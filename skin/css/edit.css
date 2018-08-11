@@ -1,0 +1,392 @@
+@charset "utf-8";
+
+/* ゆとシート for SW2.5 */
+
+/* // フォーム設定
+---------------------------------------------------------------------------------------------------- */
+main {
+  overflow: visible;
+}
+
+input,
+select,
+textarea {
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 5px;
+  background-color: rgba(255,255,255,0.6);
+}
+
+input::placeholder {
+  opacity: 0.5;
+}
+
+.box input[type="text"],
+.box input[type="number"],
+.box select,
+.box textarea,
+#status dd input {
+  width: calc(100% - 4px);
+  min-width: 3em;
+  margin: 2px;
+  padding: 2px
+}
+input[type="number"] {
+  text-align: center;
+}
+
+.box .add-del-button {
+  text-align: center;
+}
+
+.box .add-del-button a {
+  display: inline-block;
+  margin: 0px 2em;
+  cursor: pointer;
+  transform: scale(3.5, 1);
+}
+
+.message {
+  max-width: 500px;
+  margin: 2rem auto;
+  padding: 1rem;
+  border: 1px solid #aaa;
+  border-radius: 5px;
+  text-align: center;
+}
+.message:empty {
+  display: none;
+}
+
+#hide-checkbox {
+  text-align: right;
+  
+}
+#hide-checkbox input {
+  vertical-align: middle;
+}
+
+.box .annotate {
+  text-align: right;
+  font-size: 90%;
+}
+.example {
+  background: rgba(170,170,170,0.2);
+}
+
+#area-name {
+  position: sticky;
+  top: 0px;
+  z-index: 1;
+  padding: 0.5em;
+}
+#area-name input {
+  width: calc(100% - 1em);
+  min-width: 3em;
+  margin: 2px;
+  padding: 2px
+}
+#area-name #character-name {
+  flex-grow: 1;
+  text-align: left;
+  font-weight: bold;
+  font-size: 1.4rem;
+}
+#area-name #player-name {
+  text-align: left;
+  font-weight: bold;
+}
+#area-name input[type="submit"]{
+  width: 100px;
+  align-self: stretch;
+  background: linear-gradient(to bottom, #ddeeff, #ccccff);
+  box-shadow: 1px 1px 0 0 #ffffff inset, -1px -1px 0 0 #bbbbee inset;
+}
+#area-name input[type="submit"]:hover {
+  background: linear-gradient(to bottom, rgba(50,150,250,0.5), rgba(50,50,250,0.5));
+  color: #ffffff;
+}
+
+#regulation {
+  margin: 10px 0;
+  overflow-y: auto;
+}
+#regulation dl {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+  grid-template-rows: auto;
+  margin: 10px 0;
+}
+#regulation dl dt {
+  grid-row: 1 / 2;
+}
+#regulation dl dd {
+  grid-row: 2 / 3;
+  font-size: 1.2rem;
+}
+#regulation dl dd:nth-last-child(-n+6) input {
+  width: calc(100% - 5em);
+}
+
+#area-status {
+  grid-template-columns: 0.5fr 0.6fr 1.6fr 1.8fr;
+}
+
+@media screen and (max-width:735px){
+  #area-status {
+    grid-template-columns: 1fr 1fr 2fr;
+    grid-gap: 10px 5px;
+
+    grid-template-areas:
+      "IMG  IMG  IMG"
+      "PER  PER  PER "
+      "STT  STT  STT "
+      "STT  STT  STT "
+      "LVL  EXP  sSTT"
+    ;
+  }
+}
+
+
+#area-status #image {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr 1fr;
+  
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  
+  cursor: unset;
+}
+#area-status #image div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  align-items: unset;
+}
+#area-status #image select {
+  width: calc(100% - 6.5em);
+}
+
+#area-status #image .words-input select {
+  width: auto;
+}
+
+
+#area-status #faith select {
+  font-family: initial;
+}
+
+#sub-status input,
+#mobility input {
+  width: 3.5em;
+}
+
+#classes dl {
+  grid-template-columns: 1fr 3.5em;
+}
+
+#area-package #package table {
+  margin-top: 1px;
+  margin-bottom: -1px;
+}
+
+#language dl {
+  display: grid;
+  grid-template-columns: 1fr 2.4em 2.4em;
+  grid-template-rows: auto;
+  
+  margin: 0 5px;
+}
+#language dl dt {
+  font-weight: normal;
+}
+#language dl dd {
+  text-align: center;
+}
+
+#magic-power p {
+  margin-top: -1em;
+  text-align: right;
+}
+#magic-power p input {
+  width: 3.5em;
+}
+
+#combat-feats select {
+  margin-left: 1em;
+  width: calc(100% - 4px - 1em);
+}
+
+#weapons {
+  display: block;
+  overflow-y: auto;
+}
+#weapons table {
+  min-width: 800px;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+}
+#weapons tr {
+  display: grid;
+  grid-template-columns: 23.3% 4.5em 3.5em 5em 3.5em 3.5em 5em 1.5em 1fr 1fr;
+  grid-template-rows: auto;
+  
+  width: 100%;
+}
+#weapons tr th {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: auto !important;
+}
+#weapons tr td {
+  border-bottom-width: 0px;
+  border-right-width: 0px;
+  vertical-align: middle;
+}
+#weapons tr td:first-child {
+  border-left-width: 0px;
+}
+#weapons td:nth-child(1) { grid-row: 1 / span 2; } /* 名前 */
+#weapons td:nth-child(2) { grid-row: 1 / span 2; } /* 用法 */
+#weapons td:nth-child(3) { grid-row: 1 / span 2; } /* 必筋 */
+#weapons td:nth-child(4) { grid-row: 1 / span 2; } /* 命中 */
+#weapons td:nth-child(5) { grid-row: 1 / span 2; } /* 威力 */
+#weapons td:nth-child(6) { grid-row: 1 / span 2; } /* Ｃ値 */
+#weapons td:nth-child(7) { grid-row: 1 / span 2; } /* 追加Ｄ */
+#weapons td:nth-child(8) { grid-row: 1; } /* 専用 */
+#weapons td:nth-child(9) { grid-row: 1; } /* カテゴリ */
+#weapons td:nth-child(10){ grid-row: 1; } /* 技能 */
+#weapons td:nth-child(11){ grid-row: 2; grid-column: -4 / span 3; } /* 備考 */
+
+#weapons table td {
+  font-size: 12px;
+}
+#weapons table td b {
+  font-size: 14px;
+}
+#weapons td input[name$="Acc"],
+#weapons td input[name$="Dmg"] {
+  width: 3.5em;
+}
+#weapons td input[type="checkbox"] {
+  vertical-align:bottom;
+}
+
+#accessories th:nth-child(1) { width: 1.5em; } /*  */
+#accessories th:nth-child(2) { width: 2.5em; } /* 種別 */
+#accessories th:nth-child(3) { width:   25%; } /* 名前 */
+#accessories th:nth-child(4) { width: 4.5em; } /* 専用 */
+#accessories th:nth-child(5) { width:  auto; } /* 備考 */
+
+#money input {
+  width: calc(100% - 3em);
+}
+
+#items textarea {
+  height: 16em;
+}
+
+#free-note textarea {
+  height: 16em;
+}
+
+@media screen and (max-width:735px){
+  #history{
+    overflow-y: auto;
+  }
+}
+#history table {
+  min-width: 800px;
+}
+#history table tr th:nth-child(1) { width:   2em; } /* No. */
+#history table tr th:nth-child(2) { width:   6em; } /* 日付 */
+#history table tr th:nth-child(3) { width:  auto; } /* タイトル */
+#history table tr th:nth-child(4) { width:   5em; } /* 経験点 */
+#history table tr th:nth-child(5) { width:   3em; } /* 名誉点 */
+#history table tr th:nth-child(6) { width: 4.5em; } /* ガメル */
+#history table tr th:nth-child(7) { width:   5em; } /* 成長 */
+#history table tr th:nth-child(8) { width:   6em; } /* ＧＭ */
+#history table tr th:nth-child(9) { width:  15em; } /* 参加者 */
+
+#history td{
+  white-space: nowrap;
+}
+#history table tr td:nth-child(6):after {
+  margin-left: 0px;
+  font-size: 1.1rem;
+}
+#history input[name$="Money"] {
+  width: calc(100% - 0.9em);
+}
+#history .example {
+  margin-top: 1em;
+}
+#history .annotate {
+  width: 70%;
+  margin: auto 3px auto auto;
+  text-align: left;
+}
+
+article > form > hr {
+  margin: 5rem 0px;
+  border-width: 1px 0 0;
+  border-style: solid;
+}
+
+#f-public,
+#f-checkboxes {
+  width: 16em;
+  margin-top: 1rem;
+  padding: .5em;
+}
+
+#f-profile {
+  margin-top: 1rem;
+}
+#f-profile textarea {
+  height: 10em;
+}
+
+#f-actions table {
+  margin-top: 1rem;
+}
+#f-actions table {
+  width: 100%;
+}
+#f-actions table th {
+  white-space: nowrap;
+}
+#f-actions td:nth-child(1){
+  width: 2em;
+  font-size: 2rem;
+  white-space: normal;
+  text-align: center;
+}
+#f-actions td:nth-child(2){
+  width: 2.5em;
+  font-size: 2rem;
+  text-align: center;
+}
+#f-actions td:nth-child(5){
+  width: 3.5em;
+}
+
+#f-note {
+  min-height: auto;
+  margin-top: 1rem;
+}
+#f-note textarea {
+  height: 10em;
+}
+
+
+
+
+
+
+
+
