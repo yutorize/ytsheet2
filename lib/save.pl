@@ -307,7 +307,7 @@ foreach (
 }
 ## ＨＰ
 $pc{'hpBase'} = $pc{'level'} * 3 + $pc{'sttVit'} + $pc{'sttAddD'};
-$pc{'hpAddTotal'} = s_eval($pc{'hpAdd'});
+$pc{'hpAddTotal'} = s_eval($pc{'hpAdd'}) + $pc{'tenacity'};
 $pc{'hpTotal'}  = $pc{'hpBase'} + $pc{'hpAddTotal'};
 ## ＭＰ
 $pc{'mpBase'} = ($pc{'lvSor'} + $pc{'lvCon'} + $pc{'lvPri'} + $pc{'lvFai'} + 

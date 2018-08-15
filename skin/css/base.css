@@ -40,6 +40,13 @@ a {
   text-decoration: none;
 }
 
+main a:link    { color: #78d; }
+main a:visited { color: #789; }
+main a:hover   { color: #000; }
+main p a {
+  background: linear-gradient(to top, #ccf 20%, transparent 30%, transparent);
+}
+
 body {
   display: grid;
   grid-template-columns: 1fr minmax(auto, 900px) 1fr;
@@ -83,7 +90,6 @@ main {
   min-height: calc(100vh - 11rem);
   margin: 0;
   padding: 1rem 0;
-  overflow: hidden;
   border-width: 0px 3px;
   border-style: double;
   border-color: #aaa;
@@ -92,6 +98,11 @@ main {
 article{
   max-width: 860px;
   margin: 0 auto;
+}
+
+* + article{
+  border-width: 1px 0 0;
+  border-style: solid;
 }
 
 footer {
@@ -166,6 +177,7 @@ header nav ul  {
   display: flex;
   justify-content: flex-end;
   align-items: center;
+  margin-right: 1rem;
 }
 header nav ul li  {
   position: relative;
@@ -237,7 +249,6 @@ header nav ul li.small + li.very-small {
   margin-left: 0.8rem;
 }
 
-
 /* // Aside
 ---------------------------------------------------------------------------------------------------- */
 main aside {
@@ -263,37 +274,63 @@ main aside h2 + p {
 /* // List
 ---------------------------------------------------------------------------------------------------- */
 .list {
-  margin: 1.5rem 0 0;
+  margin: 1.5rem 0 5rem;
   padding: 1.5rem 0 0;
-  border-width: 1px 0 0;
-  border-style: solid;
 }
 .list h2 {
   font-size: 2rem;
 }
 .list table {
+  position: relative;
+  display: block;
   width: 100%;
   height: 100%;
 }
+.list table thead {
+  display: block;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+.list table tbody {
+  display: block;
+}
+.list table tr {
+    display: grid;
+    grid-template-columns: 20em 0.7fr 0.4fr 0.4fr 0.4fr 0.6fr 1fr 0.3fr;
+}
+.list table tr th {
+  display: block;
+}
+.list table tr td {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .list table th > span {
   display: block;
   margin: 1px;
   padding: 10px 5px;
-  background: rgba(170,170,170,0.3);
+  background: rgba(230,230,230,0.9);
   border-radius: 5px;
   white-space: nowrap;
 }
-.list table tr + tr {
+.list table tbody tr {
   border-bottom-width: 1px;
   border-bottom-style: solid;
 }
-.list table tr + tr:nth-child(odd) {
+.list table tr.hide {
+  background: linear-gradient(to right, rgba(180,80,200,0.3), transparent 10px);
+}
+.list table tr + tr:nth-child(even) {
   background: rgba(170,170,170,0.1);
 }
 .list table tr + tr:hover {
   background: rgba(180,230,255,0.2);
 }
 .list table th.fellow {
+  width: 3em;
 }
 .list table th.fellow > span {
   width: 3em;
@@ -313,28 +350,33 @@ main aside h2 + p {
   line-height: 1;
 }
 .list table td.name a {
+  flex-grow: 1;
+  
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 16em;
   height: 100%;
   padding: 5px;
   
   font-size: 1.6rem;
   font-weight: bold;
-  color: #679;
 }
 .list table td.name a:hover {
   background: rgba(180,200,255,0.2);
 }
 .list table td.race {
-  white-space: nowrap;
 }
 .list table td.class {
   text-align: left;
   font-size: 80%;
 }
+.list table td.race > div {
+  flex-grow: 1;
+  margin: 0 -6%;
+  transform: scaleX(0.88);
+}
 .list table td.class > div {
+  flex-grow: 1;
   margin: 0 calc(-6% + -1em) 0 -6%;
   transform: scaleX(0.88);
 }

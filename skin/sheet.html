@@ -4,9 +4,10 @@
 <head>
   <meta charset="UTF-8">
   <title><TMPL_VAR characterName> - <TMPL_VAR title></title>
-  <link rel="stylesheet" media="all" href="./skin/css/sheet.css?201808111145">
-  <link rel="stylesheet" media="all" href="./skin/css/sheet-sp.css?201808071500">
+  <link rel="stylesheet" media="all" href="./skin/css/sheet.css?201808141930">
+  <link rel="stylesheet" media="all" href="./skin/css/sheet-sp.css?201808141930">
   <link rel="stylesheet" id="nightmode">
+  <script src="./skin/js/common.js?201808121500" ></script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <script>
 function popImage() {
@@ -97,11 +98,11 @@ window.onload = function() {
           <dl class="box" id="race">
             <dt>種族</dt><dd><TMPL_VAR race></dd>
           </dl>
-          <dl class="box" id="age">
-            <dt>年齢</dt><dd><TMPL_VAR age></dd>
-          </dl>
           <dl class="box" id="gender">
             <dt>性別</dt><dd><TMPL_VAR gender></dd>
+          </dl>
+          <dl class="box" id="age">
+            <dt>年齢</dt><dd><TMPL_VAR age></dd>
           </dl>
           <dl class="box" id="race-ability">
             <dt>種族特徴</dt><dd><TMPL_VAR raceAbility></dd>
@@ -718,6 +719,5 @@ window.onload = function() {
     <p class="copyright">ゆとシート for SW2.5 ver.<TMPL_VAR ver> - <a href="http://yutorize.2-d.jp/">ゆとらいず工房</a></p>
   </footer>
 </body>
-<script src="./skin/js/common.js?201808111100" ></script>
 
 </html>

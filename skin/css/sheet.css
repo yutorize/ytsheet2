@@ -262,13 +262,14 @@ header nav ul li.small + li.small {
 #login-form {
   position: absolute;
   top: -4rem;
-  right: 0;
+  right: 10%;
   width: 300px;
   padding: 2rem 2rem 1rem;
   background: #fff;
   text-align: center;
   
   border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
   border-width: 0 0 1px 1px;
   border-style: solid;
   
@@ -367,6 +368,7 @@ h1#character-name {
   padding: 0 5px;
   color: #fff;
   text-shadow: 0 0 1px #000, 0 0 1px #000, 0 0 1px #000, 0 0 2px #000, 0 0 3px #000;
+  word-break: break-all;
 }
 .image-none {
   overflow: hidden;
@@ -424,8 +426,8 @@ h1#character-name {
 .image p.words,
 .image-none p.words {
   position: absolute;
+  padding-top: 1em;
   writing-mode: vertical-rl;
-  white-space: nowrap;
   font-weight: bold;
   font-size: 2rem;
   color: #000;
@@ -443,12 +445,19 @@ h1#character-name {
 .image p.words .d-dash,
 .image-none p.words .d-dash {
   display: inline-block;
-  transform: scaleY(0.8)
+  transform: scaleY(0.8);
+  white-space: nowrap;
 }
 .image p.words .d-dash span,
 .image-none p.words .d-dash span {
   display: inline-block;
   transform: scaleY(1.2)
+}
+p.words span {
+  display: inline-block;
+}
+p.words span.brackets {
+  text-indent: -1em;
 }
 
 /* Personal */

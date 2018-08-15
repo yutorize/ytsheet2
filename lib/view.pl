@@ -55,6 +55,9 @@ while (my ($key, $value) = each(%pc)){
 
 ### 出力準備 ##################################################
 ## セリフ
+$pc{'words'} =~ s/^「/<span class="brackets">「<\/span>/g;
+$pc{'words'} =~ s/(.+?[，、。？」])/<span>$1<\/span>/g;
+$SHEET->param("words" => $pc{'words'});
 $SHEET->param("wordsX" => ($pc{'wordsX'} eq '左' ? 'left:0;' : 'right:0;'));
 $SHEET->param("wordsY" => ($pc{'wordsY'} eq '下' ? 'bottom:0;' : 'top:0;'));
 
@@ -229,6 +232,13 @@ foreach (
     "NAME" => @$_[0]."技能レベル".$pc{'lv'.@$_[1]},
     "STR"  => (@$_[1] eq 'Fen' ? $pc{'reqdStrF'} : $pc{'reqdStr'}),
     "EVA"  => $pc{'lv'.@$_[1]}+$pc{'bonusAgi'},
+  } );
+}
+if(!$pc{'evasionClass'}){
+  push(@evasion, {
+    "NAME" => '技能なし',
+    "STR"  => $pc{'reqdStr'},
+    "EVA"  => 0,
   } );
 }
 foreach (['金属鎧','MetalArmour'],['非金属鎧','NonMetalArmour'],['盾','Shield']) {

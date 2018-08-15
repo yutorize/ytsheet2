@@ -31,7 +31,7 @@ if($mode eq 'mylist'){
   close($FH);
 }
 
-my @characters;
+my %grouplist;
 open (my $FH, "<", $set::listfile);
 my @list = sort { (split(/<>/,$b))[3] <=> (split(/<>/,$a))[3] } <$FH>;
 close($FH);
@@ -49,9 +49,17 @@ foreach (@list) {
     }
   }
   
-  next if $hide && $mode ne 'mylist';
+  if (
+       !($set::masterid && $set::masterid eq $LOGIN_ID)
+    && !($mode eq 'mylist')
+  ){
+    next if $hide;
+  }
+  
+  $group = $set::group_default if !$group;
   
   $race =~ s/（.*）//;
+  $race = "<div>$race</div>" if length($race) >= 5;
   
   my $m_flag; my $f_flag;
   foreach('男','♂','雄','オス','爺','漢') { $m_flag = 1 if $gender =~ /$_/; }
@@ -100,6 +108,7 @@ foreach (@list) {
   
   if($fellow != 1) { $fellow = 0; }
   
+  my @characters;
   push(@characters, {
     "ID" => $id,
     "NAME" => $name,
@@ -114,11 +123,28 @@ foreach (@list) {
     "AGE" => $age,
     "FAITH" => $faith,
     "FELLOW" => $fellow,
+    "HIDE" => $hide,
   });
   
+  push(@{$grouplist{$group}}, @characters);
 }
 
-$INDEX->param(Characters => \@characters);
+my %group_name;
+my %group_text;
+foreach (@set::groups){
+  $group_name{@$_[0]} = @$_[2];
+  $group_text{@$_[0]} = @$_[3];
+}
+my @characterlists; 
+foreach (keys %grouplist){
+  push(@characterlists, {
+    "NAME" => $group_name{$_},
+    "TEXT" => $group_text{$_},
+    "Characters" => [@{$grouplist{$_}}],
+  });
+}
+
+$INDEX->param(Lists => \@characterlists);
 
 
 $INDEX->param(title => $set::title);

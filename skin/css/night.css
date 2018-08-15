@@ -13,14 +13,22 @@ body {
   color: #fff;
 }
 
-main a:link    { color: #aaf; }
-main a:visited { color: #caf; }
+main a:link    { color: #abf; }
+main a:visited { color: #abc; }
 main a:hover   { color: #fff; }
+main p a {
+  background: linear-gradient(to top, #338 20%, transparent 30%, transparent);
+}
 
 main,
 header,
 footer {
   border-color: #556;
+}
+
+
+.list table th > span {
+  background: rgba(50,50,50,0.9);
 }
 
 .box,
@@ -67,4 +75,21 @@ select {
 
 form #image > * {
   background: rgba(0,0,0,0.8);
+}
+
+#area-name input[type="submit"]{
+  width: 100px;
+  align-self: stretch;
+  background: linear-gradient(to bottom, #445566, #333355);
+  box-shadow: 1px 1px 0 0 #777788 inset, -1px -1px 0 0 #000000 inset;
+}
+
+#area-name input[type="submit"]:hover {
+  background: linear-gradient(to bottom, rgba(50,150,250,0.5), rgba(50,50,250,0.5));
+  color: #ffffff;
+}
+
+
+#login-form {
+  background: #334455;
 }

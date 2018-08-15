@@ -1,0 +1,47 @@
+@media screen and (max-width:735px){
+  html {
+    font-size: 1.6vw;
+  }
+  
+  header nav {
+    margin-top: 4rem;
+  }
+  main {
+    padding-top: 6rem;
+  }
+  .list table tr {
+    display: grid;
+    grid-template-columns: 16em 0.5fr 0.5fr 0.8fr 1fr 0.3fr;
+    grid-template-rows: auto;
+    grid-template-areas:
+      "NAME  RACE RACE  LVL CLS FELL"
+      "NAME   GEN  AGE  EXP CLS FELL"
+    ;
+  }
+  .list table .name   { grid-area: NAME; }
+  .list table .race   { grid-area: RACE; }
+  .list table .gender { grid-area:  GEN; }
+  .list table .age    { grid-area:  AGE; }
+  .list table .lv     { grid-area:  LVL; }
+  .list table .exp    { grid-area:  EXP; }
+  .list table .class  { grid-area:  CLS; }
+  .list table .fellow { grid-area: FELL; }
+  .list table tr > th {
+    display: grid;
+  }
+  .list table tr > th > span {
+    display: grid;
+    align-items: center;
+    padding: 5px;
+  }
+  .list table tr > td {
+    display: flex;
+    align-items: center;
+  }
+  .list table td.name a {
+    font-size: unset;
+  }
+  .list table th.fellow {
+    text-align: center;
+  }
+}
