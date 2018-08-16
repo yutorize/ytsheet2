@@ -4,10 +4,10 @@
 <head>
   <meta charset="UTF-8">
   <title><TMPL_VAR characterName> - <TMPL_VAR title></title>
-  <link rel="stylesheet" media="all" href="./skin/css/sheet.css?201808141930">
+  <link rel="stylesheet" media="all" href="./skin/css/sheet.css?201808161734">
   <link rel="stylesheet" media="all" href="./skin/css/sheet-sp.css?201808141930">
   <link rel="stylesheet" id="nightmode">
-  <script src="./skin/js/common.js?201808121500" ></script>
+  <script src="./skin/js/common.js?201808161734" ></script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <script>
 function popImage() {
@@ -31,6 +31,17 @@ function editOn() {
     editForm = 1;
   }
 }
+let backupList = 0;
+function backuplistOn() {
+  if(backupList){
+    document.getElementById("backuplist").style.right = '-100vh';
+    backupList = 0;
+  }
+  else {
+    document.getElementById("backuplist").style.right = '0';
+    backupList = 1;
+  }
+}
 <TMPL_IF error>
 window.onload = function() {
   document.getElementById("login-form").style.top = '5rem';
@@ -49,10 +60,11 @@ window.onload = function() {
       <ul>
         <TMPL_IF FellowMode><li><a href="./?id=<TMPL_VAR id>">通常</a></li></TMPL_IF>
         <TMPL_IF fellowPublic><TMPL_UNLESS FellowMode><li><a href="./?id=<TMPL_VAR id>&f=1">フェロー</a></li></TMPL_UNLESS></TMPL_IF>
+        <li class="small"><a onclick="backuplistOn()"><span>過去ログ</span></a></li>
         <TMPL_IF ReqdPassword>
-        <li><a onclick="editOn()">編集</a></li>
+        <li class="small"><a onclick="editOn()">編集</a></li>
         <TMPL_ELSE>
-        <li><a href="./?mode=edit&id=<TMPL_VAR id>">編集</a></li>
+        <li class="small"><a href="./?mode=edit&id=<TMPL_VAR id>">編集</a></li>
         </TMPL_IF>
         <li class="small"><a onclick="nightModeChange()" title="ナイトモード">☾✧</a></li>
       </ul>
@@ -66,6 +78,13 @@ window.onload = function() {
     </p>
   </aside>
   </TMPL_IF>
+  
+  <aside id="backuplist">
+    <ul>
+      <li<TMPL_UNLESS BackupMode> class="backup-now"</TMPL_UNLESS>><a href="?id=<TMPL_VAR id>">最新</a></li>
+      <TMPL_LOOP Backup><li<TMPL_IF NOW> class="backup-now"</TMPL_IF>><a href="?id=<TMPL_VAR id>&backup=<TMPL_VAR URL>"><TMPL_VAR DATE></a></li></TMPL_LOOP>
+    </ul>
+  </aside>
 
   <form id="login-form" method="post" action="./">
     <input type="hidden" name="mode" value="edit">
@@ -76,6 +95,7 @@ window.onload = function() {
 
   <main>
     <article<TMPL_IF FellowMode> style="display:none"</TMPL_IF>>
+      <TMPL_IF BackupMode><p><TMPL_VAR updateTime> 時点のバックアップデータです。</p></TMPL_IF>
       <div id="area-name">
         <h1 id="character-name"><TMPL_VAR aka><span id="aka"></span><TMPL_VAR characterName></h1>
         <div>

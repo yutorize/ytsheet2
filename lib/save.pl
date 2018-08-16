@@ -408,7 +408,8 @@ if(param('imageFile')){
   
   if($flag && $ext){
     unlink "${set::data_dir}${file}/image.$pc{'image'}"; # 前のファイルを削除
-  
+    
+    if (!-d "${set::data_dir}${file}"){ mkdir "${set::data_dir}${file}"; }
     open(my $IMG, ">", "${set::data_dir}${file}/image.${ext}");
     binmode($IMG);
     print $IMG $data;
@@ -441,7 +442,6 @@ if($mode eq 'make'){
 }
 ## 更新
 elsif($mode eq 'save'){
-  
   if($pc{'protect'} ne $pc{'protectOld'}){
   sysopen (my $FH, $set::passfile, O_RDWR);
   my @list = <$FH>;
@@ -464,6 +464,16 @@ elsif($mode eq 'save'){
 }
 
 ### 保存
+if($mode eq 'save'){
+  use File::Copy qw/copy/;
+  if (!-d "${set::data_dir}${file}/backup/"){ mkdir "${set::data_dir}${file}/backup/"; }
+  
+  my $modtime = (stat("${set::data_dir}${file}/data.cgi"))[9];
+  my ($min, $hour, $day, $mon, $year) = (localtime($modtime))[1..5];
+  $year += 1900; $mon++;
+  my $update_date = sprintf("%04d-%02d-%02d-%02d-%02d",$year,$mon,$day,$hour,$min);
+  copy("${set::data_dir}${file}/data.cgi", "${set::data_dir}${file}/backup/${update_date}.cgi");
+}
 delete $pc{'pass'};
 if (!-d "${set::data_dir}${file}"){ mkdir "${set::data_dir}${file}"; }
 sysopen (my $FH, "${set::data_dir}${file}/data.cgi", O_WRONLY | O_TRUNC | O_CREAT, 0666);

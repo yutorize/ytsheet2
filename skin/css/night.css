@@ -20,6 +20,13 @@ main p a {
   background: linear-gradient(to top, #338 20%, transparent 30%, transparent);
 }
 
+aside#backuplist {
+  background: rgba(0,0,0,0.9);
+}
+aside#backuplist ul li a {
+  color: #fff;
+}
+
 main,
 header,
 footer {
@@ -28,7 +35,7 @@ footer {
 
 
 .list table th > span {
-  background: rgba(50,50,50,0.9);
+  background: rgba(45,50,55,0.9);
 }
 
 .box,

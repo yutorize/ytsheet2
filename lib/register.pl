@@ -32,7 +32,7 @@ if($mode eq 'register'){
 
   log_in(param('id'),param('password'));
 }
-if($mode eq 'option'){
+elsif($mode eq 'option'){
   my $LOGIN_ID = check;
   
   sysopen (my $FH, $set::userfile, O_RDWR);
@@ -49,6 +49,38 @@ if($mode eq 'option'){
   }
   truncate($FH, tell($FH));
   close($FH);
+  
+  our $set_message = '変更を保存しました。';
+  require $set::lib_form;
+}
+elsif($mode eq 'passchange'){
+  my $LOGIN_ID = check;
+
+  if(param('new_password') ne param('new_password_confirm')){ error('パスワードの確認入力が一致しません'); }
+  if (param('password') eq ''){ error('パスワードが入力されていません'); }
+  if (param('new_password') eq ''){ error('新しいパスワードが入力されていません'); }
+  else {
+    if (param('new_password') =~ /[^0-9A-Za-z\.\-\/]/) { error('パスワードに使える文字は、半角の英数字とピリオド、ハイフン、スラッシュだけです'); }
+  }
+  
+  my $flag;
+  sysopen (my $FH, $set::userfile, O_RDWR);
+  my @list = <$FH>;
+  flock($FH, 2);
+  seek($FH, 0, 0);
+  foreach (@list){
+    my @data= split /<>/;
+    if ($data[0] eq $LOGIN_ID && c_crypt(param('password'),$data[1])){
+      print $FH "$data[0]<>".e_crypt(param('new_password'))."<>$data[2]<>$data[3]<>\n";
+      $flag = 1;
+    }else{
+      print $FH $_;
+    }
+  }
+  truncate($FH, tell($FH));
+  close($FH);
+  
+  if(!$flag){ error('パスワードが間違っています'); }
   
   our $set_message = '変更を保存しました。';
   require $set::lib_form;

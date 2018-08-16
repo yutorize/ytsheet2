@@ -49,7 +49,7 @@ if($mode eq 'edit'){
 }
 
 sub login_error {
-  our $login_error = 'パスワードが間違ってます。';
+  our $login_error = 'パスワードが間違っているか、<br>編集権限がありません。';
   require $set::lib_view;
   exit;
 }
@@ -191,7 +191,7 @@ foreach (@set::groups){
 }
 print <<"HTML";
           </select></dd>
-          <dt>タグ</dt><dd>@{[ input 'tags','','','disabled' ]}</dd>
+          <dt>タグ</dt><dd>@{[ input 'tags','','','' ]}</dd>
         </dl>
       </div>
       <div class="box" id="regulation">

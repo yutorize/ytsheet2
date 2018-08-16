@@ -1,7 +1,7 @@
 #!/usr/local/bin/perl
 ####################################
 ##       ゆとシート for SW2.5     ##
-##                version0.01     ##
+##                version0.03     ##
 ##          by ゆとらいず工房     ##
 ##     http://yutorize.2-d.jp     ##
 ####################################
@@ -17,7 +17,7 @@ use Fcntl;
 
 ################### バージョン ###################
 
-our $ver = "0.02";
+our $ver = "0.03";
 
 #################### 設定読込 ####################
 
@@ -35,6 +35,9 @@ if($mode eq 'register'){
 elsif($mode eq 'option'){
   if(param('name'))  { require $set::lib_register; }    #オプション変更処理
   else               { require $set::lib_form; }        #オプションフォーム
+}
+elsif($mode eq 'passchange'){
+  require $set::lib_register;    #パスワード変更処理
 }
 elsif($mode eq 'login')   {
   if(param('id')) { &log_in(param('id'),param('password')); }  #ログイン

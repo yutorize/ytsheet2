@@ -41,7 +41,7 @@ a {
 }
 
 main a:link    { color: #78d; }
-main a:visited { color: #789; }
+main a:visited { color: #678; }
 main a:hover   { color: #000; }
 main p a {
   background: linear-gradient(to top, #ccf 20%, transparent 30%, transparent);
@@ -312,22 +312,33 @@ main aside h2 + p {
   display: block;
   margin: 1px;
   padding: 10px 5px;
-  background: rgba(230,230,230,0.9);
+  background: rgba(225,230,235,0.9);
   border-radius: 5px;
   white-space: nowrap;
 }
 .list table tbody tr {
   border-bottom-width: 1px;
   border-bottom-style: solid;
+  position: relative;
 }
-.list table tr.hide {
+.list table tbody tr:nth-child(even) {
+  background: rgba(165,170,175,0.1);
+}
+.list table tbody tr:before,
+.list table tbody tr:after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  pointer-events: none;
+}
+.list table tbody tr:hover:after {
+  background: linear-gradient(to top, rgba(100,230,255,0.2), transparent 50%);
+}
+.list table tbody tr.hide:before {
   background: linear-gradient(to right, rgba(180,80,200,0.3), transparent 10px);
-}
-.list table tr + tr:nth-child(even) {
-  background: rgba(170,170,170,0.1);
-}
-.list table tr + tr:hover {
-  background: rgba(180,230,255,0.2);
 }
 .list table th.fellow {
   width: 3em;
@@ -362,7 +373,7 @@ main aside h2 + p {
   font-weight: bold;
 }
 .list table td.name a:hover {
-  background: rgba(180,200,255,0.2);
+  background: rgba(180,200,255,0.1);
 }
 .list table td.race {
 }
@@ -415,12 +426,7 @@ form p {
 }
 form p > label > span {
   display: inline-block;
-  width: 10em;
-  text-align: right;
-}
-form p > label > span {
-  display: inline-block;
-  width: 10em;
+  width: 11em;
   text-align: right;
 }
 form p > label >  input + b{

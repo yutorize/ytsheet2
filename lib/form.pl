@@ -26,8 +26,9 @@ close($FH);
 $INDEX->param(modeRegister => 1) if param('mode') eq 'register';
 $INDEX->param(modeLogin => 1) if param('mode') eq 'login';
 $INDEX->param(modeOption => 1) if param('mode') eq 'option';
+$INDEX->param(modeOption => 1) if param('mode') eq 'passchange';
 
-if(param('mode') eq 'option'){
+if(param('mode') eq 'option' || param('mode') eq 'passchange'){
   $INDEX->param(setMessage => $main::set_message);
   $INDEX->param(userName => (getplayername($LOGIN_ID))[0]);
   $INDEX->param(userMail => (getplayername($LOGIN_ID))[1]);

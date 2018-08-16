@@ -6,8 +6,6 @@ use open ":utf8";
 use open ":std";
 use HTML::Template;
 
-
-
 ### データ読み込み ##################################################
 require $set::data_races;
 require $set::data_items;
@@ -16,9 +14,10 @@ require $set::data_items;
 #my $template = HTML::Template->new(filename => "template.html", utf8 => 1,);
 my $SHEET;
 open (my $FH, "<:utf8", $set::skin_sheet ) or die "Couldn't open template file: $!\n";
-$SHEET = HTML::Template->new( filehandle => *$FH , die_on_bad_params => 0, case_sensitive => 1);
+$SHEET = HTML::Template->new( filehandle => *$FH , die_on_bad_params => 0, case_sensitive => 1, global_vars => 1);
 close($FH);
 
+$SHEET->param("BackupMode" => param('backup') ? 1 : 0);
 
 ### キャラクターデータ読み込み ##################################################
 my $id = param('id');
@@ -35,7 +34,9 @@ while (<$FH>) {
 close($FH);
 
 my %pc = ();
-open my $IN, '<', "${set::data_dir}${file}/data.cgi" or error 'キャラクターシートがありません。';
+my $datafile = "${set::data_dir}${file}/data.cgi";
+   $datafile = "${set::data_dir}${file}/backup/".param('backup').'.cgi' if param('backup');
+open my $IN, '<', $datafile or error 'キャラクターシートがありません。';
 $_ =~ s/(.*?)<>(.*?)\n/$pc{$1} = $2;/egi while <$IN>;
 close($IN);
 
@@ -316,6 +317,24 @@ foreach (0 .. $pc{'historyNum'}){
   } );
 }
 $SHEET->param(History => \@history);
+
+### バックアップ
+opendir(my $DIR,"${set::data_dir}${file}/backup");
+my @backlist = readdir($DIR);
+closedir($DIR);
+my @backup;
+foreach (reverse sort @backlist) {
+  if ($_ =~ s/\.cgi//) {
+    my $url = $_;
+    $_ =~ s/^([0-9]{4}-[0-9]{2}-[0-9]{2})-([0-9]{2})-([0-9]{2})$/$1 $2\:$3/;
+    push(@backup, {
+      "NOW"  => ($url eq param('backup') ? 1 : 0),
+      "URL"  => $url,
+      "DATE" => $_,
+    });
+  }
+}
+$SHEET->param(Backup => \@backup);
 
 ### パスワード要求
 $SHEET->param(ReqdPassword => (!$pc{'protect'} || $pc{'protect'} eq 'password' ? 1 : 0) );
