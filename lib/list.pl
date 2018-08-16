@@ -4,6 +4,7 @@ use strict;
 use utf8;
 use open ":utf8";
 use open ":std";
+use Encode;
 use HTML::Template;
 
 my $LOGIN_ID = check;
@@ -20,6 +21,7 @@ close($FH);
 $INDEX->param(modeList => 1);
 $INDEX->param(LOGIN_ID => $LOGIN_ID);
 
+## マイリスト取得
 my @mylist;
 if($mode eq 'mylist'){
   $INDEX->param( playerName => (getplayername($LOGIN_ID))[0] );
@@ -31,10 +33,18 @@ if($mode eq 'mylist'){
   close($FH);
 }
 
-my @characters;
+## ファイル読み込み
+my %grouplist;
 open (my $FH, "<", $set::listfile);
 my @list = sort { (split(/<>/,$b))[3] <=> (split(/<>/,$a))[3] } <$FH>;
 close($FH);
+
+## タグ検索
+my $tag_query = Encode::decode('utf8', param('tag'));
+if($tag_query) { @list = grep { (split(/<>/))[16] =~ / $tag_query / } @list; }
+$INDEX->param(tag => $tag_query);
+
+## リストを回す
 foreach (@list) {
   my (
     $id, undef, undef, $updatetime, $name, $player, $group,
@@ -49,9 +59,18 @@ foreach (@list) {
     }
   }
   
-  next if $hide && $mode ne 'mylist';
+  if (
+       !($set::masterid && $set::masterid eq $LOGIN_ID)
+    && !($mode eq 'mylist')
+    && !$tag_query
+  ){
+    next if $hide;
+  }
+  
+  $group = $set::group_default if !$group;
   
   $race =~ s/（.*）//;
+  $race = "<div>$race</div>" if length($race) >= 5;
   
   my $m_flag; my $f_flag;
   foreach('男','♂','雄','オス','爺','漢') { $m_flag = 1 if $gender =~ /$_/; }
@@ -100,6 +119,7 @@ foreach (@list) {
   
   if($fellow != 1) { $fellow = 0; }
   
+  my @characters;
   push(@characters, {
     "ID" => $id,
     "NAME" => $name,
@@ -114,11 +134,28 @@ foreach (@list) {
     "AGE" => $age,
     "FAITH" => $faith,
     "FELLOW" => $fellow,
+    "HIDE" => $hide,
   });
   
+  push(@{$grouplist{$group}}, @characters);
 }
 
-$INDEX->param(Characters => \@characters);
+my %group_name;
+my %group_text;
+foreach (@set::groups){
+  $group_name{@$_[0]} = @$_[2];
+  $group_text{@$_[0]} = @$_[3];
+}
+my @characterlists; 
+foreach (keys %grouplist){
+  push(@characterlists, {
+    "NAME" => $group_name{$_},
+    "TEXT" => $group_text{$_},
+    "Characters" => [@{$grouplist{$_}}],
+  });
+}
+
+$INDEX->param(Lists => \@characterlists);
 
 
 $INDEX->param(title => $set::title);

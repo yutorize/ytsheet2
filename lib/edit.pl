@@ -49,7 +49,7 @@ if($mode eq 'edit'){
 }
 
 sub login_error {
-  our $login_error = 'パスワードが間違ってます。';
+  our $login_error = 'パスワードが間違っているか、<br>編集権限がありません。';
   require $set::lib_view;
   exit;
 }
@@ -85,9 +85,9 @@ sub display {
 }
 
 ## 初期設定 ##
-$pc{'history0Exp'}   = $pc{'history0Exp'}   ne '' ? $pc{'history0Exp'}   : 3000;
-$pc{'history0Honor'} = $pc{'history0Honor'} ne '' ? $pc{'history0Honor'} :    0;
-$pc{'history0Money'} = $pc{'history0Money'} ne '' ? $pc{'history0Money'} : 1200;
+$pc{'history0Exp'}   = $pc{'history0Exp'}   ne '' ? $pc{'history0Exp'}   : $set::make_exp;
+$pc{'history0Honor'} = $pc{'history0Honor'} ne '' ? $pc{'history0Honor'} : $set::make_honor;
+$pc{'history0Money'} = $pc{'history0Money'} ne '' ? $pc{'history0Money'} : $set::make_money;
 $pc{'expTotal'} = $pc{'expTotal'} ? $pc{'expTotal'} : $pc{'history0Exp'};
 
 $pc{'accuracyEnhance'} = $pc{'accuracyEnhance'} ? $pc{'accuracyEnhance'} : 0;
@@ -100,6 +100,7 @@ $pc{'languageNum'} = $pc{'languageNum'} ? $pc{'languageNum'} : 5;
 $pc{'historyNum'}  = $pc{'historyNum'}  ? $pc{'historyNum'}  : 5;
 
 $pc{'protect'} = $pc{'protect'} ? $pc{'protect'} : 'password';
+$pc{'group'} = $pc{'group'} ? $pc{'group'} : $set::group_default;
 
 ### 改行処理 #########################################################################################
 $pc{'items'}         =~ s/&lt;br&gt;/\n/g;
@@ -118,10 +119,11 @@ Content-type: text/html\n
 <head>
   <meta charset="UTF-8">
   <title>編集：$pc{'characterName'} - $set::title</title>
-  <link rel="stylesheet" media="all" href="./skin/css/sheet.css?201808111100">
+  <link rel="stylesheet" media="all" href="./skin/css/sheet.css?201808161954">
   <link rel="stylesheet" media="all" href="./skin/css/sheet-sp.css?201808041652">
-  <link rel="stylesheet" media="all" href="./skin/css/edit.css?201808051600">
+  <link rel="stylesheet" media="all" href="./skin/css/edit.css?201808161954">
   <link rel="stylesheet" id="nightmode">
+  <script src="./skin/js/common.js?201808161954" ></script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     #image {
@@ -158,10 +160,12 @@ print <<"HTML";
         </div>
         <input type="submit" value="保存">
       </div>
-      <p><input type="hidden" name="protectOld" value="$pc{'protect'}">
+      <div class="box" id="edit-protect">
+      <h2 onclick="view('edit-protect-view')">編集保護設定 ▼</h2>
+      <p id="edit-protect-view" @{[$mode eq 'edit' ? 'style="display:none"':'']}><input type="hidden" name="protectOld" value="$pc{'protect'}">
 HTML
 if($LOGIN_ID){
-  print '<input type="radio" name="protect" value="account"'.($pc{'protect'} eq 'account'?' checked':'').'> アカウントに紐付ける<br>';
+  print '<input type="radio" name="protect" value="account"'.($pc{'protect'} eq 'account'?' checked':'').'> アカウントに紐付ける（ログイン中のみ編集可能になります）<br>';
 }
   print '<input type="radio" name="protect" value="password"'.($pc{'protect'} eq 'password'?' checked':'').'> パスワードで保護 ';
 if ($mode eq 'edit' && $pass) {
@@ -172,9 +176,25 @@ if ($mode eq 'edit' && $pass) {
 print <<"HTML";
 <input type="radio" name="protect" value="none"@{[ $pc{'protect'} eq 'none'?' checked':'' ]}> 保護しない（誰でも編集できるようになります）
       </p>
+      </div>
       <p id="hide-checkbox">
-      @{[ input 'hide','checkbox' ]} 一覧に表示しない
+      @{[ input 'hide','checkbox' ]} 一覧に表示しない<br>
+      ※タグ検索結果に合致した場合は表示されます
       </p>
+      <div class="box" id="group">
+        <dl>
+          <dt>グループ</dt><dd><select name="group">
+HTML
+foreach (@set::groups){
+  my $id   = @$_[0];
+  my $name = @$_[2];
+  print '<option value="'.$id.'"'.($pc{'group'} eq $id ? ' selected': '').'>'.$name.'</option>';
+}
+print <<"HTML";
+          </select></dd>
+          <dt>タグ</dt><dd>@{[ input 'tags','','','' ]}</dd>
+        </dl>
+      </div>
       <div class="box" id="regulation">
         <h2>作成レギュレーション</h2>
         <dl>
@@ -226,17 +246,17 @@ print <<"HTML";
           <dl class="box" id="race">
             <dt>種族</dt><dd><select name="race" oninput="raceChange()">@{[ option 'race', @data::race_names ]}</select></dd>
           </dl>
-          <dl class="box" id="age">
-            <dt>年齢</dt><dd>@{[input('age')]}</dd>
-          </dl>
           <dl class="box" id="gender">
             <dt>性別</dt><dd>@{[input('gender')]}</dd>
           </dl>
-          <dl class="box" id="sin">
-            <dt>穢れ</dt><dd>@{[input('sin','number')]}</dd>
+          <dl class="box" id="age">
+            <dt>年齢</dt><dd>@{[input('age')]}</dd>
           </dl>
           <dl class="box" id="race-ability">
             <dt>種族特徴</dt><dd id="race-ability-value">$data::race_ability{$pc{'race'}}</dd>
+          </dl>
+          <dl class="box" id="sin">
+            <dt>穢れ</dt><dd>@{[input('sin','number')]}</dd>
           </dl>
           <dl class="box" id="birth">
             <dt>生まれ</dt><dd>@{[input('birth')]}</dd>
@@ -693,11 +713,17 @@ print <<"HTML";
               <td id="evasion-eva">$pc{'EvasionEva'}</td>
               <td>―</td>
             </tr>
-            <tr id="evasive-maneuver"@{[ display $pc{'evasiveManeuver'} ]}>
-              <td>［］</td>
+            <tr id="scaled-skin"@{[ display $pc{'scaledSkin'} ]}>
+              <td>［鱗の皮膚］</td>
               <td>―</td>
-              <td id="evasive-maneuver-value">$pc{'evasiveManeuver'}</td>
               <td>―</td>
+              <td id="scaled-skin-value">$pc{'scaledSkin'}</td>
+            </tr>
+            <tr id="crystal-body"@{[ display $pc{'crystalBody'} ]}>
+              <td>［晶石の身体］</td>
+              <td>―</td>
+              <td>―</td>
+              <td id="crystal-body-value">$pc{'crystalBody'}</td>
             </tr>
             <tr id="mastery-metalarmour"@{[ display $pc{'masteryMetalArmour'} ]}>
               <td>《防具習熟／金属鎧》</td>
@@ -926,7 +952,7 @@ print <<"HTML";
           <td>1800</td>
           <td>器用</td>
           <td>サンプルさん</td>
-          <td>ウィリアム　メネルドール<br>ヴィンダールブ　レイストフ</td>
+          <td>ウィリアム　メネルドール<br>ヴィンダールヴ　レイストフ</td>
         </tr>
         </table>
         <div class="annotate">
@@ -1082,8 +1108,7 @@ foreach my $key ( keys(%data::race_language) ){
 print '};';
 print <<"HTML";
   </script>
-  <script src="./skin/js/common.js" ></script>
-  <script src="./lib/edit.js?201808111100" ></script>
+  <script src="./lib/edit.js?201808141439" ></script>
 </body>
 
 </html>

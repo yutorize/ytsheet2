@@ -21,6 +21,10 @@ input::placeholder {
   opacity: 0.5;
 }
 
+h2[onclick] {
+  cursor: pointer;
+}
+
 .box input[type="text"],
 .box input[type="number"],
 .box select,
@@ -58,9 +62,15 @@ input[type="number"] {
   display: none;
 }
 
+#edit-protect {
+  margin-top: 1rem;
+}
+
 #hide-checkbox {
-  text-align: right;
-  
+  width: 22em;
+  margin-top: 1rem;
+  margin-left: auto;
+  text-align: left;
 }
 #hide-checkbox input {
   vertical-align: middle;
@@ -72,6 +82,21 @@ input[type="number"] {
 }
 .example {
   background: rgba(170,170,170,0.2);
+}
+
+
+#group dl {
+  display: grid;
+  grid-template-columns: 4em 1fr 2.5em 3fr;
+  grid-template-rows: auto;
+  text-align: right;
+}
+
+#group dl > * {
+  grid-row: 1 / 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 #area-name {
