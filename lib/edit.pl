@@ -86,8 +86,8 @@ sub display {
 
 ## 初期設定 ##
 $pc{'history0Exp'}   = $pc{'history0Exp'}   ne '' ? $pc{'history0Exp'}   : $set::make_exp;
-$pc{'history0Honor'} = $pc{'history0Honor'} ne '' ? $pc{'history0Honor'} : $set::make_money;
-$pc{'history0Money'} = $pc{'history0Money'} ne '' ? $pc{'history0Money'} : $set::make_honor;
+$pc{'history0Honor'} = $pc{'history0Honor'} ne '' ? $pc{'history0Honor'} : $set::make_honor;
+$pc{'history0Money'} = $pc{'history0Money'} ne '' ? $pc{'history0Money'} : $set::make_money;
 $pc{'expTotal'} = $pc{'expTotal'} ? $pc{'expTotal'} : $pc{'history0Exp'};
 
 $pc{'accuracyEnhance'} = $pc{'accuracyEnhance'} ? $pc{'accuracyEnhance'} : 0;
