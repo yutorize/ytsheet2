@@ -7,8 +7,11 @@ use open ":std";
 use JSON;
 
 
-### コールバック関数読み込み ##################################################
+### コールバック関数読み込み ###################################################
 my $callback = param('callback');
+
+### バックアップ情報読み込み ###################################################
+my $backup = param('backup');
 
 ### キャラクターデータ読み込み ##################################################
 my $id = param('id');
@@ -25,14 +28,25 @@ while (<$FH>) {
 close($FH);
 
 my %pc = ();
-open my $IN, '<', "${set::data_dir}${file}/data.cgi" or error 'キャラクターシートがありません。';
+my $IN;
+
+if($backup eq "") {
+  open $IN, '<', "${set::data_dir}${file}/data.cgi" or "";
+} else {
+  open $IN, '<', "${set::data_dir}${file}/backup/${backup}.cgi" or "";
+}
+
+
 $_ =~ s/(.*?)<>(.*?)\n/$pc{$1} = $2;/egi while <$IN>;
 close($IN);
 
-### 置換
-foreach (keys %pc) {
-  $pc{$_} = tag_unescape($pc{$_});
-  if($_ =~ /^(?:items|freeNote|freeHistory)$/){
+if($pc{updateTime}) {
+  $pc{result} = "OK";
+} else {
+  if($backup eq "") {
+    $pc{result} = "リクエストされたシートは見つかりませんでした。 id: ${id}";
+  } else {
+    $pc{result} = "リクエストされたシートは見つかりませんでした。 id: ${id}, backup: ${backup}";
   }
 }
 
@@ -47,29 +61,6 @@ if($callback eq "") {
   print "(";
   print to_json( \%pc );
   print ")";
-}
-
-
-
-#$pc{characterName};
-#encode_json( $pc );
-#decode( 'utf-8', encode_json( $tmp )); #decode( 'utf-8', $tmp );
-
-
-### サブルーチン ##################################################
-sub tag_unescape {
-  my $text = $_[0];
-  $text =~ s/&amp;/&/g;
-  $text =~ s/&quot;/"/g;
-  
-  $text =~ s/{{([0-9\+\-\*\/\%\(\) ]+?)}}/s_eval($1);/eg;
-  
-  $text =~ s|(―+)|&ddash($1);|eg;
-  
-  $text =~ s/[|｜](.+?)《(.*?)》/<ruby>$1<rp>(<\/rp><rt>$2<\/rt><rp>)<\/rp><\/ruby>/gi; # なろう式ルビ
-  $text =~ s/&lt;br&gt;/<br>/gi;
-  
-  return $text;
 }
 
 1;
