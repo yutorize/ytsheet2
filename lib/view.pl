@@ -336,6 +336,16 @@ foreach (reverse sort @backlist) {
 }
 $SHEET->param(Backup => \@backup);
 
+### タグ
+my @tags;
+foreach(split(/ /, $pc{'tags'})){
+    push(@tags, {
+      "URL"  => uri_escape_utf8($_),
+      "TEXT" => $_,
+    });
+}
+$SHEET->param(Tags => \@tags);
+
 ### パスワード要求
 $SHEET->param(ReqdPassword => (!$pc{'protect'} || $pc{'protect'} eq 'password' ? 1 : 0) );
 

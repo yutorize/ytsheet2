@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <title><TMPL_VAR title></title>
-  <link rel="stylesheet" media="all" href="./skin/css/base.css?201808161734">
+  <link rel="stylesheet" media="all" href="./skin/css/base.css?201808162036">
   <link rel="stylesheet" media="all" href="./skin/css/base-sp.css?201808141930">
   <link rel="stylesheet" id="nightmode">
   <script src="./skin/js/common.js?201808141710" ></script>
@@ -51,7 +51,7 @@
         ・稼働テスト中です。<br>
         ・<s>計算や表示がおかしい箇所がまだあるかもしれません。</s><br>
         　だいたい問題なくなってきました。<br>
-        ・メンテなどで急に止まる可能性があります。<br>
+        ・予告なくメンテナンスで止まる可能性があります。<br>
         ・IEは非対応です（推奨ブラウザ：Chrome／FireFox）。<br>
         ・不具合、要望報告は <a href="https://twitter.com/tale_hw/status/1023362455781531649">@tale_hw</a> か <a href="https://twitter.com/yutorize">@yutorize</a> まで。<br>
         <br>
@@ -63,8 +63,15 @@
         ・<a href="./?mode=register">ユーザー登録</a>すると自分のキャラシートを纏めて管理できます。
       </p>
     </aside>
+      <form method="get" action="./" id="form-search">
+        <p><input type="text" name="tag" value="<TMPL_VAR tag>"><input type="submit" value="タグ検索"></p>
+      </form>
     <article>
-      <h1><TMPL_IF playerName><TMPL_VAR playerName>さんの</TMPL_IF>キャラクター一覧</h1>
+      <h1>
+        <TMPL_IF tag>タグ「<TMPL_VAR tag>」の</TMPL_IF>
+        <TMPL_IF playerName><TMPL_VAR playerName>さんの</TMPL_IF>
+        キャラクター一覧
+      </h1>
       <TMPL_LOOP Lists>
       <section class="list">
         <h2><TMPL_VAR NAME> <small><TMPL_VAR TEXT></small></h2>

@@ -431,6 +431,12 @@ foreach (keys %pc) {
   $pc{$_} =~ s/\n//g;
 }
 
+## タグ：全角スペース・英数を半角に変換
+$pc{'tags'} =~ tr/　/ /;
+$pc{'tags'} =~ tr/０-９Ａ-Ｚａ-ｚ/0-9A-Za-z/;
+$pc{'tags'} =~ tr/＋－＊／．，＿/\+\-\*\/\.,_/;
+$pc{'tags'} =~ tr/ / /s;
+
 ## 新規
 if($mode eq 'make'){
   sysopen (my $FH, $set::passfile, O_WRONLY | O_APPEND | O_CREAT, 0666);
@@ -501,7 +507,7 @@ close($FH);
                 "$pc{'lvEnh'}/$pc{'lvBar'}/$pc{'lvRid'}/$pc{'lvAlc'}/$pc{'lvWar'}/$pc{'lvMys'}/".
                 "$pc{'lvDem'}/$pc{'lvPhy'}/$pc{'lvGri'}/$pc{'lvArt'}/$pc{'lvAri'}<>".
                 
-                "$pc{'sessionTotal'}<>$pc{'image'}<> $pc{'tag'} <>$pc{'hide'}<>$pc{'fellowPublic'}<>";
+                "$pc{'sessionTotal'}<>$pc{'image'}<> $pc{'tags'} <>$pc{'hide'}<>$pc{'fellowPublic'}<>";
   my $listhit;
   foreach (@list){
     my( $id, undef ) = split /<>/;

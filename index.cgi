@@ -1,7 +1,7 @@
 #!/usr/local/bin/perl
 ####################################
 ##       ゆとシート for SW2.5     ##
-##                version0.03     ##
+##                version0.04     ##
 ##          by ゆとらいず工房     ##
 ##     http://yutorize.2-d.jp     ##
 ####################################
@@ -13,11 +13,12 @@ use open ":std";
 use CGI::Carp qw(fatalsToBrowser);
 use CGI qw/:all/;
 use CGI::Cookie;
+use Encode qw/encode decode/;
 use Fcntl;
 
 ################### バージョン ###################
 
-our $ver = "0.03";
+our $ver = "0.04";
 
 #################### 設定読込 ####################
 
@@ -239,6 +240,16 @@ sub token_check {
   close($FH);
   
   return $flag;
+}
+
+### URIエスケープ ###
+sub uri_escape_utf8 {
+  my($tmp) = @_;
+  $tmp = Encode::encode('utf8',$tmp);
+  $tmp =~ s/([^\w])/'%'.unpack("H2", $1)/ego;
+  $tmp =~ tr/ /+/;
+  $tmp = Encode::decode('utf8',$tmp);
+  return($tmp);
 }
 
 ### エラー ###

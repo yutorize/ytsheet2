@@ -64,6 +64,10 @@ h1#character-name {
   text-shadow: 0 0 0 #fff, 0 0 1px #777, 1px 1px 0px #000;
 }
 
+#tags a:before {
+  color: #000;
+}
+
 #fellow #f-level dd,
 #fellow #f-level:before,
 #fellow #f-level:after {

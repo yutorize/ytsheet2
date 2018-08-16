@@ -318,7 +318,6 @@ input::placeholder {
   justify-content: space-between;
   align-items: flex-end;
   
-  margin-bottom: 1rem;
   padding: 0px 5px;
   border-width: 3px 0px;
   border-style: solid;
@@ -340,9 +339,35 @@ h1#character-name {
 #player-name {
 }
 
+/* // Tags
+---------------------------------------------------------------------------------------------------- */
+#tags {
+  margin: .5rem;
+  min-height: 0.1px;
+}
+#tags a {
+  display: inline-block;
+  background-color: rgba(140,170,200,0.3);
+  color: inherit;
+  padding: .2rem .5rem .2rem .2rem;
+  border-radius: 12px 5px 5px 12px;
+}
+#tags a:before {
+  content:"●";
+  color: #fff;
+  font-size: 80%;
+}
+#tags a:hover {
+  background-color: rgba(120,220,220,0.4);
+}
+#tags a + a {
+  margin-left: 1rem;
+}
+
 /* // Area-Status
 ---------------------------------------------------------------------------------------------------- */
 #area-status {
+  margin-top: .5rem;
   display: grid;
   grid-gap: 1rem;
   grid-template-columns: 0.6fr 0.8fr 1.5fr 2.115fr;

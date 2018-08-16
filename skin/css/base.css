@@ -44,7 +44,7 @@ main a:link    { color: #78d; }
 main a:visited { color: #678; }
 main a:hover   { color: #000; }
 main p a {
-  background: linear-gradient(to top, #ccf 20%, transparent 30%, transparent);
+  background: linear-gradient(to top, #cef 20%, transparent 30%, transparent);
 }
 
 body {
@@ -103,6 +103,9 @@ article{
 * + article{
   border-width: 1px 0 0;
   border-style: solid;
+}
+article h1 {
+  font-size: 2.5rem;
 }
 
 footer {
@@ -270,6 +273,17 @@ main aside h2 + p {
   margin-top: 0.5em;
 }
 
+/* // Search-Form
+---------------------------------------------------------------------------------------------------- */
+form#form-search p {
+  margin: .5rem 1.5rem;
+  text-align: right;
+}
+form#form-search p input {
+  height: 3rem;
+  margin: 1px;
+  vertical-align:middle;
+}
 
 /* // List
 ---------------------------------------------------------------------------------------------------- */
@@ -338,7 +352,8 @@ main aside h2 + p {
   background: linear-gradient(to top, rgba(100,230,255,0.2), transparent 50%);
 }
 .list table tbody tr.hide:before {
-  background: linear-gradient(to right, rgba(180,80,200,0.3), transparent 10px);
+  background-image: linear-gradient(135deg, rgba(80,80,200,0.3) 10px, transparent 10px);
+  background-position: top left;
 }
 .list table th.fellow {
   width: 3em;

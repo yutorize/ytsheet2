@@ -62,9 +62,15 @@ input[type="number"] {
   display: none;
 }
 
-#hide-checkbox {
+#edit-protect {
   margin-top: 1rem;
-  text-align: right;
+}
+
+#hide-checkbox {
+  width: 22em;
+  margin-top: 1rem;
+  margin-left: auto;
+  text-align: left;
 }
 #hide-checkbox input {
   vertical-align: middle;

@@ -4,6 +4,7 @@ use strict;
 use utf8;
 use open ":utf8";
 use open ":std";
+use Encode;
 use HTML::Template;
 
 my $LOGIN_ID = check;
@@ -20,6 +21,7 @@ close($FH);
 $INDEX->param(modeList => 1);
 $INDEX->param(LOGIN_ID => $LOGIN_ID);
 
+## マイリスト取得
 my @mylist;
 if($mode eq 'mylist'){
   $INDEX->param( playerName => (getplayername($LOGIN_ID))[0] );
@@ -31,10 +33,18 @@ if($mode eq 'mylist'){
   close($FH);
 }
 
+## ファイル読み込み
 my %grouplist;
 open (my $FH, "<", $set::listfile);
 my @list = sort { (split(/<>/,$b))[3] <=> (split(/<>/,$a))[3] } <$FH>;
 close($FH);
+
+## タグ検索
+my $tag_query = Encode::decode('utf8', param('tag'));
+if($tag_query) { @list = grep { (split(/<>/))[16] =~ / $tag_query / } @list; }
+$INDEX->param(tag => $tag_query);
+
+## リストを回す
 foreach (@list) {
   my (
     $id, undef, undef, $updatetime, $name, $player, $group,
@@ -52,6 +62,7 @@ foreach (@list) {
   if (
        !($set::masterid && $set::masterid eq $LOGIN_ID)
     && !($mode eq 'mylist')
+    && !$tag_query
   ){
     next if $hide;
   }

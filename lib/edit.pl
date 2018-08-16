@@ -119,11 +119,11 @@ Content-type: text/html\n
 <head>
   <meta charset="UTF-8">
   <title>編集：$pc{'characterName'} - $set::title</title>
-  <link rel="stylesheet" media="all" href="./skin/css/sheet.css?201808111100">
+  <link rel="stylesheet" media="all" href="./skin/css/sheet.css?201808161954">
   <link rel="stylesheet" media="all" href="./skin/css/sheet-sp.css?201808041652">
-  <link rel="stylesheet" media="all" href="./skin/css/edit.css?201808141622">
+  <link rel="stylesheet" media="all" href="./skin/css/edit.css?201808161954">
   <link rel="stylesheet" id="nightmode">
-  <script src="./skin/js/common.js?20180812" ></script>
+  <script src="./skin/js/common.js?201808161954" ></script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     #image {
@@ -160,7 +160,7 @@ print <<"HTML";
         </div>
         <input type="submit" value="保存">
       </div>
-      <div class="box">
+      <div class="box" id="edit-protect">
       <h2 onclick="view('edit-protect-view')">編集保護設定 ▼</h2>
       <p id="edit-protect-view" @{[$mode eq 'edit' ? 'style="display:none"':'']}><input type="hidden" name="protectOld" value="$pc{'protect'}">
 HTML
@@ -178,7 +178,8 @@ print <<"HTML";
       </p>
       </div>
       <p id="hide-checkbox">
-      @{[ input 'hide','checkbox' ]} 一覧に表示しない
+      @{[ input 'hide','checkbox' ]} 一覧に表示しない<br>
+      ※タグ検索結果に合致した場合は表示されます
       </p>
       <div class="box" id="group">
         <dl>

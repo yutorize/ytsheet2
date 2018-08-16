@@ -4,10 +4,10 @@
 <head>
   <meta charset="UTF-8">
   <title><TMPL_VAR characterName> - <TMPL_VAR title></title>
-  <link rel="stylesheet" media="all" href="./skin/css/sheet.css?201808161734">
+  <link rel="stylesheet" media="all" href="./skin/css/sheet.css?201808161930">
   <link rel="stylesheet" media="all" href="./skin/css/sheet-sp.css?201808141930">
   <link rel="stylesheet" id="nightmode">
-  <script src="./skin/js/common.js?201808161734" ></script>
+  <script src="./skin/js/common.js?201808161930" ></script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <script>
 function popImage() {
@@ -102,6 +102,10 @@ window.onload = function() {
         <p id="update-time"><time><TMPL_VAR updateTime></time></p>
         <p id="player-name">プレイヤー：<TMPL_VAR playerName></p>
         </div>
+      </div>
+      
+      <div id="tags">
+      <TMPL_LOOP Tags><a href="./?tag=<TMPL_VAR URL>"><TMPL_VAR TEXT></a></TMPL_LOOP>
       </div>
 
       <div id="area-status">
