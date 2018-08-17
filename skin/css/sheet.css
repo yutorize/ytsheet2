@@ -14,6 +14,7 @@
 
 html {
   font-size: 62.5%;
+  overflow-x: hidden;
 }
 
 body {
@@ -343,14 +344,16 @@ h1#character-name {
 ---------------------------------------------------------------------------------------------------- */
 #tags {
   margin: .5rem;
+  margin-right: -.5rem;
   min-height: 0.1px;
 }
 #tags a {
   display: inline-block;
-  background-color: rgba(140,170,200,0.3);
-  color: inherit;
+  margin-right: 1rem;
   padding: .2rem .5rem .2rem .2rem;
   border-radius: 12px 5px 5px 12px;
+  background-color: rgba(140,170,200,0.3);
+  color: inherit;
 }
 #tags a:before {
   content:"●";
@@ -359,9 +362,6 @@ h1#character-name {
 }
 #tags a:hover {
   background-color: rgba(120,220,220,0.4);
-}
-#tags a + a {
-  margin-left: 1rem;
 }
 
 /* // Area-Status

@@ -62,13 +62,13 @@ sub getfile {
   open (my $FH, '<', $set::passfile) or die;
   while (<$FH>) {
     my ($id, $pass, $file, undef) = (split /<>/, $_)[0..3];
-    if    ($_[0] eq $id && !$pass){
-      return ($id, $pass, $file, undef);
-    }
-    elsif ($_[0] eq $id && $pass eq "[$_[2]]"){
-      return ($id, $pass, $file, undef);
-    }
-    elsif ($_[0] eq $id && (&c_crypt($_[1], $pass) || ($set::masterkey && $_[1] eq $set::masterkey))) {
+    if ($_[0] eq $id && (
+         (!$pass) # パス不要
+      || (&c_crypt($_[1], $pass)) # パス一致
+      || ($pass eq "[$_[2]]") # アカウント一致
+      || ($set::masterkey && $_[1] eq $set::masterkey) # 管理パス一致
+      || ($set::masterid && $_[2] eq $set::masterid) # 管理アカウント一致
+    )) {
       close($FH);
       return ($id, $pass, $file, undef);
     }

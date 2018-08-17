@@ -4,7 +4,7 @@ use strict;
 use utf8;
 use open ":utf8";
 use open ":std";
-use JSON;
+#use JSON;
 
 
 ### コールバック関数読み込み ###################################################
@@ -61,6 +61,17 @@ if($callback eq "") {
   print "(";
   print to_json( \%pc );
   print ")";
+}
+
+sub to_json {
+  my $hash = shift;
+  my $output;
+  foreach my $keys (keys %{$hash}) {
+    $$hash{$keys} =~ s/"//g;
+    $output .= '"'.${keys}.'":"'.$$hash{$keys}.'",';
+  }
+  $output =~ s/,$//; # 末尾のカンマを消す
+  return "\{$output\}";
 }
 
 1;
