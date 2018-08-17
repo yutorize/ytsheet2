@@ -10,6 +10,7 @@ package set;
   our $lib_edit   = 'lib/edit.pl';
   our $lib_save   = 'lib/save.pl';
   our $lib_view   = 'lib/view.pl';
+  our $lib_json   = 'lib/json.pl';
   our $lib_list   = 'lib/list.pl';
   
   our $lib_form    = 'lib/form.pl';

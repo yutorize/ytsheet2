@@ -50,6 +50,7 @@ elsif($mode eq 'blanksheet') { require $set::lib_edit; }   #ブランクシー�
 elsif($mode eq 'edit')       { require $set::lib_edit; }   #編集
 elsif($mode eq 'make')       { require $set::lib_save; }   #新規作成
 elsif($mode eq 'save')       { require $set::lib_save; }   #更新
+elsif($mode eq 'json')       { require $set::lib_json; }   #外部アプリ連携
 elsif(param('id')) { require $set::lib_view; }   #シート表示
 else { require $set::lib_list; }   #一覧表示
 
