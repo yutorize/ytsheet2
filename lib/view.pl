@@ -318,6 +318,14 @@ foreach (0 .. $pc{'historyNum'}){
 }
 $SHEET->param(History => \@history);
 
+## ガメル
+if($pc{"money"} =~ /^(?:自動|auto)$/i){
+  $SHEET->param(money => $pc{'moneyTotal'});
+}
+if($pc{"deposit"} =~ /^(?:自動|auto)$/i){
+  $SHEET->param(deposit => $pc{'depositTotal'}.' G ／ '.$pc{'debtTotal'});
+}
+
 ### バックアップ
 opendir(my $DIR,"${set::data_dir}${file}/backup");
 my @backlist = readdir($DIR);

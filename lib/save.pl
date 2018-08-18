@@ -104,24 +104,29 @@ $pc{'lvWiz'} = max($pc{'lvSor'},$pc{'lvCon'});
 ### 魔法使い最大レベル算出 ##################################################
 $pc{'lvCaster'} = max($pc{'lvSor'},$pc{'lvCon'},$pc{'lvPri'},$pc{'lvFai'},$pc{'lvMag'},$pc{'lvDem'},$pc{'lvGri'});
 
-### 経験点／名誉点計算 ##################################################
+### 経験点／名誉点／ガメル計算 ##################################################
 my @expA = ( 0, 1000, 2000, 3500, 5000, 7000, 9500, 12500, 16500, 21500, 27500, 35000, 44000, 54500, 66500, 80000, 95000, 125000 );
 my @expB = ( 0,  500, 1500, 2500, 4000, 5500, 7500, 10000, 13000, 17000, 22000, 28000, 35500, 44500, 55000, 67000, 80500, 105500 );
 my @expS = ( 0, 3000, 6000, 9000, 12000, 16000, 20000, 24000, 28000, 33000, 38000, 43000, 48000, 54000, 60000, 66000, 72000, 79000, 86000, 93000, 100000 );
 ## 履歴から 
-foreach (split /[|｜]/, $pc{'make_honor'}) {
-     if($_ =~ s/^b//){ $pc{'bhonor_total'} += s_eval($_); } #蛮族名誉点
-  elsif($_ =~ s/^r//){ $pc{'rhonor_total'} += s_eval($_); } #盟竜点
-  else { $pc{'honor_total'} += s_eval($_); }
-}
+$pc{'moneyTotal'} = 0;
+$pc{'depositTotal'} = 0;
+$pc{'debtTotal'} = 0;
 for (my $i = 0; $i <= $pc{'historyNum'}; $i++){
   $pc{'expTotal'} += s_eval($pc{"history${i}Exp"});
+  $pc{'moneyTotal'} += s_eval($pc{"history${i}Money"});
   foreach (split /[|｜]/, $pc{"history${i}Honor"}) {
        if($_ =~ s/^b//){ $pc{'bhonorTotal'} += s_eval($_); } #蛮族名誉点
     elsif($_ =~ s/^r//){ $pc{'rhonorTotal'} += s_eval($_); } #盟竜点
     else { $pc{'honorTotal'} += s_eval($_); }
   }
 }
+my $cashbook = $pc{"cashbook"};
+$cashbook =~ s/::((?:[\+\-\*]?[0-9]+)+)/$pc{'moneyTotal'} += eval($1)/eg;
+$cashbook =~ s/:>((?:[\+\-\*]?[0-9]+)+)/$pc{'depositTotal'} += eval($1)/eg;
+$cashbook =~ s/:<((?:[\+\-\*]?[0-9]+)+)/$pc{'debtTotal'} += eval($1)/eg;
+$pc{'moneyTotal'} += $pc{'debtTotal'} - $pc{'depositTotal'};
+
 ## 経験点消費
 $pc{'expRest'} = $pc{'expTotal'};
 foreach ("Fig", "Gra", "Sor", "Con", "Pri", "Fai", "Mag", "Dem","Gri") {
@@ -376,7 +381,7 @@ foreach(1 .. $pc{'weaponNum'}){
 #### 改行を<br>に変換 ##################################################
 $pc{'items'}         =~ s/\r\n?|\n/<br>/g;
 $pc{'freeNote'}      =~ s/\r\n?|\n/<br>/g;
-$pc{'freeHistory'}   =~ s/\r\n?|\n/<br>/g;
+$pc{'cashbook'}      =~ s/\r\n?|\n/<br>/g;
 $pc{'fellowProfile'} =~ s/\r\n?|\n/<br>/g;
 $pc{'fellowNote'}    =~ s/\r\n?|\n/<br>/g;
 

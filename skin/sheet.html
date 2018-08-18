@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <title><TMPL_VAR characterName> - <TMPL_VAR title></title>
-  <link rel="stylesheet" media="all" href="./skin/css/sheet.css?201808161930">
+  <link rel="stylesheet" media="all" href="./skin/css/sheet.css?201808181730">
   <link rel="stylesheet" media="all" href="./skin/css/sheet-sp.css?201808141930">
   <link rel="stylesheet" id="nightmode">
   <script src="./skin/js/common.js?201808161930" ></script>
@@ -596,7 +596,7 @@ window.onload = function() {
           </div>
         </div>
       </div>
-        <div class="box" id="free-note">
+      <div class="box" id="free-note">
         <h2>容姿・経歴・その他メモ</h2>
         <p><TMPL_VAR freeNote></p>
       </div>
@@ -629,6 +629,12 @@ window.onload = function() {
           </TMPL_LOOP>
         </table>
       </div>
+      <TMPL_IF cashbook>
+      <div class="box" id="cashbook">
+        <h2>収支履歴</h2>
+        <p><TMPL_VAR cashbook></p>
+      </div>
+      </TMPL_IF>
     </article>
     <article id="fellow" <TMPL_UNLESS FellowMode> style="display:none"</TMPL_UNLESS>>
       <TMPL_IF fellowPublic>

@@ -45,6 +45,14 @@ main a:link    { color: #77f; }
 main a:visited { color: #a7f; }
 main a:hover   { color: #777; }
 
+code {
+  margin: 0 1px;
+  padding: 0.2em 0.4em;
+  font-size: 85%;
+  font-family: "SFMono-Regular",Consolas,"Liberation Mono",Menlo,Courier,meiryo,monospace,serif;
+  background-color: rgba(100,250,170,0.4);
+}
+
 body {
   position: relative;
   min-height: 100vh;
@@ -1110,6 +1118,18 @@ div#area-items-R {
   font-size: 1.1rem;
 }
 
+/* // Cashbook
+---------------------------------------------------------------------------------------------------- */
+#cashbook {
+  margin-top: 1rem;
+}
+#cashbook p {
+  max-height: 16em;
+  overflow: auto;
+  font-size: 85%;
+  font-family: monospace, serif;
+  white-space: pre-wrap;
+}
 
 /* // Button
 ---------------------------------------------------------------------------------------------------- */

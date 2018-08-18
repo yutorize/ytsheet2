@@ -4,6 +4,9 @@
 
 /* // フォーム設定
 ---------------------------------------------------------------------------------------------------- */
+html {
+  overflow: visible;
+}
 main {
   overflow: visible;
 }
@@ -317,6 +320,20 @@ input[type="number"] {
 
 #free-note textarea {
   height: 16em;
+}
+
+#cashbook textarea {
+  height: 16em;
+}
+#cashbook-total-value {
+  font-size: 120%;
+  font-weight: bold;
+}
+#cashbook p {
+  font-size: 90%;
+  font-family: inherit;
+  white-space: normal;
+  text-align: left;
 }
 
 @media screen and (max-width:735px){

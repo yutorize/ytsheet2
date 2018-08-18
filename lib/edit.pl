@@ -105,7 +105,7 @@ $pc{'group'} = $pc{'group'} ? $pc{'group'} : $set::group_default;
 ### 改行処理 #########################################################################################
 $pc{'items'}         =~ s/&lt;br&gt;/\n/g;
 $pc{'freeNote'}      =~ s/&lt;br&gt;/\n/g;
-$pc{'freeHistory'}   =~ s/&lt;br&gt;/\n/g;
+$pc{'cashbook'}      =~ s/&lt;br&gt;/\n/g;
 $pc{'fellowProfile'} =~ s/&lt;br&gt;/\n/g;
 $pc{'fellowNote'}    =~ s/&lt;br&gt;/\n/g;
 
@@ -119,9 +119,9 @@ Content-type: text/html\n
 <head>
   <meta charset="UTF-8">
   <title>編集：$pc{'characterName'} - $set::title</title>
-  <link rel="stylesheet" media="all" href="./skin/css/sheet.css?201808161954">
+  <link rel="stylesheet" media="all" href="./skin/css/sheet.css?201808182100">
   <link rel="stylesheet" media="all" href="./skin/css/sheet-sp.css?201808041652">
-  <link rel="stylesheet" media="all" href="./skin/css/edit.css?201808161954">
+  <link rel="stylesheet" media="all" href="./skin/css/edit.css?201808182100">
   <link rel="stylesheet" id="nightmode">
   <script src="./skin/js/common.js?201808161954" ></script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -199,11 +199,11 @@ print <<"HTML";
         <h2>作成レギュレーション</h2>
         <dl>
           <dt>経験点</dt>
-          <dd>@{[input("history0Exp",'number','changeRegu','step="1000"')]}</dd>
+          <dd>@{[input("history0Exp",'number','changeRegu','step="500"')]}</dd>
           <dt>名誉点</dt>
-          <dd>@{[input("history0Honor",'number','changeRegu','step="50"')]}</dd>
+          <dd>@{[input("history0Honor",'number','changeRegu')]}</dd>
           <dt>所持金</dt>
-          <dd>@{[input("history0Money",'number','changeRegu','step="100"')]}</dd>
+          <dd>@{[input("history0Money",'number','changeRegu')]}</dd>
           <dt>初期成長</dt>
           <dd>器用度:@{[ input "sttPreGrowA",'number','calcStt' ]}</dd>
           <dd>敏捷度:@{[ input "sttPreGrowB",'number','calcStt' ]}</dd>
@@ -256,7 +256,7 @@ print <<"HTML";
             <dt>種族特徴</dt><dd id="race-ability-value">$data::race_ability{$pc{'race'}}</dd>
           </dl>
           <dl class="box" id="sin">
-            <dt>穢れ</dt><dd>@{[input('sin','number')]}</dd>
+            <dt>穢れ</dt><dd>@{[input('sin','number','','min="0"')]}</dd>
           </dl>
           <dl class="box" id="birth">
             <dt>生まれ</dt><dd>@{[input('birth')]}</dd>
@@ -881,7 +881,7 @@ print <<"HTML";
           </div>
         </div>
       </div>
-        <div class="box" id="free-note">
+      <div class="box" id="free-note">
         <h2>容姿・経歴・その他メモ</h2>
         <textarea name="freeNote">$pc{'freeNote'}</textarea>
       </div>
@@ -921,7 +921,7 @@ print <<"HTML";
             <td>@{[input("history${i}Title")]}</td>
             <td>@{[input("history${i}Exp",'text','calcExp')]}</td>
             <td>@{[input("history${i}Honor")]}</td>
-            <td>@{[input("history${i}Money")]}</td>
+            <td>@{[input("history${i}Money",'text','calcCash')]}</td>
             <td>@{[input("history${i}Grow",'text','','list="list-grow"')]}</td>
             <td>@{[input("history${i}Gm")]}</td>
             <td>@{[input("history${i}Member")]}</td>
@@ -956,12 +956,28 @@ print <<"HTML";
         </tr>
         </table>
         <div class="annotate">
-        ※経験点欄は「1000+50*2」など四則演算が有効です（ファンブル経験点などを分けて書けます）。<br>
-        ※成長は欄1つの欄に「敏捷生命知力」など複数書いても自動計算されます。<br>
-        　また、「敏捷×2」「知力*3」など同じ成長が複数ある場合は纏めて記述できます（×や*は省略できます）。「器敏2知3」と能力値の頭文字1つで記述することもできます。<br>
+        ※経験点欄は<code>1000+50*2</code>など四則演算が有効です（ファンブル経験点などを分けて書けます）。<br>
+        ※成長は欄1つの欄に<code>敏捷生命知力</code>など複数書いても自動計算されます。<br>
+        　また、<code>敏捷×2</code><code>知力*3</code>など同じ成長が複数ある場合は纏めて記述できます（×や*は省略できます）。<br>
+        　<code>器敏2知3</code>と能力値の頭文字1つで記述することもできます。<br>
         ※成長はリアルタイムでの自動計算はされません。反映するには一度保存してください。
         </div>
         @{[input('historyNum','hidden')]}
+      </div>
+      <div class="box" id="cashbook">
+        <h2>収支履歴</h2>
+        <textarea name="cashbook" oninput="calcCash();">$pc{'cashbook'}</textarea>
+        <p>
+          所持金：<span id="cashbook-total-value">$pc{'moneyTotal'}</span> G
+          　預金：<span id="cashbook-deposit-value">－</span> G
+          　借金：<span id="cashbook-debt-value">－</span> G
+        </p>
+        <p class="annotate">
+          ※<code>::+n</code> <code>::-n</code>の書式で入力すると加算・減算されます。<br>
+          　預金は<code>:>+n</code>、借金は<code>:<+n</code>で増減できます。（それに応じて所持金も増減します）<br>
+          ※セッション履歴に記入された報酬は自動的に加算されます。<br>
+          ※所持金欄、預金／借金欄に<code>自動</code>または<code>auto</code>と記入すると、収支の計算結果を反映します。
+        </p>
       </div>
       
       @{[ input 'birthTime','hidden' ]}
@@ -1108,7 +1124,7 @@ foreach my $key ( keys(%data::race_language) ){
 print '};';
 print <<"HTML";
   </script>
-  <script src="./lib/edit.js?201808141439" ></script>
+  <script src="./lib/edit.js?201808181800" ></script>
 </body>
 
 </html>
