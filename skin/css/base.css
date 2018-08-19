@@ -13,6 +13,7 @@
 
 html {
   font-size: 62.5%;
+  height: 100vh;
 }
 
 body {
@@ -52,6 +53,7 @@ body {
   grid-template-columns: 1fr minmax(auto, 900px) 1fr;
   position: relative;
   min-height: 100vh;
+  height 100%;
   background-color: #ffffff;
   background-image: url(../img/back-pattern.png), url(../img/back-first.png);
   background-position: center, bottom right;

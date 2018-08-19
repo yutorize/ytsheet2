@@ -19,6 +19,9 @@
   }
 }
 @media screen and (max-width:735px){
+  body {
+    background-size: auto, 60%;
+  }
   #area-status {
     display: grid;
     grid-gap: 5px;

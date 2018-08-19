@@ -62,6 +62,11 @@ $SHEET->param("words" => $pc{'words'});
 $SHEET->param("wordsX" => ($pc{'wordsX'} eq '左' ? 'left:0;' : 'right:0;'));
 $SHEET->param("wordsY" => ($pc{'wordsY'} eq '下' ? 'bottom:0;' : 'top:0;'));
 
+## 種族特徴
+$pc{'raceAbility'} =~ s/［(.*?)］/<span>［$1］<\/span>/g;
+$SHEET->param("raceAbility" => $pc{'raceAbility'});
+
+
 ## 信仰
 if($pc{'faith'} eq 'その他の信仰') { $SHEET->param("faith" => $pc{'faithOther'}); }
 $pc{'faith'} =~ s/“(.*)”//;
@@ -240,6 +245,24 @@ if(!$pc{'evasionClass'}){
     "NAME" => '技能なし',
     "STR"  => $pc{'reqdStr'},
     "EVA"  => 0,
+  } );
+}
+if($pc{'race'} eq 'リルドラケン') {
+  push(@evasion, {
+    "NAME" => "［鱗の皮膚］",
+    "DEF"  => $pc{'raceAbilityDef'},
+  } );
+}
+elsif($pc{'race'} eq 'フロウライト') {
+  push(@evasion, {
+    "NAME" => "［晶石の身体］",
+    "DEF"  => $pc{'raceAbilityDef'},
+  } );
+}
+elsif($pc{'race'} eq 'ダークトロール') {
+  push(@evasion, {
+    "NAME" => "［トロールの体躯］",
+    "DEF"  => $pc{'raceAbilityDef'},
   } );
 }
 foreach (['金属鎧','MetalArmour'],['非金属鎧','NonMetalArmour'],['盾','Shield']) {

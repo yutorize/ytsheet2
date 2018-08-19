@@ -137,6 +137,21 @@ foreach ("Fen", "Sho", "Sco", "Ran", "Sag", "Enh", "Bar", "Rid", "Alc", "War", "
 }
 $pc{'expRest'} += $expS[$pc{'lvSeeker'}];  # 求道者
 
+### 種族チェック ##################################################
+if($pc{'race'} eq 'リルドラケン'){
+  $pc{'raceAbilityDef'} = 1;
+}
+elsif($pc{'race'} eq 'シャドウ'){
+  $pc{'raceAbilityMndResist'} = 4;
+}
+elsif($pc{'race'} eq 'フロウライト'){
+  $pc{'raceAbilityDef'} = 2;
+  $pc{'raceAbilityMp'} = 15;
+}
+elsif($pc{'race'} eq 'ダークトロール'){
+  $pc{'raceAbilityDef'} = 1;
+}
+
 ### 能力値計算  ##################################################
 ## 成長
 $pc{'sttGrowA'} = $pc{'sttPreGrowA'};
@@ -290,7 +305,7 @@ $pc{'vitResistAddTotal'} = s_eval($pc{'vitResistAdd'});
 $pc{'vitResistTotal'}  = $pc{'vitResistBase'} + $pc{'vitResistAddTotal'};
 ## 精神抵抗力
 $pc{'mndResistBase'} = $st{'LvF'};
-$pc{'mndResistAddTotal'} = s_eval($pc{'mndResistAdd'});
+$pc{'mndResistAddTotal'} = s_eval($pc{'mndResistAdd'}) + $pc{'raceAbilityMndResist'};
 $pc{'mndResistTotal'}  = $pc{'mndResistBase'} + $pc{'mndResistAddTotal'};
 ## ＨＰＭＰ：装飾品
 foreach (
@@ -317,11 +332,14 @@ $pc{'hpTotal'}  = $pc{'hpBase'} + $pc{'hpAddTotal'};
 ## ＭＰ
 $pc{'mpBase'} = ($pc{'lvSor'} + $pc{'lvCon'} + $pc{'lvPri'} + $pc{'lvFai'} + 
                  $pc{'lvMag'} + $pc{'lvDem'} + $pc{'lvGri'}) * 3 + $pc{'sttMnd'} + $pc{'sttAddF'};
-$pc{'mpAddTotal'} = s_eval($pc{'mpAdd'});
+$pc{'mpBase'} = $pc{'level'} * 3 + $pc{'sttMnd'} + $pc{'sttAddF'} if ($pc{'race'} eq 'マナフレア');
+$pc{'mpAddTotal'} = s_eval($pc{'mpAdd'}) + $pc{'capacity'} + $pc{'raceAbilityMp'};
 $pc{'mpTotal'}  = $pc{'mpBase'} + $pc{'mpAddTotal'};
+$pc{'mpTotal'}  = 0  if ($pc{'race'} eq 'グラスランナー');
 
 ## 移動力
 $pc{'mobilityBase'} = $pc{'sttAgi'} + $pc{'sttAddB'};
+$pc{'mobilityBase'} = $pc{'mobilityBase'} * 2  if ($pc{'race'} eq 'ケンタウロス');
 $pc{'mobilityTotal'} = $pc{'mobilityBase'} + s_eval($pc{'mobilityAdd'});
 $pc{'mobilityFull'} = $pc{'mobilityTotal'} * 3;
 $pc{'mobilityLimited'} = $pc{'footwork'} ? 9 : 3;
@@ -374,6 +392,7 @@ foreach(1 .. $pc{'weaponNum'}){
 ## 防具
   $pc{'DefenseTotalAllEva'} = $pc{'evasionEva'} + $pc{'evasiveManeuver'} + $pc{'armourEva'} + $pc{'shieldEva'} + $pc{'defOtherEva'};
   $pc{'DefenseTotalAllDef'} =
+    $pc{'raceAbilityDef'} +
     $pc{'armourDef'} + max($pc{'masteryMetalArmour'},$pc{'masteryNonMetalArmour'}) +
     $pc{'shieldDef'} + $pc{'masteryShield'} +
     $pc{'defOtherDef'};

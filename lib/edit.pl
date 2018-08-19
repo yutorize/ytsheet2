@@ -244,7 +244,7 @@ print <<"HTML";
 
         <div id="personal">
           <dl class="box" id="race">
-            <dt>種族</dt><dd><select name="race" oninput="raceChange()">@{[ option 'race', @data::race_names ]}</select></dd>
+            <dt>種族</dt><dd><select name="race" oninput="changeRace()">@{[ option 'race', @data::race_names ]}</select></dd>
           </dl>
           <dl class="box" id="gender">
             <dt>性別</dt><dd>@{[input('gender')]}</dd>
@@ -713,17 +713,11 @@ print <<"HTML";
               <td id="evasion-eva">$pc{'EvasionEva'}</td>
               <td>―</td>
             </tr>
-            <tr id="scaled-skin"@{[ display $pc{'scaledSkin'} ]}>
-              <td>［鱗の皮膚］</td>
+            <tr id="race-ability-def"@{[ display $pc{'raceAbilityDef'} ]}>
+              <td id="race-ability-def-name">［@{[ $pc{'race'} eq 'リルドラケン' ? '鱗の皮膚':$pc{'race'} eq 'フロウライト'?'晶石の身体':$pc{'race'} eq 'ダークトロール'?'トロールの体躯':'']}］</td>
               <td>―</td>
               <td>―</td>
-              <td id="scaled-skin-value">$pc{'scaledSkin'}</td>
-            </tr>
-            <tr id="crystal-body"@{[ display $pc{'crystalBody'} ]}>
-              <td>［晶石の身体］</td>
-              <td>―</td>
-              <td>―</td>
-              <td id="crystal-body-value">$pc{'crystalBody'}</td>
+              <td id="race-ability-def-value">$pc{'raceAbilityDef'}</td>
             </tr>
             <tr id="mastery-metalarmour"@{[ display $pc{'masteryMetalArmour'} ]}>
               <td>《防具習熟／金属鎧》</td>
@@ -1087,6 +1081,9 @@ foreach (
   'sttHistGrowD',
   'sttHistGrowE',
   'sttHistGrowF',
+  'raceAbilityDef',
+  'raceAbilityMp',
+  'raceAbilityMndResist',
   'accuracyEnhance',
   'evasiveManeuver',
   'shootersMartialArts',

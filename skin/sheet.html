@@ -4,8 +4,8 @@
 <head>
   <meta charset="UTF-8">
   <title><TMPL_VAR characterName> - <TMPL_VAR title></title>
-  <link rel="stylesheet" media="all" href="./skin/css/sheet.css?201808181730">
-  <link rel="stylesheet" media="all" href="./skin/css/sheet-sp.css?201808141930">
+  <link rel="stylesheet" media="all" href="./skin/css/sheet.css?201808191850">
+  <link rel="stylesheet" media="all" href="./skin/css/sheet-sp.css?201808191850">
   <link rel="stylesheet" id="nightmode">
   <script src="./skin/js/common.js?201808161930" ></script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -281,7 +281,7 @@ window.onload = function() {
           <dt id="vit-resist">生命抵抗力</dt><dd><TMPL_IF vitResistAddTotal><TMPL_VAR vitResistBase>+<TMPL_VAR vitResistAddTotal>=</TMPL_IF><b><TMPL_VAR vitResistTotal></b></dd>
           <dt id="mnd-resist">精神抵抗力</dt><dd><TMPL_IF mndResistAddTotal><TMPL_VAR mndResistBase>+<TMPL_VAR mndResistAddTotal>=</TMPL_IF><b><TMPL_VAR mndResistTotal></b></dd>
           <dt id="hp">ＨＰ</dt><dd><TMPL_IF hpAddTotal><TMPL_VAR hpBase>+<TMPL_VAR hpAddTotal>=</TMPL_IF><b><TMPL_VAR hpTotal></b></dd>
-          <dt id="mp">ＭＰ</dt><dd><TMPL_IF mpAddTotal><TMPL_VAR mpBase>+<TMPL_VAR mpAddTotal>=</TMPL_IF><b><TMPL_VAR mpTotal></b></dd>
+          <dt id="mp">ＭＰ</dt><dd><TMPL_IF mpTotal><TMPL_IF mpAddTotal><TMPL_VAR mpBase>+<TMPL_VAR mpAddTotal>=</TMPL_IF><b><TMPL_VAR mpTotal></b><TMPL_ELSE><b>なし</b></TMPL_IF></dd>
         </dl>
         
         <dl class="box" id="level">
