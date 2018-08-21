@@ -22,7 +22,7 @@ if($main::make_error) {
 }
 
 my $token;
-if($mode eq 'blanksheet'){
+if($mode eq 'blanksheet' || $mode eq 'copy'){
   $token = random_id(12);
 
   my $mask = umask 0;
@@ -46,6 +46,26 @@ if($mode eq 'edit'){
   open my $IN, '<', "${set::data_dir}${file}/data.cgi" or &login_error;
   $_ =~ s/(.*?)<>(.*?)\n/$pc{$1} = $2;/egi while <$IN>;
   close($IN);
+}
+if($mode eq 'copy'){
+  $id = param('id');
+  open (my $FH, '<', $set::listfile) or die;
+  while (<$FH>) {
+    my @data = (split /<>/, $_)[0..1];
+    if ($data[0] eq $id) {
+      $file = $data[1];
+      last;
+    }
+    }
+  close($FH);
+  open my $IN, '<', "${set::data_dir}${file}/data.cgi" or error 'キャラクターシートがありません。';
+  $_ =~ s/(.*?)<>(.*?)\n/$pc{$1} = $2;/egi while <$IN>;
+  close($IN);
+  
+  delete $pc{'image'};  
+  delete $pc{'imageCopyright'};
+  
+  $message = '「<a href="./?id='.$id.'" target="_blank">'.$pc{"characterName"}.'</a>」コピーして新規作成します。<br>（まだ保存はされていません）';
 }
 
 sub login_error {
@@ -118,7 +138,7 @@ Content-type: text/html\n
 
 <head>
   <meta charset="UTF-8">
-  <title>編集：$pc{'characterName'} - $set::title</title>
+  <title>@{[$mode eq 'edit'?"編集：$pc{'characterName'}":'新規作成']} - $set::title</title>
   <link rel="stylesheet" media="all" href="./skin/css/sheet.css?201808182100">
   <link rel="stylesheet" media="all" href="./skin/css/sheet-sp.css?201808041652">
   <link rel="stylesheet" media="all" href="./skin/css/edit.css?201808182100">
@@ -144,7 +164,7 @@ Content-type: text/html\n
       <aside class="message">$message</aside>
       <form name="sheet" method="post" action="./" enctype="multipart/form-data">
 HTML
-if($mode eq 'blanksheet'){
+if($mode eq 'blanksheet' || $mode eq 'copy'){
 print '<input type="hidden" name="_token" value="'.$token.'">'."\n";
 }
 print <<"HTML";
@@ -158,6 +178,13 @@ print <<"HTML";
         <p id="update-time"></p>
         <p id="player-name">プレイヤー名@{[input('playerName')]}</p>
         </div>
+HTML
+if($mode eq 'edit'){
+print <<"HTML";
+        <input type="button" value="複製" onclick="window.open('./?mode=copy&id=@{[$id]}');">
+HTML
+}
+print <<"HTML";
         <input type="submit" value="保存">
       </div>
       <div class="box" id="edit-protect">
@@ -570,7 +597,11 @@ print <<"HTML";
             <tr><th></th><th>会話</th><th>読文</th></tr>
           </table>
           <dl id="language-default">
-            <dt>交易共通語</dt><dd>○</dd><dd>○</dd>
+HTML
+foreach (@{$data::race_language{ $pc{'race'} }}){
+  print '<dt>'.@$_[0].'</dt><dd>'.(@$_[1] ? '○' : '－').'</dd><dd>'.(@$_[2] ? '○' : '－').'</dd>';
+}
+print <<"HTML";
           </dl>
           <table id="language-table">
 HTML
@@ -878,6 +909,27 @@ print <<"HTML";
       <div class="box" id="free-note">
         <h2>容姿・経歴・その他メモ</h2>
         <textarea name="freeNote">$pc{'freeNote'}</textarea>
+        <h4 onclick="view('text-format')">テキスト装飾・整形ルール▼</h4>
+        <div class="annotate" id="text-format" style="display:none;">
+        ※メモ欄以外でも有効です。<br>
+        太字　：<code>''テキスト''</code>：<b>テキスト</b><br>
+        斜体　：<code>'''テキスト'''</code>：<span class="oblique">テキスト</span><br>
+        打消線：<code>%%テキスト%%</code>：<span class="strike">テキスト</span><br>
+        下線　：<code>__テキスト__</code>：<span class="underline">テキスト</span><br>
+        ルビ　：<code>|テキスト《てきすと》</code>：<ruby>テキスト<rt>てきすと</rt></ruby><br>
+        傍点　：<code>《《テキスト》》</code>：<span class="text-em">テキスト</span><br>
+        <hr>
+        ※以下は複数行の欄でのみ有効です。<br>
+        大見出し：行頭に<code>*</code><br>
+        中見出し：行頭に<code>**</code><br>
+        少見出し：行頭に<code>***</code><br>
+        左寄せ　：行頭に<code>LEFT:</code>：以降のテキストがすべて左寄せになります。<br>
+        中央寄せ：行頭に<code>CENTER:</code>：以降のテキストがすべて中央寄せになります。<br>
+        右寄せ　：行頭に<code>RIGHT:</code>：以降のテキストがすべて右寄せになります。<br>
+        横罫線（直線）：<code>----</code>（4つ以上のハイフン）<br>
+        横罫線（点線）：<code> * * * *</code>（4つ以上の「スペース＋アスタリスク」）<br>
+        横罫線（破線）：<code> - - - -</code>（4つ以上の「スペース＋ハイフン」）<br>
+        </div>
       </div>
       <div class="box" id="history">
         <h2>セッション履歴</h2>
@@ -966,12 +1018,12 @@ print <<"HTML";
           　預金：<span id="cashbook-deposit-value">－</span> G
           　借金：<span id="cashbook-debt-value">－</span> G
         </p>
-        <p class="annotate">
+        <div class="annotate">
           ※<code>::+n</code> <code>::-n</code>の書式で入力すると加算・減算されます。<br>
           　預金は<code>:>+n</code>、借金は<code>:<+n</code>で増減できます。（それに応じて所持金も増減します）<br>
           ※セッション履歴に記入された報酬は自動的に加算されます。<br>
           ※所持金欄、預金／借金欄に<code>自動</code>または<code>auto</code>と記入すると、収支の計算結果を反映します。
-        </p>
+        </div>
       </div>
       
       @{[ input 'birthTime','hidden' ]}

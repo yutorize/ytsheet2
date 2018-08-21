@@ -14,7 +14,7 @@
       "PER  PER  PER  PER"
       "STT  STT  STT  IMG"
       "STT  STT  STT  IMG"
-      "LVL  EXP  sSTT IMG"
+      "EXP  LVL  sSTT IMG"
     ;
   }
 }
@@ -32,7 +32,7 @@
       "PER  PER  PER  PER"
       "STT  STT  STT  IMG"
       "STT  STT  STT  IMG"
-      "LVL  EXP  sSTT IMG"
+      "EXP  LVL  sSTT IMG"
     ;
   }
   
@@ -71,14 +71,14 @@
   
   #fellow #personal-area {
     grid-template-areas:
-      " LVL NAME NAME"
-      " LVL  PLN  PLN"
-      "RACE RACE  IMG"
-      " PER  PER  IMG"
-      " CLS  CLS  IMG"
-      "LANG LANG  IMG"
-      "NOTE NOTE  IMG"
-      "NOTE NOTE CHCK"
+      " LVL NAME NAME NAME"
+      " LVL  PLN  PLN  PLN"
+      "RACE RACE  IMG  IMG"
+      " PER  PER  IMG  IMG"
+      " CLS  CLS  IMG  IMG"
+      "LANG LANG  IMG  IMG"
+      "NOTE NOTE  IMG  IMG"
+      "NOTE NOTE   MP CHCK"
     ;
   }
 

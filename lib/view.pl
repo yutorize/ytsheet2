@@ -45,7 +45,8 @@ $SHEET->param("id" => $id);
 ### 置換
 foreach (keys %pc) {
   $pc{$_} = tag_unescape($pc{$_});
-  if($_ =~ /^(?:items|freeNote|freeHistory)$/){
+  if($_ =~ /^(?:items|freeNote|cashbook)$/){
+    $pc{$_} = tag_unescape_lines($pc{$_});
   }
 }
 
@@ -405,10 +406,66 @@ sub tag_unescape {
   
   $text =~ s|(―+)|&ddash($1);|eg;
   
-  $text =~ s/[|｜](.+?)《(.*?)》/<ruby>$1<rp>(<\/rp><rt>$2<\/rt><rp>)<\/rp><\/ruby>/gi; # なろう式ルビ
+  $text =~ s/'''(.+?)'''/<span class="oblique">$1<\/span>/gi; # 斜体
+  $text =~ s/''(.+?)''/<b>$1<\/b>/gi;  # 太字
+  $text =~ s/%%(.+?)%%/<span class="strike">$1<\/span>/gi;  # 打ち消し線
+  $text =~ s/__(.+?)__/<span class="underline">$1<\/span>/gi;  # 下線
+  $text =~ s/[|｜](.+?)《(.+?)》/<ruby>$1<rp>(<\/rp><rt>$2<\/rt><rp>)<\/rp><\/ruby>/gi; # なろう式ルビ
+  $text =~ s/《《(.+?)》》/<span class="text-em">$1<\/span>/gi; # カクヨム式傍点
   $text =~ s/&lt;br&gt;/<br>/gi;
   
   return $text;
+}
+sub tag_unescape_lines {
+  my $text = $_[0];
+  $text =~ s/<br>/\n/gi;
+  
+  $text =~ s/^LEFT:/<\/p><p class="left">/gim;
+  $text =~ s/^CENTER:/<\/p><p class="center">/gim;
+  $text =~ s/^RIGHT:/<\/p><p class="right">/gim;
+  
+  $text =~ s/^-{4,}$/<\/p><hr><p>/gim;  
+  $text =~ s/^( \*){4,}$/<\/p><hr class="dotted"><p>/gim;
+  $text =~ s/^( \-){4,}$/<\/p><hr class="dashed"><p>/gim;
+  $text =~ s/^\*\*\*(.*?)$/<\/p><h4>$1<\/h4><p>/gim;
+  $text =~ s/^\*\*(.*?)$/<\/p><h3>$1<\/h3><p>/gim;
+  $text =~ s/\A\*(.*?)$/$pc{"head_$_"} = $1; ''/egim;
+  $text =~ s/^\*(.*?)$/<\/p><h2>$1<\/h2><p>/gim;
+  
+  
+  $text =~ s/^\|(.*?)\|$/&tablecall($1)/egim;
+  $text =~ s/(<\/tr>)\n/$1/gi;
+  $text =~ s/(?!<\/tr>)(<tr>.*?<\/tr>)(?!<tr>)/<\/p><table class="note-table">$1<\/table><p>/gi;
+
+  
+  $text =~ s/(^|<p(?:.*?)>|<hr(?:.*?)>)\n/$1/gi;
+  $text =~ s/\n/<br>/gi;
+  
+  return $text;
+}
+
+sub tablecall {
+  my $out = '<tr>';
+  my @td = split(/\|/, $_[0]);
+  my $col_num;
+  foreach(@td){
+    $col_num++;
+    if($_ eq '&gt;'){ $col_num++; next; }
+    
+    if($_ =~ /^~/){ $_ =~ s/^~//; $out .= '<th'.($col_num > 1 ? " colspan=\"$col_num\"" : '').'>'.$_.'</th>'; }
+    else          {               $out .= '<td'.($col_num > 1 ? " colspan=\"$col_num\"" : '').'>'.$_.'</td>'; }
+    $col_num = 0;
+  }
+  $out .= '</tr>';
+  return $out;
+}
+sub colcall {
+  my @out;
+  my @col = split(/\|/, $_[0]);
+  foreach(@col){
+    push (@out, &tablestyle($_));
+  }
+  return @out;
 }
 
 sub ddash {

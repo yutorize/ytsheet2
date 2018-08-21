@@ -597,7 +597,7 @@ window.onload = function() {
         </div>
       </div>
       <div class="box" id="free-note">
-        <h2>容姿・経歴・その他メモ</h2>
+        <h2><TMPL_IF head_freeNote><TMPL_VAR head_freeNote><TMPL_ELSE>容姿・経歴・その他メモ</TMPL_IF></h2>
         <p><TMPL_VAR freeNote></p>
       </div>
       <div class="box" id="history">
@@ -676,6 +676,9 @@ window.onload = function() {
         </dd>
       <dl id="f-note">
         <dt>自己紹介</dt><dd><TMPL_VAR fellowProfile></dd>
+      </dl>
+      <dl id="f-mp">
+        <dt>ＭＰ</dt><dd><TMPL_IF mpTotal><TMPL_VAR mpTotal><TMPL_ELSE>なし</TMPL_IF></dd>
       </dl>
       <div id="f-checkboxes">
         <dl><dt>経験点</dt>

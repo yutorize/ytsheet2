@@ -181,6 +181,98 @@ dl#sub-status {
 
 .box p {
   padding: 3px .5em .5em;
+  line-height: 1.8em;
+}
+.box p:empty {
+  display: none;
+}
+.box hr {
+  border-width: 1px 0 0;
+  border-style: solid;
+  margin: 3px .5em  .5em;
+}
+.box hr.dotted {
+  border-style: dotted;
+}
+.box hr.dashed {
+  border-style: dashed;
+}
+.box h2:nth-child(n+2){
+  margin-bottom: -1em;
+  padding-bottom: 1em;
+  border-width: 1px 0 0;
+  border-style: solid;
+  background: linear-gradient(to bottom, #dadcdf 0, transparent 2.5rem);
+}
+.box h3 {
+  position: relative;
+  margin: .3em .3em 0;
+  line-height: 1.2;
+  font-size: 110%;
+}
+.box h3:after {
+  content:'';
+  position: absolute;
+  top: 60%; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(to right, rgba(150,170,190,0.3), transparent);
+}
+.box h4 {
+  position: relative;
+  margin: .3em .5em 0;
+  line-height: 1.2;
+  font-size: 103%;
+}
+.box h4:after {
+  content:'';
+  position: absolute;
+  top: 90%; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(to right, rgba(150,170,190,0.5), transparent);
+}
+
+/* テキスト処理 */
+.box p + p {
+  margin-top: -.3em;
+  padding-top: 0;
+}
+.left   { text-align: left; }
+.center { text-align: center; }
+.right  { text-align: right; }
+ruby {
+  position: relative;
+}
+ruby rt {
+  position: relative;
+  top: 0.6ex;
+}
+.oblique {
+  display:inline-block;
+  transform: skewX(-20deg);
+}
+.strike {
+  text-decoration: line-through;
+}
+.underline {
+  background: linear-gradient(to top, transparent 10%, rgba(255,100,0,0.5) 10%, rgba(255,100,0,0.5) 25%, transparent 25%);
+}
+.text-em {
+  -webkit-text-emphasis: dot filled;
+  text-emphasis: dot filled;
+}
+.d-dash {
+  display: inline-block;
+  font-family: "メイリオ","Meiryo","小塚明朝 Pro","Kozuka Mincho Pro","小塚明朝Std","Kozuka Mincho Std",sans-serif;
+  transform: scaleX(0.90);
+}
+.d-dash > span {
+  display: inline-block;
+  transform: scaleX(1.2);
+}
+table.note-table,
+table.note-table th,
+table.note-table td {
+  margin: 3px .5em  .5em;
+  border-width: 1px;
+  border-style: solid;
 }
 
 /* // Font
@@ -379,14 +471,14 @@ h1#character-name {
   margin-top: .5rem;
   display: grid;
   grid-gap: 1rem;
-  grid-template-columns: 0.6fr 0.8fr 1.5fr 2.115fr;
+  grid-template-columns: 0.8fr 0.6fr 1.5fr 2.115fr;
   grid-template-rows: auto;
   
   grid-template-areas:
     "PER  PER  PER  IMG"
     "STT  STT  STT  IMG"
     "STT  STT  STT  IMG"
-    "LVL  EXP  sSTT IMG"
+    "EXP  LVL sSTT IMG"
   ;
 }
 #image-none,
@@ -499,8 +591,9 @@ h1#character-name {
 .image p.words .d-dash,
 .image-none p.words .d-dash {
   display: inline-block;
-  transform: scaleY(0.8);
+  transform: scaleY(0.9);
   white-space: nowrap;
+  font-family: inherit;
 }
 .image p.words .d-dash span,
 .image-none p.words .d-dash span {
@@ -1175,18 +1268,18 @@ div#area-items-R {
   margin-top: 2rem;
   display: grid;
   grid-gap: 1rem;
-  grid-template-columns: 100px 1.1fr 1fr;
+  grid-template-columns: 100px 1.1fr 0.3fr 0.6fr;
   grid-template-rows: auto;
   
   grid-template-areas:
-    " LVL NAME  IMG"
-    " LVL  PLN  IMG"
-    "RACE RACE  IMG"
-    " PER  PER  IMG"
-    " CLS  CLS  IMG"
-    "LANG LANG  IMG"
-    "NOTE NOTE  IMG"
-    "NOTE NOTE CHCK"
+    " LVL NAME  IMG  IMG"
+    " LVL  PLN  IMG  IMG"
+    "RACE RACE  IMG  IMG"
+    " PER  PER  IMG  IMG"
+    " CLS  CLS  IMG  IMG"
+    "LANG LANG  IMG  IMG"
+    "NOTE NOTE  IMG  IMG"
+    "NOTE NOTE   MP CHCK"
   ;
 }
 #f-image-none,
@@ -1198,6 +1291,7 @@ div#area-items-R {
 #f-personal       { grid-area: PER; }
 #f-classes        { grid-area: CLS ; }
 #f-language       { grid-area: LANG; }
+#f-mp             { grid-area: MP; }
 #f-note           { grid-area: NOTE; }
 #f-checkboxes     { grid-area: CHCK; }
 
@@ -1319,6 +1413,14 @@ div#area-items-R {
 
 #f-note {
   min-height: 250px;
+}
+#f-mp dt {
+  white-space: nowrap;
+}
+#f-mp dd {
+  text-align: center;
+  font-size: 130%;
+  line-height: 1;
 }
 
 #f-checkboxes dl {

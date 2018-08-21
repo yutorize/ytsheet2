@@ -18,7 +18,7 @@ use Fcntl;
 
 ################### バージョン ###################
 
-our $ver = "0.06";
+our $ver = "0.07";
 
 #################### 設定読込 ####################
 
@@ -48,6 +48,7 @@ elsif($mode eq 'logout')     { &log_out; }   #ログアウト
 elsif($mode eq 'option')     { require $set::lib_form; }   #オプション
 elsif($mode eq 'blanksheet') { require $set::lib_edit; }   #ブランクシート
 elsif($mode eq 'edit')       { require $set::lib_edit; }   #編集
+elsif($mode eq 'copy')       { require $set::lib_edit; }   #コピー
 elsif($mode eq 'make')       { require $set::lib_save; }   #新規作成
 elsif($mode eq 'save')       { require $set::lib_save; }   #更新
 elsif($mode eq 'json')       { require $set::lib_json; }   #外部アプリ連携
