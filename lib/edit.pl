@@ -139,11 +139,11 @@ Content-type: text/html\n
 <head>
   <meta charset="UTF-8">
   <title>@{[$mode eq 'edit'?"編集：$pc{'characterName'}":'新規作成']} - $set::title</title>
-  <link rel="stylesheet" media="all" href="./skin/css/sheet.css?201808182100">
-  <link rel="stylesheet" media="all" href="./skin/css/sheet-sp.css?201808041652">
-  <link rel="stylesheet" media="all" href="./skin/css/edit.css?201808182100">
+  <link rel="stylesheet" media="all" href="./skin/css/sheet.css?201808272000">
+  <link rel="stylesheet" media="all" href="./skin/css/sheet-sp.css?201808211430">
+  <link rel="stylesheet" media="all" href="./skin/css/edit.css?201808211430">
   <link rel="stylesheet" id="nightmode">
-  <script src="./skin/js/common.js?201808161954" ></script>
+  <script src="./skin/js/common.js?201808211430" ></script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     #image {
@@ -906,6 +906,21 @@ print <<"HTML";
           </div>
         </div>
       </div>
+      <div class="box" id="cashbook">
+        <h2>収支履歴</h2>
+        <textarea name="cashbook" oninput="calcCash();" placeholder="例）冒険者セット  ::-100&#13;&#10;　　剣のかけら売却::+200">$pc{'cashbook'}</textarea>
+        <p>
+          所持金：<span id="cashbook-total-value">$pc{'moneyTotal'}</span> G
+          　預金：<span id="cashbook-deposit-value">－</span> G
+          　借金：<span id="cashbook-debt-value">－</span> G
+        </p>
+        <div class="annotate">
+          ※<code>::+n</code> <code>::-n</code>の書式で入力すると加算・減算されます。（<code>n</code>には金額を入れてください）<br>
+          　預金は<code>:>+n</code>、借金は<code>:<+n</code>で増減できます。（それに応じて所持金も増減します）<br>
+          ※<span class="underline">セッション履歴に記入されたガメル報酬は自動的に加算されます。</span><br>
+          ※所持金欄、預金／借金欄に<code>自動</code>または<code>auto</code>と記入すると、収支の計算結果を反映します。
+        </div>
+      </div>
       <div class="box" id="free-note">
         <h2>容姿・経歴・その他メモ</h2>
         <textarea name="freeNote">$pc{'freeNote'}</textarea>
@@ -1009,21 +1024,6 @@ print <<"HTML";
         ※成長はリアルタイムでの自動計算はされません。反映するには一度保存してください。
         </div>
         @{[input('historyNum','hidden')]}
-      </div>
-      <div class="box" id="cashbook">
-        <h2>収支履歴</h2>
-        <textarea name="cashbook" oninput="calcCash();">$pc{'cashbook'}</textarea>
-        <p>
-          所持金：<span id="cashbook-total-value">$pc{'moneyTotal'}</span> G
-          　預金：<span id="cashbook-deposit-value">－</span> G
-          　借金：<span id="cashbook-debt-value">－</span> G
-        </p>
-        <div class="annotate">
-          ※<code>::+n</code> <code>::-n</code>の書式で入力すると加算・減算されます。<br>
-          　預金は<code>:>+n</code>、借金は<code>:<+n</code>で増減できます。（それに応じて所持金も増減します）<br>
-          ※セッション履歴に記入された報酬は自動的に加算されます。<br>
-          ※所持金欄、預金／借金欄に<code>自動</code>または<code>auto</code>と記入すると、収支の計算結果を反映します。
-        </div>
       </div>
       
       @{[ input 'birthTime','hidden' ]}

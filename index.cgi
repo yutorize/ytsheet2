@@ -18,7 +18,7 @@ use Fcntl;
 
 ################### バージョン ###################
 
-our $ver = "0.07";
+our $ver = "0.08";
 
 #################### 設定読込 ####################
 
@@ -44,6 +44,14 @@ elsif($mode eq 'login')   {
   if(param('id')) { &log_in(param('id'),param('password')); }  #ログイン
   else            { require $set::lib_form; }                  #ログインフォーム
 }
+elsif($mode eq 'reminder')   {
+  if(param('id'))   { require $set::lib_reminder; }  #メール送信
+  else              { require $set::lib_form; }      #リマインダフォーム
+}
+elsif($mode eq 'reset')   {
+  if(param('password')) { require $set::lib_reminder; }  #パスリセット処理
+  else                  { require $set::lib_form; }  #パスリセットフォーム
+}
 elsif($mode eq 'logout')     { &log_out; }   #ログアウト
 elsif($mode eq 'option')     { require $set::lib_form; }   #オプション
 elsif($mode eq 'blanksheet') { require $set::lib_edit; }   #ブランクシート
@@ -55,8 +63,7 @@ elsif($mode eq 'json')       { require $set::lib_json; }   #外部アプリ連�
 elsif(param('id')) { require $set::lib_view; }   #シート表示
 else { require $set::lib_list; }   #一覧表示
 
-
-
+##################################################
 
 ### ファイル名取得 ###
 sub getfile {
@@ -246,6 +253,23 @@ sub token_check {
   return $flag;
 }
 
+### メール送信 ###
+sub sendmail{
+  my $from    = encode('MIME-Header-ISO_2022_JP', "ゆとシート for SW2.5 <$set::admimail>");
+  my $to      = encode('MIME-Header-ISO_2022_JP', shift);
+  my $subject = encode('MIME-Header-ISO_2022_JP', shift);
+  my $message = encode('iso-2022-jp', shift);
+
+  open (my $MA, "|$set::sendmail -t") or &error("sendmailの起動に失敗しました。");
+  print $MA "To: $to\n";
+  print $MA "From: $from\n";
+  print $MA "Subject: $subject\n";
+  print $MA "Content-Transfer-Encoding: 7bit\n";
+  print $MA "Content-Type: text/plain; charset=iso-2022-jp\n\n";
+  print $MA $message;
+  close($MA);
+}
+
 ### URIエスケープ ###
 sub uri_escape_utf8 {
   my($tmp) = @_;
@@ -256,9 +280,18 @@ sub uri_escape_utf8 {
   return($tmp);
 }
 
+### 案内 ###
+sub info {
+  our $header = shift;
+  our $message = shift;
+  require $set::lib_info;
+  exit;
+}
+
 ### エラー ###
 sub error {
-  our $error_message = shift;
-  require $set::lib_error;
+  our $header = 'エラー';
+  our $message = shift;
+  require $set::lib_info;
   exit;
 }

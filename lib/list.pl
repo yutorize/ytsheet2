@@ -119,6 +119,10 @@ foreach (@list) {
   
   if($fellow != 1) { $fellow = 0; }
   
+  my ($min,$hour,$day,$mon,$year) = (localtime($updatetime))[1..5];
+  $year += 1900; $mon++;
+  $updatetime = sprintf("<span>%04d-</span><span>%02d-%02d</span> <span>%02d:%02d</span>",$year,$mon,$day,$hour,$min);
+  
   my @characters;
   push(@characters, {
     "ID" => $id,
@@ -134,6 +138,7 @@ foreach (@list) {
     "AGE" => $age,
     "FAITH" => $faith,
     "FELLOW" => $fellow,
+    "DATE" => $updatetime,
     "HIDE" => $hide,
   });
   

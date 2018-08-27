@@ -14,7 +14,9 @@ package set;
   our $lib_list   = 'lib/list.pl';
   
   our $lib_form    = 'lib/form.pl';
+  our $lib_info    = 'lib/info.pl';
   our $lib_register= 'lib/register.pl';
+  our $lib_reminder= 'lib/reminder.pl';
   our $login_users = 'tmp/login_users.cgi';
   
   our $tokenfile  = 'tmp/token.cgi'; 
@@ -27,6 +29,5 @@ package set;
   our $skin_sheet = 'skin/sheet.html';
   our $skin_tmpl  = 'skin/template.html';
   
-  our $lib_error  = 'lib/error.pl';
 
 1;

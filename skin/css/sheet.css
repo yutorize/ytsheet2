@@ -408,7 +408,8 @@ header nav ul li a span {
   line-height: 1;
 }
 
-input::placeholder {
+input::placeholder,
+textarea::placeholder {
   opacity: 0.5;
 }
 

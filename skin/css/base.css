@@ -313,10 +313,25 @@ form#form-search p input {
 }
 .list table tr {
     display: grid;
-    grid-template-columns: 20em 0.6fr 0.3fr 0.3fr 0.3fr 0.5fr 1fr 0.2fr;
+    grid-template-columns: 28rem 0.8fr 0.4fr 0.6fr 0.8fr 1fr 4rem 0.8fr;
+    grid-template-rows: auto;
+    grid-template-areas:
+      "NAME PL RACE RACE  LVL CLS FELL DATE"
+      "NAME PL  GEN  AGE  EXP CLS FELL DATE"
+    ;
 }
-.list table tr th {
-  display: block;
+.list table .name   { grid-area: NAME; }
+.list table .player { grid-area:   PL; }
+.list table .race   { grid-area: RACE; }
+.list table .gender { grid-area:  GEN; }
+.list table .age    { grid-area:  AGE; }
+.list table .lv     { grid-area:  LVL; }
+.list table .exp    { grid-area:  EXP; }
+.list table .class  { grid-area:  CLS; }
+.list table .fellow { grid-area: FELL; }
+.list table .date   { grid-area: DATE; }
+.list table tr > th {
+  display: grid;
 }
 .list table tr td {
   display: flex;
@@ -325,9 +340,10 @@ form#form-search p input {
 }
 
 .list table th > span {
-  display: block;
+  display: grid;
+  align-items: center;
   margin: 1px;
-  padding: 10px 5px;
+  padding: 5px;
   background: rgba(225,230,235,0.9);
   border-radius: 5px;
   white-space: nowrap;
@@ -358,14 +374,13 @@ form#form-search p input {
   background-position: top left;
 }
 .list table th.fellow {
-  width: 3em;
 }
 .list table th.fellow > span {
-  width: 3em;
+  width: 3.9rem;
 }
 .list table th.fellow > span > span {
   display: block;
-  margin: 0 -50%;
+  margin: 0 -100%;
   transform: scaleX(0.5)
 }
 .list table td {
@@ -392,6 +407,9 @@ form#form-search p input {
 .list table td.name a:hover {
   background: rgba(180,200,255,0.1);
 }
+.list table td.player {
+  word-break: break-all;
+}
 .list table td.race {
 }
 .list table td.class {
@@ -411,6 +429,13 @@ form#form-search p input {
 .list table td.class > div > span {
   display: inline-block;
   margin-right: 1em;
+}
+.list table td.date {
+  font-family: Arial;
+  font-size: 85%;
+}
+.list table td.date > div > span {
+  display: inline-block;
 }
 .list table td.fellow {
   font-size: 150%;
@@ -490,4 +515,58 @@ form p > input[type="submit"] {
 .back-button:hover {
   opacity: 0.8;
 }
+
+#page-top-button {
+  width: 100px;
+  height: 60px;
+  position: fixed;
+  right: 0;
+  bottom: 6rem;
+  background: #7799ff;
+  opacity: 0.6;
+  z-index: 200;
+}
+#page-top-button:hover {
+  opacity: 0.8;
+}
+#page-top-button a{
+  position: relative;
+  display: block;
+  width: 100px;
+  height: 60px;
+  text-decoration: none;
+}
+#page-top-button a::before{
+  font-family: "FontAwesome";
+  content: '▲';
+  font-size: 25px;
+  color: #fff;
+  position: absolute;
+  width: 25px;
+  height: 25px;
+  top: -25px;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  margin: auto;
+  text-align: center;
+  transform: scaleY(0.8);
+}
+#page-top-button a::after{
+  content: 'PAGE TOP';
+  font-size: 13px;
+  color: #fff;
+  position: absolute;
+  top: 30px;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  margin: auto;
+  text-align: center;
+}
+
+
+
+
+
 

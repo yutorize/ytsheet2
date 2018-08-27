@@ -14,32 +14,22 @@
   }
   .list table tr {
     display: grid;
-    grid-template-columns: 16em 0.5fr 0.5fr 0.8fr 1fr 0.3fr;
+    grid-template-columns: 18rem 1fr 0.6fr 0.6fr 0.8fr 1fr 4rem 0.5fr;
     grid-template-rows: auto;
     grid-template-areas:
-      "NAME  RACE RACE  LVL CLS FELL"
-      "NAME   GEN  AGE  EXP CLS FELL"
+      "NAME PL RACE RACE  LVL CLS FELL DATE"
+      "NAME PL  GEN  AGE  EXP CLS FELL DATE"
     ;
+    font-size: 95%;
   }
-  .list table .name   { grid-area: NAME; }
-  .list table .race   { grid-area: RACE; }
-  .list table .gender { grid-area:  GEN; }
-  .list table .age    { grid-area:  AGE; }
-  .list table .lv     { grid-area:  LVL; }
-  .list table .exp    { grid-area:  EXP; }
-  .list table .class  { grid-area:  CLS; }
-  .list table .fellow { grid-area: FELL; }
   .list table tr > th {
     display: grid;
   }
   .list table tr > th > span {
-    display: grid;
-    align-items: center;
     padding: 5px;
   }
-  .list table tr > td {
-    display: flex;
-    align-items: center;
+  .list table th.player > span {
+    white-space: normal;
   }
   .list table td.name a {
     font-size: unset;
@@ -50,5 +40,15 @@
   .list table th.fellow span {
     padding-left: 0;
     padding-right: 0;
+  }
+  .list table th.date > span {
+    white-space: normal;
+  }
+  .list table td.date {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .list table td.date > div > span:first-child {
+    display: none;
   }
 }

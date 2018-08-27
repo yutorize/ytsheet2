@@ -318,6 +318,7 @@ $pc{"history0Grow"} .= '知力'.$pc{'sttPreGrowE'} if $pc{'sttPreGrowE'};
 $pc{"history0Grow"} .= '精神'.$pc{'sttPreGrowF'} if $pc{'sttPreGrowF'};
 
 my @history;
+$pc{'history0Title'} = 'キャラクター作成';
 foreach (0 .. $pc{'historyNum'}){
   $pc{'history'.$_.'Grow'} =~ s/[^器敏筋生知精0-9]//g;
   $pc{'history'.$_.'Grow'} =~ s/器([0-9]{0,3})/器用×$1<br>/g;
