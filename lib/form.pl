@@ -21,12 +21,10 @@ if(param('mode') eq 'reset'){
   $token = param('code');
 }
 
-### テンプレート読み込み ##################################################
-#my $template = HTML::Template->new(filename => "template.html", utf8 => 1,);
+### テンプレート読み込み #############################################################################
 my $INDEX;
-open (my $FH, "<:utf8", $set::skin_tmpl ) or die "Couldn't open template file: $!\n";
-$INDEX = HTML::Template->new( filehandle => *$FH , die_on_bad_params => 0, case_sensitive => 1);
-close($FH);
+$INDEX = HTML::Template->new( filename => $set::skin_tmpl, utf8 => 1,
+  die_on_bad_params => 0, case_sensitive => 1);
 
 $INDEX->param(modeRegister => 1) if param('mode') eq 'register';
 $INDEX->param(modeLogin => 1) if param('mode') eq 'login';
@@ -48,7 +46,7 @@ $INDEX->param(token => $token);
 $INDEX->param(title => $set::title);
 $INDEX->param(ver => $main::ver);
 
-### 出力 ##################################################
+### 出力 #############################################################################################
 print "Content-Type: text/html\n\n";
 print $INDEX->output;
 

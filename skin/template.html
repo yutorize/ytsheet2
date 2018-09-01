@@ -4,8 +4,9 @@
 <head>
   <meta charset="UTF-8">
   <title><TMPL_VAR title></title>
-  <link rel="stylesheet" media="all" href="./skin/css/base.css?201808272000">
-  <link rel="stylesheet" media="all" href="./skin/css/base-sp.css?201808191850">
+  <link rel="stylesheet" media="all" href="./skin/css/base.css?201809010000">
+  <link rel="stylesheet" media="all" href="./skin/css/list.css?201809010000">
+  <link rel="stylesheet" media="all" href="./skin/css/list-sp.css?201809010000">
   <link rel="stylesheet" id="nightmode">
   <script src="./skin/js/common.js?201808141710" ></script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -30,247 +31,43 @@
     </nav>
   </header>
   
-  <aside id="sidebar-left">
-    <p>
-      <!--  -->
-    </p>
-  </aside>
-  
-  <aside id="sidebar-right">
-    <p>
-      <!--  -->
-    </p>
-  </aside>
-  
-<!-- LIST -->
-  <TMPL_IF modeList>
   <main>
+<!--
+    <TMPL_IF modeList>
     <aside>
       <h2>注意書き</h2>
       <p>
-        ・稼働テスト中です。<br>
-        ・<s>計算や表示がおかしい箇所がまだあるかもしれません。</s><br>
-        　だいたい問題なくなってきました。<br>
-        ・予告なくメンテナンスで止まる可能性があります。<br>
-        ・IEは非対応です（推奨ブラウザ：Chrome／FireFox）。<br>
-        ・不具合、要望報告は <a href="https://twitter.com/tale_hw/status/1023362455781531649">@tale_hw</a> か <a href="https://twitter.com/yutorize">@yutorize</a> まで。<br>
-        <br>
-        ・キャラクター画像は著作権・肖像権的に問題ないものを使用してください。<br>
-        ・マンガ・アニメ・ゲームなどのキャプ画像・スクリーンショット等も当然ダメです。やめてね。<br>
-        ・許諾のある転載の場合はその旨を記載して頂けると助かります。<br>
-        ・非表示シートにおいても同様です。<br>
-        <br>
-        ・<a href="./?mode=register">ユーザー登録</a>すると自分のキャラシートを纏めて管理できます。
+        注意書き本文
       </p>
     </aside>
-      <form method="get" action="./" id="form-search">
-        <p><input type="text" name="tag" value="<TMPL_VAR tag>"><input type="submit" value="タグ検索"></p>
-      </form>
-    <article>
-      <h1>
-        <TMPL_IF tag>タグ「<TMPL_VAR tag>」の</TMPL_IF>
-        <TMPL_IF playerName><TMPL_VAR playerName>さんの</TMPL_IF>
-        キャラクター一覧
-      </h1>
-      <TMPL_LOOP Lists>
-      <section class="list">
-        <h2><TMPL_VAR NAME> <small><TMPL_VAR TEXT></small></h2>
-        <table>
-          <thead>
-          <tr>
-            <th class="name"><span>名前</span></th>
-            <th class="player"><span>プレイヤー</span></th>
-            <th class="race"><span>種族</span></th>
-            <th class="gender"><span>性別</span></th>
-            <th class="age"><span>年齢</span></th>
-            <th class="lv"><span>Lv</span></th>
-            <th class="exp"><span>経験点</span></th>
-            <th class="class"><span>技能</span></th>
-            <th class="fellow"><span><span>フェロー</span></span></th>
-            <th class="date"><span>更新日時</span></th>
-          </tr>
-          </thead>
-          <TMPL_LOOP Characters><tr<TMPL_IF HIDE> class="hide"</TMPL_IF>>
-            <td class="name"><a href="./?id=<TMPL_VAR ID>"><TMPL_VAR NAME></a></td>
-            <td class="player"><TMPL_VAR PLAYER></td>
-            <td class="race"><TMPL_VAR RACE></td>
-            <td class="gender"><TMPL_VAR GENDER></td>
-            <td class="age"><TMPL_VAR AGE></td>
-            <td class="lv"><TMPL_VAR LV></td>
-            <td class="exp"><TMPL_VAR EXP></td>
-            <td class="class"><div><TMPL_VAR CLASS></div></td>
-            <td class="fellow"><div><TMPL_IF FELLOW>✔</TMPL_IF></div></td>
-            <td class="date"><div><TMPL_VAR DATE></div></td>
-          </tr></TMPL_LOOP>
-        </table>
-      </section>
-      </TMPL_LOOP>
-    </article>
-    <div class="back-button"><a href="./">⏎</a></div>
-    <div id="page-top-button"><a href="#"></a></div>
-  </main>
-  </TMPL_IF>
-<!-- / LIST -->
-
-<!-- FORM -->
-  <TMPL_IF modeRegister>
-  <main>
-    <article>
-      <section class="form">
-        <h2>ユーザーアカウント作成</h2>
-        <form method="post" action="./">
-          <input type="hidden" name="mode" value="register">
-          <input type="hidden" name="_token" value="<TMPL_VAR token>">
-          <p>
-            <label><span>名前</span> <input type="text" name="name" required><b>必須</b></label>
-          </p>
-          <p>
-            <label><span>ＩＤ<small>(ログインに使用)</small></span> <input type="text" name="id" pattern="^[0-9A-Za-z]+$" title="半角英数字のみ。" required><b>必須</b></label>
-          </p>
-          <p>
-            <label><span>メールアドレス</span> <input type="email" name="mail"></label>
-          </p>
-          <p>
-            <label><span>パスワード</span> <input type="password" name="password" pattern="^[0-9A-Za-z\.\-\/]+$" title="半角英数字、『.』『-』『/』のみ" required><b>必須</b></label>
-          </p>
-          <p>
-            <label><span>パスワード(確認)</span> <input type="password" name="password_confirm" pattern="^[0-9A-Za-z\.\-\/]+$" title="半角英数字、『.』『-』『/』のみ" required><b>必須</b></label>
-          </p>
-          <p>
-            <input type="submit" value="登録">
-          </p>
-        </form>
-      </section>
-    </article>
-    <div class="back-button"><a href="./">⏎</a></div>
-  </main>
-  </TMPL_IF>
-  <TMPL_IF modeLogin>
-  <main>
-    <article>
-      <section class="form">
-        <h2>ログイン</h2>
-        <form method="post" action="./">
-          <input type="hidden" name="mode" value="login">
-          <p>
-            <label><span>ＩＤ</span> <input type="text" name="id" required></label>
-          </p>
-          <p>
-            <label><span>パスワード</span> <input type="password" name="password" required></label>
-          </p>
-          <p>
-            <input type="submit" value="ログイン">
-          </p>
-        </form>
-        <a href="./?mode=reminder">⇒パスワードを忘れた場合</a>
-      </section>
-    </article>
-    <div class="back-button"><a href="./">⏎</a></div>
-  </main>
-  </TMPL_IF>
-  <TMPL_IF modeReminder>
-  <main>
-    <article>
-      <section class="form">
-        <h2>パスワードをリセットする</h2>
-        <p>登録されたメールアドレスにリセット用のURLを送信します。</p>
-        <form method="post" action="./">
-          <input type="hidden" name="mode" value="reminder">
-          <p>
-            <label><span>ＩＤ</span> <input type="text" name="id" required></label>
-          </p>
-          <p>
-            <input type="submit" value="送信">
-          </p>
-        </form>
-      </section>
-    </article>
-    <div class="back-button"><a href="./">⏎</a></div>
-  </main>
-  </TMPL_IF>
-  <TMPL_IF modeReset>
-  <main>
-    <article>
-      <section class="form">
-        <h2>パスワードを変更する</h2>
-        <form method="post" action="./">
-          <input type="hidden" name="mode" value="reset">
-          <input type="hidden" name="code" value="<TMPL_VAR token>">
-          <p>
-            <label><span>パスワード</span> <input type="password" name="password" pattern="^[0-9A-Za-z\.\-\/]+$" title="半角英数字、『.』『-』『/』のみ" required><b>必須</b></label>
-          </p>
-          <p>
-            <label><span>パスワード(確認)</span> <input type="password" name="password_confirm" pattern="^[0-9A-Za-z\.\-\/]+$" title="半角英数字、『.』『-』『/』のみ" required><b>必須</b></label>
-          </p>
-          <p>
-            <input type="submit" value="送信">
-          </p>
-        </form>
-      </section>
-    </article>
-    <div class="back-button"><a href="./">⏎</a></div>
-  </main>
-  </TMPL_IF>
-  <TMPL_IF modeOption>
-  <main>
-    <TMPL_IF setMessage>
-    <aside>
-      <p><TMPL_VAR setMessage></p>
-    </aside>
     </TMPL_IF>
-    <article>
-      <section class="form">
-        <h2>ユーザー設定</h2>
-        <form method="post" action="./">
-          <input type="hidden" name="mode" value="option">
-          <p>
-            <label><span>名前</span> <input type="text" name="name" value="<TMPL_VAR userName>" required></label>
-          </p>
-          <p>
-            <label><span>メールアドレス</span> <input type="email" name="mail" value="<TMPL_VAR userMail>"></label>
-          </p>
-          <p>
-            <input type="submit" value="変更">
-          </p>
-        </form>
-      </section>
-      <section class="form">
-        <h2>パスワード変更</h2>
-        <form method="post" action="./">
-          <input type="hidden" name="mode" value="passchange">
-          <p>
-            <label><span>現在のパスワード</span> <input type="password" name="password"></label>
-          </p>
-          <p>
-            <label><span>新しいパスワード</span> <input type="password" name="new_password" pattern="^[0-9A-Za-z\.\-\/]+$" title="半角英数字、『.』『-』『/』のみ"></label>
-          </p>
-          <p>
-            <label><span>新しいパスワード(確認)</span> <input type="password" name="new_password_confirm" pattern="^[0-9A-Za-z\.\-\/]+$" title="半角英数字、『.』『-』『/』のみ"></label>
-          </p>
-          <p>
-            <input type="submit" value="変更">
-          </p>
-        </form>
-      </section>
-    </article>
+-->
+    <TMPL_INCLUDE NAME="./skin/main.html">
     <div class="back-button"><a href="./">⏎</a></div>
   </main>
-  </TMPL_IF>
-<!-- / FORM -->
-
-<!-- INFO -->
-  <TMPL_IF modeInfo>
-  <main>
-    <article>
-      <section class="info">
-        <h2><TMPL_VAR header></h2>
-        <p><TMPL_VAR message></p>
-      </section>
-    </article>
-    <div class="back-button"><a href="./">⏎</a></div>
-  </main>
-  </TMPL_IF>
-<!-- / INFO -->
+  <!--
+  <aside id="sidebar-left">
+    <p>
+      フリースペース・左（画面幅が広い時のみ） 
+    </p>
+  </aside>
+  <aside id="sidebar-right">
+    <p>
+      フリースペース・右（画面幅が広い時のみ）
+    </p>
+  </aside>
+  <aside id="sidebar-top">
+    <p>
+      フリースペース・上（画面幅が狭い時のみ）
+    </p>
+  </aside>
+  <aside id="sidebar-bottom">
+    <p>
+      フリースペース・下（画面幅が狭い時のみ）
+    </p>
+  </aside>
+  -->
+  
   <footer>
     　ゆとシート for SW2.5 ver.<TMPL_VAR ver> - <a href="http://yutorize.2-d.jp">ゆとらいず工房</a>
   </footer>

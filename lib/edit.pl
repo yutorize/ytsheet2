@@ -15,12 +15,15 @@ my %pc = ();
 
 my $LOGIN_ID = check;
 
+### 読込前処理 #######################################################################################
+### エラーメッセージ --------------------------------------------------
 if($main::make_error) {
   $mode = 'blanksheet';
   for (param()){ $pc{$_} = param($_); }
   $message = $main::make_error;
 }
 
+### トークン処理 --------------------------------------------------
 my $token;
 if($mode eq 'blanksheet' || $mode eq 'copy'){
   $token = random_id(12);
@@ -35,10 +38,12 @@ if($mode eq 'blanksheet' || $mode eq 'copy'){
   }
 }
 
+### 更新後処理 --------------------------------------------------
 if($mode eq 'save'){
   $message .= 'キャラクターシートを更新しました。<a href="./?id='.param('id').'">⇒シートを確認する</a>';
   $mode = 'edit';
 }
+### キャラクターデータ読み込み --------------------------------------------------
 if($mode eq 'edit'){
   $id = param('id');
   $pass = param('pass');
@@ -47,6 +52,12 @@ if($mode eq 'edit'){
   $_ =~ s/(.*?)<>(.*?)\n/$pc{$1} = $2;/egi while <$IN>;
   close($IN);
 }
+sub login_error {
+  our $login_error = 'パスワードが間違っているか、<br>編集権限がありません。';
+  require $set::lib_view;
+  exit;
+}
+### キャラクターデータ読み込み：複製時 --------------------------------------------------
 if($mode eq 'copy'){
   $id = param('id');
   open (my $FH, '<', $set::listfile) or die;
@@ -68,20 +79,15 @@ if($mode eq 'copy'){
   $message = '「<a href="./?id='.$id.'" target="_blank">'.$pc{"characterName"}.'</a>」コピーして新規作成します。<br>（まだ保存はされていません）';
 }
 
-sub login_error {
-  our $login_error = 'パスワードが間違っているか、<br>編集権限がありません。';
-  require $set::lib_view;
-  exit;
-}
 
-## データ読み込み ##
+### 各種データライブラリ読み込み --------------------------------------------------
 require $set::data_feats;
 require $set::data_races;
 require $set::data_items;
 require $set::data_faith;
 
 
-## 簡略化関数 ##
+### 簡略化関数 --------------------------------------------------
 sub input {
   '<input'.
   ' type="'.($_[1]?$_[1]:'text').'"'.
@@ -104,7 +110,8 @@ sub display {
   $_[0] ? ($_[1] ? " style=\"display:$_[1]\"" : '') : ' style="display:none"'
 }
 
-## 初期設定 ##
+### 出力準備 #########################################################################################
+### 初期設定 --------------------------------------------------
 $pc{'history0Exp'}   = $pc{'history0Exp'}   ne '' ? $pc{'history0Exp'}   : $set::make_exp;
 $pc{'history0Honor'} = $pc{'history0Honor'} ne '' ? $pc{'history0Honor'} : $set::make_honor;
 $pc{'history0Money'} = $pc{'history0Money'} ne '' ? $pc{'history0Money'} : $set::make_money;
@@ -122,7 +129,7 @@ $pc{'historyNum'}  = $pc{'historyNum'}  ? $pc{'historyNum'}  : 5;
 $pc{'protect'} = $pc{'protect'} ? $pc{'protect'} : 'password';
 $pc{'group'} = $pc{'group'} ? $pc{'group'} : $set::group_default;
 
-### 改行処理 #########################################################################################
+### 改行処理 --------------------------------------------------
 $pc{'items'}         =~ s/&lt;br&gt;/\n/g;
 $pc{'freeNote'}      =~ s/&lt;br&gt;/\n/g;
 $pc{'cashbook'}      =~ s/&lt;br&gt;/\n/g;
@@ -139,6 +146,7 @@ Content-type: text/html\n
 <head>
   <meta charset="UTF-8">
   <title>@{[$mode eq 'edit'?"編集：$pc{'characterName'}":'新規作成']} - $set::title</title>
+  <link rel="stylesheet" media="all" href="./skin/css/base.css?201809010000">
   <link rel="stylesheet" media="all" href="./skin/css/sheet.css?201808272000">
   <link rel="stylesheet" media="all" href="./skin/css/sheet-sp.css?201808211430">
   <link rel="stylesheet" media="all" href="./skin/css/edit.css?201808211430">
@@ -165,7 +173,7 @@ Content-type: text/html\n
       <form name="sheet" method="post" action="./" enctype="multipart/form-data">
 HTML
 if($mode eq 'blanksheet' || $mode eq 'copy'){
-print '<input type="hidden" name="_token" value="'.$token.'">'."\n";
+  print '<input type="hidden" name="_token" value="'.$token.'">'."\n";
 }
 print <<"HTML";
       <input type="hidden" name="mode" value="@{[ $mode eq 'edit' ? 'save' : 'make' ]}">
@@ -187,6 +195,11 @@ HTML
 print <<"HTML";
         <input type="submit" value="保存">
       </div>
+HTML
+if($set::registerkey && ($mode eq 'blanksheet' || $mode eq 'copy')){
+  print '登録キー：<input type="text" name="registerkey" required>'."\n";
+}
+print <<"HTML";
       <div class="box" id="edit-protect">
       <h2 onclick="view('edit-protect-view')">編集保護設定 ▼</h2>
       <p id="edit-protect-view" @{[$mode eq 'edit' ? 'style="display:none"':'']}><input type="hidden" name="protectOld" value="$pc{'protect'}">
@@ -226,11 +239,11 @@ print <<"HTML";
         <h2>作成レギュレーション</h2>
         <dl>
           <dt>経験点</dt>
-          <dd>@{[input("history0Exp",'number','changeRegu','step="500"')]}</dd>
+          <dd>@{[input("history0Exp",'number','changeRegu','step="500"'.($set::make_fix?' readonly':''))]}</dd>
           <dt>名誉点</dt>
-          <dd>@{[input("history0Honor",'number','changeRegu')]}</dd>
+          <dd>@{[input("history0Honor",'number','changeRegu', ($set::make_fix?' readonly':''))]}</dd>
           <dt>所持金</dt>
-          <dd>@{[input("history0Money",'number','changeRegu')]}</dd>
+          <dd>@{[input("history0Money",'number','changeRegu', ($set::make_fix?' readonly':''))]}</dd>
           <dt>初期成長</dt>
           <dd>器用度:@{[ input "sttPreGrowA",'number','calcStt' ]}</dd>
           <dd>敏捷度:@{[ input "sttPreGrowB",'number','calcStt' ]}</dd>
@@ -1099,6 +1112,23 @@ print <<"HTML";
         <textarea name="fellowNote">$pc{'fellowNote'}</textarea>
       </div>
     </form>
+HTML
+if($mode eq 'edit'){
+print <<"HTML";
+    <form name="del" method="post" action="./" id="deleteform">
+      <p>
+      <input type="hidden" name="mode" value="delete">
+      <input type="hidden" name="id" value="$id">
+      <input type="hidden" name="pass" value="$pass">
+      <input type="checkbox" name="check1" value="1" required>
+      <input type="checkbox" name="check2" value="1" required>
+      <input type="checkbox" name="check3" value="1" required>
+      <input type="submit" value="シート削除">
+      </p>
+    </form>
+HTML
+}
+print <<"HTML";
     </article>
   </main>
   <footer>

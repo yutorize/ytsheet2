@@ -13,11 +13,11 @@ body {
   color: #fff;
 }
 
-main a:link    { color: #abf; }
-main a:visited { color: #abc; }
-main a:hover   { color: #fff; }
+a:link    { color: #abf; }
+a:visited { color: #abc; }
+a:hover   { color: #fff; }
 main p a {
-  background: linear-gradient(to top, #338 20%, transparent 30%, transparent);
+  background: linear-gradient(to top, #338 .3rem, transparent .3rem, transparent);
 }
 
 aside#backuplist {
@@ -29,7 +29,9 @@ aside#backuplist ul li a {
 
 main,
 header,
-footer {
+footer,
+aside#sidebar-top,
+aside#sidebar-bottom {
   border-color: #556;
 }
 

@@ -1,7 +1,7 @@
 #!/usr/local/bin/perl
 ####################################
 ##       ゆとシート for SW2.5     ##
-##                version0.06     ##
+##                version0.09     ##
 ##          by ゆとらいず工房     ##
 ##     http://yutorize.2-d.jp     ##
 ####################################
@@ -18,12 +18,12 @@ use Fcntl;
 
 ################### バージョン ###################
 
-our $ver = "0.08";
+our $ver = "0.09";
 
 #################### 設定読込 ####################
 
-require './config.cgi';
 require './lib/file.pl';
+require './config.cgi';
 
 ##################################################
 
@@ -59,6 +59,7 @@ elsif($mode eq 'edit')       { require $set::lib_edit; }   #編集
 elsif($mode eq 'copy')       { require $set::lib_edit; }   #コピー
 elsif($mode eq 'make')       { require $set::lib_save; }   #新規作成
 elsif($mode eq 'save')       { require $set::lib_save; }   #更新
+elsif($mode eq 'delete')     { require $set::lib_delete; } #削除
 elsif($mode eq 'json')       { require $set::lib_json; }   #外部アプリ連携
 elsif(param('id')) { require $set::lib_view; }   #シート表示
 else { require $set::lib_list; }   #一覧表示

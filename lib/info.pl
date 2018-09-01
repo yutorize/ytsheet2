@@ -8,7 +8,7 @@ use HTML::Template;
 
 my $LOGIN_ID = check;
 
-### テンプレート読み込み ##################################################
+### テンプレート読み込み #############################################################################
 #my $template = HTML::Template->new(filename => "template.html", utf8 => 1,);
 my $INDEX;
 open (my $FH, "<:utf8", $set::skin_tmpl ) or die "Couldn't open template file: $!\n";
@@ -25,7 +25,7 @@ $INDEX->param(message => $main::message);
 $INDEX->param(title => $set::title);
 $INDEX->param(ver => $main::ver);
 
-### 出力 ##################################################
+### 出力 #############################################################################################
 print "Content-Type: text/html\n\n";
 print $INDEX->output;
 

@@ -28,6 +28,10 @@ h2[onclick],
 h4[onclick] {
   cursor: pointer;
 }
+h2[onclick]:hover,
+h4[onclick]:hover {
+  background: linear-gradient(to top, #cef 20%, transparent 30%, transparent);
+}
 
 .box input[type="text"],
 .box input[type="number"],
@@ -41,6 +45,17 @@ h4[onclick] {
 }
 input[type="number"] {
   text-align: center;
+}
+
+input[type="submit"],
+input[type="button"] {
+  background: linear-gradient(to bottom, #ddeeff, #ccccff);
+  box-shadow: 1px 1px 0 0 #ffffff inset, -1px -1px 0 0 #bbbbee inset;
+}
+input[type="submit"]:hover,
+input[type="button"]:hover {
+  background: linear-gradient(to bottom, rgba(50,150,250,0.5), rgba(50,50,250,0.5));
+  color: #ffffff;
 }
 
 .box .add-del-button {
@@ -120,6 +135,7 @@ input[type="number"] {
   text-align: left;
   font-weight: bold;
   font-size: 1.4rem;
+  font-family: inherit;
 }
 #area-name #player-name {
   text-align: left;
@@ -129,17 +145,10 @@ input[type="number"] {
 #area-name input[type="button"] {
   width: 100px;
   align-self: stretch;
-  background: linear-gradient(to bottom, #ddeeff, #ccccff);
-  box-shadow: 1px 1px 0 0 #ffffff inset, -1px -1px 0 0 #bbbbee inset;
 }
 #area-name input[type="button"] {
   background: linear-gradient(to bottom, #e0e7ef, #c0c7cf);
   box-shadow: 1px 1px 0 0 #ffffff inset, -1px -1px 0 0 #bbbbdd inset;
-}
-#area-name input[type="submit"]:hover,
-#area-name input[type="button"]:hover {
-  background: linear-gradient(to bottom, rgba(50,150,250,0.5), rgba(50,50,250,0.5));
-  color: #ffffff;
 }
 #area-name input[type="button"] {
   width: 50px;
@@ -408,6 +417,9 @@ article > form > hr {
   height: 10em;
 }
 
+#f-actions {
+  margin-top: 1rem;
+}
 #f-actions table {
   margin-top: 1rem;
 }
@@ -439,6 +451,22 @@ article > form > hr {
 #f-note textarea {
   height: 10em;
 }
+
+#deleteform {
+  margin-top: 5rem;
+  padding-top: 5rem;
+  border-width: 1px 0 0;
+  border-style: solid;
+  text-align: right;
+}
+
+#deleteform input[type="submit"] {
+  margin-left: .5rem;
+  padding: .3rem .5rem;
+}
+
+
+
 
 
 

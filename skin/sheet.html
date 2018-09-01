@@ -4,7 +4,8 @@
 <head>
   <meta charset="UTF-8">
   <title><TMPL_VAR characterName> - <TMPL_VAR title></title>
-  <link rel="stylesheet" media="all" href="./skin/css/sheet.css?201808211430">
+  <link rel="stylesheet" media="all" href="./skin/css/base.css?201809010000">
+  <link rel="stylesheet" media="all" href="./skin/css/sheet.css?201809010700">
   <link rel="stylesheet" media="all" href="./skin/css/sheet-sp.css?201808211430">
   <link rel="stylesheet" id="nightmode">
   <script src="./skin/js/common.js?201808211430" ></script>
@@ -23,7 +24,7 @@ function closeImage() {
 let editForm = 0;
 function editOn() {
   if(editForm){
-    document.getElementById("login-form").style.top = '-4rem';
+    document.getElementById("login-form").style.top = '-5rem';
     editForm = 0;
   }
   else {
@@ -105,6 +106,7 @@ window.onload = function() {
       </div>
       
       <div id="tags">
+      <a href="./?group=<TMPL_VAR group>" id="group"><TMPL_VAR groupName></a>
       <TMPL_LOOP Tags><a href="./?tag=<TMPL_VAR URL>"><TMPL_VAR TEXT></a></TMPL_LOOP>
       </div>
 

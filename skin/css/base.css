@@ -2,7 +2,7 @@
 
 /* ゆとシート for SW2.5 */
 
-/* // 基本設定
+/* // Base
 ---------------------------------------------------------------------------------------------------- */
 
 * {
@@ -41,11 +41,11 @@ a {
   text-decoration: none;
 }
 
-main a:link    { color: #78d; }
-main a:visited { color: #678; }
-main a:hover   { color: #000; }
+a:link    { color: #78d; }
+a:visited { color: #678; }
+a:hover   { color: #000; }
 main p a {
-  background: linear-gradient(to top, #cef 20%, transparent 30%, transparent);
+  background: linear-gradient(to top, #cef .3rem, transparent .3rem, transparent);
 }
 
 body {
@@ -59,6 +59,7 @@ body {
   background-position: center, bottom right;
   background-repeat: repeat, no-repeat;
   background-attachment: scroll, fixed;
+  color: #000;
 }
 
 header {
@@ -82,7 +83,7 @@ header h1 {
 }
 header a {
   position: relative;
-  color: #fff;
+  color: #fff !important;
   z-index: 101;
 }
 
@@ -91,7 +92,7 @@ main {
   grid-row: 2 / 3;
   min-height: calc(100vh - 11rem);
   margin: 0;
-  padding: 1rem 0;
+  padding: 4rem 0 1rem;
   border-width: 0px 3px;
   border-style: double;
   border-color: #aaa;
@@ -124,7 +125,7 @@ footer {
 }
 footer a {
   margin-right: 1em;
-  color: #ddf;
+  color: #ddf !important;
 }
 
 header,
@@ -132,7 +133,6 @@ footer {
   background-color: #fff;
   color: #fff;
   text-shadow: 0 0 1px #000, 0 0 5px #000, 0 0 5px #000, 0 0 5px #000, 0 0 6px #000, 0 0 7px #000, 0 0 8px #000;
-  font-family: "游明朝", "YuMincho", "ヒラギノ明朝 ProN W3", "Hiragino Mincho ProN", "HG明朝E", "ＭＳ Ｐ明朝", Verdana, "Hiragino Kaku Gothic ProN", "游ゴシック", YuGothic, Meiryo, sans-serif;
   font-weight: bold;
 }
 header a:hover,
@@ -147,6 +147,18 @@ footer .copyright {
 }
 
 * { border-color: #999; }
+
+/* // Font
+---------------------------------------------------------------------------------------------------- */
+body,
+header nav,
+#personal dl#faith dd {
+  font-family: "ヒラギノ角ゴ ProN","Hiragino Kaku Gothic ProN","HiraKakuProN-W3","メイリオ","Meiryo",sans-serif;
+}
+header,
+footer {
+  font-family: "游明朝", "YuMincho", "ヒラギノ明朝 ProN W3", "Hiragino Mincho ProN", "HG明朝E", "ＭＳ Ｐ明朝", Verdana, "Hiragino Kaku Gothic ProN", "游ゴシック", YuGothic, Meiryo, sans-serif;
+}
 
 /* // Sidebar
 ---------------------------------------------------------------------------------------------------- */
@@ -163,7 +175,25 @@ aside#sidebar-left > p,
 aside#sidebar-right > p {
   padding:5px;
 }
+aside#sidebar-top,
+aside#sidebar-bottom {
+  display: none;
+  margin: 0;
+  border-width: 0px 3px;
+  border-style: double;
+  border-color: #aaa;
+  grid-column: 2 / 3;
+  text-align: center;
+}
+aside#sidebar-top {
+  padding: 5rem 0 0rem;
+}
 
+aside#sidebar-bottom {
+  padding: 5rem 0 1rem;
+  border-top-width: 1px;
+  border-top-style: solid;
+}
 
 /* // Nav
 ---------------------------------------------------------------------------------------------------- */
@@ -174,7 +204,6 @@ header nav {
   left: 0;
   right: 0;
   margin: auto;
-  font-family: initial;
 
   z-index: 1;
 }
@@ -252,236 +281,6 @@ header nav ul li + li.very-small {
 }
 header nav ul li.small + li.very-small {
   margin-left: 0.8rem;
-}
-
-/* // Aside
----------------------------------------------------------------------------------------------------- */
-main aside {
-  max-width: 50rem;
-  margin: 10px auto;
-  border-width: 1px;
-  border-style: solid;
-  border-radius: 10px;
-  font-size: 1.4rem;
-}
-main aside h2 {
-  margin: 0.5em;
-  font-size: 2rem;
-}
-main aside p {
-  margin: 1.5em 1em;
-}
-main aside h2 + p {
-  margin-top: 0.5em;
-}
-
-/* // Search-Form
----------------------------------------------------------------------------------------------------- */
-form#form-search p {
-  margin: .5rem 1.5rem;
-  text-align: right;
-}
-form#form-search p input {
-  height: 3rem;
-  margin: 1px;
-  vertical-align:middle;
-}
-
-/* // List
----------------------------------------------------------------------------------------------------- */
-.list {
-  margin: 1.5rem 0 5rem;
-  padding: 1.5rem 0 0;
-}
-.list h2 {
-  font-size: 2rem;
-}
-.list table {
-  position: relative;
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-.list table thead {
-  display: block;
-  position: sticky;
-  top: 0;
-  z-index: 1;
-}
-.list table tbody {
-  display: block;
-}
-.list table tr {
-    display: grid;
-    grid-template-columns: 28rem 0.8fr 0.4fr 0.6fr 0.8fr 1fr 4rem 0.8fr;
-    grid-template-rows: auto;
-    grid-template-areas:
-      "NAME PL RACE RACE  LVL CLS FELL DATE"
-      "NAME PL  GEN  AGE  EXP CLS FELL DATE"
-    ;
-}
-.list table .name   { grid-area: NAME; }
-.list table .player { grid-area:   PL; }
-.list table .race   { grid-area: RACE; }
-.list table .gender { grid-area:  GEN; }
-.list table .age    { grid-area:  AGE; }
-.list table .lv     { grid-area:  LVL; }
-.list table .exp    { grid-area:  EXP; }
-.list table .class  { grid-area:  CLS; }
-.list table .fellow { grid-area: FELL; }
-.list table .date   { grid-area: DATE; }
-.list table tr > th {
-  display: grid;
-}
-.list table tr td {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.list table th > span {
-  display: grid;
-  align-items: center;
-  margin: 1px;
-  padding: 5px;
-  background: rgba(225,230,235,0.9);
-  border-radius: 5px;
-  white-space: nowrap;
-}
-.list table tbody tr {
-  border-bottom-width: 1px;
-  border-bottom-style: solid;
-  position: relative;
-}
-.list table tbody tr:nth-child(even) {
-  background: rgba(165,170,175,0.1);
-}
-.list table tbody tr:before,
-.list table tbody tr:after {
-  content: '';
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  pointer-events: none;
-}
-.list table tbody tr:hover:after {
-  background: linear-gradient(to top, rgba(100,230,255,0.2), transparent 50%);
-}
-.list table tbody tr.hide:before {
-  background-image: linear-gradient(135deg, rgba(80,80,200,0.3) 10px, transparent 10px);
-  background-position: top left;
-}
-.list table th.fellow {
-}
-.list table th.fellow > span {
-  width: 3.9rem;
-}
-.list table th.fellow > span > span {
-  display: block;
-  margin: 0 -100%;
-  transform: scaleX(0.5)
-}
-.list table td {
-  padding: 5px;
-  text-align: center;
-}
-.list table td.name {
-  height: 100%;
-  padding: 0;
-  line-height: 1;
-}
-.list table td.name a {
-  flex-grow: 1;
-  
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  padding: 5px;
-  
-  font-size: 1.6rem;
-  font-weight: bold;
-}
-.list table td.name a:hover {
-  background: rgba(180,200,255,0.1);
-}
-.list table td.player {
-  word-break: break-all;
-}
-.list table td.race {
-}
-.list table td.class {
-  text-align: left;
-  font-size: 80%;
-}
-.list table td.race > div {
-  flex-grow: 1;
-  margin: 0 -6%;
-  transform: scaleX(0.88);
-}
-.list table td.class > div {
-  flex-grow: 1;
-  margin: 0 calc(-6% + -1em) 0 -6%;
-  transform: scaleX(0.88);
-}
-.list table td.class > div > span {
-  display: inline-block;
-  margin-right: 1em;
-}
-.list table td.date {
-  font-family: Arial;
-  font-size: 85%;
-}
-.list table td.date > div > span {
-  display: inline-block;
-}
-.list table td.fellow {
-  font-size: 150%;
-  line-height: 1;
-}
-
-
-/* // Form
----------------------------------------------------------------------------------------------------- */
-section.form {
-  margin: 10%;
-  padding: 0.5em;
-  border-width: 1px;
-  border-style: solid;
-  border-radius: 10px;
-}
-section.form h2 {
-  font-size: 2rem;
-}
-form input {
-  padding: 5px;
-  border-width: 1px;
-  border-style: solid;
-  border-radius: 5px;
-}
-form p {
-  position: relative;
-  margin: 1em;
-  text-align: center;
-}
-form p > label > span {
-  display: inline-block;
-  width: 11em;
-  text-align: right;
-}
-form p > label >  input + b{
-  display: inline-block;
-  position: absolute;
-  bottom: 2px;
-  margin-left: 5px;
-  white-space: nowrap;
-  overflow: visible;
-  font-size: 12px;
-}
-form p > input[type="submit"] {
-  width: 5em;
 }
 
 /* // Button

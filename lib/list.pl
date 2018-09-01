@@ -11,15 +11,22 @@ my $LOGIN_ID = check;
 
 my $mode = param('mode');
 
-### テンプレート読み込み ##################################################
+### テンプレート読み込み #############################################################################
 #my $template = HTML::Template->new(filename => "template.html", utf8 => 1,);
 my $INDEX;
-open (my $FH, "<:utf8", $set::skin_tmpl ) or die "Couldn't open template file: $!\n";
-$INDEX = HTML::Template->new( filehandle => *$FH , die_on_bad_params => 0, case_sensitive => 1);
-close($FH);
+$INDEX = HTML::Template->new( filename  => $set::skin_tmpl , utf8 => 1,
+  die_on_bad_params => 0, case_sensitive => 1, global_vars => 1);
+
 
 $INDEX->param(modeList => 1);
+
 $INDEX->param(LOGIN_ID => $LOGIN_ID);
+
+my $index_mode;
+if(!($mode eq 'mylist' || param('tag') || param('group'))){
+  $index_mode = 1;
+  $INDEX->param(modeIndex => 1);
+}
 
 ## マイリスト取得
 my @mylist;
@@ -39,12 +46,29 @@ open (my $FH, "<", $set::listfile);
 my @list = sort { (split(/<>/,$b))[3] <=> (split(/<>/,$a))[3] } <$FH>;
 close($FH);
 
+## グループ
+my %group_name;
+my %group_text;
+foreach (@set::groups){
+  $group_name{@$_[0]} = @$_[2];
+  $group_text{@$_[0]} = @$_[3];
+}
+## グループ検索
+my $group_query = param('group');
+if($group_query) {
+  if($group_query eq $set::group_default){ @list = grep { (split(/<>/))[6] =~ /^$group_query$|^$/ } @list; }
+  else { @list = grep { (split(/<>/))[6] eq $group_query } @list; }
+  
+}
+$INDEX->param(group => $group_name{$group_query});
+
 ## タグ検索
 my $tag_query = Encode::decode('utf8', param('tag'));
 if($tag_query) { @list = grep { (split(/<>/))[16] =~ / $tag_query / } @list; }
 $INDEX->param(tag => $tag_query);
 
 ## リストを回す
+my %count;
 foreach (@list) {
   my (
     $id, undef, undef, $updatetime, $name, $player, $group,
@@ -142,20 +166,17 @@ foreach (@list) {
     "HIDE" => $hide,
   });
   
-  push(@{$grouplist{$group}}, @characters);
+  $count{$group}++;
+  push(@{$grouplist{$group}}, @characters) if !($index_mode && $count{$group} > $set::list_maxline && $set::list_maxline);
 }
 
-my %group_name;
-my %group_text;
-foreach (@set::groups){
-  $group_name{@$_[0]} = @$_[2];
-  $group_text{@$_[0]} = @$_[3];
-}
 my @characterlists; 
 foreach (keys %grouplist){
   push(@characterlists, {
+    "ID" => $_,
     "NAME" => $group_name{$_},
     "TEXT" => $group_text{$_},
+    "NUM" => $count{$_},
     "Characters" => [@{$grouplist{$_}}],
   });
 }
@@ -166,7 +187,7 @@ $INDEX->param(Lists => \@characterlists);
 $INDEX->param(title => $set::title);
 $INDEX->param(ver => $main::ver);
 
-### 出力 ##################################################
+### 出力 #############################################################################################
 print "Content-Type: text/html\n\n";
 print $INDEX->output;
 print "<!-- @mylist -->";

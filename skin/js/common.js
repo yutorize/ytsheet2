@@ -1,8 +1,8 @@
 // ナイトモード
 let nightMode = localStorage.getItem("nightMode");
-if(nightMode == 1) { document.getElementById("nightmode").href = './skin/css/night.css?201808211430'; }
+if(nightMode == 1) { document.getElementById("nightmode").href = './skin/css/night.css?201808312246'; }
 function nightModeChange() {
-  if(nightMode != 1) { document.getElementById("nightmode").href = './skin/css/night.css?201808211430'; nightMode = 1; }
+  if(nightMode != 1) { document.getElementById("nightmode").href = './skin/css/night.css?201808312246'; nightMode = 1; }
   else { document.getElementById("nightmode").href = ''; nightMode = 0; }
   localStorage.setItem("nightMode", nightMode);
 }

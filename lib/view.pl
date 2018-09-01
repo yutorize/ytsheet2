@@ -6,20 +6,20 @@ use open ":utf8";
 use open ":std";
 use HTML::Template;
 
-### データ読み込み ##################################################
+### データ読み込み ###################################################################################
 require $set::data_races;
 require $set::data_items;
 
-### テンプレート読み込み ##################################################
+### テンプレート読み込み #############################################################################
 #my $template = HTML::Template->new(filename => "template.html", utf8 => 1,);
 my $SHEET;
-open (my $FH, "<:utf8", $set::skin_sheet ) or die "Couldn't open template file: $!\n";
-$SHEET = HTML::Template->new( filehandle => *$FH , die_on_bad_params => 0, case_sensitive => 1, global_vars => 1);
-close($FH);
+$SHEET = HTML::Template->new( filename => $set::skin_sheet, utf8 => 1,
+  die_on_bad_params => 0, case_sensitive => 1, global_vars => 1);
+
 
 $SHEET->param("BackupMode" => param('backup') ? 1 : 0);
 
-### キャラクターデータ読み込み ##################################################
+### キャラクターデータ読み込み #######################################################################
 my $id = param('id');
 my $file;
 
@@ -42,7 +42,7 @@ close($IN);
 
 $SHEET->param("id" => $id);
 
-### 置換
+### 置換 --------------------------------------------------
 foreach (keys %pc) {
   $pc{$_} = tag_unescape($pc{$_});
   if($_ =~ /^(?:items|freeNote|cashbook)$/){
@@ -50,28 +50,47 @@ foreach (keys %pc) {
   }
 }
 
-### テンプレ用に変換
+### テンプレ用に変換 --------------------------------------------------
 while (my ($key, $value) = each(%pc)){
   $SHEET->param("$key" => $value);
 }
 
-### 出力準備 ##################################################
-## セリフ
+### 出力準備 #########################################################################################
+### グループ --------------------------------------------------
+foreach (@set::groups){
+  if($pc{'group'} eq @$_[0]){
+    $SHEET->param(groupName => @$_[2]);
+    last;
+  }
+}
+
+### タグ --------------------------------------------------
+my @tags;
+foreach(split(/ /, $pc{'tags'})){
+    push(@tags, {
+      "URL"  => uri_escape_utf8($_),
+      "TEXT" => $_,
+    });
+}
+$SHEET->param(Tags => \@tags);
+
+### セリフ --------------------------------------------------
 $pc{'words'} =~ s/^「/<span class="brackets">「<\/span>/g;
 $pc{'words'} =~ s/(.+?[，、。？」])/<span>$1<\/span>/g;
 $SHEET->param("words" => $pc{'words'});
 $SHEET->param("wordsX" => ($pc{'wordsX'} eq '左' ? 'left:0;' : 'right:0;'));
 $SHEET->param("wordsY" => ($pc{'wordsY'} eq '下' ? 'bottom:0;' : 'top:0;'));
 
-## 種族特徴
+### 種族特徴 --------------------------------------------------
 $pc{'raceAbility'} =~ s/［(.*?)］/<span>［$1］<\/span>/g;
 $SHEET->param("raceAbility" => $pc{'raceAbility'});
 
 
-## 信仰
+### 信仰 --------------------------------------------------
 if($pc{'faith'} eq 'その他の信仰') { $SHEET->param("faith" => $pc{'faithOther'}); }
 $pc{'faith'} =~ s/“(.*)”//;
-## 技能
+
+### 技能 --------------------------------------------------
 my @classes;
 foreach (
   ['Fig','ファイター'],
@@ -107,21 +126,22 @@ foreach (
 @classes = sort{$b->{'LV'} <=> $a->{'LV'}} @classes;
 $SHEET->param(Classes => \@classes);
 
-## 戦闘特技
+### 戦闘特技 --------------------------------------------------
 my @feats_lv;
 foreach (1..$pc{'level'}){
   next if !$pc{'combatFeatsLv'.$_};
   push(@feats_lv, { "NAME" => $pc{'combatFeatsLv'.$_}, "LV" => $_ } );
 }
 $SHEET->param(CombatFeatsLv => \@feats_lv);
-## 戦闘特技（自動習得）
+
+## 自動習得
 my @feats_auto;
 foreach (split /,/, $pc{'combatFeatsAuto'}) {
   push(@feats_auto, { "NAME" => $_ } );
 }
 $SHEET->param(CombatFeatsAuto => \@feats_auto);
 
-## 言語
+### 言語 --------------------------------------------------
 my @language;
 foreach (@{$data::race_language{ $pc{'race'} }}){
   push(@language, {
@@ -145,10 +165,10 @@ foreach (1 .. $pc{'languageNum'}) {
 $SHEET->param(Language => \@language);
 
 
-## パッケージ
+### パッケージ --------------------------------------------------
 $SHEET->param("PackageLv" => max($pc{'lvSco'},$pc{'lvRan'},$pc{'lvSag'}));
 
-## 魔力
+### 魔力 --------------------------------------------------
 my @magic;
 foreach (
   ['ソーサラー',         'Sor', '真語魔法'],
@@ -168,7 +188,7 @@ foreach (
 }
 $SHEET->param(MagicPowers => \@magic);
 
-## 攻撃技能／特技
+### 攻撃技能／特技 --------------------------------------------------
 my @atacck;
 foreach (
   ['ファイター',      'Fig'],
@@ -202,7 +222,7 @@ if($pc{'accuracyEnhance'}) {
 }
 $SHEET->param(AttackClasses => \@atacck);
 
-## 武器
+### 武器 --------------------------------------------------
 my @weapons;
 foreach (1 .. $pc{'weaponNum'}){
   next if $pc{'weapon'.$_.'Name'}.$pc{'weapon'.$_.'Usage'}.$pc{'weapon'.$_.'Reqd'}.
@@ -225,7 +245,7 @@ foreach (1 .. $pc{'weaponNum'}){
 }
 $SHEET->param(Weapons => \@weapons);
 
-## 回避技能／特技
+### 回避技能／特技 --------------------------------------------------
 my @evasion;
 foreach (
   ['ファイター',      'Fig'],
@@ -281,7 +301,7 @@ if($pc{'evasiveManeuver'}) {
 }
 $SHEET->param(EvasionClasses => \@evasion);
 
-## 装飾品
+### 装飾品 --------------------------------------------------
 my @accessories;
 foreach (
   ["頭","Head"],    ["┗","Head_"],
@@ -308,7 +328,7 @@ foreach (
 }
 $SHEET->param(Accessories => \@accessories);
 
-## 履歴
+### 履歴 --------------------------------------------------
 
 $pc{"history0Grow"} .= '器用'.$pc{'sttPreGrowA'} if $pc{'sttPreGrowA'};
 $pc{"history0Grow"} .= '敏捷'.$pc{'sttPreGrowB'} if $pc{'sttPreGrowB'};
@@ -343,7 +363,7 @@ foreach (0 .. $pc{'historyNum'}){
 }
 $SHEET->param(History => \@history);
 
-## ガメル
+### ガメル --------------------------------------------------
 if($pc{"money"} =~ /^(?:自動|auto)$/i){
   $SHEET->param(money => $pc{'moneyTotal'});
 }
@@ -351,7 +371,7 @@ if($pc{"deposit"} =~ /^(?:自動|auto)$/i){
   $SHEET->param(deposit => $pc{'depositTotal'}.' G ／ '.$pc{'debtTotal'});
 }
 
-### バックアップ
+### バックアップ --------------------------------------------------
 opendir(my $DIR,"${set::data_dir}${file}/backup");
 my @backlist = readdir($DIR);
 closedir($DIR);
@@ -369,35 +389,27 @@ foreach (reverse sort @backlist) {
 }
 $SHEET->param(Backup => \@backup);
 
-### タグ
-my @tags;
-foreach(split(/ /, $pc{'tags'})){
-    push(@tags, {
-      "URL"  => uri_escape_utf8($_),
-      "TEXT" => $_,
-    });
-}
-$SHEET->param(Tags => \@tags);
-
-### パスワード要求
+### パスワード要求 --------------------------------------------------
 $SHEET->param(ReqdPassword => (!$pc{'protect'} || $pc{'protect'} eq 'password' ? 1 : 0) );
 
-### フェロー
+### フェロー --------------------------------------------------
 $SHEET->param(FellowMode => param('f'));
 
-### タイトル
+### タイトル --------------------------------------------------
 $SHEET->param(title => $set::title);
 
-$SHEET->param("imageSrc" => "${set::data_dir}${file}/image.$pc{'image'}");
+### 画像 --------------------------------------------------
+$pc{'imageUpdateTime'} =~ s/[\-\ \:]//g;
+$SHEET->param("imageSrc" => "${set::data_dir}${file}/image.$pc{'image'}?$pc{'imageUpdateTime'}");
 
-### エラー
+### エラー --------------------------------------------------
 $SHEET->param(error => $main::login_error);
 
-### 出力 ##################################################
+### 出力 #############################################################################################
 print "Content-Type: text/html\n\n";
 print $SHEET->output;
 
-### サブルーチン ##################################################
+### サブルーチン #####################################################################################
 sub tag_unescape {
   my $text = $_[0];
   $text =~ s/&amp;/&/g;
