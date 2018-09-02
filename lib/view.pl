@@ -11,7 +11,6 @@ require $set::data_races;
 require $set::data_items;
 
 ### テンプレート読み込み #############################################################################
-#my $template = HTML::Template->new(filename => "template.html", utf8 => 1,);
 my $SHEET;
 $SHEET = HTML::Template->new( filename => $set::skin_sheet, utf8 => 1,
   die_on_bad_params => 0, case_sensitive => 1, global_vars => 1);

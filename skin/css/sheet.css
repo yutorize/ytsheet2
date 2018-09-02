@@ -218,7 +218,7 @@ header nav ul li + li {
   margin-left: 0.5rem;
 }
 header nav ul li + li.small {
-  margin-left: -0.2rem;
+  margin-left: 0.3rem;
 }
 header nav ul li.small + li.small {
   margin-left: 0rem;

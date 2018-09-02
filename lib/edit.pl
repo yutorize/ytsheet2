@@ -1133,7 +1133,7 @@ print <<"HTML";
   </main>
   <footer>
     『ソード・ワールド2.5』は、「グループSNE」及び「KADOKAWA」の著作物です。<br>
-    　ゆとシート for SW2.5 ver.${main::ver} - ゆとらいず工房
+    　ゆとシートⅡ for SW2.5 ver.${main::ver} - ゆとらいず工房
   </footer>
   <datalist id="list-usage">
     <option value="1H">
