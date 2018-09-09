@@ -6,6 +6,10 @@ use open ":utf8";
 use open ":std";
 #use JSON;
 
+my $data_dir;
+if(param('type') eq 'm'){ $data_dir = $set::mons_dir; }
+if(param('type') eq 'i'){ $data_dir = $set::item_dir; }
+else                    { $data_dir = $set::char_dir; }
 
 ### コールバック関数読み込み #########################################################################
 my $callback = param('callback');
@@ -31,9 +35,9 @@ my %pc = ();
 my $IN;
 
 if($backup eq "") {
-  open $IN, '<', "${set::data_dir}${file}/data.cgi" or "";
+  open $IN, '<', "${data_dir}${file}/data.cgi" or "";
 } else {
-  open $IN, '<', "${set::data_dir}${file}/backup/${backup}.cgi" or "";
+  open $IN, '<', "${data_dir}${file}/backup/${backup}.cgi" or "";
 }
 
 

@@ -22,6 +22,9 @@ main aside p {
 main aside h2 + p {
   margin-top: 0.5em;
 }
+main aside hr {
+  margin: 1rem;
+}
 
 /* // Search-Form
 ---------------------------------------------------------------------------------------------------- */
@@ -197,9 +200,52 @@ form#form-search p input {
 .list .more {
   padding: .5rem;
   text-align: right;
-  font-size: 140%;
+  font-size: 150%;
   font-weight: bold;
 }
+
+/* // List-Monster
+---------------------------------------------------------------------------------------------------- */
+.list-monster ul {
+  display: grid;
+  grid-gap: .5rem;
+  grid-template-columns: 1fr 1fr;
+}
+.list-monster ul li {
+}
+.list-monster ul li a {
+  display: block;
+  position: relative;
+  padding: 1em;
+  background-color: rgba(225,235,255,0.1);
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 1rem;
+  font-size: 110%;
+  font-weight: bold;
+  text-align: center;
+}
+.list-monster ul li a:before {
+  content: 'Lv'attr(data-lv);
+  position: absolute;
+  top: .1em;
+  left: .5em;
+  font-weight: normal;
+}
+.list-monster ul li a small {
+  display: block;
+  position: absolute;
+  right: .5em;
+  bottom: .1em;
+  font-weight: normal;
+}
+.list-monster ul li a small:before {
+  content:"by "
+}
+.list-monster ul li a:hover {
+  background: rgba(180,200,255,0.1);
+}
+
 
 /* // Form
 ---------------------------------------------------------------------------------------------------- */

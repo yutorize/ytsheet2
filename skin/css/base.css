@@ -19,6 +19,12 @@ html {
 body {
   font-size  : 1.4rem;
   line-height: 1.5;
+  -webkit-print-color-adjust: exact;
+}
+
+hr {
+  border-width: 1px 0 0;
+  border-style: solid;
 }
 
 table, tr, th, td {
@@ -147,6 +153,8 @@ footer .copyright {
 }
 
 * { border-color: #999; }
+
+
 
 /* // Font
 ---------------------------------------------------------------------------------------------------- */
@@ -281,6 +289,36 @@ header nav ul li + li.very-small {
 }
 header nav ul li.small + li.very-small {
   margin-left: 0.8rem;
+}
+
+/* // Main-Nav
+---------------------------------------------------------------------------------------------------- */
+main nav {
+}
+main nav ul {
+  display: flex;
+  padding-left: 2rem;
+}
+main nav ul li {
+  width: 12em;
+  margin: 1rem;
+  padding: .5rem 1rem;
+  transform: skewX(-30deg);
+  background: linear-gradient(to top, #679, #cdf);
+  text-align: center;
+  font-weight: bold;
+  font-size: 120%;
+  outline: 3px double #000;
+}
+main nav ul li a {
+  display: block;
+  transform: skewX(30deg);
+  text-decoration: none;
+  color: #fff !important;
+  text-shadow: -1px -1px 1px #000, 0px 1px 1px #abc;
+}
+main nav ul li:hover {
+  opacity: 0.8;
 }
 
 /* // Button

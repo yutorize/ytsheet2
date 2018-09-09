@@ -1,0 +1,183 @@
+@charset "utf-8";
+
+/* // Base
+---------------------------------------------------------------------------------------------------- */
+article {
+  max-width: 800px;
+}
+
+/* // Font
+---------------------------------------------------------------------------------------------------- */
+#area-name h1 {
+  font-family: "游明朝", YuMincho, "ヒラギノ明朝 ProN W3", "Hiragino Mincho ProN", "HG明朝E", "メイリオ", serif;
+}
+
+
+/* // Name
+---------------------------------------------------------------------------------------------------- */
+#area-monstername {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  
+  border-width: 3px 0 0;
+  border-style: solid;
+}
+#area-monstername .lv {
+  order: -1;
+  align-self: stretch;
+  width: 2em;
+  background: linear-gradient(to bottom, #aaa, #555);
+  color: #fff;
+  text-shadow: 0 0 2px #000, 0 0 2px #000, 0 0 2px #000;
+  text-align: center;
+  font-size: 200%;
+  font-weight: bold;
+}
+#area-monstername h1 {
+  flex-grow: 1;
+  padding: 0 1rem;
+  text-align: left;
+  font-size: 200%;
+  font-weight: bold;
+  text-shadow: 0 0 0 #000, 0 0 1px #777;
+}
+#area-monstername .taxa {
+  text-align: right;
+}
+
+/* // Status
+---------------------------------------------------------------------------------------------------- */
+div.status {
+  padding: 1rem;
+}
+div.status div {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+div.status dl {
+  display: flex;
+  margin-right: 1.5em;
+}
+div.status dl dt:after {
+  content: ':';
+  display: inline-block;
+  width: 1em;
+  text-align: center;
+  font-weight: normal;
+}
+
+
+table.status {
+  width: 100%;
+  border-width: 1px;
+  border-style: solid;
+}
+table.status th {
+  background-color: rgba(127,127,127,0.4);
+}
+table.status td {
+  padding: .2rem;
+  border-width: 1px;
+  border-style: solid;
+  background-color: rgba(255,255,255,0.3);
+  text-align: center;
+}
+table.status tr:nth-child(odd) td {
+  background-color: rgba(127,127,127,0.2);
+}
+
+table.status th:nth-child(1) { width: auto; }
+table.status th:nth-child(2) { width: 12%; }
+table.status th:nth-child(3) { width: 12%; }
+table.status th:nth-child(4) { width: 12%; }
+table.status th:nth-child(5) { width: 12%; }
+table.status th:nth-child(6) { width: 12%; }
+table.status th:nth-child(7) { width: 12%; }
+
+/* // Parts
+---------------------------------------------------------------------------------------------------- */
+div.parts {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 1rem;
+}
+div.parts dl {
+  display: flex;
+  margin-right: 1.5em;
+}
+div.parts dl dt:after {
+  content: ':';
+  display: inline-block;
+  width: 1em;
+  text-align: center;
+  font-weight: normal;
+}
+
+
+/* // Skills
+---------------------------------------------------------------------------------------------------- */
+div.skills {
+  border: 0;
+  background: none;
+  box-shadow: none;
+}
+div.skills h2 {
+  padding: .3rem .5rem;
+  background-color: rgba(127,127,127,0.4);
+  font-size: 110%;
+}
+
+/* // Loots
+---------------------------------------------------------------------------------------------------- */
+div.loots {
+  margin-top: 2em;
+}
+div.loots h2 {
+  font-size: 110%;
+}
+div.loots dl {
+  display: grid;
+  grid-template-columns: 6em 1fr;
+  grid-template-rows: auto;
+  border-width: 1px;
+  border-style: solid;
+}
+div.loots dl > dt {
+  grid-column: 1;
+  padding: .2rem;
+  background-color: rgba(127,127,127,0.3);
+  border-width: 0px 1px 1px 0px;
+  border-style: solid;
+  text-align: center;
+}
+div.loots dl > dd {
+  grid-column: 2;
+  padding: .2rem .5rem;
+  background-color: rgba(255,255,255,0.3);
+  border-width: 0px 0px 1px;
+  border-style: solid;
+}
+div.loots dl > dt:last-of-type,
+div.loots dl > dd:last-of-type {
+  border-bottom-width: 0px;
+}
+
+/* // Description
+---------------------------------------------------------------------------------------------------- */
+div.description {
+  margin-top: 1.5em;
+  border: 0;
+  background: none;
+  box-shadow: none;
+}
+div.description h2 {
+  border-width: 1px 0px;
+  border-style: solid;
+  font-size: 115%;
+}
+
+
+
+

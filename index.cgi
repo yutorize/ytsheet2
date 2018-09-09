@@ -1,9 +1,9 @@
 #!/usr/local/bin/perl
 ####################################
-##       ゆとシート for SW2.5     ##
-##                version0.09     ##
+##     ゆとシートⅡ for SW2.5     ##
+##                version1.00     ##
 ##          by ゆとらいず工房     ##
-##     http://yutorize.2-d.jp     ##
+##    https://yutorize.2-d.jp     ##
 ####################################
 use strict;
 use warnings;
@@ -16,16 +16,16 @@ use CGI::Cookie;
 use Encode qw/encode decode/;
 use Fcntl;
 
-################### バージョン ###################
+### バージョン #######################################################################################
 
-our $ver = "0.09";
+our $ver = "1.00";
 
-#################### 設定読込 ####################
+### 設定読込 #########################################################################################
 
-require './lib/file.pl';
+require './lib/config-default.pl';
 require './config.cgi';
 
-##################################################
+### 各処理へ移動 #####################################################################################
 
 my $mode = param('mode');
 
@@ -62,15 +62,18 @@ elsif($mode eq 'save')       { require $set::lib_save; }   #更新
 elsif($mode eq 'delete')     { require $set::lib_delete; } #削除
 elsif($mode eq 'json')       { require $set::lib_json; }   #外部アプリ連携
 elsif(param('id')) { require $set::lib_view; }   #シート表示
-else { require $set::lib_list; }   #一覧表示
+else {
+  if(param('type') eq 'm'){ require $set::lib_list_mons; }
+  else                  { require $set::lib_list; }
+}   #一覧表示
 
-##################################################
+### サブルーチン #####################################################################################
 
-### ファイル名取得 ###
+### ファイル名取得／パスorアカウント必要時 --------------------------------------------------
 sub getfile {
   open (my $FH, '<', $set::passfile) or die;
   while (<$FH>) {
-    my ($id, $pass, $file, undef) = (split /<>/, $_)[0..3];
+    my ($id, $pass, $file, $type) = (split /<>/, $_)[0..3];
     if(
       $_[0] eq $id && (
            (!$pass) # パス不要
@@ -81,13 +84,28 @@ sub getfile {
       )
     ) {
       close($FH);
-      return ($id, $pass, $file, undef);
+      return ($id, $pass, $file, $type);
     }
   }
   close($FH);
   return 0;
 }
-### プレイヤー名取得 ###
+### ファイル名取得／パスorアカウント不要時 --------------------------------------------------
+sub getfile_open {
+  open (my $FH, '<', $set::passfile) or die;
+  while (<$FH>) {
+    my ($id, $file, $type) = (split /<>/, $_)[0,2,3];
+    if($_[0] eq $id) {
+      close($FH);
+      return ($file,$type);
+    }
+  }
+  close($FH);
+  return 0;
+}
+
+
+### プレイヤー名取得 --------------------------------------------------
 sub getplayername {
   my $login_id = shift;
   open (my $FH, '<', $set::userfile);
@@ -100,7 +118,8 @@ sub getplayername {
     }
   close($FH);
 }
-### 暗号化 ###
+
+### 暗号化 --------------------------------------------------
 sub e_crypt {
   my $plain = shift;
   my $s;
@@ -114,19 +133,19 @@ sub c_crypt {
   return ($plain ne '' && $crypt ne '' && crypt($plain,$crypt) eq $crypt);
 }
 
-### 最大値取得 ###
+### 最大値取得 --------------------------------------------------
 sub max {
   (sort {$b <=> $a} @_)[0];
 }
 
-### 安全にevalする ###
+### 安全にevalする --------------------------------------------------
 sub s_eval {
   my $i = shift;
   if($i =~ /[^0-9\+\-\*\/\%\(\) ]/){ $i = 0; }
   return eval($i);
 }
 
-### ログイン ##
+### ログイン --------------------------------------------------
 sub log_in {
   my $key = key_get($_[0],$_[1]);
   if($key){
@@ -151,7 +170,7 @@ sub log_in {
   print "Location: ./\n\n";
 }
 
-###  ###
+### キー取得 --------------------------------------------------
 sub key_get {
   my $in_id  = $_[0];
   my $in_pass= $_[1];
@@ -169,7 +188,8 @@ sub key_get {
   close($FH);
   return 0;
 }
-### ログアウト ###
+
+### ログアウト --------------------------------------------------
 sub log_out {
   my ($id, $key) = &cookie_get;
   my $key  = param('key');
@@ -191,7 +211,7 @@ sub log_out {
   
   print "Location: ./\n\n";
 }
-### ログインチェック ###
+### ログインチェック --------------------------------------------------
 sub check {
   my ($in_id, $in_key) = &cookie_get;
   return 0 if !$in_id || !$in_key;
@@ -207,7 +227,7 @@ sub check {
   return 0;
 }
 
-### Cookieセット ###
+### Cookieセット --------------------------------------------------
 sub cookie_set {
   my $value   = "$_[1]<>$_[2]";
   my $cookie = new CGI::Cookie(
@@ -218,7 +238,7 @@ sub cookie_set {
   return ("Set-Cookie: $cookie\n");
 }
 
-### Cookieゲット ###
+### Cookieゲット --------------------------------------------------
 sub cookie_get {
   my %cookies = fetch CGI::Cookie;
   my $value   = $cookies{'ytsheet2.5'}->value if(exists $cookies{'ytsheet2.5'});
@@ -226,7 +246,7 @@ sub cookie_get {
   return @return;
 }
 
-## ランダムID生成
+### ランダムID生成 --------------------------------------------------
 sub random_id {
   my @char = (0..9,'a'..'z','A'..'Z');
   my $s;
@@ -234,7 +254,7 @@ sub random_id {
   return $s;
 }
 
-### トークンチェック ###
+### トークンチェック --------------------------------------------------
 sub token_check {
   my $in_token = shift;
   my $flag = 0;
@@ -254,7 +274,7 @@ sub token_check {
   return $flag;
 }
 
-### メール送信 ###
+### メール送信 --------------------------------------------------
 sub sendmail{
   my $from    = encode('MIME-Header-ISO_2022_JP', "ゆとシート for SW2.5 <$set::admimail>");
   my $to      = encode('MIME-Header-ISO_2022_JP', shift);
@@ -271,7 +291,7 @@ sub sendmail{
   close($MA);
 }
 
-### URIエスケープ ###
+### URIエスケープ --------------------------------------------------
 sub uri_escape_utf8 {
   my($tmp) = @_;
   $tmp = Encode::encode('utf8',$tmp);
@@ -281,7 +301,7 @@ sub uri_escape_utf8 {
   return($tmp);
 }
 
-### 案内 ###
+### 案内画面 --------------------------------------------------
 sub info {
   our $header = shift;
   our $message = shift;
@@ -289,7 +309,7 @@ sub info {
   exit;
 }
 
-### エラー ###
+### エラー画面 --------------------------------------------------
 sub error {
   our $header = 'エラー';
   our $message = shift;

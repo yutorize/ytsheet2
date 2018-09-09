@@ -63,6 +63,13 @@ dl#sub-status {
 .box * { border-color: #445; }
 
 
+.s-icon:before {
+  color: #fff;
+}
+.s-icon.setup:before {
+  text-shadow: -.05rem 0 0 #fff, 0 .05rem 0 #fff, -.05rem .05rem 0 #fff;
+}
+
 #area-name {
   background: linear-gradient(to right, #234, #000);
 }
