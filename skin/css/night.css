@@ -88,6 +88,10 @@ h1#character-name {
   border-color: #556;
 }
 
+div.loots dl > dd,
+table.status td {
+  background-color: rgba(0,0,0,0.3);
+}
 
 input,
 textarea,
@@ -119,3 +123,11 @@ form #image > * {
 #login-form {
   background: #334455;
 }
+
+
+
+
+
+
+
+

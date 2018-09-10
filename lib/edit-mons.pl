@@ -42,7 +42,7 @@ if($mode eq 'edit'){
   $id = param('id');
   $pass = param('pass');
   (undef, undef, $file, undef) = getfile($id,$pass,$LOGIN_ID);
-  open my $IN, '<', "${set::mons_dir}${file}/data.cgi" or error $id.$pass.$LOGIN_ID;
+  open my $IN, '<', "${set::mons_dir}${file}/data.cgi" or error &login_error;
   $_ =~ s/(.*?)<>(.*?)\n/$pc{$1} = $2;/egi while <$IN>;
   close($IN);
 }
@@ -83,13 +83,14 @@ Content-type: text/html\n
 <head>
   <meta charset="UTF-8">
   <title>@{[$mode eq 'edit'?"編集：$pc{'monsterName'}":'新規作成']} - $set::title</title>
-  <link rel="stylesheet" media="all" href="./skin/css/base.css?201809010000">
-  <link rel="stylesheet" media="all" href="./skin/css/sheet.css?201808272000">
-  <link rel="stylesheet" media="all" href="./skin/css/sheet-sp.css?201808211430">
-  <link rel="stylesheet" media="all" href="./skin/css/monster.css?201808272000">
-  <link rel="stylesheet" media="all" href="./skin/css/edit.css?201808211430">
+  <link rel="stylesheet" media="all" href="./skin/css/base.css?20180910800">
+  <link rel="stylesheet" media="all" href="./skin/css/sheet.css?20180910800">
+  <link rel="stylesheet" media="all" href="./skin/css/sheet-sp.css?20180910800">
+  <link rel="stylesheet" media="all" href="./skin/css/monster.css?20180910800">
+  <link rel="stylesheet" media="all" href="./skin/css/edit.css?20180910800">
   <link rel="stylesheet" id="nightmode">
   <script src="./skin/js/common.js?201808211430" ></script>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     #image {
@@ -147,7 +148,7 @@ if($LOGIN_ID){
   print '<input type="radio" name="protect" value="account"'.($pc{'protect'} eq 'account'?' checked':'').'> アカウントに紐付ける（ログイン中のみ編集可能になります）<br>';
 }
   print '<input type="radio" name="protect" value="password"'.($pc{'protect'} eq 'password'?' checked':'').'> パスワードで保護 ';
-if ($mode eq 'edit' && $pass) {
+if ($mode eq 'edit' && $pc{'protect'} eq 'password') {
   print '<input type="hidden" name="pass" value="'.$pass.'"><br>';
 } else {
   print '<input type="password" name="pass"><br>';
@@ -225,6 +226,17 @@ print <<"HTML";
     <div class="box">
       <h2>特殊能力</h2>
       <textarea name="skills">$pc{'skills'}</textarea>
+      <div class="annotate">
+        ※特殊能力の分類マークなどを記述すると自動的に見出し化します。<br>
+        　2.0での分類マークでも構いません。また、入力簡易化の為に入力しやすい代替文字での入力も可能です。<br>
+        　以下に見出しとして変換される記号を一覧にしています。<br>
+        ●：部位見出し：<code>●</code><br>
+        <i class="s-icon passive"></i>：常時型　　：<code>○</code> <code>◯</code> <code>〇</code><br>
+        <i class="s-icon setup"  ></i>：戦闘準備型：<code>△</code><br>
+        <i class="s-icon major"  ></i>：主動作型　：<code>＞</code> <code>▶</code> <code>〆</code><br>
+        <i class="s-icon minor"  ></i>：補助動作型：<code>≫</code> <code>&gt;&gt;</code> <code>☆</code><br>
+        <i class="s-icon active" ></i>：宣言型　　：<code>🗨</code> <code>□</code> <code>☑</code><br>
+      </div>
     </div>
     <div class="box loots">
       <h2>戦利品</h2>
@@ -254,6 +266,7 @@ print <<"HTML";
     <form name="del" method="post" action="./" id="deleteform">
       <p>
       <input type="hidden" name="mode" value="delete">
+      <input type="hidden" name="type" value="m">
       <input type="hidden" name="id" value="$id">
       <input type="hidden" name="pass" value="$pass">
       <input type="checkbox" name="check1" value="1" required>

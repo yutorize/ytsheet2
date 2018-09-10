@@ -77,5 +77,43 @@ sub time_convert {
   return sprintf("%04d-%02d-%02d %02d:%02d",$year,$mon,$day,$hour,$min);
 }
 
+sub passfile_write_make {
+  my ($id, $pass ,$LOGIN_ID, $protect, $now) = @_;
+  sysopen (my $FH, $set::passfile, O_WRONLY | O_APPEND | O_CREAT, 0666);
+    my $passwrite;
+    if   ($protect eq 'account'&& $LOGIN_ID) { $passwrite = '['.$LOGIN_ID.']'; }
+    elsif($protect eq 'password')            { $passwrite = e_crypt($pass); }
+    print $FH "$id<>$passwrite<>$now<>".param('type')."<>\n";
+  close ($FH);
+}
+
+sub passfile_write_save {
+  my ($id, $pass ,$LOGIN_ID, $protect) = @_;
+  sysopen (my $FH, $set::passfile, O_RDWR);
+  my @list = <$FH>;
+  flock($FH, 2);
+  seek($FH, 0, 0);
+  foreach (@list){
+    my @data = split /<>/;
+    if ($data[0] eq $id){
+      my $passwrite = $data[1];
+      if   ($protect eq 'account')  {
+        if($passwrite !~ /\[.+?\]/) { $passwrite = '['.$LOGIN_ID.']'; }
+      }
+      elsif($protect eq 'password') {
+        if(!$passwrite || $passwrite =~ /\[.+?\]/) { $passwrite = e_crypt($pass); }
+      }
+      elsif($protect eq 'none') {
+        $passwrite = '';
+      }
+      print $FH "$data[0]<>$passwrite<>$data[2]<>$data[3]<>\n";
+    }else{
+      print $FH $_;
+    }
+  }
+  truncate($FH, tell($FH));
+  close($FH);
+}
+
 
 1;

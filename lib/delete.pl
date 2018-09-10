@@ -9,10 +9,10 @@ my $LOGIN_ID = check;
 
 my $message;
 
-my $data_dir;
-if(param('type') eq 'm'){ $data_dir = $set::mons_dir; }
-if(param('type') eq 'i'){ $data_dir = $set::item_dir; }
-else                    { $data_dir = $set::char_dir; }
+my $data_dir; my $data_list;
+   if(param('type') eq 'm'){ $data_dir = $set::mons_dir; $data_list = $set::monslist; }
+elsif(param('type') eq 'i'){ $data_dir = $set::item_dir; $data_list = $set::itemlist; }
+else                       { $data_dir = $set::char_dir; $data_list = $set::listfile; }
 
 if(!param('id')){ error('IDがありません。'); }
 if(!param('check1') || !param('check2') || !param('check3')){ error('確認のチェックが入っていません。'); }
@@ -21,7 +21,7 @@ my $file;
 (undef, undef, $file, undef) = getfile(param('id'),param('pass'),$LOGIN_ID);
 if(!$file){ error('データが見つかりません。'); }
 
-open (my $FH, "+<", $set::listfile) or error('一覧ファイルのオープンに失敗しました。');
+open (my $FH, "+<", $data_list) or error('一覧ファイルのオープンに失敗しました。');
 my @list = <$FH>;
 flock($FH, 2);
 seek($FH, 0, 0);

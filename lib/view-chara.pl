@@ -25,7 +25,7 @@ my $file = $main::file;
 our %pc = ();
 my $datafile = "${set::char_dir}${file}/data.cgi";
    $datafile = "${set::char_dir}${file}/backup/".param('backup').'.cgi' if param('backup');
-open my $IN, '<', $datafile or error 'キャラクターシートがありません。'."${set::char_dir}${file}/data.cgi";
+open my $IN, '<', $datafile or error 'キャラクターシートがありません。';
 $_ =~ s/(.*?)<>(.*?)\n/$pc{$1} = $2;/egi while <$IN>;
 close($IN);
 

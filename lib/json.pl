@@ -6,10 +6,6 @@ use open ":utf8";
 use open ":std";
 #use JSON;
 
-my $data_dir;
-if(param('type') eq 'm'){ $data_dir = $set::mons_dir; }
-if(param('type') eq 'i'){ $data_dir = $set::item_dir; }
-else                    { $data_dir = $set::char_dir; }
 
 ### コールバック関数読み込み #########################################################################
 my $callback = param('callback');
@@ -19,17 +15,12 @@ my $backup = param('backup');
 
 ### キャラクターデータ読み込み #######################################################################
 my $id = param('id');
-my $file;
+my ($file, $type) = getfile_open($id);
 
-open (my $FH, '<', $set::listfile) or die;
-while (<$FH>) {
-  my @data = (split /<>/, $_)[0..1];
-  if ($data[0] eq $id) {
-    $file = $data[1];
-    last;
-  }
-}
-close($FH);
+my $data_dir;
+   if($type eq 'm'){ $data_dir = $set::mons_dir; }
+elsif($type eq 'i'){ $data_dir = $set::item_dir; }
+else               { $data_dir = $set::char_dir; }
 
 my %pc = ();
 my $IN;
@@ -39,7 +30,6 @@ if($backup eq "") {
 } else {
   open $IN, '<', "${data_dir}${file}/backup/${backup}.cgi" or "";
 }
-
 
 $_ =~ s/(.*?)<>(.*?)\n/$pc{$1} = $2;/egi while <$IN>;
 close($IN);

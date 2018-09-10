@@ -529,15 +529,17 @@ form#monster div.parts input[name="partsNum"] {
   width: 5em;
 }
 
+form#monster textarea[name="skills"] + .annotate code {
+  font-size: 100%;
+  font-family: monospace,serif;
+}
 
 form#monster textarea[name="skills"] {
-  width: 100%;
   height: 16em;
   padding: 2px;
 }
 
 form#monster textarea[name="description"] {
-  width: 100%;
   height: 16em;
   padding: 2px;
 }

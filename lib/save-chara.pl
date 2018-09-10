@@ -31,7 +31,7 @@ if($mode eq 'make'){
 }
 elsif($mode eq 'save'){
   (undef, undef, $file, undef) = getfile($pc{'id'},$pc{'pass'},$LOGIN_ID);
-  if(!$file){ die; }
+  if(!$file){ error('編集権限がありません。'); }
 }
 
 ### 種族特徴 --------------------------------------------------
@@ -434,41 +434,12 @@ my $mask = umask 0;
 ### passfile --------------------------------------------------
 ## 新規
 if($mode eq 'make'){
-  sysopen (my $FH, $set::passfile, O_WRONLY | O_APPEND | O_CREAT, 0666);
-    my $pass;
-    if   ($pc{'protect'} eq 'account'&& $LOGIN_ID) { $pass = '['.$LOGIN_ID.']'; }
-    elsif($pc{'protect'} eq 'password')            { $pass = &e_crypt($pc{'pass'}); }
-    print $FH "$pc{'id'}<>$pass<>$now<>$pc{'mail'}<>\n";
-  close ($FH);
+  passfile_write_make($pc{'id'},$pc{'pass'},$LOGIN_ID,$pc{'protect'},$now)
 }
-### passfile --------------------------------------------------
 ## 更新
 elsif($mode eq 'save'){
   if($pc{'protect'} ne $pc{'protectOld'}){
-  sysopen (my $FH, $set::passfile, O_RDWR);
-  my @list = <$FH>;
-  flock($FH, 2);
-  seek($FH, 0, 0);
-  foreach (@list){
-    my @data= split /<>/;
-    if ($data[0] eq $pc{'id'}){
-      my $pass = $_[1];
-      if   ($pc{'protect'} eq 'account')  {
-        if($pass !~ /\[.+?\]/) { $pass = '['.$LOGIN_ID.']'; }
-      }
-      elsif($pc{'protect'} eq 'password') {
-        if($pass =~ /\[.+?\]/) { $pass = &e_crypt($pc{'pass'}); }
-      }
-      elsif($pc{'protect'} eq 'none') {
-        $pass = '';
-      }
-      print $FH "$data[0]<>$pass<>$data[2]<>$data[3]<>\n";
-    }else{
-      print $FH $_;
-    }
-  }
-  truncate($FH, tell($FH));
-  close($FH);
+    passfile_write_save($pc{'id'},$pc{'pass'},$LOGIN_ID,$pc{'protect'})
   }
 }
 

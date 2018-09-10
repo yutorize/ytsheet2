@@ -74,21 +74,23 @@ foreach(split(/ /, $pc{'tags'})){
 }
 $SHEET->param(Tags => \@tags);
 
-
 ### ステータス --------------------------------------------------
 my @status;
 foreach (1 .. $pc{'statusNum'}){
   push(@status, {
     "STYLE"    => $pc{'status'.$_.'Style'},
-    "ACCURACY" => $pc{'status'.$_.'Accuracy'},
+    "ACCURACY" => $pc{'status'.$_.'Accuracy'}.' ('.$pc{'status'.$_.'AccuracyFix'}.')',
     "DAMAGE"   => $pc{'status'.$_.'Damage'},
-    "EVASION"  => $pc{'status'.$_.'Evasion'},
+    "EVASION"  => $pc{'status'.$_.'Evasion'}.' ('.$pc{'status'.$_.'EvasionFix'}.')',
     "DEFENSE"  => $pc{'status'.$_.'Defense'},
     "HP"       => $pc{'status'.$_.'Hp'},
     "MP"       => $pc{'status'.$_.'Mp'},
   } );
 }
 $SHEET->param(Status => \@status);
+
+### 部位 --------------------------------------------------
+$SHEET->param(partsOn => 1) if $pc{'partsNum'};
 
 ### 戦利品 --------------------------------------------------
 my @loots;

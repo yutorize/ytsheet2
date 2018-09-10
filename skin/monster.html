@@ -4,13 +4,13 @@
 <head>
   <meta charset="UTF-8">
   <title><TMPL_IF characterName><TMPL_VAR characterName>（<TMPL_VAR monsterName>）<TMPL_ELSE><TMPL_VAR monsterName></TMPL_IF> - <TMPL_VAR title></title>
-  <link rel="stylesheet" media="all" href="./skin/css/base.css?201809010000">
+  <link rel="stylesheet" media="all" href="./skin/css/base.css?20180910800">
   <link rel="stylesheet" media="all" href="./skin/css/sheet.css?">
   <link rel="stylesheet" media="all" href="./skin/css/monster.css?">
   <link rel="stylesheet" media="all" href="./skin/css/monster-sp.css?">
   <link rel="stylesheet" id="nightmode">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
-  <script src="./skin/js/common.js?201808211430" ></script>
+  <script src="./skin/js/common.js?20180910800" ></script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <script>
 function popImage() {
@@ -103,7 +103,7 @@ window.onload = function() {
         <dl><dt>知能</dt><dd><TMPL_VAR intellect></dd></dl>
         <dl><dt>知覚</dt><dd><TMPL_VAR perception></dd></dl>
         <dl><dt>反応</dt><dd><TMPL_VAR disposition></dd></dl>
-        <dl><dt>穢れ</dt><dd><TMPL_VAR sin></dd></dl>
+        <TMPL_IF sin><dl><dt>穢れ</dt><dd><TMPL_VAR sin></dd></dl></TMPL_IF>
       </div>
       <div>
         <dl><dt>言語</dt><dd><TMPL_VAR language></dd></dl>
@@ -144,10 +144,12 @@ window.onload = function() {
         </tr>
       </TMPL_LOOP>
     </table>
+    <TMPL_IF partsOn>
     <div class="parts">
-      <dl><dt>部位数</dt><dd><TMPL_VAR parts></dd></dl>
+      <dl><dt>部位数</dt><dd><TMPL_VAR partsNum>（<TMPL_VAR parts>）</dd></dl>
       <dl><dt>コア部位</dt><dd><TMPL_VAR coreParts></dd></dl>
     </div>
+    </TMPL_IF>
     <div class="box skills">
       <h2>特殊能力</h2>
       <TMPL_VAR skills>
@@ -163,7 +165,7 @@ window.onload = function() {
       <p><TMPL_VAR description></p>
     </div>
     </article>
-    <div class="back-button"><a href="./">⏎</a></div>
+    <div class="back-button"><a href="./?type=m">⏎</a></div>
     <div id="image-box" onclick="closeImage()">
       <img src="<TMPL_VAR imageSrc>" id="image-box-image">
     </div>

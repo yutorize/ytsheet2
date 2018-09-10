@@ -100,13 +100,13 @@ Content-type: text/html\n
 <head>
   <meta charset="UTF-8">
   <title>@{[$mode eq 'edit'?"編集：$pc{'characterName'}":'新規作成']} - $set::title</title>
-  <link rel="stylesheet" media="all" href="./skin/css/base.css?201809010000">
-  <link rel="stylesheet" media="all" href="./skin/css/sheet.css?201808272000">
-  <link rel="stylesheet" media="all" href="./skin/css/chara.css?201808272000">
-  <link rel="stylesheet" media="all" href="./skin/css/sheet-sp.css?201808211430">
-  <link rel="stylesheet" media="all" href="./skin/css/edit.css?201808211430">
+  <link rel="stylesheet" media="all" href="./skin/css/base.css?20180910800">
+  <link rel="stylesheet" media="all" href="./skin/css/sheet.css?20180910800">
+  <link rel="stylesheet" media="all" href="./skin/css/chara.css?20180910800">
+  <link rel="stylesheet" media="all" href="./skin/css/sheet-sp.css?20180910800">
+  <link rel="stylesheet" media="all" href="./skin/css/edit.css?20180910800">
   <link rel="stylesheet" id="nightmode">
-  <script src="./skin/js/common.js?201808211430" ></script>
+  <script src="./skin/js/common.js?20180910800" ></script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     #image {
@@ -163,7 +163,7 @@ if($LOGIN_ID){
   print '<input type="radio" name="protect" value="account"'.($pc{'protect'} eq 'account'?' checked':'').'> アカウントに紐付ける（ログイン中のみ編集可能になります）<br>';
 }
   print '<input type="radio" name="protect" value="password"'.($pc{'protect'} eq 'password'?' checked':'').'> パスワードで保護 ';
-if ($mode eq 'edit' && $pass) {
+if ($mode eq 'edit' && $pc{'protect'} eq 'password') {
   print '<input type="hidden" name="pass" value="'.$pass.'"><br>';
 } else {
   print '<input type="password" name="pass"><br>';

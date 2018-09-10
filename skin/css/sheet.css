@@ -15,7 +15,7 @@ a:visited { color: #a7f; }
 code {
   margin: 0 1px;
   padding: 0.2em 0.4em;
-  font-size: 85%;
+  font-size: 90%;
   font-family: "SFMono-Regular",Consolas,"Liberation Mono",Menlo,Courier,meiryo,monospace,serif;
   background-color: rgba(100,250,170,0.4);
 }
@@ -189,13 +189,20 @@ table.note-table td {
   display: inline-block;
   position: relative;
   width: 1em;
+  height: 1em;
   color: transparent;
+  text-align: center;
 }
 .s-icon:before {
+  display: inline-block;
   position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   font-family: "Font Awesome 5 Free";
   font-style: normal;
-  font-size: 90%;
+  font-size: 85%;
   color: #000;
 }
 .s-icon.passive:before {

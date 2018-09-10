@@ -8,7 +8,7 @@ article {
 
 /* // Font
 ---------------------------------------------------------------------------------------------------- */
-#area-name h1 {
+#area-monstername h1 {
   font-family: "游明朝", YuMincho, "ヒラギノ明朝 ProN W3", "Hiragino Mincho ProN", "HG明朝E", "メイリオ", serif;
 }
 
@@ -101,7 +101,7 @@ table.status th:nth-child(7) { width: 12%; }
 div.parts {
   display: flex;
   flex-wrap: wrap;
-  padding: 1rem;
+  margin: 1rem;
 }
 div.parts dl {
   display: flex;
@@ -120,6 +120,7 @@ div.parts dl dt:after {
 ---------------------------------------------------------------------------------------------------- */
 div.skills {
   border: 0;
+  margin: 1rem 0;
   background: none;
   box-shadow: none;
 }
