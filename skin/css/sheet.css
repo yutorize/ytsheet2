@@ -102,7 +102,7 @@ dl#sub-status {
   line-height: 1.2;
   font-size: 110%;
 }
-.box h3:after {
+.box h3::after {
   content:'';
   position: absolute;
   top: 60%; left: 0; right: 0; bottom: 0;
@@ -115,7 +115,7 @@ dl#sub-status {
   line-height: 1.2;
   font-size: 103%;
 }
-.box h4:after {
+.box h4::after {
   content:'';
   position: absolute;
   top: calc(100% - .2rem); left: 0; right: 0; bottom: 0;
@@ -193,7 +193,8 @@ table.note-table td {
   color: transparent;
   text-align: center;
 }
-.s-icon:before {
+.s-icon::after,
+.s-icon::before {
   display: inline-block;
   position: absolute;
   top: 0;
@@ -205,25 +206,30 @@ table.note-table td {
   font-size: 85%;
   color: #000;
 }
-.s-icon.passive:before {
+.s-icon.passive::before {
   content: "\f111";
   font-weight: normal;
 }
-.s-icon.setup:before {
+.s-icon.setup::before {
   content: "△";
   font-weight: normal;
   text-shadow: -.08rem 0 0 #000, 0 .08rem 0 #000, -.08rem .08rem 0 #000;
 }
-.s-icon.major:before {
+.s-icon.major::before {
   content: "\f04b";
   font-weight: bold;
 }
-.s-icon.minor:before {
+.s-icon.minor::before {
   content:"\f04e";
   font-weight: bold;
 }
-.s-icon.active:before {
-  content: "\f4ad";
+.s-icon.active::after {
+  content: "\f00c";
+  font-weight: bold;
+  transform: scale(0.6,0.6);
+}
+.s-icon.active::before {
+  content: "\f075";
   font-weight: normal;
   transform: scale(-1, 1);
 }
@@ -328,7 +334,7 @@ textarea::placeholder {
   background-color: rgba(140,170,200,0.3);
   color: inherit;
 }
-#tags a:before {
+#tags a::before {
   content:"●";
   color: #fff;
   font-size: 80%;
@@ -343,7 +349,7 @@ textarea::placeholder {
   background-color: rgba(140,200,170,0.3);
   color: inherit;
 }
-#tags a#group:before {
+#tags a#group::before {
   content:'';
 }
 

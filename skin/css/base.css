@@ -302,17 +302,19 @@ main nav ul {
 main nav ul li {
   width: 12em;
   margin: 1rem;
-  padding: .5rem 1rem;
   transform: skewX(-30deg);
   background: linear-gradient(to top, #679, #cdf);
   text-align: center;
   font-weight: bold;
   font-size: 120%;
   outline: 3px double #000;
+  overflow: hidden;
 }
 main nav ul li a {
   display: block;
   transform: skewX(30deg);
+  margin: 0 -50%;
+  padding: .5rem 1rem;
   text-decoration: none;
   color: #fff !important;
   text-shadow: -1px -1px 1px #000, 0px 1px 1px #abc;

@@ -113,12 +113,12 @@ h1#character-name {
   overflow: hidden;
   font-family: "Times New Roman";
 }
-.image-none:before {
+.image-none::before {
   content: 'no image';
   text-align: center;
   font-size: 2.2rem;
 }
-.image-none:after {
+.image-none::after {
   content: 'SW\A 2.5';
   position: absolute;
   display: flex;
@@ -269,8 +269,8 @@ p.words span.brackets {
 #stt-bonus-int { grid-row: 5; grid-column: 6; }
 #stt-bonus-mnd { grid-row: 6; grid-column: 6; }
 
-#status dl:nth-child(n+4):nth-child(-n+15):before,
-#status dl:nth-child(n+22):nth-child(-n+27):before {
+#status dl:nth-child(n+4):nth-child(-n+15)::before,
+#status dl:nth-child(n+22):nth-child(-n+27)::before {
   position:
   absolute;
   content:"+";
@@ -278,7 +278,7 @@ p.words span.brackets {
   bottom: 0;
   font-size: 1.2rem;
 }
-#status dl:nth-child(n+16):nth-child(-n+21):before {
+#status dl:nth-child(n+16):nth-child(-n+21)::before {
   position:
   absolute;
   content:"=";
@@ -413,7 +413,7 @@ dl#exp dd {
 #combat-feats ul li[id^=combat-feats-lv] {
   position: relative;
 }
-#combat-feats ul li[id^=combat-feats-lv]:before {
+#combat-feats ul li[id^=combat-feats-lv]::before {
   display: block;
   position: absolute;
   left: -4px;
@@ -422,14 +422,14 @@ dl#exp dd {
   opacity: 0.5;
   font-size: 80%;
 }
-#combat-feats ul li#combat-feats-lv1:before { content:"1"; }
-#combat-feats ul li#combat-feats-lv3:before { content:"3"; }
-#combat-feats ul li#combat-feats-lv5:before { content:"5"; }
-#combat-feats ul li#combat-feats-lv7:before { content:"7"; }
-#combat-feats ul li#combat-feats-lv9:before { content:"9"; }
-#combat-feats ul li#combat-feats-lv11:before { content:"11"; }
-#combat-feats ul li#combat-feats-lv13:before { content:"13"; }
-#combat-feats ul li#combat-feats-lv15:before { content:"15"; }
+#combat-feats ul li#combat-feats-lv1::before { content:"1"; }
+#combat-feats ul li#combat-feats-lv3::before { content:"3"; }
+#combat-feats ul li#combat-feats-lv5::before { content:"5"; }
+#combat-feats ul li#combat-feats-lv7::before { content:"7"; }
+#combat-feats ul li#combat-feats-lv9::before { content:"9"; }
+#combat-feats ul li#combat-feats-lv11::before { content:"11"; }
+#combat-feats ul li#combat-feats-lv13::before { content:"13"; }
+#combat-feats ul li#combat-feats-lv15::before { content:"15"; }
 
 /* Skill */
 #skill {}
@@ -767,7 +767,7 @@ div#area-items-R {
 #history table tr td:nth-child(6) {
   text-align: right;
 }
-#history table tr td:nth-child(6):after {
+#history table tr td:nth-child(6)::after {
   content: "G";
   margin-left: 2px;
   font-size: 1.1rem;
@@ -857,8 +857,8 @@ div#area-items-R {
   border-style: solid;
   border-color: #000;
 }
-#fellow #f-level:before,
-#fellow #f-level:after {
+#fellow #f-level::before,
+#fellow #f-level::after {
   content: '';
   top: 0;
   left: 0;
@@ -870,10 +870,10 @@ div#area-items-R {
   border-style: solid;
   border-color: #000;
 }
-#fellow #f-level:before {
+#fellow #f-level::before {
   transform: rotate(60deg);
 }
-#fellow #f-level:after {
+#fellow #f-level::after {
   transform: rotate(-60deg);
 }
 #fellow #f-level dt {
@@ -962,7 +962,7 @@ div#area-items-R {
   max-width: 14em;
   margin-left: auto;
 }
-#f-checkboxes dt:after {
+#f-checkboxes dt::after {
   content:':';
   position: absolute;
   right: -.5em;

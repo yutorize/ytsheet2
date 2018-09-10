@@ -13,7 +13,7 @@ require $set::data_items;
 ### テンプレート読み込み #############################################################################
 my $SHEET;
 $SHEET = HTML::Template->new( filename => $set::skin_sheet, utf8 => 1,
-  die_on_bad_params => 0, case_sensitive => 1, global_vars => 1);
+  die_on_bad_params => 0, die_on_missing_include => 0, case_sensitive => 1, global_vars => 1);
 
 
 $SHEET->param("BackupMode" => param('backup') ? 1 : 0);

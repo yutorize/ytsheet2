@@ -11,11 +11,12 @@ my $LOGIN_ID = check;
 
 my $mode = param('mode');
 
+require $set::data_mons;
+
 ### テンプレート読み込み #############################################################################
 my $INDEX;
 $INDEX = HTML::Template->new( filename  => $set::skin_tmpl , utf8 => 1,
-  die_on_bad_params => 0, case_sensitive => 1, global_vars => 1);
-
+  die_on_bad_params => 0, die_on_missing_include => 0, case_sensitive => 1, global_vars => 1);
 
 $INDEX->param(modeMonsList => 1);
 
@@ -112,12 +113,15 @@ foreach (@list) {
 }
 
 my @characterlists; 
-foreach (keys %grouplist){
+@data::taxa = sort{$a->[1] <=> $b->[1]} @data::taxa;
+foreach (@data::taxa){
+  my $name = $_->[0];
+  next if !$count{$name};
   push(@characterlists, {
-    "URL" => uri_escape_utf8($_),
-    "NAME" => $_,
-    "NUM" => $count{$_},
-    "Characters" => [@{$grouplist{$_}}],
+    "URL" => uri_escape_utf8($name),
+    "NAME" => $name,
+    "NUM" => $count{$name},
+    "Characters" => [@{$grouplist{$name}}],
   });
 }
 

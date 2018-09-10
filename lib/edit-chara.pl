@@ -100,6 +100,7 @@ Content-type: text/html\n
 <head>
   <meta charset="UTF-8">
   <title>@{[$mode eq 'edit'?"編集：$pc{'characterName'}":'新規作成']} - $set::title</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" media="all" href="./skin/css/base.css?20180910800">
   <link rel="stylesheet" media="all" href="./skin/css/sheet.css?20180910800">
   <link rel="stylesheet" media="all" href="./skin/css/chara.css?20180910800">
@@ -107,7 +108,6 @@ Content-type: text/html\n
   <link rel="stylesheet" media="all" href="./skin/css/edit.css?20180910800">
   <link rel="stylesheet" id="nightmode">
   <script src="./skin/js/common.js?20180910800" ></script>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     #image {
       background-image: url("${set::char_dir}${file}/image.$pc{'image'}");

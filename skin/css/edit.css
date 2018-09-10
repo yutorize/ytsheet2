@@ -390,7 +390,7 @@ input[type="button"]:hover {
 #history td{
   white-space: nowrap;
 }
-#history table tr td:nth-child(6):after {
+#history table tr td:nth-child(6)::after {
   margin-left: 0px;
   font-size: 1.1rem;
 }

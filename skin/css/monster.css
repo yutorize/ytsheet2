@@ -51,6 +51,10 @@ article {
 div.status {
   padding: 1rem;
 }
+#tags + div.status {
+  border-top: 1px dotted rgba(127,127,127,0.5);
+  padding-top: .5rem;
+}
 div.status div {
   display: flex;
   flex-wrap: wrap;
@@ -60,7 +64,7 @@ div.status dl {
   display: flex;
   margin-right: 1.5em;
 }
-div.status dl dt:after {
+div.status dl dt::after {
   content: ':';
   display: inline-block;
   width: 1em;
@@ -107,7 +111,7 @@ div.parts dl {
   display: flex;
   margin-right: 1.5em;
 }
-div.parts dl dt:after {
+div.parts dl dt::after {
   content: ':';
   display: inline-block;
   width: 1em;

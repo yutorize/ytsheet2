@@ -55,7 +55,7 @@ if($mode eq 'copy'){
   
   delete $pc{'image'};  
   
-  $message = '「<a href="./?id='.$id.'" target="_blank">'.$pc{"characterName"}.'</a>」コピーして新規作成します。<br>（まだ保存はされていません）';
+  $message = '「<a href="./?id='.$id.'" target="_blank">'.$pc{"monsterName"}.'</a>」コピーして新規作成します。<br>（まだ保存はされていません）';
 }
 
 ### 各種データライブラリ読み込み --------------------------------------------------
@@ -66,7 +66,7 @@ require $set::data_mons;
 $pc{'protect'} = $pc{'protect'} ? $pc{'protect'} : 'password';
 $pc{'group'} = $pc{'group'} ? $pc{'group'} : $set::group_default;
 
-$pc{'statusNum'}  = $pc{'statusNum'} ? $pc{'statusNum'} : 2;
+$pc{'statusNum'}  = $pc{'statusNum'} ? $pc{'statusNum'} : 1;
 $pc{'lootsNum'}   = $pc{'lootsNum'} ? $pc{'lootsNum'} : 2;
 
 ### 改行処理 --------------------------------------------------
@@ -83,15 +83,15 @@ Content-type: text/html\n
 <head>
   <meta charset="UTF-8">
   <title>@{[$mode eq 'edit'?"編集：$pc{'monsterName'}":'新規作成']} - $set::title</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" media="all" href="./skin/css/base.css?20180910800">
   <link rel="stylesheet" media="all" href="./skin/css/sheet.css?20180910800">
-  <link rel="stylesheet" media="all" href="./skin/css/sheet-sp.css?20180910800">
   <link rel="stylesheet" media="all" href="./skin/css/monster.css?20180910800">
+  <link rel="stylesheet" media="all" href="./skin/css/monster-sp.css?20180910800">
   <link rel="stylesheet" media="all" href="./skin/css/edit.css?20180910800">
   <link rel="stylesheet" id="nightmode">
   <script src="./skin/js/common.js?201808211430" ></script>
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     #image {
       background-image: url("${set::char_dir}${file}/image.$pc{'image'}");
@@ -129,7 +129,7 @@ print <<"HTML";
 HTML
 if($mode eq 'edit'){
 print <<"HTML";
-        <input type="button" value="複製" onclick="window.open('./?mode=copy&id=${id}');">
+        <input type="button" value="複製" onclick="window.open('./?mode=copy&type=m&id=${id}');">
 HTML
 }
 print <<"HTML";
@@ -175,14 +175,14 @@ print <<"HTML";
       </div>
     <div class="box status">
       <dl><dt>レベル</dt><dd>@{[ input 'lv','number','','min="0"' ]}</dd></dl>
-      <dl><dt>知能</dt><dd>@{[ input 'intellect' ]}</dd></dl>
-      <dl><dt>知覚</dt><dd>@{[ input 'perception' ]}</dd></dl>
-      <dl><dt>反応</dt><dd>@{[ input 'disposition' ]}</dd></dl>
+      <dl><dt>知能</dt><dd>@{[ input 'intellect','','','list="data-intellect"' ]}</dd></dl>
+      <dl><dt>知覚</dt><dd>@{[ input 'perception','','','list="data-perception"' ]}</dd></dl>
+      <dl><dt>反応</dt><dd>@{[ input 'disposition','','','list="data-disposition"' ]}</dd></dl>
       <dl><dt>穢れ</dt><dd>@{[ input 'sin','number','','min="0"' ]}</dd></dl>
       <dl><dt>言語</dt><dd>@{[ input 'language' ]}</dd></dl>
       <dl><dt>生息地</dt><dd>@{[ input 'habitat' ]}</dd></dl>
       <dl><dt>知名度／弱点値</dt><dd>@{[ input 'reputation' ]}／@{[ input 'reputation+' ]}</dd></dl>
-      <dl><dt>弱点</dt><dd>@{[ input 'weakness' ]}</dd></dl>
+      <dl><dt>弱点</dt><dd>@{[ input 'weakness','','','list="data-weakness"' ]}</dd></dl>
       <dl><dt>先制値</dt><dd>@{[ input 'initiative' ]}</dd></dl>
       <dl><dt>移動速度</dt><dd>@{[ input 'mobility' ]}</dd></dl>
       <dl><dt>生命抵抗力</dt><dd>@{[ input 'vitResist','number','calcVit' ]} (@{[ input 'vitResistFix','number','calcVitF' ]})</dd></dl>
@@ -284,11 +284,37 @@ print <<"HTML";
     『ソード・ワールド2.5』は、「グループSNE」及び「KADOKAWA」の著作物です。<br>
     　ゆとシートⅡ for SW2.5 ver.${main::ver} - ゆとらいず工房
   </footer>
-  <datalist id="list-usage">
+  <datalist id="data-intellect">
+  <option value="なし">
+  <option value="動物並み">
+  <option value="低い">
+  <option value="人間並み">
+  <option value="高い">
+  <option value="命令を聞く">
   </datalist>
-  <datalist id="list-grow">
+  <datalist id="data-perception">
+  <option value="五感">
+  <option value="五感（暗視）">
+  <option value="五感（）">
+  <option value="魔法">
+  <option value="機械">
   </datalist>
-  <script>
+  <datalist id="data-disposition">
+  <option value="友好的">
+  <option value="中立">
+  <option value="敵対的">
+  <option value="腹具合による">
+  <option value="命令による">
+  </datalist>
+  <datalist id="data-weakness">
+  <option value="命中力+1">
+  <option value="物理ダメージ+2点">
+  <option value="魔法ダメージ+2点">
+  <option value="属性ダメージ+3点">
+  <option value="回復効果ダメージ+3点">
+  <option value="なし">
+  </datalist>
+  <script>disposition
 HTML
 print <<"HTML";
   </script>
