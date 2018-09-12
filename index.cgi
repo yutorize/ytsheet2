@@ -1,7 +1,7 @@
 #!/usr/local/bin/perl
 ####################################
 ##     ゆとシートⅡ for SW2.5     ##
-##                version1.00     ##
+##                version1.01     ##
 ##          by ゆとらいず工房     ##
 ##    https://yutorize.2-d.jp     ##
 ####################################
@@ -18,7 +18,7 @@ use Fcntl;
 
 ### バージョン #######################################################################################
 
-our $ver = "1.00";
+our $ver = "1.01";
 
 ### 設定読込 #########################################################################################
 
@@ -62,15 +62,18 @@ elsif($mode eq 'save')       { require $set::lib_save; }   #更新
 elsif($mode eq 'delete')     { require $set::lib_delete; } #削除
 elsif($mode eq 'json')       { require $set::lib_json; }   #外部アプリ連携
 elsif(param('id')) { require $set::lib_view; }   #シート表示
-else { require $set::lib_list; }   #一覧表示
+else {
+  if(param('type') eq 'm'){ require $set::lib_list_mons; }
+  else                  { require $set::lib_list; }
+}   #一覧表示
 
 ### サブルーチン #####################################################################################
 
-### ファイル名取得 --------------------------------------------------
+### ファイル名取得／パスorアカウント必要時 --------------------------------------------------
 sub getfile {
   open (my $FH, '<', $set::passfile) or die;
   while (<$FH>) {
-    my ($id, $pass, $file, undef) = (split /<>/, $_)[0..3];
+    my ($id, $pass, $file, $type) = (split /<>/, $_)[0..3];
     if(
       $_[0] eq $id && (
            (!$pass) # パス不要
@@ -81,12 +84,26 @@ sub getfile {
       )
     ) {
       close($FH);
-      return ($id, $pass, $file, undef);
+      return ($id, $pass, $file, $type);
     }
   }
   close($FH);
   return 0;
 }
+### ファイル名取得／パスorアカウント不要時 --------------------------------------------------
+sub getfile_open {
+  open (my $FH, '<', $set::passfile) or die;
+  while (<$FH>) {
+    my ($id, $file, $type) = (split /<>/, $_)[0,2,3];
+    if($_[0] eq $id) {
+      close($FH);
+      return ($file,$type);
+    }
+  }
+  close($FH);
+  return 0;
+}
+
 
 ### プレイヤー名取得 --------------------------------------------------
 sub getplayername {
@@ -100,6 +117,7 @@ sub getplayername {
       }
     }
   close($FH);
+  return '';
 }
 
 ### 暗号化 --------------------------------------------------

@@ -22,6 +22,9 @@ main aside p {
 main aside h2 + p {
   margin-top: 0.5em;
 }
+main aside hr {
+  margin: 1rem;
+}
 
 /* // Search-Form
 ---------------------------------------------------------------------------------------------------- */
@@ -108,8 +111,8 @@ form#form-search p input {
 .list table tbody tr:nth-child(even) {
   background: rgba(165,170,175,0.1);
 }
-.list table tbody tr:before,
-.list table tbody tr:after {
+.list table tbody tr::before,
+.list table tbody tr::after {
   content: '';
   position: absolute;
   top: 0;
@@ -118,10 +121,10 @@ form#form-search p input {
   right: 0;
   pointer-events: none;
 }
-.list table tbody tr:hover:after {
+.list table tbody tr:hover::after {
   background: linear-gradient(to top, rgba(100,230,255,0.2), transparent 50%);
 }
-.list table tbody tr.hide:before {
+.list table tbody tr.hide::before {
   background-image: linear-gradient(135deg, rgba(80,80,200,0.3) 10px, transparent 10px);
   background-position: top left;
 }
@@ -197,9 +200,57 @@ form#form-search p input {
 .list .more {
   padding: .5rem;
   text-align: right;
-  font-size: 140%;
+  font-size: 150%;
   font-weight: bold;
 }
+
+/* // List-Monster
+---------------------------------------------------------------------------------------------------- */
+.list-monster ul {
+  display: grid;
+  grid-gap: .5rem;
+  grid-template-columns: 1fr 1fr;
+}
+.list-monster ul li {
+}
+.list-monster ul li.hide {
+  background-image: linear-gradient(135deg, rgba(80,80,200,0.3) 20px, transparent 20px);
+  background-position: top left;
+  border-radius: 1rem;
+}
+.list-monster ul li a {
+  display: block;
+  position: relative;
+  padding: 1em;
+  background-color: rgba(225,235,255,0.1);
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 1rem;
+  font-size: 110%;
+  font-weight: bold;
+  text-align: center;
+}
+.list-monster ul li a::before {
+  content: 'Lv'attr(data-lv);
+  position: absolute;
+  top: .1em;
+  left: .5em;
+  font-weight: normal;
+}
+.list-monster ul li a small {
+  display: block;
+  position: absolute;
+  right: .5em;
+  bottom: .1em;
+  font-weight: normal;
+}
+.list-monster ul li a small::before {
+  content:"by "
+}
+.list-monster ul li a:hover {
+  background: rgba(180,200,255,0.1);
+}
+
 
 /* // Form
 ---------------------------------------------------------------------------------------------------- */

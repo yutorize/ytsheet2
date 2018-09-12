@@ -12,18 +12,19 @@ my $LOGIN_ID = check;
 my $mode = param('mode');
 
 ### テンプレート読み込み #############################################################################
-#my $template = HTML::Template->new(filename => "template.html", utf8 => 1,);
 my $INDEX;
 $INDEX = HTML::Template->new( filename  => $set::skin_tmpl , utf8 => 1,
-  die_on_bad_params => 0, case_sensitive => 1, global_vars => 1);
+  die_on_bad_params => 0, die_on_missing_include => 0, case_sensitive => 1, global_vars => 1);
 
 
 $INDEX->param(modeList => 1);
 
 $INDEX->param(LOGIN_ID => $LOGIN_ID);
 
+$INDEX->param(mode => $mode);
+
 my $index_mode;
-if(!($mode eq 'mylist' || param('tag') || param('group'))){
+if(!($mode eq 'mylist' || param('tag') || param('group') || param('name'))){
   $index_mode = 1;
   $INDEX->param(modeIndex => 1);
 }
@@ -66,6 +67,11 @@ $INDEX->param(group => $group_name{$group_query});
 my $tag_query = Encode::decode('utf8', param('tag'));
 if($tag_query) { @list = grep { (split(/<>/))[16] =~ / $tag_query / } @list; }
 $INDEX->param(tag => $tag_query);
+
+## 名前検索
+my $name_query = Encode::decode('utf8', param('name'));
+if($name_query) { @list = grep { (split(/<>/))[4] =~ /$name_query/ } @list; }
+$INDEX->param(name => $name_query);
 
 ## リストを回す
 my %count;

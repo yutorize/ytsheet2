@@ -63,6 +63,14 @@ dl#sub-status {
 .box * { border-color: #445; }
 
 
+.s-icon::before,
+.s-icon::after {
+  color: #fff;
+}
+.s-icon.setup::before {
+  text-shadow: -.05rem 0 0 #fff, 0 .05rem 0 #fff, -.05rem .05rem 0 #fff;
+}
+
 #area-name {
   background: linear-gradient(to right, #234, #000);
 }
@@ -70,17 +78,21 @@ h1#character-name {
   text-shadow: 0 0 0 #fff, 0 0 1px #777, 1px 1px 0px #000;
 }
 
-#tags a:before {
+#tags a::before {
   color: #000;
 }
 
 #fellow #f-level dd,
-#fellow #f-level:before,
-#fellow #f-level:after {
+#fellow #f-level::before,
+#fellow #f-level::after {
   color: #fff;
   border-color: #556;
 }
 
+div.loots dl > dd,
+table.status td {
+  background-color: rgba(0,0,0,0.3);
+}
 
 input,
 textarea,
@@ -112,3 +124,11 @@ form #image > * {
 #login-form {
   background: #334455;
 }
+
+
+
+
+
+
+
+

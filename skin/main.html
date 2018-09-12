@@ -47,6 +47,33 @@
     <div id="page-top-button"><a href="#"></a></div>
   </TMPL_IF>
 <!-- / LIST -->
+<!-- MONSTER -->
+  <TMPL_IF modeMonsList>
+    <article>
+      <h1>
+        <TMPL_IF tag>タグ「<TMPL_VAR tag>」：</TMPL_IF>
+        <TMPL_IF playerName><TMPL_VAR playerName>さん：</TMPL_IF>
+        魔物データ一覧
+      </h1>
+      <form method="get" action="./" id="form-search">
+        <input type="hidden" name="type" value="m">
+        <p><input type="text" name="tag" value="<TMPL_VAR tag>"><input type="submit" value="タグ検索"></p>
+      </form>
+      <TMPL_LOOP Lists>
+      <section class="list list-monster">
+        <h2><TMPL_VAR NAME> <small>(<TMPL_VAR NUM>)</small></h2>
+        <ul>
+          <TMPL_LOOP Characters><li<TMPL_IF HIDE> class="hide"</TMPL_IF>>
+            <a href="./?id=<TMPL_VAR ID>" data-lv="<TMPL_VAR LV>"><TMPL_VAR NAME><small><TMPL_VAR AUTHOR></small></a>
+          </li></TMPL_LOOP>
+        </ul>
+        <TMPL_IF modeIndex><p class="more"><a href="./?type=m&taxa=<TMPL_VAR URL>">>>MORE</a></p></TMPL_IF>
+      </section>
+      </TMPL_LOOP>
+    </article>
+    <div id="page-top-button"><a href="#"></a></div>
+  </TMPL_IF>
+<!-- / MONSTER -->
 
 <!-- FORM -->
   <!-- 登録 -->

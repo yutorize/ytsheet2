@@ -12,7 +12,7 @@ my $LOGIN_ID = check;
 #my $template = HTML::Template->new(filename => "template.html", utf8 => 1,);
 my $INDEX;
 open (my $FH, "<:utf8", $set::skin_tmpl ) or die "Couldn't open template file: $!\n";
-$INDEX = HTML::Template->new( filehandle => *$FH , die_on_bad_params => 0, case_sensitive => 1);
+$INDEX = HTML::Template->new( filehandle => *$FH , die_on_bad_params => 0, die_on_missing_include => 0, case_sensitive => 1);
 close($FH);
 
 $INDEX->param(modeInfo => 1);

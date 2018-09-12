@@ -15,27 +15,21 @@ my $backup = param('backup');
 
 ### キャラクターデータ読み込み #######################################################################
 my $id = param('id');
-my $file;
+my ($file, $type) = getfile_open($id);
 
-open (my $FH, '<', $set::listfile) or die;
-while (<$FH>) {
-  my @data = (split /<>/, $_)[0..1];
-  if ($data[0] eq $id) {
-    $file = $data[1];
-    last;
-  }
-}
-close($FH);
+my $data_dir;
+   if($type eq 'm'){ $data_dir = $set::mons_dir; }
+elsif($type eq 'i'){ $data_dir = $set::item_dir; }
+else               { $data_dir = $set::char_dir; }
 
 my %pc = ();
 my $IN;
 
 if($backup eq "") {
-  open $IN, '<', "${set::data_dir}${file}/data.cgi" or "";
+  open $IN, '<', "${data_dir}${file}/data.cgi" or "";
 } else {
-  open $IN, '<', "${set::data_dir}${file}/backup/${backup}.cgi" or "";
+  open $IN, '<', "${data_dir}${file}/backup/${backup}.cgi" or "";
 }
-
 
 $_ =~ s/(.*?)<>(.*?)\n/$pc{$1} = $2;/egi while <$IN>;
 close($IN);
