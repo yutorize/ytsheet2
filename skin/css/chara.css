@@ -422,14 +422,10 @@ dl#exp dd {
   opacity: 0.5;
   font-size: 80%;
 }
-#combat-feats ul li#combat-feats-lv1::before { content:"1"; }
-#combat-feats ul li#combat-feats-lv3::before { content:"3"; }
-#combat-feats ul li#combat-feats-lv5::before { content:"5"; }
-#combat-feats ul li#combat-feats-lv7::before { content:"7"; }
-#combat-feats ul li#combat-feats-lv9::before { content:"9"; }
-#combat-feats ul li#combat-feats-lv11::before { content:"11"; }
-#combat-feats ul li#combat-feats-lv13::before { content:"13"; }
-#combat-feats ul li#combat-feats-lv15::before { content:"15"; }
+#combat-feats ul li[id|="combat-feats"]::before { content: attr(data-lv); }
+#combat-feats ul li.fail {
+  color: #ee0000;
+}
 
 /* Skill */
 #skill {}

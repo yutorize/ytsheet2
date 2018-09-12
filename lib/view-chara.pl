@@ -121,8 +121,9 @@ $SHEET->param(Classes => \@classes);
 
 ### 戦闘特技 --------------------------------------------------
 my @feats_lv;
-foreach (1..$pc{'level'}){
+foreach (@set::feats_lv){
   next if !$pc{'combatFeatsLv'.$_};
+  next if $pc{'level'} < $_;
   push(@feats_lv, { "NAME" => $pc{'combatFeatsLv'.$_}, "LV" => $_ } );
 }
 $SHEET->param(CombatFeatsLv => \@feats_lv);

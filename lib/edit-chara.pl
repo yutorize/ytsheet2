@@ -104,7 +104,7 @@ Content-type: text/html\n
   <link rel="stylesheet" media="all" href="./skin/css/base.css?20180910800">
   <link rel="stylesheet" media="all" href="./skin/css/sheet.css?20180910800">
   <link rel="stylesheet" media="all" href="./skin/css/chara.css?20180910800">
-  <link rel="stylesheet" media="all" href="./skin/css/sheet-sp.css?20180910800">
+  <link rel="stylesheet" media="all" href="./skin/css/chara-sp.css?20180910800">
   <link rel="stylesheet" media="all" href="./skin/css/edit.css?20180910800">
   <link rel="stylesheet" id="nightmode">
   <script src="./skin/js/common.js?20180910800" ></script>
@@ -455,15 +455,15 @@ print <<"HTML";
             <h2>戦闘特技</h2>
             <ul>
 HTML
-foreach my $i (1,3,5,7,9,11,13,15,16,17) {
-  print '<li id="combat-feats-lv'.$i.'"><select name="combatFeatsLv'.$i.'" oninput="checkFeats()">';
+foreach my $lv (@set::feats_lv) {
+  print '<li id="combat-feats-lv'.$lv.'" data-lv="'.$lv.'"><select name="combatFeatsLv'.$lv.'" oninput="checkFeats()">';
   print '<option></option>';
   foreach my $type ('常','宣','主') {
     print '<optgroup label="'.($type eq '常' ? '常時' : $type eq '宣' ? '宣言' : '主動作').'特技">';
     foreach my $feats (@data::combat_feats){
-      next if $i < @$feats[1];
+      next if $lv < @$feats[1];
       next if $type ne @$feats[0];
-      print '<option'.(($pc{"combatFeatsLv$i"} eq @$feats[2])?' selected':'').'>'.@$feats[2];
+      print '<option'.(($pc{"combatFeatsLv$lv"} eq @$feats[2])?' selected':'').'>'.@$feats[2];
     }
     print '</optgroup>';
   }
@@ -1111,6 +1111,7 @@ print <<"HTML";
   </datalist>
   <script>
 HTML
+print 'const featsLv = ["'. join('","', @set::feats_lv) . '"];';
 foreach (
   'sttHistGrowA',
   'sttHistGrowB',

@@ -39,6 +39,10 @@ package set;
   our $make_money = 1200;
   our $make_honor = 0;
   our $make_fix   = 0;
+  
+## ●戦闘特技
+ # 習得レベル
+  our @feats_lv = (1,3,5,7,9,11,13,15,16,17);
 
 ## ●各種ファイルへのパス
   our $sendmail = '/usr/sbin/sendmail'; # sendmailのパス
