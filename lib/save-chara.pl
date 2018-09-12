@@ -228,41 +228,32 @@ $" = ',';
 $pc{'combatFeatsAuto'} = "@abilities";
 ## 選択特技による補正
 {
+  
   my $i = 1; #カウンターセット
-  foreach (
-    $pc{'combatFeatsLv1'},
-    $pc{'combatFeatsLv3'},
-    $pc{'combatFeatsLv5'},
-    $pc{'combatFeatsLv7'},
-    $pc{'combatFeatsLv9'},
-    $pc{'combatFeatsLv11'},
-    $pc{'combatFeatsLv13'},
-    $pc{'combatFeatsLv15'},
-    $pc{'combatFeatsLv16'},
-    $pc{'combatFeatsLv17'},
-  ) {
-    if   ($_ eq '命中強化Ⅰ')  { $pc{'accuracyEnhance'} = 1; }
-    elsif($_ eq '命中強化Ⅱ')  { $pc{'accuracyEnhance'} = 2; }
-    elsif($_ eq '回避行動Ⅰ')  { $pc{'evasiveManeuver'} = 1; }
-    elsif($_ eq '回避行動Ⅱ')  { $pc{'evasiveManeuver'} = 2; }
-    elsif($_ eq '魔力強化Ⅰ')  { $pc{'magicPowerEnhance'} = 1; }
-    elsif($_ eq '魔力強化Ⅱ')  { $pc{'magicPowerEnhance'} = 2; }
-    elsif($_ eq '頑強')        { $pc{'tenacity'} += 15; }
-    elsif($_ eq '超頑強')      { $pc{'tenacity'} += 15; }
-    elsif($_ eq 'キャパシティ'){ $pc{'capacity'} += 15; }
-    elsif($_ eq '防具習熟Ａ／金属鎧')  { $pc{'masteryMetalArmour'}   += 1; }
-    elsif($_ eq '防具習熟Ａ／非金属鎧'){ $pc{'masteryNonMetalArmour'}+= 1; }
-    elsif($_ eq '防具習熟Ａ／盾')      { $pc{'masteryShield'}        += 1; }
-    elsif($_ eq '防具習熟Ｓ／金属鎧')  { $pc{'masteryMetalArmour'}   += 2; }
-    elsif($_ eq '防具習熟Ｓ／非金属鎧'){ $pc{'masteryNonMetalArmour'}+= 2; }
-    elsif($_ eq '防具習熟Ｓ／盾')      { $pc{'masteryShield'}        += 2; }
-    elsif($_ =~ /^武器習熟Ａ／(.*)$/) { $pc{'mastery'.ucfirst($data::weapon_id{$1})} += 1; }
-    elsif($_ =~ /^武器習熟Ｓ／(.*)$/) { $pc{'mastery'.ucfirst($data::weapon_id{$1})} += 2; }
-  #  elsif($_ =~ /^魔器習熟Ａ/) { $master{'魔器'} += 1; }
-  #  elsif($_ =~ /^魔器習熟Ｓ/) { $master{'魔器'} += 1; }
-  #  elsif($_ =~ /^魔器の達人/) { $master{'魔器'} += 1; }
-  #  elsif($_ eq 'スローイングⅠ'){ $pc{'throwing'} = 1; }
-  #  elsif($_ eq 'スローイングⅡ'){ $pc{'throwing'} = 2; }
+  foreach ($set::feats_lv) {
+    my $feat = $pc{'combatFeatsLv'.$_};
+    if   ($feat eq '命中強化Ⅰ')  { $pc{'accuracyEnhance'} = 1; }
+    elsif($feat eq '命中強化Ⅱ')  { $pc{'accuracyEnhance'} = 2; }
+    elsif($feat eq '回避行動Ⅰ')  { $pc{'evasiveManeuver'} = 1; }
+    elsif($feat eq '回避行動Ⅱ')  { $pc{'evasiveManeuver'} = 2; }
+    elsif($feat eq '魔力強化Ⅰ')  { $pc{'magicPowerEnhance'} = 1; }
+    elsif($feat eq '魔力強化Ⅱ')  { $pc{'magicPowerEnhance'} = 2; }
+    elsif($feat eq '頑強')        { $pc{'tenacity'} += 15; }
+    elsif($feat eq '超頑強')      { $pc{'tenacity'} += 15; }
+    elsif($feat eq 'キャパシティ'){ $pc{'capacity'} += 15; }
+    elsif($feat eq '防具習熟Ａ／金属鎧')  { $pc{'masteryMetalArmour'}   += 1; }
+    elsif($feat eq '防具習熟Ａ／非金属鎧'){ $pc{'masteryNonMetalArmour'}+= 1; }
+    elsif($feat eq '防具習熟Ａ／盾')      { $pc{'masteryShield'}        += 1; }
+    elsif($feat eq '防具習熟Ｓ／金属鎧')  { $pc{'masteryMetalArmour'}   += 2; }
+    elsif($feat eq '防具習熟Ｓ／非金属鎧'){ $pc{'masteryNonMetalArmour'}+= 2; }
+    elsif($feat eq '防具習熟Ｓ／盾')      { $pc{'masteryShield'}        += 2; }
+    elsif($feat =~ /^武器習熟Ａ／(.*)$/) { $pc{'mastery'.ucfirst($data::weapon_id{$1})} += 1; }
+    elsif($feat =~ /^武器習熟Ｓ／(.*)$/) { $pc{'mastery'.ucfirst($data::weapon_id{$1})} += 2; }
+  #  elsif($feat =~ /^魔器習熟Ａ/) { $master{'魔器'} += 1; }
+  #  elsif($feat =~ /^魔器習熟Ｓ/) { $master{'魔器'} += 1; }
+  #  elsif($feat =~ /^魔器の達人/) { $master{'魔器'} += 1; }
+  #  elsif($feat eq 'スローイングⅠ'){ $pc{'throwing'} = 1; }
+  #  elsif($feat eq 'スローイングⅡ'){ $pc{'throwing'} = 2; }
     $i += $i < 15 ? 2 : 1;      #カウンターに+2(15Lv～は+1)
     if($i > $pc{'level'}){ last; } #カウンターがLvを超えたら中断
   }

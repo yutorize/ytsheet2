@@ -183,6 +183,16 @@ div.description h2 {
   font-size: 115%;
 }
 
+/* // Author
+---------------------------------------------------------------------------------------------------- */
+#author {
+  width: 50%;
+  margin: 2em 0 0 auto;
+  padding: .5em;
+  text-align: right;
+  border-width: 0 1px 1px 0px;
+  border-style: solid;
+}
 
 
 

@@ -6,9 +6,9 @@
   <meta charset="UTF-8">
   <title><TMPL_IF characterName><TMPL_VAR characterName>（<TMPL_VAR monsterName>）<TMPL_ELSE><TMPL_VAR monsterName></TMPL_IF> - <TMPL_VAR title></title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" media="all" href="./skin/css/base.css?20180910800">
+  <link rel="stylesheet" media="all" href="./skin/css/base.css?201809100800">
   <link rel="stylesheet" media="all" href="./skin/css/sheet.css?">
-  <link rel="stylesheet" media="all" href="./skin/css/monster.css?">
+  <link rel="stylesheet" media="all" href="./skin/css/monster.css?201809122125">
   <link rel="stylesheet" media="all" href="./skin/css/monster-sp.css?">
   <link rel="stylesheet" id="nightmode">
   <script src="./skin/js/common.js?20180910800" ></script>
@@ -169,6 +169,9 @@ window.onload = function() {
       <div class="box description">
         <h2>解説</h2>
         <p><TMPL_VAR description></p>
+      </div>
+      <div id="author">
+        製作者：<TMPL_VAR author>
       </div>
     </article>
     <div class="back-button"><a href="./?type=m">⏎</a></div>
