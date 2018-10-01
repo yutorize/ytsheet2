@@ -13,7 +13,12 @@ our $new_id;
 our $make_error;
 
 ## 新規作成時処理
-if ($mode eq 'make'){  
+if ($mode eq 'make'){
+  ##ログインチェック
+  if($set::user_reqd && !check) {
+    $make_error .= 'エラー：ログインしていません。<br>';
+  }
+
   ## 二重投稿チェック
   if(!token_check(param('_token'))){
     $make_error .= 'エラー：セッションの有効期限が切れたか、二重投稿です。（⇒<a href="./'
@@ -22,7 +27,7 @@ if ($mode eq 'make'){
   }
   
   ## 登録キーチェック
-  if($set::registerkey && $set::registerkey ne param('registerkey')){
+  if(!$set::user_reqd && $set::registerkey && $set::registerkey ne param('registerkey')){
     $make_error .= '記入エラー：登録キーが一致しません。<br>';
   }
   
@@ -33,14 +38,27 @@ if ($mode eq 'make'){
       if ($pass =~ /[^0-9A-Za-z\.\-\/]/) { $make_error .= '記入エラー：パスワードに使える文字は、半角の英数字とピリオド、ハイフン、スラッシュだけです。'; }
     }
   }
-  
   ## ID生成
-  $new_id = random_id(6);
-  # 重複チェック
-  while (overlap_check($new_id)) {
+  my $LOGIN_ID = check;
+  if($set::id_type && $LOGIN_ID){
+    my $type = (param('type') eq 'm') ? 'm' : (param('type') eq 'i') ? 'i' : '';
+    my $i = 1;
+    $new_id = $LOGIN_ID.'-'.$type.sprintf("%03d",$i);
+    # 重複チェック
+    while (overlap_check($new_id)) {
+      $i++;
+      $new_id = $LOGIN_ID.'-'.$type.sprintf("%03d",$i);
+    }
+  }
+  else {
     $new_id = random_id(6);
+    # 重複チェック
+    while (overlap_check($new_id)) {
+      $new_id = random_id(6);
+    }
   }
 }
+
 ## 重複チェックサブルーチン
 sub overlap_check {
   my $id = shift;

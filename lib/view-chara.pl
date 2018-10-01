@@ -13,6 +13,7 @@ require $set::data_items;
 ### テンプレート読み込み #############################################################################
 my $SHEET;
 $SHEET = HTML::Template->new( filename => $set::skin_sheet, utf8 => 1,
+  loop_context_vars => 1,
   die_on_bad_params => 0, die_on_missing_include => 0, case_sensitive => 1, global_vars => 1);
 
 
@@ -45,6 +46,9 @@ while (my ($key, $value) = each(%pc)){
 }
 
 ### 出力準備 #########################################################################################
+### 二つ名 --------------------------------------------------
+my($aka, $ruby) = split(/:/,$pc{'aka'});
+$SHEET->param("aka" => "<ruby>$aka<rt>$ruby</rt></ruby>") if $ruby;
 ### グループ --------------------------------------------------
 if(!$pc{'group'}) {
   $pc{'group'} = $set::group_default;
@@ -77,7 +81,6 @@ $SHEET->param("wordsY" => ($pc{'wordsY'} eq '下' ? 'bottom:0;' : 'top:0;'));
 ### 種族特徴 --------------------------------------------------
 $pc{'raceAbility'} =~ s/［(.*?)］/<span>［$1］<\/span>/g;
 $SHEET->param("raceAbility" => $pc{'raceAbility'});
-
 
 ### 信仰 --------------------------------------------------
 if($pc{'faith'} eq 'その他の信仰') { $SHEET->param("faith" => $pc{'faithOther'}); }
@@ -135,6 +138,23 @@ foreach (split /,/, $pc{'combatFeatsAuto'}) {
 }
 $SHEET->param(CombatFeatsAuto => \@feats_auto);
 
+### 練技 --------------------------------------------------
+my @craft_enhance;
+foreach (1 .. $pc{'lvEnh'}){
+  push(@craft_enhance, { "NAME" => $pc{'craftEnhance'.$_} } );
+}
+$SHEET->param(CraftEnhance => \@craft_enhance);
+
+### 呪歌 --------------------------------------------------
+my @craft_song;
+foreach (1 .. $pc{'lvBar'}+$pc{'songAddition'}){
+  push(@craft_song, { "NAME" => $pc{'craftSong'.$_} } );
+}
+$SHEET->param(CraftSong => \@craft_song);
+
+### 練技・呪歌：なし --------------------------------------------------
+$SHEET->param(craftNone => 1) if !$pc{'lvEnh'} && !$pc{'lvBar'};
+
 ### 言語 --------------------------------------------------
 my @language;
 foreach (@{$data::race_language{ $pc{'race'} }}){
@@ -189,8 +209,8 @@ foreach (
   ['グラップラー',    'Gra'],
   ['フェンサー',      'Fen'],
   ['シューター',      'Sho'],
-  ['エンハンサー',    'Enh'],
-  ['デーモンルーラー','Dem'],
+#  ['エンハンサー',    'Enh'],
+#  ['デーモンルーラー','Dem'],
 ){
   next if !$pc{'lv'.@$_[1]};
   push(@atacck, {
@@ -212,6 +232,12 @@ if($pc{'accuracyEnhance'}) {
   push(@atacck, {
     "NAME" => "《命中強化".($pc{'accuracyEnhance'}  >= 2  ? 'Ⅱ' : 'Ⅰ')."》",
     "ACC"  => $pc{'accuracyEnhance'},
+  } );
+}
+if($pc{'throwing'}) {
+  push(@atacck, {
+    "NAME" => "《スローイング".($pc{'throwing'}  >= 2  ? 'Ⅱ' : 'Ⅰ')."》",
+    "ACC"  => 1,
   } );
 }
 $SHEET->param(AttackClasses => \@atacck);
@@ -356,6 +382,18 @@ foreach (0 .. $pc{'historyNum'}){
   } );
 }
 $SHEET->param(History => \@history);
+
+
+### 名誉アイテム --------------------------------------------------
+my @honoritems;
+foreach (1 .. $pc{'honorItemsNum'}) {
+  next if !$pc{'honorItem'.$_} && !$pc{'honorItem'.$_.'Pt'};
+  push(@honoritems, {
+    "NAME" => $pc{'honorItem'.$_},
+    "PT"   => $pc{'honorItem'.$_.'Pt'},
+  } );
+}
+$SHEET->param(HonorItems => \@honoritems);
 
 ### ガメル --------------------------------------------------
 if($pc{"money"} =~ /^(?:自動|auto)$/i){

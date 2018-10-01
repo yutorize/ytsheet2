@@ -14,6 +14,7 @@ my $id = param('id');
 if($mode eq 'register'){
   if(!token_check(param('_token'))){ error('セッションの有効期限が切れたか、二重投稿です'); }
 
+  if($set::registerkey && $set::registerkey ne param('registerkey')){ error('登録キーが間違っています。'); }
   if(param('password') ne param('password_confirm')){ error('パスワードの確認入力が一致しません'); }
   if (param('password') eq ''){ error('パスワードが入力されていません'); }
   else {

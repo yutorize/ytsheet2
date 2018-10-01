@@ -10,6 +10,12 @@ html {
 main {
   overflow: visible;
 }
+header {
+  display: none;
+}
+footer {
+  grid-row: 3;
+}
 
 input,
 select,
@@ -18,6 +24,11 @@ textarea {
   border-style: solid;
   border-radius: 5px;
   background-color: rgba(255,255,255,0.6);
+}
+select option,
+select optgroup {
+  background-color: #fff;
+  color: #000;
 }
 
 input::placeholder {
@@ -31,6 +42,19 @@ h4[onclick] {
 h2[onclick]:hover,
 h4[onclick]:hover {
   background: linear-gradient(to top, #cef 20%, transparent 30%, transparent);
+}
+
+.fail input,
+.fail select {
+  background-color: rgba(125,125,125,0.1);
+}
+.fail select option,
+.fail select optgroup {
+  background-color: #ddd;
+  color: #000;
+}
+.hidden {
+  display: none;
 }
 
 /* // キャラクター
@@ -82,6 +106,7 @@ input[type="button"]:hover {
 .message:empty {
   display: none;
 }
+
 
 #edit-protect {
   margin-top: 1rem;
@@ -144,6 +169,9 @@ input[type="button"]:hover {
   font-weight: bold;
   font-size: 1.4rem;
   font-family: inherit;
+}
+#area-name #character-name input {
+  width: calc(100% - 8em);
 }
 #area-name #player-name {
   text-align: left;
@@ -243,10 +271,15 @@ input[type="button"]:hover {
   grid-template-columns: 1fr 3.5em;
 }
 
+#area-status + p {
+  margin-top: 1rem;
+}
+
 #area-package #package table {
   margin-top: 1px;
   margin-bottom: -1px;
 }
+
 
 #language dl {
   display: grid;
@@ -276,8 +309,13 @@ input[type="button"]:hover {
 }
 
 #weapons {
-  display: block;
-  overflow-y: auto;
+  width: 100%;
+  overflow: auto;
+}
+@media screen and (max-width:850px){
+  #weapons{
+    width:calc(100vw - 23px);
+  }
 }
 #weapons table {
   min-width: 800px;
@@ -345,14 +383,7 @@ input[type="button"]:hover {
 }
 
 #items textarea {
-  height: 16em;
-}
-
-#free-note {
-  padding-bottom: .3rem;
-}
-#free-note textarea {
-  height: 16em;
+  height: 20em;
 }
 
 #cashbook textarea {
@@ -369,9 +400,24 @@ input[type="button"]:hover {
   text-align: left;
 }
 
-@media screen and (max-width:735px){
+#honor-items table {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+#free-note {
+  padding-bottom: .3rem;
+}
+#free-note textarea {
+  height: 16em;
+}
+
+#history{
+    overflow-x: auto;
+}
+@media screen and (max-width:850px){
   #history{
-    overflow-y: auto;
+    width:calc(100vw - 23px);
   }
 }
 #history table {

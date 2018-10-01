@@ -6,10 +6,10 @@
   <meta charset="UTF-8">
   <title><TMPL_VAR characterName> - <TMPL_VAR title></title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" media="all" href="./skin/css/base.css?20180910800">
-  <link rel="stylesheet" media="all" href="./skin/css/sheet.css?20180910800">
-  <link rel="stylesheet" media="all" href="./skin/css/chara.css?20180910800">
-  <link rel="stylesheet" media="all" href="./skin/css/chara-sp.css?20180910800">
+  <link rel="stylesheet" media="all" href="./skin/css/base.css?201809100800">
+  <link rel="stylesheet" media="all" href="./skin/css/sheet.css?201809100800">
+  <link rel="stylesheet" media="all" href="./skin/css/chara.css?201809221400">
+  <link rel="stylesheet" media="all" href="./skin/css/chara-sp.css?201809220730">
   <link rel="stylesheet" id="nightmode">
   <script src="./skin/js/common.js?20180910800" ></script>
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
@@ -97,11 +97,11 @@ window.onload = function() {
     <input type="submit" value="編集">
   </form>
 
-  <main>
+  <main id="character">
     <article<TMPL_IF FellowMode> style="display:none"</TMPL_IF>>
       <TMPL_IF BackupMode><p><TMPL_VAR updateTime> 時点のバックアップデータです。</p></TMPL_IF>
       <div id="area-name">
-        <h1 id="character-name"><TMPL_VAR aka><span id="aka"></span><TMPL_VAR characterName></h1>
+        <h1 id="character-name"><TMPL_IF aka><span id="aka">“<TMPL_VAR aka>”</span></TMPL_IF><TMPL_VAR characterName></h1>
         <div>
         <p id="update-time"><time><TMPL_VAR updateTime></time></p>
         <p id="player-name">プレイヤー：<TMPL_VAR playerName></p>
@@ -324,7 +324,7 @@ window.onload = function() {
             <h2>戦闘特技</h2>
             <ul>
               <TMPL_LOOP CombatFeatsLv>
-              <li id="combat-feats-lv<TMPL_VAR LV>">《<TMPL_VAR NAME>》</li>
+              <li id="combat-feats-lv<TMPL_VAR LV>" data-lv="<TMPL_VAR LV>">《<TMPL_VAR NAME>》</li>
               </TMPL_LOOP>
               <TMPL_LOOP CombatFeatsAuto>
               <li>《<TMPL_VAR NAME>》</li>
@@ -344,13 +344,27 @@ window.onload = function() {
           
 -->
         </div>
-        <div>
-          <div class="box" id="">
-            <h2>練技／呪歌／騎芸／賦術</h2>
+        <div id="crafts">
+          <TMPL_IF CraftEnhance><div class="box" id="craft-enhance">
+            <h2>練技</h2>
             <ul>
-              <li>なし</li>
+              <TMPL_LOOP CraftEnhance>
+              <li id="craft-enhance<TMPL_VAR __counter__>">【<TMPL_VAR NAME>】</li>
+              </TMPL_LOOP>
             </ul>
-          </div>
+          </div></TMPL_IF>
+          <TMPL_IF CraftSong><div class="box" id="craft-song">
+            <h2>呪歌</h2>
+            <ul>
+              <TMPL_LOOP CraftSong>
+              <li id="craft-enhance<TMPL_VAR __counter__>">【<TMPL_VAR NAME>】</li>
+              </TMPL_LOOP>
+            </ul>
+          </div></TMPL_IF>
+          <TMPL_IF craftNone><div class="box">
+            <h2>練技／呪歌／賦術</h2>
+            <ul><li>なし</li></ul>
+          </div></TMPL_IF>
         </div>
       </div>
 
@@ -424,7 +438,7 @@ window.onload = function() {
             <TMPL_IF  magicPowerAdd><p id="magic-power-add">+<TMPL_VAR  magicPowerAdd></p></TMPL_IF>
             <table>
               <TMPL_LOOP MagicPowers>
-              <tr><th><TMPL_VAR NAME></th><th><TMPL_VAR MAGIC></th><td><TMPL_VAR NUM></td></tr>
+              <tr><th><span><TMPL_VAR NAME></span></th><th><TMPL_VAR MAGIC></th><td><TMPL_VAR NUM></td></tr>
               </TMPL_LOOP>
             </table>
           </div>
@@ -485,8 +499,8 @@ window.onload = function() {
               <td><TMPL_IF ACC>+<TMPL_VAR ACC>=</TMPL_IF><b><TMPL_VAR ACCTOTAL></b></td>
               <td><TMPL_VAR RATE></td>
               <td><TMPL_VAR CRIT></td>
-                <td><TMPL_IF DMG>+<TMPL_VAR DMG>=</TMPL_IF><b><TMPL_VAR DMGTOTAL></b></td>
-              <td><TMPL_VAR OWN></td>
+              <td><TMPL_IF DMG>+<TMPL_VAR DMG>=</TMPL_IF><b><TMPL_VAR DMGTOTAL></b></td>
+              <td><TMPL_IF OWN>✔</TMPL_IF></td>
               <td><span class="item-name"><TMPL_VAR NOTE></span></td>
             </tr>
             </TMPL_LOOP>
@@ -527,7 +541,7 @@ window.onload = function() {
               <td><TMPL_VAR armourReqd></td>
               <td><TMPL_VAR armourEva></td>
               <td><TMPL_VAR armourDef></td>
-              <td><TMPL_VAR armourOwn></td>
+              <td><TMPL_IF armourOwn>✔</TMPL_IF></td>
               <td><TMPL_VAR armourNote></td>
             </tr>
             <tr>
@@ -536,7 +550,7 @@ window.onload = function() {
               <td><TMPL_VAR shieldReqd></td>
               <td><TMPL_VAR shieldEva></td>
               <td><TMPL_VAR shieldDef></td>
-              <td><TMPL_VAR shieldOwn></td>
+              <td><TMPL_IF shieldOwn>✔</TMPL_IF></td>
               <td><TMPL_VAR shieldNote></td>
             </tr>
             <tr>
@@ -567,7 +581,7 @@ window.onload = function() {
             <tr>
               <th><TMPL_VAR TYPE></th>
               <td><span class="item-name"><TMPL_VAR NAME></span></td>
-              <td><TMPL_VAR OWN></td>
+              <td><TMPL_IF OWN>✔<TMPL_VAR OWN></TMPL_IF></td>
               <td><TMPL_VAR NOTE></td>
             </tr>
             </TMPL_LOOP>
@@ -587,15 +601,21 @@ window.onload = function() {
         </div>
         <div id="area-items-R">
           <dl class="box" id="honor">
-            <dt>所持名誉点</dt><dd>未実装</dd>
-            <dt>ランク</dt><dd>未実装</dd>
+            <dt>名誉点</dt><dd><TMPL_VAR honor></dd>
+            <dt>ランク</dt><dd><TMPL_VAR rank></dd>
           </dl>
+          <TMPL_IF dishonor>
+          <dl class="box" id="dishonor">
+            <dt>不名誉点</dt><dd><TMPL_VAR dishonor></dd>
+            <dt>不名誉称号</dt><dd><TMPL_VAR disrank></dd>
+          </dl>
+          </TMPL_IF>
           <div class="box" id="honor-items">
             <h2>名誉アイテム</h2>
             <table>
               <tr><th></th><th>点数</th></tr>
-              <TMPL_LOOP HonoItems>
-              <tr><td><TMPL_VAR NAME></td><td><TMPL_VAR NUM></td></tr>
+              <TMPL_LOOP HonorItems>
+              <tr><td><TMPL_VAR NAME></td><td><TMPL_VAR PT></td></tr>
               </TMPL_LOOP>
             </table>
           </div>

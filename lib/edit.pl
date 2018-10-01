@@ -11,6 +11,8 @@ our $message;
 our %pc;
 
 
+
+if($set::user_reqd && !check){ error('ログインしていません。'); }
 ### 個別処理 --------------------------------------------------
 if   (param('type') eq 'm'){ require $set::lib_edit_mons; }
 elsif(param('type') eq 'i'){ require $set::lib_edit_item; }

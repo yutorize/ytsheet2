@@ -42,6 +42,7 @@ if(param('mode') eq 'option' || param('mode') eq 'passchange'){
 $INDEX->param(LOGIN_ID => $LOGIN_ID);
 
 $INDEX->param(token => $token);
+$INDEX->param(registerkey => 1) if $set::registerkey;
 
 $INDEX->param(title => $set::title);
 $INDEX->param(ver => $main::ver);

@@ -57,6 +57,13 @@
     margin-left: 0px;
   }
   
+  #crafts > .box {
+    flex-basis: 49%;
+  }
+  #crafts > .box + .box {
+    margin-top: 0;
+  }
+  
   #area-actions {
   display: flex;
     display: grid;
