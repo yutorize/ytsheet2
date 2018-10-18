@@ -134,6 +134,5 @@ $INDEX->param(ver => $main::ver);
 ### 出力 #############################################################################################
 print "Content-Type: text/html\n\n";
 print $INDEX->output;
-print "<!-- @mylist -->";
 
 1;

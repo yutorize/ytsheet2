@@ -5,9 +5,9 @@
   <TMPL_INCLUDE NAME="./skin/head.html">
   <meta charset="UTF-8">
   <title><TMPL_VAR title></title>
-  <link rel="stylesheet" media="all" href="./skin/css/base.css?20180910800">
-  <link rel="stylesheet" media="all" href="./skin/css/list.css?20180910800">
-  <link rel="stylesheet" media="all" href="./skin/css/list-sp.css?20180910800">
+  <link rel="stylesheet" media="all" href="./skin/css/base.css?201810172400">
+  <link rel="stylesheet" media="all" href="./skin/css/list.css?201810172400">
+  <link rel="stylesheet" media="all" href="./skin/css/list-sp.css?201810172400">
   <link rel="stylesheet" id="nightmode">
   <script src="./skin/js/common.js?20180910800" ></script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -35,6 +35,7 @@
   <main>
     <nav>
       <ul>
+        <li><a href="./?mode=making">能力値作成</a></li>
         <li><a href="./?<TMPL_IF mode>mode=<TMPL_VAR mode>&</TMPL_IF><TMPL_IF tag>tag=<TMPL_VAR tag></TMPL_IF>">キャラクターシート</a></li>
         <li><a href="./?<TMPL_IF mode>mode=<TMPL_VAR mode>&</TMPL_IF><TMPL_IF tag>tag=<TMPL_VAR tag>&</TMPL_IF>type=m">魔物データ</a></li>
       </ul>
@@ -49,7 +50,18 @@
     </aside>
     </TMPL_IF>
 -->
-    <TMPL_INCLUDE NAME="./skin/main.html">
+<TMPL_IF modeList><TMPL_INCLUDE NAME="./skin/list-chara.html"></TMPL_IF>
+<TMPL_IF modeMonsList><TMPL_INCLUDE NAME="./skin/list-mons.html"></TMPL_IF>
+<TMPL_IF modeMaking><TMPL_INCLUDE NAME="./skin/making.html"></TMPL_IF>
+<TMPL_INCLUDE NAME="./skin/form.html">
+<TMPL_IF modeInfo>
+  <article>
+    <section class="info">
+      <h2><TMPL_VAR header></h2>
+      <p><TMPL_VAR message></p>
+    </section>
+  </article>
+</TMPL_IF>
     <div class="back-button"><a href="./">⏎</a></div>
   </main>
   <!--

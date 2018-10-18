@@ -136,27 +136,37 @@ print <<"HTML";
         <input type="submit" value="保存">
       </div>
 HTML
-if($set::registerkey && ($mode eq 'blanksheet' || $mode eq 'copy')){
-  print '登録キー：<input type="text" name="registerkey" required>'."\n";
+if($set::user_reqd){
+  print <<"HTML";
+    <input type="hidden" name="protect" value="account">
+    <input type="hidden" name="protectOld" value="$pc{'protect'}">
+HTML
 }
-print <<"HTML";
+else {
+  if($set::registerkey && ($mode eq 'blanksheet' || $mode eq 'copy')){
+    print '登録キー：<input type="text" name="registerkey" required>'."\n";
+  }
+  print <<"HTML";
       <div class="box" id="edit-protect">
       <h2 onclick="view('edit-protect-view')">編集保護設定 ▼</h2>
       <p id="edit-protect-view" @{[$mode eq 'edit' ? 'style="display:none"':'']}><input type="hidden" name="protectOld" value="$pc{'protect'}">
 HTML
-if($LOGIN_ID){
-  print '<input type="radio" name="protect" value="account"'.($pc{'protect'} eq 'account'?' checked':'').'> アカウントに紐付ける（ログイン中のみ編集可能になります）<br>';
-}
-  print '<input type="radio" name="protect" value="password"'.($pc{'protect'} eq 'password'?' checked':'').'> パスワードで保護 ';
-if ($mode eq 'edit' && $pc{'protect'} eq 'password') {
-  print '<input type="hidden" name="pass" value="'.$pass.'"><br>';
-} else {
-  print '<input type="password" name="pass"><br>';
-}
-print <<"HTML";
+  if($LOGIN_ID){
+    print '<input type="radio" name="protect" value="account"'.($pc{'protect'} eq 'account'?' checked':'').'> アカウントに紐付ける（ログイン中のみ編集可能になります）<br>';
+  }
+    print '<input type="radio" name="protect" value="password"'.($pc{'protect'} eq 'password'?' checked':'').'> パスワードで保護 ';
+  if ($mode eq 'edit' && $pc{'protect'} eq 'password') {
+    print '<input type="hidden" name="pass" value="'.$pass.'"><br>';
+  } else {
+    print '<input type="password" name="pass"><br>';
+  }
+  print <<"HTML";
 <input type="radio" name="protect" value="none"@{[ $pc{'protect'} eq 'none'?' checked':'' ]}> 保護しない（誰でも編集できるようになります）
       </p>
       </div>
+HTML
+}
+  print <<"HTML";
       <p id="hide-checkbox">
       @{[ input 'hide','checkbox' ]} 一覧に表示しない<br>
       ※タグ検索結果に合致した場合は表示されます

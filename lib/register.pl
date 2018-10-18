@@ -14,6 +14,7 @@ my $id = param('id');
 if($mode eq 'register'){
   if(!token_check(param('_token'))){ error('セッションの有効期限が切れたか、二重投稿です'); }
 
+  if($set::registerkey && $set::registerkey ne param('registerkey')){ error('登録キーが間違っています。'); }
   if(param('password') ne param('password_confirm')){ error('パスワードの確認入力が一致しません'); }
   if (param('password') eq ''){ error('パスワードが入力されていません'); }
   else {
@@ -27,8 +28,16 @@ if($mode eq 'register'){
   close ($FH);
 
   sysopen (my $FH, $set::userfile, O_WRONLY | O_APPEND | O_CREAT, 0666);
-    print $FH param('id')."<>".&e_crypt(param('password'))."<>".Encode::decode('utf8', param('name'))."<>".param('mail')."<>\n";
+    print $FH param('id')."<>".&e_crypt(param('password'))."<>".Encode::decode('utf8', param('name'))."<>".param('mail')."<>".time."<>\n";
   close ($FH);
+  
+  if($set::player_dir){
+    if (!-d $set::player_dir.param('id')){ mkdir $set::player_dir.param('id'); }
+    sysopen (my $FH, $set::player_dir.param('id').'/data.cgi', O_WRONLY | O_APPEND | O_CREAT, 0666);
+      print $FH "id<>".param('id')."\n";
+      print $FH "name<>".Encode::decode('utf8',param('name'))."\n";
+    close ($FH);
+  }
 
   log_in(param('id'),param('password'));
 }

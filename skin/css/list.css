@@ -94,6 +94,7 @@ form#form-search p input {
   justify-content: center;
 }
 
+.list table th > a,
 .list table th > span {
   display: grid;
   align-items: center;
@@ -251,6 +252,102 @@ form#form-search p input {
   background: rgba(180,200,255,0.1);
 }
 
+/* // List-Making
+---------------------------------------------------------------------------------------------------- */
+#making {
+  max-width: 400px;
+  margin: 3em auto;
+}
+#making form dl {
+  display: grid;
+  grid-template-columns: 5em 1fr;
+}
+#making form dl dt {
+  text-align: justify;
+  text-align-last: justify;
+}
+#making form dl dt,
+#making form dl dd {
+  padding: 0.2em 0.5em;
+  border-width: 0 0 1px;
+  border-style: solid;
+}
+#making form dl dd:nth-of-type(2) input {
+  width: 100%;
+}
+#making form dl dd:nth-of-type(3) input {
+  width: 4.5em;
+  text-align: center;
+}
+
+#making-posts h2 {
+  text-align: center;
+}
+#making-posts .post {
+  max-width: 500px;
+  margin: .5em auto 1.5em;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 10px;
+  overflow: hidden;
+}
+#making-posts .post h3 {
+  padding: 0.1em 0.3em;
+  background: rgba(100,120,190,0.25);
+}
+#making-posts .post p {
+  padding: 0.5em 1.5em
+}
+#making-posts .post dl {
+  margin: .5em;
+}
+#making-posts .post dt {
+}
+#making-posts .post dd {
+  margin: 0 .5em .5em;
+}
+#making-posts .post table {
+  min-width: 400px;
+  margin: .5em auto 1.5em;
+  border-width: 1px;
+  border-style: solid;
+  text-align: center;
+}
+#making-posts .post table tr {
+  border-width: 1px;
+  border-style: solid;
+}
+#making-posts .post table th {
+  position: relative;
+  padding: 0.2em 0.5em;
+  background: rgba(100,120,190,0.15);
+  text-align: left;
+}
+#making-posts .post table th a {
+  display: inline-block;
+  position: absolute;
+  top: 0.4em;
+  right: .5em;
+  font-size: 85%;
+  font-weight: normal;
+}
+#making-posts .post table td {
+  padding: 0.2em 0.5em;
+  border-width: 1px;
+  border-style: dotted;
+}
+#making-posts .post table td > span {
+  font-size: 90%;
+}
+#making-posts .navigation {
+  text-align: center;
+}
+#making-posts .navigation a {
+  display: inline-block;
+}
+#making-posts .navigation a + a {
+  margin-left: 3em;
+}
 
 /* // Form
 ---------------------------------------------------------------------------------------------------- */
@@ -264,7 +361,8 @@ section.form {
 section.form h2 {
   font-size: 2rem;
 }
-form input {
+form input,
+form select {
   padding: 5px;
   border-width: 1px;
   border-style: solid;

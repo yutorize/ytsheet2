@@ -10,6 +10,7 @@ use HTML::Template;
 my $LOGIN_ID = check;
 
 my $mode = param('mode');
+my $sort = param('sort');
 
 ### テンプレート読み込み #############################################################################
 my $INDEX;
@@ -48,9 +49,11 @@ my @list = sort { (split(/<>/,$b))[3] <=> (split(/<>/,$a))[3] } <$FH>;
 close($FH);
 
 ## グループ
+my %group_sort;
 my %group_name;
 my %group_text;
 foreach (@set::groups){
+  $group_sort{@$_[0]} = @$_[1];
   $group_name{@$_[0]} = @$_[2];
   $group_text{@$_[0]} = @$_[3];
 }
@@ -144,8 +147,9 @@ foreach (@list) {
   @lv{@class_name} = @levels;
   my $class;
   foreach (sort {$lv{$b} <=> $lv{$a}} keys %lv){
-    $class .= '<span>'.$_.$lv{$_}.'</span>' if $lv{$_};
+    $class .= $_.$lv{$_} if $lv{$_};
   }
+  $class = class_color($class);
   
   if($fellow != 1) { $fellow = 0; }
   
@@ -153,8 +157,12 @@ foreach (@list) {
   $year += 1900; $mon++;
   $updatetime = sprintf("<span>%04d-</span><span>%02d-%02d</span> <span>%02d:%02d</span>",$year,$mon,$day,$hour,$min);
   
+  my $sort_data;
+  ($sort_data = $name) =~ s/^“.*”// if ($sort eq 'name');
+  
   my @characters;
   push(@characters, {
+    "SORT" => $sort_data,
     "ID" => $id,
     "NAME" => $name,
     "PLAYER" => $player,
@@ -176,8 +184,18 @@ foreach (@list) {
   push(@{$grouplist{$group}}, @characters) if !($index_mode && $count{$group} > $set::list_maxline && $set::list_maxline);
 }
 
+
+
+
 my @characterlists; 
-foreach (keys %grouplist){
+foreach (sort {$group_sort{$a} <=> $group_sort{$b}} keys %grouplist){
+  ## ソート
+  if   ($sort eq 'name'){ @{$grouplist{$_}} = sort { $a->{'SORT'} cmp $b->{'SORT'} } @{$grouplist{$_}}; }
+  elsif($sort eq 'pl')  { @{$grouplist{$_}} = sort { $a->{'PLAYER'} cmp $b->{'PLAYER'} } @{$grouplist{$_}}; }
+  elsif($sort eq 'lv')  { @{$grouplist{$_}} = sort { $b->{'LV'} <=> $a->{'LV'} } @{$grouplist{$_}}; }
+  elsif($sort eq 'exp') { @{$grouplist{$_}} = sort { $b->{'EXP'} <=> $a->{'EXP'} } @{$grouplist{$_}}; }
+  elsif($sort eq 'date'){ @{$grouplist{$_}} = sort { $b->{'DATE'} <=> $a->{'DATE'} } @{$grouplist{$_}}; }
+  
   push(@characterlists, {
     "ID" => $_,
     "NAME" => $group_name{$_},

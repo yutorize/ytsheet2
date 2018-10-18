@@ -6,10 +6,10 @@
   <meta charset="UTF-8">
   <title><TMPL_IF characterName><TMPL_VAR characterName>（<TMPL_VAR monsterName>）<TMPL_ELSE><TMPL_VAR monsterName></TMPL_IF> - <TMPL_VAR title></title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" media="all" href="./skin/css/base.css?201809100800">
-  <link rel="stylesheet" media="all" href="./skin/css/sheet.css?">
-  <link rel="stylesheet" media="all" href="./skin/css/monster.css?201809122125">
-  <link rel="stylesheet" media="all" href="./skin/css/monster-sp.css?">
+  <link rel="stylesheet" media="all" href="./skin/css/base.css?201810160200">
+  <link rel="stylesheet" media="all" href="./skin/css/sheet.css?201810160200">
+  <link rel="stylesheet" media="all" href="./skin/css/monster.css?201810160200">
+  <link rel="stylesheet" media="all" href="./skin/css/monster-sp.css?201810160200">
   <link rel="stylesheet" id="nightmode">
   <script src="./skin/js/common.js?20180910800" ></script>
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
@@ -62,6 +62,7 @@ window.onload = function() {
     <h1><a href="./?type=m"><TMPL_VAR title></a></h1>
     <nav>
       <ul>
+        <li class="small"><a href="./?type=m">⏎</a></li>
         <li class="small"><a onclick="backuplistOn()"><span>過去ログ</span></a></li>
         <TMPL_IF ReqdPassword>
         <li class="small"><a onclick="editOn()">編集</a></li>
@@ -98,7 +99,7 @@ window.onload = function() {
 
   <main>
     <article>
-      <div id="area-monstername"><h1><TMPL_VAR monsterName></h1><div class="lv"><TMPL_VAR lv></div><div class="taxa">分類：<TMPL_VAR taxa></div></div>
+      <div id="area-monstername"><h1><TMPL_IF characterName><TMPL_VAR characterName><small>（<TMPL_VAR monsterName>）</small><TMPL_ELSE><TMPL_VAR monsterName></TMPL_IF></h1><div class="lv"><TMPL_VAR lv></div><div class="taxa">分類：<TMPL_VAR taxa></div></div>
 
       <div id="tags">
       <TMPL_LOOP Tags><a href="./?type=m&tag=<TMPL_VAR URL>"><TMPL_VAR TEXT></a></TMPL_LOOP>

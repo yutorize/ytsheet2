@@ -36,6 +36,7 @@ aside#sidebar-bottom {
 }
 
 
+.list table th > a,
 .list table th > span {
   background: rgba(45,50,55,0.9);
 }

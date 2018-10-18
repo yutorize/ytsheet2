@@ -81,13 +81,12 @@ my @expS = ( 0, 3000, 6000, 9000, 12000, 16000, 20000, 24000, 28000, 33000, 3800
 $pc{'moneyTotal'} = 0;
 $pc{'depositTotal'} = 0;
 $pc{'debtTotal'} = 0;
+$pc{'honor'} = 0;
 for (my $i = 0; $i <= $pc{'historyNum'}; $i++){
   $pc{'expTotal'} += s_eval($pc{"history${i}Exp"});
   $pc{'moneyTotal'} += s_eval($pc{"history${i}Money"});
   foreach (split /[|｜]/, $pc{"history${i}Honor"}) {
-       if($_ =~ s/^b//){ $pc{'bhonorTotal'} += s_eval($_); } #蛮族名誉点
-    elsif($_ =~ s/^r//){ $pc{'rhonorTotal'} += s_eval($_); } #盟竜点
-    else { $pc{'honorTotal'} += s_eval($_); }
+    $pc{'honor'} += s_eval($_);
   }
 }
 ## 収支履歴計算
@@ -96,6 +95,11 @@ $cashbook =~ s/::((?:[\+\-\*]?[0-9]+)+)/$pc{'moneyTotal'} += eval($1)/eg;
 $cashbook =~ s/:>((?:[\+\-\*]?[0-9]+)+)/$pc{'depositTotal'} += eval($1)/eg;
 $cashbook =~ s/:<((?:[\+\-\*]?[0-9]+)+)/$pc{'debtTotal'} += eval($1)/eg;
 $pc{'moneyTotal'} += $pc{'debtTotal'} - $pc{'depositTotal'};
+
+## 名誉点消費
+foreach (1 .. $pc{'honorItemsNum'}){
+  $pc{'honor'} -= $pc{'honorItem'.$_.'Pt'};
+}
 
 ## 経験点消費
 $pc{'expRest'} = $pc{'expTotal'};
@@ -124,12 +128,6 @@ elsif($pc{'race'} eq 'ダークトロール'){
 
 ### 能力値計算  --------------------------------------------------
 ## 成長
-$pc{'sttGrowA'} = $pc{'sttPreGrowA'};
-$pc{'sttGrowB'} = $pc{'sttPreGrowB'};
-$pc{'sttGrowC'} = $pc{'sttPreGrowC'};
-$pc{'sttGrowD'} = $pc{'sttPreGrowD'};
-$pc{'sttGrowE'} = $pc{'sttPreGrowE'};
-$pc{'sttGrowF'} = $pc{'sttPreGrowF'};
 for (my $i = 1; $i <= $pc{'historyNum'}; $i++) {
   my $grow = $pc{"history${i}Grow"};
   $grow =~ s/器(?:用度?)?(?:×|\*)?([0-9]{1,3})/$pc{'sttGrowA'} += $1; ''/ge;
@@ -138,13 +136,19 @@ for (my $i = 1; $i <= $pc{'historyNum'}; $i++) {
   $grow =~ s/生(?:命力?)?(?:×|\*)?([0-9]{1,3})/$pc{'sttGrowD'} += $1; ''/ge;
   $grow =~ s/知(?:力)?(?:×|\*)?([0-9]{1,3})/$pc{'sttGrowE'} += $1; ''/ge;
   $grow =~ s/精(?:神力?)?(?:×|\*)?([0-9]{1,3})/$pc{'sttGrowF'} += $1; ''/ge;
-  $pc{'sttGrowA'} += ($grow =~ s/器/器/g);
-  $pc{'sttGrowB'} += ($grow =~ s/敏/敏/g);
-  $pc{'sttGrowC'} += ($grow =~ s/筋/筋/g);
-  $pc{'sttGrowD'} += ($grow =~ s/生/生/g);
-  $pc{'sttGrowE'} += ($grow =~ s/知/知/g);
-  $pc{'sttGrowF'} += ($grow =~ s/精/精/g);
+  $pc{'sttHistGrowA'} += ($grow =~ s/器/器/g);
+  $pc{'sttHistGrowB'} += ($grow =~ s/敏/敏/g);
+  $pc{'sttHistGrowC'} += ($grow =~ s/筋/筋/g);
+  $pc{'sttHistGrowD'} += ($grow =~ s/生/生/g);
+  $pc{'sttHistGrowE'} += ($grow =~ s/知/知/g);
+  $pc{'sttHistGrowF'} += ($grow =~ s/精/精/g);
 }
+$pc{'sttGrowA'} = $pc{'sttPreGrowA'} + $pc{'sttHistGrowA'};
+$pc{'sttGrowB'} = $pc{'sttPreGrowB'} + $pc{'sttHistGrowB'};
+$pc{'sttGrowC'} = $pc{'sttPreGrowC'} + $pc{'sttHistGrowC'};
+$pc{'sttGrowD'} = $pc{'sttPreGrowD'} + $pc{'sttHistGrowD'};
+$pc{'sttGrowE'} = $pc{'sttPreGrowE'} + $pc{'sttHistGrowE'};
+$pc{'sttGrowF'} = $pc{'sttPreGrowF'} + $pc{'sttHistGrowF'};
 
 ## 能力値算出
 $pc{'sttDex'} = $pc{'sttBaseTec'} + $pc{'sttBaseA'} + $pc{'sttGrowA'};
@@ -220,19 +224,28 @@ foreach (
 ### 戦闘特技 --------------------------------------------------
 ## 自動習得
 my @abilities;
+if($pc{'lvFig'} >= 7) { push(@abilities, "タフネス"); }
 if($pc{'lvGra'} >= 1) { push(@abilities, "追加攻撃"); }
+if($pc{'lvGra'} >= 7) { push(@abilities, "カウンター"); }
 if($pc{'lvSco'} >= 5) { push(@abilities, "トレジャーハント"); }
+if($pc{'lvSco'} >= 7) { push(@abilities, "ファストアクション"); }
+if($pc{'lvSco'} >= 9) { push(@abilities, "影走り"); }
 if($pc{'lvRan'} >= 5) { push(@abilities, "サバイバビリティ"); }
+if($pc{'lvRan'} >= 7) { push(@abilities, "不屈"); }
+if($pc{'lvRan'} >= 9) { push(@abilities, "ポーションマスター"); }
 if($pc{'lvSag'} >= 5) { push(@abilities, "鋭い目"); }
+if($pc{'lvSag'} >= 7) { push(@abilities, "弱点看破"); }
+if($pc{'lvSag'} >= 9) { push(@abilities, "マナセーブ"); }
 $" = ',';
 $pc{'combatFeatsAuto'} = "@abilities";
 ## 選択特技による補正
 {
   
-  my $i = 1; #カウンターセット
-  foreach ($set::feats_lv) {
-    my $feat = $pc{'combatFeatsLv'.$_};
-    if   ($feat eq '命中強化Ⅰ')  { $pc{'accuracyEnhance'} = 1; }
+  foreach my $i (@set::feats_lv) {
+    if($i > $pc{'level'}){ next; } # $iがLvを超えたら処理しない
+    my $feat = $pc{'combatFeatsLv'.$i};
+    if   ($feat eq '足さばき')  { $pc{'footwork'} = 1; }
+    elsif($feat eq '命中強化Ⅰ')  { $pc{'accuracyEnhance'} = 1; }
     elsif($feat eq '命中強化Ⅱ')  { $pc{'accuracyEnhance'} = 2; }
     elsif($feat eq '回避行動Ⅰ')  { $pc{'evasiveManeuver'} = 1; }
     elsif($feat eq '回避行動Ⅱ')  { $pc{'evasiveManeuver'} = 2; }
@@ -252,10 +265,10 @@ $pc{'combatFeatsAuto'} = "@abilities";
   #  elsif($feat =~ /^魔器習熟Ａ/) { $master{'魔器'} += 1; }
   #  elsif($feat =~ /^魔器習熟Ｓ/) { $master{'魔器'} += 1; }
   #  elsif($feat =~ /^魔器の達人/) { $master{'魔器'} += 1; }
-  #  elsif($feat eq 'スローイングⅠ'){ $pc{'throwing'} = 1; }
-  #  elsif($feat eq 'スローイングⅡ'){ $pc{'throwing'} = 2; }
-    $i += $i < 15 ? 2 : 1;      #カウンターに+2(15Lv～は+1)
-    if($i > $pc{'level'}){ last; } #カウンターがLvを超えたら中断
+    elsif($feat eq 'スローイングⅠ'){ $pc{'throwing'} = 1; }
+    elsif($feat eq 'スローイングⅡ'){ $pc{'throwing'} = 2; }
+    elsif($feat eq '呪歌追加Ⅰ')  { $pc{'songAddition'} = 1; }
+    elsif($feat eq '呪歌追加Ⅱ')  { $pc{'songAddition'} = 2; }
   }
 }
 
@@ -288,22 +301,24 @@ foreach (
 }
 ## ＨＰ
 $pc{'hpBase'} = $pc{'level'} * 3 + $pc{'sttVit'} + $pc{'sttAddD'};
-$pc{'hpAddTotal'} = s_eval($pc{'hpAdd'}) + $pc{'tenacity'};
+$pc{'hpAddTotal'} = s_eval($pc{'hpAdd'}) + $pc{'tenacity'} + $pc{'hpAccessory'};
+$pc{'hpAddTotal'} += 15 if $pc{'lvFig'} >= 7; #タフネス
 $pc{'hpTotal'}  = $pc{'hpBase'} + $pc{'hpAddTotal'};
 ## ＭＰ
 $pc{'mpBase'} = ($pc{'lvSor'} + $pc{'lvCon'} + $pc{'lvPri'} + $pc{'lvFai'} + 
                  $pc{'lvMag'} + $pc{'lvDem'} + $pc{'lvGri'}) * 3 + $pc{'sttMnd'} + $pc{'sttAddF'};
 $pc{'mpBase'} = $pc{'level'} * 3 + $pc{'sttMnd'} + $pc{'sttAddF'} if ($pc{'race'} eq 'マナフレア');
-$pc{'mpAddTotal'} = s_eval($pc{'mpAdd'}) + $pc{'capacity'} + $pc{'raceAbilityMp'};
+$pc{'mpAddTotal'} = s_eval($pc{'mpAdd'}) + $pc{'capacity'} + $pc{'raceAbilityMp'} + $pc{'mpAccessory'};
 $pc{'mpTotal'}  = $pc{'mpBase'} + $pc{'mpAddTotal'};
 $pc{'mpTotal'}  = 0  if ($pc{'race'} eq 'グラスランナー');
 
 ## 移動力
-$pc{'mobilityBase'} = $pc{'sttAgi'} + $pc{'sttAddB'};
-$pc{'mobilityBase'} = $pc{'mobilityBase'} * 2  if ($pc{'race'} eq 'ケンタウロス');
+my $own_mobility = $pc{'armourOwn'} ? 2 : 0;
+$pc{'mobilityBase'} = $pc{'sttAgi'} + $pc{'sttAddB'} + $own_mobility;
+$pc{'mobilityBase'} = $pc{'mobilityBase'} * 2 + $own_mobility  if ($pc{'race'} eq 'ケンタウロス');
 $pc{'mobilityTotal'} = $pc{'mobilityBase'} + s_eval($pc{'mobilityAdd'});
 $pc{'mobilityFull'} = $pc{'mobilityTotal'} * 3;
-$pc{'mobilityLimited'} = $pc{'footwork'} ? 9 : 3;
+$pc{'mobilityLimited'} = $pc{'footwork'} ? 10 : 3;
 
 ## 判定パッケージ
 $pc{'packScoutTec'}  = $st{'ScoA'};
@@ -318,9 +333,17 @@ $pc{'packSageInt'}   = $st{'SagE'};
 $pc{'monsterLore'} = max($st{'SagE'},$st{'RidE'});
 $pc{'initiative'}  = max($st{'ScoB'},$st{'WarB'});
 
+## 魔力
+$pc{'magicPowerSor'} = $pc{'lvSor'} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwnSor'} ? 2 : 0)) / 6) + $pc{'magicPowerAddSor'} + $pc{'magicPowerAdd'};
+$pc{'magicPowerCon'} = $pc{'lvCon'} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwnCon'} ? 2 : 0)) / 6) + $pc{'magicPowerAddCon'} + $pc{'magicPowerAdd'};
+$pc{'magicPowerPri'} = $pc{'lvPri'} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwnPri'} ? 2 : 0)) / 6) + $pc{'magicPowerAddPri'} + $pc{'magicPowerAdd'};
+$pc{'magicPowerFai'} = $pc{'lvFai'} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwnFai'} ? 2 : 0)) / 6) + $pc{'magicPowerAddFai'} + $pc{'magicPowerAdd'};
+$pc{'magicPowerMag'} = $pc{'lvMag'} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwnMag'} ? 2 : 0)) / 6) + $pc{'magicPowerAddMag'} + $pc{'magicPowerAdd'};
+$pc{'magicPowerBar'} = $pc{'lvBar'} + int(($pc{'sttMnd'} + $pc{'sttAddF'} + ($pc{'magicPowerOwnBar'} ? 2 : 0)) / 6) + $pc{'magicPowerAddBar'};
+
 ### 装備 --------------------------------------------------
 ## 武器
-foreach(1 .. $pc{'weaponNum'}){
+foreach (1 .. $pc{'weaponNum'}){
   my $class;
   if   ($pc{'weapon'.$_.'Class'} eq "ファイター"       && $pc{'lvFig'}){ $class = 'Fig'; }
   elsif($pc{'weapon'.$_.'Class'} eq "グラップラー"     && $pc{'lvGra'}){ $class = 'Gra'; }
@@ -329,13 +352,17 @@ foreach(1 .. $pc{'weaponNum'}){
   elsif($pc{'weapon'.$_.'Class'} eq "エンハンサー"     && $pc{'lvEnh'}){ $class = 'Enh'; }
   elsif($pc{'weapon'.$_.'Class'} eq "デーモンルーラー" && $pc{'lvDem'}){ $class = 'Dem'; }
   # 命中
-  my $base_acc = 0;
-     $base_acc = $pc{'lv'.$class} + int(($pc{'sttDex'} + $pc{'sttAddA'}) / 6) if $pc{'lv'.$class};
-  $pc{'weapon'.$_.'AccTotal'} = $pc{'weapon'.$_.'Acc'} + $base_acc;
+  my $own_dex = $pc{'weapon'.$_.'Own'} ? 2 : 0; # 専用化補正
+  $pc{'weapon'.$_.'AccTotal'} = 0;
+  $pc{'weapon'.$_.'AccTotal'} = $pc{'lv'.$class} + int( ($pc{'sttDex'} + $pc{'sttAddA'} + $own_dex) / 6 ) if $pc{'lv'.$class};
+  $pc{'weapon'.$_.'AccTotal'} += $pc{'accuracyEnhance'}; # 命中強化
+  $pc{'weapon'.$_.'AccTotal'} += 1 if $pc{'throwing'} && $pc{'weapon'.$_.'Category'} eq '投擲'; # スローイング
+  $pc{'weapon'.$_.'AccTotal'} += $pc{'weapon'.$_.'Acc'}; # 武器の修正値
   # ダメージ
-  if($pc{'weapon'.$_.'Category'} eq 'クロスボウ'){ $pc{'weapon'.$_.'DmgTotal'} = $pc{'weapon'.$_.'Dmg'} + $pc{'lvSho'}; }
-  elsif   ($pc{'weapon'.$_.'Category'} eq 'ガン'){ $pc{'weapon'.$_.'DmgTotal'} = $pc{'weapon'.$_.'Dmg'} + $st{'MagE'}; }
-  else                                           { $pc{'weapon'.$_.'DmgTotal'} = $pc{'weapon'.$_.'Dmg'} + $st{$class.'C'}; }
+  if   ($pc{'weapon'.$_.'Category'} eq 'クロスボウ'){ $pc{'weapon'.$_.'DmgTotal'} = $pc{'weapon'.$_.'Dmg'} + $pc{'lvSho'}; }
+  elsif($pc{'weapon'.$_.'Category'} eq 'ガン'      ){ $pc{'weapon'.$_.'DmgTotal'} = $pc{'weapon'.$_.'Dmg'} + $st{'MagE'}; }
+  else                                              { $pc{'weapon'.$_.'DmgTotal'} = $pc{'weapon'.$_.'Dmg'} + $st{$class.'C'}; }
+  
   $pc{'weapon'.$_.'DmgTotal'} += $pc{'mastery' . ucfirst($data::weapon_id{ $pc{'weapon'.$_.'Category'} }) };
 }
 
@@ -343,12 +370,17 @@ foreach(1 .. $pc{'weaponNum'}){
   use POSIX 'ceil';
   $pc{'reqdStr'}  = $pc{'sttStr'} + $pc{'sttAddC'};
   $pc{'reqdStrF'} = ceil($pc{'reqdStr'} / 2);
-  if   ($pc{'evasionClass'} eq "ファイター"       && $pc{'lvFig'}){ $pc{'evasionEva'} = $st{'FigB'}; $pc{'evasionStr'} = $pc{'reqdStr'}; }
-  elsif($pc{'evasionClass'} eq "グラップラー"     && $pc{'lvGra'}){ $pc{'evasionEva'} = $st{'GraB'}; $pc{'evasionStr'} = $pc{'reqdStr'}; }
-  elsif($pc{'evasionClass'} eq "フェンサー"       && $pc{'lvFen'}){ $pc{'evasionEva'} = $st{'FenB'}; $pc{'evasionStr'} = $pc{'reqdStrF'}; }
-  elsif($pc{'evasionClass'} eq "シューター"       && $pc{'lvSho'}){ $pc{'evasionEva'} = $st{'ShoB'}; $pc{'evasionStr'} = $pc{'reqdStr'}; }
-  elsif($pc{'evasionClass'} eq "デーモンルーラー" && $pc{'lvDem'}){ $pc{'evasionEva'} = $st{'DemB'}; $pc{'evasionStr'} = $pc{'reqdStr'}; }
-  else{ $pc{'evasionEva'} = 0; $pc{'reqdStr'} = $pc{'reqdStr'}; }
+  my $eva_class;
+  my $own_agi = $pc{'shieldOwn'} ? 2 : 0;
+  if   ($pc{'evasionClass'} eq "ファイター"       && $pc{'lvFig'}){ $eva_class = $pc{'lvFig'}; $pc{'evasionStr'} = $pc{'reqdStr'}; }
+  elsif($pc{'evasionClass'} eq "グラップラー"     && $pc{'lvGra'}){ $eva_class = $pc{'lvGra'}; $pc{'evasionStr'} = $pc{'reqdStr'}; }
+  elsif($pc{'evasionClass'} eq "フェンサー"       && $pc{'lvFen'}){ $eva_class = $pc{'lvFen'}; $pc{'evasionStr'} = $pc{'reqdStrF'}; }
+  elsif($pc{'evasionClass'} eq "シューター"       && $pc{'lvSho'}){ $eva_class = $pc{'lvSho'}; $pc{'evasionStr'} = $pc{'reqdStr'}; }
+  elsif($pc{'evasionClass'} eq "デーモンルーラー" && $pc{'lvDem'}){ $eva_class = $pc{'lvDem'}; $pc{'evasionStr'} = $pc{'reqdStr'}; }
+  else{ $pc{'evasionStr'} = $pc{'reqdStr'}; }
+  
+  $pc{'evasionEva'} = 0;
+  $pc{'evasionEva'} = $eva_class + int( ($pc{'sttAgi'} + $pc{'sttAddB'} + $own_agi) / 6 ) if $eva_class;
 
 ## 防具
   $pc{'DefenseTotalAllEva'} = $pc{'evasionEva'} + $pc{'evasiveManeuver'} + $pc{'armourEva'} + $pc{'shieldEva'} + $pc{'defOtherEva'};
@@ -461,14 +493,15 @@ close($FH);
 ### 一覧データ更新 --------------------------------------------------
 {
   my($aka, $ruby) = split(/:/,$pc{'aka'});
+  my $charactername = ($aka?"“$aka”":"").$pc{'characterName'};
 
   sysopen (my $FH, $set::listfile, O_RDWR | O_CREAT, 0666);
   my @list = sort { (split(/<>/,$b))[3] cmp (split(/<>/,$a))[3] } <$FH>;
   flock($FH, 2);
   seek($FH, 0, 0);
   my $newline = "$pc{'id'}<>$file<>".
-                "$pc{'birthTime'}<>$now<>$pc{'characterName'}<>$pc{'playerName'}<>$pc{'group'}<>".
-                "$pc{'expTotal'}<>$pc{'honorTotal'}<>$pc{'race'}<>$pc{'gender'}<>$pc{'age'}<>$pc{'faith'}<>".
+                "$pc{'birthTime'}<>$now<>$charactername<>$pc{'playerName'}<>$pc{'group'}<>".
+                "$pc{'expTotal'}<>$pc{'rank'}<>$pc{'race'}<>$pc{'gender'}<>$pc{'age'}<>$pc{'faith'}<>".
                 
                 "$pc{'lvFig'}/$pc{'lvGra'}/$pc{'lvFen'}/".
                 "$pc{'lvSho'}/$pc{'lvSor'}/$pc{'lvCon'}/$pc{'lvPri'}/$pc{'lvFai'}/$pc{'lvMag'}/".

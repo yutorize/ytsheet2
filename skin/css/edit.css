@@ -10,6 +10,12 @@ html {
 main {
   overflow: visible;
 }
+header {
+  display: none;
+}
+footer {
+  grid-row: 3;
+}
 
 input,
 select,
@@ -18,6 +24,11 @@ textarea {
   border-style: solid;
   border-radius: 5px;
   background-color: rgba(255,255,255,0.6);
+}
+select option,
+select optgroup {
+  background-color: #fff;
+  color: #000;
 }
 
 input::placeholder {
@@ -31,6 +42,19 @@ h4[onclick] {
 h2[onclick]:hover,
 h4[onclick]:hover {
   background: linear-gradient(to top, #cef 20%, transparent 30%, transparent);
+}
+
+.fail input,
+.fail select {
+  background-color: rgba(125,125,125,0.1);
+}
+.fail select option,
+.fail select optgroup {
+  background-color: #ddd;
+  color: #000;
+}
+.hidden {
+  display: none;
 }
 
 /* // キャラクター
@@ -82,6 +106,7 @@ input[type="button"]:hover {
 .message:empty {
   display: none;
 }
+
 
 #edit-protect {
   margin-top: 1rem;
@@ -144,6 +169,9 @@ input[type="button"]:hover {
   font-weight: bold;
   font-size: 1.4rem;
   font-family: inherit;
+}
+#area-name #character-name input {
+  width: calc(100% - 8em);
 }
 #area-name #player-name {
   text-align: left;
@@ -243,10 +271,15 @@ input[type="button"]:hover {
   grid-template-columns: 1fr 3.5em;
 }
 
+#area-status + p {
+  margin-top: 1rem;
+}
+
 #area-package #package table {
   margin-top: 1px;
   margin-bottom: -1px;
 }
+
 
 #language dl {
   display: grid;
@@ -269,6 +302,22 @@ input[type="button"]:hover {
 #magic-power p input {
   width: 3.5em;
 }
+#magic-power table th:nth-child(2) {
+  width: 13em;
+}
+#magic-power table th:nth-child(2) input {
+  width: 10em;
+}
+#magic-power table td:nth-child(3) input {
+  vertical-align: middle;
+}
+#magic-power table td:nth-child(4) {
+  padding-left: 1em;
+  width: 5.5em;
+}
+#magic-power table td:nth-child(4) input {
+  width: 3.5em;
+}
 
 #combat-feats select {
   margin-left: 1em;
@@ -276,8 +325,13 @@ input[type="button"]:hover {
 }
 
 #weapons {
-  display: block;
-  overflow-y: auto;
+  width: 100%;
+  overflow: auto;
+}
+@media screen and (max-width:850px){
+  #weapons{
+    width:calc(100vw - 23px);
+  }
 }
 #weapons table {
   min-width: 800px;
@@ -345,14 +399,7 @@ input[type="button"]:hover {
 }
 
 #items textarea {
-  height: 16em;
-}
-
-#free-note {
-  padding-bottom: .3rem;
-}
-#free-note textarea {
-  height: 16em;
+  height: 20em;
 }
 
 #cashbook textarea {
@@ -369,25 +416,56 @@ input[type="button"]:hover {
   text-align: left;
 }
 
-@media screen and (max-width:735px){
+
+#battle-items input {
+  margin-left: 1em;
+  width: calc(100% - 4px - 1em);
+}
+
+#honor-items table {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+#free-note {
+  padding-bottom: .3rem;
+}
+#free-note textarea {
+  height: 16em;
+}
+
+#history{
+    overflow-x: auto;
+}
+@media screen and (max-width:850px){
   #history{
-    overflow-y: auto;
+    width:calc(100vw - 23px);
   }
 }
 #history table {
   min-width: 800px;
 }
-#history table tr th:nth-child(1) { width:   2em; } /* No. */
-#history table tr th:nth-child(2) { width:   6em; } /* 日付 */
-#history table tr th:nth-child(3) { width:  auto; } /* タイトル */
-#history table tr th:nth-child(4) { width:   5em; } /* 経験点 */
-#history table tr th:nth-child(5) { width:   3em; } /* 名誉点 */
-#history table tr th:nth-child(6) { width: 4.5em; } /* ガメル */
-#history table tr th:nth-child(7) { width:   5em; } /* 成長 */
-#history table tr th:nth-child(8) { width:   6em; } /* ＧＭ */
-#history table tr th:nth-child(9) { width:  15em; } /* 参加者 */
+#history table tr {
+  display: grid;
+  grid-template-columns: 6em 1fr 5em 3.5em 4.5em 5em 6em 15em;
+  grid-template-rows: auto;
+}
+#history table tr th { width: unset !important;}
+#history table tr th:nth-child(1) { display:none; } /* No. */
+#history table tr td:nth-child(1) { display:none; } /* No. */
+#history table tr td:nth-child(2) { grid-row: 1 / span 2; } /* 日付 */
+#history table tr td:nth-child(3) { grid-row: 1 / span 2; } /* タイトル */
+#history table tr td:nth-child(4) { grid-row: 1; } /* 経験点 */
+#history table tr td:nth-child(5) { grid-row: 1; } /* 名誉点 */
+#history table tr td:nth-child(6) { grid-row: 1; } /* ガメル */
+#history table tr td:nth-child(7) { grid-row: 1; } /* 成長 */
+#history table tr td:nth-child(8) { grid-row: 1; } /* ＧＭ */
+#history table tr td:nth-child(9) { grid-row: 1; } /* 参加者 */
+#history table tr td:nth-child(10){ grid-row: 2; grid-column: 3 / span 6; } /* 備考 */
 
-#history td{
+#history table tr td {
+  border-bottom-width: 0px;
+  border-right-width: 0px;
   white-space: nowrap;
 }
 #history table tr td:nth-child(6)::after {

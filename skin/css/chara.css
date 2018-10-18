@@ -19,8 +19,12 @@
   font-family: 'Verdana';
 }
 #character-name,
+#character-name rt,
 .words {
   font-family: "游明朝", YuMincho, "ヒラギノ明朝 ProN W3", "Hiragino Mincho ProN", "HG明朝E", "メイリオ", serif;
+}
+#character-name rt {
+  font-family: Arial, "游明朝", YuMincho, "ヒラギノ明朝 ProN W3", "Hiragino Mincho ProN", "HG明朝E", "メイリオ", serif;
 }
 
 /* // Name / Date
@@ -380,6 +384,16 @@ dl#exp dd {
 
 /* Classes */
 #area-classes {
+  position: relative;
+}
+#area-classes h2 + div {
+  position: absolute;
+  top: .2rem;
+  right: .5em;
+  font-size: 80%;
+}
+#area-classes h2 + div span {
+  font-size: 120%;
 }
 #area-classes dl {
   display: grid;
@@ -427,8 +441,16 @@ dl#exp dd {
   color: #ee0000;
 }
 
-/* Skill */
-#skill {}
+/* Crafts */
+#crafts {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+#crafts > .box {
+  flex-basis: 100%;
+}
 
 /* // Area-Actions & Language
 ---------------------------------------------------------------------------------------------------- */
@@ -436,6 +458,7 @@ dl#exp dd {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
+  flex-wrap: wrap;
   
   margin-top: 1rem;
   line-height: 1.8;
@@ -462,17 +485,10 @@ dl#exp dd {
 #area-actions .box#language > table  {
   border-style: hidden;
 }
-#area-actions #magic-power p#magic-power-add {
-  margin-top: -1.5em;
-  margin-bottom: 0;
-  text-align: right;
-}
-#area-actions #magic-power p + table {
-  border-top-width: 1px;
-  border-top-style: solid;
-}
 #area-actions #package td:last-child,
 #area-actions #magic-power td:last-child {
+  width: 1.8em;
+  padding-left: 0.2rem;
   font-size: 1.6rem;
   line-height: 1.6;
 }
@@ -541,16 +557,55 @@ dl#exp dd {
 
 /* Magic-Power */
 #magic-power{
-  flex-grow: 1;
+  flex-basis: auto;
+  flex-grow: 0;
   margin-top: 1rem;
+  margin-left: 0;
 }
 #magic-power table th {
   font-weight: normal;
+  padding-right: 1em;
 }
 #magic-power table th:first-child {
   text-align: left;
 }
-#magic-power table td {  }
+#magic-power table th:first-child span {
+  display: block;
+  margin: 0 -10%;
+  transform: scaleX(0.81);
+  font-size: 1.3rem;
+}
+#magic-power table th:nth-child(2) {
+  white-space: nowrap;
+}
+#magic-power table th:nth-child(2) > span {
+  display: block;
+  font-size: 0.85em;
+  line-height: 1;
+  margin-bottom: 0.3em;
+}
+#magic-power table td:nth-child(3) {
+  text-align: left;
+}
+#magic-power table td {
+}
+#magic-power table td:nth-child(4) {
+  width: 4em;
+  text-align: right;
+}
+#magic-power table td:nth-child(4):empty {
+  width: 0;
+}
+
+#magic-power p#magic-power-add {
+  margin-top: -1.5em;
+  margin-bottom: 0;
+  text-align: right;
+}
+#magic-power p + table {
+  border-top-width: 1px;
+  border-top-style: solid;
+}
 
 /* Language */
 #language {
@@ -668,6 +723,7 @@ dl#exp dd {
 #area-items {
   display: flex;
   justify-content: space-between;
+  line-height: 1.8;
 }
 #area-items > div > .box {
   margin-top: 1rem;
@@ -693,29 +749,67 @@ div#area-items-R {
     grid-row: 2;
   }
 
-/* Items */
+/* BattleItems */
+#battle-items ul {
+  margin: 0 0.5rem;
+  counter-reset: battle-items;
+}
+#battle-items ul li {
+  position: relative;
+  counter-increment: battle-items 1;
+  padding-left: 1em;
+  text-align: left;
+}
+#battle-items ul li:nth-last-child(n+2) {
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+}
+#battle-items ul li::before {
+  content: counter(battle-items);
+  display: block;
+  position: absolute;
+  left: -4px;
+  bottom: 0;
+  width: 1.1em;
+  opacity: 0.5;
+  font-size: 80%;
+  text-align: center;
+}
+#battle-items ul li.fail {
+  color: #ee0000;
+}
 
 /* Honor */
-#honor{
+#honor,
+#dishonor {
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: auto;
 }
-  #honor dt {
+  #honor dt,
+  #dishonor dt {
     grid-row: 1;
   }
-  #honor dd {
+  #honor dd,
+  #dishonor dd {
     grid-row: 2;
   }
-#honor-items table {
-  width: 100%;
+#area-items-R table {
+  width: calc(100% - 1rem);
   margin: -2.1rem 5px 0;
 }
-#honor-items table th:first-child,
-#honor-items table td:first-child {
+#area-items-R table tr {
+  border-width: 0 0 1px;
+  border-style: solid;
+}
+#area-items-R table tr:last-child {
+  border-width: 0;
+}
+#area-items-R table th:first-child,
+#area-items-R table td:first-child {
   text-align: left;
 }
-#honor-items table tr > td:last-child {
+#area-items-R table tr > td:last-child {
   width: 5em;
 }
 
@@ -758,7 +852,6 @@ div#area-items-R {
 #history table tr th:nth-child(9) { width:  auto; } /* 参加者 */
 
 #history table tr td:nth-child(4) {
-  text-align: left;
 }
 #history table tr td:nth-child(6) {
   text-align: right;
@@ -772,16 +865,38 @@ div#area-items-R {
 #history table tr td:nth-child(9) {
   font-size: 1.1rem;
 }
+#history table tr td[colspan] {
+  padding-left: .5rem;
+  text-align: left;
+}
+#history table tr td[colspan]:empty {
+  display: none;
+}
+#history table tr td:nth-child(2) a {
+  display: block;
+}
+#history table tr td a[data-num] {
+  display: block;
+}
+#history table tr td a[data-num]:before {
+  content:"#"attr(data-num);
+  float: left;
+  font-size: 90%;
+}
 
 /* // Cashbook
 ---------------------------------------------------------------------------------------------------- */
 #cashbook {
   margin-top: 1rem;
 }
-#cashbook p {
+#cashbook > div {
   max-height: 16em;
   overflow: auto;
+  margin: 0 .5em;
+}
+#cashbook p {
   font-size: 85%;
+  margin: .3rem 0 0;
   font-family: monospace, serif;
   white-space: pre-wrap;
 }

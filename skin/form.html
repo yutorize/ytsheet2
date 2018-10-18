@@ -1,0 +1,138 @@
+  <!-- 登録 -->
+  <TMPL_IF modeRegister>
+    <article>
+      <section class="form">
+        <h2>ユーザーアカウント作成</h2>
+        <form method="post" action="./">
+          <input type="hidden" name="mode" value="register">
+          <input type="hidden" name="_token" value="<TMPL_VAR token>">
+          <TMPL_IF registerkey>
+          <p>
+            <label><span>登録キー</span> <input type="text" name="registerkey" required><b>必須</b></label>
+          </p>
+          </TMPL_IF>
+          <p>
+            <label><span>名前</span> <input type="text" name="name" required><b>必須</b></label>
+          </p>
+          <p>
+            <label><span>ＩＤ<small>(ログインに使用)</small></span> <input type="text" name="id" pattern="^[0-9A-Za-z]+$" title="半角英数字のみ。" required><b>必須</b></label>
+          </p>
+          <p>
+            <label><span>メールアドレス</span> <input type="email" name="mail"></label>
+          </p>
+          <p>
+            <label><span>パスワード</span> <input type="password" name="password" pattern="^[0-9A-Za-z\.\-\/]+$" title="半角英数字、『.』『-』『/』のみ" required><b>必須</b></label>
+          </p>
+          <p>
+            <label><span>パスワード(確認)</span> <input type="password" name="password_confirm" pattern="^[0-9A-Za-z\.\-\/]+$" title="半角英数字、『.』『-』『/』のみ" required><b>必須</b></label>
+          </p>
+          <p>
+            <input type="submit" value="登録">
+          </p>
+        </form>
+      </section>
+    </article>
+  </TMPL_IF>
+  <!-- ログイン -->
+  <TMPL_IF modeLogin>
+    <article>
+      <section class="form">
+        <h2>ログイン</h2>
+        <form method="post" action="./">
+          <input type="hidden" name="mode" value="login">
+          <p>
+            <label><span>ＩＤ</span> <input type="text" name="id" required></label>
+          </p>
+          <p>
+            <label><span>パスワード</span> <input type="password" name="password" required></label>
+          </p>
+          <p>
+            <input type="submit" value="ログイン">
+          </p>
+        </form>
+        <a href="./?mode=reminder">⇒パスワードを忘れた場合</a>
+      </section>
+    </article>
+  </TMPL_IF>
+  <!-- リマインダ -->
+  <TMPL_IF modeReminder>
+  <main>
+      <section class="form">
+        <h2>パスワードをリセットする</h2>
+        <p>登録されたメールアドレスにリセット用のURLを送信します。</p>
+        <form method="post" action="./">
+          <input type="hidden" name="mode" value="reminder">
+          <p>
+            <label><span>ＩＤ</span> <input type="text" name="id" required></label>
+          </p>
+          <p>
+            <input type="submit" value="送信">
+          </p>
+        </form>
+      </section>
+    </article>
+  </TMPL_IF>
+  <!-- リセット -->
+  <TMPL_IF modeReset>
+    <article>
+      <section class="form">
+        <h2>パスワードを変更する</h2>
+        <form method="post" action="./">
+          <input type="hidden" name="mode" value="reset">
+          <input type="hidden" name="code" value="<TMPL_VAR token>">
+          <p>
+            <label><span>パスワード</span> <input type="password" name="password" pattern="^[0-9A-Za-z\.\-\/]+$" title="半角英数字、『.』『-』『/』のみ" required><b>必須</b></label>
+          </p>
+          <p>
+            <label><span>パスワード(確認)</span> <input type="password" name="password_confirm" pattern="^[0-9A-Za-z\.\-\/]+$" title="半角英数字、『.』『-』『/』のみ" required><b>必須</b></label>
+          </p>
+          <p>
+            <input type="submit" value="送信">
+          </p>
+        </form>
+      </section>
+    </article>
+  </TMPL_IF>
+  <!-- オプション -->
+  <TMPL_IF modeOption>
+    <TMPL_IF setMessage>
+    <aside>
+      <p><TMPL_VAR setMessage></p>
+    </aside>
+    </TMPL_IF>
+    <article>
+      <section class="form">
+        <h2>ユーザー設定</h2>
+        <form method="post" action="./">
+          <input type="hidden" name="mode" value="option">
+          <p>
+            <label><span>名前</span> <input type="text" name="name" value="<TMPL_VAR userName>" required></label>
+          </p>
+          <p>
+            <label><span>メールアドレス</span> <input type="email" name="mail" value="<TMPL_VAR userMail>"></label>
+          </p>
+          <p>
+            <input type="submit" value="変更">
+          </p>
+        </form>
+      </section>
+      <section class="form">
+        <h2>パスワード変更</h2>
+        <form method="post" action="./">
+          <input type="hidden" name="mode" value="passchange">
+          <p>
+            <label><span>現在のパスワード</span> <input type="password" name="password"></label>
+          </p>
+          <p>
+            <label><span>新しいパスワード</span> <input type="password" name="new_password" pattern="^[0-9A-Za-z\.\-\/]+$" title="半角英数字、『.』『-』『/』のみ"></label>
+          </p>
+          <p>
+            <label><span>新しいパスワード(確認)</span> <input type="password" name="new_password_confirm" pattern="^[0-9A-Za-z\.\-\/]+$" title="半角英数字、『.』『-』『/』のみ"></label>
+          </p>
+          <p>
+            <input type="submit" value="変更">
+          </p>
+        </form>
+      </section>
+    </article>
+  </TMPL_IF>

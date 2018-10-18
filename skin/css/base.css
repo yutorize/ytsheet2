@@ -70,6 +70,7 @@ body {
 
 header {
   grid-column: 1 / 4;
+  grid-row: 1 / 2;
   height: 5rem;
   position: relative;
   padding: 0px 10px;
