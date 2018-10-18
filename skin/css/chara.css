@@ -593,6 +593,9 @@ dl#exp dd {
   width: 4em;
   text-align: right;
 }
+#magic-power table td:nth-child(4):empty {
+  width: 0;
+}
 
 #magic-power p#magic-power-add {
   margin-top: -1.5em;
