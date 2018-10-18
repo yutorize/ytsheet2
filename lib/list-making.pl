@@ -31,6 +31,9 @@ my $i = 0;
 open (my $FH,"<", $set::makelist);
 my @lines = <$FH>;
 close($FH);
+
+@lines = grep { (split /<>/)[2]  eq param('id') } @lines if param('id');
+
 my @posts;
 foreach my $data (@lines) {
   $i++;
@@ -108,7 +111,7 @@ if(!param("num")) {
   $INDEX->param(pagePrevOn => $page - $page_items >= 0);
   $INDEX->param(pageNextOn => $page + $page_items < @lines);
 }
-$INDEX->param(formOn => 1) if !param('num');
+$INDEX->param(formOn => 1) if !param('num') && !param('id');
 
 ### 出力 #############################################################################################
 print "Content-Type: text/html\n\n";

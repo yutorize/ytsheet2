@@ -24,12 +24,29 @@ foreach(param()){
 
 my $now = time;
 
+## 重複チェック
+if($set::making_interval){
+  open (my $FH, '<', $set::makelist);
+  my $file = <$FH>;
+  close($FH);
+  my ($num, $date, $id, $name, $comment, $race, $stt) = split(/<>/, $file);
+  if(
+    $now - $date <= $set::making_interval &&
+    $LOGIN_ID eq $id &&
+    $in{'name'} eq $name &&
+    $in{'race'} eq $race
+  ){
+    error($set::making_interval.'秒以内の連続投稿は禁止されています。');
+  }
+}
+
+## 能力値作成処理
 my $adventurer = ($in{'race'} =~ s/（冒険者）//) ? 1 : 0;
 
 my $stt_data;
 my $average_max = 0;
 my $i = 1;
-while ($i <= $in{"repeat"} || ($average_max <= 3.5 && $set::average_over)){
+while ($i <= $in{"repeat"} || ($average_max <= $set::average_over)){
   if($adventurer){
     $in{'tec'} = dice(2);
     $in{'phy'} = dice(2);
@@ -56,6 +73,7 @@ while ($i <= $in{"repeat"} || ($average_max <= 3.5 && $set::average_over)){
      $average = ($stt_A + $stt_B + $stt_C + $stt_D + $stt_E + $stt_F + $in{'tec'} + $in{'phy'} + $in{'spi'}) / 18 if $adventurer;
   $average_max = $average if $average > $average_max;
   
+  last if $set::adventurer_onlyonce && $adventurer;
   $i++;
 }
 

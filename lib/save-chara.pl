@@ -333,6 +333,14 @@ $pc{'packSageInt'}   = $st{'SagE'};
 $pc{'monsterLore'} = max($st{'SagE'},$st{'RidE'});
 $pc{'initiative'}  = max($st{'ScoB'},$st{'WarB'});
 
+## 魔力
+$pc{'magicPowerSor'} = $pc{'lvSor'} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwnSor'} ? 2 : 0)) / 6) + $pc{'magicPowerAddSor'} + $pc{'magicPowerAdd'};
+$pc{'magicPowerCon'} = $pc{'lvCon'} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwnCon'} ? 2 : 0)) / 6) + $pc{'magicPowerAddCon'} + $pc{'magicPowerAdd'};
+$pc{'magicPowerPri'} = $pc{'lvPri'} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwnPri'} ? 2 : 0)) / 6) + $pc{'magicPowerAddPri'} + $pc{'magicPowerAdd'};
+$pc{'magicPowerFai'} = $pc{'lvFai'} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwnFai'} ? 2 : 0)) / 6) + $pc{'magicPowerAddFai'} + $pc{'magicPowerAdd'};
+$pc{'magicPowerMag'} = $pc{'lvMag'} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwnMag'} ? 2 : 0)) / 6) + $pc{'magicPowerAddMag'} + $pc{'magicPowerAdd'};
+$pc{'magicPowerBar'} = $pc{'lvBar'} + int(($pc{'sttMnd'} + $pc{'sttAddF'} + ($pc{'magicPowerOwnBar'} ? 2 : 0)) / 6) + $pc{'magicPowerAddBar'};
+
 ### 装備 --------------------------------------------------
 ## 武器
 foreach (1 .. $pc{'weaponNum'}){
@@ -364,11 +372,11 @@ foreach (1 .. $pc{'weaponNum'}){
   $pc{'reqdStrF'} = ceil($pc{'reqdStr'} / 2);
   my $eva_class;
   my $own_agi = $pc{'shieldOwn'} ? 2 : 0;
-  if   ($pc{'evasionClass'} eq "ファイター"       && $pc{'lvFig'}){ $eva_class = 'Fig'; $pc{'evasionStr'} = $pc{'reqdStr'}; }
-  elsif($pc{'evasionClass'} eq "グラップラー"     && $pc{'lvGra'}){ $eva_class = 'Gra'; $pc{'evasionStr'} = $pc{'reqdStr'}; }
-  elsif($pc{'evasionClass'} eq "フェンサー"       && $pc{'lvFen'}){ $eva_class = 'Fen'; $pc{'evasionStr'} = $pc{'reqdStrF'}; }
-  elsif($pc{'evasionClass'} eq "シューター"       && $pc{'lvSho'}){ $eva_class = 'Sho'; $pc{'evasionStr'} = $pc{'reqdStr'}; }
-  elsif($pc{'evasionClass'} eq "デーモンルーラー" && $pc{'lvDem'}){ $eva_class = 'Dem'; $pc{'evasionStr'} = $pc{'reqdStr'}; }
+  if   ($pc{'evasionClass'} eq "ファイター"       && $pc{'lvFig'}){ $eva_class = $pc{'lvFig'}; $pc{'evasionStr'} = $pc{'reqdStr'}; }
+  elsif($pc{'evasionClass'} eq "グラップラー"     && $pc{'lvGra'}){ $eva_class = $pc{'lvGra'}; $pc{'evasionStr'} = $pc{'reqdStr'}; }
+  elsif($pc{'evasionClass'} eq "フェンサー"       && $pc{'lvFen'}){ $eva_class = $pc{'lvFen'}; $pc{'evasionStr'} = $pc{'reqdStrF'}; }
+  elsif($pc{'evasionClass'} eq "シューター"       && $pc{'lvSho'}){ $eva_class = $pc{'lvSho'}; $pc{'evasionStr'} = $pc{'reqdStr'}; }
+  elsif($pc{'evasionClass'} eq "デーモンルーラー" && $pc{'lvDem'}){ $eva_class = $pc{'lvDem'}; $pc{'evasionStr'} = $pc{'reqdStr'}; }
   else{ $pc{'evasionStr'} = $pc{'reqdStr'}; }
   
   $pc{'evasionEva'} = 0;

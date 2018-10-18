@@ -26,6 +26,9 @@ article {
 #area-monstername .lv {
   order: -1;
   align-self: stretch;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   width: 2em;
   background: linear-gradient(to bottom, #aaa, #555);
   color: #fff;
@@ -36,13 +39,21 @@ article {
 }
 #area-monstername h1 {
   flex-grow: 1;
-  padding: 0 1rem;
+  padding: .25em 1rem;
   text-align: left;
   font-size: 200%;
   font-weight: bold;
   text-shadow: 0 0 0 #000, 0 0 1px #777;
+  line-height: 1;
+}
+#area-monstername h1 small {
+  display: inline-block;
+  font-size: 70%;
+  line-height: 1;
 }
 #area-monstername .taxa {
+  min-width: 5.5em;
+  padding-right: .5em;
   text-align: right;
 }
 

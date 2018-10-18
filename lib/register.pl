@@ -28,8 +28,16 @@ if($mode eq 'register'){
   close ($FH);
 
   sysopen (my $FH, $set::userfile, O_WRONLY | O_APPEND | O_CREAT, 0666);
-    print $FH param('id')."<>".&e_crypt(param('password'))."<>".Encode::decode('utf8', param('name'))."<>".param('mail')."<>\n";
+    print $FH param('id')."<>".&e_crypt(param('password'))."<>".Encode::decode('utf8', param('name'))."<>".param('mail')."<>".time."<>\n";
   close ($FH);
+  
+  if($set::player_dir){
+    if (!-d $set::player_dir.param('id')){ mkdir $set::player_dir.param('id'); }
+    sysopen (my $FH, $set::player_dir.param('id').'/data.cgi', O_WRONLY | O_APPEND | O_CREAT, 0666);
+      print $FH "id<>".param('id')."\n";
+      print $FH "name<>".Encode::decode('utf8',param('name'))."\n";
+    close ($FH);
+  }
 
   log_in(param('id'),param('password'));
 }

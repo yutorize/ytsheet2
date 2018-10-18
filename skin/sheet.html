@@ -6,10 +6,10 @@
   <meta charset="UTF-8">
   <title><TMPL_VAR characterName> - <TMPL_VAR title></title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" media="all" href="./skin/css/base.css?201809100800">
-  <link rel="stylesheet" media="all" href="./skin/css/sheet.css?201809100800">
-  <link rel="stylesheet" media="all" href="./skin/css/chara.css?201809221400">
-  <link rel="stylesheet" media="all" href="./skin/css/chara-sp.css?201809220730">
+  <link rel="stylesheet" media="all" href="./skin/css/base.css?201810160200">
+  <link rel="stylesheet" media="all" href="./skin/css/sheet.css?201810172400">
+  <link rel="stylesheet" media="all" href="./skin/css/chara.css?201810172400">
+  <link rel="stylesheet" media="all" href="./skin/css/chara-sp.css?201810172400">
   <link rel="stylesheet" id="nightmode">
   <script src="./skin/js/common.js?20180910800" ></script>
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
@@ -62,6 +62,7 @@ window.onload = function() {
     <h1><a href="./"><TMPL_VAR title></a></h1>
     <nav>
       <ul>
+        <li class="small"><a href="./">⏎</a></li>
         <TMPL_IF FellowMode><li><a href="./?id=<TMPL_VAR id>">通常</a></li></TMPL_IF>
         <TMPL_IF fellowPublic><TMPL_UNLESS FellowMode><li><a href="./?id=<TMPL_VAR id>&f=1">フェロー</a></li></TMPL_UNLESS></TMPL_IF>
         <li class="small"><a onclick="backuplistOn()"><span>過去ログ</span></a></li>
@@ -257,27 +258,27 @@ window.onload = function() {
             <dd><TMPL_VAR sttAddF></dd>
           </dl>
           <dl id="stt-bonus-dex">
-            <dt>＋</dt>
+            <dt>÷6</dt>
             <dd><TMPL_VAR bonusDex></dd>
           </dl>
           <dl id="stt-bonus-agi">
-            <dt>＋</dt>
+            <dt>÷6</dt>
             <dd><TMPL_VAR bonusAgi></dd>
           </dl>
           <dl id="stt-bonus-str">
-            <dt>＋</dt>
+            <dt>÷6</dt>
             <dd><TMPL_VAR bonusStr></dd>
           </dl>
           <dl id="stt-bonus-vit">
-            <dt>＋</dt>
+            <dt>÷6</dt>
             <dd><TMPL_VAR bonusVit></dd>
           </dl>
           <dl id="stt-bonus-int">
-            <dt>＋</dt>
+            <dt>÷6</dt>
             <dd><TMPL_VAR bonusInt></dd>
           </dl>
           <dl id="stt-bonus-mnd">
-            <dt>＋</dt>
+            <dt>÷6</dt>
             <dd><TMPL_VAR bonusMnd></dd>
           </dl>
         </div>
@@ -432,17 +433,6 @@ window.onload = function() {
             <dt>移動力</dt><dd><TMPL_IF mobilityAdd><TMPL_VAR mobilityBase>+<TMPL_VAR mobilityAdd>=</TMPL_IF><b><TMPL_VAR mobilityTotal></b> m</dd>
             <dt>全力移動</dt><dd><b><TMPL_VAR mobilityFull></b> m</dd>
           </dl>
-          <TMPL_IF lvCaster>
-          <div class="box" id="magic-power">
-            <h2>魔力</h2>
-            <TMPL_IF  magicPowerAdd><p id="magic-power-add">+<TMPL_VAR  magicPowerAdd></p></TMPL_IF>
-            <table>
-              <TMPL_LOOP MagicPowers>
-              <tr><th><span><TMPL_VAR NAME></span></th><th><TMPL_VAR MAGIC></th><td><TMPL_VAR NUM></td></tr>
-              </TMPL_LOOP>
-            </table>
-          </div>
-          </TMPL_IF>
         </div>
         <div class="box" id="language">
           <h2>言語</h2>
@@ -453,9 +443,27 @@ window.onload = function() {
             </TMPL_LOOP>
           </table>
         </div>
+        <TMPL_IF MagicPowers>
+        <div class="box" id="magic-power">
+          <h2>魔力<TMPL_IF lvBar>／奏力</TMPL_IF></h2>
+          <TMPL_IF  magicPowerAdd><p id="magic-power-add">+<TMPL_VAR  magicPowerAdd></p></TMPL_IF>
+          <table>
+            <TMPL_LOOP MagicPowers>
+            <tr>
+              <th><TMPL_VAR NAME></th>
+              <th><TMPL_VAR MAGIC></th>
+              <td><TMPL_VAR OWN></td>
+              <td><TMPL_VAR ADD></td>
+              <td><TMPL_VAR NUM></td>
+            </tr>
+            </TMPL_LOOP>
+          </table>
+        </div>
+        </TMPL_IF>
       </div>
       
       <div id="area-equipment">
+        <TMPL_IF Weapons>
         <div class="box" id="attack-classes">
           <table>
             <tr>
@@ -506,6 +514,8 @@ window.onload = function() {
             </TMPL_LOOP>
           </table>
         </div>
+        </TMPL_IF>
+        
         <div class="box" id="evasion-classes">
           <table>
             <tr>
@@ -600,6 +610,12 @@ window.onload = function() {
           </div>
         </div>
         <div id="area-items-R">
+          <TMPL_IF BattleItems>
+          <div class="box" id="battle-items">
+            <h2>戦闘用アイテム</h2>
+            <ul><TMPL_LOOP BattleItems><li><TMPL_VAR ITEM DEFAULT="&nbsp;"></li></TMPL_LOOP></ul>
+          </div>
+          </TMPL_IF>
           <dl class="box" id="honor">
             <dt>名誉点</dt><dd><TMPL_VAR honor></dd>
             <dt>ランク</dt><dd><TMPL_VAR rank></dd>
@@ -641,9 +657,9 @@ window.onload = function() {
           </tr>
           <TMPL_LOOP History>
           <tr>
-            <td><TMPL_VAR NUM></td>
-            <td><TMPL_VAR DATE></td>
-            <td><TMPL_VAR TITLE></td>
+            <td rowspan="2"><TMPL_VAR NUM></td>
+            <td rowspan="2"><TMPL_VAR DATE></td>
+            <td rowspan="2"><TMPL_VAR TITLE></td>
             <td><TMPL_VAR EXP></td>
             <td><TMPL_VAR HONOR></td>
             <td><TMPL_VAR MONEY></td>
@@ -651,13 +667,16 @@ window.onload = function() {
             <td><TMPL_VAR GM></td>
             <td><TMPL_VAR MEMBER></td>
           </tr>
+          <tr>
+            <td colspan="6"><TMPL_VAR NOTE></td>
+          </tr>
           </TMPL_LOOP>
         </table>
       </div>
       <TMPL_IF cashbook>
       <div class="box" id="cashbook">
         <h2>収支履歴</h2>
-        <p><TMPL_VAR cashbook></p>
+        <div><p><TMPL_VAR cashbook></p></div>
       </div>
       </TMPL_IF>
     </article>

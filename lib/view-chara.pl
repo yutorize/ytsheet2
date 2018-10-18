@@ -49,6 +49,12 @@ while (my ($key, $value) = each(%pc)){
 ### 二つ名 --------------------------------------------------
 my($aka, $ruby) = split(/:/,$pc{'aka'});
 $SHEET->param("aka" => "<ruby>$aka<rt>$ruby</rt></ruby>") if $ruby;
+
+### プレイヤー名 --------------------------------------------------
+if($set::playerlist){
+  my $pl_id = (split(/-/, $id))[0];
+  $SHEET->param("playerName" => '<a href="'.$set::playerlist.'?id='.$pl_id.'">'.$pc{'playerName'}.'</a>');
+}
 ### グループ --------------------------------------------------
 if(!$pc{'group'}) {
   $pc{'group'} = $set::group_default;
@@ -81,6 +87,9 @@ $SHEET->param("wordsY" => ($pc{'wordsY'} eq '下' ? 'bottom:0;' : 'top:0;'));
 ### 種族特徴 --------------------------------------------------
 $pc{'raceAbility'} =~ s/［(.*?)］/<span>［$1］<\/span>/g;
 $SHEET->param("raceAbility" => $pc{'raceAbility'});
+
+### 穢れ --------------------------------------------------
+$SHEET->param("sin" => '―') if !$pc{'sin'} && $pc{'race'} =~ /^(?:ルーンフォーク|フィー)$/;
 
 ### 信仰 --------------------------------------------------
 if($pc{'faith'} eq 'その他の信仰') { $SHEET->param("faith" => $pc{'faithOther'}); }
@@ -185,19 +194,22 @@ $SHEET->param("PackageLv" => max($pc{'lvSco'},$pc{'lvRan'},$pc{'lvSag'}));
 ### 魔力 --------------------------------------------------
 my @magic;
 foreach (
-  ['ソーサラー',         'Sor', '真語魔法'],
-  ['コンジャラー',       'Con', '操霊魔法'],
-  ['プリースト',         'Pri', '神聖魔法'],
-  ['マギテック',         'Mag', '魔動機術'],
-  ['フェアリーテイマー', 'Fai', '妖精魔法'],
-  ['デーモンルーラー'   ,'Dem', '召異魔法'],
-  ['グリモワール'       ,'Gri', '秘奥魔法'],
+  ['ソーサラー',         'Sor', '真語魔法', '発動体'],
+  ['コンジャラー',       'Con', '操霊魔法', '発動体'],
+  ['プリースト',         'Pri', '神聖魔法', '聖印'],
+  ['マギテック',         'Mag', '魔動機術', 'マギスフィア'],
+  ['フェアリーテイマー', 'Fai', '妖精魔法', 'ケース／飾り'],
+  ['デーモンルーラー'   ,'Dem', '召異魔法', ''],
+  ['グリモワール'       ,'Gri', '秘奥魔法', ''],
+  ['バード'             ,'Bar', '呪歌',     '楽器'],
 ){
   next if !$pc{'lv'.@$_[1]};
   push(@magic, {
     "NAME" => @$_[0]."技能レベル".$pc{'lv'.@$_[1]},
-    "MAGIC"  => @$_[2],
-    "NUM"  => $pc{'lv'.@$_[1]}+$pc{'bonusInt'}+$pc{'magicPowerAdd'},
+    "OWN"  => ($pc{'magicPowerOwn'.@$_[1]} ? '✔専用'.@$_[3] : ''),
+    "MAGIC"  => @$_[2].(@$_[1] eq 'Fai' && $pc{'ftElemental'} ? "<span>（$pc{'ftElemental'}）</span>" : ''),
+    "ADD"  => ($pc{'magicPowerAdd'.@$_[1]} ? '+'.$pc{'magicPowerAdd'.@$_[1]}.' =' : ''),
+    "NUM"  => $pc{'magicPower'.@$_[1]},
   } );
 }
 $SHEET->param(MagicPowers => \@magic);
@@ -358,6 +370,7 @@ $pc{"history0Grow"} .= '知力'.$pc{'sttPreGrowE'} if $pc{'sttPreGrowE'};
 $pc{"history0Grow"} .= '精神'.$pc{'sttPreGrowF'} if $pc{'sttPreGrowF'};
 
 my @history;
+my $h_num = 0;
 $pc{'history0Title'} = 'キャラクター作成';
 foreach (0 .. $pc{'historyNum'}){
   $pc{'history'.$_.'Grow'} =~ s/[^器敏筋生知精0-9]//g;
@@ -369,8 +382,17 @@ foreach (0 .. $pc{'historyNum'}){
   $pc{'history'.$_.'Grow'} =~ s/精([0-9]{0,3})/精神×$1<br>/g;
   $pc{'history'.$_.'Grow'} =~ s/×([^0-9])/$1/g;
   #next if !$pc{'history'.$_.'Title'};
+  $h_num++ if $pc{'history'.$_.'Gm'};
+  if ($set::log_dir && $pc{'history'.$_.'Date'} =~ s/([^0-9]*?_[0-9])+$//){
+    my $room = $1;
+    (my $date = $pc{'history'.$_.'Date'}) =~ s/[\-\/]//g;
+    $pc{'history'.$_.'Date'} = "<a href=\"$set::log_dir$date$room.html\">$pc{'history'.$_.'Date'}<\/a>";
+  }
+  if ($set::sessionlist && $pc{'history'.$_.'Title'} =~ s/^#([0-9]+)//){
+    $pc{'history'.$_.'Title'} = "<a href=\"$set::sessionlist?num=$1\" data-num=\"$1\">$pc{'history'.$_.'Title'}<\/a>";
+  }
   push(@history, {
-    "NUM"    => $_,
+    "NUM"    => ($pc{'history'.$_.'Gm'} ? $h_num : ''),
     "DATE"   => $pc{'history'.$_.'Date'},
     "TITLE"  => $pc{'history'.$_.'Title'},
     "EXP"    => $pc{'history'.$_.'Exp'},
@@ -379,6 +401,7 @@ foreach (0 .. $pc{'historyNum'}){
     "GROW"   => $pc{'history'.$_.'Grow'},
     "GM"     => $pc{'history'.$_.'Gm'},
     "MEMBER" => $pc{'history'.$_.'Member'},
+    "NOTE"   => $pc{'history'.$_.'Note'},
   } );
 }
 $SHEET->param(History => \@history);
@@ -404,6 +427,18 @@ if($pc{"deposit"} =~ /^(?:自動|auto)$/i){
 }
 $pc{"cashbook"} =~ s/(:(?:\:|&lt;|&gt;)(?:[\+\-\*]?[0-9]+)+)/<b class="cash">$1<\/b>/g;
   $SHEET->param(cashbook => $pc{'cashbook'});
+
+
+### 戦闘用アイテム --------------------------------------------------
+my $smax = max("$pc{'lvSco'}","$pc{'lvRan'}","$pc{'lvSag'}");
+my @battleitems;
+foreach (1 .. (8 + ceil($smax / 2))) {
+  last if !$set::battleitem;
+  push(@battleitems, {
+    "ITEM" => $pc{'battleItem'.$_},
+  } );
+}
+$SHEET->param(BattleItems => \@battleitems);
 
 ### バックアップ --------------------------------------------------
 opendir(my $DIR,"${set::char_dir}${file}/backup");

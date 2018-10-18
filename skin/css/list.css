@@ -94,6 +94,7 @@ form#form-search p input {
   justify-content: center;
 }
 
+.list table th > a,
 .list table th > span {
   display: grid;
   align-items: center;
@@ -270,6 +271,9 @@ form#form-search p input {
   padding: 0.2em 0.5em;
   border-width: 0 0 1px;
   border-style: solid;
+}
+#making form dl dd:nth-of-type(2) input {
+  width: 100%;
 }
 #making form dl dd:nth-of-type(3) input {
   width: 4.5em;

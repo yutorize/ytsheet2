@@ -81,6 +81,17 @@ sub max {
   (sort {$b <=> $a} @_)[0];
 }
 
+### クラス色分け --------------------------------------------------
+sub class_color {
+  my $text = shift;
+  $text =~ s/((?:.*?)(?:[0-9]+))/<span>$1<\/span>/g;
+  $text =~ s/<span>((?:ファイター|グラップラー|フェンサー)(?:[0-9]+?))<\/span>/<span class="melee">$1<\/span>/;
+  $text =~ s/<span>((?:プリースト)(?:[0-9]+?))<\/span>/<span class="healer">$1<\/span>/;
+  $text =~ s/<span>((?:スカウト|ウォーリーダー|レンジャー)(?:[0-9]+?))<\/span>/<span class="initiative">$1<\/span>/;
+  $text =~ s/<span>((?:セージ)(?:[0-9]+?))<\/span>/<span class="knowledge">$1<\/span>/;
+  return $text;
+}
+
 ### 安全にevalする --------------------------------------------------
 sub s_eval {
   my $i = shift;
@@ -110,7 +121,9 @@ sub log_in {
     print &cookie_set($set::cookie,$_[0],$key,'+365d');
   }
   else { error('ログインできませんでした'); }
-  print "Location: ./\n\n";
+  
+  if($set::url_home){ print "Location: $set::url_home\n\n"; }
+  else { print "Location: ./\n\n"; }
 }
 
 ### キー取得 --------------------------------------------------
@@ -152,7 +165,8 @@ sub log_out {
   close($FH);
   print &cookie_set($set::cookie,$id,$key,'Thu, 1-Jan-1970 00:00:00 GMT');
   
-  print "Location: ./\n\n";
+  if($set::url_home){ print "Location: $set::url_home\n\n"; }
+  else { print "Location: ./\n\n"; }
 }
 ### ログインチェック --------------------------------------------------
 sub check {
@@ -242,6 +256,15 @@ sub uri_escape_utf8 {
   $tmp =~ tr/ /+/;
   $tmp = Encode::decode('utf8',$tmp);
   return($tmp);
+}
+
+### 端数切り上げ --------------------------------------------------
+sub ceil {
+  my $num = shift;
+  my $val = 0;
+ 
+  $val = 1 if($num > 0 and $num != int($num));
+  return int($num + $val);
 }
 
 ### 案内画面 --------------------------------------------------

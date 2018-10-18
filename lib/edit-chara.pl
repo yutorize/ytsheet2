@@ -109,11 +109,11 @@ Content-type: text/html\n
   <meta charset="UTF-8">
   <title>@{[$mode eq 'edit'?"編集：$pc{'characterName'}":'新規作成']} - $set::title</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" media="all" href="./skin/css/base.css?20180910800">
-  <link rel="stylesheet" media="all" href="./skin/css/sheet.css?20180910800">
-  <link rel="stylesheet" media="all" href="./skin/css/chara.css?201809220730">
-  <link rel="stylesheet" media="all" href="./skin/css/chara-sp.css?201809220730">
-  <link rel="stylesheet" media="all" href="./skin/css/edit.css?201809221500">
+  <link rel="stylesheet" media="all" href="./skin/css/base.css?201810160200">
+  <link rel="stylesheet" media="all" href="./skin/css/sheet.css?201810172400">
+  <link rel="stylesheet" media="all" href="./skin/css/chara.css?201810172400">
+  <link rel="stylesheet" media="all" href="./skin/css/chara-sp.css?201810172400">
+  <link rel="stylesheet" media="all" href="./skin/css/edit.css?201810172400">
   <link rel="stylesheet" id="nightmode">
   <script src="./skin/js/common.js?20180910800" ></script>
   <style>
@@ -402,28 +402,42 @@ print <<"HTML";
             <dd>@{[input('sttAddF','number','calcStt')]}</dd>
           </dl>
           <dl id="stt-bonus-dex">
-            <dt>＋</dt>
+            <dt>÷6</dt>
             <dd id="stt-bonus-dex-value">$pc{'bonusDex'}</dd>
           </dl>
           <dl id="stt-bonus-agi">
-            <dt>＋</dt>
+            <dt>÷6</dt>
             <dd id="stt-bonus-agi-value">$pc{'bonusAgi'}</dd>
           </dl>
           <dl id="stt-bonus-str">
-            <dt>＋</dt>
+            <dt>÷6</dt>
             <dd id="stt-bonus-str-value">$pc{'bonusStr'}</dd>
           </dl>
           <dl id="stt-bonus-vit">
-            <dt>＋</dt>
+            <dt>÷6</dt>
             <dd id="stt-bonus-vit-value">$pc{'bonusVit'}</dd>
           </dl>
           <dl id="stt-bonus-int">
-            <dt>＋</dt>
+            <dt>÷6</dt>
             <dd id="stt-bonus-int-value">$pc{'bonusInt'}</dd>
           </dl>
           <dl id="stt-bonus-mnd">
-            <dt>＋</dt>
+            <dt>÷6</dt>
             <dd id="stt-bonus-mnd-value">$pc{'bonusMnd'}</dd>
+          </dl>
+          
+          
+          <dl id="stt-pointbuy-TPS">
+            <dt>割振りPt.</dt>
+            <dd id="stt-pointbuy-TPS-value"></dd>
+          </dl>
+          <dl id="stt-pointbuy-AtoF">
+            <dt>割振りPt.</dt>
+            <dd id="stt-pointbuy-AtoF-value"></dd>
+          </dl>
+          <dl id="stt-grow-total">
+            <dt>成長合計</dt>
+            <dd><span><span id="stt-grow-total-value"></span><span id="stt-grow-max-value"></span></span></dd>
           </dl>
         </div>
 
@@ -447,6 +461,7 @@ print <<"HTML";
         <div id="area-classes">
           <div class="box" id="classes">
             <h2>技能</h2>
+            <div>使用経験点：<span id="exp-use"></span></div>
             <dl>
               <dt>ファイター        </dt><dd>@{[input('lvFig', 'number','changeLv','min="0" max="17"')]}</dd>
               <dt>グラップラー      </dt><dd>@{[input('lvGra', 'number','changeLv','min="0" max="17"')]}</dd>
@@ -595,17 +610,6 @@ print <<"HTML";
             <dt>移動力</dt><dd><span id="mobility-base">$pc{'mobilityBase'}</span>+@{[input('mobilityAdd','number','calcMobility')]}=<b id="mobility-total">0</b> m</dd>
             <dt>全力移動</dt><dd><b id="mobility-full">$pc{'mobilityFull'}</b> m</dd>
           </dl>
-          <div class="box" id="magic-power">
-            <h2>魔力</h2>
-            <p>+@{[input('magicPowerAdd','number','calcMagic')]}</p>
-            <table>
-              <tr@{[ display $pc{'lvSor'} ]} id="magic-power-sorcerer"  ><th>ソーサラー        </th><th>真語魔法</th><td id="magic-power-sorcerer-value"  >0</td></tr>
-              <tr@{[ display $pc{'lvCon'} ]} id="magic-power-conjurer"  ><th>コンジャラー      </th><th>操霊魔法</th><td id="magic-power-conjurer-value"  >0</td></tr>
-              <tr@{[ display $pc{'lvPri'} ]} id="magic-power-priest"    ><th>プリースト        </th><th>神聖魔法</th><td id="magic-power-priest-value"    >0</td></tr>
-              <tr@{[ display $pc{'lvFai'} ]} id="magic-power-fairytamer"><th>フェアリーテイマー</th><th>妖精魔法</th><td id="magic-power-fairytamer-value">0</td></tr>
-              <tr@{[ display $pc{'lvMag'} ]} id="magic-power-magitech"  ><th>マギテック        </th><th>魔動機術</th><td id="magic-power-magitech-value"  >0</td></tr>
-            </table>
-          </div>
         </div>
         <div class="box" id="language">
           <h2>言語</h2>
@@ -631,6 +635,57 @@ print <<"HTML";
           </table>
           <div class="add-del-button"><a onclick="addLanguage()">▼</a><a onclick="delLanguage()">▲</a></div>
           @{[input('languageNum','hidden')]}
+        </div>
+        <div class="box" id="magic-power">
+          <h2>魔力／奏力</h2>
+          <p>+@{[ input 'magicPowerAdd','number','calcMagic' ]}</p>
+          <table>
+            <tr@{[ display $pc{'lvSor'} ]} id="magic-power-sorcerer">
+              <th>ソーサラー</th>
+              <th>真語魔法</th>
+              <td>@{[ input 'magicPowerOwnSor', 'checkbox','calcMagic' ]}専用発動体</td>
+              <td>+@{[ input 'magicPowerAddSor', 'number','calcMagic' ]}</td>
+              <td><td id="magic-power-sorcerer-value">0</td>
+            </tr>
+            <tr@{[ display $pc{'lvCon'} ]} id="magic-power-conjurer">
+              <th>コンジャラー</th>
+              <th>操霊魔法</th>
+              <td>@{[ input 'magicPowerOwnCon', 'checkbox','calcMagic' ]}専用発動体</td>
+              <td>+@{[ input 'magicPowerAddCon', 'number','calcMagic' ]}</td>
+              <td id="magic-power-conjurer-value">0</td>
+            </tr>
+            <tr@{[ display $pc{'lvPri'} ]} id="magic-power-priest">
+              <th>プリースト</th>
+              <th>神聖魔法</th>
+              <td>@{[ input 'magicPowerOwnPri', 'checkbox','calcMagic' ]}専用聖印</td>
+              <td>+@{[ input 'magicPowerAddPri', 'number','calcMagic' ]}</td>
+              <td id="magic-power-priest-value">0</td>
+            </tr>
+            <tr@{[ display $pc{'lvFai'} ]} id="magic-power-fairytamer">
+              <th>フェアリーテイマー</th>
+              <th>
+                妖精魔法<br>
+                属性: @{[ input 'ftElemental', 'text', '', 'placeholder="例）土／炎／風／光"' ]}
+              </th>
+              <td>@{[ input 'magicPowerOwnFai', 'checkbox','calcMagic' ]}専用ケース／飾り</td>
+              <td>+@{[ input 'magicPowerAddFai', 'number','calcMagic' ]}</td>
+              <td id="magic-power-fairytamer-value">0</td>
+            </tr>
+            <tr@{[ display $pc{'lvMag'} ]} id="magic-power-magitech">
+              <th>マギテック</th>
+              <th>魔動機術</th>
+              <td>@{[ input 'magicPowerOwnMag', 'checkbox','calcMagic' ]}専用スフィア</td>
+              <td>+@{[ input 'magicPowerAddMag', 'number','calcMagic' ]}</td>
+              <td id="magic-power-magitech-value">0</td>
+            </tr>
+            <tr@{[ display $pc{'lvBar'} ]} id="magic-power-bard">
+              <th>バード</th>
+              <th>呪歌</th>
+              <td>@{[ input 'magicPowerOwnBar', 'checkbox','calcMagic' ]}専用楽器</td>
+              <td>+@{[ input 'magicPowerAddBar', 'number','calcMagic' ]}</td>
+              <td id="magic-power-bard-value">0</td>
+            </tr>
+          </table>
         </div>
       </div>
       
@@ -913,6 +968,16 @@ print <<"HTML";
           </div>
         </div>
         <div id="area-items-R">
+          <div class="box" id="battle-items"@{[ display $set::battleitem ]}>
+          <h2>戦闘用アイテム</h2>
+          <ul>
+HTML
+foreach my $i (1 .. 16){
+  print '<li id="battle-item'.$i.'"><input type="text" name="battleItem'.$i.'" value="'.$pc{'battleItem'.$i}.'"></li>';
+}
+print <<"HTML";
+          </ul>
+          </div>
           <dl class="box" id="honor">
             <dt>名誉点</dt><dd id="honor-value">$pc{'honor'}</dd>
             <dt>ランク</dt>
@@ -957,7 +1022,7 @@ print <<"HTML";
       <div class="box" id="free-note">
         <h2>容姿・経歴・その他メモ</h2>
         <textarea name="freeNote">$pc{'freeNote'}</textarea>
-        <h4 onclick="view('text-format')">テキスト装飾・整形ルール▼</h4>
+        <h4 onclick="view('text-format')">テキスト装飾・整形ルール（クリックで展開）▼</h4>
         <div class="annotate" id="text-format" style="display:none;">
         ※メモ欄以外でも有効です。<br>
         太字　：<code>''テキスト''</code>：<b>テキスト</b><br>
@@ -977,6 +1042,8 @@ print <<"HTML";
         横罫線（直線）：<code>----</code>（4つ以上のハイフン）<br>
         横罫線（点線）：<code> * * * *</code>（4つ以上の「スペース＋アスタリスク」）<br>
         横罫線（破線）：<code> - - - -</code>（4つ以上の「スペース＋ハイフン」）<br>
+        表組み　　：<code>|テキスト|テキスト|</code><br>
+        定義リスト：<code>:項目名|説明文</code><br>
         </div>
       </div>
       <div class="box" id="history">
@@ -1019,6 +1086,7 @@ print <<"HTML";
             <td>@{[input("history${i}Grow",'text','','list="list-grow"')]}</td>
             <td>@{[input("history${i}Gm")]}</td>
             <td>@{[input("history${i}Member")]}</td>
+            <td>@{[input("history${i}Note",'','','placeholder="備考"')]}</td>
           </tr>
 HTML
 }
@@ -1175,6 +1243,8 @@ print <<"HTML";
     <option value="精神">
   </datalist>
   <script>
+  const battleItemOn = @{[ $set::battleitem ? 1 : 0 ]};
+  const growType = '@{[ $set::growtype ? $set::growtype : 0 ]}';
 HTML
 print 'const featsLv = ["'. join('","', @set::feats_lv) . '"];';
 foreach (
@@ -1224,10 +1294,51 @@ foreach my $key ( keys(%data::race_language) ){
   }
   print "\",";
 }
-print '};';
+print "};\n";
+## 割り振り計算
 print <<"HTML";
+function calcPointBuy() {
+  const A = Number(form.sttBaseA.value);
+  const B = Number(form.sttBaseB.value);
+  const C = Number(form.sttBaseC.value);
+  const D = Number(form.sttBaseD.value);
+  const E = Number(form.sttBaseE.value);
+  const F = Number(form.sttBaseF.value);
+  
+  const _race = race.match(/ナイトメア/) ? 'ナイトメア' : race;
+  
+  let ptA;
+  let ptB;
+  let ptC;
+  let ptD;
+  let ptE;
+  let ptF;
+  
+  if(race == ''){}
+HTML
+foreach my $key (keys %data::race_dices) {
+  print "else if (_race === '$key'){ ";
+  foreach ("A".."F"){
+    my $x = $data::race_dices{$key}{$_};
+    my $add = $data::race_dices{$key}{$_.'+'};
+    print "pt$_ = point${x}($_" . ($add ? " - $add" : '') . "); ";
+  } 
+  print "}\n";
+}
+print <<"HTML";
+  document.getElementById("stt-pointbuy-AtoF-value").innerHTML = ptA + ptB + ptC + ptD + ptE + ptF;
+  
+  if(form.birth.value === '冒険者'){
+    let ptTec = pointx(Number(form.sttBaseTec.value));
+    let ptPhy = pointx(Number(form.sttBasePhy.value));
+    let ptSpi = pointx(Number(form.sttBaseSpi.value));
+    document.getElementById("stt-pointbuy-TPS-value").innerHTML = ptTec + ptPhy + ptSpi;
+  } else {
+    document.getElementById("stt-pointbuy-TPS-value").innerHTML = '―';
+  }
+}
   </script>
-  <script src="./lib/edit.js?201810017000" ></script>
+  <script src="./lib/edit.js?201810172400" ></script>
 </body>
 
 </html>

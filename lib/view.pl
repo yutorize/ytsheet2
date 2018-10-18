@@ -26,7 +26,7 @@ sub tag_unescape {
   $text =~ s/''(.+?)''/<b>$1<\/b>/gi;  # 太字
   $text =~ s/%%(.+?)%%/<span class="strike">$1<\/span>/gi;  # 打ち消し線
   $text =~ s/__(.+?)__/<span class="underline">$1<\/span>/gi;  # 下線
-  $text =~ s/[|｜](.+?)《(.+?)》/<ruby>$1<rp>(<\/rp><rt>$2<\/rt><rp>)<\/rp><\/ruby>/gi; # なろう式ルビ
+  $text =~ s/[|｜]([^|｜]+?)《(.+?)》/<ruby>$1<rp>(<\/rp><rt>$2<\/rt><rp>)<\/rp><\/ruby>/gi; # なろう式ルビ
   $text =~ s/《《(.+?)》》/<span class="text-em">$1<\/span>/gi; # カクヨム式傍点
   
   $text =~ s/&lt;br&gt;/<br>/gi;
@@ -54,7 +54,10 @@ sub tag_unescape_lines {
   
   $text =~ s/^\|(.*?)\|$/&tablecall($1)/egim;
   $text =~ s/(<\/tr>)\n/$1/gi;
-  $text =~ s/(?!<\/tr>)(<tr>.*?<\/tr>)(?!<tr>)/<\/p><table class="note-table">$1<\/table><p>/gi;
+  $text =~ s/(?!<\/tr>|<table>)(<tr>.*?<\/tr>)(?!<tr>|<\/table>)/<\/p><table class="note-table">$1<\/table><p>/gi;
+  $text =~ s/^\:(.*?)\|(.*?)$/<dt>$1<\/dt><dd>$2<\/dd>/gim;
+  $text =~ s/(<\/dd>)\n/$1/gi;
+  $text =~ s/(?!<\/dd>)(<dt>.*?<\/dd>)(?!<dt>)/<\/p><dl class="note-description">$1<\/dl><p>/gi;
 
   $text =~ s/\n<\/p>/<\/p>/gi;
   $text =~ s/(^|<p(?:.*?)>|<hr(?:.*?)>)\n/$1/gi;
