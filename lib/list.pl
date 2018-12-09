@@ -57,9 +57,11 @@ foreach (@set::groups){
   $group_name{@$_[0]} = @$_[2];
   $group_text{@$_[0]} = @$_[3];
 }
+$group_name{'all'} = 'すべて' if param('group') eq 'all';
+
 ## グループ検索
 my $group_query = param('group');
-if($group_query) {
+if($group_query && param('group') ne 'all') {
   if($group_query eq $set::group_default){ @list = grep { (split(/<>/))[6] =~ /^$group_query$|^$/ } @list; }
   else { @list = grep { (split(/<>/))[6] eq $group_query } @list; }
   
@@ -77,11 +79,11 @@ if($name_query) { @list = grep { (split(/<>/))[4] =~ /$name_query/ } @list; }
 $INDEX->param(name => $name_query);
 
 ## リストを回す
-my %count;
+my %count; my %pl_flag;
 foreach (@list) {
   my (
     $id, undef, undef, $updatetime, $name, $player, $group,
-    $exp, $honor, $race, $gender, $age, $faith,
+    $exp, $rank, $race, $gender, $age, $faith,
     $classes, $session, $image, $tag, $hide, $fellow
   ) = (split /<>/, $_)[0..18];
   
@@ -112,7 +114,7 @@ foreach (@list) {
   elsif($m_flag){ $gender = '♂' }
   elsif($f_flag){ $gender = '♀' }
   elsif($gender){ $gender = '？' }
-  else { $gender = '' }
+  else { $gender = '？' }
   
   $age =~ tr/０-９/0-9/;
   
@@ -160,6 +162,8 @@ foreach (@list) {
   my $sort_data;
   ($sort_data = $name) =~ s/^“.*”// if ($sort eq 'name');
   
+  $name =~ s/^“(.*)”(.*)/<span>“$1”<\/span><span>$2<\/span>/;
+  
   my @characters;
   push(@characters, {
     "SORT" => $sort_data,
@@ -170,18 +174,22 @@ foreach (@list) {
     "EXP" => $exp,
     "LV" => $level,
     "CLASS" => $class,
-    "HONOR" => $honor,
     "RACE" => $race,
     "GENDER" => $gender,
     "AGE" => $age,
     "FAITH" => $faith,
+    "RANK" => $rank,
     "FELLOW" => $fellow,
     "DATE" => $updatetime,
     "HIDE" => $hide,
   });
   
-  $count{$group}++;
-  push(@{$grouplist{$group}}, @characters) if !($index_mode && $count{$group} > $set::list_maxline && $set::list_maxline);
+  $group = 'all' if param('group') eq 'all';
+  
+  $count{'PC'}{$group}++;
+  $count{'PL'}{$group}++ if !$pl_flag{$group}{$player};
+  $pl_flag{$group}{$player} = 1;
+  push(@{$grouplist{$group}}, @characters) if !($index_mode && $count{'PC'}{$group} > $set::list_maxline && $set::list_maxline);
 }
 
 
@@ -192,6 +200,8 @@ foreach (sort {$group_sort{$a} <=> $group_sort{$b}} keys %grouplist){
   ## ソート
   if   ($sort eq 'name'){ @{$grouplist{$_}} = sort { $a->{'SORT'} cmp $b->{'SORT'} } @{$grouplist{$_}}; }
   elsif($sort eq 'pl')  { @{$grouplist{$_}} = sort { $a->{'PLAYER'} cmp $b->{'PLAYER'} } @{$grouplist{$_}}; }
+  elsif($sort eq 'race'){ @{$grouplist{$_}} = sort { $a->{'RACE'} cmp $b->{'RACE'} } @{$grouplist{$_}}; }
+  elsif($sort eq 'gender'){ @{$grouplist{$_}} = sort { $a->{'GENDER'} cmp $b->{'GENDER'} } @{$grouplist{$_}}; }
   elsif($sort eq 'lv')  { @{$grouplist{$_}} = sort { $b->{'LV'} <=> $a->{'LV'} } @{$grouplist{$_}}; }
   elsif($sort eq 'exp') { @{$grouplist{$_}} = sort { $b->{'EXP'} <=> $a->{'EXP'} } @{$grouplist{$_}}; }
   elsif($sort eq 'date'){ @{$grouplist{$_}} = sort { $b->{'DATE'} <=> $a->{'DATE'} } @{$grouplist{$_}}; }
@@ -200,7 +210,8 @@ foreach (sort {$group_sort{$a} <=> $group_sort{$b}} keys %grouplist){
     "ID" => $_,
     "NAME" => $group_name{$_},
     "TEXT" => $group_text{$_},
-    "NUM" => $count{$_},
+    "NUM-PC" => $count{'PC'}{$_},
+    "NUM-PL" => $count{'PL'}{$_},
     "Characters" => [@{$grouplist{$_}}],
   });
 }

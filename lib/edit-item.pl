@@ -42,24 +42,24 @@ if($mode eq 'edit'){
   $id = param('id');
   $pass = param('pass');
   (undef, undef, $file, undef) = getfile($id,$pass,$LOGIN_ID);
-  open my $IN, '<', "${set::mons_dir}${file}/data.cgi" or error &login_error;
+  open my $IN, '<', "${set::item_dir}${file}/data.cgi" or error &login_error;
   $_ =~ s/(.*?)<>(.*?)\n/$pc{$1} = $2;/egi while <$IN>;
   close($IN);
 }
 if($mode eq 'copy'){
   $id = param('id');
   $file = (getfile_open($id))[0];
-  open my $IN, '<', "${set::mons_dir}${file}/data.cgi" or error '魔物データがありません。';
+  open my $IN, '<', "${set::item_dir}${file}/data.cgi" or error 'アイテムデータがありません。';
   $_ =~ s/(.*?)<>(.*?)\n/$pc{$1} = $2;/egi while <$IN>;
   close($IN);
   
   delete $pc{'image'};  
   
-  $message = '「<a href="./?id='.$id.'" target="_blank">'.$pc{"monsterName"}.'</a>」コピーして新規作成します。<br>（まだ保存はされていません）';
+  $message = '「<a href="./?id='.$id.'" target="_blank">'.$pc{"itemName"}.'</a>」コピーして新規作成します。<br>（まだ保存はされていません）';
 }
 
 ### 各種データライブラリ読み込み --------------------------------------------------
-require $set::data_mons;
+#require $set::data_item;
 
 ### 出力準備 #########################################################################################
 ### 初期設定 --------------------------------------------------
@@ -70,7 +70,7 @@ $pc{'statusNum'}  = $pc{'statusNum'} ? $pc{'statusNum'} : 1;
 $pc{'lootsNum'}   = $pc{'lootsNum'} ? $pc{'lootsNum'} : 2;
 
 ### 改行処理 --------------------------------------------------
-$pc{'skills'}      =~ s/&lt;br&gt;/\n/g;
+$pc{'effects'}     =~ s/&lt;br&gt;/\n/g;
 $pc{'description'} =~ s/&lt;br&gt;/\n/g;
 
 
@@ -82,24 +82,16 @@ Content-type: text/html\n
 
 <head>
   <meta charset="UTF-8">
-  <title>@{[$mode eq 'edit'?"編集：$pc{'monsterName'}":'新規作成']} - $set::title</title>
+  <title>@{[$mode eq 'edit'?"編集：$pc{'itemName'}":'新規作成']} - $set::title</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" media="all" href="./skin/css/base.css?20180910800">
   <link rel="stylesheet" media="all" href="./skin/css/sheet.css?20180910800">
-  <link rel="stylesheet" media="all" href="./skin/css/monster.css?20180910800">
-  <link rel="stylesheet" media="all" href="./skin/css/monster-sp.css?20180910800">
+  <link rel="stylesheet" media="all" href="./skin/css/item.css?20180910800">
+  <link rel="stylesheet" media="all" href="./skin/css/item-sp.css?20180910800">
   <link rel="stylesheet" media="all" href="./skin/css/edit.css?20180910800">
   <link rel="stylesheet" id="nightmode">
   <script src="./skin/js/common.js?201808211430" ></script>
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
-  <style>
-    #image {
-      background-image: url("${set::char_dir}${file}/image.$pc{'image'}");
-    }
-    #image > * {
-      background: rgba(255,255,255,0.8);
-    }
-  </style>
 </head>
 <body>
   <header>
@@ -109,8 +101,8 @@ Content-type: text/html\n
   <main>
     <article>
       <aside class="message">$message</aside>
-      <form id="monster" name="sheet" method="post" action="./" enctype="multipart/form-data">
-      <input type="hidden" name="type" value="m">
+      <form id="item" name="sheet" method="post" action="./" enctype="multipart/form-data">
+      <input type="hidden" name="type" value="i">
 HTML
 if($mode eq 'blanksheet' || $mode eq 'copy'){
   print '<input type="hidden" name="_token" value="'.$token.'">'."\n";
@@ -118,9 +110,8 @@ if($mode eq 'blanksheet' || $mode eq 'copy'){
 print <<"HTML";
       <input type="hidden" name="mode" value="@{[ $mode eq 'edit' ? 'save' : 'make' ]}">
       <div id="area-name">
-        <div id="monster-name">
-          <div>名称@{[ input 'monsterName','text','','required' ]}</div>
-          <div>名前@{[ input 'characterName','text','','placeholder="※名前を持つ魔物のみ"' ]}</div>
+        <div id="item-name">
+          <div>名称@{[ input 'itemName','text','','required' ]}</div>
         </div>
         <div>
         <p id="update-time"></p>
@@ -178,94 +169,84 @@ HTML
       </div>
       <div class="box" id="group">
         <dl>
-          <dt>分類</dt><dd><select name="taxa">
-HTML
-foreach (@data::taxa){
-  print '<option '.($pc{'taxa'} eq @$_[0] ? ' selected': '').'>'.@$_[0].'</option>';
-}
-print <<"HTML";
-          </select></dd>
           <dt>タグ</dt><dd>@{[ input 'tags' ]}</dd>
         </dl>
       </div>
-    <div class="box status">
-      <dl><dt>レベル</dt><dd>@{[ input 'lv','number','','min="0"' ]}</dd></dl>
-      <dl><dt>知能</dt><dd>@{[ input 'intellect','','','list="data-intellect"' ]}</dd></dl>
-      <dl><dt>知覚</dt><dd>@{[ input 'perception','','','list="data-perception"' ]}</dd></dl>
-      <dl><dt>反応</dt><dd>@{[ input 'disposition','','','list="data-disposition"' ]}</dd></dl>
-      <dl><dt>穢れ</dt><dd>@{[ input 'sin','number','','min="0"' ]}</dd></dl>
-      <dl><dt>言語</dt><dd>@{[ input 'language' ]}</dd></dl>
-      <dl><dt>生息地</dt><dd>@{[ input 'habitat' ]}</dd></dl>
-      <dl><dt>知名度／弱点値</dt><dd>@{[ input 'reputation' ]}／@{[ input 'reputation+' ]}</dd></dl>
-      <dl><dt>弱点</dt><dd>@{[ input 'weakness','','','list="data-weakness"' ]}</dd></dl>
-      <dl><dt>先制値</dt><dd>@{[ input 'initiative' ]}</dd></dl>
-      <dl><dt>移動速度</dt><dd>@{[ input 'mobility' ]}</dd></dl>
-      <dl><dt>生命抵抗力</dt><dd>@{[ input 'vitResist','number','calcVit' ]} (@{[ input 'vitResistFix','number','calcVitF' ]})</dd></dl>
-      <dl><dt>精神抵抗力</dt><dd>@{[ input 'mndResist','number','calcMnd' ]} (@{[ input 'mndResistFix','number','calcMndF' ]})</dd></dl>
+      
+      <div class="box input-data">
+      <label>@{[ input 'magic', 'checkbox' ]}<span>魔法のアイテム</span></label>
+      <!-- <label>@{[ input 'school', 'checkbox' ]}　流派装備</label> -->
+      <hr>
+      <dl><dt>基本取引価格</dt><dd>@{[ input 'price' ]}G</dd></dl>
+      <dl><dt>知名度  </dt><dd>@{[ input 'reputation', 'number' ]}</dd></dl>
+      <dl><dt>形状    </dt><dd>@{[ input 'shape' ]}</dd></dl>
+      <dl><dt>カテゴリ</dt><dd>@{[ input 'category','text','','list="list-category"' ]}
+        複数カテゴリの場合、スペースで区切ってください。</dd></dl>
+      <dl><dt>製作時期</dt><dd>@{[ input 'age','text','','list="list-age"' ]}</dd></dl>
+      <dl><dt>概要    </dt><dd>@{[ input 'summary' ]}</dd></dl>
     </div>
     <div class="box">
-    <table id="status-table" class="status">
+      <h2>効果</h2>
+      <textarea name="effects">$pc{'effects'}</textarea>
+      <h4>武器データ</h4>
+      <table class="input-weapon-data">
+      <tr><th>用法</th><th>必筋</th><th>命中</th><th>威力</th><th>C値</th><th>追加D</th><th>備考</th></tr>
       <tr>
-        <th>攻撃方法</th>
-        <th>命中力</th>
-        <th>打撃点</th>
-        <th>回避力</th>
-        <th>防護点</th>
-        <th>ＨＰ</th>
-        <th>ＭＰ</th>
+        <td>@{[ input 'weapon1Usage','text','','list="list-usage"' ]}</td>
+        <td>@{[ input 'weapon1Reqd' ]}</td>
+        <td>@{[ input 'weapon1Acc' ]}</td>
+        <td>@{[ input 'weapon1Rate' ]}</td>
+        <td>@{[ input 'weapon1Crit' ]}</td>
+        <td>@{[ input 'weapon1Dmg' ]}</td>
+        <td>@{[ input 'weapon1Note' ]}</td>
       </tr>
-HTML
-foreach (1 .. $pc{'statusNum'}){
-$pc{'status'.$_.'Damage'} = '2d6+' if $pc{'status'.$_.'Damage'} eq '' && $mode eq 'blanksheet';
-print <<"HTML";
-        <tr>
-          <td>@{[ input 'status'.$_.'Style' ]}</td>
-          <td>@{[ input 'status'.$_.'Accuracy','number','calcAcc('.$_.')' ]}<br>(@{[ input 'status'.$_.'AccuracyFix','number','calcAccF('.$_.')' ]})</td>
-          <td>@{[ input 'status'.$_.'Damage' ]}</td>
-          <td>@{[ input 'status'.$_.'Evasion','number','calcEva('.$_.')' ]}<br>(@{[ input 'status'.$_.'EvasionFix','number','calcEvaF('.$_.')' ]})</td>
-          <td>@{[ input 'status'.$_.'Defense' ]}</td>
-          <td>@{[ input 'status'.$_.'Hp' ]}</td>
-          <td>@{[ input 'status'.$_.'Mp' ]}</td>
-        </tr>
-HTML
-}
-print <<"HTML";
-    </table>
-    <div class="add-del-button"><a onclick="addStatus()">▼</a><a onclick="delStatus()">▲</a></div>
-    @{[input('statusNum','hidden')]}
-    </div>
-    <div class="box parts">
-      <dl><dt>部位数</dt><dd>@{[ input 'partsNum','number','','min="0"' ]} (@{[ input 'parts' ]}) </dd></dl>
-      <dl><dt>コア部位</dt><dd>@{[ input 'coreParts' ]}</dd></dl>
-    </div>
-    <div class="box">
-      <h2>特殊能力</h2>
-      <textarea name="skills">$pc{'skills'}</textarea>
-      <div class="annotate">
-        ※特殊能力の分類マークなどを記述すると自動的に見出し化します。<br>
-        　2.0での分類マークでも構いません。また、入力簡易化の為に入力しやすい代替文字での入力も可能です。<br>
-        　以下に見出しとして変換される記号を一覧にしています。<br>
-        ●：部位見出し：<code>●</code><br>
-        <i class="s-icon passive"></i>：常時型　　：<code>○</code> <code>◯</code> <code>〇</code><br>
-        <i class="s-icon setup"  ></i>：戦闘準備型：<code>△</code><br>
-        <i class="s-icon major"  ></i>：主動作型　：<code>＞</code> <code>▶</code> <code>〆</code><br>
-        <i class="s-icon minor"  ></i>：補助動作型：<code>≫</code> <code>&gt;&gt;</code> <code>☆</code><br>
-        <i class="s-icon active" ></i>：宣言型　　：<code>🗨</code> <code>□</code> <code>☑</code><br>
-      </div>
-    </div>
-    <div class="box loots">
-      <h2>戦利品</h2>
-      <dl id="loots-list">
-HTML
-foreach (1 .. $pc{'lootsNum'}){
-print <<"HTML";
-        <dt>@{[ input 'loots'.$_.'Num' ]}</dt><dd>@{[ input 'loots'.$_.'Item' ]}</dd>
-HTML
-}
-print <<"HTML";
-      </dl>
-    <div class="add-del-button"><a onclick="addLoots()">▼</a><a onclick="delLoots()">▲</a></div>
-    @{[input('lootsNum','hidden')]}
+      <tr>
+        <td>@{[ input 'weapon2Usage','text','','list="list-usage"' ]}</td>
+        <td>@{[ input 'weapon2Reqd' ]}</td>
+        <td>@{[ input 'weapon2Acc' ]}</td>
+        <td>@{[ input 'weapon2Rate' ]}</td>
+        <td>@{[ input 'weapon2Crit' ]}</td>
+        <td>@{[ input 'weapon2Dmg' ]}</td>
+        <td>@{[ input 'weapon2Note' ]}</td>
+      </tr>
+      <tr>
+        <td>@{[ input 'weapon3Usage','text','','list="list-usage"' ]}</td>
+        <td>@{[ input 'weapon3Reqd' ]}</td>
+        <td>@{[ input 'weapon3Acc' ]}</td>
+        <td>@{[ input 'weapon3Rate' ]}</td>
+        <td>@{[ input 'weapon3Crit' ]}</td>
+        <td>@{[ input 'weapon3Dmg' ]}</td>
+        <td>@{[ input 'weapon3Note' ]}</td>
+      </tr>
+      </table>
+      <p>
+      <code>[刃]</code> <code>[打]</code> でそれぞれ<img class="i-icon" src="${set::icon_dir}wp_edge.png"><img class="i-icon" src="${set::icon_dir}wp_blow.png">に置き換え
+      <p>
+      <h4>防具データ</h4>
+      <table class="input-armour-data">
+      <tr><th>用法</th><th>必筋</th><th>回避</th><th>防護</th><th>備考</th></tr>
+      <tr>
+        <td>@{[ input 'armour1Usage','text','','list="list-usage"' ]}</td>
+        <td>@{[ input 'armour1Reqd' ]}</td>
+        <td>@{[ input 'armour1Eva' ]}</td>
+        <td>@{[ input 'armour1Def' ]}</td>
+        <td>@{[ input 'armour1Note' ]}</td>
+      </tr>
+      <tr>
+        <td>@{[ input 'armour2Usage','text','','list="list-usage"' ]}</td>
+        <td>@{[ input 'armour2Reqd' ]}</td>
+        <td>@{[ input 'armour2Eva' ]}</td>
+        <td>@{[ input 'armour2Def' ]}</td>
+        <td>@{[ input 'armour2Note' ]}</td>
+      </tr>
+      <tr>
+        <td>@{[ input 'armour3Usage','text','','list="list-usage"' ]}</td>
+        <td>@{[ input 'armour3Reqd' ]}</td>
+        <td>@{[ input 'armour3Eva' ]}</td>
+        <td>@{[ input 'armour3Def' ]}</td>
+        <td>@{[ input 'armour3Note' ]}</td>
+      </tr>
+      </table>
     </div>
     <div class="box">
       <h2>解説</h2>
@@ -281,7 +262,7 @@ print <<"HTML";
     <form name="del" method="post" action="./" id="deleteform">
       <p>
       <input type="hidden" name="mode" value="delete">
-      <input type="hidden" name="type" value="m">
+      <input type="hidden" name="type" value="i">
       <input type="hidden" name="id" value="$id">
       <input type="hidden" name="pass" value="$pass">
       <input type="checkbox" name="check1" value="1" required>
@@ -299,37 +280,60 @@ print <<"HTML";
     『ソード・ワールド2.5』は、「グループSNE」及び「KADOKAWA」の著作物です。<br>
     　ゆとシートⅡ for SW2.5 ver.${main::ver} - ゆとらいず工房
   </footer>
-  <datalist id="data-intellect">
-  <option value="なし">
-  <option value="動物並み">
-  <option value="低い">
-  <option value="人間並み">
-  <option value="高い">
-  <option value="命令を聞く">
+  <datalist id="list-usage">
+    <option value="1H">
+    <option value="1H#">
+    <option value="1H投">
+    <option value="1H拳">
+    <option value="1H両">
+    <option value="2H">
+    <option value="2H#">
+    <option value="振2H">
+    <option value="突2H">
   </datalist>
-  <datalist id="data-perception">
-  <option value="五感">
-  <option value="五感（暗視）">
-  <option value="五感（）">
-  <option value="魔法">
-  <option value="機械">
+  <datalist id="list-age">
+    <option value="現代">
+    <option value="魔動機文明">
+    <option value="魔法文明">
+    <option value="神紀文明">
+    <option value="不明">
   </datalist>
-  <datalist id="data-disposition">
-  <option value="友好的">
-  <option value="中立">
-  <option value="敵対的">
-  <option value="腹具合による">
-  <option value="命令による">
+  <datalist id="list-category">
+    <option value="〈ソード〉">
+    <option value="〈アックス〉">
+    <option value="〈スピア〉">
+    <option value="〈メイス〉">
+    <option value="〈スタッフ〉">
+    <option value="〈フレイル〉">
+    <option value="〈ウォーハンマー〉">
+    <option value="〈絡み〉">
+    <option value="〈格闘〉">
+    <option value="〈投擲〉">
+    <option value="〈ボウ〉">
+    <option value="〈クロスボウ〉">
+    <option value="〈ガン〉">
+    <option value="〈矢弾〉">
+    <option value="〈非金属鎧〉">
+    <option value="〈金属鎧〉">
+    <option value="〈盾〉">
+    <option value="装飾品：頭">
+    <option value="装飾品：顔">
+    <option value="装飾品：耳">
+    <option value="装飾品：首">
+    <option value="装飾品：背中">
+    <option value="装飾品：手">
+    <option value="装飾品：腰">
+    <option value="装飾品：足">
+    <option value="装飾品：その他">
+    <option value="装飾品：任意">
+    <option value="薬草類">
+    <option value="ポーション類">
+    <option value="冒険者技能用アイテム">
+    <option value="楽器">
+    <option value="特殊楽器">
+    <option value="冒険道具類">
+    <option value="冒険道具類（消耗品）">
   </datalist>
-  <datalist id="data-weakness">
-  <option value="命中力+1">
-  <option value="物理ダメージ+2点">
-  <option value="魔法ダメージ+2点">
-  <option value="属性ダメージ+3点">
-  <option value="回復効果ダメージ+3点">
-  <option value="なし">
-  </datalist>
-  <script src="./lib/edit-mons.js" ></script>
 </body>
 
 </html>

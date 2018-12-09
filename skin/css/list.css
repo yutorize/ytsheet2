@@ -68,11 +68,11 @@ form#form-search p input {
 }
 .list table tr {
     display: grid;
-    grid-template-columns: 28rem 0.8fr 0.4fr 0.6fr 0.8fr 1fr 4rem 0.8fr;
+    grid-template-columns: 28rem 0.8fr 0.4fr 0.6fr 2em 0.8fr 1fr 4rem 0.8fr;
     grid-template-rows: auto;
     grid-template-areas:
-      "NAME PL RACE RACE  LVL CLS FELL DATE"
-      "NAME PL  GEN  AGE  EXP CLS FELL DATE"
+      "NAME PL RACE RACE RANK RANK CLS FELL DATE"
+      "NAME PL  GEN  AGE  LVL  EXP CLS FELL DATE"
     ;
 }
 .list table .name   { grid-area: NAME; }
@@ -80,6 +80,7 @@ form#form-search p input {
 .list table .race   { grid-area: RACE; }
 .list table .gender { grid-area:  GEN; }
 .list table .age    { grid-area:  AGE; }
+.list table .rank   { grid-area: RANK; }
 .list table .lv     { grid-area:  LVL; }
 .list table .exp    { grid-area:  EXP; }
 .list table .class  { grid-area:  CLS; }
@@ -129,6 +130,10 @@ form#form-search p input {
   background-image: linear-gradient(135deg, rgba(80,80,200,0.3) 10px, transparent 10px);
   background-position: top left;
 }
+.list table td.lv {
+  font-size: 1.15em;
+  line-height: 1;
+}
 .list table th.fellow {
 }
 .list table th.fellow > span {
@@ -154,6 +159,7 @@ form#form-search p input {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
   height: 100%;
   padding: 5px;
   
@@ -203,6 +209,35 @@ form#form-search p input {
   text-align: right;
   font-size: 150%;
   font-weight: bold;
+}
+
+/* // List-Item
+---------------------------------------------------------------------------------------------------- */
+.list.item table tr {
+    display: grid;
+    grid-template-columns: 24rem 0.5fr 0.6fr 6em 1fr 0.4fr;
+    grid-template-rows: auto;
+    grid-template-areas:
+      "NAME AUTHOR CATEGORY PRICE SUMMARY DATE"
+    ;
+}
+.list.item table .name    { grid-area: NAME; }
+.list.item table .author  { grid-area: AUTHOR; }
+.list.item table .category{ grid-area: CATEGORY; }
+.list.item table .price   { grid-area: PRICE; }
+.list.item table .summary { grid-area: SUMMARY; }
+.list.item table .date    { grid-area: DATE; }
+.list.item table td.name a {
+  font-size: 1.4rem;
+}
+.list.item table td.category,
+.list.item table td.summary {
+  font-size: 1.2rem;
+}
+/* アイテムアイコン */
+.i-icon {
+  width: 1em;
+  height: 1em;
 }
 
 /* // List-Monster

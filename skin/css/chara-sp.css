@@ -43,7 +43,7 @@
   
   #status {
     grid-gap: 5px 1rem;
-    grid-template-columns: 1fr 1fr 1fr 1.4fr 1fr 1.2fr;
+    grid-template-columns: 1fr 1fr 1fr 1.4fr 0.7fr 1.4fr;
   }
   
   #area-ability {

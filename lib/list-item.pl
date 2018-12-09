@@ -11,23 +11,23 @@ my $LOGIN_ID = check;
 
 my $mode = param('mode');
 
-require $set::data_mons;
+#require $set::data_item;
 
 ### テンプレート読み込み #############################################################################
 my $INDEX;
 $INDEX = HTML::Template->new( filename  => $set::skin_tmpl , utf8 => 1,
   die_on_bad_params => 0, die_on_missing_include => 0, case_sensitive => 1, global_vars => 1);
 
-$INDEX->param(modeMonsList => 1);
+$INDEX->param(modeItemList => 1);
 $INDEX->param(modeMylist => 1) if $mode eq 'mylist';
 
 $INDEX->param(LOGIN_ID => $LOGIN_ID);
 
 $INDEX->param(mode => $mode);
-$INDEX->param(type => 'm');
+$INDEX->param(type => 'i');
 
 my $index_mode;
-if(!($mode eq 'mylist' || param('tag') || param('taxa') || param('name'))){
+if(!($mode eq 'mylist' || param('tag') || param('category') || param('name'))){
   $index_mode = 1;
   $INDEX->param(modeIndex => 1);
 }
@@ -46,21 +46,21 @@ if($mode eq 'mylist'){
 
 ## ファイル読み込み
 my %grouplist;
-open (my $FH, "<", $set::monslist);
-my @list = sort { (split(/<>/,$a))[7] <=> (split(/<>/,$b))[7] } <$FH>;
+open (my $FH, "<", $set::itemlist);
+my @list = sort { (split(/<>/,$b))[3] <=> (split(/<>/,$a))[3] } <$FH>;
 close($FH);
 
 ## 分類検索
-my $taxa_query = Encode::decode('utf8', param('taxa'));
-if($taxa_query) {
-  @list = grep { (split(/<>/))[6] eq $taxa_query } @list;
+my $category_query = Encode::decode('utf8', param('category'));
+if($category_query && param('category') ne 'all') {
+  @list = grep { (split(/<>/))[6] eq $category_query } @list;
   
 }
-$INDEX->param(group => $taxa_query);
+$INDEX->param(category => $category_query);
 
 ## タグ検索
 my $tag_query = Encode::decode('utf8', param('tag'));
-if($tag_query) { @list = grep { (split(/<>/))[15] =~ / $tag_query / } @list; }
+if($tag_query) { @list = grep { (split(/<>/))[12] =~ / $tag_query / } @list; }
 $INDEX->param(tag => $tag_query);
 
 ## 名前検索
@@ -72,9 +72,8 @@ $INDEX->param(name => $name_query);
 my %count;
 foreach (@list) {
   my (
-    $id, undef, undef, $updatetime, $name, $author, $taxa, $lv,
-    $intellect, $perception, $disposition, $sin, $initiative, $weakness,
-    $image, $tag, $hide, $fellow
+    $id, undef, undef, $updatetime, $name, $author, $category, $price, $age, $summary, $type,
+    $image, $tag, $hide
   ) = (split /<>/, $_)[0..16];
   
   if($mode eq 'mylist'){
@@ -92,7 +91,6 @@ foreach (@list) {
     next if $hide;
   }
   
-  if($fellow != 1) { $fellow = 0; }
   
   my ($min,$hour,$day,$mon,$year) = (localtime($updatetime))[1..5];
   $year += 1900; $mon++;
@@ -103,19 +101,25 @@ foreach (@list) {
     "ID" => $id,
     "NAME" => $name,
     "AUTHOR" => $author,
-    "TAXA" => $taxa,
-    "LV" => $lv,
+    "CATEGORY" => $category,
+    "PRICE" => $price,
+    "AGE" => $age,
+    "SUMMARY" => $summary,
+    "MAGIC" => ($type =~ /\[ma\]/ ? "<img class=\"${set::icon_dir}wp_magic.png\">" : ''),
     "DATE" => $updatetime,
     "HIDE" => $hide,
   });
   
-  $count{$taxa}++;
-  push(@{$grouplist{$taxa}}, @characters) if !($index_mode && $count{$taxa} > $set::list_maxline && $set::list_maxline);
+  $category = 'すべて';
+  $count{$category}++;
+  push(@{$grouplist{$category}}, @characters) if !($index_mode && $count{$category} > $set::list_maxline && $set::list_maxline);
 }
 
 my @characterlists; 
-@data::taxa = sort{$a->[1] <=> $b->[1]} @data::taxa;
-foreach (@data::taxa){
+our @categories = (
+  ['すべて','']
+);
+foreach (@categories){
   my $name = $_->[0];
   next if !$count{$name};
   push(@characterlists, {

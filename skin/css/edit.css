@@ -94,6 +94,15 @@ input[type="button"]:hover {
   cursor: pointer;
   transform: scale(3.5, 1);
 }
+#history .switch-button {
+  display: inline-block !important;
+  float: left;
+  margin-top: .2em;
+  padding: .1em .4em;
+  font-size: 1.6em;
+  line-height: 1;
+  cursor: pointer;
+}
 
 .message {
   max-width: 500px;
@@ -111,14 +120,19 @@ input[type="button"]:hover {
 #edit-protect {
   margin-top: 1rem;
 }
-
-#hide-checkbox {
-  width: 22em;
+#hide-options {
+  display: flex;
+  justify-content: flex-end;
   margin-top: 1rem;
-  margin-left: auto;
+}
+#forbidden-checkbox {
+  flex-basis:  10em;
   text-align: left;
 }
-#hide-checkbox input {
+#hide-checkbox {
+  text-align: left;
+}
+#hide-options input {
   vertical-align: middle;
 }
 
@@ -258,8 +272,19 @@ input[type="button"]:hover {
 }
 
 
+#personal dl#race         { flex-basis: 58%; order: 1; }
+#personal dl#gender       { flex-basis: 20%; order: 2; }
+#personal dl#age          { flex-basis: 20%; order: 3; }
+#personal dl#race-ability { flex-basis: 85%; order: 4; }
+#personal dl#birth        { flex-basis: 30%; order: 6; }
+#personal dl#faith        { flex-basis: 69%; order: 7; }
+#personal dl#sin          { flex-basis: 14%; order: 5; }
 #area-status #faith select {
   font-family: initial;
+}
+
+#status dl[id^="stt-add"]::before {
+  left: -.6rem;
 }
 
 #sub-status input,
@@ -427,11 +452,17 @@ input[type="button"]:hover {
   margin-right: 0;
 }
 
-#free-note {
+#honor-items input.free {
+  background: rgba(0,255,0,0.2);
+}
+
+#free-note,
+#free-history {
   padding-bottom: .3rem;
 }
-#free-note textarea {
-  height: 16em;
+#free-note textarea,
+#free-history textarea {
+  height: 18em;
 }
 
 #history{
@@ -622,8 +653,105 @@ form#monster textarea[name="description"] {
   padding: 2px;
 }
 
+/* // アイテム
+---------------------------------------------------------------------------------------------------- */
+form#item div.box {
+  margin: 1rem 0;
+}
+form#item div.box {
+  margin: 1rem 0;
+}
+form#item h2 {
+  font-size: 100%;
+}
+form#item #area-name {
+  font-weight: bold;
+}
+form#item #item-name {
+  flex-grow: 1;
+}
+form#item #item-name input {
+  width: calc(100% - 1em);
+}
+form#item #group dl {
+  display: grid;
+  grid-template-columns: 2.5em 1fr;
+  grid-template-rows: auto;
+}
+form#item div.input-data {
+  padding: 1rem;
+}
+form#item div.input-data div {
+  display: flex;
+  flex-wrap: wrap;
+}
+form#item div.input-data dl {
+  display: flex;
+  margin-right: 1.5em;
+}
+form#item div.input-data dl dt {
+  position: relative;
+  width: 6em;
+  margin-right: 1em;
+  text-align-last: justify;
+}
+form#item div.input-data dl dt::after {
+  content: ':';
+  position: absolute;
+  display: inline-block;
+  width: 1em;
+  text-align: center;
+  font-weight: normal;
+}
+form#item div.input-data dl dd {
+  flex-grow: 1;
+  text-align: left;
+}
+form#item div.input-data dl dd input {
+  max-width: 14em;
+}
+form#item div.input-data dl dd input[name="reputation"] {
+  width: 4em;
+}
+form#item div.input-data dl dd input[name="shape"] {
+  max-width: 26em;
+}
+form#item div.input-data dl dd input[name="summary"] {
+  max-width: 100%;
+}
+form#item .input-weapon-data,
+form#item .input-armour-data {
+  width: 100%;
+}
+form#item .input-weapon-data td,
+form#item .input-armour-data td {
+  width: 5em;
+}
+form#item .input-weapon-data td:last-child,
+form#item .input-armour-data td:last-child {
+  width: auto;
+}
 
+form#item .input-data label {
+  border-width: 1px;
+  border-style: solid;
+  border-radius: .5em;
+  padding: .1em .3em;
+  cursor: pointer;
+}
+form#item .input-data label input {
+}
+form#item .input-data label input:checked + span {
+  font-weight: bold;
+}
 
-
+form#item textarea[name="effects"] {
+  height: 16em;
+  padding: 2px;
+}
+form#item textarea[name="description"] {
+  height: 16em;
+  padding: 2px;
+}
 
 

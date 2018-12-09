@@ -121,6 +121,9 @@ form #image > * {
   color: #ffffff;
 }
 
+.item div.data dl {
+  background: rgba(0,0,0,0.3);
+}
 
 #login-form {
   background: #334455;

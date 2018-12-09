@@ -22,12 +22,21 @@ sub tag_unescape {
   
   $text =~ s|(―+)|&ddash($1);|eg;
   
+  
+  $text =~ s/\[魔\]/<img alt="[魔]" class="i-icon" src="${set::icon_dir}wp_magic.png">/gi;
+  $text =~ s/\[刃\]/<img alt="[刃]" class="i-icon" src="${set::icon_dir}wp_edge.png">/gi;
+  $text =~ s/\[打\]/<img alt="[打]" class="i-icon" src="${set::icon_dir}wp_blow.png">/gi;
+  
   $text =~ s/'''(.+?)'''/<span class="oblique">$1<\/span>/gi; # 斜体
   $text =~ s/''(.+?)''/<b>$1<\/b>/gi;  # 太字
   $text =~ s/%%(.+?)%%/<span class="strike">$1<\/span>/gi;  # 打ち消し線
   $text =~ s/__(.+?)__/<span class="underline">$1<\/span>/gi;  # 下線
+  $text =~ s/{{(.+?)}}/<span style="color:transparent">$1<\/span>/gi;  # 下線
   $text =~ s/[|｜]([^|｜]+?)《(.+?)》/<ruby>$1<rp>(<\/rp><rt>$2<\/rt><rp>)<\/rp><\/ruby>/gi; # なろう式ルビ
   $text =~ s/《《(.+?)》》/<span class="text-em">$1<\/span>/gi; # カクヨム式傍点
+  
+  $text =~ s/\[\[(.+?)&gt;((?:(?!<br>)[^"])+?)\]\]/&tag_link_url($2,$1)/egi; # リンク
+  $text =~ s/\[(.+?)#([a-zA-Z0-9\-]+?)\]/<a href="?id=$2">$1<\/a>/gi; # シート内リンク
   
   $text =~ s/&lt;br&gt;/<br>/gi;
   
@@ -35,9 +44,25 @@ sub tag_unescape {
   
   return $text;
 }
+  sub tag_link_url {
+    my $url = $_[0];
+    my $txt = $_[1];
+    #foreach my $safe (@set::safeurl){
+    #  next if !$safe;
+    #  if($url =~ /^$safe/) { return '<a href="'.$url.'" target="_blank">'.$txt.'</a>'; }
+    #}
+    if($url =~ /^[#\.\/]/){ return '<a href="'.$url.'">'.$txt.'</a>'; }
+    return '<a href="'.$url.'" target="_blank">'.$txt.'</a>';
+    #return '<a href="../'.$set::cgi.'?jump='.$url.'" target="_blank">'.$txt.'</a>';
+  }
+
 sub tag_unescape_lines {
   my $text = $_[0];
   $text =~ s/<br>/\n/gi;
+  
+  $text =~ s|^//(.*?)$||gm; # コメントアウト
+  
+  $text =~ s/\\\\\n/<br>/gi;
   
   $text =~ s/^LEFT:/<\/p><p class="left">/gim;
   $text =~ s/^CENTER:/<\/p><p class="center">/gim;
@@ -55,9 +80,11 @@ sub tag_unescape_lines {
   $text =~ s/^\|(.*?)\|$/&tablecall($1)/egim;
   $text =~ s/(<\/tr>)\n/$1/gi;
   $text =~ s/(?!<\/tr>|<table>)(<tr>.*?<\/tr>)(?!<tr>|<\/table>)/<\/p><table class="note-table">$1<\/table><p>/gi;
+  
   $text =~ s/^\:(.*?)\|(.*?)$/<dt>$1<\/dt><dd>$2<\/dd>/gim;
   $text =~ s/(<\/dd>)\n/$1/gi;
   $text =~ s/(?!<\/dd>)(<dt>.*?<\/dd>)(?!<dt>)/<\/p><dl class="note-description">$1<\/dl><p>/gi;
+  $text =~ s/<dt> *?<\/dt>//gim;
 
   $text =~ s/\n<\/p>/<\/p>/gi;
   $text =~ s/(^|<p(?:.*?)>|<hr(?:.*?)>)\n/$1/gi;
@@ -66,7 +93,6 @@ sub tag_unescape_lines {
   
   return $text;
 }
-
 sub text_convert_icon {
   my $text = $_[0];
   

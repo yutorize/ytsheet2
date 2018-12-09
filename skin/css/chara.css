@@ -195,8 +195,9 @@ p.words span.brackets {
 #personal dl#gender       { flex-basis: 20%; order: 2; }
 #personal dl#age          { flex-basis: 20%; order: 3; }
 #personal dl#race-ability { flex-basis: 85%; order: 4; }
-#personal dl#birth        { flex-basis: 30%; order: 6; }
-#personal dl#faith        { flex-basis: 69%; order: 7; }
+#personal dl#birth        { flex-basis: 28%; order: 6; }
+#personal dl#faith        { flex-basis: 46%; order: 7; }
+#personal dl#rank         { flex-basis: 24%; order: 8; }
 #personal dl#sin          { flex-basis: 14%; order: 5; }
 
 #personal dl#race-ability dd span {
@@ -206,8 +207,8 @@ p.words span.brackets {
 /* Status */
 #status {
   display: grid;
-  grid-gap: 0.8rem 10px;
-  grid-template-columns: 1fr 1fr 1fr 1.2fr 1fr 1fr;
+  grid-gap: 0.8rem 1rem;
+  grid-template-columns: 1fr 1fr 1fr 1.3fr 0.8fr 1.2fr;
   grid-template-rows: auto;
 }
 #status dl {
@@ -238,6 +239,36 @@ p.words span.brackets {
 #status dl:nth-child(n+16):nth-child(-n+21) dd,
 #status dl[id^="stt-bonus"] dd {
   font-size: 1.6rem;
+}
+#status dl:nth-child(n+16):nth-child(-n+21) {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-right-width: 0;
+}
+#status dl[id^="stt-add"] {
+  border-style: solid;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  border-left-width: 0;
+  margin-left: -1rem;
+}
+#status dl[id^="stt-add"] dt span {
+  display: inline-block;
+  margin: 0 -3%;
+  transform: scale(0.85, 0.85);
+}
+#status dl[id^="stt-bonus"] {
+  margin-left: .8rem;
+}
+#status dl[id^="stt-bonus"] dt span {
+  display: block;
+  width: 3em;
+  margin: 0 -.3em;
+  transform: scale(0.75, 0.85);
+}
+#status dl[id^="stt-bonus"] dt span::after { content: "ボーナス"; }
+@media screen and (max-width:850px){
+  #status dl[id^="stt-bonus"] dt span::after { content: "Ｂ"; }
 }
 #stt-base-tec { grid-row: 1 / span 2; grid-column: 1; }
 #stt-base-phy { grid-row: 3 / span 2; grid-column: 1; }
@@ -274,20 +305,38 @@ p.words span.brackets {
 #stt-bonus-mnd { grid-row: 6; grid-column: 6; }
 
 #status dl:nth-child(n+4):nth-child(-n+15)::before,
-#status dl:nth-child(n+22):nth-child(-n+27)::before {
-  position:
-  absolute;
-  content:"+";
-  left: -10px;
+#status dl[id^="stt-add"]::before {
+  position: absolute;
+  content: "+";
+  left: -1rem;
   bottom: 0;
   font-size: 1.2rem;
 }
 #status dl:nth-child(n+16):nth-child(-n+21)::before {
-  position:
-  absolute;
-  content:"=";
-  left: -10px;
+  position: absolute;
+  content: "=";
+  left: -1rem;
   bottom: 0;
+  font-size: 1.2rem;
+}
+#status dl[id^="stt-add"]::before {
+  left: -.3rem;
+}
+#status dl[id^="stt-bonus"]::before {
+  position: absolute;
+  content: "";
+  left: -1.9rem;
+  bottom: 8px;
+  width: 1.4rem;
+  border-width: 0.2rem;
+  border-style: solid;
+  border-color: inherit;
+}
+#status dl[id^="stt-bonus"]::after {
+  position: absolute;
+  content: "÷6";
+  left: -1.6rem;
+  bottom: 8px;
   font-size: 1.2rem;
 }
 
@@ -816,7 +865,8 @@ div#area-items-R {
 
 /* // Free-Memo
 ---------------------------------------------------------------------------------------------------- */
-#free-note {
+#free-note,
+#free-history{
   margin-top: 1rem;
 }
 
@@ -842,9 +892,9 @@ div#area-items-R {
   font-size: 1.2rem;
 }
 #history table tr th:nth-child(1) { width:   2em; } /* No. */
-#history table tr th:nth-child(2) { width:   6em; } /* 日付 */
+#history table tr th:nth-child(2) { width: 5.2em; } /* 日付 */
 #history table tr th:nth-child(3) { width:  auto; } /* タイトル */
-#history table tr th:nth-child(4) { width:   5em; } /* 経験点 */
+#history table tr th:nth-child(4) { width: 4.6em; } /* 経験点 */
 #history table tr th:nth-child(5) { width:   3em; } /* 名誉点 */
 #history table tr th:nth-child(6) { width: 4.5em; } /* ガメル */
 #history table tr th:nth-child(7) { width: 3.5em; } /* 成長 */
@@ -861,9 +911,24 @@ div#area-items-R {
   margin-left: 2px;
   font-size: 1.1rem;
 }
+#history table tr td:nth-child(6):empty::after {
+  content: "";
+}
 #history table tr td:nth-child(8),
 #history table tr td:nth-child(9) {
   font-size: 1.1rem;
+}
+#history table tr td:nth-child(8) span {
+  display: block;
+  min-width: 5em;
+}
+#history table tr td:nth-child(9) {
+  padding: 1px 0;
+  text-align: left;
+}
+#history table tr td:nth-child(9) span {
+  display: inline-block;
+  padding: 0 .5em;
 }
 #history table tr td[colspan] {
   padding-left: .5rem;
@@ -881,7 +946,10 @@ div#area-items-R {
 #history table tr td a[data-num]:before {
   content:"#"attr(data-num);
   float: left;
+  margin: 0 -0.1em;
   font-size: 90%;
+  transform: scale(0.8, 0.8);
+  opacity: 0.8;
 }
 
 /* // Cashbook

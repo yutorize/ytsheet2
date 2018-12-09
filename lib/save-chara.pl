@@ -130,12 +130,12 @@ elsif($pc{'race'} eq 'ダークトロール'){
 ## 成長
 for (my $i = 1; $i <= $pc{'historyNum'}; $i++) {
   my $grow = $pc{"history${i}Grow"};
-  $grow =~ s/器(?:用度?)?(?:×|\*)?([0-9]{1,3})/$pc{'sttGrowA'} += $1; ''/ge;
-  $grow =~ s/敏(?:捷度?)?(?:×|\*)?([0-9]{1,3})/$pc{'sttGrowB'} += $1; ''/ge;
-  $grow =~ s/筋(?:力)?(?:×|\*)?([0-9]{1,3})/$pc{'sttGrowC'} += $1; ''/ge;
-  $grow =~ s/生(?:命力?)?(?:×|\*)?([0-9]{1,3})/$pc{'sttGrowD'} += $1; ''/ge;
-  $grow =~ s/知(?:力)?(?:×|\*)?([0-9]{1,3})/$pc{'sttGrowE'} += $1; ''/ge;
-  $grow =~ s/精(?:神力?)?(?:×|\*)?([0-9]{1,3})/$pc{'sttGrowF'} += $1; ''/ge;
+  $grow =~ s/器(?:用度?)?(?:×|\*)?([0-9]{1,3})/$pc{'sttHistGrowA'} += $1; ''/ge;
+  $grow =~ s/敏(?:捷度?)?(?:×|\*)?([0-9]{1,3})/$pc{'sttHistGrowB'} += $1; ''/ge;
+  $grow =~ s/筋(?:力)?(?:×|\*)?([0-9]{1,3})/$pc{'sttHistGrowC'} += $1; ''/ge;
+  $grow =~ s/生(?:命力?)?(?:×|\*)?([0-9]{1,3})/$pc{'sttHistGrowD'} += $1; ''/ge;
+  $grow =~ s/知(?:力)?(?:×|\*)?([0-9]{1,3})/$pc{'sttHistGrowE'} += $1; ''/ge;
+  $grow =~ s/精(?:神力?)?(?:×|\*)?([0-9]{1,3})/$pc{'sttHistGrowF'} += $1; ''/ge;
   $pc{'sttHistGrowA'} += ($grow =~ s/器/器/g);
   $pc{'sttHistGrowB'} += ($grow =~ s/敏/敏/g);
   $pc{'sttHistGrowC'} += ($grow =~ s/筋/筋/g);
@@ -328,10 +328,13 @@ $pc{'packRangerTec'} = $st{'RanA'};
 $pc{'packRangerAgi'} = $st{'RanB'};
 $pc{'packRangerInt'} = $st{'RanE'};
 $pc{'packSageInt'}   = $st{'SagE'};
+$pc{'packBardInt'}   = $st{'BarE'};
 
 ## 魔物知識／先制力
+my @ini_class = ($st{'ScoB'},$st{'WarB'});
+push @ini_class, $st{$_} foreach (@set::ini_class_add);
 $pc{'monsterLore'} = max($st{'SagE'},$st{'RidE'});
-$pc{'initiative'}  = max($st{'ScoB'},$st{'WarB'});
+$pc{'initiative'}  = max(@ini_class);
 
 ## 魔力
 $pc{'magicPowerSor'} = $pc{'lvSor'} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwnSor'} ? 2 : 0)) / 6) + $pc{'magicPowerAddSor'} + $pc{'magicPowerAdd'};
@@ -393,6 +396,7 @@ foreach (1 .. $pc{'weaponNum'}){
 #### 改行を<br>に変換 --------------------------------------------------
 $pc{'items'}         =~ s/\r\n?|\n/<br>/g;
 $pc{'freeNote'}      =~ s/\r\n?|\n/<br>/g;
+$pc{'freeHistory'}   =~ s/\r\n?|\n/<br>/g;
 $pc{'cashbook'}      =~ s/\r\n?|\n/<br>/g;
 $pc{'fellowProfile'} =~ s/\r\n?|\n/<br>/g;
 $pc{'fellowNote'}    =~ s/\r\n?|\n/<br>/g;
@@ -451,6 +455,19 @@ $pc{'tags'} =~ tr/　/ /;
 $pc{'tags'} =~ tr/０-９Ａ-Ｚａ-ｚ/0-9A-Za-z/;
 $pc{'tags'} =~ tr/＋－＊／．，＿/\+\-\*\/\.,_/;
 $pc{'tags'} =~ tr/ / /s;
+
+### グレード自動変更 --------------------------------------------------
+if (@set::grades){
+  my $flag;
+  foreach(@set::grades){
+    if ($pc{'group'} eq @$_[0]){ $flag = 1; last; }
+  }
+  if($flag ne ''){
+    foreach(@set::grades){
+      if ($pc{'level'} <= @$_[1] && $pc{'expTotal'} <= @$_[2]){ $pc{'group'} = @$_[0]; last; }
+    }
+  }
+}
 
 ### 保存 #############################################################################################
 my $mask = umask 0;

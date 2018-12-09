@@ -35,7 +35,7 @@ $SHEET->param("id" => $id);
 ### 置換 --------------------------------------------------
 foreach (keys %pc) {
   $pc{$_} = tag_unescape($pc{$_});
-  if($_ =~ /^(?:items|freeNote|cashbook)$/){
+  if($_ =~ /^(?:items|freeNote|freeHistory|cashbook)$/){
     $pc{$_} = tag_unescape_lines($pc{$_});
   }
 }
@@ -79,7 +79,7 @@ $SHEET->param(Tags => \@tags);
 
 ### セリフ --------------------------------------------------
 $pc{'words'} =~ s/^「/<span class="brackets">「<\/span>/g;
-$pc{'words'} =~ s/(.+?[，、。？」])/<span>$1<\/span>/g;
+$pc{'words'} =~ s/(.+?(?:[，、。？」]|$))/<span>$1<\/span>/g;
 $SHEET->param("words" => $pc{'words'});
 $SHEET->param("wordsX" => ($pc{'wordsX'} eq '左' ? 'left:0;' : 'right:0;'));
 $SHEET->param("wordsY" => ($pc{'wordsY'} eq '下' ? 'bottom:0;' : 'top:0;'));
@@ -124,7 +124,7 @@ foreach (
 ){
   next if !$pc{'lv'.@$_[0]};
   if(@$_[1] eq 'プリースト' && $pc{'faith'}){
-    @$_[1] .= '<span class="priest-faith'.(length($pc{'faith'}) > 12 ? ' narrow' : "").'">（'.$pc{'faith'}.'）</span>';
+    @$_[1] .= '<span class="priest-faith'.(length($pc{'faith'}) > 12 ? ' narrow' : "").'">（'.$pc{'faith'}.$pc{'faithType'}.'）</span>';
   }
   push(@classes, { "NAME" => @$_[1], "LV" => $pc{'lv'.@$_[0]} } );
 }
@@ -167,6 +167,7 @@ $SHEET->param(craftNone => 1) if !$pc{'lvEnh'} && !$pc{'lvBar'};
 ### 言語 --------------------------------------------------
 my @language;
 foreach (@{$data::race_language{ $pc{'race'} }}){
+  last if $pc{'languageAutoOff'};
   push(@language, {
     "NAME" => @$_[0],
     "TALK" => @$_[1],
@@ -189,7 +190,7 @@ $SHEET->param(Language => \@language);
 
 
 ### パッケージ --------------------------------------------------
-$SHEET->param("PackageLv" => max($pc{'lvSco'},$pc{'lvRan'},$pc{'lvSag'}));
+$SHEET->param("PackageLv" => max($pc{'lvSco'},$pc{'lvRan'},$pc{'lvSag'},$pc{'lvBar'}));
 
 ### 魔力 --------------------------------------------------
 my @magic;
@@ -383,13 +384,17 @@ foreach (0 .. $pc{'historyNum'}){
   $pc{'history'.$_.'Grow'} =~ s/×([^0-9])/$1/g;
   #next if !$pc{'history'.$_.'Title'};
   $h_num++ if $pc{'history'.$_.'Gm'};
-  if ($set::log_dir && $pc{'history'.$_.'Date'} =~ s/([^0-9]*?_[0-9])+$//){
+  if ($set::log_dir && $pc{'history'.$_.'Date'} =~ s/([^0-9]*?_[0-9]+(?:#[0-9a-zA-Z]+?)?)$//){
     my $room = $1;
     (my $date = $pc{'history'.$_.'Date'}) =~ s/[\-\/]//g;
     $pc{'history'.$_.'Date'} = "<a href=\"$set::log_dir$date$room.html\">$pc{'history'.$_.'Date'}<\/a>";
   }
   if ($set::sessionlist && $pc{'history'.$_.'Title'} =~ s/^#([0-9]+)//){
     $pc{'history'.$_.'Title'} = "<a href=\"$set::sessionlist?num=$1\" data-num=\"$1\">$pc{'history'.$_.'Title'}<\/a>";
+  }
+  my $members;
+  foreach my $mem (split(/[,、　 ]+/,$pc{'history'.$_.'Member'})){
+    $members .= '<span>'.$mem.'</span>';
   }
   push(@history, {
     "NUM"    => ($pc{'history'.$_.'Gm'} ? $h_num : ''),
@@ -400,7 +405,7 @@ foreach (0 .. $pc{'historyNum'}){
     "MONEY"  => $pc{'history'.$_.'Money'},
     "GROW"   => $pc{'history'.$_.'Grow'},
     "GM"     => $pc{'history'.$_.'Gm'},
-    "MEMBER" => $pc{'history'.$_.'Member'},
+    "MEMBER" => $members,
     "NOTE"   => $pc{'history'.$_.'Note'},
   } );
 }
@@ -471,6 +476,10 @@ $SHEET->param(title => $set::title);
 $pc{'imageUpdateTime'} = $pc{'updateTime'};
 $pc{'imageUpdateTime'} =~ s/[\-\ \:]//g;
 $SHEET->param("imageSrc" => "${set::char_dir}${file}/image.$pc{'image'}?$pc{'imageUpdateTime'}");
+
+if($pc{'imageFit'} eq 'percent'){
+$SHEET->param("imageFit" => $pc{'imagePercent'}.'%');
+}
 
 ### エラー --------------------------------------------------
 $SHEET->param(error => $main::login_error);

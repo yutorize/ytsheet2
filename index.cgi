@@ -68,8 +68,9 @@ elsif($mode eq 'delete')     { require $set::lib_delete; } #削除
 elsif($mode eq 'json')       { require $set::lib_json; }   #外部アプリ連携
 elsif(param('id')) { require $set::lib_view; }   #シート表示
 else {
-  if(param('type') eq 'm'){ require $set::lib_list_mons; }
-  else                  { require $set::lib_list; }
+  if   (param('type') eq 'm'){ require $set::lib_list_mons; }
+  elsif(param('type') eq 'i'){ require $set::lib_list_item; }
+  else                       { require $set::lib_list; }
 }   #一覧表示
 
 

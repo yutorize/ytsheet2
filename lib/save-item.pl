@@ -15,7 +15,7 @@ my %st;
 if($main::new_id){ $pc{'id'} = $main::new_id; }
 
 ### データ読み込み ###################################################################################
-require $set::data_mons;
+#require $set::data_item;
 
 ### 保存前処理 #######################################################################################
 ## 現在時刻
@@ -35,12 +35,12 @@ elsif($mode eq 'save'){
 
 
 #### 改行を<br>に変換 --------------------------------------------------
-$pc{'skills'}      =~ s/\r\n?|\n/<br>/g;
+$pc{'effects'}     =~ s/\r\n?|\n/<br>/g;
 $pc{'description'} =~ s/\r\n?|\n/<br>/g;
 
 ### 画像アップロード --------------------------------------------------
 if($pc{'imageDelete'}){
-  unlink "${set::mons_dir}${file}/image.$pc{'image'}"; # ファイルを削除
+  unlink "${set::item_dir}${file}/image.$pc{'image'}"; # ファイルを削除
   $pc{'image'} = '';
 }
 if(param('imageFile')){
@@ -65,10 +65,10 @@ if(param('imageFile')){
   elsif ($type eq "image/x-png") { $ext ="png"; } #PNG
   
   if($flag && $ext){
-    unlink "${set::mons_dir}${file}/image.$pc{'image'}"; # 前のファイルを削除
+    unlink "${set::item_dir}${file}/image.$pc{'image'}"; # 前のファイルを削除
     
-    if (!-d "${set::mons_dir}${file}"){ mkdir "${set::mons_dir}${file}"; }
-    open(my $IMG, ">", "${set::mons_dir}${file}/image.${ext}");
+    if (!-d "${set::item_dir}${file}"){ mkdir "${set::item_dir}${file}"; }
+    open(my $IMG, ">", "${set::item_dir}${file}/image.${ext}");
     binmode($IMG);
     print $IMG $data;
     close($IMG);
@@ -113,18 +113,18 @@ delete $pc{'_token'};
 delete $pc{'registerkey'};
 if($mode eq 'save'){
   use File::Copy qw/copy/;
-  if (!-d "${set::mons_dir}${file}/backup/"){ mkdir "${set::mons_dir}${file}/backup/"; }
+  if (!-d "${set::item_dir}${file}/backup/"){ mkdir "${set::item_dir}${file}/backup/"; }
   
-  my $modtime = (stat("${set::mons_dir}${file}/data.cgi"))[9];
+  my $modtime = (stat("${set::item_dir}${file}/data.cgi"))[9];
   my ($min, $hour, $day, $mon, $year) = (localtime($modtime))[1..5];
   $year += 1900; $mon++;
   my $update_date = sprintf("%04d-%02d-%02d-%02d-%02d",$year,$mon,$day,$hour,$min);
-  copy("${set::mons_dir}${file}/data.cgi", "${set::mons_dir}${file}/backup/${update_date}.cgi");
+  copy("${set::item_dir}${file}/data.cgi", "${set::item_dir}${file}/backup/${update_date}.cgi");
 }
 
-if (!-d "${set::mons_dir}"){ mkdir "${set::mons_dir}"; }
-if (!-d "${set::mons_dir}${file}"){ mkdir "${set::mons_dir}${file}"; }
-sysopen (my $FH, "${set::mons_dir}${file}/data.cgi", O_WRONLY | O_TRUNC | O_CREAT, 0666);
+if (!-d "${set::item_dir}"){ mkdir "${set::item_dir}"; }
+if (!-d "${set::item_dir}${file}"){ mkdir "${set::item_dir}${file}"; }
+sysopen (my $FH, "${set::item_dir}${file}/data.cgi", O_WRONLY | O_TRUNC | O_CREAT, 0666);
   print $FH "ver<>".$main::ver."\n";
   foreach (sort keys %pc){
     if($pc{$_} ne "") { print $FH "$_<>".$pc{$_}."\n"; }
@@ -133,15 +133,16 @@ close($FH);
 
 ### 一覧データ更新 --------------------------------------------------
 {
-  my $name = $pc{'characterName'} ? $pc{'characterName'} : $pc{'monsterName'};
+  my $name = $pc{'itemName'};
+  my $type = $pc{'magic'} ? '[ma]' : '';
   $name =~ s/[|｜]([^|｜]+?)《.+?》/$1/;
-  sysopen (my $FH, $set::monslist, O_RDWR | O_CREAT, 0666);
+  sysopen (my $FH, $set::itemlist, O_RDWR | O_CREAT, 0666);
   my @list = sort { (split(/<>/,$b))[3] cmp (split(/<>/,$a))[3] } <$FH>;
   flock($FH, 2);
   seek($FH, 0, 0);
   my $newline = "$pc{'id'}<>$file<>".
-                "$pc{'birthTime'}<>$now<>$name<>$pc{'author'}<>$pc{'taxa'}<>$pc{'lv'}<>".
-                "$pc{'intellect'}<>$pc{'perception'}<>$pc{'disposition'}<>$pc{'sin'}<>$pc{'initiative'}<>$pc{'weakness'}<>".
+                "$pc{'birthTime'}<>$now<>$name<>$pc{'author'}<>".
+                "$pc{'category'}<>$pc{'price'}<>$pc{'age'}<>$pc{'summary'}<>$type<>".
                 "$pc{'image'}<> $pc{'tags'} <>$pc{'hide'}<>";
   my $listhit;
   foreach (@list){
