@@ -79,12 +79,8 @@ dl#sub-status {
 .box p:empty {
   display: none;
 }
-.box > h2 + p:empty {
-  display: block;
-  margin-bottom: -1em;
-}
-.box > h2 + p:only-of-type:empty {
-  margin-bottom: unset;
+.box > h2 + p:empty + * {
+  margin-top: .3rem;
 }
 .box hr {
   border-width: 1px 0 0;
@@ -201,16 +197,24 @@ dl.note-description {
   text-align: left;
 }
 dl.note-description dt {
+  grid-column: 1 / 2;
   border-width: 0 0 1px;
   border-style: dotted;
   text-align: center;
 }
 dl.note-description dd {
+  grid-column: 2 / 3;
   text-align: left;
   padding-left: 1em;
   border-width: 0 0 1px;
   border-style: dotted;
 }
+/* アイテムアイコン */
+.i-icon {
+  width: 1em;
+  height: 1em;
+}
+
 /* 能力アイコン */
 .s-icon {
   display: inline-block;

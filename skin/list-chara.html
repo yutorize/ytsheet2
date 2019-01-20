@@ -8,8 +8,8 @@
         <p><input type="text" name="tag" value="<TMPL_VAR tag>"><input type="submit" value="タグ検索"></p>
       </form>
       <TMPL_LOOP Lists>
-      <section class="list">
-        <h2><TMPL_VAR NAME> <small><TMPL_VAR TEXT> (<TMPL_VAR NUM>)</small></h2>
+      <section class="list" id="group-<TMPL_VAR ID>">
+        <h2><TMPL_VAR NAME> <small><TMPL_VAR TEXT> (<TMPL_VAR NUM-PC>)</small></h2>
         <table>
           <thead>
           <tr>
@@ -18,6 +18,7 @@
             <th class="race"><span>種族</span></th>
             <th class="gender"><span>性別</span></th>
             <th class="age"><span>年齢</span></th>
+            <th class="rank"><a href="./?group=<TMPL_VAR ID>&sort=rank">ランク</a></th>
             <th class="lv"><a href="./?group=<TMPL_VAR ID>&sort=lv">Lv</a></th>
             <th class="exp"><a href="./?group=<TMPL_VAR ID>&sort=exp">経験点</a></th>
             <th class="class"><span>技能</span></th>
@@ -31,6 +32,7 @@
             <td class="race"><TMPL_VAR RACE></td>
             <td class="gender"><TMPL_VAR GENDER></td>
             <td class="age"><TMPL_VAR AGE></td>
+            <td class="rank"><TMPL_VAR RANK></td>
             <td class="lv"><TMPL_VAR LV></td>
             <td class="exp"><TMPL_VAR EXP></td>
             <td class="class"><div><TMPL_VAR CLASS></div></td>

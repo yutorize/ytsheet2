@@ -94,6 +94,7 @@ $pc{'historyNum'}    = $pc{'historyNum'}    ? $pc{'historyNum'}    : 5;
 ### 改行処理 --------------------------------------------------
 $pc{'items'}         =~ s/&lt;br&gt;/\n/g;
 $pc{'freeNote'}      =~ s/&lt;br&gt;/\n/g;
+$pc{'freeHistory'}   =~ s/&lt;br&gt;/\n/g;
 $pc{'cashbook'}      =~ s/&lt;br&gt;/\n/g;
 $pc{'fellowProfile'} =~ s/&lt;br&gt;/\n/g;
 $pc{'fellowNote'}    =~ s/&lt;br&gt;/\n/g;
@@ -111,9 +112,9 @@ Content-type: text/html\n
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" media="all" href="./skin/css/base.css?201810160200">
   <link rel="stylesheet" media="all" href="./skin/css/sheet.css?201810172400">
-  <link rel="stylesheet" media="all" href="./skin/css/chara.css?201810172400">
-  <link rel="stylesheet" media="all" href="./skin/css/chara-sp.css?201810172400">
-  <link rel="stylesheet" media="all" href="./skin/css/edit.css?201810172400">
+  <link rel="stylesheet" media="all" href="./skin/css/chara.css?1.02.003">
+  <link rel="stylesheet" media="all" href="./skin/css/chara-sp.css?1.02.003">
+  <link rel="stylesheet" media="all" href="./skin/css/edit.css?1.02.002">
   <link rel="stylesheet" id="nightmode">
   <script src="./skin/js/common.js?20180910800" ></script>
   <style>
@@ -190,10 +191,12 @@ HTML
 HTML
 }
   print <<"HTML";
-      <p id="hide-checkbox">
-      @{[ input 'hide','checkbox' ]} 一覧に表示しない<br>
-      ※タグ検索結果に合致した場合は表示されます
-      </p>
+      <div id="hide-options">
+        <p id="hide-checkbox">
+        @{[ input 'hide','checkbox' ]} 一覧に表示しない<br>
+        ※タグ検索結果に合致した場合は表示されます
+        </p>
+      </div>
       <div class="box" id="group">
         <dl>
           <dt>グループ</dt><dd><select name="group">
@@ -235,8 +238,17 @@ print <<"HTML";
             表示方式：<select name="imageFit">
             <option value="cover"   @{[$pc{'imageFit'} eq 'cover'  ?'selected':'']}>枠いっぱいに表示
             <option value="contain" @{[$pc{'imageFit'} eq 'contain'?'selected':'']}>画像全体を表示
-            <option value="unset"   @{[$pc{'imageFit'} eq 'unset'  ?'selected':'']}>拡大せず表示
+            <option value="unset"   @{[$pc{'imageFit'} eq 'unset'  ?'selected':'']}>拡大／縮小せず表示
+            <option value="percent" @{[$pc{'imageFit'} eq 'percent'?'selected':'']}>拡大率を指定
             </select><br>
+            <br>
+            拡大率：@{[ input "imagePercent",'number','','style="width:4em;"' ]}%<br>
+            （「拡大率を指定」時／100で横幅ピッタリ）<br>
+            <br>
+            枠をはみ出る際の基準位置(50%が中心)<br>
+            横@{[ input "imagePositionX",'number','','style="width:4em;"' ]}% ／ 
+            縦@{[ input "imagePositionY",'number','','style="width:4em;"' ]}%
+            <br>
             <br>
             <input type="checkbox" name="imageDelete" value="1">画像を削除する
             @{[input('image','hidden')]}
@@ -402,27 +414,27 @@ print <<"HTML";
             <dd>@{[input('sttAddF','number','calcStt')]}</dd>
           </dl>
           <dl id="stt-bonus-dex">
-            <dt>÷6</dt>
+            <dt><span>器用度</span></dt>
             <dd id="stt-bonus-dex-value">$pc{'bonusDex'}</dd>
           </dl>
           <dl id="stt-bonus-agi">
-            <dt>÷6</dt>
+            <dt><span>敏捷度</span></dt>
             <dd id="stt-bonus-agi-value">$pc{'bonusAgi'}</dd>
           </dl>
           <dl id="stt-bonus-str">
-            <dt>÷6</dt>
+            <dt><span>筋力</span></dt>
             <dd id="stt-bonus-str-value">$pc{'bonusStr'}</dd>
           </dl>
           <dl id="stt-bonus-vit">
-            <dt>÷6</dt>
+            <dt><span>生命力</span></dt>
             <dd id="stt-bonus-vit-value">$pc{'bonusVit'}</dd>
           </dl>
           <dl id="stt-bonus-int">
-            <dt>÷6</dt>
+            <dt><span>知力</span></dt>
             <dd id="stt-bonus-int-value">$pc{'bonusInt'}</dd>
           </dl>
           <dl id="stt-bonus-mnd">
-            <dt>÷6</dt>
+            <dt><span>精神力</span></dt>
             <dd id="stt-bonus-mnd-value">$pc{'bonusMnd'}</dd>
           </dl>
           
@@ -469,7 +481,7 @@ print <<"HTML";
               <dt>シューター        </dt><dd>@{[input('lvSho', 'number','changeLv','min="0" max="17"')]}</dd>
               <dt>ソーサラー        </dt><dd>@{[input('lvSor', 'number','changeLv','min="0" max="17"')]}</dd>
               <dt>コンジャラー      </dt><dd>@{[input('lvCon', 'number','changeLv','min="0" max="17"')]}</dd>
-              <dt>プリースト        </dt><dd>@{[input('lvPri', 'number','changeLv','min="0" max="17"')]}</dd>
+              <dt>プリースト<select name="faithType" style="width:auto;">@{[ option 'faithType','†','‡','†‡' ]}</select></dt><dd>@{[input('lvPri', 'number','changeLv','min="0" max="17"')]}</dd>
               <dt>フェアリーテイマー</dt><dd>@{[input('lvFai', 'number','changeLv','min="0" max="17"')]}</dd>
               <dt>マギテック        </dt><dd>@{[input('lvMag', 'number','changeLv','min="0" max="17"')]}</dd>
               <dt>スカウト          </dt><dd>@{[input('lvSco', 'number','changeLv','min="0" max="17"')]}</dd>
@@ -477,6 +489,8 @@ print <<"HTML";
               <dt>セージ            </dt><dd>@{[input('lvSag', 'number','changeLv','min="0" max="17"')]}</dd>
               <dt>エンハンサー      </dt><dd>@{[input('lvEnh', 'number','changeLv','min="0" max="17"')]}</dd>
               <dt>バード            </dt><dd>@{[input('lvBar', 'number','changeLv','min="0" max="17"')]}</dd>
+              <dt>ライダー          </dt><dd>@{[input('lvRid', 'number','changeLv','min="0" max="17"')]}</dd>
+              <dt>アルケミスト      </dt><dd>@{[input('lvAlc', 'number','changeLv','min="0" max="17"')]}</dd>
             </dl>
           </div>
           <div class="box" id="common-classes">
@@ -544,6 +558,38 @@ foreach my $lv (1..19){
   foreach my $craft (@data::craft_song){
     next if $lv < @$craft[0];
     print '<option'.(($pc{"craftSong$lv"} eq @$craft[1])?' selected':'').'>'.@$craft[1];
+  }
+  print "</select></li>\n";
+}
+print <<"HTML";
+            </ul>
+          </div>
+          <div class="box" id="craft-riding">
+            <h2>騎芸</h2>
+            <ul>
+HTML
+foreach my $lv (1..17){
+  print '<li id="craft-riding'.$lv.'"><select name="craftRiding'.$lv.'">';
+  print '<option></option>';
+  foreach my $craft (@data::craft_riding){
+    next if $lv < @$craft[0];
+    print '<option'.(($pc{"craftRiding$lv"} eq @$craft[1])?' selected':'').'>'.@$craft[1];
+  }
+  print "</select></li>\n";
+}
+print <<"HTML";
+            </ul>
+          </div>
+          <div class="box" id="craft-alchemy">
+            <h2>賦術</h2>
+            <ul>
+HTML
+foreach my $lv (1..17){
+  print '<li id="craft-alchemy'.$lv.'"><select name="craftAlchemy'.$lv.'">';
+  print '<option></option>';
+  foreach my $craft (@data::craft_alchemy){
+    next if $lv < @$craft[0];
+    print '<option'.(($pc{"craftAlchemy$lv"} eq @$craft[1])?' selected':'').'>'.@$craft[1];
   }
   print "</select></li>\n";
 }
@@ -633,6 +679,7 @@ foreach my $i (1 .. $pc{'languageNum'}){
 }
 print <<"HTML";
           </table>
+          <p>@{[ input 'languageAutoOff','checkbox','changeRace' ]}初期習得言語を自動記入しない</p>
           <div class="add-del-button"><a onclick="addLanguage()">▼</a><a onclick="delLanguage()">▲</a></div>
           @{[input('languageNum','hidden')]}
         </div>
@@ -685,6 +732,13 @@ print <<"HTML";
               <td>+@{[ input 'magicPowerAddBar', 'number','calcMagic' ]}</td>
               <td id="magic-power-bard-value">0</td>
             </tr>
+            <tr@{[ display $pc{'lvAlc'} ]} id="magic-power-alchemist">
+              <th>アルケミスト</th>
+              <th>賦術</th>
+              <td></td>
+              <td>+@{[ input 'magicPowerAddAlc', 'number','calcMagic' ]}</td>
+              <td id="magic-power-alchemist-value">0</td>
+            </tr>
           </table>
         </div>
       </div>
@@ -731,6 +785,14 @@ print <<"HTML";
               <td>―</td>
               <td>―</td>
               <td id="attack-shooter-dmg">0</td>
+            </tr>
+            <tr id="attack-enhancer"@{[ display ($pc{'lvEnh'} >= 10) ]}>
+              <td>エンハンサー技能</td>
+              <td id="attack-enhancer-str">0</td>
+              <td id="attack-enhancer-acc">0</td>
+              <td>―</td>
+              <td>―</td>
+              <td id="attack-enhancer-dmg">0</td>
             </tr>
 HTML
 foreach my $weapon (@data::weapons){
@@ -792,7 +854,7 @@ print <<"HTML";
               <td>+@{[input("weapon${i}Dmg",'number','calcWeapon')]}=<b id="weapon${i}-dmg-total">0</b></td>
               <td>@{[input("weapon${i}Own",'checkbox','calcWeapon')]}</td>
               <td><select name="weapon${i}Category" oninput="calcWeapon()">@{[option("weapon${i}Category",@data::weapon_names)]}</select></td>
-              <td><select name="weapon${i}Class" oninput="calcWeapon()">@{[option("weapon${i}Class",'ファイター','グラップラー','フェンサー','シューター')]}</select></td>
+              <td><select name="weapon${i}Class" oninput="calcWeapon()">@{[option("weapon${i}Class",'ファイター','グラップラー','フェンサー','シューター','エンハンサー')]}</select></td>
               <td>@{[input("weapon${i}Note",'','','placeholder="備考"')]}</td>
             </tr>
 HTML
@@ -935,7 +997,7 @@ foreach (
     print "  <input type=\"checkbox\" id=\"accessory-@$_[1]-add-check\"" .
           " name=\"accessory@$_[1]Add\" value=\"1\"" .
           ($pc{"accessory@$_[1]Add"}?' checked' : '') .
-          " onChange=\"addAccessory(this,'@$_[1]')\" disabled>";
+          " onChange=\"addAccessory(this,'@$_[1]')\">";
   }
   print "</td>\n";
   print <<"HTML";
@@ -981,14 +1043,8 @@ print <<"HTML";
           <dl class="box" id="honor">
             <dt>名誉点</dt><dd id="honor-value">$pc{'honor'}</dd>
             <dt>ランク</dt>
-            <dd><select name="rank">@{[ option "rank",@set::adventurer_rank_name ]}</select></dd>
+            <dd><select name="rank" oninput="calcHonor()">@{[ option "rank",@set::adventurer_rank_name ]}</select></dd>
           </dl>
-          <!--
-          <dl class="box" id="dishonor">
-            <dt>不名誉点</dt><dd>@{[ input 'dishonor' ]}</dd>
-            <dt>不名誉称号</dt><dd id="notoriety"></dd>
-          </dl>
-          -->
           <div class="box" id="honor-items">
             <table id="honor-items-table">
               <h2>名誉アイテム</h2>
@@ -1001,6 +1057,23 @@ print <<"HTML";
             </table>
           <div class="add-del-button"><a onclick="addHonorItems()">▼</a><a onclick="delHonorItems()">▲</a></div>
           @{[ input 'honorItemsNum','hidden' ]}
+          </div>
+          <dl class="box" id="dishonor">
+            <dt>不名誉点</dt><dd id="dishonor-value">0</dd>
+            <dt>不名誉称号</dt><dd id="notoriety"></dd>
+          </dl>
+          <div class="box" id="dishonor-items">
+            <table id="dishonor-items-table">
+              <h2>不名誉詳細</h2>
+              <tr><th></th><th>点数</th></tr>
+HTML
+foreach my $i (1 .. $pc{'dishonorItemsNum'}){
+  print '<tr><td>'.(input "dishonorItem${i}", "text").'</td><td>'.(input "dishonorItem${i}Pt", "number", "calcDishonor").'</td></tr>';
+}
+print <<"HTML";
+            </table>
+          <div class="add-del-button"><a onclick="addDishonorItems()">▼</a><a onclick="delDishonorItems()">▲</a></div>
+          @{[ input 'dishonorItemsNum','hidden' ]}
           </div>
         </div>
       </div>
@@ -1029,8 +1102,17 @@ print <<"HTML";
         斜体　：<code>'''テキスト'''</code>：<span class="oblique">テキスト</span><br>
         打消線：<code>%%テキスト%%</code>：<span class="strike">テキスト</span><br>
         下線　：<code>__テキスト__</code>：<span class="underline">テキスト</span><br>
+        透明　：<code>{{テキスト}}</code>：<span style="color:transparent">テキスト</span><br>
         ルビ　：<code>|テキスト《てきすと》</code>：<ruby>テキスト<rt>てきすと</rt></ruby><br>
         傍点　：<code>《《テキスト》》</code>：<span class="text-em">テキスト</span><br>
+        透明　：<code>{{テキスト}}</code>：<span style="color:transparent">テキスト</span>（ドラッグ反転で見える）<br>
+        リンク：<code>[[テキスト>URL]]</code><br>
+        別シートへのリンク：<code>[テキスト#シートのID]</code><br>
+        <br>
+        アイコン<br>
+        　魔法のアイテム：<code>[魔]</code>：<img class="i-icon" src="${set::icon_dir}wp_magic.png"><br>
+        　刃武器　　　　：<code>[刃]</code>：<img class="i-icon" src="${set::icon_dir}wp_edge.png"><br>
+        　打撃武器　　　：<code>[打]</code>：<img class="i-icon" src="${set::icon_dir}wp_blow.png"><br>
         <hr>
         ※以下は複数行の欄でのみ有効です。<br>
         大見出し：行頭に<code>*</code><br>
@@ -1078,7 +1160,7 @@ foreach my $i (1 .. $pc{'historyNum'}) {
 print <<"HTML";
           <tr>
             <td>$i</td>
-            <td>@{[input("history${i}Date")]}</td>
+            <td>@{[input("history${i}Date")]}<br><a class="switch-button" onclick="switchHistory(${i})">⇕</a></td>
             <td>@{[input("history${i}Title")]}</td>
             <td>@{[input("history${i}Exp",'text','calcExp')]}</td>
             <td>@{[input("history${i}Honor",'text','calcHonor')]}</td>
@@ -1127,6 +1209,10 @@ print <<"HTML";
         @{[input('historyNum','hidden')]}
       </div>
       
+      <div class="box" id="free-history">
+        <h2>履歴（自由記入）</h2>
+        <textarea name="freeHistory">$pc{'freeHistory'}</textarea>
+      </div>
       <hr>
       
       <h2>フェロー関連データ</h2>
@@ -1260,6 +1346,8 @@ foreach (
   'footwork',
   'accuracyEnhance',
   'evasiveManeuver',
+  'magicPowerEnhance',
+  'alchemyEnhance',
   'shootersMartialArts',
   'tenacity',
   'capacity',
@@ -1293,6 +1381,18 @@ foreach my $key ( keys(%data::race_language) ){
     print "<dt>@$_[0]</dt><dd>".(@$_[1]?'○':'－')."</dd><dd>".(@$_[2]?'○':'－')."</dd>";
   }
   print "\",";
+}
+print "};\n";
+## 冒険者ランク
+print 'const adventurerRank = {';
+foreach(@set::adventurer_rank){
+  print "'@$_[0]' : { 'num': @$_[1], 'free':@$_[2] },";
+}
+print "};\n";
+## 不名誉称号
+print 'const notorietyRank = {';
+foreach(@set::notoriety_rank){
+  print "'@$_[0]' : { 'num': @$_[1] },";
 }
 print "};\n";
 ## 割り振り計算
@@ -1338,7 +1438,7 @@ print <<"HTML";
   }
 }
   </script>
-  <script src="./lib/edit.js?201810172400" ></script>
+  <script src="./lib/edit.js?1.03.002" ></script>
 </body>
 
 </html>

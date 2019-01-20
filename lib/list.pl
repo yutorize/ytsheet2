@@ -25,7 +25,7 @@ $INDEX->param(LOGIN_ID => $LOGIN_ID);
 $INDEX->param(mode => $mode);
 
 my $index_mode;
-if(!($mode eq 'mylist' || param('tag') || param('group') || param('name'))){
+if(!($mode eq 'mylist' || param('tag') || param('group') || param('name') || param('image'))){
   $index_mode = 1;
   $INDEX->param(modeIndex => 1);
 }
@@ -57,9 +57,18 @@ foreach (@set::groups){
   $group_name{@$_[0]} = @$_[2];
   $group_text{@$_[0]} = @$_[3];
 }
+$group_name{'all'} = 'すべて' if param('group') eq 'all';
+
+## ランク
+my %rank_sort;
+foreach (@set::adventurer_rank){
+  $rank_sort{@$_[0]} = @$_[1];
+}
+$rank_sort{''} = -1;
+
 ## グループ検索
 my $group_query = param('group');
-if($group_query) {
+if($group_query && param('group') ne 'all') {
   if($group_query eq $set::group_default){ @list = grep { (split(/<>/))[6] =~ /^$group_query$|^$/ } @list; }
   else { @list = grep { (split(/<>/))[6] eq $group_query } @list; }
   
@@ -76,12 +85,15 @@ my $name_query = Encode::decode('utf8', param('name'));
 if($name_query) { @list = grep { (split(/<>/))[4] =~ /$name_query/ } @list; }
 $INDEX->param(name => $name_query);
 
+## 画像フィルタ
+if(param('image') == 1) { @list = grep { (split(/<>/))[15] } @list; }
+
 ## リストを回す
-my %count;
+my %count; my %pl_flag;
 foreach (@list) {
   my (
     $id, undef, undef, $updatetime, $name, $player, $group,
-    $exp, $honor, $race, $gender, $age, $faith,
+    $exp, $rank, $race, $gender, $age, $faith,
     $classes, $session, $image, $tag, $hide, $fellow
   ) = (split /<>/, $_)[0..18];
   
@@ -112,7 +124,7 @@ foreach (@list) {
   elsif($m_flag){ $gender = '♂' }
   elsif($f_flag){ $gender = '♀' }
   elsif($gender){ $gender = '？' }
-  else { $gender = '' }
+  else { $gender = '？' }
   
   $age =~ tr/０-９/0-9/;
   
@@ -158,7 +170,10 @@ foreach (@list) {
   $updatetime = sprintf("<span>%04d-</span><span>%02d-%02d</span> <span>%02d:%02d</span>",$year,$mon,$day,$hour,$min);
   
   my $sort_data;
-  ($sort_data = $name) =~ s/^“.*”// if ($sort eq 'name');
+  if    ($sort eq 'name'){ ($sort_data = $name) =~ s/^“.*”//; }
+  elsif ($sort eq 'rank'){  $sort_data = $rank_sort{$rank}; }
+  
+  $name =~ s/^“(.*)”(.*)/<span>“$1”<\/span><span>$2<\/span>/;
   
   my @characters;
   push(@characters, {
@@ -170,18 +185,22 @@ foreach (@list) {
     "EXP" => $exp,
     "LV" => $level,
     "CLASS" => $class,
-    "HONOR" => $honor,
     "RACE" => $race,
     "GENDER" => $gender,
     "AGE" => $age,
     "FAITH" => $faith,
+    "RANK" => $rank,
     "FELLOW" => $fellow,
     "DATE" => $updatetime,
     "HIDE" => $hide,
   });
   
-  $count{$group}++;
-  push(@{$grouplist{$group}}, @characters) if !($index_mode && $count{$group} > $set::list_maxline && $set::list_maxline);
+  $group = 'all' if param('group') eq 'all';
+  
+  $count{'PC'}{$group}++;
+  $count{'PL'}{$group}++ if !$pl_flag{$group}{$player};
+  $pl_flag{$group}{$player} = 1;
+  push(@{$grouplist{$group}}, @characters) if !($index_mode && $count{'PC'}{$group} > $set::list_maxline && $set::list_maxline);
 }
 
 
@@ -192,6 +211,9 @@ foreach (sort {$group_sort{$a} <=> $group_sort{$b}} keys %grouplist){
   ## ソート
   if   ($sort eq 'name'){ @{$grouplist{$_}} = sort { $a->{'SORT'} cmp $b->{'SORT'} } @{$grouplist{$_}}; }
   elsif($sort eq 'pl')  { @{$grouplist{$_}} = sort { $a->{'PLAYER'} cmp $b->{'PLAYER'} } @{$grouplist{$_}}; }
+  elsif($sort eq 'race'){ @{$grouplist{$_}} = sort { $a->{'RACE'} cmp $b->{'RACE'} } @{$grouplist{$_}}; }
+  elsif($sort eq 'gender'){ @{$grouplist{$_}} = sort { $a->{'GENDER'} cmp $b->{'GENDER'} } @{$grouplist{$_}}; }
+  elsif($sort eq 'rank'){ @{$grouplist{$_}} = sort { $b->{'SORT'} <=> $a->{'SORT'} } @{$grouplist{$_}}; }
   elsif($sort eq 'lv')  { @{$grouplist{$_}} = sort { $b->{'LV'} <=> $a->{'LV'} } @{$grouplist{$_}}; }
   elsif($sort eq 'exp') { @{$grouplist{$_}} = sort { $b->{'EXP'} <=> $a->{'EXP'} } @{$grouplist{$_}}; }
   elsif($sort eq 'date'){ @{$grouplist{$_}} = sort { $b->{'DATE'} <=> $a->{'DATE'} } @{$grouplist{$_}}; }
@@ -200,7 +222,8 @@ foreach (sort {$group_sort{$a} <=> $group_sort{$b}} keys %grouplist){
     "ID" => $_,
     "NAME" => $group_name{$_},
     "TEXT" => $group_text{$_},
-    "NUM" => $count{$_},
+    "NUM-PC" => $count{'PC'}{$_},
+    "NUM-PL" => $count{'PL'}{$_},
     "Characters" => [@{$grouplist{$_}}],
   });
 }
@@ -214,6 +237,5 @@ $INDEX->param(ver => $main::ver);
 ### 出力 #############################################################################################
 print "Content-Type: text/html\n\n";
 print $INDEX->output;
-print "<!-- @mylist -->";
 
 1;

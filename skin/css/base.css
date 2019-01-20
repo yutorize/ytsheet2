@@ -155,7 +155,15 @@ footer .copyright {
 
 * { border-color: #999; }
 
-
+@media print{
+  header,
+  footer,
+  #login-form,
+  #link-tag,
+  .back-button {
+    display: none;
+  }
+}
 
 /* // Font
 ---------------------------------------------------------------------------------------------------- */
@@ -301,7 +309,8 @@ main nav ul {
   padding-left: 2rem;
 }
 main nav ul li {
-  width: 12em;
+  max-width: 11.5em;
+  width: 100%;
   margin: 1rem;
   transform: skewX(-30deg);
   background: linear-gradient(to top, #679, #cdf);

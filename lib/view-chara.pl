@@ -35,7 +35,7 @@ $SHEET->param("id" => $id);
 ### 置換 --------------------------------------------------
 foreach (keys %pc) {
   $pc{$_} = tag_unescape($pc{$_});
-  if($_ =~ /^(?:items|freeNote|cashbook)$/){
+  if($_ =~ /^(?:items|freeNote|freeHistory|cashbook)$/){
     $pc{$_} = tag_unescape_lines($pc{$_});
   }
 }
@@ -79,7 +79,7 @@ $SHEET->param(Tags => \@tags);
 
 ### セリフ --------------------------------------------------
 $pc{'words'} =~ s/^「/<span class="brackets">「<\/span>/g;
-$pc{'words'} =~ s/(.+?[，、。？」])/<span>$1<\/span>/g;
+$pc{'words'} =~ s/(.+?(?:[，、。？」]|$))/<span>$1<\/span>/g;
 $SHEET->param("words" => $pc{'words'});
 $SHEET->param("wordsX" => ($pc{'wordsX'} eq '左' ? 'left:0;' : 'right:0;'));
 $SHEET->param("wordsY" => ($pc{'wordsY'} eq '下' ? 'bottom:0;' : 'top:0;'));
@@ -119,12 +119,12 @@ foreach (
   ['Dem','デーモンルーラー'],
   ['Phy','フィジカルマスター'],
   ['Gri','グリモワール'],
-  ['Art','アリストクラシー'],
-  ['Ari','アーティザン'],
+  ['Ari','アリストクラシー'],
+  ['Art','アーティザン'],
 ){
   next if !$pc{'lv'.@$_[0]};
   if(@$_[1] eq 'プリースト' && $pc{'faith'}){
-    @$_[1] .= '<span class="priest-faith'.(length($pc{'faith'}) > 12 ? ' narrow' : "").'">（'.$pc{'faith'}.'）</span>';
+    @$_[1] .= '<span class="priest-faith'.(length($pc{'faith'}) > 12 ? ' narrow' : "").'">（'.$pc{'faith'}.$pc{'faithType'}.'）</span>';
   }
   push(@classes, { "NAME" => @$_[1], "LV" => $pc{'lv'.@$_[0]} } );
 }
@@ -148,9 +148,10 @@ foreach (split /,/, $pc{'combatFeatsAuto'}) {
 $SHEET->param(CombatFeatsAuto => \@feats_auto);
 
 ### 練技 --------------------------------------------------
-my @craft_enhance;
+my @craft_enhance; my $enhance_attack_on;
 foreach (1 .. $pc{'lvEnh'}){
   push(@craft_enhance, { "NAME" => $pc{'craftEnhance'.$_} } );
+  $enhance_attack_on = 1 if $pc{'craftEnhance'.$_} =~ /フェンリルバイト|バルーンシードショット/;
 }
 $SHEET->param(CraftEnhance => \@craft_enhance);
 
@@ -161,12 +162,27 @@ foreach (1 .. $pc{'lvBar'}+$pc{'songAddition'}){
 }
 $SHEET->param(CraftSong => \@craft_song);
 
+### 騎芸 --------------------------------------------------
+my @craft_riding;
+foreach (1 .. $pc{'lvRid'}){
+  push(@craft_riding, { "NAME" => $pc{'craftRiding'.$_} } );
+}
+$SHEET->param(CraftRiding => \@craft_riding);
+
+### 賦術 --------------------------------------------------
+my @craft_alchemy;
+foreach (1 .. $pc{'lvAlc'}){
+  push(@craft_alchemy, { "NAME" => $pc{'craftAlchemy'.$_} } );
+}
+$SHEET->param(CraftAlchemy => \@craft_alchemy);
+
 ### 練技・呪歌：なし --------------------------------------------------
-$SHEET->param(craftNone => 1) if !$pc{'lvEnh'} && !$pc{'lvBar'};
+$SHEET->param(craftNone => 1) if !$pc{'lvEnh'} && !$pc{'lvBar'} && !$pc{'lvRid'} && !$pc{'lvAlc'};
 
 ### 言語 --------------------------------------------------
 my @language;
 foreach (@{$data::race_language{ $pc{'race'} }}){
+  last if $pc{'languageAutoOff'};
   push(@language, {
     "NAME" => @$_[0],
     "TALK" => @$_[1],
@@ -189,7 +205,7 @@ $SHEET->param(Language => \@language);
 
 
 ### パッケージ --------------------------------------------------
-$SHEET->param("PackageLv" => max($pc{'lvSco'},$pc{'lvRan'},$pc{'lvSag'}));
+$SHEET->param("PackageLv" => max($pc{'lvSco'},$pc{'lvRan'},$pc{'lvSag'},$pc{'lvBar'},$pc{'lvRid'},$pc{'lvAlc'}));
 
 ### 魔力 --------------------------------------------------
 my @magic;
@@ -202,6 +218,7 @@ foreach (
   ['デーモンルーラー'   ,'Dem', '召異魔法', ''],
   ['グリモワール'       ,'Gri', '秘奥魔法', ''],
   ['バード'             ,'Bar', '呪歌',     '楽器'],
+  ['アルケミスト'       ,'Alc', '賦術',     ''],
 ){
   next if !$pc{'lv'.@$_[1]};
   push(@magic, {
@@ -221,10 +238,11 @@ foreach (
   ['グラップラー',    'Gra'],
   ['フェンサー',      'Fen'],
   ['シューター',      'Sho'],
-#  ['エンハンサー',    'Enh'],
+  ['エンハンサー',    'Enh'],
 #  ['デーモンルーラー','Dem'],
 ){
   next if !$pc{'lv'.@$_[1]};
+  next if @$_[0] eq 'エンハンサー' && !$enhance_attack_on;
   push(@atacck, {
     "NAME" => @$_[0]."技能レベル".$pc{'lv'.@$_[1]},
     "STR"  => (@$_[1] eq 'Fen' ? $pc{'reqdStrF'} : $pc{'reqdStr'}),
@@ -383,13 +401,17 @@ foreach (0 .. $pc{'historyNum'}){
   $pc{'history'.$_.'Grow'} =~ s/×([^0-9])/$1/g;
   #next if !$pc{'history'.$_.'Title'};
   $h_num++ if $pc{'history'.$_.'Gm'};
-  if ($set::log_dir && $pc{'history'.$_.'Date'} =~ s/([^0-9]*?_[0-9])+$//){
+  if ($set::log_dir && $pc{'history'.$_.'Date'} =~ s/([^0-9]*?_[0-9]+(?:#[0-9a-zA-Z]+?)?)$//){
     my $room = $1;
     (my $date = $pc{'history'.$_.'Date'}) =~ s/[\-\/]//g;
     $pc{'history'.$_.'Date'} = "<a href=\"$set::log_dir$date$room.html\">$pc{'history'.$_.'Date'}<\/a>";
   }
   if ($set::sessionlist && $pc{'history'.$_.'Title'} =~ s/^#([0-9]+)//){
     $pc{'history'.$_.'Title'} = "<a href=\"$set::sessionlist?num=$1\" data-num=\"$1\">$pc{'history'.$_.'Title'}<\/a>";
+  }
+  my $members;
+  foreach my $mem (split(/[,、　]+/,$pc{'history'.$_.'Member'})){
+    $members .= '<span>'.$mem.'</span>';
   }
   push(@history, {
     "NUM"    => ($pc{'history'.$_.'Gm'} ? $h_num : ''),
@@ -400,7 +422,7 @@ foreach (0 .. $pc{'historyNum'}){
     "MONEY"  => $pc{'history'.$_.'Money'},
     "GROW"   => $pc{'history'.$_.'Grow'},
     "GM"     => $pc{'history'.$_.'Gm'},
-    "MEMBER" => $pc{'history'.$_.'Member'},
+    "MEMBER" => $members,
     "NOTE"   => $pc{'history'.$_.'Note'},
   } );
 }
@@ -417,6 +439,21 @@ foreach (1 .. $pc{'honorItemsNum'}) {
   } );
 }
 $SHEET->param(HonorItems => \@honoritems);
+
+my @dishonoritems;
+foreach (1 .. $pc{'dishonorItemsNum'}) {
+  next if !$pc{'dishonorItem'.$_} && !$pc{'dishonorItem'.$_.'Pt'};
+  push(@dishonoritems, {
+    "NAME" => $pc{'dishonorItem'.$_},
+    "PT"   => $pc{'dishonorItem'.$_.'Pt'},
+  } );
+}
+$SHEET->param(DishonorItems => \@dishonoritems);
+
+foreach (@set::notoriety_rank){
+  my ($name, $num) = @$_;
+  $SHEET->param(notoriety => $name) if $pc{'dishonor'} >= $num;
+}
 
 ### ガメル --------------------------------------------------
 if($pc{"money"} =~ /^(?:自動|auto)$/i){
@@ -471,6 +508,10 @@ $SHEET->param(title => $set::title);
 $pc{'imageUpdateTime'} = $pc{'updateTime'};
 $pc{'imageUpdateTime'} =~ s/[\-\ \:]//g;
 $SHEET->param("imageSrc" => "${set::char_dir}${file}/image.$pc{'image'}?$pc{'imageUpdateTime'}");
+
+if($pc{'imageFit'} eq 'percent'){
+$SHEET->param("imageFit" => $pc{'imagePercent'}.'%');
+}
 
 ### エラー --------------------------------------------------
 $SHEET->param(error => $main::login_error);

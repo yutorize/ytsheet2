@@ -6,7 +6,7 @@
   <meta charset="UTF-8">
   <title><TMPL_VAR title></title>
   <link rel="stylesheet" media="all" href="./skin/css/base.css?201810172400">
-  <link rel="stylesheet" media="all" href="./skin/css/list.css?201810172400">
+  <link rel="stylesheet" media="all" href="./skin/css/list.css?201811071530">
   <link rel="stylesheet" media="all" href="./skin/css/list-sp.css?201810172400">
   <link rel="stylesheet" id="nightmode">
   <script src="./skin/js/common.js?20180910800" ></script>
@@ -38,6 +38,7 @@
         <li><a href="./?mode=making">能力値作成</a></li>
         <li><a href="./?<TMPL_IF mode>mode=<TMPL_VAR mode>&</TMPL_IF><TMPL_IF tag>tag=<TMPL_VAR tag></TMPL_IF>">キャラクターシート</a></li>
         <li><a href="./?<TMPL_IF mode>mode=<TMPL_VAR mode>&</TMPL_IF><TMPL_IF tag>tag=<TMPL_VAR tag>&</TMPL_IF>type=m">魔物データ</a></li>
+        <li><a href="./?<TMPL_IF mode>mode=<TMPL_VAR mode>&</TMPL_IF><TMPL_IF tag>tag=<TMPL_VAR tag>&</TMPL_IF>type=i">アイテムデータ</a></li>
       </ul>
     </nav>
 <!--
@@ -52,6 +53,7 @@
 -->
 <TMPL_IF modeList><TMPL_INCLUDE NAME="./skin/list-chara.html"></TMPL_IF>
 <TMPL_IF modeMonsList><TMPL_INCLUDE NAME="./skin/list-mons.html"></TMPL_IF>
+<TMPL_IF modeItemList><TMPL_INCLUDE NAME="./skin/list-item.html"></TMPL_IF>
 <TMPL_IF modeMaking><TMPL_INCLUDE NAME="./skin/making.html"></TMPL_IF>
 <TMPL_INCLUDE NAME="./skin/form.html">
 <TMPL_IF modeInfo>

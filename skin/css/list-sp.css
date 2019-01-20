@@ -43,11 +43,11 @@
   }
   .list table tr {
     display: grid;
-    grid-template-columns: 18rem 1fr 0.6fr 0.6fr 0.8fr 1fr 4rem 0.5fr;
+    grid-template-columns: 18rem 1fr 0.6fr 0.6fr 2em 0.8fr 1fr 4rem 0.5fr;
     grid-template-rows: auto;
     grid-template-areas:
-      "NAME PL RACE RACE  LVL CLS FELL DATE"
-      "NAME PL  GEN  AGE  EXP CLS FELL DATE"
+      "NAME PL RACE RACE RANK RANK CLS FELL DATE"
+      "NAME PL  GEN  AGE  LVL  EXP CLS FELL DATE"
     ;
     font-size: 95%;
   }

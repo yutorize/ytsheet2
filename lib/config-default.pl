@@ -48,17 +48,26 @@ package set;
   
 ## ●名誉ランク
   our @adventurer_rank = (
-    ['ダガー',0],
-    ['レイピア',5],
-    ['ブロードソード',10],
-    ['グレートソード',20],
-    ['フランベルジュ',30],
-    ['センチネル',50],
-    ['ハイペリオン',70],
-    ['〈始まりの剣〉',100],
+    ['ダガー',          20,  0],
+    ['レイピア',        50,  5],
+    ['ブロードソード', 100, 10],
+    ['グレートソード', 200, 20],
+    ['フランベルジュ', 300, 30],
+    ['センチネル',     500, 50],
+    ['ハイペリオン',   700, 70],
+    ['〈始まりの剣〉',1000,100],
   );
   our @adventurer_rank_name;
   push (@adventurer_rank_name, @$_[0]) foreach (@adventurer_rank);
+## ●不名誉称号
+  our @notoriety_rank = (
+    ['ゴブリン級迷惑',       1],
+    ['ボルグ級危険',        21],
+    ['オーガ級外道',        51],
+    ['トロール級極悪',     101],
+    ['ドレイク級人族の敵', 201],
+    ['蛮王級世界破壊者',   501],
+  );
 
 ## ●戦闘特技
  # 習得レベル
@@ -88,15 +97,19 @@ package set;
   our $lib_edit      = 'lib/edit.pl';
   our $lib_edit_char = 'lib/edit-chara.pl';
   our $lib_edit_mons = 'lib/edit-mons.pl';
+  our $lib_edit_item = 'lib/edit-item.pl';
   our $lib_save      = 'lib/save.pl';
   our $lib_save_char = 'lib/save-chara.pl';
   our $lib_save_mons = 'lib/save-mons.pl';
+  our $lib_save_item = 'lib/save-item.pl';
   our $lib_view      = 'lib/view.pl';
   our $lib_view_char = 'lib/view-chara.pl';
   our $lib_view_mons = 'lib/view-mons.pl';
+  our $lib_view_item = 'lib/view-item.pl';
   our $lib_json      = 'lib/json.pl';
   our $lib_list      = 'lib/list.pl';
   our $lib_list_mons = 'lib/list-mons.pl';
+  our $lib_list_item = 'lib/list-item.pl';
   our $lib_making    = 'lib/making.pl';
   our $lib_list_make = 'lib/list-making.pl';
   
@@ -117,9 +130,12 @@ package set;
   our $data_craft = 'lib/data-craft.pl';  # 練技・呪歌などのデータ
   our $data_mons  = 'lib/data-mons.pl';   # 魔物分類のデータ
 
+  our $icon_dir  = 'skin/img/'; # 武器アイコンのあるディレクトリ
+  
   our $skin_tmpl  = 'skin/template.html'; # 一覧など
   our $skin_sheet = 'skin/sheet.html';    # キャラクターシート
-  our $skin_mons  = 'skin/monster.html';    # キャラクターシート
+  our $skin_mons  = 'skin/monster.html';    # 魔物シート
+  our $skin_item  = 'skin/item.html';    # アイテムシート
   
  # config.cgiのほうが優先されます
  # 変更する場合は同様の項目をconfig.cgiに追記してください

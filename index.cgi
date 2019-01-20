@@ -1,7 +1,7 @@
 #!/usr/local/bin/perl
 ####################################
 ##     ゆとシートⅡ for SW2.5     ##
-##                version1.02     ##
+##                version1.03     ##
 ##          by ゆとらいず工房     ##
 ##    https://yutorize.2-d.jp     ##
 ####################################
@@ -18,7 +18,7 @@ use Fcntl;
 
 ### バージョン #######################################################################################
 
-our $ver = "1.02";
+our $ver = "1.03";
 
 ### 設定読込 #########################################################################################
 
@@ -68,8 +68,9 @@ elsif($mode eq 'delete')     { require $set::lib_delete; } #削除
 elsif($mode eq 'json')       { require $set::lib_json; }   #外部アプリ連携
 elsif(param('id')) { require $set::lib_view; }   #シート表示
 else {
-  if(param('type') eq 'm'){ require $set::lib_list_mons; }
-  else                  { require $set::lib_list; }
+  if   (param('type') eq 'm'){ require $set::lib_list_mons; }
+  elsif(param('type') eq 'i'){ require $set::lib_list_item; }
+  else                       { require $set::lib_list; }
 }   #一覧表示
 
 

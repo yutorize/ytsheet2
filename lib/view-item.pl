@@ -12,7 +12,7 @@ require $set::data_items;
 
 ### テンプレート読み込み #############################################################################
 my $SHEET;
-$SHEET = HTML::Template->new( filename => $set::skin_mons, utf8 => 1,
+$SHEET = HTML::Template->new( filename => $set::skin_item, utf8 => 1,
   die_on_bad_params => 0, die_on_missing_include => 0, case_sensitive => 1, global_vars => 1);
 
 $SHEET->param("BackupMode" => param('backup') ? 1 : 0);
@@ -22,13 +22,14 @@ my $id = param('id');
 my $file = $main::file;
 
 our %pc = ();
-my $datafile = "${set::mons_dir}${file}/data.cgi";
-   $datafile = "${set::mons_dir}${file}/backup/".param('backup').'.cgi' if param('backup');
+my $datafile = "${set::item_dir}${file}/data.cgi";
+   $datafile = "${set::item_dir}${file}/backup/".param('backup').'.cgi' if param('backup');
 open my $IN, '<', $datafile or error 'キャラクターシートがありません。';
 $_ =~ s/(.*?)<>(.*?)\n/$pc{$1} = $2;/egi while <$IN>;
 close($IN);
 
 $SHEET->param("id" => $id);
+$SHEET->param("itemNameRaw" => $pc{'itemName'});
 
 ### 置換 --------------------------------------------------
 foreach (keys %pc) {
@@ -37,14 +38,14 @@ foreach (keys %pc) {
     $pc{$_} = tag_unescape_lines($pc{$_});
   }
 }
-$pc{'skills'} =~ s/<br>/\n/gi;
-$pc{'skills'} =~ s/^●(.*?)$/<\/p><h3>●$1<\/h3><p>/gim;
-$pc{'skills'} =~ s/^((?:[○◯〇△＞▶〆☆≫»□☑🗨]|&gt;&gt;)+)(.*?)([ 　]|$)/"<\/p><h5>".&text_convert_icon($1)."$2<\/h5><p>".$3;/egim;
-$pc{'skills'} =~ s/\n+<\/p>/<\/p>/gi;
-$pc{'skills'} =~ s/(^|<p(?:.*?)>|<hr(?:.*?)>)\n/$1/gi;
-$pc{'skills'} = "<p>$pc{'skills'}</p>";
-$pc{'skills'} =~ s/<p><\/p>//gi;
-$pc{'skills'} =~ s/\n/<br>/gi;
+$pc{'effects'} =~ s/<br>/\n/gi;
+$pc{'effects'} =~ s/^●(.*?)$/<\/p><h3>●$1<\/h3><p>/gim;
+$pc{'effects'} =~ s/^((?:[○◯〇△＞▶〆☆≫»□☑🗨]|&gt;&gt;)+)(.*?)([ 　]|$)/"<\/p><h5>".&text_convert_icon($1)."$2<\/h5><p>".$3;/egim;
+$pc{'effects'} =~ s/\n+<\/p>/<\/p>/gi;
+$pc{'effects'} =~ s/(^|<p(?:.*?)>|<hr(?:.*?)>)\n/$1/gi;
+$pc{'effects'} = "<p>$pc{'effects'}</p>";
+$pc{'effects'} =~ s/<p><\/p>//gi;
+$pc{'effects'} =~ s/\n/<br>/gi;
 
 ### テンプレ用に変換 --------------------------------------------------
 while (my ($key, $value) = each(%pc)){
@@ -52,6 +53,42 @@ while (my ($key, $value) = each(%pc)){
 }
 
 ### 出力準備 #########################################################################################
+$SHEET->param("magic" => ($pc{'magic'} ? "<img class=\"i-icon\" src=\"${set::icon_dir}wp_magic.png\">" : ''));
+
+### 武器 --------------------------------------------------
+my @weapons;
+foreach (1 .. 3){
+  next if $pc{'weapon'.$_.'Usage'}.$pc{'weapon'.$_.'Reqd'}.
+          $pc{'weapon'.$_.'Acc'}.$pc{'weapon'.$_.'Rate'}.$pc{'weapon'.$_.'Crit'}.
+          $pc{'weapon'.$_.'Dmg'}.$pc{'weapon'.$_.'Note'}
+          eq '';
+  push(@weapons, {
+    "USAGE"    => $pc{'weapon'.$_.'Usage'},
+    "REQD"     => $pc{'weapon'.$_.'Reqd'},
+    "ACC"      => $pc{'weapon'.$_.'Acc'},
+    "RATE"     => $pc{'weapon'.$_.'Rate'},
+    "CRIT"     => $pc{'weapon'.$_.'Crit'},
+    "DMG"      => $pc{'weapon'.$_.'Dmg'},
+    "NOTE"     => $pc{'weapon'.$_.'Note'},
+  } );
+}
+$SHEET->param(WeaponData => \@weapons);
+
+### 防具 --------------------------------------------------
+my @armours;
+foreach (1 .. 3){
+  next if $pc{'armour'.$_.'Usage'}.$pc{'armour'.$_.'Reqd'}.
+          $pc{'armour'.$_.'Acc'}.$pc{'armour'.$_.'Def'}.$pc{'armour'.$_.'Note'}
+          eq '';
+  push(@armours, {
+    "USAGE"    => $pc{'armour'.$_.'Usage'},
+    "REQD"     => $pc{'armour'.$_.'Reqd'},
+    "EVA"      => $pc{'armour'.$_.'Eva'},
+    "DEF"      => $pc{'armour'.$_.'Def'},
+    "NOTE"     => $pc{'armour'.$_.'Note'},
+  } );
+}
+$SHEET->param(ArmourData => \@armours);
 
 ### タグ --------------------------------------------------
 my @tags;
@@ -63,42 +100,9 @@ foreach(split(/ /, $pc{'tags'})){
 }
 $SHEET->param(Tags => \@tags);
 
-### ステータス --------------------------------------------------
-my @status;
-foreach (1 .. $pc{'statusNum'}){
-  $pc{'status'.$_.'Accuracy'} = ($pc{'status'.$_.'Accuracy'} eq '' ? '―' : $pc{'status'.$_.'Accuracy'}.' ('.$pc{'status'.$_.'AccuracyFix'}.')');
-  $pc{'status'.$_.'Evasion'}  = ($pc{'status'.$_.'Evasion'} eq '' ? '―' : $pc{'status'.$_.'Evasion'}.' ('.$pc{'status'.$_.'EvasionFix'}.')');
-  $pc{'status'.$_.'Damage'}  = '―' if $pc{'status'.$_.'Damage'} eq '';
-  $pc{'status'.$_.'Defense'} = '―' if $pc{'status'.$_.'Defense'} eq '';
-  $pc{'status'.$_.'Hp'} = '―' if $pc{'status'.$_.'Hp'} eq '';
-  $pc{'status'.$_.'Mp'} = '―' if $pc{'status'.$_.'Mp'} eq '';
-  push(@status, {
-    "STYLE"    => $pc{'status'.$_.'Style'},
-    "ACCURACY" => $pc{'status'.$_.'Accuracy'},
-    "DAMAGE"   => $pc{'status'.$_.'Damage'},
-    "EVASION"  => $pc{'status'.$_.'Evasion'},
-    "DEFENSE"  => $pc{'status'.$_.'Defense'},
-    "HP"       => $pc{'status'.$_.'Hp'},
-    "MP"       => $pc{'status'.$_.'Mp'},
-  } );
-}
-$SHEET->param(Status => \@status);
-
-### 部位 --------------------------------------------------
-$SHEET->param(partsOn => 1) if $pc{'partsNum'};
-
-### 戦利品 --------------------------------------------------
-my @loots;
-foreach (1 .. $pc{'lootsNum'}){
-  push(@loots, {
-    "NUM"  => $pc{'loots'.$_.'Num'},
-    "ITEM" => $pc{'loots'.$_.'Item'},
-  } );
-}
-$SHEET->param(Loots => \@loots);
 
 ### バックアップ --------------------------------------------------
-opendir(my $DIR,"${set::mons_dir}${file}/backup");
+opendir(my $DIR,"${set::item_dir}${file}/backup");
 my @backlist = readdir($DIR);
 closedir($DIR);
 my @backup;
@@ -119,14 +123,13 @@ $SHEET->param(Backup => \@backup);
 $SHEET->param(ReqdPassword => (!$pc{'protect'} || $pc{'protect'} eq 'password' ? 1 : 0) );
 
 ### タイトル --------------------------------------------------
-$SHEET->param(characterNameTitle => tag_delete($pc{'characterName'}));
-$SHEET->param(monsterNameTitle => tag_delete($pc{'monsterName'}));
+$SHEET->param(itemNameTitle => tag_delete($pc{'itemName'}));
 $SHEET->param(title => $set::title);
 
 ### 画像 --------------------------------------------------
 $pc{'imageUpdateTime'} = $pc{'updateTime'};
 $pc{'imageUpdateTime'} =~ s/[\-\ \:]//g;
-$SHEET->param("imageSrc" => "${set::mons_dir}${file}/image.$pc{'image'}?$pc{'imageUpdateTime'}");
+$SHEET->param("imageSrc" => "${set::item_dir}${file}/image.$pc{'image'}?$pc{'imageUpdateTime'}");
 
 ### エラー --------------------------------------------------
 $SHEET->param(error => $main::login_error);

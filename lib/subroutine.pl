@@ -92,6 +92,13 @@ sub class_color {
   return $text;
 }
 
+### タグ削除 --------------------------------------------------
+sub tag_delete {
+  my $text = $_[0];
+  $text =~ s/<.+?>//g;
+  return $text;
+}
+
 ### 安全にevalする --------------------------------------------------
 sub s_eval {
   my $i = shift;
