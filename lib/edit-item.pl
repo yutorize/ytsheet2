@@ -120,7 +120,7 @@ print <<"HTML";
 HTML
 if($mode eq 'edit'){
 print <<"HTML";
-        <input type="button" value="複製" onclick="window.open('./?mode=copy&type=m&id=${id}');">
+        <input type="button" value="複製" onclick="window.open('./?mode=copy&type=i&id=${id}');">
 HTML
 }
 print <<"HTML";

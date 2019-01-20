@@ -489,6 +489,8 @@ print <<"HTML";
               <dt>セージ            </dt><dd>@{[input('lvSag', 'number','changeLv','min="0" max="17"')]}</dd>
               <dt>エンハンサー      </dt><dd>@{[input('lvEnh', 'number','changeLv','min="0" max="17"')]}</dd>
               <dt>バード            </dt><dd>@{[input('lvBar', 'number','changeLv','min="0" max="17"')]}</dd>
+              <dt>ライダー          </dt><dd>@{[input('lvRid', 'number','changeLv','min="0" max="17"')]}</dd>
+              <dt>アルケミスト      </dt><dd>@{[input('lvAlc', 'number','changeLv','min="0" max="17"')]}</dd>
             </dl>
           </div>
           <div class="box" id="common-classes">
@@ -556,6 +558,38 @@ foreach my $lv (1..19){
   foreach my $craft (@data::craft_song){
     next if $lv < @$craft[0];
     print '<option'.(($pc{"craftSong$lv"} eq @$craft[1])?' selected':'').'>'.@$craft[1];
+  }
+  print "</select></li>\n";
+}
+print <<"HTML";
+            </ul>
+          </div>
+          <div class="box" id="craft-riding">
+            <h2>騎芸</h2>
+            <ul>
+HTML
+foreach my $lv (1..17){
+  print '<li id="craft-riding'.$lv.'"><select name="craftRiding'.$lv.'">';
+  print '<option></option>';
+  foreach my $craft (@data::craft_riding){
+    next if $lv < @$craft[0];
+    print '<option'.(($pc{"craftRiding$lv"} eq @$craft[1])?' selected':'').'>'.@$craft[1];
+  }
+  print "</select></li>\n";
+}
+print <<"HTML";
+            </ul>
+          </div>
+          <div class="box" id="craft-alchemy">
+            <h2>賦術</h2>
+            <ul>
+HTML
+foreach my $lv (1..17){
+  print '<li id="craft-alchemy'.$lv.'"><select name="craftAlchemy'.$lv.'">';
+  print '<option></option>';
+  foreach my $craft (@data::craft_alchemy){
+    next if $lv < @$craft[0];
+    print '<option'.(($pc{"craftAlchemy$lv"} eq @$craft[1])?' selected':'').'>'.@$craft[1];
   }
   print "</select></li>\n";
 }
@@ -698,6 +732,13 @@ print <<"HTML";
               <td>+@{[ input 'magicPowerAddBar', 'number','calcMagic' ]}</td>
               <td id="magic-power-bard-value">0</td>
             </tr>
+            <tr@{[ display $pc{'lvAlc'} ]} id="magic-power-alchemist">
+              <th>アルケミスト</th>
+              <th>賦術</th>
+              <td></td>
+              <td>+@{[ input 'magicPowerAddAlc', 'number','calcMagic' ]}</td>
+              <td id="magic-power-alchemist-value">0</td>
+            </tr>
           </table>
         </div>
       </div>
@@ -744,6 +785,14 @@ print <<"HTML";
               <td>―</td>
               <td>―</td>
               <td id="attack-shooter-dmg">0</td>
+            </tr>
+            <tr id="attack-enhancer"@{[ display ($pc{'lvEnh'} >= 10) ]}>
+              <td>エンハンサー技能</td>
+              <td id="attack-enhancer-str">0</td>
+              <td id="attack-enhancer-acc">0</td>
+              <td>―</td>
+              <td>―</td>
+              <td id="attack-enhancer-dmg">0</td>
             </tr>
 HTML
 foreach my $weapon (@data::weapons){
@@ -805,7 +854,7 @@ print <<"HTML";
               <td>+@{[input("weapon${i}Dmg",'number','calcWeapon')]}=<b id="weapon${i}-dmg-total">0</b></td>
               <td>@{[input("weapon${i}Own",'checkbox','calcWeapon')]}</td>
               <td><select name="weapon${i}Category" oninput="calcWeapon()">@{[option("weapon${i}Category",@data::weapon_names)]}</select></td>
-              <td><select name="weapon${i}Class" oninput="calcWeapon()">@{[option("weapon${i}Class",'ファイター','グラップラー','フェンサー','シューター')]}</select></td>
+              <td><select name="weapon${i}Class" oninput="calcWeapon()">@{[option("weapon${i}Class",'ファイター','グラップラー','フェンサー','シューター','エンハンサー')]}</select></td>
               <td>@{[input("weapon${i}Note",'','','placeholder="備考"')]}</td>
             </tr>
 HTML
@@ -1019,7 +1068,7 @@ print <<"HTML";
               <tr><th></th><th>点数</th></tr>
 HTML
 foreach my $i (1 .. $pc{'dishonorItemsNum'}){
-  print '<tr><td>'.(input "disHonorItem${i}", "text").'</td><td>'.(input "dishonorItem${i}Pt", "number", "calcDishonor").'</td></tr>';
+  print '<tr><td>'.(input "dishonorItem${i}", "text").'</td><td>'.(input "dishonorItem${i}Pt", "number", "calcDishonor").'</td></tr>';
 }
 print <<"HTML";
             </table>
@@ -1297,6 +1346,8 @@ foreach (
   'footwork',
   'accuracyEnhance',
   'evasiveManeuver',
+  'magicPowerEnhance',
+  'alchemyEnhance',
   'shootersMartialArts',
   'tenacity',
   'capacity',
@@ -1387,7 +1438,7 @@ print <<"HTML";
   }
 }
   </script>
-  <script src="./lib/edit.js?1.02.003" ></script>
+  <script src="./lib/edit.js?1.03.002" ></script>
 </body>
 
 </html>

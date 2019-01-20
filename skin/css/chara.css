@@ -211,6 +211,41 @@ p.words span.brackets {
   grid-template-columns: 1fr 1fr 1fr 1.3fr 0.8fr 1.2fr;
   grid-template-rows: auto;
 }
+
+#stt-base-tec { grid-row: 1 / span 2; grid-column: 1; }
+#stt-base-phy { grid-row: 3 / span 2; grid-column: 1; }
+#stt-base-spi { grid-row: 5 / span 2; grid-column: 1; }
+#stt-base-A { grid-row: 1; grid-column: 2; }
+#stt-base-B { grid-row: 2; grid-column: 2; }
+#stt-base-C { grid-row: 3; grid-column: 2; }
+#stt-base-D { grid-row: 4; grid-column: 2; }
+#stt-base-E { grid-row: 5; grid-column: 2; }
+#stt-base-F { grid-row: 6; grid-column: 2; }
+#stt-grow-A { grid-row: 1; grid-column: 3; }
+#stt-grow-B { grid-row: 2; grid-column: 3; }
+#stt-grow-C { grid-row: 3; grid-column: 3; }
+#stt-grow-D { grid-row: 4; grid-column: 3; }
+#stt-grow-E { grid-row: 5; grid-column: 3; }
+#stt-grow-F { grid-row: 6; grid-column: 3; }
+#stt-dex { grid-row: 1; grid-column: 4; }
+#stt-agi { grid-row: 2; grid-column: 4; }
+#stt-str { grid-row: 3; grid-column: 4; }
+#stt-vit { grid-row: 4; grid-column: 4; }
+#stt-int { grid-row: 5; grid-column: 4; }
+#stt-mnd { grid-row: 6; grid-column: 4; }
+#stt-add-A { grid-row: 1; grid-column: 5; }
+#stt-add-B { grid-row: 2; grid-column: 5; }
+#stt-add-C { grid-row: 3; grid-column: 5; }
+#stt-add-D { grid-row: 4; grid-column: 5; }
+#stt-add-E { grid-row: 5; grid-column: 5; }
+#stt-add-F { grid-row: 6; grid-column: 5; }
+#stt-bonus-dex { grid-row: 1; grid-column: 6; }
+#stt-bonus-agi { grid-row: 2; grid-column: 6; }
+#stt-bonus-str { grid-row: 3; grid-column: 6; }
+#stt-bonus-vit { grid-row: 4; grid-column: 6; }
+#stt-bonus-int { grid-row: 5; grid-column: 6; }
+#stt-bonus-mnd { grid-row: 6; grid-column: 6; }
+
 #status dl {
   display: flex;
   flex-direction: column;
@@ -257,52 +292,6 @@ p.words span.brackets {
   margin: 0 -3%;
   transform: scale(0.85, 0.85);
 }
-#status dl[id^="stt-bonus"] {
-  margin-left: .8rem;
-}
-#status dl[id^="stt-bonus"] dt span {
-  display: block;
-  width: 3em;
-  margin: 0 -.3em;
-  transform: scale(0.75, 0.85);
-}
-#status dl[id^="stt-bonus"] dt span::after { content: "ボーナス"; }
-@media screen and (max-width:850px){
-  #status dl[id^="stt-bonus"] dt span::after { content: "Ｂ"; }
-}
-#stt-base-tec { grid-row: 1 / span 2; grid-column: 1; }
-#stt-base-phy { grid-row: 3 / span 2; grid-column: 1; }
-#stt-base-spi { grid-row: 5 / span 2; grid-column: 1; }
-#stt-base-A { grid-row: 1; grid-column: 2; }
-#stt-base-B { grid-row: 2; grid-column: 2; }
-#stt-base-C { grid-row: 3; grid-column: 2; }
-#stt-base-D { grid-row: 4; grid-column: 2; }
-#stt-base-E { grid-row: 5; grid-column: 2; }
-#stt-base-F { grid-row: 6; grid-column: 2; }
-#stt-grow-A { grid-row: 1; grid-column: 3; }
-#stt-grow-B { grid-row: 2; grid-column: 3; }
-#stt-grow-C { grid-row: 3; grid-column: 3; }
-#stt-grow-D { grid-row: 4; grid-column: 3; }
-#stt-grow-E { grid-row: 5; grid-column: 3; }
-#stt-grow-F { grid-row: 6; grid-column: 3; }
-#stt-dex { grid-row: 1; grid-column: 4; }
-#stt-agi { grid-row: 2; grid-column: 4; }
-#stt-str { grid-row: 3; grid-column: 4; }
-#stt-vit { grid-row: 4; grid-column: 4; }
-#stt-int { grid-row: 5; grid-column: 4; }
-#stt-mnd { grid-row: 6; grid-column: 4; }
-#stt-add-A { grid-row: 1; grid-column: 5; }
-#stt-add-B { grid-row: 2; grid-column: 5; }
-#stt-add-C { grid-row: 3; grid-column: 5; }
-#stt-add-D { grid-row: 4; grid-column: 5; }
-#stt-add-E { grid-row: 5; grid-column: 5; }
-#stt-add-F { grid-row: 6; grid-column: 5; }
-#stt-bonus-dex { grid-row: 1; grid-column: 6; }
-#stt-bonus-agi { grid-row: 2; grid-column: 6; }
-#stt-bonus-str { grid-row: 3; grid-column: 6; }
-#stt-bonus-vit { grid-row: 4; grid-column: 6; }
-#stt-bonus-int { grid-row: 5; grid-column: 6; }
-#stt-bonus-mnd { grid-row: 6; grid-column: 6; }
 
 #status dl:nth-child(n+4):nth-child(-n+15)::before,
 #status dl[id^="stt-add"]::before {
@@ -322,6 +311,10 @@ p.words span.brackets {
 #status dl[id^="stt-add"]::before {
   left: -.3rem;
 }
+
+#status dl[id^="stt-bonus"] {
+  margin-left: .8rem;
+}
 #status dl[id^="stt-bonus"]::before {
   position: absolute;
   content: "";
@@ -338,6 +331,19 @@ p.words span.brackets {
   left: -1.6rem;
   bottom: 8px;
   font-size: 1.2rem;
+}
+#status dl[id^="stt-bonus"] dt span {
+  display: block;
+  width: 3em;
+  margin: 0 -.4em;
+  transform: scale(0.75, 0.85);
+}
+#status dl[id^="stt-bonus"] dt span::after { content: "ボーナス"; }
+@media screen and (max-width:850px){
+  #status dl[id^="stt-bonus"] dt span::after { content: "Ｂ"; }
+}
+#status dl[id^="stt-bonus"] dd {
+  transform: scale(1.2);
 }
 
 /* Sub-Status */
@@ -926,7 +932,7 @@ div#area-items-R {
   padding: 1px 0;
   text-align: left;
 }
-#history table tr td:nth-child(9) span {
+#history table tr td:nth-child(9) > span {
   display: inline-block;
   padding: 0 .5em;
 }

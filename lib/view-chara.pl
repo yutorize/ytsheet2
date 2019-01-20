@@ -119,8 +119,8 @@ foreach (
   ['Dem','デーモンルーラー'],
   ['Phy','フィジカルマスター'],
   ['Gri','グリモワール'],
-  ['Art','アリストクラシー'],
-  ['Ari','アーティザン'],
+  ['Ari','アリストクラシー'],
+  ['Art','アーティザン'],
 ){
   next if !$pc{'lv'.@$_[0]};
   if(@$_[1] eq 'プリースト' && $pc{'faith'}){
@@ -148,9 +148,10 @@ foreach (split /,/, $pc{'combatFeatsAuto'}) {
 $SHEET->param(CombatFeatsAuto => \@feats_auto);
 
 ### 練技 --------------------------------------------------
-my @craft_enhance;
+my @craft_enhance; my $enhance_attack_on;
 foreach (1 .. $pc{'lvEnh'}){
   push(@craft_enhance, { "NAME" => $pc{'craftEnhance'.$_} } );
+  $enhance_attack_on = 1 if $pc{'craftEnhance'.$_} =~ /フェンリルバイト|バルーンシードショット/;
 }
 $SHEET->param(CraftEnhance => \@craft_enhance);
 
@@ -161,8 +162,22 @@ foreach (1 .. $pc{'lvBar'}+$pc{'songAddition'}){
 }
 $SHEET->param(CraftSong => \@craft_song);
 
+### 騎芸 --------------------------------------------------
+my @craft_riding;
+foreach (1 .. $pc{'lvRid'}){
+  push(@craft_riding, { "NAME" => $pc{'craftRiding'.$_} } );
+}
+$SHEET->param(CraftRiding => \@craft_riding);
+
+### 賦術 --------------------------------------------------
+my @craft_alchemy;
+foreach (1 .. $pc{'lvAlc'}){
+  push(@craft_alchemy, { "NAME" => $pc{'craftAlchemy'.$_} } );
+}
+$SHEET->param(CraftAlchemy => \@craft_alchemy);
+
 ### 練技・呪歌：なし --------------------------------------------------
-$SHEET->param(craftNone => 1) if !$pc{'lvEnh'} && !$pc{'lvBar'};
+$SHEET->param(craftNone => 1) if !$pc{'lvEnh'} && !$pc{'lvBar'} && !$pc{'lvRid'} && !$pc{'lvAlc'};
 
 ### 言語 --------------------------------------------------
 my @language;
@@ -190,7 +205,7 @@ $SHEET->param(Language => \@language);
 
 
 ### パッケージ --------------------------------------------------
-$SHEET->param("PackageLv" => max($pc{'lvSco'},$pc{'lvRan'},$pc{'lvSag'},$pc{'lvBar'}));
+$SHEET->param("PackageLv" => max($pc{'lvSco'},$pc{'lvRan'},$pc{'lvSag'},$pc{'lvBar'},$pc{'lvRid'},$pc{'lvAlc'}));
 
 ### 魔力 --------------------------------------------------
 my @magic;
@@ -203,6 +218,7 @@ foreach (
   ['デーモンルーラー'   ,'Dem', '召異魔法', ''],
   ['グリモワール'       ,'Gri', '秘奥魔法', ''],
   ['バード'             ,'Bar', '呪歌',     '楽器'],
+  ['アルケミスト'       ,'Alc', '賦術',     ''],
 ){
   next if !$pc{'lv'.@$_[1]};
   push(@magic, {
@@ -222,10 +238,11 @@ foreach (
   ['グラップラー',    'Gra'],
   ['フェンサー',      'Fen'],
   ['シューター',      'Sho'],
-#  ['エンハンサー',    'Enh'],
+  ['エンハンサー',    'Enh'],
 #  ['デーモンルーラー','Dem'],
 ){
   next if !$pc{'lv'.@$_[1]};
+  next if @$_[0] eq 'エンハンサー' && !$enhance_attack_on;
   push(@atacck, {
     "NAME" => @$_[0]."技能レベル".$pc{'lv'.@$_[1]},
     "STR"  => (@$_[1] eq 'Fen' ? $pc{'reqdStrF'} : $pc{'reqdStr'}),
@@ -393,7 +410,7 @@ foreach (0 .. $pc{'historyNum'}){
     $pc{'history'.$_.'Title'} = "<a href=\"$set::sessionlist?num=$1\" data-num=\"$1\">$pc{'history'.$_.'Title'}<\/a>";
   }
   my $members;
-  foreach my $mem (split(/[,、　 ]+/,$pc{'history'.$_.'Member'})){
+  foreach my $mem (split(/[,、　]+/,$pc{'history'.$_.'Member'})){
     $members .= '<span>'.$mem.'</span>';
   }
   push(@history, {
@@ -422,6 +439,21 @@ foreach (1 .. $pc{'honorItemsNum'}) {
   } );
 }
 $SHEET->param(HonorItems => \@honoritems);
+
+my @dishonoritems;
+foreach (1 .. $pc{'dishonorItemsNum'}) {
+  next if !$pc{'dishonorItem'.$_} && !$pc{'dishonorItem'.$_.'Pt'};
+  push(@dishonoritems, {
+    "NAME" => $pc{'dishonorItem'.$_},
+    "PT"   => $pc{'dishonorItem'.$_.'Pt'},
+  } );
+}
+$SHEET->param(DishonorItems => \@dishonoritems);
+
+foreach (@set::notoriety_rank){
+  my ($name, $num) = @$_;
+  $SHEET->param(notoriety => $name) if $pc{'dishonor'} >= $num;
+}
 
 ### ガメル --------------------------------------------------
 if($pc{"money"} =~ /^(?:自動|auto)$/i){

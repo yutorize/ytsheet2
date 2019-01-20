@@ -100,6 +100,9 @@ $pc{'moneyTotal'} += $pc{'debtTotal'} - $pc{'depositTotal'};
 foreach (1 .. $pc{'honorItemsNum'}){
   $pc{'honor'} -= $pc{'honorItem'.$_.'Pt'};
 }
+foreach (1 .. $pc{'dishonorItemsNum'}){
+  $pc{'dishonor'} += $pc{'dishonorItem'.$_.'Pt'};
+}
 
 ## 経験点消費
 $pc{'expRest'} = $pc{'expTotal'};
@@ -227,15 +230,23 @@ my @abilities;
 if($pc{'lvFig'} >= 7) { push(@abilities, "タフネス"); }
 if($pc{'lvGra'} >= 1) { push(@abilities, "追加攻撃"); }
 if($pc{'lvGra'} >= 7) { push(@abilities, "カウンター"); }
+if($pc{'lvFig'} >=13 || $pc{'lvGra'} >=13) { push(@abilities, "バトルマスター"); }
+if($pc{'lvCaster'} >= 11){ push(@abilities, "ルーンマスター"); }
 if($pc{'lvSco'} >= 5) { push(@abilities, "トレジャーハント"); }
 if($pc{'lvSco'} >= 7) { push(@abilities, "ファストアクション"); }
+if($pc{'lvSco'} >=12) { push(@abilities, "トレジャーマスター"); }
+if($pc{'lvSco'} >=15) { push(@abilities, "匠の技"); }
 if($pc{'lvSco'} >= 9) { push(@abilities, "影走り"); }
 if($pc{'lvRan'} >= 5) { push(@abilities, "サバイバビリティ"); }
 if($pc{'lvRan'} >= 7) { push(@abilities, "不屈"); }
 if($pc{'lvRan'} >= 9) { push(@abilities, "ポーションマスター"); }
+if($pc{'lvRan'} >=12) { push(@abilities, "縮地"); }
+if($pc{'lvRan'} >=15) { push(@abilities, "ランアンドガン"); }
 if($pc{'lvSag'} >= 5) { push(@abilities, "鋭い目"); }
 if($pc{'lvSag'} >= 7) { push(@abilities, "弱点看破"); }
 if($pc{'lvSag'} >= 9) { push(@abilities, "マナセーブ"); }
+if($pc{'lvSag'} >=12) { push(@abilities, "マナ耐性"); }
+if($pc{'lvSag'} >=15) { push(@abilities, "賢人の知恵"); }
 $" = ',';
 $pc{'combatFeatsAuto'} = "@abilities";
 ## 選択特技による補正
@@ -251,6 +262,8 @@ $pc{'combatFeatsAuto'} = "@abilities";
     elsif($feat eq '回避行動Ⅱ')  { $pc{'evasiveManeuver'} = 2; }
     elsif($feat eq '魔力強化Ⅰ')  { $pc{'magicPowerEnhance'} = 1; }
     elsif($feat eq '魔力強化Ⅱ')  { $pc{'magicPowerEnhance'} = 2; }
+    elsif($feat eq '賦術強化Ⅰ')  { $pc{'alchemyEnhance'} = 1; }
+    elsif($feat eq '賦術強化Ⅱ')  { $pc{'alchemyEnhance'} = 2; }
     elsif($feat eq '頑強')        { $pc{'tenacity'} += 15; }
     elsif($feat eq '超頑強')      { $pc{'tenacity'} += 15; }
     elsif($feat eq 'キャパシティ'){ $pc{'capacity'} += 15; }
@@ -269,6 +282,7 @@ $pc{'combatFeatsAuto'} = "@abilities";
     elsif($feat eq 'スローイングⅡ'){ $pc{'throwing'} = 2; }
     elsif($feat eq '呪歌追加Ⅰ')  { $pc{'songAddition'} = 1; }
     elsif($feat eq '呪歌追加Ⅱ')  { $pc{'songAddition'} = 2; }
+    elsif($feat eq '呪歌追加Ⅲ')  { $pc{'songAddition'} = 3; }
   }
 }
 
@@ -321,14 +335,17 @@ $pc{'mobilityFull'} = $pc{'mobilityTotal'} * 3;
 $pc{'mobilityLimited'} = $pc{'footwork'} ? 10 : 3;
 
 ## 判定パッケージ
-$pc{'packScoutTec'}  = $st{'ScoA'};
-$pc{'packScoutAgi'}  = $st{'ScoB'};
-$pc{'packScoutInt'}  = $st{'ScoE'};
-$pc{'packRangerTec'} = $st{'RanA'};
-$pc{'packRangerAgi'} = $st{'RanB'};
-$pc{'packRangerInt'} = $st{'RanE'};
-$pc{'packSageInt'}   = $st{'SagE'};
-$pc{'packBardInt'}   = $st{'BarE'};
+$pc{'packScoutTec'}    = $st{'ScoA'};
+$pc{'packScoutAgi'}    = $st{'ScoB'};
+$pc{'packScoutInt'}    = $st{'ScoE'};
+$pc{'packRangerTec'}   = $st{'RanA'};
+$pc{'packRangerAgi'}   = $st{'RanB'};
+$pc{'packRangerInt'}   = $st{'RanE'};
+$pc{'packSageInt'}     = $st{'SagE'};
+$pc{'packBardInt'}     = $st{'BarE'};
+$pc{'packRiderAgi'}    = $st{'RidB'};
+$pc{'packRiderInt'}    = $st{'RidE'};
+$pc{'packAlchemistInt'}= $st{'AlcE'};
 
 ## 魔物知識／先制力
 my @ini_class = ($st{'ScoB'},$st{'WarB'});
@@ -337,12 +354,13 @@ $pc{'monsterLore'} = max($st{'SagE'},$st{'RidE'});
 $pc{'initiative'}  = max(@ini_class);
 
 ## 魔力
-$pc{'magicPowerSor'} = $pc{'lvSor'} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwnSor'} ? 2 : 0)) / 6) + $pc{'magicPowerAddSor'} + $pc{'magicPowerAdd'};
-$pc{'magicPowerCon'} = $pc{'lvCon'} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwnCon'} ? 2 : 0)) / 6) + $pc{'magicPowerAddCon'} + $pc{'magicPowerAdd'};
-$pc{'magicPowerPri'} = $pc{'lvPri'} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwnPri'} ? 2 : 0)) / 6) + $pc{'magicPowerAddPri'} + $pc{'magicPowerAdd'};
-$pc{'magicPowerFai'} = $pc{'lvFai'} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwnFai'} ? 2 : 0)) / 6) + $pc{'magicPowerAddFai'} + $pc{'magicPowerAdd'};
-$pc{'magicPowerMag'} = $pc{'lvMag'} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwnMag'} ? 2 : 0)) / 6) + $pc{'magicPowerAddMag'} + $pc{'magicPowerAdd'};
+$pc{'magicPowerSor'} = $pc{'lvSor'} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwnSor'} ? 2 : 0)) / 6) + $pc{'magicPowerAddSor'} + $pc{'magicPowerAdd'} + $pc{'magicPowerEnhance'};
+$pc{'magicPowerCon'} = $pc{'lvCon'} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwnCon'} ? 2 : 0)) / 6) + $pc{'magicPowerAddCon'} + $pc{'magicPowerAdd'} + $pc{'magicPowerEnhance'};
+$pc{'magicPowerPri'} = $pc{'lvPri'} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwnPri'} ? 2 : 0)) / 6) + $pc{'magicPowerAddPri'} + $pc{'magicPowerAdd'} + $pc{'magicPowerEnhance'};
+$pc{'magicPowerFai'} = $pc{'lvFai'} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwnFai'} ? 2 : 0)) / 6) + $pc{'magicPowerAddFai'} + $pc{'magicPowerAdd'} + $pc{'magicPowerEnhance'};
+$pc{'magicPowerMag'} = $pc{'lvMag'} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwnMag'} ? 2 : 0)) / 6) + $pc{'magicPowerAddMag'} + $pc{'magicPowerAdd'} + $pc{'magicPowerEnhance'};
 $pc{'magicPowerBar'} = $pc{'lvBar'} + int(($pc{'sttMnd'} + $pc{'sttAddF'} + ($pc{'magicPowerOwnBar'} ? 2 : 0)) / 6) + $pc{'magicPowerAddBar'};
+$pc{'magicPowerAlc'} = $pc{'lvAlc'} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwnAlc'} ? 2 : 0)) / 6) + $pc{'magicPowerAddInt'} + $pc{'alchemyEnhance'};
 
 ### 装備 --------------------------------------------------
 ## 武器
@@ -511,6 +529,7 @@ close($FH);
 {
   my($aka, $ruby) = split(/:/,$pc{'aka'});
   my $charactername = ($aka?"“$aka”":"").$pc{'characterName'};
+  $charactername =~ s/[|｜]([^|｜]+?)《.+?》/$1/g;
 
   sysopen (my $FH, $set::listfile, O_RDWR | O_CREAT, 0666);
   my @list = sort { (split(/<>/,$b))[3] cmp (split(/<>/,$a))[3] } <$FH>;

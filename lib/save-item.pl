@@ -135,7 +135,7 @@ close($FH);
 {
   my $name = $pc{'itemName'};
   my $type = $pc{'magic'} ? '[ma]' : '';
-  $name =~ s/[|｜]([^|｜]+?)《.+?》/$1/;
+  $name =~ s/[|｜]([^|｜]+?)《.+?》/$1/g;
   sysopen (my $FH, $set::itemlist, O_RDWR | O_CREAT, 0666);
   my @list = sort { (split(/<>/,$b))[3] cmp (split(/<>/,$a))[3] } <$FH>;
   flock($FH, 2);

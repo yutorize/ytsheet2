@@ -134,7 +134,7 @@ close($FH);
 ### 一覧データ更新 --------------------------------------------------
 {
   my $name = $pc{'characterName'} ? $pc{'characterName'} : $pc{'monsterName'};
-  $name =~ s/[|｜]([^|｜]+?)《.+?》/$1/;
+  $name =~ s/[|｜]([^|｜]+?)《.+?》/$1/g;
   sysopen (my $FH, $set::monslist, O_RDWR | O_CREAT, 0666);
   my @list = sort { (split(/<>/,$b))[3] cmp (split(/<>/,$a))[3] } <$FH>;
   flock($FH, 2);

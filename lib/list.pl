@@ -25,7 +25,7 @@ $INDEX->param(LOGIN_ID => $LOGIN_ID);
 $INDEX->param(mode => $mode);
 
 my $index_mode;
-if(!($mode eq 'mylist' || param('tag') || param('group') || param('name'))){
+if(!($mode eq 'mylist' || param('tag') || param('group') || param('name') || param('image'))){
   $index_mode = 1;
   $INDEX->param(modeIndex => 1);
 }
@@ -59,6 +59,13 @@ foreach (@set::groups){
 }
 $group_name{'all'} = 'すべて' if param('group') eq 'all';
 
+## ランク
+my %rank_sort;
+foreach (@set::adventurer_rank){
+  $rank_sort{@$_[0]} = @$_[1];
+}
+$rank_sort{''} = -1;
+
 ## グループ検索
 my $group_query = param('group');
 if($group_query && param('group') ne 'all') {
@@ -77,6 +84,9 @@ $INDEX->param(tag => $tag_query);
 my $name_query = Encode::decode('utf8', param('name'));
 if($name_query) { @list = grep { (split(/<>/))[4] =~ /$name_query/ } @list; }
 $INDEX->param(name => $name_query);
+
+## 画像フィルタ
+if(param('image') == 1) { @list = grep { (split(/<>/))[15] } @list; }
 
 ## リストを回す
 my %count; my %pl_flag;
@@ -160,7 +170,8 @@ foreach (@list) {
   $updatetime = sprintf("<span>%04d-</span><span>%02d-%02d</span> <span>%02d:%02d</span>",$year,$mon,$day,$hour,$min);
   
   my $sort_data;
-  ($sort_data = $name) =~ s/^“.*”// if ($sort eq 'name');
+  if    ($sort eq 'name'){ ($sort_data = $name) =~ s/^“.*”//; }
+  elsif ($sort eq 'rank'){  $sort_data = $rank_sort{$rank}; }
   
   $name =~ s/^“(.*)”(.*)/<span>“$1”<\/span><span>$2<\/span>/;
   
@@ -202,6 +213,7 @@ foreach (sort {$group_sort{$a} <=> $group_sort{$b}} keys %grouplist){
   elsif($sort eq 'pl')  { @{$grouplist{$_}} = sort { $a->{'PLAYER'} cmp $b->{'PLAYER'} } @{$grouplist{$_}}; }
   elsif($sort eq 'race'){ @{$grouplist{$_}} = sort { $a->{'RACE'} cmp $b->{'RACE'} } @{$grouplist{$_}}; }
   elsif($sort eq 'gender'){ @{$grouplist{$_}} = sort { $a->{'GENDER'} cmp $b->{'GENDER'} } @{$grouplist{$_}}; }
+  elsif($sort eq 'rank'){ @{$grouplist{$_}} = sort { $b->{'SORT'} <=> $a->{'SORT'} } @{$grouplist{$_}}; }
   elsif($sort eq 'lv')  { @{$grouplist{$_}} = sort { $b->{'LV'} <=> $a->{'LV'} } @{$grouplist{$_}}; }
   elsif($sort eq 'exp') { @{$grouplist{$_}} = sort { $b->{'EXP'} <=> $a->{'EXP'} } @{$grouplist{$_}}; }
   elsif($sort eq 'date'){ @{$grouplist{$_}} = sort { $b->{'DATE'} <=> $a->{'DATE'} } @{$grouplist{$_}}; }
@@ -225,6 +237,5 @@ $INDEX->param(ver => $main::ver);
 ### 出力 #############################################################################################
 print "Content-Type: text/html\n\n";
 print $INDEX->output;
-print "<!-- @mylist -->";
 
 1;

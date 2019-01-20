@@ -365,8 +365,24 @@ window.onload = function() {
               </TMPL_LOOP>
             </ul>
           </div></TMPL_IF>
+          <TMPL_IF CraftRiding><div class="box" id="craft-riding">
+            <h2>騎芸</h2>
+            <ul>
+              <TMPL_LOOP CraftRiding>
+              <li id="craft-riding<TMPL_VAR __counter__>">【<TMPL_VAR NAME>】</li>
+              </TMPL_LOOP>
+            </ul>
+          </div></TMPL_IF>
+          <TMPL_IF CraftAlchemy><div class="box" id="craft-archemy">
+            <h2>賦術</h2>
+            <ul>
+              <TMPL_LOOP CraftAlchemy>
+              <li id="craft-archemy<TMPL_VAR __counter__>">【<TMPL_VAR NAME>】</li>
+              </TMPL_LOOP>
+            </ul>
+          </div></TMPL_IF>
           <TMPL_IF craftNone><div class="box">
-            <h2>練技／呪歌／賦術</h2>
+            <h2>練技／呪歌／騎芸／賦術</h2>
             <ul><li>なし</li></ul>
           </div></TMPL_IF>
         </div>
@@ -425,6 +441,28 @@ window.onload = function() {
                 <th>バード技能レベル<TMPL_VAR lvBar></th>
                 <th>見識</th>
                 <td><TMPL_VAR packBardInt></td>
+              </tr>
+            </table>
+            </TMPL_IF>
+            <TMPL_IF lvRid>
+            <table>
+              <tr>
+                <th rowspan="2">ライダー技能レベル<TMPL_VAR lvRid></th>
+                <th>運動</th>
+                <td><TMPL_VAR packRiderAgi></td>
+              </tr>
+              <tr>
+                <th>知識</th>
+                <td><TMPL_VAR packRiderInt></td>
+              </tr>
+            </table>
+            </TMPL_IF>
+            <TMPL_IF lvAlc>
+            <table>
+              <tr>
+                <th>アルケミスト技能レベル<TMPL_VAR lvAlc></th>
+                <th>知識</th>
+                <td><TMPL_VAR packAlchemistInt></td>
               </tr>
             </table>
             </TMPL_IF>
@@ -617,7 +655,7 @@ window.onload = function() {
             <dt>預金／借金</dt><dd><TMPL_VAR deposit> G</dd>
           </dl>
           <div class="box" id="items">
-            <h2>所持品</h2>
+            <h2><TMPL_IF head_items><TMPL_VAR head_items><TMPL_ELSE>所持品</TMPL_IF></h2>
             <p><TMPL_VAR items></p>
           </div>
         </div>
@@ -632,12 +670,6 @@ window.onload = function() {
             <dt>名誉点</dt><dd><TMPL_VAR honor></dd>
             <dt>ランク</dt><dd><TMPL_VAR rank></dd>
           </dl>
-          <TMPL_IF dishonor>
-          <dl class="box" id="dishonor">
-            <dt>不名誉点</dt><dd><TMPL_VAR dishonor></dd>
-            <dt>不名誉称号</dt><dd><TMPL_VAR disrank></dd>
-          </dl>
-          </TMPL_IF>
           <div class="box" id="honor-items">
             <h2>名誉アイテム</h2>
             <table>
@@ -647,6 +679,21 @@ window.onload = function() {
               </TMPL_LOOP>
             </table>
           </div>
+          <TMPL_IF DishonorItems>
+          <dl class="box" id="dishonor">
+            <dt>不名誉点</dt><dd><TMPL_VAR dishonor></dd>
+            <dt>不名誉称号</dt><dd><TMPL_VAR notoriety></dd>
+          </dl>
+          <div class="box" id="dishonor-items">
+            <h2>不名誉詳細</h2>
+            <table>
+              <tr><th></th><th>点数</th></tr>
+              <TMPL_LOOP DishonorItems>
+              <tr><td><TMPL_VAR NAME></td><td><TMPL_VAR PT></td></tr>
+              </TMPL_LOOP>
+            </table>
+          </div>
+          </TMPL_IF>
         </div>
       </div>
       <div class="box" id="free-note">

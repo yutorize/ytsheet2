@@ -18,9 +18,9 @@ sub tag_unescape {
   $text =~ s/&amp;/&/g;
   $text =~ s/&quot;/"/g;
   
-  $text =~ s/{{([0-9\+\-\*\/\%\(\) ]+?)}}/s_eval($1);/eg;
+  $text =~ s/\{\{([0-9\+\-\*\/\%\(\) ]+?)\}\}/s_eval($1);/eg;
   
-  $text =~ s|(―+)|&ddash($1);|eg;
+  $text =~ s/(―+)/&ddash($1);/eg;
   
   
   $text =~ s/\[魔\]/<img alt="[魔]" class="i-icon" src="${set::icon_dir}wp_magic.png">/gi;
@@ -44,17 +44,18 @@ sub tag_unescape {
   
   return $text;
 }
-  sub tag_link_url {
-    my $url = $_[0];
-    my $txt = $_[1];
-    #foreach my $safe (@set::safeurl){
-    #  next if !$safe;
-    #  if($url =~ /^$safe/) { return '<a href="'.$url.'" target="_blank">'.$txt.'</a>'; }
-    #}
-    if($url =~ /^[#\.\/]/){ return '<a href="'.$url.'">'.$txt.'</a>'; }
-    return '<a href="'.$url.'" target="_blank">'.$txt.'</a>';
-    #return '<a href="../'.$set::cgi.'?jump='.$url.'" target="_blank">'.$txt.'</a>';
-  }
+
+sub tag_link_url {
+  my $url = $_[0];
+  my $txt = $_[1];
+  #foreach my $safe (@set::safeurl){
+  #  next if !$safe;
+  #  if($url =~ /^$safe/) { return '<a href="'.$url.'" target="_blank">'.$txt.'</a>'; }
+  #}
+  if($url =~ /^[#\.\/]/){ return '<a href="'.$url.'">'.$txt.'</a>'; }
+  return '<a href="'.$url.'" target="_blank">'.$txt.'</a>';
+  #return '<a href="../'.$set::cgi.'?jump='.$url.'" target="_blank">'.$txt.'</a>';
+}
 
 sub tag_unescape_lines {
   my $text = $_[0];
