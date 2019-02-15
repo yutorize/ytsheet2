@@ -25,7 +25,7 @@ $INDEX->param(LOGIN_ID => $LOGIN_ID);
 $INDEX->param(mode => $mode);
 
 my $index_mode;
-if(!($mode eq 'mylist' || param('tag') || param('group') || param('name') || param('image'))){
+if(!($mode eq 'mylist' || param('tag') || param('group') || param('name') || param('race') || param('exp-min') || param('exp-max') || param('class') || param('image'))){
   $index_mode = 1;
   $INDEX->param(modeIndex => 1);
 }
@@ -85,8 +85,32 @@ my $name_query = Encode::decode('utf8', param('name'));
 if($name_query) { @list = grep { (split(/<>/))[4] =~ /$name_query/ } @list; }
 $INDEX->param(name => $name_query);
 
+## 種族検索
+my $race_query = Encode::decode('utf8', param('race'));
+if($race_query) { @list = grep { (split(/<>/))[9] =~ /^$race_query/ } @list; }
+$INDEX->param(race => $race_query);
+
+## 経験点検索
+my $exp_min_query = param('exp-min');
+my $exp_max_query = param('exp-max');
+if($exp_min_query) { @list = grep { (split(/<>/))[7] >= $exp_min_query } @list; }
+if($exp_max_query) { @list = grep { (split(/<>/))[7] <= $exp_max_query } @list; }
+$INDEX->param(expMin => $exp_min_query);
+$INDEX->param(expMax => $exp_max_query);
+
+## 技能検索
+my @class_query = split(/ |　/, Encode::decode('utf8', param('class')));
+$INDEX->param(class => "@class_query");
+
 ## 画像フィルタ
-if(param('image') == 1) { @list = grep { (split(/<>/))[15] } @list; }
+if(param('image') == 1) {
+  @list = grep { (split(/<>/))[15] } @list;
+  $INDEX->param(image => 1);
+}
+elsif(param('image') eq 'N') {
+  @list = grep { !(split(/<>/))[15] } @list;
+  $INDEX->param(image => 1);
+}
 
 ## リストを回す
 my %count; my %pl_flag;
@@ -160,6 +184,13 @@ foreach (@list) {
   my $class;
   foreach (sort {$lv{$b} <=> $lv{$a}} keys %lv){
     $class .= $_.$lv{$_} if $lv{$_};
+  }
+  if(@class_query){
+    my $class_hit = 1;
+    foreach (@class_query){
+      if($class !~ /$_/){ $class_hit = 0; }
+    }
+    next if !$class_hit;
   }
   $class = class_color($class);
   

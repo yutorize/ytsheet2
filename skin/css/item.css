@@ -108,6 +108,40 @@ div.data dl.reputation dd,
 div.data dl.category   dd,
 div.data dl.age        dd { text-align: center; }
 
+div.data dl.reputation dd,
+div.data dl.shape      dd,
+div.data dl.category   dd,
+div.data dl.age        dd {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+div.data dl.shape dd{
+  justify-content: flex-start;
+}
+div.data dl.category dd > div {
+  width: 100%;
+}
+div.data dl.category dd > div hr {
+  opacity: 0.5;
+}
+@media screen and (max-width:735px){
+  div.data dl.reputation dd,
+  div.data dl.shape      dd,
+  div.data dl.category   dd,
+  div.data dl.age        dd {
+    display: block; 
+  }
+  div.data dl.category dd hr {
+    display: inline;
+    border: 0;
+  }
+  div.data dl.category dd hr::before {
+    content: '／';
+    margin: 0 0.3em;
+  }
+}
+
 div.data dl.effects dd.box {
   background: none;
   border: 0;

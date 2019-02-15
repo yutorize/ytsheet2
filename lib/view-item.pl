@@ -34,7 +34,7 @@ $SHEET->param("itemNameRaw" => $pc{'itemName'});
 ### 置換 --------------------------------------------------
 foreach (keys %pc) {
   $pc{$_} = tag_unescape($pc{$_},$pc{'oldSignConv'});
-  if($_ =~ /^(?:skills|description)$/){
+  if($_ =~ /^(?:effects|description)$/){
     $pc{$_} = tag_unescape_lines($pc{$_});
   }
 }
@@ -54,6 +54,10 @@ while (my ($key, $value) = each(%pc)){
 
 ### 出力準備 #########################################################################################
 $SHEET->param("magic" => ($pc{'magic'} ? "<img class=\"i-icon\" src=\"${set::icon_dir}wp_magic.png\">" : ''));
+
+### カテゴリ --------------------------------------------------
+$pc{'category'} =~ s/[ 　]/<hr>/g;
+$SHEET->param("category" => $pc{'category'});
 
 ### 武器 --------------------------------------------------
 my @weapons;

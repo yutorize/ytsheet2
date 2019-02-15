@@ -135,6 +135,7 @@ close($FH);
 {
   my $name = $pc{'characterName'} ? $pc{'characterName'} : $pc{'monsterName'};
   $name =~ s/[|｜]([^|｜]+?)《.+?》/$1/g;
+  $pc{'hide'} = 'IN' if(!$pc{'hide'} && $pc{'description'} =~ /#login-only/i);
   sysopen (my $FH, $set::monslist, O_RDWR | O_CREAT, 0666);
   my @list = sort { (split(/<>/,$b))[3] cmp (split(/<>/,$a))[3] } <$FH>;
   flock($FH, 2);

@@ -47,4 +47,16 @@ package set;
   our $make_honor = 0;  # 初期名誉点
   our $make_fix   = 0;  # 初期値を固定にする(PLが変更出来ないようにする)=1 しない=0
 
+## ●2.5未実装要素の表示設定 (ON=1)
+ # 全ての技能を表示
+  our $all_class_on = 1;
+ # 一般技能
+  our $common_class_on = 1;
+ # 秘伝
+  our $mystic_arts_on = 1;
+
+
+
+## 上記以外の設定は config-default.pl を参照してください。 ##
+
 1;

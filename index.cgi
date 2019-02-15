@@ -70,7 +70,7 @@ elsif(param('id')) { require $set::lib_view; }   #シート表示
 else {
   if   (param('type') eq 'm'){ require $set::lib_list_mons; }
   elsif(param('type') eq 'i'){ require $set::lib_list_item; }
-  else                       { require $set::lib_list; }
+  else                       { require $set::lib_list_char; }
 }   #一覧表示
 
 

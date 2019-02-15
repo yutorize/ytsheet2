@@ -2,6 +2,13 @@
 
 /* ゆとシート for SW2.5 - リスト */
 
+/* // Article
+---------------------------------------------------------------------------------------------------- */
+article h1 small {
+  display: inline-block;
+  font-size: 50%;
+}
+
 /* // Aside
 ---------------------------------------------------------------------------------------------------- */
 main aside {
@@ -28,14 +35,37 @@ main aside hr {
 
 /* // Search-Form
 ---------------------------------------------------------------------------------------------------- */
+form#form-search{
+  width: max-content;
+  margin-left: auto;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 1rem;
+}
+form#form-search h3 {
+  width: max-content;
+  margin-left: auto;
+  padding: 0 1em;
+  cursor: pointer;
+}
+form#form-search h3:hover {
+  background-color: rgba(100,200,255,0.2);
+}
 form#form-search p {
+  width: max-content;
   margin: .5rem 1.5rem;
-  text-align: right;
+  margin-left: auto;
+  padding: .5em 1em;
+  text-align: left;
 }
 form#form-search p input {
   height: 3rem;
   margin: 1px;
   vertical-align:middle;
+}
+form#form-search p input[type="submit"] {
+  display: block;
+  margin-left: auto;
 }
 
 /* // List

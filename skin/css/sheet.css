@@ -2,6 +2,18 @@
 
 /* ゆとシート for SW2.5 */
 
+/* // Font
+---------------------------------------------------------------------------------------------------- */
+@import url('https://fonts.googleapis.com/css?family=Varela+Round&text=0123456789');
+
+body,
+header nav {
+  font-family: "ヒラギノ角ゴ ProN","Hiragino Kaku Gothic ProN","HiraKakuProN-W3","メイリオ","Meiryo",sans-serif;
+}
+body {
+  font-family: "Varela Round";
+}
+
 /* // Base
 ---------------------------------------------------------------------------------------------------- */
 
@@ -147,9 +159,9 @@ dl#sub-status {
 }
 
 /* テキスト処理 */
-.left   { text-align: left; }
-.center { text-align: center; }
-.right  { text-align: right; }
+.left   { text-align: left !important; }
+.center { text-align: center !important; }
+.right  { text-align: right !important; }
 ruby {
   position: relative;
 }
@@ -263,14 +275,6 @@ dl.note-description dd {
   content: "\f075";
   font-weight: normal;
   transform: scale(-1, 1);
-}
-
-
-/* // Font
----------------------------------------------------------------------------------------------------- */
-body,
-header nav {
-  font-family: "ヒラギノ角ゴ ProN","Hiragino Kaku Gothic ProN","HiraKakuProN-W3","メイリオ","Meiryo",sans-serif;
 }
 
 /* // Nav

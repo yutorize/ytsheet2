@@ -131,6 +131,7 @@ if($set::user_reqd){
   print <<"HTML";
     <input type="hidden" name="protect" value="account">
     <input type="hidden" name="protectOld" value="$pc{'protect'}">
+    <input type="hidden" name="pass" value="$pass">
 HTML
 }
 else {
@@ -334,8 +335,13 @@ print <<"HTML";
     <option value="冒険道具類">
     <option value="冒険道具類（消耗品）">
   </datalist>
+<script>
+function view(viewId){
+  let value = document.getElementById(viewId).style.display;
+  document.getElementById(viewId).style.display = (value === 'none') ? '' : 'none';
+}
+</script>
 </body>
-
 </html>
 HTML
 

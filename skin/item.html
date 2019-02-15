@@ -98,7 +98,7 @@ window.onload = function() {
 
   <form id="login-form" method="post" action="./">
     <input type="hidden" name="mode" value="edit">
-    <input type="hidden" name="type" value="m">
+    <input type="hidden" name="type" value="i">
     <input type="hidden" name="id" value="<TMPL_VAR id>">
     <input type="password" name="pass" placeholder="password">
     <input type="submit" value="編集">
@@ -120,8 +120,8 @@ window.onload = function() {
       
       <div class="data">
       <dl class="reputation"><dt>知名度</dt><dd><TMPL_VAR reputation></dd></dl>
-      <dl class="shape"><dt>形状</dt><dd><TMPL_VAR shape></dd></dl>
-      <dl class="category"><dt>カテゴリ</dt><dd><TMPL_VAR category></dd></dl>
+      <dl class="shape"><dt>形状</dt><dd><div><TMPL_VAR shape></div></dd></dl>
+      <dl class="category"><dt>カテゴリ</dt><dd><div><TMPL_VAR category></div></dd></dl>
       <dl class="age"><dt>製作時期</dt><dd><TMPL_VAR age></dd></dl>
       <dl class="summary"><dt>概要</dt><dd><TMPL_VAR summary></dd></dl>
       <dl class="effects"><dt>効果</dt><dd class="box">
@@ -159,10 +159,10 @@ window.onload = function() {
       </dd></dl>
       </div>
       
-      <div class="box description">
+      <TMPL_IF description><div class="box description">
         <h2>由来・逸話</h2>
         <p><TMPL_VAR description></p>
-      </div>
+      </div></TMPL_IF>
       <div id="author">
         製作者：<TMPL_VAR author>
       </div>
