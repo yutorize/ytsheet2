@@ -25,7 +25,7 @@ $INDEX->param(LOGIN_ID => $LOGIN_ID);
 $INDEX->param(mode => $mode);
 
 my $index_mode;
-if(!($mode eq 'mylist' || param('tag') || param('group') || param('name') || param('race') || param('exp-min') || param('exp-max') || param('class') || param('image'))){
+if(!($mode eq 'mylist' || param('tag') || param('group') || param('name') || param('race') || param('exp-min') || param('exp-max') || param('class') || param('faith') || param('image'))){
   $index_mode = 1;
   $INDEX->param(modeIndex => 1);
 }
@@ -101,6 +101,11 @@ $INDEX->param(expMax => $exp_max_query);
 ## 技能検索
 my @class_query = split(/ |　/, Encode::decode('utf8', param('class')));
 $INDEX->param(class => "@class_query");
+
+## 信仰検索
+my $faith_query = Encode::decode('utf8', param('faith'));
+if($faith_query) { @list = grep { (split(/<>/))[12] =~ /$faith_query/ } @list; }
+$INDEX->param(faith => $faith_query);
 
 ## 画像フィルタ
 if(param('image') == 1) {

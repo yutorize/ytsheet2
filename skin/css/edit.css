@@ -624,6 +624,7 @@ option.zero-data::before {
 }
 #battle-items ul li.fail::before {
   content: '✖';
+  opacity: 0.8;
 }
 
 #free-note,
