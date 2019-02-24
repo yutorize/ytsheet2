@@ -1,7 +1,7 @@
 #!/usr/local/bin/perl
 ####################################
 ##     ゆとシートⅡ for SW2.5     ##
-##                version1.03     ##
+##                version1.04     ##
 ##          by ゆとらいず工房     ##
 ##    https://yutorize.2-d.jp     ##
 ####################################
@@ -18,7 +18,7 @@ use Fcntl;
 
 ### バージョン #######################################################################################
 
-our $ver = "1.03";
+our $ver = "1.04";
 
 ### 設定読込 #########################################################################################
 
@@ -70,7 +70,7 @@ elsif(param('id')) { require $set::lib_view; }   #シート表示
 else {
   if   (param('type') eq 'm'){ require $set::lib_list_mons; }
   elsif(param('type') eq 'i'){ require $set::lib_list_item; }
-  else                       { require $set::lib_list; }
+  else                       { require $set::lib_list_char; }
 }   #一覧表示
 
 

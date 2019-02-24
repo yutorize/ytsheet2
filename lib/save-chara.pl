@@ -100,6 +100,13 @@ $pc{'moneyTotal'} += $pc{'debtTotal'} - $pc{'depositTotal'};
 foreach (1 .. $pc{'honorItemsNum'}){
   $pc{'honor'} -= $pc{'honorItem'.$_.'Pt'};
 }
+foreach (@set::adventurer_rank){
+  my ($name, $num, undef) = @$_;
+  $pc{'honor'} -= $num if ($pc{'rank'} eq $name);
+}
+foreach (1 .. $pc{'mysticArtsNum'}){
+  $pc{'honor'} -= $pc{'mysticArts'.$_.'Pt'};
+}
 foreach (1 .. $pc{'dishonorItemsNum'}){
   $pc{'dishonor'} += $pc{'dishonorItem'.$_.'Pt'};
 }
@@ -251,7 +258,6 @@ $" = ',';
 $pc{'combatFeatsAuto'} = "@abilities";
 ## 選択特技による補正
 {
-  
   foreach my $i (@set::feats_lv) {
     if($i > $pc{'level'}){ next; } # $iがLvを超えたら処理しない
     my $feat = $pc{'combatFeatsLv'.$i};
@@ -275,9 +281,9 @@ $pc{'combatFeatsAuto'} = "@abilities";
     elsif($feat eq '防具習熟Ｓ／盾')      { $pc{'masteryShield'}        += 2; }
     elsif($feat =~ /^武器習熟Ａ／(.*)$/) { $pc{'mastery'.ucfirst($data::weapon_id{$1})} += 1; }
     elsif($feat =~ /^武器習熟Ｓ／(.*)$/) { $pc{'mastery'.ucfirst($data::weapon_id{$1})} += 2; }
-  #  elsif($feat =~ /^魔器習熟Ａ/) { $master{'魔器'} += 1; }
-  #  elsif($feat =~ /^魔器習熟Ｓ/) { $master{'魔器'} += 1; }
-  #  elsif($feat =~ /^魔器の達人/) { $master{'魔器'} += 1; }
+    elsif($feat =~ /^魔器習熟Ａ/) { $pc{'masteryArtisan'} += 1; }
+    elsif($feat =~ /^魔器習熟Ｓ/) { $pc{'masteryArtisan'} += 1; }
+    elsif($feat =~ /^魔器の達人/) { $pc{'masteryArtisan'} += 1; }
     elsif($feat eq 'スローイングⅠ'){ $pc{'throwing'} = 1; }
     elsif($feat eq 'スローイングⅡ'){ $pc{'throwing'} = 2; }
     elsif($feat eq '呪歌追加Ⅰ')  { $pc{'songAddition'} = 1; }
@@ -297,19 +303,19 @@ $pc{'mndResistAddTotal'} = s_eval($pc{'mndResistAdd'}) + $pc{'raceAbilityMndResi
 $pc{'mndResistTotal'}  = $pc{'mndResistBase'} + $pc{'mndResistAddTotal'};
 ## ＨＰＭＰ：装飾品
 foreach (
-  'Head',
-  'Ear',
-  'Face',
-  'Neck',
-  'Back',
-  'HandR',
-  'HandL',
-  'Waist',
-  'Leg',
-  'Other',
-  'Other2',
-  'Other3',
-  'Other4',) {
+  'Head',  'Head_',
+  'Ear',   'Ear_',
+  'Face',  'Face_',
+  'Neck',  'Neck_',
+  'Back',  'Back_',
+  'HandR', 'HandR_',
+  'HandL', 'HandL_',
+  'Waist', 'Waist_',
+  'Leg',   'Leg_',
+  'Other', 'Other_',
+  'Other2','Other2_',
+  'Other3','Other3_',
+  'Other4','Other4_',) {
   $pc{'hpAccessory'} = 2 if $pc{"accessory$_".'Own'} eq 'HP';
   $pc{'mpAccessory'} = 2 if $pc{"accessory$_".'Own'} eq 'MP';
 }
@@ -359,8 +365,12 @@ $pc{'magicPowerCon'} = $pc{'lvCon'} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc
 $pc{'magicPowerPri'} = $pc{'lvPri'} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwnPri'} ? 2 : 0)) / 6) + $pc{'magicPowerAddPri'} + $pc{'magicPowerAdd'} + $pc{'magicPowerEnhance'};
 $pc{'magicPowerFai'} = $pc{'lvFai'} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwnFai'} ? 2 : 0)) / 6) + $pc{'magicPowerAddFai'} + $pc{'magicPowerAdd'} + $pc{'magicPowerEnhance'};
 $pc{'magicPowerMag'} = $pc{'lvMag'} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwnMag'} ? 2 : 0)) / 6) + $pc{'magicPowerAddMag'} + $pc{'magicPowerAdd'} + $pc{'magicPowerEnhance'};
+$pc{'magicPowerDem'} = $pc{'lvDem'} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwnDem'} ? 2 : 0)) / 6) + $pc{'magicPowerAddDem'} + $pc{'magicPowerAdd'} + $pc{'magicPowerEnhance'};
+$pc{'magicPowerGri'} = $pc{'lvGri'} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwnGri'} ? 2 : 0)) / 6) + $pc{'magicPowerAddGri'} + $pc{'magicPowerAdd'} + $pc{'magicPowerEnhance'};
+
 $pc{'magicPowerBar'} = $pc{'lvBar'} + int(($pc{'sttMnd'} + $pc{'sttAddF'} + ($pc{'magicPowerOwnBar'} ? 2 : 0)) / 6) + $pc{'magicPowerAddBar'};
-$pc{'magicPowerAlc'} = $pc{'lvAlc'} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwnAlc'} ? 2 : 0)) / 6) + $pc{'magicPowerAddInt'} + $pc{'alchemyEnhance'};
+$pc{'magicPowerAlc'} = $pc{'lvAlc'} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwnAlc'} ? 2 : 0)) / 6) + $pc{'magicPowerAddAlc'} + $pc{'alchemyEnhance'};
+$pc{'magicPowerMys'} = $pc{'lvMys'} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwnMys'} ? 2 : 0)) / 6) + $pc{'magicPowerAddMys'};
 
 ### 装備 --------------------------------------------------
 ## 武器
@@ -372,19 +382,20 @@ foreach (1 .. $pc{'weaponNum'}){
   elsif($pc{'weapon'.$_.'Class'} eq "シューター"       && $pc{'lvSho'}){ $class = 'Sho'; }
   elsif($pc{'weapon'.$_.'Class'} eq "エンハンサー"     && $pc{'lvEnh'}){ $class = 'Enh'; }
   elsif($pc{'weapon'.$_.'Class'} eq "デーモンルーラー" && $pc{'lvDem'}){ $class = 'Dem'; }
-  # 命中
+  ## 命中
   my $own_dex = $pc{'weapon'.$_.'Own'} ? 2 : 0; # 専用化補正
   $pc{'weapon'.$_.'AccTotal'} = 0;
   $pc{'weapon'.$_.'AccTotal'} = $pc{'lv'.$class} + int( ($pc{'sttDex'} + $pc{'sttAddA'} + $own_dex) / 6 ) if $pc{'lv'.$class};
   $pc{'weapon'.$_.'AccTotal'} += $pc{'accuracyEnhance'}; # 命中強化
   $pc{'weapon'.$_.'AccTotal'} += 1 if $pc{'throwing'} && $pc{'weapon'.$_.'Category'} eq '投擲'; # スローイング
   $pc{'weapon'.$_.'AccTotal'} += $pc{'weapon'.$_.'Acc'}; # 武器の修正値
-  # ダメージ
+  ## ダメージ
   if   ($pc{'weapon'.$_.'Category'} eq 'クロスボウ'){ $pc{'weapon'.$_.'DmgTotal'} = $pc{'weapon'.$_.'Dmg'} + $pc{'lvSho'}; }
   elsif($pc{'weapon'.$_.'Category'} eq 'ガン'      ){ $pc{'weapon'.$_.'DmgTotal'} = $pc{'weapon'.$_.'Dmg'} + $st{'MagE'}; }
   else                                              { $pc{'weapon'.$_.'DmgTotal'} = $pc{'weapon'.$_.'Dmg'} + $st{$class.'C'}; }
   
   $pc{'weapon'.$_.'DmgTotal'} += $pc{'mastery' . ucfirst($data::weapon_id{ $pc{'weapon'.$_.'Category'} }) };
+  if($pc{'weapon'.$_.'Note'} =~ /〈魔器〉/){ $pc{'weapon'.$_.'DmgTotal'} += $pc{'masteryArtisan'}; }
 }
 
 ## 回避力
@@ -410,6 +421,9 @@ foreach (1 .. $pc{'weaponNum'}){
     $pc{'armourDef'} + max($pc{'masteryMetalArmour'},$pc{'masteryNonMetalArmour'}) +
     $pc{'shieldDef'} + $pc{'masteryShield'} +
     $pc{'defOtherDef'};
+  if($pc{'armourNote'} =~ /〈魔器〉/ || $pc{'ShieldNote'} =~ /〈魔器〉/){
+    $pc{'DefenseTotalAllDef'} += $pc{'masteryArtisan'};
+  }
 
 #### 改行を<br>に変換 --------------------------------------------------
 $pc{'items'}         =~ s/\r\n?|\n/<br>/g;

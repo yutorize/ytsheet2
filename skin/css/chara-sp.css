@@ -57,18 +57,25 @@
     margin-left: 0px;
   }
   
+  #crafts {
+    flex-direction: row;
+    justify-content: space-between;
+  }
   #crafts > .box {
+    width: auto;
     flex-basis: 49%;
+    margin-bottom: 1rem;
   }
   #crafts > .box + .box {
     margin-top: 0;
   }
   
   #area-actions {
-  display: flex;
+    display: flex;
     display: grid;
-    grid-gap: 5px;
+    grid-gap: 1rem;
     grid-template-columns: 1fr 1fr;
+    margin: 0;
   }
   #area-actions > * {
     margin: 0;

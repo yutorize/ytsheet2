@@ -140,6 +140,7 @@ if($set::user_reqd){
   print <<"HTML";
     <input type="hidden" name="protect" value="account">
     <input type="hidden" name="protectOld" value="$pc{'protect'}">
+    <input type="hidden" name="pass" value="$pass">
 HTML
 }
 else {

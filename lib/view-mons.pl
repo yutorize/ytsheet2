@@ -6,6 +6,8 @@ use open ":utf8";
 use open ":std";
 use HTML::Template;
 
+my $LOGIN_ID = check;
+
 ### データ読み込み ###################################################################################
 require $set::data_races;
 require $set::data_items;
@@ -17,7 +19,7 @@ $SHEET = HTML::Template->new( filename => $set::skin_mons, utf8 => 1,
 
 $SHEET->param("BackupMode" => param('backup') ? 1 : 0);
 
-### キャラクターデータ読み込み #######################################################################
+### モンスターデータ読み込み #######################################################################
 my $id = param('id');
 my $file = $main::file;
 
@@ -45,6 +47,12 @@ $pc{'skills'} =~ s/(^|<p(?:.*?)>|<hr(?:.*?)>)\n/$1/gi;
 $pc{'skills'} = "<p>$pc{'skills'}</p>";
 $pc{'skills'} =~ s/<p><\/p>//gi;
 $pc{'skills'} =~ s/\n/<br>/gi;
+
+##
+if($pc{'description'} =~ s/#login-only//i){
+  $pc{'description'} .= '<span class="login-only">［ログイン限定公開］</span>';
+  $pc{'forbidden'} = 1 if !$LOGIN_ID;
+}
 
 ### テンプレ用に変換 --------------------------------------------------
 while (my ($key, $value) = each(%pc)){

@@ -11,7 +11,9 @@
 }
 #area-status,
 #area-ability,
-#area-equipment,
+#area-equipment {
+  font-family: "Varela Round",'Arial';
+}
 #history {
   font-family: 'Arial';
 }
@@ -275,6 +277,9 @@ p.words span.brackets {
 #status dl[id^="stt-bonus"] dd {
   font-size: 1.6rem;
 }
+#status dl:nth-child(n+16):nth-child(-n+21) dd {
+  transform: scale(1,1.15);
+}
 #status dl:nth-child(n+16):nth-child(-n+21) {
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
@@ -328,7 +333,7 @@ p.words span.brackets {
 #status dl[id^="stt-bonus"]::after {
   position: absolute;
   content: "÷6";
-  left: -1.6rem;
+  left: -1.7rem;
   bottom: 8px;
   font-size: 1.2rem;
 }
@@ -343,7 +348,7 @@ p.words span.brackets {
   #status dl[id^="stt-bonus"] dt span::after { content: "Ｂ"; }
 }
 #status dl[id^="stt-bonus"] dd {
-  transform: scale(1.2);
+  transform: scale(1.2,1.25);
 }
 
 /* Sub-Status */
@@ -375,6 +380,8 @@ p.words span.brackets {
 #sub-status dd b {
   font-weight:normal;
   font-size: 1.6rem;
+  display: inline-block;
+  transform: scaleY(1.1);
 }
   
 /* Level */
@@ -389,7 +396,7 @@ dl#level dd {
   align-items: center;
   justify-content: center;
   
-  font-size: 180%;
+  font-size: 200%;
 }
 
 /* EXP */
@@ -499,12 +506,12 @@ dl#exp dd {
 /* Crafts */
 #crafts {
   display: flex;
+  flex-direction: column;
   flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: flex-start;
+  justify-content: flex-start;
 }
 #crafts > .box {
-  flex-basis: 100%;
+  width: 100%;
 }
 
 /* // Area-Actions & Language
@@ -564,6 +571,13 @@ dl#exp dd {
 }
 #package table tr th {
   font-weight: normal;
+}
+#package table tr {
+  border-width: 1px 0 0;
+  border-style: dotted;
+}
+#package table tr:first-child {
+  border-width: 0;
 }
 
 /* Area-Other-Actions */

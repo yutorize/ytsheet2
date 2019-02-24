@@ -55,7 +55,10 @@ sub option {
   my $name = shift;
   my $text = '<option value="">';
   foreach my $i (@_) {
-    $text .= '<option value="'.$i.'"'.($pc{$name} eq $i ? ' selected':'').'>'.$i
+    my $value = $i;
+    my $view;
+    if($value =~ s/\|\<(.*?)\>$//){ $view = $1 } else { $view = $value }
+    $text .= '<option value="'.$value.'"'.($pc{$name} eq $value ? ' selected':'').'>'.$view
   }
   return $text;
 }

@@ -8,8 +8,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" media="all" href="./skin/css/base.css?201810160200">
   <link rel="stylesheet" media="all" href="./skin/css/sheet.css?201811070400">
-  <link rel="stylesheet" media="all" href="./skin/css/chara.css?1.02.003">
-  <link rel="stylesheet" media="all" href="./skin/css/chara-sp.css?1.02.003">
+  <link rel="stylesheet" media="all" href="./skin/css/chara.css?1.04.001">
+  <link rel="stylesheet" media="all" href="./skin/css/chara-sp.css?1.04.001">
   <link rel="stylesheet" id="nightmode">
   <script src="./skin/js/common.js?20180910800" ></script>
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
@@ -335,20 +335,26 @@ window.onload = function() {
               </TMPL_LOOP>
             </ul>
           </div>
-<!--
-          
+          <TMPL_IF MysticArts>
           <div class="box" id="mystic-arts">
             <h2>秘伝</h2>
             <ul>
               <TMPL_LOOP MysticArts>
-              <li><TMPL_VAR Name></li>
+              <li>《<TMPL_VAR NAME>》</li>
               </TMPL_LOOP>
             </ul>
           </div>
-          
--->
+          </TMPL_IF>
         </div>
         <div id="crafts">
+          <TMPL_IF MagicGramarye><div class="box" id="magic-gramarye">
+            <h2>秘奥魔法</h2>
+            <ul>
+              <TMPL_LOOP MagicGramarye>
+              <li id="magic-gramarye<TMPL_VAR __counter__>">【－<TMPL_VAR NAME>－】</li>
+              </TMPL_LOOP>
+            </ul>
+          </div></TMPL_IF>
           <TMPL_IF CraftEnhance><div class="box" id="craft-enhance">
             <h2>練技</h2>
             <ul>
@@ -373,11 +379,51 @@ window.onload = function() {
               </TMPL_LOOP>
             </ul>
           </div></TMPL_IF>
-          <TMPL_IF CraftAlchemy><div class="box" id="craft-archemy">
+          <TMPL_IF CraftAlchemy><div class="box" id="craft-alchemy">
             <h2>賦術</h2>
             <ul>
               <TMPL_LOOP CraftAlchemy>
-              <li id="craft-archemy<TMPL_VAR __counter__>">【<TMPL_VAR NAME>】</li>
+              <li id="craft-alchemy<TMPL_VAR __counter__>">【<TMPL_VAR NAME>】</li>
+              </TMPL_LOOP>
+            </ul>
+          </div></TMPL_IF>
+          <TMPL_IF CraftCommand><div class="box" id="craft-command">
+            <h2>鼓咆</h2>
+            <ul>
+              <TMPL_LOOP CraftCommand>
+              <li id="craft-command<TMPL_VAR __counter__>">【<TMPL_VAR NAME>】</li>
+              </TMPL_LOOP>
+            </ul>
+          </div></TMPL_IF>
+          <TMPL_IF CraftDivination><div class="box" id="craft-divination">
+            <h2>占瞳</h2>
+            <ul>
+              <TMPL_LOOP CraftDivination>
+              <li id="craft-divination<TMPL_VAR __counter__>">【<TMPL_VAR NAME>】</li>
+              </TMPL_LOOP>
+            </ul>
+          </div></TMPL_IF>
+          <TMPL_IF CraftPotential><div class="box" id="craft-potential">
+            <h2>魔装</h2>
+            <ul>
+              <TMPL_LOOP CraftPotential>
+              <li id="craft-potential<TMPL_VAR __counter__>">【<TMPL_VAR NAME>】</li>
+              </TMPL_LOOP>
+            </ul>
+          </div></TMPL_IF>
+          <TMPL_IF CraftSeal><div class="box" id="craft-seal">
+            <h2>呪印</h2>
+            <ul>
+              <TMPL_LOOP CraftSeal>
+              <li id="craft-seal<TMPL_VAR __counter__>">【<TMPL_VAR NAME>】</li>
+              </TMPL_LOOP>
+            </ul>
+          </div></TMPL_IF>
+          <TMPL_IF CraftDignity><div class="box" id="craft-dignity">
+            <h2>貴格</h2>
+            <ul>
+              <TMPL_LOOP CraftDignity>
+              <li id="craft-dignity<TMPL_VAR __counter__>">【<TMPL_VAR NAME>】</li>
               </TMPL_LOOP>
             </ul>
           </div></TMPL_IF>
@@ -452,7 +498,7 @@ window.onload = function() {
                 <td><TMPL_VAR packRiderAgi></td>
               </tr>
               <tr>
-                <th>知識</th>
+                <th>知識<TMPL_IF riderObsOn><br>観察</TMPL_IF></th>
                 <td><TMPL_VAR packRiderInt></td>
               </tr>
             </table>
@@ -674,6 +720,10 @@ window.onload = function() {
             <h2>名誉アイテム</h2>
             <table>
               <tr><th></th><th>点数</th></tr>
+              <tr><td>冒険者ランク</td><td><TMPL_VAR rankHonorValue></td></tr>
+              <TMPL_IF MysticArtsHonor>
+              <tr><td>秘伝</td><td><TMPL_VAR MysticArtsHonor></td></tr>
+              </TMPL_IF>
               <TMPL_LOOP HonorItems>
               <tr><td><TMPL_VAR NAME></td><td><TMPL_VAR PT></td></tr>
               </TMPL_LOOP>

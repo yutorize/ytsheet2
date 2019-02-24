@@ -46,12 +46,45 @@ h4[onclick]:hover {
 
 .fail input,
 .fail select {
-  background-color: rgba(125,125,125,0.1);
+  background-color: rgba(125,125,125,0.2);
+}
+dt.fail, dt.fail + dd {
+  background-color: rgba(125,125,125,0.2) !important;
+  opacity: 0.9;
+}
+dt.fail::before {
+  content: "✖ ";
+  font-weight: bold;
+  color: #c00;
+}
+dt.fail > select,
+dt.fail + dd > input {
+  background-color: transparent;
 }
 .fail select option,
 .fail select optgroup {
   background-color: #ddd;
   color: #000;
+}
+.error input,
+.error select {
+  color: #c00;
+  text-decoration: line-through;
+}
+.evo input,
+.evo select,
+span.evo,
+#honor-items input.free,
+span.free {
+  background: rgba(255,200,0,0.3);
+  font-weight: bold;
+}
+span.evo,
+span.free {
+  padding: 1px 3px;
+  border-radius: 5px;
+  border-width: 1px;
+  border-style: solid;
 }
 .hidden {
   display: none;
@@ -292,9 +325,132 @@ input[type="button"]:hover {
   width: 3.5em;
 }
 
+#area-ability {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+#area-ability > * {
+  margin-bottom: 1rem;
+  margin-left: 0;
+}
+#area-ability > p {
+  flex-basis: 100%;
+}
+
+#area-classes {
+  flex-basis: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+#area-classes.common-classes-off {
+  flex-basis: calc(66% - 1rem);
+  margin-right: 1rem;
+}
+
+#classes {
+  flex-basis: 66%;
+  flex-grow: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  position: relative;
+}
+#classes h2 {
+  flex-basis: 100%;
+}
+#common-classes {
+  flex-grow: 1;
+  margin: 0 0 0 1rem !important;
+}
+
 #classes dl {
+  flex-grow: 1;
+  flex-basis: calc(50% - 10px);
   grid-template-columns: 1fr 3.5em;
 }
+#common-classes dl {
+  grid-template-columns: 1fr 3.5em;
+}
+@media screen and (max-width:735px){
+  #area-classes {
+    display: block;
+  }
+  #classes {
+    width: 100%;
+  }
+  #common-classes {
+    margin: 1rem 0 0 !important;
+  }
+}
+#classes dl select {
+  font-size: 80%;
+}
+
+#combat-feats {
+  margin-left: 0 !important;
+}
+#combat-feats > p:nth-last-child(2) {
+  font-size: 90%;
+  border-width: 0 0 1px;
+  border-style: dotted;
+}
+
+#mystic-arts {
+  position: relative;
+}
+#mystic-arts h2 + div {
+  position: absolute;
+  top: .2rem;
+  right: .5em;
+  font-size: 80%;
+}
+#mystic-arts h2 + div span {
+  font-size: 120%;
+}
+#mystic-arts dl {
+  display: grid;
+  grid-template-columns: 1fr 4em;
+  grid-template-rows: auto;
+}
+#mystic-arts dl dt {
+  grid-column: 1;
+}
+#mystic-arts dl dd {
+  grid-column: 2;
+}
+
+#crafts {
+  flex-basis: 66%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+#crafts > .box {
+  flex-basis: calc(50% - 1rem);
+  margin: 0 0 1rem 1rem !important;
+}
+#area-classes.common-classes-off + div + #crafts > .box {
+  flex-basis: calc(33% - 1rem);
+}
+#area-classes.common-classes-off + div + #crafts > .box:first-child {
+  margin-left: 0 !important;
+}
+@media screen and (max-width:735px){
+  #area-classes.common-classes-off + div + #crafts > .box {
+  flex-basis: calc(50% - 1rem);
+  }
+}
+#crafts > .box ul {
+  margin-bottom: -1px;
+}
+#crafts > .box ul li:last-child {
+  padding-bottom: 1px;
+}
+
 
 #area-status + p {
   margin-top: 1rem;
@@ -347,6 +503,17 @@ input[type="button"]:hover {
 #combat-feats select {
   margin-left: 1em;
   width: calc(100% - 4px - 1em);
+}
+
+#classes dl dt.zero-data,
+option.zero-data {
+  background-color: rgba(0,200,255,0.2);
+}
+#classes dl dt.zero-data {
+  font-family: 'Arial';
+}
+option.zero-data::before {
+  content: '★';
 }
 
 #weapons {
@@ -446,14 +613,18 @@ input[type="button"]:hover {
   margin-left: 1em;
   width: calc(100% - 4px - 1em);
 }
-
 #honor-items table {
   margin-left: 0;
   margin-right: 0;
 }
-
-#honor-items input.free {
-  background: rgba(0,255,0,0.2);
+#honor-items > p:nth-last-child(1) {
+  font-size: 90%;
+  border-width: 1px 0 0;
+  border-style: dotted;
+}
+#battle-items ul li.fail::before {
+  content: '✖';
+  opacity: 0.8;
 }
 
 #free-note,

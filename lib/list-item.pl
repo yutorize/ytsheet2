@@ -91,6 +91,8 @@ foreach (@list) {
     next if $hide;
   }
   
+  $category =~ s/[ 　]/<br>/g;
+  
   
   my ($min,$hour,$day,$mon,$year) = (localtime($updatetime))[1..5];
   $year += 1900; $mon++;
