@@ -34,10 +34,10 @@ $SHEET->param("id" => $id);
 
 ### 置換 --------------------------------------------------
 foreach (keys %pc) {
-  $pc{$_} = tag_unescape($pc{$_});
   if($_ =~ /^(?:items|freeNote|freeHistory|cashbook)$/){
     $pc{$_} = tag_unescape_lines($pc{$_});
   }
+  $pc{$_} = tag_unescape($pc{$_});
 }
 
 ### テンプレ用に変換 --------------------------------------------------
@@ -233,7 +233,7 @@ $SHEET->param(CraftSeal => \@craft_seal);
 
 ### 貴格 --------------------------------------------------
 my @craft_dignity;
-foreach (1 .. $pc{'lvArt'}){
+foreach (1 .. $pc{'lvAri'}){
   push(@craft_dignity, { "NAME" => $pc{'craftDignity'.$_} } );
 }
 $SHEET->param(CraftDignity => \@craft_dignity);
@@ -277,15 +277,15 @@ foreach (
   ['プリースト',         'Pri', '神聖魔法', '聖印'],
   ['マギテック',         'Mag', '魔動機術', 'マギスフィア'],
   ['フェアリーテイマー', 'Fai', '妖精魔法', 'ケース／飾り'],
-  ['デーモンルーラー'   ,'Dem', '召異魔法', ''],
-  ['グリモワール'       ,'Gri', '秘奥魔法', ''],
-  ['バード'             ,'Bar', '呪歌',     '楽器'],
-  ['アルケミスト'       ,'Alc', '賦術',     ''],
-  ['ミスティック'       ,'Mys', '占瞳',     ''],
+  ['デーモンルーラー',   'Dem', '召異魔法', ''],
+  ['グリモワール',       'Gri', '秘奥魔法', ''],
+  ['バード',             'Bar', '呪歌',     '楽器'],
+  ['アルケミスト',       'Alc', '賦術',     ''],
+  ['ミスティック',       'Mys', '占瞳',     ''],
 ){
   next if !$pc{'lv'.@$_[1]};
   push(@magic, {
-    "NAME" => @$_[0]."技能レベル".$pc{'lv'.@$_[1]},
+    "NAME" => @$_[0]."<span class=\"small\">技能レベル</span>".$pc{'lv'.@$_[1]},
     "OWN"  => ($pc{'magicPowerOwn'.@$_[1]} ? '✔専用'.@$_[3] : ''),
     "MAGIC"  => @$_[2].(@$_[1] eq 'Fai' && $pc{'ftElemental'} ? "<span>（$pc{'ftElemental'}）</span>" : ''),
     "ADD"  => ($pc{'magicPowerAdd'.@$_[1]} ? '+'.$pc{'magicPowerAdd'.@$_[1]}.' =' : ''),
@@ -307,7 +307,7 @@ foreach (
   next if !$pc{'lv'.@$_[1]};
   next if @$_[0] eq 'エンハンサー' && !$enhance_attack_on;
   push(@atacck, {
-    "NAME" => @$_[0]."技能レベル".$pc{'lv'.@$_[1]},
+    "NAME" => @$_[0]."<span class=\"small\">技能レベル</span>".$pc{'lv'.@$_[1]},
     "STR"  => (@$_[1] eq 'Fen' ? $pc{'reqdStrF'} : $pc{'reqdStr'}),
     "ACC"  => $pc{'lv'.@$_[1]}+$pc{'bonusDex'},
     (@$_[1] eq 'Fen' ? ("CRIT" => '-1') : ('' => '')),
@@ -348,8 +348,20 @@ foreach (1 .. $pc{'weaponNum'}){
           $pc{'weapon'.$_.'Acc'}.$pc{'weapon'.$_.'Rate'}.$pc{'weapon'.$_.'Crit'}.
           $pc{'weapon'.$_.'Dmg'}.$pc{'weapon'.$_.'Own'}.$pc{'weapon'.$_.'Note'}
           eq '';
+  my $rowspan = 1;
+  for(my $num = $_+1; $num <= $pc{'weaponNum'}; $num++){
+    last if $pc{'weapon'.$num.'NameOff'};
+    last if $pc{'weapon'.$num.'Name'};
+    last if $pc{'weapon'.$num.'Name'}.$pc{'weapon'.$num.'Usage'}.$pc{'weapon'.$num.'Reqd'}.
+          $pc{'weapon'.$num.'Acc'}.$pc{'weapon'.$num.'Rate'}.$pc{'weapon'.$num.'Crit'}.
+          $pc{'weapon'.$num.'Dmg'}.$pc{'weapon'.$num.'Own'}.$pc{'weapon'.$num.'Note'} eq '';
+    $rowspan++;
+    $pc{'weapon'.$num.'NameOff'} = 1;
+  }
   push(@weapons, {
     "NAME"     => $pc{'weapon'.$_.'Name'},
+    "ROWSPAN"  => $rowspan,
+    "NAMEOFF"  => $pc{'weapon'.$_.'NameOff'},
     "USAGE"    => $pc{'weapon'.$_.'Usage'},
     "REQD"     => $pc{'weapon'.$_.'Reqd'},
     "ACC"      => $pc{'weapon'.$_.'Acc'},
@@ -375,7 +387,7 @@ foreach (
 ){
   next if @$_[0] ne $pc{'evasionClass'};
   push(@evasion, {
-    "NAME" => @$_[0]."技能レベル".$pc{'lv'.@$_[1]},
+    "NAME" => @$_[0]."<span class=\"small\">技能レベル</span>".$pc{'lv'.@$_[1]},
     "STR"  => (@$_[1] eq 'Fen' ? $pc{'reqdStrF'} : $pc{'reqdStr'}),
     "EVA"  => $pc{'lv'.@$_[1]}+$pc{'bonusAgi'},
   } );
@@ -485,7 +497,8 @@ foreach (0 .. $pc{'historyNum'}){
     $pc{'history'.$_.'Title'} = "<a href=\"$set::sessionlist?num=$1\" data-num=\"$1\">$pc{'history'.$_.'Title'}<\/a>";
   }
   my $members;
-  foreach my $mem (split(/[,、　]+/,$pc{'history'.$_.'Member'})){
+  $pc{'history'.$_.'Member'} =~ s/((?:\G|>)[^<]*?)[,、 ]+/$1　/g;
+  foreach my $mem (split(/　/,$pc{'history'.$_.'Member'})){
     $members .= '<span>'.$mem.'</span>';
   }
   push(@history, {
@@ -544,6 +557,10 @@ if($pc{"deposit"} =~ /^(?:自動|auto)$/i){
 $pc{"cashbook"} =~ s/(:(?:\:|&lt;|&gt;)(?:[\+\-\*]?[0-9]+)+)/<b class="cash">$1<\/b>/g;
   $SHEET->param(cashbook => $pc{'cashbook'});
 
+### マテリアルカード --------------------------------------------------
+foreach my $color ('Red','Gre','Bla','Whi','Gol'){
+  $SHEET->param("card${color}View" => $pc{'card'.$color.'B'}+$pc{'card'.$color.'A'}+$pc{'card'.$color.'S'}+$pc{'card'.$color.'SS'});
+}
 
 ### 戦闘用アイテム --------------------------------------------------
 my $smax = max("$pc{'lvSco'}","$pc{'lvRan'}","$pc{'lvSag'}");

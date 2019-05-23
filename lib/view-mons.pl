@@ -34,10 +34,10 @@ $SHEET->param("id" => $id);
 
 ### 置換 --------------------------------------------------
 foreach (keys %pc) {
-  $pc{$_} = tag_unescape($pc{$_},$pc{'oldSignConv'});
   if($_ =~ /^(?:skills|description)$/){
     $pc{$_} = tag_unescape_lines($pc{$_});
   }
+  $pc{$_} = tag_unescape($pc{$_},$pc{'oldSignConv'});
 }
 $pc{'skills'} =~ s/<br>/\n/gi;
 $pc{'skills'} =~ s/^●(.*?)$/<\/p><h3>●$1<\/h3><p>/gim;
@@ -98,6 +98,7 @@ $SHEET->param(partsOn => 1) if $pc{'partsNum'};
 ### 戦利品 --------------------------------------------------
 my @loots;
 foreach (1 .. $pc{'lootsNum'}){
+  next if !$pc{'loots'.$_.'Num'} && !$pc{'loots'.$_.'Item'};
   push(@loots, {
     "NUM"  => $pc{'loots'.$_.'Num'},
     "ITEM" => $pc{'loots'.$_.'Item'},

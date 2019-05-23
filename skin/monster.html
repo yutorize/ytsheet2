@@ -14,7 +14,7 @@
   </title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" media="all" href="./skin/css/base.css?201810160200">
-  <link rel="stylesheet" media="all" href="./skin/css/sheet.css?201811070400">
+  <link rel="stylesheet" media="all" href="./skin/css/sheet.css?1.05.002">
   <link rel="stylesheet" media="all" href="./skin/css/monster.css?201810160200">
   <link rel="stylesheet" media="all" href="./skin/css/monster-sp.css?201810160200">
   <link rel="stylesheet" id="nightmode">
@@ -70,6 +70,7 @@ window.onload = function() {
     <nav>
       <ul>
         <li class="small"><a href="./?type=m">⏎</a></li>
+        <li class="small"><a href="./?mode=palette&id=<TMPL_VAR id>&type=m"><span>パレット</span></a></li>
         <li class="small"><a onclick="backuplistOn()"><span>過去ログ</span></a></li>
         <TMPL_IF ReqdPassword>
         <li class="small"><a onclick="editOn()">編集</a></li>
@@ -171,12 +172,14 @@ window.onload = function() {
         <h2>特殊能力</h2>
         <TMPL_VAR skills>
       </div>
+      <TMPL_IF Loots>
       <div class="loots">
         <h2>戦利品</h2>
         <dl>
           <TMPL_LOOP Loots><dt><TMPL_VAR NUM></dt><dd><TMPL_VAR ITEM></dd></TMPL_LOOP>
         </dl>
       </div>
+      </TMPL_IF>
       <div class="box description">
         <h2>解説</h2>
         <p><TMPL_VAR description></p>

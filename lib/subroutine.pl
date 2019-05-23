@@ -81,24 +81,6 @@ sub max {
   (sort {$b <=> $a} @_)[0];
 }
 
-### クラス色分け --------------------------------------------------
-sub class_color {
-  my $text = shift;
-  $text =~ s/((?:.*?)(?:[0-9]+))/<span>$1<\/span>/g;
-  $text =~ s/<span>((?:ファイター|グラップラー|フェンサー)(?:[0-9]+?))<\/span>/<span class="melee">$1<\/span>/;
-  $text =~ s/<span>((?:プリースト)(?:[0-9]+?))<\/span>/<span class="healer">$1<\/span>/;
-  $text =~ s/<span>((?:スカウト|ウォーリーダー|レンジャー)(?:[0-9]+?))<\/span>/<span class="initiative">$1<\/span>/;
-  $text =~ s/<span>((?:セージ)(?:[0-9]+?))<\/span>/<span class="knowledge">$1<\/span>/;
-  return $text;
-}
-
-### タグ削除 --------------------------------------------------
-sub tag_delete {
-  my $text = $_[0];
-  $text =~ s/<.+?>//g;
-  return $text;
-}
-
 ### 安全にevalする --------------------------------------------------
 sub s_eval {
   my $i = shift;
@@ -272,6 +254,153 @@ sub ceil {
  
   $val = 1 if($num > 0 and $num != int($num));
   return int($num + $val);
+}
+
+### クラス色分け --------------------------------------------------
+sub class_color {
+  my $text = shift;
+  $text =~ s/((?:.*?)(?:[0-9]+))/<span>$1<\/span>/g;
+  $text =~ s/<span>((?:ファイター|グラップラー|フェンサー)(?:[0-9]+?))<\/span>/<span class="melee">$1<\/span>/;
+  $text =~ s/<span>((?:プリースト)(?:[0-9]+?))<\/span>/<span class="healer">$1<\/span>/;
+  $text =~ s/<span>((?:スカウト|ウォーリーダー|レンジャー)(?:[0-9]+?))<\/span>/<span class="initiative">$1<\/span>/;
+  $text =~ s/<span>((?:セージ)(?:[0-9]+?))<\/span>/<span class="knowledge">$1<\/span>/;
+  return $text;
+}
+
+### タグ変換 --------------------------------------------------
+sub tag_unescape {
+  my $text = $_[0];
+  my $old_on = $_[1];
+  $text =~ s/&amp;/&/g;
+  $text =~ s/&quot;/"/g;
+  $text =~ s/&lt;br&gt;/\n/gi;
+  
+  $text =~ s/\{\{([0-9\+\-\*\/\%\(\) ]+?)\}\}/s_eval($1);/eg;
+  
+  $text =~ s/(―+)/&ddash($1);/eg;
+  
+  
+  $text =~ s/\[魔\]/<img alt="&#91;魔&#93;" class="i-icon" src="${set::icon_dir}wp_magic.png">/gi;
+  $text =~ s/\[刃\]/<img alt="&#91;刃&#93;" class="i-icon" src="${set::icon_dir}wp_edge.png">/gi;
+  $text =~ s/\[打\]/<img alt="&#91;打&#93;" class="i-icon" src="${set::icon_dir}wp_blow.png">/gi;
+  
+  $text =~ s/'''(.+?)'''/<span class="oblique">$1<\/span>/gi; # 斜体
+  $text =~ s/''(.+?)''/<b>$1<\/b>/gi;  # 太字
+  $text =~ s/%%(.+?)%%/<span class="strike">$1<\/span>/gi;  # 打ち消し線
+  $text =~ s/__(.+?)__/<span class="underline">$1<\/span>/gi;  # 下線
+  $text =~ s/{{(.+?)}}/<span style="color:transparent">$1<\/span>/gi;  # 下線
+  $text =~ s/[|｜]([^|｜]+?)《(.+?)》/<ruby>$1<rp>(<\/rp><rt>$2<\/rt><rp>)<\/rp><\/ruby>/gi; # なろう式ルビ
+  $text =~ s/《《(.+?)》》/<span class="text-em">$1<\/span>/gi; # カクヨム式傍点
+  
+  $text =~ s/\[\[(.+?)&gt;((?:(?!<br>)[^"])+?)\]\]/&tag_link_url($2,$1)/egi; # リンク
+  $text =~ s/\[(.+?)#([a-zA-Z0-9\-]+?)\]/<a href="?id=$2">$1<\/a>/gi; # シート内リンク
+  $text =~ s/(?<!href=")(https?:\/\/[^\s\<]+)/<a href="$1">$1<\/a>/gi; # 自動リンク
+  
+  $text =~ s/\n/<br>/gi;
+  
+  $text =~ s/「((?:[○◯〇△＞▶〆☆≫»□☑🗨]|&gt;&gt;)+)/"「".&text_convert_icon($1);/egi;
+  
+  return $text;
+}
+
+sub tag_link_url {
+  my $url = $_[0];
+  my $txt = $_[1];
+  #foreach my $safe (@set::safeurl){
+  #  next if !$safe;
+  #  if($url =~ /^$safe/) { return '<a href="'.$url.'" target="_blank">'.$txt.'</a>'; }
+  #}
+  if($url =~ /^[#\.\/]/){ return '<a href="'.$url.'">'.$txt.'</a>'; }
+  return '<a href="'.$url.'" target="_blank">'.$txt.'</a>';
+  #return '<a href="../'.$set::cgi.'?jump='.$url.'" target="_blank">'.$txt.'</a>';
+}
+
+sub tag_unescape_lines {
+  my $text = $_[0];
+  $text =~ s/&lt;br&gt;/\n/gi;
+  
+  $text =~ s|^//(.*?)$||gm; # コメントアウト
+  
+  $text =~ s/\\\\\n/<br>/gi;
+  
+  $text =~ s/^LEFT:/<\/p><p class="left">/gim;
+  $text =~ s/^CENTER:/<\/p><p class="center">/gim;
+  $text =~ s/^RIGHT:/<\/p><p class="right">/gim;
+  
+  $text =~ s/^-{4,}$/<\/p><hr><p>/gim;  
+  $text =~ s/^( \*){4,}$/<\/p><hr class="dotted"><p>/gim;
+  $text =~ s/^( \-){4,}$/<\/p><hr class="dashed"><p>/gim;
+  $text =~ s/^\*\*\*\*(.*?)$/<\/p><h5>$1<\/h5><p>/gim;
+  $text =~ s/^\*\*\*(.*?)$/<\/p><h4>$1<\/h4><p>/gim;
+  $text =~ s/^\*\*(.*?)$/<\/p><h3>$1<\/h3><p>/gim;
+  $text =~ s/\A\*(.*?)$/$main::pc{"head_$_"} = $1; ''/egim;
+  $text =~ s/^\*(.*?)$/<\/p><h2>$1<\/h2><p>/gim;
+  
+  $text =~ s/^\|(.*?)\|$/&tablecall($1)/egim;
+  $text =~ s/(<\/tr>)\n/$1/gi;
+  $text =~ s/(?!<\/tr>|<table>)(<tr>.*?<\/tr>)(?!<tr>|<\/table>)/<\/p><table class="note-table">$1<\/table><p>/gi;
+  
+  $text =~ s/^\:(.*?)\|(.*?)$/<dt>$1<\/dt><dd>$2<\/dd>/gim;
+  $text =~ s/(<\/dd>)\n/$1/gi;
+  $text =~ s/<\/dd><dt>\s*<\/dt><dd>/&lt;br&gt;/gi;
+  $text =~ s/(?!<\/dd>)(<dt>.*?<\/dd>)(?!<dt>)/<\/p><dl class="note-description">$1<\/dl><p>/gi;
+  $text =~ s/<dt> *?<\/dt>//gim;
+
+  $text =~ s/\n<\/p>/<\/p>/gi;
+  $text =~ s/(^|<p(?:.*?)>|<hr(?:.*?)>)\n/$1/gi;
+  $text =~ s/<p><\/p>//gi;
+  $text =~ s/\n/&lt;br&gt;/gi;
+  
+  return $text;
+}
+sub text_convert_icon {
+  my $text = $_[0];
+  
+  $text =~ s{[○◯〇]}{<i class="s-icon passive">○</i>}gi;
+  $text =~ s{[△]}{<i class="s-icon setup">△</i>}gi;
+  $text =~ s{[＞▶〆]}{<i class="s-icon major">▶</i>}gi;
+  $text =~ s{[☆≫»]|&gt;&gt;}{<i class="s-icon minor">≫</i>}gi;
+  $text =~ s{[□☑🗨]}{<i class="s-icon active">☑</i>}gi;
+  
+  return $text;
+} 
+
+sub tablecall {
+  my $out = '<tr>';
+  my @td = split(/\|/, $_[0]);
+  my $col_num;
+  foreach(@td){
+    $col_num++;
+    if($_ eq '&gt;'){ $col_num++; next; }
+    
+    if($_ =~ /^~/){ $_ =~ s/^~//; $out .= '<th'.($col_num > 1 ? " colspan=\"$col_num\"" : '').'>'.$_.'</th>'; }
+    else          {               $out .= '<td'.($col_num > 1 ? " colspan=\"$col_num\"" : '').'>'.$_.'</td>'; }
+    $col_num = 0;
+  }
+  $out .= '</tr>';
+  return $out;
+}
+sub colcall {
+  my @out;
+  my @col = split(/\|/, $_[0]);
+  foreach(@col){
+    push (@out, &tablestyle($_));
+  }
+  return @out;
+}
+
+sub ddash {
+  my $dash = $_[0];
+  $dash =~ s|―|<span>―</span>|g;
+  return "<span class=\"d-dash\">$dash</span>";
+}
+
+### タグ削除 --------------------------------------------------
+sub tag_delete {
+  my $text = $_[0];
+  $text =~ s/<img alt="&#91;(.)&#93;"/[$1]<img /g;
+  $text =~ s/<.+?>//g;
+  return $text;
 }
 
 ### 案内画面 --------------------------------------------------

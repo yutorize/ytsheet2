@@ -102,9 +102,12 @@ select {
   color: #fff;
   border-color: #234 !important;
 }
-
-form #image > * {
+#image > h2 {
   background: rgba(0,0,0,0.8);
+}
+#image > p {
+  background: rgba(0,0,0,0.5);
+  text-shadow: 0 0 3px #000, 0 0 4px #000, 0 0 5px #000, 0 0 5px #000, 0 0 5px #000;
 }
 
 #area-name input[type="submit"] {

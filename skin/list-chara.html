@@ -9,6 +9,7 @@
         <TMPL_IF expMax>：経験点「～<TMPL_VAR expMax>」</TMPL_IF>
         <TMPL_IF faith>：信仰「<TMPL_VAR faith>」</TMPL_IF>
         <TMPL_IF image>：画像あり</TMPL_IF>
+        <TMPL_IF fellow>：フェローあり</TMPL_IF>
         <TMPL_IF playerName>：<TMPL_VAR playerName>さん</TMPL_IF>
         </small>
       </h1>
@@ -21,6 +22,7 @@
           経験点：<input type="number" name="exp-min" value="<TMPL_VAR expMin>" style="width:6em;"> ～ <input type="number" name="exp-max" value="<TMPL_VAR expMax>" style="width:6em;"><br>
           技能　：<input type="text" name="class" value="<TMPL_VAR class>"><br>
           信仰　：<input type="text" name="faith" value="<TMPL_VAR faith>"><br>
+          フェロー：<input type="checkbox" name="fellow" value="1" >あり<br>
           <input type="submit" value="検索">
         </p>
       </form>

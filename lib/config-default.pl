@@ -148,6 +148,7 @@ package set;
   our $lib_view_mons = 'lib/view-mons.pl';
   our $lib_view_item = 'lib/view-item.pl';
   our $lib_json      = 'lib/json.pl';
+  our $lib_palette   = 'lib/palette.pl';
   our $lib_list_char = 'lib/list-chara.pl';
   our $lib_list_mons = 'lib/list-mons.pl';
   our $lib_list_item = 'lib/list-item.pl';

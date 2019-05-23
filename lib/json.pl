@@ -61,7 +61,8 @@ sub to_json {
   my $hash = shift;
   my $output;
   foreach my $keys (keys %{$hash}) {
-    $$hash{$keys} =~ s/"/\\"/g; # いらないかも。念の為。
+    $$hash{$keys} =~ s/\\/\\\\/g;
+    $$hash{$keys} =~ s/"/\"/g;
     $output .= '"'.${keys}.'":"'.$$hash{$keys}.'",';
   }
   $output =~ s/,$//; # 末尾のカンマを消す

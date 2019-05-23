@@ -25,7 +25,7 @@ $INDEX->param(LOGIN_ID => $LOGIN_ID);
 $INDEX->param(mode => $mode);
 
 my $index_mode;
-if(!($mode eq 'mylist' || param('tag') || param('group') || param('name') || param('race') || param('exp-min') || param('exp-max') || param('class') || param('faith') || param('image'))){
+if(!($mode eq 'mylist' || param('tag') || param('group') || param('name') || param('race') || param('exp-min') || param('exp-max') || param('class') || param('faith') || param('image') || param('fellow'))){
   $index_mode = 1;
   $INDEX->param(modeIndex => 1);
 }
@@ -107,6 +107,15 @@ my $faith_query = Encode::decode('utf8', param('faith'));
 if($faith_query) { @list = grep { (split(/<>/))[12] =~ /$faith_query/ } @list; }
 $INDEX->param(faith => $faith_query);
 
+## 非表示除外
+if (
+     !($set::masterid && $set::masterid eq $LOGIN_ID)
+  && !($mode eq 'mylist')
+  && !$tag_query
+){
+  @list = grep { !(split(/<>/))[17] } @list;
+}
+
 ## 画像フィルタ
 if(param('image') == 1) {
   @list = grep { (split(/<>/))[15] } @list;
@@ -117,6 +126,42 @@ elsif(param('image') eq 'N') {
   $INDEX->param(image => 1);
 }
 
+## フェローフィルタ
+if(param('fellow') == 1) {
+  @list = grep { (split(/<>/))[18] } @list;
+  $INDEX->param(fellow => 1);
+}
+elsif(param('fellow') eq 'N') {
+  @list = grep { !(split(/<>/))[18] } @list;
+  $INDEX->param(fellow => 1);
+}
+
+## クラス一覧
+my @class_name = (
+  'ファイター',
+  'グラップラー',
+  'フェンサー',
+  'シューター',
+  'ソーサラー',
+  'コンジャラー',
+  'プリースト',
+  'フェアリーテイマー',
+  'マギテック',
+  'スカウト',
+  'レンジャー',
+  'セージ',
+  'エンハンサー',
+  'バード',
+  'ライダー',
+  'アルケミスト',
+  'ウォーリーダー',
+  'ミスティック',
+  'デーモンルーラー',
+  'フィジカルマスター',
+  'グリモワール',
+  'アリストクラシー',
+  'アーティザン'
+);
 ## リストを回す
 my %count; my %pl_flag;
 foreach (@list) {
@@ -133,22 +178,14 @@ foreach (@list) {
     }
   }
   
-  if (
-       !($set::masterid && $set::masterid eq $LOGIN_ID)
-    && !($mode eq 'mylist')
-    && !$tag_query
-  ){
-    next if $hide;
-  }
-  
   $group = $set::group_default if !$group;
   
   $race =~ s/（.*）//;
   $race = "<div>$race</div>" if length($race) >= 5;
   
   my $m_flag; my $f_flag;
-  foreach('男','♂','雄','オス','爺','漢') { $m_flag = 1 if $gender =~ /$_/; }
-  foreach('女','♀','雌','メス','婆','娘') { $f_flag = 1 if $gender =~ /$_/; }
+  if($gender =~ /男|♂|雄|オス|爺|漢/) { $m_flag = 1 }
+  if($gender =~ /女|♀|雌|メス|婆|娘/) { $f_flag = 1 }
   if($m_flag && $f_flag){ $gender = '？' }
   elsif($m_flag){ $gender = '♂' }
   elsif($f_flag){ $gender = '♀' }
@@ -159,31 +196,6 @@ foreach (@list) {
   
   my @levels = (split /\//, $classes);
   my $level = max(@levels);
-  my @class_name = (
-    'ファイター',
-    'グラップラー',
-    'フェンサー',
-    'シューター',
-    'ソーサラー',
-    'コンジャラー',
-    'プリースト',
-    'フェアリーテイマー',
-    'マギテック',
-    'スカウト',
-    'レンジャー',
-    'セージ',
-    'エンハンサー',
-    'バード',
-    'ライダー',
-    'アルケミスト',
-    'ウォーリーダー',
-    'ミスティック',
-    'デーモンルーラー',
-    'フィジカルマスター',
-    'グリモワール',
-    'アリストクラシー',
-    'アーティザン'
-  );
   my %lv;
   @lv{@class_name} = @levels;
   my $class;
@@ -201,42 +213,46 @@ foreach (@list) {
   
   if($fellow != 1) { $fellow = 0; }
   
-  my ($min,$hour,$day,$mon,$year) = (localtime($updatetime))[1..5];
-  $year += 1900; $mon++;
-  $updatetime = sprintf("<span>%04d-</span><span>%02d-%02d</span> <span>%02d:%02d</span>",$year,$mon,$day,$hour,$min);
-  
   my $sort_data;
   if    ($sort eq 'name'){ ($sort_data = $name) =~ s/^“.*”//; }
   elsif ($sort eq 'rank'){  $sort_data = $rank_sort{$rank}; }
   
   $name =~ s/^“(.*)”(.*)/<span>“$1”<\/span><span>$2<\/span>/;
   
-  my @characters;
-  push(@characters, {
-    "SORT" => $sort_data,
-    "ID" => $id,
-    "NAME" => $name,
-    "PLAYER" => $player,
-    "GROUP" => $group,
-    "EXP" => $exp,
-    "LV" => $level,
-    "CLASS" => $class,
-    "RACE" => $race,
-    "GENDER" => $gender,
-    "AGE" => $age,
-    "FAITH" => $faith,
-    "RANK" => $rank,
-    "FELLOW" => $fellow,
-    "DATE" => $updatetime,
-    "HIDE" => $hide,
-  });
-  
   $group = 'all' if param('group') eq 'all';
   
   $count{'PC'}{$group}++;
   $count{'PL'}{$group}++ if !$pl_flag{$group}{$player};
   $pl_flag{$group}{$player} = 1;
-  push(@{$grouplist{$group}}, @characters) if !($index_mode && $count{'PC'}{$group} > $set::list_maxline && $set::list_maxline);
+  
+  if (!($index_mode && $count{'PC'}{$group} > $set::list_maxline && $set::list_maxline)){
+    my ($min,$hour,$day,$mon,$year) = (localtime($updatetime))[1..5];
+    $year += 1900; $mon++;
+    $updatetime = sprintf("<span>%04d-</span><span>%02d-%02d</span> <span>%02d:%02d</span>",$year,$mon,$day,$hour,$min);
+    
+    
+    my @characters;
+    push(@characters, {
+      "SORT" => $sort_data,
+      "ID" => $id,
+      "NAME" => $name,
+      "PLAYER" => $player,
+      "GROUP" => $group,
+      "EXP" => $exp,
+      "LV" => $level,
+      "CLASS" => $class,
+      "RACE" => $race,
+      "GENDER" => $gender,
+      "AGE" => $age,
+      "FAITH" => $faith,
+      "RANK" => $rank,
+      "FELLOW" => $fellow,
+      "DATE" => $updatetime,
+      "HIDE" => $hide,
+    });
+
+    push(@{$grouplist{$group}}, @characters);
+  }
 }
 
 

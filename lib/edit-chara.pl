@@ -4,7 +4,10 @@ use strict;
 use utf8;
 use open ":utf8";
 use open ":std";
+use feature 'say';
 use Encode;
+
+require './lib/palette-sub.pl';
 
 my $mode = $main::mode;
 my $message = $main::message;
@@ -98,31 +101,7 @@ $pc{'freeHistory'}   =~ s/&lt;br&gt;/\n/g;
 $pc{'cashbook'}      =~ s/&lt;br&gt;/\n/g;
 $pc{'fellowProfile'} =~ s/&lt;br&gt;/\n/g;
 $pc{'fellowNote'}    =~ s/&lt;br&gt;/\n/g;
-
-### 0レベル消去 --------------------------------------------------
-delete $pc{'lvFig'} if !$pc{'lvFig'};
-delete $pc{'lvGra'} if !$pc{'lvGra'};
-delete $pc{'lvFen'} if !$pc{'lvFen'};
-delete $pc{'lvSho'} if !$pc{'lvSho'};
-delete $pc{'lvSor'} if !$pc{'lvSor'};
-delete $pc{'lvCon'} if !$pc{'lvCon'};
-delete $pc{'lvPri'} if !$pc{'lvPri'};
-delete $pc{'lvFai'} if !$pc{'lvFai'};
-delete $pc{'lvMag'} if !$pc{'lvMag'};
-delete $pc{'lvSco'} if !$pc{'lvSco'};
-delete $pc{'lvRan'} if !$pc{'lvRan'};
-delete $pc{'lvSag'} if !$pc{'lvSag'};
-delete $pc{'lvEnh'} if !$pc{'lvEnh'};
-delete $pc{'lvBar'} if !$pc{'lvBar'};
-delete $pc{'lvRid'} if !$pc{'lvRid'};
-delete $pc{'lvAlc'} if !$pc{'lvAlc'};
-delete $pc{'lvWar'} if !$pc{'lvWar'};
-delete $pc{'lvMys'} if !$pc{'lvMys'};
-delete $pc{'lvDem'} if !$pc{'lvDem'};
-delete $pc{'lvPhy'} if !$pc{'lvPhy'};
-delete $pc{'lvGri'} if !$pc{'lvGri'};
-delete $pc{'lvArt'} if !$pc{'lvArt'};
-delete $pc{'lvAri'} if !$pc{'lvAri'};
+$pc{'chatPalette'}   =~ s/&lt;br&gt;/\n/g;
 
 ### フォーム表示 #####################################################################################
 print <<"HTML";
@@ -135,18 +114,17 @@ Content-type: text/html\n
   <title>@{[$mode eq 'edit'?"編集：$pc{'characterName'}":'新規作成']} - $set::title</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" media="all" href="./skin/css/base.css?201810160200">
-  <link rel="stylesheet" media="all" href="./skin/css/sheet.css?201810172400">
-  <link rel="stylesheet" media="all" href="./skin/css/chara.css?1.04.001">
-  <link rel="stylesheet" media="all" href="./skin/css/chara-sp.css?1.04.001">
-  <link rel="stylesheet" media="all" href="./skin/css/edit.css?1.04.003">
+  <link rel="stylesheet" media="all" href="./skin/css/sheet.css?1.05.004">
+  <link rel="stylesheet" media="all" href="./skin/css/chara.css?1.05.004">
+  <link rel="stylesheet" media="all" href="./skin/css/chara-sp.css?1.05.004">
+  <link rel="stylesheet" media="all" href="./skin/css/edit.css?1.05.006">
   <link rel="stylesheet" id="nightmode">
-  <script src="./skin/js/common.js?1.04.003" ></script>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+  <script src="./skin/js/common.js?1.05.003" defer></script>
+  <script src="./lib/edit-chara.js?1.05.006" defer></script>
   <style>
     #image {
       background-image: url("${set::char_dir}${file}/image.$pc{'image'}");
-    }
-    #image > * {
-      background: rgba(255,255,255,0.8);
     }
   </style>
 </head>
@@ -182,6 +160,11 @@ HTML
 }
 print <<"HTML";
         <input type="submit" value="保存">
+        <ul id="header-menu">
+          <li onclick="sectionSelect('common');">キャラクターデータ</li>
+          <li onclick="sectionSelect('fellow');">フェローデータ</li>
+          <li onclick="sectionSelect('palette');">チャットパレット</li>
+        </ul>
       </div>
 HTML
 if($set::user_reqd){
@@ -216,6 +199,7 @@ HTML
 HTML
 }
   print <<"HTML";
+      <section id="section-common">
       <div id="hide-options">
         <p id="hide-checkbox">
         @{[ input 'hide','checkbox' ]} 一覧に表示しない<br>
@@ -255,33 +239,34 @@ print <<"HTML";
         </dl>
       </div>
       <div id="area-status">
-        <div class="box" id="image">
+        <div class="box" id="image" style="max-height:550px;">
           <h2>キャラクター画像</h2>
-          <div><p>
+          <p>
             <input type="file" accept="image/*" name="imageFile"><br>
-            ※ @{[ int($set::image_maxsize / 1024) ]}KBまでのJPG/PNG/GIF<br>
-            表示方式：<select name="imageFit">
+            ※ @{[ int($set::image_maxsize / 1024) ]}KBまでのJPG/PNG/GIF
+          </p>
+          <p>
+            表示方式：<select name="imageFit" oninput="imagePosition()">
             <option value="cover"   @{[$pc{'imageFit'} eq 'cover'  ?'selected':'']}>枠いっぱいに表示
             <option value="contain" @{[$pc{'imageFit'} eq 'contain'?'selected':'']}>画像全体を表示
             <option value="unset"   @{[$pc{'imageFit'} eq 'unset'  ?'selected':'']}>拡大／縮小せず表示
             <option value="percent" @{[$pc{'imageFit'} eq 'percent'?'selected':'']}>拡大率を指定
             </select><br>
             <br>
-            拡大率：@{[ input "imagePercent",'number','','style="width:4em;"' ]}%<br>
+            拡大率：@{[ input "imagePercent",'number','imagePosition','style="width:4em;"' ]}%<br>
             （「拡大率を指定」時／100で横幅ピッタリ）<br>
             <br>
             枠をはみ出る際の基準位置(50%が中心)<br>
-            横@{[ input "imagePositionX",'number','','style="width:4em;"' ]}% ／ 
-            縦@{[ input "imagePositionY",'number','','style="width:4em;"' ]}%
-            <br>
-            <br>
-            <input type="checkbox" name="imageDelete" value="1">画像を削除する
-            @{[input('image','hidden')]}
+            横@{[ input "imagePositionX",'number','imagePosition','style="width:4em;"' ]}% ／ 
+            縦@{[ input "imagePositionY",'number','imagePosition','style="width:4em;"' ]}%
           </p>
-          </div>
           <p>
           画像の注釈（作者や権利表記など）
           @{[ input 'imageCopyright' ]}
+          </p>
+          <p>
+            <input type="checkbox" name="imageDelete" value="1"> 画像を削除する
+            @{[input('image','hidden')]}
           </p>
           <h2>セリフ</h2>
           <p class="words-input">
@@ -770,55 +755,70 @@ print <<"HTML";
               <tr>
                 <th rowspan="3">スカウト技能</th>
                 <th>技巧</th>
-                <td id="package-scout-tec">$pc{'packScoutTec'}</td>
+                <td>+@{[ input 'packScoTecAdd', 'number','calcPackage' ]}</td>
+                <td id="package-scout-tec">$pc{'packScoTec'}</td>
               </tr>
               <tr>
                 <th>運動</th>
-                <td id="package-scout-agi">$pc{'packScoutAgi'}</td>
+                <td>+@{[ input 'packScoAgiAdd', 'number','calcPackage' ]}</td>
+                <td id="package-scout-agi">$pc{'packScoAgi'}</td>
               </tr>
               <tr>
                 <th>観察</th>
-                <td id="package-scout-int">$pc{'packScoutInt'}</td>
+                <td>+@{[ input 'packScoObsAdd', 'number','calcPackage' ]}</td>
+                <td id="package-scout-obs">$pc{'packScoObs'}</td>
               </tr>
             </table>
             <table id="package-ranger"@{[ display $pc{'lvRan'} ]}>
               <tr>
                 <th rowspan="3">レンジャー技能</th>
                 <th>技巧</th>
-                <td id="package-ranger-tec">$pc{'packRangerTec'}</td>
+                <td>+@{[ input 'packRanTecAdd', 'number','calcPackage' ]}</td>
+                <td id="package-ranger-tec">$pc{'packRanTec'}</td>
               </tr>
               <tr>
                 <th>運動</th>
-                <td id="package-ranger-agi">$pc{'packRangerAgi'}</td>
+                <td>+@{[ input 'packRanAgiAdd', 'number','calcPackage' ]}</td>
+                <td id="package-ranger-agi">$pc{'packRanAgi'}</td>
               </tr>
               <tr>
                 <th>観察</th>
-                <td id="package-ranger-int">$pc{'packRangerInt'}</td>
+                <td>+@{[ input 'packRanObsAdd', 'number','calcPackage' ]}</td>
+                <td id="package-ranger-obs">$pc{'packRanObs'}</td>
               </tr>
             </table>
             <table id="package-sage"@{[ display $pc{'lvSag'} ]}>
               <tr>
-                <th>セージ技能レベル</th>
+                <th>セージ技能</th>
                 <th>知識</th>
-                <td id="package-sage-int">$pc{'packSageInt'}</td>
+                <td>+@{[ input 'packSagKnoAdd', 'number','calcPackage' ]}</td>
+                <td id="package-sage-kno">$pc{'packSagKno'}</td>
               </tr>
             </table>
             <table id="package-rider"@{[ display $pc{'lvRid'} ]}>
               <tr>
-                <th rowspan="2">ライダー技能レベル</th>
+                <th rowspan="3">ライダー技能</th>
                 <th>運動</th>
-                <td id="package-rider-agi">$pc{'packRiderAgi'}</td>
+                <td>+@{[ input 'packRidAgiAdd', 'number','calcPackage' ]}</td>
+                <td id="package-rider-agi">$pc{'packRidAgi'}</td>
               </tr>
               <tr>
-                <th>知識<br>観察</th>
-                <td id="package-rider-int">$pc{'packRiderInt'}</td>
+                <th>知識</th>
+                <td>+@{[ input 'packRidKnoAdd', 'number','calcPackage' ]}</td>
+                <td id="package-rider-kno">$pc{'packRidKno'}</td>
+              </tr>
+              <tr>
+                <th>観察</th>
+                <td>+@{[ input 'packRidObsAdd', 'number','calcPackage' ]}</td>
+                <td id="package-rider-obs">$pc{'packRidObs'}</td>
               </tr>
             </table>
             <table id="package-alchemist"@{[ display $pc{'lvAlc'} ]}>
               <tr>
-                <th>アルケミスト技能レベル</th>
+                <th>アルケミスト技能</th>
                 <th>知識</th>
-                <td id="package-alchemist-int">$pc{'packAlchemistInt'}</td>
+                <td>+@{[ input 'packAlcKnoAdd', 'number','calcPackage' ]}</td>
+                <td id="package-alchemist-kno">$pc{'packAlcKno'}</td>
               </tr>
             </table>
           </div>
@@ -826,11 +826,11 @@ print <<"HTML";
         <div id="area-other-actions">
           <dl class="box" id="monster-lore">
             <dt>魔物知識</dt>
-            <dd id="monster-lore-value">$pc{'monsterLore'}</dd>
+            <dd>+@{[ input 'monsterLoreAdd', 'number','calcPackage' ]}=<span id="monster-lore-value">$pc{'monsterLore'}</span></dd>
           </dl>
           <dl class="box" id="initiative">
             <dt>先制力</dt>
-            <dd id="initiative-value">$pc{'initiative'}</dd>
+            <dd>+@{[ input 'initiativeAdd', 'number','calcPackage' ]}=<span id="initiative-value">$pc{'initiative'}</span></dd>
           </dl>
           <dl class="box" id="mobility">
             <dt>制限移動</dt><dd><b id="mobility-limited">$pc{'mobilityLimited'}</b> m</dd>
@@ -1046,6 +1046,7 @@ print <<"HTML";
         </div>
         <div class="box" id="weapons">
           <table id="weapons-table">
+            <thead>
             <tr>
               <th>武器</th>
               <th>用法</th>
@@ -1058,12 +1059,13 @@ print <<"HTML";
               <th>カテゴリ</th>
               <th>使用技能</th>
             </tr>
+            </thead>
 HTML
 
 foreach my $i (1 .. $pc{'weaponNum'}) {
 print <<"HTML";
-            <tr>
-              <td>@{[input("weapon${i}Name")]}</td>
+            <tr id="weapon-row$i" data-sort="$i">
+              <td>@{[input("weapon${i}Name")]}<br><a class="switch-button" onclick="switchWeapon(${i})">⇕</a></td>
               <td>@{[input("weapon${i}Usage","text",'','list="list-usage"')]}</td>
               <td>@{[input("weapon${i}Reqd")]}</td>
               <td>+@{[input("weapon${i}Acc",'number','calcWeapon')]}=<b id="weapon${i}-acc-total">0</b></td>
@@ -1071,8 +1073,8 @@ print <<"HTML";
               <td>@{[input("weapon${i}Crit")]}</td>
               <td>+@{[input("weapon${i}Dmg",'number','calcWeapon')]}=<b id="weapon${i}-dmg-total">0</b></td>
               <td>@{[input("weapon${i}Own",'checkbox','calcWeapon')]}</td>
-              <td><select name="weapon${i}Category" oninput="calcWeapon()">@{[option("weapon${i}Category",@data::weapon_names)]}</select></td>
-              <td><select name="weapon${i}Class" oninput="calcWeapon()">@{[option("weapon${i}Class",'ファイター','グラップラー','フェンサー','シューター','エンハンサー','デーモンルーラー')]}</select></td>
+              <td><select id="in-weapon${i}Category" name="weapon${i}Category" oninput="calcWeapon()">@{[option("weapon${i}Category",@data::weapon_names)]}</select></td>
+              <td><select id="in-weapon${i}Class" name="weapon${i}Class" oninput="calcWeapon()">@{[option("weapon${i}Class",'ファイター','グラップラー','フェンサー','シューター','エンハンサー','デーモンルーラー')]}</select></td>
               <td>@{[input("weapon${i}Note",'','calcWeapon','placeholder="備考"')]}</td>
             </tr>
 HTML
@@ -1255,6 +1257,17 @@ print <<"HTML";
           </div>
         </div>
         <div id="area-items-R">
+          <div class="box" id="material-cards"@{[ display $pc{'lvAlc'} ]}>
+            <h2>マテリアルカード</h2>
+            <table>
+            <tr><th>  </th><th>B</th><th>A</th><th>S</th><th>SS</th></tr>
+            <tr class="cards-red"><th>赤</th><td>@{[input 'cardRedB','number']}</td><td>@{[input 'cardRedA','number']}</td><td>@{[input 'cardRedS','number']}</td><td>@{[input 'cardRedSS','number']}</td></tr>
+            <tr class="cards-gre"><th>緑</th><td>@{[input 'cardGreB','number']}</td><td>@{[input 'cardGreA','number']}</td><td>@{[input 'cardGreS','number']}</td><td>@{[input 'cardGreSS','number']}</td></tr>
+            <tr class="cards-bla"><th>黒</th><td>@{[input 'cardBlaB','number']}</td><td>@{[input 'cardBlaA','number']}</td><td>@{[input 'cardBlaS','number']}</td><td>@{[input 'cardBlaSS','number']}</td></tr>
+            <tr class="cards-whi"><th>白</th><td>@{[input 'cardWhiB','number']}</td><td>@{[input 'cardWhiA','number']}</td><td>@{[input 'cardWhiS','number']}</td><td>@{[input 'cardWhiSS','number']}</td></tr>
+            <tr class="cards-gol"><th>金</th><td>@{[input 'cardGolB','number']}</td><td>@{[input 'cardGolA','number']}</td><td>@{[input 'cardGolS','number']}</td><td>@{[input 'cardGolSS','number']}</td></tr>
+            </table>
+          </div>
           <div class="box" id="battle-items"@{[ display $set::battleitem ]}>
           <h2>戦闘用アイテム</h2>
           <ul>
@@ -1354,6 +1367,7 @@ print <<"HTML";
         横罫線（破線）：<code> - - - -</code>（4つ以上の「スペース＋ハイフン」）<br>
         表組み　　：<code>|テキスト|テキスト|</code><br>
         定義リスト：<code>:項目名|説明文</code><br>
+        　　　　　　<code>:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|説明文2行目</code> 項目名を記入しないか、半角スペースで埋めると上と結合
         </div>
       </div>
       <div class="box" id="history">
@@ -1441,9 +1455,10 @@ print <<"HTML";
         <h2>履歴（自由記入）</h2>
         <textarea name="freeHistory">$pc{'freeHistory'}</textarea>
       </div>
-      <hr>
+      </section>
       
-      <h2>フェロー関連データ</h2>
+      <section id="section-fellow" style="display:none;">
+      <h2 id="fellow">フェロー関連データ</h2>
       <div class="box" id="f-public">
         @{[ input 'fellowPublic', 'checkbox']} フェローを公開する
       </div>
@@ -1510,6 +1525,123 @@ print <<"HTML";
         <h2>備考</h2>
         <textarea name="fellowNote">$pc{'fellowNote'}</textarea>
       </div>
+      </section>
+      
+      <section id="section-palette" style="display:none;">
+      <div class="box">
+        <h2>チャットパレット</h2>
+        <textarea name="chatPalette" style="height:20em" placeholder="例）&#13;&#10;2d6+{冒険者}+{器用}&#13;&#10;&#13;&#10;※入力がない場合、自動的にプリセットがそのまま反映されます。">$pc{'chatPalette'}</textarea>
+        
+        <div class="palette-column">
+        <h2>デフォルト変数 （自動的に末尾に出力されます）</h2>
+        <textarea readonly style="height:20em">
+HTML
+  say "//器用=$pc{'bonusDex'}";
+  say "//敏捷=$pc{'bonusAgi'}";
+  say "//筋力=$pc{'bonusStr'}";
+  say "//生命=$pc{'bonusVit'}";
+  say "//知力=$pc{'bonusInt'}";
+  say "//精神=$pc{'bonusMnd'}";
+  say "//DEX=$pc{'bonusDex'}";
+  say "//AGI=$pc{'bonusAgi'}";
+  say "//STR=$pc{'bonusStr'}";
+  say "//VIT=$pc{'bonusVit'}";
+  say "//INT=$pc{'bonusInt'}";
+  say "//MND=$pc{'bonusMnd'}";
+  say '';
+  say "//生命抵抗=$pc{'vitResistTotal'}";
+  say "//精神抵抗=$pc{'mndResistTotal'}";
+  say "//HP=$pc{'hpTotal'}";
+  say "//MP=$pc{'mpTotal'}";
+  say '';
+  say "//冒険者=$pc{'level'}";
+  say "//LV=$pc{'level'}";
+  foreach (
+    ['Fig','ファイター'],
+    ['Gra','グラップラー'],
+    ['Fen','フェンサー'],
+    ['Sho','シューター'],
+    ['Sor','ソーサラー'],
+    ['Con','コンジャラー'],
+    ['Pri','プリースト'],
+    ['Fai','フェアリーテイマー'],
+    ['Mag','マギテック'],
+    ['Sco','スカウト'],
+    ['Ran','レンジャー'],
+    ['Sag','セージ'],
+    ['Enh','エンハンサー'],
+    ['Bar','バード'],
+    ['Rid','ライダー'],
+    ['Alc','アルケミスト'],
+    ['War','ウォーリーダー'],
+    ['Mys','ミスティック'],
+    ['Dem','デーモンルーラー'],
+    ['Phy','フィジカルマスター'],
+    ['Gri','グリモワール'],
+    ['Ari','アリストクラシー'],
+    ['Art','アーティザン'],
+  ){
+    next if !$pc{'lv'.@$_[0]};
+    say "//@$_[1]=$pc{'lv'.@$_[0]}";
+    say "//".uc(@$_[0])."=$pc{'lv'.@$_[0]}";
+  }
+  say '';
+  say "//魔物知識=$pc{'monsterLore'}" if $pc{'monsterLore'};
+  say "//先制力=$pc{'initiative'}" if $pc{'initiative'};
+  say "//スカウト技巧=$pc{'packScoTec'}" if $pc{'packScoTec'};
+  say "//スカウト運動=$pc{'packScoAgi'}" if $pc{'packScoAgi'};
+  say "//スカウト観察=$pc{'packScoObs'}" if $pc{'packScoObs'};
+  say "//レンジャー技巧=$pc{'packRanTec'}" if $pc{'packRanTec'};
+  say "//レンジャー運動=$pc{'packRanAgi'}" if $pc{'packRanAgi'};
+  say "//レンジャー観察=$pc{'packRanObs'}" if $pc{'packRanObs'};
+  say "//セージ知識=$pc{'packSagKno'}" if $pc{'packSagKno'};
+  say "//バード知識=$pc{'packBarKno'}" if $pc{'packBarKno'};
+  say "//ライダー運動=$pc{'packRidAgi'}" if $pc{'packRidAgi'};
+  say "//ライダー知識=$pc{'packRidKno'}" if $pc{'packRidKno'};
+  say "//ライダー観察=$pc{'packRidObs'}" if $pc{'packRidObs'};
+  say "//アルケミスト知識=$pc{'packAlcKno'}" if $pc{'packAlcKno'};
+  say '';
+  
+  foreach (
+    ['Sor', '真語魔法'],
+    ['Con', '操霊魔法'],
+    ['Pri', '神聖魔法'],
+    ['Mag', '魔動機術'],
+    ['Fai', '妖精魔法'],
+    ['Dem', '召異魔法'],
+    ['Gri', '秘奥魔法'],
+    ['Bar', '呪歌'],
+    ['Alc', '賦術'],
+    ['Mys', '占瞳'],
+  ){
+    next if !$pc{'lv'.@$_[0]};
+    say "//@$_[1]=$pc{'magicPower'.@$_[0]}";
+  }
+  say '';
+  
+  foreach (1 .. $pc{'weaponNum'}){
+    next if $pc{'weapon'.$_.'Name'}.$pc{'weapon'.$_.'Usage'}.$pc{'weapon'.$_.'Reqd'}.
+            $pc{'weapon'.$_.'Acc'}.$pc{'weapon'.$_.'Rate'}.$pc{'weapon'.$_.'Crit'}.
+            $pc{'weapon'.$_.'Dmg'}.$pc{'weapon'.$_.'Own'}.$pc{'weapon'.$_.'Note'}
+            eq '';
+    say "//武器$_=$pc{'weapon'.$_.'Name'}";
+    say "//命中$_=$pc{'weapon'.$_.'AccTotal'}";
+    say "//威力$_=$pc{'weapon'.$_.'Rate'}";
+    say "//C値$_=$pc{'weapon'.$_.'Crit'}";
+    say "//追加D$_=$pc{'weapon'.$_.'DmgTotal'}";
+    say '';
+  }
+  say "//回避=$pc{'DefenseTotalAllEva'}";
+print <<"HTML";
+</textarea>
+        <p><label>@{[ input 'chatPaletteUnusedHidden', 'checkbox']} 未使用の変数は出力しない</label></p>
+        </div>
+        <div class="palette-column">
+        <h2>プリセット （コピーペースト用）</h2>
+        <textarea id="palettePreset" readonly style="height:20em">@{[ palettePreset(param('type')) ]}</textarea>
+        </div>
+      </div>
+      </section>
       
       @{[ input 'birthTime','hidden' ]}
       @{[ input 'id','hidden' ]}
@@ -1518,14 +1650,15 @@ HTML
 if($mode eq 'edit'){
 print <<"HTML";
     <form name="del" method="post" action="./" id="deleteform">
-      <p>
+      <p style="font-size: 80%;">
       <input type="hidden" name="mode" value="delete">
       <input type="hidden" name="id" value="$id">
       <input type="hidden" name="pass" value="$pass">
       <input type="checkbox" name="check1" value="1" required>
       <input type="checkbox" name="check2" value="1" required>
       <input type="checkbox" name="check3" value="1" required>
-      <input type="submit" value="シート削除">
+      <input type="submit" value="シート削除"><br>
+      ※チェックを全て入れてください
       </p>
     </form>
 HTML
@@ -1669,7 +1802,6 @@ print <<"HTML";
   }
 }
   </script>
-  <script src="./lib/edit-chara.js?1.04.003" defer></script>
 </body>
 
 </html>

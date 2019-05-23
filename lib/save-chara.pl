@@ -341,23 +341,27 @@ $pc{'mobilityFull'} = $pc{'mobilityTotal'} * 3;
 $pc{'mobilityLimited'} = $pc{'footwork'} ? 10 : 3;
 
 ## 判定パッケージ
-$pc{'packScoutTec'}    = $st{'ScoA'};
-$pc{'packScoutAgi'}    = $st{'ScoB'};
-$pc{'packScoutInt'}    = $st{'ScoE'};
-$pc{'packRangerTec'}   = $st{'RanA'};
-$pc{'packRangerAgi'}   = $st{'RanB'};
-$pc{'packRangerInt'}   = $st{'RanE'};
-$pc{'packSageInt'}     = $st{'SagE'};
-$pc{'packBardInt'}     = $st{'BarE'};
-$pc{'packRiderAgi'}    = $st{'RidB'};
-$pc{'packRiderInt'}    = $st{'RidE'};
-$pc{'packAlchemistInt'}= $st{'AlcE'};
+$pc{'packScoTec'} = $st{'ScoA'} + $pc{'packScoTecAdd'};
+$pc{'packScoAgi'} = $st{'ScoB'} + $pc{'packScoAgiAdd'};
+$pc{'packScoObs'} = $st{'ScoE'} + $pc{'packScoObsAdd'};
+$pc{'packRanTec'} = $st{'RanA'} + $pc{'packRanTecAdd'};
+$pc{'packRanAgi'} = $st{'RanB'} + $pc{'packRanAgiAdd'};
+$pc{'packRanObs'} = $st{'RanE'} + $pc{'packRanObsAdd'};
+$pc{'packSagKno'} = $st{'SagE'} + $pc{'packSagKnoAdd'};
+$pc{'packBarKno'} = $st{'BarE'} + $pc{'packBarKnoAdd'};
+$pc{'packRidAgi'} = $st{'RidB'} + $pc{'packRidAgiAdd'};
+$pc{'packRidKno'} = $st{'RidE'} + $pc{'packRidKnoAdd'};
+$pc{'packRidObs'} = $st{'RidE'} + $pc{'packRidObsAdd'};
+$pc{'packAlcKno'} = $st{'AlcE'} + $pc{'packAlcKnoAdd'};
 
 ## 魔物知識／先制力
-my @ini_class = ($st{'ScoB'},$st{'WarB'});
+my @ini_class = ($pc{'packScoAgi'},$st{'WarB'});
 push @ini_class, $st{$_} foreach (@set::ini_class_add);
-$pc{'monsterLore'} = max($st{'SagE'},$st{'RidE'});
-$pc{'initiative'}  = max(@ini_class);
+foreach(1 .. $pc{'lvWar'}){
+  if($pc{'craftCommand'.$_} =~ /軍師の知略/){ push @ini_class, $st{'WarE'}; }
+}
+$pc{'monsterLore'} = max($pc{'packSagKno'},$pc{'packRidKno'}) + $pc{'monsterLoreAdd'};
+$pc{'initiative'}  = max(@ini_class) + $pc{'initiativeAdd'};
 
 ## 魔力
 $pc{'magicPowerSor'} = $pc{'lvSor'} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwnSor'} ? 2 : 0)) / 6) + $pc{'magicPowerAddSor'} + $pc{'magicPowerAdd'} + $pc{'magicPowerEnhance'};
@@ -432,6 +436,7 @@ $pc{'freeHistory'}   =~ s/\r\n?|\n/<br>/g;
 $pc{'cashbook'}      =~ s/\r\n?|\n/<br>/g;
 $pc{'fellowProfile'} =~ s/\r\n?|\n/<br>/g;
 $pc{'fellowNote'}    =~ s/\r\n?|\n/<br>/g;
+$pc{'chatPalette'}   =~ s/\r\n?|\n/<br>/g;
 
 ### 画像アップロード --------------------------------------------------
 if($pc{'imageDelete'}){
@@ -499,6 +504,23 @@ if (@set::grades){
       if ($pc{'level'} <= @$_[1] && $pc{'expTotal'} <= @$_[2]){ $pc{'group'} = @$_[0]; last; }
     }
   }
+}
+
+### 0を消去 --------------------------------------------------
+foreach (
+'lvFig','lvGra','lvFen','lvSho',
+'lvSor','lvCon','lvPri','lvFai','lvMag',
+'lvSco','lvRan','lvSag',
+'lvEnh','lvBar','lvRid','lvAlc',
+'lvWar','lvMys','lvDem','lvPhy',
+'lvGri','lvArt','lvAri',
+'cardRedB','cardRedA','cardRedS','cardRedSS',
+'cardGreB','cardGreA','cardGreS','cardGreSS',
+'cardBlaB','cardBlaA','cardBlaS','cardBlaSS',
+'cardWhiB','cardWhiA','cardWhiS','cardWhiSS',
+'cardGolB','cardGolA','cardGolS','cardGolSS',
+){
+  delete $pc{$_} if !$pc{$_};
 }
 
 ### 保存 #############################################################################################

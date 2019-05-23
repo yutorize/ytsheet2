@@ -3,7 +3,6 @@
 /* // Base
 ---------------------------------------------------------------------------------------------------- */
 
-
 /* // Font
 ---------------------------------------------------------------------------------------------------- */
 #personal dl#faith dd {
@@ -356,6 +355,7 @@ p.words span.brackets {
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: auto;
+  white-space:nowrap;
 }
 #sub-status *:nth-child(1) { grid-row: 1; grid-column: 1; }
 #sub-status *:nth-child(2) { grid-row: 2; grid-column: 1; }
@@ -543,12 +543,12 @@ dl#exp dd {
   border-bottom-width: 1px;
   border-bottom-style: solid;
 }
-#area-actions #magic-power table,
+#area-actions .box#magic-power table,
 #area-actions .box#language > table  {
   border-style: hidden;
 }
-#area-actions #package td:last-child,
-#area-actions #magic-power td:last-child {
+#area-actions .box#package td:last-child,
+#area-actions .box#magic-power td:last-child {
   width: 1.8em;
   padding-left: 0.2rem;
   font-size: 1.6rem;
@@ -562,12 +562,16 @@ dl#exp dd {
 }
 #package table tr:first-child th:first-child {
   width: 12em;
-}
-#package table tr td:last-child {
-  width: 3em;
-}
-#package table tr th:nth-last-child(2) {
   white-space: nowrap;
+}
+#package table tr th:nth-last-child(3) {
+  width: 3em;
+  white-space: nowrap;
+}
+#package table tr td:nth-last-child(2) {
+  font-size: 90%;
+  white-space: nowrap;
+  vertical-align: bottom;
 }
 #package table tr th {
   font-weight: normal;
@@ -586,7 +590,9 @@ dl#exp dd {
   flex-wrap: wrap;
   justify-content: space-between;
 }
-
+#area-other-actions input {
+  width: 3.5em;
+}
 /* Monster-Lore  */
 #monster-lore {
   flex-basis: calc(50% - 5px);
@@ -636,13 +642,8 @@ dl#exp dd {
   padding-right: 1em;
 }
 #magic-power table th:first-child {
-  text-align: left;
 }
 #magic-power table th:first-child span {
-  display: block;
-  margin: 0 -10%;
-  transform: scaleX(0.81);
-  font-size: 1.3rem;
 }
 #magic-power table th:nth-child(2) {
   white-space: nowrap;
@@ -747,7 +748,7 @@ dl#exp dd {
 #weapons th:nth-child(8) { width:   1em; } /* 専用 */
 #weapons th:nth-child(9) { width: auto; } /* 備考 */
 
-#weapons td:nth-child(9) { padding-left: .3em; text-align: left; font-size: 90%; } /* 備考 */
+#weapons td:last-child { padding-left: .3em; text-align: left; font-size: 90%; } /* 備考 */
 
 /* Defense-Status */
 #evasion-classes {
@@ -817,6 +818,32 @@ div#area-items-R {
   #money dd {
     grid-row: 2;
   }
+
+/* MaterialCard */
+#material-cards > h2 + table {
+  margin-top: 0;
+}
+#material-cards > h2 + table tr > * {
+  width: 20%;
+}
+#material-cards > h2 + table tr > th:first-child {
+  width: auto;
+  text-align: center;
+}
+#material-cards > h2 + table tr > td {
+  border-width: 0 0 0 1px;
+  border-style: dotted;
+  
+}
+#material-cards > h2 + table tr:nth-child(n+2) > th:first-child::before {
+  font-family: "Font Awesome 5 Free";
+  margin-right: .3rem;
+}
+#material-cards > h2 + table tr.cards-red { background-color: rgba(255,  0,  0,0.15); } #material-cards > h2 + table tr.cards-red th::before { content:'\f1b0'; color: #a00; }
+#material-cards > h2 + table tr.cards-gre { background-color: rgba( 50,255,220,0.15); } #material-cards > h2 + table tr.cards-gre th::before { content:'\f06c'; color: #0c3; }
+#material-cards > h2 + table tr.cards-bla { background-color: rgba(125,125,125,0.2); } #material-cards > h2 + table tr.cards-bla th::before { content:'\f013'; color: #777; }
+#material-cards > h2 + table tr.cards-whi { background-color: rgba(255,255,255,0.2); } #material-cards > h2 + table tr.cards-whi th::before { content:'\f02d'; color: #bbb; }
+#material-cards > h2 + table tr.cards-gol { background-color: rgba(255,210, 50,0.15); } #material-cards > h2 + table tr.cards-gol th::before { content:'\f666'; color: #f90; }
 
 /* BattleItems */
 #battle-items ul {
@@ -983,9 +1010,9 @@ div#area-items-R {
   margin: 0 .5em;
 }
 #cashbook p {
-  font-size: 85%;
   margin: .3rem 0 0;
-  font-family: monospace, serif;
+  line-height: 1.5;
+  font-family: "UD デジタル 教科書体 N-R", monospace, serif;
   white-space: pre-wrap;
 }
 #cashbook b.cash {
