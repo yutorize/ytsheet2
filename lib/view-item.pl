@@ -33,10 +33,10 @@ $SHEET->param("itemNameRaw" => $pc{'itemName'});
 
 ### 置換 --------------------------------------------------
 foreach (keys %pc) {
-  $pc{$_} = tag_unescape($pc{$_},$pc{'oldSignConv'});
   if($_ =~ /^(?:effects|description)$/){
     $pc{$_} = tag_unescape_lines($pc{$_});
   }
+  $pc{$_} = tag_unescape($pc{$_},$pc{'oldSignConv'});
 }
 $pc{'effects'} =~ s/<br>/\n/gi;
 $pc{'effects'} =~ s/^●(.*?)$/<\/p><h3>●$1<\/h3><p>/gim;

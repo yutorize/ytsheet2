@@ -105,6 +105,7 @@ foreach my $data (@lines) {
 }
 $INDEX->param(Posts => \@posts);
 
+$INDEX->param(pageId => '&id='.param('id')) if param('id');
 $INDEX->param(pagePrev => ($page - $page_items) / $page_items);
 $INDEX->param(pageNext => ($page + $page_items) / $page_items);
 if(!param("num")) {

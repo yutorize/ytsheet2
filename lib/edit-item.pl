@@ -1,4 +1,4 @@
-############# フォーム・キャラクター #############
+############# フォーム・アイテム #############
 use strict;
 #use warnings;
 use utf8;
@@ -179,7 +179,7 @@ HTML
       <!-- <label>@{[ input 'school', 'checkbox' ]}　流派装備</label> -->
       <hr>
       <dl><dt>基本取引価格</dt><dd>@{[ input 'price' ]}G</dd></dl>
-      <dl><dt>知名度  </dt><dd>@{[ input 'reputation', 'number' ]}</dd></dl>
+      <dl><dt>知名度  </dt><dd>@{[ input 'reputation', 'text','','pattern="^[0-9\/／]+$"' ]} 数字と／のみ入力可</dd></dl>
       <dl><dt>形状    </dt><dd>@{[ input 'shape' ]}</dd></dl>
       <dl><dt>カテゴリ</dt><dd>@{[ input 'category','text','','list="list-category"' ]}
         複数カテゴリの場合、スペースで区切ってください。</dd></dl>
@@ -261,7 +261,7 @@ HTML
 if($mode eq 'edit'){
 print <<"HTML";
     <form name="del" method="post" action="./" id="deleteform">
-      <p>
+      <p style="font-size: 80%;">
       <input type="hidden" name="mode" value="delete">
       <input type="hidden" name="type" value="i">
       <input type="hidden" name="id" value="$id">
@@ -269,7 +269,8 @@ print <<"HTML";
       <input type="checkbox" name="check1" value="1" required>
       <input type="checkbox" name="check2" value="1" required>
       <input type="checkbox" name="check3" value="1" required>
-      <input type="submit" value="シート削除">
+      <input type="submit" value="シート削除"><br>
+      ※チェックを全て入れてください
       </p>
     </form>
 HTML
@@ -293,7 +294,7 @@ print <<"HTML";
     <option value="突2H">
   </datalist>
   <datalist id="list-age">
-    <option value="現代">
+    <option value="現在">
     <option value="魔動機文明">
     <option value="魔法文明">
     <option value="神紀文明">

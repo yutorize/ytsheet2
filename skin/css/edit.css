@@ -90,6 +90,37 @@ span.free {
   display: none;
 }
 
+/* // メニュー
+---------------------------------------------------------------------------------------------------- */
+ul#header-menu {
+  position: absolute;
+  display: flex;
+  right: 0;
+  bottom: calc(-1em - 3px - 1rem);
+  line-height: 1;
+  background: rgba(100,100,100,0.9);
+  border-radius: 0 0 .5em .5em;
+  color: #fff;
+  font-weight: bold;
+  overflow: hidden;
+}
+ul#header-menu li {
+  padding: .5rem 1rem;
+  cursor: pointer;
+}
+ul#header-menu li + li {
+  border-left: 1px solid rgba(200,200,200,0.3);
+}
+ul#header-menu li:hover {
+  background: rgba(0,0,0,0.5);
+}
+section {
+  margin-top: 2em;
+}
+section > h2 {
+  margin-top: 1rem;
+}
+
 /* // キャラクター
 ---------------------------------------------------------------------------------------------------- */
 .box input[type="text"],
@@ -127,7 +158,7 @@ input[type="button"]:hover {
   cursor: pointer;
   transform: scale(3.5, 1);
 }
-#history .switch-button {
+td .switch-button {
   display: inline-block !important;
   float: left;
   margin-top: .2em;
@@ -279,9 +310,9 @@ input[type="button"]:hover {
 
 
 #area-status #image {
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: auto 1fr 1fr;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   
   background-repeat: no-repeat;
   background-size: cover;
@@ -289,15 +320,34 @@ input[type="button"]:hover {
   
   cursor: unset;
 }
-#area-status #image div {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+#image > h2 {
+  background: rgba(255,255,255,0.8);
+}
+#image > p {
+  background: rgba(255,255,255,0.4);
+  text-shadow: 0 0 10px #fff, 0 0 10px #fff, 0 0 10px #fff, 0 0 10px #fff, 0 0 10px #fff,
+               0 0 10px #fff, 0 0 10px #fff, 0 0 10px #fff, 0 0 10px #fff, 0 0 10px #fff;
+}
+#area-status #image h2 {
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+#area-status #image p {
+  padding: .5em .1em;
   text-align: center;
-  align-items: unset;
+  line-height: 1.2;
+}
+#area-status #image p+p {
+  margin-top: 1em;
+}
+#area-status #image p:last-child {
+  margin-bottom: .5em;
 }
 #area-status #image select {
   width: calc(100% - 6.5em);
+}
+#area-status #image input[type="checkbox"] {
+  transform: scale(1.1)
 }
 
 #area-status #image .words-input select {
@@ -460,6 +510,12 @@ input[type="button"]:hover {
   margin-top: 1px;
   margin-bottom: -1px;
 }
+#package table tr:first-child th:first-child {
+  width: 10em;
+}
+#package table tr td:nth-last-child(2) input {
+  width: calc(100% - 1em);
+}
 
 
 #language dl {
@@ -476,6 +532,9 @@ input[type="button"]:hover {
   text-align: center;
 }
 
+#magic-power {
+  min-width: 10em;
+}
 #magic-power p {
   margin-top: -1em;
   text-align: right;
@@ -882,7 +941,7 @@ form#item div.input-data dl dd input {
   max-width: 14em;
 }
 form#item div.input-data dl dd input[name="reputation"] {
-  width: 4em;
+  width: 6em;
 }
 form#item div.input-data dl dd input[name="shape"] {
   max-width: 26em;
@@ -925,4 +984,30 @@ form#item textarea[name="description"] {
   padding: 2px;
 }
 
+/* // パレット
+---------------------------------------------------------------------------------------------------- */
+#section-palette .box {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+#section-palette .box > * {
+  grid-column: span 2;
+}
+#section-palette .box > .palette-column {
+  grid-column: span 1;
+}
 
+/* // 
+---------------------------------------------------------------------------------------------------- */
+@media screen and (min-width:1300px){
+  body {
+    grid-template-columns: 1fr minmax(auto, 900px) 1fr;
+  }
+  header nav {
+    max-width: 900px;
+  }
+  article{
+    max-width: 860px;
+    display: block;
+  }
+}

@@ -1,3 +1,6 @@
+@charset "utf-8";
+/* // Narrow
+---------------------------------------------------------------------------------------------------- */
 @media screen and (max-width:735px){
   html {
     font-size: 1.8vw;
@@ -113,4 +116,102 @@
   #f-note {
     min-height: 6rem
   }
+}
+
+/* // Wide
+---------------------------------------------------------------------------------------------------- */
+/*
+@media screen and (min-width:1180px) and (max-width:1599px){
+  body {
+    grid-template-columns: 1fr minmax(auto, 1200px) 1fr;
+  }
+  header nav {
+    max-width: 1200px;
+  }
+  article {
+    max-width: 1160px;
+    display: grid;
+    grid-gap: 0 1rem;
+    grid-template-columns: 3fr 1fr;
+  }
+  article > * {
+    grid-column: span 2;
+  }
+  article > div.column-status,
+  article > #area-actions {
+    grid-column: span 1;
+  }
+  article > div.column-status {
+    grid-row: span 2;
+  }
+  #area-actions {
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-wrap: nowrap;
+  }
+  #area-actions > * {
+    width: 100%;
+    flex-basis: auto;
+    flex-grow: 0;
+    margin: 0 0 1rem;
+  }
+  #language { order: -1; }
+  #package  { order: 1; }
+  #magic-power  { order: 2; }
+  #area-other-actions  { order: 3; }
+  #area-actions #magic-power tr th:first-child {
+    display: none;
+  }
+  #area-actions #magic-power tr th span {
+    font-size: .8em;
+  }
+  #area-actions #magic-power tr td:nth-child(3) {
+    font-size: .85em;
+  }
+  #area-actions #magic-power tr td:nth-child(3):first-letter{
+    font-size: 1.15em;
+  }
+}
+*/
+@media screen and (min-width:1400px){
+  body {
+    grid-template-columns: 1fr minmax(auto, 1800px) 1fr;
+  }
+  header nav {
+    max-width: 1800px;
+  }
+  article{
+    max-width: 1760px;
+    display: grid;
+    grid-gap: 0 1.2rem;
+    grid-template-columns: 1fr 1fr;
+  }
+  #area-name, #tags {
+    grid-column: span 2;
+  }
+  div.column-status {
+    grid-row: span 2;
+  }
+  #area-actions {
+    align-items: flex-start !important;
+  }
+  #area-items {
+    grid-column: 2;
+    grid-row: 5;
+  }
+  #free-note {
+    grid-column: 1;
+    grid-row: 5;
+  }
+  #history {
+    grid-column: span 2;
+  }
+  #history table tr td {
+    font-size: inherit !important;
+  }
+  #history table tr th:nth-child(2) { width: 6.5em; } /* DATE */
+}
+@media screen and (min-width:1400px) and (max-width:1680px){
+  #status dl[id^="stt-bonus"] dt span::after { content: "Ｂ" !important; }
 }

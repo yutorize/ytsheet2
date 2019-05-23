@@ -1,10 +1,13 @@
-############# フォーム・キャラクター #############
+############# フォーム・モンスター #############
 use strict;
 #use warnings;
 use utf8;
 use open ":utf8";
 use open ":std";
+use feature 'say';
 use Encode;
+
+require './lib/palette-sub.pl';
 
 my $mode = $main::mode;
 my $message = $main::message;
@@ -88,9 +91,10 @@ Content-type: text/html\n
   <link rel="stylesheet" media="all" href="./skin/css/sheet.css?20180910800">
   <link rel="stylesheet" media="all" href="./skin/css/monster.css?20180910800">
   <link rel="stylesheet" media="all" href="./skin/css/monster-sp.css?20180910800">
-  <link rel="stylesheet" media="all" href="./skin/css/edit.css?20180910800">
+  <link rel="stylesheet" media="all" href="./skin/css/edit.css?1.05.006">
   <link rel="stylesheet" id="nightmode">
-  <script src="./skin/js/common.js?201808211430" ></script>
+  <script src="./skin/js/common.js?1.05.003" defer></script>
+  <script src="./lib/edit-mons.js?1.05.006" defer></script>
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
   <style>
     #image {
@@ -134,6 +138,10 @@ HTML
 }
 print <<"HTML";
         <input type="submit" value="保存">
+        <ul id="header-menu">
+          <li onclick="sectionSelect('common');">キャラクターデータ</li>
+          <li onclick="sectionSelect('palette');">チャットパレット</li>
+        </ul>
       </div>
 HTML
 if($set::user_reqd){
@@ -168,6 +176,7 @@ HTML
 HTML
 }
   print <<"HTML";
+      <section id="section-common">
       <div id="hide-options">
         <p id="forbidden-checkbox">
         @{[ input 'forbidden','checkbox' ]} 閲覧を禁止する
@@ -189,32 +198,32 @@ print <<"HTML";
           <dt>タグ</dt><dd>@{[ input 'tags' ]}</dd>
         </dl>
       </div>
-    <div class="box status">
-      <dl><dt>レベル</dt><dd>@{[ input 'lv','number','','min="0"' ]}</dd></dl>
-      <dl><dt>知能</dt><dd>@{[ input 'intellect','','','list="data-intellect"' ]}</dd></dl>
-      <dl><dt>知覚</dt><dd>@{[ input 'perception','','','list="data-perception"' ]}</dd></dl>
-      <dl><dt>反応</dt><dd>@{[ input 'disposition','','','list="data-disposition"' ]}</dd></dl>
-      <dl><dt>穢れ</dt><dd>@{[ input 'sin','number','','min="0"' ]}</dd></dl>
-      <dl><dt>言語</dt><dd>@{[ input 'language' ]}</dd></dl>
-      <dl><dt>生息地</dt><dd>@{[ input 'habitat' ]}</dd></dl>
-      <dl><dt>知名度／弱点値</dt><dd>@{[ input 'reputation' ]}／@{[ input 'reputation+' ]}</dd></dl>
-      <dl><dt>弱点</dt><dd>@{[ input 'weakness','','','list="data-weakness"' ]}</dd></dl>
-      <dl><dt>先制値</dt><dd>@{[ input 'initiative' ]}</dd></dl>
-      <dl><dt>移動速度</dt><dd>@{[ input 'mobility' ]}</dd></dl>
-      <dl><dt>生命抵抗力</dt><dd>@{[ input 'vitResist','number','calcVit' ]} (@{[ input 'vitResistFix','number','calcVitF' ]})</dd></dl>
-      <dl><dt>精神抵抗力</dt><dd>@{[ input 'mndResist','number','calcMnd' ]} (@{[ input 'mndResistFix','number','calcMndF' ]})</dd></dl>
-    </div>
-    <div class="box">
-    <table id="status-table" class="status">
-      <tr>
-        <th>攻撃方法</th>
-        <th>命中力</th>
-        <th>打撃点</th>
-        <th>回避力</th>
-        <th>防護点</th>
-        <th>ＨＰ</th>
-        <th>ＭＰ</th>
-      </tr>
+      <div class="box status">
+        <dl><dt>レベル</dt><dd>@{[ input 'lv','number','','min="0"' ]}</dd></dl>
+        <dl><dt>知能</dt><dd>@{[ input 'intellect','','','list="data-intellect"' ]}</dd></dl>
+        <dl><dt>知覚</dt><dd>@{[ input 'perception','','','list="data-perception"' ]}</dd></dl>
+        <dl><dt>反応</dt><dd>@{[ input 'disposition','','','list="data-disposition"' ]}</dd></dl>
+        <dl><dt>穢れ</dt><dd>@{[ input 'sin','number','','min="0"' ]}</dd></dl>
+        <dl><dt>言語</dt><dd>@{[ input 'language' ]}</dd></dl>
+        <dl><dt>生息地</dt><dd>@{[ input 'habitat' ]}</dd></dl>
+        <dl><dt>知名度／弱点値</dt><dd>@{[ input 'reputation' ]}／@{[ input 'reputation+' ]}</dd></dl>
+        <dl><dt>弱点</dt><dd>@{[ input 'weakness','','','list="data-weakness"' ]}</dd></dl>
+        <dl><dt>先制値</dt><dd>@{[ input 'initiative' ]}</dd></dl>
+        <dl><dt>移動速度</dt><dd>@{[ input 'mobility' ]}</dd></dl>
+        <dl><dt>生命抵抗力</dt><dd>@{[ input 'vitResist','number','calcVit' ]} (@{[ input 'vitResistFix','number','calcVitF' ]})</dd></dl>
+        <dl><dt>精神抵抗力</dt><dd>@{[ input 'mndResist','number','calcMnd' ]} (@{[ input 'mndResistFix','number','calcMndF' ]})</dd></dl>
+      </div>
+      <div class="box">
+      <table id="status-table" class="status">
+        <tr>
+          <th>攻撃方法</th>
+          <th>命中力</th>
+          <th>打撃点</th>
+          <th>回避力</th>
+          <th>防護点</th>
+          <th>ＨＰ</th>
+          <th>ＭＰ</th>
+        </tr>
 HTML
 foreach (1 .. $pc{'statusNum'}){
 $pc{'status'.$_.'Damage'} = '2d6+' if $pc{'status'.$_.'Damage'} eq '' && $mode eq 'blanksheet';
@@ -231,32 +240,32 @@ print <<"HTML";
 HTML
 }
 print <<"HTML";
-    </table>
-    <div class="add-del-button"><a onclick="addStatus()">▼</a><a onclick="delStatus()">▲</a></div>
-    @{[input('statusNum','hidden')]}
-    </div>
-    <div class="box parts">
-      <dl><dt>部位数</dt><dd>@{[ input 'partsNum','number','','min="0"' ]} (@{[ input 'parts' ]}) </dd></dl>
-      <dl><dt>コア部位</dt><dd>@{[ input 'coreParts' ]}</dd></dl>
-    </div>
-    <div class="box">
-      <h2>特殊能力</h2>
-      <textarea name="skills">$pc{'skills'}</textarea>
-      <div class="annotate">
-        ※特殊能力の分類マークなどを記述すると自動的に見出し化します。<br>
-        　2.0での分類マークでも構いません。また、入力簡易化の為に入力しやすい代替文字での入力も可能です。<br>
-        　以下に見出しとして変換される記号を一覧にしています。<br>
-        ●：部位見出し：<code>●</code><br>
-        <i class="s-icon passive"></i>：常時型　　：<code>○</code> <code>◯</code> <code>〇</code><br>
-        <i class="s-icon setup"  ></i>：戦闘準備型：<code>△</code><br>
-        <i class="s-icon major"  ></i>：主動作型　：<code>＞</code> <code>▶</code> <code>〆</code><br>
-        <i class="s-icon minor"  ></i>：補助動作型：<code>≫</code> <code>&gt;&gt;</code> <code>☆</code><br>
-        <i class="s-icon active" ></i>：宣言型　　：<code>🗨</code> <code>□</code> <code>☑</code><br>
+      </table>
+      <div class="add-del-button"><a onclick="addStatus()">▼</a><a onclick="delStatus()">▲</a></div>
+      @{[input('statusNum','hidden')]}
       </div>
-    </div>
-    <div class="box loots">
-      <h2>戦利品</h2>
-      <dl id="loots-list">
+      <div class="box parts">
+        <dl><dt>部位数</dt><dd>@{[ input 'partsNum','number','','min="0"' ]} (@{[ input 'parts' ]}) </dd></dl>
+        <dl><dt>コア部位</dt><dd>@{[ input 'coreParts' ]}</dd></dl>
+      </div>
+      <div class="box">
+        <h2>特殊能力</h2>
+        <textarea name="skills">$pc{'skills'}</textarea>
+        <div class="annotate">
+          ※特殊能力の分類マークなどを記述すると自動的に見出し化します。<br>
+           2.0での分類マークでも構いません。また、入力簡易化の為に入力しやすい代替文字での入力も可能です。<br>
+           以下に見出しとして変換される記号を一覧にしています。<br>
+          ●：部位見出し：<code>●</code><br>
+          <i class="s-icon passive"></i>：常時型　　：<code>○</code> <code>◯</code> <code>〇</code><br>
+          <i class="s-icon setup"  ></i>：戦闘準備型：<code>△</code><br>
+          <i class="s-icon major"  ></i>：主動作型　：<code>＞</code> <code>▶</code> <code>〆</code><br>
+          <i class="s-icon minor"  ></i>：補助動作型：<code>≫</code> <code>&gt;&gt;</code> <code>☆</code><br>
+          <i class="s-icon active" ></i>：宣言型　　：<code>🗨</code> <code>□</code> <code>☑</code><br>
+        </div>
+      </div>
+      <div class="box loots">
+        <h2>戦利品</h2>
+        <dl id="loots-list">
 HTML
 foreach (1 .. $pc{'lootsNum'}){
 print <<"HTML";
@@ -265,13 +274,50 @@ HTML
 }
 print <<"HTML";
       </dl>
-    <div class="add-del-button"><a onclick="addLoots()">▼</a><a onclick="delLoots()">▲</a></div>
-    @{[input('lootsNum','hidden')]}
-    </div>
-    <div class="box">
-      <h2>解説</h2>
-      <textarea name="description">$pc{'description'}</textarea>
-    </div>
+      <div class="add-del-button"><a onclick="addLoots()">▼</a><a onclick="delLoots()">▲</a></div>
+      @{[input('lootsNum','hidden')]}
+      </div>
+      <div class="box">
+        <h2>解説</h2>
+        <textarea name="description">$pc{'description'}</textarea>
+      </div>
+      </section>
+      
+      <section id="section-palette" style="display:none;">
+      <div class="box">
+        <h2>チャットパレット</h2>
+        <textarea name="chatPalette" style="height:20em" placeholder="例）&#13;&#10;2d6+{冒険者}+{器用}&#13;&#10;&#13;&#10;※入力がない場合、自動的にプリセットがそのまま反映されます。">$pc{'chatPalette'}</textarea>
+        
+        <div class="palette-column">
+        <h2>デフォルト変数 （自動的に末尾に出力されます）</h2>
+        <textarea readonly style="height:20em">
+HTML
+  say "//LV=$pc{'lv'}";
+  say '';
+  say "//生命抵抗=$pc{'vitResist'}";
+  say "//精神抵抗=$pc{'mndResist'}";
+  
+  say '';
+  foreach (1 .. $pc{'statusNum'}){
+    say "//部位$_=$pc{'status'.$_.'Style'}";
+    say "//命中$_=$pc{'status'.$_.'Accuracy'}" if $pc{'status'.$_.'Accuracy'} ne '';
+    say "//ダメージ$_=$pc{'status'.$_.'Damage'}" if $pc{'status'.$_.'Damage'} ne '';
+    say "//回避$_=$pc{'status'.$_.'Evasion'}" if $pc{'status'.$_.'Evasion'} ne '';
+    say '';
+  }
+  my $skills = $pc{'skills'};
+  $skills =~ tr/０-９（）/0-9\(\)/;
+  $skills =~ s/^(?:[○◯〇△＞▶〆☆≫»□☑🗨]|&gt;&gt;)+(.+?)(?:[0-9]+(?:レベル|LV)|\(.+\))*[\/／](?:魔力)([0-9]+)[(（][0-9]+[）)]/say "\/\/$1=$2";/megi;
+  $skills =~ s/^(?:[○◯〇△＞▶〆☆≫»□☑🗨]|&gt;&gt;)+(.+)[\/／]([0-9]+)[(（][0-9]+[）)]/say "\/\/$1=$2";/megi;
+print <<"HTML";
+</textarea>
+        </div>
+        <div class="palette-column">
+        <h2>プリセット （コピーペースト用）</h2>
+        <textarea id="palettePreset" readonly style="height:20em">@{[ palettePreset(param('type')) ]}</textarea>
+        </div>
+      </div>
+      </section>
     
       @{[ input 'birthTime','hidden' ]}
       @{[ input 'id','hidden' ]}
@@ -280,7 +326,7 @@ HTML
 if($mode eq 'edit'){
 print <<"HTML";
     <form name="del" method="post" action="./" id="deleteform">
-      <p>
+      <p style="font-size: 80%;">
       <input type="hidden" name="mode" value="delete">
       <input type="hidden" name="type" value="m">
       <input type="hidden" name="id" value="$id">
@@ -288,7 +334,8 @@ print <<"HTML";
       <input type="checkbox" name="check1" value="1" required>
       <input type="checkbox" name="check2" value="1" required>
       <input type="checkbox" name="check3" value="1" required>
-      <input type="submit" value="シート削除">
+      <input type="submit" value="シート削除"><br>
+      ※チェックを全て入れてください
       </p>
     </form>
 HTML
@@ -330,7 +377,6 @@ print <<"HTML";
   <option value="回復効果ダメージ+3点">
   <option value="なし">
   </datalist>
-  <script src="./lib/edit-mons.js" ></script>
 </body>
 
 </html>
