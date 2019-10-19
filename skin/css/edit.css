@@ -147,6 +147,9 @@ input[type="button"]:hover {
   background: linear-gradient(to bottom, rgba(50,150,250,0.5), rgba(50,50,250,0.5));
   color: #ffffff;
 }
+#status dl#stt-pointbuy-type {
+  grid-column: span 2;
+}
 
 .box .add-del-button {
   text-align: center;
@@ -535,12 +538,8 @@ td .switch-button {
 #magic-power {
   min-width: 10em;
 }
-#magic-power p {
-  margin-top: -1em;
-  text-align: right;
-}
-#magic-power p input {
-  width: 3.5em;
+#magic-power table {
+  margin-top: -1.2em !important;
 }
 #magic-power table th:nth-child(2) {
   width: 13em;
@@ -548,12 +547,19 @@ td .switch-button {
 #magic-power table th:nth-child(2) input {
   width: 10em;
 }
+#magic-power table td:nth-child(3) {
+  padding-left : .5em;
+  padding-right: .5em;
+  border-width: 0 1px;
+  border-style: none dotted;
+  font-size: 85%;
+}
 #magic-power table td:nth-child(3) input {
   vertical-align: middle;
 }
 #magic-power table td:nth-child(4) {
-  padding-left: 1em;
   width: 5.5em;
+  text-align: left;
 }
 #magic-power table td:nth-child(4) input {
   width: 3.5em;

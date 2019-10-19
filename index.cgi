@@ -1,12 +1,12 @@
 #!/usr/local/bin/perl
 ####################################
 ##     ゆとシートⅡ for SW2.5     ##
-##                version1.05     ##
+##                version1.06     ##
 ##          by ゆとらいず工房     ##
 ##    https://yutorize.2-d.jp     ##
 ####################################
 use strict;
-use warnings;
+#use warnings;
 use utf8;
 use open ":utf8";
 use open ":std";
@@ -14,11 +14,12 @@ use CGI::Carp qw(fatalsToBrowser);
 use CGI qw/:all/;
 use CGI::Cookie;
 use Encode qw/encode decode/;
+use List::Util qw/max/;
 use Fcntl;
 
 ### バージョン #######################################################################################
 
-our $ver = "1.05";
+our $ver = "1.06";
 
 ### 設定読込 #########################################################################################
 

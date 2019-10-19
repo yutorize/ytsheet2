@@ -272,21 +272,21 @@ $SHEET->param("PackageLv" => max($pc{'lvSco'},$pc{'lvRan'},$pc{'lvSag'},$pc{'lvB
 ### 魔力 --------------------------------------------------
 my @magic;
 foreach (
-  ['ソーサラー',         'Sor', '真語魔法', '発動体'],
-  ['コンジャラー',       'Con', '操霊魔法', '発動体'],
-  ['プリースト',         'Pri', '神聖魔法', '聖印'],
-  ['マギテック',         'Mag', '魔動機術', 'マギスフィア'],
-  ['フェアリーテイマー', 'Fai', '妖精魔法', 'ケース／飾り'],
-  ['デーモンルーラー',   'Dem', '召異魔法', ''],
-  ['グリモワール',       'Gri', '秘奥魔法', ''],
-  ['バード',             'Bar', '呪歌',     '楽器'],
-  ['アルケミスト',       'Alc', '賦術',     ''],
-  ['ミスティック',       'Mys', '占瞳',     ''],
+  ['ソーサラー',         'Sor', '真語魔法', '知力+2'],
+  ['コンジャラー',       'Con', '操霊魔法', '知力+2'],
+  ['プリースト',         'Pri', '神聖魔法', '知力+2'],
+  ['マギテック',         'Mag', '魔動機術', '知力+2'],
+  ['フェアリーテイマー', 'Fai', '妖精魔法', '知力+2'],
+  ['デーモンルーラー',   'Dem', '召異魔法', '知力+2'],
+  ['グリモワール',       'Gri', '秘奥魔法', '知力+2'],
+  ['バード',             'Bar', '呪歌',     '精神力+2'],
+  ['アルケミスト',       'Alc', '賦術',     '知力+2'],
+  ['ミスティック',       'Mys', '占瞳',     '知力+2'],
 ){
   next if !$pc{'lv'.@$_[1]};
   push(@magic, {
     "NAME" => @$_[0]."<span class=\"small\">技能レベル</span>".$pc{'lv'.@$_[1]},
-    "OWN"  => ($pc{'magicPowerOwn'.@$_[1]} ? '✔専用'.@$_[3] : ''),
+    "OWN"  => ($pc{'magicPowerOwn'.@$_[1]} ? '[✔<span class="small">'.@$_[3].'</span>]' : ''),
     "MAGIC"  => @$_[2].(@$_[1] eq 'Fai' && $pc{'ftElemental'} ? "<span>（$pc{'ftElemental'}）</span>" : ''),
     "ADD"  => ($pc{'magicPowerAdd'.@$_[1]} ? '+'.$pc{'magicPowerAdd'.@$_[1]}.' =' : ''),
     "NUM"  => $pc{'magicPower'.@$_[1]},
@@ -357,6 +357,10 @@ foreach (1 .. $pc{'weaponNum'}){
           $pc{'weapon'.$num.'Dmg'}.$pc{'weapon'.$num.'Own'}.$pc{'weapon'.$num.'Note'} eq '';
     $rowspan++;
     $pc{'weapon'.$num.'NameOff'} = 1;
+  }
+  if($pc{'weapon'.$_.'Class'} eq "自動計算しない"){
+    $pc{'weapon'.$_.'Acc'} = 0;
+    $pc{'weapon'.$_.'Dmg'} = 0;
   }
   push(@weapons, {
     "NAME"     => $pc{'weapon'.$_.'Name'},
@@ -598,7 +602,12 @@ $SHEET->param(ReqdPassword => (!$pc{'protect'} || $pc{'protect'} eq 'password' ?
 $SHEET->param(FellowMode => param('f'));
 
 ### タイトル --------------------------------------------------
+$SHEET->param(characterNameTitle => tag_delete($pc{'characterName'}));
 $SHEET->param(title => $set::title);
+
+### 種族名 --------------------------------------------------
+$pc{'race'} =~ s/［.*］//g;
+$SHEET->param("race" => $pc{'race'});
 
 ### 画像 --------------------------------------------------
 $pc{'imageUpdateTime'} = $pc{'updateTime'};

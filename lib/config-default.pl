@@ -35,6 +35,9 @@ package set;
  # データを削除するとき、バックアップも削除 する=1 しない=0
   our $del_back = 0;
 
+## ●一覧表示関係
+ # キャラクター一覧を簡易表示にする
+  our $simplelist = 0; 
 
 ## ●グループ設定
  # ["ID", "ソート順(空欄で非表示)", "分類名", "分類の説明文"],
@@ -44,10 +47,16 @@ package set;
     ["pc",  "01", "ＰＣ", "プレイヤーキャラクター"],
     ["npc", "99", "ＮＰＣ", "ノンプレイヤーキャラクター"],
   );
+
  # デフォルトのグループID
   our $group_default = 'pc';
+
  # トップページのキャラクター最大表示数（1グループあたり／無制限=0）
   our $list_maxline = 0;
+
+ # グループ個別表示時や検索結果表示時の1ページあたりの最大表示数（0で全部表示）
+  our $pagemax = 0;
+
  # グループ自動移動（レベルと経験点で自動で分ける設定）
  # ['自動にしたいグループのID', 上限Lv, 上限経験点],
   our @grades = ( 
@@ -106,25 +115,30 @@ package set;
  # 習得レベル
   our @feats_lv = (1,3,5,7,9,11,13,15,16,17);
 
-
 ## ●メイキング
   our $making_max = 0; # 作成板の最大保存数（0で無制限）
   our $average_over = 0;
   our $adventurer_onlyonce = 0;
   our $making_interval = 0;
 
-
 ## ●Cookie
  # Cookieの名前
   our $cookie = 'ytsheet2.5';
 
-## ●
+## ●特殊ハウスルール向け
+ # 戦闘用アイテム欄
+ # our $battleitem = 1;
+
+ # 成長タイプ O=1000毎 ／ A=1000＋(10*成長回数)
  # our $growtype = '';
+
+ # レンジャー先制
+ # our @ini_class_add = ('RanB');
 
 ## ●各種ファイルへのパス
   our $sendmail = '/usr/sbin/sendmail'; # sendmailのパス
   
-  our $data_dir = 'data/'; # データ格納ディレクトリ
+  our $data_dir = './data/'; # データ格納ディレクトリ
   our $userfile = $data_dir . 'users.cgi';    # ユーザー一覧ファイル
   our $passfile = $data_dir . 'charpass.cgi'; # パスワード記録ファイル
   our $listfile = $data_dir . 'charlist.cgi'; # キャラクター一覧ファイル
@@ -135,49 +149,49 @@ package set;
   our $mons_dir = $data_dir . 'mons/';  # 魔物データ格納ディレクトリ
   our $item_dir = $data_dir . 'item/';  # アイテムデータ格納ディレクトリ
   
-  our $lib_edit      = 'lib/edit.pl';
-  our $lib_edit_char = 'lib/edit-chara.pl';
-  our $lib_edit_mons = 'lib/edit-mons.pl';
-  our $lib_edit_item = 'lib/edit-item.pl';
-  our $lib_save      = 'lib/save.pl';
-  our $lib_save_char = 'lib/save-chara.pl';
-  our $lib_save_mons = 'lib/save-mons.pl';
-  our $lib_save_item = 'lib/save-item.pl';
-  our $lib_view      = 'lib/view.pl';
-  our $lib_view_char = 'lib/view-chara.pl';
-  our $lib_view_mons = 'lib/view-mons.pl';
-  our $lib_view_item = 'lib/view-item.pl';
-  our $lib_json      = 'lib/json.pl';
-  our $lib_palette   = 'lib/palette.pl';
-  our $lib_list_char = 'lib/list-chara.pl';
-  our $lib_list_mons = 'lib/list-mons.pl';
-  our $lib_list_item = 'lib/list-item.pl';
-  our $lib_making    = 'lib/making.pl';
-  our $lib_list_make = 'lib/list-making.pl';
+  our $lib_edit      = './lib/edit.pl';
+  our $lib_edit_char = './lib/edit-chara.pl';
+  our $lib_edit_mons = './lib/edit-mons.pl';
+  our $lib_edit_item = './lib/edit-item.pl';
+  our $lib_save      = './lib/save.pl';
+  our $lib_save_char = './lib/save-chara.pl';
+  our $lib_save_mons = './lib/save-mons.pl';
+  our $lib_save_item = './lib/save-item.pl';
+  our $lib_view      = './lib/view.pl';
+  our $lib_view_char = './lib/view-chara.pl';
+  our $lib_view_mons = './lib/view-mons.pl';
+  our $lib_view_item = './lib/view-item.pl';
+  our $lib_json      = './lib/json.pl';
+  our $lib_palette   = './lib/palette.pl';
+  our $lib_list_char = './lib/list-chara.pl';
+  our $lib_list_mons = './lib/list-mons.pl';
+  our $lib_list_item = './lib/list-item.pl';
+  our $lib_making    = './lib/making.pl';
+  our $lib_list_make = './lib/list-making.pl';
   
-  our $lib_delete = 'lib/delete.pl';
+  our $lib_delete = './lib/delete.pl';
   
-  our $lib_form    = 'lib/form.pl';
-  our $lib_info    = 'lib/info.pl';
-  our $lib_register= 'lib/register.pl';
-  our $lib_reminder= 'lib/reminder.pl';
-  our $login_users = 'tmp/login_users.cgi';
+  our $lib_form    = './lib/form.pl';
+  our $lib_info    = './lib/info.pl';
+  our $lib_register= './lib/register.pl';
+  our $lib_reminder= './lib/reminder.pl';
+  our $login_users = './tmp/login_users.cgi';
   
-  our $tokenfile  = 'tmp/token.cgi'; 
+  our $tokenfile  = './tmp/token.cgi'; 
 
-  our $data_races = 'lib/data-races.pl';  # 種族のデータ
-  our $data_items = 'lib/data-items.pl';  # アイテムカテゴリのデータ
-  our $data_faith = 'lib/data-faith.pl';  # 信仰のデータ
-  our $data_feats = 'lib/data-feats.pl';  # 戦闘特技のデータ
-  our $data_craft = 'lib/data-craft.pl';  # 練技・呪歌などのデータ
-  our $data_mons  = 'lib/data-mons.pl';   # 魔物分類のデータ
+  our $data_races = './lib/data-races.pl';  # 種族のデータ
+  our $data_items = './lib/data-items.pl';  # アイテムカテゴリのデータ
+  our $data_faith = './lib/data-faith.pl';  # 信仰のデータ
+  our $data_feats = './lib/data-feats.pl';  # 戦闘特技のデータ
+  our $data_craft = './lib/data-craft.pl';  # 練技・呪歌などのデータ
+  our $data_mons  = './lib/data-mons.pl';   # 魔物分類のデータ
 
-  our $icon_dir  = 'skin/img/'; # 武器アイコンのあるディレクトリ
+  our $icon_dir  = './skin/img/'; # 武器アイコンのあるディレクトリ
   
-  our $skin_tmpl  = 'skin/template.html'; # 一覧など
-  our $skin_sheet = 'skin/sheet.html';    # キャラクターシート
-  our $skin_mons  = 'skin/monster.html';    # 魔物シート
-  our $skin_item  = 'skin/item.html';    # アイテムシート
+  our $skin_tmpl  = './skin/template.html'; # 一覧など
+  our $skin_sheet = './skin/sheet.html';    # キャラクターシート
+  our $skin_mons  = './skin/monster.html';    # 魔物シート
+  our $skin_item  = './skin/item.html';    # アイテムシート
 
 
 1;

@@ -1,5 +1,5 @@
 use strict;
-use warnings;
+#use warnings;
 use utf8;
 use open ":utf8";
 use open ":std";
@@ -74,11 +74,6 @@ sub e_crypt {
 sub c_crypt {
   my($plain,$crypt) = @_;
   return ($plain ne '' && $crypt ne '' && crypt($plain,$crypt) eq $crypt);
-}
-
-### 最大値取得 --------------------------------------------------
-sub max {
-  (sort {$b <=> $a} @_)[0];
 }
 
 ### 安全にevalする --------------------------------------------------
@@ -288,7 +283,7 @@ sub tag_unescape {
   $text =~ s/''(.+?)''/<b>$1<\/b>/gi;  # 太字
   $text =~ s/%%(.+?)%%/<span class="strike">$1<\/span>/gi;  # 打ち消し線
   $text =~ s/__(.+?)__/<span class="underline">$1<\/span>/gi;  # 下線
-  $text =~ s/{{(.+?)}}/<span style="color:transparent">$1<\/span>/gi;  # 下線
+  $text =~ s/\{\{(.+?)\}\}/<span style="color:transparent">$1<\/span>/gi;  # 下線
   $text =~ s/[|｜]([^|｜]+?)《(.+?)》/<ruby>$1<rp>(<\/rp><rt>$2<\/rt><rp>)<\/rp><\/ruby>/gi; # なろう式ルビ
   $text =~ s/《《(.+?)》》/<span class="text-em">$1<\/span>/gi; # カクヨム式傍点
   

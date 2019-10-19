@@ -637,7 +637,7 @@ dl#exp dd {
   margin-top: 1rem;
   margin-left: 0;
 }
-#magic-power table th {
+#magic-power table tbody th {
   font-weight: normal;
   padding-right: 1em;
 }
