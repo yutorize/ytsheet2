@@ -16,6 +16,7 @@
       <form method="get" action="./" name="search" id="form-search">
         <h3 onclick="formSwitch()">検索フォーム▼</h3>
         <p id="form-search-area" style="display:none">
+          <input type="hidden" name="group" value="all"><br>
           名前　：<input type="text" name="name" value="<TMPL_VAR name>"><br>
           タグ　：<input type="text" name="tag" value="<TMPL_VAR tag>"><br>
           種族　：<input type="text" name="race" value="<TMPL_VAR race>"><br>
@@ -30,20 +31,28 @@
       <TMPL_LOOP Lists>
       <section class="list" id="group-<TMPL_VAR ID>">
         <h2><TMPL_VAR NAME> <small><TMPL_VAR TEXT> (<TMPL_VAR NUM-PC>)</small></h2>
+        <TMPL_VAR NAV>
+        <TMPL_IF simpleMode>
+        <ul>
+          <TMPL_LOOP Characters><li<TMPL_IF HIDE> class="hide"</TMPL_IF>>
+            <a href="./?id=<TMPL_VAR ID>" data-lv="<TMPL_VAR LV>"><TMPL_VAR NAME><small><TMPL_VAR PLAYER></small></a>
+          </li></TMPL_LOOP>
+        </ul>
+        <TMPL_ELSE>
         <table>
           <thead>
           <tr>
-            <th class="name"><a href="./?group=<TMPL_VAR ID>&sort=name">名前</a></th>
-            <th class="player"><a href="./?group=<TMPL_VAR ID>&sort=pl">プレイヤー</a></th>
+            <th class="name"><a href="./?group=<TMPL_VAR ID>&<TMPL_VAR qLinks>&sort=name">名前</a></th>
+            <th class="player"><a href="./?group=<TMPL_VAR ID>&<TMPL_VAR qLinks>&sort=pl">プレイヤー</a></th>
             <th class="race"><span>種族</span></th>
             <th class="gender"><span>性別</span></th>
             <th class="age"><span>年齢</span></th>
-            <th class="rank"><a href="./?group=<TMPL_VAR ID>&sort=rank">ランク</a></th>
-            <th class="lv"><a href="./?group=<TMPL_VAR ID>&sort=lv">Lv</a></th>
-            <th class="exp"><a href="./?group=<TMPL_VAR ID>&sort=exp">経験点</a></th>
+            <th class="rank"><a href="./?group=<TMPL_VAR ID>&<TMPL_VAR qLinks>&sort=rank">ランク</a></th>
+            <th class="lv"><a href="./?group=<TMPL_VAR ID>&<TMPL_VAR qLinks>&sort=lv">Lv</a></th>
+            <th class="exp"><a href="./?group=<TMPL_VAR ID>&<TMPL_VAR qLinks>&sort=exp">経験点</a></th>
             <th class="class"><span>技能</span></th>
             <th class="fellow"><span><span>フェロー</span></span></th>
-            <th class="date"><a href="./?group=<TMPL_VAR ID>&sort=date">更新日時</a></th>
+            <th class="date"><a href="./?group=<TMPL_VAR ID>&<TMPL_VAR qLinks>&sort=date">更新日時</a></th>
           </tr>
           </thead>
           <TMPL_LOOP Characters><tr<TMPL_IF HIDE> class="hide"</TMPL_IF>>
@@ -60,6 +69,8 @@
             <td class="date"><div><TMPL_VAR DATE></div></td>
           </tr></TMPL_LOOP>
         </table>
+        </TMPL_IF>
+        <TMPL_VAR NAV>
         <TMPL_IF modeIndex><p class="more"><a href="./?group=<TMPL_VAR ID>">>>MORE</a></p></TMPL_IF>
       </section>
       </TMPL_LOOP>

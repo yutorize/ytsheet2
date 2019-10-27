@@ -17,14 +17,6 @@ footer {
   grid-row: 3;
 }
 
-input,
-select,
-textarea {
-  border-width: 1px;
-  border-style: solid;
-  border-radius: 5px;
-  background-color: rgba(255,255,255,0.6);
-}
 select option,
 select optgroup {
   background-color: #fff;
@@ -147,6 +139,9 @@ input[type="button"]:hover {
   background: linear-gradient(to bottom, rgba(50,150,250,0.5), rgba(50,50,250,0.5));
   color: #ffffff;
 }
+#status dl#stt-pointbuy-type {
+  grid-column: span 2;
+}
 
 .box .add-del-button {
   text-align: center;
@@ -235,6 +230,9 @@ td .switch-button {
   border-width: 3px 0;
   border-style: solid;
 }
+.night #area-name {
+  background: linear-gradient(to right, #234, #000);
+}
 #area-name input {
   width: calc(100% - 1em);
   min-width: 3em;
@@ -266,6 +264,18 @@ td .switch-button {
 }
 #area-name input[type="button"] {
   width: 50px;
+}
+.night #area-name input[type="submit"] {
+  background: linear-gradient(to bottom, #445566, #333355);
+  box-shadow: 1px 1px 0 0 #777788 inset, -1px -1px 0 0 #000000 inset;
+}
+.night #area-name input[type="button"] {
+  background: linear-gradient(to bottom, #50575f, #30373f);
+  box-shadow: 1px 1px 0 0 #777788 inset, -1px -1px 0 0 #000000 inset;
+}
+.night #area-name input[type="submit"]:hover {
+  background: linear-gradient(to bottom, rgba(50,150,250,0.5), rgba(50,50,250,0.5));
+  color: #ffffff;
 }
 
 #regulation {
@@ -323,10 +333,17 @@ td .switch-button {
 #image > h2 {
   background: rgba(255,255,255,0.8);
 }
+.night #image > h2 {
+  background: rgba(0,0,0,0.8);
+}
 #image > p {
   background: rgba(255,255,255,0.4);
   text-shadow: 0 0 10px #fff, 0 0 10px #fff, 0 0 10px #fff, 0 0 10px #fff, 0 0 10px #fff,
                0 0 10px #fff, 0 0 10px #fff, 0 0 10px #fff, 0 0 10px #fff, 0 0 10px #fff;
+}
+.night #image > p {
+  background: rgba(0,0,0,0.5);
+  text-shadow: 0 0 3px #000, 0 0 4px #000, 0 0 5px #000, 0 0 5px #000, 0 0 5px #000;
 }
 #area-status #image h2 {
   margin-bottom: 0;
@@ -535,12 +552,8 @@ td .switch-button {
 #magic-power {
   min-width: 10em;
 }
-#magic-power p {
-  margin-top: -1em;
-  text-align: right;
-}
-#magic-power p input {
-  width: 3.5em;
+#magic-power table {
+  margin-top: -1.2em !important;
 }
 #magic-power table th:nth-child(2) {
   width: 13em;
@@ -548,12 +561,19 @@ td .switch-button {
 #magic-power table th:nth-child(2) input {
   width: 10em;
 }
+#magic-power table td:nth-child(3) {
+  padding-left : .5em;
+  padding-right: .5em;
+  border-width: 0 1px;
+  border-style: none dotted;
+  font-size: 85%;
+}
 #magic-power table td:nth-child(3) input {
   vertical-align: middle;
 }
 #magic-power table td:nth-child(4) {
-  padding-left: 1em;
   width: 5.5em;
+  text-align: left;
 }
 #magic-power table td:nth-child(4) input {
   width: 3.5em;

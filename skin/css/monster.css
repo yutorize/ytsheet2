@@ -99,6 +99,9 @@ table.status td {
   background-color: rgba(255,255,255,0.3);
   text-align: center;
 }
+.night table.status td {
+  background-color: rgba(0,0,0,0.3);
+}
 table.status tr:nth-child(odd) td {
   background-color: rgba(127,127,127,0.2);
 }
@@ -136,12 +139,12 @@ div.parts dl dt::after {
 div.skills {
   border: 0;
   margin: 1rem 0;
-  background: none;
-  box-shadow: none;
+  background: none !important;
+  box-shadow: none !important;
 }
 div.skills h2 {
   padding: .3rem .5rem;
-  background-color: rgba(127,127,127,0.4);
+  background-color: rgba(127,127,127,0.4) !important;
   font-size: 110%;
 }
 
@@ -175,6 +178,9 @@ div.loots dl > dd {
   border-width: 0px 0px 1px;
   border-style: solid;
 }
+.night div.loots dl > dd {
+  background-color: rgba(0,0,0,0.3);
+}
 div.loots dl > dt:last-of-type,
 div.loots dl > dd:last-of-type {
   border-bottom-width: 0px;
@@ -185,8 +191,8 @@ div.loots dl > dd:last-of-type {
 div.description {
   margin-top: 1.5em;
   border: 0;
-  background: none;
-  box-shadow: none;
+  background: none !important;
+  box-shadow: none !important;
 }
 div.description h2 {
   border-width: 1px 0px;

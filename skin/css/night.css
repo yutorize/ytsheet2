@@ -1,136 +1,23 @@
 /* // ナイトモード
 ---------------------------------------------------------------------------------------------------- */
 
-header,
-footer {
-  background-color: #456;
-  background-blend-mode: color-burn;
-}
-
-body {
-  background-color: #000;
-  background-blend-mode: hard-light, hard-light;
-  color: #fff;
-}
-
-a:link    { color: #abf; }
-a:visited { color: #abc; }
-a:hover   { color: #fff; }
-main p a {
-  background: linear-gradient(to top, #338 .3rem, transparent .3rem, transparent);
-}
-
-aside#backuplist {
-  background: rgba(0,0,0,0.9);
-}
-aside#backuplist ul li a {
-  color: #fff;
-}
-
-main,
-header,
-footer,
-aside#sidebar-top,
-aside#sidebar-bottom {
-  border-color: #556;
-}
 
 
-.list table th > a,
-.list table th > span {
-  background: rgba(45,50,55,0.9);
-}
-
-.box,
-#status > dl {
-  background: linear-gradient(to bottom, #345 0, transparent 2.5rem);
-  box-shadow: 1px 1px 2px 0px #335;
-  background-color: rgba(40,50,60,0.5);
-}
-
-dl#sub-status {
-  background: linear-gradient(to bottom, #345 0, transparent 2.5rem, transparent 50%, #345 50%, transparent calc(50% + 2.5rem));
-  background-color: rgba(50,60,70,0.5);
-}
-
-.box h2:nth-child(n+2){
-  background: linear-gradient(to bottom, #345 0, transparent 2.5rem);
-}
-
-*,
-.box {
-  border-color: #556;
-}
-.box * { border-color: #445; }
 
 
-.s-icon::before,
-.s-icon::after {
-  color: #fff;
-}
-.s-icon.setup::before {
-  text-shadow: -.05rem 0 0 #fff, 0 .05rem 0 #fff, -.05rem .05rem 0 #fff;
-}
 
-#area-name {
-  background: linear-gradient(to right, #234, #000);
-}
-h1#character-name {
-  text-shadow: 0 0 0 #fff, 0 0 1px #777, 1px 1px 0px #000;
-}
 
-#tags a::before {
-  color: #000;
-}
 
-#fellow #f-level dd,
-#fellow #f-level::before,
-#fellow #f-level::after {
-  color: #fff;
-  border-color: #556;
-}
 
-div.loots dl > dd,
-table.status td {
-  background-color: rgba(0,0,0,0.3);
-}
 
-input,
-textarea,
-select {
-  background: rgba(0,0,0,0.8);
-  color: #fff;
-  border-color: #234 !important;
-}
-#image > h2 {
-  background: rgba(0,0,0,0.8);
-}
-#image > p {
-  background: rgba(0,0,0,0.5);
-  text-shadow: 0 0 3px #000, 0 0 4px #000, 0 0 5px #000, 0 0 5px #000, 0 0 5px #000;
-}
 
-#area-name input[type="submit"] {
-  background: linear-gradient(to bottom, #445566, #333355);
-  box-shadow: 1px 1px 0 0 #777788 inset, -1px -1px 0 0 #000000 inset;
-}
-#area-name input[type="button"] {
-  background: linear-gradient(to bottom, #50575f, #30373f);
-  box-shadow: 1px 1px 0 0 #777788 inset, -1px -1px 0 0 #000000 inset;
-}
 
-#area-name input[type="submit"]:hover {
-  background: linear-gradient(to bottom, rgba(50,150,250,0.5), rgba(50,50,250,0.5));
-  color: #ffffff;
-}
 
-.item div.data dl {
-  background: rgba(0,0,0,0.3);
-}
 
-#login-form {
-  background: #334455;
-}
+
+
+
+
 
 
 

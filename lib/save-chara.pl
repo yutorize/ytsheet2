@@ -399,7 +399,13 @@ foreach (1 .. $pc{'weaponNum'}){
   else                                              { $pc{'weapon'.$_.'DmgTotal'} = $pc{'weapon'.$_.'Dmg'} + $st{$class.'C'}; }
   
   $pc{'weapon'.$_.'DmgTotal'} += $pc{'mastery' . ucfirst($data::weapon_id{ $pc{'weapon'.$_.'Category'} }) };
+  if($pc{'weapon'.$_.'Category'} eq 'ガン（物理）'){ $pc{'weapon'.$_.'DmgTotal'} += $pc{'masteryGun'}; }
   if($pc{'weapon'.$_.'Note'} =~ /〈魔器〉/){ $pc{'weapon'.$_.'DmgTotal'} += $pc{'masteryArtisan'}; }
+  
+  if($pc{'weapon'.$_.'Class'} eq "自動計算しない"){
+    $pc{'weapon'.$_.'AccTotal'} = $pc{'weapon'.$_.'Acc'};
+    $pc{'weapon'.$_.'DmgTotal'} = $pc{'weapon'.$_.'Dmg'};
+  }
 }
 
 ## 回避力

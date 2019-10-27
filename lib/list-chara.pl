@@ -28,7 +28,24 @@ my $index_mode;
 if(!($mode eq 'mylist' || param('tag') || param('group') || param('name') || param('race') || param('exp-min') || param('exp-max') || param('class') || param('faith') || param('image') || param('fellow'))){
   $index_mode = 1;
   $INDEX->param(modeIndex => 1);
+  $INDEX->param(simpleMode => 1) if $set::simplelist;
 }
+my @q_links;
+foreach(
+  'tag',
+  #'group',
+  'name',
+  'race',
+  'exp-min',
+  'exp-max',
+  'class',
+  'faith',
+  'image',
+  'fellow',
+  ){
+  push( @q_links, $_.'='.uri_escape_utf8(Encode::decode('utf8', param($_))) ) if param($_);
+}
+my $q_links = join('&', @q_links);
 
 ## マイリスト取得
 my @mylist;
@@ -180,7 +197,7 @@ foreach (@list) {
   
   $group = $set::group_default if !$group;
   
-  $race =~ s/（.*）//;
+  $race =~ s/（.*）|［.*］//;
   $race = "<div>$race</div>" if length($race) >= 5;
   
   my $m_flag; my $f_flag;
@@ -255,10 +272,10 @@ foreach (@list) {
   }
 }
 
-
-
-
 my @characterlists; 
+my $page = param('page') ? param('page') : 1;
+my $pagestart = $page * $set::pagemax - $set::pagemax;
+my $pageend   = $page * $set::pagemax - 1;
 foreach (sort {$group_sort{$a} <=> $group_sort{$b}} keys %grouplist){
   ## ソート
   if   ($sort eq 'name'){ @{$grouplist{$_}} = sort { $a->{'SORT'} cmp $b->{'SORT'} } @{$grouplist{$_}}; }
@@ -270,6 +287,17 @@ foreach (sort {$group_sort{$a} <=> $group_sort{$b}} keys %grouplist){
   elsif($sort eq 'exp') { @{$grouplist{$_}} = sort { $b->{'EXP'} <=> $a->{'EXP'} } @{$grouplist{$_}}; }
   elsif($sort eq 'date'){ @{$grouplist{$_}} = sort { $b->{'DATE'} <=> $a->{'DATE'} } @{$grouplist{$_}}; }
   
+  my $navbar;
+  if($set::pagemax && !$index_mode && param('group')){
+    my $pageend = ($count{'PC'}{$_}-1 < $pageend) ? $count{'PC'}{$_}-1 : $pageend;
+    @{$grouplist{$_}} = @{$grouplist{$_}}[$pagestart .. $pageend];
+    foreach(1 .. ceil($count{'PC'}{$_} / $set::pagemax)){
+      if($_ == $page){  $navbar .= '<b>'.$_.'</b> '}
+      else { $navbar .= '<a href="./?group='.param('group').'&'.$q_links.'&page='.$_.'&sort='.param('sort').'">'.$_.'</a> ' }
+    }
+  }
+  $navbar = '<div class="navbar">'.$navbar.'</div>' if $navbar;
+  
   push(@characterlists, {
     "ID" => $_,
     "NAME" => $group_name{$_},
@@ -277,8 +305,11 @@ foreach (sort {$group_sort{$a} <=> $group_sort{$b}} keys %grouplist){
     "NUM-PC" => $count{'PC'}{$_},
     "NUM-PL" => $count{'PL'}{$_},
     "Characters" => [@{$grouplist{$_}}],
+    "NAV" => $navbar,
   });
 }
+
+$INDEX->param(qLinks => $q_links);
 
 $INDEX->param(Lists => \@characterlists);
 
