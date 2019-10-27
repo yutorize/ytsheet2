@@ -113,15 +113,13 @@ Content-type: text/html\n
   <meta charset="UTF-8">
   <title>@{[$mode eq 'edit'?"編集：$pc{'characterName'}":'新規作成']} - $set::title</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" media="all" href="./skin/css/base.css?201810160200">
-  <link rel="stylesheet" media="all" href="./skin/css/sheet.css?1.05.004">
-  <link rel="stylesheet" media="all" href="./skin/css/chara.css?1.06.000">
+  <link rel="stylesheet" media="all" href="./skin/css/base.css?1.06.002">
+  <link rel="stylesheet" media="all" href="./skin/css/sheet.css?1.06.002">
+  <link rel="stylesheet" media="all" href="./skin/css/chara.css?1.06.002">
   <link rel="stylesheet" media="all" href="./skin/css/chara-sp.css?1.05.004">
-  <link rel="stylesheet" media="all" href="./skin/css/edit.css?1.06.000">
-  <link rel="stylesheet" id="nightmode">
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
-  <script src="./skin/js/common.js?1.05.003" defer></script>
+  <link rel="stylesheet" media="all" href="./skin/css/edit.css?1.06.002">
   <script src="./lib/edit-chara.js?1.06.000" defer></script>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
   <style>
     #image {
       background-image: url("${set::char_dir}${file}/image.$pc{'image'}");
@@ -129,6 +127,7 @@ Content-type: text/html\n
   </style>
 </head>
 <body>
+  <script src="./skin/js/common.js?1.06.002"></script>
   <header>
     <h1>$set::title</h1>
   </header>
@@ -1261,6 +1260,9 @@ HTML
 }
 print <<"HTML";
           </table>
+        <div class="annotate">
+        ※左のボックスにチェックを入れると欄が一つ追加されます
+        </div>
         </div>
       </div>
       <div id="area-items">

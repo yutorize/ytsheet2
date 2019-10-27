@@ -50,8 +50,30 @@ a {
 a:link    { color: #78d; }
 a:visited { color: #678; }
 a:hover   { color: #000; }
+.night a:link    { color: #abf; }
+.night a:visited { color: #abc; }
+.night a:hover   { color: #fff; }
 main p a {
   background: linear-gradient(to top, #cef .3rem, transparent .3rem, transparent);
+}
+.night main p a {
+  background: linear-gradient(to top, #338 .3rem, transparent .3rem, transparent);
+}
+
+input,
+textarea,
+select {
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 5px;
+  background-color: rgba(255,255,255,0.6);
+}
+.night input,
+.night textarea,
+.night select {
+  background: rgba(0,0,0,0.8);
+  color: #fff;
+  border-color: #234;
 }
 
 body {
@@ -67,6 +89,11 @@ body {
   background-attachment: scroll, fixed;
   color: #000;
 }
+body.night {
+  background-color: #000;
+  background-blend-mode: hard-light, hard-light;
+  color: #fff;
+}
 
 header {
   grid-column: 1 / 4;
@@ -75,7 +102,6 @@ header {
   position: relative;
   padding: 0px 10px;
   border-bottom: 1px solid #aaa;
-  background-color: #fff;
   background-image: url(../img/back-abstract.png);
   background-position: left center;
   background-repeat: no-repeat;
@@ -142,6 +168,11 @@ footer {
   text-shadow: 0 0 1px #000, 0 0 5px #000, 0 0 5px #000, 0 0 5px #000, 0 0 6px #000, 0 0 7px #000, 0 0 8px #000;
   font-weight: bold;
 }
+.night header,
+.night footer {
+  background-color: #456;
+  background-blend-mode: color-burn;
+}
 header a:hover,
 footer a:hover {
   opacity: 0.7;
@@ -154,6 +185,7 @@ footer .copyright {
 }
 
 * { border-color: #999; }
+.night * { border-color: #556; }
 
 @media print{
   header,

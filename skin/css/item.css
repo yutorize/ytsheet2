@@ -78,6 +78,9 @@ div.data dl {
   border-width: 1px 0 0 1px;
   border-style: solid;
 }
+.night div.data dl {
+  background: rgba(0,0,0,0.3);
+}
 div.data dl.shape { grid-template-columns: 3.5em 1fr; }
 div.data dl.category,
 div.data dl.age   { grid-template-columns: 5.5em 1fr; }

@@ -84,16 +84,15 @@ Content-type: text/html\n
   <meta charset="UTF-8">
   <title>@{[$mode eq 'edit'?"編集：$pc{'itemName'}":'新規作成']} - $set::title</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" media="all" href="./skin/css/base.css?20180910800">
-  <link rel="stylesheet" media="all" href="./skin/css/sheet.css?20180910800">
-  <link rel="stylesheet" media="all" href="./skin/css/item.css?20180910800">
+  <link rel="stylesheet" media="all" href="./skin/css/base.css?1.06.002">
+  <link rel="stylesheet" media="all" href="./skin/css/sheet.css?1.06.002">
+  <link rel="stylesheet" media="all" href="./skin/css/item.css?1.06.002">
   <link rel="stylesheet" media="all" href="./skin/css/item-sp.css?20180910800">
-  <link rel="stylesheet" media="all" href="./skin/css/edit.css?20180910800">
-  <link rel="stylesheet" id="nightmode">
-  <script src="./skin/js/common.js?201808211430" ></script>
+  <link rel="stylesheet" media="all" href="./skin/css/edit.css?1.06.002">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
 </head>
 <body>
+  <script src="./skin/js/common.js?1.06.002"></script>
   <header>
     <h1>$set::title</h1>
   </header>

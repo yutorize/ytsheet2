@@ -17,14 +17,6 @@ footer {
   grid-row: 3;
 }
 
-input,
-select,
-textarea {
-  border-width: 1px;
-  border-style: solid;
-  border-radius: 5px;
-  background-color: rgba(255,255,255,0.6);
-}
 select option,
 select optgroup {
   background-color: #fff;
@@ -238,6 +230,9 @@ td .switch-button {
   border-width: 3px 0;
   border-style: solid;
 }
+.night #area-name {
+  background: linear-gradient(to right, #234, #000);
+}
 #area-name input {
   width: calc(100% - 1em);
   min-width: 3em;
@@ -269,6 +264,18 @@ td .switch-button {
 }
 #area-name input[type="button"] {
   width: 50px;
+}
+.night #area-name input[type="submit"] {
+  background: linear-gradient(to bottom, #445566, #333355);
+  box-shadow: 1px 1px 0 0 #777788 inset, -1px -1px 0 0 #000000 inset;
+}
+.night #area-name input[type="button"] {
+  background: linear-gradient(to bottom, #50575f, #30373f);
+  box-shadow: 1px 1px 0 0 #777788 inset, -1px -1px 0 0 #000000 inset;
+}
+.night #area-name input[type="submit"]:hover {
+  background: linear-gradient(to bottom, rgba(50,150,250,0.5), rgba(50,50,250,0.5));
+  color: #ffffff;
 }
 
 #regulation {
@@ -326,10 +333,17 @@ td .switch-button {
 #image > h2 {
   background: rgba(255,255,255,0.8);
 }
+.night #image > h2 {
+  background: rgba(0,0,0,0.8);
+}
 #image > p {
   background: rgba(255,255,255,0.4);
   text-shadow: 0 0 10px #fff, 0 0 10px #fff, 0 0 10px #fff, 0 0 10px #fff, 0 0 10px #fff,
                0 0 10px #fff, 0 0 10px #fff, 0 0 10px #fff, 0 0 10px #fff, 0 0 10px #fff;
+}
+.night #image > p {
+  background: rgba(0,0,0,0.5);
+  text-shadow: 0 0 3px #000, 0 0 4px #000, 0 0 5px #000, 0 0 5px #000, 0 0 5px #000;
 }
 #area-status #image h2 {
   margin-bottom: 0;

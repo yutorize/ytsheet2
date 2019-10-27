@@ -153,6 +153,10 @@ form#form-search p input[type="submit"] {
   border-radius: 5px;
   white-space: nowrap;
 }
+.night .list table th > a,
+.night .list table th > span {
+  background: rgba(45,50,55,0.9);
+}
 .list table tbody tr {
   border-bottom-width: 1px;
   border-bottom-style: solid;

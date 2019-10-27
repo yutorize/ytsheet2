@@ -41,11 +41,17 @@
   
   background: linear-gradient(to right, #dadcdf, #fff);
 }
+.night #area-name {
+  background: linear-gradient(to right, #234, #000);
+}
 h1#character-name {
   padding: 1rem;
   font-size: 2.2rem;
   font-weight: bold;
   text-shadow: 0 0 0 #000, 0 0 1px #777, 1px 1px 0px #fff;
+}
+.night h1#character-name {
+  text-shadow: 0 0 0 #fff, 0 0 1px #777, 1px 1px 0px #000;
 }
 #area-name > div { 
   text-align: right;
@@ -1095,6 +1101,12 @@ div#area-items-R {
   border-width: 2px 0px;
   border-style: solid;
   border-color: #000;
+}
+.night #fellow #f-level dd,
+.night #fellow #f-level::before,
+.night #fellow #f-level::after {
+  color: #fff;
+  border-color: #556;
 }
 #fellow #f-level::before {
   transform: rotate(60deg);
