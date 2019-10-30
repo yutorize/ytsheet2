@@ -118,7 +118,7 @@ Content-type: text/html\n
   <link rel="stylesheet" media="all" href="./skin/css/chara.css?1.06.002">
   <link rel="stylesheet" media="all" href="./skin/css/chara-sp.css?1.05.004">
   <link rel="stylesheet" media="all" href="./skin/css/edit.css?1.06.002">
-  <script src="./lib/edit-chara.js?1.06.000" defer></script>
+  <script src="./lib/edit-chara.js?1.06.100" defer></script>
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
   <style>
     #image {
