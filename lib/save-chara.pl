@@ -364,17 +364,17 @@ $pc{'monsterLore'} = max($pc{'packSagKno'},$pc{'packRidKno'}) + $pc{'monsterLore
 $pc{'initiative'}  = max(@ini_class) + $pc{'initiativeAdd'};
 
 ## 魔力
-$pc{'magicPowerSor'} = $pc{'lvSor'} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwnSor'} ? 2 : 0)) / 6) + $pc{'magicPowerAddSor'} + $pc{'magicPowerAdd'} + $pc{'magicPowerEnhance'};
-$pc{'magicPowerCon'} = $pc{'lvCon'} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwnCon'} ? 2 : 0)) / 6) + $pc{'magicPowerAddCon'} + $pc{'magicPowerAdd'} + $pc{'magicPowerEnhance'};
-$pc{'magicPowerPri'} = $pc{'lvPri'} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwnPri'} ? 2 : 0)) / 6) + $pc{'magicPowerAddPri'} + $pc{'magicPowerAdd'} + $pc{'magicPowerEnhance'};
-$pc{'magicPowerFai'} = $pc{'lvFai'} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwnFai'} ? 2 : 0)) / 6) + $pc{'magicPowerAddFai'} + $pc{'magicPowerAdd'} + $pc{'magicPowerEnhance'};
-$pc{'magicPowerMag'} = $pc{'lvMag'} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwnMag'} ? 2 : 0)) / 6) + $pc{'magicPowerAddMag'} + $pc{'magicPowerAdd'} + $pc{'magicPowerEnhance'};
-$pc{'magicPowerDem'} = $pc{'lvDem'} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwnDem'} ? 2 : 0)) / 6) + $pc{'magicPowerAddDem'} + $pc{'magicPowerAdd'} + $pc{'magicPowerEnhance'};
-$pc{'magicPowerGri'} = $pc{'lvGri'} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwnGri'} ? 2 : 0)) / 6) + $pc{'magicPowerAddGri'} + $pc{'magicPowerAdd'} + $pc{'magicPowerEnhance'};
+$pc{'magicPowerSor'} = $pc{'lvSor'} ? $pc{'lvSor'} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwnSor'} ? 2 : 0)) / 6) + $pc{'magicPowerAddSor'} + $pc{'magicPowerAdd'} + $pc{'magicPowerEnhance'} : 0;
+$pc{'magicPowerCon'} = $pc{'lvCon'} ? $pc{'lvCon'} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwnCon'} ? 2 : 0)) / 6) + $pc{'magicPowerAddCon'} + $pc{'magicPowerAdd'} + $pc{'magicPowerEnhance'} : 0;
+$pc{'magicPowerPri'} = $pc{'lvPri'} ? $pc{'lvPri'} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwnPri'} ? 2 : 0)) / 6) + $pc{'magicPowerAddPri'} + $pc{'magicPowerAdd'} + $pc{'magicPowerEnhance'} : 0;
+$pc{'magicPowerFai'} = $pc{'lvFai'} ? $pc{'lvFai'} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwnFai'} ? 2 : 0)) / 6) + $pc{'magicPowerAddFai'} + $pc{'magicPowerAdd'} + $pc{'magicPowerEnhance'} : 0;
+$pc{'magicPowerMag'} = $pc{'lvMag'} ? $pc{'lvMag'} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwnMag'} ? 2 : 0)) / 6) + $pc{'magicPowerAddMag'} + $pc{'magicPowerAdd'} + $pc{'magicPowerEnhance'} : 0;
+$pc{'magicPowerDem'} = $pc{'lvDem'} ? $pc{'lvDem'} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwnDem'} ? 2 : 0)) / 6) + $pc{'magicPowerAddDem'} + $pc{'magicPowerAdd'} + $pc{'magicPowerEnhance'} : 0;
+$pc{'magicPowerGri'} = $pc{'lvGri'} ? $pc{'lvGri'} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwnGri'} ? 2 : 0)) / 6) + $pc{'magicPowerAddGri'} + $pc{'magicPowerAdd'} + $pc{'magicPowerEnhance'} : 0;
 
-$pc{'magicPowerBar'} = $pc{'lvBar'} + int(($pc{'sttMnd'} + $pc{'sttAddF'} + ($pc{'magicPowerOwnBar'} ? 2 : 0)) / 6) + $pc{'magicPowerAddBar'};
-$pc{'magicPowerAlc'} = $pc{'lvAlc'} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwnAlc'} ? 2 : 0)) / 6) + $pc{'magicPowerAddAlc'} + $pc{'alchemyEnhance'};
-$pc{'magicPowerMys'} = $pc{'lvMys'} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwnMys'} ? 2 : 0)) / 6) + $pc{'magicPowerAddMys'};
+$pc{'magicPowerBar'} = $pc{'lvBar'} ? $pc{'lvBar'} + int(($pc{'sttMnd'} + $pc{'sttAddF'} + ($pc{'magicPowerOwnBar'} ? 2 : 0)) / 6) + $pc{'magicPowerAddBar'} : 0;
+$pc{'magicPowerAlc'} = $pc{'lvAlc'} ? $pc{'lvAlc'} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwnAlc'} ? 2 : 0)) / 6) + $pc{'magicPowerAddAlc'} + $pc{'alchemyEnhance'} : 0;
+$pc{'magicPowerMys'} = $pc{'lvMys'} ? $pc{'lvMys'} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwnMys'} ? 2 : 0)) / 6) + $pc{'magicPowerAddMys'} : 0;
 
 ### 装備 --------------------------------------------------
 ## 武器
@@ -395,7 +395,7 @@ foreach (1 .. $pc{'weaponNum'}){
   $pc{'weapon'.$_.'AccTotal'} += $pc{'weapon'.$_.'Acc'}; # 武器の修正値
   ## ダメージ
   if   ($pc{'weapon'.$_.'Category'} eq 'クロスボウ'){ $pc{'weapon'.$_.'DmgTotal'} = $pc{'weapon'.$_.'Dmg'} + $pc{'lvSho'}; }
-  elsif($pc{'weapon'.$_.'Category'} eq 'ガン'      ){ $pc{'weapon'.$_.'DmgTotal'} = $pc{'weapon'.$_.'Dmg'} + $st{'MagE'}; }
+  elsif($pc{'weapon'.$_.'Category'} eq 'ガン'      ){ $pc{'weapon'.$_.'DmgTotal'} = $pc{'weapon'.$_.'Dmg'} + $pc{'magicPowerMag'}; }
   else                                              { $pc{'weapon'.$_.'DmgTotal'} = $pc{'weapon'.$_.'Dmg'} + $st{$class.'C'}; }
   
   $pc{'weapon'.$_.'DmgTotal'} += $pc{'mastery' . ucfirst($data::weapon_id{ $pc{'weapon'.$_.'Category'} }) };
