@@ -94,6 +94,15 @@ $pc{'languageNum'}   = $pc{'languageNum'}   ? $pc{'languageNum'}   : 3;
 $pc{'honorItemsNum'} = $pc{'honorItemsNum'} ? $pc{'honorItemsNum'} : 3;
 $pc{'historyNum'}    = $pc{'historyNum'}    ? $pc{'historyNum'}    : 3;
 
+$pc{'colorHeadBgR'} = $pc{'colorHeadBgR'} eq '' ? 135 : $pc{'colorHeadBgR'};
+$pc{'colorHeadBgG'} = $pc{'colorHeadBgG'} eq '' ? 140 : $pc{'colorHeadBgG'};
+$pc{'colorHeadBgB'} = $pc{'colorHeadBgB'} eq '' ? 155 : $pc{'colorHeadBgB'};
+$pc{'colorHeadBgA'} = $pc{'colorHeadBgA'} eq '' ? 0.3 : $pc{'colorHeadBgA'};
+$pc{'colorBaseBgR'} = $pc{'colorBaseBgR'} eq '' ? 128 : $pc{'colorBaseBgR'};
+$pc{'colorBaseBgG'} = $pc{'colorBaseBgG'} eq '' ? 128 : $pc{'colorBaseBgG'};
+$pc{'colorBaseBgB'} = $pc{'colorBaseBgB'} eq '' ? 128 : $pc{'colorBaseBgB'};
+$pc{'colorBaseBgA'} = $pc{'colorBaseBgA'} eq '' ?   0 : $pc{'colorBaseBgA'};
+
 ### 改行処理 --------------------------------------------------
 $pc{'items'}         =~ s/&lt;br&gt;/\n/g;
 $pc{'freeNote'}      =~ s/&lt;br&gt;/\n/g;
@@ -113,16 +122,16 @@ Content-type: text/html\n
   <meta charset="UTF-8">
   <title>@{[$mode eq 'edit'?"編集：$pc{'characterName'}":'新規作成']} - $set::title</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" media="all" href="./skin/css/base.css?1.06.002">
-  <link rel="stylesheet" media="all" href="./skin/css/sheet.css?1.06.002">
-  <link rel="stylesheet" media="all" href="./skin/css/chara.css?1.06.002">
+  <link rel="stylesheet" media="all" href="./skin/css/base.css?1.07.000">
+  <link rel="stylesheet" media="all" href="./skin/css/sheet.css?1.07.000">
+  <link rel="stylesheet" media="all" href="./skin/css/chara.css?1.07.000">
   <link rel="stylesheet" media="all" href="./skin/css/chara-sp.css?1.05.004">
-  <link rel="stylesheet" media="all" href="./skin/css/edit.css?1.06.002">
+  <link rel="stylesheet" media="all" href="./skin/css/edit.css?1.07.000">
   <script src="./lib/edit-chara.js?1.06.100" defer></script>
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
   <style>
     #image {
-      background-image: url("${set::char_dir}${file}/image.$pc{'image'}");
+      background-image: url("${set::char_dir}${file}/image.$pc{'image'}") !important;
     }
   </style>
 </head>
@@ -163,6 +172,7 @@ print <<"HTML";
           <li onclick="sectionSelect('common');">キャラクターデータ</li>
           <li onclick="sectionSelect('fellow');">フェローデータ</li>
           <li onclick="sectionSelect('palette');">チャットパレット</li>
+          <li onclick="sectionSelect('color');">カラーカスタム</li>
         </ul>
       </div>
 HTML
@@ -212,6 +222,8 @@ HTML
 foreach (@set::groups){
   my $id   = @$_[0];
   my $name = @$_[2];
+  my $exclusive = @$_[4];
+  next if($exclusive && (!$LOGIN_ID || $LOGIN_ID !~ /^($exclusive)$/));
   print '<option value="'.$id.'"'.($pc{'group'} eq $id ? ' selected': '').'>'.$name.'</option>';
 }
 print <<"HTML";
@@ -314,153 +326,58 @@ print <<"HTML";
         </div>
 
         <div id="status">
-          <dl id="stt-base-tec">
-            <dt>技</dt>
-            <dd>@{[input('sttBaseTec','number','calcStt')]}</dd>
-          </dl>
-          <dl id="stt-base-phy">
-            <dt>体</dt>
-            <dd>@{[input('sttBasePhy','number','calcStt')]}</dd>
-          </dl>
-          <dl id="stt-base-spi">
-            <dt>心</dt>
-            <dd>@{[input('sttBaseSpi','number','calcStt')]}</dd>
-          </dl>
-          <dl id="stt-base-A">
-            <dt>Ａ</dt>
-            <dd>@{[input('sttBaseA','number','calcStt')]}</dd>
-          </dl>
-          <dl id="stt-base-B">
-            <dt>Ｂ</dt>
-            <dd>@{[input('sttBaseB','number','calcStt')]}</dd>
-          </dl>
-          <dl id="stt-base-C">
-            <dt>Ｃ</dt>
-            <dd>@{[input('sttBaseC','number','calcStt')]}</dd>
-          </dl>
-          <dl id="stt-base-D">
-            <dt>Ｄ</dt>
-            <dd>@{[input('sttBaseD','number','calcStt')]}</dd>
-          </dl>
-          <dl id="stt-base-E">
-            <dt>Ｅ</dt>
-            <dd>@{[input('sttBaseE','number','calcStt')]}</dd>
-          </dl>
-          <dl id="stt-base-F">
-            <dt>Ｆ</dt>
-            <dd>@{[input('sttBaseF','number','calcStt')]}</dd>
-          </dl>
-          <dl id="stt-grow-A">
-            <dt>成長</dt>
-            <dd id="stt-grow-A-value">$pc{'sttGrowA'}</dd>
-          </dl>
-          <dl id="stt-grow-B">
-            <dt>成長</dt>
-            <dd id="stt-grow-B-value">$pc{'sttGrowB'}</dd>
-          </dl>
-          <dl id="stt-grow-C">
-            <dt>成長</dt>
-            <dd id="stt-grow-C-value">$pc{'sttGrowC'}</dd>
-          </dl>
-          <dl id="stt-grow-D">
-            <dt>成長</dt>
-            <dd id="stt-grow-D-value">$pc{'sttGrowD'}</dd>
-          </dl>
-          <dl id="stt-grow-E">
-            <dt>成長</dt>
-            <dd id="stt-grow-E-value">$pc{'sttGrowE'}</dd>
-          </dl>
-          <dl id="stt-grow-F">
-            <dt>成長</dt>
-            <dd id="stt-grow-F-value">$pc{'sttGrowF'}</dd>
-          </dl>
-          <dl id="stt-dex">
-            <dt>器用度</dt>
-            <dd id="stt-dex-value">$pc{'sttDex'}</dd>
-          </dl>
-          <dl id="stt-agi">
-            <dt>敏捷度</dt>
-            <dd id="stt-agi-value">$pc{'sttAgi'}</dd>
-          </dl>
-          <dl id="stt-str">
-            <dt>筋力</dt>
-            <dd id="stt-str-value">$pc{'sttStr'}</dd>
-          </dl>
-          <dl id="stt-vit">
-            <dt>生命力</dt>
-            <dd id="stt-vit-value">$pc{'sttVit'}</dd>
-          </dl>
-          <dl id="stt-int">
-            <dt>知力</dt>
-            <dd id="stt-int-value">$pc{'sttInt'}</dd>
-          </dl>
-          <dl id="stt-mnd">
-            <dt>精神力</dt>
-            <dd id="stt-mnd-value">$pc{'sttMnd'}</dd>
-          </dl>
-          <dl id="stt-add-A">
-            <dt>増強</dt>
-            <dd>@{[input('sttAddA','number','calcStt')]}</dd>
-          </dl>
-          <dl id="stt-add-B">
-            <dt>増強</dt>
-            <dd>@{[input('sttAddB','number','calcStt')]}</dd>
-          </dl>
-          <dl id="stt-add-C">
-            <dt>増強</dt>
-            <dd>@{[input('sttAddC','number','calcStt')]}</dd>
-          </dl>
-          <dl id="stt-add-D">
-            <dt>増強</dt>
-            <dd>@{[input('sttAddD','number','calcStt')]}</dd>
-          </dl>
-          <dl id="stt-add-E">
-            <dt>増強</dt>
-            <dd>@{[input('sttAddE','number','calcStt')]}</dd>
-          </dl>
-          <dl id="stt-add-F">
-            <dt>増強</dt>
-            <dd>@{[input('sttAddF','number','calcStt')]}</dd>
-          </dl>
-          <dl id="stt-bonus-dex">
-            <dt><span>器用度</span></dt>
-            <dd id="stt-bonus-dex-value">$pc{'bonusDex'}</dd>
-          </dl>
-          <dl id="stt-bonus-agi">
-            <dt><span>敏捷度</span></dt>
-            <dd id="stt-bonus-agi-value">$pc{'bonusAgi'}</dd>
-          </dl>
-          <dl id="stt-bonus-str">
-            <dt><span>筋力</span></dt>
-            <dd id="stt-bonus-str-value">$pc{'bonusStr'}</dd>
-          </dl>
-          <dl id="stt-bonus-vit">
-            <dt><span>生命力</span></dt>
-            <dd id="stt-bonus-vit-value">$pc{'bonusVit'}</dd>
-          </dl>
-          <dl id="stt-bonus-int">
-            <dt><span>知力</span></dt>
-            <dd id="stt-bonus-int-value">$pc{'bonusInt'}</dd>
-          </dl>
-          <dl id="stt-bonus-mnd">
-            <dt><span>精神力</span></dt>
-            <dd id="stt-bonus-mnd-value">$pc{'bonusMnd'}</dd>
-          </dl>
+          <dl class="box" id="stt-base-tec"><dt>技</dt><dd>@{[input('sttBaseTec','number','calcStt')]}</dd></dl>
+          <dl class="box" id="stt-base-phy"><dt>体</dt><dd>@{[input('sttBasePhy','number','calcStt')]}</dd></dl>
+          <dl class="box" id="stt-base-spi"><dt>心</dt><dd>@{[input('sttBaseSpi','number','calcStt')]}</dd></dl>
           
+          <dl class="box" id="stt-base-A"><dt>Ａ</dt><dd>@{[input('sttBaseA','number','calcStt')]}</dd></dl>
+          <dl class="box" id="stt-base-B"><dt>Ｂ</dt><dd>@{[input('sttBaseB','number','calcStt')]}</dd></dl>
+          <dl class="box" id="stt-base-C"><dt>Ｃ</dt><dd>@{[input('sttBaseC','number','calcStt')]}</dd></dl>
+          <dl class="box" id="stt-base-D"><dt>Ｄ</dt><dd>@{[input('sttBaseD','number','calcStt')]}</dd></dl>
+          <dl class="box" id="stt-base-E"><dt>Ｅ</dt><dd>@{[input('sttBaseE','number','calcStt')]}</dd></dl>
+          <dl class="box" id="stt-base-F"><dt>Ｆ</dt><dd>@{[input('sttBaseF','number','calcStt')]}</dd></dl>
           
-          <dl id="stt-pointbuy-TPS">
+          <dl class="box" id="stt-grow-A"><dt>成長</dt><dd id="stt-grow-A-value">$pc{'sttGrowA'}</dd></dl>
+          <dl class="box" id="stt-grow-B"><dt>成長</dt><dd id="stt-grow-B-value">$pc{'sttGrowB'}</dd></dl>
+          <dl class="box" id="stt-grow-C"><dt>成長</dt><dd id="stt-grow-C-value">$pc{'sttGrowC'}</dd></dl>
+          <dl class="box" id="stt-grow-D"><dt>成長</dt><dd id="stt-grow-D-value">$pc{'sttGrowD'}</dd></dl>
+          <dl class="box" id="stt-grow-E"><dt>成長</dt><dd id="stt-grow-E-value">$pc{'sttGrowE'}</dd></dl>
+          <dl class="box" id="stt-grow-F"><dt>成長</dt><dd id="stt-grow-F-value">$pc{'sttGrowF'}</dd></dl>
+          
+          <dl class="box" id="stt-dex"><dt>器用度</dt><dd id="stt-dex-value">$pc{'sttDex'}</dd></dl>
+          <dl class="box" id="stt-agi"><dt>敏捷度</dt><dd id="stt-agi-value">$pc{'sttAgi'}</dd></dl>
+          <dl class="box" id="stt-str"><dt>筋力  </dt><dd id="stt-str-value">$pc{'sttStr'}</dd></dl>
+          <dl class="box" id="stt-vit"><dt>生命力</dt><dd id="stt-vit-value">$pc{'sttVit'}</dd></dl>
+          <dl class="box" id="stt-int"><dt>知力  </dt><dd id="stt-int-value">$pc{'sttInt'}</dd></dl>
+          <dl class="box" id="stt-mnd"><dt>精神力</dt><dd id="stt-mnd-value">$pc{'sttMnd'}</dd></dl>
+          
+          <dl class="box" id="stt-add-A"><dt>増強</dt><dd>@{[input('sttAddA','number','calcStt')]}</dd></dl>
+          <dl class="box" id="stt-add-B"><dt>増強</dt><dd>@{[input('sttAddB','number','calcStt')]}</dd></dl>
+          <dl class="box" id="stt-add-C"><dt>増強</dt><dd>@{[input('sttAddC','number','calcStt')]}</dd></dl>
+          <dl class="box" id="stt-add-D"><dt>増強</dt><dd>@{[input('sttAddD','number','calcStt')]}</dd></dl>
+          <dl class="box" id="stt-add-E"><dt>増強</dt><dd>@{[input('sttAddE','number','calcStt')]}</dd></dl>
+          <dl class="box" id="stt-add-F"><dt>増強</dt><dd>@{[input('sttAddF','number','calcStt')]}</dd></dl>
+          
+          <dl class="box" id="stt-bonus-dex"><dt><span>器用度</span></dt><dd id="stt-bonus-dex-value">$pc{'bonusDex'}</dd></dl>
+          <dl class="box" id="stt-bonus-agi"><dt><span>敏捷度</span></dt><dd id="stt-bonus-agi-value">$pc{'bonusAgi'}</dd></dl>
+          <dl class="box" id="stt-bonus-str"><dt><span>筋力  </span></dt><dd id="stt-bonus-str-value">$pc{'bonusStr'}</dd></dl>
+          <dl class="box" id="stt-bonus-vit"><dt><span>生命力</span></dt><dd id="stt-bonus-vit-value">$pc{'bonusVit'}</dd></dl>
+          <dl class="box" id="stt-bonus-int"><dt><span>知力  </span></dt><dd id="stt-bonus-int-value">$pc{'bonusInt'}</dd></dl>
+          <dl class="box" id="stt-bonus-mnd"><dt><span>精神力</span></dt><dd id="stt-bonus-mnd-value">$pc{'bonusMnd'}</dd></dl>
+          
+          <dl class="box" id="stt-pointbuy-TPS">
             <dt>割振りPt.</dt>
             <dd id="stt-pointbuy-TPS-value"></dd>
           </dl>
-          <dl id="stt-pointbuy-AtoF">
+          <dl class="box" id="stt-pointbuy-AtoF">
             <dt>割振りPt.</dt>
             <dd id="stt-pointbuy-AtoF-value"></dd>
           </dl>
-          <dl id="stt-grow-total">
+          <dl class="box" id="stt-grow-total">
             <dt>成長合計</dt>
             <dd><span><span id="stt-grow-total-value"></span><span id="stt-grow-max-value"></span></span></dd>
           </dl>
-          <dl id="stt-pointbuy-type">
+          <dl class="box" id="stt-pointbuy-type">
             <dt>ポイント割り振りの計算式</dt>
             <dd><select name="pointbuyType" onchange="calcStt();">
             <option value="2.5" @{[$pc{'pointbuyType'} eq '2.5' ? 'selected':'']}>2.5式(ET)</option>
@@ -469,7 +386,7 @@ print <<"HTML";
           </dl>
         </div>
 
-        <dl class="box" id="sub-status">
+        <dl class="box box-2row" id="sub-status">
           <dt id="vit-resist">生命抵抗力</dt><dd><span id="vit-resist-base">$pc{'vitResistBase'}</span>+<span id="vit-resist-auto-add">$pc{'vitResistAutoAdd'}</span>+@{[input('vitResistAdd','number','calcSubStt')]}=<b id="vit-resist-total">$pc{'vitResistTotal'}</b></dd>
           <dt id="mnd-resist">精神抵抗力</dt><dd><span id="mnd-resist-base">$pc{'mndResistBase'}</span>+<span id="mnd-resist-auto-add">$pc{'mndResistAutoAdd'}</span>+@{[input('mndResistAdd','number','calcSubStt')]}=<b id="mnd-resist-total">$pc{'mndResistTotal'}</b></dd>
           <dt id="hp">ＨＰ</dt><dd><span id="hp-base">$pc{'hpBase'}</span>+<span id="hp-auto-add">$pc{'hpAutoAdd'}</span>+@{[input('hpAdd','number','calcSubStt')]}=<b id="hp-total">$pc{'hpTotal'}</b></dd>
@@ -1550,7 +1467,14 @@ print <<"HTML";
       <section id="section-palette" style="display:none;">
       <div class="box">
         <h2>チャットパレット</h2>
-        <textarea name="chatPalette" style="height:20em" placeholder="例）&#13;&#10;2d6+{冒険者}+{器用}&#13;&#10;&#13;&#10;※入力がない場合、自動的にプリセットがそのまま反映されます。">$pc{'chatPalette'}</textarea>
+        <p>
+          手動パレットの配置:<select name="paletteInsertType" style="width: auto;">
+            <option value="exchange" @{[ $pc{'paletteInsertType'} eq 'exchange'?'selected':'' ]}>プリセットと入れ替える</option>
+            <option value="begin"    @{[ $pc{'paletteInsertType'} eq 'begin'   ?'selected':'' ]}>プリセットの手前に挿入</option>
+            <option value="end"      @{[ $pc{'paletteInsertType'} eq 'end'     ?'selected':'' ]}>プリセットの直後に挿入</option>
+          </select>
+        </p>
+        <textarea name="chatPalette" style="height:20em" placeholder="例）&#13;&#10;2d6+{冒険者}+{器用}&#13;&#10;&#13;&#10;※入力がない場合、プリセットがそのまま反映されます。">$pc{'chatPalette'}</textarea>
         
         <div class="palette-column">
         <h2>デフォルト変数 （自動的に末尾に出力されます）</h2>
@@ -1652,6 +1576,7 @@ HTML
     say '';
   }
   say "//回避=$pc{'DefenseTotalAllEva'}";
+  say "//防護=$pc{'DefenseTotalAllDef'}";
 print <<"HTML";
 </textarea>
         <p><label>@{[ input 'chatPaletteUnusedHidden', 'checkbox']} 未使用の変数は出力しない</label></p>
@@ -1659,9 +1584,36 @@ print <<"HTML";
         <div class="palette-column">
         <h2>プリセット （コピーペースト用）</h2>
         <textarea id="palettePreset" readonly style="height:20em">@{[ palettePreset(param('type')) ]}</textarea>
+        <p><label><input type="checkbox" name="palettePresetRaw" @{[ $pc{'palettePresetRaw'}?'checked':'' ]} value="1">プリセットは変数を使わない（数字をそのまま入れる）</label></p>
         </div>
       </div>
       </section>
+      <section id="section-color" style="display:none;">
+      <h2>キャラクターシートのカラー設定</h2>
+      <label class="box color-custom">
+        <input type="checkbox" name="colorCustom" value="1" onchange="changeColor();" @{[ $pc{'colorCustom'} ? 'checked':'' ]}>キャラクターシートの色をカスタムする
+      </label>
+      <a class="box color-custom" onclick="nightModeChange()">ナイトモードON/OFF</a>
+      <div class="box color-custom">
+        <h2>見出し背景</h2>
+        <table>
+        <tr class="color-range-R"><th>Ｒ</th><td><input type="range" name="colorHeadBgR" min="0" max="255" value="$pc{'colorHeadBgR'}" oninput="changeColor();"></td><td id="colorHeadBgRValue">$pc{'colorHeadBgR'}</td></tr>
+        <tr class="color-range-G"><th>Ｇ</th><td><input type="range" name="colorHeadBgG" min="0" max="255" value="$pc{'colorHeadBgG'}" oninput="changeColor();"></td><td id="colorHeadBgGValue">$pc{'colorHeadBgG'}</td></tr>
+        <tr class="color-range-B"><th>Ｂ</th><td><input type="range" name="colorHeadBgB" min="0" max="255" value="$pc{'colorHeadBgB'}" oninput="changeColor();"></td><td id="colorHeadBgBValue">$pc{'colorHeadBgB'}</td></tr>
+        <tr class="color-range-A"><th>濃</th><td><input type="range" name="colorHeadBgA" min="0.1" max="0.4" step="0.01" value="$pc{'colorHeadBgA'}" oninput="changeColor();"></td><td id="colorHeadBgAValue">$pc{'colorHeadBgA'}</td>
+        </table>
+      </div>
+      <div class="box color-custom">
+        <h2>ベース背景</h2>
+        <table>
+        <tr class="color-range-R"><th>Ｒ</th><td><input type="range" name="colorBaseBgR" min="0" max="255" value="$pc{'colorBaseBgR'}" oninput="changeColor();"></td><td id="colorBaseBgRValue">$pc{'colorBaseBgR'}</td></tr>
+        <tr class="color-range-G"><th>Ｇ</th><td><input type="range" name="colorBaseBgG" min="0" max="255" value="$pc{'colorBaseBgG'}" oninput="changeColor();"></td><td id="colorBaseBgGValue">$pc{'colorBaseBgG'}</td></tr>
+        <tr class="color-range-B"><th>Ｂ</th><td><input type="range" name="colorBaseBgB" min="0" max="255" value="$pc{'colorBaseBgB'}" oninput="changeColor();"></td><td id="colorBaseBgBValue">$pc{'colorBaseBgB'}</td></tr>
+        <tr class="color-range-A"><th>濃</th><td><input type="range" name="colorBaseBgA" min="0" max="0.1" step="0.01" value="$pc{'colorBaseBgA'}" oninput="changeColor();"></td><td id="colorBaseBgAValue">$pc{'colorBaseBgA'}</td></tr>
+        </table>
+      </div>
+      </section>
+      
       
       @{[ input 'birthTime','hidden' ]}
       @{[ input 'id','hidden' ]}

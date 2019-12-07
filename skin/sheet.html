@@ -6,9 +6,9 @@
   <meta charset="UTF-8">
   <title><TMPL_VAR characterNameTitle> - <TMPL_VAR title></title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" media="all" href="./skin/css/base.css?1.06.002">
-  <link rel="stylesheet" media="all" href="./skin/css/sheet.css?1.06.002">
-  <link rel="stylesheet" media="all" href="./skin/css/chara.css?1.06.002">
+  <link rel="stylesheet" media="all" href="./skin/css/base.css?1.07.000">
+  <link rel="stylesheet" media="all" href="./skin/css/sheet.css?1.07.000">
+  <link rel="stylesheet" media="all" href="./skin/css/chara.css?1.07.000">
   <link rel="stylesheet" media="all" href="./skin/css/chara-sp.css?1.05.004">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
   <script>
@@ -44,6 +44,17 @@ function backuplistOn() {
     backupList = 1;
   }
 }
+let chatPalette = 0;
+function chatPaletteOn() {
+  if(chatPalette){
+    document.querySelector(".chat-palette").style.top = '-100vh';
+    chatPalette = 0;
+  }
+  else {
+    document.querySelector(".chat-palette").style.top = '60px';
+    chatPalette = 1;
+  }
+}
 <TMPL_IF error>
 window.onload = function() {
   document.getElementById("login-form").style.top = '5rem';
@@ -54,6 +65,57 @@ window.onload = function() {
 };
 </TMPL_IF>
   </script>
+  <TMPL_IF colorCustom><style>
+    #area-name {
+      background-image:
+        linear-gradient(
+          to right,
+          rgba(<TMPL_VAR colorHeadBgR>,<TMPL_VAR colorHeadBgG>,<TMPL_VAR colorHeadBgB>,<TMPL_VAR colorHeadBgA>) 0,
+          transparent
+        )
+      ;
+    }
+    .box {
+      background-image:
+        linear-gradient(
+          to bottom,
+          rgba(<TMPL_VAR colorHeadBgR>,<TMPL_VAR colorHeadBgG>,<TMPL_VAR colorHeadBgB>,<TMPL_VAR colorHeadBgA>) 0,
+          rgba(<TMPL_VAR colorBaseBgR>,<TMPL_VAR colorBaseBgG>,<TMPL_VAR colorBaseBgB>,<TMPL_VAR colorBaseBgA>) 2.5rem
+        )
+      ;
+    }
+    .box.box-2row {
+      background-image:
+        linear-gradient(
+          to bottom,
+          rgba(<TMPL_VAR colorHeadBgR>,<TMPL_VAR colorHeadBgG>,<TMPL_VAR colorHeadBgB>,<TMPL_VAR colorHeadBgA>) 0,
+          rgba(<TMPL_VAR colorBaseBgR>,<TMPL_VAR colorBaseBgG>,<TMPL_VAR colorBaseBgB>,<TMPL_VAR colorBaseBgA>) 2.5rem,
+          rgba(<TMPL_VAR colorBaseBgR>,<TMPL_VAR colorBaseBgG>,<TMPL_VAR colorBaseBgB>,<TMPL_VAR colorBaseBgA>) 50%,
+          rgba(<TMPL_VAR colorHeadBgR>,<TMPL_VAR colorHeadBgG>,<TMPL_VAR colorHeadBgB>,<TMPL_VAR colorHeadBgA>) 50%,
+          rgba(<TMPL_VAR colorBaseBgR>,<TMPL_VAR colorBaseBgG>,<TMPL_VAR colorBaseBgB>,<TMPL_VAR colorBaseBgA>) calc(50% + 2.5rem)
+        )
+      ;
+    }
+    .box h2:nth-child(n+2) {
+      background-image:
+        linear-gradient(
+          to bottom,
+          rgba(<TMPL_VAR colorHeadBgR>,<TMPL_VAR colorHeadBgG>,<TMPL_VAR colorHeadBgB>,<TMPL_VAR colorHeadBgA>) 0,
+          transparent 2.5rem
+        )
+      ;
+    }
+    .box h3::after,
+    .box h4::after {
+      background-image:
+        linear-gradient(
+          to right,
+          rgba(<TMPL_VAR colorHeadBgR>,<TMPL_VAR colorHeadBgG>,<TMPL_VAR colorHeadBgB>,<TMPL_VAR colorHeadBgA>) 0,
+          transparent
+        )
+      ;
+    }
+  </style></TMPL_IF>
 </head>
 <body>
   <script src="./skin/js/common.js?1.06.002"></script>
@@ -64,7 +126,7 @@ window.onload = function() {
         <li class="small"><a href="./">⏎</a></li>
         <TMPL_IF FellowMode><li><a href="./?id=<TMPL_VAR id>">通常</a></li></TMPL_IF>
         <TMPL_IF fellowPublic><TMPL_UNLESS FellowMode><li><a href="./?id=<TMPL_VAR id>&f=1">フェロー</a></li></TMPL_UNLESS></TMPL_IF>
-        <li class="small"><a href="./?mode=palette&id=<TMPL_VAR id>"><span>パレット</span></a></li>
+        <li class="small"><a onclick="chatPaletteOn();"><span>パレット</span></a></li>
         <li class="small"><a onclick="backuplistOn()"><span>過去ログ</span></a></li>
         <TMPL_IF ReqdPassword>
         <li class="small"><a onclick="editOn()">編集</a></li>
@@ -152,142 +214,43 @@ window.onload = function() {
         </div>
 
         <div id="status">
-          <dl id="stt-base-tec">
-            <dt>技</dt>
-            <dd><TMPL_VAR sttBaseTec></dd>
-          </dl>
-          <dl id="stt-base-phy">
-            <dt>体</dt>
-            <dd><TMPL_VAR sttBasePhy></dd>
-          </dl>
-          <dl id="stt-base-spi">
-            <dt>心</dt>
-            <dd><TMPL_VAR sttBaseSpi></dd>
-          </dl>
-          <dl id="stt-base-A">
-            <dt>Ａ</dt>
-            <dd><TMPL_VAR sttBaseA></dd>
-          </dl>
-          <dl id="stt-base-B">
-            <dt>Ｂ</dt>
-            <dd><TMPL_VAR sttBaseB></dd>
-          </dl>
-          <dl id="stt-base-C">
-            <dt>Ｃ</dt>
-            <dd><TMPL_VAR sttBaseC></dd>
-          </dl>
-          <dl id="stt-base-D">
-            <dt>Ｄ</dt>
-            <dd><TMPL_VAR sttBaseD></dd>
-          </dl>
-          <dl id="stt-base-E">
-            <dt>Ｅ</dt>
-            <dd><TMPL_VAR sttBaseE></dd>
-          </dl>
-          <dl id="stt-base-F">
-            <dt>Ｆ</dt>
-            <dd><TMPL_VAR sttBaseF></dd>
-          </dl>
-          <dl id="stt-grow-A">
-            <dt>成長</dt>
-            <dd><TMPL_VAR sttGrowA></dd>
-          </dl>
-          <dl id="stt-grow-B">
-            <dt>成長</dt>
-            <dd><TMPL_VAR sttGrowB></dd>
-          </dl>
-          <dl id="stt-grow-C">
-            <dt>成長</dt>
-            <dd><TMPL_VAR sttGrowC></dd>
-          </dl>
-          <dl id="stt-grow-D">
-            <dt>成長</dt>
-            <dd><TMPL_VAR sttGrowD></dd>
-          </dl>
-          <dl id="stt-grow-E">
-            <dt>成長</dt>
-            <dd><TMPL_VAR sttGrowE></dd>
-          </dl>
-          <dl id="stt-grow-F">
-            <dt>成長</dt>
-            <dd><TMPL_VAR sttGrowF></dd>
-          </dl>
-          <dl id="stt-dex">
-            <dt>器用度</dt>
-            <dd><TMPL_VAR sttDex></dd>
-          </dl>
-          <dl id="stt-agi">
-            <dt>敏捷度</dt>
-            <dd><TMPL_VAR sttAgi></dd>
-          </dl>
-          <dl id="stt-str">
-            <dt>筋力</dt>
-            <dd><TMPL_VAR sttStr></dd>
-          </dl>
-          <dl id="stt-vit">
-            <dt>生命力</dt>
-            <dd><TMPL_VAR sttVit></dd>
-          </dl>
-          <dl id="stt-int">
-            <dt>知力</dt>
-            <dd><TMPL_VAR sttInt></dd>
-          </dl>
-          <dl id="stt-mnd">
-            <dt>精神力</dt>
-            <dd><TMPL_VAR sttMnd></dd>
-          </dl>
-          <dl id="stt-add-A">
-            <dt><span>増強</span></dt>
-            <dd><TMPL_VAR sttAddA></dd>
-          </dl>
-          <dl id="stt-add-B">
-            <dt><span>増強</span></dt>
-            <dd><TMPL_VAR sttAddB></dd>
-          </dl>
-          <dl id="stt-add-C">
-            <dt><span>増強</span></dt>
-            <dd><TMPL_VAR sttAddC></dd>
-          </dl>
-          <dl id="stt-add-D">
-            <dt><span>増強</span></dt>
-            <dd><TMPL_VAR sttAddD></dd>
-          </dl>
-          <dl id="stt-add-E">
-            <dt><span>増強</span></dt>
-            <dd><TMPL_VAR sttAddE></dd>
-          </dl>
-          <dl id="stt-add-F">
-            <dt><span>増強</span></dt>
-            <dd><TMPL_VAR sttAddF></dd>
-          </dl>
-          <dl id="stt-bonus-dex">
-            <dt><span>器用度</span></dt>
-            <dd><TMPL_VAR bonusDex></dd>
-          </dl>
-          <dl id="stt-bonus-agi">
-            <dt><span>敏捷度</span></dt>
-            <dd><TMPL_VAR bonusAgi></dd>
-          </dl>
-          <dl id="stt-bonus-str">
-            <dt><span>筋力</span></dt>
-            <dd><TMPL_VAR bonusStr></dd>
-          </dl>
-          <dl id="stt-bonus-vit">
-            <dt><span>生命力</span></dt>
-            <dd><TMPL_VAR bonusVit></dd>
-          </dl>
-          <dl id="stt-bonus-int">
-            <dt><span>知力</span></dt>
-            <dd><TMPL_VAR bonusInt></dd>
-          </dl>
-          <dl id="stt-bonus-mnd">
-            <dt><span>精神力</span></dt>
-            <dd><TMPL_VAR bonusMnd></dd>
-          </dl>
+          <dl class="box" id="stt-base-tec"><dt>技</dt><dd><TMPL_VAR sttBaseTec></dd></dl>
+          <dl class="box" id="stt-base-phy"><dt>体</dt><dd><TMPL_VAR sttBasePhy></dd></dl>
+          <dl class="box" id="stt-base-spi"><dt>心</dt><dd><TMPL_VAR sttBaseSpi></dd></dl>
+          <dl class="box" id="stt-base-A"> <dt>Ａ</dt> <dd><TMPL_VAR sttBaseA></dd></dl>
+          <dl class="box" id="stt-base-B"> <dt>Ｂ</dt> <dd><TMPL_VAR sttBaseB></dd></dl>
+          <dl class="box" id="stt-base-C"> <dt>Ｃ</dt> <dd><TMPL_VAR sttBaseC></dd></dl>
+          <dl class="box" id="stt-base-D"> <dt>Ｄ</dt> <dd><TMPL_VAR sttBaseD></dd></dl>
+          <dl class="box" id="stt-base-E"> <dt>Ｅ</dt> <dd><TMPL_VAR sttBaseE></dd></dl>
+          <dl class="box" id="stt-base-F"> <dt>Ｆ</dt> <dd><TMPL_VAR sttBaseF></dd></dl>
+          <dl class="box" id="stt-grow-A"> <dt>成長</dt> <dd><TMPL_VAR sttGrowA></dd></dl>
+          <dl class="box" id="stt-grow-B"> <dt>成長</dt> <dd><TMPL_VAR sttGrowB></dd></dl>
+          <dl class="box" id="stt-grow-C"> <dt>成長</dt> <dd><TMPL_VAR sttGrowC></dd></dl>
+          <dl class="box" id="stt-grow-D"> <dt>成長</dt> <dd><TMPL_VAR sttGrowD></dd></dl>
+          <dl class="box" id="stt-grow-E"> <dt>成長</dt> <dd><TMPL_VAR sttGrowE></dd></dl>
+          <dl class="box" id="stt-grow-F"> <dt>成長</dt> <dd><TMPL_VAR sttGrowF></dd></dl>
+          <dl class="box" id="stt-dex"> <dt>器用度</dt> <dd><TMPL_VAR sttDex></dd></dl>
+          <dl class="box" id="stt-agi"> <dt>敏捷度</dt> <dd><TMPL_VAR sttAgi></dd></dl>
+          <dl class="box" id="stt-str"> <dt>筋力  </dt> <dd><TMPL_VAR sttStr></dd></dl>
+          <dl class="box" id="stt-vit"> <dt>生命力</dt> <dd><TMPL_VAR sttVit></dd></dl>
+          <dl class="box" id="stt-int"> <dt>知力  </dt> <dd><TMPL_VAR sttInt></dd></dl>
+          <dl class="box" id="stt-mnd"> <dt>精神力</dt> <dd> <TMPL_VAR  sttMnd></dd></dl>
+          <dl class="box" id="stt-add-A"> <dt><span>増強</span></dt> <dd><TMPL_VAR sttAddA></dd></dl>
+          <dl class="box" id="stt-add-B"> <dt><span>増強</span></dt> <dd><TMPL_VAR sttAddB></dd></dl>
+          <dl class="box" id="stt-add-C"> <dt><span>増強</span></dt> <dd><TMPL_VAR sttAddC></dd></dl>
+          <dl class="box" id="stt-add-D"> <dt><span>増強</span></dt> <dd><TMPL_VAR sttAddD></dd></dl>
+          <dl class="box" id="stt-add-E"> <dt><span>増強</span></dt> <dd><TMPL_VAR sttAddE></dd></dl>
+          <dl class="box" id="stt-add-F"> <dt><span>増強</span></dt> <dd><TMPL_VAR sttAddF></dd></dl>
+          <dl class="box" id="stt-bonus-dex"> <dt><span>器用度</span></dt> <dd><TMPL_VAR bonusDex></dd></dl>
+          <dl class="box" id="stt-bonus-agi"> <dt><span>敏捷度</span></dt> <dd><TMPL_VAR bonusAgi></dd></dl>
+          <dl class="box" id="stt-bonus-str"> <dt><span>筋力  </span></dt> <dd><TMPL_VAR bonusStr></dd></dl>
+          <dl class="box" id="stt-bonus-vit"> <dt><span>生命力</span></dt> <dd><TMPL_VAR bonusVit></dd></dl>
+          <dl class="box" id="stt-bonus-int"> <dt><span>知力  </span></dt> <dd><TMPL_VAR bonusInt></dd></dl>
+          <dl class="box" id="stt-bonus-mnd"> <dt><span>精神力</span></dt> <dd><TMPL_VAR bonusMnd></dd></dl>
         </div>
 
-        <dl class="box" id="sub-status">
-          <dt id="vit-resist">生命抵抗力</dt><dd><TMPL_IF vitResistAddTotal><TMPL_VAR vitResistBase>+<TMPL_VAR vitResistAddTotal>=</TMPL_IF><b><TMPL_VAR vitResistTotal></b></dd>
+        <dl class="box box-2row" id="sub-status">
+          <dt id="vit-resist">生命抵抗</dt><dd><TMPL_IF vitResistAddTotal><TMPL_VAR vitResistBase>+<TMPL_VAR vitResistAddTotal>=</TMPL_IF><b><TMPL_VAR vitResistTotal></b></dd>
           <dt id="mnd-resist">精神抵抗力</dt><dd><TMPL_IF mndResistAddTotal><TMPL_VAR mndResistBase>+<TMPL_VAR mndResistAddTotal>=</TMPL_IF><b><TMPL_VAR mndResistTotal></b></dd>
           <dt id="hp">ＨＰ</dt><dd><TMPL_IF hpAddTotal><TMPL_VAR hpBase>+<TMPL_VAR hpAddTotal>=</TMPL_IF><b><TMPL_VAR hpTotal></b></dd>
           <dt id="mp">ＭＰ</dt><dd><TMPL_IF mpTotal><TMPL_IF mpAddTotal><TMPL_VAR mpBase>+<TMPL_VAR mpAddTotal>=</TMPL_IF><b><TMPL_VAR mpTotal></b><TMPL_ELSE><b>なし</b></TMPL_IF></dd>
@@ -822,7 +785,12 @@ window.onload = function() {
         <div><p><TMPL_VAR cashbook></p></div>
       </div>
       </TMPL_IF>
+      <div class="box chat-palette">
+        <h2>チャットパレット</h2>
+        <iframe src="./?mode=palette&id=<TMPL_VAR id>"></iframe>
+      </div>
     </article>
+    <!-- フェロー -->
     <article id="fellow" <TMPL_UNLESS FellowMode> style="display:none"</TMPL_UNLESS>>
       <TMPL_IF fellowPublic>
       <div id="personal-area">

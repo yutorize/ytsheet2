@@ -129,13 +129,28 @@ input[type="number"] {
   text-align: center;
 }
 
-input[type="submit"],
-input[type="button"] {
+input[type="submit"] {
   background: linear-gradient(to bottom, #ddeeff, #ccccff);
   box-shadow: 1px 1px 0 0 #ffffff inset, -1px -1px 0 0 #bbbbee inset;
 }
+input[type="button"] {
+  background: linear-gradient(to bottom, #e0e7ef, #c0c7cf);
+  box-shadow: 1px 1px 0 0 #ffffff inset, -1px -1px 0 0 #bbbbdd inset;
+}
 input[type="submit"]:hover,
 input[type="button"]:hover {
+  background: linear-gradient(to bottom, rgba(50,150,250,0.5), rgba(50,50,250,0.5));
+  color: #ffffff;
+}
+.night input[type="submit"] {
+  background: linear-gradient(to bottom, #445566, #333355);
+  box-shadow: 1px 1px 0 0 #777788 inset, -1px -1px 0 0 #000000 inset;
+}
+.night input[type="button"] {
+  background: linear-gradient(to bottom, #50575f, #30373f);
+  box-shadow: 1px 1px 0 0 #777788 inset, -1px -1px 0 0 #000000 inset;
+}
+.night input[type="submit"]:hover {
   background: linear-gradient(to bottom, rgba(50,150,250,0.5), rgba(50,50,250,0.5));
   color: #ffffff;
 }
@@ -226,12 +241,13 @@ td .switch-button {
   top: 0px;
   z-index: 1;
   padding: 0.5em;
-  background: linear-gradient(to bottom, #dadcdf, #fff);
+  background-image: linear-gradient(to bottom, rgba(135,140,155,0.3), transparent);
+  background-color: #fff;
   border-width: 3px 0;
   border-style: solid;
 }
 .night #area-name {
-  background: linear-gradient(to right, #234, #000);
+  background-color: #222;
 }
 #area-name input {
   width: calc(100% - 1em);
@@ -259,23 +275,7 @@ td .switch-button {
   align-self: stretch;
 }
 #area-name input[type="button"] {
-  background: linear-gradient(to bottom, #e0e7ef, #c0c7cf);
-  box-shadow: 1px 1px 0 0 #ffffff inset, -1px -1px 0 0 #bbbbdd inset;
-}
-#area-name input[type="button"] {
   width: 50px;
-}
-.night #area-name input[type="submit"] {
-  background: linear-gradient(to bottom, #445566, #333355);
-  box-shadow: 1px 1px 0 0 #777788 inset, -1px -1px 0 0 #000000 inset;
-}
-.night #area-name input[type="button"] {
-  background: linear-gradient(to bottom, #50575f, #30373f);
-  box-shadow: 1px 1px 0 0 #777788 inset, -1px -1px 0 0 #000000 inset;
-}
-.night #area-name input[type="submit"]:hover {
-  background: linear-gradient(to bottom, rgba(50,150,250,0.5), rgba(50,50,250,0.5));
-  color: #ffffff;
 }
 
 #regulation {
@@ -1015,6 +1015,38 @@ form#item textarea[name="description"] {
 }
 #section-palette .box > .palette-column {
   grid-column: span 1;
+}
+
+
+/* // カラーカスタム
+---------------------------------------------------------------------------------------------------- */
+.box.color-custom {
+  margin-bottom: 1em;
+}
+label.box.color-custom {
+  display: inline-block;
+  cursor: pointer;
+  padding: .1em;
+}
+a.box.color-custom {
+  display: inline-block;
+  cursor: pointer;
+  padding: .1em;
+}
+.box.color-custom table {
+  margin-left: 1em;
+}
+.box.color-custom table td {
+  padding-left: .5em;
+}
+.box.color-custom table td:last-child {
+  width: 4em;
+}
+.box.color-custom .color-range-R th { color: #f00; }
+.box.color-custom .color-range-G th { color: #0f0; }
+.box.color-custom .color-range-B th { color: #00f; }
+.box.color-custom input[type="range"] {
+  width: 256px;
 }
 
 /* // 

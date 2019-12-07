@@ -59,33 +59,38 @@ footer {
   font-size: 1.4rem;
 }
 .box h2,
-.box dl:first-child > dt,
-dl.box > dt,
-#status > dl > dt {
+dl.box > dt {
   padding-left: 2px;
   line-height: 1.5;
   white-space: nowrap;
 }
+.box > h2,
+dl.box > dt,
+.box > table:first-child > tbody > tr > th {
+  text-shadow: 0px 0px .3em #fff;
+}
+.night .box > h2,
+.night dl.box > dt,
+.night .box > table:first-child > tbody > tr > th {
+  text-shadow: 0px 0px .3em #000;
+}
 
-.box,
-#status > dl {
-  background: linear-gradient(to bottom, #dadcdf 0, transparent 2.5rem);
+.box {
+  background-image: linear-gradient(to bottom, rgba(135,140,155,0.3) 0, transparent 2.5rem);
   box-shadow: 1px 1px 2px 0px #ccc;
   background-color: rgba(255,255,255,0.5);
 }
-dl#sub-status {
-  background: linear-gradient(to bottom, #dadcdf 0, transparent 2.5rem, transparent 50%, #dadcdf 50%, transparent calc(50% + 2.5rem));
+.box.box-2row {
+  background-image: linear-gradient(to bottom, rgba(135,140,155,0.3) 0, transparent 2.5rem, transparent 50%, rgba(135,140,155,0.3) 50%, transparent calc(50% + 2.5rem));
   background-color: rgba(255,255,255,0.5);
 }
 .night .box,
 .night #status > dl {
-  background: linear-gradient(to bottom, #345 0, transparent 2.5rem);
   box-shadow: 1px 1px 2px 0px #335;
-  background-color: rgba(40,50,60,0.5);
+  background-color: rgba(50,50,50,0.5);
 }
 .night dl#sub-status {
-  background: linear-gradient(to bottom, #345 0, transparent 2.5rem, transparent 50%, #345 50%, transparent calc(50% + 2.5rem));
-  background-color: rgba(50,60,70,0.5);
+  background-color: rgba(50,50,50,0.5);
 }
 
 .box dd,
@@ -96,8 +101,8 @@ dl#sub-status {
 
 .box { border-color: #999; }
 .box * { border-color: #aaa; }
-.night .box { border-color: #556; }
-.night .box * { border-color: #445; }
+.night .box { border-color: #555; }
+.night .box * { border-color: #444; }
 
 .box p {
   margin: .3rem .5em 0;
@@ -120,40 +125,41 @@ dl#sub-status {
 .box hr.dashed {
   border-style: dashed;
 }
-.box h2:nth-child(n+2){
+.box h2:nth-child(n+2) {
   margin: 1.8em 0 -1em;
   padding-bottom: 1em;
   border-width: 1px 0 0;
   border-style: solid;
-  background: linear-gradient(to bottom, #dadcdf 0, transparent 2.5rem);
-}
-.night .box h2:nth-child(n+2){
-  background: linear-gradient(to bottom, #345 0, transparent 2.5rem);
+  background-image: linear-gradient(to bottom, rgba(135,140,155,0.3) 0, transparent 2.5rem);
 }
 .box h3 {
   position: relative;
   margin: 1.3em .3em 0;
   line-height: 1.2;
   font-size: 110%;
+  z-index: 0;
 }
 .box h3::after {
   content:'';
   position: absolute;
   top: 60%; left: 0; right: 0; bottom: 0;
-  background: linear-gradient(to right, rgba(150,170,190,0.3), transparent);
+  background-image: linear-gradient(to right, rgba(150,170,190,0.3), transparent);
   line-height: 1.2;
+  z-index: -1;
 }
 .box h4 {
   position: relative;
   margin: 1.3em .5em 0;
   line-height: 1.2;
   font-size: 103%;
+  z-index: 0;
 }
 .box h4::after {
   content:'';
   position: absolute;
   top: calc(100% - .2rem); left: 0; right: 0; bottom: 0;
-  background: linear-gradient(to right, rgba(150,170,190,0.5), transparent);
+  background-image: linear-gradient(to right, rgba(150,170,190,0.5), transparent);
+  z-index: -1;
 }
 .box h5 {
   position: relative;
@@ -174,6 +180,27 @@ dl#sub-status {
 .box p + p {
   margin-top: 0em;
   padding-top: 0;
+}
+
+.box.chat-palette {
+  position: fixed;
+  top: -100vh;
+  left: 0;
+  right: 0;
+  width: 100%;
+  max-width: 800px;
+  margin: auto;
+  background: #fff;
+  transition: top 0.3s;
+}
+.night .box.chat-palette {
+  background: #000;
+}
+.box.chat-palette iframe {
+  width: calc(100% - 2em);
+  height: calc(100vh - 120px - 3em);
+  margin: 0 1em 1em;
+  background: #fff;
 }
 
 /* テキスト処理 */

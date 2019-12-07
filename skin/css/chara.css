@@ -39,19 +39,20 @@
   border-width: 3px 0px;
   border-style: solid;
   
-  background: linear-gradient(to right, #dadcdf, #fff);
+  background-image: linear-gradient(to right, rgba(135,140,155,0.3), transparent);
+  background-color: #fff;
 }
 .night #area-name {
-  background: linear-gradient(to right, #234, #000);
+  background-color: #000;
 }
 h1#character-name {
   padding: 1rem;
   font-size: 2.2rem;
   font-weight: bold;
-  text-shadow: 0 0 0 #000, 0 0 1px #777, 1px 1px 0px #fff;
+  text-shadow: 0 0 0 #000, 0 0 1px #777, 1px 1px 0px #fff, 0px 0px .5em #fff, 0px 0px 1em #fff;
 }
 .night h1#character-name {
-  text-shadow: 0 0 0 #fff, 0 0 1px #777, 1px 1px 0px #000;
+  text-shadow: 0 0 0 #fff, 0 0 1px #777, 1px 1px 0px #000, 0px 0px .5em #000;
 }
 #area-name > div { 
   text-align: right;
