@@ -2,12 +2,15 @@
 <html lang="ja">
 
 <head>
+  <TMPL_INCLUDE NAME="./skin/head.html">
   <meta charset="UTF-8">
-  <title><TMPL_VAR characterName> - <TMPL_VAR title></title>
-  <link rel="stylesheet" media="all" href="./skin/css/sheet.css?201808111145">
-  <link rel="stylesheet" media="all" href="./skin/css/sheet-sp.css?201808071500">
-  <link rel="stylesheet" id="nightmode">
+  <title><TMPL_VAR characterNameTitle> - <TMPL_VAR title></title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" media="all" href="./skin/css/base.css?1.06.002">
+  <link rel="stylesheet" media="all" href="./skin/css/sheet.css?1.06.002">
+  <link rel="stylesheet" media="all" href="./skin/css/chara.css?1.06.002">
+  <link rel="stylesheet" media="all" href="./skin/css/chara-sp.css?1.05.004">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
   <script>
 function popImage() {
   document.getElementById("image-box").style.bottom = 0;
@@ -22,12 +25,23 @@ function closeImage() {
 let editForm = 0;
 function editOn() {
   if(editForm){
-    document.getElementById("login-form").style.top = '-4rem';
+    document.getElementById("login-form").style.top = '-5rem';
     editForm = 0;
   }
   else {
     document.getElementById("login-form").style.top = '5rem';
     editForm = 1;
+  }
+}
+let backupList = 0;
+function backuplistOn() {
+  if(backupList){
+    document.getElementById("backuplist").style.right = '-100vh';
+    backupList = 0;
+  }
+  else {
+    document.getElementById("backuplist").style.right = '0';
+    backupList = 1;
   }
 }
 <TMPL_IF error>
@@ -42,16 +56,20 @@ window.onload = function() {
   </script>
 </head>
 <body>
+  <script src="./skin/js/common.js?1.06.002"></script>
   <header>
     <h1><a href="./"><TMPL_VAR title></a></h1>
     <nav>
       <ul>
+        <li class="small"><a href="./">⏎</a></li>
         <TMPL_IF FellowMode><li><a href="./?id=<TMPL_VAR id>">通常</a></li></TMPL_IF>
         <TMPL_IF fellowPublic><TMPL_UNLESS FellowMode><li><a href="./?id=<TMPL_VAR id>&f=1">フェロー</a></li></TMPL_UNLESS></TMPL_IF>
+        <li class="small"><a href="./?mode=palette&id=<TMPL_VAR id>"><span>パレット</span></a></li>
+        <li class="small"><a onclick="backuplistOn()"><span>過去ログ</span></a></li>
         <TMPL_IF ReqdPassword>
-        <li><a onclick="editOn()">編集</a></li>
+        <li class="small"><a onclick="editOn()">編集</a></li>
         <TMPL_ELSE>
-        <li><a href="./?mode=edit&id=<TMPL_VAR id>">編集</a></li>
+        <li class="small"><a href="./?mode=edit&id=<TMPL_VAR id>">編集</a></li>
         </TMPL_IF>
         <li class="small"><a onclick="nightModeChange()" title="ナイトモード">☾✧</a></li>
       </ul>
@@ -65,6 +83,13 @@ window.onload = function() {
     </p>
   </aside>
   </TMPL_IF>
+  
+  <aside id="backuplist">
+    <ul>
+      <li<TMPL_UNLESS BackupMode> class="backup-now"</TMPL_UNLESS>><a href="?id=<TMPL_VAR id>">最新</a></li>
+      <TMPL_LOOP Backup><li<TMPL_IF NOW> class="backup-now"</TMPL_IF>><a href="?id=<TMPL_VAR id>&backup=<TMPL_VAR URL>"><TMPL_VAR DATE></a></li></TMPL_LOOP>
+    </ul>
+  </aside>
 
   <form id="login-form" method="post" action="./">
     <input type="hidden" name="mode" value="edit">
@@ -73,19 +98,25 @@ window.onload = function() {
     <input type="submit" value="編集">
   </form>
 
-  <main>
+  <main id="character">
     <article<TMPL_IF FellowMode> style="display:none"</TMPL_IF>>
+      <TMPL_IF BackupMode><p><TMPL_VAR updateTime> 時点のバックアップデータです。</p></TMPL_IF>
       <div id="area-name">
-        <h1 id="character-name"><TMPL_VAR aka><span id="aka"></span><TMPL_VAR characterName></h1>
+        <h1 id="character-name"><TMPL_IF aka><span id="aka">“<TMPL_VAR aka>”</span></TMPL_IF><TMPL_VAR characterName></h1>
         <div>
         <p id="update-time"><time><TMPL_VAR updateTime></time></p>
         <p id="player-name">プレイヤー：<TMPL_VAR playerName></p>
         </div>
       </div>
-
+      
+      <div id="tags">
+      <a href="./?group=<TMPL_VAR group>" id="group"><TMPL_VAR groupName></a>
+      <TMPL_LOOP Tags><a href="./?tag=<TMPL_VAR URL>"><TMPL_VAR TEXT></a></TMPL_LOOP>
+      </div>
+      <div class="column column-status"><!-- COLUMN -->
       <div id="area-status">
         <TMPL_IF image> 
-        <div id="image" class="image" style="background-image: url(<TMPL_VAR imageSrc>);background-size:<TMPL_VAR imageFit>;">
+        <div id="image" class="image" style="background-image: url(<TMPL_VAR imageSrc>);background-size:<TMPL_VAR imageFit>;background-position:<TMPL_VAR imagePositionX>% <TMPL_VAR imagePositionY>%;">
         <div onclick="popImage()"><p class="words" style="<TMPL_VAR wordsX><TMPL_VAR wordsY>"><TMPL_VAR words></p></div>
         <p class="image-copyright"><TMPL_VAR imageCopyright></p>
         </div>
@@ -97,11 +128,11 @@ window.onload = function() {
           <dl class="box" id="race">
             <dt>種族</dt><dd><TMPL_VAR race></dd>
           </dl>
-          <dl class="box" id="age">
-            <dt>年齢</dt><dd><TMPL_VAR age></dd>
-          </dl>
           <dl class="box" id="gender">
             <dt>性別</dt><dd><TMPL_VAR gender></dd>
+          </dl>
+          <dl class="box" id="age">
+            <dt>年齢</dt><dd><TMPL_VAR age></dd>
           </dl>
           <dl class="box" id="race-ability">
             <dt>種族特徴</dt><dd><TMPL_VAR raceAbility></dd>
@@ -111,6 +142,9 @@ window.onload = function() {
           </dl>
           <dl class="box" id="faith">
             <dt>信仰</dt><dd><TMPL_VAR faith></dd>
+          </dl>
+          <dl class="box" id="rank">
+            <dt>ランク</dt><dd><TMPL_VAR rank></dd>
           </dl>
           <dl class="box" id="sin">
             <dt>穢れ</dt><dd><TMPL_VAR sin></dd>
@@ -203,51 +237,51 @@ window.onload = function() {
             <dd><TMPL_VAR sttMnd></dd>
           </dl>
           <dl id="stt-add-A">
-            <dt>増強</dt>
+            <dt><span>増強</span></dt>
             <dd><TMPL_VAR sttAddA></dd>
           </dl>
           <dl id="stt-add-B">
-            <dt>増強</dt>
+            <dt><span>増強</span></dt>
             <dd><TMPL_VAR sttAddB></dd>
           </dl>
           <dl id="stt-add-C">
-            <dt>増強</dt>
+            <dt><span>増強</span></dt>
             <dd><TMPL_VAR sttAddC></dd>
           </dl>
           <dl id="stt-add-D">
-            <dt>増強</dt>
+            <dt><span>増強</span></dt>
             <dd><TMPL_VAR sttAddD></dd>
           </dl>
           <dl id="stt-add-E">
-            <dt>増強</dt>
+            <dt><span>増強</span></dt>
             <dd><TMPL_VAR sttAddE></dd>
           </dl>
           <dl id="stt-add-F">
-            <dt>増強</dt>
+            <dt><span>増強</span></dt>
             <dd><TMPL_VAR sttAddF></dd>
           </dl>
           <dl id="stt-bonus-dex">
-            <dt>＋</dt>
+            <dt><span>器用度</span></dt>
             <dd><TMPL_VAR bonusDex></dd>
           </dl>
           <dl id="stt-bonus-agi">
-            <dt>＋</dt>
+            <dt><span>敏捷度</span></dt>
             <dd><TMPL_VAR bonusAgi></dd>
           </dl>
           <dl id="stt-bonus-str">
-            <dt>＋</dt>
+            <dt><span>筋力</span></dt>
             <dd><TMPL_VAR bonusStr></dd>
           </dl>
           <dl id="stt-bonus-vit">
-            <dt>＋</dt>
+            <dt><span>生命力</span></dt>
             <dd><TMPL_VAR bonusVit></dd>
           </dl>
           <dl id="stt-bonus-int">
-            <dt>＋</dt>
+            <dt><span>知力</span></dt>
             <dd><TMPL_VAR bonusInt></dd>
           </dl>
           <dl id="stt-bonus-mnd">
-            <dt>＋</dt>
+            <dt><span>精神力</span></dt>
             <dd><TMPL_VAR bonusMnd></dd>
           </dl>
         </div>
@@ -256,7 +290,7 @@ window.onload = function() {
           <dt id="vit-resist">生命抵抗力</dt><dd><TMPL_IF vitResistAddTotal><TMPL_VAR vitResistBase>+<TMPL_VAR vitResistAddTotal>=</TMPL_IF><b><TMPL_VAR vitResistTotal></b></dd>
           <dt id="mnd-resist">精神抵抗力</dt><dd><TMPL_IF mndResistAddTotal><TMPL_VAR mndResistBase>+<TMPL_VAR mndResistAddTotal>=</TMPL_IF><b><TMPL_VAR mndResistTotal></b></dd>
           <dt id="hp">ＨＰ</dt><dd><TMPL_IF hpAddTotal><TMPL_VAR hpBase>+<TMPL_VAR hpAddTotal>=</TMPL_IF><b><TMPL_VAR hpTotal></b></dd>
-          <dt id="mp">ＭＰ</dt><dd><TMPL_IF mpAddTotal><TMPL_VAR mpBase>+<TMPL_VAR mpAddTotal>=</TMPL_IF><b><TMPL_VAR mpTotal></b></dd>
+          <dt id="mp">ＭＰ</dt><dd><TMPL_IF mpTotal><TMPL_IF mpAddTotal><TMPL_VAR mpBase>+<TMPL_VAR mpAddTotal>=</TMPL_IF><b><TMPL_VAR mpTotal></b><TMPL_ELSE><b>なし</b></TMPL_IF></dd>
         </dl>
         
         <dl class="box" id="level">
@@ -294,36 +328,112 @@ window.onload = function() {
             <h2>戦闘特技</h2>
             <ul>
               <TMPL_LOOP CombatFeatsLv>
-              <li id="combat-feats-lv<TMPL_VAR LV>">《<TMPL_VAR NAME>》</li>
+              <li id="combat-feats-lv<TMPL_VAR LV>" data-lv="<TMPL_VAR LV>">《<TMPL_VAR NAME>》</li>
               </TMPL_LOOP>
               <TMPL_LOOP CombatFeatsAuto>
               <li>《<TMPL_VAR NAME>》</li>
               </TMPL_LOOP>
             </ul>
           </div>
-<!--
-          
+          <TMPL_IF MysticArts>
           <div class="box" id="mystic-arts">
             <h2>秘伝</h2>
             <ul>
               <TMPL_LOOP MysticArts>
-              <li><TMPL_VAR Name></li>
+              <li>《<TMPL_VAR NAME>》</li>
               </TMPL_LOOP>
             </ul>
           </div>
-          
--->
+          </TMPL_IF>
         </div>
-        <div>
-          <div class="box" id="">
-            <h2>練技／呪歌／騎芸／賦術</h2>
+        <div id="crafts">
+          <TMPL_IF MagicGramarye><div class="box" id="magic-gramarye">
+            <h2>秘奥魔法</h2>
             <ul>
-              <li>なし</li>
+              <TMPL_LOOP MagicGramarye>
+              <li id="magic-gramarye<TMPL_VAR __counter__>">【－<TMPL_VAR NAME>－】</li>
+              </TMPL_LOOP>
             </ul>
-          </div>
+          </div></TMPL_IF>
+          <TMPL_IF CraftEnhance><div class="box" id="craft-enhance">
+            <h2>練技</h2>
+            <ul>
+              <TMPL_LOOP CraftEnhance>
+              <li id="craft-enhance<TMPL_VAR __counter__>">【<TMPL_VAR NAME>】</li>
+              </TMPL_LOOP>
+            </ul>
+          </div></TMPL_IF>
+          <TMPL_IF CraftSong><div class="box" id="craft-song">
+            <h2>呪歌</h2>
+            <ul>
+              <TMPL_LOOP CraftSong>
+              <li id="craft-enhance<TMPL_VAR __counter__>">【<TMPL_VAR NAME>】</li>
+              </TMPL_LOOP>
+            </ul>
+          </div></TMPL_IF>
+          <TMPL_IF CraftRiding><div class="box" id="craft-riding">
+            <h2>騎芸</h2>
+            <ul>
+              <TMPL_LOOP CraftRiding>
+              <li id="craft-riding<TMPL_VAR __counter__>">【<TMPL_VAR NAME>】</li>
+              </TMPL_LOOP>
+            </ul>
+          </div></TMPL_IF>
+          <TMPL_IF CraftAlchemy><div class="box" id="craft-alchemy">
+            <h2>賦術</h2>
+            <ul>
+              <TMPL_LOOP CraftAlchemy>
+              <li id="craft-alchemy<TMPL_VAR __counter__>">【<TMPL_VAR NAME>】</li>
+              </TMPL_LOOP>
+            </ul>
+          </div></TMPL_IF>
+          <TMPL_IF CraftCommand><div class="box" id="craft-command">
+            <h2>鼓咆</h2>
+            <ul>
+              <TMPL_LOOP CraftCommand>
+              <li id="craft-command<TMPL_VAR __counter__>">【<TMPL_VAR NAME>】</li>
+              </TMPL_LOOP>
+            </ul>
+          </div></TMPL_IF>
+          <TMPL_IF CraftDivination><div class="box" id="craft-divination">
+            <h2>占瞳</h2>
+            <ul>
+              <TMPL_LOOP CraftDivination>
+              <li id="craft-divination<TMPL_VAR __counter__>">【<TMPL_VAR NAME>】</li>
+              </TMPL_LOOP>
+            </ul>
+          </div></TMPL_IF>
+          <TMPL_IF CraftPotential><div class="box" id="craft-potential">
+            <h2>魔装</h2>
+            <ul>
+              <TMPL_LOOP CraftPotential>
+              <li id="craft-potential<TMPL_VAR __counter__>">【<TMPL_VAR NAME>】</li>
+              </TMPL_LOOP>
+            </ul>
+          </div></TMPL_IF>
+          <TMPL_IF CraftSeal><div class="box" id="craft-seal">
+            <h2>呪印</h2>
+            <ul>
+              <TMPL_LOOP CraftSeal>
+              <li id="craft-seal<TMPL_VAR __counter__>">【<TMPL_VAR NAME>】</li>
+              </TMPL_LOOP>
+            </ul>
+          </div></TMPL_IF>
+          <TMPL_IF CraftDignity><div class="box" id="craft-dignity">
+            <h2>貴格</h2>
+            <ul>
+              <TMPL_LOOP CraftDignity>
+              <li id="craft-dignity<TMPL_VAR __counter__>">【<TMPL_VAR NAME>】</li>
+              </TMPL_LOOP>
+            </ul>
+          </div></TMPL_IF>
+          <TMPL_IF craftNone><div class="box">
+            <h2>練技／呪歌／騎芸／賦術</h2>
+            <ul><li>なし</li></ul>
+          </div></TMPL_IF>
         </div>
       </div>
-
+      </div><!-- / COLUMN -->
       <div id="area-actions">
         <div id="area-package">
           <div class="box" id="package">
@@ -331,43 +441,90 @@ window.onload = function() {
             <TMPL_IF lvSco>
             <table>
               <tr>
-                <th rowspan="3">スカウト技能レベル<TMPL_VAR lvSco></th>
+                <th rowspan="3">スカウト<span class="small">技能レベル</span><TMPL_VAR lvSco></th>
                 <th>技巧</th>
-                <td><TMPL_VAR packScoutTec></td>
+                <td><TMPL_IF packScoTecAdd>+<TMPL_VAR packScoTecAdd>=</TMPL_IF></td>
+                <td><TMPL_VAR packScoTec></td>
               </tr>
               <tr>
                 <th>運動</th>
-                <td><TMPL_VAR packScoutAgi></td>
+                <td><TMPL_IF packScoAgiAdd>+<TMPL_VAR packScoAgiAdd>=</TMPL_IF></td>
+                <td><TMPL_VAR packScoAgi></td>
               </tr>
               <tr>
                 <th>観察</th>
-                <td><TMPL_VAR packScoutInt></td>
+                <td><TMPL_IF packScoObsAdd>+<TMPL_VAR packScoObsAdd>=</TMPL_IF></td>
+                <td><TMPL_VAR packScoObs></td>
               </tr>
             </table>
             </TMPL_IF>
             <TMPL_IF lvRan>
             <table>
               <tr>
-                <th rowspan="3">レンジャー技能レベル<TMPL_VAR lvRan></th>
+                <th rowspan="3">レンジャー<span class="small">技能レベル</span><TMPL_VAR lvRan></th>
                 <th>技巧</th>
-                <td><TMPL_VAR packRangerTec></td>
+                <td><TMPL_IF packRanTecAdd>+<TMPL_VAR packRanTecAdd>=</TMPL_IF></td>
+                <td><TMPL_VAR packRanTec></td>
               </tr>
               <tr>
                 <th>運動</th>
-                <td><TMPL_VAR packRangerAgi></td>
+                <td><TMPL_IF packRanAgiAdd>+<TMPL_VAR packRanAgiAdd>=</TMPL_IF></td>
+                <td><TMPL_VAR packRanAgi></td>
               </tr>
               <tr>
                 <th>観察</th>
-                <td><TMPL_VAR packRangerInt></td>
+                <td><TMPL_IF packRanObsAdd>+<TMPL_VAR packRanObsAdd>=</TMPL_IF></td>
+                <td><TMPL_VAR packRanObs></td>
               </tr>
             </table>
             </TMPL_IF>
             <TMPL_IF lvSag>
             <table>
               <tr>
-                <th>セージ技能レベル<TMPL_VAR lvSag></th>
+                <th>セージ<span class="small">技能レベル</span><TMPL_VAR lvSag></th>
                 <th>知識</th>
-                <td><TMPL_VAR packSageInt></td>
+                <td><TMPL_IF packSagKnoAdd>+<TMPL_VAR packSagKnoAdd>=</TMPL_IF></td>
+                <td><TMPL_VAR packSagKno></td>
+              </tr>
+            </table>
+            </TMPL_IF>
+            <TMPL_IF lvBar>
+            <table>
+              <tr>
+                <th>バード<span class="small">技能レベル</span><TMPL_VAR lvBar></th>
+                <th>見識</th>
+                <td><TMPL_IF packBarKnoAdd>+<TMPL_VAR packBarKnoAdd>=</TMPL_IF></td>
+                <td><TMPL_VAR packBarKno></td>
+              </tr>
+            </table>
+            </TMPL_IF>
+            <TMPL_IF lvRid>
+            <table>
+              <tr>
+                <th rowspan="<TMPL_IF riderObsOn>3<TMPL_ELSE>2</TMPL_IF>">ライダー<span class="small">技能レベル</span><TMPL_VAR lvRid></th>
+                <th>運動</th>
+                <td><TMPL_IF packRidAgiAdd>+<TMPL_VAR packRidAgiAdd>=</TMPL_IF></td>
+                <td><TMPL_VAR packRidAgi></td>
+              </tr>
+              <tr>
+                <th>知識</th>
+                <td><TMPL_IF packRidKnoAdd>+<TMPL_VAR packRidKnoAdd>=</TMPL_IF></td>
+                <td><TMPL_VAR packRidKno></td>
+              </tr>
+              <TMPL_IF riderObsOn><tr>
+                <th>観察</th>
+                <td><TMPL_IF packRidObsAdd>+<TMPL_VAR packRidObsAdd>=</TMPL_IF></td>
+                <td><TMPL_VAR packRidObs></td>
+              </tr></TMPL_IF>
+            </table>
+            </TMPL_IF>
+            <TMPL_IF lvAlc>
+            <table>
+              <tr>
+                <th>アルケミスト<span class="small">技能レベル</span><TMPL_VAR lvAlc></th>
+                <th>知識</th>
+                <td><TMPL_IF packAlcKnoAdd>+<TMPL_VAR packAlcKnoAdd>=</TMPL_IF></td>
+                <td><TMPL_VAR packAlcKno></td>
               </tr>
             </table>
             </TMPL_IF>
@@ -377,28 +534,17 @@ window.onload = function() {
         <div id="area-other-actions">
           <dl class="box" id="monster-lore">
             <dt>魔物知識</dt>
-            <dd><TMPL_VAR monsterLore></dd>
+            <dd><TMPL_IF monsterLoreAdd><span class="small">+<TMPL_VAR monsterLoreAdd>=</span></TMPL_IF><TMPL_VAR monsterLore></dd>
           </dl>
           <dl class="box" id="initiative">
             <dt>先制力</dt>
-            <dd><TMPL_VAR initiative></dd>
+            <dd><TMPL_IF initiativeAdd><span class="small">+<TMPL_VAR initiativeAdd>=</span></TMPL_IF><TMPL_VAR initiative></dd>
           </dl>
           <dl class="box" id="mobility">
             <dt>制限移動</dt><dd><b><TMPL_VAR mobilityLimited></b> m</dd>
             <dt>移動力</dt><dd><TMPL_IF mobilityAdd><TMPL_VAR mobilityBase>+<TMPL_VAR mobilityAdd>=</TMPL_IF><b><TMPL_VAR mobilityTotal></b> m</dd>
             <dt>全力移動</dt><dd><b><TMPL_VAR mobilityFull></b> m</dd>
           </dl>
-          <TMPL_IF lvCaster>
-          <div class="box" id="magic-power">
-            <h2>魔力</h2>
-            <TMPL_IF  magicPowerAdd><p id="magic-power-add">+<TMPL_VAR  magicPowerAdd></p></TMPL_IF>
-            <table>
-              <TMPL_LOOP MagicPowers>
-              <tr><th><TMPL_VAR NAME></th><th><TMPL_VAR MAGIC></th><td><TMPL_VAR NUM></td></tr>
-              </TMPL_LOOP>
-            </table>
-          </div>
-          </TMPL_IF>
         </div>
         <div class="box" id="language">
           <h2>言語</h2>
@@ -409,9 +555,27 @@ window.onload = function() {
             </TMPL_LOOP>
           </table>
         </div>
+        <TMPL_IF MagicPowers>
+        <div class="box" id="magic-power">
+          <h2>魔力<TMPL_IF lvBar>／奏力</TMPL_IF></h2>
+          <TMPL_IF  magicPowerAdd><p id="magic-power-add">+<TMPL_VAR  magicPowerAdd></p></TMPL_IF>
+          <table>
+            <TMPL_LOOP MagicPowers>
+            <tr>
+              <th><TMPL_VAR NAME></th>
+              <th><TMPL_VAR MAGIC></th>
+              <td><TMPL_VAR OWN></td>
+              <td><TMPL_VAR ADD></td>
+              <td><TMPL_VAR NUM></td>
+            </tr>
+            </TMPL_LOOP>
+          </table>
+        </div>
+        </TMPL_IF>
       </div>
-      
+      <div class="column"><!-- COLUMN -->
       <div id="area-equipment">
+        <TMPL_IF Weapons>
         <div class="box" id="attack-classes">
           <table>
             <tr>
@@ -449,19 +613,21 @@ window.onload = function() {
             </tr>
             <TMPL_LOOP Weapons>
             <tr>
-              <td><span class="item-name"><TMPL_VAR NAME></span></td>
+              <TMPL_UNLESS NAMEOFF><td rowspan="<TMPL_VAR ROWSPAN>"><span class="item-name"><TMPL_VAR NAME></span></td></TMPL_UNLESS>
               <td><TMPL_VAR USAGE></td>
               <td><TMPL_VAR REQD></td>
               <td><TMPL_IF ACC>+<TMPL_VAR ACC>=</TMPL_IF><b><TMPL_VAR ACCTOTAL></b></td>
               <td><TMPL_VAR RATE></td>
               <td><TMPL_VAR CRIT></td>
-                <td><TMPL_IF DMG>+<TMPL_VAR DMG>=</TMPL_IF><b><TMPL_VAR DMGTOTAL></b></td>
-              <td><TMPL_VAR OWN></td>
+              <td><TMPL_IF DMG>+<TMPL_VAR DMG>=</TMPL_IF><b><TMPL_VAR DMGTOTAL></b></td>
+              <td><TMPL_IF OWN>✔</TMPL_IF></td>
               <td><span class="item-name"><TMPL_VAR NOTE></span></td>
             </tr>
             </TMPL_LOOP>
           </table>
         </div>
+        </TMPL_IF>
+        
         <div class="box" id="evasion-classes">
           <table>
             <tr>
@@ -497,7 +663,7 @@ window.onload = function() {
               <td><TMPL_VAR armourReqd></td>
               <td><TMPL_VAR armourEva></td>
               <td><TMPL_VAR armourDef></td>
-              <td><TMPL_VAR armourOwn></td>
+              <td><TMPL_IF armourOwn>✔</TMPL_IF></td>
               <td><TMPL_VAR armourNote></td>
             </tr>
             <tr>
@@ -506,7 +672,7 @@ window.onload = function() {
               <td><TMPL_VAR shieldReqd></td>
               <td><TMPL_VAR shieldEva></td>
               <td><TMPL_VAR shieldDef></td>
-              <td><TMPL_VAR shieldOwn></td>
+              <td><TMPL_IF shieldOwn>✔</TMPL_IF></td>
               <td><TMPL_VAR shieldNote></td>
             </tr>
             <tr>
@@ -537,13 +703,14 @@ window.onload = function() {
             <tr>
               <th><TMPL_VAR TYPE></th>
               <td><span class="item-name"><TMPL_VAR NAME></span></td>
-              <td><TMPL_VAR OWN></td>
+              <td><TMPL_IF OWN>✔<TMPL_VAR OWN></TMPL_IF></td>
               <td><TMPL_VAR NOTE></td>
             </tr>
             </TMPL_LOOP>
           </table>
         </div>
       </div>
+      </div><!-- / COLUMN -->
       <div id="area-items">
         <div id="area-items-L">
           <dl class="box" id="money">
@@ -551,28 +718,64 @@ window.onload = function() {
             <dt>預金／借金</dt><dd><TMPL_VAR deposit> G</dd>
           </dl>
           <div class="box" id="items">
-            <h2>所持品</h2>
+            <h2><TMPL_IF head_items><TMPL_VAR head_items><TMPL_ELSE>所持品</TMPL_IF></h2>
             <p><TMPL_VAR items></p>
           </div>
         </div>
         <div id="area-items-R">
+          <TMPL_IF lvAlc><div class="box" id="material-cards">
+            <h2>マテリアルカード</h2>
+            <table>
+            <tr><th> </th><th>B</th><th>A</th><th>S</th><th>SS</th></tr>
+            <TMPL_IF cardRedView><tr class="cards-red"><th>赤</th><td><TMPL_VAR cardRedB></td><td><TMPL_VAR cardRedA></td><td><TMPL_VAR cardRedS></td><td><TMPL_VAR cardRedSS></td></tr></TMPL_IF>
+            <TMPL_IF cardGreView><tr class="cards-gre"><th>緑</th><td><TMPL_VAR cardGreB></td><td><TMPL_VAR cardGreA></td><td><TMPL_VAR cardGreS></td><td><TMPL_VAR cardGreSS></td></tr></TMPL_IF>
+            <TMPL_IF cardBlaView><tr class="cards-bla"><th>黒</th><td><TMPL_VAR cardBlaB></td><td><TMPL_VAR cardBlaA></td><td><TMPL_VAR cardBlaS></td><td><TMPL_VAR cardBlaSS></td></tr></TMPL_IF>
+            <TMPL_IF cardWhiView><tr class="cards-whi"><th>白</th><td><TMPL_VAR cardWhiB></td><td><TMPL_VAR cardWhiA></td><td><TMPL_VAR cardWhiS></td><td><TMPL_VAR cardWhiSS></td></tr></TMPL_IF>
+            <TMPL_IF cardGolView><tr class="cards-gol"><th>金</th><td><TMPL_VAR cardGolB></td><td><TMPL_VAR cardGolA></td><td><TMPL_VAR cardGolS></td><td><TMPL_VAR cardGolSS></td></tr></TMPL_IF>
+            </table>
+          </div></TMPL_IF>
+          <TMPL_IF BattleItems>
+          <div class="box" id="battle-items">
+            <h2>戦闘用アイテム</h2>
+            <ul><TMPL_LOOP BattleItems><li><TMPL_VAR ITEM DEFAULT="&nbsp;"></li></TMPL_LOOP></ul>
+          </div>
+          </TMPL_IF>
           <dl class="box" id="honor">
-            <dt>所持名誉点</dt><dd>未実装</dd>
-            <dt>ランク</dt><dd>未実装</dd>
+            <dt>名誉点</dt><dd><TMPL_VAR honor></dd>
+            <dt>ランク</dt><dd><TMPL_VAR rank></dd>
           </dl>
           <div class="box" id="honor-items">
             <h2>名誉アイテム</h2>
             <table>
               <tr><th></th><th>点数</th></tr>
-              <TMPL_LOOP HonoItems>
-              <tr><td><TMPL_VAR NAME></td><td><TMPL_VAR NUM></td></tr>
+              <tr><td>冒険者ランク</td><td><TMPL_VAR rankHonorValue></td></tr>
+              <TMPL_IF MysticArtsHonor>
+              <tr><td>秘伝</td><td><TMPL_VAR MysticArtsHonor></td></tr>
+              </TMPL_IF>
+              <TMPL_LOOP HonorItems>
+              <tr><td><TMPL_VAR NAME></td><td><TMPL_VAR PT></td></tr>
               </TMPL_LOOP>
             </table>
           </div>
+          <TMPL_IF DishonorItems>
+          <dl class="box" id="dishonor">
+            <dt>不名誉点</dt><dd><TMPL_VAR dishonor></dd>
+            <dt>不名誉称号</dt><dd><TMPL_VAR notoriety></dd>
+          </dl>
+          <div class="box" id="dishonor-items">
+            <h2>不名誉詳細</h2>
+            <table>
+              <tr><th></th><th>点数</th></tr>
+              <TMPL_LOOP DishonorItems>
+              <tr><td><TMPL_VAR NAME></td><td><TMPL_VAR PT></td></tr>
+              </TMPL_LOOP>
+            </table>
+          </div>
+          </TMPL_IF>
         </div>
       </div>
-        <div class="box" id="free-note">
-        <h2>容姿・経歴・その他メモ</h2>
+      <div class="box" id="free-note">
+        <h2><TMPL_IF head_freeNote><TMPL_VAR head_freeNote><TMPL_ELSE>容姿・経歴・その他メモ</TMPL_IF></h2>
         <p><TMPL_VAR freeNote></p>
       </div>
       <div class="box" id="history">
@@ -591,19 +794,34 @@ window.onload = function() {
           </tr>
           <TMPL_LOOP History>
           <tr>
-            <td><TMPL_VAR NUM></td>
-            <td><TMPL_VAR DATE></td>
-            <td><TMPL_VAR TITLE></td>
+            <td rowspan="2"><TMPL_VAR NUM></td>
+            <td rowspan="2"><TMPL_VAR DATE></td>
+            <td rowspan="2"><TMPL_VAR TITLE></td>
             <td><TMPL_VAR EXP></td>
             <td><TMPL_VAR HONOR></td>
             <td><TMPL_VAR MONEY></td>
             <td><TMPL_VAR GROW></td>
-            <td><TMPL_VAR GM></td>
+            <td><span><TMPL_VAR GM></span></td>
             <td><TMPL_VAR MEMBER></td>
+          </tr>
+          <tr>
+            <td colspan="6"><TMPL_VAR NOTE></td>
           </tr>
           </TMPL_LOOP>
         </table>
       </div>
+      <TMPL_IF freeHistory>
+      <div class="box" id="free-history">
+        <h2><TMPL_IF head_freeHistory><TMPL_VAR head_freeHistory><TMPL_ELSE>履歴</TMPL_IF></h2>
+        <p><TMPL_VAR freeHistory></p>
+      </div>
+      </TMPL_IF>
+      <TMPL_IF cashbook>
+      <div class="box" id="cashbook">
+        <h2>収支履歴</h2>
+        <div><p><TMPL_VAR cashbook></p></div>
+      </div>
+      </TMPL_IF>
     </article>
     <article id="fellow" <TMPL_UNLESS FellowMode> style="display:none"</TMPL_UNLESS>>
       <TMPL_IF fellowPublic>
@@ -645,6 +863,9 @@ window.onload = function() {
         </dd>
       <dl id="f-note">
         <dt>自己紹介</dt><dd><TMPL_VAR fellowProfile></dd>
+      </dl>
+      <dl id="f-mp">
+        <dt>ＭＰ</dt><dd><TMPL_IF mpTotal><TMPL_VAR mpTotal><TMPL_ELSE>なし</TMPL_IF></dd>
       </dl>
       <div id="f-checkboxes">
         <dl><dt>経験点</dt>
@@ -715,9 +936,8 @@ window.onload = function() {
 
   <footer>
     <p class="notes"><span>『ソード・ワールド2.5』は、</span><span>「グループSNE」及び「KADOKAWA」の著作物です。</span></p>
-    <p class="copyright">ゆとシート for SW2.5 ver.<TMPL_VAR ver> - <a href="http://yutorize.2-d.jp/">ゆとらいず工房</a></p>
+    <p class="copyright">ゆとシートⅡ for SW2.5 ver.<TMPL_VAR ver> - <a href="https://yutorize.2-d.jp">ゆとらいず工房</a></p>
   </footer>
 </body>
-<script src="./skin/js/common.js?201808111100" ></script>
 
 </html>

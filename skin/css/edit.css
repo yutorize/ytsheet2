@@ -4,23 +4,117 @@
 
 /* // フォーム設定
 ---------------------------------------------------------------------------------------------------- */
+html {
+  overflow: visible;
+}
 main {
   overflow: visible;
 }
+header {
+  display: none;
+}
+footer {
+  grid-row: 3;
+}
 
-input,
-select,
-textarea {
-  border-width: 1px;
-  border-style: solid;
-  border-radius: 5px;
-  background-color: rgba(255,255,255,0.6);
+select option,
+select optgroup {
+  background-color: #fff;
+  color: #000;
 }
 
 input::placeholder {
   opacity: 0.5;
 }
 
+h2[onclick],
+h4[onclick] {
+  cursor: pointer;
+}
+h2[onclick]:hover,
+h4[onclick]:hover {
+  background: linear-gradient(to top, #cef 20%, transparent 30%, transparent);
+}
+
+.fail input,
+.fail select {
+  background-color: rgba(125,125,125,0.2);
+}
+dt.fail, dt.fail + dd {
+  background-color: rgba(125,125,125,0.2) !important;
+  opacity: 0.9;
+}
+dt.fail::before {
+  content: "✖ ";
+  font-weight: bold;
+  color: #c00;
+}
+dt.fail > select,
+dt.fail + dd > input {
+  background-color: transparent;
+}
+.fail select option,
+.fail select optgroup {
+  background-color: #ddd;
+  color: #000;
+}
+.error input,
+.error select {
+  color: #c00;
+  text-decoration: line-through;
+}
+.evo input,
+.evo select,
+span.evo,
+#honor-items input.free,
+span.free {
+  background: rgba(255,200,0,0.3);
+  font-weight: bold;
+}
+span.evo,
+span.free {
+  padding: 1px 3px;
+  border-radius: 5px;
+  border-width: 1px;
+  border-style: solid;
+}
+.hidden {
+  display: none;
+}
+
+/* // メニュー
+---------------------------------------------------------------------------------------------------- */
+ul#header-menu {
+  position: absolute;
+  display: flex;
+  right: 0;
+  bottom: calc(-1em - 3px - 1rem);
+  line-height: 1;
+  background: rgba(100,100,100,0.9);
+  border-radius: 0 0 .5em .5em;
+  color: #fff;
+  font-weight: bold;
+  overflow: hidden;
+}
+ul#header-menu li {
+  padding: .5rem 1rem;
+  cursor: pointer;
+}
+ul#header-menu li + li {
+  border-left: 1px solid rgba(200,200,200,0.3);
+}
+ul#header-menu li:hover {
+  background: rgba(0,0,0,0.5);
+}
+section {
+  margin-top: 2em;
+}
+section > h2 {
+  margin-top: 1rem;
+}
+
+/* // キャラクター
+---------------------------------------------------------------------------------------------------- */
 .box input[type="text"],
 .box input[type="number"],
 .box select,
@@ -35,15 +129,38 @@ input[type="number"] {
   text-align: center;
 }
 
+input[type="submit"],
+input[type="button"] {
+  background: linear-gradient(to bottom, #ddeeff, #ccccff);
+  box-shadow: 1px 1px 0 0 #ffffff inset, -1px -1px 0 0 #bbbbee inset;
+}
+input[type="submit"]:hover,
+input[type="button"]:hover {
+  background: linear-gradient(to bottom, rgba(50,150,250,0.5), rgba(50,50,250,0.5));
+  color: #ffffff;
+}
+#status dl#stt-pointbuy-type {
+  grid-column: span 2;
+}
+
 .box .add-del-button {
   text-align: center;
 }
 
-.box .add-del-button a {
+.add-del-button a {
   display: inline-block;
   margin: 0px 2em;
   cursor: pointer;
   transform: scale(3.5, 1);
+}
+td .switch-button {
+  display: inline-block !important;
+  float: left;
+  margin-top: .2em;
+  padding: .1em .4em;
+  font-size: 1.6em;
+  line-height: 1;
+  cursor: pointer;
 }
 
 .message {
@@ -58,27 +175,63 @@ input[type="number"] {
   display: none;
 }
 
-#hide-checkbox {
-  text-align: right;
-  
+
+#edit-protect {
+  margin-top: 1rem;
 }
-#hide-checkbox input {
+#hide-options {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+#forbidden-checkbox {
+  flex-basis:  10em;
+  text-align: left;
+}
+#hide-checkbox {
+  text-align: left;
+}
+#hide-options input {
   vertical-align: middle;
 }
 
 .box .annotate {
-  text-align: right;
   font-size: 90%;
+  padding: 0 1rem;
 }
 .example {
   background: rgba(170,170,170,0.2);
 }
 
+
+#group dl {
+  display: grid;
+  grid-template-columns: 4em 1fr 2.5em 3fr;
+  grid-template-rows: auto;
+  text-align: right;
+}
+
+#group dl > * {
+  grid-row: 1 / 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 #area-name {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
   position: sticky;
   top: 0px;
   z-index: 1;
   padding: 0.5em;
+  background: linear-gradient(to bottom, #dadcdf, #fff);
+  border-width: 3px 0;
+  border-style: solid;
+}
+.night #area-name {
+  background: linear-gradient(to right, #234, #000);
 }
 #area-name input {
   width: calc(100% - 1em);
@@ -91,18 +244,36 @@ input[type="number"] {
   text-align: left;
   font-weight: bold;
   font-size: 1.4rem;
+  font-family: inherit;
+}
+#area-name #character-name input {
+  width: calc(100% - 8em);
 }
 #area-name #player-name {
   text-align: left;
   font-weight: bold;
 }
-#area-name input[type="submit"]{
+#area-name input[type="submit"],
+#area-name input[type="button"] {
   width: 100px;
   align-self: stretch;
-  background: linear-gradient(to bottom, #ddeeff, #ccccff);
-  box-shadow: 1px 1px 0 0 #ffffff inset, -1px -1px 0 0 #bbbbee inset;
 }
-#area-name input[type="submit"]:hover {
+#area-name input[type="button"] {
+  background: linear-gradient(to bottom, #e0e7ef, #c0c7cf);
+  box-shadow: 1px 1px 0 0 #ffffff inset, -1px -1px 0 0 #bbbbdd inset;
+}
+#area-name input[type="button"] {
+  width: 50px;
+}
+.night #area-name input[type="submit"] {
+  background: linear-gradient(to bottom, #445566, #333355);
+  box-shadow: 1px 1px 0 0 #777788 inset, -1px -1px 0 0 #000000 inset;
+}
+.night #area-name input[type="button"] {
+  background: linear-gradient(to bottom, #50575f, #30373f);
+  box-shadow: 1px 1px 0 0 #777788 inset, -1px -1px 0 0 #000000 inset;
+}
+.night #area-name input[type="submit"]:hover {
   background: linear-gradient(to bottom, rgba(50,150,250,0.5), rgba(50,50,250,0.5));
   color: #ffffff;
 }
@@ -129,7 +300,7 @@ input[type="number"] {
 }
 
 #area-status {
-  grid-template-columns: 0.5fr 0.6fr 1.6fr 1.8fr;
+  grid-template-columns: 0.6fr 0.5fr 1.6fr 1.8fr;
 }
 
 @media screen and (max-width:735px){
@@ -142,16 +313,16 @@ input[type="number"] {
       "PER  PER  PER "
       "STT  STT  STT "
       "STT  STT  STT "
-      "LVL  EXP  sSTT"
+      "EXP  LVL  sSTT"
     ;
   }
 }
 
 
 #area-status #image {
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: auto 1fr 1fr;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   
   background-repeat: no-repeat;
   background-size: cover;
@@ -159,15 +330,41 @@ input[type="number"] {
   
   cursor: unset;
 }
-#area-status #image div {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+#image > h2 {
+  background: rgba(255,255,255,0.8);
+}
+.night #image > h2 {
+  background: rgba(0,0,0,0.8);
+}
+#image > p {
+  background: rgba(255,255,255,0.4);
+  text-shadow: 0 0 10px #fff, 0 0 10px #fff, 0 0 10px #fff, 0 0 10px #fff, 0 0 10px #fff,
+               0 0 10px #fff, 0 0 10px #fff, 0 0 10px #fff, 0 0 10px #fff, 0 0 10px #fff;
+}
+.night #image > p {
+  background: rgba(0,0,0,0.5);
+  text-shadow: 0 0 3px #000, 0 0 4px #000, 0 0 5px #000, 0 0 5px #000, 0 0 5px #000;
+}
+#area-status #image h2 {
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+#area-status #image p {
+  padding: .5em .1em;
   text-align: center;
-  align-items: unset;
+  line-height: 1.2;
+}
+#area-status #image p+p {
+  margin-top: 1em;
+}
+#area-status #image p:last-child {
+  margin-bottom: .5em;
 }
 #area-status #image select {
   width: calc(100% - 6.5em);
+}
+#area-status #image input[type="checkbox"] {
+  transform: scale(1.1)
 }
 
 #area-status #image .words-input select {
@@ -175,8 +372,19 @@ input[type="number"] {
 }
 
 
+#personal dl#race         { flex-basis: 58%; order: 1; }
+#personal dl#gender       { flex-basis: 20%; order: 2; }
+#personal dl#age          { flex-basis: 20%; order: 3; }
+#personal dl#race-ability { flex-basis: 85%; order: 4; }
+#personal dl#birth        { flex-basis: 30%; order: 6; }
+#personal dl#faith        { flex-basis: 69%; order: 7; }
+#personal dl#sin          { flex-basis: 14%; order: 5; }
 #area-status #faith select {
   font-family: initial;
+}
+
+#status dl[id^="stt-add"]::before {
+  left: -.6rem;
 }
 
 #sub-status input,
@@ -184,14 +392,148 @@ input[type="number"] {
   width: 3.5em;
 }
 
+#area-ability {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+#area-ability > * {
+  margin-bottom: 1rem;
+  margin-left: 0;
+}
+#area-ability > p {
+  flex-basis: 100%;
+}
+
+#area-classes {
+  flex-basis: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+#area-classes.common-classes-off {
+  flex-basis: calc(66% - 1rem);
+  margin-right: 1rem;
+}
+
+#classes {
+  flex-basis: 66%;
+  flex-grow: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  position: relative;
+}
+#classes h2 {
+  flex-basis: 100%;
+}
+#common-classes {
+  flex-grow: 1;
+  margin: 0 0 0 1rem !important;
+}
+
 #classes dl {
+  flex-grow: 1;
+  flex-basis: calc(50% - 10px);
   grid-template-columns: 1fr 3.5em;
+}
+#common-classes dl {
+  grid-template-columns: 1fr 3.5em;
+}
+@media screen and (max-width:735px){
+  #area-classes {
+    display: block;
+  }
+  #classes {
+    width: 100%;
+  }
+  #common-classes {
+    margin: 1rem 0 0 !important;
+  }
+}
+#classes dl select {
+  font-size: 80%;
+}
+
+#combat-feats {
+  margin-left: 0 !important;
+}
+#combat-feats > p:nth-last-child(2) {
+  font-size: 90%;
+  border-width: 0 0 1px;
+  border-style: dotted;
+}
+
+#mystic-arts {
+  position: relative;
+}
+#mystic-arts h2 + div {
+  position: absolute;
+  top: .2rem;
+  right: .5em;
+  font-size: 80%;
+}
+#mystic-arts h2 + div span {
+  font-size: 120%;
+}
+#mystic-arts dl {
+  display: grid;
+  grid-template-columns: 1fr 4em;
+  grid-template-rows: auto;
+}
+#mystic-arts dl dt {
+  grid-column: 1;
+}
+#mystic-arts dl dd {
+  grid-column: 2;
+}
+
+#crafts {
+  flex-basis: 66%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+#crafts > .box {
+  flex-basis: calc(50% - 1rem);
+  margin: 0 0 1rem 1rem !important;
+}
+#area-classes.common-classes-off + div + #crafts > .box {
+  flex-basis: calc(33% - 1rem);
+}
+#area-classes.common-classes-off + div + #crafts > .box:first-child {
+  margin-left: 0 !important;
+}
+@media screen and (max-width:735px){
+  #area-classes.common-classes-off + div + #crafts > .box {
+  flex-basis: calc(50% - 1rem);
+  }
+}
+#crafts > .box ul {
+  margin-bottom: -1px;
+}
+#crafts > .box ul li:last-child {
+  padding-bottom: 1px;
+}
+
+
+#area-status + p {
+  margin-top: 1rem;
 }
 
 #area-package #package table {
   margin-top: 1px;
   margin-bottom: -1px;
 }
+#package table tr:first-child th:first-child {
+  width: 10em;
+}
+#package table tr td:nth-last-child(2) input {
+  width: calc(100% - 1em);
+}
+
 
 #language dl {
   display: grid;
@@ -207,11 +549,33 @@ input[type="number"] {
   text-align: center;
 }
 
-#magic-power p {
-  margin-top: -1em;
-  text-align: right;
+#magic-power {
+  min-width: 10em;
 }
-#magic-power p input {
+#magic-power table {
+  margin-top: -1.2em !important;
+}
+#magic-power table th:nth-child(2) {
+  width: 13em;
+}
+#magic-power table th:nth-child(2) input {
+  width: 10em;
+}
+#magic-power table td:nth-child(3) {
+  padding-left : .5em;
+  padding-right: .5em;
+  border-width: 0 1px;
+  border-style: none dotted;
+  font-size: 85%;
+}
+#magic-power table td:nth-child(3) input {
+  vertical-align: middle;
+}
+#magic-power table td:nth-child(4) {
+  width: 5.5em;
+  text-align: left;
+}
+#magic-power table td:nth-child(4) input {
   width: 3.5em;
 }
 
@@ -220,9 +584,25 @@ input[type="number"] {
   width: calc(100% - 4px - 1em);
 }
 
+#classes dl dt.zero-data,
+option.zero-data {
+  background-color: rgba(0,200,255,0.2);
+}
+#classes dl dt.zero-data {
+  font-family: 'Arial';
+}
+option.zero-data::before {
+  content: '★';
+}
+
 #weapons {
-  display: block;
-  overflow-y: auto;
+  width: 100%;
+  overflow: auto;
+}
+@media screen and (max-width:850px){
+  #weapons{
+    width:calc(100vw - 23px);
+  }
 }
 #weapons table {
   min-width: 800px;
@@ -275,6 +655,9 @@ input[type="number"] {
 #weapons td input[type="checkbox"] {
   vertical-align:bottom;
 }
+#weapons .annotate {
+  text-align: center;
+}
 
 #accessories th:nth-child(1) { width: 1.5em; } /*  */
 #accessories th:nth-child(2) { width: 2.5em; } /* 種別 */
@@ -287,35 +670,86 @@ input[type="number"] {
 }
 
 #items textarea {
-  height: 16em;
+  height: 20em;
 }
 
-#free-note textarea {
+#cashbook textarea {
   height: 16em;
 }
+#cashbook-total-value {
+  font-size: 120%;
+  font-weight: bold;
+}
+#cashbook p {
+  font-size: 90%;
+  font-family: inherit;
+  white-space: normal;
+  text-align: left;
+}
 
-@media screen and (max-width:735px){
+
+#battle-items input {
+  margin-left: 1em;
+  width: calc(100% - 4px - 1em);
+}
+#honor-items table {
+  margin-left: 0;
+  margin-right: 0;
+}
+#honor-items > p:nth-last-child(1) {
+  font-size: 90%;
+  border-width: 1px 0 0;
+  border-style: dotted;
+}
+#battle-items ul li.fail::before {
+  content: '✖';
+  opacity: 0.8;
+}
+
+#free-note,
+#free-history {
+  padding-bottom: .3rem;
+}
+#free-note textarea,
+#free-history textarea {
+  height: 18em;
+}
+
+#history{
+    overflow-x: auto;
+}
+@media screen and (max-width:850px){
   #history{
-    overflow-y: auto;
+    width:calc(100vw - 23px);
   }
 }
 #history table {
   min-width: 800px;
 }
-#history table tr th:nth-child(1) { width:   2em; } /* No. */
-#history table tr th:nth-child(2) { width:   6em; } /* 日付 */
-#history table tr th:nth-child(3) { width:  auto; } /* タイトル */
-#history table tr th:nth-child(4) { width:   5em; } /* 経験点 */
-#history table tr th:nth-child(5) { width:   3em; } /* 名誉点 */
-#history table tr th:nth-child(6) { width: 4.5em; } /* ガメル */
-#history table tr th:nth-child(7) { width:   5em; } /* 成長 */
-#history table tr th:nth-child(8) { width:   6em; } /* ＧＭ */
-#history table tr th:nth-child(9) { width:  15em; } /* 参加者 */
+#history table tr {
+  display: grid;
+  grid-template-columns: 6em 1fr 5em 3.5em 4.5em 5em 6em 15em;
+  grid-template-rows: auto;
+}
+#history table tr th { width: unset !important;}
+#history table tr th:nth-child(1) { display:none; } /* No. */
+#history table tr td:nth-child(1) { display:none; } /* No. */
+#history table tr td:nth-child(2) { grid-row: 1 / span 2; } /* 日付 */
+#history table tr td:nth-child(3) { grid-row: 1 / span 2; } /* タイトル */
+#history table tr td:nth-child(4) { grid-row: 1; } /* 経験点 */
+#history table tr td:nth-child(5) { grid-row: 1; } /* 名誉点 */
+#history table tr td:nth-child(6) { grid-row: 1; } /* ガメル */
+#history table tr td:nth-child(7) { grid-row: 1; } /* 成長 */
+#history table tr td:nth-child(8) { grid-row: 1; } /* ＧＭ */
+#history table tr td:nth-child(9) { grid-row: 1; } /* 参加者 */
+#history table tr td:nth-child(10){ grid-row: 2; grid-column: 3 / span 6; } /* 備考 */
 
-#history td{
+#history table tr td {
+  border-bottom-width: 0px;
+  border-right-width: 0px;
   white-space: nowrap;
 }
-#history table tr td:nth-child(6):after {
+#history table tr td:nth-child(6)::after {
   margin-left: 0px;
   font-size: 1.1rem;
 }
@@ -328,7 +762,6 @@ input[type="number"] {
 #history .annotate {
   width: 70%;
   margin: auto 3px auto auto;
-  text-align: left;
 }
 
 article > form > hr {
@@ -351,6 +784,9 @@ article > form > hr {
   height: 10em;
 }
 
+#f-actions {
+  margin-top: 1rem;
+}
 #f-actions table {
   margin-top: 1rem;
 }
@@ -383,10 +819,215 @@ article > form > hr {
   height: 10em;
 }
 
+#deleteform {
+  margin-top: 5rem;
+  padding-top: 5rem;
+  border-width: 1px 0 0;
+  border-style: solid;
+  text-align: right;
+}
+
+#deleteform input[type="submit"] {
+  margin-left: .5rem;
+  padding: .3rem .5rem;
+}
 
 
 
+/* // モンスター
+---------------------------------------------------------------------------------------------------- */
+form#monster div.box {
+  margin: 1rem 0;
+}
+form#monster h2 {
+  font-size: 100%;
+}
+form#monster #area-name {
+  font-weight: bold;
+}
+form#monster #monster-name {
+  flex-grow: 1;
+}
+form#monster #monster-name input {
+  width: calc(100% - 3em);
+}
+form#monster div.status dl {
+  margin: .5rem 0;
+}
+form#monster div.status input[type="number"],
+form#monster div.status input[name^="reputation"],
+form#monster div.status input[name="initiative"] {
+  width: 5em;
+}
+form#monster div.status input[name="language"] {
+  width: 25em;
+}
+form#monster table.status {
+  border-width: 0;
+}
+form#monster table.status th {
+  background: transparent;
+}
+form#monster table.status td {
+  white-space: nowrap;
+}
+form#monster table.status td:first-child {
+  border-left: 0;
+}
+form#monster table.status input {
+  width: calc(100% - 1.8em);
+}
+form#monster table.status input[name$="Style"] {
+  width: calc(100% - 4px);
+}
 
+form#monster div.parts input {
+  width: auto;
+}
+form#monster div.parts input[name="partsNum"] {
+  width: 5em;
+}
 
+form#monster textarea[name="skills"] + .annotate code {
+  font-size: 100%;
+  font-family: monospace,serif;
+}
 
+form#monster textarea[name="skills"] {
+  height: 16em;
+  padding: 2px;
+}
 
+form#monster textarea[name="description"] {
+  height: 16em;
+  padding: 2px;
+}
+
+/* // アイテム
+---------------------------------------------------------------------------------------------------- */
+form#item div.box {
+  margin: 1rem 0;
+}
+form#item div.box {
+  margin: 1rem 0;
+}
+form#item h2 {
+  font-size: 100%;
+}
+form#item #area-name {
+  font-weight: bold;
+}
+form#item #item-name {
+  flex-grow: 1;
+}
+form#item #item-name input {
+  width: calc(100% - 1em);
+}
+form#item #group dl {
+  display: grid;
+  grid-template-columns: 2.5em 1fr;
+  grid-template-rows: auto;
+}
+form#item div.input-data {
+  padding: 1rem;
+}
+form#item div.input-data div {
+  display: flex;
+  flex-wrap: wrap;
+}
+form#item div.input-data dl {
+  display: flex;
+  margin-right: 1.5em;
+}
+form#item div.input-data dl dt {
+  position: relative;
+  width: 6em;
+  margin-right: 1em;
+  text-align-last: justify;
+}
+form#item div.input-data dl dt::after {
+  content: ':';
+  position: absolute;
+  display: inline-block;
+  width: 1em;
+  text-align: center;
+  font-weight: normal;
+}
+form#item div.input-data dl dd {
+  flex-grow: 1;
+  text-align: left;
+}
+form#item div.input-data dl dd input {
+  max-width: 14em;
+}
+form#item div.input-data dl dd input[name="reputation"] {
+  width: 6em;
+}
+form#item div.input-data dl dd input[name="shape"] {
+  max-width: 26em;
+}
+form#item div.input-data dl dd input[name="summary"] {
+  max-width: 100%;
+}
+form#item .input-weapon-data,
+form#item .input-armour-data {
+  width: 100%;
+}
+form#item .input-weapon-data td,
+form#item .input-armour-data td {
+  width: 5em;
+}
+form#item .input-weapon-data td:last-child,
+form#item .input-armour-data td:last-child {
+  width: auto;
+}
+
+form#item .input-data label {
+  border-width: 1px;
+  border-style: solid;
+  border-radius: .5em;
+  padding: .1em .3em;
+  cursor: pointer;
+}
+form#item .input-data label input {
+}
+form#item .input-data label input:checked + span {
+  font-weight: bold;
+}
+
+form#item textarea[name="effects"] {
+  height: 16em;
+  padding: 2px;
+}
+form#item textarea[name="description"] {
+  height: 16em;
+  padding: 2px;
+}
+
+/* // パレット
+---------------------------------------------------------------------------------------------------- */
+#section-palette .box {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+#section-palette .box > * {
+  grid-column: span 2;
+}
+#section-palette .box > .palette-column {
+  grid-column: span 1;
+}
+
+/* // 
+---------------------------------------------------------------------------------------------------- */
+@media screen and (min-width:1300px){
+  body {
+    grid-template-columns: 1fr minmax(auto, 900px) 1fr;
+  }
+  header nav {
+    max-width: 900px;
+  }
+  article{
+    max-width: 860px;
+    display: block;
+  }
+}

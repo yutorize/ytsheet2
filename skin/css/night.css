@@ -1,70 +1,28 @@
 /* // ナイトモード
 ---------------------------------------------------------------------------------------------------- */
 
-header,
-footer {
-  background-color: #456;
-  background-blend-mode: color-burn;
-}
-
-body {
-  background-color: #000;
-  background-blend-mode: hard-light, hard-light;
-  color: #fff;
-}
-
-main a:link    { color: #aaf; }
-main a:visited { color: #caf; }
-main a:hover   { color: #fff; }
-
-main,
-header,
-footer {
-  border-color: #556;
-}
-
-.box,
-#status > dl {
-  background: linear-gradient(to bottom, #345 0, transparent 2.5rem);
-  box-shadow: 1px 1px 2px 0px #335;
-  background-color: rgba(40,50,60,0.5);
-}
-
-dl#sub-status {
-  background: linear-gradient(to bottom, #456 0, transparent 2.5rem, transparent 50%, #456 50%, transparent calc(50% + 2.5rem));
-  background-color: rgba(50,60,70,0.5);
-}
-
-*,
-.box {
-  border-color: #556;
-}
-.box * { border-color: #445; }
 
 
-#area-name {
-  background: linear-gradient(to right, #234, #000);
-}
-h1#character-name {
-  text-shadow: 0 0 0 #fff, 0 0 1px #777, 1px 1px 0px #000;
-}
-
-#fellow #f-level dd,
-#fellow #f-level:before,
-#fellow #f-level:after {
-  color: #fff;
-  border-color: #556;
-}
 
 
-input,
-textarea,
-select {
-  background: rgba(0,0,0,0.8);
-  color: #fff;
-  border-color: #234 !important;
-}
 
-form #image > * {
-  background: rgba(0,0,0,0.8);
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

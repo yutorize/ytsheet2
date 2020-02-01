@@ -2,129 +2,52 @@
 
 /* ゆとシート for SW2.5 */
 
-
-/* // 基本設定
+/* // Font
 ---------------------------------------------------------------------------------------------------- */
-
-* {
-  margin: 0px;
-  padding: 0px;
-  box-sizing: border-box;
-}
-
-html {
-  font-size: 62.5%;
-}
+@import url('https://fonts.googleapis.com/css?family=Varela+Round&text=0123456789');
 
 body {
-  font-size  : 1.4rem;
-  line-height: 1.5;
+  font-family: "Varela Round","ヒラギノ角ゴ ProN","Hiragino Kaku Gothic ProN","HiraKakuProN-W3","メイリオ","Meiryo",sans-serif;
+}
+header nav {
+  font-family: "ヒラギノ角ゴ ProN","Hiragino Kaku Gothic ProN","HiraKakuProN-W3","メイリオ","Meiryo",sans-serif;
+}
+textarea,tt {
+  font-family: "UD デジタル 教科書体 N-R", monospace;
+  font-size: inherit;
 }
 
-table, tr, th, td {
-  border: 0;
-  border-collapse: collapse;
-}
-td {
-  empty-cells: show;
+/* // Base
+---------------------------------------------------------------------------------------------------- */
+
+html {
+  overflow-x: hidden;
 }
 
-dt {
-  font-weight: bold;
-}
+a:link    { color: #78d; }
+a:visited { color: #54d; }
+a:hover   { color: #000; background: rgba(0,220,255,0.2); }
 
-ul,ol {
-  list-style-type: none;
+code {
+  margin: 0 1px;
+  padding: 0.2em 0.4em;
+  font-size: 90%;
+  font-family: "SFMono-Regular",Consolas,"Liberation Mono",Menlo,Courier,meiryo,monospace,serif;
+  background-color: rgba(100,250,170,0.4);
 }
-
-a {
-  text-decoration: none;
-}
-main a:link    { color: #77f; }
-main a:visited { color: #a7f; }
-main a:hover   { color: #777; }
 
 body {
   min-height: 100vh;
-  background-color: #ffffff;
-  background-image: url(../img/back-pattern.png), url(../img/back-first.png);
-  background-position: top center, bottom right;
-  background-repeat: repeat, no-repeat;
-  background-attachment: scroll, fixed;
-  color: #000;
-}
-
-header {
-  height: 5rem;
-  position: relative;
-  padding: 0px 10px;
-  border-bottom: 1px solid #aaa;
-  background-color: #fff;
-  background-image: url(../img/back-abstract.png);
-  background-position: left center;
-  background-repeat: no-repeat;
-  
-  z-index: 100;
-}
-
-header h1 {
-  font-size: 3rem;
-  line-height: 5rem;
-}
-header a {
-  position: relative;
-  color: #fff;
-  z-index: 101;
+  overflow-x: hidden;
 }
 
 main {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 1rem 0;
+  padding: 1rem 0 3rem;
   overflow: hidden;
-  border-width: 0px 3px;
-  border-style: double;
-  border-color: #aaa;
-}
-
-article{
-  max-width: 860px;
-  margin: 0 auto;
 }
 
 footer {
-  margin-top: auto;
-  padding: 15px 10px 20px;
-  border-top: 1px solid #aaa;
-  background-image: linear-gradient(to left, rgba(0,0,0,0.3), rgba(0,0,0,0) 35em),
-                    url(../img/back-abstract-reverse.png);
-  background-position: right bottom;
-  background-repeat: no-repeat;
-  text-align: right;
-  font-size: 1.6rem;
-}
-footer a {
-  margin-right: 1em;
-  color: #ddf;
-}
-
-header,
-footer {
-  background-color: #fff;
-  color: #fff;
-  text-shadow: 0 0 1px #000, 0 0 5px #000, 0 0 5px #000, 0 0 5px #000, 0 0 6px #000, 0 0 7px #000, 0 0 8px #000;
-  font-family: "游明朝", "YuMincho", "ヒラギノ明朝 ProN W3", "Hiragino Mincho ProN", "HG明朝E", "ＭＳ Ｐ明朝", Verdana, "Hiragino Kaku Gothic ProN", "游ゴシック", YuGothic, Meiryo, sans-serif;
-  font-weight: bold;
-}
-header a:hover,
-footer a:hover {
-  opacity: 0.7;
-}
-footer span {
-  display: inline-block;
-}
-footer .copyright {
-  margin-top: 0.5em;
+  height: auto;
 }
 
 .box {
@@ -154,6 +77,16 @@ dl#sub-status {
   background: linear-gradient(to bottom, #dadcdf 0, transparent 2.5rem, transparent 50%, #dadcdf 50%, transparent calc(50% + 2.5rem));
   background-color: rgba(255,255,255,0.5);
 }
+.night .box,
+.night #status > dl {
+  background: linear-gradient(to bottom, #345 0, transparent 2.5rem);
+  box-shadow: 1px 1px 2px 0px #335;
+  background-color: rgba(40,50,60,0.5);
+}
+.night dl#sub-status {
+  background: linear-gradient(to bottom, #345 0, transparent 2.5rem, transparent 50%, #345 50%, transparent calc(50% + 2.5rem));
+  background-color: rgba(50,60,70,0.5);
+}
 
 .box dd,
 .box li,
@@ -161,99 +94,255 @@ dl#sub-status {
   text-align: center;
 }
 
-*,
+.box { border-color: #999; }
 .box * { border-color: #aaa; }
-.box {
-  border-color: #999;
-}
+.night .box { border-color: #556; }
+.night .box * { border-color: #445; }
 
 .box p {
-  padding: 3px .5em .5em;
+  margin: .3rem .5em 0;
+  line-height: 1.8;
+}
+.box p:empty {
+  display: none;
+}
+.box > h2 + p:empty + * {
+  margin-top: .3rem;
+}
+.box hr {
+  border-width: 1px 0 0;
+  border-style: solid;
+  margin: .8em .5em;
+}
+.box hr.dotted {
+  border-style: dotted;
+}
+.box hr.dashed {
+  border-style: dashed;
+}
+.box h2:nth-child(n+2){
+  margin: 1.8em 0 -1em;
+  padding-bottom: 1em;
+  border-width: 1px 0 0;
+  border-style: solid;
+  background: linear-gradient(to bottom, #dadcdf 0, transparent 2.5rem);
+}
+.night .box h2:nth-child(n+2){
+  background: linear-gradient(to bottom, #345 0, transparent 2.5rem);
+}
+.box h3 {
+  position: relative;
+  margin: 1.3em .3em 0;
+  line-height: 1.2;
+  font-size: 110%;
+}
+.box h3::after {
+  content:'';
+  position: absolute;
+  top: 60%; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(to right, rgba(150,170,190,0.3), transparent);
+  line-height: 1.2;
+}
+.box h4 {
+  position: relative;
+  margin: 1.3em .5em 0;
+  line-height: 1.2;
+  font-size: 103%;
+}
+.box h4::after {
+  content:'';
+  position: absolute;
+  top: calc(100% - .2rem); left: 0; right: 0; bottom: 0;
+  background: linear-gradient(to right, rgba(150,170,190,0.5), transparent);
+}
+.box h5 {
+  position: relative;
+  margin: 1.4em .5em 0;
+  line-height: 1.2;
+  font-size: 100%;
 }
 
-/* // Font
----------------------------------------------------------------------------------------------------- */
-body {
-  font-family: sans-serif;
-}
-#area-status,
-#area-ability,
-#area-equipment,
-#history {
-  font-family: 'Arial',sans-serif;
-}
-#level {
-  font-family: 'Verdana',sans-serif;
-}
-#character-name,
-.words {
-  font-family: "游明朝", YuMincho, "ヒラギノ明朝 ProN W3", "Hiragino Mincho ProN", "HG明朝E", "ＭＳ Ｐ明朝", serif;
+.box h2 + h3,
+.box h2 + h4,
+.box h3 + h4,
+.box h2 + h5,
+.box h3 + h5,
+.box h4 + h5 {
+  margin-top: calc(0.7em);
 }
 
+.box p + p {
+  margin-top: 0em;
+  padding-top: 0;
+}
+
+/* テキスト処理 */
+.left   { text-align: left !important; }
+.center { text-align: center !important; }
+.right  { text-align: right !important; }
+ruby {
+  position: relative;
+}
+ruby rt {
+  position: relative;
+  top: 0.6ex;
+  font-family: Arial;
+}
+.oblique {
+  font-family: "游ゴシック Medium","Yu Gothic Medium";
+  font-style: oblique;
+}
+.strike {
+  text-decoration: line-through;
+}
+.underline {
+  background: linear-gradient(to top, transparent 10%, rgba(255,100,0,0.5) 10%, rgba(255,100,0,0.5) 25%, transparent 25%);
+}
+.text-em {
+  -webkit-text-emphasis: dot filled;
+  text-emphasis: dot filled;
+}
+.d-dash {
+  display: inline-block;
+  font-family: "メイリオ","Meiryo","小塚明朝 Pro","Kozuka Mincho Pro","小塚明朝Std","Kozuka Mincho Std",sans-serif;
+  transform: scaleX(0.90);
+}
+.d-dash > span {
+  display: inline-block;
+  transform: scaleX(1.2);
+}
+.small {
+  font-size: 80%;
+}
+table.note-table,
+table.note-table th,
+table.note-table td {
+  margin: 3px .5em  .5em;
+  padding: 0 .5em;
+  border-width: 1px;
+  border-style: solid;
+}
+dl.note-description {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  
+  margin: .3rem .5em 0;
+  line-height: 1.8;
+  text-align: left;
+}
+dl.note-description dt {
+  grid-column: 1 / 2;
+  border-width: 0 0 1px;
+  border-style: dotted;
+  text-align: center;
+}
+dl.note-description dd {
+  grid-column: 2 / 3;
+  text-align: left;
+  padding-left: 1em;
+  border-width: 0 0 1px;
+  border-style: dotted;
+}
+/* アイテムアイコン */
+.i-icon {
+  width: 1em;
+  height: 1em;
+}
+
+/* 能力アイコン */
+.s-icon {
+  display: inline-block;
+  position: relative;
+  width: 1em;
+  height: 1em;
+  color: transparent;
+  text-align: center;
+}
+.s-icon::after,
+.s-icon::before {
+  display: inline-block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  font-family: "Font Awesome 5 Free";
+  font-style: normal;
+  font-size: 85%;
+  color: #000;
+}
+.night .s-icon::after,
+.night .s-icon::before {
+  color: #fff;
+}
+.s-icon.passive::before {
+  content: "\f111";
+  font-weight: normal;
+}
+.s-icon.setup::before {
+  content: "△";
+  font-weight: normal;
+  text-shadow: -.08rem 0 0 #000, 0 .08rem 0 #000, -.08rem .08rem 0 #000;
+}
+.night .s-icon.setup::before {
+  text-shadow: -.05rem 0 0 #fff, 0 .05rem 0 #fff, -.05rem .05rem 0 #fff;
+}
+.s-icon.major::before {
+  content: "\f04b";
+  font-weight: bold;
+}
+.s-icon.minor::before {
+  content:"\f04e";
+  font-weight: bold;
+}
+.s-icon.active::after {
+  content: "\f00c";
+  font-weight: bold;
+  transform: scale(0.6,0.6);
+}
+.s-icon.active::before {
+  content: "\f075";
+  font-weight: normal;
+  transform: scale(-1, 1);
+}
 
 /* // Nav
 ---------------------------------------------------------------------------------------------------- */
-header nav {
-  max-width: 900px;
-  position: absolute;
-  top: 0.5rem;
-  left: 0;
-  right: 0;
-  margin: auto;
-  font-family: initial;
-  
-  z-index: 1;
-}
-header nav ul  {
-  display: flex;
-  justify-content: flex-end;
-}
 header nav ul li  {
   margin: 0.6rem 1.2rem 0;
   width: 4.2rem;
   height: 4.2rem;
-  transform: rotate(45deg);
-  
-  background: linear-gradient(-45deg, #679, #cdf);
-  text-align: center;
-  
-  outline: 3px double #000;
-  overflow: hidden;
   font-size: 1.2rem;
-  font-weight: bold;
   line-height: calc(4.2rem + 1rem + 1.2rem);
-  
-  cursor: pointer;
-  
-  z-index: 200;
 }
-header nav ul li a {
-  display: block;
-  width: 150%;
-  height: 150%;
-  margin: -25%;
-  transform: rotate(-45deg);
-  
-  text-decoration: none;
-  color: #fff;
-  text-shadow: -1px -1px 1px #000, 0px 1px 1px #abc;
-}
-header nav ul li:hover {
-  opacity: 0.8;
-}
-
 header nav ul li.small  {
   width: 3rem;
   height: 3rem;
   margin-left: 3rem;
-  font-size: 1.1rem;
   line-height: calc(3rem + 1rem + 1rem);
 }
+
+header nav ul li:nth-last-child(even)  {
+  top: 1.5rem;
+}
+header nav ul li:nth-last-child(odd)  {
+  top: 0rem;
+}
+header nav ul li + li {
+  margin-left: 0.5rem;
+}
 header nav ul li + li.small {
-  margin-left: 1rem;
+  margin-left: 0.3rem;
 }
 header nav ul li.small + li.small {
-  margin-left: 0.5rem;
+  margin-left: 0rem;
+}
+header nav ul li a span {
+  display: inline-block;
+  white-space: nowrap;
+  margin: 0 -15%;
+  transform: scaleX(0.8);
+  font-size: 90%;
 }
 
 
@@ -261,19 +350,23 @@ header nav ul li.small + li.small {
 ---------------------------------------------------------------------------------------------------- */
 #login-form {
   position: absolute;
-  top: -4rem;
-  right: 0;
+  top: -5rem;
+  right: 10%;
   width: 300px;
-  padding: 2rem 2rem 1rem;
+  padding: 4rem 2rem 1rem;
   background: #fff;
   text-align: center;
   
   border-bottom-left-radius: 5px;
-  border-width: 0 0 1px 1px;
+  border-bottom-right-radius: 5px;
+  border-width: 0 1px 1px;
   border-style: solid;
   
   z-index: 99;
   transition: top 0.3s;
+}
+.night #login-form {
+  background: #334455;
 }
 
 #login-form input {
@@ -285,123 +378,54 @@ header nav ul li.small + li.small {
   line-height: 1;
 }
 
-input::placeholder {
+input::placeholder,
+textarea::placeholder {
   opacity: 0.5;
 }
 
 
-/* // Name / Date
----------------------------------------------------------------------------------------------------- */
-#area-name {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  
-  margin-bottom: 1rem;
-  padding: 0px 5px;
-  border-width: 3px 0px;
-  border-style: solid;
-  
-  background: linear-gradient(to right, #dadcdf, #fff);
-}
-h1#character-name {
-  padding: 1rem;
-  font-size: 2.2rem;
-  font-weight: bold;
-  text-shadow: 0 0 0 #000, 0 0 1px #777, 1px 1px 0px #fff;
-}
-#area-name > div { 
-  text-align: right;
-  font-size: 1.2rem;
-}
-#update-time {
-}
-#player-name {
-}
 
-/* // Area-Status
----------------------------------------------------------------------------------------------------- */
-#area-status {
-  display: grid;
-  grid-gap: 1rem;
-  grid-template-columns: 0.6fr 0.8fr 1.5fr 2.115fr;
-  grid-template-rows: auto;
-  
-  grid-template-areas:
-    "PER  PER  PER  IMG"
-    "STT  STT  STT  IMG"
-    "STT  STT  STT  IMG"
-    "LVL  EXP  sSTT IMG"
-  ;
-}
-#image-none,
-#image     { grid-area: IMG; }
-#personal  { grid-area: PER; }
-#status    { grid-area: STT; }
-#sub-status{ grid-area: sSTT; }
-#level     { grid-area: LVL; }
-#exp       { grid-area: EXP; }
 
-/* Image */
-.image {
-  overflow: hidden;
-  background-size: cover;
-  background-position: center 20%;
-  background-repeat: no-repeat;
-  border-radius: 5px;
-  
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  justify-content: flex-end;
-  
-  position: relative;
+/* // Tags
+---------------------------------------------------------------------------------------------------- */
+#tags {
+  margin: .5rem;
+  margin-right: -.5rem;
+  min-height: 0.1px;
 }
-.image div[onclick] {
-  flex-grow: 1;
-  width: 100%;
-  cursor: pointer;
-  position: relative;
+#tags a {
+  display: inline-block;
+  margin-right: 1rem;
+  padding: .2rem .5rem .2rem .2rem;
+  border-radius: 12px 5px 5px 12px;
+  background-color: rgba(140,170,200,0.3);
+  color: inherit;
 }
-.image p.image-copyright {
-  padding: 0 5px;
+#tags a::before {
+  content:"●";
   color: #fff;
-  text-shadow: 0 0 1px #000, 0 0 1px #000, 0 0 1px #000, 0 0 2px #000, 0 0 3px #000;
+  font-size: 80%;
 }
-.image-none {
-  overflow: hidden;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0,0,0,0.05);
+.night #tags a::before {
+  color: #000;
+}
+#tags a:hover {
+  background-color: rgba(120,220,220,0.4) !important;
+}
+#tags a#group {
+  margin-right: 1rem;
+  padding: .2rem 1rem;
   border-radius: 5px;
-  overflow: hidden;
-  font-family: "Times New Roman";
+  background-color: rgba(140,200,170,0.3);
+  color: inherit;
 }
-.image-none:before {
-  content: 'no image';
-  text-align: center;
-  font-size: 2.2rem;
-}
-.image-none:after {
-  content: 'SW\A 2.5';
-  position: absolute;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100px;
-  height: 100px;
-  line-height: 0.7;
-  font-size: 15rem;
-  font-weight: bold;
-  letter-spacing: -0.08em;
-  text-align: center;
-  transform: scale(1, 1.2);
-  opacity: 0.1;
-  white-space: pre;
+#tags a#group::before {
+  content:'';
 }
 
+
+/* // Image-Box
+---------------------------------------------------------------------------------------------------- */
 #image-box {
   position: fixed;
   bottom: -100vh;
@@ -421,879 +445,50 @@ h1#character-name {
   object-fit: scale-down;
 }
 
-.image p.words,
-.image-none p.words {
+
+/* // Backup
+---------------------------------------------------------------------------------------------------- */
+aside#backuplist {
   position: absolute;
-  writing-mode: vertical-rl;
-  white-space: nowrap;
-  font-weight: bold;
-  font-size: 2rem;
-  color: #000;
-  text-shadow: 0 0 0 #000, 0 0 1px #777,
-               2px -2px 2px #fff,  2px  0px 2px #fff, 2px 2px 2px #fff,
-               0px -2px 2px #fff,  0px  0px 2px #fff, 0px 2px 2px #fff,
-              -2px  0px 2px #fff, -2px -2px 2px #fff,-2px 2px 2px #fff,
-               2px -2px 15px #fff,  2px  0px 15px #fff, 2px 2px 15px #fff,
-               0px -2px 15px #fff,  0px  0px 15px #fff, 0px 2px 15px #fff,
-              -2px  0px 15px #fff, -2px -2px 15px #fff,-2px 2px 15px #fff,
-               2px -2px 15px #fff,  2px  0px 15px #fff, 2px 2px 15px #fff,
-               0px -2px 15px #fff,  0px  0px 15px #fff, 0px 2px 15px #fff,
-              -2px  0px 15px #fff, -2px -2px 15px #fff,-2px 2px 15px #fff
-}
-.image p.words .d-dash,
-.image-none p.words .d-dash {
-  display: inline-block;
-  transform: scaleY(0.8)
-}
-.image p.words .d-dash span,
-.image-none p.words .d-dash span {
-  display: inline-block;
-  transform: scaleY(1.2)
-}
-
-/* Personal */
-#personal {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  margin-bottom: -0.6rem;
-}
-#personal dl {
-  flex-basis: 33%;
-  margin-bottom: 0.6rem;
-}
-#personal dl dt {
-}
-#personal dl#race         { flex-basis: 58%; order: 1; }
-#personal dl#gender       { flex-basis: 20%; order: 2; }
-#personal dl#age          { flex-basis: 20%; order: 3; }
-#personal dl#race-ability { flex-basis: 85%; order: 4; }
-#personal dl#birth        { flex-basis: 30%; order: 6; }
-#personal dl#faith        { flex-basis: 69%; order: 7; }
-#personal dl#sin          { flex-basis: 14%; order: 5; }
-
-#personal dl#faith dd {
-  font-family: initial;
-}
-
-/* Status */
-#status {
-  display: grid;
-  grid-gap: 0.8rem 10px;
-  grid-template-columns: 1fr 1fr 1fr 1.2fr 1fr 1fr;
-  grid-template-rows: auto;
-}
-#status dl {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  min-width: 13rem;
+  height: calc(100vh - 10rem);
+  top: 8rem;
+  right: -100vh;
+  border-width: 1px 0px 1px 1px;
+  border-style: solid;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+  background: rgba(255,255,255,0.9);
   
-  position:relative;
-  border-width: 1px;
+  overflow-y: auto;
+  
+  transition-property: right;
+  transition-duration: 0.2s;
+  
+  z-index: 300;
+}
+.night aside#backuplist {
+  background: rgba(0,0,0,0.9);
+}
+aside#backuplist ul {
+}
+aside#backuplist ul li + li {
+  border-width: 1px 0 0;
   border-style: dotted;
-  border-radius: 5px;
 }
-#status dl dt {
-  font-size: 1.3rem;
+aside#backuplist ul li.backup-now {
+  background-color: rgba(100,200,255,0.2);
 }
-#status dl dd {
-  flex-grow: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.4rem;
-}
-#status dl:nth-child(n+16):nth-child(-n+21),
-#status dl[id^="stt-bonus"] {
-  border-width: 1px;
-  border-style: solid;
-}
-#status dl:nth-child(n+16):nth-child(-n+21) dd,
-#status dl[id^="stt-bonus"] dd {
-  font-size: 1.6rem;
-}
-#stt-base-tec { grid-row: 1 / span 2; grid-column: 1; }
-#stt-base-phy { grid-row: 3 / span 2; grid-column: 1; }
-#stt-base-spi { grid-row: 5 / span 2; grid-column: 1; }
-#stt-base-A { grid-row: 1; grid-column: 2; }
-#stt-base-B { grid-row: 2; grid-column: 2; }
-#stt-base-C { grid-row: 3; grid-column: 2; }
-#stt-base-D { grid-row: 4; grid-column: 2; }
-#stt-base-E { grid-row: 5; grid-column: 2; }
-#stt-base-F { grid-row: 6; grid-column: 2; }
-#stt-grow-A { grid-row: 1; grid-column: 3; }
-#stt-grow-B { grid-row: 2; grid-column: 3; }
-#stt-grow-C { grid-row: 3; grid-column: 3; }
-#stt-grow-D { grid-row: 4; grid-column: 3; }
-#stt-grow-E { grid-row: 5; grid-column: 3; }
-#stt-grow-F { grid-row: 6; grid-column: 3; }
-#stt-dex { grid-row: 1; grid-column: 4; }
-#stt-agi { grid-row: 2; grid-column: 4; }
-#stt-str { grid-row: 3; grid-column: 4; }
-#stt-vit { grid-row: 4; grid-column: 4; }
-#stt-int { grid-row: 5; grid-column: 4; }
-#stt-mnd { grid-row: 6; grid-column: 4; }
-#stt-add-A { grid-row: 1; grid-column: 5; }
-#stt-add-B { grid-row: 2; grid-column: 5; }
-#stt-add-C { grid-row: 3; grid-column: 5; }
-#stt-add-D { grid-row: 4; grid-column: 5; }
-#stt-add-E { grid-row: 5; grid-column: 5; }
-#stt-add-F { grid-row: 6; grid-column: 5; }
-#stt-bonus-dex { grid-row: 1; grid-column: 6; }
-#stt-bonus-agi { grid-row: 2; grid-column: 6; }
-#stt-bonus-str { grid-row: 3; grid-column: 6; }
-#stt-bonus-vit { grid-row: 4; grid-column: 6; }
-#stt-bonus-int { grid-row: 5; grid-column: 6; }
-#stt-bonus-mnd { grid-row: 6; grid-column: 6; }
-
-#status dl:nth-child(n+4):nth-child(-n+15):before,
-#status dl:nth-child(n+22):nth-child(-n+27):before {
-  position:
-  absolute;
-  content:"+";
-  left: -10px;
-  bottom: 0;
-  font-size: 1.2rem;
-}
-#status dl:nth-child(n+16):nth-child(-n+21):before {
-  position:
-  absolute;
-  content:"=";
-  left: -10px;
-  bottom: 0;
-  font-size: 1.2rem;
-}
-
-/* Sub-Status */
-#sub-status {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: auto;
-}
-#sub-status *:nth-child(1) { grid-row: 1; grid-column: 1; }
-#sub-status *:nth-child(2) { grid-row: 2; grid-column: 1; }
-#sub-status *:nth-child(3) { grid-row: 3; grid-column: 1; }
-#sub-status *:nth-child(4) { grid-row: 4; grid-column: 1; }
-#sub-status *:nth-child(5) { grid-row: 1; grid-column: 2; }
-#sub-status *:nth-child(6) { grid-row: 2; grid-column: 2; }
-#sub-status *:nth-child(7) { grid-row: 3; grid-column: 2; }
-#sub-status *:nth-child(8) { grid-row: 4; grid-column: 2; }
-#sub-status dt#mnd-resist,
-#sub-status dt#mp {
-  border-top-width: 1px;
-  border-top-style: dotted;
-}
-#sub-status dt#vit-resist,
-#sub-status dt#mnd-resist,
-#sub-status dt#vit-resist + dd,
-#sub-status dt#mnd-resist + dd {
-  border-right-width: 1px;
-  border-right-style: solid;
-}
-#sub-status dd b {
-  font-weight:normal;
-  font-size: 1.6rem;
-}
-  
-/* Level */
-dl#level {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-dl#level dd {
-  flex-grow: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  
-  font-size: 180%;
-}
-
-/* EXP */
-dl#exp {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-dl#exp dd {
-  flex-grow: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* // Area-Ability
----------------------------------------------------------------------------------------------------- */
-#area-ability {
-  display: flex;
-  justify-content: space-between;
-  
-  margin-top: 1rem;
-  
-  line-height: 1.8;
-}
-#area-ability > * {
-  flex-basis: 30%;
-  flex-grow: 1;
-  margin-left: 1rem;
-}
-#area-ability > *:first-child {
-  margin-left: 0px;
-}
-
-#area-ability .box + .box {
-  margin-top: 1rem;
-}
-#area-ability .box > dl,
-#area-ability .box > ul {
-  margin: 0 5px;
-}
-#area-ability .box > dl > *:nth-last-child(n+3),
-#area-ability .box > ul li:nth-last-child(n+2) {
-  border-bottom-width: 1px;
-  border-bottom-style: solid;
-}
-
-/* Classes */
-#area-classes {
-}
-#area-classes dl {
-  display: grid;
-  grid-template-columns: 1fr 2em;
-  grid-template-rows: auto;
-}
-#area-classes dl dt {
-  grid-column: 1;
-  font-weight: normal;
-}
-#area-classes dl dd {
-  grid-column: 2;
-  font-size: 1.6rem;
-  line-height: 1.6;
-}
-#area-classes .priest-faith {
-  display: inline-block;
-  font-size: 1.2rem;
-  line-height: 1;
-}
-#area-classes #priest-faith.narrow {
-  margin: 0 -10%;
-  transform: scaleX(0.8);
-}
-
-/* Combat-feats */
-#combat-feats {
-}
-#combat-feats ul li {
-}
-#combat-feats ul li[id^=combat-feats-lv] {
-  position: relative;
-}
-#combat-feats ul li[id^=combat-feats-lv]:before {
+aside#backuplist ul li a {
   display: block;
-  position: absolute;
-  left: -4px;
-  bottom: 0;
-  width: 1.1em;
-  opacity: 0.5;
-  font-size: 80%;
-}
-#combat-feats ul li#combat-feats-lv1:before { content:"1"; }
-#combat-feats ul li#combat-feats-lv3:before { content:"3"; }
-#combat-feats ul li#combat-feats-lv5:before { content:"5"; }
-#combat-feats ul li#combat-feats-lv7:before { content:"7"; }
-#combat-feats ul li#combat-feats-lv9:before { content:"9"; }
-#combat-feats ul li#combat-feats-lv11:before { content:"11"; }
-#combat-feats ul li#combat-feats-lv13:before { content:"13"; }
-#combat-feats ul li#combat-feats-lv15:before { content:"15"; }
-
-/* Skill */
-#skill {}
-
-/* // Area-Actions & Language
----------------------------------------------------------------------------------------------------- */
-#area-actions {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  
-  margin-top: 1rem;
-  line-height: 1.8;
-}
-#area-actions > * {
-  flex-basis: 30%;
-  flex-grow: 1;
-  margin-left: 1rem;
-}
-#area-actions > *:first-child {
-  margin-left: 0px;
-}
-#area-actions .box > table {
-  width: calc(100% - 1rem);
-  margin: 0 5px;
-}
-#area-actions .box#package > table:nth-last-child(n+2),
-#area-actions .box#magic-power > table tr > *,
-#area-actions .box#language > table tr > * {
-  border-bottom-width: 1px;
-  border-bottom-style: solid;
-}
-#area-actions #magic-power table,
-#area-actions .box#language > table  {
-  border-style: hidden;
-}
-#area-actions #magic-power p {
-  margin-top: -1.5em;
-  padding-bottom: 0;
-  text-align: right;
-}
-#area-actions #magic-power p + table {
-  border-top-width: 1px;
-  border-top-style: solid;
-}
-#area-actions #package td:last-child,
-#area-actions #magic-power td:last-child {
-  font-size: 1.6rem;
-  line-height: 1.6;
-}
-
-/* Actions-Package */
-#package {}
-#package table {
-  width: 100%;
-}
-#package table tr:first-child th:first-child {
-  width: 12em;
-}
-#package table tr td:last-child {
-  width: 3em;
-}
-#package table tr th:nth-last-child(2) {
-  white-space: nowrap;
-}
-#package table tr th {
-  font-weight: normal;
-}
-
-/* Area-Other-Actions */
-#area-other-actions {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-}
-
-/* Monster-Lore  */
-#monster-lore {
-  flex-basis: calc(50% - 5px);
-}
-#monster-lore dd {
-  font-size: 1.6rem;
-}
-
-/* Initiative */
-#initiative {
-  flex-basis: calc(50% - 5px);
-}
-#initiative dd {
-  font-size: 1.6rem;
-}
-
-/* Mobility */
-#mobility {
-  flex-grow: 1;
-  
-  display: grid;
-  grid-template-columns: auto;
-  grid-template-rows: auto auto;
-  
-  margin-top: 1rem;
-}
-#mobility dt {
-  grid-row: 1;
-}
-#mobility dd {
-  grid-row: 2;
-}
-#mobility b {
-  font-weight: normal;
-  font-size: 1.6rem;
-}
-
-/* Magic-Power */
-#magic-power{
-  flex-grow: 1;
-  margin-top: 1rem;
-}
-#magic-power table th {
-  font-weight: normal;
-}
-#magic-power table th:first-child {
-  text-align: left;
-}
-#magic-power table td {  }
-
-/* Language */
-#language {
-  width: 100%;
-  align-self :flex-start;
-}
-#language table:first-of-type {
-  margin-top: -2.1rem !important;
-}
-#language table tr *:nth-child(n+2) {
-  width: 2.4em;
-}
-#language table td:first-child {
-  text-align: left;
-}
-
-/* // Area-Equipment
----------------------------------------------------------------------------------------------------- */
-#area-equipment {
-}
-#area-equipment > .box {
-  margin-top: 1rem;
-}
-
-#area-equipment table {
-  width: 100%;
-  border-style: hidden;
-}
-#area-equipment table th {
-  padding: 2px 0;
-  line-height: 1;
-}
-#area-equipment table td {
-  padding: 1px 0;
-  border-width: 1px;
-  border-style: solid dotted;
-}
-#area-equipment table th + td {
-  border-left-style: solid;
-}
-#area-equipment table td b {
-  font-weight: normal;
-  font-size: 1.6rem;
-}
-
-#area-equipment .item-name {
-  display: block;
-  margin: 0 -6%;
-  transform:scaleX(0.88);
-}
-
-/* Attack-Status */
-#attack-classes {
-  width: calc(25% + 24em + 1px);
-}
-#attack-classes th:nth-child(1) { width:  auto; } /* 名前 */
-#attack-classes th:nth-child(2) { width: 3.5em; } /* 必筋 */
-#attack-classes th:nth-child(3) { width:   5em; } /* 命中 */
-#attack-classes th:nth-child(4) { width: 3.5em; } /* 威力 */
-#attack-classes th:nth-child(5) { width: 3.5em; } /* Ｃ値 */
-#attack-classes th:nth-child(6) { width:   5em; } /* 追加Ｄ */
-
-#weapons th:nth-child(1) { width:   25%; } /* 名前 */
-#weapons th:nth-child(2) { width: 3.5em; } /* 用法 */
-#weapons th:nth-child(3) { width: 3.5em; } /* 必筋 */
-#weapons th:nth-child(4) { width:   5em; } /* 命中 */
-#weapons th:nth-child(5) { width: 3.5em; } /* 威力 */
-#weapons th:nth-child(6) { width: 3.5em; } /* Ｃ値 */
-#weapons th:nth-child(7) { width:   5em; } /* 追加Ｄ */
-#weapons th:nth-child(8) { width:   1em; } /* 専用 */
-#weapons th:nth-child(9) { width: auto; } /* 備考 */
-
-#weapons td:nth-child(9) { padding-left: .3em; text-align: left; font-size: 90%; } /* 備考 */
-
-/* Defense-Status */
-#evasion-classes {
-  width: calc(25% + 13em + 1px);
-}
-#evasion-classes th:nth-child(1) { width:  auto; } /* 名前 */
-#evasion-classes th:nth-child(2) { width: 3.5em; } /* 必筋 */
-#evasion-classes th:nth-child(3) { width: 3.5em; } /* 回避 */
-#evasion-classes th:nth-child(4) { width: 3.5em; } /* 防護 */
-
-#armours th:nth-child(1) { width: 2.5em; } /* 種別 */
-#armours th:nth-child(2) { width:   25%; } /* 名前 */
-#armours th:nth-child(3) { width: 3.5em; } /* 必筋 */
-#armours th:nth-child(4) { width: 3.5em; } /* 回避 */
-#armours th:nth-child(5) { width: 3.5em; } /* 防護 */
-#armours th:nth-child(6) { width:   1em; } /* 専用 */
-#armours th:nth-child(7) { width:  auto; } /* 備考 */
-
-#armours td:nth-child(7) { padding-left: .3em; text-align: left; font-size: 90%; } /* 備考 */
-
-#armours .defense-total th {
-  padding-right: 5px;
-  text-align: right;
-}
-#armours .defense-total td {
-  font-size: 1.6rem
-}
-
-
-/* Accessories */
-#accessories th:nth-child(1) { width: 2.5em; } /* 種別 */
-#accessories th:nth-child(2) { width:   25%; } /* 名前 */
-#accessories th:nth-child(3) { width: 3.5em; } /* 専用 */
-#accessories th:nth-child(4) { width:  auto; } /* 備考 */
-
-#accessories td:nth-child(4) { padding-left: .3em; text-align: left; font-size: 90%; } /* 備考 */
-
-
-
-
-/* // Area-Items
----------------------------------------------------------------------------------------------------- */
-#area-items {
-  display: flex;
-  justify-content: space-between;
-}
-#area-items > div > .box {
-  margin-top: 1rem;
-}
-
-div#area-items-L {
-  flex-basis: 60%;
-}
-div#area-items-R {
-  flex-basis: 40%;
-  margin-left: 1rem;
-}
-/* Money */
-#money{
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: auto;
-}
-  #money dt {
-    grid-row: 1;
-  }
-  #money dd {
-    grid-row: 2;
-  }
-
-/* Items */
-
-/* Honor */
-#honor{
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto;
-}
-  #honor dt {
-    grid-row: 1;
-  }
-  #honor dd {
-    grid-row: 2;
-  }
-#honor-items table {
-  width: 100%;
-  margin: -2.1rem 5px 0;
-}
-#honor-items table th:first-child,
-#honor-items table td:first-child {
-  text-align: left;
-}
-#honor-items table tr > td:last-child {
-  width: 5em;
-}
-
-
-/* // Free-Memo
----------------------------------------------------------------------------------------------------- */
-#free-note {
-  margin-top: 1rem;
-}
-
-
-
-/* // History
----------------------------------------------------------------------------------------------------- */
-#history {
-  margin-top: 1rem;
-}
-#history table{
-  width: 100%;
-  border: hidden;
-}
-#history table th {
-  padding: 2px 0;
-  line-height: 1;
-  white-space: nowrap;
-}
-#history table td {
-  padding: 1px;
-  border-width: 1px;
-  border-style: solid dotted;
-  font-size: 1.2rem;
-}
-#history table tr th:nth-child(1) { width:   2em; } /* No. */
-#history table tr th:nth-child(2) { width:   6em; } /* 日付 */
-#history table tr th:nth-child(3) { width:  auto; } /* タイトル */
-#history table tr th:nth-child(4) { width:   5em; } /* 経験点 */
-#history table tr th:nth-child(5) { width:   3em; } /* 名誉点 */
-#history table tr th:nth-child(6) { width: 4.5em; } /* ガメル */
-#history table tr th:nth-child(7) { width: 3.5em; } /* 成長 */
-#history table tr th:nth-child(8) { width:  auto; } /* ＧＭ */
-#history table tr th:nth-child(9) { width:  auto; } /* 参加者 */
-
-#history table tr td:nth-child(4) {
-  text-align: left;
-}
-#history table tr td:nth-child(6) {
-  text-align: right;
-}
-#history table tr td:nth-child(6):after {
-  content: "G";
-  margin-left: 2px;
-  font-size: 1.1rem;
-}
-#history table tr td:nth-child(8),
-#history table tr td:nth-child(9) {
-  font-size: 1.1rem;
-}
-
-
-/* // Button
----------------------------------------------------------------------------------------------------- */
-.back-button {
-  margin: 5rem auto 3rem;
-  width: 1.2em;
-  height: 1.2em;
-  transform: rotate(45deg);
-  
-  background: linear-gradient(-45deg, #679, #cdf);
-  text-align: center;
-  
-  outline: 3px double #000;
-  overflow: hidden;
-  font-size: 2em;
-  font-weight: bold;
-}
-.back-button a {
-  display: block;
-  width: 160%;
-  height: 160%;
-  margin: -60%;
-  transform: rotate(-45deg);
-  
-  line-height: 3em;
-  text-decoration: none;
-  color: #fff !important;
-  text-shadow: -1px -1px 1px #000, 0px 1px 1px #abc;
-}
-.back-button:hover {
-  opacity: 0.8;
-}
-
-
-/* // Fellow
----------------------------------------------------------------------------------------------------- */
-#fellow #personal-area {
-  width: 100%;
-  display: grid;
-  grid-gap: 1rem;
-  grid-template-columns: 100px 1.1fr 1fr;
-  grid-template-rows: auto;
-  
-  grid-template-areas:
-    " LVL NAME  IMG"
-    " LVL  PLN  IMG"
-    "RACE RACE  IMG"
-    " PER  PER  IMG"
-    " CLS  CLS  IMG"
-    "LANG LANG  IMG"
-    "NOTE NOTE  IMG"
-    "NOTE NOTE CHCK"
-  ;
-}
-#f-image-none,
-#f-image          { grid-area: IMG; }
-#f-level          { grid-area: LVL; }
-#f-character-name { grid-area: NAME; }
-#f-player-name    { grid-area: PLN; }
-#f-race           { grid-area: RACE; }
-#f-personal       { grid-area: PER; }
-#f-classes        { grid-area: CLS ; }
-#f-language       { grid-area: LANG; }
-#f-note           { grid-area: NOTE; }
-#f-checkboxes     { grid-area: CHCK; }
-
-
-#f-image-none,
-#f-image          {
-  max-height:546px;
-}
-
-#fellow #f-level {
-  margin: 0 auto;
-  width: 52px;
-  height: 86px;
-  display: block;
-  position: relative;
-  border-bottom: 0px !important;
-}
-#fellow #f-level dd {
-  width: 100%;
-  height: 90px;
-  line-height: 80px;
+  padding: .3rem 3rem .3rem 1.5rem;
   color: #000;
-  text-align: center;
-  font-size: 2.5rem;
-  display: block;
-  position: relative;
-  z-index: 1;
-  border-width: 2px 0px;
-  border-style: solid;
-  border-color: #000;
 }
-#fellow #f-level:before,
-#fellow #f-level:after {
-  content: '';
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  z-index: 0;
-  border-width: 2px 0px;
-  border-style: solid;
-  border-color: #000;
+.night aside#backuplist ul li a {
+  color: #fff;
 }
-#fellow #f-level:before {
-  transform: rotate(60deg);
-}
-#fellow #f-level:after {
-  transform: rotate(-60deg);
-}
-#fellow #f-level dt {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  line-height: 1;
-  text-align: center;
-  white-space: nowrap;
-  z-index: 2;
-}
-#fellow dl {
-  border-bottom: 1px solid #999;
-  font-size: 1.6rem;
-}
-#fellow dd {
-  line-height: 1.3;
-}
-#fellow dd {
-  font-size: 1.8rem;
-}
-
-#f-character-name,
-#f-player-name {
-  margin-left: .5em;
-}
-#f-character-name dd,
-#f-player-name dd {
-  text-align: center;
-}
-#f-character-name dd {
-  font-size: 2rem;
-}
-
-#f-race,
-#f-personal,
-#f-classes,
-#f-language {
-  display: flex;
-  justify-content:space-between;
-  text-align: left;
-  align-items: flex-start;
-}
-#f-race dt,
-#f-personal dt {
-  width: 3.1em;
-  white-space: nowrap;
-}
-#f-classes dt,
-#f-language dt {
-  width: 2.1em;
-  white-space: nowrap;
-}
-#f-race dd,
-#f-personal dd,
-#f-classes dd,
-#f-language dd {
-  flex-grow: 1;
-}
-
-#f-classes span:not(.priest-faith),
-#f-language span {
-  display: inline-block;
-  margin-left: 1em;
-}
-
-#f-classes,
-#f-language {
-  min-height: 80px;
-}
-
-#f-note {
-  min-height: 250px;
-}
-
-#f-checkboxes dl {
-  display: flex;
-  max-width: 14em;
-  margin-left: auto;
-}
-#f-checkboxes dt:after {
-  content:':';
-  position: absolute;
-  right: -.5em;
-}
-#f-checkboxes dt,
-#f-checkboxes dd {
-  position: relative;
-  width: 4em;
-  margin-right: 1em;
-  white-space: nowrap;
-}
-
-
-#fellow-actions {
-  width: 100%;
-  margin-top: 1.5rem;
-  border: 1px solid;
-}
-#fellow-actions th {
-  border-bottom: 1px solid;
-  white-space: nowrap;
-}
-#fellow-actions td {
-  border-bottom: 1px solid;
-  border-right: 1px dotted;
-}
-
-#fellow-actions td:nth-child(1){
-  width: 2em;
-  font-size: 2rem;
-  white-space: normal;
-  text-align: center;
-}
-#fellow-actions td:nth-child(2){
-  width: 2.5em;
-  font-size: 2rem;
-  text-align: center;
-}
-#fellow-actions td:nth-child(5){
-  width: 3em;
-  font-size: 2rem;
-  text-align: center;
-}
-
-#fellowNote {
-  margin-top: 1.5rem;
+aside#backuplist ul li a:hover {
+  background: linear-gradient(to top, rgba(100,200,255,0.2) 20%, transparent 20%);
 }
 
 
@@ -1305,7 +500,6 @@ aside#error {
   left: 0;
   right: 0;
   width: 20em;
-  height: 3.5em;
   padding: 1em;
   margin: auto;
   border: 1px solid;
