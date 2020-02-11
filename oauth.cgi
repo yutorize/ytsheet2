@@ -19,5 +19,5 @@ if (! &isIdExist($userinfo[0]) ) {
 }
 
 my $token = &generateToken();
-&registerToken($userinfo[0], $token);
+print &registerToken($userinfo[0], $token);
 print "Location: ./\n\n";
