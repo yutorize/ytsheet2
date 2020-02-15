@@ -6,8 +6,14 @@ use JSON::PP;
 my $browser = LWP::UserAgent->new;
 my $json = JSON::PP->new;
 
-my %token_url_list = ('Discord' => 'https://discordapp.com/api/oauth2/token');
-my %client_name_list = ('Discord' => 'DiscordBot (ytsheet, 6)');
+my %token_url_list = (
+  'Discord' => 'https://discordapp.com/api/oauth2/token',
+  'Google' => 'https://accounts.google.com/o/oauth2/token'
+);
+my %client_name_list = (
+  'Discord' => 'DiscordBot (ytsheet, 6)',
+  'Google' => 'Google API Request (ytsheet)'
+);
 
 
 sub getAccessToken {  
@@ -33,10 +39,23 @@ sub getUserInfo {
     $id_request->header("User-Agent" => $client_name_list{$set::oauth_service});
     $id_request->header("Authorization" => "Bearer $token");
     my $id_response = $browser->request($id_request);
-    my @rawLog = decode_json $id_response->content;
-
+    my $rawJson = $id_response->content;
+    my @rawLog = decode_json $rawJson;
     my $id = @rawLog[0]->{'id'};
     my $name = @rawLog[0]->{'username'};
+    my $mail = @rawLog[0]->{'email'};
+    return ($id, $name, $mail);
+	}
+  if ( $set::oauth_service eq 'Google' ) {
+    my $id_request = HTTP::Request->new(GET => 'https://www.googleapis.com/oauth2/v1/userinfo');
+    $id_request->content_type('application/x-www-form-urlencoded');
+    $id_request->header("User-Agent" => $client_name_list{$set::oauth_service});
+    $id_request->header("Authorization" => "Bearer $token");
+    my $id_response = $browser->request($id_request);
+    my $rawJson = $id_response->content;
+    my @rawLog = decode_json $rawJson;
+    my $id = @rawLog[0]->{'id'};
+    my $name = @rawLog[0]->{'name'};
     my $mail = @rawLog[0]->{'email'};
     return ($id, $name, $mail);
 	}
@@ -77,14 +96,15 @@ sub registerUser {
   my @salt = ('0'..'9','A'..'Z','a'..'z','.','/');
   1 while (length($password .= $salt[rand(@salt)] ) < 12);
   sysopen (my $FH, $set::userfile, O_WRONLY | O_APPEND | O_CREAT, 0666);
-    print $FH "$id<>".&e_crypt($password)."<>".Encode::decode('utf8', $name)."<>$mail<>".time."<>\n";
+    # print $FH "$id<>".&e_crypt($password)."<>".Encode::decode('utf8', $name)."<>$mail<>".time."<>\n";
+    print $FH "$id<>".&e_crypt($password)."<>$name<>$mail<>".time."<>\n";
   close ($FH);
 
   if($set::player_dir){
-    if (!-d $set::player_dir.param('id')){ mkdir $set::player_dir.param('id'); }
-    sysopen (my $FH, $set::player_dir.param('id').'/data.cgi', O_WRONLY | O_APPEND | O_CREAT, 0666);
-      print $FH "id<>".param('id')."\n";
-      print $FH "name<>".Encode::decode('utf8',param('name'))."\n";
+    if (!-d $set::player_dir.$id){ mkdir $set::player_dir.$id; }
+    sysopen (my $FH, $set::player_dir.$id.'/data.cgi', O_WRONLY | O_APPEND | O_CREAT, 0666);
+      print $FH "id<>$id\n";
+      print $FH "name<>$name\n";
     close ($FH);
   }
 }

@@ -26,7 +26,7 @@ package set;
   our $id_type = 0;
 
 ## ●OAuth2 でのログイン関係
- # OAuth2 を提供するサービスの名称。現在 Discord のみ対応
+ # OAuth2 を提供するサービスの名称。現在 Discord と Google のみ対応
   our $oauth_service = '';
  # OAuth2 で利用するサービスにユーザがログインするための URL
   our $oauth_login_url = '';
