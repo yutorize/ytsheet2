@@ -15,8 +15,8 @@ my $token = &getAccessToken(param("code"));
 my @userinfo = &getUserInfo($token);
 
 if ( ($set::oauth_service eq 'Discord') && (@set::oauth_discord_login_servers) ) {
-  if ( &isDiscordServerIncluded($token, @userinfo) ) {
-    # 指定したサーバに所属している  
+  if ( &isDiscordServerIncluded($token, @set::oauth_discord_login_servers) ) {
+    # 指定したサーバに所属している
   } else {
     &error("サーバに所属していないため利用できません");
     exit;
