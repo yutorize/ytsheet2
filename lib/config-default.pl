@@ -40,6 +40,9 @@ package set;
  # OAuth2 のスコープ
   our $oauth_scope = '';
 
+ # OAuth で Discord を利用する場合のみ利用可能 ログインを許可する Discord のサーバ一覧。空リストの場合は制限しない
+  our @oauth_discord_login_servers = (); 
+
 ## ●画像関係
  # キャラクター画像のファイルサイズ上限(単位byte)
   our $image_maxsize = 1024 * 1024 * 1;

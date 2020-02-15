@@ -42,6 +42,22 @@ sub getUserInfo {
 	}
 }
 
+sub isDiscordServerIncluded {
+  my ($token, @list) = @_;
+  my $server_request = HTTP::Request->new(GET => 'https://discordapp.com/api/users/@me/guilds');
+  $server_request->content_type('application/x-www-form-urlencoded');
+  $server_request->header("User-Agent" => $client_name_list{$set::oauth_service});
+  $server_request->header("Authorization" => "Bearer $token");
+  my $server_response = $browser->request($server_request);
+  my $rawServerList = $server_response->content;
+  foreach my $serverId (@list) {
+    if ( index($rawServerList, "\"id\": \"$serverId\"") != -1 ) {
+      return 1;
+    }
+  }
+  return 0;
+}
+
 sub isIdExist {
 	my $id = $_[0];
   open (my $FH, '<', $set::userfile);
