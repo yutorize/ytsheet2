@@ -128,7 +128,7 @@ Google APIs の OAuch 2.0 クライアント ID を作成・取得します。
 
 Discord でログインするように設定した上でさらに `config.cgi` に次のように追記してください。
 
-```
+```perl
   our $user_reqd = 1;
   our @oauth_discord_login_servers = ("サーバーのID");
 ```
@@ -138,7 +138,7 @@ Discord でログインするように設定した上でさらに `config.cgi` �
 `@oauth_discord_login_servers` にサーバのIDを挿入することで、そのサーバに所属しているメンバーのみにログインを許可することができます。
 さらに、以下のようにカンマで区切ることで複数のサーバのいずれかのメンバーならログインを許可する、というように設定することができます。
 
-```
+```perl
   our $user_reqd = 1;
   our @oauth_discord_login_servers = ("463088353794064384", "302452071993442307");
 ```
