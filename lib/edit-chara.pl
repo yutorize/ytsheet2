@@ -3,7 +3,6 @@ use strict;
 #use warnings;
 use utf8;
 use open ":utf8";
-use open ":std";
 use feature 'say';
 use Encode;
 
@@ -1583,8 +1582,8 @@ print <<"HTML";
         </div>
         <div class="palette-column">
         <h2>プリセット （コピーペースト用）</h2>
-        <textarea id="palettePreset" readonly style="height:20em">@{[ palettePreset(param('type')) ]}</textarea>
-        <p><label><input type="checkbox" name="palettePresetRaw" @{[ $pc{'palettePresetRaw'}?'checked':'' ]} value="1">プリセットは変数を使わない（数字をそのまま入れる）</label></p>
+        <textarea id="palettePreset" readonly style="height:20em">@{[ palettePresetRaw(param('type')) ]}</textarea>
+        <p><label><input type="checkbox" name="paletteUseVar" @{[ $pc{'paletteUseVar'}?'checked':'' ]} value="1">変数を使う</label></p>
         </div>
       </div>
       </section>

@@ -5,15 +5,17 @@
 /* // Font
 ---------------------------------------------------------------------------------------------------- */
 @import url('https://fonts.googleapis.com/css?family=Varela+Round&text=0123456789');
+@import url('https://fonts.googleapis.com/css?family=Raleway:500,700&text=ABCČĆDĐEFGHIJKLMNOPQRSŠTUVWXYZŽabcčćdđefghijklmnopqrsštuvwxyzž%26%20');
+@import url('https://fonts.googleapis.com/css?family=Kosugi&text=%E2%80%9C%E2%80%9D');
 
 body {
-  font-family: "Varela Round","ヒラギノ角ゴ ProN","Hiragino Kaku Gothic ProN","HiraKakuProN-W3","メイリオ","Meiryo",sans-serif;
+  font-family: "Varela Round","Raleway","Hiragino Kaku Gothic ProN","HiraKakuProN-W3","Kosugi","Meiryo",sans-serif;
 }
 header nav {
-  font-family: "ヒラギノ角ゴ ProN","Hiragino Kaku Gothic ProN","HiraKakuProN-W3","メイリオ","Meiryo",sans-serif;
+  font-family: "ヒラギノ角ゴ ProN","Hiragino Kaku Gothic ProN","HiraKakuProN-W3","Meiryo",sans-serif;
 }
 textarea,tt {
-  font-family: "UD デジタル 教科書体 N-R", monospace;
+  font-family: "BIZ UDGothic", monospace;
   font-size: inherit;
 }
 
@@ -192,6 +194,7 @@ dl.box > dt,
   margin: auto;
   background: #fff;
   transition: top 0.3s;
+  z-index: 1;
 }
 .night .box.chat-palette {
   background: #000;
@@ -231,7 +234,7 @@ ruby rt {
 }
 .d-dash {
   display: inline-block;
-  font-family: "メイリオ","Meiryo","小塚明朝 Pro","Kozuka Mincho Pro","小塚明朝Std","Kozuka Mincho Std",sans-serif;
+  font-family: "Meiryo","小塚明朝 Pro","Kozuka Mincho Pro","Kozuka Mincho Std",sans-serif;
   transform: scaleX(0.90);
 }
 .d-dash > span {

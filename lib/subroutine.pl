@@ -2,10 +2,6 @@ use strict;
 #use warnings;
 use utf8;
 use open ":utf8";
-use open ":std";
-use CGI::Carp qw(fatalsToBrowser);
-use CGI qw/:all/;
-use CGI::Cookie;
 use Encode qw/encode decode/;
 use Fcntl;
 

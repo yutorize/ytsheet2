@@ -6,15 +6,17 @@
 /* // Font
 ---------------------------------------------------------------------------------------------------- */
 #personal dl#faith dd {
-  font-family: "ヒラギノ角ゴ ProN","Hiragino Kaku Gothic ProN","HiraKakuProN-W3","メイリオ","Meiryo",sans-serif;
 }
 #area-status,
 #area-ability,
 #area-equipment {
-  font-family: "Varela Round",'Arial';
+  font-family: "Varela Round","Kosugi","Arial","Hiragino Kaku Gothic ProN","HiraKakuProN-W3","Meiryo",sans-serif;
 }
 #history {
-  font-family: 'Arial';
+  font-family: "Kosugi","Arial","Hiragino Kaku Gothic ProN","HiraKakuProN-W3","Meiryo",sans-serif;
+}
+#cashbook p {
+  font-family: "BIZ UDGothic", monospace, serif;
 }
 #level {
   font-family: 'Verdana';
@@ -22,10 +24,10 @@
 #character-name,
 #character-name rt,
 .words {
-  font-family: "游明朝", YuMincho, "ヒラギノ明朝 ProN W3", "Hiragino Mincho ProN", "HG明朝E", "メイリオ", serif;
+  font-family: "游明朝", "YuMincho", "ヒラギノ明朝 ProN W3", "Hiragino Mincho ProN", "HG明朝E", "Meiryo", serif;
 }
 #character-name rt {
-  font-family: Arial, "游明朝", YuMincho, "ヒラギノ明朝 ProN W3", "Hiragino Mincho ProN", "HG明朝E", "メイリオ", serif;
+  font-family: Arial, "游明朝", "YuMincho", "ヒラギノ明朝 ProN W3", "Hiragino Mincho ProN", "HG明朝E", "Meiryo", serif;
 }
 
 /* // Name / Date
@@ -339,9 +341,11 @@ p.words span.brackets {
 #status dl[id^="stt-bonus"]::after {
   position: absolute;
   content: "÷6";
-  left: -1.7rem;
+  width: 2rem;
+  left: -2.2rem;
   bottom: 8px;
   font-size: 1.2rem;
+  text-align: right;
 }
 #status dl[id^="stt-bonus"] dt span {
   display: block;
@@ -1019,7 +1023,6 @@ div#area-items-R {
 #cashbook p {
   margin: .3rem 0 0;
   line-height: 1.5;
-  font-family: "UD デジタル 教科書体 N-R", monospace, serif;
   white-space: pre-wrap;
 }
 #cashbook b.cash {

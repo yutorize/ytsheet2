@@ -176,7 +176,7 @@
 */
 @media screen and (min-width:1400px){
   body {
-    grid-template-columns: 1fr minmax(auto, 1800px) 1fr;
+    grid-template-columns: minmax(0, 1fr) minmax(auto, 1800px) minmax(0, 1fr);
   }
   header nav {
     max-width: 1800px;

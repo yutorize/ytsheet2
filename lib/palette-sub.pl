@@ -2,8 +2,6 @@
 use strict;
 #use warnings;
 use utf8;
-use open ":utf8";
-use open ":std";
 
 sub palettePreset {
   my $type = shift;
@@ -96,8 +94,8 @@ sub palettePresetRaw {
     $text .= "2d6+$::pc{'level'}+$::pc{'bonusAgi'} 冒険者＋敏捷\n";
     $text .= "2d6+$::pc{'level'}+$::pc{'bonusStr'} 冒険者＋筋力\n";
     $text .= "2d6+$::pc{'level'}+$::pc{'bonusInt'} 冒険者＋知力\n";
-    $text .= "2d6+$::pc{'monsterLore'} 魔物知識判定\n" if $::pc{'monsterLore'};
-    $text .= "2d6+$::pc{'initiative'} 先制力判定\n" if $::pc{'initiative'};
+    $text .= "2d6+$::pc{'monsterLore'} 魔物知識\n" if $::pc{'monsterLore'};
+    $text .= "2d6+$::pc{'initiative'} 先制力\n" if $::pc{'initiative'};
     $text .= "2d6+$::pc{'packScoTec'} スカウト技巧\n" if $::pc{'packScoTec'};
     $text .= "2d6+$::pc{'packScoAgi'} スカウト運動\n" if $::pc{'packScoAgi'};
     $text .= "2d6+$::pc{'packScoObs'} スカウト観察\n" if $::pc{'packScoObs'};
@@ -111,8 +109,8 @@ sub palettePresetRaw {
     $text .= "2d6+$::pc{'packRidObs'} ライダー観察\n" if $::pc{'packRidObs'};
     $text .= "2d6+$::pc{'packAlcKno'} アルケミスト知識\n" if $::pc{'packAlcKno'};
     $text .= "\n";
-    $text .= "2d6+$::pc{'vitResistTotal'} 生命抵抗判定\n";
-    $text .= "2d6+$::pc{'mndResistTotal'} 精神抵抗判定\n";
+    $text .= "2d6+$::pc{'vitResistTotal'} 生命抵抗力\n";
+    $text .= "2d6+$::pc{'mndResistTotal'} 精神抵抗力\n";
     $text .= "\n";
 
     foreach (
@@ -128,7 +126,7 @@ sub palettePresetRaw {
       ['Mys', '占瞳'],
     ){
       next if !$::pc{'lv'.@$_[0]};
-      $text .= "2d6+$::pc{'magicPower'.@$_[0]} @$_[1]".(@$_[0] =~ /魔法/?'行使':'')."\n";
+      $text .= "2d6+$::pc{'magicPower'.@$_[0]} @$_[1]".(@$_[1] =~ /魔法/?'行使':'')."\n";
     }
     $text .= "\n";
     foreach (1 .. $::pc{'weaponNum'}){
@@ -136,11 +134,11 @@ sub palettePresetRaw {
               $::pc{'weapon'.$_.'Acc'}.$::pc{'weapon'.$_.'Rate'}.$::pc{'weapon'.$_.'Crit'}.
               $::pc{'weapon'.$_.'Dmg'}.$::pc{'weapon'.$_.'Own'}.$::pc{'weapon'.$_.'Note'}
               eq '';
-      $text .= "2d6+$::pc{'weapon'.$_.'AccTotal'} 命中／$::pc{'weapon'.$_.'Name'}\n";
+      $text .= "2d6+$::pc{'weapon'.$_.'AccTotal'} 命中力／$::pc{'weapon'.$_.'Name'}\n";
       $text .= "k$::pc{'weapon'.$_.'Rate'}\[$::pc{'weapon'.$_.'Crit'}\]+$::pc{'weapon'.$_.'DmgTotal'} ダメージ\n";
       $text .= "\n";
     }
-    $text .= "2d6+$::pc{'DefenseTotalAllEva'} 回避力判定\n";
+    $text .= "2d6+$::pc{'DefenseTotalAllEva'} 回避力\n";
     
     if(1){
       $text .= "\n";
@@ -154,9 +152,9 @@ sub palettePresetRaw {
     $text .= "\n";
 
     foreach (1 .. $::pc{'statusNum'}){
-      $text .= "2d6+$::pc{'status'.$_.'Style'} 命中／$::pc{'status'.$_.'Style'}\n" if $::pc{'status'.$_.'Accuracy'} ne '';
+      $text .= "2d6+$::pc{'status'.$_.'Style'} 命中力／$::pc{'status'.$_.'Style'}\n" if $::pc{'status'.$_.'Accuracy'} ne '';
       $text .= "$::pc{'status'.$_.'Damage'} ダメージ\n" if $::pc{'status'.$_.'Damage'} ne '';
-      $text .= "2d6+$::pc{'status'.$_.'Evasion'} 回避\n" if $::pc{'status'.$_.'Evasion'} ne '';
+      $text .= "2d6+$::pc{'status'.$_.'Evasion'} 回避力\n" if $::pc{'status'.$_.'Evasion'} ne '';
       $text .= "\n";
     }
     my $skills = $::pc{'skills'};

@@ -6,10 +6,10 @@
   <meta charset="UTF-8">
   <title><TMPL_VAR characterNameTitle> - <TMPL_VAR title></title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" media="all" href="./skin/css/base.css?1.07.000">
-  <link rel="stylesheet" media="all" href="./skin/css/sheet.css?1.07.000">
-  <link rel="stylesheet" media="all" href="./skin/css/chara.css?1.07.000">
-  <link rel="stylesheet" media="all" href="./skin/css/chara-sp.css?1.05.004">
+  <link rel="stylesheet" media="all" href="./skin/css/base.css?1.07.003">
+  <link rel="stylesheet" media="all" href="./skin/css/sheet.css?1.07.003">
+  <link rel="stylesheet" media="all" href="./skin/css/chara.css?1.07.003">
+  <link rel="stylesheet" media="all" href="./skin/css/chara-sp.css?1.07.003">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
   <script>
 function popImage() {
@@ -250,7 +250,7 @@ window.onload = function() {
         </div>
 
         <dl class="box box-2row" id="sub-status">
-          <dt id="vit-resist">生命抵抗</dt><dd><TMPL_IF vitResistAddTotal><TMPL_VAR vitResistBase>+<TMPL_VAR vitResistAddTotal>=</TMPL_IF><b><TMPL_VAR vitResistTotal></b></dd>
+          <dt id="vit-resist">生命抵抗力</dt><dd><TMPL_IF vitResistAddTotal><TMPL_VAR vitResistBase>+<TMPL_VAR vitResistAddTotal>=</TMPL_IF><b><TMPL_VAR vitResistTotal></b></dd>
           <dt id="mnd-resist">精神抵抗力</dt><dd><TMPL_IF mndResistAddTotal><TMPL_VAR mndResistBase>+<TMPL_VAR mndResistAddTotal>=</TMPL_IF><b><TMPL_VAR mndResistTotal></b></dd>
           <dt id="hp">ＨＰ</dt><dd><TMPL_IF hpAddTotal><TMPL_VAR hpBase>+<TMPL_VAR hpAddTotal>=</TMPL_IF><b><TMPL_VAR hpTotal></b></dd>
           <dt id="mp">ＭＰ</dt><dd><TMPL_IF mpTotal><TMPL_IF mpAddTotal><TMPL_VAR mpBase>+<TMPL_VAR mpAddTotal>=</TMPL_IF><b><TMPL_VAR mpTotal></b><TMPL_ELSE><b>なし</b></TMPL_IF></dd>
@@ -795,7 +795,7 @@ window.onload = function() {
       <TMPL_IF fellowPublic>
       <div id="personal-area">
       <TMPL_IF image> 
-      <div id="f-image" class="image" style="background-image: url(<TMPL_VAR imageSrc>);background-size:<TMPL_VAR imageFit>;">
+      <div id="f-image" class="image" style="background-image: url(<TMPL_VAR imageSrc>);background-size:<TMPL_VAR imageFit>;background-position:<TMPL_VAR imagePositionX>% <TMPL_VAR imagePositionY>%;">
       <div onclick="popImage()"><p class="words" style="<TMPL_VAR wordsX><TMPL_VAR wordsY>"><TMPL_VAR words></p></div>
       <p class="image-copyright"><TMPL_VAR imageCopyright></p>
       </div>
