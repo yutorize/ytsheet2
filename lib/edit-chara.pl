@@ -88,19 +88,23 @@ $pc{'evasiveManeuver'} = $pc{'evasiveManeuver'} ? $pc{'evasiveManeuver'} : 0;
 $pc{'tenacity'} = $pc{'tenacity'} ? $pc{'tenacity'} : 0;
 $pc{'capacity'} = $pc{'capacity'} ? $pc{'capacity'} : 0;
 
-$pc{'weaponNum'}     = $pc{'weaponNum'}     ? $pc{'weaponNum'}     : 3;
-$pc{'languageNum'}   = $pc{'languageNum'}   ? $pc{'languageNum'}   : 3;
-$pc{'honorItemsNum'} = $pc{'honorItemsNum'} ? $pc{'honorItemsNum'} : 3;
-$pc{'historyNum'}    = $pc{'historyNum'}    ? $pc{'historyNum'}    : 3;
+$pc{'weaponNum'}     = $pc{'weaponNum'}     || 3;
+$pc{'languageNum'}   = $pc{'languageNum'}   || 3;
+$pc{'honorItemsNum'} = $pc{'honorItemsNum'} || 3;
+$pc{'historyNum'}    = $pc{'historyNum'}    || 3;
 
-$pc{'colorHeadBgR'} = $pc{'colorHeadBgR'} eq '' ? 135 : $pc{'colorHeadBgR'};
-$pc{'colorHeadBgG'} = $pc{'colorHeadBgG'} eq '' ? 140 : $pc{'colorHeadBgG'};
-$pc{'colorHeadBgB'} = $pc{'colorHeadBgB'} eq '' ? 155 : $pc{'colorHeadBgB'};
-$pc{'colorHeadBgA'} = $pc{'colorHeadBgA'} eq '' ? 0.3 : $pc{'colorHeadBgA'};
-$pc{'colorBaseBgR'} = $pc{'colorBaseBgR'} eq '' ? 128 : $pc{'colorBaseBgR'};
-$pc{'colorBaseBgG'} = $pc{'colorBaseBgG'} eq '' ? 128 : $pc{'colorBaseBgG'};
-$pc{'colorBaseBgB'} = $pc{'colorBaseBgB'} eq '' ? 128 : $pc{'colorBaseBgB'};
-$pc{'colorBaseBgA'} = $pc{'colorBaseBgA'} eq '' ?   0 : $pc{'colorBaseBgA'};
+$pc{'colorHeadBgH'} = $pc{'colorHeadBgH'} eq '' ? 225 : $pc{'colorHeadBgH'};
+$pc{'colorHeadBgS'} = $pc{'colorHeadBgS'} eq '' ?   9 : $pc{'colorHeadBgS'};
+$pc{'colorHeadBgL'} = $pc{'colorHeadBgL'} eq '' ?  56 : $pc{'colorHeadBgL'};
+$pc{'colorBaseBgH'} = $pc{'colorBaseBgH'} eq '' ?   0 : $pc{'colorBaseBgH'};
+$pc{'colorBaseBgS'} = $pc{'colorBaseBgS'} eq '' ?   0 : $pc{'colorBaseBgS'};
+$pc{'colorBaseBgL'} = $pc{'colorBaseBgL'} eq '' ? 100 : $pc{'colorBaseBgL'};
+
+if($pc{'colorCustom'} && $pc{'colorHeadBgA'}) {
+  ($pc{'colorHeadBgH'}, $pc{'colorHeadBgS'}, $pc{'colorHeadBgL'}) = rgb_to_hsl($pc{'colorHeadBgR'},$pc{'colorHeadBgG'},$pc{'colorHeadBgB'});
+  ($pc{'colorBaseBgH'}, $pc{'colorBaseBgS'}, undef) = rgb_to_hsl($pc{'colorBaseBgR'},$pc{'colorBaseBgG'},$pc{'colorBaseBgB'});
+  $pc{'colorBaseBgS'} = $pc{'colorBaseBgS'} * $pc{'colorBaseBgA'} * 10;
+}
 
 ### 改行処理 --------------------------------------------------
 $pc{'items'}         =~ s/&lt;br&gt;/\n/g;
@@ -121,12 +125,12 @@ Content-type: text/html\n
   <meta charset="UTF-8">
   <title>@{[$mode eq 'edit'?"編集：$pc{'characterName'}":'新規作成']} - $set::title</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" media="all" href="./skin/css/base.css?1.07.000">
-  <link rel="stylesheet" media="all" href="./skin/css/sheet.css?1.07.000">
-  <link rel="stylesheet" media="all" href="./skin/css/chara.css?1.07.000">
-  <link rel="stylesheet" media="all" href="./skin/css/chara-sp.css?1.05.004">
-  <link rel="stylesheet" media="all" href="./skin/css/edit.css?1.07.000">
-  <script src="./lib/edit-chara.js?1.06.100" defer></script>
+  <link rel="stylesheet" media="all" href="./skin/css/base.css?1.07.005">
+  <link rel="stylesheet" media="all" href="./skin/css/sheet.css?1.07.005">
+  <link rel="stylesheet" media="all" href="./skin/css/chara.css?1.07.005">
+  <link rel="stylesheet" media="all" href="./skin/css/chara-sp.css?1.07.005">
+  <link rel="stylesheet" media="all" href="./skin/css/edit.css?1.07.005">
+  <script src="./lib/edit-chara.js?1.07.005" defer></script>
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
   <style>
     #image {
@@ -1423,37 +1427,65 @@ print <<"HTML";
           <th>達成値</th>
           <th>効果</th>
         </tr>
-        <tr>
-          <td>⚀⚁</td>
-          <td>7</td>
+        <tr class="border-top">
+          <td rowspan="2">⚀<br>⚁</td>
+          <td class="number">7</td>
           <td>@{[ input 'fellow1Action' ]}</td>
           <td>@{[ input 'fellow1Words' ]}</td>
           <td>@{[ input 'fellow1Num' ]}</td>
           <td>@{[ input 'fellow1Note' ]}</td>
         </tr>
         <tr>
-          <td>⚂⚃</td>
-          <td>8</td>
+          <td class="number">6</td>
+          <td>@{[ input 'fellow1-2Action' ]}</td>
+          <td>@{[ input 'fellow1-2Words' ]}</td>
+          <td>@{[ input 'fellow1-2Num' ]}</td>
+          <td>@{[ input 'fellow1-2Note' ]}</td>
+        </tr>
+        <tr class="border-top">
+          <td rowspan="2">⚂<br>⚃</td>
+          <td class="number">8</td>
           <td>@{[ input 'fellow3Action' ]}</td>
           <td>@{[ input 'fellow3Words' ]}</td>
           <td>@{[ input 'fellow3Num' ]}</td>
           <td>@{[ input 'fellow3Note' ]}</td>
         </tr>
         <tr>
-          <td>⚄</td>
-          <td>9</td>
+          <td class="number">5</td>
+          <td>@{[ input 'fellow3-2Action' ]}</td>
+          <td>@{[ input 'fellow3-2Words' ]}</td>
+          <td>@{[ input 'fellow3-2Num' ]}</td>
+          <td>@{[ input 'fellow3-2Note' ]}</td>
+        </tr>
+        <tr class="border-top">
+          <td rowspan="2">⚄</td>
+          <td class="number">9</td>
           <td>@{[ input 'fellow5Action' ]}</td>
           <td>@{[ input 'fellow5Words' ]}</td>
           <td>@{[ input 'fellow5Num' ]}</td>
           <td>@{[ input 'fellow5Note' ]}</td>
         </tr>
         <tr>
-          <td>⚅</td>
-          <td>10</td>
+          <td class="number">4</td>
+          <td>@{[ input 'fellow5-2Action' ]}</td>
+          <td>@{[ input 'fellow5-2Words' ]}</td>
+          <td>@{[ input 'fellow5-2Num' ]}</td>
+          <td>@{[ input 'fellow5-2Note' ]}</td>
+        </tr>
+        <tr class="border-top">
+          <td rowspan="2">⚅</td>
+          <td class="number">10</td>
           <td>@{[ input 'fellow6Action' ]}</td>
           <td>@{[ input 'fellow6Words' ]}</td>
           <td>@{[ input 'fellow6Num' ]}</td>
           <td>@{[ input 'fellow6Note' ]}</td>
+        </tr>
+        <tr>
+          <td class="number">3</td>
+          <td>@{[ input 'fellow6-2Action' ]}</td>
+          <td>@{[ input 'fellow6-2Words' ]}</td>
+          <td>@{[ input 'fellow6-2Num' ]}</td>
+          <td>@{[ input 'fellow6-2Note' ]}</td>
         </tr>
       </table>
       </div>
@@ -1590,25 +1622,22 @@ print <<"HTML";
       <section id="section-color" style="display:none;">
       <h2>キャラクターシートのカラー設定</h2>
       <label class="box color-custom">
-        <input type="checkbox" name="colorCustom" value="1" onchange="changeColor();" @{[ $pc{'colorCustom'} ? 'checked':'' ]}>キャラクターシートの色をカスタムする
+        <input type="checkbox" name="colorCustom" value="1" onchange="changeColor();" @{[ $pc{'colorCustom'} ? 'checked':'' ]}><i></i>キャラクターシートの色をカスタムする
       </label>
-      <a class="box color-custom" onclick="nightModeChange()">ナイトモードON/OFF</a>
+      <span class="box color-custom night-switch" onclick="nightModeChange()"><i></i>ナイトモード</span>
       <div class="box color-custom">
         <h2>見出し背景</h2>
         <table>
-        <tr class="color-range-R"><th>Ｒ</th><td><input type="range" name="colorHeadBgR" min="0" max="255" value="$pc{'colorHeadBgR'}" oninput="changeColor();"></td><td id="colorHeadBgRValue">$pc{'colorHeadBgR'}</td></tr>
-        <tr class="color-range-G"><th>Ｇ</th><td><input type="range" name="colorHeadBgG" min="0" max="255" value="$pc{'colorHeadBgG'}" oninput="changeColor();"></td><td id="colorHeadBgGValue">$pc{'colorHeadBgG'}</td></tr>
-        <tr class="color-range-B"><th>Ｂ</th><td><input type="range" name="colorHeadBgB" min="0" max="255" value="$pc{'colorHeadBgB'}" oninput="changeColor();"></td><td id="colorHeadBgBValue">$pc{'colorHeadBgB'}</td></tr>
-        <tr class="color-range-A"><th>濃</th><td><input type="range" name="colorHeadBgA" min="0.1" max="0.4" step="0.01" value="$pc{'colorHeadBgA'}" oninput="changeColor();"></td><td id="colorHeadBgAValue">$pc{'colorHeadBgA'}</td>
+        <tr class="color-range-H"><th>色相</th><td><input type="range" name="colorHeadBgH" min="0" max="360" value="$pc{'colorHeadBgH'}" oninput="changeColor();"></td><td id="colorHeadBgHValue">$pc{'colorHeadBgH'}</td></tr>
+        <tr class="color-range-S"><th>彩度</th><td><input type="range" name="colorHeadBgS" min="0" max="100" value="$pc{'colorHeadBgS'}" oninput="changeColor();"></td><td id="colorHeadBgSValue">$pc{'colorHeadBgS'}</td></tr>
+        <tr class="color-range-L"><th>輝度</th><td><input type="range" name="colorHeadBgL" min="0" max="100" value="$pc{'colorHeadBgL'}" oninput="changeColor();"></td><td id="colorHeadBgLValue">$pc{'colorHeadBgL'}</td></tr>
         </table>
       </div>
       <div class="box color-custom">
         <h2>ベース背景</h2>
         <table>
-        <tr class="color-range-R"><th>Ｒ</th><td><input type="range" name="colorBaseBgR" min="0" max="255" value="$pc{'colorBaseBgR'}" oninput="changeColor();"></td><td id="colorBaseBgRValue">$pc{'colorBaseBgR'}</td></tr>
-        <tr class="color-range-G"><th>Ｇ</th><td><input type="range" name="colorBaseBgG" min="0" max="255" value="$pc{'colorBaseBgG'}" oninput="changeColor();"></td><td id="colorBaseBgGValue">$pc{'colorBaseBgG'}</td></tr>
-        <tr class="color-range-B"><th>Ｂ</th><td><input type="range" name="colorBaseBgB" min="0" max="255" value="$pc{'colorBaseBgB'}" oninput="changeColor();"></td><td id="colorBaseBgBValue">$pc{'colorBaseBgB'}</td></tr>
-        <tr class="color-range-A"><th>濃</th><td><input type="range" name="colorBaseBgA" min="0" max="0.1" step="0.01" value="$pc{'colorBaseBgA'}" oninput="changeColor();"></td><td id="colorBaseBgAValue">$pc{'colorBaseBgA'}</td></tr>
+        <tr class="color-range-H"><th>色相</th><td><input type="range" name="colorBaseBgH"  min="0" max="360" value="$pc{'colorBaseBgH'}" oninput="changeColor();"></td><td id="colorBaseBgHValue">$pc{'colorBaseBgH'}</td></tr>
+        <tr class="color-range-S"><th>色の濃さ</th><td><input type="range" name="colorBaseBgS"  min="0" max="100" value="$pc{'colorBaseBgS'}" oninput="changeColor();"></td><td id="colorBaseBgSValue">$pc{'colorBaseBgS'}</td></tr>
         </table>
       </div>
       </section>

@@ -394,6 +394,45 @@ sub tag_delete {
   return $text;
 }
 
+### RGB>HSL --------------------------------------------------
+sub rgb_to_hsl {
+  my $re = shift || 0;
+  my $gr = shift || 0;
+  my $bl = shift || 0;
+  my $RGB_MAX = 255;
+  my $HUE_MAX = 360;
+  my $SATURATION_MAX = 100;
+  my $LIGHTNESS_MAX = 100;
+
+  my $max = max($re,$gr,$bl);
+  my $min = min($re,$gr,$bl);
+  my ($hu, $sa, $li);
+
+  # Hue
+  my $hp = $HUE_MAX / 6;
+  if   ($max == $min) { $hu = 0; }
+  elsif ($re == $max) { $hu = $hp * (($gr - $bl) / ($max - $min)); }
+  elsif ($gr == $max) { $hu = $hp * (($bl - $re) / ($max - $min)) + $HUE_MAX / 3; }
+  else                { $hu = $hp * (($re - $gr) / ($max - $min)) + $HUE_MAX * 2 / 3; }
+  if ($hu < 0) { $hu += $HUE_MAX; }
+
+  # Saturation
+  my $cnt = ($max + $min) / 2;
+  if ($max == $min) { $sa = 0; }
+  elsif ($cnt < $RGB_MAX / 2) {
+    if ($max + $min <= 0) { $sa = 0; }
+    else { $sa = ($max - $min) / ($max + $min) * $SATURATION_MAX; }
+  }
+  else {
+    $sa = ($max - $min) / ($RGB_MAX * 2 - $max - $min) * $SATURATION_MAX;
+  }
+
+  # Lightness
+  my $li = ($max + $min) / $RGB_MAX / 2 * $LIGHTNESS_MAX;
+
+  return ($hu, $sa, $li);
+};
+
 ### 案内画面 --------------------------------------------------
 sub info {
   our $header = shift;

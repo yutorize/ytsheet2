@@ -241,8 +241,9 @@ td .switch-button {
   top: 0px;
   z-index: 1;
   padding: 0.5em;
-  background-image: linear-gradient(to bottom, rgba(135,140,155,0.3), transparent);
+  background-image: linear-gradient(to right, var(--box-head-bg-color), var(--box-base-bg-color));
   background-color: #fff;
+  border-color: var(--box-outside-border-color, inherit);
   border-width: 3px 0;
   border-style: solid;
 }
@@ -793,21 +794,25 @@ article > form > hr {
 #f-actions table {
   width: 100%;
 }
+#f-actions table tr.border-top {
+  border-width: 1px 0 0;
+  border-style: solid;
+}
 #f-actions table th {
   white-space: nowrap;
 }
-#f-actions td:nth-child(1){
+#f-actions td[rowspan]{
   width: 2em;
   font-size: 2rem;
-  white-space: normal;
+  line-height: 1;
   text-align: center;
 }
-#f-actions td:nth-child(2){
+#f-actions td.number {
   width: 2.5em;
   font-size: 2rem;
   text-align: center;
 }
-#f-actions td:nth-child(5){
+#f-actions td:nth-last-child(2){
   width: 3.5em;
 }
 
@@ -1023,21 +1028,47 @@ form#item textarea[name="description"] {
 .box.color-custom {
   margin-bottom: 1em;
 }
+span.box.color-custom,
 label.box.color-custom {
   display: inline-block;
   cursor: pointer;
   padding: .1em;
+  padding-left: 1.4em;
+  position: relative;
 }
-a.box.color-custom {
+label.box.color-custom input {
+  display: none;
+}
+label.box.color-custom input+i,
+.color-custom.night-switch i {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  margin: auto .3rem;
   display: inline-block;
-  cursor: pointer;
-  padding: .1em;
+  width: 1.3em;
+  height: 1.3em;
+  border-radius: .4rem;
+  font-size: 80%;
+  font-family: "Font Awesome 5 Free";
+  font-weight: bold;
+  font-style: normal;
+  text-align: center;
+  background: #fff;
+  box-shadow: #777 inset 0 0 .2rem;
+  color: #000;
+  overflow: hidden;
+}
+label.box.color-custom input:checked+i::before,
+.night .color-custom.night-switch i::before {
+  content: '\f00c';
 }
 .box.color-custom table {
   margin-left: 1em;
 }
 .box.color-custom table td {
-  padding-left: .5em;
+  padding: .5em;
 }
 .box.color-custom table td:last-child {
   width: 4em;
@@ -1046,7 +1077,51 @@ a.box.color-custom {
 .box.color-custom .color-range-G th { color: #0f0; }
 .box.color-custom .color-range-B th { color: #00f; }
 .box.color-custom input[type="range"] {
-  width: 256px;
+  width: 361px;
+}
+.box.color-custom input[type=range] {
+  -webkit-appearance:none;
+  background: #000;
+  height: 14px;
+  border-radius: 0px;
+}
+.box.color-custom .color-range-H input[type=range] {
+  background: linear-gradient(to right, #f00,#ff0,#0f0,#0ff,#00f,#f0f,#f00);
+}
+.box.color-custom .color-range-S input[name=colorHeadBgS] {
+  background: linear-gradient(to right, #fff, hsl(var(--box-head-bg-color-h),100%,50%));
+}
+.box.color-custom .color-range-L input[name=colorHeadBgL] {
+  background: linear-gradient(to right, #000, hsl(var(--box-head-bg-color-h),var(--box-head-bg-color-s),50%), #fff);
+}
+.box.color-custom .color-range-S input[name=colorBaseBgS] {
+  background: linear-gradient(to right, #fff, hsla(var(--box-base-bg-color-h),70%,83%,0.5));
+}
+.night .box.color-custom .color-range-S input[name=colorBaseBgS] {
+  background: linear-gradient(to right, #111, hsla(var(--box-base-bg-color-h),100%,15%,0.5));
+}
+.box.color-custom input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;
+  border: 1px solid #777;
+  background: linear-gradient(to bottom, #fff, #bbb);
+  box-shadow: #fff inset 0 0 .1rem .1rem;
+  height: 20px;
+  width: 10px;
+  border-radius: 0px;
+}
+.box.color-custom input[type=range]::-ms-tooltip{
+  display:none;
+}
+.box.color-custom input[type=range]::-moz-range-track{
+  height:0;
+}
+.box.color-custom input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;
+  border: 1px solid #777;
+  background: linear-gradient(to bottom, #fff, #bbb);
+  height: 20px;
+  width: 10px;
+  border-radius: 0px;
 }
 
 /* // 

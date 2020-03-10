@@ -4,7 +4,14 @@
 
 /* // Base
 ---------------------------------------------------------------------------------------------------- */
-
+:root {
+  --bg-color: #fff;
+  --text-color: #000;
+}
+.night {
+  --text-color: #fff;
+  --bg-color: #000;
+}
 * {
   margin: 0px;
   padding: 0px;
@@ -72,7 +79,7 @@ select {
 .night textarea,
 .night select {
   background: rgba(0,0,0,0.8);
-  color: #fff;
+  color: inherit;
   border-color: #234;
 }
 
@@ -82,17 +89,15 @@ body {
   position: relative;
   min-height: 100vh;
   height 100%;
-  background-color: #ffffff;
+  background-color: var(--bg-color);
   background-image: url(../img/back-pattern.png), url(../img/back-first.png);
   background-position: center, bottom right;
   background-repeat: repeat, no-repeat;
   background-attachment: scroll, fixed;
-  color: #000;
+  color: var(--text-color);
 }
 body.night {
-  background-color: #000;
   background-blend-mode: hard-light, hard-light;
-  color: #fff;
 }
 
 header {

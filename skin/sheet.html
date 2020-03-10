@@ -6,10 +6,10 @@
   <meta charset="UTF-8">
   <title><TMPL_VAR characterNameTitle> - <TMPL_VAR title></title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" media="all" href="./skin/css/base.css?1.07.003">
-  <link rel="stylesheet" media="all" href="./skin/css/sheet.css?1.07.003">
-  <link rel="stylesheet" media="all" href="./skin/css/chara.css?1.07.003">
-  <link rel="stylesheet" media="all" href="./skin/css/chara-sp.css?1.07.003">
+  <link rel="stylesheet" media="all" href="./skin/css/base.css?1.07.005">
+  <link rel="stylesheet" media="all" href="./skin/css/sheet.css?1.07.005">
+  <link rel="stylesheet" media="all" href="./skin/css/chara.css?1.07.005">
+  <link rel="stylesheet" media="all" href="./skin/css/chara-sp.css?1.07.005">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
   <script>
 function popImage() {
@@ -66,54 +66,14 @@ window.onload = function() {
 </TMPL_IF>
   </script>
   <TMPL_IF colorCustom><style>
-    #area-name {
-      background-image:
-        linear-gradient(
-          to right,
-          rgba(<TMPL_VAR colorHeadBgR>,<TMPL_VAR colorHeadBgG>,<TMPL_VAR colorHeadBgB>,<TMPL_VAR colorHeadBgA>) 0,
-          transparent
-        )
-      ;
-    }
-    .box {
-      background-image:
-        linear-gradient(
-          to bottom,
-          rgba(<TMPL_VAR colorHeadBgR>,<TMPL_VAR colorHeadBgG>,<TMPL_VAR colorHeadBgB>,<TMPL_VAR colorHeadBgA>) 0,
-          rgba(<TMPL_VAR colorBaseBgR>,<TMPL_VAR colorBaseBgG>,<TMPL_VAR colorBaseBgB>,<TMPL_VAR colorBaseBgA>) 2.5rem
-        )
-      ;
-    }
-    .box.box-2row {
-      background-image:
-        linear-gradient(
-          to bottom,
-          rgba(<TMPL_VAR colorHeadBgR>,<TMPL_VAR colorHeadBgG>,<TMPL_VAR colorHeadBgB>,<TMPL_VAR colorHeadBgA>) 0,
-          rgba(<TMPL_VAR colorBaseBgR>,<TMPL_VAR colorBaseBgG>,<TMPL_VAR colorBaseBgB>,<TMPL_VAR colorBaseBgA>) 2.5rem,
-          rgba(<TMPL_VAR colorBaseBgR>,<TMPL_VAR colorBaseBgG>,<TMPL_VAR colorBaseBgB>,<TMPL_VAR colorBaseBgA>) 50%,
-          rgba(<TMPL_VAR colorHeadBgR>,<TMPL_VAR colorHeadBgG>,<TMPL_VAR colorHeadBgB>,<TMPL_VAR colorHeadBgA>) 50%,
-          rgba(<TMPL_VAR colorBaseBgR>,<TMPL_VAR colorBaseBgG>,<TMPL_VAR colorBaseBgB>,<TMPL_VAR colorBaseBgA>) calc(50% + 2.5rem)
-        )
-      ;
-    }
-    .box h2:nth-child(n+2) {
-      background-image:
-        linear-gradient(
-          to bottom,
-          rgba(<TMPL_VAR colorHeadBgR>,<TMPL_VAR colorHeadBgG>,<TMPL_VAR colorHeadBgB>,<TMPL_VAR colorHeadBgA>) 0,
-          transparent 2.5rem
-        )
-      ;
-    }
-    .box h3::after,
-    .box h4::after {
-      background-image:
-        linear-gradient(
-          to right,
-          rgba(<TMPL_VAR colorHeadBgR>,<TMPL_VAR colorHeadBgG>,<TMPL_VAR colorHeadBgB>,<TMPL_VAR colorHeadBgA>) 0,
-          transparent
-        )
-      ;
+    :root {
+      --box-head-bg-color-h: <TMPL_VAR colorHeadBgH>;
+      --box-head-bg-color-s: <TMPL_VAR colorHeadBgS>%;
+      --box-head-bg-color-l: <TMPL_VAR colorHeadBgL>%;
+      --box-base-bg-color-h: <TMPL_VAR colorBaseBgH>;
+      --box-base-bg-color-s: <TMPL_VAR colorBaseBgS>%;
+      --box-base-bg-color-l: <TMPL_VAR colorBaseBgL>%;
+      --box-base-bg-color-d: <TMPL_VAR colorBaseBgD>%;
     }
   </style></TMPL_IF>
 </head>
@@ -162,7 +122,7 @@ window.onload = function() {
 
   <main id="character">
     <article<TMPL_IF FellowMode> style="display:none"</TMPL_IF>>
-      <TMPL_IF BackupMode><p><TMPL_VAR updateTime> 時点のバックアップデータです。</p></TMPL_IF>
+      <TMPL_IF BackupMode><p class="backup-message"><TMPL_VAR updateTime> 時点のバックアップデータです。</p></TMPL_IF>
       <div id="area-name">
         <h1 id="character-name"><TMPL_IF aka><span id="aka">“<TMPL_VAR aka>”</span></TMPL_IF><TMPL_VAR characterName></h1>
         <div>
@@ -856,36 +816,64 @@ window.onload = function() {
           <th>効果</th>
         </tr>
         <tr>
-          <td>⚀⚁</td>
-          <td>7</td>
+          <td rowspan="2">⚀<br>⚁</td>
+          <td class="number">7</td>
           <td><TMPL_VAR fellow1Action></td>
           <td><TMPL_VAR fellow1Words></td>
           <td><TMPL_VAR fellow1Num></td>
           <td><TMPL_VAR fellow1Note></td>
         </tr>
         <tr>
-          <td>⚂⚃</td>
-          <td>8</td>
+          <td class="number">6</td>
+          <td><TMPL_VAR fellow1-2Action></td>
+          <td><TMPL_VAR fellow1-2Words></td>
+          <td><TMPL_VAR fellow1-2Num></td>
+          <td><TMPL_VAR fellow1-2Note></td>
+        </tr>
+        <tr>
+          <td rowspan="2">⚂<br>⚃</td>
+          <td class="number">8</td>
           <td><TMPL_VAR fellow3Action></td>
           <td><TMPL_VAR fellow3Words></td>
           <td><TMPL_VAR fellow3Num></td>
           <td><TMPL_VAR fellow3Note></td>
         </tr>
         <tr>
-          <td>⚄</td>
-          <td>9</td>
+          <td class="number">5</td>
+          <td><TMPL_VAR fellow3-2Action></td>
+          <td><TMPL_VAR fellow3-2Words></td>
+          <td><TMPL_VAR fellow3-2Num></td>
+          <td><TMPL_VAR fellow3-2Note></td>
+        </tr>
+        <tr>
+          <td rowspan="2">⚄</td>
+          <td class="number">9</td>
           <td><TMPL_VAR fellow5Action></td>
           <td><TMPL_VAR fellow5Words></td>
           <td><TMPL_VAR fellow5Num></td>
           <td><TMPL_VAR fellow5Note></td>
         </tr>
         <tr>
-          <td>⚅</td>
-          <td>10</td>
+          <td class="number">4</td>
+          <td><TMPL_VAR fellow5-2Action></td>
+          <td><TMPL_VAR fellow5-2Words></td>
+          <td><TMPL_VAR fellow5-2Num></td>
+          <td><TMPL_VAR fellow5-2Note></td>
+        </tr>
+        <tr>
+          <td rowspan="2">⚅</td>
+          <td class="number">10</td>
           <td><TMPL_VAR fellow6Action></td>
           <td><TMPL_VAR fellow6Words></td>
           <td><TMPL_VAR fellow6Num></td>
           <td><TMPL_VAR fellow6Note></td>
+        </tr>
+        <tr>
+          <td class="number">3</td>
+          <td><TMPL_VAR fellow6-2Action></td>
+          <td><TMPL_VAR fellow6-2Words></td>
+          <td><TMPL_VAR fellow6-2Num></td>
+          <td><TMPL_VAR fellow6-2Note></td>
         </tr>
       </table>
       <dl id="fellowNote">
