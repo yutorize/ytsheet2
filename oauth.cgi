@@ -1,8 +1,7 @@
-#!/usr/local/bin/perl
+#!/usr/bin/perl
 
 use strict;
 use utf8;
-
 
 require './lib/config-default.pl';
 require './config.cgi';

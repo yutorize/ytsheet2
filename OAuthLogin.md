@@ -22,7 +22,7 @@
 
 どの外部サービスを利用するとしても原則として Client ID 等を払い出した上でそれを config.cgi に記載する、という手順を踏みます。
 
-また、どの外部サービスを利用するとしても `$oauth_scope` の値は変わりません。
+また、どの外部サービスを利用するとしても `$oauth_redirect_url` の値は変わりません。
 ゆとシートの URL が `http://my-ytsheet-sample.example.com/ytsheet2_sw2.5/` なのであれば
 `http%3A%2F%2Fmy-ytsheet-sample.example.com%2Fytsheet2_sw2.5%2Foauth.cgi` としてください。
 （`:` および `\` を変換し、末尾に `oauth.cgi` を付けます）
@@ -57,7 +57,7 @@ Google APIs の OAuch 2.0 クライアント ID を作成・取得します。
 
 * 名前には先の OAuth 同意画面で設定したアプリケーション名と同じものを入れてください
 * 承認済みの JavaScript 生成元にはゆとシートの URL のドメイン部分までを入れてください。例えば `http://my-ytsheet-sample.example.com` です
-* 承認済みのリダイレクト URI にはゆとシートの URL の末尾に `oatuh.cgi` を追加したものを入れてください。例えば `http://my-ytsheet-sample.example.com/ytsheet2_sw2.5/oauth.cgi` です
+* 承認済みのリダイレクト URI にはゆとシートの URL の末尾に `oauth.cgi` を追加したものを入れてください。例えば `http://my-ytsheet-sample.example.com/ytsheet2_sw2.5/oauth.cgi` です
 
 これらを入力し「作成」をクリックすると「クライアント ID」と「クライアントシークレット」が表示されますので、これを控えてください。
 
@@ -94,7 +94,7 @@ Google APIs の OAuch 2.0 クライアント ID を作成・取得します。
 ### リダイレクト先を設定する
 
 次に画面左側のメニューより「OAuth2」を選択してください。これによって開く画面上で OAuth2 の設定をしていきます。
-「Redirects」にゆとシートの URL の末尾に `oatuh.cgi` を追加したものを入れてください。例えば `http://my-ytsheet-sample.example.com/ytsheet2_sw2.5/oauth.cgi` です。
+「Redirects」にゆとシートの URL の末尾に `oauth.cgi` を追加したものを入れてください。例えば `http://my-ytsheet-sample.example.com/ytsheet2_sw2.5/oauth.cgi` です。
 
 追加したら画面下部の「Save Changes」を押して保存してください。
 

@@ -11,10 +11,6 @@ use open ":utf8";
 binmode STDIN, ":utf8";
 binmode STDOUT, ':utf8';
 use CGI::Carp qw(fatalsToBrowser);
-use CGI qw/:all/;
-use CGI::Cookie;
-use Encode qw/encode decode/;
-use List::Util qw/max min/;
 use Fcntl;
 
 ### バージョン #######################################################################################

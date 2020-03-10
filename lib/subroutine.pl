@@ -2,7 +2,10 @@ use strict;
 #use warnings;
 use utf8;
 use open ":utf8";
+use CGI qw/:all/;
+use CGI::Cookie;
 use Encode qw/encode decode/;
+use List::Util qw/max min/;
 use Fcntl;
 
 ### サブルーチン #####################################################################################
