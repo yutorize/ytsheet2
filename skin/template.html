@@ -23,12 +23,8 @@
         <li class="small"><a href="./?mode=option">オプション</a></li>
         <li class="small"><a href="./?mode=logout">ログアウト</a></li>
         <TMPL_ELSE>
-          <TMPL_IF OAUTH_MODE>
-          <li class="small"><a href="<TMPL_VAR OAUTH_LOGIN_URL>">ログイン</a></li>
-          <TMPL_ELSE>
-          <li class="small"><a href="./?mode=login">ログイン</a></li>
-          <li class="small"><a href="./?mode=register">登録</a></li>
-          </TMPL_IF>
+        <li class="small"><a href="./?mode=login">ログイン</a></li>
+        <li class="small"><a href="./?mode=register">登録</a></li>
         </TMPL_IF>
         <li class="very-small"><a onclick="nightModeChange()" title="ナイトモード">☾✧</a></li>
       </ul>

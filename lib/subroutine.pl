@@ -85,7 +85,6 @@ sub s_eval {
 
 ### ログイン --------------------------------------------------
 sub log_in {
-  if($set::oauth_service){ error("$set::oauth_serviceでのログインのみ有効です"); }
   my $key = key_get($_[0],$_[1]);
   if($key){
     my $flag = 0;

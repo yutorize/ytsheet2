@@ -116,27 +116,23 @@
           </p>
         </form>
       </section>
-      <TMPL_IF OAUTH_MODE>
-      <!-- 何も出さない -->
-      <TMPL_ELSE>
       <section class="form">
-      <h2>パスワード変更</h2>
-      <form method="post" action="./">
-        <input type="hidden" name="mode" value="passchange">
-        <p>
-          <label><span>現在のパスワード</span> <input type="password" name="password"></label>
-        </p>
-        <p>
-          <label><span>新しいパスワード</span> <input type="password" name="new_password" pattern="^[0-9A-Za-z\.\-\/]+$" title="半角英数字、『.』『-』『/』のみ"></label>
-        </p>
-        <p>
-          <label><span>新しいパスワード(確認)</span> <input type="password" name="new_password_confirm" pattern="^[0-9A-Za-z\.\-\/]+$" title="半角英数字、『.』『-』『/』のみ"></label>
-        </p>
-        <p>
-          <input type="submit" value="変更">
-        </p>
-      </form>
+        <h2>パスワード変更</h2>
+        <form method="post" action="./">
+          <input type="hidden" name="mode" value="passchange">
+          <p>
+            <label><span>現在のパスワード</span> <input type="password" name="password"></label>
+          </p>
+          <p>
+            <label><span>新しいパスワード</span> <input type="password" name="new_password" pattern="^[0-9A-Za-z\.\-\/]+$" title="半角英数字、『.』『-』『/』のみ"></label>
+          </p>
+          <p>
+            <label><span>新しいパスワード(確認)</span> <input type="password" name="new_password_confirm" pattern="^[0-9A-Za-z\.\-\/]+$" title="半角英数字、『.』『-』『/』のみ"></label>
+          </p>
+          <p>
+            <input type="submit" value="変更">
+          </p>
+        </form>
       </section>
-      </TMPL_IF>
     </article>
   </TMPL_IF>

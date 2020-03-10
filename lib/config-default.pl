@@ -25,23 +25,6 @@ package set;
  # キャラクター・魔物のIDをランダムではなくユーザーID＋番号(001,002..)にする(魔物はm001..)
   our $id_type = 0;
 
-## ●OAuth2 でのログイン関係
- # OAuth2 を提供するサービスの名称。現在 Discord と Google のみ対応
-  our $oauth_service = '';
- # OAuth2 で利用するサービスにユーザがログインするための URL
-  our $oauth_login_url = '';
- # OAuth2 で利用するサービスから払い出される client_id
-  our $oauth_client_id = '';
- # OAuth2 で利用するサービスから払い出される client_secret
-  our $oauth_secret_id = '';
- # ゆとシート2 の URL のうち index.cgi を oauth.cgi に置換したものを URI エンコードしたもの
- # 例: https://yutorize.2-d.jp/ytsheet/sw2.5/index.cgi ならば  https%3A%2F%2Fyutorize.2-d.jp%2Fytsheet%2Fsw2.5%2Foauth.cgi
-  our $oauth_redirect_url = '';
- # OAuth2 のスコープ
-  our $oauth_scope = '';
-
- # OAuth で Discord を利用する場合のみ利用可能 ログインを許可する Discord のサーバ一覧。空リストの場合は制限しない
-  our @oauth_discord_login_servers = (); 
 
 ## ●画像関係
  # キャラクター画像のファイルサイズ上限(単位byte)
