@@ -13,9 +13,9 @@
    - <TMPL_VAR title>
   </title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" media="all" href="./skin/css/base.css?1.06.002">
-  <link rel="stylesheet" media="all" href="./skin/css/sheet.css?1.06.002">
-  <link rel="stylesheet" media="all" href="./skin/css/monster.css?1.06.002">
+  <link rel="stylesheet" media="all" href="./skin/css/base.css?1.07.005">
+  <link rel="stylesheet" media="all" href="./skin/css/sheet.css?1.07.005">
+  <link rel="stylesheet" media="all" href="./skin/css/monster.css?1.07.005">
   <link rel="stylesheet" media="all" href="./skin/css/monster-sp.css?201810160200">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
   <script>
@@ -51,6 +51,17 @@ function backuplistOn() {
     backupList = 1;
   }
 }
+let chatPalette = 0;
+function chatPaletteOn() {
+  if(chatPalette){
+    document.querySelector(".chat-palette").style.top = '-100vh';
+    chatPalette = 0;
+  }
+  else {
+    document.querySelector(".chat-palette").style.top = '60px';
+    chatPalette = 1;
+  }
+}
 <TMPL_IF error>
 window.onload = function() {
   document.getElementById("login-form").style.top = '5rem';
@@ -69,7 +80,7 @@ window.onload = function() {
     <nav>
       <ul>
         <li class="small"><a href="./?type=m">⏎</a></li>
-        <li class="small"><a href="./?mode=palette&id=<TMPL_VAR id>&type=m"><span>パレット</span></a></li>
+        <li class="small"><a onclick="chatPaletteOn();"><span>パレット</span></a></li>
         <li class="small"><a onclick="backuplistOn()"><span>過去ログ</span></a></li>
         <TMPL_IF ReqdPassword>
         <li class="small"><a onclick="editOn()">編集</a></li>
@@ -188,6 +199,10 @@ window.onload = function() {
       </div>
       <div id="link-tag">
         ゆとシート内リンク用タグ：<input type="text" onclick="this.select()" value="[<TMPL_IF characterNameTitle><TMPL_VAR characterNameTitle>（<TMPL_VAR monsterNameTitle>）<TMPL_ELSE><TMPL_VAR monsterNameTitle></TMPL_IF>#<TMPL_VAR id>]">
+      </div>
+      <div class="box chat-palette">
+        <h2>チャットパレット</h2>
+        <iframe src="./?mode=palette&id=<TMPL_VAR id>&type=m"></iframe>
       </div>
     </article>
     <div class="back-button"><a href="./?type=m">⏎</a></div>

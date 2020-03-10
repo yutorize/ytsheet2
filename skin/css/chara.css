@@ -1,31 +1,31 @@
 @charset "utf-8";
-
 /* // Base
 ---------------------------------------------------------------------------------------------------- */
 
 /* // Font
 ---------------------------------------------------------------------------------------------------- */
 #personal dl#faith dd {
-  font-family: "ヒラギノ角ゴ ProN","Hiragino Kaku Gothic ProN","HiraKakuProN-W3","メイリオ","Meiryo",sans-serif;
 }
 #area-status,
 #area-ability,
 #area-equipment {
-  font-family: "Varela Round",'Arial';
+  font-family: "Varela Round","Kosugi","Arial",var(--base-font-family-jp);
 }
 #history {
-  font-family: 'Arial';
+  font-family: "Kosugi","Arial",var(--base-font-family-jp);
+}
+#cashbook p {
+  font-family: var(--base-font-family-mono);
 }
 #level {
   font-family: 'Verdana';
 }
 #character-name,
-#character-name rt,
 .words {
-  font-family: "游明朝", YuMincho, "ヒラギノ明朝 ProN W3", "Hiragino Mincho ProN", "HG明朝E", "メイリオ", serif;
+  font-family: var(--base-font-family-min);
 }
 #character-name rt {
-  font-family: Arial, "游明朝", YuMincho, "ヒラギノ明朝 ProN W3", "Hiragino Mincho ProN", "HG明朝E", "メイリオ", serif;
+  font-family: Arial,var(--base-font-family-min);
 }
 
 /* // Name / Date
@@ -39,19 +39,19 @@
   border-width: 3px 0px;
   border-style: solid;
   
-  background: linear-gradient(to right, #dadcdf, #fff);
-}
-.night #area-name {
-  background: linear-gradient(to right, #234, #000);
+  background-image: linear-gradient(to right, var(--box-head-bg-color), var(--box-base-bg-color));
+  background-color: var(--bg-color);
+  border-color: var(--box-outside-border-color, inherit);
 }
 h1#character-name {
   padding: 1rem;
   font-size: 2.2rem;
   font-weight: bold;
-  text-shadow: 0 0 0 #000, 0 0 1px #777, 1px 1px 0px #fff;
-}
-.night h1#character-name {
-  text-shadow: 0 0 0 #fff, 0 0 1px #777, 1px 1px 0px #000;
+  text-shadow: var(--bg-color) 0px 0px .5em,
+    var(--bg-color)  .1rem .1rem, var(--bg-color) -.1rem -.1rem,
+    var(--bg-color) -.1rem .1rem, var(--bg-color)  .1rem -.1rem,
+    var(--bg-color)  .0rem .1rem, var(--bg-color)  .0rem -.1rem,
+    var(--bg-color) -.1rem .0rem, var(--bg-color)  .1rem  .0rem;
 }
 #area-name > div { 
   text-align: right;
@@ -110,7 +110,12 @@ h1#character-name {
 .image p.image-copyright {
   padding: 0 5px;
   color: #fff;
-  text-shadow: 0 0 1px #000, 0 0 1px #000, 0 0 1px #000, 0 0 2px #000, 0 0 3px #000;
+  text-shadow: 
+    #000  .1rem .1rem, #000 -.1rem -.1rem,
+    #000 -.1rem .1rem, #000  .1rem -.1rem,
+    #000  .0rem .1rem, #000  .0rem -.1rem,
+    #000 -.1rem .0rem, #000  .1rem  .0rem,
+    #000 0 0 .3rem, #000 0 0 .3rem, #000 0 0 .3rem;
   word-break: break-all;
 }
 .image-none {
@@ -119,7 +124,7 @@ h1#character-name {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0,0,0,0.05);
+  background: rgba(127,127,127,0.1);
   border-radius: 5px;
   overflow: hidden;
   font-family: "Times New Roman";
@@ -154,17 +159,16 @@ h1#character-name {
   writing-mode: vertical-rl;
   font-weight: bold;
   font-size: 2rem;
-  color: #000;
-  text-shadow: 0 0 0 #000, 0 0 1px #777,
-               2px -2px 2px #fff,  2px  0px 2px #fff, 2px 2px 2px #fff,
-               0px -2px 2px #fff,  0px  0px 2px #fff, 0px 2px 2px #fff,
-              -2px  0px 2px #fff, -2px -2px 2px #fff,-2px 2px 2px #fff,
-               2px -2px 15px #fff,  2px  0px 15px #fff, 2px 2px 15px #fff,
-               0px -2px 15px #fff,  0px  0px 15px #fff, 0px 2px 15px #fff,
-              -2px  0px 15px #fff, -2px -2px 15px #fff,-2px 2px 15px #fff,
-               2px -2px 15px #fff,  2px  0px 15px #fff, 2px 2px 15px #fff,
-               0px -2px 15px #fff,  0px  0px 15px #fff, 0px 2px 15px #fff,
-              -2px  0px 15px #fff, -2px -2px 15px #fff,-2px 2px 15px #fff
+  color: var(--text-color);
+  text-shadow:
+    var(--bg-color) 2px  0px, var(--bg-color) -2px  0px,
+    var(--bg-color) 0px -2px, var(--bg-color)  0px  2px,
+    var(--bg-color) 2px  2px, var(--bg-color) -2px  2px,
+    var(--bg-color) 2px -2px, var(--bg-color) -2px -2px,
+    var(--bg-color) 1px  2px, var(--bg-color) -1px  2px,
+    var(--bg-color) 1px -2px, var(--bg-color) -1px -2px,
+    var(--bg-color) 2px  1px, var(--bg-color) -2px  1px,
+    var(--bg-color) 2px -1px, var(--bg-color) -2px -1px;
 }
 .image p.words .d-dash,
 .image-none p.words .d-dash {
@@ -338,9 +342,11 @@ p.words span.brackets {
 #status dl[id^="stt-bonus"]::after {
   position: absolute;
   content: "÷6";
-  left: -1.7rem;
+  width: 2rem;
+  left: -2.2rem;
   bottom: 8px;
   font-size: 1.2rem;
+  text-align: right;
 }
 #status dl[id^="stt-bonus"] dt span {
   display: block;
@@ -990,11 +996,10 @@ div#area-items-R {
 #history table tr td[colspan]:empty {
   display: none;
 }
-#history table tr td:nth-child(2) a {
-  display: block;
-}
+#history table tr td:nth-child(2) a,
 #history table tr td a[data-num] {
   display: block;
+  background: none;
 }
 #history table tr td a[data-num]:before {
   content:"#"attr(data-num);
@@ -1018,7 +1023,6 @@ div#area-items-R {
 #cashbook p {
   margin: .3rem 0 0;
   line-height: 1.5;
-  font-family: "UD デジタル 教科書体 N-R", monospace, serif;
   white-space: pre-wrap;
 }
 #cashbook b.cash {
@@ -1079,7 +1083,7 @@ div#area-items-R {
   width: 100%;
   height: 90px;
   line-height: 80px;
-  color: #000;
+  color: var(--text-color);
   text-align: center;
   font-size: 2.5rem;
   display: block;
@@ -1087,7 +1091,7 @@ div#area-items-R {
   z-index: 1;
   border-width: 2px 0px;
   border-style: solid;
-  border-color: #000;
+  border-color: var(--box-outside-border-color);
 }
 #fellow #f-level::before,
 #fellow #f-level::after {
@@ -1100,13 +1104,7 @@ div#area-items-R {
   z-index: 0;
   border-width: 2px 0px;
   border-style: solid;
-  border-color: #000;
-}
-.night #fellow #f-level dd,
-.night #fellow #f-level::before,
-.night #fellow #f-level::after {
-  color: #fff;
-  border-color: #556;
+  border-color: var(--box-outside-border-color);
 }
 #fellow #f-level::before {
   transform: rotate(60deg);
@@ -1124,7 +1122,7 @@ div#area-items-R {
   z-index: 2;
 }
 #fellow dl {
-  border-bottom: 1px solid #999;
+  border-bottom: 1px solid var(--box-outside-border-color);
   font-size: 1.6rem;
 }
 #fellow dd {
@@ -1217,28 +1215,32 @@ div#area-items-R {
   width: 100%;
   margin-top: 1.5rem;
   border: 1px solid;
+  border-color: var(--box-outside-border-color);
 }
 #fellow-actions th {
   border-bottom: 1px solid;
+  border-color: var(--box-outside-border-color);
   white-space: nowrap;
 }
 #fellow-actions td {
   border-bottom: 1px solid;
   border-right: 1px dotted;
+  border-color: var(--box-outside-border-color);
+  padding: .2rem .5rem;
 }
 
-#fellow-actions td:nth-child(1){
+#fellow-actions td[rowspan]{
   width: 2em;
   font-size: 2rem;
   white-space: normal;
   text-align: center;
 }
-#fellow-actions td:nth-child(2){
+#fellow-actions td.number {
   width: 2.5em;
   font-size: 2rem;
   text-align: center;
 }
-#fellow-actions td:nth-child(5){
+#fellow-actions td:nth-last-child(2){
   width: 3em;
   font-size: 2rem;
   text-align: center;

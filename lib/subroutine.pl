@@ -2,10 +2,6 @@ use strict;
 #use warnings;
 use utf8;
 use open ":utf8";
-use open ":std";
-use CGI::Carp qw(fatalsToBrowser);
-use CGI qw/:all/;
-use CGI::Cookie;
 use Encode qw/encode decode/;
 use Fcntl;
 
@@ -283,7 +279,7 @@ sub tag_unescape {
   $text =~ s/''(.+?)''/<b>$1<\/b>/gi;  # 太字
   $text =~ s/%%(.+?)%%/<span class="strike">$1<\/span>/gi;  # 打ち消し線
   $text =~ s/__(.+?)__/<span class="underline">$1<\/span>/gi;  # 下線
-  $text =~ s/\{\{(.+?)\}\}/<span style="color:transparent">$1<\/span>/gi;  # 下線
+  $text =~ s/\{\{(.+?)\}\}/<span style="color:transparent">$1<\/span>/gi;  # 透明
   $text =~ s/[|｜]([^|｜]+?)《(.+?)》/<ruby>$1<rp>(<\/rp><rt>$2<\/rt><rp>)<\/rp><\/ruby>/gi; # なろう式ルビ
   $text =~ s/《《(.+?)》》/<span class="text-em">$1<\/span>/gi; # カクヨム式傍点
   
@@ -397,6 +393,45 @@ sub tag_delete {
   $text =~ s/<.+?>//g;
   return $text;
 }
+
+### RGB>HSL --------------------------------------------------
+sub rgb_to_hsl {
+  my $re = shift || 0;
+  my $gr = shift || 0;
+  my $bl = shift || 0;
+  my $RGB_MAX = 255;
+  my $HUE_MAX = 360;
+  my $SATURATION_MAX = 100;
+  my $LIGHTNESS_MAX = 100;
+
+  my $max = max($re,$gr,$bl);
+  my $min = min($re,$gr,$bl);
+  my ($hu, $sa, $li);
+
+  # Hue
+  my $hp = $HUE_MAX / 6;
+  if   ($max == $min) { $hu = 0; }
+  elsif ($re == $max) { $hu = $hp * (($gr - $bl) / ($max - $min)); }
+  elsif ($gr == $max) { $hu = $hp * (($bl - $re) / ($max - $min)) + $HUE_MAX / 3; }
+  else                { $hu = $hp * (($re - $gr) / ($max - $min)) + $HUE_MAX * 2 / 3; }
+  if ($hu < 0) { $hu += $HUE_MAX; }
+
+  # Saturation
+  my $cnt = ($max + $min) / 2;
+  if ($max == $min) { $sa = 0; }
+  elsif ($cnt < $RGB_MAX / 2) {
+    if ($max + $min <= 0) { $sa = 0; }
+    else { $sa = ($max - $min) / ($max + $min) * $SATURATION_MAX; }
+  }
+  else {
+    $sa = ($max - $min) / ($RGB_MAX * 2 - $max - $min) * $SATURATION_MAX;
+  }
+
+  # Lightness
+  my $li = ($max + $min) / $RGB_MAX / 2 * $LIGHTNESS_MAX;
+
+  return ($hu, $sa, $li);
+};
 
 ### 案内画面 --------------------------------------------------
 sub info {

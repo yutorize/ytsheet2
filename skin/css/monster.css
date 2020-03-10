@@ -9,7 +9,7 @@ article {
 /* // Font
 ---------------------------------------------------------------------------------------------------- */
 #area-monstername h1 {
-  font-family: "游明朝", YuMincho, "ヒラギノ明朝 ProN W3", "Hiragino Mincho ProN", "HG明朝E", "メイリオ", serif;
+  font-family: var(--base-font-family-min);
 }
 
 
@@ -43,7 +43,6 @@ article {
   text-align: left;
   font-size: 200%;
   font-weight: bold;
-  text-shadow: 0 0 0 #000, 0 0 1px #777;
   line-height: 1;
 }
 #area-monstername h1 small {

@@ -3,7 +3,6 @@ use strict;
 #use warnings;
 use utf8;
 use open ":utf8";
-use open ":std";
 use feature 'say';
 
 require './lib/palette-sub.pl';
@@ -35,7 +34,12 @@ $pc{'skills'} =~ s/<br>/\n/gi;
 $pc{$_} = tag_delete($pc{$_}) foreach keys %pc;
 close($IN);
 
-if(!$pc{'chatPalette'}) { $pc{'chatPalette'} = palettePreset($type); }
+my $preset = $pc{'paletteUseVar'} ? palettePreset($type) : palettePresetRaw($type);
+if ($pc{'paletteInsertType'} eq 'begin'){ $pc{'chatPalette'} = $pc{'chatPalette'}."\n".$preset; }
+elsif($pc{'paletteInsertType'} eq 'end'){ $pc{'chatPalette'} = $preset."\n".$pc{'chatPalette'}; }
+else {
+  $pc{'chatPalette'} = $preset if !$pc{'chatPalette'};
+}
 
 sub usedCheck{
   my $var = shift;
@@ -145,6 +149,7 @@ if(!$type){
     say '';
   }
   say "//回避=$pc{'DefenseTotalAllEva'}" if usedCheck('回避');
+  say "//防護=$pc{'DefenseTotalAllDef'}" if usedCheck('防護');
 }
 elsif($type eq 'm') {
   say "//LV=$pc{'lv'}";
