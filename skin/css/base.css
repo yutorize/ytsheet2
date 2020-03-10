@@ -4,7 +4,14 @@
 
 /* // Base
 ---------------------------------------------------------------------------------------------------- */
-
+:root {
+  --bg-color: #fff;
+  --text-color: #000;
+}
+.night {
+  --text-color: #fff;
+  --bg-color: #000;
+}
 * {
   margin: 0px;
   padding: 0px;
@@ -72,27 +79,25 @@ select {
 .night textarea,
 .night select {
   background: rgba(0,0,0,0.8);
-  color: #fff;
+  color: inherit;
   border-color: #234;
 }
 
 body {
   display: grid;
-  grid-template-columns: 1fr minmax(auto, 900px) 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(auto, 900px) minmax(0, 1fr);
   position: relative;
   min-height: 100vh;
   height 100%;
-  background-color: #ffffff;
+  background-color: var(--bg-color);
   background-image: url(../img/back-pattern.png), url(../img/back-first.png);
   background-position: center, bottom right;
   background-repeat: repeat, no-repeat;
   background-attachment: scroll, fixed;
-  color: #000;
+  color: var(--text-color);
 }
 body.night {
-  background-color: #000;
   background-blend-mode: hard-light, hard-light;
-  color: #fff;
 }
 
 header {
@@ -192,7 +197,8 @@ footer .copyright {
   footer,
   #login-form,
   #link-tag,
-  .back-button {
+  .back-button,
+  .chat-palette {
     display: none;
   }
 }
@@ -200,13 +206,12 @@ footer .copyright {
 /* // Font
 ---------------------------------------------------------------------------------------------------- */
 body,
-header nav,
-#personal dl#faith dd {
-  font-family: "ヒラギノ角ゴ ProN","Hiragino Kaku Gothic ProN","HiraKakuProN-W3","メイリオ","Meiryo",sans-serif;
+header nav {
+  font-family: "ヒラギノ角ゴ ProN","Hiragino Kaku Gothic ProN","HiraKakuProN-W3","Meiryo",sans-serif;
 }
 header,
 footer {
-  font-family: "游明朝", "YuMincho", "ヒラギノ明朝 ProN W3", "Hiragino Mincho ProN", "HG明朝E", "ＭＳ Ｐ明朝", Verdana, "Hiragino Kaku Gothic ProN", "游ゴシック", YuGothic, Meiryo, sans-serif;
+  font-family: "Yu Mincho", "YuMincho", "Hiragino Mincho ProN", "HG明朝E", "ＭＳ Ｐ明朝", Verdana, "Hiragino Kaku Gothic ProN", "Yu Gothic", "YuGothic", "Meiryo", sans-serif;
 }
 
 /* // Sidebar

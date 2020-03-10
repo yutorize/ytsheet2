@@ -176,7 +176,7 @@
 */
 @media screen and (min-width:1400px){
   body {
-    grid-template-columns: 1fr minmax(auto, 1800px) 1fr;
+    grid-template-columns: minmax(0, 1fr) minmax(auto, 1800px) minmax(0, 1fr);
   }
   header nav {
     max-width: 1800px;
@@ -186,6 +186,16 @@
     display: grid;
     grid-gap: 0 1.2rem;
     grid-template-columns: 1fr 1fr;
+    padding: 0 1.2rem;
+    position: relative;
+  }
+  .backup-message {
+    position: absolute;
+    top: -.5em;
+    left: 1em;
+  }
+  .backup-message + #area-name {
+    margin-top: 1em;
   }
   #area-name, #tags {
     grid-column: span 2;

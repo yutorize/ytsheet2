@@ -3,7 +3,6 @@ use strict;
 #use warnings;
 use utf8;
 use open ":utf8";
-use open ":std";
 #use JSON;
 
 
