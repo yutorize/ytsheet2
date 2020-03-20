@@ -3,7 +3,6 @@ use strict;
 #use warnings;
 use utf8;
 use open ":utf8";
-use open ":std";
 use HTML::Template;
 
 ### データ読み込み ###################################################################################
@@ -38,6 +37,13 @@ foreach (keys %pc) {
     $pc{$_} = tag_unescape_lines($pc{$_});
   }
   $pc{$_} = tag_unescape($pc{$_});
+}
+
+### コンバート --------------------------------------------------
+if($pc{'colorCustom'} && $pc{'colorHeadBgA'}) {
+  ($pc{'colorHeadBgH'}, $pc{'colorHeadBgS'}, $pc{'colorHeadBgL'}) = rgb_to_hsl($pc{'colorHeadBgR'},$pc{'colorHeadBgG'},$pc{'colorHeadBgB'});
+  ($pc{'colorBaseBgH'}, $pc{'colorBaseBgS'}, undef) = rgb_to_hsl($pc{'colorBaseBgR'},$pc{'colorBaseBgG'},$pc{'colorBaseBgB'});
+  $pc{'colorBaseBgS'} = $pc{'colorBaseBgS'} * $pc{'colorBaseBgA'} * 10;
 }
 
 ### テンプレ用に変換 --------------------------------------------------
@@ -576,6 +582,13 @@ foreach (1 .. (8 + ceil($smax / 2))) {
   } );
 }
 $SHEET->param(BattleItems => \@battleitems);
+
+
+### カラーカスタム --------------------------------------------------
+$SHEET->param(colorBaseBgS => $pc{colorBaseBgS} * 0.7);
+$SHEET->param(colorBaseBgL => 100 - $pc{colorBaseBgS} / 6);
+$SHEET->param(colorBaseBgD => 15);
+
 
 ### バックアップ --------------------------------------------------
 opendir(my $DIR,"${set::char_dir}${file}/backup");

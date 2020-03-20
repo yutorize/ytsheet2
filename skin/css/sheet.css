@@ -5,28 +5,92 @@
 /* // Font
 ---------------------------------------------------------------------------------------------------- */
 @import url('https://fonts.googleapis.com/css?family=Varela+Round&text=0123456789');
+@import url('https://fonts.googleapis.com/css?family=Raleway:500,700&text=ABCČĆDĐEFGHIJKLMNOPQRSŠTUVWXYZŽabcčćdđefghijklmnopqrsštuvwxyzž%26%20');
+@import url('https://fonts.googleapis.com/css?family=Kosugi&text=%E2%80%9C%E2%80%9D');
+@import url('https://fonts.googleapis.com/css?family=Noto+Serif+JP:400,700&display=swap');
+
+:root {
+  --base-font-family-jp : "BIZ UDGothic","Hiragino Kaku Gothic ProN","HiraKakuProN-W3","Kosugi","Meiryo",sans-serif;
+  --base-font-family-min: "Noto Serif JP","YuMincho","ヒラギノ明朝 ProN W3","Hiragino Mincho ProN",serif;
+  --base-font-family-mono: "BIZ UDGothic", monospace;
+}
 
 body {
-  font-family: "Varela Round","ヒラギノ角ゴ ProN","Hiragino Kaku Gothic ProN","HiraKakuProN-W3","メイリオ","Meiryo",sans-serif;
+  font-family: "Varela Round","Raleway",var(--base-font-family-jp);
 }
 header nav {
-  font-family: "ヒラギノ角ゴ ProN","Hiragino Kaku Gothic ProN","HiraKakuProN-W3","メイリオ","Meiryo",sans-serif;
+  font-family: "ヒラギノ角ゴ ProN","Hiragino Kaku Gothic ProN","HiraKakuProN-W3","Meiryo",sans-serif;
 }
 textarea,tt {
-  font-family: "UD デジタル 教科書体 N-R", monospace;
+  font-family: var(--base-font-family-mono);
   font-size: inherit;
 }
 
 /* // Base
 ---------------------------------------------------------------------------------------------------- */
+:root {
+  --box-head-bg-color: hsla(
+    var(--box-head-bg-color-h, 225),
+    var(--box-head-bg-color-s,  9%),
+    var(--box-head-bg-color-l, 65%),
+    var(--box-head-bg-color-a, 0.4)
+  );
+  --box-head-bg-color-pale: hsla(
+    var(--box-head-bg-color-h, 225),
+    var(--box-head-bg-color-s,  9%),
+    var(--box-head-bg-color-l, 65%),
+    var(--box-head-bg-color-a, 0.25)
+  );
+  --box-base-bg-color: hsla(
+    var(--box-base-bg-color-h,   0),
+    var(--box-base-bg-color-s,   0%),
+    var(--box-base-bg-color-l, 100%),
+    var(--box-base-bg-color-a, 0.5)
+  );
+  --box-outside-border-color: hsl(
+    var(--box-head-bg-color-h, 0),
+    calc( var(--box-head-bg-color-s,   0%) * 0.15 ),
+    60%
+  );
+  --box-inside-border-color: hsl(
+    var(--box-base-bg-color-h, 0),
+    calc( var(--box-base-bg-color-s,   0%) * 0.3 ),
+    65%
+  );
+}
+.night {
+  --box-base-bg-color: hsla(
+    var(--box-base-bg-color-h,   0),
+    var(--box-base-bg-color-s,  0%),
+    var(--box-base-bg-color-d, 15%),
+    var(--box-base-bg-color-a, 0.5)
+  );
+  --box-outside-border-color: hsl(
+    var(--box-head-bg-color-h, 0),
+    calc( var(--box-head-bg-color-s,   0%) * 0.15 ),
+    35%
+  );
+  --box-inside-border-color: hsl(
+    var(--box-base-bg-color-h, 0),
+    calc( var(--box-base-bg-color-s,   0%) * 0.3 ),
+    25%
+  );
+}
 
 html {
   overflow-x: hidden;
 }
 
-a:link    { color: #78d; }
-a:visited { color: #54d; }
-a:hover   { color: #000; background: rgba(0,220,255,0.2); }
+main article a         { background: linear-gradient(to top, hsla(var(--box-head-bg-color-h,230),100%,80%,0.7) .2rem, transparent .2rem, transparent); }
+main article a:link    { color: hsl(var(--box-head-bg-color-h,230),90%,40%); }
+main article a:visited { color: hsl(var(--box-base-bg-color-h,270),40%,40%); }
+main article a:hover   { color: #000; background: hsla(var(--box-head-bg-color-h,230),100%,80%,0.7); }
+.night main article a         { background: linear-gradient(to top, hsla(var(--box-head-bg-color-h,230),100%,20%,0.7) .2rem, transparent .2rem, transparent); }
+.night main article a:link    { color: hsl(var(--box-head-bg-color-h,210),100%,70%); }
+.night main article a:visited { color: hsl(var(--box-base-bg-color-h,270), 40%,60%); }
+.night main article a:hover   { color: #fff; background: hsla(var(--box-head-bg-color-h,230),100%,20%,0.7); }
+
+main article a[onclick] { background: none; }
 
 code {
   margin: 0 1px;
@@ -59,33 +123,34 @@ footer {
   font-size: 1.4rem;
 }
 .box h2,
-.box dl:first-child > dt,
-dl.box > dt,
-#status > dl > dt {
+dl.box > dt {
   padding-left: 2px;
   line-height: 1.5;
   white-space: nowrap;
 }
+.box > h2,
+dl.box > dt,
+.box > table:first-child > tbody > tr > th {
+  text-shadow: 0px 0px .3em #fff;
+}
+.night .box > h2,
+.night dl.box > dt,
+.night .box > table:first-child > tbody > tr > th {
+  text-shadow: 0px 0px .3em #000;
+}
 
-.box,
-#status > dl {
-  background: linear-gradient(to bottom, #dadcdf 0, transparent 2.5rem);
+.box {
+  background-image: linear-gradient(to bottom, var(--box-head-bg-color) 0, transparent 2.5rem);
+  background-repeat: no-repeat;
   box-shadow: 1px 1px 2px 0px #ccc;
-  background-color: rgba(255,255,255,0.5);
+  background-color: var(--box-base-bg-color);
 }
-dl#sub-status {
-  background: linear-gradient(to bottom, #dadcdf 0, transparent 2.5rem, transparent 50%, #dadcdf 50%, transparent calc(50% + 2.5rem));
-  background-color: rgba(255,255,255,0.5);
-}
-.night .box,
-.night #status > dl {
-  background: linear-gradient(to bottom, #345 0, transparent 2.5rem);
+.night .box {
   box-shadow: 1px 1px 2px 0px #335;
-  background-color: rgba(40,50,60,0.5);
 }
-.night dl#sub-status {
-  background: linear-gradient(to bottom, #345 0, transparent 2.5rem, transparent 50%, #345 50%, transparent calc(50% + 2.5rem));
-  background-color: rgba(50,60,70,0.5);
+.box.box-2row {
+  background-image: linear-gradient(to bottom, var(--box-head-bg-color) 0, transparent 2.5rem, transparent 50%, var(--box-head-bg-color) 50%, transparent calc(50% + 2.5rem));
+  background-color: var(--box-base-bg-color);
 }
 
 .box dd,
@@ -94,10 +159,8 @@ dl#sub-status {
   text-align: center;
 }
 
-.box { border-color: #999; }
-.box * { border-color: #aaa; }
-.night .box { border-color: #556; }
-.night .box * { border-color: #445; }
+.box { border-color: var(--box-outside-border-color); }
+.box * { border-color: var(--box-inside-border-color); }
 
 .box p {
   margin: .3rem .5em 0;
@@ -120,40 +183,42 @@ dl#sub-status {
 .box hr.dashed {
   border-style: dashed;
 }
-.box h2:nth-child(n+2){
+.box h2:nth-child(n+2) {
   margin: 1.8em 0 -1em;
   padding-bottom: 1em;
   border-width: 1px 0 0;
   border-style: solid;
-  background: linear-gradient(to bottom, #dadcdf 0, transparent 2.5rem);
-}
-.night .box h2:nth-child(n+2){
-  background: linear-gradient(to bottom, #345 0, transparent 2.5rem);
+  border-color: var(--box-outside-border-color);
+  background-image: linear-gradient(to bottom, var(--box-head-bg-color-pale) 0, transparent 2.5rem);
 }
 .box h3 {
   position: relative;
   margin: 1.3em .3em 0;
   line-height: 1.2;
   font-size: 110%;
+  z-index: 0;
 }
 .box h3::after {
   content:'';
   position: absolute;
   top: 60%; left: 0; right: 0; bottom: 0;
-  background: linear-gradient(to right, rgba(150,170,190,0.3), transparent);
+  background-image: linear-gradient(to right, var(--box-head-bg-color-pale), transparent);
   line-height: 1.2;
+  z-index: -1;
 }
 .box h4 {
   position: relative;
   margin: 1.3em .5em 0;
   line-height: 1.2;
   font-size: 103%;
+  z-index: 0;
 }
 .box h4::after {
   content:'';
   position: absolute;
   top: calc(100% - .2rem); left: 0; right: 0; bottom: 0;
-  background: linear-gradient(to right, rgba(150,170,190,0.5), transparent);
+  background-image: linear-gradient(to right, var(--box-head-bg-color-pale), transparent);
+  z-index: -1;
 }
 .box h5 {
   position: relative;
@@ -176,20 +241,40 @@ dl#sub-status {
   padding-top: 0;
 }
 
+.box.chat-palette {
+  position: fixed;
+  top: -100vh;
+  left: 0;
+  right: 0;
+  width: 100%;
+  max-width: 800px;
+  margin: auto;
+  background: #fff;
+  transition: top 0.3s;
+  z-index: 1;
+}
+.night .box.chat-palette {
+  background: #000;
+}
+.box.chat-palette iframe {
+  width: calc(100% - 2em);
+  height: calc(100vh - 120px - 3em);
+  margin: 0 1em 1em;
+  background: #fff;
+}
+
 /* テキスト処理 */
 .left   { text-align: left !important; }
 .center { text-align: center !important; }
 .right  { text-align: right !important; }
 ruby {
-  position: relative;
 }
 ruby rt {
-  position: relative;
-  top: 0.6ex;
-  font-family: Arial;
+  font-family: Arial,var(--base-font-family-jp);
+  transform: translateY(0.2em);
 }
 .oblique {
-  font-family: "游ゴシック Medium","Yu Gothic Medium";
+  font-family: "BIZ UDGothic","游ゴシック Medium","Yu Gothic Medium",var(--base-font-family-min);
   font-style: oblique;
 }
 .strike {
@@ -204,7 +289,7 @@ ruby rt {
 }
 .d-dash {
   display: inline-block;
-  font-family: "メイリオ","Meiryo","小塚明朝 Pro","Kozuka Mincho Pro","小塚明朝Std","Kozuka Mincho Std",sans-serif;
+  font-family: "Meiryo","小塚明朝 Pro","Kozuka Mincho Pro","Kozuka Mincho Std",sans-serif;
   transform: scaleX(0.90);
 }
 .d-dash > span {
@@ -399,6 +484,7 @@ textarea::placeholder {
   padding: .2rem .5rem .2rem .2rem;
   border-radius: 12px 5px 5px 12px;
   background-color: rgba(140,170,200,0.3);
+  background-image: none;
   color: inherit;
 }
 #tags a::before {
