@@ -168,42 +168,43 @@ use lib './module';
   our $mons_dir = $data_dir . 'mons/';  # 魔物データ格納ディレクトリ
   our $item_dir = $data_dir . 'item/';  # アイテムデータ格納ディレクトリ
   
-  our $lib_edit      = './lib/edit.pl';
-  our $lib_edit_char = './lib/edit-chara.pl';
-  our $lib_edit_mons = './lib/edit-mons.pl';
-  our $lib_edit_item = './lib/edit-item.pl';
-  our $lib_save      = './lib/save.pl';
-  our $lib_save_char = './lib/save-chara.pl';
-  our $lib_save_mons = './lib/save-mons.pl';
-  our $lib_save_item = './lib/save-item.pl';
-  our $lib_view      = './lib/view.pl';
-  our $lib_view_char = './lib/view-chara.pl';
-  our $lib_view_mons = './lib/view-mons.pl';
-  our $lib_view_item = './lib/view-item.pl';
-  our $lib_json      = './lib/json.pl';
-  our $lib_palette   = './lib/palette.pl';
-  our $lib_list_char = './lib/list-chara.pl';
-  our $lib_list_mons = './lib/list-mons.pl';
-  our $lib_list_item = './lib/list-item.pl';
-  our $lib_making    = './lib/making.pl';
-  our $lib_list_make = './lib/list-making.pl';
+  our $lib_edit      = './lib/common/edit.pl';
+  our $lib_save      = './lib/common/save.pl';
+  our $lib_view      = './lib/common/view.pl';
+  our $lib_json      = './lib/common/json.pl';
   
-  our $lib_delete = './lib/delete.pl';
+  our $lib_edit_char = './lib/sw2/edit-chara.pl';
+  our $lib_edit_mons = './lib/sw2/edit-mons.pl';
+  our $lib_edit_item = './lib/sw2/edit-item.pl';
+  our $lib_save_char = './lib/sw2/save-chara.pl';
+  our $lib_save_mons = './lib/sw2/save-mons.pl';
+  our $lib_save_item = './lib/sw2/save-item.pl';
+  our $lib_view_char = './lib/sw2/view-chara.pl';
+  our $lib_view_mons = './lib/sw2/view-mons.pl';
+  our $lib_view_item = './lib/sw2/view-item.pl';
+  our $lib_palette   = './lib/sw2/palette.pl';
+  our $lib_list_char = './lib/sw2/list-chara.pl';
+  our $lib_list_mons = './lib/sw2/list-mons.pl';
+  our $lib_list_item = './lib/sw2/list-item.pl';
+  our $lib_making    = './lib/sw2/making.pl';
+  our $lib_list_make = './lib/sw2/list-making.pl';
   
-  our $lib_form    = './lib/form.pl';
-  our $lib_info    = './lib/info.pl';
-  our $lib_register= './lib/register.pl';
-  our $lib_reminder= './lib/reminder.pl';
+  our $lib_delete = './lib/common/delete.pl';
+  
+  our $lib_form    = './lib/common/form.pl';
+  our $lib_info    = './lib/common/info.pl';
+  our $lib_register= './lib/common/register.pl';
+  our $lib_reminder= './lib/common/reminder.pl';
   our $login_users = './tmp/login_users.cgi';
   
   our $tokenfile  = './tmp/token.cgi'; 
 
-  our $data_races = './lib/data-races.pl';  # 種族のデータ
-  our $data_items = './lib/data-items.pl';  # アイテムカテゴリのデータ
-  our $data_faith = './lib/data-faith.pl';  # 信仰のデータ
-  our $data_feats = './lib/data-feats.pl';  # 戦闘特技のデータ
-  our $data_craft = './lib/data-craft.pl';  # 練技・呪歌などのデータ
-  our $data_mons  = './lib/data-mons.pl';   # 魔物分類のデータ
+  our $data_races = './lib/sw2/data-races.pl';  # 種族のデータ
+  our $data_items = './lib/sw2/data-items.pl';  # アイテムカテゴリのデータ
+  our $data_faith = './lib/sw2/data-faith.pl';  # 信仰のデータ
+  our $data_feats = './lib/sw2/data-feats.pl';  # 戦闘特技のデータ
+  our $data_craft = './lib/sw2/data-craft.pl';  # 練技・呪歌などのデータ
+  our $data_mons  = './lib/sw2/data-mons.pl';   # 魔物分類のデータ
 
   our $icon_dir  = './skin/img/'; # 武器アイコンのあるディレクトリ
   

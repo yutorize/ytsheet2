@@ -5,7 +5,7 @@ use utf8;
 use open ":utf8";
 use feature 'say';
 
-require './lib/palette-sub.pl';
+require './lib/sw2/palette-sub.pl';
 
 ### バックアップ情報読み込み #########################################################################
 my $backup = param('backup');

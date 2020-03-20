@@ -6,7 +6,7 @@ use open ":utf8";
 use feature 'say';
 use Encode;
 
-require './lib/palette-sub.pl';
+require './lib/sw2/palette-sub.pl';
 
 my $mode = $main::mode;
 my $message = $main::message;
@@ -127,10 +127,10 @@ Content-type: text/html\n
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" media="all" href="./skin/css/base.css?1.07.005">
   <link rel="stylesheet" media="all" href="./skin/css/sheet.css?1.07.005">
-  <link rel="stylesheet" media="all" href="./skin/css/chara.css?1.07.005">
-  <link rel="stylesheet" media="all" href="./skin/css/chara-sp.css?1.07.005">
-  <link rel="stylesheet" media="all" href="./skin/css/edit.css?1.07.005">
-  <script src="./lib/edit-chara.js?1.07.005" defer></script>
+  <link rel="stylesheet" media="all" href="./skin/css/sw2/chara.css?1.07.005">
+  <link rel="stylesheet" media="all" href="./skin/css/sw2/chara-sp.css?1.07.005">
+  <link rel="stylesheet" media="all" href="./skin/css/sw2/edit.css?1.07.005">
+  <script src="./lib/sw2/edit-chara.js?1.07.005" defer></script>
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
   <style>
     #image {

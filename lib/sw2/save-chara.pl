@@ -58,7 +58,7 @@ sub data_calc {
   $pc{'depositTotal'} = 0;
   $pc{'debtTotal'} = 0;
   $pc{'honor'} = 0;
-  for (my $i = 0; $i <= $pc{'historyNum'}; $i++){
+  foreach my $i (0 .. $pc{'historyNum'}){
     $pc{'expTotal'} += s_eval($pc{"history${i}Exp"});
     $pc{'moneyTotal'} += s_eval($pc{"history${i}Money"});
     foreach (split /[|｜]/, $pc{"history${i}Honor"}) {
