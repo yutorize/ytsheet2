@@ -3,7 +3,6 @@ use strict;
 #use warnings;
 use utf8;
 use open ":utf8";
-use open ":std";
 use HTML::Template;
 
 my $LOGIN_ID = check;
@@ -15,6 +14,8 @@ my $INDEX = HTML::Template->new( filename => $set::skin_tmpl, utf8 => 1,
 $INDEX->param(modeInfo => 1);
 
 $INDEX->param(LOGIN_ID => $LOGIN_ID);
+$INDEX->param(OAUTH_MODE => $set::oauth_service);
+$INDEX->param(OAUTH_LOGIN_URL => $set::oauth_login_url);
 
 $INDEX->param(header => $main::header);
 $INDEX->param(message => $main::message);

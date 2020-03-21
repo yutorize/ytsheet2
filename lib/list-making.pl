@@ -3,7 +3,6 @@ use strict;
 #use warnings;
 use utf8;
 use open ":utf8";
-use open ":std";
 use HTML::Template;
 
 my $LOGIN_ID = check;
@@ -23,6 +22,8 @@ $INDEX->param(modeMaking => 1) if param('mode') eq 'making';
 $INDEX->param(name => (getplayername($LOGIN_ID))[0]);
 
 $INDEX->param(LOGIN_ID => $LOGIN_ID);
+$INDEX->param(OAUTH_MODE => $set::oauth_service);
+$INDEX->param(OAUTH_LOGIN_URL => $set::oauth_login_url);
 
 $INDEX->param(title => $set::title);
 $INDEX->param(ver => $main::ver);

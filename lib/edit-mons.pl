@@ -3,7 +3,6 @@ use strict;
 #use warnings;
 use utf8;
 use open ":utf8";
-use open ":std";
 use feature 'say';
 use Encode;
 
@@ -75,6 +74,7 @@ $pc{'lootsNum'}   = $pc{'lootsNum'} ? $pc{'lootsNum'} : 2;
 ### 改行処理 --------------------------------------------------
 $pc{'skills'}      =~ s/&lt;br&gt;/\n/g;
 $pc{'description'} =~ s/&lt;br&gt;/\n/g;
+$pc{'chatPalette'} =~ s/&lt;br&gt;/\n/g;
 
 
 ### フォーム表示 #####################################################################################
@@ -285,7 +285,14 @@ print <<"HTML";
       <section id="section-palette" style="display:none;">
       <div class="box">
         <h2>チャットパレット</h2>
-        <textarea name="chatPalette" style="height:20em" placeholder="例）&#13;&#10;2d6+{冒険者}+{器用}&#13;&#10;&#13;&#10;※入力がない場合、自動的にプリセットがそのまま反映されます。">$pc{'chatPalette'}</textarea>
+        <p>
+          手動パレットの配置:<select name="paletteInsertType" style="width: auto;">
+            <option value="exchange" @{[ $pc{'paletteInsertType'} eq 'exchange'?'selected':'' ]}>プリセットと入れ替える</option>
+            <option value="begin"    @{[ $pc{'paletteInsertType'} eq 'begin'   ?'selected':'' ]}>プリセットの手前に挿入</option>
+            <option value="end"      @{[ $pc{'paletteInsertType'} eq 'end'     ?'selected':'' ]}>プリセットの直後に挿入</option>
+          </select>
+        </p>
+        <textarea name="chatPalette" style="height:20em" placeholder="例）&#13;&#10;2d6+{冒険者}+{器用}&#13;&#10;&#13;&#10;※入力がない場合、プリセットがそのまま反映されます。">$pc{'chatPalette'}</textarea>
         
         <div class="palette-column">
         <h2>デフォルト変数 （自動的に末尾に出力されます）</h2>
