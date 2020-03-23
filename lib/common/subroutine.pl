@@ -327,12 +327,6 @@ sub colcall {
   return @out;
 }
 
-sub ddash {
-  my $dash = $_[0];
-  $dash =~ s|―|<span>―</span>|g;
-  return "<span class=\"d-dash\">$dash</span>";
-}
-
 ### タグ削除 --------------------------------------------------
 sub tag_delete {
   my $text = $_[0];

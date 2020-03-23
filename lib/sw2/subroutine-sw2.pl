@@ -29,7 +29,7 @@ sub tag_unescape {
   
   $text =~ s/\{\{([0-9\+\-\*\/\%\(\) ]+?)\}\}/s_eval($1);/eg;
   
-  $text =~ s/(―+)/&ddash($1);/eg;
+  $text =~ s#(―+)#<span class="d-dash">$1</span>#g;
   
   
   $text =~ s/\[魔\]/<img alt="&#91;魔&#93;" class="i-icon" src="${set::icon_dir}wp_magic.png">/gi;
