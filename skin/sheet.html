@@ -6,10 +6,18 @@
   <meta charset="UTF-8">
   <title><TMPL_VAR characterNameTitle> - <TMPL_VAR title></title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" media="all" href="./skin/css/base.css?1.07.005">
-  <link rel="stylesheet" media="all" href="./skin/css/sheet.css?1.07.005">
-  <link rel="stylesheet" media="all" href="./skin/css/sw2/chara.css?1.07.005">
-  <link rel="stylesheet" media="all" href="./skin/css/sw2/chara-sp.css?1.07.005">
+  <meta property="og:title" content="<TMPL_VAR characterNameTitle> - <TMPL_VAR title>">
+  <meta property="og:type" content="artcle">
+  <meta property="og:url" content="<TMPL_VAR ogUrl>">
+  <meta property="og:site_name" content="<TMPL_VAR title>">
+  <meta property="og:description" content="<TMPL_VAR ogDescript>">
+  <TMPL_IF ogImg><meta property="og:image" content="<TMPL_VAR ogImg>"></TMPL_IF>
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@yutorize">
+  <link rel="stylesheet" media="all" href="./skin/css/base.css?1.08a">
+  <link rel="stylesheet" media="all" href="./skin/css/sheet.css?1.08a">
+  <link rel="stylesheet" media="all" href="./skin/css/sw2/chara.css?1.08a">
+  <link rel="stylesheet" media="all" href="./skin/css/sw2/chara-sp.css?1.08a">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
   <script>
 function popImage() {
@@ -209,12 +217,24 @@ window.onload = function() {
           <dl class="box" id="stt-bonus-mnd"> <dt><span>精神力</span></dt> <dd><TMPL_VAR bonusMnd></dd></dl>
         </div>
 
-        <dl class="box box-2row" id="sub-status">
-          <dt id="vit-resist">生命抵抗力</dt><dd><TMPL_IF vitResistAddTotal><TMPL_VAR vitResistBase>+<TMPL_VAR vitResistAddTotal>=</TMPL_IF><b><TMPL_VAR vitResistTotal></b></dd>
-          <dt id="mnd-resist">精神抵抗力</dt><dd><TMPL_IF mndResistAddTotal><TMPL_VAR mndResistBase>+<TMPL_VAR mndResistAddTotal>=</TMPL_IF><b><TMPL_VAR mndResistTotal></b></dd>
-          <dt id="hp">ＨＰ</dt><dd><TMPL_IF hpAddTotal><TMPL_VAR hpBase>+<TMPL_VAR hpAddTotal>=</TMPL_IF><b><TMPL_VAR hpTotal></b></dd>
-          <dt id="mp">ＭＰ</dt><dd><TMPL_IF mpTotal><TMPL_IF mpAddTotal><TMPL_VAR mpBase>+<TMPL_VAR mpAddTotal>=</TMPL_IF><b><TMPL_VAR mpTotal></b><TMPL_ELSE><b>なし</b></TMPL_IF></dd>
-        </dl>
+        <div class="box-union" id="sub-status">
+          <dl class="box">
+            <dt>生命抵抗力</dt>
+            <dd><TMPL_IF vitResistAddTotal><TMPL_VAR vitResistBase>+<TMPL_VAR vitResistAddTotal>=</TMPL_IF><b><TMPL_VAR vitResistTotal></b></dd>
+          </dl>
+          <dl class="box">
+            <dt>精神抵抗力</dt>
+            <dd><TMPL_IF mndResistAddTotal><TMPL_VAR mndResistBase>+<TMPL_VAR mndResistAddTotal>=</TMPL_IF><b><TMPL_VAR mndResistTotal></b></dd>
+          </dl>
+          <dl class="box">
+            <dt>ＨＰ</dt>
+            <dd><TMPL_IF hpAddTotal><TMPL_VAR hpBase>+<TMPL_VAR hpAddTotal>=</TMPL_IF><b><TMPL_VAR hpTotal></b></dd>
+          </dl>
+          <dl class="box">
+            <dt>ＭＰ</dt>
+            <dd><TMPL_IF mpTotal><TMPL_IF mpAddTotal><TMPL_VAR mpBase>+<TMPL_VAR mpAddTotal>=</TMPL_IF><b><TMPL_VAR mpTotal></b><TMPL_ELSE><b>なし</b></TMPL_IF></dd>
+          </dl>
+        </div>
         
         <dl class="box" id="level">
           <dt>冒険者レベル</dt><dd><TMPL_VAR level></dd>
@@ -224,7 +244,7 @@ window.onload = function() {
         </dl>
       </div>
 
-      <div id="area-ability">
+      <div id="area-ability" class="data-tables side-margin">
         <div id="area-classes">
           <div class="box" id="classes">
             <h2>技能</h2>
@@ -361,8 +381,8 @@ window.onload = function() {
         <div id="area-package">
           <div class="box" id="package">
             <h2>判定パッケージ</h2>
-            <TMPL_IF lvSco>
-            <table>
+            <table class="data-table side-margin line-tbody">
+            <TMPL_IF lvSco><tbody>
               <tr>
                 <th rowspan="3">スカウト<span class="small">技能レベル</span><TMPL_VAR lvSco></th>
                 <th>技巧</th>
@@ -379,10 +399,8 @@ window.onload = function() {
                 <td><TMPL_IF packScoObsAdd>+<TMPL_VAR packScoObsAdd>=</TMPL_IF></td>
                 <td><TMPL_VAR packScoObs></td>
               </tr>
-            </table>
-            </TMPL_IF>
-            <TMPL_IF lvRan>
-            <table>
+            </tbody></TMPL_IF>
+            <TMPL_IF lvRan><tbody>
               <tr>
                 <th rowspan="3">レンジャー<span class="small">技能レベル</span><TMPL_VAR lvRan></th>
                 <th>技巧</th>
@@ -399,30 +417,24 @@ window.onload = function() {
                 <td><TMPL_IF packRanObsAdd>+<TMPL_VAR packRanObsAdd>=</TMPL_IF></td>
                 <td><TMPL_VAR packRanObs></td>
               </tr>
-            </table>
-            </TMPL_IF>
-            <TMPL_IF lvSag>
-            <table>
+            </tbody></TMPL_IF>
+            <TMPL_IF lvSag><tbody>
               <tr>
                 <th>セージ<span class="small">技能レベル</span><TMPL_VAR lvSag></th>
                 <th>知識</th>
                 <td><TMPL_IF packSagKnoAdd>+<TMPL_VAR packSagKnoAdd>=</TMPL_IF></td>
                 <td><TMPL_VAR packSagKno></td>
               </tr>
-            </table>
-            </TMPL_IF>
-            <TMPL_IF lvBar>
-            <table>
+            </tbody></TMPL_IF>
+            <TMPL_IF lvBar><tbody>
               <tr>
                 <th>バード<span class="small">技能レベル</span><TMPL_VAR lvBar></th>
                 <th>見識</th>
                 <td><TMPL_IF packBarKnoAdd>+<TMPL_VAR packBarKnoAdd>=</TMPL_IF></td>
                 <td><TMPL_VAR packBarKno></td>
               </tr>
-            </table>
-            </TMPL_IF>
-            <TMPL_IF lvRid>
-            <table>
+            </tbody></TMPL_IF>
+            <TMPL_IF lvRid><tbody>
               <tr>
                 <th rowspan="<TMPL_IF riderObsOn>3<TMPL_ELSE>2</TMPL_IF>">ライダー<span class="small">技能レベル</span><TMPL_VAR lvRid></th>
                 <th>運動</th>
@@ -439,18 +451,17 @@ window.onload = function() {
                 <td><TMPL_IF packRidObsAdd>+<TMPL_VAR packRidObsAdd>=</TMPL_IF></td>
                 <td><TMPL_VAR packRidObs></td>
               </tr></TMPL_IF>
-            </table>
-            </TMPL_IF>
-            <TMPL_IF lvAlc>
-            <table>
+            </tbody></TMPL_IF>
+            <TMPL_IF lvAlc><tbody>
               <tr>
                 <th>アルケミスト<span class="small">技能レベル</span><TMPL_VAR lvAlc></th>
                 <th>知識</th>
                 <td><TMPL_IF packAlcKnoAdd>+<TMPL_VAR packAlcKnoAdd>=</TMPL_IF></td>
                 <td><TMPL_VAR packAlcKno></td>
               </tr>
-            </table>
+            </tbody>
             </TMPL_IF>
+            </table>
             <TMPL_UNLESS PackageLv><p>なし</p></TMPL_UNLESS>
           </div>
         </div>
@@ -471,18 +482,24 @@ window.onload = function() {
         </div>
         <div class="box" id="language">
           <h2>言語</h2>
-          <table>
-            <tr><th></th><th>会話</th><th>読文</th></tr>
-            <TMPL_LOOP Language>
-            <tr><td><TMPL_VAR NAME></td><td><TMPL_IF TALK>○</TMPL_IF></td><td><TMPL_IF READ>○</TMPL_IF></td></tr>
-            </TMPL_LOOP>
+          <table class="data-table side-margin">
+            <thead>
+              <tr><th></th><th>会話</th><th>読文</th></tr>
+            </thead>
+            <tbody>
+              <TMPL_LOOP Language><tr>
+              <td><TMPL_VAR NAME></td>
+              <td><TMPL_IF TALK>○</TMPL_IF></td>
+              <td><TMPL_IF READ>○</TMPL_IF></td>
+              </tr></TMPL_LOOP>
+            </tbody>
           </table>
         </div>
         <TMPL_IF MagicPowers>
         <div class="box" id="magic-power">
           <h2>魔力<TMPL_IF lvBar>／奏力</TMPL_IF></h2>
           <TMPL_IF  magicPowerAdd><p id="magic-power-add">+<TMPL_VAR  magicPowerAdd></p></TMPL_IF>
-          <table>
+          <table class="data-table side-margin">
             <TMPL_LOOP MagicPowers>
             <tr>
               <th><TMPL_VAR NAME></th>
@@ -500,136 +517,148 @@ window.onload = function() {
       <div id="area-equipment">
         <TMPL_IF Weapons>
         <div class="box" id="attack-classes">
-          <table>
-            <tr>
-              <th>技能・特技</th>
-              <th>必筋<br>上限</th>
-              <th>命中力</th>
-              <th></th>
-              <th>Ｃ値</th>
-              <th>追加Ｄ</th>
-            </tr>
-            <TMPL_LOOP AttackClasses>
-            <tr>
-              <td><TMPL_VAR NAME DEFAULT=―></td>
-              <td><TMPL_VAR STR DEFAULT=―></td>
-              <td><TMPL_VAR ACC DEFAULT=―></td>
-              <td>―</td>
-              <td><TMPL_VAR CRIT DEFAULT=―></td>
-              <td><TMPL_VAR DMG DEFAULT=―></td>
-            </tr>
-            </TMPL_LOOP>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>技能・特技</th>
+                <th>必筋<br>上限</th>
+                <th>命中力</th>
+                <th></th>
+                <th>Ｃ値</th>
+                <th>追加Ｄ</th>
+              </tr>
+            </thead>
+            <tbody>
+              <TMPL_LOOP AttackClasses><tr>
+                <td><TMPL_VAR NAME DEFAULT=―></td>
+                <td><TMPL_VAR STR DEFAULT=―></td>
+                <td><TMPL_VAR ACC DEFAULT=―></td>
+                <td>―</td>
+                <td><TMPL_VAR CRIT DEFAULT=―></td>
+                <td><TMPL_VAR DMG DEFAULT=―></td>
+              </tr></TMPL_LOOP>
+            </tbody>
           </table>
         </div>
         <div class="box" id="weapons">
-          <table>
-            <tr>
-              <th>武器</th>
-              <th>用法</th>
-              <th>必筋</th>
-              <th>命中力</th>
-              <th>威力</th>
-              <th>Ｃ値</th>
-              <th>追加Ｄ</th>
-              <th>専用</th>
-              <th>備考</th>
-            </tr>
-            <TMPL_LOOP Weapons>
-            <tr>
-              <TMPL_UNLESS NAMEOFF><td rowspan="<TMPL_VAR ROWSPAN>"><span class="item-name"><TMPL_VAR NAME></span></td></TMPL_UNLESS>
-              <td><TMPL_VAR USAGE></td>
-              <td><TMPL_VAR REQD></td>
-              <td><TMPL_IF ACC>+<TMPL_VAR ACC>=</TMPL_IF><b><TMPL_VAR ACCTOTAL></b></td>
-              <td><TMPL_VAR RATE></td>
-              <td><TMPL_VAR CRIT></td>
-              <td><TMPL_IF DMG>+<TMPL_VAR DMG>=</TMPL_IF><b><TMPL_VAR DMGTOTAL></b></td>
-              <td><TMPL_IF OWN>✔</TMPL_IF></td>
-              <td><span class="item-name"><TMPL_VAR NOTE></span></td>
-            </tr>
-            </TMPL_LOOP>
+          <table class="data-table line-tbody">
+            <thead>
+              <tr>
+                <th>武器</th>
+                <th>用法</th>
+                <th>必筋</th>
+                <th>命中力</th>
+                <th>威力</th>
+                <th>Ｃ値</th>
+                <th>追加Ｄ</th>
+                <th>専用</th>
+                <th>備考</th>
+              </tr>
+            </thead>
+            <tbody><TMPL_LOOP Weapons><TMPL_IF CLOSE></tbody><tbody></TMPL_IF>
+              <tr>
+                <TMPL_UNLESS NAMEOFF><td rowspan="<TMPL_VAR ROWSPAN>"><span class="item-name"><TMPL_VAR NAME></span></td></TMPL_UNLESS>
+                <td><TMPL_VAR USAGE></td>
+                <td><TMPL_VAR REQD></td>
+                <td><TMPL_IF ACC>+<TMPL_VAR ACC>=</TMPL_IF><b><TMPL_VAR ACCTOTAL></b></td>
+                <td><TMPL_VAR RATE></td>
+                <td><TMPL_VAR CRIT></td>
+                <td><TMPL_IF DMG>+<TMPL_VAR DMG>=</TMPL_IF><b><TMPL_VAR DMGTOTAL></b></td>
+                <td><TMPL_IF OWN>✔</TMPL_IF></td>
+                <td><span class="item-name"><TMPL_VAR NOTE></span></td>
+              </tr>
+            </TMPL_LOOP></tbody>
           </table>
         </div>
         </TMPL_IF>
         
         <div class="box" id="evasion-classes">
-          <table>
-            <tr>
-              <th>技能・特技</th>
-              <th>必筋<br>上限</th>
-              <th>回避力</th>
-              <th>防護点</th>
-            </tr>
-            <TMPL_LOOP EvasionClasses>
-            <tr>
-              <td><TMPL_VAR NAME DEFAULT=―></td>
-              <td><TMPL_VAR STR DEFAULT=―></td>
-              <td><TMPL_VAR EVA DEFAULT=―></td>
-              <td><TMPL_VAR DEF DEFAULT=―></td>
-            </tr>
-            </TMPL_LOOP>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>技能・特技</th>
+                <th>必筋<br>上限</th>
+                <th>回避力</th>
+                <th>防護点</th>
+              </tr>
+            </thead>
+            <tbody>
+              <TMPL_LOOP EvasionClasses><tr>
+                <td><TMPL_VAR NAME DEFAULT=―></td>
+                <td><TMPL_VAR STR DEFAULT=―></td>
+                <td><TMPL_VAR EVA DEFAULT=―></td>
+                <td><TMPL_VAR DEF DEFAULT=―></td>
+              </tr></TMPL_LOOP>
+            </tbody>
           </table>
         </div>
         <div class="box" id="armours">
-          <table>
-            <tr>
-              <th></th>
-              <th>防具</th>
-              <th>必筋</th>
-              <th>回避力</th>
-              <th>防護点</th>
-              <th>専用</th>
-              <th>備考</th>
-            </tr>
-            <tr>
-              <th>鎧</th>
-              <td><span class="item-name"><TMPL_VAR armourName></span></td>
-              <td><TMPL_VAR armourReqd></td>
-              <td><TMPL_VAR armourEva></td>
-              <td><TMPL_VAR armourDef></td>
-              <td><TMPL_IF armourOwn>✔</TMPL_IF></td>
-              <td><TMPL_VAR armourNote></td>
-            </tr>
-            <tr>
-              <th>盾</th>
-              <td><span class="item-name"><TMPL_VAR shieldName></span></td>
-              <td><TMPL_VAR shieldReqd></td>
-              <td><TMPL_VAR shieldEva></td>
-              <td><TMPL_VAR shieldDef></td>
-              <td><TMPL_IF shieldOwn>✔</TMPL_IF></td>
-              <td><TMPL_VAR shieldNote></td>
-            </tr>
-            <tr>
-              <th>他</th>
-              <td><span class="item-name"><TMPL_VAR defOtherName></span></td>
-              <td><TMPL_VAR defOtherReqd></td>
-              <td><TMPL_VAR defOtherEva></td>
-              <td><TMPL_VAR defOtherDef></td>
-              <td><TMPL_VAR defOtherOwn></td>
-              <td><TMPL_VAR defOtherNote></td>
-            </tr>
-            <tr class="defense-total">
-              <th colspan="3">合計：すべて</th>
-              <td><TMPL_VAR DefenseTotalAllEva></td>
-              <td><TMPL_VAR DefenseTotalAllDef></td>
-            </tr>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th></th>
+                <th>防具</th>
+                <th>必筋</th>
+                <th>回避力</th>
+                <th>防護点</th>
+                <th>専用</th>
+                <th>備考</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th>鎧</th>
+                <td><span class="item-name"><TMPL_VAR armourName></span></td>
+                <td><TMPL_VAR armourReqd></td>
+                <td><TMPL_VAR armourEva></td>
+                <td><TMPL_VAR armourDef></td>
+                <td><TMPL_IF armourOwn>✔</TMPL_IF></td>
+                <td><TMPL_VAR armourNote></td>
+              </tr>
+              <tr>
+                <th>盾</th>
+                <td><span class="item-name"><TMPL_VAR shieldName></span></td>
+                <td><TMPL_VAR shieldReqd></td>
+                <td><TMPL_VAR shieldEva></td>
+                <td><TMPL_VAR shieldDef></td>
+                <td><TMPL_IF shieldOwn>✔</TMPL_IF></td>
+                <td><TMPL_VAR shieldNote></td>
+              </tr>
+              <tr>
+                <th>他</th>
+                <td><span class="item-name"><TMPL_VAR defOtherName></span></td>
+                <td><TMPL_VAR defOtherReqd></td>
+                <td><TMPL_VAR defOtherEva></td>
+                <td><TMPL_VAR defOtherDef></td>
+                <td><TMPL_VAR defOtherOwn></td>
+                <td><TMPL_VAR defOtherNote></td>
+              </tr>
+              <tr class="defense-total">
+                <th colspan="3">合計：すべて</th>
+                <td><TMPL_VAR DefenseTotalAllEva></td>
+                <td><TMPL_VAR DefenseTotalAllDef></td>
+              </tr>
+            </tbody>
           </table>
         </div>
         <div class="box" id="accessories">
-          <table>
-            <tr>
-              <th></th>
-              <th>装飾品</th>
-              <th>専用</th>
-              <th>効果</th>
-            </tr>
-            <TMPL_LOOP Accessories>
-            <tr>
-              <th><TMPL_VAR TYPE></th>
-              <td><span class="item-name"><TMPL_VAR NAME></span></td>
-              <td><TMPL_IF OWN>✔<TMPL_VAR OWN></TMPL_IF></td>
-              <td><TMPL_VAR NOTE></td>
-            </tr>
-            </TMPL_LOOP>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th></th>
+                <th>装飾品</th>
+                <th>専用</th>
+                <th>効果</th>
+              </tr>
+            </thead>
+            <tbody>
+              <TMPL_LOOP Accessories><tr>
+                <th><TMPL_VAR TYPE></th>
+                <td><span class="item-name"><TMPL_VAR NAME></span></td>
+                <td><TMPL_IF OWN>✔<TMPL_VAR OWN></TMPL_IF></td>
+                <td><TMPL_VAR NOTE></td>
+              </tr></TMPL_LOOP>
+            </tbody>
           </table>
         </div>
       </div>
@@ -648,36 +677,40 @@ window.onload = function() {
         <div id="area-items-R">
           <TMPL_IF lvAlc><div class="box" id="material-cards">
             <h2>マテリアルカード</h2>
-            <table>
-            <tr><th> </th><th>B</th><th>A</th><th>S</th><th>SS</th></tr>
-            <TMPL_IF cardRedView><tr class="cards-red"><th>赤</th><td><TMPL_VAR cardRedB></td><td><TMPL_VAR cardRedA></td><td><TMPL_VAR cardRedS></td><td><TMPL_VAR cardRedSS></td></tr></TMPL_IF>
-            <TMPL_IF cardGreView><tr class="cards-gre"><th>緑</th><td><TMPL_VAR cardGreB></td><td><TMPL_VAR cardGreA></td><td><TMPL_VAR cardGreS></td><td><TMPL_VAR cardGreSS></td></tr></TMPL_IF>
-            <TMPL_IF cardBlaView><tr class="cards-bla"><th>黒</th><td><TMPL_VAR cardBlaB></td><td><TMPL_VAR cardBlaA></td><td><TMPL_VAR cardBlaS></td><td><TMPL_VAR cardBlaSS></td></tr></TMPL_IF>
-            <TMPL_IF cardWhiView><tr class="cards-whi"><th>白</th><td><TMPL_VAR cardWhiB></td><td><TMPL_VAR cardWhiA></td><td><TMPL_VAR cardWhiS></td><td><TMPL_VAR cardWhiSS></td></tr></TMPL_IF>
-            <TMPL_IF cardGolView><tr class="cards-gol"><th>金</th><td><TMPL_VAR cardGolB></td><td><TMPL_VAR cardGolA></td><td><TMPL_VAR cardGolS></td><td><TMPL_VAR cardGolSS></td></tr></TMPL_IF>
+            <table class="data-table">
+            <thead>
+              <tr><th> </th><th>B</th><th>A</th><th>S</th><th>SS</th></tr>
+            </thead>
+            <tbody>
+              <TMPL_IF cardRedView><tr class="cards-red"><th>赤</th><td><TMPL_VAR cardRedB></td><td><TMPL_VAR cardRedA></td><td><TMPL_VAR cardRedS></td><td><TMPL_VAR cardRedSS></td></tr></TMPL_IF>
+              <TMPL_IF cardGreView><tr class="cards-gre"><th>緑</th><td><TMPL_VAR cardGreB></td><td><TMPL_VAR cardGreA></td><td><TMPL_VAR cardGreS></td><td><TMPL_VAR cardGreSS></td></tr></TMPL_IF>
+              <TMPL_IF cardBlaView><tr class="cards-bla"><th>黒</th><td><TMPL_VAR cardBlaB></td><td><TMPL_VAR cardBlaA></td><td><TMPL_VAR cardBlaS></td><td><TMPL_VAR cardBlaSS></td></tr></TMPL_IF>
+              <TMPL_IF cardWhiView><tr class="cards-whi"><th>白</th><td><TMPL_VAR cardWhiB></td><td><TMPL_VAR cardWhiA></td><td><TMPL_VAR cardWhiS></td><td><TMPL_VAR cardWhiSS></td></tr></TMPL_IF>
+              <TMPL_IF cardGolView><tr class="cards-gol"><th>金</th><td><TMPL_VAR cardGolB></td><td><TMPL_VAR cardGolA></td><td><TMPL_VAR cardGolS></td><td><TMPL_VAR cardGolSS></td></tr></TMPL_IF>
+            </tbody>
             </table>
           </div></TMPL_IF>
           <TMPL_IF BattleItems>
           <div class="box" id="battle-items">
             <h2>戦闘用アイテム</h2>
-            <ul><TMPL_LOOP BattleItems><li><TMPL_VAR ITEM DEFAULT="&nbsp;"></li></TMPL_LOOP></ul>
+            <ul class="data-table side-margin"><TMPL_LOOP BattleItems><li><TMPL_VAR ITEM DEFAULT="&nbsp;"></li></TMPL_LOOP></ul>
           </div>
           </TMPL_IF>
           <dl class="box" id="honor">
             <dt>名誉点</dt><dd><TMPL_VAR honor></dd>
             <dt>ランク</dt><dd><TMPL_VAR rank></dd>
           </dl>
-          <div class="box" id="honor-items">
+          <div class="box honor-items" id="honor-items">
             <h2>名誉アイテム</h2>
-            <table>
-              <tr><th></th><th>点数</th></tr>
-              <tr><td>冒険者ランク</td><td><TMPL_VAR rankHonorValue></td></tr>
-              <TMPL_IF MysticArtsHonor>
-              <tr><td>秘伝</td><td><TMPL_VAR MysticArtsHonor></td></tr>
-              </TMPL_IF>
-              <TMPL_LOOP HonorItems>
-              <tr><td><TMPL_VAR NAME></td><td><TMPL_VAR PT></td></tr>
-              </TMPL_LOOP>
+            <table class="data-table side-margin">
+              <thead>
+                <tr><th></th><th>点数</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>冒険者ランク</td><td><TMPL_VAR rankHonorValue></td></tr>
+                <TMPL_IF MysticArtsHonor><tr><td>秘伝</td><td><TMPL_VAR MysticArtsHonor></td></tr></TMPL_IF>
+                <TMPL_LOOP HonorItems><tr><td class="left"><TMPL_VAR NAME></td><td><TMPL_VAR PT></td></tr></TMPL_LOOP>
+              </tbody>
             </table>
           </div>
           <TMPL_IF DishonorItems>
@@ -685,13 +718,13 @@ window.onload = function() {
             <dt>不名誉点</dt><dd><TMPL_VAR dishonor></dd>
             <dt>不名誉称号</dt><dd><TMPL_VAR notoriety></dd>
           </dl>
-          <div class="box" id="dishonor-items">
+          <div class="box honor-items" id="dishonor-items">
             <h2>不名誉詳細</h2>
-            <table>
-              <tr><th></th><th>点数</th></tr>
-              <TMPL_LOOP DishonorItems>
-              <tr><td><TMPL_VAR NAME></td><td><TMPL_VAR PT></td></tr>
-              </TMPL_LOOP>
+            <table class="data-table side-margin">
+              <thead><tr><th></th><th>点数</th></tr></thead>
+              <tbody>
+                <TMPL_LOOP DishonorItems><tr><td class="left"><TMPL_VAR NAME></td><td><TMPL_VAR PT></td></tr></TMPL_LOOP>
+              </tbody>
             </table>
           </div>
           </TMPL_IF>
@@ -703,34 +736,36 @@ window.onload = function() {
       </div>
       <div class="box" id="history">
         <h2>セッション履歴</h2>
-        <table>
-          <tr>
-            <th>No.</th>
-            <th>日付</th>
-            <th>タイトル</th>
-            <th>経験点</th>
-            <th>名誉点</th>
-            <th>ガメル</th>
-            <th>成長</th>
-            <th>GM</th>
-            <th>参加者</th>
-          </tr>
-          <TMPL_LOOP History>
-          <tr>
-            <td rowspan="2"><TMPL_VAR NUM></td>
-            <td rowspan="2"><TMPL_VAR DATE></td>
-            <td rowspan="2"><TMPL_VAR TITLE></td>
-            <td><TMPL_VAR EXP></td>
-            <td><TMPL_VAR HONOR></td>
-            <td><TMPL_VAR MONEY></td>
-            <td><TMPL_VAR GROW></td>
-            <td><span><TMPL_VAR GM></span></td>
-            <td><TMPL_VAR MEMBER></td>
-          </tr>
-          <tr>
-            <td colspan="6"><TMPL_VAR NOTE></td>
-          </tr>
-          </TMPL_LOOP>
+        <table class="data-table line-tbody">
+          <thead>
+            <tr>
+              <th>No.</th>
+              <th>日付</th>
+              <th>タイトル</th>
+              <th>経験点</th>
+              <th>名誉点</th>
+              <th>ガメル</th>
+              <th>成長</th>
+              <th>GM</th>
+              <th>参加者</th>
+            </tr>
+          </thead>
+          <TMPL_LOOP History><tbody>
+            <tr>
+              <td <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR NUM></td>
+              <td <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR DATE></td>
+              <td <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR TITLE></td>
+              <td><TMPL_VAR EXP></td>
+              <td><TMPL_VAR HONOR></td>
+              <td><TMPL_VAR MONEY></td>
+              <td><TMPL_VAR GROW></td>
+              <td><span><TMPL_VAR GM></span></td>
+              <td><TMPL_VAR MEMBER></td>
+            </tr>
+          <TMPL_IF NOTE><tr>
+            <td colspan="6" class="note"><TMPL_VAR NOTE></td>
+          </tr></TMPL_IF>
+          </tbody></TMPL_LOOP>
         </table>
       </div>
       <TMPL_IF freeHistory>

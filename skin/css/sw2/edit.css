@@ -1,7 +1,5 @@
 @charset "utf-8";
 
-/* ゆとシート for SW2.5 */
-
 /* // フォーム設定
 ---------------------------------------------------------------------------------------------------- */
 html {
@@ -22,7 +20,15 @@ select optgroup {
   background-color: #fff;
   color: #000;
 }
-
+input,
+select {
+  font-family: inherit;
+  font-weight: inherit;
+}
+input[type=checkbox] {
+  margin: 0 .2rem;
+  transform: scale(1.3);
+}
 input::placeholder {
   opacity: 0.5;
 }
@@ -81,6 +87,100 @@ span.free {
 .hidden {
   display: none;
 }
+/* テーブル */
+.edit-table,
+.edit-tables table,
+.edit-tables ul,
+.edit-tables dl {
+  width: 100%;
+  border-style: hidden hidden none;
+}
+.edit-table.side-margin,
+.edit-tables.side-margin table,
+.edit-tables.side-margin ul,
+.edit-tables.side-margin dl {
+  width: calc(100% - 1rem);
+  margin: 0 .5rem;
+}
+.edit-table:last-child,
+.edit-tables table {
+  border-bottom-style: hidden;
+}
+table.edit-table:not(.side-margin) thead th,
+.edit-tables:not(.side-margin) table thead th {
+  padding: .3rem 0 .2rem;
+  border-width: 0;
+  line-height: 1;
+}
+table.edit-table > tbody tr,
+.edit-tables table tbody tr {
+  border-width: .1rem 0;
+  border-style: solid;
+}
+table.edit-table:last-child {
+  border-bottom-style: hidden !important;
+}
+table.edit-table:not(.side-margin) tbody > tr > *,
+.edit-tables:not(.side-margin) table tbody > tr > * {
+  border-left-width: 1px;
+  border-right-width: 1px;
+  border-left-style: dotted;
+  border-right-style: dotted;
+}
+table.edit-table tbody td select,
+table.edit-table tbody td textarea,
+table.edit-table tbody td input[type="text"],
+table.edit-table tbody td input[type="number"] {
+  width: calc(100% - .1rem);
+  margin: .1rem .1rem 0 0;
+}
+table.edit-table:not(.side-margin).line-tbody tbody:nth-of-type(even),
+table.edit-table:not(.side-margin):not(.line-tbody) tbody tr:nth-of-type(even),
+.edit-tables:not(.side-margin) table.line-tbody tbody:nth-of-type(even),
+.edit-tables:not(.side-margin) table:not(.line-tbody) tbody tr:nth-of-type(even) {
+  background-color: var(--box-even-rows-bg-color);
+}
+
+ul.edit-table > li,  .edit-tables ul  > li,
+dl.edit-table > *,   .edit-tables dl  > *  {
+  border-width: 0 0 1px;
+  border-style: solid;
+}
+ul.edit-table:last-child > li:last-child,
+dl.edit-table:last-child > dt:last-of-type,
+dl.edit-table:last-child > dt:last-of-type ~ dd,
+.edit-tables ul:last-child > li:last-child,
+.edit-tables dl:last-child > dt:last-of-type,
+.edit-tables dl:last-child > dt:last-of-type ~ dd {
+  border-bottom-style: hidden;
+}
+
+input.auto {
+  text-align: center;
+  border: hidden;
+  background-color: transparent;
+  font-size: 100%;
+  cursor: inherit;
+}
+/* Sortable */
+.sortable-drag {
+}
+.sortable-chosen {
+}
+.sortable-ghost {
+  background-color: hsla(50,100%,50%,0.3) !important;
+}
+.sortable-swap-highlight {
+  background-color: hsla(100,100%,50%,0.3) !important;
+}
+.handle {
+  cursor: ns-resize;
+}
+.handle::before {
+  content: '::';
+  font-family: Arial;
+  font-weight: bold;
+}
 
 /* // メニュー
 ---------------------------------------------------------------------------------------------------- */
@@ -111,6 +211,26 @@ section {
 }
 section > h2 {
   margin-top: 1rem;
+}
+
+/* // フッタ付近
+---------------------------------------------------------------------------------------------------- */
+article > form > hr {
+  margin: 5rem 0px;
+  border-width: 1px 0 0;
+  border-style: solid;
+}
+
+#deleteform {
+  margin-top: 5rem;
+  padding-top: 5rem;
+  border-width: 1px 0 0;
+  border-style: solid;
+  text-align: right;
+}
+#deleteform input[type="submit"] {
+  margin-left: .5rem;
+  padding: .3rem .5rem;
 }
 
 /* // キャラクター
@@ -477,16 +597,14 @@ td .switch-button {
 #mystic-arts h2 + div span {
   font-size: 120%;
 }
-#mystic-arts dl {
+#mystic-arts ul li {
   display: grid;
-  grid-template-columns: 1fr 4em;
+  grid-template-columns: max-content 1fr 4em;
   grid-template-rows: auto;
 }
-#mystic-arts dl dt {
-  grid-column: 1;
-}
-#mystic-arts dl dd {
-  grid-column: 2;
+#mystic-arts ul li .handle {
+  width: 1.2em;
+  margin-left: -.5rem;
 }
 
 #crafts {
@@ -538,7 +656,7 @@ td .switch-button {
 
 #language dl {
   display: grid;
-  grid-template-columns: 1fr 2.4em 2.4em;
+  grid-template-columns: auto 2.4em 2.4em;
   grid-template-rows: auto;
   
   margin: 0 5px;
@@ -547,6 +665,15 @@ td .switch-button {
   font-weight: normal;
 }
 #language dl dd {
+  text-align: center;
+}
+#language table td {
+  vertical-align: bottom;
+}
+#language table td.handle::before {
+  display: block;
+  width: 1.2em;
+  margin-left: -.5rem;
   text-align: center;
 }
 
@@ -610,44 +737,19 @@ option.zero-data::before {
   border-bottom-width: 1px;
   border-bottom-style: solid;
 }
-#weapons tr {
-  display: grid;
-  grid-template-columns: 23.3% 4.5em 3.5em 5em 3.5em 3.5em 5em 1.5em 1fr 1fr;
-  grid-template-rows: auto;
-  
-  width: 100%;
-}
-#weapons tr th {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: auto !important;
-}
 #weapons tr td {
-  border-bottom-width: 0px;
-  border-right-width: 0px;
-  vertical-align: middle;
+  vertical-align: top;
 }
-#weapons tr td:first-child {
-  border-left-width: 0px;
-}
-#weapons td:nth-child(1) { grid-row: 1 / span 2; } /* 名前 */
-#weapons td:nth-child(2) { grid-row: 1 / span 2; } /* 用法 */
-#weapons td:nth-child(3) { grid-row: 1 / span 2; } /* 必筋 */
-#weapons td:nth-child(4) { grid-row: 1 / span 2; } /* 命中 */
-#weapons td:nth-child(5) { grid-row: 1 / span 2; } /* 威力 */
-#weapons td:nth-child(6) { grid-row: 1 / span 2; } /* Ｃ値 */
-#weapons td:nth-child(7) { grid-row: 1 / span 2; } /* 追加Ｄ */
-#weapons td:nth-child(8) { grid-row: 1; } /* 専用 */
-#weapons td:nth-child(9) { grid-row: 1; } /* カテゴリ */
-#weapons td:nth-child(10){ grid-row: 1; } /* 技能 */
-#weapons td:nth-child(11){ grid-row: 2; grid-column: -4 / span 3; } /* 備考 */
 
 #weapons table td {
-  font-size: 12px;
+  font-size: 90%;
 }
 #weapons table td b {
-  font-size: 14px;
+  display: inline-block;
+}
+#weapons table td b::before {
+  content: '=';
+  margin-right: .2rem;
 }
 #weapons td input[name$="Acc"],
 #weapons td input[name$="Dmg"] {
@@ -659,12 +761,29 @@ option.zero-data::before {
 #weapons .annotate {
   text-align: center;
 }
+#weapons td span.handle {
+  display: block;
+  width: 2em;
+  line-height: 2.2;
+  margin-right: auto;
+}
 
-#accessories th:nth-child(1) { width: 1.5em; } /*  */
-#accessories th:nth-child(2) { width: 2.5em; } /* 種別 */
-#accessories th:nth-child(3) { width:   25%; } /* 名前 */
-#accessories th:nth-child(4) { width: 4.5em; } /* 専用 */
-#accessories th:nth-child(5) { width:  auto; } /* 備考 */
+#accessories thead th:nth-child(1) { width: 1.5em; } /*  */
+#accessories thead th:nth-child(2) { width: 2.5em; } /* 種別 */
+#accessories thead th:nth-child(3) { width:   25%; } /* 名前 */
+#accessories thead th:nth-child(4) { width: 4.5em; } /* 専用 */
+#accessories thead th:nth-child(5) { width:  auto; } /* 備考 */
+#accessories tbody th {
+  cursor: ns-resize;
+}
+#accessories tbody tr:nth-child(4n+1),
+#accessories tbody tr:nth-child(4n+2) {
+  background-color: transparent;
+}
+#accessories tbody tr:nth-child(4n+3),
+#accessories tbody tr:nth-child(4n+4) {
+  background-color: var(--box-even-rows-bg-color);
+}
 
 #money input {
   width: calc(100% - 3em);
@@ -689,20 +808,35 @@ option.zero-data::before {
 }
 
 
-#battle-items input {
-  margin-left: 1em;
-  width: calc(100% - 4px - 1em);
+#battle-items ul li {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  grid-template-rows: auto;
 }
-#honor-items table {
-  margin-left: 0;
-  margin-right: 0;
+#battle-items ul li::before {
+  left: 0;
+  pointer-events: none;
 }
-#honor-items > p:nth-last-child(1) {
+#battle-items ul li .handle {
+  display: inline-block;
+  width: 1.8em;
+  margin-left: calc(-1em - .2rem);
+  text-align: right;
+}
+
+
+.honor-items table td.handle::before {
+  display: block;
+  width: 1.4em;
+  margin: 0 -.5rem;
+  text-align: center;
+}
+.honor-items > p:nth-last-child(1) {
   font-size: 90%;
   border-width: 1px 0 0;
   border-style: dotted;
 }
-#battle-items ul li.fail::before {
+.battle-items ul li.fail::before {
   content: '✖';
   opacity: 0.8;
 }
@@ -726,37 +860,38 @@ option.zero-data::before {
 }
 #history table {
   min-width: 800px;
+  width: calc(100% - 1px);
 }
-#history table tr {
-  display: grid;
-  grid-template-columns: 6em 1fr 5em 3.5em 4.5em 5em 6em 15em;
-  grid-template-rows: auto;
-}
-#history table tr th { width: unset !important;}
-#history table tr th:nth-child(1) { display:none; } /* No. */
-#history table tr td:nth-child(1) { display:none; } /* No. */
-#history table tr td:nth-child(2) { grid-row: 1 / span 2; } /* 日付 */
-#history table tr td:nth-child(3) { grid-row: 1 / span 2; } /* タイトル */
-#history table tr td:nth-child(4) { grid-row: 1; } /* 経験点 */
-#history table tr td:nth-child(5) { grid-row: 1; } /* 名誉点 */
-#history table tr td:nth-child(6) { grid-row: 1; } /* ガメル */
-#history table tr td:nth-child(7) { grid-row: 1; } /* 成長 */
-#history table tr td:nth-child(8) { grid-row: 1; } /* ＧＭ */
-#history table tr td:nth-child(9) { grid-row: 1; } /* 参加者 */
-#history table tr td:nth-child(10){ grid-row: 2; grid-column: 3 / span 6; } /* 備考 */
+#history table thead th:nth-child(1) { width: 1.4em; }
+#history table thead th:nth-child(2) { width:   6em; } /* 日付 */
+#history table thead th:nth-child(3) { width:  auto; } /* タイトル */
+#history table thead th:nth-child(4) { width:   5em; } /* 経験点 */
+#history table thead th:nth-child(5) { width: 3.5em; } /* 名誉点 */
+#history table thead th:nth-child(6) { width: 4.5em; } /* ガメル */
+#history table thead th:nth-child(7) { width: 4.5em; } /* 成長 */
+#history table thead th:nth-child(8) { width:   6em; } /* ＧＭ */
+#history table thead th:nth-child(9) { width:  16em; } /* 参加者 */
 
-#history table tr td {
-  border-bottom-width: 0px;
-  border-right-width: 0px;
-  white-space: nowrap;
+#history table tbody td {
+  border: 0;
+  padding: .4rem 0 .1rem !important;
+  vertical-align: top;
 }
-#history table tr td:nth-child(6)::after {
-  margin-left: 0px;
+#history table tbody td:nth-child(6)::after {
+  margin: 0 2px 0 -1px;
   font-size: 1.1rem;
 }
 #history input[name$="Money"] {
   width: calc(100% - 0.9em);
 }
+#history table tbody td.handle {
+  vertical-align: middle;
+}
+#history table tbody td.left {
+  padding: 0 0 .4rem !important;
+  border-top: hidden;
+}
+
 #history .example {
   margin-top: 1em;
 }

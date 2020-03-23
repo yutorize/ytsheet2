@@ -1,6 +1,6 @@
 @charset "utf-8";
 
-/* ゆとシート for SW2.5 */
+/* ゆとシートⅡ */
 
 /* // Font
 ---------------------------------------------------------------------------------------------------- */
@@ -10,13 +10,15 @@
 @import url('https://fonts.googleapis.com/css?family=Noto+Serif+JP:400,700&display=swap');
 
 :root {
-  --base-font-family-jp : "BIZ UDGothic","Hiragino Kaku Gothic ProN","HiraKakuProN-W3","Kosugi","Meiryo",sans-serif;
+  --base-font-family-jp : "BIZ UDGothic", "Hiragino Sans","Kosugi","Meiryo",sans-serif;
+  --base-font-family-pr : "BIZ UDPGothic","Hiragino Sans","Kosugi","Meiryo UI",sans-serif;
   --base-font-family-min: "Noto Serif JP","YuMincho","ヒラギノ明朝 ProN W3","Hiragino Mincho ProN",serif;
   --base-font-family-mono: "BIZ UDGothic", monospace;
 }
 
 body {
   font-family: "Varela Round","Raleway",var(--base-font-family-jp);
+  --font-proportional: "Varela Round","Raleway",var(--base-font-family-pr);
 }
 header nav {
   font-family: "ヒラギノ角ゴ ProN","Hiragino Kaku Gothic ProN","HiraKakuProN-W3","Meiryo",sans-serif;
@@ -57,6 +59,7 @@ textarea,tt {
     calc( var(--box-base-bg-color-s,   0%) * 0.3 ),
     65%
   );
+  --box-even-rows-bg-color: rgba(127,127,127,0.15);
 }
 .night {
   --box-base-bg-color: hsla(
@@ -79,6 +82,11 @@ textarea,tt {
 
 html {
   overflow-x: hidden;
+}
+@media screen and (max-width:735px){
+  html {
+    font-size: 1.8vw;
+  }
 }
 
 main article a         { background: linear-gradient(to top, hsla(var(--box-head-bg-color-h,230),100%,80%,0.7) .2rem, transparent .2rem, transparent); }
@@ -114,16 +122,44 @@ footer {
   height: auto;
 }
 
-.box {
+summary {
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.box,
+.box-union {
   border-width: 1px;
   border-style: solid;
   border-radius: 5px;
+  box-shadow: 1px 1px 2px 0px #ccc;
+  background-color: var(--box-base-bg-color);
 }
-.box h2 {
+.night .box,
+.night .box-union {
+  box-shadow: 1px 1px 2px 0px #335;
+}
+.box {
+  background-image: linear-gradient(to bottom, var(--box-head-bg-color) 0, transparent 2.5rem);
+  background-repeat: no-repeat;
+}
+.box-union {
+  overflow: hidden;
+}
+.box-union > .box {
+  background-color: transparent;
+  border-width: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.box h2,
+.box > summary {
   font-size: 1.4rem;
 }
 .box h2,
-dl.box > dt {
+dl.box > dt,
+details.box > summary {
   padding-left: 2px;
   line-height: 1.5;
   white-space: nowrap;
@@ -137,20 +173,6 @@ dl.box > dt,
 .night dl.box > dt,
 .night .box > table:first-child > tbody > tr > th {
   text-shadow: 0px 0px .3em #000;
-}
-
-.box {
-  background-image: linear-gradient(to bottom, var(--box-head-bg-color) 0, transparent 2.5rem);
-  background-repeat: no-repeat;
-  box-shadow: 1px 1px 2px 0px #ccc;
-  background-color: var(--box-base-bg-color);
-}
-.night .box {
-  box-shadow: 1px 1px 2px 0px #335;
-}
-.box.box-2row {
-  background-image: linear-gradient(to bottom, var(--box-head-bg-color) 0, transparent 2.5rem, transparent 50%, var(--box-head-bg-color) 50%, transparent calc(50% + 2.5rem));
-  background-color: var(--box-base-bg-color);
 }
 
 .box dd,
@@ -176,6 +198,9 @@ dl.box > dt,
   border-width: 1px 0 0;
   border-style: solid;
   margin: .8em .5em;
+}
+.box table hr {
+  margin: .1rem .2rem;
 }
 .box hr.dotted {
   border-style: dotted;
@@ -273,8 +298,10 @@ ruby rt {
   font-family: Arial,var(--base-font-family-jp);
   transform: translateY(0.2em);
 }
+.bold {
+  font-weight: bold;
+}
 .oblique {
-  font-family: "BIZ UDGothic","游ゴシック Medium","Yu Gothic Medium",var(--base-font-family-min);
   font-style: oblique;
 }
 .strike {
@@ -297,7 +324,7 @@ ruby rt {
   transform: scaleX(1.2);
 }
 .small {
-  font-size: 80%;
+  font-size: 85%;
 }
 table.note-table,
 table.note-table th,

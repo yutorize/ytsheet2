@@ -52,6 +52,7 @@ sub palettePreset {
               $::pc{'weapon'.$_.'Acc'}.$::pc{'weapon'.$_.'Rate'}.$::pc{'weapon'.$_.'Crit'}.
               $::pc{'weapon'.$_.'Dmg'}.$::pc{'weapon'.$_.'Own'}.$::pc{'weapon'.$_.'Note'}
               eq '';
+      $::pc{'weapon'.$_.'Name'} = $::pc{'weapon'.$_.'Name'} || $::pc{'weapon'.($_-1).'Name'};
       $text .= "2d6+{命中$_} 命中／$::pc{'weapon'.$_.'Name'}\n";
       $text .= "k{威力$_}[{C値$_}]+{追加D$_} ダメージ\n";
       $text .= "\n";
@@ -134,6 +135,7 @@ sub palettePresetRaw {
               $::pc{'weapon'.$_.'Acc'}.$::pc{'weapon'.$_.'Rate'}.$::pc{'weapon'.$_.'Crit'}.
               $::pc{'weapon'.$_.'Dmg'}.$::pc{'weapon'.$_.'Own'}.$::pc{'weapon'.$_.'Note'}
               eq '';
+      $::pc{'weapon'.$_.'Name'} = $::pc{'weapon'.$_.'Name'} || $::pc{'weapon'.($_-1).'Name'};
       $text .= "2d6+$::pc{'weapon'.$_.'AccTotal'} 命中力／$::pc{'weapon'.$_.'Name'}\n";
       $text .= "k$::pc{'weapon'.$_.'Rate'}\[$::pc{'weapon'.$_.'Crit'}\]+$::pc{'weapon'.$_.'DmgTotal'} ダメージ\n";
       $text .= "\n";

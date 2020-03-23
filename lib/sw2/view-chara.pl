@@ -90,6 +90,10 @@ $SHEET->param("words" => $pc{'words'});
 $SHEET->param("wordsX" => ($pc{'wordsX'} eq '左' ? 'left:0;' : 'right:0;'));
 $SHEET->param("wordsY" => ($pc{'wordsY'} eq '下' ? 'bottom:0;' : 'top:0;'));
 
+### 種族名 --------------------------------------------------
+$pc{'race'} =~ s/［.*］//g;
+$SHEET->param("race" => $pc{'race'});
+
 ### 種族特徴 --------------------------------------------------
 $pc{'raceAbility'} =~ s/［(.*?)］/<span>［$1］<\/span>/g;
 $SHEET->param("raceAbility" => $pc{'raceAbility'});
@@ -102,7 +106,7 @@ if($pc{'faith'} eq 'その他の信仰') { $SHEET->param("faith" => $pc{'faithOt
 $pc{'faith'} =~ s/“(.*)”//;
 
 ### 技能 --------------------------------------------------
-my @classes;
+my @classes; my %classes;
 foreach (
   ['Fig','ファイター'],
   ['Gra','グラップラー'],
@@ -129,18 +133,23 @@ foreach (
   ['Art','アーティザン'],
 ){
   next if !$pc{'lv'.@$_[0]};
-  if(@$_[1] eq 'プリースト' && $pc{'faith'}){
-    @$_[1] .= '<span class="priest-faith'.(length($pc{'faith'}) > 12 ? ' narrow' : "").'">（'.$pc{'faith'}.$pc{'faithType'}.'）</span>';
+  my $name = @$_[1];
+  if($name eq 'プリースト' && $pc{'faith'}){
+    $name .= '<span class="priest-faith'.(length($pc{'faith'}) > 12 ? ' narrow' : "").'">（'.$pc{'faith'}.$pc{'faithType'}.'）</span>';
   }
-  push(@classes, { "NAME" => @$_[1], "LV" => $pc{'lv'.@$_[0]} } );
+  push(@classes, { "NAME" => $name, "LV" => $pc{'lv'.@$_[0]} } );
+  $classes{@$_[1]} = $pc{'lv'.@$_[0]};
 }
 @classes = sort{$b->{'LV'} <=> $a->{'LV'}} @classes;
 $SHEET->param(Classes => \@classes);
+my $class_text;
+foreach my $key (sort {$classes{$b} <=> $classes{$a}} keys %classes){ $class_text .= ($class_text ? ',' : '').$key.$classes{$key}; }
 
 ### 技能 --------------------------------------------------
 my @common_classes;
 foreach (1..10){
   next if !$pc{'commonClass'.$_};
+  $pc{'commonClass'.$_} =~ s#([（\(].+?[\)）])#<span class="small">$1</span>#g;
   push(@common_classes, { "NAME" => $pc{'commonClass'.$_}, "LV" => $pc{'lvCommon'.$_} } );
 }
 $SHEET->param(CommonClasses => \@common_classes);
@@ -348,7 +357,8 @@ if($pc{'throwing'}) {
 $SHEET->param(AttackClasses => \@atacck);
 
 ### 武器 --------------------------------------------------
-my @weapons;
+{
+my @weapons; my $first = 1;
 foreach (1 .. $pc{'weaponNum'}){
   next if $pc{'weapon'.$_.'Name'}.$pc{'weapon'.$_.'Usage'}.$pc{'weapon'.$_.'Reqd'}.
           $pc{'weapon'.$_.'Acc'}.$pc{'weapon'.$_.'Rate'}.$pc{'weapon'.$_.'Crit'}.
@@ -382,10 +392,12 @@ foreach (1 .. $pc{'weaponNum'}){
     "DMGTOTAL" => $pc{'weapon'.$_.'DmgTotal'},
     "OWN"      => $pc{'weapon'.$_.'Own'},
     "NOTE"     => $pc{'weapon'.$_.'Note'},
+    "CLOSE"    => ($pc{'weapon'.$_.'NameOff'} || $first ? 0 : 1),
   } );
+  $first = 0;
 }
 $SHEET->param(Weapons => \@weapons);
-
+}
 ### 回避技能／特技 --------------------------------------------------
 my @evasion;
 foreach (
@@ -618,18 +630,20 @@ $SHEET->param(FellowMode => param('f'));
 $SHEET->param(characterNameTitle => tag_delete($pc{'characterName'}));
 $SHEET->param(title => $set::title);
 
-### 種族名 --------------------------------------------------
-$pc{'race'} =~ s/［.*］//g;
-$SHEET->param("race" => $pc{'race'});
-
 ### 画像 --------------------------------------------------
 $pc{'imageUpdateTime'} = $pc{'updateTime'};
 $pc{'imageUpdateTime'} =~ s/[\-\ \:]//g;
-$SHEET->param("imageSrc" => "${set::char_dir}${file}/image.$pc{'image'}?$pc{'imageUpdateTime'}");
+my $imgsrc = "${set::char_dir}${file}/image.$pc{'image'}?$pc{'imageUpdateTime'}";
+$SHEET->param("imageSrc" => $imgsrc);
 
 if($pc{'imageFit'} eq 'percent'){
 $SHEET->param("imageFit" => $pc{'imagePercent'}.'%');
 }
+
+### OGP --------------------------------------------------
+$SHEET->param(ogUrl => url()."?=id".$id);
+if($pc{'image'}) { $SHEET->param(ogImg => url()."/".$imgsrc); }
+$SHEET->param(ogDescript => "種族:$pc{'race'}　性別:$pc{'gender'}　年齢:$pc{'age'}　技能:${class_text}");
 
 ### エラー --------------------------------------------------
 $SHEET->param(error => $main::login_error);

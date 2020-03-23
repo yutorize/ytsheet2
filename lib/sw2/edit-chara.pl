@@ -125,12 +125,12 @@ Content-type: text/html\n
   <meta charset="UTF-8">
   <title>@{[$mode eq 'edit'?"編集：$pc{'characterName'}":'新規作成']} - $set::title</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" media="all" href="./skin/css/base.css?1.07.005">
-  <link rel="stylesheet" media="all" href="./skin/css/sheet.css?1.07.005">
-  <link rel="stylesheet" media="all" href="./skin/css/sw2/chara.css?1.07.005">
-  <link rel="stylesheet" media="all" href="./skin/css/sw2/chara-sp.css?1.07.005">
-  <link rel="stylesheet" media="all" href="./skin/css/sw2/edit.css?1.07.005">
-  <script src="./lib/sw2/edit-chara.js?1.07.005" defer></script>
+  <link rel="stylesheet" media="all" href="./skin/css/base.css?1.08a">
+  <link rel="stylesheet" media="all" href="./skin/css/sheet.css?1.08a">
+  <link rel="stylesheet" media="all" href="./skin/css/sw2/chara.css?1.08a">
+  <link rel="stylesheet" media="all" href="./skin/css/sw2/edit.css?1.08a">
+  <script src="./skin/js/lib/Sortable.min.js"></script>
+  <script src="./lib/sw2/edit-chara.js?1.08a" defer></script>
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
   <style>
     #image {
@@ -191,9 +191,9 @@ else {
     print '登録キー：<input type="text" name="registerkey" required>'."\n";
   }
   print <<"HTML";
-      <div class="box" id="edit-protect">
-      <h2 onclick="view('edit-protect-view')">編集保護設定 ▼</h2>
-      <p id="edit-protect-view" @{[$mode eq 'edit' ? 'style="display:none"':'']}><input type="hidden" name="protectOld" value="$pc{'protect'}">
+      <details class="box" id="edit-protect" @{[$mode eq 'edit' ? '':'open']}>
+      <summary>編集保護設定</summary>
+      <p id="edit-protect-view"><input type="hidden" name="protectOld" value="$pc{'protect'}">
 HTML
   if($LOGIN_ID){
     print '<input type="radio" name="protect" value="account"'.($pc{'protect'} eq 'account'?' checked':'').'> アカウントに紐付ける（ログイン中のみ編集可能になります）<br>';
@@ -207,7 +207,7 @@ HTML
   print <<"HTML";
 <input type="radio" name="protect" value="none"@{[ $pc{'protect'} eq 'none'?' checked':'' ]}> 保護しない（誰でも編集できるようになります）
       </p>
-      </div>
+      </details>
 HTML
 }
   print <<"HTML";
@@ -234,8 +234,8 @@ print <<"HTML";
           <dt>タグ</dt><dd>@{[ input 'tags','','','' ]}</dd>
         </dl>
       </div>
-      <div class="box" id="regulation">
-        <h2>作成レギュレーション</h2>
+      <details class="box" id="regulation" @{[$mode eq 'edit' ? '':'open']}>
+        <summary>作成レギュレーション</summary>
         <dl>
           <dt>経験点</dt>
           <dd>@{[input("history0Exp",'number','changeRegu','step="500"'.($set::make_fix?' readonly':''))]}</dd>
@@ -251,7 +251,7 @@ print <<"HTML";
           <dd>　知力:@{[ input "sttPreGrowE",'number','calcStt' ]}</dd>
           <dd>精神力:@{[ input "sttPreGrowF",'number','calcStt' ]}</dd>
         </dl>
-      </div>
+      </details>
       <div id="area-status">
         <div class="box" id="image" style="max-height:550px;">
           <h2>キャラクター画像</h2>
@@ -389,12 +389,24 @@ print <<"HTML";
           </dl>
         </div>
 
-        <dl class="box box-2row" id="sub-status">
-          <dt id="vit-resist">生命抵抗力</dt><dd><span id="vit-resist-base">$pc{'vitResistBase'}</span>+<span id="vit-resist-auto-add">$pc{'vitResistAutoAdd'}</span>+@{[input('vitResistAdd','number','calcSubStt')]}=<b id="vit-resist-total">$pc{'vitResistTotal'}</b></dd>
-          <dt id="mnd-resist">精神抵抗力</dt><dd><span id="mnd-resist-base">$pc{'mndResistBase'}</span>+<span id="mnd-resist-auto-add">$pc{'mndResistAutoAdd'}</span>+@{[input('mndResistAdd','number','calcSubStt')]}=<b id="mnd-resist-total">$pc{'mndResistTotal'}</b></dd>
-          <dt id="hp">ＨＰ</dt><dd><span id="hp-base">$pc{'hpBase'}</span>+<span id="hp-auto-add">$pc{'hpAutoAdd'}</span>+@{[input('hpAdd','number','calcSubStt')]}=<b id="hp-total">$pc{'hpTotal'}</b></dd>
-          <dt id="mp">ＭＰ</dt><dd><span id="mp-base">$pc{'mpBase'}</span>+<span id="mp-auto-add">$pc{'mpAutoAdd'}</span>+@{[input('mpAdd','number','calcSubStt')]}=<b id="mp-total">$pc{'mpTotal'}</b></dd>
-        </dl>
+        <div class="box-union" id="sub-status">
+          <dl class="box">
+            <dt id="vit-resist">生命抵抗力</dt>
+            <dd><span id="vit-resist-base">$pc{'vitResistBase'}</span>+<span id="vit-resist-auto-add">$pc{'vitResistAutoAdd'}</span>+@{[input('vitResistAdd','number','calcSubStt')]}=<b id="vit-resist-total">$pc{'vitResistTotal'}</b></dd>
+          </dl>
+          <dl class="box">
+          <dt id="mnd-resist">精神抵抗力</dt>
+          <dd><span id="mnd-resist-base">$pc{'mndResistBase'}</span>+<span id="mnd-resist-auto-add">$pc{'mndResistAutoAdd'}</span>+@{[input('mndResistAdd','number','calcSubStt')]}=<b id="mnd-resist-total">$pc{'mndResistTotal'}</b></dd>
+          </dl>
+          <dl class="box">
+            <dt id="hp">ＨＰ</dt>
+            <dd><span id="hp-base">$pc{'hpBase'}</span>+<span id="hp-auto-add">$pc{'hpAutoAdd'}</span>+@{[input('hpAdd','number','calcSubStt')]}=<b id="hp-total">$pc{'hpTotal'}</b></dd>
+          </dl>
+          <dl class="box">
+            <dt id="mp">ＭＰ</dt>
+            <dd><span id="mp-base">$pc{'mpBase'}</span>+<span id="mp-auto-add">$pc{'mpAutoAdd'}</span>+@{[input('mpAdd','number','calcSubStt')]}=<b id="mp-total">$pc{'mpTotal'}</b></dd>
+          </dl>
+        </div>
         
         <dl class="box" id="level">
           <dt>冒険者レベル</dt><dd id="level-value">$pc{'level'}</dd>
@@ -404,7 +416,7 @@ print <<"HTML";
         </dl>
       </div>
       
-      <div id="area-ability">
+      <div id="area-ability" class="edit-tables side-margin">
         <div id="area-classes" @{[ $set::common_class_on ? '' : 'class="common-classes-off"' ]}>
           <div class="box" id="classes">
             <h2>技能</h2>
@@ -490,14 +502,14 @@ print <<"HTML";
           <div class="box" id="mystic-arts" @{[ display $set::mystic_arts_on ]}>
             <h2>秘伝</h2>
             <div>所持名誉点：<span id="honor-value-MA"></span></div>
-            <dl id="mystic-arts-list">
+            <ul id="mystic-arts-list">
 HTML
 $pc{'mysticArtsNum'} = 0 if !$set::mystic_arts_on;
-foreach my $i(1 .. $pc{'mysticArtsNum'}){
-  print '<dt>'.(input 'mysticArts'.$i).'</dt><dd>'.(input 'mysticArts'.$i.'Pt', 'number', 'calcHonor').'</dd>'
+foreach my $num (1 .. $pc{'mysticArtsNum'}){
+  print '<li id="mystic-arts'.$num.'"><span class="handle"></span>'.(input 'mysticArts'.$num).(input 'mysticArts'.$num.'Pt', 'number', 'calcHonor').'</li>';
 }
 print <<"HTML";
-            </dl>
+            </ul>
             <div class="add-del-button"><a onclick="addMysticArts()">▼</a><a onclick="delMysticArts()">▲</a></div>
             @{[input('mysticArtsNum','hidden')]}
           </div>
@@ -677,75 +689,77 @@ print <<"HTML";
         <div id="area-package">
           <div class="box" id="package">
             <h2>判定パッケージ</h2>
-            <table id="package-scout"@{[ display $pc{'lvSco'} ]}>
-              <tr>
-                <th rowspan="3">スカウト技能</th>
-                <th>技巧</th>
-                <td>+@{[ input 'packScoTecAdd', 'number','calcPackage' ]}</td>
-                <td id="package-scout-tec">$pc{'packScoTec'}</td>
-              </tr>
-              <tr>
-                <th>運動</th>
-                <td>+@{[ input 'packScoAgiAdd', 'number','calcPackage' ]}</td>
-                <td id="package-scout-agi">$pc{'packScoAgi'}</td>
-              </tr>
-              <tr>
-                <th>観察</th>
-                <td>+@{[ input 'packScoObsAdd', 'number','calcPackage' ]}</td>
-                <td id="package-scout-obs">$pc{'packScoObs'}</td>
-              </tr>
-            </table>
-            <table id="package-ranger"@{[ display $pc{'lvRan'} ]}>
-              <tr>
-                <th rowspan="3">レンジャー技能</th>
-                <th>技巧</th>
-                <td>+@{[ input 'packRanTecAdd', 'number','calcPackage' ]}</td>
-                <td id="package-ranger-tec">$pc{'packRanTec'}</td>
-              </tr>
-              <tr>
-                <th>運動</th>
-                <td>+@{[ input 'packRanAgiAdd', 'number','calcPackage' ]}</td>
-                <td id="package-ranger-agi">$pc{'packRanAgi'}</td>
-              </tr>
-              <tr>
-                <th>観察</th>
-                <td>+@{[ input 'packRanObsAdd', 'number','calcPackage' ]}</td>
-                <td id="package-ranger-obs">$pc{'packRanObs'}</td>
-              </tr>
-            </table>
-            <table id="package-sage"@{[ display $pc{'lvSag'} ]}>
-              <tr>
-                <th>セージ技能</th>
-                <th>知識</th>
-                <td>+@{[ input 'packSagKnoAdd', 'number','calcPackage' ]}</td>
-                <td id="package-sage-kno">$pc{'packSagKno'}</td>
-              </tr>
-            </table>
-            <table id="package-rider"@{[ display $pc{'lvRid'} ]}>
-              <tr>
-                <th rowspan="3">ライダー技能</th>
-                <th>運動</th>
-                <td>+@{[ input 'packRidAgiAdd', 'number','calcPackage' ]}</td>
-                <td id="package-rider-agi">$pc{'packRidAgi'}</td>
-              </tr>
-              <tr>
-                <th>知識</th>
-                <td>+@{[ input 'packRidKnoAdd', 'number','calcPackage' ]}</td>
-                <td id="package-rider-kno">$pc{'packRidKno'}</td>
-              </tr>
-              <tr>
-                <th>観察</th>
-                <td>+@{[ input 'packRidObsAdd', 'number','calcPackage' ]}</td>
-                <td id="package-rider-obs">$pc{'packRidObs'}</td>
-              </tr>
-            </table>
-            <table id="package-alchemist"@{[ display $pc{'lvAlc'} ]}>
-              <tr>
-                <th>アルケミスト技能</th>
-                <th>知識</th>
-                <td>+@{[ input 'packAlcKnoAdd', 'number','calcPackage' ]}</td>
-                <td id="package-alchemist-kno">$pc{'packAlcKno'}</td>
-              </tr>
+            <table class="edit-table side-margin">
+              <tbody id="package-scout"@{[ display $pc{'lvSco'} ]}>
+                <tr>
+                  <th rowspan="3">スカウト技能</th>
+                  <th>技巧</th>
+                  <td>+@{[ input 'packScoTecAdd', 'number','calcPackage' ]}</td>
+                  <td id="package-scout-tec">$pc{'packScoTec'}</td>
+                </tr>
+                <tr>
+                  <th>運動</th>
+                  <td>+@{[ input 'packScoAgiAdd', 'number','calcPackage' ]}</td>
+                  <td id="package-scout-agi">$pc{'packScoAgi'}</td>
+                </tr>
+                <tr>
+                  <th>観察</th>
+                  <td>+@{[ input 'packScoObsAdd', 'number','calcPackage' ]}</td>
+                  <td id="package-scout-obs">$pc{'packScoObs'}</td>
+                </tr>
+              </tbody>
+              <tbody id="package-ranger"@{[ display $pc{'lvRan'} ]}>
+                <tr>
+                  <th rowspan="3">レンジャー技能</th>
+                  <th>技巧</th>
+                  <td>+@{[ input 'packRanTecAdd', 'number','calcPackage' ]}</td>
+                  <td id="package-ranger-tec">$pc{'packRanTec'}</td>
+                </tr>
+                <tr>
+                  <th>運動</th>
+                  <td>+@{[ input 'packRanAgiAdd', 'number','calcPackage' ]}</td>
+                  <td id="package-ranger-agi">$pc{'packRanAgi'}</td>
+                </tr>
+                <tr>
+                  <th>観察</th>
+                  <td>+@{[ input 'packRanObsAdd', 'number','calcPackage' ]}</td>
+                  <td id="package-ranger-obs">$pc{'packRanObs'}</td>
+                </tr>
+              </tbody>
+              <tbody id="package-sage"@{[ display $pc{'lvSag'} ]}>
+                <tr>
+                  <th>セージ技能</th>
+                  <th>知識</th>
+                  <td>+@{[ input 'packSagKnoAdd', 'number','calcPackage' ]}</td>
+                  <td id="package-sage-kno">$pc{'packSagKno'}</td>
+                </tr>
+              </tbody>
+              <tbody id="package-rider"@{[ display $pc{'lvRid'} ]}>
+                <tr>
+                  <th rowspan="3">ライダー技能</th>
+                  <th>運動</th>
+                  <td>+@{[ input 'packRidAgiAdd', 'number','calcPackage' ]}</td>
+                  <td id="package-rider-agi">$pc{'packRidAgi'}</td>
+                </tr>
+                <tr>
+                  <th>知識</th>
+                  <td>+@{[ input 'packRidKnoAdd', 'number','calcPackage' ]}</td>
+                  <td id="package-rider-kno">$pc{'packRidKno'}</td>
+                </tr>
+                <tr>
+                  <th>観察</th>
+                  <td>+@{[ input 'packRidObsAdd', 'number','calcPackage' ]}</td>
+                  <td id="package-rider-obs">$pc{'packRidObs'}</td>
+                </tr>
+              </tbody>
+              <tbody id="package-alchemist"@{[ display $pc{'lvAlc'} ]}>
+                <tr>
+                  <th>アルケミスト技能</th>
+                  <th>知識</th>
+                  <td>+@{[ input 'packAlcKnoAdd', 'number','calcPackage' ]}</td>
+                  <td id="package-alchemist-kno">$pc{'packAlcKno'}</td>
+                </tr>
+              </tbody>
             </table>
           </div>
         </div>
@@ -766,25 +780,27 @@ print <<"HTML";
         </div>
         <div class="box" id="language">
           <h2>言語</h2>
-          <table>
+          <table class="edit-table side-margin">
             <tr><th></th><th>会話</th><th>読文</th></tr>
           </table>
-          <dl id="language-default">
+          <dl class="edit-table side-margin" id="language-default">
 HTML
 foreach (@{$data::race_language{ $pc{'race'} }}){
   print '<dt>'.@$_[0].'</dt><dd>'.(@$_[1] ? '○' : '－').'</dd><dd>'.(@$_[2] ? '○' : '－').'</dd>';
 }
 print <<"HTML";
           </dl>
-          <table id="language-table">
+          <table class="edit-table side-margin" id="language-table">
+            <tbody>
 HTML
-foreach my $i (1 .. $pc{'languageNum'}){
-  print '<tr><td>'.input('language'.$i).'</td>'.
-  '<td><input type="checkbox" name="language'.$i.'Talk" value="1"'.($pc{"language${i}Talk"} ? 'checked' :'').'></td>'.
-  '<td><input type="checkbox" name="language'.$i.'Read" value="1"'.($pc{"language${i}Read"} ? 'checked' :'').'></td>'.
+foreach my $num (1 .. $pc{'languageNum'}){
+  print '<tr id="language-item'.$num.'"><td class="handle"></td><td>'.input('language'.$num).'</td>'.
+  '<td><input type="checkbox" name="language'.$num.'Talk" value="1"'.($pc{"language${num}Talk"} ? 'checked' :'').'></td>'.
+  '<td><input type="checkbox" name="language'.$num.'Read" value="1"'.($pc{"language${num}Read"} ? 'checked' :'').'></td>'.
   '</tr>'."\n";
 }
 print <<"HTML";
+            </tbody>
           </table>
           <p>@{[ input 'languageAutoOff','checkbox','changeRace' ]}初期習得言語を自動記入しない</p>
           <div class="add-del-button"><a onclick="addLanguage()">▼</a><a onclick="delLanguage()">▲</a></div>
@@ -792,7 +808,7 @@ print <<"HTML";
         </div>
         <div class="box" id="magic-power">
           <h2>魔力／奏力／他</h2>
-          <table>
+          <table class="edit-table side-margin">
             <thead>
             <tr>
               <th></th><th>魔法</th><th>専用化</th><th>魔力修正</th><th></th>
@@ -882,141 +898,148 @@ print <<"HTML";
         </div>
       </div>
       
-      <div id="area-equipment">
+      <div class="edit-tables" id="area-equipment">
         <div class="box" id="attack-classes">
-          <table>
-            <tr>
-              <th>技能・特技</th>
-              <th>必筋<br>上限</th>
-              <th>命中力</th>
-              <th></th>
-              <th>Ｃ値</th>
-              <th>追加Ｄ</th>
-            </tr>
-            <tr id="attack-fighter"@{[ display $pc{'lvFig'} ]}>
-              <td>ファイター技能</td>
-              <td id="attack-fighter-str">0</td>
-              <td id="attack-fighter-acc">0</td>
-              <td>―</td>
-              <td>―</td>
-              <td id="attack-fighter-dmg">―</td>
-            </tr>
-            <tr id="attack-grappler"@{[ display $pc{'lvGra'} ]}>
-              <td>グラップラー技能</td>
-              <td id="attack-grappler-str">0</td>
-              <td id="attack-grappler-acc">0</td>
-              <td>―</td>
-              <td>―</td>
-              <td id="attack-grappler-dmg">0</td>
-            </tr>
-            <tr id="attack-fencer"@{[ display $pc{'lvFen'} ]}>
-              <td>フェンサー技能</td>
-              <td id="attack-fencer-str">0</td>
-              <td id="attack-fencer-acc">0</td>
-              <td>―</td>
-              <td>-1</td>
-              <td id="attack-fencer-dmg">0</td>
-            </tr>
-            <tr id="attack-shooter"@{[ display $pc{'lvSho'} ]}>
-              <td>シューター技能</td>
-              <td id="attack-shooter-str">0</td>
-              <td id="attack-shooter-acc">0</td>
-              <td>―</td>
-              <td>―</td>
-              <td id="attack-shooter-dmg">0</td>
-            </tr>
-            <tr id="attack-enhancer"@{[ display ($pc{'lvEnh'} >= 10) ]}>
-              <td>エンハンサー技能</td>
-              <td id="attack-enhancer-str">0</td>
-              <td id="attack-enhancer-acc">0</td>
-              <td>―</td>
-              <td>―</td>
-              <td id="attack-enhancer-dmg">0</td>
-            </tr>
-            <tr id="attack-demonruler"@{[ display $pc{'lvDem'} ]}>
-              <td>デーモンルーラー技能</td>
-              <td id="attack-demonruler-str">0</td>
-              <td id="attack-demonruler-acc">0</td>
-              <td>―</td>
-              <td>―</td>
-              <td id="attack-demonruler-dmg">0</td>
-            </tr>
+          <table class="line-tbody">
+            <thead>
+              <tr>
+                <th>技能・特技</th>
+                <th>必筋<br>上限</th>
+                <th>命中力</th>
+                <th></th>
+                <th>Ｃ値</th>
+                <th>追加Ｄ</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr id="attack-fighter"@{[ display $pc{'lvFig'} ]}>
+                <td>ファイター技能</td>
+                <td id="attack-fighter-str">0</td>
+                <td id="attack-fighter-acc">0</td>
+                <td>―</td>
+                <td>―</td>
+                <td id="attack-fighter-dmg">―</td>
+              </tr>
+              <tr id="attack-grappler"@{[ display $pc{'lvGra'} ]}>
+                <td>グラップラー技能</td>
+                <td id="attack-grappler-str">0</td>
+                <td id="attack-grappler-acc">0</td>
+                <td>―</td>
+                <td>―</td>
+                <td id="attack-grappler-dmg">0</td>
+              </tr>
+              <tr id="attack-fencer"@{[ display $pc{'lvFen'} ]}>
+                <td>フェンサー技能</td>
+                <td id="attack-fencer-str">0</td>
+                <td id="attack-fencer-acc">0</td>
+                <td>―</td>
+                <td>-1</td>
+                <td id="attack-fencer-dmg">0</td>
+              </tr>
+              <tr id="attack-shooter"@{[ display $pc{'lvSho'} ]}>
+                <td>シューター技能</td>
+                <td id="attack-shooter-str">0</td>
+                <td id="attack-shooter-acc">0</td>
+                <td>―</td>
+                <td>―</td>
+                <td id="attack-shooter-dmg">0</td>
+              </tr>
+              <tr id="attack-enhancer"@{[ display ($pc{'lvEnh'} >= 10) ]}>
+                <td>エンハンサー技能</td>
+                <td id="attack-enhancer-str">0</td>
+                <td id="attack-enhancer-acc">0</td>
+                <td>―</td>
+                <td>―</td>
+                <td id="attack-enhancer-dmg">0</td>
+              </tr>
+              <tr id="attack-demonruler"@{[ display $pc{'lvDem'} ]}>
+                <td>デーモンルーラー技能</td>
+                <td id="attack-demonruler-str">0</td>
+                <td id="attack-demonruler-acc">0</td>
+                <td>―</td>
+                <td>―</td>
+                <td id="attack-demonruler-dmg">0</td>
+              </tr>
 HTML
 foreach my $weapon (@data::weapons){
 print <<"HTML";
-            <tr id="attack-@$weapon[1]-mastery"@{[ display $pc{'mastery'.ucfirst(@$weapon[1])} ]}>
-              <td>《武器習熟／@$weapon[0]》</td>
-              <td>―</td>
-              <td>―</td>
-              <td>―</td>
-              <td>―</td>
-              <td id="attack-@$weapon[1]-mastery-dmg">$pc{'mastery'.ucfirst(@$weapon[1])}</td>
-            </tr>
+              <tr id="attack-@$weapon[1]-mastery"@{[ display $pc{'mastery'.ucfirst(@$weapon[1])} ]}>
+                <td>《武器習熟／@$weapon[0]》</td>
+                <td>―</td>
+                <td>―</td>
+                <td>―</td>
+                <td>―</td>
+                <td id="attack-@$weapon[1]-mastery-dmg">$pc{'mastery'.ucfirst(@$weapon[1])}</td>
+              </tr>
 HTML
 }
 print <<"HTML";
-            <tr id="attack-artisan-mastery"@{[ display $pc{'masteryArtisan'} ]}>
-              <td>《魔器習熟》</td>
-              <td>―</td>
-              <td>―</td>
-              <td>―</td>
-              <td>―</td>
-              <td id="attack-artisan-mastery-dmg">$pc{'masteryArtisan'}</td>
-            </tr>
-            <tr id="accuracy-enhance"@{[ display $pc{'accuracyEnhance'} ]}>
-              <td>《命中強化》</td>
-              <td>―</td>
-              <td id="accuracy-enhance-acc">$pc{'accuracyEnhance'}</td>
-              <td>―</td>
-              <td>―</td>
-              <td>―</td>
-            </tr>
-            <tr id="throwing"@{[ display $pc{'throwing'} ]}>
-              <td>《スローイング》</td>
-              <td>―</td>
-              <td id="throwing-acc">1</td>
-              <td>―</td>
-              <td>―</td>
-              <td>―</td>
-            </tr>
+              <tr id="attack-artisan-mastery"@{[ display $pc{'masteryArtisan'} ]}>
+                <td>《魔器習熟》</td>
+                <td>―</td>
+                <td>―</td>
+                <td>―</td>
+                <td>―</td>
+                <td id="attack-artisan-mastery-dmg">$pc{'masteryArtisan'}</td>
+              </tr>
+              <tr id="accuracy-enhance"@{[ display $pc{'accuracyEnhance'} ]}>
+                <td>《命中強化》</td>
+                <td>―</td>
+                <td id="accuracy-enhance-acc">$pc{'accuracyEnhance'}</td>
+                <td>―</td>
+                <td>―</td>
+                <td>―</td>
+              </tr>
+              <tr id="throwing"@{[ display $pc{'throwing'} ]}>
+                <td>《スローイング》</td>
+                <td>―</td>
+                <td id="throwing-acc">1</td>
+                <td>―</td>
+                <td>―</td>
+                <td>―</td>
+              </tr>
+            </tbody>
           </table>
         </div>
         <div class="box" id="weapons">
-          <table id="weapons-table">
+          <table class="line-tbody" id="weapons-table">
             <thead>
-            <tr>
-              <th>武器</th>
-              <th>用法</th>
-              <th>必筋</th>
-              <th>命中力</th>
-              <th>威力</th>
-              <th>Ｃ値</th>
-              <th>追加Ｄ</th>
-              <th>専用</th>
-              <th>カテゴリ</th>
-              <th>使用技能</th>
-            </tr>
+              <tr>
+                <th>武器</th>
+                <th>用法</th>
+                <th>必筋</th>
+                <th>命中力</th>
+                <th>威力</th>
+                <th>Ｃ値</th>
+                <th>追加Ｄ</th>
+                <th>専用</th>
+                <th>カテゴリ</th>
+                <th>使用技能</th>
+              </tr>
             </thead>
 HTML
 
-foreach my $i (1 .. $pc{'weaponNum'}) {
+foreach my $num (1 .. $pc{'weaponNum'}) {
 print <<"HTML";
-            <tr id="weapon-row$i" data-sort="$i">
-              <td>@{[input("weapon${i}Name")]}<br><a class="switch-button" onclick="switchWeapon(${i})">⇕</a></td>
-              <td>@{[input("weapon${i}Usage","text",'','list="list-usage"')]}</td>
-              <td>@{[input("weapon${i}Reqd")]}</td>
-              <td>+@{[input("weapon${i}Acc",'number','calcWeapon')]}=<b id="weapon${i}-acc-total">0</b></td>
-              <td>@{[input("weapon${i}Rate")]}</td>
-              <td>@{[input("weapon${i}Crit")]}</td>
-              <td>+@{[input("weapon${i}Dmg",'number','calcWeapon')]}=<b id="weapon${i}-dmg-total">0</b></td>
-              <td>@{[input("weapon${i}Own",'checkbox','calcWeapon')]}</td>
-              <td><select id="in-weapon${i}Category" name="weapon${i}Category" oninput="calcWeapon()">@{[option("weapon${i}Category",@data::weapon_names,'ガン（物理）','盾')]}</select></td>
-              <td><select id="in-weapon${i}Class" name="weapon${i}Class" oninput="calcWeapon()">@{[option("weapon${i}Class",'ファイター','グラップラー','フェンサー','シューター','エンハンサー','デーモンルーラー','自動計算しない')]}</select></td>
-              <td>@{[input("weapon${i}Note",'','calcWeapon','placeholder="備考"')]}</td>
-            </tr>
+            <tbody id="weapon-row$num">
+              <tr>
+                <td rowspan="2">@{[input("weapon${num}Name")]}<span class="handle"></span></td>
+                <td rowspan="2">@{[input("weapon${num}Usage","text",'','list="list-usage"')]}</td>
+                <td rowspan="2">@{[input("weapon${num}Reqd")]}</td>
+                <td rowspan="2">+@{[input("weapon${num}Acc",'number','calcWeapon')]}<b id="weapon${num}-acc-total">0</b></td>
+                <td rowspan="2">@{[input("weapon${num}Rate")]}</td>
+                <td rowspan="2">@{[input("weapon${num}Crit")]}</td>
+                <td rowspan="2">+@{[input("weapon${num}Dmg",'number','calcWeapon')]}<b id="weapon${num}-dmg-total">0</b></td>
+                <td>@{[input("weapon${num}Own",'checkbox','calcWeapon')]}</td>
+                <td><select name="weapon${num}Category" oninput="calcWeapon()">@{[option("weapon${num}Category",@data::weapon_names,'ガン（物理）','盾')]}</select></td>
+                <td><select name="weapon${num}Class" oninput="calcWeapon()">@{[option("weapon${num}Class",'ファイター','グラップラー','フェンサー','シューター','エンハンサー','デーモンルーラー','自動計算しない')]}</select></td>
+              </tr>
+              <tr><td colspan="3">@{[input("weapon${num}Note",'','calcWeapon','placeholder="備考"')]}</td>
+            </tbody>
 HTML
 }
 print <<"HTML";
+            </tbody>
           </table>
           <div class="annotate">
             ※Ｃ値は自動計算されません。<br>
@@ -1027,58 +1050,63 @@ print <<"HTML";
         </div>
         <div class="box" id="evasion-classes">
           <table>
-            <tr>
-              <th>技能・特技</th>
-              <th>必筋<br>上限</th>
-              <th>回避力</th>
-              <th>防護点</th>
-            </tr>
-            <tr>
-              <td><select id="evasion-class" name="evasionClass" oninput="calcDefense()">@{[option('evasionClass','ファイター','グラップラー','フェンサー','シューター','デーモンルーラー')]}</select></td>
-              <td id="evasion-str">$pc{'EvasionStr'}</td>
-              <td id="evasion-eva">$pc{'EvasionEva'}</td>
-              <td>―</td>
-            </tr>
-            <tr id="race-ability-def"@{[ display $pc{'raceAbilityDef'} ]}>
-              <td id="race-ability-def-name">［@{[ $pc{'race'} eq 'リルドラケン' ? '鱗の皮膚':$pc{'race'} eq 'フロウライト'?'晶石の身体':$pc{'race'} eq 'ダークトロール'?'トロールの体躯':'']}］</td>
-              <td>―</td>
-              <td>―</td>
-              <td id="race-ability-def-value">$pc{'raceAbilityDef'}</td>
-            </tr>
-            <tr id="mastery-metalarmour"@{[ display $pc{'masteryMetalArmour'} ]}>
-              <td>《防具習熟／金属鎧》</td>
-              <td>―</td>
-              <td>―</td>
-              <td id="mastery-metalarmour-value">$pc{'masteryMetalArmour'}</td>
-            </tr>
-            <tr id="mastery-nonmetalarmour"@{[ display $pc{'masteryNonMetalArmour'} ]}>
-              <td>《防具習熟／非金属鎧》</td>
-              <td>―</td>
-              <td>―</td>
-              <td id="mastery-nonmetalarmour-value">$pc{'masteryNonMetalArmour'}</td>
-            </tr>
-            <tr id="mastery-shield"@{[ display $pc{'masteryShield'} ]}>
-              <td>《防具習熟／盾》</td>
-              <td>―</td>
-              <td>―</td>
-              <td id="mastery-shield-value">$pc{'masteryShield'}</td>
-            </tr>
-            <tr id="mastery-artisan-def"@{[ display $pc{'masteryArtisan'} ]}>
-              <td>《魔器習熟》</td>
-              <td>―</td>
-              <td>―</td>
-              <td id="mastery-artisan-def-value">$pc{'masteryArtisan'}</td>
-            </tr>
-            <tr id="evasive-maneuver"@{[ display $pc{'evasiveManeuver'} ]}>
-              <td>《回避行動》</td>
-              <td>―</td>
-              <td id="evasive-maneuver-value">$pc{'evasiveManeuver'}</td>
-              <td>―</td>
-            </tr>
+            <thead>
+              <tr>
+                <th>技能・特技</th>
+                <th>必筋<br>上限</th>
+                <th>回避力</th>
+                <th>防護点</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><select id="evasion-class" name="evasionClass" oninput="calcDefense()">@{[option('evasionClass','ファイター','グラップラー','フェンサー','シューター','デーモンルーラー')]}</select></td>
+                <td id="evasion-str">$pc{'EvasionStr'}</td>
+                <td id="evasion-eva">$pc{'EvasionEva'}</td>
+                <td>―</td>
+              </tr>
+              <tr id="race-ability-def"@{[ display $pc{'raceAbilityDef'} ]}>
+                <td id="race-ability-def-name">［@{[ $pc{'race'} eq 'リルドラケン' ? '鱗の皮膚':$pc{'race'} eq 'フロウライト'?'晶石の身体':$pc{'race'} eq 'ダークトロール'?'トロールの体躯':'']}］</td>
+                <td>―</td>
+                <td>―</td>
+                <td id="race-ability-def-value">$pc{'raceAbilityDef'}</td>
+              </tr>
+              <tr id="mastery-metalarmour"@{[ display $pc{'masteryMetalArmour'} ]}>
+                <td>《防具習熟／金属鎧》</td>
+                <td>―</td>
+                <td>―</td>
+                <td id="mastery-metalarmour-value">$pc{'masteryMetalArmour'}</td>
+              </tr>
+              <tr id="mastery-nonmetalarmour"@{[ display $pc{'masteryNonMetalArmour'} ]}>
+                <td>《防具習熟／非金属鎧》</td>
+                <td>―</td>
+                <td>―</td>
+                <td id="mastery-nonmetalarmour-value">$pc{'masteryNonMetalArmour'}</td>
+              </tr>
+              <tr id="mastery-shield"@{[ display $pc{'masteryShield'} ]}>
+                <td>《防具習熟／盾》</td>
+                <td>―</td>
+                <td>―</td>
+                <td id="mastery-shield-value">$pc{'masteryShield'}</td>
+              </tr>
+              <tr id="mastery-artisan-def"@{[ display $pc{'masteryArtisan'} ]}>
+                <td>《魔器習熟》</td>
+                <td>―</td>
+                <td>―</td>
+                <td id="mastery-artisan-def-value">$pc{'masteryArtisan'}</td>
+              </tr>
+              <tr id="evasive-maneuver"@{[ display $pc{'evasiveManeuver'} ]}>
+                <td>《回避行動》</td>
+                <td>―</td>
+                <td id="evasive-maneuver-value">$pc{'evasiveManeuver'}</td>
+                <td>―</td>
+              </tr>
+            </tbody>
           </table>
         </div>
         <div class="box" id="armours">
           <table>
+            <thead>
             <tr>
               <th></th>
               <th>防具</th>
@@ -1088,49 +1116,55 @@ print <<"HTML";
               <th>専用</th>
               <th>備考</th>
             </tr>
-            <tr>
-              <th>鎧</th>
-              <td>@{[input('armourName')]}</td>
-              <td>@{[input('armourReqd')]}</td>
-              <td>@{[input('armourEva','number','calcDefense')]}</td>
-              <td>@{[input('armourDef','number','calcDefense')]}</td>
-              <td>@{[input('armourOwn','checkbox','calcDefense')]}</td>
-              <td>@{[input('armourNote')]}</td>
-            </tr>
-            <tr>
-              <th>盾</th>
-              <td>@{[input('shieldName')]}</td>
-              <td>@{[input('shieldReqd')]}</td>
-              <td>@{[input('shieldEva','number','calcDefense')]}</td>
-              <td>@{[input('shieldDef','number','calcDefense')]}</td>
-              <td>@{[input('shieldOwn','checkbox','calcDefense')]}</td>
-              <td>@{[input('shieldNote')]}</td>
-            </tr>
-            <tr>
-              <th>他</th>
-              <td>@{[input('defOtherName')]}</td>
-              <td>@{[input('defOtherReqd')]}</td>
-              <td>@{[input('defOtherEva','number','calcDefense')]}</td>
-              <td>@{[input('defOtherDef','number','calcDefense')]}</td>
-              <td> </td>
-              <td>@{[input('defOtherNote')]}</td>
-            </tr>
-            <tr class="defense-total">
-              <th colspan="3">合計：すべて</th>
-              <td id="defense-total-all-eva">0</td>
-              <td id="defense-total-all-def">0</td>
-            </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th>鎧</th>
+                <td>@{[input('armourName')]}</td>
+                <td>@{[input('armourReqd')]}</td>
+                <td>@{[input('armourEva','number','calcDefense')]}</td>
+                <td>@{[input('armourDef','number','calcDefense')]}</td>
+                <td>@{[input('armourOwn','checkbox','calcDefense')]}</td>
+                <td>@{[input('armourNote')]}</td>
+              </tr>
+              <tr>
+                <th>盾</th>
+                <td>@{[input('shieldName')]}</td>
+                <td>@{[input('shieldReqd')]}</td>
+                <td>@{[input('shieldEva','number','calcDefense')]}</td>
+                <td>@{[input('shieldDef','number','calcDefense')]}</td>
+                <td>@{[input('shieldOwn','checkbox','calcDefense')]}</td>
+                <td>@{[input('shieldNote')]}</td>
+              </tr>
+              <tr>
+                <th>他</th>
+                <td>@{[input('defOtherName')]}</td>
+                <td>@{[input('defOtherReqd')]}</td>
+                <td>@{[input('defOtherEva','number','calcDefense')]}</td>
+                <td>@{[input('defOtherDef','number','calcDefense')]}</td>
+                <td> </td>
+                <td>@{[input('defOtherNote')]}</td>
+              </tr>
+              <tr class="defense-total">
+                <th colspan="3">合計：すべて</th>
+                <td id="defense-total-all-eva">0</td>
+                <td id="defense-total-all-def">0</td>
+              </tr>
+            </tbody>
           </table>
         </div>
         <div class="box" id="accessories">
           <table>
-            <tr>
-              <th></th>
-              <th></th>
-              <th>装飾品</th>
-              <th>専用</th>
-              <th>効果</th>
-            </tr>
+            <thead>
+              <tr>
+                <th></th>
+                <th></th>
+                <th>装飾品</th>
+                <th>専用</th>
+                <th>効果</th>
+              </tr>
+            </thead>
+            <tbody id="accessories-table">
 HTML
 foreach (
   ["頭","Head"],    ["┗","Head_"],
@@ -1155,10 +1189,10 @@ foreach (
   elsif(@$_[0] eq '他4' && ($pc{'race'} ne 'レプラカーン' || $pc{'level'} <16)){ $flag = 0; }
   elsif(@$_[0] =~ /┗/  && !$pc{'accessory'.$addbase.'Add'}){ $flag = 0; }
   else { $flag = 1; }
-  print '  <tr id="accessory-' . @$_[1] . '"' . display($flag) . ">\n";
+  print '  <tr id="accessory-row'.@$_[1].'" data-type="'.@$_[1].'" '.display($flag).">\n";
   print '  <td>';
   if (@$_[0] !~ /┗/) {
-    print "  <input type=\"checkbox\" id=\"accessory-@$_[1]-add-check\"" .
+    print '  <input type="checkbox"' .
           " name=\"accessory@$_[1]Add\" value=\"1\"" .
           ($pc{"accessory@$_[1]Add"}?' checked' : '') .
           " onChange=\"addAccessory(this,'@$_[1]')\">";
@@ -1168,7 +1202,7 @@ foreach (
   <th>@$_[0]</th>
   <td>@{[input('accessory'.@$_[1].'Name')]}</td>
   <td>
-    <select id="accessory-@$_[1]" name="accessory@$_[1]Own" oninput="calcSubStt()">
+    <select name="accessory@$_[1]Own" oninput="calcSubStt()">
       <option></option>
       <option value="HP" @{[ $pc{"accessory@$_[1]Own"} eq 'HP' ? 'selected':'']}>HP</option>
       <option value="MP" @{[ $pc{"accessory@$_[1]Own"} eq 'MP' ? 'selected':'' ]}>MP</option>
@@ -1179,6 +1213,7 @@ foreach (
 HTML
 }
 print <<"HTML";
+          </tbody>
           </table>
         <div class="annotate">
         ※左のボックスにチェックを入れると欄が一つ追加されます
@@ -1199,7 +1234,7 @@ print <<"HTML";
         <div id="area-items-R">
           <div class="box" id="material-cards"@{[ display $pc{'lvAlc'} ]}>
             <h2>マテリアルカード</h2>
-            <table>
+            <table class="edit-table" >
             <tr><th>  </th><th>B</th><th>A</th><th>S</th><th>SS</th></tr>
             <tr class="cards-red"><th>赤</th><td>@{[input 'cardRedB','number']}</td><td>@{[input 'cardRedA','number']}</td><td>@{[input 'cardRedS','number']}</td><td>@{[input 'cardRedSS','number']}</td></tr>
             <tr class="cards-gre"><th>緑</th><td>@{[input 'cardGreB','number']}</td><td>@{[input 'cardGreA','number']}</td><td>@{[input 'cardGreS','number']}</td><td>@{[input 'cardGreSS','number']}</td></tr>
@@ -1210,10 +1245,10 @@ print <<"HTML";
           </div>
           <div class="box" id="battle-items"@{[ display $set::battleitem ]}>
           <h2>戦闘用アイテム</h2>
-          <ul>
+          <ul id="battle-items-list">
 HTML
-foreach my $i (1 .. 16){
-  print '<li id="battle-item'.$i.'"><input type="text" name="battleItem'.$i.'" value="'.$pc{'battleItem'.$i}.'"></li>';
+foreach my $num (1 .. 16){
+  print '<li id="battle-item'.$num.'"><span class="handle"></span><input type="text" name="battleItem'.$num.'" value="'.$pc{'battleItem'.$num}.'"></li>';
 }
 print <<"HTML";
           </ul>
@@ -1223,17 +1258,21 @@ print <<"HTML";
             <dt>ランク</dt>
             <dd><select name="rank" oninput="calcHonor()">@{[ option "rank",@set::adventurer_rank_name ]}</select></dd>
           </dl>
-          <div class="box" id="honor-items">
-            <table id="honor-items-table">
-              <h2>名誉アイテム</h2>
-              <tr><th></th><th>点数</th></tr>
-              <tr><td class="center">冒険者ランク</td><td id="rank-honor-value">0</td></tr>
-              <tr @{[ display $set::mystic_arts_on ]}><td class="center">秘伝</td><td id="mystic-arts-honor-value">0</td></tr>
+          <div class="box honor-items" id="honor-items">
+            <h2>名誉アイテム</h2>
+            <table class="edit-table side-margin" id="honor-items-table">
+              <thead>
+                <tr><th></th><th></th><th>点数</th></tr>
+              </thead>
+              <tbody>
+                <tr><td class="center" colspan="2">冒険者ランク</td><td id="rank-honor-value">0</td></tr>
+                <tr @{[ display $set::mystic_arts_on ]}><td class="center" class="center" colspan="2">秘伝</td><td id="mystic-arts-honor-value">0</td></tr>
 HTML
-foreach my $i (1 .. $pc{'honorItemsNum'}){
-  print '<tr><td>'.(input "honorItem${i}", "text").'</td><td>'.(input "honorItem${i}Pt", "number", "calcHonor").'</td></tr>';
+foreach my $num (1 .. $pc{'honorItemsNum'}){
+  print '<tr id="honor-item'.$num.'"><td class="handle"></td><td>'.(input "honorItem${num}", "text").'</td><td>'.(input "honorItem${num}Pt", "number", "calcHonor").'</td></tr>';
 }
 print <<"HTML";
+              </tbody>
             </table>
           <div class="add-del-button"><a onclick="addHonorItems()">▼</a><a onclick="delHonorItems()">▲</a></div>
           @{[ input 'honorItemsNum','hidden' ]}
@@ -1243,15 +1282,17 @@ print <<"HTML";
             <dt>不名誉点</dt><dd id="dishonor-value">0</dd>
             <dt>不名誉称号</dt><dd id="notoriety"></dd>
           </dl>
-          <div class="box" id="dishonor-items">
-            <table id="dishonor-items-table">
-              <h2>不名誉詳細</h2>
-              <tr><th></th><th>点数</th></tr>
+          <div class="box honor-items" id="dishonor-items">
+            <h2>不名誉詳細</h2>
+            <table class="edit-table side-margin" id="dishonor-items-table">
+              <thead><tr><th></th><th></th><th>点数</th></tr></thead>
+              <tbody>
 HTML
-foreach my $i (1 .. $pc{'dishonorItemsNum'}){
-  print '<tr><td>'.(input "dishonorItem${i}", "text").'</td><td>'.(input "dishonorItem${i}Pt", "number", "calcDishonor").'</td></tr>';
+foreach my $num (1 .. $pc{'dishonorItemsNum'}){
+  print '<tr id="dishonor-item'.$num.'"><td class="handle"></td><td>'.(input "dishonorItem${num}", "text").'</td><td>'.(input "dishonorItem${num}Pt", "number", "calcDishonor").'</td></tr>';
 }
 print <<"HTML";
+            </tbody>
             </table>
           <div class="add-del-button"><a onclick="addDishonorItems()">▼</a><a onclick="delDishonorItems()">▲</a></div>
           @{[ input 'dishonorItemsNum','hidden' ]}
@@ -1276,8 +1317,8 @@ print <<"HTML";
       <div class="box" id="free-note">
         <h2>容姿・経歴・その他メモ</h2>
         <textarea name="freeNote">$pc{'freeNote'}</textarea>
-        <h4 onclick="view('text-format')">テキスト装飾・整形ルール（クリックで展開）▼</h4>
-        <div class="annotate" id="text-format" style="display:none;">
+        <details class="annotate">
+        <summary>テキスト装飾・整形ルール（クリックで展開）</summary>
         ※メモ欄以外でも有効です。<br>
         太字　：<code>''テキスト''</code>：<b>テキスト</b><br>
         斜体　：<code>'''テキスト'''</code>：<span class="oblique">テキスト</span><br>
@@ -1308,53 +1349,57 @@ print <<"HTML";
         表組み　　：<code>|テキスト|テキスト|</code><br>
         定義リスト：<code>:項目名|説明文</code><br>
         　　　　　　<code>:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|説明文2行目</code> 項目名を記入しないか、半角スペースで埋めると上と結合
-        </div>
+        </details>
       </div>
       <div class="box" id="history">
         <h2>セッション履歴</h2>
-        <table id="history-table">
-          <tr>
-            <th>No.</th>
-            <th>日付</th>
-            <th>タイトル</th>
-            <th>経験点</th>
-            <th>名誉点</th>
-            <th>ガメル</th>
-            <th>成長</th>
-            <th>GM</th>
-            <th>参加者</th>
-          </tr>
+        @{[input 'historyNum','hidden']}
+        <table class="edit-table line-tbody" id="history-table">
+          <thead>
+            <tr>
+              <th></th>
+              <th>日付</th>
+              <th>タイトル</th>
+              <th>経験点</th>
+              <th>名誉点</th>
+              <th>ガメル</th>
+              <th>成長</th>
+              <th>GM</th>
+              <th>参加者</th>
+            </tr>
+            <tr>
+              <td>-</td>
+              <td></td>
+              <td>キャラクター作成</td>
+              <td id="history0-exp">$pc{'history0Exp'}</td>
+              <td id="history0-honor">$pc{'history0Honor'}</td>
+              <td id="history0-money">$pc{'history0Money'}</td>
+              <td id="history0-grow">$pc{'history0Grow'}</td>
+            </tr>
+          </thead>
 HTML
-if(1){
+foreach my $num (1 .. $pc{'historyNum'}) {
 print <<"HTML";
-          <tr>
-            <td>-</td>
-            <td></td>
-            <td>キャラクター作成</td>
-            <td id="history0-exp">$pc{'history0Exp'}</td>
-            <td id="history0-honor">$pc{'history0Honor'}</td>
-            <td id="history0-money">$pc{'history0Money'}</td>
-            <td id="history0-grow">$pc{'history0Grow'}</td>
-          </tr>
+          <tbody id="history${num}">
+            <tr>
+              <td rowspan="2" class="handle"></td>
+              <td rowspan="2">@{[input("history${num}Date")]}</td>
+              <td rowspan="2">@{[input("history${num}Title")]}</td>
+              <td>@{[input("history${num}Exp",'text','calcExp')]}</td>
+              <td>@{[input("history${num}Honor",'text','calcHonor')]}</td>
+              <td>@{[input("history${num}Money",'text','calcCash')]}</td>
+              <td>@{[input("history${num}Grow",'text','','list="list-grow"')]}</td>
+              <td>@{[input("history${num}Gm")]}</td>
+              <td>@{[input("history${num}Member")]}</td>
+            </tr>
+            <tr><td colspan="6" class="left">@{[input("history${num}Note",'','','placeholder="備考"')]}</td></tr>
+          </tbody>
 HTML
 }
-foreach my $i (1 .. $pc{'historyNum'}) {
 print <<"HTML";
-          <tr>
-            <td>$i</td>
-            <td>@{[input("history${i}Date")]}<br><a class="switch-button" onclick="switchHistory(${i})">⇕</a></td>
-            <td>@{[input("history${i}Title")]}</td>
-            <td>@{[input("history${i}Exp",'text','calcExp')]}</td>
-            <td>@{[input("history${i}Honor",'text','calcHonor')]}</td>
-            <td>@{[input("history${i}Money",'text','calcCash')]}</td>
-            <td>@{[input("history${i}Grow",'text','','list="list-grow"')]}</td>
-            <td>@{[input("history${i}Gm")]}</td>
-            <td>@{[input("history${i}Member")]}</td>
-            <td>@{[input("history${i}Note",'','','placeholder="備考"')]}</td>
-          </tr>
-HTML
-}
-print <<"HTML";
+          <tfoot>
+            <tr><th></th><th>日付</th><th>タイトル</th><th>経験点</th><th>GM</th><th>参加者</th></tr>
+          </tfoot>
         </table>
         <div class="add-del-button"><a onclick="addHistory()">▼</a><a onclick="delHistory()">▲</a></div>
         <table class="example">
@@ -1388,7 +1433,6 @@ print <<"HTML";
         　<code>器敏2知3</code>と能力値の頭文字1つで記述することもできます。<br>
         ※成長はリアルタイムでの自動計算はされません。反映するには一度保存してください。
         </div>
-        @{[input('historyNum','hidden')]}
       </div>
       
       <div class="box" id="free-history">
@@ -1731,7 +1775,7 @@ print 'let weapons = [';
 foreach (@data::weapons){
   print "'".@$_[0]."',";
 }
-print '];';
+print '"ガン（物理）","盾"];';
 print 'let raceAbility = {';
 foreach my $key ( keys(%data::race_ability) ){
   print "\"$key\" : \"$data::race_ability{$key}\",";

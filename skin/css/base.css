@@ -1,6 +1,6 @@
 @charset "utf-8";
 
-/* ゆとシート for SW2.5 */
+/* ゆとシートⅡ */
 
 /* // Base
 ---------------------------------------------------------------------------------------------------- */
@@ -73,7 +73,7 @@ select {
   border-width: 1px;
   border-style: solid;
   border-radius: 5px;
-  background-color: rgba(255,255,255,0.6);
+  background-color: rgba(255,255,255,0.7);
 }
 .night input,
 .night textarea,

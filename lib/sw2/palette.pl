@@ -141,6 +141,7 @@ if(!$type){
             $pc{'weapon'.$_.'Acc'}.$pc{'weapon'.$_.'Rate'}.$pc{'weapon'.$_.'Crit'}.
             $pc{'weapon'.$_.'Dmg'}.$pc{'weapon'.$_.'Own'}.$pc{'weapon'.$_.'Note'}
             eq '';
+    $pc{'weapon'.$_.'Name'} = $pc{'weapon'.$_.'Name'} || $pc{'weapon'.($_-1).'Name'};
     say "//武器$_=$pc{'weapon'.$_.'Name'}" if usedCheck("武器$_");
     say "//命中$_=$pc{'weapon'.$_.'AccTotal'}" if usedCheck("命中$_");
     say "//威力$_=$pc{'weapon'.$_.'Rate'}" if usedCheck("威力$_");
