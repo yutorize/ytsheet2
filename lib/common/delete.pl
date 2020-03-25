@@ -5,7 +5,7 @@ use utf8;
 use open ":utf8";
 
 my $LOGIN_ID = check;
-
+my $mode = param('mode');
 my $message;
 
 my $data_dir; my $data_list;
@@ -20,59 +20,94 @@ my $file;
 (undef, undef, $file, undef) = getfile(param('id'),param('pass'),$LOGIN_ID);
 if(!$file){ error('データが見つかりません。'); }
 
-open (my $FH, "+<", $data_list) or error('一覧ファイルのオープンに失敗しました。');
-my @list = <$FH>;
-flock($FH, 2);
-seek($FH, 0, 0);
-foreach (@list){
-  my($id, undef) = split /<>/;
-  if (param('id') eq $id){
-    $message .= 'リストから削除しました。<br>';
-  }else{
-    print $FH $_;
-  }
-}
-truncate($FH, tell($FH));
-close($FH);
-
-open (my $FH, '+<', $set::passfile) or error('IDファイルのオープンに失敗しました。');
-my @list = <$FH>;
-flock($FH, 2);
-seek($FH, 0, 0);
-foreach (@list){
-  my($id, undef) = split /<>/;
-  if (param('id') eq $id){
-    $message .= 'IDを削除しました。<br>';
-  } else {
-    print $FH $_;
-  }
-}
-truncate($FH, tell($FH));
-close($FH);
-
-if (unlink "${data_dir}${file}/data.cgi")  { $message .= 'キャラクターデータを削除しました。<br>'; }
-if (unlink "${data_dir}${file}/image.png") { $message .= 'キャラクター画像を削除しました。<br>'; }
-if (unlink "${data_dir}${file}/image.jpg") { $message .= 'キャラクター画像を削除しました。<br>'; }
-if (unlink "${data_dir}${file}/image.gif") { $message .= 'キャラクター画像を削除しました。<br>'; }
-
-if($set::del_back){
-  my $dir = "${data_dir}${file}/backup/";
-  opendir (my $DIR, $dir);
-  my @files = grep { !m/^(\.|\.\.)$/g } readdir $DIR;
-  close ($DIR);
-  my $flag = @files;
-  if ($flag) {
-    foreach (@files) {
-      unlink "$dir$_";
+## キャラシ削除
+if($mode eq 'delete'){
+  open (my $FH, "+<", $data_list) or error('一覧ファイルのオープンに失敗しました。');
+  my @list = <$FH>;
+  flock($FH, 2);
+  seek($FH, 0, 0);
+  foreach (@list){
+    my($id, undef) = split /<>/;
+    if (param('id') eq $id){
+      $message .= 'リストから削除しました。<br>';
+    }else{
+      print $FH $_;
     }
   }
-  if(rmdir $dir){ print 'バックアップを削除しました。<br>'; }
-  #else { print 'バックアップフォルダ'.$dir.'の削除に失敗しました。<br>'; }
+  truncate($FH, tell($FH));
+  close($FH);
+
+  open (my $FH, '+<', $set::passfile) or error('IDファイルのオープンに失敗しました。');
+  my @list = <$FH>;
+  flock($FH, 2);
+  seek($FH, 0, 0);
+  foreach (@list){
+    my($id, undef) = split /<>/;
+    if (param('id') eq $id){
+      $message .= 'IDを削除しました。<br>';
+    } else {
+      print $FH $_;
+    }
+  }
+  truncate($FH, tell($FH));
+  close($FH);
+
+  if (unlink "${data_dir}${file}/data.cgi")  { $message .= 'キャラクターデータを削除しました。<br>'; }
+  if (unlink "${data_dir}${file}/image.png") { $message .= 'キャラクター画像を削除しました。<br>'; }
+  if (unlink "${data_dir}${file}/image.jpg") { $message .= 'キャラクター画像を削除しました。<br>'; }
+  if (unlink "${data_dir}${file}/image.gif") { $message .= 'キャラクター画像を削除しました。<br>'; }
+
+  if($set::del_back){
+    my $dir = "${data_dir}${file}/backup/";
+    opendir (my $DIR, $dir);
+    my @files = grep { !m/^(\.|\.\.)$/g } readdir $DIR;
+    close ($DIR);
+    my $flag = @files;
+    if ($flag) {
+      foreach (@files) {
+        unlink "$dir$_";
+      }
+    }
+    if(rmdir $dir){ print 'バックアップを削除しました。<br>'; }
+    #else { print 'バックアップフォルダ'.$dir.'の削除に失敗しました。<br>'; }
+  }
+  
+  if(rmdir "${data_dir}${file}"){ $message .= 'ディレクトリを削除しました。<br>'; }
+  else { rename("${data_dir}${file}", "${data_dir}del-${file}") }
+  
+  info('キャラクターシートの削除',$message);
 }
-
-if(rmdir "${data_dir}${file}"){ $message .= 'ディレクトリを削除しました。<br>'; }
-else { rename("${data_dir}${file}", "${data_dir}del-${file}") }
-
-info('キャラクターシートの削除',$message);
-
+## 画像削除
+elsif($mode eq 'img-delete'){
+  # 画像差し替え
+  if($set::beheaded){
+    use File::Copy 'copy';
+    if (unlink "${data_dir}${file}/image.png") {
+      $message .= 'キャラクター画像を削除しました。<br>';
+      if(copy "${set::beheaded}.png", "${data_dir}${file}/image.png"){
+        $message .= '差し替え画像を設定しました。<br>';
+      }
+    }
+    if (unlink "${data_dir}${file}/image.jpg") {
+      $message .= 'キャラクター画像を削除しました。<br>';
+      if(copy "${set::beheaded}.jpg", "${data_dir}${file}/image.jpg"){
+        $message .= '差し替え画像を設定しました。<br>';
+      }
+    }
+    if (unlink "${data_dir}${file}/image.gif") {
+      $message .= 'キャラクター画像を削除しました。<br>';
+      if(copy "${set::beheaded}.gif", "${data_dir}${file}/image.gif"){
+        $message .= '差し替え画像を設定しました。<br>';
+      }
+    }
+  }
+  # 消すだけ
+  else {
+    if (unlink "${data_dir}${file}/image.png") { $message .= 'キャラクター画像を削除しました。<br>'; }
+    if (unlink "${data_dir}${file}/image.jpg") { $message .= 'キャラクター画像を削除しました。<br>'; }
+    if (unlink "${data_dir}${file}/image.gif") { $message .= 'キャラクター画像を削除しました。<br>'; }
+  }
+  $message .= '<a href="./?id='.param('id').'">キャラクターシートを確認</a>';
+  info('画像の削除',$message);
+}
 1;

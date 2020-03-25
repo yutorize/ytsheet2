@@ -11,16 +11,18 @@ use open ":utf8";
 binmode STDIN, ":utf8";
 binmode STDOUT, ':utf8';
 use CGI::Carp qw(fatalsToBrowser);
+use CGI qw/:all/;
 use Fcntl;
 
 ### バージョン #######################################################################################
-our $ver = "1.07";
+our $ver = "1.08β";
 
 ### 設定読込 #########################################################################################
 
 require './lib/config-default.pl';
 require './config.cgi';
-require './lib/subroutine.pl';
+require './lib/common/subroutine.pl';
+require './lib/sw2/subroutine-sw2.pl';
 
 ### 各処理へ移動 #####################################################################################
 
@@ -61,6 +63,7 @@ elsif($mode eq 'copy')       { require $set::lib_edit; }   #コピー
 elsif($mode eq 'make')       { require $set::lib_save; }   #新規作成
 elsif($mode eq 'save')       { require $set::lib_save; }   #更新
 elsif($mode eq 'delete')     { require $set::lib_delete; } #削除
+elsif($mode eq 'img-delete') { require $set::lib_delete; } #削除
 elsif($mode eq 'palette')    { require $set::lib_palette; }#チャットパレット表示
 elsif($mode eq 'json')       { require $set::lib_json; }   #外部アプリ連携
 elsif(param('id')) { require $set::lib_view; }   #シート表示
