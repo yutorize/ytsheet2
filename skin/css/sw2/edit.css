@@ -221,14 +221,14 @@ article > form > hr {
   border-style: solid;
 }
 
-#deleteform {
+.deleteform {
   margin-top: 5rem;
   padding-top: 5rem;
   border-width: 1px 0 0;
   border-style: solid;
   text-align: right;
 }
-#deleteform input[type="submit"] {
+.deleteform input[type="submit"] {
   margin-left: .5rem;
   padding: .3rem .5rem;
 }

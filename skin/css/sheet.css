@@ -4,16 +4,19 @@
 
 /* // Font
 ---------------------------------------------------------------------------------------------------- */
-@import url('https://fonts.googleapis.com/css?family=Varela+Round&text=0123456789');
+@import url('https://fonts.googleapis.com/css?family=Varela+Round&text=0123456789%25%23%40-%2B%3D');
 @import url('https://fonts.googleapis.com/css?family=Raleway:500,700&text=ABCČĆDĐEFGHIJKLMNOPQRSŠTUVWXYZŽabcčćdđefghijklmnopqrsštuvwxyzž%26%20');
+@import url('https://fonts.googleapis.com/css?family=Lato:700');
 @import url('https://fonts.googleapis.com/css?family=Kosugi&text=%E2%80%9C%E2%80%9D');
 @import url('https://fonts.googleapis.com/css?family=Noto+Serif+JP:400,700&display=swap');
+@font-face { font-family: "Arial"; src: local("Arial"); unicode-range: U+0020-0039,U+003F-007F; }
 
 :root {
   --base-font-family-jp : "BIZ UDGothic", "Hiragino Sans","Kosugi","Meiryo",sans-serif;
-  --base-font-family-pr : "BIZ UDPGothic","Hiragino Sans","Kosugi","Meiryo UI",sans-serif;
+  --base-font-family-pr : "BIZ UDPGothic","Hiragino Sans","Meiryo UI",sans-serif;
   --base-font-family-min: "Noto Serif JP","YuMincho","ヒラギノ明朝 ProN W3","Hiragino Mincho ProN",serif;
-  --base-font-family-mono: "BIZ UDGothic", monospace;
+  --base-font-family-input: 'Arial',"BIZ UDPGothic","Hiragino Sans","Meiryo UI",sans-serif;
+  --base-font-family-mono : "BIZ UDGothic", monospace;
 }
 
 body {
@@ -22,6 +25,9 @@ body {
 }
 header nav {
   font-family: "ヒラギノ角ゴ ProN","Hiragino Kaku Gothic ProN","HiraKakuProN-W3","Meiryo",sans-serif;
+}
+input, select {
+  font-family: var(--base-font-family-input);
 }
 textarea,tt {
   font-family: var(--base-font-family-mono);
@@ -51,15 +57,17 @@ textarea,tt {
   );
   --box-outside-border-color: hsl(
     var(--box-head-bg-color-h, 0),
-    calc( var(--box-head-bg-color-s,   0%) * 0.15 ),
-    60%
+    calc( var(--box-head-bg-color-s,   0%) * 0.15 ), 60%
   );
   --box-inside-border-color: hsl(
     var(--box-base-bg-color-h, 0),
-    calc( var(--box-base-bg-color-s,   0%) * 0.3 ),
-    65%
+    calc( var(--box-base-bg-color-s,   0%) * 0.3 ), 65%
   );
   --box-even-rows-bg-color: rgba(127,127,127,0.15);
+  --box-input-border-color: hsl(
+    var(--box-base-bg-color-h, 0),
+    calc( var(--box-base-bg-color-s,   0%) * 0.3 ), 75%
+  );
 }
 .night {
   --box-base-bg-color: hsla(
@@ -70,13 +78,15 @@ textarea,tt {
   );
   --box-outside-border-color: hsl(
     var(--box-head-bg-color-h, 0),
-    calc( var(--box-head-bg-color-s,   0%) * 0.15 ),
-    35%
+    calc( var(--box-head-bg-color-s,   0%) * 0.15 ), 35%
   );
   --box-inside-border-color: hsl(
     var(--box-base-bg-color-h, 0),
-    calc( var(--box-base-bg-color-s,   0%) * 0.3 ),
-    25%
+    calc( var(--box-base-bg-color-s,   0%) * 0.3 ), 25%
+  );
+  --box-input-border-color: hsl(
+    var(--box-base-bg-color-h, 0),
+    calc( var(--box-base-bg-color-s,   0%) * 0.3 ), 15%
   );
 }
 
@@ -111,6 +121,7 @@ code {
 body {
   min-height: 100vh;
   overflow-x: hidden;
+  word-break: break-word;
 }
 
 main {
@@ -183,6 +194,9 @@ dl.box > dt,
 
 .box { border-color: var(--box-outside-border-color); }
 .box * { border-color: var(--box-inside-border-color); }
+.box input,
+.box textarea,
+.box select { border-color: var(--box-input-border-color); }
 
 .box p {
   margin: .3rem .5em 0;

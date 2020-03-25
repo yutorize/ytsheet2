@@ -88,7 +88,7 @@ $pc{'evasiveManeuver'} = $pc{'evasiveManeuver'} ? $pc{'evasiveManeuver'} : 0;
 $pc{'tenacity'} = $pc{'tenacity'} ? $pc{'tenacity'} : 0;
 $pc{'capacity'} = $pc{'capacity'} ? $pc{'capacity'} : 0;
 
-$pc{'weaponNum'}     = $pc{'weaponNum'}     || 3;
+$pc{'weaponNum'}     = $pc{'weaponNum'}     || 1;
 $pc{'languageNum'}   = $pc{'languageNum'}   || 3;
 $pc{'honorItemsNum'} = $pc{'honorItemsNum'} || 3;
 $pc{'historyNum'}    = $pc{'historyNum'}    || 3;
@@ -1299,8 +1299,8 @@ print <<"HTML";
           </div>
         </div>
       </div>
-      <div class="box" id="cashbook">
-        <h2>収支履歴</h2>
+      <details class="box" id="cashbook" @{[$pc{'cashbook'}?'open':'']}>
+        <summary>収支履歴</summary>
         <textarea name="cashbook" oninput="calcCash();" placeholder="例）冒険者セット  ::-100&#13;&#10;　　剣のかけら売却::+200">$pc{'cashbook'}</textarea>
         <p>
           所持金：<span id="cashbook-total-value">$pc{'moneyTotal'}</span> G
@@ -1313,9 +1313,10 @@ print <<"HTML";
           ※<span class="underline">セッション履歴に記入されたガメル報酬は自動的に加算されます。</span><br>
           ※所持金欄、預金／借金欄に<code>自動</code>または<code>auto</code>と記入すると、収支の計算結果を反映します。
         </div>
-      </div>
-      <div class="box" id="free-note">
-        <h2>容姿・経歴・その他メモ</h2>
+      </details>
+      
+      <details class="box" id="free-note" @{[$pc{'freeNote'}?'open':'']}>
+        <summary>容姿・経歴・その他メモ</summary>
         <textarea name="freeNote">$pc{'freeNote'}</textarea>
         <details class="annotate">
         <summary>テキスト装飾・整形ルール（クリックで展開）</summary>
@@ -1330,11 +1331,6 @@ print <<"HTML";
         透明　：<code>{{テキスト}}</code>：<span style="color:transparent">テキスト</span>（ドラッグ反転で見える）<br>
         リンク：<code>[[テキスト>URL]]</code><br>
         別シートへのリンク：<code>[テキスト#シートのID]</code><br>
-        <br>
-        アイコン<br>
-        　魔法のアイテム：<code>[魔]</code>：<img class="i-icon" src="${set::icon_dir}wp_magic.png"><br>
-        　刃武器　　　　：<code>[刃]</code>：<img class="i-icon" src="${set::icon_dir}wp_edge.png"><br>
-        　打撃武器　　　：<code>[打]</code>：<img class="i-icon" src="${set::icon_dir}wp_blow.png"><br>
         <hr>
         ※以下は複数行の欄でのみ有効です。<br>
         大見出し：行頭に<code>*</code><br>
@@ -1350,7 +1346,13 @@ print <<"HTML";
         定義リスト：<code>:項目名|説明文</code><br>
         　　　　　　<code>:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|説明文2行目</code> 項目名を記入しないか、半角スペースで埋めると上と結合
         </details>
-      </div>
+      </details>
+      
+      <details class="box" id="free-history" @{[$pc{'freeHistory'}?'open':'']}>
+        <summary>履歴（自由記入）</summary>
+        <textarea name="freeHistory">$pc{'freeHistory'}</textarea>
+      </details>
+      
       <div class="box" id="history">
         <h2>セッション履歴</h2>
         @{[input 'historyNum','hidden']}
@@ -1433,11 +1435,6 @@ print <<"HTML";
         　<code>器敏2知3</code>と能力値の頭文字1つで記述することもできます。<br>
         ※成長はリアルタイムでの自動計算はされません。反映するには一度保存してください。
         </div>
-      </div>
-      
-      <div class="box" id="free-history">
-        <h2>履歴（自由記入）</h2>
-        <textarea name="freeHistory">$pc{'freeHistory'}</textarea>
       </div>
       </section>
       
@@ -1693,7 +1690,7 @@ print <<"HTML";
 HTML
 if($mode eq 'edit'){
 print <<"HTML";
-    <form name="del" method="post" action="./" id="deleteform">
+    <form name="del" method="post" action="./" class="deleteform">
       <p style="font-size: 80%;">
       <input type="hidden" name="mode" value="delete">
       <input type="hidden" name="id" value="$id">
@@ -1706,6 +1703,22 @@ print <<"HTML";
       </p>
     </form>
 HTML
+  # 怒りの画像削除フォーム
+  if($LOGIN_ID eq $set::masterid){
+    print <<"HTML";
+    <form name="imgdel" method="post" action="./" class="deleteform">
+      <p style="font-size: 80%;">
+      <input type="hidden" name="mode" value="img-delete">
+      <input type="hidden" name="id" value="$id">
+      <input type="hidden" name="pass" value="$pass">
+      <input type="checkbox" name="check1" value="1" required>
+      <input type="checkbox" name="check2" value="1" required>
+      <input type="checkbox" name="check3" value="1" required>
+      <input type="submit" value="画像削除"><br>
+      </p>
+    </form>
+HTML
+  }
 }
 print <<"HTML";
     </article>
