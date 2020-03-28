@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <title>
+  <TMPL_IF forbidden>
+    非公開データ
+  <TMPL_ELSE>
+    <TMPL_VAR itemNameTitle>
+  </TMPL_IF>
+   - <TMPL_VAR title>
+  </title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" media="all" href="<TMPL_VAR coreDir>/skin/_common/css/base.css?<TMPL_VAR ver>">
+  <link rel="stylesheet" media="all" href="<TMPL_VAR coreDir>/skin/_common/css/sheet.css?<TMPL_VAR ver>">
+  <link rel="stylesheet" media="all" href="<TMPL_VAR coreDir>/skin/sw2/css/item.css?<TMPL_VAR ver>">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+  <script>
+function popImage() {
+  document.getElementById("image-box").style.bottom = 0;
+  document.getElementById("image-box").style.opacity = 1;
+}
+function closeImage() {
+  document.getElementById("image-box").style.opacity = 0;
+  setTimeout(function(){
+    document.getElementById("image-box").style.bottom = '-100vh';
+  },200);
+}
+let editForm = 0;
+function editOn() {
+  if(editForm){
+    document.getElementById("login-form").style.top = '-5rem';
+    editForm = 0;
+  }
+  else {
+    document.getElementById("login-form").style.top = '5rem';
+    editForm = 1;
+  }
+}
+let backupList = 0;
+function backuplistOn() {
+  if(backupList){
+    document.getElementById("backuplist").style.right = '-100vh';
+    backupList = 0;
+  }
+  else {
+    document.getElementById("backuplist").style.right = '0';
+    backupList = 1;
+  }
+}
+<TMPL_IF error>
+window.onload = function() {
+  document.getElementById("login-form").style.top = '5rem';
+  setTimeout(function(){
+    document.getElementById("error").style.opacity = 0;
+    document.getElementById("error").style.top = '-5rem';
+  },2000);
+};
+</TMPL_IF>
+  </script>
+  <TMPL_INCLUDE NAME="../../skin-add/head.html">
+</head>
+<body>
+  <script src="<TMPL_VAR coreDir>/skin/_common/js/common.js?<TMPL_VAR ver>"></script>
+  <header>
+    <h1><a href="./?type=i"><TMPL_VAR title></a></h1>
+    <nav>
+      <ul>
+        <li class="small"><a href="./?type=i">⏎</a></li>
+        <li class="small"><a onclick="backuplistOn()"><span>過去ログ</span></a></li>
+        <TMPL_IF ReqdPassword>
+        <li class="small"><a onclick="editOn()">編集</a></li>
+        <TMPL_ELSE>
+        <li class="small"><a href="./?mode=edit&id=<TMPL_VAR id>&type=i">編集</a></li>
+        </TMPL_IF>
+        <li class="small"><a onclick="nightModeChange()" title="ナイトモード">☾✧</a></li>
+      </ul>
+    </nav>
+  </header>
+  
+  <TMPL_IF error>
+  <aside id="error">
+    <p>
+      <TMPL_VAR error>
+    </p>
+  </aside>
+  </TMPL_IF>
+  
+  <aside id="backuplist">
+    <ul>
+      <li<TMPL_UNLESS BackupMode> class="backup-now"</TMPL_UNLESS>><a href="?id=<TMPL_VAR id>">最新</a></li>
+      <TMPL_LOOP Backup><li<TMPL_IF NOW> class="backup-now"</TMPL_IF>><a href="?id=<TMPL_VAR id>&backup=<TMPL_VAR URL>"><TMPL_VAR DATE></a></li></TMPL_LOOP>
+    </ul>
+  </aside>
+
+  <form id="login-form" method="post" action="./">
+    <input type="hidden" name="mode" value="edit">
+    <input type="hidden" name="type" value="i">
+    <input type="hidden" name="id" value="<TMPL_VAR id>">
+    <input type="password" name="pass" placeholder="password">
+    <input type="submit" value="編集">
+  </form>
+
+  <TMPL_IF forbidden>
+  <main><article><p>閲覧が禁止されています。</p></article></main>
+  <TMPL_ELSE>
+  <main>
+    <article class="item">
+      <div id="area-itemname">
+        <h1><TMPL_VAR magic><TMPL_VAR itemName></h1>
+        <div class="price">基本取引価格：<TMPL_VAR price></div>
+      </div>
+      
+      <div id="tags">
+      <TMPL_LOOP Tags><a href="./?type=i&tag=<TMPL_VAR URL>"><TMPL_VAR TEXT></a></TMPL_LOOP>
+      </div>
+      
+      <div class="data">
+      <dl class="reputation"><dt>知名度</dt><dd><TMPL_VAR reputation></dd></dl>
+      <dl class="shape"><dt>形状</dt><dd><div><TMPL_VAR shape></div></dd></dl>
+      <dl class="category"><dt>カテゴリ</dt><dd><div><TMPL_VAR category></div></dd></dl>
+      <dl class="age"><dt>製作時期</dt><dd><TMPL_VAR age></dd></dl>
+      <dl class="summary"><dt>概要</dt><dd><TMPL_VAR summary></dd></dl>
+      <dl class="effects"><dt>効果</dt><dd class="box">
+        <TMPL_VAR effects>
+        <TMPL_IF WeaponData>
+          <table>
+            <tr><th>用法</th><th>必筋</th><th>命中</th><th>威力</th><th>C値</th><th>追加D</th><th>備考</th></tr>
+            <TMPL_LOOP WeaponData>
+            <tr>
+            <td><TMPL_VAR USAGE></td>
+            <td><TMPL_VAR REQD></td>
+            <td><TMPL_VAR ACC></td>
+            <td><TMPL_VAR RATE></td>
+            <td><TMPL_VAR CRIT></td>
+            <td><TMPL_VAR DMG></td>
+            <td><TMPL_VAR NOTE></td>
+            </tr>
+            </TMPL_LOOP>
+          </table>
+        </TMPL_IF>
+        <TMPL_IF ArmourData>
+          <table>
+          <tr><th>用法</th><th>必筋</th><th>回避</th><th>防護</th><th>備考</th></tr>
+          <TMPL_LOOP ArmourData>
+          <tr>
+          <td><TMPL_VAR USAGE></td>
+          <td><TMPL_VAR REQD></td>
+          <td><TMPL_VAR EVA></td>
+          <td><TMPL_VAR DEF></td>
+          <td><TMPL_VAR NOTE></td>
+          </tr>
+          </TMPL_LOOP>
+          </table>
+        </TMPL_IF>
+      </dd></dl>
+      </div>
+      
+      <TMPL_IF description><div class="box description">
+        <h2>由来・逸話</h2>
+        <p><TMPL_VAR description></p>
+      </div></TMPL_IF>
+      <div id="author">
+        製作者：<TMPL_VAR author>
+      </div>
+      <div id="link-tag">
+        ゆとシート内リンク用タグ：<input type="text" onclick="this.select()" value="[<TMPL_VAR itemNameRaw>#<TMPL_VAR id>]">
+      </div>
+    </article>
+    <div class="back-button"><a href="./?type=i">⏎</a></div>
+    <div id="image-box" onclick="closeImage()">
+      <img src="<TMPL_VAR imageSrc>" id="image-box-image">
+    </div>
+  </main>
+  </TMPL_IF>
+
+  <footer>
+    <p class="notes"><span>『ソード・ワールド2.5』は、</span><span>「グループSNE」及び「KADOKAWA」の著作物です。</span></p>
+    <p class="copyright">ゆとシートⅡ for SW2.5 ver.<TMPL_VAR ver> - <a href="https://yutorize.2-d.jp">ゆとらいず工房</a></p>
+  </footer>
+</body>
+
+</html>
