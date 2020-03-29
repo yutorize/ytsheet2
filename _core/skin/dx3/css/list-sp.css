@@ -1,0 +1,72 @@
+
+@media screen and (max-width:1200px){
+  aside#sidebar-left,
+  aside#sidebar-right {
+    display:none;
+  }
+  aside#sidebar-top,
+  aside#sidebar-bottom {
+    display: block;
+  }
+  aside#sidebar-top{
+    grid-row: 2 / 3;
+  }
+  main {
+    grid-row: 3 / 4;
+  }
+  aside#sidebar-bottom{
+    grid-row: 4 / 5;
+  }
+  footer {
+    grid-row: 5 / 6;
+  }
+}
+@media screen and (max-width:735px){
+  html {
+    font-size: 1.6vw;
+  }
+  body {
+    background-size: auto, 60%;
+  }
+  
+  header nav {
+    margin-top: 4rem;
+  }
+  aside#sidebar-top {
+    padding-top: 10rem;
+  }
+  main {
+    padding-top: 6rem;
+  }
+  main nav ul {
+    display: block;
+  }
+  .list table tr {
+    display: grid;
+    grid-template-columns: 18rem 0.6fr 3em 0.6fr 0.8fr 4em 0.4fr;
+    grid-template-rows: auto;
+    font-size: 95%;
+  }
+  .list table tr > th {
+    display: grid;
+  }
+  .list table tr > th > span {
+    padding: 5px;
+  }
+  .list table th.player > span {
+    white-space: normal;
+  }
+  .list table td.name a {
+    font-size: unset;
+  }
+  .list table th.date > span {
+    white-space: normal;
+  }
+  .list table td.date {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .list table td.date > div > span:first-child {
+    display: none;
+  }
+}
