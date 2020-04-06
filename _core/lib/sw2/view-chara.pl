@@ -8,6 +8,8 @@ use HTML::Template;
 ### データ読み込み ###################################################################################
 require $set::data_races;
 require $set::data_items;
+require $set::data_craft;
+require $set::data_faith;
 
 ### テンプレート読み込み #############################################################################
 my $SHEET;
@@ -16,18 +18,29 @@ $SHEET = HTML::Template->new( filename => $set::skin_sheet, utf8 => 1,
   die_on_bad_params => 0, die_on_missing_include => 0, case_sensitive => 1, global_vars => 1);
 
 
-$SHEET->param("BackupMode" => param('backup') ? 1 : 0);
+$SHEET->param("backupMode" => param('backup') ? 1 : 0);
 
 ### キャラクターデータ読み込み #######################################################################
 my $id = param('id');
+my $url = param('url');
 my $file = $main::file;
 
 our %pc = ();
-my $datafile = "${set::char_dir}${file}/data.cgi";
-   $datafile = "${set::char_dir}${file}/backup/".param('backup').'.cgi' if param('backup');
-open my $IN, '<', $datafile or error 'キャラクターシートがありません。';
-$_ =~ s/(.*?)<>(.*?)\n/$pc{$1} = $2;/egi while <$IN>;
-close($IN);
+if($id){
+  my $datafile = "${set::char_dir}${file}/data.cgi";
+     $datafile = "${set::char_dir}${file}/backup/".param('backup').'.cgi' if param('backup');
+  open my $IN, '<', $datafile or error 'キャラクターシートがありません。';
+  $_ =~ s/(.*?)<>(.*?)\n/$pc{$1} = $2;/egi while <$IN>;
+  close($IN);
+}
+elsif($url){
+  require $set::lib_convert;
+  require $set::lib_calc_char;
+  %pc = data_convert($url);
+  %pc = data_calc(\%pc);
+  $SHEET->param("convertMode" => 1);
+  $SHEET->param("convertUrl" => $url);
+}
 
 $SHEET->param("id" => $id);
 
@@ -183,7 +196,12 @@ $SHEET->param(MysticArtsHonor => $mysticarts_honor);
 ### 秘奥魔法 --------------------------------------------------
 my @magic_gramarye;
 foreach (1 .. $pc{'lvGri'}){
-  push(@magic_gramarye, { "NAME" => $pc{'magicGramarye'.$_} } );
+  my $name = $pc{'magicGramarye'.$_};
+  my $ruby;
+  foreach(@data::magic_gramarye){
+    if ($name eq @$_[1]){ $name = "－$name－"; $ruby = @$_[2]; last }
+  }
+  push(@magic_gramarye, { "NAME" => $name, "RUBY" => $ruby } );
 }
 $SHEET->param(MagicGramarye => \@magic_gramarye);
 
@@ -463,19 +481,19 @@ $SHEET->param(EvasionClasses => \@evasion);
 ### 装飾品 --------------------------------------------------
 my @accessories;
 foreach (
-  ["頭","Head"],    ["┗","Head_"],
-  ["耳","Ear"],     ["┗","Ear_"],
-  ["顔","Face"],    ["┗","Face_"],
-  ["首","Neck"],    ["┗","Neck_"],
-  ["背中","Back"],  ["┗","Back_"],
-  ["右手","HandR"], ["┗","HandR_"],
-  ["左手","HandL"], ["┗","HandL_"],
-  ["腰","Waist"],   ["┗","Waist_"],
-  ["足","Leg"],     ["┗","Leg_"],
-  ["他","Other"],   ["┗","Other_"],
-  ["他2","Other2"], ["┗","Other2_"],
-  ["他3","Other3"], ["┗","Other3_"],
-  ["他4","Other4"], ["┗","Other4_"]
+  ["頭","Head"],    ["┗","Head_"],   ["┗","Head__"],
+  ["耳","Ear"],     ["┗","Ear_"],    ["┗","Ear__"],
+  ["顔","Face"],    ["┗","Face_"],   ["┗","Face__"],
+  ["首","Neck"],    ["┗","Neck_"],   ["┗","Neck__"],
+  ["背中","Back"],  ["┗","Back_"],   ["┗","Back__"],
+  ["右手","HandR"], ["┗","HandR_"],  ["┗","HandR__"],
+  ["左手","HandL"], ["┗","HandL_"],  ["┗","HandL__"],
+  ["腰","Waist"],   ["┗","Waist_"],  ["┗","Waist__"],
+  ["足","Leg"],     ["┗","Leg_"],    ["┗","Leg__"],
+  ["他","Other"],   ["┗","Other_"],  ["┗","Other__"],
+  ["他2","Other2"], ["┗","Other2_"], ["┗","Other2__"],
+  ["他3","Other3"], ["┗","Other3_"], ["┗","Other3__"],
+  ["他4","Other4"], ["┗","Other4_"], ["┗","Other4__"],
 ){
   next if !$pc{'accessory'.@$_[1].'Name'} && !$pc{'accessory'.@$_[1].'Note'};
   push(@accessories, {
@@ -603,22 +621,24 @@ $SHEET->param(colorBaseBgD => 15);
 
 
 ### バックアップ --------------------------------------------------
-opendir(my $DIR,"${set::char_dir}${file}/backup");
-my @backlist = readdir($DIR);
-closedir($DIR);
-my @backup;
-foreach (reverse sort @backlist) {
-  if ($_ =~ s/\.cgi//) {
-    my $url = $_;
-    $_ =~ s/^([0-9]{4}-[0-9]{2}-[0-9]{2})-([0-9]{2})-([0-9]{2})$/$1 $2\:$3/;
-    push(@backup, {
-      "NOW"  => ($url eq param('backup') ? 1 : 0),
-      "URL"  => $url,
-      "DATE" => $_,
-    });
+if($id){
+  opendir(my $DIR,"${set::char_dir}${file}/backup");
+  my @backlist = readdir($DIR);
+  closedir($DIR);
+  my @backup;
+  foreach (reverse sort @backlist) {
+    if ($_ =~ s/\.cgi//) {
+      my $url = $_;
+      $_ =~ s/^([0-9]{4}-[0-9]{2}-[0-9]{2})-([0-9]{2})-([0-9]{2})$/$1 $2\:$3/;
+      push(@backup, {
+        "NOW"  => ($url eq param('backup') ? 1 : 0),
+        "URL"  => $url,
+        "DATE" => $_,
+      });
+    }
   }
+  $SHEET->param(Backup => \@backup);
 }
-$SHEET->param(Backup => \@backup);
 
 ### パスワード要求 --------------------------------------------------
 $SHEET->param(ReqdPassword => (!$pc{'protect'} || $pc{'protect'} eq 'password' ? 1 : 0) );
@@ -633,7 +653,11 @@ $SHEET->param(title => $set::title);
 ### 画像 --------------------------------------------------
 $pc{'imageUpdateTime'} = $pc{'updateTime'};
 $pc{'imageUpdateTime'} =~ s/[\-\ \:]//g;
-my $imgsrc = "${set::char_dir}${file}/image.$pc{'image'}?$pc{'imageUpdateTime'}";
+my $imgsrc = (
+  $pc{'imageURL'} ? tag_delete($pc{'imageURL'})
+  : $main::base_url ? "${main::base_url}data/chara/$pc{'birthTime'}/image.$pc{'image'}"
+  : "${set::char_dir}${file}/image.$pc{'image'}?$pc{'imageUpdateTime'}"
+);
 $SHEET->param("imageSrc" => $imgsrc);
 
 if($pc{'imageFit'} eq 'percent'){
@@ -641,11 +665,12 @@ $SHEET->param("imageFit" => $pc{'imagePercent'}.'%');
 }
 
 ### OGP --------------------------------------------------
-$SHEET->param(ogUrl => url()."?=id".$id);
+$SHEET->param(ogUrl => url().($url ? "?url=${url}" : "?id=${id}"));
 if($pc{'image'}) { $SHEET->param(ogImg => url()."/".$imgsrc); }
 $SHEET->param(ogDescript => "種族:$pc{'race'}　性別:$pc{'gender'}　年齢:$pc{'age'}　技能:${class_text}");
 
-### ディレクトリ指定 --------------------------------------------------
+### バージョン等 --------------------------------------------------
+$SHEET->param("ver" => $::ver);
 $SHEET->param("coreDir" => $::core_dir);
 
 ### エラー --------------------------------------------------

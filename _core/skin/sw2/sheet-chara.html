@@ -28,38 +28,14 @@ function closeImage() {
     document.getElementById("image-box").style.bottom = '-100vh';
   },200);
 }
-let editForm = 0;
 function editOn() {
-  if(editForm){
-    document.getElementById("login-form").style.top = '-5rem';
-    editForm = 0;
-  }
-  else {
-    document.getElementById("login-form").style.top = '5rem';
-    editForm = 1;
-  }
+  document.getElementById("login-form").classList.toggle('show');
 }
-let backupList = 0;
 function backuplistOn() {
-  if(backupList){
-    document.getElementById("backuplist").style.right = '-100vh';
-    backupList = 0;
-  }
-  else {
-    document.getElementById("backuplist").style.right = '0';
-    backupList = 1;
-  }
+  document.getElementById("backuplist").classList.toggle('show');
 }
-let chatPalette = 0;
 function chatPaletteOn() {
-  if(chatPalette){
-    document.querySelector(".chat-palette").style.top = '-100vh';
-    chatPalette = 0;
-  }
-  else {
-    document.querySelector(".chat-palette").style.top = '60px';
-    chatPalette = 1;
-  }
+  document.querySelector(".chat-palette").classList.toggle('show');
 }
 <TMPL_IF error>
 window.onload = function() {
@@ -91,14 +67,18 @@ window.onload = function() {
     <nav>
       <ul>
         <li class="small"><a href="./">⏎</a></li>
-        <TMPL_IF FellowMode><li><a href="./?id=<TMPL_VAR id>">通常</a></li></TMPL_IF>
-        <TMPL_IF fellowPublic><TMPL_UNLESS FellowMode><li><a href="./?id=<TMPL_VAR id>&f=1">フェロー</a></li></TMPL_UNLESS></TMPL_IF>
-        <li class="small"><a onclick="chatPaletteOn();"><span>パレット</span></a></li>
-        <li class="small"><a onclick="backuplistOn()"><span>過去ログ</span></a></li>
-        <TMPL_IF ReqdPassword>
-        <li class="small"><a onclick="editOn()">編集</a></li>
+        <TMPL_IF convertMode>
+          <li><a href="./?mode=convert&url=<TMPL_VAR convertUrl>"><span>コンバート</span></a></li>
         <TMPL_ELSE>
-        <li class="small"><a href="./?mode=edit&id=<TMPL_VAR id>">編集</a></li>
+          <TMPL_IF FellowMode><li><a href="./?id=<TMPL_VAR id>">通常</a></li></TMPL_IF>
+          <TMPL_IF fellowPublic><TMPL_UNLESS FellowMode><li><a href="./?id=<TMPL_VAR id>&f=1">フェロー</a></li></TMPL_UNLESS></TMPL_IF>
+          <li class="small"><a onclick="chatPaletteOn();"><span>パレット</span></a></li>
+          <li class="small"><a onclick="backuplistOn()"><span>過去ログ</span></a></li>
+          <TMPL_IF ReqdPassword>
+          <li class="small"><a onclick="editOn()">編集</a></li>
+          <TMPL_ELSE>
+          <li class="small"><a href="./?mode=edit&id=<TMPL_VAR id>">編集</a></li>
+          </TMPL_IF>
         </TMPL_IF>
         <li class="small"><a onclick="nightModeChange()" title="ナイトモード">☾✧</a></li>
       </ul>
@@ -115,7 +95,7 @@ window.onload = function() {
   
   <aside id="backuplist">
     <ul>
-      <li<TMPL_UNLESS BackupMode> class="backup-now"</TMPL_UNLESS>><a href="?id=<TMPL_VAR id>">最新</a></li>
+      <li<TMPL_UNLESS backupMode> class="backup-now"</TMPL_UNLESS>><a href="?id=<TMPL_VAR id>">最新</a></li>
       <TMPL_LOOP Backup><li<TMPL_IF NOW> class="backup-now"</TMPL_IF>><a href="?id=<TMPL_VAR id>&backup=<TMPL_VAR URL>"><TMPL_VAR DATE></a></li></TMPL_LOOP>
     </ul>
   </aside>
@@ -127,9 +107,16 @@ window.onload = function() {
     <input type="submit" value="編集">
   </form>
 
+  
   <main id="character">
+    <TMPL_IF backupMode><aside class="information">
+      <TMPL_VAR updateTime> 時点のバックアップデータです。
+    </aside></TMPL_IF>
+    <TMPL_IF convertMode><aside class="information">
+      <a href="<TMPL_VAR convertUrl>" target="_blank"><TMPL_VAR convertSource></a> のデータを表示しています。
+    </aside></TMPL_IF>
+    
     <article<TMPL_IF FellowMode> style="display:none"</TMPL_IF>>
-      <TMPL_IF BackupMode><p class="backup-message"><TMPL_VAR updateTime> 時点のバックアップデータです。</p></TMPL_IF>
       <div id="area-name">
         <h1 id="character-name"><TMPL_IF aka><span id="aka">“<TMPL_VAR aka>”</span></TMPL_IF><TMPL_VAR characterName></h1>
         <div>
@@ -293,7 +280,7 @@ window.onload = function() {
             <h2>秘奥魔法</h2>
             <ul>
               <TMPL_LOOP MagicGramarye>
-              <li id="magic-gramarye<TMPL_VAR __counter__>">【－<TMPL_VAR NAME>－】</li>
+              <li id="magic-gramarye<TMPL_VAR __counter__>"><span data-ruby="<TMPL_VAR RUBY>">【<TMPL_VAR NAME>】</span></li>
               </TMPL_LOOP>
             </ul>
           </div></TMPL_IF>
@@ -634,8 +621,8 @@ window.onload = function() {
               </tr>
               <tr class="defense-total">
                 <th colspan="3">合計：すべて</th>
-                <td><TMPL_VAR DefenseTotalAllEva></td>
-                <td><TMPL_VAR DefenseTotalAllDef></td>
+                <td><TMPL_VAR defenseTotalAllEva></td>
+                <td><TMPL_VAR defenseTotalAllDef></td>
               </tr>
             </tbody>
           </table>

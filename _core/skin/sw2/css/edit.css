@@ -94,6 +94,14 @@ span.free {
   width: 100%;
   border-style: hidden hidden none;
 }
+@media screen and (max-width:735px){
+  .edit-table,
+  .edit-tables table,
+  .edit-tables ul,
+  .edit-tables dl {
+    min-width: 100%;
+  }
+}
 .edit-table.side-margin,
 .edit-tables.side-margin table,
 .edit-tables.side-margin ul,
@@ -234,6 +242,24 @@ article > form > hr {
 
 /* // キャラクター
 ---------------------------------------------------------------------------------------------------- */
+@media screen and (max-width:735px){
+  .box {
+    max-width: calc(100vw - 6px);
+    overflow-x: auto;
+    font-size: 1.8rem;
+  }
+  .box h2,
+  .box dt,
+  .box summary {
+    font-size: 1.8rem;
+  }
+  .box input[type="text"],
+  .box input[type="number"],
+  .box select,
+  .box textarea {
+    font-size: 1.8rem;
+  }
+}
 .box input[type="text"],
 .box input[type="number"],
 .box select,
@@ -397,6 +423,19 @@ td .switch-button {
 #area-name input[type="button"] {
   width: 50px;
 }
+@media screen and (max-width:735px){
+  #area-name {
+    font-size: 1.2rem;
+    line-height: 1;
+  }
+  #area-name #character-name {
+    font-size: inherit;
+  }
+  #area-name #character-name input {
+    width: calc(100% - 1em);
+    font-size: inherit;
+  }
+}
 
 #regulation {
   margin: 10px 0;
@@ -425,7 +464,7 @@ td .switch-button {
 
 @media screen and (max-width:735px){
   #area-status {
-    grid-template-columns: 1fr 1fr 2fr;
+    grid-template-columns: 0.6fr 0.6fr 2fr;
     grid-gap: 10px 5px;
 
     grid-template-areas:
@@ -675,6 +714,9 @@ td .switch-button {
   margin-left: -.5rem;
   text-align: center;
 }
+@media screen and (max-width:735px){
+  #language { grid-row: 1 / span 2; grid-column: 1 / span 2; }
+}
 
 #magic-power {
   min-width: 10em;
@@ -705,6 +747,20 @@ td .switch-button {
 #magic-power table td:nth-child(4) input {
   width: 3.5em;
 }
+@media screen and (max-width:735px){
+  #magic-power {
+    width: max-content;
+  }
+  #magic-power table tr > *:nth-child(1) {
+    display: none;
+  }
+  #magic-power table thead th:nth-child(2) {
+    visibility: hidden;
+  }
+  #magic-power table tr td:nth-child(3) {
+    white-space: nowrap;
+  }
+}
 
 #combat-feats select {
   margin-left: 1em;
@@ -724,15 +780,9 @@ option.zero-data::before {
 
 #weapons {
   width: 100%;
-  overflow: auto;
-}
-@media screen and (max-width:850px){
-  #weapons{
-    width:calc(100vw - 23px);
-  }
+  overflow-x: auto;
 }
 #weapons table {
-  min-width: 800px;
   border-bottom-width: 1px;
   border-bottom-style: solid;
 }
@@ -766,6 +816,22 @@ option.zero-data::before {
   line-height: 2.2;
   margin-right: auto;
 }
+@media screen and (max-width:735px){
+  #weapons table {
+    min-width: 0;
+    table-layout: fixed;
+  }
+  #weapons thead th:nth-child(1) { width:  10em; } /* 名前 */
+  #weapons thead th:nth-child(2) { width: 3.5em; } /* 用法 */
+  #weapons thead th:nth-child(3) { width: 3.5em; } /* 必筋 */
+  #weapons thead th:nth-child(4) { width:   5em; } /* 命中 */
+  #weapons thead th:nth-child(5) { width: 3.5em; } /* 威力 */
+  #weapons thead th:nth-child(6) { width: 3.5em; } /* Ｃ値 */
+  #weapons thead th:nth-child(7) { width:   5em; } /* 追加Ｄ */
+  #weapons thead th:nth-child(8) { width: 1.4em; } /* 専用 */
+  #weapons thead th:nth-child(9) { width:   8em; } /* 追加Ｄ */
+  #weapons thead th:nth-child(10){ width:   8em; } /* 追加Ｄ */
+}
 
 #accessories thead th:nth-child(1) { width: 1.5em; } /*  */
 #accessories thead th:nth-child(2) { width: 2.5em; } /* 種別 */
@@ -775,13 +841,25 @@ option.zero-data::before {
 #accessories tbody th {
   cursor: ns-resize;
 }
-#accessories tbody tr:nth-child(4n+1),
-#accessories tbody tr:nth-child(4n+2) {
+#accessories tbody tr:nth-child(6n+1),
+#accessories tbody tr:nth-child(6n+2),
+#accessories tbody tr:nth-child(6n+3) {
   background-color: transparent;
 }
-#accessories tbody tr:nth-child(4n+3),
-#accessories tbody tr:nth-child(4n+4) {
+#accessories tbody tr:nth-child(6n+4),
+#accessories tbody tr:nth-child(6n+5),
+#accessories tbody tr:nth-child(6n+6) {
   background-color: var(--box-even-rows-bg-color);
+}
+
+
+@media screen and (max-width:735px){
+  #area-items {
+    flex-direction: column;
+  }
+  div#area-items-R {
+    margin-left: 0;
+  }
 }
 
 #money input {
@@ -850,15 +928,9 @@ option.zero-data::before {
 }
 
 #history{
-    overflow-x: auto;
-}
-@media screen and (max-width:850px){
-  #history{
-    width:calc(100vw - 23px);
-  }
+  overflow-x: auto;
 }
 #history table {
-  min-width: 800px;
   width: calc(100% - 1px);
 }
 #history table thead th:nth-child(1) { width: 1.4em; }
@@ -869,7 +941,12 @@ option.zero-data::before {
 #history table thead th:nth-child(6) { width: 4.5em; } /* ガメル */
 #history table thead th:nth-child(7) { width: 4.5em; } /* 成長 */
 #history table thead th:nth-child(8) { width:   6em; } /* ＧＭ */
-#history table thead th:nth-child(9) { width:  16em; } /* 参加者 */
+#history table thead th:nth-child(9) { width:  auto; } /* 参加者 */
+@media screen and (max-width:735px){
+  #history table  { table-layout: fixed; }
+  #history table thead th:nth-child(3) { width: 12em; } /* タイトル */
+  #history table thead th:nth-child(9) { width: 16em; } /* 参加者 */
+}
 
 #history table tbody td {
   border: 0;
@@ -1004,6 +1081,14 @@ form#monster div.status input[name="language"] {
 form#monster table.status {
   border-width: 0;
 }
+form#monster table.status thead th:nth-child(1) { width: 1.4em; }
+form#monster table.status thead th:nth-child(2) { width: auto; }
+form#monster table.status thead th:nth-child(3) { width: 12%; }
+form#monster table.status thead th:nth-child(4) { width: 12%; }
+form#monster table.status thead th:nth-child(5) { width: 12%; }
+form#monster table.status thead th:nth-child(6) { width: 12%; }
+form#monster table.status thead th:nth-child(7) { width: 12%; }
+form#monster table.status thead th:nth-child(8) { width: 12%; }
 form#monster table.status th {
   background: transparent;
 }
@@ -1040,6 +1125,28 @@ form#monster textarea[name="skills"] {
 form#monster textarea[name="description"] {
   height: 16em;
   padding: 2px;
+}
+form#monster div#loots-list {
+  display: grid;
+  grid-template-columns: 7em auto;
+  white-space: nowrap;
+}
+form#monster div#loots-list ul li {
+  border-width: 1px 0;
+  border-style: solid;
+}
+form#monster div#loots-list ul li + li {
+  border-top-width: 0;
+}
+form#monster div#loots-list .handle {
+  display: inline-block;
+  widows: 1.4em;
+}
+form#monster div#loots-list input {
+  width: calc(100% - 1.4em - 2px);
+}
+form#monster ul#loots-num {
+  background-color: rgba(127,127,127,0.3);
 }
 
 /* // アイテム

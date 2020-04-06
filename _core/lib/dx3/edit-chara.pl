@@ -25,16 +25,20 @@ if($main::make_error) {
 my $token;
 if($mode eq 'blanksheet' || $mode eq 'copy' || $mode eq 'convert'){
   $token = token_make();
-  
-  if(!$pc{'playerName'}){
-    $pc{'playerName'} = (getplayername($LOGIN_ID))[0];
-  }
 }
 ## 更新後処理 --------------------------------------------------
 if($mode eq 'save'){
   $message .= 'データを更新しました。<a href="./?id='.param('id').'">⇒シートを確認する</a>';
   $mode = 'edit';
 }
+
+### 各種データライブラリ読み込み --------------------------------------------------
+require $set::data_syndrome;
+my @awakens;
+my @impulses;
+push(@awakens , @$_[0]) foreach(@data::awakens);
+push(@impulses, @$_[0]) foreach(@data::impulses);
+
 ### データ読み込み ###################################################################################
 my $id;
 my $pass;
@@ -60,17 +64,15 @@ elsif($mode eq 'copy'){
   $message = '「<a href="./?id='.$id.'" target="_blank">'.$pc{"characterName"}.'</a>」をコピーして新規作成します。<br>（まだ保存はされていません）';
 }
 elsif($mode eq 'convert'){
-  require './lib/dx3/convert-1to2.pl';
+  require $set::lib_convert;
   %pc = data_convert(param('url'));
-  $message = '「<a href="'.param('url').'" target="_blank">'.($pc{"characterName"}||$pc{"aka"}).'</a>」をコピーして新規作成します。<br>（まだ保存はされていません）';
+  $message = '「<a href="'.param('url').'" target="_blank">'.($pc{"characterName"}||$pc{"aka"}||'無題').'</a>」をコンバートして新規作成します。<br>（まだ保存はされていません）';
 }
 
-### 各種データライブラリ読み込み --------------------------------------------------
-require $set::data_syndrome;
-my @awakens;
-my @impulses;
-push(@awakens , @$_[0]) foreach(@data::awakens);
-push(@impulses, @$_[0]) foreach(@data::impulses);
+### プレイヤー名 --------------------------------------------------
+if($mode eq 'blanksheet' || $mode eq 'copy' || $mode eq 'convert'){
+  $pc{'playerName'} = (getplayername($LOGIN_ID))[0] if !$main::make_error;
+}
 
 ### 出力準備 #########################################################################################
 ### 初期設定 --------------------------------------------------
@@ -160,7 +162,7 @@ Content-type: text/html\n
   <link rel="stylesheet" media="all" href="${main::core_dir}/skin/_common/css/sheet.css?${main::ver}">
   <link rel="stylesheet" media="all" href="${main::core_dir}/skin/dx3/css/chara.css?${main::ver}">
   <link rel="stylesheet" media="all" href="${main::core_dir}/skin/dx3/css/edit.css?${main::ver}">
-  <script src="./skin/js/lib/Sortable.min.js"></script>
+  <script src="${main::core_dir}/skin/_common/js/lib/Sortable.min.js"></script>
   <script src="${main::core_dir}/lib/dx3/edit-chara.js?${main::ver}" defer></script>
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
   <style>
@@ -191,8 +193,8 @@ print <<"HTML";
           <div>コードネーム　@{[input('aka','text','','placeholder="漢字:ルビ"')]}</div>
         </div>
         <div>
-        <p id="update-time"></p>
-        <p id="player-name">プレイヤー名@{[input('playerName')]}</p>
+          <p id="update-time"></p>
+          <p id="player-name">プレイヤー名@{[input('playerName')]}</p>
         </div>
 HTML
 if($mode eq 'edit'){
@@ -267,6 +269,8 @@ print <<"HTML";
       <details class="box" id="regulation" @{[$mode eq 'edit' ? '':'open']}>
         <summary>作成レギュレーション</summary>
         <dl>
+          <dt>ステージ</dt>
+          <dd>@{[input("stage",'','','list="list-stage"')]}</dd>
           <dt>経験点</dt>
           <dd>@{[input("history0Exp",'number','changeRegu',($set::make_fix?' readonly':''))]}</dd>
         </dl>
@@ -312,7 +316,7 @@ print <<"HTML";
 
         <div class="box-union" id="personal">
           <dl class="box"><dt>年齢  </dt><dd>@{[input "age"]}</dd></dl>
-          <dl class="box"><dt>性別  </dt><dd>@{[input "gender"]}</dd></dl>
+          <dl class="box"><dt>性別  </dt><dd>@{[input "gender",'','','list="list-gender"']}</dd></dl>
           <dl class="box"><dt>星座  </dt><dd>@{[input "sign",'','','list="list-sign"']}</dd></dl>
           <dl class="box"><dt>身長  </dt><dd>@{[input "height"]}</dd></dl>
           <dl class="box"><dt>体重  </dt><dd>@{[input "weight"]}</dd></dl>
@@ -425,25 +429,25 @@ print <<"HTML";
           </thead>
           <tbody>
           <tr>
-            <td class="left">白兵</td><td class="right">@{[input "skillMelee"    ,'number','calcSkill']}</td>
-            <td class="left">射撃</td><td class="right">@{[input "skillRanged"   ,'number','calcSkill']}</td>
-            <td class="left">ＲＣ</td><td class="right">@{[input "skillRC"       ,'number','calcSkill']}</td>
-            <td class="left">交渉</td><td class="right">@{[input "skillNegotiate",'number','calcSkill']}</td>
+            <td class="left">白兵</td><td class="right">@{[input "skillMelee"    ,'number','calcSkill']}+@{[input "skillAddMelee"    ,'number']}</td>
+            <td class="left">射撃</td><td class="right">@{[input "skillRanged"   ,'number','calcSkill']}+@{[input "skillAddRanged"   ,'number']}</td>
+            <td class="left">ＲＣ</td><td class="right">@{[input "skillRC"       ,'number','calcSkill']}+@{[input "skillAddRC"       ,'number']}</td>
+            <td class="left">交渉</td><td class="right">@{[input "skillNegotiate",'number','calcSkill']}+@{[input "skillAddNegotiate",'number']}</td>
           </tr>
           <tr>
-            <td class="left">回避</td><td class="right">@{[input "skillDodge"  ,'number','calcSkill']}</td>
-            <td class="left">知覚</td><td class="right">@{[input "skillPercept",'number','calcSkill']}</td>
-            <td class="left">意思</td><td class="right">@{[input "skillWill"   ,'number','calcSkill']}</td>
-            <td class="left">調達</td><td class="right">@{[input "skillProcure",'number','calcSkill();calcStock']}</td>
+            <td class="left">回避</td><td class="right">@{[input "skillDodge"  ,'number','calcSkill']}+@{[input "skillAddDodge"  ,'number']}</td>
+            <td class="left">知覚</td><td class="right">@{[input "skillPercept",'number','calcSkill']}+@{[input "skillAddPercept",'number']}</td>
+            <td class="left">意思</td><td class="right">@{[input "skillWill"   ,'number','calcSkill']}+@{[input "skillAddWill"   ,'number']}</td>
+            <td class="left">調達</td><td class="right">@{[input "skillProcure",'number','calcSkill();calcStock']}+@{[input "skillAddProcure",'number','calcStock']}</td>
           </tr>
 HTML
 foreach my $num (1 .. $pc{'skillNum'}) {
 print <<"HTML";
           <tr>
-            <td class="left">@{[input "skillRide${num}Name",'','','list="list-ride"']}</td><td class="right">@{[input "skillRide$num",'number','calcSkill']}</td>
-            <td class="left">@{[input "skillArt${num}Name" ,'','','list="list-art"' ]}</td><td class="right">@{[input "skillArt$num" ,'number','calcSkill']}</td>
-            <td class="left">@{[input "skillKnow${num}Name",'','','list="list-know"']}</td><td class="right">@{[input "skillKnow$num",'number','calcSkill']}</td>
-            <td class="left">@{[input "skillInfo${num}Name",'','','list="list-info"']}</td><td class="right">@{[input "skillInfo$num",'number','calcSkill']}</td>
+            <td class="left">@{[input "skillRide${num}Name",'','','list="list-ride"']}</td><td class="right">@{[input "skillRide$num",'number','calcSkill']}+@{[input "skillAddRide$num",'number','calcSkill']}</td>
+            <td class="left">@{[input "skillArt${num}Name" ,'','','list="list-art"' ]}</td><td class="right">@{[input "skillArt$num" ,'number','calcSkill']}+@{[input "skillAddArt$num" ,'number','calcSkill']}</td>
+            <td class="left">@{[input "skillKnow${num}Name",'','','list="list-know"']}</td><td class="right">@{[input "skillKnow$num",'number','calcSkill']}+@{[input "skillAddKnow$num",'number','calcSkill']}</td>
+            <td class="left">@{[input "skillInfo${num}Name",'','','list="list-info"']}</td><td class="right">@{[input "skillInfo$num",'number','calcSkill']}+@{[input "skillAddInfo$num",'number','calcSkill']}</td>
           </tr>
 HTML
 }
@@ -496,7 +500,7 @@ print <<"HTML";
           <tr>
             <th class="small">@{[input "lifepathUrgeCheck",'checkbox']}変異暴走</th>
             <th class="small">効果</th>
-            <td class="left" colspan="3">@{[input "lifepathUrgeNote"]}</td>
+            <td class="left" colspan="2">@{[input "lifepathUrgeNote"]}</td>
           </tr>
           </tbody>
           <tbody>
@@ -517,6 +521,7 @@ print <<"HTML";
       <details class="box" id="lois" $open{'lois'}>
         <summary>ロイス</summary>
         <table class="edit-table" id="lois-table">
+          <colgroup><col><col><col><col><col><col><col></colgroup>
           <thead>
             <tr>
               <th>関係</th>
@@ -638,8 +643,8 @@ print <<"HTML";
             </tr>
             <tr><th>タイミング</th><th>技能</th><th>難易度</th><th>対象</th><th>射程</th><th>侵蝕値</th><th>条件</th><th>ダイス</th><th>Ｃ値</th><th>基準値</th><th>攻撃力</th></tr>
             <tr>
-              <td>@{[input "combo${num}Timing",'','','list="list-timing"']}</td>
-              <td>@{[input "combo${num}Skill",'','','list="list-effect-skill"']}</td>
+              <td>@{[input "combo${num}Timing",'','','list="list-combo-timing"']}</td>
+              <td>@{[input "combo${num}Skill",'','','list="list-combo-skill"']}</td>
               <td>@{[input "combo${num}Dfclty",'','','list="list-dfclty"']}</td>
               <td>@{[input "combo${num}Target",'','','list="list-target"']}</td>
               <td>@{[input "combo${num}Range",'','','list="list-range"']}</td>
@@ -837,7 +842,8 @@ print <<"HTML";
         横罫線（破線）：<code> - - - -</code>（4つ以上の「スペース＋ハイフン」）<br>
         表組み　　：<code>|テキスト|テキスト|</code><br>
         定義リスト：<code>:項目名|説明文</code><br>
-        　　　　　　<code>:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|説明文2行目</code> 項目名を記入しないか、半角スペースで埋めると上と結合
+        　　　　　　<code>:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|説明文2行目</code> 項目名を記入しないか、半角スペースで埋めると上と結合<br>
+        コメントアウト：行頭に<code>//</code>：記述した行を非表示にします。
         </details>
       </details>
       
@@ -1010,6 +1016,29 @@ print <<"HTML";
     <p class="notes"><span>『ダブルクロスThe 3rd Edition』は、</span><span>は「矢野俊策」及び「有限会社F.E.A.R.」の著作物です。</span></p>
     <p class="copyright">ゆとシートⅡ for DX3rd ver.${main::ver} - ゆとらいず工房</p>
   </footer>
+  <datalist id="list-stage">
+    <option value="基本ステージ">
+    <option value="オーヴァードアカデミア">
+    <option value="ナイトメアプリズン">
+    <option value="デモンズシティ">
+    <option value="陽炎の戦場">
+    <option value="エンドライン">
+    <option value="ホーリーグレイル">
+    <option value="平安京物怪録">
+    <option value="モダンタイムス">
+    <option value="エピックヒーローズ">
+    <option value="クロノスガーディアン">
+    <option value="レネゲイドウォー">
+    <option value="バッドシティ">
+    <option value="ウィアードエイジ">
+    <option value="カオスガーデン">
+  </datalist>
+  <datalist id="list-gender">
+    <option value="男">
+    <option value="女">
+    <option value="その他">
+    <option value="不明">
+  </datalist>
   <datalist id="list-sign">
     <option value="牡羊座">
     <option value="牡牛座">
@@ -1023,9 +1052,10 @@ print <<"HTML";
     <option value="山羊座">
     <option value="水瓶座">
     <option value="魚座">
+    <option value="不明">
   </datalist>
   <datalist id="list-blood">
-    <option value="A型"><option value="B型"><option value="AB型"><option value="O型">
+    <option value="A型"><option value="B型"><option value="AB型"><option value="O型"><option value="不明">
   </datalist>
   <datalist id="list-ride">
     <option value="運転:">
@@ -1060,6 +1090,8 @@ print <<"HTML";
   <datalist id="list-info">
     <option value="情報:">
     <option value="情報:UGN">
+    <option value="情報:FH">
+    <option value="情報:ゼノス">
     <option value="情報:噂話">
     <option value="情報:裏社会">
     <option value="情報:警察">
@@ -1068,8 +1100,6 @@ print <<"HTML";
     <option value="情報:ウェブ">
     <option value="情報:メディア">
     <option value="情報:ビジネス">
-    <option value="情報:FH">
-    <option value="情報:ゼノス">
   </datalist>
   <datalist id="list-lois-color">
     <option value="BK">ブラック
@@ -1087,19 +1117,49 @@ print <<"HTML";
     <option value="メジャー">
     <option value="メジャー／リア">
     <option value="リアクション">
-    <option value="イニシアチブ">
     <option value="セットアップ">
+    <option value="イニシアチブ">
     <option value="クリンナップ">
     <option value="常時">
+    <option value="効果参照">
   </datalist>
   <datalist id="list-effect-skill">
     <option value="―">
     <option value="シンドローム">
     <option value="〈白兵〉">
     <option value="〈射撃〉">
-    <option value="〈白兵〉〈射撃〉">
     <option value="〈RC〉">
     <option value="〈交渉〉">
+    <option value="〈白兵〉〈射撃〉">
+    <option value="〈白兵〉〈RC〉">
+    <option value="〈回避〉">
+    <option value="〈知覚〉">
+    <option value="〈意思〉">
+    <option value="〈調達〉">
+    <option value="【肉体】">
+    <option value="【感覚】">
+    <option value="【精神】">
+    <option value="【社会】">
+    <option value="効果参照">
+  </datalist>
+  <datalist id="list-combo-timing">
+    <option value="オート">
+    <option value="マイナー">
+    <option value="メジャー">
+    <option value="リアクション">
+    <option value="セットアップ">
+    <option value="イニシアチブ">
+    <option value="クリンナップ">
+    <option value="常時">
+  </datalist>
+  <datalist id="list-combo-skill">
+    <option value="―">
+    <option value="〈白兵〉">
+    <option value="〈射撃〉">
+    <option value="〈RC〉">
+    <option value="〈交渉〉">
+    <option value="〈白兵〉〈射撃〉">
+    <option value="〈白兵〉〈RC〉">
     <option value="〈回避〉">
     <option value="〈知覚〉">
     <option value="〈意思〉">
@@ -1115,29 +1175,6 @@ print <<"HTML";
     <option value="〈白兵〉">
     <option value="〈射撃〉">
     <option value="〈白兵〉〈射撃〉">
-    <option value="〈RC〉">
-    <option value="〈交渉〉">
-    <option value="〈回避〉">
-    <option value="〈知覚〉">
-    <option value="〈意思〉">
-    <option value="〈調達〉">
-    <option value="効果参照">
-  </datalist>
-  <datalist id="list-item-skill">
-    <option value="―">
-    <option value="〈白兵〉">
-    <option value="〈射撃〉">
-    <option value="〈白兵〉〈射撃〉">
-    <option value="〈RC〉">
-    <option value="〈交渉〉">
-    <option value="〈回避〉">
-    <option value="〈知覚〉">
-    <option value="〈意思〉">
-    <option value="〈調達〉">
-    <option value="〈運転:〉">
-    <option value="〈芸術:〉">
-    <option value="〈知識:〉">
-    <option value="〈情報:〉">
     <option value="効果参照">
   </datalist>
   <datalist id="list-vehicle-skill">
@@ -1149,6 +1186,24 @@ print <<"HTML";
     <option value="〈運転:馬〉">
     <option value="〈運転:多脚戦車〉">
     <option value="〈運転:宇宙船〉">
+  </datalist>
+  <datalist id="list-item-skill">
+    <option value="―">
+    <option value="〈調達〉">
+    <option value="〈知識:〉">
+    <option value="〈情報:〉">
+    <option value="〈情報:UGN〉">
+    <option value="〈情報:FH〉">
+    <option value="〈情報:ゼノス〉">
+    <option value="〈情報:噂話〉">
+    <option value="〈情報:裏社会〉">
+    <option value="〈情報:警察〉">
+    <option value="〈情報:軍事〉">
+    <option value="〈情報:学問">
+    <option value="〈情報:ウェブ〉">
+    <option value="〈情報:メディア〉">
+    <option value="〈情報:ビジネス〉">
+    <option value="効果参照">
   </datalist>
   <datalist id="list-weapon-type">
     <option value="白兵">
@@ -1174,7 +1229,8 @@ print <<"HTML";
     <option value="―">
     <option value="自身">
     <option value="単体">
-    <option value="体">
+    <option value="3体">
+    <option value="[LV+1]体">
     <option value="範囲">
     <option value="範囲（選択）">
     <option value="シーン">
@@ -1183,7 +1239,6 @@ print <<"HTML";
   </datalist>
   <datalist id="list-range">
     <option value="―">
-    <option value="m">
     <option value="至近">
     <option value="武器">
     <option value="視界">

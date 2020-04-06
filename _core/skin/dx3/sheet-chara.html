@@ -28,38 +28,14 @@ function closeImage() {
     document.getElementById("image-box").style.bottom = '-100vh';
   },200);
 }
-let editForm = 0;
 function editOn() {
-  if(editForm){
-    document.getElementById("login-form").style.top = '-5rem';
-    editForm = 0;
-  }
-  else {
-    document.getElementById("login-form").style.top = '5rem';
-    editForm = 1;
-  }
+  document.getElementById("login-form").classList.toggle('show');
 }
-let backupList = 0;
 function backuplistOn() {
-  if(backupList){
-    document.getElementById("backuplist").style.right = '-100vh';
-    backupList = 0;
-  }
-  else {
-    document.getElementById("backuplist").style.right = '0';
-    backupList = 1;
-  }
+  document.getElementById("backuplist").classList.toggle('show');
 }
-let chatPalette = 0;
 function chatPaletteOn() {
-  if(chatPalette){
-    document.querySelector(".chat-palette").style.top = '-100vh';
-    chatPalette = 0;
-  }
-  else {
-    document.querySelector(".chat-palette").style.top = '60px';
-    chatPalette = 1;
-  }
+  document.querySelector(".chat-palette").classList.toggle('show');
 }
 <TMPL_IF error>
 window.onload = function() {
@@ -91,14 +67,18 @@ window.onload = function() {
     <nav>
       <ul>
         <li class="small"><a href="./">⏎</a></li>
-        <TMPL_IF FellowMode><li><a href="./?id=<TMPL_VAR id>">通常</a></li></TMPL_IF>
-        <TMPL_IF fellowPublic><TMPL_UNLESS FellowMode><li><a href="./?id=<TMPL_VAR id>&f=1">フェロー</a></li></TMPL_UNLESS></TMPL_IF>
-        <li class="small"><a onclick="chatPaletteOn();"><span>パレット</span></a></li>
-        <li class="small"><a onclick="backuplistOn()"><span>過去ログ</span></a></li>
-        <TMPL_IF ReqdPassword>
-        <li class="small"><a onclick="editOn()">編集</a></li>
+        <TMPL_IF convertMode>
+          <li><a href="./?mode=convert&url=<TMPL_VAR convertUrl>"><span>コンバート</span></a></li>
         <TMPL_ELSE>
-        <li class="small"><a href="./?mode=edit&id=<TMPL_VAR id>">編集</a></li>
+          <TMPL_IF FellowMode><li><a href="./?id=<TMPL_VAR id>">通常</a></li></TMPL_IF>
+          <TMPL_IF fellowPublic><TMPL_UNLESS FellowMode><li><a href="./?id=<TMPL_VAR id>&f=1">フェロー</a></li></TMPL_UNLESS></TMPL_IF>
+          <li class="small"><a onclick="chatPaletteOn();"><span>パレット</span></a></li>
+          <li class="small"><a onclick="backuplistOn()"><span>過去ログ</span></a></li>
+          <TMPL_IF ReqdPassword>
+          <li class="small"><a onclick="editOn()">編集</a></li>
+          <TMPL_ELSE>
+          <li class="small"><a href="./?mode=edit&id=<TMPL_VAR id>">編集</a></li>
+          </TMPL_IF>
         </TMPL_IF>
         <li class="small"><a onclick="nightModeChange()" title="ナイトモード">☾✧</a></li>
       </ul>
@@ -115,7 +95,7 @@ window.onload = function() {
   
   <aside id="backuplist">
     <ul>
-      <li<TMPL_UNLESS BackupMode> class="backup-now"</TMPL_UNLESS>><a href="?id=<TMPL_VAR id>">最新</a></li>
+      <li<TMPL_UNLESS backupMode> class="backup-now"</TMPL_UNLESS>><a href="?id=<TMPL_VAR id>">最新</a></li>
       <TMPL_LOOP Backup><li<TMPL_IF NOW> class="backup-now"</TMPL_IF>><a href="?id=<TMPL_VAR id>&backup=<TMPL_VAR URL>"><TMPL_VAR DATE></a></li></TMPL_LOOP>
     </ul>
   </aside>
@@ -128,8 +108,14 @@ window.onload = function() {
   </form>
 
   <main id="character">
+    <TMPL_IF backupMode><aside class="information">
+      <TMPL_VAR updateTime> 時点のバックアップデータです。
+    </aside></TMPL_IF>
+    <TMPL_IF convertMode><aside class="information">
+      <a href="<TMPL_VAR convertUrl>" target="_blank"><TMPL_VAR convertSource></a> のデータを表示しています。
+    </aside></TMPL_IF>
+    
     <article>
-      <TMPL_IF BackupMode><p class="backup-message"><TMPL_VAR updateTime> 時点のバックアップデータです。</p></TMPL_IF>
       <div id="area-name">
         <h1 id="character-name"><TMPL_IF aka><span id="aka">“<TMPL_VAR aka>”</span></TMPL_IF><TMPL_VAR characterName></h1>
         <div>
@@ -139,8 +125,9 @@ window.onload = function() {
       </div>
       
       <div id="tags">
-      <a href="./?group=<TMPL_VAR group>" id="group"><TMPL_VAR groupName></a>
-      <TMPL_LOOP Tags><a href="./?tag=<TMPL_VAR URL>"><TMPL_VAR TEXT></a></TMPL_LOOP>
+        <a href="./?group=<TMPL_VAR group>" id="group"><TMPL_VAR groupName></a>
+        <TMPL_IF stage><i href="./?group=<TMPL_VAR group>" id="stage"><TMPL_VAR stage></i></TMPL_IF>
+        <TMPL_LOOP Tags><a href="./?tag=<TMPL_VAR URL>"><TMPL_VAR TEXT></a></TMPL_LOOP>
       </div>
       <div class="column column-status"><!-- COLUMN -->
       <div id="area-status">
@@ -279,23 +266,23 @@ window.onload = function() {
         <table>
           <thead>
           <tr>
-            <th>肉体</th><td><TMPL_VAR sttTotalBody></td>
-            <th>感覚</th><td><TMPL_VAR sttTotalSense></td>
-            <th>精神</th><td><TMPL_VAR sttTotalMind></td>
-            <th>社会</th><td><TMPL_VAR sttTotalSocial></td>
+            <th>肉体</th><td data-edb><TMPL_VAR sttTotalBody></td>
+            <th>感覚</th><td data-edb><TMPL_VAR sttTotalSense></td>
+            <th>精神</th><td data-edb><TMPL_VAR sttTotalMind></td>
+            <th>社会</th><td data-edb><TMPL_VAR sttTotalSocial></td>
           </tr>
           </thead>
           <tr>
-            <td class="left">白兵</td><td class="right"><TMPL_VAR skillMelee></td>
-            <td class="left">射撃</td><td class="right"><TMPL_VAR skillRanged></td>
-            <td class="left">ＲＣ</td><td class="right"><TMPL_VAR skillRC></td>
-            <td class="left">交渉</td><td class="right"><TMPL_VAR skillNegotiate></td>
+            <td class="left">白兵</td><td class="right"><TMPL_VAR skillTotalMelee></td>
+            <td class="left">射撃</td><td class="right"><TMPL_VAR skillTotalRanged></td>
+            <td class="left">ＲＣ</td><td class="right"><TMPL_VAR skillTotalRC></td>
+            <td class="left">交渉</td><td class="right"><TMPL_VAR skillTotalNegotiate></td>
           </tr>
           <tr>
-            <td class="left">回避</td><td class="right"><TMPL_VAR skillDodge></td>
-            <td class="left">知覚</td><td class="right"><TMPL_VAR skillPercept></td>
-            <td class="left">意思</td><td class="right"><TMPL_VAR skillWill></td>
-            <td class="left">調達</td><td class="right"><TMPL_VAR skillProcure></td>
+            <td class="left">回避</td><td class="right"><TMPL_VAR skillTotalDodge></td>
+            <td class="left">知覚</td><td class="right"><TMPL_VAR skillTotalPercept></td>
+            <td class="left">意思</td><td class="right"><TMPL_VAR skillTotalWill></td>
+            <td class="left">調達</td><td class="right"><TMPL_VAR skillTotalProcure></td>
           </tr>
           <TMPL_LOOP Skills><tr>
             <td class="left"><TMPL_VAR RIDE></td><td class="right"><TMPL_VAR RIDELV></td>
@@ -397,7 +384,7 @@ window.onload = function() {
                 <td><TMPL_VAR RANGE></td>
                 <td><TMPL_VAR ENCROACH></td>
                 <th><TMPL_VAR CONDITION1></th>
-                <td><TMPL_VAR DICE1></td>
+                <td data-edb><TMPL_VAR DICE1></td>
                 <td><TMPL_VAR CRIT1></td>
                 <td><TMPL_VAR FIXED1></td>
                 <td><TMPL_VAR ATK1></td>
@@ -405,14 +392,14 @@ window.onload = function() {
               <tr>
                 <td rowspan="3" colspan="6" class="note"><TMPL_VAR NOTE></td>
                 <th><TMPL_VAR CONDITION2></th>
-                <td><TMPL_VAR DICE2></td>
+                <td data-edb><TMPL_VAR DICE2></td>
                 <td><TMPL_VAR CRIT2></td>
                 <td><TMPL_VAR FIXED2></td>
                 <td><TMPL_VAR ATK2></td>
               </tr>
               <TMPL_IF CONDITION3><tr>
                 <th><TMPL_VAR CONDITION3></th>
-                <td><TMPL_VAR DICE3></td>
+                <td data-edb><TMPL_VAR DICE3></td>
                 <td><TMPL_VAR CRIT3></td>
                 <td><TMPL_VAR FIXED3></td>
                 <td><TMPL_VAR ATK3></td>
@@ -420,7 +407,7 @@ window.onload = function() {
               <TMPL_IF CONDITION4><tr>
                 <th><TMPL_VAR CONDITION4></th>
                 <td><TMPL_VAR DICE4></td>
-                <td><TMPL_VAR CRIT4></td>
+                <td data-edb><TMPL_VAR CRIT4></td>
                 <td><TMPL_VAR FIXED4></td>
                 <td><TMPL_VAR ATK4></td>
               </tr></TMPL_IF>
@@ -509,6 +496,7 @@ window.onload = function() {
             </table>
           </div></TMPL_IF>
         </div>
+        
         <div class="box" id="exps">
           <h2>経験点計算</h2>
           <table>
@@ -538,6 +526,92 @@ window.onload = function() {
         </div>
       </div>
       </div><!-- / COLUMN -->
+      <div id="enc-bonus">
+        <details class="box">
+          <summary>侵蝕率ボーナス</summary>
+          <p>
+            現在侵蝕率:<input type="number" id="current-encroach" value="<TMPL_VAR baseEncroach>" oninput="encroachBonusSet(this.value);">
+            <input type="checkbox" id="enchroach-ea-on" oninput="encroachBonusType();"><label for="enchroach-ea-on">エフェクトアーカイヴ</label>
+            <input type="checkbox" id="enchroach-or-on" oninput="encroachBonusType();"><label for="enchroach-or-on">起源種</label>
+          </p>
+          <table class="data-table" id="enc-table-n">
+            <colgroup>
+              <col>
+              <col id="enc-col0">
+              <col id="enc-col60">
+              <col id="enc-col80">
+              <col id="enc-col100">
+              <col id="enc-col130">
+              <col id="enc-col160">
+              <col id="enc-col200">
+              <col id="enc-col240">
+              <col id="enc-col300">
+            </colgroup>
+            <tr><th></th><th>0-59</th><th>60-79</th><th>80-99</th><th>100-129</th><th>130-159</th><th>160-199</th><th>200-239</th><th>240-299</th><th>300-</th></tr>
+            <tr><th>ダイス </th><td>+0</td><td>+1</td><td>+2</td><td>+3</td><td>+4</td><td>+5</td><td>+6</td><td>+7</td><td>+8</td></tr>
+            <tr><th>Efct.Lv</th><td>+0</td><td>+0</td><td>+0</td><td>+1</td><td>+1</td><td>+2</td><td>+2</td><td>+2</td><td>+2</td></tr>
+          </table>
+          <table class="data-table" id="enc-table-ea" style="display:none">
+            <colgroup>
+              <col>
+              <col id="enc-ea-col0">
+              <col id="enc-ea-col60">
+              <col id="enc-ea-col80">
+              <col id="enc-ea-col100">
+              <col id="enc-ea-col130">
+              <col id="enc-ea-col160">
+              <col id="enc-ea-col190">
+              <col id="enc-ea-col220">
+              <col id="enc-ea-col260">
+              <col id="enc-ea-col300">
+            </colgroup>
+            <tr><th></th><th>0-59</th><th>60-79</th><th>80-99</th><th>100-129</th><th>130-159</th><th>160-189</th><th>190-219</th><th>220-259</th><th>260-299</th><th>300-</th></tr>
+            <tr><th>ダイス </th><td>+0</td><td>+1</td><td>+2</td><td>+3</td><td>+4</td><td>+4</td><td>+5</td><td>+5</td><td>+6</td><td>+7</td></tr>
+            <tr><th>Efct.Lv</th><td>+0</td><td>+0</td><td>+0</td><td>+1</td><td>+1</td><td>+2</td><td>+2</td><td>+3</td><td>+3</td><td>+3</td></tr>
+          </table>
+          <table class="data-table" id="enc-table-or" style="display:none">
+            <colgroup>
+              <col>
+              <col id="enc-or-col0">
+              <col id="enc-or-col80">
+              <col id="enc-or-col100">
+              <col id="enc-or-col150">
+              <col id="enc-or-col200">
+            </colgroup>
+            <tr><th></th><th>0-79</th><th>80-99</th><th>100-149</th><th>150-199</th><th>200-</th></tr>
+            <tr><th>ダイス </th><td>―</td><td>―</td><td>―</td><td>―</td><td>―</td></tr>
+            <tr><th>Efct.Lv</th><td>+0</td><td>+1</td><td>+2</td><td>+3</td><td>+4</td></tr>
+          </table>
+        </details>
+      </div>
+      <script>
+      let EA; let OR;
+      encroachBonusSet(<TMPL_VAR baseEncroach>);
+      function encroachBonusType(){
+        EA = document.getElementById("enchroach-ea-on" ).checked;
+        OR = document.getElementById("enchroach-or-on" ).checked;
+        document.getElementById("enc-table-n" ).style.display = OR ? 'none' : EA ? 'none':  '';
+        document.getElementById("enc-table-ea").style.display = OR ? 'none' : EA ? '' : 'none';
+        document.getElementById("enc-table-or").style.display = OR ? '' : 'none';
+        encroachBonusSet(document.getElementById('current-encroach').value);
+      }
+      function encroachBonusSet(enc){
+        const id = OR ? 'enc-or-col' : EA ? 'enc-ea-col' : 'enc-col';
+        const array = OR ? [200  ,150  ,100  ,80  ,0  ] : EA ? [300   ,260   ,220   ,190   ,160   ,130   ,100   ,80   ,60   ,0  ] : [300   ,240   ,200   ,160   ,130   ,100   ,80   ,60   ,0  ];
+        const edbs  = OR ? {200:0,150:0,100:0,80:0,0:0} : EA ? {300:7 ,260:6 ,220:5 ,190:5 ,160:4 ,130:4 ,100:3 ,80:2 ,60:1 ,0:0} : {300:8 ,240:7 ,200:6 ,160:5 ,130:4 ,100:3 ,80:2 ,60:1 ,0:0};
+        for (let v of array){ document.getElementById(id+v).classList.remove('current'); }
+        for (let v of array){
+          if(enc >= v){
+            document.getElementById(id+v).classList.add('current');
+            document.querySelectorAll("[data-edb]").forEach(function(obj) {
+              obj.dataset.edb = edbs[v];
+            });
+            break;
+          }
+        }
+        
+      }
+      </script>
       <div class="box" id="free-note">
         <h2><TMPL_IF head_freeNote><TMPL_VAR head_freeNote><TMPL_ELSE>容姿・経歴・その他メモ</TMPL_IF></h2>
         <p><TMPL_VAR freeNote></p>

@@ -94,9 +94,9 @@ elsif($mode eq 'save'){
 }
 
 my $data_dir; my $listfile; our $newline;
-if   (param('type') eq 'm'){ require $set::lib_save_mons; $data_dir = $set::mons_dir; $listfile = $set::monslist; }
-elsif(param('type') eq 'i'){ require $set::lib_save_item; $data_dir = $set::item_dir; $listfile = $set::itemlist; }
-else                       { require $set::lib_save_char; $data_dir = $set::char_dir; $listfile = $set::listfile; }
+if   (param('type') eq 'm'){ require $set::lib_calc_mons; $data_dir = $set::mons_dir; $listfile = $set::monslist; }
+elsif(param('type') eq 'i'){ require $set::lib_calc_item; $data_dir = $set::item_dir; $listfile = $set::itemlist; }
+else                       { require $set::lib_calc_char; $data_dir = $set::char_dir; $listfile = $set::listfile; }
 
 %pc = data_calc(\%pc);
 

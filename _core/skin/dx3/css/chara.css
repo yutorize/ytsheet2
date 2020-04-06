@@ -1,4 +1,10 @@
 @charset "utf-8";
+
+/* // Body
+---------------------------------------------------------------------------------------------------- */
+body {
+  background-image: url(../../_common/img/back-pattern.png), url(../img/back-xx.png);
+}
 /* // Layout
 ---------------------------------------------------------------------------------------------------- */
 @media screen and (max-width:735px){
@@ -34,10 +40,13 @@
     grid-column: span 2;
   }
   #area-battle {
-    grid-row: span 1;
+    grid-row: span 2;
   }
   #free-note {
     grid-column: 1;
+  }
+  #enc-bonus {
+    align-self: end;
   }
 }
 /* // Font
@@ -77,6 +86,9 @@ h1#character-name {
     var(--bg-color) -.1rem .1rem, var(--bg-color)  .1rem -.1rem,
     var(--bg-color)  .0rem .1rem, var(--bg-color)  .0rem -.1rem,
     var(--bg-color) -.1rem .0rem, var(--bg-color)  .1rem  .0rem;
+}
+#aka {
+  margin-right: .5em;
 }
 #area-name > div { 
   text-align: right;
@@ -540,10 +552,16 @@ dl#exp dd {
   font-size: 120%;
   white-space: nowrap;
 }
+#status table tbody td.right span.small {
+  display: inline-block;
+  margin: 0 -8% 0 -10%;
+  font-size: 70%;
+  transform: scaleX(0.8);
+}
 #status table tbody td.right::after {
   content: 'Lv';
-  margin-left: .3em;
-  font-size: 80%;
+  margin-left: .1em;
+  font-size: 70%;
 }
 @media screen and (max-width:735px){
   #status table thead td {
@@ -552,9 +570,14 @@ dl#exp dd {
   #status table tbody {
     font-size: 90%;
   }
+  #status table tbody td.left {
+    font-size: 90%;
+  }
+  #status table tbody td.right {
+    padding-right: .2em;
+  }
   #status table tbody td.right::after {
-    margin-left: .1em;
-    opacity: 0.8;
+    display: none;
   }
 }
 
@@ -665,6 +688,7 @@ dl#exp dd {
 /* // Area-Battle
 ---------------------------------------------------------------------------------------------------- */
 #area-battle {
+  position: relative;
 }
 #area-battle > .box {
   margin-top: 1rem;
@@ -872,6 +896,13 @@ dl#exp dd {
   padding-left: .5rem;
   text-align: left;
 }
+@media screen and (max-width:735px){
+  #combo table tbody {
+  }
+  #combo table tbody td span.shorten {
+    display: none !important;
+  }
+}
 
 /* Items */
 #items {
@@ -940,6 +971,69 @@ dl#exp dd {
 /* Exps */
 #exps table {
   table-layout: fixed;
+}
+
+/* Encroach-Bonus
+---------------------------------------------------------------------------------------------------- */
+#enc-bonus {
+  position: sticky;
+  bottom: 0;
+  margin-top: 1rem;
+  background-image: none;
+  background-color: var(--bg-color);
+  border-radius: 5px;
+}
+#enc-bonus p {
+  margin: -1.4em 0 0 9em;
+}
+#enc-bonus p input[type="number"] {
+  width: 4em;
+  padding: .1em;
+  text-align: center;
+  font-size: 110%;
+  font-weight: bold;
+}
+#enc-bonus p input[type="checkbox"] {
+  margin: 0 .2rem 0 1em;
+  transform: scale(1.4);
+}
+#enc-bonus p input[type="checkbox"] + label {
+  user-select: none;
+  cursor: pointer;
+}
+#enc-bonus p input[type="checkbox"]:not(:checked) + label {
+  opacity: 0.5;
+}
+#enc-bonus p input[type="checkbox"] + label:hover {
+  opacity: 0.8;
+}
+#enc-bonus table {
+  border-top: 1px;
+  border-bottom: hidden;
+  table-layout: fixed;
+}
+#enc-bonus table col.current {
+  background-color: hsla(340,100%,50%,0.3);
+}
+#enc-bonus table th {
+  font-size: 80%;
+  line-height: 1;
+  padding: .2rem;
+}
+#enc-bonus table td {
+  padding: .2rem 0 .1rem;
+  line-height: 1;
+}
+[data-edb] {
+  position: relative;
+}
+[data-edb]:not([data-edb="0"]):not([data-edb=""])::after {
+  content: '+'attr(data-edb);
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  font-size: 80%;
+  line-height: 1;
 }
 
 /* // Free-Memo

@@ -88,10 +88,12 @@ let lvAri = 0;
 let lvArt = 0;
 let levelCasters;
 
+const delConfirmText = '項目に値が入っています。本当に削除しますか？';
+
 window.onload = function() {
   checkRace();
-  calcLv();
   calcExp();
+  calcLv();
   calcStt();
   calcCash();
   calcHonor();
@@ -104,8 +106,8 @@ function changeRegu(){
   document.getElementById("history0-honor").innerHTML = form.history0Honor.value;
   document.getElementById("history0-money").innerHTML = form.history0Money.value;
   
-  calcLv();
   calcExp();
+  calcLv();
   calcCash();
 }
 
@@ -117,7 +119,7 @@ function changeFaith(Faith) {
   }
 }
 
-// レベル変更 //
+// レベル変更 ----------------------------------------
 function changeLv() {
   calcLv();
   
@@ -126,7 +128,9 @@ function changeLv() {
   checkFeats();
 }
 
-// レベル計算 //
+// レベル計算 ----------------------------------------
+let expUse = 0;
+let expTotal = 0;
 function calcLv(){
   lvFig = Number(form.lvFig.value);
   lvGra = Number(form.lvGra.value);
@@ -152,8 +156,7 @@ function calcLv(){
   lvArt = AllClassOn ? Number(form.lvArt.value) : 0;
   lvAri = AllClassOn ? Number(form.lvAri.value) : 0;
   
-  const expTotal = Number(document.getElementById("exp-total").innerHTML);
-  let expUse = 0;
+  expUse = 0;
   expUse += expA[lvFig];
   expUse += expA[lvGra];
   expUse += expB[lvFen];
@@ -204,7 +207,7 @@ function calcLv(){
   }
 }
 
-// 種族変更 //
+// 種族変更 ----------------------------------------
 function changeRace(){
   race = form.race.value;
   document.getElementById("race-ability-value").innerHTML = raceAbility[race];
@@ -215,7 +218,7 @@ function changeRace(){
   calcStt();
 }
 
-// 種族チェック //
+// 種族チェック ----------------------------------------
 function checkRace(){
   raceAbilityDef = 0;
   raceAbilityMndResist = 0;
@@ -293,7 +296,7 @@ function checkRace(){
   }
 }
 
-// ステータス計算 //
+// ステータス計算 ----------------------------------------
 function calcStt() {
   let growDex = 0;
   let growAgi = 0;
@@ -378,7 +381,7 @@ function calcStt() {
   calcPointBuy();
 }
 
-// 戦闘特技チェック //
+// 戦闘特技チェック ----------------------------------------
 function checkFeats(){
   const array = featsLv;
   footwork = 0;
@@ -939,7 +942,7 @@ function calcSubStt() {
   document.getElementById("mnd-resist-total").innerHTML = mndResistBase + Number(form.mndResistAdd.value) + mndResistAutoAdd;
   
   const accessories = [
-    "Head", "Head_", "Ear", "Ear_", "Face", "Face_", "Neck", "Neck_", "Back", "Back_", "HandR", "HandR_", "HandL", "HandL_", "Waist", "Waist_", "Leg", "Leg_", "Other", "Other_", "Other2", "Other2_", "Other3", "Other3_", "Other4", "Other4_"
+    "Head", "Head_", "Face", "Face_", "Ear", "Ear_", "Neck", "Neck_", "Back", "Back_", "HandR", "HandR_", "HandL", "HandL_", "Waist", "Waist_", "Leg", "Leg_", "Other", "Other_", "Other2", "Other2_", "Other3", "Other3_", "Other4", "Other4_"
   ]
   let hpAccessory = 0;
   let mpAccessory = 0;
@@ -1211,13 +1214,14 @@ function calcArmour(evaBase,defBase) {
 
 // 経験点計算 ----------------------------------------
 function calcExp(){
-  let expTotal = 0;
+  expTotal = 0;
   const historyNum = form.historyNum.value;
   for (let i = 0; i <= historyNum; i++){
     let exp = Number(eval(form['history'+i+'Exp'].value));
     if(isNaN(exp)){ exp = 0; }
     expTotal += exp;
   }
+  document.getElementById("exp-rest").innerHTML = expTotal - expUse;
   document.getElementById("exp-total").innerHTML = expTotal;
   
   // 最大成長回数
@@ -1387,7 +1391,7 @@ let accesorySortable = Sortable.create(document.getElementById('accessories-tabl
 function addMysticArts(){
   let num = Number(form.mysticArtsNum.value) + 1;
   let tbody = document.createElement('li');
-  tbody.setAttribute('id','mystic-arts'+num);
+  tbody.setAttribute('id',idNumSet('mystic-arts'));
   tbody.innerHTML = `
     <span class="handle"></span>
     <input type="text" name="mysticArts${num}">
@@ -1401,6 +1405,9 @@ function addMysticArts(){
 function delMysticArts(){
   let num = Number(form.mysticArtsNum.value);
   if(num > 0){
+    if(form[`mysticArts${num}`].value || form[`mysticArts${num}Pt`].value){
+      if (!confirm(delConfirmText)) return false;
+    }
     let target = document.getElementById("mystic-arts-list");
     target.removeChild(target.lastElementChild);
     num--;
@@ -1432,7 +1439,7 @@ let mysticArtsSortable = Sortable.create(document.querySelector('#mystic-arts-li
 function addLanguage(){
   let num = Number(form.languageNum.value) + 1;
   let tbody = document.createElement('tr');
-  tbody.setAttribute('id','language-item'+num);
+  tbody.setAttribute('id',idNumSet('language-item'));
   tbody.innerHTML = `
     <td class="handle"></td>
     <td><input name="language${num}" type="text"></td>
@@ -1447,6 +1454,9 @@ function addLanguage(){
 function delLanguage(){
   let num = Number(form.languageNum.value);
   if(num > 1){
+    if(form[`language${num}`].value){
+      if (!confirm(delConfirmText)) return false;
+    }
     const target = document.querySelector("#language-table tbody tr:last-of-type");
     target.parentNode.removeChild(target);
     num--;
@@ -1481,7 +1491,7 @@ let languageSortable = Sortable.create(document.querySelector('#language-table t
 function addWeapons(){
   let num = Number(form.weaponNum.value) + 1;
   let tbody = document.createElement('tbody');
-  tbody.setAttribute('id','weapon-row'+num);
+  tbody.setAttribute('id',idNumSet('weapon-row'));
   tbody.innerHTML = `<tr>
     <td rowspan="2"><input name="weapon${num}Name"  type="text"><span class="handle"></span></td>
     <td rowspan="2"><input name="weapon${num}Usage" type="text"></td>
@@ -1510,6 +1520,9 @@ function addWeapons(){
 function delWeapons(){
   let num = Number(form.weaponNum.value);
   if(num > 1){
+    if(form[`weapon${num}Name`].value || form[`weapon${num}Usage`].value || form[`weapon${num}Reqd`].value || form[`weapon${num}Acc`].value || form[`weapon${num}Rate`].value || form[`weapon${num}Crit`].value || form[`weapon${num}Note`].value){
+      if (!confirm(delConfirmText)) return false;
+    }
     const target = document.querySelector("#weapons-table tbody:last-of-type");
     target.parentNode.removeChild(target);
     num--;
@@ -1553,7 +1566,7 @@ let weaponsSortable = Sortable.create(document.getElementById('weapons-table'), 
 function addHonorItems(){
   let num = Number(form.honorItemsNum.value) + 1;
   let tbody = document.createElement('tr');
-  tbody.setAttribute('id','honor-item'+num);
+  tbody.setAttribute('id',idNumSet('honor-item'));
   tbody.innerHTML = `
     <td class="handle"></td>
     <td><input type="text" name="honorItem${num}"></td>
@@ -1567,6 +1580,9 @@ function addHonorItems(){
 function delHonorItems(){
   let num = Number(form.honorItemsNum.value);
   if(num > 1){
+    if(form[`honorItem${num}`].value || form[`honorItem${num}Pt`].value){
+      if (!confirm(delConfirmText)) return false;
+    }
     const target = document.querySelector("#honor-items-table tbody tr:last-of-type");
     target.parentNode.removeChild(target);
     num--;
@@ -1598,7 +1614,7 @@ let honorSortable = Sortable.create(document.querySelector('#honor-items-table t
 function addDishonorItems(){
   let num = Number(form.dishonorItemsNum.value) + 1;
   let tbody = document.createElement('tr');
-  tbody.setAttribute('id','dishonor-item'+num);
+  tbody.setAttribute('id',idNumSet('dishonor-item'));
   tbody.innerHTML = `
     <td class="handle"></td>
     <td><input type="text" name="dishonorItem${num}"></td>
@@ -1612,6 +1628,9 @@ function addDishonorItems(){
 function delDishonorItems(){
   let num = Number(form.dishonorItemsNum.value);
   if(num > 1){
+    if(form[`dishonorItem${num}`].value || form[`dishonorItem${num}Pt`].value){
+      if (!confirm(delConfirmText)) return false;
+    }
     const target = document.querySelector("#dishonor-items-table tbody tr:last-of-type");
     target.parentNode.removeChild(target);
     num--;
@@ -1644,7 +1663,7 @@ let dishonorSortable = Sortable.create(document.querySelector('#dishonor-items-t
 function addHistory(){
   let num = Number(form.historyNum.value) + 1;
   let tbody = document.createElement('tbody');
-  tbody.setAttribute('id','history'+num);
+  tbody.setAttribute('id',idNumSet('history'));
   tbody.innerHTML = `<tr>
     <td rowspan="2" class="handle"></td>
     <td rowspan="2"><input name="history${num}Date"   type="text"></td>
@@ -1666,6 +1685,9 @@ function addHistory(){
 function delHistory(){
   let num = Number(form.historyNum.value);
   if(num > 1){
+    if(form[`history${num}Date`].value || form[`history${num}Title`].value || form[`history${num}Exp`].value || form[`history${num}Honor`].value || form[`history${num}Money`].value || form[`history${num}Grow`].value || form[`history${num}Gm`].value || form[`history${num}Member`].value || form[`history${num}Note`].value){
+      if (!confirm(delConfirmText)) return false;
+    }
     const target = document.querySelector("#history-table tbody:last-of-type");
     target.parentNode.removeChild(target);
     num--;
@@ -1857,6 +1879,15 @@ function sectionSelect(id){
     document.getElementById('section-'+value).style.display = 'none';
   });
   document.getElementById('section-'+id).style.display = 'block';
+}
+
+// 連番ID生成 ----------------------------------------
+function idNumSet (id){
+  let num = 1;
+  while(document.getElementById(id+num)){
+    num++;
+  }
+  return id+num;
 }
 
 

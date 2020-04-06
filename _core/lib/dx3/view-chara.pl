@@ -14,18 +14,29 @@ $SHEET = HTML::Template->new( filename => $set::skin_sheet, utf8 => 1,
   die_on_bad_params => 0, die_on_missing_include => 0, case_sensitive => 1, global_vars => 1);
 
 
-$SHEET->param("BackupMode" => param('backup') ? 1 : 0);
+$SHEET->param("backupMode" => param('backup') ? 1 : 0);
 
 ### キャラクターデータ読み込み #######################################################################
 my $id = param('id');
+my $url = param('url');
 my $file = $main::file;
 
 our %pc = ();
-my $datafile = "${set::char_dir}${file}/data.cgi";
-   $datafile = "${set::char_dir}${file}/backup/".param('backup').'.cgi' if param('backup');
-open my $IN, '<', $datafile or error 'キャラクターシートがありません。';
-$_ =~ s/(.*?)<>(.*?)\n/$pc{$1} = $2;/egi while <$IN>;
-close($IN);
+if($id){
+  my $datafile = "${set::char_dir}${file}/data.cgi";
+     $datafile = "${set::char_dir}${file}/backup/".param('backup').'.cgi' if param('backup');
+  open my $IN, '<', $datafile or error 'キャラクターシートがありません。';
+  $_ =~ s/(.*?)<>(.*?)\n/$pc{$1} = $2;/egi while <$IN>;
+  close($IN);
+}
+elsif($url){
+  require $set::lib_convert;
+  require $set::lib_calc_char;
+  %pc = data_convert($url);
+  %pc = data_calc(\%pc);
+  $SHEET->param("convertMode" => 1);
+  $SHEET->param("convertUrl" => $url);
+}
 
 $SHEET->param("id" => $id);
 
@@ -95,13 +106,16 @@ $SHEET->param("breed" =>
 );
 
 ### 技能 --------------------------------------------------
+foreach my $name ('Melee','Ranged','RC','Negotiate','Dodge','Percept','Will','Procure'){
+  $SHEET->param('skillTotal'.$name => ($pc{'skillAdd'.$name} ? "<span class=\"small\">+$pc{'skillAdd'.$name}=</span>" : '').$pc{'skillTotal'.$name});
+}
 my @skills;
 foreach (1 .. $pc{'skillNum'}){
   push(@skills, {
-    "RIDE" => $pc{'skillRide'.$_.'Name'}, "RIDELV" => $pc{'skillRide'.$_},
-    "ART"  => $pc{'skillArt' .$_.'Name'}, "ARTLV"  => $pc{'skillArt'.$_},
-    "KNOW" => $pc{'skillKnow'.$_.'Name'}, "KNOWLV" => $pc{'skillKnow'.$_},
-    "INFO" => $pc{'skillInfo'.$_.'Name'}, "INFOLV" => $pc{'skillInfo'.$_},
+    "RIDE" => $pc{'skillRide'.$_.'Name'}, "RIDELV" => ($pc{'skillAddRide'.$_}?"<span class=\"small\">+$pc{'skillAddRide'.$_}=</span>":'').$pc{'skillTotalRide'.$_},
+    "ART"  => $pc{'skillArt' .$_.'Name'}, "ARTLV"  => ($pc{'skillAddArt'.$_} ?"<span class=\"small\">+$pc{'skillAddArt'.$_}=</span>" :'').$pc{'skillTotalArt'.$_} ,
+    "KNOW" => $pc{'skillKnow'.$_.'Name'}, "KNOWLV" => ($pc{'skillAddKnow'.$_}?"<span class=\"small\">+$pc{'skillAddKnow'.$_}=</span>":'').$pc{'skillTotalKnow'.$_},
+    "INFO" => $pc{'skillInfo'.$_.'Name'}, "INFOLV" => ($pc{'skillAddInfo'.$_}?"<span class=\"small\">+$pc{'skillAddInfo'.$_}=</span>":'').$pc{'skillTotalInfo'.$_},
   });
 }
 $SHEET->param(Skills => \@skills);
@@ -178,7 +192,7 @@ sub textTiming {
   my $text = shift;
   $text =~ s#[／\/]#<hr class="dotted">#g;
   $text =~ s#(オート|メジャー|マイナー)(アクション)?#<span class="thin">$1<span class="shorten">アクション</span></span>#g;
-  $text =~ s#リア(クション)?#<span class="thin">リア<span class="shorten">クション</span></span>#g;
+  $text =~ s#リアク?(ション)?#<span class="thin">リア<span class="shorten">クション</span></span>#g;
   $text =~ s#(セットアップ|クリンナップ)(プロセス)?#<span class="thiner">$1<span class="shorten">プロセス</span></span>#g;
   return $text;
 }
@@ -380,6 +394,7 @@ foreach (0 .. $pc{'historyNum'}){
     "NUM"    => ($pc{'history'.$_.'Gm'} ? $h_num : ''),
     "DATE"   => $pc{'history'.$_.'Date'},
     "TITLE"  => $pc{'history'.$_.'Title'},
+    "EXP"    => $pc{'history'.$_.'Exp'},
     "GM"     => $pc{'history'.$_.'Gm'},
     "MEMBER" => $members,
     "NOTE"   => $pc{'history'.$_.'Note'},
@@ -429,7 +444,16 @@ $SHEET->param("race" => $pc{'race'});
 ### 画像 --------------------------------------------------
 $pc{'imageUpdateTime'} = $pc{'updateTime'};
 $pc{'imageUpdateTime'} =~ s/[\-\ \:]//g;
-my $imgsrc = "${set::char_dir}${file}/image.$pc{'image'}?$pc{'imageUpdateTime'}";
+my $imgsrc;
+if($pc{'convertSource'} eq 'キャラクターシート倉庫'){
+  ($imgsrc = $url) =~ s/edit\.html/image/; 
+  require LWP::UserAgent;
+  my $code = LWP::UserAgent->new->simple_request(HTTP::Request->new(GET => $imgsrc))->code == 200;
+  $SHEET->param("image" => $code);
+}
+else {
+  $imgsrc = "${set::char_dir}${file}/image.$pc{'image'}?$pc{'imageUpdateTime'}"
+}
 $SHEET->param("imageSrc" => $imgsrc);
 
 if($pc{'imageFit'} eq 'percent'){
@@ -441,7 +465,8 @@ $SHEET->param(ogUrl => url()."?=id".$id);
 if($pc{'image'}) { $SHEET->param(ogImg => url()."/".$imgsrc); }
 $SHEET->param(ogDescript => "性別:$pc{'gender'}　年齢:$pc{'age'}　ワークス:$pc{'works'}　シンドローム:$pc{'syndrome1'} $pc{'syndrome2'} $pc{'syndrome3'}");
 
-### ディレクトリ指定 --------------------------------------------------
+### バージョン等 --------------------------------------------------
+$SHEET->param("ver" => $::ver);
 $SHEET->param("coreDir" => $::core_dir);
 
 ### エラー --------------------------------------------------

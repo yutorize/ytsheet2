@@ -2,6 +2,12 @@
 
 /* ゆとシート for SW2.5 - リスト */
 
+/* // Body
+---------------------------------------------------------------------------------------------------- */
+body {
+  background-image: url(../../_common/img/back-pattern.png), url(../img/back-xx.png);
+}
+
 /* // Article
 ---------------------------------------------------------------------------------------------------- */
 article h1 small {
@@ -212,6 +218,9 @@ form#form-search p input[type="submit"] {
 .list table td.player {
   word-break: break-all;
 }
+.list table td.dlois span {
+  display: inline-block;
+}
 .list table td.syndrome {
   font-size: 85%;
 }
@@ -404,46 +413,4 @@ form#form-search p input[type="submit"] {
 }
 #making-posts .navigation a + a {
   margin-left: 3em;
-}
-
-/* // Form
----------------------------------------------------------------------------------------------------- */
-section.form {
-  margin: 10%;
-  padding: 0.5em;
-  border-width: 1px;
-  border-style: solid;
-  border-radius: 10px;
-}
-section.form h2 {
-  font-size: 2rem;
-}
-form input,
-form select {
-  padding: 5px;
-  border-width: 1px;
-  border-style: solid;
-  border-radius: 5px;
-}
-form p {
-  position: relative;
-  margin: 1em;
-  text-align: center;
-}
-form p > label > span {
-  display: inline-block;
-  width: 11em;
-  text-align: right;
-}
-form p > label >  input + b{
-  display: inline-block;
-  position: absolute;
-  bottom: 2px;
-  margin-left: 5px;
-  white-space: nowrap;
-  overflow: visible;
-  font-size: 12px;
-}
-form p > input[type="submit"] {
-  width: 5em;
 }

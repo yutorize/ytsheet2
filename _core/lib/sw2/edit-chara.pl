@@ -25,16 +25,20 @@ if($main::make_error) {
 my $token;
 if($mode eq 'blanksheet' || $mode eq 'copy' || $mode eq 'convert'){
   $token = token_make();
-  
-  if(!$pc{'playerName'}){
-    $pc{'playerName'} = (getplayername($LOGIN_ID))[0];
-  }
 }
 ## 更新後処理 --------------------------------------------------
 if($mode eq 'save'){
   $message .= 'データを更新しました。<a href="./?id='.param('id').'">⇒シートを確認する</a>';
   $mode = 'edit';
 }
+
+### 各種データライブラリ読み込み --------------------------------------------------
+require $set::data_feats;
+require $set::data_races;
+require $set::data_items;
+require $set::data_faith;
+require $set::data_craft;
+
 ### データ読み込み ###################################################################################
 my $id;
 my $pass;
@@ -65,13 +69,11 @@ if($mode eq 'copy'){
   
   $message = '「<a href="./?id='.$id.'" target="_blank">'.$pc{"characterName"}.'</a>」コピーして新規作成します。<br>（まだ保存はされていません）';
 }
-
-### 各種データライブラリ読み込み --------------------------------------------------
-require $set::data_feats;
-require $set::data_races;
-require $set::data_items;
-require $set::data_faith;
-require $set::data_craft;
+elsif($mode eq 'convert'){
+  require $set::lib_convert;
+  %pc = data_convert(param('url'));
+  $message = '「<a href="'.param('url').'" target="_blank">'.($pc{"characterName"}||$pc{"aka"}||'無題').'</a>」をコンバートして新規作成します。<br>（まだ保存はされていません）';
+}
 
 ### 出力準備 #########################################################################################
 ### 初期設定 --------------------------------------------------
@@ -129,7 +131,7 @@ Content-type: text/html\n
   <link rel="stylesheet" media="all" href="${main::core_dir}/skin/_common/css/sheet.css?${main::ver}">
   <link rel="stylesheet" media="all" href="${main::core_dir}/skin/sw2/css/chara.css?${main::ver}">
   <link rel="stylesheet" media="all" href="${main::core_dir}/skin/sw2/css/edit.css?${main::ver}">
-  <script src="${main::core_dir}/skin/js/lib/Sortable.min.js"></script>
+  <script src="${main::core_dir}/skin/_common/js/lib/Sortable.min.js"></script>
   <script src="${main::core_dir}/lib/sw2/edit-chara.js?${main::ver}" defer></script>
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
   <style>
@@ -319,7 +321,7 @@ foreach my $type (1,3,2,0) {
   print '<optgroup label="'.($type eq 1 ? '第一の剣' : $type eq 3 ? '第三の剣' : $type eq 2 ? '第二の剣' : 'その他').'">';
   foreach my $gods (@data::gods){
     next if $type ne @$gods[0];
-    my $name = @$gods[2] ? "“@$gods[2]”@$gods[3]" : @$gods[3];
+    my $name = @$gods[2] && @$gods[3] ? "“@$gods[2]”@$gods[3]" : @$gods[2] ? "“@$gods[2]”" : @$gods[3];
     print '<option'.(($pc{"faith"} eq $name)?' selected':'').">$name";
   }
   print '</optgroup>';
@@ -524,7 +526,7 @@ foreach my $lv (1..17){
   print '<option></option>';
   foreach my $magic (@data::magic_gramarye){
     next if $lv < @$magic[0];
-    print '<option'.(($pc{"magicGramarye$lv"} eq @$magic[1])?' selected':'').' value="'.@$magic[1].'">'.@$magic[1]."（@$magic[2]）";
+    print '<option'.($pc{"magicGramarye$lv"} eq @$magic[1]?' selected':'').' value="'.@$magic[1].'">'.@$magic[1]."（@$magic[2]）";
   }
   print "</select></li>\n";
 }
@@ -1167,19 +1169,19 @@ print <<"HTML";
             <tbody id="accessories-table">
 HTML
 foreach (
-  ["頭","Head"],    ["┗","Head_"],
-  ["耳","Ear"],     ["┗","Ear_"],
-  ["顔","Face"],    ["┗","Face_"],
-  ["首","Neck"],    ["┗","Neck_"],
-  ["背中","Back"],  ["┗","Back_"],
-  ["右手","HandR"], ["┗","HandR_"],
-  ["左手","HandL"], ["┗","HandL_"],
-  ["腰","Waist"],   ["┗","Waist_"],
-  ["足","Leg"],     ["┗","Leg_"],
-  ["他","Other"],   ["┗","Other_"],
-  ["他2","Other2"], ["┗","Other2_"],
-  ["他3","Other3"], ["┗","Other3_"],
-  ["他4","Other4"], ["┗","Other4_"]
+  ["頭","Head"],    ["┗","Head_"],   ["┗","Head__"],
+  ["顔","Face"],    ["┗","Face_"],   ["┗","Face__"],
+  ["耳","Ear"],     ["┗","Ear_"],    ["┗","Ear__"],
+  ["首","Neck"],    ["┗","Neck_"],   ["┗","Neck__"],
+  ["背中","Back"],  ["┗","Back_"],   ["┗","Back__"],
+  ["右手","HandR"], ["┗","HandR_"],  ["┗","HandR__"],
+  ["左手","HandL"], ["┗","HandL_"],  ["┗","HandL__"],
+  ["腰","Waist"],   ["┗","Waist_"],  ["┗","Waist__"],
+  ["足","Leg"],     ["┗","Leg_"],    ["┗","Leg__"],
+  ["他","Other"],   ["┗","Other_"],  ["┗","Other__"],
+  ["他2","Other2"], ["┗","Other2_"], ["┗","Other2__"],
+  ["他3","Other3"], ["┗","Other3_"], ["┗","Other3__"],
+  ["他4","Other4"], ["┗","Other4_"], ["┗","Other4__"],
 ) {
   my $flag;
   my $addbase = @$_[1];
@@ -1191,7 +1193,7 @@ foreach (
   else { $flag = 1; }
   print '  <tr id="accessory-row'.@$_[1].'" data-type="'.@$_[1].'" '.display($flag).">\n";
   print '  <td>';
-  if (@$_[0] !~ /┗/) {
+  if (@$_[1] !~ /__/) {
     print '  <input type="checkbox"' .
           " name=\"accessory@$_[1]Add\" value=\"1\"" .
           ($pc{"accessory@$_[1]Add"}?' checked' : '') .
@@ -1344,7 +1346,8 @@ print <<"HTML";
         横罫線（破線）：<code> - - - -</code>（4つ以上の「スペース＋ハイフン」）<br>
         表組み　　：<code>|テキスト|テキスト|</code><br>
         定義リスト：<code>:項目名|説明文</code><br>
-        　　　　　　<code>:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|説明文2行目</code> 項目名を記入しないか、半角スペースで埋めると上と結合
+        　　　　　　<code>:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|説明文2行目</code> 項目名を記入しないか、半角スペースで埋めると上と結合<br>
+        コメントアウト：行頭に<code>//</code>：記述した行を非表示にします。
         </details>
       </details>
       

@@ -3,7 +3,9 @@ const form = document.sheet;
 let exps = {};
 let status = {};
 
-// //
+const delConfirmText = '項目に値が入っています。本当に削除しますか？';
+
+// ----------------------------------------
 window.onload = function() {
   calcStt();
   calcSkill();
@@ -20,14 +22,14 @@ function changeRegu(){
   document.getElementById("history0-exp").innerHTML = form.history0Exp.value;
 }
 
-// シンドローム変更 //
+// シンドローム変更 ----------------------------------------
 let syndromes = [form.syndrome1.value, form.syndrome2.value, form.syndrome3.value];
 function changeSyndrome(num, syn){
   syndromes[num-1] = syn;
   calcStt();
 }
 
-// ステータス計算 //
+// ステータス計算 ----------------------------------------
 function calcStt() {
   const syn1 = syndromes[0];
   const syn2 = syndromes[1];
@@ -84,7 +86,7 @@ function calcMove(){
 let stock = 0;
 let stockUsed = 0;
 function calcStock(){
-  stock = status['social'] * 2 + Number(form.skillProcure.value) * 2 + Number(form.stockAdd.value);
+  stock = status['social'] * 2 + (Number(form.skillProcure.value)+Number(form.skillAddProcure.value)) * 2 + Number(form.stockAdd.value);
   document.getElementById('stock-total').innerHTML = stock;
   document.getElementById("item-max-stock").innerHTML = stock;
   calcSaving();
@@ -117,15 +119,22 @@ function calcEffect() {
     if(lv >= 1){
       //イージー
       if(type == 'easy'){
-        exps['effect'] += 2;
+        exps['effect'] += lv * 2;
       }
       //通常
       else {
         exps['effect'] += lv * 5 + 10; //lv×5 + 新規取得の差分10
         if(type.match(/^(auto|dlois)$/i)){ exps['effect'] += -15; } //自動かDロイスは新規取得ぶん減らす
+        form['effect'+num+'Type'].style.backgroundColor = '';
       }
     }
     exps['effect'] += Number(form['effect'+num+'Exp'].value)
+    const bg = form['effect'+num+'Name'].parentNode.parentNode.parentNode.style;
+    if     (type == 'easy') { bg.backgroundImage = 'linear-gradient(to right,hsla(120,100%, 50%,0.2),transparent)'; }
+    else if(type == 'auto') { bg.backgroundImage = 'linear-gradient(to right,hsla(200,100%, 50%,0.2),transparent)'; }
+    else if(type == 'dlois'){ bg.backgroundImage = 'linear-gradient(to right,hsla(280,100%, 50%,0.2),transparent)'; }
+    else if(type == 'enemy'){ bg.backgroundImage = 'linear-gradient(to right,hsla( 30,100%, 50%,0.2),transparent)'; }
+    else { bg.backgroundImage = ''; }
   }
   document.getElementById('exp-effect').innerHTML = exps['effect'];
   calcExp();
@@ -219,6 +228,34 @@ function changeLoisState(id){
   document.getElementById(id+'-state').dataset.state = state;
 }
 // ソート
+let loisSortable = Sortable.create(document.querySelector('#lois-table tbody'), {
+  group: "lois",
+  dataIdAttr: 'id',
+  animation: 100,
+  handle: '.handle',
+  filter: 'thead,tfoot',
+  ghostClass: 'sortable-ghost',
+  onUpdate: function (evt) {
+    const order = loisSortable.toArray();
+    let num = 1;
+    for(let id of order) {
+      if(document.getElementById(id)){
+        document.querySelector(`#${id} [name$="Relation"]`    ).setAttribute('name',`lois${num}Relation`);
+        document.querySelector(`#${id} [name$="Name"]`        ).setAttribute('name',`lois${num}Name`);
+        document.querySelector(`#${id} [name$="EmoPosiCheck"]`).setAttribute('name',`lois${num}EmoPosiCheck`);
+        document.querySelector(`#${id} [name$="EmoPosi"]`     ).setAttribute('name',`lois${num}EmoPosi`);
+        document.querySelector(`#${id} [name$="EmoNegaCheck"]`).setAttribute('name',`lois${num}EmoNegaCheck`);
+        document.querySelector(`#${id} [name$="EmoNega"]`     ).setAttribute('name',`lois${num}EmoNega`);
+        document.querySelector(`#${id} [name$="Color"]`       ).setAttribute('name',`lois${num}Color`);
+        document.querySelector(`#${id} [name$="Note"]`        ).setAttribute('name',`lois${num}Note`);
+        document.querySelector(`#${id} [name$="State"]`       ).setAttribute('name',`lois${num}State`);
+        num++;
+      }
+    }
+  }
+});
+// メモリー ----------------------------------------
+// ソート
 let memorySortable = Sortable.create(document.querySelector('#memory-table tbody'), {
   group: "memory",
   dataIdAttr: 'id',
@@ -235,7 +272,6 @@ let memorySortable = Sortable.create(document.querySelector('#memory-table tbody
         document.querySelector(`#${id} [name$="Name"]`    ).setAttribute('name',`memory${num}Name`);
         document.querySelector(`#${id} [name$="Emo"]`     ).setAttribute('name',`memory${num}Emo`);
         document.querySelector(`#${id} [name$="Note"]`    ).setAttribute('name',`memory${num}Note`);
-        document.querySelector(`#${id} [name$="State"]`   ).setAttribute('name',`memory${num}State`);
         num++;
       }
     }
@@ -249,13 +285,13 @@ function addSkill(){
   let tbody = document.createElement('tr');
   tbody.innerHTML = `
     <td class="left"><input name="skillRide${num}Name" type="text" list="list-ride"></td>
-    <td class="right"><input name="skillRide${num}" type="number" oninput="calcSkill()"></td>
+    <td class="right"><input name="skillRide${num}" type="number" oninput="calcSkill()">+<input name="skillAddRide${num}" type="number" oninput="calcSkill()"></td>
     <td class="left"><input name="skillArt${num}Name" type="text" list="list-art"></td>
-    <td class="right"><input name="skillArt${num}" type="number" oninput="calcSkill()"></td>
+    <td class="right"><input name="skillArt${num}" type="number" oninput="calcSkill()">+<input name="skillAddArt${num}" type="number" oninput="calcSkill()"></td>
     <td class="left"><input name="skillKnow${num}Name" type="text" list="list-know"></td>
-    <td class="right"><input name="skillKnow${num}" type="number" oninput="calcSkill()"></td>
+    <td class="right"><input name="skillKnow${num}" type="number" oninput="calcSkill()">+<input name="skillAddKnow${num}" type="number" oninput="calcSkill()"></td>
     <td class="left"><input name="skillInfo${num}Name" type="text" list="list-info"></td>
-    <td class="right"><input name="skillInfo${num}" type="number" oninput="calcSkill()"></td>
+    <td class="right"><input name="skillInfo${num}" type="number" oninput="calcSkill()">+<input name="skillAddInfo${num}" type="number" oninput="calcSkill()"></td>
   `;
   const target = document.querySelector("#skill-table tbody");
   target.appendChild(tbody, target);
@@ -266,6 +302,9 @@ function addSkill(){
 function delSkill(){
   let num = Number(form.skillNum.value);
   if(num > 1){
+    if(form[`skillRide${num}Name`].value || form[`skillRide${num}`].value || form[`skillAddRide${num}`].value || form[`skillArt${num}Name`].value || form[`skillArt${num}`].value || form[`skillAddArt${num}`].value || form[`skillKnow${num}Name`].value || form[`skillKnow${num}`].value || form[`skillAddKnow${num}`].value || form[`skillInfo${num}Name`].value || form[`skillInfo${num}`].value || form[`skillAddInfo${num}`].value){
+      if (!confirm(delConfirmText)) return false;
+    }
     const target = document.querySelector("#skill-table tbody tr:last-of-type");
     target.parentNode.removeChild(target);
     num--;
@@ -278,7 +317,7 @@ function delSkill(){
 function addEffect(){
   let num = Number(form.effectNum.value) + 1;
   let tbody = document.createElement('tbody');
-  tbody.setAttribute('id','effect'+num);
+  tbody.setAttribute('id',idNumSet('effect'));
   tbody.innerHTML = `<tr>
     <td rowspan="2" class="handle"></td>
     <td><input name="effect${num}Name"     type="text"   placeholder="名称"></td>
@@ -311,6 +350,9 @@ function addEffect(){
 function delEffect(){
   let num = Number(form.effectNum.value);
   if(num > 2){
+    if(form[`effect${num}Name`].value || form[`effect${num}Lv`].value || form[`effect${num}Timing`].value || form[`effect${num}Skill`].value || form[`effect${num}Dfclty`].value || form[`effect${num}Target`].value || form[`effect${num}Range`].value || form[`effect${num}Encroach`].value || form[`effect${num}Restrict`].value || form[`effect${num}Exp`].value || form[`effect${num}Note`].value){
+      if (!confirm(delConfirmText)) return false;
+    }
     const target = document.querySelector("#effect-table tbody:last-of-type");
     target.parentNode.removeChild(target);
     num--;
@@ -352,7 +394,7 @@ let effectSortable = Sortable.create(document.getElementById('effect-table'), {
 function addCombo(){
   let num = Number(form.comboNum.value) + 1;
   let tbody = document.createElement('tbody');
-  tbody.setAttribute('id','combo'+num);
+  tbody.setAttribute('id',idNumSet('combo'));
   tbody.innerHTML = `<tr>
       <td class="handle" rowspan="7"></td>
       <th colspan="3">名称</th>
@@ -406,6 +448,9 @@ function addCombo(){
 function delCombo(){
   let num = Number(form.comboNum.value);
   if(num > 1){
+    if(form[`combo${num}Name`].value || form[`combo${num}Combo`].value || form[`combo${num}Timing`].value || form[`combo${num}Skill`].value || form[`combo${num}Dfclty`].value || form[`combo${num}Target`].value || form[`combo${num}Range`].value || form[`combo${num}Encroach`].value || form[`combo${num}Dice1`].value || form[`combo${num}Crit1`].value || form[`combo${num}Atk1`].value || form[`combo${num}Fixed1`].value || form[`combo${num}Note`].value){
+      if (!confirm(delConfirmText)) return false;
+    }
     const target = document.querySelector("#combo-table tbody:last-of-type");
     target.parentNode.removeChild(target);
     num--;
@@ -460,9 +505,9 @@ let comboSortable = Sortable.create(document.getElementById('combo-table'), {
 function addWeapon(){
   let num = Number(form.weaponNum.value) + 1;
   let tbody = document.createElement('tr');
-  tbody.setAttribute('id','weapon'+num);
+  tbody.setAttribute('id',idNumSet('weapon'));
   tbody.innerHTML = `
-    <td><input name="weapon${num}Name"  type="text"></td>
+    <td><input name="weapon${num}Name"  type="text"><span class="handle"></span></td>
     <td><input name="weapon${num}Stock" type="number" oninput="calcItem()"></td>
     <td><input name="weapon${num}Exp"   type="number" oninput="calcItem()"></td>
     <td><input name="weapon${num}Type"  type="text" list="list-weapon-type"></td>
@@ -482,6 +527,9 @@ function addWeapon(){
 function delWeapon(){
   let num = Number(form.weaponNum.value);
   if(num > 1){
+    if(form[`weapon${num}Name`].value || form[`weapon${num}Stock`].value || form[`weapon${num}Exp`].value || form[`weapon${num}Type`].value || form[`weapon${num}Skill`].value || form[`weapon${num}Acc`].value || form[`weapon${num}Atk`].value || form[`weapon${num}Guard`].value || form[`weapon${num}Range`].value || form[`weapon${num}Note`].value){
+      if (!confirm(delConfirmText)) return false;
+    }
     const target = document.querySelector("#weapon-table tbody tr:last-of-type");
     target.parentNode.removeChild(target);
     num--;
@@ -521,9 +569,9 @@ let weaponSortable = Sortable.create(document.querySelector('#weapon-table tbody
 function addArmor(){
   let num = Number(form.armorNum.value) + 1;
   let tbody = document.createElement('tr');
-  tbody.setAttribute('id','armor'+num);
+  tbody.setAttribute('id',idNumSet('armor'));
   tbody.innerHTML = `
-    <td><input name="armor${num}Name"  type="text"></td>
+    <td><input name="armor${num}Name"  type="text"><span class="handle"></span></td>
     <td><input name="armor${num}Stock" type="number" oninput="calcItem()"></td>
     <td><input name="armor${num}Exp"   type="number" oninput="calcItem()"></td>
     <td><input name="armor${num}Type"  type="text" value="防具" list="list-armor-type"></td>
@@ -541,6 +589,9 @@ function addArmor(){
 function delArmor(){
   let num = Number(form.armorNum.value);
   if(num > 1){
+    if(form[`armor${num}Name`].value || form[`armor${num}Stock`].value || form[`armor${num}Exp`].value || form[`armor${num}Initiative`].value || form[`armor${num}Dodge`].value || form[`armor${num}Armor`].value || form[`armor${num}Note`].value){
+      if (!confirm(delConfirmText)) return false;
+    }
     const target = document.querySelector("#armor-table tbody tr:last-of-type");
     target.parentNode.removeChild(target);
     num--;
@@ -578,9 +629,9 @@ let armorSortable = Sortable.create(document.querySelector('#armor-table tbody')
 function addVehicle(){
   let num = Number(form.vehicleNum.value) + 1;
   let tbody = document.createElement('tr');
-  tbody.setAttribute('id','vehicle'+num);
+  tbody.setAttribute('id',idNumSet('vehicle'));
   tbody.innerHTML = `
-    <td><input name="vehicle${num}Name"  type="text"></td>
+    <td><input name="vehicle${num}Name"  type="text"><span class="handle"></span></td>
     <td><input name="vehicle${num}Stock" type="number" oninput="calcItem()"></td>
     <td><input name="vehicle${num}Exp"   type="number" oninput="calcItem()"></td>
     <td><input name="vehicle${num}Type"  type="text" value="ヴィークル"></td>
@@ -599,6 +650,9 @@ function addVehicle(){
 function delVehicle(){
   let num = Number(form.vehicleNum.value);
   if(num > 0){
+    if(form[`vehicle${num}Name`].value || form[`vehicle${num}Stock`].value || form[`vehicle${num}Exp`].value || form[`vehicle${num}Skill`].value || form[`vehicle${num}Initiative`].value || form[`vehicle${num}Atk`].value || form[`vehicle${num}Armor`].value || form[`vehicle${num}Dash`].value || form[`vehicle${num}Note`].value){
+      if (!confirm(delConfirmText)) return false;
+    }
     const target = document.querySelector("#vehicle-table tbody tr:last-of-type");
     target.parentNode.removeChild(target);
     num--;
@@ -639,9 +693,9 @@ let vehicleSortable = Sortable.create(document.querySelector('#vehicle-table tbo
 function addItem(){
   let num = Number(form.itemNum.value) + 1;
   let tbody = document.createElement('tr');
-  tbody.setAttribute('id','item'+num);
+  tbody.setAttribute('id',idNumSet('item'));
   tbody.innerHTML = `
-    <td><input name="item${num}Name"  type="text"></td>
+    <td><input name="item${num}Name"  type="text"><span class="handle"></span></td>
     <td><input name="item${num}Stock" type="number" oninput="calcItem()"></td>
     <td><input name="item${num}Exp"   type="number" oninput="calcItem()"></td>
     <td><input name="item${num}Type"  type="text" list="list-item-type"></td>
@@ -657,6 +711,9 @@ function addItem(){
 function delItem(){
   let num = Number(form.itemNum.value);
   if(num > 1){
+    if(form[`item${num}Name`].value || form[`item${num}Stock`].value || form[`item${num}Exp`].value || form[`item${num}Type`].value || form[`item${num}Skill`].value || form[`item${num}Note`].value){
+      if (!confirm(delConfirmText)) return false;
+    }
     const target = document.querySelector("#item-table tbody tr:last-of-type");
     target.parentNode.removeChild(target);
     num--;
@@ -693,7 +750,7 @@ let itemSortable = Sortable.create(document.querySelector('#item-table tbody'), 
 function addHistory(){
   let num = Number(form.historyNum.value) + 1;
   let tbody = document.createElement('tbody');
-  tbody.setAttribute('id','history'+num);
+  tbody.setAttribute('id',idNumSet('history'));
   tbody.innerHTML = `<tr>
     <td rowspan="2" class="handle"></td>
     <td rowspan="2"><input name="history${num}Date"   type="text"></td>
@@ -712,6 +769,9 @@ function addHistory(){
 function delHistory(){
   let num = Number(form.historyNum.value);
   if(num > 1){
+    if(form[`history${num}Date`].value || form[`history${num}Title`].value || form[`history${num}Exp`].value || form[`history${num}Gm`].value || form[`history${num}Member`].value || form[`history${num}Note`].value){
+      if (!confirm(delConfirmText)) return false;
+    }
     const target = document.querySelector("#history-table tbody:last-of-type");
     target.parentNode.removeChild(target);
     num--;
@@ -798,6 +858,15 @@ function sectionSelect(id){
     document.getElementById('section-'+value).style.display = 'none';
   });
   document.getElementById('section-'+id).style.display = 'block';
+}
+
+// 連番ID生成 ----------------------------------------
+function idNumSet (id){
+  let num = 1;
+  while(document.getElementById(id+num)){
+    num++;
+  }
+  return id+num;
 }
 
 

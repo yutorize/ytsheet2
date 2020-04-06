@@ -196,8 +196,8 @@ sub paletteProperties {
     push @propaties, '';
   }
     
-    push @propaties, "//回避=$::pc{'DefenseTotalAllEva'}";
-    push @propaties, "//防護=$::pc{'DefenseTotalAllDef'}";
+    push @propaties, "//回避=$::pc{'defenseTotalAllEva'}";
+    push @propaties, "//防護=$::pc{'defenseTotalAllDef'}";
   }
   ## 魔物
   elsif($type eq 'm') {

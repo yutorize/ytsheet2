@@ -14,7 +14,7 @@ my $SHEET;
 $SHEET = HTML::Template->new( filename => $set::skin_item, utf8 => 1,
   die_on_bad_params => 0, die_on_missing_include => 0, case_sensitive => 1, global_vars => 1);
 
-$SHEET->param("BackupMode" => param('backup') ? 1 : 0);
+$SHEET->param("backupMode" => param('backup') ? 1 : 0);
 
 ### キャラクターデータ読み込み #######################################################################
 my $id = param('id');
@@ -134,7 +134,8 @@ $pc{'imageUpdateTime'} = $pc{'updateTime'};
 $pc{'imageUpdateTime'} =~ s/[\-\ \:]//g;
 $SHEET->param("imageSrc" => "${set::item_dir}${file}/image.$pc{'image'}?$pc{'imageUpdateTime'}");
 
-### ディレクトリ指定 --------------------------------------------------
+### バージョン等 --------------------------------------------------
+$SHEET->param("ver" => $::ver);
 $SHEET->param("coreDir" => $::core_dir);
 
 ### エラー --------------------------------------------------

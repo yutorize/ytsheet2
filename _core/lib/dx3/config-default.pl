@@ -4,8 +4,6 @@ use utf8;
 
 package set;
 
-use lib './module';
-
 # config.cgiのほうが優先されます
 # 変更する場合は同様の項目をconfig.cgiに追記してください
 # （CGIアップデート時に上書きされるため）
@@ -109,7 +107,7 @@ use lib './module';
   our $lib_edit_char   = $::core_dir . '/lib/dx3/edit-chara.pl';
   # 保存処理
   our $lib_save        = $::core_dir . '/lib/save.pl';
-  our $lib_save_char   = $::core_dir . '/lib/dx3/save-chara.pl';
+  our $lib_calc_char   = $::core_dir . '/lib/dx3/calc-chara.pl';
   # シート表示
   our $lib_view        = $::core_dir . '/lib/view.pl';
   our $lib_view_char   = $::core_dir . '/lib/dx3/view-chara.pl';
@@ -120,6 +118,8 @@ use lib './module';
   our $lib_list_char   = $::core_dir . '/lib/dx3/list-chara.pl';
   # JSON出力
   our $lib_json        = $::core_dir . '/lib/json.pl';
+  # コンバート
+  our $lib_convert = $::core_dir . '/lib/dx3/convert.pl';
 
   # 各種データ
   our $data_syndrome = $::core_dir . '/lib/dx3/data-syndrome.pl';  # シンドロームのデータ

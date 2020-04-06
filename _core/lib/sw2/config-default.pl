@@ -182,9 +182,9 @@ package set;
   our $lib_edit_item = $::core_dir . '/lib/sw2/edit-item.pl';
   # 保存処理
   our $lib_save   = $::core_dir . '/lib/save.pl';
-  our $lib_save_char = $::core_dir . '/lib/sw2/save-chara.pl';
-  our $lib_save_mons = $::core_dir . '/lib/sw2/save-mons.pl';
-  our $lib_save_item = $::core_dir . '/lib/sw2/save-item.pl';
+  our $lib_calc_char = $::core_dir . '/lib/sw2/calc-chara.pl';
+  our $lib_calc_mons = $::core_dir . '/lib/sw2/calc-mons.pl';
+  our $lib_calc_item = $::core_dir . '/lib/sw2/calc-item.pl';
   # シート表示
   our $lib_view   = $::core_dir . '/lib/view.pl';
   our $lib_view_char = $::core_dir . '/lib/sw2/view-chara.pl';
@@ -202,6 +202,8 @@ package set;
   our $lib_list_make = $::core_dir . '/lib/sw2/list-making.pl';
   # JSON出力
   our $lib_json    = $::core_dir . '/lib/json.pl';
+  # コンバート
+  our $lib_convert = $::core_dir . '/lib/sw2/convert.pl';
 
   # 各種データ
   our $data_races = $::core_dir . '/lib/sw2/data-races.pl';  # 種族

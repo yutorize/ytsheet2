@@ -91,6 +91,7 @@ Content-type: text/html\n
   <link rel="stylesheet" media="all" href="${main::core_dir}/skin/_common/css/sheet.css?${main::ver}">
   <link rel="stylesheet" media="all" href="${main::core_dir}/skin/sw2/css/monster.css?${main::ver}">
   <link rel="stylesheet" media="all" href="${main::core_dir}/skin/sw2/css/edit.css?${main::ver}">
+  <script src="${main::core_dir}/skin/_common/js/lib/Sortable.min.js"></script>
   <script src="${main::core_dir}/lib/sw2/edit-mons.js?${main::ver}" defer></script>
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
   <style>
@@ -154,9 +155,9 @@ else {
     print '登録キー：<input type="text" name="registerkey" required>'."\n";
   }
   print <<"HTML";
-      <div class="box" id="edit-protect">
-      <h2 onclick="view('edit-protect-view')">編集保護設定 ▼</h2>
-      <p id="edit-protect-view" @{[$mode eq 'edit' ? 'style="display:none"':'']}><input type="hidden" name="protectOld" value="$pc{'protect'}">
+      <details class="box" id="edit-protect" @{[$mode eq 'edit' ? '':'open']}>
+      <summary>編集保護設定</summary>
+      <p id="edit-protect-view"><input type="hidden" name="protectOld" value="$pc{'protect'}">
 HTML
   if($LOGIN_ID){
     print '<input type="radio" name="protect" value="account"'.($pc{'protect'} eq 'account'?' checked':'').'> アカウントに紐付ける（ログイン中のみ編集可能になります）<br>';
@@ -170,7 +171,7 @@ HTML
   print <<"HTML";
 <input type="radio" name="protect" value="none"@{[ $pc{'protect'} eq 'none'?' checked':'' ]}> 保護しない（誰でも編集できるようになります）
       </p>
-      </div>
+      </details>
 HTML
 }
   print <<"HTML";
@@ -213,31 +214,37 @@ print <<"HTML";
       </div>
       <div class="box">
       <table id="status-table" class="status">
-        <tr>
-          <th>攻撃方法</th>
-          <th>命中力</th>
-          <th>打撃点</th>
-          <th>回避力</th>
-          <th>防護点</th>
-          <th>ＨＰ</th>
-          <th>ＭＰ</th>
-        </tr>
+        <thead>
+          <tr>
+            <th></th>
+            <th>攻撃方法</th>
+            <th>命中力</th>
+            <th>打撃点</th>
+            <th>回避力</th>
+            <th>防護点</th>
+            <th>ＨＰ</th>
+            <th>ＭＰ</th>
+          </tr>
+        </thead>
+        <tbody>
 HTML
-foreach (1 .. $pc{'statusNum'}){
-$pc{'status'.$_.'Damage'} = '2d6+' if $pc{'status'.$_.'Damage'} eq '' && $mode eq 'blanksheet';
+foreach my $num (1 .. $pc{'statusNum'}){
+$pc{"status${num}Damage"} = '2d6+' if $pc{"status${num}Damage"} eq '' && $mode eq 'blanksheet';
 print <<"HTML";
-        <tr>
-          <td>@{[ input 'status'.$_.'Style' ]}</td>
-          <td>@{[ input 'status'.$_.'Accuracy','number','calcAcc('.$_.')' ]}<br>(@{[ input 'status'.$_.'AccuracyFix','number','calcAccF('.$_.')' ]})</td>
-          <td>@{[ input 'status'.$_.'Damage' ]}</td>
-          <td>@{[ input 'status'.$_.'Evasion','number','calcEva('.$_.')' ]}<br>(@{[ input 'status'.$_.'EvasionFix','number','calcEvaF('.$_.')' ]})</td>
-          <td>@{[ input 'status'.$_.'Defense' ]}</td>
-          <td>@{[ input 'status'.$_.'Hp' ]}</td>
-          <td>@{[ input 'status'.$_.'Mp' ]}</td>
+        <tr id="status-row${num}">
+          <td class="handle"></td>
+          <td>@{[ input "status${num}Style" ]}</td>
+          <td>@{[ input "status${num}Accuracy",'number',"calcAcc($num)" ]}<br>(@{[ input "status${num}AccuracyFix",'number',"calcAccF($num)" ]})</td>
+          <td>@{[ input "status${num}Damage" ]}</td>
+          <td>@{[ input "status${num}Evasion",'number',"calcEva($num)" ]}<br>(@{[ input "status${num}EvasionFix",'number',"calcEvaF($num)" ]})</td>
+          <td>@{[ input "status${num}Defense" ]}</td>
+          <td>@{[ input "status${num}Hp" ]}</td>
+          <td>@{[ input "status${num}Mp" ]}</td>
         </tr>
 HTML
 }
 print <<"HTML";
+        </tobdy>
       </table>
       <div class="add-del-button"><a onclick="addStatus()">▼</a><a onclick="delStatus()">▲</a></div>
       @{[input('statusNum','hidden')]}
@@ -263,15 +270,18 @@ print <<"HTML";
       </div>
       <div class="box loots">
         <h2>戦利品</h2>
-        <dl id="loots-list">
+        <div id="loots-list">
+          <ul id="loots-num">
 HTML
-foreach (1 .. $pc{'lootsNum'}){
+foreach my $num (1 .. $pc{'lootsNum'}){ print "<li id='loots-num${num}'><span class='handle'></span>".input("loots${num}Num").'</li>'; }
 print <<"HTML";
-        <dt>@{[ input 'loots'.$_.'Num' ]}</dt><dd>@{[ input 'loots'.$_.'Item' ]}</dd>
+          </ul>
+          <ul id="loots-item">
 HTML
-}
+foreach my $num (1 .. $pc{'lootsNum'}){ print "<li id='loots-item${num}'><span class='handle'></span>".input("loots${num}Item").'</li>'; }
 print <<"HTML";
-      </dl>
+        </ul>
+      </div>
       <div class="add-del-button"><a onclick="addLoots()">▼</a><a onclick="delLoots()">▲</a></div>
       @{[input('lootsNum','hidden')]}
       </div>

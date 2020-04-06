@@ -42,11 +42,13 @@ sub data_calc {
   foreach my $name ('Melee','Ranged','RC','Negotiate','Dodge','Percept','Will','Procure'){
     my $lv = $pc{'skill'.$name};
     for(my $i = 0; $i < $lv; $i++){ $pc{'expUsedSkill'} += ($i > 20) ? 10 : ($i > 10) ? 5 : ($i > 5) ? 3 : 2; }
+      if($pc{'skill'.$name} && $pc{'skill'.$name}){ $pc{'skillTotal'.$name} = $pc{'skill'.$name} + $pc{'skillAdd'.$name}; }
   }
   foreach my $name ('Ride','Art','Know','Info'){
     foreach my $num (1 .. $pc{'skillNum'}){
       my $lv = $pc{'skill'.$name.$num};
       for(my $i = 0; $i < $lv; $i++){ $pc{'expUsedSkill'} += ($i > 20) ? 10 : ($i > 10) ? 5 : ($i > 5) ? 3 : 1; }
+      if($pc{'skill'.$name.$num} && $pc{'skill'.$name.$num}){ $pc{'skillTotal'.$name.$num} = $pc{'skill'.$name.$num} + $pc{'skillAdd'.$name.$num}; }
     }
   }
   
@@ -57,7 +59,7 @@ sub data_calc {
     if($lv >= 1){
       # イージー
       if($type eq 'easy'){
-        $pc{'expUsedEffect'} += 2;
+        $pc{'expUsedEffect'} += $lv * 2;
       }
       # 通常
       else {
@@ -122,11 +124,14 @@ sub data_calc {
   foreach (
     'skillMelee','skillRanged','skillRC','skillNegotiate',
     'skillDodge','skillPercept','skillWill','skillProcure',
+    'skillAddMelee','skillAddRanged','skillAddRC','skillAddNegotiate',
+    'skillAddDodge','skillAddPercept','skillAddWill','skillAddProcure',
   ){
     delete $pc{$_} if !$pc{$_};
   }
   foreach (
     'skillRide','skillArt','skillKnow','skillInfo',
+    'skillAddRide','skillAddArt','skillAddKnow','skillAddInfo',
   ){
     foreach my $num (1..$pc{'skillNum'}){
       delete $pc{$_.$num} if !$pc{$_.$num};
@@ -149,6 +154,7 @@ sub data_calc {
   my $charactername = ($aka?"“$aka”":"").$name;
   $charactername =~ s/[|｜]([^|｜]+?)《.+?》/$1/g;
   $_ =~ s/[|｜]([^|｜]+?)《.+?》/$1/g foreach (@dloises);
+  $_ =~ s/[:：].+?$//g foreach (@dloises);
   $::newline = "$pc{'id'}<>$::file<>".
                "$pc{'birthTime'}<>$::now<>$charactername<>$pc{'playerName'}<>$pc{'group'}<>".
                "$pc{'expTotal'}<>$pc{'gender'}<>$pc{'age'}<>$pc{'sign'}<>$pc{'blood'}<>$pc{'works'}<>".

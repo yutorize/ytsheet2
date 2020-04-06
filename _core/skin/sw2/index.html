@@ -6,9 +6,10 @@
   <title><TMPL_VAR title></title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" media="all" href="<TMPL_VAR coreDir>/skin/_common/css/base.css?<TMPL_VAR ver>">
+  <link rel="stylesheet" media="all" href="<TMPL_VAR coreDir>/skin/_common/css/form.css?<TMPL_VAR ver>">
   <link rel="stylesheet" media="all" href="<TMPL_VAR coreDir>/skin/sw2/css/list.css?<TMPL_VAR ver>">
   <link rel="stylesheet" media="all" href="<TMPL_VAR coreDir>/skin/sw2/css/list-sp.css?<TMPL_VAR ver>">
-  <TMPL_INCLUDE NAME="../../skin-add/head.html">
+  <TMPL_INCLUDE NAME="skin-add/head.html">
 </head>
 
 <body>
@@ -27,7 +28,7 @@
         <li><a href="./?<TMPL_IF mode>mode=<TMPL_VAR mode>&</TMPL_IF><TMPL_IF tag>tag=<TMPL_VAR tag>&</TMPL_IF>type=i">アイテムデータ</a></li>
       </ul>
     </nav>
-    <TMPL_IF modeIndex><TMPL_INCLUDE NAME="../../skin-add/index-message.html"></TMPL_IF>
+    <TMPL_IF modeIndex><TMPL_INCLUDE NAME="skin-add/index-message.html"></TMPL_IF>
 
     <TMPL_IF modeList><TMPL_INCLUDE NAME="list-chara.html"></TMPL_IF>
     <TMPL_IF modeMonsList><TMPL_INCLUDE NAME="list-mons.html"></TMPL_IF>
@@ -44,7 +45,7 @@
     </TMPL_IF>
     <div class="back-button"><a href="./">⏎</a></div>
   </main>
-  <TMPL_INCLUDE NAME="../../skin-add/sidebar.html">
+  <TMPL_INCLUDE NAME="skin-add/sidebar.html">
   <!-- add/sidebar.htmlに推奨の記述
   <aside id="sidebar-left">（サイドバー・左／画面幅が広い時のみ）</aside>
   <aside id="sidebar-right">（サイドバー・右／画面幅が広い時のみ）</aside>

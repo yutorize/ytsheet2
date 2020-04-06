@@ -88,13 +88,11 @@ code {
 
 body {
   min-height: 100vh;
-  overflow-x: hidden;
   word-break: break-word;
 }
 
 main {
   padding: 1rem 0 3rem;
-  overflow: hidden;
 }
 
 footer {
@@ -260,6 +258,9 @@ dl.box > dt,
   transition: top 0.3s;
   z-index: 1;
 }
+.box.chat-palette.show {
+  top: 60px;
+}
 .night .box.chat-palette {
   background: #000;
 }
@@ -400,6 +401,25 @@ dl.note-description dd {
   transform: scale(-1, 1);
 }
 
+/* // Message
+---------------------------------------------------------------------------------------------------- */
+aside.information {
+  max-width: 500px;
+  margin: 0 auto .5rem;
+  padding: .5rem;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: .5rem;
+  background-color: hsla(120,100%,50%,0.2);
+  text-align: center;
+}
+aside.information a {
+  font-weight: bold;
+}
+aside.information + article {
+  border-top: 0;
+}
+
 /* // Nav
 ---------------------------------------------------------------------------------------------------- */
 header nav ul li  {
@@ -459,6 +479,9 @@ header nav ul li a span {
   z-index: 99;
   transition: top 0.3s;
 }
+#login-form.show {
+  top: 5rem;
+}
 .night #login-form {
   background: #334455;
 }
@@ -487,7 +510,8 @@ textarea::placeholder {
   margin-right: -.5rem;
   min-height: 0.1px;
 }
-#tags a {
+#tags a,
+#tags i {
   display: inline-block;
   margin-right: 1rem;
   padding: .2rem .5rem .2rem .2rem;
@@ -517,6 +541,13 @@ textarea::placeholder {
 #tags a#group::before {
   content:'';
 }
+#tags i {
+  border-radius: 5px;
+  padding: .1rem .5rem;
+  font-style: normal;
+  background-color: var(--bg-color);
+  box-shadow: var(--box-outside-border-color) 0 0 0 1px;
+}
 
 
 /* // Image-Box
@@ -544,11 +575,11 @@ textarea::placeholder {
 /* // Backup
 ---------------------------------------------------------------------------------------------------- */
 aside#backuplist {
-  position: absolute;
+  position: fixed;
   min-width: 13rem;
   height: calc(100vh - 10rem);
   top: 8rem;
-  right: -100vh;
+  right: 0;
   border-width: 1px 0px 1px 1px;
   border-style: solid;
   border-top-left-radius: 5px;
@@ -557,15 +588,40 @@ aside#backuplist {
   
   overflow-y: auto;
   
-  transition-property: right;
-  transition-duration: 0.2s;
-  
   z-index: 300;
+  
+  animation-name: bulist-hide;
+  animation-duration: 0.5s;
+  animation-fill-mode: forwards;
+}
+@keyframes bulist-in {
+  0% {
+    right: -100vw;
+  }
+  100% {
+    right: 0;
+  }
+}
+aside#backuplist.show {
+  display: block;
+  animation-name: bulist-in;
+  animation-duration: 0.2s;
+  animation-fill-mode: forwards;
+}
+@keyframes bulist-hide {
+  0% {
+    right: 0;
+  }
+  100% {
+    right: -100vw;
+    display: :none;
+  }
 }
 .night aside#backuplist {
   background: rgba(0,0,0,0.9);
 }
 aside#backuplist ul {
+  white-space: nowrap;
 }
 aside#backuplist ul li + li {
   border-width: 1px 0 0;

@@ -140,3 +140,81 @@
       </TMPL_IF>
     </article>
   </TMPL_IF>
+  <!-- コンバート -->
+  <TMPL_IF modeConvert>
+    <article id="convertform">
+      <section class="form">
+        <h2>コンバート作成</h2>
+        <form method="get" action="./">
+          <input type="hidden" name="mode" value="convert">
+          <p>
+            入力したURLのデータを元にゆとシートⅡで新規作成します。<br>
+            <input type="url" name="url" style="width:50%;" placeholder="http://..."><input type="submit" value="作成">
+          </p>
+        </form>
+      </section>
+      <section class="form">
+        <h2>コンバートビュー</h2>
+        <form method="get" action="./">
+          <p>
+            入力したURLのデータをゆとシートⅡで表示します。（保存はされません）<br>
+            <input type="url" name="url" style="width:50%;" placeholder="http://..."><input type="submit" value="表示">
+          </p>
+        </form>
+      </section>
+      <aside class="form">
+        <h3>コンバート可能なキャラクターシート（URL）</h3>
+        <dl>
+          <dt>キャラクター保管所 (SW2.x/DX3rd)</dt>
+          <dd>https://charasheet.vampire-blood.net/<i>[MD/ID]</i></dd>
+        </dl>
+        <dl>
+          <dt>キャラクターシート倉庫 (DX3rd)</dt>
+          <dd>http://character-sheets.appspot.com/<i>dx3</i>/edit.html?key=<i>[ID]</i></dd>
+        </dl>
+        <TMPL_IF ConvertURLs><dl>
+          <dt>旧ゆとシート（同サイト内、特定のもののみ）</dt>
+          <TMPL_LOOP ConvertURLs><dd><TMPL_VAR URL>data/<i>[番号/ID]</i>.html</dd></TMPL_LOOP>
+        </dl></TMPL_IF>
+        <dl>
+          <dt>他、ゆとシートⅡ</dt>
+          <dd>http://<i>(設置されたゆとシートⅡのURL)</i>/?id=<i>[ID]</i></dd>
+        </dl>
+      </aside>
+      <section class="form">
+        <h3>コンバートの仕様</h3>
+        <section>
+        <h4>データの変換</h4>
+        <p>
+          　基本的に、数値などは自動的に計算され直します。<br>
+          　また、一部テキスト等もゆとシート向けに自動的に変換されます。<br>
+          　一例を下記に示します。<br>
+        </p>
+        <dl>
+          <dt>全般</dt>
+          <dd>半角⇔全角は適宜ゆとシートに合わせて変換。</dd>
+          <dd>一部表記ぶれの統一（怒涛⇒怒濤、エンジェルハイロウ⇒エンジェルハィロゥなど）</dd>
+          <dt>DX3rd</dt>
+          <dd>キャラクター名及びコードネームが「AAA（BBB）」という形式の場合、（）内を自動的にルビにする。</dd>
+        </dl>
+        </section>
+        <section>
+        <h4>データの欠損</h4>
+        <p>
+          　ゆとシートの型に合わないなどの理由で、一部データが抜けることがあります。<br>
+          　現在確認できるものを以下に示します。<br>
+        </p>
+        <dl>
+          <dt>SW2.5</dt>
+          <dd>本来あり得ない習得レベルで特技・練技などを習得している場合（作成のみ）</dd>
+          <dd>特技・練技などの名前が間違っている／対応できていない表記ぶれの場合（作成のみ）</dd>
+          <dd>装飾品の、1部位の4枠目以降</dd>
+          <dd>専用装飾品の選択が「HP」「MP」以外の場合</dd>
+          <dt>DX3rd</dt>
+          <dd>覚醒・衝動の名前が間違っている／対応できていない表記ぶれの場合（作成のみ）</dd>
+        </dl>
+        <p style="text-align:right;border-top-width:1px;border-top-style:dotted">※（作成のみ）とある場合、コンバートビューの場合は欠落せず表示されます。</p>
+        </section>
+      </section>
+    </article>
+  </TMPL_IF>

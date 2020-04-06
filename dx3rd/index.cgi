@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 ####################################
-##     ゆとシートⅡ for SW2.5     ##
+##     ゆとシートⅡ for DX3rd     ##
 ##          by ゆとらいず工房     ##
 ##    https://yutorize.2-d.jp     ##
 ####################################
@@ -18,10 +18,10 @@ use Fcntl;
 our $core_dir = '../_core';
 use lib '../_core/module';
 
-require $core_dir.'/lib/sw2/config-default.pl';
+require $core_dir.'/lib/dx3/config-default.pl';
 require './config.cgi';
 require $core_dir.'/lib/subroutine.pl';
-require $core_dir.'/lib/sw2/subroutine-sw2.pl';
+require $core_dir.'/lib/dx3/subroutine-dx3.pl';
 
 require $core_dir.'/lib/junction.pl';
 

@@ -3,7 +3,7 @@ use strict;
 #use warnings;
 use utf8;
 use open ":utf8";
-#use JSON;
+use JSON::PP;
 
 
 ### コールバック関数読み込み #########################################################################
@@ -42,30 +42,33 @@ if($pc{updateTime}) {
     $pc{result} = "リクエストされたシートは見つかりませんでした。 id: ${id}, backup: ${backup}";
   }
 }
+if($pc{'image'}){
+  $pc{'imageURL'} = url()."${data_dir}${file}/image.$pc{'image'}";
+}
 
 ### 出力 #############################################################################################
-
+my $json = JSON::PP->new->canonical(1)->encode( \%pc );
 if($callback eq "") {
   print "Content-type: application/json\n\n";
-  print to_json( \%pc );
+  print $json;
 } else {
   print "Content-type: text/javascript\n\n";
   print $callback;
   print "(";
-  print to_json( \%pc );
+  print $json;
   print ")";
 }
 
-sub to_json {
-  my $hash = shift;
-  my $output;
-  foreach my $keys (keys %{$hash}) {
-    $$hash{$keys} =~ s/\\/\\\\/g;
-    $$hash{$keys} =~ s/"/\"/g;
-    $output .= '"'.${keys}.'":"'.$$hash{$keys}.'",';
-  }
-  $output =~ s/,$//; # 末尾のカンマを消す
-  return "\{$output\}";
-}
+#sub to_json {
+#  my $hash = shift;
+#  my $output;
+#  foreach my $keys (keys %{$hash}) {
+#    $$hash{$keys} =~ s/\\/\\\\/g;
+#    $$hash{$keys} =~ s/"/\"/g;
+#    $output .= '"'.${keys}.'":"'.$$hash{$keys}.'",';
+#  }
+#  $output =~ s/,$//; # 末尾のカンマを消す
+#  return "\{$output\}";
+#}
 
 1;

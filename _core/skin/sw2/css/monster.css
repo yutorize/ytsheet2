@@ -1,5 +1,11 @@
 @charset "utf-8";
 
+/* // Body
+---------------------------------------------------------------------------------------------------- */
+body {
+  background-image: url(../../_common/img/back-pattern.png), url(../img/back-first.png);
+}
+
 /* // Base
 ---------------------------------------------------------------------------------------------------- */
 article {
@@ -88,6 +94,13 @@ table.status {
   border-width: 1px;
   border-style: solid;
 }
+table.status thead th:nth-child(1) { width: auto; }
+table.status thead th:nth-child(2) { width: 12%; }
+table.status thead th:nth-child(3) { width: 12%; }
+table.status thead th:nth-child(4) { width: 12%; }
+table.status thead th:nth-child(5) { width: 12%; }
+table.status thead th:nth-child(6) { width: 12%; }
+table.status thead th:nth-child(7) { width: 12%; }
 table.status th {
   background-color: rgba(127,127,127,0.4);
 }
@@ -101,17 +114,10 @@ table.status td {
 .night table.status td {
   background-color: rgba(0,0,0,0.3);
 }
-table.status tr:nth-child(odd) td {
+table.status tbody tr:nth-child(even) td {
   background-color: rgba(127,127,127,0.2);
 }
 
-table.status th:nth-child(1) { width: auto; }
-table.status th:nth-child(2) { width: 12%; }
-table.status th:nth-child(3) { width: 12%; }
-table.status th:nth-child(4) { width: 12%; }
-table.status th:nth-child(5) { width: 12%; }
-table.status th:nth-child(6) { width: 12%; }
-table.status th:nth-child(7) { width: 12%; }
 
 /* // Parts
 ---------------------------------------------------------------------------------------------------- */
@@ -119,6 +125,7 @@ div.parts {
   display: flex;
   flex-wrap: wrap;
   margin: 1rem;
+  padding-left: .5em;
 }
 div.parts dl {
   display: flex;

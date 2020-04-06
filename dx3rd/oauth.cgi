@@ -8,7 +8,7 @@ use CGI qw/:all/;
 our $core_dir = '../_core';
 use lib '../_core/module';
 
-require $core_dir.'/lib/sw2/config-default.pl';
+require $core_dir.'/lib/dx3/config-default.pl';
 require './config.cgi';
 require $core_dir.'/lib/subroutine.pl';
 require $core_dir.'/lib/oauth.pl';

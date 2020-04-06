@@ -15,6 +15,7 @@ my $mode = param('mode');
 ### テンプレート読み込み #############################################################################
 my $INDEX;
 $INDEX = HTML::Template->new( filename  => $set::skin_tmpl , utf8 => 1,
+  path => ['./', $::core_dir],
   die_on_bad_params => 0, die_on_missing_include => 0, case_sensitive => 1, global_vars => 1);
 
 $INDEX->param(modeItemList => 1);

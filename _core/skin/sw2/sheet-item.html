@@ -27,27 +27,11 @@ function closeImage() {
     document.getElementById("image-box").style.bottom = '-100vh';
   },200);
 }
-let editForm = 0;
 function editOn() {
-  if(editForm){
-    document.getElementById("login-form").style.top = '-5rem';
-    editForm = 0;
-  }
-  else {
-    document.getElementById("login-form").style.top = '5rem';
-    editForm = 1;
-  }
+  document.getElementById("login-form").classList.toggle('show');
 }
-let backupList = 0;
 function backuplistOn() {
-  if(backupList){
-    document.getElementById("backuplist").style.right = '-100vh';
-    backupList = 0;
-  }
-  else {
-    document.getElementById("backuplist").style.right = '0';
-    backupList = 1;
-  }
+  document.getElementById("backuplist").classList.toggle('show');
 }
 <TMPL_IF error>
 window.onload = function() {
@@ -89,7 +73,7 @@ window.onload = function() {
   
   <aside id="backuplist">
     <ul>
-      <li<TMPL_UNLESS BackupMode> class="backup-now"</TMPL_UNLESS>><a href="?id=<TMPL_VAR id>">最新</a></li>
+      <li<TMPL_UNLESS backupMode> class="backup-now"</TMPL_UNLESS>><a href="?id=<TMPL_VAR id>">最新</a></li>
       <TMPL_LOOP Backup><li<TMPL_IF NOW> class="backup-now"</TMPL_IF>><a href="?id=<TMPL_VAR id>&backup=<TMPL_VAR URL>"><TMPL_VAR DATE></a></li></TMPL_LOOP>
     </ul>
   </aside>
@@ -106,6 +90,13 @@ window.onload = function() {
   <main><article><p>閲覧が禁止されています。</p></article></main>
   <TMPL_ELSE>
   <main>
+    <TMPL_IF backupMode><aside class="information">
+      <TMPL_VAR updateTime> 時点のバックアップデータです。
+    </aside></TMPL_IF>
+    <TMPL_IF convertMode><aside class="information">
+      <a href="<TMPL_VAR convertUrl>" target="_blank"><TMPL_VAR convertSource></a> のデータを表示しています。
+    </aside></TMPL_IF>
+    
     <article class="item">
       <div id="area-itemname">
         <h1><TMPL_VAR magic><TMPL_VAR itemName></h1>

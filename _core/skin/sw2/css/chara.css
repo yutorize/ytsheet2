@@ -1,4 +1,10 @@
 @charset "utf-8";
+
+/* // Body
+---------------------------------------------------------------------------------------------------- */
+body {
+  background-image: url(../../_common/img/back-pattern.png), url(../img/back-first.png);
+}
 /* // Layout
 ---------------------------------------------------------------------------------------------------- */
 @media screen and (max-width:735px){
@@ -20,14 +26,6 @@
     grid-template-columns: 1fr 1fr;
     padding: 0 1.2rem;
     position: relative;
-  }
-  .backup-message {
-    position: absolute;
-    top: -.5em;
-    left: 1em;
-  }
-  .backup-message + #area-name {
-    margin-top: 1em;
   }
   #area-name, #tags {
     grid-column: span 2;
@@ -106,6 +104,9 @@ h1#character-name {
     var(--bg-color) -.1rem .1rem, var(--bg-color)  .1rem -.1rem,
     var(--bg-color)  .0rem .1rem, var(--bg-color)  .0rem -.1rem,
     var(--bg-color) -.1rem .0rem, var(--bg-color)  .1rem  .0rem;
+}
+#aka {
+  margin-right: .5em;
 }
 #area-name > div { 
   text-align: right;
@@ -656,6 +657,7 @@ dl#exp dd {
   width: 1.1em;
   opacity: 0.5;
   font-size: 80%;
+  white-space: nowrap;
 }
 #combat-feats ul li[id|="combat-feats"]::before { content: attr(data-lv); }
 #combat-feats ul li.fail {
@@ -685,6 +687,24 @@ dl#exp dd {
   #crafts > .box + .box {
     margin-top: 0;
   }
+}
+#magic-gramarye li {
+  position: relative;
+}
+#magic-gramarye li span[data-ruby] {
+  display: block;
+  position: relative;
+  bottom: -.35em;
+}
+#magic-gramarye li span::before {
+  content: attr(data-ruby);
+  display: block;
+  position: absolute;
+  left: -5em;
+  right: -5em;
+  text-align: center;
+  white-space: nowrap;
+  transform: scale(0.7) translateY(-1.2em);
 }
 
 /* // Area-Actions & Language
@@ -730,6 +750,7 @@ dl#exp dd {
 /* Actions-Package */
 #package {}
 #package table {
+  white-space: nowrap;
 }
 #package table tr:first-child th:first-child {
   width: 12em;

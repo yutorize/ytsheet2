@@ -103,10 +103,21 @@ sub data_calc {
   }
   elsif($pc{'race'} eq 'シャドウ'){
     $pc{'raceAbilityMndResist'} = 4;
+    if($pc{'level'} >= 11){
+      $pc{'raceAbilityMndResist'} += 2;
+    }
   }
   elsif($pc{'race'} eq 'フロウライト'){
     $pc{'raceAbilityDef'} = 2;
     $pc{'raceAbilityMp'} = 15;
+    if($pc{'level'} >= 6){
+      $pc{'raceAbilityDef'} += 1;
+      $pc{'raceAbilityMp'} += 15;
+    }
+    if($pc{'level'} >= 11){
+      $pc{'raceAbilityDef'} += 1;
+      $pc{'raceAbilityMp'} += 15;
+    }
   }
   elsif($pc{'race'} eq 'ダークトロール'){
     $pc{'raceAbilityDef'} = 1;
@@ -401,14 +412,14 @@ sub data_calc {
     $pc{'evasionEva'} = $eva_class + int( ($pc{'sttAgi'} + $pc{'sttAddB'} + $own_agi) / 6 ) if $eva_class;
 
   ## 防具
-    $pc{'DefenseTotalAllEva'} = $pc{'evasionEva'} + $pc{'evasiveManeuver'} + $pc{'armourEva'} + $pc{'shieldEva'} + $pc{'defOtherEva'};
-    $pc{'DefenseTotalAllDef'} =
+    $pc{'defenseTotalAllEva'} = $pc{'evasionEva'} + $pc{'evasiveManeuver'} + $pc{'armourEva'} + $pc{'shieldEva'} + $pc{'defOtherEva'};
+    $pc{'defenseTotalAllDef'} =
       $pc{'raceAbilityDef'} +
       $pc{'armourDef'} + max($pc{'masteryMetalArmour'},$pc{'masteryNonMetalArmour'}) +
       $pc{'shieldDef'} + $pc{'masteryShield'} +
       $pc{'defOtherDef'};
     if($pc{'armourNote'} =~ /〈魔器〉/ || $pc{'ShieldNote'} =~ /〈魔器〉/){
-      $pc{'DefenseTotalAllDef'} += $pc{'masteryArtisan'};
+      $pc{'defenseTotalAllDef'} += $pc{'masteryArtisan'};
     }
 
   ### グレード自動変更 --------------------------------------------------
