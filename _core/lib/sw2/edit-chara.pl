@@ -64,9 +64,9 @@ if($mode eq 'copy'){
   open my $IN, '<', "${set::char_dir}${file}/data.cgi" or error 'キャラクターシートがありません。';
   $_ =~ s/(.*?)<>(.*?)\n/$pc{$1} = $2;/egi while <$IN>;
   close($IN);
-  
-  delete $pc{'image'};  
-  
+
+  delete $pc{'image'};
+
   $message = '「<a href="./?id='.$id.'" target="_blank">'.$pc{"characterName"}.'</a>」コピーして新規作成します。<br>（まだ保存はされていません）';
 }
 elsif($mode eq 'convert'){
@@ -273,7 +273,7 @@ print <<"HTML";
             （「拡大率を指定」時／100で横幅ピッタリ）<br>
             <br>
             枠をはみ出る際の基準位置(50%が中心)<br>
-            横@{[ input "imagePositionX",'number','imagePosition','style="width:4em;"' ]}% ／ 
+            横@{[ input "imagePositionX",'number','imagePosition','style="width:4em;"' ]}% ／
             縦@{[ input "imagePositionY",'number','imagePosition','style="width:4em;"' ]}%
           </p>
           <p>
@@ -334,42 +334,42 @@ print <<"HTML";
           <dl class="box" id="stt-base-tec"><dt>技</dt><dd>@{[input('sttBaseTec','number','calcStt')]}</dd></dl>
           <dl class="box" id="stt-base-phy"><dt>体</dt><dd>@{[input('sttBasePhy','number','calcStt')]}</dd></dl>
           <dl class="box" id="stt-base-spi"><dt>心</dt><dd>@{[input('sttBaseSpi','number','calcStt')]}</dd></dl>
-          
+
           <dl class="box" id="stt-base-A"><dt>Ａ</dt><dd>@{[input('sttBaseA','number','calcStt')]}</dd></dl>
           <dl class="box" id="stt-base-B"><dt>Ｂ</dt><dd>@{[input('sttBaseB','number','calcStt')]}</dd></dl>
           <dl class="box" id="stt-base-C"><dt>Ｃ</dt><dd>@{[input('sttBaseC','number','calcStt')]}</dd></dl>
           <dl class="box" id="stt-base-D"><dt>Ｄ</dt><dd>@{[input('sttBaseD','number','calcStt')]}</dd></dl>
           <dl class="box" id="stt-base-E"><dt>Ｅ</dt><dd>@{[input('sttBaseE','number','calcStt')]}</dd></dl>
           <dl class="box" id="stt-base-F"><dt>Ｆ</dt><dd>@{[input('sttBaseF','number','calcStt')]}</dd></dl>
-          
+
           <dl class="box" id="stt-grow-A"><dt>成長</dt><dd id="stt-grow-A-value">$pc{'sttGrowA'}</dd></dl>
           <dl class="box" id="stt-grow-B"><dt>成長</dt><dd id="stt-grow-B-value">$pc{'sttGrowB'}</dd></dl>
           <dl class="box" id="stt-grow-C"><dt>成長</dt><dd id="stt-grow-C-value">$pc{'sttGrowC'}</dd></dl>
           <dl class="box" id="stt-grow-D"><dt>成長</dt><dd id="stt-grow-D-value">$pc{'sttGrowD'}</dd></dl>
           <dl class="box" id="stt-grow-E"><dt>成長</dt><dd id="stt-grow-E-value">$pc{'sttGrowE'}</dd></dl>
           <dl class="box" id="stt-grow-F"><dt>成長</dt><dd id="stt-grow-F-value">$pc{'sttGrowF'}</dd></dl>
-          
+
           <dl class="box" id="stt-dex"><dt>器用度</dt><dd id="stt-dex-value">$pc{'sttDex'}</dd></dl>
           <dl class="box" id="stt-agi"><dt>敏捷度</dt><dd id="stt-agi-value">$pc{'sttAgi'}</dd></dl>
           <dl class="box" id="stt-str"><dt>筋力  </dt><dd id="stt-str-value">$pc{'sttStr'}</dd></dl>
           <dl class="box" id="stt-vit"><dt>生命力</dt><dd id="stt-vit-value">$pc{'sttVit'}</dd></dl>
           <dl class="box" id="stt-int"><dt>知力  </dt><dd id="stt-int-value">$pc{'sttInt'}</dd></dl>
           <dl class="box" id="stt-mnd"><dt>精神力</dt><dd id="stt-mnd-value">$pc{'sttMnd'}</dd></dl>
-          
+
           <dl class="box" id="stt-add-A"><dt>増強</dt><dd>@{[input('sttAddA','number','calcStt')]}</dd></dl>
           <dl class="box" id="stt-add-B"><dt>増強</dt><dd>@{[input('sttAddB','number','calcStt')]}</dd></dl>
           <dl class="box" id="stt-add-C"><dt>増強</dt><dd>@{[input('sttAddC','number','calcStt')]}</dd></dl>
           <dl class="box" id="stt-add-D"><dt>増強</dt><dd>@{[input('sttAddD','number','calcStt')]}</dd></dl>
           <dl class="box" id="stt-add-E"><dt>増強</dt><dd>@{[input('sttAddE','number','calcStt')]}</dd></dl>
           <dl class="box" id="stt-add-F"><dt>増強</dt><dd>@{[input('sttAddF','number','calcStt')]}</dd></dl>
-          
+
           <dl class="box" id="stt-bonus-dex"><dt><span>器用度</span></dt><dd id="stt-bonus-dex-value">$pc{'bonusDex'}</dd></dl>
           <dl class="box" id="stt-bonus-agi"><dt><span>敏捷度</span></dt><dd id="stt-bonus-agi-value">$pc{'bonusAgi'}</dd></dl>
           <dl class="box" id="stt-bonus-str"><dt><span>筋力  </span></dt><dd id="stt-bonus-str-value">$pc{'bonusStr'}</dd></dl>
           <dl class="box" id="stt-bonus-vit"><dt><span>生命力</span></dt><dd id="stt-bonus-vit-value">$pc{'bonusVit'}</dd></dl>
           <dl class="box" id="stt-bonus-int"><dt><span>知力  </span></dt><dd id="stt-bonus-int-value">$pc{'bonusInt'}</dd></dl>
           <dl class="box" id="stt-bonus-mnd"><dt><span>精神力</span></dt><dd id="stt-bonus-mnd-value">$pc{'bonusMnd'}</dd></dl>
-          
+
           <dl class="box" id="stt-pointbuy-TPS">
             <dt>割振りPt.</dt>
             <dd id="stt-pointbuy-TPS-value"></dd>
@@ -409,7 +409,7 @@ print <<"HTML";
             <dd><span id="mp-base">$pc{'mpBase'}</span>+<span id="mp-auto-add">$pc{'mpAutoAdd'}</span>+@{[input('mpAdd','number','calcSubStt')]}=<b id="mp-total">$pc{'mpTotal'}</b></dd>
           </dl>
         </div>
-        
+
         <dl class="box" id="level">
           <dt>冒険者レベル</dt><dd id="level-value">$pc{'level'}</dd>
         </dl>
@@ -417,7 +417,7 @@ print <<"HTML";
           <dt>経験点</dt><dd><div><span id="exp-rest">$pc{'expRest'}</span><br>／<br><span id="exp-total">$pc{'expTotal'}</span></div></dd>
         </dl>
       </div>
-      
+
       <div id="area-ability" class="edit-tables side-margin">
         <div id="area-classes" @{[ $set::common_class_on ? '' : 'class="common-classes-off"' ]}>
           <div class="box" id="classes">
@@ -899,7 +899,7 @@ print <<"HTML";
           </table>
         </div>
       </div>
-      
+
       <div class="edit-tables" id="area-equipment">
         <div class="box" id="attack-classes">
           <table class="line-tbody">
@@ -1316,7 +1316,7 @@ print <<"HTML";
           ※所持金欄、預金／借金欄に<code>自動</code>または<code>auto</code>と記入すると、収支の計算結果を反映します。
         </div>
       </details>
-      
+
       <details class="box" id="free-note" @{[$pc{'freeNote'}?'open':'']}>
         <summary>容姿・経歴・その他メモ</summary>
         <textarea name="freeNote">$pc{'freeNote'}</textarea>
@@ -1350,12 +1350,12 @@ print <<"HTML";
         コメントアウト：行頭に<code>//</code>：記述した行を非表示にします。
         </details>
       </details>
-      
+
       <details class="box" id="free-history" @{[$pc{'freeHistory'}?'open':'']}>
         <summary>履歴（自由記入）</summary>
         <textarea name="freeHistory">$pc{'freeHistory'}</textarea>
       </details>
-      
+
       <div class="box" id="history">
         <h2>セッション履歴</h2>
         @{[input 'historyNum','hidden']}
@@ -1440,7 +1440,7 @@ print <<"HTML";
         </div>
       </div>
       </section>
-      
+
       <section id="section-fellow" style="display:none;">
       <h2 id="fellow">フェロー関連データ</h2>
       <div class="box" id="f-public">
@@ -1538,7 +1538,7 @@ print <<"HTML";
         <textarea name="fellowNote">$pc{'fellowNote'}</textarea>
       </div>
       </section>
-      
+
       <section id="section-palette" style="display:none;">
       <div class="box">
         <h2>チャットパレット</h2>
@@ -1550,7 +1550,7 @@ print <<"HTML";
           </select>
         </p>
         <textarea name="chatPalette" style="height:20em" placeholder="例）&#13;&#10;2d6+{冒険者}+{器用}&#13;&#10;&#13;&#10;※入力がない場合、プリセットがそのまま反映されます。">$pc{'chatPalette'}</textarea>
-        
+
         <div class="palette-column">
         <h2>デフォルト変数 （自動的に末尾に出力されます）</h2>
         <textarea readonly style="height:20em">
@@ -1590,8 +1590,8 @@ print <<"HTML";
         </table>
       </div>
       </section>
-      
-      
+
+
       @{[ input 'birthTime','hidden' ]}
       @{[ input 'id','hidden' ]}
     </form>
@@ -1688,8 +1688,8 @@ foreach (
   print "let $_ = ". ($pc{$_} ? $pc{$_} : 0) . ";\n";
 }
 foreach (@data::weapons){
-  print 'let mastery'.ucfirst(@$_[1]).' = '. 
-  ($pc{'mastery'.ucfirst(@$_[1])} ? $pc{'mastery'.ucfirst(@$_[1])} : 0 ). 
+  print 'let mastery'.ucfirst(@$_[1]).' = '.
+  ($pc{'mastery'.ucfirst(@$_[1])} ? $pc{'mastery'.ucfirst(@$_[1])} : 0 ).
   ";\n";
 }
 print 'let weapons = [';
@@ -1733,16 +1733,16 @@ function calcPointBuy() {
   const D = Number(form.sttBaseD.value);
   const E = Number(form.sttBaseE.value);
   const F = Number(form.sttBaseF.value);
-  
+
   const _race = race.match(/ナイトメア/) ? 'ナイトメア' : race;
-  
+
   let ptA;
   let ptB;
   let ptC;
   let ptD;
   let ptE;
   let ptF;
-  
+
   if(race == ''){}
 HTML
 foreach my $key (keys %data::race_dices) {
@@ -1751,12 +1751,12 @@ foreach my $key (keys %data::race_dices) {
     my $x = $data::race_dices{$key}{$_};
     my $add = $data::race_dices{$key}{$_.'+'};
     print "pt$_ = point${x}($_" . ($add ? " - $add" : '') . "); ";
-  } 
+  }
   print "}\n";
 }
 print <<"HTML";
   document.getElementById("stt-pointbuy-AtoF-value").innerHTML = ptA + ptB + ptC + ptD + ptE + ptF;
-  
+
   if(form.birth.value === '冒険者'){
     let ptTec = pointx(Number(form.sttBaseTec.value));
     let ptPhy = pointx(Number(form.sttBasePhy.value));

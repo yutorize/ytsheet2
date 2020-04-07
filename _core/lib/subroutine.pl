@@ -104,7 +104,7 @@ sub log_in {
     print &cookie_set($set::cookie,$_[0],$key,'+365d');
   }
   else { error('ログインできませんでした'); }
-  
+
   if($set::url_home){ print "Location: $set::url_home\n\n"; }
   else { print "Location: ./\n\n"; }
 }
@@ -147,7 +147,7 @@ sub log_out {
   truncate($FH, tell($FH));
   close($FH);
   print &cookie_set($set::cookie,$id,$key,'Thu, 1-Jan-1970 00:00:00 GMT');
-  
+
   if($set::url_home){ print "Location: $set::url_home\n\n"; }
   else { print "Location: ./\n\n"; }
 }
@@ -210,7 +210,7 @@ sub token_check {
   }
   truncate($FH, tell($FH));
   close($FH);
-  
+
   return $flag;
 }
 
@@ -245,7 +245,7 @@ sub uri_escape_utf8 {
 sub ceil {
   my $num = shift;
   my $val = 0;
- 
+
   $val = 1 if($num > 0 and $num != int($num));
   return int($num + $val);
 }
@@ -267,16 +267,16 @@ sub tag_link_url {
 sub tag_unescape_lines {
   my $text = $_[0];
   $text =~ s/&lt;br&gt;/\n/gi;
-  
+
   $text =~ s|^//(.*?)$||gm; # コメントアウト
-  
+
   $text =~ s/\\\\\n/<br>/gi;
-  
+
   $text =~ s/^LEFT:/<\/p><p class="left">/gim;
   $text =~ s/^CENTER:/<\/p><p class="center">/gim;
   $text =~ s/^RIGHT:/<\/p><p class="right">/gim;
-  
-  $text =~ s/^-{4,}$/<\/p><hr><p>/gim;  
+
+  $text =~ s/^-{4,}$/<\/p><hr><p>/gim;
   $text =~ s/^( \*){4,}$/<\/p><hr class="dotted"><p>/gim;
   $text =~ s/^( \-){4,}$/<\/p><hr class="dashed"><p>/gim;
   $text =~ s/^\*\*\*\*(.*?)$/<\/p><h5>$1<\/h5><p>/gim;
@@ -284,11 +284,11 @@ sub tag_unescape_lines {
   $text =~ s/^\*\*(.*?)$/<\/p><h3>$1<\/h3><p>/gim;
   $text =~ s/\A\*(.*?)$/$main::pc{"head_$_"} = $1; ''/egim;
   $text =~ s/^\*(.*?)$/<\/p><h2>$1<\/h2><p>/gim;
-  
+
   $text =~ s/^\|(.*?)\|$/&tablecall($1)/egim;
   $text =~ s/(<\/tr>)\n/$1/gi;
   $text =~ s/(?!<\/tr>|<table>)(<tr>.*?<\/tr>)(?!<tr>|<\/table>)/<\/p><table class="note-table">$1<\/table><p>/gi;
-  
+
   $text =~ s/^\:(.*?)\|(.*?)$/<dt>$1<\/dt><dd>$2<\/dd>/gim;
   $text =~ s/(<\/dd>)\n/$1/gi;
   $text =~ s/<\/dd><dt>\s*<\/dt><dd>/&lt;br&gt;/gi;
@@ -299,7 +299,7 @@ sub tag_unescape_lines {
   $text =~ s/(^|<p(?:.*?)>|<hr(?:.*?)>)\n/$1/gi;
   $text =~ s/<p><\/p>//gi;
   $text =~ s/\n/&lt;br&gt;/gi;
-  
+
   return $text;
 }
 
@@ -310,7 +310,7 @@ sub tablecall {
   foreach(@td){
     $col_num++;
     if($_ eq '&gt;'){ $col_num++; next; }
-    
+
     if($_ =~ /^~/){ $_ =~ s/^~//; $out .= '<th'.($col_num > 1 ? " colspan=\"$col_num\"" : '').'>'.$_.'</th>'; }
     else          {               $out .= '<td'.($col_num > 1 ? " colspan=\"$col_num\"" : '').'>'.$_.'</td>'; }
     $col_num = 0;

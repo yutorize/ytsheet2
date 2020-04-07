@@ -37,16 +37,16 @@ my @posts;
 foreach my $data (@lines) {
   $i++;
   chomp $data;
-  
+
   my ($num, $date, $id, $name, $comment, $race, $stt) = split(/<>/, $data);
   next if param("num") && param("num") ne $num;
   next if !param("num") && (($i <= $page) || ($i > $page+$page_items));
-  
+
   my $adventurer = ($race =~ s/（冒険者）//) ? 1 : 0;
   my @datalist;
   foreach my $stt_data (split(/\//, $stt)){
     my ($tec, $phy, $spi, $stt_A, $stt_B, $stt_C, $stt_D, $stt_E, $stt_F) = split(/,/, $stt_data);
-    
+
     my $dicetotal = $data::race_dices{$race}{'A'}
                   + $data::race_dices{$race}{'B'}
                   + $data::race_dices{$race}{'C'}
@@ -59,10 +59,10 @@ foreach my $data (@lines) {
                  + $data::race_dices{$race}{'D+'}
                  + $data::race_dices{$race}{'E+'}
                  + $data::race_dices{$race}{'F+'};
-    
+
     my $average = ($stt_A + $stt_B + $stt_C + $stt_D + $stt_E + $stt_F) / $dicetotal;
        $average = ($stt_A + $stt_B + $stt_C + $stt_D + $stt_E + $stt_F + $tec + $phy + $spi) / 18 if $adventurer;
-       
+
     my $url = "${tec}_${phy}_${spi}_"
             . ($stt_A + $data::race_dices{$race}{'A+'}) . '_'
             . ($stt_B + $data::race_dices{$race}{'B+'}) . '_'
@@ -70,10 +70,10 @@ foreach my $data (@lines) {
             . ($stt_D + $data::race_dices{$race}{'D+'}) . '_'
             . ($stt_E + $data::race_dices{$race}{'E+'}) . '_'
             . ($stt_F + $data::race_dices{$race}{'F+'});
-    
+
     push(@datalist, {
       "RACE" => $race.($adventurer?'（冒険者）':''),
-      
+
       "TEC" => $tec,
       "PHY" => $phy,
       "SPI" => $spi,

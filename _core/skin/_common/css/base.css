@@ -145,7 +145,7 @@ header {
   background-image: url(../img/back-abstract.png);
   background-position: left center;
   background-repeat: no-repeat;
-  
+
   z-index: 100;
 }
 
@@ -298,18 +298,18 @@ header nav ul li  {
   width: 6rem;
   height: 6rem;
   transform: rotate(45deg);
-  
+
   background: linear-gradient(-45deg, #679, #cdf);
   text-align: center;
-  
+
   outline: 3px double #000;
   overflow: hidden;
   font-size: 1.5rem;
   font-weight: bold;
   line-height: calc(6rem + 2rem + 1.5rem);
-  
+
   cursor: pointer;
-  
+
   z-index: 200;
 }
 header nav ul li a {
@@ -318,7 +318,7 @@ header nav ul li a {
   height: 150%;
   margin: -25%;
   transform: rotate(-45deg);
-  
+
   text-decoration: none;
   color: #fff;
   text-shadow: -1px -1px 1px #000, 0px 1px 1px #abc;
@@ -402,10 +402,10 @@ main nav ul li:hover {
   width: 1.2em;
   height: 1.2em;
   transform: rotate(45deg);
-  
+
   background: linear-gradient(-45deg, #679, #cdf);
   text-align: center;
-  
+
   outline: 3px double #000;
   overflow: hidden;
   font-size: 2em;
@@ -417,7 +417,7 @@ main nav ul li:hover {
   height: 160%;
   margin: -60%;
   transform: rotate(-45deg);
-  
+
   line-height: 3em;
   text-decoration: none;
   color: #fff !important;
@@ -475,9 +475,3 @@ main nav ul li:hover {
   margin: auto;
   text-align: center;
 }
-
-
-
-
-
-

@@ -86,11 +86,11 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  
+
   padding: 0px 5px;
   border-width: 3px 0px;
   border-style: solid;
-  
+
   background-image: linear-gradient(to right, var(--box-head-bg-color), var(--box-base-bg-color));
   background-color: var(--bg-color);
   border-color: var(--box-outside-border-color, inherit);
@@ -108,7 +108,7 @@ h1#character-name {
 #aka {
   margin-right: .5em;
 }
-#area-name > div { 
+#area-name > div {
   text-align: right;
   font-size: 1.2rem;
 }
@@ -182,7 +182,7 @@ dl.data-table:last-child > dt:last-of-type ~ dd,
   grid-gap: 1rem;
   grid-template-columns: 0.8fr 0.6fr 1.5fr 2.115fr;
   grid-template-rows: auto;
-  
+
   grid-template-areas:
     "PER  PER  PER  IMG"
     "STT  STT  STT  IMG"
@@ -235,12 +235,12 @@ dl.data-table:last-child > dt:last-of-type ~ dd,
   background-position: center 20%;
   background-repeat: no-repeat;
   border-radius: 5px;
-  
+
   display: flex;
   flex-direction: column;
   align-items: flex-end;
   justify-content: flex-end;
-  
+
   position: relative;
 }
 .image div[onclick] {
@@ -252,7 +252,7 @@ dl.data-table:last-child > dt:last-of-type ~ dd,
 .image p.image-copyright {
   padding: 0 5px;
   color: #fff;
-  text-shadow: 
+  text-shadow:
     #000  .1rem .1rem, #000 -.1rem -.1rem,
     #000 -.1rem .1rem, #000  .1rem -.1rem,
     #000  .0rem .1rem, #000  .0rem -.1rem,
@@ -412,7 +412,7 @@ p.words span.brackets {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  
+
   position:relative;
   border-width: 1px;
   border-style: dotted;
@@ -540,7 +540,7 @@ p.words span.brackets {
   display: inline-block;
   transform: scaleY(1.1);
 }
-  
+
 /* Level */
 dl#level {
   display: flex;
@@ -552,7 +552,7 @@ dl#level dd {
   display: flex;
   align-items: center;
   justify-content: center;
-  
+
   font-size: 200%;
 }
 
@@ -574,9 +574,9 @@ dl#exp dd {
 #area-ability {
   display: flex;
   justify-content: space-between;
-  
+
   margin-top: 1rem;
-  
+
   line-height: 1.8;
 }
 #area-ability > * {
@@ -714,7 +714,7 @@ dl#exp dd {
   justify-content: space-between;
   align-items: flex-end;
   flex-wrap: wrap;
-  
+
   margin-top: 1rem;
   line-height: 1.8;
 }
@@ -797,11 +797,11 @@ dl#exp dd {
 /* Mobility */
 #mobility {
   flex-grow: 1;
-  
+
   display: grid;
   grid-template-columns: auto;
   grid-template-rows: auto auto;
-  
+
   margin-top: 1rem;
 }
 #mobility dt {
@@ -1173,7 +1173,7 @@ div#area-items-R {
   grid-gap: 1rem;
   grid-template-columns: 100px 1.1fr 0.3fr 0.6fr;
   grid-template-rows: auto;
-  
+
   grid-template-areas:
     " LVL NAME  IMG  IMG"
     " LVL  PLN  IMG  IMG"

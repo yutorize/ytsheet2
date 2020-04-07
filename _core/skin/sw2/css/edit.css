@@ -482,11 +482,11 @@ td .switch-button {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  
+
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
-  
+
   cursor: unset;
 }
 #image > h2 {
@@ -696,7 +696,7 @@ td .switch-button {
   display: grid;
   grid-template-columns: auto 2.4em 2.4em;
   grid-template-rows: auto;
-  
+
   margin: 0 5px;
 }
 #language dl dt {
@@ -1365,7 +1365,7 @@ label.box.color-custom input:checked+i::before,
   border-radius: 0px;
 }
 
-/* // 
+/* //
 ---------------------------------------------------------------------------------------------------- */
 @media screen and (min-width:1300px){
   body {
