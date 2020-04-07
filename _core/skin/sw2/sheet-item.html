@@ -62,7 +62,7 @@ window.onload = function() {
       </ul>
     </nav>
   </header>
-
+  
   <TMPL_IF error>
   <aside id="error">
     <p>
@@ -70,7 +70,7 @@ window.onload = function() {
     </p>
   </aside>
   </TMPL_IF>
-
+  
   <aside id="backuplist">
     <ul>
       <li<TMPL_UNLESS backupMode> class="backup-now"</TMPL_UNLESS>><a href="?id=<TMPL_VAR id>">最新</a></li>
@@ -96,17 +96,17 @@ window.onload = function() {
     <TMPL_IF convertMode><aside class="information">
       <a href="<TMPL_VAR convertUrl>" target="_blank"><TMPL_VAR convertSource></a> のデータを表示しています。
     </aside></TMPL_IF>
-
+    
     <article class="item">
       <div id="area-itemname">
         <h1><TMPL_VAR magic><TMPL_VAR itemName></h1>
         <div class="price">基本取引価格：<TMPL_VAR price></div>
       </div>
-
+      
       <div id="tags">
       <TMPL_LOOP Tags><a href="./?type=i&tag=<TMPL_VAR URL>"><TMPL_VAR TEXT></a></TMPL_LOOP>
       </div>
-
+      
       <div class="data">
       <dl class="reputation"><dt>知名度</dt><dd><TMPL_VAR reputation></dd></dl>
       <dl class="shape"><dt>形状</dt><dd><div><TMPL_VAR shape></div></dd></dl>
@@ -147,7 +147,7 @@ window.onload = function() {
         </TMPL_IF>
       </dd></dl>
       </div>
-
+      
       <TMPL_IF description><div class="box description">
         <h2>由来・逸話</h2>
         <p><TMPL_VAR description></p>

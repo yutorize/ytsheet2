@@ -105,7 +105,7 @@ function changeRegu(){
   document.getElementById("history0-exp").innerHTML = form.history0Exp.value;
   document.getElementById("history0-honor").innerHTML = form.history0Honor.value;
   document.getElementById("history0-money").innerHTML = form.history0Money.value;
-
+  
   calcExp();
   calcLv();
   calcCash();
@@ -122,7 +122,7 @@ function changeFaith(Faith) {
 // レベル変更 ----------------------------------------
 function changeLv() {
   calcLv();
-
+  
   checkRace();
   calcPackage();
   checkFeats();
@@ -155,7 +155,7 @@ function calcLv(){
   lvGri = AllClassOn ? Number(form.lvGri.value) : 0;
   lvArt = AllClassOn ? Number(form.lvArt.value) : 0;
   lvAri = AllClassOn ? Number(form.lvAri.value) : 0;
-
+  
   expUse = 0;
   expUse += expA[lvFig];
   expUse += expA[lvGra];
@@ -180,10 +180,10 @@ function calcLv(){
   expUse += expA[lvGri];
   expUse += expB[lvArt];
   expUse += expB[lvAri];
-
+  
   document.getElementById("exp-use").innerHTML = expUse;
   document.getElementById("exp-rest").innerHTML = expTotal - expUse;
-
+  
   level = Math.max.apply(null, [
     lvFig, lvGra, lvFen, lvSho,
     lvSor, lvCon, lvPri, lvFai, lvMag,
@@ -192,10 +192,10 @@ function calcLv(){
     lvPhy, lvGri, lvArt, lvAri
   ]);
   document.getElementById("level-value").innerHTML = level;
-
+  
   levelCasters = [lvSor, lvCon, lvPri, lvFai, lvMag, lvDem, lvGri];
   levelCasters.sort( function(a,b){ return (a < b ? 1 : -1); } );
-
+  
   if(battleItemOn){
     const sLevel = Math.max.apply(null, [ lvSco, lvRan, lvSag ]);
     const maxBattleItems = 8 + Math.ceil(sLevel / 2);
@@ -213,7 +213,7 @@ function changeRace(){
   document.getElementById("race-ability-value").innerHTML = raceAbility[race];
   if (!form.languageAutoOff.checked) { document.getElementById("language-default").innerHTML = raceLanguage[race] ? raceLanguage[race] : '<dt>初期習得言語</dt><dd>○</dd><dd>○</dd>'; }
   else { document.getElementById("language-default").innerHTML = ''; }
-
+  
   checkRace();
   calcStt();
 }
@@ -223,7 +223,7 @@ function checkRace(){
   raceAbilityDef = 0;
   raceAbilityMndResist = 0;
   raceAbilityMp = 0;
-
+  
   document.getElementById("classFig").classList.remove('fail');
   document.getElementById("classGra").classList.remove('fail');
   document.getElementById("classFen").classList.remove('fail');
@@ -247,7 +247,7 @@ function checkRace(){
   if(AllClassOn) document.getElementById("classGri").classList.remove('fail');
   if(AllClassOn) document.getElementById("classArt").classList.remove('fail');
   if(AllClassOn) document.getElementById("classAri").classList.remove('fail');
-
+  
   if(race === 'ルーンフォーク'){
     document.getElementById("classPri").classList.add('fail');
     document.getElementById("classFai").classList.add('fail');
@@ -290,7 +290,7 @@ function checkRace(){
   else if(race === 'バルカン'){
     document.getElementById("classPri").classList.add('fail');
   }
-
+  
   if(race !== 'ドレイク（ナイト）' && race !== 'バジリスク'){
     if(AllClassOn) document.getElementById("classPhy").classList.add('fail');
   }
@@ -322,7 +322,7 @@ function calcStt() {
   growVit = Number(form.sttPreGrowD.value) + sttHistGrowD;
   growInt = Number(form.sttPreGrowE.value) + sttHistGrowE;
   growMnd = Number(form.sttPreGrowF.value) + sttHistGrowF;
-
+  
   document.getElementById("stt-grow-A-value").innerHTML = growDex;
   document.getElementById("stt-grow-B-value").innerHTML = growAgi;
   document.getElementById("stt-grow-C-value").innerHTML = growStr;
@@ -330,47 +330,47 @@ function calcStt() {
   document.getElementById("stt-grow-E-value").innerHTML = growInt;
   document.getElementById("stt-grow-F-value").innerHTML = growMnd;
   document.getElementById("stt-grow-total-value").innerHTML = growDex + growAgi + growStr + growVit + growInt + growMnd;
-
+  
   sttDex = Number(form.sttBaseTec.value) + Number(form.sttBaseA.value) + growDex;
   sttAgi = Number(form.sttBaseTec.value) + Number(form.sttBaseB.value) + growAgi;
   sttStr = Number(form.sttBasePhy.value) + Number(form.sttBaseC.value) + growStr;
   sttVit = Number(form.sttBasePhy.value) + Number(form.sttBaseD.value) + growVit;
   sttInt = Number(form.sttBaseSpi.value) + Number(form.sttBaseE.value) + growInt;
   sttMnd = Number(form.sttBaseSpi.value) + Number(form.sttBaseF.value) + growMnd;
-
+  
   if      (race === 'ウィークリング（ガルーダ）')     sttAgi += 3;
   else if (race === 'ウィークリング（ミノタウロス）') sttStr += 3;
   else if (race === 'ウィークリング（バジリスク）')   sttInt += 3;
   else if (race === 'ウィークリング（マーマン）')     sttMnd += 3;
-
+  
   document.getElementById("stt-dex-value").innerHTML = sttDex;
   document.getElementById("stt-agi-value").innerHTML = sttAgi;
   document.getElementById("stt-str-value").innerHTML = sttStr;
   document.getElementById("stt-vit-value").innerHTML = sttVit;
   document.getElementById("stt-int-value").innerHTML = sttInt;
   document.getElementById("stt-mnd-value").innerHTML = sttMnd;
-
+  
   sttAddA = Number(form.sttAddA.value);
   sttAddB = Number(form.sttAddB.value);
   sttAddC = Number(form.sttAddC.value);
   sttAddD = Number(form.sttAddD.value);
   sttAddE = Number(form.sttAddE.value);
   sttAddF = Number(form.sttAddF.value);
-
+  
   bonusDex = parseInt((sttDex + sttAddA) / 6);
   bonusAgi = parseInt((sttAgi + sttAddB) / 6);
   bonusStr = parseInt((sttStr + sttAddC) / 6);
   bonusVit = parseInt((sttVit + sttAddD) / 6);
   bonusInt = parseInt((sttInt + sttAddE) / 6);
   bonusMnd = parseInt((sttMnd + sttAddF) / 6);
-
+  
   document.getElementById("stt-bonus-dex-value").innerHTML = bonusDex;
   document.getElementById("stt-bonus-agi-value").innerHTML = bonusAgi;
   document.getElementById("stt-bonus-str-value").innerHTML = bonusStr;
   document.getElementById("stt-bonus-vit-value").innerHTML = bonusVit;
   document.getElementById("stt-bonus-int-value").innerHTML = bonusInt;
   document.getElementById("stt-bonus-mnd-value").innerHTML = bonusMnd;
-
+  
   checkFeats();
   calcSubStt();
   calcMobility();
@@ -412,7 +412,7 @@ function checkFeats(){
   masteryArtisan = 0;
   throwing = 0;
   songAddition = 0;
-
+  
   let acquire = '';
   for (let i = 0; i < array.length; i++) {
     let cL = document.getElementById("combat-feats-lv"+array[i]).classList;
@@ -424,7 +424,7 @@ function checkFeats(){
       const auto = form.featsAutoOn.checked;
       let feat = box.options[box.selectedIndex].value;
       acquire += feat + ',';
-
+      
       if (feat.match(/足さばき/)){
         if(level < 9){ cL.add("error"); }
       }
@@ -752,7 +752,7 @@ function checkFeats(){
         if(!acquire.match('ターゲッティング') || !acquire.match('魔法収束')){ cL.add("error"); }
       }
       feat = box.options[box.selectedIndex].value;
-
+      
       if     (feat === "足さばき"){ footwork = 1; }
       else if(feat === "回避行動Ⅰ"){ evasiveManeuver = 1; }
       else if(feat === "回避行動Ⅱ"){ evasiveManeuver = 2; }
@@ -807,7 +807,7 @@ function checkFeats(){
       else if(feat === "呪歌追加Ⅰ"){ songAddition = 1; }
       else if(feat === "呪歌追加Ⅱ"){ songAddition = 2; }
       else if(feat === "呪歌追加Ⅲ"){ songAddition = 3; }
-
+      
       cL.remove("fail","hidden");
     }
     else {
@@ -815,7 +815,7 @@ function checkFeats(){
       if(form.failView.checked){ cL.remove("hidden") } else { cL.add("hidden") };
     }
   }
-
+  
   calcSubStt();
   calcMobility();
   calcMagic();
@@ -940,7 +940,7 @@ function calcSubStt() {
   document.getElementById("mnd-resist-auto-add").innerHTML = mndResistAutoAdd;
   document.getElementById("vit-resist-total").innerHTML = vitResistBase + Number(form.vitResistAdd.value) + vitResistAutoAdd;
   document.getElementById("mnd-resist-total").innerHTML = mndResistBase + Number(form.mndResistAdd.value) + mndResistAutoAdd;
-
+  
   const accessories = [
     "Head", "Head_", "Face", "Face_", "Ear", "Ear_", "Neck", "Neck_", "Back", "Back_", "HandR", "HandR_", "HandL", "HandL_", "Waist", "Waist_", "Leg", "Leg_", "Other", "Other_", "Other2", "Other2_", "Other3", "Other3_", "Other4", "Other4_"
   ]
@@ -950,9 +950,9 @@ function calcSubStt() {
     if(form["accessory"+i+"Own"].options[form["accessory"+i+"Own"].selectedIndex].value === "HP"){ hpAccessory = 2 }
     if(form["accessory"+i+"Own"].options[form["accessory"+i+"Own"].selectedIndex].value === "MP"){ mpAccessory = 2 }
   }
-
+  
   const hpBase = level * 3 + sttVit + sttAddD;
-  const mpBase =
+  const mpBase = 
     (race === 'マナフレア') ? (level * 3 + sttMnd + sttAddF)
     : ((lvSor + lvCon + lvPri + lvFai + lvMag) * 3 + sttMnd + sttAddF);
   const hpAutoAdd = tenacity + hpAccessory + (lvFig >= 7 ? 15 : 0);
@@ -984,7 +984,7 @@ function calcPackage() {
   document.getElementById("package-alchemist").style.display = lvAlc > 0 ? "" :"none";
   document.getElementById("package-alchemist").style.display = lvAlc > 0 ? "" :"none";
   document.getElementById("material-cards"   ).style.display = lvAlc > 0 ? "" :"none";
-
+  
   document.getElementById("package-scout-tec"    ).innerHTML = lvSco + bonusDex + Number(form.packScoTecAdd.value);
   document.getElementById("package-scout-agi"    ).innerHTML = lvSco + bonusAgi + Number(form.packScoAgiAdd.value);
   document.getElementById("package-scout-obs"    ).innerHTML = lvSco + bonusInt + Number(form.packScoObsAdd.value);
@@ -996,13 +996,13 @@ function calcPackage() {
   document.getElementById("package-rider-kno"    ).innerHTML = lvRid + bonusInt + Number(form.packRidKnoAdd.value);
   document.getElementById("package-rider-obs"    ).innerHTML = lvRid + bonusInt + Number(form.packRidObsAdd.value);
   document.getElementById("package-alchemist-kno").innerHTML = lvAlc + bonusInt + Number(form.packAlcKnoAdd.value);
-
+  
   const loreSag = lvSag + bonusInt + Number(form.packSagKnoAdd.value);
   const loreRid = lvRid + bonusInt + Number(form.packRidKnoAdd.value);
   let lore = loreRid > loreSag ? loreRid : loreSag;
       lore += Number(form.monsterLoreAdd.value);
   document.getElementById("monster-lore-value").innerHTML = (lvSag || lvRid) ? lore : 0;
-
+  
   const initSco = lvSco + bonusAgi + Number(form.packScoAgiAdd.value);
   const initWar = lvWar + bonusAgi;
   let init = initWar > initSco ? initWar : initSco;
@@ -1121,7 +1121,7 @@ function calcWeapon() {
     }
     else if(category === 'ガン（物理）')   { dmgBase += masteryGun; }
     if(note.match(/〈魔器〉/)){ dmgBase += masteryArtisan; }
-
+    
     if(classes === "自動計算しない"){
       document.getElementById("weapon"+i+"-acc-total").innerHTML = Number(form["weapon"+i+"Acc"].value);
       document.getElementById("weapon"+i+"-dmg-total").innerHTML = Number(form["weapon"+i+"Dmg"].value);
@@ -1148,8 +1148,8 @@ function calcWeapon() {
   document.getElementById("attack-artisan-mastery").style.display  = masteryArtisan   ? '' : 'none';   document.getElementById("attack-artisan-mastery-dmg").innerHTML  = masteryArtisan ;
   document.getElementById("accuracy-enhance").style.display        = accuracyEnhance  ? '' : 'none';   document.getElementById("accuracy-enhance-acc").innerHTML        = accuracyEnhance;
   document.getElementById("throwing").style.display                = throwing         ? '' : 'none';
-
-  document.getElementById("artisan-annotate").style.display = masteryArtisan ? '' : 'none';
+  
+  document.getElementById("artisan-annotate").style.display = masteryArtisan ? '' : 'none'; 
 }
 
 // 防御計算 ----------------------------------------
@@ -1166,18 +1166,18 @@ function calcDefense() {
   else if(classes === "デーモンルーラー"){ evaClassLv = lvDem; }
   else { evaClassLv = 0; }
   evaBase = evaClassLv ? (evaClassLv + parseInt((sttAgi + sttAddB + ownAgi) / 6)) : 0;
-
+  
   const reqdStr = sttStr + sttAddC;
   document.getElementById("evasion-str").innerHTML = (classes === "フェンサー") ? Math.ceil(reqdStr / 2) : reqdStr;
   document.getElementById("evasion-eva").innerHTML = evaClassLv ? (evaClassLv + bonusAgi) : 0;
-
+  
   // 技能選択のエラー表示
   let cL = document.getElementById("evasion-classes").classList;
-  if(classes === "シューター" && !shootersMartialArts || classes === "デーモンルーラー" && lvDem < 7){
+  if(classes === "シューター" && !shootersMartialArts || classes === "デーモンルーラー" && lvDem < 7){ 
     cL.add('error');
   }
   else { cL.remove('error'); }
-
+  
   // 種族特徴
   defBase += raceAbilityDef;
   document.getElementById("race-ability-def").style.display = raceAbilityDef > 0 ? "" :"none";
@@ -1195,7 +1195,7 @@ function calcDefense() {
   evaBase += evasiveManeuver;
   document.getElementById("evasive-maneuver").style.display = evasiveManeuver > 0 ? "" :"none";
   document.getElementById("evasive-maneuver-value").innerHTML = evasiveManeuver;
-
+  
   calcArmour(evaBase,defBase);
 }
 function calcArmour(evaBase,defBase) {
@@ -1205,9 +1205,9 @@ function calcArmour(evaBase,defBase) {
   const shieldDef = Number(form.shieldDef.value) + masteryShield;
   const otherEva  = Number(form.defOtherEva.value);
   const otherDef  = Number(form.defOtherDef.value);
-
+  
   if(form.armourNote.value.match(/〈魔器〉/) || form.shieldNote.value.match(/〈魔器〉/)){ defBase += masteryArtisan; }
-
+  
   document.getElementById("defense-total-all-eva").innerHTML = evaBase + armourEva + shieldEva + otherEva;
   document.getElementById("defense-total-all-def").innerHTML = defBase + armourDef + shieldDef + otherDef;
 }
@@ -1223,7 +1223,7 @@ function calcExp(){
   }
   document.getElementById("exp-rest").innerHTML = expTotal - expUse;
   document.getElementById("exp-total").innerHTML = expTotal;
-
+  
   // 最大成長回数
   if(growType === 'A'){
     let count = 0;
@@ -1260,7 +1260,7 @@ function calcHonor(){
     let point = Number(eval(form['honorItem'+i+'Pt'].value));
     if(isNaN(point)){ point = 0; }
     pointTotal -= point;
-
+    
     let cL = form['honorItem'+i+'Pt'].classList;
     if(point && point <= free) { cL.add("free"); }
     else { cL.remove("free"); }
@@ -1364,11 +1364,11 @@ let accesorySortable = Sortable.create(document.getElementById('accessories-tabl
     //form[`accessory${afterId}Name`].value = name;
     //form[`accessory${afterId}Own` ].value = own ;
     //form[`accessory${afterId}Note`].value = note;
-
+    
     const beforeTitle = document.querySelector(`#${beforeId} th`).innerHTML;
     document.querySelector(`#${beforeId} th`).innerHTML = document.querySelector(`#${afterId} th`).innerHTML;
     document.querySelector(`#${afterId} th`).innerHTML = beforeTitle;
-
+    
     const beforeCheck = document.querySelector(`#${beforeId} [name$="Add"]`) ? document.querySelector(`#${beforeId} [name$="Add"]`).checked : false;
     const AfterCheck = document.querySelector(`#${afterId} [name$="Add"]`) ? document.querySelector(`#${afterId} [name$="Add"]`).checked : false;
     const beforeCheckBox = document.querySelector(`#${beforeId} td:first-child`).innerHTML;
@@ -1376,7 +1376,7 @@ let accesorySortable = Sortable.create(document.getElementById('accessories-tabl
     document.querySelector(`#${afterId} td:first-child`).innerHTML = beforeCheckBox;
     if(document.querySelector(`#${beforeId} [name$="Add"]`)){ document.querySelector(`#${beforeId} [name$="Add"]`).checked = AfterCheck; }
     if(document.querySelector(`#${afterId} [name$="Add"]`)){ document.querySelector(`#${afterId} [name$="Add"]`).checked = beforeCheck; }
-
+    
     document.querySelector(`#${beforeId} [name$="Name"]`).setAttribute('name',`accessory${afterType}Name`);
     document.querySelector(`#${beforeId} [name$="Own"]` ).setAttribute('name',`accessory${afterType}Own`);
     document.querySelector(`#${beforeId} [name$="Note"]`).setAttribute('name',`accessory${afterType}Note`);
@@ -1507,13 +1507,13 @@ function addWeapons(){
   <tr><td colspan="3"><input name="weapon${num}Note" type="text" oninput="calcWeapon()"></td></tr>`;
   const target = document.querySelector("#weapons-table");
   target.appendChild(tbody, target);
-
+  
   for(let i = 0; i < weapons.length; i++){
     let op = document.createElement("option");
     op.text = weapons[i];
     form["weapon"+num+"Category"].appendChild(op);
   }
-
+  
   form.weaponNum.value = num;
 }
 // 削除
@@ -1678,7 +1678,7 @@ function addHistory(){
   <tr><td colspan="6" class="left"><input name="history${num}Note" type="text"></td></tr>`;
   const target = document.querySelector("#history-table tfoot");
   target.parentNode.insertBefore(tbody, target);
-
+  
   form.historyNum.value = num;
 }
 // 削除
@@ -1861,7 +1861,7 @@ function changeColor(){
   document.getElementById('colorBaseBgSValue').innerHTML = bS;
   //document.getElementById('colorBaseBgLValue').innerHTML = bL;
   //document.getElementById('colorBaseBgAValue').innerHTML = bA;
-
+  
   const boxes = document.querySelectorAll('.box');
   document.documentElement.style.setProperty('--box-head-bg-color-h', customOn ? hH     : '');
   document.documentElement.style.setProperty('--box-head-bg-color-s', customOn ? hS+'%' : '');
@@ -1889,3 +1889,6 @@ function idNumSet (id){
   }
   return id+num;
 }
+
+
+

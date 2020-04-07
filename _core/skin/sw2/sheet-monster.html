@@ -36,17 +36,6 @@ function backuplistOn() {
 function chatPaletteOn() {
   document.querySelector(".chat-palette").classList.toggle('show');
 }
-let chatPalette = 0;
-function chatPaletteOn() {
-  if(chatPalette){
-    document.querySelector(".chat-palette").style.top = '-100vh';
-    chatPalette = 0;
-  }
-  else {
-    document.querySelector(".chat-palette").style.top = '60px';
-    chatPalette = 1;
-  }
-}
 <TMPL_IF error>
 window.onload = function() {
   document.getElementById("login-form").style.top = '5rem';
@@ -77,7 +66,7 @@ window.onload = function() {
       </ul>
     </nav>
   </header>
-
+  
   <TMPL_IF error>
   <aside id="error">
     <p>
@@ -85,7 +74,7 @@ window.onload = function() {
     </p>
   </aside>
   </TMPL_IF>
-
+  
   <aside id="backuplist">
     <ul>
       <li<TMPL_UNLESS backupMode> class="backup-now"</TMPL_UNLESS>><a href="?id=<TMPL_VAR id>">最新</a></li>
@@ -111,14 +100,14 @@ window.onload = function() {
     <TMPL_IF convertMode><aside class="information">
       <a href="<TMPL_VAR convertUrl>" target="_blank"><TMPL_VAR convertSource></a> のデータを表示しています。
     </aside></TMPL_IF>
-
+    
     <article>
       <div id="area-monstername"><h1><TMPL_IF characterName><TMPL_VAR characterName><small>（<TMPL_VAR monsterName>）</small><TMPL_ELSE><TMPL_VAR monsterName></TMPL_IF></h1><div class="lv"><TMPL_VAR lv></div><div class="taxa">分類：<TMPL_VAR taxa></div></div>
 
       <div id="tags">
       <TMPL_LOOP Tags><a href="./?type=m&tag=<TMPL_VAR URL>"><TMPL_VAR TEXT></a></TMPL_LOOP>
       </div>
-
+      
       <div class="status">
         <div>
           <dl><dt>知能</dt><dd><TMPL_VAR intellect></dd></dl>

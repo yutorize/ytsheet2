@@ -320,7 +320,7 @@ table.note-table td {
 dl.note-description {
   display: grid;
   grid-template-columns: auto 1fr;
-
+  
   margin: .3rem .5em 0;
   line-height: 1.8;
   text-align: left;
@@ -470,12 +470,12 @@ header nav ul li a span {
   padding: 4rem 2rem 1rem;
   background: #fff;
   text-align: center;
-
+  
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
   border-width: 0 1px 1px;
   border-style: solid;
-
+  
   z-index: 99;
   transition: top 0.3s;
 }
@@ -585,11 +585,11 @@ aside#backuplist {
   border-top-left-radius: 5px;
   border-bottom-left-radius: 5px;
   background: rgba(255,255,255,0.9);
-
+  
   overflow-y: auto;
-
+  
   z-index: 300;
-
+  
   animation-name: bulist-hide;
   animation-duration: 0.5s;
   animation-fill-mode: forwards;
@@ -658,9 +658,16 @@ aside#error {
   background: #fcc;
   text-align: center;
   font-size: 1.6rem;
-
+  
   transition-property: opacity, top;
   transition-duration: 3s;
-
+  
   z-index: 101;
 }
+
+
+
+
+
+
+
