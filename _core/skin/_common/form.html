@@ -1,0 +1,220 @@
+  <!-- 登録 -->
+  <TMPL_IF modeRegister>
+    <article>
+      <section class="form">
+        <h2>ユーザーアカウント作成</h2>
+        <form method="post" action="./">
+          <input type="hidden" name="mode" value="register">
+          <input type="hidden" name="_token" value="<TMPL_VAR token>">
+          <TMPL_IF registerkey>
+          <p>
+            <label><span>登録キー</span> <input type="text" name="registerkey" required><b>必須</b></label>
+          </p>
+          </TMPL_IF>
+          <p>
+            <label><span>名前</span> <input type="text" name="name" required><b>必須</b></label>
+          </p>
+          <p>
+            <label><span>ＩＤ<small>(ログインに使用)</small></span> <input type="text" name="id" pattern="^[0-9A-Za-z]+$" title="半角英数字のみ。" required><b>必須</b></label>
+          </p>
+          <p>
+            <label><span>メールアドレス</span> <input type="email" name="mail"></label>
+          </p>
+          <p>
+            <label><span>パスワード</span> <input type="password" name="password" pattern="^[0-9A-Za-z\.\-\/]+$" title="半角英数字、『.』『-』『/』のみ" required><b>必須</b></label>
+          </p>
+          <p>
+            <label><span>パスワード(確認)</span> <input type="password" name="password_confirm" pattern="^[0-9A-Za-z\.\-\/]+$" title="半角英数字、『.』『-』『/』のみ" required><b>必須</b></label>
+          </p>
+          <p>
+            <input type="submit" value="登録">
+          </p>
+        </form>
+      </section>
+    </article>
+  </TMPL_IF>
+  <!-- ログイン -->
+  <TMPL_IF modeLogin>
+    <article>
+      <section class="form">
+        <h2>ログイン</h2>
+        <form method="post" action="./">
+          <input type="hidden" name="mode" value="login">
+          <p>
+            <label><span>ＩＤ</span> <input type="text" name="id" required></label>
+          </p>
+          <p>
+            <label><span>パスワード</span> <input type="password" name="password" required></label>
+          </p>
+          <p>
+            <input type="submit" value="ログイン">
+          </p>
+        </form>
+        <a href="./?mode=reminder">⇒パスワードを忘れた場合</a>
+      </section>
+    </article>
+  </TMPL_IF>
+  <!-- リマインダ -->
+  <TMPL_IF modeReminder>
+  <main>
+      <section class="form">
+        <h2>パスワードをリセットする</h2>
+        <p>登録されたメールアドレスにリセット用のURLを送信します。</p>
+        <form method="post" action="./">
+          <input type="hidden" name="mode" value="reminder">
+          <p>
+            <label><span>ＩＤ</span> <input type="text" name="id" required></label>
+          </p>
+          <p>
+            <input type="submit" value="送信">
+          </p>
+        </form>
+      </section>
+    </article>
+  </TMPL_IF>
+  <!-- リセット -->
+  <TMPL_IF modeReset>
+    <article>
+      <section class="form">
+        <h2>パスワードを変更する</h2>
+        <form method="post" action="./">
+          <input type="hidden" name="mode" value="reset">
+          <input type="hidden" name="code" value="<TMPL_VAR token>">
+          <p>
+            <label><span>パスワード</span> <input type="password" name="password" pattern="^[0-9A-Za-z\.\-\/]+$" title="半角英数字、『.』『-』『/』のみ" required><b>必須</b></label>
+          </p>
+          <p>
+            <label><span>パスワード(確認)</span> <input type="password" name="password_confirm" pattern="^[0-9A-Za-z\.\-\/]+$" title="半角英数字、『.』『-』『/』のみ" required><b>必須</b></label>
+          </p>
+          <p>
+            <input type="submit" value="送信">
+          </p>
+        </form>
+      </section>
+    </article>
+  </TMPL_IF>
+  <!-- オプション -->
+  <TMPL_IF modeOption>
+    <TMPL_IF setMessage>
+    <aside>
+      <p><TMPL_VAR setMessage></p>
+    </aside>
+    </TMPL_IF>
+    <article>
+      <section class="form">
+        <h2>ユーザー設定</h2>
+        <form method="post" action="./">
+          <input type="hidden" name="mode" value="option">
+          <p>
+            <label><span>名前</span> <input type="text" name="name" value="<TMPL_VAR userName>" required></label>
+          </p>
+          <p>
+            <label><span>メールアドレス</span> <input type="email" name="mail" value="<TMPL_VAR userMail>"></label>
+          </p>
+          <p>
+            <input type="submit" value="変更">
+          </p>
+        </form>
+      </section>
+      <TMPL_IF OAUTH_MODE>
+      <!-- 何も出さない -->
+      <TMPL_ELSE>
+      <section class="form">
+      <h2>パスワード変更</h2>
+      <form method="post" action="./">
+        <input type="hidden" name="mode" value="passchange">
+        <p>
+          <label><span>現在のパスワード</span> <input type="password" name="password"></label>
+        </p>
+        <p>
+          <label><span>新しいパスワード</span> <input type="password" name="new_password" pattern="^[0-9A-Za-z\.\-\/]+$" title="半角英数字、『.』『-』『/』のみ"></label>
+        </p>
+        <p>
+          <label><span>新しいパスワード(確認)</span> <input type="password" name="new_password_confirm" pattern="^[0-9A-Za-z\.\-\/]+$" title="半角英数字、『.』『-』『/』のみ"></label>
+        </p>
+        <p>
+          <input type="submit" value="変更">
+        </p>
+      </form>
+      </section>
+      </TMPL_IF>
+    </article>
+  </TMPL_IF>
+  <!-- コンバート -->
+  <TMPL_IF modeConvert>
+    <article id="convertform">
+      <section class="form">
+        <h2>コンバート作成</h2>
+        <form method="get" action="./">
+          <input type="hidden" name="mode" value="convert">
+          <p>
+            入力したURLのデータを元にゆとシートⅡで新規作成します。<br>
+            <input type="url" name="url" style="width:50%;" placeholder="http://..."><input type="submit" value="作成">
+          </p>
+        </form>
+      </section>
+      <section class="form">
+        <h2>コンバートビュー</h2>
+        <form method="get" action="./">
+          <p>
+            入力したURLのデータをゆとシートⅡで表示します。（保存はされません）<br>
+            <input type="url" name="url" style="width:50%;" placeholder="http://..."><input type="submit" value="表示">
+          </p>
+        </form>
+      </section>
+      <aside class="form">
+        <h3>コンバート可能なキャラクターシート（URL）</h3>
+        <dl>
+          <dt>キャラクター保管所 (SW2.x/DX3rd)</dt>
+          <dd>https://charasheet.vampire-blood.net/<i>[MD/ID]</i></dd>
+        </dl>
+        <dl>
+          <dt>キャラクターシート倉庫 (DX3rd)</dt>
+          <dd>http://character-sheets.appspot.com/<i>dx3</i>/edit.html?key=<i>[ID]</i></dd>
+        </dl>
+        <TMPL_IF ConvertURLs><dl>
+          <dt>旧ゆとシート（同サイト内、特定のもののみ）</dt>
+          <TMPL_LOOP ConvertURLs><dd><TMPL_VAR URL>data/<i>[番号/ID]</i>.html</dd></TMPL_LOOP>
+        </dl></TMPL_IF>
+        <dl>
+          <dt>他、ゆとシートⅡ</dt>
+          <dd>http://<i>(設置されたゆとシートⅡのURL)</i>/?id=<i>[ID]</i></dd>
+        </dl>
+      </aside>
+      <section class="form">
+        <h3>コンバートの仕様</h3>
+        <section>
+        <h4>データの変換</h4>
+        <p>
+          　基本的に、数値などは自動的に計算され直します。<br>
+          　また、一部テキスト等もゆとシート向けに自動的に変換されます。<br>
+          　一例を下記に示します。<br>
+        </p>
+        <dl>
+          <dt>全般</dt>
+          <dd>半角⇔全角は適宜ゆとシートに合わせて変換。</dd>
+          <dd>一部表記ぶれの統一（怒涛⇒怒濤、エンジェルハイロウ⇒エンジェルハィロゥなど）</dd>
+          <dt>DX3rd</dt>
+          <dd>キャラクター名及びコードネームが「AAA（BBB）」という形式の場合、（）内を自動的にルビにする。</dd>
+        </dl>
+        </section>
+        <section>
+        <h4>データの欠損</h4>
+        <p>
+          　ゆとシートの型に合わないなどの理由で、一部データが抜けることがあります。<br>
+          　現在確認できるものを以下に示します。<br>
+        </p>
+        <dl>
+          <dt>SW2.5</dt>
+          <dd>本来あり得ない習得レベルで特技・練技などを習得している場合（作成のみ）</dd>
+          <dd>特技・練技などの名前が間違っている／対応できていない表記ぶれの場合（作成のみ）</dd>
+          <dd>装飾品の、1部位の4枠目以降</dd>
+          <dd>専用装飾品の選択が「HP」「MP」以外の場合</dd>
+          <dt>DX3rd</dt>
+          <dd>覚醒・衝動の名前が間違っている／対応できていない表記ぶれの場合（作成のみ）</dd>
+        </dl>
+        <p style="text-align:right;border-top-width:1px;border-top-style:dotted">※（作成のみ）とある場合、コンバートビューの場合は欠落せず表示されます。</p>
+        </section>
+      </section>
+    </article>
+  </TMPL_IF>
