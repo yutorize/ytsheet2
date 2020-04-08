@@ -855,7 +855,7 @@ print <<"HTML";
       <div class="box" id="history">
         <h2>セッション履歴</h2>
         @{[input 'historyNum','hidden']}
-        <table class="edit-table lines-tbody" id="history-table">
+        <table class="edit-table line-tbody" id="history-table">
           <thead>
           <tr>
             <th></th>
@@ -894,30 +894,31 @@ print <<"HTML";
           </tfoot>
         </table>
         <div class="add-del-button"><a onclick="addHistory()">▼</a><a onclick="delHistory()">▲</a></div>
-        <table class="example">
+        <h2>記入例</h2>
+        <table class="example edit-table line-tbody">
+          <thead>
           <tr>
-            <th>No.</th>
+            <th></th>
             <th>日付</th>
             <th>タイトル</th>
             <th>経験点</th>
             <th>GM</th>
             <th>参加者</th>
           </tr>
-        <tr>
-          <td>-</td>
-          <td>2020-03-18</td>
-          <td>第一話「記入例」</td>
-          <td>10+5+1</td>
-          <td class="gm">サンプルさん</td>
-          <td class="member">鳴瓢秋人　本堂町小春　百貴船太郎　富久田保津</td>
-        </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td>-</td>
+            <td><input type="text" value="2020-03-18" disabled></td>
+            <td><input type="text" value="第一話「記入例」" disabled></td>
+            <td><input type="text" value="10+5+1" disabled></td>
+            <td class="gm"><input type="text" value="サンプルGM" disabled></td>
+            <td class="member"><input type="text" value="鳴瓢秋人　本堂町小春　百貴船太郎　富久田保津" disabled></td>
+          </tr>
+          </tbody>
         </table>
         <div class="annotate">
-        ※経験点欄は<code>1000+50*2</code>など四則演算が有効です（ファンブル経験点などを分けて書けます）。<br>
-        ※成長は欄1つの欄に<code>敏捷生命知力</code>など複数書いても自動計算されます。<br>
-        　また、<code>敏捷×2</code><code>知力*3</code>など同じ成長が複数ある場合は纏めて記述できます（×や*は省略できます）。<br>
-        　<code>器敏2知3</code>と能力値の頭文字1つで記述することもできます。<br>
-        ※成長はリアルタイムでの自動計算はされません。反映するには一度保存してください。
+        ※経験点欄は<code>10+5+1</code>など四則演算が有効です（獲得条件の違う経験点などを分けて書けます）。
         </div>
       </div>
       
@@ -1037,7 +1038,9 @@ print <<"HTML";
     <option value="男">
     <option value="女">
     <option value="その他">
+    <option value="なし">
     <option value="不明">
+    <option value="不詳">
   </datalist>
   <datalist id="list-sign">
     <option value="牡羊座">
@@ -1053,9 +1056,10 @@ print <<"HTML";
     <option value="水瓶座">
     <option value="魚座">
     <option value="不明">
+    <option value="不詳">
   </datalist>
   <datalist id="list-blood">
-    <option value="A型"><option value="B型"><option value="AB型"><option value="O型"><option value="不明">
+    <option value="A型"><option value="B型"><option value="AB型"><option value="O型"><option value="不明"><option value="不詳">
   </datalist>
   <datalist id="list-ride">
     <option value="運転:">

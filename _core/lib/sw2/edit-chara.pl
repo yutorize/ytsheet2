@@ -298,7 +298,7 @@ print <<"HTML";
             <dt>種族</dt><dd><select name="race" oninput="changeRace()">@{[ option 'race', @data::race_names ]}</select></dd>
           </dl>
           <dl class="box" id="gender">
-            <dt>性別</dt><dd>@{[input('gender')]}</dd>
+            <dt>性別</dt><dd>@{[input('gender','','','list="list-gender"')]}</dd>
           </dl>
           <dl class="box" id="age">
             <dt>年齢</dt><dd>@{[input('age')]}</dd>
@@ -1407,9 +1407,11 @@ print <<"HTML";
           </tfoot>
         </table>
         <div class="add-del-button"><a onclick="addHistory()">▼</a><a onclick="delHistory()">▲</a></div>
-        <table class="example">
+        <h2>記入例</h2>
+        <table class="example edit-table line-tbody">
+          <thead>
           <tr>
-            <th>No.</th>
+            <th></th>
             <th>日付</th>
             <th>タイトル</th>
             <th>経験点</th>
@@ -1419,17 +1421,20 @@ print <<"HTML";
             <th>GM</th>
             <th>参加者</th>
           </tr>
-        <tr>
-          <td>-</td>
-          <td>2018-08-11</td>
-          <td>第一話「記入例」</td>
-          <td>1100+50</td>
-          <td>17</td>
-          <td>1800</td>
-          <td>器用</td>
-          <td>サンプルさん</td>
-          <td>アルバート　ラミット　ブランデン<br>レンダ・レイ　ナイルベルト</td>
-        </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td>-</td>
+            <td><input type="text" value="2018-08-11" disabled></td>
+            <td><input type="text" value="第一話「記入例」" disabled></td>
+            <td><input type="text" value="1100+50" disabled></td>
+            <td><input type="text" value="17" disabled></td>
+            <td><input type="text" value="1800" disabled></td>
+            <td><input type="text" value="器用" disabled></td>
+            <td><input type="text" value="サンプルさん" disabled></td>
+            <td><input type="text" value="アルバート　ラミット　ブランデン　レンダ・レイ　ナイルベルト" disabled></td>
+          </tr>
+          </tbody>
         </table>
         <div class="annotate">
         ※経験点欄は<code>1000+50*2</code>など四則演算が有効です（ファンブル経験点などを分けて書けます）。<br>
@@ -1635,6 +1640,14 @@ print <<"HTML";
     『ソード・ワールド2.5』は、「グループSNE」及び「KADOKAWA」の著作物です。<br>
     　ゆとシートⅡ for SW2.5 ver.${main::ver} - ゆとらいず工房
   </footer>
+  <datalist id="list-gender">
+    <option value="男">
+    <option value="女">
+    <option value="その他">
+    <option value="なし">
+    <option value="不明">
+    <option value="不詳">
+  </datalist>
   <datalist id="list-usage">
     <option value="1H">
     <option value="1H#">

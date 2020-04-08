@@ -929,13 +929,14 @@ option.zero-data::before {
 
 #history{
   overflow-x: auto;
+  overflow-y: hidden;
 }
 #history table {
   width: calc(100% - 1px);
 }
 #history table thead th:nth-child(1) { width: 1.4em; }
 #history table thead th:nth-child(2) { width:   6em; } /* 日付 */
-#history table thead th:nth-child(3) { width:  auto; } /* タイトル */
+#history table thead th:nth-child(3) { width:  12em; } /* タイトル */
 #history table thead th:nth-child(4) { width:   5em; } /* 経験点 */
 #history table thead th:nth-child(5) { width: 3.5em; } /* 名誉点 */
 #history table thead th:nth-child(6) { width: 4.5em; } /* ガメル */
@@ -948,6 +949,13 @@ option.zero-data::before {
   #history table thead th:nth-child(9) { width: 16em; } /* 参加者 */
 }
 
+#history table thead td {
+  padding: 1px;
+  border-width: 1px;
+  border-style: solid dotted;
+  font-size: inherit;
+}
+
 #history table tbody td {
   border: 0;
   padding: .4rem 0 .1rem !important;
@@ -957,7 +965,7 @@ option.zero-data::before {
   margin: 0 2px 0 -1px;
   font-size: 1.1rem;
 }
-#history input[name$="Money"] {
+#history table tbody td:nth-child(6) input {
   width: calc(100% - 0.9em);
 }
 #history table tbody td.handle {
@@ -968,9 +976,6 @@ option.zero-data::before {
   border-top: hidden;
 }
 
-#history .example {
-  margin-top: 1em;
-}
 #history .annotate {
   width: 70%;
   margin: auto 3px auto auto;
