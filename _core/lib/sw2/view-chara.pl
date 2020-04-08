@@ -118,6 +118,9 @@ $SHEET->param("sin" => '―') if !$pc{'sin'} && $pc{'race'} =~ /^(?:ルーンフ
 if($pc{'faith'} eq 'その他の信仰') { $SHEET->param("faith" => $pc{'faithOther'}); }
 $pc{'faith'} =~ s/“(.*)”//;
 
+### 経験点 --------------------------------------------------
+$SHEET->param("expUsed" => $pc{'expTotal'} - $pc{'expRest'}) ;
+
 ### 技能 --------------------------------------------------
 my @classes; my %classes;
 foreach (
@@ -158,7 +161,7 @@ $SHEET->param(Classes => \@classes);
 my $class_text;
 foreach my $key (sort {$classes{$b} <=> $classes{$a}} keys %classes){ $class_text .= ($class_text ? ',' : '').$key.$classes{$key}; }
 
-### 技能 --------------------------------------------------
+### 一般技能 --------------------------------------------------
 my @common_classes;
 foreach (1..10){
   next if !$pc{'commonClass'.$_};

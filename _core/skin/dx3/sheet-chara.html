@@ -193,7 +193,14 @@ window.onload = function() {
           </dl>
         </div>
         
-        <dl class="box" id="exp"><dt>経験点</dt><dd><TMPL_VAR expRest>／<TMPL_VAR expTotal></dd></dl>
+        <div class="box" id="exp">
+        <h2>経験点</h2>
+        <dl>
+          <dt>使用</dt><dd><TMPL_VAR expUsed></dd>
+          <dt>残り</dt><dd><TMPL_VAR expRest></dd>
+          <dt>総計</dt><dd><TMPL_VAR expTotal></dd>
+        </dl>
+        </div>
         
         <div class="box" id="lifepath">
           <h2>ライフパス</h2>
@@ -624,7 +631,7 @@ window.onload = function() {
       </TMPL_IF>
       <div class="box" id="history">
         <h2>セッション履歴</h2>
-        <table clsss="data-table">
+        <table class="data-table line-tbody">
           <thead>
             <tr>
               <th>No.</th>

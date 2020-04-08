@@ -117,7 +117,7 @@ h1#character-name {
 #player-name {
 }
 
-/* // Data-Tables
+/* // Common
 ---------------------------------------------------------------------------------------------------- */
 .data-table {
   width: 100%;
@@ -540,7 +540,14 @@ p.words span.brackets {
   display: inline-block;
   transform: scaleY(1.1);
 }
-  
+@media screen and (max-width:735px){
+  #sub-status dt span {
+    display: inline-block;
+    font-size: 90%;
+    transform: scaleY(calc(1/0.9));
+  }
+}
+
 /* Level */
 dl#level {
   display: flex;
@@ -555,18 +562,43 @@ dl#level dd {
   
   font-size: 200%;
 }
+@media screen and (max-width:735px){
+  dl#level dt::after {
+    content:'Lv'
+  }
+  dl#level dt span {
+    display: none;
+  }
+}
 
 /* EXP */
-dl#exp {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+#exp {
+  display: grid;
 }
-dl#exp dd {
-  flex-grow: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+#exp dl {
+  display: grid;
+  grid-template-columns: 2em 1fr;
+  align-items: end;;
+  margin: 0 .5rem;
+  line-height: 1;
+  white-space: nowrap;
+}
+#exp dl > * {
+}
+#exp dl > *:not(:last-of-type) {
+  border-width: 0 0 .1rem;
+  border-style: solid;
+}
+#exp dl dt {
+  grid-column: 1;
+  font-size: 80%;
+  padding: 0 0 .3rem;
+}
+#exp dl dd {
+  grid-column: 2;
+  text-align: right;
+  font-size: 120%;
+  padding: .3rem 0 .1rem;
 }
 
 /* // Area-Ability
@@ -1035,6 +1067,7 @@ div#area-items-R {
   opacity: 0.5;
   font-size: 80%;
   text-align: center;
+  white-space: nowrap;
 }
 #battle-items ul li.fail {
   color: #ee0000;

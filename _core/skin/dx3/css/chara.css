@@ -444,17 +444,33 @@ p.words span.brackets {
 }
 
 /* EXP */
-dl#exp {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+#exp {
+  display: grid;
 }
-dl#exp dd {
-  flex-grow: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 125%;
+#exp dl {
+  display: grid;
+  grid-template-columns: 2em 1fr;
+  align-items: end;;
+  margin: 0 .5rem;
+  line-height: 1;
+}
+#exp dl > * {
+}
+#exp dl > *:not(:last-of-type) {
+  border-width: 0 0 .1rem;
+  border-style: solid;
+}
+#exp dl dt {
+  grid-column: 1;
+  font-size: 80%;
+  padding: 0 0 .3rem;
+}
+#exp dl dd {
+  grid-column: 2;
+  text-align: right;
+  white-space: nowrap;
+  font-size: 120%;
+  padding: .3rem 0 .1rem;
 }
 
 /* Lifepath */
@@ -1059,9 +1075,6 @@ dl#exp dd {
   white-space: nowrap;
 }
 #history table td {
-  padding: 1px;
-  border-width: 1px;
-  border-style: solid dotted;
   font-size: 1.2rem;
 }
 #history table thead th:nth-child(1) { width:   2em; } /* No. */
