@@ -51,7 +51,7 @@ package set;
   our $make_fix   = 0;  # 初期値を固定にする(PLが変更出来ないようにする)=1 しない=0
 
  # コンバートしたいゆとシートⅠの '絶対URL' => 'ゆとシートⅡからの相対パス',
-  our %convert1url = (
+  our %convert_url = (
   );
 
 ## ●ログイン関係ファイル

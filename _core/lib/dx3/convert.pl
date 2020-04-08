@@ -567,8 +567,10 @@ sub convert1to2 {
   foreach my $num (1 .. 7) {
     $pc{"lois${num}Relation"}     = $pc{"lois${num}_relation"};
     $pc{"lois${num}Name"}         = $pc{"lois${num}_name"};
-    $pc{"lois${num}EmoPosiCheck"} = $pc{"lois${num}_positive"};
-    $pc{"lois${num}EmoNegaCheck"} = $pc{"lois${num}_negative"};
+    $pc{"lois${num}EmoPosi"}      = $pc{"lois${num}_positive"};
+    $pc{"lois${num}EmoNega"}      = $pc{"lois${num}_negative"};
+    $pc{"lois${num}EmoPosiCheck"} = $pc{"lois${num}_check"} ne 'P' ? 1 : 0;
+    $pc{"lois${num}EmoNegaCheck"} = $pc{"lois${num}_check"} ne 'N' ? 1 : 0;
     $pc{"lois${num}Note"}         = $pc{"lois${num}_note"};
     $pc{"lois${num}State"}        = $pc{"lois${num}_titus"} ? 'タイタス' : '';
   }
@@ -679,6 +681,7 @@ sub convert1to2 {
     $pc{"history${num}Gm"}         = $pc{"hist_gm$num"};
     $pc{"history${num}Member"}     = $pc{"hist_member$num"};
   }
+  $pc{"history0Exp"} = $pc{"make_exp"};
   
   return %pc;
 }
