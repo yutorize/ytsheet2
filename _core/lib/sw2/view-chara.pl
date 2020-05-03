@@ -485,8 +485,8 @@ $SHEET->param(EvasionClasses => \@evasion);
 my @accessories;
 foreach (
   ["頭","Head"],    ["┗","Head_"],   ["┗","Head__"],
-  ["耳","Ear"],     ["┗","Ear_"],    ["┗","Ear__"],
   ["顔","Face"],    ["┗","Face_"],   ["┗","Face__"],
+  ["耳","Ear"],     ["┗","Ear_"],    ["┗","Ear__"],
   ["首","Neck"],    ["┗","Neck_"],   ["┗","Neck__"],
   ["背中","Back"],  ["┗","Back_"],   ["┗","Back__"],
   ["右手","HandR"], ["┗","HandR_"],  ["┗","HandR__"],
