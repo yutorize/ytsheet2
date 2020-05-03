@@ -723,6 +723,9 @@ p.words span.brackets {
 }
 
 /* Effects */
+#effect {
+  position: relative;
+}
 #effect table thead th {
   vertical-align: bottom;
 }
@@ -757,6 +760,10 @@ p.words span.brackets {
 
 #effect table tbody td.left {
   padding-left: .5rem;
+  display: none;
+}
+#effect table tbody:hover td.left {
+  display: table-cell;
 }
 .ef-auto {
   display: block;
@@ -764,7 +771,7 @@ p.words span.brackets {
   font-size: 0.66em;
   font-style: normal;
   font-weight: bold;
-  line-height: 1.1;
+  line-height: 1;
   color: hsl(200,30%,50%);
   white-space: nowrap;
 }
@@ -773,7 +780,7 @@ p.words span.brackets {
 }
 .ef-dlois {
   display: block;
-  margin: -1em;
+  margin: -1.5em;
   transform: scale(0.5);
   font-style: normal;
   font-weight: bold;
@@ -783,16 +790,18 @@ p.words span.brackets {
 .ef-dlois::before {
   content: 'D';
   display: block;
-  transform: scale(1.1,0.9) translateY(.15em);
+  transform: scale(1.1,0.9) translateY(.1em);
   font-size: 3em;
 }
 .ef-dlois::after {
   display: block;
   content: 'ロイス';
   white-space: nowrap;
+  transform: translateY(-.1em);
 }
 .ef-easy {
   display: block;
+  margin: -1em;
   transform: scale(0.8, 0.7) translateY(.25em);
   font-style: normal;
   font-weight: bold;
@@ -807,12 +816,40 @@ p.words span.brackets {
   content: 'SY';
   display: block;
 }
+.ef-enemy {
+  display: block;
+  margin: -1.5em;
+  transform: scale(0.5);
+  font-style: normal;
+  font-weight: bold;
+  line-height: 1;
+  color: hsl(270,30%,50%);
+}
+.ef-enemy::before {
+  content: 'E';
+  display: block;
+  transform: scale(1.1,0.9) translateY(.1em);
+  font-size: 3em;
+}
+.ef-enemy::after {
+  display: block;
+  content: 'NEMY';
+  white-space: nowrap;
+  transform: translateY(-.1em);
+}
 .ef-other::before {
   content: '他';
   color: hsl(0,0%,50%);
   font-size: 1em;
   font-style: normal;
   font-weight: bold;
+}
+#effect .open-button {
+  position: absolute;
+  top: .1em;
+  right: .3em;
+  cursor: pointer;
+  font-size: 90%;
 }
 @media screen and (max-width:735px){
   #effect table thead tr,

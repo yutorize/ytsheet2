@@ -345,9 +345,11 @@ window.onload = function() {
       </div></TMPL_IF>
       
       </div><!-- / COLUMN -->
+      
       <div id="area-battle">
         <div class="box effects" id="effect">
           <h2>エフェクト</h2>
+          <span class="open-button" onclick="effectNoteFullOpen();">▼効果全展開</span>
           <table class="data-table line-tbody">
             <thead>
               <tr><th>種別</th><th>名称</th><th>Lv</th><th>タイミング</th><th>技能</th><th>難易度</th><th>対象</th><th>射程</th><th>侵蝕値</th><th>制限</th></tr>
@@ -369,6 +371,14 @@ window.onload = function() {
             </tbody></TMPL_LOOP>
           </table>
         </div>
+        <script>
+        let effectNoteOpenFlag = 0;
+        function effectNoteFullOpen(){
+          document.querySelectorAll('#effect table td.left').forEach(obj => obj.style.display = effectNoteOpenFlag ? '' : 'table-cell');
+          document.querySelector('#effect .open-button').innerHTML = effectNoteOpenFlag ? '▼効果全展開' : '▲効果折畳み';
+          effectNoteOpenFlag = effectNoteOpenFlag ? 0 : 1;
+        }
+        </script>
         
         <div class="box" id="combo">
           <h2>コンボ</h2>
