@@ -75,6 +75,11 @@ elsif($mode eq 'convert'){
   $message = '「<a href="'.param('url').'" target="_blank">'.($pc{"characterName"}||$pc{"aka"}||'無題').'</a>」をコンバートして新規作成します。<br>（まだ保存はされていません）';
 }
 
+### プレイヤー名 --------------------------------------------------
+if($mode eq 'blanksheet' || $mode eq 'copy' || $mode eq 'convert'){
+  $pc{'playerName'} = (getplayername($LOGIN_ID))[0] if !$main::make_error;
+}
+
 ### 出力準備 #########################################################################################
 ### 初期設定 --------------------------------------------------
 $pc{'protect'} = $pc{'protect'} ? $pc{'protect'} : 'password';
