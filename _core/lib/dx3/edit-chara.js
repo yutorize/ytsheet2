@@ -132,8 +132,8 @@ function calcEffect() {
     const bg = form['effect'+num+'Name'].parentNode.parentNode.parentNode.style;
     if     (type == 'easy') { bg.backgroundImage = 'linear-gradient(to right,hsla(120,100%, 50%,0.2),transparent)'; }
     else if(type == 'auto') { bg.backgroundImage = 'linear-gradient(to right,hsla(200,100%, 50%,0.2),transparent)'; }
-    else if(type == 'dlois'){ bg.backgroundImage = 'linear-gradient(to right,hsla(280,100%, 50%,0.2),transparent)'; }
-    else if(type == 'enemy'){ bg.backgroundImage = 'linear-gradient(to right,hsla( 30,100%, 50%,0.2),transparent)'; }
+    else if(type == 'dlois'){ bg.backgroundImage = 'linear-gradient(to right,hsla(  0,100%, 50%,0.2),transparent)'; }
+    else if(type == 'enemy'){ bg.backgroundImage = 'linear-gradient(to right,hsla(270,100%, 50%,0.2),transparent)'; }
     else { bg.backgroundImage = ''; }
   }
   document.getElementById('exp-effect').innerHTML = exps['effect'];

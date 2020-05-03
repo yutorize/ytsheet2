@@ -667,6 +667,9 @@ p.words span.brackets {
 #lois table tbody td.emo.checked::before {
   color: inherit;
 }
+#lois table tbody td:nth-child(4) {
+  border-style: solid hidden;
+}
 #lois table tbody td.left {
   padding-left: .5em;
 }

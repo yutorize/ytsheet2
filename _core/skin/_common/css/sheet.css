@@ -317,6 +317,12 @@ table.note-table td {
   border-width: 1px;
   border-style: solid;
 }
+table.note-table th {
+  text-align: center;
+}
+table.note-table td {
+  text-align: left;
+}
 dl.note-description {
   display: grid;
   grid-template-columns: auto 1fr;
