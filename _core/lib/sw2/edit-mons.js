@@ -5,28 +5,36 @@ const delConfirmText = '項目に値が入っています。本当に削除し�
 
 // //
 function calcVit(){
-  form.vitResistFix.value = Number(form.vitResist.value) + 7;
+  const val = form.vitResist.value;
+  form.vitResistFix.value = (val == '') ? '' : Number(val) + 7;
 }
 function calcVitF(){
-  form.vitResist.value = Number(form.vitResistFix.value) - 7;
+  const val = form.vitResistFix.value;
+  form.vitResist.value    = (val == '') ? '' : Number(val) + 7;
 }
 function calcMnd(){
-  form.mndResistFix.value = Number(form.mndResist.value) + 7;
+  const val = form.mndResist.value;
+  form.mndResistFix.value = (val == '') ? '' : Number(val) + 7;
 }
 function calcMndF(){
-  form.mndResist.value = Number(form.mndResistFix.value) - 7;
+  const val = form.mndResistFix.value;
+  form.mndResist.value    = (val == '') ? '' : Number(val) + 7;
 }
 function calcAcc(Num){
-  form['status'+Num+'AccuracyFix'].value = Number(form['status'+Num+'Accuracy'].value) + 7;
+  const val = form['status'+Num+'Accuracy'].value;
+  form['status'+Num+'AccuracyFix'].value = (val == '') ? '' : Number(val) + 7;
 }
 function calcAccF(Num){
-  form['status'+Num+'Accuracy'].value = Number(form['status'+Num+'AccuracyFix'].value) - 7;
+  const val = form['status'+Num+'AccuracyFix'].value;
+  form['status'+Num+'Accuracy'].value    = (val == '') ? '' : Number(val) + 7;
 }
 function calcEva(Num){
-  form['status'+Num+'EvasionFix'].value = Number(form['status'+Num+'Evasion'].value) + 7;
+  const val = form['status'+Num+'Evasion'].value;
+  form['status'+Num+'EvasionFix'].value  = (val == '') ? '' : Number(val) + 7;
 }
 function calcEvaF(Num){
-  form['status'+Num+'Evasion'].value = Number(form['status'+Num+'EvasionFix'].value) - 7;
+  const val = form['status'+Num+'EvasionFix'].value;
+  form['status'+Num+'Evasion'].value     = (val == '') ? '' : Number(val) + 7;
 }
 
 

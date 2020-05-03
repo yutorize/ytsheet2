@@ -71,6 +71,9 @@ foreach(split(/ /, $pc{'tags'})){
 $SHEET->param(Tags => \@tags);
 
 ### ステータス --------------------------------------------------
+$SHEET->param("vitResist" => ($pc{'vitResist'} eq '' ? '' : $pc{'vitResist'}.' ('.$pc{'vitResistFix'}.')'));
+$SHEET->param("mndResist" => ($pc{'mndResist'} eq '' ? '' : $pc{'mndResist'}.' ('.$pc{'mndResistFix'}.')'));
+
 my @status;
 foreach (1 .. $pc{'statusNum'}){
   $pc{'status'.$_.'Accuracy'} = ($pc{'status'.$_.'Accuracy'} eq '' ? '―' : $pc{'status'.$_.'Accuracy'}.' ('.$pc{'status'.$_.'AccuracyFix'}.')');
