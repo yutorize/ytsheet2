@@ -539,9 +539,9 @@ print <<"HTML";
             <tr id="lois${num}">
               <td><span class="handle"></span>@{[input "lois${num}Relation"]}</td>
               <td>@{[input "lois${num}Name"]}</td>
-              <td class="emo">@{[input "lois${num}EmoPosiCheck",'checkbox',"emoP($num)"]}@{[input "lois${num}EmoPosi"]}</td>
+              <td class="emo">@{[input "lois${num}EmoPosiCheck",'checkbox',"emoP($num)"]}@{[input "lois${num}EmoPosi",'','','list="list-emotionP"']}</td>
               <td>／</td>
-              <td class="emo">@{[input "lois${num}EmoNegaCheck",'checkbox',"emoN($num)"]}@{[input "lois${num}EmoNega"]}</td>
+              <td class="emo">@{[input "lois${num}EmoNegaCheck",'checkbox',"emoN($num)"]}@{[input "lois${num}EmoNega",'','','list="list-emotionN"']}</td>
               <td>@{[input "lois${num}Color",'',"changeLoisColor($num)",'list="list-lois-color"']}</td>
               <td>@{[input "lois${num}Note"]}</td>
               <td onclick="changeLoisState(this.parentNode.id)"><span id="lois${num}-state" data-state="$pc{"lois${num}State"}"></span>@{[input "lois${num}State",'hidden']}</td>
@@ -1060,6 +1060,54 @@ print <<"HTML";
   </datalist>
   <datalist id="list-blood">
     <option value="A型"><option value="B型"><option value="AB型"><option value="O型"><option value="不明"><option value="不詳">
+  </datalist>
+  <datalist id="list-emotionP">
+    <option value="傾倒">
+    <option value="好奇心">
+    <option value="憧憬">
+    <option value="尊敬">
+    <option value="連帯感">
+    <option value="慈愛">
+    <option value="感服">
+    <option value="純愛">
+    <option value="友情">
+    <option value="慕情">
+    <option value="同情">
+    <option value="遺志">
+    <option value="庇護">
+    <option value="幸福感">
+    <option value="信頼">
+    <option value="執着">
+    <option value="親近感">
+    <option value="誠意">
+    <option value="好意">
+    <option value="有為">
+    <option value="尽力">
+    <option value="懐旧">
+  </datalist>
+  <datalist id="list-emotionN">
+    <option value="侮蔑">
+    <option value="食傷">
+    <option value="脅威">
+    <option value="嫉妬">
+    <option value="悔悟">
+    <option value="恐怖">
+    <option value="不安">
+    <option value="劣等感">
+    <option value="疎外感">
+    <option value="恥辱">
+    <option value="憐憫">
+    <option value="偏愛">
+    <option value="憎悪">
+    <option value="隔意">
+    <option value="嫌悪">
+    <option value="猜疑心">
+    <option value="厭気">
+    <option value="不信感">
+    <option value="不快感">
+    <option value="憤懣">
+    <option value="敵愾心">
+    <option value="無関心">
   </datalist>
   <datalist id="list-ride">
     <option value="運転:">
