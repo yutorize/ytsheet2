@@ -414,30 +414,30 @@ function addCombo(){
       <td><input name="combo${num}Condition1" type="text" value="100%未満"></td>
       <td><input name="combo${num}Dice1"      type="text"></td>
       <td><input name="combo${num}Crit1"      type="text"></td>
-      <td><input name="combo${num}Atk1"       type="text"></td>
       <td><input name="combo${num}Fixed1"     type="text"></td>
+      <td><input name="combo${num}Atk1"       type="text"></td>
     </tr>
     <tr>
       <td rowspan="3" colspan="6"><textarea name="combo${num}Note" rows="4" placeholder="解説"></textarea></td>
       <td><input name="combo${num}Condition2" type="text" value="100%以上"></td>
       <td><input name="combo${num}Dice2"      type="text"></td>
       <td><input name="combo${num}Crit2"      type="text"></td>
-      <td><input name="combo${num}Atk2"       type="text"></td>
       <td><input name="combo${num}Fixed2"     type="text"></td>
+      <td><input name="combo${num}Atk2"       type="text"></td>
     </tr>
     <tr>
       <td><input name="combo${num}Condition3" type="text"></td>
       <td><input name="combo${num}Dice3"      type="text"></td>
       <td><input name="combo${num}Crit3"      type="text"></td>
-      <td><input name="combo${num}Atk3"       type="text"></td>
       <td><input name="combo${num}Fixed3"     type="text"></td>
+      <td><input name="combo${num}Atk3"       type="text"></td>
     </tr>
     <tr>
       <td><input name="combo${num}Condition4" type="text"></td>
       <td><input name="combo${num}Dice4"      type="text"></td>
       <td><input name="combo${num}Crit4"      type="text"></td>
-      <td><input name="combo${num}Atk4"       type="text"></td>
       <td><input name="combo${num}Fixed4"     type="text"></td>
+      <td><input name="combo${num}Atk4"       type="text"></td>
     </tr>`;
   const target = document.querySelector("#combo-table");
   target.appendChild(tbody, target);
