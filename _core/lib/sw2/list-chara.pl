@@ -205,8 +205,8 @@ foreach (@list) {
   
   my $m_flag; my $f_flag;
   $gender =~ s/^(.+?)[\(（].*?[）\)]$/$1/;
-  if($gender =~ /男|♂|雄|オス|爺|漢|(?!fe)male/) { $m_flag = 1 }
-  if($gender =~ /女|♀|雌|メス|婆|娘|female/)     { $f_flag = 1 }
+  if($gender =~ /男|♂|雄|オス|爺|漢|(?<!fe)male|(?<!wo)man/i) { $m_flag = 1 }
+  if($gender =~ /女|♀|雌|メス|婆|娘|female|woman/i)           { $f_flag = 1 }
   if($m_flag && $f_flag){ $gender = '？' }
   elsif($m_flag){ $gender = '♂' }
   elsif($f_flag){ $gender = '♀' }
