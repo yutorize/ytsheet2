@@ -58,7 +58,7 @@ if($mode eq 'edit'){
   $_ =~ s/(.*?)<>(.*?)\n/$pc{$1} = $2;/egi while <$IN>;
   close($IN);
 }
-if($mode eq 'copy'){
+elsif($mode eq 'copy'){
   $id = param('id');
   $file = (getfile_open($id))[0];
   open my $IN, '<', "${set::char_dir}${file}/data.cgi" or error 'キャラクターシートがありません。';
@@ -67,7 +67,7 @@ if($mode eq 'copy'){
   
   delete $pc{'image'};  
   
-  $message = '「<a href="./?id='.$id.'" target="_blank">'.$pc{"characterName"}.'</a>」コピーして新規作成します。<br>（まだ保存はされていません）';
+  $message = '「<a href="./?id='.$id.'" target="_blank">'.$pc{"characterName"}.'</a>」をコピーして新規作成します。<br>（まだ保存はされていません）';
 }
 elsif($mode eq 'convert'){
   require $set::lib_convert;
