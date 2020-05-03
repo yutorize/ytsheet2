@@ -166,7 +166,7 @@ sub convertHokanjoToYtsheet {
   sub convertEffectLv {
     my $lv = shift;
     if   ($lv > 9) { return $lv - 10; }
-    elsif($lv > 5) { return $lv -  5; }
+    elsif($lv > 5) { return $lv -  6; }
     return $lv;
   }
   
@@ -649,7 +649,7 @@ sub convert1to2 {
     $pc{"weapon${num}Range"} = $pc{"weapon${num}_range"};
     $pc{"weapon${num}Note"}  = $pc{"weapon${num}_note"};
   }
-  $pc{'armorNum'} = $pc{'count_weapon'};
+  $pc{'armorNum'} = $pc{'count_armour'};
   foreach my $num (1 .. $pc{'armorNum'}) {
     $pc{"armor${num}Name"}       = $pc{"armor${num}_name"};
     $pc{"armor${num}Stock"}      = $pc{"armor${num}_point"};
@@ -660,7 +660,7 @@ sub convert1to2 {
     $pc{"armor${num}Armor"}      = $pc{"armor${num}_guard"};
     $pc{"armor${num}Note"}       = $pc{"armor${num}_note"};
   }
-  $pc{'armorNum'} = $pc{'count_weapon'};
+  $pc{'armorNum'} = $pc{'count_item'};
   foreach my $num (1 .. $pc{'armorNum'}) {
     $pc{"item${num}Name"}       = $pc{"item${num}_name"};
     $pc{"item${num}Stock"}      = $pc{"item${num}_point"};
