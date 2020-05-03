@@ -437,7 +437,7 @@ print <<"HTML";
           <tr>
             <td class="left">回避</td><td class="right">@{[input "skillDodge"  ,'number','calcSkill']}+@{[input "skillAddDodge"  ,'number']}</td>
             <td class="left">知覚</td><td class="right">@{[input "skillPercept",'number','calcSkill']}+@{[input "skillAddPercept",'number']}</td>
-            <td class="left">意思</td><td class="right">@{[input "skillWill"   ,'number','calcSkill']}+@{[input "skillAddWill"   ,'number']}</td>
+            <td class="left">意志</td><td class="right">@{[input "skillWill"   ,'number','calcSkill']}+@{[input "skillAddWill"   ,'number']}</td>
             <td class="left">調達</td><td class="right">@{[input "skillProcure",'number','calcSkill();calcStock']}+@{[input "skillAddProcure",'number','calcStock']}</td>
           </tr>
 HTML
