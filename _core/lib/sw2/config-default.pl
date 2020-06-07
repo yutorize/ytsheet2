@@ -154,6 +154,7 @@ package set;
 
 ## ●各種ファイルへのパス
   our $sendmail = '/usr/sbin/sendmail'; # sendmailのパス
+  our $admimail = 'noreply@yutorize.2-d.jp'; # 管理者メールアドレス
   
   our $data_dir = './data/'; # データ格納ディレクトリ
   our $passfile = $data_dir . 'charpass.cgi'; # パスワード記録ファイル
