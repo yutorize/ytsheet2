@@ -67,6 +67,7 @@ sub data_calc {
         if($type =~ /^(auto|dlois)$/i){ $pc{'expUsedEffect'} += -15; } #自動かDロイスは新規取得ぶん減らす
       }
     }
+    $pc{'expUsedEffect'} += $pc{'effect'.$num.'Exp'};
   }
   
   ### アイテム --------------------------------------------------
