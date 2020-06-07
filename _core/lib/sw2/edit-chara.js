@@ -1828,12 +1828,16 @@ function pointx(dice){
 // 画像配置 ----------------------------------------
 function imagePosition(){
   const bgSize = form.imageFit.options[form.imageFit.selectedIndex].value;
-  document.getElementById("image").style.backgroundSize = bgSize;
   if(bgSize === 'percent'){
+    document.getElementById("image-percent-config").style.visibility = 'visible';
     document.getElementById("image").style.backgroundSize = form.imagePercent.value + '%';
-    document.getElementById("image").style.backgroundPositionX = form.imagePositionX.value + '%';
-    document.getElementById("image").style.backgroundPositionY = form.imagePositionY.value + '%';
   }
+  else {
+    document.getElementById("image-percent-config").style.visibility = 'hidden';
+    document.getElementById("image").style.backgroundSize = bgSize;
+  }
+  document.getElementById("image").style.backgroundPositionX = form.imagePositionX.value + '%';
+  document.getElementById("image").style.backgroundPositionY = form.imagePositionY.value + '%';
 }
 
 // 表示／非表示 ----------------------------------------

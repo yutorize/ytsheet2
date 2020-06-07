@@ -100,6 +100,10 @@ $pc{'languageNum'}   = $pc{'languageNum'}   || 3;
 $pc{'honorItemsNum'} = $pc{'honorItemsNum'} || 3;
 $pc{'historyNum'}    = $pc{'historyNum'}    || 3;
 
+$pc{'imagePercent'} = $pc{'imagePercent'} eq '' ? '100' : $pc{'imagePercent'};
+$pc{'imagePositionX'} = $pc{'imagePositionX'} eq '' ? '50' : $pc{'imagePositionX'};
+$pc{'imagePositionY'} = $pc{'imagePositionY'} eq '' ? '50' : $pc{'imagePositionY'};
+
 $pc{'colorHeadBgH'} = $pc{'colorHeadBgH'} eq '' ? 225 : $pc{'colorHeadBgH'};
 $pc{'colorHeadBgS'} = $pc{'colorHeadBgS'} eq '' ?   9 : $pc{'colorHeadBgS'};
 $pc{'colorHeadBgL'} = $pc{'colorHeadBgL'} eq '' ?  65 : $pc{'colorHeadBgL'};
@@ -273,13 +277,15 @@ print <<"HTML";
             <option value="unset"   @{[$pc{'imageFit'} eq 'unset'  ?'selected':'']}>拡大／縮小せず表示
             <option value="percent" @{[$pc{'imageFit'} eq 'percent'?'selected':'']}>拡大率を指定
             </select><br>
-            <br>
-            拡大率：@{[ input "imagePercent",'number','imagePosition','style="width:4em;"' ]}%<br>
-            （「拡大率を指定」時／100で横幅ピッタリ）<br>
-            <br>
+          </p>
+          <p>
             枠をはみ出る際の基準位置(50%が中心)<br>
             横@{[ input "imagePositionX",'number','imagePosition','style="width:4em;"' ]}% ／ 
             縦@{[ input "imagePositionY",'number','imagePosition','style="width:4em;"' ]}%
+          </p>
+          <p id="image-percent-config">
+            拡大率：@{[ input "imagePercent",'number','imagePosition','style="width:4em;"' ]}%<br>
+            （「拡大率を指定」時／100で横幅ピッタリ）<br>
           </p>
           <p>
           画像の注釈（作者や権利表記など）
