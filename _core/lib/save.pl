@@ -63,7 +63,7 @@ if ($mode eq 'make'){
 sub overlap_check {
   my $id = shift;
   my $flag;
-  open (my $FH, '<', $set::passfile) ;
+  open (my $FH, '<', $set::passfile);
   while (<$FH>){ 
     if ($_ =~ /^$id<>/){ $flag = 1; }
   }
@@ -121,19 +121,19 @@ if($pc{'imageDelete'}){
   unlink "${data_dir}${file}/image.$pc{'image'}"; # ファイルを削除
   $pc{'image'} = '';
 }
+my $imagedata; my $imageflag;
 if(param('imageFile')){
   my $imagefile = param('imageFile'); # ファイル名の取得
   my $type = uploadInfo($imagefile)->{'Content-Type'}; # MIMEタイプの取得
   
   # ファイルの受け取り
-  my $data; my $buffer;
+  my $buffer;
   while(my $bytesread = read($imagefile, $buffer, 2048)) {
-    $data .= $buffer;
+    $imagedata .= $buffer;
   }
   # サイズチェック
-  my $flag; 
   my $max_size = ( $set::image_maxsize ? $set::image_maxsize : 1024 * 1024 );
-  if (length($data) <= $max_size){ $flag = 1; }
+  if (length($imagedata) <= $max_size){ $imageflag = 1; }
   # 形式チェック
   my $ext;
   if    ($type eq "image/gif")   { $ext ="gif"; } #GIF
@@ -142,14 +142,8 @@ if(param('imageFile')){
   elsif ($type eq "image/png")   { $ext ="png"; } #PNG
   elsif ($type eq "image/x-png") { $ext ="png"; } #PNG
   
-  if($flag && $ext){
+  if($imageflag && $ext){
     unlink "${data_dir}${file}/image.$pc{'image'}"; # 前のファイルを削除
-    
-    if (!-d "${data_dir}${file}"){ mkdir "${data_dir}${file}"; }
-    open(my $IMG, ">", "${data_dir}${file}/image.${ext}");
-    binmode($IMG);
-    print $IMG $data;
-    close($IMG);
     
     $pc{'image'} = $ext;
   }
@@ -158,25 +152,32 @@ if(param('imageFile')){
 
 ### 保存 #############################################################################################
 my $mask = umask 0;
-### passfile --------------------------------------------------
-## 新規
-if($mode eq 'make'){
-  passfile_write_make($pc{'id'},$pc{'pass'},$LOGIN_ID,$pc{'protect'},$now)
-}
-## 更新
-elsif($mode eq 'save'){
-  if($pc{'protect'} ne $pc{'protectOld'}){
-    passfile_write_save($pc{'id'},$pc{'pass'},$LOGIN_ID,$pc{'protect'})
-  }
-}
 ### 個別データ保存 --------------------------------------------------
 delete $pc{'pass'};
 delete $pc{'_token'};
 delete $pc{'registerkey'};
 data_save($mode, $data_dir, $file);
+### passfile --------------------------------------------------
+## 新規
+if($mode eq 'make'){
+  passfile_write_make($pc{'id'},$pass,$LOGIN_ID,$pc{'protect'},$now)
+}
+## 更新
+elsif($mode eq 'save'){
+  if($pc{'protect'} ne $pc{'protectOld'}){
+    passfile_write_save($pc{'id'},$pass,$LOGIN_ID,$pc{'protect'})
+  }
+}
 ### 一覧データ更新 --------------------------------------------------
 list_save($listfile, $newline);
 
+### 画像アップ更新 --------------------------------------------------
+if($imageflag && $pc{'image'}){
+  open(my $IMG, ">", "${data_dir}${file}/image.$pc{'image'}");
+  binmode($IMG);
+  print $IMG $imagedata;
+  close($IMG);
+}
 
 
 
@@ -241,6 +242,12 @@ sub data_save {
   my $mode = shift;
   my $dir  = shift;
   my $file = shift;
+  if($mode eq 'make'){
+    if (-d "${dir}${file}"){
+      $make_error = '新規作成が衝突しました。再度保存してください。';
+      require $set::lib_edit; exit;
+    }
+  }
   if($mode eq 'save'){
     use File::Copy qw/copy/;
     if (!-d "${dir}${file}/backup/"){ mkdir "${dir}${file}/backup/"; }
