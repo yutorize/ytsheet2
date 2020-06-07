@@ -967,7 +967,8 @@ function calcSubStt() {
 
 // 移動力計算 ----------------------------------------
 function calcMobility() {
-  const mobilityBase = ((race === 'ケンタウロス') ? (sttAgi * 2) : sttAgi) + (form["armourOwn"].checked ? 2 : 0);
+  const agi = sttAgi + sttAddB;
+  const mobilityBase = ((race === 'ケンタウロス') ? (agi * 2) : agi) + (form["armourOwn"].checked ? 2 : 0);
   const mobility = mobilityBase + Number(form.mobilityAdd.value);
   document.getElementById("mobility-limited").innerHTML = footwork ? 10 : 3;
   document.getElementById("mobility-base").innerHTML = mobilityBase;
