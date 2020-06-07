@@ -198,7 +198,7 @@ foreach (@list) {
     }
   }
   
-  $group = $set::group_default if !$group;
+  $group = $set::group_default if (!$group || !$group_name{$group});
   
   $race =~ s/（.*）|［.*］//;
   $race = "<div>$race</div>" if length($race) >= 5;

@@ -156,7 +156,7 @@ foreach (@list) {
     }
   }
   
-  $group = $set::group_default if !$group;
+  $group = $set::group_default if (!$group || !$group_name{$group});
   
   my $m_flag; my $f_flag;
   $gender =~ s/^(.+?)[\(（].*?[）\)]$/$1/;

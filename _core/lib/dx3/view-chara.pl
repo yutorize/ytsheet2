@@ -209,6 +209,8 @@ sub textShrink {
   my $small   = shift;
   my $text = shift;
   my $check = $text;
+  $check =~ s|<rp>(.+?)</rp>||g;
+  $check =~ s|<rt>(.+?)</rt>||g;
   $check =~ s|<.+?>||g;
   if(length($check) >= $small) {
     return '<span class="thinest small">'.$text.'</span>';

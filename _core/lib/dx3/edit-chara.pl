@@ -460,6 +460,9 @@ HTML
 print <<"HTML";
           </tbody>
         </table>
+        <div class="annotate">
+        ※右側は、DロイスなどによるLv補正の欄です（経験点が計算されません）
+        </div>
         <div class="add-del-button"><a onclick="addSkill()">▼</a><a onclick="delSkill()">▲</a></div>
       </details>
       <details class="box" id="lifepath" $open{'lifepath'}>
