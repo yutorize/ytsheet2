@@ -16,8 +16,8 @@ else                       { $data_dir = $set::char_dir; $data_list = $set::list
 if(!param('id')){ error('IDがありません。'); }
 if(!param('check1') || !param('check2') || !param('check3')){ error('確認のチェックが入っていません。'); }
 
-my $file;
-(undef, undef, $file, undef) = getfile(param('id'),param('pass'),$LOGIN_ID);
+my ($sheet_id, $sheet_user, $file);
+($sheet_id, $sheet_user, $file, undef) = getfile(param('id'),param('pass'),$LOGIN_ID);
 if(!$file){ error('データが見つかりません。'); }
 
 ## キャラシ削除
@@ -108,6 +108,13 @@ elsif($mode eq 'img-delete'){
     if (unlink "${data_dir}${file}/image.gif") { $message .= 'キャラクター画像を削除しました。<br>'; }
   }
   $message .= '<a href="./?id='.param('id').'">キャラクターシートを確認</a>';
+  
+  
+  sysopen (my $FH, $::core_dir.'/data/delete.cgi', O_WRONLY | O_APPEND | O_CREAT, 0666) or $message .= 'デリートリストが開けませんでした。';
+    if($sheet_user =~ /^\[.+?\]$/){ print $FH "$sheet_id<>$sheet_user<>$file<>image<>".time."<>\n"; }
+    else { print $FH "$sheet_id<>-----<>$file<>image<>".time."<>\n"; }
+  close ($FH);
+  
   info('画像の削除',$message);
 }
 1;
