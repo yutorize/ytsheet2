@@ -211,14 +211,14 @@ article > form > hr {
   border-style: solid;
 }
 
-#deleteform {
+.deleteform {
   margin-top: 5rem;
   padding-top: 5rem;
   border-width: 1px 0 0;
   border-style: solid;
   text-align: right;
 }
-#deleteform input[type="submit"] {
+.deleteform input[type="submit"] {
   margin-left: .5rem;
   padding: .3rem .5rem;
 }
@@ -474,19 +474,23 @@ td .switch-button {
   cursor: unset;
 }
 #image > h2 {
-  background: rgba(255,255,255,0.8);
-}
-.night #image > h2 {
-  background: rgba(0,0,0,0.8);
+  background-image: linear-gradient(to bottom, var(--box-head-bg-color), transparent);
+  text-shadow: var(--bg-color) 0px 0px .5em,
+    var(--bg-color)  .1rem .1rem, var(--bg-color) -.1rem -.1rem,
+    var(--bg-color) -.1rem .1rem, var(--bg-color)  .1rem -.1rem,
+    var(--bg-color)  .0rem .1rem, var(--bg-color)  .0rem -.1rem,
+    var(--bg-color) -.1rem .0rem, var(--bg-color)  .1rem  .0rem;
 }
 #image > p {
   background: rgba(255,255,255,0.4);
-  text-shadow: 0 0 10px #fff, 0 0 10px #fff, 0 0 10px #fff, 0 0 10px #fff, 0 0 10px #fff,
-               0 0 10px #fff, 0 0 10px #fff, 0 0 10px #fff, 0 0 10px #fff, 0 0 10px #fff;
+  text-shadow: 0 0 3px var(--bg-color), 0 0 3px var(--bg-color), 0 0 3px var(--bg-color),
+               0 0 3px var(--bg-color), 0 0 3px var(--bg-color), 0 0 3px var(--bg-color),
+               0 0 3px var(--bg-color), 0 0 3px var(--bg-color), 0 0 3px var(--bg-color),
+               0 0 3px var(--bg-color), 0 0 3px var(--bg-color), 0 0 3px var(--bg-color),
+               0 0 3px var(--bg-color), 0 0 3px var(--bg-color), 0 0 3px var(--bg-color);
 }
 .night #image > p {
   background: rgba(0,0,0,0.5);
-  text-shadow: 0 0 3px #000, 0 0 4px #000, 0 0 5px #000, 0 0 5px #000, 0 0 5px #000;
 }
 #area-status #image h2 {
   margin-bottom: 0;
