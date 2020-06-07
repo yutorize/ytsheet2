@@ -669,7 +669,13 @@ window.onload = function() {
       </div>
       <div class="box chat-palette">
         <h2>チャットパレット</h2>
-        <iframe src="./?mode=palette&id=<TMPL_VAR id>"></iframe>
+        <p>
+          仕様ダイスbot: 
+          <a href="./?mode=palette&id=<TMPL_VAR id>" target="palette">ゆとチャadv.</a>
+          ／
+          <a href="./?mode=palette&id=<TMPL_VAR id>&tool=bcdice" target="palette">BCDice</a>
+        </p>
+        <iframe src="./?mode=palette&id=<TMPL_VAR id>" name="palette"></iframe>
       </div>
     </article>
     <div class="back-button"><a href="./">⏎</a></div>

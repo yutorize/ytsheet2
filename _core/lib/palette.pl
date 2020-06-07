@@ -12,6 +12,7 @@ my $backup = param('backup');
 
 ### キャラクターデータ読み込み #######################################################################
 my $id = param('id');
+my $tool = param('tool');
 my ($file, $type) = getfile_open($id);
 
 my $data_dir;
@@ -34,7 +35,7 @@ $pc{'skills'} =~ s/<br>/\n/gi;
 $pc{$_} = tag_delete($pc{$_}) foreach keys %pc;
 close($IN);
 
-my $preset = $pc{'paletteUseVar'} ? palettePreset($type) : palettePresetRaw($type);
+my $preset = $pc{'paletteUseVar'} ? palettePreset($type,$tool) : palettePresetRaw($type,$tool);
 if ($pc{'paletteInsertType'} eq 'begin'){ $pc{'chatPalette'} = $pc{'chatPalette'}."\n".$preset; }
 elsif($pc{'paletteInsertType'} eq 'end'){ $pc{'chatPalette'} = $preset."\n".$pc{'chatPalette'}; }
 else {

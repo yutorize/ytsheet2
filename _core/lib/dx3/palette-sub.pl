@@ -5,6 +5,7 @@ use utf8;
 
 sub palettePreset {
   my $type = shift;
+  my $tool = shift;
   my $text;
   ## ＰＣ
   if(!$type){
@@ -41,8 +42,9 @@ sub palettePreset {
       }
     }
   }
-  ## 魔物
-  elsif($type eq 'm') {
+  
+  if($tool eq 'bcdice') {
+    $text =~ s/^(.+?)dx/\($1\)dx/mg;
   }
   
   return $text;
@@ -50,7 +52,8 @@ sub palettePreset {
 
 sub palettePresetRaw {
   my $type = shift;
-  my $text = palettePreset($type);
+  my $tool = shift;
+  my $text = palettePreset($type,$tool);
   my %property;
   $_ =~ s|^//(.*?)=(.*?)$|$property{$1} = $2;|egi foreach paletteProperties($type);
   $text =~ s|\{$_\}|$property{$_}|g foreach keys %property;
