@@ -27,7 +27,7 @@ sub tag_unescape {
   $text =~ s/&quot;/"/g;
   $text =~ s/&lt;br&gt;/\n/gi;
   
-  $text =~ s/\{\{([0-9\+\-\*\/\%\(\) ]+?)\}\}/s_eval($1);/eg;
+  #$text =~ s/\{\{([0-9\+\-\*\/\%\(\) ]+?)\}\}/s_eval($1);/eg;
   
   $text =~ s#(―+)#<span class="d-dash">$1</span>#g;
   
