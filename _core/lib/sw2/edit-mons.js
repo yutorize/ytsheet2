@@ -1,5 +1,6 @@
 "use strict";
 const form = document.sheet;
+const sttTextOn = form.statusTextInput.checked ? 1 : 0;
 
 const delConfirmText = '項目に値が入っています。本当に削除しますか？';
 
@@ -10,7 +11,7 @@ function calcVit(){
 }
 function calcVitF(){
   const val = form.vitResistFix.value;
-  form.vitResist.value    = (val == '') ? '' : Number(val) + 7;
+  form.vitResist.value    = (val == '') ? '' : Number(val) - 7;
 }
 function calcMnd(){
   const val = form.mndResist.value;
@@ -18,7 +19,7 @@ function calcMnd(){
 }
 function calcMndF(){
   const val = form.mndResistFix.value;
-  form.mndResist.value    = (val == '') ? '' : Number(val) + 7;
+  form.mndResist.value    = (val == '') ? '' : Number(val) - 7;
 }
 function calcAcc(Num){
   const val = form['status'+Num+'Accuracy'].value;
@@ -26,7 +27,7 @@ function calcAcc(Num){
 }
 function calcAccF(Num){
   const val = form['status'+Num+'AccuracyFix'].value;
-  form['status'+Num+'Accuracy'].value    = (val == '') ? '' : Number(val) + 7;
+  form['status'+Num+'Accuracy'].value    = (val == '') ? '' : Number(val) - 7;
 }
 function calcEva(Num){
   const val = form['status'+Num+'Evasion'].value;
@@ -34,7 +35,7 @@ function calcEva(Num){
 }
 function calcEvaF(Num){
   const val = form['status'+Num+'EvasionFix'].value;
-  form['status'+Num+'Evasion'].value     = (val == '') ? '' : Number(val) + 7;
+  form['status'+Num+'Evasion'].value     = (val == '') ? '' : Number(val) - 7;
 }
 
 
@@ -63,6 +64,7 @@ function addStatus(){
   const target = document.querySelector("#status-table tbody");
   target.appendChild(tbody, target);
   form.statusNum.value = num;
+  statusTextInputToggle();
 }
 // 削除
 function delStatus(){
@@ -104,6 +106,20 @@ let statusSortable = Sortable.create(document.querySelector('#status-table tbody
     }
   }
 });
+//
+function statusTextInputToggle(){
+  const on = form.statusTextInput.checked ? 1 : 0;
+  form[`vitResist`].type    = on ? 'text'   : 'number';
+  form[`vitResistFix`].type = on ? 'hidden' : 'number';
+  form[`mndResist`].type    = on ? 'text'   : 'number';
+  form[`mndResistFix`].type = on ? 'hidden' : 'number';
+  for(let i = 1; i <= form.statusNum.value; i++){
+    form[`status${i}Accuracy`].type    = on ? 'text'   : 'number';
+    form[`status${i}AccuracyFix`].type = on ? 'hidden' : 'number';
+    form[`status${i}Evasion`].type     = on ? 'text'   : 'number';
+    form[`status${i}EvasionFix`].type  = on ? 'hidden' : 'number';
+  }
+}
 
 // 戦利品欄 ----------------------------------------
 // 追加

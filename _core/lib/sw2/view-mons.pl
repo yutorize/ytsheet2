@@ -71,13 +71,13 @@ foreach(split(/ /, $pc{'tags'})){
 $SHEET->param(Tags => \@tags);
 
 ### ステータス --------------------------------------------------
-$SHEET->param("vitResist" => ($pc{'vitResist'} eq '' ? '' : $pc{'vitResist'}.' ('.$pc{'vitResistFix'}.')'));
-$SHEET->param("mndResist" => ($pc{'mndResist'} eq '' ? '' : $pc{'mndResist'}.' ('.$pc{'mndResistFix'}.')'));
+$SHEET->param("vitResist" => $pc{'vitResist'} eq '' ? '' : $pc{'vitResist'}.(!$pc{'statusTextInput'}?' ('.$pc{'vitResistFix'}.')':''));
+$SHEET->param("mndResist" => $pc{'mndResist'} eq '' ? '' : $pc{'mndResist'}.(!$pc{'statusTextInput'}?' ('.$pc{'mndResistFix'}.')':''));
 
 my @status;
 foreach (1 .. $pc{'statusNum'}){
-  $pc{'status'.$_.'Accuracy'} = ($pc{'status'.$_.'Accuracy'} eq '' ? '―' : $pc{'status'.$_.'Accuracy'}.' ('.$pc{'status'.$_.'AccuracyFix'}.')');
-  $pc{'status'.$_.'Evasion'}  = ($pc{'status'.$_.'Evasion'} eq '' ? '―' : $pc{'status'.$_.'Evasion'}.' ('.$pc{'status'.$_.'EvasionFix'}.')');
+  $pc{'status'.$_.'Accuracy'} = $pc{'status'.$_.'Accuracy'} eq '' ? '―' : $pc{'status'.$_.'Accuracy'}.(!$pc{'statusTextInput'}?' ('.$pc{'status'.$_.'AccuracyFix'}.')':'');
+  $pc{'status'.$_.'Evasion'}  = $pc{'status'.$_.'Evasion'}  eq '' ? '―' : $pc{'status'.$_.'Evasion'} .(!$pc{'statusTextInput'}?' ('.$pc{'status'.$_.'EvasionFix'}.')' :'');
   $pc{'status'.$_.'Damage'}  = '―' if $pc{'status'.$_.'Damage'} eq '';
   $pc{'status'.$_.'Defense'} = '―' if $pc{'status'.$_.'Defense'} eq '';
   $pc{'status'.$_.'Hp'} = '―' if $pc{'status'.$_.'Hp'} eq '';

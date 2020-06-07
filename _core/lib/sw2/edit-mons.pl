@@ -209,9 +209,10 @@ print <<"HTML";
         <dl><dt>弱点</dt><dd>@{[ input 'weakness','','','list="data-weakness"' ]}</dd></dl>
         <dl><dt>先制値</dt><dd>@{[ input 'initiative' ]}</dd></dl>
         <dl><dt>移動速度</dt><dd>@{[ input 'mobility' ]}</dd></dl>
-        <dl><dt>生命抵抗力</dt><dd>@{[ input 'vitResist','number','calcVit' ]} (@{[ input 'vitResistFix','number','calcVitF' ]})</dd></dl>
-        <dl><dt>精神抵抗力</dt><dd>@{[ input 'mndResist','number','calcMnd' ]} (@{[ input 'mndResistFix','number','calcMndF' ]})</dd></dl>
+        <dl><dt>生命抵抗力</dt><dd>@{[ input 'vitResist',($pc{'statusTextInput'} ? 'text':'number'),'calcVit' ]} (@{[ input 'vitResistFix',$pc{'statusTextInput'} ? 'hidden':'number','calcVitF' ]})</dd></dl>
+        <dl><dt>精神抵抗力</dt><dd>@{[ input 'mndResist',($pc{'statusTextInput'} ? 'text':'number'),'calcMnd' ]} (@{[ input 'mndResistFix',$pc{'statusTextInput'} ? 'hidden':'number','calcMndF' ]})</dd></dl>
       </div>
+      <p>@{[ input "statusTextInput",'checkbox','statusTextInputToggle']}命中・回避・抵抗に数値以外を入力</p>
       <div class="box">
       <table id="status-table" class="status">
         <thead>
@@ -234,9 +235,9 @@ print <<"HTML";
         <tr id="status-row${num}">
           <td class="handle"></td>
           <td>@{[ input "status${num}Style" ]}</td>
-          <td>@{[ input "status${num}Accuracy",'number',"calcAcc($num)" ]}<br>(@{[ input "status${num}AccuracyFix",'number',"calcAccF($num)" ]})</td>
+          <td>@{[ input "status${num}Accuracy",($pc{'statusTextInput'} ? 'text':'number'),"calcAcc($num)" ]}<br>(@{[ input "status${num}AccuracyFix",($pc{'statusTextInput'} ? 'hidden':'number'),"calcAccF($num)" ]})</td>
           <td>@{[ input "status${num}Damage" ]}</td>
-          <td>@{[ input "status${num}Evasion",'number',"calcEva($num)" ]}<br>(@{[ input "status${num}EvasionFix",'number',"calcEvaF($num)" ]})</td>
+          <td>@{[ input "status${num}Evasion",($pc{'statusTextInput'} ? 'text':'number'),"calcEva($num)" ]}<br>(@{[ input "status${num}EvasionFix",($pc{'statusTextInput'} ? 'hidden':'number'),"calcEvaF($num)" ]})</td>
           <td>@{[ input "status${num}Defense" ]}</td>
           <td>@{[ input "status${num}Hp" ]}</td>
           <td>@{[ input "status${num}Mp" ]}</td>
