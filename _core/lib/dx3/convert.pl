@@ -167,6 +167,7 @@ sub convertHokanjoToYtsheet {
     my $lv = shift;
     if   ($lv > 9) { return $lv - 10; }
     elsif($lv > 5) { return $lv -  6; }
+    elsif($lv < 1) { return 1; }
     return $lv;
   }
   
@@ -276,7 +277,8 @@ sub convertTiming {
 }
 sub convertNameRuby {
   my $name = shift;
-  $name =~ s/^(.+)[\(（](.+?)[\)）]$/$1\:$2/;
+  if    ($name =~ s/^(.+)[\(（](.+?)[\)）]$/$1\:$2/){ 1; }
+  elsif ($name =~ s/^(.+)[\"“](.+?)[\"”]$/$1\:$2/){ 1; }
   return $name;
 }
 ### キャラクターシート倉庫 --------------------------------------------------
