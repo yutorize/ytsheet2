@@ -216,17 +216,17 @@ sub token_check {
 
 ### メール送信 --------------------------------------------------
 sub sendmail{
-  my $from    = encode('MIME-Header-ISO_2022_JP', "ゆとシート for SW2.5 <$set::admimail>");
-  my $to      = encode('MIME-Header-ISO_2022_JP', shift);
-  my $subject = encode('MIME-Header-ISO_2022_JP', shift);
-  my $message = encode('iso-2022-jp', shift);
+  my $from    = encode('MIME-Header', "ゆとシートⅡ <$set::admimail>");
+  my $to      = encode('MIME-Header', shift);
+  my $subject = encode('MIME-Header', shift);
+  my $message = shift;
 
   open (my $MA, "|$set::sendmail -t") or &error("sendmailの起動に失敗しました。");
   print $MA "To: $to\n";
   print $MA "From: $from\n";
   print $MA "Subject: $subject\n";
-  print $MA "Content-Transfer-Encoding: 7bit\n";
-  print $MA "Content-Type: text/plain; charset=iso-2022-jp\n\n";
+  print $MA "Content-Transfer-Encoding: 8bit\n";
+  print $MA "Content-Type: text/plain; charset=utf-8\n\n";
   print $MA $message;
   close($MA);
 }
