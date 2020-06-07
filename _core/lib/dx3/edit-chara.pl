@@ -1002,7 +1002,7 @@ print <<"HTML";
 HTML
 if($mode eq 'edit'){
 print <<"HTML";
-    <form name="del" method="post" action="./" id="deleteform">
+    <form name="del" method="post" action="./" class="deleteform">
       <p style="font-size: 80%;">
       <input type="hidden" name="mode" value="delete">
       <input type="hidden" name="id" value="$id">
@@ -1015,6 +1015,22 @@ print <<"HTML";
       </p>
     </form>
 HTML
+  # 怒りの画像削除フォーム
+  if($LOGIN_ID eq $set::masterid){
+    print <<"HTML";
+    <form name="imgdel" method="post" action="./" class="deleteform">
+      <p style="font-size: 80%;">
+      <input type="hidden" name="mode" value="img-delete">
+      <input type="hidden" name="id" value="$id">
+      <input type="hidden" name="pass" value="$pass">
+      <input type="checkbox" name="check1" value="1" required>
+      <input type="checkbox" name="check2" value="1" required>
+      <input type="checkbox" name="check3" value="1" required>
+      <input type="submit" value="画像削除"><br>
+      </p>
+    </form>
+HTML
+  }
 }
 print <<"HTML";
     </article>
