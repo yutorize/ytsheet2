@@ -168,7 +168,7 @@ print <<"HTML";
       <div id="area-name">
         <div id="character-name">
           <div>キャラクター名@{[input('characterName','text','','required')]}</div>
-          <div>二つ名　　　　@{[input('aka','text','','placeholder="漢字:ルビ"')]}</div>
+          <div>二つ名　　　　@{[input('aka','text','','placeholder="漢字:ルビ　（※「:」は半角）"')]}</div>
         </div>
         <div>
         <p id="update-time"></p>

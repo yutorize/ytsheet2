@@ -193,8 +193,8 @@ print <<"HTML";
       <input type="hidden" name="mode" value="@{[ $mode eq 'edit' ? 'save' : 'make' ]}">
       <div id="area-name">
         <div id="character-name">
-          <div>キャラクター名@{[input('characterName','text','','required placeholder="漢字:るび"')]}</div>
-          <div>コードネーム　@{[input('aka','text','','placeholder="漢字:ルビ"')]}</div>
+          <div>キャラクター名@{[input('characterName','text','','required placeholder="漢字:るび　（※「:」は半角）"')]}</div>
+          <div>コードネーム　@{[input('aka','text','','placeholder="漢字:ルビ　（※「:」は半角）"')]}</div>
         </div>
         <div>
           <p id="update-time"></p>
