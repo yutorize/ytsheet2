@@ -276,6 +276,17 @@ sub tag_unescape_lines {
   $text =~ s/^CENTER:/<\/p><p class="center">/gim;
   $text =~ s/^RIGHT:/<\/p><p class="right">/gim;
   
+  $text =~ s/^RIGHT:/<\/p><p class="right">/gim;
+  
+  my $d_count = 0;
+  $d_count += ($text =~ s/^\[&gt;\]\*\*\*\*(.*?)$/<\/p><details><summary class="header4">$1<\/summary><div class="detail-body"><p>/gim);
+  $d_count += ($text =~ s/^\[&gt;\]\*\*\*(.*?)$/<\/p><details><summary class="header3">$1<\/summary><div class="detail-body"><p>/gim);
+  $d_count += ($text =~ s/^\[&gt;\]\*\*(.*?)$/<\/p><details><summary class="header2">$1<\/summary><div class="detail-body"><p>/gim);
+  $d_count += ($text =~ s/^\[&gt;\]\*(.*?)$/<\/p><details><summary class="header1">$1<\/summary><div class="detail-body"><p>/gim);
+  $d_count += ($text =~ s/^\[&gt;\](.+?)$/<\/p><details><summary>$1<\/summary><div class="detail-body"><p>/gim);
+  $d_count += ($text =~ s/^\[&gt;\]$/<\/p><details><summary>詳細<\/summary><div class="detail-body"><p>/gim);
+  $d_count -= ($text =~ s/^\[-{3,}\]\n?$/<\/div><\/details>/gim);
+  
   $text =~ s/^-{4,}$/<\/p><hr><p>/gim;  
   $text =~ s/^( \*){4,}$/<\/p><hr class="dotted"><p>/gim;
   $text =~ s/^( \-){4,}$/<\/p><hr class="dashed"><p>/gim;
@@ -299,6 +310,11 @@ sub tag_unescape_lines {
   $text =~ s/(^|<p(?:.*?)>|<hr(?:.*?)>)\n/$1/gi;
   $text =~ s/<p><\/p>//gi;
   $text =~ s/\n/&lt;br&gt;/gi;
+  
+  while($d_count) {
+    $text .= "</div></details>";
+    $d_count--;
+  }
   
   return $text;
 }
