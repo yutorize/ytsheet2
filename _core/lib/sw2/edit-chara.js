@@ -733,16 +733,16 @@ function checkFeats(){
       }
       else if (feat.match(/鎧貫き/)){
         if(feat.match(/Ⅰ$/)){
-          if     (f3 && lvGra >= 11) { (auto) ? box.value = "鎧貫きⅢ" : cL.add("evo") }
+          if     (f3 && lvGra >= 15) { (auto) ? box.value = "鎧貫きⅢ" : cL.add("evo") }
           else if(f2 && lvGra >=  9) { (auto) ? box.value = "鎧貫きⅡ" : cL.add("evo") }
         }
         else if(feat.match(/Ⅱ$/)){
-          if     (f3 && lvGra >= 11) { (auto) ? box.value = "鎧貫きⅢ" : cL.add("evo") }
+          if     (f3 && lvGra >= 15) { (auto) ? box.value = "鎧貫きⅢ" : cL.add("evo") }
           else if(!f2 || lvGra <  9) { (auto) ? box.value = "鎧貫きⅠ" : cL.add("error") }
         }
         else if(feat.match(/Ⅲ$/)){
           if     (!f2 || lvGra <  9) { (auto) ? box.value = "鎧貫きⅠ" : cL.add("error") }
-          else if(!f3 || lvGra < 11) { (auto) ? box.value = "鎧貫きⅡ" : cL.add("error") }
+          else if(!f3 || lvGra < 15) { (auto) ? box.value = "鎧貫きⅡ" : cL.add("error") }
         }
       }
       else if (feat.match(/魔法拡大すべて/)){

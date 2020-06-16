@@ -1212,7 +1212,7 @@ print <<"HTML";
     <option value="〈白兵〉〈RC〉">
     <option value="〈回避〉">
     <option value="〈知覚〉">
-    <option value="〈意思〉">
+    <option value="〈意志〉">
     <option value="〈調達〉">
     <option value="【肉体】">
     <option value="【感覚】">
@@ -1240,7 +1240,7 @@ print <<"HTML";
     <option value="〈白兵〉〈RC〉">
     <option value="〈回避〉">
     <option value="〈知覚〉">
-    <option value="〈意思〉">
+    <option value="〈意志〉">
     <option value="〈調達〉">
     <option value="【肉体】">
     <option value="【感覚】">
@@ -1336,6 +1336,7 @@ print <<"HTML";
 HTML
 print 'const synStats = {';
 foreach (keys %data::syndrome_status) {
+  next if !$_;
   my @ar = @{$data::syndrome_status{$_}};
   print '"'.$_.'":{"body":'.$ar[0].',"sense":'.$ar[1].',"mind":'.$ar[2].',"social":'.$ar[3].'},'
 }

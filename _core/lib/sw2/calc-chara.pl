@@ -362,7 +362,6 @@ sub data_calc {
   $pc{'magicPowerBar'} = $pc{'lvBar'} ? $pc{'lvBar'} + int(($pc{'sttMnd'} + $pc{'sttAddF'} + ($pc{'magicPowerOwnBar'} ? 2 : 0)) / 6) + $pc{'magicPowerAddBar'} : 0;
   $pc{'magicPowerAlc'} = $pc{'lvAlc'} ? $pc{'lvAlc'} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwnAlc'} ? 2 : 0)) / 6) + $pc{'magicPowerAddAlc'} + $pc{'alchemyEnhance'} : 0;
   $pc{'magicPowerMys'} = $pc{'lvMys'} ? $pc{'lvMys'} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwnMys'} ? 2 : 0)) / 6) + $pc{'magicPowerAddMys'} : 0;
-
   ### 装備 --------------------------------------------------
   ## 武器
   foreach (1 .. $pc{'weaponNum'}){
