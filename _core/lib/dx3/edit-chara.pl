@@ -102,7 +102,8 @@ if(!$pc{'effect2Name'}){
     = ('auto','ワーディング',1,'オート','―','自動成功','シーン','視界','0','―','非オーヴァードをエキストラ化');
 }
 
-$pc{'imagePercent'} = $pc{'imagePercent'} eq '' ? '100' : $pc{'imagePercent'};
+$pc{'imageFit'} = $pc{'imageFit'} eq 'percent' ? 'percentX' : $pc{'imageFit'};
+$pc{'imagePercent'} = $pc{'imagePercent'} eq '' ? '200' : $pc{'imagePercent'};
 $pc{'imagePositionX'} = $pc{'imagePositionX'} eq '' ? '50' : $pc{'imagePositionX'};
 $pc{'imagePositionY'} = $pc{'imagePositionY'} eq '' ? '50' : $pc{'imagePositionY'};
 
@@ -164,13 +165,15 @@ Content-type: text/html\n
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" media="all" href="${main::core_dir}/skin/_common/css/base.css?${main::ver}">
   <link rel="stylesheet" media="all" href="${main::core_dir}/skin/_common/css/sheet.css?${main::ver}">
+  <link rel="stylesheet" media="all" href="${main::core_dir}/skin/_common/css/edit.css?${main::ver}">
   <link rel="stylesheet" media="all" href="${main::core_dir}/skin/dx3/css/chara.css?${main::ver}">
   <link rel="stylesheet" media="all" href="${main::core_dir}/skin/dx3/css/edit.css?${main::ver}">
   <script src="${main::core_dir}/skin/_common/js/lib/Sortable.min.js"></script>
   <script src="${main::core_dir}/lib/dx3/edit-chara.js?${main::ver}" defer></script>
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
   <style>
-    #image {
+    #image,
+    #image-custom-view {
       background-image: url("${set::char_dir}${file}/image.$pc{'image'}") !important;
     }
   </style>
@@ -287,21 +290,7 @@ print <<"HTML";
             ※ @{[ int($set::image_maxsize / 1024) ]}KBまでのJPG/PNG/GIF
           </p>
           <p>
-            表示方式：<select name="imageFit" oninput="imagePosition()">
-            <option value="cover"   @{[$pc{'imageFit'} eq 'cover'  ?'selected':'']}>枠いっぱいに表示
-            <option value="contain" @{[$pc{'imageFit'} eq 'contain'?'selected':'']}>画像全体を表示
-            <option value="unset"   @{[$pc{'imageFit'} eq 'unset'  ?'selected':'']}>拡大／縮小せず表示
-            <option value="percent" @{[$pc{'imageFit'} eq 'percent'?'selected':'']}>拡大率を指定
-            </select><br>
-          </p>
-          <p>
-            枠をはみ出る際の基準位置(50%が中心)<br>
-            横@{[ input "imagePositionX",'number','imagePosition','style="width:4em;"' ]}% ／ 
-            縦@{[ input "imagePositionY",'number','imagePosition','style="width:4em;"' ]}%
-          </p>
-          <p id="image-percent-config">
-            拡大率：@{[ input "imagePercent",'number','imagePosition','style="width:4em;"' ]}%<br>
-            （「拡大率を指定」時／100で横幅ピッタリ）<br>
+            <a class="button" onclick="imagePositionView()">トリミング位置をカスタマイズ</a>
           </p>
           <p>
           画像の注釈（作者や権利表記など）
@@ -319,6 +308,7 @@ print <<"HTML";
           <select name="wordsY">@{[ option 'wordsY','上','下' ]}</select>
           </p>
         </div>
+        @{[ image_form ]}
 
         <div class="box-union" id="personal">
           <dl class="box"><dt>年齢  </dt><dd>@{[input "age"]}</dd></dl>
