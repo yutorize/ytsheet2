@@ -130,8 +130,8 @@ $SHEET->param(Backup => \@backup);
 $SHEET->param(ReqdPassword => (!$pc{'protect'} || $pc{'protect'} eq 'password' ? 1 : 0) );
 
 ### タイトル --------------------------------------------------
-$SHEET->param(characterNameTitle => tag_delete($pc{'characterName'}));
-$SHEET->param(monsterNameTitle => tag_delete($pc{'monsterName'}));
+$SHEET->param(characterNameTitle => tag_delete name_plain $pc{'characterName'});
+$SHEET->param(monsterNameTitle => tag_delete name_plain $pc{'monsterName'});
 $SHEET->param(title => $set::title);
 
 ### 画像 --------------------------------------------------

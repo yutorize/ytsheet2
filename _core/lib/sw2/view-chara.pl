@@ -650,7 +650,7 @@ $SHEET->param(ReqdPassword => (!$pc{'protect'} || $pc{'protect'} eq 'password' ?
 $SHEET->param(FellowMode => param('f'));
 
 ### タイトル --------------------------------------------------
-$SHEET->param(characterNameTitle => tag_delete($pc{'characterName'}));
+$SHEET->param(characterNameTitle => tag_delete name_plain $pc{'characterName'});
 $SHEET->param(title => $set::title);
 
 ### 画像 --------------------------------------------------
