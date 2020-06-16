@@ -5,9 +5,14 @@ use utf8;
 
 sub palettePreset {
   my $type = shift;
+  my $tool = shift;
   my $text;
+  my %bot;
+  if   (!$tool)           { $bot{'YTC'} = 1; }
+  elsif($tool eq 'bcdice'){ $bot{'BCD'} = 1; }
   ## ＰＣ
   if(!$type){
+    # 基本判定
     $text .= "2d6+{冒険者}+{器用} 冒険者＋器用\n";
     $text .= "2d6+{冒険者}+{敏捷} 冒険者＋敏捷\n";
     $text .= "2d6+{冒険者}+{筋力} 冒険者＋筋力\n";
@@ -30,7 +35,59 @@ sub palettePreset {
     $text .= "2d6+{生命抵抗} 生命抵抗力\n";
     $text .= "2d6+{精神抵抗} 精神抵抗力\n";
     $text .= "\n";
-
+    
+    # 魔法
+    my %pows = (
+      'Sor' => [10,20],
+      'Con' => [ 0],
+      'Pri' => [10],
+      'Mag' => [],
+      'Fai' => [10],
+      'Dem' => [10,20],
+      'Gri' => [10,20],
+      'Bar' => [10],
+    );
+    my %heals = (
+      'Con' => [ 0],
+      'Pri' => [10],
+      'Gri' => [20],
+      'Bar' => [ 0,10,20],
+    );
+    if($::pc{'lvSor'} >=  5){ push(@{$pows{'Sor'}}, 30) }
+    if($::pc{'lvSor'} >=  8){ push(@{$pows{'Sor'}}, 40) }
+    if($::pc{'lvSor'} >= 11){ push(@{$pows{'Sor'}}, 50) }
+    if($::pc{'lvSor'} >= 14){ push(@{$pows{'Sor'}}, 60) }
+    if($::pc{'lvSor'} >= 15){ push(@{$pows{'Sor'}},100) }
+    if($::pc{'lvCon'} >=  8){ push(@{$pows{'Con'}}, 20) }
+    if($::pc{'lvCon'} >=  9){ push(@{$pows{'Con'}}, 30) }
+    if($::pc{'lvCon'} >= 15){ push(@{$pows{'Con'}}, 60) }
+    if($::pc{'lvPri'} >=  5){ push(@{$pows{'Pri'}}, 20) }
+    if($::pc{'lvPri'} >=  9){ push(@{$pows{'Pri'}}, 30) }
+    if($::pc{'lvFai'} >=  5){ push(@{$pows{'Fai'}}, 20) }
+    if($::pc{'lvFai'} >= 10){ push(@{$pows{'Fai'}}, 40) }
+    if($::pc{'lvFai'} >= 11){ push(@{$pows{'Fai'}}, 50) }
+    if($::pc{'lvFai'} >= 14){ push(@{$pows{'Fai'}}, 60) }
+    if($::pc{'lvMag'} >=  5){ push(@{$pows{'Mag'}}, 30) }
+    if($::pc{'lvMag'} >= 15){ push(@{$pows{'Mag'}}, 90) }
+    if($::pc{'lvDem'} >=  5){ push(@{$pows{'Dem'}}, 30); push(@{$pows{'Dem'}}, 40); push(@{$pows{'Dem'}}, 50) }
+    if($::pc{'lvGri'} >=  4){ push(@{$pows{'Gri'}}, 30) }
+    if($::pc{'lvGri'} >=  7){ push(@{$pows{'Gri'}}, 40); push(@{$pows{'Gri'}}, 50) }
+    if($::pc{'lvGri'} >= 10){ push(@{$pows{'Gri'}}, 60) }
+    if($::pc{'lvGri'} >= 13){ push(@{$pows{'Gri'}}, 80); push(@{$pows{'Gri'}},100) }
+    if($::pc{'lvBar'} >=  5){ push(@{$pows{'Bar'}}, 20) }
+    if($::pc{'lvBar'} >= 10){ push(@{$pows{'Bar'}}, 30) }
+    
+    if($::pc{'lvCon'} >= 11){ push(@{$heals{'Con'}}, 30) }
+    if($::pc{'lvPri'} >=  5){ push(@{$heals{'Pri'}}, 30) }
+    if($::pc{'lvPri'} >= 10){ push(@{$heals{'Pri'}}, 50) }
+    if($::pc{'lvPri'} >= 13){ push(@{$heals{'Pri'}}, 70) }
+    if($::pc{'lvGri'} >=  7){ push(@{$heals{'Gri'}}, 40) }
+    if($::pc{'lvGri'} >= 13){ push(@{$heals{'Gri'}},100) }
+    if($::pc{'lvBar'} >=  5){ push(@{$heals{'Bar'}}, 30) }
+    if($::pc{'lvBar'} >= 10){ push(@{$heals{'Bar'}}, 40) }
+    $text .= "※CAST:行使ボーナス mDMG:魔法ダメージボーナス\n";
+    $text .= "//CAST=".($::pc{'magicCastAdd'}||0)."\n";
+    $text .= "//mDMG=".($::pc{'magicDamageAdd'}||0)."\n";
     foreach (
       ['Sor', '真語魔法'],
       ['Con', '操霊魔法'],
@@ -43,29 +100,65 @@ sub palettePreset {
       ['Alc', '賦術'],
       ['Mys', '占瞳'],
     ){
-      next if !$::pc{'lv'.@$_[0]};
-      $text .= "2d6+{@$_[1]} @$_[1]".(@$_[1] =~ /魔法/?'行使':'')."\n";
+      my ($id, $name) = @$_;
+      next if !$::pc{'lv'.$id};
+      
+      $text .= "2d6+{@$_[1]}".($::pc{'magicCastAdd'.$id}?"+$::pc{'magicCastAdd'.$id}":'');
+      if   ($name =~ /魔/){ $text .= "+{CAST} ${name}行使\n"; }
+      elsif($name =~ /歌/){ $text .= " 呪歌演奏\n"; }
+      else                { $text .= " ${name}\n"; }
+      
+      foreach my $pow (@{$pows{$id}}) {
+        $text .= "k${pow}[10]+{$name}".($::pc{'magicDamageAdd'.$id}?"+$::pc{'magicDamageAdd'.$id}":'').($name =~ /魔/?"+{mDMG}":'')." ダメージ\n";
+        $text .= "k${pow}+{$name}//"  .($::pc{'magicDamageAdd'.$id}?"+$::pc{'magicDamageAdd'.$id}":'').($name =~ /魔/?"+{mDMG}":'')." 半減\n" if ($bot{'YTC'});
+        $text .= "hk${pow}+{$name} 半減\n" if ($bot{'BCD'});
+      }
+      foreach my $pow (@{$heals{$id}}) {
+        $text .= "k${pow}+{@$_[1]} 回復量\n"
+      }
+      $text .= "\n";
     }
-    $text .= "\n";
+    
+    # 攻撃
+    $text .= "※ACC:命中力ボーナス DMG:ダメージボーナス\n";
+    $text .= "//ACC=0\n";
+    $text .= "//DMG=0\n";
+    
     foreach (1 .. $::pc{'weaponNum'}){
       next if $::pc{'weapon'.$_.'Acc'}.$::pc{'weapon'.$_.'Rate'}.
               $::pc{'weapon'.$_.'Crit'}.$::pc{'weapon'.$_.'Dmg'} eq '';
+      
+      $::pc{'weapon'.$_.'Crit'} =~ s/[⑦➆]/7/;
+      $::pc{'weapon'.$_.'Crit'} =~ s/[⑧➇]/8/;
+      $::pc{'weapon'.$_.'Crit'} =~ s/[⑨➈]/9/;
+      $::pc{'weapon'.$_.'Crit'} =~ s/[⑩➉]/10/;
+      $::pc{'weapon'.$_.'Crit'} =~ s/[⑪]/11/;
+      $::pc{'weapon'.$_.'Crit'} =~ s/[⑫]/12/;
+      $::pc{'weapon'.$_.'Crit'} =~ s/[⑬]/13/;
+      
       $::pc{'weapon'.$_.'Name'} = $::pc{'weapon'.$_.'Name'} || $::pc{'weapon'.($_-1).'Name'};
-      $text .= "2d6+{命中$_} 命中力／$::pc{'weapon'.$_.'Name'}\n";
-      $text .= "k{威力$_}\[{C値$_}\]+{追加D$_} ダメージ\n";
+      $text .= "2d6+{命中$_}+{ACC}";
+      $text .= " 命中力／$::pc{'weapon'.$_.'Name'}\n";
+      
+      $text .= "k{威力$_}\[{C値$_}\]+{追加D$_}+{DMG}";
+      if($::pc{'weapon'.$_.'Name'} =~ /首切/ || $::pc{'weapon'.$_.'Note'} =~ /首切/){
+        $text .= $bot{'YTC'} ? '首切' : $bot{'BCD'} ? 'r5' : '';
+      }
+      $text .= " ダメージ\n";
       $text .= "\n";
     }
+    # 回避
     $text .= "2d6+{回避} 回避力\n";
     
-    if(1){
-      $text .= "\n";
-      $text .= "\@HP:{HP}/{HP} MP:{MP}/{MP} 防護:{防護}\n";
+    #
+    if($bot{'YTC'}) {
+      $text .= "\n\@HP:{HP}/{HP} MP:{MP}/{MP} 防護:{防護}\n";
     }
   }
   ## 魔物
   elsif($type eq 'm') {
-    $text .= "2d6+{生命抵抗}\n";
-    $text .= "2d6+{精神抵抗}\n";
+    $text .= "2d6+{生命抵抗} 生命抵抗力\n";
+    $text .= "2d6+{精神抵抗} 精神抵抗力\n";
     $text .= "\n";
 
     foreach (1 .. $::pc{'statusNum'}){
@@ -77,8 +170,8 @@ sub palettePreset {
     my $skills = $::pc{'skills'};
     $skills =~ tr/０-９（）/0-9\(\)/;
     $skills =~ s/<br>/\n/gi;
-    $skills =~ s/^(?:[○◯〇△＞▶〆☆≫»□☑🗨]|&gt;&gt;)+(.+?)(?:[0-9]+(?:レベル|LV)|\(.+\))*[\/／](?:魔力)([0-9]+)[(（][0-9]+[）)]/$text .= "2d6+{$1}\n";/megi;
-    $skills =~ s/^(?:[○◯〇△＞▶〆☆≫»□☑🗨]|&gt;&gt;)+(.+)[\/／]([0-9]+)[(（][0-9]+[）)]/$text .= "2d6+{$1}\n";/megi;
+    $skills =~ s/^(?:[○◯〇△＞▶〆☆≫»□☑🗨]|&gt;&gt;)+(.+?)(?:[0-9]+(?:レベル|LV)|\(.+\))*[\/／](?:魔力)([0-9]+)[(（][0-9]+[）)]/$text .= "2d6+{$1} $1\n";/megi;
+    $skills =~ s/^(?:[○◯〇△＞▶〆☆≫»□☑🗨]|&gt;&gt;)+(.+)[\/／]([0-9]+)[(（][0-9]+[）)]/$text .= "2d6+{$1} $1\n";/megi;
   }
   
   return $text;
@@ -86,7 +179,8 @@ sub palettePreset {
 
 sub palettePresetRaw {
   my $type = shift;
-  my $text = palettePreset($type);
+  my $tool = shift;
+  my $text = palettePreset($type,$tool);
   my %property;
   $_ =~ s|^//(.*?)=(.*?)$|$property{$1} = $2;|egi foreach paletteProperties($type);
   $text =~ s|\{$_\}|$property{$_}|g foreach keys %property;

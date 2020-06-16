@@ -187,6 +187,15 @@ let lootsItemSortable = Sortable.create(document.querySelector('#loots-item'), {
   }
 });
 
+// チャットパレット ----------------------------------------
+palettePresetChange();
+function palettePresetChange (){
+  const tool = form.paletteTool.value;
+  document.getElementById('palettePreset').value = 
+    form.paletteUseVar.checked ? (tool == 'bcdice' ? palettePresetText : palettePresetTextBcd)
+                               : (tool == 'bcdice' ? palettePresetTextBcdRaw : palettePresetTextRaw);
+}
+
 // セクション選択 ----------------------------------------
 function sectionSelect(id){
   const sections = ['common','palette'];

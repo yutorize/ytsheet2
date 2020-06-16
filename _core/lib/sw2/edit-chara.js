@@ -1826,6 +1826,15 @@ function pointx(dice){
   return(point);
 }
 
+// チャットパレット ----------------------------------------
+palettePresetChange();
+function palettePresetChange (){
+  const tool = form.paletteTool.value;
+  document.getElementById('palettePreset').value = 
+    form.paletteUseVar.checked ? (tool == 'bcdice' ? palettePresetText : palettePresetTextBcd)
+                               : (tool == 'bcdice' ? palettePresetTextBcdRaw : palettePresetTextRaw);
+}
+
 // 画像配置 ----------------------------------------
 function imagePosition(){
   const bgSize = form.imageFit.options[form.imageFit.selectedIndex].value;

@@ -973,8 +973,15 @@ print <<"HTML";
         </div>
         <div class="palette-column">
         <h2>プリセット （コピーペースト用）</h2>
-        <textarea id="palettePreset" readonly style="height:20em">@{[ palettePresetRaw(param('type')) ]}</textarea>
-        <p><label><input type="checkbox" name="paletteUseVar" @{[ $pc{'paletteUseVar'}?'checked':'' ]} value="1">変数を使う</label></p>
+        <textarea id="palettePreset" readonly style="height:20em"></textarea>
+        <p>
+          <label>@{[ input 'paletteUseVar', 'checkbox','palettePresetChange']}変数を使う</label>
+          ／
+          使用ダイスbot: <select name="paletteTool" onchange="palettePresetChange();" style="width:auto;">
+          <option value="">ゆとチャadv.
+          <option value="bcdice" @{[ $pc{'paletteTool'} eq 'bcdice' ? 'checked' : '']}>BCDice
+          </select>
+        </p>
         </div>
       </div>
       </section>
@@ -1352,7 +1359,12 @@ foreach (@data::impulses) {
   print '"'.@$_[0].'":'.@$_[1].','
 }
 print "};\n";
+## チャットパレット
 print <<"HTML";
+  let palettePresetText       = `@{[ palettePreset    ('') ]}`;
+  let palettePresetTextRaw    = `@{[ palettePresetRaw ('') ]}`;
+  let palettePresetTextBcd    = `@{[ palettePreset    ('', 'bcdice') ]}`;
+  let palettePresetTextBcdRaw = `@{[ palettePresetRaw ('', 'bcdice') ]}`;
   </script>
 </body>
 

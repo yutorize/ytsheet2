@@ -308,29 +308,23 @@ print <<"HTML";
         <h2>デフォルト変数 （自動的に末尾に出力されます）</h2>
         <textarea readonly style="height:20em">
 HTML
-  say "//LV=$pc{'lv'}";
-  say '';
-  say "//生命抵抗=$pc{'vitResist'}";
-  say "//精神抵抗=$pc{'mndResist'}";
-  
-  say '';
-  foreach (1 .. $pc{'statusNum'}){
-    say "//部位$_=$pc{'status'.$_.'Style'}";
-    say "//命中$_=$pc{'status'.$_.'Accuracy'}" if $pc{'status'.$_.'Accuracy'} ne '';
-    say "//ダメージ$_=$pc{'status'.$_.'Damage'}" if $pc{'status'.$_.'Damage'} ne '';
-    say "//回避$_=$pc{'status'.$_.'Evasion'}" if $pc{'status'.$_.'Evasion'} ne '';
-    say '';
-  }
-  my $skills = $pc{'skills'};
-  $skills =~ tr/０-９（）/0-9\(\)/;
-  $skills =~ s/^(?:[○◯〇△＞▶〆☆≫»□☑🗨]|&gt;&gt;)+(.+?)(?:[0-9]+(?:レベル|LV)|\(.+\))*[\/／](?:魔力)([0-9]+)[(（][0-9]+[）)]/say "\/\/$1=$2";/megi;
-  $skills =~ s/^(?:[○◯〇△＞▶〆☆≫»□☑🗨]|&gt;&gt;)+(.+)[\/／]([0-9]+)[(（][0-9]+[）)]/say "\/\/$1=$2";/megi;
+  say $_ foreach(paletteProperties('m','all'));
 print <<"HTML";
 </textarea>
+          <label>@{[ input 'chatPalettePropertiesAll', 'checkbox']} 全ての変数を出力する</label><br>
+          （デフォルトだと、未使用の変数は出力されません）
         </div>
         <div class="palette-column">
         <h2>プリセット （コピーペースト用）</h2>
-        <textarea id="palettePreset" readonly style="height:20em">@{[ palettePreset(param('type')) ]}</textarea>
+        <textarea id="palettePreset" readonly style="height:20em"></textarea>
+        <p>
+          <label>@{[ input 'paletteUseVar', 'checkbox','palettePresetChange']}変数を使う</label>
+          ／
+          使用ダイスbot: <select name="paletteTool" onchange="palettePresetChange();" style="width:auto;">
+          <option value="">ゆとチャadv.
+          <option value="bcdice" @{[ $pc{'paletteTool'} eq 'bcdice' ? 'checked' : '']}>BCDice
+          </select>
+        </p>
         </div>
       </div>
       </section>
@@ -393,6 +387,12 @@ print <<"HTML";
   <option value="回復効果ダメージ+3点">
   <option value="なし">
   </datalist>
+  <script>
+  let palettePresetText       = `@{[ palettePreset    ('m') ]}`;
+  let palettePresetTextRaw    = `@{[ palettePresetRaw ('m') ]}`;
+  let palettePresetTextBcd    = `@{[ palettePreset    ('m', 'bcdice') ]}`;
+  let palettePresetTextBcdRaw = `@{[ palettePresetRaw ('m', 'bcdice') ]}`;
+  </script>
 </body>
 
 </html>

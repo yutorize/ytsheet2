@@ -803,6 +803,14 @@ let historySortable = Sortable.create(document.getElementById('history-table'), 
   }
 });
 
+// チャットパレット ----------------------------------------
+palettePresetChange();
+function palettePresetChange (){
+  const tool = form.paletteTool.value;
+  document.getElementById('palettePreset').value = 
+    form.paletteUseVar.checked ? (tool == 'bcdice' ? palettePresetText : palettePresetTextBcd)
+                               : (tool == 'bcdice' ? palettePresetTextBcdRaw : palettePresetTextRaw);
+}
 
 // 画像配置 ----------------------------------------
 function imagePosition(){

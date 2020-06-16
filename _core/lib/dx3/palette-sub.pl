@@ -11,12 +11,16 @@ sub palettePreset {
   if(!$type){
     $text .= "//EDB=0\n";
     $text .= "  ※侵蝕率によるダイスボーナス\n";
+    $text .= "{肉体}+{EDB}dx\@10 【肉体】判定\n";
+    $text .= "{感覚}+{EDB}dx\@10 【感覚】判定\n";
+    $text .= "{精神}+{EDB}dx\@10 【精神】判定\n";
+    $text .= "{社会}+{EDB}dx\@10 【社会】判定\n";
     $text .= "{肉体}+{EDB}dx+{白兵}\@10 〈白兵〉判定\n";
     $text .= "{肉体}+{EDB}dx+{回避}\@10 〈回避〉判定\n";
     $text .= "{感覚}+{EDB}dx+{射撃}\@10 〈射撃〉判定\n";
-    $text .= "{感覚}+{EDB}dx+{知覚}\@10 〈感覚〉判定\n";
+    $text .= "{感覚}+{EDB}dx+{知覚}\@10 〈知覚〉判定\n";
     $text .= "{精神}+{EDB}dx+{ＲＣ}\@10 〈ＲＣ〉判定\n";
-    $text .= "{精神}+{EDB}dx+{意思}\@10 〈意思〉判定\n";
+    $text .= "{精神}+{EDB}dx+{意志}\@10 〈意志〉判定\n";
     $text .= "{社会}+{EDB}dx+{交渉}\@10 〈交渉〉判定\n";
     $text .= "{社会}+{EDB}dx+{調達}\@10 〈調達〉判定\n";
     foreach my $num (1 .. $::pc{'skillNum'}){
@@ -46,6 +50,9 @@ sub palettePreset {
   if($tool eq 'bcdice') {
     $text =~ s/^(.+?)dx/\($1\)dx/mg;
   }
+  else {
+    $text .= "\n\@HP:$::pc{'maxHpTotal'}/$::pc{'maxHpTotal'} 侵蝕:$::pc{'baseEncroach'} 行動:$::pc{'initiativeTotal'}\n";
+  }
   
   return $text;
 }
@@ -73,7 +80,7 @@ sub paletteProperties {
   push @propaties, "//射撃=".($::pc{'skillRanged'}   ||0);
   push @propaties, "//知覚=".($::pc{'skillPercept'}  ||0);
   push @propaties, "//ＲＣ=".($::pc{'skillRC'}       ||0);
-  push @propaties, "//意思=".($::pc{'skillWill'}     ||0);
+  push @propaties, "//意志=".($::pc{'skillWill'}     ||0);
   push @propaties, "//交渉=".($::pc{'skillNegotiate'}||0);
   push @propaties, "//調達=".($::pc{'skillProcure'}  ||0);
   foreach my $name ('Ride','Art','Know','Info'){
