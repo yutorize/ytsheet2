@@ -1357,6 +1357,11 @@ print <<"HTML";
         透明　：<code>{{テキスト}}</code>：<span style="color:transparent">テキスト</span>（ドラッグ反転で見える）<br>
         リンク：<code>[[テキスト>URL]]</code><br>
         別シートへのリンク：<code>[テキスト#シートのID]</code><br>
+        <br>
+        アイコン<br>
+        　魔法のアイテム：<code>[魔]</code>：<img class="i-icon" src="${set::icon_dir}wp_magic.png"><br>
+        　刃武器　　　　：<code>[刃]</code>：<img class="i-icon" src="${set::icon_dir}wp_edge.png"><br>
+        　打撃武器　　　：<code>[打]</code>：<img class="i-icon" src="${set::icon_dir}wp_blow.png"><br>
         <hr>
         ※以下は複数行の欄でのみ有効です。<br>
         大見出し：行頭に<code>*</code><br>
