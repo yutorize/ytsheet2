@@ -121,17 +121,17 @@ table.status tbody tr:nth-child(even) td {
 
 /* // Parts
 ---------------------------------------------------------------------------------------------------- */
-div.parts {
+.parts {
   display: flex;
   flex-wrap: wrap;
   margin: 1rem;
   padding-left: .5em;
 }
-div.parts dl {
+.parts dl {
   display: flex;
   margin-right: 1.5em;
 }
-div.parts dl dt::after {
+.parts dl dt::after {
   content: ':';
   display: inline-block;
   width: 1em;
@@ -142,13 +142,13 @@ div.parts dl dt::after {
 
 /* // Skills
 ---------------------------------------------------------------------------------------------------- */
-div.skills {
+.skills {
   border: 0;
   margin: 1rem 0;
   background: none !important;
   box-shadow: none !important;
 }
-div.skills h2 {
+.skills h2 {
   padding: .3rem .5rem;
   background-color: rgba(127,127,127,0.4) !important;
   font-size: 110%;
@@ -156,20 +156,20 @@ div.skills h2 {
 
 /* // Loots
 ---------------------------------------------------------------------------------------------------- */
-div.loots {
+.loots {
   margin-top: 2em;
 }
-div.loots h2 {
+.loots h2 {
   font-size: 110%;
 }
-div.loots dl {
+.loots dl {
   display: grid;
   grid-template-columns: 6em 1fr;
   grid-template-rows: auto;
   border-width: 1px;
   border-style: solid;
 }
-div.loots dl > dt {
+.loots dl > dt {
   grid-column: 1;
   padding: .2rem;
   background-color: rgba(127,127,127,0.3);
@@ -177,7 +177,7 @@ div.loots dl > dt {
   border-style: solid;
   text-align: center;
 }
-div.loots dl > dd {
+.loots dl > dd {
   grid-column: 2;
   padding: .2rem .5rem;
   background-color: rgba(255,255,255,0.3);
@@ -187,20 +187,20 @@ div.loots dl > dd {
 .night div.loots dl > dd {
   background-color: rgba(0,0,0,0.3);
 }
-div.loots dl > dt:last-of-type,
-div.loots dl > dd:last-of-type {
+.loots dl > dt:last-of-type,
+.loots dl > dd:last-of-type {
   border-bottom-width: 0px;
 }
 
 /* // Description
 ---------------------------------------------------------------------------------------------------- */
-div.description {
+.description {
   margin-top: 1.5em;
   border: 0;
   background: none !important;
   box-shadow: none !important;
 }
-div.description h2 {
+.description h2 {
   border-width: 1px 0px;
   border-style: solid;
   font-size: 115%;

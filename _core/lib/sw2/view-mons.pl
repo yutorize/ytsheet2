@@ -39,11 +39,13 @@ foreach (keys %pc) {
   $pc{$_} = tag_unescape($pc{$_},$pc{'oldSignConv'});
 }
 $pc{'skills'} =~ s/<br>/\n/gi;
+$pc{'skills'} =~ s#(<p>|</p>|</details>)#$1\n#gi;
 $pc{'skills'} =~ s/^●(.*?)$/<\/p><h3>●$1<\/h3><p>/gim;
 $pc{'skills'} =~ s/^((?:[○◯〇△＞▶〆☆≫»□☑🗨]|&gt;&gt;)+)(.*?)([ 　]|$)/"<\/p><h5>".&text_convert_icon($1)."$2<\/h5><p>".$3;/egim;
 $pc{'skills'} =~ s/\n+<\/p>/<\/p>/gi;
 $pc{'skills'} =~ s/(^|<p(?:.*?)>|<hr(?:.*?)>)\n/$1/gi;
 $pc{'skills'} = "<p>$pc{'skills'}</p>";
+$pc{'skills'} =~ s#(</p>|</details>)\n#$1#gi;
 $pc{'skills'} =~ s/<p><\/p>//gi;
 $pc{'skills'} =~ s/\n/<br>/gi;
 

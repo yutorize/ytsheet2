@@ -176,13 +176,13 @@ div.data dl.effects table th {
 
 /* // Description
 ---------------------------------------------------------------------------------------------------- */
-div.description {
+.description {
   margin-top: 1.5em;
   border: 0;
   background: none;
   box-shadow: none;
 }
-div.description h2 {
+.description h2 {
   border-width: 1px 0px;
   border-style: solid;
   font-size: 115%;

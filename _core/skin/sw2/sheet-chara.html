@@ -225,40 +225,40 @@ window.onload = function() {
         <dl class="box" id="level">
           <dt>冒険者<span>レベル</span></dt><dd><TMPL_VAR level></dd>
         </dl>
-        <div class="box" id="exp">
-        <h2>経験点</h2>
-        <dl>
-          <dt>使用</dt><dd><TMPL_VAR expUsed></dd>
-          <dt>残り</dt><dd><TMPL_VAR expRest></dd>
-          <dt>総計</dt><dd><TMPL_VAR expTotal></dd>
-        </dl>
-        </div>
+        <section class="box" id="exp">
+          <h2>経験点</h2>
+          <dl>
+            <dt>使用</dt><dd><TMPL_VAR expUsed></dd>
+            <dt>残り</dt><dd><TMPL_VAR expRest></dd>
+            <dt>総計</dt><dd><TMPL_VAR expTotal></dd>
+          </dl>
+        </section>
       </div>
 
       <div id="area-ability" class="data-tables side-margin">
         <div id="area-classes">
-          <div class="box" id="classes">
+          <section class="box" id="classes">
             <h2>技能</h2>
             <dl>
               <TMPL_LOOP Classes>
               <dt><TMPL_VAR NAME></dt><dd><TMPL_VAR LV></dd>
               </TMPL_LOOP>
             </dl>
-          </div>
+          </section>
           <TMPL_IF CommonClasses>
-          <div class="box" id="common-classes">
+          <section class="box" id="common-classes">
             <h2>一般技能</h2>
             <dl>
               <TMPL_LOOP CommonClasses>
               <dt><TMPL_VAR NAME></dt><dd><TMPL_VAR LV></dd>
               </TMPL_LOOP>
             </dl>
-          </div>
+          </section>
           </TMPL_IF>
         </div>
 
         <div>
-          <div class="box" id="combat-feats">
+          <section class="box" id="combat-feats">
             <h2>戦闘特技</h2>
             <ul>
               <TMPL_LOOP CombatFeatsLv>
@@ -268,109 +268,109 @@ window.onload = function() {
               <li>《<TMPL_VAR NAME>》</li>
               </TMPL_LOOP>
             </ul>
-          </div>
+          </section>
           <TMPL_IF MysticArts>
-          <div class="box" id="mystic-arts">
+          <section class="box" id="mystic-arts">
             <h2>秘伝</h2>
             <ul>
               <TMPL_LOOP MysticArts>
               <li>《<TMPL_VAR NAME>》</li>
               </TMPL_LOOP>
             </ul>
-          </div>
+          </section>
           </TMPL_IF>
         </div>
         <div id="crafts">
-          <TMPL_IF MagicGramarye><div class="box" id="magic-gramarye">
+          <TMPL_IF MagicGramarye><section class="box" id="magic-gramarye">
             <h2>秘奥魔法</h2>
             <ul>
               <TMPL_LOOP MagicGramarye>
               <li id="magic-gramarye<TMPL_VAR __counter__>"><span data-ruby="<TMPL_VAR RUBY>">【<TMPL_VAR NAME>】</span></li>
               </TMPL_LOOP>
             </ul>
-          </div></TMPL_IF>
-          <TMPL_IF CraftEnhance><div class="box" id="craft-enhance">
+          </section></TMPL_IF>
+          <TMPL_IF CraftEnhance><section class="box" id="craft-enhance">
             <h2>練技</h2>
             <ul>
               <TMPL_LOOP CraftEnhance>
               <li id="craft-enhance<TMPL_VAR __counter__>">【<TMPL_VAR NAME>】</li>
               </TMPL_LOOP>
             </ul>
-          </div></TMPL_IF>
-          <TMPL_IF CraftSong><div class="box" id="craft-song">
+          </section></TMPL_IF>
+          <TMPL_IF CraftSong><section class="box" id="craft-song">
             <h2>呪歌</h2>
             <ul>
               <TMPL_LOOP CraftSong>
               <li id="craft-enhance<TMPL_VAR __counter__>">【<TMPL_VAR NAME>】</li>
               </TMPL_LOOP>
             </ul>
-          </div></TMPL_IF>
-          <TMPL_IF CraftRiding><div class="box" id="craft-riding">
+          </section></TMPL_IF>
+          <TMPL_IF CraftRiding><section class="box" id="craft-riding">
             <h2>騎芸</h2>
             <ul>
               <TMPL_LOOP CraftRiding>
               <li id="craft-riding<TMPL_VAR __counter__>">【<TMPL_VAR NAME>】</li>
               </TMPL_LOOP>
             </ul>
-          </div></TMPL_IF>
-          <TMPL_IF CraftAlchemy><div class="box" id="craft-alchemy">
+          </section></TMPL_IF>
+          <TMPL_IF CraftAlchemy><section class="box" id="craft-alchemy">
             <h2>賦術</h2>
             <ul>
               <TMPL_LOOP CraftAlchemy>
               <li id="craft-alchemy<TMPL_VAR __counter__>">【<TMPL_VAR NAME>】</li>
               </TMPL_LOOP>
             </ul>
-          </div></TMPL_IF>
-          <TMPL_IF CraftCommand><div class="box" id="craft-command">
+          </section></TMPL_IF>
+          <TMPL_IF CraftCommand><section class="box" id="craft-command">
             <h2>鼓咆</h2>
             <ul>
               <TMPL_LOOP CraftCommand>
               <li id="craft-command<TMPL_VAR __counter__>">【<TMPL_VAR NAME>】</li>
               </TMPL_LOOP>
             </ul>
-          </div></TMPL_IF>
-          <TMPL_IF CraftDivination><div class="box" id="craft-divination">
+          </section></TMPL_IF>
+          <TMPL_IF CraftDivination><section class="box" id="craft-divination">
             <h2>占瞳</h2>
             <ul>
               <TMPL_LOOP CraftDivination>
               <li id="craft-divination<TMPL_VAR __counter__>">【<TMPL_VAR NAME>】</li>
               </TMPL_LOOP>
             </ul>
-          </div></TMPL_IF>
-          <TMPL_IF CraftPotential><div class="box" id="craft-potential">
+          </section></TMPL_IF>
+          <TMPL_IF CraftPotential><section class="box" id="craft-potential">
             <h2>魔装</h2>
             <ul>
               <TMPL_LOOP CraftPotential>
               <li id="craft-potential<TMPL_VAR __counter__>">【<TMPL_VAR NAME>】</li>
               </TMPL_LOOP>
             </ul>
-          </div></TMPL_IF>
-          <TMPL_IF CraftSeal><div class="box" id="craft-seal">
+          </section></TMPL_IF>
+          <TMPL_IF CraftSeal><section class="box" id="craft-seal">
             <h2>呪印</h2>
             <ul>
               <TMPL_LOOP CraftSeal>
               <li id="craft-seal<TMPL_VAR __counter__>">【<TMPL_VAR NAME>】</li>
               </TMPL_LOOP>
             </ul>
-          </div></TMPL_IF>
-          <TMPL_IF CraftDignity><div class="box" id="craft-dignity">
+          </section></TMPL_IF>
+          <TMPL_IF CraftDignity><section class="box" id="craft-dignity">
             <h2>貴格</h2>
             <ul>
               <TMPL_LOOP CraftDignity>
               <li id="craft-dignity<TMPL_VAR __counter__>">【<TMPL_VAR NAME>】</li>
               </TMPL_LOOP>
             </ul>
-          </div></TMPL_IF>
-          <TMPL_IF craftNone><div class="box">
+          </section></TMPL_IF>
+          <TMPL_IF craftNone><section class="box">
             <h2>練技／呪歌／騎芸／賦術</h2>
             <ul><li>なし</li></ul>
-          </div></TMPL_IF>
+          </section></TMPL_IF>
         </div>
       </div>
       </div><!-- / COLUMN -->
       <div id="area-actions">
         <div id="area-package">
-          <div class="box" id="package">
+          <section class="box" id="package">
             <h2>判定パッケージ</h2>
             <table class="data-table side-margin line-tbody">
             <TMPL_IF lvSco><tbody>
@@ -453,7 +453,7 @@ window.onload = function() {
             </tbody></TMPL_IF>
             </table>
             <TMPL_UNLESS PackageLv><p>なし</p></TMPL_UNLESS>
-          </div>
+          </section>
         </div>
         <div id="area-other-actions">
           <dl class="box" id="monster-lore">
@@ -470,7 +470,7 @@ window.onload = function() {
             <dt>全力移動</dt><dd><b><TMPL_VAR mobilityFull></b> m</dd>
           </dl>
         </div>
-        <div class="box" id="language">
+        <section class="box" id="language">
           <h2>言語</h2>
           <table class="data-table side-margin">
             <thead>
@@ -484,29 +484,32 @@ window.onload = function() {
               </tr></TMPL_LOOP>
             </tbody>
           </table>
-        </div>
+        </section>
         <TMPL_IF MagicPowers>
-        <div class="box" id="magic-power">
-          <h2>魔力<TMPL_IF lvBar>／奏力</TMPL_IF></h2>
-          <TMPL_IF  magicPowerAdd><p id="magic-power-add">+<TMPL_VAR  magicPowerAdd></p></TMPL_IF>
-          <table class="data-table side-margin">
-            <TMPL_LOOP MagicPowers>
-            <tr>
-              <th><TMPL_VAR NAME></th>
-              <th><TMPL_VAR MAGIC></th>
+        <section class="box" id="magic-power">
+          <h2><TMPL_VAR MagicPowerHeader></h2>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th></th><th></th><th><TMPL_VAR MagicPowerThPow></th><th class="small"><TMPL_VAR MagicPowerThAct><br>基準値</th><th class="small">ダメージ<br>上昇効果</th><th>専用</th>
+              </tr>
+            </thead>
+            <TMPL_LOOP MagicPowers><tr>
+              <td><TMPL_VAR NAME></td>
+              <td><TMPL_VAR MAGIC></td>
+              <td class="num"><TMPL_VAR POWER></td>
+              <td class="num"><TMPL_VAR CAST></td>
+              <td class="num"><TMPL_VAR DAMAGE></td>
               <td><TMPL_VAR OWN></td>
-              <td><TMPL_VAR ADD></td>
-              <td><TMPL_VAR NUM></td>
-            </tr>
-            </TMPL_LOOP>
+            </tr></TMPL_LOOP>
           </table>
-        </div>
+        </section>
         </TMPL_IF>
       </div>
       <div class="column"><!-- COLUMN -->
       <div id="area-equipment">
         <TMPL_IF Weapons>
-        <div class="box" id="attack-classes">
+        <section class="box" id="attack-classes">
           <table class="data-table">
             <thead>
               <tr>
@@ -529,8 +532,8 @@ window.onload = function() {
               </tr></TMPL_LOOP>
             </tbody>
           </table>
-        </div>
-        <div class="box" id="weapons">
+        </section>
+        <section class="box" id="weapons">
           <table class="data-table line-tbody">
             <thead>
               <tr>
@@ -559,10 +562,10 @@ window.onload = function() {
               </tr>
             </TMPL_LOOP></tbody>
           </table>
-        </div>
+        </section>
         </TMPL_IF>
         
-        <div class="box" id="evasion-classes">
+        <section class="box" id="evasion-classes">
           <table class="data-table">
             <thead>
               <tr>
@@ -581,8 +584,8 @@ window.onload = function() {
               </tr></TMPL_LOOP>
             </tbody>
           </table>
-        </div>
-        <div class="box" id="armours">
+        </section>
+        <section class="box" id="armours">
           <table class="data-table">
             <thead>
               <tr>
@@ -630,8 +633,8 @@ window.onload = function() {
               </tr>
             </tbody>
           </table>
-        </div>
-        <div class="box" id="accessories">
+        </section>
+        <section class="box" id="accessories">
           <table class="data-table">
             <thead>
               <tr>
@@ -650,7 +653,7 @@ window.onload = function() {
               </tr></TMPL_LOOP>
             </tbody>
           </table>
-        </div>
+        </section>
       </div>
       </div><!-- / COLUMN -->
       <div id="area-items">
@@ -659,13 +662,13 @@ window.onload = function() {
             <dt>所持金</dt><dd><TMPL_VAR money> G</dd>
             <dt>預金／借金</dt><dd><TMPL_VAR deposit> G</dd>
           </dl>
-          <div class="box" id="items">
+          <section class="box" id="items">
             <h2><TMPL_IF head_items><TMPL_VAR head_items><TMPL_ELSE>所持品</TMPL_IF></h2>
             <p><TMPL_VAR items></p>
-          </div>
+          </section>
         </div>
         <div id="area-items-R">
-          <TMPL_IF lvAlc><div class="box" id="material-cards">
+          <TMPL_IF lvAlc><section class="box" id="material-cards">
             <h2>マテリアルカード</h2>
             <table class="data-table">
             <thead>
@@ -679,18 +682,18 @@ window.onload = function() {
               <TMPL_IF cardGolView><tr class="cards-gol"><th>金</th><td><TMPL_VAR cardGolB></td><td><TMPL_VAR cardGolA></td><td><TMPL_VAR cardGolS></td><td><TMPL_VAR cardGolSS></td></tr></TMPL_IF>
             </tbody>
             </table>
-          </div></TMPL_IF>
+          </section></TMPL_IF>
           <TMPL_IF BattleItems>
-          <div class="box" id="battle-items">
+          <section class="box" id="battle-items">
             <h2>戦闘用アイテム</h2>
             <ul class="data-table side-margin"><TMPL_LOOP BattleItems><li><TMPL_VAR ITEM DEFAULT="&nbsp;"></li></TMPL_LOOP></ul>
-          </div>
+          </section>
           </TMPL_IF>
           <dl class="box" id="honor">
             <dt>名誉点</dt><dd><TMPL_VAR honor></dd>
             <dt>ランク</dt><dd><TMPL_VAR rank></dd>
           </dl>
-          <div class="box honor-items" id="honor-items">
+          <section class="box honor-items" id="honor-items">
             <h2>名誉アイテム</h2>
             <table class="data-table side-margin">
               <thead>
@@ -702,13 +705,13 @@ window.onload = function() {
                 <TMPL_LOOP HonorItems><tr><td class="left"><TMPL_VAR NAME></td><td><TMPL_VAR PT></td></tr></TMPL_LOOP>
               </tbody>
             </table>
-          </div>
+          </section>
           <TMPL_IF DishonorItems>
           <dl class="box" id="dishonor">
             <dt>不名誉点</dt><dd><TMPL_VAR dishonor></dd>
             <dt>不名誉称号</dt><dd><TMPL_VAR notoriety></dd>
           </dl>
-          <div class="box honor-items" id="dishonor-items">
+          <section class="box honor-items" id="dishonor-items">
             <h2>不名誉詳細</h2>
             <table class="data-table side-margin">
               <thead><tr><th></th><th>点数</th></tr></thead>
@@ -716,21 +719,21 @@ window.onload = function() {
                 <TMPL_LOOP DishonorItems><tr><td class="left"><TMPL_VAR NAME></td><td><TMPL_VAR PT></td></tr></TMPL_LOOP>
               </tbody>
             </table>
-          </div>
+          </section>
           </TMPL_IF>
         </div>
       </div>
-      <div class="box" id="free-note">
+      <section class="box" id="free-note">
         <h2><TMPL_IF head_freeNote><TMPL_VAR head_freeNote><TMPL_ELSE>容姿・経歴・その他メモ</TMPL_IF></h2>
         <p><TMPL_VAR freeNote></p>
-      </div>
+      </section>
       <TMPL_IF freeHistory>
-      <div class="box" id="free-history">
+      <section class="box" id="free-history">
         <h2><TMPL_IF head_freeHistory><TMPL_VAR head_freeHistory><TMPL_ELSE>履歴</TMPL_IF></h2>
         <p><TMPL_VAR freeHistory></p>
-      </div>
+      </section>
       </TMPL_IF>
-      <div class="box" id="history">
+      <section class="box" id="history">
         <h2>セッション履歴</h2>
         <table class="data-table line-tbody">
           <thead>
@@ -763,17 +766,23 @@ window.onload = function() {
           </tr></TMPL_IF>
           </tbody></TMPL_LOOP>
         </table>
-      </div>
+      </section>
       <TMPL_IF cashbook>
-      <div class="box" id="cashbook">
+      <section class="box" id="cashbook">
         <h2>収支履歴</h2>
         <div><p><TMPL_VAR cashbook></p></div>
-      </div>
+      </section>
       </TMPL_IF>
-      <div class="box chat-palette">
+      <section class="box chat-palette">
         <h2>チャットパレット</h2>
-        <iframe src="./?mode=palette&id=<TMPL_VAR id>"></iframe>
-      </div>
+        <p>
+          使用ダイスbot: 
+          <a href="./?mode=palette&id=<TMPL_VAR id>" target="palette">ゆとチャadv.</a>
+          ／
+          <a href="./?mode=palette&id=<TMPL_VAR id>&tool=bcdice" target="palette">BCDice</a>
+        </p>
+        <iframe src="./?mode=palette&id=<TMPL_VAR id>" name="palette"></iframe>
+      </section>
     </article>
     <!-- フェロー -->
     <article id="fellow" <TMPL_UNLESS FellowMode> style="display:none"</TMPL_UNLESS>>

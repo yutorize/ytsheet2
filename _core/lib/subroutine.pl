@@ -285,7 +285,7 @@ sub tag_unescape_lines {
   $d_count += ($text =~ s/^\[&gt;\]\*(.*?)$/<\/p><details><summary class="header1">$1<\/summary><div class="detail-body"><p>/gim);
   $d_count += ($text =~ s/^\[&gt;\](.+?)$/<\/p><details><summary>$1<\/summary><div class="detail-body"><p>/gim);
   $d_count += ($text =~ s/^\[&gt;\]$/<\/p><details><summary>詳細<\/summary><div class="detail-body"><p>/gim);
-  $d_count -= ($text =~ s/^\[-{3,}\]\n?$/<\/div><\/details>/gim);
+  $d_count -= ($text =~ s/^\[-{3,}\]\n?$/<\/p><\/div><\/details><p>/gim);
   
   $text =~ s/^-{4,}$/<\/p><hr><p>/gim;  
   $text =~ s/^( \*){4,}$/<\/p><hr class="dotted"><p>/gim;
@@ -311,7 +311,7 @@ sub tag_unescape_lines {
   $text =~ s/<p><\/p>//gi;
   $text =~ s/\n/&lt;br&gt;/gi;
   
-  while($d_count) {
+  while($d_count > 0) {
     $text .= "</div></details>";
     $d_count--;
   }
@@ -349,6 +349,11 @@ sub tag_delete {
   $text =~ s/<img alt="&#91;(.)&#93;"/[$1]<img /g;
   $text =~ s/<.+?>//g;
   return $text;
+}
+sub name_plain {
+  my($name, undef) = split(/:/,shift);
+  $name =~ s#<rt>.*?</rt>|<rp>.*?</rp>##g;
+  return $name;
 }
 
 ### RGB>HSL --------------------------------------------------

@@ -185,8 +185,28 @@ dl.box > dt,
   font-weight: normal;
 }
 .box details summary:not([class]) {
-  padding-left: 5px;
+  padding-left: .5em;
   font-weight: normal;
+}
+.box .header1 + .detail-body,
+.box .header2 + .detail-body,
+.box .header3 + .detail-body,
+.box .header4 + .detail-body {
+  margin-top: .0em !important;
+}
+.box .detail-body h2:first-child,
+.box .detail-body h3:first-child,
+.box .detail-body h4:first-child,
+.box .detail-body h5:first-child {
+  margin-top: 0 !important;
+}
+.box .detail-body h3:first-child,
+.box .detail-body h4:first-child,
+.box .detail-body h5:first-child {
+  padding-top: .4em !important;
+}
+.box details + details {
+  margin-top: 0em;
 }
 
 .box hr {
@@ -204,6 +224,7 @@ dl.box > dt,
   border-style: dashed;
 }
 .box h2:nth-child(n+2),
+.box details h2,
 .box .header1 {
   margin: 1.8em 0 -1em;
   padding-bottom: 1em;

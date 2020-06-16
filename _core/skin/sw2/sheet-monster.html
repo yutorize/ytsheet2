@@ -162,22 +162,22 @@ window.onload = function() {
         <dl><dt>コア部位</dt><dd><TMPL_VAR coreParts></dd></dl>
       </div>
       </TMPL_IF>
-      <div class="box skills">
+      <section class="box skills">
         <h2>特殊能力</h2>
         <TMPL_VAR skills>
-      </div>
+      </section>
       <TMPL_IF Loots>
-      <div class="loots">
+      <section class="loots">
         <h2>戦利品</h2>
         <dl>
           <TMPL_LOOP Loots><dt><TMPL_VAR NUM></dt><dd><TMPL_VAR ITEM></dd></TMPL_LOOP>
         </dl>
-      </div>
+      </section>
       </TMPL_IF>
-      <div class="box description">
+      <section class="box description">
         <h2>解説</h2>
         <p><TMPL_VAR description></p>
-      </div>
+      </section>
       <div id="author">
         製作者：<TMPL_VAR author>
       </div>

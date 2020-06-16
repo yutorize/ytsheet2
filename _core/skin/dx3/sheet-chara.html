@@ -193,16 +193,16 @@ window.onload = function() {
           </dl>
         </div>
         
-        <div class="box" id="exp">
+        <section class="box" id="exp">
         <h2>経験点</h2>
         <dl>
           <dt>使用</dt><dd><TMPL_VAR expUsed></dd>
           <dt>残り</dt><dd><TMPL_VAR expRest></dd>
           <dt>総計</dt><dd><TMPL_VAR expTotal></dd>
         </dl>
-        </div>
+        </section>
         
-        <div class="box" id="lifepath">
+        <section class="box" id="lifepath">
           <h2>ライフパス</h2>
           <table class="data-table line-tbody">
             <tbody>
@@ -265,10 +265,10 @@ window.onload = function() {
               <tr><th class="right">侵蝕率基本値</th><td class="center bold"><TMPL_VAR baseEncroach></td></tr>
             </tbody>
           </table>
-        </div>
+        </section>
       </div>
 
-      <div class="box" id="status">
+      <section class="box" id="status">
         <h2>能力値</h2>
         <table>
           <thead>
@@ -298,9 +298,9 @@ window.onload = function() {
             <td class="left"><TMPL_VAR INFO></td><td class="right"><TMPL_VAR INFOLV></td>
           </tr></TMPL_LOOP>
         </table>
-      </div>
+      </section>
       
-      <div class="box" id="lois">
+      <section class="box" id="lois">
         <h2>ロイス</h2>
         <table class="data-table">
           <thead>
@@ -325,9 +325,9 @@ window.onload = function() {
             </tr></TMPL_LOOP>
           </tbody>
         </table>
-      </div>
+      </section>
       
-      <TMPL_IF Memories><div class="box" id="memory">
+      <TMPL_IF Memories><section class="box" id="memory">
         <h2>メモリー</h2>
         <table class="data-table">
           <thead>
@@ -342,12 +342,12 @@ window.onload = function() {
             </tr></TMPL_LOOP>
           </tbody>
         </table>
-      </div></TMPL_IF>
+      </section></TMPL_IF>
       
       </div><!-- / COLUMN -->
       
       <div id="area-battle">
-        <div class="box effects" id="effect">
+        <section class="box effects" id="effect">
           <h2>エフェクト</h2>
           <span class="open-button" onclick="effectNoteFullOpen();">▼効果全展開</span>
           <table class="data-table line-tbody">
@@ -370,7 +370,7 @@ window.onload = function() {
               <tr><td class="left" colspan="9"><TMPL_VAR NOTE></td></tr>
             </tbody></TMPL_LOOP>
           </table>
-        </div>
+        </section>
         <script>
         let effectNoteOpenFlag = 0;
         function effectNoteFullOpen(){
@@ -380,7 +380,7 @@ window.onload = function() {
         }
         </script>
         
-        <div class="box" id="combo">
+        <section class="box" id="combo">
           <h2>コンボ</h2>
           <table class="data-table line-tbody">
             <colgroup><col><col><col><col><col><col><col><col><col><col><col></colgroup>
@@ -430,10 +430,10 @@ window.onload = function() {
               </tr></TMPL_IF>
             </tbody></TMPL_LOOP>
           </table>
-        </div>
+        </section>
         
         <div class="box-union" id="items">
-          <TMPL_IF Weapons><div class="box">
+          <TMPL_IF Weapons><section class="box">
             <table class="data-table">
               <thead>
                 <tr><th>武器</th><th>常備化</th><th>経験点</th><th>種別</th><th>技能</th><th>命中</th><th>攻撃力</th><th><span class="small">ガード<br>値</span></th><th>射程</th><th>解説</th></tr>
@@ -453,8 +453,8 @@ window.onload = function() {
                 </tr></TMPL_LOOP>
               </tbody>
             </table>
-          </div></TMPL_IF>
-          <TMPL_IF Armors><div class="box">
+          </section></TMPL_IF>
+          <TMPL_IF Armors><section class="box">
             <table class="data-table">
               <thead>
                 <tr><th>防具</th><th>常備化</th><th>経験点</th><th>種別</th><th></th><th>行動</th><th>ドッジ</th><th>装甲値</th><th>解説</th></tr>
@@ -473,8 +473,8 @@ window.onload = function() {
                 </tr></TMPL_LOOP>
               </tbody>
             </table>
-          </div></TMPL_IF>
-          <TMPL_IF Vehicles><div class="box">
+          </section></TMPL_IF>
+          <TMPL_IF Vehicles><section class="box">
             <table class="data-table">
               <thead>
                 <tr><th>ヴィークル</th><th>常備化</th><th>経験点</th><th>種別</th><th>技能</th><th>行動</th><th>攻撃力</th><th>装甲値</th><th><span class="small">全力<br>移動</span></th><th>解説</th></tr>
@@ -494,8 +494,8 @@ window.onload = function() {
                 </tr></TMPL_LOOP>
               </tbody>
             </table>
-          </div></TMPL_IF>
-          <TMPL_IF Items><div class="box">
+          </section></TMPL_IF>
+          <TMPL_IF Items><section class="box">
             <table class="data-table">
               <thead>
                 <tr><th>一般アイテム</th><th>常備化</th><th>経験点</th><th>種別</th><th>技能</th><th>解説</th></tr>
@@ -511,10 +511,10 @@ window.onload = function() {
                 </tr></TMPL_LOOP>
               </tbody>
             </table>
-          </div></TMPL_IF>
+          </section></TMPL_IF>
         </div>
         
-        <div class="box" id="exps">
+        <section class="box" id="exps">
           <h2>経験点計算</h2>
           <table>
             <thead>
@@ -540,7 +540,7 @@ window.onload = function() {
               </tr>
             </tbody>
           </table>
-        </div>
+        </section>
       </div>
       </div><!-- / COLUMN -->
       <div id="enc-bonus">
@@ -629,17 +629,17 @@ window.onload = function() {
         
       }
       </script>
-      <div class="box" id="free-note">
+      <section class="box" id="free-note">
         <h2><TMPL_IF head_freeNote><TMPL_VAR head_freeNote><TMPL_ELSE>容姿・経歴・その他メモ</TMPL_IF></h2>
         <p><TMPL_VAR freeNote></p>
-      </div>
+      </section>
       <TMPL_IF freeHistory>
-      <div class="box" id="free-history">
+      <section class="box" id="free-history">
         <h2><TMPL_IF head_freeHistory><TMPL_VAR head_freeHistory><TMPL_ELSE>履歴</TMPL_IF></h2>
         <p><TMPL_VAR freeHistory></p>
-      </div>
+      </section>
       </TMPL_IF>
-      <div class="box" id="history">
+      <section class="box" id="history">
         <h2>セッション履歴</h2>
         <table class="data-table line-tbody">
           <thead>
@@ -666,17 +666,17 @@ window.onload = function() {
             </tr></TMPL_IF>
           </tbody></TMPL_LOOP>
         </table>
-      </div>
-      <div class="box chat-palette">
+      </section>
+      <section class="box chat-palette">
         <h2>チャットパレット</h2>
         <p>
-          仕様ダイスbot: 
+          使用ダイスbot: 
           <a href="./?mode=palette&id=<TMPL_VAR id>" target="palette">ゆとチャadv.</a>
           ／
           <a href="./?mode=palette&id=<TMPL_VAR id>&tool=bcdice" target="palette">BCDice</a>
         </p>
         <iframe src="./?mode=palette&id=<TMPL_VAR id>" name="palette"></iframe>
-      </div>
+      </section>
     </article>
     <div class="back-button"><a href="./">⏎</a></div>
     <div id="image-box" onclick="closeImage()">
