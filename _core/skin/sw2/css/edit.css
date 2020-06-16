@@ -730,10 +730,13 @@ td .switch-button {
 #magic-power table {
   margin-top: -1.2em !important;
 }
-#magic-power table th:nth-child(2) {
+#magic-power table td input[type=number] {
+  width: 3.5em;
+}
+#magic-power table td:nth-child(2) {
   width: 13em;
 }
-#magic-power table th:nth-child(2) input {
+#magic-power table td:nth-child(2) input {
   width: 10em;
 }
 #magic-power table td:nth-child(3) {
@@ -742,16 +745,33 @@ td .switch-button {
   border-width: 0 1px;
   border-style: none dotted;
   font-size: 85%;
-}
-#magic-power table td:nth-child(3) input {
-  vertical-align: middle;
-}
-#magic-power table td:nth-child(4) {
-  width: 5.5em;
   text-align: left;
 }
-#magic-power table td:nth-child(4) input {
-  width: 3.5em;
+#magic-power table td:nth-child(3) input {
+  vertical-align: text-bottom;
+}
+#magic-power table td:nth-child(3) label {
+  line-height: 1;
+}
+#magic-power table td:nth-child(4),
+#magic-power table td:nth-child(5),
+#magic-power table td:nth-child(6) {
+  width: max-content !important;
+  padding-right: .2em;
+  text-align: left;
+}
+#magic-power table td b {
+  display: inline-block;
+  min-width: 2.5em;
+  padding-right : .2em;
+  font-size: 1.6rem;
+  line-height: 1.6;
+  font-weight: normal;
+  text-align: center;
+  white-space: nowrap;
+}
+#magic-power #magic-power-hr td {
+  height: .5em;
 }
 @media screen and (max-width:735px){
   #magic-power {

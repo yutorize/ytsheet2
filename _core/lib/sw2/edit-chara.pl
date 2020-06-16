@@ -811,92 +811,114 @@ print <<"HTML";
           @{[input('languageNum','hidden')]}
         </div>
         <div class="box" id="magic-power">
-          <h2>魔力／奏力／他</h2>
-          <table class="edit-table side-margin">
+          <h2>魔法／呪歌／賦術など</h2>
+          <table class="edit-table line-tbody">
             <thead>
             <tr>
-              <th></th><th>魔法</th><th>専用化</th><th>魔力修正</th><th></th>
+              <th></th><th></th><th>専用化</th><th>魔力／奏力</th><th>行使<small>／演奏など</small></th><th class="small">ダメージ<br>上昇効果</th>
             </tr>
             </thead>
-            <tr>
-              <th></th>
-              <th>魔法全般</th>
+            <tr id="magic-power-magicenhance">
+              <td>《魔力強化》</td>
+              <td>魔法全般</td>
+              <td></td>
+              <td class="center">+<span id="magic-power-magicenhance-value">0</span></td>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr id="magic-power-common">
+              <td>装備補正など</td>
+              <td>魔法全般</td>
               <td></td>
               <td>+@{[ input 'magicPowerAdd','number','calcMagic' ]}</td>
-              <td></td>
+              <td>+@{[ input 'magicCastAdd','number','calcMagic' ]}</td>
+              <td>+@{[ input 'magicDamageAdd','number','calcMagic' ]}</td>
             </tr>
             <tr@{[ display $pc{'lvSor'} ]} id="magic-power-sorcerer">
-              <th>ソーサラー</th>
-              <th>真語魔法</th>
-              <td>@{[ input 'magicPowerOwnSor', 'checkbox','calcMagic' ]}知力+2</td>
-              <td>+@{[ input 'magicPowerAddSor', 'number','calcMagic' ]}=</td>
-              <td id="magic-power-sorcerer-value">0</td>
+              <td>ソーサラー</td>
+              <td>真語魔法</td>
+              <td><label>@{[ input 'magicPowerOwnSor', 'checkbox','calcMagic' ]}知力+2</label></td>
+              <td>+@{[ input 'magicPowerAddSor',  'number','calcMagic' ]}=<b id="magic-power-sorcerer-value">0</b></td>
+              <td>+@{[ input 'magicCastAddSor',   'number','calcMagic' ]}=<b id="magic-cast-sorcerer-value" >0</b></td>
+              <td>+@{[ input 'magicDamageAddSor', 'number','calcMagic' ]}=<b id="magic-damage-sorcerer-value" >0</b></td>
             </tr>
             <tr@{[ display $pc{'lvCon'} ]} id="magic-power-conjurer">
-              <th>コンジャラー</th>
-              <th>操霊魔法</th>
-              <td>@{[ input 'magicPowerOwnCon', 'checkbox','calcMagic' ]}知力+2</td>
-              <td>+@{[ input 'magicPowerAddCon', 'number','calcMagic' ]}=</td>
-              <td id="magic-power-conjurer-value">0</td>
+              <td>コンジャラー</td>
+              <td>操霊魔法</td>
+              <td><label>@{[ input 'magicPowerOwnCon', 'checkbox','calcMagic' ]}知力+2</label></td>
+              <td>+@{[ input 'magicPowerAddCon',  'number','calcMagic' ]}=<b id="magic-power-conjurer-value">0</b></td>
+              <td>+@{[ input 'magicCastAddCon',   'number','calcMagic' ]}=<b id="magic-cast-conjurer-value" >0</b></td>
+              <td>+@{[ input 'magicDamageAddCon', 'number','calcMagic' ]}=<b id="magic-damage-conjurer-value" >0</b></td>
             </tr>
             <tr@{[ display $pc{'lvPri'} ]} id="magic-power-priest">
-              <th>プリースト</th>
-              <th>神聖魔法</th>
-              <td>@{[ input 'magicPowerOwnPri', 'checkbox','calcMagic' ]}知力+2</td>
-              <td>+@{[ input 'magicPowerAddPri', 'number','calcMagic' ]}=</td>
-              <td id="magic-power-priest-value">0</td>
+              <td>プリースト</td>
+              <td>神聖魔法</td>
+              <td><label>@{[ input 'magicPowerOwnPri', 'checkbox','calcMagic' ]}知力+2</label></td>
+              <td>+@{[ input 'magicPowerAddPri',  'number','calcMagic' ]}=<b id="magic-power-priest-value">0</b></td>
+              <td>+@{[ input 'magicCastAddPri',   'number','calcMagic' ]}=<b id="magic-cast-priest-value" >0</b></td>
+              <td>+@{[ input 'magicDamageAddPri', 'number','calcMagic' ]}=<b id="magic-damage-priest-value" >0</b></td>
             </tr>
             <tr@{[ display $pc{'lvFai'} ]} id="magic-power-fairytamer">
-              <th>フェアリーテイマー</th>
-              <th>
+              <td>フェアリーテイマー</td>
+              <td>
                 妖精魔法<br>
                 属性: @{[ input 'ftElemental', 'text', '', 'placeholder="例）土／炎／風／光"' ]}
-              </th>
-              <td>@{[ input 'magicPowerOwnFai', 'checkbox','calcMagic' ]}知力+2</td>
-              <td>+@{[ input 'magicPowerAddFai', 'number','calcMagic' ]}=</td>
-              <td id="magic-power-fairytamer-value">0</td>
+              </td>
+              <td><label>@{[ input 'magicPowerOwnFai', 'checkbox','calcMagic' ]}知力+2</label></td>
+              <td>+@{[ input 'magicPowerAddFai',  'number','calcMagic' ]}=<b id="magic-power-fairytamer-value">0</b></td>
+              <td>+@{[ input 'magicCastAddFai',   'number','calcMagic' ]}=<b id="magic-cast-fairytamer-value" >0</b></td>
+              <td>+@{[ input 'magicDamageAddFai', 'number','calcMagic' ]}=<b id="magic-damage-fairytamer-value" >0</b></td>
             </tr>
             <tr@{[ display $pc{'lvMag'} ]} id="magic-power-magitech">
-              <th>マギテック</th>
-              <th>魔動機術</th>
-              <td>@{[ input 'magicPowerOwnMag', 'checkbox','calcMagic' ]}知力+2</td>
-              <td>+@{[ input 'magicPowerAddMag', 'number','calcMagic' ]}=</td>
-              <td id="magic-power-magitech-value">0</td>
+              <td>マギテック</td>
+              <td>魔動機術</td>
+              <td><label>@{[ input 'magicPowerOwnMag', 'checkbox','calcMagic' ]}知力+2</label></td>
+              <td>+@{[ input 'magicPowerAddMag',  'number','calcMagic' ]}=<b id="magic-power-magitech-value">0</b></td>
+              <td>+@{[ input 'magicCastAddMag',   'number','calcMagic' ]}=<b id="magic-cast-magitech-value" >0</b></td>
+              <td>+@{[ input 'magicDamageAddMag', 'number','calcMagic' ]}=<b id="magic-damage-magitech-value" >0</b></td>
             </tr>
             <tr@{[ display $pc{'lvDem'} ]} id="magic-power-demonruler">
-              <th>デーモンルーラー</th>
-              <th>召異魔法</th>
-              <td>@{[ input 'magicPowerOwnDem', 'checkbox','calcMagic' ]}知力+2</td>
-              <td>+@{[ input 'magicPowerAddDem', 'number','calcMagic' ]}=</td>
-              <td id="magic-power-demonruler-value">0</td>
+              <td>デーモンルーラー</td>
+              <td>召異魔法</td>
+              <td><label>@{[ input 'magicPowerOwnDem', 'checkbox','calcMagic' ]}知力+2</label></td>
+              <td>+@{[ input 'magicPowerAddDem',  'number','calcMagic' ]}=<b id="magic-power-demonruler-value">0</b></td>
+              <td>+@{[ input 'magicCastAddDem',   'number','calcMagic' ]}=<b id="magic-cast-demonruler-value" >0</b></td>
+              <td>+@{[ input 'magicDamageAddDem', 'number','calcMagic' ]}=<b id="magic-damage-demonruler-value" >0</b></td>
             </tr>
             <tr@{[ display $pc{'lvGri'} ]} id="magic-power-grimoir">
-              <th>グリモワール</th>
-              <th>秘奥魔法</th>
-              <td>@{[ input 'magicPowerOwnGri', 'checkbox','calcMagic' ]}知力+2</td>
-              <td>+@{[ input 'magicPowerAddGri', 'number','calcMagic' ]}=</td>
-              <td id="magic-power-grimoir-value">0</td>
+              <td>グリモワール</td>
+              <td>秘奥魔法</td>
+              <td><label>@{[ input 'magicPowerOwnGri', 'checkbox','calcMagic' ]}知力+2</label></td>
+              <td>+@{[ input 'magicPowerAddGri',  'number','calcMagic' ]}=<b id="magic-power-grimoir-value">0</b></td>
+              <td>+@{[ input 'magicCastAddGri',   'number','calcMagic' ]}=<b id="magic-cast-grimoir-value" >0</b></td>
+              <td>+@{[ input 'magicDamageAddGri', 'number','calcMagic' ]}=<b id="magic-damage-grimoir-value" >0</b></td>
+            </tr>
+            <tr id="magic-power-hr">
+              <td colspan="8"></td>
             </tr>
             <tr@{[ display $pc{'lvBar'} ]} id="magic-power-bard">
-              <th>バード</th>
-              <th>呪歌</th>
-              <td>@{[ input 'magicPowerOwnBar', 'checkbox','calcMagic' ]}精神力+2</td>
-              <td>+@{[ input 'magicPowerAddBar', 'number','calcMagic' ]}=</td>
-              <td id="magic-power-bard-value">0</td>
+              <td>バード</td>
+              <td>呪歌</td>
+              <td><label>@{[ input 'magicPowerOwnBar', 'checkbox','calcMagic' ]}精神力+2</label></td>
+              <td>+@{[ input 'magicPowerAddBar',  'number','calcMagic' ]}=<b id="magic-power-bard-value">0</b></td>
+              <td>+@{[ input 'magicCastAddBar',   'number','calcMagic' ]}=<b id="magic-cast-bard-value" >0</b></td>
+              <td>+@{[ input 'magicDamageAddBar', 'number','calcMagic' ]}=<b id="magic-damage-bard-value" >0</b></td>
             </tr>
             <tr@{[ display $pc{'lvAlc'} ]} id="magic-power-alchemist">
-              <th>アルケミスト</th>
-              <th>賦術</th>
-              <td>@{[ input 'magicPowerOwnAlc', 'checkbox','calcMagic' ]}知力+2</td>
-              <td>+@{[ input 'magicPowerAddAlc', 'number','calcMagic' ]}=</td>
-              <td id="magic-power-alchemist-value">0</td>
+              <td>アルケミスト</td>
+              <td>賦術</td>
+              <td><label>@{[ input 'magicPowerOwnAlc', 'checkbox','calcMagic' ]}知力+2</label></td>
+              <td></td>
+              <td>+@{[ input 'magicCastAddAlc', 'number','calcMagic' ]}=<b id="magic-cast-alchemist-value">0</b></td>
+              <td></td>
             </tr>
             <tr@{[ display $pc{'lvMys'} ]} id="magic-power-mystic">
-              <th>ミスティック</th>
-              <th>占瞳</th>
-              <td>@{[ input 'magicPowerOwnMys', 'checkbox','calcMagic' ]}知力+2</td>
-              <td>+@{[ input 'magicPowerAddMys', 'number','calcMagic' ]}=</td>
-              <td id="magic-power-mystic-value">0</td>
+              <td>ミスティック</td>
+              <td>占瞳</td>
+              <td><label>@{[ input 'magicPowerOwnMys', 'checkbox','calcMagic' ]}知力+2</label></td>
+              <td></td>
+              <td>+@{[ input 'magicCastAddMys', 'number','calcMagic' ]}=<b id="magic-cast-mystic-value">0</b></td>
+              <td></td>
             </tr>
           </table>
         </div>

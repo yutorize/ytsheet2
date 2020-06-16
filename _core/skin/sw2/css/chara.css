@@ -758,12 +758,12 @@ dl#level dd {
 #area-actions > *:first-child {
   margin-left: 0px;
 }
-#area-actions .box#package td:last-child,
-#area-actions .box#magic-power td:last-child {
+#area-actions .box#package td:last-child {
   width: 1.8em;
   padding-left: 0.2rem;
   font-size: 1.6rem;
   line-height: 1.6;
+  white-space: nowrap;
 }
 @media screen and (max-width:735px){
   #area-actions {
@@ -854,34 +854,30 @@ dl#level dd {
   margin-top: 1rem;
   margin-left: 0;
 }
-#magic-power table tbody th {
-  font-weight: normal;
-  padding-right: 1em;
+#magic-power table {
+  margin-top: -1.2em !important;
 }
-#magic-power table th:first-child {
+#magic-power table thead th {
 }
-#magic-power table th:first-child span {
+#magic-power table tbody td:nth-child(1),
+#magic-power table tbody td:nth-child(2) {
+  padding-left : .2em;
+  padding-right: .2em;
 }
-#magic-power table th:nth-child(2) {
+#magic-power table tbody td:nth-child(2) {
   white-space: nowrap;
 }
-#magic-power table th:nth-child(2) > span {
+#magic-power table tbody td:nth-child(2) > span {
   display: block;
   font-size: 0.85em;
   line-height: 1;
   margin-bottom: 0.3em;
 }
-#magic-power table td:nth-child(3) {
-  text-align: left;
-}
-#magic-power table td {
-}
-#magic-power table td:nth-child(4) {
+#magic-power table tbody td.num {
   width: 4em;
-  text-align: right;
-}
-#magic-power table td:nth-child(4):empty {
-  width: 0;
+  font-size: 1.6rem;
+  line-height: 1.6;
+  white-space: nowrap;
 }
 
 #magic-power p#magic-power-add {

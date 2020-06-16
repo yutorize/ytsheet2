@@ -1013,38 +1013,58 @@ function calcPackage() {
 
 // 魔力計算 ----------------------------------------
 function calcMagic() {
-  const add = Number(form.magicPowerAdd.value) + magicPowerEnhance;
-  const addSor = Number(form.magicPowerAddSor.value);
-  const addCon = Number(form.magicPowerAddCon.value);
-  const addPri = Number(form.magicPowerAddPri.value);
-  const addFai = Number(form.magicPowerAddFai.value);
-  const addMag = Number(form.magicPowerAddMag.value);
-  const addDem = Number(form.magicPowerAddDem.value);
-  const addGri = Number(form.magicPowerAddGri.value);
-  const addBar = Number(form.magicPowerAddBar.value);
-  const addAlc = Number(form.magicPowerAddAlc.value) + alchemyEnhance;
-  const addMys = Number(form.magicPowerAddMys.value);
-  document.getElementById("magic-power").style.display = (Math.max(lvSor,lvCon,lvPri,lvFai,lvMag,lvDem,lvGri,lvBar,lvAlc,lvMys) > 0) ? '' : 'none';
-  document.getElementById("magic-power-sorcerer").style.display   = lvSor > 0 ? '' : 'none';
-  document.getElementById("magic-power-conjurer").style.display   = lvCon > 0 ? '' : 'none';
-  document.getElementById("magic-power-priest"  ).style.display   = lvPri > 0 ? '' : 'none';
-  document.getElementById("magic-power-fairytamer").style.display = lvFai > 0 ? '' : 'none';
-  document.getElementById("magic-power-magitech").style.display   = lvMag > 0 ? '' : 'none';
-  document.getElementById("magic-power-demonruler").style.display = lvDem > 0 ? '' : 'none';
-  document.getElementById("magic-power-grimoir").style.display    = lvGri > 0 ? '' : 'none';
-  document.getElementById("magic-power-bard").style.display       = lvBar > 0 ? '' : 'none';
-  document.getElementById("magic-power-alchemist").style.display  = lvAlc > 0 ? '' : 'none';
-  document.getElementById("magic-power-mystic").style.display     = lvMys > 0 ? '' : 'none';
-  document.getElementById("magic-power-sorcerer-value").innerHTML   = lvSor + parseInt((sttInt + sttAddE + (form.magicPowerOwnSor.checked ? 2 : 0)) / 6) + addSor + add;
-  document.getElementById("magic-power-conjurer-value").innerHTML   = lvCon + parseInt((sttInt + sttAddE + (form.magicPowerOwnCon.checked ? 2 : 0)) / 6) + addCon + add;
-  document.getElementById("magic-power-priest-value"  ).innerHTML   = lvPri + parseInt((sttInt + sttAddE + (form.magicPowerOwnPri.checked ? 2 : 0)) / 6) + addPri + add;
-  document.getElementById("magic-power-fairytamer-value").innerHTML = lvFai + parseInt((sttInt + sttAddE + (form.magicPowerOwnFai.checked ? 2 : 0)) / 6) + addFai + add;
-  document.getElementById("magic-power-magitech-value").innerHTML   = lvMag + parseInt((sttInt + sttAddE + (form.magicPowerOwnMag.checked ? 2 : 0)) / 6) + addMag + add;
-  document.getElementById("magic-power-demonruler-value").innerHTML = lvDem + parseInt((sttInt + sttAddE + (form.magicPowerOwnDem.checked ? 2 : 0)) / 6) + addDem + add;
-  document.getElementById("magic-power-grimoir-value").innerHTML    = lvGri + parseInt((sttInt + sttAddE + (form.magicPowerOwnGri.checked ? 2 : 0)) / 6) + addGri + add;
-  document.getElementById("magic-power-bard-value").innerHTML       = lvBar + parseInt((sttMnd + sttAddF + (form.magicPowerOwnBar.checked ? 2 : 0)) / 6) + addBar;
-  document.getElementById("magic-power-alchemist-value").innerHTML  = lvAlc + parseInt((sttInt + sttAddE + (form.magicPowerOwnAlc.checked ? 2 : 0)) / 6) + addAlc;
-  document.getElementById("magic-power-mystic-value").innerHTML     = lvMys + parseInt((sttInt + sttAddE + (form.magicPowerOwnMys.checked ? 2 : 0)) / 6) + addMys;
+  document.getElementById("magic-power").style.display              = (Math.max(lvSor,lvCon,lvPri,lvFai,lvMag,lvDem,lvGri,lvBar,lvAlc,lvMys) > 0) ? '' : 'none';
+  document.getElementById("magic-power-magicenhance").style.display = magicPowerEnhance ? '' : 'none';
+  document.getElementById("magic-power-common").style.display       = (Math.max(lvSor,lvCon,lvPri,lvFai,lvMag,lvDem,lvGri)) ? '' : 'none';
+  document.getElementById("magic-power-hr").style.display           = (Math.max(lvSor,lvCon,lvPri,lvFai,lvMag,lvDem,lvGri) > 0 && (Math.max(lvBar,lvAlc,lvMys) > 0)) ? '' : 'none';
+  document.getElementById("magic-power-sorcerer").style.display   = lvSor ? '' : 'none';
+  document.getElementById("magic-power-conjurer").style.display   = lvCon ? '' : 'none';
+  document.getElementById("magic-power-priest"  ).style.display   = lvPri ? '' : 'none';
+  document.getElementById("magic-power-fairytamer").style.display = lvFai ? '' : 'none';
+  document.getElementById("magic-power-magitech").style.display   = lvMag ? '' : 'none';
+  document.getElementById("magic-power-demonruler").style.display = lvDem ? '' : 'none';
+  document.getElementById("magic-power-grimoir").style.display    = lvGri ? '' : 'none';
+  document.getElementById("magic-power-bard").style.display       = lvBar ? '' : 'none';
+  document.getElementById("magic-power-alchemist").style.display  = lvAlc ? '' : 'none';
+  document.getElementById("magic-power-mystic").style.display     = lvMys ? '' : 'none';
+  
+  // 魔力
+  const addPower = Number(form.magicPowerAdd.value) + magicPowerEnhance;
+  const powerSor = lvSor + parseInt((sttInt + sttAddE + (form.magicPowerOwnSor.checked ? 2 : 0)) / 6) + Number(form.magicPowerAddSor.value) + addPower;
+  const powerCon = lvCon + parseInt((sttInt + sttAddE + (form.magicPowerOwnCon.checked ? 2 : 0)) / 6) + Number(form.magicPowerAddCon.value) + addPower;
+  const powerPri = lvPri + parseInt((sttInt + sttAddE + (form.magicPowerOwnPri.checked ? 2 : 0)) / 6) + Number(form.magicPowerAddPri.value) + addPower;
+  const powerFai = lvFai + parseInt((sttInt + sttAddE + (form.magicPowerOwnFai.checked ? 2 : 0)) / 6) + Number(form.magicPowerAddFai.value) + addPower;
+  const powerMag = lvMag + parseInt((sttInt + sttAddE + (form.magicPowerOwnMag.checked ? 2 : 0)) / 6) + Number(form.magicPowerAddMag.value) + addPower;
+  const powerDem = lvDem + parseInt((sttInt + sttAddE + (form.magicPowerOwnDem.checked ? 2 : 0)) / 6) + Number(form.magicPowerAddDem.value) + addPower;
+  const powerGri = lvGri + parseInt((sttInt + sttAddE + (form.magicPowerOwnGri.checked ? 2 : 0)) / 6) + Number(form.magicPowerAddGri.value) + addPower;
+  const powerBar = lvBar + parseInt((sttMnd + sttAddF + (form.magicPowerOwnBar.checked ? 2 : 0)) / 6) + Number(form.magicPowerAddBar.value);
+  const powerAlc = lvAlc + parseInt((sttInt + sttAddE + (form.magicPowerOwnAlc.checked ? 2 : 0)) / 6);
+  const powerMys = lvMys + parseInt((sttInt + sttAddE + (form.magicPowerOwnMys.checked ? 2 : 0)) / 6);
+  
+  document.getElementById("magic-power-magicenhance-value").innerHTML = magicPowerEnhance;
+  document.getElementById("magic-power-sorcerer-value").innerHTML   = powerSor;
+  document.getElementById("magic-power-conjurer-value").innerHTML   = powerCon;
+  document.getElementById("magic-power-priest-value"  ).innerHTML   = powerPri;
+  document.getElementById("magic-power-fairytamer-value").innerHTML = powerFai;
+  document.getElementById("magic-power-magitech-value").innerHTML   = powerMag;
+  document.getElementById("magic-power-demonruler-value").innerHTML = powerDem;
+  document.getElementById("magic-power-grimoir-value").innerHTML    = powerGri;
+  document.getElementById("magic-power-bard-value").innerHTML       = powerBar;
+  //document.getElementById("magic-power-alchemist-value").innerHTML  = powerAlc;
+  //document.getElementById("magic-power-mystic-value").innerHTML     = powerMys;
+  
+  // 行使
+  const addCast = Number(form.magicCastAdd.value);
+  document.getElementById("magic-cast-sorcerer-value").innerHTML   = powerSor + Number(form.magicCastAddSor.value) + addCast;
+  document.getElementById("magic-cast-conjurer-value").innerHTML   = powerCon + Number(form.magicCastAddCon.value) + addCast;
+  document.getElementById("magic-cast-priest-value"  ).innerHTML   = powerPri + Number(form.magicCastAddPri.value) + addCast;
+  document.getElementById("magic-cast-fairytamer-value").innerHTML = powerFai + Number(form.magicCastAddFai.value) + addCast;
+  document.getElementById("magic-cast-magitech-value").innerHTML   = powerMag + Number(form.magicCastAddMag.value) + addCast;
+  document.getElementById("magic-cast-demonruler-value").innerHTML = powerDem + Number(form.magicCastAddDem.value) + addCast;
+  document.getElementById("magic-cast-grimoir-value").innerHTML    = powerGri + Number(form.magicCastAddGri.value) + addCast;
+  document.getElementById("magic-cast-bard-value").innerHTML       = powerBar + Number(form.magicCastAddBar.value);
+  document.getElementById("magic-cast-alchemist-value").innerHTML  = powerAlc + Number(form.magicCastAddAlc.value) + alchemyEnhance;
+  document.getElementById("magic-cast-mystic-value").innerHTML     = powerMys + Number(form.magicCastAddMys.value);
 }
 
 // 攻撃計算 ----------------------------------------

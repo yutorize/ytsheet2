@@ -320,15 +320,29 @@ foreach (
   ['ミスティック',       'Mys', '占瞳',     '知力+2'],
 ){
   next if !$pc{'lv'.@$_[1]};
+  my $power  = $pc{'magicPowerAdd'.@$_[1]}  + (@$_[2] =~ /魔/ ? $pc{'magicPowerAdd'} +$pc{'magicPowerEnhance'} : 0);
+  my $cast   = $pc{'magicCastAdd'.@$_[1]}   + (@$_[2] =~ /魔/ ? $pc{'magicCastAdd'} : 0);
+  my $damage = $pc{'magicDamageAdd'.@$_[1]} + (@$_[2] =~ /魔/ ? $pc{'magicDamageAdd'} : 0);
   push(@magic, {
     "NAME" => @$_[0]."<span class=\"small\">技能レベル</span>".$pc{'lv'.@$_[1]},
-    "OWN"  => ($pc{'magicPowerOwn'.@$_[1]} ? '[✔<span class="small">'.@$_[3].'</span>]' : ''),
+    "OWN"  => ($pc{'magicPowerOwn'.@$_[1]} ? '✔<span class="small">'.@$_[3].'</span>' : ''),
     "MAGIC"  => @$_[2].(@$_[1] eq 'Fai' && $pc{'ftElemental'} ? "<span>（$pc{'ftElemental'}）</span>" : ''),
-    "ADD"  => ($pc{'magicPowerAdd'.@$_[1]} ? '+'.$pc{'magicPowerAdd'.@$_[1]}.' =' : ''),
-    "NUM"  => $pc{'magicPower'.@$_[1]},
+    "POWER"  => @$_[2] =~ /魔|歌/ ? ($power ? '<span class="small">+'.$power.'=</span>' : '').$pc{'magicPower'.@$_[1]} : '―',
+    "CAST"   => ($cast ? '<span class="small">+'.$cast.'=</span>' : '').($pc{'magicPower'.@$_[1]}+$cast),
+    "DAMAGE" => @$_[2] =~ /魔|歌/ ? "+$damage" : '―',
   } );
 }
 $SHEET->param(MagicPowers => \@magic);
+{
+  my @head; my @pow; my @act;
+  if($pc{'lvCaster'}) { push(@head, '魔法'); push(@pow, '魔力'); push(@act, '行使'); }
+  if($pc{'lvBar'})    { push(@head, '呪歌'); push(@pow, '奏力'); push(@act, '演奏'); }
+  if($pc{'lvAlc'})    { push(@head, '賦術');                     push(@act, '賦術'); }
+  if($pc{'lvMys'})    { push(@head, '占瞳');                     push(@act, '占瞳'); }
+  $SHEET->param(MagicPowerHeader => join('／',@head));
+  $SHEET->param(MagicPowerThPow => scalar(@pow) >= 2 ? '<span class="small">'.join('/',@pow).'</span>' : join('/',@pow));
+  $SHEET->param(MagicPowerThAct => scalar(@act) >= 3 ? "$act[0]など" : join('/',@act));
+}
 
 ### 攻撃技能／特技 --------------------------------------------------
 my @atacck;
