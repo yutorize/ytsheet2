@@ -174,8 +174,8 @@ Content-type: text/html\n
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
   <style>
     #image,
-    #image-custom-view {
-      background-image: url("${set::char_dir}${file}/image.$pc{'image'}") !important;
+    .image-custom-view {
+      background-image: url("${set::char_dir}${file}/image.$pc{'image'}?$pc{'imageUpdate'}") !important;
     }
   </style>
 </head>

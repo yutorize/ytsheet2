@@ -42,33 +42,35 @@ sub image_form {
   return <<"HTML";
     <div id="image-custom" style="display:none">
       <div class="image-custom-view-area">
-        <div></div><div></div><div></div>
-        <div></div>
-        <div id="image-custom-view">
+        <div id="image-custom-frame-L" class="image-custom-frame"><div class="image-custom-view"
+ class="image-custom-view"><b>横幅が狭い時</b></div></div>
+        <div id="image-custom-frame-C" class="image-custom-frame"><div class="image-custom-view"
+ class="image-custom-view"><b>標準の比率　<small>※縦横比は適宜変動します</small></b></div>
           @{[ input "imagePositionY",'range','imagePosition','' ]}
           @{[ input "imagePositionX",'range','imagePosition','' ]}
         </div>
-        <div></div>
-        <div></div><div></div><div></div>
+        <div id="image-custom-frame-R" class="image-custom-frame"><div class="image-custom-view"
+ class="image-custom-view"><b>縦幅が狭い時</b></div></div>
       </div>
       <div class="image-custom-form">
         <p>
           縦基準位置:<span id="image-positionY-view"></span> ／
-          横基準位置:<span id="image-positionX-view"></span>
+          横基準位置:<span id="image-positionX-view"></span><br>
         </p>
         <p>
-          表示方式：<select name="imageFit" oninput="imagePosition()">
-          <option value="cover"   @{[$pc{'imageFit'} eq 'cover'  ?'selected':'']}>枠いっぱいに表示（最低限のトリミング）
-          <option value="contain" @{[$pc{'imageFit'} eq 'contain'?'selected':'']}>全体表示（トリミングしない）
-          <option value="percentX" @{[$pc{'imageFit'} eq 'percentX'?'selected':'']}>拡大率を指定（横基準）
-          <option value="percentY" @{[$pc{'imageFit'} eq 'percentY'?'selected':'']}>拡大率を指定（縦基準）
-          <option value="unset"   @{[$pc{'imageFit'} eq 'unset'  ?'selected':'']}>拡大縮小せず表示（ドット絵等向き）
+          表示（トリミング）方式：<br><select name="imageFit" oninput="imagePosition()">
+          <option value="cover"   @{[$pc{'imageFit'} eq 'cover'  ?'selected':'']}>自動的に最低限のトリミング（表示域いっぱいに表示）
+          <option value="contain" @{[$pc{'imageFit'} eq 'contain'?'selected':'']}>トリミングしない（必ず画像全体を収める）
+          <option value="percentX" @{[$pc{'imageFit'} eq 'percentX'?'selected':'']}>任意のトリミング／横幅を基準
+          <option value="percentY" @{[$pc{'imageFit'} eq 'percentY'?'selected':'']}>任意のトリミング／縦幅を基準
+          <option value="unset"   @{[$pc{'imageFit'} eq 'unset'  ?'selected':'']}>拡大縮小せず表示（ドット絵など向き）
           </select><br>
+          <small>※いずれの設定でも、クリックすると画像全体が表示されます。</small>
         </p>
         <p id="image-percent-config">
           拡大率：@{[ input "imagePercent",'number','imagePosition','style="width:4em;"' ]}%<br>
           <input type="range" id="image-percent-bar" min="10" max="1000" oninput="imagePercentBarChange(this.value)" style="width:100%;"><br>
-          （「拡大率を指定」時／100で幅ピッタリ）<br>
+          （100%で幅ピッタリ）<br>
         </p>
         <p class="center"><a class="button" onclick="imagePositionClose()">トリミング位置のカスタマイズを閉じる</a><p>
       </div>

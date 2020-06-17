@@ -1871,24 +1871,32 @@ function imagePosition(){
   if(bgSize === 'percentX'){
     document.getElementById("image-percent-config").style.visibility = 'visible';
     document.getElementById("image").style.backgroundSize = form.imagePercent.value + '%';
-    document.getElementById("image-custom-view").style.backgroundSize = form.imagePercent.value + '%';
+    document.querySelectorAll(".image-custom-view").forEach((el) => {
+      el.style.backgroundSize = form.imagePercent.value + '%';
+    });
   }
   else if(bgSize === 'percentY'){
     document.getElementById("image-percent-config").style.visibility = 'visible';
     document.getElementById("image").style.backgroundSize = 'auto ' + form.imagePercent.value + '%';
-    document.getElementById("image-custom-view").style.backgroundSize = 'auto ' + form.imagePercent.value + '%';
+    document.querySelectorAll(".image-custom-view").forEach((el) => {
+      el.style.backgroundSize = 'auto ' + form.imagePercent.value + '%';
+    });
   }
   else {
     document.getElementById("image-percent-config").style.visibility = 'hidden';
     document.getElementById("image").style.backgroundSize = bgSize;
-    document.getElementById("image-custom-view").style.backgroundSize = bgSize;
+    document.querySelectorAll(".image-custom-view").forEach((el) => {
+      el.style.backgroundSize = bgSize;
+    });
   }
   document.getElementById("image-positionX-view").innerHTML = form.imagePositionX.value + '%';
   document.getElementById("image-positionY-view").innerHTML = form.imagePositionY.value + '%';
   document.getElementById("image").style.backgroundPositionX = form.imagePositionX.value + '%';
   document.getElementById("image").style.backgroundPositionY = form.imagePositionY.value + '%';
-  document.getElementById("image-custom-view").style.backgroundPositionX = form.imagePositionX.value + '%';
-  document.getElementById("image-custom-view").style.backgroundPositionY = form.imagePositionY.value + '%';
+  document.querySelectorAll(".image-custom-view").forEach((el) => {
+    el.style.backgroundPositionX = form.imagePositionX.value + '%';
+    el.style.backgroundPositionY = form.imagePositionY.value + '%';
+  });
   
   document.getElementById("image-percent-bar").value = form.imagePercent.value;
 }
