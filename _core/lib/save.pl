@@ -146,6 +146,7 @@ if(param('imageFile')){
     unlink "${data_dir}${file}/image.$pc{'image'}"; # 前のファイルを削除
     
     $pc{'image'} = $ext;
+    $pc{'imageUpdate'} = time;
   }
 }
 

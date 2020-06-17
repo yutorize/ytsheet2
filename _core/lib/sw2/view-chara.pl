@@ -668,12 +668,10 @@ $SHEET->param(characterNameTitle => tag_delete name_plain $pc{'characterName'});
 $SHEET->param(title => $set::title);
 
 ### 画像 --------------------------------------------------
-$pc{'imageUpdateTime'} = $pc{'updateTime'};
-$pc{'imageUpdateTime'} =~ s/[\-\ \:]//g;
 my $imgsrc = (
   $pc{'imageURL'} ? tag_delete($pc{'imageURL'})
   : $main::base_url ? "${main::base_url}data/chara/$pc{'birthTime'}/image.$pc{'image'}"
-  : "${set::char_dir}${file}/image.$pc{'image'}?$pc{'imageUpdateTime'}"
+  : "${set::char_dir}${file}/image.$pc{'image'}?$pc{'imageUpdate'}"
 );
 $SHEET->param("imageSrc" => $imgsrc);
 

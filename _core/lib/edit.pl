@@ -40,6 +40,7 @@ sub login_error {
 ## 画像欄
 sub image_form {
   return <<"HTML";
+    @{[ input('imageUpdate', 'hidden') ]}
     <div id="image-custom" style="display:none">
       <div class="image-custom-view-area">
         <div id="image-custom-frame-L" class="image-custom-frame"><div class="image-custom-view"

@@ -444,8 +444,6 @@ $pc{'race'} =~ s/［.*］//g;
 $SHEET->param("race" => $pc{'race'});
 
 ### 画像 --------------------------------------------------
-$pc{'imageUpdateTime'} = $pc{'updateTime'};
-$pc{'imageUpdateTime'} =~ s/[\-\ \:]//g;
 my $imgsrc;
 if($pc{'convertSource'} eq 'キャラクターシート倉庫'){
   ($imgsrc = $url) =~ s/edit\.html/image/; 
@@ -454,7 +452,7 @@ if($pc{'convertSource'} eq 'キャラクターシート倉庫'){
   $SHEET->param("image" => $code);
 }
 else {
-  $imgsrc = "${set::char_dir}${file}/image.$pc{'image'}?$pc{'imageUpdateTime'}"
+  $imgsrc = "${set::char_dir}${file}/image.$pc{'image'}?$pc{'imageUpdate'}"
 }
 $SHEET->param("imageSrc" => $imgsrc);
 
