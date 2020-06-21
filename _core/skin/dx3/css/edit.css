@@ -1,0 +1,1074 @@
+@charset "utf-8";
+
+/* // フォーム設定
+---------------------------------------------------------------------------------------------------- */
+html {
+  overflow: visible;
+}
+main {
+  overflow: visible;
+}
+header {
+  display: none;
+}
+footer {
+  grid-row: 3;
+}
+
+select option,
+select optgroup {
+  background-color: #fff;
+  color: #000;
+}
+input,
+select {
+  font-weight: inherit;
+}
+input[type=checkbox] {
+  margin: 0 .2rem;
+  transform: scale(1.3);
+}
+input::placeholder {
+  opacity: 0.5;
+}
+
+h2[onclick],
+h4[onclick] {
+  cursor: pointer;
+}
+h2[onclick]:hover,
+h4[onclick]:hover {
+  background: linear-gradient(to top, #cef 20%, transparent 30%, transparent);
+}
+
+.fail input,
+.fail select {
+  background-color: rgba(125,125,125,0.2);
+}
+dt.fail, dt.fail + dd {
+  background-color: rgba(125,125,125,0.2) !important;
+  opacity: 0.9;
+}
+dt.fail::before {
+  content: "✖ ";
+  font-weight: bold;
+  color: #c00;
+}
+dt.fail > select,
+dt.fail + dd > input {
+  background-color: transparent;
+}
+.fail select option,
+.fail select optgroup {
+  background-color: #ddd;
+  color: #000;
+}
+.error input,
+.error select {
+  color: #c00;
+  text-decoration: line-through;
+}
+.hidden {
+  display: none;
+}
+/* テーブル */
+.edit-table,
+.edit-tables table,
+.edit-tables ul,
+.edit-tables dl {
+  width: 100%;
+  border-style: hidden hidden none;
+}
+@media screen and (max-width:735px){
+  .edit-table,
+  .edit-tables table,
+  .edit-tables ul,
+  .edit-tables dl {
+    min-width: 100%;
+  }
+}
+.edit-table.side-margin,
+.edit-tables.side-margin table,
+.edit-tables.side-margin ul,
+.edit-tables.side-margin dl {
+  width: calc(100% - 1rem);
+  margin: 0 .5rem;
+}
+.edit-table:last-child,
+.edit-tables table {
+  border-bottom-style: hidden;
+}
+table.edit-table:not(.side-margin) thead th,
+.edit-tables:not(.side-margin) table thead th {
+  padding: .3rem 0 .2rem;
+  border-width: 0;
+  line-height: 1;
+}
+table.edit-table > tbody tr,
+.edit-tables table tbody tr {
+  border-width: .1rem 0;
+  border-style: solid;
+}
+table.edit-table:last-child {
+  border-bottom-style: hidden !important;
+}
+table.edit-table:not(.side-margin) tbody > tr > *,
+.edit-tables:not(.side-margin) table tbody > tr > * {
+  border-left-width: 1px;
+  border-right-width: 1px;
+  border-left-style: dotted;
+  border-right-style: dotted;
+}
+table.edit-table tbody td select,
+table.edit-table tbody td textarea,
+table.edit-table tbody td input[type="text"],
+table.edit-table tbody td input[type="number"] {
+  width: calc(100% - .1rem);
+  margin: .1rem .1rem 0 0;
+}
+table.edit-table:not(.side-margin).line-tbody tbody:nth-of-type(even),
+table.edit-table:not(.side-margin):not(.line-tbody) tbody tr:nth-of-type(even),
+.edit-tables:not(.side-margin) table.line-tbody tbody:nth-of-type(even),
+.edit-tables:not(.side-margin) table:not(.line-tbody) tbody tr:nth-of-type(even) {
+  background-color: var(--box-even-rows-bg-color);
+}
+
+ul.edit-table > li,  .edit-tables ul  > li,
+dl.edit-table > *,   .edit-tables dl  > *  {
+  border-width: 0 0 1px;
+  border-style: solid;
+}
+ul.edit-table:last-child > li:last-child,
+dl.edit-table:last-child > dt:last-of-type,
+dl.edit-table:last-child > dt:last-of-type ~ dd,
+.edit-tables ul:last-child > li:last-child,
+.edit-tables dl:last-child > dt:last-of-type,
+.edit-tables dl:last-child > dt:last-of-type ~ dd {
+  border-bottom-style: hidden;
+}
+
+input.auto {
+  text-align: center;
+  border: hidden;
+  background-color: transparent;
+  font-size: 100%;
+  cursor: inherit;
+}
+/* Sortable */
+.sortable-drag {
+}
+.sortable-chosen {
+}
+.sortable-ghost {
+  background-color: hsla(50,100%,50%,0.3) !important;
+}
+.handle {
+  cursor: ns-resize;
+}
+.handle::before {
+  content: '::';
+  font-family: Arial;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+/* // メニュー
+---------------------------------------------------------------------------------------------------- */
+ul#header-menu {
+  position: absolute;
+  display: flex;
+  right: 0;
+  bottom: calc(-1em - 3px - 1rem);
+  line-height: 1;
+  background: rgba(100,100,100,0.9);
+  border-radius: 0 0 .5em .5em;
+  color: #fff;
+  font-weight: bold;
+  overflow: hidden;
+}
+ul#header-menu li {
+  padding: .5rem 1rem;
+  cursor: pointer;
+}
+ul#header-menu li + li {
+  border-left: 1px solid rgba(200,200,200,0.3);
+}
+ul#header-menu li:hover {
+  background: rgba(0,0,0,0.5);
+}
+section {
+  margin-top: 2em;
+}
+section > h2 {
+  margin-top: 1rem;
+}
+
+/* // フッタ付近
+---------------------------------------------------------------------------------------------------- */
+article > form > hr {
+  margin: 5rem 0px;
+  border-width: 1px 0 0;
+  border-style: solid;
+}
+
+.deleteform {
+  margin-top: 5rem;
+  padding-top: 5rem;
+  border-width: 1px 0 0;
+  border-style: solid;
+  text-align: right;
+}
+.deleteform input[type="submit"] {
+  margin-left: .5rem;
+  padding: .3rem .5rem;
+}
+
+/* // キャラクター
+---------------------------------------------------------------------------------------------------- */
+@media screen and (max-width:735px){
+  .box {
+    max-width: calc(100vw - 6px);
+    overflow-x: auto;
+    font-size: 1.8rem;
+  }
+  .box h2,
+  .box dt,
+  .box summary {
+    font-size: 1.8rem;
+  }
+  .box input[type="text"],
+  .box input[type="number"],
+  .box select,
+  .box textarea {
+    font-size: 1.8rem;
+  }
+}
+.box input[type="text"],
+.box input[type="number"],
+.box select,
+.box textarea {
+  width: calc(100% - 4px);
+  min-width: 3em;
+  margin: 2px;
+  padding: 2px
+}
+input[type="number"] {
+  text-align: center;
+}
+
+input[type="submit"] {
+  background: linear-gradient(to bottom, #ddeeff, #ccccff);
+  box-shadow: 1px 1px 0 0 #ffffff inset, -1px -1px 0 0 #bbbbee inset;
+}
+input[type="button"] {
+  background: linear-gradient(to bottom, #e0e7ef, #c0c7cf);
+  box-shadow: 1px 1px 0 0 #ffffff inset, -1px -1px 0 0 #bbbbdd inset;
+}
+input[type="submit"]:hover,
+input[type="button"]:hover {
+  background: linear-gradient(to bottom, rgba(50,150,250,0.5), rgba(50,50,250,0.5));
+  color: #ffffff;
+}
+.night input[type="submit"] {
+  background: linear-gradient(to bottom, #445566, #333355);
+  box-shadow: 1px 1px 0 0 #777788 inset, -1px -1px 0 0 #000000 inset;
+}
+.night input[type="button"] {
+  background: linear-gradient(to bottom, #50575f, #30373f);
+  box-shadow: 1px 1px 0 0 #777788 inset, -1px -1px 0 0 #000000 inset;
+}
+.night input[type="submit"]:hover {
+  background: linear-gradient(to bottom, rgba(50,150,250,0.5), rgba(50,50,250,0.5));
+  color: #ffffff;
+}
+
+.box .add-del-button {
+  text-align: center;
+}
+
+.add-del-button a {
+  display: inline-block;
+  margin: 0px 2em;
+  cursor: pointer;
+  transform: scale(3.5, 1);
+}
+.add-del-button a:hover {
+  opacity: 0.5;
+}
+td .switch-button {
+  display: inline-block !important;
+  float: left;
+  margin-top: .2em;
+  padding: .1em .4em;
+  font-size: 1.6em;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.message {
+  max-width: 500px;
+  margin: 2rem auto;
+  padding: 1rem;
+  border: 1px solid #aaa;
+  border-radius: 5px;
+  text-align: center;
+}
+.message:empty {
+  display: none;
+}
+
+
+#edit-protect {
+  margin-top: 1rem;
+}
+#hide-options {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+#forbidden-checkbox {
+  flex-basis:  10em;
+  text-align: left;
+}
+#hide-checkbox {
+  text-align: left;
+}
+#hide-options input {
+  vertical-align: middle;
+}
+
+.box .annotate {
+  font-size: 90%;
+  padding: 0 1rem;
+}
+.example {
+  background: rgba(170,170,170,0.2);
+}
+
+
+#group dl {
+  display: grid;
+  grid-template-columns: 4em 1fr 2.5em 3fr;
+  grid-template-rows: auto;
+  text-align: right;
+}
+
+#group dl > * {
+  grid-row: 1 / 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#area-name {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  position: sticky;
+  top: 0px;
+  z-index: 1;
+  padding: 0.5em;
+  background-image: linear-gradient(to right, var(--box-head-bg-color), var(--box-base-bg-color));
+  background-color: #fff;
+  border-color: var(--box-outside-border-color, inherit);
+  border-width: 3px 0;
+  border-style: solid;
+}
+.night #area-name {
+  background-color: #222;
+}
+#area-name input {
+  width: calc(100% - 1em);
+  min-width: 3em;
+  margin: 2px;
+  padding: 2px
+}
+#area-name #character-name {
+  flex-grow: 1;
+  text-align: left;
+  font-weight: bold;
+  font-size: 1.4rem;
+  font-family: inherit;
+}
+#area-name #character-name input {
+  width: calc(100% - 8em);
+}
+#area-name #player-name {
+  text-align: left;
+  font-weight: bold;
+}
+#area-name input[type="submit"],
+#area-name input[type="button"] {
+  width: 100px;
+  align-self: stretch;
+}
+#area-name input[type="button"] {
+  width: 50px;
+}
+@media screen and (max-width:735px){
+  #area-name {
+    font-size: 1.2rem;
+    line-height: 1;
+  }
+  #area-name #character-name {
+    font-size: inherit;
+  }
+  #area-name #character-name input {
+    width: calc(100% - 1em);
+    font-size: inherit;
+  }
+}
+
+#regulation {
+  margin: 10px 0;
+  overflow-y: auto;
+}
+#regulation dl {
+  display: grid;
+  grid-template-columns: max-content 10em max-content 6em 1fr;
+  grid-template-rows: auto;
+  margin: 1rem;
+}
+#regulation dl dt {
+  padding-left: .5em;
+}
+
+#area-status {
+  min-height: 0%;
+  grid-template-columns: 0.6fr 1.2fr 0.9fr 1.8fr;
+}
+#area-status {
+  grid-template-areas:
+    "PER PER WKS IMG"
+    "SYN SYN SYN IMG"
+    "STT STT STT IMG"
+  ;
+}
+#syndrome-status { grid-area: SYN; }
+
+
+@media screen and (max-width:735px){
+  #area-status {
+    grid-template-columns: 1fr 1fr 2fr;
+    grid-gap: 10px 5px;
+
+    grid-template-areas:
+      "IMG  IMG  IMG"
+      "PER  PER  WKS"
+      "SYN  SYN  SYN "
+      "STT  STT  STT "
+    ;
+  }
+}
+
+
+#area-status #image {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  
+  cursor: unset;
+}
+#image > h2 {
+  background-image: linear-gradient(to bottom, var(--box-head-bg-color), transparent);
+  text-shadow: var(--bg-color) 0px 0px .5em,
+    var(--bg-color)  .1rem .1rem, var(--bg-color) -.1rem -.1rem,
+    var(--bg-color) -.1rem .1rem, var(--bg-color)  .1rem -.1rem,
+    var(--bg-color)  .0rem .1rem, var(--bg-color)  .0rem -.1rem,
+    var(--bg-color) -.1rem .0rem, var(--bg-color)  .1rem  .0rem;
+}
+#image > p {
+  background: rgba(255,255,255,0.4);
+  text-shadow: 0 0 3px var(--bg-color), 0 0 3px var(--bg-color), 0 0 3px var(--bg-color),
+               0 0 3px var(--bg-color), 0 0 3px var(--bg-color), 0 0 3px var(--bg-color),
+               0 0 3px var(--bg-color), 0 0 3px var(--bg-color), 0 0 3px var(--bg-color),
+               0 0 3px var(--bg-color), 0 0 3px var(--bg-color), 0 0 3px var(--bg-color),
+               0 0 3px var(--bg-color), 0 0 3px var(--bg-color), 0 0 3px var(--bg-color);
+}
+.night #image > p {
+  background: rgba(0,0,0,0.5);
+}
+#area-status #image h2 {
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+#area-status #image p {
+  padding: .5em .1em;
+  text-align: center;
+  line-height: 1.2;
+}
+#area-status #image p+p {
+  margin-top: 1em;
+}
+#area-status #image p:last-child {
+  margin-bottom: .5em;
+}
+#area-status #image select {
+  width: calc(100% - 6.5em);
+}
+#area-status #image input[type="checkbox"] {
+  transform: scale(1.1)
+}
+
+#area-status #image .words-input select {
+  width: auto;
+}
+
+
+#syndrome-status table {
+  width: 100%;
+}
+#syndrome-status table tr {
+  border-width: .1rem 0 0;
+  border-style: solid;
+}
+#syndrome-status thead th:nth-child(1)   { width: 3.5em; }
+#syndrome-status thead th:nth-last-child(-n+4) { width:   5em; }
+#syndrome-status input[type=radio] {
+  cursor: pointer;
+  transform: scale(1.5) translateY(.1em);
+}
+@media screen and (max-width:735px){
+#syndrome-status thead th:nth-last-child(-n+4) { width:   4em; }
+}
+
+#sub-status input {
+  width: 3.5em;
+}
+#sub-status input.auto {
+  width: 2.5em;
+}
+#lifepath {
+  margin-top: 1rem;
+}
+#lifepath table tbody tr:before {
+  display: none;
+}
+#lifepath table th:nth-child(1) { width: 5em; }
+#lifepath table td:nth-child(2) { width: 6em; }
+#lifepath table th:nth-child(3) { width: 4em; }
+#lifepath table td.center { width: 4em; }
+#lifepath table td:last-child   { width: auto; }
+#lifepath table th.small {
+  border-bottom-style: solid;
+}
+#lifepath table th.small.right {
+  font-size: 85%;
+}
+#lifepath table input[type=checkbox] {
+  transform: scale(1.4) translateY(.1em);
+  margin-right: .2em;
+}
+
+
+#status table thead td {
+  width: 4.6em;
+}
+#status table tbody td.left input {
+  width: calc(100% + .4em);
+  margin-left: -.4em;
+}
+#status table tbody td.right {
+  font-size: 70%;
+}
+#status table tbody td.right::after {
+  display: none;
+}
+#status table tbody td.right input {
+  min-width: 0;
+  width: 3em;
+}
+#status table tbody td.right input:last-of-type {
+  width: 2.6em;
+  margin: 0 -.13em;
+  transform: scale(0.9);
+}
+@media screen and (max-width:850px){
+}
+@media screen and (max-width:735px){
+  #status table {
+    display: block;
+  }
+  #status table thead,
+  #status table tbody,
+  #status table tr {
+    display: block;
+    border-width: 0;
+  }
+  #status table thead td {
+    border-width: 1px 1px 0;
+  }
+  #status table tr > * {
+    display: block;
+    width: auto !important;
+  }
+  #status table thead tr {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr 3em);
+  }
+  #status table tbody tr {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+  }
+  #status table tbody tr + tr {
+    margin-top: 1rem;
+  }
+  #status table tbody tr td.left {
+    font-size: 1.4rem;
+    border-width: 1px 1px 0  0;
+  }
+  #status table tbody tr td.right {
+    border-width: 0 1px 1px  0;
+    grid-row: 2;
+  }
+  #status table tbody tr td:nth-child(7),
+  #status table tbody tr td:nth-child(8) {
+    border-right-width: 0;
+  }
+  #status table tbody td.right input {
+    width: 4em;
+  }
+  #status table tbody td.right input:last-of-type {
+    width: 3em;
+  }
+}
+
+#lois table tbody td,
+#memory table tbody td {
+  border-width: 0 !important;
+}
+#lois table {
+}
+#lois table tbody tr td:first-child {
+  white-space: nowrap;
+}
+#lois table tbody tr td .handle {
+  display: inline-block;
+  width: 1.4em;
+  text-align: center;
+}
+#lois table tbody tr td .handle + input {
+  width: calc(100% - 1.4em - .2rem);
+}
+#lois table tbody td.emo {
+  width: 6em;
+  padding-left: .25em
+}
+#lois table tbody td.emo::before {
+  display: none;
+}
+#lois table input[type=checkbox] {
+  margin: 0;
+  transform: scale(1.5) translateY(.1em);
+}
+#lois table input[type=checkbox] + input {
+  width: calc(100% - 1.6em);
+  margin-left: .3em;
+}
+#lois table input[name$="Color"] {
+  width: 3.5em;
+}
+#lois table tbody td span[data-state] {
+  cursor: pointer;
+  user-select: none;
+}
+@media screen and (max-width:735px){
+  #lois table  { table-layout: fixed; white-space: nowrap; }
+  #lois table colgroup col:nth-child(1) { width:   7em; } 
+  #lois table colgroup col:nth-child(2) { width:  10em; }
+  #lois table colgroup col:nth-child(3) { width:   6em; }
+  #lois table colgroup col:nth-child(4) { width: 1.5em; }
+  #lois table colgroup col:nth-child(5) { width:   6em; }
+  #lois table colgroup col:nth-child(6) { width:   4em; }
+  #lois table colgroup col:nth-child(7) { width:  10em; }
+  #lois table colgroup col:nth-child(8) { width:   4em; }
+}
+
+#memory table tbody td:nth-child(1) { width: 2.5em; border-right-width: 1px; } /* ✔ */
+#memory table tbody td:nth-child(2) { width: 6.2em; border-right-width: 1px; } /* 関係 */
+#memory table tbody td:nth-child(3) { width: 14em; border-right-width: 1px; } /* 名前 */
+#memory table tbody td:nth-child(4) { width: 4em; border-right-width: 1px; } /* 感情 */
+#memory table thead tr th:first-child {
+  padding-left: 0;
+  text-align: center;
+}
+#memory table tbody tr td:first-child {
+  padding-right: .2rem;
+  white-space: nowrap;
+}
+#memory table input[type=checkbox] {
+  transform: scale(1.5) translateY(.1em);
+}
+#memory table tbody tr td span.handle {
+  display: inline-block;
+  width: 1.4em;
+  margin: -.1rem 0;
+  text-align: center;
+}
+
+#effect {
+  overflow-x: auto;
+  margin-top: 1rem;
+}
+#effect table {
+}
+#effect table thead th:nth-child(1) { width: 1.4em; }
+#effect table thead th:nth-child(2) { width:  auto; } /* 名称 */
+#effect table thead th:nth-child(3) { width:   2em; } /* Lv */
+#effect table thead th:nth-child(4) { width: 8.9em; } /* タイミング */
+#effect table thead th:nth-child(5) { width: 8.9em; } /* 技能 */
+#effect table thead th:nth-child(6) { width: 5.9em; } /* 難易度 */
+#effect table thead th:nth-child(7) { width: 6.3em; } /* 対象 */
+#effect table thead th:nth-child(8) { width: 5.3em; } /* 射程 */
+#effect table thead th:nth-child(9) { width: 3.9em; } /* 侵蝕値 */
+#effect table thead th:nth-child(10){ width: 5.4em; } /* 制限 */
+
+#effect table tbody td {
+  padding: .5rem 0 0;
+  border-width: 0;
+  vertical-align: bottom;
+}
+#effect table tbody td[colspan] {
+  padding: 0 0 .5rem;
+  border-top: hidden;
+  vertical-align: middle;
+  text-align: right;
+}
+#effect table tbody td[colspan] div {
+  display: grid;
+  grid-gap: .1rem;
+  grid-template-columns: 2.3em 6.5em 3.8em 3em 2.3em 1fr;
+  align-items: end;
+}
+#effect table tbody td[rowspan] {
+  vertical-align: middle;
+}
+#effect table tbody td b {
+  display: block;
+  font-size: 85%;
+  text-align: right;
+}
+#effect table tbody td .small {
+  font-size: 80%;
+  transform: scale(0.8,1);
+  white-space: nowrap;
+}
+#effect table tbody td b::after {
+  content: ":";
+  font-size: 1rem;
+}
+@media screen and (min-width:736px){
+  #effect table tbody td:nth-child(n+4) input {
+    font-size: 12.5px;
+  }
+}
+@media screen and (max-width:735px){
+  #effect table {
+    table-layout: fixed;
+  }
+  #effect table thead tr,
+  #effect table tbody tr {
+    display: table-row;
+  }
+  #effect table tbody td[rowspan] {
+    display: table-cell;
+  }
+  #effect table thead th:nth-child(2) {
+    display: table-cell;
+  }
+  #effect table tbody td[colspan] div {
+    grid-template-columns: max-content 6.5em max-content 3em max-content 1fr;
+  }
+  #effect table thead th:nth-child(1) { width: 1.4em !important; }
+  #effect table thead th:nth-child(2) { width: 14em !important; } /* 名称 */
+  #effect table thead th:nth-child(3) { width:  3em !important; } /* Lv */
+  #effect table thead th:nth-child(4) { width:  8em !important; } /* タイミング */
+  #effect table thead th:nth-child(5) { width:  8em !important; } /* 技能 */
+  #effect table thead th:nth-child(6) { width:  5em !important; } /* 難易度 */
+  #effect table thead th:nth-child(7) { width:  6em !important; } /* 対象 */
+  #effect table thead th:nth-child(8) { width:  5em !important; } /* 射程 */
+  #effect table thead th:nth-child(9) { width:  4em !important; } /* 侵蝕値 */
+  #effect table thead th:nth-child(10){ width:  5em !important; } /* 制限 */
+  #effect table tbody td b {
+    white-space: nowrap;
+  }
+}
+
+#combo {
+  margin-top: 1rem;
+}
+#combo table col:nth-child(1) { width: 1.4em; }
+#combo table col:nth-child(2) { width:  auto; } /* タイミング */
+#combo table col:nth-child(3) { width:   13%; } /* 技能 */
+#combo table col:nth-child(4) { width:   4em; } /* 難易度 */
+#combo table col:nth-child(5) { width:   5em; } /* 対象 */
+#combo table col:nth-child(6) { width:    8%; } /* 射程 */
+#combo table col:nth-child(7) { width: 3.2em; } /* 侵蝕値 */
+#combo table col:nth-child(8) { width:   5em; } /* 条件 */
+#combo table col:nth-child(9) { width:    8%; } /* ダイス */
+#combo table col:nth-child(10){ width:    8%; } /* クリティカル */
+#combo table col:nth-child(11){ width:    8%; } /* 基準値 */
+#combo table col:nth-child(12){ width:    8%; } /* 攻撃力 */
+#combo table.edit-table tbody > tr {
+  border-width: 0;
+}
+#combo table.edit-table tbody > tr:first-child {
+  border-top-width: 1px !important;
+}
+#combo table.edit-table tbody > tr > * {
+  padding: 0;
+  border: 0;
+}
+#combo table.edit-table tr:last-child td {
+  padding-bottom: .5rem;
+}
+@media screen and (max-width:735px){
+  #combo table  { table-layout: fixed; }
+  #combo table col:nth-child(1) { width: 1.4em; }
+  #combo table col:nth-child(2) { width:   7em; } /* タイミング */
+  #combo table col:nth-child(3) { width:   7em; } /* 技能 */
+  #combo table col:nth-child(4) { width:   5em; } /* 難易度 */
+  #combo table col:nth-child(5) { width:   6em; } /* 対象 */
+  #combo table col:nth-child(6) { width:   6em; } /* 射程 */
+  #combo table col:nth-child(7) { width:   4em; } /* 侵蝕値 */
+  #combo table col:nth-child(8) { width:   5em; } /* 条件 */
+  #combo table col:nth-child(9) { width:   4em; } /* ダイス */
+  #combo table col:nth-child(10){ width:   4em; } /* クリティカル */
+  #combo table col:nth-child(11){ width:   4em; } /* 基準値 */
+  #combo table col:nth-child(12){ width:   4em; } /* 攻撃力 */
+}
+
+#items {
+  margin-top: 1rem;
+}
+#items table thead th:nth-child(1) { width:  11em !important; } /* 名称 */
+#items table thead th:nth-child(2) { width: 3.4em !important; } /* 常備化 */
+#items table thead th:nth-child(3) { width: 3.4em !important; } /* 経験点 */
+#items table thead th:nth-child(4) { width:   7em !important; } /* 種別 */
+#items table thead th:nth-child(5) { width:   7em !important; } /* 技能 */
+#items table thead th:nth-child(6) { width: 3.9em !important; } /* 命中  ／ドッジ */
+#items table thead th:nth-child(7) { width: 5.2em !important; } /* 攻撃力／行動 */
+#items table thead th:nth-child(8) { width: 3.9em !important; } /* ガード／装甲値 */
+#items table thead th:nth-child(9) { width: 3.9em !important; } /* 射程 */
+#items table thead th:last-child   { width: auto !important;  } /* 解説 */
+#items table.edit-table tbody td {
+  vertical-align: top;
+  padding: .4rem 0 0;
+  border: 0;
+}
+#items table:last-of-type tbody td {
+  border-width: 0;
+}
+@media screen and (max-width:735px){
+  #items table  { table-layout: fixed; }
+  #items table thead th:last-child   { width: 10em !important;  } /* 解説 */
+  #items table tbody td { width: auto !important; }
+}
+
+#free-note,
+#free-history {
+  padding-bottom: .3rem;
+}
+#free-note textarea,
+#free-history textarea {
+  height: 18em;
+}
+
+#history{
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+#history table {
+  width: calc(100% - 1px);
+}
+#history table thead th:nth-child(1) { width: 1.4em; }
+#history table thead th:nth-child(2) { width:   6em; } /* 日付 */
+#history table thead th:nth-child(3) { width:  12em; } /* タイトル */
+#history table thead th:nth-child(4) { width:   6em; } /* 経験点 */
+#history table thead th:nth-child(5) { width:   6em; } /* ＧＭ */
+#history table thead th:nth-child(6) { width:  auto; } /* 参加者 */
+@media screen and (max-width:735px){
+  #history table  { table-layout: fixed; }
+  #history table thead th:nth-child(3) { width: 12em; } /* タイトル */
+  #history table thead th:nth-child(6) { width: 16em; } /* 参加者 */
+}
+
+#history table thead td {
+  padding: 1px;
+  border-width: 1px;
+  border-style: solid dotted;
+  font-size: inherit;
+}
+
+#history table tbody td {
+  border: 0;
+  padding: .4rem 0 .1rem !important;
+  vertical-align: top;
+}
+#history table tbody td.handle {
+  vertical-align: middle;
+}
+#history table tbody td.left {
+  padding: 0 0 .4rem !important;
+  border-top: hidden;
+}
+#history .annotate {
+  width: 70%;
+  margin: auto 3px auto auto;
+}
+
+#exp-footer {
+  position: sticky;
+  bottom: 0;
+  margin-top: 1em;
+  padding: .2rem 0 .5rem;
+  border-radius: 0;
+  border-width: .2rem 0;
+  background: var(--bg-color);
+  font-size: 85%;
+  font-weight: bold;
+}
+#exp-footer input.auto {
+  width: 2.5em;
+  min-width: 0;
+  font-size: 110%;
+}
+#exp-footer input:first-child,
+#exp-footer input:last-child {
+  font-size: 120%;
+}
+
+
+/* // パレット
+---------------------------------------------------------------------------------------------------- */
+#section-palette .box {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+#section-palette .box > * {
+  grid-column: span 2;
+}
+#section-palette .box > .palette-column {
+  grid-column: span 1;
+}
+
+
+/* // カラーカスタム
+---------------------------------------------------------------------------------------------------- */
+.box.color-custom {
+  margin-bottom: 1em;
+}
+span.box.color-custom,
+label.box.color-custom {
+  display: inline-block;
+  cursor: pointer;
+  padding: .1em;
+  padding-left: 1.4em;
+  position: relative;
+}
+label.box.color-custom input {
+  display: none;
+}
+label.box.color-custom input+i,
+.color-custom.night-switch i {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  margin: auto .3rem;
+  display: inline-block;
+  width: 1.3em;
+  height: 1.3em;
+  border-radius: .4rem;
+  font-size: 80%;
+  font-family: "Font Awesome 5 Free";
+  font-weight: bold;
+  font-style: normal;
+  text-align: center;
+  background: #fff;
+  box-shadow: #777 inset 0 0 .2rem;
+  color: #000;
+  overflow: hidden;
+}
+label.box.color-custom input:checked+i::before,
+.night .color-custom.night-switch i::before {
+  content: '\f00c';
+}
+.box.color-custom table {
+  margin-left: 1em;
+}
+.box.color-custom table td {
+  padding: .5em;
+}
+.box.color-custom table td:last-child {
+  width: 4em;
+}
+.box.color-custom .color-range-R th { color: #f00; }
+.box.color-custom .color-range-G th { color: #0f0; }
+.box.color-custom .color-range-B th { color: #00f; }
+.box.color-custom input[type="range"] {
+  width: 361px;
+}
+.box.color-custom input[type=range] {
+  -webkit-appearance:none;
+  background: #000;
+  height: 14px;
+  border-radius: 0px;
+}
+.box.color-custom .color-range-H input[type=range] {
+  background: linear-gradient(to right, #f00,#ff0,#0f0,#0ff,#00f,#f0f,#f00);
+}
+.box.color-custom .color-range-S input[name=colorHeadBgS] {
+  background: linear-gradient(to right, #fff, hsl(var(--box-head-bg-color-h),100%,50%));
+}
+.box.color-custom .color-range-L input[name=colorHeadBgL] {
+  background: linear-gradient(to right, #000, hsl(var(--box-head-bg-color-h),var(--box-head-bg-color-s),50%), #fff);
+}
+.box.color-custom .color-range-S input[name=colorBaseBgS] {
+  background: linear-gradient(to right, #fff, hsla(var(--box-base-bg-color-h),70%,83%,0.5));
+}
+.night .box.color-custom .color-range-S input[name=colorBaseBgS] {
+  background: linear-gradient(to right, #111, hsla(var(--box-base-bg-color-h),100%,15%,0.5));
+}
+.box.color-custom input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;
+  border: 1px solid #777;
+  background: linear-gradient(to bottom, #fff, #bbb);
+  box-shadow: #fff inset 0 0 .1rem .1rem;
+  height: 20px;
+  width: 10px;
+  border-radius: 0px;
+}
+.box.color-custom input[type=range]::-ms-tooltip{
+  display:none;
+}
+.box.color-custom input[type=range]::-moz-range-track{
+  height:0;
+}
+.box.color-custom input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;
+  border: 1px solid #777;
+  background: linear-gradient(to bottom, #fff, #bbb);
+  height: 20px;
+  width: 10px;
+  border-radius: 0px;
+}
+
+/* // 
+---------------------------------------------------------------------------------------------------- */
+@media screen and (min-width:1300px){
+  body {
+    grid-template-columns: 1fr minmax(auto, 900px) 1fr;
+  }
+  header nav {
+    max-width: 900px;
+  }
+  article{
+    max-width: 860px;
+    display: block;
+  }
+}

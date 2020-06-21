@@ -1,0 +1,215 @@
+@charset "utf-8";
+
+@media screen and (max-width:550px){
+  html {
+    font-size: 1.8vw;
+  }
+}
+
+/* // Body
+---------------------------------------------------------------------------------------------------- */
+body {
+  background-image: url(../../_common/img/back-pattern.png), url(../img/back-first.png);
+}
+
+/* // Base
+---------------------------------------------------------------------------------------------------- */
+article {
+  max-width: 800px;
+}
+
+/* // Font
+---------------------------------------------------------------------------------------------------- */
+#area-itemname h1 {
+  font-family: var(--base-font-family-min);
+}
+
+
+/* // Name
+---------------------------------------------------------------------------------------------------- */
+#area-itemname {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  
+  border-width: 3px 0 0;
+  border-style: solid;
+}
+#area-itemname h1 {
+  flex-grow: 1;
+  padding: .25em 1rem;
+  text-align: left;
+  font-size: 200%;
+  font-weight: bold;
+  line-height: 1;
+}
+#area-itemname h1 small {
+  display: inline-block;
+  font-size: 70%;
+  line-height: 1;
+}
+#area-itemname .price {
+  flex-grow: 1;
+  padding-right: .5em;
+  text-align: right;
+}
+#area-itemname h1 .i-icon {
+  width: .7em;
+  height: .7em;
+}
+
+
+/* // Item
+---------------------------------------------------------------------------------------------------- */
+div.data {
+  display: grid;
+  grid-template-columns: 10em 2fr 18em;
+  border-width: 0 1px 1px 0;
+  border-style: solid;
+  
+}
+
+div.data dl.reputation {  }
+div.data dl.shape      {  }
+div.data dl.category   {  }
+div.data dl.age        { grid-column: 3/4; grid-row: 2/3; }
+div.data dl.summary    { grid-column: 1/3; grid-row: 2/3; }
+div.data dl.effects    { grid-column: 1/4; }
+
+div.data dl {
+  display: grid;
+  grid-template-columns: 4.5em 1fr;
+  background: rgba(255,255,255,0.5);
+  border-width: 1px 0 0 1px;
+  border-style: solid;
+}
+.night div.data dl {
+  background: rgba(0,0,0,0.3);
+}
+div.data dl.shape { grid-template-columns: 3.5em 1fr; }
+div.data dl.category,
+div.data dl.age   { grid-template-columns: 5.5em 1fr; }
+
+@media screen and (max-width:735px){
+  div.data { grid-template-columns: 1fr; }
+  div.data dl {
+    grid-column: 1/2 !important;
+    grid-row: auto !important;
+    grid-template-columns: 5.5em 1fr !important;
+  }
+  div.data dl dd {
+    text-align: left !important;
+  }
+}
+
+div.data dl dt,
+div.data dl dd {
+  padding: .2em .5em;
+}
+div.data dl dt {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(127,127,127,0.3);
+}
+div.data dl.reputation dd,
+div.data dl.category   dd,
+div.data dl.age        dd { text-align: center; }
+
+div.data dl.reputation dd,
+div.data dl.shape      dd,
+div.data dl.category   dd,
+div.data dl.age        dd {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+div.data dl.shape dd{
+  justify-content: flex-start;
+}
+div.data dl.category dd > div {
+  width: 100%;
+}
+div.data dl.category dd > div hr {
+  opacity: 0.5;
+}
+@media screen and (max-width:735px){
+  div.data dl.reputation dd,
+  div.data dl.shape      dd,
+  div.data dl.category   dd,
+  div.data dl.age        dd {
+    display: block; 
+  }
+  div.data dl.category dd hr {
+    display: inline;
+    border: 0;
+  }
+  div.data dl.category dd hr::before {
+    content: '／';
+    margin: 0 0.3em;
+  }
+}
+
+div.data dl.effects dd.box {
+  background: none;
+  border: 0;
+  padding: 0;
+}
+div.data dl.effects dd.box *:first-child {
+  margin-top: .2em;
+}
+div.data dl.effects table,
+div.data dl.effects table th,
+div.data dl.effects table td {
+  margin: .5em;
+  border-width: 1px;
+  border-style: solid;
+}
+div.data dl.effects table th,
+div.data dl.effects table td {
+  padding: .2em .5em;
+}
+div.data dl.effects table th {
+  background: rgba(127,127,127,0.2);
+}
+
+/* // Description
+---------------------------------------------------------------------------------------------------- */
+.description {
+  margin-top: 1.5em;
+  border: 0;
+  background: none;
+  box-shadow: none;
+}
+.description h2 {
+  border-width: 1px 0px;
+  border-style: solid;
+  font-size: 115%;
+}
+
+/* // Author
+---------------------------------------------------------------------------------------------------- */
+#author {
+  width: 50%;
+  margin: 2em 0 0 auto;
+  padding: .5em;
+  text-align: right;
+  border-width: 0 1px 1px 0px;
+  border-style: solid;
+}
+
+#link-tag {
+  padding: .5em;
+  text-align: right;
+}
+#link-tag input {
+  width: 18em;
+  padding: 0.2em;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: .5rem;
+  font-size: 0.9em;
+}
+
+

@@ -1,0 +1,82 @@
+@charset "utf-8";
+/* // Form
+---------------------------------------------------------------------------------------------------- */
+section.form {
+  margin: 10%;
+  padding: 0.5em;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 10px;
+}
+section.form h2 {
+  font-size: 2rem;
+}
+form input,
+form select {
+  padding: 5px;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 5px;
+}
+form p {
+  position: relative;
+  margin: 1em;
+  text-align: center;
+}
+form p > label > span {
+  display: inline-block;
+  width: 11em;
+  text-align: right;
+}
+form p > label >  input + b{
+  display: inline-block;
+  position: absolute;
+  bottom: 2px;
+  margin-left: 5px;
+  white-space: nowrap;
+  overflow: visible;
+  font-size: 12px;
+}
+form p > input[type="submit"] {
+  width: 5em;
+}
+
+#convertform section.form {
+  margin: 5% 10%;
+}
+#convertform aside.form {
+  padding: .5em;
+}
+#convertform .form section+section {
+  margin-top: 1em;
+  border-top-width: 1px;
+  border-top-style: solid;
+}
+#convertform .form h4 {
+  font-size: 110%;
+}
+#convertform .form p {
+  margin: .5em 0 1em;
+}
+#convertform .form section:last-child p:last-child {
+  margin-bottom: .5em;
+}
+#convertform .form dl + dl {
+  margin-top: .8em;
+}
+#convertform .form dl dd + dt {
+  margin-top: .2em;
+}
+#convertform .form dl dt::before {
+  content: "◆";
+}
+#convertform .form dl dd {
+  font-size: 95%;
+}
+#convertform .form dl dd::before {
+  content: "・";
+}
+#convertform .form dl dd i {
+  font-style: normal;
+  color: #5599aa;
+}
