@@ -17,6 +17,7 @@
   <link rel="stylesheet" media="all" href="<TMPL_VAR coreDir>/skin/_common/css/sheet.css?<TMPL_VAR ver>">
   <link rel="stylesheet" media="all" href="<TMPL_VAR coreDir>/skin/sw2/css/chara.css?<TMPL_VAR ver>">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+  
   <script>
 function popImage() {
   document.getElementById("image-box").style.bottom = 0;
@@ -37,6 +38,54 @@ function backuplistOn() {
 function chatPaletteOn() {
   document.querySelector(".chat-palette").classList.toggle('show');
 }
+function donwloadListOn() {
+  document.getElementById("downloadlist").classList.toggle('show');
+}
+
+function getJsonData() {
+  return new Promise((resolve, reject)=>{
+    let xhr = new XMLHttpRequest();
+    xhr.open('GET', `${location.href}&mode=json`, true);
+    xhr.responseType = "json";
+    xhr.onload = (e) => {
+      resolve(e.currentTarget.response);
+    };
+    xhr.onerror = () => reject('error');
+    xhr.onabort = () => reject('abort');
+    xhr.ontimeout = () => reject('timeout');
+    xhr.send();
+  });
+}
+
+function generateZipFile(title, data, image){
+	return new Promise((resolve, dummy)=>{
+		let zip = new JSZip();
+		let folder = zip.folder(title);
+		if(image.hash) {
+			folder.file(image.fileName, image.data);
+		}
+		folder.file(`${title}.xml`, data);
+		zip.generateAsync({ type: "blob" }).then(blob => {
+			const dataUrl = URL.createObjectURL(blob);
+			resolve(dataUrl);
+		});		
+	});
+};
+
+async function initializeDownloadList() {
+  const characterDataJson = await getJsonData();
+  const characterId = characterDataJson.birthTime;
+
+  // udonarium
+  const image = (characterDataJson.imageURL) ? await io.github.shunshun94.trpg.udonarium.getPicture(characterDataJson.imageURL) : {hash:''};
+  const udonariumXml = io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2SwordWorldPC(characterDataJson, location.href, image.hash);
+  const udonariumUrl = await generateZipFile(characterDataJson.characterName, udonariumXml, image);
+  document.getElementById('downloadlist-udonarium').innerHTML = `<a href="${udonariumUrl}" download="data_${characterId}.zip">Udonarium 向けのデータ</a>`;
+
+  // json
+  const jsonUrl = window.URL.createObjectURL(new Blob([ JSON.stringify(characterDataJson) ], { "type" : 'text/json;charset=utf-8;' }));
+  document.getElementById('downloadlist-json').innerHTML = `<a href="${jsonUrl}" download="data_${characterId}.json">JSON 形式</a>`;
+}
 <TMPL_IF error>
 window.onload = function() {
   document.getElementById("login-form").style.top = '5rem';
@@ -46,6 +95,7 @@ window.onload = function() {
   },2000);
 };
 </TMPL_IF>
+initializeDownloadList();
   </script>
   <TMPL_IF colorCustom><style>
     :root {
@@ -62,6 +112,9 @@ window.onload = function() {
 </head>
 <body>
   <script src="<TMPL_VAR coreDir>/skin/_common/js/common.js?<TMPL_VAR ver>"></script>
+  <script src="<TMPL_VAR coreDir>/skin/_common/js/lib/sha256.js?<TMPL_VAR ver>"></script>
+  <script src="<TMPL_VAR coreDir>/skin/_common/js/lib/jszip.js?<TMPL_VAR ver>"></script>
+  <script src="<TMPL_VAR coreDir>/skin/_common/js/lib/generateCharacterXml.js?<TMPL_VAR ver>"></script>
   <header>
     <h1><a href="./"><TMPL_VAR title></a></h1>
     <nav>
@@ -72,6 +125,7 @@ window.onload = function() {
         <TMPL_ELSE>
           <TMPL_IF FellowMode><li><a href="./?id=<TMPL_VAR id>">通常</a></li></TMPL_IF>
           <TMPL_IF fellowPublic><TMPL_UNLESS FellowMode><li><a href="./?id=<TMPL_VAR id>&f=1">フェロー</a></li></TMPL_UNLESS></TMPL_IF>
+          <li class="small"><a onclick="donwloadListOn();">保存</a></li>
           <li class="small"><a onclick="chatPaletteOn();"><span>パレット</span></a></li>
           <li class="small"><a onclick="backuplistOn()"><span>過去ログ</span></a></li>
           <TMPL_IF ReqdPassword>
@@ -97,6 +151,13 @@ window.onload = function() {
     <ul>
       <li<TMPL_UNLESS backupMode> class="backup-now"</TMPL_UNLESS>><a href="?id=<TMPL_VAR id>">最新</a></li>
       <TMPL_LOOP Backup><li<TMPL_IF NOW> class="backup-now"</TMPL_IF>><a href="?id=<TMPL_VAR id>&backup=<TMPL_VAR URL>"><TMPL_VAR DATE></a></li></TMPL_LOOP>
+    </ul>
+  </aside>
+
+  <aside id="downloadlist">
+    <ul>
+      <li id="downloadlist-udonarium">Udonarium 向けのデータ</li>
+      <li id="downloadlist-json">JSON 形式</li>
     </ul>
   </aside>
 

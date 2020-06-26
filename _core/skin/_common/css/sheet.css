@@ -632,26 +632,40 @@ textarea::placeholder {
 
 /* // Backup
 ---------------------------------------------------------------------------------------------------- */
-aside#backuplist {
+aside#backuplist,
+aside#downloadlist {
   position: fixed;
   min-width: 13rem;
   height: calc(100vh - 10rem);
   top: 8rem;
-  right: 0;
-  border-width: 1px 0px 1px 1px;
+  
   border-style: solid;
-  border-top-left-radius: 5px;
-  border-bottom-left-radius: 5px;
+
   background: rgba(255,255,255,0.9);
   
   overflow-y: auto;
   
   z-index: 300;
   
-  animation-name: bulist-hide;
   animation-duration: 0.5s;
   animation-fill-mode: forwards;
 }
+
+aside#backuplist {
+  right: 0;
+  animation-name: bulist-hide;
+  border-width: 1px 0px 1px 1px;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+}
+aside#downloadlist {
+  left: 0;
+  animation-name: dllist-hide;
+  border-width: 1px 1px 1px 0px;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
 @keyframes bulist-in {
   0% {
     right: -100vw;
@@ -660,43 +674,78 @@ aside#backuplist {
     right: 0;
   }
 }
-aside#backuplist.show {
+
+@keyframes dllist-in {
+  0% {
+    left: -100vw;
+  }
+  100% {
+    left: 0;
+  }
+}
+
+aside#backuplist.show,
+aside#downloadlist.show {
   display: block;
-  animation-name: bulist-in;
   animation-duration: 0.2s;
   animation-fill-mode: forwards;
 }
+
+aside#backuplist.show {
+  animation-name: bulist-in;
+}
+
+aside#downloadlist.show {
+  animation-name: dllist-in;
+}
+
 @keyframes bulist-hide {
   0% {
     right: 0;
   }
   100% {
     right: -100vw;
-    display: :none;
+    display:none;
   }
 }
-.night aside#backuplist {
+
+@keyframes dllist-hide {
+  0% {
+    left: 0;
+  }
+  100% {
+    left: -100vw;
+    display:none;
+  }
+}
+.night aside#backuplist,
+.night aside#downloadlist {
   background: rgba(0,0,0,0.9);
 }
-aside#backuplist ul {
+aside#backuplist ul,
+aside#downloadlist ul {
   white-space: nowrap;
 }
-aside#backuplist ul li + li {
+aside#backuplist ul li + li,
+aside#downloadlist ul li + li {
   border-width: 1px 0 0;
   border-style: dotted;
 }
 aside#backuplist ul li.backup-now {
   background-color: rgba(100,200,255,0.2);
 }
-aside#backuplist ul li a {
+aside#backuplist ul li a,
+aside#downloadlist ul li a {
   display: block;
   padding: .3rem 3rem .3rem 1.5rem;
   color: #000;
 }
-.night aside#backuplist ul li a {
+.night aside#backuplist ul li a,
+.night aside#downloadlist ul li a {
   color: #fff;
 }
-aside#backuplist ul li a:hover {
+aside#backuplist ul li a:hover,
+aside#downloadlist ul li a:hover {
   background: linear-gradient(to top, rgba(100,200,255,0.2) 20%, transparent 20%);
 }
 
