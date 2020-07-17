@@ -23,9 +23,8 @@
 どの外部サービスを利用するとしても原則として Client ID 等を払い出した上でそれを config.cgi に記載する、という手順を踏みます。
 
 また、どの外部サービスを利用するとしても `$oauth_redirect_url` の値は変わりません。
-ゆとシートの URL が `http://my-ytsheet-sample.example.com/ytsheet2_sw2.5/` なのであれば
-`http%3A%2F%2Fmy-ytsheet-sample.example.com%2Fytsheet2_sw2.5%2Foauth.cgi` としてください。
-（`:` および `\` を変換し、末尾に `oauth.cgi` を付けます）
+ゆとシートの URL が `http://my-ytsheet-sample.example.com/ytsheet2/sw2.5/` なのであれば
+末尾に `oauth.cgi` を付け、`http://my-ytsheet-sample.example.com/ytsheet2_sw2.5/sw2.5/oauth.cgi` としてください。
 
 
 ## Google でログインする場合の設定手順
@@ -76,7 +75,7 @@ Google APIs の OAuch 2.0 クライアント ID を作成・取得します。
   our $oauth_login_url = "前のステップで生成した確認画面の URL";
   our $oauth_client_id = "OAuth クライアント ID 取得のステップで入手したクライアント ID";
   our $oauth_secret_id = "OAuth クライアント ID 取得のステップで入手したクライアントシークレット";
-  our $oauth_redirect_url = "ゆとシートの oauth.cgi のエンコード済み URL（例：http%3A%2F%2Fmy-ytsheet-sample.example.com%2Fytsheet2_sw2.5%2Foauth.cgi）";
+  our $oauth_redirect_url = "ゆとシートの oauth.cgi の URL";
   our $oauth_scope = "https://www.googleapis.com/auth/userinfo.profile+email";
 ```
 
@@ -86,7 +85,7 @@ Google APIs の OAuch 2.0 クライアント ID を作成・取得します。
 
 ### Client ID 等の払い出し
 
-[Discord Developer Portal](https://discordapp.com/developers/applications) の「New Application」からアプリケーションを新規作成してください。
+[Discord Developer Portal](https://discord.com/developers/applications) の「New Application」からアプリケーションを新規作成してください。
 
 新規作成後、画面右側のメニュー、「General Information」からCLIENT ID および CLIENT SECRET が取得できます。
 これを取得し、控えておきます。
@@ -94,7 +93,7 @@ Google APIs の OAuch 2.0 クライアント ID を作成・取得します。
 ### リダイレクト先を設定する
 
 次に画面左側のメニューより「OAuth2」を選択してください。これによって開く画面上で OAuth2 の設定をしていきます。
-「Redirects」にゆとシートの URL の末尾に `oauth.cgi` を追加したものを入れてください。例えば `http://my-ytsheet-sample.example.com/ytsheet2_sw2.5/oauth.cgi` です。
+「Redirects」にゆとシートの URL の末尾に `oauth.cgi` を追加したものを入れてください。例えば `http://my-ytsheet-sample.example.com/ytsheet2/sw2.5/oauth.cgi` です。
 
 追加したら画面下部の「Save Changes」を押して保存してください。
 
@@ -116,7 +115,7 @@ Google APIs の OAuch 2.0 クライアント ID を作成・取得します。
   our $oauth_login_url = "前のステップで生成した確認画面の URL";
   our $oauth_client_id = "General Information で取得した CLIENT ID";
   our $oauth_secret_id = "General Information で取得した CLIENT SECRET";
-  our $oauth_redirect_url = "ゆとシートの oauth.cgi のエンコード済み URL（例：http%3A%2F%2Fmy-ytsheet-sample.example.com%2Fytsheet2_sw2.5%2Foauth.cgi）";
+  our $oauth_redirect_url = "ゆとシートの oauth.cgi の URL";
   our $oauth_scope = "identify+guilds+email";
 ```
 

@@ -7,7 +7,7 @@ my $browser = LWP::UserAgent->new;
 my $json = JSON::PP->new;
 
 my %token_url_list = (
-  'Discord' => 'https://discordapp.com/api/oauth2/token',
+  'Discord' => 'https://discord.com/api/oauth2/token',
   'Google' => 'https://accounts.google.com/o/oauth2/token'
 );
 my %client_name_list = (
@@ -34,7 +34,7 @@ sub getAccessToken {
 sub getUserInfo {
   my $token = $_[0];
   if ( $set::oauth_service eq 'Discord' ) {
-    my $id_request = HTTP::Request->new(GET => 'https://discordapp.com/api/users/@me');
+    my $id_request = HTTP::Request->new(GET => 'https://discord.com/api/users/@me');
     $id_request->content_type('application/x-www-form-urlencoded');
     $id_request->header("User-Agent" => $client_name_list{$set::oauth_service});
     $id_request->header("Authorization" => "Bearer $token");
@@ -63,7 +63,7 @@ sub getUserInfo {
 
 sub isDiscordServerIncluded {
   my ($token, @list) = @_;
-  my $server_request = HTTP::Request->new(GET => 'https://discordapp.com/api/users/@me/guilds');
+  my $server_request = HTTP::Request->new(GET => 'https://discord.com/api/users/@me/guilds');
   $server_request->content_type('application/x-www-form-urlencoded');
   $server_request->header("User-Agent" => $client_name_list{$set::oauth_service});
   $server_request->header("Authorization" => "Bearer $token");
