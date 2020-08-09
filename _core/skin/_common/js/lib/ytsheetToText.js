@@ -161,7 +161,7 @@ io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2SwordWorldPC 
 
 	result.push('●所持品');
 	const itemListPrefix = '  ';
-	result.push(itemListPrefix + json.items.replace(/&lt;br&gt;&lt;br&gt;/gm, '&lt;br&gt;').replace(/&lt;br&gt;/gm, '\n').replace(/\n/gm, '\n  '));
+	result.push(itemListPrefix + (json.items || '').replace(/&lt;br&gt;&lt;br&gt;/gm, '&lt;br&gt;').replace(/&lt;br&gt;/gm, '\n').replace(/\n/gm, '\n  '));
 	if(json.lvAlc) {
 		result.push('');
 		const cardColumnLength = 5;
@@ -182,9 +182,9 @@ io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2SwordWorldPC 
 	result.push('');
 
 	result.push('●資金');
-	result.push('  所持金：' + (json.moneyTotal　|| json.money));
-	result.push('  　預金：' + json.depositTotal);
-	result.push('  　借金：' + json.debtTotal);
+	result.push('  所持金：' + (json.moneyTotal　|| json.money || 0));
+	result.push('  　預金：' + (json.depositTotal || 0));
+	result.push('  　借金：' + (json.debtTotal || 0));
 	result.push('');
 
 	result.push('●魔力');
@@ -197,7 +197,7 @@ io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2SwordWorldPC 
 	}
 	result.push('');
 
-	result.push('●習得言語');
+	result.push('●習得言語（初期習得の言語は除く）');
 	const languageLength = Number(json.languageNum);
 	const languageNameColumnLength = 24;
 	const languageColumnLength = 5;
@@ -206,8 +206,11 @@ io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2SwordWorldPC 
 		const name = json[`language${i+1}`] || '？？？';
 		const talk = json[`language${i+1}Talk`] ? '〇' : '　';
 		const read = json[`language${i+1}Read`] ? '〇' : '　';
-		result.push(`  ${name.padStart(languageNameColumnLength - name.length, ' ')}${talk.padStart(languageColumnLength - 1, ' ')}${read.padStart(languageColumnLength - 1, ' ')}`);
+		if(json[`language${i+1}`] || json[`language${i+1}Talk`] || json[`language${i+1}Read`]) {
+			result.push(`  ${name.padStart(languageNameColumnLength - name.length, ' ')}${talk.padStart(languageColumnLength - 1, ' ')}${read.padStart(languageColumnLength - 1, ' ')}`);
+		}
 	}
+	result.push('');
 
 	result.push('●名誉点');
 	const historyLength = Number(json.historyNum || '0'); 
@@ -217,7 +220,7 @@ io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2SwordWorldPC 
 	const honorLength = Number(json.honorItemsNum || '0');
 	const dishonorLength = Number(json.dishonorItemsNum || '0')
 	result.push(`　- 名誉`);
-	result.push(`${honorPrefix}${honorPrefix}名誉点残高：${json.honor}`);
+	result.push(`${honorPrefix}${honorPrefix}名誉点残高：${json.honor || 0}`);
 	for(let i = 0; i < historyLength + 1; i++) {
 		totalHonor += Number(json[`history${i}Honor`] || '0');
 	}
@@ -228,7 +231,7 @@ io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2SwordWorldPC 
 		}
 	}
 	if(totalHonor !== honorDiffCandidate) {
-		result.push(`${honorPrefix}${honorPrefix}冒険者ランク(${json.rank})：${totalHonor - honorDiffCandidate}`);
+		result.push(`${honorPrefix}${honorPrefix}冒険者ランク(${json.rank || '？？？'})：${totalHonor - honorDiffCandidate}`);
 	}
 	result.push(`　- 不名誉`);
 	for(let i = 0; i < dishonorLength; i++) {
@@ -236,7 +239,7 @@ io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2SwordWorldPC 
 			result.push(`${honorPrefix}${honorPrefix}${json[`dishonorItem${i+1}`]}：${json[`dishonorItem${i+1}Pt`] || 0}`);
 		}
 	}
-	result.push(`${honorPrefix}${honorPrefix}合計：${json.dishonor}`);
+	result.push(`${honorPrefix}${honorPrefix}合計：${json.dishonor || 0}`);
 	result.push('');
 
 	if(historyLength) {
