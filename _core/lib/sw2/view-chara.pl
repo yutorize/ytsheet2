@@ -6,9 +6,9 @@ use open ":utf8";
 use HTML::Template;
 
 ### データ読み込み ###################################################################################
+require $set::data_class;
 require $set::data_races;
 require $set::data_items;
-require $set::data_craft;
 require $set::data_faith;
 
 ### テンプレート読み込み #############################################################################
@@ -57,6 +57,9 @@ if($pc{'colorCustom'} && $pc{'colorHeadBgA'}) {
   ($pc{'colorHeadBgH'}, $pc{'colorHeadBgS'}, $pc{'colorHeadBgL'}) = rgb_to_hsl($pc{'colorHeadBgR'},$pc{'colorHeadBgG'},$pc{'colorHeadBgB'});
   ($pc{'colorBaseBgH'}, $pc{'colorBaseBgS'}, undef) = rgb_to_hsl($pc{'colorBaseBgR'},$pc{'colorBaseBgG'},$pc{'colorBaseBgB'});
   $pc{'colorBaseBgS'} = $pc{'colorBaseBgS'} * $pc{'colorBaseBgA'} * 10;
+}
+foreach (1..17) {
+  $pc{'craftGramarye'.$_} = $pc{'craftGramarye'.$_} || $pc{'magicGramarye'.$_};
 }
 
 ### テンプレ用に変換 --------------------------------------------------
@@ -123,38 +126,15 @@ $SHEET->param("expUsed" => $pc{'expTotal'} - $pc{'expRest'}) ;
 
 ### 技能 --------------------------------------------------
 my @classes; my %classes;
-foreach (
-  ['Fig','ファイター'],
-  ['Gra','グラップラー'],
-  ['Fen','フェンサー'],
-  ['Sho','シューター'],
-  ['Sor','ソーサラー'],
-  ['Con','コンジャラー'],
-  ['Pri','プリースト'],
-  ['Fai','フェアリーテイマー'],
-  ['Mag','マギテック'],
-  ['Sco','スカウト'],
-  ['Ran','レンジャー'],
-  ['Sag','セージ'],
-  ['Enh','エンハンサー'],
-  ['Bar','バード'],
-  ['Rid','ライダー'],
-  ['Alc','アルケミスト'],
-  ['War','ウォーリーダー'],
-  ['Mys','ミスティック'],
-  ['Dem','デーモンルーラー'],
-  ['Phy','フィジカルマスター'],
-  ['Gri','グリモワール'],
-  ['Ari','アリストクラシー'],
-  ['Art','アーティザン'],
-){
-  next if !$pc{'lv'.@$_[0]};
-  my $name = @$_[1];
+foreach my $class (@data::class_names){
+  my $id   = $data::class{$class}{'id'};
+  next if !$pc{'lv'.$id};
+  my $name = $class;
   if($name eq 'プリースト' && $pc{'faith'}){
     $name .= '<span class="priest-faith'.(length($pc{'faith'}) > 12 ? ' narrow' : "").'">（'.$pc{'faith'}.$pc{'faithType'}.'）</span>';
   }
-  push(@classes, { "NAME" => $name, "LV" => $pc{'lv'.@$_[0]} } );
-  $classes{@$_[1]} = $pc{'lv'.@$_[0]};
+  push(@classes, { "NAME" => $name, "LV" => $pc{'lv'.$id} } );
+  $classes{$class} = $pc{'lv'.$id};
 }
 @classes = sort{$b->{'LV'} <=> $a->{'LV'}} @classes;
 $SHEET->param(Classes => \@classes);
@@ -197,85 +177,61 @@ $SHEET->param(MysticArts => \@mystic_arts);
 $SHEET->param(MysticArtsHonor => $mysticarts_honor);
 
 ### 秘奥魔法 --------------------------------------------------
-my @magic_gramarye;
-foreach (1 .. $pc{'lvGri'}){
-  my $name = $pc{'magicGramarye'.$_};
-  my $ruby;
-  foreach(@data::magic_gramarye){
-    if ($name eq @$_[1]){ $name = "－$name－"; $ruby = @$_[2]; last }
+my %gramarye_ruby;
+foreach (@{$data::class{'グリモワール'}{'magic'}{'data'}}){
+  $gramarye_ruby{@$_[1]} = @$_[2];
+}
+### 魔法 --------------------------------------------------
+my $craft_none = 1;
+my @magic_lists;
+foreach my $class (@data::class_names){
+  next if !$data::class{$class}{'magic'}{'data'};
+  my $lv = $pc{'lv'.$data::class{$class}{'id'}};
+  next if !$lv;
+  
+  my @magics;
+  foreach (1 .. $lv + $pc{$data::class{$class}{'magic'}{'eName'}.'Addition'}){
+    my $magic = $pc{'magic'.ucfirst($data::class{$class}{'magic'}{'eName'}).$_};
+    
+    if($class eq 'グリモワール'){
+      push(@magics, { "ITEM" => "－${magic}－", "RUBY" => "data-ruby=\"$gramarye_ruby{$magic}\"" } );
+    }
+    else { push(@magics, { "ITEM" => $magic } ); }
   }
-  push(@magic_gramarye, { "NAME" => $name, "RUBY" => $ruby } );
+  
+  push(@magic_lists, { "jNAME" => $data::class{$class}{'magic'}{'jName'}, "eNAME" => $data::class{$class}{'magic'}{'eName'}, "MAGICS" => \@magics } );
+  $craft_none = 0;
 }
-$SHEET->param(MagicGramarye => \@magic_gramarye);
+$SHEET->param(MagicLists => \@magic_lists);
 
-### 練技 --------------------------------------------------
-my @craft_enhance; my $enhance_attack_on;
-foreach (1 .. $pc{'lvEnh'}){
-  push(@craft_enhance, { "NAME" => $pc{'craftEnhance'.$_} } );
-  $enhance_attack_on = 1 if $pc{'craftEnhance'.$_} =~ /フェンリルバイト|バルーンシードショット/;
+### 技芸 --------------------------------------------------
+my @craft_lists;
+my $enhance_attack_on;
+my $rider_obs_on;
+foreach my $class (@data::class_names){
+  next if !$data::class{$class}{'craft'}{'data'};
+  my $lv = $pc{'lv'.$data::class{$class}{'id'}};
+  next if !$lv;
+  
+  my @crafts;
+  foreach (1 .. $lv + $pc{$data::class{$class}{'craft'}{'eName'}.'Addition'}){
+    my $craft = $pc{'craft'.ucfirst($data::class{$class}{'craft'}{'eName'}).$_};
+    
+    if($class eq 'エンハンサー'){
+      $enhance_attack_on = 1 if $craft =~ /フェンリルバイト|バルーンシードショット/;
+    }
+    elsif($class eq 'ライダー'){
+      $SHEET->param(riderObsOn => 1)  if $craft eq '探索指令';
+    }
+    push(@crafts, { "ITEM" => $craft } );
+  }
+  
+  push(@craft_lists, { "jNAME" => $data::class{$class}{'craft'}{'jName'}, "eNAME" => $data::class{$class}{'craft'}{'eName'}, "CRAFTS" => \@crafts } );
+  $craft_none = 0;
 }
-$SHEET->param(CraftEnhance => \@craft_enhance);
+$SHEET->param(CraftLists => \@craft_lists);
 
-### 呪歌 --------------------------------------------------
-my @craft_song;
-foreach (1 .. $pc{'lvBar'}+$pc{'songAddition'}){
-  push(@craft_song, { "NAME" => $pc{'craftSong'.$_} } );
-}
-$SHEET->param(CraftSong => \@craft_song);
-
-### 騎芸 --------------------------------------------------
-my @craft_riding; my $rider_obs_on;
-foreach (1 .. $pc{'lvRid'}){
-  push(@craft_riding, { "NAME" => $pc{'craftRiding'.$_} } );
-  $rider_obs_on = 1 if $pc{'craftRiding'.$_} eq '探索指令';
-}
-$SHEET->param(CraftRiding => \@craft_riding);
-$SHEET->param(riderObsOn => $rider_obs_on);
-
-### 賦術 --------------------------------------------------
-my @craft_alchemy;
-foreach (1 .. $pc{'lvAlc'}){
-  push(@craft_alchemy, { "NAME" => $pc{'craftAlchemy'.$_} } );
-}
-$SHEET->param(CraftAlchemy => \@craft_alchemy);
-
-### 鼓咆 --------------------------------------------------
-my @craft_command;
-foreach (1 .. $pc{'lvWar'}){
-  push(@craft_command, { "NAME" => $pc{'craftCommand'.$_} } );
-}
-$SHEET->param(CraftCommand => \@craft_command);
-
-### 占瞳 --------------------------------------------------
-my @craft_divination;
-foreach (1 .. $pc{'lvMys'}){
-  push(@craft_divination, { "NAME" => $pc{'craftDivination'.$_} } );
-}
-$SHEET->param(CraftDivination => \@craft_divination);
-
-### 魔装 --------------------------------------------------
-my @craft_potential;
-foreach (1 .. $pc{'lvPhy'}){
-  push(@craft_potential, { "NAME" => $pc{'craftPotential'.$_} } );
-}
-$SHEET->param(CraftPotential => \@craft_potential);
-
-### 呪印 --------------------------------------------------
-my @craft_seal;
-foreach (1 .. $pc{'lvArt'}){
-  push(@craft_seal, { "NAME" => $pc{'craftSeal'.$_} } );
-}
-$SHEET->param(CraftSeal => \@craft_seal);
-
-### 貴格 --------------------------------------------------
-my @craft_dignity;
-foreach (1 .. $pc{'lvAri'}){
-  push(@craft_dignity, { "NAME" => $pc{'craftDignity'.$_} } );
-}
-$SHEET->param(CraftDignity => \@craft_dignity);
-
-### 練技・呪歌：なし --------------------------------------------------
-$SHEET->param(craftNone => 1) if !$pc{'lvEnh'} && !$pc{'lvBar'} && !$pc{'lvRid'} && !$pc{'lvAlc'} && !$pc{'lvWar'} && !$pc{'lvMys'} && !$pc{'lvPhy'} && !$pc{'lvArt'} && !$pc{'lvAri'};
+$SHEET->param(craftNone => $craft_none);
 
 ### 言語 --------------------------------------------------
 my @language;
@@ -307,38 +263,62 @@ $SHEET->param("PackageLv" => max($pc{'lvSco'},$pc{'lvRan'},$pc{'lvSag'},$pc{'lvB
 
 ### 魔力 --------------------------------------------------
 my @magic;
-foreach (
-  ['ソーサラー',         'Sor', '真語魔法', '知力+2'],
-  ['コンジャラー',       'Con', '操霊魔法', '知力+2'],
-  ['プリースト',         'Pri', '神聖魔法', '知力+2'],
-  ['マギテック',         'Mag', '魔動機術', '知力+2'],
-  ['フェアリーテイマー', 'Fai', '妖精魔法', '知力+2'],
-  ['デーモンルーラー',   'Dem', '召異魔法', '知力+2'],
-  ['グリモワール',       'Gri', '秘奥魔法', '知力+2'],
-  ['バード',             'Bar', '呪歌',     '精神力+2'],
-  ['アルケミスト',       'Alc', '賦術',     '知力+2'],
-  ['ミスティック',       'Mys', '占瞳',     '知力+2'],
-){
-  next if !$pc{'lv'.@$_[1]};
-  my $power  = $pc{'magicPowerAdd'.@$_[1]}  + (@$_[2] =~ /魔/ ? $pc{'magicPowerAdd'} +$pc{'magicPowerEnhance'} : 0);
-  my $cast   = $pc{'magicCastAdd'.@$_[1]}   + (@$_[2] =~ /魔/ ? $pc{'magicCastAdd'} : 0);
-  my $damage = $pc{'magicDamageAdd'.@$_[1]} + (@$_[2] =~ /魔/ ? $pc{'magicDamageAdd'} : 0);
+foreach my $class (@data::class_names){
+  my $id   = $data::class{$class}{'id'};
+  my $name = $data::class{$class}{'magic'}{'jName'};
+  next if !$name;
+  next if !$pc{'lv'.$id};
+  
+  my $power  = $pc{'magicPowerAdd' .$id} + $pc{'magicPowerAdd'} +$pc{'magicPowerEnhance'};
+  my $cast   = $pc{'magicCastAdd'  .$id} + $pc{'magicCastAdd'};
+  my $damage = $pc{'magicDamageAdd'.$id} + $pc{'magicDamageAdd'};
+  
   push(@magic, {
-    "NAME" => @$_[0]."<span class=\"small\">技能レベル</span>".$pc{'lv'.@$_[1]},
-    "OWN"  => ($pc{'magicPowerOwn'.@$_[1]} ? '✔<span class="small">'.@$_[3].'</span>' : ''),
-    "MAGIC"  => @$_[2].(@$_[1] eq 'Fai' && $pc{'ftElemental'} ? "<span>（$pc{'ftElemental'}）</span>" : ''),
-    "POWER"  => @$_[2] =~ /魔|歌/ ? ($power ? '<span class="small">+'.$power.'=</span>' : '').$pc{'magicPower'.@$_[1]} : '―',
-    "CAST"   => ($cast ? '<span class="small">+'.$cast.'=</span>' : '').($pc{'magicPower'.@$_[1]}+$cast),
-    "DAMAGE" => @$_[2] =~ /魔|歌/ ? "+$damage" : '―',
+    "NAME" => $class."<span class=\"small\">技能レベル</span>".$pc{'lv'.$id},
+    "OWN"  => ($pc{'magicPowerOwn'.$id} ? '✔<span class="small">知力+2</span>' : ''),
+    "MAGIC"  => $name.($id eq 'Fai' && $fairy_contact ? "<div id=\"fairycontact\">（$fairy_contact）</div>" : ''),
+    "POWER"  => ($power ? '<span class="small">+'.$power.'=</span>' : '').$pc{'magicPower'.$id},
+    "CAST"   => ($cast ? '<span class="small">+'.$cast.'=</span>' : '').($pc{'magicPower'.$id}+$cast),
+    "DAMAGE" => "+$damage",
+  } );
+}
+
+foreach my $class (@data::class_names){
+  my $id    = $data::class{$class}{'id'};
+  my $name  = $data::class{$class}{'craft'}{'jName'};
+  my $stt   = $data::class{$class}{'craft'}{'stt'};
+  my $pname = $data::class{$class}{'craft'}{'power'};
+  next if !$stt;
+  next if !$pc{'lv'.$id};
+  
+  my $power  = $pc{'magicPowerAdd' .$id};
+  my $cast   = $pc{'magicCastAdd'  .$id};
+  my $damage = $pc{'magicDamageAdd'.$id};
+  
+  push(@magic, {
+    "NAME" => $class."<span class=\"small\">技能レベル</span>".$pc{'lv'.$id},
+    "OWN"  => ($pc{'magicPowerOwn'.$id} ? '✔<span class="small">'.$stt.'+2</span>' : ''),
+    "MAGIC"  => $name,
+    "POWER"  => ($pname) ? ($power ? '<span class="small">+'.$power.'=</span>' : '').$pc{'magicPower'.$id} : '―',
+    "CAST"   => ($cast ? '<span class="small">+'.$cast.'=</span>' : '').($pc{'magicPower'.$id}+$cast),
+    "DAMAGE" => ($pname) ? "+$damage" : '―',
   } );
 }
 $SHEET->param(MagicPowers => \@magic);
 {
   my @head; my @pow; my @act;
   if($pc{'lvCaster'}) { push(@head, '魔法'); push(@pow, '魔力'); push(@act, '行使'); }
-  if($pc{'lvBar'})    { push(@head, '呪歌'); push(@pow, '奏力'); push(@act, '演奏'); }
-  if($pc{'lvAlc'})    { push(@head, '賦術');                     push(@act, '賦術'); }
-  if($pc{'lvMys'})    { push(@head, '占瞳');                     push(@act, '占瞳'); }
+  foreach my $class (@data::class_names){
+    my $id    = $data::class{$class}{'id'};
+    next if !$data::class{$class}{'craft'}{'stt'};
+    next if !$pc{'lv'.$id};
+    
+    push(@head, $data::class{$class}{'craft'}{'jName'});
+    push(@pow,  $data::class{$class}{'craft'}{'power'}) if $data::class{$class}{'craft'}{'power'};
+    if($class eq 'バード'){ push(@act, '演奏'); }
+    else                  { push(@act, $data::class{$class}{'craft'}{'jName'}); }
+  }
+  
   $SHEET->param(MagicPowerHeader => join('／',@head));
   $SHEET->param(MagicPowerThPow => scalar(@pow) >= 2 ? '<span class="small">'.join('/',@pow).'</span>' : join('/',@pow));
   $SHEET->param(MagicPowerThAct => scalar(@act) >= 3 ? "$act[0]など" : join('/',@act));
@@ -641,7 +621,6 @@ $SHEET->param(BattleItems => \@battleitems);
 $SHEET->param(colorBaseBgS => $pc{colorBaseBgS} * 0.7);
 $SHEET->param(colorBaseBgL => 100 - $pc{colorBaseBgS} / 6);
 $SHEET->param(colorBaseBgD => 15);
-
 
 ### バックアップ --------------------------------------------------
 if($id){

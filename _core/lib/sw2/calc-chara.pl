@@ -3,6 +3,7 @@ use strict;
 #use warnings;
 use utf8;
 
+require $set::data_class;
 require $set::data_races;
 require $set::data_items;
 
@@ -10,49 +11,30 @@ sub data_calc {
   my %pc = %{$_[0]};
   my %st;
 
+  
   ### 種族特徴 --------------------------------------------------
   $pc{'raceAbility'} = $data::race_ability{$pc{'race'}};
-
-  ### 冒険者レベル算出 --------------------------------------------------
-  $pc{'level'} = max(
-    $pc{'lvFig'},
-    $pc{'lvGra'},
-    $pc{'lvFen'},
-    $pc{'lvSho'},
-    $pc{'lvSor'},
-    $pc{'lvCon'},
-    $pc{'lvPri'},
-    $pc{'lvFai'},
-    $pc{'lvMag'},
-    $pc{'lvSco'},
-    $pc{'lvRan'},
-    $pc{'lvSag'},
-    $pc{'lvEnh'},
-    $pc{'lvBar'},
-    $pc{'lvRid'},
-    $pc{'lvAlc'},
-    $pc{'lvWar'},
-    $pc{'lvMys'},
-    $pc{'lvDem'},
-    $pc{'lvPhy'},
-    $pc{'lvGri'},
-    $pc{'lvArt'},
-    $pc{'lvAri'}
-  );
+  
+  ### 技能 --------------------------------------------------
+  my @class_a; my @class_b; my $lv_caster_total;
+  foreach my $class (@data::class_names){
+    my $id = $data::class{$class}{'id'};
+    
+    ## 冒険者レベル算出
+    $pc{'level'} = $pc{'lv'.$id} if ($pc{'level'} < $pc{'lv'.$id});
+    
+    ## 魔法使い最大/合計レベル算出
+    $pc{'lvCaster'} = $pc{'lv'.$id} if ($pc{'lvCaster'} < $pc{'lv'.$id} && $data::class{$class}{'magic'}{'jName'});
+    $lv_caster_total += $pc{'lv'.$id} if $data::class{$class}{'magic'}{'jName'};
+  }
 
   ### スカレンセジ最大レベル算出 --------------------------------------------------
-  my $smax = max("$pc{'lvSco'}","$pc{'lvRan'}","$pc{'lvSag'}");
+  my $smax = max($pc{'lvSco'},$pc{'lvRan'},$pc{'lvSag'});
 
   ### ウィザードレベル算出 --------------------------------------------------
   $pc{'lvWiz'} = max($pc{'lvSor'},$pc{'lvCon'});
 
-  ### 魔法使い最大レベル算出 --------------------------------------------------
-  $pc{'lvCaster'} = max($pc{'lvSor'},$pc{'lvCon'},$pc{'lvPri'},$pc{'lvFai'},$pc{'lvMag'},$pc{'lvDem'},$pc{'lvGri'});
-
   ### 経験点／名誉点／ガメル計算 --------------------------------------------------
-  my @expA = ( 0, 1000, 2000, 3500, 5000, 7000, 9500, 12500, 16500, 21500, 27500, 35000, 44000, 54500, 66500, 80000, 95000, 125000 );
-  my @expB = ( 0,  500, 1500, 2500, 4000, 5500, 7500, 10000, 13000, 17000, 22000, 28000, 35500, 44500, 55000, 67000, 80500, 105500 );
-  my @expS = ( 0, 3000, 6000, 9000, 12000, 16000, 20000, 24000, 28000, 33000, 38000, 43000, 48000, 54000, 60000, 66000, 72000, 79000, 86000, 93000, 100000 );
   ## 履歴から 
   $pc{'moneyTotal'} = 0;
   $pc{'depositTotal'} = 0;
@@ -88,12 +70,13 @@ sub data_calc {
   }
 
   ## 経験点消費
+  my @expA = ( 0, 1000, 2000, 3500, 5000, 7000, 9500, 12500, 16500, 21500, 27500, 35000, 44000, 54500, 66500, 80000, 95000, 125000 );
+  my @expB = ( 0,  500, 1500, 2500, 4000, 5500, 7500, 10000, 13000, 17000, 22000, 28000, 35500, 44500, 55000, 67000, 80500, 105500 );
+  my @expS = ( 0, 3000, 6000, 9000, 12000, 16000, 20000, 24000, 28000, 33000, 38000, 43000, 48000, 54000, 60000, 66000, 72000, 79000, 86000, 93000, 100000 );
   $pc{'expRest'} = $pc{'expTotal'};
-  foreach ("Fig", "Gra", "Sor", "Con", "Pri", "Fai", "Mag", "Dem","Gri") {
-    $pc{'expRest'} -= $expA[$pc{'lv'.$_}];
-  }
-  foreach ("Fen", "Sho", "Sco", "Ran", "Sag", "Enh", "Bar", "Rid", "Alc", "War", "Mys","Phy","Art","Ari") {
-    $pc{'expRest'} -= $expB[$pc{'lv'.$_}];
+  foreach (@data::class_names){
+    if    ($data::class{$_}{'expTable'} eq 'A'){ $pc{'expRest'} -= $expA[$pc{'lv'.$data::class{$_}{'id'}}]; }
+    elsif ($data::class{$_}{'expTable'} eq 'B'){ $pc{'expRest'} -= $expB[$pc{'lv'.$data::class{$_}{'id'}}]; }
   }
   $pc{'expRest'} += $expS[$pc{'lvSeeker'}];  # 求道者
 
@@ -175,46 +158,23 @@ sub data_calc {
   $st{'LvE'} = $pc{'level'}+$pc{'bonusInt'};
   $st{'LvF'} = $pc{'level'}+$pc{'bonusMnd'};
   ## 各技能レベル＋各ボーナス算出
-  foreach (
-    'Fig',
-    'Gra',
-    'Fen',
-    'Sho',
-    'Sor',
-    'Con',
-    'Pri',
-    'Fai',
-    'Mag',
-    'Sco',
-    'Ran',
-    'Sag',
-    'Enh',
-    'Bar',
-    'Rid',
-    'Alc',
-    'War',
-    'Mys',
-    'Dem',
-    'Phy',
-    'Gri',
-    'Art',
-    'Ari',
-  ){
-    if($pc{'lv'.$_} > 0) {
-      $st{$_.'A'} = $pc{'lv'.$_}+$pc{'bonusDex'};
-      $st{$_.'B'} = $pc{'lv'.$_}+$pc{'bonusAgi'};
-      $st{$_.'C'} = $pc{'lv'.$_}+$pc{'bonusStr'};
-      $st{$_.'D'} = $pc{'lv'.$_}+$pc{'bonusVit'};
-      $st{$_.'E'} = $pc{'lv'.$_}+$pc{'bonusInt'};
-      $st{$_.'F'} = $pc{'lv'.$_}+$pc{'bonusMnd'};
+  foreach my $class (@data::class_names){
+    my $id = $data::class{$class}{'id'};
+    if($pc{'lv'.$id} > 0) {
+      $st{$id.'A'} = $pc{'lv'.$id}+$pc{'bonusDex'};
+      $st{$id.'B'} = $pc{'lv'.$id}+$pc{'bonusAgi'};
+      $st{$id.'C'} = $pc{'lv'.$id}+$pc{'bonusStr'};
+      $st{$id.'D'} = $pc{'lv'.$id}+$pc{'bonusVit'};
+      $st{$id.'E'} = $pc{'lv'.$id}+$pc{'bonusInt'};
+      $st{$id.'F'} = $pc{'lv'.$id}+$pc{'bonusMnd'};
     }
     else {
-      $st{$_.'A'} = 0;
-      $st{$_.'B'} = 0;
-      $st{$_.'C'} = 0;
-      $st{$_.'D'} = 0;
-      $st{$_.'E'} = 0;
-      $st{$_.'F'} = 0;
+      $st{$id.'A'} = 0;
+      $st{$id.'B'} = 0;
+      $st{$id.'C'} = 0;
+      $st{$id.'D'} = 0;
+      $st{$id.'E'} = 0;
+      $st{$id.'F'} = 0;
     }
   }
 
@@ -312,8 +272,7 @@ sub data_calc {
   $pc{'hpAddTotal'} += 15 if $pc{'lvFig'} >= 7; #タフネス
   $pc{'hpTotal'}  = $pc{'hpBase'} + $pc{'hpAddTotal'};
   ## ＭＰ
-  $pc{'mpBase'} = ($pc{'lvSor'} + $pc{'lvCon'} + $pc{'lvPri'} + $pc{'lvFai'} + 
-                   $pc{'lvMag'} + $pc{'lvDem'} + $pc{'lvGri'}) * 3 + $pc{'sttMnd'} + $pc{'sttAddF'};
+  $pc{'mpBase'} = $lv_caster_total * 3 + $pc{'sttMnd'} + $pc{'sttAddF'};
   $pc{'mpBase'} = $pc{'level'} * 3 + $pc{'sttMnd'} + $pc{'sttAddF'} if ($pc{'race'} eq 'マナフレア');
   $pc{'mpAddTotal'} = s_eval($pc{'mpAdd'}) + $pc{'capacity'} + $pc{'raceAbilityMp'} + $pc{'mpAccessory'};
   $pc{'mpTotal'}  = $pc{'mpBase'} + $pc{'mpAddTotal'};
@@ -351,17 +310,21 @@ sub data_calc {
   $pc{'initiative'}  = max(@ini_class) + $pc{'initiativeAdd'};
 
   ## 魔力
-  $pc{'magicPowerSor'} = $pc{'lvSor'} ? $pc{'lvSor'} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwnSor'} ? 2 : 0)) / 6) + $pc{'magicPowerAddSor'} + $pc{'magicPowerAdd'} + $pc{'magicPowerEnhance'} : 0;
-  $pc{'magicPowerCon'} = $pc{'lvCon'} ? $pc{'lvCon'} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwnCon'} ? 2 : 0)) / 6) + $pc{'magicPowerAddCon'} + $pc{'magicPowerAdd'} + $pc{'magicPowerEnhance'} : 0;
-  $pc{'magicPowerPri'} = $pc{'lvPri'} ? $pc{'lvPri'} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwnPri'} ? 2 : 0)) / 6) + $pc{'magicPowerAddPri'} + $pc{'magicPowerAdd'} + $pc{'magicPowerEnhance'} : 0;
-  $pc{'magicPowerFai'} = $pc{'lvFai'} ? $pc{'lvFai'} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwnFai'} ? 2 : 0)) / 6) + $pc{'magicPowerAddFai'} + $pc{'magicPowerAdd'} + $pc{'magicPowerEnhance'} : 0;
-  $pc{'magicPowerMag'} = $pc{'lvMag'} ? $pc{'lvMag'} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwnMag'} ? 2 : 0)) / 6) + $pc{'magicPowerAddMag'} + $pc{'magicPowerAdd'} + $pc{'magicPowerEnhance'} : 0;
-  $pc{'magicPowerDem'} = $pc{'lvDem'} ? $pc{'lvDem'} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwnDem'} ? 2 : 0)) / 6) + $pc{'magicPowerAddDem'} + $pc{'magicPowerAdd'} + $pc{'magicPowerEnhance'} : 0;
-  $pc{'magicPowerGri'} = $pc{'lvGri'} ? $pc{'lvGri'} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwnGri'} ? 2 : 0)) / 6) + $pc{'magicPowerAddGri'} + $pc{'magicPowerAdd'} + $pc{'magicPowerEnhance'} : 0;
-
-  $pc{'magicPowerBar'} = $pc{'lvBar'} ? $pc{'lvBar'} + int(($pc{'sttMnd'} + $pc{'sttAddF'} + ($pc{'magicPowerOwnBar'} ? 2 : 0)) / 6) + $pc{'magicPowerAddBar'} : 0;
-  $pc{'magicPowerAlc'} = $pc{'lvAlc'} ? $pc{'lvAlc'} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwnAlc'} ? 2 : 0)) / 6) + $pc{'magicPowerAddAlc'} + $pc{'alchemyEnhance'} : 0;
-  $pc{'magicPowerMys'} = $pc{'lvMys'} ? $pc{'lvMys'} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwnMys'} ? 2 : 0)) / 6) + $pc{'magicPowerAddMys'} : 0;
+  foreach my $name (@data::class_names){
+    next if (!$data::class{$name}{'magic'}{'jName'});
+    my $id = $data::class{$name}{'id'};
+    $pc{'magicPower'.$id} = $pc{'lv'.$id} ? ( $pc{'lv'.$id} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwn'.$id} ? 2 : 0)) / 6) + $pc{'magicPowerAdd'.$id} + $pc{'magicPowerAdd'} + $pc{'magicPowerEnhance'} ) : 0;
+  }
+  ## 奏力ほか
+  my %stt = ('知力'=>['Int','E'], '精神力'=>['Mnd','F']);
+  foreach my $name (@data::class_names){
+    next if (!$data::class{$name}{'craft'}{'stt'});
+    my $id = $data::class{$name}{'id'};
+    my $st = $data::class{$name}{'craft'}{'stt'};
+    $pc{'magicPower'.$id} = $pc{'lv'.$id} ? ( $pc{'lv'.$id} + int(($pc{'stt'.$stt{$st}[0]} + $pc{'sttAdd'.$stt{$st}[1]} + ($pc{'magicPowerOwn'.$id} ? 2 : 0)) / 6) + $pc{'magicPowerAdd'.$id} ) : 0;
+  }
+  $pc{'magicPowerAlc'} += $pc{'alchemyEnhance'};
+  
   ### 装備 --------------------------------------------------
   ## 武器
   foreach (1 .. $pc{'weaponNum'}){
@@ -440,7 +403,8 @@ sub data_calc {
   'lvSor','lvCon','lvPri','lvFai','lvMag',
   'lvSco','lvRan','lvSag',
   'lvEnh','lvBar','lvRid','lvAlc',
-  'lvWar','lvMys','lvDem','lvPhy',
+  'lvDru','lvDem',
+  'lvWar','lvMys','lvPhy',
   'lvGri','lvArt','lvAri',
   'cardRedB','cardRedA','cardRedS','cardRedSS',
   'cardGreB','cardGreA','cardGreS','cardGreSS',
@@ -464,16 +428,14 @@ sub data_calc {
   my($aka, $ruby) = split(/:/,$pc{'aka'});
   my $charactername = ($aka?"“$aka”":"").$pc{'characterName'};
   $charactername =~ s/[|｜]([^|｜]+?)《.+?》/$1/g;
+  my $classlv;
+  foreach my $class (@data::class_list){
+    $classlv .= $pc{'lv'.$data::class{$class}{'id'}}.'/';
+  }
   $::newline = "$pc{'id'}<>$::file<>".
                "$pc{'birthTime'}<>$::now<>$charactername<>$pc{'playerName'}<>$pc{'group'}<>".
                "$pc{'expTotal'}<>$pc{'rank'}<>$pc{'race'}<>$pc{'gender'}<>$pc{'age'}<>$pc{'faith'}<>".
-               
-               "$pc{'lvFig'}/$pc{'lvGra'}/$pc{'lvFen'}/".
-               "$pc{'lvSho'}/$pc{'lvSor'}/$pc{'lvCon'}/$pc{'lvPri'}/$pc{'lvFai'}/$pc{'lvMag'}/".
-               "$pc{'lvSco'}/$pc{'lvRan'}/$pc{'lvSag'}/".
-               "$pc{'lvEnh'}/$pc{'lvBar'}/$pc{'lvRid'}/$pc{'lvAlc'}/$pc{'lvWar'}/$pc{'lvMys'}/".
-               "$pc{'lvDem'}/$pc{'lvPhy'}/$pc{'lvGri'}/$pc{'lvArt'}/$pc{'lvAri'}<>".
-               
+               "$classlv<>".
                "$pc{'sessionTotal'}<>$pc{'image'}<> $pc{'tags'} <>$pc{'hide'}<>$pc{'fellowPublic'}<>";
 
   return %pc;

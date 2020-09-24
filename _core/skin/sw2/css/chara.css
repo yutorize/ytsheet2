@@ -720,15 +720,15 @@ dl#level dd {
     margin-top: 0;
   }
 }
-#magic-gramarye li {
+#crafts li {
   position: relative;
 }
-#magic-gramarye li span[data-ruby] {
+#crafts li span[data-ruby] {
   display: block;
   position: relative;
   bottom: -.35em;
 }
-#magic-gramarye li span::before {
+#crafts li span[data-ruby]::before {
   content: attr(data-ruby);
   display: block;
   position: absolute;
