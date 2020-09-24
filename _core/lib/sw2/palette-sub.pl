@@ -150,7 +150,8 @@ sub palettePreset {
       $text .= "\n";
     }
     # 回避
-    $text .= "2d6+{回避} 回避力\n";
+    $text .= "//EVA=0\n";
+    $text .= "2d6+{回避}+{EVA} 回避力\n";
     
     #
     if($bot{'YTC'}) {

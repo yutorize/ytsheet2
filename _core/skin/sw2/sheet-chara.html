@@ -34,8 +34,21 @@ function editOn() {
 function backuplistOn() {
   document.getElementById("backuplist").classList.toggle('show');
 }
+let cpOpenFirst = 0;
 function chatPaletteOn() {
   document.querySelector(".chat-palette").classList.toggle('show');
+  if(!cpOpenFirst){ chatPaletteSelect(); }
+  cpOpenFirst++;
+}
+function chatPaletteSelect(tool) {
+  const url = './?mode=palette&id=<TMPL_VAR id>&tool='+tool;
+  fetch(url)
+  .then(response => { return response.text(); })
+  .then(text => { document.getElementById('chatPaletteBox').value = text; });
+  document.querySelectorAll('.chat-palette-menu a').forEach(elm => {
+    elm.classList.remove('check');
+  });
+  document.getElementById('cp-switch-'+(tool||'ytc')).classList.add('check');
 }
 <TMPL_IF error>
 window.onload = function() {
@@ -711,13 +724,12 @@ window.onload = function() {
       </TMPL_IF>
       <section class="box chat-palette">
         <h2>チャットパレット</h2>
-        <p>
-          使用ダイスbot: 
-          <a href="./?mode=palette&id=<TMPL_VAR id>" target="palette">ゆとチャadv.</a>
-          ／
-          <a href="./?mode=palette&id=<TMPL_VAR id>&tool=bcdice" target="palette">BCDice</a>
-        </p>
-        <iframe src="./?mode=palette&id=<TMPL_VAR id>" name="palette"></iframe>
+        <div class="chat-palette-menu">
+          <b>使用ダイスbot:</b>
+          <a onclick="chatPaletteSelect('')"       id="cp-switch-ytc">ゆとチャadv.</a>
+          <a onclick="chatPaletteSelect('bcdice')" id="cp-switch-bcdice">BCDice</a>
+        </div>
+        <textarea id="chatPaletteBox"></textarea>
       </section>
     </article>
     <!-- フェロー -->
