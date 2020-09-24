@@ -611,9 +611,15 @@ if($pc{"money"} =~ /^(?:自動|auto)$/i){
 if($pc{"deposit"} =~ /^(?:自動|auto)$/i){
   $SHEET->param(deposit => $pc{'depositTotal'}.' G ／ '.$pc{'debtTotal'});
 }
-$pc{"cashbook"} =~ s/(:(?:\:|&lt;|&gt;)(?:[\+\-\*]?[0-9]+)+)/<b class="cash">$1<\/b>/g;
+$pc{"cashbook"} =~ s/(:(?:\:|&lt;|&gt;))((?:[\+\-\*\/]?[0-9]+)+)/$1.cashCheck($2)/eg;
   $SHEET->param(cashbook => $pc{'cashbook'});
-
+sub cashCheck(){
+  my $text = shift;
+  my $num = s_eval($text);
+  if   ($num > 0) { return '<b class="cash plus">'.$text.'</b>'; }
+  elsif($num < 0) { return '<b class="cash minus">'.$text.'</b>'; }
+  else { return '<b class="cash">'.$text.'</b>'; }
+}
 ### マテリアルカード --------------------------------------------------
 foreach my $color ('Red','Gre','Bla','Whi','Gol'){
   $SHEET->param("card${color}View" => $pc{'card'.$color.'B'}+$pc{'card'.$color.'A'}+$pc{'card'.$color.'S'}+$pc{'card'.$color.'SS'});

@@ -1238,9 +1238,10 @@ function calcExp(){
   expTotal = 0;
   const historyNum = form.historyNum.value;
   for (let i = 0; i <= historyNum; i++){
-    let exp = Number(eval(form['history'+i+'Exp'].value));
+    let exp = Number(safeEval(form['history'+i+'Exp'].value));
     if(isNaN(exp)){ exp = 0; }
     expTotal += exp;
+    form['history'+i+'Exp'].style.textDecoration = !exp ? 'underline red' : 'none';
   }
   document.getElementById("exp-rest").innerHTML = expTotal - expUse;
   document.getElementById("exp-total").innerHTML = expTotal;
@@ -1272,13 +1273,14 @@ function calcHonor(){
   const historyNum = form.historyNum.value;
   pointTotal -= rankNum;
   for (let i = 0; i <= historyNum; i++){
-    let point = Number(eval(form['history'+i+'Honor'].value));
+    let point = Number(safeEval(form['history'+i+'Honor'].value));
     if(isNaN(point)){ point = 0; }
     pointTotal += point;
+    form['history'+i+'Honor'].style.textDecoration = !point ? 'underline red' : 'none';
   }
   const honorItemsNum = form.honorItemsNum.value;
   for (let i = 1; i <= honorItemsNum; i++){
-    let point = Number(eval(form['honorItem'+i+'Pt'].value));
+    let point = Number(safeEval(form['honorItem'+i+'Pt'].value));
     if(isNaN(point)){ point = 0; }
     pointTotal -= point;
     
@@ -1288,7 +1290,7 @@ function calcHonor(){
   }
   const mysticArtsNum = form.mysticArtsNum.value;
   for (let i = 1; i <= mysticArtsNum; i++){
-    let point = Number(eval(form['mysticArts'+i+'Pt'].value));
+    let point = Number(safeEval(form['mysticArts'+i+'Pt'].value));
     if(isNaN(point)){ point = 0; }
     mysticArtsPt += point;
   }
@@ -1302,7 +1304,7 @@ function calcDishonor(){
   let pointTotal = 0;
   const dishonorItemsNum = form.dishonorItemsNum.value;
   for (let i = 1; i <= dishonorItemsNum; i++){
-    let point = Number(eval(form['dishonorItem'+i+'Pt'].value));
+    let point = Number(safeEval(form['dishonorItem'+i+'Pt'].value));
     if(isNaN(point)){ point = 0; }
     pointTotal += point;
   }
@@ -1319,27 +1321,28 @@ function calcCash(){
   let debt = 0;
   const historyNum = form.historyNum.value;
   for (let i = 0; i <= historyNum; i++){
-    let hCash = Number(eval(form['history'+i+'Money'].value))
+    let hCash = Number(safeEval(form['history'+i+'Money'].value))
     if(isNaN(hCash)){ hCash = 0; }
     cash += hCash;
+    form['history'+i+'Money'].style.textDecoration = !hCash ? 'underline red' : 'none';
   }
   let s = form.cashbook.value;
   s.replace(
-    /::([\+\-\*]?[0-9]+)+/g,
+    /::([\+\-\*\/]?[0-9]+)+/g,
     function (num, idx, old) {
-      cash += Number(eval(num.slice(2)));
+      cash += Number(safeEval(num.slice(2)));
     }
   );
   s.replace(
-    /:>([\+\-\*]?[0-9]+)+/g,
+    /:>([\+\-\*\/]?[0-9]+)+/g,
     function (num, idx, old) {
-      deposit += Number(eval(num.slice(2)));
+      deposit += Number(safeEval(num.slice(2)));
     }
   );
   s.replace(
-    /:<([\+\-\*]?[0-9]+)+/g,
+    /:<([\+\-\*\/]?[0-9]+)+/g,
     function (num, idx, old) {
-      debt += Number(eval(num.slice(2)));
+      debt += Number(safeEval(num.slice(2)));
     }
   );
   cash = cash - deposit + debt;
@@ -1963,5 +1966,13 @@ function idNumSet (id){
   return id+num;
 }
 
+// 安全なeval ----------------------------------------
+function safeEval(text){
+  if     (text === '') { return 0; }
+  else if(text.match(/[^0-9\+\-\*\/\(\) ]/)){ return 0; }
+  
+  try { return Function('"use strict";return (' + text + ')')(); } 
+  catch (e) { return 0; }
+}
 
 

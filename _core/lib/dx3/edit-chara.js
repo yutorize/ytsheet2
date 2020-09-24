@@ -179,7 +179,10 @@ function calcMemory() {
 function calcExp(){
   let total = 0;
   for (let num = 0; num <= Number(form.historyNum.value); num++){
-    total += Number(eval(form['history'+num+'Exp'].value)) || 0;
+    let exp = Number(safeEval(form['history'+num+'Exp'].value));
+    if(isNaN(exp)){ exp = 0; }
+    total += exp;
+    form['history'+num+'Exp'].style.textDecoration = !exp ? 'underline red' : 'none';
   }
   let rest = total;
   for (let key in exps){
@@ -947,5 +950,13 @@ function idNumSet (id){
   return id+num;
 }
 
+// 安全なeval ----------------------------------------
+function safeEval(text){
+  if     (text === '') { return 0; }
+  else if(text.match(/[^0-9\+\-\*\/\(\) ]/)){ return 0; }
+  
+  try { return Function('"use strict";return (' + text + ')')(); } 
+  catch (e) { return 0; }
+}
 
 
