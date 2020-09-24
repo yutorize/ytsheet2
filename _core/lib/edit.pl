@@ -40,7 +40,33 @@ sub login_error {
 ## 画像欄
 sub image_form {
   return <<"HTML";
+    <div class="box" id="image" style="max-height:550px;">
+      <h2>キャラクター画像</h2>
+      <p>
+        <input type="file" accept="image/*" name="imageFile" onchange="imagePreView(this.files[0])"><br>
+        ※ @{[ int($set::image_maxsize / 1024) ]}KBまでのJPG/PNG/GIF
+      </p>
+      <p>
+        <a class="button" onclick="imagePositionView()">画像表示のプレビュー／カスタマイズ</a>
+      </p>
+      <p>
+      画像の注釈（作者や権利表記など）
+      @{[ input 'imageCopyright' ]}
+      </p>
+      <p>
+        <input type="checkbox" name="imageDelete" value="1"> 画像を削除する
+        @{[input('image','hidden')]}
+      </p>
+      <h2>セリフ</h2>
+      <p class="words-input">
+      @{[ input 'words' ]}<br>
+      セリフの配置：
+      <select name="wordsX">@{[ option 'wordsX','右','左' ]}</select>
+      <select name="wordsY">@{[ option 'wordsY','上','下' ]}</select>
+      </p>
+    </div>
     @{[ input('imageUpdate', 'hidden') ]}
+    
     <div id="image-custom" style="display:none">
       <div class="image-custom-view-area">
         <div id="image-custom-frame-L" class="image-custom-frame"><div class="image-custom-view"
@@ -73,7 +99,7 @@ sub image_form {
           <input type="range" id="image-percent-bar" min="10" max="1000" oninput="imagePercentBarChange(this.value)" style="width:100%;"><br>
           （100%で幅ピッタリ）<br>
         </p>
-        <p class="center"><a class="button" onclick="imagePositionClose()">トリミング位置のカスタマイズを閉じる</a><p>
+        <p class="center"><a class="button" onclick="imagePositionClose()">画像表示のプレビューを閉じる</a><p>
       </div>
     </div>
 HTML

@@ -149,7 +149,7 @@ Content-type: text/html\n
   <style>
     #image,
     .image-custom-view {
-      background-image: url("${set::char_dir}${file}/image.$pc{'image'}?$pc{'imageUpdate'}") !important;
+      background-image: url("${set::char_dir}${file}/image.$pc{'image'}?$pc{'imageUpdate'}");
     }
   </style>
 </head>
@@ -268,31 +268,6 @@ print <<"HTML";
         </dl>
       </details>
       <div id="area-status">
-        <div class="box" id="image" style="max-height:550px;">
-          <h2>キャラクター画像</h2>
-          <p>
-            <input type="file" accept="image/*" name="imageFile"><br>
-            ※ @{[ int($set::image_maxsize / 1024) ]}KBまでのJPG/PNG/GIF
-          </p>
-          <p>
-            <a class="button" onclick="imagePositionView()">トリミング位置をカスタマイズ</a>
-          </p>
-          <p>
-          画像の注釈（作者や権利表記など）
-          @{[ input 'imageCopyright' ]}
-          </p>
-          <p>
-            <input type="checkbox" name="imageDelete" value="1"> 画像を削除する
-            @{[input('image','hidden')]}
-          </p>
-          <h2>セリフ</h2>
-          <p class="words-input">
-          @{[ input 'words' ]}<br>
-          セリフの配置：
-          <select name="wordsX">@{[ option 'wordsX','右','左' ]}</select>
-          <select name="wordsY">@{[ option 'wordsY','上','下' ]}</select>
-          </p>
-        </div>
         @{[ image_form ]}
 
         <div id="personal">
