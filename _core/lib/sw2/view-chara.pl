@@ -62,6 +62,15 @@ foreach (1..17) {
   $pc{'craftGramarye'.$_} = $pc{'craftGramarye'.$_} || $pc{'magicGramarye'.$_};
 }
 
+### アップデート --------------------------------------------------
+if($pc{'ver'} < 1.10){
+  $pc{'fairyContractEarth'} = 1 if $pc{'ftElemental'} =~ /土|地/;
+  $pc{'fairyContractWater'} = 1 if $pc{'ftElemental'} =~ /水|氷/;
+  $pc{'fairyContractFire' } = 1 if $pc{'ftElemental'} =~ /火|炎/;
+  $pc{'fairyContractWind' } = 1 if $pc{'ftElemental'} =~ /風|空/;
+  $pc{'fairyContractLight'} = 1 if $pc{'ftElemental'} =~ /光/;
+  $pc{'fairyContractDark' } = 1 if $pc{'ftElemental'} =~ /闇/;
+}
 ### テンプレ用に変換 --------------------------------------------------
 while (my ($key, $value) = each(%pc)){
   $SHEET->param("$key" => $value);
@@ -261,6 +270,16 @@ $SHEET->param(Language => \@language);
 ### パッケージ --------------------------------------------------
 $SHEET->param("PackageLv" => max($pc{'lvSco'},$pc{'lvRan'},$pc{'lvSag'},$pc{'lvBar'},$pc{'lvRid'},$pc{'lvAlc'}));
 
+### 妖精契約 --------------------------------------------------
+my $fairy_contact;
+{
+  $fairy_contact .= '<span class="ft-earth">土</span>' if $pc{'fairyContractEarth'};
+  $fairy_contact .= '<span class="ft-water">水</span>' if $pc{'fairyContractWater'};
+  $fairy_contact .= '<span class="ft-fire" >炎</span>' if $pc{'fairyContractFire' };
+  $fairy_contact .= '<span class="ft-wind" >風</span>' if $pc{'fairyContractWind' };
+  $fairy_contact .= '<span class="ft-light">光</span>' if $pc{'fairyContractLight'};
+  $fairy_contact .= '<span class="ft-dark" >闇</span>' if $pc{'fairyContractDark' };
+}
 ### 魔力 --------------------------------------------------
 my @magic;
 foreach my $class (@data::class_names){

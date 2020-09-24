@@ -118,6 +118,16 @@ if($pc{'colorCustom'} && $pc{'colorHeadBgA'}) {
   $pc{'colorBaseBgS'} = $pc{'colorBaseBgS'} * $pc{'colorBaseBgA'} * 10;
 }
 
+### アップデート --------------------------------------------------
+if($pc{'ver'} < 1.10){
+  $pc{'fairyContractEarth'} = 1 if $pc{'ftElemental'} =~ /土|地/;
+  $pc{'fairyContractWater'} = 1 if $pc{'ftElemental'} =~ /水|氷/;
+  $pc{'fairyContractFire' } = 1 if $pc{'ftElemental'} =~ /火|炎/;
+  $pc{'fairyContractWind' } = 1 if $pc{'ftElemental'} =~ /風|空/;
+  $pc{'fairyContractLight'} = 1 if $pc{'ftElemental'} =~ /光/;
+  $pc{'fairyContractDark' } = 1 if $pc{'ftElemental'} =~ /闇/;
+}
+
 ### 改行処理 --------------------------------------------------
 $pc{'items'}         =~ s/&lt;br&gt;/\n/g;
 $pc{'freeNote'}      =~ s/&lt;br&gt;/\n/g;
@@ -689,6 +699,16 @@ print <<"HTML";
               <td>+@{[ input 'magicCastAdd','number','calcMagic' ]}</td>
               <td>+@{[ input 'magicDamageAdd','number','calcMagic' ]}</td>
             </tr>
+HTML
+my $fairyset = <<"HTML";
+<div id="fairycontact">
+  <label>@{[ input 'fairyContractEarth', 'checkbox','calcMagic' ]}<span>土</span></label>
+  <label>@{[ input 'fairyContractWater', 'checkbox','calcMagic' ]}<span>水</span></label>
+  <label>@{[ input 'fairyContractFire' , 'checkbox','calcMagic' ]}<span>炎</span></label>
+  <label>@{[ input 'fairyContractWind' , 'checkbox','calcMagic' ]}<span>風</span></label>
+  <label>@{[ input 'fairyContractLight', 'checkbox','calcMagic' ]}<span>光</span></label>
+  <label>@{[ input 'fairyContractDark' , 'checkbox','calcMagic' ]}<span>闇</span></label>
+</div>
 HTML
 foreach my $name (@data::class_names){
   next if (!$data::class{$name}{'magic'}{'jName'});

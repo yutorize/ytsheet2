@@ -736,8 +736,27 @@ td .switch-button {
 #magic-power table td:nth-child(2) {
   width: 13em;
 }
-#magic-power table td:nth-child(2) input {
-  width: 10em;
+#magic-power #fairycontact {
+  display: flex;
+  margin: 0 -.2em;
+  border-width: .1rem 0 0;
+  border-style: solid;
+}
+#magic-power #fairycontact label {
+  padding: 0 .3em;
+}
+#magic-power #fairycontact label:nth-child(1) { background: hsla( 45,100%, 50%,0.3); }
+#magic-power #fairycontact label:nth-child(2) { background: hsla(210,100%, 50%,0.3); }
+#magic-power #fairycontact label:nth-child(3) { background: hsla(  0,100%, 50%,0.3); }
+#magic-power #fairycontact label:nth-child(4) { background: hsla(120,100%, 50%,0.3); }
+#magic-power #fairycontact label:nth-child(5) { background: hsla(  0,100%,100%,0.3); }
+#magic-power #fairycontact label:nth-child(6) { background: hsla(  0,100%,  0%,0.3); }
+#magic-power #fairycontact label input {
+  width: auto;
+  border: 0;
+}
+#magic-power #fairycontact label span {
+  font-size: 85%;
 }
 #magic-power table td:nth-child(3) {
   padding-left : .5em;
