@@ -206,19 +206,19 @@ window.onload = function() {
         <div class="box-union" id="sub-status">
           <dl class="box">
             <dt><span>生命抵抗力</span></dt>
-            <dd><TMPL_IF vitResistAddTotal><TMPL_VAR vitResistBase>+<TMPL_VAR vitResistAddTotal>=</TMPL_IF><b><TMPL_VAR vitResistTotal></b></dd>
+            <dd><TMPL_IF vitResistAddTotal><span class="sp-del"><TMPL_VAR vitResistBase></span>+<TMPL_VAR vitResistAddTotal>=</TMPL_IF><b><TMPL_VAR vitResistTotal></b></dd>
           </dl>
           <dl class="box">
             <dt><span>精神抵抗力</span></dt>
-            <dd><TMPL_IF mndResistAddTotal><TMPL_VAR mndResistBase>+<TMPL_VAR mndResistAddTotal>=</TMPL_IF><b><TMPL_VAR mndResistTotal></b></dd>
+            <dd><TMPL_IF mndResistAddTotal><span class="sp-del"><TMPL_VAR mndResistBase></span>+<TMPL_VAR mndResistAddTotal>=</TMPL_IF><b><TMPL_VAR mndResistTotal></b></dd>
           </dl>
           <dl class="box">
             <dt>ＨＰ</dt>
-            <dd><TMPL_IF hpAddTotal><TMPL_VAR hpBase>+<TMPL_VAR hpAddTotal>=</TMPL_IF><b><TMPL_VAR hpTotal></b></dd>
+            <dd><TMPL_IF hpAddTotal><span class="sp-del"><TMPL_VAR hpBase></span>+<TMPL_VAR hpAddTotal>=</TMPL_IF><b><TMPL_VAR hpTotal></b></dd>
           </dl>
           <dl class="box">
             <dt>ＭＰ</dt>
-            <dd><TMPL_IF mpTotal><TMPL_IF mpAddTotal><TMPL_VAR mpBase>+<TMPL_VAR mpAddTotal>=</TMPL_IF><b><TMPL_VAR mpTotal></b><TMPL_ELSE><b>なし</b></TMPL_IF></dd>
+            <dd><TMPL_IF mpTotal><TMPL_IF mpAddTotal><span class="sp-del"><TMPL_VAR mpBase></span>+<TMPL_VAR mpAddTotal>=</TMPL_IF><b><TMPL_VAR mpTotal></b><TMPL_ELSE><b>なし</b></TMPL_IF></dd>
           </dl>
         </div>
         

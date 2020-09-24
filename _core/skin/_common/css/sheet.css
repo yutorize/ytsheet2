@@ -451,6 +451,12 @@ dl.note-description dd {
   font-weight: normal;
   transform: scale(-1, 1);
 }
+/* 狭いときに消す */
+@media screen and (max-width:735px){
+  .sp-del {
+    display: none;
+  }
+}
 
 /* // Message
 ---------------------------------------------------------------------------------------------------- */
