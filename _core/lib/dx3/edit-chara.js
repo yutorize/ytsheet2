@@ -254,6 +254,33 @@ let loisSortable = Sortable.create(document.querySelector('#lois-table tbody'), 
     }
   }
 });
+// リセット
+function resetLois(num){
+  form[`lois${num}Relation`].value = '';
+  form[`lois${num}Name`    ].value = '';
+  form[`lois${num}EmoPosiCheck` ].checked = false;
+  form[`lois${num}EmoNegaCheck` ].checked = false;
+  form[`lois${num}EmoPosi` ].value = '';
+  form[`lois${num}EmoNega` ].value = '';
+  form[`lois${num}Color`   ].value = '';
+  form[`lois${num}Color`   ].style.backgroundColor = '';
+  form[`lois${num}Note`    ].value = '';
+  form[`lois${num}State`   ].value = 'ロイス';
+  document.getElementById(`lois${num}-state`).dataset.state = 'ロイス';
+}
+function resetLoisAll(){
+  if (!confirm('全てのロイスを削除します。よろしいですか？')) return false;
+  for(let num = 1; num <= 7; num++){
+    resetLois(num);
+  }
+}
+function resetLoisAdd(){
+  if (!confirm('4～7番目のロイスを削除します。よろしいですか？')) return false;
+  for(let num = 4; num <= 7; num++){
+    resetLois(num);
+  }
+}
+
 // メモリー ----------------------------------------
 // ソート
 let memorySortable = Sortable.create(document.querySelector('#memory-table tbody'), {

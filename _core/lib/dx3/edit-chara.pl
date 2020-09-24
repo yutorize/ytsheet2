@@ -518,7 +518,7 @@ print <<"HTML";
           </tbody>
         </table>
       </details>
-      <details class="box" id="lois" $open{'lois'}>
+      <details class="box" id="lois" $open{'lois'} style="position:relative">
         <summary>ロイス</summary>
         <table class="edit-table" id="lois-table">
           <colgroup><col><col><col><col><col><col><col></colgroup>
@@ -551,6 +551,10 @@ HTML
 print <<"HTML";
           </tbody>
         </table>
+        <div class="right" style="position: absolute; top: 0; right: 0;">
+          <a class="button small" onclick="resetLoisAll()">全ロイスをリセット</a>
+          <a class="button small" onclick="resetLoisAdd()">4番目以降をリセット</a>
+        </div>
       </details>
       <details class="box" id="memory" $open{'memory'}>
         <summary>メモリー [<span id="exp-memory">0</span>]</summary>
