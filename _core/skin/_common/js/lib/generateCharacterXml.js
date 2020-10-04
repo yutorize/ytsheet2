@@ -169,7 +169,7 @@ io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2SwordWorldPC
 	data_character_detail['情報'] = [
         `        <data name="PL">${json.playerName}</data>`,
         `        <data name="種族">${json.race}</data>`,
-        `        <data type="note" name="説明">${json.freeNote.replace(/&lt;br&gt;/g, '\n')}</data>`
+        `        <data type="note" name="説明">${(json.freeNote || '').replace(/&lt;br&gt;/g, '\n')}</data>`
 	];
 	if(opt_url) { data_character_detail['情報'].push(`        <data name="URL">${opt_url}</data>`);}
 
@@ -214,6 +214,7 @@ io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2SwordWorldPC
 		{level:json.lvWar, name:'ウォーリーダー'},
 		{level:json.lvMys, name:'ミスティック'},
 		{level:json.lvDem, name:'デーモンルーラー'},
+		{level:json.lvDru, name:'ドルイド'},
 		{level:json.lvPhy, name:'フィジカルマスター'},
 		{level:json.lvGri, name:'グリモワール'},
 		{level:json.lvAri, name:'アリストクラシー'},
@@ -239,6 +240,7 @@ io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2SwordWorldPC
 		`        ${json.lvWar ? '' : '<!--'}<data name="ウォーリーダー">${json.lvWar}</data>${json.lvWar ? '' : '-->'}`,
 		`        ${json.lvMys ? '' : '<!--'}<data name="ミスティック">${json.lvMys}</data>${json.lvMys ? '' : '-->'}`,
 		`        ${json.lvDem ? '' : '<!--'}<data name="デーモンルーラー">${json.lvDem}</data>${json.lvDem ? '' : '-->'}`,
+		`        ${json.lvDru ? '' : '<!--'}<data name="ドルイド">${json.lvDru}</data>${json.lvDru ? '' : '-->'}`,
 		`        ${json.lvPhy ? '' : '<!--'}<data name="フィジカルマスター">${json.lvPhy}</data>${json.lvPhy ? '' : '-->'}`,
 		`        ${json.lvGri ? '' : '<!--'}<data name="グリモワール">${json.lvGri}</data>${json.lvGri ? '' : '-->'}`,
 		`        ${json.lvAri ? '' : '<!--'}<data name="アリストクラシー">${json.lvAri}</data>${json.lvAri ? '' : '-->'}`,
@@ -295,6 +297,7 @@ io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2SwordWorldPC
 	 [json.lvMag, json.magicPowerMag, '魔動機術'],
 	 [json.lvFai, json.magicPowerFai, '妖精魔法'],
 	 [json.lvDem, json.magicPowerDem, '召異魔法'],
+	 [json.lvDru, json.magicPowerDru, '森羅魔法'],
 	 [json.lvGri, json.magicPowerGri, '秘奥魔法'],].filter((d)=>{
 		return d[0];
 	}).forEach((v)=>{
