@@ -18,6 +18,60 @@ io.github = io.github || {};
 io.github.shunshun94 = io.github.shunshun94 || {};
 io.github.shunshun94.trpg = io.github.shunshun94.trpg || {};
 io.github.shunshun94.trpg.ytsheet = io.github.shunshun94.trpg.ytsheet || {};
+io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2SwordWorldEnemy = (json) => {
+	const result = [];
+
+	result.push(`種族名：${json.monsterName}`);
+	if(json.characterName) {result.push(`個体名：${json.characterName}`);}
+	if(json.taxa) {result.push(`　分類：${json.taxa}`);}
+	if(json.sin) {result.push(`　穢れ：${json.sin}`);}
+	result.push('');
+
+	result.push(`知能：${json.intellect.padEnd(12 - json.intellect.length, ' ')}知覚：${json.perception.padEnd(14-json.perception.length, ' ')}反応：${json.disposition}`);
+	result.push(`言語：${json.language || ''}  生息地：${json.habitat || ''}`);
+	result.push('');
+	result.push('');
+
+	result.push('□基本能力');
+	result.push(`　知名度/弱点：${json.reputation || 0}/${json['reputation+'] || 0}  ` + `${json.weakness ? '弱点：' + json.weakness : ''}`);
+	result.push(`　先制値：${json.initiative || 0}  移動速度：${json.mobility || 0}`);
+	result.push(`　生命抵抗力：${json.vitResist || 0}  精神抵抗力：${json.mndResist || 0}`);
+	result.push('');
+
+	const partsLength = Number(json.statusNum);
+	const partBaseValueLength = 5;
+	const partAttackValueLength = 7;
+	const partBaseXPLength = 5;
+	result.push(`　      命中力| 打撃点 |回避力|防護点|   HP |   MP`);
+	for(let i = 0; i < partsLength; i++) {
+		result.push(`　${json[`status${i + 1}Style`]}\n　      ${(json[`status${i + 1}Accuracy`] || '0').padStart(partBaseValueLength, ' ')} |${(json[`status${i + 1}Damage`] || '0').padStart(partAttackValueLength, ' ')} |${(json[`status${i + 1}Evasion`] || '0').padStart(partBaseValueLength, ' ')} |${(json[`status${i + 1}Defense`] || '0').padStart(partBaseValueLength, ' ')} |${(json[`status${i + 1}Hp`] || '0').padStart(partBaseValueLength, ' ')} |${(json[`status${i + 1}Mp`] || '0').padStart(partBaseValueLength, ' ')}`)
+	}
+	if(partsLength !== 1) {
+		result.push(`　部位数：${partsLength}（${json.parts}） コア部位：${json.coreParts}`);
+	}
+	result.push('');
+	result.push('');
+
+	result.push('□特殊能力');
+	result.push('　' + (json.skills || '').replaceAll('&lt;br&gt;', '\n　'));
+	result.push('');
+	result.push('');
+
+	result.push('□戦利品');
+	const lootsLength = Number(json.lootsNum);
+	for(let i = 0; i < lootsLength; i++) {
+		if(json[`loots${i + 1}Num`]) {
+			result.push(`　${json[`loots${i + 1}Num`]}\n　　${json[`loots${i + 1}Item`]}`);
+		}
+	}
+	result.push('');
+	result.push('');
+
+	result.push('□説明');
+	result.push('　' + (json.description || '').replaceAll('&lt;br&gt;', '\n　'));
+	return result.join('\n');
+};
+
 io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2SwordWorldPC = (json) => {
 	const result = [];
 	result.push(`キャラクター名：${json.characterName}`);

@@ -70,7 +70,7 @@ function generateZipFile(title, data, image){
 			resolve(dataUrl);
 		});		
 	});
-};
+}
 
 async function initializeDownloadList() {
   const characterDataJson = await getJsonData();
@@ -91,6 +91,7 @@ async function initializeDownloadList() {
   const jsonUrl = window.URL.createObjectURL(new Blob([ JSON.stringify(characterDataJson) ], { "type" : 'text/json;charset=utf-8;' }));
   document.getElementById('downloadlist-json').innerHTML = `<a href="${jsonUrl}" download="data_${characterId}.json">JSON 形式</a>`;
 }
+initializeDownloadList();
 <TMPL_IF error>
 window.onload = function() {
   document.getElementById("login-form").style.top = '5rem';
@@ -100,7 +101,6 @@ window.onload = function() {
   },2000);
 };
 </TMPL_IF>
-initializeDownloadList();
   </script>
   <TMPL_IF colorCustom><style>
     :root {
