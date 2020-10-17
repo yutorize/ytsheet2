@@ -46,11 +46,11 @@ io.github.shunshun94.trpg.udonarium.getPicture = (src) => {
 	});
 };
 
-io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2SwordWorldEnemy = (json, opt_url='')=>{
+io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2SwordWorldEnemy = (json, opt_url='', opt_imageHash='')=>{
 	const data_character = {};
 	data_character.image = `
     <data name="image">
-      <data type="image" name="imageIdentifier"></data>
+      <data type="image" name="imageIdentifier">${opt_imageHash}</data>
     </data>`;
 
 	data_character.common = `

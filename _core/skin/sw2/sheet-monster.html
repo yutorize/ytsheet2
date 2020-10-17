@@ -70,25 +70,40 @@ function generateZipFile(title, data, image){
 	});
 }
 
-async function initializeDownloadList() {
+function downloadFile(title, url) {
+  const a = document.createElement("a");
+  document.body.appendChild(a);
+  a.download = title;
+  a.href = url;
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+async function downloadAsUdonarium() {
   const characterDataJson = await getJsonData();
   const characterId = characterDataJson.birthTime;
-
-  // udonarium
   const image = (characterDataJson.imageURL) ? await io.github.shunshun94.trpg.udonarium.getPicture(characterDataJson.imageURL) : {hash:''};
   const udonariumXml = io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2SwordWorldEnemy(characterDataJson, location.href);
   const udonariumUrl = await generateZipFile(characterDataJson.characterName, udonariumXml, image);
-  document.getElementById('downloadlist-udonarium').innerHTML = `<a href="${udonariumUrl}" download="data_${characterId}.zip">Udonarium 向けのデータ</a>`;
+  downloadFile(`data_${characterId}.zip`, udonariumUrl);
+}
 
-  // text
+async function donloadAsText() {
+  const characterDataJson = await getJsonData();
+  const characterId = characterDataJson.birthTime;
   const textData = io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2SwordWorldEnemy(characterDataJson);
   const textUrl = window.URL.createObjectURL(new Blob([ textData ], { "type" : 'text/plain;charset=utf-8;' }));
-  document.getElementById('downloadlist-text').innerHTML = `<a href="${textUrl}" download="data_${characterId}.txt">テキスト形式</a>`;
-
-  // json
-  const jsonUrl = window.URL.createObjectURL(new Blob([ JSON.stringify(characterDataJson) ], { "type" : 'text/json;charset=utf-8;' }));
-  document.getElementById('downloadlist-json').innerHTML = `<a href="${jsonUrl}" download="data_${characterId}.json">JSON 形式</a>`;
+  downloadFile(`data_${characterId}.txt`, textUrl);
 }
+
+async function donloadAsJson() {
+  const characterDataJson = await getJsonData();
+  const characterId = characterDataJson.birthTime;
+  const jsonUrl = window.URL.createObjectURL(new Blob([ JSON.stringify(characterDataJson) ], { "type" : 'text/json;charset=utf-8;' }));
+  downloadFile(`data_${characterId}.json`, jsonUrl);
+}
+
 <TMPL_IF error>
 window.onload = function() {
   document.getElementById("login-form").style.top = '5rem';
@@ -108,7 +123,6 @@ window.onload = function() {
   <script src="<TMPL_VAR coreDir>/skin/_common/js/lib/generateCharacterXml.js?<TMPL_VAR ver>"></script>
   <script src="<TMPL_VAR coreDir>/skin/_common/js/lib/ytsheet_consts.js?<TMPL_VAR ver>"></script>
   <script src="<TMPL_VAR coreDir>/skin/_common/js/lib/ytsheetToText.js?<TMPL_VAR ver>"></script>
-  <script>initializeDownloadList(); </script>
   <header>
     <h1><a href="./?type=m"><TMPL_VAR title></a></h1>
     <nav>
@@ -144,9 +158,9 @@ window.onload = function() {
 
   <aside id="downloadlist">
     <ul>
-      <li id="downloadlist-udonarium">Udonarium 向けのデータ</li>
-      <li id="downloadlist-text">テキスト形式</li>
-      <li id="downloadlist-json">JSON 形式</li>
+      <li id="downloadlist-udonarium"><a onclick="downloadAsUdonarium();">Udonarium 向けのデータ</a></li>
+      <li id="downloadlist-text"><a onclick="donloadAsText();">テキスト形式</a></li>
+      <li id="downloadlist-json"><a onclick="donloadAsJson();">JSON 形式</a></li>
     </ul>
   </aside>
 
