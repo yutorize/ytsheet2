@@ -129,6 +129,9 @@ io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2SwordWorldEn
 	for(const key in palette_detail) {
 		palette += `// ${key}\n${palette_detail[key]}\n`;
 	}
+	if(json.chatPalette) {
+		palette += json.chatPalette.replace(/&lt;br&gt;/gm, '\n');
+	}
 	palette += `  </chat-palette>`;
 	return `<?xml version="1.0" encoding="UTF-8"?>
 <character location.name="table" location.x="0" location.y="0" posZ="0" rotate="0" roll="0">
@@ -191,6 +194,14 @@ io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2SwordWorldPC
         `        <data name="生命力">${json.sttVit}${addToStr(json.sttAddD)}</data>`,
         `        <data name="知力">${json.sttInt}${addToStr(json.sttAddE)}</data>`,
         `        <data name="精神力">${json.sttMnd}${addToStr(json.sttAddF)}</data>`
+	];
+	data_character_detail['能力値ボーナス'] = [
+        `        <data name="器用度B">${json.bonusDex}</data>`,
+        `        <data name="敏捷度B">${json.bonusAgi}</data>`,
+        `        <data name="筋力B">${json.bonusStr}</data>`,
+        `        <data name="生命力B">${json.bonusVit}</data>`,
+        `        <data name="知力B">${json.bonusInt}</data>`,
+        `        <data name="精神力B">${json.bonusMnd}</data>`
 	];
 
 	const skills = [
@@ -272,17 +283,17 @@ io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2SwordWorldPC
 	if(opt_url) { palette_detail['情報共有'] += `キャラクターシート　{URL}\n`;}
 	palette_detail['戦闘前'] = ``;
 	if(json.lvSco) {
-		palette_detail['戦闘前'] += `2d6+{スカウト}+(({敏捷度})/6) 先制判定 (スカウト)\n`;
+		palette_detail['戦闘前'] += `2d6+{スカウト}+{敏捷度B} 先制判定 (スカウト)\n`;
 	}
 	if(json.lvWar) {
-		palette_detail['戦闘前'] += `2d6+{ウォーリーダー}+(({敏捷度})/6) 先制判定 (ウォーリーダー・敏捷)\n`;
-		palette_detail['戦闘前'] += `2d6+{ウォーリーダー}+(({知力})/6) 先制判定 (ウォーリーダー・知力)\n`;
+		palette_detail['戦闘前'] += `2d6+{ウォーリーダー}+{敏捷度B} 先制判定 (ウォーリーダー・敏捷)\n`;
+		palette_detail['戦闘前'] += `2d6+{ウォーリーダー}+{知力B} 先制判定 (ウォーリーダー・知力)\n`;
 	}
 	if(json.lvSag) {
-		palette_detail['戦闘前'] += `2d6+{セージ}+(({知力})/6) 魔物知識判定（セージ）\n`;
+		palette_detail['戦闘前'] += `2d6+{セージ}+{知力B} 魔物知識判定（セージ）\n`;
 	}
 	if(json.lvRid) {
-		palette_detail['戦闘前'] += `2d6+{ライダー}+(({知力})/6) 魔物知識判定（ライダー）\n`;
+		palette_detail['戦闘前'] += `2d6+{ライダー}+{知力B} 魔物知識判定（ライダー）\n`;
 	}
 
 	palette_detail['戦闘中'] = ``;
@@ -311,7 +322,7 @@ io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2SwordWorldPC
 	palette_detail['戦闘中'] += `2d6+${json.mndResistTotal}+{精神抵抗} 精神抵抗判定\n`;
 
 	palette_detail['探索中'] = skills.map((s)=>{
-		return ['器用度', '敏捷度', '知力'].map((v)=>{
+		return ['器用度B', '敏捷度B', '知力B'].map((v)=>{
 			return `2d6+{${s.name}}+{${v}} ${s.name}+${v}`
 		}).join('\n')
 	}).join('\n')
@@ -319,6 +330,9 @@ io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2SwordWorldPC
 	let palette = `<chat-palette dicebot="SwordWorld2_5">\n`;
 	for(const key in palette_detail) {
 		palette += `// ${key}\n${palette_detail[key]}\n`;
+	}
+	if(json.chatPalette) {
+		palette += json.chatPalette.replace(/&lt;br&gt;/gm, '\n');
 	}
 	palette += `  </chat-palette>`;
 	return `<?xml version="1.0" encoding="UTF-8"?>
