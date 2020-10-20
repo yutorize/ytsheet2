@@ -187,6 +187,7 @@ function checkRace(){
   if(race === 'ルーンフォーク'){
     document.getElementById("classPri").classList.add('fail');
     document.getElementById("classFai").classList.add('fail');
+    document.getElementById("classDru").classList.add('fail');
   }
   else if(race === 'タビット'){
     document.getElementById("classPri").classList.add('fail');
@@ -1047,7 +1048,7 @@ function calcDefense() {
        if(classes === "ファイター")      { evaClassLv = lv['Fig']; }
   else if(classes === "グラップラー")    { evaClassLv = lv['Gra']; }
   else if(classes === "フェンサー")      { evaClassLv = lv['Fen']; }
-  else if(classes === "シューター")      { evaClassLv = lv['Sho'];  }
+  else if(classes === "シューター")      { evaClassLv = lv['Sho']; }
   else if(classes === "デーモンルーラー"){ evaClassLv = lv['Dem']; }
   else { evaClassLv = 0; }
   evaBase = evaClassLv ? (evaClassLv + parseInt((sttAgi + sttAddB + ownAgi) / 6)) : 0;
@@ -1058,7 +1059,7 @@ function calcDefense() {
   
   // 技能選択のエラー表示
   let cL = document.getElementById("evasion-classes").classList;
-  if(classes === "シューター" && !shootersMartialArts || classes === "デーモンルーラー" && lv['Dem'] < 7){ 
+  if(classes === "シューター" && !shootersMartialArts || classes === "デーモンルーラー" && lv['Dem'] < 2){ 
     cL.add('error');
   }
   else { cL.remove('error'); }
