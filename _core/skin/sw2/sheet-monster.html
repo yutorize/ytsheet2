@@ -36,7 +36,7 @@ function backuplistOn() {
 let cpOpenFirst = 0;
 function chatPaletteOn() {
   document.querySelector(".chat-palette").classList.toggle('show');
-  if(!cpOpenFirst){ chatPaletteSelect(); }
+  if(!cpOpenFirst){ chatPaletteSelect(''); }
   cpOpenFirst++;
 }
 function chatPaletteSelect(tool) {
