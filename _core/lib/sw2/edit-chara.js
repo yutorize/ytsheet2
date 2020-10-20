@@ -700,6 +700,7 @@ function checkFeats(){
       else if(feat === "賦術強化Ⅱ"){ alchemyEnhance = 2; }
       else if(feat === "頑強"){ tenacity += 15; }
       else if(feat === "超頑強"){ tenacity += 15; }
+      else if(feat === "キャパシティ"){ capacity += 15; }
       else if(feat === "射手の体術"){ shootersMartialArts = 1; }
       else if(feat === "武器習熟Ａ／ソード"){ masterySword += 1; }
       else if(feat === "武器習熟Ａ／アックス"){ masteryAxe += 1; }
