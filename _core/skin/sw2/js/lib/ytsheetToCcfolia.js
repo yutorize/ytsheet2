@@ -20,7 +20,8 @@ io.github.shunshun94.trpg = io.github.shunshun94.trpg || {};
 io.github.shunshun94.trpg.ccfolia = io.github.shunshun94.trpg.ccfolia || {};
 
 io.github.shunshun94.trpg.ccfolia.CONSTS = {};
-io.github.shunshun94.trpg.ccfolia.CONSTS.DEFAULT_PICTURE = 'https://shunshun94.github.io/shared/hiyoko.jpg';
+io.github.shunshun94.trpg.ccfolia.CONSTS.DEFAULT_PC_PICTURE = 'https://shunshun94.github.io/shared/hiyoko.jpg';
+io.github.shunshun94.trpg.ccfolia.CONSTS.DEFAULT_ENEMY_PICTURE = 'https://shunshun94.github.io/shared/pics/default_enemy.png';
 
 io.github.shunshun94.trpg.ccfolia.getCharacterSeed = ()=>{
 	return {
@@ -53,14 +54,14 @@ for(var i=0; i<length; i++) {
 	randomString += baseString.charAt( Math.floor( Math.random() * baseString.length));
 }
 
-io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2SwordWorldPC = (json, opt_sheetUrl = '', opt_defaultPictureUrl = io.github.shunshun94.trpg.ccfolia.CONSTS.DEFAULT_PICTURE) => {
+io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2SwordWorldPC = (json, opt_sheetUrl = '', opt_defaultPictureUrl = io.github.shunshun94.trpg.ccfolia.CONSTS.DEFAULT_PC_PICTURE) => {
 	const result = io.github.shunshun94.trpg.ccfolia.getCharacterSeed();
 	const character = {
 			name: json.characterName,
 			playerName: json.playerName,
 			memo: `PL: ${json.playerName}\n${json.race}\n\n${json.imageURL ? '立ち絵：' + json.imageCopyright : ''}`,
 			initiative: '2',
-			externalurl: opt_sheetUrl,
+			externalUrl: opt_sheetUrl,
 			status: [
 				{
 					label: 'HP',
@@ -137,7 +138,7 @@ io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2SwordWorldPC 
 	const weaponLength = Number(json.weaponNum);
 	for(let i = 0; i < weaponLength; i++) {
 		palette.push(`2d6+${json['weapon' + (i + 1) + 'AccTotal']}+0 命中判定 (${json['weapon' + (i + 1) + 'Name']})`);
-		palette.push(`k${json['weapon' + (i + 1) + 'Rate']}+${json['weapon' + (i + 1) + 'DmgTotal']}+0@(${json['weapon' + (i + 1) + 'Crit']}-0)$+0   ダメージ判定 (${json['weapon' + (i + 1) + 'Name']})`);
+		palette.push(`k${json['weapon' + (i + 1) + 'Rate']}+${json['weapon' + (i + 1) + 'DmgTotal']}+0@(${json['weapon' + (i + 1) + 'Crit']}-0)$+0   ダメージ (${json['weapon' + (i + 1) + 'Name']})`);
 	}
 	[[json.lvSor, json.magicPowerSor, '真語魔法'],
 	 [json.lvCon, json.magicPowerCon, '操霊魔法'],
@@ -170,3 +171,94 @@ io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2SwordWorldPC 
 	result.entities.characters[json.id] = character;
 	return JSON.stringify(result);
 };
+
+io.github.shunshun94.trpg.ccfolia.getPartsFromYtSheetEnemyWithPartsNum = (json, opt_num = '') => {
+	const result = {
+			status: [],
+			commands: ''
+	};
+	const name = opt_num ? json[`status${opt_num}Style`] : '';	
+	result.status.push({
+		label: `${name}HP`,
+		value: Number(json[`status${opt_num || '1'}Hp`]) || 0,
+		max: Number(json[`status${opt_num || '1'}Hp`]) || 0
+	});
+
+	result.status.push({
+		label: `${name}MP`,
+		value: Number(json[`status${opt_num || '1'}Mp`]) || 0,
+		max: Number(json[`status${opt_num || '1'}Mp`]) || 0
+	});
+
+	result.commands = [
+		{name:'命中判定', column:`status${opt_num || '1'}Accuracy`},
+		{name:'回避判定', column:`status${opt_num || '1'}Evasion`}
+	].filter((d)=>{
+		return Number(json[d.column])
+	}).map((d)=>{
+		return `2d6+${json[d.column]}+0 ${name} ${d.name}`;
+	}).join('\n');
+	result.commands += `\n${json[`status${opt_num || '1'}Damage`]} ${name} ダメージ`;
+	return result;
+};
+
+io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2SwordWorldEnemies = (count, json, opt_sheetUrl = '', opt_defaultPictureUrl = io.github.shunshun94.trpg.ccfolia.CONSTS.DEFAULT_ENEMY_PICTURE) => {
+	if(count > 26) {
+		throw "26体までしか一度に生成できません";
+	}
+	if(count > 1){
+		const result = io.github.shunshun94.trpg.ccfolia.getCharacterSeed();
+		const singleJsonString = io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2SwordWorldEnemy(json, opt_sheetUrl, opt_defaultPictureUrl);
+		const characterDataJsonString = JSON.stringify(JSON.parse(singleJsonString).entities.characters[json.id]);
+		for(var i = 0; i < count; i++) {
+			const suffix = String.fromCharCode(65 + i);
+			const character = JSON.parse(characterDataJsonString);
+			character.name = `${character.name} ${suffix}`;
+			result.entities.characters[`${json.id}_${suffix}`] = character;
+		}
+		return JSON.stringify(result);
+	} else { 
+		return io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2SwordWorldEnemy(json, opt_sheetUrl, opt_defaultPictureUrl);
+	}
+};
+
+io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2SwordWorldEnemy = (json, opt_sheetUrl = '', opt_defaultPictureUrl = io.github.shunshun94.trpg.ccfolia.CONSTS.DEFAULT_ENEMY_PICTURE) => {
+	const result = io.github.shunshun94.trpg.ccfolia.getCharacterSeed();
+	const character = {
+			name: json.characterName || json.monsterName,
+			playerName: 'GM',
+			memo: '',
+			initiative: '0',
+			externalUrl: opt_sheetUrl,
+			status: [],
+			params: [],
+			iconUrl: json.imageURL || opt_defaultPictureUrl,
+			faces: [],
+			x: 0, y: 0, z: 0,
+			angle: 0, width: 4, height: 4,
+			active: true, secret: false,
+			invisible: false, hideStatus: false,
+			color: '',
+			roomId: null,
+			commands: `2d6+${json.vitResist}+0 生命抵抗\n2d6+${json.mndResist}+0 精神抵抗\n`,
+			speaking: true
+	};
+	const partsLenght = Number(json.statusNum);
+	if(partsLenght === 1) {
+		const partsInfo = io.github.shunshun94.trpg.ccfolia.getPartsFromYtSheetEnemyWithPartsNum(json);
+		character.status = character.status.concat(partsInfo.status);
+		character.commands += partsInfo.commands + '\n';
+	} else {
+		for(let i = 0; i < partsLenght; i++) {
+			const partsInfo = io.github.shunshun94.trpg.ccfolia.getPartsFromYtSheetEnemyWithPartsNum(json, i + 1);
+			character.status = character.status.concat(partsInfo.status);
+			character.commands += partsInfo.commands + '\n';
+		}
+	}
+	if(json.chatPalette) {
+		character.commands += json.chatPalette.replace(/&lt;br&gt;/gm, '\n');
+	}
+	result.entities.characters[json.id] = character;
+	return JSON.stringify(result);
+};
+
