@@ -890,21 +890,22 @@ dl#level dd {
   border-top-style: solid;
 }
 #magic-power #fairycontact {
+  margin: -.2em 0 -.1em;
   font-size: 90%;
+  line-height: 1;
 }
-#magic-power #fairycontact span {
+#magic-power #fairycontact > span {
   display: inline-block;
   border-radius: .5rem;
   margin: .1em;
   padding: .3rem;
-  line-height: 1;
 }
-#magic-power #fairycontact span.ft-earth { background: hsla( 45,100%, 50%,0.3); }
-#magic-power #fairycontact span.ft-water { background: hsla(210,100%, 50%,0.3); }
-#magic-power #fairycontact span.ft-fire  { background: hsla(  0,100%, 50%,0.3); }
-#magic-power #fairycontact span.ft-wind  { background: hsla(120,100%, 50%,0.3); }
-#magic-power #fairycontact span.ft-light { background: hsla(  0,100%,100%,0.3); }
-#magic-power #fairycontact span.ft-dark  { background: hsla(  0,100%,  0%,0.3); }
+#fairycontact .ft-earth { background: hsla( 45,100%, 50%,0.3); }
+#fairycontact .ft-water { background: hsla(210,100%, 50%,0.3); }
+#fairycontact .ft-fire  { background: hsla(  0,100%, 50%,0.3); }
+#fairycontact .ft-wind  { background: hsla(120,100%, 50%,0.3); }
+#fairycontact .ft-light { background: hsla(  0,100%,100%,0.3); }
+#fairycontact .ft-dark  { background: hsla(  0,100%,  0%,0.3); }
 
 /* Language */
 #language {

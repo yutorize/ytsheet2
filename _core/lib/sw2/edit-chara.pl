@@ -702,12 +702,12 @@ print <<"HTML";
 HTML
 my $fairyset = <<"HTML";
 <div id="fairycontact">
-  <label>@{[ input 'fairyContractEarth', 'checkbox','calcMagic' ]}<span>土</span></label>
-  <label>@{[ input 'fairyContractWater', 'checkbox','calcMagic' ]}<span>水</span></label>
-  <label>@{[ input 'fairyContractFire' , 'checkbox','calcMagic' ]}<span>炎</span></label>
-  <label>@{[ input 'fairyContractWind' , 'checkbox','calcMagic' ]}<span>風</span></label>
-  <label>@{[ input 'fairyContractLight', 'checkbox','calcMagic' ]}<span>光</span></label>
-  <label>@{[ input 'fairyContractDark' , 'checkbox','calcMagic' ]}<span>闇</span></label>
+  <label class="ft-earth">@{[ input 'fairyContractEarth', 'checkbox','calcMagic' ]}<span>土</span></label>
+  <label class="ft-water">@{[ input 'fairyContractWater', 'checkbox','calcMagic' ]}<span>水</span></label>
+  <label class="ft-fire" >@{[ input 'fairyContractFire' , 'checkbox','calcMagic' ]}<span>炎</span></label>
+  <label class="ft-wind" >@{[ input 'fairyContractWind' , 'checkbox','calcMagic' ]}<span>風</span></label>
+  <label class="ft-light">@{[ input 'fairyContractLight', 'checkbox','calcMagic' ]}<span>光</span></label>
+  <label class="ft-dark" >@{[ input 'fairyContractDark' , 'checkbox','calcMagic' ]}<span>闇</span></label>
 </div>
 HTML
 foreach my $name (@data::class_names){

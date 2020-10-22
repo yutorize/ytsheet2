@@ -733,9 +733,6 @@ td .switch-button {
 #magic-power table td input[type=number] {
   width: 3.5em;
 }
-#magic-power table td:nth-child(2) {
-  width: 13em;
-}
 #magic-power #fairycontact {
   display: flex;
   margin: 0 -.2em;
@@ -743,19 +740,17 @@ td .switch-button {
   border-style: solid;
 }
 #magic-power #fairycontact label {
-  padding: 0 .3em;
+  padding: .2em;
 }
-#magic-power #fairycontact label:nth-child(1) { background: hsla( 45,100%, 50%,0.3); }
-#magic-power #fairycontact label:nth-child(2) { background: hsla(210,100%, 50%,0.3); }
-#magic-power #fairycontact label:nth-child(3) { background: hsla(  0,100%, 50%,0.3); }
-#magic-power #fairycontact label:nth-child(4) { background: hsla(120,100%, 50%,0.3); }
-#magic-power #fairycontact label:nth-child(5) { background: hsla(  0,100%,100%,0.3); }
-#magic-power #fairycontact label:nth-child(6) { background: hsla(  0,100%,  0%,0.3); }
 #magic-power #fairycontact label input {
   width: auto;
+  margin-right: .2em;
   border: 0;
+  vertical-align: middle;
+  transform: scale(1.1);
 }
 #magic-power #fairycontact label span {
+  padding: .2em 0;
   font-size: 85%;
 }
 #magic-power table td:nth-child(3) {
@@ -804,6 +799,10 @@ td .switch-button {
   }
   #magic-power table tr td:nth-child(3) {
     white-space: nowrap;
+  }
+  #magic-power #fairycontact {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
   }
 }
 

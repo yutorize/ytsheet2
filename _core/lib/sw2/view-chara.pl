@@ -295,7 +295,7 @@ foreach my $class (@data::class_names){
   push(@magic, {
     "NAME" => $class."<span class=\"small\">技能レベル</span>".$pc{'lv'.$id},
     "OWN"  => ($pc{'magicPowerOwn'.$id} ? '✔<span class="small">知力+2</span>' : ''),
-    "MAGIC"  => $name.($id eq 'Fai' && $fairy_contact ? "<div id=\"fairycontact\">（$fairy_contact）</div>" : ''),
+    "MAGIC"  => $name.($id eq 'Fai' && $fairy_contact ? "<div id=\"fairycontact\">$fairy_contact</div>" : ''),
     "POWER"  => ($power ? '<span class="small">+'.$power.'=</span>' : '').$pc{'magicPower'.$id},
     "CAST"   => ($cast ? '<span class="small">+'.$cast.'=</span>' : '').($pc{'magicPower'.$id}+$cast),
     "DAMAGE" => "+$damage",
