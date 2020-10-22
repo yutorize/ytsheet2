@@ -37,18 +37,30 @@ sub data_calc {
   $pc{'savingTotal'} = $pc{'stockTotal'} + $pc{'savingAdd'};
   
   ### 技能 --------------------------------------------------
+  my %skill_name_to_id = (
+    '白兵' => 'Melee',
+    '射撃' => 'Ranged',
+    'RC' => 'RC',
+    '交渉' => 'Negotiate',
+    '回避' => 'Dodge',
+    '知覚' => 'Percept',
+    '意志' => 'Will',
+    '調達' => 'Procure',
+  );
   # 経験点
   $pc{'expUsedSkill'} = -9; #ワークス取得ぶん
   foreach my $name ('Melee','Ranged','RC','Negotiate','Dodge','Percept','Will','Procure'){
     my $lv = $pc{'skill'.$name};
     for(my $i = 0; $i < $lv; $i++){ $pc{'expUsedSkill'} += ($i > 20) ? 10 : ($i > 10) ? 5 : ($i > 5) ? 3 : 2; }
-      if($pc{'skill'.$name} || $pc{'skillAdd'.$name}){ $pc{'skillTotal'.$name} = $pc{'skill'.$name} + $pc{'skillAdd'.$name}; }
+    if($pc{'skill'.$name} || $pc{'skillAdd'.$name}){ $pc{'skillTotal'.$name} = $pc{'skill'.$name} + $pc{'skillAdd'.$name}; }
+    
   }
   foreach my $name ('Ride','Art','Know','Info'){
     foreach my $num (1 .. $pc{'skillNum'}){
       my $lv = $pc{'skill'.$name.$num};
       for(my $i = 0; $i < $lv; $i++){ $pc{'expUsedSkill'} += ($i > 20) ? 10 : ($i > 10) ? 5 : ($i > 5) ? 3 : 1; }
       if($pc{'skill'.$name.$num} || $pc{'skillAdd'.$name.$num}){ $pc{'skillTotal'.$name.$num} = $pc{'skill'.$name.$num} + $pc{'skillAdd'.$name.$num}; }
+      $skill_name_to_id{$pc{'skill'.$name.$num.'Name'}} = $name.$num if $pc{'skill'.$name.$num.'Name'};
     }
   }
   
@@ -68,6 +80,38 @@ sub data_calc {
       }
     }
     $pc{'expUsedEffect'} += $pc{'effect'.$num.'Exp'};
+  }
+  
+  ### コンボ --------------------------------------------------
+  foreach my $num (1 .. $pc{'comboNum'}){
+    my $name = $pc{"combo${num}Skill"};
+    my $id = $skill_name_to_id{$name};
+    my $lv = $pc{"skill${id}"} + $pc{"skillAdd${id}"};
+    my $stt = do {
+      my $stt;
+      if($name && $id){
+        if   ($id =~ /Melee|Dodge|Ride/)      { $stt = $pc{"sttTotalBody"}; }
+        elsif($id =~ /Ranged|Percept|Art/)    { $stt = $pc{"sttTotalSense"}; }
+        elsif($id =~ /RC|Will|Know/)          { $stt = $pc{"sttTotalMind"}; }
+        elsif($id =~ /Negotiate|Procure|Info/){ $stt = $pc{"sttTotalSocial"}; }
+      }
+      if($pc{"combo${num}Stt"}){
+        if   ($pc{"combo${num}Stt"} eq '肉体'){ $stt = $pc{"sttTotalBody"}; }
+        elsif($pc{"combo${num}Stt"} eq '感覚'){ $stt = $pc{"sttTotalSense"}; }
+        elsif($pc{"combo${num}Stt"} eq '精神'){ $stt = $pc{"sttTotalMind"}; }
+        elsif($pc{"combo${num}Stt"} eq '社会'){ $stt = $pc{"sttTotalSocial"}; }
+      }
+      $stt;
+    };
+    if($pc{'comboCalcOff'}){
+      $lv = 0; $stt = 0;
+    }
+    foreach (1..4) {
+      my $dadd = $pc{"combo${num}DiceAdd".$_};
+      my $fadd = $pc{"combo${num}FixedAdd".$_};
+      $pc{"combo${num}Dice".$_}  = ($stt && $dadd) ? "$stt+$dadd" : ($stt||$dadd);
+      $pc{"combo${num}Fixed".$_} = ($lv  && $fadd) ? "$lv+$fadd"  : ($lv ||$fadd);
+    }
   }
   
   ### アイテム --------------------------------------------------

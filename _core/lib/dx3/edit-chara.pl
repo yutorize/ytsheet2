@@ -114,6 +114,19 @@ $pc{'colorBaseBgH'} = $pc{'colorBaseBgH'} eq '' ? 210 : $pc{'colorBaseBgH'};
 $pc{'colorBaseBgS'} = $pc{'colorBaseBgS'} eq '' ?   0 : $pc{'colorBaseBgS'};
 $pc{'colorBaseBgL'} = $pc{'colorBaseBgL'} eq '' ? 100 : $pc{'colorBaseBgL'};
 
+### アップデート --------------------------------------------------
+$pc{'ver'} =~ s/^([0-9]+)\.([0-9]+)\.([0-9]+)$/$1.$2$3/;
+if($pc{'ver'} && $pc{'ver'} < 1.10003){
+  $pc{'comboCalcOff'} = 1;
+  foreach my $num (1 .. $pc{'comboNum'}){
+    $pc{"combo${num}Skill"} =~ s/[〈〉<>]//g;
+    foreach (1..4) {
+      $pc{"combo${num}DiceAdd".$_}  = $pc{"combo${num}Dice".$_};
+      $pc{"combo${num}FixedAdd".$_} = $pc{"combo${num}Fixed".$_};
+    }
+  }
+}
+
 ### 折り畳み判断 --------------------------------------------------
 my %open;
 foreach (
@@ -416,10 +429,10 @@ HTML
 foreach my $num (1 .. $pc{'skillNum'}) {
 print <<"HTML";
           <tr>
-            <td class="left">@{[input "skillRide${num}Name",'','','list="list-ride"']}</td><td class="right">@{[input "skillRide$num",'number','calcSkill']}+@{[input "skillAddRide$num",'number','calcSkill']}</td>
-            <td class="left">@{[input "skillArt${num}Name" ,'','','list="list-art"' ]}</td><td class="right">@{[input "skillArt$num" ,'number','calcSkill']}+@{[input "skillAddArt$num" ,'number','calcSkill']}</td>
-            <td class="left">@{[input "skillKnow${num}Name",'','','list="list-know"']}</td><td class="right">@{[input "skillKnow$num",'number','calcSkill']}+@{[input "skillAddKnow$num",'number','calcSkill']}</td>
-            <td class="left">@{[input "skillInfo${num}Name",'','','list="list-info"']}</td><td class="right">@{[input "skillInfo$num",'number','calcSkill']}+@{[input "skillAddInfo$num",'number','calcSkill']}</td>
+            <td class="left">@{[input "skillRide${num}Name",'','comboSkillSetAll','list="list-ride"']}</td><td class="right">@{[input "skillRide$num",'number','calcSkill']}+@{[input "skillAddRide$num",'number','calcSkill']}</td>
+            <td class="left">@{[input "skillArt${num}Name" ,'','comboSkillSetAll','list="list-art"' ]}</td><td class="right">@{[input "skillArt$num" ,'number','calcSkill']}+@{[input "skillAddArt$num" ,'number','calcSkill']}</td>
+            <td class="left">@{[input "skillKnow${num}Name",'','comboSkillSetAll','list="list-know"']}</td><td class="right">@{[input "skillKnow$num",'number','calcSkill']}+@{[input "skillAddKnow$num",'number','calcSkill']}</td>
+            <td class="left">@{[input "skillInfo${num}Name",'','comboSkillSetAll','list="list-info"']}</td><td class="right">@{[input "skillInfo$num",'number','calcSkill']}+@{[input "skillAddInfo$num",'number','calcSkill']}</td>
           </tr>
 HTML
 }
@@ -603,43 +616,90 @@ print <<"HTML";
         <div class="add-del-button"><a onclick="addEffect()">▼</a><a onclick="delEffect()">▲</a></div>
       </details>
       
-      <details class="box" id="combo" $open{'combo'}>
+      <details class="box" id="combo" $open{'combo'} style="position:relative">
         <summary>コンボ</summary>
         @{[input 'comboNum','hidden']}
         <table class="edit-table line-tbody" id="combo-table">
-          <colgroup><col><col><col><col><col><col><col><col><col><col><col><col></colgroup>
+          <colgroup><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col></colgroup>
 HTML
+sub comboSkillSet {
+  my $num = shift;
+  my @skills = ('白兵','射撃','RC','交渉','回避','知覚','意志','調達');
+  foreach my $id ('Ride','Art','Know','Info'){
+    foreach my $num (1 .. $pc{'skillNum'}){
+      push(@skills, $pc{'skill'.$id.$num.'Name'}) if $pc{'skill'.$id.$num.'Name'};
+    }
+  }
+  push(@skills, '解説参照');
+  my $output = '<option value="">－';
+  foreach my $skillname (@skills){
+    $output .= '<option'
+            . ($pc{"combo${num}Skill"} eq $skillname ? ' selected' : '')
+            . '>'.$skillname;
+  }
+  return $output;
+}
+sub comboStatusSet {
+  my $num = shift;
+  my @status = ('肉体','感覚','精神','社会');
+  my $output = '<option value="">自動（技能に合った能力値）';
+  $output .= '<optgroup label="▼エフェクト等による差し替え">';
+  foreach my $statusname (@status){
+    $output .= '<option'
+            . ($pc{"combo${num}Stt"} eq $statusname ? ' selected' : '')
+            . '>'.$statusname;
+  }
+  $output .= '</optgroup>';
+  return $output;
+}
 foreach my $num (1 .. $pc{'comboNum'}) {
 print <<"HTML";
           <tbody id="combo${num}">
             <tr>
               <td class="handle" rowspan="7"></td>
-              <th colspan="3">名称</th><th colspan="8">組み合わせ</th>
+              <th colspan="3">名称</th><th colspan="11">組み合わせ</th>
             </tr>
             <tr>
               <td colspan="3" class="bold">@{[input "combo${num}Name"]}</td>
-              <td colspan="8">@{[input "combo${num}Combo"]}</td>
+              <td colspan="11">@{[input "combo${num}Combo"]}</td>
             </tr>
-            <tr><th>タイミング</th><th>技能</th><th>難易度</th><th>対象</th><th>射程</th><th>侵蝕値</th><th>条件</th><th>ダイス</th><th>Ｃ値</th><th>基準値</th><th>攻撃力</th></tr>
+            <tr>
+              <th>タイミング</th>
+              <th>技能</th>
+              <th>能力値</th>
+              <th>難易度</th>
+              <th>対象</th>
+              <th>射程</th>
+              <th>侵蝕値</th>
+              <th>条件</th>
+              <th colspan="2">ダイス<div class="small">(能力値+修正)</div></th>
+              <th>Ｃ値</th>
+              <th colspan="2">判定固定値<div class="small">(技能Lv+修正)</div></th>
+              <th>攻撃力</th></tr>
             <tr>
               <td>@{[input "combo${num}Timing",'','','list="list-combo-timing"']}</td>
-              <td>@{[input "combo${num}Skill",'','','list="list-combo-skill"']}</td>
+              <td><select name="combo${num}Skill" oninput="calcCombo(${num})">@{[ comboSkillSet($num) ]}</select></td>
+              <td><select name="combo${num}Stt" oninput="calcCombo(${num})">@{[ comboStatusSet($num) ]}</select></td>
               <td>@{[input "combo${num}Dfclty",'','','list="list-dfclty"']}</td>
               <td>@{[input "combo${num}Target",'','','list="list-target"']}</td>
               <td>@{[input "combo${num}Range",'','','list="list-range"']}</td>
               <td>@{[input "combo${num}Encroach"]}</td>
               <td>@{[input "combo${num}Condition1"]}</td>
-              <td>@{[input "combo${num}Dice1"]}</td>
+              <td id="combo${num}Stt1"></td>
+              <td>@{[input "combo${num}DiceAdd1"]}</td>
               <td>@{[input "combo${num}Crit1"]}</td>
-              <td>@{[input "combo${num}Fixed1"]}</td>
+              <td id="combo${num}SkillLv1"></td>
+              <td>@{[input "combo${num}FixedAdd1"]}</td>
               <td>@{[input "combo${num}Atk1"]}</td>
             </tr>
             <tr>
-              <td rowspan="3" colspan="6"><textarea name="combo${num}Note" rows="4" placeholder="解説">$pc{"combo${num}Note"}</textarea></td>
+              <td rowspan="3" colspan="7"><textarea name="combo${num}Note" rows="4" placeholder="解説">$pc{"combo${num}Note"}</textarea></td>
               <td>@{[input "combo${num}Condition2"]}</td>
-              <td>@{[input "combo${num}Dice2"]}</td>
+              <td id="combo${num}Stt2"></td>
+              <td>@{[input "combo${num}DiceAdd2"]}</td>
               <td>@{[input "combo${num}Crit2"]}</td>
-              <td>@{[input "combo${num}Fixed2"]}</td>
+              <td id="combo${num}SkillLv2"></td>
+              <td>@{[input "combo${num}FixedAdd2"]}</td>
               <td>@{[input "combo${num}Atk2"]}</td>
             </tr>
 HTML
@@ -647,9 +707,11 @@ HTML
   print <<"HTML";
             <tr>
               <td>@{[input "combo${num}Condition${i}"]}</td>
-              <td>@{[input "combo${num}Dice${i}"]}</td>
+              <td id="combo${num}Stt${i}"></td>
+              <td>@{[input "combo${num}DiceAdd${i}"]}</td>
               <td>@{[input "combo${num}Crit${i}"]}</td>
-              <td>@{[input "combo${num}Fixed${i}"]}</td>
+              <td id="combo${num}SkillLv${i}"></td>
+              <td>@{[input "combo${num}FixedAdd${i}"]}</td>
               <td>@{[input "combo${num}Atk${i}"]}</td>
             </tr>
 HTML
@@ -660,6 +722,9 @@ HTML
 }
 print <<"HTML";
         </table>
+        <div class="annotate">
+          @{[ input 'comboCalcOff','checkbox','calcComboAll' ]} 能力値・技能Lvを自動挿入しない（自分で計算する）
+        </div>
         <div class="add-del-button"><a onclick="addCombo()">▼</a><a onclick="delCombo()">▲</a></div>
       </details>
       
