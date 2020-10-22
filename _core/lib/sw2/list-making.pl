@@ -95,8 +95,10 @@ foreach my $data (@lines) {
       "URLSTT" => $url,
     });
   }
+  my ($sec, $min, $hour, $day, $mon, $year) = localtime($date);
   push(@posts, {
     "NUM" => $num,
+    'DATE' => sprintf('%04d-%02d-%02d %02d:%02d:%02d', $year+1900, $mon+1, $day, $hour, $min, $sec),
     "NAME" => $name,
     "COMMENT" => $comment,
     "Data" => \@datalist,

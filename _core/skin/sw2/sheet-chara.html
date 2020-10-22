@@ -35,8 +35,21 @@ function editOn() {
 function backuplistOn() {
   document.getElementById("backuplist").classList.toggle('show');
 }
+let cpOpenFirst = 0;
 function chatPaletteOn() {
   document.querySelector(".chat-palette").classList.toggle('show');
+  if(!cpOpenFirst){ chatPaletteSelect(''); }
+  cpOpenFirst++;
+}
+function chatPaletteSelect(tool) {
+  const url = './?mode=palette&id=<TMPL_VAR id>&tool='+tool;
+  fetch(url)
+  .then(response => { return response.text(); })
+  .then(text => { document.getElementById('chatPaletteBox').value = text; });
+  document.querySelectorAll('.chat-palette-menu a').forEach(elm => {
+    elm.classList.remove('check');
+  });
+  document.getElementById('cp-switch-'+(tool||'ytc')).classList.add('check');
 }
 function donwloadListOn() {
   document.getElementById("downloadlist").classList.toggle('show');
@@ -310,19 +323,19 @@ window.onload = function() {
         <div class="box-union" id="sub-status">
           <dl class="box">
             <dt><span>生命抵抗力</span></dt>
-            <dd><TMPL_IF vitResistAddTotal><TMPL_VAR vitResistBase>+<TMPL_VAR vitResistAddTotal>=</TMPL_IF><b><TMPL_VAR vitResistTotal></b></dd>
+            <dd><TMPL_IF vitResistAddTotal><span class="sp-del"><TMPL_VAR vitResistBase></span>+<TMPL_VAR vitResistAddTotal>=</TMPL_IF><b><TMPL_VAR vitResistTotal></b></dd>
           </dl>
           <dl class="box">
             <dt><span>精神抵抗力</span></dt>
-            <dd><TMPL_IF mndResistAddTotal><TMPL_VAR mndResistBase>+<TMPL_VAR mndResistAddTotal>=</TMPL_IF><b><TMPL_VAR mndResistTotal></b></dd>
+            <dd><TMPL_IF mndResistAddTotal><span class="sp-del"><TMPL_VAR mndResistBase></span>+<TMPL_VAR mndResistAddTotal>=</TMPL_IF><b><TMPL_VAR mndResistTotal></b></dd>
           </dl>
           <dl class="box">
             <dt>ＨＰ</dt>
-            <dd><TMPL_IF hpAddTotal><TMPL_VAR hpBase>+<TMPL_VAR hpAddTotal>=</TMPL_IF><b><TMPL_VAR hpTotal></b></dd>
+            <dd><TMPL_IF hpAddTotal><span class="sp-del"><TMPL_VAR hpBase></span>+<TMPL_VAR hpAddTotal>=</TMPL_IF><b><TMPL_VAR hpTotal></b></dd>
           </dl>
           <dl class="box">
             <dt>ＭＰ</dt>
-            <dd><TMPL_IF mpTotal><TMPL_IF mpAddTotal><TMPL_VAR mpBase>+<TMPL_VAR mpAddTotal>=</TMPL_IF><b><TMPL_VAR mpTotal></b><TMPL_ELSE><b>なし</b></TMPL_IF></dd>
+            <dd><TMPL_IF mpTotal><TMPL_IF mpAddTotal><span class="sp-del"><TMPL_VAR mpBase></span>+<TMPL_VAR mpAddTotal>=</TMPL_IF><b><TMPL_VAR mpTotal></b><TMPL_ELSE><b>なし</b></TMPL_IF></dd>
           </dl>
         </div>
         
@@ -385,86 +398,22 @@ window.onload = function() {
           </TMPL_IF>
         </div>
         <div id="crafts">
-          <TMPL_IF MagicGramarye><section class="box" id="magic-gramarye">
-            <h2>秘奥魔法</h2>
+          <TMPL_LOOP MagicLists><section class="box" id="magic-<TMPL_VAR eNAME>">
+            <h2><TMPL_VAR jNAME></h2>
             <ul>
-              <TMPL_LOOP MagicGramarye>
-              <li id="magic-gramarye<TMPL_VAR __counter__>"><span data-ruby="<TMPL_VAR RUBY>">【<TMPL_VAR NAME>】</span></li>
+              <TMPL_LOOP MAGICS>
+              <li id="magic-<TMPL_VAR eNAME><TMPL_VAR __counter__>"><span <TMPL_VAR RUBY>>【<TMPL_VAR ITEM>】</span></li>
               </TMPL_LOOP>
             </ul>
-          </section></TMPL_IF>
-          <TMPL_IF CraftEnhance><section class="box" id="craft-enhance">
-            <h2>練技</h2>
+          </section></TMPL_LOOP>
+          <TMPL_LOOP CraftLists><section class="box" id="craft-<TMPL_VAR eNAME>">
+            <h2><TMPL_VAR jNAME></h2>
             <ul>
-              <TMPL_LOOP CraftEnhance>
-              <li id="craft-enhance<TMPL_VAR __counter__>">【<TMPL_VAR NAME>】</li>
+              <TMPL_LOOP CRAFTS>
+              <li id="craft-<TMPL_VAR eNAME><TMPL_VAR __counter__>"><span <TMPL_VAR RUBY>>【<TMPL_VAR ITEM>】</span></li>
               </TMPL_LOOP>
             </ul>
-          </section></TMPL_IF>
-          <TMPL_IF CraftSong><section class="box" id="craft-song">
-            <h2>呪歌</h2>
-            <ul>
-              <TMPL_LOOP CraftSong>
-              <li id="craft-enhance<TMPL_VAR __counter__>">【<TMPL_VAR NAME>】</li>
-              </TMPL_LOOP>
-            </ul>
-          </section></TMPL_IF>
-          <TMPL_IF CraftRiding><section class="box" id="craft-riding">
-            <h2>騎芸</h2>
-            <ul>
-              <TMPL_LOOP CraftRiding>
-              <li id="craft-riding<TMPL_VAR __counter__>">【<TMPL_VAR NAME>】</li>
-              </TMPL_LOOP>
-            </ul>
-          </section></TMPL_IF>
-          <TMPL_IF CraftAlchemy><section class="box" id="craft-alchemy">
-            <h2>賦術</h2>
-            <ul>
-              <TMPL_LOOP CraftAlchemy>
-              <li id="craft-alchemy<TMPL_VAR __counter__>">【<TMPL_VAR NAME>】</li>
-              </TMPL_LOOP>
-            </ul>
-          </section></TMPL_IF>
-          <TMPL_IF CraftCommand><section class="box" id="craft-command">
-            <h2>鼓咆</h2>
-            <ul>
-              <TMPL_LOOP CraftCommand>
-              <li id="craft-command<TMPL_VAR __counter__>">【<TMPL_VAR NAME>】</li>
-              </TMPL_LOOP>
-            </ul>
-          </section></TMPL_IF>
-          <TMPL_IF CraftDivination><section class="box" id="craft-divination">
-            <h2>占瞳</h2>
-            <ul>
-              <TMPL_LOOP CraftDivination>
-              <li id="craft-divination<TMPL_VAR __counter__>">【<TMPL_VAR NAME>】</li>
-              </TMPL_LOOP>
-            </ul>
-          </section></TMPL_IF>
-          <TMPL_IF CraftPotential><section class="box" id="craft-potential">
-            <h2>魔装</h2>
-            <ul>
-              <TMPL_LOOP CraftPotential>
-              <li id="craft-potential<TMPL_VAR __counter__>">【<TMPL_VAR NAME>】</li>
-              </TMPL_LOOP>
-            </ul>
-          </section></TMPL_IF>
-          <TMPL_IF CraftSeal><section class="box" id="craft-seal">
-            <h2>呪印</h2>
-            <ul>
-              <TMPL_LOOP CraftSeal>
-              <li id="craft-seal<TMPL_VAR __counter__>">【<TMPL_VAR NAME>】</li>
-              </TMPL_LOOP>
-            </ul>
-          </section></TMPL_IF>
-          <TMPL_IF CraftDignity><section class="box" id="craft-dignity">
-            <h2>貴格</h2>
-            <ul>
-              <TMPL_LOOP CraftDignity>
-              <li id="craft-dignity<TMPL_VAR __counter__>">【<TMPL_VAR NAME>】</li>
-              </TMPL_LOOP>
-            </ul>
-          </section></TMPL_IF>
+          </section></TMPL_LOOP>
           <TMPL_IF craftNone><section class="box">
             <h2>練技／呪歌／騎芸／賦術</h2>
             <ul><li>なし</li></ul>
@@ -879,13 +828,12 @@ window.onload = function() {
       </TMPL_IF>
       <section class="box chat-palette">
         <h2>チャットパレット</h2>
-        <p>
-          使用ダイスbot: 
-          <a href="./?mode=palette&id=<TMPL_VAR id>" target="palette">ゆとチャadv.</a>
-          ／
-          <a href="./?mode=palette&id=<TMPL_VAR id>&tool=bcdice" target="palette">BCDice</a>
-        </p>
-        <iframe src="./?mode=palette&id=<TMPL_VAR id>" name="palette"></iframe>
+        <div class="chat-palette-menu">
+          <b>使用ダイスbot:</b>
+          <a onclick="chatPaletteSelect('')"       id="cp-switch-ytc">ゆとチャadv.</a>
+          <a onclick="chatPaletteSelect('bcdice')" id="cp-switch-bcdice">BCDice</a>
+        </div>
+        <textarea id="chatPaletteBox"></textarea>
       </section>
     </article>
     <!-- フェロー -->
