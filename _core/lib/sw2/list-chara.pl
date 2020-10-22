@@ -109,6 +109,11 @@ my $name_query = Encode::decode('utf8', param('name'));
 if($name_query) { @list = grep { (split(/<>/))[4] =~ /$name_query/ } @list; }
 $INDEX->param(name => $name_query);
 
+## PL名検索
+my $pl_query = Encode::decode('utf8', param('player'));
+if($pl_query) { @list = grep { (split(/<>/))[5] =~ /$pl_query/ } @list; }
+$INDEX->param(player => $pl_query);
+
 ## 種族検索
 my $race_query = Encode::decode('utf8', param('race'));
 if($race_query) { @list = grep { (split(/<>/))[9] =~ /^$race_query/ } @list; }
