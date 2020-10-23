@@ -75,7 +75,7 @@ function generateUdonariumZipFile(title, data, image){
 		if(image.hash) {
 			folder.file(image.fileName, image.data);
 		}
-		folder.file(`${title}.xml`, data);
+		folder.file(`${title}.xml`, data, {binary: false});
 		zip.generateAsync({ type: "blob" }).then(blob => {
 			const dataUrl = URL.createObjectURL(blob);
 			resolve(dataUrl);
@@ -109,7 +109,7 @@ async function downloadAsUdonarium() {
   const characterDataJson = await getJsonData();
   const characterId = characterDataJson.birthTime;
   const image = (characterDataJson.imageURL) ? await io.github.shunshun94.trpg.udonarium.getPicture(characterDataJson.imageURL) : {hash:''};
-  const udonariumXml = io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2SwordWorldPC(characterDataJson, location.href, image.hash);
+  const udonariumXml = io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2SwordWorldEnemy(characterDataJson, location.href, image.hash);
   const udonariumUrl = await generateUdonariumZipFile(characterDataJson.characterName, udonariumXml, image);
   downloadFile(`data_${characterId}.zip`, udonariumUrl);
 }
