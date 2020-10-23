@@ -86,7 +86,7 @@ function generateUdonariumZipFile(title, data, image){
 function generateCcfoliaZipFile(title, data){
 	return new Promise((resolve, dummy)=>{
 		let zip = new JSZip();
-		zip.file("__data.json", data);
+		zip.file("__data.json", data, {binary: false});
     zip.file(".token", `0.${io.github.shunshun94.trpg.ccfolia.generateRndStr()}`);
 		zip.generateAsync({ type: "blob", compression: "DEFLATE", compressionOptions: {level: 9}}).then(blob => {
 			const dataUrl = URL.createObjectURL(blob);

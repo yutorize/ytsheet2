@@ -48,14 +48,25 @@ io.github.shunshun94.trpg.ccfolia.generateRndStr = () => {
 	return randomString;
 };
 
-var randomString = '';
-var baseString ='0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-for(var i=0; i<length; i++) {
-	randomString += baseString.charAt( Math.floor( Math.random() * baseString.length));
-}
+io.github.shunshun94.trpg.ccfolia.getChatPallet = (sheetUrl) => {
+	return new Promise((resolve, reject)=>{
+		let xhr = new XMLHttpRequest();
+		xhr.open('GET', `${sheetUrl}&tool=bcdice&mode=palette`, true);
+		xhr.responseType = "text";
+		xhr.onload = (e) => {
+			console.log('aaa', e.currentTarget);
+			resolve(e.currentTarget.response);
+		};
+		xhr.onerror = () => resolve('');
+		xhr.onabort = () => resolve('');
+		xhr.ontimeout = () => resolve('');
+		xhr.send();
+  });
+};
 
-io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2SwordWorldPC = (json, opt_sheetUrl = '', opt_defaultPictureUrl = io.github.shunshun94.trpg.ccfolia.CONSTS.DEFAULT_PC_PICTURE) => {
+io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2SwordWorldPC = async (json, opt_sheetUrl = '', opt_defaultPictureUrl = io.github.shunshun94.trpg.ccfolia.CONSTS.DEFAULT_PC_PICTURE) => {
 	const result = io.github.shunshun94.trpg.ccfolia.getCharacterSeed();
+	const defaultPallet = await io.github.shunshun94.trpg.ccfolia.getChatPallet(opt_sheetUrl);
 	const character = {
 			name: json.characterName,
 			playerName: json.playerName,
@@ -89,7 +100,7 @@ io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2SwordWorldPC 
 			invisible: false, hideStatus: false,
 			color: '',
 			roomId: null,
-			commands: '',
+			commands: defaultPallet,
 			speaking: true
 	};
 	const skills = [
@@ -120,54 +131,57 @@ io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2SwordWorldPC 
 		{value:json.lvArt, label:'アーティザン'}].filter((d)=>{return d.value});
 	character.params = character.params.concat(skills);
 	
-	const palette = [];
-	palette.push(`現在の状態　HP:{HP} / MP:{MP}`);
-	if(json.lvSco) {
-		palette.push(`2d6+{スカウト}+{敏捷度B} 先制判定 (スカウト)`);
-	}
-	if(json.lvWar) {
-		palette.push(`2d6+{ウォーリーダー}+{敏捷度B} 先制判定 (ウォーリーダー・敏捷)`);
-		palette.push(`2d6+{ウォーリーダー}+{知力B} 先制判定 (ウォーリーダー・知力)`);
-	}
-	if(json.lvSag) {
-		palette.push(`2d6+{セージ}+{知力B} 魔物知識判定（セージ）`);
-	}
-	if(json.lvRid) {
-		palette.push(`2d6+{ライダー}+{知力B} 魔物知識判定（ライダー）`);
-	}
-	const weaponLength = Number(json.weaponNum);
-	for(let i = 0; i < weaponLength; i++) {
-		palette.push(`2d6+${json['weapon' + (i + 1) + 'AccTotal']}+0 命中判定 (${json['weapon' + (i + 1) + 'Name']})`);
-		palette.push(`k${json['weapon' + (i + 1) + 'Rate']}+${json['weapon' + (i + 1) + 'DmgTotal']}+0@(${json['weapon' + (i + 1) + 'Crit']}-0)$+0   ダメージ (${json['weapon' + (i + 1) + 'Name']})`);
-	}
-	[[json.lvSor, json.magicPowerSor, '真語魔法'],
-	 [json.lvCon, json.magicPowerCon, '操霊魔法'],
-	 [json.lvPri, json.magicPowerPri, '神聖魔法'],
-	 [json.lvMag, json.magicPowerMag, '魔動機術'],
-	 [json.lvFai, json.magicPowerFai, '妖精魔法'],
-	 [json.lvDem, json.magicPowerDem, '召異魔法'],
-	 [json.lvDru, json.magicPowerDru, '森羅魔法'],
-	 [json.lvGri, json.magicPowerGri, '秘奥魔法'],].filter((d)=>{
-		return d[0];
-	}).forEach((v)=>{
-		palette.push(`\n2d6+${v[1]}+{魔法行使} ${v[2]}行使判定`);
-		for(let i = 0; i < 6; i++) {
-			palette.push(`k${i*10}+${v[1]}+0@(10-0) ${v[2]}ダメージ (威力 ${i*10})`);
+	if(defaultPallet === '') {
+		const palette = [];
+		palette.push(`現在の状態　HP:{HP} / MP:{MP}`);
+		if(json.lvSco) {
+			palette.push(`2d6+{スカウト}+{敏捷度B} 先制判定 (スカウト)`);
 		}
-	});
-	palette.push(`2d6+${json.defenseTotalAllEva}+0 回避判定`);
-	palette.push(`2d6+${json.vitResistTotal}+0 生命抵抗判定`);
-	palette.push(`2d6+${json.mndResistTotal}+0 精神抵抗判定`);
-
-	skills.forEach((s)=>{
-		['器用度B', '敏捷度B', '知力B'].forEach((v)=>{
-			palette.push(`2d6+{${s.label}}+{${v}} ${s.label}+${v}`);
+		if(json.lvWar) {
+			palette.push(`2d6+{ウォーリーダー}+{敏捷度B} 先制判定 (ウォーリーダー・敏捷)`);
+			palette.push(`2d6+{ウォーリーダー}+{知力B} 先制判定 (ウォーリーダー・知力)`);
+		}
+		if(json.lvSag) {
+			palette.push(`2d6+{セージ}+{知力B} 魔物知識判定（セージ）`);
+		}
+		if(json.lvRid) {
+			palette.push(`2d6+{ライダー}+{知力B} 魔物知識判定（ライダー）`);
+		}
+		const weaponLength = Number(json.weaponNum);
+		for(let i = 0; i < weaponLength; i++) {
+			palette.push(`2d6+${json['weapon' + (i + 1) + 'AccTotal']}+0 命中判定 (${json['weapon' + (i + 1) + 'Name']})`);
+			palette.push(`k${json['weapon' + (i + 1) + 'Rate']}+${json['weapon' + (i + 1) + 'DmgTotal']}+0@(${json['weapon' + (i + 1) + 'Crit']}-0)$+0   ダメージ (${json['weapon' + (i + 1) + 'Name']})`);
+		}
+		[[json.lvSor, json.magicPowerSor, '真語魔法'],
+		 [json.lvCon, json.magicPowerCon, '操霊魔法'],
+		 [json.lvPri, json.magicPowerPri, '神聖魔法'],
+		 [json.lvMag, json.magicPowerMag, '魔動機術'],
+		 [json.lvFai, json.magicPowerFai, '妖精魔法'],
+		 [json.lvDem, json.magicPowerDem, '召異魔法'],
+		 [json.lvDru, json.magicPowerDru, '森羅魔法'],
+		 [json.lvGri, json.magicPowerGri, '秘奥魔法'],].filter((d)=>{
+			return d[0];
+		}).forEach((v)=>{
+			palette.push(`\n2d6+${v[1]}+{魔法行使} ${v[2]}行使判定`);
+			for(let i = 0; i < 6; i++) {
+				palette.push(`k${i*10}+${v[1]}+0@(10-0) ${v[2]}ダメージ (威力 ${i*10})`);
+			}
 		});
-	});
-	if(json.chatPalette) {
-		palette.push(json.chatPalette.replace(/&lt;br&gt;/gm, '\n'));
+		palette.push(`2d6+${json.defenseTotalAllEva}+0 回避判定`);
+		palette.push(`2d6+${json.vitResistTotal}+0 生命抵抗判定`);
+		palette.push(`2d6+${json.mndResistTotal}+0 精神抵抗判定`);
+	
+		skills.forEach((s)=>{
+			['器用度B', '敏捷度B', '知力B'].forEach((v)=>{
+				palette.push(`2d6+{${s.label}}+{${v}} ${s.label}+${v}`);
+			});
+		});
+		if(json.chatPalette) {
+			palette.push(json.chatPalette.replace(/&lt;br&gt;/gm, '\n'));
+		}
+		character.commands = palette.join('\n');
 	}
-	character.commands = palette.join('\n');
+
 	result.entities.characters[json.id] = character;
 	return JSON.stringify(result);
 };
@@ -222,8 +236,9 @@ io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2SwordWorldEne
 	}
 };
 
-io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2SwordWorldEnemy = (json, opt_sheetUrl = '', opt_defaultPictureUrl = io.github.shunshun94.trpg.ccfolia.CONSTS.DEFAULT_ENEMY_PICTURE) => {
+io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2SwordWorldEnemy = async (json, opt_sheetUrl = '', opt_defaultPictureUrl = io.github.shunshun94.trpg.ccfolia.CONSTS.DEFAULT_ENEMY_PICTURE) => {
 	const result = io.github.shunshun94.trpg.ccfolia.getCharacterSeed();
+	const defaultPallet = await io.github.shunshun94.trpg.ccfolia.getChatPallet(opt_sheetUrl);
 	const character = {
 			name: json.characterName || json.monsterName,
 			playerName: 'GM',
@@ -240,23 +255,24 @@ io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2SwordWorldEne
 			invisible: false, hideStatus: false,
 			color: '',
 			roomId: null,
-			commands: `2d6+${json.vitResist}+0 生命抵抗\n2d6+${json.mndResist}+0 精神抵抗\n`,
+			commands: defaultPallet,
 			speaking: true
 	};
 	const partsLenght = Number(json.statusNum);
+	character.commands += (defaultPallet === '') ? `2d6+${json.vitResist}+0 生命抵抗\n2d6+${json.mndResist}+0 精神抵抗\n` : '';
 	if(partsLenght === 1) {
 		const partsInfo = io.github.shunshun94.trpg.ccfolia.getPartsFromYtSheetEnemyWithPartsNum(json);
 		character.status = character.status.concat(partsInfo.status);
-		character.commands += partsInfo.commands + '\n';
+		character.commands += (defaultPallet === '') ? partsInfo.commands + '\n' : '';
 	} else {
 		for(let i = 0; i < partsLenght; i++) {
 			const partsInfo = io.github.shunshun94.trpg.ccfolia.getPartsFromYtSheetEnemyWithPartsNum(json, i + 1);
 			character.status = character.status.concat(partsInfo.status);
-			character.commands += partsInfo.commands + '\n';
+			character.commands += (defaultPallet === '') ? partsInfo.commands + '\n' : '';
 		}
 	}
 	if(json.chatPalette) {
-		character.commands += json.chatPalette.replace(/&lt;br&gt;/gm, '\n');
+		character.commands += (defaultPallet === '') ? json.chatPalette.replace(/&lt;br&gt;/gm, '\n') : '';
 	}
 	result.entities.characters[json.id] = character;
 	return JSON.stringify(result);
