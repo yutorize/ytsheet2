@@ -75,7 +75,7 @@ function generateUdonariumZipFile(title, data, image){
 		if(image.hash) {
 			folder.file(image.fileName, image.data);
 		}
-		folder.file(`${title}.xml`, data);
+		folder.file(`${title}.xml`, data, {binary: false});
 		zip.generateAsync({ type: "blob" }).then(blob => {
 			const dataUrl = URL.createObjectURL(blob);
 			resolve(dataUrl);
@@ -86,7 +86,7 @@ function generateUdonariumZipFile(title, data, image){
 function generateCcfoliaZipFile(title, data){
 	return new Promise((resolve, dummy)=>{
 		let zip = new JSZip();
-		zip.file("__data.json", data);
+		zip.file("__data.json", data, {binary: false});
     zip.file(".token", `0.${io.github.shunshun94.trpg.ccfolia.generateRndStr()}`);
 		zip.generateAsync({ type: "blob", compression: "DEFLATE", compressionOptions: {level: 9}}).then(blob => {
 			const dataUrl = URL.createObjectURL(blob);
@@ -109,7 +109,7 @@ async function downloadAsUdonarium() {
   const characterDataJson = await getJsonData();
   const characterId = characterDataJson.birthTime;
   const image = (characterDataJson.imageURL) ? await io.github.shunshun94.trpg.udonarium.getPicture(characterDataJson.imageURL) : {hash:''};
-  const udonariumXml = io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2SwordWorldPC(characterDataJson, location.href, image.hash);
+  const udonariumXml = io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2SwordWorldEnemy(characterDataJson, location.href, image.hash);
   const udonariumUrl = await generateUdonariumZipFile(characterDataJson.characterName, udonariumXml, image);
   downloadFile(`data_${characterId}.zip`, udonariumUrl);
 }
@@ -122,7 +122,7 @@ async function downloadAsCcfolia() {
     alert('1度に作れるのは26体までです');
     return;
   }
-  const json = io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2SwordWorldEnemies(count, characterDataJson);
+  const json = io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2SwordWorldEnemies(count, characterDataJson, location.href);
   const ccfoliaUrl = await generateCcfoliaZipFile(characterId, json);
   downloadFile(`data_${characterId}.zip`, ccfoliaUrl);
 }
@@ -158,10 +158,10 @@ window.onload = function() {
   <script src="<TMPL_VAR coreDir>/skin/_common/js/common.js?<TMPL_VAR ver>"></script>
   <script src="<TMPL_VAR coreDir>/skin/_common/js/lib/sha256.js?<TMPL_VAR ver>"></script>
   <script src="<TMPL_VAR coreDir>/skin/_common/js/lib/jszip.js?<TMPL_VAR ver>"></script>
-  <script src="<TMPL_VAR coreDir>/skin/sw2/js/lib/generateCharacterXml.js?<TMPL_VAR ver>"></script>
-  <script src="<TMPL_VAR coreDir>/skin/sw2/js/lib/ytsheetToCcfolia.js?<TMPL_VAR ver>"></script>
-  <script src="<TMPL_VAR coreDir>/skin/sw2/js/lib/ytsheet_consts.js?<TMPL_VAR ver>"></script>
-  <script src="<TMPL_VAR coreDir>/skin/sw2/js/lib/ytsheetToText.js?<TMPL_VAR ver>"></script>
+  <script src="<TMPL_VAR coreDir>/skin/sw2/js/lib/ytsheetToUdonariumSW25.js?<TMPL_VAR ver>"></script>
+  <script src="<TMPL_VAR coreDir>/skin/sw2/js/lib/ytsheetToCcfoliaSW25.js?<TMPL_VAR ver>"></script>
+  <script src="<TMPL_VAR coreDir>/skin/sw2/js/lib/ytsheetConstsSW25.js?<TMPL_VAR ver>"></script>
+  <script src="<TMPL_VAR coreDir>/skin/sw2/js/lib/ytsheetToTextSW25.js?<TMPL_VAR ver>"></script>
   <header>
     <h1><a href="./?type=m"><TMPL_VAR title></a></h1>
     <nav>
