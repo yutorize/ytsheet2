@@ -92,10 +92,16 @@ function downloadFile(title, url) {
   URL.revokeObjectURL(url);
 }
 
+function getAbsoluteUrl(path) {
+  const dummyLink = document.createElement('a');
+  dummyLink.href = path;
+  return dummyLink.href;
+}
+
 async function downloadAsUdonarium() {
   const characterDataJson = await getJsonData();
   const characterId = characterDataJson.birthTime;
-  const image = (characterDataJson.imageURL) ? await io.github.shunshun94.trpg.udonarium.getPicture(characterDataJson.imageURL) : {hash:''};
+  const image = await io.github.shunshun94.trpg.udonarium.getPicture('<TMPL_VAR coreDir>/skin/sw2/img/default_enemy.png');
   const udonariumXml = io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2SwordWorldEnemy(characterDataJson, location.href, image.hash);
   const udonariumUrl = await generateUdonariumZipFile(characterDataJson.characterName, udonariumXml, image);
   downloadFile(`data_${characterId}.zip`, udonariumUrl);
@@ -109,7 +115,7 @@ async function downloadAsCcfolia() {
     alert('1度に作れるのは26体までです');
     return;
   }
-  const json = io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2SwordWorldEnemies(count, characterDataJson, location.href);
+  const json = io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2SwordWorldEnemies(count, characterDataJson, location.href, getAbsoluteUrl('<TMPL_VAR coreDir>/skin/sw2/img/default_enemy.png'));
   const ccfoliaUrl = await generateCcfoliaZipFile(characterId, json);
   downloadFile(`data_${characterId}.zip`, ccfoliaUrl);
 }
