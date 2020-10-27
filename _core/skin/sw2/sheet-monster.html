@@ -104,7 +104,7 @@ async function downloadAsUdonarium() {
   const image = await io.github.shunshun94.trpg.udonarium.getPicture('<TMPL_VAR coreDir>/skin/sw2/img/default_enemy.png');
   const udonariumXml = io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2SwordWorldEnemy(characterDataJson, location.href, image.hash);
   const udonariumUrl = await generateUdonariumZipFile(characterDataJson.characterName, udonariumXml, image);
-  downloadFile(`data_${characterId}.zip`, udonariumUrl);
+  downloadFile(`udonarium_data_${characterId}.zip`, udonariumUrl);
 }
 
 async function downloadAsCcfolia() {
@@ -117,7 +117,7 @@ async function downloadAsCcfolia() {
   }
   const json = io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2SwordWorldEnemies(count, characterDataJson, location.href, getAbsoluteUrl('<TMPL_VAR coreDir>/skin/sw2/img/default_enemy.png'));
   const ccfoliaUrl = await generateCcfoliaZipFile(characterId, json);
-  downloadFile(`data_${characterId}.zip`, ccfoliaUrl);
+  downloadFile(`ccfolia_data_${characterId}.zip`, ccfoliaUrl);
 }
 
 async function donloadAsText() {
