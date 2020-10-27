@@ -549,38 +549,38 @@ function addCombo(){
       <td><input name="combo${num}Encroach" type="text"></td>
       <td><input name="combo${num}Condition1" type="text" value="100%未満"></td>
       <td id="combo${num}Stt1"></td>
-      <td><input name="combo${num}DiceAdd1"      type="text"></td>
+      <td><input name="combo${num}DiceAdd1"   type="text"></td>
       <td><input name="combo${num}Crit1"      type="text"></td>
       <td id="combo${num}SkillLv1"></td>
-      <td><input name="combo${num}FixedAdd1"     type="text"></td>
+      <td><input name="combo${num}FixedAdd1"  type="text"></td>
       <td><input name="combo${num}Atk1"       type="text"></td>
     </tr>
     <tr>
       <td rowspan="3" colspan="7"><textarea name="combo${num}Note" rows="4" placeholder="解説"></textarea></td>
       <td><input name="combo${num}Condition2" type="text" value="100%以上"></td>
       <td id="combo${num}Stt2"></td>
-      <td><input name="combo${num}DiceAdd2"      type="text"></td>
+      <td><input name="combo${num}DiceAdd2"   type="text"></td>
       <td><input name="combo${num}Crit2"      type="text"></td>
       <td id="combo${num}SkillLv2"></td>
-      <td><input name="combo${num}FixedAdd2"     type="text"></td>
+      <td><input name="combo${num}FixedAdd2"  type="text"></td>
       <td><input name="combo${num}Atk2"       type="text"></td>
     </tr>
     <tr>
       <td><input name="combo${num}Condition3" type="text"></td>
       <td id="combo${num}Stt3"></td>
-      <td><input name="combo${num}DiceAdd3"      type="text"></td>
+      <td><input name="combo${num}DiceAdd3"   type="text"></td>
       <td><input name="combo${num}Crit3"      type="text"></td>
       <td id="combo${num}SkillLv3"></td>
-      <td><input name="combo${num}FixedAdd3"     type="text"></td>
+      <td><input name="combo${num}FixedAdd3"  type="text"></td>
       <td><input name="combo${num}Atk3"       type="text"></td>
     </tr>
     <tr>
       <td><input name="combo${num}Condition4" type="text"></td>
       <td id="combo${num}Stt4"></td>
-      <td><input name="combo${num}DiceAdd4"      type="text"></td>
+      <td><input name="combo${num}DiceAdd4"   type="text"></td>
       <td><input name="combo${num}Crit4"      type="text"></td>
       <td id="combo${num}SkillLv4"></td>
-      <td><input name="combo${num}FixedAdd4"     type="text"></td>
+      <td><input name="combo${num}FixedAdd4"  type="text"></td>
       <td><input name="combo${num}Atk4"       type="text"></td>
     </tr>`;
   const target = document.querySelector("#combo-table");
@@ -618,26 +618,32 @@ let comboSortable = Sortable.create(document.getElementById('combo-table'), {
         document.querySelector(`#${id} [name$="Combo"]`   ).setAttribute('name',`combo${num}Combo`);
         document.querySelector(`#${id} [name$="Timing"]`  ).setAttribute('name',`combo${num}Timing`);
         document.querySelector(`#${id} [name$="Skill"]`   ).setAttribute('name',`combo${num}Skill`);
+        document.querySelector(`#${id} [name$="Stt"]`     ).setAttribute('name',`combo${num}Stt`);
         document.querySelector(`#${id} [name$="Dfclty"]`  ).setAttribute('name',`combo${num}Dfclty`);
         document.querySelector(`#${id} [name$="Target"]`  ).setAttribute('name',`combo${num}Target`);
         document.querySelector(`#${id} [name$="Range"]`   ).setAttribute('name',`combo${num}Range`);
         document.querySelector(`#${id} [name$="Encroach"]`).setAttribute('name',`combo${num}Encroach`);
         document.querySelector(`#${id} [name$="Note"]`    ).setAttribute('name',`combo${num}Note`);
         document.querySelector(`#${id} [name$="Condition1"]`).setAttribute('name',`combo${num}Condition1`);
-        document.querySelector(`#${id} [name$="Dice1"]`     ).setAttribute('name',`combo${num}Dice1`);
+        document.querySelector(`#${id} [name$="DiceAdd1"]`  ).setAttribute('name',`combo${num}DiceAdd1`);
         document.querySelector(`#${id} [name$="Crit1"]`     ).setAttribute('name',`combo${num}Crit1`);
         document.querySelector(`#${id} [name$="Atk1"]`      ).setAttribute('name',`combo${num}Atk1`);
-        document.querySelector(`#${id} [name$="Fixed1"]`    ).setAttribute('name',`combo${num}Fixed1`);
+        document.querySelector(`#${id} [name$="FixedAdd1"]` ).setAttribute('name',`combo${num}FixedAdd1`);
         document.querySelector(`#${id} [name$="Condition2"]`).setAttribute('name',`combo${num}Condition2`);
-        document.querySelector(`#${id} [name$="Dice2"]`     ).setAttribute('name',`combo${num}Dice2`);
+        document.querySelector(`#${id} [name$="DiceAdd2"]`  ).setAttribute('name',`combo${num}DiceAdd2`);
         document.querySelector(`#${id} [name$="Crit2"]`     ).setAttribute('name',`combo${num}Crit2`);
         document.querySelector(`#${id} [name$="Atk2"]`      ).setAttribute('name',`combo${num}Atk2`);
-        document.querySelector(`#${id} [name$="Fixed2"]`    ).setAttribute('name',`combo${num}Fixed2`);
+        document.querySelector(`#${id} [name$="FixedAdd2"]` ).setAttribute('name',`combo${num}FixedAdd2`);
         document.querySelector(`#${id} [name$="Condition3"]`).setAttribute('name',`combo${num}Condition3`);
-        document.querySelector(`#${id} [name$="Dice3"]`     ).setAttribute('name',`combo${num}Dice3`);
+        document.querySelector(`#${id} [name$="DiceAdd3"]`  ).setAttribute('name',`combo${num}DiceAdd3`);
         document.querySelector(`#${id} [name$="Crit3"]`     ).setAttribute('name',`combo${num}Crit3`);
         document.querySelector(`#${id} [name$="Atk3"]`      ).setAttribute('name',`combo${num}Atk3`);
-        document.querySelector(`#${id} [name$="Fixed3"]`    ).setAttribute('name',`combo${num}Fixed3`);
+        document.querySelector(`#${id} [name$="FixedAdd3"]` ).setAttribute('name',`combo${num}FixedAdd3`);
+        document.querySelector(`#${id} [name$="Condition4"]`).setAttribute('name',`combo${num}Condition4`);
+        document.querySelector(`#${id} [name$="DiceAdd4"]`  ).setAttribute('name',`combo${num}DiceAdd4`);
+        document.querySelector(`#${id} [name$="Crit4"]`     ).setAttribute('name',`combo${num}Crit4`);
+        document.querySelector(`#${id} [name$="Atk4"]`      ).setAttribute('name',`combo${num}Atk4`);
+        document.querySelector(`#${id} [name$="FixedAdd4"]` ).setAttribute('name',`combo${num}FixedAdd4`);
         num++;
       }
     }
