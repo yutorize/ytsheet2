@@ -106,7 +106,7 @@ async function downloadAsUdonarium() {
   const image = await io.github.shunshun94.trpg.udonarium.getPicture(characterDataJson.imageURL || '<TMPL_VAR coreDir>/skin/dx3/img/default.png');
   const udonariumXml = io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2DoubleCross3PC(characterDataJson, location.href, image.hash);
   const udonariumUrl = await generateUdonariumZipFile(characterDataJson.characterName, udonariumXml, image);
-  downloadFile(`data_${characterId}.zip`, udonariumUrl);
+  downloadFile(`udonarium_data_${characterId}.zip`, udonariumUrl);
 }
 
 async function downloadAsCcfolia() {
@@ -114,7 +114,7 @@ async function downloadAsCcfolia() {
   const characterId = characterDataJson.birthTime;
   const json = io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2DoubleCrossPC(characterDataJson, location.href, getAbsoluteUrl('<TMPL_VAR coreDir>/skin/dx3/img/default.png'));
   const ccfoliaUrl = await generateCcfoliaZipFile(characterId, json);
-  downloadFile(`data_${characterId}.zip`, ccfoliaUrl);
+  downloadFile(`ccfolia_data_${characterId}.zip`, ccfoliaUrl);
 }
 
 async function donloadAsText() {
