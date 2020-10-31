@@ -216,13 +216,13 @@ io.github.shunshun94.trpg.ccfolia.getPartsFromYtSheetEnemyWithPartsNum = (json, 
 	return result;
 };
 
-io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2SwordWorldEnemies = (count, json, opt_sheetUrl = '', opt_defaultPictureUrl = io.github.shunshun94.trpg.ccfolia.CONSTS.DEFAULT_ENEMY_PICTURE) => {
+io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2SwordWorldEnemies = async (count, json, opt_sheetUrl = '', opt_defaultPictureUrl = io.github.shunshun94.trpg.ccfolia.CONSTS.DEFAULT_ENEMY_PICTURE) => {
 	if(count > 26) {
 		throw "26体までしか一度に生成できません";
 	}
 	if(count > 1){
 		const result = io.github.shunshun94.trpg.ccfolia.getCharacterSeed();
-		const singleJsonString = io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2SwordWorldEnemy(json, opt_sheetUrl, opt_defaultPictureUrl);
+		const singleJsonString = await io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2SwordWorldEnemy(json, opt_sheetUrl, opt_defaultPictureUrl);
 		const characterDataJsonString = JSON.stringify(JSON.parse(singleJsonString).entities.characters[json.id]);
 		for(var i = 0; i < count; i++) {
 			const suffix = String.fromCharCode(65 + i);

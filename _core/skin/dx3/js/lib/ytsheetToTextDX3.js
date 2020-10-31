@@ -117,7 +117,7 @@ io.github.shunshun94.trpg.ytsheet._getDoubleCrossEffects = (json) => {
 io.github.shunshun94.trpg.ytsheet._getDoubleCrossCombos = (json) => {
 	let cursor = 1;
 	const comboData = [];
-	while(json[`effect${cursor}Name`]) {
+	while(json[`combo${cursor}Name`]) {
 		let limitationCursor = 1;
 		while(json[`combo${cursor}Condition${limitationCursor}`]) {
 			comboData.push({
@@ -162,10 +162,10 @@ io.github.shunshun94.trpg.ytsheet._getDoubleCrossMemories = (json) => {
 	const data = [];
 	while(json[`memory${cursor}Gain`]) {
 		data.push({
-			name: json[`memory${cursor}Name`],
-			relation: json[`memory${cursor}Relation`],
-			emotion: json[`memory${cursor}Emo`],
-			note: json[`memory${cursor}Note`]
+			name: json[`memory${cursor}Name`] || '',
+			relation: json[`memory${cursor}Relation`] || '',
+			emotion: json[`memory${cursor}Emo`] || '',
+			note: json[`memory${cursor}Note`] || ''
 		});
 		cursor++;
 	}
