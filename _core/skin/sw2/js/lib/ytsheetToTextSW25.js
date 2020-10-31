@@ -83,7 +83,7 @@ io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2SwordWorldEne
 	if(json.sin) {result.push(`　穢れ：${json.sin}`);}
 	result.push('');
 
-	result.push(`知能：${json.intellect.padEnd(12 - json.intellect.length, ' ')}知覚：${json.perception.padEnd(14-json.perception.length, ' ')}反応：${json.disposition}`);
+	result.push(`知能：${(json.intellect || '').padEnd(12 - (json.intellect || '').length, ' ')}知覚：${(json.perception || '').padEnd(14-(json.perception || '').length, ' ')}反応：${json.disposition || ''}`);
 	result.push(`言語：${json.language || ''}  生息地：${json.habitat || ''}`);
 	result.push('');
 	result.push('');
@@ -100,10 +100,10 @@ io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2SwordWorldEne
 	const partBaseXPLength = 5;
 	result.push(`　      命中力| 打撃点 |回避力|防護点|   HP |   MP`);
 	for(let i = 0; i < partsLength; i++) {
-		result.push(`　${json[`status${i + 1}Style`]}\n　      ${(json[`status${i + 1}Accuracy`] || '0').padStart(partBaseValueLength, ' ')} |${(json[`status${i + 1}Damage`] || '0').padStart(partAttackValueLength, ' ')} |${(json[`status${i + 1}Evasion`] || '0').padStart(partBaseValueLength, ' ')} |${(json[`status${i + 1}Defense`] || '0').padStart(partBaseValueLength, ' ')} |${(json[`status${i + 1}Hp`] || '0').padStart(partBaseValueLength, ' ')} |${(json[`status${i + 1}Mp`] || '0').padStart(partBaseValueLength, ' ')}`)
+		result.push(`　${json[`status${i + 1}Style`] || ''}\n　      ${(json[`status${i + 1}Accuracy`] || '0').padStart(partBaseValueLength, ' ')} |${(json[`status${i + 1}Damage`] || '0').padStart(partAttackValueLength, ' ')} |${(json[`status${i + 1}Evasion`] || '0').padStart(partBaseValueLength, ' ')} |${(json[`status${i + 1}Defense`] || '0').padStart(partBaseValueLength, ' ')} |${(json[`status${i + 1}Hp`] || '0').padStart(partBaseValueLength, ' ')} |${(json[`status${i + 1}Mp`] || '0').padStart(partBaseValueLength, ' ')}`)
 	}
 	if(partsLength !== 1) {
-		result.push(`　部位数：${partsLength}（${json.parts}） コア部位：${json.coreParts}`);
+		result.push(`　部位数：${partsLength}（${json.parts || '?'}） コア部位：${json.coreParts || '?'}`);
 	}
 	result.push('');
 	result.push('');
@@ -116,7 +116,7 @@ io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2SwordWorldEne
 	result.push('□戦利品');
 	const lootsLength = Number(json.lootsNum);
 	for(let i = 0; i < lootsLength; i++) {
-		if(json[`loots${i + 1}Num`]) {
+		if(json[`loots${i + 1}Num`] && json[`loots${i + 1}Item`]) {
 			result.push(`　${json[`loots${i + 1}Num`]}\n　　${json[`loots${i + 1}Item`]}`);
 		}
 	}
@@ -131,8 +131,8 @@ io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2SwordWorldEne
 io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2SwordWorldPC = (json) => {
 	const result = [];
 	result.push(`キャラクター名：${json.characterName}`);
-	result.push(`種族：${json.race} ${json.raceAbility}`);
-	result.push(`生まれ：${json.birth}`);
+	result.push(`種族：${json.race || ''} ${json.raceAbility || ''}`);
+	result.push(`生まれ：${json.birth || ''}`);
 	if(json.faith) { result.push(`信仰：${json.faith}`); }
 	result.push(`年齢：${json.age || '?'}`);
 	result.push(`性別：${json.gender || '?'}`);
@@ -148,7 +148,7 @@ io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2SwordWorldPC 
 	result.push(`${baseValuesPrefixSpaces}${'技'.padStart(singleColumnLength - 1, ' ')}${'体'.padStart(doubleColumnLength - 1, ' ')}${'心'.padStart(doubleColumnLength  - 1, ' ')}`);
 	result.push(`${baseValuesPrefixSpaces}${(json.sttBaseTec || '').padStart(singleColumnLength, ' ')}${(json.sttBasePhy || '').padStart(doubleColumnLength, ' ')}${(json.sttBaseSpi || '').padStart(doubleColumnLength, ' ')}`);
 	result.push(`${baseValuesPrefixSpaces}${'器用'.padStart(halfColumnLength - 2, ' ')}${'敏捷'.padStart(singleColumnLength - 2, ' ')}${'筋力'.padStart(singleColumnLength - 2, ' ')}${'生命'.padStart(singleColumnLength - 2, ' ')}${'知力'.padStart(singleColumnLength - 2, ' ')}${'精神'.padStart(singleColumnLength - 2, ' ')}`);
-	result.push(`${'ダイス'.padEnd(leftThLength - 3, ' ')}${json.sttBaseA.padStart(halfColumnLength, ' ')}${json.sttBaseB.padStart(singleColumnLength, ' ')}${json.sttBaseC.padStart(singleColumnLength, ' ')}${json.sttBaseD.padStart(singleColumnLength, ' ')}${json.sttBaseE.padStart(singleColumnLength, ' ')}${json.sttBaseF.padStart(singleColumnLength, ' ')}`);
+	result.push(`${'ダイス'.padEnd(leftThLength - 3, ' ')}${(json.sttBaseA || '').padStart(halfColumnLength, ' ')}${(json.sttBaseB || '').padStart(singleColumnLength, ' ')}${(json.sttBaseC || '').padStart(singleColumnLength, ' ')}${(json.sttBaseD || '').padStart(singleColumnLength, ' ')}${(json.sttBaseE || '').padStart(singleColumnLength, ' ')}${(json.sttBaseF || '').padStart(singleColumnLength, ' ')}`);
 	result.push(`${'成長'.padEnd(leftThLength - 2, ' ')}${json.sttGrowA.padStart(halfColumnLength, ' ')}${json.sttGrowB.padStart(singleColumnLength, ' ')}${json.sttGrowC.padStart(singleColumnLength, ' ')}${json.sttGrowD.padStart(singleColumnLength, ' ')}${json.sttGrowE.padStart(singleColumnLength, ' ')}${json.sttGrowF.padStart(singleColumnLength, ' ')}`);
 	result.push(''.padEnd(leftThLength + doubleColumnLength * 3, '-'));
 	result.push(`${'合計'.padEnd(leftThLength - 2, ' ')}${json.sttDex.padStart(halfColumnLength, ' ')}${json.sttAgi.padStart(singleColumnLength, ' ')}${json.sttStr.padStart(singleColumnLength, ' ')}${json.sttVit.padStart(singleColumnLength, ' ')}${json.sttInt.padStart(singleColumnLength, ' ')}${json.sttMnd.padStart(singleColumnLength, ' ')}`);
@@ -173,7 +173,7 @@ io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2SwordWorldPC 
 
 	result.push('●レベル・技能');
 	const skillNameColumnLength = 20;
-	result.push(`${'冒険者レベル'.padEnd(skillNameColumnLength - 6, ' ')}: ${json.level.padStart(3, ' ')} Lv`);
+	result.push(`${'冒険者レベル'.padEnd(skillNameColumnLength - 6, ' ')}: ${(json.level || '').padStart(3, ' ')} Lv`);
 	for(let key in io.github.shunshun94.trpg.ytsheet.consts.skills) {
 		if(json[key]) {
 			const name = io.github.shunshun94.trpg.ytsheet.consts.skills[key];
@@ -218,10 +218,12 @@ io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2SwordWorldPC 
 		result.push(`　- 武器`);
 	}
 	for(var i = 0; i < weaponCount; i++) {
-		result.push(`${equipsPrefix}名前：${json[`weapon${i+1}Name`]}${json[`weapon${i+1}Own`] ? '(専)' : ''} ${json[`weapon${i+1}Category`] ? `(カテゴリ ${json[`weapon${i+1}Category`]})` : ''}`);
-		if(json[`weapon${i+1}Note`]){ result.push(`${equipsPrefix}メモ： ${json[`weapon${i+1}Note`]}`); }
-		result.push(equipsWeaponHeader);
-		result.push(`${equipsPrefix}${(json[`weapon${i+1}Usage`] || '').padStart(equipsColumnLength, ' ')}${(json[`weapon${i+1}Reqd`] || '').padStart(equipsColumnLength, ' ')}${(json[`weapon${i+1}Acc`] || '').padStart(equipsColumnLength, ' ')}${(json[`weapon${i+1}AccTotal`] || '').padStart(equipsColumnLength, ' ')}${(json[`weapon${i+1}Rate`] || '').padStart(equipsColumnLength, ' ')}${(json[`weapon${i+1}Crit`] || '').padStart(equipsColumnLength, ' ')}${(json[`weapon${i+1}Dmg`] || '').padStart(equipsColumnLength, ' ')}${(json[`weapon${i+1}DmgTotal`] || '').padStart(equipsColumnLength, ' ')}`)
+		if(json[`weapon${i+1}Name`]) {
+			result.push(`${equipsPrefix}名前：${json[`weapon${i+1}Name`]}${json[`weapon${i+1}Own`] ? '(専)' : ''} ${json[`weapon${i+1}Category`] ? `(カテゴリ ${json[`weapon${i+1}Category`]})` : ''}`);
+			if(json[`weapon${i+1}Note`]){ result.push(`${equipsPrefix}メモ： ${json[`weapon${i+1}Note`]}`); }
+			result.push(equipsWeaponHeader);
+			result.push(`${equipsPrefix}${(json[`weapon${i+1}Usage`] || '').padStart(equipsColumnLength, ' ')}${(json[`weapon${i+1}Reqd`] || '').padStart(equipsColumnLength, ' ')}${(json[`weapon${i+1}Acc`] || '').padStart(equipsColumnLength, ' ')}${(json[`weapon${i+1}AccTotal`] || '').padStart(equipsColumnLength, ' ')}${(json[`weapon${i+1}Rate`] || '').padStart(equipsColumnLength, ' ')}${(json[`weapon${i+1}Crit`] || '').padStart(equipsColumnLength, ' ')}${(json[`weapon${i+1}Dmg`] || '').padStart(equipsColumnLength, ' ')}${(json[`weapon${i+1}DmgTotal`] || '').padStart(equipsColumnLength, ' ')}`)
+		}
 	}
 	if(json.armourName || json.shieldName || json.defOtherName) {
 		result.push(`　- 防具`);
@@ -247,7 +249,7 @@ io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2SwordWorldPC 
 		result.push(`${equipsPrefix}${''.padStart(equipsColumnLength*3, '-')}`);
 	}
 	result.push(`${equipsPrefix}${' '.padStart(equipsColumnLength, ' ')}${'回避'.padStart(equipsColumnLength-2, ' ')}${'防護'.padStart(equipsColumnLength-2, ' ')}`);
-	result.push(`${equipsPrefix}${'合計'.padStart(equipsColumnLength-2, ' ')}${json.defenseTotalAllEva.padStart(equipsColumnLength, ' ')}${json.defenseTotalAllDef.padStart(equipsColumnLength, ' ')}`);
+	result.push(`${equipsPrefix}${'合計'.padStart(equipsColumnLength-2, ' ')}${(json.defenseTotalAllEva || '0').padStart(equipsColumnLength, ' ')}${(json.defenseTotalAllDef || '0').padStart(equipsColumnLength, ' ')}`);
 
 	const accessoryPartList = [];
 	const accessoryPartsNameColumnLength = 6;

@@ -123,7 +123,11 @@ async function downloadAsUdonarium() {
 async function downloadAsCcfolia() {
   const characterDataJson = await getJsonData();
   const characterId = characterDataJson.birthTime;
-  const count = Number(window.prompt(`${characterDataJson.characterName || characterDataJson.monsterName}を一度に何体生成しますか？`, '1')) || 1 ;
+  const rawCount = window.prompt(`${characterDataJson.characterName || characterDataJson.monsterName}を一度に何体生成しますか？`, '1');
+  if(rawCount === null) {
+    return;
+  }
+  const count = Number(rawCount) || 1 ;
   if(count > 26) {
     alert('1度に作れるのは26体までです');
     return;

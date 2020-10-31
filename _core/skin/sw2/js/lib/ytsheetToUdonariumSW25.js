@@ -55,6 +55,7 @@ io.github.shunshun94.trpg.udonarium.getPicture = (src) => {
 
 io.github.shunshun94.trpg.udonarium.getChatPallet = (sheetUrl) => {
 	return new Promise((resolve, reject)=>{
+		if(sheetUrl === '' || ! sheetUrl.startsWith(location.origin)) {resolve('');return;}
 		let xhr = new XMLHttpRequest();
 		xhr.open('GET', `${sheetUrl}&tool=bcdice&mode=palette`, true);
 		xhr.responseType = "text";
@@ -87,34 +88,34 @@ io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2SwordWorldEn
 	data_character_detail['リソース'] = [];
 	if(statusLenght.length === 1) {
 		data_character_detail['リソース'].push(
-			`        <data type="numberResource" currentValue="${json.status1Hp}" name="HP">${json.status1Hp}</data>`,
-			`        <data type="numberResource" currentValue="${json.status1Mp}" name="MP">${json.status1Mp}</data>`
+			`        <data type="numberResource" currentValue="${json.status1Hp || '0'}" name="HP">${json.status1Hp || '0'}</data>`,
+			`        <data type="numberResource" currentValue="${json.status1Mp || '0'}" name="MP">${json.status1Mp || '0'}</data>`
 		);
 	} else {
 		for(let i = 0; i < statusLenght; i++) {
 			const cursor = i + 1;
 			data_character_detail['リソース'].push(
-					`        <data type="numberResource" currentValue="${json['status' + cursor + 'Hp']}" name="HP${cursor}">${json['status' + cursor + 'Hp']}</data>`,
-					`        <data type="numberResource" currentValue="${json['status' + cursor + 'Mp']}" name="MP${cursor}">${json['status' + cursor + 'Mp']}</data>`
+					`        <data type="numberResource" currentValue="${json['status' + cursor + 'Hp'] || '0'}" name="HP${cursor}">${json['status' + cursor + 'Hp'] || '0'}</data>`,
+					`        <data type="numberResource" currentValue="${json['status' + cursor + 'Mp'] || '0'}" name="MP${cursor}">${json['status' + cursor + 'Mp'] || '0'}</data>`
 			);
 		}
 	}
 	data_character_detail['能力値'] = [];
 	if(statusLenght.length === 1) {
 		data_character_detail['能力値'].push(
-			`        <data currentValue="${json.status1Accuracy}" name="命中">${json.status1Accuracy}</data>`,
-			`        <data currentValue="${json.status1Damage}" name="打撃点">${json.status1Damage}</data>`,
-			`        <data currentValue="${json.status1Evasion}" name="回避力">${json.status1Evasion}</data>`,
-			`        <data type="numberResource" currentValue="${json.status1Defense}" name="防護点">${json.status1Defense}</data>`
+			`        <data currentValue="${json.status1Accuracy || '0'}" name="命中">${json.status1Accuracy || '0'}</data>`,
+			`        <data currentValue="${json.status1Damag || '0'}" name="打撃点">${json.status1Damage || '0'}</data>`,
+			`        <data currentValue="${json.status1Evasion || '0'}" name="回避力">${json.status1Evasion || '0'}</data>`,
+			`        <data type="numberResource" currentValue="${json.status1Defense || '0'}" name="防護点">${json.status1Defense || '0'}</data>`
 		);
 	} else {
 		for(let i = 0; i < statusLenght; i++) {
 			const cursor = i + 1;
 			data_character_detail['能力値'].push(
-					`        <data currentValue="${json['status' + cursor + 'Accuracy']}" name="命中${cursor}">${json['status' + cursor + 'Accuracy']}</data>`,
-					`        <data currentValue="${json['status' + cursor + 'Damage']}" name="打撃点${cursor}">${json['status' + cursor + 'Damage']}</data>`,
-					`        <data currentValue="${json['status' + cursor + 'Evasion']}" name="回避力${cursor}">${json['status' + cursor + 'Evasion']}</data>`,
-					`        <data type="numberResource" currentValue="${json['status' + cursor + 'Defense']}" name="防護点${cursor}">${json['status' + cursor + 'Defense']}</data>`,
+					`        <data currentValue="${json['status' + cursor + 'Accuracy'] || '0'}" name="命中${cursor}">${json['status' + cursor + 'Accuracy'] || '0'}</data>`,
+					`        <data currentValue="${json['status' + cursor + 'Damage'] || '0'}" name="打撃点${cursor}">${json['status' + cursor + 'Damage'] || '0'}</data>`,
+					`        <data currentValue="${json['status' + cursor + 'Evasion'] || '0'}" name="回避力${cursor}">${json['status' + cursor + 'Evasion'] || '0'}</data>`,
+					`        <data type="numberResource" currentValue="${json['status' + cursor + 'Defense'] || '0'}" name="防護点${cursor}">${json['status' + cursor + 'Defense'] || '0'}</data>`,
 			);
 		}
 	}
@@ -144,14 +145,14 @@ io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2SwordWorldEn
 			palette_detail['情報共有'] += `現在の状態 | `;
 			for(let i = 0; i < statusLenght; i++) {
 				const cursor = i + 1;
-				palette_detail['情報共有'] += `${json['status' + cursor + 'Style']}: HP:{HP${cursor}} / MP:{MP${cursor}} | `;
-				palette_detail['戦闘'] += `2d6+{命中${cursor}} ${json['status' + cursor + 'Style']} 命中判定\n`;
-				palette_detail['戦闘'] += `{打撃点${cursor}} ${json['status' + cursor + 'Style']} 打撃ダメージ\n`;
-				palette_detail['戦闘'] += `2d6+{回避力${cursor}} ${json['status' + cursor + 'Style']} 回避\n`;
+				palette_detail['情報共有'] += `${json['status' + cursor + 'Style'] || ''}: HP:{HP${cursor}} / MP:{MP${cursor}} | `;
+				palette_detail['戦闘'] += `2d6+{命中${cursor}} ${json['status' + cursor + 'Style'] || ''} 命中判定\n`;
+				palette_detail['戦闘'] += `{打撃点${cursor}} ${json['status' + cursor + 'Style'] || ''} 打撃ダメージ\n`;
+				palette_detail['戦闘'] += `2d6+{回避力${cursor}} ${json['status' + cursor + 'Style'] || ''} 回避\n`;
 			}
 		}
-		palette_detail['戦闘'] += `2d6+${json.vitResist} 生命抵抗\n`;
-		palette_detail['戦闘'] += `2d6+${json.mndResist} 精神抵抗\n`;
+		palette_detail['戦闘'] += `2d6+${json.vitResist || '0'} 生命抵抗\n`;
+		palette_detail['戦闘'] += `2d6+${json.mndResist || '0'} 精神抵抗\n`;
 		if(opt_url) { palette_detail['情報共有'] += `\nキャラクターシート　{URL}\n`;}
 	
 		for(const key in palette_detail) {
@@ -194,15 +195,15 @@ io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2SwordWorldPC
 	data_character_detail['リソース'] = [
 		`        <data type="numberResource" currentValue="${json.hpTotal}" name="HP">${json.hpTotal}</data>`,
 		`        <data type="numberResource" currentValue="${json.mpTotal}" name="MP">${json.mpTotal}</data>`,
-        `        <data type="numberResource" currentValue="${json.defenseTotalAllDef}" name="防護点">${json.defenseTotalAllDef}</data>`,
+        `        <data type="numberResource" currentValue="${json.defenseTotalAllDef || '0'}" name="防護点">${json.defenseTotalAllDef || 0}</data>`,
         `        <data type="numberResource" currentValue="0" name="1ゾロ">10</data>`,
         `        <data type="numberResource" currentValue="${json.sin || 0}" name="穢れ度">5</data>`,
         `        <data name="所持金">${json.moneyTotal}</data>`,
         `        <data name="残名誉点">${json.honor}</data>`
 	];
 	data_character_detail['情報'] = [
-        `        <data name="PL">${json.playerName}</data>`,
-        `        <data name="種族">${json.race}</data>`,
+        `        <data name="PL">${json.playerName || '?'}</data>`,
+        `        <data name="種族">${json.race || '?'}</data>`,
         `        <data type="note" name="説明">${(json.freeNote || '').replace(/&lt;br&gt;/g, '\n')}</data>`
 	];
 	if(opt_url) { data_character_detail['情報'].push(`        <data name="URL">${opt_url}</data>`);}
@@ -261,33 +262,9 @@ io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2SwordWorldPC
 		{level:json.lvGri, name:'グリモワール'},
 		{level:json.lvAri, name:'アリストクラシー'},
 		{level:json.lvArt, name:'アーティザン'}].filter((d)=>{return d.level});
-	data_character_detail['技能'] = [
-		`        ${json.level ? '' : '<!--'}<data name="冒険者レベル">${json.level}</data>${json.level ? '' : '-->'}`,
-		`        ${json.lvFig ? '' : '<!--'}<data name="ファイター">${json.lvFig}</data>${json.lvFig ? '' : '-->'}`,
-		`        ${json.lvGra ? '' : '<!--'}<data name="グラップラー">${json.lvGra}</data>${json.lvGra ? '' : '-->'}`,
-		`        ${json.lvFen ? '' : '<!--'}<data name="フェンサー">${json.lvFen}</data>${json.lvFen ? '' : '-->'}`,
-		`        ${json.lvSho ? '' : '<!--'}<data name="シューター">${json.lvSho}</data>${json.lvSho ? '' : '-->'}`,
-		`        ${json.lvSor ? '' : '<!--'}<data name="ソーサラー">${json.lvSor}</data>${json.lvSor ? '' : '-->'}`,
-		`        ${json.lvCon ? '' : '<!--'}<data name="コンジャラー">${json.lvCon}</data>${json.lvCon ? '' : '-->'}`,
-		`        ${json.lvPri ? '' : '<!--'}<data name="プリースト">${json.lvPri}</data>${json.lvPri ? '' : '-->'}`,
-		`        ${json.lvFai ? '' : '<!--'}<data name="フェアリーテイマー">${json.lvFai}</data>${json.lvFai ? '' : '-->'}`,
-		`        ${json.lvMag ? '' : '<!--'}<data name="マギテック">${json.lvMag}</data>${json.lvMag ? '' : '-->'}`,
-		`        ${json.lvSco ? '' : '<!--'}<data name="スカウト">${json.lvSco}</data>${json.lvSco ? '' : '-->'}`,
-		`        ${json.lvRan ? '' : '<!--'}<data name="レンジャー">${json.lvRan}</data>${json.lvRan ? '' : '-->'}`,
-		`        ${json.lvSag ? '' : '<!--'}<data name="セージ">${json.lvSag}</data>${json.lvSag ? '' : '-->'}`,
-		`        ${json.lvEnh ? '' : '<!--'}<data name="エンハンサー">${json.lvEnh}</data>${json.lvEnh ? '' : '-->'}`,
-		`        ${json.lvBar ? '' : '<!--'}<data name="バード">${json.lvBar}</data>${json.lvBar ? '' : '-->'}`,
-		`        ${json.lvRid ? '' : '<!--'}<data name="ライダー">${json.lvRid}</data>${json.lvRid ? '' : '-->'}`,
-		`        ${json.lvAlc ? '' : '<!--'}<data name="アルケミスト">${json.lvAlc}</data>${json.lvAlc ? '' : '-->'}`,
-		`        ${json.lvWar ? '' : '<!--'}<data name="ウォーリーダー">${json.lvWar}</data>${json.lvWar ? '' : '-->'}`,
-		`        ${json.lvMys ? '' : '<!--'}<data name="ミスティック">${json.lvMys}</data>${json.lvMys ? '' : '-->'}`,
-		`        ${json.lvDem ? '' : '<!--'}<data name="デーモンルーラー">${json.lvDem}</data>${json.lvDem ? '' : '-->'}`,
-		`        ${json.lvDru ? '' : '<!--'}<data name="ドルイド">${json.lvDru}</data>${json.lvDru ? '' : '-->'}`,
-		`        ${json.lvPhy ? '' : '<!--'}<data name="フィジカルマスター">${json.lvPhy}</data>${json.lvPhy ? '' : '-->'}`,
-		`        ${json.lvGri ? '' : '<!--'}<data name="グリモワール">${json.lvGri}</data>${json.lvGri ? '' : '-->'}`,
-		`        ${json.lvAri ? '' : '<!--'}<data name="アリストクラシー">${json.lvAri}</data>${json.lvAri ? '' : '-->'}`,
-		`        ${json.lvArt ? '' : '<!--'}<data name="アーティザン">${json.lvArt}</data>${json.lvArt ? '' : '-->'}`
-	];
+	data_character_detail['技能'] = skills.map((s)=>{
+		return `<data name="${s.name}">${s.level}</data>`
+	});
 	data_character_detail['バフ・デバフ'] = [
 		`        <data type="numberResource" currentValue="0" name="命中">10</data>`,
 		`        <data type="numberResource" currentValue="0" name="回避">10</data>`,
@@ -335,8 +312,10 @@ io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2SwordWorldPC
 		palette_detail['戦闘中'] = ``;
 		const weaponLength = Number(json.weaponNum);
 		for(let i = 0; i < weaponLength; i++) {
-			palette_detail['戦闘中'] += `2d6+${json['weapon' + (i + 1) + 'AccTotal']}+{命中} 命中判定 (${json['weapon' + (i + 1) + 'Name']})\n`;
-			palette_detail['戦闘中'] += `k${json['weapon' + (i + 1) + 'Rate']}+${json['weapon' + (i + 1) + 'DmgTotal']}+{攻撃}@(${json['weapon' + (i + 1) + 'Crit']}-{クリティカル値減少})$+{クリレイ}   ダメージ判定 (${json['weapon' + (i + 1) + 'Name']})\n`;
+			if(json['weapon' + (i + 1) + 'Name']) {
+				palette_detail['戦闘中'] += `2d6+${json['weapon' + (i + 1) + 'AccTotal'] || '0'}+{命中} 命中判定 (${json['weapon' + (i + 1) + 'Name']})\n`;
+				palette_detail['戦闘中'] += `k${json['weapon' + (i + 1) + 'Rate'] || '0'}+${json['weapon' + (i + 1) + 'DmgTotal'] || '0'}+{攻撃}@(${json['weapon' + (i + 1) + 'Crit'] || '10'}-{クリティカル値減少})$+{クリレイ}   ダメージ判定 (${json['weapon' + (i + 1) + 'Name']})\n`;				
+			}
 		}
 		[[json.lvSor, json.magicPowerSor, '真語魔法'],
 		 [json.lvCon, json.magicPowerCon, '操霊魔法'],
@@ -353,7 +332,7 @@ io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2SwordWorldPC
 				palette_detail['戦闘中'] += `k${i*10}+${v[1]}+{魔法ダメージ}@(10-{クリティカル値減少}) ${v[2]}ダメージ (威力 ${i*10})\n`;
 			}
 		});
-		palette_detail['戦闘中'] += `2d6+${json.defenseTotalAllEva}+{回避} 回避判定\n`;
+		palette_detail['戦闘中'] += `2d6+${json.defenseTotalAllEva || '0'}+{回避} 回避判定\n`;
 		palette_detail['戦闘中'] += `2d6+${json.vitResistTotal}+{生命抵抗} 生命抵抗判定\n`;
 		palette_detail['戦闘中'] += `2d6+${json.mndResistTotal}+{精神抵抗} 精神抵抗判定\n`;
 	
