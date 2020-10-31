@@ -1,47 +1,48 @@
 "use strict";
 const form = document.sheet;
 
-const expA = [
-       0,
-    1000,
-    2000,
-    3500,
-    5000,
-    7000,
-    9500,
-   12500,
-   16500,
-   21500,
-   27500,
-   35000,
-   44000,
-   54500,
-   66500,
-   80000,
-   95000,
-  125000
-];
-
-const expB = [
-       0,
-     500,
-    1500,
-    2500,
-    4000,
-    5500,
-    7500,
-   10000,
-   13000,
-   17000,
-   22000,
-   28000,
-   35500,
-   44500,
-   55000,
-   67000,
-   80500,
-  105500
-];
+const expTable = {
+  'A' : [
+         0,
+      1000,
+      2000,
+      3500,
+      5000,
+      7000,
+      9500,
+     12500,
+     16500,
+     21500,
+     27500,
+     35000,
+     44000,
+     54500,
+     66500,
+     80000,
+     95000,
+    125000
+  ],
+  'B' : [
+         0,
+       500,
+      1500,
+      2500,
+      4000,
+      5500,
+      7500,
+     10000,
+     13000,
+     17000,
+     22000,
+     28000,
+     35500,
+     44500,
+     55000,
+     67000,
+     80500,
+    105500
+  ]
+};
 
 let race = form.race.value;
 let sttDex = 0;
@@ -63,30 +64,7 @@ let bonusVit = 0;
 let bonusInt = 0;
 let bonusMnd = 0;
 let level = 0;
-let lvFig = 0;
-let lvGra = 0;
-let lvFen = 0;
-let lvSho = 0;
-let lvSor = 0;
-let lvCon = 0;
-let lvPri = 0;
-let lvFai = 0;
-let lvMag = 0;
-let lvSco = 0;
-let lvRan = 0;
-let lvSag = 0;
-let lvEnh = 0;
-let lvBar = 0;
-let lvRid = 0;
-let lvAlc = 0;
-let lvWar = 0;
-let lvMys = 0;
-let lvDem = 0;
-let lvPhy = 0;
-let lvGri = 0;
-let lvAri = 0;
-let lvArt = 0;
-let levelCasters;
+let levelCasters = [];
 
 const delConfirmText = '項目に値が入っています。本当に削除しますか？';
 
@@ -131,73 +109,31 @@ function changeLv() {
 // レベル計算 ----------------------------------------
 let expUse = 0;
 let expTotal = 0;
+let lv = {};
 function calcLv(){
-  lvFig = Number(form.lvFig.value);
-  lvGra = Number(form.lvGra.value);
-  lvFen = Number(form.lvFen.value);
-  lvSho = Number(form.lvSho.value);
-  lvSor = Number(form.lvSor.value);
-  lvCon = Number(form.lvCon.value);
-  lvPri = Number(form.lvPri.value);
-  lvFai = Number(form.lvFai.value);
-  lvMag = Number(form.lvMag.value);
-  lvSco = Number(form.lvSco.value);
-  lvRan = Number(form.lvRan.value);
-  lvSag = Number(form.lvSag.value);
-  lvEnh = Number(form.lvEnh.value);
-  lvBar = Number(form.lvBar.value);
-  lvRid = Number(form.lvRid.value);
-  lvAlc = Number(form.lvAlc.value);
-  lvWar = AllClassOn ? Number(form.lvWar.value) : 0;
-  lvMys = AllClassOn ? Number(form.lvMys.value) : 0;
-  lvDem = AllClassOn ? Number(form.lvDem.value) : 0;
-  lvPhy = AllClassOn ? Number(form.lvPhy.value) : 0;
-  lvGri = AllClassOn ? Number(form.lvGri.value) : 0;
-  lvArt = AllClassOn ? Number(form.lvArt.value) : 0;
-  lvAri = AllClassOn ? Number(form.lvAri.value) : 0;
-  
   expUse = 0;
-  expUse += expA[lvFig];
-  expUse += expA[lvGra];
-  expUse += expB[lvFen];
-  expUse += expB[lvSho];
-  expUse += expA[lvSor];
-  expUse += expA[lvCon];
-  expUse += expA[lvPri];
-  expUse += expA[lvFai];
-  expUse += expA[lvMag];
-  expUse += expB[lvSco];
-  expUse += expB[lvRan];
-  expUse += expB[lvSag];
-  expUse += expB[lvEnh];
-  expUse += expB[lvBar];
-  expUse += expB[lvRid];
-  expUse += expB[lvAlc];
-  expUse += expB[lvWar];
-  expUse += expB[lvMys];
-  expUse += expA[lvDem];
-  expUse += expB[lvPhy];
-  expUse += expA[lvGri];
-  expUse += expB[lvArt];
-  expUse += expB[lvAri];
+  let allClassLv = [];
+  levelCasters = [];
+  Object.keys(classes).forEach(function(key) {
+    lv[key] = Number(form['lv'+key].value);
+    if(classes[key]['2.0'] && !AllClassOn){ lv[key] = 0; }
+    
+    expUse += expTable[ classes[key]['expTable'] ][ lv[key] ];
+    
+    allClassLv.push(lv[key]);
+    if(classes[key]['magic']){ levelCasters.push(lv[key]); }
+  });
   
   document.getElementById("exp-use").innerHTML = expUse;
   document.getElementById("exp-rest").innerHTML = expTotal - expUse;
   
-  level = Math.max.apply(null, [
-    lvFig, lvGra, lvFen, lvSho,
-    lvSor, lvCon, lvPri, lvFai, lvMag,
-    lvSco, lvRan, lvSag, lvEnh, lvBar,
-    lvRid, lvAlc, lvWar, lvMys, lvDem,
-    lvPhy, lvGri, lvArt, lvAri
-  ]);
+  level = Math.max.apply(null, Object.values(lv));
   document.getElementById("level-value").innerHTML = level;
   
-  levelCasters = [lvSor, lvCon, lvPri, lvFai, lvMag, lvDem, lvGri];
   levelCasters.sort( function(a,b){ return (a < b ? 1 : -1); } );
   
   if(battleItemOn){
-    const sLevel = Math.max.apply(null, [ lvSco, lvRan, lvSag ]);
+    const sLevel = Math.max.apply(null, [ lv['Sco'], lv['Ran'], lv['Sag'] ]);
     const maxBattleItems = 8 + Math.ceil(sLevel / 2);
     for (let i = 1; i <= 16; i++) {
       let cL = document.getElementById("battle-item"+i).classList;
@@ -251,6 +187,7 @@ function checkRace(){
   if(race === 'ルーンフォーク'){
     document.getElementById("classPri").classList.add('fail');
     document.getElementById("classFai").classList.add('fail');
+    document.getElementById("classDru").classList.add('fail');
   }
   else if(race === 'タビット'){
     document.getElementById("classPri").classList.add('fail');
@@ -440,37 +377,37 @@ function checkFeats(){
       else if (feat.match(/回避行動/)){
         if(level < 3){ cL.add("error"); }
         if(feat.match(/Ⅰ$/)){
-          if (f2 && lvFen >= 9) { (auto) ? box.value = "回避行動Ⅱ" : cL.add("evo") }
+          if (f2 && lv['Fen'] >= 9) { (auto) ? box.value = "回避行動Ⅱ" : cL.add("evo") }
         }
         else if(feat.match(/Ⅱ$/)){
-          if(!f2 || lvFen < 9) { (auto) ? box.value = "回避行動Ⅰ" : cL.add("error") }
+          if(!f2 || lv['Fen'] < 9) { (auto) ? box.value = "回避行動Ⅰ" : cL.add("error") }
         }
       }
       else if (feat.match(/^頑強/)){
-        if(lvFig < 5 && lvGra < 5 && lvFen < 5){ cL.add("error"); }
+        if(lv['Fig'] < 5 && lv['Gra'] < 5 && lv['Fen'] < 5){ cL.add("error"); }
       }
       else if (feat.match(/キャパシティ/)){
         if(level < 11){ cL.add("error"); }
       }
       else if (feat.match(/射手の体術/)){
-        if(lvSho < 7){ cL.add("error"); }
+        if(lv['Sho'] < 7){ cL.add("error"); }
       }
       else if (feat.match(/終律増強/)){
-        if(lvBar < 3){ cL.add("error"); }
+        if(lv['Bar'] < 3){ cL.add("error"); }
       }
       else if (feat.match(/呪歌追加/)){
-        if(lvBar < 1){ cL.add("error"); }
+        if(lv['Bar'] < 1){ cL.add("error"); }
         if(feat.match(/Ⅰ$/)){
-          if     (f3 && lvBar >= 13) { (auto) ? box.value = "呪歌追加Ⅲ" : cL.add("evo") }
-          else if(f2 && lvBar >=  7) { (auto) ? box.value = "呪歌追加Ⅱ" : cL.add("evo") }
+          if     (f3 && lv['Bar'] >= 13) { (auto) ? box.value = "呪歌追加Ⅲ" : cL.add("evo") }
+          else if(f2 && lv['Bar'] >=  7) { (auto) ? box.value = "呪歌追加Ⅱ" : cL.add("evo") }
         }
         else if(feat.match(/Ⅱ$/)){
-          if     (f3 && lvBar >= 13) { (auto) ? box.value = "呪歌追加Ⅲ" : cL.add("evo") }
-          else if(!f2 || lvBar <  7) { (auto) ? box.value = "呪歌追加Ⅰ" : cL.add("error") }
+          if     (f3 && lv['Bar'] >= 13) { (auto) ? box.value = "呪歌追加Ⅲ" : cL.add("evo") }
+          else if(!f2 || lv['Bar'] <  7) { (auto) ? box.value = "呪歌追加Ⅰ" : cL.add("error") }
         }
         else if(feat.match(/Ⅲ$/)){
-          if     (!f2 || lvBar <  7) { (auto) ? box.value = "呪歌追加Ⅰ" : cL.add("error") }
-          else if(!f3 || lvBar < 13) { (auto) ? box.value = "呪歌追加Ⅱ" : cL.add("error") }
+          if     (!f2 || lv['Bar'] <  7) { (auto) ? box.value = "呪歌追加Ⅰ" : cL.add("error") }
+          else if(!f3 || lv['Bar'] < 13) { (auto) ? box.value = "呪歌追加Ⅱ" : cL.add("error") }
         }
       }
       else if (feat.match(/双撃/)){
@@ -488,21 +425,21 @@ function checkFeats(){
         }
       }
       else if (feat.match(/超頑強/)){
-        if((lvFig < 7 && lvGra < 7)|| !acquire.match('頑強')){ cL.add("error"); }
+        if((lv['Fig'] < 7 && lv['Gra'] < 7)|| !acquire.match('頑強')){ cL.add("error"); }
       }
       else if (feat.match(/特殊楽器習熟/)){
-        if(lvBar < 1){ cL.add("error"); }
+        if(lv['Bar'] < 1){ cL.add("error"); }
       }
       else if (feat.match(/跳び蹴り/)){
-        if(lvGra < 9){ cL.add("error"); }
+        if(lv['Gra'] < 9){ cL.add("error"); }
       }
       else if (feat.match(/投げ強化/)){
-        if(lvGra < 3){ cL.add("error"); }
+        if(lv['Gra'] < 3){ cL.add("error"); }
         if(feat.match(/Ⅰ$/)){
-          if (f2 && lvGra >= 9) { (auto) ? box.value = "投げ強化Ⅱ" : cL.add("evo") }
+          if (f2 && lv['Gra'] >= 9) { (auto) ? box.value = "投げ強化Ⅱ" : cL.add("evo") }
         }
         else if(feat.match(/Ⅱ$/)){
-          if(!f2 || lvGra < 9) { (auto) ? box.value = "投げ強化Ⅰ" : cL.add("error") }
+          if(!f2 || lv['Gra'] < 9) { (auto) ? box.value = "投げ強化Ⅰ" : cL.add("error") }
         }
       }
       else if (feat.match(/二刀無双/)){
@@ -512,7 +449,7 @@ function checkFeats(){
         if(level < 5){ cL.add("error"); }
       }
       else if (feat.match(/ハーモニー/)){
-        if(lvBar < 5){ cL.add("error"); }
+        if(lv['Bar'] < 5){ cL.add("error"); }
       }
       else if (feat.match(/武器習熟Ｓ／(.*)/)){
         if(level < 5 || !(acquire.match('武器習熟Ａ／' + RegExp.$1))){ cL.add("error"); }
@@ -524,27 +461,27 @@ function checkFeats(){
         if(level < 3){ cL.add("error"); }
       }
       else if (feat.match(/賦術強化/)){
-        if(lvAlc < 3){ cL.add("error"); }
+        if(lv['Alc'] < 3){ cL.add("error"); }
         if(feat.match(/Ⅰ$/)){
-          if (f2 && lvAlc >= 9) { (auto) ? box.value = "賦術強化Ⅱ" : cL.add("evo") }
+          if (f2 && lv['Alc'] >= 9) { (auto) ? box.value = "賦術強化Ⅱ" : cL.add("evo") }
         }
         else if(feat.match(/Ⅱ$/)){
-          if(!f2 || lvAlc < 9) { (auto) ? box.value = "賦術強化Ⅰ" : cL.add("error") }
+          if(!f2 || lv['Alc'] < 9) { (auto) ? box.value = "賦術強化Ⅰ" : cL.add("error") }
         }
       }
       else if (feat.match(/賦術全遠隔化/)){
-        if(lvAlc < 5){ cL.add("error"); }
+        if(lv['Alc'] < 5){ cL.add("error"); }
       }
       else if (feat.match(/踏みつけ/)){
-        if(lvGra < 5){ cL.add("error"); }
+        if(lv['Gra'] < 5){ cL.add("error"); }
       }
       else if (feat.match(/変幻自在/)){
-        if(lvGra < 5 && lvFen < 5){ cL.add("error"); }
+        if(lv['Gra'] < 5 && lv['Fen'] < 5){ cL.add("error"); }
         if(feat.match(/Ⅰ$/)){
-          if (f2 && (lvGra >= 13 || lvFen >= 13)) { (auto) ? box.value = "変幻自在Ⅱ" : cL.add("evo") }
+          if (f2 && (lv['Gra'] >= 13 || lv['Fen'] >= 13)) { (auto) ? box.value = "変幻自在Ⅱ" : cL.add("evo") }
         }
         else if(feat.match(/Ⅱ$/)){
-          if(!f2 || (lvGra < 13 && lvFen < 13)) { (auto) ? box.value = "変幻自在Ⅰ" : cL.add("error") }
+          if(!f2 || (lv['Gra'] < 13 && lv['Fen'] < 13)) { (auto) ? box.value = "変幻自在Ⅰ" : cL.add("error") }
         }
       }
       else if (feat.match(/防具習熟Ｓ／(.*)/)){
@@ -581,21 +518,21 @@ function checkFeats(){
         }
       }
       else if (feat.match(/連続賦術/)){
-        if(lvAlc < 5){ cL.add("error"); }
+        if(lv['Alc'] < 5){ cL.add("error"); }
       }
       else if (feat.match(/練体の極意/)){
-        if(lvEnh < 5){ cL.add("error"); }
+        if(lv['Enh'] < 5){ cL.add("error"); }
       }
       else if (feat.match(/ＭＰ軽減/)){
         if(level < 5){ cL.add("error"); }
       }
       else if (feat.match(/インファイト/)){
-        if(lvGra < 5){ cL.add("error"); }
+        if(lv['Gra'] < 5){ cL.add("error"); }
         if(feat.match(/Ⅰ$/)){
-          if (f2 && lvGra >= 9) { (auto) ? box.value = "インファイトⅡ" : cL.add("evo") }
+          if (f2 && lv['Gra'] >= 9) { (auto) ? box.value = "インファイトⅡ" : cL.add("evo") }
         }
         else if(feat.match(/Ⅱ$/)){
-          if(!f2 || lvGra < 9) { (auto) ? box.value = "インファイトⅠ" : cL.add("error") }
+          if(!f2 || lv['Gra'] < 9) { (auto) ? box.value = "インファイトⅠ" : cL.add("error") }
         }
       }
       else if (feat.match(/囮攻撃/)){
@@ -607,10 +544,10 @@ function checkFeats(){
         }
       }
       else if (feat.match(/カード軽減/)){
-        if(lvAlc < 5){ cL.add("error"); }
+        if(lv['Alc'] < 5){ cL.add("error"); }
       }
       else if (feat.match(/楽素転換/)){
-        if(lvBar < 3){ cL.add("error"); }
+        if(lv['Bar'] < 3){ cL.add("error"); }
       }
       else if (feat.match(/かばう/)){
         if(feat.match(/Ⅰ$/)){
@@ -621,17 +558,17 @@ function checkFeats(){
         }
       }
       else if (feat.match(/影矢/)){
-        if(lvSho < 9){ cL.add("error"); }
+        if(lv['Sho'] < 9){ cL.add("error"); }
       }
       else if (feat.match(/牙折り/)){
-        if(lvGra < 9){ cL.add("error"); }
+        if(lv['Gra'] < 9){ cL.add("error"); }
       }
       else if (feat.match(/斬り返し/)){
         if(feat.match(/Ⅰ$/)){
-          if (f2 && (lvFig >= 7 || lvFen >= 7)) { (auto) ? box.value = "斬り返しⅡ" : cL.add("evo") }
+          if (f2 && (lv['Fig'] >= 7 || lv['Fen'] >= 7)) { (auto) ? box.value = "斬り返しⅡ" : cL.add("evo") }
         }
         else if(feat.match(/Ⅱ$/)){
-          if(!f2 || (lvFig < 7 && lvFen < 7)) { (auto) ? box.value = "斬り返しⅠ" : cL.add("error") }
+          if(!f2 || (lv['Fig'] < 7 && lv['Fen'] < 7)) { (auto) ? box.value = "斬り返しⅠ" : cL.add("error") }
         }
       }
       else if (feat.match(/クリティカルキャスト/)){
@@ -658,23 +595,23 @@ function checkFeats(){
         }
       }
       else if (feat.match(/シェアパフォーマー/)){
-        if(lvBar < 3){ cL.add("error"); }
+        if(lv['Bar'] < 3){ cL.add("error"); }
       }
       else if (feat.match(/スキルフルプレイ/)){
-        if(lvBar < 7){ cL.add("error"); }
+        if(lv['Bar'] < 7){ cL.add("error"); }
       }
       else if (feat.match(/全力攻撃/)){
         if(feat.match(/Ⅰ$/)){
-          if     (f3 && lvFig >= 15)               { (auto) ? box.value = "全力攻撃Ⅲ" : cL.add("evo") }
-          else if(f2 && (lvFig >= 9 || lvGra >= 9)){ (auto) ? box.value = "全力攻撃Ⅱ" : cL.add("evo") }
+          if     (f3 && lv['Fig'] >= 15)               { (auto) ? box.value = "全力攻撃Ⅲ" : cL.add("evo") }
+          else if(f2 && (lv['Fig'] >= 9 || lv['Gra'] >= 9)){ (auto) ? box.value = "全力攻撃Ⅱ" : cL.add("evo") }
         }
         else if(feat.match(/Ⅱ$/)){
-          if     (f3 && lvFig >= 15)               { (auto) ? box.value = "全力攻撃Ⅲ" : cL.add("evo") }
-          else if(!f2 || (lvFig < 9 && lvGra < 9)) { (auto) ? box.value = "全力攻撃Ⅰ" : cL.add("error") }
+          if     (f3 && lv['Fig'] >= 15)               { (auto) ? box.value = "全力攻撃Ⅲ" : cL.add("evo") }
+          else if(!f2 || (lv['Fig'] < 9 && lv['Gra'] < 9)) { (auto) ? box.value = "全力攻撃Ⅰ" : cL.add("error") }
         }
         else if(feat.match(/Ⅲ$/)){
-          if     (!f2 || (lvFig < 9 && lvGra < 9)) { (auto) ? box.value = "全力攻撃Ⅰ" : cL.add("error") }
-          else if(!f3 || lvFig < 15)               { (auto) ? box.value = "全力攻撃Ⅱ" : cL.add("error") }
+          if     (!f2 || (lv['Fig'] < 9 && lv['Gra'] < 9)) { (auto) ? box.value = "全力攻撃Ⅰ" : cL.add("error") }
+          else if(!f3 || lv['Fig'] < 15)               { (auto) ? box.value = "全力攻撃Ⅱ" : cL.add("error") }
         }
       }
       else if (feat.match(/ダブルキャスト/)){
@@ -682,10 +619,10 @@ function checkFeats(){
       }
       else if (feat.match(/挑発攻撃/)){
         if(feat.match(/Ⅰ$/)){
-          if (f2 && lvFen >= 7) { (auto) ? box.value = "挑発攻撃Ⅱ" : cL.add("evo") }
+          if (f2 && lv['Fen'] >= 7) { (auto) ? box.value = "挑発攻撃Ⅱ" : cL.add("evo") }
         }
         else if(feat.match(/Ⅱ$/)){
-          if(!f2 ||  lvFen < 7) { (auto) ? box.value = "挑発攻撃Ⅰ" : cL.add("error") }
+          if(!f2 ||  lv['Fen'] < 7) { (auto) ? box.value = "挑発攻撃Ⅰ" : cL.add("error") }
         }
       }
       else if (feat.match(/テイルスイング/)){
@@ -700,10 +637,10 @@ function checkFeats(){
       else if (feat.match(/薙ぎ払い/)){
         if(level < 3){ cL.add("error"); }
         if(feat.match(/Ⅰ$/)){
-          if (f2 && lvFig >= 9) { (auto) ? box.value = "薙ぎ払いⅡ" : cL.add("evo") }
+          if (f2 && lv['Fig'] >= 9) { (auto) ? box.value = "薙ぎ払いⅡ" : cL.add("evo") }
         }
         else if(feat.match(/Ⅱ$/)){
-          if(!f2 || lvFig < 9) { (auto) ? box.value = "薙ぎ払いⅠ" : cL.add("error") }
+          if(!f2 || lv['Fig'] < 9) { (auto) ? box.value = "薙ぎ払いⅠ" : cL.add("error") }
         }
       }
       else if (feat.match(/バイオレントキャスト/)){
@@ -716,16 +653,16 @@ function checkFeats(){
       }
       else if (feat.match(/必殺攻撃/)){
         if(feat.match(/Ⅰ$/)){
-          if     (f3 && lvFen >= 11) { (auto) ? box.value = "必殺攻撃Ⅲ" : cL.add("evo") }
+          if     (f3 && lv['Fen'] >= 11) { (auto) ? box.value = "必殺攻撃Ⅲ" : cL.add("evo") }
           else if(f2 && level >=  7) { (auto) ? box.value = "必殺攻撃Ⅱ" : cL.add("evo") }
         }
         else if(feat.match(/Ⅱ$/)){
-          if     (f3 && lvFen >= 11) { (auto) ? box.value = "必殺攻撃Ⅲ" : cL.add("evo") }
+          if     (f3 && lv['Fen'] >= 11) { (auto) ? box.value = "必殺攻撃Ⅲ" : cL.add("evo") }
           else if(!f2 || level <  7) { (auto) ? box.value = "必殺攻撃Ⅰ" : cL.add("error") }
         }
         else if(feat.match(/Ⅲ$/)){
           if     (!f2 || level <  7) { (auto) ? box.value = "必殺攻撃Ⅰ" : cL.add("error") }
-          else if(!f3 || lvFen < 11) { (auto) ? box.value = "必殺攻撃Ⅱ" : cL.add("error") }
+          else if(!f3 || lv['Fen'] < 11) { (auto) ? box.value = "必殺攻撃Ⅱ" : cL.add("error") }
         }
       }
       else if (feat.match(/マルチアクション/)){
@@ -733,16 +670,16 @@ function checkFeats(){
       }
       else if (feat.match(/鎧貫き/)){
         if(feat.match(/Ⅰ$/)){
-          if     (f3 && lvGra >= 15) { (auto) ? box.value = "鎧貫きⅢ" : cL.add("evo") }
-          else if(f2 && lvGra >=  9) { (auto) ? box.value = "鎧貫きⅡ" : cL.add("evo") }
+          if     (f3 && lv['Gra'] >= 15) { (auto) ? box.value = "鎧貫きⅢ" : cL.add("evo") }
+          else if(f2 && lv['Gra'] >=  9) { (auto) ? box.value = "鎧貫きⅡ" : cL.add("evo") }
         }
         else if(feat.match(/Ⅱ$/)){
-          if     (f3 && lvGra >= 15) { (auto) ? box.value = "鎧貫きⅢ" : cL.add("evo") }
-          else if(!f2 || lvGra <  9) { (auto) ? box.value = "鎧貫きⅠ" : cL.add("error") }
+          if     (f3 && lv['Gra'] >= 15) { (auto) ? box.value = "鎧貫きⅢ" : cL.add("evo") }
+          else if(!f2 || lv['Gra'] <  9) { (auto) ? box.value = "鎧貫きⅠ" : cL.add("error") }
         }
         else if(feat.match(/Ⅲ$/)){
-          if     (!f2 || lvGra <  9) { (auto) ? box.value = "鎧貫きⅠ" : cL.add("error") }
-          else if(!f3 || lvGra < 15) { (auto) ? box.value = "鎧貫きⅡ" : cL.add("error") }
+          if     (!f2 || lv['Gra'] <  9) { (auto) ? box.value = "鎧貫きⅠ" : cL.add("error") }
+          else if(!f3 || lv['Gra'] < 15) { (auto) ? box.value = "鎧貫きⅡ" : cL.add("error") }
         }
       }
       else if (feat.match(/魔法拡大すべて/)){
@@ -764,6 +701,7 @@ function checkFeats(){
       else if(feat === "賦術強化Ⅱ"){ alchemyEnhance = 2; }
       else if(feat === "頑強"){ tenacity += 15; }
       else if(feat === "超頑強"){ tenacity += 15; }
+      else if(feat === "キャパシティ"){ capacity += 15; }
       else if(feat === "射手の体術"){ shootersMartialArts = 1; }
       else if(feat === "武器習熟Ａ／ソード"){ masterySword += 1; }
       else if(feat === "武器習熟Ａ／アックス"){ masteryAxe += 1; }
@@ -826,106 +764,38 @@ function checkFeats(){
 
 // 技芸 ----------------------------------------
 function checkCraft() {
-  // 練技 //
-  document.getElementById("craft-enhance").style.display = lvEnh ? "block" : "none";
-  for (let i = 1; i <= 17; i++) {
-    let cL = document.getElementById("craft-enhance"+i).classList;
-    if(i <= lvEnh){ cL.remove("fail","hidden"); }
-    else {
-      cL.add("fail");
-      if(form.failView.checked){ cL.remove("hidden") } else { cL.add("hidden"); };
+  Object.keys(classes).forEach(function(key) {
+    if (classes[key]['craftData']){
+      const eName = classes[key]['craft'];
+      document.getElementById("craft-"+eName).style.display = lv[key] ? "block" : "none";
+      const cMax = (key === 'Bar') ? 20 : 17;
+      for (let i = 1; i <= cMax; i++) {
+        let cL = document.getElementById("craft-"+eName+i).classList;
+        if ( (i <= lv[key])
+          || (i <= lv[key]+songAddition && key === 'Bar')
+        ){
+          cL.remove("fail","hidden");
+        }
+        else {
+          cL.add("fail");
+          if(form.failView.checked){ cL.remove("hidden") } else { cL.add("hidden"); };
+        }
+      }
     }
-  }
-  // 呪歌 //
-  document.getElementById("craft-song").style.display = lvBar ? "block" : "none";
-  for (let i = 1; i <= 19; i++) {
-    let cL = document.getElementById("craft-song"+i).classList;
-    if(i <= lvBar + songAddition){ cL.remove("fail","hidden"); }
-    else {
-      cL.add("fail");
-      if(form.failView.checked){ cL.remove("hidden") } else { cL.add("hidden"); };
+    else if (classes[key]['magicData']){
+      const eName = classes[key]['magic'];
+      document.getElementById("magic-"+eName).style.display = lv[key] ? "block" : "none";
+      const cMax = 17;
+      for (let i = 1; i <= cMax; i++) {
+        let cL = document.getElementById("magic-"+eName+i).classList;
+        if(i <= lv[key]){ cL.remove("fail","hidden"); }
+        else {
+          cL.add("fail");
+          if(form.failView.checked){ cL.remove("hidden") } else { cL.add("hidden"); };
+        }
+      }
     }
-  }
-  // 騎芸 //
-  document.getElementById("craft-riding").style.display = lvRid ? "block" : "none";
-  for (let i = 1; i <= 17; i++) {
-    let cL = document.getElementById("craft-riding"+i).classList;
-    if(i <= lvRid){ cL.remove("fail","hidden"); }
-    else {
-      cL.add("fail");
-      if(form.failView.checked){ cL.remove("hidden") } else { cL.add("hidden"); };
-    }
-  }
-  // 賦術 //
-  document.getElementById("craft-alchemy").style.display = lvAlc ? "block" : "none";
-  for (let i = 1; i <= 17; i++) {
-    let cL = document.getElementById("craft-alchemy"+i).classList;
-    if(i <= lvAlc){ cL.remove("fail","hidden"); }
-    else {
-      cL.add("fail");
-      if(form.failView.checked){ cL.remove("hidden") } else { cL.add("hidden"); };
-    }
-  }
-  // 鼓咆 //
-  document.getElementById("craft-command").style.display = lvWar ? "block" : "none";
-  for (let i = 1; i <= 17; i++) {
-    let cL = document.getElementById("craft-command"+i).classList;
-    if(i <= lvWar){ cL.remove("fail","hidden"); }
-    else {
-      cL.add("fail");
-      if(form.failView.checked){ cL.remove("hidden") } else { cL.add("hidden"); };
-    }
-  }
-  // 占瞳 //
-  document.getElementById("craft-divination").style.display = lvMys ? "block" : "none";
-  for (let i = 1; i <= 17; i++) {
-    let cL = document.getElementById("craft-divination"+i).classList;
-    if(i <= lvMys){ cL.remove("fail","hidden"); }
-    else {
-      cL.add("fail");
-      if(form.failView.checked){ cL.remove("hidden") } else { cL.add("hidden"); };
-    }
-  }
-  // 魔装 //
-  document.getElementById("craft-potential").style.display = lvPhy ? "block" : "none";
-  for (let i = 1; i <= 17; i++) {
-    let cL = document.getElementById("craft-potential"+i).classList;
-    if(i <= lvPhy){ cL.remove("fail","hidden"); }
-    else {
-      cL.add("fail");
-      if(form.failView.checked){ cL.remove("hidden") } else { cL.add("hidden"); };
-    }
-  }
-  // 呪印 //
-  document.getElementById("craft-seal").style.display = lvArt ? "block" : "none";
-  for (let i = 1; i <= 17; i++) {
-    let cL = document.getElementById("craft-seal"+i).classList;
-    if(i <= lvArt){ cL.remove("fail","hidden"); }
-    else {
-      cL.add("fail");
-      if(form.failView.checked){ cL.remove("hidden") } else { cL.add("hidden"); };
-    }
-  }
-  // 貴格 //
-  document.getElementById("craft-dignity").style.display = lvAri ? "block" : "none";
-  for (let i = 1; i <= 17; i++) {
-    let cL = document.getElementById("craft-dignity"+i).classList;
-    if(i <= lvAri){ cL.remove("fail","hidden"); }
-    else {
-      cL.add("fail");
-      if(form.failView.checked){ cL.remove("hidden") } else { cL.add("hidden"); };
-    }
-  }
-  // 秘奥魔法 //
-  document.getElementById("magic-gramarye").style.display = lvGri ? "block" : "none";
-  for (let i = 1; i <= 17; i++) {
-    let cL = document.getElementById("magic-gramarye"+i).classList;
-    if(i <= lvGri){ cL.remove("fail","hidden"); }
-    else {
-      cL.add("fail");
-      if(form.failView.checked){ cL.remove("hidden") } else { cL.add("hidden"); };
-    }
-  }
+  });
 }
 
 // ＨＰＭＰ抵抗力計算 ----------------------------------------
@@ -954,8 +824,8 @@ function calcSubStt() {
   const hpBase = level * 3 + sttVit + sttAddD;
   const mpBase = 
     (race === 'マナフレア') ? (level * 3 + sttMnd + sttAddF)
-    : ((lvSor + lvCon + lvPri + lvFai + lvMag) * 3 + sttMnd + sttAddF);
-  const hpAutoAdd = tenacity + hpAccessory + (lvFig >= 7 ? 15 : 0);
+    : ( levelCasters.reduce((a,x) => a+x,0) * 3 + sttMnd + sttAddF );
+  const hpAutoAdd = tenacity + hpAccessory + (lv['Fig'] >= 7 ? 15 : 0);
   const mpAutoAdd = capacity + raceAbilityMp + mpAccessory;
   document.getElementById("hp-base").innerHTML = hpBase;
   document.getElementById("mp-base").innerHTML = (race === 'グラスランナー') ? '0' : mpBase;
@@ -978,103 +848,98 @@ function calcMobility() {
 
 // パッケージ計算 ----------------------------------------
 function calcPackage() {
-  document.getElementById("package-scout"    ).style.display = lvSco > 0 ? "" :"none";
-  document.getElementById("package-ranger"   ).style.display = lvRan > 0 ? "" :"none";
-  document.getElementById("package-sage"     ).style.display = lvSag > 0 ? "" :"none";
-  document.getElementById("package-rider"    ).style.display = lvRid > 0 ? "" :"none";
-  document.getElementById("package-alchemist").style.display = lvAlc > 0 ? "" :"none";
-  document.getElementById("package-alchemist").style.display = lvAlc > 0 ? "" :"none";
-  document.getElementById("material-cards"   ).style.display = lvAlc > 0 ? "" :"none";
+  document.getElementById("package-scout"    ).style.display = lv['Sco'] > 0 ? "" :"none";
+  document.getElementById("package-ranger"   ).style.display = lv['Ran'] > 0 ? "" :"none";
+  document.getElementById("package-sage"     ).style.display = lv['Sag'] > 0 ? "" :"none";
+  document.getElementById("package-rider"    ).style.display = lv['Rid'] > 0 ? "" :"none";
+  document.getElementById("package-alchemist").style.display = lv['Alc'] > 0 ? "" :"none";
+  document.getElementById("material-cards"   ).style.display = lv['Alc'] > 0 ? "" :"none";
   
-  document.getElementById("package-scout-tec"    ).innerHTML = lvSco + bonusDex + Number(form.packScoTecAdd.value);
-  document.getElementById("package-scout-agi"    ).innerHTML = lvSco + bonusAgi + Number(form.packScoAgiAdd.value);
-  document.getElementById("package-scout-obs"    ).innerHTML = lvSco + bonusInt + Number(form.packScoObsAdd.value);
-  document.getElementById("package-ranger-tec"   ).innerHTML = lvRan + bonusDex + Number(form.packRanTecAdd.value);
-  document.getElementById("package-ranger-agi"   ).innerHTML = lvRan + bonusAgi + Number(form.packRanAgiAdd.value);
-  document.getElementById("package-ranger-obs"   ).innerHTML = lvRan + bonusInt + Number(form.packRanObsAdd.value);
-  document.getElementById("package-sage-kno"     ).innerHTML = lvSag + bonusInt + Number(form.packSagKnoAdd.value);
-  document.getElementById("package-rider-agi"    ).innerHTML = lvRid + bonusAgi + Number(form.packRidAgiAdd.value);
-  document.getElementById("package-rider-kno"    ).innerHTML = lvRid + bonusInt + Number(form.packRidKnoAdd.value);
-  document.getElementById("package-rider-obs"    ).innerHTML = lvRid + bonusInt + Number(form.packRidObsAdd.value);
-  document.getElementById("package-alchemist-kno").innerHTML = lvAlc + bonusInt + Number(form.packAlcKnoAdd.value);
+  document.getElementById("package-scout-tec"    ).innerHTML = lv['Sco'] + bonusDex + Number(form.packScoTecAdd.value);
+  document.getElementById("package-scout-agi"    ).innerHTML = lv['Sco'] + bonusAgi + Number(form.packScoAgiAdd.value);
+  document.getElementById("package-scout-obs"    ).innerHTML = lv['Sco'] + bonusInt + Number(form.packScoObsAdd.value);
+  document.getElementById("package-ranger-tec"   ).innerHTML = lv['Ran'] + bonusDex + Number(form.packRanTecAdd.value);
+  document.getElementById("package-ranger-agi"   ).innerHTML = lv['Ran'] + bonusAgi + Number(form.packRanAgiAdd.value);
+  document.getElementById("package-ranger-obs"   ).innerHTML = lv['Ran'] + bonusInt + Number(form.packRanObsAdd.value);
+  document.getElementById("package-sage-kno"     ).innerHTML = lv['Sag'] + bonusInt + Number(form.packSagKnoAdd.value);
+  document.getElementById("package-rider-agi"    ).innerHTML = lv['Rid'] + bonusAgi + Number(form.packRidAgiAdd.value);
+  document.getElementById("package-rider-kno"    ).innerHTML = lv['Rid'] + bonusInt + Number(form.packRidKnoAdd.value);
+  document.getElementById("package-rider-obs"    ).innerHTML = lv['Rid'] + bonusInt + Number(form.packRidObsAdd.value);
+  document.getElementById("package-alchemist-kno").innerHTML = lv['Alc'] + bonusInt + Number(form.packAlcKnoAdd.value);
   
-  const loreSag = lvSag + bonusInt + Number(form.packSagKnoAdd.value);
-  const loreRid = lvRid + bonusInt + Number(form.packRidKnoAdd.value);
+  const loreSag = lv['Sag'] + bonusInt + Number(form.packSagKnoAdd.value);
+  const loreRid = lv['Rid'] + bonusInt + Number(form.packRidKnoAdd.value);
   let lore = loreRid > loreSag ? loreRid : loreSag;
       lore += Number(form.monsterLoreAdd.value);
-  document.getElementById("monster-lore-value").innerHTML = (lvSag || lvRid) ? lore : 0;
+  document.getElementById("monster-lore-value").innerHTML = (lv['Sag'] || lv['Rid']) ? lore : 0;
   
-  const initSco = lvSco + bonusAgi + Number(form.packScoAgiAdd.value);
-  const initWar = lvWar + bonusAgi;
+  const initSco = lv['Sco'] + bonusAgi + Number(form.packScoAgiAdd.value);
+  const initWar = lv['War'] + bonusAgi;
   let init = initWar > initSco ? initWar : initSco;
       init += Number(form.initiativeAdd.value);
-  document.getElementById("initiative-value").innerHTML   = (lvSco || lvWar)  > 0 ? init : 0;
+  document.getElementById("initiative-value").innerHTML   = (lv['Sco'] || lv['War'])  > 0 ? init : 0;
 }
 
 // 魔力計算 ----------------------------------------
 function calcMagic() {
-  document.getElementById("magic-power").style.display              = (Math.max(lvSor,lvCon,lvPri,lvFai,lvMag,lvDem,lvGri,lvBar,lvAlc,lvMys) > 0) ? '' : 'none';
-  document.getElementById("magic-power-magicenhance").style.display = magicPowerEnhance ? '' : 'none';
-  document.getElementById("magic-power-common").style.display       = (Math.max(lvSor,lvCon,lvPri,lvFai,lvMag,lvDem,lvGri)) ? '' : 'none';
-  document.getElementById("magic-power-hr").style.display           = (Math.max(lvSor,lvCon,lvPri,lvFai,lvMag,lvDem,lvGri) > 0 && (Math.max(lvBar,lvAlc,lvMys) > 0)) ? '' : 'none';
-  document.getElementById("magic-power-sorcerer").style.display   = lvSor ? '' : 'none';
-  document.getElementById("magic-power-conjurer").style.display   = lvCon ? '' : 'none';
-  document.getElementById("magic-power-priest"  ).style.display   = lvPri ? '' : 'none';
-  document.getElementById("magic-power-fairytamer").style.display = lvFai ? '' : 'none';
-  document.getElementById("magic-power-magitech").style.display   = lvMag ? '' : 'none';
-  document.getElementById("magic-power-demonruler").style.display = lvDem ? '' : 'none';
-  document.getElementById("magic-power-grimoir").style.display    = lvGri ? '' : 'none';
-  document.getElementById("magic-power-bard").style.display       = lvBar ? '' : 'none';
-  document.getElementById("magic-power-alchemist").style.display  = lvAlc ? '' : 'none';
-  document.getElementById("magic-power-mystic").style.display     = lvMys ? '' : 'none';
-  
-  // 魔力
   const addPower = Number(form.magicPowerAdd.value) + magicPowerEnhance;
-  const powerSor = lvSor + parseInt((sttInt + sttAddE + (form.magicPowerOwnSor.checked ? 2 : 0)) / 6) + Number(form.magicPowerAddSor.value) + addPower;
-  const powerCon = lvCon + parseInt((sttInt + sttAddE + (form.magicPowerOwnCon.checked ? 2 : 0)) / 6) + Number(form.magicPowerAddCon.value) + addPower;
-  const powerPri = lvPri + parseInt((sttInt + sttAddE + (form.magicPowerOwnPri.checked ? 2 : 0)) / 6) + Number(form.magicPowerAddPri.value) + addPower;
-  const powerFai = lvFai + parseInt((sttInt + sttAddE + (form.magicPowerOwnFai.checked ? 2 : 0)) / 6) + Number(form.magicPowerAddFai.value) + addPower;
-  const powerMag = lvMag + parseInt((sttInt + sttAddE + (form.magicPowerOwnMag.checked ? 2 : 0)) / 6) + Number(form.magicPowerAddMag.value) + addPower;
-  const powerDem = lvDem + parseInt((sttInt + sttAddE + (form.magicPowerOwnDem.checked ? 2 : 0)) / 6) + Number(form.magicPowerAddDem.value) + addPower;
-  const powerGri = lvGri + parseInt((sttInt + sttAddE + (form.magicPowerOwnGri.checked ? 2 : 0)) / 6) + Number(form.magicPowerAddGri.value) + addPower;
-  const powerBar = lvBar + parseInt((sttMnd + sttAddF + (form.magicPowerOwnBar.checked ? 2 : 0)) / 6) + Number(form.magicPowerAddBar.value);
-  const powerAlc = lvAlc + parseInt((sttInt + sttAddE + (form.magicPowerOwnAlc.checked ? 2 : 0)) / 6);
-  const powerMys = lvMys + parseInt((sttInt + sttAddE + (form.magicPowerOwnMys.checked ? 2 : 0)) / 6);
-  
   document.getElementById("magic-power-magicenhance-value").innerHTML = magicPowerEnhance;
-  document.getElementById("magic-power-sorcerer-value").innerHTML   = powerSor;
-  document.getElementById("magic-power-conjurer-value").innerHTML   = powerCon;
-  document.getElementById("magic-power-priest-value"  ).innerHTML   = powerPri;
-  document.getElementById("magic-power-fairytamer-value").innerHTML = powerFai;
-  document.getElementById("magic-power-magitech-value").innerHTML   = powerMag;
-  document.getElementById("magic-power-demonruler-value").innerHTML = powerDem;
-  document.getElementById("magic-power-grimoir-value").innerHTML    = powerGri;
-  document.getElementById("magic-power-bard-value").innerHTML       = powerBar;
-  //document.getElementById("magic-power-alchemist-value").innerHTML  = powerAlc;
-  //document.getElementById("magic-power-mystic-value").innerHTML     = powerMys;
-  
-  // 行使
   const addCast = Number(form.magicCastAdd.value);
-  document.getElementById("magic-cast-sorcerer-value").innerHTML   = powerSor + Number(form.magicCastAddSor.value) + addCast;
-  document.getElementById("magic-cast-conjurer-value").innerHTML   = powerCon + Number(form.magicCastAddCon.value) + addCast;
-  document.getElementById("magic-cast-priest-value"  ).innerHTML   = powerPri + Number(form.magicCastAddPri.value) + addCast;
-  document.getElementById("magic-cast-fairytamer-value").innerHTML = powerFai + Number(form.magicCastAddFai.value) + addCast;
-  document.getElementById("magic-cast-magitech-value").innerHTML   = powerMag + Number(form.magicCastAddMag.value) + addCast;
-  document.getElementById("magic-cast-demonruler-value").innerHTML = powerDem + Number(form.magicCastAddDem.value) + addCast;
-  document.getElementById("magic-cast-grimoir-value").innerHTML    = powerGri + Number(form.magicCastAddGri.value) + addCast;
-  document.getElementById("magic-cast-bard-value").innerHTML       = powerBar + Number(form.magicCastAddBar.value);
-  document.getElementById("magic-cast-alchemist-value").innerHTML  = powerAlc + Number(form.magicCastAddAlc.value) + alchemyEnhance;
-  document.getElementById("magic-cast-mystic-value").innerHTML     = powerMys + Number(form.magicCastAddMys.value);
+  const addDamage = Number(form.magicDamageAdd.value);
+  
+  let openMagic = 0;
+  let openCraft = 0;
+  Object.keys(classes).forEach(function(key) {
+    // 魔法
+    if(classes[key]['magic']){
+      const eName = classes[key]['eName'];
+      document.getElementById("magic-power-"+eName).style.display = lv[key] ? '' : 'none';
+      if(lv[key]){ openMagic++; }
+      
+      const power = lv[key] + parseInt((sttInt + sttAddE + (form["magicPowerOwn"+key].checked ? 2 : 0)) / 6) + Number(form["magicPowerAdd"+key].value) + addPower;
+      document.getElementById("magic-power-"+eName+"-value").innerHTML  = power;
+      document.getElementById("magic-cast-"+eName+"-value").innerHTML   = power + Number(form["magicCastAdd"+key].value) + addCast;
+      document.getElementById("magic-damage-"+eName+"-value").innerHTML = Number(form["magicDamageAdd"+key].value) + addDamage;
+    }
+    // 呪歌など
+    else if(classes[key]['craftStt']){
+      const eName = classes[key]['eName'];
+      document.getElementById("magic-power-"+eName).style.display = lv[key] ? '' : 'none';
+      if(lv[key]){ openCraft++; }
+      
+      let power = lv[key];
+      if     (classes[key]['craftStt'] === '知力')  {
+        power += parseInt((sttInt + sttAddE + (form["magicPowerOwn"+key].checked ? 2 : 0)) / 6);
+      }
+      else if(classes[key]['craftStt'] === '精神力'){
+        power += parseInt((sttMnd + sttAddF + (form["magicPowerOwn"+key].checked ? 2 : 0)) / 6);
+      }
+      if(classes[key]['craftPower']){
+        power += Number(form["magicPowerAdd"+key].value);
+        document.getElementById("magic-power-"+eName+"-value").innerHTML  = power;
+        document.getElementById("magic-damage-"+eName+"-value").innerHTML = Number(form["magicDamageAdd"+key].value);
+      }
+      
+      if(key === 'Alc'){ power += alchemyEnhance }
+      document.getElementById("magic-cast-"+eName+"-value").innerHTML   = power + Number(form["magicCastAdd"+key].value);
+    }
+  });
+  // 全体／その他の開閉
+  document.getElementById("magic-power").style.display = (openMagic || openCraft) ? '' : 'none';
+  
+  document.getElementById("magic-power-magicenhance").style.display = magicPowerEnhance      ? '' : 'none';
+  document.getElementById("magic-power-common"      ).style.display = openMagic              ? '' : 'none';
+  document.getElementById("magic-power-hr"          ).style.display = openMagic && openCraft ? '' : 'none';
 }
 
 // 攻撃計算 ----------------------------------------
 function calcAttack() {
-  document.getElementById("attack-fighter"   ).style.display = lvFig >   0 ? "" :"none";
-  document.getElementById("attack-grappler"  ).style.display = lvGra >   0 ? "" :"none";
-  document.getElementById("attack-fencer"    ).style.display = lvFen >   0 ? "" :"none";
-  document.getElementById("attack-shooter"   ).style.display = lvSho >   0 ? "" :"none";
-  document.getElementById("attack-enhancer"  ).style.display = lvEnh >= 10 ? "" :"none";
-  document.getElementById("attack-demonruler").style.display = lvDem >   0 ? "" :"none";
+  document.getElementById("attack-fighter"   ).style.display = lv['Fig'] >   0 ? "" :"none";
+  document.getElementById("attack-grappler"  ).style.display = lv['Gra'] >   0 ? "" :"none";
+  document.getElementById("attack-fencer"    ).style.display = lv['Fen'] >   0 ? "" :"none";
+  document.getElementById("attack-shooter"   ).style.display = lv['Sho'] >   0 ? "" :"none";
+  document.getElementById("attack-enhancer"  ).style.display = lv['Enh'] >= 10 ? "" :"none";
+  document.getElementById("attack-demonruler").style.display = lv['Dem'] >   0 ? "" :"none";
 
   const reqdStr = sttStr + sttAddC;
   document.getElementById("attack-fighter-str"   ).innerHTML = reqdStr;
@@ -1084,19 +949,19 @@ function calcAttack() {
   document.getElementById("attack-enhancer-str"  ).innerHTML = reqdStr;
   document.getElementById("attack-demonruler-str").innerHTML = reqdStr;
 
-  document.getElementById("attack-fighter-acc"   ).innerHTML = lvFig + bonusDex;
-  document.getElementById("attack-grappler-acc"  ).innerHTML = lvGra + bonusDex;
-  document.getElementById("attack-fencer-acc"    ).innerHTML = lvFen + bonusDex;
-  document.getElementById("attack-shooter-acc"   ).innerHTML = lvSho + bonusDex;
-  document.getElementById("attack-enhancer-acc"  ).innerHTML = lvEnh + bonusDex;
-  document.getElementById("attack-demonruler-acc").innerHTML = lvDem + bonusDex;
+  document.getElementById("attack-fighter-acc"   ).innerHTML = lv['Fig'] + bonusDex;
+  document.getElementById("attack-grappler-acc"  ).innerHTML = lv['Gra'] + bonusDex;
+  document.getElementById("attack-fencer-acc"    ).innerHTML = lv['Fen'] + bonusDex;
+  document.getElementById("attack-shooter-acc"   ).innerHTML = lv['Sho'] + bonusDex;
+  document.getElementById("attack-enhancer-acc"  ).innerHTML = lv['Enh'] + bonusDex;
+  document.getElementById("attack-demonruler-acc").innerHTML = lv['Dem'] + bonusDex;
 
-  document.getElementById("attack-fighter-dmg"   ).innerHTML = lvFig + bonusStr;
-  document.getElementById("attack-grappler-dmg"  ).innerHTML = lvGra + bonusStr;
-  document.getElementById("attack-fencer-dmg"    ).innerHTML = lvFen + bonusStr;
-  document.getElementById("attack-shooter-dmg"   ).innerHTML = lvSho + bonusStr;
-  document.getElementById("attack-enhancer-dmg"  ).innerHTML = lvEnh + bonusStr;
-  document.getElementById("attack-demonruler-dmg").innerHTML = lvDem + bonusStr;
+  document.getElementById("attack-fighter-dmg"   ).innerHTML = lv['Fig'] + bonusStr;
+  document.getElementById("attack-grappler-dmg"  ).innerHTML = lv['Gra'] + bonusStr;
+  document.getElementById("attack-fencer-dmg"    ).innerHTML = lv['Fen'] + bonusStr;
+  document.getElementById("attack-shooter-dmg"   ).innerHTML = lv['Sho'] + bonusStr;
+  document.getElementById("attack-enhancer-dmg"  ).innerHTML = lv['Enh'] + bonusStr;
+  document.getElementById("attack-demonruler-dmg").innerHTML = lv['Dem'] + bonusStr;
 
   calcWeapon();
 }
@@ -1111,12 +976,12 @@ function calcWeapon() {
     let accBase = 0;
     let dmgBase = 0;
     accBase += accuracyEnhance; //命中強化
-         if(classes === "ファイター")       { attackClass = lvFig; }
-    else if(classes === "グラップラー")     { attackClass = lvGra; }
-    else if(classes === "フェンサー")       { attackClass = lvFen; }
-    else if(classes === "シューター")       { attackClass = lvSho; }
-    else if(classes === "エンハンサー")     { attackClass = lvEnh; }
-    else if(classes === "デーモンルーラー") { attackClass = lvDem; }
+         if(classes === "ファイター")       { attackClass = lv['Fig']; }
+    else if(classes === "グラップラー")     { attackClass = lv['Gra']; }
+    else if(classes === "フェンサー")       { attackClass = lv['Fen']; }
+    else if(classes === "シューター")       { attackClass = lv['Sho']; }
+    else if(classes === "エンハンサー")     { attackClass = lv['Enh']; }
+    else if(classes === "デーモンルーラー") { attackClass = lv['Dem']; }
     if(attackClass) {
       accBase += attackClass + parseInt((sttDex + sttAddA + ownDex) / 6);
       if     (category === 'クロスボウ') { dmgBase += attackClass; }
@@ -1137,7 +1002,7 @@ function calcWeapon() {
     else if(category === 'ブロウガン')     { dmgBase += masteryBlowgun; }
     else if(category === 'クロスボウ')     { dmgBase += masteryCrossbow; }
     else if(category === 'ガン') {
-      const magicPower = lvMag ? Number(document.getElementById('magic-power-magitech-value').innerHTML) : 0;
+      const magicPower = lv['Mag'] ? Number(document.getElementById('magic-power-magitech-value').innerHTML) : 0;
       dmgBase = magicPower + masteryGun;
     }
     else if(category === 'ガン（物理）')   { dmgBase += masteryGun; }
@@ -1180,11 +1045,11 @@ function calcDefense() {
   let evaClassLv = 0;
   let evaBase = 0;
   let defBase = 0;
-       if(classes === "ファイター")      { evaClassLv = lvFig; }
-  else if(classes === "グラップラー")    { evaClassLv = lvGra; }
-  else if(classes === "フェンサー")      { evaClassLv = lvFen; }
-  else if(classes === "シューター")      { evaClassLv = lvSho;  }
-  else if(classes === "デーモンルーラー"){ evaClassLv = lvDem; }
+       if(classes === "ファイター")      { evaClassLv = lv['Fig']; }
+  else if(classes === "グラップラー")    { evaClassLv = lv['Gra']; }
+  else if(classes === "フェンサー")      { evaClassLv = lv['Fen']; }
+  else if(classes === "シューター")      { evaClassLv = lv['Sho']; }
+  else if(classes === "デーモンルーラー"){ evaClassLv = lv['Dem']; }
   else { evaClassLv = 0; }
   evaBase = evaClassLv ? (evaClassLv + parseInt((sttAgi + sttAddB + ownAgi) / 6)) : 0;
   
@@ -1194,7 +1059,7 @@ function calcDefense() {
   
   // 技能選択のエラー表示
   let cL = document.getElementById("evasion-classes").classList;
-  if(classes === "シューター" && !shootersMartialArts || classes === "デーモンルーラー" && lvDem < 7){ 
+  if(classes === "シューター" && !shootersMartialArts || classes === "デーモンルーラー" && lv['Dem'] < 2){ 
     cL.add('error');
   }
   else { cL.remove('error'); }
@@ -1238,9 +1103,10 @@ function calcExp(){
   expTotal = 0;
   const historyNum = form.historyNum.value;
   for (let i = 0; i <= historyNum; i++){
-    let exp = Number(eval(form['history'+i+'Exp'].value));
+    let exp = Number(safeEval(form['history'+i+'Exp'].value));
     if(isNaN(exp)){ exp = 0; }
     expTotal += exp;
+    form['history'+i+'Exp'].style.textDecoration = !exp ? 'underline red' : 'none';
   }
   document.getElementById("exp-rest").innerHTML = expTotal - expUse;
   document.getElementById("exp-total").innerHTML = expTotal;
@@ -1272,13 +1138,14 @@ function calcHonor(){
   const historyNum = form.historyNum.value;
   pointTotal -= rankNum;
   for (let i = 0; i <= historyNum; i++){
-    let point = Number(eval(form['history'+i+'Honor'].value));
+    let point = Number(safeEval(form['history'+i+'Honor'].value));
     if(isNaN(point)){ point = 0; }
     pointTotal += point;
+    form['history'+i+'Honor'].style.textDecoration = !point ? 'underline red' : 'none';
   }
   const honorItemsNum = form.honorItemsNum.value;
   for (let i = 1; i <= honorItemsNum; i++){
-    let point = Number(eval(form['honorItem'+i+'Pt'].value));
+    let point = Number(safeEval(form['honorItem'+i+'Pt'].value));
     if(isNaN(point)){ point = 0; }
     pointTotal -= point;
     
@@ -1288,7 +1155,7 @@ function calcHonor(){
   }
   const mysticArtsNum = form.mysticArtsNum.value;
   for (let i = 1; i <= mysticArtsNum; i++){
-    let point = Number(eval(form['mysticArts'+i+'Pt'].value));
+    let point = Number(safeEval(form['mysticArts'+i+'Pt'].value));
     if(isNaN(point)){ point = 0; }
     mysticArtsPt += point;
   }
@@ -1302,7 +1169,7 @@ function calcDishonor(){
   let pointTotal = 0;
   const dishonorItemsNum = form.dishonorItemsNum.value;
   for (let i = 1; i <= dishonorItemsNum; i++){
-    let point = Number(eval(form['dishonorItem'+i+'Pt'].value));
+    let point = Number(safeEval(form['dishonorItem'+i+'Pt'].value));
     if(isNaN(point)){ point = 0; }
     pointTotal += point;
   }
@@ -1319,27 +1186,28 @@ function calcCash(){
   let debt = 0;
   const historyNum = form.historyNum.value;
   for (let i = 0; i <= historyNum; i++){
-    let hCash = Number(eval(form['history'+i+'Money'].value))
+    let hCash = Number(safeEval(form['history'+i+'Money'].value))
     if(isNaN(hCash)){ hCash = 0; }
     cash += hCash;
+    form['history'+i+'Money'].style.textDecoration = !hCash ? 'underline red' : 'none';
   }
   let s = form.cashbook.value;
   s.replace(
-    /::([\+\-\*]?[0-9]+)+/g,
+    /::([\+\-\*\/]?[0-9]+)+/g,
     function (num, idx, old) {
-      cash += Number(eval(num.slice(2)));
+      cash += Number(safeEval(num.slice(2)));
     }
   );
   s.replace(
-    /:>([\+\-\*]?[0-9]+)+/g,
+    /:>([\+\-\*\/]?[0-9]+)+/g,
     function (num, idx, old) {
-      deposit += Number(eval(num.slice(2)));
+      deposit += Number(safeEval(num.slice(2)));
     }
   );
   s.replace(
-    /:<([\+\-\*]?[0-9]+)+/g,
+    /:<([\+\-\*\/]?[0-9]+)+/g,
     function (num, idx, old) {
-      debt += Number(eval(num.slice(2)));
+      debt += Number(safeEval(num.slice(2)));
     }
   );
   cash = cash - deposit + debt;
@@ -1856,6 +1724,14 @@ function palettePresetChange (){
 }
 
 // 画像配置 ----------------------------------------
+function imagePreView(file){
+  const blobUrl = window.URL.createObjectURL(file);
+  document.getElementById('image').style.backgroundImage = 'url("'+blobUrl+'")';
+  document.querySelectorAll(".image-custom-view").forEach((el) => {
+    el.style.backgroundImage = 'url("'+blobUrl+'")';
+  });
+  console.log(blobUrl)
+}
 function imagePositionView(){
   document.getElementById('image-custom').style.display = 'grid';
 }
@@ -1955,5 +1831,13 @@ function idNumSet (id){
   return id+num;
 }
 
+// 安全なeval ----------------------------------------
+function safeEval(text){
+  if     (text === '') { return 0; }
+  else if(text.match(/[^0-9\+\-\*\/\(\) ]/)){ return 0; }
+  
+  try { return Function('"use strict";return (' + text + ')')(); } 
+  catch (e) { return 0; }
+}
 
 

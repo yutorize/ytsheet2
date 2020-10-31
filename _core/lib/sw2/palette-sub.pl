@@ -43,6 +43,7 @@ sub palettePreset {
       'Pri' => [10],
       'Mag' => [],
       'Fai' => [10],
+      'Dru' => [],
       'Dem' => [10,20],
       'Gri' => [10,20],
       'Bar' => [10],
@@ -94,6 +95,7 @@ sub palettePreset {
       ['Pri', '神聖魔法'],
       ['Mag', '魔動機術'],
       ['Fai', '妖精魔法'],
+      ['Dru', '森羅魔法'],
       ['Dem', '召異魔法'],
       ['Gri', '秘奥魔法'],
       ['Bar', '呪歌'],
@@ -148,7 +150,8 @@ sub palettePreset {
       $text .= "\n";
     }
     # 回避
-    $text .= "2d6+{回避} 回避力\n";
+    $text .= "//EVA=0\n";
+    $text .= "2d6+{回避}+{EVA} 回避力\n";
     
     #
     if($bot{'YTC'}) {
@@ -265,6 +268,7 @@ sub paletteProperties {
       ['Pri', '神聖魔法'],
       ['Mag', '魔動機術'],
       ['Fai', '妖精魔法'],
+      ['Dru', '森羅魔法'],
       ['Dem', '召異魔法'],
       ['Gri', '秘奥魔法'],
       ['Bar', '呪歌'],

@@ -8,7 +8,6 @@ const delConfirmText = '項目に値が入っています。本当に削除し�
 // ----------------------------------------
 window.onload = function() {
   calcStt();
-  calcSkill();
   calcEffect();
   calcItem();
   calcMemory();
@@ -58,7 +57,7 @@ function calcStt() {
   }
   document.getElementById('exp-status').innerHTML = exps['status'];
   calcSubStt();
-  calcExp();
+  calcSkill();
 }
 // サブステータス
 function calcSubStt() {
@@ -95,6 +94,17 @@ function calcSaving(){
   document.getElementById('saving-total').innerHTML = stock - stockUsed + Number(form.savingAdd.value);
 }
 // 技能
+const skillNameToId = {
+  '白兵': 'Melee'    ,
+  '射撃': 'Ranged'   ,
+  'RC'  : 'RC'       ,  
+  '交渉': 'Negotiate',
+  '回避': 'Dodge'    ,
+  '知覚': 'Percept'  ,
+  '意志': 'Will'     ,
+  '調達': 'Procure'  ,
+}
+let skillData = {};
 function calcSkill() {
   exps['skill'] = -9;
   for (let name of ['Melee','Ranged','RC','Negotiate','Dodge','Percept','Will','Procure']){
@@ -105,10 +115,12 @@ function calcSkill() {
     for (let num = 1; num <= Number(form.skillNum.value); num++){
       const lv = Number(form['skill'+name+num].value);
       for(let i = 0; i < lv; i++){ exps['skill'] += (i > 20) ? 10 : (i > 10) ? 5 : (i > 5) ? 3 : 1; }
+      skillNameToId[form['skill'+name+num+'Name'].value] = name+num;
     }
   }
   document.getElementById('exp-skill').innerHTML = exps['skill'];
   calcExp();
+  calcComboAll();
 }
 // エフェクト
 function calcEffect() {
@@ -179,7 +191,10 @@ function calcMemory() {
 function calcExp(){
   let total = 0;
   for (let num = 0; num <= Number(form.historyNum.value); num++){
-    total += Number(eval(form['history'+num+'Exp'].value)) || 0;
+    let exp = Number(safeEval(form['history'+num+'Exp'].value));
+    if(isNaN(exp)){ exp = 0; }
+    total += exp;
+    form['history'+num+'Exp'].style.textDecoration = !exp ? 'underline red' : 'none';
   }
   let rest = total;
   for (let key in exps){
@@ -243,8 +258,8 @@ let loisSortable = Sortable.create(document.querySelector('#lois-table tbody'), 
         document.querySelector(`#${id} [name$="Relation"]`    ).setAttribute('name',`lois${num}Relation`);
         document.querySelector(`#${id} [name$="Name"]`        ).setAttribute('name',`lois${num}Name`);
         document.querySelector(`#${id} [name$="EmoPosiCheck"]`).setAttribute('name',`lois${num}EmoPosiCheck`);
-        document.querySelector(`#${id} [name$="EmoPosi"]`     ).setAttribute('name',`lois${num}EmoPosi`);
         document.querySelector(`#${id} [name$="EmoNegaCheck"]`).setAttribute('name',`lois${num}EmoNegaCheck`);
+        document.querySelector(`#${id} [name$="EmoPosi"]`     ).setAttribute('name',`lois${num}EmoPosi`);
         document.querySelector(`#${id} [name$="EmoNega"]`     ).setAttribute('name',`lois${num}EmoNega`);
         document.querySelector(`#${id} [name$="Color"]`       ).setAttribute('name',`lois${num}Color`);
         document.querySelector(`#${id} [name$="Note"]`        ).setAttribute('name',`lois${num}Note`);
@@ -254,6 +269,33 @@ let loisSortable = Sortable.create(document.querySelector('#lois-table tbody'), 
     }
   }
 });
+// リセット
+function resetLois(num){
+  form[`lois${num}Relation`].value = '';
+  form[`lois${num}Name`    ].value = '';
+  form[`lois${num}EmoPosiCheck` ].checked = false;
+  form[`lois${num}EmoNegaCheck` ].checked = false;
+  form[`lois${num}EmoPosi` ].value = '';
+  form[`lois${num}EmoNega` ].value = '';
+  form[`lois${num}Color`   ].value = '';
+  form[`lois${num}Color`   ].style.backgroundColor = '';
+  form[`lois${num}Note`    ].value = '';
+  form[`lois${num}State`   ].value = 'ロイス';
+  document.getElementById(`lois${num}-state`).dataset.state = 'ロイス';
+}
+function resetLoisAll(){
+  if (!confirm('全てのロイスを削除します。よろしいですか？')) return false;
+  for(let num = 1; num <= 7; num++){
+    resetLois(num);
+  }
+}
+function resetLoisAdd(){
+  if (!confirm('4～7番目のロイスを削除します。よろしいですか？')) return false;
+  for(let num = 4; num <= 7; num++){
+    resetLois(num);
+  }
+}
+
 // メモリー ----------------------------------------
 // ソート
 let memorySortable = Sortable.create(document.querySelector('#memory-table tbody'), {
@@ -390,6 +432,79 @@ let effectSortable = Sortable.create(document.getElementById('effect-table'), {
 });
 
 // コンボ欄 ----------------------------------------
+// 技能セット
+function comboSkillSetAll(){
+  for(let i = 1; i <= Number(form.comboNum.value); i++){
+    comboSkillSet(i);
+  }
+}
+function comboSkillSet(num){
+  const select = form[`combo${num}Skill`];
+  const nowSelect = select.value;
+  while (0 < select.childNodes.length) {
+    select.removeChild(select.childNodes[0]);
+  }
+  if(1){
+    let op = document.createElement("option");
+    op.value = '';
+    op.text = '－';
+    select.appendChild(op);
+  }
+  for(let i of ['白兵','射撃','RC','交渉','回避','知覚','意志','調達']){
+    let op = document.createElement("option");
+    op.text = i;
+    select.appendChild(op);
+  }
+  for (let name of ['Ride','Art','Know','Info']){
+    for (let num = 1; num <= Number(form.skillNum.value); num++){
+      let op = document.createElement("option");
+      const skillname = form['skill'+name+num+'Name'].value;
+      if(skillname){
+        op.text = skillname;
+        select.appendChild(op);
+      }
+    }
+  }
+  select.value = nowSelect;
+}
+// 計算
+function calcComboAll(){
+  for(let i = 1; i <= Number(form.comboNum.value); i++){
+    calcCombo(i);
+  }
+}
+function calcCombo(num){
+  const name = form[`combo${num}Skill`].value;
+  
+  const [lv, stt] = (() => {
+    if(form['comboCalcOff'].checked){ return ['',''] }
+    const id = skillNameToId[name];
+    const sttname = form[`combo${num}Stt`].value
+    let [lv, stt] = ['',''];
+    if(id && name){
+      lv = Number(form['skill'+id].value) + Number(form['skillAdd'+id].value);
+      if     (id.match(/Melee|Dodge|Ride/))      { stt = status['body']   }
+      else if(id.match(/Ranged|Percept|Art/))    { stt = status['sense']  }
+      else if(id.match(/RC|Will|Know/))          { stt = status['mind']   }
+      else if(id.match(/Negotiate|Procure|Info/)){ stt = status['social'] }
+    }
+    if(sttname){ 
+      if     (sttname === '肉体'){ stt = status['body']   }
+      else if(sttname === '感覚'){ stt = status['sense']  }
+      else if(sttname === '精神'){ stt = status['mind']   }
+      else if(sttname === '社会'){ stt = status['social'] }
+      else { stt = 0; }
+    }
+    return [lv, stt];
+  })();
+  
+  for (const i of [1,2,3,4]){
+    document.getElementById(`combo${num}Stt${i}`).innerHTML = stt;
+    document.getElementById(`combo${num}SkillLv${i}`).innerHTML = lv;
+  }
+}
+function comboSkillData(name){
+}
 // 追加
 function addCombo(){
   let num = Number(form.comboNum.value) + 1;
@@ -398,57 +513,86 @@ function addCombo(){
   tbody.innerHTML = `<tr>
       <td class="handle" rowspan="7"></td>
       <th colspan="3">名称</th>
-      <th colspan="8">組み合わせ</th>
+      <th colspan="11">組み合わせ</th>
     <tr>
       <td colspan="3" class="bold"><input name="combo${num}Name" type="text"></td>
-      <td colspan="8"><input name="combo${num}Combo" type="text"></td>
+      <td colspan="11"><input name="combo${num}Combo" type="text"></td>
     </tr>
-    <tr><th>タイミング</th><th>技能</th><th>難易度</th><th>対象</th><th>射程</th><th>侵蝕値</th><th>条件</th><th>ダイス</th><th>Ｃ値</th><th>基準値</th><th>攻撃力</th></tr>
+    <tr>
+      <th>タイミング</th>
+      <th>技能</th>
+      <th>能力値</th>
+      <th>難易度</th>
+      <th>対象</th>
+      <th>射程</th>
+      <th>侵蝕値</th>
+      <th>条件</th>
+      <th colspan="2">ダイス<div class="small">(能力値+修正)</div></th>
+      <th>Ｃ値</th>
+      <th colspan="2">判定固定値<div class="small">(技能Lv+修正)</div></th>
+      <th>攻撃力</th></tr></tr>
     <tr>
       <td><input name="combo${num}Timing"   type="text" list="list-timing"></td>
-      <td><input name="combo${num}Skill"    type="text" list="list-effect-skill"></td>
+      <td><select name="combo${num}Skill" oninput="calcCombo${num}"></select></td>
+      <td><select name="combo${num}Stt" oninput="calcCombo${num}">
+        <option>自動（技能に合った能力値）
+        <optgroup label="▼エフェクト等による差し替え">
+          <option>肉体
+          <option>感覚
+          <option>精神
+          <option>社会
+        </optgroup>
+      </select></td>
       <td><input name="combo${num}Dfclty"   type="text" list="list-dfclty"></td>
       <td><input name="combo${num}Target"   type="text" list="list-target"></td>
       <td><input name="combo${num}Range"    type="text" list="list-range"></td>
       <td><input name="combo${num}Encroach" type="text"></td>
       <td><input name="combo${num}Condition1" type="text" value="100%未満"></td>
-      <td><input name="combo${num}Dice1"      type="text"></td>
+      <td id="combo${num}Stt1"></td>
+      <td><input name="combo${num}DiceAdd1"      type="text"></td>
       <td><input name="combo${num}Crit1"      type="text"></td>
-      <td><input name="combo${num}Fixed1"     type="text"></td>
+      <td id="combo${num}SkillLv1"></td>
+      <td><input name="combo${num}FixedAdd1"     type="text"></td>
       <td><input name="combo${num}Atk1"       type="text"></td>
     </tr>
     <tr>
-      <td rowspan="3" colspan="6"><textarea name="combo${num}Note" rows="4" placeholder="解説"></textarea></td>
+      <td rowspan="3" colspan="7"><textarea name="combo${num}Note" rows="4" placeholder="解説"></textarea></td>
       <td><input name="combo${num}Condition2" type="text" value="100%以上"></td>
-      <td><input name="combo${num}Dice2"      type="text"></td>
+      <td id="combo${num}Stt2"></td>
+      <td><input name="combo${num}DiceAdd2"      type="text"></td>
       <td><input name="combo${num}Crit2"      type="text"></td>
-      <td><input name="combo${num}Fixed2"     type="text"></td>
+      <td id="combo${num}SkillLv2"></td>
+      <td><input name="combo${num}FixedAdd2"     type="text"></td>
       <td><input name="combo${num}Atk2"       type="text"></td>
     </tr>
     <tr>
       <td><input name="combo${num}Condition3" type="text"></td>
-      <td><input name="combo${num}Dice3"      type="text"></td>
+      <td id="combo${num}Stt3"></td>
+      <td><input name="combo${num}DiceAdd3"      type="text"></td>
       <td><input name="combo${num}Crit3"      type="text"></td>
-      <td><input name="combo${num}Fixed3"     type="text"></td>
+      <td id="combo${num}SkillLv3"></td>
+      <td><input name="combo${num}FixedAdd3"     type="text"></td>
       <td><input name="combo${num}Atk3"       type="text"></td>
     </tr>
     <tr>
       <td><input name="combo${num}Condition4" type="text"></td>
-      <td><input name="combo${num}Dice4"      type="text"></td>
+      <td id="combo${num}Stt4"></td>
+      <td><input name="combo${num}DiceAdd4"      type="text"></td>
       <td><input name="combo${num}Crit4"      type="text"></td>
-      <td><input name="combo${num}Fixed4"     type="text"></td>
+      <td id="combo${num}SkillLv4"></td>
+      <td><input name="combo${num}FixedAdd4"     type="text"></td>
       <td><input name="combo${num}Atk4"       type="text"></td>
     </tr>`;
   const target = document.querySelector("#combo-table");
   target.appendChild(tbody, target);
-  
+  comboSkillSet(num);
   form.comboNum.value = num;
 }
 // 削除
 function delCombo(){
   let num = Number(form.comboNum.value);
   if(num > 1){
-    if(form[`combo${num}Name`].value || form[`combo${num}Combo`].value || form[`combo${num}Timing`].value || form[`combo${num}Skill`].value || form[`combo${num}Dfclty`].value || form[`combo${num}Target`].value || form[`combo${num}Range`].value || form[`combo${num}Encroach`].value || form[`combo${num}Dice1`].value || form[`combo${num}Crit1`].value || form[`combo${num}Atk1`].value || form[`combo${num}Fixed1`].value || form[`combo${num}Note`].value){
+    if(form[`combo${num}Name`].value || form[`combo${num}Combo`].value || form[`combo${num}Timing`].value || form[`combo${num}Skill`].value || form[`combo${num}Dfclty`].value || form[`combo${num}Target`].value || form[`combo${num}Range`].value || form[`combo${num}Encroach`].value || form[`combo${num}DiceAdd1`].value || form[`combo${num}Crit1`].value || form[`combo${num}Atk1`].value || form[`combo${num}FixedAdd1`].value || form[`combo${num}Note`].value){
       if (!confirm(delConfirmText)) return false;
     }
     const target = document.querySelector("#combo-table tbody:last-of-type");
@@ -813,6 +957,14 @@ function palettePresetChange (){
 }
 
 // 画像配置 ----------------------------------------
+function imagePreView(file){
+  const blobUrl = window.URL.createObjectURL(file);
+  document.getElementById('image').style.backgroundImage = 'url("'+blobUrl+'")';
+  document.querySelectorAll(".image-custom-view").forEach((el) => {
+    el.style.backgroundImage = 'url("'+blobUrl+'")';
+  });
+  console.log(blobUrl)
+}
 function imagePositionView(){
   document.getElementById('image-custom').style.display = 'grid';
 }
@@ -912,5 +1064,13 @@ function idNumSet (id){
   return id+num;
 }
 
+// 安全なeval ----------------------------------------
+function safeEval(text){
+  if     (text === '') { return 0; }
+  else if(text.match(/[^0-9\+\-\*\/\(\) ]/)){ return 0; }
+  
+  try { return Function('"use strict";return (' + text + ')')(); } 
+  catch (e) { return 0; }
+}
 
 

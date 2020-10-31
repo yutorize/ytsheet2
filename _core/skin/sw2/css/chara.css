@@ -720,15 +720,15 @@ dl#level dd {
     margin-top: 0;
   }
 }
-#magic-gramarye li {
+#crafts li {
   position: relative;
 }
-#magic-gramarye li span[data-ruby] {
+#crafts li span[data-ruby] {
   display: block;
   position: relative;
   bottom: -.35em;
 }
-#magic-gramarye li span::before {
+#crafts li span[data-ruby]::before {
   content: attr(data-ruby);
   display: block;
   position: absolute;
@@ -889,6 +889,23 @@ dl#level dd {
   border-top-width: 1px;
   border-top-style: solid;
 }
+#magic-power #fairycontact {
+  margin: -.2em 0 -.1em;
+  font-size: 90%;
+  line-height: 1;
+}
+#magic-power #fairycontact > span {
+  display: inline-block;
+  border-radius: .5rem;
+  margin: .1em;
+  padding: .3rem;
+}
+#fairycontact .ft-earth { background: hsla( 45,100%, 50%,0.3); }
+#fairycontact .ft-water { background: hsla(210,100%, 50%,0.3); }
+#fairycontact .ft-fire  { background: hsla(  0,100%, 50%,0.3); }
+#fairycontact .ft-wind  { background: hsla(120,100%, 50%,0.3); }
+#fairycontact .ft-light { background: hsla(  0,100%,100%,0.3); }
+#fairycontact .ft-dark  { background: hsla(  0,100%,  0%,0.3); }
 
 /* Language */
 #language {
@@ -1190,7 +1207,13 @@ div#area-items-R {
 #cashbook b.cash {
   padding: 2px 0;
   font-weight: normal;
-  background: linear-gradient(to top, rgba(0,255,100,0.3) 0rem, rgba(0,255,100,0.3) .5rem, transparent .5rem);
+  background: linear-gradient(to top, rgba(0,100,255,0.5) 0rem, rgba(0,100,255,0.3) .5rem, transparent .5rem);
+}
+#cashbook b.cash.plus {
+  background: linear-gradient(to top, rgba(0,255,100,0.5) 0rem, rgba(0,255,100,0.3) .5rem, transparent .5rem);
+}
+#cashbook b.cash.minus {
+  background: linear-gradient(to top, rgba(255,100,0,0.5) 0rem, rgba(255,100,0,0.3) .5rem, transparent .5rem);
 }
 
 /* // Fellow
