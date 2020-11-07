@@ -438,6 +438,12 @@ form#form-search p input[type="submit"] {
 #making-posts .post table td > span {
   font-size: 90%;
 }
+#making-posts .post time {
+  display: block;
+  padding: 2px .5em;
+  background: rgba(100,120,190,0.1);
+  text-align: right;
+}
 #making-posts .navigation {
   text-align: center;
 }

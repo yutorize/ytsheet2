@@ -12,6 +12,10 @@ my $mode = param('mode');
 my $sort = param('sort');
 
 $ENV{HTML_TEMPLATE_ROOT} = $::core_dir;
+
+### データ読み込み ###################################################################################
+require $set::data_class;
+
 ### テンプレート読み込み #############################################################################
 my $INDEX;
 $INDEX = HTML::Template->new( filename  => $set::skin_tmpl , utf8 => 1,
@@ -105,6 +109,11 @@ my $name_query = Encode::decode('utf8', param('name'));
 if($name_query) { @list = grep { (split(/<>/))[4] =~ /$name_query/ } @list; }
 $INDEX->param(name => $name_query);
 
+## PL名検索
+my $pl_query = Encode::decode('utf8', param('player'));
+if($pl_query) { @list = grep { (split(/<>/))[5] =~ /$pl_query/ } @list; }
+$INDEX->param(player => $pl_query);
+
 ## 種族検索
 my $race_query = Encode::decode('utf8', param('race'));
 if($race_query) { @list = grep { (split(/<>/))[9] =~ /^$race_query/ } @list; }
@@ -157,31 +166,8 @@ elsif(param('fellow') eq 'N') {
 }
 
 ## クラス一覧
-my @class_name = (
-  'ファイター',
-  'グラップラー',
-  'フェンサー',
-  'シューター',
-  'ソーサラー',
-  'コンジャラー',
-  'プリースト',
-  'フェアリーテイマー',
-  'マギテック',
-  'スカウト',
-  'レンジャー',
-  'セージ',
-  'エンハンサー',
-  'バード',
-  'ライダー',
-  'アルケミスト',
-  'ウォーリーダー',
-  'ミスティック',
-  'デーモンルーラー',
-  'フィジカルマスター',
-  'グリモワール',
-  'アリストクラシー',
-  'アーティザン'
-);
+my @class_name = @data::class_list;
+
 ## リストを回す
 my %count; my %pl_flag;
 foreach (@list) {

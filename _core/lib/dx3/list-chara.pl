@@ -97,6 +97,11 @@ my $name_query = Encode::decode('utf8', param('name'));
 if($name_query) { @list = grep { (split(/<>/))[4] =~ /$name_query/ } @list; }
 $INDEX->param(name => $name_query);
 
+## PL名検索
+my $pl_query = Encode::decode('utf8', param('player'));
+if($pl_query) { @list = grep { (split(/<>/))[5] =~ /$pl_query/ } @list; }
+$INDEX->param(player => $pl_query);
+
 ## 経験点検索
 my $exp_min_query = param('exp-min');
 my $exp_max_query = param('exp-max');

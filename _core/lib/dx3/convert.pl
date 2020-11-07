@@ -173,6 +173,7 @@ sub convertHokanjoToYtsheet {
   
   ## コンボ・武器
   my @weapon_skill = ('', '白兵', '射撃', 'RC', '運転', '交渉');
+  my @combo_status = ('', '肉体', '感覚', '精神', '社会');
   my $i = 0; my $w = 1;
   foreach my $name (@{$in{'arms_name'}}){
     my ($cost, $crit);
@@ -194,12 +195,15 @@ sub convertHokanjoToYtsheet {
     $pc{'combo'.($i+1).'Name'} = $name;
     $pc{'combo'.($i+1).'Timing'}   = '';
     $pc{'combo'.($i+1).'Skill'}    = $weapon_skill[ $in{'arms_hit_param'}[$i] ];
+    $pc{'combo'.($i+1).'Stt'}      = $combo_status[ $in{'V_arms_hit_status'}[$i] ];
     $pc{'combo'.($i+1).'Dfclty'}   = '';
     $pc{'combo'.($i+1).'Target'}   = '';
     $pc{'combo'.($i+1).'Range'}    = $in{'arms_range'}[$i];
     $pc{'combo'.($i+1).'Encroach'} = $cost;
+    $pc{'combo'.($i+1).'DiceAdd1'} = $in{'arms_hit_dice_mod'}[$i];
     $pc{'combo'.($i+1).'Dice1'}    = $acc;
     $pc{'combo'.($i+1).'Crit1'}    = $crit;
+    $pc{'combo'.($i+1).'FixedAdd1'}= $in{'arms_hit_mod'}[$i];
     $pc{'combo'.($i+1).'Fixed1'}   = $fixed;
     $pc{'combo'.($i+1).'Atk1'}     = $in{'arms_power'}[$i];
     $pc{'combo'.($i+1).'Note'}     = $in{'arms_sonota'}[$i];
@@ -415,6 +419,7 @@ sub convertSoukoToYtsheet {
   $pc{'effectNum'} = $i-1;
   ## コンボ
   my $i = 1;
+  $pc{'comboCalcOff'} = 1;
   foreach (@{$in{'combo'}}){
     my %un = %{@$_{'under100'}};
     my %ov = %{@$_{'over100'}};
@@ -433,13 +438,11 @@ sub convertSoukoToYtsheet {
                              : $un{'range'} ? $un{'range'} : $ov{'range'};
     $pc{"combo${i}Encroach"} = $un{'cost'} && $ov{'cost'} && $un{'cost'} ne $ov{'cost'} ? "$un{'cost'}／$ov{'cost'}"
                              : $un{'cost'} ? $un{'cost'} : $ov{'cost'};
-    $pc{"combo${i}Dice1"}    = $un{'dice'};
+    $pc{"combo${i}DiceAdd1"} = $un{'dice'};
     $pc{"combo${i}Crit1"}    = $un{'critical'};
-    $pc{"combo${i}Fixed1"}   = $un{''};
     $pc{"combo${i}Atk1"}     = $un{'attack'};
-    $pc{"combo${i}Dice2"}    = $ov{'dice'};
+    $pc{"combo${i}DiceAdd2"} = $ov{'dice'};
     $pc{"combo${i}Crit2"}    = $ov{'critical'};
-    $pc{"combo${i}Fixed2"}   = $ov{''};
     $pc{"combo${i}Atk2"}     = $ov{'attack'};
     $pc{"combo${i}Note"}     = $un{'notes'} && $ov{'notes'} && $un{'notes'} ne $ov{'notes'} ? "$un{'notes'}／$ov{'notes'}"
                              : $un{'notes'} ? $un{'notes'} : $ov{'notes'};

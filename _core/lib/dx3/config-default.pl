@@ -34,8 +34,7 @@ package set;
   our $oauth_client_id = '';
  # OAuth2 で利用するサービスから払い出される client_secret
   our $oauth_secret_id = '';
- # ゆとシート2 の URL のうち index.cgi を oauth.cgi に置換したものを URI エンコードしたもの
- # 例: https://yutorize.2-d.jp/ytsheet/sw2.5/index.cgi ならば  https%3A%2F%2Fyutorize.2-d.jp%2Fytsheet%2Fsw2.5%2Foauth.cgi
+ # ゆとシート2 の URL のうち index.cgi を oauth.cgi に置換したもの
   our $oauth_redirect_url = '';
  # OAuth2 のスコープ
   our $oauth_scope = '';

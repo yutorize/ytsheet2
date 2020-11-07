@@ -803,18 +803,34 @@ td .switch-button {
 }
 #combo table col:nth-child(1) { width: 1.4em; }
 #combo table col:nth-child(2) { width:  auto; } /* タイミング */
-#combo table col:nth-child(3) { width:   13%; } /* 技能 */
-#combo table col:nth-child(4) { width:   4em; } /* 難易度 */
-#combo table col:nth-child(5) { width:   5em; } /* 対象 */
-#combo table col:nth-child(6) { width:    8%; } /* 射程 */
-#combo table col:nth-child(7) { width: 3.2em; } /* 侵蝕値 */
-#combo table col:nth-child(8) { width:   5em; } /* 条件 */
-#combo table col:nth-child(9) { width:    8%; } /* ダイス */
-#combo table col:nth-child(10){ width:    8%; } /* クリティカル */
-#combo table col:nth-child(11){ width:    8%; } /* 基準値 */
-#combo table col:nth-child(12){ width:    8%; } /* 攻撃力 */
+#combo table col:nth-child(3) { width:   12%; } /* 技能 */
+#combo table col:nth-child(4) { width:   4em; } /* 能力変更 */
+#combo table col:nth-child(5) { width:   4em; } /* 難易度 */
+#combo table col:nth-child(6) { width:   5em; } /* 対象 */
+#combo table col:nth-child(7) { width:    8%; } /* 射程 */
+#combo table col:nth-child(8) { width:   3em; } /* 侵蝕値 */
+#combo table col:nth-child(9) { width:   5em; } /* 条件 */
+#combo table col:nth-child(10){ width: max-content; } /* 能力値 */
+#combo table col:nth-child(11){ width:    7%; } /* ダイス */
+#combo table col:nth-child(12){ width:    7%; } /* クリティカル */
+#combo table col:nth-child(13){ width: max-content; } /* 技能Lv */
+#combo table col:nth-child(14){ width:    7%; } /* 基準値 */
+#combo table col:nth-child(15){ width:    7%; } /* 攻撃力 */
 #combo table.edit-table tbody > tr {
   border-width: 0;
+}
+#combo table td[id*="Stt"]:not(:empty),
+#combo table td[id*="SkillLv"]:not(:empty) {
+  padding-left: .1em;
+  text-align: right;
+  vertical-align: bottom;
+  font-size: .9em;
+  font-family: var(--base-font-family-input);
+}
+#combo table td[id*="Stt"]:not(:empty)::after,
+#combo table td[id*="SkillLv"]:not(:empty)::after {
+  content: '+';
+  margin-right: -.1rem;
 }
 #combo table.edit-table tbody > tr:first-child {
   border-top-width: 1px !important;
@@ -826,22 +842,40 @@ td .switch-button {
 #combo table.edit-table tr:last-child td {
   padding-bottom: .5rem;
 }
+#combo table.edit-table th {
+  vertical-align: bottom;
+}
+#combo table.edit-table th .small {
+  line-height: 0.6;
+}
+#combo table.edit-table td select {
+  font-size: 0.93em;
+}
+#combo table.edit-table tbody:last-child {
+  border-bottom-width: .1rem;
+  border-bottom-style: solid;
+}
+#combo .annotate {
+  padding-top: .2em;
+}
 @media screen and (max-width:735px){
   #combo table  { table-layout: fixed; }
   #combo table col:nth-child(1) { width: 1.4em; }
   #combo table col:nth-child(2) { width:   7em; } /* タイミング */
   #combo table col:nth-child(3) { width:   7em; } /* 技能 */
-  #combo table col:nth-child(4) { width:   5em; } /* 難易度 */
-  #combo table col:nth-child(5) { width:   6em; } /* 対象 */
-  #combo table col:nth-child(6) { width:   6em; } /* 射程 */
-  #combo table col:nth-child(7) { width:   4em; } /* 侵蝕値 */
-  #combo table col:nth-child(8) { width:   5em; } /* 条件 */
-  #combo table col:nth-child(9) { width:   4em; } /* ダイス */
-  #combo table col:nth-child(10){ width:   4em; } /* クリティカル */
-  #combo table col:nth-child(11){ width:   4em; } /* 基準値 */
-  #combo table col:nth-child(12){ width:   4em; } /* 攻撃力 */
-}
-
+  #combo table col:nth-child(4) { width:   4em; } /* 能力変更 */
+  #combo table col:nth-child(5) { width:   5em; } /* 難易度 */
+  #combo table col:nth-child(6) { width:   6em; } /* 対象 */
+  #combo table col:nth-child(7) { width:   6em; } /* 射程 */
+  #combo table col:nth-child(8) { width:   4em; } /* 侵蝕値 */
+  #combo table col:nth-child(9) { width:   5em; } /* 条件 */
+  #combo table col:nth-child(10){ width: 2em; } /* 能力値 */
+  #combo table col:nth-child(11){ width:   4em; } /* ダイス */
+  #combo table col:nth-child(12){ width:   4em; } /* クリティカル */
+  #combo table col:nth-child(13){ width: 2em; } /* 技能Lv */
+  #combo table col:nth-child(14){ width:   4em; } /* 基準値 */
+  #combo table col:nth-child(15){ width:   4em; } /* 攻撃力 */
+  }
 #items {
   margin-top: 1rem;
 }

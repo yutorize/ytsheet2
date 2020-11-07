@@ -31,10 +31,11 @@ article {
 }
 #area-monstername .lv {
   order: -1;
+  flex-shrink: 0;
   align-self: stretch;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 2em;
   background: linear-gradient(to bottom, #aaa, #555);
   color: #fff;
@@ -42,6 +43,13 @@ article {
   text-align: center;
   font-size: 200%;
   font-weight: bold;
+}
+#area-monstername .name-taxa {
+  flex-grow: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
 }
 #area-monstername h1 {
   flex-grow: 1;
@@ -57,6 +65,7 @@ article {
   line-height: 1;
 }
 #area-monstername .taxa {
+  flex-grow: 1;
   min-width: 5.5em;
   padding-right: .5em;
   text-align: right;

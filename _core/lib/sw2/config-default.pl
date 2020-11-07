@@ -34,8 +34,7 @@ package set;
   our $oauth_client_id = '';
  # OAuth2 で利用するサービスから払い出される client_secret
   our $oauth_secret_id = '';
- # ゆとシート2 の URL のうち index.cgi を oauth.cgi に置換したものを URI エンコードしたもの
- # 例: https://yutorize.2-d.jp/ytsheet/sw2.5/index.cgi ならば  https%3A%2F%2Fyutorize.2-d.jp%2Fytsheet%2Fsw2.5%2Foauth.cgi
+ # ゆとシート2 の URL のうち index.cgi を oauth.cgi に置換したもの
   our $oauth_redirect_url = '';
  # OAuth2 のスコープ
   our $oauth_scope = '';
@@ -211,7 +210,7 @@ package set;
   our $data_items = $::core_dir . '/lib/sw2/data-items.pl';  # アイテムカテゴリ
   our $data_faith = $::core_dir . '/lib/sw2/data-faith.pl';  # 信仰
   our $data_feats = $::core_dir . '/lib/sw2/data-feats.pl';  # 戦闘特技
-  our $data_craft = $::core_dir . '/lib/sw2/data-craft.pl';  # 練技・呪歌など
+  our $data_class = $::core_dir . '/lib/sw2/data-class.pl';  # 技能、練技・呪歌など
   our $data_mons  = $::core_dir . '/lib/sw2/data-mons.pl';   # 魔物分類
 
   # HTMLテンプレート

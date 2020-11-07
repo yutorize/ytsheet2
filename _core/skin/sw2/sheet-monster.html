@@ -33,8 +33,21 @@ function editOn() {
 function backuplistOn() {
   document.getElementById("backuplist").classList.toggle('show');
 }
+let cpOpenFirst = 0;
 function chatPaletteOn() {
   document.querySelector(".chat-palette").classList.toggle('show');
+  if(!cpOpenFirst){ chatPaletteSelect(''); }
+  cpOpenFirst++;
+}
+function chatPaletteSelect(tool) {
+  const url = './?mode=palette&id=<TMPL_VAR id>&tool='+tool;
+  fetch(url)
+  .then(response => { return response.text(); })
+  .then(text => { document.getElementById('chatPaletteBox').value = text; });
+  document.querySelectorAll('.chat-palette-menu a').forEach(elm => {
+    elm.classList.remove('check');
+  });
+  document.getElementById('cp-switch-'+(tool||'ytc')).classList.add('check');
 }
 function donwloadListOn() {
   document.getElementById("downloadlist").classList.toggle('show');
@@ -221,7 +234,13 @@ window.onload = function() {
     </aside></TMPL_IF>
     
     <article>
-      <div id="area-monstername"><h1><TMPL_IF characterName><TMPL_VAR characterName><small>（<TMPL_VAR monsterName>）</small><TMPL_ELSE><TMPL_VAR monsterName></TMPL_IF></h1><div class="lv"><TMPL_VAR lv></div><div class="taxa">分類：<TMPL_VAR taxa></div></div>
+      <div id="area-monstername">
+        <div class="lv"><TMPL_VAR lv></div>
+        <div class="name-taxa">
+          <h1><TMPL_IF characterName><TMPL_VAR characterName><small>（<TMPL_VAR monsterName>）</small><TMPL_ELSE><TMPL_VAR monsterName></TMPL_IF></h1>
+          <div class="taxa">分類：<TMPL_VAR taxa></div>
+        </div>
+      </div>
 
       <div id="tags">
       <TMPL_LOOP Tags><a href="./?type=m&tag=<TMPL_VAR URL>"><TMPL_VAR TEXT></a></TMPL_LOOP>
@@ -303,10 +322,15 @@ window.onload = function() {
       <div id="link-tag">
         ゆとシート内リンク用タグ：<input type="text" onclick="this.select()" value="[<TMPL_IF characterNameTitle><TMPL_VAR characterNameTitle>（<TMPL_VAR monsterNameTitle>）<TMPL_ELSE><TMPL_VAR monsterNameTitle></TMPL_IF>#<TMPL_VAR id>]">
       </div>
-      <div class="box chat-palette">
+      <section class="box chat-palette">
         <h2>チャットパレット</h2>
-        <iframe src="./?mode=palette&id=<TMPL_VAR id>&type=m"></iframe>
-      </div>
+        <div class="chat-palette-menu">
+          <b>使用ダイスbot:</b>
+          <a onclick="chatPaletteSelect('')"       id="cp-switch-ytc">ゆとチャadv.</a>
+          <a onclick="chatPaletteSelect('bcdice')" id="cp-switch-bcdice">BCDice</a>
+        </div>
+        <textarea id="chatPaletteBox"></textarea>
+      </section>
     </article>
     <div class="back-button"><a href="./?type=m">⏎</a></div>
     <div id="image-box" onclick="closeImage()">
