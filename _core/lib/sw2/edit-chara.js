@@ -234,6 +234,8 @@ function checkRace(){
 }
 
 // ステータス計算 ----------------------------------------
+let reqdStr = 0;
+let reqdStrHalf = 0;
 function calcStt() {
   let growDex = 0;
   let growAgi = 0;
@@ -307,6 +309,9 @@ function calcStt() {
   document.getElementById("stt-bonus-vit-value").innerHTML = bonusVit;
   document.getElementById("stt-bonus-int-value").innerHTML = bonusInt;
   document.getElementById("stt-bonus-mnd-value").innerHTML = bonusMnd;
+  
+  reqdStr = sttStr + sttAddC;
+  reqdStrHalf = Math.ceil(reqdStr / 2);
   
   checkFeats();
   calcSubStt();
@@ -941,10 +946,9 @@ function calcAttack() {
   document.getElementById("attack-enhancer"  ).style.display = lv['Enh'] >= 10 ? "" :"none";
   document.getElementById("attack-demonruler").style.display = lv['Dem'] >   0 ? "" :"none";
 
-  const reqdStr = sttStr + sttAddC;
   document.getElementById("attack-fighter-str"   ).innerHTML = reqdStr;
   document.getElementById("attack-grappler-str"  ).innerHTML = reqdStr;
-  document.getElementById("attack-fencer-str"    ).innerHTML = Math.ceil(reqdStr / 2);
+  document.getElementById("attack-fencer-str"    ).innerHTML = reqdStrHalf;
   document.getElementById("attack-shooter-str"   ).innerHTML = reqdStr;
   document.getElementById("attack-enhancer-str"  ).innerHTML = reqdStr;
   document.getElementById("attack-demonruler-str").innerHTML = reqdStr;
@@ -972,16 +976,22 @@ function calcWeapon() {
     const category = form["weapon"+i+"Category"].value;
     const ownDex = form["weapon"+i+"Own"].checked ? 2 : 0;
     const note = form["weapon"+i+"Note"].value;
+    const weaponReqd = Number(safeEval(form["weapon"+i+"Reqd"].value));
     let attackClass;
     let accBase = 0;
     let dmgBase = 0;
+    let maxReqd = reqdStr;
     accBase += accuracyEnhance; //命中強化
+    // 使用技能
          if(classes === "ファイター")       { attackClass = lv['Fig']; }
     else if(classes === "グラップラー")     { attackClass = lv['Gra']; }
-    else if(classes === "フェンサー")       { attackClass = lv['Fen']; }
+    else if(classes === "フェンサー")       { attackClass = lv['Fen']; maxReqd = reqdStrHalf; }
     else if(classes === "シューター")       { attackClass = lv['Sho']; }
     else if(classes === "エンハンサー")     { attackClass = lv['Enh']; }
     else if(classes === "デーモンルーラー") { attackClass = lv['Dem']; }
+    // 必筋チェック
+    form["weapon"+i+"Reqd"].classList.toggle('error', weaponReqd > maxReqd);
+    // 武器カテゴリ
     if(attackClass) {
       accBase += attackClass + parseInt((sttDex + sttAddA + ownDex) / 6);
       if     (category === 'クロスボウ') { dmgBase += attackClass; }
@@ -1007,7 +1017,7 @@ function calcWeapon() {
     }
     else if(category === 'ガン（物理）')   { dmgBase += masteryGun; }
     if(note.match(/〈魔器〉/)){ dmgBase += masteryArtisan; }
-    
+    // 命中追加D出力
     if(classes === "自動計算しない"){
       document.getElementById("weapon"+i+"-acc-total").innerHTML = Number(form["weapon"+i+"Acc"].value);
       document.getElementById("weapon"+i+"-dmg-total").innerHTML = Number(form["weapon"+i+"Dmg"].value);
@@ -1053,8 +1063,8 @@ function calcDefense() {
   else { evaClassLv = 0; }
   evaBase = evaClassLv ? (evaClassLv + parseInt((sttAgi + sttAddB + ownAgi) / 6)) : 0;
   
-  const reqdStr = sttStr + sttAddC;
-  document.getElementById("evasion-str").innerHTML = (classes === "フェンサー") ? Math.ceil(reqdStr / 2) : reqdStr;
+  const maxReqd = (classes === "フェンサー") ? reqdStrHalf : reqdStr;
+  document.getElementById("evasion-str").innerHTML = maxReqd;
   document.getElementById("evasion-eva").innerHTML = evaClassLv ? (evaClassLv + bonusAgi) : 0;
   
   // 技能選択のエラー表示
@@ -1082,20 +1092,27 @@ function calcDefense() {
   document.getElementById("evasive-maneuver").style.display = evasiveManeuver > 0 ? "" :"none";
   document.getElementById("evasive-maneuver-value").innerHTML = evasiveManeuver;
   
-  calcArmour(evaBase,defBase);
+  calcArmour(evaBase,defBase,maxReqd);
 }
-function calcArmour(evaBase,defBase) {
-  const armourEva = Number(form.armourEva.value);
-  const armourDef = Number(form.armourDef.value) + Math.max(masteryMetalArmour,masteryNonMetalArmour);
-  const shieldEva = Number(form.shieldEva.value);
-  const shieldDef = Number(form.shieldDef.value) + masteryShield;
-  const otherEva  = Number(form.defOtherEva.value);
-  const otherDef  = Number(form.defOtherDef.value);
+function calcArmour(evaBase,defBase,maxReqd) {
+  const armourEva   = Number(form.armourEva.value);
+  const armourDef   = Number(form.armourDef.value) + Math.max(masteryMetalArmour,masteryNonMetalArmour);
+  const shieldEva   = Number(form.shieldEva.value);
+  const shieldDef   = Number(form.shieldDef.value) + masteryShield;
+  const otherEva    = Number(form.defOtherEva.value);
+  const otherDef    = Number(form.defOtherDef.value);
   
   if(form.armourNote.value.match(/〈魔器〉/) || form.shieldNote.value.match(/〈魔器〉/)){ defBase += masteryArtisan; }
   
   document.getElementById("defense-total-all-eva").innerHTML = evaBase + armourEva + shieldEva + otherEva;
   document.getElementById("defense-total-all-def").innerHTML = defBase + armourDef + shieldDef + otherDef;
+  
+  const armourReqd = Number(safeEval(form.armourReqd.value));
+  const shieldReqd = Number(safeEval(form.shieldReqd.value));
+  const otherReqd  = Number(safeEval(form.defOtherReqd.value));
+  form.armourReqd.classList.toggle('error', armourReqd > maxReqd);
+  form.shieldReqd.classList.toggle('error', shieldReqd > maxReqd);
+  form.defOtherReqd.classList.toggle('error', otherReqd > maxReqd);
 }
 
 // 経験点計算 ----------------------------------------

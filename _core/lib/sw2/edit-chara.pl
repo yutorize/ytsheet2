@@ -889,7 +889,7 @@ print <<"HTML";
               <tr>
                 <td rowspan="2">@{[input("weapon${num}Name")]}<span class="handle"></span></td>
                 <td rowspan="2">@{[input("weapon${num}Usage","text",'','list="list-usage"')]}</td>
-                <td rowspan="2">@{[input("weapon${num}Reqd")]}</td>
+                <td rowspan="2">@{[input("weapon${num}Reqd",'text','calcWeapon')]}</td>
                 <td rowspan="2">+@{[input("weapon${num}Acc",'number','calcWeapon')]}<b id="weapon${num}-acc-total">0</b></td>
                 <td rowspan="2">@{[input("weapon${num}Rate")]}</td>
                 <td rowspan="2">@{[input("weapon${num}Crit")]}</td>
@@ -985,7 +985,7 @@ print <<"HTML";
               <tr>
                 <th>鎧</th>
                 <td>@{[input('armourName')]}</td>
-                <td>@{[input('armourReqd')]}</td>
+                <td>@{[input('armourReqd','','calcDefense')]}</td>
                 <td>@{[input('armourEva','number','calcDefense')]}</td>
                 <td>@{[input('armourDef','number','calcDefense')]}</td>
                 <td>@{[input('armourOwn','checkbox','calcDefense')]}</td>
@@ -994,7 +994,7 @@ print <<"HTML";
               <tr>
                 <th>盾</th>
                 <td>@{[input('shieldName')]}</td>
-                <td>@{[input('shieldReqd')]}</td>
+                <td>@{[input('shieldReqd','','calcDefense')]}</td>
                 <td>@{[input('shieldEva','number','calcDefense')]}</td>
                 <td>@{[input('shieldDef','number','calcDefense')]}</td>
                 <td>@{[input('shieldOwn','checkbox','calcDefense')]}</td>
@@ -1002,7 +1002,7 @@ print <<"HTML";
               </tr>
               <tr>
                 <th>他</th>
-                <td>@{[input('defOtherName')]}</td>
+                <td>@{[input('defOtherName','','calcDefense')]}</td>
                 <td>@{[input('defOtherReqd')]}</td>
                 <td>@{[input('defOtherEva','number','calcDefense')]}</td>
                 <td>@{[input('defOtherDef','number','calcDefense')]}</td>
