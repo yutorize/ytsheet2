@@ -117,7 +117,8 @@ package set;
   # 一覧
   our $lib_list_char   = $::core_dir . '/lib/dx3/list-chara.pl';
   # JSON出力
-  our $lib_json        = $::core_dir . '/lib/json.pl';
+  our $lib_json     = $::core_dir . '/lib/json.pl';
+  our $lib_json_sub = $::core_dir . '/lib/dx3/json-sub.pl';
   # コンバート
   our $lib_convert = $::core_dir . '/lib/dx3/convert.pl';
 

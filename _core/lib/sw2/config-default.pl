@@ -201,7 +201,8 @@ package set;
   our $lib_list_item = $::core_dir . '/lib/sw2/list-item.pl';
   our $lib_list_make = $::core_dir . '/lib/sw2/list-making.pl';
   # JSON出力
-  our $lib_json    = $::core_dir . '/lib/json.pl';
+  our $lib_json     = $::core_dir . '/lib/json.pl';
+  our $lib_json_sub = $::core_dir . '/lib/sw2/json-sub.pl';
   # コンバート
   our $lib_convert = $::core_dir . '/lib/sw2/convert.pl';
 
