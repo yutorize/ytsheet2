@@ -1391,7 +1391,7 @@ function addWeapons(){
     <td rowspan="2">+<input name="weapon${num}Dmg" type="number" oninput="calcWeapon()"><b id="weapon${num}-dmg-total">0</b></td>
     <td><input name="weapon${num}Own" type="checkbox" oninput="calcWeapon()"></td>
     <td><select name="weapon${num}Category" oninput="calcWeapon()"><option></select></td>
-    <td><select name="weapon${num}Class" oninput="calcWeapon()"><option><option>ファイター<option>グラップラー<option>フェンサー<option>シューター<option>デーモンルーラー</select></td>
+    <td><select name="weapon${num}Class" oninput="calcWeapon()"><option><option>ファイター<option>グラップラー<option>フェンサー<option>シューター<option>エンハンサー<option>デーモンルーラー<option>自動計算しない</select></td>
   </tr>
   <tr><td colspan="3"><input name="weapon${num}Note" type="text" oninput="calcWeapon()"></td></tr>`;
   const target = document.querySelector("#weapons-table");
