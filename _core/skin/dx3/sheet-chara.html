@@ -691,9 +691,9 @@ window.onload = function() {
       </section>
     </article>
     <div class="back-button"><a href="./">⏎</a></div>
-    <div id="image-box" onclick="closeImage()">
+    <TMPL_IF image><div id="image-box" onclick="closeImage()">
       <img src="<TMPL_VAR imageSrc>" id="image-box-image">
-    </div>
+    </div></TMPL_IF> 
   </main>
 
   <footer>
