@@ -191,7 +191,7 @@ package set;
   our $lib_view_mons = $::core_dir . '/lib/sw2/view-mons.pl';
   our $lib_view_item = $::core_dir . '/lib/sw2/view-item.pl';
   # チャットパレット
-  our $lib_palette = $::core_dir . '/lib/palette.pl';
+  our $lib_palette     = $::core_dir . '/lib/palette.pl';
   our $lib_palette_sub = $::core_dir . '/lib/sw2/palette-sub.pl';
   # キャラ作成
   our $lib_making = $::core_dir . '/lib/sw2/making.pl';
