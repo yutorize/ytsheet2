@@ -80,8 +80,8 @@ $in{'race'} .= '（冒険者）' if $adventurer;
 
 # 書き込み
 sysopen (my $FH, $set::makelist, O_RDWR | O_CREAT, 0666);
-  my @lines = <$FH>;
   flock($FH, 2);
+  my @lines = <$FH>;
   seek($FH, 0, 0);
   my $num = (split(/<>/, $lines[0]))[0] + 1;
   if ($set::making_max) { while ($set::making_max <= @lines) { pop(@lines); } }

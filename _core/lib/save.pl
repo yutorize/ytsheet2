@@ -214,8 +214,8 @@ sub passfile_write_make {
 sub passfile_write_save {
   my ($id, $pass ,$LOGIN_ID, $protect) = @_;
   sysopen (my $FH, $set::passfile, O_RDWR);
-  my @list = <$FH>;
   flock($FH, 2);
+  my @list = <$FH>;
   seek($FH, 0, 0);
   foreach (@list){
     my @data = split /<>/;
@@ -274,8 +274,8 @@ sub list_save {
   my $listfile = shift;
   my $newline  = shift;
   sysopen (my $FH, $listfile, O_RDWR | O_CREAT, 0666);
-  my @list = sort { (split(/<>/,$b))[3] cmp (split(/<>/,$a))[3] } <$FH>;
   flock($FH, 2);
+  my @list = sort { (split(/<>/,$b))[3] cmp (split(/<>/,$a))[3] } <$FH>;
   seek($FH, 0, 0);
   my $listhit;
   foreach (@list){

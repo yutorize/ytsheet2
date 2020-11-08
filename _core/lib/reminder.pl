@@ -43,8 +43,8 @@ elsif(param('password')){
   
   my $flag;
   sysopen (my $FH, $set::userfile, O_RDWR);
-  my @list = <$FH>;
   flock($FH, 2);
+  my @list = <$FH>;
   seek($FH, 0, 0);
   foreach (@list){
     my @data= split /<>/;

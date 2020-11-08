@@ -120,8 +120,8 @@ sub registerToken {
   my $id = $_[0];
   my $key = $_[1];
   sysopen (my $FH, $set::login_users, O_RDWR | O_CREAT, 0666);
-    my @list = <$FH>;
     flock($FH, 2);
+    my @list = <$FH>;
     seek($FH, 0, 0);
     foreach (@list){
       my @line = (split/<>/, $_);

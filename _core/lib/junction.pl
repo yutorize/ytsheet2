@@ -3,7 +3,7 @@ use strict;
 #use warnings;
 use utf8;
 
-our $ver = "1.10.005";
+our $ver = "1.10.200";
 
 my $mode = param('mode');
 
@@ -50,7 +50,7 @@ elsif($mode eq 'json')       { require $set::lib_json; }   #外部アプリ連�
 elsif(param('id')) { require $set::lib_view; }   #シート表示
 elsif(param('url')) { require $set::lib_view; }   #シート表示（コンバート）
 else {
-  if   (param('type') eq 'm'){ require $set::lib_list_mons; }
-  elsif(param('type') eq 'i'){ require $set::lib_list_item; }
-  else                       { require $set::lib_list_char; }
+  if   (param('type') eq 'm' && $set::lib_list_mons){ require $set::lib_list_mons; }
+  elsif(param('type') eq 'i' && $set::lib_list_item){ require $set::lib_list_item; }
+  else { require $set::lib_list_char; }
 }   #一覧表示

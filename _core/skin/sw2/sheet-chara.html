@@ -254,7 +254,7 @@ window.onload = function() {
       </div>
       <div class="column column-status"><!-- COLUMN -->
       <div id="area-status">
-        <TMPL_IF image> 
+        <TMPL_IF image>
         <div id="image" class="image" style="background-image: url(<TMPL_VAR imageSrc>);background-size:<TMPL_VAR imageFit>;background-position:<TMPL_VAR imagePositionX>% <TMPL_VAR imagePositionY>%;">
         <div onclick="popImage()"><p class="words" style="<TMPL_VAR wordsX><TMPL_VAR wordsY>"><TMPL_VAR words></p></div>
         <p class="image-copyright"><TMPL_VAR imageCopyright></p>
@@ -977,9 +977,9 @@ window.onload = function() {
       </TMPL_IF>
     </article>
     <div class="back-button"><a href="./">⏎</a></div>
-    <div id="image-box" onclick="closeImage()">
+    <TMPL_IF image><div id="image-box" onclick="closeImage()">
       <img src="<TMPL_VAR imageSrc>" id="image-box-image">
-    </div>
+    </div></TMPL_IF> 
   </main>
 
   <footer>

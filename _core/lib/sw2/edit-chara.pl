@@ -663,7 +663,7 @@ print <<"HTML";
             <tbody>
 HTML
 foreach my $num (1 .. $pc{'languageNum'}){
-  print '<tr id="language-item'.$num.'"><td class="handle"></td><td>'.input('language'.$num).'</td>'.
+  print '<tr id="language-item'.$num.'"><td class="handle"></td><td>'.input('language'.$num, '','','list="list-language"').'</td>'.
   '<td><input type="checkbox" name="language'.$num.'Talk" value="1"'.($pc{"language${num}Talk"} ? 'checked' :'').'></td>'.
   '<td><input type="checkbox" name="language'.$num.'Read" value="1"'.($pc{"language${num}Read"} ? 'checked' :'').'></td>'.
   '</tr>'."\n";
@@ -889,7 +889,7 @@ print <<"HTML";
               <tr>
                 <td rowspan="2">@{[input("weapon${num}Name")]}<span class="handle"></span></td>
                 <td rowspan="2">@{[input("weapon${num}Usage","text",'','list="list-usage"')]}</td>
-                <td rowspan="2">@{[input("weapon${num}Reqd")]}</td>
+                <td rowspan="2">@{[input("weapon${num}Reqd",'text','calcWeapon')]}</td>
                 <td rowspan="2">+@{[input("weapon${num}Acc",'number','calcWeapon')]}<b id="weapon${num}-acc-total">0</b></td>
                 <td rowspan="2">@{[input("weapon${num}Rate")]}</td>
                 <td rowspan="2">@{[input("weapon${num}Crit")]}</td>
@@ -985,7 +985,7 @@ print <<"HTML";
               <tr>
                 <th>鎧</th>
                 <td>@{[input('armourName')]}</td>
-                <td>@{[input('armourReqd')]}</td>
+                <td>@{[input('armourReqd','','calcDefense')]}</td>
                 <td>@{[input('armourEva','number','calcDefense')]}</td>
                 <td>@{[input('armourDef','number','calcDefense')]}</td>
                 <td>@{[input('armourOwn','checkbox','calcDefense')]}</td>
@@ -994,7 +994,7 @@ print <<"HTML";
               <tr>
                 <th>盾</th>
                 <td>@{[input('shieldName')]}</td>
-                <td>@{[input('shieldReqd')]}</td>
+                <td>@{[input('shieldReqd','','calcDefense')]}</td>
                 <td>@{[input('shieldEva','number','calcDefense')]}</td>
                 <td>@{[input('shieldDef','number','calcDefense')]}</td>
                 <td>@{[input('shieldOwn','checkbox','calcDefense')]}</td>
@@ -1002,7 +1002,7 @@ print <<"HTML";
               </tr>
               <tr>
                 <th>他</th>
-                <td>@{[input('defOtherName')]}</td>
+                <td>@{[input('defOtherName','','calcDefense')]}</td>
                 <td>@{[input('defOtherReqd')]}</td>
                 <td>@{[input('defOtherEva','number','calcDefense')]}</td>
                 <td>@{[input('defOtherDef','number','calcDefense')]}</td>
@@ -1544,6 +1544,38 @@ print <<"HTML";
     <option value="生命">
     <option value="知力">
     <option value="精神">
+  </datalist>
+  <datalist id="list-language">
+    <option value="交易共通語">
+    <option value="地方語（）">
+    <option value="神紀文明語">
+    <option value="魔法文明語">
+    <option value="魔動機文明語">
+    <option value="エルフ語">
+    <option value="ドワーフ語">
+    <option value="グラスランナー語">
+    <option value="シャドウ語">
+    <option value="ソレイユ語">
+    <option value="ミアキス語">
+    <option value="リカント語">
+    <option value="ドラゴン語">
+    <option value="妖精語">
+    <option value="海獣語">
+    <option value="ヴァルグ語">
+    <option value="汎用蛮族語">
+    <option value="妖魔語">
+    <option value="巨人語">
+    <option value="ドレイク語">
+    <option value="バジリスク語">
+    <option value="ノスフェラトゥ語">
+    <option value="マーマン語">
+    <option value="ケンタウロス語">
+    <option value="ライカンスロープ語">
+    <option value="リザードマン語">
+    <option value="ハルピュイア語">
+    <option value="バルカン語">
+    <option value="翼人語">
+    <option value="魔神語">
   </datalist>
   <script>
   const AllClassOn = @{[ $set::all_class_on ? 1 : 0 ]};

@@ -44,8 +44,8 @@ elsif($mode eq 'option'){
   my $LOGIN_ID = check;
   
   sysopen (my $FH, $set::userfile, O_RDWR);
-  my @list = <$FH>;
   flock($FH, 2);
+  my @list = <$FH>;
   seek($FH, 0, 0);
   foreach (@list){
     my @data= split /<>/;
@@ -73,8 +73,8 @@ elsif($mode eq 'passchange'){
   
   my $flag;
   sysopen (my $FH, $set::userfile, O_RDWR);
-  my @list = <$FH>;
   flock($FH, 2);
+  my @list = <$FH>;
   seek($FH, 0, 0);
   foreach (@list){
     my @data= split /<>/;

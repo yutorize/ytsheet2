@@ -90,8 +90,8 @@ sub log_in {
     my $flag = 0;
     my $mask = umask 0;
     sysopen (my $FH, $set::login_users, O_RDWR | O_CREAT, 0666);
-      my @list = <$FH>;
       flock($FH, 2);
+      my @list = <$FH>;
       seek($FH, 0, 0);
       foreach (@list){
         my @line = (split/<>/, $_);
@@ -134,8 +134,8 @@ sub log_out {
   my ($id, $key) = &cookie_get;
   my $key  = param('key');
   open (my $FH, '+<', $set::login_users);
-  my @list = <$FH>;
   flock($FH, 2);
+  my @list = <$FH>;
   seek($FH, 0, 0);
   foreach (@list){
     my @line = (split/<>/, $_);
@@ -200,8 +200,8 @@ sub token_check {
   my $in_token = shift;
   my $flag = 0;
   open (my $FH, '+<', $set::tokenfile);
-  my @list = <$FH>;
   flock($FH, 2);
+  my @list = <$FH>;
   seek($FH, 0, 0);
   foreach (@list){
     my ($token, $time) = (split/<>/, $_);
