@@ -53,15 +53,38 @@ io.github.shunshun94.trpg.udonarium.getPicture = (src) => {
 	});
 };
 
-io.github.shunshun94.trpg.udonarium.getChatPallet = (sheetUrl) => {
+io.github.shunshun94.trpg.udonarium.separateParametersFromChatPalette = (chatPalette) => {
+	const result = {
+		palette: '',
+		parameters: []
+	};
+	const palette = [];
+	const parameterRegExp = /\/\/(.+)=(\d+)/;
+	chatPalette.split('\n').forEach((line)=>{
+		if(line.startsWith('//')) {
+			const parameterExecResult = parameterRegExp.exec(line);
+			if(parameterExecResult) {
+				result.parameters.push({
+					label:parameterExecResult[1],
+					value:Number(parameterExecResult[2])
+				});
+			}
+		} else {
+			palette.push(line);
+		}
+	});
+	result.palette = palette.join('\n');
+	return result;
+};
+
+io.github.shunshun94.trpg.udonarium.getChatPalette = (sheetUrl) => {
 	return new Promise((resolve, reject)=>{
 		if(sheetUrl === '' || ! sheetUrl.startsWith(location.origin)) {resolve('');return;}
 		let xhr = new XMLHttpRequest();
 		xhr.open('GET', `${sheetUrl}&tool=bcdice&mode=palette`, true);
 		xhr.responseType = "text";
 		xhr.onload = (e) => {
-			console.log('aaa', e.currentTarget);
-			resolve(e.currentTarget.response);
+			resolve(io.github.shunshun94.trpg.udonarium.separateParametersFromChatPalette(e.currentTarget.response));
 		};
 		xhr.onerror = () => resolve('');
 		xhr.onabort = () => resolve('');
@@ -71,7 +94,7 @@ io.github.shunshun94.trpg.udonarium.getChatPallet = (sheetUrl) => {
 };
 
 io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2DoubleCross3PC = async (json, opt_url='', opt_imageHash='')=>{
-	const defaultPallet = await io.github.shunshun94.trpg.udonarium.getChatPallet(opt_url);
+	const defaultPalette = await io.github.shunshun94.trpg.udonarium.getChatPalette(opt_url);
 	const data_character = {};
 
 	data_character.image = `
@@ -127,13 +150,19 @@ io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2DoubleCross3
 		return result.join('\n');
 	});
 
-	data_character_detail['バフ・デバフ'] = [
-		`        <data type="numberResource" currentValue="0" name="侵蝕率によるダイスボーナス">10</data>`,
-		`        <data type="numberResource" currentValue="0" name="ダイス">50</data>`,
-		`        <data type="numberResource" currentValue="0" name="達成値">50</data>`,
-		`        <data type="numberResource" currentValue="0" name="攻撃力">100</data>`,
-		`        <data type="numberResource" currentValue="0" name="クリティカル値減少">9</data>`,
-	];
+	if(defaultPalette) {
+		data_character_detail['バフ・デバフ'] = defaultPalette.parameters.map((param)=>{
+			return `        <data type="numberResource" currentValue="${param.value}" name="${param.label}">${param.value < 10 ? 10 : param.value}</data>`; 
+		});
+	} else {
+		data_character_detail['バフ・デバフ'] = [
+			`        <data type="numberResource" currentValue="0" name="侵蝕率によるダイスボーナス">10</data>`,
+			`        <data type="numberResource" currentValue="0" name="ダイス">50</data>`,
+			`        <data type="numberResource" currentValue="0" name="達成値">50</data>`,
+			`        <data type="numberResource" currentValue="0" name="攻撃力">100</data>`,
+			`        <data type="numberResource" currentValue="0" name="クリティカル値減少">9</data>`,
+		];
+	}
 
 	data_character.detail = `  <data name="detail">\n`;
 	for(const key in data_character_detail) {
@@ -144,8 +173,8 @@ io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2DoubleCross3
 	data_character.detail += `    </data>`;
 
 	let palette = `<chat-palette dicebot="DoubleCross">\n`;
-	if(defaultPallet) {
-		palette += defaultPallet;
+	if(defaultPalette) {
+		palette += defaultPalette.palette;
 	} else {
 		const tmp_palette = [];
 
