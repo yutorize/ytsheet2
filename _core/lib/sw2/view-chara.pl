@@ -679,11 +679,11 @@ my $imgsrc = (
 );
 $SHEET->param("imageSrc" => $imgsrc);
 
-if($pc{'imageFit'} =~ /^(percent|percentX)$/){
-  $SHEET->param("imageFit" => $pc{'imagePercent'}.'%');
-}
-elsif($pc{'imageFit'} eq 'percentY'){
+if($pc{'imageFit'} eq 'percentY'){
   $SHEET->param("imageFit" => 'auto '.$pc{'imagePercent'}.'%');
+}
+elsif($pc{'imageFit'} =~ /^percentX?$/){
+  $SHEET->param("imageFit" => $pc{'imagePercent'}.'%');
 }
 
 ### OGP --------------------------------------------------

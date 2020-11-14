@@ -160,9 +160,9 @@ window.onload = function() {
       </div>
     </article>
     <div class="back-button"><a href="./?type=i">⏎</a></div>
-    <div id="image-box" onclick="closeImage()">
+    <TMPL_IF image><div id="image-box" onclick="closeImage()">
       <img src="<TMPL_VAR imageSrc>" id="image-box-image">
-    </div>
+    </div></TMPL_IF> 
   </main>
   </TMPL_IF>
 

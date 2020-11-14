@@ -516,7 +516,7 @@ window.onload = function() {
               <tr>
                 <td colspan="8" class="left"><TMPL_VAR COMBO></td>
               </tr>
-              <tr><th>タイミング</th><th>技能</th><th>難易度</th><th>対象</th><th>射程</th><th>侵蝕値</th><th>条件</th><th>ダイス</th><th>Ｃ値</th><th>基準値</th><th>攻撃力</th></tr>
+              <tr><th>タイミング</th><th>技能</th><th>難易度</th><th>対象</th><th>射程</th><th>侵蝕値</th><th>条件</th><th>ダイス</th><th>Ｃ値</th><th>判定固定値</th><th>攻撃力</th></tr>
               <tr>
                 <td><TMPL_VAR TIMING></td>
                 <td><TMPL_VAR SKILL></td>
@@ -802,9 +802,9 @@ window.onload = function() {
       </section>
     </article>
     <div class="back-button"><a href="./">⏎</a></div>
-    <div id="image-box" onclick="closeImage()">
+    <TMPL_IF image><div id="image-box" onclick="closeImage()">
       <img src="<TMPL_VAR imageSrc>" id="image-box-image">
-    </div>
+    </div></TMPL_IF> 
   </main>
 
   <footer>

@@ -33,6 +33,13 @@ if($backup eq "") {
 $_ =~ s/(.*?)<>(.*?)\n/$pc{$1} = $2;/egi while <$IN>;
 close($IN);
 
+if($set::lib_json_sub){
+  require $set::lib_json_sub;
+  %pc = %{ addJsonData(\%pc , $type) };
+}
+
+
+
 if($pc{updateTime}) {
   $pc{result} = "OK";
 } else {

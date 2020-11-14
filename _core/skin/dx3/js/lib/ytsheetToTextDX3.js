@@ -70,8 +70,8 @@ io.github.shunshun94.trpg.ytsheet._getColumnLength = (list, header) => {
 	}, header);
 };
 
-io.github.shunshun94.trpg.ytsheet._convertList = (list, columns) => {
-	const headerLength = io.github.shunshun94.trpg.ytsheet._getLengthWithoutNote(columns);
+io.github.shunshun94.trpg.ytsheet._convertList = (list, columns, opt_separator = '/') => {
+	const headerLength = io.github.shunshun94.trpg.ytsheet._getLengthWithoutNote(columns || list[0]);
 	const length = io.github.shunshun94.trpg.ytsheet._getColumnLength(list, headerLength);
 	const convertDataToString = (data) => {
 		const result = [];
@@ -79,9 +79,9 @@ io.github.shunshun94.trpg.ytsheet._convertList = (list, columns) => {
 			result.push(`${data[key]}${''.padEnd(length[key] - io.github.shunshun94.trpg.ytsheet.length(data[key]), ' ')}`);
 		}
 		result.push(data.note);
-		return result.join('/');
+		return result.join(opt_separator);
 	};
-	return [columns].concat(list).map(convertDataToString).join('\n');
+	return (columns ? [columns].concat(list) : list).map(convertDataToString).join('\n');
 };
 
 io.github.shunshun94.trpg.ytsheet._getLengthWithoutNote = (baseHeader) => {
@@ -265,13 +265,13 @@ io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2DoubleCrossPc
 
 	result.push('■エフェクト■\n');
 	const effectData = io.github.shunshun94.trpg.ytsheet._getDoubleCrossEffects(json);
-	result.push(io.github.shunshun94.trpg.ytsheet._convertList(effectData, io.github.shunshun94.trpg.ytsheet.consts.EFFECT_COLUMNS));
+	result.push(io.github.shunshun94.trpg.ytsheet._convertList(effectData, io.github.shunshun94.trpg.ytsheet.consts.EFFECT_COLUMNS, ' / '));
 	result.push('');
 	result.push('');
 
 	result.push('■コンボ■\n');
 	const comboData = io.github.shunshun94.trpg.ytsheet._getDoubleCrossCombos(json);
-	result.push(io.github.shunshun94.trpg.ytsheet._convertList(comboData, io.github.shunshun94.trpg.ytsheet.consts.COMBO_COLUMNS));
+	result.push(io.github.shunshun94.trpg.ytsheet._convertList(comboData, io.github.shunshun94.trpg.ytsheet.consts.COMBO_COLUMNS, ' / '));
 	result.push('');
 	result.push('');
 
@@ -280,17 +280,17 @@ io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2DoubleCrossPc
 
 	result.push('・武器');
 	const weaponData = io.github.shunshun94.trpg.ytsheet._getDoubleCrossWeapons(json);
-	result.push(io.github.shunshun94.trpg.ytsheet._convertList(weaponData, io.github.shunshun94.trpg.ytsheet.consts.WEAPON_COLUMNS));
+	result.push(io.github.shunshun94.trpg.ytsheet._convertList(weaponData, io.github.shunshun94.trpg.ytsheet.consts.WEAPON_COLUMNS, ' / '));
 	result.push('');
 
 	result.push('・防具');
 	const armorData = io.github.shunshun94.trpg.ytsheet._getDoubleCrossArmors(json);
-	result.push(io.github.shunshun94.trpg.ytsheet._convertList(armorData, io.github.shunshun94.trpg.ytsheet.consts.ARMOR_COLUMNS));
+	result.push(io.github.shunshun94.trpg.ytsheet._convertList(armorData, io.github.shunshun94.trpg.ytsheet.consts.ARMOR_COLUMNS, ' / '));
 	result.push('');
 
 	result.push('・その他');
 	const itemData = io.github.shunshun94.trpg.ytsheet._getDoubleCrossItems(json);
-	result.push(io.github.shunshun94.trpg.ytsheet._convertList(itemData, io.github.shunshun94.trpg.ytsheet.consts.ITEM_COLUMNS));
+	result.push(io.github.shunshun94.trpg.ytsheet._convertList(itemData, io.github.shunshun94.trpg.ytsheet.consts.ITEM_COLUMNS, ' / '));
 	result.push('');
 
 	result.push(`【常備化ポイント】${(String(json.stockTotal || 2)).padStart(4, ' ')} pt`);
@@ -300,13 +300,13 @@ io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2DoubleCrossPc
 
 	result.push('■ロイス■');
 	const loisData = io.github.shunshun94.trpg.ytsheet._getDoubleCrossLoises(json);
-	result.push(io.github.shunshun94.trpg.ytsheet._convertList(loisData, io.github.shunshun94.trpg.ytsheet.consts.LOISES_COLUMNS));
+	result.push(io.github.shunshun94.trpg.ytsheet._convertList(loisData, io.github.shunshun94.trpg.ytsheet.consts.LOISES_COLUMNS, ' / '));
 	result.push('');
 	result.push('');
 
 	result.push('■メモリー■');
 	const memoryData = io.github.shunshun94.trpg.ytsheet._getDoubleCrossMemories(json);
-	result.push(io.github.shunshun94.trpg.ytsheet._convertList(memoryData, io.github.shunshun94.trpg.ytsheet.consts.MEMORIES_COLUMNS));
+	result.push(io.github.shunshun94.trpg.ytsheet._convertList(memoryData, io.github.shunshun94.trpg.ytsheet.consts.MEMORIES_COLUMNS, ' / '));
 	result.push('');
 	result.push('');
 

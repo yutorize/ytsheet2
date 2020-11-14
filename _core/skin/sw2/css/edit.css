@@ -63,10 +63,14 @@ dt.fail + dd > input {
   background-color: #ddd;
   color: #000;
 }
+input.error,
+input.select,
 .error input,
 .error select {
   color: #c00;
-  text-decoration: line-through;
+  border-color: #f00;
+  border-style: dotted;
+  background-color: rgba(255,0,0,0.1);
 }
 .evo input,
 .evo select,

@@ -23,8 +23,8 @@ if(!$file){ error('データが見つかりません。'); }
 ## キャラシ削除
 if($mode eq 'delete'){
   open (my $FH, "+<", $data_list) or error('一覧ファイルのオープンに失敗しました。');
-  my @list = <$FH>;
   flock($FH, 2);
+  my @list = <$FH>;
   seek($FH, 0, 0);
   foreach (@list){
     my($id, undef) = split /<>/;
@@ -38,8 +38,8 @@ if($mode eq 'delete'){
   close($FH);
 
   open (my $FH, '+<', $set::passfile) or error('IDファイルのオープンに失敗しました。');
-  my @list = <$FH>;
   flock($FH, 2);
+  my @list = <$FH>;
   seek($FH, 0, 0);
   foreach (@list){
     my($id, undef) = split /<>/;
