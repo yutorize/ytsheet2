@@ -291,7 +291,7 @@ io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2SwordWorldEne
 			invisible: false, hideStatus: false,
 			color: '',
 			roomId: null,
-			commands: defaultPalette.palette,
+			commands: defaultPalette.palette || '',
 			speaking: true
 	};
 	const partsLenght = Number(json.statusNum);
