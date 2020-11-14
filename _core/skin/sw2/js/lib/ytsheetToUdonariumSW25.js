@@ -123,26 +123,28 @@ io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2SwordWorldEn
 			);
 		}
 	}
-	data_character_detail['能力値'] = [];
-	if(statusLenght.length === 1) {
-		data_character_detail['能力値'].push(
-			`        <data currentValue="${json.status1Accuracy || '0'}" name="命中">${json.status1Accuracy || '0'}</data>`,
-			`        <data currentValue="${json.status1Damag || '0'}" name="打撃点">${json.status1Damage || '0'}</data>`,
-			`        <data currentValue="${json.status1Evasion || '0'}" name="回避力">${json.status1Evasion || '0'}</data>`,
-			`        <data type="numberResource" currentValue="${json.status1Defense || '0'}" name="防護点">${json.status1Defense || '0'}</data>`
-		);
-	} else {
-		for(let i = 0; i < statusLenght; i++) {
-			const cursor = i + 1;
+	if(defaultPalette === '') {
+		data_character_detail['能力値'] = [];
+		if(statusLenght.length === 1) {
 			data_character_detail['能力値'].push(
-					`        <data currentValue="${json['status' + cursor + 'Accuracy'] || '0'}" name="命中${cursor}">${json['status' + cursor + 'Accuracy'] || '0'}</data>`,
-					`        <data currentValue="${json['status' + cursor + 'Damage'] || '0'}" name="打撃点${cursor}">${json['status' + cursor + 'Damage'] || '0'}</data>`,
-					`        <data currentValue="${json['status' + cursor + 'Evasion'] || '0'}" name="回避力${cursor}">${json['status' + cursor + 'Evasion'] || '0'}</data>`,
-					`        <data type="numberResource" currentValue="${json['status' + cursor + 'Defense'] || '0'}" name="防護点${cursor}">${json['status' + cursor + 'Defense'] || '0'}</data>`,
+				`        <data currentValue="${json.status1Accuracy || '0'}" name="命中">${json.status1Accuracy || '0'}</data>`,
+				`        <data currentValue="${json.status1Damag || '0'}" name="打撃点">${json.status1Damage || '0'}</data>`,
+				`        <data currentValue="${json.status1Evasion || '0'}" name="回避力">${json.status1Evasion || '0'}</data>`,
+				`        <data type="numberResource" currentValue="${json.status1Defense || '0'}" name="防護点">${json.status1Defense || '0'}</data>`
 			);
+		} else {
+			for(let i = 0; i < statusLenght; i++) {
+				const cursor = i + 1;
+				data_character_detail['能力値'].push(
+						`        <data currentValue="${json['status' + cursor + 'Accuracy'] || '0'}" name="命中${cursor}">${json['status' + cursor + 'Accuracy'] || '0'}</data>`,
+						`        <data currentValue="${json['status' + cursor + 'Damage'] || '0'}" name="打撃点${cursor}">${json['status' + cursor + 'Damage'] || '0'}</data>`,
+						`        <data currentValue="${json['status' + cursor + 'Evasion'] || '0'}" name="回避力${cursor}">${json['status' + cursor + 'Evasion'] || '0'}</data>`,
+						`        <data type="numberResource" currentValue="${json['status' + cursor + 'Defense'] || '0'}" name="防護点${cursor}">${json['status' + cursor + 'Defense'] || '0'}</data>`,
+				);
+			}
 		}
+		data_character_detail['能力値'].push(`        <data type="numberResource" currentValue="${json.sin || 0}" name="穢れ度">5</data>`);
 	}
-	data_character_detail['能力値'].push(`        <data type="numberResource" currentValue="${json.sin || 0}" name="穢れ度">5</data>`);
 	if(defaultPalette && defaultPalette.parameters.length) {
 		data_character_detail['バフ・デバフ'] = defaultPalette.parameters.map((param)=>{
 			return `        <data type="numberResource" currentValue="${param.value}" name="${param.label}">${param.value < 10 ? 10 : param.value}</data>`; 
