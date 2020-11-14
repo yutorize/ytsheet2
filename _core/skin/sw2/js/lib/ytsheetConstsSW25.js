@@ -76,19 +76,19 @@ io.github.shunshun94.trpg.ytsheet.consts.card.color = {
 io.github.shunshun94.trpg.ytsheet.consts.card.rank = ['B', 'A', 'S', 'SS'];
 io.github.shunshun94.trpg.ytsheet.consts.accessory = {};
 io.github.shunshun94.trpg.ytsheet.consts.accessory.part = {
-	Head:'頭',
-	Face:'顔',
-	Ear:'耳',
-	Neck:'首',
+	Head:' 頭 ',
+	Face:' 顔 ',
+	Ear:' 耳 ',
+	Neck:' 首 ',
 	Back:'背中',
 	HandR:'右手',
 	HandL:'左手',
-	Waist:'腰',
-	Leg:'足',
-	Other:'他',
-	Other2:'他',
-	Other3:'他',
-	Other4:'他',
+	Waist:' 腰 ',
+	Leg:' 足 ',
+	Other:' 他 ',
+	Other2:' 他 ',
+	Other3:' 他 ',
+	Other4:' 他 ',
 };
 io.github.shunshun94.trpg.ytsheet.consts.magic = {
 	magicPowerSor:'真語魔法',
@@ -102,4 +102,36 @@ io.github.shunshun94.trpg.ytsheet.consts.magic = {
 	magicPowerBar:'呪歌',
 	magicPowerAlc:'賦術',
 	magicPowerMys:'占瞳'
+};
+
+io.github.shunshun94.trpg.ytsheet.consts.PC_ARMORS_COLUMNS = {
+		type: '',
+		name: '名前',
+		reqd: '必筋',
+		dodge: '回避力',
+		defense: '防護点',
+		note: 'メモ'
+};
+
+io.github.shunshun94.trpg.ytsheet.consts.PC_WEAPONS_COLUMNS = {
+	name: '名前',
+	usage: '用法',
+	reqd: '必筋',
+	acc: '命中修正',
+	accTotal: '命中',
+	rate: '威力',
+	crit: 'C値',
+	dmg: 'ダメ修正',
+	dmgTotal: '追加ダメ',
+	note: 'メモ'
+};
+
+io.github.shunshun94.trpg.ytsheet.consts.ENEMY_STATUS_COLUMNS = {
+	name: '攻撃方法',
+	hit: ' 命中力 ',
+	damage: ' 打撃点 ',
+	dodge: ' 回避力 ',
+	defense: ' 防護点 ',
+	hp: ' HP ',
+	mp: ' MP '
 };
