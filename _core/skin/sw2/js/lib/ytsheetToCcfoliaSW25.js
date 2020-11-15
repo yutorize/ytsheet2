@@ -55,46 +55,6 @@ io.github.shunshun94.trpg.ccfolia.generateRndStr = () => {
 	return randomString;
 };
 
-io.github.shunshun94.trpg.ccfolia.separateParametersFromChatPalette = (chatPalette) => {
-	const result = {
-		palette: '',
-		parameters: []
-	};
-	const palette = [];
-	const parameterRegExp = /\/\/(.+)=(\d+)/;
-	chatPalette.split('\n').forEach((line)=>{
-		if(line.startsWith('//')) {
-			const parameterExecResult = parameterRegExp.exec(line);
-			if(parameterExecResult) {
-				result.parameters.push({
-					label:parameterExecResult[1],
-					value:Number(parameterExecResult[2])
-				});
-			}
-		} else {
-			palette.push(line);
-		}
-	});
-	result.palette = palette.join('\n');
-	return result;
-};
-
-io.github.shunshun94.trpg.ccfolia.getChatPalette = (sheetUrl = '') => {
-	return new Promise((resolve, reject)=>{
-		if(sheetUrl === '' || ! sheetUrl.startsWith(location.origin)) {resolve('');return;}
-		let xhr = new XMLHttpRequest();
-		xhr.open('GET', `${sheetUrl}&tool=bcdice&mode=palette`, true);
-		xhr.responseType = "text";
-		xhr.onload = (e) => {
-			resolve(io.github.shunshun94.trpg.ccfolia.separateParametersFromChatPalette(e.currentTarget.response));
-		};
-		xhr.onerror = () => resolve('');
-		xhr.onabort = () => resolve('');
-		xhr.ontimeout = () => resolve('');
-		xhr.send();
-  });
-};
-
 io.github.shunshun94.trpg.ccfolia.getPcSkillList = (json) => {
 	return [
 		{value:json.level, label:'冒険者レベル'},
@@ -127,7 +87,7 @@ io.github.shunshun94.trpg.ccfolia.getPcSkillList = (json) => {
 io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2SwordWorldPC = async (json, opt_sheetUrl = '', opt_defaultPictureUrl = io.github.shunshun94.trpg.ccfolia.CONSTS.DEFAULT_PC_PICTURE) => {
 	const result = io.github.shunshun94.trpg.ccfolia.getCharacterSeed();
 	const skills = io.github.shunshun94.trpg.ccfolia.getPcSkillList(json);
-	const defaultPalette = await io.github.shunshun94.trpg.ccfolia.getChatPalette(opt_sheetUrl);
+	const defaultPalette = await io.github.shunshun94.trpg.ytsheet.getChatPalette(opt_sheetUrl);
 	const character = {
 			name: json.characterName,
 			playerName: json.playerName,
@@ -274,7 +234,7 @@ io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2SwordWorldEne
 
 io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2SwordWorldEnemy = async (json, opt_sheetUrl = '', opt_defaultPictureUrl = io.github.shunshun94.trpg.ccfolia.CONSTS.DEFAULT_ENEMY_PICTURE) => {
 	const result = io.github.shunshun94.trpg.ccfolia.getCharacterSeed();
-	const defaultPalette = await io.github.shunshun94.trpg.ccfolia.getChatPalette(opt_sheetUrl);
+	const defaultPalette = await io.github.shunshun94.trpg.ytsheet.getChatPalette(opt_sheetUrl);
 	const character = {
 			name: json.characterName || json.monsterName,
 			playerName: 'GM',
