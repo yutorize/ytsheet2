@@ -1445,7 +1445,7 @@ print <<"HTML";
           ／
           使用ダイスbot: <select name="paletteTool" onchange="palettePresetChange();" style="width:auto;">
           <option value="">ゆとチャadv.
-          <option value="bcdice" @{[ $pc{'paletteTool'} eq 'bcdice' ? 'checked' : '']}>BCDice
+          <option value="bcdice" @{[ $pc{'paletteTool'} eq 'bcdice' ? 'selected' : '']}>BCDice
           </select>
         </p>
         </div>

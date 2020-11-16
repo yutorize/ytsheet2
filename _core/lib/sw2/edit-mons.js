@@ -192,7 +192,7 @@ palettePresetChange();
 function palettePresetChange (){
   const tool = form.paletteTool.value;
   document.getElementById('palettePreset').value = 
-    form.paletteUseVar.checked ? (tool == 'bcdice' ? palettePresetText : palettePresetTextBcd)
+    form.paletteUseVar.checked ? (tool == 'bcdice' ? palettePresetTextBcd : palettePresetText)
                                : (tool == 'bcdice' ? palettePresetTextBcdRaw : palettePresetTextRaw);
 }
 
