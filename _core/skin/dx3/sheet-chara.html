@@ -18,42 +18,8 @@
   <link rel="stylesheet" media="all" href="<TMPL_VAR coreDir>/skin/dx3/css/chara.css?<TMPL_VAR ver>">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
   <script>
-function popImage() {
-  document.getElementById("image-box").style.bottom = 0;
-  document.getElementById("image-box").style.opacity = 1;
-}
-function closeImage() {
-  document.getElementById("image-box").style.opacity = 0;
-  setTimeout(function(){
-    document.getElementById("image-box").style.bottom = '-100vh';
-  },200);
-}
-function editOn() {
-  document.getElementById("login-form").classList.toggle('show');
-}
-function backuplistOn() {
-  document.getElementById("backuplist").classList.toggle('show');
-}
-let cpOpenFirst = 0;
-function chatPaletteOn() {
-  document.querySelector(".chat-palette").classList.toggle('show');
-  if(!cpOpenFirst){ chatPaletteSelect(''); }
-  cpOpenFirst++;
-}
-function chatPaletteSelect(tool) {
-  const url = './?mode=palette&id=<TMPL_VAR id>&tool='+tool;
-  fetch(url)
-  .then(response => { return response.text(); })
-  .then(text => { document.getElementById('chatPaletteBox').value = text; });
-  document.querySelectorAll('.chat-palette-menu a').forEach(elm => {
-    elm.classList.remove('check');
-  });
-  document.getElementById('cp-switch-'+(tool||'ytc')).classList.add('check');
-}
-
-function donwloadListOn() {
-  document.getElementById("downloadlist").classList.toggle('show');
-}
+const sheetId = '<TMPL_VAR id>';
+const paletteTool = '<TMPL_VAR paletteTool>';
 
 function getJsonData() {
   return new Promise((resolve, reject)=>{
@@ -71,30 +37,30 @@ function getJsonData() {
 }
 
 function generateUdonariumZipFile(title, data, image){
-	return new Promise((resolve, dummy)=>{
-		let zip = new JSZip();
-		let folder = zip.folder(title);
-		if(image.hash) {
-			folder.file(image.fileName, image.data);
-		}
-		folder.file(`${title}.xml`, data, {binary: false});
-		zip.generateAsync({ type: "blob" }).then(blob => {
-			const dataUrl = URL.createObjectURL(blob);
-			resolve(dataUrl);
-		});		
-	});
+  return new Promise((resolve, dummy)=>{
+    let zip = new JSZip();
+    let folder = zip.folder(title);
+    if(image.hash) {
+      folder.file(image.fileName, image.data);
+    }
+    folder.file(`${title}.xml`, data, {binary: false});
+    zip.generateAsync({ type: "blob" }).then(blob => {
+      const dataUrl = URL.createObjectURL(blob);
+      resolve(dataUrl);
+    });    
+  });
 }
 
 function generateCcfoliaZipFile(title, data){
-	return new Promise((resolve, dummy)=>{
-		let zip = new JSZip();
-		zip.file("__data.json", data, {binary: false});
+  return new Promise((resolve, dummy)=>{
+    let zip = new JSZip();
+    zip.file("__data.json", data, {binary: false});
     zip.file(".token", `0.${io.github.shunshun94.trpg.ccfolia.generateRndStr()}`);
-		zip.generateAsync({ type: "blob", compression: "DEFLATE", compressionOptions: {level: 9}}).then(blob => {
-			const dataUrl = URL.createObjectURL(blob);
-			resolve(dataUrl);
-		});		
-	});
+    zip.generateAsync({ type: "blob", compression: "DEFLATE", compressionOptions: {level: 9}}).then(blob => {
+      const dataUrl = URL.createObjectURL(blob);
+      resolve(dataUrl);
+    });    
+  });
 }
 
 function downloadFile(title, url) {
@@ -170,6 +136,7 @@ window.onload = function() {
 </head>
 <body>
   <script src="<TMPL_VAR coreDir>/skin/_common/js/common.js?<TMPL_VAR ver>"></script>
+  <script src="<TMPL_VAR coreDir>/skin/_common/js/sheet.js?<TMPL_VAR ver>"></script>
   <script src="<TMPL_VAR coreDir>/skin/_common/js/lib/sha256.js?<TMPL_VAR ver>"></script>
   <script src="<TMPL_VAR coreDir>/skin/_common/js/lib/jszip.js?<TMPL_VAR ver>"></script>
   <script src="<TMPL_VAR coreDir>/skin/_common/js/lib/ytsheetCommon.js?<TMPL_VAR ver>"></script>
