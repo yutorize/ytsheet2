@@ -352,9 +352,20 @@ dl.box > dt,
 }
 .box.chat-palette textarea {
   width: calc(100% - 2em);
-  height: calc(100vh - 120px - 3em);
+  height: calc(100vh - 12rem - 3em);
   margin: 0 1em 1em;
   padding: .5em;
+}
+@media screen and (max-width:735px){
+  .box.chat-palette.show {
+    width: calc(100% - 2rem);
+    top: 8rem;
+    left: 1rem;
+    right: 1rem;
+  }
+  .box.chat-palette textarea {
+    width: calc(100% - 2em);
+  }
 }
 
 /* テキスト処理 */
@@ -686,97 +697,64 @@ aside#downloadlist {
   height: calc(100vh - 10rem);
   top: 8rem;
   
+  padding-bottom: .5em;
+  
   border-style: solid;
-
+  border-width: 1px 0px 1px 1px;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
   background: rgba(255,255,255,0.9);
   
   overflow-y: auto;
   
   z-index: 300;
-  
-  animation-duration: 0.5s;
-  animation-fill-mode: forwards;
 }
 
-aside#backuplist {
+aside#backuplist:not(.show),
+aside#downloadlist:not(.show) {
   right: 0;
   animation-name: bulist-hide;
-  border-width: 1px 0px 1px 1px;
-  border-top-left-radius: 5px;
-  border-bottom-left-radius: 5px;
-}
-aside#downloadlist {
-  left: 0;
-  animation-name: dllist-hide;
-  border-width: 1px 1px 1px 0px;
-  border-top-right-radius: 5px;
-  border-bottom-right-radius: 5px;
-}
-
-@keyframes bulist-in {
-  0% {
-    right: -100vw;
-  }
-  100% {
-    right: 0;
-  }
-}
-
-@keyframes dllist-in {
-  0% {
-    left: -100vw;
-  }
-  100% {
-    left: 0;
-  }
+  animation-duration: 0.5s;
+  animation-fill-mode: forwards;
 }
 
 aside#backuplist.show,
 aside#downloadlist.show {
   display: block;
+  animation-name: bulist-in;
   animation-duration: 0.2s;
   animation-fill-mode: forwards;
 }
-
-aside#backuplist.show {
-  animation-name: bulist-in;
+@keyframes bulist-in {
+  0%   { right: -100vw; }
+  100% { right: 0; }
 }
-
-aside#downloadlist.show {
-  animation-name: dllist-in;
-}
-
 @keyframes bulist-hide {
-  0% {
-    right: 0;
-  }
-  100% {
-    right: -100vw;
-    display:none;
-  }
+  0%   { right:      0; }
+  100% { right: -100vw; display: none; }
 }
 
-@keyframes dllist-hide {
-  0% {
-    left: 0;
-  }
-  100% {
-    left: -100vw;
-    display:none;
-  }
-}
 .night aside#backuplist,
 .night aside#downloadlist {
   background: rgba(0,0,0,0.9);
+}
+aside#backuplist h2,
+aside#downloadlist h2 {
+  font-size: 1em;
+  padding-left: .2em;
 }
 aside#backuplist ul,
 aside#downloadlist ul {
   white-space: nowrap;
 }
-aside#backuplist ul li + li,
-aside#downloadlist ul li + li {
+aside#backuplist ul li,
+aside#downloadlist ul li {
   border-width: 1px 0 0;
   border-style: dotted;
+}
+aside#backuplist ul li:last-child ,
+aside#downloadlist ul li:last-child {
+  border-bottom-width: 1px;
 }
 aside#backuplist ul li.backup-now {
   background-color: rgba(100,200,255,0.2);
@@ -786,6 +764,7 @@ aside#downloadlist ul li a {
   display: block;
   padding: .3rem 3rem .3rem 1.5rem;
   color: #000;
+  cursor: pointer;
 }
 .night aside#backuplist ul li a,
 .night aside#downloadlist ul li a {
@@ -794,6 +773,13 @@ aside#downloadlist ul li a {
 aside#backuplist ul li a:hover,
 aside#downloadlist ul li a:hover {
   background: linear-gradient(to top, rgba(100,200,255,0.2) 20%, transparent 20%);
+}
+@media screen and (max-width:735px){
+  aside#backuplist,
+  aside#downloadlist {
+    top: 10rem;
+    height: calc(100vh - 12rem);
+  }
 }
 
 

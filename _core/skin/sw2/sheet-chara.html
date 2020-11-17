@@ -153,8 +153,8 @@ window.onload = function() {
         <TMPL_ELSE>
           <TMPL_IF FellowMode><li><a href="./?id=<TMPL_VAR id>">通常</a></li></TMPL_IF>
           <TMPL_IF fellowPublic><TMPL_UNLESS FellowMode><li><a href="./?id=<TMPL_VAR id>&f=1">フェロー</a></li></TMPL_UNLESS></TMPL_IF>
-          <li class="small"><a onclick="donwloadListOn();">保存</a></li>
           <li class="small"><a onclick="chatPaletteOn();"><span>パレット</span></a></li>
+          <li class="small"><a onclick="donwloadListOn();">保存</a></li>
           <li class="small"><a onclick="backuplistOn()"><span>過去ログ</span></a></li>
           <TMPL_IF ReqdPassword>
           <li class="small"><a onclick="editOn()">編集</a></li>
@@ -175,14 +175,16 @@ window.onload = function() {
   </aside>
   </TMPL_IF>
   
-  <aside id="backuplist">
+  <aside id="backuplist" class="float-box">
+    <h2>過去ログ</h2>
     <ul>
       <li<TMPL_UNLESS backupMode> class="backup-now"</TMPL_UNLESS>><a href="?id=<TMPL_VAR id>">最新</a></li>
       <TMPL_LOOP Backup><li<TMPL_IF NOW> class="backup-now"</TMPL_IF>><a href="?id=<TMPL_VAR id>&backup=<TMPL_VAR URL>"><TMPL_VAR DATE></a></li></TMPL_LOOP>
     </ul>
   </aside>
 
-  <aside id="downloadlist">
+  <aside id="downloadlist" class="float-box">
+    <h2>保存</h2>
     <ul>
       <li id="downloadlist-udonarium"><a onclick="downloadAsUdonarium();">Udonarium 向けのデータ</a></li>
       <li id="downloadlist-ccfolia"><a onclick="downloadAsCcfolia();">ココフォリア向けのデータ</a></li>
@@ -191,7 +193,7 @@ window.onload = function() {
     </ul>
   </aside>
 
-  <form id="login-form" method="post" action="./">
+  <form id="login-form" class="float-box" method="post" action="./">
     <input type="hidden" name="mode" value="edit">
     <input type="hidden" name="id" value="<TMPL_VAR id>">
     <input type="password" name="pass" placeholder="password">
@@ -800,7 +802,7 @@ window.onload = function() {
         <div><p><TMPL_VAR cashbook></p></div>
       </section>
       </TMPL_IF>
-      <section class="box chat-palette">
+      <section class="box chat-palette float-box">
         <h2>チャットパレット</h2>
         <div class="chat-palette-menu">
           <b>使用ダイスbot:</b>

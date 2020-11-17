@@ -10,16 +10,20 @@ function closeImage() {
   },200);
 }
 function editOn() {
+  document.querySelectorAll('.float-box:not(#login-form)').forEach(obj => { obj.classList.remove('show') });
   document.getElementById("login-form").classList.toggle('show');
 }
 function backuplistOn() {
+  document.querySelectorAll('.float-box:not(#backuplist)').forEach(obj => { obj.classList.remove('show') });
   document.getElementById("backuplist").classList.toggle('show');
 }
 function donwloadListOn() {
+  document.querySelectorAll('.float-box:not(#downloadlist)').forEach(obj => { obj.classList.remove('show') });
   document.getElementById("downloadlist").classList.toggle('show');
 }
 let cpOpenFirst = 0;
 function chatPaletteOn() {
+  document.querySelectorAll('.float-box:not(.chat-palette)').forEach(obj => { obj.classList.remove('show') });
   document.querySelector(".chat-palette").classList.toggle('show');
   if(!cpOpenFirst){ chatPaletteSelect(paletteTool); }
   cpOpenFirst++;
