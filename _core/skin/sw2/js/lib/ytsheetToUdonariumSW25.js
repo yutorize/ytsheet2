@@ -237,7 +237,22 @@ io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2SwordWorldPC
 		{level:json.lvAri, name:'アリストクラシー'},
 		{level:json.lvArt, name:'アーティザン'}].filter((d)=>{return d.level});
 	if(defaultPalette) {
+		data_character_detail['能力値'] = [
+	        `        <data name="器用度">${json.sttDex}${addToStr(json.sttAddA)}</data>`,
+	        `        <data name="敏捷度">${json.sttAgi}${addToStr(json.sttAddB)}</data>`,
+	        `        <data name="筋力">${json.sttStr}${addToStr(json.sttAddC)}</data>`,
+	        `        <data name="生命力">${json.sttVit}${addToStr(json.sttAddD)}</data>`,
+	        `        <data name="知力">${json.sttInt}${addToStr(json.sttAddE)}</data>`,
+	        `        <data name="精神力">${json.sttMnd}${addToStr(json.sttAddF)}</data>`
+		];
+		data_character_detail['技能'] = skills.map((s)=>{
+			return `<data name="${s.name}">${s.level}</data>`
+		});
 		data_character_detail['バフ・デバフ'] = defaultPalette.parameters.map((param)=>{
+			for (const s of skills){
+				if(s.name === param.label){ return `` }
+			}
+			if(param.label.match(/^(器用度|敏捷度|筋力|生命力|知力|精神力)$/)){ return `` }
 			return `        <data type="numberResource" currentValue="${param.value}" name="${param.label}">${param.value < 10 ? 10 : param.value}</data>`; 
 		});
 	} else {
