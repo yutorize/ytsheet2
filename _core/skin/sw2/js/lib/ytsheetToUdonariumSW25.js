@@ -122,7 +122,7 @@ io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2SwordWorldEn
 
 	let palette = `<chat-palette dicebot="SwordWorld2_5">\n`;
 	if(defaultPalette) {
-		palette += defaultPalette.palette;
+		palette += defaultPalette.palette.replace('<','&lt;').replace('>','&gt;');
 	} else {
 		const palette_detail = {};
 		palette_detail['情報共有'] = '';
@@ -285,7 +285,7 @@ io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2SwordWorldPC
 
 	let palette = `<chat-palette dicebot="SwordWorld2_5">\n`;
 	if(defaultPalette) {
-		palette += defaultPalette.palette;
+		palette += defaultPalette.palette.replace('<','&lt;').replace('>','&gt;');
 	} else {
 		const palette_detail = {};
 		palette_detail['情報共有'] = `現在の状態　HP:{HP} / MP:{MP}\n`;

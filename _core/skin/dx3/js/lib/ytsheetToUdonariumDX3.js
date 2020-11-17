@@ -133,7 +133,7 @@ io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2DoubleCross3
 
 	let palette = `<chat-palette dicebot="DoubleCross">\n`;
 	if(defaultPalette) {
-		palette += defaultPalette.palette;
+		palette += defaultPalette.palette.replace('<','&lt;').replace('>','&gt;');
 	} else {
 		const tmp_palette = [];
 
