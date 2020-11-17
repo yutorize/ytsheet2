@@ -252,7 +252,7 @@ io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2SwordWorldPC 
 		let i = 0;
 		while(json[`accessory${part}${''.padStart(i, '_')}Name`]) {
 			const name = json[`accessory${part}${''.padStart(i, '_')}Name`];
-			const isCustom = json[`accessory${part}${''.padStart(i, '_')}Own`] ? '(先)' : '';
+			const isCustom = json[`accessory${part}${''.padStart(i, '_')}Own`] ? '(専)' : '';
 			const note = json[`accessory${part}${''.padStart(i, '_')}Note`] || '';
 			accessoryList.push({
 				name: `${partName}： ${name}${isCustom}`,
