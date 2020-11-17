@@ -396,6 +396,56 @@ sub rgb_to_hsl {
   return ($hu, $sa, $li);
 };
 
+
+
+### チャットパレット --------------------------------------------------
+sub palettePresetBuffDelete {
+  my $text = shift;
+  my %property;
+  $_ =~ s|^//(.+?)=(.*?)$|$property{$1} = $2;|egi foreach split("\n",$text);
+  my $hit;
+  foreach(0 .. 100){
+    $hit = 0;
+    foreach (keys %property){
+      if($text =~ s|\{$_\}|$property{$_}|g){ $hit = 1; }
+    }
+    last if !$hit
+  }
+  $text =~ s#^//.+?=.*?(\n|$)##gm;
+  $text =~ s/\+0//g;
+  $text =~ s/\#0\$//g;
+  $text =~ s/^### ■バフ・デバフ\n//g;
+  
+  return $text;
+}
+
+sub palettePropertiesUsedOnly {
+  my $palette = shift;
+  my $type = shift;
+  my %used;
+  my @propaties_in = paletteProperties($type);
+  my @propaties_out;
+  my $hit = 1;
+  foreach (0 .. 100){
+    $hit = 0;
+    foreach my $line (@propaties_in){
+      if($line =~ "^//(.+?)="){
+        if   ($palette =~ /^\/\/$1=/m){ ; }
+        elsif($palette =~ /\{($1)\}/){ $palette .= $line."\n"; $hit = 1 }
+      }
+    }
+    last if !$hit;
+  }
+  foreach (@propaties_in){
+    if($_ =~ "^//(.+?)="){
+      if($palette =~ /\{($1)\}/){ push @propaties_out, $_; }
+    }
+    elsif(!$_){
+      push @propaties_out, '';
+    }
+  }
+  return @propaties_out;
+}
 ### 案内画面 --------------------------------------------------
 sub info {
   our $header = shift;

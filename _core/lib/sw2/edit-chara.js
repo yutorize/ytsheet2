@@ -1734,10 +1734,30 @@ function pointx(dice){
 // チャットパレット ----------------------------------------
 palettePresetChange();
 function palettePresetChange (){
-  const tool = form.paletteTool.value;
-  document.getElementById('palettePreset').value = 
-    form.paletteUseVar.checked ? (tool == 'bcdice' ? palettePresetTextBcd : palettePresetText)
-                               : (tool == 'bcdice' ? palettePresetTextBcdRaw : palettePresetTextRaw);
+  const tool = form.paletteTool.value || 'ytc';
+  const type = form.paletteUseVar.checked ? 'full' : 'simple';
+  let presetText = palettePresetText[tool][type];
+  if(!form.paletteUseBuff.checked){
+    let property = {};
+    presetText.split("\n").forEach(text => {
+      if(text.match(/^\/\/(.+?)=(.*?)$/)){ property[RegExp.$1] = RegExp.$2; }
+    });
+    let hit;
+    for (let i=0; i<100; i++) {
+      hit = 0;
+      Object.keys(property).forEach(key => {
+        presetText = presetText.replace(new RegExp('{'+key+'}',"g"), ()=>{
+          hit = 1;
+          return property[key];
+        });
+      });
+      if(!hit) break;
+    };
+    presetText = presetText.replace(/^\/\/(.+?)=(.*?)(\n|$)/gm, '');
+    presetText = presetText.replace(/\+0/g, '');
+    presetText = presetText.replace(/\#0\$/g, '');
+  }
+  document.getElementById('palettePreset').value = presetText;
 }
 
 // 画像配置 ----------------------------------------

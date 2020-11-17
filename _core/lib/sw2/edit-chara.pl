@@ -117,8 +117,12 @@ if($pc{'colorCustom'} && $pc{'colorHeadBgA'}) {
   ($pc{'colorBaseBgH'}, $pc{'colorBaseBgS'}, undef) = rgb_to_hsl($pc{'colorBaseBgR'},$pc{'colorBaseBgG'},$pc{'colorBaseBgB'});
   $pc{'colorBaseBgS'} = $pc{'colorBaseBgS'} * $pc{'colorBaseBgA'} * 10;
 }
+if($mode eq 'blanksheet'){
+  $pc{'paletteUseBuff'} = 1;
+}
 
 ### アップデート --------------------------------------------------
+$pc{'ver'} =~ s/^([0-9]+)\.([0-9]+)\.([0-9]+)$/$1.$2$3/;
 if($pc{'ver'} < 1.10){
   $pc{'fairyContractEarth'} = 1 if $pc{'ftElemental'} =~ /土|地/;
   $pc{'fairyContractWater'} = 1 if $pc{'ftElemental'} =~ /水|氷/;
@@ -126,6 +130,9 @@ if($pc{'ver'} < 1.10){
   $pc{'fairyContractWind' } = 1 if $pc{'ftElemental'} =~ /風|空/;
   $pc{'fairyContractLight'} = 1 if $pc{'ftElemental'} =~ /光/;
   $pc{'fairyContractDark' } = 1 if $pc{'ftElemental'} =~ /闇/;
+}
+if($pc{'ver'} < 1.11001){
+  $pc{'paletteUseBuff'} = 1;
 }
 
 ### 改行処理 --------------------------------------------------
@@ -1425,13 +1432,13 @@ print <<"HTML";
             <option value="end"      @{[ $pc{'paletteInsertType'} eq 'end'     ?'selected':'' ]}>プリセットの直後に挿入</option>
           </select>
         </p>
-        <textarea name="chatPalette" style="height:20em" placeholder="例）&#13;&#10;2d6+{冒険者}+{器用}&#13;&#10;&#13;&#10;※入力がない場合、プリセットがそのまま反映されます。">$pc{'chatPalette'}</textarea>
+        <textarea name="chatPalette" style="height:20em" placeholder="例）&#13;&#10;2d6+{冒険者}+{器用}&#13;&#10;&#13;&#10;※入力がない場合、プリセットが自動的に反映されます。">$pc{'chatPalette'}</textarea>
         
         <div class="palette-column">
         <h2>デフォルト変数 （自動的に末尾に出力されます）</h2>
-        <textarea readonly style="height:20em">
+        <textarea id="paletteDefaultProperties" readonly style="height:20em">
 HTML
-  say $_ foreach(paletteProperties('','all'));
+  say $_ foreach(paletteProperties());
 print <<"HTML";
 </textarea>
           <label>@{[ input 'chatPalettePropertiesAll', 'checkbox']} 全ての変数を出力する</label><br>
@@ -1441,8 +1448,10 @@ print <<"HTML";
         <h2>プリセット （コピーペースト用）</h2>
         <textarea id="palettePreset" readonly style="height:20em"></textarea>
         <p>
-          <label>@{[ input 'paletteUseVar', 'checkbox','palettePresetChange']}変数を使う</label>
+          <label>@{[ input 'paletteUseVar', 'checkbox','palettePresetChange']}デフォルト変数を使う</label>
           ／
+          <label>@{[ input 'paletteUseBuff', 'checkbox','palettePresetChange']}バフデバフ用変数を使う</label>
+          <br>
           使用ダイスbot: <select name="paletteTool" onchange="palettePresetChange();" style="width:auto;">
           <option value="">ゆとチャadv.
           <option value="bcdice" @{[ $pc{'paletteTool'} eq 'bcdice' ? 'selected' : '']}>BCDice
@@ -1710,10 +1719,10 @@ print <<"HTML";
 HTML
 ## チャットパレット
 print <<"HTML";
-  let palettePresetText       = `@{[ palettePreset    ('') ]}`;
-  let palettePresetTextRaw    = `@{[ palettePresetRaw ('') ]}`;
-  let palettePresetTextBcd    = `@{[ palettePreset    ('', 'bcdice') ]}`;
-  let palettePresetTextBcdRaw = `@{[ palettePresetRaw ('', 'bcdice') ]}`;
+  let palettePresetText = {
+    'ytc'    : { 'full': `@{[ palettePreset()         ]}`, 'simple': `@{[ palettePresetSimple()         ]}` } ,
+    'bcdice' : { 'full': `@{[ palettePreset('bcdice') ]}`, 'simple': `@{[ palettePresetSimple('bcdice') ]}` } ,
+  };
   </script>
 </body>
 

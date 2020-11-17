@@ -36,5 +36,17 @@ sub tag_unescape {
   
   return $text;
 }
+sub tag_unescape_ytc {
+  my $text = $_[0];
+  $text =~ s/&amp;/&/g;
+  $text =~ s/&quot;/"/g;
+  $text =~ s/&lt;br&gt;/\n/gi;
+  
+  $text =~ s/\[\[(.+?)&gt;((?:(?!<br>)[^"])+?)\]\]/$1/gi; # リンク
+  $text =~ s/\[(.+?)#([a-zA-Z0-9\-]+?)\]/$1/gi; # シート内リンク
+  
+  $text =~ s/\n/<br>/gi;
+  return $text;
+}
 
 1;

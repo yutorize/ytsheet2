@@ -113,6 +113,9 @@ $pc{'colorHeadBgL'} = $pc{'colorHeadBgL'} eq '' ?  65 : $pc{'colorHeadBgL'};
 $pc{'colorBaseBgH'} = $pc{'colorBaseBgH'} eq '' ? 210 : $pc{'colorBaseBgH'};
 $pc{'colorBaseBgS'} = $pc{'colorBaseBgS'} eq '' ?   0 : $pc{'colorBaseBgS'};
 $pc{'colorBaseBgL'} = $pc{'colorBaseBgL'} eq '' ? 100 : $pc{'colorBaseBgL'};
+if($mode eq 'blanksheet'){
+  $pc{'paletteUseBuff'} = 1;
+}
 
 ### アップデート --------------------------------------------------
 $pc{'ver'} =~ s/^([0-9]+)\.([0-9]+)\.([0-9]+)$/$1.$2$3/;
@@ -125,6 +128,9 @@ if($pc{'ver'} && $pc{'ver'} < 1.10003){
       $pc{"combo${num}FixedAdd".$_} = $pc{"combo${num}Fixed".$_};
     }
   }
+}
+if($pc{'ver'} < 1.11001){
+  $pc{'paletteUseBuff'} = 1;
 }
 
 ### 折り畳み判断 --------------------------------------------------
@@ -993,13 +999,13 @@ print <<"HTML";
             <option value="end"      @{[ $pc{'paletteInsertType'} eq 'end'     ?'selected':'' ]}>プリセットの直後に挿入</option>
           </select>
         </p>
-        <textarea name="chatPalette" style="height:20em" placeholder="例）&#13;&#10;2d6+{冒険者}+{器用}&#13;&#10;&#13;&#10;※入力がない場合、プリセットがそのまま反映されます。">$pc{'chatPalette'}</textarea>
+        <textarea name="chatPalette" style="height:20em" placeholder="例）&#13;&#10;2d6+{冒険者}+{器用}&#13;&#10;&#13;&#10;※入力がない場合、プリセットが自動的に反映されます。">$pc{'chatPalette'}</textarea>
         
         <div class="palette-column">
         <h2>デフォルト変数 （自動的に末尾に出力されます）</h2>
-        <textarea readonly style="height:20em">
+        <textarea id="paletteDefaultProperties" readonly style="height:20em">
 HTML
-  say $_ foreach(paletteProperties('','all'));
+  say $_ foreach(paletteProperties());
 print <<"HTML";
 </textarea>
         <p>
@@ -1011,8 +1017,10 @@ print <<"HTML";
         <h2>プリセット （コピーペースト用）</h2>
         <textarea id="palettePreset" readonly style="height:20em"></textarea>
         <p>
-          <label>@{[ input 'paletteUseVar', 'checkbox','palettePresetChange']}変数を使う</label>
+          <label>@{[ input 'paletteUseVar', 'checkbox','palettePresetChange']}デフォルト変数を使う</label>
           ／
+          <label>@{[ input 'paletteUseBuff', 'checkbox','palettePresetChange']}バフデバフ用変数を使う</label>
+          <br>
           使用ダイスbot: <select name="paletteTool" onchange="palettePresetChange();" style="width:auto;">
           <option value="">ゆとチャadv.
           <option value="bcdice" @{[ $pc{'paletteTool'} eq 'bcdice' ? 'selected' : '']}>BCDice
@@ -1398,10 +1406,10 @@ foreach (@data::impulses) {
 print "};\n";
 ## チャットパレット
 print <<"HTML";
-  let palettePresetText       = `@{[ palettePreset    ('') ]}`;
-  let palettePresetTextRaw    = `@{[ palettePresetRaw ('') ]}`;
-  let palettePresetTextBcd    = `@{[ palettePreset    ('', 'bcdice') ]}`;
-  let palettePresetTextBcdRaw = `@{[ palettePresetRaw ('', 'bcdice') ]}`;
+  let palettePresetText = {
+    'ytc'    : { 'full': `@{[ palettePreset()         ]}`, 'simple': `@{[ palettePresetSimple()         ]}` } ,
+    'bcdice' : { 'full': `@{[ palettePreset('bcdice') ]}`, 'simple': `@{[ palettePresetSimple('bcdice') ]}` } ,
+  };
   </script>
 </body>
 

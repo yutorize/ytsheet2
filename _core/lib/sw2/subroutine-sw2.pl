@@ -65,5 +65,23 @@ sub text_convert_icon {
   
   return $text;
 } 
+sub tag_unescape_ytc {
+  my $text = $_[0];
+  $text =~ s/&amp;/&/g;
+  $text =~ s/&quot;/"/g;
+  $text =~ s/&lt;br&gt;/\n/gi;
+  
+  $text =~ s/\[魔\]/&#91;魔&#93;/gi;
+  $text =~ s/\[刃\]/&#91;刃&#93;/gi;
+  $text =~ s/\[打\]/&#91;打&#93;/gi;
+  
+  $text =~ s/\[\[(.+?)&gt;((?:(?!<br>)[^"])+?)\]\]/$1/gi; # リンク削除
+  $text =~ s/\[(.+?)#([a-zA-Z0-9\-]+?)\]/$1/gi; # シート内リンク削除
+  
+  $text =~ s/&#91;(.)&#93;/[$1]/g;
+  
+  $text =~ s/\n/<br>/gi;
+  return $text;
+}
 
 1;
