@@ -154,8 +154,8 @@ window.onload = function() {
         <TMPL_ELSE>
           <TMPL_IF FellowMode><li><a href="./?id=<TMPL_VAR id>">通常</a></li></TMPL_IF>
           <TMPL_IF fellowPublic><TMPL_UNLESS FellowMode><li><a href="./?id=<TMPL_VAR id>&f=1">フェロー</a></li></TMPL_UNLESS></TMPL_IF>
-          <li class="small"><a onclick="donwloadListOn();">保存</a></li>
           <li class="small"><a onclick="chatPaletteOn();"><span>パレット</span></a></li>
+          <li class="small"><a onclick="donwloadListOn();">保存</a></li>
           <li class="small"><a onclick="backuplistOn()"><span>過去ログ</span></a></li>
           <TMPL_IF ReqdPassword>
           <li class="small"><a onclick="editOn()">編集</a></li>
