@@ -169,7 +169,7 @@ io.github.shunshun94.trpg.ccfolia.consts.DX3_STATUS = [
 				name: '射撃',
 				column: 'Ranged'
 			}, {
-				name: '回避',
+				name: '知覚',
 				column: 'Percept'
 			}
 		],

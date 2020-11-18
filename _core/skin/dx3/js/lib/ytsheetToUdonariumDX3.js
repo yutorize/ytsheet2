@@ -208,7 +208,7 @@ io.github.shunshun94.trpg.udonarium.consts.DX3_STATUS = [
 				name: '射撃',
 				column: 'Ranged'
 			}, {
-				name: '回避',
+				name: '知覚',
 				column: 'Percept'
 			}
 		],
@@ -221,7 +221,7 @@ io.github.shunshun94.trpg.udonarium.consts.DX3_STATUS = [
 		column: 'Mind',
 		skills: [
 			{
-				name: 'ＲＣ',
+				name: 'RC',
 				column: 'RC'
 			}, {
 				name: '意志',
