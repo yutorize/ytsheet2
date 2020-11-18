@@ -122,12 +122,12 @@ sub palettePreset {
       else                { $text .= " ${name}\n"; }
       
       foreach my $pow (@{$pows{$id}}) {
-        $text .= "k${pow}[{魔法C}]+{$name}+{魔力修正}".($::pc{'magicDamageAdd'.$id}?"+$::pc{'magicDamageAdd'.$id}":'')."+{魔法D修正} ダメージ\n";
+        $text .= "k${pow}[{魔法C}]+{$name}+{魔力修正}".($::pc{'magicDamageAdd'.$id}?"+$::pc{'magicDamageAdd'.$id}":'')."+{魔法D修正} ダメージ".($bot{'BCD'}?"／${name}":"")."\n";
         $text .= "k${pow}+{$name}+{魔力修正}//"  .($::pc{'magicDamageAdd'.$id}?"+$::pc{'magicDamageAdd'.$id}":'')."+{魔法D修正} 半減\n" if ($bot{'YTC'});
-        $text .= "hk${pow}+{$name}+{魔力修正} 半減\n" if ($bot{'BCD'});
+        $text .= "hk${pow}+{$name}+{魔力修正} 半減／${name}\n" if ($bot{'BCD'});
       }
       foreach my $pow (@{$heals{$id}}) {
-        $text .= "k${pow}+{$name}+{魔力修正} 回復量\n"
+        $text .= "k${pow}+{$name}+{魔力修正} 回復量".($bot{'BCD'}?"／${name}":"")."\n"
       }
       $text .= "\n";
     }
@@ -154,7 +154,9 @@ sub palettePreset {
       if($::pc{'weapon'.$_.'Name'} =~ /首切/ || $::pc{'weapon'.$_.'Note'} =~ /首切/){
         $text .= $bot{'YTC'} ? '首切' : $bot{'BCD'} ? 'r5' : '';
       }
-      $text .= " ダメージ\n";
+      $text .= " ダメージ";
+      $text .= "／$::pc{'weapon'.$_.'Name'}" if $bot{'BCD'};
+      $text .= "\n";
       $text .= "\n";
     }
     $text .= "//武器修正={追加D修正}\#{必殺効果}\$+{クリレイ}\n";
@@ -260,12 +262,12 @@ sub palettePresetSimple {
       
       foreach my $pow (@{$pows{$id}}) {
         my $add  = $::pc{'magicDamageAdd'.$id} ? "+$::pc{'magicDamageAdd'.$id}" : '';
-        $text .= "k${pow}[{魔法C}]+$base+{魔力修正}".$add."+{魔法D修正} ダメージ\n";
+        $text .= "k${pow}[{魔法C}]+$base+{魔力修正}".$add."+{魔法D修正} ダメージ".($bot{'BCD'}?"／${name}":"")."\n";
         $text .= "k${pow}+$base+{魔力修正}//".$add."+{魔法D修正} 半減\n" if ($bot{'YTC'});
-        $text .= "hk${pow}+$base+{魔力修正} 半減\n" if ($bot{'BCD'});
+        $text .= "hk${pow}+$base+{魔力修正} 半減／${name}\n" if ($bot{'BCD'});
       }
       foreach my $pow (@{$heals{$id}}) {
-        $text .= "k${pow}+$base+{魔力修正} 回復量\n"
+        $text .= "k${pow}+$base+{魔力修正} 回復量".($bot{'BCD'}?"／${name}":"")."\n"
       }
       $text .= "\n";
     }
@@ -299,7 +301,9 @@ sub palettePresetSimple {
       if($::pc{'weapon'.$_.'Name'} =~ /首切/ || $::pc{'weapon'.$_.'Note'} =~ /首切/){
         $text .= $bot{'YTC'} ? '首切' : $bot{'BCD'} ? 'r5' : '';
       }
-      $text .= " ダメージ\n";
+      $text .= " ダメージ";
+      $text .= "／$::pc{'weapon'.$_.'Name'}" if $bot{'BCD'};
+      $text .= "\n";
       $text .= "\n";
     }
     $text .= "//武器修正={追加D修正}\#{必殺効果}\$+{クリレイ}\n";

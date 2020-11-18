@@ -182,7 +182,7 @@ io.github.shunshun94.trpg.ccfolia.consts.DX3_STATUS = [
 		column: 'Mind',
 		skills: [
 			{
-				name: 'ＲＣ',
+				name: 'RC',
 				column: 'RC'
 			}, {
 				name: '意志',

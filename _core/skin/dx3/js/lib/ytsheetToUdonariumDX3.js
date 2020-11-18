@@ -93,27 +93,31 @@ io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2DoubleCross3
 			return '';
 		}
 	};
+	let addedParam = {};
+	data_character_detail['能力値'] = io.github.shunshun94.trpg.udonarium.consts.DX3_STATUS.map((s)=>{
+		addedParam[s.name] = 1;
+		return `        <data name="${s.name}">${json['sttTotal' + s.column]}</data>`
+	});
+	data_character_detail['技能'] = io.github.shunshun94.trpg.udonarium.consts.DX3_STATUS.map((s)=>{
+		const result = [];
+		result.push(s.skills.map((skill)=>{
+			addedParam[skill.name] = 1;
+			return `        <data name="${skill.name}">${json['skill' + skill.column] || '0'}</data>`;
+		}).join('\n'));
+		let cursor = 1;
+		while(json[`skill${s.extendableSkill.column}${cursor}Name`]) {
+			addedParam[json[`skill${s.extendableSkill.column}${cursor}Name`]] = 1;
+			result.push(`        <data name="${json[`skill${s.extendableSkill.column}${cursor}Name`]}">${json[`skill${s.extendableSkill.column}${cursor}`] || 0}</data>`);
+			cursor++;
+		}
+		return result.join('\n');
+	});
 	if(defaultPalette) {
 		data_character_detail['バフ・デバフ'] = defaultPalette.parameters.map((param)=>{
+			if(addedParam[param.label]){ return `` }
 			return `        <data type="numberResource" currentValue="${param.value}" name="${param.label}">${param.value < 10 ? 10 : param.value}</data>`; 
 		});
 	} else {
-		data_character_detail['能力値'] = io.github.shunshun94.trpg.udonarium.consts.DX3_STATUS.map((s)=>{
-			return `        <data name="${s.name}">${json['sttTotal' + s.column]}</data>`
-		});
-
-		data_character_detail['技能'] = io.github.shunshun94.trpg.udonarium.consts.DX3_STATUS.map((s)=>{
-			const result = [];
-			result.push(s.skills.map((skill)=>{
-				return `        <data name="${skill.name}">${json['skill' + skill.column] || '0'}</data>`;
-			}).join('\n'));
-			let cursor = 1;
-			while(json[`skill${s.extendableSkill.column}${cursor}Name`]) {
-				result.push(`        <data name="${json[`skill${s.extendableSkill.column}${cursor}Name`]}">${json[`skill${s.extendableSkill.column}${cursor}`] || 0}</data>`);
-				cursor++;
-			}
-			return result.join('\n');
-		});
 		data_character_detail['バフ・デバフ'] = [
 			`        <data type="numberResource" currentValue="0" name="侵蝕率によるダイスボーナス">10</data>`,
 			`        <data type="numberResource" currentValue="0" name="ダイス">50</data>`,
