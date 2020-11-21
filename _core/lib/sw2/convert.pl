@@ -12,7 +12,7 @@ sub data_convert {
   
   ## キャラクター保管所
   if($set_url =~ m"^https?://charasheet\.vampire-blood\.net/"){
-    my $data = get($set_url.'.js') or error 'キャラクター保管庫のデータが取得できませんでした:'.$file;
+    my $data = get($set_url.'.js') or error 'キャラクター保管所のデータが取得できませんでした:'.$file;
     my %in = %{ decode_json(encode('utf8', (join '', $data))) };
     
     return convertHokanjoToYtsheet(\%in);
