@@ -285,7 +285,7 @@ sub palettePresetSimple {
               $::pc{'weapon'.$_.'Crit'}.$::pc{'weapon'.$_.'Dmg'} eq '';
       
       $::pc{'weapon'.$_.'Name'} = $::pc{'weapon'.$_.'Name'} || $::pc{'weapon'.($_-1).'Name'};
-      $text .= "2d6+{命中$_}+{命中修正}";
+      $text .= "2d6+$::pc{'weapon'.$_.'AccTotal'}+{命中修正}";
       $text .= " 命中力／$::pc{'weapon'.$_.'Name'}\n";
       
       $::pc{'weapon'.$_.'Crit'} =~ s/⑦|➆/7/;
@@ -377,8 +377,8 @@ sub paletteProperties {
     push @propaties, "//intB={知力B}";
     push @propaties, "//mndB={精神B}";
     push @propaties, '';
-    push @propaties, "//生命抵抗={生命B}".($::pc{'vitResistAddTotal'}?"+$::pc{'vitResistAddTotal'}":"");
-    push @propaties, "//精神抵抗={精神B}".($::pc{'mndResistAddTotal'}?"+$::pc{'mndResistAddTotal'}":"");
+    push @propaties, "//生命抵抗=({冒険者}+{生命B})".($::pc{'vitResistAddTotal'}?"+$::pc{'vitResistAddTotal'}":"");
+    push @propaties, "//精神抵抗=({冒険者}+{精神B})".($::pc{'mndResistAddTotal'}?"+$::pc{'mndResistAddTotal'}":"");
     push @propaties, "//最大HP=$::pc{'hpTotal'}";
     push @propaties, "//最大MP=$::pc{'mpTotal'}";
     push @propaties, '';
