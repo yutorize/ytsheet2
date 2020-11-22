@@ -12,7 +12,7 @@ sub data_convert {
   
   ## キャラクター保管所
   if($set_url =~ m"^https?://charasheet\.vampire-blood\.net/"){
-    my $data = get($set_url.'.js') or error 'キャラクター保管庫のデータが取得できませんでした:'.$file;
+    my $data = get($set_url.'.js') or error 'キャラクター保管所のデータが取得できませんでした:'.$file;
     my %in = %{ decode_json(encode('utf8', (join '', $data))) };
     
     return convertHokanjoToYtsheet(\%in);
@@ -66,7 +66,7 @@ sub convertHokanjoToYtsheet {
     'sttBaseF' => $in{'V_NC6'}, 'sttAddF' => ($in{'NP6'}-$in{'N_kokoro'}-$in{'V_NC6'}-$in{'NS6'}) || '',
     'lvFig' => $in{'V_GLv1'} || '', 'lvGra' => $in{'V_GLv2'} || '', 'lvFen' => $in{'V_GLv3'} || '', 'lvSho' => $in{'V_GLv4'} || '',
     'lvSor' => $in{'V_GLv5'} || '', 'lvCon' => $in{'V_GLv6'} || '', 'lvPri' => $in{'V_GLv7'} || '',
-    'lvFai' => $in{'V_GLv8'} || '', 'lvMag' => $in{'V_GLv9'} || '', 'lvDem' => $in{'V_GLv17'} || '',
+    'lvFai' => $in{'V_GLv8'} || '', 'lvMag' => $in{'V_GLv9'} || '', 'lvDem' => $in{'V_GLv17'} || '', 'lvDru' => $in{'V_GLv24'} || '',
     'lvSco' => $in{'V_GLv10'} || '','lvRan' => $in{'V_GLv11'} || '','lvSag' => $in{'V_GLv12'} || '',
     'lvEnh' => $in{'V_GLv13'} || '', 'lvBar' => $in{'V_GLv14'} || '', 'lvRid' => $in{'V_GLv16'} || '',
     'lvAlc' => $in{'V_GLv15'} || '', 'lvWar' => $in{'V_GLv18'} || '', 'lvMys' => $in{'V_GLv19'} || '', 'lvPhy' => $in{'V_GLv20'} || '',
