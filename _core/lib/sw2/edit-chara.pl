@@ -21,10 +21,11 @@ if($main::make_error) {
   for (param()){ $pc{$_} = param($_); }
   $message = $main::make_error;
 }
-## 新規作成＆コピー時 --------------------------------------------------
-my $token;
+## 新規作成/コピー/コンバート時 --------------------------------------------------
+my $token; my $mode_make;
 if($mode eq 'blanksheet' || $mode eq 'copy' || $mode eq 'convert'){
   $token = token_make();
+  $mode_make = 1;
 }
 ## 更新後処理 --------------------------------------------------
 if($mode eq 'save'){
@@ -65,18 +66,20 @@ elsif($mode eq 'copy'){
   $_ =~ s/(.*?)<>(.*?)\n/$pc{$1} = $2;/egi while <$IN>;
   close($IN);
   
-  delete $pc{'image'};  
+  delete $pc{'image'};
+  delete $pc{'protect'};
   
   $message = '「<a href="./?id='.$id.'" target="_blank">'.$pc{"characterName"}.'</a>」をコピーして新規作成します。<br>（まだ保存はされていません）';
 }
 elsif($mode eq 'convert'){
-  require $set::lib_convert;
-  %pc = data_convert(param('url'));
+  %pc = %::conv_data;
+  delete $pc{'image'};
+  delete $pc{'protect'};
   $message = '「<a href="'.param('url').'" target="_blank">'.($pc{"characterName"}||$pc{"aka"}||'無題').'</a>」をコンバートして新規作成します。<br>（まだ保存はされていません）';
 }
 
 ### プレイヤー名 --------------------------------------------------
-if($mode eq 'blanksheet' || $mode eq 'copy' || $mode eq 'convert'){
+if($mode_make){
   $pc{'playerName'} = (getplayername($LOGIN_ID))[0] if !$main::make_error;
 }
 
@@ -181,7 +184,7 @@ Content-type: text/html\n
       <aside class="message">$message</aside>
       <form name="sheet" method="post" action="./" enctype="multipart/form-data">
 HTML
-if($mode eq 'blanksheet' || $mode eq 'copy' || $mode eq 'convert'){
+if($mode_make){
   print '<input type="hidden" name="_token" value="'.$token.'">'."\n";
 }
 print <<"HTML";
@@ -219,7 +222,7 @@ if($set::user_reqd){
 HTML
 }
 else {
-  if($set::registerkey && ($mode eq 'blanksheet' || $mode eq 'copy' || $mode eq 'convert')){
+  if($set::registerkey && $mode_make){
     print '登録キー：<input type="text" name="registerkey" required>'."\n";
   }
   print <<"HTML";
@@ -1591,7 +1594,7 @@ print <<"HTML";
   const battleItemOn = @{[ $set::battleitem ? 1 : 0 ]};
   const growType = '@{[ $set::growtype ? $set::growtype : 0 ]}';
 HTML
-print 'const featsLv = ["'. join('","', @set::feats_lv) . '"];';
+print 'const featsLv = ["'. join('","', @set::feats_lv) . '"];'."\n";
 foreach (
   'sttHistGrowA',
   'sttHistGrowB',
@@ -1628,19 +1631,19 @@ print 'let weapons = [';
 foreach (@data::weapons){
   print "'".@$_[0]."',";
 }
-print '"ガン（物理）","盾"];';
+print '"ガン（物理）","盾"];'."\n";
 print 'let raceAbility = {';
 foreach my $key ( keys(%data::race_ability) ){
   print "\"$key\" : \"$data::race_ability{$key}\",";
 }
-print '};';
+print "};\n";
 print 'let raceLanguage = {';
 foreach my $key ( keys(%data::race_language) ){
   print "\"$key\" : \"";
   foreach (@{$data::race_language{$key}}){
     print "<dt>@$_[0]</dt><dd>".(@$_[1]?'○':'－')."</dd><dd>".(@$_[2]?'○':'－')."</dd>";
   }
-  print "\",";
+  print "\", ";
 }
 print "};\n";
 ## 技能

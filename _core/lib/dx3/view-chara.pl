@@ -18,7 +18,7 @@ $SHEET->param("backupMode" => param('backup') ? 1 : 0);
 
 ### キャラクターデータ読み込み #######################################################################
 my $id = param('id');
-my $url = param('url');
+my $conv_url = param('url');
 my $file = $main::file;
 
 our %pc = ();
@@ -29,13 +29,12 @@ if($id){
   $_ =~ s/(.*?)<>(.*?)\n/$pc{$1} = $2;/egi while <$IN>;
   close($IN);
 }
-elsif($url){
-  require $set::lib_convert;
+elsif($conv_url){
   require $set::lib_calc_char;
-  %pc = data_convert($url);
+  %pc = %::conv_data;
   %pc = data_calc(\%pc);
   $SHEET->param("convertMode" => 1);
-  $SHEET->param("convertUrl" => $url);
+  $SHEET->param("convertUrl" => $conv_url);
 }
 
 $SHEET->param("id" => $id);
@@ -446,13 +445,16 @@ $SHEET->param("race" => $pc{'race'});
 ### 画像 --------------------------------------------------
 my $imgsrc;
 if($pc{'convertSource'} eq 'キャラクターシート倉庫'){
-  ($imgsrc = $url) =~ s/edit\.html/image/; 
+  ($imgsrc = $conv_url) =~ s/edit\.html/image/; 
   require LWP::UserAgent;
   my $code = LWP::UserAgent->new->simple_request(HTTP::Request->new(GET => $imgsrc))->code == 200;
   $SHEET->param("image" => $code);
 }
+elsif($pc{'convertSource'} eq '別のゆとシートⅡ') {
+  $imgsrc = tag_delete $pc{'imageURL'};
+}
 else {
-  $imgsrc = "${set::char_dir}${file}/image.$pc{'image'}?$pc{'imageUpdate'}"
+  $imgsrc = "${set::char_dir}${file}/image.$pc{'image'}?$pc{'imageUpdate'}";
 }
 $SHEET->param("imageSrc" => $imgsrc);
 

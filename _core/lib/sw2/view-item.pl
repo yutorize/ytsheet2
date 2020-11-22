@@ -18,14 +18,24 @@ $SHEET->param("backupMode" => param('backup') ? 1 : 0);
 
 ### キャラクターデータ読み込み #######################################################################
 my $id = param('id');
+my $conv_url = param('url');
 my $file = $main::file;
 
 our %pc = ();
-my $datafile = "${set::item_dir}${file}/data.cgi";
-   $datafile = "${set::item_dir}${file}/backup/".param('backup').'.cgi' if param('backup');
-open my $IN, '<', $datafile or error 'キャラクターシートがありません。';
-$_ =~ s/(.*?)<>(.*?)\n/$pc{$1} = $2;/egi while <$IN>;
-close($IN);
+if($id){
+  my $datafile = "${set::item_dir}${file}/data.cgi";
+     $datafile = "${set::item_dir}${file}/backup/".param('backup').'.cgi' if param('backup');
+  open my $IN, '<', $datafile or error 'アイテムデータがありません。';
+  $_ =~ s/(.*?)<>(.*?)\n/$pc{$1} = $2;/egi while <$IN>;
+  close($IN);
+}
+elsif($conv_url){
+  require $set::lib_calc_char;
+  %pc = %::conv_data;
+  %pc = data_calc(\%pc);
+  $SHEET->param("convertMode" => 1);
+  $SHEET->param("convertUrl" => $conv_url);
+}
 
 $SHEET->param("id" => $id);
 $SHEET->param("itemNameRaw" => $pc{'itemName'});

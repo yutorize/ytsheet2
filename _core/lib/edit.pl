@@ -13,9 +13,17 @@ our %pc;
 
 if($set::user_reqd && !check){ error('ログインしていません。'); }
 ### 個別処理 --------------------------------------------------
-if   (param('type') eq 'm'){ require $set::lib_edit_mons; }
-elsif(param('type') eq 'i'){ require $set::lib_edit_item; }
-else                       { require $set::lib_edit_char; }
+my $type = param('type');
+our %conv_data = ();
+if(param('url')){
+  require $set::lib_convert;
+  %conv_data = data_convert(param('url'));
+  $type = $conv_data{'type'};
+}
+
+if   ($type eq 'm'){ require $set::lib_edit_mons; }
+elsif($type eq 'i'){ require $set::lib_edit_item; }
+else               { require $set::lib_edit_char; }
 
 ### 共通サブルーチン --------------------------------------------------
 ## トークン生成

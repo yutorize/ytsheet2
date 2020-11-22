@@ -18,20 +18,21 @@ if($main::make_error) {
   for (param()){ $pc{$_} = param($_); }
   $message = $main::make_error;
 }
-## 新規作成＆コピー時 --------------------------------------------------
-my $token;
-if($mode eq 'blanksheet' || $mode eq 'copy'){
+## 新規作成/コピー/コンバート時 --------------------------------------------------
+my $token; my $mode_make;
+if($mode eq 'blanksheet' || $mode eq 'copy' || $mode eq 'convert'){
   $token = token_make();
-  
-  if(!$pc{'author'}){
-    $pc{'author'} = (getplayername($LOGIN_ID))[0];
-  }
+  $mode_make = 1;
 }
 ## 更新後処理 --------------------------------------------------
 if($mode eq 'save'){
   $message .= 'データを更新しました。<a href="./?id='.param('id').'">⇒シートを確認する</a>';
   $mode = 'edit';
 }
+
+### 各種データライブラリ読み込み --------------------------------------------------
+#require $set::data_item;
+
 ### データ読み込み ###################################################################################
 my $id;
 my $pass;
@@ -52,13 +53,22 @@ if($mode eq 'copy'){
   $_ =~ s/(.*?)<>(.*?)\n/$pc{$1} = $2;/egi while <$IN>;
   close($IN);
   
-  delete $pc{'image'};  
+  delete $pc{'image'};
+  delete $pc{'protect'};
   
   $message = '「<a href="./?id='.$id.'" target="_blank">'.$pc{"itemName"}.'</a>」コピーして新規作成します。<br>（まだ保存はされていません）';
 }
+elsif($mode eq 'convert'){
+  %pc = %::conv_data;
+  delete $pc{'image'};
+  delete $pc{'protect'};
+  $message = '「<a href="'.param('url').'" target="_blank">'.($pc{"itemName"}||'無題').'</a>」をコンバートして新規作成します。<br>（まだ保存はされていません）';
+}
 
-### 各種データライブラリ読み込み --------------------------------------------------
-#require $set::data_item;
+### 製作者名 --------------------------------------------------
+if($mode_make){
+  $pc{'author'} = (getplayername($LOGIN_ID))[0] if !$main::make_error;
+}
 
 ### 出力準備 #########################################################################################
 ### 初期設定 --------------------------------------------------
@@ -101,7 +111,7 @@ Content-type: text/html\n
       <form id="item" name="sheet" method="post" action="./" enctype="multipart/form-data">
       <input type="hidden" name="type" value="i">
 HTML
-if($mode eq 'blanksheet' || $mode eq 'copy'){
+if($mode_make){
   print '<input type="hidden" name="_token" value="'.$token.'">'."\n";
 }
 print <<"HTML";
@@ -132,7 +142,7 @@ if($set::user_reqd){
 HTML
 }
 else {
-  if($set::registerkey && ($mode eq 'blanksheet' || $mode eq 'copy')){
+  if($set::registerkey && $mode_make){
     print '登録キー：<input type="text" name="registerkey" required>'."\n";
   }
   print <<"HTML";

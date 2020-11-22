@@ -22,7 +22,7 @@ $SHEET->param("backupMode" => param('backup') ? 1 : 0);
 
 ### キャラクターデータ読み込み #######################################################################
 my $id = param('id');
-my $url = param('url');
+my $conv_url = param('url');
 my $file = $main::file;
 
 our %pc = ();
@@ -33,13 +33,12 @@ if($id){
   $_ =~ s/(.*?)<>(.*?)\n/$pc{$1} = $2;/egi while <$IN>;
   close($IN);
 }
-elsif($url){
-  require $set::lib_convert;
+elsif($conv_url){
   require $set::lib_calc_char;
-  %pc = data_convert($url);
+  %pc = %::conv_data;
   %pc = data_calc(\%pc);
   $SHEET->param("convertMode" => 1);
-  $SHEET->param("convertUrl" => $url);
+  $SHEET->param("convertUrl" => $conv_url);
 }
 
 $SHEET->param("id" => $id);
@@ -687,7 +686,7 @@ elsif($pc{'imageFit'} =~ /^percentX?$/){
 }
 
 ### OGP --------------------------------------------------
-$SHEET->param(ogUrl => url().($url ? "?url=${url}" : "?id=${id}"));
+$SHEET->param(ogUrl => url().($conv_url ? "?url=${conv_url}" : "?id=${id}"));
 if($pc{'image'}) { $SHEET->param(ogImg => url()."/".$imgsrc); }
 $SHEET->param(ogDescript => "種族:$pc{'race'}　性別:$pc{'gender'}　年齢:$pc{'age'}　技能:${class_text}");
 

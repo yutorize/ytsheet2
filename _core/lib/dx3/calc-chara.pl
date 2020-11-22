@@ -109,8 +109,8 @@ sub data_calc {
     foreach (1..4) {
       my $dadd = $pc{"combo${num}DiceAdd".$_};
       my $fadd = $pc{"combo${num}FixedAdd".$_};
-      $pc{"combo${num}Dice".$_}  = ($stt && $dadd) ? "$stt+$dadd" : ($stt||$dadd);
-      $pc{"combo${num}Fixed".$_} = ($lv  && $fadd) ? "$lv+$fadd"  : ($lv ||$fadd);
+      $pc{"combo${num}Dice" .$_} = ($stt && $dadd) ? "$stt+$dadd" : ($stt||$dadd) if !$pc{"combo${num}Dice" .$_};
+      $pc{"combo${num}Fixed".$_} = ($lv  && $fadd) ? "$lv+$fadd"  : ($lv ||$fadd) if !$pc{"combo${num}Fixed".$_};
     }
   }
   

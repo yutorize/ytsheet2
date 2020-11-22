@@ -20,14 +20,24 @@ $SHEET->param("backupMode" => param('backup') ? 1 : 0);
 
 ### モンスターデータ読み込み #######################################################################
 my $id = param('id');
+my $conv_url = param('url');
 my $file = $main::file;
 
 our %pc = ();
-my $datafile = "${set::mons_dir}${file}/data.cgi";
-   $datafile = "${set::mons_dir}${file}/backup/".param('backup').'.cgi' if param('backup');
-open my $IN, '<', $datafile or error 'キャラクターシートがありません。';
-$_ =~ s/(.*?)<>(.*?)\n/$pc{$1} = $2;/egi while <$IN>;
-close($IN);
+if($id){
+  my $datafile = "${set::mons_dir}${file}/data.cgi";
+     $datafile = "${set::mons_dir}${file}/backup/".param('backup').'.cgi' if param('backup');
+  open my $IN, '<', $datafile or error '魔物データがありません。';
+  $_ =~ s/(.*?)<>(.*?)\n/$pc{$1} = $2;/egi while <$IN>;
+  close($IN);
+}
+elsif($conv_url){
+  require $set::lib_calc_mons;
+  %pc = %::conv_data;
+  %pc = data_calc(\%pc);
+  $SHEET->param("convertMode" => 1);
+  $SHEET->param("convertUrl" => $conv_url);
+}
 
 $SHEET->param("id" => $id);
 
