@@ -100,12 +100,12 @@ io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2DoubleCrossPC
 		});
 		s.skills.forEach((skill)=>{
 			character.params.push({
-				label: skill.name, value: json['skill' + skill.column] || 0
+				label: skill.name, value: json['skillTotal' + skill.column] || 0
 			});
 		});
 		let cursor = 1;
 		while(json[`skill${s.extendableSkill.column}${cursor}Name`]) {
-			character.params.push({label: json[`skill${s.extendableSkill.column}${cursor}Name`], value: json[`skill${s.extendableSkill.column}${cursor}`] || 0});
+			character.params.push({label: json[`skill${s.extendableSkill.column}${cursor}Name`], value: json[`skillTotal${s.extendableSkill.column}${cursor}`] || 0});
 			cursor++;
 		}
 	});

@@ -102,12 +102,12 @@ io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2DoubleCross3
 		const result = [];
 		result.push(s.skills.map((skill)=>{
 			addedParam[skill.name] = 1;
-			return `        <data name="${skill.name}">${json['skill' + skill.column] || '0'}</data>`;
+			return `        <data name="${skill.name}">${json['skillTotal' + skill.column] || '0'}</data>`;
 		}).join('\n'));
 		let cursor = 1;
 		while(json[`skill${s.extendableSkill.column}${cursor}Name`]) {
 			addedParam[json[`skill${s.extendableSkill.column}${cursor}Name`]] = 1;
-			result.push(`        <data name="${json[`skill${s.extendableSkill.column}${cursor}Name`]}">${json[`skill${s.extendableSkill.column}${cursor}`] || 0}</data>`);
+			result.push(`        <data name="${json[`skill${s.extendableSkill.column}${cursor}Name`]}">${json[`skillTotal${s.extendableSkill.column}${cursor}`] || 0}</data>`);
 			cursor++;
 		}
 		return result.join('\n');

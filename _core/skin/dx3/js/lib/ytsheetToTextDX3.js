@@ -30,12 +30,12 @@ io.github.shunshun94.trpg.ytsheet._convertDoubleCrossStatus = (json, s) => {
 	const result = [];
 	result.push(`【${s.name}】：${json['sttTotal' + s.column]} (内成長：${json['sttGrow' + s.column] || 0})`);
 	s.skills.forEach((skill)=>{
-		result.push(`〈${skill.name}〉：${json['skill' + skill.column] || 0} / 判定 ${json['sttTotal' + s.column]}r+${json['skillTotal' + skill.column] || 0}`);
+		result.push(`〈${skill.name}〉：${json['skillTotal' + skill.column] || 0} / 判定 ${json['sttTotal' + s.column]}r+${json['skillTotal' + skill.column] || 0}`);
 	});
 	let cursor = 1;
 	if(json[`skill${s.extendableSkill.column}${cursor}`]) {
 		while(json[`skill${s.extendableSkill.column}${cursor}Name`]) {
-			result.push('〈' + json[`skill${s.extendableSkill.column}${cursor}Name`] +`〉：${json[`skill${s.extendableSkill.column}${cursor}`] || 0} / 判定 ${json['sttTotal' + s.column]}r+${json[`skill${s.extendableSkill.column}${cursor}`] || 0}`);
+			result.push('〈' + json[`skill${s.extendableSkill.column}${cursor}Name`] +`〉：${json[`skillTotal${s.extendableSkill.column}${cursor}`] || 0} / 判定 ${json['sttTotal' + s.column]}r+${json[`skillTotal${s.extendableSkill.column}${cursor}`] || 0}`);
 			cursor++;
 		}
 	} else {
