@@ -3,6 +3,11 @@ use strict;
 #use warnings;
 use utf8;
 
+sub getValueWithDefault {
+  my $column = $_[0];
+  return $::pc{$column} ? $::pc{$column} : '0';
+}
+
 ### プリセット #######################################################################################
 sub palettePreset {
   my $tool = shift;
@@ -114,25 +119,25 @@ sub palettePresetSimple {
     $text .= "$::pc{'sttTotalSense' }+{DB}dx+{AB}\@10+{CB} 【感覚】判定\n";
     $text .= "$::pc{'sttTotalMind'  }+{DB}dx+{AB}\@10+{CB} 【精神】判定\n";
     $text .= "$::pc{'sttTotalSocial'}+{DB}dx+{AB}\@10+{CB} 【社会】判定\n";
-    $text .= "$::pc{'sttTotalBody'  }+{DB}dx+$::pc{'skillMelee'    }+{AB}\@10+{CB} 〈白兵〉判定\n";
-    $text .= "$::pc{'sttTotalBody'  }+{DB}dx+$::pc{'skillDodge'    }+{AB}\@10+{CB} 〈回避〉判定\n";
-    $text .= "$::pc{'sttTotalSense' }+{DB}dx+$::pc{'skillRanged'   }+{AB}\@10+{CB} 〈射撃〉判定\n";
-    $text .= "$::pc{'sttTotalSense' }+{DB}dx+$::pc{'skillPercept'  }+{AB}\@10+{CB} 〈知覚〉判定\n";
-    $text .= "$::pc{'sttTotalMind'  }+{DB}dx+$::pc{'skillRC'       }+{AB}\@10+{CB} 〈ＲＣ〉判定\n";
-    $text .= "$::pc{'sttTotalMind'  }+{DB}dx+$::pc{'skillWill'     }+{AB}\@10+{CB} 〈意志〉判定\n";
-    $text .= "$::pc{'sttTotalSocial'}+{DB}dx+$::pc{'skillNegotiate'}+{AB}\@10+{CB} 〈交渉〉判定\n";
-    $text .= "$::pc{'sttTotalSocial'}+{DB}dx+$::pc{'skillProcure'  }+{AB}\@10+{CB} 〈調達〉判定\n";
+    $text .= "$::pc{'sttTotalBody'  }+{DB}dx+" . getValueWithDefault('skillMelee'    ) . "+{AB}\@10+{CB} 〈白兵〉判定\n";
+    $text .= "$::pc{'sttTotalBody'  }+{DB}dx+" . getValueWithDefault('skillDodge'    ) . "+{AB}\@10+{CB} 〈回避〉判定\n";
+    $text .= "$::pc{'sttTotalSense' }+{DB}dx+" . getValueWithDefault('skillRanged'   ) . "+{AB}\@10+{CB} 〈射撃〉判定\n";
+    $text .= "$::pc{'sttTotalSense' }+{DB}dx+" . getValueWithDefault('skillPercept'  ) . "+{AB}\@10+{CB} 〈知覚〉判定\n";
+    $text .= "$::pc{'sttTotalMind'  }+{DB}dx+" . getValueWithDefault('skillRC'       ) . "+{AB}\@10+{CB} 〈ＲＣ〉判定\n";
+    $text .= "$::pc{'sttTotalMind'  }+{DB}dx+" . getValueWithDefault('skillWill'     ) . "+{AB}\@10+{CB} 〈意志〉判定\n";
+    $text .= "$::pc{'sttTotalSocial'}+{DB}dx+" . getValueWithDefault('skillNegotiate') . "+{AB}\@10+{CB} 〈交渉〉判定\n";
+    $text .= "$::pc{'sttTotalSocial'}+{DB}dx+" . getValueWithDefault('skillProcure'  ) . "+{AB}\@10+{CB} 〈調達〉判定\n";
     foreach my $num (1 .. $::pc{'skillNum'}){
-      $text .= "$::pc{'sttTotalBody'}+{DB}dx+$::pc{'skillRide'.$num}+{AB}\@10+{CB} 〈$::pc{'skillRide'.$num.'Name'}〉判定\n" if $::pc{'skillRide'.$num.'Name'};
+      $text .= "$::pc{'sttTotalBody'}+{DB}dx+" . getValueWithDefault('skillRide'.$num) . "+{AB}\@10+{CB} 〈$::pc{'skillRide'.$num.'Name'}〉判定\n" if $::pc{'skillRide'.$num.'Name'};
     }
     foreach my $num (1 .. $::pc{'skillNum'}){
-      $text .= "$::pc{'sttTotalSense'}+{DB}dx+$::pc{'skillArt'.$num}+{AB}\@10+{CB} 〈$::pc{'skillArt'.$num.'Name'}〉判定\n"  if $::pc{'skillArt'.$num.'Name'};
+      $text .= "$::pc{'sttTotalSense'}+{DB}dx+" . getValueWithDefault('skillArt'.$num) . "+{AB}\@10+{CB} 〈$::pc{'skillArt'.$num.'Name'}〉判定\n"  if $::pc{'skillArt'.$num.'Name'};
     }
     foreach my $num (1 .. $::pc{'skillNum'}){
-      $text .= "$::pc{'sttTotalMind'}+{DB}dx+$::pc{'skillKnow'.$num}+{AB}\@10+{CB} 〈$::pc{'skillKnow'.$num.'Name'}〉判定\n" if $::pc{'skillKnow'.$num.'Name'};
+      $text .= "$::pc{'sttTotalMind'}+{DB}dx+" . getValueWithDefault('skillKnow'.$num) . "+{AB}\@10+{CB} 〈$::pc{'skillKnow'.$num.'Name'}〉判定\n" if $::pc{'skillKnow'.$num.'Name'};
     }
     foreach my $num (1 .. $::pc{'skillNum'}){
-      $text .= "$::pc{'sttTotalSocial'}+{DB}dx+$::pc{'skillInfo'.$num}+{AB}\@10+{CB} 〈$::pc{'skillInfo'.$num.'Name'}〉判定\n" if $::pc{'skillInfo'.$num.'Name'};
+      $text .= "$::pc{'sttTotalSocial'}+{DB}dx+" . getValueWithDefault('skillInfo'.$num) . "+{AB}\@10+{CB} 〈$::pc{'skillInfo'.$num.'Name'}〉判定\n" if $::pc{'skillInfo'.$num.'Name'};
     }
     $text .= "\n";
     foreach my $num (1 .. $::pc{'comboNum'}){
@@ -156,7 +161,7 @@ sub palettePresetSimple {
             elsif($::pc{"combo${num}Skill"} =~ /^(交渉|調達|情報)/){ $text .= $::pc{'sttTotalSocial'}.'+';  }
           }
         }
-        $text .= "$::pc{'combo'.$num.'DiceAdd'.$i}+{DB}dx+$::pc{'combo'.$num.'Fixed'.$i}+{AB}\@$::pc{'combo'.$num.'Crit'.$i}+{CB}";
+        $text .= "$::pc{'combo'.$num.'DiceAdd'.$i}+{DB}dx+" . getValueWithDefault('combo'.$num.'Fixed'.$i) . "+{AB}\@$::pc{'combo'.$num.'Crit'.$i}+{CB} ";
         $text .= "判定／$::pc{'combo'.$num.'Condition'.$i}／$::pc{'combo'.$num.'Name'}" if $bot{'BCD'};
         $text .= "\n";
         if($::pc{'combo'.$num.'Atk'.$i}){
