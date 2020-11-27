@@ -146,13 +146,17 @@ window.onload = function() {
     <nav>
       <ul>
         <li class="small"><a href="./?type=m">⏎</a></li>
-        <li class="small"><a onclick="chatPaletteOn();"><span>パレット</span></a></li>
-        <li class="small"><a onclick="donwloadListOn();">保存</a></li>
-        <li class="small"><a onclick="backuplistOn()"><span>過去ログ</span></a></li>
-        <TMPL_IF ReqdPassword>
-        <li class="small"><a onclick="editOn()">編集</a></li>
+        <TMPL_IF convertMode>
+          <li><a href="./?mode=convert&url=<TMPL_VAR convertUrl>"><span>コンバート</span></a></li>
         <TMPL_ELSE>
-        <li class="small"><a href="./?mode=edit&id=<TMPL_VAR id>&type=m">編集</a></li>
+          <li class="small"><a onclick="chatPaletteOn();"><span>パレット</span></a></li>
+          <li class="small"><a onclick="donwloadListOn();">保存</a></li>
+          <li class="small"><a onclick="backuplistOn()"><span>過去ログ</span></a></li>
+          <TMPL_IF ReqdPassword>
+          <li class="small"><a onclick="editOn()">編集</a></li>
+          <TMPL_ELSE>
+          <li class="small"><a href="./?mode=edit&id=<TMPL_VAR id>&type=m">編集</a></li>
+          </TMPL_IF>
         </TMPL_IF>
         <li class="small"><a onclick="nightModeChange()" title="ナイトモード">☾✧</a></li>
       </ul>
