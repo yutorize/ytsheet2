@@ -348,43 +348,16 @@ sub paletteProperties {
   my @propaties;
   ## PC
   if  (!$type){
+    push @propaties, "### ■能力値";
     push @propaties, "//器用度=$::pc{'sttDex'}".($::pc{'sttAddA'}?"+$::pc{'sttAddA'}":"");
     push @propaties, "//敏捷度=$::pc{'sttAgi'}".($::pc{'sttAddB'}?"+$::pc{'sttAddB'}":"");
     push @propaties, "//筋力=$::pc{'sttStr'}".($::pc{'sttAddC'}?"+$::pc{'sttAddC'}":"");
     push @propaties, "//生命力=$::pc{'sttVit'}".($::pc{'sttAddD'}?"+$::pc{'sttAddD'}":"");
     push @propaties, "//知力=$::pc{'sttInt'}".($::pc{'sttAddE'}?"+$::pc{'sttAddE'}":"");
     push @propaties, "//精神力=$::pc{'sttMnd'}".($::pc{'sttAddF'}?"+$::pc{'sttAddF'}":"");
-    push @propaties, "//器用={器用度}";
-    push @propaties, "//敏捷={敏捷度}";
-    push @propaties, "//生命={生命力}";
-    push @propaties, "//精神={精神力}";
-    push @propaties, "//器用B=(({器用})/6)";
-    push @propaties, "//敏捷B=(({敏捷})/6)";
-    push @propaties, "//筋力B=(({筋力})/6)";
-    push @propaties, "//生命B=(({生命})/6)";
-    push @propaties, "//知力B=(({知力})/6)";
-    push @propaties, "//精神B=(({精神})/6)";
-    push @propaties, "//DEX={器用}";
-    push @propaties, "//AGI={敏捷}";
-    push @propaties, "//STR={筋力}";
-    push @propaties, "//VIT={生命}";
-    push @propaties, "//INT={知力}";
-    push @propaties, "//MND={精神}";
-    push @propaties, "//dexB={器用B}";
-    push @propaties, "//agiB={敏捷B}";
-    push @propaties, "//strB={筋力B}";
-    push @propaties, "//vitB={生命B}";
-    push @propaties, "//intB={知力B}";
-    push @propaties, "//mndB={精神B}";
-    push @propaties, '';
-    push @propaties, "//生命抵抗=({冒険者}+{生命B})".($::pc{'vitResistAddTotal'}?"+$::pc{'vitResistAddTotal'}":"");
-    push @propaties, "//精神抵抗=({冒険者}+{精神B})".($::pc{'mndResistAddTotal'}?"+$::pc{'mndResistAddTotal'}":"");
-    push @propaties, "//最大HP=$::pc{'hpTotal'}";
-    push @propaties, "//最大MP=$::pc{'mpTotal'}";
-    push @propaties, '';
+    push @propaties, "### ■技能レベル";
     push @propaties, "//冒険者レベル=$::pc{'level'}";
-    push @propaties, "//冒険者={冒険者レベル}";
-    push @propaties, "//LV={冒険者}";
+    my @classes_en;
     foreach (
       ['Fig','ファイター'],
       ['Gra','グラップラー'],
@@ -413,8 +386,41 @@ sub paletteProperties {
     ){
       next if !$::pc{'lv'.@$_[0]};
       push @propaties, "//@$_[1]=$::pc{'lv'.@$_[0]}";
-      push @propaties, "//".uc(@$_[0])."={@$_[1]}";
+      push @classes_en, "//".uc(@$_[0])."={@$_[1]}";
     }
+    push @propaties, '';
+    push @propaties, "### ■代入パラメータ";
+    push @propaties, "//器用={器用度}";
+    push @propaties, "//敏捷={敏捷度}";
+    push @propaties, "//生命={生命力}";
+    push @propaties, "//精神={精神力}";
+    push @propaties, "//器用B=(({器用})/6)";
+    push @propaties, "//敏捷B=(({敏捷})/6)";
+    push @propaties, "//筋力B=(({筋力})/6)";
+    push @propaties, "//生命B=(({生命})/6)";
+    push @propaties, "//知力B=(({知力})/6)";
+    push @propaties, "//精神B=(({精神})/6)";
+    push @propaties, "//DEX={器用}";
+    push @propaties, "//AGI={敏捷}";
+    push @propaties, "//STR={筋力}";
+    push @propaties, "//VIT={生命}";
+    push @propaties, "//INT={知力}";
+    push @propaties, "//MND={精神}";
+    push @propaties, "//dexB={器用B}";
+    push @propaties, "//agiB={敏捷B}";
+    push @propaties, "//strB={筋力B}";
+    push @propaties, "//vitB={生命B}";
+    push @propaties, "//intB={知力B}";
+    push @propaties, "//mndB={精神B}";
+    push @propaties, @classes_en;
+    push @propaties, '';
+    push @propaties, "//生命抵抗=({冒険者}+{生命B})".($::pc{'vitResistAddTotal'}?"+$::pc{'vitResistAddTotal'}":"");
+    push @propaties, "//精神抵抗=({冒険者}+{精神B})".($::pc{'mndResistAddTotal'}?"+$::pc{'mndResistAddTotal'}":"");
+    push @propaties, "//最大HP=$::pc{'hpTotal'}";
+    push @propaties, "//最大MP=$::pc{'mpTotal'}";
+    push @propaties, '';
+    push @propaties, "//冒険者={冒険者レベル}";
+    push @propaties, "//LV={冒険者}";
     push @propaties, '';
     #push @propaties, "//魔物知識=$::pc{'monsterLore'}" if $::pc{'monsterLore'};
     #push @propaties, "//先制力=$::pc{'initiative'}" if $::pc{'initiative'};
@@ -489,13 +495,20 @@ sub paletteProperties {
       push @propaties, '';
     }
     
-    push @propaties, "//回避=({$::pc{'evasionClass'}}+({敏捷})/6+".($::pc{'evasiveManeuver'}+$::pc{'armourEva'}+$::pc{'shieldEva'}+$::pc{'defOtherEva'}).")";
-    push @propaties, "//回避（盾なし）=({$::pc{'evasionClass'}}+({敏捷})/6+".($::pc{'evasiveManeuver'}+$::pc{'armourEva'}+$::pc{'defOtherEva'}).")";
+    if($::pc{'evasionClass'}){
+      push @propaties, "//回避=({$::pc{'evasionClass'}}+({敏捷}".($::pc{'shieldOwn'}?"+2":"").")/6+".($::pc{'evasiveManeuver'}+$::pc{'armourEva'}+$::pc{'shieldEva'}+$::pc{'defOtherEva'}).")";
+      push @propaties, "//回避（盾なし）=({$::pc{'evasionClass'}}+({敏捷})/6+".($::pc{'evasiveManeuver'}+$::pc{'armourEva'}+$::pc{'defOtherEva'}).")";
+    }
+    else {
+      push @propaties, "//回避=(0+".($::pc{'evasiveManeuver'}+$::pc{'armourEva'}+$::pc{'shieldEva'}+$::pc{'defOtherEva'}).")";
+      push @propaties, "//回避（盾なし）=(0+".($::pc{'evasiveManeuver'}+$::pc{'armourEva'}+$::pc{'defOtherEva'}).")";
+    }
     push @propaties, "//防護=$::pc{'defenseTotalAllDef'}";
     
   }
   ## 魔物
   elsif($type eq 'm') {
+    push @propaties, "### ■パラメータ";
     push @propaties, "//LV=$::pc{'lv'}";
     push @propaties, '';
     push @propaties, "//生命抵抗=$::pc{'vitResist'}";

@@ -440,8 +440,8 @@ sub palettePropertiesUsedOnly {
     if($_ =~ "^//(.+?)="){
       if($palette =~ /\{($1)\}/){ push @propaties_out, $_; }
     }
-    elsif(!$_){
-      push @propaties_out, '';
+    else {
+      push @propaties_out, $_;
     }
   }
   return @propaties_out;
