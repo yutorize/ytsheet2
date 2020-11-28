@@ -82,7 +82,7 @@ function getAbsoluteUrl(path) {
 async function downloadAsUdonarium() {
   const characterDataJson = await getJsonData();
   const characterId = characterDataJson.birthTime;
-  const image = await io.github.shunshun94.trpg.udonarium.getPicture(characterDataJson.imageURL || '<TMPL_VAR coreDir>/skin/dx3/img/default.png');
+  const image = await io.github.shunshun94.trpg.ytsheet.getPicture(characterDataJson.imageURL || '<TMPL_VAR coreDir>/skin/dx3/img/default.png');
   const udonariumXml = io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2DoubleCross3PC(characterDataJson, location.href, image.hash);
   const udonariumUrl = await generateUdonariumZipFile(characterDataJson.characterName, udonariumXml, image);
   downloadFile(`udonarium_data_${characterId}.zip`, udonariumUrl);
