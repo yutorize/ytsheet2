@@ -26,33 +26,6 @@ io.github.shunshun94 = io.github.shunshun94 || {};
 io.github.shunshun94.trpg = io.github.shunshun94.trpg || {};
 io.github.shunshun94.trpg.udonarium = io.github.shunshun94.trpg.udonarium || {};
 
-io.github.shunshun94.trpg.udonarium.getPicture = (src) => {
-	return new Promise((resolve, reject) => {
-		let xhr = new XMLHttpRequest();
-		xhr.open('GET', src, true);
-		xhr.responseType = "blob";
-		xhr.onload = (e) => {
-			const fileName = src.slice(src.lastIndexOf("/") + 1);
-			if(! Boolean(jsSHA)) {
-				console.warn('To calculate SHA256 value of the picture, jsSHA is required: https://github.com/Caligatio/jsSHA');
-				resolve({ event:e, data: e.currentTarget.response, fileName: fileName, hash: '' });
-				return;
-			}
-			e.currentTarget.response.arrayBuffer().then((arraybuffer)=>{
-				const sha = new jsSHA("SHA-256", 'ARRAYBUFFER');
-				sha.update(arraybuffer);
-				const hash = sha.getHash("HEX");
-				resolve({ event:e, data: e.currentTarget.response, fileName: fileName, hash: hash });
-				return;
-			});
-		};
-		xhr.onerror = () => resolve({ data: null });
-		xhr.onabort = () => resolve({ data: null });
-		xhr.ontimeout = () => resolve({ data: null });
-		xhr.send();
-	});
-};
-
 io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2SwordWorldEnemy = async (json, opt_url='', opt_imageHash='')=>{
 	const defaultPalette = await io.github.shunshun94.trpg.ytsheet.getChatPalette(opt_url);
 	const data_character = {};
