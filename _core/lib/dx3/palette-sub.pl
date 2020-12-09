@@ -156,7 +156,7 @@ sub palettePresetSimple {
             elsif($::pc{"combo${num}Skill"} =~ /^(交渉|調達|情報)/){ $text .= $::pc{'sttTotalSocial'}.'+';  }
           }
         }
-        $text .= "$::pc{'combo'.$num.'DiceAdd'.$i}+{DB}dx+".($::pc{'combo'.$num.'Fixed'.$i}||0)."+{AB}\@$::pc{'combo'.$num.'Crit'.$i}+{CB}";
+        $text .= ($::pc{'combo'.$num.'DiceAdd'.$i}||0)."+{DB}dx+".($::pc{'combo'.$num.'Fixed'.$i}||0)."+{AB}\@$::pc{'combo'.$num.'Crit'.$i}+{CB}";
         $text .= " 判定／$::pc{'combo'.$num.'Condition'.$i}／$::pc{'combo'.$num.'Name'}" if $bot{'BCD'};
         $text .= "\n";
         if($::pc{'combo'.$num.'Atk'.$i} ne ''){
