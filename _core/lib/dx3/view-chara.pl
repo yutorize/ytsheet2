@@ -6,6 +6,7 @@ use open ":utf8";
 use HTML::Template;
 
 ### データ読み込み ###################################################################################
+require $set::data_syndrome;
 
 ### テンプレート読み込み #############################################################################
 my $SHEET;
@@ -104,6 +105,17 @@ $SHEET->param("breed" =>
   ($pc{'syndrome3'} ? 'トライ' : $pc{'syndrome2'} ? 'クロス' : $pc{'syndrome1'} ? 'ピュア' : '') . '<span>ブリード</span>'
 );
 
+### 能力値 --------------------------------------------------
+my %status = (0=>'body', 1=>'sense', 2=>'mind', 3=>'social');
+foreach my $num (keys %status){
+  my $name = $status{$num};
+  my $base = 0;
+  $base += $data::syndrome_status{$pc{'syndrome1'}}[$num];
+  $base += $pc{'syndrome2'} ? $data::syndrome_status{$pc{'syndrome2'}}[$num] : $base;
+  $SHEET->param("sttBase".ucfirst($name) => $base);
+}
+$SHEET->param("sttWorks".ucfirst($pc{'sttWorks'}) => 1);
+
 ### 技能 --------------------------------------------------
 foreach my $name ('Melee','Ranged','RC','Negotiate','Dodge','Percept','Will','Procure'){
   $SHEET->param('skillTotal'.$name => ($pc{'skillAdd'.$name} ? "<span class=\"small\">+$pc{'skillAdd'.$name}=</span>" : '').$pc{'skillTotal'.$name});
@@ -183,7 +195,7 @@ foreach (1 .. $pc{'effectNum'}){
     "ENCROACH" => textShrink(3,4,4,4,$pc{'effect'.$_.'Encroach'}),
     "RESTRICT" => $pc{'effect'.$_.'Restrict'},
     "NOTE"     => $pc{'effect'.$_.'Note'},
-    "EXP"      => $pc{'effect'.$_.'Exp'},
+    "EXP"      => ($pc{'effect'.$_.'Exp'} > 0 ? '+' : '').$pc{'effect'.$_.'Exp'},
   });
 }
 $SHEET->param(Effects => \@effects);
