@@ -8,7 +8,7 @@ sub get_parsed_enemy_data_from_ytsheet_one_mons {
     '反応' => 'disposition',
     '言語' => 'language',
     '生息地' => 'habitat',
-    # 知名度／弱点値 // そのまま出すと乙るので保留
+    # 知名度／弱点値 // そのまま出すと乙るので別枠
     # 生命抵抗力
     # 精神抵抗力
     '弱点'=> 'weakness',
@@ -52,12 +52,10 @@ sub get_parsed_enemy_data_from_ytsheet_one_mons {
       $result{'lv'} = $title[2];
       $result{'lv'} =~ s/レベル//;
     }
-    if($text eq '知名度／弱点値') {
-      $mode = $text;
-    }
     if($mode eq '知名度／弱点値') {
       my @reputations = split(/／/, $text);
       $result{'reputation'} = $reputations[0];
+      $result{'reputation'} =~ s/://;
       $result{'reputation+'} = $reputations[1];
       $mode = "";
     }
@@ -68,6 +66,9 @@ sub get_parsed_enemy_data_from_ytsheet_one_mons {
       $result{$simple_column_table{$mode}} = $text;
       $result{$simple_column_table{$mode}} =~ s/://;
       $mode = '';
+    }
+    if($text eq '知名度／弱点値') {
+      $mode = $text;
     }
   }
   while (my ($key, $value) = each(%result)) {
