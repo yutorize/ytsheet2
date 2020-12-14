@@ -8,12 +8,13 @@ sub get_parsed_enemy_data_from_ytsheet_one_mons {
     '反応' => 'disposition',
     '言語' => 'language',
     '生息地' => 'habitat',
-    # 知名度／弱点値 // そのまま出すと乙るので別枠
-    # 生命抵抗力
-    # 精神抵抗力
     '弱点'=> 'weakness',
     '先制値' => 'initiative',
     '移動速度' => 'mobility',
+  );
+  my %parentheses_column_table = (
+    '生命抵抗力' => {raw => 'vitResist', fix => 'vitResistFix'},
+    '精神抵抗力' => {raw => 'mndResist', fix => 'mndResistFix'},
   );
   my $browser = LWP::UserAgent->new;
   my $response = $browser->get("https://yutorize.2-d.jp/ms_sw2/s/data/1579365932.html");
@@ -52,7 +53,10 @@ sub get_parsed_enemy_data_from_ytsheet_one_mons {
       $result{'lv'} = $title[2];
       $result{'lv'} =~ s/レベル//;
     }
-    if($mode eq '知名度／弱点値') {
+    elsif($text eq '知名度／弱点値') {
+      $mode = $text;
+    }
+    elsif($mode eq '知名度／弱点値') {
       my @reputations = split(/／/, $text);
       $result{'reputation'} = $reputations[0];
       $result{'reputation'} =~ s/://;
@@ -65,11 +69,24 @@ sub get_parsed_enemy_data_from_ytsheet_one_mons {
     elsif($simple_column_table{$mode}) {
       $result{$simple_column_table{$mode}} = $text;
       $result{$simple_column_table{$mode}} =~ s/://;
-      $mode = '';
+      $mode = "";
     }
-    if($text eq '知名度／弱点値') {
+    elsif($parentheses_column_table{$text}) {
       $mode = $text;
     }
+    elsif($parentheses_column_table{$mode}) {
+      if($text =~ /(\d+)\((\d+)\)/) {
+        $result{$parentheses_column_table{$mode}{raw}} = $1;
+        $result{$parentheses_column_table{$mode}{fix}} = $2;
+        print "$1 and $2 \n";
+      }
+      else {
+        $result{$parentheses_column_table{$mode}{raw}} = "-";
+        $result{$parentheses_column_table{$mode}{fix}} = "-";
+      }
+      $mode = "";
+    }
+    
   }
   while (my ($key, $value) = each(%result)) {
     $result{$key} =~ s/^[ 　\t\n\r\f]*(.*?)[ 　\t\n\r\f]*$/$1/;
