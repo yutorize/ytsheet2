@@ -3,8 +3,20 @@ use strict;
 #use warnings;
 use utf8;
 use open ":utf8";
-use LWP::Simple;
+use LWP::UserAgent;
 use JSON::PP;
+
+sub data_get {
+  my $url = shift;
+  my $ua  = LWP::UserAgent->new;
+  my $res = $ua->get($url);
+  if ($res->is_success) {
+    return $res->decoded_content;
+  }
+  else {
+    return undef;
+  }
+}
 
 sub data_convert {
   my $set_url = shift;
@@ -12,7 +24,7 @@ sub data_convert {
   
   ## キャラクター保管所
   if($set_url =~ m"^https?://charasheet\.vampire-blood\.net/"){
-    my $data = get($set_url.'.js') or error 'キャラクター保管所のデータが取得できませんでした:'.$file;
+    my $data = data_get($set_url.'.js') or error 'キャラクター保管所のデータが取得できませんでした';
     my %in = %{ decode_json(encode('utf8', (join '', $data))) };
     
     return convertHokanjoToYtsheet(\%in);
@@ -21,7 +33,7 @@ sub data_convert {
   {
     foreach my $url (keys %set::convert_url){
       if($set_url =~ s"^${url}data/(.*?).html"$1"){
-        open my $IN, '<', "$set::convert_url{$url}data/${set_url}.cgi" or error '旧ゆとシートのデータが開けませんでした:'.$file;
+        open my $IN, '<', "$set::convert_url{$url}data/${set_url}.cgi" or error '旧ゆとシートのデータが開けませんでした';
         my %pc;
         $_ =~ s/(.*?)<>(.*?)\n/$pc{$1} = $2;/egi while <$IN>;
         close($IN);
@@ -32,13 +44,21 @@ sub data_convert {
   }
   ## ゆとシートⅡ
   {
-    my $data = get($set_url.'&mode=json') or error 'コンバート元のデータが取得できませんでした';
+    my $data = data_get($set_url.'&mode=json') or error 'コンバート元のデータが取得できませんでした';
     if($data !~ /^{/){ error 'JSONデータが取得できませんでした' }
     my %pc = %{ decode_json(join '', $data) };
-    our $base_url = $set_url;
-    $base_url =~ s|/[^/]+?$|/|;
-    $pc{'convertSource'} = '別のゆとシートⅡ';
-    return %pc;
+    if($pc{'result'} eq 'OK'){
+      our $base_url = $set_url;
+      $base_url =~ s|/[^/]+?$|/|;
+      $pc{'convertSource'} = '別のゆとシートⅡ';
+      return %pc;
+    }
+    elsif($pc{'result'}) {
+      error 'コンバート元のゆとシートⅡでエラーがありました。<br>>'.$pc{'result'};
+    }
+    else {
+      error '有効なデータが取得できませんでした';
+    }
   }
 }
 
