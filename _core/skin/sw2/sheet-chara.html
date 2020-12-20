@@ -628,39 +628,24 @@ window.onload = function() {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <th>鎧</th>
-                <td><span class="item-name"><TMPL_VAR armourName></span></td>
-                <td><TMPL_VAR armourReqd></td>
-                <td><TMPL_VAR armourEva></td>
-                <td><TMPL_VAR armourDef></td>
-                <td><TMPL_IF armourOwn>✔</TMPL_IF></td>
-                <td><TMPL_VAR armourNote></td>
-              </tr>
-              <tr>
-                <th>盾</th>
-                <td><span class="item-name"><TMPL_VAR shieldName></span></td>
-                <td><TMPL_VAR shieldReqd></td>
-                <td><TMPL_VAR shieldEva></td>
-                <td><TMPL_VAR shieldDef></td>
-                <td><TMPL_IF shieldOwn>✔</TMPL_IF></td>
-                <td><TMPL_VAR shieldNote></td>
-              </tr>
-              <tr>
-                <th>他</th>
-                <td><span class="item-name"><TMPL_VAR defOtherName></span></td>
-                <td><TMPL_VAR defOtherReqd></td>
-                <td><TMPL_VAR defOtherEva></td>
-                <td><TMPL_VAR defOtherDef></td>
-                <td><TMPL_VAR defOtherOwn></td>
-                <td><TMPL_VAR defOtherNote></td>
-              </tr>
-              <tr class="defense-total">
-                <th colspan="3">合計：すべて</th>
-                <td><TMPL_VAR defenseTotalAllEva></td>
-                <td><TMPL_VAR defenseTotalAllDef></td>
-              </tr>
+              <TMPL_LOOP Armours><tr>
+                <th><TMPL_VAR TH></th>
+                <td><TMPL_VAR NAME></td>
+                <td><TMPL_VAR REQD></td>
+                <td><TMPL_VAR EVA></td>
+                <td><TMPL_VAR DEF></td>
+                <td><TMPL_IF OWN>✔</TMPL_IF></td>
+                <td><TMPL_VAR NOTE></td>
+              </tr></TMPL_LOOP>
             </tbody>
+            <tfoot>
+              <TMPL_LOOP ArmourTotals><tr class="defense-total">
+                <th colspan="3">合計: <TMPL_VAR TH></th>
+                <td><TMPL_VAR EVA></td>
+                <td><TMPL_VAR DEF></td>
+                <td colspan="2"><TMPL_VAR NOTE></td>
+              </tr></TMPL_LOOP>
+            </tfoot>
           </table>
         </section>
         <section class="box" id="accessories">

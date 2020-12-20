@@ -1003,7 +1003,14 @@ dl#level dd {
   text-align: right;
 }
 #armours .defense-total td {
-  font-size: 1.6rem
+  border-width: 1px;
+  border-style: solid dotted;
+  font-size: 1.6rem;
+}
+#armours .defense-total td:last-child {
+  padding-left: .3em;
+  text-align: left;
+  font-size: 90%;
 }
 
 

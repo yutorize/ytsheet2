@@ -35,6 +35,13 @@ sub addJsonData {
     $pc{'sheetDescriptionS'} = $base."\n".$classes;
     $pc{'sheetDescriptionM'} = $base."\n".$sub."\n".$classes."\n".$status;
   }
+  # 防護点
+  if($pc{'defenseTotalAllDef'} eq ''){
+    $pc{'defenseTotalAllDef'} = $pc{'defenseTotal1Def'} ne '' ? $pc{'defenseTotal1Def'}
+                              : $pc{'defenseTotal2Def'} ne '' ? $pc{'defenseTotal2Def'}
+                              : $pc{'defenseTotal3Def'} ne '' ? $pc{'defenseTotal3Def'}
+                              : 0;
+  }
   return \%pc;
 }
 

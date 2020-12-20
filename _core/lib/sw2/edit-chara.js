@@ -843,7 +843,7 @@ function calcSubStt() {
 // 移動力計算 ----------------------------------------
 function calcMobility() {
   const agi = sttAgi + sttAddB;
-  const mobilityBase = ((race === 'ケンタウロス') ? (agi * 2) : agi) + (form["armourOwn"].checked ? 2 : 0);
+  const mobilityBase = ((race === 'ケンタウロス') ? (agi * 2) : agi) + (form["armour1Own"].checked ? 2 : 0);
   const mobility = mobilityBase + Number(form.mobilityAdd.value);
   document.getElementById("mobility-limited").innerHTML = footwork ? 10 : 3;
   document.getElementById("mobility-base").innerHTML = mobilityBase;
@@ -1051,7 +1051,6 @@ function calcWeapon() {
 // 防御計算 ----------------------------------------
 function calcDefense() {
   const classes = form.evasionClass.options[form.evasionClass.selectedIndex].value;
-  const ownAgi = form["shieldOwn"].checked ? 2 : 0;
   let evaClassLv = 0;
   let evaBase = 0;
   let defBase = 0;
@@ -1061,7 +1060,7 @@ function calcDefense() {
   else if(classes === "シューター")      { evaClassLv = lv['Sho']; }
   else if(classes === "デーモンルーラー"){ evaClassLv = lv['Dem']; }
   else { evaClassLv = 0; }
-  evaBase = evaClassLv ? (evaClassLv + parseInt((sttAgi + sttAddB + ownAgi) / 6)) : 0;
+  evaBase = evaClassLv || 0;
   
   const maxReqd = (classes === "フェンサー") ? reqdStrHalf : reqdStr;
   document.getElementById("evasion-str").innerHTML = maxReqd;
@@ -1095,24 +1094,43 @@ function calcDefense() {
   calcArmour(evaBase,defBase,maxReqd);
 }
 function calcArmour(evaBase,defBase,maxReqd) {
-  const armourEva   = Number(form.armourEva.value);
-  const armourDef   = Number(form.armourDef.value) + Math.max(masteryMetalArmour,masteryNonMetalArmour);
-  const shieldEva   = Number(form.shieldEva.value);
-  const shieldDef   = Number(form.shieldDef.value) + masteryShield;
-  const otherEva    = Number(form.defOtherEva.value);
-  const otherDef    = Number(form.defOtherDef.value);
+  const armour1Eva = Number(form.armour1Eva.value);
+  const armour1Def = Number(form.armour1Def.value) + Math.max(masteryMetalArmour,masteryNonMetalArmour);
+  const shield1Eva = Number(form.shield1Eva.value);
+  const shield1Def = Number(form.shield1Def.value) + masteryShield;
+  const other1Eva = Number(form.defOther1Eva.value);
+  const other1Def = Number(form.defOther1Def.value);
+  const other2Eva = Number(form.defOther2Eva.value);
+  const other2Def = Number(form.defOther2Def.value);
+  const other3Eva = Number(form.defOther3Eva.value);
+  const other3Def = Number(form.defOther3Def.value);
   
-  if(form.armourNote.value.match(/〈魔器〉/) || form.shieldNote.value.match(/〈魔器〉/)){ defBase += masteryArtisan; }
+  //document.getElementById("defense-total-all-eva").innerHTML = evaBase + armourEva + shieldEva + other1Eva + other2Eva + parseInt((sttAgi + sttAddB + ownAgi) / 6);
+  //document.getElementById("defense-total-all-def").innerHTML = defBase + armourDef + shieldDef + other1Def + other2Def;
   
-  document.getElementById("defense-total-all-eva").innerHTML = evaBase + armourEva + shieldEva + otherEva;
-  document.getElementById("defense-total-all-def").innerHTML = defBase + armourDef + shieldDef + otherDef;
+  for (let i = 1; i <= 3; i++){
+    const ownAgi = form[`defTotal${i}CheckShield1`].checked && form.shield1Own.checked ? 2 : 0;
+    let eva = ( evaBase ? evaBase + parseInt((sttAgi + sttAddB + ownAgi) / 6) : 0 );
+    let def = defBase;
+    if(form[`defTotal${i}CheckArmour1`].checked)  { eva += armour1Eva; def += armour1Def; }
+    if(form[`defTotal${i}CheckShield1`].checked)  { eva += shield1Eva; def += shield1Def; }
+    if(form[`defTotal${i}CheckDefOther1`].checked){ eva +=  other1Eva; def +=  other1Def; }
+    if(form[`defTotal${i}CheckDefOther2`].checked){ eva +=  other2Eva; def +=  other2Def; }
+    if(form[`defTotal${i}CheckDefOther3`].checked){ eva +=  other3Eva; def +=  other3Def; }
+    if((form[`defTotal${i}CheckArmour1`].checked && form.armour1Note.value.match(/〈魔器〉/))
+    || (form[`defTotal${i}CheckShield1`].checked && form.shield1Note.value.match(/〈魔器〉/))){
+      def += masteryArtisan;
+    }
+    
+    document.getElementById(`defense-total${i}-eva`).innerHTML = eva;
+    document.getElementById(`defense-total${i}-def`).innerHTML = def;
+  }
   
-  const armourReqd = Number(safeEval(form.armourReqd.value));
-  const shieldReqd = Number(safeEval(form.shieldReqd.value));
-  const otherReqd  = Number(safeEval(form.defOtherReqd.value));
-  form.armourReqd.classList.toggle('error', armourReqd > maxReqd);
-  form.shieldReqd.classList.toggle('error', shieldReqd > maxReqd);
-  form.defOtherReqd.classList.toggle('error', otherReqd > maxReqd);
+  form.armour1Reqd.classList.toggle(  'error', Number(safeEval(form.armour1Reqd.value))   > maxReqd);
+  form.shield1Reqd.classList.toggle(  'error', Number(safeEval(form.shield1Reqd.value))   > maxReqd);
+  form.defOther1Reqd.classList.toggle('error', Number(safeEval(form.defOther1Reqd.value)) > maxReqd);
+  form.defOther2Reqd.classList.toggle('error', Number(safeEval(form.defOther2Reqd.value)) > maxReqd);
+  form.defOther3Reqd.classList.toggle('error', Number(safeEval(form.defOther3Reqd.value)) > maxReqd);
 }
 
 // 経験点計算 ----------------------------------------

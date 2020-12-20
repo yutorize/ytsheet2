@@ -93,12 +93,12 @@ sub convertHokanjoToYtsheet {
     'lvGri' => $in{'V_GLv21'} || '', 'lvArt' => $in{'V_GLv22'} || '', 'lvAri' => $in{'V_GLv23'} || '',
     'magicPowerAdd' => $in{'arms_maryoku_sum'},
     'evasionClass' => $in{'kaihi_ginou_name'},
-    'armourName' => $in{'armor_name'}, 'armourReqd' => $in{'armor_hitsukin'}, 'armourNote' => $in{'armor_memo'},
-    'armourDef' => $in{'armor_bougo'} || 0, 'armourEva' => $in{'armor_kaihi'} || 0,
-    'shieldName' => $in{'shield_name'}, 'shieldReqd' => $in{'shield_hitsukin'}, 'shieldNote' => $in{'shield_memo'},
-    'shieldDef' => $in{'shield_bougo'} || 0, 'shieldEva' => $in{'shield_kaihi'} || 0,
-    'defOtherName' => $in{'shield2_name'}, 'defOtherReqd' => $in{'shield2_hitsukin'}, 'defOtherNote' => $in{'shield2_memo'},
-    'defOtherDef' =>$in{'shield2_bougo'} || 0, 'defOtherEva' =>$in{'shield2_kaihi'} || 0,
+    'armour1Name' => $in{'armor_name'}, 'armour1Reqd' => $in{'armor_hitsukin'}, 'armour1Note' => $in{'armor_memo'},
+    'armour1Def' => $in{'armor_bougo'} || 0, 'armour1Eva' => $in{'armor_kaihi'} || 0,
+    'shield1Name' => $in{'shield_name'}, 'shield1Reqd' => $in{'shield_hitsukin'}, 'shield1Note' => $in{'shield_memo'},
+    'shield1Def' => $in{'shield_bougo'} || 0, 'shield1Eva' => $in{'shield_kaihi'} || 0,
+    'defOther1Name' => $in{'shield2_name'}, 'defOther1Reqd' => $in{'shield2_hitsukin'}, 'defOther1Note' => $in{'shield2_memo'},
+    'defOther1Def' =>$in{'shield2_bougo'} || 0, 'defOther1Eva' =>$in{'shield2_kaihi'} || 0,
     
     'accessoryOtherName'    => $in{'acce10_name'}[0], 'accessoryOtherNote'    => $in{'acce10_memo'}[0],
     'accessoryOtherOwn'     => $in{'acce10_senyou'}[0] eq 1 ? 'HP' : $in{'acce10_senyou'}[0] eq 2 ? 'MP' : '',
@@ -275,6 +275,8 @@ sub convertHokanjoToYtsheet {
     $i++;
   }
   $pc{'weaponNum'} = $i;
+  ## 防具
+  $pc{"defTotal1CheckArmour1"} = $pc{"defTotal1CheckShield1"} = $pc{"defTotal1CheckDefOther1"} = $pc{"defTotal1CheckDefOther2"} = $pc{"defTotal1CheckDefOther3"} = 1;
   ## 装飾品(その他以外)
   my $i = 0;
   foreach ('','_','__') {

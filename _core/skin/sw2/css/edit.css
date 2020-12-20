@@ -881,6 +881,17 @@ option.zero-data::before {
   #weapons thead th:nth-child(10){ width:   8em; } /* 追加Ｄ */
 }
 
+#armours .defense-total th label {
+  display: inline-block;
+}
+#armours .defense-total th label input + span {
+  opacity: 0.5;
+  font-size: 90%;
+}
+#armours .defense-total th label input:checked + span {
+  opacity: 1;
+}
+
 #accessories thead th:nth-child(1) { width: 1.5em; } /*  */
 #accessories thead th:nth-child(2) { width: 2.5em; } /* 種別 */
 #accessories thead th:nth-child(3) { width:   25%; } /* 名前 */

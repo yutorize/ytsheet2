@@ -167,7 +167,9 @@ sub palettePreset {
     $text .= "//回避修正=0\n";
     $text .= "2d6+{生命抵抗}+{生命抵抗修正} 生命抵抗力\n";
     $text .= "2d6+{精神抵抗}+{精神抵抗修正} 精神抵抗力\n";
-    $text .= "2d6+{回避}+{回避修正} 回避力\n";
+    $text .= "2d6+{回避1}+{回避修正} 回避力".($::pc{'defenseTotal1Note'}?"／$::pc{'defenseTotal1Note'}":'')."\n";
+    $text .= "2d6+{回避2}+{回避修正} 回避力".($::pc{'defenseTotal2Note'}?"／$::pc{'defenseTotal2Note'}":'')."\n" if $::pc{'defenseTotal2Eva'} ne '';
+    $text .= "2d6+{回避3}+{回避修正} 回避力".($::pc{'defenseTotal3Note'}?"／$::pc{'defenseTotal3Note'}":'')."\n" if $::pc{'defenseTotal3Eva'} ne '';
     $text .= "\n";
     
     #
@@ -314,7 +316,10 @@ sub palettePresetSimple {
     $text .= "//回避修正=0\n";
     $text .= "2d6+$::pc{'vitResistTotal'}+{生命抵抗修正} 生命抵抗力\n";
     $text .= "2d6+$::pc{'mndResistTotal'}+{精神抵抗修正} 精神抵抗力\n";
-    $text .= "2d6+$::pc{'defenseTotalAllEva'}+{回避修正} 回避力\n";
+    $text .= "2d6+$::pc{'defenseTotalAllEva'}+{回避修正} 回避力\n" if $::pc{'defenseTotalAllEva'} ne '';
+    $text .= "2d6+$::pc{'defenseTotal1Eva'}+{回避修正} 回避力".($::pc{'defenseTotal1Note'}?"／$::pc{'defenseTotal1Note'}":'')."\n" if $::pc{'defenseTotal2Eva'} ne '';
+    $text .= "2d6+$::pc{'defenseTotal2Eva'}+{回避修正} 回避力".($::pc{'defenseTotal2Note'}?"／$::pc{'defenseTotal2Note'}":'')."\n" if $::pc{'defenseTotal2Eva'} ne '';
+    $text .= "2d6+$::pc{'defenseTotal3Eva'}+{回避修正} 回避力".($::pc{'defenseTotal3Note'}?"／$::pc{'defenseTotal3Note'}":'')."\n" if $::pc{'defenseTotal3Eva'} ne '';
     $text .= "\n";
     
     #
@@ -495,15 +500,23 @@ sub paletteProperties {
       push @propaties, '';
     }
     
-    if($::pc{'evasionClass'}){
-      push @propaties, "//回避=({$::pc{'evasionClass'}}+({敏捷}".($::pc{'shieldOwn'}?"+2":"").")/6+".($::pc{'evasiveManeuver'}+$::pc{'armourEva'}+$::pc{'shieldEva'}+$::pc{'defOtherEva'}).")";
-      push @propaties, "//回避（盾なし）=({$::pc{'evasionClass'}}+({敏捷})/6+".($::pc{'evasiveManeuver'}+$::pc{'armourEva'}+$::pc{'defOtherEva'}).")";
+    foreach my $i (1..3){
+      next if ($::pc{"defenseTotal${i}Eva"} eq '');
+      my $own_agi = $::pc{"defTotal${i}CheckShield1"} && $::pc{'shield1Own'} ? '+2' : '';
+      push @propaties, "//回避${i}=("
+        .($::pc{'evasionClass'} ? "{$::pc{'evasionClass'}}+({敏捷}${own_agi})/6+" : '')
+        .($::pc{'evasiveManeuver'}
+          + ($::pc{"defTotal${i}CheckArmour1"}   ? $::pc{'armour1Eva'} : 0)
+          + ($::pc{"defTotal${i}CheckShield1"}   ? $::pc{'shield1Eva'} : 0)
+          + ($::pc{"defTotal${i}CheckDefOther1"} ? $::pc{'defOther1Eva'} : 0)
+          + ($::pc{"defTotal${i}CheckDefOther2"} ? $::pc{'defOther2Eva'} : 0)
+          + ($::pc{"defTotal${i}CheckDefOther3"} ? $::pc{'defOther3Eva'} : 0)
+        )
+        .")";
     }
-    else {
-      push @propaties, "//回避=(0+".($::pc{'evasiveManeuver'}+$::pc{'armourEva'}+$::pc{'shieldEva'}+$::pc{'defOtherEva'}).")";
-      push @propaties, "//回避（盾なし）=(0+".($::pc{'evasiveManeuver'}+$::pc{'armourEva'}+$::pc{'defOtherEva'}).")";
-    }
-    push @propaties, "//防護=$::pc{'defenseTotalAllDef'}";
+    push @propaties, "//防護1=".($::pc{'defenseTotal1Def'} || $::pc{'defenseTotalAllDef'} || 0);
+    push @propaties, "//防護2=$::pc{'defenseTotal2Def'}" if $::pc{'defenseTotal2Def'} ne '';
+    push @propaties, "//防護3=$::pc{'defenseTotal3Def'}" if $::pc{'defenseTotal3Def'} ne '';
     
   }
   ## 魔物

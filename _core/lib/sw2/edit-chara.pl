@@ -985,37 +985,71 @@ print <<"HTML";
             <tbody>
               <tr>
                 <th>鎧</th>
-                <td>@{[input('armourName')]}</td>
-                <td>@{[input('armourReqd','','calcDefense')]}</td>
-                <td>@{[input('armourEva','number','calcDefense')]}</td>
-                <td>@{[input('armourDef','number','calcDefense')]}</td>
-                <td>@{[input('armourOwn','checkbox','calcDefense')]}</td>
-                <td>@{[input('armourNote')]}</td>
+                <td>@{[input('armour1Name')]}</td>
+                <td>@{[input('armour1Reqd','','calcDefense')]}</td>
+                <td>@{[input('armour1Eva','number','calcDefense')]}</td>
+                <td>@{[input('armour1Def','number','calcDefense')]}</td>
+                <td>@{[input('armour1Own','checkbox','calcDefense')]}</td>
+                <td>@{[input('armour1Note')]}</td>
               </tr>
               <tr>
                 <th>盾</th>
-                <td>@{[input('shieldName')]}</td>
-                <td>@{[input('shieldReqd','','calcDefense')]}</td>
-                <td>@{[input('shieldEva','number','calcDefense')]}</td>
-                <td>@{[input('shieldDef','number','calcDefense')]}</td>
-                <td>@{[input('shieldOwn','checkbox','calcDefense')]}</td>
-                <td>@{[input('shieldNote')]}</td>
+                <td>@{[input('shield1Name')]}</td>
+                <td>@{[input('shield1Reqd','','calcDefense')]}</td>
+                <td>@{[input('shield1Eva','number','calcDefense')]}</td>
+                <td>@{[input('shield1Def','number','calcDefense')]}</td>
+                <td>@{[input('shield1Own','checkbox','calcDefense')]}</td>
+                <td>@{[input('shield1Note')]}</td>
               </tr>
               <tr>
-                <th>他</th>
-                <td>@{[input('defOtherName','','calcDefense')]}</td>
-                <td>@{[input('defOtherReqd')]}</td>
-                <td>@{[input('defOtherEva','number','calcDefense')]}</td>
-                <td>@{[input('defOtherDef','number','calcDefense')]}</td>
+                <th>他1</th>
+                <td>@{[input('defOther1Name','','calcDefense')]}</td>
+                <td>@{[input('defOther1Reqd','','calcDefense')]}</td>
+                <td>@{[input('defOther1Eva','number','calcDefense')]}</td>
+                <td>@{[input('defOther1Def','number','calcDefense')]}</td>
                 <td> </td>
-                <td>@{[input('defOtherNote')]}</td>
+                <td>@{[input('defOther1Note')]}</td>
               </tr>
-              <tr class="defense-total">
-                <th colspan="3">合計：すべて</th>
-                <td id="defense-total-all-eva">0</td>
-                <td id="defense-total-all-def">0</td>
+              <tr>
+                <th>他2</th>
+                <td>@{[input('defOther2Name','','calcDefense')]}</td>
+                <td>@{[input('defOther2Reqd','','calcDefense')]}</td>
+                <td>@{[input('defOther2Eva','number','calcDefense')]}</td>
+                <td>@{[input('defOther2Def','number','calcDefense')]}</td>
+                <td> </td>
+                <td>@{[input('defOther2Note')]}</td>
+              </tr>
+              <tr>
+                <th>他3</th>
+                <td>@{[input('defOther3Name','','calcDefense')]}</td>
+                <td>@{[input('defOther3Reqd','','calcDefense')]}</td>
+                <td>@{[input('defOther3Eva','number','calcDefense')]}</td>
+                <td>@{[input('defOther3Def','number','calcDefense')]}</td>
+                <td> </td>
+                <td>@{[input('defOther3Note')]}</td>
               </tr>
             </tbody>
+            <tfoot>
+HTML
+foreach my $i (1..3){
+  print <<"HTML";
+              <tr class="defense-total">
+                <th colspan="3">
+                  合計:
+                  <label>@{[input("defTotal${i}CheckArmour1"  ,'checkbox','calcDefense')]}<span>鎧</span></label>
+                  <label>@{[input("defTotal${i}CheckShield1"  ,'checkbox','calcDefense')]}<span>盾</span></label>
+                  <label>@{[input("defTotal${i}CheckDefOther1",'checkbox','calcDefense')]}<span>他1</span></label>
+                  <label>@{[input("defTotal${i}CheckDefOther2",'checkbox','calcDefense')]}<span>他2</span></label>
+                  <label>@{[input("defTotal${i}CheckDefOther3",'checkbox','calcDefense')]}<span>他3</span></label>
+                </th>
+                <td id="defense-total${i}-eva">0</td>
+                <td id="defense-total${i}-def">0</td>
+                <td colspan="2">@{[input("defenseTotal${i}Note")]}</td>
+              </tr>
+HTML
+}
+print <<"HTML";
+            </tfoot>
           </table>
         </div>
         <div class="box" id="accessories">

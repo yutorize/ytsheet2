@@ -496,6 +496,48 @@ if($pc{'evasiveManeuver'}) {
 }
 $SHEET->param(EvasionClasses => \@evasion);
 
+### 防具 --------------------------------------------------
+{
+  my @list = (
+    ['鎧','armour1'],
+    ['盾','shield1'],
+    ['他1','defOther1'],
+    ['他2','defOther2'],
+    ['他3','defOther3'],
+  );
+  my @armours;
+  foreach (@list){
+    next if $pc{@$_[1].'Name'} eq '' && !$pc{@$_[1].'Eva'} && !$pc{@$_[1].'Def'};
+    push(@armours, {
+      "TH"   => @$_[0],
+      "NAME" => $pc{@$_[1].'Name'},
+      "REQD" => $pc{@$_[1].'Reqd'},
+      "EVA"  => $pc{@$_[1].'Eva'},
+      "DEF"  => $pc{@$_[1].'Def'},
+      "OWN"  => $pc{@$_[1].'Own'},
+      "NOTE" => $pc{@$_[1].'Note'},
+    } );
+  }
+  $SHEET->param(Armours => \@armours);
+  
+  my @total;
+  foreach my $i (1..3){
+    my @ths;
+    foreach (@list){
+      if($pc{"defTotal${i}Check".ucfirst(@$_[1])} && ($pc{@$_[1].'Name'} || $pc{@$_[1].'Eva'} || $pc{@$_[1].'Def'})){
+        push(@ths, @$_[0]);
+      }
+    }
+    next if !@ths;
+    push(@total, {
+      "TH"   => (@ths == @armours ? 'すべて' : join('＋', @ths)),
+      "EVA"  => $pc{"defenseTotal${i}Eva"},
+      "DEF"  => $pc{"defenseTotal${i}Def"},
+      "NOTE" => $pc{"defenseTotal${i}Note"},
+    } );
+  }
+  $SHEET->param(ArmourTotals => \@total);
+}
 ### 装飾品 --------------------------------------------------
 my @accessories;
 foreach (

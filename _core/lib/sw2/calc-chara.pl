@@ -280,7 +280,7 @@ sub data_calc {
   $pc{'mpTotal'}  = 0  if ($pc{'race'} eq 'グラスランナー');
 
   ## 移動力
-  my $own_mobility = $pc{'armourOwn'} ? 2 : 0;
+  my $own_mobility = $pc{'armour1Own'} ? 2 : 0;
   $pc{'mobilityBase'} = $pc{'sttAgi'} + $pc{'sttAddB'} + $own_mobility;
   $pc{'mobilityBase'} = $pc{'mobilityBase'} * 2 + $own_mobility  if ($pc{'race'} eq 'ケンタウロス');
   $pc{'mobilityTotal'} = $pc{'mobilityBase'} + s_eval($pc{'mobilityAdd'});
@@ -358,31 +358,38 @@ sub data_calc {
     }
   }
 
-  ## 回避力
+  ## 基本回避力
     use POSIX 'ceil';
     $pc{'reqdStr'}  = $pc{'sttStr'} + $pc{'sttAddC'};
     $pc{'reqdStrF'} = ceil($pc{'reqdStr'} / 2);
     my $eva_class;
-    my $own_agi = $pc{'shieldOwn'} ? 2 : 0;
     if   ($pc{'evasionClass'} eq "ファイター"       && $pc{'lvFig'}){ $eva_class = $pc{'lvFig'}; $pc{'evasionStr'} = $pc{'reqdStr'}; }
     elsif($pc{'evasionClass'} eq "グラップラー"     && $pc{'lvGra'}){ $eva_class = $pc{'lvGra'}; $pc{'evasionStr'} = $pc{'reqdStr'}; }
     elsif($pc{'evasionClass'} eq "フェンサー"       && $pc{'lvFen'}){ $eva_class = $pc{'lvFen'}; $pc{'evasionStr'} = $pc{'reqdStrF'}; }
     elsif($pc{'evasionClass'} eq "シューター"       && $pc{'lvSho'}){ $eva_class = $pc{'lvSho'}; $pc{'evasionStr'} = $pc{'reqdStr'}; }
     elsif($pc{'evasionClass'} eq "デーモンルーラー" && $pc{'lvDem'}){ $eva_class = $pc{'lvDem'}; $pc{'evasionStr'} = $pc{'reqdStr'}; }
-    else{ $pc{'evasionStr'} = $pc{'reqdStr'}; }
-
-    $pc{'evasionEva'} = 0;
-    $pc{'evasionEva'} = $eva_class + int( ($pc{'sttAgi'} + $pc{'sttAddB'} + $own_agi) / 6 ) if $eva_class;
+    else{ $eva_class = 0; $pc{'evasionStr'} = $pc{'reqdStr'}; }
 
   ## 防具
-    $pc{'defenseTotalAllEva'} = $pc{'evasionEva'} + $pc{'evasiveManeuver'} + $pc{'armourEva'} + $pc{'shieldEva'} + $pc{'defOtherEva'};
-    $pc{'defenseTotalAllDef'} =
-      $pc{'raceAbilityDef'} +
-      $pc{'armourDef'} + max($pc{'masteryMetalArmour'},$pc{'masteryNonMetalArmour'}) +
-      $pc{'shieldDef'} + $pc{'masteryShield'} +
-      $pc{'defOtherDef'};
-    if($pc{'armourNote'} =~ /〈魔器〉/ || $pc{'ShieldNote'} =~ /〈魔器〉/){
-      $pc{'defenseTotalAllDef'} += $pc{'masteryArtisan'};
+    foreach my $i (1..3){
+      my $own_agi = $pc{"defTotal${i}CheckShield1"} && $pc{'shield1Own'} ? 2 : 0;
+      my $art_def = 0;
+      my $eva = ( $eva_class ? $eva_class + int(($pc{'sttAgi'}+$pc{'sttAddB'}+$own_agi)/6) : 0 ) + $pc{'evasiveManeuver'};
+      my $def = $pc{'raceAbilityDef'};
+      my $flag = 0;
+      if($pc{"defTotal${i}CheckArmour1"}  ){ $flag++; $eva += $pc{'armour1Eva'};    $def += $pc{'armour1Def'} + max($pc{'masteryMetalArmour'},$pc{'masteryNonMetalArmour'}); }
+      if($pc{"defTotal${i}CheckShield1"}  ){ $flag++; $eva += $pc{'shield1Eva'};    $def += $pc{'shield1Def'} + $pc{'masteryShield'}; }
+      if($pc{"defTotal${i}CheckDefOther1"}){ $flag++; $eva += $pc{'defOther1Eva'}; $def += $pc{'defOther1Def'}; }
+      if($pc{"defTotal${i}CheckDefOther2"}){ $flag++; $eva += $pc{'defOther2Eva'}; $def += $pc{'defOther2Def'}; }
+      if($pc{"defTotal${i}CheckDefOther3"}){ $flag++; $eva += $pc{'defOther3Eva'}; $def += $pc{'defOther3Def'}; }
+      if(($pc{"defTotal${i}CheckArmour1"} && $pc{'armour1Note'} =~ /〈魔器〉/)
+      || ($pc{"defTotal${i}CheckShield1"} && $pc{'Shield1Note'} =~ /〈魔器〉/)){
+        $def += $pc{'masteryArtisan'};
+      }
+      if($flag){
+        $pc{"defenseTotal${i}Eva"} = $eva;
+        $pc{"defenseTotal${i}Def"} = $def;
+      }
     }
 
   ### グレード自動変更 --------------------------------------------------

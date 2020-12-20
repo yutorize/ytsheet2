@@ -99,6 +99,28 @@ sub data_update_chara {
   if($pc{'ver'} < 1.11001){
     $pc{'paletteUseBuff'} = 1;
   }
+  if($pc{'ver'} < 1.11004){
+    $pc{'armour1Name'} = $pc{'armourName'};
+    $pc{'armour1Reqd'} = $pc{'armourReqd'};
+    $pc{'armour1Eva'}  = $pc{'armourEva'};
+    $pc{'armour1Def'}  = $pc{'armourDef'};
+    $pc{'armour1Own'}  = $pc{'armourOwn'};
+    $pc{'armour1Note'} = $pc{'armourNote'};
+    $pc{'shield1Name'} = $pc{'shieldName'};
+    $pc{'shield1Reqd'} = $pc{'shieldReqd'};
+    $pc{'shield1Eva'}  = $pc{'shieldEva'};
+    $pc{'shield1Def'}  = $pc{'shieldDef'};
+    $pc{'shield1Own'}  = $pc{'shieldOwn'};
+    $pc{'shield1Note'} = $pc{'shieldNote'};
+    $pc{'defOther1Name'} = $pc{'defOtherName'};
+    $pc{'defOther1Reqd'} = $pc{'defOtherReqd'};
+    $pc{'defOther1Eva'}  = $pc{'defOtherEva'};
+    $pc{'defOther1Def'}  = $pc{'defOtherDef'};
+    $pc{'defOther1Note'} = $pc{'defOtherNote'};
+    $pc{"defenseTotal1Eva"} = $pc{"defenseTotalAllEva"};
+    $pc{"defenseTotal1Def"} = $pc{"defenseTotalAllDef"};
+    $pc{"defTotal1CheckArmour1"} = $pc{"defTotal1CheckShield1"} = $pc{"defTotal1CheckDefOther1"} = $pc{"defTotal1CheckDefOther2"} = $pc{"defTotal1CheckDefOther3"} = 1;
+  }
   return %pc;
 }
 
