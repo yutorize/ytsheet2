@@ -1418,7 +1418,7 @@ function addWeapons(){
   tbody.setAttribute('id',idNumSet('weapon-row'));
   tbody.innerHTML = `<tr>
     <td rowspan="2"><input name="weapon${num}Name"  type="text"><span class="handle"></span></td>
-    <td rowspan="2"><input name="weapon${num}Usage" type="text" list="list-usage></td>
+    <td rowspan="2"><input name="weapon${num}Usage" type="text" list="list-usage"></td>
     <td rowspan="2"><input name="weapon${num}Reqd"  type="text"></td>
     <td rowspan="2">+<input name="weapon${num}Acc" type="number" oninput="calcWeapon()"><b id="weapon${num}-acc-total">0</b></td>
     <td rowspan="2"><input name="weapon${num}Rate" type="text"></td>
