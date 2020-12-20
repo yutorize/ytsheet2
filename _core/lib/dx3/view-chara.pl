@@ -31,9 +31,11 @@ if($id){
   close($IN);
 }
 elsif($conv_url){
-  require $set::lib_calc_char;
   %pc = %::conv_data;
-  %pc = data_calc(\%pc);
+  if(!$pc{'ver'}){
+    require $set::lib_calc_char;
+    %pc = data_calc(\%pc);
+  }
   $SHEET->param("convertMode" => 1);
   $SHEET->param("convertUrl" => $conv_url);
 }
@@ -72,14 +74,19 @@ if($set::playerlist){
   $SHEET->param("playerName" => '<a href="'.$set::playerlist.'?id='.$pl_id.'">'.$pc{'playerName'}.'</a>');
 }
 ### グループ --------------------------------------------------
-if(!$pc{'group'}) {
-  $pc{'group'} = $set::group_default;
-  $SHEET->param(group => $set::group_default);
+if($conv_url){
+  $SHEET->param(group => '');
 }
-foreach (@set::groups){
-  if($pc{'group'} eq @$_[0]){
-    $SHEET->param(groupName => @$_[2]);
-    last;
+else {
+  if(!$pc{'group'}) {
+    $pc{'group'} = $set::group_default;
+    $SHEET->param(group => $set::group_default);
+  }
+  foreach (@set::groups){
+    if($pc{'group'} eq @$_[0]){
+      $SHEET->param(groupName => @$_[2]);
+      last;
+    }
   }
 }
 

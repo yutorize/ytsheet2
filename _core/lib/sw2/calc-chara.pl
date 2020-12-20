@@ -108,6 +108,7 @@ sub data_calc {
 
   ### 能力値計算  --------------------------------------------------
   ## 成長
+  $pc{'sttHistGrowA'} = $pc{'sttHistGrowB'} = $pc{'sttHistGrowC'} = $pc{'sttHistGrowD'} = $pc{'sttHistGrowE'} = $pc{'sttHistGrowF'} = 0;
   for (my $i = 1; $i <= $pc{'historyNum'}; $i++) {
     my $grow = $pc{"history${i}Grow"};
     $grow =~ s/器(?:用度?)?(?:×|\*)?([0-9]{1,3})/$pc{'sttHistGrowA'} += $1; ''/ge;

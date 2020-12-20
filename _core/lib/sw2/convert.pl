@@ -360,13 +360,14 @@ sub convertHokanjoToYtsheet {
   $pc{'freeNote'} = $profile.$in{'pc_making_memo'},
   
   ## 〆
+  $pc{'ver'} = 0;
   return %pc;
 }
 ### 旧ゆとシート --------------------------------------------------
 sub convert1to2 {
   my %pc = %{$_[0]};
   $pc{'convertSource'} = '旧ゆとシート';
-  
+  $pc{'ver'} = 0;
   return %pc;
 }
 

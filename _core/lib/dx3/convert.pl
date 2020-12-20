@@ -283,6 +283,7 @@ sub convertHokanjoToYtsheet {
   $pc{'freeNote'} = $profile.$in{'pc_making_memo'},
   
   ## 〆
+  $pc{'ver'} = 0;
   return %pc;
 }
 sub convertTiming {
@@ -520,6 +521,7 @@ sub convertSoukoToYtsheet {
   $pc{'history1Exp'} = $in{'exp'}{'acquire'};
   $pc{'historyNum'} = 3;
   ## 〆
+  $pc{'ver'} = 0;
   return %pc;
 }
 ### 旧ゆとシート => ゆとシートⅡ --------------------------------------------------
@@ -709,6 +711,7 @@ sub convert1to2 {
   }
   $pc{"history0Exp"} = $pc{"make_exp"};
   
+  $pc{'ver'} = 0;
   return %pc;
 }
 
