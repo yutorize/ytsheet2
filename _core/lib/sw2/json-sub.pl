@@ -12,6 +12,7 @@ sub addJsonData {
   if   ($type eq 'm'){  }
   elsif($type eq 'i'){  }
   else {
+    %pc = data_update_chara(\%pc);
     # 簡易プロフィール
     my @classes;
     foreach (@data::class_names){

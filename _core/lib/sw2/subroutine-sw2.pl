@@ -84,4 +84,22 @@ sub tag_unescape_ytc {
   return $text;
 }
 
+### バージョンアップデート --------------------------------------------------
+sub data_update_chara {
+  my %pc = %{$_[0]};
+  $pc{'ver'} =~ s/^([0-9]+)\.([0-9]+)\.([0-9]+)$/$1.$2$3/;
+  if($pc{'ver'} < 1.10){
+    $pc{'fairyContractEarth'} = 1 if $pc{'ftElemental'} =~ /土|地/;
+    $pc{'fairyContractWater'} = 1 if $pc{'ftElemental'} =~ /水|氷/;
+    $pc{'fairyContractFire' } = 1 if $pc{'ftElemental'} =~ /火|炎/;
+    $pc{'fairyContractWind' } = 1 if $pc{'ftElemental'} =~ /風|空/;
+    $pc{'fairyContractLight'} = 1 if $pc{'ftElemental'} =~ /光/;
+    $pc{'fairyContractDark' } = 1 if $pc{'ftElemental'} =~ /闇/;
+  }
+  if($pc{'ver'} < 1.11001){
+    $pc{'paletteUseBuff'} = 1;
+  }
+  return %pc;
+}
+
 1;

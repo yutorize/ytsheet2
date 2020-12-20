@@ -8,6 +8,7 @@ sub addJsonData {
   my %pc = %{ $_[0] };
   my $type = $_[1];
   
+  %pc = data_update_chara(\%pc);
   ### ロイス数 --------------------------------------------------
   my @dloises; $pc{'loisHave'} = 0; $pc{'loisMax'} = 0; $pc{'titusHave'} = 0; $pc{'sublimated'} = 0;
   foreach my $num (1..7){

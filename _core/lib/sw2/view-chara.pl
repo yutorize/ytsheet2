@@ -64,14 +64,10 @@ foreach (1..17) {
 }
 
 ### アップデート --------------------------------------------------
-if($pc{'ver'} < 1.10){
-  $pc{'fairyContractEarth'} = 1 if $pc{'ftElemental'} =~ /土|地/;
-  $pc{'fairyContractWater'} = 1 if $pc{'ftElemental'} =~ /水|氷/;
-  $pc{'fairyContractFire' } = 1 if $pc{'ftElemental'} =~ /火|炎/;
-  $pc{'fairyContractWind' } = 1 if $pc{'ftElemental'} =~ /風|空/;
-  $pc{'fairyContractLight'} = 1 if $pc{'ftElemental'} =~ /光/;
-  $pc{'fairyContractDark' } = 1 if $pc{'ftElemental'} =~ /闇/;
+if($pc{'ver'}){
+  %pc = data_update_chara(\%pc);
 }
+
 ### テンプレ用に変換 --------------------------------------------------
 while (my ($key, $value) = each(%pc)){
   $SHEET->param("$key" => $value);
