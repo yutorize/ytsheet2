@@ -79,30 +79,25 @@ if($mode_make){
 
 ### 出力準備 #########################################################################################
 ### 初期設定 --------------------------------------------------
-$pc{'protect'} = $pc{'protect'} ? $pc{'protect'} : 'password';
-$pc{'group'} = $pc{'group'} ? $pc{'group'} : $set::group_default;
-
-$pc{'history0Exp'} = $pc{'history0Exp'} ne '' ? $pc{'history0Exp'} : $set::make_exp;
-
-$pc{'skillNum'}   = $pc{'skillNum'}   || 2;
-$pc{'effectNum'}  = $pc{'effectNum'}  || 5;
-$pc{'weaponNum'}  = $pc{'weaponNum'}  || 1;
-$pc{'armorNum'}   = $pc{'armorNum'}   || 1;
-$pc{'itemNum'}    = $pc{'itemNum'}    || 2;
-$pc{'historyNum'} = $pc{'historyNum'} || 3;
-
-if(!$pc{'comboNum'}){
+if($mode eq 'edit'){
+  %pc = data_update_chara(\%pc);
+}
+elsif($mode eq 'blanksheet'){
+  $pc{'protect'} = 'password';
+  $pc{'group'} = $set::group_default;
+  
+  $pc{'history0Exp'}   = $set::make_exp;
+  
+  ($pc{'effect1Type'},$pc{'effect1Name'},$pc{'effect1Lv'},$pc{'effect1Timing'},$pc{'effect1Skill'},$pc{'effect1Dfclty'},$pc{'effect1Target'},$pc{'effect1Range'},$pc{'effect1Encroach'},$pc{'effect1Restrict'},$pc{'effect1Note'})
+    = ('auto','リザレクト',1,'オート','―','自動成功','自身','至近','効果参照','―','(Lv)D点HP回復、侵蝕値上昇');
+  ($pc{'effect2Type'},$pc{'effect2Name'},$pc{'effect2Lv'},$pc{'effect2Timing'},$pc{'effect2Skill'},$pc{'effect2Dfclty'},$pc{'effect2Target'},$pc{'effect2Range'},$pc{'effect2Encroach'},$pc{'effect2Restrict'},$pc{'effect2Note'})
+    = ('auto','ワーディング',1,'オート','―','自動成功','シーン','視界','0','―','非オーヴァードをエキストラ化');
+  
   $pc{'comboNum'} = 1;
   $pc{'combo1Condition1'} = '100%未満';
   $pc{'combo1Condition2'} = '100%以上';
-}
-if(!$pc{'effect1Name'}){
-  ($pc{'effect1Type'},$pc{'effect1Name'},$pc{'effect1Lv'},$pc{'effect1Timing'},$pc{'effect1Skill'},$pc{'effect1Dfclty'},$pc{'effect1Target'},$pc{'effect1Range'},$pc{'effect1Encroach'},$pc{'effect1Restrict'},$pc{'effect1Note'})
-    = ('auto','リザレクト',1,'オート','―','自動成功','自身','至近','効果参照','―','(Lv)D点HP回復、侵蝕値上昇');
-}
-if(!$pc{'effect2Name'}){
-  ($pc{'effect2Type'},$pc{'effect2Name'},$pc{'effect2Lv'},$pc{'effect2Timing'},$pc{'effect2Skill'},$pc{'effect2Dfclty'},$pc{'effect2Target'},$pc{'effect2Range'},$pc{'effect2Encroach'},$pc{'effect2Restrict'},$pc{'effect2Note'})
-    = ('auto','ワーディング',1,'オート','―','自動成功','シーン','視界','0','―','非オーヴァードをエキストラ化');
+  
+  $pc{'paletteUseBuff'} = 1;
 }
 
 $pc{'imageFit'} = $pc{'imageFit'} eq 'percent' ? 'percentX' : $pc{'imageFit'};
@@ -116,25 +111,13 @@ $pc{'colorHeadBgL'} = $pc{'colorHeadBgL'} eq '' ?  65 : $pc{'colorHeadBgL'};
 $pc{'colorBaseBgH'} = $pc{'colorBaseBgH'} eq '' ? 210 : $pc{'colorBaseBgH'};
 $pc{'colorBaseBgS'} = $pc{'colorBaseBgS'} eq '' ?   0 : $pc{'colorBaseBgS'};
 $pc{'colorBaseBgL'} = $pc{'colorBaseBgL'} eq '' ? 100 : $pc{'colorBaseBgL'};
-if($mode eq 'blanksheet'){
-  $pc{'paletteUseBuff'} = 1;
-}
 
-### アップデート --------------------------------------------------
-$pc{'ver'} =~ s/^([0-9]+)\.([0-9]+)\.([0-9]+)$/$1.$2$3/;
-if($pc{'ver'} && $pc{'ver'} < 1.10003){
-  $pc{'comboCalcOff'} = 1;
-  foreach my $num (1 .. $pc{'comboNum'}){
-    $pc{"combo${num}Skill"} =~ s/[〈〉<>]//g;
-    foreach (1..4) {
-      $pc{"combo${num}DiceAdd".$_}  = $pc{"combo${num}Dice".$_};
-      $pc{"combo${num}FixedAdd".$_} = $pc{"combo${num}Fixed".$_};
-    }
-  }
-}
-if($pc{'ver'} < 1.11001){
-  $pc{'paletteUseBuff'} = 1;
-}
+$pc{'skillNum'}   = $pc{'skillNum'}   || 2;
+$pc{'effectNum'}  = $pc{'effectNum'}  || 5;
+$pc{'weaponNum'}  = $pc{'weaponNum'}  || 1;
+$pc{'armorNum'}   = $pc{'armorNum'}   || 1;
+$pc{'itemNum'}    = $pc{'itemNum'}    || 2;
+$pc{'historyNum'} = $pc{'historyNum'} || 3;
 
 ### 折り畳み判断 --------------------------------------------------
 my %open;

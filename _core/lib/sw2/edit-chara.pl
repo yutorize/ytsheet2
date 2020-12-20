@@ -85,29 +85,31 @@ if($mode_make){
 
 ### 出力準備 #########################################################################################
 ### 初期設定 --------------------------------------------------
-$pc{'protect'} = $pc{'protect'} ? $pc{'protect'} : 'password';
-$pc{'group'} = $pc{'group'} ? $pc{'group'} : $set::group_default;
-
-$pc{'history0Exp'}   = $pc{'history0Exp'}   ne '' ? $pc{'history0Exp'}   : $set::make_exp;
-$pc{'history0Honor'} = $pc{'history0Honor'} ne '' ? $pc{'history0Honor'} : $set::make_honor;
-$pc{'history0Money'} = $pc{'history0Money'} ne '' ? $pc{'history0Money'} : $set::make_money;
-$pc{'expTotal'} = $pc{'expTotal'} ? $pc{'expTotal'} : $pc{'history0Exp'};
-
-$pc{'accuracyEnhance'} = $pc{'accuracyEnhance'} ? $pc{'accuracyEnhance'} : 0;
-$pc{'evasiveManeuver'} = $pc{'evasiveManeuver'} ? $pc{'evasiveManeuver'} : 0;
-$pc{'tenacity'} = $pc{'tenacity'} ? $pc{'tenacity'} : 0;
-$pc{'capacity'} = $pc{'capacity'} ? $pc{'capacity'} : 0;
-
-$pc{'weaponNum'}     = $pc{'weaponNum'}     || 1;
-$pc{'languageNum'}   = $pc{'languageNum'}   || 3;
-$pc{'honorItemsNum'} = $pc{'honorItemsNum'} || 3;
-$pc{'historyNum'}    = $pc{'historyNum'}    || 3;
+if($mode eq 'edit'){
+  %pc = data_update_chara(\%pc);
+}
+elsif($mode eq 'blanksheet'){
+  $pc{'protect'} = 'password';
+  $pc{'group'} = $set::group_default;
+  
+  $pc{'history0Exp'}   = $set::make_exp;
+  $pc{'history0Honor'} = $set::make_honor;
+  $pc{'history0Money'} = $set::make_money;
+  $pc{'expTotal'} = $pc{'history0Exp'};
+  
+  $pc{'paletteUseBuff'} = 1;
+}
 
 $pc{'imageFit'} = $pc{'imageFit'} eq 'percent' ? 'percentX' : $pc{'imageFit'};
 $pc{'imagePercent'} = $pc{'imagePercent'} eq '' ? '200' : $pc{'imagePercent'};
 $pc{'imagePositionX'} = $pc{'imagePositionX'} eq '' ? '50' : $pc{'imagePositionX'};
 $pc{'imagePositionY'} = $pc{'imagePositionY'} eq '' ? '50' : $pc{'imagePositionY'};
 
+if($pc{'colorCustom'} && $pc{'colorHeadBgA'}) {
+  ($pc{'colorHeadBgH'}, $pc{'colorHeadBgS'}, $pc{'colorHeadBgL'}) = rgb_to_hsl($pc{'colorHeadBgR'},$pc{'colorHeadBgG'},$pc{'colorHeadBgB'});
+  ($pc{'colorBaseBgH'}, $pc{'colorBaseBgS'}, undef) = rgb_to_hsl($pc{'colorBaseBgR'},$pc{'colorBaseBgG'},$pc{'colorBaseBgB'});
+  $pc{'colorBaseBgS'} = $pc{'colorBaseBgS'} * $pc{'colorBaseBgA'} * 10;
+}
 $pc{'colorHeadBgH'} = $pc{'colorHeadBgH'} eq '' ? 225 : $pc{'colorHeadBgH'};
 $pc{'colorHeadBgS'} = $pc{'colorHeadBgS'} eq '' ?   9 : $pc{'colorHeadBgS'};
 $pc{'colorHeadBgL'} = $pc{'colorHeadBgL'} eq '' ?  65 : $pc{'colorHeadBgL'};
@@ -115,28 +117,15 @@ $pc{'colorBaseBgH'} = $pc{'colorBaseBgH'} eq '' ? 210 : $pc{'colorBaseBgH'};
 $pc{'colorBaseBgS'} = $pc{'colorBaseBgS'} eq '' ?   0 : $pc{'colorBaseBgS'};
 $pc{'colorBaseBgL'} = $pc{'colorBaseBgL'} eq '' ? 100 : $pc{'colorBaseBgL'};
 
-if($pc{'colorCustom'} && $pc{'colorHeadBgA'}) {
-  ($pc{'colorHeadBgH'}, $pc{'colorHeadBgS'}, $pc{'colorHeadBgL'}) = rgb_to_hsl($pc{'colorHeadBgR'},$pc{'colorHeadBgG'},$pc{'colorHeadBgB'});
-  ($pc{'colorBaseBgH'}, $pc{'colorBaseBgS'}, undef) = rgb_to_hsl($pc{'colorBaseBgR'},$pc{'colorBaseBgG'},$pc{'colorBaseBgB'});
-  $pc{'colorBaseBgS'} = $pc{'colorBaseBgS'} * $pc{'colorBaseBgA'} * 10;
-}
-if($mode eq 'blanksheet'){
-  $pc{'paletteUseBuff'} = 1;
-}
+$pc{'weaponNum'}     = $pc{'weaponNum'}     || 1;
+$pc{'languageNum'}   = $pc{'languageNum'}   || 3;
+$pc{'honorItemsNum'} = $pc{'honorItemsNum'} || 3;
+$pc{'historyNum'}    = $pc{'historyNum'}    || 3;
 
-### アップデート --------------------------------------------------
-$pc{'ver'} =~ s/^([0-9]+)\.([0-9]+)\.([0-9]+)$/$1.$2$3/;
-if($pc{'ver'} < 1.10){
-  $pc{'fairyContractEarth'} = 1 if $pc{'ftElemental'} =~ /土|地/;
-  $pc{'fairyContractWater'} = 1 if $pc{'ftElemental'} =~ /水|氷/;
-  $pc{'fairyContractFire' } = 1 if $pc{'ftElemental'} =~ /火|炎/;
-  $pc{'fairyContractWind' } = 1 if $pc{'ftElemental'} =~ /風|空/;
-  $pc{'fairyContractLight'} = 1 if $pc{'ftElemental'} =~ /光/;
-  $pc{'fairyContractDark' } = 1 if $pc{'ftElemental'} =~ /闇/;
-}
-if($pc{'ver'} < 1.11001){
-  $pc{'paletteUseBuff'} = 1;
-}
+$pc{'accuracyEnhance'} = $pc{'accuracyEnhance'} || 0;
+$pc{'evasiveManeuver'} = $pc{'evasiveManeuver'} || 0;
+$pc{'tenacity'} = $pc{'tenacity'} || 0;
+$pc{'capacity'} = $pc{'capacity'} || 0;
 
 ### 改行処理 --------------------------------------------------
 $pc{'items'}         =~ s/&lt;br&gt;/\n/g;
