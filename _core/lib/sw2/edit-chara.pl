@@ -442,16 +442,18 @@ print <<"HTML";
           </div>
           <div class="box" id="common-classes">
             <h2>一般技能</h2>
-            <dl>
+            <table id="common-classes-table">
+            <tbody>
 HTML
   foreach my $i (1..10){
 print <<"HTML";
-              <dt>@{[input('commonClass'.$i)]}</dt><dd>@{[input('lvCommon'.$i, 'number','','min="0" max="17"')]}</dd>
+              <tr id="common-class${i}"><td class="handle"></td><td>@{[input('commonClass'.$i)]}</td><td>@{[input('lvCommon'.$i, 'number','','min="0" max="17"')]}</td></tr>
 HTML
   }
 }
 print <<"HTML";
-            </dl>
+            </tbody>
+            </table>
           </div>
         </div>
         <p class="right">@{[ input "failView", "checkbox", "checkFeats()" ]} 習得レベルの足りない項目（特技／練技・呪歌など）も表示する</p>

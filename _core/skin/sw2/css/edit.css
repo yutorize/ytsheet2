@@ -606,8 +606,8 @@ td .switch-button {
   flex-basis: calc(50% - 10px);
   grid-template-columns: 1fr 3.5em;
 }
-#common-classes dl {
-  grid-template-columns: 1fr 3.5em;
+#common-classes td:last-child {
+  width: 3.5em;
 }
 @media screen and (max-width:735px){
   #area-classes {

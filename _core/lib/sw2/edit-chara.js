@@ -1564,6 +1564,28 @@ let dishonorSortable = Sortable.create(document.querySelector('#dishonor-items-t
   }
 });
 
+// 一般技能 ----------------------------------------
+// ソート
+let commonClassSortable = Sortable.create(document.querySelector('#common-classes-table tbody'), {
+  group: "honor",
+  dataIdAttr: 'id',
+  animation: 150,
+  //handle: '.handle',
+  filter: 'thead,tfoot',
+  ghostClass: 'sortable-ghost',
+  onUpdate: function (evt) {
+    const order = commonClassSortable.toArray();
+    let num = 1;
+    for(let id of order) {
+      if(document.getElementById(id)){
+        document.querySelector(`#${id} [type="text"]`  ).setAttribute('name',`commonClass${num}`);
+        document.querySelector(`#${id} [type="number"]`).setAttribute('name',`lvCommon${num}`);
+        num++;
+      }
+    }
+  }
+});
+
 // 履歴欄 ----------------------------------------
 // 追加
 function addHistory(){
