@@ -958,6 +958,10 @@ dl#level dd {
 #attack-classes thead th:nth-child(5) { width: 3.5em; } /* Ｃ値 */
 #attack-classes thead th:nth-child(6) { width:   5em; } /* 追加Ｄ */
 
+#attack-classes + #weapons {
+  margin-top: .3rem;
+}
+
 #weapons thead th:nth-child(1) { width:   25%; } /* 名前 */
 #weapons thead th:nth-child(2) { width: 3.5em; } /* 用法 */
 #weapons thead th:nth-child(3) { width: 3.5em; } /* 必筋 */
@@ -980,6 +984,10 @@ dl#level dd {
 #evasion-classes th:nth-child(3) { width: 3.5em; } /* 回避 */
 #evasion-classes th:nth-child(4) { width: 3.5em; } /* 防護 */
 
+#evasion-classes + #armours {
+  margin-top: .3rem;
+}
+
 #armours thead th:nth-child(1) { width: 2.5em; } /* 種別 */
 #armours thead th:nth-child(2) { width:   25%; } /* 名前 */
 #armours thead th:nth-child(3) { width: 3.5em; } /* 必筋 */
@@ -988,7 +996,7 @@ dl#level dd {
 #armours thead th:nth-child(6) { width:   1em; } /* 専用 */
 #armours thead th:nth-child(7) { width:  auto; } /* 備考 */
 
-#armours tbody td:nth-child(7) { padding-left: .3em; text-align: left; font-size: 90%; } /* 備考 */
+#armours tbody td:last-child { padding-left: .3em; text-align: left; font-size: 90%; } /* 備考 */
 
 #armours .defense-total th {
   padding-right: 5px;
@@ -1089,9 +1097,9 @@ div#area-items-R {
 /* Honor */
 #honor,
 #dishonor {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto;
 }
   #honor dt,
   #dishonor dt {
@@ -1108,6 +1116,10 @@ div#area-items-R {
   width: 4em;
 }
 
+#honor    + #honor-items,
+#dishonor + #dishonor-items {
+  margin-top: .3rem;
+}
 
 /* // Free-Memo
 ---------------------------------------------------------------------------------------------------- */
