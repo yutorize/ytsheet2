@@ -97,6 +97,8 @@ elsif($mode eq 'blanksheet'){
   $pc{'history0Money'} = $set::make_money;
   $pc{'expTotal'} = $pc{'history0Exp'};
   
+  $pc{"defTotal1CheckArmour1"} = $pc{"defTotal1CheckShield1"} = $pc{"defTotal1CheckDefOther1"} = $pc{"defTotal1CheckDefOther2"} = $pc{"defTotal1CheckDefOther3"} = 1;
+  
   $pc{'paletteUseBuff'} = 1;
 }
 
