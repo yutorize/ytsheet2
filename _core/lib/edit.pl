@@ -5,11 +5,12 @@ use utf8;
 use open ":utf8";
 use Encode;
 
-our $mode = param('mode');
-our $message;
-our %pc;
+our $LOGIN_ID = check;
 
+our %in;
+for (param()){ $in{$_} = param($_); }
 
+our $mode = $in{'mode'};
 
 if($set::user_reqd && !check){ error('ログインしていません。'); }
 ### 個別処理 --------------------------------------------------
@@ -26,6 +27,55 @@ elsif($type eq 'i'){ require $set::lib_edit_item; }
 else               { require $set::lib_edit_char; }
 
 ### 共通サブルーチン --------------------------------------------------
+## データ読み込み
+sub pcDataGet {
+  my $mode = shift;
+  my %pc;
+  my $file;
+  my $message;
+  my $datadir = ($type eq 'm') ? $set::mons_dir : ($type eq 'i') ? $set::item_dir : $set::char_dir;
+  # 新規作成エラー
+  if($main::make_error) {
+    $mode = 'blanksheet';
+    for (param()){ $pc{$_} = param($_); }
+    $message = $::make_error;
+  }
+  # 保存
+  if($mode eq 'save'){
+    $message .= 'データを更新しました。<a href="./?id='.$::in{'id'}.'">⇒シートを確認する</a>';
+    $mode = 'edit';
+  }
+  # 編集 / 複製 / コンバート
+  if($mode eq 'edit'){
+    (undef, undef, $file, undef) = getfile($in{'id'},$in{'pass'},$LOGIN_ID);
+    my $datafile = $in{'backup'} ? "${datadir}${file}/backup/$in{'backup'}.cgi" : "${datadir}${file}/data.cgi";
+    open my $IN, '<', $datafile or &login_error;
+    $_ =~ s/(.*?)<>(.*?)\n/$pc{$1} = $2;/egi while <$IN>;
+    close($IN);
+    if($in{'backup'}){
+      $pc{'protect'} = protectTypeGet("${datadir}${file}/data.cgi");
+      $message = $pc{'updateTime'}.' 時点のバックアップデータから編集しています。';
+    }
+  }
+  elsif($mode eq 'copy'){
+    $file = (getfile_open($in{'id'}))[0];
+    open my $IN, '<', "${datadir}${file}/data.cgi" or error 'データがありません。';
+    $_ =~ s/(.*?)<>(.*?)\n/$pc{$1} = $2;/egi while <$IN>;
+    close($IN);
+
+    delete $pc{'image'};
+    $pc{'protect'} = 'password';
+
+    $message = '「<a href="./?id='.$in{'id'}.'" target="_blank"><!NAME></a>」をコピーして新規作成します。<br>（まだ保存はされていません）';
+  }
+  elsif($mode eq 'convert'){
+    %pc = %::conv_data;
+    delete $pc{'image'};
+    $pc{'protect'} = 'password';
+    $message = '「<a href="'.param('url').'" target="_blank"><!NAME></a>」をコンバートして新規作成します。<br>（まだ保存はされていません）';
+  }
+  return (\%pc, $mode, $file, $message)
+}
 ## トークン生成
 sub token_make {
   my $token = random_id(12);
@@ -94,11 +144,11 @@ sub image_form {
         </p>
         <p>
           表示（トリミング）方式：<br><select name="imageFit" oninput="imagePosition()">
-          <option value="cover"   @{[$pc{'imageFit'} eq 'cover'  ?'selected':'']}>自動的に最低限のトリミング（表示域いっぱいに表示）
-          <option value="contain" @{[$pc{'imageFit'} eq 'contain'?'selected':'']}>トリミングしない（必ず画像全体を収める）
-          <option value="percentX" @{[$pc{'imageFit'} eq 'percentX'?'selected':'']}>任意のトリミング／横幅を基準
-          <option value="percentY" @{[$pc{'imageFit'} eq 'percentY'?'selected':'']}>任意のトリミング／縦幅を基準
-          <option value="unset"   @{[$pc{'imageFit'} eq 'unset'  ?'selected':'']}>拡大縮小せず表示（ドット絵など向き）
+          <option value="cover"   @{[$::pc{'imageFit'} eq 'cover'  ?'selected':'']}>自動的に最低限のトリミング（表示域いっぱいに表示）
+          <option value="contain" @{[$::pc{'imageFit'} eq 'contain'?'selected':'']}>トリミングしない（必ず画像全体を収める）
+          <option value="percentX" @{[$::pc{'imageFit'} eq 'percentX'?'selected':'']}>任意のトリミング／横幅を基準
+          <option value="percentY" @{[$::pc{'imageFit'} eq 'percentY'?'selected':'']}>任意のトリミング／縦幅を基準
+          <option value="unset"   @{[$::pc{'imageFit'} eq 'unset'  ?'selected':'']}>拡大縮小せず表示（ドット絵など向き）
           </select><br>
           <small>※いずれの設定でも、クリックすると画像全体が表示されます。</small>
         </p>
@@ -120,9 +170,9 @@ sub input {
   '<input'.
   ' type="'.($type?$type:'text').'"'.
   ' name="'.$name.'"'.
-  ' value="'.($_[1] eq 'checkbox' ? 1 : $pc{$name}).'"'.
+  ' value="'.($_[1] eq 'checkbox' ? 1 : $::pc{$name}).'"'.
   ($other?" $other":"").
-  ($type eq 'checkbox' && $pc{$name}?" checked":"").
+  ($type eq 'checkbox' && $::pc{$name}?" checked":"").
   ($oniput?' oninput="'.$oniput.'"':"").
   '>';
 }
@@ -133,7 +183,7 @@ sub option {
     my $value = $i;
     my $view;
     if($value =~ s/\|\<(.*?)\>$//){ $view = $1 } else { $view = $value }
-    $text .= '<option value="'.$value.'"'.($pc{$name} eq $value ? ' selected':'').'>'.$view
+    $text .= '<option value="'.$value.'"'.($::pc{$name} eq $value ? ' selected':'').'>'.$view
   }
   return $text;
 }

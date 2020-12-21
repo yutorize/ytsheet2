@@ -22,8 +22,11 @@ if ($mode eq 'make'){
 
   ## 二重投稿チェック
   if(!token_check(param('_token'))){
+    my @query;
+    push(@query, 'mode=mylist') if param('protect') eq 'account';
+    push(@query, 'type='.param('type')) if param('type');
     $make_error .= 'エラー：セッションの有効期限が切れたか、二重投稿です。（⇒<a href="./'
-                   .(param('protect') eq 'account'? '?mode=mylist' : '')
+                   .(@query ? '?'.join('&',@query) : '')
                    .'">投稿されているか確認する</a>';
   }
   
@@ -98,6 +101,7 @@ if   (param('type') eq 'm'){ require $set::lib_calc_mons; $data_dir = $set::mons
 elsif(param('type') eq 'i'){ require $set::lib_calc_item; $data_dir = $set::item_dir; $listfile = $set::itemlist; }
 else                       { require $set::lib_calc_char; $data_dir = $set::char_dir; $listfile = $set::listfile; }
 
+## データ計算
 %pc = data_calc(\%pc);
 
 ### エスケープ --------------------------------------------------

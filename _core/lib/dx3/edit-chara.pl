@@ -6,33 +6,10 @@ use open ":utf8";
 use feature 'say';
 use Encode;
 
-require $set::lib_palette_sub;
-
-my $mode = $main::mode;
-my $message = $main::message;
-our %pc;
-
-my $LOGIN_ID = check;
+my $LOGIN_ID = $::LOGIN_ID;
 
 ### 読込前処理 #######################################################################################
-### エラーメッセージ --------------------------------------------------
-if($main::make_error) {
-  $mode = 'blanksheet';
-  for (param()){ $pc{$_} = param($_); }
-  $message = $main::make_error;
-}
-## 新規作成/コピー/コンバート時 --------------------------------------------------
-my $token; my $mode_make;
-if($mode eq 'blanksheet' || $mode eq 'copy' || $mode eq 'convert'){
-  $token = token_make();
-  $mode_make = 1;
-}
-## 更新後処理 --------------------------------------------------
-if($mode eq 'save'){
-  $message .= 'データを更新しました。<a href="./?id='.param('id').'">⇒シートを確認する</a>';
-  $mode = 'edit';
-}
-
+require $set::lib_palette_sub;
 ### 各種データライブラリ読み込み --------------------------------------------------
 require $set::data_syndrome;
 my @awakens;
@@ -41,49 +18,20 @@ push(@awakens , @$_[0]) foreach(@data::awakens);
 push(@impulses, @$_[0]) foreach(@data::impulses);
 
 ### データ読み込み ###################################################################################
-my $id;
-my $pass;
-my $file;
-my $backup = param('backup');
-### 編集時 --------------------------------------------------
-if($mode eq 'edit'){
-  $id = param('id');
-  $pass = param('pass');
-  (undef, undef, $file, undef) = getfile($id,$pass,$LOGIN_ID);
-  my $datafile = $backup ? "${set::char_dir}${file}/backup/${backup}.cgi" : "${set::char_dir}${file}/data.cgi";
-  open my $IN, '<', $datafile or &login_error;
-  $_ =~ s/(.*?)<>(.*?)\n/$pc{$1} = $2;/egi while <$IN>;
-  close($IN);
-  if($backup){
-    $pc{'protect'} = protectTypeGet("${set::char_dir}${file}/data.cgi");
-    $message = $pc{'updateTime'}.' 時点のバックアップデータから編集しています。';
-  }
-}
-elsif($mode eq 'copy'){
-  $id = param('id');
-  $file = (getfile_open($id))[0];
-  open my $IN, '<', "${set::char_dir}${file}/data.cgi" or error 'キャラクターシートがありません。';
-  $_ =~ s/(.*?)<>(.*?)\n/$pc{$1} = $2;/egi while <$IN>;
-  close($IN);
-  
-  delete $pc{'image'};
-  delete $pc{'protect'};
-  
-  $message = '「<a href="./?id='.$id.'" target="_blank">'.$pc{"characterName"}.'</a>」をコピーして新規作成します。<br>（まだ保存はされていません）';
-}
-elsif($mode eq 'convert'){
-  %pc = %::conv_data;
-  delete $pc{'image'};
-  delete $pc{'protect'};
-  $message = '「<a href="'.param('url').'" target="_blank">'.($pc{"characterName"}||$pc{"aka"}||'無題').'</a>」をコンバートして新規作成します。<br>（まだ保存はされていません）';
-}
+my ($data, $mode, $file, $message) = pcDataGet($::in{'mode'});
+our %pc = %{ $data };
 
-### プレイヤー名 --------------------------------------------------
-if($mode_make){
-  $pc{'playerName'} = (getplayername($LOGIN_ID))[0] if !$main::make_error;
-}
+my $mode_make = ($mode =~ /^(blanksheet|copy|convert)$/) ? 1 : 0;
 
 ### 出力準備 #########################################################################################
+if($message){
+  my $name = tag_unescape($pc{'characterName'} || $pc{'aka'} || '無題');
+  $message =~ s/<!NAME>/$name/;
+}
+### プレイヤー名 --------------------------------------------------
+if($mode_make && !$::make_error){
+  $pc{'playerName'} = (getplayername($LOGIN_ID))[0];
+}
 ### 初期設定 --------------------------------------------------
 if($mode eq 'edit'){
   %pc = data_update_chara(\%pc);
@@ -203,7 +151,7 @@ Content-type: text/html\n
       <input type="hidden" name="ver" value="${main::ver}">
 HTML
 if($mode_make){
-  print '<input type="hidden" name="_token" value="'.$token.'">'."\n";
+  print '<input type="hidden" name="_token" value="'.token_make().'">'."\n";
 }
 print <<"HTML";
       <input type="hidden" name="mode" value="@{[ $mode eq 'edit' ? 'save' : 'make' ]}">
@@ -219,7 +167,7 @@ print <<"HTML";
 HTML
 if($mode eq 'edit'){
 print <<"HTML";
-        <input type="button" value="複製" onclick="window.open('./?mode=copy&id=${id}');">
+        <input type="button" value="複製" onclick="window.open('./?mode=copy&id=$::in{'id'}');">
 HTML
 }
 print <<"HTML";
@@ -235,7 +183,7 @@ if($set::user_reqd){
   print <<"HTML";
     <input type="hidden" name="protect" value="account">
     <input type="hidden" name="protectOld" value="$pc{'protect'}">
-    <input type="hidden" name="pass" value="$pass">
+    <input type="hidden" name="pass" value="$::in{'pass'}">
 HTML
 }
 else {
@@ -252,7 +200,7 @@ HTML
   }
     print '<input type="radio" name="protect" value="password"'.($pc{'protect'} eq 'password'?' checked':'').'> パスワードで保護 ';
   if ($mode eq 'edit' && $pc{'protect'} eq 'password') {
-    print '<input type="hidden" name="pass" value="'.$pass.'"><br>';
+    print '<input type="hidden" name="pass" value="'.$::in{'pass'}.'"><br>';
   } else {
     print '<input type="password" name="pass"><br>';
   }
@@ -1047,7 +995,7 @@ print <<"HTML";
       
       
       @{[ input 'birthTime','hidden' ]}
-      @{[ input 'id','hidden' ]}
+      <input type="hidden" name="id" value="$::in{'id'}">
     </form>
 HTML
 if($mode eq 'edit'){
@@ -1055,8 +1003,8 @@ print <<"HTML";
     <form name="del" method="post" action="./" class="deleteform">
       <p style="font-size: 80%;">
       <input type="hidden" name="mode" value="delete">
-      <input type="hidden" name="id" value="$id">
-      <input type="hidden" name="pass" value="$pass">
+      <input type="hidden" name="id" value="$::in{'id'}">
+      <input type="hidden" name="pass" value="$::in{'pass'}">
       <input type="checkbox" name="check1" value="1" required>
       <input type="checkbox" name="check2" value="1" required>
       <input type="checkbox" name="check3" value="1" required>
@@ -1071,8 +1019,8 @@ HTML
     <form name="imgdel" method="post" action="./" class="deleteform">
       <p style="font-size: 80%;">
       <input type="hidden" name="mode" value="img-delete">
-      <input type="hidden" name="id" value="$id">
-      <input type="hidden" name="pass" value="$pass">
+      <input type="hidden" name="id" value="$::in{'id'}">
+      <input type="hidden" name="pass" value="$::in{'pass'}">
       <input type="checkbox" name="check1" value="1" required>
       <input type="checkbox" name="check2" value="1" required>
       <input type="checkbox" name="check3" value="1" required>

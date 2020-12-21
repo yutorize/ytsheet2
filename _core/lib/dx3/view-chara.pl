@@ -15,35 +15,11 @@ $SHEET = HTML::Template->new( filename => $set::skin_sheet, utf8 => 1,
   die_on_bad_params => 0, die_on_missing_include => 0, case_sensitive => 1, global_vars => 1);
 
 ### キャラクターデータ読み込み #######################################################################
-my $id = param('id');
-my $conv_url = param('url');
-my $file = $main::file;
-my $backup = param('backup');
-$SHEET->param("backupId" => $backup);
+my %pc = pcDataGet();
 
-our %pc = ();
-if($id){
-  my $datafile = $backup ? "${set::char_dir}${file}/backup/${backup}.cgi" : "${set::char_dir}${file}/data.cgi";
-  open my $IN, '<', $datafile or error 'キャラクターシートがありません。';
-  $_ =~ s/(.*?)<>(.*?)\n/$pc{$1} = $2;/egi while <$IN>;
-  close($IN);
-  if($backup){
-    $pc{'protect'} = protectTypeGet("${set::char_dir}${file}/data.cgi");
-  }
-}
-elsif($conv_url){
-  %pc = %::conv_data;
-  if(!$pc{'ver'}){
-    require $set::lib_calc_char;
-    %pc = data_calc(\%pc);
-  }
-  $SHEET->param("convertMode" => 1);
-  $SHEET->param("convertUrl" => $conv_url);
-}
+### 置換前出力 #######################################################################################
 
-$SHEET->param("id" => $id);
-
-### 置換 --------------------------------------------------
+### 置換 #############################################################################################
 foreach (keys %pc) {
   if($_ =~ /^(?:freeNote|freeHistory)$/){
     $pc{$_} = tag_unescape_lines($pc{$_});
@@ -56,12 +32,18 @@ if($pc{'ver'}){
   %pc = data_update_chara(\%pc);
 }
 
-### テンプレ用に変換 --------------------------------------------------
+### 出力準備 #########################################################################################
+### データ全体 --------------------------------------------------
 while (my ($key, $value) = each(%pc)){
   $SHEET->param("$key" => $value);
 }
+### ID / URL--------------------------------------------------
+$SHEET->param("id" => $::in{'id'});
 
-### 出力準備 #########################################################################################
+if($::in{'url'}){
+  $SHEET->param("convertMode" => 1);
+  $SHEET->param("convertUrl" => $::in{'url'});
+}
 ### キャラクター名 --------------------------------------------------
 {
   my($name, $ruby) = split(/:/,$pc{'characterName'});
@@ -74,11 +56,11 @@ while (my ($key, $value) = each(%pc)){
 }
 ### プレイヤー名 --------------------------------------------------
 if($set::playerlist){
-  my $pl_id = (split(/-/, $id))[0];
+  my $pl_id = (split(/-/, $::in{'id'}))[0];
   $SHEET->param("playerName" => '<a href="'.$set::playerlist.'?id='.$pl_id.'">'.$pc{'playerName'}.'</a>');
 }
 ### グループ --------------------------------------------------
-if($conv_url){
+if($::in{'url'}){
   $SHEET->param(group => '');
 }
 else {
@@ -434,7 +416,7 @@ $SHEET->param(colorBaseBgD => 15);
 
 
 ### バックアップ --------------------------------------------------
-opendir(my $DIR,"${set::char_dir}${file}/backup");
+opendir(my $DIR,"${set::char_dir}${main::file}/backup");
 my @backlist = readdir($DIR);
 closedir($DIR);
 my @backup;
@@ -468,7 +450,7 @@ $SHEET->param("race" => $pc{'race'});
 ### 画像 --------------------------------------------------
 my $imgsrc;
 if($pc{'convertSource'} eq 'キャラクターシート倉庫'){
-  ($imgsrc = $conv_url) =~ s/edit\.html/image/; 
+  ($imgsrc = $::in{'url'}) =~ s/edit\.html/image/; 
   require LWP::UserAgent;
   my $code = LWP::UserAgent->new->simple_request(HTTP::Request->new(GET => $imgsrc))->code == 200;
   $SHEET->param("image" => $code);
@@ -477,7 +459,7 @@ elsif($pc{'convertSource'} eq '別のゆとシートⅡ') {
   $imgsrc = tag_delete $pc{'imageURL'};
 }
 else {
-  $imgsrc = "${set::char_dir}${file}/image.$pc{'image'}?$pc{'imageUpdate'}";
+  $imgsrc = "${set::char_dir}${main::file}/image.$pc{'image'}?$pc{'imageUpdate'}";
 }
 $SHEET->param("imageSrc" => $imgsrc);
 
@@ -489,7 +471,7 @@ elsif($pc{'imageFit'} eq 'percentY'){
 }
 
 ### OGP --------------------------------------------------
-$SHEET->param(ogUrl => url()."?=id".$id);
+$SHEET->param(ogUrl => url().($::in{'url'} ? "?url=$::in{'url'}" : "?id=$::in{'id'}"));
 if($pc{'image'}) { $SHEET->param(ogImg => url()."/".$imgsrc); }
 $SHEET->param(ogDescript => "性別:$pc{'gender'}　年齢:$pc{'age'}　ワークス:$pc{'works'}　シンドローム:$pc{'syndrome1'} $pc{'syndrome2'} $pc{'syndrome3'}");
 

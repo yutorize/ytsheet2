@@ -70,15 +70,15 @@ window.onload = function() {
   </aside>
   </TMPL_IF>
   
-  <aside id="backuplist">
-    <h2>過去ログ</h2>
+  <aside id="backuplist" class="float-box">
+    <h2>過去ログ（バックアップ）</h2>
     <ul>
       <li<TMPL_UNLESS backupId> class="backup-now"</TMPL_UNLESS>><a href="?id=<TMPL_VAR id>">最新</a></li>
       <TMPL_LOOP Backup><li<TMPL_IF NOW> class="backup-now"</TMPL_IF>><a href="?id=<TMPL_VAR id>&backup=<TMPL_VAR URL>"><TMPL_VAR DATE></a></li></TMPL_LOOP>
     </ul>
   </aside>
 
-  <form id="login-form" method="post" action="./">
+  <form id="login-form" class="float-box" method="post" action="./">
     <input type="hidden" name="mode" value="edit">
     <input type="hidden" name="type" value="i">
     <input type="hidden" name="id" value="<TMPL_VAR id>">
@@ -158,7 +158,7 @@ window.onload = function() {
         製作者：<TMPL_VAR author>
       </div>
       <div id="link-tag">
-        ゆとシート内リンク用タグ：<input type="text" onclick="this.select()" value="[<TMPL_VAR itemNameRaw>#<TMPL_VAR id>]">
+        ゆとシート内リンク用タグ：<input type="text" onclick="this.select()" value="[<TMPL_VAR rawName>#<TMPL_VAR id>]">
       </div>
     </article>
     <div class="back-button"><a href="./?type=i">⏎</a></div>

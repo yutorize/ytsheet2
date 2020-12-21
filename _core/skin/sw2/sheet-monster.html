@@ -181,7 +181,7 @@ window.onload = function() {
   </TMPL_IF>
   
   <aside id="backuplist" class="float-box">
-    <h2>過去ログ</h2>
+    <h2>過去ログ（バックアップ）</h2>
     <ul>
       <li<TMPL_UNLESS backupId> class="backup-now"</TMPL_UNLESS>><a href="?id=<TMPL_VAR id>">最新</a></li>
       <TMPL_LOOP Backup><li<TMPL_IF NOW> class="backup-now"</TMPL_IF>><a href="?id=<TMPL_VAR id>&backup=<TMPL_VAR URL>"><TMPL_VAR DATE></a></li></TMPL_LOOP>
@@ -306,7 +306,7 @@ window.onload = function() {
         製作者：<TMPL_VAR author>
       </div>
       <div id="link-tag">
-        ゆとシート内リンク用タグ：<input type="text" onclick="this.select()" value="[<TMPL_IF characterNameTitle><TMPL_VAR characterNameTitle>（<TMPL_VAR monsterNameTitle>）<TMPL_ELSE><TMPL_VAR monsterNameTitle></TMPL_IF>#<TMPL_VAR id>]">
+        ゆとシート内リンク用タグ：<input type="text" onclick="this.select()" value="[<TMPL_VAR rawName>#<TMPL_VAR id>]">
       </div>
       <section class="box chat-palette float-box">
         <h2>チャットパレット</h2>

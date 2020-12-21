@@ -15,34 +15,12 @@ $SHEET = HTML::Template->new( filename => $set::skin_item, utf8 => 1,
   die_on_bad_params => 0, die_on_missing_include => 0, case_sensitive => 1, global_vars => 1);
 
 ### キャラクターデータ読み込み #######################################################################
-my $id = param('id');
-my $conv_url = param('url');
-my $file = $main::file;
-my $backup = param('backup');
-$SHEET->param("backupId" => $backup);
+my %pc = pcDataGet();
 
-our %pc = ();
-if($id){
-  my $datafile = $backup ? "${set::item_dir}${file}/backup/${backup}.cgi" : "${set::item_dir}${file}/data.cgi";
-  open my $IN, '<', $datafile or error 'アイテムデータがありません。';
-  $_ =~ s/(.*?)<>(.*?)\n/$pc{$1} = $2;/egi while <$IN>;
-  close($IN);
-  if($backup){
-    $pc{'protect'} = protectTypeGet("${set::item_dir}${file}/data.cgi");
-  }
-}
-elsif($conv_url){
-  require $set::lib_calc_char;
-  %pc = %::conv_data;
-  %pc = data_calc(\%pc);
-  $SHEET->param("convertMode" => 1);
-  $SHEET->param("convertUrl" => $conv_url);
-}
+### 置換前出力 #######################################################################################
+$SHEET->param("rawName" => $pc{'itemName'});
 
-$SHEET->param("id" => $id);
-$SHEET->param("itemNameRaw" => $pc{'itemName'});
-
-### 置換 --------------------------------------------------
+### 置換 #############################################################################################
 foreach (keys %pc) {
   if($_ =~ /^(?:effects|description)$/){
     $pc{$_} = tag_unescape_lines($pc{$_});
@@ -58,12 +36,20 @@ $pc{'effects'} = "<p>$pc{'effects'}</p>";
 $pc{'effects'} =~ s/<p><\/p>//gi;
 $pc{'effects'} =~ s/\n/<br>/gi;
 
-### テンプレ用に変換 --------------------------------------------------
+### 出力準備 #########################################################################################
+### データ全体 --------------------------------------------------
 while (my ($key, $value) = each(%pc)){
   $SHEET->param("$key" => $value);
 }
+### ID / URL--------------------------------------------------
+$SHEET->param("id" => $::in{'id'});
 
-### 出力準備 #########################################################################################
+if($::in{'url'}){
+  $SHEET->param("convertMode" => 1);
+  $SHEET->param("convertUrl" => $::in{'url'});
+}
+
+### 魔法の武器アイコン --------------------------------------------------
 $SHEET->param("magic" => ($pc{'magic'} ? "<img class=\"i-icon\" src=\"${set::icon_dir}wp_magic.png\">" : ''));
 
 ### カテゴリ --------------------------------------------------
@@ -117,22 +103,24 @@ $SHEET->param(Tags => \@tags);
 
 
 ### バックアップ --------------------------------------------------
-opendir(my $DIR,"${set::item_dir}${file}/backup");
-my @backlist = readdir($DIR);
-closedir($DIR);
-my @backup;
-foreach (reverse sort @backlist) {
-  if ($_ =~ s/\.cgi//) {
-    my $url = $_;
-    $_ =~ s/^([0-9]{4}-[0-9]{2}-[0-9]{2})-([0-9]{2})-([0-9]{2})$/$1 $2\:$3/;
-    push(@backup, {
-      "NOW"  => ($url eq param('backup') ? 1 : 0),
-      "URL"  => $url,
-      "DATE" => $_,
-    });
+if($::in{'id'}){
+  opendir(my $DIR,"${set::item_dir}${main::file}/backup");
+  my @backlist = readdir($DIR);
+  closedir($DIR);
+  my @backup;
+  foreach (reverse sort @backlist) {
+    if ($_ =~ s/\.cgi//) {
+      my $url = $_;
+      $_ =~ s/^([0-9]{4}-[0-9]{2}-[0-9]{2})-([0-9]{2})-([0-9]{2})$/$1 $2\:$3/;
+      push(@backup, {
+        "NOW"  => ($url eq param('backup') ? 1 : 0),
+        "URL"  => $url,
+        "DATE" => $_,
+      });
+    }
   }
+  $SHEET->param(Backup => \@backup);
 }
-$SHEET->param(Backup => \@backup);
 
 ### パスワード要求 --------------------------------------------------
 $SHEET->param(ReqdPassword => (!$pc{'protect'} || $pc{'protect'} eq 'password' ? 1 : 0) );
@@ -144,7 +132,7 @@ $SHEET->param(title => $set::title);
 ### 画像 --------------------------------------------------
 $pc{'imageUpdateTime'} = $pc{'updateTime'};
 $pc{'imageUpdateTime'} =~ s/[\-\ \:]//g;
-$SHEET->param("imageSrc" => "${set::item_dir}${file}/image.$pc{'image'}?$pc{'imageUpdateTime'}");
+$SHEET->param("imageSrc" => "${set::item_dir}${main::file}/image.$pc{'image'}?$pc{'imageUpdateTime'}");
 
 ### バージョン等 --------------------------------------------------
 $SHEET->param("ver" => $::ver);

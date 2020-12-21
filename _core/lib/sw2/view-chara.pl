@@ -18,35 +18,11 @@ $SHEET = HTML::Template->new( filename => $set::skin_sheet, utf8 => 1,
   die_on_bad_params => 0, die_on_missing_include => 0, case_sensitive => 1, global_vars => 1);
 
 ### キャラクターデータ読み込み #######################################################################
-my $id = param('id');
-my $conv_url = param('url');
-my $file = $main::file;
-my $backup = param('backup');
-$SHEET->param("backupId" => $backup);
+my %pc = pcDataGet();
 
-our %pc = ();
-if($id){
-  my $datafile = $backup ? "${set::char_dir}${file}/backup/${backup}.cgi" : "${set::char_dir}${file}/data.cgi";
-  open my $IN, '<', $datafile or error 'キャラクターシートがありません。';
-  $_ =~ s/(.*?)<>(.*?)\n/$pc{$1} = $2;/egi while <$IN>;
-  close($IN);
-  if($backup){
-    $pc{'protect'} = protectTypeGet("${set::char_dir}${file}/data.cgi");
-  }
-}
-elsif($conv_url){
-  %pc = %::conv_data;
-  if(!$pc{'ver'}){
-    require $set::lib_calc_char;
-    %pc = data_calc(\%pc);
-  }
-  $SHEET->param("convertMode" => 1);
-  $SHEET->param("convertUrl" => $conv_url);
-}
+### 置換前出力 #######################################################################################
 
-$SHEET->param("id" => $id);
-
-### 置換 --------------------------------------------------
+### 置換 #############################################################################################
 foreach (keys %pc) {
   if($_ =~ /^(?:items|freeNote|freeHistory|cashbook)$/){
     $pc{$_} = tag_unescape_lines($pc{$_});
@@ -69,23 +45,30 @@ if($pc{'ver'}){
   %pc = data_update_chara(\%pc);
 }
 
-### テンプレ用に変換 --------------------------------------------------
+### 置換後出力 #######################################################################################
+### データ全体 --------------------------------------------------
 while (my ($key, $value) = each(%pc)){
   $SHEET->param("$key" => $value);
 }
+### ID / URL--------------------------------------------------
+$SHEET->param("id" => $::in{'id'});
 
-### 出力準備 #########################################################################################
+if($::in{'url'}){
+  $SHEET->param("convertMode" => 1);
+  $SHEET->param("convertUrl" => $::in{'url'});
+}
+
 ### 二つ名 --------------------------------------------------
 my($aka, $ruby) = split(/:/,$pc{'aka'});
 $SHEET->param("aka" => "<ruby>$aka<rt>$ruby</rt></ruby>") if $ruby;
 
 ### プレイヤー名 --------------------------------------------------
 if($set::playerlist){
-  my $pl_id = (split(/-/, $id))[0];
+  my $pl_id = (split(/-/, $::in{'id'}))[0];
   $SHEET->param("playerName" => '<a href="'.$set::playerlist.'?id='.$pl_id.'">'.$pc{'playerName'}.'</a>');
 }
 ### グループ --------------------------------------------------
-if($conv_url){
+if($::in{'url'}){
   $SHEET->param(group => '');
 }
 else {
@@ -687,8 +670,8 @@ $SHEET->param(colorBaseBgL => 100 - $pc{colorBaseBgS} / 6);
 $SHEET->param(colorBaseBgD => 15);
 
 ### バックアップ --------------------------------------------------
-if($id){
-  opendir(my $DIR,"${set::char_dir}${file}/backup");
+if($::in{'id'}){
+  opendir(my $DIR,"${set::char_dir}${main::file}/backup");
   my @backlist = readdir($DIR);
   closedir($DIR);
   my @backup;
@@ -720,7 +703,7 @@ $SHEET->param(title => $set::title);
 my $imgsrc = (
   $pc{'imageURL'} ? tag_delete($pc{'imageURL'})
   : $main::base_url ? "${main::base_url}data/chara/$pc{'birthTime'}/image.$pc{'image'}"
-  : "${set::char_dir}${file}/image.$pc{'image'}?$pc{'imageUpdate'}"
+  : "${set::char_dir}${main::file}/image.$pc{'image'}?$pc{'imageUpdate'}"
 );
 $SHEET->param("imageSrc" => $imgsrc);
 
@@ -732,7 +715,7 @@ elsif($pc{'imageFit'} =~ /^percentX?$/){
 }
 
 ### OGP --------------------------------------------------
-$SHEET->param(ogUrl => url().($conv_url ? "?url=${conv_url}" : "?id=${id}"));
+$SHEET->param(ogUrl => url().($::in{'url'} ? "?url=$::in{'url'}" : "?id=$::in{'id'}"));
 if($pc{'image'}) { $SHEET->param(ogImg => url()."/".$imgsrc); }
 $SHEET->param(ogDescript => "種族:$pc{'race'}　性別:$pc{'gender'}　年齢:$pc{'age'}　技能:${class_text}");
 
