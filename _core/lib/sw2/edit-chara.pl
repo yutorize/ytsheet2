@@ -174,6 +174,7 @@ Content-type: text/html\n
     <article>
       <aside class="message">$message</aside>
       <form name="sheet" method="post" action="./" enctype="multipart/form-data">
+      <input type="hidden" name="ver" value="${main::ver}">
 HTML
 if($mode_make){
   print '<input type="hidden" name="_token" value="'.$token.'">'."\n";

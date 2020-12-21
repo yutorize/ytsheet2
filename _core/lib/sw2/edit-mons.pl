@@ -126,6 +126,7 @@ Content-type: text/html\n
     <article>
       <aside class="message">$message</aside>
       <form id="monster" name="sheet" method="post" action="./" enctype="multipart/form-data">
+      <input type="hidden" name="ver" value="${main::ver}">
       <input type="hidden" name="type" value="m">
 HTML
 if($mode_make){
