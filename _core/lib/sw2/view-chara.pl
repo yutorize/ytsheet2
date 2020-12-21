@@ -17,21 +17,22 @@ $SHEET = HTML::Template->new( filename => $set::skin_sheet, utf8 => 1,
   loop_context_vars => 1,
   die_on_bad_params => 0, die_on_missing_include => 0, case_sensitive => 1, global_vars => 1);
 
-
-$SHEET->param("backupMode" => param('backup') ? 1 : 0);
-
 ### キャラクターデータ読み込み #######################################################################
 my $id = param('id');
 my $conv_url = param('url');
 my $file = $main::file;
+my $backup = param('backup');
+$SHEET->param("backupId" => $backup);
 
 our %pc = ();
 if($id){
-  my $datafile = "${set::char_dir}${file}/data.cgi";
-     $datafile = "${set::char_dir}${file}/backup/".param('backup').'.cgi' if param('backup');
+  my $datafile = $backup ? "${set::char_dir}${file}/backup/${backup}.cgi" : "${set::char_dir}${file}/data.cgi";
   open my $IN, '<', $datafile or error 'キャラクターシートがありません。';
   $_ =~ s/(.*?)<>(.*?)\n/$pc{$1} = $2;/egi while <$IN>;
   close($IN);
+  if($backup){
+    $pc{'protect'} = protectTypeGet("${set::char_dir}${file}/data.cgi");
+  }
 }
 elsif($conv_url){
   %pc = %::conv_data;

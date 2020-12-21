@@ -60,6 +60,19 @@ sub getplayername {
   return '';
 }
 
+
+### 編集保護設定取得 --------------------------------------------------
+sub protectTypeGet {
+  my $file = shift;
+  my $value = '';
+  open (my $IN, '<', $file) or error('キャラクターシートがありません。');
+  while (my $line = <$IN>){
+    if($line =~ /^protect<>(.*)\n/){ $value = $1; last; }
+  }
+  close($IN);
+  return $value;
+}
+
 ### 暗号化 --------------------------------------------------
 sub e_crypt {
   my $plain = shift;

@@ -110,9 +110,10 @@ async function donloadAsJson() {
   const jsonUrl = window.URL.createObjectURL(new Blob([ JSON.stringify(characterDataJson) ], { "type" : 'text/json;charset=utf-8;' }));
   downloadFile(`data_${characterId}.json`, jsonUrl);
 }
+
 <TMPL_IF error>
 window.onload = function() {
-  document.getElementById("login-form").style.top = '5rem';
+  editOn();
   setTimeout(function(){
     document.getElementById("error").style.opacity = 0;
     document.getElementById("error").style.top = '-5rem';
@@ -151,15 +152,26 @@ window.onload = function() {
         <TMPL_IF convertMode>
           <li><a href="./?mode=convert&url=<TMPL_VAR convertUrl>"><span>コンバート</span></a></li>
         <TMPL_ELSE>
-          <TMPL_IF FellowMode><li><a href="./?id=<TMPL_VAR id>">通常</a></li></TMPL_IF>
-          <TMPL_IF fellowPublic><TMPL_UNLESS FellowMode><li><a href="./?id=<TMPL_VAR id>&f=1">フェロー</a></li></TMPL_UNLESS></TMPL_IF>
-          <li class="small"><a onclick="chatPaletteOn();"><span>パレット</span></a></li>
-          <li class="small"><a onclick="donwloadListOn();">保存</a></li>
-          <li class="small"><a onclick="backuplistOn()"><span>過去ログ</span></a></li>
-          <TMPL_IF ReqdPassword>
-          <li class="small"><a onclick="editOn()">編集</a></li>
+          <TMPL_IF backupId>
+            <TMPL_IF FellowMode><li><a href="./?id=<TMPL_VAR id>&backup=<TMPL_VAR backupId>">通常</a></li></TMPL_IF>
+            <TMPL_IF fellowPublic><TMPL_UNLESS FellowMode><li><a href="./?id=<TMPL_VAR id>&backup=<TMPL_VAR backupId>&f=1">フェロー</a></li></TMPL_UNLESS></TMPL_IF>
+            <li class="small"><a onclick="backuplistOn()"><span>過去ログ</span></a></li>
+            <TMPL_IF ReqdPassword>
+              <li class="small"><a onclick="editOn()">復元</a></li>
+            <TMPL_ELSE>
+              <li class="small"><a href="./?mode=edit&id=<TMPL_VAR id>&backup=<TMPL_VAR backupId>">復元</a></li>
+            </TMPL_IF>
           <TMPL_ELSE>
-          <li class="small"><a href="./?mode=edit&id=<TMPL_VAR id>">編集</a></li>
+            <TMPL_IF FellowMode><li><a href="./?id=<TMPL_VAR id>">通常</a></li></TMPL_IF>
+            <TMPL_IF fellowPublic><TMPL_UNLESS FellowMode><li><a href="./?id=<TMPL_VAR id>&f=1">フェロー</a></li></TMPL_UNLESS></TMPL_IF>
+            <li class="small"><a onclick="chatPaletteOn();"><span>パレット</span></a></li>
+            <li class="small"><a onclick="donwloadListOn();">保存</a></li>
+            <li class="small"><a onclick="backuplistOn()"><span>過去ログ</span></a></li>
+            <TMPL_IF ReqdPassword>
+              <li class="small"><a onclick="editOn()">編集</a></li>
+            <TMPL_ELSE>
+              <li class="small"><a href="./?mode=edit&id=<TMPL_VAR id>">編集</a></li>
+            </TMPL_IF>
           </TMPL_IF>
         </TMPL_IF>
         <li class="small"><a onclick="nightModeChange()" title="ナイトモード">☾✧</a></li>
@@ -178,7 +190,7 @@ window.onload = function() {
   <aside id="backuplist" class="float-box">
     <h2>過去ログ</h2>
     <ul>
-      <li<TMPL_UNLESS backupMode> class="backup-now"</TMPL_UNLESS>><a href="?id=<TMPL_VAR id>">最新</a></li>
+      <li<TMPL_UNLESS backupId> class="backup-now"</TMPL_UNLESS>><a href="?id=<TMPL_VAR id>">最新</a></li>
       <TMPL_LOOP Backup><li<TMPL_IF NOW> class="backup-now"</TMPL_IF>><a href="?id=<TMPL_VAR id>&backup=<TMPL_VAR URL>"><TMPL_VAR DATE></a></li></TMPL_LOOP>
     </ul>
   </aside>
@@ -197,14 +209,15 @@ window.onload = function() {
     <input type="hidden" name="mode" value="edit">
     <input type="hidden" name="id" value="<TMPL_VAR id>">
     <input type="password" name="pass" placeholder="password">
+    <input type="hidden" name="backup" value="<TMPL_VAR backupId>">
     <input type="submit" value="編集">
   </form>
 
-  
   <main id="character">
-    <TMPL_IF backupMode><aside class="information">
+    <TMPL_IF backupId><aside class="information">
       <TMPL_VAR updateTime> 時点のバックアップデータです。
     </aside></TMPL_IF>
+    
     <TMPL_IF convertMode><aside class="information">
       <a href="<TMPL_VAR convertUrl>" target="_blank"><TMPL_VAR convertSource></a> のデータを表示しています。
     </aside></TMPL_IF>

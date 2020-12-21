@@ -44,14 +44,20 @@ push(@impulses, @$_[0]) foreach(@data::impulses);
 my $id;
 my $pass;
 my $file;
+my $backup = param('backup');
 ### 編集時 --------------------------------------------------
 if($mode eq 'edit'){
   $id = param('id');
   $pass = param('pass');
   (undef, undef, $file, undef) = getfile($id,$pass,$LOGIN_ID);
-  open my $IN, '<', "${set::char_dir}${file}/data.cgi" or &login_error;
+  my $datafile = $backup ? "${set::char_dir}${file}/backup/${backup}.cgi" : "${set::char_dir}${file}/data.cgi";
+  open my $IN, '<', $datafile or &login_error;
   $_ =~ s/(.*?)<>(.*?)\n/$pc{$1} = $2;/egi while <$IN>;
   close($IN);
+  if($backup){
+    $pc{'protect'} = protectTypeGet("${set::char_dir}${file}/data.cgi");
+    $message = $pc{'updateTime'}.' 時点のバックアップデータから編集しています。';
+  }
 }
 elsif($mode eq 'copy'){
   $id = param('id');
