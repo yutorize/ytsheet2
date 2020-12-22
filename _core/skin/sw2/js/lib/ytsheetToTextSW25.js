@@ -159,7 +159,7 @@ io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2SwordWorldPC 
 
 	result.push('●習得特技');
 	for(var key in io.github.shunshun94.trpg.ytsheet.consts.levelSkills) {
-		if(json[`${key}1`]) {			
+		if(json[`${key}1`]) {
 			result.push(`　- ${io.github.shunshun94.trpg.ytsheet.consts.levelSkills[key]}`);
 			for(let i = 0; i < io.github.shunshun94.trpg.ytsheet.consts.maxLevel; i++) {
 				if(json[`${key}${i + 1}`]) {
@@ -194,50 +194,62 @@ io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2SwordWorldPC 
 	}
 	result.push(io.github.shunshun94.trpg.ytsheet._convertList(weapons, io.github.shunshun94.trpg.ytsheet.consts.PC_WEAPONS_COLUMNS, ' | '));
 	result.push('');
-	if(json.armourName || json.shieldName || json.defOtherName) {
+	if(json.armourName || json.shield1Name || json.defOther1Name) {
 		result.push(`　- 防具`);
 	} else {
 		result.push(`　- 回避・防護点`);
 	}
 	const armors = [];
-	if(json.armourName) {
+	if(json.armour1Name) {
 		armors.push({
 			type: '鎧',
-			name: `${json.armourName}${json.armourOwn ? '(専)' : ''}`,
-			reqd: json.armourReqd || '0',
-			dodge: json.armourEva || '0',
-			defense: json.armourDef || '0',
-			note: json.armourNote || ''
+			name: `${json.armour1Name}${json.armour1Own ? '(専)' : ''}`,
+			reqd: json.armour1Reqd || '0',
+			dodge: json.armour1Eva || '0',
+			defense: json.armour1Def || '0',
+			note: json.armour1Note || ''
 		});
 	}
-	if(json.shieldName) {
+	if(json.shield1Name) {
 		armors.push({
 			type: '盾',
-			name: `${json.shieldName}${json.shieldOwn ? '(専)' : ''}`,
-			reqd: json.shieldReqd || '0',
-			dodge: json.shieldEva || '0',
-			defense: json.shieldDef || '0',
-			note: json.shieldNote || ''
+			name: `${json.shield1Name}${json.shield1Own ? '(専)' : ''}`,
+			reqd: json.shield1Reqd || '0',
+			dodge: json.shield1Eva || '0',
+			defense: json.shield1Def || '0',
+			note: json.shield1Note || ''
 		});
 	}
-	if(json.defOtherName) {
-		armors.push({
-			type: '他',
-			name: json.defOtherName,
-			reqd: json.defOtherReqd || '0',
-			dodge: json.defOtherEva || '0',
-			defense: json.defOtherDef || '0',
-			note: json.defOtherNote || ''
-		});
+	for(let i = 0; i <= 3; i++) {
+		if(json[`defOther${i}Name`] || json[`defOther${i}Eva`] || json[`defOther${i}Def`]) {
+			armors.push({
+				type: '他'+i,
+				name: json[`defOther${i}Name`],
+				reqd: json[`defOther${i}Reqd`] || '0',
+				dodge: json[`defOther${i}Eva`] || '0',
+				defense: json[`defOther${i}Def`] || '0',
+				note: json[`defOther${i}Note`] || ''
+			});
+		}
 	}
-	armors.push({
-		type: '',
-		name: '合計',
-		reqd: '',
-		dodge: json.defenseTotalAllEva || '0',
-		defense: json.defenseTotalAllDef || '0',
-		note: ''
-	});
+	for(let i = 1; i <= 3; i++) {
+		let names = [];
+		if (json[`defTotal${i}CheckArmour1`]){ names.push('鎧'); }
+		if (json[`defTotal${i}CheckShield1`]){ names.push('盾'); }
+		if (json[`defTotal${i}CheckDefOther1`] && (json.defOther1Name || json.defOther1Eva || json.defOther1Def)){ names.push('他1'); }
+		if (json[`defTotal${i}CheckDefOther2`] && (json.defOther2Name || json.defOther2Eva || json.defOther2Def)){ names.push('他2'); }
+		if (json[`defTotal${i}CheckDefOther3`] && (json.defOther3Name || json.defOther3Eva || json.defOther3Def)){ names.push('他3'); }
+		if(names.length){
+			armors.push({
+				type: '合計',
+				name: names.join('＋'),
+				reqd: '',
+				dodge: json[`defenseTotal${i}Eva`] || '0',
+				defense: json[`defenseTotal${i}Def`] || '0',
+				note: json[`defenseTotal${i}Note`] || ''
+			});
+		}
+	}
 	result.push(io.github.shunshun94.trpg.ytsheet._convertList(armors, io.github.shunshun94.trpg.ytsheet.consts.PC_ARMORS_COLUMNS, ' | '));
 	result.push('');
 	const accessoryPartList = [];
