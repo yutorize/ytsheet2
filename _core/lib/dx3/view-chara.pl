@@ -149,6 +149,7 @@ foreach (1 .. 7){
     "NOTE"     => $pc{'lois'.$_.'Note'},
     "STATE"    => $pc{'lois'.$_.'State'},
   });
+  if($pc{'lois'.$_.'Name'} =~ /起源種|オリジナルレネゲイド/){ $SHEET->param(enchroachOrOn => 'checked'); }
 }
 $SHEET->param(Loises => \@loises);
 $SHEET->param(Skills => \@skills);
@@ -240,6 +241,10 @@ foreach (1 .. $pc{'comboNum'}){
     !$pc{'combo'.$_.'Range'} && !$pc{'combo'.$_.'Encroach'} && !$pc{'combo'.$_.'Note'} && 
     !$pc{'combo'.$_.'Dice1'} && !$pc{'combo'.$_.'Crit1'} && !$pc{'combo'.$_.'Atk1'} && !$pc{'combo'.$_.'Fixed1'}
   );
+  my $blankrow = 0;
+  if(!$pc{'combo'.$_.'Condition2'}){ $blankrow++; }
+  if(!$pc{'combo'.$_.'Condition3'}){ $blankrow++; }
+  if(!$pc{'combo'.$_.'Condition4'}){ $blankrow++; }
   push(@combos, {
     "NAME"     => textShrink(15,17,19,23,$pc{'combo'.$_.'Name'}),
     "COMBO"    => textCombo($pc{'combo'.$_.'Combo'}),
@@ -270,6 +275,7 @@ foreach (1 .. $pc{'comboNum'}){
     "CRIT4"      => $pc{'combo'.$_.'Crit4'},
     "ATK4"       => $pc{'combo'.$_.'Atk4'},
     "FIXED4"     => $pc{'combo'.$_.'Fixed4'},
+    "BLANKROW"   => $blankrow,
   });
 }
 $SHEET->param(Combos => \@combos);

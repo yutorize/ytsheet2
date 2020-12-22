@@ -567,6 +567,9 @@ window.onload = function() {
                 <td><TMPL_VAR FIXED4></td>
                 <td><TMPL_VAR ATK4></td>
               </tr></TMPL_IF>
+              <TMPL_IF BLANKROW><tr>
+                <td colspan="5" rowspan="<TMPL_VAR BLANKROW>"></td>
+              </tr></TMPL_IF>
             </tbody></TMPL_LOOP>
           </table>
         </section>
@@ -681,14 +684,13 @@ window.onload = function() {
           </table>
         </section>
       </div>
-      </div><!-- / COLUMN -->
       <div id="enc-bonus">
         <details class="box">
           <summary>侵蝕率ボーナス</summary>
           <p>
             現在侵蝕率:<input type="number" id="current-encroach" value="<TMPL_VAR baseEncroach>" oninput="encroachBonusSet(this.value);">
-            <input type="checkbox" id="enchroach-ea-on" oninput="encroachBonusType();"><label for="enchroach-ea-on">エフェクトアーカイヴ</label>
-            <input type="checkbox" id="enchroach-or-on" oninput="encroachBonusType();"><label for="enchroach-or-on">起源種</label>
+            <input type="checkbox" id="enchroach-ea-on" oninput="encroachBonusType();" <TMPL_VAR enchroachEaOn>><label for="enchroach-ea-on">エフェクトアーカイヴ</label>
+            <input type="checkbox" id="enchroach-or-on" oninput="encroachBonusType();" <TMPL_VAR enchroachOrOn>><label for="enchroach-or-on">起源種</label>
           </p>
           <table class="data-table" id="enc-table-n">
             <colgroup>
@@ -743,6 +745,7 @@ window.onload = function() {
       <script>
       let EA; let OR;
       encroachBonusSet(<TMPL_VAR baseEncroach>);
+      encroachBonusType();
       function encroachBonusType(){
         EA = document.getElementById("enchroach-ea-on" ).checked;
         OR = document.getElementById("enchroach-or-on" ).checked;

@@ -39,13 +39,17 @@ body {
   #area-name, #tags {
     grid-column: span 2;
   }
-  #area-battle {
+  .column-status{
     grid-row: span 2;
+  }
+  #area-battle {
+    grid-row: span 1;
   }
   #free-note {
     grid-column: 1;
   }
   #enc-bonus {
+    grid-column: 2;
     align-self: end;
   }
 }
@@ -972,6 +976,9 @@ p.words span.brackets {
   padding-left: .5rem;
   text-align: left;
 }
+#combo table tr td[colspan][rowspan]:last-child {
+  padding: 0;
+}
 @media screen and (max-width:735px){
   #combo table tbody {
   }
@@ -1059,21 +1066,27 @@ p.words span.brackets {
   background-color: var(--bg-color);
   border-radius: 5px;
 }
+#enc-bonus details:not([open]) summary::after {
+  content: '（クリックで展開）';
+  font-size: 90%;
+}
 #enc-bonus p {
   margin: -1.4em 0 0 9em;
 }
-#enc-bonus p input[type="number"] {
+#enc-bonus p input#current-encroach {
   width: 4em;
   padding: .1em;
   text-align: center;
+  vertical-align: text-bottom;
   font-size: 110%;
   font-weight: bold;
 }
 #enc-bonus p input[type="checkbox"] {
-  margin: 0 .2rem 0 1em;
+  margin: 0 .4rem 0 1em;
   transform: scale(1.4);
 }
 #enc-bonus p input[type="checkbox"] + label {
+  display: inline-block;
   user-select: none;
   cursor: pointer;
 }
@@ -1100,16 +1113,26 @@ p.words span.brackets {
   padding: .2rem 0 .1rem;
   line-height: 1;
 }
+
+@media screen and (max-width:735px){
+  #enc-bonus p {
+    margin: 0 0 0 1em;
+  }
+  #enc-bonus p input#current-encroach {
+    font-size: 150%;
+  }
+}
+
 [data-edb] {
   position: relative;
 }
-[data-edb]:not([data-edb="0"]):not([data-edb=""])::after {
+[data-edb]:not(:empty):not([data-edb="0"]):not([data-edb=""])::after {
   content: '+'attr(data-edb);
   position: absolute;
   right: 0;
   bottom: 0;
-  font-size: 80%;
-  line-height: 1;
+  font-size: 75%;
+  line-height: 0.8;
 }
 
 /* // Free-Memo
