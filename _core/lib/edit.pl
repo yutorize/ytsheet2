@@ -59,14 +59,17 @@ sub pcDataGet {
   }
   elsif($mode eq 'copy'){
     $file = (getfile_open($in{'id'}))[0];
-    open my $IN, '<', "${datadir}${file}/data.cgi" or error 'データがありません。';
+    my $datafile = $in{'backup'} ? "${datadir}${file}/backup/$in{'backup'}.cgi" : "${datadir}${file}/data.cgi";
+    open my $IN, '<', $datafile or error 'データがありません。';
     $_ =~ s/(.*?)<>(.*?)\n/$pc{$1} = $2;/egi while <$IN>;
     close($IN);
 
     delete $pc{'image'};
     $pc{'protect'} = 'password';
 
-    $message = '「<a href="./?id='.$in{'id'}.'" target="_blank"><!NAME></a>」をコピーして新規作成します。<br>（まだ保存はされていません）';
+    $message  = '「<a href="./?id='.$in{'id'}.'" target="_blank"><!NAME></a>」';
+    $message .= 'の<br><a href="./?id='.$in{'id'}.'&backup='.$in{'backup'}.'" target="_blank">'.$pc{'updateTime'}.'</a> 時点のバックアップデータ' if $in{'backup'};
+    $message .= 'を<br>コピーして新規作成します。<br>（まだ保存はされていません）';
   }
   elsif($mode eq 'convert'){
     %pc = %::conv_data;

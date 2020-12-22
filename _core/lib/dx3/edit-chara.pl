@@ -167,7 +167,7 @@ print <<"HTML";
 HTML
 if($mode eq 'edit'){
 print <<"HTML";
-        <input type="button" value="複製" onclick="window.open('./?mode=copy&id=$::in{'id'}');">
+        <input type="button" value="複製" onclick="window.open('./?mode=copy&id=$::in{'id'}@{[ $::in{'backup'}?"&backup=$::in{'backup'}":'' ]}');">
 HTML
 }
 print <<"HTML";
