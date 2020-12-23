@@ -16,11 +16,16 @@ sub get_parsed_enemy_data_from_ytsheet_one_mons {
     '生命抵抗力' => {raw => 'vitResist', fix => 'vitResistFix'},
     '精神抵抗力' => {raw => 'mndResist', fix => 'mndResistFix'},
   );
+  my @parts_columns = ("Style", "Accuracy", "Damage", "Evasion", "Defense", "Hp", "Mp");
+
   my $browser = LWP::UserAgent->new;
   my $response = $browser->get("https://yutorize.2-d.jp/ms_sw2/s/data/1579365932.html");
   my $parse_target_html = $response->content;
+  print $parse_target_html;
   my %result = ();
   my $mode = "";
+  my $partsCount = -1;
+  my $partsInternalCursor = 0;
 
   my $parser = HTML::Parser->new(
     api_version => 3,
@@ -32,14 +37,23 @@ sub get_parsed_enemy_data_from_ytsheet_one_mons {
 
   sub ytsheet_one_mons_when_open_tag_found {
     my ($self, $tagname, $attr) = @_;
+    print "$tagname: $attr $attr[class] $attr{class} $attr[0]\n";
     if($tagname eq 'title') {
       $mode = $tagname;
+    }
+    elsif($attr{class} eq "statu") {
+      $mode = "parts";
+      print "parts start\n";
+    }
+    elsif($tagname eq 'tr' && $mode eq 'parts') {
+      $partsCount++;
+      $partsInternalCursor = 0;
     }
   }
 
   sub ytsheet_one_mons_when_close_tag_found {
     my ($self, $tagname) = @_;
-    if($tagname eq 'title') {
+    if($tagname eq 'title' || $tagname eq 'div') {
       $mode = '';
     }
   }
@@ -52,6 +66,15 @@ sub get_parsed_enemy_data_from_ytsheet_one_mons {
       $result{'taxa'} = $title[1];
       $result{'lv'} = $title[2];
       $result{'lv'} =~ s/レベル//;
+    }
+    elsif($mode eq 'parts' && ($partCount > 0) ) {
+      if($parts_columns[$partsInternalCursor] eq "Accuracy" || $parts_columns[$partsInternalCursor] eq "Evasion") {
+        $result{"status$partsCount$parts_columns[$partsInternalCursor]"} = $text;
+        $result{"status$partsCount$parts_columns[$partsInternalCursor]Fix"} = $text;
+      } else {
+        $result{"status$partsCount$parts_columns[$partsInternalCursor]"} = $text;
+      }
+      $partsInternalCursor++;
     }
     elsif($text eq '知名度／弱点値') {
       $mode = $text;
@@ -78,7 +101,6 @@ sub get_parsed_enemy_data_from_ytsheet_one_mons {
       if($text =~ /(\d+)\((\d+)\)/) {
         $result{$parentheses_column_table{$mode}{raw}} = $1;
         $result{$parentheses_column_table{$mode}{fix}} = $2;
-        print "$1 and $2 \n";
       }
       else {
         $result{$parentheses_column_table{$mode}{raw}} = "-";
@@ -89,6 +111,7 @@ sub get_parsed_enemy_data_from_ytsheet_one_mons {
     
   }
   while (my ($key, $value) = each(%result)) {
+    # JavaScript でいう所の String#trim() を行っている
     $result{$key} =~ s/^[ 　\t\n\r\f]*(.*?)[ 　\t\n\r\f]*$/$1/;
   }
   return %result;
