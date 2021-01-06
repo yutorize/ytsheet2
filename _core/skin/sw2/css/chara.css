@@ -296,6 +296,9 @@ dl.data-table:last-child > dt:last-of-type ~ dd,
   opacity: 0.1;
   white-space: pre;
 }
+.image-none.sw2_0::after {
+  content: 'SW\A 2.0';
+}
 
 .image p.words,
 .image-none p.words {

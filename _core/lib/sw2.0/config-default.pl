@@ -9,7 +9,7 @@ package set;
 # （CGIアップデート時に上書きされるため）
   
 ## ●タイトル
-  our $title = 'ゆとシートⅡ for SW2.5';
+  our $title = 'ゆとシートⅡ for SW2.0';
 
 ## ●管理パスワード
   our $masterkey = '';
@@ -94,7 +94,7 @@ package set;
   our $make_fix   = 0;
 
 
-## ●2.5未実装要素の表示設定 (ON=1)
+## ●2.5要素の表示設定 (ON=1)
  # 全ての技能を表示
   our $all_class_on = 1;
  # 秘伝
@@ -103,14 +103,15 @@ package set;
 
 ## ●名誉ランク
   our @adventurer_rank = (
-    ['ダガー',          20,  0],
-    ['レイピア',        50,  5],
-    ['ブロードソード', 100, 10],
-    ['グレートソード', 200, 20],
-    ['フランベルジュ', 300, 30],
-    ['センチネル',     500, 50],
-    ['ハイペリオン',   700, 70],
-    ['〈始まりの剣〉',1000,100],
+    ['馬の骨',                   0],
+    ['駆け出し',                21],
+    ['一人前',                  51],
+    ['噂の人物',               101],
+    ['都市レベルで名が通じる', 201],
+    ['都市レベルの有名人',     501],
+    ['国家レベルの有名人',    1001],
+    ['第一人者',              2001],
+    ['生ける伝説',            5001],
   );
   our @adventurer_rank_name;
   push (@adventurer_rank_name, @$_[0]) foreach (@adventurer_rank);
@@ -127,7 +128,7 @@ package set;
 
 ## ●戦闘特技
  # 習得レベル
-  our @feats_lv = (1,3,5,7,9,11,13,15,16,17);
+  our @feats_lv = (1,3,5,7,9,11,13,15,16,17,18,19,20);
 
 ## ●メイキング
   our $making_max = 0; # 作成板の最大保存数（0で無制限）
@@ -175,7 +176,7 @@ package set;
   
   # 編集画面
   our $lib_edit = $::core_dir . '/lib/edit.pl';
-  our $lib_edit_char = $::core_dir . '/lib/sw2/edit-chara.pl';
+  our $lib_edit_char = $::core_dir . '/lib/sw2.0/edit-chara.pl';
   our $lib_edit_mons = $::core_dir . '/lib/sw2/edit-mons.pl';
   our $lib_edit_item = $::core_dir . '/lib/sw2/edit-item.pl';
   # 保存処理
@@ -208,14 +209,15 @@ package set;
   our $data_races = $::core_dir . '/lib/sw2/data-races.pl';  # 種族
   our $data_items = $::core_dir . '/lib/sw2/data-items.pl';  # アイテムカテゴリ
   our $data_faith = $::core_dir . '/lib/sw2/data-faith.pl';  # 信仰
-  our $data_feats = $::core_dir . '/lib/sw2/data-feats.pl';  # 戦闘特技
-  our $data_class = $::core_dir . '/lib/sw2/data-class.pl';  # 技能、練技・呪歌など
-  our $data_mons  = $::core_dir . '/lib/sw2/data-mons.pl';   # 魔物分類
+  our $data_feats = $::core_dir . '/lib/sw2.0/data-feats.pl';  # 戦闘特技
+  our $data_class = $::core_dir . '/lib/sw2.0/data-class.pl';  # 技能、練技・呪歌など
+  our $data_mons  = $::core_dir . '/lib/sw2.0/data-mons.pl';   # 魔物分類
+
 
   # HTMLテンプレート
   our $icon_dir   = $::core_dir . '/skin/sw2/img/'; # 武器アイコンのあるディレクトリ
   our $skin_tmpl  = $::core_dir . '/skin/sw2/index.html';         # 一覧／登録フォーム等の大枠
-  our $skin_sheet = $::core_dir . '/skin/sw2/sheet-chara.html';   # キャラクターシート
+  our $skin_sheet = $::core_dir . '/skin/sw2.0/sheet-chara.html';   # キャラクターシート
   our $skin_mons  = $::core_dir . '/skin/sw2/sheet-monster.html'; # 魔物シート
   our $skin_item  = $::core_dir . '/skin/sw2/sheet-item.html';    # アイテムシート
 

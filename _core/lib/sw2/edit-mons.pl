@@ -232,10 +232,23 @@ print <<"HTML";
            以下に見出しとして変換される記号を一覧にしています。<br>
           ●：部位見出し：<code>●</code><br>
           <i class="s-icon passive"></i>：常時型　　：<code>○</code> <code>◯</code> <code>〇</code><br>
+HTML
+if($::SW2_0){
+print <<"HTML";
+          <i class="s-icon major0"   ></i>：主動作型　：<code>＞</code> <code>▶</code> <code>〆</code><br>
+          <i class="s-icon minor0"   ></i>：補助動作型：<code>≫</code> <code>&gt;&gt;</code> <code>☆</code><br>
+          <i class="s-icon condition"></i>：条件型　　：<code>▽</code><br>
+          <i class="s-icon selection"></i>：条件選択型：<code>▼</code><br>
+HTML
+} else {
+print <<"HTML";
           <i class="s-icon setup"  ></i>：戦闘準備型：<code>△</code><br>
           <i class="s-icon major"  ></i>：主動作型　：<code>＞</code> <code>▶</code> <code>〆</code><br>
           <i class="s-icon minor"  ></i>：補助動作型：<code>≫</code> <code>&gt;&gt;</code> <code>☆</code><br>
           <i class="s-icon active" ></i>：宣言型　　：<code>🗨</code> <code>□</code> <code>☑</code><br>
+HTML
+}
+print <<"HTML";
         </div>
       </div>
       <div class="box loots">

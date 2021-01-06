@@ -41,6 +41,29 @@ const expTable = {
      67000,
      80500,
     105500
+  ],
+  'S' : [
+         0,
+      3000,
+      6000,
+      9000,
+     12000,
+     16000,
+     20000,
+     24000,
+     28000,
+     33000,
+     38000,
+     43000,
+     48000,
+     54000,
+     60000,
+     66000,
+     72000,
+     79000,
+     86000,
+     93000,
+    100000
   ]
 };
 
@@ -68,9 +91,9 @@ let levelCasters = [];
 
 window.onload = function() {
   race = form.race.value;
-  checkRace();
   calcExp();
   calcLv();
+  checkRace();
   calcStt();
   calcCash();
   calcHonor();
@@ -111,19 +134,26 @@ function changeLv() {
 let expUse = 0;
 let expTotal = 0;
 let lv = {};
+let lvSeeker = 0;
 function calcLv(){
   expUse = 0;
   let allClassLv = [];
   levelCasters = [];
   Object.keys(classes).forEach(function(key) {
-    lv[key] = Number(form['lv'+key].value);
-    if(classes[key]['2.0'] && !AllClassOn){ lv[key] = 0; }
-    
-    expUse += expTable[ classes[key]['expTable'] ][ lv[key] ];
-    
-    allClassLv.push(lv[key]);
-    if(classes[key]['magic']){ levelCasters.push(lv[key]); }
+    if(classes[key]['expTable']){
+      lv[key] = Number(form['lv'+key].value);
+      if(classes[key]['2.0'] && !AllClassOn){ lv[key] = 0; }
+      
+      expUse += expTable[ classes[key]['expTable'] ][ lv[key] ];
+      
+      allClassLv.push(lv[key]);
+      if(classes[key]['magic']){ levelCasters.push(lv[key]); }
+    }
   });
+  if(form.lvSeeker){
+    lvSeeker = Number(form.lvSeeker.value);
+    expUse += expTable['S'][ lvSeeker ];
+  }
   
   document.getElementById("exp-use").innerHTML = expUse;
   document.getElementById("exp-rest").innerHTML = expTotal - expUse;
@@ -131,8 +161,8 @@ function calcLv(){
   level = Math.max.apply(null, Object.values(lv));
   document.getElementById("level-value").innerHTML = level;
   
+  lv['Wiz'] = Math.max(lv['Sor'],lv['Con']);
   levelCasters.sort( function(a,b){ return (a < b ? 1 : -1); } );
-  
   if(battleItemOn){
     const sLevel = Math.max.apply(null, [ lv['Sco'], lv['Ran'], lv['Sag'] ]);
     const maxBattleItems = 8 + Math.ceil(sLevel / 2);
@@ -147,7 +177,6 @@ function calcLv(){
 // 種族変更 ----------------------------------------
 function changeRace(){
   race = form.race.value;
-  document.getElementById("race-ability-value").innerHTML = raceAbility[race];
   if (!form.languageAutoOff.checked) { document.getElementById("language-default").innerHTML = raceLanguage[race] ? raceLanguage[race] : '<dt>初期習得言語</dt><dd>○</dd><dd>○</dd>'; }
   else { document.getElementById("language-default").innerHTML = ''; }
   
@@ -199,10 +228,25 @@ function checkRace(){
   }
   else if(race === 'シャドウ'){
     raceAbilityMndResist = 4;
+    if(level >= 11){
+      raceAbilityMndResist += 2;
+    }
   }
   else if(race === 'フロウライト'){
     raceAbilityDef = 2;
     raceAbilityMp = 15;
+    if(level >= 6){
+      raceAbilityDef += 1;
+      raceAbilityMp += 15;
+    }
+    if(level >= 11){
+      raceAbilityDef += 1;
+      raceAbilityMp += 15;
+    }
+    if(level >= 16){
+      raceAbilityDef += 2;
+      raceAbilityMp += 30;
+    }
     document.getElementById("race-ability-def-name").innerHTML = '晶石の身体';
   }
   else if(race === 'フィー'){
@@ -220,6 +264,9 @@ function checkRace(){
   }
   else if(race === 'ダークトロール'){
     raceAbilityDef = 1;
+    if(level >= 16){
+      raceAbilityDef += 2;
+    }
     document.getElementById("race-ability-def-name").innerHTML = 'トロールの体躯';
   }
   else if(race === 'ケンタウロス'){
@@ -232,8 +279,50 @@ function checkRace(){
   if(race !== 'ドレイク（ナイト）' && race !== 'バジリスク'){
     if(AllClassOn) document.getElementById("classPhy").classList.add('fail');
   }
+  
+  let ability = '';
+  if(raceAbility[race]){
+    ability = raceAbility[race]['1'] || '';
+    if(level >= 6 && raceAbility[race]['6']){
+      if(raceAbility[race]['6'].match('ARRAY')){
+        form.raceAbilityLv6.classList.remove('hidden');
+      }
+      else{
+        ability += raceAbility[race]['6'];
+        form.raceAbilityLv6.classList.add('hidden');
+      }
+    }
+    else {
+      form.raceAbilityLv6.classList.add('hidden');
+    }
+    if(level >= 11 && raceAbility[race]['11']){
+      if(raceAbility[race]['11'].match('ARRAY')){
+        form.raceAbilityLv11.classList.remove('hidden');
+      }
+      else{
+        ability += raceAbility[race]['11'];
+        form.raceAbilityLv11.classList.add('hidden');
+      }
+    }
+    else {
+      form.raceAbilityLv11.classList.add('hidden');
+    }
+    if(level >= 16 && raceAbility[race]['16']){
+      if(raceAbility[race]['16'].match('ARRAY')){
+        form.raceAbilityLv16.classList.remove('hidden');
+      }
+      else{
+        ability += raceAbility[race]['16'];
+        form.raceAbilityLv16.classList.add('hidden');
+      }
+    }
+    else {
+      form.raceAbilityLv16.classList.add('hidden');
+    }
+  }
+  document.getElementById("race-ability-value").innerHTML = ability;
+  
 }
-
 // ステータス計算 ----------------------------------------
 let reqdStr = 0;
 let reqdStrHalf = 0;
@@ -256,12 +345,18 @@ function calcStt() {
   document.getElementById("stt-grow-E-value").innerHTML = growInt;
   document.getElementById("stt-grow-F-value").innerHTML = growMnd;
   */
-  growDex = Number(form.sttPreGrowA.value) + sttHistGrowA;
-  growAgi = Number(form.sttPreGrowB.value) + sttHistGrowB;
-  growStr = Number(form.sttPreGrowC.value) + sttHistGrowC;
-  growVit = Number(form.sttPreGrowD.value) + sttHistGrowD;
-  growInt = Number(form.sttPreGrowE.value) + sttHistGrowE;
-  growMnd = Number(form.sttPreGrowF.value) + sttHistGrowF;
+  const seekerGrow = lvSeeker >= 17 ? 30
+                   : lvSeeker >= 13 ? 24
+                   : lvSeeker >=  9 ? 18
+                   : lvSeeker >=  5 ? 12
+                   : lvSeeker >=  1 ?  6
+                   : 0;
+  growDex = Number(form.sttPreGrowA.value) + sttHistGrowA + seekerGrow;
+  growAgi = Number(form.sttPreGrowB.value) + sttHistGrowB + seekerGrow;
+  growStr = Number(form.sttPreGrowC.value) + sttHistGrowC + seekerGrow;
+  growVit = Number(form.sttPreGrowD.value) + sttHistGrowD + seekerGrow;
+  growInt = Number(form.sttPreGrowE.value) + sttHistGrowE + seekerGrow;
+  growMnd = Number(form.sttPreGrowF.value) + sttHistGrowF + seekerGrow;
   
   document.getElementById("stt-grow-A-value").innerHTML = growDex;
   document.getElementById("stt-grow-B-value").innerHTML = growAgi;
@@ -806,10 +901,13 @@ function checkCraft() {
 
 // ＨＰＭＰ抵抗力計算 ----------------------------------------
 function calcSubStt() {
+  const seekerHpMpAdd = (lvSeeker && checkSeekerAbility('ＨＰ、ＭＰ上昇')) ? 10 : 0;
+  const seekerResistAdd = (lvSeeker && checkSeekerAbility('抵抗力上昇')) ? 3 : 0;
+  
   const vitResistBase = level + bonusVit;
   const mndResistBase = level + bonusMnd;
-  const vitResistAutoAdd = 0;
-  const mndResistAutoAdd = raceAbilityMndResist;
+  const vitResistAutoAdd = 0 + seekerResistAdd;
+  const mndResistAutoAdd = raceAbilityMndResist + seekerResistAdd;
   document.getElementById("vit-resist-base").innerHTML = vitResistBase;
   document.getElementById("mnd-resist-base").innerHTML = mndResistBase;
   document.getElementById("vit-resist-auto-add").innerHTML = vitResistAutoAdd;
@@ -831,8 +929,8 @@ function calcSubStt() {
   const mpBase = 
     (race === 'マナフレア') ? (level * 3 + sttMnd + sttAddF)
     : ( levelCasters.reduce((a,x) => a+x,0) * 3 + sttMnd + sttAddF );
-  const hpAutoAdd = tenacity + hpAccessory + (lv['Fig'] >= 7 ? 15 : 0);
-  const mpAutoAdd = capacity + raceAbilityMp + mpAccessory;
+  const hpAutoAdd = tenacity + hpAccessory + (lv['Fig'] >= 7 ? 15 : 0) + seekerHpMpAdd;
+  const mpAutoAdd = capacity + raceAbilityMp + mpAccessory + seekerHpMpAdd;
   document.getElementById("hp-base").innerHTML = hpBase;
   document.getElementById("mp-base").innerHTML = (race === 'グラスランナー') ? '0' : mpBase;
   document.getElementById("hp-auto-add").innerHTML = hpAutoAdd;
@@ -902,7 +1000,8 @@ function calcMagic() {
       document.getElementById("magic-power-"+eName).style.display = lv[key] ? '' : 'none';
       if(lv[key]){ openMagic++; }
       
-      const power = lv[key] + parseInt((sttInt + sttAddE + (form["magicPowerOwn"+key].checked ? 2 : 0)) / 6) + Number(form["magicPowerAdd"+key].value) + addPower;
+      const seekerMagicAdd = (lvSeeker && checkSeekerAbility('魔力上昇') && lv[key] >= 15) ? 3 : 0;
+      const power = lv[key] + parseInt((sttInt + sttAddE + (form["magicPowerOwn"+key].checked ? 2 : 0)) / 6) + Number(form["magicPowerAdd"+key].value) + addPower + seekerMagicAdd;
       document.getElementById("magic-power-"+eName+"-value").innerHTML  = power;
       document.getElementById("magic-cast-"+eName+"-value").innerHTML   = power + Number(form["magicCastAdd"+key].value) + addCast;
       document.getElementById("magic-damage-"+eName+"-value").innerHTML = Number(form["magicDamageAdd"+key].value) + addDamage;
@@ -1078,6 +1177,17 @@ function calcDefense() {
   defBase += raceAbilityDef;
   document.getElementById("race-ability-def").style.display = raceAbilityDef > 0 ? "" :"none";
   document.getElementById("race-ability-def-value").innerHTML  = raceAbilityDef;
+  // 求道者
+  if(form.lvSeeker){
+    const seekerDefense = lvSeeker >= 18 ? 10
+                        : lvSeeker >= 14 ?  8
+                        : lvSeeker >= 10 ?  6
+                        : lvSeeker >=  6 ?  4
+                        : lvSeeker >=  2 ?  2
+                        : 0;
+    defBase += seekerDefense;
+    document.getElementById('seeker-defense-value').innerHTML = seekerDefense;
+  }
   // 習熟
   document.getElementById("mastery-metalarmour").style.display    = masteryMetalArmour    > 0 ? "" :"none";
   document.getElementById("mastery-nonmetalarmour").style.display = masteryNonMetalArmour > 0 ? "" :"none";

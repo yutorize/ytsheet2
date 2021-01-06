@@ -548,6 +548,9 @@ td .switch-button {
 #personal dl#birth        { flex-basis: 30%; order: 6; }
 #personal dl#faith        { flex-basis: 69%; order: 7; }
 #personal dl#sin          { flex-basis: 14%; order: 5; }
+#personal dl#race-ability select {
+  width: auto;
+}
 #area-status #faith select {
   font-family: initial;
 }
@@ -737,6 +740,9 @@ td .switch-button {
 #magic-power table td input[type=number] {
   width: 3.5em;
 }
+#magic-power a {
+  font-size: 90%;
+}
 #magic-power #fairycontact {
   display: flex;
   margin: 0 -.2em;
@@ -746,7 +752,7 @@ td .switch-button {
 #magic-power #fairycontact label {
   padding: .2em;
 }
-#magic-power #fairycontact label input {
+#magic-power #fairycontact label input[type="checkbox"] {
   width: auto;
   margin-right: .2em;
   border: 0;
@@ -756,6 +762,12 @@ td .switch-button {
 #magic-power #fairycontact label span {
   padding: .2em 0;
   font-size: 85%;
+}
+#magic-power #fairycontact label input[type="number"] {
+  width: 2em;
+  border: 0;
+  vertical-align: middle;
+  transform: scale(1.1);
 }
 #magic-power table td:nth-child(3) {
   padding-left : .5em;

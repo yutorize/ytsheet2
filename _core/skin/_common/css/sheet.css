@@ -503,6 +503,32 @@ dl.note-description dd {
   font-weight: normal;
   transform: scale(-1, 1);
 }
+
+.s-icon.major0::before {
+  content: "〆";
+  font-weight: bold;
+}
+.s-icon.minor0::before {
+  content: "\f005";
+  font-weight: normal;
+}
+.s-icon.active0::before {
+  content: "\f14a";
+  font-weight: normal;
+}
+.s-icon.condition::before {
+  content: "▽";
+  font-weight: normal;
+  text-shadow: -.08rem 0 0 #000, 0 .08rem 0 #000, -.08rem .08rem 0 #000;
+}
+.night .s-icon.conditional::before {
+  text-shadow: -.05rem 0 0 #fff, 0 .05rem 0 #fff, -.05rem .05rem 0 #fff;
+}
+.s-icon.selection::before {
+  content: "▼";
+  font-weight: normal;
+  text-shadow: -.08rem 0 0 #000, 0 .08rem 0 #000, -.08rem .08rem 0 #000;
+}
 /* 狭いときに消す */
 @media screen and (max-width:735px){
   .sp-del {

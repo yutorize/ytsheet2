@@ -18,7 +18,7 @@ $SHEET = HTML::Template->new( filename => $set::skin_sheet, utf8 => 1,
   die_on_bad_params => 0, die_on_missing_include => 0, case_sensitive => 1, global_vars => 1);
 
 ### キャラクターデータ読み込み #######################################################################
-my %pc = pcDataGet();
+our %pc = pcDataGet();
 
 ### 置換前出力 #######################################################################################
 
@@ -136,6 +136,17 @@ $SHEET->param(Classes => \@classes);
 my $class_text;
 foreach my $key (sort {$classes{$b} <=> $classes{$a}} keys %classes){ $class_text .= ($class_text ? ',' : '').$key.$classes{$key}; }
 
+### 求道者 --------------------------------------------------
+if($pc{'lvSeeker'}){
+  my @seeker;
+  my $lv = $pc{'lvSeeker'};
+  push(@seeker, { "NAME" => '全能力値上昇', 'LV' => ($lv >= 17 ? 'Ⅴ' : $lv >= 13 ? 'Ⅳ' : $lv >=  9 ? 'Ⅲ' : $lv >=  5 ? 'Ⅱ' : 'Ⅰ') } ) if $lv >= 1;
+  push(@seeker, { "NAME" => '防護点上昇'  , 'LV' => ($lv >= 18 ? 'Ⅴ' : $lv >= 14 ? 'Ⅳ' : $lv >= 10 ? 'Ⅲ' : $lv >=  6 ? 'Ⅱ' : 'Ⅰ') } ) if $lv >= 1;
+  push(@seeker, { "NAME" => '成長枠獲得'  , 'LV' => ($lv >= 19 ? 'Ⅴ' : $lv >= 15 ? 'Ⅳ' : $lv >= 11 ? 'Ⅲ' : $lv >=  7 ? 'Ⅱ' : 'Ⅰ') } ) if $lv >= 1;
+  push(@seeker, { "NAME" => '特殊能力獲得', 'LV' => ($lv >= 20 ? 'Ⅴ' : $lv >= 16 ? 'Ⅳ' : $lv >= 12 ? 'Ⅲ' : $lv >=  8 ? 'Ⅱ' : 'Ⅰ') } ) if $lv >= 1;
+  $SHEET->param(Seeker => \@seeker);
+}
+
 ### 一般技能 --------------------------------------------------
 my @common_classes;
 foreach (1..10){
@@ -161,6 +172,18 @@ foreach (split /,/, $pc{'combatFeatsAuto'}) {
 }
 $SHEET->param(CombatFeatsAuto => \@feats_auto);
 
+### 特殊能力 --------------------------------------------------
+my @seeker_abilities;
+foreach (1..5){
+  last if ($_ == 1 && $pc{'lvSeeker'} < 4);
+  last if ($_ == 2 && $pc{'lvSeeker'} < 8);
+  last if ($_ == 3 && $pc{'lvSeeker'} < 12);
+  last if ($_ == 4 && $pc{'lvSeeker'} < 16);
+  last if ($_ == 5 && $pc{'lvSeeker'} < 20);
+  push(@seeker_abilities, { "NAME" => $pc{'seekerAbility'.$_} });
+}
+$SHEET->param(SeekerAbilities => \@seeker_abilities);
+
 ### 秘伝 --------------------------------------------------
 my @mystic_arts; my $mysticarts_honor = 0;
 foreach (1..$pc{'mysticArtsNum'}){
@@ -179,13 +202,17 @@ foreach (@{$data::class{'グリモワール'}{'magic'}{'data'}}){
 ### 魔法 --------------------------------------------------
 my $craft_none = 1;
 my @magic_lists;
-foreach my $class (@data::class_names){
+foreach my $class (@data::class_caster){
   next if !$data::class{$class}{'magic'}{'data'};
   my $lv = $pc{'lv'.$data::class{$class}{'id'}};
+  my $add = $pc{ 'buildupAdd'.ucfirst($data::class{$class}{'magic'}{'eName'}) };
+  if($class eq 'ウィザード'){ $lv = max($pc{'lvSor'},$pc{'Con'}); }
   next if !$lv;
+  next if $data::class{$class}{'magic'}{'trancendOnly'} && $lv+$add <= 15;
   
   my @magics;
   foreach (1 .. $lv + $pc{$data::class{$class}{'magic'}{'eName'}.'Addition'}){
+    next if $data::class{$class}{'magic'}{'trancendOnly'} && $_ <= 15;
     my $magic = $pc{'magic'.ucfirst($data::class{$class}{'magic'}{'eName'}).$_};
     
     if($class eq 'グリモワール'){
@@ -206,10 +233,12 @@ my $rider_obs_on;
 foreach my $class (@data::class_names){
   next if !$data::class{$class}{'craft'}{'data'};
   my $lv = $pc{'lv'.$data::class{$class}{'id'}};
+  my $add = $pc{ $data::class{$class}{'craft'}{'eName'}.'Addition' }
+          + $pc{ 'buildupAdd'.ucfirst($data::class{$class}{'craft'}{'eName'}) };
   next if !$lv;
   
   my @crafts;
-  foreach (1 .. $lv + $pc{$data::class{$class}{'craft'}{'eName'}.'Addition'}){
+  foreach (1 .. $lv + $add){
     my $craft = $pc{'craft'.ucfirst($data::class{$class}{'craft'}{'eName'}).$_};
     
     if($class eq 'エンハンサー'){
@@ -258,7 +287,25 @@ $SHEET->param("PackageLv" => max($pc{'lvSco'},$pc{'lvRan'},$pc{'lvSag'},$pc{'lvB
 
 ### 妖精契約 --------------------------------------------------
 my $fairy_contact;
-{
+my $fairy_sim_url;
+if($::SW2_0){
+  $fairy_sim_url = 'https://yutorize.2-d.jp/ft_sim/?ft='
+    . convert10to36($pc{"lvFai"})
+    . convert10to36($pc{"fairyContractEarth"})
+    . convert10to36($pc{"fairyContractWater"})
+    . convert10to36($pc{"fairyContractFire"})
+    . convert10to36($pc{"fairyContractWind"})
+    . convert10to36($pc{"fairyContractLight"})
+    . convert10to36($pc{"fairyContractDark"})
+  ;
+  $fairy_contact .= '<span class="ft-earth">土<br>'.($pc{'fairyContractEarth'}||0).'</span>';
+  $fairy_contact .= '<span class="ft-water">水<br>'.($pc{'fairyContractWater'}||0).'</span>';
+  $fairy_contact .= '<span class="ft-fire" >炎<br>'.($pc{'fairyContractFire' }||0).'</span>';
+  $fairy_contact .= '<span class="ft-wind" >風<br>'.($pc{'fairyContractWind' }||0).'</span>';
+  $fairy_contact .= '<span class="ft-light">光<br>'.($pc{'fairyContractLight'}||0).'</span>';
+  $fairy_contact .= '<span class="ft-dark" >闇<br>'.($pc{'fairyContractDark' }||0).'</span>';
+}
+else {
   $fairy_contact .= '<span class="ft-earth">土</span>' if $pc{'fairyContractEarth'};
   $fairy_contact .= '<span class="ft-water">水</span>' if $pc{'fairyContractWater'};
   $fairy_contact .= '<span class="ft-fire" >炎</span>' if $pc{'fairyContractFire' };
@@ -268,7 +315,7 @@ my $fairy_contact;
 }
 ### 魔力 --------------------------------------------------
 my @magic;
-foreach my $class (@data::class_names){
+foreach my $class (@data::class_caster){
   my $id   = $data::class{$class}{'id'};
   my $name = $data::class{$class}{'magic'}{'jName'};
   next if !$name;
@@ -278,10 +325,18 @@ foreach my $class (@data::class_names){
   my $cast   = $pc{'magicCastAdd'  .$id} + $pc{'magicCastAdd'};
   my $damage = $pc{'magicDamageAdd'.$id} + $pc{'magicDamageAdd'};
   
+  my $title = $class.'<span class="small">技能レベル</span>'.$pc{'lv'.$id};
+  if($class eq 'ウィザード'){ $title = 'ウィザード<span class="small">最大魔法レベル</span>'.max($pc{'lvSor'},$pc{'Con'}); }
+  
+  my $magicname = $name;
+  if($id eq 'Fai'){
+    $magicname = ($fairy_sim_url ? "<a href=\"$fairy_sim_url\" target=\"_blank\">$name</a>" : $name)
+               . ($fairy_contact ? "<div id=\"fairycontact\">$fairy_contact</div>" : '')
+  }
   push(@magic, {
-    "NAME" => $class."<span class=\"small\">技能レベル</span>".$pc{'lv'.$id},
+    "NAME" => $title,
     "OWN"  => ($pc{'magicPowerOwn'.$id} ? '✔<span class="small">知力+2</span>' : ''),
-    "MAGIC"  => $name.($id eq 'Fai' && $fairy_contact ? "<div id=\"fairycontact\">$fairy_contact</div>" : ''),
+    "MAGIC"  => $magicname,
     "POWER"  => ($power ? '<span class="small">+'.$power.'=</span>' : '').$pc{'magicPower'.$id},
     "CAST"   => ($cast ? '<span class="small">+'.$cast.'=</span>' : '').($pc{'magicPower'.$id}+$cast),
     "DAMAGE" => "+$damage",
@@ -296,9 +351,9 @@ foreach my $class (@data::class_names){
   next if !$stt;
   next if !$pc{'lv'.$id};
   
-  my $power  = $pc{'magicPowerAdd' .$id};
-  my $cast   = $pc{'magicCastAdd'  .$id};
-  my $damage = $pc{'magicDamageAdd'.$id};
+  my $power  = $pc{'magicPowerAdd' .$id} || 0;
+  my $cast   = $pc{'magicCastAdd'  .$id} || 0;
+  my $damage = $pc{'magicDamageAdd'.$id} || 0;
   
   push(@magic, {
     "NAME" => $class."<span class=\"small\">技能レベル</span>".$pc{'lv'.$id},
@@ -457,6 +512,12 @@ elsif($pc{'race'} eq 'ダークトロール') {
   push(@evasion, {
     "NAME" => "［トロールの体躯］",
     "DEF"  => $pc{'raceAbilityDef'},
+  } );
+}
+if($pc{'lvSeeker'}) {
+  push(@evasion, {
+    "NAME" => "求道者：防護点上昇",
+    "DEF"  => $pc{'defenseSeeker'},
   } );
 }
 foreach (['金属鎧','MetalArmour'],['非金属鎧','NonMetalArmour'],['盾','Shield']) {
@@ -622,13 +683,26 @@ foreach (1 .. $pc{'dishonorItemsNum'}) {
 }
 $SHEET->param(DishonorItems => \@dishonoritems);
 
-foreach (@set::adventurer_rank){
-  my ($name, $num, undef) = @$_;
-  $SHEET->param(rankHonorValue => $num) if ($pc{'rank'} eq $name);
+if($::SW2_0){
+  foreach (@set::adventurer_rank){
+    my ($name, $num) = @$_;
+    last if ($pc{'honor'} < $num);
+    $SHEET->param(rank => $name);
+  }
+  foreach (@set::notoriety_rank){
+    my ($name, $num) = @$_;
+    $SHEET->param(notoriety => $name) if $pc{'dishonor'} >= $num;
+  }
 }
-foreach (@set::notoriety_rank){
-  my ($name, $num) = @$_;
-  $SHEET->param(notoriety => $name) if $pc{'dishonor'} >= $num;
+else {
+  foreach (@set::adventurer_rank){
+    my ($name, $num, undef) = @$_;
+    $SHEET->param(rankHonorValue => $num) if ($pc{'rank'} eq $name);
+  }
+  foreach (@set::notoriety_rank){
+    my ($name, $num) = @$_;
+    $SHEET->param(notoriety => $name) if $pc{'dishonor'} >= $num;
+  }
 }
 
 ### ガメル --------------------------------------------------
