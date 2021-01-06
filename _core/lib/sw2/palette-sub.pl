@@ -148,6 +148,13 @@ sub palettePreset {
       $text .= "2d6+{命中$_}+{命中修正}";
       $text .= " 命中力／$::pc{'weapon'.$_.'Name'}\n";
       
+      $::pc{'weapon'.$_.'Crit'} =~ s/⑦|➆/7/;
+      $::pc{'weapon'.$_.'Crit'} =~ s/⑧|➇/8/;
+      $::pc{'weapon'.$_.'Crit'} =~ s/⑨|➈/9/;
+      $::pc{'weapon'.$_.'Crit'} =~ s/⑩|➉/10/;
+      $::pc{'weapon'.$_.'Crit'} =~ s/⑪/11/;
+      $::pc{'weapon'.$_.'Crit'} =~ s/⑫/12/;
+      $::pc{'weapon'.$_.'Crit'} =~ s/⑬/13/;
       if   ($bot{'YTC'} ){ $text .= "k$::pc{'weapon'.$_.'Rate'}\[$::pc{'weapon'.$_.'Crit'}+{C修正}\]+{追加D$_}+{武器修正}"; }
       elsif($bot{'BCD'} ){ $text .= "k$::pc{'weapon'.$_.'Rate'}+{追加D$_}+{武器修正}\@($::pc{'weapon'.$_.'Crit'}+{C修正})"; }
       
