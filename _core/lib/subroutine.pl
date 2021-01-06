@@ -409,7 +409,17 @@ sub rgb_to_hsl {
   return ($hu, $sa, $li);
 };
 
-
+### 進数変換 --------------------------------------------------
+sub convert10to36 {
+  my $number = shift;
+  if(!$number){ return 0;}
+  my @work;
+  while ($number > 0) {
+    unshift @work, substr("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ", $number % 36, 1);
+    $number = int($number / 36);
+  }
+  return join('', @work);
+}
 
 ### チャットパレット --------------------------------------------------
 sub palettePresetBuffDelete {
