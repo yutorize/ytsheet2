@@ -427,6 +427,7 @@ let effectSortable = Sortable.create(document.getElementById('effect-table'), {
         document.querySelector(`#${id} [name$="Encroach"]`).setAttribute('name',`effect${num}Encroach`);
         document.querySelector(`#${id} [name$="Restrict"]`).setAttribute('name',`effect${num}Restrict`);
         document.querySelector(`#${id} [name$="Note"]`    ).setAttribute('name',`effect${num}Note`);
+        document.querySelector(`#${id} [name$="Exp"]`     ).setAttribute('name',`effect${num}Exp`);
         num++;
       }
     }
