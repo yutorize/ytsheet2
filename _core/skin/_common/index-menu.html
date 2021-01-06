@@ -1,9 +1,10 @@
       <ul>
+        <TMPL_IF typeName><li class="head"><b><TMPL_VAR typeName></b></li></TMPL_IF>
         <li><a href="./?mode=blanksheet<TMPL_IF type>&type=<TMPL_VAR type></TMPL_IF>">新規作成</a></li>
-        <li class="small"><a href="./?mode=convertform">コンバート</a></li>
+        <li class="small <TMPL_IF modeConvert>current</TMPL_IF>"><a href="./?mode=convertform">コンバート</a></li>
         <TMPL_IF LOGIN_ID>
-        <li><a href="./?mode=mylist<TMPL_IF type>&type=<TMPL_VAR type></TMPL_IF>">マイリスト</a></li>
-        <li class="small"><a href="./?mode=option">オプション</a></li>
+        <li class="<TMPL_IF modeMylist>current</TMPL_IF>"><a href="./?mode=mylist<TMPL_IF type>&type=<TMPL_VAR type></TMPL_IF>">マイリスト</a></li>
+        <li class="small <TMPL_IF modeOption>current</TMPL_IF>"><a href="./?mode=option">オプション</a></li>
         <li class="small"><a href="./?mode=logout">ログアウト</a></li>
         <TMPL_ELSE>
           <TMPL_IF OAUTH_MODE>

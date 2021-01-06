@@ -22,10 +22,10 @@
   <main>
     <nav>
       <ul>
-        <li><a href="./?mode=making">能力値作成</a></li>
-        <li><a href="./?<TMPL_IF mode>mode=<TMPL_VAR mode>&</TMPL_IF><TMPL_IF tag>tag=<TMPL_VAR tag></TMPL_IF>">キャラクターシート</a></li>
-        <li><a href="./?<TMPL_IF mode>mode=<TMPL_VAR mode>&</TMPL_IF><TMPL_IF tag>tag=<TMPL_VAR tag>&</TMPL_IF>type=m">魔物データ</a></li>
-        <li><a href="./?<TMPL_IF mode>mode=<TMPL_VAR mode>&</TMPL_IF><TMPL_IF tag>tag=<TMPL_VAR tag>&</TMPL_IF>type=i">アイテムデータ</a></li>
+        <li class="<TMPL_IF modeMaking>current</TMPL_IF>"><a href="./?mode=making">能力値作成</a></li>
+        <li class="<TMPL_IF modeList>current</TMPL_IF>"><a href="./?<TMPL_IF mode>mode=<TMPL_VAR mode>&</TMPL_IF><TMPL_IF tag>tag=<TMPL_VAR tag></TMPL_IF>">キャラクターシート</a></li>
+        <li class="<TMPL_IF modeMonsList>current</TMPL_IF>"><a href="./?<TMPL_IF mode>mode=<TMPL_VAR mode>&</TMPL_IF><TMPL_IF tag>tag=<TMPL_VAR tag>&</TMPL_IF>type=m">魔物データ</a></li>
+        <li class="<TMPL_IF modeItemList>current</TMPL_IF>"><a href="./?<TMPL_IF mode>mode=<TMPL_VAR mode>&</TMPL_IF><TMPL_IF tag>tag=<TMPL_VAR tag>&</TMPL_IF>type=i">アイテムデータ</a></li>
       </ul>
     </nav>
     <TMPL_IF modeIndex><TMPL_INCLUDE NAME="skin-add/index-message.html"></TMPL_IF>

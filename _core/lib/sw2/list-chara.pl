@@ -19,11 +19,14 @@ require $set::data_class;
 ### テンプレート読み込み #############################################################################
 my $INDEX;
 $INDEX = HTML::Template->new( filename  => $set::skin_tmpl , utf8 => 1,
-  path => ['./', $::core_dir],
+  path => ['./', $::core_dir."/skin/sw2", $::core_dir."/skin/_common", $::core_dir],
+  search_path_on_include => 1,
   die_on_bad_params => 0, die_on_missing_include => 0, case_sensitive => 1, global_vars => 1);
 
 
 $INDEX->param(modeList => 1);
+$INDEX->param(modeMylist => 1) if $mode eq 'mylist';
+$INDEX->param(typeName => 'キャラ');
 
 $INDEX->param(LOGIN_ID => $LOGIN_ID);
 $INDEX->param(OAUTH_MODE => $set::oauth_service);
@@ -71,6 +74,15 @@ my %grouplist;
 open (my $FH, "<", $set::listfile);
 my @list = sort { (split(/<>/,$b))[3] <=> (split(/<>/,$a))[3] } <$FH>;
 close($FH);
+
+## 非表示除外
+if (
+     !($set::masterid && $set::masterid eq $LOGIN_ID)
+  && !($mode eq 'mylist')
+  && !param('tag')
+){
+  @list = grep { !(split(/<>/))[17] } @list;
+}
 
 ## グループ
 my %group_sort;
@@ -136,15 +148,6 @@ my $faith_query = Encode::decode('utf8', param('faith'));
 if($faith_query) { @list = grep { (split(/<>/))[12] =~ /$faith_query/ } @list; }
 $INDEX->param(faith => $faith_query);
 
-## 非表示除外
-if (
-     !($set::masterid && $set::masterid eq $LOGIN_ID)
-  && !($mode eq 'mylist')
-  && !$tag_query
-){
-  @list = grep { !(split(/<>/))[17] } @list;
-}
-
 ## 画像フィルタ
 if(param('image') == 1) {
   @list = grep { (split(/<>/))[15] } @list;
@@ -184,24 +187,11 @@ foreach (@list) {
     }
   }
   
+  #グループ
   $group = $set::group_default if (!$group || !$group_name{$group});
+  $group = 'all' if param('group') eq 'all';
   
-  $race =~ s/（.*）|［.*］//;
-  $race = "<div>$race</div>" if length($race) >= 5;
-  
-  my $m_flag; my $f_flag;
-  $gender =~ s/^(.+?)[\(（].*?[）\)]$/$1/;
-  if($gender =~ /男|♂|雄|オス|爺|漢|(?<!fe)male|(?<!wo)man/i) { $m_flag = 1 }
-  if($gender =~ /女|♀|雌|メス|婆|娘|female|woman/i)           { $f_flag = 1 }
-  if($m_flag && $f_flag){ $gender = '？' }
-  elsif($m_flag){ $gender = '♂' }
-  elsif($f_flag){ $gender = '♀' }
-  elsif($gender){ $gender = '？' }
-  else { $gender = '？' }
-  
-  $age =~ s/^(.+?)[\(（].*?[）\)]$/$1/;
-  $age =~ tr/０-９/0-9/;
-  
+  #技能レベル
   my @levels = (split /\//, $classes);
   my $level = max(@levels);
   my %lv;
@@ -219,48 +209,70 @@ foreach (@list) {
   }
   $class = class_color($class);
   
-  if($fellow != 1) { $fellow = 0; }
-  
-  my $sort_data;
-  if    ($sort eq 'name'){ ($sort_data = $name) =~ s/^“.*”//; }
-  elsif ($sort eq 'rank'){  $sort_data = $rank_sort{$rank}; }
-  
-  $name =~ s/^“(.*)”(.*)/<span>“$1”<\/span><span>$2<\/span>/;
-  
-  $group = 'all' if param('group') eq 'all';
-  
+  #カウント
   $count{'PC'}{$group}++;
   $count{'PL'}{$group}++ if !$pl_flag{$group}{$player};
   $pl_flag{$group}{$player} = 1;
+  #最大表示制限
+  next if ($index_mode && $count{'PC'}{$group} >= $set::list_maxline && $set::list_maxline);
   
-  if (!($index_mode && $count{'PC'}{$group} > $set::list_maxline && $set::list_maxline)){
-    my ($min,$hour,$day,$mon,$year) = (localtime($updatetime))[1..5];
-    $year += 1900; $mon++;
-    $updatetime = sprintf("<span>%04d-</span><span>%02d-%02d</span> <span>%02d:%02d</span>",$year,$mon,$day,$hour,$min);
-    
-    
-    my @characters;
-    push(@characters, {
-      "SORT" => $sort_data,
-      "ID" => $id,
-      "NAME" => $name,
-      "PLAYER" => $player,
-      "GROUP" => $group,
-      "EXP" => $exp,
-      "LV" => $level,
-      "CLASS" => $class,
-      "RACE" => $race,
-      "GENDER" => $gender,
-      "AGE" => $age,
-      "FAITH" => $faith,
-      "RANK" => $rank,
-      "FELLOW" => $fellow,
-      "DATE" => $updatetime,
-      "HIDE" => $hide,
-    });
+  #種族
+  $race =~ s/（.*）|［.*］//;
+  $race = "<div>$race</div>" if length($race) >= 5;
+  
+  #性別
+  my $m_flag; my $f_flag;
+  $gender =~ s/^(.+?)[\(（].*?[）\)]$/$1/;
+  if($gender =~ /男|♂|雄|オス|爺|漢|(?<!fe)male|(?<!wo)man/i) { $m_flag = 1 }
+  if($gender =~ /女|♀|雌|メス|婆|娘|female|woman/i)           { $f_flag = 1 }
+  if($m_flag && $f_flag){ $gender = '？' }
+  elsif($m_flag){ $gender = '♂' }
+  elsif($f_flag){ $gender = '♀' }
+  elsif($gender){ $gender = '？' }
+  else { $gender = '？' }
+  
+  #年齢
+  $age =~ s/^(.+?)[\(（].*?[）\)]$/$1/;
+  $age =~ tr/０-９/0-9/;
+  
+  #フェロー
+  if($fellow != 1) { $fellow = 0; }
+  
+  #ソート用データ
+  my $sort_data;
+  if    ($sort eq 'name'){ ($sort_data = $name) =~ s/^“.*”//; }
+  elsif ($sort eq 'rank'){  $sort_data = $rank_sort{$rank}; }
+  #名前
+  $name =~ s/^“(.*)”(.*)/<span>“$1”<\/span><span>$2<\/span>/;
+  
+  #更新日時
+  my ($min,$hour,$day,$mon,$year) = (localtime($updatetime))[1..5];
+  $year += 1900; $mon++;
+  $updatetime = sprintf("<span>%04d-</span><span>%02d-%02d</span> <span>%02d:%02d</span>",$year,$mon,$day,$hour,$min);
+  
+  #出力用配列へ
+  my @characters;
+  push(@characters, {
+    "SORT" => $sort_data,
+    "ID" => $id,
+    "NAME" => $name,
+    "PLAYER" => $player,
+    "GROUP" => $group,
+    "EXP" => $exp,
+    "LV" => $level,
+    "CLASS" => $class,
+    "RACE" => $race,
+    "GENDER" => $gender,
+    "AGE" => $age,
+    "FAITH" => $faith,
+    "RANK" => $rank,
+    "FELLOW" => $fellow,
+    "DATE" => $updatetime,
+    "HIDE" => $hide,
+  });
 
-    push(@{$grouplist{$group}}, @characters);
-  }
+  push(@{$grouplist{$group}}, @characters);
+  
 }
 
 my @characterlists; 
