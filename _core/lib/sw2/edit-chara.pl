@@ -1142,12 +1142,15 @@ foreach my $num (1 .. $pc{'honorItemsNum'}){
 print <<"HTML";
               </tbody>
             </table>
-          <div class="add-del-button"><a onclick="addHonorItems()">▼</a><a onclick="delHonorItems()">▲</a></div>
-          @{[ input 'honorItemsNum','hidden' ]}
-          <p>フリー条件適用可能な（名誉点消費を0点にして良い）場合、<span class="evo">この表示</span>になります。</p>
+            <div class="add-del-button"><a onclick="addHonorItems()">▼</a><a onclick="delHonorItems()">▲</a></div>
+            @{[ input 'honorItemsNum','hidden' ]}
+            <p>フリー条件適用可能な（名誉点消費を0点にして良い）場合、<span class="evo">この表示</span>になります。</p>
+            <dl class="edit-table side-margin" id="honor-offset">
+              <dt>不名誉点相殺</dt><dd>@{[ input "honorOffset", "number", "calcHonor();calcDishonor" ]}</dd>
+            </dl>
           </div>
           <dl class="box" id="dishonor">
-            <dt>不名誉点</dt><dd id="dishonor-value">0</dd>
+            <dt>不名誉点</dt><dd id="dishonor-value">$pc{'dishonor'}</dd>
             <dt>不名誉称号</dt><dd id="notoriety"></dd>
           </dl>
           <div class="box honor-items" id="dishonor-items">

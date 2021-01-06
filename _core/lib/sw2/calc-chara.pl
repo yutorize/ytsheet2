@@ -81,6 +81,8 @@ sub data_calc {
     foreach (1 .. $pc{'dishonorItemsNum'}){
       $pc{'dishonor'} += $pc{'dishonorItem'.$_.'Pt'};
     }
+    $pc{'honor'}    -= $pc{'honorOffset'};
+    $pc{'dishonor'} -= $pc{'honorOffset'};
   }
 
   ## 経験点消費

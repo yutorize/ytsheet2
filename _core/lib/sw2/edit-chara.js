@@ -97,6 +97,7 @@ window.onload = function() {
   calcStt();
   calcCash();
   calcHonor();
+  calcDishonor();
   imagePosition();
   changeColor();
   
@@ -1306,6 +1307,7 @@ function calcHonor(){
     mysticArtsPt += point;
   }
   pointTotal -= mysticArtsPt;
+  pointTotal -= Number(form.honorOffset.value);
   document.getElementById("honor-value"   ).innerHTML = pointTotal;
   document.getElementById("honor-value-MA").innerHTML = pointTotal;
   document.getElementById("rank-honor-value").innerHTML = rankNum;
@@ -1319,6 +1321,7 @@ function calcDishonor(){
     if(isNaN(point)){ point = 0; }
     pointTotal += point;
   }
+  pointTotal -= Number(form.honorOffset.value);
   document.getElementById("dishonor-value").innerHTML = pointTotal;
   for(const key in notorietyRank){
     if(pointTotal >= notorietyRank[key]['num']) { document.getElementById("notoriety").innerHTML = key; }

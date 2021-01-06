@@ -1125,6 +1125,19 @@ div#area-items-R {
 .honor-items table thead th:last-child {
   width: 4em;
 }
+.honor-items dl#honor-offset {
+  display: grid;
+  grid-template-columns: 1fr 4.2em;
+  margin-top: .5em;
+  border-width: .1rem 0 0;
+  border-style: solid;
+}
+.honor-items dl#honor-offset dt {
+  text-align: center;
+}
+.honor-items dl#honor-offset dd input {
+  margin: 0;
+}
 
 #honor    + #honor-items,
 #dishonor + #dishonor-items {
