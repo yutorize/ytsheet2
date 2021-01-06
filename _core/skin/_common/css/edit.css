@@ -2,6 +2,9 @@
 
 /* // 
 ---------------------------------------------------------------------------------------------------- */
+body {
+  grid-template-rows: 0 auto max-content;
+}
 @media screen and (max-width:735px){
   main {
     padding-top: 0;
