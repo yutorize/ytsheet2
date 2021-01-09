@@ -455,7 +455,7 @@ function checkFeats(){
   let acquire = '';
   for (let i = 0; i < array.length; i++) {
     let cL = document.getElementById("combat-feats-lv"+array[i]).classList;
-    cL.remove("evo","error");
+    cL.remove("mark","error");
     if(level >= Number( array[i].replace(/[^0-9]/g, '') )){
       const f2 = (array[i+1] && level >= Number( array[i+1].replace(/[^0-9]/g, '') )) ? 1 : 0; //次枠の開放状況
       const f3 = (array[i+2] && level >= Number( array[i+2].replace(/[^0-9]/g, '') )) ? 1 : 0; //次々枠の開放状況
@@ -470,7 +470,7 @@ function checkFeats(){
       else if (feat.match(/ガーディアン/)){
         if(level < 5 || !acquire.match('かばう')){ cL.add("error"); }
         if(feat.match(/Ⅰ$/)){
-          if (f2 && level >= 9) { (auto) ? box.value = "ガーディアンⅡ" : cL.add("evo") }
+          if (f2 && level >= 9) { (auto) ? box.value = "ガーディアンⅡ" : cL.add("mark") }
         }
         else if(feat.match(/Ⅱ$/)){
           if(!f2 || level < 9) { (auto) ? box.value = "ガーディアンⅠ" : cL.add("error") }
@@ -479,7 +479,7 @@ function checkFeats(){
       else if (feat.match(/回避行動/)){
         if(level < 3){ cL.add("error"); }
         if(feat.match(/Ⅰ$/)){
-          if (f2 && lv['Fen'] >= 9) { (auto) ? box.value = "回避行動Ⅱ" : cL.add("evo") }
+          if (f2 && lv['Fen'] >= 9) { (auto) ? box.value = "回避行動Ⅱ" : cL.add("mark") }
         }
         else if(feat.match(/Ⅱ$/)){
           if(!f2 || lv['Fen'] < 9) { (auto) ? box.value = "回避行動Ⅰ" : cL.add("error") }
@@ -500,11 +500,11 @@ function checkFeats(){
       else if (feat.match(/呪歌追加/)){
         if(lv['Bar'] < 1){ cL.add("error"); }
         if(feat.match(/Ⅰ$/)){
-          if     (f3 && lv['Bar'] >= 13) { (auto) ? box.value = "呪歌追加Ⅲ" : cL.add("evo") }
-          else if(f2 && lv['Bar'] >=  7) { (auto) ? box.value = "呪歌追加Ⅱ" : cL.add("evo") }
+          if     (f3 && lv['Bar'] >= 13) { (auto) ? box.value = "呪歌追加Ⅲ" : cL.add("mark") }
+          else if(f2 && lv['Bar'] >=  7) { (auto) ? box.value = "呪歌追加Ⅱ" : cL.add("mark") }
         }
         else if(feat.match(/Ⅱ$/)){
-          if     (f3 && lv['Bar'] >= 13) { (auto) ? box.value = "呪歌追加Ⅲ" : cL.add("evo") }
+          if     (f3 && lv['Bar'] >= 13) { (auto) ? box.value = "呪歌追加Ⅲ" : cL.add("mark") }
           else if(!f2 || lv['Bar'] <  7) { (auto) ? box.value = "呪歌追加Ⅰ" : cL.add("error") }
         }
         else if(feat.match(/Ⅲ$/)){
@@ -520,7 +520,7 @@ function checkFeats(){
       }
       else if (feat.match(/スローイング/)){
         if(feat.match(/Ⅰ$/)){
-          if (f2 && level >= 5) { (auto) ? box.value = "スローイングⅡ" : cL.add("evo") }
+          if (f2 && level >= 5) { (auto) ? box.value = "スローイングⅡ" : cL.add("mark") }
         }
         else if(feat.match(/Ⅱ$/)){
           if(!f2 || level < 5) { (auto) ? box.value = "スローイングⅠ" : cL.add("error") }
@@ -538,7 +538,7 @@ function checkFeats(){
       else if (feat.match(/投げ強化/)){
         if(lv['Gra'] < 3){ cL.add("error"); }
         if(feat.match(/Ⅰ$/)){
-          if (f2 && lv['Gra'] >= 9) { (auto) ? box.value = "投げ強化Ⅱ" : cL.add("evo") }
+          if (f2 && lv['Gra'] >= 9) { (auto) ? box.value = "投げ強化Ⅱ" : cL.add("mark") }
         }
         else if(feat.match(/Ⅱ$/)){
           if(!f2 || lv['Gra'] < 9) { (auto) ? box.value = "投げ強化Ⅰ" : cL.add("error") }
@@ -565,7 +565,7 @@ function checkFeats(){
       else if (feat.match(/賦術強化/)){
         if(lv['Alc'] < 3){ cL.add("error"); }
         if(feat.match(/Ⅰ$/)){
-          if (f2 && lv['Alc'] >= 9) { (auto) ? box.value = "賦術強化Ⅱ" : cL.add("evo") }
+          if (f2 && lv['Alc'] >= 9) { (auto) ? box.value = "賦術強化Ⅱ" : cL.add("mark") }
         }
         else if(feat.match(/Ⅱ$/)){
           if(!f2 || lv['Alc'] < 9) { (auto) ? box.value = "賦術強化Ⅰ" : cL.add("error") }
@@ -580,7 +580,7 @@ function checkFeats(){
       else if (feat.match(/変幻自在/)){
         if(lv['Gra'] < 5 && lv['Fen'] < 5){ cL.add("error"); }
         if(feat.match(/Ⅰ$/)){
-          if (f2 && (lv['Gra'] >= 13 || lv['Fen'] >= 13)) { (auto) ? box.value = "変幻自在Ⅱ" : cL.add("evo") }
+          if (f2 && (lv['Gra'] >= 13 || lv['Fen'] >= 13)) { (auto) ? box.value = "変幻自在Ⅱ" : cL.add("mark") }
         }
         else if(feat.match(/Ⅱ$/)){
           if(!f2 || (lv['Gra'] < 13 && lv['Fen'] < 13)) { (auto) ? box.value = "変幻自在Ⅰ" : cL.add("error") }
@@ -604,7 +604,7 @@ function checkFeats(){
       else if (feat.match(/魔力強化/)){
         if(levelCasters[1] < 6){ cL.add("error"); }
         if(feat.match(/Ⅰ$/)){
-          if (f2 && level >= 11 && levelCasters[1] >= 10) { (auto) ? box.value = "魔力強化Ⅱ" : cL.add("evo") }
+          if (f2 && level >= 11 && levelCasters[1] >= 10) { (auto) ? box.value = "魔力強化Ⅱ" : cL.add("mark") }
         }
         else if(feat.match(/Ⅱ$/)){
           if(!f2 || level < 11 || levelCasters[1] < 10) { (auto) ? box.value = "魔力強化Ⅰ" : cL.add("error") }
@@ -613,7 +613,7 @@ function checkFeats(){
       else if (feat.match(/命中強化/)){
         if(level < 7){ cL.add("error"); }
         if(feat.match(/Ⅰ$/)){
-          if (f2 && level >= 13) { (auto) ? box.value = "命中強化Ⅱ" : cL.add("evo") }
+          if (f2 && level >= 13) { (auto) ? box.value = "命中強化Ⅱ" : cL.add("mark") }
         }
         else if(feat.match(/Ⅱ$/)){
           if(!f2 || level < 13) { (auto) ? box.value = "命中強化Ⅰ" : cL.add("error") }
@@ -631,7 +631,7 @@ function checkFeats(){
       else if (feat.match(/インファイト/)){
         if(lv['Gra'] < 5){ cL.add("error"); }
         if(feat.match(/Ⅰ$/)){
-          if (f2 && lv['Gra'] >= 9) { (auto) ? box.value = "インファイトⅡ" : cL.add("evo") }
+          if (f2 && lv['Gra'] >= 9) { (auto) ? box.value = "インファイトⅡ" : cL.add("mark") }
         }
         else if(feat.match(/Ⅱ$/)){
           if(!f2 || lv['Gra'] < 9) { (auto) ? box.value = "インファイトⅠ" : cL.add("error") }
@@ -639,7 +639,7 @@ function checkFeats(){
       }
       else if (feat.match(/囮攻撃/)){
         if(feat.match(/Ⅰ$/)){
-          if (f2 && level >= 9) { (auto) ? box.value = "囮攻撃Ⅱ" : cL.add("evo") }
+          if (f2 && level >= 9) { (auto) ? box.value = "囮攻撃Ⅱ" : cL.add("mark") }
         }
         else if(feat.match(/Ⅱ$/)){
           if(!f2 || level < 9) { (auto) ? box.value = "囮攻撃Ⅰ" : cL.add("error") }
@@ -653,7 +653,7 @@ function checkFeats(){
       }
       else if (feat.match(/かばう/)){
         if(feat.match(/Ⅰ$/)){
-          if (f2 && level >= 7) { (auto) ? box.value = "かばうⅡ" : cL.add("evo") }
+          if (f2 && level >= 7) { (auto) ? box.value = "かばうⅡ" : cL.add("mark") }
         }
         else if(feat.match(/Ⅱ$/)){
           if(!f2 || level < 7) { (auto) ? box.value = "かばうⅠ" : cL.add("error") }
@@ -667,7 +667,7 @@ function checkFeats(){
       }
       else if (feat.match(/斬り返し/)){
         if(feat.match(/Ⅰ$/)){
-          if (f2 && (lv['Fig'] >= 7 || lv['Fen'] >= 7)) { (auto) ? box.value = "斬り返しⅡ" : cL.add("evo") }
+          if (f2 && (lv['Fig'] >= 7 || lv['Fen'] >= 7)) { (auto) ? box.value = "斬り返しⅡ" : cL.add("mark") }
         }
         else if(feat.match(/Ⅱ$/)){
           if(!f2 || (lv['Fig'] < 7 && lv['Fen'] < 7)) { (auto) ? box.value = "斬り返しⅠ" : cL.add("error") }
@@ -676,7 +676,7 @@ function checkFeats(){
       else if (feat.match(/クリティカルキャスト/)){
         if(level < 7){ cL.add("error"); }
         if(feat.match(/Ⅰ$/)){
-          if (f2 && level >= 11) { (auto) ? box.value = "クリティカルキャストⅡ" : cL.add("evo") }
+          if (f2 && level >= 11) { (auto) ? box.value = "クリティカルキャストⅡ" : cL.add("mark") }
         }
         else if(feat.match(/Ⅱ$/)){
           if(!f2 || level < 11) { (auto) ? box.value = "クリティカルキャストⅠ" : cL.add("error") }
@@ -684,11 +684,11 @@ function checkFeats(){
       }
       else if (feat.match(/牽制攻撃/)){
         if(feat.match(/Ⅰ$/)){
-          if     (f3 && level >= 11) { (auto) ? box.value = "牽制攻撃Ⅲ" : cL.add("evo") }
-          else if(f2 && level >=  7) { (auto) ? box.value = "牽制攻撃Ⅱ" : cL.add("evo") }
+          if     (f3 && level >= 11) { (auto) ? box.value = "牽制攻撃Ⅲ" : cL.add("mark") }
+          else if(f2 && level >=  7) { (auto) ? box.value = "牽制攻撃Ⅱ" : cL.add("mark") }
         }
         else if(feat.match(/Ⅱ$/)){
-          if     (f3 && level >= 11) { (auto) ? box.value = "牽制攻撃Ⅲ" : cL.add("evo") }
+          if     (f3 && level >= 11) { (auto) ? box.value = "牽制攻撃Ⅲ" : cL.add("mark") }
           else if(!f2 || level <  7) { (auto) ? box.value = "牽制攻撃Ⅰ" : cL.add("error") }
         }
         else if(feat.match(/Ⅲ$/)){
@@ -704,11 +704,11 @@ function checkFeats(){
       }
       else if (feat.match(/全力攻撃/)){
         if(feat.match(/Ⅰ$/)){
-          if     (f3 && lv['Fig'] >= 15)               { (auto) ? box.value = "全力攻撃Ⅲ" : cL.add("evo") }
-          else if(f2 && (lv['Fig'] >= 9 || lv['Gra'] >= 9)){ (auto) ? box.value = "全力攻撃Ⅱ" : cL.add("evo") }
+          if     (f3 && lv['Fig'] >= 15)               { (auto) ? box.value = "全力攻撃Ⅲ" : cL.add("mark") }
+          else if(f2 && (lv['Fig'] >= 9 || lv['Gra'] >= 9)){ (auto) ? box.value = "全力攻撃Ⅱ" : cL.add("mark") }
         }
         else if(feat.match(/Ⅱ$/)){
-          if     (f3 && lv['Fig'] >= 15)               { (auto) ? box.value = "全力攻撃Ⅲ" : cL.add("evo") }
+          if     (f3 && lv['Fig'] >= 15)               { (auto) ? box.value = "全力攻撃Ⅲ" : cL.add("mark") }
           else if(!f2 || (lv['Fig'] < 9 && lv['Gra'] < 9)) { (auto) ? box.value = "全力攻撃Ⅰ" : cL.add("error") }
         }
         else if(feat.match(/Ⅲ$/)){
@@ -721,7 +721,7 @@ function checkFeats(){
       }
       else if (feat.match(/挑発攻撃/)){
         if(feat.match(/Ⅰ$/)){
-          if (f2 && lv['Fen'] >= 7) { (auto) ? box.value = "挑発攻撃Ⅱ" : cL.add("evo") }
+          if (f2 && lv['Fen'] >= 7) { (auto) ? box.value = "挑発攻撃Ⅱ" : cL.add("mark") }
         }
         else if(feat.match(/Ⅱ$/)){
           if(!f2 ||  lv['Fen'] < 7) { (auto) ? box.value = "挑発攻撃Ⅰ" : cL.add("error") }
@@ -730,7 +730,7 @@ function checkFeats(){
       else if (feat.match(/テイルスイング/)){
         if(level < 3){ cL.add("error"); }
         if(feat.match(/Ⅰ$/)){
-          if (f2 && level >= 9) { (auto) ? box.value = "テイルスイングⅡ" : cL.add("evo") }
+          if (f2 && level >= 9) { (auto) ? box.value = "テイルスイングⅡ" : cL.add("mark") }
         }
         else if(feat.match(/Ⅱ$/)){
           if(!f2 || level < 9) { (auto) ? box.value = "テイルスイングⅠ" : cL.add("error") }
@@ -739,7 +739,7 @@ function checkFeats(){
       else if (feat.match(/薙ぎ払い/)){
         if(level < 3){ cL.add("error"); }
         if(feat.match(/Ⅰ$/)){
-          if (f2 && lv['Fig'] >= 9) { (auto) ? box.value = "薙ぎ払いⅡ" : cL.add("evo") }
+          if (f2 && lv['Fig'] >= 9) { (auto) ? box.value = "薙ぎ払いⅡ" : cL.add("mark") }
         }
         else if(feat.match(/Ⅱ$/)){
           if(!f2 || lv['Fig'] < 9) { (auto) ? box.value = "薙ぎ払いⅠ" : cL.add("error") }
@@ -747,7 +747,7 @@ function checkFeats(){
       }
       else if (feat.match(/バイオレントキャスト/)){
         if(feat.match(/Ⅰ$/)){
-          if (f2 && level >= 13) { (auto) ? box.value = "バイオレントキャストⅡ" : cL.add("evo") }
+          if (f2 && level >= 13) { (auto) ? box.value = "バイオレントキャストⅡ" : cL.add("mark") }
         }
         else if(feat.match(/Ⅱ$/)){
           if(!f2 || level < 13) { (auto) ? box.value = "バイオレントキャストⅠ" : cL.add("error") }
@@ -755,11 +755,11 @@ function checkFeats(){
       }
       else if (feat.match(/必殺攻撃/)){
         if(feat.match(/Ⅰ$/)){
-          if     (f3 && lv['Fen'] >= 11) { (auto) ? box.value = "必殺攻撃Ⅲ" : cL.add("evo") }
-          else if(f2 && level >=  7) { (auto) ? box.value = "必殺攻撃Ⅱ" : cL.add("evo") }
+          if     (f3 && lv['Fen'] >= 11) { (auto) ? box.value = "必殺攻撃Ⅲ" : cL.add("mark") }
+          else if(f2 && level >=  7) { (auto) ? box.value = "必殺攻撃Ⅱ" : cL.add("mark") }
         }
         else if(feat.match(/Ⅱ$/)){
-          if     (f3 && lv['Fen'] >= 11) { (auto) ? box.value = "必殺攻撃Ⅲ" : cL.add("evo") }
+          if     (f3 && lv['Fen'] >= 11) { (auto) ? box.value = "必殺攻撃Ⅲ" : cL.add("mark") }
           else if(!f2 || level <  7) { (auto) ? box.value = "必殺攻撃Ⅰ" : cL.add("error") }
         }
         else if(feat.match(/Ⅲ$/)){
@@ -772,11 +772,11 @@ function checkFeats(){
       }
       else if (feat.match(/鎧貫き/)){
         if(feat.match(/Ⅰ$/)){
-          if     (f3 && lv['Gra'] >= 15) { (auto) ? box.value = "鎧貫きⅢ" : cL.add("evo") }
-          else if(f2 && lv['Gra'] >=  9) { (auto) ? box.value = "鎧貫きⅡ" : cL.add("evo") }
+          if     (f3 && lv['Gra'] >= 15) { (auto) ? box.value = "鎧貫きⅢ" : cL.add("mark") }
+          else if(f2 && lv['Gra'] >=  9) { (auto) ? box.value = "鎧貫きⅡ" : cL.add("mark") }
         }
         else if(feat.match(/Ⅱ$/)){
-          if     (f3 && lv['Gra'] >= 15) { (auto) ? box.value = "鎧貫きⅢ" : cL.add("evo") }
+          if     (f3 && lv['Gra'] >= 15) { (auto) ? box.value = "鎧貫きⅢ" : cL.add("mark") }
           else if(!f2 || lv['Gra'] <  9) { (auto) ? box.value = "鎧貫きⅠ" : cL.add("error") }
         }
         else if(feat.match(/Ⅲ$/)){
@@ -1297,8 +1297,8 @@ function calcHonor(){
     pointTotal -= point;
     
     let cL = form['honorItem'+i+'Pt'].classList;
-    if(point && point <= free) { cL.add("free"); }
-    else { cL.remove("free"); }
+    if(point && point <= free) { cL.add("mark"); }
+    else { cL.remove("mark"); }
   }
   const mysticArtsNum = form.mysticArtsNum.value;
   for (let i = 1; i <= mysticArtsNum; i++){

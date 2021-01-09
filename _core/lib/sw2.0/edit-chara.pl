@@ -460,7 +460,7 @@ foreach my $lv (@set::feats_lv) {
 }
 print <<"HTML";
             </ul>
-            <p>置き換え可能な場合<span class="evo">この表示</span>になります。</p>
+            <p>置き換え可能な場合<span class="mark">この表示</span>になります。</p>
             <p>@{[ input 'featsAutoOn','checkbox','checkFeats' ]}自動置き換え（非推奨）</p>
           </div>
           <div class="box" id="seeker-abilities" @{[ display $pc{'lvSeeker'} ]}>
@@ -1183,7 +1183,7 @@ print <<"HTML";
             </table>
           <div class="add-del-button"><a onclick="addHonorItems()">▼</a><a onclick="delHonorItems()">▲</a></div>
           @{[ input 'honorItemsNum','hidden' ]}
-          <p>フリー条件適用可能な（名誉点消費を0点にして良い）場合、<span class="evo">この表示</span>になります。</p>
+          <p>フリー条件適用可能な（名誉点消費を0点にして良い）場合、<span class="mark">この表示</span>になります。</p>
           </div>
           <div class="box honor-items" id="dishonor-items">
             <h2>消失名誉アイテム</h2>
