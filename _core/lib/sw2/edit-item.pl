@@ -103,9 +103,9 @@ else {
     print '登録キー：<input type="text" name="registerkey" required>'."\n";
   }
   print <<"HTML";
-      <div class="box" id="edit-protect">
-      <h2 onclick="view('edit-protect-view')">編集保護設定 ▼</h2>
-      <p id="edit-protect-view" @{[$mode eq 'edit' ? 'style="display:none"':'']}><input type="hidden" name="protectOld" value="$pc{'protect'}">
+      <details class="box" id="edit-protect" @{[$mode eq 'edit' ? '':'open']}>
+      <summary>編集保護設定</summary>
+      <p id="edit-protect-view"><input type="hidden" name="protectOld" value="$pc{'protect'}">
 HTML
   if($LOGIN_ID){
     print '<input type="radio" name="protect" value="account"'.($pc{'protect'} eq 'account'?' checked':'').'> アカウントに紐付ける（ログイン中のみ編集可能になります）<br>';
@@ -119,19 +119,30 @@ HTML
   print <<"HTML";
 <input type="radio" name="protect" value="none"@{[ $pc{'protect'} eq 'none'?' checked':'' ]}> 保護しない（誰でも編集できるようになります）
       </p>
-      </div>
+      </details>
 HTML
 }
   print <<"HTML";
-      <div id="hide-options">
-        <p id="forbidden-checkbox">
-        @{[ input 'forbidden','checkbox' ]} 閲覧を禁止する
-        </p>
-        <p id="hide-checkbox">
-        @{[ input 'hide','checkbox' ]} 一覧に表示しない<br>
-        ※タグ検索結果に合致した場合は表示されます
-        </p>
-      </div>
+      <section id="section-common">
+      <dl class="box" id="hide-options">
+        <dt>閲覧可否設定</dt>
+        <dd id="forbidden-checkbox">
+          <select name="forbidden">
+            <option value="">内容を全て開示
+            <option value="battle" @{[ $pc{'forbidden'} eq 'battle' ? 'selected' : '' ]}>データ・数値のみ秘匿
+            <option value="all"    @{[ $pc{'forbidden'} eq 'all'    ? 'selected' : '' ]}>内容を全て秘匿
+          </select>
+        </dd>
+        <dd id="hide-checkbox">
+          <select name="hide">
+            <option value="">一覧に表示
+            <option value="1" @{[ $pc{'hide'} ? 'selected' : '' ]}>一覧には非表示
+          </select>
+        </dd>
+        <dd>
+          ※一覧に非表示でもタグ検索結果・マイリストには表示されます
+        </dd>
+      </dl>
       <div class="box" id="group">
         <dl>
           <dt>タグ</dt><dd>@{[ input 'tags' ]}</dd>
@@ -217,6 +228,7 @@ HTML
       <h2>解説</h2>
       <textarea name="description">$pc{'description'}</textarea>
     </div>
+    </section>
     
       @{[ input 'birthTime','hidden' ]}
       <input type="hidden" name="id" value="$::in{'id'}">

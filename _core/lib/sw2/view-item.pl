@@ -15,7 +15,47 @@ $SHEET = HTML::Template->new( filename => $set::skin_item, utf8 => 1,
   die_on_bad_params => 0, die_on_missing_include => 0, case_sensitive => 1, global_vars => 1);
 
 ### キャラクターデータ読み込み #######################################################################
-my %pc = pcDataGet();
+our %pc = pcDataGet();
+
+### 閲覧禁止データ ###################################################################################
+if($::in{'checkView'}){ $::LOGIN_ID = ''; }
+
+if($pc{'forbidden'} && (getfile($::in{'id'},'',$::LOGIN_ID))[0]){
+  $pc{'forbiddenAuthor'} = 1;
+}
+elsif($pc{'forbidden'}){
+  my $author = $pc{'author'};
+  my $protect   = $pc{'protect'};
+  my $forbidden = $pc{'forbidden'};
+  
+  if($forbidden eq 'all'){
+    %pc = ();
+  }
+  if($forbidden ne 'battle'){
+    $pc{'itemName'}   = noiseText(6,14);
+    $pc{'tags'} = '';
+  }
+  
+  $pc{'price'}      = noiseText(1,8);
+  $pc{'reputation'} = noiseText(2,3);
+  $pc{'shape'}      = noiseText(8,20);
+  $pc{'category'}   = noiseText(2,8);
+  $pc{'age'}        = noiseText(2,6);
+  $pc{'summary'}    = noiseText(8,28);
+  
+  $pc{'effects'} = '';
+  foreach(1..int(rand 4)+1){
+    $pc{'effects'} .= noiseText(6,18)."\n";
+    $pc{'effects'} .= '　'.noiseText(18,40)."\n";
+    $pc{'effects'} .= '　'.noiseText(18,40)."\n" if(int rand 2);
+    $pc{'effects'} .= "\n";
+  }
+  
+  $pc{'author'} = $author;
+  $pc{'protect'} = $protect;
+  $pc{'forbidden'} = $forbidden;
+  $pc{'forbiddenMode'} = 1;
+}
 
 ### 置換前出力 #######################################################################################
 $SHEET->param("rawName" => $pc{'itemName'});
@@ -77,7 +117,7 @@ foreach (1 .. 3){
     "NOTE"     => $pc{'weapon'.$_.'Note'},
   } );
 }
-$SHEET->param(WeaponData => \@weapons);
+$SHEET->param(WeaponData => \@weapons) if !$pc{'forbidden'};
 
 ### 防具 --------------------------------------------------
 my @armours;
@@ -93,7 +133,7 @@ foreach (1 .. 3){
     "NOTE"     => $pc{'armour'.$_.'Note'},
   } );
 }
-$SHEET->param(ArmourData => \@armours);
+$SHEET->param(ArmourData => \@armours) if !$pc{'forbidden'};
 
 ### タグ --------------------------------------------------
 my @tags;
@@ -130,8 +170,13 @@ if($::in{'id'}){
 $SHEET->param(ReqdPassword => (!$pc{'protect'} || $pc{'protect'} eq 'password' ? 1 : 0) );
 
 ### タイトル --------------------------------------------------
-$SHEET->param(itemNameTitle => tag_delete($pc{'itemName'}));
 $SHEET->param(title => $set::title);
+if($pc{'forbidden'} eq 'all' && $pc{'forbiddenMode'}){
+  $SHEET->param(itemNameTitle => '非公開データ');
+}
+else {
+  $SHEET->param(itemNameTitle => tag_delete name_plain $pc{'itemName'});
+}
 
 ### 画像 --------------------------------------------------
 $pc{'imageUpdateTime'} = $pc{'updateTime'};

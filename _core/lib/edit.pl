@@ -53,7 +53,7 @@ sub pcDataGet {
     $_ =~ s/(.*?)<>(.*?)\n/$pc{$1} = $2;/egi while <$IN>;
     close($IN);
     if($in{'backup'}){
-      $pc{'protect'} = protectTypeGet("${datadir}${file}/data.cgi");
+      ($pc{'protect'}, $pc{'forbidden'}) = protectTypeGet("${datadir}${file}/data.cgi");
       $message = $pc{'updateTime'}.' 時点のバックアップデータから編集しています。';
     }
   }

@@ -553,6 +553,9 @@ aside.information {
   background-color: hsla(120,100%,50%,0.2);
   text-align: center;
 }
+aside.information.attention {
+  background-color: hsla(0,100%,50%,0.2);
+}
 aside.information a {
   font-weight: bold;
 }
@@ -836,9 +839,12 @@ aside#error {
   z-index: 101;
 }
 
-
-
-
+/* // Restrict
+---------------------------------------------------------------------------------------------------- */
+.censored {
+  opacity: 0.5;
+  letter-spacing: -0.1rem;
+}
 
 
 

@@ -4,6 +4,8 @@ use strict;
 use utf8;
 use open ":utf8";
 
+our $LOGIN_ID = check;
+
 our %in;
 for (param()){ $in{$_} = param($_); }
 
@@ -36,7 +38,7 @@ sub pcDataGet {
     $_ =~ s/(.*?)<>(.*?)\n/$pc{$1} = $2;/egi while <$IN>;
     close($IN);
     if($in{'backup'}){
-      $pc{'protect'} = protectTypeGet("${datadir}${file}/data.cgi");
+      ($pc{'protect'}, $pc{'forbidden'}) = protectTypeGet("${datadir}${file}/data.cgi");
       $pc{'backupId'} = $in{'backup'};
     }
   }
@@ -48,6 +50,27 @@ sub pcDataGet {
     }
   }
   return %pc;
+}
+
+
+### 伏せ文字 --------------------------------------------------
+sub noiseText {
+  my $min = shift;
+  my $max = shift || $min;
+  my $length = $min + (int rand($max - $min + 1));
+  my @seed = split(//, '██████████▇▆▅▄▃▂▚▞▙▛▜▟');
+  my $text;
+  foreach (1 .. $length) {
+    $text .= @seed[int rand(scalar @seed)];
+  }
+  return $text;
+}
+sub noiseTextTag {
+  my $text = shift;
+  $text =~ s/<br>/\n/g;
+  $text =~ s/^[██████████▇▆▅▄▃▂▚▞▙▛▜▟\n\s]+$/<span class="censored">$&<\/span>/s;
+  $text =~ s/\n/<br>/g;
+  return $text;
 }
 
 1;

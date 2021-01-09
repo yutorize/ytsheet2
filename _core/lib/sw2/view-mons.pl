@@ -15,7 +15,78 @@ $SHEET = HTML::Template->new( filename => $set::skin_mons, utf8 => 1,
   die_on_bad_params => 0, die_on_missing_include => 0, case_sensitive => 1, global_vars => 1);
 
 ### モンスターデータ読み込み #########################################################################
-my %pc = pcDataGet();
+our %pc = pcDataGet();
+
+if($pc{'description'} =~ s/#login-only//i){
+  $pc{'description'} .= '<span class="login-only">［ログイン限定公開］</span>';
+  $pc{'forbidden'} = 'all' if !$::LOGIN_ID;
+}
+### 閲覧禁止データ ###################################################################################
+if($::in{'checkView'}){ $::LOGIN_ID = ''; }
+
+if($pc{'forbidden'} && (getfile($::in{'id'},'',$::LOGIN_ID))[0]){
+  $pc{'forbiddenAuthor'} = 1;
+}
+elsif($pc{'forbidden'}){
+  my $author = $pc{'author'};
+  my $protect   = $pc{'protect'};
+  my $forbidden = $pc{'forbidden'};
+  
+  if($forbidden eq 'all'){
+    %pc = ();
+  }
+  if($forbidden ne 'battle'){
+    $pc{'monsterName'} = noiseText(6,14);
+    $pc{'tags'} = '';
+    
+    $pc{'description'} = '';
+    foreach(1..int(rand 3)+1){
+      $pc{'description'} .= '　'.noiseText(18,40)."\n";
+    }
+  }
+  
+  $pc{'lv'}   = noiseText(1);
+  $pc{'taxa'} = noiseText(2,5);
+  $pc{'intellect'}   = noiseText(3);
+  $pc{'perception'}  = noiseText(3);
+  $pc{'disposition'} = noiseText(3);
+  $pc{'sin'}         = noiseText(1);
+  $pc{'language'}    = noiseText(4,18);
+  $pc{'habitat'}     = noiseText(3,8);
+  $pc{'reputation'}  = noiseText(2);
+  $pc{'reputation+'} = noiseText(2);
+  $pc{'weakness'}    = noiseText(6,10);
+  $pc{'initiative'}  = noiseText(2);
+  $pc{'mobility'}    = noiseText(2,6);
+  $pc{'statusNum'} = int(rand 3)+1;
+  $pc{'partsNum'}  = noiseText(2);
+  $pc{'parts'}     = noiseText(3,9);
+  $pc{'coreParts'} = noiseText(2,5);
+  
+  foreach(1..$pc{'statusNum'}){
+    $pc{'status'.$_.'Style'} = noiseText(3,10);
+    $pc{'status'.$_.'Accuracy'}    = noiseText(1,2);
+    $pc{'status'.$_.'AccuracyFix'} = noiseText(2);
+    $pc{'status'.$_.'Damage'}      = noiseText(4);
+    $pc{'status'.$_.'Evasion'}     = noiseText(1,2);
+    $pc{'status'.$_.'EvasionFix'}  = noiseText(2);
+    $pc{'status'.$_.'Defense'}     = noiseText(2);
+    $pc{'status'.$_.'Hp'}          = noiseText(2,3);
+    $pc{'status'.$_.'Mp'}          = noiseText(2,3);
+  }
+  $pc{'skills'} = '';
+  foreach(1..int(rand 4)+1){
+    $pc{'skills'} .= noiseText(6,18)."\n";
+    $pc{'skills'} .= '　'.noiseText(18,40)."\n";
+    $pc{'skills'} .= '　'.noiseText(18,40)."\n" if(int rand 2);
+    $pc{'skills'} .= "\n";
+  }
+  
+  $pc{'author'} = $author;
+  $pc{'protect'} = $protect;
+  $pc{'forbidden'} = $forbidden;
+  $pc{'forbiddenMode'} = 1;
+}
 
 ### 置換前出力 #######################################################################################
 $SHEET->param("rawName" => $pc{'characterName'}?"$pc{'characterName'}（$pc{'monsterName'}）":$pc{'monsterName'});
@@ -41,13 +112,6 @@ $pc{'skills'} = "<p>$pc{'skills'}</p>";
 $pc{'skills'} =~ s#(</p>|</details>)\n#$1#gi;
 $pc{'skills'} =~ s/<p><\/p>//gi;
 $pc{'skills'} =~ s/\n/<br>/gi;
-
-##
-my $LOGIN_ID = check;
-if($pc{'description'} =~ s/#login-only//i){
-  $pc{'description'} .= '<span class="login-only">［ログイン限定公開］</span>';
-  $pc{'forbidden'} = 1 if !$LOGIN_ID;
-}
 
 ### 置換後出力 #######################################################################################
 ### データ全体 --------------------------------------------------
@@ -96,7 +160,7 @@ foreach (1 .. $pc{'statusNum'}){
 $SHEET->param(Status => \@status);
 
 ### 部位 --------------------------------------------------
-$SHEET->param(partsOn => 1) if $pc{'partsNum'};
+$SHEET->param(partsOn => 1) if ($pc{'partsNum'} > 1 || $pc{'parts'} || $pc{'coreParts'});
 
 ### 戦利品 --------------------------------------------------
 my @loots;
@@ -133,14 +197,24 @@ if($::in{'id'}){
 $SHEET->param(ReqdPassword => (!$pc{'protect'} || $pc{'protect'} eq 'password' ? 1 : 0) );
 
 ### タイトル --------------------------------------------------
-$SHEET->param(characterNameTitle => tag_delete name_plain $pc{'characterName'});
-$SHEET->param(monsterNameTitle => tag_delete name_plain $pc{'monsterName'});
 $SHEET->param(title => $set::title);
+if($pc{'forbidden'} eq 'all' && $pc{'forbiddenMode'}){
+  $SHEET->param(monsterNameTitle => '非公開データ');
+}
+else {
+  $SHEET->param(characterNameTitle => tag_delete name_plain $pc{'characterName'});
+  $SHEET->param(monsterNameTitle => tag_delete name_plain $pc{'monsterName'});
+}
 
 ### 画像 --------------------------------------------------
 $pc{'imageUpdateTime'} = $pc{'updateTime'};
 $pc{'imageUpdateTime'} =~ s/[\-\ \:]//g;
 $SHEET->param("imageSrc" => "${set::mons_dir}${main::file}/image.$pc{'image'}?$pc{'imageUpdateTime'}");
+
+### OGP --------------------------------------------------
+$SHEET->param(ogUrl => url().($::in{'url'} ? "?url=$::in{'url'}" : "?id=$::in{'id'}"));
+#if($pc{'image'}) { $SHEET->param(ogImg => url()."/".$imgsrc); }
+$SHEET->param(ogDescript => "レベル:$pc{'lv'}　分類:$pc{'taxa'}".($pc{'partsNum'}>1?"　部位数:$pc{'partsNum'}":'')."　知名度:$pc{'reputation'}／$pc{'reputation'}");
 
 ### バージョン等 --------------------------------------------------
 $SHEET->param("ver" => $::ver);

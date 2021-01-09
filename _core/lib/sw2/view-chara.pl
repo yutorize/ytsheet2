@@ -20,6 +20,100 @@ $SHEET = HTML::Template->new( filename => $set::skin_sheet, utf8 => 1,
 ### キャラクターデータ読み込み #######################################################################
 our %pc = pcDataGet();
 
+### 閲覧禁止データ ###################################################################################
+if($::in{'checkView'}){ $::LOGIN_ID = ''; }
+
+if($pc{'forbidden'} && (getfile($::in{'id'},'',$::LOGIN_ID))[0]){
+  $pc{'forbiddenAuthor'} = 1;
+}
+elsif($pc{'forbidden'}){
+  my $author = $pc{'playerName'};
+  my $protect   = $pc{'protect'};
+  my $forbidden = $pc{'forbidden'};
+  
+  if($forbidden eq 'all'){
+    %pc = ();
+  }
+  if($forbidden ne 'battle'){
+    $pc{'aka'} = '';
+    $pc{'characterName'} = noiseText(6,14);
+    $pc{'group'} = $pc{'tags'} = '';
+    
+    $pc{'freeNote'} = '';
+    foreach(1..int(rand 5)+4){
+      $pc{'freeNote'} .= '　'.noiseText(18,40)."\n";
+    }
+    $pc{'freeHistory'} = '';
+  }
+  
+  $pc{'age'}    = noiseText(1,2);
+  $pc{'gender'} = noiseText(1,2);
+  $pc{'birth'}  = noiseText(2,4);
+  $pc{'race'}        = noiseText(3,8);
+  $pc{'raceAbility'} = noiseText(4,16);
+  $pc{'sin'} = noiseText(1);
+  $pc{'faith'}  = noiseText(6,10);
+  $pc{'rank'}   = noiseText(3,5);
+  
+  foreach('Tec','Phy','Spi'){ $pc{'sttBase'.$_} = noiseText(1,2); }
+  foreach('A'..'F'){
+    $pc{'sttBase'.$_} = noiseText(1);
+    $pc{'sttGrow'.$_} = noiseText(1);
+    $pc{'sttAdd'.$_} = noiseText(1);
+    $pc{'sttPreGrow'.$_} = 0;
+  }
+  foreach('Dex','Agi','Str','Vit','Int','Mnd'){
+    $pc{'stt'.$_} = noiseText(1);
+    $pc{'bonus'.$_} = noiseText(1);
+  }
+  foreach('vitResist','mndResist','hp','mp'){
+    $pc{$_.'AddTotal'} = '';
+    $pc{$_.'Total'} = noiseText(1,2);
+  }
+  
+  $pc{'expRest'}  = noiseText(2,3);
+  $pc{'expTotal'} = noiseText(2,3);
+  $pc{'level'} = noiseText(1);
+  $pc{'lvWiz'} = $pc{'lvSeeker'} = $pc{'lvMonster'} = 0;
+  foreach my $class (@data::class_names){ $pc{ 'lv'.$data::class{$class}{'id'} } = 0; }
+  foreach (1 .. 10){ $pc{'commonClass'.$_} = ''; }
+  $pc{'monsterLore'} = noiseText(1);
+  $pc{'initiative'}  = noiseText(1);
+  $pc{'mobilityLimited'} = noiseText(1);
+  $pc{'mobilityTotal'}   = noiseText(1);
+  $pc{'mobilityFull'}    = noiseText(1,2);
+  
+  $pc{'combatFeatsAuto'} = '';
+  $pc{'mysticArtsNum'} = '';
+  
+  $pc{'languageNum'} = 1;
+  foreach (1 .. $pc{'languageNum'}){
+    $pc{'language'.$_} = '不明';
+    $pc{'language'.$_.'Read'} = $pc{'language'.$_.'Talk'} = '';
+  }
+  
+  $pc{'honor'} = $pc{'dishonor'} = $pc{'honorOffset'} = noiseText(1,2);
+  $pc{'honorItemsNum'} = $pc{'dishonorItemsNum'} = $pc{'rankHonorValue'} = $pc{'MysticArtsHonor'} = '';
+  
+  $pc{'money'}   = noiseText(3,6);
+  $pc{'deposit'} = noiseText(3,6);
+  $pc{'items'} = '';
+  foreach(1..int(rand 3)+6){
+    $pc{'items'} .= noiseText(6,24)."\n";
+  }
+  $pc{'cashbook'} = '';
+  
+  $pc{'historyNum'} = 0;
+  $pc{'history0Exp'}   = noiseText(1,3);
+  $pc{'history0Honor'} = noiseText(1,2);
+  $pc{'history0Money'} = noiseText(2,4);
+  
+  $pc{'playerName'} = $author;
+  $pc{'protect'} = $protect;
+  $pc{'forbidden'} = $forbidden;
+  $pc{'forbiddenMode'} = 1;
+}
+
 ### 置換前出力 #######################################################################################
 if($pc{'imageCopyrightURL'}){
   $pc{'imageCopyright'} = $pc{'imageCopyright'} ? "\[\[$pc{'imageCopyright'}&gt;$pc{'imageCopyrightURL'}\]\]" : $pc{'imageCopyrightURL'};
@@ -31,6 +125,8 @@ foreach (keys %pc) {
     $pc{$_} = tag_unescape_lines($pc{$_});
   }
   $pc{$_} = tag_unescape($pc{$_});
+  
+  $pc{$_} = noiseTextTag $pc{$_} if $pc{'forbiddenMode'};
 }
 
 ### コンバート --------------------------------------------------
@@ -125,7 +221,7 @@ $pc{'faith'} =~ s/“(.*)”//;
 $SHEET->param("expUsed" => $pc{'expTotal'} - $pc{'expRest'}) ;
 
 ### 技能 --------------------------------------------------
-my @classes; my %classes;
+my @classes; my %classes; my $class_text;
 foreach my $class (@data::class_names){
   my $id   = $data::class{$class}{'id'};
   next if !$pc{'lv'.$id};
@@ -137,9 +233,8 @@ foreach my $class (@data::class_names){
   $classes{$class} = $pc{'lv'.$id};
 }
 @classes = sort{$b->{'LV'} <=> $a->{'LV'}} @classes;
-$SHEET->param(Classes => \@classes);
-my $class_text;
 foreach my $key (sort {$classes{$b} <=> $classes{$a}} keys %classes){ $class_text .= ($class_text ? ',' : '').$key.$classes{$key}; }
+$SHEET->param(Classes => \@classes);
 
 ### 求道者 --------------------------------------------------
 if($pc{'lvSeeker'}){
@@ -259,30 +354,36 @@ foreach my $class (@data::class_names){
   $craft_none = 0;
 }
 $SHEET->param(CraftLists => \@craft_lists);
-
 $SHEET->param(craftNone => $craft_none);
 
 ### 言語 --------------------------------------------------
 my @language;
-foreach (@{$data::race_language{ $pc{'race'} }}){
-  last if $pc{'languageAutoOff'};
-  push(@language, {
-    "NAME" => @$_[0],
-    "TALK" => @$_[1],
-    "READ" => @$_[2],
-    "TALK/READ" => (@$_[1]?'会話':'').(@$_[1] && @$_[2] ? '／' : '').(@$_[2]?'読文':'')
-  } );
+if($pc{'forbiddenMode'}){
+  foreach(1..rand(3)+1){
+    push(@language, { "NAME" => noiseTextTag noiseText(4,8) });
+  }
 }
-foreach (1 .. $pc{'languageNum'}) {
-  next if !$pc{'language'.$_};
-  push(@language, {
-    "NAME" => $pc{'language'.$_},
-    "TALK" => $pc{'language'.$_.'Talk'},
-    "READ" => $pc{'language'.$_.'Read'},
-    "TALK/READ" => ($pc{'language'.$_.'Talk'}?'会話':'').
-                   ($pc{'language'.$_.'Talk'} && $pc{'language'.$_.'Read'} ? '／' : '').
-                   ($pc{'language'.$_.'Read'}?'読文':'')
-  } );
+else {
+  foreach (@{$data::race_language{ $pc{'race'} }}){
+    last if $pc{'languageAutoOff'};
+    push(@language, {
+      "NAME" => @$_[0],
+      "TALK" => @$_[1],
+      "READ" => @$_[2],
+      "TALK/READ" => (@$_[1]?'会話':'').(@$_[1] && @$_[2] ? '／' : '').(@$_[2]?'読文':'')
+    });
+  }
+  foreach (1 .. $pc{'languageNum'}) {
+    next if !$pc{'language'.$_};
+    push(@language, {
+      "NAME" => $pc{'language'.$_},
+      "TALK" => $pc{'language'.$_.'Talk'},
+      "READ" => $pc{'language'.$_.'Read'},
+      "TALK/READ" => ($pc{'language'.$_.'Talk'}?'会話':'').
+                     ($pc{'language'.$_.'Talk'} && $pc{'language'.$_.'Read'} ? '／' : '').
+                     ($pc{'language'.$_.'Read'}?'読文':'')
+    } );
+  }
 }
 $SHEET->param(Language => \@language);
 
@@ -391,163 +492,194 @@ $SHEET->param(MagicPowers => \@magic);
 
 ### 攻撃技能／特技 --------------------------------------------------
 my @atacck;
-foreach (
-  ['ファイター',      'Fig'],
-  ['グラップラー',    'Gra'],
-  ['フェンサー',      'Fen'],
-  ['シューター',      'Sho'],
-  ['エンハンサー',    'Enh'],
-  ['デーモンルーラー','Dem'],
-){
-  next if !$pc{'lv'.@$_[1]};
-  next if @$_[0] eq 'エンハンサー' && !$enhance_attack_on;
-  push(@atacck, {
-    "NAME" => @$_[0]."<span class=\"small\">技能レベル</span>".$pc{'lv'.@$_[1]},
-    "STR"  => (@$_[1] eq 'Fen' ? $pc{'reqdStrF'} : $pc{'reqdStr'}),
-    "ACC"  => $pc{'lv'.@$_[1]}+$pc{'bonusDex'},
-    (@$_[1] eq 'Fen' ? ("CRIT" => '-1') : ('' => '')),
-    "DMG"  => $pc{'lv'.@$_[1]}+$pc{'bonusStr'},
-  } );
-}
-foreach (@data::weapons) {
-  next if !$pc{'mastery'.ucfirst(@$_[1])};
-  push(@atacck, {
-    "NAME" => "《武器習熟".($pc{'mastery'.ucfirst(@$_[1])} >= 2 ? 'Ｓ' : 'Ａ')."／".@$_[0]."》",
-    "DMG"  => $pc{'mastery'.ucfirst(@$_[1])},
-  } );
-}
-if($pc{'masteryArtisan'}) {
-  push(@atacck, {
-    "NAME" => "《".($pc{'masteryArtisan'} >= 3 ? '魔器の達人' : $pc{'masteryArtisan'} >= 2 ? '魔器習熟Ｓ' : '魔器習熟Ａ')."》",
-    "DMG"  => $pc{'masteryArtisan'},
-  } );
-}
-if($pc{'accuracyEnhance'}) {
-  push(@atacck, {
-    "NAME" => "《命中強化".($pc{'accuracyEnhance'}  >= 2  ? 'Ⅱ' : 'Ⅰ')."》",
-    "ACC"  => $pc{'accuracyEnhance'},
-  } );
-}
-if($pc{'throwing'}) {
-  push(@atacck, {
-    "NAME" => "《スローイング".($pc{'throwing'}  >= 2  ? 'Ⅱ' : 'Ⅰ')."》",
-    "ACC"  => 1,
-  } );
+if(!$pc{'forbiddenMode'}){
+  foreach (
+    ['ファイター',      'Fig'],
+    ['グラップラー',    'Gra'],
+    ['フェンサー',      'Fen'],
+    ['シューター',      'Sho'],
+    ['エンハンサー',    'Enh'],
+    ['デーモンルーラー','Dem'],
+  ){
+    next if !$pc{'lv'.@$_[1]};
+    next if @$_[0] eq 'エンハンサー' && !$enhance_attack_on;
+    push(@atacck, {
+      "NAME" => @$_[0]."<span class=\"small\">技能レベル</span>".$pc{'lv'.@$_[1]},
+      "STR"  => (@$_[1] eq 'Fen' ? $pc{'reqdStrF'} : $pc{'reqdStr'}),
+      "ACC"  => $pc{'lv'.@$_[1]}+$pc{'bonusDex'},
+      (@$_[1] eq 'Fen' ? ("CRIT" => '-1') : ('' => '')),
+      "DMG"  => $pc{'lv'.@$_[1]}+$pc{'bonusStr'},
+    } );
+  }
+  foreach (@data::weapons) {
+    next if !$pc{'mastery'.ucfirst(@$_[1])};
+    push(@atacck, {
+      "NAME" => "《武器習熟".($pc{'mastery'.ucfirst(@$_[1])} >= 2 ? 'Ｓ' : 'Ａ')."／".@$_[0]."》",
+      "DMG"  => $pc{'mastery'.ucfirst(@$_[1])},
+    } );
+  }
+  if($pc{'masteryArtisan'}) {
+    push(@atacck, {
+      "NAME" => "《".($pc{'masteryArtisan'} >= 3 ? '魔器の達人' : $pc{'masteryArtisan'} >= 2 ? '魔器習熟Ｓ' : '魔器習熟Ａ')."》",
+      "DMG"  => $pc{'masteryArtisan'},
+    } );
+  }
+  if($pc{'accuracyEnhance'}) {
+    push(@atacck, {
+      "NAME" => "《命中強化".($pc{'accuracyEnhance'}  >= 2  ? 'Ⅱ' : 'Ⅰ')."》",
+      "ACC"  => $pc{'accuracyEnhance'},
+    } );
+  }
+  if($pc{'throwing'}) {
+    push(@atacck, {
+      "NAME" => "《スローイング".($pc{'throwing'}  >= 2  ? 'Ⅱ' : 'Ⅰ')."》",
+      "ACC"  => 1,
+    } );
+  }
 }
 $SHEET->param(AttackClasses => \@atacck);
 
 ### 武器 --------------------------------------------------
-{
-my @weapons; my $first = 1;
-foreach (1 .. $pc{'weaponNum'}){
-  next if $pc{'weapon'.$_.'Name'}.$pc{'weapon'.$_.'Usage'}.$pc{'weapon'.$_.'Reqd'}.
-          $pc{'weapon'.$_.'Acc'}.$pc{'weapon'.$_.'Rate'}.$pc{'weapon'.$_.'Crit'}.
-          $pc{'weapon'.$_.'Dmg'}.$pc{'weapon'.$_.'Own'}.$pc{'weapon'.$_.'Note'}
-          eq '';
-  my $rowspan = 1;
-  for(my $num = $_+1; $num <= $pc{'weaponNum'}; $num++){
-    last if $pc{'weapon'.$num.'NameOff'};
-    last if $pc{'weapon'.$num.'Name'};
-    last if $pc{'weapon'.$num.'Name'}.$pc{'weapon'.$num.'Usage'}.$pc{'weapon'.$num.'Reqd'}.
-          $pc{'weapon'.$num.'Acc'}.$pc{'weapon'.$num.'Rate'}.$pc{'weapon'.$num.'Crit'}.
-          $pc{'weapon'.$num.'Dmg'}.$pc{'weapon'.$num.'Own'}.$pc{'weapon'.$num.'Note'} eq '';
-    $rowspan++;
-    $pc{'weapon'.$num.'NameOff'} = 1;
+my @weapons;
+if($pc{'forbiddenMode'}){
+  push(@weapons,{
+    "NAME"     => noiseTextTag(noiseText(4,8)),
+    "USAGE"    => noiseTextTag(noiseText(1)),
+    "REQD"     => noiseTextTag(noiseText(1)),
+    "ACCTOTAL" => noiseTextTag(noiseText(1)),
+    "RATE"     => noiseTextTag(noiseText(1)),
+    "CRIT"     => noiseTextTag(noiseText(1)),
+    "DMGTOTAL" => noiseTextTag(noiseText(1)),
+    "NOTE"     => noiseTextTag(noiseText(4,8)),
+  });
+}
+else {
+  my $first = 1;
+  foreach (1 .. $pc{'weaponNum'}){
+    next if $pc{'weapon'.$_.'Name'}.$pc{'weapon'.$_.'Usage'}.$pc{'weapon'.$_.'Reqd'}.
+            $pc{'weapon'.$_.'Acc'}.$pc{'weapon'.$_.'Rate'}.$pc{'weapon'.$_.'Crit'}.
+            $pc{'weapon'.$_.'Dmg'}.$pc{'weapon'.$_.'Own'}.$pc{'weapon'.$_.'Note'}
+            eq '';
+    my $rowspan = 1;
+    for(my $num = $_+1; $num <= $pc{'weaponNum'}; $num++){
+      last if $pc{'weapon'.$num.'NameOff'};
+      last if $pc{'weapon'.$num.'Name'};
+      last if $pc{'weapon'.$num.'Name'}.$pc{'weapon'.$num.'Usage'}.$pc{'weapon'.$num.'Reqd'}.
+            $pc{'weapon'.$num.'Acc'}.$pc{'weapon'.$num.'Rate'}.$pc{'weapon'.$num.'Crit'}.
+            $pc{'weapon'.$num.'Dmg'}.$pc{'weapon'.$num.'Own'}.$pc{'weapon'.$num.'Note'} eq '';
+      $rowspan++;
+      $pc{'weapon'.$num.'NameOff'} = 1;
+    }
+    if($pc{'weapon'.$_.'Class'} eq "自動計算しない"){
+      $pc{'weapon'.$_.'Acc'} = 0;
+      $pc{'weapon'.$_.'Dmg'} = 0;
+    }
+    push(@weapons, {
+      "NAME"     => $pc{'weapon'.$_.'Name'},
+      "ROWSPAN"  => $rowspan,
+      "NAMEOFF"  => $pc{'weapon'.$_.'NameOff'},
+      "USAGE"    => $pc{'weapon'.$_.'Usage'},
+      "REQD"     => $pc{'weapon'.$_.'Reqd'},
+      "ACC"      => $pc{'weapon'.$_.'Acc'},
+      "ACCTOTAL" => $pc{'weapon'.$_.'AccTotal'},
+      "RATE"     => $pc{'weapon'.$_.'Rate'},
+      "CRIT"     => $pc{'weapon'.$_.'Crit'},
+      "DMG"      => $pc{'weapon'.$_.'Dmg'},
+      "DMGTOTAL" => $pc{'weapon'.$_.'DmgTotal'},
+      "OWN"      => $pc{'weapon'.$_.'Own'},
+      "NOTE"     => $pc{'weapon'.$_.'Note'},
+      "CLOSE"    => ($pc{'weapon'.$_.'NameOff'} || $first ? 0 : 1),
+    } );
+    $first = 0;
   }
-  if($pc{'weapon'.$_.'Class'} eq "自動計算しない"){
-    $pc{'weapon'.$_.'Acc'} = 0;
-    $pc{'weapon'.$_.'Dmg'} = 0;
-  }
-  push(@weapons, {
-    "NAME"     => $pc{'weapon'.$_.'Name'},
-    "ROWSPAN"  => $rowspan,
-    "NAMEOFF"  => $pc{'weapon'.$_.'NameOff'},
-    "USAGE"    => $pc{'weapon'.$_.'Usage'},
-    "REQD"     => $pc{'weapon'.$_.'Reqd'},
-    "ACC"      => $pc{'weapon'.$_.'Acc'},
-    "ACCTOTAL" => $pc{'weapon'.$_.'AccTotal'},
-    "RATE"     => $pc{'weapon'.$_.'Rate'},
-    "CRIT"     => $pc{'weapon'.$_.'Crit'},
-    "DMG"      => $pc{'weapon'.$_.'Dmg'},
-    "DMGTOTAL" => $pc{'weapon'.$_.'DmgTotal'},
-    "OWN"      => $pc{'weapon'.$_.'Own'},
-    "NOTE"     => $pc{'weapon'.$_.'Note'},
-    "CLOSE"    => ($pc{'weapon'.$_.'NameOff'} || $first ? 0 : 1),
-  } );
-  $first = 0;
 }
 $SHEET->param(Weapons => \@weapons);
-}
 ### 回避技能／特技 --------------------------------------------------
-my @evasion;
-foreach (
-  ['ファイター',      'Fig'],
-  ['グラップラー',    'Gra'],
-  ['フェンサー',      'Fen'],
-  ['シューター',      'Sho'],
-  ['デーモンルーラー','Dem'],
-){
-  next if @$_[0] ne $pc{'evasionClass'};
-  push(@evasion, {
-    "NAME" => @$_[0]."<span class=\"small\">技能レベル</span>".$pc{'lv'.@$_[1]},
-    "STR"  => (@$_[1] eq 'Fen' ? $pc{'reqdStrF'} : $pc{'reqdStr'}),
-    "EVA"  => $pc{'lv'.@$_[1]}+$pc{'bonusAgi'},
-  } );
+if(!$pc{'forbiddenMode'}){
+  my @evasion;
+  foreach (
+    ['ファイター',      'Fig'],
+    ['グラップラー',    'Gra'],
+    ['フェンサー',      'Fen'],
+    ['シューター',      'Sho'],
+    ['デーモンルーラー','Dem'],
+  ){
+    next if @$_[0] ne $pc{'evasionClass'};
+    push(@evasion, {
+      "NAME" => @$_[0]."<span class=\"small\">技能レベル</span>".$pc{'lv'.@$_[1]},
+      "STR"  => (@$_[1] eq 'Fen' ? $pc{'reqdStrF'} : $pc{'reqdStr'}),
+      "EVA"  => $pc{'lv'.@$_[1]}+$pc{'bonusAgi'},
+    } );
+  }
+  if(!$pc{'evasionClass'}){
+    push(@evasion, {
+      "NAME" => '技能なし',
+      "STR"  => $pc{'reqdStr'},
+      "EVA"  => 0,
+    } );
+  }
+  if($pc{'race'} eq 'リルドラケン') {
+    push(@evasion, {
+      "NAME" => "［鱗の皮膚］",
+      "DEF"  => $pc{'raceAbilityDef'},
+    } );
+  }
+  elsif($pc{'race'} eq 'フロウライト') {
+    push(@evasion, {
+      "NAME" => "［晶石の身体］",
+      "DEF"  => $pc{'raceAbilityDef'},
+    } );
+  }
+  elsif($pc{'race'} eq 'ダークトロール') {
+    push(@evasion, {
+      "NAME" => "［トロールの体躯］",
+      "DEF"  => $pc{'raceAbilityDef'},
+    } );
+  }
+  if($pc{'lvSeeker'}) {
+    push(@evasion, {
+      "NAME" => "求道者：防護点上昇",
+      "DEF"  => $pc{'defenseSeeker'},
+    } );
+  }
+  foreach (['金属鎧','MetalArmour'],['非金属鎧','NonMetalArmour'],['盾','Shield']) {
+    next if !$pc{'mastery'.ucfirst(@$_[1])};
+    push(@evasion, {
+      "NAME" => "《防具習熟".($pc{'mastery'.ucfirst(@$_[1])} >= 2 ? 'Ｓ' : 'Ａ')."／".@$_[0]."》",
+      "DEF"  => $pc{'mastery'.ucfirst(@$_[1])},
+    } );
+  }
+  if($pc{'masteryArtisan'}) {
+    push(@evasion, {
+      "NAME" => "《".($pc{'masteryArtisan'} >= 3 ? '魔器の達人' : $pc{'masteryArtisan'} >= 2 ? '魔器習熟Ｓ' : '魔器習熟Ａ')."》",
+      "DEF"  => $pc{'masteryArtisan'},
+    } );
+  }
+  if($pc{'evasiveManeuver'}) {
+    push(@evasion, {
+      "NAME" => "《回避行動".($pc{'evasiveManeuver'}  >= 2  ? 'Ⅱ' : 'Ⅰ').@$_[0]."》",
+      "EVA"  => $pc{'evasiveManeuver'},
+    } );
+  }
+  $SHEET->param(EvasionClasses => \@evasion);
 }
-if(!$pc{'evasionClass'}){
-  push(@evasion, {
-    "NAME" => '技能なし',
-    "STR"  => $pc{'reqdStr'},
-    "EVA"  => 0,
-  } );
-}
-if($pc{'race'} eq 'リルドラケン') {
-  push(@evasion, {
-    "NAME" => "［鱗の皮膚］",
-    "DEF"  => $pc{'raceAbilityDef'},
-  } );
-}
-elsif($pc{'race'} eq 'フロウライト') {
-  push(@evasion, {
-    "NAME" => "［晶石の身体］",
-    "DEF"  => $pc{'raceAbilityDef'},
-  } );
-}
-elsif($pc{'race'} eq 'ダークトロール') {
-  push(@evasion, {
-    "NAME" => "［トロールの体躯］",
-    "DEF"  => $pc{'raceAbilityDef'},
-  } );
-}
-if($pc{'lvSeeker'}) {
-  push(@evasion, {
-    "NAME" => "求道者：防護点上昇",
-    "DEF"  => $pc{'defenseSeeker'},
-  } );
-}
-foreach (['金属鎧','MetalArmour'],['非金属鎧','NonMetalArmour'],['盾','Shield']) {
-  next if !$pc{'mastery'.ucfirst(@$_[1])};
-  push(@evasion, {
-    "NAME" => "《防具習熟".($pc{'mastery'.ucfirst(@$_[1])} >= 2 ? 'Ｓ' : 'Ａ')."／".@$_[0]."》",
-    "DEF"  => $pc{'mastery'.ucfirst(@$_[1])},
-  } );
-}
-if($pc{'masteryArtisan'}) {
-  push(@evasion, {
-    "NAME" => "《".($pc{'masteryArtisan'} >= 3 ? '魔器の達人' : $pc{'masteryArtisan'} >= 2 ? '魔器習熟Ｓ' : '魔器習熟Ａ')."》",
-    "DEF"  => $pc{'masteryArtisan'},
-  } );
-}
-if($pc{'evasiveManeuver'}) {
-  push(@evasion, {
-    "NAME" => "《回避行動".($pc{'evasiveManeuver'}  >= 2  ? 'Ⅱ' : 'Ⅰ').@$_[0]."》",
-    "EVA"  => $pc{'evasiveManeuver'},
-  } );
-}
-$SHEET->param(EvasionClasses => \@evasion);
-
 ### 防具 --------------------------------------------------
-{
+if($pc{'forbiddenMode'}){
+  my @armours;
+  foreach(1..3){
+    push(@armours, {
+      "TH"   => noiseTextTag(noiseText(1)),
+      "NAME" => noiseTextTag(noiseText(4,8)),
+      "REQD" => noiseTextTag(noiseText(1)),
+      "EVA"  => noiseTextTag(noiseText(1)),
+      "DEF"  => noiseTextTag(noiseText(1)),
+      "NOTE" => noiseTextTag(noiseText(4,8)),
+    });
+  }
+  $SHEET->param(Armours => \@armours);
+}
+else {
+  my @armours;
   my @list = (
     ['鎧','armour1'],
     ['盾','shield1'],
@@ -555,7 +687,6 @@ $SHEET->param(EvasionClasses => \@evasion);
     ['他2','defOther2'],
     ['他3','defOther3'],
   );
-  my @armours;
   foreach (@list){
     next if $pc{@$_[1].'Name'} eq '' && !$pc{@$_[1].'Eva'} && !$pc{@$_[1].'Def'};
     push(@armours, {
@@ -589,32 +720,43 @@ $SHEET->param(EvasionClasses => \@evasion);
   $SHEET->param(ArmourTotals => \@total);
 }
 ### 装飾品 --------------------------------------------------
-my @accessories;
-foreach (
-  ["頭","Head"],    ["┗","Head_"],   ["┗","Head__"],
-  ["顔","Face"],    ["┗","Face_"],   ["┗","Face__"],
-  ["耳","Ear"],     ["┗","Ear_"],    ["┗","Ear__"],
-  ["首","Neck"],    ["┗","Neck_"],   ["┗","Neck__"],
-  ["背中","Back"],  ["┗","Back_"],   ["┗","Back__"],
-  ["右手","HandR"], ["┗","HandR_"],  ["┗","HandR__"],
-  ["左手","HandL"], ["┗","HandL_"],  ["┗","HandL__"],
-  ["腰","Waist"],   ["┗","Waist_"],  ["┗","Waist__"],
-  ["足","Leg"],     ["┗","Leg_"],    ["┗","Leg__"],
-  ["他","Other"],   ["┗","Other_"],  ["┗","Other__"],
-  ["他2","Other2"], ["┗","Other2_"], ["┗","Other2__"],
-  ["他3","Other3"], ["┗","Other3_"], ["┗","Other3__"],
-  ["他4","Other4"], ["┗","Other4_"], ["┗","Other4__"],
-){
-  next if !$pc{'accessory'.@$_[1].'Name'} && !$pc{'accessory'.@$_[1].'Note'};
-  push(@accessories, {
-    "TYPE" => @$_[0],
-    "NAME" => $pc{'accessory'.@$_[1].'Name'},
-    "OWN"  => $pc{'accessory'.@$_[1].'Own'},
-    "NOTE" => $pc{'accessory'.@$_[1].'Note'},
-  } );
+  my @accessories;
+if($pc{'forbiddenMode'}){
+  foreach(1..rand(3)+3){
+    push(@accessories, {
+      "TYPE" => noiseTextTag(noiseText(1)),
+      "NAME" => noiseTextTag(noiseText(4,8)),
+      "NOTE" => noiseTextTag(noiseText(6,13)),
+    });
+  }
+  $SHEET->param(Accessories => \@accessories);
 }
-$SHEET->param(Accessories => \@accessories);
-
+else {
+  foreach (
+    ["頭","Head"],    ["┗","Head_"],   ["┗","Head__"],
+    ["顔","Face"],    ["┗","Face_"],   ["┗","Face__"],
+    ["耳","Ear"],     ["┗","Ear_"],    ["┗","Ear__"],
+    ["首","Neck"],    ["┗","Neck_"],   ["┗","Neck__"],
+    ["背中","Back"],  ["┗","Back_"],   ["┗","Back__"],
+    ["右手","HandR"], ["┗","HandR_"],  ["┗","HandR__"],
+    ["左手","HandL"], ["┗","HandL_"],  ["┗","HandL__"],
+    ["腰","Waist"],   ["┗","Waist_"],  ["┗","Waist__"],
+    ["足","Leg"],     ["┗","Leg_"],    ["┗","Leg__"],
+    ["他","Other"],   ["┗","Other_"],  ["┗","Other__"],
+    ["他2","Other2"], ["┗","Other2_"], ["┗","Other2__"],
+    ["他3","Other3"], ["┗","Other3_"], ["┗","Other3__"],
+    ["他4","Other4"], ["┗","Other4_"], ["┗","Other4__"],
+  ){
+    next if !$pc{'accessory'.@$_[1].'Name'} && !$pc{'accessory'.@$_[1].'Note'};
+    push(@accessories, {
+      "TYPE" => @$_[0],
+      "NAME" => $pc{'accessory'.@$_[1].'Name'},
+      "OWN"  => $pc{'accessory'.@$_[1].'Own'},
+      "NOTE" => $pc{'accessory'.@$_[1].'Note'},
+    } );
+  }
+  $SHEET->param(Accessories => \@accessories);
+}
 ### 履歴 --------------------------------------------------
 
 $pc{"history0Grow"} .= '器用'.$pc{'sttPreGrowA'} if $pc{'sttPreGrowA'};
@@ -775,8 +917,13 @@ $SHEET->param(ReqdPassword => (!$pc{'protect'} || $pc{'protect'} eq 'password' ?
 $SHEET->param(FellowMode => param('f'));
 
 ### タイトル --------------------------------------------------
-$SHEET->param(characterNameTitle => tag_delete name_plain $pc{'characterName'});
 $SHEET->param(title => $set::title);
+if($pc{'forbidden'} eq 'all' && $pc{'forbiddenMode'}){
+  $SHEET->param(characterNameTitle => '非公開データ');
+}
+else {
+  $SHEET->param(characterNameTitle => tag_delete name_plain $pc{'characterName'});
+}
 
 ### 画像 --------------------------------------------------
 my $imgsrc = (
@@ -796,7 +943,7 @@ elsif($pc{'imageFit'} =~ /^percentX?$/){
 ### OGP --------------------------------------------------
 $SHEET->param(ogUrl => url().($::in{'url'} ? "?url=$::in{'url'}" : "?id=$::in{'id'}"));
 if($pc{'image'}) { $SHEET->param(ogImg => url()."/".$imgsrc); }
-$SHEET->param(ogDescript => "種族:$pc{'race'}　性別:$pc{'gender'}　年齢:$pc{'age'}　技能:${class_text}");
+$SHEET->param(ogDescript => tag_delete "種族:$pc{'race'}　性別:$pc{'gender'}　年齢:$pc{'age'}　技能:${class_text}");
 
 ### バージョン等 --------------------------------------------------
 $SHEET->param("ver" => $::ver);

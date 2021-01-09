@@ -12,8 +12,8 @@ use Fcntl;
 ### ファイル名取得／パスorアカウント必要時 --------------------------------------------------
 sub getfile {
   open (my $FH, '<', $set::passfile) or die;
-  while (<$FH>) {
-    my ($id, $pass, $file, $type) = (split /<>/, $_)[0..3];
+  while (my $line = <$FH>) {
+    my ($id, $pass, $file, $type) = (split /<>/, $line)[0..3];
     if(
       $_[0] eq $id && (
            (!$pass) # パス不要
@@ -64,13 +64,17 @@ sub getplayername {
 ### 編集保護設定取得 --------------------------------------------------
 sub protectTypeGet {
   my $file = shift;
-  my $value = '';
+  my $protect   = '';
+  my $forbidden = '';
   open (my $IN, '<', $file) or error('キャラクターシートがありません。');
   while (my $line = <$IN>){
-    if($line =~ /^protect<>(.*)\n/){ $value = $1; last; }
+    if   ($line =~ /^protect<>(.*)\n/)  { $protect = $1; }
+    elsif($line =~ /^forbidden<>(.*)\n/){ $forbidden = $1; }
+    
+    if($protect && $forbidden){ last; }
   }
   close($IN);
-  return $value;
+  return ($protect, $forbidden);
 }
 
 ### 暗号化 --------------------------------------------------

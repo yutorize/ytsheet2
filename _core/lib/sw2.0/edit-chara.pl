@@ -197,12 +197,25 @@ HTML
 }
   print <<"HTML";
       <section id="section-common">
-      <div id="hide-options">
-        <p id="hide-checkbox">
-        @{[ input 'hide','checkbox' ]} 一覧に表示しない<br>
-        ※タグ検索結果に合致した場合は表示されます
-        </p>
-      </div>
+      <dl class="box" id="hide-options">
+        <dt>閲覧可否設定</dt>
+        <dd id="forbidden-checkbox">
+          <select name="forbidden">
+            <option value="">内容を全て開示
+            <option value="battle" @{[ $pc{'forbidden'} eq 'battle' ? 'selected' : '' ]}>データ・数値のみ秘匿
+            <option value="all"    @{[ $pc{'forbidden'} eq 'all'    ? 'selected' : '' ]}>内容を全て秘匿
+          </select>
+        </dd>
+        <dd id="hide-checkbox">
+          <select name="hide">
+            <option value="">一覧に表示
+            <option value="1" @{[ $pc{'hide'} ? 'selected' : '' ]}>一覧には非表示
+          </select>
+        </dd>
+        <dd>
+          ※一覧に非表示でもタグ検索結果・マイリストには表示されます
+        </dd>
+      </dl>
       <div class="box" id="group">
         <dl>
           <dt>グループ</dt><dd><select name="group">
