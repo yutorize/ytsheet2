@@ -260,12 +260,12 @@ sub data_calc {
     $pc{'sttHistGrowE'} += ($grow =~ s/知/知/g);
     $pc{'sttHistGrowF'} += ($grow =~ s/精/精/g);
   }
-  $pc{'sttGrowA'} = $pc{'sttPreGrowA'} + $pc{'sttHistGrowA'};
-  $pc{'sttGrowB'} = $pc{'sttPreGrowB'} + $pc{'sttHistGrowB'};
-  $pc{'sttGrowC'} = $pc{'sttPreGrowC'} + $pc{'sttHistGrowC'};
-  $pc{'sttGrowD'} = $pc{'sttPreGrowD'} + $pc{'sttHistGrowD'};
-  $pc{'sttGrowE'} = $pc{'sttPreGrowE'} + $pc{'sttHistGrowE'};
-  $pc{'sttGrowF'} = $pc{'sttPreGrowF'} + $pc{'sttHistGrowF'};
+  $pc{'sttGrowA'} = $pc{'sttPreGrowA'} + $pc{'sttHistGrowA'} + $pc{'sttSeekerGrow'};
+  $pc{'sttGrowB'} = $pc{'sttPreGrowB'} + $pc{'sttHistGrowB'} + $pc{'sttSeekerGrow'};
+  $pc{'sttGrowC'} = $pc{'sttPreGrowC'} + $pc{'sttHistGrowC'} + $pc{'sttSeekerGrow'};
+  $pc{'sttGrowD'} = $pc{'sttPreGrowD'} + $pc{'sttHistGrowD'} + $pc{'sttSeekerGrow'};
+  $pc{'sttGrowE'} = $pc{'sttPreGrowE'} + $pc{'sttHistGrowE'} + $pc{'sttSeekerGrow'};
+  $pc{'sttGrowF'} = $pc{'sttPreGrowF'} + $pc{'sttHistGrowF'} + $pc{'sttSeekerGrow'};
 
   ## 能力値算出
   $pc{'sttDex'} = $pc{'sttBaseTec'} + $pc{'sttBaseA'} + $pc{'sttGrowA'};
