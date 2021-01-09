@@ -92,6 +92,24 @@ function imagePosition(){
   
   document.getElementById("image-percent-bar").value = form.imagePercent.value;
 }
+function wordsPreView(){
+  let words = form.words.value;
+  words = words.replace(/[|｜](.+?)《(.+?)》/, '<ruby>$1<rt>$2</rt></ruby>')
+               .replace(/《《(.+?)》》/, '<span class="text-em">$1</span>')
+               .replace(/^「/, '<span class="brackets">「</span>')
+               .replace(/(.+?(?:[，、。？」]|$))/g, '<span>$1</span>')
+               .replace(/\n/g, '<br>');
+  
+  const wObj = document.getElementById('words-preview');
+  wObj.innerHTML = words;
+  
+  wObj.style.left   = form.wordsX.value === '左' ? '0' : '';
+  wObj.style.right  = form.wordsX.value === '右' || !form.wordsX.value ? '0' : '';
+  wObj.style.top    = form.wordsY.value === '上' || !form.wordsY.value ? '0' : '';
+  wObj.style.bottom = form.wordsY.value === '下' ? '0' : '';
+  
+  document.getElementById('image-copyright-preview').innerHTML = form.imageCopyright.value;
+}
 
 // カラーカスタム ----------------------------------------
 function changeColor(){

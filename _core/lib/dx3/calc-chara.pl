@@ -184,6 +184,7 @@ sub data_calc {
   }
 
   #### 改行を<br>に変換 --------------------------------------------------
+  $pc{'words'}         =~ s/\r\n?|\n/<br>/g;
   $pc{'freeNote'}      =~ s/\r\n?|\n/<br>/g;
   $pc{'freeHistory'}   =~ s/\r\n?|\n/<br>/g;
   $pc{'chatPalette'}   =~ s/\r\n?|\n/<br>/g;

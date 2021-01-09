@@ -58,6 +58,8 @@ $pc{'imageFit'} = $pc{'imageFit'} eq 'percent' ? 'percentX' : $pc{'imageFit'};
 $pc{'imagePercent'} = $pc{'imagePercent'} eq '' ? '200' : $pc{'imagePercent'};
 $pc{'imagePositionX'} = $pc{'imagePositionX'} eq '' ? '50' : $pc{'imagePositionX'};
 $pc{'imagePositionY'} = $pc{'imagePositionY'} eq '' ? '50' : $pc{'imagePositionY'};
+$pc{'wordsX'} = $pc{'wordsX'} || '右';
+$pc{'wordsY'} = $pc{'wordsY'} || '上';
 
 $pc{'colorHeadBgH'} = $pc{'colorHeadBgH'} eq '' ? 225 : $pc{'colorHeadBgH'};
 $pc{'colorHeadBgS'} = $pc{'colorHeadBgS'} eq '' ?   9 : $pc{'colorHeadBgS'};
@@ -103,6 +105,7 @@ foreach (1..$pc{'vehiclesNum'}){ if($pc{"vehicles${_}Name"}){ $open{'item'} = 'o
 foreach (1..$pc{'itemNum'})    { if($pc{"item${_}Name"})    { $open{'item'} = 'open'; last; } }
 
 ### 改行処理 --------------------------------------------------
+$pc{'words'}         =~ s/&lt;br&gt;/\n/g;
 $pc{'freeNote'}      =~ s/&lt;br&gt;/\n/g;
 $pc{'freeHistory'}   =~ s/&lt;br&gt;/\n/g;
 $pc{'chatPalette'}   =~ s/&lt;br&gt;/\n/g;
@@ -125,8 +128,8 @@ Content-type: text/html\n
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" media="all" href="${main::core_dir}/skin/_common/css/base.css?${main::ver}">
   <link rel="stylesheet" media="all" href="${main::core_dir}/skin/_common/css/sheet.css?${main::ver}">
-  <link rel="stylesheet" media="all" href="${main::core_dir}/skin/_common/css/edit.css?${main::ver}">
   <link rel="stylesheet" media="all" href="${main::core_dir}/skin/dx3/css/chara.css?${main::ver}">
+  <link rel="stylesheet" media="all" href="${main::core_dir}/skin/_common/css/edit.css?${main::ver}">
   <link rel="stylesheet" media="all" href="${main::core_dir}/skin/dx3/css/edit.css?${main::ver}">
   <script src="${main::core_dir}/skin/_common/js/lib/Sortable.min.js"></script>
   <script src="${main::core_dir}/lib/edit.js?${main::ver}" defer></script>

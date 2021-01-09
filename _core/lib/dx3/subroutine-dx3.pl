@@ -20,6 +20,8 @@ sub tag_unescape {
   
   $text =~ s#(―+)#<span class="d-dash">$1</span>#g;
   
+  $text =~ s{[©]}{<i class="s-icon copyright">©</i>}gi;
+  
   $text =~ s/'''(.+?)'''/<span class="oblique">$1<\/span>/gi; # 斜体
   $text =~ s/''(.+?)''/<b>$1<\/b>/gi;  # 太字
   $text =~ s/%%(.+?)%%/<span class="strike">$1<\/span>/gi;  # 打ち消し線
@@ -30,7 +32,7 @@ sub tag_unescape {
   
   $text =~ s/\[\[(.+?)&gt;((?:(?!<br>)[^"])+?)\]\]/&tag_link_url($2,$1)/egi; # リンク
   $text =~ s/\[(.+?)#([a-zA-Z0-9\-]+?)\]/<a href="?id=$2">$1<\/a>/gi; # シート内リンク
-  $text =~ s/(?<!href=")(https?:\/\/[^\s\<]+)/<a href="$1">$1<\/a>/gi; # 自動リンク
+  $text =~ s/(?<!href=")(https?:\/\/[^\s\<]+)/<a href="$1" target="_blank">$1<\/a>/gi; # 自動リンク
   
   $text =~ s/\n/<br>/gi;
   

@@ -21,6 +21,9 @@ $SHEET = HTML::Template->new( filename => $set::skin_sheet, utf8 => 1,
 our %pc = pcDataGet();
 
 ### 置換前出力 #######################################################################################
+if($pc{'imageCopyrightURL'}){
+  $pc{'imageCopyright'} = $pc{'imageCopyright'} ? "\[\[$pc{'imageCopyright'}&gt;$pc{'imageCopyrightURL'}\]\]" : $pc{'imageCopyrightURL'};
+}
 
 ### 置換 #############################################################################################
 foreach (keys %pc) {
@@ -95,8 +98,10 @@ foreach(split(/ /, $pc{'tags'})){
 $SHEET->param(Tags => \@tags);
 
 ### セリフ --------------------------------------------------
+$pc{'words'} =~ s/<br>/\n/g;
 $pc{'words'} =~ s/^「/<span class="brackets">「<\/span>/g;
 $pc{'words'} =~ s/(.+?(?:[，、。？」]|$))/<span>$1<\/span>/g;
+$pc{'words'} =~ s/\n/<br>/g;
 $SHEET->param("words" => $pc{'words'});
 $SHEET->param("wordsX" => ($pc{'wordsX'} eq '左' ? 'left:0;' : 'right:0;'));
 $SHEET->param("wordsY" => ($pc{'wordsY'} eq '下' ? 'bottom:0;' : 'top:0;'));

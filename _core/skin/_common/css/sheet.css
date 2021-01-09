@@ -529,6 +529,11 @@ dl.note-description dd {
   font-weight: normal;
   text-shadow: -.08rem 0 0 #000, 0 .08rem 0 #000, -.08rem .08rem 0 #000;
 }
+/* コピーライト */
+.s-icon.copyright::before {
+  content: "\f1f9";
+  font-weight: normal;
+}
 /* 狭いときに消す */
 @media screen and (max-width:735px){
   .sp-del {

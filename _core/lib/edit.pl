@@ -104,49 +104,55 @@ sub image_form {
     <div class="box" id="image" style="max-height:550px;">
       <h2>キャラクター画像</h2>
       <p>
-        <input type="file" accept="image/*" name="imageFile" onchange="imagePreView(this.files[0])"><br>
-        ※ @{[ int($set::image_maxsize / 1024) ]}KBまでのJPG/PNG/GIF
-      </p>
-      <p>
-        <a class="button" onclick="imagePositionView()">画像表示のプレビュー／カスタマイズ</a>
-      </p>
-      <p>
-      画像の注釈（作者や権利表記など）
-      @{[ input 'imageCopyright' ]}
+        <a class="button" onclick="imagePositionView();wordsPreView()">画像とセリフの設定</a>
       </p>
       <p>
         <input type="checkbox" name="imageDelete" value="1"> 画像を削除する
         @{[input('image','hidden')]}
-      </p>
-      <h2>セリフ</h2>
-      <p class="words-input">
-      @{[ input 'words' ]}<br>
-      セリフの配置：
-      <select name="wordsX">@{[ option 'wordsX','右','左' ]}</select>
-      <select name="wordsY">@{[ option 'wordsY','上','下' ]}</select>
       </p>
     </div>
     @{[ input('imageUpdate', 'hidden') ]}
     
     <div id="image-custom" style="display:none">
       <div class="image-custom-view-area">
-        <div id="image-custom-frame-L" class="image-custom-frame"><div class="image-custom-view"
+        <div id="image-custom-frame-S1" class="image-custom-frame"><div class="image-custom-view"
  class="image-custom-view"><b>横幅が狭い時</b></div></div>
-        <div id="image-custom-frame-C" class="image-custom-frame"><div class="image-custom-view"
- class="image-custom-view"><b>標準の比率　<small>※縦横比は適宜変動します</small></b></div>
+        <div id="image-custom-frame-S2" class="image-custom-frame"><div class="image-custom-view"
+ class="image-custom-view"><b>縦幅が狭い時</b></div></div>
+        <div id="image-custom-frame-M" class="image-custom-frame"><div class="image-custom-view"
+ class="image-custom-view"><b>標準の比率　<small>※縦横比は適宜変動します</small></b><div class="words" id="words-preview"></div><div id="image-copyright-preview"></div></div>
           @{[ input "imagePositionY",'range','imagePosition','' ]}
           @{[ input "imagePositionX",'range','imagePosition','' ]}
         </div>
-        <div id="image-custom-frame-R" class="image-custom-frame"><div class="image-custom-view"
- class="image-custom-view"><b>縦幅が狭い時</b></div></div>
       </div>
       <div class="image-custom-form">
+        <h3>画像選択</h3>
         <p>
-          縦基準位置:<span id="image-positionY-view"></span> ／
-          横基準位置:<span id="image-positionX-view"></span><br>
+          プレビューエリアに画像ファイルをドロップ、<br>
+          または
+          <input type="file" accept="image/*" name="imageFile" onchange="imagePreView(this.files[0])"><br>
+          ※ @{[ int($set::image_maxsize / 1024) ]}KBまでのJPG/PNG/GIF
+        </p>
+        <script>
+          document.getElementById('image-custom').addEventListener('dragover',function(e){
+            e.preventDefault();
+          });
+          document.getElementById('image-custom').addEventListener('drop',function(e){
+            e.preventDefault();
+          });
+          document.querySelector('.image-custom-view-area').addEventListener('drop', function (e) {
+            const obj = document.querySelector("[name='imageFile']");
+            obj.files = e.dataTransfer.files;
+            imagePreView(obj.files[0]);
+          });
+        </script>
+        <h3>画像レイアウト</h3>
+        <p>
+          <b>縦基準位置</b>:<span id="image-positionY-view"></span> ／
+          <b>横基準位置</b>:<span id="image-positionX-view"></span><br>
         </p>
         <p>
-          表示（トリミング）方式：<br><select name="imageFit" oninput="imagePosition()">
+          <b>表示（トリミング）方式</b>：<br><select name="imageFit" oninput="imagePosition()">
           <option value="cover"   @{[$::pc{'imageFit'} eq 'cover'  ?'selected':'']}>自動的に最低限のトリミング（表示域いっぱいに表示）
           <option value="contain" @{[$::pc{'imageFit'} eq 'contain'?'selected':'']}>トリミングしない（必ず画像全体を収める）
           <option value="percentX" @{[$::pc{'imageFit'} eq 'percentX'?'selected':'']}>任意のトリミング／横幅を基準
@@ -156,11 +162,31 @@ sub image_form {
           <small>※いずれの設定でも、クリックすると画像全体が表示されます。</small>
         </p>
         <p id="image-percent-config">
-          拡大率：@{[ input "imagePercent",'number','imagePosition','style="width:4em;"' ]}%<br>
+          <b>拡大率</b>：@{[ input "imagePercent",'number','imagePosition','style="width:4em;"' ]}%<br>
           <input type="range" id="image-percent-bar" min="10" max="1000" oninput="imagePercentBarChange(this.value)" style="width:100%;"><br>
           （100%で幅ピッタリ）<br>
         </p>
-        <p class="center"><a class="button" onclick="imagePositionClose()">画像表示のプレビューを閉じる</a><p>
+        <h3>画像の注釈</h3>
+        <p>
+          <b>作者名や権利表示：</b><br>
+          @{[ input 'imageCopyright','text ','wordsPreView','placeholder="(C)画像の作者名" style="width:70%;"' ]}<br>
+        </p>
+        <p>
+          <b>URL（作者のWebサイトなどあれば）：</b><br>
+          @{[ input 'imageCopyrightURL','url ','wordsPreView','placeholder="https://..." style="width:90%;"' ]}<br>
+        </p>
+        <h3>画像に重ねるセリフ</h3>
+        <p>
+          <textarea name="words" style="width:100%;height:3.6em;" onchange="wordsPreView();" placeholder="「任意の台詞」">$::pc{'words'}</textarea>
+        </p>
+        <p>
+          <b>セリフの配置</b>：
+          <select name="wordsX" oninput="wordsPreView();">@{[ option 'wordsX','右','左' ]}</select>
+          <select name="wordsY" oninput="wordsPreView();">@{[ option 'wordsY','上','下' ]}</select>
+        </p>
+      </div>
+      <div class="image-custom-form close-button">
+        <a class="button" onclick="imagePositionClose()">画像とセリフの設定を閉じる</a>
       </div>
     </div>
 HTML

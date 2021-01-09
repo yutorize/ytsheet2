@@ -288,8 +288,9 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
     #000 0 0 .3rem, #000 0 0 .3rem, #000 0 0 .3rem;
   word-break: break-all;
 }
-.image p.image-copyright a {
-  color: #fff;
+.image p.image-copyright a,
+.image p.image-copyright i::before {
+  color: #fff !important;
 }
 .image-none {
   overflow: hidden;
