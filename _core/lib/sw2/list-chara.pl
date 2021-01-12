@@ -140,7 +140,25 @@ $INDEX->param(expMin => $exp_min_query);
 $INDEX->param(expMax => $exp_max_query);
 
 ## 技能検索
+my @class_name = @data::class_list;
 my @class_query = split(/ |　/, Encode::decode('utf8', param('class')));
+if(@class_query){
+  my %num;
+  my $i = 0;
+  foreach (@class_name){ $num{$_} = $i; $i++; }
+  foreach my $class (@class_query){
+    my $op = ''; my $lv = '';
+    (my $name = $class) =~ s/(>=?|<=?)?([0-9]+)$/$op = $1;$lv = $2;''/e;
+    if($lv ne ''){
+      if   ($op eq '>='){ @list = grep { (split '/' ,(split /<>/)[13])[$num{$name}] >= $lv } @list; }
+      elsif($op eq '<='){ @list = grep { (split '/' ,(split /<>/)[13])[$num{$name}] <= $lv } @list; }
+      elsif($op eq '>' ){ @list = grep { (split '/' ,(split /<>/)[13])[$num{$name}] >  $lv } @list; }
+      elsif($op eq '<' ){ @list = grep { (split '/' ,(split /<>/)[13])[$num{$name}] <  $lv } @list; }
+      else              { @list = grep { (split '/' ,(split /<>/)[13])[$num{$name}] == $lv } @list; }
+    }
+    else { @list = grep { (split '/' ,(split /<>/)[13])[$num{$name}] >= 1 } @list; }
+  }
+}
 $INDEX->param(class => "@class_query");
 
 ## 信仰検索
@@ -168,8 +186,6 @@ elsif(param('fellow') eq 'N') {
   $INDEX->param(fellow => 1);
 }
 
-## クラス一覧
-my @class_name = @data::class_list;
 
 ## リストを回す
 my %count; my %pl_flag;
@@ -191,6 +207,13 @@ foreach (@list) {
   $group = $set::group_default if (!$group || !$group_name{$group});
   $group = 'all' if param('group') eq 'all';
   
+  #カウント
+  $count{'PC'}{$group}++;
+  $count{'PL'}{$group}++ if !$pl_flag{$group}{$player};
+  $pl_flag{$group}{$player} = 1;
+  #最大表示制限
+  next if ($index_mode && $count{'PC'}{$group} >= $set::list_maxline && $set::list_maxline);
+  
   #技能レベル
   my @levels = (split /\//, $classes);
   my $level = max(@levels);
@@ -200,21 +223,7 @@ foreach (@list) {
   foreach (sort {$lv{$b} <=> $lv{$a}} keys %lv){
     $class .= $_.$lv{$_} if $lv{$_};
   }
-  if(@class_query){
-    my $class_hit = 1;
-    foreach (@class_query){
-      if($class !~ /$_/){ $class_hit = 0; }
-    }
-    next if !$class_hit;
-  }
   $class = class_color($class);
-  
-  #カウント
-  $count{'PC'}{$group}++;
-  $count{'PL'}{$group}++ if !$pl_flag{$group}{$player};
-  $pl_flag{$group}{$player} = 1;
-  #最大表示制限
-  next if ($index_mode && $count{'PC'}{$group} >= $set::list_maxline && $set::list_maxline);
   
   #種族
   $race =~ s/（.*）|［.*］//;
