@@ -155,8 +155,8 @@ sub palettePreset {
       $::pc{'weapon'.$_.'Crit'} =~ s/⑪/11/;
       $::pc{'weapon'.$_.'Crit'} =~ s/⑫/12/;
       $::pc{'weapon'.$_.'Crit'} =~ s/⑬/13/;
-      if   ($bot{'YTC'} ){ $text .= "k$::pc{'weapon'.$_.'Rate'}\[$::pc{'weapon'.$_.'Crit'}+{C修正}\]+{追加D$_}+{武器修正}"; }
-      elsif($bot{'BCD'} ){ $text .= "k$::pc{'weapon'.$_.'Rate'}+{追加D$_}+{武器修正}\@($::pc{'weapon'.$_.'Crit'}+{C修正})"; }
+      if   ($bot{'YTC'} ){ $text .= "k$::pc{'weapon'.$_.'Rate'}\[$::pc{'weapon'.$_.'Crit'}+{C修正}\]+{追加D$_}+{追加D修正}{出目修正}"; }
+      elsif($bot{'BCD'} ){ $text .= "k$::pc{'weapon'.$_.'Rate'}+{追加D$_}+{追加D修正}\@($::pc{'weapon'.$_.'Crit'}+{C修正}){出目修正}"; }
       
       if($::pc{'weapon'.$_.'Name'} =~ /首切/ || $::pc{'weapon'.$_.'Note'} =~ /首切/){
         $text .= $bot{'YTC'} ? '首切' : $bot{'BCD'} ? 'r5' : '';
@@ -166,7 +166,7 @@ sub palettePreset {
       $text .= "\n";
       $text .= "\n";
     }
-    $text .= "//武器修正={追加D修正}\#{必殺効果}\$+{クリレイ}\n";
+    $text .= "//出目修正=\#{必殺効果}\$+{クリレイ}\n";
     # 抵抗回避
     $text .= "### ■抵抗回避\n";
     $text .= "//生命抵抗修正=0\n";
@@ -304,8 +304,8 @@ sub palettePresetSimple {
       $::pc{'weapon'.$_.'Crit'} =~ s/⑪/11/;
       $::pc{'weapon'.$_.'Crit'} =~ s/⑫/12/;
       $::pc{'weapon'.$_.'Crit'} =~ s/⑬/13/;
-      if   ($bot{'YTC'} ){ $text .= "k$::pc{'weapon'.$_.'Rate'}\[$::pc{'weapon'.$_.'Crit'}+{C修正}\]+$::pc{'weapon'.$_.'DmgTotal'}+{武器修正}"; }
-      elsif($bot{'BCD'} ){ $text .= "k$::pc{'weapon'.$_.'Rate'}+$::pc{'weapon'.$_.'DmgTotal'}+{武器修正}\@($::pc{'weapon'.$_.'Crit'}+{C修正})"; }
+      if   ($bot{'YTC'} ){ $text .= "k$::pc{'weapon'.$_.'Rate'}\[$::pc{'weapon'.$_.'Crit'}+{C修正}\]+$::pc{'weapon'.$_.'DmgTotal'}+{追加D修正}{出目修正}"; }
+      elsif($bot{'BCD'} ){ $text .= "k$::pc{'weapon'.$_.'Rate'}+$::pc{'weapon'.$_.'DmgTotal'}+{追加D修正}\@($::pc{'weapon'.$_.'Crit'}+{C修正}){出目修正}"; }
       
       if($::pc{'weapon'.$_.'Name'} =~ /首切/ || $::pc{'weapon'.$_.'Note'} =~ /首切/){
         $text .= $bot{'YTC'} ? '首切' : $bot{'BCD'} ? 'r5' : '';
@@ -315,7 +315,7 @@ sub palettePresetSimple {
       $text .= "\n";
       $text .= "\n";
     }
-    $text .= "//武器修正={追加D修正}\#{必殺効果}\$+{クリレイ}\n";
+    $text .= "//出目修正={追加D修正}\#{必殺効果}\$+{クリレイ}\n";
     # 抵抗回避
     $text .= "### ■抵抗回避\n";
     $text .= "//生命抵抗修正=0\n";
