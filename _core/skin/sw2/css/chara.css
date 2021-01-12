@@ -177,7 +177,6 @@ dl.data-table:last-child > dt:last-of-type ~ dd,
 /* // Area-Status
 ---------------------------------------------------------------------------------------------------- */
 #area-status {
-  margin-top: .5rem;
   display: grid;
   grid-gap: 1rem;
   grid-template-columns: 0.8fr 0.6fr 1.5fr 2.115fr;
@@ -612,7 +611,6 @@ dl#level dd {
   justify-content: space-between;
   
   margin-top: 1rem;
-  
   line-height: 1.8;
 }
 #area-ability > * {
@@ -753,6 +751,11 @@ dl#level dd {
   
   margin-top: 1rem;
   line-height: 1.8;
+}
+@media screen and (min-width:1400px){
+  #area-actions {
+    margin-top: 0;
+  }
 }
 #area-actions > * {
   flex-basis: 30%;

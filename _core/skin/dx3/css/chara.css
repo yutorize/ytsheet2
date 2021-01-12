@@ -204,7 +204,6 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
 ---------------------------------------------------------------------------------------------------- */
 #area-status {
   min-height: 56.7rem;
-  margin-top: .5rem;
   display: grid;
   grid-gap: 1rem;
   grid-template-columns: 0.8fr 1fr 1.1fr 2.115fr;
@@ -736,6 +735,11 @@ p.words span.brackets {
 ---------------------------------------------------------------------------------------------------- */
 #area-battle {
   position: relative;
+}
+@media screen and (min-width:1400px){
+  #area-battle {
+    margin-top: -1rem;
+  }
 }
 #area-battle > .box {
   margin-top: 1rem;
