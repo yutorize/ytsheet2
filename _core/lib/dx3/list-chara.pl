@@ -29,7 +29,7 @@ $INDEX->param(OAUTH_LOGIN_URL => $set::oauth_login_url);
 $INDEX->param(mode => $mode);
 
 my $index_mode;
-if(!($mode eq 'mylist' || param('tag') || param('group') || param('name') || param('exp-min') || param('exp-max') || param('syndrome') || param('works') || param('faith') || param('image'))){
+if(!($mode eq 'mylist' || param('tag') || param('group') || param('name') || param('player') || param('exp-min') || param('exp-max') || param('syndrome') || param('works') || param('faith') || param('image'))){
   $index_mode = 1;
   $INDEX->param(modeIndex => 1);
   $INDEX->param(simpleMode => 1) if $set::simplelist;

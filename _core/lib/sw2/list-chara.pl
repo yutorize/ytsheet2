@@ -35,7 +35,7 @@ $INDEX->param(OAUTH_LOGIN_URL => $set::oauth_login_url);
 $INDEX->param(mode => $mode);
 
 my $index_mode;
-if(!($mode eq 'mylist' || param('tag') || param('group') || param('name') || param('race') || param('exp-min') || param('exp-max') || param('class') || param('faith') || param('image') || param('fellow'))){
+if(!($mode eq 'mylist' || param('tag') || param('group') || param('name') || param('player') || param('race') || param('exp-min') || param('exp-max') || param('class') || param('faith') || param('image') || param('fellow'))){
   $index_mode = 1;
   $INDEX->param(modeIndex => 1);
   $INDEX->param(simpleMode => 1) if $set::simplelist;
