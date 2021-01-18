@@ -96,7 +96,7 @@ function wordsPreView(){
   let words = form.words.value;
   words = words.replace(/[|｜](.+?)《(.+?)》/, '<ruby>$1<rt>$2</rt></ruby>')
                .replace(/《《(.+?)》》/, '<span class="text-em">$1</span>')
-               .replace(/^「/, '<span class="brackets">「</span>')
+               .replace(/^([「『（])/gm, '<span class="brackets">$1</span>')
                .replace(/(.+?(?:[，、。？」]|$))/g, '<span>$1</span>')
                .replace(/\n/g, '<br>');
   
