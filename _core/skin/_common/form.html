@@ -50,13 +50,26 @@
             <input type="submit" value="ログイン">
           </p>
         </form>
-        <a href="./?mode=reminder">⇒パスワードを忘れた場合</a>
+        <a href="./?mode=reminder">⇒ID、パスワードを忘れた場合</a>
       </section>
     </article>
   </TMPL_IF>
   <!-- リマインダ -->
   <TMPL_IF modeReminder>
-  <main>
+    <article>
+      <section class="form">
+        <h2>IDを確認する</h2>
+        <p>入力したメールアドレスに、IDを送信します。</p>
+        <form method="post" action="./">
+          <input type="hidden" name="mode" value="reminder">
+          <p>
+            <label><span>メールアドレス</span> <input type="mail" name="mail" required></label>
+          </p>
+          <p>
+            <input type="submit" value="送信">
+          </p>
+        </form>
+      </section>
       <section class="form">
         <h2>パスワードをリセットする</h2>
         <p>登録されたメールアドレスにリセット用のURLを送信します。</p>
@@ -105,6 +118,9 @@
         <h2>ユーザー設定</h2>
         <form method="post" action="./">
           <input type="hidden" name="mode" value="option">
+          <p>
+            ID: <b><TMPL_VAR LOGIN_ID></b>
+          </p>
           <p>
             <label><span>名前</span> <input type="text" name="name" value="<TMPL_VAR userName>" required></label>
           </p>

@@ -233,7 +233,7 @@ sub token_check {
 }
 
 ### メール送信 --------------------------------------------------
-sub sendmail{
+sub sendmail {
   my $from    = encode('MIME-Header', "ゆとシートⅡ <$set::admimail>");
   my $to      = encode('MIME-Header', shift);
   my $subject = encode('MIME-Header', shift);
