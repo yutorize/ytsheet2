@@ -597,7 +597,7 @@ p.words span.brackets {
 }
 #status table tbody td.right span.small {
   display: inline-block;
-  margin: 0 -8% 0 -10%;
+  margin: 0 -.3em 0 -1em;
   font-size: 70%;
   transform: scaleX(0.8);
 }
