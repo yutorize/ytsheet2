@@ -593,7 +593,8 @@ sub comboSkillSet {
     }
   }
   push(@skills, '解説参照');
-  my $output = '<option value="">－';
+  unshift(@skills, '―');
+  my $output = '<option value="">';
   foreach my $skillname (@skills){
     $output .= '<option'
             . ($pc{"combo${num}Skill"} eq $skillname ? ' selected' : '')
