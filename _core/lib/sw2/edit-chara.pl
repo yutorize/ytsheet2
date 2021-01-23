@@ -1224,7 +1224,8 @@ print <<"HTML";
         　刃武器　　　　：<code>[刃]</code>：<img class="i-icon" src="${set::icon_dir}wp_edge.png"><br>
         　打撃武器　　　：<code>[打]</code>：<img class="i-icon" src="${set::icon_dir}wp_blow.png"><br>
         <hr>
-        ※以下は複数行の欄でのみ有効です。<br>
+        ※以下は一部の複数行の欄でのみ有効です。<br>
+        （有効な欄：「容姿・経歴・その他メモ」「履歴（自由記入）」「所持品」「収支履歴」）<br>
         大見出し：行頭に<code>*</code><br>
         中見出し：行頭に<code>**</code><br>
         少見出し：行頭に<code>***</code><br>
