@@ -58,8 +58,8 @@ $pc{'imageFit'} = $pc{'imageFit'} eq 'percent' ? 'percentX' : $pc{'imageFit'};
 $pc{'imagePercent'} = $pc{'imagePercent'} eq '' ? '200' : $pc{'imagePercent'};
 $pc{'imagePositionX'} = $pc{'imagePositionX'} eq '' ? '50' : $pc{'imagePositionX'};
 $pc{'imagePositionY'} = $pc{'imagePositionY'} eq '' ? '50' : $pc{'imagePositionY'};
-$pc{'wordsX'} = $pc{'wordsX'} || '右';
-$pc{'wordsY'} = $pc{'wordsY'} || '上';
+$pc{'wordsX'} ||= '右';
+$pc{'wordsY'} ||= '上';
 
 $pc{'colorHeadBgH'} = $pc{'colorHeadBgH'} eq '' ? 225 : $pc{'colorHeadBgH'};
 $pc{'colorHeadBgS'} = $pc{'colorHeadBgS'} eq '' ?   9 : $pc{'colorHeadBgS'};
@@ -68,12 +68,12 @@ $pc{'colorBaseBgH'} = $pc{'colorBaseBgH'} eq '' ? 210 : $pc{'colorBaseBgH'};
 $pc{'colorBaseBgS'} = $pc{'colorBaseBgS'} eq '' ?   0 : $pc{'colorBaseBgS'};
 $pc{'colorBaseBgL'} = $pc{'colorBaseBgL'} eq '' ? 100 : $pc{'colorBaseBgL'};
 
-$pc{'skillNum'}   = $pc{'skillNum'}   || 2;
-$pc{'effectNum'}  = $pc{'effectNum'}  || 5;
-$pc{'weaponNum'}  = $pc{'weaponNum'}  || 1;
-$pc{'armorNum'}   = $pc{'armorNum'}   || 1;
-$pc{'itemNum'}    = $pc{'itemNum'}    || 2;
-$pc{'historyNum'} = $pc{'historyNum'} || 3;
+$pc{'skillNum'}   ||= 2;
+$pc{'effectNum'}  ||= 5;
+$pc{'weaponNum'}  ||= 1;
+$pc{'armorNum'}   ||= 1;
+$pc{'itemNum'}    ||= 2;
+$pc{'historyNum'} ||= 3;
 
 ### 折り畳み判断 --------------------------------------------------
 my %open;

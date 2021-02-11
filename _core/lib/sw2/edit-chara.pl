@@ -61,8 +61,8 @@ $pc{'imageFit'} = $pc{'imageFit'} eq 'percent' ? 'percentX' : $pc{'imageFit'};
 $pc{'imagePercent'} = $pc{'imagePercent'} eq '' ? '200' : $pc{'imagePercent'};
 $pc{'imagePositionX'} = $pc{'imagePositionX'} eq '' ? '50' : $pc{'imagePositionX'};
 $pc{'imagePositionY'} = $pc{'imagePositionY'} eq '' ? '50' : $pc{'imagePositionY'};
-$pc{'wordsX'} = $pc{'wordsX'} || '右';
-$pc{'wordsY'} = $pc{'wordsY'} || '上';
+$pc{'wordsX'} ||= '右';
+$pc{'wordsY'} ||= '上';
 
 if($pc{'colorCustom'} && $pc{'colorHeadBgA'}) {
   ($pc{'colorHeadBgH'}, $pc{'colorHeadBgS'}, $pc{'colorHeadBgL'}) = rgb_to_hsl($pc{'colorHeadBgR'},$pc{'colorHeadBgG'},$pc{'colorHeadBgB'});
@@ -76,15 +76,15 @@ $pc{'colorBaseBgH'} = $pc{'colorBaseBgH'} eq '' ? 210 : $pc{'colorBaseBgH'};
 $pc{'colorBaseBgS'} = $pc{'colorBaseBgS'} eq '' ?   0 : $pc{'colorBaseBgS'};
 $pc{'colorBaseBgL'} = $pc{'colorBaseBgL'} eq '' ? 100 : $pc{'colorBaseBgL'};
 
-$pc{'weaponNum'}     = $pc{'weaponNum'}     || 1;
-$pc{'languageNum'}   = $pc{'languageNum'}   || 3;
-$pc{'honorItemsNum'} = $pc{'honorItemsNum'} || 3;
-$pc{'historyNum'}    = $pc{'historyNum'}    || 3;
+$pc{'weaponNum'}     ||=  1;
+$pc{'languageNum'}   ||=  3;
+$pc{'honorItemsNum'} ||=  3;
+$pc{'historyNum'}    ||=  3;
 
-$pc{'accuracyEnhance'} = $pc{'accuracyEnhance'} || 0;
-$pc{'evasiveManeuver'} = $pc{'evasiveManeuver'} || 0;
-$pc{'tenacity'} = $pc{'tenacity'} || 0;
-$pc{'capacity'} = $pc{'capacity'} || 0;
+$pc{'accuracyEnhance'} ||= 0;
+$pc{'evasiveManeuver'} ||= 0;
+$pc{'tenacity'} ||= 0;
+$pc{'capacity'} ||= 0;
 
 ### 改行処理 --------------------------------------------------
 $pc{'words'}         =~ s/&lt;br&gt;/\n/g;
