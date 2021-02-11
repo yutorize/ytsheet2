@@ -447,13 +447,7 @@ function comboSkillSet(num){
   while (0 < select.childNodes.length) {
     select.removeChild(select.childNodes[0]);
   }
-  if(1){
-    let op = document.createElement("option");
-    op.value = '';
-    op.text = '－';
-    select.appendChild(op);
-  }
-  for(let i of ['白兵','射撃','RC','交渉','回避','知覚','意志','調達']){
+  for(let i of ['','―','白兵','射撃','RC','交渉','回避','知覚','意志','調達']){
     let op = document.createElement("option");
     op.text = i;
     select.appendChild(op);
@@ -468,6 +462,10 @@ function comboSkillSet(num){
       }
     }
   }
+  let op = document.createElement("option");
+  op.text = '解説参照';
+  select.appendChild(op);
+  
   select.value = nowSelect;
 }
 // 計算
@@ -505,8 +503,6 @@ function calcCombo(num){
     document.getElementById(`combo${num}Stt${i}`).innerHTML = stt;
     document.getElementById(`combo${num}SkillLv${i}`).innerHTML = lv;
   }
-}
-function comboSkillData(name){
 }
 // 追加
 function addCombo(){
