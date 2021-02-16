@@ -58,9 +58,9 @@ io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2DoubleCrossPC
 	const result = io.github.shunshun94.trpg.ccfolia.getCharacterSeed();
 	const defaultPalette = await io.github.shunshun94.trpg.ytsheet.getChatPalette(opt_sheetUrl);
 	const character = {
-			name: json.characterName,
+			name: json.characterNameRaw || json.characterName,
 			playerName: json.playerName,
-			memo: `PL: ${json.playerName || 'PL情報無し'}\n${json.works || ''} / ${json.cover || ''}\n${json.syndrome1 || ''}${json.syndrome2 ? '、'+json.syndrome2 : ''}${json.syndrome3 ? '、'+json.syndrome3 : ''}\n\n${json.imageURL ? '立ち絵：' + (json.imageCopyright || '権利情報なし') : ''}`,
+			memo: `${json.characterNameRuby ? '('+json.characterNameRuby+')\n' :''}PL: ${json.playerName || 'PL情報無し'}\n${json.works || ''} / ${json.cover || ''}\n${json.syndrome1 || ''}${json.syndrome2 ? '、'+json.syndrome2 : ''}${json.syndrome3 ? '、'+json.syndrome3 : ''}\n\n${json.imageURL ? '立ち絵：' + (json.imageCopyright || '権利情報なし') : ''}`,
 			initiative: json.initiativeTotal || '0',
 			externalUrl: opt_sheetUrl,
 			status: [
@@ -74,8 +74,8 @@ io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2DoubleCrossPC
 					max: 300
 				}, {
 					label: 'ロイス',
-					value: 5,
-					max: 7
+					value: json.loisHave || 3,
+					max: json.loisMax || 7
 				}, {
 					label: '財産点',
 					value: json.savingTotal,

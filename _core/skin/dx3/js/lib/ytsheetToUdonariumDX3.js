@@ -37,7 +37,7 @@ io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2DoubleCross3
 
 	data_character.common = `
     <data name="common">
-      <data name="name">${json.characterName || ''}</data>
+      <data name="name">${json.characterNameRaw || json.characterName || ''}</data>
       <data name="size">1</data>
     </data>`;
 
@@ -45,8 +45,8 @@ io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2DoubleCross3
 	data_character_detail['リソース'] = [
 		`        <data type="numberResource" currentValue="${json.maxHpTotal}" name="HP">${json.maxHpTotal}</data>`,
 		`        <data type="numberResource" currentValue="${json.baseEncroach}" name="侵蝕率">300</data>`,
-        `        <data type="numberResource" currentValue="${json.initiativeTotal || '0'}" name="行動値">100</data>`,
-        `        <data type="numberResource" currentValue="5" name="ロイス">7</data>`,
+        `        <data type="numberResource" currentValue="${json.initiativeTotal || 0}" name="行動値">100</data>`,
+        `        <data type="numberResource" currentValue="${json.loisHave || 3}" name="ロイス">${json.loisMax || 7}</data>`,
         `        <data type="numberResource" currentValue="${json.savingTotal || 0}" name="財産点">300</data>`
 	];
 	data_character_detail['情報'] = [
