@@ -9,6 +9,9 @@ sub addJsonData {
   my $type = $_[1];
   
   %pc = data_update_chara(\%pc);
+  ### ルビ分離 --------------------------------------------------
+  ($pc{'characterNameRaw'}, $pc{'characterNameRuby'}) = split(/:/,$pc{'characterName'});
+  
   ### ロイス数 --------------------------------------------------
   my @dloises; $pc{'loisHave'} = 0; $pc{'loisMax'} = 0; $pc{'titusHave'} = 0; $pc{'sublimated'} = 0;
   foreach my $num (1..7){
@@ -45,10 +48,10 @@ sub addJsonData {
   my $syndrome = "シンドローム:$pc{'syndrome1'}"
                . ($pc{'syndrome2'}?"／$pc{'syndrome2'}":'')
                . ($pc{'syndrome3'}?"／$pc{'syndrome3'}":'');
-  my $dlois = 'Dロイス:'.join('／', @dloises);
+  my $dlois = (@dloises ? 'Dロイス:'.join('／', @dloises) : '');
   
   $pc{'sheetDescriptionS'} = $base."\n".$works."\n".$syndrome;
-  $pc{'sheetDescriptionM'} = $base."　".$sub."\n".$works."\n".$syndrome."\n".$dlois;
+  $pc{'sheetDescriptionM'} = $base."　".$sub."\n".$works."\n".$syndrome.($dlois?"\n$dlois":'');
   
   return \%pc;
 }
