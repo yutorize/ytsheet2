@@ -375,7 +375,7 @@ sub convertSoukoToYtsheet {
     'skillAddWill'      => $in{'skills'}{'isi'}{'D'}{'dlv'} ne '' ? $in{'skills'}{'isi'}{'D'}{'dlv'} - $in{'skills'}{'isi'}{'A'}{'lv'} : '',
     'skillAddNegotiate' => $in{'skills'}{'kou'}{'D'}{'dlv'} ne '' ? $in{'skills'}{'kou'}{'D'}{'dlv'} - $in{'skills'}{'kou'}{'A'}{'lv'} : '',
     'skillAddProcure'   => $in{'skills'}{'tyo'}{'D'}{'dlv'} ne '' ? $in{'skills'}{'tyo'}{'D'}{'dlv'} - $in{'skills'}{'tyo'}{'A'}{'lv'} : '',
-    'freeNote' => ' '.$in{'base'}{'memo'},
+    'freeNote' => $in{'base'}{'memo'},
   );
   ## シンドローム
   foreach my $i (1 .. 3){

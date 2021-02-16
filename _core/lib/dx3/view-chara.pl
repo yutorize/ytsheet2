@@ -168,14 +168,16 @@ elsif($pc{'forbidden'}){
 }
 
 ### 置換 #############################################################################################
-foreach (keys %pc) {
-  if($_ =~ /^(?:freeNote|freeHistory)$/){
-    $pc{$_} = tag_unescape_lines($pc{$_});
+if($pc{'ver'}){
+  foreach (keys %pc) {
     next if($_ =~ /^(?:imageURL|imageCopyrightURL)$/);
+    if($_ =~ /^(?:freeNote|freeHistory|)$/){
+      $pc{$_} = tag_unescape_lines($pc{$_});
+    }
+    $pc{$_} = tag_unescape($pc{$_});
+
+    $pc{$_} = noiseTextTag $pc{$_} if $pc{'forbiddenMode'};
   }
-  $pc{$_} = tag_unescape($pc{$_});
-  
-  $pc{$_} = noiseTextTag $pc{$_} if $pc{'forbiddenMode'};
 }
 
 ### アップデート --------------------------------------------------
