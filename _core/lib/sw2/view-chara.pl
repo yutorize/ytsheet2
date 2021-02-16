@@ -114,15 +114,11 @@ elsif($pc{'forbidden'}){
   $pc{'forbiddenMode'} = 1;
 }
 
-### 置換前出力 #######################################################################################
-if($pc{'imageCopyrightURL'}){
-  $pc{'imageCopyright'} = $pc{'imageCopyright'} ? "\[\[$pc{'imageCopyright'}&gt;$pc{'imageCopyrightURL'}\]\]" : $pc{'imageCopyrightURL'};
-}
-
 ### 置換 #############################################################################################
 foreach (keys %pc) {
   if($_ =~ /^(?:items|freeNote|freeHistory|cashbook)$/){
     $pc{$_} = tag_unescape_lines($pc{$_});
+    next if($_ =~ /^(?:imageURL|imageCopyrightURL)$/);
   }
   $pc{$_} = tag_unescape($pc{$_});
   
@@ -926,11 +922,13 @@ else {
 }
 
 ### 画像 --------------------------------------------------
-my $imgsrc = (
-  $pc{'imageURL'} ? tag_delete($pc{'imageURL'})
-  : $main::base_url ? "${main::base_url}data/chara/$pc{'birthTime'}/image.$pc{'image'}"
-  : "${set::char_dir}${main::file}/image.$pc{'image'}?$pc{'imageUpdate'}"
-);
+my $imgsrc;
+if($pc{'convertSource'} eq '別のゆとシートⅡ') {
+  $imgsrc = $pc{'imageURL'}."?$pc{'imageUpdate'}";
+}
+else {
+  $imgsrc = "${set::char_dir}${main::file}/image.$pc{'image'}?$pc{'imageUpdate'}";
+}
 $SHEET->param("imageSrc" => $imgsrc);
 
 if($pc{'imageFit'} eq 'percentY'){
@@ -938,6 +936,12 @@ if($pc{'imageFit'} eq 'percentY'){
 }
 elsif($pc{'imageFit'} =~ /^percentX?$/){
   $SHEET->param("imageFit" => $pc{'imagePercent'}.'%');
+}
+
+## 権利表記
+if($pc{'imageCopyrightURL'}){
+  $pc{'imageCopyright'} = $pc{'imageCopyrightURL'} if !$pc{'imageCopyright'};
+  $SHEET->param(imageCopyright => "<a href=\"$pc{'imageCopyrightURL'}\" target=\"_blank\">$pc{'imageCopyright'}</a>");
 }
 
 ### OGP --------------------------------------------------
