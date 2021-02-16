@@ -67,11 +67,11 @@ io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2DoubleCross3
 		}
 	};
 	let addedParam = {};
-	data_character_detail['能力値'] = io.github.shunshun94.trpg.udonarium.consts.DX3_STATUS.map((s)=>{
+	data_character_detail['能力値'] = io.github.shunshun94.trpg.ytsheet.consts.DX3_STATUS.map((s)=>{
 		addedParam[s.name] = 1;
 		return `        <data name="${s.name}">${json['sttTotal' + s.column]}</data>`
 	});
-	data_character_detail['技能'] = io.github.shunshun94.trpg.udonarium.consts.DX3_STATUS.map((s)=>{
+	data_character_detail['技能'] = io.github.shunshun94.trpg.ytsheet.consts.DX3_STATUS.map((s)=>{
 		const result = [];
 		result.push(s.skills.map((skill)=>{
 			addedParam[skill.name] = 1;
@@ -116,7 +116,7 @@ io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2DoubleCross3
 
 		tmp_palette.push(`現在の状態　HP:{HP} / 侵蝕率:{侵蝕率}`);
 		if(opt_url) { tmp_palette.push(`キャラクターシート　{URL}`);}
-		io.github.shunshun94.trpg.udonarium.consts.DX3_STATUS.forEach((s)=>{
+		io.github.shunshun94.trpg.ytsheet.consts.DX3_STATUS.forEach((s)=>{
 			const base = json['sttTotal' + s.column];
 			s.skills.forEach((skill)=>{
 				tmp_palette.push(`(${base}+{侵蝕率によるダイスボーナス}+{ダイス})DX+(${json['skill' + skill.column] || 0}+{達成値})@(10-{クリティカル値減少}) ${skill.name}`);
@@ -158,72 +158,3 @@ io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2DoubleCross3
 </character>
 `;
 };
-
-io.github.shunshun94.trpg.udonarium.consts = io.github.shunshun94.trpg.udonarium.consts || {};
-io.github.shunshun94.trpg.udonarium.consts.DX3_STATUS = [
-	{
-		name: '肉体',
-		column: 'Body',
-		skills: [
-			{
-				name: '白兵',
-				column: 'Melee'
-			}, {
-				name: '回避',
-				column: 'Dodge'
-			}
-		],
-		extendableSkill: {
-			name: '運転',
-			column: 'Ride'
-		}
-	}, {
-		name: '感覚',
-		column: 'Sense',
-		skills: [
-			{
-				name: '射撃',
-				column: 'Ranged'
-			}, {
-				name: '知覚',
-				column: 'Percept'
-			}
-		],
-		extendableSkill: {
-			name: '芸術',
-			column: 'Art'
-		}
-	}, {
-		name: '精神',
-		column: 'Mind',
-		skills: [
-			{
-				name: 'RC',
-				column: 'RC'
-			}, {
-				name: '意志',
-				column: 'Will'
-			}
-		],
-		extendableSkill: {
-			name: '知識',
-			column: 'Know'
-		}
-	}, {
-		name: '社会',
-		column: 'Social',
-		skills: [
-			{
-				name: '交渉',
-				column: 'Negotiate'
-			}, {
-				name: '調達',
-				column: 'Procure'
-			}
-		],
-		extendableSkill: {
-			name: '情報',
-			column: 'Info'
-		}
-	}
-];

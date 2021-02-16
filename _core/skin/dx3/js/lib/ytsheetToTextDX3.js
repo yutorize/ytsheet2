@@ -181,7 +181,7 @@ io.github.shunshun94.trpg.ytsheet._getDoubleCrossItems = (json) => {
 	return data;
 };
 
-io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2DoubleCrossPc = (json) => {
+io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2DoubleCross3PC = (json) => {
 	const result = [];
 
 	result.push(`タイトル：${json.characterName}`);

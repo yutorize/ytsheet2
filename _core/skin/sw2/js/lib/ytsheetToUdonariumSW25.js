@@ -26,7 +26,7 @@ io.github.shunshun94 = io.github.shunshun94 || {};
 io.github.shunshun94.trpg = io.github.shunshun94.trpg || {};
 io.github.shunshun94.trpg.udonarium = io.github.shunshun94.trpg.udonarium || {};
 
-io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2SwordWorldEnemy = async (json, opt_url='', opt_imageHash='')=>{
+io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2SwordWorld2Enemy = async (json, opt_url='', opt_imageHash='')=>{
 	const defaultPalette = await io.github.shunshun94.trpg.ytsheet.getChatPalette(opt_url);
 	const data_character = {};
 	data_character.image = `
@@ -140,7 +140,7 @@ io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2SwordWorldEn
 `;
 };
 
-io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2SwordWorldPC = async (json, opt_url='', opt_imageHash='')=>{
+io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2SwordWorld2PC = async (json, opt_url='', opt_imageHash='')=>{
 	const defaultPalette = await io.github.shunshun94.trpg.ytsheet.getChatPalette(opt_url);
 	const data_character = {};
 

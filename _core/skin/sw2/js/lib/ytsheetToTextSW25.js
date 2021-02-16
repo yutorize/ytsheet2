@@ -26,7 +26,7 @@ io.github.shunshun94 = io.github.shunshun94 || {};
 io.github.shunshun94.trpg = io.github.shunshun94.trpg || {};
 io.github.shunshun94.trpg.ytsheet = io.github.shunshun94.trpg.ytsheet || {};
 
-io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2SwordWorldEnemy = (json) => {
+io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2SwordWorld2Enemy = (json) => {
 	const result = [];
 
 	result.push(`種族名：${json.monsterName}`);
@@ -91,7 +91,7 @@ io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2SwordWorldEne
 	return result.join('\n');
 };
 
-io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2SwordWorldPC = (json) => {
+io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2SwordWorld2PC = (json) => {
 	const result = [];
 	result.push(`キャラクター名：${json.characterName}`);
 	result.push(`種族：${json.race || ''} ${json.raceAbility || ''}`);
