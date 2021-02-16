@@ -29,14 +29,14 @@ if($mode_make && !$::make_error){
   $pc{'author'} = (getplayername($LOGIN_ID))[0];
 }
 ### 初期設定 --------------------------------------------------
-$pc{'protect'} = $pc{'protect'} ? $pc{'protect'} : 'password';
-$pc{'group'} = $pc{'group'} ? $pc{'group'} : $set::group_default;
+if($mode_make){ $pc{'protect'} = $LOGIN_ID ? 'account' : 'password'; }
 
-$pc{'statusNum'}  = $pc{'statusNum'} ? $pc{'statusNum'} : 1;
-$pc{'lootsNum'}   = $pc{'lootsNum'} ? $pc{'lootsNum'} : 2;
-if($mode eq 'blanksheet'){
+if($mode eq 'blanksheet' && !$::make_error){
   $pc{'paletteUseBuff'} = 1;
 }
+
+$pc{'statusNum'} ||= 1;
+$pc{'lootsNum'}  ||= 2;
 
 ### 改行処理 --------------------------------------------------
 $pc{'skills'}      =~ s/&lt;br&gt;/\n/g;

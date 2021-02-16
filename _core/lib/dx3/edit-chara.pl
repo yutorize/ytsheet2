@@ -33,11 +33,12 @@ if($mode_make && !$::make_error){
   $pc{'playerName'} = (getplayername($LOGIN_ID))[0];
 }
 ### 初期設定 --------------------------------------------------
+if($mode_make){ $pc{'protect'} = $LOGIN_ID ? 'account' : 'password'; }
+
 if($mode eq 'edit'){
   %pc = data_update_chara(\%pc);
 }
-elsif($mode eq 'blanksheet'){
-  $pc{'protect'} = 'password';
+elsif($mode eq 'blanksheet' && !$::make_error){
   $pc{'group'} = $set::group_default;
   
   $pc{'history0Exp'}   = $set::make_exp;
