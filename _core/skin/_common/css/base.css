@@ -124,7 +124,6 @@ body {
   grid-template-columns: minmax(0, 1fr) minmax(auto, 900px) minmax(0, 1fr);
   position: relative;
   min-height: 100vh;
-  height 100%;
   background-color: var(--bg-color);
   background-position: center, bottom right;
   background-repeat: repeat, no-repeat;

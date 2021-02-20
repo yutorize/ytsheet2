@@ -52,9 +52,6 @@
 #personal dl#race-ability select {
   width: auto;
 }
-#area-status #faith select {
-  font-family: initial;
-}
 
 #status dl[id^="stt-add"]::before {
   left: -.6rem;

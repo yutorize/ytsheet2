@@ -67,6 +67,8 @@ h2[onclick]:hover,
 h4[onclick]:hover {
   background: linear-gradient(to top, #cef 20%, transparent 30%, transparent);
 }
+input.fail,
+select.fail,
 .fail input,
 .fail select {
   background-color: rgba(125,125,125,0.2);
@@ -90,7 +92,7 @@ dt.fail + dd > input {
   color: #000;
 }
 input.error,
-input.select,
+select.select,
 .error input,
 .error select {
   color: #c00;
@@ -167,7 +169,7 @@ table.edit-table:not(.side-margin) tbody > tr > *,
 table.edit-table tbody td select,
 table.edit-table tbody td textarea,
 table.edit-table tbody td input[type="text"],
-table.edit-table tbody td input[type="number"] {
+table.edit-table tbody td input[type="number"],
   width: calc(100% - .1rem);
   margin: .1rem .1rem 0 0;
 }
@@ -296,7 +298,13 @@ article > form > hr {
   width: calc(100% - 4px);
   min-width: 3em;
   margin: 2px;
-  padding: 2px
+  padding: 2px;
+}
+.box input[type="text"],
+.box input[type="number"],
+.box select {
+  height: calc(1.2em + 3px * 2);
+  line-height: 1.2;
 }
 input[type="number"] {
   text-align: center;
