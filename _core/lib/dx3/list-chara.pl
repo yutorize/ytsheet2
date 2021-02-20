@@ -172,7 +172,7 @@ foreach (@list) {
   $count{'PL'}{$group}++ if !$pl_flag{$group}{$player};
   $pl_flag{$group}{$player} = 1;
   #最大表示制限
-  next if ($index_mode && $count{'PC'}{$group} >= $set::list_maxline && $set::list_maxline);
+  next if ($index_mode && $count{'PC'}{$group} > $set::list_maxline && $set::list_maxline);
   
   #性別
   my $m_flag; my $f_flag;

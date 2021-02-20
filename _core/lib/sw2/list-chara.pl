@@ -212,7 +212,7 @@ foreach (@list) {
   $count{'PL'}{$group}++ if !$pl_flag{$group}{$player};
   $pl_flag{$group}{$player} = 1;
   #最大表示制限
-  next if ($index_mode && $count{'PC'}{$group} >= $set::list_maxline && $set::list_maxline);
+  next if ($index_mode && $count{'PC'}{$group} > $set::list_maxline && $set::list_maxline);
   
   #技能レベル
   my @levels = (split /\//, $classes);
