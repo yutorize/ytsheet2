@@ -1172,6 +1172,10 @@ p.words span.brackets {
 #history table thead th:nth-child(5) { width:  auto; } /* ＧＭ */
 #history table thead th:nth-child(6) { width:  auto; } /* 参加者 */
 
+#history table tbody td:nth-child(4) s {
+  opacity: 0.3;
+  text-decoration: none;
+}
 #history table tbody td.gm span {
   display: block;
   min-width: 5em;

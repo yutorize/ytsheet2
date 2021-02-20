@@ -68,6 +68,11 @@ sub data_update_chara {
   if($pc{'ver'} < 1.11001){
     $pc{'paletteUseBuff'} = 1;
   }
+  if($pc{'ver'} < 1.12012){
+    foreach my $num (1 .. $pc{'historyNum'}){
+      $pc{"history${num}ExpApply".$_} = 1 if $pc{"history${num}Exp".$_};
+    }
+  }
   return %pc;
 }
 

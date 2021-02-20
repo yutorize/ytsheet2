@@ -268,6 +268,7 @@ sub convertHokanjoToYtsheet {
   my $i = 0;
   foreach my $exp (@{$in{'get_exp_his'}}){
     $pc{'history'.($i+1).'Exp'}   = $exp;
+    $pc{'history'.($i+1).'ExpApply'} = 1 if $exp;
     $pc{'history'.($i+1).'Note'}  = $in{'seicho_memo_his'}[$i];
     $i++;
   }

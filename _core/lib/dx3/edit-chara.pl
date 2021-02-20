@@ -869,12 +869,13 @@ print <<"HTML";
         <h2>セッション履歴</h2>
         @{[input 'historyNum','hidden']}
         <table class="edit-table line-tbody" id="history-table">
+          <colgroup><col><col><col><col><col><col><col></colgroup>
           <thead>
           <tr>
             <th></th>
             <th>日付</th>
             <th>タイトル</th>
-            <th>経験点</th>
+            <th colspan="2">経験点</th>
             <th>GM</th>
             <th>参加者</th>
           </tr>
@@ -883,6 +884,7 @@ print <<"HTML";
             <td></td>
             <td>キャラクター作成</td>
             <td id="history0-exp">$pc{'history0Exp'}</td>
+            <td><input type="checkbox" checked disabled>適用</td>
           </tr>
           </thead>
 HTML
@@ -891,30 +893,32 @@ print <<"HTML";
           <tbody id="history${num}">
           <tr>
             <td rowspan="2" class="handle"></td>
-            <td rowspan="2">@{[input("history${num}Date")]}</td>
-            <td rowspan="2">@{[input("history${num}Title")]}</td>
-            <td>@{[input("history${num}Exp",'text','calcExp')]}</td>
-            <td>@{[input("history${num}Gm")]}</td>
-            <td>@{[input("history${num}Member")]}</td>
+            <td rowspan="2">@{[input "history${num}Date" ]}</td>
+            <td rowspan="2">@{[input "history${num}Title" ]}</td>
+            <td>@{[ input "history${num}Exp",'text','calcExp' ]}</td>
+            <td><label>@{[ input "history${num}ExpApply",'checkbox','calcExp' ]}<b>適用</b></label>
+            <td>@{[ input "history${num}Gm" ]}</td>
+            <td>@{[ input "history${num}Member" ]}</td>
           </tr>
-          <tr><td colspan="5" class="left">@{[input("history${num}Note",'','','placeholder="備考"')]}</td></tr>
+          <tr><td colspan="4" class="left">@{[input("history${num}Note",'','','placeholder="備考"')]}</td></tr>
           </tbody>
 HTML
 }
 print <<"HTML";
           <tfoot>
-            <tr><th></th><th>日付</th><th>タイトル</th><th>経験点</th><th>GM</th><th>参加者</th></tr>
+            <tr><th></th><th>日付</th><th>タイトル</th><th colspan="2">経験点</th><th>GM</th><th>参加者</th></tr>
           </tfoot>
         </table>
         <div class="add-del-button"><a onclick="addHistory()">▼</a><a onclick="delHistory()">▲</a></div>
         <h2>記入例</h2>
         <table class="example edit-table line-tbody">
+          <colgroup><col><col><col><col><col><col><col></colgroup>
           <thead>
           <tr>
             <th></th>
             <th>日付</th>
             <th>タイトル</th>
-            <th>経験点</th>
+            <th colspan="2">経験点</th>
             <th>GM</th>
             <th>参加者</th>
           </tr>
@@ -925,13 +929,15 @@ print <<"HTML";
             <td><input type="text" value="2020-03-18" disabled></td>
             <td><input type="text" value="第一話「記入例」" disabled></td>
             <td><input type="text" value="10+5+1" disabled></td>
+            <td><label><input type="checkbox" checked disabled><b>適用</b></label></td>
             <td class="gm"><input type="text" value="サンプルGM" disabled></td>
             <td class="member"><input type="text" value="鳴瓢秋人　本堂町小春　百貴船太郎　富久田保津" disabled></td>
           </tr>
           </tbody>
         </table>
         <div class="annotate">
-        ※経験点欄は<code>10+5+1</code>など四則演算が有効です（獲得条件の違う経験点などを分けて書けます）。
+        ※経験点欄は<code>10+5+1</code>など四則演算が有効です（獲得条件の違う経験点などを分けて書けます）。<br>
+        　経験点欄の右の適用チェックを入れると、その経験点が適用されます。
         </div>
       </div>
       

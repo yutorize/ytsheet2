@@ -194,6 +194,7 @@ function calcExp(){
   let total = Number(form['history0Exp'].value);
   for (let num = 1; num <= Number(form.historyNum.value); num++){
     const obj = form['history'+num+'Exp'];
+    if(form['history'+num+'ExpApply'].checked){
       let exp = safeEval(obj.value);
       if(isNaN(exp)){
         obj.classList.add('error');
@@ -202,6 +203,8 @@ function calcExp(){
         total += exp;
         obj.classList.remove('error');
       }
+    }
+    else { obj.classList.remove('error'); }
   }
   let rest = total;
   for (let key in exps){
@@ -910,6 +913,7 @@ function addHistory(){
     <td rowspan="2"><input name="history${num}Date"   type="text"></td>
     <td rowspan="2"><input name="history${num}Title"  type="text"></td>
     <td><input name="history${num}Exp"    type="text" oninput="calcExp()"></td>
+    <td><label><input name="history${num}ExpApply" type="checkbox" oninput="calcExp()"><b>適用</b></label></td>
     <td><input name="history${num}Gm"     type="text"></td>
     <td><input name="history${num}Member" type="text"></td>
   </tr>
