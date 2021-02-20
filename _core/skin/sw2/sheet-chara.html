@@ -44,7 +44,7 @@ window.onload = function() {
       --box-base-bg-color-d: <TMPL_VAR colorBaseBgD>%;
     }
   </style></TMPL_IF>
-  <TMPL_INCLUDE NAME="../../skin-add/head.html">
+  <TMPL_INCLUDE NAME="skin-add/sheet-head.html">
 </head>
 <body>
   <script src="<TMPL_VAR coreDir>/skin/_common/js/common.js?<TMPL_VAR ver>"></script>
@@ -871,6 +871,7 @@ window.onload = function() {
       <img src="<TMPL_VAR imageSrc>" id="image-box-image">
     </div></TMPL_IF> 
   </main>
+  <TMPL_INCLUDE NAME="skin-add/sheet-sidebar.html">
 
   <footer>
     <p class="notes"><span>『ソード・ワールド2.5』は、</span><span>「グループSNE」及び「KADOKAWA」の著作物です。</span></p>

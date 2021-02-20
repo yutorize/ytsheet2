@@ -12,6 +12,8 @@ require $set::data_items;
 ### テンプレート読み込み #############################################################################
 my $SHEET;
 $SHEET = HTML::Template->new( filename => $set::skin_mons, utf8 => 1,
+  path => ['./', $::core_dir."/skin/sw2", $::core_dir."/skin/_common", $::core_dir],
+  search_path_on_include => 1,
   die_on_bad_params => 0, die_on_missing_include => 0, case_sensitive => 1, global_vars => 1);
 
 ### モンスターデータ読み込み #########################################################################
