@@ -191,12 +191,17 @@ function calcMemory() {
 
 // 経験点
 function calcExp(){
-  let total = 0;
-  for (let num = 0; num <= Number(form.historyNum.value); num++){
-    let exp = Number(safeEval(form['history'+num+'Exp'].value));
-    if(isNaN(exp)){ exp = 0; }
-    total += exp;
-    form['history'+num+'Exp'].style.textDecoration = !exp ? 'underline red' : 'none';
+  let total = Number(form['history0Exp'].value);
+  for (let num = 1; num <= Number(form.historyNum.value); num++){
+    const obj = form['history'+num+'Exp'];
+      let exp = safeEval(obj.value);
+      if(isNaN(exp)){
+        obj.classList.add('error');
+      }
+      else {
+        total += exp;
+        obj.classList.remove('error');
+      }
   }
   let rest = total;
   for (let key in exps){

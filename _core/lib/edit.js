@@ -161,10 +161,10 @@ function idNumSet (id){
 // 安全なeval ----------------------------------------
 function safeEval(text){
   if     (text === '') { return 0; }
-  else if(text.match(/[^0-9\+\-\*\/\(\) ]/)){ return 0; }
+  else if(text.match(/[^0-9\+\-\*\/\(\) ]/)){ return NaN; }
   
-  try { return Function('"use strict";return (' + text + ')')(); } 
-  catch (e) { return 0; }
+  try { return Number( Function('"use strict";return (' + text + ')')() ); } 
+  catch (e) { return NaN; }
 }
 
 

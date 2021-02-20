@@ -112,6 +112,7 @@ function changeRegu(){
   calcExp();
   calcLv();
   calcCash();
+  calcHonor();
 }
 
 function changeFaith(Faith) {
@@ -1077,7 +1078,7 @@ function calcWeapon() {
     const category = form["weapon"+i+"Category"].value;
     const ownDex = form["weapon"+i+"Own"].checked ? 2 : 0;
     const note = form["weapon"+i+"Note"].value;
-    const weaponReqd = Number(safeEval(form["weapon"+i+"Reqd"].value));
+    const weaponReqd = safeEval(form["weapon"+i+"Reqd"].value) || 0;
     let attackClass;
     let accBase = 0;
     let dmgBase = 0;
@@ -1238,11 +1239,11 @@ function calcArmour(evaBase,defBase,maxReqd) {
     document.getElementById(`defense-total${i}-def`).innerHTML = def;
   }
   
-  form.armour1Reqd.classList.toggle(  'error', Number(safeEval(form.armour1Reqd.value))   > maxReqd);
-  form.shield1Reqd.classList.toggle(  'error', Number(safeEval(form.shield1Reqd.value))   > maxReqd);
-  form.defOther1Reqd.classList.toggle('error', Number(safeEval(form.defOther1Reqd.value)) > maxReqd);
-  form.defOther2Reqd.classList.toggle('error', Number(safeEval(form.defOther2Reqd.value)) > maxReqd);
-  form.defOther3Reqd.classList.toggle('error', Number(safeEval(form.defOther3Reqd.value)) > maxReqd);
+  form.armour1Reqd.classList.toggle(  'error', (safeEval(form.armour1Reqd.value)   || 0)   > maxReqd);
+  form.shield1Reqd.classList.toggle(  'error', (safeEval(form.shield1Reqd.value)   || 0)   > maxReqd);
+  form.defOther1Reqd.classList.toggle('error', (safeEval(form.defOther1Reqd.value) || 0) > maxReqd);
+  form.defOther2Reqd.classList.toggle('error', (safeEval(form.defOther2Reqd.value) || 0) > maxReqd);
+  form.defOther3Reqd.classList.toggle('error', (safeEval(form.defOther3Reqd.value) || 0) > maxReqd);
 }
 
 // 経験点計算 ----------------------------------------
@@ -1250,10 +1251,15 @@ function calcExp(){
   expTotal = 0;
   const historyNum = form.historyNum.value;
   for (let i = 0; i <= historyNum; i++){
-    let exp = Number(safeEval(form['history'+i+'Exp'].value));
-    if(isNaN(exp)){ exp = 0; }
-    expTotal += exp;
-    form['history'+i+'Exp'].style.textDecoration = !exp ? 'underline red' : 'none';
+    const obj = form['history'+i+'Exp'];
+    let exp = safeEval(obj.value);
+    if(isNaN(exp)){
+      obj.classList.add('error');
+    }
+    else {
+      expTotal += exp;
+      obj.classList.remove('error');
+    }
   }
   document.getElementById("exp-rest").innerHTML = expTotal - expUse;
   document.getElementById("exp-total").innerHTML = expTotal;
@@ -1285,15 +1291,19 @@ function calcHonor(){
   const historyNum = form.historyNum.value;
   pointTotal -= rankNum;
   for (let i = 0; i <= historyNum; i++){
-    let point = Number(safeEval(form['history'+i+'Honor'].value));
-    if(isNaN(point)){ point = 0; }
-    pointTotal += point;
-    form['history'+i+'Honor'].style.textDecoration = !point ? 'underline red' : 'none';
+    const obj = form['history'+i+'Honor'];
+    let point = safeEval(obj.value);
+    if(isNaN(point)){
+      obj.classList.add('error');
+    }
+    else {
+      pointTotal += point;
+      obj.classList.remove('error');
+    }
   }
   const honorItemsNum = form.honorItemsNum.value;
   for (let i = 1; i <= honorItemsNum; i++){
-    let point = Number(safeEval(form['honorItem'+i+'Pt'].value));
-    if(isNaN(point)){ point = 0; }
+    let point = safeEval(form['honorItem'+i+'Pt'].value) || 0;
     pointTotal -= point;
     
     let cL = form['honorItem'+i+'Pt'].classList;
@@ -1302,8 +1312,7 @@ function calcHonor(){
   }
   const mysticArtsNum = form.mysticArtsNum.value;
   for (let i = 1; i <= mysticArtsNum; i++){
-    let point = Number(safeEval(form['mysticArts'+i+'Pt'].value));
-    if(isNaN(point)){ point = 0; }
+    let point = safeEval(form['mysticArts'+i+'Pt'].value) || 0;
     mysticArtsPt += point;
   }
   pointTotal -= mysticArtsPt;
@@ -1317,8 +1326,7 @@ function calcDishonor(){
   let pointTotal = 0;
   const dishonorItemsNum = form.dishonorItemsNum.value;
   for (let i = 1; i <= dishonorItemsNum; i++){
-    let point = Number(safeEval(form['dishonorItem'+i+'Pt'].value));
-    if(isNaN(point)){ point = 0; }
+    let point = safeEval(form['dishonorItem'+i+'Pt'].value) || 0;
     pointTotal += point;
   }
   pointTotal -= Number(form.honorOffset.value);
@@ -1335,28 +1343,36 @@ function calcCash(){
   let debt = 0;
   const historyNum = form.historyNum.value;
   for (let i = 0; i <= historyNum; i++){
-    let hCash = Number(safeEval(form['history'+i+'Money'].value))
-    if(isNaN(hCash)){ hCash = 0; }
-    cash += hCash;
-    form['history'+i+'Money'].style.textDecoration = !hCash ? 'underline red' : 'none';
+    const obj = form['history'+i+'Money'];
+    let hCash = safeEval(obj.value);
+    if(isNaN(hCash)){
+      obj.classList.add('error');
+    }
+    else {
+      cash += hCash;
+      obj.classList.remove('error');
+    }
+    if(isNaN(hCash)){
+      obj
+    }
   }
   let s = form.cashbook.value;
   s.replace(
     /::([\+\-\*\/]?[0-9]+)+/g,
     function (num, idx, old) {
-      cash += Number(safeEval(num.slice(2)));
+      cash += safeEval(num.slice(2)) || 0;
     }
   );
   s.replace(
     /:>([\+\-\*\/]?[0-9]+)+/g,
     function (num, idx, old) {
-      deposit += Number(safeEval(num.slice(2)));
+      deposit += safeEval(num.slice(2)) || 0;
     }
   );
   s.replace(
     /:<([\+\-\*\/]?[0-9]+)+/g,
     function (num, idx, old) {
-      debt += Number(safeEval(num.slice(2)));
+      debt += safeEval(num.slice(2)) || 0;
     }
   );
   cash = cash - deposit + debt;

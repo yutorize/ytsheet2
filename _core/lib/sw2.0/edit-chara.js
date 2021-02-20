@@ -541,16 +541,20 @@ function calcHonor(){
   let mysticArtsPt = 0;
   const historyNum = form.historyNum.value;
   for (let i = 0; i <= historyNum; i++){
-    let point = Number(safeEval(form['history'+i+'Honor'].value));
-    if(isNaN(point)){ point = 0; }
-    pointTotal += point;
-    form['history'+i+'Honor'].style.textDecoration = !point ? 'underline red' : 'none';
+    const obj = form['history'+i+'Honor'];
+    let point = safeEval(obj.value);
+    if(isNaN(point)){
+      obj.classList.add('error');
+    }
+    else {
+      pointTotal += point;
+      obj.classList.remove('error');
+    }
   }
   let pointLost = 0;
   const dishonorItemsNum = form.dishonorItemsNum.value;
   for (let i = 1; i <= dishonorItemsNum; i++){
-    let point = Number(safeEval(form['dishonorItem'+i+'Pt'].value));
-    if(isNaN(point)){ point = 0; }
+    let point = safeEval(form['dishonorItem'+i+'Pt'].value) || 0;
     pointLost += point;
   }
   pointTotal -= pointLost;
@@ -563,14 +567,12 @@ function calcHonor(){
   
   const honorItemsNum = form.honorItemsNum.value;
   for (let i = 1; i <= honorItemsNum; i++){
-    let point = Number(safeEval(form['honorItem'+i+'Pt'].value));
-    if(isNaN(point)){ point = 0; }
+    let point = safeEval(form['honorItem'+i+'Pt'].value) || 0;
     pointTotal -= point;
   }
   const mysticArtsNum = form.mysticArtsNum.value;
   for (let i = 1; i <= mysticArtsNum; i++){
-    let point = Number(safeEval(form['mysticArts'+i+'Pt'].value));
-    if(isNaN(point)){ point = 0; }
+    let point = safeEval(form['mysticArts'+i+'Pt'].value) || 0;
     mysticArtsPt += point;
   }
   pointTotal -= mysticArtsPt;
