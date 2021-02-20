@@ -280,7 +280,9 @@ sub convertHokanjoToYtsheet {
   $profile .= ": 瞳 |$in{'color_eye'}&lt;br&gt;";
   $profile .= ": 肌 |$in{'color_skin'}&lt;br&gt;";
   
-  $pc{'freeNote'} = $profile.$in{'pc_making_memo'},
+  $pc{'freeNote'} = $profile.$in{'pc_making_memo'};
+  $pc{'freeNoteView'} = (tag_unescape tag_unescape_lines $profile).$in{'pc_making_memo'};
+  $pc{'freeNoteView'} =~ s/\r\n?|\n/<br>/g;
   
   ## 〆
   $pc{'ver'} = 0;

@@ -126,6 +126,9 @@ if($pc{'ver'}){
     $pc{$_} = noiseTextTag $pc{$_} if $pc{'forbiddenMode'};
   }
 }
+else {
+  $pc{'freeNote'} = $pc{'freeNoteView'} if $pc{'freeNoteView'};
+}
 
 ### コンバート --------------------------------------------------
 if($pc{'colorCustom'} && $pc{'colorHeadBgA'}) {

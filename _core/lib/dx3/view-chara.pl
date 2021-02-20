@@ -171,13 +171,16 @@ elsif($pc{'forbidden'}){
 if($pc{'ver'}){
   foreach (keys %pc) {
     next if($_ =~ /^(?:imageURL|imageCopyrightURL)$/);
-    if($_ =~ /^(?:freeNote|freeHistory|)$/){
+    if($_ =~ /^(?:freeNote|freeHistory)$/){
       $pc{$_} = tag_unescape_lines($pc{$_});
     }
     $pc{$_} = tag_unescape($pc{$_});
 
     $pc{$_} = noiseTextTag $pc{$_} if $pc{'forbiddenMode'};
   }
+}
+else {
+  $pc{'freeNote'} = $pc{'freeNoteView'} if $pc{'freeNoteView'};
 }
 
 ### アップデート --------------------------------------------------
