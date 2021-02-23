@@ -12,8 +12,8 @@ use Fcntl;
 ### ファイル名取得／パスorアカウント必要時 --------------------------------------------------
 sub getfile {
   open (my $FH, '<', $set::passfile) or die;
-  while (<$FH>) {
-    my ($id, $pass, $file, $type) = (split /<>/, $_)[0..3];
+  while (my $line = <$FH>) {
+    my ($id, $pass, $file, $type) = (split /<>/, $line)[0..3];
     if(
       $_[0] eq $id && (
            (!$pass) # パス不要
@@ -58,6 +58,23 @@ sub getplayername {
     }
   close($FH);
   return '';
+}
+
+
+### 編集保護設定取得 --------------------------------------------------
+sub protectTypeGet {
+  my $file = shift;
+  my $protect   = '';
+  my $forbidden = '';
+  open (my $IN, '<', $file) or error('キャラクターシートがありません。');
+  while (my $line = <$IN>){
+    if   ($line =~ /^protect<>(.*)\n/)  { $protect = $1; }
+    elsif($line =~ /^forbidden<>(.*)\n/){ $forbidden = $1; }
+    
+    if($protect && $forbidden){ last; }
+  }
+  close($IN);
+  return ($protect, $forbidden);
 }
 
 ### 暗号化 --------------------------------------------------
@@ -216,7 +233,7 @@ sub token_check {
 }
 
 ### メール送信 --------------------------------------------------
-sub sendmail{
+sub sendmail {
   my $from    = encode('MIME-Header', "ゆとシートⅡ <$set::admimail>");
   my $to      = encode('MIME-Header', shift);
   my $subject = encode('MIME-Header', shift);
@@ -396,7 +413,17 @@ sub rgb_to_hsl {
   return ($hu, $sa, $li);
 };
 
-
+### 進数変換 --------------------------------------------------
+sub convert10to36 {
+  my $number = shift;
+  if(!$number){ return 0;}
+  my @work;
+  while ($number > 0) {
+    unshift @work, substr("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ", $number % 36, 1);
+    $number = int($number / 36);
+  }
+  return join('', @work);
+}
 
 ### チャットパレット --------------------------------------------------
 sub palettePresetBuffDelete {
@@ -440,8 +467,8 @@ sub palettePropertiesUsedOnly {
     if($_ =~ "^//(.+?)="){
       if($palette =~ /\{($1)\}/){ push @propaties_out, $_; }
     }
-    elsif(!$_){
-      push @propaties_out, '';
+    else {
+      push @propaties_out, $_;
     }
   }
   return @propaties_out;

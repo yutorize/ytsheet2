@@ -6,7 +6,26 @@ use open ":utf8";
 
 my $mask = umask 0;
 
-if(param('id')){
+if(param('mail')){
+
+  open (my $FH, '<', $set::userfile) or &error('一覧データのオープンに失敗しました。');
+  my @list = <$FH>;
+  close($FH);
+
+  my @hit_id;
+  foreach(@list){
+    my($id, $pass, $name, $mail) = (split /<>/, $_)[0..3];
+    if($mail eq param('mail')){
+      push(@hit_id, $id);
+    }
+  }
+  if(!@hit_id){ error('入力したメールアドレスは登録されていません。'); }
+
+  &sendmail(param('mail'), $set::title." : ID-Reminder", "このメールアドレスで登録されているIDは\n".join("\n",@hit_id)."\nです。");
+
+  info('送信完了','入力されたメールアドレスにIDを送信しました。');
+}
+elsif(param('id')){
   my $token = random_id(12);
   sysopen (my $FH, $set::tokenfile, O_WRONLY | O_APPEND | O_CREAT, 0666);
   print $FH param('id').'-'.$token."<>".(time + 60*60*1)."<>\n";
@@ -62,4 +81,5 @@ elsif(param('password')){
   
   info('再設定完了','パスワードの変更が完了しました。');
 }
+
 1;

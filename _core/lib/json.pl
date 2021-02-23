@@ -33,20 +33,17 @@ if($backup eq "") {
 $_ =~ s/(.*?)<>(.*?)\n/$pc{$1} = $2;/egi while <$IN>;
 close($IN);
 
-if($set::lib_json_sub){
-  require $set::lib_json_sub;
-  %pc = %{ addJsonData(\%pc , $type) };
-}
-
-
-
 if($pc{updateTime}) {
   $pc{result} = "OK";
+  if($set::lib_json_sub){
+    require $set::lib_json_sub;
+    %pc = %{ addJsonData(\%pc , $type) };
+  }
 } else {
   if($backup eq "") {
-    $pc{result} = "リクエストされたシートは見つかりませんでした。 id: ${id}";
+    $pc{result} = "リクエストされたシートは見つかりませんでした。(id: ${id})";
   } else {
-    $pc{result} = "リクエストされたシートは見つかりませんでした。 id: ${id}, backup: ${backup}";
+    $pc{result} = "リクエストされたシートは見つかりませんでした。(id: ${id}, backup: ${backup})";
   }
 }
 if($pc{'image'}){

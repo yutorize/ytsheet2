@@ -3,7 +3,7 @@ use strict;
 #use warnings;
 use utf8;
 
-our $ver = "1.11.001";
+our $ver = "1.12.012";
 
 my $mode = param('mode');
 
@@ -23,7 +23,8 @@ elsif($mode eq 'login')   {
   else            { require $set::lib_form; }                  #ログインフォーム
 }
 elsif($mode eq 'reminder')   {
-  if(param('id'))   { require $set::lib_reminder; }  #メール送信
+  if(param('mail')) { require $set::lib_reminder; }  #IDリマインダ
+  elsif(param('id')){ require $set::lib_reminder; }  #メール送信
   else              { require $set::lib_form; }      #リマインダフォーム
 }
 elsif($mode eq 'reset')   {

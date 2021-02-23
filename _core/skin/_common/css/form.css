@@ -28,7 +28,7 @@ form p > label > span {
   width: 11em;
   text-align: right;
 }
-form p > label >  input + b{
+form p > label >  input + b {
   display: inline-block;
   position: absolute;
   bottom: 2px;

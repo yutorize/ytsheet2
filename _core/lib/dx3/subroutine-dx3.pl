@@ -20,6 +20,8 @@ sub tag_unescape {
   
   $text =~ s#(―+)#<span class="d-dash">$1</span>#g;
   
+  $text =~ s{[©]}{<i class="s-icon copyright">©</i>}gi;
+  
   $text =~ s/'''(.+?)'''/<span class="oblique">$1<\/span>/gi; # 斜体
   $text =~ s/''(.+?)''/<b>$1<\/b>/gi;  # 太字
   $text =~ s/%%(.+?)%%/<span class="strike">$1<\/span>/gi;  # 打ち消し線
@@ -30,7 +32,7 @@ sub tag_unescape {
   
   $text =~ s/\[\[(.+?)&gt;((?:(?!<br>)[^"])+?)\]\]/&tag_link_url($2,$1)/egi; # リンク
   $text =~ s/\[(.+?)#([a-zA-Z0-9\-]+?)\]/<a href="?id=$2">$1<\/a>/gi; # シート内リンク
-  $text =~ s/(?<!href=")(https?:\/\/[^\s\<]+)/<a href="$1">$1<\/a>/gi; # 自動リンク
+  $text =~ s/(?<!href=")(https?:\/\/[^\s\<]+)/<a href="$1" target="_blank">$1<\/a>/gi; # 自動リンク
   
   $text =~ s/\n/<br>/gi;
   
@@ -47,6 +49,31 @@ sub tag_unescape_ytc {
   
   $text =~ s/\n/<br>/gi;
   return $text;
+}
+
+### バージョンアップデート --------------------------------------------------
+sub data_update_chara {
+  my %pc = %{$_[0]};
+  $pc{'ver'} =~ s/^([0-9]+)\.([0-9]+)\.([0-9]+)$/$1.$2$3/;
+  if($pc{'ver'} && $pc{'ver'} < 1.10003){
+    $pc{'comboCalcOff'} = 1;
+    foreach my $num (1 .. $pc{'comboNum'}){
+      $pc{"combo${num}Skill"} =~ s/[〈〉<>]//g;
+      foreach (1..4) {
+        $pc{"combo${num}DiceAdd".$_}  = $pc{"combo${num}Dice".$_};
+        $pc{"combo${num}FixedAdd".$_} = $pc{"combo${num}Fixed".$_};
+      }
+    }
+  }
+  if($pc{'ver'} < 1.11001){
+    $pc{'paletteUseBuff'} = 1;
+  }
+  if($pc{'ver'} < 1.12012){
+    foreach my $num (1 .. $pc{'historyNum'}){
+      $pc{"history${num}ExpApply".$_} = 1 if $pc{"history${num}Exp".$_};
+    }
+  }
+  return %pc;
 }
 
 1;

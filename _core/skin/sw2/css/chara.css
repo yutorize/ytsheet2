@@ -177,7 +177,6 @@ dl.data-table:last-child > dt:last-of-type ~ dd,
 /* // Area-Status
 ---------------------------------------------------------------------------------------------------- */
 #area-status {
-  margin-top: .5rem;
   display: grid;
   grid-gap: 1rem;
   grid-template-columns: 0.8fr 0.6fr 1.5fr 2.115fr;
@@ -260,8 +259,9 @@ dl.data-table:last-child > dt:last-of-type ~ dd,
     #000 0 0 .3rem, #000 0 0 .3rem, #000 0 0 .3rem;
   word-break: break-all;
 }
-.image p.image-copyright a {
-  color: #fff;
+.image p.image-copyright a,
+.image p.image-copyright i::before {
+  color: #fff !important;
 }
 .image-none {
   overflow: hidden;
@@ -295,6 +295,9 @@ dl.data-table:last-child > dt:last-of-type ~ dd,
   transform: scale(1, 1.2);
   opacity: 0.1;
   white-space: pre;
+}
+.image-none.sw2_0::after {
+  content: 'SW\A 2.0';
 }
 
 .image p.words,
@@ -608,7 +611,6 @@ dl#level dd {
   justify-content: space-between;
   
   margin-top: 1rem;
-  
   line-height: 1.8;
 }
 #area-ability > * {
@@ -749,6 +751,11 @@ dl#level dd {
   
   margin-top: 1rem;
   line-height: 1.8;
+}
+@media screen and (min-width:1400px){
+  #area-actions {
+    margin-top: 0;
+  }
 }
 #area-actions > * {
   flex-basis: 30%;
@@ -958,6 +965,10 @@ dl#level dd {
 #attack-classes thead th:nth-child(5) { width: 3.5em; } /* Ｃ値 */
 #attack-classes thead th:nth-child(6) { width:   5em; } /* 追加Ｄ */
 
+#attack-classes + #weapons {
+  margin-top: .3rem;
+}
+
 #weapons thead th:nth-child(1) { width:   25%; } /* 名前 */
 #weapons thead th:nth-child(2) { width: 3.5em; } /* 用法 */
 #weapons thead th:nth-child(3) { width: 3.5em; } /* 必筋 */
@@ -980,6 +991,10 @@ dl#level dd {
 #evasion-classes th:nth-child(3) { width: 3.5em; } /* 回避 */
 #evasion-classes th:nth-child(4) { width: 3.5em; } /* 防護 */
 
+#evasion-classes + #armours {
+  margin-top: .3rem;
+}
+
 #armours thead th:nth-child(1) { width: 2.5em; } /* 種別 */
 #armours thead th:nth-child(2) { width:   25%; } /* 名前 */
 #armours thead th:nth-child(3) { width: 3.5em; } /* 必筋 */
@@ -988,14 +1003,21 @@ dl#level dd {
 #armours thead th:nth-child(6) { width:   1em; } /* 専用 */
 #armours thead th:nth-child(7) { width:  auto; } /* 備考 */
 
-#armours tbody td:nth-child(7) { padding-left: .3em; text-align: left; font-size: 90%; } /* 備考 */
+#armours tbody td:last-child { padding-left: .3em; text-align: left; font-size: 90%; } /* 備考 */
 
 #armours .defense-total th {
   padding-right: 5px;
   text-align: right;
 }
 #armours .defense-total td {
-  font-size: 1.6rem
+  border-width: 1px;
+  border-style: solid dotted;
+  font-size: 1.6rem;
+}
+#armours .defense-total td:last-child {
+  padding-left: .3em;
+  text-align: left;
+  font-size: 90%;
 }
 
 
@@ -1089,9 +1111,9 @@ div#area-items-R {
 /* Honor */
 #honor,
 #dishonor {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto;
 }
   #honor dt,
   #dishonor dt {
@@ -1107,7 +1129,24 @@ div#area-items-R {
 .honor-items table thead th:last-child {
   width: 4em;
 }
+.honor-items dl#honor-offset {
+  display: grid;
+  grid-template-columns: 1fr 4.2em;
+  margin-top: .5em;
+  border-width: .1rem 0 0;
+  border-style: solid;
+}
+.honor-items dl#honor-offset dt {
+  text-align: center;
+}
+.honor-items dl#honor-offset dd input {
+  margin: 0;
+}
 
+#honor    + #honor-items,
+#dishonor + #dishonor-items {
+  margin-top: .3rem;
+}
 
 /* // Free-Memo
 ---------------------------------------------------------------------------------------------------- */

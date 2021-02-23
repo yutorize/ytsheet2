@@ -5,78 +5,29 @@ use utf8;
 use open ":utf8";
 use Encode;
 
-my $mode = $main::mode;
-my $message = $main::message;
-our %pc;
-
-my $LOGIN_ID = check;
+my $LOGIN_ID = $::LOGIN_ID;
 
 ### 読込前処理 #######################################################################################
-### エラーメッセージ --------------------------------------------------
-if($main::make_error) {
-  $mode = 'blanksheet';
-  for (param()){ $pc{$_} = param($_); }
-  $message = $main::make_error;
-}
-## 新規作成/コピー/コンバート時 --------------------------------------------------
-my $token; my $mode_make;
-if($mode eq 'blanksheet' || $mode eq 'copy' || $mode eq 'convert'){
-  $token = token_make();
-  $mode_make = 1;
-}
-## 更新後処理 --------------------------------------------------
-if($mode eq 'save'){
-  $message .= 'データを更新しました。<a href="./?id='.param('id').'">⇒シートを確認する</a>';
-  $mode = 'edit';
-}
-
 ### 各種データライブラリ読み込み --------------------------------------------------
 #require $set::data_item;
 
 ### データ読み込み ###################################################################################
-my $id;
-my $pass;
-my $file;
-### 編集時 --------------------------------------------------
-if($mode eq 'edit'){
-  $id = param('id');
-  $pass = param('pass');
-  (undef, undef, $file, undef) = getfile($id,$pass,$LOGIN_ID);
-  open my $IN, '<', "${set::item_dir}${file}/data.cgi" or error &login_error;
-  $_ =~ s/(.*?)<>(.*?)\n/$pc{$1} = $2;/egi while <$IN>;
-  close($IN);
-}
-if($mode eq 'copy'){
-  $id = param('id');
-  $file = (getfile_open($id))[0];
-  open my $IN, '<', "${set::item_dir}${file}/data.cgi" or error 'アイテムデータがありません。';
-  $_ =~ s/(.*?)<>(.*?)\n/$pc{$1} = $2;/egi while <$IN>;
-  close($IN);
-  
-  delete $pc{'image'};
-  delete $pc{'protect'};
-  
-  $message = '「<a href="./?id='.$id.'" target="_blank">'.$pc{"itemName"}.'</a>」コピーして新規作成します。<br>（まだ保存はされていません）';
-}
-elsif($mode eq 'convert'){
-  %pc = %::conv_data;
-  delete $pc{'image'};
-  delete $pc{'protect'};
-  $message = '「<a href="'.param('url').'" target="_blank">'.($pc{"itemName"}||'無題').'</a>」をコンバートして新規作成します。<br>（まだ保存はされていません）';
-}
+my ($data, $mode, $file, $message) = pcDataGet($::in{'mode'});
+our %pc = %{ $data };
 
-### 製作者名 --------------------------------------------------
-if($mode_make){
-  $pc{'author'} = (getplayername($LOGIN_ID))[0] if !$main::make_error;
-}
+my $mode_make = ($mode =~ /^(blanksheet|copy|convert)$/) ? 1 : 0;
 
 ### 出力準備 #########################################################################################
+if($message){
+  my $name = tag_unescape($pc{'itemName'} || '無題');
+  $message =~ s/<!NAME>/$name/;
+}
+### 製作者名 --------------------------------------------------
+if($mode_make && !$::make_error){
+  $pc{'author'} = (getplayername($LOGIN_ID))[0];
+}
 ### 初期設定 --------------------------------------------------
-$pc{'protect'} = $pc{'protect'} ? $pc{'protect'} : 'password';
-$pc{'group'} = $pc{'group'} ? $pc{'group'} : $set::group_default;
-
-$pc{'statusNum'}  = $pc{'statusNum'} ? $pc{'statusNum'} : 1;
-$pc{'lootsNum'}   = $pc{'lootsNum'} ? $pc{'lootsNum'} : 2;
+if($mode_make){ $pc{'protect'} = $LOGIN_ID ? 'account' : 'password'; }
 
 ### 改行処理 --------------------------------------------------
 $pc{'effects'}     =~ s/&lt;br&gt;/\n/g;
@@ -96,6 +47,7 @@ Content-type: text/html\n
   <link rel="stylesheet" media="all" href="${main::core_dir}/skin/_common/css/base.css?${main::ver}">
   <link rel="stylesheet" media="all" href="${main::core_dir}/skin/_common/css/sheet.css?${main::ver}">
   <link rel="stylesheet" media="all" href="${main::core_dir}/skin/sw2/css/item.css?{main::ver}">
+  <link rel="stylesheet" media="all" href="${main::core_dir}/skin/_common/css/edit.css?${main::ver}">
   <link rel="stylesheet" media="all" href="${main::core_dir}/skin/sw2/css/edit.css?{main::ver}">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
 </head>
@@ -109,10 +61,11 @@ Content-type: text/html\n
     <article>
       <aside class="message">$message</aside>
       <form id="item" name="sheet" method="post" action="./" enctype="multipart/form-data">
+      <input type="hidden" name="ver" value="${main::ver}">
       <input type="hidden" name="type" value="i">
 HTML
 if($mode_make){
-  print '<input type="hidden" name="_token" value="'.$token.'">'."\n";
+  print '<input type="hidden" name="_token" value="'.token_make().'">'."\n";
 }
 print <<"HTML";
       <input type="hidden" name="mode" value="@{[ $mode eq 'edit' ? 'save' : 'make' ]}">
@@ -127,7 +80,7 @@ print <<"HTML";
 HTML
 if($mode eq 'edit'){
 print <<"HTML";
-        <input type="button" value="複製" onclick="window.open('./?mode=copy&type=i&id=${id}');">
+        <input type="button" value="複製" onclick="window.open('./?mode=copy&type=i&id=$::in{'id'}@{[ $::in{'backup'}?"&backup=$::in{'backup'}":'' ]}');">
 HTML
 }
 print <<"HTML";
@@ -138,7 +91,7 @@ if($set::user_reqd){
   print <<"HTML";
     <input type="hidden" name="protect" value="account">
     <input type="hidden" name="protectOld" value="$pc{'protect'}">
-    <input type="hidden" name="pass" value="$pass">
+    <input type="hidden" name="pass" value="$::in{'pass'}">
 HTML
 }
 else {
@@ -146,35 +99,46 @@ else {
     print '登録キー：<input type="text" name="registerkey" required>'."\n";
   }
   print <<"HTML";
-      <div class="box" id="edit-protect">
-      <h2 onclick="view('edit-protect-view')">編集保護設定 ▼</h2>
-      <p id="edit-protect-view" @{[$mode eq 'edit' ? 'style="display:none"':'']}><input type="hidden" name="protectOld" value="$pc{'protect'}">
+      <details class="box" id="edit-protect" @{[$mode eq 'edit' ? '':'open']}>
+      <summary>編集保護設定</summary>
+      <p id="edit-protect-view"><input type="hidden" name="protectOld" value="$pc{'protect'}">
 HTML
   if($LOGIN_ID){
     print '<input type="radio" name="protect" value="account"'.($pc{'protect'} eq 'account'?' checked':'').'> アカウントに紐付ける（ログイン中のみ編集可能になります）<br>';
   }
     print '<input type="radio" name="protect" value="password"'.($pc{'protect'} eq 'password'?' checked':'').'> パスワードで保護 ';
   if ($mode eq 'edit' && $pc{'protect'} eq 'password') {
-    print '<input type="hidden" name="pass" value="'.$pass.'"><br>';
+    print '<input type="hidden" name="pass" value="'.$::in{'pass'}.'"><br>';
   } else {
     print '<input type="password" name="pass"><br>';
   }
   print <<"HTML";
 <input type="radio" name="protect" value="none"@{[ $pc{'protect'} eq 'none'?' checked':'' ]}> 保護しない（誰でも編集できるようになります）
       </p>
-      </div>
+      </details>
 HTML
 }
   print <<"HTML";
-      <div id="hide-options">
-        <p id="forbidden-checkbox">
-        @{[ input 'forbidden','checkbox' ]} 閲覧を禁止する
-        </p>
-        <p id="hide-checkbox">
-        @{[ input 'hide','checkbox' ]} 一覧に表示しない<br>
-        ※タグ検索結果に合致した場合は表示されます
-        </p>
-      </div>
+      <section id="section-common">
+      <dl class="box" id="hide-options">
+        <dt>閲覧可否設定</dt>
+        <dd id="forbidden-checkbox">
+          <select name="forbidden">
+            <option value="">内容を全て開示
+            <option value="battle" @{[ $pc{'forbidden'} eq 'battle' ? 'selected' : '' ]}>データ・数値のみ秘匿
+            <option value="all"    @{[ $pc{'forbidden'} eq 'all'    ? 'selected' : '' ]}>内容を全て秘匿
+          </select>
+        </dd>
+        <dd id="hide-checkbox">
+          <select name="hide">
+            <option value="">一覧に表示
+            <option value="1" @{[ $pc{'hide'} ? 'selected' : '' ]}>一覧には非表示
+          </select>
+        </dd>
+        <dd>
+          ※一覧に非表示でもタグ検索結果・マイリストには表示されます
+        </dd>
+      </dl>
       <div class="box" id="group">
         <dl>
           <dt>タグ</dt><dd>@{[ input 'tags' ]}</dd>
@@ -260,9 +224,10 @@ HTML
       <h2>解説</h2>
       <textarea name="description">$pc{'description'}</textarea>
     </div>
+    </section>
     
       @{[ input 'birthTime','hidden' ]}
-      @{[ input 'id','hidden' ]}
+      <input type="hidden" name="id" value="$::in{'id'}">
     </form>
 HTML
 if($mode eq 'edit'){
@@ -271,8 +236,8 @@ print <<"HTML";
       <p style="font-size: 80%;">
       <input type="hidden" name="mode" value="delete">
       <input type="hidden" name="type" value="i">
-      <input type="hidden" name="id" value="$id">
-      <input type="hidden" name="pass" value="$pass">
+      <input type="hidden" name="id" value="$::in{'id'}">
+      <input type="hidden" name="pass" value="$::in{'pass'}">
       <input type="checkbox" name="check1" value="1" required>
       <input type="checkbox" name="check2" value="1" required>
       <input type="checkbox" name="check3" value="1" required>

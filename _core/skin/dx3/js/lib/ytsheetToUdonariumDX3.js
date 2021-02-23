@@ -26,33 +26,6 @@ io.github.shunshun94 = io.github.shunshun94 || {};
 io.github.shunshun94.trpg = io.github.shunshun94.trpg || {};
 io.github.shunshun94.trpg.udonarium = io.github.shunshun94.trpg.udonarium || {};
 
-io.github.shunshun94.trpg.udonarium.getPicture = (src) => {
-	return new Promise((resolve, reject) => {
-		let xhr = new XMLHttpRequest();
-		xhr.open('GET', src, true);
-		xhr.responseType = "blob";
-		xhr.onload = (e) => {
-			const fileName = src.slice(src.lastIndexOf("/") + 1);
-			if(! Boolean(jsSHA)) {
-				console.warn('To calculate SHA256 value of the picture, jsSHA is required: https://github.com/Caligatio/jsSHA');
-				resolve({ event:e, data: e.currentTarget.response, fileName: fileName, hash: '' });
-				return;
-			}
-			e.currentTarget.response.arrayBuffer().then((arraybuffer)=>{
-				const sha = new jsSHA("SHA-256", 'ARRAYBUFFER');
-				sha.update(arraybuffer);
-				const hash = sha.getHash("HEX");
-				resolve({ event:e, data: e.currentTarget.response, fileName: fileName, hash: hash });
-				return;
-			});
-		};
-		xhr.onerror = () => resolve({ data: null });
-		xhr.onabort = () => resolve({ data: null });
-		xhr.ontimeout = () => resolve({ data: null });
-		xhr.send();
-	});
-};
-
 io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2DoubleCross3PC = async (json, opt_url='', opt_imageHash='')=>{
 	const defaultPalette = await io.github.shunshun94.trpg.ytsheet.getChatPalette(opt_url);
 	const data_character = {};
@@ -64,7 +37,7 @@ io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2DoubleCross3
 
 	data_character.common = `
     <data name="common">
-      <data name="name">${json.characterName || ''}</data>
+      <data name="name">${json.characterNameRaw || json.characterName || ''}</data>
       <data name="size">1</data>
     </data>`;
 
@@ -72,8 +45,8 @@ io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2DoubleCross3
 	data_character_detail['リソース'] = [
 		`        <data type="numberResource" currentValue="${json.maxHpTotal}" name="HP">${json.maxHpTotal}</data>`,
 		`        <data type="numberResource" currentValue="${json.baseEncroach}" name="侵蝕率">300</data>`,
-        `        <data type="numberResource" currentValue="${json.initiativeTotal || '0'}" name="行動値">100</data>`,
-        `        <data type="numberResource" currentValue="5" name="ロイス">7</data>`,
+        `        <data type="numberResource" currentValue="${json.initiativeTotal || 0}" name="行動値">100</data>`,
+        `        <data type="numberResource" currentValue="${json.loisHave || 3}" name="ロイス">${json.loisMax || 7}</data>`,
         `        <data type="numberResource" currentValue="${json.savingTotal || 0}" name="財産点">300</data>`
 	];
 	data_character_detail['情報'] = [
@@ -94,20 +67,20 @@ io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2DoubleCross3
 		}
 	};
 	let addedParam = {};
-	data_character_detail['能力値'] = io.github.shunshun94.trpg.udonarium.consts.DX3_STATUS.map((s)=>{
+	data_character_detail['能力値'] = io.github.shunshun94.trpg.ytsheet.consts.DX3_STATUS.map((s)=>{
 		addedParam[s.name] = 1;
 		return `        <data name="${s.name}">${json['sttTotal' + s.column]}</data>`
 	});
-	data_character_detail['技能'] = io.github.shunshun94.trpg.udonarium.consts.DX3_STATUS.map((s)=>{
+	data_character_detail['技能'] = io.github.shunshun94.trpg.ytsheet.consts.DX3_STATUS.map((s)=>{
 		const result = [];
 		result.push(s.skills.map((skill)=>{
 			addedParam[skill.name] = 1;
-			return `        <data name="${skill.name}">${json['skill' + skill.column] || '0'}</data>`;
+			return `        <data name="${skill.name}">${json['skillTotal' + skill.column] || '0'}</data>`;
 		}).join('\n'));
 		let cursor = 1;
 		while(json[`skill${s.extendableSkill.column}${cursor}Name`]) {
 			addedParam[json[`skill${s.extendableSkill.column}${cursor}Name`]] = 1;
-			result.push(`        <data name="${json[`skill${s.extendableSkill.column}${cursor}Name`]}">${json[`skill${s.extendableSkill.column}${cursor}`] || 0}</data>`);
+			result.push(`        <data name="${json[`skill${s.extendableSkill.column}${cursor}Name`]}">${json[`skillTotal${s.extendableSkill.column}${cursor}`] || 0}</data>`);
 			cursor++;
 		}
 		return result.join('\n');
@@ -143,7 +116,7 @@ io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2DoubleCross3
 
 		tmp_palette.push(`現在の状態　HP:{HP} / 侵蝕率:{侵蝕率}`);
 		if(opt_url) { tmp_palette.push(`キャラクターシート　{URL}`);}
-		io.github.shunshun94.trpg.udonarium.consts.DX3_STATUS.forEach((s)=>{
+		io.github.shunshun94.trpg.ytsheet.consts.DX3_STATUS.forEach((s)=>{
 			const base = json['sttTotal' + s.column];
 			s.skills.forEach((skill)=>{
 				tmp_palette.push(`(${base}+{侵蝕率によるダイスボーナス}+{ダイス})DX+(${json['skill' + skill.column] || 0}+{達成値})@(10-{クリティカル値減少}) ${skill.name}`);
@@ -185,72 +158,3 @@ io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2DoubleCross3
 </character>
 `;
 };
-
-io.github.shunshun94.trpg.udonarium.consts = io.github.shunshun94.trpg.udonarium.consts || {};
-io.github.shunshun94.trpg.udonarium.consts.DX3_STATUS = [
-	{
-		name: '肉体',
-		column: 'Body',
-		skills: [
-			{
-				name: '白兵',
-				column: 'Melee'
-			}, {
-				name: '回避',
-				column: 'Dodge'
-			}
-		],
-		extendableSkill: {
-			name: '運転',
-			column: 'Ride'
-		}
-	}, {
-		name: '感覚',
-		column: 'Sense',
-		skills: [
-			{
-				name: '射撃',
-				column: 'Ranged'
-			}, {
-				name: '知覚',
-				column: 'Percept'
-			}
-		],
-		extendableSkill: {
-			name: '芸術',
-			column: 'Art'
-		}
-	}, {
-		name: '精神',
-		column: 'Mind',
-		skills: [
-			{
-				name: 'RC',
-				column: 'RC'
-			}, {
-				name: '意志',
-				column: 'Will'
-			}
-		],
-		extendableSkill: {
-			name: '知識',
-			column: 'Know'
-		}
-	}, {
-		name: '社会',
-		column: 'Social',
-		skills: [
-			{
-				name: '交渉',
-				column: 'Negotiate'
-			}, {
-				name: '調達',
-				column: 'Procure'
-			}
-		],
-		extendableSkill: {
-			name: '情報',
-			column: 'Info'
-		}
-	}
-];

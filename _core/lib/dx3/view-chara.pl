@@ -6,55 +6,202 @@ use open ":utf8";
 use HTML::Template;
 
 ### データ読み込み ###################################################################################
+require $set::data_syndrome;
 
 ### テンプレート読み込み #############################################################################
 my $SHEET;
 $SHEET = HTML::Template->new( filename => $set::skin_sheet, utf8 => 1,
+  path => ['./', $::core_dir."/skin/dx3", $::core_dir."/skin/_common", $::core_dir],
+  search_path_on_include => 1,
   loop_context_vars => 1,
   die_on_bad_params => 0, die_on_missing_include => 0, case_sensitive => 1, global_vars => 1);
 
-
-$SHEET->param("backupMode" => param('backup') ? 1 : 0);
-
 ### キャラクターデータ読み込み #######################################################################
-my $id = param('id');
-my $conv_url = param('url');
-my $file = $main::file;
+our %pc = pcDataGet();
 
-our %pc = ();
-if($id){
-  my $datafile = "${set::char_dir}${file}/data.cgi";
-     $datafile = "${set::char_dir}${file}/backup/".param('backup').'.cgi' if param('backup');
-  open my $IN, '<', $datafile or error 'キャラクターシートがありません。';
-  $_ =~ s/(.*?)<>(.*?)\n/$pc{$1} = $2;/egi while <$IN>;
-  close($IN);
+### 閲覧禁止データ ###################################################################################
+if($::in{'checkView'}){ $::LOGIN_ID = ''; }
+
+if($pc{'forbidden'} && (getfile($::in{'id'},'',$::LOGIN_ID))[0]){
+  $pc{'forbiddenAuthor'} = 1;
 }
-elsif($conv_url){
-  require $set::lib_calc_char;
-  %pc = %::conv_data;
-  %pc = data_calc(\%pc);
-  $SHEET->param("convertMode" => 1);
-  $SHEET->param("convertUrl" => $conv_url);
-}
-
-$SHEET->param("id" => $id);
-
-### 置換 --------------------------------------------------
-foreach (keys %pc) {
-  if($_ =~ /^(?:freeNote|freeHistory)$/){
-    $pc{$_} = tag_unescape_lines($pc{$_});
+elsif($pc{'forbidden'}){
+  my $author = $pc{'playerName'};
+  my $protect   = $pc{'protect'};
+  my $forbidden = $pc{'forbidden'};
+  
+  if($forbidden eq 'all'){
+    %pc = ();
   }
-  $pc{$_} = tag_unescape($pc{$_});
+  if($forbidden ne 'battle'){
+    $pc{'aka'} = '';
+    $pc{'characterName'} = noiseText(6,14);
+    $pc{'group'} = $pc{'stage'} = $pc{'tags'} = '';
+  
+    $pc{'age'}    = noiseText(1,2);
+    $pc{'gender'} = noiseText(1,2);
+    $pc{'sign'}   = noiseText(3);
+    $pc{'height'} = noiseText(2);
+    $pc{'weight'} = noiseText(2);
+    $pc{'blood'}  = noiseText(2,3);
+    
+    $pc{'cover'} = noiseText(3,8);
+    
+    $pc{'freeNote'} = '';
+    foreach(1..int(rand 3)+2){
+      $pc{'freeNote'} .= '　'.noiseText(18,40)."\n";
+    }
+    $pc{'freeHistory'} = '';
+  }
+  
+  $pc{'works'} = noiseText(3,8);
+  
+  $pc{'expUsedStatus'} = noiseText(2);
+  $pc{'expUsedSkill'}  = noiseText(2);
+  $pc{'expUsedEffect'} = noiseText(2);
+  $pc{'expUsedItem'}   = noiseText(2);
+  $pc{'expUsedMemory'} = noiseText(2);
+  $pc{'expUsed'}       = noiseText(2);
+  $pc{'expRest'}       = noiseText(2);
+  $pc{'expTotal'}      = noiseText(2);
+  
+  if($forbidden ne 'battle'){
+    $pc{'lifepathOrigin'}          = noiseText(3,5);
+    $pc{'lifepathExperience'}      = noiseText(3,5);
+    $pc{'lifepathEncounter'}       = noiseText(3,5);
+    $pc{'lifepathOriginNote'}      = noiseText(8,16);
+    $pc{'lifepathExperienceNote'}  = noiseText(8,16);
+    $pc{'lifepathEncounterNote'}   = noiseText(8,16);
+  }
+  $pc{'lifepathAwaken'}          = noiseText(2);
+  $pc{'lifepathImpulse'}         = noiseText(2);
+  $pc{'lifepathAwakenNote'}      = noiseText(8,16);
+  $pc{'lifepathImpulseNote'}     = noiseText(8,16);
+  $pc{'lifepathOtherNote'}       = noiseText(8,16);
+  $pc{'lifepathAwakenEncroach'}  = noiseText(1);
+  $pc{'lifepathImpulseEncroach'} = noiseText(1);
+  $pc{'lifepathOtherEncroach'}   = noiseText(1);
+  $pc{'baseEncroach'} = noiseText(1,2);
+  $pc{'lifepathUrgeCheck'} = '';
+  
+  $pc{'breed'}       = noiseText(3);
+  $pc{'syndrome1'}   = noiseText(4,8);
+  $pc{'syndrome2'}   = noiseText(4,8);
+  $pc{'syndrome3'}   = noiseText(4,8);
+  
+  $pc{'sttTotalBody'}   = noiseText(1);
+  $pc{'sttTotalSense'}  = noiseText(1);
+  $pc{'sttTotalMind'}   = noiseText(1);
+  $pc{'sttTotalSocial'} = noiseText(1);
+  $pc{'maxHpTotal'}      = noiseText(1,2);
+  $pc{'initiativeTotal'} = noiseText(1,2);
+  $pc{'moveTotal'}       = noiseText(1,2);
+  $pc{'dashTotal'}       = noiseText(1,2);
+  $pc{'stockTotal'}      = noiseText(1,2);
+  $pc{'savingTotal'}     = noiseText(1,2);
+  
+  foreach my $name ('Melee','Ranged','RC','Negotiate','Dodge','Percept','Will','Procure'){
+    $pc{'skillTotal'.$name} = noiseText(1);
+  }
+  $pc{'skillNum'} = 0;
+  foreach my $name ('Ride','Art','Know','Info'){
+    foreach my $num (1 .. $pc{'skillNum'}){
+      $pc{'skill'.$name.$num.'Name'} = noiseText(4,8);
+      $pc{'skillTotal'.$name.$num} = noiseText(1);
+    }
+  }
+  
+  foreach(1..7){
+    $pc{'lois'.$_.'Relation'} = noiseText(2,4);
+    $pc{'lois'.$_.'Name'}     = noiseText(3,10);
+    $pc{'lois'.$_.'Note'}     = noiseText(3,16);
+    $pc{'lois'.$_.'EmoPosi'}  = noiseText(2,3);
+    $pc{'lois'.$_.'EmoNega'}  = noiseText(2,3);
+    $pc{'lois'.$_.'EmoPosiCheck'} = $pc{'lois'.$_.'EmoNegaCheck'} = $pc{'lois'.$_.'Color'} = $pc{'lois'.$_.'State'} = '';
+  }
+  
+  $pc{'effectNum'} = int(rand 4) + 8;
+  foreach(1..$pc{'effectNum'}){
+    $pc{'effect'.$_.'Type'}     = '';
+    $pc{'effect'.$_.'Name'}     = noiseText(5,10);
+    $pc{'effect'.$_.'Lv'}       = noiseText(1);
+    $pc{'effect'.$_.'Timing'}   = noiseText(4,7);
+    $pc{'effect'.$_.'Skill'}    = noiseText(2,6);
+    $pc{'effect'.$_.'Dfclty'}   = noiseText(1,2);
+    $pc{'effect'.$_.'Target'}   = noiseText(2,5);
+    $pc{'effect'.$_.'Range'}    = noiseText(2,3);
+    $pc{'effect'.$_.'Encroach'} = noiseText(1);
+    $pc{'effect'.$_.'Restrict'} = noiseText(2,3);
+    $pc{'effect'.$_.'Note'}     = noiseText(10,20);
+  }
+  $pc{'comboNum'} = int(rand 3) + 1;
+  foreach(1..$pc{'comboNum'}){
+    $pc{'combo'.$_.'Name'}     = noiseText(5,10);
+    $pc{'combo'.$_.'Combo'}    = noiseText(10,30);
+    $pc{'combo'.$_.'Timing'}   = noiseText(4,7);
+    $pc{'combo'.$_.'Skill'}    = noiseText(2,6);
+    $pc{'combo'.$_.'Dfclty'}   = noiseText(1,2);
+    $pc{'combo'.$_.'Target'}   = noiseText(2,5);
+    $pc{'combo'.$_.'Range'}    = noiseText(2,3);
+    $pc{'combo'.$_.'Encroach'} = noiseText(1);
+    $pc{'combo'.$_.'Note'}     = noiseText(10,20);
+    foreach my $i (1..2){
+      $pc{'combo'.$_.'Condition'.$i} = noiseText(3,4);
+      $pc{'combo'.$_.'Dice'.$i}  = noiseText(1,3);
+      $pc{'combo'.$_.'Crit'.$i}  = noiseText(1,3);
+      $pc{'combo'.$_.'Atk'.$i}   = noiseText(1,3);
+      $pc{'combo'.$_.'Fixed'.$i} = noiseText(1,3);
+    }
+    foreach my $i (3..4){
+      $pc{'combo'.$_.'Condition'.$i} = '';
+      $pc{'combo'.$_.'Dice'.$i}  = '';
+      $pc{'combo'.$_.'Crit'.$i}  = '';
+      $pc{'combo'.$_.'Atk'.$i}   = '';
+      $pc{'combo'.$_.'Fixed'.$i} = '';
+    }
+  }
+  $pc{'weaponNum'} = $pc{'armorNum'} = $pc{'itemNum'} = $pc{'historyNum'} = 0;
+  $pc{'history0Exp'} = noiseText(1,3);
+  
+  $pc{'playerName'} = $author;
+  $pc{'protect'} = $protect;
+  $pc{'forbidden'} = $forbidden;
+  $pc{'forbiddenMode'} = 1;
 }
 
-### コンバート --------------------------------------------------
+### 置換 #############################################################################################
+if($pc{'ver'}){
+  foreach (keys %pc) {
+    next if($_ =~ /^(?:imageURL|imageCopyrightURL)$/);
+    if($_ =~ /^(?:freeNote|freeHistory)$/){
+      $pc{$_} = tag_unescape_lines($pc{$_});
+    }
+    $pc{$_} = tag_unescape($pc{$_});
 
-### テンプレ用に変換 --------------------------------------------------
-while (my ($key, $value) = each(%pc)){
-  $SHEET->param("$key" => $value);
+    $pc{$_} = noiseTextTag $pc{$_} if $pc{'forbiddenMode'};
+  }
+}
+else {
+  $pc{'freeNote'} = $pc{'freeNoteView'} if $pc{'freeNoteView'};
+}
+
+### アップデート --------------------------------------------------
+if($pc{'ver'}){
+  %pc = data_update_chara(\%pc);
 }
 
 ### 出力準備 #########################################################################################
+### データ全体 --------------------------------------------------
+while (my ($key, $value) = each(%pc)){
+  $SHEET->param("$key" => $value);
+}
+### ID / URL--------------------------------------------------
+$SHEET->param("id" => $::in{'id'});
+
+if($::in{'url'}){
+  $SHEET->param("convertMode" => 1);
+  $SHEET->param("convertUrl" => $::in{'url'});
+}
 ### キャラクター名 --------------------------------------------------
 {
   my($name, $ruby) = split(/:/,$pc{'characterName'});
@@ -67,18 +214,23 @@ while (my ($key, $value) = each(%pc)){
 }
 ### プレイヤー名 --------------------------------------------------
 if($set::playerlist){
-  my $pl_id = (split(/-/, $id))[0];
+  my $pl_id = (split(/-/, $::in{'id'}))[0];
   $SHEET->param("playerName" => '<a href="'.$set::playerlist.'?id='.$pl_id.'">'.$pc{'playerName'}.'</a>');
 }
 ### グループ --------------------------------------------------
-if(!$pc{'group'}) {
-  $pc{'group'} = $set::group_default;
-  $SHEET->param(group => $set::group_default);
+if($::in{'url'}){
+  $SHEET->param(group => '');
 }
-foreach (@set::groups){
-  if($pc{'group'} eq @$_[0]){
-    $SHEET->param(groupName => @$_[2]);
-    last;
+else {
+  if(!$pc{'group'}) {
+    $pc{'group'} = $set::group_default;
+    $SHEET->param(group => $set::group_default);
+  }
+  foreach (@set::groups){
+    if($pc{'group'} eq @$_[0]){
+      $SHEET->param(groupName => @$_[2]);
+      last;
+    }
   }
 }
 
@@ -93,16 +245,29 @@ foreach(split(/ /, $pc{'tags'})){
 $SHEET->param(Tags => \@tags);
 
 ### セリフ --------------------------------------------------
-$pc{'words'} =~ s/^「/<span class="brackets">「<\/span>/g;
-$pc{'words'} =~ s/(.+?(?:[，、。？」]|$))/<span>$1<\/span>/g;
+$pc{'words'} =~ s/<br>/\n/g;
+$pc{'words'} =~ s/^([「『（])/<span class="brackets">$1<\/span>/gm;
+$pc{'words'} =~ s/(.+?(?:[，、。？」』）]|$))/<span>$1<\/span>/g;
+$pc{'words'} =~ s/\n/<br>/g;
 $SHEET->param("words" => $pc{'words'});
 $SHEET->param("wordsX" => ($pc{'wordsX'} eq '左' ? 'left:0;' : 'right:0;'));
 $SHEET->param("wordsY" => ($pc{'wordsY'} eq '下' ? 'bottom:0;' : 'top:0;'));
 
 ### ブリード --------------------------------------------------
 $SHEET->param("breed" => 
-  ($pc{'syndrome3'} ? 'トライ' : $pc{'syndrome2'} ? 'クロス' : $pc{'syndrome1'} ? 'ピュア' : '') . '<span>ブリード</span>'
+  ($pc{'breed'} ? $pc{'breed'} : $pc{'syndrome3'} ? 'トライ' : $pc{'syndrome2'} ? 'クロス' : $pc{'syndrome1'} ? 'ピュア' : '') . '<span>ブリード</span>'
 );
+
+### 能力値 --------------------------------------------------
+my %status = (0=>'body', 1=>'sense', 2=>'mind', 3=>'social');
+foreach my $num (keys %status){
+  my $name = $status{$num};
+  my $base = 0;
+  $base += $data::syndrome_status{$pc{'syndrome1'}}[$num];
+  $base += $pc{'syndrome2'} ? $data::syndrome_status{$pc{'syndrome2'}}[$num] : $base;
+  $SHEET->param("sttBase".ucfirst($name) => $base);
+}
+$SHEET->param("sttWorks".ucfirst($pc{'sttWorks'}) => 1);
 
 ### 技能 --------------------------------------------------
 foreach my $name ('Melee','Ranged','RC','Negotiate','Dodge','Percept','Will','Procure'){
@@ -144,6 +309,7 @@ foreach (1 .. 7){
     "NOTE"     => $pc{'lois'.$_.'Note'},
     "STATE"    => $pc{'lois'.$_.'State'},
   });
+  if($pc{'lois'.$_.'Name'} =~ /起源種|オリジナルレネゲイド/){ $SHEET->param(enchroachOrOn => 'checked'); }
 }
 $SHEET->param(Loises => \@loises);
 $SHEET->param(Skills => \@skills);
@@ -183,13 +349,13 @@ foreach (1 .. $pc{'effectNum'}){
     "ENCROACH" => textShrink(3,4,4,4,$pc{'effect'.$_.'Encroach'}),
     "RESTRICT" => $pc{'effect'.$_.'Restrict'},
     "NOTE"     => $pc{'effect'.$_.'Note'},
-    "EXP"      => $pc{'effect'.$_.'Exp'},
+    "EXP"      => ($pc{'effect'.$_.'Exp'} > 0 ? '+' : '').$pc{'effect'.$_.'Exp'},
   });
 }
 $SHEET->param(Effects => \@effects);
 sub textTiming {
   my $text = shift;
-  $text =~ s#[／\/]#<hr class="dotted">#g;
+  $text =~ s#[^<][／\/]#<hr class="dotted">#g;
   $text =~ s#(オート|メジャー|マイナー)(アクション)?#<span class="thin">$1<span class="shorten">アクション</span></span>#g;
   $text =~ s#リアク?(ション)?#<span class="thin">リア<span class="shorten">クション</span></span>#g;
   $text =~ s#(セットアップ|クリンナップ)(プロセス)?#<span class="thiner">$1<span class="shorten">プロセス</span></span>#g;
@@ -235,6 +401,10 @@ foreach (1 .. $pc{'comboNum'}){
     !$pc{'combo'.$_.'Range'} && !$pc{'combo'.$_.'Encroach'} && !$pc{'combo'.$_.'Note'} && 
     !$pc{'combo'.$_.'Dice1'} && !$pc{'combo'.$_.'Crit1'} && !$pc{'combo'.$_.'Atk1'} && !$pc{'combo'.$_.'Fixed1'}
   );
+  my $blankrow = 0;
+  if(!$pc{'combo'.$_.'Condition2'}){ $blankrow++; }
+  if(!$pc{'combo'.$_.'Condition3'}){ $blankrow++; }
+  if(!$pc{'combo'.$_.'Condition4'}){ $blankrow++; }
   push(@combos, {
     "NAME"     => textShrink(15,17,19,23,$pc{'combo'.$_.'Name'}),
     "COMBO"    => textCombo($pc{'combo'.$_.'Combo'}),
@@ -265,6 +435,7 @@ foreach (1 .. $pc{'comboNum'}){
     "CRIT4"      => $pc{'combo'.$_.'Crit4'},
     "ATK4"       => $pc{'combo'.$_.'Atk4'},
     "FIXED4"     => $pc{'combo'.$_.'Fixed4'},
+    "BLANKROW"   => $blankrow,
   });
 }
 $SHEET->param(Combos => \@combos);
@@ -371,6 +542,9 @@ foreach (1 .. $pc{'itemNum'}){
 }
 $SHEET->param(Items => \@items);
 
+### 侵食率 --------------------------------------------------
+$SHEET->param(currentEncroach => $pc{'baseEncroach'} =~ /^[0-9]+$/ ? $pc{'baseEncroach'} : 0);
+
 ### 履歴 --------------------------------------------------
 my @history;
 my $h_num = 0;
@@ -390,6 +564,9 @@ foreach (0 .. $pc{'historyNum'}){
   $pc{'history'.$_.'Member'} =~ s/((?:\G|>)[^<]*?)[,、]+/$1　/g;
   foreach my $mem (split(/　/,$pc{'history'.$_.'Member'})){
     $members .= '<span>'.$mem.'</span>';
+  }
+  if($_ && !$pc{'history'.$_.'ExpApply'}) {
+    $pc{'history'.$_.'Exp'} = '<s>'.$pc{'history'.$_.'Exp'}.'</s>';
   }
   push(@history, {
     "NUM"    => ($pc{'history'.$_.'Gm'} ? $h_num : ''),
@@ -411,7 +588,7 @@ $SHEET->param(colorBaseBgD => 15);
 
 
 ### バックアップ --------------------------------------------------
-opendir(my $DIR,"${set::char_dir}${file}/backup");
+opendir(my $DIR,"${set::char_dir}${main::file}/backup");
 my @backlist = readdir($DIR);
 closedir($DIR);
 my @backup;
@@ -431,12 +608,14 @@ $SHEET->param(Backup => \@backup);
 ### パスワード要求 --------------------------------------------------
 $SHEET->param(ReqdPassword => (!$pc{'protect'} || $pc{'protect'} eq 'password' ? 1 : 0) );
 
-### フェロー --------------------------------------------------
-$SHEET->param(FellowMode => param('f'));
-
 ### タイトル --------------------------------------------------
-$SHEET->param(characterNameTitle => tag_delete( name_plain($pc{'characterName'}) ));
 $SHEET->param(title => $set::title);
+if($pc{'forbidden'} eq 'all' && $pc{'forbiddenMode'}){
+  $SHEET->param(characterNameTitle => '非公開データ');
+}
+else {
+  $SHEET->param(characterNameTitle => tag_delete name_plain $pc{'characterName'});
+}
 
 ### 種族名 --------------------------------------------------
 $pc{'race'} =~ s/［.*］//g;
@@ -445,30 +624,36 @@ $SHEET->param("race" => $pc{'race'});
 ### 画像 --------------------------------------------------
 my $imgsrc;
 if($pc{'convertSource'} eq 'キャラクターシート倉庫'){
-  ($imgsrc = $conv_url) =~ s/edit\.html/image/; 
+  ($imgsrc = $::in{'url'}) =~ s/edit\.html/image/; 
   require LWP::UserAgent;
   my $code = LWP::UserAgent->new->simple_request(HTTP::Request->new(GET => $imgsrc))->code == 200;
   $SHEET->param("image" => $code);
 }
 elsif($pc{'convertSource'} eq '別のゆとシートⅡ') {
-  $imgsrc = tag_delete $pc{'imageURL'};
+  $imgsrc = $pc{'imageURL'}."?$pc{'imageUpdate'}";
 }
 else {
-  $imgsrc = "${set::char_dir}${file}/image.$pc{'image'}?$pc{'imageUpdate'}";
+  $imgsrc = "${set::char_dir}${main::file}/image.$pc{'image'}?$pc{'imageUpdate'}";
 }
 $SHEET->param("imageSrc" => $imgsrc);
 
-if($pc{'imageFit'} =~ /^(percent|percentX)$/){
+if($pc{'imageFit'} eq 'percentY'){
+  $SHEET->param("imageFit" => 'auto '.$pc{'imagePercent'}.'%');
+}
+elsif($pc{'imageFit'} =~ /^percentX?$/){
   $SHEET->param("imageFit" => $pc{'imagePercent'}.'%');
 }
-elsif($pc{'imageFit'} eq 'percentY'){
-  $SHEET->param("imageFit" => 'auto '.$pc{'imagePercent'}.'%');
+
+## 権利表記
+if($pc{'imageCopyrightURL'}){
+  $pc{'imageCopyright'} = $pc{'imageCopyrightURL'} if !$pc{'imageCopyright'};
+  $SHEET->param(imageCopyright => "<a href=\"$pc{'imageCopyrightURL'}\" target=\"_blank\">$pc{'imageCopyright'}</a>");
 }
 
 ### OGP --------------------------------------------------
-$SHEET->param(ogUrl => url()."?=id".$id);
+$SHEET->param(ogUrl => url().($::in{'url'} ? "?url=$::in{'url'}" : "?id=$::in{'id'}"));
 if($pc{'image'}) { $SHEET->param(ogImg => url()."/".$imgsrc); }
-$SHEET->param(ogDescript => "性別:$pc{'gender'}　年齢:$pc{'age'}　ワークス:$pc{'works'}　シンドローム:$pc{'syndrome1'} $pc{'syndrome2'} $pc{'syndrome3'}");
+$SHEET->param(ogDescript => tag_delete "性別:$pc{'gender'}　年齢:$pc{'age'}　ワークス:$pc{'works'}　シンドローム:$pc{'syndrome1'} $pc{'syndrome2'} $pc{'syndrome3'}");
 
 ### バージョン等 --------------------------------------------------
 $SHEET->param("ver" => $::ver);

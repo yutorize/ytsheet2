@@ -59,7 +59,6 @@ my $properties;
 $properties .= $_."\n" foreach( $pc{'chatPalettePropertiesAll'} ? paletteProperties($type) : palettePropertiesUsedOnly($pc{'chatPalette'},$type) );
 
 $properties =~ s/\n+$//g;
-$properties = "### ■パラメータ\n".$properties if $properties;
 
 ### 出力 #############################################################################################
 print "Content-type: text/plain; charset=UTF-8\n\n";

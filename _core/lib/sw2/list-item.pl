@@ -15,11 +15,13 @@ my $mode = param('mode');
 ### テンプレート読み込み #############################################################################
 my $INDEX;
 $INDEX = HTML::Template->new( filename  => $set::skin_tmpl , utf8 => 1,
-  path => ['./', $::core_dir],
+  path => ['./', $::core_dir."/skin/sw2", $::core_dir."/skin/_common", $::core_dir],
+  search_path_on_include => 1,
   die_on_bad_params => 0, die_on_missing_include => 0, case_sensitive => 1, global_vars => 1);
 
 $INDEX->param(modeItemList => 1);
 $INDEX->param(modeMylist => 1) if $mode eq 'mylist';
+$INDEX->param(typeName => 'アイテム');
 
 $INDEX->param(LOGIN_ID => $LOGIN_ID);
 $INDEX->param(OAUTH_MODE => $set::oauth_service);
@@ -52,6 +54,15 @@ open (my $FH, "<", $set::itemlist);
 my @list = sort { (split(/<>/,$b))[3] <=> (split(/<>/,$a))[3] } <$FH>;
 close($FH);
 
+## 非表示除外
+if (
+     !($set::masterid && $set::masterid eq $LOGIN_ID)
+  && !($mode eq 'mylist')
+  && !param('tag')
+){
+  @list = grep { !(split(/<>/))[13] } @list;
+}
+
 ## 分類検索
 my $category_query = Encode::decode('utf8', param('category'));
 if($category_query && param('category') ne 'all') {
@@ -76,7 +87,7 @@ foreach (@list) {
   my (
     $id, undef, undef, $updatetime, $name, $author, $category, $price, $age, $summary, $type,
     $image, $tag, $hide
-  ) = (split /<>/, $_)[0..16];
+  ) = (split /<>/, $_)[0..13];
   
   if($mode eq 'mylist'){
     if(grep {$_ eq $id} @mylist){
@@ -85,21 +96,21 @@ foreach (@list) {
     }
   }
   
-  if (
-       !($set::masterid && $set::masterid eq $LOGIN_ID)
-    && !($mode eq 'mylist')
-    && !$tag_query
-  ){
-    next if $hide;
-  }
   
+  #カウント
+  $count{'すべて'}++;
+  #最大表示制限
+  next if ($index_mode && $count{'すべて'} > $set::list_maxline && $set::list_maxline);
+  
+  #グループ（分類）
   $category =~ s/[ 　]/<br>/g;
   
-  
+  #更新日時
   my ($min,$hour,$day,$mon,$year) = (localtime($updatetime))[1..5];
   $year += 1900; $mon++;
   $updatetime = sprintf("<span>%04d-</span><span>%02d-%02d</span> <span>%02d:%02d</span>",$year,$mon,$day,$hour,$min);
   
+  #出力用配列へ
   my @characters;
   push(@characters, {
     "ID" => $id,
@@ -114,9 +125,7 @@ foreach (@list) {
     "HIDE" => $hide,
   });
   
-  $category = 'すべて';
-  $count{$category}++;
-  push(@{$grouplist{$category}}, @characters) if !($index_mode && $count{$category} > $set::list_maxline && $set::list_maxline);
+  push(@{$grouplist{'すべて'}}, @characters);
 }
 
 my @characterlists; 
