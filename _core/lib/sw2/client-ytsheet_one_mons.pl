@@ -2,6 +2,7 @@ use HTML::Parser ();
 use LWP::UserAgent;
 
 sub get_parsed_enemy_data_from_ytsheet_one_mons {
+  my $url = @_[0];
   my %simple_column_table = (
     '知能' => 'intellect',
     '知覚' => 'perception',
@@ -19,9 +20,8 @@ sub get_parsed_enemy_data_from_ytsheet_one_mons {
   my @parts_columns = ("Style", "Accuracy", "Damage", "Evasion", "Defense", "Hp", "Mp");
 
   my $browser = LWP::UserAgent->new;
-  my $response = $browser->get("https://yutorize.2-d.jp/ms_sw2/s/data/1579365932.html");
+  my $response = $browser->get($url);
   my $parse_target_html = $response->content;
-  print $parse_target_html;
   my %result = ();
   my $mode = "";
   my $partsCount = -1;
@@ -36,18 +36,17 @@ sub get_parsed_enemy_data_from_ytsheet_one_mons {
   $parser->parse($parse_target_html);
 
   sub ytsheet_one_mons_when_open_tag_found {
-    my ($self, $tagname, $attr) = @_;
-    print "$tagname: $attr $attr[class] $attr{class} $attr[0]\n";
+    my ($self, $tagname, %attr) = @_;
     if($tagname eq 'title') {
       $mode = $tagname;
     }
-    elsif($attr{class} eq "statu") {
+    elsif($_[2]{class} eq "statu") {
       $mode = "parts";
-      print "parts start\n";
     }
     elsif($tagname eq 'tr' && $mode eq 'parts') {
       $partsCount++;
       $partsInternalCursor = 0;
+      $result['statusNum'] = $partsInternalCursor;
     }
   }
 
@@ -62,15 +61,20 @@ sub get_parsed_enemy_data_from_ytsheet_one_mons {
     my ($self, $text) = @_;
     if($mode eq 'title') {
       my @title = split(/：/, $text);
-      $result{'monsterName'} = $title[0];
+      $result{'monsterName'} = "$title[0]";
       $result{'taxa'} = $title[1];
       $result{'lv'} = $title[2];
       $result{'lv'} =~ s/レベル//;
     }
-    elsif($mode eq 'parts' && ($partCount > 0) ) {
+    elsif($mode eq 'parts' && ($partsCount > 0) ) {
       if($parts_columns[$partsInternalCursor] eq "Accuracy" || $parts_columns[$partsInternalCursor] eq "Evasion") {
-        $result{"status$partsCount$parts_columns[$partsInternalCursor]"} = $text;
-        $result{"status$partsCount$parts_columns[$partsInternalCursor]Fix"} = $text;
+        if($text =~ /(\d+)\((\d+)\)/) {
+          $result{"status$partsCount$parts_columns[$partsInternalCursor]"} = $1;
+          $result{"status$partsCount$parts_columns[$partsInternalCursor]Fix"} = $2;
+        } else {
+          $result{"status$partsCount$parts_columns[$partsInternalCursor]"} = "-";
+          $result{"status$partsCount$parts_columns[$partsInternalCursor]Fix"} = "-";
+        }
       } else {
         $result{"status$partsCount$parts_columns[$partsInternalCursor]"} = $text;
       }
@@ -101,8 +105,7 @@ sub get_parsed_enemy_data_from_ytsheet_one_mons {
       if($text =~ /(\d+)\((\d+)\)/) {
         $result{$parentheses_column_table{$mode}{raw}} = $1;
         $result{$parentheses_column_table{$mode}{fix}} = $2;
-      }
-      else {
+      } else {
         $result{$parentheses_column_table{$mode}{raw}} = "-";
         $result{$parentheses_column_table{$mode}{fix}} = "-";
       }
@@ -112,12 +115,12 @@ sub get_parsed_enemy_data_from_ytsheet_one_mons {
   }
   while (my ($key, $value) = each(%result)) {
     # JavaScript でいう所の String#trim() を行っている
-    $result{$key} =~ s/^[ 　\t\n\r\f]*(.*?)[ 　\t\n\r\f]*$/$1/;
+    $result{$key} =~ s/^\s*(.*?)[\s　]*$/$1/;
   }
   return %result;
 }
 
-my %result = get_parsed_enemy_data_from_ytsheet_one_mons();
+my %result = get_parsed_enemy_data_from_ytsheet_one_mons($ARGV[0]);
 while (my ($key, $value) = each(%result)) {
   print "$key = [$value]\n";
 }
