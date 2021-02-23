@@ -90,6 +90,25 @@ sub get_parsed_enemy_data_from_ytsheet_one_mons {
       $result{'reputation+'} = $reputations[1];
       $mode = "";
     }
+    elsif($text eq '部位数') {
+      $mode = "partsList"
+    }
+    elsif($mode eq 'partsList') {
+      if($text =~ /^:\d+（(.*)）　$/) {
+        $result{'parts'} = $1;
+      } else {
+        $result{'parts'} = '-';
+      }
+      $mode = "";
+    }
+    elsif($text eq 'コア部位') {
+      $mode = "corePartsInfo"
+    }
+    elsif($mode eq 'corePartsInfo') {
+      $result{'coreParts'} = $text;
+      $result{'coreParts'} =~ s/://;
+      $mode = "";
+    }
     elsif($simple_column_table{$text}) {
       $mode = $text;
     }
