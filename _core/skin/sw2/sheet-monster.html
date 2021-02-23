@@ -3,15 +3,16 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>
-  <TMPL_IF forbidden>
-    非公開データ
-  <TMPL_ELSE>
-    <TMPL_IF characterNameTitle><TMPL_VAR characterNameTitle>（<TMPL_VAR monsterNameTitle>）<TMPL_ELSE><TMPL_VAR monsterNameTitle></TMPL_IF>
-  </TMPL_IF>
-   - <TMPL_VAR title>
-  </title>
+  <title><TMPL_IF characterNameTitle><TMPL_VAR characterNameTitle>（<TMPL_VAR monsterNameTitle>）<TMPL_ELSE><TMPL_VAR monsterNameTitle></TMPL_IF> - <TMPL_VAR title></title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta property="og:title" content="<TMPL_IF characterNameTitle><TMPL_VAR characterNameTitle><TMPL_ELSE><TMPL_VAR monsterNameTitle></TMPL_IF> - <TMPL_VAR title>">
+  <meta property="og:type" content="artcle">
+  <meta property="og:url" content="<TMPL_VAR ogUrl>">
+  <meta property="og:site_name" content="<TMPL_VAR title>">
+  <meta property="og:description" content="<TMPL_VAR ogDescript>">
+  <TMPL_IF ogImg><meta property="og:image" content="<TMPL_VAR ogImg>"></TMPL_IF>
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@yutorize">
   <link rel="stylesheet" media="all" href="<TMPL_VAR coreDir>/skin/_common/css/base.css?<TMPL_VAR ver>">
   <link rel="stylesheet" media="all" href="<TMPL_VAR coreDir>/skin/_common/css/sheet.css?<TMPL_VAR ver>">
   <link rel="stylesheet" media="all" href="<TMPL_VAR coreDir>/skin/sw2/css/monster.css?<TMPL_VAR ver>">
@@ -19,75 +20,10 @@
   <script>
 const sheetId = '<TMPL_VAR id>';
 const paletteTool = '<TMPL_VAR paletteTool>';
+const generateType = 'SwordWorld2Enemy';
+const defaultImage = '<TMPL_VAR coreDir>/skin/sw2/img/default_enemy.png';
 
-function getJsonData() {
-  return new Promise((resolve, reject)=>{
-    let xhr = new XMLHttpRequest();
-    xhr.open('GET', `${location.href}&mode=json`, true);
-    xhr.responseType = "json";
-    xhr.onload = (e) => {
-      resolve(e.currentTarget.response);
-    };
-    xhr.onerror = () => reject('error');
-    xhr.onabort = () => reject('abort');
-    xhr.ontimeout = () => reject('timeout');
-    xhr.send();
-  });
-}
-
-function generateUdonariumZipFile(title, data, image){
-  return new Promise((resolve, dummy)=>{
-    let zip = new JSZip();
-    let folder = zip.folder(title);
-    if(image.hash) {
-      folder.file(image.fileName, image.data);
-    }
-    folder.file(`${title}.xml`, data, {binary: false});
-    zip.generateAsync({ type: "blob" }).then(blob => {
-      const dataUrl = URL.createObjectURL(blob);
-      resolve(dataUrl);
-    });
-  });
-}
-
-function generateCcfoliaZipFile(title, data){
-  return new Promise((resolve, dummy)=>{
-    let zip = new JSZip();
-    zip.file("__data.json", data, {binary: false});
-    zip.file(".token", `0.${io.github.shunshun94.trpg.ccfolia.generateRndStr()}`);
-    zip.generateAsync({ type: "blob", compression: "DEFLATE", compressionOptions: {level: 9}}).then(blob => {
-      const dataUrl = URL.createObjectURL(blob);
-      resolve(dataUrl);
-    });
-  });
-}
-
-function downloadFile(title, url) {
-  const a = document.createElement("a");
-  document.body.appendChild(a);
-  a.download = title;
-  a.href = url;
-  a.click();
-  a.remove();
-  URL.revokeObjectURL(url);
-}
-
-function getAbsoluteUrl(path) {
-  const dummyLink = document.createElement('a');
-  dummyLink.href = path;
-  return dummyLink.href;
-}
-
-async function downloadAsUdonarium() {
-  const characterDataJson = await getJsonData();
-  const characterId = characterDataJson.birthTime;
-  const image = await io.github.shunshun94.trpg.udonarium.getPicture('<TMPL_VAR coreDir>/skin/sw2/img/default_enemy.png');
-  const udonariumXml = io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2SwordWorldEnemy(characterDataJson, location.href, image.hash);
-  const udonariumUrl = await generateUdonariumZipFile(characterDataJson.characterName, udonariumXml, image);
-  downloadFile(`udonarium_data_${characterId}.zip`, udonariumUrl);
-}
-
-async function downloadAsCcfolia() {
+async function downloadAsCcfoliaE() {
   const characterDataJson = await getJsonData();
   const characterId = characterDataJson.birthTime;
   const rawCount = window.prompt(`${characterDataJson.characterName || characterDataJson.monsterName}を一度に何体生成しますか？`, '1');
@@ -99,29 +35,14 @@ async function downloadAsCcfolia() {
     alert('1度に作れるのは26体までです');
     return;
   }
-  const json = io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2SwordWorldEnemies(count, characterDataJson, location.href, getAbsoluteUrl('<TMPL_VAR coreDir>/skin/sw2/img/default_enemy.png'));
+  const json = io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2SwordWorld2Enemies(count, characterDataJson, location.href, getAbsoluteUrl(defaultImage));
   const ccfoliaUrl = await generateCcfoliaZipFile(characterId, json);
   downloadFile(`ccfolia_data_${characterId}.zip`, ccfoliaUrl);
 }
 
-async function donloadAsText() {
-  const characterDataJson = await getJsonData();
-  const characterId = characterDataJson.birthTime;
-  const textData = io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2SwordWorldEnemy(characterDataJson);
-  const textUrl = window.URL.createObjectURL(new Blob([ textData ], { "type" : 'text/plain;charset=utf-8;' }));
-  downloadFile(`data_${characterId}.txt`, textUrl);
-}
-
-async function donloadAsJson() {
-  const characterDataJson = await getJsonData();
-  const characterId = characterDataJson.birthTime;
-  const jsonUrl = window.URL.createObjectURL(new Blob([ JSON.stringify(characterDataJson) ], { "type" : 'text/json;charset=utf-8;' }));
-  downloadFile(`data_${characterId}.json`, jsonUrl);
-}
-
 <TMPL_IF error>
 window.onload = function() {
-  document.getElementById("login-form").style.top = '5rem';
+  editOn();
   setTimeout(function(){
     document.getElementById("error").style.opacity = 0;
     document.getElementById("error").style.top = '-5rem';
@@ -129,7 +50,7 @@ window.onload = function() {
 };
 </TMPL_IF>
   </script>
-  <TMPL_INCLUDE NAME="../../skin-add/head.html">
+  <TMPL_INCLUDE NAME="skin-add/sheet-head.html">
 </head>
 <body>
   <script src="<TMPL_VAR coreDir>/skin/_common/js/common.js?<TMPL_VAR ver>"></script>
@@ -146,13 +67,28 @@ window.onload = function() {
     <nav>
       <ul>
         <li class="small"><a href="./?type=m">⏎</a></li>
-        <li class="small"><a onclick="chatPaletteOn();"><span>パレット</span></a></li>
-        <li class="small"><a onclick="donwloadListOn();">保存</a></li>
-        <li class="small"><a onclick="backuplistOn()"><span>過去ログ</span></a></li>
-        <TMPL_IF ReqdPassword>
-        <li class="small"><a onclick="editOn()">編集</a></li>
+        <TMPL_IF convertMode>
+          <li><a href="./?mode=convert&url=<TMPL_VAR convertUrl>"><span>コンバート</span></a></li>
         <TMPL_ELSE>
-        <li class="small"><a href="./?mode=edit&id=<TMPL_VAR id>&type=m">編集</a></li>
+          <TMPL_IF backupId>
+            <li class="small"><a onclick="backuplistOn()"><span>過去ログ</span></a></li>
+            <TMPL_IF ReqdPassword>
+              <li class="small"><a onclick="editOn()">復元</a></li>
+            <TMPL_ELSE>
+              <li class="small"><a href="./?mode=edit&id=<TMPL_VAR id>&backup=<TMPL_VAR backupId>&type=m">復元</a></li>
+            </TMPL_IF>
+          <TMPL_ELSE>
+            <TMPL_UNLESS forbiddenMode>
+              <li class="small"><a onclick="chatPaletteOn();"><span>パレット</span></a></li>
+              <li class="small"><a onclick="donwloadListOn();">保存</a></li>
+              <li class="small"><a onclick="backuplistOn()"><span>過去ログ</span></a></li>
+            </TMPL_UNLESS>
+            <TMPL_IF ReqdPassword>
+              <li class="small"><a onclick="editOn()">編集</a></li>
+            <TMPL_ELSE>
+              <li class="small"><a href="./?mode=edit&id=<TMPL_VAR id>&type=m">編集</a></li>
+            </TMPL_IF>
+          </TMPL_IF>
         </TMPL_IF>
         <li class="small"><a onclick="nightModeChange()" title="ナイトモード">☾✧</a></li>
       </ul>
@@ -167,39 +103,45 @@ window.onload = function() {
   </aside>
   </TMPL_IF>
   
-  <aside id="backuplist" class="float-box">
-    <h2>過去ログ</h2>
-    <ul>
-      <li<TMPL_UNLESS backupMode> class="backup-now"</TMPL_UNLESS>><a href="?id=<TMPL_VAR id>">最新</a></li>
-      <TMPL_LOOP Backup><li<TMPL_IF NOW> class="backup-now"</TMPL_IF>><a href="?id=<TMPL_VAR id>&backup=<TMPL_VAR URL>"><TMPL_VAR DATE></a></li></TMPL_LOOP>
-    </ul>
-  </aside>
+  <TMPL_UNLESS forbiddenMode>
+    <aside id="backuplist" class="float-box">
+      <h2>過去ログ（バックアップ）</h2>
+      <ul>
+        <li<TMPL_UNLESS backupId> class="backup-now"</TMPL_UNLESS>><a href="?id=<TMPL_VAR id>">最新</a></li>
+        <TMPL_LOOP Backup><li<TMPL_IF NOW> class="backup-now"</TMPL_IF>><a href="?id=<TMPL_VAR id>&backup=<TMPL_VAR URL>"><TMPL_VAR DATE></a></li></TMPL_LOOP>
+      </ul>
+    </aside>
 
-  <aside id="downloadlist" class="float-box">
-    <h2>保存</h2>
-    <ul>
-      <li id="downloadlist-udonarium"><a onclick="downloadAsUdonarium();">ユドナリウム向けのデータ</a></li>
-      <li id="downloadlist-ccfolia"><a onclick="downloadAsCcfolia();">ココフォリア向けのデータ</a></li>
-      <li id="downloadlist-text"><a onclick="donloadAsText();">テキスト形式</a></li>
-      <li id="downloadlist-json"><a onclick="donloadAsJson();">JSON 形式</a></li>
-    </ul>
-  </aside>
+    <aside id="downloadlist" class="float-box">
+      <h2>保存</h2>
+      <ul>
+        <li id="downloadlist-udonarium"><a onclick="downloadAsUdonarium();">ユドナリウム向けのデータ</a></li>
+        <li id="downloadlist-ccfolia"><a onclick="downloadAsCcfoliaE();">ココフォリア向けのデータ</a></li>
+        <li id="downloadlist-text"><a onclick="donloadAsText();">テキスト形式</a></li>
+        <li id="downloadlist-json"><a onclick="donloadAsJson();">JSON 形式</a></li>
+      </ul>
+    </aside>
+  </TMPL_UNLESS>
 
   <form id="login-form" class="float-box" method="post" action="./">
     <input type="hidden" name="mode" value="edit">
     <input type="hidden" name="type" value="m">
     <input type="hidden" name="id" value="<TMPL_VAR id>">
     <input type="password" name="pass" placeholder="password">
+    <input type="hidden" name="backup" value="<TMPL_VAR backupId>">
     <input type="submit" value="編集">
   </form>
 
-  <TMPL_IF forbidden>
-  <main><article><p>閲覧が禁止されています。</p></article></main>
-  <TMPL_ELSE>
   <main>
-    <TMPL_IF backupMode><aside class="information">
+    <TMPL_IF forbidden><aside class="information attention">
+      閲覧が制限されているデータです。<br>
+      <TMPL_IF forbiddenAuthor>あなた以外には一部または全てのデータが伏せられます。(<a href="./?id=<TMPL_VAR id>&checkView=1">⇒確認</a>)</TMPL_IF>
+    </aside></TMPL_IF>
+    
+    <TMPL_IF backupId><aside class="information">
       <TMPL_VAR updateTime> 時点のバックアップデータです。
     </aside></TMPL_IF>
+    
     <TMPL_IF convertMode><aside class="information">
       <a href="<TMPL_VAR convertUrl>" target="_blank"><TMPL_VAR convertSource></a> のデータを表示しています。
     </aside></TMPL_IF>
@@ -290,9 +232,11 @@ window.onload = function() {
       <div id="author">
         製作者：<TMPL_VAR author>
       </div>
+      <TMPL_UNLESS forbiddenMode>
       <div id="link-tag">
-        ゆとシート内リンク用タグ：<input type="text" onclick="this.select()" value="[<TMPL_IF characterNameTitle><TMPL_VAR characterNameTitle>（<TMPL_VAR monsterNameTitle>）<TMPL_ELSE><TMPL_VAR monsterNameTitle></TMPL_IF>#<TMPL_VAR id>]">
+        ゆとシート内リンク用タグ：<input type="text" onclick="this.select()" value="[<TMPL_VAR rawName>#<TMPL_VAR id>]">
       </div>
+      </TMPL_UNLESS>
       <section class="box chat-palette float-box">
         <h2>チャットパレット</h2>
         <div class="chat-palette-menu">
@@ -308,7 +252,7 @@ window.onload = function() {
       <img src="<TMPL_VAR imageSrc>" id="image-box-image">
     </div></TMPL_IF> 
   </main>
-  </TMPL_IF>
+  <TMPL_INCLUDE NAME="skin-add/sheet-sidebar.html">
 
   <footer>
     <p class="notes"><span>『ソード・ワールド2.5』は、</span><span>「グループSNE」及び「KADOKAWA」の著作物です。</span></p>

@@ -85,6 +85,7 @@ io.github.shunshun94.trpg.ytsheet.getPicture = (src) => {
 		xhr.responseType = "blob";
 		xhr.onload = (e) => {
 			const fileName = src.slice(src.lastIndexOf("/") + 1);
+			const currentTarget = e.currentTarget;
 			if(! Boolean(jsSHA)) {
 				console.warn('To calculate SHA256 value of the picture, jsSHA is required: https://github.com/Caligatio/jsSHA');
 				resolve({ event:e, data: e.currentTarget.response, fileName: fileName, hash: '' });
@@ -94,7 +95,7 @@ io.github.shunshun94.trpg.ytsheet.getPicture = (src) => {
 				const sha = new jsSHA("SHA-256", 'ARRAYBUFFER');
 				sha.update(arraybuffer);
 				const hash = sha.getHash("HEX");
-				resolve({ event:e, data: e.currentTarget.response, fileName: fileName, hash: hash });
+				resolve({ event:e, data: currentTarget.response, fileName: fileName, hash: hash });
 				return;
 			});
 		};

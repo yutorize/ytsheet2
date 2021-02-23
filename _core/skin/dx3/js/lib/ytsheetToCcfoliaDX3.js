@@ -54,13 +54,13 @@ io.github.shunshun94.trpg.ccfolia.generateRndStr = () => {
 	return randomString;
 };
 
-io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2DoubleCrossPC = async (json, opt_sheetUrl = '', opt_defaultPictureUrl = io.github.shunshun94.trpg.ccfolia.CONSTS.DEFAULT_PC_PICTURE) => {
+io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2DoubleCross3PC = async (json, opt_sheetUrl = '', opt_defaultPictureUrl = io.github.shunshun94.trpg.ccfolia.CONSTS.DEFAULT_PC_PICTURE) => {
 	const result = io.github.shunshun94.trpg.ccfolia.getCharacterSeed();
 	const defaultPalette = await io.github.shunshun94.trpg.ytsheet.getChatPalette(opt_sheetUrl);
 	const character = {
-			name: json.characterName,
+			name: json.characterNameRaw || json.characterName,
 			playerName: json.playerName,
-			memo: `PL: ${json.playerName || 'PL情報無し'}\n${json.works || ''} / ${json.cover || ''}\n${json.syndrome1 || ''}${json.syndrome2 ? '、'+json.syndrome2 : ''}${json.syndrome3 ? '、'+json.syndrome3 : ''}\n\n${json.imageURL ? '立ち絵：' + (json.imageCopyright || '権利情報なし') : ''}`,
+			memo: `${json.characterNameRuby ? '('+json.characterNameRuby+')\n' :''}PL: ${json.playerName || 'PL情報無し'}\n${json.works || ''} / ${json.cover || ''}\n${json.syndrome1 || ''}${json.syndrome2 ? '、'+json.syndrome2 : ''}${json.syndrome3 ? '、'+json.syndrome3 : ''}\n\n${json.imageURL ? '立ち絵：' + (json.imageCopyright || '権利情報なし') : ''}`,
 			initiative: json.initiativeTotal || '0',
 			externalUrl: opt_sheetUrl,
 			status: [
@@ -74,8 +74,8 @@ io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2DoubleCrossPC
 					max: 300
 				}, {
 					label: 'ロイス',
-					value: 5,
-					max: 7
+					value: json.loisHave || 3,
+					max: json.loisMax || 7
 				}, {
 					label: '財産点',
 					value: json.savingTotal,
@@ -94,18 +94,18 @@ io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2DoubleCrossPC
 			commands: defaultPalette.palette || '',
 			speaking: true
 	};
-	io.github.shunshun94.trpg.ccfolia.consts.DX3_STATUS.forEach((s)=>{
+	io.github.shunshun94.trpg.ytsheet.consts.DX3_STATUS.forEach((s)=>{
 		character.params.push({
 			label: s.name, value: json['sttTotal' + s.column] || 0
 		});
 		s.skills.forEach((skill)=>{
 			character.params.push({
-				label: skill.name, value: json['skill' + skill.column] || 0
+				label: skill.name, value: json['skillTotal' + skill.column] || 0
 			});
 		});
 		let cursor = 1;
 		while(json[`skill${s.extendableSkill.column}${cursor}Name`]) {
-			character.params.push({label: json[`skill${s.extendableSkill.column}${cursor}Name`], value: json[`skill${s.extendableSkill.column}${cursor}`] || 0});
+			character.params.push({label: json[`skill${s.extendableSkill.column}${cursor}Name`], value: json[`skillTotal${s.extendableSkill.column}${cursor}`] || 0});
 			cursor++;
 		}
 	});
@@ -113,7 +113,7 @@ io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2DoubleCrossPC
 	if(defaultPalette === '') {
 		const palette = [];
 		palette.push(`現在の状態　HP:{HP} / 侵蝕率:{侵蝕率}`);
-		io.github.shunshun94.trpg.ccfolia.consts.DX3_STATUS.forEach((s)=>{
+		io.github.shunshun94.trpg.ytsheet.consts.DX3_STATUS.forEach((s)=>{
 			s.skills.forEach((skill)=>{
 				palette.push(`({${s.name}}+0+0)DX+({${skill.name}}+0)@(10-0) ${skill.name}`);
 			});
@@ -142,74 +142,3 @@ io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2DoubleCrossPC
 	result.entities.characters[json.id] = character;
 	return JSON.stringify(result);
 };
-
-io.github.shunshun94.trpg.ccfolia.consts = io.github.shunshun94.trpg.ccfolia.consts || {};
-io.github.shunshun94.trpg.ccfolia.consts.DX3_STATUS = [
-	{
-		name: '肉体',
-		column: 'Body',
-		skills: [
-			{
-				name: '白兵',
-				column: 'Melee'
-			}, {
-				name: '回避',
-				column: 'Dodge'
-			}
-		],
-		extendableSkill: {
-			name: '運転',
-			column: 'Ride'
-		}
-	}, {
-		name: '感覚',
-		column: 'Sense',
-		skills: [
-			{
-				name: '射撃',
-				column: 'Ranged'
-			}, {
-				name: '知覚',
-				column: 'Percept'
-			}
-		],
-		extendableSkill: {
-			name: '芸術',
-			column: 'Art'
-		}
-	}, {
-		name: '精神',
-		column: 'Mind',
-		skills: [
-			{
-				name: 'RC',
-				column: 'RC'
-			}, {
-				name: '意志',
-				column: 'Will'
-			}
-		],
-		extendableSkill: {
-			name: '知識',
-			column: 'Know'
-		}
-	}, {
-		name: '社会',
-		column: 'Social',
-		skills: [
-			{
-				name: '交渉',
-				column: 'Negotiate'
-			}, {
-				name: '調達',
-				column: 'Procure'
-			}
-		],
-		extendableSkill: {
-			name: '情報',
-			column: 'Info'
-		}
-	}
-];
-
-

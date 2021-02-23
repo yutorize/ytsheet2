@@ -81,10 +81,10 @@ io.github.shunshun94.trpg.ccfolia.getPcSkillList = (json) => {
 		{value:json.lvPhy, label:'フィジカルマスター'},
 		{value:json.lvGri, label:'グリモワール'},
 		{value:json.lvAri, label:'アリストクラシー'},
-		{value:json.lvArt, label:'アーティザン'}].filter((d)=>{return d.value});	
+		{value:json.lvArt, label:'アーティザン'}].filter((d)=>{return d.value});
 };
 
-io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2SwordWorldPC = async (json, opt_sheetUrl = '', opt_defaultPictureUrl = io.github.shunshun94.trpg.ccfolia.CONSTS.DEFAULT_PC_PICTURE) => {
+io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2SwordWorld2PC = async (json, opt_sheetUrl = '', opt_defaultPictureUrl = io.github.shunshun94.trpg.ccfolia.CONSTS.DEFAULT_PC_PICTURE) => {
 	const result = io.github.shunshun94.trpg.ccfolia.getCharacterSeed();
 	const skills = io.github.shunshun94.trpg.ccfolia.getPcSkillList(json);
 	const defaultPalette = await io.github.shunshun94.trpg.ytsheet.getChatPalette(opt_sheetUrl);
@@ -212,7 +212,7 @@ io.github.shunshun94.trpg.ccfolia.getPartsFromYtSheetEnemyWithPartsNum = (json, 
 	return result;
 };
 
-io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2SwordWorldEnemies = async (count, json, opt_sheetUrl = '', opt_defaultPictureUrl = io.github.shunshun94.trpg.ccfolia.CONSTS.DEFAULT_ENEMY_PICTURE) => {
+io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2SwordWorld2Enemies = async (count, json, opt_sheetUrl = '', opt_defaultPictureUrl = io.github.shunshun94.trpg.ccfolia.CONSTS.DEFAULT_ENEMY_PICTURE) => {
 	if(count > 26) {
 		throw "26体までしか一度に生成できません";
 	}

@@ -123,11 +123,11 @@ sub palettePreset {
       
       foreach my $pow (@{$pows{$id}}) {
         $text .= "k${pow}[{魔法C}]+{$name}+{魔力修正}".($::pc{'magicDamageAdd'.$id}?"+$::pc{'magicDamageAdd'.$id}":'')."+{魔法D修正} ダメージ".($bot{'BCD'}?"／${name}":"")."\n";
-        $text .= "k${pow}+{$name}+{魔力修正}//"  .($::pc{'magicDamageAdd'.$id}?"+$::pc{'magicDamageAdd'.$id}":'')."+{魔法D修正} 半減\n" if ($bot{'YTC'});
-        $text .= "hk${pow}+{$name}+{魔力修正} 半減／${name}\n" if ($bot{'BCD'});
+        if ($bot{'YTC'}) { $text .= "k${pow}[13]+{$name}+{魔力修正}//" . ($::pc{'magicDamageAdd'.$id}?"+$::pc{'magicDamageAdd'.$id}":'') . "+{魔法D修正} 半減\n"; }
+        if ($bot{'BCD'}) { $text .= "hk${pow}[13]+{$name}+{魔力修正} 半減／${name}\n"; }
       }
       foreach my $pow (@{$heals{$id}}) {
-        $text .= "k${pow}+{$name}+{魔力修正} 回復量".($bot{'BCD'}?"／${name}":"")."\n"
+        $text .= "k${pow}[13]+{$name}+{魔力修正} 回復量".($bot{'BCD'}?"／${name}":"")."\n"
       }
       $text .= "\n";
     }
@@ -148,8 +148,15 @@ sub palettePreset {
       $text .= "2d6+{命中$_}+{命中修正}";
       $text .= " 命中力／$::pc{'weapon'.$_.'Name'}\n";
       
-      if   ($bot{'YTC'} ){ $text .= "k$::pc{'weapon'.$_.'Rate'}\[$::pc{'weapon'.$_.'Crit'}+{C修正}\]+{追加D$_}+{武器修正}"; }
-      elsif($bot{'BCD'} ){ $text .= "k$::pc{'weapon'.$_.'Rate'}+{追加D$_}+{武器修正}\@($::pc{'weapon'.$_.'Crit'}+{C修正})"; }
+      $::pc{'weapon'.$_.'Crit'} =~ s/⑦|➆/7/;
+      $::pc{'weapon'.$_.'Crit'} =~ s/⑧|➇/8/;
+      $::pc{'weapon'.$_.'Crit'} =~ s/⑨|➈/9/;
+      $::pc{'weapon'.$_.'Crit'} =~ s/⑩|➉/10/;
+      $::pc{'weapon'.$_.'Crit'} =~ s/⑪/11/;
+      $::pc{'weapon'.$_.'Crit'} =~ s/⑫/12/;
+      $::pc{'weapon'.$_.'Crit'} =~ s/⑬/13/;
+      if   ($bot{'YTC'} ){ $text .= "k$::pc{'weapon'.$_.'Rate'}\[$::pc{'weapon'.$_.'Crit'}+{C修正}\]+{追加D$_}+{追加D修正}{出目修正}"; }
+      elsif($bot{'BCD'} ){ $text .= "k$::pc{'weapon'.$_.'Rate'}+{追加D$_}+{追加D修正}\@($::pc{'weapon'.$_.'Crit'}+{C修正}){出目修正}"; }
       
       if($::pc{'weapon'.$_.'Name'} =~ /首切/ || $::pc{'weapon'.$_.'Note'} =~ /首切/){
         $text .= $bot{'YTC'} ? '首切' : $bot{'BCD'} ? 'r5' : '';
@@ -159,7 +166,7 @@ sub palettePreset {
       $text .= "\n";
       $text .= "\n";
     }
-    $text .= "//武器修正={追加D修正}\#{必殺効果}\$+{クリレイ}\n";
+    $text .= "//出目修正=\#{必殺効果}\$+{クリレイ}\n";
     # 抵抗回避
     $text .= "### ■抵抗回避\n";
     $text .= "//生命抵抗修正=0\n";
@@ -167,7 +174,9 @@ sub palettePreset {
     $text .= "//回避修正=0\n";
     $text .= "2d6+{生命抵抗}+{生命抵抗修正} 生命抵抗力\n";
     $text .= "2d6+{精神抵抗}+{精神抵抗修正} 精神抵抗力\n";
-    $text .= "2d6+{回避}+{回避修正} 回避力\n";
+    $text .= "2d6+{回避1}+{回避修正} 回避力".($::pc{'defenseTotal1Note'}?"／$::pc{'defenseTotal1Note'}":'')."\n";
+    $text .= "2d6+{回避2}+{回避修正} 回避力".($::pc{'defenseTotal2Note'}?"／$::pc{'defenseTotal2Note'}":'')."\n" if $::pc{'defenseTotal2Eva'} ne '';
+    $text .= "2d6+{回避3}+{回避修正} 回避力".($::pc{'defenseTotal3Note'}?"／$::pc{'defenseTotal3Note'}":'')."\n" if $::pc{'defenseTotal3Eva'} ne '';
     $text .= "\n";
     
     #
@@ -263,11 +272,11 @@ sub palettePresetSimple {
       foreach my $pow (@{$pows{$id}}) {
         my $add  = $::pc{'magicDamageAdd'.$id} ? "+$::pc{'magicDamageAdd'.$id}" : '';
         $text .= "k${pow}[{魔法C}]+$base+{魔力修正}".$add."+{魔法D修正} ダメージ".($bot{'BCD'}?"／${name}":"")."\n";
-        $text .= "k${pow}+$base+{魔力修正}//".$add."+{魔法D修正} 半減\n" if ($bot{'YTC'});
-        $text .= "hk${pow}+$base+{魔力修正} 半減／${name}\n" if ($bot{'BCD'});
+        $text .= "k${pow}[13]+$base+{魔力修正}//".$add."+{魔法D修正} 半減\n" if ($bot{'YTC'});
+        $text .= "hk${pow}[13]+$base+{魔力修正} 半減／${name}\n" if ($bot{'BCD'});
       }
       foreach my $pow (@{$heals{$id}}) {
-        $text .= "k${pow}+$base+{魔力修正} 回復量".($bot{'BCD'}?"／${name}":"")."\n"
+        $text .= "k${pow}[13]+$base+{魔力修正} 回復量".($bot{'BCD'}?"／${name}":"")."\n"
       }
       $text .= "\n";
     }
@@ -295,8 +304,8 @@ sub palettePresetSimple {
       $::pc{'weapon'.$_.'Crit'} =~ s/⑪/11/;
       $::pc{'weapon'.$_.'Crit'} =~ s/⑫/12/;
       $::pc{'weapon'.$_.'Crit'} =~ s/⑬/13/;
-      if   ($bot{'YTC'} ){ $text .= "k$::pc{'weapon'.$_.'Rate'}\[$::pc{'weapon'.$_.'Crit'}+{C修正}\]+$::pc{'weapon'.$_.'DmgTotal'}+{武器修正}"; }
-      elsif($bot{'BCD'} ){ $text .= "k$::pc{'weapon'.$_.'Rate'}+$::pc{'weapon'.$_.'DmgTotal'}+{武器修正}\@($::pc{'weapon'.$_.'Crit'}+{C修正})"; }
+      if   ($bot{'YTC'} ){ $text .= "k$::pc{'weapon'.$_.'Rate'}\[$::pc{'weapon'.$_.'Crit'}+{C修正}\]+$::pc{'weapon'.$_.'DmgTotal'}+{追加D修正}{出目修正}"; }
+      elsif($bot{'BCD'} ){ $text .= "k$::pc{'weapon'.$_.'Rate'}+$::pc{'weapon'.$_.'DmgTotal'}+{追加D修正}\@($::pc{'weapon'.$_.'Crit'}+{C修正}){出目修正}"; }
       
       if($::pc{'weapon'.$_.'Name'} =~ /首切/ || $::pc{'weapon'.$_.'Note'} =~ /首切/){
         $text .= $bot{'YTC'} ? '首切' : $bot{'BCD'} ? 'r5' : '';
@@ -306,7 +315,7 @@ sub palettePresetSimple {
       $text .= "\n";
       $text .= "\n";
     }
-    $text .= "//武器修正={追加D修正}\#{必殺効果}\$+{クリレイ}\n";
+    $text .= "//出目修正=\#{必殺効果}\$+{クリレイ}\n";
     # 抵抗回避
     $text .= "### ■抵抗回避\n";
     $text .= "//生命抵抗修正=0\n";
@@ -314,7 +323,10 @@ sub palettePresetSimple {
     $text .= "//回避修正=0\n";
     $text .= "2d6+$::pc{'vitResistTotal'}+{生命抵抗修正} 生命抵抗力\n";
     $text .= "2d6+$::pc{'mndResistTotal'}+{精神抵抗修正} 精神抵抗力\n";
-    $text .= "2d6+$::pc{'defenseTotalAllEva'}+{回避修正} 回避力\n";
+    $text .= "2d6+$::pc{'defenseTotalAllEva'}+{回避修正} 回避力\n" if $::pc{'defenseTotalAllEva'} ne '';
+    $text .= "2d6+$::pc{'defenseTotal1Eva'}+{回避修正} 回避力".($::pc{'defenseTotal1Note'}?"／$::pc{'defenseTotal1Note'}":'')."\n" if $::pc{'defenseTotal2Eva'} ne '';
+    $text .= "2d6+$::pc{'defenseTotal2Eva'}+{回避修正} 回避力".($::pc{'defenseTotal2Note'}?"／$::pc{'defenseTotal2Note'}":'')."\n" if $::pc{'defenseTotal2Eva'} ne '';
+    $text .= "2d6+$::pc{'defenseTotal3Eva'}+{回避修正} 回避力".($::pc{'defenseTotal3Note'}?"／$::pc{'defenseTotal3Note'}":'')."\n" if $::pc{'defenseTotal3Eva'} ne '';
     $text .= "\n";
     
     #
@@ -348,43 +360,16 @@ sub paletteProperties {
   my @propaties;
   ## PC
   if  (!$type){
+    push @propaties, "### ■能力値";
     push @propaties, "//器用度=$::pc{'sttDex'}".($::pc{'sttAddA'}?"+$::pc{'sttAddA'}":"");
     push @propaties, "//敏捷度=$::pc{'sttAgi'}".($::pc{'sttAddB'}?"+$::pc{'sttAddB'}":"");
     push @propaties, "//筋力=$::pc{'sttStr'}".($::pc{'sttAddC'}?"+$::pc{'sttAddC'}":"");
     push @propaties, "//生命力=$::pc{'sttVit'}".($::pc{'sttAddD'}?"+$::pc{'sttAddD'}":"");
     push @propaties, "//知力=$::pc{'sttInt'}".($::pc{'sttAddE'}?"+$::pc{'sttAddE'}":"");
     push @propaties, "//精神力=$::pc{'sttMnd'}".($::pc{'sttAddF'}?"+$::pc{'sttAddF'}":"");
-    push @propaties, "//器用={器用度}";
-    push @propaties, "//敏捷={敏捷度}";
-    push @propaties, "//生命={生命力}";
-    push @propaties, "//精神={精神力}";
-    push @propaties, "//器用B=(({器用})/6)";
-    push @propaties, "//敏捷B=(({敏捷})/6)";
-    push @propaties, "//筋力B=(({筋力})/6)";
-    push @propaties, "//生命B=(({生命})/6)";
-    push @propaties, "//知力B=(({知力})/6)";
-    push @propaties, "//精神B=(({精神})/6)";
-    push @propaties, "//DEX={器用}";
-    push @propaties, "//AGI={敏捷}";
-    push @propaties, "//STR={筋力}";
-    push @propaties, "//VIT={生命}";
-    push @propaties, "//INT={知力}";
-    push @propaties, "//MND={精神}";
-    push @propaties, "//dexB={器用B}";
-    push @propaties, "//agiB={敏捷B}";
-    push @propaties, "//strB={筋力B}";
-    push @propaties, "//vitB={生命B}";
-    push @propaties, "//intB={知力B}";
-    push @propaties, "//mndB={精神B}";
-    push @propaties, '';
-    push @propaties, "//生命抵抗=({冒険者}+{生命B})".($::pc{'vitResistAddTotal'}?"+$::pc{'vitResistAddTotal'}":"");
-    push @propaties, "//精神抵抗=({冒険者}+{精神B})".($::pc{'mndResistAddTotal'}?"+$::pc{'mndResistAddTotal'}":"");
-    push @propaties, "//最大HP=$::pc{'hpTotal'}";
-    push @propaties, "//最大MP=$::pc{'mpTotal'}";
-    push @propaties, '';
+    push @propaties, "### ■技能レベル";
     push @propaties, "//冒険者レベル=$::pc{'level'}";
-    push @propaties, "//冒険者={冒険者レベル}";
-    push @propaties, "//LV={冒険者}";
+    my @classes_en;
     foreach (
       ['Fig','ファイター'],
       ['Gra','グラップラー'],
@@ -413,8 +398,41 @@ sub paletteProperties {
     ){
       next if !$::pc{'lv'.@$_[0]};
       push @propaties, "//@$_[1]=$::pc{'lv'.@$_[0]}";
-      push @propaties, "//".uc(@$_[0])."={@$_[1]}";
+      push @classes_en, "//".uc(@$_[0])."={@$_[1]}";
     }
+    push @propaties, '';
+    push @propaties, "### ■代入パラメータ";
+    push @propaties, "//器用={器用度}";
+    push @propaties, "//敏捷={敏捷度}";
+    push @propaties, "//生命={生命力}";
+    push @propaties, "//精神={精神力}";
+    push @propaties, "//器用B=(({器用})/6)";
+    push @propaties, "//敏捷B=(({敏捷})/6)";
+    push @propaties, "//筋力B=(({筋力})/6)";
+    push @propaties, "//生命B=(({生命})/6)";
+    push @propaties, "//知力B=(({知力})/6)";
+    push @propaties, "//精神B=(({精神})/6)";
+    push @propaties, "//DEX={器用}";
+    push @propaties, "//AGI={敏捷}";
+    push @propaties, "//STR={筋力}";
+    push @propaties, "//VIT={生命}";
+    push @propaties, "//INT={知力}";
+    push @propaties, "//MND={精神}";
+    push @propaties, "//dexB={器用B}";
+    push @propaties, "//agiB={敏捷B}";
+    push @propaties, "//strB={筋力B}";
+    push @propaties, "//vitB={生命B}";
+    push @propaties, "//intB={知力B}";
+    push @propaties, "//mndB={精神B}";
+    push @propaties, @classes_en;
+    push @propaties, '';
+    push @propaties, "//生命抵抗=({冒険者}+{生命B})".($::pc{'vitResistAddTotal'}?"+$::pc{'vitResistAddTotal'}":"");
+    push @propaties, "//精神抵抗=({冒険者}+{精神B})".($::pc{'mndResistAddTotal'}?"+$::pc{'mndResistAddTotal'}":"");
+    push @propaties, "//最大HP=$::pc{'hpTotal'}";
+    push @propaties, "//最大MP=$::pc{'mpTotal'}";
+    push @propaties, '';
+    push @propaties, "//冒険者={冒険者レベル}";
+    push @propaties, "//LV={冒険者}";
     push @propaties, '';
     #push @propaties, "//魔物知識=$::pc{'monsterLore'}" if $::pc{'monsterLore'};
     #push @propaties, "//先制力=$::pc{'initiative'}" if $::pc{'initiative'};
@@ -489,13 +507,28 @@ sub paletteProperties {
       push @propaties, '';
     }
     
-    push @propaties, "//回避=({$::pc{'evasionClass'}}+({敏捷})/6+".($::pc{'evasiveManeuver'}+$::pc{'armourEva'}+$::pc{'shieldEva'}+$::pc{'defOtherEva'}).")";
-    push @propaties, "//回避（盾なし）=({$::pc{'evasionClass'}}+({敏捷})/6+".($::pc{'evasiveManeuver'}+$::pc{'armourEva'}+$::pc{'defOtherEva'}).")";
-    push @propaties, "//防護=$::pc{'defenseTotalAllDef'}";
+    foreach my $i (1..3){
+      next if ($::pc{"defenseTotal${i}Eva"} eq '');
+      my $own_agi = $::pc{"defTotal${i}CheckShield1"} && $::pc{'shield1Own'} ? '+2' : '';
+      push @propaties, "//回避${i}=("
+        .($::pc{'evasionClass'} ? "{$::pc{'evasionClass'}}+({敏捷}${own_agi})/6+" : '')
+        .($::pc{'evasiveManeuver'}
+          + ($::pc{"defTotal${i}CheckArmour1"}   ? $::pc{'armour1Eva'} : 0)
+          + ($::pc{"defTotal${i}CheckShield1"}   ? $::pc{'shield1Eva'} : 0)
+          + ($::pc{"defTotal${i}CheckDefOther1"} ? $::pc{'defOther1Eva'} : 0)
+          + ($::pc{"defTotal${i}CheckDefOther2"} ? $::pc{'defOther2Eva'} : 0)
+          + ($::pc{"defTotal${i}CheckDefOther3"} ? $::pc{'defOther3Eva'} : 0)
+        )
+        .")";
+    }
+    push @propaties, "//防護1=".($::pc{'defenseTotal1Def'} || $::pc{'defenseTotalAllDef'} || 0);
+    push @propaties, "//防護2=$::pc{'defenseTotal2Def'}" if $::pc{'defenseTotal2Def'} ne '';
+    push @propaties, "//防護3=$::pc{'defenseTotal3Def'}" if $::pc{'defenseTotal3Def'} ne '';
     
   }
   ## 魔物
   elsif($type eq 'm') {
+    push @propaties, "### ■パラメータ";
     push @propaties, "//LV=$::pc{'lv'}";
     push @propaties, '';
     push @propaties, "//生命抵抗=$::pc{'vitResist'}";

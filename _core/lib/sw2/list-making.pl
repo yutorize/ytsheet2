@@ -15,10 +15,12 @@ my $page = param("page") * $page_items;
 ### テンプレート読み込み #############################################################################
 my $INDEX;
 $INDEX = HTML::Template->new( filename => $set::skin_tmpl, utf8 => 1,
-  path => ['./', $::core_dir],
+  path => ['./', $::core_dir."/skin/sw2", $::core_dir."/skin/_common", $::core_dir],
+  search_path_on_include => 1,
   die_on_bad_params => 0, die_on_missing_include => 0, case_sensitive => 1);
 
 $INDEX->param(modeMaking => 1) if param('mode') eq 'making';
+$INDEX->param(typeName => 'キャラ');
 
 $INDEX->param(name => (getplayername($LOGIN_ID))[0]);
 

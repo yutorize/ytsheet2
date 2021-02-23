@@ -1,10 +1,10 @@
 "use strict";
-const form = document.sheet;
-const sttTextOn = form.statusTextInput.checked ? 1 : 0;
+const gameSystem = 'sw2';
 
-const delConfirmText = '項目に値が入っています。本当に削除しますか？';
-
-// //
+window.onload = function() {
+  palettePresetChange();
+}
+// 各ステータス計算 ----------------------------------------
 function calcVit(){
   const val = form.vitResist.value;
   form.vitResistFix.value = (val == '') ? '' : Number(val) + 7;
@@ -37,7 +37,6 @@ function calcEvaF(Num){
   const val = form['status'+Num+'EvasionFix'].value;
   form['status'+Num+'Evasion'].value     = (val == '') ? '' : Number(val) - 7;
 }
-
 
 // ステータス欄 ----------------------------------------
 // 追加
@@ -186,52 +185,3 @@ let lootsItemSortable = Sortable.create(document.querySelector('#loots-item'), {
     }
   }
 });
-
-// チャットパレット ----------------------------------------
-palettePresetChange();
-function palettePresetChange (){
-  const tool = form.paletteTool.value || 'ytc';
-  const type = form.paletteUseVar.checked ? 'full' : 'simple';
-  let presetText = palettePresetText[tool][type];
-  if(!form.paletteUseBuff.checked){
-    let property = {};
-    presetText.split("\n").forEach(text => {
-      if(text.match(/^\/\/(.+?)=(.*?)$/)){ property[RegExp.$1] = RegExp.$2; }
-    });
-    let hit;
-    for (let i=0; i<100; i++) {
-      hit = 0;
-      Object.keys(property).forEach(key => {
-        presetText = presetText.replace(new RegExp('{'+key+'}',"g"), ()=>{
-          hit = 1;
-          return property[key];
-        });
-      });
-      if(!hit) break;
-    };
-    presetText = presetText.replace(/^\/\/(.+?)=(.*?)(\n|$)/gm, '');
-    presetText = presetText.replace(/\+0/g, '');
-  }
-  document.getElementById('palettePreset').value = presetText;
-}
-
-// セクション選択 ----------------------------------------
-function sectionSelect(id){
-  const sections = ['common','palette'];
-  sections.forEach( (value) => {
-    document.getElementById('section-'+value).style.display = 'none';
-  });
-  document.getElementById('section-'+id).style.display = 'block';
-}
-
-// 連番ID生成 ----------------------------------------
-function idNumSet (id){
-  let num = 1;
-  while(document.getElementById(id+num)){
-    num++;
-  }
-  return id+num;
-}
-
-
-

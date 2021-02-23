@@ -14,11 +14,13 @@ my $sort = param('sort');
 ### テンプレート読み込み #############################################################################
 my $INDEX;
 $INDEX = HTML::Template->new( filename  => $set::skin_tmpl , utf8 => 1,
-  path => ['./', $::core_dir],
+  path => ['./', $::core_dir."/skin/dx3", $::core_dir."/skin/_common", $::core_dir],
+  search_path_on_include => 1,
   die_on_bad_params => 0, die_on_missing_include => 0, case_sensitive => 1, global_vars => 1);
 
 
 $INDEX->param(modeList => 1);
+$INDEX->param(modeMylist => 1) if $mode eq 'mylist';
 
 $INDEX->param(LOGIN_ID => $LOGIN_ID);
 $INDEX->param(OAUTH_MODE => $set::oauth_service);
@@ -27,7 +29,7 @@ $INDEX->param(OAUTH_LOGIN_URL => $set::oauth_login_url);
 $INDEX->param(mode => $mode);
 
 my $index_mode;
-if(!($mode eq 'mylist' || param('tag') || param('group') || param('name') || param('exp-min') || param('exp-max') || param('syndrome') || param('works') || param('faith') || param('image'))){
+if(!($mode eq 'mylist' || param('tag') || param('group') || param('name') || param('player') || param('exp-min') || param('exp-max') || param('syndrome') || param('works') || param('dlois') || param('image'))){
   $index_mode = 1;
   $INDEX->param(modeIndex => 1);
   $INDEX->param(simpleMode => 1) if $set::simplelist;
@@ -37,11 +39,11 @@ foreach(
   'tag',
   #'group',
   'name',
-  'race',
   'exp-min',
   'exp-max',
-  'class',
-  'faith',
+  'syndrome',
+  'works',
+  'dlois',
   'image',
   'fellow',
   ){
@@ -66,6 +68,15 @@ my %grouplist;
 open (my $FH, "<", $set::listfile);
 my @list = sort { (split(/<>/,$b))[3] <=> (split(/<>/,$a))[3] } <$FH>;
 close($FH);
+
+## 非表示除外
+if (
+     !($set::masterid && $set::masterid eq $LOGIN_ID)
+  && !($mode eq 'mylist')
+  && !param('tag')
+){
+  @list = grep { !(split(/<>/))[18] } @list;
+}
 
 ## グループ
 my %group_sort;
@@ -125,15 +136,6 @@ my @dlois_query = split(/ |　/, Encode::decode('utf8', param('dlois')));
 foreach my $q (@dlois_query) { @list = grep { (split(/<>/))[14] =~ /$q/ } @list; }
 $INDEX->param(dlois => "@dlois_query");
 
-## 非表示除外
-if (
-     !($set::masterid && $set::masterid eq $LOGIN_ID)
-  && !($mode eq 'mylist')
-  && !$tag_query
-){
-  @list = grep { !(split(/<>/))[18] } @list;
-}
-
 ## 画像フィルタ
 if(param('image') == 1) {
   @list = grep { (split(/<>/))[16] } @list;
@@ -161,8 +163,18 @@ foreach (@list) {
     }
   }
   
+  #グループ
   $group = $set::group_default if (!$group || !$group_name{$group});
+  $group = 'all' if param('group') eq 'all';
   
+  #カウント
+  $count{'PC'}{$group}++;
+  $count{'PL'}{$group}++ if !$pl_flag{$group}{$player};
+  $pl_flag{$group}{$player} = 1;
+  #最大表示制限
+  next if ($index_mode && $count{'PC'}{$group} > $set::list_maxline && $set::list_maxline);
+  
+  #性別
   my $m_flag; my $f_flag;
   $gender =~ s/^(.+?)[\(（].*?[）\)]$/$1/;
   if($gender =~ /男|♂|雄|オス|爺|漢|(?<!fe)male|(?<!wo)man/i) { $m_flag = 1 }
@@ -173,52 +185,48 @@ foreach (@list) {
   elsif($gender){ $gender = '？' }
   else { $gender = '？' }
   
+  #年齢
   $age =~ s/^(.+?)[\(（].*?[）\)]$/$1/;
   $age =~ tr/０-９/0-9/;
   
+  #シンドローム
   my @syndromes;
   push(@syndromes, "<span>$_</span>") foreach (split '/', $syndrome);
   my @dloises;
   push(@dloises, "<span>$_</span>") foreach (split '/', $dlois);
   
+  #ソート用データ
   my $sort_data;
   if    ($sort eq 'name'){ ($sort_data = $name) =~ s/^“.*”//; }
-  
+  #名前
   $name =~ s/^“(.*)”(.*)/<span>“$1”<\/span><span>$2<\/span>/;
   
-  $group = 'all' if param('group') eq 'all';
+  #更新日時
+  my ($min,$hour,$day,$mon,$year) = (localtime($updatetime))[1..5];
+  $year += 1900; $mon++;
+  $updatetime = sprintf("<span>%04d-</span><span>%02d-%02d</span> <span>%02d:%02d</span>",$year,$mon,$day,$hour,$min);
   
-  $count{'PC'}{$group}++;
-  $count{'PL'}{$group}++ if !$pl_flag{$group}{$player};
-  $pl_flag{$group}{$player} = 1;
-  
-  if (!($index_mode && $count{'PC'}{$group} > $set::list_maxline && $set::list_maxline)){
-    my ($min,$hour,$day,$mon,$year) = (localtime($updatetime))[1..5];
-    $year += 1900; $mon++;
-    $updatetime = sprintf("<span>%04d-</span><span>%02d-%02d</span> <span>%02d:%02d</span>",$year,$mon,$day,$hour,$min);
-    
-    
-    my @characters;
-    push(@characters, {
-      "SORT" => $sort_data,
-      "ID" => $id,
-      "NAME" => $name,
-      "PLAYER" => $player,
-      "GROUP" => $group,
-      "EXP" => $exp,
-      "AGE" => $age,
-      "GENDER" => $gender,
-      "SIGN" => $sign,
-      "BLOOD" => $blood,
-      "WORKS" => $works,
-      "SYNDROME" => join('',@syndromes),
-      "DLOIS" => join(' ',@dloises),
-      "DATE" => $updatetime,
-      "HIDE" => $hide,
-    });
+  #出力用配列へ
+  my @characters;
+  push(@characters, {
+    "SORT" => $sort_data,
+    "ID" => $id,
+    "NAME" => $name,
+    "PLAYER" => $player,
+    "GROUP" => $group,
+    "EXP" => $exp,
+    "AGE" => $age,
+    "GENDER" => $gender,
+    "SIGN" => $sign,
+    "BLOOD" => $blood,
+    "WORKS" => $works,
+    "SYNDROME" => join('',@syndromes),
+    "DLOIS" => join(' ',@dloises),
+    "DATE" => $updatetime,
+    "HIDE" => $hide,
+  });
 
-    push(@{$grouplist{$group}}, @characters);
-  }
+  push(@{$grouplist{$group}}, @characters);
 }
 
 my @characterlists; 

@@ -124,7 +124,6 @@ body {
   grid-template-columns: minmax(0, 1fr) minmax(auto, 900px) minmax(0, 1fr);
   position: relative;
   min-height: 100vh;
-  height 100%;
   background-color: var(--bg-color);
   background-position: center, bottom right;
   background-repeat: repeat, no-repeat;
@@ -314,6 +313,9 @@ header nav ul li  {
   
   z-index: 200;
 }
+.night header nav ul li  {
+  outline-color: #78a;
+}
 header nav ul li a {
   display: block;
   width: 150%;
@@ -325,21 +327,55 @@ header nav ul li a {
   color: #fff;
   text-shadow: -1px -1px 1px #000, 0px 1px 1px #abc;
 }
+header nav ul li.current {
+  background: linear-gradient(-45deg, #eff, #bcd);
+}
+header nav ul li.current a {
+  color: #000 !important;
+  text-shadow: 0px 0px 2px #fff, 0px 0px 2px #fff, 0px 0px 2px #fff;
+}
 header nav ul li:hover {
   opacity: 0.8;
 }
+
 header nav ul li.small  {
   width: 5rem;
   height: 5rem;
   font-size: 1.1rem;
-  line-height: calc(5rem + 2rem + 1rem);
+  line-height: 7.8rem;
 }
-
 header nav ul li.very-small {
   width: 3rem;
   height: 3rem;
   font-size: 1.1rem;
-  line-height: calc(3rem + 1rem + 1rem);
+  line-height: 5rem;
+}
+
+header nav ul li.head {
+  margin-right: -.5rem;
+  width: 5rem;
+  height: 5rem;
+  font-size: 1.4rem;
+  line-height: 7.5rem;
+  color: #fff;
+  background: #fff;
+  outline-width: 1px;
+  outline-style: solid;
+}
+header nav ul li.head b {
+  width: 150%;
+  height: 150%;
+  margin: -25%;
+  display: block;
+  transform: rotate(-45deg);
+  color: #000;
+  text-shadow: none;
+}
+.night header nav ul li.head {
+  background: #235;
+}
+.night header nav ul li.head b {
+  color: #fff;
 }
 
 header nav ul li:nth-last-child(even)  {
@@ -384,6 +420,9 @@ main nav ul li {
   outline: 3px double #000;
   overflow: hidden;
 }
+.night main nav ul li  {
+  outline-color: #78a;
+}
 main nav ul li a {
   display: block;
   transform: skewX(30deg);
@@ -391,7 +430,14 @@ main nav ul li a {
   padding: .5rem 1rem;
   text-decoration: none;
   color: #fff !important;
-  text-shadow: -1px -1px 1px #000, 0px 1px 1px #abc;
+  text-shadow: -1px -1px 1px #000, 0px 1px 1px #789;
+}
+main nav ul li.current {
+  background: linear-gradient(to top, #eff, #bcd);
+}
+main nav ul li.current a {
+  color: #000 !important;
+  text-shadow: 0px 0px 2px #fff, 0px 0px 2px #fff, 0px 0px 2px #fff;
 }
 main nav ul li:hover {
   opacity: 0.8;

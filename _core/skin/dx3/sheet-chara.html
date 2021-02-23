@@ -20,100 +20,12 @@
   <script>
 const sheetId = '<TMPL_VAR id>';
 const paletteTool = '<TMPL_VAR paletteTool>';
-
-function getJsonData() {
-  return new Promise((resolve, reject)=>{
-    let xhr = new XMLHttpRequest();
-    xhr.open('GET', `${location.href}&mode=json`, true);
-    xhr.responseType = "json";
-    xhr.onload = (e) => {
-      resolve(e.currentTarget.response);
-    };
-    xhr.onerror = () => reject('error');
-    xhr.onabort = () => reject('abort');
-    xhr.ontimeout = () => reject('timeout');
-    xhr.send();
-  });
-}
-
-function generateUdonariumZipFile(title, data, image){
-  return new Promise((resolve, dummy)=>{
-    let zip = new JSZip();
-    let folder = zip.folder(title);
-    if(image.hash) {
-      folder.file(image.fileName, image.data);
-    }
-    folder.file(`${title}.xml`, data, {binary: false});
-    zip.generateAsync({ type: "blob" }).then(blob => {
-      const dataUrl = URL.createObjectURL(blob);
-      resolve(dataUrl);
-    });    
-  });
-}
-
-function generateCcfoliaZipFile(title, data){
-  return new Promise((resolve, dummy)=>{
-    let zip = new JSZip();
-    zip.file("__data.json", data, {binary: false});
-    zip.file(".token", `0.${io.github.shunshun94.trpg.ccfolia.generateRndStr()}`);
-    zip.generateAsync({ type: "blob", compression: "DEFLATE", compressionOptions: {level: 9}}).then(blob => {
-      const dataUrl = URL.createObjectURL(blob);
-      resolve(dataUrl);
-    });    
-  });
-}
-
-function downloadFile(title, url) {
-  const a = document.createElement("a");
-  document.body.appendChild(a);
-  a.download = title;
-  a.href = url;
-  a.click();
-  a.remove();
-  URL.revokeObjectURL(url);
-}
-
-function getAbsoluteUrl(path) {
-  const dummyLink = document.createElement('a');
-  dummyLink.href = path;
-  return dummyLink.href;
-}
-
-async function downloadAsUdonarium() {
-  const characterDataJson = await getJsonData();
-  const characterId = characterDataJson.birthTime;
-  const image = await io.github.shunshun94.trpg.udonarium.getPicture(characterDataJson.imageURL || '<TMPL_VAR coreDir>/skin/dx3/img/default.png');
-  const udonariumXml = io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2DoubleCross3PC(characterDataJson, location.href, image.hash);
-  const udonariumUrl = await generateUdonariumZipFile(characterDataJson.characterName, udonariumXml, image);
-  downloadFile(`udonarium_data_${characterId}.zip`, udonariumUrl);
-}
-
-async function downloadAsCcfolia() {
-  const characterDataJson = await getJsonData();
-  const characterId = characterDataJson.birthTime;
-  const json = io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2DoubleCrossPC(characterDataJson, location.href, getAbsoluteUrl('<TMPL_VAR coreDir>/skin/dx3/img/default.png'));
-  const ccfoliaUrl = await generateCcfoliaZipFile(characterId, json);
-  downloadFile(`ccfolia_data_${characterId}.zip`, ccfoliaUrl);
-}
-
-async function donloadAsText() {
-  const characterDataJson = await getJsonData();
-  const characterId = characterDataJson.birthTime;
-  const textData = io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2DoubleCrossPc(characterDataJson);
-  const textUrl = window.URL.createObjectURL(new Blob([ textData ], { "type" : 'text/plain;charset=utf-8;' }));
-  downloadFile(`data_${characterId}.txt`, textUrl);
-}
-
-async function donloadAsJson() {
-  const characterDataJson = await getJsonData();
-  const characterId = characterDataJson.birthTime;
-  const jsonUrl = window.URL.createObjectURL(new Blob([ JSON.stringify(characterDataJson) ], { "type" : 'text/json;charset=utf-8;' }));
-  downloadFile(`data_${characterId}.json`, jsonUrl);
-}
+const generateType = 'DoubleCross3PC';
+const defaultImage = '<TMPL_VAR coreDir>/skin/dx3/img/default.png';
 
 <TMPL_IF error>
 window.onload = function() {
-  document.getElementById("login-form").style.top = '5rem';
+  editOn();
   setTimeout(function(){
     document.getElementById("error").style.opacity = 0;
     document.getElementById("error").style.top = '-5rem';
@@ -132,7 +44,7 @@ window.onload = function() {
       --box-base-bg-color-d: <TMPL_VAR colorBaseBgD>%;
     }
   </style></TMPL_IF>
-  <TMPL_INCLUDE NAME="../../skin-add/head.html">
+  <TMPL_INCLUDE NAME="skin-add/sheet-head.html">
 </head>
 <body>
   <script src="<TMPL_VAR coreDir>/skin/_common/js/common.js?<TMPL_VAR ver>"></script>
@@ -152,15 +64,24 @@ window.onload = function() {
         <TMPL_IF convertMode>
           <li><a href="./?mode=convert&url=<TMPL_VAR convertUrl>"><span>コンバート</span></a></li>
         <TMPL_ELSE>
-          <TMPL_IF FellowMode><li><a href="./?id=<TMPL_VAR id>">通常</a></li></TMPL_IF>
-          <TMPL_IF fellowPublic><TMPL_UNLESS FellowMode><li><a href="./?id=<TMPL_VAR id>&f=1">フェロー</a></li></TMPL_UNLESS></TMPL_IF>
-          <li class="small"><a onclick="chatPaletteOn();"><span>パレット</span></a></li>
-          <li class="small"><a onclick="donwloadListOn();">保存</a></li>
-          <li class="small"><a onclick="backuplistOn()"><span>過去ログ</span></a></li>
-          <TMPL_IF ReqdPassword>
-          <li class="small"><a onclick="editOn()">編集</a></li>
+          <TMPL_IF backupId>
+            <li class="small"><a onclick="backuplistOn()"><span>過去ログ</span></a></li>
+            <TMPL_IF ReqdPassword>
+              <li class="small"><a onclick="editOn()">復元</a></li>
+            <TMPL_ELSE>
+              <li class="small"><a href="./?mode=edit&id=<TMPL_VAR id>&backup=<TMPL_VAR backupId>">復元</a></li>
+            </TMPL_IF>
           <TMPL_ELSE>
-          <li class="small"><a href="./?mode=edit&id=<TMPL_VAR id>">編集</a></li>
+            <TMPL_UNLESS forbiddenMode>
+              <li class="small"><a onclick="chatPaletteOn();"><span>パレット</span></a></li>
+              <li class="small"><a onclick="donwloadListOn();">保存</a></li>
+              <li class="small"><a onclick="backuplistOn()"><span>過去ログ</span></a></li>
+            </TMPL_UNLESS>
+            <TMPL_IF ReqdPassword>
+              <li class="small"><a onclick="editOn()">編集</a></li>
+            <TMPL_ELSE>
+              <li class="small"><a href="./?mode=edit&id=<TMPL_VAR id>">編集</a></li>
+            </TMPL_IF>
           </TMPL_IF>
         </TMPL_IF>
         <li class="small"><a onclick="nightModeChange()" title="ナイトモード">☾✧</a></li>
@@ -176,35 +97,44 @@ window.onload = function() {
   </aside>
   </TMPL_IF>
   
-  <aside id="backuplist" class="float-box">
-    <h2>過去ログ</h2>
-    <ul>
-      <li<TMPL_UNLESS backupMode> class="backup-now"</TMPL_UNLESS>><a href="?id=<TMPL_VAR id>">最新</a></li>
-      <TMPL_LOOP Backup><li<TMPL_IF NOW> class="backup-now"</TMPL_IF>><a href="?id=<TMPL_VAR id>&backup=<TMPL_VAR URL>"><TMPL_VAR DATE></a></li></TMPL_LOOP>
-    </ul>
-  </aside>
+  <TMPL_UNLESS forbiddenMode>
+    <aside id="backuplist" class="float-box">
+      <h2>過去ログ（バックアップ）</h2>
+      <ul>
+        <li<TMPL_UNLESS backupId> class="backup-now"</TMPL_UNLESS>><a href="?id=<TMPL_VAR id>">最新</a></li>
+        <TMPL_LOOP Backup><li<TMPL_IF NOW> class="backup-now"</TMPL_IF>><a href="?id=<TMPL_VAR id>&backup=<TMPL_VAR URL>"><TMPL_VAR DATE></a></li></TMPL_LOOP>
+      </ul>
+    </aside>
 
-  <aside id="downloadlist" class="float-box">
-    <h2>保存</h2>
-    <ul>
-      <li id="downloadlist-udonarium"><a onclick="downloadAsUdonarium();">ユドナリウム向けのデータ</a></li>
-      <li id="downloadlist-ccfolia"><a onclick="downloadAsCcfolia();">ココフォリア向けのデータ</a></li>
-      <li id="downloadlist-text"><a onclick="donloadAsText();">テキスト形式</a></li>
-      <li id="downloadlist-json"><a onclick="donloadAsJson();">JSON 形式</a></li>
-    </ul>
-  </aside>
+    <aside id="downloadlist" class="float-box">
+      <h2>保存</h2>
+      <ul>
+        <li id="downloadlist-udonarium"><a onclick="downloadAsUdonarium();">ユドナリウム向けのデータ</a></li>
+        <li id="downloadlist-ccfolia"><a onclick="downloadAsCcfolia();">ココフォリア向けのデータ</a></li>
+        <li id="downloadlist-text"><a onclick="donloadAsText();">テキスト形式</a></li>
+        <li id="downloadlist-json"><a onclick="donloadAsJson();">JSON 形式</a></li>
+      </ul>
+    </aside>
+  </TMPL_UNLESS>
 
   <form id="login-form" class="float-box" method="post" action="./">
     <input type="hidden" name="mode" value="edit">
     <input type="hidden" name="id" value="<TMPL_VAR id>">
     <input type="password" name="pass" placeholder="password">
+    <input type="hidden" name="backup" value="<TMPL_VAR backupId>">
     <input type="submit" value="編集">
   </form>
 
   <main id="character">
-    <TMPL_IF backupMode><aside class="information">
+    <TMPL_IF forbidden><aside class="information attention">
+      閲覧が制限されているデータです。<br>
+      <TMPL_IF forbiddenAuthor>あなた以外には一部または全てのデータが伏せられます。(<a href="./?id=<TMPL_VAR id>&checkView=1">⇒確認</a>)</TMPL_IF>
+    </aside></TMPL_IF>
+    
+    <TMPL_IF backupId><aside class="information">
       <TMPL_VAR updateTime> 時点のバックアップデータです。
     </aside></TMPL_IF>
+    
     <TMPL_IF convertMode><aside class="information">
       <a href="<TMPL_VAR convertUrl>" target="_blank"><TMPL_VAR convertSource></a> のデータを表示しています。
     </aside></TMPL_IF>
@@ -219,7 +149,7 @@ window.onload = function() {
       </div>
       
       <div id="tags">
-        <a href="./?group=<TMPL_VAR group>" id="group"><TMPL_VAR groupName></a>
+        <TMPL_IF group><a href="./?group=<TMPL_VAR group>" id="group"><TMPL_VAR groupName></a></TMPL_IF>
         <TMPL_IF stage><i href="./?group=<TMPL_VAR group>" id="stage"><TMPL_VAR stage></i></TMPL_IF>
         <TMPL_LOOP Tags><a href="./?tag=<TMPL_VAR URL>"><TMPL_VAR TEXT></a></TMPL_LOOP>
       </div>
@@ -364,6 +294,7 @@ window.onload = function() {
 
       <section class="box" id="status">
         <h2>能力値</h2>
+        <span class="open-button" onclick="statusBreakdownOpen();">▼能力値内訳表示</span>
         <table>
           <thead>
           <tr>
@@ -371,6 +302,30 @@ window.onload = function() {
             <th>感覚</th><td data-edb><TMPL_VAR sttTotalSense></td>
             <th>精神</th><td data-edb><TMPL_VAR sttTotalMind></td>
             <th>社会</th><td data-edb><TMPL_VAR sttTotalSocial></td>
+          </tr>
+          <tr class="breakdown">
+            <th>シンドローム</th><td><TMPL_VAR sttBaseBody></td>
+            <th>シンドローム</th><td><TMPL_VAR sttBaseSense></td>
+            <th>シンドローム</th><td><TMPL_VAR sttBaseMind></td>
+            <th>シンドローム</th><td><TMPL_VAR sttBaseSocial></td>
+          </tr>
+          <tr class="breakdown">
+            <th>ワークス</th><td><TMPL_VAR sttWorksBody></td>
+            <th>ワークス</th><td><TMPL_VAR sttWorksSense></td>
+            <th>ワークス</th><td><TMPL_VAR sttWorksMind></td>
+            <th>ワークス</th><td><TMPL_VAR sttWorksSocial></td>
+          </tr>
+          <tr class="breakdown">
+            <th>成長</th><td><TMPL_VAR sttGrowBody></td>
+            <th>成長</th><td><TMPL_VAR sttGrowSense></td>
+            <th>成長</th><td><TMPL_VAR sttGrowMind></td>
+            <th>成長</th><td><TMPL_VAR sttGrowSocial></td>
+          </tr>
+          <tr class="breakdown">
+            <th>その他修正</th><td><TMPL_VAR sttAddBody></td>
+            <th>その他修正</th><td><TMPL_VAR sttAddSense></td>
+            <th>その他修正</th><td><TMPL_VAR sttAddMind></td>
+            <th>その他修正</th><td><TMPL_VAR sttAddSocial></td>
           </tr>
           </thead>
           <tr>
@@ -393,6 +348,14 @@ window.onload = function() {
           </tr></TMPL_LOOP>
         </table>
       </section>
+      <script>
+      let statusBreakdownOpenFlag = 0;
+      function statusBreakdownOpen(){
+        document.querySelectorAll('#status table tr.breakdown').forEach(obj => obj.style.display = statusBreakdownOpenFlag ? 'none' : 'table-row');
+        document.querySelector('#status .open-button').innerHTML = statusBreakdownOpenFlag ? '▼能力値内訳表示' : '▲能力値内訳折畳み';
+        statusBreakdownOpenFlag = statusBreakdownOpenFlag ? 0 : 1;
+      }
+      </script>
       
       <section class="box" id="lois">
         <h2>ロイス</h2>
@@ -461,7 +424,10 @@ window.onload = function() {
                 <td><TMPL_VAR ENCROACH></td>
                 <td><TMPL_VAR RESTRICT></td>
               </tr>
-              <tr><td class="left" colspan="9"><TMPL_VAR NOTE></td></tr>
+              <tr><td class="left" colspan="9">
+                <TMPL_VAR NOTE>
+                  <TMPL_IF EXP><span class="right">［<b>経験点修正</b>:<TMPL_VAR EXP>点］</span></TMPL_IF>
+              </td></tr>
             </tbody></TMPL_LOOP>
           </table>
         </section>
@@ -521,6 +487,9 @@ window.onload = function() {
                 <td><TMPL_VAR CRIT4></td>
                 <td><TMPL_VAR FIXED4></td>
                 <td><TMPL_VAR ATK4></td>
+              </tr></TMPL_IF>
+              <TMPL_IF BLANKROW><tr>
+                <td colspan="5" rowspan="<TMPL_VAR BLANKROW>"></td>
               </tr></TMPL_IF>
             </tbody></TMPL_LOOP>
           </table>
@@ -636,14 +605,13 @@ window.onload = function() {
           </table>
         </section>
       </div>
-      </div><!-- / COLUMN -->
       <div id="enc-bonus">
         <details class="box">
           <summary>侵蝕率ボーナス</summary>
           <p>
-            現在侵蝕率:<input type="number" id="current-encroach" value="<TMPL_VAR baseEncroach>" oninput="encroachBonusSet(this.value);">
-            <input type="checkbox" id="enchroach-ea-on" oninput="encroachBonusType();"><label for="enchroach-ea-on">エフェクトアーカイヴ</label>
-            <input type="checkbox" id="enchroach-or-on" oninput="encroachBonusType();"><label for="enchroach-or-on">起源種</label>
+            現在侵蝕率:<input type="number" id="current-encroach" value="<TMPL_VAR currentEncroach>" oninput="encroachBonusSet(this.value);">
+            <input type="checkbox" id="enchroach-ea-on" oninput="encroachBonusType();" <TMPL_VAR enchroachEaOn>><label for="enchroach-ea-on">エフェクトアーカイヴ</label>
+            <input type="checkbox" id="enchroach-or-on" oninput="encroachBonusType();" <TMPL_VAR enchroachOrOn>><label for="enchroach-or-on">起源種</label>
           </p>
           <table class="data-table" id="enc-table-n">
             <colgroup>
@@ -697,7 +665,8 @@ window.onload = function() {
       </div>
       <script>
       let EA; let OR;
-      encroachBonusSet(<TMPL_VAR baseEncroach>);
+      encroachBonusSet(<TMPL_VAR currentEncroach>);
+      encroachBonusType();
       function encroachBonusType(){
         EA = document.getElementById("enchroach-ea-on" ).checked;
         OR = document.getElementById("enchroach-or-on" ).checked;
@@ -776,6 +745,7 @@ window.onload = function() {
       <img src="<TMPL_VAR imageSrc>" id="image-box-image">
     </div></TMPL_IF> 
   </main>
+  <TMPL_INCLUDE NAME="skin-add/sheet-sidebar.html">
 
   <footer>
     <p class="notes"><span>『ダブルクロスThe 3rd Edition』は、</span><span>「矢野俊策」及び「有限会社F.E.A.R.」の著作物です。</span></p>

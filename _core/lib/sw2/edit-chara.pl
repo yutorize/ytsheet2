@@ -6,33 +6,10 @@ use open ":utf8";
 use feature 'say';
 use Encode;
 
-require $set::lib_palette_sub;
-
-my $mode = $main::mode;
-my $message = $main::message;
-our %pc;
-
-my $LOGIN_ID = check;
+my $LOGIN_ID = $::LOGIN_ID;
 
 ### 読込前処理 #######################################################################################
-### エラーメッセージ --------------------------------------------------
-if($main::make_error) {
-  $mode = 'blanksheet';
-  for (param()){ $pc{$_} = param($_); }
-  $message = $main::make_error;
-}
-## 新規作成/コピー/コンバート時 --------------------------------------------------
-my $token; my $mode_make;
-if($mode eq 'blanksheet' || $mode eq 'copy' || $mode eq 'convert'){
-  $token = token_make();
-  $mode_make = 1;
-}
-## 更新後処理 --------------------------------------------------
-if($mode eq 'save'){
-  $message .= 'データを更新しました。<a href="./?id='.param('id').'">⇒シートを確認する</a>';
-  $mode = 'edit';
-}
-
+require $set::lib_palette_sub;
 ### 各種データライブラリ読み込み --------------------------------------------------
 require $set::data_class;
 require $set::data_feats;
@@ -41,73 +18,58 @@ require $set::data_items;
 require $set::data_faith;
 
 ### データ読み込み ###################################################################################
-my $id;
-my $pass;
-my $file;
-### 編集時 --------------------------------------------------
-if($mode eq 'blanksheet' && param('stt')){
-  ($pc{'sttBaseTec'}, $pc{'sttBasePhy'}, $pc{'sttBaseSpi'}, $pc{'sttBaseA'}, $pc{'sttBaseB'}, $pc{'sttBaseC'}, $pc{'sttBaseD'}, $pc{'sttBaseE'}, $pc{'sttBaseF'}) = split(/_/, param('stt'));
-  $pc{'race'} = Encode::decode('utf8', param('race'));
-  $pc{'race'} = 'ナイトメア（人間）' if $pc{'race'} eq 'ナイトメア';
-  $pc{'race'} = 'ウィークリング（ガルーダ）' if $pc{'race'} eq 'ウィークリング';
-}
-if($mode eq 'edit'){
-  $id = param('id');
-  $pass = param('pass');
-  (undef, undef, $file, undef) = getfile($id,$pass,$LOGIN_ID);
-  open my $IN, '<', "${set::char_dir}${file}/data.cgi" or &login_error;
-  $_ =~ s/(.*?)<>(.*?)\n/$pc{$1} = $2;/egi while <$IN>;
-  close($IN);
-}
-elsif($mode eq 'copy'){
-  $id = param('id');
-  $file = (getfile_open($id))[0];
-  open my $IN, '<', "${set::char_dir}${file}/data.cgi" or error 'キャラクターシートがありません。';
-  $_ =~ s/(.*?)<>(.*?)\n/$pc{$1} = $2;/egi while <$IN>;
-  close($IN);
-  
-  delete $pc{'image'};
-  delete $pc{'protect'};
-  
-  $message = '「<a href="./?id='.$id.'" target="_blank">'.$pc{"characterName"}.'</a>」をコピーして新規作成します。<br>（まだ保存はされていません）';
-}
-elsif($mode eq 'convert'){
-  %pc = %::conv_data;
-  delete $pc{'image'};
-  delete $pc{'protect'};
-  $message = '「<a href="'.param('url').'" target="_blank">'.($pc{"characterName"}||$pc{"aka"}||'無題').'</a>」をコンバートして新規作成します。<br>（まだ保存はされていません）';
-}
+my ($data, $mode, $file, $message) = pcDataGet($::in{'mode'});
+our %pc = %{ $data };
 
-### プレイヤー名 --------------------------------------------------
-if($mode_make){
-  $pc{'playerName'} = (getplayername($LOGIN_ID))[0] if !$main::make_error;
-}
+my $mode_make = ($mode =~ /^(blanksheet|copy|convert)$/) ? 1 : 0;
 
 ### 出力準備 #########################################################################################
+if($message){
+  my $name = tag_unescape($pc{'characterName'} || $pc{'aka'} || '無題');
+  $message =~ s/<!NAME>/$name/;
+}
+### プレイヤー名 --------------------------------------------------
+if($mode_make && !$::make_error){
+  $pc{'playerName'} = (getplayername($LOGIN_ID))[0];
+}
 ### 初期設定 --------------------------------------------------
-$pc{'protect'} = $pc{'protect'} ? $pc{'protect'} : 'password';
-$pc{'group'} = $pc{'group'} ? $pc{'group'} : $set::group_default;
+if($mode_make){ $pc{'protect'} = $LOGIN_ID ? 'account' : 'password'; }
 
-$pc{'history0Exp'}   = $pc{'history0Exp'}   ne '' ? $pc{'history0Exp'}   : $set::make_exp;
-$pc{'history0Honor'} = $pc{'history0Honor'} ne '' ? $pc{'history0Honor'} : $set::make_honor;
-$pc{'history0Money'} = $pc{'history0Money'} ne '' ? $pc{'history0Money'} : $set::make_money;
-$pc{'expTotal'} = $pc{'expTotal'} ? $pc{'expTotal'} : $pc{'history0Exp'};
-
-$pc{'accuracyEnhance'} = $pc{'accuracyEnhance'} ? $pc{'accuracyEnhance'} : 0;
-$pc{'evasiveManeuver'} = $pc{'evasiveManeuver'} ? $pc{'evasiveManeuver'} : 0;
-$pc{'tenacity'} = $pc{'tenacity'} ? $pc{'tenacity'} : 0;
-$pc{'capacity'} = $pc{'capacity'} ? $pc{'capacity'} : 0;
-
-$pc{'weaponNum'}     = $pc{'weaponNum'}     || 1;
-$pc{'languageNum'}   = $pc{'languageNum'}   || 3;
-$pc{'honorItemsNum'} = $pc{'honorItemsNum'} || 3;
-$pc{'historyNum'}    = $pc{'historyNum'}    || 3;
+if($mode eq 'edit'){
+  %pc = data_update_chara(\%pc);
+}
+elsif($mode eq 'blanksheet' && !$::make_error){
+  $pc{'group'} = $set::group_default;
+  
+  $pc{'history0Exp'}   = $set::make_exp;
+  $pc{'history0Honor'} = $set::make_honor;
+  $pc{'history0Money'} = $set::make_money;
+  $pc{'expTotal'} = $pc{'history0Exp'};
+  
+  if($::in{'stt'}){
+    ($pc{'sttBaseTec'}, $pc{'sttBasePhy'}, $pc{'sttBaseSpi'}, $pc{'sttBaseA'}, $pc{'sttBaseB'}, $pc{'sttBaseC'}, $pc{'sttBaseD'}, $pc{'sttBaseE'}, $pc{'sttBaseF'}) = split(/_/, $::in{'stt'});
+    $pc{'race'} = Encode::decode('utf8', $::in{'race'});
+    $pc{'race'} = 'ナイトメア（人間）' if $pc{'race'} eq 'ナイトメア';
+    $pc{'race'} = 'ウィークリング（ガルーダ）' if $pc{'race'} eq 'ウィークリング';
+  }
+  
+  $pc{"defTotal1CheckArmour1"} = $pc{"defTotal1CheckShield1"} = $pc{"defTotal1CheckDefOther1"} = $pc{"defTotal1CheckDefOther2"} = $pc{"defTotal1CheckDefOther3"} = 1;
+  
+  $pc{'paletteUseBuff'} = 1;
+}
 
 $pc{'imageFit'} = $pc{'imageFit'} eq 'percent' ? 'percentX' : $pc{'imageFit'};
 $pc{'imagePercent'} = $pc{'imagePercent'} eq '' ? '200' : $pc{'imagePercent'};
 $pc{'imagePositionX'} = $pc{'imagePositionX'} eq '' ? '50' : $pc{'imagePositionX'};
 $pc{'imagePositionY'} = $pc{'imagePositionY'} eq '' ? '50' : $pc{'imagePositionY'};
+$pc{'wordsX'} ||= '右';
+$pc{'wordsY'} ||= '上';
 
+if($pc{'colorCustom'} && $pc{'colorHeadBgA'}) {
+  ($pc{'colorHeadBgH'}, $pc{'colorHeadBgS'}, $pc{'colorHeadBgL'}) = rgb_to_hsl($pc{'colorHeadBgR'},$pc{'colorHeadBgG'},$pc{'colorHeadBgB'});
+  ($pc{'colorBaseBgH'}, $pc{'colorBaseBgS'}, undef) = rgb_to_hsl($pc{'colorBaseBgR'},$pc{'colorBaseBgG'},$pc{'colorBaseBgB'});
+  $pc{'colorBaseBgS'} = $pc{'colorBaseBgS'} * $pc{'colorBaseBgA'} * 10;
+}
 $pc{'colorHeadBgH'} = $pc{'colorHeadBgH'} eq '' ? 225 : $pc{'colorHeadBgH'};
 $pc{'colorHeadBgS'} = $pc{'colorHeadBgS'} eq '' ?   9 : $pc{'colorHeadBgS'};
 $pc{'colorHeadBgL'} = $pc{'colorHeadBgL'} eq '' ?  65 : $pc{'colorHeadBgL'};
@@ -115,30 +77,18 @@ $pc{'colorBaseBgH'} = $pc{'colorBaseBgH'} eq '' ? 210 : $pc{'colorBaseBgH'};
 $pc{'colorBaseBgS'} = $pc{'colorBaseBgS'} eq '' ?   0 : $pc{'colorBaseBgS'};
 $pc{'colorBaseBgL'} = $pc{'colorBaseBgL'} eq '' ? 100 : $pc{'colorBaseBgL'};
 
-if($pc{'colorCustom'} && $pc{'colorHeadBgA'}) {
-  ($pc{'colorHeadBgH'}, $pc{'colorHeadBgS'}, $pc{'colorHeadBgL'}) = rgb_to_hsl($pc{'colorHeadBgR'},$pc{'colorHeadBgG'},$pc{'colorHeadBgB'});
-  ($pc{'colorBaseBgH'}, $pc{'colorBaseBgS'}, undef) = rgb_to_hsl($pc{'colorBaseBgR'},$pc{'colorBaseBgG'},$pc{'colorBaseBgB'});
-  $pc{'colorBaseBgS'} = $pc{'colorBaseBgS'} * $pc{'colorBaseBgA'} * 10;
-}
-if($mode eq 'blanksheet'){
-  $pc{'paletteUseBuff'} = 1;
-}
+$pc{'weaponNum'}     ||=  1;
+$pc{'languageNum'}   ||=  3;
+$pc{'honorItemsNum'} ||=  3;
+$pc{'historyNum'}    ||=  3;
 
-### アップデート --------------------------------------------------
-$pc{'ver'} =~ s/^([0-9]+)\.([0-9]+)\.([0-9]+)$/$1.$2$3/;
-if($pc{'ver'} < 1.10){
-  $pc{'fairyContractEarth'} = 1 if $pc{'ftElemental'} =~ /土|地/;
-  $pc{'fairyContractWater'} = 1 if $pc{'ftElemental'} =~ /水|氷/;
-  $pc{'fairyContractFire' } = 1 if $pc{'ftElemental'} =~ /火|炎/;
-  $pc{'fairyContractWind' } = 1 if $pc{'ftElemental'} =~ /風|空/;
-  $pc{'fairyContractLight'} = 1 if $pc{'ftElemental'} =~ /光/;
-  $pc{'fairyContractDark' } = 1 if $pc{'ftElemental'} =~ /闇/;
-}
-if($pc{'ver'} < 1.11001){
-  $pc{'paletteUseBuff'} = 1;
-}
+$pc{'accuracyEnhance'} ||= 0;
+$pc{'evasiveManeuver'} ||= 0;
+$pc{'tenacity'} ||= 0;
+$pc{'capacity'} ||= 0;
 
 ### 改行処理 --------------------------------------------------
+$pc{'words'}         =~ s/&lt;br&gt;/\n/g;
 $pc{'items'}         =~ s/&lt;br&gt;/\n/g;
 $pc{'freeNote'}      =~ s/&lt;br&gt;/\n/g;
 $pc{'freeHistory'}   =~ s/&lt;br&gt;/\n/g;
@@ -160,10 +110,11 @@ Content-type: text/html\n
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" media="all" href="${main::core_dir}/skin/_common/css/base.css?${main::ver}">
   <link rel="stylesheet" media="all" href="${main::core_dir}/skin/_common/css/sheet.css?${main::ver}">
-  <link rel="stylesheet" media="all" href="${main::core_dir}/skin/_common/css/edit.css?${main::ver}">
   <link rel="stylesheet" media="all" href="${main::core_dir}/skin/sw2/css/chara.css?${main::ver}">
+  <link rel="stylesheet" media="all" href="${main::core_dir}/skin/_common/css/edit.css?${main::ver}">
   <link rel="stylesheet" media="all" href="${main::core_dir}/skin/sw2/css/edit.css?${main::ver}">
   <script src="${main::core_dir}/skin/_common/js/lib/Sortable.min.js"></script>
+  <script src="${main::core_dir}/lib/edit.js?${main::ver}" defer></script>
   <script src="${main::core_dir}/lib/sw2/edit-chara.js?${main::ver}" defer></script>
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
   <style>
@@ -183,9 +134,10 @@ Content-type: text/html\n
     <article>
       <aside class="message">$message</aside>
       <form name="sheet" method="post" action="./" enctype="multipart/form-data">
+      <input type="hidden" name="ver" value="${main::ver}">
 HTML
 if($mode_make){
-  print '<input type="hidden" name="_token" value="'.$token.'">'."\n";
+  print '<input type="hidden" name="_token" value="'.token_make().'">'."\n";
 }
 print <<"HTML";
       <input type="hidden" name="mode" value="@{[ $mode eq 'edit' ? 'save' : 'make' ]}">
@@ -201,7 +153,7 @@ print <<"HTML";
 HTML
 if($mode eq 'edit'){
 print <<"HTML";
-        <input type="button" value="複製" onclick="window.open('./?mode=copy&id=${id}');">
+        <input type="button" value="複製" onclick="window.open('./?mode=copy&id=$::in{'id'}@{[ $::in{'backup'}?"&backup=$::in{'backup'}":'' ]}');">
 HTML
 }
 print <<"HTML";
@@ -218,7 +170,7 @@ if($set::user_reqd){
   print <<"HTML";
     <input type="hidden" name="protect" value="account">
     <input type="hidden" name="protectOld" value="$pc{'protect'}">
-    <input type="hidden" name="pass" value="$pass">
+    <input type="hidden" name="pass" value="$::in{'pass'}">
 HTML
 }
 else {
@@ -235,7 +187,7 @@ HTML
   }
     print '<input type="radio" name="protect" value="password"'.($pc{'protect'} eq 'password'?' checked':'').'> パスワードで保護 ';
   if ($mode eq 'edit' && $pc{'protect'} eq 'password') {
-    print '<input type="hidden" name="pass" value="'.$pass.'"><br>';
+    print '<input type="hidden" name="pass" value="'.$::in{'pass'}.'"><br>';
   } else {
     print '<input type="password" name="pass"><br>';
   }
@@ -247,12 +199,25 @@ HTML
 }
   print <<"HTML";
       <section id="section-common">
-      <div id="hide-options">
-        <p id="hide-checkbox">
-        @{[ input 'hide','checkbox' ]} 一覧に表示しない<br>
-        ※タグ検索結果に合致した場合は表示されます
-        </p>
-      </div>
+      <dl class="box" id="hide-options">
+        <dt>閲覧可否設定</dt>
+        <dd id="forbidden-checkbox">
+          <select name="forbidden">
+            <option value="">内容を全て開示
+            <option value="battle" @{[ $pc{'forbidden'} eq 'battle' ? 'selected' : '' ]}>データ・数値のみ秘匿
+            <option value="all"    @{[ $pc{'forbidden'} eq 'all'    ? 'selected' : '' ]}>内容を全て秘匿
+          </select>
+        </dd>
+        <dd id="hide-checkbox">
+          <select name="hide">
+            <option value="">一覧に表示
+            <option value="1" @{[ $pc{'hide'} ? 'selected' : '' ]}>一覧には非表示
+          </select>
+        </dd>
+        <dd>
+          ※一覧に非表示でもタグ検索結果・マイリストには表示されます
+        </dd>
+      </dl>
       <div class="box" id="group">
         <dl>
           <dt>グループ</dt><dd><select name="group">
@@ -301,7 +266,19 @@ print <<"HTML";
             <dt>年齢</dt><dd>@{[input('age')]}</dd>
           </dl>
           <dl class="box" id="race-ability">
-            <dt>種族特徴</dt><dd id="race-ability-value">$data::race_ability{$pc{'race'}}</dd>
+            <dt>種族特徴</dt>
+            <dd>
+              <span id="race-ability-value">$data::race_ability{$pc{'race'}}</span>
+              <select name="raceAbilityLv6" class="hidden">
+                @{[ option('raceAbilityLv6' , (ref($data::race_ability_lv6{$pc{'race'}})  eq 'ARRAY' ? @{$data::race_ability_lv6{$pc{'race'}}} : '')) ]}
+              </select>
+              <select name="raceAbilityLv11" class="hidden">
+                @{[ option('raceAbilityLv11', (ref($data::race_ability_lv11{$pc{'race'}}) eq 'ARRAY' ? @{$data::race_ability_lv11{$pc{'race'}}} : '')) ]}
+              </select>
+              <select name="raceAbilityLv16" class="hidden">
+                @{[ option('raceAbilityLv16', (ref($data::race_ability_lv16{$pc{'race'}}) eq 'ARRAY' ? @{$data::race_ability_lv16{$pc{'race'}}} : '')) ]}
+              </select>
+            </dd>
           </dl>
           <dl class="box" id="sin">
             <dt>穢れ</dt><dd>@{[input('sin','number','','min="0"')]}</dd>
@@ -416,7 +393,7 @@ print <<"HTML";
       </div>
       
       <div id="area-ability" class="edit-tables side-margin">
-        <div id="area-classes" @{[ $set::common_class_on ? '' : 'class="common-classes-off"' ]}>
+        <div id="area-classes">
           <div class="box" id="classes">
             <h2>技能</h2>
             <div>使用経験点：<span id="exp-use"></span></div>
@@ -436,22 +413,22 @@ foreach my $name (@data::class_names){
   print '</dt><dd>' . input("lv${id}", 'number','changeLv','min="0" max="17"') . '</dd>';
   print '</dl><dl>' if ($i == int(scalar(@data::class_names) / 2));
 }
-if($set::common_class_on){
 print <<"HTML";
             </dl>
           </div>
           <div class="box" id="common-classes">
             <h2>一般技能</h2>
-            <dl>
+            <table id="common-classes-table">
+            <tbody>
 HTML
-  foreach my $i (1..10){
+foreach my $i (1..10){
 print <<"HTML";
-              <dt>@{[input('commonClass'.$i)]}</dt><dd>@{[input('lvCommon'.$i, 'number','','min="0" max="17"')]}</dd>
+              <tr id="common-class${i}"><td class="handle"></td><td>@{[input('commonClass'.$i)]}</td><td>@{[input('lvCommon'.$i, 'number','','min="0" max="17"')]}</td></tr>
 HTML
-  }
 }
 print <<"HTML";
-            </dl>
+            </tbody>
+            </table>
           </div>
         </div>
         <p class="right">@{[ input "failView", "checkbox", "checkFeats()" ]} 習得レベルの足りない項目（特技／練技・呪歌など）も表示する</p>
@@ -480,7 +457,7 @@ foreach my $lv (@set::feats_lv) {
 }
 print <<"HTML";
             </ul>
-            <p>置き換え可能な場合<span class="evo">この表示</span>になります。</p>
+            <p>置き換え可能な場合<span class="mark">この表示</span>になります。</p>
             <p>@{[ input 'featsAutoOn','checkbox','checkFeats' ]}自動置き換え（非推奨）</p>
           </div>
           <div class="box" id="mystic-arts" @{[ display $set::mystic_arts_on ]}>
@@ -994,37 +971,71 @@ print <<"HTML";
             <tbody>
               <tr>
                 <th>鎧</th>
-                <td>@{[input('armourName')]}</td>
-                <td>@{[input('armourReqd','','calcDefense')]}</td>
-                <td>@{[input('armourEva','number','calcDefense')]}</td>
-                <td>@{[input('armourDef','number','calcDefense')]}</td>
-                <td>@{[input('armourOwn','checkbox','calcDefense')]}</td>
-                <td>@{[input('armourNote')]}</td>
+                <td>@{[input('armour1Name')]}</td>
+                <td>@{[input('armour1Reqd','','calcDefense')]}</td>
+                <td>@{[input('armour1Eva','number','calcDefense')]}</td>
+                <td>@{[input('armour1Def','number','calcDefense')]}</td>
+                <td>@{[input('armour1Own','checkbox','calcDefense')]}</td>
+                <td>@{[input('armour1Note')]}</td>
               </tr>
               <tr>
                 <th>盾</th>
-                <td>@{[input('shieldName')]}</td>
-                <td>@{[input('shieldReqd','','calcDefense')]}</td>
-                <td>@{[input('shieldEva','number','calcDefense')]}</td>
-                <td>@{[input('shieldDef','number','calcDefense')]}</td>
-                <td>@{[input('shieldOwn','checkbox','calcDefense')]}</td>
-                <td>@{[input('shieldNote')]}</td>
+                <td>@{[input('shield1Name')]}</td>
+                <td>@{[input('shield1Reqd','','calcDefense')]}</td>
+                <td>@{[input('shield1Eva','number','calcDefense')]}</td>
+                <td>@{[input('shield1Def','number','calcDefense')]}</td>
+                <td>@{[input('shield1Own','checkbox','calcDefense')]}</td>
+                <td>@{[input('shield1Note')]}</td>
               </tr>
               <tr>
-                <th>他</th>
-                <td>@{[input('defOtherName','','calcDefense')]}</td>
-                <td>@{[input('defOtherReqd')]}</td>
-                <td>@{[input('defOtherEva','number','calcDefense')]}</td>
-                <td>@{[input('defOtherDef','number','calcDefense')]}</td>
+                <th>他1</th>
+                <td>@{[input('defOther1Name','','calcDefense')]}</td>
+                <td>@{[input('defOther1Reqd','','calcDefense')]}</td>
+                <td>@{[input('defOther1Eva','number','calcDefense')]}</td>
+                <td>@{[input('defOther1Def','number','calcDefense')]}</td>
                 <td> </td>
-                <td>@{[input('defOtherNote')]}</td>
+                <td>@{[input('defOther1Note')]}</td>
               </tr>
-              <tr class="defense-total">
-                <th colspan="3">合計：すべて</th>
-                <td id="defense-total-all-eva">0</td>
-                <td id="defense-total-all-def">0</td>
+              <tr>
+                <th>他2</th>
+                <td>@{[input('defOther2Name','','calcDefense')]}</td>
+                <td>@{[input('defOther2Reqd','','calcDefense')]}</td>
+                <td>@{[input('defOther2Eva','number','calcDefense')]}</td>
+                <td>@{[input('defOther2Def','number','calcDefense')]}</td>
+                <td> </td>
+                <td>@{[input('defOther2Note')]}</td>
+              </tr>
+              <tr>
+                <th>他3</th>
+                <td>@{[input('defOther3Name','','calcDefense')]}</td>
+                <td>@{[input('defOther3Reqd','','calcDefense')]}</td>
+                <td>@{[input('defOther3Eva','number','calcDefense')]}</td>
+                <td>@{[input('defOther3Def','number','calcDefense')]}</td>
+                <td> </td>
+                <td>@{[input('defOther3Note')]}</td>
               </tr>
             </tbody>
+            <tfoot>
+HTML
+foreach my $i (1..3){
+  print <<"HTML";
+              <tr class="defense-total">
+                <th colspan="3">
+                  合計:
+                  <label>@{[input("defTotal${i}CheckArmour1"  ,'checkbox','calcDefense')]}<span>鎧</span></label>
+                  <label>@{[input("defTotal${i}CheckShield1"  ,'checkbox','calcDefense')]}<span>盾</span></label>
+                  <label>@{[input("defTotal${i}CheckDefOther1",'checkbox','calcDefense')]}<span>他1</span></label>
+                  <label>@{[input("defTotal${i}CheckDefOther2",'checkbox','calcDefense')]}<span>他2</span></label>
+                  <label>@{[input("defTotal${i}CheckDefOther3",'checkbox','calcDefense')]}<span>他3</span></label>
+                </th>
+                <td id="defense-total${i}-eva">0</td>
+                <td id="defense-total${i}-def">0</td>
+                <td colspan="2">@{[input("defenseTotal${i}Note")]}</td>
+              </tr>
+HTML
+}
+print <<"HTML";
+            </tfoot>
           </table>
         </div>
         <div class="box" id="accessories">
@@ -1055,15 +1066,15 @@ foreach (
   ["他3","Other3"], ["┗","Other3_"], ["┗","Other3__"],
   ["他4","Other4"], ["┗","Other4_"], ["┗","Other4__"],
 ) {
-  my $flag;
+  my $show;
   my $addbase = @$_[1];
      $addbase =~ s/_//;
-  if   (@$_[0] eq '他2' &&  $pc{'race'} ne 'レプラカーン')                     { $flag = 0; }
-  elsif(@$_[0] eq '他3' && ($pc{'race'} ne 'レプラカーン' || $pc{'level'} < 6)){ $flag = 0; }
-  elsif(@$_[0] eq '他4' && ($pc{'race'} ne 'レプラカーン' || $pc{'level'} <16)){ $flag = 0; }
-  elsif(@$_[0] =~ /┗/  && !$pc{'accessory'.$addbase.'Add'}){ $flag = 0; }
-  else { $flag = 1; }
-  print '  <tr id="accessory-row'.@$_[1].'" data-type="'.@$_[1].'" '.display($flag).">\n";
+  if   (@$_[0] eq '他2' &&  $pc{'race'} ne 'レプラカーン')                     { $show = 0; }
+  elsif(@$_[0] eq '他3' && ($pc{'race'} ne 'レプラカーン' || $pc{'level'} < 6)){ $show = 0; }
+  elsif(@$_[0] eq '他4' && ($pc{'race'} ne 'レプラカーン' || $pc{'level'} <16)){ $show = 0; }
+  elsif(@$_[0] =~ /┗/  && !$pc{'accessory'.$addbase.'Add'}){ $show = 0; }
+  else { $show = 1; }
+  print '  <tr id="accessory-row'.@$_[1].'" data-type="'.@$_[1].'" '.display($show).">\n";
   print '  <td>';
   if (@$_[1] !~ /__/) {
     print '  <input type="checkbox"' .
@@ -1148,12 +1159,15 @@ foreach my $num (1 .. $pc{'honorItemsNum'}){
 print <<"HTML";
               </tbody>
             </table>
-          <div class="add-del-button"><a onclick="addHonorItems()">▼</a><a onclick="delHonorItems()">▲</a></div>
-          @{[ input 'honorItemsNum','hidden' ]}
-          <p>フリー条件適用可能な（名誉点消費を0点にして良い）場合、<span class="evo">この表示</span>になります。</p>
+            <div class="add-del-button"><a onclick="addHonorItems()">▼</a><a onclick="delHonorItems()">▲</a></div>
+            @{[ input 'honorItemsNum','hidden' ]}
+            <p>フリー条件適用可能な（名誉点消費を0点にして良い）場合、<span class="mark">この表示</span>になります。</p>
+            <dl class="edit-table side-margin" id="honor-offset">
+              <dt>不名誉点相殺</dt><dd>@{[ input "honorOffset", "number", "calcHonor();calcDishonor" ]}</dd>
+            </dl>
           </div>
           <dl class="box" id="dishonor">
-            <dt>不名誉点</dt><dd id="dishonor-value">0</dd>
+            <dt>不名誉点</dt><dd id="dishonor-value">$pc{'dishonor'}</dd>
             <dt>不名誉称号</dt><dd id="notoriety"></dd>
           </dl>
           <div class="box honor-items" id="dishonor-items">
@@ -1211,7 +1225,8 @@ print <<"HTML";
         　刃武器　　　　：<code>[刃]</code>：<img class="i-icon" src="${set::icon_dir}wp_edge.png"><br>
         　打撃武器　　　：<code>[打]</code>：<img class="i-icon" src="${set::icon_dir}wp_blow.png"><br>
         <hr>
-        ※以下は複数行の欄でのみ有効です。<br>
+        ※以下は一部の複数行の欄でのみ有効です。<br>
+        （有効な欄：「容姿・経歴・その他メモ」「履歴（自由記入）」「所持品」「収支履歴」）<br>
         大見出し：行頭に<code>*</code><br>
         中見出し：行頭に<code>**</code><br>
         少見出し：行頭に<code>***</code><br>
@@ -1224,7 +1239,7 @@ print <<"HTML";
         表組み　　：<code>|テキスト|テキスト|</code><br>
         定義リスト：<code>:項目名|説明文</code><br>
         　　　　　　<code>:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|説明文2行目</code> 項目名を記入しないか、半角スペースで埋めると上と結合<br>
-        折り畳み：行頭に<code>[>]項目名</code>：移行のテキストがすべて折り畳みになります。<br>
+        折り畳み：行頭に<code>[>]項目名</code>：以降のテキストがすべて折り畳みになります。<br>
         　　　　　項目名を省略すると、自動的に「詳細」になります。<br>
         折り畳み終了：行頭に<code>[---]</code>：（ハイフンは3つ以上任意）<br>
         　　　　　　　省略すると、以後のテキストが全て折りたたまれます。<br>
@@ -1488,7 +1503,7 @@ print <<"HTML";
       
       
       @{[ input 'birthTime','hidden' ]}
-      @{[ input 'id','hidden' ]}
+      <input type="hidden" name="id" value="$::in{'id'}">
     </form>
 HTML
 if($mode eq 'edit'){
@@ -1496,8 +1511,8 @@ print <<"HTML";
     <form name="del" method="post" action="./" class="deleteform">
       <p style="font-size: 80%;">
       <input type="hidden" name="mode" value="delete">
-      <input type="hidden" name="id" value="$id">
-      <input type="hidden" name="pass" value="$pass">
+      <input type="hidden" name="id" value="$::in{'id'}">
+      <input type="hidden" name="pass" value="$::in{'pass'}">
       <input type="checkbox" name="check1" value="1" required>
       <input type="checkbox" name="check2" value="1" required>
       <input type="checkbox" name="check3" value="1" required>
@@ -1512,8 +1527,8 @@ HTML
     <form name="imgdel" method="post" action="./" class="deleteform">
       <p style="font-size: 80%;">
       <input type="hidden" name="mode" value="img-delete">
-      <input type="hidden" name="id" value="$id">
-      <input type="hidden" name="pass" value="$pass">
+      <input type="hidden" name="id" value="$::in{'id'}">
+      <input type="hidden" name="pass" value="$::in{'pass'}">
       <input type="checkbox" name="check1" value="1" required>
       <input type="checkbox" name="check2" value="1" required>
       <input type="checkbox" name="check3" value="1" required>
@@ -1632,9 +1647,15 @@ foreach (@data::weapons){
   print "'".@$_[0]."',";
 }
 print '"ガン（物理）","盾"];'."\n";
+## 種族
 print 'let raceAbility = {';
 foreach my $key ( keys(%data::race_ability) ){
-  print "\"$key\" : \"$data::race_ability{$key}\",";
+  print "\"$key\" : {";
+  print "\"1\" : \"$data::race_ability{$key}\",";
+  print "\"6\" : \"$data::race_ability_lv6{$key}\",";
+  print "\"11\" : \"$data::race_ability_lv11{$key}\",";
+  print "\"16\" : \"$data::race_ability_lv16{$key}\",";
+  print "},";
 }
 print "};\n";
 print 'let raceLanguage = {';

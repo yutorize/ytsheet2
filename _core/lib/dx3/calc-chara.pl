@@ -156,8 +156,9 @@ sub data_calc {
 
   ### 経験点 --------------------------------------------------
   ## 履歴から 
-  foreach my $i (0 .. $pc{'historyNum'}){
-    $pc{'expTotal'} += s_eval($pc{"history${i}Exp"});
+  $pc{'expTotal'} = $pc{"history0Exp"};
+  foreach my $i (1 .. $pc{'historyNum'}){
+    $pc{'expTotal'} += s_eval($pc{"history${i}Exp"}) if $pc{"history${i}ExpApply"};
   }
 
   ## 経験点消費
@@ -184,6 +185,7 @@ sub data_calc {
   }
 
   #### 改行を<br>に変換 --------------------------------------------------
+  $pc{'words'}         =~ s/\r\n?|\n/<br>/g;
   $pc{'freeNote'}      =~ s/\r\n?|\n/<br>/g;
   $pc{'freeHistory'}   =~ s/\r\n?|\n/<br>/g;
   $pc{'chatPalette'}   =~ s/\r\n?|\n/<br>/g;

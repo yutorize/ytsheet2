@@ -10,10 +10,6 @@ require $set::data_items;
 sub data_calc {
   my %pc = %{$_[0]};
   my %st;
-
-  
-  ### 種族特徴 --------------------------------------------------
-  $pc{'raceAbility'} = $data::race_ability{$pc{'race'}};
   
   ### 技能 --------------------------------------------------
   my @class_a; my @class_b; my $lv_caster_total;
@@ -32,7 +28,7 @@ sub data_calc {
   my $smax = max($pc{'lvSco'},$pc{'lvRan'},$pc{'lvSag'});
 
   ### ウィザードレベル算出 --------------------------------------------------
-  $pc{'lvWiz'} = max($pc{'lvSor'},$pc{'lvCon'});
+  $pc{'lvWiz'} = max($pc{'lvSor'},$pc{'lvCon'}) if ($pc{'lvSor'} || $pc{'lvCon'});
 
   ### 経験点／名誉点／ガメル計算 --------------------------------------------------
   ## 履歴から 
@@ -54,19 +50,39 @@ sub data_calc {
   $cashbook =~ s/:<((?:[\+\-\*\/]?[0-9]+)+)/$pc{'debtTotal'} += eval($1)/eg;
   $pc{'moneyTotal'} += $pc{'debtTotal'} - $pc{'depositTotal'};
 
-  ## 名誉点消費
-  foreach (1 .. $pc{'honorItemsNum'}){
-    $pc{'honor'} -= $pc{'honorItem'.$_.'Pt'};
+  ## 名誉点2.0
+  if($::SW2_0){
+    ## 消失
+    foreach (1 .. $pc{'dishonorItemsNum'}){
+      $pc{'dishonor'} += $pc{'dishonorItem'.$_.'Pt'};
+    }
+    $pc{'honor'} -= $pc{'dishonor'};
+    $pc{'honorMax'} = $pc{'honor'};
+    ## 消費
+    foreach (1 .. $pc{'honorItemsNum'}){
+      $pc{'honor'} -= $pc{'honorItem'.$_.'Pt'};
+    }
+    foreach (1 .. $pc{'mysticArtsNum'}){
+      $pc{'honor'} -= $pc{'mysticArts'.$_.'Pt'};
+    }
   }
-  foreach (@set::adventurer_rank){
-    my ($name, $num, undef) = @$_;
-    $pc{'honor'} -= $num if ($pc{'rank'} eq $name);
-  }
-  foreach (1 .. $pc{'mysticArtsNum'}){
-    $pc{'honor'} -= $pc{'mysticArts'.$_.'Pt'};
-  }
-  foreach (1 .. $pc{'dishonorItemsNum'}){
-    $pc{'dishonor'} += $pc{'dishonorItem'.$_.'Pt'};
+  ## 名誉点2.5
+  else {
+    foreach (1 .. $pc{'honorItemsNum'}){
+      $pc{'honor'} -= $pc{'honorItem'.$_.'Pt'};
+    }
+    foreach (@set::adventurer_rank){
+      my ($name, $num, undef) = @$_;
+      $pc{'honor'} -= $num if ($pc{'rank'} eq $name);
+    }
+    foreach (1 .. $pc{'mysticArtsNum'}){
+      $pc{'honor'} -= $pc{'mysticArts'.$_.'Pt'};
+    }
+    foreach (1 .. $pc{'dishonorItemsNum'}){
+      $pc{'dishonor'} += $pc{'dishonorItem'.$_.'Pt'};
+    }
+    $pc{'honor'}    -= $pc{'honorOffset'};
+    $pc{'dishonor'} -= $pc{'honorOffset'};
   }
 
   ## 経験点消費
@@ -78,8 +94,111 @@ sub data_calc {
     if    ($data::class{$_}{'expTable'} eq 'A'){ $pc{'expRest'} -= $expA[$pc{'lv'.$data::class{$_}{'id'}}]; }
     elsif ($data::class{$_}{'expTable'} eq 'B'){ $pc{'expRest'} -= $expB[$pc{'lv'.$data::class{$_}{'id'}}]; }
   }
-  $pc{'expRest'} += $expS[$pc{'lvSeeker'}];  # 求道者
-
+  
+  ### 求道者 --------------------------------------------------
+  $pc{'expRest'} += $expS[$pc{'lvSeeker'}];
+  if($pc{'lvSeeker'}){
+    $pc{'lvMonster'} = $pc{'level'};
+    $pc{'lvMonster'} += $expS[$pc{'lvSeeker'}] >= 90001 ? 7 :
+                        $expS[$pc{'lvSeeker'}] >= 70001 ? 6 :
+                        $expS[$pc{'lvSeeker'}] >= 50001 ? 5 :
+                        $expS[$pc{'lvSeeker'}] >= 40001 ? 4 :
+                        $expS[$pc{'lvSeeker'}] >= 30001 ? 3 :
+                        $expS[$pc{'lvSeeker'}] >= 20001 ? 2 :
+                        $expS[$pc{'lvSeeker'}] >= 10001 ? 1 : 0;
+  }
+  $pc{'sttSeekerGrow'} = $pc{'lvSeeker'} >= 17 ? 30
+                       : $pc{'lvSeeker'} >= 13 ? 24
+                       : $pc{'lvSeeker'} >=  9 ? 18
+                       : $pc{'lvSeeker'} >=  5 ? 12
+                       : $pc{'lvSeeker'} >=  1 ?  6
+                       : 0;
+  $pc{'defenseSeeker'} = $pc{'lvSeeker'} >= 18 ? 10
+                       : $pc{'lvSeeker'} >= 14 ?  8
+                       : $pc{'lvSeeker'} >= 10 ?  6
+                       : $pc{'lvSeeker'} >=  6 ?  4
+                       : $pc{'lvSeeker'} >=  2 ?  2
+                       : 0;
+  if($pc{'lvSeeker'}){
+    foreach (1..5) {
+      last if ($_ == 1 && $pc{'lvSeeker'} < 3);
+      last if ($_ == 2 && $pc{'lvSeeker'} < 7);
+      last if ($_ == 3 && $pc{'lvSeeker'} < 11);
+      last if ($_ == 4 && $pc{'lvSeeker'} < 15);
+      last if ($_ == 5 && $pc{'lvSeeker'} < 19);
+      $pc{'buildupAddFeats'     }++ if $pc{'seekerBuildup'.$_} eq '戦闘特技';
+      $pc{'buildupAddSorcery'   }++ if $pc{'seekerBuildup'.$_} eq '真語魔法';
+      $pc{'buildupAddConjury'   }++ if $pc{'seekerBuildup'.$_} eq '操霊魔法';
+      $pc{'buildupAddWizardry'  }++ if $pc{'seekerBuildup'.$_} eq '深智魔法';
+      $pc{'buildupAddHolypray'  }++ if $pc{'seekerBuildup'.$_} eq '神聖魔法';
+      $pc{'buildupAddFairyism'  }++ if $pc{'seekerBuildup'.$_} eq '妖精魔法';
+      $pc{'buildupAddMagitech'  }++ if $pc{'seekerBuildup'.$_} eq '魔動機術';
+      $pc{'buildupAddDemonology'}++ if $pc{'seekerBuildup'.$_} eq '召異魔法';
+      $pc{'buildupAddGramarye'  }++ if $pc{'seekerBuildup'.$_} eq '秘奥魔法';
+      $pc{'buildupAddEnhance'   }++ if $pc{'seekerBuildup'.$_} eq '練技';
+      $pc{'buildupAddSong'      }++ if $pc{'seekerBuildup'.$_} eq '呪歌';
+      $pc{'buildupAddRiding'    }++ if $pc{'seekerBuildup'.$_} eq '騎芸';
+      $pc{'buildupAddAlchemy'   }++ if $pc{'seekerBuildup'.$_} eq '賦術';
+      $pc{'buildupAddCommand'   }++ if $pc{'seekerBuildup'.$_} eq '鼓咆';
+      $pc{'buildupAddDivination'}++ if $pc{'seekerBuildup'.$_} eq '占瞳';
+      $pc{'buildupAddPotential' }++ if $pc{'seekerBuildup'.$_} eq '魔装';
+      $pc{'buildupAddSeal'      }++ if $pc{'seekerBuildup'.$_} eq '呪印';
+      $pc{'buildupAddDignity'   }++ if $pc{'seekerBuildup'.$_} eq '貴格';
+    }
+    foreach (1..5) {
+      last if ($_ == 1 && $pc{'lvSeeker'} < 4);
+      last if ($_ == 2 && $pc{'lvSeeker'} < 8);
+      last if ($_ == 3 && $pc{'lvSeeker'} < 12);
+      last if ($_ == 4 && $pc{'lvSeeker'} < 16);
+      last if ($_ == 5 && $pc{'lvSeeker'} < 20);
+         if($pc{'seekerAbility'.$_} eq 'ＨＰ、ＭＰ上昇'){ $pc{'seekerAbilityHpMp'}   = 10; }
+      elsif($pc{'seekerAbility'.$_} eq '抵抗力上昇'    ){ $pc{'seekerAbilityResist'} =  3; }
+      elsif($pc{'seekerAbility'.$_} eq '魔力上昇'      ){ $pc{'seekerAbilityMagic'}  =  3; }
+      elsif($pc{'seekerAbility'.$_} eq '種族特徴の獲得、強化'){ $pc{'seekerAbilityRaceA'} = 1; }
+    }
+  }
+  ### 種族特徴 --------------------------------------------------
+  $pc{'raceAbility'} = $data::race_ability{$pc{'race'}};
+  if($pc{'level'} >= 6){
+    if(ref($data::race_ability_lv6{$pc{'race'}}) eq 'ARRAY'){
+      $pc{'raceAbility'} .= $pc{'raceAbilityLv6'};
+    }
+    else { $pc{'raceAbility'} .= $data::race_ability_lv6{$pc{'race'}}; }
+  }
+  if($pc{'level'} >= 11){
+    if(ref($data::race_ability_lv11{$pc{'race'}}) eq 'ARRAY'){
+      if($pc{'raceAbility'} =~ /$pc{'raceAbilityLv11'}/){
+        (my $text = $pc{'raceAbilityLv11'}) =~ s/］/＋］/;
+        $pc{'raceAbility'} =~ s/$pc{'raceAbilityLv11'}/$text/;
+      } else {
+        $pc{'raceAbility'} .= $pc{'raceAbilityLv11'};
+      }
+    }
+    else { $pc{'raceAbility'} .= $data::race_ability_lv11{$pc{'race'}}; }
+  }
+  if($pc{'level'} >= 16){
+    $pc{'raceAbility'} = '［剣の託宣／運命凌駕］' . $pc{'raceAbility'};
+    if(ref($data::race_ability_lv16{$pc{'race'}}) eq 'ARRAY'){
+      if($pc{'raceAbility'} =~ /$pc{'raceAbilityLv16'}/){
+        (my $text = $pc{'raceAbilityLv16'}) =~ s/］/＋］/;
+        $pc{'raceAbility'} =~ s/$pc{'raceAbilityLv16'}/$text/;
+      } else {
+        $pc{'raceAbility'} .= $pc{'raceAbilityLv16'};
+      }
+    }
+    else {  $pc{'raceAbility'} .= $data::race_ability_lv16{$pc{'race'}}; }
+  }
+  elsif($pc{'seekerAbilityRaceA'}){
+    if(ref($data::race_ability_lv16{$pc{'race'}}) eq 'ARRAY'){
+      if($pc{'raceAbility'} =~ /$pc{'raceAbilityLv16'}/){
+        (my $text = $pc{'raceAbilityLv16'}) =~ s/］/＋］/;
+        $pc{'raceAbility'} =~ s/$pc{'raceAbilityLv16'}/$text/;
+      } else {
+        $pc{'raceAbility'} .= $pc{'raceAbilityLv16'};
+      }
+    }
+    else { $pc{'raceAbility'} = $pc{'raceAbility'} . $data::race_ability_lv16{$pc{'race'}}; }
+  }
   ### 種族チェック --------------------------------------------------
   if($pc{'race'} eq 'リルドラケン'){
     $pc{'raceAbilityDef'} = 1;
@@ -101,13 +220,31 @@ sub data_calc {
       $pc{'raceAbilityDef'} += 1;
       $pc{'raceAbilityMp'} += 15;
     }
+    if($pc{'level'} >= 16){
+      $pc{'raceAbilityDef'} += 2;
+      $pc{'raceAbilityMp'} += 30;
+    }
   }
   elsif($pc{'race'} eq 'ダークトロール'){
     $pc{'raceAbilityDef'} = 1;
+    if($pc{'level'} >= 16){
+      $pc{'raceAbilityDef'} += 2;
+    }
+  }
+  elsif($pc{'race'} eq 'ドレイク（ナイト）'){
+    if($pc{'level'} >= 16){
+      $pc{'raceAbility'} =~ s/［竜化］/［剣の託宣／復活竜化］/;
+    }
+  }
+  elsif($pc{'race'} eq 'バジリスク'){
+    if($pc{'level'} >= 16){
+      $pc{'raceAbility'} =~ s/［魔物化］/［剣の託宣／復活魔物化］/;
+    }
   }
 
   ### 能力値計算  --------------------------------------------------
   ## 成長
+  $pc{'sttHistGrowA'} = $pc{'sttHistGrowB'} = $pc{'sttHistGrowC'} = $pc{'sttHistGrowD'} = $pc{'sttHistGrowE'} = $pc{'sttHistGrowF'} = 0;
   for (my $i = 1; $i <= $pc{'historyNum'}; $i++) {
     my $grow = $pc{"history${i}Grow"};
     $grow =~ s/器(?:用度?)?(?:×|\*)?([0-9]{1,3})/$pc{'sttHistGrowA'} += $1; ''/ge;
@@ -123,12 +260,12 @@ sub data_calc {
     $pc{'sttHistGrowE'} += ($grow =~ s/知/知/g);
     $pc{'sttHistGrowF'} += ($grow =~ s/精/精/g);
   }
-  $pc{'sttGrowA'} = $pc{'sttPreGrowA'} + $pc{'sttHistGrowA'};
-  $pc{'sttGrowB'} = $pc{'sttPreGrowB'} + $pc{'sttHistGrowB'};
-  $pc{'sttGrowC'} = $pc{'sttPreGrowC'} + $pc{'sttHistGrowC'};
-  $pc{'sttGrowD'} = $pc{'sttPreGrowD'} + $pc{'sttHistGrowD'};
-  $pc{'sttGrowE'} = $pc{'sttPreGrowE'} + $pc{'sttHistGrowE'};
-  $pc{'sttGrowF'} = $pc{'sttPreGrowF'} + $pc{'sttHistGrowF'};
+  $pc{'sttGrowA'} = $pc{'sttPreGrowA'} + $pc{'sttHistGrowA'} + $pc{'sttSeekerGrow'};
+  $pc{'sttGrowB'} = $pc{'sttPreGrowB'} + $pc{'sttHistGrowB'} + $pc{'sttSeekerGrow'};
+  $pc{'sttGrowC'} = $pc{'sttPreGrowC'} + $pc{'sttHistGrowC'} + $pc{'sttSeekerGrow'};
+  $pc{'sttGrowD'} = $pc{'sttPreGrowD'} + $pc{'sttHistGrowD'} + $pc{'sttSeekerGrow'};
+  $pc{'sttGrowE'} = $pc{'sttPreGrowE'} + $pc{'sttHistGrowE'} + $pc{'sttSeekerGrow'};
+  $pc{'sttGrowF'} = $pc{'sttPreGrowF'} + $pc{'sttHistGrowF'} + $pc{'sttSeekerGrow'};
 
   ## 能力値算出
   $pc{'sttDex'} = $pc{'sttBaseTec'} + $pc{'sttBaseA'} + $pc{'sttGrowA'};
@@ -191,7 +328,7 @@ sub data_calc {
   if($pc{'lvSco'} >=12) { push(@abilities, "トレジャーマスター"); }
   if($pc{'lvSco'} >=15) { push(@abilities, "匠の技"); }
   if($pc{'lvSco'} >= 9) { push(@abilities, "影走り"); }
-  if($pc{'lvRan'} >= 5) { push(@abilities, "サバイバビリティ"); }
+  if($pc{'lvRan'} >= 5) { push(@abilities, $::SW2_0?"治癒適性":"サバイバビリティ"); }
   if($pc{'lvRan'} >= 7) { push(@abilities, "不屈"); }
   if($pc{'lvRan'} >= 9) { push(@abilities, "ポーションマスター"); }
   if($pc{'lvRan'} >=12) { push(@abilities, "縮地"); }
@@ -242,11 +379,11 @@ sub data_calc {
   ### サブステータス --------------------------------------------------
   ## 生命抵抗力
   $pc{'vitResistBase'} = $st{'LvD'};
-  $pc{'vitResistAddTotal'} = s_eval($pc{'vitResistAdd'});
+  $pc{'vitResistAddTotal'} = s_eval($pc{'vitResistAdd'}) + $pc{'seekerAbilityResist'};
   $pc{'vitResistTotal'}  = $pc{'vitResistBase'} + $pc{'vitResistAddTotal'};
   ## 精神抵抗力
   $pc{'mndResistBase'} = $st{'LvF'};
-  $pc{'mndResistAddTotal'} = s_eval($pc{'mndResistAdd'}) + $pc{'raceAbilityMndResist'};
+  $pc{'mndResistAddTotal'} = s_eval($pc{'mndResistAdd'}) + $pc{'raceAbilityMndResist'} + $pc{'seekerAbilityResist'};
   $pc{'mndResistTotal'}  = $pc{'mndResistBase'} + $pc{'mndResistAddTotal'};
   ## ＨＰＭＰ：装飾品
   foreach (
@@ -268,18 +405,18 @@ sub data_calc {
   }
   ## ＨＰ
   $pc{'hpBase'} = $pc{'level'} * 3 + $pc{'sttVit'} + $pc{'sttAddD'};
-  $pc{'hpAddTotal'} = s_eval($pc{'hpAdd'}) + $pc{'tenacity'} + $pc{'hpAccessory'};
+  $pc{'hpAddTotal'} = s_eval($pc{'hpAdd'}) + $pc{'tenacity'} + $pc{'hpAccessory'} + $pc{'seekerAbilityHpMp'};
   $pc{'hpAddTotal'} += 15 if $pc{'lvFig'} >= 7; #タフネス
   $pc{'hpTotal'}  = $pc{'hpBase'} + $pc{'hpAddTotal'};
   ## ＭＰ
   $pc{'mpBase'} = $lv_caster_total * 3 + $pc{'sttMnd'} + $pc{'sttAddF'};
   $pc{'mpBase'} = $pc{'level'} * 3 + $pc{'sttMnd'} + $pc{'sttAddF'} if ($pc{'race'} eq 'マナフレア');
-  $pc{'mpAddTotal'} = s_eval($pc{'mpAdd'}) + $pc{'capacity'} + $pc{'raceAbilityMp'} + $pc{'mpAccessory'};
+  $pc{'mpAddTotal'} = s_eval($pc{'mpAdd'}) + $pc{'capacity'} + $pc{'raceAbilityMp'} + $pc{'mpAccessory'} + $pc{'seekerAbilityHpMp'};
   $pc{'mpTotal'}  = $pc{'mpBase'} + $pc{'mpAddTotal'};
   $pc{'mpTotal'}  = 0  if ($pc{'race'} eq 'グラスランナー');
 
   ## 移動力
-  my $own_mobility = $pc{'armourOwn'} ? 2 : 0;
+  my $own_mobility = $pc{'armour1Own'} ? 2 : 0;
   $pc{'mobilityBase'} = $pc{'sttAgi'} + $pc{'sttAddB'} + $own_mobility;
   $pc{'mobilityBase'} = $pc{'mobilityBase'} * 2 + $own_mobility  if ($pc{'race'} eq 'ケンタウロス');
   $pc{'mobilityTotal'} = $pc{'mobilityBase'} + s_eval($pc{'mobilityAdd'});
@@ -314,6 +451,7 @@ sub data_calc {
     next if (!$data::class{$name}{'magic'}{'jName'});
     my $id = $data::class{$name}{'id'};
     $pc{'magicPower'.$id} = $pc{'lv'.$id} ? ( $pc{'lv'.$id} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwn'.$id} ? 2 : 0)) / 6) + $pc{'magicPowerAdd'.$id} + $pc{'magicPowerAdd'} + $pc{'magicPowerEnhance'} ) : 0;
+    $pc{'magicPower'.$id} += $pc{'seekerAbilityMagic'} if $pc{'lv'.$id} >= 15; #求道者
   }
   ## 奏力ほか
   my %stt = ('知力'=>['Int','E'], '精神力'=>['Mnd','F']);
@@ -357,31 +495,38 @@ sub data_calc {
     }
   }
 
-  ## 回避力
+  ## 基本回避力
     use POSIX 'ceil';
     $pc{'reqdStr'}  = $pc{'sttStr'} + $pc{'sttAddC'};
     $pc{'reqdStrF'} = ceil($pc{'reqdStr'} / 2);
     my $eva_class;
-    my $own_agi = $pc{'shieldOwn'} ? 2 : 0;
     if   ($pc{'evasionClass'} eq "ファイター"       && $pc{'lvFig'}){ $eva_class = $pc{'lvFig'}; $pc{'evasionStr'} = $pc{'reqdStr'}; }
     elsif($pc{'evasionClass'} eq "グラップラー"     && $pc{'lvGra'}){ $eva_class = $pc{'lvGra'}; $pc{'evasionStr'} = $pc{'reqdStr'}; }
     elsif($pc{'evasionClass'} eq "フェンサー"       && $pc{'lvFen'}){ $eva_class = $pc{'lvFen'}; $pc{'evasionStr'} = $pc{'reqdStrF'}; }
     elsif($pc{'evasionClass'} eq "シューター"       && $pc{'lvSho'}){ $eva_class = $pc{'lvSho'}; $pc{'evasionStr'} = $pc{'reqdStr'}; }
     elsif($pc{'evasionClass'} eq "デーモンルーラー" && $pc{'lvDem'}){ $eva_class = $pc{'lvDem'}; $pc{'evasionStr'} = $pc{'reqdStr'}; }
-    else{ $pc{'evasionStr'} = $pc{'reqdStr'}; }
-
-    $pc{'evasionEva'} = 0;
-    $pc{'evasionEva'} = $eva_class + int( ($pc{'sttAgi'} + $pc{'sttAddB'} + $own_agi) / 6 ) if $eva_class;
+    else{ $eva_class = 0; $pc{'evasionStr'} = $pc{'reqdStr'}; }
 
   ## 防具
-    $pc{'defenseTotalAllEva'} = $pc{'evasionEva'} + $pc{'evasiveManeuver'} + $pc{'armourEva'} + $pc{'shieldEva'} + $pc{'defOtherEva'};
-    $pc{'defenseTotalAllDef'} =
-      $pc{'raceAbilityDef'} +
-      $pc{'armourDef'} + max($pc{'masteryMetalArmour'},$pc{'masteryNonMetalArmour'}) +
-      $pc{'shieldDef'} + $pc{'masteryShield'} +
-      $pc{'defOtherDef'};
-    if($pc{'armourNote'} =~ /〈魔器〉/ || $pc{'ShieldNote'} =~ /〈魔器〉/){
-      $pc{'defenseTotalAllDef'} += $pc{'masteryArtisan'};
+    foreach my $i (1..3){
+      my $own_agi = $pc{"defTotal${i}CheckShield1"} && $pc{'shield1Own'} ? 2 : 0;
+      my $art_def = 0;
+      my $eva = ( $eva_class ? $eva_class + int(($pc{'sttAgi'}+$pc{'sttAddB'}+$own_agi)/6) : 0 ) + $pc{'evasiveManeuver'};
+      my $def = $pc{'raceAbilityDef'} + $pc{'defenseSeeker'};
+      my $flag = 0;
+      if($pc{"defTotal${i}CheckArmour1"}  ){ $flag++; $eva += $pc{'armour1Eva'};    $def += $pc{'armour1Def'} + max($pc{'masteryMetalArmour'},$pc{'masteryNonMetalArmour'}); }
+      if($pc{"defTotal${i}CheckShield1"}  ){ $flag++; $eva += $pc{'shield1Eva'};    $def += $pc{'shield1Def'} + $pc{'masteryShield'}; }
+      if($pc{"defTotal${i}CheckDefOther1"}){ $flag++; $eva += $pc{'defOther1Eva'}; $def += $pc{'defOther1Def'}; }
+      if($pc{"defTotal${i}CheckDefOther2"}){ $flag++; $eva += $pc{'defOther2Eva'}; $def += $pc{'defOther2Def'}; }
+      if($pc{"defTotal${i}CheckDefOther3"}){ $flag++; $eva += $pc{'defOther3Eva'}; $def += $pc{'defOther3Def'}; }
+      if(($pc{"defTotal${i}CheckArmour1"} && $pc{'armour1Note'} =~ /〈魔器〉/)
+      || ($pc{"defTotal${i}CheckShield1"} && $pc{'Shield1Note'} =~ /〈魔器〉/)){
+        $def += $pc{'masteryArtisan'};
+      }
+      if($flag){
+        $pc{"defenseTotal${i}Eva"} = $eva;
+        $pc{"defenseTotal${i}Def"} = $def;
+      }
     }
 
   ### グレード自動変更 --------------------------------------------------
@@ -416,6 +561,7 @@ sub data_calc {
   }
 
   #### 改行を<br>に変換 --------------------------------------------------
+  $pc{'words'}         =~ s/\r\n?|\n/<br>/g;
   $pc{'items'}         =~ s/\r\n?|\n/<br>/g;
   $pc{'freeNote'}      =~ s/\r\n?|\n/<br>/g;
   $pc{'freeHistory'}   =~ s/\r\n?|\n/<br>/g;

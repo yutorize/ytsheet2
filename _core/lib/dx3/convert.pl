@@ -3,8 +3,20 @@ use strict;
 #use warnings;
 use utf8;
 use open ":utf8";
-use LWP::Simple;
+use LWP::UserAgent;
 use JSON::PP;
+
+sub data_get {
+  my $url = shift;
+  my $ua  = LWP::UserAgent->new;
+  my $res = $ua->get($url);
+  if ($res->is_success) {
+    return $res->decoded_content;
+  }
+  else {
+    return undef;
+  }
+}
 
 sub data_convert {
   my $set_url = shift;
@@ -12,7 +24,7 @@ sub data_convert {
   
   ## キャラクター保管所
   if($set_url =~ m"^https?://charasheet\.vampire-blood\.net/"){
-    my $data = get($set_url.'.js') or error 'キャラクター保管所のデータが取得できませんでした:'.$file;
+    my $data = data_get($set_url.'.js') or error 'キャラクター保管所のデータが取得できませんでした';
     my %in = %{ decode_json(encode('utf8', (join '', $data))) };
     
     return convertHokanjoToYtsheet(\%in);
@@ -20,7 +32,7 @@ sub data_convert {
   ## キャラクター保管所
   if($set_url =~ m"^https?://character-sheets\.appspot\.com/dx3/edit.html"){
     $set_url =~ s/edit\.html\?/display\?ajax=1&/;
-    my $data = get($set_url) or error 'キャラクターシート倉庫のデータが取得できませんでした:'.$file;
+    my $data = data_get($set_url) or error 'キャラクターシート倉庫のデータが取得できませんでした';
     my %in = %{ decode_json(encode('utf8', (join '', $data))) };
     
     return convertSoukoToYtsheet(\%in);
@@ -40,12 +52,21 @@ sub data_convert {
   }
   ## ゆとシートⅡ
   {
-    my $data = get($set_url.'&mode=json') or error 'コンバート元のデータが取得できませんでした';
+    my $data = data_get($set_url.'&mode=json') or error 'コンバート元のデータが取得できませんでした';
+    if($data !~ /^{/){ error 'JSONデータが取得できませんでした' }
     my %pc = %{ decode_json(join '', $data) };
-    our $base_url = $set_url;
-    $base_url =~ s|/[^/]+?$|/|;
-    $pc{'convertSource'} = '別のゆとシートⅡ';
-    return %pc;
+    if($pc{'result'} eq 'OK'){
+      our $base_url = $set_url;
+      $base_url =~ s|/[^/]+?$|/|;
+      $pc{'convertSource'} = '別のゆとシートⅡ';
+      return %pc;
+    }
+    elsif($pc{'result'}) {
+      error 'コンバート元のゆとシートⅡでエラーがありました<br>>'.$pc{'result'};
+    }
+    else {
+      error '有効なデータが取得できませんでした';
+    }
   }
 }
 
@@ -247,6 +268,7 @@ sub convertHokanjoToYtsheet {
   my $i = 0;
   foreach my $exp (@{$in{'get_exp_his'}}){
     $pc{'history'.($i+1).'Exp'}   = $exp;
+    $pc{'history'.($i+1).'ExpApply'} = 1 if $exp;
     $pc{'history'.($i+1).'Note'}  = $in{'seicho_memo_his'}[$i];
     $i++;
   }
@@ -259,9 +281,12 @@ sub convertHokanjoToYtsheet {
   $profile .= ": 瞳 |$in{'color_eye'}&lt;br&gt;";
   $profile .= ": 肌 |$in{'color_skin'}&lt;br&gt;";
   
-  $pc{'freeNote'} = $profile.$in{'pc_making_memo'},
+  $pc{'freeNote'} = $profile.$in{'pc_making_memo'};
+  $pc{'freeNoteView'} = (tag_unescape tag_unescape_lines $profile).$in{'pc_making_memo'};
+  $pc{'freeNoteView'} =~ s/\r\n?|\n/<br>/g;
   
   ## 〆
+  $pc{'ver'} = 0;
   return %pc;
 }
 sub convertTiming {
@@ -353,7 +378,7 @@ sub convertSoukoToYtsheet {
     'skillAddWill'      => $in{'skills'}{'isi'}{'D'}{'dlv'} ne '' ? $in{'skills'}{'isi'}{'D'}{'dlv'} - $in{'skills'}{'isi'}{'A'}{'lv'} : '',
     'skillAddNegotiate' => $in{'skills'}{'kou'}{'D'}{'dlv'} ne '' ? $in{'skills'}{'kou'}{'D'}{'dlv'} - $in{'skills'}{'kou'}{'A'}{'lv'} : '',
     'skillAddProcure'   => $in{'skills'}{'tyo'}{'D'}{'dlv'} ne '' ? $in{'skills'}{'tyo'}{'D'}{'dlv'} - $in{'skills'}{'tyo'}{'A'}{'lv'} : '',
-    'freeNote' => ' '.$in{'base'}{'memo'},
+    'freeNote' => $in{'base'}{'memo'},
   );
   ## シンドローム
   foreach my $i (1 .. 3){
@@ -499,6 +524,7 @@ sub convertSoukoToYtsheet {
   $pc{'history1Exp'} = $in{'exp'}{'acquire'};
   $pc{'historyNum'} = 3;
   ## 〆
+  $pc{'ver'} = 0;
   return %pc;
 }
 ### 旧ゆとシート => ゆとシートⅡ --------------------------------------------------
@@ -688,6 +714,7 @@ sub convert1to2 {
   }
   $pc{"history0Exp"} = $pc{"make_exp"};
   
+  $pc{'ver'} = 0;
   return %pc;
 }
 

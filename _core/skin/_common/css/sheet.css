@@ -291,6 +291,18 @@ dl.box > dt,
   padding-top: 0;
 }
 
+.box a[target="_blank"]::after,
+.image a[target="_blank"]::after {
+  content: '\f35d';
+  display: inline-block;
+  margin-left: .25em;
+  margin-top: .1em;
+  font-family: "Font Awesome 5 Free";
+  font-weight: bold;
+  font-size: 85%;
+  vertical-align: top;
+}
+
 .box.chat-palette {
   position: fixed;
   top: -100vh;
@@ -467,11 +479,7 @@ dl.note-description dd {
   font-family: "Font Awesome 5 Free";
   font-style: normal;
   font-size: 85%;
-  color: #000;
-}
-.night .s-icon::after,
-.night .s-icon::before {
-  color: #fff;
+  color: var(--text-color);
 }
 .s-icon.passive::before {
   content: "\f111";
@@ -479,11 +487,8 @@ dl.note-description dd {
 }
 .s-icon.setup::before {
   content: "△";
-  font-weight: normal;
-  text-shadow: -.08rem 0 0 #000, 0 .08rem 0 #000, -.08rem .08rem 0 #000;
-}
-.night .s-icon.setup::before {
-  text-shadow: -.05rem 0 0 #fff, 0 .05rem 0 #fff, -.05rem .05rem 0 #fff;
+  font-family: inherit;
+  text-shadow: 0 0 0 var(--text-color);
 }
 .s-icon.major::before {
   content: "\f04b";
@@ -503,6 +508,34 @@ dl.note-description dd {
   font-weight: normal;
   transform: scale(-1, 1);
 }
+
+.s-icon.major0::before {
+  content: "〆";
+  font-family: inherit;
+}
+.s-icon.minor0::before {
+  content: "\f005";
+  font-weight: normal;
+}
+.s-icon.active0::before {
+  content: "\f14a";
+  font-weight: normal;
+}
+.s-icon.condition::before {
+  content: "▽";
+  font-family: inherit;
+  text-shadow: 0 0 0 var(--text-color);
+}
+.s-icon.selection::before {
+  content: "▼";
+  font-family: inherit;
+  text-shadow: 0 0 0 var(--text-color);
+}
+/* コピーライト */
+.s-icon.copyright::before {
+  content: "\f1f9";
+  font-weight: normal;
+}
 /* 狭いときに消す */
 @media screen and (max-width:735px){
   .sp-del {
@@ -521,6 +554,9 @@ aside.information {
   border-radius: .5rem;
   background-color: hsla(120,100%,50%,0.2);
   text-align: center;
+}
+aside.information.attention {
+  background-color: hsla(0,100%,50%,0.2);
 }
 aside.information a {
   font-weight: bold;
@@ -805,9 +841,12 @@ aside#error {
   z-index: 101;
 }
 
-
-
-
+/* // Restrict
+---------------------------------------------------------------------------------------------------- */
+.censored {
+  opacity: 0.5;
+  letter-spacing: -0.1rem;
+}
 
 
 

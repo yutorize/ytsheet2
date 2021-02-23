@@ -31,6 +31,7 @@ sub tag_unescape {
   
   $text =~ s#(―+)#<span class="d-dash">$1</span>#g;
   
+  $text =~ s{[©]}{<i class="s-icon copyright">©</i>}gi;
   
   $text =~ s/\[魔\]/<img alt="&#91;魔&#93;" class="i-icon" src="${set::icon_dir}wp_magic.png">/gi;
   $text =~ s/\[刃\]/<img alt="&#91;刃&#93;" class="i-icon" src="${set::icon_dir}wp_edge.png">/gi;
@@ -46,22 +47,34 @@ sub tag_unescape {
   
   $text =~ s/\[\[(.+?)&gt;((?:(?!<br>)[^"])+?)\]\]/&tag_link_url($2,$1)/egi; # リンク
   $text =~ s/\[(.+?)#([a-zA-Z0-9\-]+?)\]/<a href="?id=$2">$1<\/a>/gi; # シート内リンク
-  $text =~ s/(?<!href=")(https?:\/\/[^\s\<]+)/<a href="$1">$1<\/a>/gi; # 自動リンク
+  $text =~ s/(?<!href=")(https?:\/\/[^\s\<]+)/<a href="$1" target="_blank">$1<\/a>/gi; # 自動リンク
   
   $text =~ s/\n/<br>/gi;
   
-  $text =~ s/「((?:[○◯〇△＞▶〆☆≫»□☑🗨]|&gt;&gt;)+)/"「".&text_convert_icon($1);/egi;
+  if($::SW2_0){
+    $text =~ s/「((?:[○◯〇＞▶〆☆≫»□☑🗨▽▼]|&gt;&gt;)+)/"「".&text_convert_icon($1);/egi;
+  } else {
+    $text =~ s/「((?:[○◯〇△＞▶〆☆≫»□☑🗨]|&gt;&gt;)+)/"「".&text_convert_icon($1);/egi;
+  }
   
   return $text;
 }
 sub text_convert_icon {
   my $text = $_[0];
-  
-  $text =~ s{[○◯〇]}{<i class="s-icon passive">○</i>}gi;
-  $text =~ s{[△]}{<i class="s-icon setup">△</i>}gi;
-  $text =~ s{[＞▶〆]}{<i class="s-icon major">▶</i>}gi;
-  $text =~ s{[☆≫»]|&gt;&gt;}{<i class="s-icon minor">≫</i>}gi;
-  $text =~ s{[□☑🗨]}{<i class="s-icon active">☑</i>}gi;
+  if($::SW2_0){
+    $text =~ s{[○◯〇]}{<i class="s-icon passive">○</i>}gi;
+    $text =~ s{[＞▶〆]}{<i class="s-icon major0">〆</i>}gi;
+    $text =~ s{[☆≫»]|&gt;&gt;}{<i class="s-icon minor0">☆</i>}gi;
+    $text =~ s{[□☑🗨]}{<i class="s-icon active0">☑</i>}gi;
+    $text =~ s{[▽]}{<i class="s-icon condition">▽</i>}gi;
+    $text =~ s{[▼]}{<i class="s-icon selection">▼</i>}gi;
+  } else {
+    $text =~ s{[○◯〇]}{<i class="s-icon passive">○</i>}gi;
+    $text =~ s{[△]}{<i class="s-icon setup">△</i>}gi;
+    $text =~ s{[＞▶〆]}{<i class="s-icon major">▶</i>}gi;
+    $text =~ s{[☆≫»]|&gt;&gt;}{<i class="s-icon minor">≫</i>}gi;
+    $text =~ s{[□☑🗨]}{<i class="s-icon active">☑</i>}gi;
+  }
   
   return $text;
 } 
@@ -82,6 +95,46 @@ sub tag_unescape_ytc {
   
   $text =~ s/\n/<br>/gi;
   return $text;
+}
+
+### バージョンアップデート --------------------------------------------------
+sub data_update_chara {
+  my %pc = %{$_[0]};
+  $pc{'ver'} =~ s/^([0-9]+)\.([0-9]+)\.([0-9]+)$/$1.$2$3/;
+  if($pc{'ver'} < 1.10){
+    $pc{'fairyContractEarth'} = 1 if $pc{'ftElemental'} =~ /土|地/;
+    $pc{'fairyContractWater'} = 1 if $pc{'ftElemental'} =~ /水|氷/;
+    $pc{'fairyContractFire' } = 1 if $pc{'ftElemental'} =~ /火|炎/;
+    $pc{'fairyContractWind' } = 1 if $pc{'ftElemental'} =~ /風|空/;
+    $pc{'fairyContractLight'} = 1 if $pc{'ftElemental'} =~ /光/;
+    $pc{'fairyContractDark' } = 1 if $pc{'ftElemental'} =~ /闇/;
+  }
+  if($pc{'ver'} < 1.11001){
+    $pc{'paletteUseBuff'} = 1;
+  }
+  if($pc{'ver'} < 1.11004){
+    $pc{'armour1Name'} = $pc{'armourName'};
+    $pc{'armour1Reqd'} = $pc{'armourReqd'};
+    $pc{'armour1Eva'}  = $pc{'armourEva'};
+    $pc{'armour1Def'}  = $pc{'armourDef'};
+    $pc{'armour1Own'}  = $pc{'armourOwn'};
+    $pc{'armour1Note'} = $pc{'armourNote'};
+    $pc{'shield1Name'} = $pc{'shieldName'};
+    $pc{'shield1Reqd'} = $pc{'shieldReqd'};
+    $pc{'shield1Eva'}  = $pc{'shieldEva'};
+    $pc{'shield1Def'}  = $pc{'shieldDef'};
+    $pc{'shield1Own'}  = $pc{'shieldOwn'};
+    $pc{'shield1Note'} = $pc{'shieldNote'};
+    $pc{'defOther1Name'} = $pc{'defOtherName'};
+    $pc{'defOther1Reqd'} = $pc{'defOtherReqd'};
+    $pc{'defOther1Eva'}  = $pc{'defOtherEva'};
+    $pc{'defOther1Def'}  = $pc{'defOtherDef'};
+    $pc{'defOther1Note'} = $pc{'defOtherNote'};
+    $pc{"defenseTotal1Eva"} = $pc{"defenseTotalAllEva"};
+    $pc{"defenseTotal1Def"} = $pc{"defenseTotalAllDef"};
+    $pc{"defTotal1CheckArmour1"} = $pc{"defTotal1CheckShield1"} = $pc{"defTotal1CheckDefOther1"} = $pc{"defTotal1CheckDefOther2"} = $pc{"defTotal1CheckDefOther3"} = 1;
+  }
+  return %pc;
 }
 
 1;

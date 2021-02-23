@@ -6,33 +6,10 @@ use open ":utf8";
 use feature 'say';
 use Encode;
 
-require $set::lib_palette_sub;
-
-my $mode = $main::mode;
-my $message = $main::message;
-our %pc;
-
-my $LOGIN_ID = check;
+my $LOGIN_ID = $::LOGIN_ID;
 
 ### 読込前処理 #######################################################################################
-### エラーメッセージ --------------------------------------------------
-if($main::make_error) {
-  $mode = 'blanksheet';
-  for (param()){ $pc{$_} = param($_); }
-  $message = $main::make_error;
-}
-## 新規作成/コピー/コンバート時 --------------------------------------------------
-my $token; my $mode_make;
-if($mode eq 'blanksheet' || $mode eq 'copy' || $mode eq 'convert'){
-  $token = token_make();
-  $mode_make = 1;
-}
-## 更新後処理 --------------------------------------------------
-if($mode eq 'save'){
-  $message .= 'データを更新しました。<a href="./?id='.param('id').'">⇒シートを確認する</a>';
-  $mode = 'edit';
-}
-
+require $set::lib_palette_sub;
 ### 各種データライブラリ読み込み --------------------------------------------------
 require $set::data_syndrome;
 my @awakens;
@@ -41,74 +18,49 @@ push(@awakens , @$_[0]) foreach(@data::awakens);
 push(@impulses, @$_[0]) foreach(@data::impulses);
 
 ### データ読み込み ###################################################################################
-my $id;
-my $pass;
-my $file;
-### 編集時 --------------------------------------------------
-if($mode eq 'edit'){
-  $id = param('id');
-  $pass = param('pass');
-  (undef, undef, $file, undef) = getfile($id,$pass,$LOGIN_ID);
-  open my $IN, '<', "${set::char_dir}${file}/data.cgi" or &login_error;
-  $_ =~ s/(.*?)<>(.*?)\n/$pc{$1} = $2;/egi while <$IN>;
-  close($IN);
-}
-elsif($mode eq 'copy'){
-  $id = param('id');
-  $file = (getfile_open($id))[0];
-  open my $IN, '<', "${set::char_dir}${file}/data.cgi" or error 'キャラクターシートがありません。';
-  $_ =~ s/(.*?)<>(.*?)\n/$pc{$1} = $2;/egi while <$IN>;
-  close($IN);
-  
-  delete $pc{'image'};
-  delete $pc{'protect'};
-  
-  $message = '「<a href="./?id='.$id.'" target="_blank">'.$pc{"characterName"}.'</a>」をコピーして新規作成します。<br>（まだ保存はされていません）';
-}
-elsif($mode eq 'convert'){
-  %pc = %::conv_data;
-  delete $pc{'image'};
-  delete $pc{'protect'};
-  $message = '「<a href="'.param('url').'" target="_blank">'.($pc{"characterName"}||$pc{"aka"}||'無題').'</a>」をコンバートして新規作成します。<br>（まだ保存はされていません）';
-}
+my ($data, $mode, $file, $message) = pcDataGet($::in{'mode'});
+our %pc = %{ $data };
 
-### プレイヤー名 --------------------------------------------------
-if($mode_make){
-  $pc{'playerName'} = (getplayername($LOGIN_ID))[0] if !$main::make_error;
-}
+my $mode_make = ($mode =~ /^(blanksheet|copy|convert)$/) ? 1 : 0;
 
 ### 出力準備 #########################################################################################
+if($message){
+  my $name = tag_unescape($pc{'characterName'} || $pc{'aka'} || '無題');
+  $message =~ s/<!NAME>/$name/;
+}
+### プレイヤー名 --------------------------------------------------
+if($mode_make && !$::make_error){
+  $pc{'playerName'} = (getplayername($LOGIN_ID))[0];
+}
 ### 初期設定 --------------------------------------------------
-$pc{'protect'} = $pc{'protect'} ? $pc{'protect'} : 'password';
-$pc{'group'} = $pc{'group'} ? $pc{'group'} : $set::group_default;
+if($mode_make){ $pc{'protect'} = $LOGIN_ID ? 'account' : 'password'; }
 
-$pc{'history0Exp'} = $pc{'history0Exp'} ne '' ? $pc{'history0Exp'} : $set::make_exp;
-
-$pc{'skillNum'}   = $pc{'skillNum'}   || 2;
-$pc{'effectNum'}  = $pc{'effectNum'}  || 5;
-$pc{'weaponNum'}  = $pc{'weaponNum'}  || 1;
-$pc{'armorNum'}   = $pc{'armorNum'}   || 1;
-$pc{'itemNum'}    = $pc{'itemNum'}    || 2;
-$pc{'historyNum'} = $pc{'historyNum'} || 3;
-
-if(!$pc{'comboNum'}){
+if($mode eq 'edit'){
+  %pc = data_update_chara(\%pc);
+}
+elsif($mode eq 'blanksheet' && !$::make_error){
+  $pc{'group'} = $set::group_default;
+  
+  $pc{'history0Exp'}   = $set::make_exp;
+  
+  ($pc{'effect1Type'},$pc{'effect1Name'},$pc{'effect1Lv'},$pc{'effect1Timing'},$pc{'effect1Skill'},$pc{'effect1Dfclty'},$pc{'effect1Target'},$pc{'effect1Range'},$pc{'effect1Encroach'},$pc{'effect1Restrict'},$pc{'effect1Note'})
+    = ('auto','リザレクト',1,'オート','―','自動成功','自身','至近','効果参照','―','(Lv)D点HP回復、侵蝕値上昇');
+  ($pc{'effect2Type'},$pc{'effect2Name'},$pc{'effect2Lv'},$pc{'effect2Timing'},$pc{'effect2Skill'},$pc{'effect2Dfclty'},$pc{'effect2Target'},$pc{'effect2Range'},$pc{'effect2Encroach'},$pc{'effect2Restrict'},$pc{'effect2Note'})
+    = ('auto','ワーディング',1,'オート','―','自動成功','シーン','視界','0','―','非オーヴァードをエキストラ化');
+  
   $pc{'comboNum'} = 1;
   $pc{'combo1Condition1'} = '100%未満';
   $pc{'combo1Condition2'} = '100%以上';
-}
-if(!$pc{'effect1Name'}){
-  ($pc{'effect1Type'},$pc{'effect1Name'},$pc{'effect1Lv'},$pc{'effect1Timing'},$pc{'effect1Skill'},$pc{'effect1Dfclty'},$pc{'effect1Target'},$pc{'effect1Range'},$pc{'effect1Encroach'},$pc{'effect1Restrict'},$pc{'effect1Note'})
-    = ('auto','リザレクト',1,'オート','―','自動成功','自身','至近','効果参照','―','(Lv)D点HP回復、侵蝕値上昇');
-}
-if(!$pc{'effect2Name'}){
-  ($pc{'effect2Type'},$pc{'effect2Name'},$pc{'effect2Lv'},$pc{'effect2Timing'},$pc{'effect2Skill'},$pc{'effect2Dfclty'},$pc{'effect2Target'},$pc{'effect2Range'},$pc{'effect2Encroach'},$pc{'effect2Restrict'},$pc{'effect2Note'})
-    = ('auto','ワーディング',1,'オート','―','自動成功','シーン','視界','0','―','非オーヴァードをエキストラ化');
+  
+  $pc{'paletteUseBuff'} = 1;
 }
 
 $pc{'imageFit'} = $pc{'imageFit'} eq 'percent' ? 'percentX' : $pc{'imageFit'};
 $pc{'imagePercent'} = $pc{'imagePercent'} eq '' ? '200' : $pc{'imagePercent'};
 $pc{'imagePositionX'} = $pc{'imagePositionX'} eq '' ? '50' : $pc{'imagePositionX'};
 $pc{'imagePositionY'} = $pc{'imagePositionY'} eq '' ? '50' : $pc{'imagePositionY'};
+$pc{'wordsX'} ||= '右';
+$pc{'wordsY'} ||= '上';
 
 $pc{'colorHeadBgH'} = $pc{'colorHeadBgH'} eq '' ? 225 : $pc{'colorHeadBgH'};
 $pc{'colorHeadBgS'} = $pc{'colorHeadBgS'} eq '' ?   9 : $pc{'colorHeadBgS'};
@@ -116,25 +68,13 @@ $pc{'colorHeadBgL'} = $pc{'colorHeadBgL'} eq '' ?  65 : $pc{'colorHeadBgL'};
 $pc{'colorBaseBgH'} = $pc{'colorBaseBgH'} eq '' ? 210 : $pc{'colorBaseBgH'};
 $pc{'colorBaseBgS'} = $pc{'colorBaseBgS'} eq '' ?   0 : $pc{'colorBaseBgS'};
 $pc{'colorBaseBgL'} = $pc{'colorBaseBgL'} eq '' ? 100 : $pc{'colorBaseBgL'};
-if($mode eq 'blanksheet'){
-  $pc{'paletteUseBuff'} = 1;
-}
 
-### アップデート --------------------------------------------------
-$pc{'ver'} =~ s/^([0-9]+)\.([0-9]+)\.([0-9]+)$/$1.$2$3/;
-if($pc{'ver'} && $pc{'ver'} < 1.10003){
-  $pc{'comboCalcOff'} = 1;
-  foreach my $num (1 .. $pc{'comboNum'}){
-    $pc{"combo${num}Skill"} =~ s/[〈〉<>]//g;
-    foreach (1..4) {
-      $pc{"combo${num}DiceAdd".$_}  = $pc{"combo${num}Dice".$_};
-      $pc{"combo${num}FixedAdd".$_} = $pc{"combo${num}Fixed".$_};
-    }
-  }
-}
-if($pc{'ver'} < 1.11001){
-  $pc{'paletteUseBuff'} = 1;
-}
+$pc{'skillNum'}   ||= 2;
+$pc{'effectNum'}  ||= 5;
+$pc{'weaponNum'}  ||= 1;
+$pc{'armorNum'}   ||= 1;
+$pc{'itemNum'}    ||= 2;
+$pc{'historyNum'} ||= 3;
 
 ### 折り畳み判断 --------------------------------------------------
 my %open;
@@ -166,6 +106,7 @@ foreach (1..$pc{'vehiclesNum'}){ if($pc{"vehicles${_}Name"}){ $open{'item'} = 'o
 foreach (1..$pc{'itemNum'})    { if($pc{"item${_}Name"})    { $open{'item'} = 'open'; last; } }
 
 ### 改行処理 --------------------------------------------------
+$pc{'words'}         =~ s/&lt;br&gt;/\n/g;
 $pc{'freeNote'}      =~ s/&lt;br&gt;/\n/g;
 $pc{'freeHistory'}   =~ s/&lt;br&gt;/\n/g;
 $pc{'chatPalette'}   =~ s/&lt;br&gt;/\n/g;
@@ -188,10 +129,11 @@ Content-type: text/html\n
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" media="all" href="${main::core_dir}/skin/_common/css/base.css?${main::ver}">
   <link rel="stylesheet" media="all" href="${main::core_dir}/skin/_common/css/sheet.css?${main::ver}">
-  <link rel="stylesheet" media="all" href="${main::core_dir}/skin/_common/css/edit.css?${main::ver}">
   <link rel="stylesheet" media="all" href="${main::core_dir}/skin/dx3/css/chara.css?${main::ver}">
+  <link rel="stylesheet" media="all" href="${main::core_dir}/skin/_common/css/edit.css?${main::ver}">
   <link rel="stylesheet" media="all" href="${main::core_dir}/skin/dx3/css/edit.css?${main::ver}">
   <script src="${main::core_dir}/skin/_common/js/lib/Sortable.min.js"></script>
+  <script src="${main::core_dir}/lib/edit.js?${main::ver}" defer></script>
   <script src="${main::core_dir}/lib/dx3/edit-chara.js?${main::ver}" defer></script>
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
   <style>
@@ -211,9 +153,10 @@ Content-type: text/html\n
     <article>
       <aside class="message">$message</aside>
       <form name="sheet" method="post" action="./" enctype="multipart/form-data">
+      <input type="hidden" name="ver" value="${main::ver}">
 HTML
 if($mode_make){
-  print '<input type="hidden" name="_token" value="'.$token.'">'."\n";
+  print '<input type="hidden" name="_token" value="'.token_make().'">'."\n";
 }
 print <<"HTML";
       <input type="hidden" name="mode" value="@{[ $mode eq 'edit' ? 'save' : 'make' ]}">
@@ -229,7 +172,7 @@ print <<"HTML";
 HTML
 if($mode eq 'edit'){
 print <<"HTML";
-        <input type="button" value="複製" onclick="window.open('./?mode=copy&id=${id}');">
+        <input type="button" value="複製" onclick="window.open('./?mode=copy&id=$::in{'id'}@{[ $::in{'backup'}?"&backup=$::in{'backup'}":'' ]}');">
 HTML
 }
 print <<"HTML";
@@ -245,7 +188,7 @@ if($set::user_reqd){
   print <<"HTML";
     <input type="hidden" name="protect" value="account">
     <input type="hidden" name="protectOld" value="$pc{'protect'}">
-    <input type="hidden" name="pass" value="$pass">
+    <input type="hidden" name="pass" value="$::in{'pass'}">
 HTML
 }
 else {
@@ -262,7 +205,7 @@ HTML
   }
     print '<input type="radio" name="protect" value="password"'.($pc{'protect'} eq 'password'?' checked':'').'> パスワードで保護 ';
   if ($mode eq 'edit' && $pc{'protect'} eq 'password') {
-    print '<input type="hidden" name="pass" value="'.$pass.'"><br>';
+    print '<input type="hidden" name="pass" value="'.$::in{'pass'}.'"><br>';
   } else {
     print '<input type="password" name="pass"><br>';
   }
@@ -274,12 +217,23 @@ HTML
 }
   print <<"HTML";
       <section id="section-common">
-      <div id="hide-options">
-        <p id="hide-checkbox">
-        @{[ input 'hide','checkbox' ]} 一覧に表示しない<br>
-        ※タグ検索結果に合致した場合は表示されます
-        </p>
-      </div>
+      <dl class="box" id="hide-options">
+        <dt>閲覧可否設定</dt>
+        <dd id="forbidden-checkbox">
+          <select name="forbidden">
+            <option value="">内容を全て開示する
+            <option value="battle" @{[ $pc{'forbidden'} eq 'battle' ? 'selected' : '' ]}>データ・数値のみ秘匿する
+            <option value="all"    @{[ $pc{'forbidden'} eq 'all'    ? 'selected' : '' ]}>内容を全て秘匿する
+          </select>
+        </dd>
+        <dd id="hide-checkbox">
+          <select name="hide">
+            <option value="">一覧に表示
+            <option value="1" @{[ $pc{'hide'} ? 'selected' : '' ]}>一覧には非表示
+          </select>
+          ※タグ検索結果・マイリストには表示されます
+        </dd>
+      </dl>
       <div class="box" id="group">
         <dl>
           <dt>グループ</dt><dd><select name="group">
@@ -640,7 +594,8 @@ sub comboSkillSet {
     }
   }
   push(@skills, '解説参照');
-  my $output = '<option value="">－';
+  unshift(@skills, '―');
+  my $output = '<option value="">';
   foreach my $skillname (@skills){
     $output .= '<option'
             . ($pc{"combo${num}Skill"} eq $skillname ? ' selected' : '')
@@ -883,7 +838,8 @@ print <<"HTML";
         リンク：<code>[[テキスト>URL]]</code><br>
         別シートへのリンク：<code>[テキスト#シートのID]</code><br>
         <hr>
-        ※以下は複数行の欄でのみ有効です。<br>
+        ※以下は一部の複数行の欄でのみ有効です。<br>
+        （有効な欄：「容姿・経歴・その他メモ」「履歴（自由記入）」）<br>
         大見出し：行頭に<code>*</code><br>
         中見出し：行頭に<code>**</code><br>
         少見出し：行頭に<code>***</code><br>
@@ -896,7 +852,7 @@ print <<"HTML";
         表組み　　：<code>|テキスト|テキスト|</code><br>
         定義リスト：<code>:項目名|説明文</code><br>
         　　　　　　<code>:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|説明文2行目</code> 項目名を記入しないか、半角スペースで埋めると上と結合<br>
-        折り畳み：行頭に<code>[>]項目名</code>：移行のテキストがすべて折り畳みになります。<br>
+        折り畳み：行頭に<code>[>]項目名</code>：以降のテキストがすべて折り畳みになります。<br>
         　　　　　項目名を省略すると、自動的に「詳細」になります。<br>
         折り畳み終了：行頭に<code>[---]</code>：（ハイフンは3つ以上任意）<br>
         　　　　　　　省略すると、以後のテキストが全て折りたたまれます。<br>
@@ -913,12 +869,13 @@ print <<"HTML";
         <h2>セッション履歴</h2>
         @{[input 'historyNum','hidden']}
         <table class="edit-table line-tbody" id="history-table">
+          <colgroup><col><col><col><col><col><col><col></colgroup>
           <thead>
           <tr>
             <th></th>
             <th>日付</th>
             <th>タイトル</th>
-            <th>経験点</th>
+            <th colspan="2">経験点</th>
             <th>GM</th>
             <th>参加者</th>
           </tr>
@@ -927,6 +884,7 @@ print <<"HTML";
             <td></td>
             <td>キャラクター作成</td>
             <td id="history0-exp">$pc{'history0Exp'}</td>
+            <td><input type="checkbox" checked disabled>適用</td>
           </tr>
           </thead>
 HTML
@@ -935,30 +893,32 @@ print <<"HTML";
           <tbody id="history${num}">
           <tr>
             <td rowspan="2" class="handle"></td>
-            <td rowspan="2">@{[input("history${num}Date")]}</td>
-            <td rowspan="2">@{[input("history${num}Title")]}</td>
-            <td>@{[input("history${num}Exp",'text','calcExp')]}</td>
-            <td>@{[input("history${num}Gm")]}</td>
-            <td>@{[input("history${num}Member")]}</td>
+            <td rowspan="2">@{[input "history${num}Date" ]}</td>
+            <td rowspan="2">@{[input "history${num}Title" ]}</td>
+            <td>@{[ input "history${num}Exp",'text','calcExp' ]}</td>
+            <td><label>@{[ input "history${num}ExpApply",'checkbox','calcExp' ]}<b>適用</b></label>
+            <td>@{[ input "history${num}Gm" ]}</td>
+            <td>@{[ input "history${num}Member" ]}</td>
           </tr>
-          <tr><td colspan="5" class="left">@{[input("history${num}Note",'','','placeholder="備考"')]}</td></tr>
+          <tr><td colspan="4" class="left">@{[input("history${num}Note",'','','placeholder="備考"')]}</td></tr>
           </tbody>
 HTML
 }
 print <<"HTML";
           <tfoot>
-            <tr><th></th><th>日付</th><th>タイトル</th><th>経験点</th><th>GM</th><th>参加者</th></tr>
+            <tr><th></th><th>日付</th><th>タイトル</th><th colspan="2">経験点</th><th>GM</th><th>参加者</th></tr>
           </tfoot>
         </table>
         <div class="add-del-button"><a onclick="addHistory()">▼</a><a onclick="delHistory()">▲</a></div>
         <h2>記入例</h2>
         <table class="example edit-table line-tbody">
+          <colgroup><col><col><col><col><col><col><col></colgroup>
           <thead>
           <tr>
             <th></th>
             <th>日付</th>
             <th>タイトル</th>
-            <th>経験点</th>
+            <th colspan="2">経験点</th>
             <th>GM</th>
             <th>参加者</th>
           </tr>
@@ -969,13 +929,15 @@ print <<"HTML";
             <td><input type="text" value="2020-03-18" disabled></td>
             <td><input type="text" value="第一話「記入例」" disabled></td>
             <td><input type="text" value="10+5+1" disabled></td>
+            <td><label><input type="checkbox" checked disabled><b>適用</b></label></td>
             <td class="gm"><input type="text" value="サンプルGM" disabled></td>
             <td class="member"><input type="text" value="鳴瓢秋人　本堂町小春　百貴船太郎　富久田保津" disabled></td>
           </tr>
           </tbody>
         </table>
         <div class="annotate">
-        ※経験点欄は<code>10+5+1</code>など四則演算が有効です（獲得条件の違う経験点などを分けて書けます）。
+        ※経験点欄は<code>10+5+1</code>など四則演算が有効です（獲得条件の違う経験点などを分けて書けます）。<br>
+        　経験点欄の右の適用チェックを入れると、その経験点が適用されます。
         </div>
       </div>
       
@@ -1057,7 +1019,7 @@ print <<"HTML";
       
       
       @{[ input 'birthTime','hidden' ]}
-      @{[ input 'id','hidden' ]}
+      <input type="hidden" name="id" value="$::in{'id'}">
     </form>
 HTML
 if($mode eq 'edit'){
@@ -1065,8 +1027,8 @@ print <<"HTML";
     <form name="del" method="post" action="./" class="deleteform">
       <p style="font-size: 80%;">
       <input type="hidden" name="mode" value="delete">
-      <input type="hidden" name="id" value="$id">
-      <input type="hidden" name="pass" value="$pass">
+      <input type="hidden" name="id" value="$::in{'id'}">
+      <input type="hidden" name="pass" value="$::in{'pass'}">
       <input type="checkbox" name="check1" value="1" required>
       <input type="checkbox" name="check2" value="1" required>
       <input type="checkbox" name="check3" value="1" required>
@@ -1081,8 +1043,8 @@ HTML
     <form name="imgdel" method="post" action="./" class="deleteform">
       <p style="font-size: 80%;">
       <input type="hidden" name="mode" value="img-delete">
-      <input type="hidden" name="id" value="$id">
-      <input type="hidden" name="pass" value="$pass">
+      <input type="hidden" name="id" value="$::in{'id'}">
+      <input type="hidden" name="pass" value="$::in{'pass'}">
       <input type="checkbox" name="check1" value="1" required>
       <input type="checkbox" name="check2" value="1" required>
       <input type="checkbox" name="check3" value="1" required>

@@ -5,8 +5,6 @@ use utf8;
 use open ":utf8";
 use HTML::Template;
 
-my $LOGIN_ID = check;
-
 ### データ読み込み ###################################################################################
 require $set::data_races;
 require $set::data_items;
@@ -14,34 +12,88 @@ require $set::data_items;
 ### テンプレート読み込み #############################################################################
 my $SHEET;
 $SHEET = HTML::Template->new( filename => $set::skin_mons, utf8 => 1,
+  path => ['./', $::core_dir."/skin/sw2", $::core_dir."/skin/_common", $::core_dir],
+  search_path_on_include => 1,
   die_on_bad_params => 0, die_on_missing_include => 0, case_sensitive => 1, global_vars => 1);
 
-$SHEET->param("backupMode" => param('backup') ? 1 : 0);
+### モンスターデータ読み込み #########################################################################
+our %pc = pcDataGet();
 
-### モンスターデータ読み込み #######################################################################
-my $id = param('id');
-my $conv_url = param('url');
-my $file = $main::file;
-
-our %pc = ();
-if($id){
-  my $datafile = "${set::mons_dir}${file}/data.cgi";
-     $datafile = "${set::mons_dir}${file}/backup/".param('backup').'.cgi' if param('backup');
-  open my $IN, '<', $datafile or error '魔物データがありません。';
-  $_ =~ s/(.*?)<>(.*?)\n/$pc{$1} = $2;/egi while <$IN>;
-  close($IN);
+if($pc{'description'} =~ s/#login-only//i){
+  $pc{'description'} .= '<span class="login-only">［ログイン限定公開］</span>';
+  $pc{'forbidden'} = 'all' if !$::LOGIN_ID;
 }
-elsif($conv_url){
-  require $set::lib_calc_mons;
-  %pc = %::conv_data;
-  %pc = data_calc(\%pc);
-  $SHEET->param("convertMode" => 1);
-  $SHEET->param("convertUrl" => $conv_url);
+### 閲覧禁止データ ###################################################################################
+if($::in{'checkView'}){ $::LOGIN_ID = ''; }
+
+if($pc{'forbidden'} && (getfile($::in{'id'},'',$::LOGIN_ID))[0]){
+  $pc{'forbiddenAuthor'} = 1;
+}
+elsif($pc{'forbidden'}){
+  my $author = $pc{'author'};
+  my $protect   = $pc{'protect'};
+  my $forbidden = $pc{'forbidden'};
+  
+  if($forbidden eq 'all'){
+    %pc = ();
+  }
+  if($forbidden ne 'battle'){
+    $pc{'monsterName'} = noiseText(6,14);
+    $pc{'tags'} = '';
+    
+    $pc{'description'} = '';
+    foreach(1..int(rand 3)+1){
+      $pc{'description'} .= '　'.noiseText(18,40)."\n";
+    }
+  }
+  
+  $pc{'lv'}   = noiseText(1);
+  $pc{'taxa'} = noiseText(2,5);
+  $pc{'intellect'}   = noiseText(3);
+  $pc{'perception'}  = noiseText(3);
+  $pc{'disposition'} = noiseText(3);
+  $pc{'sin'}         = noiseText(1);
+  $pc{'language'}    = noiseText(4,18);
+  $pc{'habitat'}     = noiseText(3,8);
+  $pc{'reputation'}  = noiseText(2);
+  $pc{'reputation+'} = noiseText(2);
+  $pc{'weakness'}    = noiseText(6,10);
+  $pc{'initiative'}  = noiseText(2);
+  $pc{'mobility'}    = noiseText(2,6);
+  $pc{'statusNum'} = int(rand 3)+1;
+  $pc{'partsNum'}  = noiseText(2);
+  $pc{'parts'}     = noiseText(3,9);
+  $pc{'coreParts'} = noiseText(2,5);
+  
+  foreach(1..$pc{'statusNum'}){
+    $pc{'status'.$_.'Style'} = noiseText(3,10);
+    $pc{'status'.$_.'Accuracy'}    = noiseText(1,2);
+    $pc{'status'.$_.'AccuracyFix'} = noiseText(2);
+    $pc{'status'.$_.'Damage'}      = noiseText(4);
+    $pc{'status'.$_.'Evasion'}     = noiseText(1,2);
+    $pc{'status'.$_.'EvasionFix'}  = noiseText(2);
+    $pc{'status'.$_.'Defense'}     = noiseText(2);
+    $pc{'status'.$_.'Hp'}          = noiseText(2,3);
+    $pc{'status'.$_.'Mp'}          = noiseText(2,3);
+  }
+  $pc{'skills'} = '';
+  foreach(1..int(rand 4)+1){
+    $pc{'skills'} .= noiseText(6,18)."\n";
+    $pc{'skills'} .= '　'.noiseText(18,40)."\n";
+    $pc{'skills'} .= '　'.noiseText(18,40)."\n" if(int rand 2);
+    $pc{'skills'} .= "\n";
+  }
+  
+  $pc{'author'} = $author;
+  $pc{'protect'} = $protect;
+  $pc{'forbidden'} = $forbidden;
+  $pc{'forbiddenMode'} = 1;
 }
 
-$SHEET->param("id" => $id);
+### 置換前出力 #######################################################################################
+$SHEET->param("rawName" => $pc{'characterName'}?"$pc{'characterName'}（$pc{'monsterName'}）":$pc{'monsterName'});
 
-### 置換 --------------------------------------------------
+### 置換 #############################################################################################
 foreach (keys %pc) {
   if($_ =~ /^(?:skills|description)$/){
     $pc{$_} = tag_unescape_lines($pc{$_});
@@ -51,7 +103,11 @@ foreach (keys %pc) {
 $pc{'skills'} =~ s/<br>/\n/gi;
 $pc{'skills'} =~ s#(<p>|</p>|</details>)#$1\n#gi;
 $pc{'skills'} =~ s/^●(.*?)$/<\/p><h3>●$1<\/h3><p>/gim;
-$pc{'skills'} =~ s/^((?:[○◯〇△＞▶〆☆≫»□☑🗨]|&gt;&gt;)+)(.*?)([ 　]|$)/"<\/p><h5>".&text_convert_icon($1)."$2<\/h5><p>".$3;/egim;
+if($::SW2_0){
+  $pc{'skills'} =~ s/^((?:[○◯〇＞▶〆☆≫»□☑🗨▽▼]|&gt;&gt;)+)(.*?)([ 　]|$)/"<\/p><h5>".&text_convert_icon($1)."$2<\/h5><p>".$3;/egim;
+} else {
+  $pc{'skills'} =~ s/^((?:[○◯〇△＞▶〆☆≫»□☑🗨]|&gt;&gt;)+)(.*?)([ 　]|$)/"<\/p><h5>".&text_convert_icon($1)."$2<\/h5><p>".$3;/egim;
+}
 $pc{'skills'} =~ s/\n+<\/p>/<\/p>/gi;
 $pc{'skills'} =~ s/(^|<p(?:.*?)>|<hr(?:.*?)>)\n/$1/gi;
 $pc{'skills'} = "<p>$pc{'skills'}</p>";
@@ -59,19 +115,18 @@ $pc{'skills'} =~ s#(</p>|</details>)\n#$1#gi;
 $pc{'skills'} =~ s/<p><\/p>//gi;
 $pc{'skills'} =~ s/\n/<br>/gi;
 
-##
-if($pc{'description'} =~ s/#login-only//i){
-  $pc{'description'} .= '<span class="login-only">［ログイン限定公開］</span>';
-  $pc{'forbidden'} = 1 if !$LOGIN_ID;
-}
-
-### テンプレ用に変換 --------------------------------------------------
+### 置換後出力 #######################################################################################
+### データ全体 --------------------------------------------------
 while (my ($key, $value) = each(%pc)){
   $SHEET->param("$key" => $value);
 }
+### ID / URL--------------------------------------------------
+$SHEET->param("id" => $::in{'id'});
 
-### 出力準備 #########################################################################################
-
+if($::in{'url'}){
+  $SHEET->param("convertMode" => 1);
+  $SHEET->param("convertUrl" => $::in{'url'});
+}
 ### タグ --------------------------------------------------
 my @tags;
 foreach(split(/ /, $pc{'tags'})){
@@ -107,7 +162,7 @@ foreach (1 .. $pc{'statusNum'}){
 $SHEET->param(Status => \@status);
 
 ### 部位 --------------------------------------------------
-$SHEET->param(partsOn => 1) if $pc{'partsNum'};
+$SHEET->param(partsOn => 1) if ($pc{'partsNum'} > 1 || $pc{'parts'} || $pc{'coreParts'});
 
 ### 戦利品 --------------------------------------------------
 my @loots;
@@ -121,35 +176,47 @@ foreach (1 .. $pc{'lootsNum'}){
 $SHEET->param(Loots => \@loots);
 
 ### バックアップ --------------------------------------------------
-opendir(my $DIR,"${set::mons_dir}${file}/backup");
-my @backlist = readdir($DIR);
-closedir($DIR);
-my @backup;
-foreach (reverse sort @backlist) {
-  if ($_ =~ s/\.cgi//) {
-    my $url = $_;
-    $_ =~ s/^([0-9]{4}-[0-9]{2}-[0-9]{2})-([0-9]{2})-([0-9]{2})$/$1 $2\:$3/;
-    push(@backup, {
-      "NOW"  => ($url eq param('backup') ? 1 : 0),
-      "URL"  => $url,
-      "DATE" => $_,
-    });
+if($::in{'id'}){
+  opendir(my $DIR,"${set::mons_dir}${main::file}/backup");
+  my @backlist = readdir($DIR);
+  closedir($DIR);
+  my @backup;
+  foreach (reverse sort @backlist) {
+    if ($_ =~ s/\.cgi//) {
+      my $url = $_;
+      $_ =~ s/^([0-9]{4}-[0-9]{2}-[0-9]{2})-([0-9]{2})-([0-9]{2})$/$1 $2\:$3/;
+      push(@backup, {
+        "NOW"  => ($url eq param('backup') ? 1 : 0),
+        "URL"  => $url,
+        "DATE" => $_,
+      });
+    }
   }
+  $SHEET->param(Backup => \@backup);
 }
-$SHEET->param(Backup => \@backup);
 
 ### パスワード要求 --------------------------------------------------
 $SHEET->param(ReqdPassword => (!$pc{'protect'} || $pc{'protect'} eq 'password' ? 1 : 0) );
 
 ### タイトル --------------------------------------------------
-$SHEET->param(characterNameTitle => tag_delete name_plain $pc{'characterName'});
-$SHEET->param(monsterNameTitle => tag_delete name_plain $pc{'monsterName'});
 $SHEET->param(title => $set::title);
+if($pc{'forbidden'} eq 'all' && $pc{'forbiddenMode'}){
+  $SHEET->param(monsterNameTitle => '非公開データ');
+}
+else {
+  $SHEET->param(characterNameTitle => tag_delete name_plain $pc{'characterName'});
+  $SHEET->param(monsterNameTitle => tag_delete name_plain $pc{'monsterName'});
+}
 
 ### 画像 --------------------------------------------------
 $pc{'imageUpdateTime'} = $pc{'updateTime'};
 $pc{'imageUpdateTime'} =~ s/[\-\ \:]//g;
-$SHEET->param("imageSrc" => "${set::mons_dir}${file}/image.$pc{'image'}?$pc{'imageUpdateTime'}");
+$SHEET->param("imageSrc" => "${set::mons_dir}${main::file}/image.$pc{'image'}?$pc{'imageUpdateTime'}");
+
+### OGP --------------------------------------------------
+$SHEET->param(ogUrl => url().($::in{'url'} ? "?url=$::in{'url'}" : "?id=$::in{'id'}"));
+#if($pc{'image'}) { $SHEET->param(ogImg => url()."/".$imgsrc); }
+$SHEET->param(ogDescript => "レベル:$pc{'lv'}　分類:$pc{'taxa'}".($pc{'partsNum'}>1?"　部位数:$pc{'partsNum'}":'')."　知名度:$pc{'reputation'}／$pc{'reputation'}");
 
 ### バージョン等 --------------------------------------------------
 $SHEET->param("ver" => $::ver);
