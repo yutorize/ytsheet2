@@ -1,0 +1,9 @@
+version: "3.8"
+services:
+  ytsheet:
+    build:
+      context: ./
+    volumes:
+      - ../:/usr/local/apache2/cgi-bin
+    ports:
+      - "8080:80"
