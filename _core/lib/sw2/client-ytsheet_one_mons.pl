@@ -63,7 +63,7 @@ sub get_parsed_enemy_data_from_ytsheet_one_mons {
 
   sub ytsheet_one_mons_when_close_tag_found {
     my ($self, $tagname) = @_;
-    if($tagname eq 'title' || $tagname eq 'div') {
+    if($tagname eq 'table') {
       $mode = '';
     }
   }
@@ -76,6 +76,7 @@ sub get_parsed_enemy_data_from_ytsheet_one_mons {
       $result{'taxa'} = $title[1];
       $result{'lv'} = $title[2];
       $result{'lv'} =~ s/レベル//;
+      $mode = '';
     }
     elsif($mode eq 'parts' && ($partsCount > 0) ) {
       if($parts_columns[$partsInternalCursor] eq 'Accuracy' || $parts_columns[$partsInternalCursor] eq 'Evasion') {
