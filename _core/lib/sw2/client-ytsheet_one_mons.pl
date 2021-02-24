@@ -51,6 +51,14 @@ sub get_parsed_enemy_data_from_ytsheet_one_mons {
       $partsInternalCursor = 0;
       $result{'statusNum'} = $partsCount;
     }
+    elsif($mode eq 'pre_skills' && $_[2]{class} eq 'text') {
+      $mode = 'skills';
+      $result{'skills'} = '';
+    }
+    elsif($mode eq 'pre_description' && $_[2]{class} eq 'text') {
+      $mode = 'description';
+      $result{'description'} = '';
+    }
     elsif($_[2]{class} eq 'senri') {
       $mode = 'loots';
     }
@@ -59,12 +67,21 @@ sub get_parsed_enemy_data_from_ytsheet_one_mons {
       $lootsInternalCursor = 0;
       $result{'lootsNum'} = $lootsCount;
     }
+    elsif($_[2]{class} eq 'hist') {
+      $mode = 'author';
+    }
   }
 
   sub ytsheet_one_mons_when_close_tag_found {
     my ($self, $tagname) = @_;
     if($tagname eq 'table') {
       $mode = '';
+    }
+    elsif($mode eq 'skills' && ($tagname eq 'br' || $tagname eq 'div' || $tagname eq 'span')) {
+      $result{'skills'} = "$result{'skills'}&lt;br&gt;";
+    }
+    elsif($mode eq 'description' && ($tagname eq 'br' || $tagname eq 'div' || $tagname eq 'span')) {
+      $result{'description'} = "$result{'description'}&lt;br&gt;";
     }
   }
 
@@ -123,6 +140,27 @@ sub get_parsed_enemy_data_from_ytsheet_one_mons {
     elsif($mode eq 'corePartsInfo') {
       $result{'coreParts'} = $text;
       $result{'coreParts'} =~ s/://;
+      $mode = '';
+    }
+    elsif($text eq '特殊能力') {
+      $mode = 'pre_skills';
+    }
+    elsif($text eq '解説') {
+      $mode = 'pre_description';
+    }
+    elsif($mode eq 'skills') {
+      my $tmp = $text;
+      $tmp =~ s/\n/&lt;br&gt;/g;
+      $result{'skills'} = "$result{'skills'}$tmp";
+    }
+    elsif($mode eq 'description') {
+      my $tmp = $text;
+      $tmp =~ s/\n/&lt;br&gt;/g;
+      $result{'description'} = "$result{'description'}$tmp";
+    }
+    elsif($mode eq 'author') {
+      $result{'author'} = $text;
+      $result{'author'} =~ s/作成者：//;
       $mode = '';
     }
     elsif($simple_column_table{$text}) {
