@@ -1065,7 +1065,7 @@ print <<"HTML";
     </article>
   </main>
   <footer>
-    <p class="notes"><span>『ダブルクロスThe 3rd Edition』は、</span><span>は「矢野俊策」及び「有限会社F.E.A.R.」の著作物です。</span></p>
+    <p class="notes"><span>『ダブルクロスThe 3rd Edition』は、</span><span>「矢野俊策」及び「有限会社F.E.A.R.」の著作物です。</span></p>
     <p class="copyright">ゆとシートⅡ for DX3rd ver.${main::ver} - ゆとらいず工房</p>
   </footer>
   <datalist id="list-stage">
