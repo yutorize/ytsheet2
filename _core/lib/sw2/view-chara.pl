@@ -511,7 +511,7 @@ if(!$pc{'forbiddenMode'}){
       "STR"  => (@$_[1] eq 'Fen' ? $pc{'reqdStrF'} : $pc{'reqdStr'}),
       "ACC"  => $pc{'lv'.@$_[1]}+$pc{'bonusDex'},
       (@$_[1] eq 'Fen' ? ("CRIT" => '-1') : ('' => '')),
-      "DMG"  => $pc{'lv'.@$_[1]}+$pc{'bonusStr'},
+      "DMG"  => @$_[1] eq 'Dem' ? '―' : $pc{'lv'.@$_[1]}+$pc{'bonusStr'},
     } );
   }
   foreach (@data::weapons) {
