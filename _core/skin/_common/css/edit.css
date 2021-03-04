@@ -5,11 +5,6 @@
 body {
   grid-template-rows: 0 auto max-content;
 }
-@media screen and (max-width:735px){
-  main {
-    padding-top: 0;
-  }
-}
 
 .button[onclick] {
   display: inline-block;
@@ -34,6 +29,12 @@ html {
 }
 main {
   overflow: visible;
+}
+@media screen and (max-width:735px){
+  main {
+    padding-top: 11rem;
+    overflow-x: hidden;
+  }
 }
 header {
   display: none;
@@ -131,7 +132,7 @@ span.mark {
   .edit-tables table,
   .edit-tables ul,
   .edit-tables dl {
-    min-width: 100%;
+    min-width: calc(100% - 1rem);
   }
 }
 .edit-table.side-margin,
@@ -170,6 +171,7 @@ table.edit-table tbody td select,
 table.edit-table tbody td textarea,
 table.edit-table tbody td input[type="text"],
 table.edit-table tbody td input[type="number"],
+table.edit-table tbody td input[type="url"] {
   width: calc(100% - .1rem);
   margin: .1rem .1rem 0 0;
 }
@@ -251,6 +253,14 @@ section {
 section > h2 {
   margin-top: 1rem;
 }
+@media screen and (max-width:735px){
+  ul#header-menu {
+  bottom: calc(-1em - 3px - 2rem);
+  }
+  ul#header-menu li {
+    padding: 1rem;
+  }
+}
 
 /* // フッタ付近
 ---------------------------------------------------------------------------------------------------- */
@@ -273,25 +283,8 @@ article > form > hr {
 }
 /* // ボックス
 ---------------------------------------------------------------------------------------------------- */
-@media screen and (max-width:735px){
-  .box {
-    max-width: calc(100vw - 6px);
-    overflow-x: auto;
-    font-size: 1.8rem;
-  }
-  .box h2,
-  .box dt,
-  .box summary {
-    font-size: 1.8rem;
-  }
-  .box input[type="text"],
-  .box input[type="number"],
-  .box select,
-  .box textarea {
-    font-size: 1.8rem;
-  }
-}
 .box input[type="text"],
+.box input[type="url"],
 .box input[type="number"],
 .box select,
 .box textarea {
@@ -301,6 +294,7 @@ article > form > hr {
   padding: 2px;
 }
 .box input[type="text"],
+.box input[type="url"],
 .box input[type="number"],
 .box select {
   height: calc(1.2em + 3px * 2);
@@ -308,6 +302,28 @@ article > form > hr {
 }
 input[type="number"] {
   text-align: center;
+}
+@media screen and (max-width:735px){
+  .box {
+    max-width: 100%;
+    font-size: 2.2rem;
+  }
+  .box h2,
+  .box dt,
+  .box th,
+  .box summary {
+    font-size: 2rem;
+  }
+  .box input[type="text"],
+  .box input[type="url"],
+  .box input[type="number"],
+  .box select {
+    height: calc(1.6em + 3px * 2);
+    font-size: 2.2rem;
+  }
+  .box textarea {
+    font-size: 2.2rem;
+  }
 }
 
 input[type="submit"] {
@@ -405,6 +421,9 @@ input[type="button"]:hover {
 #area-name #character-name input {
   width: calc(100% - 8em);
 }
+#area-name #character-name br + input {
+  width: calc(100% - 1em);
+}
 #area-name #player-name {
   text-align: left;
   font-weight: bold;
@@ -419,7 +438,9 @@ input[type="button"]:hover {
 }
 @media screen and (max-width:735px){
   #area-name {
-    font-size: 1.2rem;
+    position: fixed;
+    left: 0;
+    right: 0;
     line-height: 1;
   }
   #area-name #character-name {
@@ -427,7 +448,6 @@ input[type="button"]:hover {
   }
   #area-name #character-name input {
     width: calc(100% - 1em);
-    font-size: inherit;
   }
 }
 /* 編集保護 */
@@ -459,6 +479,14 @@ input[type="button"]:hover {
   align-self: flex-end;
   font-size: 85%;
 }
+@media screen and (max-width:735px){
+  #edit-protect {
+    margin-top: 3rem;
+  }
+  #hide-options dt {
+    flex-basis: 100%;
+  }
+}
 
 /* グループ */
 #group dl {
@@ -468,13 +496,21 @@ input[type="button"]:hover {
   text-align: right;
 }
 #group dl > * {
-  grid-row: 1 / 2;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 #group dl > dt:not(:first-child) {
   justify-content: flex-end;
+}
+@media screen and (max-width:735px){
+  #group dl {
+    grid-template-columns: 4em 1fr;
+    grid-template-rows: auto auto;
+  }
+  #group dl dt {
+    grid-column: 1;
+  }
 }
 /* 画像 */
 #area-status #image {

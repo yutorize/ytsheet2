@@ -46,7 +46,7 @@
         <table>
           <thead>
           <tr>
-            <th class="name"><a href="./?group=<TMPL_VAR ID>&<TMPL_VAR qLinks>&sort=name">名前</a></th>
+            <th class="name"><a href="./?group=<TMPL_VAR ID>&<TMPL_VAR qLinks>&sort=name">名前</a><small class="fellow">[F]=フェローあり</small></th>
             <th class="player"><a href="./?group=<TMPL_VAR ID>&<TMPL_VAR qLinks>&sort=pl">プレイヤー</a></th>
             <th class="race"><span>種族</span></th>
             <th class="gender"><span>性別</span></th>
@@ -55,12 +55,11 @@
             <th class="lv"><a href="./?group=<TMPL_VAR ID>&<TMPL_VAR qLinks>&sort=lv">Lv</a></th>
             <th class="exp"><a href="./?group=<TMPL_VAR ID>&<TMPL_VAR qLinks>&sort=exp">経験点</a></th>
             <th class="class"><span>技能</span></th>
-            <th class="fellow"><span><span>フェロー</span></span></th>
             <th class="date"><a href="./?group=<TMPL_VAR ID>&<TMPL_VAR qLinks>&sort=date">更新<br>日時</a></th>
           </tr>
           </thead>
           <TMPL_LOOP Characters><tr<TMPL_IF HIDE> class="hide"</TMPL_IF>>
-            <td class="name"><a href="./?id=<TMPL_VAR ID>"><TMPL_VAR NAME></a></td>
+            <td class="name"><a href="./?id=<TMPL_VAR ID>"><TMPL_VAR NAME><TMPL_IF FELLOW><small class="fellow">[F]</small></TMPL_IF></a></td>
             <td class="player"><TMPL_VAR PLAYER></td>
             <td class="race"><TMPL_VAR RACE></td>
             <td class="gender"><TMPL_VAR GENDER></td>
@@ -69,7 +68,6 @@
             <td class="lv"><TMPL_VAR LV></td>
             <td class="exp"><TMPL_VAR EXP></td>
             <td class="class"><div><TMPL_VAR CLASS></div></td>
-            <td class="fellow"><div><TMPL_IF FELLOW>✔</TMPL_IF></div></td>
             <td class="date"><div><TMPL_VAR DATE></div></td>
           </tr></TMPL_LOOP>
         </table>

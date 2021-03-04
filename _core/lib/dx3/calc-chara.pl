@@ -56,7 +56,7 @@ sub data_calc {
     
   }
   foreach my $name ('Ride','Art','Know','Info'){
-    foreach my $num (1 .. $pc{'skillNum'}){
+    foreach my $num (1 .. $pc{'skill'.$name.'Num'}){
       my $lv = $pc{'skill'.$name.$num};
       for(my $i = 0; $i < $lv; $i++){ $pc{'expUsedSkill'} += ($i > 20) ? 10 : ($i > 10) ? 5 : ($i > 5) ? 3 : 1; }
       if($pc{'skill'.$name.$num} || $pc{'skillAdd'.$name.$num}){ $pc{'skillTotal'.$name.$num} = $pc{'skill'.$name.$num} + $pc{'skillAdd'.$name.$num}; }
@@ -176,11 +176,11 @@ sub data_calc {
     delete $pc{$_} if !$pc{$_};
   }
   foreach (
-    'skillRide','skillArt','skillKnow','skillInfo',
-    'skillAddRide','skillAddArt','skillAddKnow','skillAddInfo',
+    'Ride','Art','Know','Info',
   ){
-    foreach my $num (1..$pc{'skillNum'}){
-      delete $pc{$_.$num} if !$pc{$_.$num};
+    foreach my $num (1..$pc{'skill'.$_.'Num'}){
+      delete $pc{'skill'.$_.$num} if !$pc{'skill'.$_.$num};
+      delete $pc{'skillAdd'.$_.$num} if !$pc{'skillAdd'.$_.$num};
     }
   }
 

@@ -11,10 +11,10 @@ body {
 /* // List
 ---------------------------------------------------------------------------------------------------- */
 .list table tr {
-    grid-template-columns: 28rem 0.8fr 0.4fr 0.6fr 2em 0.8fr 1fr 4rem 0.8fr;
+    grid-template-columns: 28rem 0.7fr 0.3fr 0.5fr 2em 0.7fr 1.2fr 0.7fr;
     grid-template-areas:
-      "NAME PL RACE RACE RANK RANK CLS FELL DATE"
-      "NAME PL  GEN  AGE  LVL  EXP CLS FELL DATE"
+      "NAME PL RACE RACE RANK RANK CLS DATE"
+      "NAME PL  GEN  AGE  LVL  EXP CLS DATE"
     ;
 }
 .list table .name   { grid-area: NAME; }
@@ -26,21 +26,22 @@ body {
 .list table .lv     { grid-area:  LVL; }
 .list table .exp    { grid-area:  EXP; }
 .list table .class  { grid-area:  CLS; }
-.list table .fellow { grid-area: FELL; }
 .list table .date   { grid-area: DATE; }
+
+.list table .name {
+  position: relative;
+}
+.list table .name small.fellow {
+  position: absolute;
+  right: 0;
+  bottom: .1rem;
+  font-size: 80%;
+  line-height: 1;
+  font-weight: normal;
+}
 .list table td.lv {
   font-size: 1.15em;
   line-height: 1;
-}
-.list table th.fellow {
-}
-.list table th.fellow > span {
-  width: 3.9rem;
-}
-.list table th.fellow > span > span {
-  display: block;
-  margin: 0 -100%;
-  transform: scaleX(0.5)
 }
 .list table td.race {
 }
@@ -62,30 +63,16 @@ body {
   display: inline-block;
   margin-right: 1em;
 }
-.list table td.fellow {
-  font-size: 150%;
-  line-height: 1;
-}
 @media screen and (max-width:735px){
   .list table tr {
-    grid-template-columns: 18rem 6em 2.8em 0.6fr 0.8fr 8em 3rem 4em;
+    grid-template-columns: 18rem 6em 2.8em 0.6fr 0.8fr 8em 4em;
     grid-template-areas:
-      "NAME PL RACE RACE EXP CLS FELL DATE"
-      "NAME PL  GEN  AGE EXP CLS FELL DATE"
+      "NAME PL RACE RACE EXP CLS DATE"
+      "NAME PL  GEN  AGE EXP CLS DATE"
     ;
   }
   .list table .rank,
   .list table .lv { display: none; }
-  .list table th.fellow {
-    text-align: center;
-  }
-  .list table th.fellow span {
-    padding-left: 0;
-    padding-right: 0;
-  }
-  .list table th.fellow > span {
-    width: 2.6rem;
-  }
 }
 
 /* // List-Simple/Monster

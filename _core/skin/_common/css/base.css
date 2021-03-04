@@ -137,7 +137,7 @@ body.night {
 header {
   grid-column: 1 / 4;
   grid-row: 1 / 2;
-  height: 5rem;
+  height: 4rem;
   position: relative;
   padding: 0px 10px;
   border-bottom: 1px solid #aaa;
@@ -151,8 +151,9 @@ header {
 header h1 {
   position: relative;
   font-family: inherit;
-  font-size: 3rem;
-  line-height: 5rem;
+  font-size: 2rem;
+  line-height: 4rem;
+  white-space: nowrap;
 }
 header a {
   position: relative;

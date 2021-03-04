@@ -442,57 +442,31 @@ window.onload = function() {
         
         <section class="box" id="combo">
           <h2>コンボ</h2>
-          <table class="data-table line-tbody">
-            <colgroup><col><col><col><col><col><col><col><col><col><col><col></colgroup>
-            <TMPL_LOOP Combos><tbody>
-              <tr>
-                <td rowspan="2" colspan="3" class="bold"><TMPL_VAR NAME></td>
-                <th colspan="8" class="left">組み合わせ</th>
-              </tr>
-              <tr>
-                <td colspan="8" class="left"><TMPL_VAR COMBO></td>
-              </tr>
-              <tr><th>タイミング</th><th>技能</th><th>難易度</th><th>対象</th><th>射程</th><th>侵蝕値</th><th>条件</th><th>ダイス</th><th>Ｃ値</th><th>判定固定値</th><th>攻撃力</th></tr>
-              <tr>
-                <td><TMPL_VAR TIMING></td>
-                <td><TMPL_VAR SKILL></td>
-                <td><TMPL_VAR DFCLTY></td>
-                <td><TMPL_VAR TARGET></td>
-                <td><TMPL_VAR RANGE></td>
-                <td><TMPL_VAR ENCROACH></td>
-                <th><TMPL_VAR CONDITION1></th>
-                <td data-edb><TMPL_VAR DICE1></td>
-                <td><TMPL_VAR CRIT1></td>
-                <td><TMPL_VAR FIXED1></td>
-                <td><TMPL_VAR ATK1></td>
-              </tr>
-              <tr>
-                <td rowspan="3" colspan="6" class="note"><TMPL_VAR NOTE></td>
-                <th><TMPL_VAR CONDITION2></th>
-                <td data-edb><TMPL_VAR DICE2></td>
-                <td><TMPL_VAR CRIT2></td>
-                <td><TMPL_VAR FIXED2></td>
-                <td><TMPL_VAR ATK2></td>
-              </tr>
-              <TMPL_IF CONDITION3><tr>
-                <th><TMPL_VAR CONDITION3></th>
-                <td data-edb><TMPL_VAR DICE3></td>
-                <td><TMPL_VAR CRIT3></td>
-                <td><TMPL_VAR FIXED3></td>
-                <td><TMPL_VAR ATK3></td>
-              </tr></TMPL_IF>
-              <TMPL_IF CONDITION4><tr>
-                <th><TMPL_VAR CONDITION4></th>
-                <td data-edb><TMPL_VAR DICE4></td>
-                <td><TMPL_VAR CRIT4></td>
-                <td><TMPL_VAR FIXED4></td>
-                <td><TMPL_VAR ATK4></td>
-              </tr></TMPL_IF>
-              <TMPL_IF BLANKROW><tr>
-                <td colspan="5" rowspan="<TMPL_VAR BLANKROW>"></td>
-              </tr></TMPL_IF>
-            </tbody></TMPL_LOOP>
-          </table>
+          <TMPL_LOOP Combos><div class="combo-table">
+            <h3><span><TMPL_VAR NAME></span></h3>
+            <dl class="combo-combo"><dt>組み合わせ</dt><dd><TMPL_VAR COMBO DEFAULT="　"></dd></dl>
+            <div class="combo-in">
+              <dl><dt>タイミング</dt><dd><span><TMPL_VAR TIMING  ></span></dd></dl>
+              <dl><dt>技能      </dt><dd><span><TMPL_VAR SKILL   ></span></dd></dl>
+              <dl><dt>難易度    </dt><dd><span><TMPL_VAR DFCLTY  ></span></dd></dl>
+              <dl><dt>対象      </dt><dd><span><TMPL_VAR TARGET  ></span></dd></dl>
+              <dl><dt>射程      </dt><dd><span><TMPL_VAR RANGE   ></span></dd></dl>
+              <dl><dt>侵蝕値    </dt><dd><span><TMPL_VAR ENCROACH></span></dd></dl>
+            </div>
+            <dl class="combo-out">
+              <dt class="combo-cond">条件</dt>
+              <dt class="combo-dice">ダイス</dt>
+              <dt class="combo-crit">Ｃ値</dt>
+              <dt class="combo-fixed">判定固定値</dt>
+              <dt class="combo-atk">攻撃力</dt>
+              
+              <dd class="combo-cond"><b><TMPL_VAR CONDITION1></b></dd><dd class="combo-dice" data-edb="0"><TMPL_VAR DICE1></dd><dd class="combo-crit"><TMPL_VAR CRIT1></dd><dd class="combo-fixed"><TMPL_VAR FIXED1></dd><dd class="combo-atk"><TMPL_VAR ATK1></dd>
+              <TMPL_IF CONDITION2><dd class="combo-cond"><b><TMPL_VAR CONDITION2></b></dd><dd class="combo-dice" data-edb="0"><TMPL_VAR DICE2></dd><dd class="combo-crit"><TMPL_VAR CRIT2></dd><dd class="combo-fixed"><TMPL_VAR FIXED2></dd><dd class="combo-atk"><TMPL_VAR ATK2></dd></TMPL_IF>
+              <TMPL_IF CONDITION3><dd class="combo-cond"><b><TMPL_VAR CONDITION3></b></dd><dd class="combo-dice" data-edb="0"><TMPL_VAR DICE3></dd><dd class="combo-crit"><TMPL_VAR CRIT3></dd><dd class="combo-fixed"><TMPL_VAR FIXED3></dd><dd class="combo-atk"><TMPL_VAR ATK3></dd></TMPL_IF>
+              <TMPL_IF CONDITION4><dd class="combo-cond"><b><TMPL_VAR CONDITION4></b></dd><dd class="combo-dice" data-edb="0"><TMPL_VAR DICE4></dd><dd class="combo-crit"><TMPL_VAR CRIT4></dd><dd class="combo-fixed"><TMPL_VAR FIXED4></dd><dd class="combo-atk"><TMPL_VAR ATK4></dd></TMPL_IF>
+            </dl>
+            <p class="combo-note"><TMPL_VAR NOTE></p>
+          </div></TMPL_LOOP>
         </section>
         
         <div class="box-union" id="items">

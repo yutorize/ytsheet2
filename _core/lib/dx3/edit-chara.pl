@@ -69,7 +69,10 @@ $pc{'colorBaseBgH'} = $pc{'colorBaseBgH'} eq '' ? 210 : $pc{'colorBaseBgH'};
 $pc{'colorBaseBgS'} = $pc{'colorBaseBgS'} eq '' ?   0 : $pc{'colorBaseBgS'};
 $pc{'colorBaseBgL'} = $pc{'colorBaseBgL'} eq '' ? 100 : $pc{'colorBaseBgL'};
 
-$pc{'skillNum'}   ||= 2;
+$pc{'skillRideNum'} ||= 2;
+$pc{'skillArtNum'}  ||= 2;
+$pc{'skillKnowNum'} ||= 2;
+$pc{'skillInfoNum'} ||= 2;
 $pc{'effectNum'}  ||= 5;
 $pc{'weaponNum'}  ||= 1;
 $pc{'armorNum'}   ||= 1;
@@ -87,7 +90,7 @@ foreach (
 foreach (
     'skillRide','skillArt','skillKnow','skillInfo',
 ){
-  foreach my $num (1..$pc{'skillNum'}){
+  foreach my $num (1..$pc{$_.'Num'}){
     if ($pc{$_.$num}){ $open{'skill'} = 'open'; last; }
   }
 }
@@ -365,47 +368,81 @@ print <<"HTML";
 
       <details class="box" id="status" $open{'skill'}>
         <summary>技能 [<span id="exp-skill">0</span>]</summary>
-        @{[input 'skillNum','hidden']}
-        <table class="edit-table" id="skill-table">
-          <thead>
-          <tr>
-            <th>肉体</th><td id="skill-body"  >0</td>
-            <th>感覚</th><td id="skill-sense" >0</td>
-            <th>精神</th><td id="skill-mind"  >0</td>
-            <th>社会</th><td id="skill-social">0</td>
-          </tr>
-          </thead>
-          <tbody>
-          <tr>
-            <td class="left">白兵</td><td class="right">@{[input "skillMelee"    ,'number','calcSkill']}+@{[input "skillAddMelee"    ,'number']}</td>
-            <td class="left">射撃</td><td class="right">@{[input "skillRanged"   ,'number','calcSkill']}+@{[input "skillAddRanged"   ,'number']}</td>
-            <td class="left">ＲＣ</td><td class="right">@{[input "skillRC"       ,'number','calcSkill']}+@{[input "skillAddRC"       ,'number']}</td>
-            <td class="left">交渉</td><td class="right">@{[input "skillNegotiate",'number','calcSkill']}+@{[input "skillAddNegotiate",'number']}</td>
-          </tr>
-          <tr>
-            <td class="left">回避</td><td class="right">@{[input "skillDodge"  ,'number','calcSkill']}+@{[input "skillAddDodge"  ,'number']}</td>
-            <td class="left">知覚</td><td class="right">@{[input "skillPercept",'number','calcSkill']}+@{[input "skillAddPercept",'number']}</td>
-            <td class="left">意志</td><td class="right">@{[input "skillWill"   ,'number','calcSkill']}+@{[input "skillAddWill"   ,'number']}</td>
-            <td class="left">調達</td><td class="right">@{[input "skillProcure",'number','calcSkill();calcStock']}+@{[input "skillAddProcure",'number','calcStock']}</td>
-          </tr>
+        @{[input 'skillRideNum','hidden']}
+        @{[input 'skillArtNum' ,'hidden']}
+        @{[input 'skillKnowNum','hidden']}
+        @{[input 'skillInfoNum','hidden']}
+        <dl id="status-table">
+          <dt>肉体</dt><dd id="skill-body"  >0</dd>
+          <dt>感覚</dt><dd id="skill-sense" >0</dd>
+          <dt>精神</dt><dd id="skill-mind"  >0</dd>
+          <dt>社会</dt><dd id="skill-social">0</dd>
+        </dl>
+        <dl id="skill-table">
+          <dt>【肉体】を使用する技能</dt>
+          <dd>
+            <dl id="skill-body-table">
+              <dt class="left">白兵</dt><dd>@{[input "skillMelee"  ,'number','calcSkill']}+@{[input "skillAddMelee"  ,'number','calcSkill']}</dd>
+              <dt class="left">回避</dt><dd>@{[input "skillDodge"  ,'number','calcSkill']}+@{[input "skillAddDodge"  ,'number','calcSkill']}</dd>
 HTML
-foreach my $num (1 .. $pc{'skillNum'}) {
+foreach my $num (1 .. $pc{'skillRideNum'}) {
 print <<"HTML";
-          <tr>
-            <td class="left">@{[input "skillRide${num}Name",'','comboSkillSetAll','list="list-ride"']}</td><td class="right">@{[input "skillRide$num",'number','calcSkill']}+@{[input "skillAddRide$num",'number','calcSkill']}</td>
-            <td class="left">@{[input "skillArt${num}Name" ,'','comboSkillSetAll','list="list-art"' ]}</td><td class="right">@{[input "skillArt$num" ,'number','calcSkill']}+@{[input "skillAddArt$num" ,'number','calcSkill']}</td>
-            <td class="left">@{[input "skillKnow${num}Name",'','comboSkillSetAll','list="list-know"']}</td><td class="right">@{[input "skillKnow$num",'number','calcSkill']}+@{[input "skillAddKnow$num",'number','calcSkill']}</td>
-            <td class="left">@{[input "skillInfo${num}Name",'','comboSkillSetAll','list="list-info"']}</td><td class="right">@{[input "skillInfo$num",'number','calcSkill']}+@{[input "skillAddInfo$num",'number','calcSkill']}</td>
-          </tr>
+              <dt>@{[input "skillRide${num}Name",'','comboSkillSetAll','list="list-ride"']}</dt><dd>@{[input "skillRide$num",'number','calcSkill']}+@{[input "skillAddRide$num",'number','calcSkill']}</dd>
 HTML
 }
 print <<"HTML";
-          </tbody>
-        </table>
+            </dl>
+            <div class="add-del-button"><a onclick="addSkill('Ride')">▼</a><a onclick="delSkill('Ride')">▲</a></div>
+          </dd>
+          <dt>【感覚】を使用する技能</dt>
+          <dd>
+            <dl id="skill-sense-table">
+              <dt class="left">射撃</dt><dd>@{[input "skillRanged" ,'number','calcSkill']}+@{[input "skillAddRanged"    ,'number','calcSkill']}</dd>
+              <dt class="left">知覚</dt><dd>@{[input "skillPercept",'number','calcSkill']}+@{[input "skillAddPercept",'number','calcSkill']}</dd>
+HTML
+foreach my $num (1 .. $pc{'skillArtNum'}) {
+print <<"HTML";
+              <dt>@{[input "skillArt${num}Name" ,'','comboSkillSetAll','list="list-art"' ]}</dt><dd>@{[input "skillArt$num" ,'number','calcSkill']}+@{[input "skillAddArt$num" ,'number','calcSkill']}</dd>
+HTML
+}
+print <<"HTML";
+            </dl>
+            <div class="add-del-button"><a onclick="addSkill('Art')">▼</a><a onclick="delSkill('Art')">▲</a></div>
+          </dd>
+          <dt>【精神】を使用する技能</dt>
+          <dd>
+            <dl id="skill-mind-table">
+              <dt class="left">ＲＣ</dt><dd>@{[input "skillRC"  ,'number','calcSkill']}+@{[input "skillAddRC"  ,'number','calcSkill']}</dd>
+              <dt class="left">意志</dt><dd>@{[input "skillWill",'number','calcSkill']}+@{[input "skillAddWill",'number','calcSkill']}</dd>
+HTML
+foreach my $num (1 .. $pc{'skillKnowNum'}) {
+print <<"HTML";
+              <dt>@{[input "skillKnow${num}Name",'','comboSkillSetAll','list="list-know"']}</dt><dd>@{[input "skillKnow$num",'number','calcSkill']}+@{[input "skillAddKnow$num",'number','calcSkill']}</dd>
+HTML
+}
+print <<"HTML";
+            </dl>
+            <div class="add-del-button"><a onclick="addSkill('Know')">▼</a><a onclick="delSkill('Know')">▲</a></div>
+          </dd>
+          <dt>【社会】を使用する技能</dt>
+          <dd>
+            <dl id="skill-social-table">
+              <dt class="left">交渉</dt><dd>@{[input "skillNegotiate",'number','calcSkill']}+@{[input "skillAddNegotiate",'number']}</dd>
+              <dt class="left">調達</dt><dd>@{[input "skillProcure"  ,'number','calcSkill']}+@{[input "skillAddProcure",  'number','calcStock']}</dd>
+HTML
+foreach my $num (1 .. $pc{'skillInfoNum'}) {
+print <<"HTML";
+              <dt>@{[input "skillInfo${num}Name",'','comboSkillSetAll','list="list-info"']}</dt><dd>@{[input "skillInfo$num",'number','calcSkill']}+@{[input "skillAddInfo$num",'number','calcSkill']}</dd>
+HTML
+}
+print <<"HTML";
+            </dl>
+            <div class="add-del-button"><a onclick="addSkill('Info')">▼</a><a onclick="delSkill('Info')">▲</a></div>
+          </dd>
+        </dl>
         <div class="annotate">
         ※右側は、DロイスなどによるLv補正の欄です（経験点が計算されません）
         </div>
-        <div class="add-del-button"><a onclick="addSkill()">▼</a><a onclick="delSkill()">▲</a></div>
       </details>
       <details class="box" id="lifepath" $open{'lifepath'}>
         <summary>ライフパス</summary>
@@ -414,21 +451,21 @@ print <<"HTML";
           <tr>
             <th>出自</th>
             <td colspan="2">@{[input "lifepathOrigin"]}</td>
-            <td colspan="2" class="left">@{[input "lifepathOriginNote"]}</td>
+            <td colspan="2" class="left">@{[input "lifepathOriginNote",'','','placeholder="備考"']}</td>
           </tr>
           </tbody>
           <tbody>
           <tr>
             <th>経験</th>
             <td colspan="2">@{[input "lifepathExperience"]}</td>
-            <td colspan="2" class="left">@{[input "lifepathExperienceNote"]}</td>
+            <td colspan="2" class="left">@{[input "lifepathExperienceNote",'','','placeholder="備考"']}</td>
           </tr>
           </tbody>
           <tbody>
           <tr>
             <th>邂逅/欲望</th>
             <td colspan="2">@{[input "lifepathEncounter"]}</td>
-            <td colspan="2" class="left">@{[input "lifepathEncounterNote"]}</td>
+            <td colspan="2" class="left">@{[input "lifepathEncounterNote",'','','placeholder="備考"']}</td>
           </tr>
           </tbody>
           <tbody>
@@ -437,7 +474,7 @@ print <<"HTML";
             <td><select name="lifepathAwaken" oninput="calcEncroach()">@{[option "lifepathAwaken",@awakens]}</select></td>
             <th class="small">侵蝕値</th>
             <td class="center" id="awaken-encroach"></td>
-            <td class="left">@{[input "lifepathAwakenNote"]}</td>
+            <td class="left">@{[input "lifepathAwakenNote",'','','placeholder="備考"']}</td>
           </tr>
           </tbody>
           <tbody>
@@ -446,19 +483,19 @@ print <<"HTML";
             <td><select name="lifepathImpulse" oninput="calcEncroach()">@{[option "lifepathImpulse",@impulses]}</select></td>
             <th class="small">侵蝕値</th>
             <td class="center" id="impulse-encroach"></td>
-            <td class="left">@{[input "lifepathImpulseNote"]}</td>
+            <td class="left">@{[input "lifepathImpulseNote",'','','placeholder="備考"']}</td>
           </tr>
           <tr>
             <th class="small">@{[input "lifepathUrgeCheck",'checkbox']}変異暴走</th>
             <th class="small">効果</th>
-            <td class="left" colspan="2">@{[input "lifepathUrgeNote"]}</td>
+            <td class="left" colspan="2">@{[input "lifepathUrgeNote",'','','placeholder="効果"']}</td>
           </tr>
           </tbody>
           <tbody>
           <tr>
             <th colspan="3" class="right small">その他の修正</th>
             <td class="center">@{[input "lifepathOtherEncroach",'number','calcEncroach']}</td>
-            <td class="left">@{[input "lifepathOtherNote"]}</td>
+            <td class="left">@{[input "lifepathOtherNote",'','','placeholder="備考"']}</td>
           </tr>
           </tbody>
           <tbody>
@@ -582,14 +619,13 @@ print <<"HTML";
       <details class="box" id="combo" $open{'combo'} style="position:relative">
         <summary>コンボ</summary>
         @{[input 'comboNum','hidden']}
-        <table class="edit-table line-tbody" id="combo-table">
-          <colgroup><col><col><col><col><col><col><col><col><col><col><col><col><col><col><col></colgroup>
+        <div id="combo-list">
 HTML
 sub comboSkillSet {
   my $num = shift;
   my @skills = ('白兵','射撃','RC','交渉','回避','知覚','意志','調達');
   foreach my $id ('Ride','Art','Know','Info'){
-    foreach my $num (1 .. $pc{'skillNum'}){
+    foreach my $num (1 .. $pc{'skill'.$id.'Num'}){
       push(@skills, $pc{'skill'.$id.$num.'Name'}) if $pc{'skill'.$id.$num.'Name'};
     }
   }
@@ -618,74 +654,45 @@ sub comboStatusSet {
 }
 foreach my $num (1 .. $pc{'comboNum'}) {
 print <<"HTML";
-          <tbody id="combo${num}">
-            <tr>
-              <td class="handle" rowspan="7"></td>
-              <th colspan="3">名称</th><th colspan="11">組み合わせ</th>
-            </tr>
-            <tr>
-              <td colspan="3" class="bold">@{[input "combo${num}Name"]}</td>
-              <td colspan="11">@{[input "combo${num}Combo"]}</td>
-            </tr>
-            <tr>
-              <th>タイミング</th>
-              <th>技能</th>
-              <th>能力値</th>
-              <th>難易度</th>
-              <th>対象</th>
-              <th>射程</th>
-              <th>侵蝕値</th>
-              <th>条件</th>
-              <th colspan="2">ダイス<div class="small">(能力値+修正)</div></th>
-              <th>Ｃ値</th>
-              <th colspan="2">判定固定値<div class="small">(技能Lv+修正)</div></th>
-              <th>攻撃力</th></tr>
-            <tr>
-              <td>@{[input "combo${num}Timing",'','','list="list-combo-timing"']}</td>
-              <td><select name="combo${num}Skill" oninput="calcCombo(${num})">@{[ comboSkillSet($num) ]}</select></td>
-              <td><select name="combo${num}Stt" oninput="calcCombo(${num})">@{[ comboStatusSet($num) ]}</select></td>
-              <td>@{[input "combo${num}Dfclty",'','','list="list-dfclty"']}</td>
-              <td>@{[input "combo${num}Target",'','','list="list-target"']}</td>
-              <td>@{[input "combo${num}Range",'','','list="list-range"']}</td>
-              <td>@{[input "combo${num}Encroach"]}</td>
-              <td>@{[input "combo${num}Condition1"]}</td>
-              <td id="combo${num}Stt1"></td>
-              <td>@{[input "combo${num}DiceAdd1"]}</td>
-              <td>@{[input "combo${num}Crit1"]}</td>
-              <td id="combo${num}SkillLv1"></td>
-              <td>@{[input "combo${num}FixedAdd1"]}</td>
-              <td>@{[input "combo${num}Atk1"]}</td>
-            </tr>
-            <tr>
-              <td rowspan="3" colspan="7"><textarea name="combo${num}Note" rows="4" placeholder="解説">$pc{"combo${num}Note"}</textarea></td>
-              <td>@{[input "combo${num}Condition2"]}</td>
-              <td id="combo${num}Stt2"></td>
-              <td>@{[input "combo${num}DiceAdd2"]}</td>
-              <td>@{[input "combo${num}Crit2"]}</td>
-              <td id="combo${num}SkillLv2"></td>
-              <td>@{[input "combo${num}FixedAdd2"]}</td>
-              <td>@{[input "combo${num}Atk2"]}</td>
-            </tr>
+        <div class="combo-table" id="combo${num}">
+          <div class="handle"></div>
+          <dl class="combo-name"><dt>名称</dt><dd>@{[input "combo${num}Name"]}</dd></dl>
+          <dl class="combo-combo"><dt>組み合わせ</dt><dd>@{[input "combo${num}Combo"]}</dl>
+          <div class="combo-in">
+            <dl><dt>タイミング</dt><dd>@{[input "combo${num}Timing",'','','list="list-combo-timing"']}</dd></dl>
+            <dl><dt>技能      </dt><dd><select name="combo${num}Skill" oninput="calcCombo(${num})">@{[ comboSkillSet($num) ]}</select></dd></dl>
+            <dl><dt>能力値    </dt><dd><select name="combo${num}Stt" oninput="calcCombo(${num})">@{[ comboStatusSet($num) ]}</select></dd></dl>
+            <dl><dt>難易度    </dt><dd>@{[input "combo${num}Dfclty",'','','list="list-dfclty"']}</dd></dl>
+            <dl><dt>対象      </dt><dd>@{[input "combo${num}Target",'','','list="list-target"']}</dd></dl>
+            <dl><dt>射程      </dt><dd>@{[input "combo${num}Range",'','','list="list-range"']}</dd></dl>
+            <dl><dt>侵蝕値    </dt><dd>@{[input "combo${num}Encroach"]}</dd></dl>
+          </div>
+          <dl class="combo-out">
+            <dt class="combo-cond">条件</dt>
+            <dt class="combo-dice">ダイス</dt>
+            <dt class="combo-crit">Ｃ値</dt>
+            <dt class="combo-fixed">判定固定値</dt>
+            <dt class="combo-atk">攻撃力</dt>
 HTML
-  foreach my $i (3 .. 4) {
+  foreach my $i (1 .. 4) {
   print <<"HTML";
-            <tr>
-              <td>@{[input "combo${num}Condition${i}"]}</td>
-              <td id="combo${num}Stt${i}"></td>
-              <td>@{[input "combo${num}DiceAdd${i}"]}</td>
-              <td>@{[input "combo${num}Crit${i}"]}</td>
-              <td id="combo${num}SkillLv${i}"></td>
-              <td>@{[input "combo${num}FixedAdd${i}"]}</td>
-              <td>@{[input "combo${num}Atk${i}"]}</td>
-            </tr>
+            <dd>@{[input "combo${num}Condition${i}"]}</dd>
+            <dd id="combo${num}Stt${i}"></dd>
+            <dd>@{[input "combo${num}DiceAdd${i}"]}</dd>
+            <dd>@{[input "combo${num}Crit${i}"]}</dd>
+            <dd id="combo${num}SkillLv${i}"></dd>
+            <dd>@{[input "combo${num}FixedAdd${i}"]}</dd>
+            <dd>@{[input "combo${num}Atk${i}"]}</dd>
 HTML
   }
 print <<"HTML";
-          </tbody>
+          </dl>
+          <p class="combo-note"><textarea name="combo${num}Note" rows="3" placeholder="解説">$pc{"combo${num}Note"}</textarea></p>
+        </div>
 HTML
 }
 print <<"HTML";
-        </table>
+        </div>
         <div class="annotate">
           @{[ input 'comboCalcOff','checkbox','calcComboAll' ]} 能力値・技能Lvを自動挿入しない（自分で計算する）
         </div>
