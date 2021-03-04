@@ -1,5 +1,6 @@
 "use strict";
 const gameSystem = 'sw2';
+let modeZero;
 
 const expTable = {
   'A' : [
@@ -987,6 +988,7 @@ function calcPackage() {
 }
 
 // 魔力計算 ----------------------------------------
+let magicPowers = {};
 function calcMagic() {
   const addPower = Number(form.magicPowerAdd.value) + magicPowerEnhance;
   document.getElementById("magic-power-magicenhance-value").innerHTML = magicPowerEnhance;
@@ -1007,6 +1009,7 @@ function calcMagic() {
       document.getElementById("magic-power-"+eName+"-value").innerHTML  = power;
       document.getElementById("magic-cast-"+eName+"-value").innerHTML   = power + Number(form["magicCastAdd"+key].value) + addCast;
       document.getElementById("magic-damage-"+eName+"-value").innerHTML = Number(form["magicDamageAdd"+key].value) + addDamage;
+      magicPowers[key] = lv[key] ? power : 0;
     }
     // 呪歌など
     else if(classes[key]['craftStt']){
@@ -1046,7 +1049,7 @@ function calcAttack() {
   document.getElementById("attack-fencer"    ).style.display = lv['Fen'] >   0 ? "" :"none";
   document.getElementById("attack-shooter"   ).style.display = lv['Sho'] >   0 ? "" :"none";
   document.getElementById("attack-enhancer"  ).style.display = lv['Enh'] >= 10 ? "" :"none";
-  document.getElementById("attack-demonruler").style.display = lv['Dem'] >   0 ? "" :"none";
+  document.getElementById("attack-demonruler").style.display = modeZero && lv['Dem'] >  0 ? "" :"none";
 
   document.getElementById("attack-fighter-str"   ).innerHTML = reqdStr;
   document.getElementById("attack-grappler-str"  ).innerHTML = reqdStr;
@@ -1066,8 +1069,7 @@ function calcAttack() {
   document.getElementById("attack-grappler-dmg"  ).innerHTML = lv['Gra'] + bonusStr;
   document.getElementById("attack-fencer-dmg"    ).innerHTML = lv['Fen'] + bonusStr;
   document.getElementById("attack-shooter-dmg"   ).innerHTML = lv['Sho'] + bonusStr;
-  document.getElementById("attack-enhancer-dmg"  ).innerHTML = lv['Enh'] + bonusStr;
-  document.getElementById("attack-demonruler-dmg").innerHTML = lv['Dem'] + bonusStr;
+  if(modeZero){ document.getElementById("attack-enhancer-dmg"  ).innerHTML = lv['Enh'] + bonusStr; }
 
   calcWeapon();
 }
@@ -1095,11 +1097,16 @@ function calcWeapon() {
     form["weapon"+i+"Reqd"].classList.toggle('error', weaponReqd > maxReqd);
     // 武器カテゴリ
     if(attackClass) {
+      // 基礎命中
       accBase += attackClass + parseInt((sttDex + sttAddA + ownDex) / 6);
+      // 基礎ダメージ
       if     (category === 'クロスボウ') { dmgBase += attackClass; }
-      else if(category === 'ガン')       { dmgBase += 0; }
+      else if(category === 'ガン')       { dmgBase += magicPowers['Mag']; }
+      else if(!modeZero && classes === "デーモンルーラー"){ dmgBase = magicPowers['Dem']; }
       else { dmgBase += attackClass + bonusStr; }
+      form["weapon"+i+"Category"].classList.remove('fail');
     }
+    // 習熟
     if     (category === 'ソード')         { dmgBase += masterySword; }
     else if(category === 'アックス')       { dmgBase += masteryAxe; }
     else if(category === 'スピア')         { dmgBase += masterySpear; }
@@ -1113,10 +1120,7 @@ function calcWeapon() {
     else if(category === 'ボウ')           { dmgBase += masteryBow; }
     else if(category === 'ブロウガン')     { dmgBase += masteryBlowgun; }
     else if(category === 'クロスボウ')     { dmgBase += masteryCrossbow; }
-    else if(category === 'ガン') {
-      const magicPower = lv['Mag'] ? Number(document.getElementById('magic-power-magitech-value').innerHTML) : 0;
-      dmgBase = magicPower + masteryGun;
-    }
+    else if(category === 'ガン')           { dmgBase += masteryGun; }
     else if(category === 'ガン（物理）')   { dmgBase += masteryGun; }
     if(note.match(/〈魔器〉/)){ dmgBase += masteryArtisan; }
     // 命中追加D出力
@@ -1718,7 +1722,7 @@ let commonClassSortable = Sortable.create(document.querySelector('#common-classe
   group: "honor",
   dataIdAttr: 'id',
   animation: 150,
-  //handle: '.handle',
+  handle: '.handle',
   filter: 'thead,tfoot',
   ghostClass: 'sortable-ghost',
   onUpdate: function (evt) {

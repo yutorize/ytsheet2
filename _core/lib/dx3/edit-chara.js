@@ -114,7 +114,7 @@ function calcSkill() {
     for(let i = 0; i < lv; i++){ exps['skill'] += (i > 20) ? 10 : (i > 10) ? 5 : (i > 5) ? 3 : 2; }
   }
   for (let name of ['Ride','Art','Know','Info']){
-    for (let num = 1; num <= Number(form.skillNum.value); num++){
+    for (let num = 1; num <= Number(form[`skill${name}Num`].value); num++){
       const lv = Number(form['skill'+name+num].value);
       for(let i = 0; i < lv; i++){ exps['skill'] += (i > 20) ? 10 : (i > 10) ? 5 : (i > 5) ? 3 : 1; }
       skillNameToId[form['skill'+name+num+'Name'].value] = name+num;
@@ -332,35 +332,45 @@ let memorySortable = Sortable.create(document.querySelector('#memory-table tbody
 
 // 技能欄 ----------------------------------------
 // 追加
-function addSkill(){
-  let num = Number(form.skillNum.value) + 1;
-  let tbody = document.createElement('tr');
-  tbody.innerHTML = `
-    <td class="left"><input name="skillRide${num}Name" type="text" list="list-ride"></td>
-    <td class="right"><input name="skillRide${num}" type="number" oninput="calcSkill()">+<input name="skillAddRide${num}" type="number" oninput="calcSkill()"></td>
-    <td class="left"><input name="skillArt${num}Name" type="text" list="list-art"></td>
-    <td class="right"><input name="skillArt${num}" type="number" oninput="calcSkill()">+<input name="skillAddArt${num}" type="number" oninput="calcSkill()"></td>
-    <td class="left"><input name="skillKnow${num}Name" type="text" list="list-know"></td>
-    <td class="right"><input name="skillKnow${num}" type="number" oninput="calcSkill()">+<input name="skillAddKnow${num}" type="number" oninput="calcSkill()"></td>
-    <td class="left"><input name="skillInfo${num}Name" type="text" list="list-info"></td>
-    <td class="right"><input name="skillInfo${num}" type="number" oninput="calcSkill()">+<input name="skillAddInfo${num}" type="number" oninput="calcSkill()"></td>
-  `;
-  const target = document.querySelector("#skill-table tbody");
-  target.appendChild(tbody, target);
+function addSkill(type){
+  let num = Number(form[`skill${type}Num`].value) + 1;
+  let dt = document.createElement('dt');
+  let dd = document.createElement('dd');
+  dt.innerHTML = `<input name="skill${type}${num}Name" type="text" list="list-${type.toLowerCase()}">`;
+  dd.innerHTML = `<input name="skill${type}${num}" type="number" oninput="calcSkill()">+<input name="skillAdd${type}${num}" type="number" oninput="calcSkill()">`;
+  const status = (
+    type === 'Ride' ? 'body'   :
+    type === 'Art'  ? 'sense'  :
+    type === 'Know' ? 'mind'   :
+    type === 'Info' ? 'social' :
+    ''
+  );
+  const target = document.querySelector(`#skill-${status}-table`);
+  target.appendChild(dt, target);
+  target.appendChild(dd, target);
   
-  form.skillNum.value = num;
+  form[`skill${type}Num`].value = num;
 }
 // 削除
-function delSkill(){
-  let num = Number(form.skillNum.value);
+function delSkill(type){
+  let num = Number(form[`skill${type}Num`].value);
   if(num > 1){
-    if(form[`skillRide${num}Name`].value || form[`skillRide${num}`].value || form[`skillAddRide${num}`].value || form[`skillArt${num}Name`].value || form[`skillArt${num}`].value || form[`skillAddArt${num}`].value || form[`skillKnow${num}Name`].value || form[`skillKnow${num}`].value || form[`skillAddKnow${num}`].value || form[`skillInfo${num}Name`].value || form[`skillInfo${num}`].value || form[`skillAddInfo${num}`].value){
+    if(form[`skill${type}${num}Name`].value || form[`skill${type}${num}`].value || form[`skillAdd${type}${num}`].value){
       if (!confirm(delConfirmText)) return false;
     }
-    const target = document.querySelector("#skill-table tbody tr:last-of-type");
-    target.parentNode.removeChild(target);
+    const status = (
+      type === 'Ride' ? 'body'   :
+      type === 'Art'  ? 'sense'  :
+      type === 'Know' ? 'mind'   :
+      type === 'Info' ? 'social' :
+      ''
+    );
+    const target = document.querySelector(`#skill-${status}-table`);
+    target.lastElementChild.remove();
+    target.lastElementChild.remove();
     num--;
-    form.skillNum.value = num;
+    form[`skill${type}Num`].value = num;
+    calcSkill();
   }
 }
 
@@ -409,6 +419,7 @@ function delEffect(){
     target.parentNode.removeChild(target);
     num--;
     form.effectNum.value = num;
+    calcEffect();
   }
 }
 // ソート
@@ -461,7 +472,7 @@ function comboSkillSet(num){
     select.appendChild(op);
   }
   for (let name of ['Ride','Art','Know','Info']){
-    for (let num = 1; num <= Number(form.skillNum.value); num++){
+    for (let num = 1; num <= Number(form[`skill${name}Num`].value); num++){
       let op = document.createElement("option");
       const skillname = form['skill'+name+num+'Name'].value;
       if(skillname){
@@ -515,83 +526,73 @@ function calcCombo(num){
 // 追加
 function addCombo(){
   let num = Number(form.comboNum.value) + 1;
-  let tbody = document.createElement('tbody');
-  tbody.setAttribute('id',idNumSet('combo'));
-  tbody.innerHTML = `<tr>
-      <td class="handle" rowspan="7"></td>
-      <th colspan="3">名称</th>
-      <th colspan="11">組み合わせ</th>
-    <tr>
-      <td colspan="3" class="bold"><input name="combo${num}Name" type="text"></td>
-      <td colspan="11"><input name="combo${num}Combo" type="text"></td>
-    </tr>
-    <tr>
-      <th>タイミング</th>
-      <th>技能</th>
-      <th>能力値</th>
-      <th>難易度</th>
-      <th>対象</th>
-      <th>射程</th>
-      <th>侵蝕値</th>
-      <th>条件</th>
-      <th colspan="2">ダイス<div class="small">(能力値+修正)</div></th>
-      <th>Ｃ値</th>
-      <th colspan="2">判定固定値<div class="small">(技能Lv+修正)</div></th>
-      <th>攻撃力</th></tr></tr>
-    <tr>
-      <td><input name="combo${num}Timing"   type="text" list="list-timing"></td>
-      <td><select name="combo${num}Skill" oninput="calcCombo${num}"></select></td>
-      <td><select name="combo${num}Stt" oninput="calcCombo${num}">
-        <option>自動（技能に合った能力値）
+  let div = document.createElement('div');
+  div.setAttribute('id',idNumSet('combo'));
+  div.classList.add('combo-table');
+  div.innerHTML = `
+    <div class="handle"></div>
+    <dl class="combo-name"><dt>名称</dt><dd><input name="combo${num}Name" type="text"></dd></dl>
+    <dl class="combo-combo"><dt>組み合わせ</dt><dd><input name="combo${num}Combo" type="text"></dl>
+    <div class="combo-in">
+      <dl><dt>タイミング</dt><dd><input name="combo${num}Timing"   type="text" list="list-timing"></dd></dl>
+      <dl><dt>技能      </dt><dd><select name="combo${num}Skill" oninput="calcCombo(${num})"></select></dd></dl>
+      <dl><dt>能力値    </dt><dd><select name="combo${num}Stt" oninput="calcCombo(${num})">
+        <option value="">自動（技能に合った能力値）
         <optgroup label="▼エフェクト等による差し替え">
           <option>肉体
           <option>感覚
           <option>精神
           <option>社会
         </optgroup>
-      </select></td>
-      <td><input name="combo${num}Dfclty"   type="text" list="list-dfclty"></td>
-      <td><input name="combo${num}Target"   type="text" list="list-target"></td>
-      <td><input name="combo${num}Range"    type="text" list="list-range"></td>
-      <td><input name="combo${num}Encroach" type="text"></td>
-      <td><input name="combo${num}Condition1" type="text" value="100%未満"></td>
-      <td id="combo${num}Stt1"></td>
-      <td><input name="combo${num}DiceAdd1"   type="text"></td>
-      <td><input name="combo${num}Crit1"      type="text"></td>
-      <td id="combo${num}SkillLv1"></td>
-      <td><input name="combo${num}FixedAdd1"  type="text"></td>
-      <td><input name="combo${num}Atk1"       type="text"></td>
-    </tr>
-    <tr>
-      <td rowspan="3" colspan="7"><textarea name="combo${num}Note" rows="4" placeholder="解説"></textarea></td>
-      <td><input name="combo${num}Condition2" type="text" value="100%以上"></td>
-      <td id="combo${num}Stt2"></td>
-      <td><input name="combo${num}DiceAdd2"   type="text"></td>
-      <td><input name="combo${num}Crit2"      type="text"></td>
-      <td id="combo${num}SkillLv2"></td>
-      <td><input name="combo${num}FixedAdd2"  type="text"></td>
-      <td><input name="combo${num}Atk2"       type="text"></td>
-    </tr>
-    <tr>
-      <td><input name="combo${num}Condition3" type="text"></td>
-      <td id="combo${num}Stt3"></td>
-      <td><input name="combo${num}DiceAdd3"   type="text"></td>
-      <td><input name="combo${num}Crit3"      type="text"></td>
-      <td id="combo${num}SkillLv3"></td>
-      <td><input name="combo${num}FixedAdd3"  type="text"></td>
-      <td><input name="combo${num}Atk3"       type="text"></td>
-    </tr>
-    <tr>
-      <td><input name="combo${num}Condition4" type="text"></td>
-      <td id="combo${num}Stt4"></td>
-      <td><input name="combo${num}DiceAdd4"   type="text"></td>
-      <td><input name="combo${num}Crit4"      type="text"></td>
-      <td id="combo${num}SkillLv4"></td>
-      <td><input name="combo${num}FixedAdd4"  type="text"></td>
-      <td><input name="combo${num}Atk4"       type="text"></td>
-    </tr>`;
-  const target = document.querySelector("#combo-table");
-  target.appendChild(tbody, target);
+      </select></dd></dl>
+      <dl><dt>難易度    </dt><dd><input name="combo${num}Dfclty"   type="text" list="list-dfclty"></dd></dl>
+      <dl><dt>対象      </dt><dd><input name="combo${num}Target"   type="text" list="list-target"></dd></dl>
+      <dl><dt>射程      </dt><dd><input name="combo${num}Range"    type="text" list="list-range"></dd></dl>
+      <dl><dt>侵蝕値    </dt><dd><input name="combo${num}Encroach" type="text"></dd></dl>
+    </div>
+    <dl class="combo-out">
+      <dt class="combo-cond">条件</dt>
+      <dt class="combo-dice">ダイス</dt>
+      <dt class="combo-crit">Ｃ値</dt>
+      <dt class="combo-fixed">判定固定値</dt>
+      <dt class="combo-atk">攻撃力</dt>
+
+      <dd><input name="combo${num}Condition1" type="text" value="100%未満"></dd>
+      <dd id="combo${num}Stt1"></dd>
+      <dd><input name="combo${num}DiceAdd1"   type="text"></dd>
+      <dd><input name="combo${num}Crit1"      type="text"></dd>
+      <dd id="combo${num}SkillLv1"></dd>
+      <dd><input name="combo${num}FixedAdd1"  type="text"></dd>
+      <dd><input name="combo${num}Atk1"       type="text"></dd>
+
+      <dd><input name="combo${num}Condition2" type="text" value="100%以上"></dd>
+      <dd id="combo${num}Stt2"></dd>
+      <dd><input name="combo${num}DiceAdd2"   type="text"></dd>
+      <dd><input name="combo${num}Crit2"      type="text"></dd>
+      <dd id="combo${num}SkillLv2"></dd>
+      <dd><input name="combo${num}FixedAdd2"  type="text"></dd>
+      <dd><input name="combo${num}Atk2"       type="text"></dd>
+
+      <dd><input name="combo${num}Condition3" type="text"></dd>
+      <dd id="combo${num}Stt3"></dd>
+      <dd><input name="combo${num}DiceAdd3"   type="text"></dd>
+      <dd><input name="combo${num}Crit3"      type="text"></dd>
+      <dd id="combo${num}SkillLv3"></dd>
+      <dd><input name="combo${num}FixedAdd3"  type="text"></dd>
+      <dd><input name="combo${num}Atk3"       type="text"></dd>
+
+      <dd><input name="combo${num}Condition4" type="text"></dd>
+      <dd id="combo${num}Stt4"></dd>
+      <dd><input name="combo${num}DiceAdd4"   type="text"></dd>
+      <dd><input name="combo${num}Crit4"      type="text"></dd>
+      <dd id="combo${num}SkillLv4"></dd>
+      <dd><input name="combo${num}FixedAdd4"  type="text"></dd>
+      <dd><input name="combo${num}Atk4"       type="text"></dd>
+    </dl>
+    <p class="combo-note"><textarea name="combo${num}Note" rows="3" placeholder="解説"></textarea></p>
+  `;
+  const target = document.querySelector("#combo-list");
+  target.appendChild(div);
   comboSkillSet(num);
   form.comboNum.value = num;
 }
@@ -602,19 +603,19 @@ function delCombo(){
     if(form[`combo${num}Name`].value || form[`combo${num}Combo`].value || form[`combo${num}Timing`].value || form[`combo${num}Skill`].value || form[`combo${num}Dfclty`].value || form[`combo${num}Target`].value || form[`combo${num}Range`].value || form[`combo${num}Encroach`].value || form[`combo${num}DiceAdd1`].value || form[`combo${num}Crit1`].value || form[`combo${num}Atk1`].value || form[`combo${num}FixedAdd1`].value || form[`combo${num}Note`].value){
       if (!confirm(delConfirmText)) return false;
     }
-    const target = document.querySelector("#combo-table tbody:last-of-type");
-    target.parentNode.removeChild(target);
+    const target = document.querySelector("#combo-list .combo-table:last-child");
+    target.remove();
     num--;
     form.comboNum.value = num;
   }
 }
 // ソート
-let comboSortable = Sortable.create(document.getElementById('combo-table'), {
+let comboSortable = Sortable.create(document.getElementById('combo-list'), {
   group: "combo",
   dataIdAttr: 'id',
   animation: 100,
   handle: '.handle',
-  filter: 'thead,tfoot',
+  filter: '',
   ghostClass: 'sortable-ghost',
   onUpdate: function (evt) {
     const order = comboSortable.toArray();
@@ -691,6 +692,7 @@ function delWeapon(){
     target.parentNode.removeChild(target);
     num--;
     form.weaponNum.value = num;
+    calcItem();
   }
 }
 // ソート
@@ -753,6 +755,7 @@ function delArmor(){
     target.parentNode.removeChild(target);
     num--;
     form.armorNum.value = num;
+    calcItem();
   }
 }
 // ソート
@@ -814,6 +817,7 @@ function delVehicle(){
     target.parentNode.removeChild(target);
     num--;
     form.vehicleNum.value = num;
+    calcItem();
   }
 }
 // ソート
@@ -875,6 +879,7 @@ function delItem(){
     target.parentNode.removeChild(target);
     num--;
     form.itemNum.value = num;
+    calcItem();
   }
 }
 // ソート

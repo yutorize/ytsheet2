@@ -564,6 +564,11 @@ aside.information a {
 aside.information + article {
   border-top: 0;
 }
+@media screen and (max-width:735px){
+  aside.information {
+    margin-top: 2rem;
+  }
+}
 
 /* // Nav
 ---------------------------------------------------------------------------------------------------- */
@@ -605,10 +610,10 @@ header nav ul li a span {
 }
 @media screen and (max-width:735px){
   header nav {
-    margin-top: 3.5rem;
+    margin-top: 2.7rem;
   }
   main {
-    padding-top: 3.5rem;
+    padding-top: 4.5rem;
   }
 }
 

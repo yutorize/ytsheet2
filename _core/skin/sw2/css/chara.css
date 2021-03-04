@@ -429,7 +429,6 @@ p.words span.brackets {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.4rem;
 }
 #status dl:nth-child(n+16):nth-child(-n+21),
 #status dl[id^="stt-bonus"] {
@@ -438,10 +437,10 @@ p.words span.brackets {
 }
 #status dl:nth-child(n+16):nth-child(-n+21) dd,
 #status dl[id^="stt-bonus"] dd {
-  font-size: 1.6rem;
+  font-size: 1.15em;
 }
 #status dl:nth-child(n+16):nth-child(-n+21) dd {
-  transform: scale(1,1.15);
+  font-size: 1.15em;
 }
 #status dl:nth-child(n+16):nth-child(-n+21) {
   border-top-right-radius: 0;
@@ -539,7 +538,7 @@ p.words span.brackets {
 }
 #sub-status dd b {
   font-weight:normal;
-  font-size: 1.6rem;
+  font-size: 1.15em;
   display: inline-block;
   transform: scaleY(1.1);
 }
@@ -662,7 +661,7 @@ dl#level dd {
 }
 #area-classes dl dd {
   grid-column: 2;
-  font-size: 1.6rem;
+  font-size: 1.15em;
   line-height: 1.1;
 }
 #area-classes .priest-faith {
@@ -768,7 +767,7 @@ dl#level dd {
 #area-actions .box#package td:last-child {
   width: 1.8em;
   padding-left: 0.2rem;
-  font-size: 1.6rem;
+  font-size: 1.15em;
   line-height: 1.6;
   white-space: nowrap;
 }
@@ -822,7 +821,7 @@ dl#level dd {
   flex-basis: calc(50% - 5px);
 }
 #monster-lore dd {
-  font-size: 1.6rem;
+  font-size: 1.15em;
 }
 
 /* Initiative */
@@ -830,7 +829,7 @@ dl#level dd {
   flex-basis: calc(50% - 5px);
 }
 #initiative dd {
-  font-size: 1.6rem;
+  font-size: 1.15em;
 }
 
 /* Mobility */
@@ -851,7 +850,7 @@ dl#level dd {
 }
 #mobility b {
   font-weight: normal;
-  font-size: 1.6rem;
+  font-size: 1.15em;
 }
 
 /* Magic-Power */
@@ -862,7 +861,7 @@ dl#level dd {
   margin-left: 0;
 }
 #magic-power table {
-  margin-top: -1.2em !important;
+  margin-top: -1.2em;
 }
 #magic-power table thead th {
 }
@@ -882,7 +881,7 @@ dl#level dd {
 }
 #magic-power table tbody td.num {
   width: 4em;
-  font-size: 1.6rem;
+  font-size: 1.15em;
   line-height: 1.6;
   white-space: nowrap;
 }
@@ -945,7 +944,7 @@ dl#level dd {
 }
 #area-equipment table td b {
   font-weight: normal;
-  font-size: 1.6rem;
+  font-size: 1.15em;
 }
 
 #area-equipment .item-name {
@@ -1012,7 +1011,7 @@ dl#level dd {
 #armours .defense-total td {
   border-width: 1px;
   border-style: solid dotted;
-  font-size: 1.6rem;
+  font-size: 1.15em;
 }
 #armours .defense-total td:last-child {
   padding-left: .3em;
@@ -1167,7 +1166,7 @@ div#area-items-R {
   white-space: nowrap;
 }
 #history table td {
-  font-size: 1.2rem;
+  font-size: .85em;
 }
 #history table thead th:nth-child(1) { width:   2em; } /* No. */
 #history table thead th:nth-child(2) { width: 5.2em; } /* 日付 */
@@ -1347,7 +1346,7 @@ div#area-items-R {
 }
 #fellow dl {
   border-bottom: 1px solid var(--box-outside-border-color);
-  font-size: 1.6rem;
+  font-size: 1.15em;
 }
 #fellow dd {
   line-height: 1.3;

@@ -6,9 +6,9 @@
   margin: 10px 0;
   overflow-y: auto;
 }
-#regulation dl {
+#regulation > dl {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 4fr;
   grid-template-rows: auto;
   margin: 10px 0;
 }
@@ -19,8 +19,26 @@
   grid-row: 2 / 3;
   font-size: 1.2rem;
 }
-#regulation dl dd:nth-last-child(-n+6) input {
-  width: calc(100% - 5em);
+#regulation dl#regulation-grow {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+  grid-template-rows: auto;
+}
+@media screen and (max-width:735px){
+  #regulation > dl {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: auto;
+    margin: 10px 0;
+  }
+  #regulation > dl > dt:last-of-type {
+    grid-column: 1 / span 3;
+    grid-row: 3;
+  }
+  #regulation > dl > dd:last-of-type {
+    grid-column: 1 / span 3;
+    grid-row: 4;
+  }
 }
 
 #area-status {
@@ -29,16 +47,23 @@
 
 @media screen and (max-width:735px){
   #area-status {
-    grid-template-columns: 0.6fr 0.6fr 2fr;
+    grid-template-columns: 2fr 1fr;
     grid-gap: 10px 5px;
 
     grid-template-areas:
-      "IMG  IMG  IMG"
-      "PER  PER  PER "
-      "STT  STT  STT "
-      "STT  STT  STT "
-      "EXP  LVL  sSTT"
+      "IMG  IMG "
+      "PER  PER "
+      "STT  STT "
+      "STT  STT "
+      "sSTT sSTT"
+      "EXP  LVL "
     ;
+  }
+  dl#level dt::after {
+    content:''
+  }
+  dl#exp br {
+    display: none;
   }
 }
 
@@ -58,6 +83,28 @@
 }
 #status dl#stt-pointbuy-type {
   grid-column: span 2;
+}
+@media screen and (max-width:735px){
+  #status {
+    grid-gap: 5px;
+    grid-template-columns: 1fr 1fr 1fr 1fr 0.8fr 1fr;
+  }
+  #status dl.box {
+    overflow-x: visible;
+  }
+  #status dl dt {
+    font-size: 2rem;
+  }
+  #status dl#stt-pointbuy-TPS dt,
+  #status dl#stt-pointbuy-AtoF dt {
+    font-size: 1.8rem;
+  }
+  #status dl#stt-pointbuy-type {
+    grid-column: span 3;
+  }
+  #status dl dd input[type="number"] {
+    min-width: 2em;
+  }
 }
 
 #sub-status input,
@@ -110,6 +157,10 @@
   flex-basis: calc(50% - 10px);
   grid-template-columns: 1fr 3.5em;
 }
+#classes dl dt {
+  font-size: inherit;
+}
+}
 #common-classes td:last-child {
   width: 3.5em;
 }
@@ -117,11 +168,21 @@
   #area-classes {
     display: block;
   }
+  #status dl:nth-child(n+16):nth-child(-n+21) dd {
+    transform: none;
+    font-size: 1.25em;
+  }
   #classes {
     width: 100%;
   }
+  #classes dl {
+    grid-template-columns: 1fr 5em;
+  }
   #common-classes {
     margin: 1rem 0 0 !important;
+  }
+  #common-classes td:last-child {
+    width: 5em;
   }
 }
 #classes dl select {
@@ -188,6 +249,14 @@
 #crafts > .box ul li:last-child {
   padding-bottom: 1px;
 }
+@media screen and (max-width:735px){
+  #crafts {
+    display: block;
+  }
+  #crafts > .box {
+    margin: 0 0 1rem !important;
+  }
+}
 
 
 #area-status + p {
@@ -229,14 +298,18 @@
   text-align: center;
 }
 @media screen and (max-width:735px){
-  #language { grid-row: 1 / span 2; grid-column: 1 / span 2; }
+  #area-actions {
+    display: block;
+  }
+  #area-actions .box {
+    margin: 1rem 0 0;
+  }
 }
 
 #magic-power {
   min-width: 10em;
 }
 #magic-power table {
-  margin-top: -1.2em !important;
 }
 #magic-power table td input[type=number] {
   width: 3.5em;
@@ -295,7 +368,6 @@
   display: inline-block;
   min-width: 2.5em;
   padding-right : .2em;
-  font-size: 1.6rem;
   line-height: 1.6;
   font-weight: normal;
   text-align: center;
@@ -306,8 +378,19 @@
 }
 @media screen and (max-width:735px){
   #magic-power {
-    width: max-content;
+    width: 100%;
+    overflow-x: auto;
   }
+  #magic-power table {
+    margin-top: -.5em;
+    table-layout: fixed;
+  }
+  #magic-power thead th:nth-child(2) { width: 7.5em; } /* 魔法名 */
+  #magic-power thead th:nth-child(3) { width:   6em; } /* 専用 */
+  #magic-power thead th:nth-child(4) { width: 8.5em; } /*  */
+  #magic-power thead th:nth-child(5) { width: 8.5em; } /*  */
+  #magic-power thead th:nth-child(6) { width: 9.5em; } /*  */
+
   #magic-power table tr > *:nth-child(1) {
     display: none;
   }
@@ -320,6 +403,9 @@
   #magic-power #fairycontact {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
+  }
+  #magic-power table td input[type=number] {
+    width: 2.5em;
   }
 }
 
@@ -378,20 +464,32 @@ option.zero-data::before {
   margin-right: auto;
 }
 @media screen and (max-width:735px){
-  #weapons table {
-    min-width: 0;
+  #attack-classes {
+    overflow-x: auto;
+  }
+  #attack-classes table {
     table-layout: fixed;
   }
-  #weapons thead th:nth-child(1) { width:  10em; } /* 名前 */
-  #weapons thead th:nth-child(2) { width: 3.5em; } /* 用法 */
-  #weapons thead th:nth-child(3) { width: 3.5em; } /* 必筋 */
-  #weapons thead th:nth-child(4) { width:   5em; } /* 命中 */
-  #weapons thead th:nth-child(5) { width: 3.5em; } /* 威力 */
-  #weapons thead th:nth-child(6) { width: 3.5em; } /* Ｃ値 */
-  #weapons thead th:nth-child(7) { width:   5em; } /* 追加Ｄ */
+  #attack-classes thead th:nth-child(1) { width:  17em; } /* 名前 */
+  #attack-classes thead th:nth-child(2) { width:   4em; } /* 必筋 */
+  #attack-classes thead th:nth-child(3) { width: 5.5em; } /* 命中 */
+  #attack-classes thead th:nth-child(4) { width:   4em; } /* 威力 */
+  #attack-classes thead th:nth-child(5) { width:   4em; } /* Ｃ値 */
+  #attack-classes thead th:nth-child(6) { width: 5.5em; } /* 追加Ｄ */
+  
+  #weapons table {
+    table-layout: fixed;
+  }
+  #weapons thead th:nth-child(1) { width:  12em; } /* 名前 */
+  #weapons thead th:nth-child(2) { width:   5em; } /* 用法 */
+  #weapons thead th:nth-child(3) { width:   4em; } /* 必筋 */
+  #weapons thead th:nth-child(4) { width: 5.5em; } /* 命中 */
+  #weapons thead th:nth-child(5) { width:   4em; } /* 威力 */
+  #weapons thead th:nth-child(6) { width:   4em; } /* Ｃ値 */
+  #weapons thead th:nth-child(7) { width: 5.5em; } /* 追加Ｄ */
   #weapons thead th:nth-child(8) { width: 1.4em; } /* 専用 */
-  #weapons thead th:nth-child(9) { width:   8em; } /* 追加Ｄ */
-  #weapons thead th:nth-child(10){ width:   8em; } /* 追加Ｄ */
+  #weapons thead th:nth-child(9) { width:   8em; } /* カテゴリ */
+  #weapons thead th:nth-child(10){ width:   8em; } /* 技能 */
 }
 
 #armours .defense-total th label {
@@ -403,6 +501,30 @@ option.zero-data::before {
 }
 #armours .defense-total th label input:checked + span {
   opacity: 1;
+}
+@media screen and (max-width:735px){
+  #evasion-classes {
+    width: auto;
+  }
+  #evasion-classes thead th:nth-child(1) { width:14.5em; } /* 名前 */
+  #evasion-classes thead th:nth-child(2) { width:   4em; } /* 必筋 */
+  #evasion-classes thead th:nth-child(3) { width:   4em; } /* 回避 */
+  #evasion-classes thead th:nth-child(4) { width:   4em; } /* 防護 */
+  #armours {
+    overflow-x: auto;
+  }
+  #armours table {
+    min-width: 0;
+    table-layout: fixed;
+  }
+  #armours thead th:nth-child(1) { width: 2.5em; } /* 種別 */
+  #armours thead th:nth-child(2) { width:  12em; } /* 名前 */
+  #armours thead th:nth-child(3) { width:   4em; } /* 必筋 */
+  #armours thead th:nth-child(4) { width:   4em; } /* 回避 */
+  #armours thead th:nth-child(5) { width:   4em; } /* 防護 */
+  #armours thead th:nth-child(6) { width: 1.5em; } /* 専用 */
+  #armours thead th:nth-child(6) { width: 1.5em; } /* 専用 */
+  #armours thead th:nth-child(7) { width:  16em; } /* 備考 */
 }
 
 #accessories thead th:nth-child(1) { width: 1.5em; } /*  */
@@ -422,6 +544,22 @@ option.zero-data::before {
 #accessories tbody tr:nth-child(6n+5),
 #accessories tbody tr:nth-child(6n+6) {
   background-color: var(--box-even-rows-bg-color);
+}
+@media screen and (max-width:735px){
+  #accessories {
+    overflow-x: auto;
+  }
+  #accessories table {
+    min-width: 0;
+    table-layout: fixed;
+  }
+  #accessories thead th:nth-child(1) { width: 1.5em; } /* ✔ */
+  #accessories thead th:nth-child(2) { width: 2.5em; } /* 種別 */
+  #accessories thead th:nth-child(3) { width:  12em; } /* 名前 */
+  #accessories thead th:nth-child(4) { width: 4.5em; } /* 専用 */
+  #accessories thead th:nth-child(5) { width:  16em; } /* 備考 */
+  
+  #accessories tbody td:nth-child(4) { padding-left: 0; } /* 専用 */
 }
 
 
@@ -631,6 +769,7 @@ article > form > hr {
 ---------------------------------------------------------------------------------------------------- */
 form#monster div.box {
   margin: 1rem 0;
+  overflow-x: auto;
 }
 form#monster h2 {
   font-size: 100%;
@@ -657,6 +796,12 @@ form#monster div.status input[name*="Resist"] {
 form#monster div.status input[name="language"] {
   width: 25em;
 }
+@media screen and (max-width:735px){
+  form#monster div.status input[name="language"] {
+    width: 18em;
+  }
+}
+
 form#monster table.status {
   border-width: 0;
 }
@@ -683,12 +828,15 @@ form#monster table.status input {
 form#monster table.status input[name$="Style"] {
   width: calc(100% - 4px);
 }
-
 form#monster div.parts input {
   width: auto;
 }
 form#monster div.parts input[name="partsNum"] {
   width: 5em;
+}
+@media screen and (max-width:735px){
+  form#monster table.status { width: 50em; }
+  form#monster div.parts dl { display: block; }
 }
 
 form#monster textarea[name="skills"] + .annotate code {
@@ -732,6 +880,7 @@ form#monster ul#loots-num {
 ---------------------------------------------------------------------------------------------------- */
 form#item div.box {
   margin: 1rem 0;
+  overflow-x: auto;
 }
 form#item div.box {
   margin: 1rem 0;
@@ -763,6 +912,11 @@ form#item div.input-data div {
 form#item div.input-data dl {
   display: flex;
   margin-right: 1.5em;
+}
+@media screen and (max-width:735px){
+  form#item div.input-data dl {
+    display: block;
+  }
 }
 form#item div.input-data dl dt {
   position: relative;

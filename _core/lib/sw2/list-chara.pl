@@ -42,6 +42,7 @@ if(!($mode eq 'mylist' || param('tag') || param('group') || param('name') || par
 }
 my @q_links;
 foreach(
+  'mode',
   'tag',
   #'group',
   'name',
@@ -281,7 +282,6 @@ foreach (@list) {
   });
 
   push(@{$grouplist{$group}}, @characters);
-  
 }
 
 my @characterlists; 

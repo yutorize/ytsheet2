@@ -73,6 +73,12 @@ sub data_update_chara {
       $pc{"history${num}ExpApply".$_} = 1 if $pc{"history${num}Exp".$_};
     }
   }
+  if($pc{'ver'} < 1.12015){
+    $pc{'skillRideNum'} = $pc{'skillNum'};
+    $pc{'skillArtNum'}  = $pc{'skillNum'};
+    $pc{'skillKnowNum'} = $pc{'skillNum'};
+    $pc{'skillInfoNum'} = $pc{'skillNum'};
+  }
   return %pc;
 }
 

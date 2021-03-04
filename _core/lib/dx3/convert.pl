@@ -29,7 +29,7 @@ sub data_convert {
     
     return convertHokanjoToYtsheet(\%in);
   }
-  ## キャラクター保管所
+  ## キャラクターシート倉庫
   if($set_url =~ m"^https?://character-sheets\.appspot\.com/dx3/edit.html"){
     $set_url =~ s/edit\.html\?/display\?ajax=1&/;
     my $data = data_get($set_url) or error 'キャラクターシート倉庫のデータが取得できませんでした';
@@ -125,7 +125,6 @@ sub convertHokanjoToYtsheet {
   my %skills = (1=>'Ride', 2=>'Art', 3=>'Know', 4=>'Info');
   my %skillsjp = (1=>'運転', 2=>'芸術', 3=>'知識', 4=>'情報');
   my $i = 12;
-  $pc{'skillNum'} = 1;
   foreach my $id (@{$in{'V_skill_id'}}){
     my $num = 2;
     while(1){
@@ -136,7 +135,7 @@ sub convertHokanjoToYtsheet {
       }
       $num++;
     }
-    if($num > $pc{'skillNum'}){ $pc{'skillNum'} = $num; }
+    $pc{"skill$skills{$id}Num"} = $num;
     $i++;
   }
   
@@ -401,7 +400,7 @@ sub convertSoukoToYtsheet {
     $pc{'skillAddInfo'.$i} = @$_{'dlv4'} ne '' ? @$_{'dlv4'} - @$_{'lv4'} : '';
     $i++;
   }
-  $pc{'skillNum'} = $i-1;
+  $pc{'skillRideNum'} = $pc{'skillArtNum'} = $pc{'skillKnowNum'} = $pc{'skillInfoNum'} = $i-1;
   ## ロイス
   my $i = 1;
   foreach (@{$in{'lois'}}){
@@ -572,8 +571,8 @@ sub convert1to2 {
   $pc{'skillWill'}      = $pc{'skill_will_lv'};
   $pc{'skillProcure'}   = $pc{'skill_raise_lv'};
   
-  $pc{'skillNum'} = $pc{'count_skill'};
-  foreach my $num (1 .. $pc{'skillNum'}){
+  $pc{'skillRideNum'} = $pc{'skillArtNum'} = $pc{'skillKnowNum'} = $pc{'skillInfoNum'} = $pc{'count_skill'};
+  foreach my $num (1 .. $pc{'count_skill'}){
     $pc{"skillRide${num}Name"} = '運転:'.$pc{"skill_drive${num}_name"}; $pc{"skillRide${num}"} = $pc{"skill_drive${num}_lv"};
     $pc{"skillArt${num}Name" } = '芸術:'.$pc{"skill_art${num}_name"  }; $pc{"skillArt${num}" } = $pc{"skill_art${num}_lv"  };
     $pc{"skillKnow${num}Name"} = '知識:'.$pc{"skill_know${num}_name" }; $pc{"skillKnow${num}"} = $pc{"skill_know${num}_lv" };

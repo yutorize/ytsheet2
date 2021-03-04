@@ -320,6 +320,7 @@ sub data_calc {
   my @abilities;
   if($pc{'lvFig'} >= 7) { push(@abilities, "タフネス"); }
   if($pc{'lvGra'} >= 1) { push(@abilities, "追加攻撃"); }
+  if($pc{'lvGra'} >= 1 && $::SW2_0) { push(@abilities, "投げ攻撃"); }
   if($pc{'lvGra'} >= 7) { push(@abilities, "カウンター"); }
   if($pc{'lvFig'} >=13 || $pc{'lvGra'} >=13) { push(@abilities, "バトルマスター"); }
   if($pc{'lvCaster'} >= 11){ push(@abilities, "ルーンマスター"); }
@@ -481,9 +482,19 @@ sub data_calc {
     $pc{'weapon'.$_.'AccTotal'} += 1 if $pc{'throwing'} && $pc{'weapon'.$_.'Category'} eq '投擲'; # スローイング
     $pc{'weapon'.$_.'AccTotal'} += $pc{'weapon'.$_.'Acc'}; # 武器の修正値
     ## ダメージ
-    if   ($pc{'weapon'.$_.'Category'} eq 'クロスボウ'){ $pc{'weapon'.$_.'DmgTotal'} = $pc{'weapon'.$_.'Dmg'} + $pc{'lvSho'}; }
-    elsif($pc{'weapon'.$_.'Category'} eq 'ガン'      ){ $pc{'weapon'.$_.'DmgTotal'} = $pc{'weapon'.$_.'Dmg'} + $pc{'magicPowerMag'}; }
-    else                                              { $pc{'weapon'.$_.'DmgTotal'} = $pc{'weapon'.$_.'Dmg'} + $st{$class.'C'}; }
+    $pc{'weapon'.$_.'DmgTotal'} = $pc{'weapon'.$_.'Dmg'};
+    if   ($pc{'weapon'.$_.'Category'} eq 'クロスボウ'){
+      $pc{'weapon'.$_.'DmgTotal'} += $pc{'lvSho'};
+    }
+    elsif($pc{'weapon'.$_.'Category'} eq 'ガン'      ){
+      $pc{'weapon'.$_.'DmgTotal'} += $pc{'magicPowerMag'};
+    }
+    elsif(!$::SW2_0 && $pc{'weapon'.$_.'Class'} eq "デーモンルーラー"){
+      $pc{'weapon'.$_.'DmgTotal'} += $pc{'magicPowerDem'};
+    }
+    else {
+      $pc{'weapon'.$_.'DmgTotal'} += $st{$class.'C'};
+    }
 
     $pc{'weapon'.$_.'DmgTotal'} += $pc{'mastery' . ucfirst($data::weapon_id{ $pc{'weapon'.$_.'Category'} }) };
     if($pc{'weapon'.$_.'Category'} eq 'ガン（物理）'){ $pc{'weapon'.$_.'DmgTotal'} += $pc{'masteryGun'}; }

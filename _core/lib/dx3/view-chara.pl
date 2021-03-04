@@ -274,10 +274,14 @@ foreach my $name ('Melee','Ranged','RC','Negotiate','Dodge','Percept','Will','Pr
   $SHEET->param('skillTotal'.$name => ($pc{'skillAdd'.$name} ? "<span class=\"small\">+$pc{'skillAdd'.$name}=</span>" : '').$pc{'skillTotal'.$name});
 }
 my @skills;
-foreach (1 .. $pc{'skillNum'}){
+foreach (1 .. max($pc{'skillRideNum'},$pc{'skillArtNum'},$pc{'skillKnowNum'},$pc{'skillInfoNum'})){
+  next if (
+    !$pc{'skillRide'.$_.'Name'} && !$pc{'skillArt' .$_.'Name'} && !$pc{'skillKnow'.$_.'Name'} && !$pc{'skillInfo'.$_.'Name'}
+    && !$pc{'skillTotalRide'.$_} && !$pc{'skillTotalArt'.$_} && !$pc{'skillTotalKnow'.$_} && !$pc{'skillTotalInfo'.$_}
+  );
   push(@skills, {
     "RIDE" => $pc{'skillRide'.$_.'Name'}, "RIDELV" => ($pc{'skillAddRide'.$_}?"<span class=\"small\">+$pc{'skillAddRide'.$_}=</span>":'').$pc{'skillTotalRide'.$_},
-    "ART"  => $pc{'skillArt' .$_.'Name'}, "ARTLV"  => ($pc{'skillAddArt'.$_} ?"<span class=\"small\">+$pc{'skillAddArt'.$_}=</span>" :'').$pc{'skillTotalArt'.$_} ,
+    "ART"  => $pc{'skillArt' .$_.'Name'}, "ARTLV"  => ($pc{'skillAddArt'.$_} ?"<span class=\"small\">+$pc{'skillAddArt'.$_}=</span>" :'').$pc{'skillTotalArt'.$_},
     "KNOW" => $pc{'skillKnow'.$_.'Name'}, "KNOWLV" => ($pc{'skillAddKnow'.$_}?"<span class=\"small\">+$pc{'skillAddKnow'.$_}=</span>":'').$pc{'skillTotalKnow'.$_},
     "INFO" => $pc{'skillInfo'.$_.'Name'}, "INFOLV" => ($pc{'skillAddInfo'.$_}?"<span class=\"small\">+$pc{'skillAddInfo'.$_}=</span>":'').$pc{'skillTotalInfo'.$_},
   });
@@ -409,7 +413,7 @@ foreach (1 .. $pc{'comboNum'}){
     "NAME"     => textShrink(15,17,19,23,$pc{'combo'.$_.'Name'}),
     "COMBO"    => textCombo($pc{'combo'.$_.'Combo'}),
     "TIMING"   => textTiming($pc{'combo'.$_.'Timing'}),
-    "SKILL"    => textSkill($pc{'combo'.$_.'Skill'}),
+    "SKILL"    => textComboSkill($pc{'combo'.$_.'Skill'}),
     "DFCLTY"   => textShrink(3,4,4,4,$pc{'combo'.$_.'Dfclty'}),
     "TARGET"   => textShrink(6,7,8,8,$pc{'combo'.$_.'Target'}),
     "RANGE"    => $pc{'combo'.$_.'Range'},
@@ -449,6 +453,11 @@ sub textCombo {
     $text = '<span>'.join('</span>+<span>',@array).'</span>';
   }
   
+  return $text;
+}
+sub textComboSkill {
+  my $text = shift;
+  $text =~ s#(.+)[:：](.+)#$1:<span>$2</span>#g;
   return $text;
 }
 

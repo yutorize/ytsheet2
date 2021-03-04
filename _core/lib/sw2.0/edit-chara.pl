@@ -241,12 +241,16 @@ print <<"HTML";
           <dt>所持金</dt>
           <dd>@{[input("history0Money",'number','changeRegu', ($set::make_fix?' readonly':''))]}</dd>
           <dt>初期成長</dt>
-          <dd>器用度:@{[ input "sttPreGrowA",'number','calcStt' ]}</dd>
-          <dd>敏捷度:@{[ input "sttPreGrowB",'number','calcStt' ]}</dd>
-          <dd>　筋力:@{[ input "sttPreGrowC",'number','calcStt' ]}</dd>
-          <dd>生命力:@{[ input "sttPreGrowD",'number','calcStt' ]}</dd>
-          <dd>　知力:@{[ input "sttPreGrowE",'number','calcStt' ]}</dd>
-          <dd>精神力:@{[ input "sttPreGrowF",'number','calcStt' ]}</dd>
+          <dd>
+            <dl id="regulation-grow">
+              <dt>器用度</dt><dd>@{[ input "sttPreGrowA",'number','calcStt' ]}</dd>
+              <dt>敏捷度</dt><dd>@{[ input "sttPreGrowB",'number','calcStt' ]}</dd>
+              <dt>筋力  </dt><dd>@{[ input "sttPreGrowC",'number','calcStt' ]}</dd>
+              <dt>生命力</dt><dd>@{[ input "sttPreGrowD",'number','calcStt' ]}</dd>
+              <dt>知力  </dt><dd>@{[ input "sttPreGrowE",'number','calcStt' ]}</dd>
+              <dt>精神力</dt><dd>@{[ input "sttPreGrowF",'number','calcStt' ]}</dd>
+            </dl>
+          </dd>
         </dl>
       </details>
       <div id="area-status">
