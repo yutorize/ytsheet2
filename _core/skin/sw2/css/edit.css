@@ -425,20 +425,24 @@ option.zero-data::before {
   content: '★';
 }
 
+#attack-classes {
+  width: calc(25% + 24.7em + 1px);
+}
 #weapons {
   width: 100%;
-  overflow-x: auto;
 }
 #weapons table {
   border-bottom-width: 1px;
   border-bottom-style: solid;
 }
-#weapons tr td {
-  vertical-align: top;
-}
-
 #weapons table td {
   font-size: 90%;
+  vertical-align: top;
+}
+#weapons table td:last-child {
+  padding: 0;
+  border-right: 0;
+  vertical-align: middle;
 }
 #weapons table td b {
   display: inline-block;
@@ -463,6 +467,11 @@ option.zero-data::before {
   line-height: 2.2;
   margin-right: auto;
 }
+#weapons td:last-child span[onclick] {
+  padding: 7px 5px;
+  transform: translateX(1px)
+}
+#weapons thead th:nth-child(2) { width: 4.2em; } /* 用法 */
 @media screen and (max-width:735px){
   #attack-classes {
     overflow-x: auto;
@@ -477,6 +486,9 @@ option.zero-data::before {
   #attack-classes thead th:nth-child(5) { width:   4em; } /* Ｃ値 */
   #attack-classes thead th:nth-child(6) { width: 5.5em; } /* 追加Ｄ */
   
+  #weapons {
+    overflow-x: auto;
+  }
   #weapons table {
     table-layout: fixed;
   }
@@ -488,8 +500,8 @@ option.zero-data::before {
   #weapons thead th:nth-child(6) { width:   4em; } /* Ｃ値 */
   #weapons thead th:nth-child(7) { width: 5.5em; } /* 追加Ｄ */
   #weapons thead th:nth-child(8) { width: 1.4em; } /* 専用 */
-  #weapons thead th:nth-child(9) { width:   8em; } /* カテゴリ */
-  #weapons thead th:nth-child(10){ width:   8em; } /* 技能 */
+  #weapons thead th:nth-child(9) { width:  10em; } /* カテゴリ */
+  #weapons thead th:nth-child(10){ width:  10em; } /* 技能 */
 }
 
 #armours .defense-total th label {
@@ -813,6 +825,10 @@ form#monster table.status thead th:nth-child(5) { width: 12%; }
 form#monster table.status thead th:nth-child(6) { width: 12%; }
 form#monster table.status thead th:nth-child(7) { width: 12%; }
 form#monster table.status thead th:nth-child(8) { width: 12%; }
+
+form#monster table.status tr {
+  border-right: hidden;
+}
 form#monster table.status th {
   background: transparent;
 }

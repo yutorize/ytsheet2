@@ -1546,30 +1546,52 @@ let languageSortable = Sortable.create(document.querySelector('#language-table t
 
 // 武器欄 ----------------------------------------
 // 追加
-function addWeapons(){
+function addWeapons(copy){
+  const ini = {
+    "name"    : copy ? form[`weapon${copy}Name`    ].value : '',
+    "usage"   : copy ? form[`weapon${copy}Usage`   ].value : '',
+    "reqd"    : copy ? form[`weapon${copy}Reqd`    ].value : '',
+    "acc"     : copy ? form[`weapon${copy}Acc`     ].value : '',
+    "rate"    : copy ? form[`weapon${copy}Rate`    ].value : '',
+    "crit"    : copy ? form[`weapon${copy}Crit`    ].value : '',
+    "dmg"     : copy ? form[`weapon${copy}Dmg`     ].value : '',
+    "own"     : copy ? form[`weapon${copy}Own`     ].checked : false,
+    "category": copy ? form[`weapon${copy}Category`].value : '',
+    "class"   : copy ? form[`weapon${copy}Class`   ].value : '',
+    "note"    : copy ? form[`weapon${copy}Note`    ].value : '',
+  };
   let num = Number(form.weaponNum.value) + 1;
   let tbody = document.createElement('tbody');
   tbody.setAttribute('id',idNumSet('weapon-row'));
   tbody.innerHTML = `<tr>
-    <td rowspan="2"><input name="weapon${num}Name"  type="text"><span class="handle"></span></td>
-    <td rowspan="2"><input name="weapon${num}Usage" type="text" list="list-usage"></td>
-    <td rowspan="2"><input name="weapon${num}Reqd"  type="text"></td>
-    <td rowspan="2">+<input name="weapon${num}Acc" type="number" oninput="calcWeapon()"><b id="weapon${num}-acc-total">0</b></td>
-    <td rowspan="2"><input name="weapon${num}Rate" type="text"></td>
-    <td rowspan="2"><input name="weapon${num}Crit" type="text"></td>
-    <td rowspan="2">+<input name="weapon${num}Dmg" type="number" oninput="calcWeapon()"><b id="weapon${num}-dmg-total">0</b></td>
-    <td><input name="weapon${num}Own" type="checkbox" oninput="calcWeapon()"></td>
+    <td rowspan="2"><input name="weapon${num}Name"  type="text" value="${ini.name}"><span class="handle"></span></td>
+    <td rowspan="2"><input name="weapon${num}Usage" type="text" value="${ini.usage}" list="list-usage"></td>
+    <td rowspan="2"><input name="weapon${num}Reqd"  type="text" value="${ini.reqd}"></td>
+    <td rowspan="2">+<input name="weapon${num}Acc" type="number" value="${ini.acc}" oninput="calcWeapon()"><b id="weapon${num}-acc-total">0</b></td>
+    <td rowspan="2"><input name="weapon${num}Rate" type="text" value="${ini.rate}"></td>
+    <td rowspan="2"><input name="weapon${num}Crit" type="text" value="${ini.crit}"></td>
+    <td rowspan="2">+<input name="weapon${num}Dmg" type="number" value="${ini.dmg}" oninput="calcWeapon()"><b id="weapon${num}-dmg-total">0</b></td>
+    <td><input name="weapon${num}Own" type="checkbox" value="1" ${ini.own?'checked':''} oninput="calcWeapon()"></td>
     <td><select name="weapon${num}Category" oninput="calcWeapon()"><option></select></td>
-    <td><select name="weapon${num}Class" oninput="calcWeapon()"><option><option>ファイター<option>グラップラー<option>フェンサー<option>シューター<option>エンハンサー<option>デーモンルーラー<option>自動計算しない</select></td>
+    <td><select name="weapon${num}Class" oninput="calcWeapon()"><option></select></td>
+    <td rowspan="2"><span class="button" onclick="addWeapons(${num});">複<br>製</span></td>
   </tr>
-  <tr><td colspan="3"><input name="weapon${num}Note" type="text" oninput="calcWeapon()"></td></tr>`;
+  <tr><td colspan="3"><input name="weapon${num}Note" type="text" value="${ini.note}" oninput="calcWeapon()"></td></tr>`;
   const target = document.querySelector("#weapons-table");
   target.appendChild(tbody, target);
   
   for(let i = 0; i < weapons.length; i++){
     let op = document.createElement("option");
     op.text = weapons[i];
+    op.selected = weapons[i] === ini.category ? true : false;
     form["weapon"+num+"Category"].appendChild(op);
+  }
+  const classes = ['ファイター','グラップラー','フェンサー','シューター','エンハンサー','デーモンルーラー','自動計算しない'];
+  for(let i = 0; i < classes.length; i++){
+    let op = document.createElement("option");
+    op.text = classes[i];
+    op.selected = weapons[i] === ini.category ? true : false;
+    form["weapon"+num+"Class"].appendChild(op);
   }
   
   form.weaponNum.value = num;
@@ -1613,6 +1635,7 @@ let weaponsSortable = Sortable.create(document.getElementById('weapons-table'), 
         document.querySelector(`#${id} [name$="Category"]`).setAttribute('name',`weapon${num}Category`);
         document.querySelector(`#${id} [name$="Class"]`   ).setAttribute('name',`weapon${num}Class`);
         document.querySelector(`#${id} [name$="Note"]`    ).setAttribute('name',`weapon${num}Note`);
+        document.querySelector(`#${id} span[onclick]`     ).setAttribute('onclick',`addWeapons(${num})`);
         num++;
       }
     }
