@@ -36,6 +36,7 @@ if($mode_make && !$::make_error){
 ### 初期設定 --------------------------------------------------
 if($mode_make){ $pc{'protect'} = $LOGIN_ID ? 'account' : 'password'; }
 
+if($mode eq 'edit' || ($mode eq 'convert' && $pc{'ver'})){
   %pc = data_update_chara(\%pc);
   if($pc{'updateMessage'}){
     $message .= "<hr>" if $message;
