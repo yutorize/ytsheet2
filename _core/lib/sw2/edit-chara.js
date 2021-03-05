@@ -1088,8 +1088,7 @@ function calcAttack() {
   calcWeapon();
 }
 function calcWeapon() {
-  const weaponNum = form.weaponNum.value;
-  for (let i = 1; i <= weaponNum; i++){
+  for (let i = 1; i <= form.weaponNum.value; i++){
     const classes = form["weapon"+i+"Class"].value;
     const category = form["weapon"+i+"Category"].value;
     const ownDex = form["weapon"+i+"Own"].checked ? 2 : 0;

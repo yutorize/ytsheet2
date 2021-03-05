@@ -160,7 +160,6 @@
 #classes dl dt {
   font-size: inherit;
 }
-}
 #common-classes td:last-child {
   width: 3.5em;
 }
@@ -520,7 +519,6 @@ option.zero-data::before {
 }
 #weapons td:last-child span[onclick] {
   padding: 7px 5px;
-  transform: translateX(1px)
 }
 #weapons thead th:nth-child(2) { width: 4.2em; } /* 用法 */
 @media screen and (max-width:735px){

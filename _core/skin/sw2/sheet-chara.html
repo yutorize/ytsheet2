@@ -473,7 +473,7 @@ window.onload = function() {
       <div class="column"><!-- COLUMN -->
       <div id="area-equipment">
         <TMPL_IF Weapons>
-        <section class="box" id="attack-classes">
+        <TMPL_IF AttackClasses><section class="box" id="attack-classes">
           <table class="data-table">
             <thead>
               <tr>
@@ -496,7 +496,7 @@ window.onload = function() {
               </tr></TMPL_LOOP>
             </tbody>
           </table>
-        </section>
+        </section></TMPL_IF>
         <section class="box" id="weapons">
           <table class="data-table line-tbody">
             <thead>
