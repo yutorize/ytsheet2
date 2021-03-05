@@ -277,7 +277,7 @@
 
 #language dl {
   display: grid;
-  grid-template-columns: auto 2.4em 2.4em;
+  grid-template-columns: auto 3em 3em;
   grid-template-rows: auto;
   
   margin: 0 5px;
@@ -296,6 +296,57 @@
   width: 1.2em;
   margin-left: -.5rem;
   text-align: center;
+}
+#language table tr > *:nth-last-child(-n+2) {
+  width: 3em;
+  position: relative;
+}
+#language table#language-table td select,
+#language table#language-table td .lang-select-view {
+  position: absolute;
+  top: .1rem;
+  left: 0;
+  right: 0;
+  bottom: .1rem;
+  height: auto;
+  cursor: pointer;
+}
+#language table#language-table td select {
+  appearance: none;
+  opacity: 0;
+}
+#language table#language-table td .lang-select-view {
+  display: block;
+  margin: .1rem .1rem 0 0;
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--box-input-border-color);
+  border-radius: .5rem;
+  font-size: 85%;
+  pointer-events: none;
+}
+#language select + .lang-select-view { background: var(--input-bg-color); }
+#language select option[value="auto"],
+#language select[data-type="auto"] + .lang-select-view { background: #00ccff22; }
+#language select[data-type="auto"] + .lang-select-view::before { content: '自動'; }
+#language select option[value="Sag"],
+#language select[data-type="Sag"] + .lang-select-view { background: #55ff0033; }
+#language select[data-type="Sag"] + .lang-select-view::before { content: 'セージ'; }
+#language select option[value="Bar"],
+#language select[data-type="Bar"] + .lang-select-view { background: #ffaa0033; }
+#language select[data-type="Bar"] + .lang-select-view::before { content: 'バード'; }
+#language select option[value="listen"],
+#language select[data-type="listen"] + .lang-select-view { background: #77777722; }
+#language select[data-type="listen"] + .lang-select-view::before { content: '△'; }
+#language #language-notice {
+  background: #ff000033;
+  padding: .3em .5em;
+  border-radius: .5rem;
+  font-size: 88%;
+  line-height: 1.3;
+}
+#language #language-notice:empty {
+  display: none;
 }
 @media screen and (max-width:735px){
   #area-actions {

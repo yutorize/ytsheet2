@@ -104,6 +104,9 @@ our %class = (
       'jName' => '真語魔法',
       'eName' => 'sorcery',
     },
+    'language' => {
+      '魔法文明語' => { 'talk' => 1, 'read' => 1 },
+    },
   },
   'コンジャラー' => {
     'expTable' => 'A',
@@ -112,6 +115,9 @@ our %class = (
     'magic' => {
       'jName' => '操霊魔法',
       'eName' => 'conjury',
+    },
+    'language' => {
+      '魔法文明語' => { 'talk' => 1, 'read' => 1 },
     },
   },
   'プリースト' => {
@@ -131,6 +137,9 @@ our %class = (
       'jName' => '妖精魔法',
       'eName' => 'fairyism',
     },
+    'language' => {
+      '妖精語' => { 'talk' => 1 },
+    },
   },
   'マギテック' => {
     'expTable' => 'A',
@@ -139,6 +148,9 @@ our %class = (
     'magic' => {
       'jName' => '魔動機術',
       'eName' => 'magitech',
+    },
+    'language' => {
+      '魔動機文明語' => { 'talk' => 1, 'read' => 1 },
     },
   },
   'スカウト' => {
@@ -155,6 +167,9 @@ our %class = (
     'expTable' => 'B',
     'id'       => 'Sag',
     'eName'    => 'sage',
+    'language' => {
+      'any' => { 'talk' => 1, 'read' => 1 },
+    },
   },
   'エンハンサー' => {
     'expTable' => 'B',
@@ -204,6 +219,9 @@ our %class = (
     'expTable' => 'B',
     'id'       => 'Bar',
     'eName'    => 'bard',
+    'language' => {
+      'any' => { 'talk' => 1 },
+    },
     'craft' => {
       'jName' => '呪歌',
       'eName' => 'song',
@@ -304,6 +322,9 @@ our %class = (
     'expTable' => 'B',
     'id'       => 'Alc',
     'eName'    => 'alchemist',
+    'language' => {
+      '魔動機文明語' => { 'talk' => 1, 'read' => 1 },
+    },
     'craft' => {
       'jName' => '賦術',
       'eName' => 'alchemy',
@@ -358,6 +379,10 @@ our %class = (
     'magic' => {
       'jName' => '召異魔法',
       'eName' => 'demonology',
+    },
+    'language' => {
+      '魔神語' => { 'talk' => 1 },
+      '魔法文明語' => { 'read' => 1 },
     },
   },
   'ウォーリーダー' => {
@@ -556,6 +581,9 @@ our %class = (
     'expTable' => 'A',
     'id'       => 'Gri',
     'eName'    => 'grimoir',
+    'language' => {
+      '魔法文明語' => { 'read' => 1 },
+    },
     'magic' => {
       'jName' => '秘奥魔法',
       'eName' => 'gramarye',

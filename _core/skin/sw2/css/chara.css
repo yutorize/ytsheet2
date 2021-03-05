@@ -927,6 +927,12 @@ dl#level dd {
 #language table td:first-child {
   text-align: left;
 }
+#language p#language-notice {
+  margin: 0;
+  padding-right: .5em;
+  line-height: 1.4;
+  text-align: right;
+}
 
 /* // Area-Equipment
 ---------------------------------------------------------------------------------------------------- */

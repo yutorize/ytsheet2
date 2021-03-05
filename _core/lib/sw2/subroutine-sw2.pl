@@ -134,6 +134,51 @@ sub data_update_chara {
     $pc{"defenseTotal1Def"} = $pc{"defenseTotalAllDef"};
     $pc{"defTotal1CheckArmour1"} = $pc{"defTotal1CheckShield1"} = $pc{"defTotal1CheckDefOther1"} = $pc{"defTotal1CheckDefOther2"} = $pc{"defTotal1CheckDefOther3"} = 1;
   }
+  if($pc{'ver'} < 1.12022){
+    foreach my $n (1 .. $pc{'languageNum'}){
+      if($pc{'race'} =~ /人間/ && $pc{"language${n}"} =~ /地方語/){
+        $pc{"language${n}Talk"} = $pc{"language${n}Talk"} ? 'auto' : '';
+        $pc{"language${n}Read"} = $pc{"language${n}Read"} ? 'auto' : '';
+        last;
+      }
+    }
+    foreach my $n (1 .. $pc{'languageNum'}){
+      if(($pc{'lvDem'} || $pc{'lvGri'}) && $pc{"language${n}"} =~ /魔法文明語/){
+        $pc{"language${n}Read"} = $pc{"language${n}Read"} ? 'auto' : '';
+      }
+      if($pc{'lvDem'} && $pc{"language${n}"} =~ /魔神語/){
+        $pc{"language${n}Talk"} = $pc{"language${n}Talk"} ? 'auto' : '';
+      }
+      if(($pc{'lvSor'} || $pc{'lvCon'}) && $pc{"language${n}"} =~ /魔法文明語/){
+        $pc{"language${n}Talk"} = $pc{"language${n}Talk"} ? 'auto' : '';
+        $pc{"language${n}Read"} = $pc{"language${n}Read"} ? 'auto' : '';
+      }
+      if(($pc{'lvMag'} || $pc{'lvAlc'}) && $pc{"language${n}"} =~ /魔動機文明語/){
+        $pc{"language${n}Talk"} = $pc{"language${n}Talk"} ? 'auto' : '';
+        $pc{"language${n}Read"} = $pc{"language${n}Read"} ? 'auto' : '';
+      }
+      if($pc{'lvFai'} && $pc{"language${n}"} =~ /妖精語/){
+        $pc{"language${n}Talk"} = $pc{"language${n}Talk"} ? 'auto' : '';
+        $pc{"language${n}Read"} = $pc{"language${n}Read"} ? 'auto' : '';
+      }
+    }
+    my $bard = 0;
+    foreach my $n (reverse 1 .. $pc{'languageNum'}){
+      last if $bard >= $pc{'lvBar'};
+      if($pc{"language${n}Talk"} == 1){ $pc{"language${n}Talk"} = 'Bar'; $bard++; }
+    }
+    my $sage = 0;
+    foreach my $n (reverse 1 .. $pc{'languageNum'}){
+      last if $sage >= $pc{'lvSag'};
+      if($pc{"language${n}Talk"} == 1){ $pc{"language${n}Talk"} = 'Sag'; $sage++; }
+      last if $sage >= $pc{'lvSag'};
+      if($pc{"language${n}Read"} == 1){ $pc{"language${n}Read"} = 'Sag'; $sage++; }
+    }
+    foreach my $n (1 .. $pc{'languageNum'}){
+      if($pc{"language${n}Talk"} == 1){ $pc{"language${n}Talk"} = 'auto'; }
+      if($pc{"language${n}Read"} == 1){ $pc{"language${n}Read"} = 'auto'; }
+    }
+  }
   return %pc;
 }
 

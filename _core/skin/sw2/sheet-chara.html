@@ -442,11 +442,12 @@ window.onload = function() {
             <tbody>
               <TMPL_LOOP Language><tr>
               <td><TMPL_VAR NAME></td>
-              <td><TMPL_IF TALK>○</TMPL_IF></td>
-              <td><TMPL_IF READ>○</TMPL_IF></td>
+              <td><TMPL_VAR TALK></td>
+              <td><TMPL_VAR READ></td>
               </tr></TMPL_LOOP>
             </tbody>
           </table>
+          <TMPL_IF languageListenOnlyExist><p id="language-notice"><small>△＝聞き取り限定</small></p></TMPL_IF>
         </section>
         <TMPL_IF MagicPowers>
         <section class="box" id="magic-power">

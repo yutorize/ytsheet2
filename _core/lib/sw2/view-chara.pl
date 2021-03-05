@@ -367,12 +367,13 @@ if($pc{'forbiddenMode'}){
   }
 }
 else {
+  my $exist_listen;
   foreach (@{$data::race_language{ $pc{'race'} }}){
     last if $pc{'languageAutoOff'};
     push(@language, {
       "NAME" => @$_[0],
-      "TALK" => @$_[1],
-      "READ" => @$_[2],
+      "TALK" => langConvert(@$_[1]),
+      "READ" => langConvert(@$_[2]),
       "TALK/READ" => (@$_[1]?'会話':'').(@$_[1] && @$_[2] ? '／' : '').(@$_[2]?'読文':'')
     });
   }
@@ -380,16 +381,22 @@ else {
     next if !$pc{'language'.$_};
     push(@language, {
       "NAME" => $pc{'language'.$_},
-      "TALK" => $pc{'language'.$_.'Talk'},
-      "READ" => $pc{'language'.$_.'Read'},
-      "TALK/READ" => ($pc{'language'.$_.'Talk'}?'会話':'').
+      "TALK" => langConvert($pc{'language'.$_.'Talk'}),
+      "READ" => langConvert($pc{'language'.$_.'Read'}),
+      "TALK/READ" => ($pc{'language'.$_.'Talk'} eq 'listen' ? '聞取' : $pc{'language'.$_.'Talk'} ? '会話' : '').
                      ($pc{'language'.$_.'Talk'} && $pc{'language'.$_.'Read'} ? '／' : '').
                      ($pc{'language'.$_.'Read'}?'読文':'')
     } );
   }
+  if($exist_listen){ $SHEET->param(languageListenOnlyExist => 1); }
+  sub langConvert {
+    my $v = shift;
+    if($v eq 'listen'){ $exist_listen = 1; return '△'; }
+    elsif($v){ return '○' }
+    else{ return '' }
+  }
 }
 $SHEET->param(Language => \@language);
-
 
 ### パッケージ --------------------------------------------------
 $SHEET->param("PackageLv" => max($pc{'lvSco'},$pc{'lvRan'},$pc{'lvSag'},$pc{'lvBar'},$pc{'lvRid'},$pc{'lvAlc'}));

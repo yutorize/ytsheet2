@@ -5,6 +5,7 @@ use utf8;
 use open ":utf8";
 use feature 'say';
 use Encode;
+use JSON::PP;
 
 my $LOGIN_ID = $::LOGIN_ID;
 
@@ -653,17 +654,30 @@ print <<"HTML";
           <table class="edit-table side-margin" id="language-table">
             <tbody>
 HTML
+my @langoptionT = ('auto|<○ 自動習得／その他の習得>','listen|<△ 聞き取り限定（通辞の耳飾りなど）>');
+my @langoptionR = ('auto|<○ 自動習得／その他の習得>');
+foreach my $key (reverse keys %data::class) {
+  next if !$data::class{$key}{'language'}{'any'};
+  if($data::class{$key}{'language'}{'any'}{'talk'}){
+    unshift(@langoptionT, "$data::class{$key}{'id'}|<○ ${key}技能による習得>");
+  }
+  if($data::class{$key}{'language'}{'any'}{'read'}){
+    unshift(@langoptionR, "$data::class{$key}{'id'}|<○ ${key}技能による習得>");
+  }
+}
+
 foreach my $num (1 .. $pc{'languageNum'}){
-  print '<tr id="language-item'.$num.'"><td class="handle"></td><td>'.input('language'.$num, '','','list="list-language"').'</td>'.
-  '<td><input type="checkbox" name="language'.$num.'Talk" value="1"'.($pc{"language${num}Talk"} ? 'checked' :'').'></td>'.
-  '<td><input type="checkbox" name="language'.$num.'Read" value="1"'.($pc{"language${num}Read"} ? 'checked' :'').'></td>'.
+  print '<tr id="language-item'.$num.'"><td class="handle"></td><td>'.input('language'.$num, '','checkLanguage','list="list-language"').'</td>'.
+  '<td><select name="language'.$num.'Talk" oninput="checkLanguage()">'.(option "language${num}Talk",@langoptionT).'</select><span class="lang-select-view"></span></td>'.
+  '<td><select name="language'.$num.'Read" oninput="checkLanguage()">'.(option "language${num}Read",@langoptionR).'</select><span class="lang-select-view"></span></td>'.
   '</tr>'."\n";
 }
 print <<"HTML";
             </tbody>
           </table>
-          <p>@{[ input 'languageAutoOff','checkbox','changeRace' ]}初期習得言語を自動記入しない</p>
           <div class="add-del-button"><a onclick="addLanguage()">▼</a><a onclick="delLanguage()">▲</a></div>
+          <p>@{[ input 'languageAutoOff','checkbox','changeRace' ]}初期習得言語を自動記入しない</p>
+          <p id="language-notice"></p>
           @{[input('languageNum','hidden')]}
         </div>
         <div class="box" id="magic-power">
@@ -1666,11 +1680,12 @@ foreach my $key ( keys(%data::race_ability) ){
 print "};\n";
 print 'let raceLanguage = {';
 foreach my $key ( keys(%data::race_language) ){
-  print "\"$key\" : \"";
+  next if !@{$data::race_language{$key}};
+  print "\"$key\" : [";
   foreach (@{$data::race_language{$key}}){
-    print "<dt>@$_[0]</dt><dd>".(@$_[1]?'○':'－')."</dd><dd>".(@$_[2]?'○':'－')."</dd>";
+    print "['@$_[0]', @$_[1], @$_[2] ],";
   }
-  print "\", ";
+  print "], ";
 }
 print "};\n";
 ## 技能
@@ -1680,6 +1695,7 @@ foreach my $key (keys %data::class) {
   '$data::class{$key}{'id'}' : {
     '2.0'       : '$data::class{$key}{'2.0'}',
     'expTable'  : '$data::class{$key}{'expTable'}',
+    'jName'     : '$key',
     'eName'     : '$data::class{$key}{'eName'}',
     'magic'     : '$data::class{$key}{'magic'}{'eName'}',
     'magicData' : @{[ $data::class{$key}{'magic'}{'data'} ? 1 : 0 ]},
@@ -1687,10 +1703,15 @@ foreach my $key (keys %data::class) {
     'craftData' : @{[ $data::class{$key}{'craft'}{'data'} ? 1 : 0 ]},
     'craftStt'  : '$data::class{$key}{'craft'}{'stt'}',
     'craftPower': '$data::class{$key}{'craft'}{'power'}',
+    'craftPower': '$data::class{$key}{'craft'}{'power'}',
+    'language' : @{[ JSON::PP->new->encode($data::class{$key}{'language'} || '') ]},
   },
 HTML
 }
 print "};\n";
+## 言語
+print 'const langOptionT = `'.(option "",@langoptionT)."`;\n";
+print 'const langOptionR = `'.(option "",@langoptionR)."`;\n";
 ## 冒険者ランク
 print 'const adventurerRank = {';
 print " '' : { 'num':0, 'free':0 },";
