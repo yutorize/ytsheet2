@@ -35,8 +35,16 @@ if($mode_make && !$::make_error){
 ### 初期設定 --------------------------------------------------
 if($mode_make){ $pc{'protect'} = $LOGIN_ID ? 'account' : 'password'; }
 
-if($mode eq 'edit'){
   %pc = data_update_chara(\%pc);
+  if($pc{'updateMessage'}){
+    $message .= "<hr>" if $message;
+    $message .= "<h2>アップデート通知</h2><dl>";
+    foreach (sort keys %{$pc{'updateMessage'}}){
+      $message .= '<dt>'.$_.'</dt><dd>'.$pc{'updateMessage'}{$_}.'</dd>';
+    }
+    (my $lasttimever = $pc{'ver'}) =~ s/([0-9]{3})$/\.$1/;
+    $message .= "</dl><small>前回保存時のバージョン:$lasttimever</small>";
+  }
 }
 elsif($mode eq 'blanksheet' && !$::make_error){
   $pc{'group'} = $set::group_default;

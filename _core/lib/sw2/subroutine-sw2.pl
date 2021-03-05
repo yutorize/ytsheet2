@@ -135,6 +135,7 @@ sub data_update_chara {
     $pc{"defTotal1CheckArmour1"} = $pc{"defTotal1CheckShield1"} = $pc{"defTotal1CheckDefOther1"} = $pc{"defTotal1CheckDefOther2"} = $pc{"defTotal1CheckDefOther3"} = 1;
   }
   if($pc{'ver'} < 1.12022){
+    $pc{'updateMessage'}{'ver.1.12.022'} = '「言語」欄が、セージ技能とバード技能による習得数をカウントする仕様になりました。<br>　このシートのデータは、自動的に、新仕様に合わせて項目を振り分けていますが、念の為、言語欄のチェックを推奨します。';
     foreach my $n (1 .. $pc{'languageNum'}){
       if($pc{'race'} =~ /人間/ && $pc{"language${n}"} =~ /地方語/){
         $pc{"language${n}Talk"} = $pc{"language${n}Talk"} ? 'auto' : '';
