@@ -870,6 +870,7 @@ print <<"HTML";
                 <th>専用</th>
                 <th>カテゴリ</th>
                 <th>使用技能</th>
+                <th></th>
               </tr>
             </thead>
 HTML
@@ -888,6 +889,7 @@ print <<"HTML";
                 <td>@{[input("weapon${num}Own",'checkbox','calcWeapon')]}</td>
                 <td><select name="weapon${num}Category" oninput="calcWeapon()">@{[option("weapon${num}Category",@data::weapon_names,'ガン（物理）','盾')]}</select></td>
                 <td><select name="weapon${num}Class" oninput="calcWeapon()">@{[option("weapon${num}Class",'ファイター','グラップラー','フェンサー','シューター','エンハンサー','デーモンルーラー','自動計算しない')]}</select></td>
+                <td rowspan="2"><span class="button" onclick="addWeapons(${num});">複<br>製</span></td>
               </tr>
               <tr><td colspan="3">@{[input("weapon${num}Note",'','calcWeapon','placeholder="備考"')]}</td>
             </tbody>

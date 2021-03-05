@@ -1,5 +1,5 @@
 "use strict";
-let modeZero = 1;
+modeZero = 1;
 
 // 求道者 ----------------------------------------
 function checkSeekerBuildup(name){

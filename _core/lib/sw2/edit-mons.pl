@@ -205,6 +205,7 @@ print <<"HTML";
             <th>防護点</th>
             <th>ＨＰ</th>
             <th>ＭＰ</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -221,6 +222,7 @@ print <<"HTML";
           <td>@{[ input "status${num}Defense" ]}</td>
           <td>@{[ input "status${num}Hp" ]}</td>
           <td>@{[ input "status${num}Mp" ]}</td>
+          <td><span class="button" onclick="addStatus(${num});">複<br>製</span></td>
         </tr>
 HTML
 }

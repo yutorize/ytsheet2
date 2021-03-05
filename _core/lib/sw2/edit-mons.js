@@ -40,30 +40,47 @@ function calcEvaF(Num){
 
 // ステータス欄 ----------------------------------------
 // 追加
-function addStatus(){
+function addStatus(copy){
+  const ini = {
+    "style"      : copy ? form[`status${copy}Style`       ].value : '',
+    "accuracy"   : copy ? form[`status${copy}Accuracy`    ].value : '',
+    "accuracyFix": copy ? form[`status${copy}AccuracyFix` ].value : '',
+    "damage"     : copy ? form[`status${copy}Damage`      ].value : '2d6+',
+    "evasion"    : copy ? form[`status${copy}Evasion`     ].value : '',
+    "evasionFix" : copy ? form[`status${copy}EvasionFix`  ].value : '',
+    "defense"    : copy ? form[`status${copy}Defense`     ].value : '',
+    "hp"         : copy ? form[`status${copy}Hp`          ].value : '',
+    "mp"         : copy ? form[`status${copy}Mp`          ].value : '',
+  };
   let num = Number(form.statusNum.value) + 1;
   let tbody = document.createElement('tr');
   tbody.setAttribute('id',idNumSet('status-row'));
   tbody.innerHTML = `
     <td class="handle"></td>
-    <td><input name="status${num}Style" type="text"></td>
+    <td><input name="status${num}Style" type="text" value="${ini.style}"></td>
     <td>
-      <input name="status${num}Accuracy" type="number" oninput="calcAcc(${num})"><br>
-      (<input name="status${num}AccuracyFix" type="number" oninput="calcAccF(${num})">)
+      <input name="status${num}Accuracy" type="number" oninput="calcAcc(${num})" value="${ini.accuracy}"><br>
+      (<input name="status${num}AccuracyFix" type="number" oninput="calcAccF(${num})" value="${ini.accuracyFix}">)
     </td>
-    <td><input name="status${num}Damage" type="text" value="2d6+"></td>
+    <td><input name="status${num}Damage" type="text" value="${ini.damage}"></td>
     <td>
-      <input name="status${num}Evasion" type="number" oninput="calcEva(${num})"><br>
-      (<input name="status${num}EvasionFix" type="number" oninput="calcEvaF(${num})">)
+      <input name="status${num}Evasion" type="number" oninput="calcEva(${num})" value="${ini.evasion}"><br>
+      (<input name="status${num}EvasionFix" type="number" oninput="calcEvaF(${num})" value="${ini.evasionFix}">)
     </td>
-    <td><input name="status${num}Defense" type="text"></td>
-    <td><input name="status${num}Hp" type="text"></td>
-    <td><input name="status${num}Mp" type="text"></td>
+    <td><input name="status${num}Defense" type="text" value="${ini.defense}"></td>
+    <td><input name="status${num}Hp" type="text" value="${ini.hp}"></td>
+    <td><input name="status${num}Mp" type="text" value="${ini.mp}"></td>
+    <td><span class="button" onclick="addStatus(${num});">複<br>製</span></td>
   `;
   const target = document.querySelector("#status-table tbody");
   target.appendChild(tbody, target);
   form.statusNum.value = num;
   statusTextInputToggle();
+}
+// 複製
+function copyStatus(num){
+  addStatus();
+  
 }
 // 削除
 function delStatus(){
@@ -100,6 +117,11 @@ let statusSortable = Sortable.create(document.querySelector('#status-table tbody
         document.querySelector(`#${id} [name$="Defense"]`    ).setAttribute('name',`status${num}Defense`);
         document.querySelector(`#${id} [name$="Hp"]`         ).setAttribute('name',`status${num}Hp`);
         document.querySelector(`#${id} [name$="Mp"]`         ).setAttribute('name',`status${num}Mp`);
+        document.querySelector(`#${id} [name$="Accuracy"]`   ).setAttribute('oninput',`calcAcc(${num})`);
+        document.querySelector(`#${id} [name$="AccuracyFix"]`).setAttribute('oninput',`calcAccF(${num})`);
+        document.querySelector(`#${id} [name$="Evasion"]`    ).setAttribute('oninput',`calcEva(${num})`);
+        document.querySelector(`#${id} [name$="EvasionFix"]` ).setAttribute('oninput',`calcEvaF(${num})`);
+        document.querySelector(`#${id} span[onclick]`        ).setAttribute('onclick',`addStatus(${num})`);
         num++;
       }
     }
