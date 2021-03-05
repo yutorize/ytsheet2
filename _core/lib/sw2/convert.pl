@@ -383,15 +383,24 @@ sub convertHokanjoToYtsheet {
   $pc{'honorItemsNum'} = $i;
   ## 履歴
   my %bases = ( '1'=>'器用', '2'=>'敏捷', '3'=>'筋力', '4'=>'生命', '5'=>'知力', '6'=>'精神' );
-  my $i = 0;
+  my $i = 0; my $growcount;
   foreach my $grow (@{$in{'V_SN_his'}}){
     $pc{'history'.($i+1).'Exp'}   = $in{'get_exp_his'}[$i];
     $pc{'history'.($i+1).'Money'} = $in{'get_money_his'}[$i];
     $pc{'history'.($i+1).'Grow'}  = $bases{$grow};
     $pc{'history'.($i+1).'Note'}  = $in{'seicho_memo_his'}[$i];
     $i++;
+    $growcount++ if $bases{$grow};
   }
   $i++;
+  if(!$growcount){
+    $pc{'sttPreGrowA'} = $in{'NS1'};
+    $pc{'sttPreGrowB'} = $in{'NS2'};
+    $pc{'sttPreGrowC'} = $in{'NS3'};
+    $pc{'sttPreGrowD'} = $in{'NS4'};
+    $pc{'sttPreGrowE'} = $in{'NS5'};
+    $pc{'sttPreGrowF'} = $in{'NS6'};
+  }
   $pc{'history'.$i.'Honor'} = $in{'honor_point_sum'};
   $pc{'history'.$i.'Note'} = 'データ形式が異なる為、獲得名誉点はここに纏めて記します。';
   $pc{'historyNum'} = $i;
