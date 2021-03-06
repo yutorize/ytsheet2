@@ -442,11 +442,12 @@ window.onload = function() {
             <tbody>
               <TMPL_LOOP Language><tr>
               <td><TMPL_VAR NAME></td>
-              <td><TMPL_IF TALK>○</TMPL_IF></td>
-              <td><TMPL_IF READ>○</TMPL_IF></td>
+              <td><TMPL_VAR TALK></td>
+              <td><TMPL_VAR READ></td>
               </tr></TMPL_LOOP>
             </tbody>
           </table>
+          <TMPL_IF languageListenOnlyExist><p id="language-notice"><small>△＝聞き取り限定</small></p></TMPL_IF>
         </section>
         <TMPL_IF MagicPowers>
         <section class="box" id="magic-power">
@@ -472,7 +473,7 @@ window.onload = function() {
       <div class="column"><!-- COLUMN -->
       <div id="area-equipment">
         <TMPL_IF Weapons>
-        <section class="box" id="attack-classes">
+        <TMPL_IF AttackClasses><section class="box" id="attack-classes">
           <table class="data-table">
             <thead>
               <tr>
@@ -495,7 +496,7 @@ window.onload = function() {
               </tr></TMPL_LOOP>
             </tbody>
           </table>
-        </section>
+        </section></TMPL_IF>
         <section class="box" id="weapons">
           <table class="data-table line-tbody">
             <thead>

@@ -43,10 +43,12 @@ textarea,tt {
 :root {
   --bg-color: #fff;
   --text-color: #000;
+  --input-bg-color: rgba(255,255,255,0.7);
 }
 .night {
   --text-color: #fff;
   --bg-color: #000;
+  --input-bg-color: rgba(0,0,0,0.8);
 }
 * {
   margin: 0px;
@@ -109,12 +111,11 @@ select {
   border-width: 1px;
   border-style: solid;
   border-radius: 5px;
-  background-color: rgba(255,255,255,0.7);
+  background-color: var(--input-bg-color);
 }
 .night input,
 .night textarea,
 .night select {
-  background: rgba(0,0,0,0.8);
   color: inherit;
   border-color: #234;
 }

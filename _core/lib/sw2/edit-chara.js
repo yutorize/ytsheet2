@@ -180,8 +180,6 @@ function calcLv(){
 // 種族変更 ----------------------------------------
 function changeRace(){
   race = form.race.value;
-  if (!form.languageAutoOff.checked) { document.getElementById("language-default").innerHTML = raceLanguage[race] ? raceLanguage[race] : '<dt>初期習得言語</dt><dd>○</dd><dd>○</dd>'; }
-  else { document.getElementById("language-default").innerHTML = ''; }
   
   checkRace();
   calcStt();
@@ -324,7 +322,23 @@ function checkRace(){
     }
   }
   document.getElementById("race-ability-value").innerHTML = ability;
-  
+  checkLanguage();
+  setLanguageDefault();
+}
+function setLanguageDefault(){
+  if (!form.languageAutoOff.checked) {
+    let text = '';
+    if(raceLanguage[race]){
+      for(let data of raceLanguage[race]){
+        text += `<dt>${data[0]}</dt><dd>${data[1]?'○':'―'}</dd><dd>${data[2]?'○':'―'}</dd>`;
+      }
+    }
+    else {
+      text += `<dt>初期習得言語</dt><dd>○</dd><dd>○</dd>`;
+    }
+    document.getElementById("language-default").innerHTML = text;
+  }
+  else { document.getElementById("language-default").innerHTML = ''; }
 }
 // ステータス計算 ----------------------------------------
 let reqdStr = 0;
@@ -1074,8 +1088,7 @@ function calcAttack() {
   calcWeapon();
 }
 function calcWeapon() {
-  const weaponNum = form.weaponNum.value;
-  for (let i = 1; i <= weaponNum; i++){
+  for (let i = 1; i <= form.weaponNum.value; i++){
     const classes = form["weapon"+i+"Class"].value;
     const category = form["weapon"+i+"Category"].value;
     const ownDex = form["weapon"+i+"Own"].checked ? 2 : 0;
@@ -1493,6 +1506,41 @@ let mysticArtsSortable = Sortable.create(document.querySelector('#mystic-arts-li
 });
 
 // 言語欄 ----------------------------------------
+function checkLanguage(){
+  let count = {}; let acqT = {}; let acqR = {};
+  for(let data of raceLanguage[race]){ acqT[data[0]] = data[1]; acqR[data[0]] = data[2]; }
+  for (let i = 1; i <= form.languageNum.value; i++){
+    let name = form[`language${i}`];
+    let talk = form[`language${i}Talk`];
+    let read = form[`language${i}Read`];
+    
+    acqT[name.value.trim()] = talk.dataset.type = talk.value;
+    acqR[name.value.trim()] = read.dataset.type = read.value;
+    count[talk.value] ||= 0; count[talk.value]++;
+    count[read.value] ||= 0; count[read.value]++;
+  }
+  let notice = '';
+  for (let key in classes){
+    if(!classes[key]['language']){ continue; }
+    for (let langName in classes[key]['language']){
+      const data = classes[key]['language'][langName];
+      const notT = (data.talk && !acqT[langName]) ? true : false;
+      const notR = (data.read && !acqR[langName]) ? true : false;
+      if(langName === 'any'){
+        const v = lv[key] - (count[key] || 0);
+        if     (v > 0){ notice += `${classes[key]['jName']}技能であと「${v}」習得できます<br>`; }
+        else if(v < 0){ notice += `${classes[key]['jName']}技能での習得が「${v*-1}」過剰です<br>`; }
+      }
+      else if(lv[key] && (notT || notR)) {
+        notice += `${langName}の`;
+        if(notT){ acqT[langName] = true; notice += `会話`+(notR ? '/' : '');  }
+        if(notR){ acqR[langName] = true; notice += `読文`;  }
+        notice += `が習得できます<br>`;
+      }
+    }
+  }
+  document.getElementById('language-notice').innerHTML = notice;
+}
 // 追加
 function addLanguage(){
   let num = Number(form.languageNum.value) + 1;
@@ -1500,9 +1548,9 @@ function addLanguage(){
   tbody.setAttribute('id',idNumSet('language-item'));
   tbody.innerHTML = `
     <td class="handle"></td>
-    <td><input name="language${num}" type="text" list="list-language"></td>
-    <td><input name="language${num}Talk" type="checkbox" value="1"></td>
-    <td><input name="language${num}Read" type="checkbox" value="1"></td>
+    <td><input name="language${num}" type="text" oninput="checkLanguage()" list="list-language"></td>
+    <td><select name="language${num}Talk" oninput="checkLanguage()">${langOptionT}</select><span class="lang-select-view"></span></td>
+    <td><select name="language${num}Read" oninput="checkLanguage()">${langOptionR}</select><span class="lang-select-view"></span></td>
   `;
   const target = document.querySelector("#language-table tbody");
   target.appendChild(tbody, target);

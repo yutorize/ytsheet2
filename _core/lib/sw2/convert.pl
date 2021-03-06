@@ -219,6 +219,51 @@ sub convertHokanjoToYtsheet {
     $i++;
   }
   $pc{'languageNum'} = $i;
+  $pc{'languageAutoOff'} = 1;
+  
+  foreach my $n (1 .. $pc{'languageNum'}){
+    if($pc{'race'} =~ /人間/ && $pc{"language${n}"} =~ /地方語/){
+      $pc{"language${n}Talk"} = $pc{"language${n}Talk"} ? 'auto' : '';
+      $pc{"language${n}Read"} = $pc{"language${n}Read"} ? 'auto' : '';
+      last;
+    }
+  }
+  foreach my $n (1 .. $pc{'languageNum'}){
+    if(($pc{'lvDem'} || $pc{'lvGri'}) && $pc{"language${n}"} =~ /魔法文明語/){
+      $pc{"language${n}Read"} = $pc{"language${n}Read"} ? 'auto' : '';
+    }
+    if($pc{'lvDem'} && $pc{"language${n}"} =~ /魔神語/){
+      $pc{"language${n}Talk"} = $pc{"language${n}Talk"} ? 'auto' : '';
+    }
+    if(($pc{'lvSor'} || $pc{'lvCon'}) && $pc{"language${n}"} =~ /魔法文明語/){
+      $pc{"language${n}Talk"} = $pc{"language${n}Talk"} ? 'auto' : '';
+      $pc{"language${n}Read"} = $pc{"language${n}Read"} ? 'auto' : '';
+    }
+    if(($pc{'lvMag'} || $pc{'lvAlc'}) && $pc{"language${n}"} =~ /魔動機文明語/){
+      $pc{"language${n}Talk"} = $pc{"language${n}Talk"} ? 'auto' : '';
+      $pc{"language${n}Read"} = $pc{"language${n}Read"} ? 'auto' : '';
+    }
+    if($pc{'lvFai'} && $pc{"language${n}"} =~ /妖精語/){
+      $pc{"language${n}Talk"} = $pc{"language${n}Talk"} ? 'auto' : '';
+      $pc{"language${n}Read"} = $pc{"language${n}Read"} ? 'auto' : '';
+    }
+  }
+  my $bard = 0;
+  foreach my $n (reverse 1 .. $pc{'languageNum'}){
+    last if $bard >= $pc{'lvBar'};
+    if($pc{"language${n}Talk"} == 1){ $pc{"language${n}Talk"} = 'Bar'; $bard++; }
+  }
+  my $sage = 0;
+  foreach my $n (reverse 1 .. $pc{'languageNum'}){
+    last if $sage >= $pc{'lvSag'};
+    if($pc{"language${n}Talk"} == 1){ $pc{"language${n}Talk"} = 'Sag'; $sage++; }
+    last if $sage >= $pc{'lvSag'};
+    if($pc{"language${n}Read"} == 1){ $pc{"language${n}Read"} = 'Sag'; $sage++; }
+  }
+  foreach my $n (1 .. $pc{'languageNum'}){
+    if($pc{"language${n}Talk"} == 1){ $pc{"language${n}Talk"} = 'auto'; }
+    if($pc{"language${n}Read"} == 1){ $pc{"language${n}Read"} = 'auto'; }
+  }
   
   ## 戦闘特技
   my %nums = ('1'=>'Ⅰ', '2'=>'Ⅱ', '3'=>'Ⅲ', '4'=>'Ⅳ', '5'=>'Ⅴ');
@@ -338,15 +383,24 @@ sub convertHokanjoToYtsheet {
   $pc{'honorItemsNum'} = $i;
   ## 履歴
   my %bases = ( '1'=>'器用', '2'=>'敏捷', '3'=>'筋力', '4'=>'生命', '5'=>'知力', '6'=>'精神' );
-  my $i = 0;
+  my $i = 0; my $growcount;
   foreach my $grow (@{$in{'V_SN_his'}}){
     $pc{'history'.($i+1).'Exp'}   = $in{'get_exp_his'}[$i];
     $pc{'history'.($i+1).'Money'} = $in{'get_money_his'}[$i];
     $pc{'history'.($i+1).'Grow'}  = $bases{$grow};
     $pc{'history'.($i+1).'Note'}  = $in{'seicho_memo_his'}[$i];
     $i++;
+    $growcount++ if $bases{$grow};
   }
   $i++;
+  if(!$growcount){
+    $pc{'sttPreGrowA'} = $in{'NS1'};
+    $pc{'sttPreGrowB'} = $in{'NS2'};
+    $pc{'sttPreGrowC'} = $in{'NS3'};
+    $pc{'sttPreGrowD'} = $in{'NS4'};
+    $pc{'sttPreGrowE'} = $in{'NS5'};
+    $pc{'sttPreGrowF'} = $in{'NS6'};
+  }
   $pc{'history'.$i.'Honor'} = $in{'honor_point_sum'};
   $pc{'history'.$i.'Note'} = 'データ形式が異なる為、獲得名誉点はここに纏めて記します。';
   $pc{'historyNum'} = $i;

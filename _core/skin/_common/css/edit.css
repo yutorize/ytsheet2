@@ -376,6 +376,17 @@ input[type="button"]:hover {
 .message:empty {
   display: none;
 }
+.message h2 {
+  font-size: 110%;
+}
+.message dl {
+  text-align: left;
+}
+.message dd {
+  margin-left: .25em;
+  padding-left: .25em;
+  border-left: 2px solid var(--box-head-bg-color-pale);
+}
 
 .box .annotate {
   font-size: 90%;

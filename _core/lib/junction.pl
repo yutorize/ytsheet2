@@ -3,7 +3,7 @@ use strict;
 #use warnings;
 use utf8;
 
-our $ver = "1.12.021";
+our $ver = "1.12.022";
 
 my $mode = param('mode');
 
