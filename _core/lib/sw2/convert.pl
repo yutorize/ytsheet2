@@ -5,6 +5,7 @@ use utf8;
 use open ":utf8";
 use LWP::UserAgent;
 use JSON::PP;
+use Encode 'decode';
 
 sub data_get {
   my $url = shift;
@@ -31,9 +32,7 @@ sub data_convert {
   }
   ## 旧ゆとシート
   {
-    # require $set::lib_ytsheetMConvert;
-    # return get_parsed_enemy_data_from_ytsheet_one_mons($set_url);
-
+    # 同一サーバから取得
     foreach my $url (keys %set::convert_url){
       if($set_url =~ s"^${url}data/(.*?).html"$1"){
         open my $IN, '<', "$set::convert_url{$url}data/${set_url}.cgi" or error '旧ゆとシートのデータが開けませんでした';
@@ -45,6 +44,12 @@ sub data_convert {
         }
         else { return convert1to2(\%pc); }
       }
+    }
+
+    # HTML をパースして取得
+    if($set_url =~ /\d+.html/){
+      require $set::lib_ytsheetMConvert;
+      return get_parsed_enemy_data_from_ytsheet_one_mons($set_url);
     }
   }
   ## ゆとシートⅡ
