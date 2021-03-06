@@ -31,6 +31,9 @@ sub data_convert {
   }
   ## 旧ゆとシート
   {
+    # require $set::lib_ytsheetMConvert;
+    # return get_parsed_enemy_data_from_ytsheet_one_mons($set_url);
+
     foreach my $url (keys %set::convert_url){
       if($set_url =~ s"^${url}data/(.*?).html"$1"){
         open my $IN, '<', "$set::convert_url{$url}data/${set_url}.cgi" or error '旧ゆとシートのデータが開けませんでした';

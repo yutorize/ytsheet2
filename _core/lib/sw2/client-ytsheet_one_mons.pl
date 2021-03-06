@@ -190,10 +190,10 @@ sub get_parsed_enemy_data_from_ytsheet_one_mons {
     # JavaScript でいう所の String#trim() を行っている
     $result{$key} =~ s/^\s*(.*?)[\s　]*$/$1/;
   }
+  $result{'convertSource'} = '旧ゆとシートM';
+  $result{'type'} = 'm';
+  $result{'ver'} = 0;
   return %result;
 }
 
-my %result = get_parsed_enemy_data_from_ytsheet_one_mons($ARGV[0]);
-while (my ($key, $value) = each(%result)) {
-  print "$key = [$value]\n";
-}
+1;

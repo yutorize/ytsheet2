@@ -203,6 +203,7 @@ package set;
   our $lib_json_sub = $::core_dir . '/lib/sw2/json-sub.pl';
   # コンバート
   our $lib_convert = $::core_dir . '/lib/sw2/convert.pl';
+  our $lib_ytsheetMConvert = $::core_dir . '/lib/sw2/client-ytsheet_one_mons.pl';
 
   # 各種データ
   our $data_races = $::core_dir . '/lib/sw2/data-races.pl';  # 種族
