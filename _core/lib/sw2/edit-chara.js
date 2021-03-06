@@ -1508,7 +1508,7 @@ let mysticArtsSortable = Sortable.create(document.querySelector('#mystic-arts-li
 // 言語欄 ----------------------------------------
 function checkLanguage(){
   let count = {}; let acqT = {}; let acqR = {};
-  for(let data of raceLanguage[race]){ acqT[data[0]] = data[1]; acqR[data[0]] = data[2]; }
+  if(raceLanguage[race]){ for(let data of raceLanguage[race]){ acqT[data[0]] = data[1]; acqR[data[0]] = data[2]; } }
   for (let i = 1; i <= form.languageNum.value; i++){
     let name = form[`language${i}`];
     let talk = form[`language${i}Talk`];
