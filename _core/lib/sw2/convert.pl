@@ -48,7 +48,10 @@ sub data_convert {
     # HTML をパースして取得
     if($set_url =~ /\d+.html/){
       require $set::lib_ytsheetMConvert;
-      return get_parsed_enemy_data_from_ytsheet_one_mons($set_url);
+      my %tmpData = get_parsed_enemy_data_from_ytsheet_one_mons($set_url);
+      if( $tmpData{'convertSource'} ) {
+        return %tmpData;
+      }
     }
   }
   ## ゆとシートⅡ

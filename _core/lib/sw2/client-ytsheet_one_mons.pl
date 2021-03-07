@@ -24,6 +24,9 @@ sub get_parsed_enemy_data_from_ytsheet_one_mons {
   my $browser = LWP::UserAgent->new;
   my $response = $browser->get($url);
   my $parse_target_html = Encode::is_utf8($response->content) ? $response->content : Encode::decode('utf8', $response->content);
+  if( index($parse_target_html, 'ゆとシートM') == -1 ) {
+    return 0;
+  }
   my %result = ();
   my $mode = '';
   my $partsCount = -1; # カラム名行をノーカンにするために -1 スタート
