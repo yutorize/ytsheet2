@@ -5,7 +5,6 @@ use utf8;
 use open ":utf8";
 use LWP::UserAgent;
 use JSON::PP;
-use Encode 'decode';
 
 sub data_get {
   my $url = shift;
