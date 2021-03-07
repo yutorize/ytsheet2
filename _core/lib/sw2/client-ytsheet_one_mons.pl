@@ -1,5 +1,6 @@
 use HTML::Parser ();
 use LWP::UserAgent;
+use Encode;
 
 sub get_parsed_enemy_data_from_ytsheet_one_mons {
   my $url = @_[0];
@@ -22,7 +23,7 @@ sub get_parsed_enemy_data_from_ytsheet_one_mons {
 
   my $browser = LWP::UserAgent->new;
   my $response = $browser->get($url);
-  my $parse_target_html = $response->content;
+  my $parse_target_html = Encode::is_utf8($response->content) ? $response->content : Encode::decode('utf8', $response->content);
   my %result = ();
   my $mode = '';
   my $partsCount = -1; # カラム名行をノーカンにするために -1 スタート
@@ -93,11 +94,10 @@ sub get_parsed_enemy_data_from_ytsheet_one_mons {
 
   sub ytsheet_one_mons_when_text_found {
     my ($self, $text) = @_;
-    $text = $text;
     if($mode eq 'title') {
       my @title = split(/：/, $text);
-      $result{'monsterName'} = Encode::decode('utf8',$title[0]);
-      $result{'taxa'} = Encode::decode('utf8',$title[1]);
+      $result{'monsterName'} = $title[0];
+      $result{'taxa'} = $title[1];
       $result{'lv'} = $title[2];
       $result{'lv'} =~ s/レベル//;
       $mode = '';
@@ -112,12 +112,12 @@ sub get_parsed_enemy_data_from_ytsheet_one_mons {
           $result{"status$partsCount$parts_columns[$partsInternalCursor]Fix"} = '-';
         }
       } else {
-        $result{"status$partsCount$parts_columns[$partsInternalCursor]"} = Encode::decode('utf8', $text);
+        $result{"status$partsCount$parts_columns[$partsInternalCursor]"} = $text;
       }
       $partsInternalCursor++;
     }
     elsif($mode eq 'loots' && ($lootsCount > 0)) {
-      $result{"loots$lootsCount$loots_columns[$lootsInternalCursor]"} = Encode::decode('utf8', $text);
+      $result{"loots$lootsCount$loots_columns[$lootsInternalCursor]"} = $text;
       $lootsInternalCursor++;
     }
     elsif($text eq '知名度／弱点値') {
@@ -125,9 +125,9 @@ sub get_parsed_enemy_data_from_ytsheet_one_mons {
     }
     elsif($mode eq '知名度／弱点値') {
       my @reputations = split(/／/, $text);
-      $result{'reputation'} = Encode::decode('utf8', $reputations[0]);
+      $result{'reputation'} = $reputations[0];
       $result{'reputation'} =~ s/://;
-      $result{'reputation+'} = Encode::decode('utf8', $reputations[1]);;
+      $result{'reputation+'} = $reputations[1];
       $mode = '';
     }
     elsif($text eq '部位数') {
@@ -135,7 +135,7 @@ sub get_parsed_enemy_data_from_ytsheet_one_mons {
     }
     elsif($mode eq 'partsList') {
       if($text =~ /^:\d+（(.*)）　$/) {
-        $result{'parts'} = Encode::decode('utf8', $1);
+        $result{'parts'} = $1;
       } else {
         $result{'parts'} = '-';
       }
@@ -147,7 +147,7 @@ sub get_parsed_enemy_data_from_ytsheet_one_mons {
     elsif($mode eq 'corePartsInfo') {
       $result{'coreParts'} = $text;
       $result{'coreParts'} =~ s/://;
-      $result{'coreParts'} = Encode::decode('utf8', $result{'coreParts'});
+      $result{'coreParts'} = $result{'coreParts'};
       $mode = '';
     }
     elsif($text eq '特殊能力') {
@@ -157,17 +157,19 @@ sub get_parsed_enemy_data_from_ytsheet_one_mons {
       $mode = 'pre_description';
     }
     elsif($mode eq 'skills') {
-      my $tmp = Encode::decode('utf8', $text);
-      $tmp =~ s/\n/&lt;br&gt;/g;
-      $result{'skills'} = "$result{'skills'}$tmp";
+      # my $tmp = Encode::is_utf8($text) ? $text : Encode::decode('utf8', $text);
+      # $tmp =~ s/\n/&lt;br&gt;/g;
+      $text =~ s/\n/&lt;br&gt;/g;
+      $result{'skills'} = "$result{'skills'}$text";
     }
     elsif($mode eq 'description') {
-      my $tmp = Encode::decode('utf8', $text);
-      $tmp =~ s/\n/&lt;br&gt;/g;
-      $result{'description'} = "$result{'description'}$tmp";
+      # my $tmp = Encode::is_utf8($text) ? $text : Encode::decode('utf8', $text);
+      # $tmp =~ s/\n/&lt;br&gt;/g;
+      $text =~ s/\n/&lt;br&gt;/g;
+      $result{'description'} = "$result{'description'}$text";
     }
     elsif($mode eq 'author') {
-      $result{'author'} = Encode::decode('utf8', $text);
+      $result{'author'} = $text;
       $result{'author'} =~ s/作成者：//;
       $mode = '';
     }
@@ -175,7 +177,7 @@ sub get_parsed_enemy_data_from_ytsheet_one_mons {
       $mode = $text;
     }
     elsif($simple_column_table{$mode}) {
-      $result{$simple_column_table{$mode}} = Encode::decode('utf8', $text);
+      $result{$simple_column_table{$mode}} = $text;
       $result{$simple_column_table{$mode}} =~ s/://;
       $mode = '';
     }
@@ -198,7 +200,7 @@ sub get_parsed_enemy_data_from_ytsheet_one_mons {
     # JavaScript でいう所の String#trim() を行っている
     $result{$key} =~ s/^\s*(.*?)[\s　]*$/$1/;
   }
-  $result{'convertSource'} = Encode::decode('utf8', '旧ゆとシートM');
+  $result{'convertSource'} = '旧ゆとシートM';
   $result{'type'} = 'm';
   $result{'ver'} = 0;
   return %result;
