@@ -157,14 +157,10 @@ sub get_parsed_enemy_data_from_ytsheet_one_mons {
       $mode = 'pre_description';
     }
     elsif($mode eq 'skills') {
-      # my $tmp = Encode::is_utf8($text) ? $text : Encode::decode('utf8', $text);
-      # $tmp =~ s/\n/&lt;br&gt;/g;
       $text =~ s/\n/&lt;br&gt;/g;
       $result{'skills'} = "$result{'skills'}$text";
     }
     elsif($mode eq 'description') {
-      # my $tmp = Encode::is_utf8($text) ? $text : Encode::decode('utf8', $text);
-      # $tmp =~ s/\n/&lt;br&gt;/g;
       $text =~ s/\n/&lt;br&gt;/g;
       $result{'description'} = "$result{'description'}$text";
     }
