@@ -128,12 +128,12 @@ if($works_query) { @list = grep { (split(/<>/))[12] =~ /$works_query/ } @list; }
 $INDEX->param(works => $works_query);
 
 ## シンドローム検索
-my @syndrome_query = split(/ |　/, Encode::decode('utf8', param('syndrome')));
+my @syndrome_query = split('\s', Encode::decode('utf8', param('syndrome')));
 foreach my $q (@syndrome_query) { @list = grep { (split(/<>/))[13] =~ /$q/ } @list; }
 $INDEX->param(syndrome => "@syndrome_query");
 
 ## Dロイス検索
-my @dlois_query = split(/ |　/, Encode::decode('utf8', param('dlois')));
+my @dlois_query = split('\s', Encode::decode('utf8', param('dlois')));
 foreach my $q (@dlois_query) { @list = grep { (split(/<>/))[14] =~ /$q/ } @list; }
 $INDEX->param(dlois => "@dlois_query");
 

@@ -1609,11 +1609,12 @@ foreach my $key ( keys(%data::race_ability) ){
 print "};\n";
 print 'let raceLanguage = {';
 foreach my $key ( keys(%data::race_language) ){
-  print "\"$key\" : \"";
+  next if !@{$data::race_language{$key}};
+  print "\"$key\" : [";
   foreach (@{$data::race_language{$key}}){
-    print "<dt>@$_[0]</dt><dd>".(@$_[1]?'○':'－')."</dd><dd>".(@$_[2]?'○':'－')."</dd>";
+    print "['@$_[0]', @$_[1], @$_[2] ],";
   }
-  print "\", ";
+  print "], ";
 }
 print "};\n";
 ## 技能

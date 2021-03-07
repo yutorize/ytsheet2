@@ -142,7 +142,7 @@ $INDEX->param(expMax => $exp_max_query);
 
 ## 技能検索
 my @class_name = @data::class_list;
-my @class_query = split(/ |　/, Encode::decode('utf8', param('class')));
+my @class_query = split('\s', Encode::decode('utf8', param('class')));
 if(@class_query){
   my %num;
   my $i = 0;
