@@ -40,6 +40,7 @@ foreach(
   'tag',
   #'group',
   'name',
+  'player',
   'exp-min',
   'exp-max',
   'syndrome',
