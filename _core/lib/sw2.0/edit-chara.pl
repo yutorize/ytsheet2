@@ -1469,6 +1469,7 @@ print <<"HTML";
       ※チェックを全て入れてください
       </p>
     </form>
+    <p class="right">@{[ $::in{'backup'}?$::in{'backup'}:'最終' ]}更新時のIP:$pc{'IP'}</p>
 HTML
   # 怒りの画像削除フォーム
   if($LOGIN_ID eq $set::masterid){

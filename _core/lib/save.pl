@@ -162,6 +162,7 @@ delete $pc{'ver'};
 delete $pc{'pass'};
 delete $pc{'_token'};
 delete $pc{'registerkey'};
+$pc{'IP'} = $ENV{'REMOTE_ADDR'};
 data_save($mode, $data_dir, $file);
 ### passfile --------------------------------------------------
 ## 新規
