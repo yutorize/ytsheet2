@@ -1,0 +1,56 @@
+@charset "utf-8";
+
+/* ゆとシートⅡ for BLP - リスト */
+
+/* // Body
+---------------------------------------------------------------------------------------------------- */
+body {
+  background-image: url(../../_common/img/back-pattern.png), url(../img/back-moon.png);
+  background-blend-mode: normal, hard-light;
+}
+
+/* // List
+---------------------------------------------------------------------------------------------------- */
+.list table tr {
+  grid-template-columns: 28rem 0.7fr 6em 0.7fr 1fr 4em 0.7fr;
+}
+.list table thead tr {
+  grid-template-areas:
+    "NAME PL FACT  GEN BLNG LVL DATE"
+    "NAME PL FACT  AGE MISS LVL DATE"
+  ;
+}
+.list table tbody tr {
+  grid-template-areas:
+    "NAME PL FACT  GEN BLNG LVL DATE"
+    "NAME PL FACS  AGE MISS LVL DATE"
+  ;
+}
+.list table .name    { grid-area: NAME; }
+.list table .player  { grid-area:   PL; }
+.list table .race    { grid-area: RACE; }
+.list table .gender  { grid-area:  GEN; }
+.list table .age     { grid-area:  AGE; }
+.list table .factor  { grid-area: FACT; }
+.list table .factors { grid-area: FACS; }
+.list table .belong  { grid-area: BLNG; }
+.list table .missing { grid-area: MISS; }
+.list table .level   { grid-area:  LVL; }
+.list table .date    { grid-area: DATE; }
+
+.list table td.belong,
+.list table td.missing {
+  font-size: 90%;
+}
+
+@media screen and (max-width:735px){
+  .list table tr {
+    grid-template-columns: 18rem 6em 7em 0.7fr 1fr 2.5em 4em;
+  }
+  .list table td.age {
+    font-size: 90%;
+  }
+  .list table td.factors {
+    font-size: 90%;
+  }
+}

@@ -1,0 +1,298 @@
+@charset "utf-8";
+
+/* // キャラクター
+---------------------------------------------------------------------------------------------------- */
+#regulation {
+  margin: 10px 0;
+  overflow-y: auto;
+}
+#regulation dl {
+  display: grid;
+  grid-template-columns: max-content 2em max-content 6em max-content 6em 1fr;
+  grid-template-rows: auto;
+  margin: 1rem;
+}
+#regulation dl dt {
+  padding-left: .5em;
+}
+
+body:not(.type-vampire) .v-only {
+  display: none;
+}
+body:not(.type-human) .h-only {
+  display: none;
+}
+
+#area-status {
+  min-height: 0%;
+  margin: 0 0 1rem;
+    grid-template-columns: 2fr 1.3fr;
+}
+@media screen and (max-width:735px){
+  #area-status {
+    grid-template-columns: 1fr;
+    grid-gap: 10px 5px;
+
+    grid-template-areas:
+      "IMG "
+      "FAC "
+      "PER "
+      "STT "
+      "SCR "
+    ;
+  }
+}
+#area-status #personal dl {
+  display: grid;
+  grid-template-columns: 10em 1fr;
+}
+#area-status #personal dl:nth-child(-n+2) {
+  grid-template-columns: 1fr;
+}
+#area-status #personal input[name="ageApp"],
+#area-status #personal input[name="age"],
+#area-status #personal input[name="gender"] {
+  width: 7em;
+}
+
+#status {
+  grid-template-columns: 0.4fr 0.9fr 1.7fr;
+}
+#status > dl dd dl dt {
+  display: flex;
+  align-items: center;
+}
+#area-status #status input {
+  width: 4em;
+}
+@media screen and (max-width:735px){
+  #status {
+    grid-template-columns: 1fr 2fr;
+  }
+  #status > dl:last-child {
+    grid-column: span 2;
+    border-width: 1px 0 0;
+    border-style: solid;
+  }
+}
+.partner-edit {
+  margin-top: 1rem;
+}
+.partner-data    { grid-area: DATA; }
+.partner-from    { grid-area: FROM; }
+.partner-to      { grid-area:   TO; }
+.partner-promise { grid-area: PRMS; }
+.partner-table {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas:
+    "DATA DATA"
+    "FROM   TO"
+    "PRMS PRMS"
+  ;
+}
+.partner-table > dl {
+  display: grid;
+  grid-template-columns: 3.5em 1fr;
+  border-top-width: 1px;
+  border-top-style: solid;
+}
+.partner-table > dl > dt {
+  display: grid;
+  place-items: center;
+  text-align: center;
+  border-right-width: 1px;
+  border-right-style: dotted;
+}
+.partner-table > dl > dd {
+  grid-column: 2;
+}
+.partner-table > dl > dd {
+  padding: .2rem 0;
+  text-align: left;
+}
+.partner-table > dl > dd + dd {
+  border-top-width: 1px;
+  border-top-style: dotted;
+}
+.partner-table > dl > dd dl dt {
+  padding: .2rem 0 0 .2rem;
+}
+.partner-table > dl > dd dl dt small {
+  font-size: unset;
+  font-weight: normal;
+}
+.partner-table > dl.partner-data > dd dl {
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-columns: 2fr 1fr 1fr;
+  grid-template-rows: auto auto auto auto;
+}
+.partner-table > dl.partner-data dl dt:nth-of-type(6) { grid-column: 2; grid-row: 3; }
+.partner-table > dl.partner-data dl dd:nth-of-type(6) { grid-column: 2; grid-row: 4; }
+
+.partner-table > dl.partner-from,
+.partner-table > dl.partner-to {
+  grid-template-rows: 1fr max-content;
+}
+.partner-table > dl.partner-from > dt,
+.partner-table > dl.partner-to > dt {
+  grid-row: span 2;
+}
+.partner-table > dl.partner-from > dd {
+  border-right-width: 1px;
+  border-right-style: solid;
+}
+.partner-table > dl.partner-from > dd dl,
+.partner-table > dl.partner-to > dd dl {
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto auto auto;
+}
+.type-vampire #partner2area.partner-table > dl.partner-from dd dl,
+.type-vampire #partner2area.partner-table > dl.partner-to dd dl {
+  grid-template-rows: auto auto;
+}
+
+.partner-table input[readonly] {
+  border-color: transparent;
+  background: rgba(125,125,125,0.2);
+  text-align: center;
+}
+.partner-table input[readonly]:focus {
+  outline: none;
+}
+@media screen and (max-width:735px){
+  .partner-table {
+    display: block;
+  }
+  .partner-table > dl.partner-data > dd dl {
+    grid-template-columns: 1fr 1fr;
+  }
+  .partner-table > dl.partner-data > dd dl dt:nth-of-type(1) { grid-column: 1 / span 2; grid-row: 1; }
+  .partner-table > dl.partner-data > dd dl dd:nth-of-type(1) { grid-column: 1 / span 2; grid-row: 2; }
+  .partner-table > dl.partner-data > dd dl dt:nth-of-type(2) { grid-column: 1 / span 2; grid-row: 3; }
+  .partner-table > dl.partner-data > dd dl dd:nth-of-type(2) { grid-column: 1 / span 2; grid-row: 4; }
+  .partner-table > dl.partner-data > dd dl dt:nth-of-type(6) { grid-column: 1 ; grid-row: 7; }
+  .partner-table > dl.partner-data > dd dl dd:nth-of-type(6) { grid-column: 1 ; grid-row: 8; }
+}
+
+
+#bloodarts,
+#arts {
+  margin-top: 1rem;
+}
+#bloodarts table,
+#arts table {
+  margin-top: -1rem;
+}
+#bloodarts table thead th:nth-child(1) { width: 1.4em; }
+#bloodarts table thead th:nth-child(2) { width: 11em; } /* 名称 */
+#bloodarts table thead th:nth-child(3) { width: 5.5em; } /* タイミング */
+#bloodarts table thead th:nth-child(4) { width: 7.5em; } /* 対象 */
+#arts table thead th:nth-child(1) { width: 1.4em; }
+#arts table thead th:nth-child(2) { width: 11em; } /* 名称 */
+#arts table thead th:nth-child(3) { width: 5.5em; } /* タイミング */
+#arts table thead th:nth-child(4) { width: 7.5em; } /* 対象 */
+#arts table thead th:nth-child(5) { width: 8.4em; } /* 代償 */
+#arts table thead th:nth-child(6) { width: 7em; } /* 条件 */
+#arts table tbody td:nth-child(n+4):nth-child(-n+7) { font-size: 85%; }
+#arts table tbody td:nth-child(n+4):nth-child(-n+7) input { font-size: inherit; padding: 3px 2px; }
+#bloodarts thead th.left,
+#arts thead th.left {
+  padding-left: 1rem;
+}
+#bloodarts table tbody td,
+#arts table tbody td {
+  border: 0;
+  padding: .3rem 0 .4rem !important;
+}
+@media screen and (max-width:735px){
+  #bloodarts,
+  #arts {
+    overflow-x: auto;
+  }
+  #bloodarts table,
+  #arts table {
+    min-width: 0;
+    table-layout: fixed;
+  }
+  #bloodarts table thead th:last-child,
+  #arts table thead th:last-child { width: 16em; } /* 備考 */
+  #arts table tbody td:nth-child(n+4):nth-child(-n+7) { font-size: unset; }
+}
+
+#free-note,
+#free-history {
+  padding-bottom: .3rem;
+}
+#free-note textarea,
+#free-history textarea {
+  height: 18em;
+}
+
+#history{
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+#history table {
+  width: calc(100% - 1px);
+}
+#history table thead th:nth-child(1) { width: 1.4em; }
+#history table thead th:nth-child(2) { width:   6em; } /* 日付 */
+#history table thead th:nth-child(3) { width:  12em; } /* タイトル */
+#history table thead th:nth-child(4) { width:   6em; } /* 成長 */
+#history table thead th:nth-child(5) { width:   6em; } /* ＧＭ */
+#history table thead th:nth-child(6) { width:  auto; } /* 参加者 */
+@media screen and (max-width:735px){
+  #history table  { table-layout: fixed; }
+  #history table thead th:nth-child(3) { width: 12em; } /* タイトル */
+  #history table thead th:nth-child(6) { width: 16em; } /* 参加者 */
+}
+
+#history table thead td {
+  padding: 1px;
+  border-width: 1px;
+  border-style: solid dotted;
+  font-size: inherit;
+}
+
+#history table tbody td {
+  border: 0;
+  padding: .4rem 0 .1rem !important;
+  vertical-align: top;
+}
+#history table tbody td.handle {
+  vertical-align: middle;
+}
+#history table tbody td.left {
+  padding: 0 0 .4rem !important;
+  border-top: hidden;
+}
+
+#history .annotate {
+  width: 70%;
+  margin: auto 3px auto auto;
+}
+
+#exp-footer {
+  position: sticky;
+  bottom: 0;
+  margin-top: 1em;
+  padding: .2rem 0 .5rem;
+  border-radius: 0;
+  border-width: .2rem 0;
+  background: var(--bg-color);
+  font-size: 85%;
+  font-weight: bold;
+}
+#exp-footer input.auto {
+  width: 2.5em;
+  min-width: 0;
+  font-size: 110%;
+}
+#exp-footer input:first-child,
+#exp-footer input:last-child {
+  font-size: 120%;
+}

@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <title><TMPL_VAR characterNameTitle> - <TMPL_VAR title></title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta property="og:title" content="<TMPL_VAR characterNameTitle> - <TMPL_VAR title>">
+  <meta property="og:type" content="artcle">
+  <meta property="og:url" content="<TMPL_VAR ogUrl>">
+  <meta property="og:site_name" content="<TMPL_VAR title>">
+  <meta property="og:description" content="<TMPL_VAR ogDescript>">
+  <TMPL_IF ogImg><meta property="og:image" content="<TMPL_VAR ogImg>"></TMPL_IF>
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@yutorize">
+  <link rel="stylesheet" media="all" href="<TMPL_VAR coreDir>/skin/_common/css/base.css?<TMPL_VAR ver>">
+  <link rel="stylesheet" media="all" href="<TMPL_VAR coreDir>/skin/_common/css/sheet.css?<TMPL_VAR ver>">
+  <link rel="stylesheet" media="all" href="<TMPL_VAR coreDir>/skin/blp/css/chara.css?<TMPL_VAR ver>">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+  <script>
+const sheetId = '<TMPL_VAR id>';
+const paletteTool = '<TMPL_VAR paletteTool>';
+const generateType = 'BloodPathPC';
+const defaultImage = '<TMPL_VAR coreDir>/skin/blp/img/default.png';
+
+<TMPL_IF error>
+window.onload = function() {
+  editOn();
+  setTimeout(function(){
+    document.getElementById("error").style.opacity = 0;
+    document.getElementById("error").style.top = '-5rem';
+  },2000);
+};
+</TMPL_IF>
+  </script>
+  <TMPL_IF colorCustom><style>
+    :root {
+      --box-head-bg-color-h: <TMPL_VAR colorHeadBgH>;
+      --box-head-bg-color-s: <TMPL_VAR colorHeadBgS>%;
+      --box-head-bg-color-l: <TMPL_VAR colorHeadBgL>%;
+      --box-base-bg-color-h: <TMPL_VAR colorBaseBgH>;
+      --box-base-bg-color-s: <TMPL_VAR colorBaseBgS>%;
+      --box-base-bg-color-l: <TMPL_VAR colorBaseBgL>%;
+      --box-base-bg-color-d: <TMPL_VAR colorBaseBgD>%;
+    }
+  </style></TMPL_IF>
+  <TMPL_INCLUDE NAME="skin-add/sheet-head.html">
+</head>
+<body>
+  <script src="<TMPL_VAR coreDir>/skin/_common/js/common.js?<TMPL_VAR ver>"></script>
+  <script src="<TMPL_VAR coreDir>/skin/_common/js/sheet.js?<TMPL_VAR ver>"></script>
+  <script src="<TMPL_VAR coreDir>/skin/_common/js/lib/sha256.js?<TMPL_VAR ver>"></script>
+  <script src="<TMPL_VAR coreDir>/skin/_common/js/lib/jszip.js?<TMPL_VAR ver>"></script>
+  <script src="<TMPL_VAR coreDir>/skin/_common/js/lib/ytsheetCommon.js?<TMPL_VAR ver>"></script>
+  <script src="<TMPL_VAR coreDir>/skin/blp/js/lib/ytsheetToUdonariumBLP.js?<TMPL_VAR ver>"></script>
+  <script src="<TMPL_VAR coreDir>/skin/blp/js/lib/ytsheetToCcfoliaBLP.js?<TMPL_VAR ver>"></script>
+  <script src="<TMPL_VAR coreDir>/skin/blp/js/lib/ytsheetConstsBLP.js?<TMPL_VAR ver>"></script>
+  <script src="<TMPL_VAR coreDir>/skin/blp/js/lib/ytsheetToTextBLP.js?<TMPL_VAR ver>"></script>
+  <header>
+    <h1><a href="./"><TMPL_VAR title></a></h1>
+    <nav>
+      <ul>
+        <li class="small"><a href="./">⏎</a></li>
+        <TMPL_IF convertMode>
+          <li><a href="./?mode=convert&url=<TMPL_VAR convertUrl>"><span>コンバート</span></a></li>
+        <TMPL_ELSE>
+          <TMPL_IF backupId>
+            <li class="small"><a onclick="backuplistOn()"><span>過去ログ</span></a></li>
+            <TMPL_IF ReqdPassword>
+              <li class="small"><a onclick="editOn()">復元</a></li>
+            <TMPL_ELSE>
+              <li class="small"><a href="./?mode=edit&id=<TMPL_VAR id>&backup=<TMPL_VAR backupId>">復元</a></li>
+            </TMPL_IF>
+          <TMPL_ELSE>
+            <TMPL_UNLESS forbiddenMode>
+              <li class="small"><a onclick="chatPaletteOn();"><span>パレット</span></a></li>
+              <li class="small"><a onclick="donwloadListOn();">保存</a></li>
+              <li class="small"><a onclick="backuplistOn()"><span>過去ログ</span></a></li>
+            </TMPL_UNLESS>
+            <TMPL_IF ReqdPassword>
+              <li class="small"><a onclick="editOn()">編集</a></li>
+            <TMPL_ELSE>
+              <li class="small"><a href="./?mode=edit&id=<TMPL_VAR id>">編集</a></li>
+            </TMPL_IF>
+          </TMPL_IF>
+        </TMPL_IF>
+        <li class="small"><a onclick="nightModeChange()" title="ナイトモード">☾✧</a></li>
+      </ul>
+    </nav>
+  </header>
+  
+  <TMPL_IF error>
+  <aside id="error">
+    <p>
+      <TMPL_VAR error>
+    </p>
+  </aside>
+  </TMPL_IF>
+  
+  <TMPL_UNLESS forbiddenMode>
+    <aside id="backuplist" class="float-box">
+      <h2>過去ログ（バックアップ）</h2>
+      <ul>
+        <li<TMPL_UNLESS backupId> class="backup-now"</TMPL_UNLESS>><a href="?id=<TMPL_VAR id>">最新</a></li>
+        <TMPL_LOOP Backup><li<TMPL_IF NOW> class="backup-now"</TMPL_IF>><a href="?id=<TMPL_VAR id>&backup=<TMPL_VAR URL>"><TMPL_VAR DATE></a></li></TMPL_LOOP>
+      </ul>
+    </aside>
+
+    <aside id="downloadlist" class="float-box">
+      <h2>保存</h2>
+      <ul>
+        <li id="downloadlist-udonarium"><a onclick="downloadAsUdonarium();">ユドナリウム向けのデータ</a></li>
+        <li id="downloadlist-ccfolia"><a onclick="downloadAsCcfolia();">ココフォリア向けのデータ</a></li>
+        <li id="downloadlist-text"><a onclick="donloadAsText();">テキスト形式</a></li>
+        <li id="downloadlist-json"><a onclick="donloadAsJson();">JSON 形式</a></li>
+      </ul>
+    </aside>
+  </TMPL_UNLESS>
+
+  <form id="login-form" class="float-box" method="post" action="./">
+    <input type="hidden" name="mode" value="edit">
+    <input type="hidden" name="id" value="<TMPL_VAR id>">
+    <input type="password" name="pass" placeholder="password">
+    <input type="hidden" name="backup" value="<TMPL_VAR backupId>">
+    <input type="submit" value="編集">
+  </form>
+
+  <main id="character">
+    <TMPL_IF forbidden><aside class="information attention">
+      閲覧が制限されているデータです。<br>
+      <TMPL_IF forbiddenAuthor>あなた以外には一部または全てのデータが伏せられます。(<a href="./?id=<TMPL_VAR id>&checkView=1">⇒確認</a>)</TMPL_IF>
+    </aside></TMPL_IF>
+    
+    <TMPL_IF backupId><aside class="information">
+      <TMPL_VAR updateTime> 時点のバックアップデータです。
+    </aside></TMPL_IF>
+    
+    <TMPL_IF convertMode><aside class="information">
+      <a href="<TMPL_VAR convertUrl>" target="_blank"><TMPL_VAR convertSource></a> のデータを表示しています。
+    </aside></TMPL_IF>
+    
+    <article>
+      <div id="area-name">
+        <h1 id="character-name"><TMPL_IF aka><span id="aka">“<TMPL_VAR aka>”</span></TMPL_IF><TMPL_VAR characterName></h1>
+        <div>
+        <p id="update-time"><time><TMPL_VAR updateTime></time></p>
+        <p id="player-name">プレイヤー：<TMPL_VAR playerName></p>
+        </div>
+      </div>
+      
+      <div id="tags">
+        <TMPL_IF group><a href="./?group=<TMPL_VAR group>" id="group"><TMPL_VAR groupName></a></TMPL_IF>
+        <TMPL_IF stage><i href="./?group=<TMPL_VAR group>" id="stage"><TMPL_VAR stage></i></TMPL_IF>
+        <TMPL_LOOP Tags><a href="./?tag=<TMPL_VAR URL>"><TMPL_VAR TEXT></a></TMPL_LOOP>
+      </div>
+      <div class="column column-status"><!-- COLUMN -->
+      <div id="area-status">
+        <TMPL_IF image> 
+        <div id="image" class="image" style="background-image: url(<TMPL_VAR imageSrc>);background-size:<TMPL_VAR imageFit>;background-position:<TMPL_VAR imagePositionX>% <TMPL_VAR imagePositionY>%;">
+        <div onclick="popImage()"><p class="words" style="<TMPL_VAR wordsX><TMPL_VAR wordsY>"><TMPL_VAR words></p></div>
+        <p class="image-copyright"><TMPL_VAR imageCopyright></p>
+        </div>
+        <TMPL_ELSE>
+        <div id="image-none" class="image-none"><p class="words" style="<TMPL_VAR wordsX><TMPL_VAR wordsY>"><TMPL_VAR words></p></div>
+        </TMPL_IF>
+
+        <div id="factors" class="box-union">
+          <dl class="box" id="factor">
+            <dt>ファクター</dt><dd><TMPL_VAR factor></dd>
+          </dl>
+          <dl class="box" id="factor-types">
+            <dt><TMPL_IF typeH>信念</TMPL_IF><TMPL_IF typeV>起源</TMPL_IF></dt>
+            <dd><TMPL_VAR factorCore></dd>
+            <dt><TMPL_IF typeH>職能</TMPL_IF><TMPL_IF typeV>流儀</TMPL_IF></dt>
+            <dd><TMPL_VAR factorStyle></dd>
+          </dl>
+        </div>
+
+        <div id="personal" class="box-union">
+          <dl class="box">
+            <dt><TMPL_IF typeV>外見年齢／実</TMPL_IF>年齢</dt>
+            <dd><TMPL_IF typeV><TMPL_VAR ageApp>／</TMPL_IF><TMPL_VAR age></dd>
+          </dl>
+          <dl class="box">
+            <dt>性別</dt>
+            <dd><TMPL_VAR gender></dd>
+          </dl>
+          <dl class="box">
+            <dt>所属</dt>
+            <dd><TMPL_VAR belong></dd>
+            <dd><div><TMPL_VAR belongNote></div></dd>
+          </dl>
+          <dl class="box">
+            <dt>過去</dt>
+            <dd><TMPL_VAR past></dd>
+            <dd><div><TMPL_VAR pastNote></div></dd>
+          </dl>
+          <dl class="box">
+            <dt>経緯</dt>
+            <dd><TMPL_VAR background></dd>
+            <dd><div><TMPL_VAR backgroundNote></div></dd>
+          </dl>
+          <dl class="box">
+            <dt><TMPL_IF typeH>喪失</TMPL_IF><TMPL_IF typeV>欠落</TMPL_IF></dt>
+            <dd><TMPL_VAR missing></dd>
+            <dd><div><TMPL_VAR missingNote></div></dd>
+          </dl>
+          <dl class="box">
+            <dt>外見的特徴</dt>
+            <dd><TMPL_VAR appearance></dd>
+            <dd><div><TMPL_VAR appearanceNote></div></dd>
+          </dl>
+          <dl class="box">
+            <dt>住まい</dt>
+            <dd><TMPL_VAR dwelling></dd>
+            <dd><div><TMPL_VAR dwellingNote></div></dd>
+          </dl>
+          <dl class="box">
+            <dt>使用武器</dt>
+            <dd><TMPL_VAR weapon></dd>
+            <dd><div><TMPL_VAR weaponNote></div></dd>
+          </dl>
+        </div>
+
+        <div id="status" class="box-union">
+          <dl class="box" id="level">
+            <dt>練度</dt>
+            <dd><TMPL_VAR level></dd>
+          </dl>
+          <dl class="box" id="main-status">
+            <dt>能力値</dt>
+            <dd>
+              <dl>
+                <dt><TMPL_IF typeH><i class="spade">♠</i>技</TMPL_IF><TMPL_IF typeV><i class="heart">♥</i>血</TMPL_IF></dt>
+                <dd><b><TMPL_VAR statusMain1></b></dd>
+                <dt><TMPL_IF typeH><i class="club" >♣</i>情</TMPL_IF><TMPL_IF typeV><i class="dia"  >♦</i>想</TMPL_IF></dt>
+                <dd><b><TMPL_VAR statusMain2></b></dd>
+              </dl>
+            </dd>
+          </dl>
+          <dl class="box" id="sub-status">
+            <dt>副能力値</dt>
+            <dd>
+              <dl>
+                <dt>耐久値</dt><dd><b><TMPL_VAR endurance ></b><small>=<TMPL_VAR enduranceFormula ></small></dt>
+                <dt>先制値</dt><dd><b><TMPL_VAR initiative></b><small>=<TMPL_VAR initiativeFormula></small></dt>
+              </dl>
+            </dd>
+          </dl>
+        </div>
+
+        <div id="scar" class="box-union">
+          <dl class="box">
+            <dt>傷号</dt>
+            <dd><TMPL_VAR scarName></dd>
+            <dd class="left"><TMPL_VAR scarNote></dd>
+          </dl>
+        </div>
+      </div>
+      
+      </div><!-- / COLUMN -->
+      
+      <div id="area-partner" <TMPL_IF partner2On>class="bigamy"</TMPL_IF>>
+        <div class="partner" id="partner1">
+          <TMPL_IF p1_image> 
+          <div class="image" style="background-image: url(<TMPL_VAR p1_imageSrc>);background-size:<TMPL_VAR p1_imageFit>;background-position:<TMPL_VAR p1_imagePositionX>% <TMPL_VAR p1_imagePositionY>%;">
+          <div onclick=""><p class="words" style="<TMPL_VAR p1_wordsX><TMPL_VAR p1_wordsY>"><TMPL_VAR p1_words></p></div>
+          <p class="image-copyright"><TMPL_VAR p1_imageCopyright></p>
+          </div>
+          <TMPL_ELSE>
+          <div class="image-none"><p class="words" style="<TMPL_VAR p1_wordsX><TMPL_VAR p1_wordsY>"><TMPL_VAR p1_words></p></div>
+          </TMPL_IF>
+        
+          <h1><TMPL_VAR head_p1>:<TMPL_IF partner1Url><a href="<TMPL_VAR partner1Url>"><TMPL_VAR partner1Name></a><TMPL_ELSE><TMPL_VAR partner1Name></TMPL_IF></h1>
+          <div class="box-union partner-personal">
+            <dl class="box"><dt><TMPL_IF typeH>起源／流儀</TMPL_IF><TMPL_IF typeV>信念／職能</TMPL_IF></dt><dd><TMPL_VAR partner1Factor></dd></dl>
+            <dl class="box"><dt><TMPL_IF typeH>外見年齢／実</TMPL_IF>年齢</dt><dd><TMPL_VAR partner1Age></dd></dl>
+            <dl class="box"><dt>性別</dt><dd><TMPL_VAR partner1Gender></dd></dl>
+            <dl class="box"><dt><TMPL_IF typeH>欠落</TMPL_IF><TMPL_IF typeV>喪失</TMPL_IF></dt><dd><TMPL_VAR partner1Missing></dd></dl>
+          </div>
+          <div class="box seal">
+            <h2>痕印</h2>
+            <div class="seal-details">
+              <dl class="position"><dt>位置</dt><dd><TMPL_VAR fromPartner1SealPosition></dd></dl>
+              <dl class="shape"   ><dt>形状</dt><dd><TMPL_VAR fromPartner1SealShape></dd></dl>
+              <dl class="emotion1"><dt>相手からの感情1</dt><dd><TMPL_VAR fromPartner1Emotion1></dd></dl>
+              <dl class="emotion2"><dt>相手からの感情2</dt><dd><TMPL_VAR fromPartner1Emotion2></dd></dl>
+              <dl class="promise" ><dt>約束</dt><dd><TMPL_VAR partner1Promise></dd></dl>
+            </div>
+          </div>
+        </div>
+        
+        <TMPL_IF partner2On><!--連血鬼 -->
+        <div class="partner" id="partner2">
+          <TMPL_IF p2_image> 
+          <div class="image" style="background-image: url(<TMPL_VAR p2_imageSrc>);background-size:<TMPL_VAR p2_imageFit>;background-position:<TMPL_VAR p2_imagePositionX>% <TMPL_VAR p2_imagePositionY>%;">
+          <div onclick=""><p class="words" style="<TMPL_VAR p2_wordsX><TMPL_VAR p2_wordsY>"><TMPL_VAR p2_words></p></div>
+          <p class="image-copyright"><TMPL_VAR p2_imageCopyright></p>
+          </div>
+          <TMPL_ELSE>
+          <div class="image-none"><p class="words" style="<TMPL_VAR p2_wordsX><TMPL_VAR p2_wordsY>"><TMPL_VAR p2_words></p></div>
+          </TMPL_IF>
+        
+          <h1><TMPL_VAR head_p2>:<TMPL_IF partner2Url><a href="<TMPL_VAR partner2Url>"><TMPL_VAR partner2Name></a><TMPL_ELSE><TMPL_VAR partner2Name></TMPL_IF></h1>
+          <div class="box-union partner-personal">
+            <dl class="box"><dt>起源／流儀</dt><dd><TMPL_VAR partner2Factor></dd></dl>
+            <dl class="box"><dt>外見年齢／実年齢</dt><dd><TMPL_VAR partner2Age></dd></dl>
+            <dl class="box"><dt>性別</dt><dd><TMPL_VAR partner2Gender></dd></dl>
+            <dl class="box"><dt>欠落</dt><dd><TMPL_VAR partner2Missing></dd></dl>
+          </div>
+          <div class="box <TMPL_VAR class_p2>">
+            <h2>痕印</h2>
+            <div class="seal-details">
+              <dl class="position"><dt>位置</dt><dd><TMPL_VAR fromPartner2SealPosition></dd></dl>
+              <dl class="shape"   ><dt>形状</dt><dd><TMPL_VAR fromPartner2SealShape></dd></dl>
+              <dl class="emotion1"><dt>相手からの感情1</dt><dd><TMPL_VAR fromPartner2Emotion1></dd></dl>
+              <dl class="emotion2"><dt>相手からの感情2</dt><dd><TMPL_VAR fromPartner2Emotion2></dd></dl>
+              <dl class="promise" ><dt><TMPL_IF typeH>約束</TMPL_IF><TMPL_IF typeV>協定</TMPL_IF></dt><dd><TMPL_VAR partner2Promise></dd></dl>
+            </div>
+          </div>
+        </div>
+        </TMPL_IF><!-- /連血鬼 -->
+      </div>
+      
+      <div id="area-battle">
+        <section class="box" id="bloodarts">
+          <h2>血威</h2>
+          <table class="data-table line-tbody">
+            <thead>
+              <tr><th>名称</th><th>タイミング</th><th>対象</th><th class="left">解説</th></tr>
+            </thead>
+            <TMPL_LOOP Bloodarts><tbody>
+               <tr>
+                <td class="name"><TMPL_VAR NAME></td>
+                <td><TMPL_VAR TIMING></td>
+                <td><TMPL_VAR TARGET></td>
+                <td class="left"><TMPL_VAR NOTE></td>
+              </tr>
+            </tbody></TMPL_LOOP>
+          </table>
+        </section>
+        
+        <section class="box" id="arts">
+          <h2>特技</h2>
+          <table class="data-table line-tbody">
+            <thead>
+              <tr><th>名称</th><th>タイミング</th><th>対象</th><th>代償</th><th>条件</th><th class="left">解説</th></tr>
+            </thead>
+            <TMPL_LOOP Arts><tbody>
+               <tr>
+                <td class="name"><TMPL_VAR NAME></td>
+                <td><TMPL_VAR TIMING></td>
+                <td><TMPL_VAR TARGET></td>
+                <td><TMPL_VAR COST></td>
+                <td><TMPL_VAR LIMITED></td>
+                <td class="left"><TMPL_VAR NOTE></td>
+              </tr>
+            </tbody></TMPL_LOOP>
+          </table>
+        </section>
+      </div>
+      
+      <section class="box" id="free-note">
+        <h2><TMPL_IF head_freeNote><TMPL_VAR head_freeNote><TMPL_ELSE>設定・その他メモ</TMPL_IF></h2>
+        <p><TMPL_VAR freeNote></p>
+      </section>
+      <TMPL_IF freeHistory>
+      <section class="box" id="free-history">
+        <h2><TMPL_IF head_freeHistory><TMPL_VAR head_freeHistory><TMPL_ELSE>履歴</TMPL_IF></h2>
+        <p><TMPL_VAR freeHistory></p>
+      </section>
+      </TMPL_IF>
+      <section class="box" id="history">
+        <h2>セッション履歴</h2>
+        <table class="data-table line-tbody">
+          <thead>
+            <tr>
+              <th>No.</th>
+              <th>日付</th>
+              <th>タイトル</th>
+              <th>力の向上</th>
+              <th>GM</th>
+              <th>参加者</th>
+            </tr>
+          </thead>
+          <TMPL_LOOP History><tbody>
+            <tr>
+              <td <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR NUM></td>
+              <td <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR DATE></td>
+              <td <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR TITLE></td>
+              <td class="grow"><span><TMPL_VAR GROW></span></td>
+              <td class="gm"><span><TMPL_VAR GM></span></td>
+              <td class="member"><TMPL_VAR MEMBER></td>
+            </tr>
+            <TMPL_IF NOTE><tr>
+              <td colspan="3" class="note"><TMPL_VAR NOTE></td>
+            </tr></TMPL_IF>
+          </tbody></TMPL_LOOP>
+        </table>
+      </section>
+      <section class="box chat-palette float-box">
+        <h2>チャットパレット</h2>
+        <div class="chat-palette-menu">
+          <b>使用ダイスbot:</b>
+          <a onclick="chatPaletteSelect('')"       id="cp-switch-ytc">ゆとチャadv.</a>
+          <a onclick="chatPaletteSelect('bcdice')" id="cp-switch-bcdice">BCDice</a>
+        </div>
+        <textarea id="chatPaletteBox"></textarea>
+      </section>
+    </article>
+    <div class="back-button"><a href="./">⏎</a></div>
+    <TMPL_IF image><div id="image-box" onclick="closeImage()">
+      <img src="<TMPL_VAR imageSrc>" id="image-box-image">
+    </div></TMPL_IF> 
+  </main>
+  <TMPL_INCLUDE NAME="skin-add/sheet-sidebar.html">
+
+  <footer>
+    <p class="notes"><span>『人鬼血盟RPG ブラッドパス』は、</span><span>「からすば晴／N.G.P.」の著作物です。</span></p>
+    <p class="copyright">ゆとシートⅡ for BLP ver.<TMPL_VAR ver> - <a href="https://yutorize.2-d.jp">ゆとらいず工房</a></p>
+  </footer>
+</body>
+
+</html>

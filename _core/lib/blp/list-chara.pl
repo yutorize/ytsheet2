@@ -14,7 +14,7 @@ my $sort = param('sort');
 ### テンプレート読み込み #############################################################################
 my $INDEX;
 $INDEX = HTML::Template->new( filename  => $set::skin_tmpl , utf8 => 1,
-  path => ['./', $::core_dir."/skin/dx3", $::core_dir."/skin/_common", $::core_dir],
+  path => ['./', $::core_dir."/skin/blp", $::core_dir."/skin/_common", $::core_dir],
   search_path_on_include => 1,
   die_on_bad_params => 0, die_on_missing_include => 0, case_sensitive => 1, global_vars => 1);
 
@@ -29,7 +29,7 @@ $INDEX->param(OAUTH_LOGIN_URL => $set::oauth_login_url);
 $INDEX->param(mode => $mode);
 
 my $index_mode;
-if(!($mode eq 'mylist' || param('tag') || param('group') || param('name') || param('player') || param('exp-min') || param('exp-max') || param('syndrome') || param('works') || param('dlois') || param('image'))){
+if(!($mode eq 'mylist' || param('tag') || param('group') || param('name') || param('player') || param('exp-min') || param('exp-max') || param('factor') || param('belong') || param('missing') || param('image'))){
   $index_mode = 1;
   $INDEX->param(modeIndex => 1);
   $INDEX->param(simpleMode => 1) if $set::simplelist;
@@ -41,11 +41,9 @@ foreach(
   #'group',
   'name',
   'player',
-  'exp-min',
-  'exp-max',
-  'syndrome',
-  'works',
-  'dlois',
+  'factor',
+  'belong',
+  'missing',
   'image',
   'fellow',
   ){
@@ -77,7 +75,7 @@ if (
   && !($mode eq 'mylist')
   && !param('tag')
 ){
-  @list = grep { !(split(/<>/))[18] } @list;
+  @list = grep { !(split(/<>/))[19] } @list;
 }
 
 ## グループ
@@ -115,28 +113,22 @@ my $pl_query = Encode::decode('utf8', param('player'));
 if($pl_query) { @list = grep { (split(/<>/))[5] =~ /$pl_query/ } @list; }
 $INDEX->param(player => $pl_query);
 
-## 経験点検索
-my $exp_min_query = param('exp-min');
-my $exp_max_query = param('exp-max');
-if($exp_min_query) { @list = grep { (split(/<>/))[7] >= $exp_min_query } @list; }
-if($exp_max_query) { @list = grep { (split(/<>/))[7] <= $exp_max_query } @list; }
-$INDEX->param(expMin => $exp_min_query);
-$INDEX->param(expMax => $exp_max_query);
+## ファクター検索
+my @factor_query = split('\s', Encode::decode('utf8', param('factor')));
+foreach my $q (@factor_query) {
+  @list = grep { (split(/<>/))[7] =~ /$q/ || (split(/<>/))[8] =~ /$q/ } @list;
+}
+$INDEX->param(factor => "@factor_query");
 
-## ワークス検索
-my $works_query = Encode::decode('utf8', param('works'));
-if($works_query) { @list = grep { (split(/<>/))[12] =~ /$works_query/ } @list; }
-$INDEX->param(works => $works_query);
+## 所属検索
+my @belong_query = split('\s', Encode::decode('utf8', param('belong')));
+foreach my $q (@belong_query) { @list = grep { (split(/<>/))[13] =~ /$q/ } @list; }
+$INDEX->param(belong => "@belong_query");
 
-## シンドローム検索
-my @syndrome_query = split('\s', Encode::decode('utf8', param('syndrome')));
-foreach my $q (@syndrome_query) { @list = grep { (split(/<>/))[13] =~ /$q/ } @list; }
-$INDEX->param(syndrome => "@syndrome_query");
-
-## Dロイス検索
-my @dlois_query = split('\s', Encode::decode('utf8', param('dlois')));
-foreach my $q (@dlois_query) { @list = grep { (split(/<>/))[14] =~ /$q/ } @list; }
-$INDEX->param(dlois => "@dlois_query");
+## 喪失検索
+my @missing_query = split('\s', Encode::decode('utf8', param('missing')));
+foreach my $q (@missing_query) { @list = grep { (split(/<>/))[14] =~ /$q/ } @list; }
+$INDEX->param(missing => "@missing_query");
 
 ## 画像フィルタ
 if(param('image') == 1) {
@@ -153,10 +145,10 @@ my %count; my %pl_flag;
 foreach (@list) {
   my (
     $id, undef, undef, $updatetime, $name, $player, $group, #0-6
-    $exp, $gender, $age, $sign, $blood, $works, #7-12
-    $syndrome, $dlois, #13-14
-    $session, $image, $tag, $hide #15-18
-  ) = (split /<>/, $_)[0..18];
+    $factor, $core, $style, $gender, $age, $ageapp, #7-12
+    $belong, $missing, $level, #13-15
+    $session, $image, $tag, $hide #16-19
+  ) = (split /<>/, $_)[0..19];
   
   if($mode eq 'mylist'){
     if(grep {$_ eq $id} @mylist){
@@ -188,14 +180,9 @@ foreach (@list) {
   else { $gender = '？' }
   
   #年齢
+  $age = $ageapp.'／'.$age if $ageapp;
   $age =~ s/^(.+?)[\(（].*?[）\)]$/$1/;
   $age =~ tr/０-９/0-9/;
-  
-  #シンドローム
-  my @syndromes;
-  push(@syndromes, "<span>$_</span>") foreach (split '/', $syndrome);
-  my @dloises;
-  push(@dloises, "<span>$_</span>") foreach (split '/', $dlois);
   
   #ソート用データ
   my $sort_data;
@@ -216,14 +203,13 @@ foreach (@list) {
     "NAME" => $name,
     "PLAYER" => $player,
     "GROUP" => $group,
-    "EXP" => $exp,
     "AGE" => $age,
     "GENDER" => $gender,
-    "SIGN" => $sign,
-    "BLOOD" => $blood,
-    "WORKS" => $works,
-    "SYNDROME" => join('',@syndromes),
-    "DLOIS" => join(' ',@dloises),
+    "FACTOR" => $factor,
+    "FACTORS" => $core.'／'.$style,
+    "BELONG" => $belong,
+    "MISSING" => $missing,
+    "LEVEL" => $level,
     "DATE" => $updatetime,
     "HIDE" => $hide,
   });
@@ -239,11 +225,7 @@ foreach (sort {$group_sort{$a} <=> $group_sort{$b}} keys %grouplist){
   ## ソート
   if   ($sort eq 'name'){ @{$grouplist{$_}} = sort { $a->{'SORT'} cmp $b->{'SORT'} } @{$grouplist{$_}}; }
   elsif($sort eq 'pl')  { @{$grouplist{$_}} = sort { $a->{'PLAYER'} cmp $b->{'PLAYER'} } @{$grouplist{$_}}; }
-  elsif($sort eq 'race'){ @{$grouplist{$_}} = sort { $a->{'RACE'} cmp $b->{'RACE'} } @{$grouplist{$_}}; }
   elsif($sort eq 'gender'){ @{$grouplist{$_}} = sort { $a->{'GENDER'} cmp $b->{'GENDER'} } @{$grouplist{$_}}; }
-  elsif($sort eq 'rank'){ @{$grouplist{$_}} = sort { $b->{'SORT'} <=> $a->{'SORT'} } @{$grouplist{$_}}; }
-  elsif($sort eq 'lv')  { @{$grouplist{$_}} = sort { $b->{'LV'} <=> $a->{'LV'} } @{$grouplist{$_}}; }
-  elsif($sort eq 'exp') { @{$grouplist{$_}} = sort { $b->{'EXP'} <=> $a->{'EXP'} } @{$grouplist{$_}}; }
   elsif($sort eq 'date'){ @{$grouplist{$_}} = sort { $b->{'DATE'} <=> $a->{'DATE'} } @{$grouplist{$_}}; }
   
   my $navbar;

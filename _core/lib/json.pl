@@ -13,41 +13,54 @@ my $callback = param('callback');
 my $backup = param('backup');
 
 ### キャラクターデータ読み込み #######################################################################
-my $id = param('id');
-my ($file, $type) = getfile_open($id);
+my $id  = param('id');
+my $url = param('url');
 
-my $data_dir;
-   if($type eq 'm'){ $data_dir = $set::mons_dir; }
-elsif($type eq 'i'){ $data_dir = $set::item_dir; }
-else               { $data_dir = $set::char_dir; }
-
+my ($file, $type);
 my %pc = ();
-my $IN;
+if($id){
+  ($file, $type) = getfile_open($id);
 
-if($backup eq "") {
-  open $IN, '<', "${data_dir}${file}/data.cgi" or "";
-} else {
-  open $IN, '<', "${data_dir}${file}/backup/${backup}.cgi" or "";
+  my $data_dir;
+     if($type eq 'm'){ $data_dir = $set::mons_dir; }
+  elsif($type eq 'i'){ $data_dir = $set::item_dir; }
+  else               { $data_dir = $set::char_dir; }
+
+  my $IN;
+  if($backup eq "") {
+    open $IN, '<', "${data_dir}${file}/data.cgi" or "";
+  } else {
+    open $IN, '<', "${data_dir}${file}/backup/${backup}.cgi" or "";
+  }
+
+  $_ =~ s/(.*?)<>(.*?)\n/$pc{$1} = $2;/egi while <$IN>;
+  close($IN);
+  
+  if($pc{'image'}){
+    $pc{'imageURL'} = url()."${data_dir}${file}/image.$pc{'image'}";
+  }
+}
+elsif(param('url')){
+  require $set::lib_convert;
+  %pc = data_convert(param('url'));
+  $type = $pc{'type'};
 }
 
-$_ =~ s/(.*?)<>(.*?)\n/$pc{$1} = $2;/egi while <$IN>;
-close($IN);
 
-if($pc{updateTime}) {
-  $pc{result} = "OK";
+if($pc{'ver'} ne '') {
+  $pc{'result'} = "OK";
   if($set::lib_json_sub){
     require $set::lib_json_sub;
     %pc = %{ addJsonData(\%pc , $type) };
   }
-} else {
-  if($backup eq "") {
-    $pc{result} = "リクエストされたシートは見つかりませんでした。(id: ${id})";
-  } else {
-    $pc{result} = "リクエストされたシートは見つかりませんでした。(id: ${id}, backup: ${backup})";
-  }
+  delete $pc{'IP'};
 }
-if($pc{'image'}){
-  $pc{'imageURL'} = url()."${data_dir}${file}/image.$pc{'image'}";
+else {
+  if($backup eq "") {
+    $pc{'result'} = "リクエストされたシートは見つかりませんでした。(id: ${id})";
+  } else {
+    $pc{'result'} = "リクエストされたシートは見つかりませんでした。(id: ${id}, backup: ${backup})";
+  }
 }
 
 ### 出力 #############################################################################################

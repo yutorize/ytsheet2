@@ -1067,6 +1067,7 @@ HTML
       <input type="submit" value="画像削除"><br>
       </p>
     </form>
+    <p class="right">@{[ $::in{'backup'}?$::in{'backup'}:'最終' ]}更新時のIP:$pc{'IP'}</p>
 HTML
   }
 }
