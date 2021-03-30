@@ -324,7 +324,7 @@ sub palettePresetSimple {
     $text .= "2d6+$::pc{'vitResistTotal'}+{生命抵抗修正} 生命抵抗力\n";
     $text .= "2d6+$::pc{'mndResistTotal'}+{精神抵抗修正} 精神抵抗力\n";
     $text .= "2d6+$::pc{'defenseTotalAllEva'}+{回避修正} 回避力\n" if $::pc{'defenseTotalAllEva'} ne '';
-    $text .= "2d6+$::pc{'defenseTotal1Eva'}+{回避修正} 回避力".($::pc{'defenseTotal1Note'}?"／$::pc{'defenseTotal1Note'}":'')."\n" if $::pc{'defenseTotal2Eva'} ne '';
+    $text .= "2d6+$::pc{'defenseTotal1Eva'}+{回避修正} 回避力".($::pc{'defenseTotal1Note'}?"／$::pc{'defenseTotal1Note'}":'')."\n" if $::pc{'defenseTotal1Eva'} ne '';
     $text .= "2d6+$::pc{'defenseTotal2Eva'}+{回避修正} 回避力".($::pc{'defenseTotal2Note'}?"／$::pc{'defenseTotal2Note'}":'')."\n" if $::pc{'defenseTotal2Eva'} ne '';
     $text .= "2d6+$::pc{'defenseTotal3Eva'}+{回避修正} 回避力".($::pc{'defenseTotal3Note'}?"／$::pc{'defenseTotal3Note'}":'')."\n" if $::pc{'defenseTotal3Eva'} ne '';
     $text .= "\n";
