@@ -34,19 +34,18 @@ sub pcDataGet {
   my $file;
   my $message;
   my $datadir = ($type eq 'm') ? $set::mons_dir : ($type eq 'i') ? $set::item_dir : $set::char_dir;
-  # 新規作成エラー
+  # エラー
   if($main::make_error) {
-    $mode = 'blanksheet';
+    $mode = ($mode eq 'save') ? 'edit' : 'blanksheet';
     for (param()){ $pc{$_} = param($_); }
     $message = $::make_error;
   }
-  # 保存
-  if($mode eq 'save'){
-    $message .= 'データを更新しました。<a href="./?id='.$::in{'id'}.'">⇒シートを確認する</a>';
-    $mode = 'edit';
-  }
-  # 編集 / 複製 / コンバート
-  if($mode eq 'edit'){
+  # 保存 / 編集 / 複製 / コンバート
+  elsif($mode eq 'edit' || $mode eq 'save'){
+    if($mode eq 'save'){
+      $mode = 'edit';
+      $message .= 'データを更新しました。<a href="./?id='.$::in{'id'}.'">⇒シートを確認する</a>';
+    }
     (undef, undef, $file, undef) = getfile($in{'id'},$in{'pass'},$LOGIN_ID);
     my $datafile = $in{'backup'} ? "${datadir}${file}/backup/$in{'backup'}.cgi" : "${datadir}${file}/data.cgi";
     open my $IN, '<', $datafile or &login_error;

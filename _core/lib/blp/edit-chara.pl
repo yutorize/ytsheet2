@@ -29,7 +29,7 @@ if($mode_make && !$::make_error){
   $pc{'playerName'} = (getplayername($LOGIN_ID))[0];
 }
 ### 初期設定 --------------------------------------------------
-if($mode_make){ $pc{'protect'} = $LOGIN_ID ? 'account' : 'password'; }
+if($mode_make){ $pc{'protect'} ||= $LOGIN_ID ? 'account' : 'password'; }
 
 if($mode eq 'edit' || ($mode eq 'convert' && $pc{'ver'})){
   %pc = data_update_chara(\%pc);
@@ -166,7 +166,7 @@ HTML
     print '<input type="radio" name="protect" value="account"'.($pc{'protect'} eq 'account'?' checked':'').'> アカウントに紐付ける（ログイン中のみ編集可能になります）<br>';
   }
     print '<input type="radio" name="protect" value="password"'.($pc{'protect'} eq 'password'?' checked':'').'> パスワードで保護 ';
-  if ($mode eq 'edit' && $pc{'protect'} eq 'password') {
+  if ($mode eq 'edit' && $pc{'protect'} eq 'password' && $::in{'pass'}) {
     print '<input type="hidden" name="pass" value="'.$::in{'pass'}.'"><br>';
   } else {
     print '<input type="password" name="pass"><br>';

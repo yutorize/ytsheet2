@@ -35,13 +35,6 @@ if ($mode eq 'make'){
     $make_error .= '記入エラー：登録キーが一致しません。<br>';
   }
   
-  ## パスワードチェック
-  if(param('protect') eq 'password'){
-    if ($pass eq ''){ $make_error .= '記入エラー：パスワードが入力されていません。<br>'; }
-    else {
-      if ($pass =~ /[^0-9A-Za-z\.\-\/]/) { $make_error .= '記入エラー：パスワードに使える文字は、半角の英数字とピリオド、ハイフン、スラッシュだけです。'; }
-    }
-  }
   ## ID生成
   if($set::id_type && $LOGIN_ID){
     my $type = (param('type') eq 'm') ? 'm' : (param('type') eq 'i') ? 'i' : '';
@@ -59,6 +52,14 @@ if ($mode eq 'make'){
     while (overlap_check($new_id)) {
       $new_id = random_id(6);
     }
+  }
+}
+
+## パスワードチェック
+if(param('protect') eq 'password'){
+  if ($pass eq ''){ $make_error .= '記入エラー：パスワードが入力されていません。<br>'; }
+  else {
+    if ($pass =~ /[^0-9A-Za-z\.\-\/]/) { $make_error .= '記入エラー：パスワードに使える文字は、半角の英数字とピリオド、ハイフン、スラッシュだけです。'; }
   }
 }
 
