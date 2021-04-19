@@ -115,8 +115,8 @@ window.onload = function() {
       <dl class="effects"><dt>効果</dt><dd class="box">
         <TMPL_VAR effects>
         <TMPL_IF WeaponData>
-          <table>
-            <tr><th>用法</th><th>必筋</th><th>命中</th><th>威力</th><th>C値</th><th>追加D</th><th>備考</th></tr>
+          <table class="weapon-table">
+            <tr><th>用法</th><th>必筋</th><th>命中</th><th>威力</th><th>C値</th><th>追加D</th><th class="left">備考</th></tr>
             <TMPL_LOOP WeaponData>
             <tr>
             <td><TMPL_VAR USAGE></td>
@@ -125,21 +125,21 @@ window.onload = function() {
             <td><TMPL_VAR RATE></td>
             <td><TMPL_VAR CRIT></td>
             <td><TMPL_VAR DMG></td>
-            <td><TMPL_VAR NOTE></td>
+            <td class="left"><TMPL_VAR NOTE></td>
             </tr>
             </TMPL_LOOP>
           </table>
         </TMPL_IF>
         <TMPL_IF ArmourData>
-          <table>
-          <tr><th>用法</th><th>必筋</th><th>回避</th><th>防護</th><th>備考</th></tr>
+          <table class="weapon-table">
+          <tr><th>用法</th><th>必筋</th><th>回避</th><th>防護</th><th class="left">備考</th></tr>
           <TMPL_LOOP ArmourData>
           <tr>
           <td><TMPL_VAR USAGE></td>
           <td><TMPL_VAR REQD></td>
           <td><TMPL_VAR EVA></td>
           <td><TMPL_VAR DEF></td>
-          <td><TMPL_VAR NOTE></td>
+          <td class="left"><TMPL_VAR NOTE></td>
           </tr>
           </TMPL_LOOP>
           </table>

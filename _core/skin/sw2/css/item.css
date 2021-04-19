@@ -173,6 +173,12 @@ div.data dl.effects table td {
 div.data dl.effects table th {
   background: rgba(127,127,127,0.2);
 }
+div.data dl.effects table.weapon-table th {
+  white-space: nowrap;
+}
+div.data dl.effects table.weapon-table td:not(.left) {
+  white-space: nowrap;
+}
 
 /* // Description
 ---------------------------------------------------------------------------------------------------- */
