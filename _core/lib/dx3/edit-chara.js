@@ -395,7 +395,7 @@ function addEffect(){
   <tr><td colspan="9"><div>
     <b>種別</b><select name="effect${num}Type" oninput="calcEffect()">
       <option value="">
-      <option value="auto">自動
+      <option value="auto">自動取得
       <option value="dlois">Dロイス
       <option value="easy">イージー
       <option value="enemy">エネミー
@@ -430,28 +430,65 @@ let effectSortable = Sortable.create(document.getElementById('effect-table'), {
   handle: '.handle',
   filter: 'thead,tfoot',
   ghostClass: 'sortable-ghost',
-  onUpdate: function(evt){
-    const order = effectSortable.toArray();
-    let num = 1;
-    for(let id of order) {
-      if(document.getElementById(id)){
-        document.querySelector(`#${id} [name$="Type"]`    ).setAttribute('name',`effect${num}Type`);
-        document.querySelector(`#${id} [name$="Name"]`    ).setAttribute('name',`effect${num}Name`);
-        document.querySelector(`#${id} [name$="Lv"]`      ).setAttribute('name',`effect${num}Lv`);
-        document.querySelector(`#${id} [name$="Timing"]`  ).setAttribute('name',`effect${num}Timing`);
-        document.querySelector(`#${id} [name$="Skill"]`   ).setAttribute('name',`effect${num}Skill`);
-        document.querySelector(`#${id} [name$="Dfclty"]`  ).setAttribute('name',`effect${num}Dfclty`);
-        document.querySelector(`#${id} [name$="Target"]`  ).setAttribute('name',`effect${num}Target`);
-        document.querySelector(`#${id} [name$="Range"]`   ).setAttribute('name',`effect${num}Range`);
-        document.querySelector(`#${id} [name$="Encroach"]`).setAttribute('name',`effect${num}Encroach`);
-        document.querySelector(`#${id} [name$="Restrict"]`).setAttribute('name',`effect${num}Restrict`);
-        document.querySelector(`#${id} [name$="Note"]`    ).setAttribute('name',`effect${num}Note`);
-        document.querySelector(`#${id} [name$="Exp"]`     ).setAttribute('name',`effect${num}Exp`);
-        num++;
-      }
+  onSort: function(evt){ effectSortAfter(); },
+  onStart: function(evt){ document.getElementById('effect-trash').style.display = 'block' },
+  onEnd: function(evt){
+    if(!effectTrashNum) { document.getElementById('effect-trash').style.display = 'none' }
+  },
+});
+let effectSortableTrash = Sortable.create(document.getElementById('effect-trash-table'), {
+  group: "effect",
+  dataIdAttr: 'id',
+  animation: 100,
+  filter: 'thead,tfoot',
+  ghostClass: 'sortable-ghost'
+});
+let effectTrashNum = 0;
+function effectSortAfter(){
+  const order = effectSortable.toArray();
+  let num = 1;
+  for(let id of order) {
+    if(document.getElementById(id)){
+      document.querySelector(`#${id} [name$="Type"]`    ).setAttribute('name',`effect${num}Type`);
+      document.querySelector(`#${id} [name$="Name"]`    ).setAttribute('name',`effect${num}Name`);
+      document.querySelector(`#${id} [name$="Lv"]`      ).setAttribute('name',`effect${num}Lv`);
+      document.querySelector(`#${id} [name$="Timing"]`  ).setAttribute('name',`effect${num}Timing`);
+      document.querySelector(`#${id} [name$="Skill"]`   ).setAttribute('name',`effect${num}Skill`);
+      document.querySelector(`#${id} [name$="Dfclty"]`  ).setAttribute('name',`effect${num}Dfclty`);
+      document.querySelector(`#${id} [name$="Target"]`  ).setAttribute('name',`effect${num}Target`);
+      document.querySelector(`#${id} [name$="Range"]`   ).setAttribute('name',`effect${num}Range`);
+      document.querySelector(`#${id} [name$="Encroach"]`).setAttribute('name',`effect${num}Encroach`);
+      document.querySelector(`#${id} [name$="Restrict"]`).setAttribute('name',`effect${num}Restrict`);
+      document.querySelector(`#${id} [name$="Note"]`    ).setAttribute('name',`effect${num}Note`);
+      document.querySelector(`#${id} [name$="Exp"]`     ).setAttribute('name',`effect${num}Exp`);
+      num++;
     }
   }
-});
+  form.effectNum.value = num-1;
+  let del = 0;
+  const trashOrder = effectSortableTrash.toArray();
+  for(let id of trashOrder) {
+    if(document.getElementById(id)){
+      del++;
+      document.querySelector(`#${id} [name$="Type"]`    ).setAttribute('name',`effectD${del}Type`);
+      document.querySelector(`#${id} [name$="Name"]`    ).setAttribute('name',`effectD${del}Name`);
+      document.querySelector(`#${id} [name$="Lv"]`      ).setAttribute('name',`effectD${del}Lv`);
+      document.querySelector(`#${id} [name$="Timing"]`  ).setAttribute('name',`effectD${del}Timing`);
+      document.querySelector(`#${id} [name$="Skill"]`   ).setAttribute('name',`effectD${del}Skill`);
+      document.querySelector(`#${id} [name$="Dfclty"]`  ).setAttribute('name',`effectD${del}Dfclty`);
+      document.querySelector(`#${id} [name$="Target"]`  ).setAttribute('name',`effectD${del}Target`);
+      document.querySelector(`#${id} [name$="Range"]`   ).setAttribute('name',`effectD${del}Range`);
+      document.querySelector(`#${id} [name$="Encroach"]`).setAttribute('name',`effectD${del}Encroach`);
+      document.querySelector(`#${id} [name$="Restrict"]`).setAttribute('name',`effectD${del}Restrict`);
+      document.querySelector(`#${id} [name$="Note"]`    ).setAttribute('name',`effectD${del}Note`);
+      document.querySelector(`#${id} [name$="Exp"]`     ).setAttribute('name',`effectD${del}Exp`);
+    }
+  }
+  effectTrashNum = del;
+  if(!del){ document.getElementById('effect-trash').style.display = 'none' }
+  calcEffect();
+}
+
 
 // コンボ欄 ----------------------------------------
 // 技能セット

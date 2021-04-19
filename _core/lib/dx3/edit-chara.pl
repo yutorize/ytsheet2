@@ -606,7 +606,7 @@ print <<"HTML";
               <td>@{[input "effect${num}Restrict",'','','placeholder="制限" list="list-restrict"']}</td>
             </tr>
             <tr><td colspan="9"><div>
-              <b>種別</b><select name="effect${num}Type" oninput="calcEffect()">@{[ option "effect${num}Type",'auto|<自動>','dlois|<Dロイス>','easy|<イージー>','enemy|<エネミー>' ]}</select>
+              <b>種別</b><select name="effect${num}Type" oninput="calcEffect()">@{[ option "effect${num}Type",'auto|<自動取得>','dlois|<Dロイス>','easy|<イージー>','enemy|<エネミー>' ]}</select>
               <b class="small">経験点修正</b>@{[input "effect${num}Exp",'number','calcEffect']}
               <b>効果</b>@{[input "effect${num}Note"]}
             </div></td></tr>
@@ -616,7 +616,7 @@ HTML
 print <<"HTML";
           <tfoot>
             <tr><th></th><th>名称</th><th>Lv</th><th>タイミング</th><th>技能</th><th>難易度</th><th>対象</th><th>射程</th><th>侵蝕値</th><th>制限</th></tr>
-          </thead>
+          </tfoot>
         </table>
         <div class="annotate">
         ※種別「自動」「Dロイス」を選択した場合、取得時（1Lv）の経験点を0として計算します。<br>
@@ -624,6 +624,11 @@ print <<"HTML";
         </div>
         <div class="add-del-button"><a onclick="addEffect()">▼</a><a onclick="delEffect()">▲</a></div>
       </details>
+      <div class="box trash-box" id="effect-trash">
+        <h2><i class="fas fa-trash-alt"></i><span class="shorten">削除エフェクト</span></h2>
+        <table class="edit-table line-tbody" id="effect-trash-table"></table>
+        <i class="fas fa-times close-button" onclick="document.getElementById('effect-trash').style.display = 'none';"></i>
+      </div>
       
       <details class="box" id="combo" $open{'combo'} style="position:relative">
         <summary>コンボ</summary>
