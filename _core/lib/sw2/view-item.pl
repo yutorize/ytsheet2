@@ -119,7 +119,7 @@ foreach (1 .. 3){
     "NOTE"     => $pc{'weapon'.$_.'Note'},
   } );
 }
-$SHEET->param(WeaponData => \@weapons) if !$pc{'forbidden'};
+$SHEET->param(WeaponData => \@weapons) if !$pc{'forbiddenMode'};
 
 ### 防具 --------------------------------------------------
 my @armours;
@@ -135,7 +135,7 @@ foreach (1 .. 3){
     "NOTE"     => $pc{'armour'.$_.'Note'},
   } );
 }
-$SHEET->param(ArmourData => \@armours) if !$pc{'forbidden'};
+$SHEET->param(ArmourData => \@armours) if !$pc{'forbiddenMode'};
 
 ### タグ --------------------------------------------------
 my @tags;
