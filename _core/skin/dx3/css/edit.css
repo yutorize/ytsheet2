@@ -8,7 +8,7 @@
 }
 #regulation dl {
   display: grid;
-  grid-template-columns: max-content 10em max-content 6em 1fr;
+  grid-template-columns: max-content 14em max-content 6em 1fr;
   grid-template-rows: auto;
   margin: 1rem;
 }
