@@ -1128,10 +1128,11 @@ p.words span.brackets {
   display: unset;
 }
 
-#combo .combo-table .combo-combo dd span {
+#combo .combo-table .combo-combo dd span.thin {
   display: inline-block;
   font-size: 90%;
-  transform: scaleY(calc(1/0.9))
+  transform: scaleY(calc(1/0.9));
+  text-decoration: inherit;
 }
 #combo .combo-table .combo-in dd span {
   display: inline-block;

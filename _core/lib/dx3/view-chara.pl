@@ -462,11 +462,11 @@ $SHEET->param(Combos => \@combos);
 sub textCombo {
   my $text = shift;
   if($text =~ /《.*?》/){
-    $text =~ s#(《.*?》)#<span>$1</span>#g
+    $text =~ s#(《.*?》)#<span class="thin">$1</span>#g
   }
   elsif($text){
     my @array = split(/[+＋]/, $text);
-    $text = '<span>'.join('</span>+<span>',@array).'</span>';
+    $text = '<span class="thin">'.join('</span>＋<span class="thin">',@array).'</span>';
   }
   
   return $text;
