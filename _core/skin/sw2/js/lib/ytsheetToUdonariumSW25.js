@@ -151,7 +151,7 @@ io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2SwordWorld2P
 
 	data_character.common = `
     <data name="common">
-      <data name="name">${json.characterName}</data>
+      <data name="name">${json.characterName || json.aka}</data>
       <data name="size">1</data>
     </data>`;
 

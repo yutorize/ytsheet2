@@ -832,7 +832,7 @@ form#monster div.box {
   margin: 1rem 0;
   overflow-x: auto;
 }
-form#monster h2 {
+form#monster .box h2 {
   font-size: 100%;
 }
 form#monster #area-name {
@@ -949,9 +949,6 @@ form#item div.box {
 }
 form#item div.box {
   margin: 1rem 0;
-}
-form#item h2 {
-  font-size: 100%;
 }
 form#item #area-name {
   font-weight: bold;

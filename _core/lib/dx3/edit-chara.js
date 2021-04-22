@@ -8,6 +8,7 @@ let syndromes = [];
 window.onload = function() {
   syndromes = [form.syndrome1.value, form.syndrome2.value, form.syndrome3.value];
   
+  nameSet();
   calcStt();
   calcEffect();
   calcItem();
@@ -20,6 +21,21 @@ window.onload = function() {
   palettePresetChange();
 };
 
+// 送信前チェック ----------------------------------------
+function formCheck(){
+  if(form.characterName.value === '' && form.aka.value === ''){
+    alert('キャラクター名かコードネームのいずれかを入力してください。');
+    form.characterName.focus();
+    return false;
+  }
+  if(form.protect.value === 'password' && form.pass.value === ''){
+    alert('パスワードが入力されていません。');
+    form.pass.focus();
+    return false;
+  }
+}
+
+// レギュレーション ----------------------------------------
 function changeRegu(){
   document.getElementById("history0-exp").innerHTML = form.history0Exp.value;
 }

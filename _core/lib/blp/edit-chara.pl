@@ -114,7 +114,6 @@ Content-type: text/html\n
 
   <main>
     <article>
-      <aside class="message">$message</aside>
       <form name="sheet" method="post" action="./" enctype="multipart/form-data">
       <input type="hidden" name="ver" value="${main::ver}">
 HTML
@@ -123,27 +122,42 @@ if($mode_make){
 }
 print <<"HTML";
       <input type="hidden" name="mode" value="@{[ $mode eq 'edit' ? 'save' : 'make' ]}">
-      <div id="area-name">
-        <div id="character-name">
-          <div>キャラクター名<br>@{[input('characterName','text','','required placeholder="漢字:るび　（※「:」は半角）"')]}</div>
-        </div>
-        <div>
-          <p id="update-time"></p>
-          <p id="player-name">プレイヤー名@{[input('playerName')]}</p>
-        </div>
+      
+      <div id="header-menu">
+        <h2><span></span></h2>
+        <ul>
+          <li onclick="sectionSelect('common');"><span>キャラクター</span><span>データ</span></li>
+          <li onclick="sectionSelect('palette');"><span>チャット</span><span>パレット</span></li>
+          <li onclick="sectionSelect('color');"><span>カラー</span><span>カスタム</span></li>
+          <li class="button">
 HTML
 if($mode eq 'edit'){
 print <<"HTML";
-        <input type="button" value="複製" onclick="window.open('./?mode=copy&id=$::in{'id'}@{[ $::in{'backup'}?"&backup=$::in{'backup'}":'' ]}');">
+            <input type="button" value="複製" onclick="window.open('./?mode=copy&id=$::in{'id'}@{[  $::in{'backup'}?"&backup=$::in{'backup'}":'' ]}');">
 HTML
 }
 print <<"HTML";
-        <input type="submit" value="保存">
-        <ul id="header-menu">
-          <li onclick="sectionSelect('common');">キャラクターデータ</li>
-          <li onclick="sectionSelect('palette');">チャットパレット</li>
-          <li onclick="sectionSelect('color');">カラーカスタム</li>
+            <input type="submit" value="保存">
+          </li>
         </ul>
+      </div>
+
+      <aside class="message">$message</aside>
+      
+      <section id="section-common">
+      <div class="box" id="name-form">
+        <div>
+          <dl id="character-name">
+            <dt>キャラクター名</dt>
+            <dd>@{[input('characterName','text',"nameSet",'required')]}</dd>
+            <dt class="ruby">ふりがな</dt>
+            <dd>@{[input('characterNameRuby','text',"nameSet")]}</dd>
+          </dl>
+        </div>
+        <dl id="player-name">
+          <dt>プレイヤー名</dt>
+          <dd>@{[input('playerName')]}</dd>
+        </dl>
       </div>
 HTML
 if($set::user_reqd){
@@ -178,7 +192,6 @@ HTML
 HTML
 }
   print <<"HTML";
-      <section id="section-common">
       <dl class="box" id="hide-options">
         <dt>閲覧可否設定</dt>
         <dd id="forbidden-checkbox">

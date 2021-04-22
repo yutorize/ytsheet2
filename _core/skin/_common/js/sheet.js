@@ -102,7 +102,7 @@ async function downloadAsUdonarium() {
   const characterId = characterDataJson.birthTime;
   const image = await io.github.shunshun94.trpg.ytsheet.getPicture(characterDataJson.imageURL || defaultImage);
   const udonariumXml = io.github.shunshun94.trpg.udonarium[`generateCharacterXmlFromYtSheet2${generateType}`](characterDataJson, location.href, image.hash);
-  const udonariumUrl = await generateUdonariumZipFile(characterDataJson.characterName, udonariumXml, image);
+  const udonariumUrl = await generateUdonariumZipFile((characterDataJson.characterName||characterDataJson.aka), udonariumXml, image);
   downloadFile(`udonarium_data_${characterId}.zip`, udonariumUrl);
 }
 

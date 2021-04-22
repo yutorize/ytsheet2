@@ -91,6 +91,7 @@ let level = 0;
 let levelCasters = [];
 
 window.onload = function() {
+  nameSet();
   race = form.race.value;
   calcExp();
   calcLv();
@@ -105,6 +106,21 @@ window.onload = function() {
   palettePresetChange();
 };
 
+// 送信前チェック ----------------------------------------
+function formCheck(){
+  if(form.characterName.value === '' && form.aka.value === ''){
+    alert('キャラクター名か二つ名のいずれかを入力してください。');
+    form.characterName.focus();
+    return false;
+  }
+  if(form.protect.value === 'password' && form.pass.value === ''){
+    alert('パスワードが入力されていません。');
+    form.pass.focus();
+    return false;
+  }
+}
+
+// レギュレーション ----------------------------------------
 function changeRegu(){
   document.getElementById("history0-exp").innerHTML = form.history0Exp.value;
   document.getElementById("history0-honor").innerHTML = form.history0Honor.value;
@@ -116,6 +132,7 @@ function changeRegu(){
   calcHonor();
 }
 
+// 信仰チェック ----------------------------------------
 function changeFaith(Faith) {
   if(Faith.options[Faith.selectedIndex].value === 'その他の信仰'){
     form.faithOther.style.display = '';

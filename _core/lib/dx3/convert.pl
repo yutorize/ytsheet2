@@ -76,9 +76,7 @@ sub convertHokanjoToYtsheet {
   ## 単純変換
   my %pc = (
     'convertSource' => 'キャラクター保管所',
-    'characterName' => convertNameRuby($in{'pc_name'} || $in{'data_title'}),
     'tags' => convertTags($in{'pc_tags'}),
-    'aka' => convertNameRuby($in{'pc_codename'}),
     'age' => $in{'age'},
     'gender' => $in{'sex'},
     'height' => $in{'pc_height'},
@@ -119,8 +117,11 @@ sub convertHokanjoToYtsheet {
     'skillProcure'   => $in{'skill_tokugi'}[10], 'skillAddProcure'   => $in{'skill_sonota'}[10],
     'skillInfo1'     => $in{'skill_tokugi'}[11], 'skillAddInfo1'     => $in{'skill_sonota'}[11], 'skillInfo1Name' => '情報:'.$in{'skill_memo'}[11],
     '' => $in{''},
-    '' => $in{''},
   );
+  ##名前
+  ($pc{'characterName'},$pc{'characterNameRuby'}) = convertNameRuby($in{'pc_name'} || $in{'data_title'});
+  ($pc{'aka'},$pc{'akaRuby'}) = convertNameRuby($in{'pc_codename'});
+
   ## 技能
   my %skills = (1=>'Ride', 2=>'Art', 3=>'Know', 4=>'Info');
   my %skillsjp = (1=>'運転', 2=>'芸術', 3=>'知識', 4=>'情報');
@@ -305,9 +306,9 @@ sub convertTiming {
 }
 sub convertNameRuby {
   my $name = shift;
-  if    ($name =~ s/^(.+)[\(（](.+?)[\)）]$/$1\:$2/){ 1; }
-  elsif ($name =~ s/^(.+)[\"“](.+?)[\"”]$/$1\:$2/){ 1; }
-  return $name;
+  if    ($name =~ /^(.+)[\(（](.+?)[\)）]$/){ return $1,$2; }
+  elsif ($name =~ /^(.+)[\"“](.+?)[\"”]$/){ return $1,$2; }
+  else { return $name; }
 }
 ### キャラクターシート倉庫 --------------------------------------------------
 sub convertSoukoToYtsheet {
@@ -318,9 +319,6 @@ sub convertSoukoToYtsheet {
     'convertSource' => 'キャラクターシート倉庫',
     
     'playerName' => $in{'base'}{'player'},
-    
-    'characterName' => convertNameRuby($in{'base'}{'name'}),
-    'aka' => convertNameRuby($aka),
     
     'age' => $in{'base'}{'age'},
     'gender' => $in{'base'}{'sex'},
@@ -379,6 +377,9 @@ sub convertSoukoToYtsheet {
     'skillAddProcure'   => $in{'skills'}{'tyo'}{'D'}{'dlv'} ne '' ? $in{'skills'}{'tyo'}{'D'}{'dlv'} - $in{'skills'}{'tyo'}{'A'}{'lv'} : '',
     'freeNote' => $in{'base'}{'memo'},
   );
+  ##名前
+  ($pc{'characterName'},$pc{'characterNameRuby'}) = convertNameRuby($in{'base'}{'name'});
+  ($pc{'aka'},$pc{'akaRuby'}) = convertNameRuby($aka);
   ## シンドローム
   foreach my $i (1 .. 3){
     $pc{'syndrome'.$i} =~ s/ハ[イィ]ロ[ウゥ]/ハィロゥ/;

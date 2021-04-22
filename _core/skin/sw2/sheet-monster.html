@@ -150,7 +150,7 @@ window.onload = function() {
       <div id="area-monstername">
         <div class="lv"><TMPL_VAR lv></div>
         <div class="name-taxa">
-          <h1><TMPL_IF characterName><TMPL_VAR characterName><small>（<TMPL_VAR monsterName>）</small><TMPL_ELSE><TMPL_VAR monsterName></TMPL_IF></h1>
+          <h1><TMPL_IF characterName><TMPL_VAR characterName><TMPL_IF monsterName><small>（<TMPL_VAR monsterName>）</small></TMPL_IF><TMPL_ELSE><TMPL_VAR monsterName></TMPL_IF></h1>
           <div class="taxa">分類：<TMPL_VAR taxa></div>
         </div>
       </div>

@@ -9,8 +9,6 @@ sub addJsonData {
   my $type = $_[1];
   
   %pc = data_update_chara(\%pc);
-  ### ルビ分離 --------------------------------------------------
-  ($pc{'characterNameRaw'}, $pc{'characterNameRuby'}) = split(/:/,$pc{'characterName'});
   
   ### ロイス数 --------------------------------------------------
   my @dloises; $pc{'loisHave'} = 0; $pc{'loisMax'} = 0; $pc{'titusHave'} = 0; $pc{'sublimated'} = 0;

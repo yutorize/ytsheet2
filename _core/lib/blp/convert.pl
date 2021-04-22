@@ -88,7 +88,8 @@ sub convertSoukoToYtsheet {
     
     'playerName' => $in{'base'}{'player'},
     
-    'characterName' => $in{'base'}{'name'}.($in{'base'}{'nameKana'} ? "\:$in{'base'}{'nameKana'}" : ''),
+    'characterName' => $in{'base'}{'name'},
+    'characterNameRuby' => $in{'base'}{'nameKana'},
     
     'factor' => $in{'base'}{'factor'},
     'belong' => $in{'base'}{'belongs'},    

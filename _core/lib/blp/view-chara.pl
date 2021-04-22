@@ -99,8 +99,10 @@ if(!param('backup')){
   if($pc{'partner1Url'} && $pc{'partner1Auto'}){
     my %pr = data_partner_get($pc{'partner1Url'});
     if($pr{'convertSource'}){
+      if($pr{'ver'}){ %pr = data_update_chara(\%pr); }
       $pc{'p1_'.$_} = $pr{$_} foreach keys %pr;
-      $pc{'partner1Name'}  = $pr{'characterName'};
+      $pc{'partner1Name'}     = $pr{'characterName'};
+      $pc{'partner1NameRuby'} = $pr{'characterNameRuby'};
       $pc{'partner1Factor'}  = $pr{'factorCore'}.'／'.$pr{'factorStyle'};
       $pc{'partner1Age'}     = ($pr{'factor'} eq '吸血鬼' ? $pr{'ageApp'}.'／' : '').$pr{'age'};
       $pc{'partner1Gender'}  = $pr{'gender'};
@@ -132,7 +134,8 @@ if(!param('backup')){
     my %pr = data_partner_get($pc{'partner2Url'});
     if($pr{'convertSource'}){
       $pc{'p2_'.$_} = $pr{$_} foreach keys %pr;
-      $pc{'partner2Name'}  = $pr{'characterName'};
+      $pc{'partner2Name'}     = $pr{'characterName'};
+      $pc{'partner2NameRuby'} = $pr{'characterNameRuby'};
       $pc{'partner2Factor'}  = $pr{'factorCore'}.'／'.$pr{'factorStyle'};
       $pc{'partner2Age'}     = ($pr{'factor'} eq '吸血鬼' ? $pr{'ageApp'}.'／' : '').$pr{'age'};
       $pc{'partner2Gender'}  = $pr{'gender'};
@@ -185,8 +188,7 @@ if($::in{'url'}){
 }
 ### キャラクター名 --------------------------------------------------
 foreach ('characterName','partner1Name','partner2Name'){
-  my($name, $ruby) = split(/:/,$pc{$_});
-  $SHEET->param($_ => "<ruby>$name<rt>$ruby</rt></ruby>") if $ruby;
+  $SHEET->param($_ => "<ruby>$pc{$_}<rt>$pc{$_.'Ruby'}</rt></ruby>") if $pc{$_.'Ruby'};
 }
 ### プレイヤー名 --------------------------------------------------
 if($set::playerlist){

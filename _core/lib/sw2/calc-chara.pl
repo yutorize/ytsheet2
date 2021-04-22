@@ -10,6 +10,10 @@ require $set::data_items;
 sub data_calc {
   my %pc = %{$_[0]};
   my %st;
+  ### アップデート --------------------------------------------------
+  if($pc{'ver'}){
+    %pc = data_update_chara(\%pc);
+  }
   
   ### 技能 --------------------------------------------------
   my @class_a; my @class_b; my $lv_caster_total;
@@ -582,8 +586,7 @@ sub data_calc {
   $pc{'chatPalette'}   =~ s/\r\n?|\n/<br>/g;
 
   ### newline --------------------------------------------------
-  my($aka, $ruby) = split(/:/,$pc{'aka'});
-  my $charactername = ($aka?"“$aka”":"").$pc{'characterName'};
+  my $charactername = ($pc{'aka'} ? "“$pc{'aka'}”" : "").$pc{'characterName'};
   $charactername =~ s/[|｜]([^|｜]+?)《.+?》/$1/g;
   my $classlv;
   foreach my $class (@data::class_list){

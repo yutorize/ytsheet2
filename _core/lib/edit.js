@@ -3,6 +3,23 @@ const form = document.sheet;
 
 const delConfirmText = '項目に値が入っています。本当に削除しますか？';
 
+// 名前 ----------------------------------------
+function nameSet(id){
+  id = id ? id : 'characterName';
+  let name = vCheck(id+'Ruby') ? `<ruby>${form[id].value}<rt>${vCheck(id+'Ruby')}</rt></ruby>` : ruby(form[id].value);
+  let aka = (form.aka && form.aka.value) ? '<span class="aka">“'+(vCheck('akaRuby') ? `<ruby>${form.aka.value}<rt>${vCheck('akaRuby')}</rt></ruby>` : `${ruby(form.aka.value)}`)+'”</span>' : '';
+  document.querySelector('#header-menu > h2 > span').innerHTML = (aka + name) || '(名称未入力)';
+
+  function vCheck(id){
+    if(form[id]){ return form[id].value; }
+    else { return '' }
+  }
+}
+// ルビ置換 ----------------------------------------
+function ruby(text){
+  return text.replace(/[|｜](.+?)《(.+?)》/g, "<ruby>$1<rt>$2</rt></ruby>");
+}
+
 // チャットパレット ----------------------------------------
 function palettePresetChange (){
   const tool = form.paletteTool.value || 'ytc';

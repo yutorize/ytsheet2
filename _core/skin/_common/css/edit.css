@@ -28,11 +28,12 @@ html {
   overflow: visible;
 }
 main {
+  padding-top: 0;
   overflow: visible;
 }
 @media screen and (max-width:735px){
   main {
-    padding-top: 11rem;
+    padding-top: 6em;
     overflow-x: hidden;
   }
 }
@@ -225,27 +226,82 @@ input.auto {
 
 /* // メニュー
 ---------------------------------------------------------------------------------------------------- */
-ul#header-menu {
-  position: absolute;
-  display: flex;
-  right: 0;
-  bottom: calc(-1em - 3px - 1rem);
-  line-height: 1;
-  background: rgba(100,100,100,0.9);
+#header-menu {
+  position: sticky;
+  top: 0px;
+  z-index: 1;
+  background: rgba(90,90,90,0.9);
+  border-width: 0 1px 1px;
+  border-style: solid;
+  border-color: transparent;
   border-radius: 0 0 .5em .5em;
   color: #fff;
+  overflow: hidden;
+}
+#header-menu h2 {
+  display: grid;
+  align-items: flex-end;
+  height: calc(1.6em + 5px);
+  padding: 0 .2em 3px;
+  border-width: 0 0 1px;
+  border-style: solid;
+  border-color: rgba(200,200,200,0.3);
+  font-size: 130%;
+  font-family: var(--base-font-family-min);
+  line-height: 1;
+  text-shadow: #000 0px 0px .1rem,
+    #000  .1rem .1rem, #000 -.1rem -.1rem,
+    #000 -.1rem .1rem, #000  .1rem -.1rem,
+    #000  .0rem .1rem, #000  .0rem -.1rem,
+    #000 -.1rem .0rem, #000  .1rem  .0rem;
+  white-space: nowrap;
+}
+#header-menu h2 .aka {
+  margin-right: .5em;
+}
+#header-menu h2 ruby rt {
+  font-size: 0.6em;
+}
+#header-menu ul {
+  display: flex;
+  line-height: 1;
   font-weight: bold;
   overflow: hidden;
 }
-ul#header-menu li {
-  padding: .5rem 1rem;
+#header-menu ul li {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: 0 1rem;
   cursor: pointer;
+  user-select: none;
 }
-ul#header-menu li + li {
-  border-left: 1px solid rgba(200,200,200,0.3);
+#header-menu ul li:not(.button) {
+  border-right: 1px solid rgba(200,200,200,0.3);
 }
-ul#header-menu li:hover {
+#header-menu ul li:hover {
   background: rgba(0,0,0,0.5);
+}
+#header-menu ul li span {
+  display: inline-block;
+}
+#header-menu ul li.button {
+  display: flex;
+  flex-wrap: nowrap;
+  margin-left: auto;
+  padding: 0;
+}
+#header-menu ul li.button input {
+  padding: .3em .5em;
+  border: 0;
+  border-radius: 0;
+}
+#header-menu ul li.button input + input {
+  margin-left: 1px;
+}
+#header-menu ul li.button input[type="submit"] {
+  padding: .3em 1em;
 }
 section {
   margin-top: 2em;
@@ -254,11 +310,22 @@ section > h2 {
   margin-top: 1rem;
 }
 @media screen and (max-width:735px){
-  ul#header-menu {
-  bottom: calc(-1em - 3px - 2rem);
+  #header-menu {
+    position: fixed;
+    left: 0;
+    right: 0;
+    border-radius: 0;
   }
-  ul#header-menu li {
-    padding: 1rem;
+  #header-menu ul {
+    bottom: calc(-1em - 3px - 2rem);
+  }
+  #header-menu ul li:not(.button) {
+    text-align: center;
+  }
+  #header-menu ul li.button input[type="button"],
+  #header-menu ul li.button input[type="submit"] {
+    padding-top: .6em;
+    padding-bottom: .6em;
   }
 }
 
@@ -399,68 +466,75 @@ input[type="button"]:hover {
 /* // 共通設定欄
 ---------------------------------------------------------------------------------------------------- */
 /* 名前 */
-#area-name {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  position: sticky;
-  top: 0px;
-  z-index: 1;
-  padding: 0.5em;
-  background-image: linear-gradient(to right, var(--box-head-bg-color), var(--box-base-bg-color));
-  background-color: #fff;
-  border-color: var(--box-outside-border-color, inherit);
-  border-width: 3px 0;
-  border-style: solid;
+#name-form {
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  grid-gap: 1em;
+  margin: 1rem 0;
+  position: relative;
 }
-.night #area-name {
+.night #name-form {
   background-color: #222;
 }
-#area-name input {
-  width: calc(100% - 1em);
-  min-width: 3em;
-  margin: 2px;
-  padding: 2px
+#name-form > div:first-child {
 }
-#area-name #character-name {
-  flex-grow: 1;
-  text-align: left;
-  font-weight: bold;
-  font-size: 1.4rem;
+#name-form input {
+  width: calc(100% - 4px);
+  min-width: 3em;
+  margin: 0 2px;
+  padding: 2px;
+}
+#name-form dl {
+  display: grid;
+  grid-template-rows: max-content auto;
+  width: 100%;
+  padding: 0 0 3px 2px;
+  font-size: inherit;
   font-family: inherit;
 }
-#area-name #character-name input {
-  width: calc(100% - 8em);
-}
-#area-name #character-name br + input {
-  width: calc(100% - 1em);
-}
-#area-name #player-name {
-  text-align: left;
+#name-form dl dt {
+  grid-row: 1;
+  display: grid;
   font-weight: bold;
+  text-align: left;
 }
-#area-name input[type="submit"],
-#area-name input[type="button"] {
+#name-form dl dd {
+  grid-row: 2;
+}
+#name-form #character-name {
+}
+#name-form dl dt.ruby {
+  align-self: flex-end;
+  font-size: 85%;
+}
+#name-form #player-name {
+  padding-bottom: 2px;
+  border-width: 0 0 0 1px;
+  border-style: solid;
+}
+#name-form input[type="submit"],
+#name-form input[type="button"] {
   width: 100px;
   align-self: stretch;
 }
-#area-name input[type="button"] {
+#name-form input[type="button"] {
   width: 50px;
 }
 @media screen and (max-width:735px){
-  #area-name {
-    position: fixed;
-    left: 0;
-    right: 0;
-    line-height: 1;
+  #name-form {
+    display: block;
   }
-  #area-name #character-name {
-    font-size: inherit;
+  #name-form dl {
+    display: block;
   }
-  #area-name #character-name input {
-    width: calc(100% - 1em);
+  #name-form dl#aka,
+  #name-form dl#player-name {
+    border-width: 1px 0 0 !important;
+    border-style: solid;
+    margin-top: .5em;
   }
 }
+
 /* 編集保護 */
 #edit-protect {
   margin-top: 1rem;
@@ -471,7 +545,7 @@ input[type="button"]:hover {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
-  margin-bottom: 1rem;
+  margin-top: 1rem;
   align-items: center;
 }
 #forbidden-checkbox {
@@ -492,7 +566,6 @@ input[type="button"]:hover {
 }
 @media screen and (max-width:735px){
   #edit-protect {
-    margin-top: 3rem;
   }
   #hide-options dt {
     flex-basis: 100%;
@@ -500,6 +573,9 @@ input[type="button"]:hover {
 }
 
 /* グループ */
+#group {
+  margin-top: 1rem;
+}
 #group dl {
   display: grid;
   grid-template-columns: 4em 1fr 2.5em 3fr;

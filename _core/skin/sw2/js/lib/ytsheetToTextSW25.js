@@ -93,7 +93,7 @@ io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2SwordWorld2En
 
 io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2SwordWorld2PC = (json) => {
 	const result = [];
-	result.push(`キャラクター名：${json.characterName}`);
+	result.push(`キャラクター名：${json.aka ? `“${json.aka}”` : '' }${json.characterName||''}`);
 	result.push(`種族：${json.race || ''} ${json.raceAbility || ''}`);
 	result.push(`生まれ：${json.birth || ''}`);
 	if(json.faith) { result.push(`信仰：${json.faith}`); }

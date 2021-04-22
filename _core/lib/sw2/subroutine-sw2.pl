@@ -100,8 +100,9 @@ sub tag_unescape_ytc {
 ### バージョンアップデート --------------------------------------------------
 sub data_update_chara {
   my %pc = %{$_[0]};
-  $pc{'ver'} =~ s/^([0-9]+)\.([0-9]+)\.([0-9]+)$/$1.$2$3/;
-  if($pc{'ver'} < 1.10){
+  my $ver = $pc{'ver'};
+  $ver =~ s/^([0-9]+)\.([0-9]+)\.([0-9]+)$/$1.$2$3/;
+  if($ver < 1.10){
     $pc{'fairyContractEarth'} = 1 if $pc{'ftElemental'} =~ /土|地/;
     $pc{'fairyContractWater'} = 1 if $pc{'ftElemental'} =~ /水|氷/;
     $pc{'fairyContractFire' } = 1 if $pc{'ftElemental'} =~ /火|炎/;
@@ -109,10 +110,10 @@ sub data_update_chara {
     $pc{'fairyContractLight'} = 1 if $pc{'ftElemental'} =~ /光/;
     $pc{'fairyContractDark' } = 1 if $pc{'ftElemental'} =~ /闇/;
   }
-  if($pc{'ver'} < 1.11001){
+  if($ver < 1.11001){
     $pc{'paletteUseBuff'} = 1;
   }
-  if($pc{'ver'} < 1.11004){
+  if($ver < 1.11004){
     $pc{'armour1Name'} = $pc{'armourName'};
     $pc{'armour1Reqd'} = $pc{'armourReqd'};
     $pc{'armour1Eva'}  = $pc{'armourEva'};
@@ -134,7 +135,7 @@ sub data_update_chara {
     $pc{"defenseTotal1Def"} = $pc{"defenseTotalAllDef"};
     $pc{"defTotal1CheckArmour1"} = $pc{"defTotal1CheckShield1"} = $pc{"defTotal1CheckDefOther1"} = $pc{"defTotal1CheckDefOther2"} = $pc{"defTotal1CheckDefOther3"} = 1;
   }
-  if($pc{'ver'} < 1.12022){
+  if($ver < 1.12022){
     $pc{'updateMessage'}{'ver.1.12.022'} = '「言語」欄が、セージ技能とバード技能による習得数をカウントする仕様になりました。<br>　このシートのデータは、自動的に、新仕様に合わせて項目を振り分けていますが、念の為、言語欄のチェックを推奨します。';
     foreach my $n (1 .. $pc{'languageNum'}){
       if($pc{'race'} =~ /人間/ && $pc{"language${n}"} =~ /地方語/){
@@ -180,6 +181,11 @@ sub data_update_chara {
       if($pc{"language${n}Read"} == 1){ $pc{"language${n}Read"} = 'auto'; }
     }
   }
+  if($ver < 1.13002){
+    ($pc{'characterName'},$pc{'characterNameRuby'}) = split(':', $pc{'characterName'});
+    ($pc{'aka'},$pc{'akaRuby'}) = split(':', $pc{'aka'});
+  }
+  $pc{'ver'} = $main::ver;
   return %pc;
 }
 

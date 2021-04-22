@@ -203,15 +203,10 @@ if($::in{'url'}){
   $SHEET->param("convertUrl" => $::in{'url'});
 }
 ### キャラクター名 --------------------------------------------------
-{
-  my($name, $ruby) = split(/:/,$pc{'characterName'});
-  $SHEET->param("characterName" => "<ruby>$name<rt>$ruby</rt></ruby>") if $ruby;
-}
+$SHEET->param("characterName" => "<ruby>$pc{'characterName'}<rt>$pc{'characterNameRuby'}</rt></ruby>") if $pc{'characterNameRuby'};
 ### 二つ名 --------------------------------------------------
-{
-  my($aka, $ruby) = split(/:/,$pc{'aka'});
-  $SHEET->param("aka" => "<ruby>$aka<rt>$ruby</rt></ruby>") if $ruby;
-}
+$SHEET->param("aka" => "<ruby>$pc{'aka'}<rt>$pc{'akaRuby'}</rt></ruby>") if $pc{'akaRuby'};
+
 ### プレイヤー名 --------------------------------------------------
 if($set::playerlist){
   my $pl_id = (split(/-/, $::in{'id'}))[0];

@@ -5,6 +5,10 @@ use utf8;
 
 sub data_calc {
   my %pc = %{$_[0]};
+  ### アップデート --------------------------------------------------
+  if($pc{'ver'}){
+    %pc = data_update_chara(\%pc);
+  }
 
   ### レベル・成長 --------------------------------------------------
   ## 履歴から 
@@ -44,9 +48,7 @@ sub data_calc {
   $pc{'scarNote'}    =~ s/\r\n?|\n/<br>/g;
 
   ### newline --------------------------------------------------
-  my($name, undef) = split(/:/,$pc{'characterName'});
-  my($aka,  undef) = split(/:/,$pc{'aka'});
-  my $charactername = ($aka?"“$aka”":"").$name;
+  my $charactername = ($pc{'aka'} ? "“$pc{'aka'}”" : "").$pc{'characterName'};
   $charactername =~ s/[|｜]([^|｜]+?)《.+?》/$1/g;
   $::newline = "$pc{'id'}<>$::file<>".
                "$pc{'birthTime'}<>$::now<>$charactername<>$pc{'playerName'}<>$pc{'group'}<>".

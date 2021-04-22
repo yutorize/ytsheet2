@@ -49,7 +49,24 @@ Content-type: text/html\n
   <link rel="stylesheet" media="all" href="${main::core_dir}/skin/sw2/css/item.css?{main::ver}">
   <link rel="stylesheet" media="all" href="${main::core_dir}/skin/_common/css/edit.css?${main::ver}">
   <link rel="stylesheet" media="all" href="${main::core_dir}/skin/sw2/css/edit.css?{main::ver}">
+  <script src="${main::core_dir}/lib/edit.js?${main::ver}" defer></script>
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+  <script>
+    window.onload = function() { nameSet('itemName'); }
+    // 送信前チェック ----------------------------------------
+    function formCheck(){
+      if(form.itemName.value === ''){
+        alert('名称を入力してください。');
+        form.itemName.focus();
+        return false;
+      }
+      if(form.protect.value === 'password' && form.pass.value === ''){
+        alert('パスワードが入力されていません。');
+        form.pass.focus();
+        return false;
+      }
+    }
+  </script>
 </head>
 <body>
   <script src="${main::core_dir}/skin/_common/js/common.js?${main::ver}"></script>
@@ -59,8 +76,7 @@ Content-type: text/html\n
 
   <main>
     <article>
-      <aside class="message">$message</aside>
-      <form id="item" name="sheet" method="post" action="./" enctype="multipart/form-data">
+      <form id="item" name="sheet" method="post" action="./" enctype="multipart/form-data" onsubmit="return formCheck();">
       <input type="hidden" name="ver" value="${main::ver}">
       <input type="hidden" name="type" value="i">
 HTML
@@ -69,22 +85,37 @@ if($mode_make){
 }
 print <<"HTML";
       <input type="hidden" name="mode" value="@{[ $mode eq 'edit' ? 'save' : 'make' ]}">
-      <div id="area-name">
-        <div id="item-name">
-          <div>名称@{[ input 'itemName','text','','required' ]}</div>
-        </div>
-        <div>
-        <p id="update-time"></p>
-        <p id="author-name">製作者@{[input('author')]}</p>
-        </div>
+            
+      <div id="header-menu">
+        <h2><span></span></h2>
+        <ul>
+          <li class="button">
 HTML
 if($mode eq 'edit'){
 print <<"HTML";
-        <input type="button" value="複製" onclick="window.open('./?mode=copy&type=i&id=$::in{'id'}@{[ $::in{'backup'}?"&backup=$::in{'backup'}":'' ]}');">
+            <input type="button" value="複製" onclick="window.open('./?mode=copy&type=i&id=$::in{'id'}@{[  $::in{'backup'}?"&backup=$::in{'backup'}":'' ]}');">
 HTML
 }
 print <<"HTML";
-        <input type="submit" value="保存">
+            <input type="submit" value="保存">
+          </li>
+        </ul>
+      </div>
+
+      <aside class="message">$message</aside>
+      
+      <section id="section-common">
+      <div class="box" id="name-form">
+        <div>
+          <dl id="character-name">
+            <dt>名称</dt>
+            <dd>@{[ input('itemName','text',"nameSet('itemName')") ]}</dd>
+          </dl>
+        </div>
+        <dl id="player-name">
+          <dt>製作者</dt>
+          <dd>@{[input('author')]}</dd>
+        </dl>
       </div>
 HTML
 if($set::user_reqd){
@@ -119,7 +150,6 @@ HTML
 HTML
 }
   print <<"HTML";
-      <section id="section-common">
       <dl class="box" id="hide-options">
         <dt>閲覧可否設定</dt>
         <dd id="forbidden-checkbox">

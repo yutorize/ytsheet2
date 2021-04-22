@@ -161,8 +161,7 @@ if($::in{'url'}){
 }
 
 ### 二つ名 --------------------------------------------------
-my($aka, $ruby) = split(/:/,$pc{'aka'});
-$SHEET->param("aka" => "<ruby>$aka<rt>$ruby</rt></ruby>") if $ruby;
+$SHEET->param("aka" => "<ruby>$pc{'aka'}<rt>$pc{'akaRuby'}</rt></ruby>") if $pc{'akaRuby'};
 
 ### プレイヤー名 --------------------------------------------------
 if($set::playerlist){

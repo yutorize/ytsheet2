@@ -2,7 +2,34 @@
 const gameSystem = 'sw2';
 
 window.onload = function() {
+  nameSet();
   palettePresetChange();
+}
+
+// 送信前チェック ----------------------------------------
+function formCheck(){
+  if(form.monsterName.value === '' && form.characterName.value === ''){
+    alert('名称か名前のいずれかを入力してください。');
+    form.monsterName.focus();
+    return false;
+  }
+  if(form.protect.value === 'password' && form.pass.value === ''){
+    alert('パスワードが入力されていません。');
+    form.pass.focus();
+    return false;
+  }
+}
+
+// 名前 ----------------------------------------
+function nameSet(){
+  let m = ruby(form.monsterName.value);
+  let c = ruby(form.characterName.value);
+  document.querySelector('#header-menu > h2 > span').innerHTML = c && m ? `${c}<small>（${m}）</small>` : (c || m || '(名称未入力)');
+
+  function vCheck(id){
+    if(form[id]){ return form[id].value; }
+    else { return '' }
+  }
 }
 // 各ステータス計算 ----------------------------------------
 function calcVit(){

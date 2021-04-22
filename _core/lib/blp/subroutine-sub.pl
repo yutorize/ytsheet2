@@ -55,8 +55,11 @@ sub tag_unescape_ytc {
 sub data_update_chara {
   my %pc = %{$_[0]};
   $pc{'ver'} =~ s/^([0-9]+)\.([0-9]+)\.([0-9]+)$/$1.$2$3/;
-  #if($pc{'ver'} < 1.11001){
-  #}
+  if($pc{'ver'} < 1.13002){
+    ($pc{'characterName'},$pc{'characterNameRuby'}) = split(':', $pc{'characterName'});
+    ($pc{'aka'},$pc{'akaRuby'}) = split(':', $pc{'aka'});
+  }
+  $pc{'ver'} = $main::ver;
   return %pc;
 }
 

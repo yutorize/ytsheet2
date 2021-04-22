@@ -196,9 +196,7 @@ sub data_calc {
   $pc{"item${_}Note"}    =~ s/\r\n?|\n/<br>/g foreach (1 .. $pc{'itemNum'});
 
   ### newline --------------------------------------------------
-  my($name, undef) = split(/:/,$pc{'characterName'});
-  my($aka,  undef) = split(/:/,$pc{'aka'});
-  my $charactername = ($aka?"“$aka”":"").$name;
+  my $charactername = ($pc{'aka'} ? "“$pc{'aka'}”" : "").$pc{'characterName'};
   $charactername =~ s/[|｜]([^|｜]+?)《.+?》/$1/g;
   $_ =~ s/[|｜]([^|｜]+?)《.+?》/$1/g foreach (@dloises);
   $_ =~ s/[:：].+?$//g foreach (@dloises);

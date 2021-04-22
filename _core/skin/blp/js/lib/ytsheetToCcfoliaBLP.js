@@ -58,7 +58,7 @@ io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2BloodPathPC =
   const result = io.github.shunshun94.trpg.ccfolia.getCharacterSeed();
   const defaultPalette = await io.github.shunshun94.trpg.ytsheet.getChatPalette(opt_sheetUrl);
   const character = {
-      name: json.characterNameRaw || json.characterName,
+      name: json.characterName,
       playerName: json.playerName,
       memo: `${json.characterNameRuby ? '('+json.characterNameRuby+')\n' :''}PL: ${json.playerName || 'PL情報無し'}\n${json.factor || ''} / ${json.factorCore || ''} / ${json.factorStyle || ''}\n\n${json.imageURL ? '立ち絵：' + (json.imageCopyright || '権利情報なし') : ''}`,
       initiative: json.initiative || '0',
