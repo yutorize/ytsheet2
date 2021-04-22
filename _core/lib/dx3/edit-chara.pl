@@ -83,6 +83,7 @@ $pc{'skillArtNum'}  ||= 2;
 $pc{'skillKnowNum'} ||= 2;
 $pc{'skillInfoNum'} ||= 2;
 $pc{'effectNum'}  ||= 5;
+$pc{'magicNum'}   ||= 2;
 $pc{'weaponNum'}  ||= 1;
 $pc{'armorNum'}   ||= 1;
 $pc{'itemNum'}    ||= 2;
@@ -108,14 +109,18 @@ if  ($pc{"lifepathOrigin"}
   || $pc{"lifepathEncounter"}
   || $pc{"lifepathAwaken"}
   || $pc{"lifepathImpulse"}  ){ $open{'lifepath'} = 'open'; }
+if  ($pc{"insanity"}
+  || $pc{"insanityNote"}){ $open{'insanity'} = 'open'; }
 foreach (1..7){ if($pc{"lois${_}Relation"} || $pc{"lois${_}Name"}  ){ $open{'lois'}   = 'open'; last; } }
 foreach (1..3){ if($pc{"memory${_}Gain"}   || $pc{"memory${_}Name"}){ $open{'memory'} = 'open'; last; } }
 foreach (1..$pc{'comboNum'}) { if($pc{"combo${_}Name"} || $pc{"combo${_}Combo"}){ $open{'combo'} = 'open'; last; } }
 foreach (3..$pc{'effectNum'}){ if($pc{"effect${_}Name"} || $pc{"effect${_}Lv"}){ $open{'effect'} = 'open'; last; } }
+foreach (1..$pc{'magicNum'}){ if($pc{"magic${_}Name"} || $pc{"magic${_}Exp"}){ $open{'magic'} = 'open'; last; } }
 foreach (1..$pc{'weaponNum'})  { if($pc{"weapon${_}Name"})  { $open{'item'} = 'open'; last; } }
 foreach (1..$pc{'armorNum'})   { if($pc{"armor${_}Name"})   { $open{'item'} = 'open'; last; } }
 foreach (1..$pc{'vehiclesNum'}){ if($pc{"vehicles${_}Name"}){ $open{'item'} = 'open'; last; } }
 foreach (1..$pc{'itemNum'})    { if($pc{"item${_}Name"})    { $open{'item'} = 'open'; last; } }
+
 
 ### 改行処理 --------------------------------------------------
 $pc{'words'}         =~ s/&lt;br&gt;/\n/g;
@@ -277,18 +282,21 @@ foreach (@set::groups){
 }
 print <<"HTML";
           </select></dd>
-          <dt>タグ</dt><dd>@{[ input 'tags','','','' ]}</dd>
+          <dt>タグ</dt><dd>@{[ input 'tags','','checkStage','' ]}</dd>
         </dl>
       </div>
+
       <details class="box" id="regulation" @{[$mode eq 'edit' ? '':'open']}>
         <summary>作成レギュレーション</summary>
         <dl>
           <dt>ステージ</dt>
-          <dd>@{[input("stage",'','','list="list-stage"')]}</dd>
+          <dd>@{[input("stage",'','checkStage','list="list-stage"')]}</dd>
           <dt>経験点</dt>
           <dd>@{[input("history0Exp",'number','changeRegu',($set::make_fix?' readonly':''))]}</dd>
         </dl>
+        <div class="annotate">※ステージの入力値に「クロウリングケイオス」が含まれる場合、専用項目が表示されます。</div>
       </details>
+
       <div id="area-status">
         @{[ image_form ]}
 
@@ -366,29 +374,33 @@ print <<"HTML";
           </table>
         </div>
         <div class="box-union" id="sub-status">
-          <dl class="box">
-            <dt id="max-hp">HP最大値</dt>
+          <dl class="box" id="max-hp">
+            <dt>HP最大値</dt>
             <dd>+@{[input "maxHpAdd",'number','calcMaxHp']}=<b id="max-hp-total"></b></dd>
           </dl>
-          <dl class="box">
-            <dt id="stock-pt">常備化ポイント</dt>
+          <dl class="box" id="stock-pt">
+            <dt>常備化ポイント</dt>
             <dd>+@{[input "stockAdd",'number','calcStock']}=<b id="stock-total"></b></dd>
           </dl>
-          <dl class="box">
-            <dt id="saving">財産ポイント</dt>
+          <dl class="box" id="saving">
+            <dt>財産ポイント</dt>
             <dd>+@{[input "savingAdd",'number','calcSaving']}=<b id="saving-total"></b></dd>
           </dl>
-          <dl class="box">
-            <dt id="initiative">行動値</dt>
+          <dl class="box" id="initiative">
+            <dt>行動値</dt>
             <dd>+@{[input "initiativeAdd",'number','calcInitiative']}=<b id="initiative-total"></b></dd>
           </dl>
-          <dl class="box">
-            <dt id="move">戦闘移動</dt>
+          <dl class="box" id="move">
+            <dt>戦闘移動</dt>
             <dd>+@{[input "moveAdd",'number','calcMove']}=<b id="move-total"></b></dd>
           </dl>
-          <dl class="box">
-            <dt id="dash">全力移動</dt>
+          <dl class="box" id="dash">
+            <dt>全力移動</dt>
             <dd><b id="dash-total"></b></dd>
+          </dl>
+          <dl class="box cc-only" id="magic-dice">
+            <dt>魔術ダイス</dt>
+            <dd>+@{[input "magicAdd",'number','calcMagicDice']}=<b id="magic-total"></b></dd>
           </dl>
         </div>
       </div>
@@ -600,6 +612,14 @@ print <<"HTML";
           </tbody>
         </table>
       </details>
+      <details class="box cc-only" id="insanity" $open{'insanity'}>
+        <summary>永続的狂気</summary>
+        <dl class="edit-table " id="insanity-table">
+          <dt>@{[input "insanity",'','','placeholder="名称"']}</dt>
+          <dd>@{[input "insanityNote",'','','placeholder="効果"']}</dd>
+        </dl>
+      </details>
+
       <details class="box" id="effect" $open{'effect'}>
         <summary>エフェクト [<span id="exp-effect">0</span>]</summary>
         @{[input 'effectNum','hidden']}
@@ -647,6 +667,35 @@ print <<"HTML";
         <table class="edit-table line-tbody" id="effect-trash-table"></table>
         <i class="fas fa-times close-button" onclick="document.getElementById('effect-trash').style.display = 'none';"></i>
       </div>
+
+      <details class="box cc-only" id="magic" $open{'magic'}>
+        <summary>術式 [<span id="exp-magic">0</span>]</summary>
+        @{[input 'magicNum','hidden']}
+        <table class="edit-table line-tbody" id="magic-table">
+          <thead>
+            <tr><th></th><th>名称</th><th>種別</th><th>経験点</th><th>発動値</th><th>侵蝕値</th><th>効果</th></tr>
+          </thead>
+HTML
+foreach my $num (1 .. $pc{'magicNum'}) {
+print <<"HTML";
+          <tbody id="magic${num}">
+            <tr>
+              <td class="handle"> </td>
+              <td>@{[input "magic${num}Name"    ,'','','placeholder="名称"']}</td>
+              <td>@{[input "magic${num}Type"    ,'','','placeholder="種別" list="list-magic-type"']}</td>
+              <td>@{[input "magic${num}Exp"     ,'number','calcMagic']}</td>
+              <td>@{[input "magic${num}Activate",'','','placeholder="発動値"']}</td>
+              <td>@{[input "magic${num}Encroach",'','','placeholder="侵蝕値"']}</td>
+              <td>@{[input "magic${num}Note"    ,'','','placeholder="効果"']}</td>
+            </tr>
+          </tbody>
+HTML
+}
+print <<"HTML";
+        <tfoot></tfoot>
+        </table>
+        <div class="add-del-button"><a onclick="addMagic()">▼</a><a onclick="delMagic()">▲</a></div>
+      </details>
       
       <details class="box" id="combo" $open{'combo'} style="position:relative">
         <summary>コンボ</summary>
@@ -986,6 +1035,7 @@ print <<"HTML";
         ( 能力値[<b id="exp-used-status"></b>]
         - 技能[<b id="exp-used-skill"></b>]
         - エフェクト[<b id="exp-used-effect"></b>]
+        <span class="cc-only">- 術式[<b id="exp-used-magic"></b>]</span>
         - アイテム[<b id="exp-used-item"></b>]
         - メモリー[<b id="exp-used-memory"></b>]
         ) = 残り[<b id="exp-rest"></b>]点
@@ -1117,6 +1167,7 @@ print <<"HTML";
     <option value="バッドシティ">
     <option value="ウィアードエイジ">
     <option value="カオスガーデン">
+    <option value="クロウリングケイオス">
   </datalist>
   <datalist id="list-gender">
     <option value="男">
@@ -1389,6 +1440,18 @@ print <<"HTML";
     <option value="Dロイス">
     <option value="リミット">
     <option value="RB">
+  </datalist>
+  <datalist id="list-magic-type">
+    <option value="通常">
+    <option value="通常／維持">
+    <option value="印形">
+    <option value="儀式">
+    <option value="儀式／維持">
+    <option value="儀式／呪詛">
+    <option value="儀式／召喚">
+    <option value="召喚">
+    <option value="喚起">
+    <option value="喚起／儀式">
   </datalist>
   <script>
 HTML

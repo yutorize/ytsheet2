@@ -381,6 +381,24 @@
   }
   #effect table tbody td:nth-child(3) input { min-width: 2em; } /* Lv */
 }
+#magic {
+  overflow-x: auto;
+  margin-top: 1rem;
+}
+#magic table thead th:nth-child(1) { width: 1.4em; }
+#magic table thead th:nth-child(2) { width:  15em; } /* 名称 */
+#magic table thead th:nth-child(3) { width:   7em; } /* 種別 */
+#magic table thead th:nth-child(4) { width: 3.8em; } /* 経験点 */
+#magic table thead th:nth-child(5) { width: 5.5em; } /* 発動値 */
+#magic table thead th:nth-child(6) { width: 3.9em; } /* 侵蝕値 */
+#magic table thead th,
+#magic table tfoot th {
+  font-size: 90%;
+}
+#magic table tbody td {
+  padding: .5rem 0;
+  border-width: 0;
+}
 
 #combo {
   margin-top: 1rem;

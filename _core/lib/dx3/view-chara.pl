@@ -248,6 +248,9 @@ $SHEET->param("words" => $pc{'words'});
 $SHEET->param("wordsX" => ($pc{'wordsX'} eq '左' ? 'left:0;' : 'right:0;'));
 $SHEET->param("wordsY" => ($pc{'wordsY'} eq '下' ? 'bottom:0;' : 'top:0;'));
 
+### ステージ --------------------------------------------------
+if($pc{'stage'} =~ /クロウリングケイオス/){ $SHEET->param(ccOn => 1); }
+
 ### ブリード --------------------------------------------------
 $SHEET->param("breed" => 
   ($pc{'breed'} ? $pc{'breed'} : $pc{'syndrome3'} ? 'トライ' : $pc{'syndrome2'} ? 'クロス' : $pc{'syndrome1'} ? 'ピュア' : '') . '<span>ブリード</span>'
@@ -390,6 +393,24 @@ sub textShrink {
   }
   return $text;
 }
+
+### 術式 --------------------------------------------------
+my @magics;
+foreach (1 .. $pc{'magicNum'}){
+  next if(
+    !$pc{'magic'.$_.'Name'}     && !$pc{'magic'.$_.'Type'}     && !$pc{'magic'.$_.'Exp'} &&
+    !$pc{'magic'.$_.'Activate'} && !$pc{'magic'.$_.'Encroach'} && !$pc{'magic'.$_.'Note'} 
+  );
+  push(@magics, {
+    "NAME"     => $pc{'magic'.$_.'Name'},
+    "TYPE"     => textShrink(5,5,5,5,$pc{'magic'.$_.'Type'}),
+    "EXP"      => $pc{'magic'.$_.'Exp'},
+    "ACTIVATE" => $pc{'magic'.$_.'Activate'},
+    "ENCROACH" => $pc{'magic'.$_.'Encroach'},
+    "NOTE"     => $pc{'magic'.$_.'Note'},
+  });
+}
+$SHEET->param(Magics => \@magics);
 
 ### コンボ --------------------------------------------------
 my @combos;

@@ -155,8 +155,8 @@ foreach (@list) {
     $id, undef, undef, $updatetime, $name, $player, $group, #0-6
     $exp, $gender, $age, $sign, $blood, $works, #7-12
     $syndrome, $dlois, #13-14
-    $session, $image, $tag, $hide #15-18
-  ) = (split /<>/, $_)[0..18];
+    $session, $image, $tag, $hide, $stage #15-19
+  ) = (split /<>/, $_)[0..19];
   
   if($mode eq 'mylist'){
     if(grep {$_ eq $id} @mylist){

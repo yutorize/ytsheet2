@@ -191,38 +191,42 @@ window.onload = function() {
         </div>
 
         <div id="sub-status" class="box-union">
-          <dl class="box">
-            <dt id="max-hp">HP最大値</dt>
+          <dl class="box" id="max-hp">
+            <dt>HP最大値</dt>
             <dd><TMPL_IF maxHpAdd>+<TMPL_VAR maxHpAdd>=</TMPL_IF><b><TMPL_VAR maxHpTotal></b></dd>
           </dl>
-          <dl class="box">
-            <dt id="stock-pt">常備化<span class="shorten">ポイント</span></dt>
+          <dl class="box" id="stock-pt">
+            <dt>常備化<span class="shorten">ポイント</span></dt>
             <dd><TMPL_IF stockAdd>+<TMPL_VAR stockAdd>=</TMPL_IF><b><TMPL_VAR stockTotal></b></dd>
           </dl>
-          <dl class="box">
-            <dt id="saving">財産<span class="shorten">ポイント</span></dt>
+          <dl class="box" id="saving">
+            <dt>財産<span class="shorten">ポイント</span></dt>
             <dd><TMPL_IF savingAdd>+<TMPL_VAR savingAdd>=</TMPL_IF><b><TMPL_VAR savingTotal></b></dd>
           </dl>
-          <dl class="box">
-            <dt id="initiative">行動値</dt>
+          <dl class="box" id="initiative">
+            <dt>行動値</dt>
             <dd><TMPL_IF initiativeAdd>+<TMPL_VAR initiativeAdd>=</TMPL_IF><b><TMPL_VAR initiativeTotal></b></dd>
           </dl>
-          <dl class="box">
-            <dt id="move">戦闘移動</dt>
+          <dl class="box" id="move">
+            <dt>戦闘移動</dt>
             <dd><TMPL_IF moveAdd>+<TMPL_VAR moveAdd>=</TMPL_IF><b><TMPL_VAR moveTotal></b></dd>
           </dl>
-          <dl class="box">
-            <dt id="dash">全力移動</dt>
+          <dl class="box" id="dash">
+            <dt>全力移動</dt>
             <dd><TMPL_IF dashAdd>+<TMPL_VAR dashAdd>=</TMPL_IF><b><TMPL_VAR dashTotal></b></dd>
           </dl>
+          <TMPL_IF ccOn><dl class="box" id="magic-dice">
+            <dt>魔術<span class="shorten">ダイス</span></dt>
+            <dd><TMPL_IF magicAdd>+<TMPL_VAR magicAdd>=</TMPL_IF><b><TMPL_VAR magicTotal></b></dd>
+          </dl></TMPL_IF>
         </div>
         
         <section class="box" id="exp">
         <h2>経験点</h2>
         <dl>
-          <dt>使用</dt><dd><TMPL_VAR expUsed></dd>
-          <dt>残り</dt><dd><TMPL_VAR expRest></dd>
-          <dt>総計</dt><dd><TMPL_VAR expTotal></dd>
+          <dt>使<span class="shorten">用</span></dt><dd><TMPL_VAR expUsed></dd>
+          <dt>残<span class="shorten">り</span></dt><dd><TMPL_VAR expRest></dd>
+          <dt>総<span class="shorten">計</span></dt><dd><TMPL_VAR expTotal></dd>
         </dl>
         </section>
         
@@ -400,6 +404,14 @@ window.onload = function() {
           </tbody>
         </table>
       </section></TMPL_IF>
+
+      <TMPL_IF insanity><section class="box" id="insanity">
+        <h2>永続的狂気</h2>
+        <dl>
+          <dt><TMPL_VAR insanity></dt>
+          <dd><TMPL_VAR insanityNote></dd>
+        </dl>
+      </section></TMPL_IF>
       
       </div><!-- / COLUMN -->
       
@@ -440,6 +452,25 @@ window.onload = function() {
         }
         </script>
         
+        <TMPL_IF Magics><section class="box effects" id="magic">
+          <h2>術式</h2>
+          <table class="data-table line-tbody">
+            <thead>
+              <tr><th>名称</th><th>種別</th><th>経験点</th><th>発動値</th><th>侵蝕値</th><th>効果</th></tr>
+            </thead>
+            <TMPL_LOOP Magics><tbody>
+               <tr>
+                <td class="name"><TMPL_VAR NAME></td>
+                <td><TMPL_VAR TYPE></td>
+                <td><TMPL_VAR EXP></td>
+                <td><TMPL_VAR ACTIVATE></td>
+                <td><TMPL_VAR ENCROACH></td>
+                <td><TMPL_VAR NOTE></td>
+              </tr>
+            </tbody></TMPL_LOOP>
+          </table>
+        </section></TMPL_IF>
+
         <section class="box" id="combo">
           <h2>コンボ</h2>
           <TMPL_LOOP Combos><div class="combo-table">
@@ -559,6 +590,7 @@ window.onload = function() {
                 <th>能力値</th>
                 <th>技能</th>
                 <th>エフェクト</th>
+                <TMPL_IF Magics><th>術式</th></TMPL_IF>
                 <th>アイテム</th>
                 <th>メモリー</th>
                 <th>使用総計</th>
@@ -570,6 +602,7 @@ window.onload = function() {
                 <td><TMPL_VAR expUsedStatus></td>
                 <td><TMPL_VAR expUsedSkill></td>
                 <td><TMPL_VAR expUsedEffect></td>
+                <TMPL_IF Magics><td><TMPL_VAR expUsedMagic></td></TMPL_IF>
                 <td><TMPL_VAR expUsedItem></td>
                 <td><TMPL_VAR expUsedMemory></td>
                 <td><TMPL_VAR expUsed></td>

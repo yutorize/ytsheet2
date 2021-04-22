@@ -9,8 +9,10 @@ window.onload = function() {
   syndromes = [form.syndrome1.value, form.syndrome2.value, form.syndrome3.value];
   
   nameSet();
+  checkStage();
   calcStt();
   calcEffect();
+  calcMagic();
   calcItem();
   calcMemory();
   calcEncroach();
@@ -40,6 +42,15 @@ function changeRegu(){
   document.getElementById("history0-exp").innerHTML = form.history0Exp.value;
 }
 
+// ステージチェック ----------------------------------------
+let ccOn = 0;
+function checkStage(){
+  ccOn = (form.stage.value.match('クロウリングケイオス')) ? 1 : 0;
+  document.querySelectorAll('.cc-only').forEach(obj =>{
+    obj.style.display = ccOn ? '' : 'none';
+  });
+  calcMagic();
+}
 // シンドローム変更 ----------------------------------------
 function changeSyndrome(num, syn){
   syndromes[num-1] = syn;
@@ -82,6 +93,7 @@ function calcSubStt() {
   calcMaxHp();
   calcInitiative();
   calcStock();
+  calcMagicDice();
 }
 let maxHp = 0;
 function calcMaxHp(){
@@ -110,6 +122,11 @@ function calcStock(){
 }
 function calcSaving(){
   document.getElementById('saving-total').innerHTML = stock - stockUsed + Number(form.savingAdd.value);
+}
+let magicDice = 0;
+function calcMagicDice(){
+  magicDice = Math.ceil(status['mind'] + Number(form.skillWill.value)+Number(form.skillAddWill.value) / 2) + Number(form.magicAdd.value);
+  document.getElementById('magic-total').innerHTML = magicDice;
 }
 // 技能
 const skillNameToId = {
@@ -168,6 +185,17 @@ function calcEffect() {
   }
   document.getElementById('exp-effect').innerHTML = exps['effect'];
   calcExp();
+}
+// 術式
+function calcMagic(){
+  exps['magic'] = 0;
+  if(ccOn){
+    for (let num = 1; num <= Number(form.magicNum.value); num++){
+      exps['magic'] += Number(form['magic'+num+'Exp'].value);
+    }
+    document.getElementById('exp-magic').innerHTML = exps['magic'];
+    calcExp();
+  }
 }
 // アイテム
 function calcItem(){
@@ -230,6 +258,7 @@ function calcExp(){
   document.getElementById("exp-used-status").innerHTML = exps['status'] || 0;
   document.getElementById("exp-used-skill" ).innerHTML = exps['skill']  || 0;
   document.getElementById("exp-used-effect").innerHTML = exps['effect'] || 0;
+  document.getElementById("exp-used-magic" ).innerHTML = exps['magic'] || 0;
   document.getElementById("exp-used-item"  ).innerHTML = exps['item']   || 0;
   document.getElementById("exp-used-memory").innerHTML = exps['memory'] || 0;
   document.getElementById("exp-rest").innerHTML = rest;
@@ -505,6 +534,40 @@ function effectSortAfter(){
   calcEffect();
 }
 
+// 術式欄 ----------------------------------------
+// 追加
+function addMagic(){
+  let num = Number(form.magicNum.value) + 1;
+  let tbody = document.createElement('tbody');
+  tbody.setAttribute('id',idNumSet('magic'));
+  tbody.innerHTML = `<tr>
+    <td class="handle"></td>
+    <td><input name="magic${num}Name"     type="text"   placeholder="名称"></td>
+    <td><input name="magic${num}Type"     type="text"   placeholder="種別" list="list-magic-type"></td>
+    <td><input name="magic${num}Exp"      type="number" placeholder="" oninput="calcMagic()"></td>
+    <td><input name="magic${num}Activate" type="text"   placeholder="発動値"></td>
+    <td><input name="magic${num}Encroach" type="text"   placeholder="侵蝕値"></td>
+    <td><input name="magic${num}Note"     type="text"   placeholder="効果"></td>
+  </tr>`;
+  const target = document.querySelector("#magic-table tfoot");
+  target.parentNode.insertBefore(tbody, target);
+  
+  form.magicNum.value = num;
+}
+// 削除
+function delMagic(){
+  let num = Number(form.magicNum.value);
+  if(num > 2){
+    if(form[`magic${num}Name`].value || form[`magic${num}Type`].value || form[`magic${num}Exp`].value || form[`magic${num}Activate`].value || form[`magic${num}Encroach`].value || form[`magic${num}Note`].value){
+      if (!confirm(delConfirmText)) return false;
+    }
+    const target = document.querySelector("#magic-table tbody:last-of-type");
+    target.parentNode.removeChild(target);
+    num--;
+    form.effectNum.value = num;
+    calcMagic();
+  }
+}
 
 // コンボ欄 ----------------------------------------
 // 技能セット

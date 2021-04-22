@@ -2,6 +2,7 @@
 use strict;
 #use warnings;
 use utf8;
+use POSIX qw(ceil);
 
 require $set::data_syndrome;
 my %awakens;
@@ -11,6 +12,10 @@ $impulses{@$_[0]} = @$_[1] foreach(@data::impulses);
 
 sub data_calc {
   my %pc = %{$_[0]};
+  ### アップデート --------------------------------------------------
+  if($pc{'ver'}){
+    %pc = data_update_chara(\%pc);
+  }
   
   ### 能力値 --------------------------------------------------
   my %status = (0=>'body', 1=>'sense', 2=>'mind', 3=>'social');
@@ -35,6 +40,7 @@ sub data_calc {
   $pc{'dashTotal'} = $pc{'moveTotal'} * 2 + $pc{'dashAdd'};
   $pc{'stockTotal'} = $pc{'sttTotalSocial'} * 2 + $pc{'skillProcure'} * 2 + $pc{'stockAdd'};
   $pc{'savingTotal'} = $pc{'stockTotal'} + $pc{'savingAdd'};
+  $pc{'magicTotal'}  = ceil(($pc{'sttTotalMind'} + $pc{'skillWill'} + $pc{'skillAddWill'}) / 2) + $pc{'magicAdd'};
   
   ### 技能 --------------------------------------------------
   my %skill_name_to_id = (
@@ -65,6 +71,7 @@ sub data_calc {
   }
   
   ### エフェクト --------------------------------------------------
+  $pc{'expUsedEffect'} = 0;
   foreach my $num (1 .. $pc{'effectNum'}){
     my $type = $pc{'effect'.$num.'Type'};
     my $lv = $pc{'effect'.$num.'Lv'};
@@ -80,6 +87,12 @@ sub data_calc {
       }
     }
     $pc{'expUsedEffect'} += $pc{'effect'.$num.'Exp'};
+  }
+
+  ### 術式 --------------------------------------------------
+  $pc{'expUsedMagic'} = 0;
+  foreach my $num (1 .. $pc{'magicNum'}){
+    $pc{'expUsedMagic'} += $pc{'magic'.$num.'Exp'};
   }
   
   ### コンボ --------------------------------------------------
@@ -163,7 +176,7 @@ sub data_calc {
 
   ## 経験点消費
   $pc{'expRest'} = $pc{'expTotal'};
-  $pc{'expUsed'} = $pc{'expUsedStatus'} + $pc{'expUsedSkill'} + $pc{'expUsedEffect'} + $pc{'expUsedItem'} + $pc{'expUsedMemory'};
+  $pc{'expUsed'} = $pc{'expUsedStatus'} + $pc{'expUsedSkill'} + $pc{'expUsedEffect'} + $pc{'expUsedMagic'} + $pc{'expUsedItem'} + $pc{'expUsedMemory'};
   $pc{'expRest'} -= $pc{'expUsed'};
 
   ### 0を消去 --------------------------------------------------
@@ -207,7 +220,7 @@ sub data_calc {
                "$pc{'syndrome1'}/$pc{'syndrome2'}/$pc{'syndrome3'}<>".
                join('/',@dloises).'<>'.
                
-               "$pc{'sessionTotal'}<>$pc{'image'}<> $pc{'tags'} <>$pc{'hide'}<><>";
+               "$pc{'sessionTotal'}<>$pc{'image'}<> $pc{'tags'} <>$pc{'hide'}<>$pc{'stage'}<>";
 
   return %pc;
 }
