@@ -1334,7 +1334,7 @@ print <<"HTML";
               <td>@{[input("history${num}Exp",'text','calcExp')]}</td>
               <td>@{[input("history${num}Honor",'text','calcHonor')]}</td>
               <td>@{[input("history${num}Money",'text','calcCash')]}</td>
-              <td>@{[input("history${num}Grow",'text','','list="list-grow"')]}</td>
+              <td>@{[input("history${num}Grow",'text','calcStt','list="list-grow"')]}</td>
               <td>@{[input("history${num}Gm")]}</td>
               <td>@{[input("history${num}Member")]}</td>
             </tr>
@@ -1344,7 +1344,17 @@ HTML
 }
 print <<"HTML";
           <tfoot>
-            <tr><th></th><th>日付</th><th>タイトル</th><th>経験点</th><th>GM</th><th>参加者</th></tr>
+            <tr>
+              <th></th>
+              <th>日付</th>
+              <th>タイトル</th>
+              <th>経験点</th>
+              <th>名誉点</th>
+              <th>ガメル</th>
+              <th>成長<span id="history-grow-total">(<span id="history-grow-total-value"></span><span id="history-grow-max-value"></span>)</th>
+              <th>GM</th>
+              <th>参加者</th>
+            </tr>
           </tfoot>
         </table>
         <div class="add-del-button"><a onclick="addHistory()">▼</a><a onclick="delHistory()">▲</a></div>
@@ -1382,7 +1392,6 @@ print <<"HTML";
         ※成長は欄1つの欄に<code>敏捷生命知力</code>など複数書いても自動計算されます。<br>
         　また、<code>敏捷×2</code><code>知力*3</code>など同じ成長が複数ある場合は纏めて記述できます（×や*は省略できます）。<br>
         　<code>器敏2知3</code>と能力値の頭文字1つで記述することもできます。<br>
-        ※成長はリアルタイムでの自動計算はされません。反映するには一度保存してください。
         </div>
       </div>
       </section>
@@ -1657,12 +1666,6 @@ print <<"HTML";
 HTML
 print 'const featsLv = ["'. join('","', @set::feats_lv) . '"];'."\n";
 foreach (
-  'sttHistGrowA',
-  'sttHistGrowB',
-  'sttHistGrowC',
-  'sttHistGrowD',
-  'sttHistGrowE',
-  'sttHistGrowF',
   'raceAbilityDef',
   'raceAbilityMp',
   'raceAbilityMndResist',

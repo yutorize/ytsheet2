@@ -746,6 +746,15 @@ option.zero-data::before {
   padding: 0 0 .4rem !important;
   border-top: hidden;
 }
+#history table tfoot th {
+  vertical-align: top;
+}
+#history table tfoot #history-grow-total {
+  display: block;
+  font-size: 85%;
+  font-weight: normal;
+  line-height: 1;
+}
 
 #history .annotate {
   width: 70%;

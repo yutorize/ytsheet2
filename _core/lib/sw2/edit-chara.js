@@ -361,24 +361,24 @@ function setLanguageDefault(){
 let reqdStr = 0;
 let reqdStrHalf = 0;
 function calcStt() {
-  let growDex = 0;
-  let growAgi = 0;
-  let growStr = 0;
-  let growVit = 0;
-  let growInt = 0;
-  let growMnd = 0;
-  /* // 履歴から成長カウント（未実装）
+  let growDex = 0; let sttHistGrowA = 0;
+  let growAgi = 0; let sttHistGrowB = 0;
+  let growStr = 0; let sttHistGrowC = 0;
+  let growVit = 0; let sttHistGrowD = 0;
+  let growInt = 0; let sttHistGrowE = 0;
+  let growMnd = 0; let sttHistGrowF = 0;
+  // 履歴から成長カウント（未実装）
   const historyNum = form.historyNum.value;
-  for (let i = 1; i < historyNum; i++){
+  console.log(historyNum);
+  for (let i = 1; i <= historyNum; i++){
     const grow = form["history" + i + "Grow"].value;
+    grow.replace(/器(?:用度?)?(?:×|\*)?([0-9]{1,3})?/g, (all,n) => { sttHistGrowA += Number(n) || 1; });
+    grow.replace(/敏(?:捷度?)?(?:×|\*)?([0-9]{1,3})?/g, (all,n) => { sttHistGrowB += Number(n) || 1; });
+    grow.replace(/筋(?:力)?(?:×|\*)?([0-9]{1,3})?/g,    (all,n) => { sttHistGrowC += Number(n) || 1; });
+    grow.replace(/生(?:命力?)?(?:×|\*)?([0-9]{1,3})?/g, (all,n) => { sttHistGrowD += Number(n) || 1; });
+    grow.replace(/知(?:力)?(?:×|\*)?([0-9]{1,3})?/g,    (all,n) => { sttHistGrowE += Number(n) || 1; });
+    grow.replace(/精(?:神力?)?(?:×|\*)?([0-9]{1,3})?/g, (all,n) => { sttHistGrowF += Number(n) || 1; });
   }
-  document.getElementById("stt-grow-A-value").innerHTML = growDex;
-  document.getElementById("stt-grow-B-value").innerHTML = growAgi;
-  document.getElementById("stt-grow-C-value").innerHTML = growStr;
-  document.getElementById("stt-grow-D-value").innerHTML = growVit;
-  document.getElementById("stt-grow-E-value").innerHTML = growInt;
-  document.getElementById("stt-grow-F-value").innerHTML = growMnd;
-  */
   const seekerGrow = lvSeeker >= 17 ? 30
                    : lvSeeker >= 13 ? 24
                    : lvSeeker >=  9 ? 18
@@ -398,7 +398,10 @@ function calcStt() {
   document.getElementById("stt-grow-D-value").innerHTML = growVit;
   document.getElementById("stt-grow-E-value").innerHTML = growInt;
   document.getElementById("stt-grow-F-value").innerHTML = growMnd;
-  document.getElementById("stt-grow-total-value").innerHTML = growDex + growAgi + growStr + growVit + growInt + growMnd;
+
+  const growTotal = growDex + growAgi + growStr + growVit + growInt + growMnd;
+  document.getElementById("stt-grow-total-value").innerHTML = growTotal;
+  document.getElementById("history-grow-total-value").innerHTML = growTotal;
   
   sttDex = Number(form.sttBaseTec.value) + Number(form.sttBaseA.value) + growDex;
   sttAgi = Number(form.sttBaseTec.value) + Number(form.sttBaseB.value) + growAgi;
@@ -1299,6 +1302,7 @@ function calcExp(){
   document.getElementById("exp-total").innerHTML = expTotal;
   
   // 最大成長回数
+  let growMax = 0;
   if(growType === 'A'){
     let count = 0;
     let exp = 3000;
@@ -1307,11 +1311,14 @@ function calcExp(){
       const next = 1000 + i * 10;
       exp += next;
     }
-    document.getElementById("stt-grow-max-value").innerHTML = ' / ' + count;
+    growMax = count;
   }
   else if(growType === 'O') {
-    document.getElementById("stt-grow-max-value").innerHTML = ' / ' + Math.floor((expTotal - 3000) / 1000);
+    growMax = Math.floor((expTotal - 3000) / 1000);
   }
+  else { document.getElementById('history-grow-total').style.display = 'none'; return; }
+  document.getElementById("stt-grow-max-value").innerHTML = ' / ' + growMax;
+  document.getElementById("history-grow-max-value").innerHTML = '/' + growMax;
 }
 
 
@@ -1839,7 +1846,7 @@ function addHistory(){
     <td><input name="history${num}Exp"    type="text" oninput="calcExp()"></td>
     <td><input name="history${num}Honor"  type="text" oninput="calcHonor()"></td>
     <td><input name="history${num}Money"  type="text" oninput="calcCash()"></td>
-    <td><input name="history${num}Grow"   type="text" list="list-grow"></td>
+    <td><input name="history${num}Grow"   type="text" oninput="calcStt()" list="list-grow"></td>
     <td><input name="history${num}Gm"     type="text"></td>
     <td><input name="history${num}Member" type="text"></td>
   </tr>
@@ -1860,6 +1867,7 @@ function delHistory(){
     target.parentNode.removeChild(target);
     num--;
     form.historyNum.value = num;
+    calcExp(); calcHonor(); calcCash(); calcStt();
   }
 }
 // ソート
