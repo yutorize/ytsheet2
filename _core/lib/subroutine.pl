@@ -174,8 +174,8 @@ sub check {
   my ($in_id, $in_key) = &cookie_get;
   return 0 if !$in_id || !$in_key;
   open (my $FH, $set::login_users) or 0;
-  while (<$FH>){
-    my @line = (split/<>/, $_);
+  while (my $data = <$FH>){
+    my @line = (split/<>/, $data);
     if ($in_id eq $line[0] && $in_key eq $line[1] && time - $line[2] < 86400*365) {
       close($FH);
       return ($in_id);

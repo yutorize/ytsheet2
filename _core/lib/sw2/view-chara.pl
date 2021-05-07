@@ -666,7 +666,7 @@ if(!$pc{'forbiddenMode'}){
   }
   if($pc{'evasiveManeuver'}) {
     push(@evasion, {
-      "NAME" => "《回避行動".($pc{'evasiveManeuver'}  >= 2  ? 'Ⅱ' : 'Ⅰ').@$_[0]."》",
+      "NAME" => "《回避行動".($pc{'evasiveManeuver'} >= 2 ? 'Ⅱ' : 'Ⅰ')."》",
       "EVA"  => $pc{'evasiveManeuver'},
     } );
   }
