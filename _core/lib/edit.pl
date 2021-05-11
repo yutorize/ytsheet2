@@ -210,8 +210,16 @@ sub option {
   foreach my $i (@_) {
     my $value = $i;
     my $view;
-    if($value =~ s/\|\<(.*?)\>$//){ $view = $1 } else { $view = $value }
-    $text .= '<option value="'.$value.'"'.($::pc{$name} eq $value ? ' selected':'').'>'.$view
+    my $label = 0;
+    if($value =~ s/^label=//){
+      $text .= '</optgroup>' if $label;
+      $text .= '<optgroup label="'.$value.'">';
+      $label = 1;
+    }
+    else {
+      if($value =~ s/\|\<(.*?)\>$//){ $view = $1 } else { $view = $value }
+      $text .= '<option value="'.$value.'"'.($::pc{$name} eq $value ? ' selected':'').'>'.$view;
+    }
   }
   return $text;
 }

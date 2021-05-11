@@ -1464,6 +1464,7 @@ foreach (keys %data::syndrome_status) {
 print "};\n";
 print 'const awakens = {';
 foreach (@data::awakens) {
+  next if (@$_[0] =~ /^label=/);
   print '"'.@$_[0].'":'.@$_[1].','
 }
 print "};\n";
