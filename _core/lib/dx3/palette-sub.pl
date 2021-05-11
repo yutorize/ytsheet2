@@ -32,16 +32,16 @@ sub palettePreset {
     $text .= "{精神}+{DB}dx+{意志}+{AB}\@10+{CB} 〈意志〉判定\n";
     $text .= "{社会}+{DB}dx+{交渉}+{AB}\@10+{CB} 〈交渉〉判定\n";
     $text .= "{社会}+{DB}dx+{調達}+{AB}\@10+{CB} 〈調達〉判定\n";
-    foreach my $num (1 .. $::pc{'skillNum'}){
+    foreach my $num (1 .. $::pc{'skillRideNum'}){
       $text .= "{肉体}+{DB}dx+{$::pc{'skillRide'.$num.'Name'}}+{AB}\@10+{CB} 〈$::pc{'skillRide'.$num.'Name'}〉判定\n" if $::pc{'skillRide'.$num.'Name'};
     }
-    foreach my $num (1 .. $::pc{'skillNum'}){
+    foreach my $num (1 .. $::pc{'skillArtNum'}){
       $text .= "{感覚}+{DB}dx+{$::pc{'skillArt'.$num.'Name'}}+{AB}\@10+{CB} 〈$::pc{'skillArt'.$num.'Name'}〉判定\n"  if $::pc{'skillArt'.$num.'Name'};
     }
-    foreach my $num (1 .. $::pc{'skillNum'}){
+    foreach my $num (1 .. $::pc{'skillKnowNum'}){
       $text .= "{精神}+{DB}dx+{$::pc{'skillKnow'.$num.'Name'}}+{AB}\@10+{CB} 〈$::pc{'skillKnow'.$num.'Name'}〉判定\n" if $::pc{'skillKnow'.$num.'Name'};
     }
-    foreach my $num (1 .. $::pc{'skillNum'}){
+    foreach my $num (1 .. $::pc{'skillInfoNum'}){
       $text .= "{社会}+{DB}dx+{$::pc{'skillInfo'.$num.'Name'}}+{AB}\@10+{CB} 〈$::pc{'skillInfo'.$num.'Name'}〉判定\n" if $::pc{'skillInfo'.$num.'Name'};
     }
     $text .= "\n";
@@ -122,16 +122,16 @@ sub palettePresetSimple {
     $text .= "$::pc{'sttTotalMind'  }+{DB}dx+".($::pc{'skillTotalWill'     }||0)."+{AB}\@10+{CB} 〈意志〉判定\n";
     $text .= "$::pc{'sttTotalSocial'}+{DB}dx+".($::pc{'skillTotalNegotiate'}||0)."+{AB}\@10+{CB} 〈交渉〉判定\n";
     $text .= "$::pc{'sttTotalSocial'}+{DB}dx+".($::pc{'skillTotalProcure'  }||0)."+{AB}\@10+{CB} 〈調達〉判定\n";
-    foreach my $num (1 .. $::pc{'skillNum'}){
+    foreach my $num (1 .. $::pc{'skillRideNum'}){
       $text .= "$::pc{'sttTotalBody'}+{DB}dx+".($::pc{'skillTotalRide'.$num}||0)."+{AB}\@10+{CB} 〈$::pc{'skillRide'.$num.'Name'}〉判定\n" if $::pc{'skillRide'.$num.'Name'};
     }
-    foreach my $num (1 .. $::pc{'skillNum'}){
+    foreach my $num (1 .. $::pc{'skillArtNum'}){
       $text .= "$::pc{'sttTotalSense'}+{DB}dx+".($::pc{'skillTotalArt'.$num}||0)."+{AB}\@10+{CB} 〈$::pc{'skillArt'.$num.'Name'}〉判定\n"  if $::pc{'skillArt'.$num.'Name'};
     }
-    foreach my $num (1 .. $::pc{'skillNum'}){
+    foreach my $num (1 .. $::pc{'skillKnowNum'}){
       $text .= "$::pc{'sttTotalMind'}+{DB}dx+".($::pc{'skillTotalKnow'.$num}||0)."+{AB}\@10+{CB} 〈$::pc{'skillKnow'.$num.'Name'}〉判定\n" if $::pc{'skillKnow'.$num.'Name'};
     }
-    foreach my $num (1 .. $::pc{'skillNum'}){
+    foreach my $num (1 .. $::pc{'skillInfoNum'}){
       $text .= "$::pc{'sttTotalSocial'}+{DB}dx+".($::pc{'skillTotalInfo'.$num}||0)."+{AB}\@10+{CB} 〈$::pc{'skillInfo'.$num.'Name'}〉判定\n" if $::pc{'skillInfo'.$num.'Name'};
     }
     $text .= "\n";
