@@ -203,10 +203,13 @@ function changeRace(){
 }
 
 // 種族チェック ----------------------------------------
+let raceAbilityDef       = 0;
+let raceAbilityMp        = 0;
+let raceAbilityMndResist = 0;
 function checkRace(){
-  raceAbilityDef = 0;
+  raceAbilityDef       = 0;
+  raceAbilityMp        = 0;
   raceAbilityMndResist = 0;
-  raceAbilityMp = 0;
   
   document.getElementById("classFig").classList.remove('fail');
   document.getElementById("classGra").classList.remove('fail');
@@ -367,9 +370,8 @@ function calcStt() {
   let growVit = 0; let sttHistGrowD = 0;
   let growInt = 0; let sttHistGrowE = 0;
   let growMnd = 0; let sttHistGrowF = 0;
-  // 履歴から成長カウント（未実装）
+  // 履歴から成長カウント
   const historyNum = form.historyNum.value;
-  console.log(historyNum);
   for (let i = 1; i <= historyNum; i++){
     const grow = form["history" + i + "Grow"].value;
     grow.replace(/器(?:用度?)?(?:×|\*)?([0-9]{1,3})?/g, (all,n) => { sttHistGrowA += Number(n) || 1; });
@@ -457,35 +459,9 @@ function calcStt() {
 }
 
 // 戦闘特技チェック ----------------------------------------
+let feats = {};
 function checkFeats(){
-  footwork = 0;
-  accuracyEnhance = 0;
-  evasiveManeuver = 0;
-  magicPowerEnhance = 0;
-  alchemyEnhance = 0;
-  shootersMartialArts = 0;
-  tenacity = 0;
-  capacity = 0;
-  masteryMetalArmour = 0;
-  masteryNonMetalArmour = 0;
-  masteryShield = 0;
-  masterySword = 0;
-  masteryAxe = 0;
-  masterySpear = 0;
-  masteryMace = 0;
-  masteryStaff = 0;
-  masteryFlail = 0;
-  masteryHammer = 0;
-  masteryEntangle = 0;
-  masteryGrapple = 0;
-  masteryThrow = 0;
-  masteryBow = 0;
-  masteryCrossbow = 0;
-  masteryBlowgun = 0;
-  masteryGun = 0;
-  masteryArtisan = 0;
-  throwing = 0;
-  songAddition = 0;
+  feats = {};
   
   const array = featsLv;
   let acquire = '';
@@ -828,61 +804,38 @@ function checkFeats(){
       }
       feat = box.options[box.selectedIndex].value;
       
-      if     (feat === "足さばき"){ footwork = 1; }
-      else if(feat === "回避行動Ⅰ"){ evasiveManeuver = 1; }
-      else if(feat === "回避行動Ⅱ"){ evasiveManeuver = 2; }
-      else if(feat === "命中強化Ⅰ"){ accuracyEnhance = 1; }
-      else if(feat === "命中強化Ⅱ"){ accuracyEnhance = 2; }
-      else if(feat === "魔力強化Ⅰ"){ magicPowerEnhance = 1; }
-      else if(feat === "魔力強化Ⅱ"){ magicPowerEnhance = 2; }
-      else if(feat === "賦術強化Ⅰ"){ alchemyEnhance = 1; }
-      else if(feat === "賦術強化Ⅱ"){ alchemyEnhance = 2; }
-      else if(feat === "頑強"){ tenacity += 15; }
-      else if(feat === "超頑強"){ tenacity += 15; }
-      else if(feat === "キャパシティ"){ capacity += 15; }
-      else if(feat === "射手の体術"){ shootersMartialArts = 1; }
-      else if(feat === "武器習熟Ａ／ソード"){ masterySword += 1; }
-      else if(feat === "武器習熟Ａ／アックス"){ masteryAxe += 1; }
-      else if(feat === "武器習熟Ａ／スピア"){ masterySpear += 1; }
-      else if(feat === "武器習熟Ａ／メイス"){ masteryMace += 1; }
-      else if(feat === "武器習熟Ａ／スタッフ"){ masteryStaff += 1; }
-      else if(feat === "武器習熟Ａ／フレイル"){ masteryFlail += 1; }
-      else if(feat === "武器習熟Ａ／ウォーハンマー"){ masteryHammer += 1; }
-      else if(feat === "武器習熟Ａ／絡み"){ masteryEntangle += 1; }
-      else if(feat === "武器習熟Ａ／格闘"){ masteryGrapple += 1; }
-      else if(feat === "武器習熟Ａ／投擲"){ masteryThrow += 1; }
-      else if(feat === "武器習熟Ａ／ボウ"){ masteryBow += 1; }
-      else if(feat === "武器習熟Ａ／クロスボウ"){ masteryCrossbow += 1; }
-      else if(feat === "武器習熟Ａ／ブロウガン"){ masteryBlowgun += 1; }
-      else if(feat === "武器習熟Ａ／ガン"){ masteryGun += 1; }
-      else if(feat === "武器習熟Ｓ／ソード"){ masterySword += 2; }
-      else if(feat === "武器習熟Ｓ／アックス"){ masteryAxe += 2; }
-      else if(feat === "武器習熟Ｓ／スピア"){ masterySpear += 2; }
-      else if(feat === "武器習熟Ｓ／メイス"){ masteryMace += 2; }
-      else if(feat === "武器習熟Ｓ／スタッフ"){ masteryStaff += 2; }
-      else if(feat === "武器習熟Ｓ／フレイル"){ masteryFlail += 2; }
-      else if(feat === "武器習熟Ｓ／ウォーハンマー"){ masteryHammer += 2; }
-      else if(feat === "武器習熟Ｓ／絡み"){ masteryEntangle += 2; }
-      else if(feat === "武器習熟Ｓ／格闘"){ masteryGrapple += 2; }
-      else if(feat === "武器習熟Ｓ／投擲"){ masteryThrow += 2; }
-      else if(feat === "武器習熟Ｓ／ボウ"){ masteryBow += 2; }
-      else if(feat === "武器習熟Ｓ／クロスボウ"){ masteryCrossbow += 2; }
-      else if(feat === "武器習熟Ｓ／ブロウガン"){ masteryBlowgun += 2; }
-      else if(feat === "武器習熟Ｓ／ガン"){ masteryGun += 2; }
-      else if(feat === "防具習熟Ａ／金属鎧"){ masteryMetalArmour += 1; }
-      else if(feat === "防具習熟Ａ／非金属鎧"){ masteryNonMetalArmour += 1; }
-      else if(feat === "防具習熟Ａ／盾"){ masteryShield += 1; }
-      else if(feat === "防具習熟Ｓ／金属鎧"){ masteryMetalArmour += 2; }
-      else if(feat === "防具習熟Ｓ／非金属鎧"){ masteryNonMetalArmour += 2; }
-      else if(feat === "防具習熟Ｓ／盾"){ masteryShield += 2; }
-      else if(feat === "魔器習熟Ａ"){ masteryArtisan += 1; }
-      else if(feat === "魔器習熟Ｓ"){ masteryArtisan += 1; }
-      else if(feat === "魔器の達人"){ masteryArtisan += 1; }
-      else if(feat === "スローイングⅠ"){ throwing = 1; }
-      else if(feat === "スローイングⅡ"){ throwing = 2; }
-      else if(feat === "呪歌追加Ⅰ"){ songAddition = 1; }
-      else if(feat === "呪歌追加Ⅱ"){ songAddition = 2; }
-      else if(feat === "呪歌追加Ⅲ"){ songAddition = 3; }
+      const weaponsRegex = new RegExp('武器習熟(Ａ|Ｓ)／(' + weapons.join('|') + ')');
+      if     (feat === "足さばき"){ feats['足さばき'] = 1; }
+      else if(feat === "回避行動Ⅰ"){ feats['回避行動'] = 1; }
+      else if(feat === "回避行動Ⅱ"){ feats['回避行動'] = 2; }
+      else if(feat === "命中強化Ⅰ"){ feats['命中強化'] = 1; }
+      else if(feat === "命中強化Ⅱ"){ feats['命中強化'] = 2; }
+      else if(feat === "魔力強化Ⅰ"){ feats['魔力強化'] = 1; }
+      else if(feat === "魔力強化Ⅱ"){ feats['魔力強化'] = 2; }
+      else if(feat === "賦術強化Ⅰ"){ feats['賦術強化'] = 1; }
+      else if(feat === "賦術強化Ⅱ"){ feats['賦術強化'] = 2; }
+      else if(feat === "頑強")  { feats['頑強'] = (feats['頑強']||0) +15; }
+      else if(feat === "超頑強"){ feats['頑強'] = (feats['頑強']||0) +15; }
+      else if(feat === "キャパシティ"){ feats['キャパシティ'] = 15; }
+      else if(feat === "射手の体術"){ feats['射手の体術'] = 1; }
+      else if(feat.match(weaponsRegex)){
+        feats['武器習熟／'+RegExp.$2] ||= 0;
+        if     (RegExp.$1 === 'Ａ'){ feats['武器習熟／'+RegExp.$2] += 1; }
+        else if(RegExp.$1 === 'Ｓ'){ feats['武器習熟／'+RegExp.$2] += 2; }
+      }
+      else if(feat.match(/防具習熟(Ａ|Ｓ)／(金属鎧|非金属鎧|盾)/)){
+        feats['防具習熟／'+RegExp.$2] ||= 0;
+        if     (RegExp.$1 === 'Ａ'){ feats['防具習熟／'+RegExp.$2] += 1; }
+        else if(RegExp.$1 === 'Ｓ'){ feats['防具習熟／'+RegExp.$2] += 2; }
+      }
+      else if(feat === "魔器習熟Ａ"){ feats['魔器習熟'] = 1; }
+      else if(feat === "魔器習熟Ｓ"){ feats['魔器習熟'] = 1; }
+      else if(feat === "魔器の達人"){ feats['魔器習熟'] = 1; }
+      else if(feat === "スローイングⅠ"){ feats['スローイング'] = 1; }
+      else if(feat === "スローイングⅡ"){ feats['スローイング'] = 2; }
+      else if(feat === "呪歌追加Ⅰ"){ feats['呪歌追加'] = 1; }
+      else if(feat === "呪歌追加Ⅱ"){ feats['呪歌追加'] = 2; }
+      else if(feat === "呪歌追加Ⅲ"){ feats['呪歌追加'] = 3; }
       
       cL.remove("fail","hidden");
     }
@@ -903,15 +856,15 @@ function checkFeats(){
 // 技芸 ----------------------------------------
 function checkCraft() {
   Object.keys(classes).forEach(function(key) {
+    let cLv = (key === 'Wiz') ? Math.min(lv['Sor'],lv['Con']) : lv[key];
     if (classes[key]['craftData']){
       const eName = classes[key]['craft'];
-      document.getElementById("craft-"+eName).style.display = lv[key] ? "block" : "none";
-      const cMax = (key === 'Bar') ? 20 : 17;
+      document.getElementById("craft-"+eName).style.display = cLv ? "block" : "none";
+      const cMax = (key === 'Bar') ? 20 : (key === 'Art') ? 19 : 17;
+      cLv += (key === 'Bar') ? (feats['呪歌追加'] || 0) : (key === 'Art' && lv.Art === 16) ? 1 : (key === 'Art' && lv.Art === 17) ? 2 : 0;
       for (let i = 1; i <= cMax; i++) {
         let cL = document.getElementById("craft-"+eName+i).classList;
-        if ( (i <= lv[key])
-          || (i <= lv[key]+songAddition && key === 'Bar')
-        ){
+        if (i <= cLv){
           cL.remove("fail","hidden");
         }
         else {
@@ -966,8 +919,8 @@ function calcSubStt() {
   const mpBase = 
     (race === 'マナフレア') ? (level * 3 + sttMnd + sttAddF)
     : ( levelCasters.reduce((a,x) => a+x,0) * 3 + sttMnd + sttAddF );
-  const hpAutoAdd = tenacity + hpAccessory + (lv['Fig'] >= 7 ? 15 : 0) + seekerHpMpAdd;
-  const mpAutoAdd = capacity + raceAbilityMp + mpAccessory + seekerHpMpAdd;
+  const hpAutoAdd = (feats['頑強'] || 0) + hpAccessory + (lv['Fig'] >= 7 ? 15 : 0) + seekerHpMpAdd;
+  const mpAutoAdd = (feats['キャパシティ'] || 0) + raceAbilityMp + mpAccessory + seekerHpMpAdd;
   document.getElementById("hp-base").innerHTML = hpBase;
   document.getElementById("mp-base").innerHTML = (race === 'グラスランナー') ? '0' : mpBase;
   document.getElementById("hp-auto-add").innerHTML = hpAutoAdd;
@@ -981,7 +934,7 @@ function calcMobility() {
   const agi = sttAgi + sttAddB;
   const mobilityBase = ((race === 'ケンタウロス') ? (agi * 2) : agi) + (form["armour1Own"].checked ? 2 : 0);
   const mobility = mobilityBase + Number(form.mobilityAdd.value);
-  document.getElementById("mobility-limited").innerHTML = footwork ? 10 : 3;
+  document.getElementById("mobility-limited").innerHTML = feats['足さばき'] ? 10 : 3;
   document.getElementById("mobility-base").innerHTML = mobilityBase;
   document.getElementById("mobility-total").innerHTML = mobility;
   document.getElementById("mobility-full").innerHTML = mobility * 3;
@@ -1024,8 +977,8 @@ function calcPackage() {
 // 魔力計算 ----------------------------------------
 let magicPowers = {};
 function calcMagic() {
-  const addPower = Number(form.magicPowerAdd.value) + magicPowerEnhance;
-  document.getElementById("magic-power-magicenhance-value").innerHTML = magicPowerEnhance;
+  const addPower = Number(form.magicPowerAdd.value) + feats['魔力強化'] || 0;
+  document.getElementById("magic-power-magicenhance-value").innerHTML = feats['魔力強化'] || 0;
   const addCast = Number(form.magicCastAdd.value);
   const addDamage = Number(form.magicDamageAdd.value);
   
@@ -1064,14 +1017,14 @@ function calcMagic() {
         document.getElementById("magic-damage-"+eName+"-value").innerHTML = Number(form["magicDamageAdd"+key].value);
       }
       
-      if(key === 'Alc'){ power += alchemyEnhance }
+      if(key === 'Alc'){ power += feats['賦術強化'] || 0 }
       document.getElementById("magic-cast-"+eName+"-value").innerHTML   = power + Number(form["magicCastAdd"+key].value);
     }
   });
   // 全体／その他の開閉
   document.getElementById("magic-power").style.display = (openMagic || openCraft) ? '' : 'none';
   
-  document.getElementById("magic-power-magicenhance").style.display = magicPowerEnhance      ? '' : 'none';
+  document.getElementById("magic-power-magicenhance").style.display = feats['魔力強化']      ? '' : 'none';
   document.getElementById("magic-power-common"      ).style.display = openMagic              ? '' : 'none';
   document.getElementById("magic-power-hr"          ).style.display = openMagic && openCraft ? '' : 'none';
 }
@@ -1118,7 +1071,7 @@ function calcWeapon() {
     let accBase = 0;
     let dmgBase = 0;
     let maxReqd = reqdStr;
-    accBase += accuracyEnhance; //命中強化
+    accBase += feats['命中強化'] || 0; //命中強化
     // 使用技能
          if(classes === "ファイター")       { attackClass = lv['Fig']; }
     else if(classes === "グラップラー")     { attackClass = lv['Gra']; }
@@ -1140,22 +1093,11 @@ function calcWeapon() {
       form["weapon"+i+"Category"].classList.remove('fail');
     }
     // 習熟
-    if     (category === 'ソード')         { dmgBase += masterySword; }
-    else if(category === 'アックス')       { dmgBase += masteryAxe; }
-    else if(category === 'スピア')         { dmgBase += masterySpear; }
-    else if(category === 'メイス')         { dmgBase += masteryMace; }
-    else if(category === 'スタッフ')       { dmgBase += masteryStaff; }
-    else if(category === 'フレイル')       { dmgBase += masteryFlail; }
-    else if(category === 'ウォーハンマー') { dmgBase += masteryHammer; }
-    else if(category === '絡み')           { dmgBase += masteryEntangle; }
-    else if(category === '格闘')           { dmgBase += masteryGrapple; }
-    else if(category === '投擲')           { dmgBase += masteryThrow; accBase += throwing ? 1 : 0; }
-    else if(category === 'ボウ')           { dmgBase += masteryBow; }
-    else if(category === 'ブロウガン')     { dmgBase += masteryBlowgun; }
-    else if(category === 'クロスボウ')     { dmgBase += masteryCrossbow; }
-    else if(category === 'ガン')           { dmgBase += masteryGun; }
-    else if(category === 'ガン（物理）')   { dmgBase += masteryGun; }
-    if(note.match(/〈魔器〉/)){ dmgBase += masteryArtisan; }
+    if(category === 'ガン（物理）') { dmgBase += feats['武器習熟／ガン'] || 0; }
+    else if(category) { dmgBase += feats['武器習熟／'+category] || 0; }
+
+    if(category === '投擲') { accBase += feats['スローイング'] ? 1 : 0; }
+    if(note.match(/〈魔器〉/)){ dmgBase += feats['魔器習熟'] || 0; }
     // 命中追加D出力
     if(classes === "自動計算しない"){
       document.getElementById("weapon"+i+"-acc-total").innerHTML = Number(form["weapon"+i+"Acc"].value);
@@ -1166,25 +1108,17 @@ function calcWeapon() {
       document.getElementById("weapon"+i+"-dmg-total").innerHTML = dmgBase + Number(form["weapon"+i+"Dmg"].value);
     }
   }
-  document.getElementById("attack-sword-mastery").style.display    = masterySword     ? '' : 'none';   document.getElementById("attack-sword-mastery-dmg").innerHTML    = masterySword   ;
-  document.getElementById("attack-axe-mastery").style.display      = masteryAxe       ? '' : 'none';   document.getElementById("attack-axe-mastery-dmg").innerHTML      = masteryAxe     ;
-  document.getElementById("attack-spear-mastery").style.display    = masterySpear     ? '' : 'none';   document.getElementById("attack-spear-mastery-dmg").innerHTML    = masterySpear   ;
-  document.getElementById("attack-mace-mastery").style.display     = masteryMace      ? '' : 'none';   document.getElementById("attack-mace-mastery-dmg").innerHTML     = masteryMace    ;
-  document.getElementById("attack-staff-mastery").style.display    = masteryStaff     ? '' : 'none';   document.getElementById("attack-staff-mastery-dmg").innerHTML    = masteryStaff   ;
-  document.getElementById("attack-flail-mastery").style.display    = masteryFlail     ? '' : 'none';   document.getElementById("attack-flail-mastery-dmg").innerHTML    = masteryFlail   ;
-  document.getElementById("attack-hammer-mastery").style.display   = masteryHammer    ? '' : 'none';   document.getElementById("attack-hammer-mastery-dmg").innerHTML   = masteryHammer  ;
-  document.getElementById("attack-entangle-mastery").style.display = masteryEntangle  ? '' : 'none';   document.getElementById("attack-entangle-mastery-dmg").innerHTML = masteryEntangle;
-  document.getElementById("attack-grapple-mastery").style.display  = masteryGrapple   ? '' : 'none';   document.getElementById("attack-grapple-mastery-dmg").innerHTML  = masteryGrapple ;
-  document.getElementById("attack-throw-mastery").style.display    = masteryThrow     ? '' : 'none';   document.getElementById("attack-throw-mastery-dmg").innerHTML    = masteryThrow   ;
-  document.getElementById("attack-bow-mastery").style.display      = masteryBow       ? '' : 'none';   document.getElementById("attack-bow-mastery-dmg").innerHTML      = masteryBow     ;
-  document.getElementById("attack-crossbow-mastery").style.display = masteryCrossbow  ? '' : 'none';   document.getElementById("attack-crossbow-mastery-dmg").innerHTML = masteryCrossbow;
-  document.getElementById("attack-blowgun-mastery").style.display  = masteryBlowgun   ? '' : 'none';   document.getElementById("attack-blowgun-mastery-dmg").innerHTML  = masteryBlowgun ;
-  document.getElementById("attack-gun-mastery").style.display      = masteryGun       ? '' : 'none';   document.getElementById("attack-gun-mastery-dmg").innerHTML      = masteryGun     ;
-  document.getElementById("attack-artisan-mastery").style.display  = masteryArtisan   ? '' : 'none';   document.getElementById("attack-artisan-mastery-dmg").innerHTML  = masteryArtisan ;
-  document.getElementById("accuracy-enhance").style.display        = accuracyEnhance  ? '' : 'none';   document.getElementById("accuracy-enhance-acc").innerHTML        = accuracyEnhance;
-  document.getElementById("throwing").style.display                = throwing         ? '' : 'none';
   
-  document.getElementById("artisan-annotate").style.display = masteryArtisan ? '' : 'none'; 
+  for(let i = 0; i < weapons.length; i++){
+    document.getElementById(`attack-${weaponsId[i]}-mastery`).style.display = feats['武器習熟／'+weapons[i]] ? '' : 'none';
+    document.getElementById(`attack-${weaponsId[i]}-mastery-dmg`).innerHTML = feats['武器習熟／'+weapons[i]] || 0;
+  }
+  document.getElementById("attack-artisan-mastery").style.display  = feats['魔器習熟'] ? '' : 'none';
+  document.getElementById("attack-artisan-mastery-dmg").innerHTML  = feats['魔器習熟'] || 0 ;
+  document.getElementById("artisan-annotate").style.display        = feats['魔器習熟'] ? '' : 'none'; 
+  document.getElementById("accuracy-enhance").style.display        = feats['命中強化'] ? '' : 'none';
+  document.getElementById("accuracy-enhance-acc").innerHTML        = feats['命中強化'] || 0;
+  document.getElementById("throwing").style.display                = feats['スローイング'] ? '' : 'none';
 }
 
 // 防御計算 ----------------------------------------
@@ -1207,7 +1141,7 @@ function calcDefense() {
   
   // 技能選択のエラー表示
   let cL = document.getElementById("evasion-classes").classList;
-  if(classes === "シューター" && !shootersMartialArts || classes === "デーモンルーラー" && lv['Dem'] < 2){ 
+  if(classes === "シューター" && !feats['射手の体術'] || classes === "デーモンルーラー" && lv['Dem'] < 2){ 
     cL.add('error');
   }
   else { cL.remove('error'); }
@@ -1228,26 +1162,30 @@ function calcDefense() {
     document.getElementById('seeker-defense-value').innerHTML = seekerDefense;
   }
   // 習熟
-  document.getElementById("mastery-metalarmour").style.display    = masteryMetalArmour    > 0 ? "" :"none";
-  document.getElementById("mastery-nonmetalarmour").style.display = masteryNonMetalArmour > 0 ? "" :"none";
-  document.getElementById("mastery-shield").style.display         = masteryShield         > 0 ? "" :"none";
-  document.getElementById("mastery-artisan-def").style.display    = masteryArtisan        > 0 ? "" :"none";
-  document.getElementById("mastery-metalarmour-value").innerHTML    = masteryMetalArmour;
-  document.getElementById("mastery-nonmetalarmour-value").innerHTML = masteryNonMetalArmour;
-  document.getElementById("mastery-shield-value").innerHTML         = masteryShield;
-  document.getElementById("mastery-artisan-def-value").innerHTML    = masteryArtisan;
+  document.getElementById("mastery-metalarmour").style.display    = feats['防具習熟／金属鎧']   > 0 ? "" :"none";
+  document.getElementById("mastery-nonmetalarmour").style.display = feats['防具習熟／非金属鎧'] > 0 ? "" :"none";
+  document.getElementById("mastery-shield").style.display         = feats['防具習熟／盾']       > 0 ? "" :"none";
+  document.getElementById("mastery-artisan-def").style.display    = feats['魔器習熟']           > 0 ? "" :"none";
+  document.getElementById("mastery-metalarmour-value").innerHTML    = feats['防具習熟／金属鎧']   || 0;
+  document.getElementById("mastery-nonmetalarmour-value").innerHTML = feats['防具習熟／非金属鎧'] || 0;
+  document.getElementById("mastery-shield-value").innerHTML         = feats['防具習熟／盾']       || 0;
+  document.getElementById("mastery-artisan-def-value").innerHTML    = feats['魔器習熟']           || 0;
   // 回避行動
-  evaBase += evasiveManeuver;
-  document.getElementById("evasive-maneuver").style.display = evasiveManeuver > 0 ? "" :"none";
-  document.getElementById("evasive-maneuver-value").innerHTML = evasiveManeuver;
+  evaBase += feats['回避行動'] || 0;
+  document.getElementById("evasive-maneuver").style.display = feats['回避行動'] > 0 ? "" :"none";
+  document.getElementById("evasive-maneuver-value").innerHTML = feats['回避行動'] || 0;
+  // 心眼
+  evaBase += feats['心眼'] || 0;
+  document.getElementById("minds-eye").style.display = feats['心眼'] > 0 ? "" :"none";
+  document.getElementById("minds-eye-value").innerHTML = feats['心眼'] || 0;
   
   calcArmour(evaBase,defBase,maxReqd);
 }
 function calcArmour(evaBase,defBase,maxReqd) {
   const armour1Eva = Number(form.armour1Eva.value);
-  const armour1Def = Number(form.armour1Def.value) + Math.max(masteryMetalArmour,masteryNonMetalArmour);
+  const armour1Def = Number(form.armour1Def.value) + Math.max((feats['防具習熟／金属鎧'] || 0),(feats['防具習熟／非金属鎧'] || 0));
   const shield1Eva = Number(form.shield1Eva.value);
-  const shield1Def = Number(form.shield1Def.value) + masteryShield;
+  const shield1Def = Number(form.shield1Def.value) + (feats['防具習熟／盾'] || 0);
   const other1Eva = Number(form.defOther1Eva.value);
   const other1Def = Number(form.defOther1Def.value);
   const other2Eva = Number(form.defOther2Eva.value);
@@ -1269,7 +1207,7 @@ function calcArmour(evaBase,defBase,maxReqd) {
     if(form[`defTotal${i}CheckDefOther3`].checked){ eva +=  other3Eva; def +=  other3Def; }
     if((form[`defTotal${i}CheckArmour1`].checked && form.armour1Note.value.match(/〈魔器〉/))
     || (form[`defTotal${i}CheckShield1`].checked && form.shield1Note.value.match(/〈魔器〉/))){
-      def += masteryArtisan;
+      def += feats['魔器習熟'] || 0;
     }
     
     document.getElementById(`defense-total${i}-eva`).innerHTML = eva;
@@ -1652,17 +1590,18 @@ function addWeapons(copy){
   const target = document.querySelector("#weapons-table");
   target.appendChild(tbody, target);
   
-  for(let i = 0; i < weapons.length; i++){
+  const categories = weapons.concat("ガン（物理）","盾");
+  for(let i = 0; i < categories.length; i++){
     let op = document.createElement("option");
-    op.text = weapons[i];
-    op.selected = weapons[i] === ini.category ? true : false;
+    op.text = categories[i];
+    op.selected = categories[i] === ini.category ? true : false;
     form["weapon"+num+"Category"].appendChild(op);
   }
   const classes = ['ファイター','グラップラー','フェンサー','シューター','エンハンサー','デーモンルーラー','自動計算しない'];
   for(let i = 0; i < classes.length; i++){
     let op = document.createElement("option");
     op.text = classes[i];
-    op.selected = weapons[i] === ini.category ? true : false;
+    op.selected = categories[i] === ini.category ? true : false;
     form["weapon"+num+"Class"].appendChild(op);
   }
   

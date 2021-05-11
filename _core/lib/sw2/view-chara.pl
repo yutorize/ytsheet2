@@ -339,6 +339,8 @@ foreach my $class (@data::class_names){
           + $pc{ 'buildupAdd'.ucfirst($data::class{$class}{'craft'}{'eName'}) };
   next if !$lv;
   
+  if($class eq 'アーティザン'){ $add += $pc{'lvArt'} >= 17 ? 2 : $pc{'lvArt'} >= 16 ? 1 : 0; }
+
   my @crafts;
   foreach (1 .. $lv + $add){
     my $craft = $pc{'craft'.ucfirst($data::class{$class}{'craft'}{'eName'}).$_};
@@ -668,6 +670,12 @@ if(!$pc{'forbiddenMode'}){
     push(@evasion, {
       "NAME" => "《回避行動".($pc{'evasiveManeuver'} >= 2 ? 'Ⅱ' : 'Ⅰ')."》",
       "EVA"  => $pc{'evasiveManeuver'},
+    } );
+  }
+  if($pc{'mindsEye'}) {
+    push(@evasion, {
+      "NAME" => "《心眼》",
+      "EVA"  => $pc{'mindsEye'},
     } );
   }
   $SHEET->param(EvasionClasses => \@evasion);

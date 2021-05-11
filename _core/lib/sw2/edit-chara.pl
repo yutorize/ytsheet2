@@ -545,7 +545,7 @@ foreach my $class (@data::class_names){
               <h2>$data::class{$class}{'craft'}{'jName'}</h2>
               <ul>
 HTML
-  my $c_max = $class eq 'バード' ? 20 : 17;
+  my $c_max = $class eq 'バード' ? 20 : $class eq 'アーティザン' ? 19 : 17;
   foreach my $lv (1..$c_max){
     print '<li id="craft-'.$name.$lv.'"><select name="craft'.$Name.$lv.'">';
     print '<option></option>';
@@ -995,6 +995,12 @@ print <<"HTML";
                 <td>《回避行動》</td>
                 <td>―</td>
                 <td id="evasive-maneuver-value">$pc{'evasiveManeuver'}</td>
+                <td>―</td>
+              </tr>
+              <tr id="minds-eye"@{[ display $pc{'mindsEye'} ]}>
+                <td>《心眼》</td>
+                <td>―</td>
+                <td id="minds-eye-value">$pc{'mindsEye'}</td>
                 <td>―</td>
               </tr>
             </tbody>
@@ -1665,37 +1671,16 @@ print <<"HTML";
   const growType = '@{[ $set::growtype ? $set::growtype : 0 ]}';
 HTML
 print 'const featsLv = ["'. join('","', @set::feats_lv) . '"];'."\n";
-foreach (
-  'raceAbilityDef',
-  'raceAbilityMp',
-  'raceAbilityMndResist',
-  'footwork',
-  'accuracyEnhance',
-  'evasiveManeuver',
-  'magicPowerEnhance',
-  'alchemyEnhance',
-  'shootersMartialArts',
-  'tenacity',
-  'capacity',
-  'masteryMetalArmour',
-  'masteryNonMetalArmour',
-  'masteryShield',
-  'masteryArtisan',
-  'throwing',
-  'songAddition',
-) {
-  print "let $_ = ". ($pc{$_} ? $pc{$_} : 0) . ";\n";
-}
-foreach (@data::weapons){
-  print 'let mastery'.ucfirst(@$_[1]).' = '. 
-  ($pc{'mastery'.ucfirst(@$_[1])} ? $pc{'mastery'.ucfirst(@$_[1])} : 0 ). 
-  ";\n";
-}
 print 'let weapons = [';
 foreach (@data::weapons){
   print "'".@$_[0]."',";
 }
-print '"ガン（物理）","盾"];'."\n";
+print '];'."\n";
+print 'let weaponsId = [';
+foreach (@data::weapons){
+  print "'".@$_[1]."',";
+}
+print '];'."\n";
 ## 種族
 print 'let raceAbility = {';
 foreach my $key ( keys(%data::race_ability) ){

@@ -355,6 +355,7 @@ sub data_calc {
       elsif($feat eq '命中強化Ⅱ')  { $pc{'accuracyEnhance'} = 2; }
       elsif($feat eq '回避行動Ⅰ')  { $pc{'evasiveManeuver'} = 1; }
       elsif($feat eq '回避行動Ⅱ')  { $pc{'evasiveManeuver'} = 2; }
+      elsif($feat eq '心眼')        { $pc{'mindsEye'} = 4; }
       elsif($feat eq '魔力強化Ⅰ')  { $pc{'magicPowerEnhance'} = 1; }
       elsif($feat eq '魔力強化Ⅱ')  { $pc{'magicPowerEnhance'} = 2; }
       elsif($feat eq '賦術強化Ⅰ')  { $pc{'alchemyEnhance'} = 1; }
@@ -526,7 +527,7 @@ sub data_calc {
     foreach my $i (1..3){
       my $own_agi = $pc{"defTotal${i}CheckShield1"} && $pc{'shield1Own'} ? 2 : 0;
       my $art_def = 0;
-      my $eva = ( $eva_class ? $eva_class + int(($pc{'sttAgi'}+$pc{'sttAddB'}+$own_agi)/6) : 0 ) + $pc{'evasiveManeuver'};
+      my $eva = ( $eva_class ? $eva_class + int(($pc{'sttAgi'}+$pc{'sttAddB'}+$own_agi)/6) : 0 ) + $pc{'evasiveManeuver'} + $pc{'mindsEye'};
       my $def = $pc{'raceAbilityDef'} + $pc{'defenseSeeker'};
       my $flag = 0;
       if($pc{"defTotal${i}CheckArmour1"}  ){ $flag++; $eva += $pc{'armour1Eva'};    $def += $pc{'armour1Def'} + max($pc{'masteryMetalArmour'},$pc{'masteryNonMetalArmour'}); }
