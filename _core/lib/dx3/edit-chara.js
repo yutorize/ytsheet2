@@ -476,7 +476,10 @@ let effectSortable = Sortable.create(document.getElementById('effect-table'), {
   filter: 'thead,tfoot',
   ghostClass: 'sortable-ghost',
   onSort: function(evt){ effectSortAfter(); },
-  onStart: function(evt){ document.getElementById('effect-trash').style.display = 'block' },
+  onStart: function(evt){
+    document.querySelectorAll('.trash-box').forEach((obj) => { obj.style.display = 'none' });
+    document.getElementById('effect-trash').style.display = 'block';
+  },
   onEnd: function(evt){
     if(!effectTrashNum) { document.getElementById('effect-trash').style.display = 'none' }
   },
@@ -564,9 +567,66 @@ function delMagic(){
     const target = document.querySelector("#magic-table tbody:last-of-type");
     target.parentNode.removeChild(target);
     num--;
-    form.effectNum.value = num;
+    form.magicNum.value = num;
     calcMagic();
   }
+}
+// ソート
+let magicSortable = Sortable.create(document.getElementById('magic-table'), {
+  group: "magic",
+  dataIdAttr: 'id',
+  animation: 100,
+  handle: '.handle',
+  filter: 'thead,tfoot',
+  ghostClass: 'sortable-ghost',
+  onSort: function(evt){ magicSortAfter(); },
+  onStart: function(evt){
+    document.querySelectorAll('.trash-box').forEach((obj) => { obj.style.display = 'none' });
+    document.getElementById('magic-trash').style.display = 'block';
+  },
+  onEnd: function(evt){
+    if(!magicTrashNum) { document.getElementById('magic-trash').style.display = 'none' }
+  },
+});
+let magicSortableTrash = Sortable.create(document.getElementById('magic-trash-table'), {
+  group: "magic",
+  dataIdAttr: 'id',
+  animation: 100,
+  filter: 'thead,tfoot',
+  ghostClass: 'sortable-ghost'
+});
+let magicTrashNum = 0;
+function magicSortAfter(){
+  const order = magicSortable.toArray();
+  let num = 1;
+  for(let id of order) {
+    if(document.getElementById(id)){
+      document.querySelector(`#${id} [name$="Name"]`    ).setAttribute('name',`magic${num}Name`);
+      document.querySelector(`#${id} [name$="Type"]`    ).setAttribute('name',`magic${num}Type`);
+      document.querySelector(`#${id} [name$="Exp"]`     ).setAttribute('name',`magic${num}Exp`);
+      document.querySelector(`#${id} [name$="Activate"]`).setAttribute('name',`magic${num}Activate`);
+      document.querySelector(`#${id} [name$="Encroach"]`).setAttribute('name',`magic${num}Encroach`);
+      document.querySelector(`#${id} [name$="Note"]`    ).setAttribute('name',`magic${num}Note`);
+      num++;
+    }
+  }
+  form.magicNum.value = num-1;
+  let del = 0;
+  const trashOrder = magicSortableTrash.toArray();
+  for(let id of trashOrder) {
+    if(document.getElementById(id)){
+      del++;
+      document.querySelector(`#${id} [name$="Name"]`    ).setAttribute('name',`magic${del}Name`);
+      document.querySelector(`#${id} [name$="Type"]`    ).setAttribute('name',`magic${del}Type`);
+      document.querySelector(`#${id} [name$="Exp"]`     ).setAttribute('name',`magic${del}Exp`);
+      document.querySelector(`#${id} [name$="Activate"]`).setAttribute('name',`magic${del}Activate`);
+      document.querySelector(`#${id} [name$="Encroach"]`).setAttribute('name',`magic${del}Encroach`);
+      document.querySelector(`#${id} [name$="Note"]`    ).setAttribute('name',`magic${del}Note`);
+    }
+  }
+  magicTrashNum = del;
+  if(!del){ document.getElementById('magic-trash').style.display = 'none' }
+  calcMagic();
 }
 
 // コンボ欄 ----------------------------------------

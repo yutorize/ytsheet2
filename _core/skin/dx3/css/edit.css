@@ -419,7 +419,7 @@
   white-space: pre;
   text-align: center;
 }
-#effect-trash table tbody {
+.trash-box table tbody {
   display: block;
   border-width: 1px;
   border-style: solid;
@@ -427,33 +427,33 @@
   margin: .2em;
   cursor: move;
 }
-#effect-trash table tbody tr,
-#effect-trash table tbody td {
+.trash-box table tbody tr,
+.trash-box table tbody td {
   display: none;
 }
-#effect-trash table tbody tr:first-child,
-#effect-trash table tbody tr:first-child td:nth-child(2) {
+.trash-box table tbody tr:first-child,
+.trash-box table tbody tr:first-child td:nth-child(2) {
   border: none;
   display: block;
 }
-#effect-trash table tbody input {
+.trash-box table tbody input {
   padding: 1em .5em;
   border-color: transparent;
   background-color: transparent;
   pointer-events: none;
 }
-#effect-trash .annotate {
+.trash-box .annotate {
   position: absolute;
   bottom: 0;
   font-size: 90%;
 }
-#effect-trash .close-button {
+.trash-box .close-button {
   position: absolute;
   top: 2px;
   right: 2px;
   font-size: 1.2em;
 }
-#effect-trash .close-button:hover {
+.trash-box .close-button:hover {
   opacity: 0.5;
 }
 @media screen and (max-width:1090px){
@@ -503,6 +503,32 @@
 #magic table tbody td {
   padding: .5rem 0;
   border-width: 0;
+}
+@media screen and (max-width:735px){
+  #magic table {
+    table-layout: fixed;
+  }
+  #magic table thead tr,
+  #magic table tbody tr {
+    display: table-row;
+  }
+  #magic table tbody td[rowspan] {
+    display: table-cell;
+  }
+  #magic table thead th:nth-child(2) {
+    display: table-cell;
+  }
+  #magic table tbody td[colspan] div {
+    grid-template-columns: max-content 6.5em max-content 3em max-content 1fr;
+  }
+  #magic table thead th:nth-child(1) { width: 1.4em; }
+  #magic table thead th:nth-child(2) { width:  15em; } /* 名称 */
+  #magic table thead th:nth-child(3) { width:   7em; } /* 種別 */
+  #magic table thead th:nth-child(4) { width: 3.8em; } /* 経験点 */
+  #magic table thead th:nth-child(5) { width: 5.5em; } /* 発動値 */
+  #magic table thead th:nth-child(6) { width: 3.9em; } /* 侵蝕値 */
+  #magic table thead th:nth-child(7) { width: 3.9em; } /* 侵蝕値 */
+  #magic table thead th:last-child   { width:  16em; } /* 効果 */
 }
 
 #combo {
@@ -649,7 +675,7 @@
   #items table thead th:nth-child(7) { width:   6em !important; } /* 攻撃力／行動 */
   #items table thead th:nth-child(8) { width: 4.5em !important; } /* ガード／装甲値 */
   #items table thead th:nth-child(9) { width: 4.5em !important; } /* 射程 */
-  #items table thead th:last-child   { width: 10em !important;  } /* 解説 */
+  #items table thead th:last-child   { width:  16em !important; } /* 解説 */
   #items table tbody td { width: auto !important; }
 }
 

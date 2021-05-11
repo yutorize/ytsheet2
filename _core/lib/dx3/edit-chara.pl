@@ -696,6 +696,11 @@ print <<"HTML";
         </table>
         <div class="add-del-button"><a onclick="addMagic()">▼</a><a onclick="delMagic()">▲</a></div>
       </details>
+      <div class="box trash-box" id="magic-trash">
+        <h2><i class="fas fa-trash-alt"></i><span class="shorten">削除術式</span></h2>
+        <table class="edit-table line-tbody" id="magic-trash-table"></table>
+        <i class="fas fa-times close-button" onclick="document.getElementById('magic-trash').style.display = 'none';"></i>
+      </div>
       
       <details class="box" id="combo" $open{'combo'} style="position:relative">
         <summary>コンボ</summary>
