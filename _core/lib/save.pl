@@ -229,10 +229,10 @@ sub passfile_write_save {
     if ($data[0] eq $id){
       my $passwrite = $data[1];
       if   ($protect eq 'account')  {
-        if($passwrite !~ /\[.+?\]/) { $passwrite = '['.$LOGIN_ID.']'; }
+        if($passwrite !~ /^\[.+?\]$/) { $passwrite = '['.$LOGIN_ID.']'; }
       }
       elsif($protect eq 'password') {
-        if(!$passwrite || $passwrite =~ /\[.+?\]/) { $passwrite = e_crypt($pass); }
+        if(!$passwrite || $passwrite =~ /^\[.+?\]$/) { $passwrite = e_crypt($pass); }
       }
       elsif($protect eq 'none') {
         $passwrite = '';

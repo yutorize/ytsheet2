@@ -49,7 +49,7 @@ sub pcDataGet {
     (undef, undef, $file, undef) = getfile($in{'id'},$in{'pass'},$LOGIN_ID);
     my $datafile = $in{'backup'} ? "${datadir}${file}/backup/$in{'backup'}.cgi" : "${datadir}${file}/data.cgi";
     open my $IN, '<', $datafile or &login_error;
-    $_ =~ s/(.*?)<>(.*?)\n/$pc{$1} = $2;/egi while <$IN>;
+    $_ =~ s/^(.+?)<>(.*)\n$/$pc{$1} = $2;/egi while <$IN>;
     close($IN);
     if($in{'backup'}){
       ($pc{'protect'}, $pc{'forbidden'}) = protectTypeGet("${datadir}${file}/data.cgi");
@@ -60,7 +60,7 @@ sub pcDataGet {
     $file = (getfile_open($in{'id'}))[0];
     my $datafile = $in{'backup'} ? "${datadir}${file}/backup/$in{'backup'}.cgi" : "${datadir}${file}/data.cgi";
     open my $IN, '<', $datafile or error 'データがありません。';
-    $_ =~ s/(.*?)<>(.*?)\n/$pc{$1} = $2;/egi while <$IN>;
+    $_ =~ s/^(.+?)<>(.*)\n$/$pc{$1} = $2;/egi while <$IN>;
     close($IN);
 
     delete $pc{'image'};

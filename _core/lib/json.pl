@@ -33,7 +33,7 @@ if($id){
     open $IN, '<', "${data_dir}${file}/backup/${backup}.cgi" or "";
   }
 
-  $_ =~ s/(.*?)<>(.*?)\n/$pc{$1} = $2;/egi while <$IN>;
+  $_ =~ s/^(.+?)<>(.*)\n$/$pc{$1} = $2;/egi while <$IN>;
   close($IN);
   
   if($pc{'image'}){

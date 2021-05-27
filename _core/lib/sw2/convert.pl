@@ -35,7 +35,7 @@ sub data_convert {
       if($set_url =~ s"^${url}data/(.*?).html"$1"){
         open my $IN, '<', "$set::convert_url{$url}data/${set_url}.cgi" or error '旧ゆとシートのデータが開けませんでした';
         my %pc;
-        $_ =~ s/(.*?)<>(.*?)\n/$pc{$1} = $2;/egi while <$IN>;
+        $_ =~ s/^(.+?)<>(.*)\n$/$pc{$1} = $2;/egi while <$IN>;
         close($IN);
         if($pc{'部位数'}){
           return convertMto2(\%pc);

@@ -29,13 +29,13 @@ if($backup eq "") {
   open $IN, '<', "${data_dir}${file}/backup/${backup}.cgi" or "";
 }
 if($tool){
-  $_ =~ s/(.*?)<>(.*?)\n/$pc{$1} = tag_unescape($2);/egi while <$IN>;
+  $_ =~ s/^(.+?)<>(.*)\n$/$pc{$1} = tag_unescape($2);/egi while <$IN>;
   $pc{'chatPalette'} =~ s/<br>/\n/g;
   $pc{'skills'} =~ s/<br>/\n/gi;
   $_ = tag_delete($_) foreach values %pc;
 }
 else {
-  $_ =~ s/(.*?)<>(.*?)\n/$pc{$1} = tag_unescape_ytc($2);/egi while <$IN>;
+  $_ =~ s/^(.+?)<>(.*)\n$/$pc{$1} = tag_unescape_ytc($2);/egi while <$IN>;
   $pc{'chatPalette'} =~ s/<br>/\n/g;
   $pc{'skills'} =~ s/<br>/\n/gi;
 }
