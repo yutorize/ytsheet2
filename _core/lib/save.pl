@@ -284,18 +284,12 @@ sub list_save {
   flock($FH, 2);
   my @list = sort { (split(/<>/,$b))[3] cmp (split(/<>/,$a))[3] } <$FH>;
   seek($FH, 0, 0);
-  my $listhit;
+  print $FH "$newline\n";
   foreach (@list){
     my( $id, undef ) = split /<>/;
-    if ($id eq $pc{'id'}){
-      print $FH "$newline\n";
-      $listhit = 1;
-    }else{
+    if ($id ne $pc{'id'}){
       print $FH $_;
     }
-  }
-  if(!$listhit){
-    print $FH "$newline\n";
   }
   truncate($FH, tell($FH));
   close($FH);

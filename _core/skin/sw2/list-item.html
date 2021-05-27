@@ -20,15 +20,16 @@
       <TMPL_LOOP Lists>
       <section class="list item">
         <h2><TMPL_VAR NAME> <small><TMPL_VAR TEXT> (<TMPL_VAR NUM>)</small></h2>
+        <TMPL_VAR NAV>
         <table>
           <thead>
           <tr>
             <th class="name"><span>名前</span></th>
-            <th class="author"><a href="./?type=i&group=<TMPL_VAR ID>&sort=pl">製作者</a></th>
+            <th class="author"><a href="./?type=i&<TMPL_VAR qLinks>&sort=author">製作者</a></th>
             <th class="category"><span>カテゴリ</span></th>
             <th class="price"><span>価格</span></th>
             <th class="summary"><span>概要</span></th>
-            <th class="date"><a href="./?type=i&group=<TMPL_VAR ID>&sort=date">更新日時</a></th>
+            <th class="date"><a href="./?type=i&<TMPL_VAR qLinks>&sort=date">更新日時</a></th>
           </tr>
           </thead>
           <TMPL_LOOP Characters><tr<TMPL_IF HIDE> class="hide"</TMPL_IF>>
@@ -40,6 +41,7 @@
             <td class="date"><div><TMPL_VAR DATE></div></td>
           </tr></TMPL_LOOP>
         </table>
+        <TMPL_VAR NAV>
         <TMPL_IF modeIndex><p class="more"><a href="./?type=i&category=all">>>MORE</a></p></TMPL_IF>
       </section>
       </TMPL_LOOP>

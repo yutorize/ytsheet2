@@ -28,6 +28,8 @@ $INDEX->param(OAUTH_LOGIN_URL => $set::oauth_login_url);
 
 $INDEX->param(mode => $mode);
 
+### データ処理 #######################################################################################
+### クエリ --------------------------------------------------
 my $index_mode;
 if(!($mode eq 'mylist' || param('tag') || param('group') || param('name') || param('player') || param('exp-min') || param('exp-max') || param('syndrome') || param('works') || param('dlois') || param('image'))){
   $index_mode = 1;
@@ -53,6 +55,7 @@ foreach(
 }
 my $q_links = join('&', @q_links);
 
+### ファイル読み込み --------------------------------------------------
 ## マイリスト取得
 my @mylist;
 if($mode eq 'mylist'){
@@ -65,14 +68,19 @@ if($mode eq 'mylist'){
   close($FH);
 }
 
-## ファイル読み込み
-my %grouplist;
+## リスト取得
 open (my $FH, "<", $set::listfile);
-my @list = sort { (split(/<>/,$b))[3] <=> (split(/<>/,$a))[3] } <$FH>;
+my @list = <$FH>;
 close($FH);
 
+### フィルタ処理 --------------------------------------------------
+## マイリスト
+if($mode eq 'mylist'){
+  my $regex = join('|', @mylist);
+  @list = grep { (split(/<>/))[0] =~ /^(?:$regex)$/ } @list;
+}
 ## 非表示除外
-if (
+elsif (
      !($set::masterid && $set::masterid eq $LOGIN_ID)
   && !($mode eq 'mylist')
   && !param('tag')
@@ -96,7 +104,6 @@ my $group_query = param('group');
 if($group_query && param('group') ne 'all') {
   if($group_query eq $set::group_default){ @list = grep { (split(/<>/))[6] =~ /^$group_query$|^$/ } @list; }
   else { @list = grep { (split(/<>/))[6] eq $group_query } @list; }
-  
 }
 $INDEX->param(group => $group_name{$group_query});
 
@@ -148,8 +155,9 @@ elsif(param('image') eq 'N') {
   $INDEX->param(image => 1);
 }
 
-## リストを回す
+### リストを回す --------------------------------------------------
 my %count; my %pl_flag;
+my %grouplist;
 foreach (@list) {
   my (
     $id, undef, undef, $updatetime, $name, $player, $group, #0-6
@@ -157,13 +165,6 @@ foreach (@list) {
     $syndrome, $dlois, #13-14
     $session, $image, $tag, $hide, $stage #15-19
   ) = (split /<>/, $_)[0..19];
-  
-  if($mode eq 'mylist'){
-    if(grep {$_ eq $id} @mylist){
-    } else {
-      next;
-    }
-  }
   
   #グループ
   $group = $set::group_default if (!$group || !$group_name{$group});
@@ -231,6 +232,7 @@ foreach (@list) {
   push(@{$grouplist{$group}}, @characters);
 }
 
+### 出力用配列 --------------------------------------------------
 my @characterlists; 
 my $page = param('page') ? param('page') : 1;
 my $pagestart = $page * $set::pagemax - $set::pagemax;
@@ -246,6 +248,7 @@ foreach (sort {$group_sort{$a} <=> $group_sort{$b}} keys %grouplist){
   elsif($sort eq 'exp') { @{$grouplist{$_}} = sort { $b->{'EXP'} <=> $a->{'EXP'} } @{$grouplist{$_}}; }
   elsif($sort eq 'date'){ @{$grouplist{$_}} = sort { $b->{'DATE'} <=> $a->{'DATE'} } @{$grouplist{$_}}; }
   
+  ## ページネーション
   my $navbar;
   if($set::pagemax && !$index_mode && param('group')){
     my $pageend = ($count{'PC'}{$_}-1 < $pageend) ? $count{'PC'}{$_}-1 : $pageend;
@@ -257,6 +260,7 @@ foreach (sort {$group_sort{$a} <=> $group_sort{$b}} keys %grouplist){
   }
   $navbar = '<div class="navbar">'.$navbar.'</div>' if $navbar;
   
+  ##
   push(@characterlists, {
     "ID" => $_,
     "NAME" => $group_name{$_},

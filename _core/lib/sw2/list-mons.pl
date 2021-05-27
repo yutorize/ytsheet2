@@ -30,12 +30,15 @@ $INDEX->param(OAUTH_LOGIN_URL => $set::oauth_login_url);
 $INDEX->param(mode => $mode);
 $INDEX->param(type => 'm');
 
+### データ処理 #######################################################################################
+### クエリ --------------------------------------------------
 my $index_mode;
 if(!($mode eq 'mylist' || param('tag') || param('taxa') || param('name'))){
   $index_mode = 1;
   $INDEX->param(modeIndex => 1);
 }
 
+### ファイル読み込み --------------------------------------------------
 ## マイリスト取得
 my @mylist;
 if($mode eq 'mylist'){
@@ -48,14 +51,19 @@ if($mode eq 'mylist'){
   close($FH);
 }
 
-## ファイル読み込み
-my %grouplist;
+## リスト取得
 open (my $FH, "<", $set::monslist);
-my @list = sort { (split(/<>/,$a))[7] <=> (split(/<>/,$b))[7] } <$FH>;
+my @list = <$FH>;
 close($FH);
 
+### フィルタ処理 --------------------------------------------------
+## マイリスト
+if($mode eq 'mylist'){
+  my $regex = join('|', @mylist);
+  @list = grep { (split(/<>/))[0] =~ /^(?:$regex)$/ } @list;
+}
 ## 非表示除外
-if (
+elsif (
      !($set::masterid && $set::masterid eq $LOGIN_ID)
   && !($mode eq 'mylist')
   && !param('tag')
@@ -81,8 +89,9 @@ my $name_query = Encode::decode('utf8', param('name'));
 if($name_query) { @list = grep { (split(/<>/))[4] =~ /$name_query/ } @list; }
 $INDEX->param(name => $name_query);
 
-## リストを回す
+### リストを回す --------------------------------------------------
 my %count;
+my %grouplist;
 foreach (@list) {
   my (
     $id, undef, undef, $updatetime, $name, $author, $taxa, $lv,
@@ -90,17 +99,9 @@ foreach (@list) {
     $image, $tag, $hide
   ) = (split /<>/, $_)[0..16];
   
-  if($mode eq 'mylist'){
-    if(grep {$_ eq $id} @mylist){
-    } else {
-      next;
-    }
-  }
-  
   #カウント
   $count{$taxa}++;
-  
-  #グループ（分類）
+  #最大表示制限
   next if ($index_mode && $count{$taxa} > $set::list_maxline && $set::list_maxline);
   
   #更新日時
@@ -123,10 +124,16 @@ foreach (@list) {
   push(@{$grouplist{$taxa}}, @characters);
 }
 
+### 出力用配列 --------------------------------------------------
 my @characterlists; 
 @data::taxa = sort{$a->[1] <=> $b->[1]} @data::taxa;
 foreach (@data::taxa){
   my $name = $_->[0];
+  ## ソート
+  unless($index_mode && $set::list_maxline){
+    @{$grouplist{$name}} = sort { $a->{'LV'} <=> $b->{'LV'} } @{$grouplist{$name}};
+  }
+  ## ページネーション
   next if !$count{$name};
   push(@characterlists, {
     "URL" => uri_escape_utf8($name),
