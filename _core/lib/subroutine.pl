@@ -234,10 +234,14 @@ sub token_check {
 
 ### メール送信 --------------------------------------------------
 sub sendmail {
-  my $from    = encode('MIME-Header', "ゆとシートⅡ <$set::admimail>");
-  my $to      = encode('MIME-Header', shift);
+  my $from    = encode('MIME-Header', "ゆとシートⅡ")." <$set::admimail>";
+  my $to      = shift;
   my $subject = encode('MIME-Header', shift);
   my $message = shift;
+
+  $from    =~ s/\r|\n//g;
+  $to      =~ s/\r|\n//g;
+  $subject =~ s/\r|\n//g;
 
   open (my $MA, "|$set::sendmail -t") or &error("sendmailの起動に失敗しました。");
   print $MA "To: $to\n";
