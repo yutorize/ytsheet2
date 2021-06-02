@@ -56,28 +56,6 @@ io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2SwordWorld2E
 			);
 		}
 	}
-	if(defaultPalette === '') {
-		data_character_detail['能力値'] = [];
-		if(statusLenght.length === 1) {
-			data_character_detail['能力値'].push(
-				`        <data currentValue="${json.status1Accuracy || '0'}" name="命中">${json.status1Accuracy || '0'}</data>`,
-				`        <data currentValue="${json.status1Damag || '0'}" name="打撃点">${json.status1Damage || '0'}</data>`,
-				`        <data currentValue="${json.status1Evasion || '0'}" name="回避力">${json.status1Evasion || '0'}</data>`,
-				`        <data type="numberResource" currentValue="${json.status1Defense || '0'}" name="防護点">${json.status1Defense || '0'}</data>`
-			);
-		} else {
-			for(let i = 0; i < statusLenght; i++) {
-				const cursor = i + 1;
-				data_character_detail['能力値'].push(
-						`        <data currentValue="${json['status' + cursor + 'Accuracy'] || '0'}" name="命中${cursor}">${json['status' + cursor + 'Accuracy'] || '0'}</data>`,
-						`        <data currentValue="${json['status' + cursor + 'Damage'] || '0'}" name="打撃点${cursor}">${json['status' + cursor + 'Damage'] || '0'}</data>`,
-						`        <data currentValue="${json['status' + cursor + 'Evasion'] || '0'}" name="回避力${cursor}">${json['status' + cursor + 'Evasion'] || '0'}</data>`,
-						`        <data type="numberResource" currentValue="${json['status' + cursor + 'Defense'] || '0'}" name="防護点${cursor}">${json['status' + cursor + 'Defense'] || '0'}</data>`,
-				);
-			}
-		}
-		data_character_detail['能力値'].push(`        <data type="numberResource" currentValue="${json.sin || 0}" name="穢れ度">5</data>`);
-	}
 	if(defaultPalette && defaultPalette.parameters.length) {
 		data_character_detail['バフ・デバフ'] = defaultPalette.parameters.map((param)=>{
 			return `        <data type="numberResource" currentValue="${param.value}" name="${param.label}">${param.value < 10 ? 10 : param.value}</data>`; 
@@ -95,36 +73,7 @@ io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2SwordWorld2E
 
 	let palette = `<chat-palette dicebot="SwordWorld2_5">\n`;
 	if(defaultPalette) {
-		palette += defaultPalette.palette.replace('<','&lt;').replace('>','&gt;');
-	} else {
-		const palette_detail = {};
-		palette_detail['情報共有'] = '';
-		palette_detail['戦闘'] = '';
-		if(statusLenght.length === 1) {
-			palette_detail['情報共有'] += `現在の状態　HP:{HP} / MP:{MP}\n`;
-			palette_detail['戦闘'] += `2d6+{命中} 命中判定\n`;
-			palette_detail['戦闘'] += `{打撃点} 打撃ダメージ\n`;
-			palette_detail['戦闘'] += `2d6+{回避力} 回避\n`;
-		} else {
-			palette_detail['情報共有'] += `現在の状態 | `;
-			for(let i = 0; i < statusLenght; i++) {
-				const cursor = i + 1;
-				palette_detail['情報共有'] += `${json['status' + cursor + 'Style'] || ''}: HP:{HP${cursor}} / MP:{MP${cursor}} | `;
-				palette_detail['戦闘'] += `2d6+{命中${cursor}} ${json['status' + cursor + 'Style'] || ''} 命中判定\n`;
-				palette_detail['戦闘'] += `{打撃点${cursor}} ${json['status' + cursor + 'Style'] || ''} 打撃ダメージ\n`;
-				palette_detail['戦闘'] += `2d6+{回避力${cursor}} ${json['status' + cursor + 'Style'] || ''} 回避\n`;
-			}
-		}
-		palette_detail['戦闘'] += `2d6+${json.vitResist || '0'} 生命抵抗\n`;
-		palette_detail['戦闘'] += `2d6+${json.mndResist || '0'} 精神抵抗\n`;
-		if(opt_url) { palette_detail['情報共有'] += `\nキャラクターシート　{URL}\n`;}
-	
-		for(const key in palette_detail) {
-			palette += `// ${key}\n${palette_detail[key]}\n`;
-		}
-		if(json.chatPalette) {
-			palette += json.chatPalette.replace(/&lt;br&gt;/gm, '\n');
-		}	
+		palette += defaultPalette.palette.replace('&','&amp;').replace('<','&lt;').replace('>','&gt;');
 	}
 	palette += `  </chat-palette>`;
 
@@ -273,65 +222,7 @@ io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2SwordWorld2P
 
 	let palette = `<chat-palette dicebot="SwordWorld2_5">\n`;
 	if(defaultPalette) {
-		palette += defaultPalette.palette.replace('<','&lt;').replace('>','&gt;');
-	} else {
-		const palette_detail = {};
-		palette_detail['情報共有'] = `現在の状態　HP:{HP} / MP:{MP}\n`;
-		if(opt_url) { palette_detail['情報共有'] += `キャラクターシート　{URL}\n`;}
-		palette_detail['戦闘前'] = ``;
-		if(json.lvSco) {
-			palette_detail['戦闘前'] += `2d6+{スカウト}+{敏捷度B} 先制判定 (スカウト)\n`;
-		}
-		if(json.lvWar) {
-			palette_detail['戦闘前'] += `2d6+{ウォーリーダー}+{敏捷度B} 先制判定 (ウォーリーダー・敏捷)\n`;
-			palette_detail['戦闘前'] += `2d6+{ウォーリーダー}+{知力B} 先制判定 (ウォーリーダー・知力)\n`;
-		}
-		if(json.lvSag) {
-			palette_detail['戦闘前'] += `2d6+{セージ}+{知力B} 魔物知識判定（セージ）\n`;
-		}
-		if(json.lvRid) {
-			palette_detail['戦闘前'] += `2d6+{ライダー}+{知力B} 魔物知識判定（ライダー）\n`;
-		}
-	
-		palette_detail['戦闘中'] = ``;
-		const weaponLength = Number(json.weaponNum);
-		for(let i = 0; i < weaponLength; i++) {
-			if(json['weapon' + (i + 1) + 'Name']) {
-				palette_detail['戦闘中'] += `2d6+${json['weapon' + (i + 1) + 'AccTotal'] || '0'}+{命中} 命中判定 (${json['weapon' + (i + 1) + 'Name']})\n`;
-				palette_detail['戦闘中'] += `k${json['weapon' + (i + 1) + 'Rate'] || '0'}+${json['weapon' + (i + 1) + 'DmgTotal'] || '0'}+{攻撃}@(${json['weapon' + (i + 1) + 'Crit'] || '10'}-{クリティカル値減少})$+{クリレイ}   ダメージ判定 (${json['weapon' + (i + 1) + 'Name']})\n`;				
-			}
-		}
-		[[json.lvSor, json.magicPowerSor, '真語魔法'],
-		 [json.lvCon, json.magicPowerCon, '操霊魔法'],
-		 [json.lvPri, json.magicPowerPri, '神聖魔法'],
-		 [json.lvMag, json.magicPowerMag, '魔動機術'],
-		 [json.lvFai, json.magicPowerFai, '妖精魔法'],
-		 [json.lvDem, json.magicPowerDem, '召異魔法'],
-		 [json.lvDru, json.magicPowerDru, '森羅魔法'],
-		 [json.lvGri, json.magicPowerGri, '秘奥魔法'],].filter((d)=>{
-			return d[0];
-		}).forEach((v)=>{
-			palette_detail['戦闘中'] += `\n2d6+${v[1]}+{魔法行使} ${v[2]}行使判定\n`;
-			for(let i = 0; i < 6; i++) {
-				palette_detail['戦闘中'] += `k${i*10}+${v[1]}+{魔法ダメージ}@(10-{クリティカル値減少}) ${v[2]}ダメージ (威力 ${i*10})\n`;
-			}
-		});
-		palette_detail['戦闘中'] += `2d6+${json.defenseTotalAllEva || '0'}+{回避} 回避判定\n`;
-		palette_detail['戦闘中'] += `2d6+${json.vitResistTotal}+{生命抵抗} 生命抵抗判定\n`;
-		palette_detail['戦闘中'] += `2d6+${json.mndResistTotal}+{精神抵抗} 精神抵抗判定\n`;
-	
-		palette_detail['探索中'] = skills.map((s)=>{
-			return ['器用度B', '敏捷度B', '知力B'].map((v)=>{
-				return `2d6+{${s.name}}+{${v}} ${s.name}+${v}`
-			}).join('\n')
-		}).join('\n')
-	
-		for(const key in palette_detail) {
-			palette += `// ${key}\n${palette_detail[key]}\n`;
-		}
-		if(json.chatPalette) {
-			palette += json.chatPalette.replace(/&lt;br&gt;/gm, '\n');
-		}
+		palette += defaultPalette.palette.replace('&','&amp;').replace('<','&lt;').replace('>','&gt;');
 	}
 	palette += `  </chat-palette>`;
 	return `<?xml version="1.0" encoding="UTF-8"?>

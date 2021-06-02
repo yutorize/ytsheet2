@@ -91,12 +91,6 @@ io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2BloodPathPC =
     character.params.push({ label: '想', value: json.statusMain2 || 0 });
   }
 
-  if(defaultPalette === '') {
-    const palette = [];
-    palette.push(`現在の状態　耐久値:{耐久値}`);
-    character.commands = palette.join('\n');
-  }
-
   result.entities.characters[json.id] = character;
   return JSON.stringify(result);
 };

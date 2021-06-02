@@ -110,35 +110,6 @@ io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2DoubleCross3P
 		}
 	});
 
-	if(defaultPalette === '') {
-		const palette = [];
-		palette.push(`現在の状態　HP:{HP} / 侵蝕率:{侵蝕率}`);
-		io.github.shunshun94.trpg.ytsheet.consts.DX3_STATUS.forEach((s)=>{
-			s.skills.forEach((skill)=>{
-				palette.push(`({${s.name}}+0+0)DX+({${skill.name}}+0)@(10-0) ${skill.name}`);
-			});
-			let cursor = 1;
-			while(json[`skill${s.extendableSkill.column}${cursor}Name`]) {
-				palette.push(`({${s.name}}+0+0)DX+({${json[`skill${s.extendableSkill.column}${cursor}Name`]}}+0)@(10-0) ${json[`skill${s.extendableSkill.column}${cursor}Name`]}`);
-				cursor++;
-			}
-		});
-		let comboCursor = 1;
-		while(json[`combo${comboCursor}Name`]) {
-			let limitationCursor = 1;
-			while(json[`combo${comboCursor}Condition${limitationCursor}`] && json[`combo${comboCursor}Dice${limitationCursor}`]) {
-				palette.push('(' + json[`combo${comboCursor}Dice${limitationCursor}`] + '+0+0)dx' +
-						'+(' + (json[`combo${comboCursor}Fixed${limitationCursor}`] || '0') + '+0)' +
-						'@(' + (json[`combo${comboCursor}Crit${limitationCursor}`] || '10') + '-0) ' +
-						json[`combo${comboCursor}Name`] + '(' + json[`combo${comboCursor}Condition${limitationCursor}`] + ') ' + (json[`combo${comboCursor}Note`] || '') + ' ' +
-						(json[`combo${comboCursor}Combo`] || '').trim() + ' ' + (json[`combo${comboCursor}Atk${limitationCursor}`] ? json[`combo${comboCursor}Atk${limitationCursor}`] : ''));
-				limitationCursor++;
-			}
-			comboCursor++;
-		}
-		character.commands = palette.join('\n');
-	}
-
 	result.entities.characters[json.id] = character;
 	return JSON.stringify(result);
 };

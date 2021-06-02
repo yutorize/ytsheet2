@@ -90,14 +90,6 @@ io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2DoubleCross3
 			if(addedParam[param.label]){ return `` }
 			return `        <data type="numberResource" currentValue="${param.value}" name="${param.label}">${param.value < 10 ? 10 : param.value}</data>`; 
 		});
-	} else {
-		data_character_detail['バフ・デバフ'] = [
-			`        <data type="numberResource" currentValue="0" name="侵蝕率によるダイスボーナス">10</data>`,
-			`        <data type="numberResource" currentValue="0" name="ダイス">50</data>`,
-			`        <data type="numberResource" currentValue="0" name="達成値">50</data>`,
-			`        <data type="numberResource" currentValue="0" name="攻撃力">100</data>`,
-			`        <data type="numberResource" currentValue="0" name="クリティカル値減少">9</data>`,
-		];
 	}
 
 	data_character.detail = `  <data name="detail">\n`;
@@ -110,41 +102,7 @@ io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2DoubleCross3
 
 	let palette = `<chat-palette dicebot="DoubleCross">\n`;
 	if(defaultPalette) {
-		palette += defaultPalette.palette.replace('<','&lt;').replace('>','&gt;');
-	} else {
-		const tmp_palette = [];
-
-		tmp_palette.push(`現在の状態　HP:{HP} / 侵蝕率:{侵蝕率}`);
-		if(opt_url) { tmp_palette.push(`キャラクターシート　{URL}`);}
-		io.github.shunshun94.trpg.ytsheet.consts.DX3_STATUS.forEach((s)=>{
-			const base = json['sttTotal' + s.column];
-			s.skills.forEach((skill)=>{
-				tmp_palette.push(`(${base}+{侵蝕率によるダイスボーナス}+{ダイス})DX+(${json['skill' + skill.column] || 0}+{達成値})@(10-{クリティカル値減少}) ${skill.name}`);
-			});
-			let cursor = 1;
-			while(json[`skill${s.extendableSkill.column}${cursor}Name`]) {
-				tmp_palette.push(`(${base}+{侵蝕率によるダイスボーナス}+{ダイス})DX+(${json[`skill${s.extendableSkill.column}${cursor}`] || 0}+{達成値})@(10-{クリティカル値減少}) ${json[`skill${s.extendableSkill.column}${cursor}Name`]}`);
-				cursor++;
-			}
-		});
-		let comboCursor = 1;
-		while(json[`combo${comboCursor}Name`]) {
-			let limitationCursor = 1;
-			while(json[`combo${comboCursor}Condition${limitationCursor}`] && json[`combo${comboCursor}Dice${limitationCursor}`]) {
-				tmp_palette.push('(' + json[`combo${comboCursor}Dice${limitationCursor}`] + '+{侵蝕率によるダイスボーナス}+{ダイス})dx' +
-						'+(' + (json[`combo${comboCursor}Fixed${limitationCursor}`] || '0') + '+{達成値})' +
-						'@(' + (json[`combo${comboCursor}Crit${limitationCursor}`] || '10') + '-{クリティカル値減少}) ' +
-						json[`combo${comboCursor}Name`] + '(' + json[`combo${comboCursor}Condition${limitationCursor}`] + ') ' + (json[`combo${comboCursor}Note`] || '') + ' ' +
-						(json[`combo${comboCursor}Combo`] || '').trim() + ' ' + (json[`combo${comboCursor}Atk${limitationCursor}`] ? json[`combo${comboCursor}Atk${limitationCursor}`] : ''));
-				limitationCursor++;
-			}
-			comboCursor++;
-		}
-		palette += tmp_palette.join('\n');
-
-		if(json.chatPalette) {
-			palette += json.chatPalette.replace(/&lt;br&gt;/gm, '\n');
-		}
+		palette += defaultPalette.palette.replace('&','&amp;').replace('<','&lt;').replace('>','&gt;');
 	}
 	palette += `  </chat-palette>`;
 	return `<?xml version="1.0" encoding="UTF-8"?>

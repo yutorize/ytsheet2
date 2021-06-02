@@ -77,17 +77,7 @@ io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2BloodPathPC 
 
   let palette = `<chat-palette dicebot="">\n`;
   if(defaultPalette) {
-    palette += defaultPalette.palette.replace('<','&lt;').replace('>','&gt;');
-  } else {
-    const tmp_palette = [];
-
-    tmp_palette.push(`現在の状態　耐久値:{耐久値}`);
-    if(opt_url) { tmp_palette.push(`キャラクターシート　{URL}`);}
-    palette += tmp_palette.join('\n');
-
-    if(json.chatPalette) {
-      palette += json.chatPalette.replace(/&lt;br&gt;/gm, '\n');
-    }
+		palette += defaultPalette.palette.replace('&','&amp;').replace('<','&lt;').replace('>','&gt;');
   }
   palette += `  </chat-palette>`;
   return `<?xml version="1.0" encoding="UTF-8"?>
