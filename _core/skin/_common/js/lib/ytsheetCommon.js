@@ -118,7 +118,7 @@ io.github.shunshun94.trpg.ytsheet.separateParametersFromChatPalette = (chatPalet
 		if(parameterExecResult) {
 			result.parameters.push({
 				label:parameterExecResult[1],
-				value:Number(parameterExecResult[2])
+				value:parameterExecResult[2]
 			});
 		} else {
 			palette.push(line);
