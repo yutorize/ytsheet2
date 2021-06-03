@@ -3,7 +3,6 @@ use strict;
 use utf8;
 use open ":utf8";
 use CGI::Cookie;
-use Encode qw/encode decode/;
 use List::Util qw/max min/;
 use Fcntl;
 

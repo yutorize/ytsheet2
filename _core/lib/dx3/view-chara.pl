@@ -622,7 +622,7 @@ foreach (reverse sort @backlist) {
     my $url = $_;
     $_ =~ s/^([0-9]{4}-[0-9]{2}-[0-9]{2})-([0-9]{2})-([0-9]{2})$/$1 $2\:$3/;
     push(@backup, {
-      "NOW"  => ($url eq param('backup') ? 1 : 0),
+      "NOW"  => ($url eq $::in{'backup'} ? 1 : 0),
       "URL"  => $url,
       "DATE" => $_,
     });

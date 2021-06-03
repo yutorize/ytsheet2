@@ -4,14 +4,13 @@ use strict;
 use utf8;
 use open ":utf8";
 
+our $LOGIN_ID = check;
 
-our $mode = param('mode');
-our $pass = param('pass');
+our $mode = $::in{'mode'};
+our $pass = $::in{'pass'};
 our $new_id;
 
 our $make_error;
-
-our $LOGIN_ID = check;
 
 ## 新規作成時処理
 if ($mode eq 'make'){
@@ -21,23 +20,24 @@ if ($mode eq 'make'){
   }
 
   ## 二重投稿チェック
-  if(!token_check(param('_token'))){
+  my $_token = $::in{'_token'};
+  if(!token_check($_token)){
     my @query;
-    push(@query, 'mode=mylist') if param('protect') eq 'account';
-    push(@query, 'type='.param('type')) if param('type');
+    push(@query, 'mode=mylist') if $::in{'protect'} eq 'account';
+    push(@query, 'type='.$::in{'type'}) if $::in{'type'};
     $make_error .= 'エラー：セッションの有効期限が切れたか、二重投稿です。（⇒<a href="./'
                    .(@query ? '?'.join('&',@query) : '')
                    .'">投稿されているか確認する</a>';
   }
   
   ## 登録キーチェック
-  if(!$set::user_reqd && $set::registerkey && $set::registerkey ne param('registerkey')){
+  if(!$set::user_reqd && $set::registerkey && $set::registerkey ne $::in{'registerkey'}){
     $make_error .= '記入エラー：登録キーが一致しません。<br>';
   }
   
   ## ID生成
   if($set::id_type && $LOGIN_ID){
-    my $type = (param('type') eq 'm') ? 'm' : (param('type') eq 'i') ? 'i' : '';
+    my $type = ($::in{'type'} eq 'm') ? 'm' : ($::in{'type'} eq 'i') ? 'i' : '';
     my $i = 1;
     $new_id = $LOGIN_ID.'-'.$type.sprintf("%03d",$i);
     # 重複チェック
@@ -56,7 +56,7 @@ if ($mode eq 'make'){
 }
 
 ## パスワードチェック
-if(param('protect') eq 'password'){
+if($::in{'protect'} eq 'password'){
   if ($pass eq ''){ $make_error .= '記入エラー：パスワードが入力されていません。<br>'; }
   else {
     if ($pass =~ /[^0-9A-Za-z\.\-\/]/) { $make_error .= '記入エラー：パスワードに使える文字は、半角の英数字とピリオド、ハイフン、スラッシュだけです。'; }
@@ -79,9 +79,8 @@ if ($make_error) { require $set::lib_edit; exit; } # エラーなら編集画面
 
 ### データ処理 #################################################################################
 my %pc;
-for (param()){ $pc{$_} = param($_); }
+for (param()){ $pc{$_} = decode('utf8', param($_)) if $_ ne 'imageFile' }
 if($main::new_id){ $pc{'id'} = $main::new_id; }
-delete $pc{'imageFile'};
 ## 現在時刻
 our $now = time;
 ## 最終更新
@@ -98,8 +97,8 @@ elsif($mode eq 'save'){
 }
 
 my $data_dir; my $listfile; our $newline;
-if   (param('type') eq 'm'){ require $set::lib_calc_mons; $data_dir = $set::mons_dir; $listfile = $set::monslist; }
-elsif(param('type') eq 'i'){ require $set::lib_calc_item; $data_dir = $set::item_dir; $listfile = $set::itemlist; }
+if   ($::in{'type'} eq 'm'){ require $set::lib_calc_mons; $data_dir = $set::mons_dir; $listfile = $set::monslist; }
+elsif($::in{'type'} eq 'i'){ require $set::lib_calc_item; $data_dir = $set::item_dir; $listfile = $set::itemlist; }
 else                       { require $set::lib_calc_char; $data_dir = $set::char_dir; $listfile = $set::listfile; }
 
 ## データ計算
@@ -127,8 +126,8 @@ if($pc{'imageDelete'}){
   $pc{'image'} = '';
 }
 my $imagedata; my $imageflag;
-if(param('imageFile')){
-  my $imagefile = param('imageFile'); # ファイル名の取得
+if($::in{'imageFile'}){
+  my $imagefile = $::in{'imageFile'}; # ファイル名の取得
   my $type = uploadInfo($imagefile)->{'Content-Type'}; # MIMEタイプの取得
   
   # ファイルの受け取り
@@ -214,7 +213,7 @@ sub passfile_write_make {
     my $passwrite;
     if   ($protect eq 'account'&& $LOGIN_ID) { $passwrite = '['.$LOGIN_ID.']'; }
     elsif($protect eq 'password')            { $passwrite = e_crypt($pass); }
-    print $FH "$id<>$passwrite<>$now<>".param('type')."<>\n";
+    print $FH "$id<>$passwrite<>$now<>".$::in{'type'}."<>\n";
   close ($FH);
 }
 
@@ -286,9 +285,10 @@ sub list_save {
   seek($FH, 0, 0);
   print $FH "$newline\n";
   foreach (@list){
+    chomp $_;
     my( $id, undef ) = split /<>/;
-    if ($id ne $pc{'id'}){
-      print $FH $_;
+    if ($id && $id ne $pc{'id'}){
+      print $FH $_,"\n";
     }
   }
   truncate($FH, tell($FH));

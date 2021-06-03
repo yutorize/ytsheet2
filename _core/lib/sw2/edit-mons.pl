@@ -4,7 +4,6 @@ use strict;
 use utf8;
 use open ":utf8";
 use feature 'say';
-use Encode;
 
 my $LOGIN_ID = $::LOGIN_ID;
 

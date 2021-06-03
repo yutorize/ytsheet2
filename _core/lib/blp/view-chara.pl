@@ -94,8 +94,8 @@ elsif($pc{'forbidden'}){
 
 ### 置換前出力 #######################################################################################
 ### パートナーデータ取得 --------------------------------------------------
-require $set::lib_convert if !param('url');
-if(!param('backup')){
+require $set::lib_convert if !$::in{'url'};
+if(!$::in{'backup'}){
   if($pc{'partner1Url'} && $pc{'partner1Auto'}){
     my %pr = data_partner_get($pc{'partner1Url'});
     if($pr{'convertSource'}){
@@ -364,7 +364,7 @@ foreach (reverse sort @backlist) {
     my $url = $_;
     $_ =~ s/^([0-9]{4}-[0-9]{2}-[0-9]{2})-([0-9]{2})-([0-9]{2})$/$1 $2\:$3/;
     push(@backup, {
-      "NOW"  => ($url eq param('backup') ? 1 : 0),
+      "NOW"  => ($url eq $::in{'backup'} ? 1 : 0),
       "URL"  => $url,
       "DATE" => $_,
     });

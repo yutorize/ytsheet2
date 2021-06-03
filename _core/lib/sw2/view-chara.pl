@@ -918,7 +918,7 @@ if($::in{'id'}){
       my $url = $_;
       $_ =~ s/^([0-9]{4}-[0-9]{2}-[0-9]{2})-([0-9]{2})-([0-9]{2})$/$1 $2\:$3/;
       push(@backup, {
-        "NOW"  => ($url eq param('backup') ? 1 : 0),
+        "NOW"  => ($url eq $::in{'backup'} ? 1 : 0),
         "URL"  => $url,
         "DATE" => $_,
       });
@@ -931,7 +931,7 @@ if($::in{'id'}){
 $SHEET->param(ReqdPassword => (!$pc{'protect'} || $pc{'protect'} eq 'password' ? 1 : 0) );
 
 ### フェロー --------------------------------------------------
-$SHEET->param(FellowMode => param('f'));
+$SHEET->param(FellowMode => $::in{'f'});
 
 ### タイトル --------------------------------------------------
 $SHEET->param(title => $set::title);

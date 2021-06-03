@@ -3,13 +3,12 @@ use strict;
 #use warnings;
 use utf8;
 use open ":utf8";
-use Encode;
 use HTML::Template;
 
 my $LOGIN_ID = check;
 
-my $mode = param('mode');
-my $sort = param('sort');
+my $mode = $::in{'mode'};
+my $sort = $::in{'sort'};
 
 ### テンプレート読み込み #############################################################################
 my $INDEX;
@@ -31,7 +30,7 @@ $INDEX->param(mode => $mode);
 ### データ処理 #######################################################################################
 ### クエリ --------------------------------------------------
 my $index_mode;
-if(!($mode eq 'mylist' || param('tag') || param('group') || param('name') || param('player') || param('exp-min') || param('exp-max') || param('factor') || param('belong') || param('missing') || param('image'))){
+if(!($mode eq 'mylist' || $::in{'tag'} || $::in{'group'} || $::in{'name'} || $::in{'player'} || $::in{'exp-min'} || $::in{'exp-max'} || $::in{'factor'} || $::in{'belong'} || $::in{'missing'} || $::in{'image'})){
   $index_mode = 1;
   $INDEX->param(modeIndex => 1);
   $INDEX->param(simpleMode => 1) if $set::simplelist;
@@ -49,7 +48,7 @@ foreach(
   'image',
   'fellow',
   ){
-  push( @q_links, $_.'='.uri_escape_utf8(Encode::decode('utf8', param($_))) ) if param($_);
+  push( @q_links, $_.'='.uri_escape_utf8(decode('utf8', param($_))) ) if param($_);
 }
 my $q_links = join('&', @q_links);
 
@@ -81,7 +80,7 @@ if($mode eq 'mylist'){
 elsif (
      !($set::masterid && $set::masterid eq $LOGIN_ID)
   && !($mode eq 'mylist')
-  && !param('tag')
+  && !$::in{'tag'}
 ){
   @list = grep { !(split(/<>/))[19] } @list;
 }
@@ -95,54 +94,54 @@ foreach (@set::groups){
   $group_name{@$_[0]} = @$_[2];
   $group_text{@$_[0]} = @$_[3];
 }
-$group_name{'all'} = 'すべて' if param('group') eq 'all';
+$group_name{'all'} = 'すべて' if $::in{'group'} eq 'all';
 
 ## グループ検索
-my $group_query = param('group');
-if($group_query && param('group') ne 'all') {
+my $group_query = $::in{'group'};
+if($group_query && $::in{'group'} ne 'all') {
   if($group_query eq $set::group_default){ @list = grep { (split(/<>/))[6] =~ /^$group_query$|^$/ } @list; }
   else { @list = grep { (split(/<>/))[6] eq $group_query } @list; }
 }
 $INDEX->param(group => $group_name{$group_query});
 
 ## タグ検索
-my $tag_query = Encode::decode('utf8', param('tag'));
+my $tag_query = decode('utf8', $::in{'tag'});
 if($tag_query) { @list = grep { (split(/<>/))[17] =~ / $tag_query / } @list; }
 $INDEX->param(tag => $tag_query);
 
 ## 名前検索
-my $name_query = Encode::decode('utf8', param('name'));
+my $name_query = decode('utf8', $::in{'name'});
 if($name_query) { @list = grep { (split(/<>/))[4] =~ /$name_query/ } @list; }
 $INDEX->param(name => $name_query);
 
 ## PL名検索
-my $pl_query = Encode::decode('utf8', param('player'));
+my $pl_query = decode('utf8', $::in{'player'});
 if($pl_query) { @list = grep { (split(/<>/))[5] =~ /$pl_query/ } @list; }
 $INDEX->param(player => $pl_query);
 
 ## ファクター検索
-my @factor_query = split('\s', Encode::decode('utf8', param('factor')));
+my @factor_query = split('\s', decode('utf8', $::in{'factor'}));
 foreach my $q (@factor_query) {
   @list = grep { (split(/<>/))[7] =~ /$q/ || (split(/<>/))[8] =~ /$q/ } @list;
 }
 $INDEX->param(factor => "@factor_query");
 
 ## 所属検索
-my @belong_query = split('\s', Encode::decode('utf8', param('belong')));
+my @belong_query = split('\s', decode('utf8', $::in{'belong'}));
 foreach my $q (@belong_query) { @list = grep { (split(/<>/))[13] =~ /$q/ } @list; }
 $INDEX->param(belong => "@belong_query");
 
 ## 喪失検索
-my @missing_query = split('\s', Encode::decode('utf8', param('missing')));
+my @missing_query = split('\s', decode('utf8', $::in{'missing'}));
 foreach my $q (@missing_query) { @list = grep { (split(/<>/))[14] =~ /$q/ } @list; }
 $INDEX->param(missing => "@missing_query");
 
 ## 画像フィルタ
-if(param('image') == 1) {
+if($::in{'image'} == 1) {
   @list = grep { (split(/<>/))[16] } @list;
   $INDEX->param(image => 1);
 }
-elsif(param('image') eq 'N') {
+elsif($::in{'image'} eq 'N') {
   @list = grep { !(split(/<>/))[16] } @list;
   $INDEX->param(image => 1);
 }
@@ -160,7 +159,7 @@ foreach (@list) {
   
   #グループ
   $group = $set::group_default if (!$group || !$group_name{$group});
-  $group = 'all' if param('group') eq 'all';
+  $group = 'all' if $::in{'group'} eq 'all';
   
   #カウント
   $count{'PC'}{$group}++;
@@ -220,7 +219,7 @@ foreach (@list) {
 
 ### 出力用配列 --------------------------------------------------
 my @characterlists; 
-my $page = param('page') ? param('page') : 1;
+my $page = $::in{'page'} ? $::in{'page'} : 1;
 my $pagestart = $page * $set::pagemax - $set::pagemax;
 my $pageend   = $page * $set::pagemax - 1;
 foreach (sort {$group_sort{$a} <=> $group_sort{$b}} keys %grouplist){
@@ -232,12 +231,12 @@ foreach (sort {$group_sort{$a} <=> $group_sort{$b}} keys %grouplist){
   
   ## ページネーション
   my $navbar;
-  if($set::pagemax && !$index_mode && param('group')){
+  if($set::pagemax && !$index_mode && $::in{'group'}){
     my $pageend = ($count{'PC'}{$_}-1 < $pageend) ? $count{'PC'}{$_}-1 : $pageend;
     @{$grouplist{$_}} = @{$grouplist{$_}}[$pagestart .. $pageend];
     foreach(1 .. ceil($count{'PC'}{$_} / $set::pagemax)){
       if($_ == $page){  $navbar .= '<b>'.$_.'</b> '}
-      else { $navbar .= '<a href="./?group='.param('group').'&'.$q_links.'&page='.$_.'&sort='.param('sort').'">'.$_.'</a> ' }
+      else { $navbar .= '<a href="./?group='.$::in{'group'}.'&'.$q_links.'&page='.$_.'&sort='.$::in{'sort'}.'">'.$_.'</a> ' }
     }
   }
   $navbar = '<div class="navbar">'.$navbar.'</div>' if $navbar;

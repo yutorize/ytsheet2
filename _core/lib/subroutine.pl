@@ -3,7 +3,6 @@ use strict;
 use utf8;
 use open ":utf8";
 use CGI::Cookie;
-use Encode qw/encode decode/;
 use List::Util qw/max min/;
 use Fcntl;
 
@@ -149,7 +148,7 @@ sub key_get {
 ### ログアウト --------------------------------------------------
 sub log_out {
   my ($id, $key) = &cookie_get;
-  my $key  = param('key');
+  my $key  = $::in{'key'};
   open (my $FH, '+<', $set::login_users);
   flock($FH, 2);
   my @list = <$FH>;
@@ -256,10 +255,10 @@ sub sendmail {
 ### URIエスケープ --------------------------------------------------
 sub uri_escape_utf8 {
   my($tmp) = @_;
-  $tmp = Encode::encode('utf8',$tmp);
+  $tmp = encode('utf8',$tmp);
   $tmp =~ s/([^\w])/'%'.unpack("H2", $1)/ego;
   $tmp =~ tr/ /+/;
-  $tmp = Encode::decode('utf8',$tmp);
+  $tmp = decode('utf8',$tmp);
   return($tmp);
 }
 

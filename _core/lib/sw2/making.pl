@@ -8,13 +8,13 @@ my $LOGIN_ID = check;
 
 require $set::data_races;
 
-error('名前が未入力です') if !param('name');
-error('種族が未選択です') if !param('race');
+error('名前が未入力です') if !$::in{'name'};
+error('種族が未選択です') if !$::in{'race'};
 
 my %in;
 
 foreach(param()){
-  $in{$_} = Encode::decode('utf8', param($_));
+  $in{$_} = decode('utf8', param($_));
   $in{$_} =~ s/\&/&amp;/g;
   $in{$_} =~ s/</&lt;/g;
   $in{$_} =~ s/>/&gt;/g;

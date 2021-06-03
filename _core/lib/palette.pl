@@ -8,11 +8,11 @@ use feature 'say';
 require $set::lib_palette_sub;
 
 ### バックアップ情報読み込み #########################################################################
-my $backup = param('backup');
+my $backup = $::in{'backup'};
 
 ### キャラクターデータ読み込み #######################################################################
-my $id = param('id');
-my $tool = param('tool');
+my $id = $::in{'id'};
+my $tool = $::in{'tool'};
 my ($file, $type) = getfile_open($id);
 
 my $data_dir;

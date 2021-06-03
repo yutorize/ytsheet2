@@ -3,13 +3,12 @@ use strict;
 #use warnings;
 use utf8;
 use open ":utf8";
-use Encode;
 use HTML::Template;
 
 my $LOGIN_ID = check;
 
-my $mode = param('mode');
-my $sort = param('sort');
+my $mode = $::in{'mode'};
+my $sort = $::in{'sort'};
 
 #require $set::data_item;
 
@@ -34,7 +33,7 @@ $INDEX->param(type => 'i');
 ### データ処理 #######################################################################################
 ### クエリ --------------------------------------------------
 my $index_mode;
-if(!($mode eq 'mylist' || param('tag') || param('category') || param('name') || param('author'))){
+if(!($mode eq 'mylist' || $::in{'tag'} || $::in{'category'} || $::in{'name'} || $::in{'author'})){
   $index_mode = 1;
   $INDEX->param(modeIndex => 1);
 }
@@ -47,7 +46,7 @@ foreach(
   'category',
   'author',
   ){
-  push( @q_links, $_.'='.uri_escape_utf8(Encode::decode('utf8', param($_))) ) if param($_);
+  push( @q_links, $_.'='.uri_escape_utf8(decode('utf8', param($_))) ) if param($_);
 }
 my $q_links = join('&', @q_links);
 
@@ -79,26 +78,26 @@ if($mode eq 'mylist'){
 elsif (
      !($set::masterid && $set::masterid eq $LOGIN_ID)
   && !($mode eq 'mylist')
-  && !param('tag')
+  && !$::in{'tag'}
 ){
   @list = grep { !(split(/<>/))[13] } @list;
 }
 
 ## 分類検索
-my $category_query = Encode::decode('utf8', param('category'));
-if($category_query && param('category') ne 'all') {
+my $category_query = decode('utf8', $::in{'category'});
+if($category_query && $::in{'category'} ne 'all') {
   @list = grep { (split(/<>/))[6] eq $category_query } @list;
   
 }
 $INDEX->param(category => $category_query);
 
 ## タグ検索
-my $tag_query = Encode::decode('utf8', param('tag'));
+my $tag_query = decode('utf8', $::in{'tag'});
 if($tag_query) { @list = grep { (split(/<>/))[12] =~ / $tag_query / } @list; }
 $INDEX->param(tag => $tag_query);
 
 ## 名前検索
-my $name_query = Encode::decode('utf8', param('name'));
+my $name_query = decode('utf8', $::in{'name'});
 if($name_query) { @list = grep { (split(/<>/))[4] =~ /$name_query/ } @list; }
 $INDEX->param(name => $name_query);
 
@@ -144,7 +143,7 @@ foreach (@list) {
 
 ### 出力用配列 --------------------------------------------------
 my @characterlists; 
-my $page = param('page') ? param('page') : 1;
+my $page = $::in{'page'} ? $::in{'page'} : 1;
 my $pagestart = $page * $set::pagemax - $set::pagemax;
 my $pageend   = $page * $set::pagemax - 1;
 our @categories = (
@@ -165,7 +164,7 @@ foreach (@categories){
     @{$grouplist{$name}} = @{$grouplist{$name}}[$pagestart .. $pageend];
     foreach(1 .. ceil($count{$name} / $set::pagemax)){
       if($_ == $page){  $navbar .= '<b>'.$_.'</b> '}
-      else { $navbar .= '<a href="./?type=i&category='.param('category').'&'.$q_links.'&page='.$_.'&sort='.param('sort').'">'.$_.'</a> ' }
+      else { $navbar .= '<a href="./?type=i&category='.$::in{'category'}.'&'.$q_links.'&page='.$_.'&sort='.$::in{'sort'}.'">'.$_.'</a> ' }
     }
   }
   $navbar = '<div class="navbar">'.$navbar.'</div>' if $navbar;

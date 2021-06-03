@@ -10,7 +10,7 @@ my $LOGIN_ID = check;
 require $set::data_races;
 
 my $page_items = 10;
-my $page = param("page") * $page_items;
+my $page = $::in{"page"} * $page_items;
 
 ### テンプレート読み込み #############################################################################
 my $INDEX;
@@ -19,7 +19,7 @@ $INDEX = HTML::Template->new( filename => $set::skin_tmpl, utf8 => 1,
   search_path_on_include => 1,
   die_on_bad_params => 0, die_on_missing_include => 0, case_sensitive => 1);
 
-$INDEX->param(modeMaking => 1) if param('mode') eq 'making';
+$INDEX->param(modeMaking => 1) if $::in{'mode'} eq 'making';
 $INDEX->param(typeName => 'キャラ');
 
 $INDEX->param(name => (getplayername($LOGIN_ID))[0]);
@@ -33,7 +33,7 @@ open (my $FH,"<", $set::makelist);
 my @lines = <$FH>;
 close($FH);
 
-@lines = grep { (split /<>/)[2]  eq param('id') } @lines if param('id');
+@lines = grep { (split /<>/)[2]  eq $::in{'id'} } @lines if $::in{'id'};
 
 my @posts;
 foreach my $data (@lines) {
@@ -41,8 +41,8 @@ foreach my $data (@lines) {
   chomp $data;
   
   my ($num, $date, $id, $name, $comment, $race, $stt) = split(/<>/, $data);
-  next if param("num") && param("num") ne $num;
-  next if !param("num") && (($i <= $page) || ($i > $page+$page_items));
+  next if $::in{"num"} && $::in{"num"} ne $num;
+  next if !$::in{"num"} && (($i <= $page) || ($i > $page+$page_items));
   
   my $adventurer = ($race =~ s/（冒険者）//) ? 1 : 0;
   my @datalist;
@@ -108,14 +108,14 @@ foreach my $data (@lines) {
 }
 $INDEX->param("Posts" => \@posts);
 
-$INDEX->param("pageId" => '&id='.param('id')) if param('id');
+$INDEX->param("pageId" => '&id='.$::in{'id'}) if $::in{'id'};
 $INDEX->param("pagePrev" => ($page - $page_items) / $page_items);
 $INDEX->param("pageNext" => ($page + $page_items) / $page_items);
-if(!param("num")) {
+if(!$::in{"num"}) {
   $INDEX->param("pagePrevOn" => $page - $page_items >= 0);
   $INDEX->param("pageNextOn" => $page + $page_items < @lines);
 }
-$INDEX->param("formOn" => 1) if !param('num') && !param('id');
+$INDEX->param("formOn" => 1) if !$::in{'num'} && !$::in{'id'};
 
 $INDEX->param("title" => $set::title);
 $INDEX->param("ver" => $::ver);

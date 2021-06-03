@@ -3,22 +3,18 @@ use strict;
 #use warnings;
 use utf8;
 use open ":utf8";
-use Encode;
 
 our $LOGIN_ID = check;
 
-our %in;
-for (param()){ $in{$_} = param($_); }
-
-our $mode = $in{'mode'};
+our $mode = $::in{'mode'};
 
 if($set::user_reqd && !check){ error('ログインしていません。'); }
 ### 個別処理 --------------------------------------------------
-my $type = param('type');
+my $type = $::in{'type'};
 our %conv_data = ();
-if(param('url')){
+if($::in{'url'}){
   require $set::lib_convert;
-  %conv_data = data_convert(param('url'));
+  %conv_data = data_convert($::in{'url'});
   $type = $conv_data{'type'};
 }
 
@@ -46,19 +42,19 @@ sub pcDataGet {
       $mode = 'edit';
       $message .= 'データを更新しました。<a href="./?id='.$::in{'id'}.'">⇒シートを確認する</a>';
     }
-    (undef, undef, $file, undef) = getfile($in{'id'},$in{'pass'},$LOGIN_ID);
-    my $datafile = $in{'backup'} ? "${datadir}${file}/backup/$in{'backup'}.cgi" : "${datadir}${file}/data.cgi";
+    (undef, undef, $file, undef) = getfile($::in{'id'},$::in{'pass'},$LOGIN_ID);
+    my $datafile = $::in{'backup'} ? "${datadir}${file}/backup/$::in{'backup'}.cgi" : "${datadir}${file}/data.cgi";
     open my $IN, '<', $datafile or &login_error;
     $_ =~ s/^(.+?)<>(.*)\n$/$pc{$1} = $2;/egi while <$IN>;
     close($IN);
-    if($in{'backup'}){
+    if($::in{'backup'}){
       ($pc{'protect'}, $pc{'forbidden'}) = protectTypeGet("${datadir}${file}/data.cgi");
       $message = $pc{'updateTime'}.' 時点のバックアップデータから編集しています。';
     }
   }
   elsif($mode eq 'copy'){
-    $file = (getfile_open($in{'id'}))[0];
-    my $datafile = $in{'backup'} ? "${datadir}${file}/backup/$in{'backup'}.cgi" : "${datadir}${file}/data.cgi";
+    $file = (getfile_open($::in{'id'}))[0];
+    my $datafile = $::in{'backup'} ? "${datadir}${file}/backup/$::in{'backup'}.cgi" : "${datadir}${file}/data.cgi";
     open my $IN, '<', $datafile or error 'データがありません。';
     $_ =~ s/^(.+?)<>(.*)\n$/$pc{$1} = $2;/egi while <$IN>;
     close($IN);
@@ -66,15 +62,15 @@ sub pcDataGet {
     delete $pc{'image'};
     $pc{'protect'} = 'password';
 
-    $message  = '「<a href="./?id='.$in{'id'}.'" target="_blank"><!NAME></a>」';
-    $message .= 'の<br><a href="./?id='.$in{'id'}.'&backup='.$in{'backup'}.'" target="_blank">'.$pc{'updateTime'}.'</a> 時点のバックアップデータ' if $in{'backup'};
+    $message  = '「<a href="./?id='.$::in{'id'}.'" target="_blank"><!NAME></a>」';
+    $message .= 'の<br><a href="./?id='.$::in{'id'}.'&backup='.$::in{'backup'}.'" target="_blank">'.$pc{'updateTime'}.'</a> 時点のバックアップデータ' if $::in{'backup'};
     $message .= 'を<br>コピーして新規作成します。<br>（まだ保存はされていません）';
   }
   elsif($mode eq 'convert'){
     %pc = %::conv_data;
     delete $pc{'image'};
     $pc{'protect'} = 'password';
-    $message = '「<a href="'.param('url').'" target="_blank"><!NAME></a>」をコンバートして新規作成します。<br>（まだ保存はされていません）';
+    $message = '「<a href="'.$::in{'url'}.'" target="_blank"><!NAME></a>」をコンバートして新規作成します。<br>（まだ保存はされていません）';
   }
   return (\%pc, $mode, $file, $message)
 }

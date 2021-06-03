@@ -5,19 +5,19 @@ use utf8;
 use open ":utf8";
 
 my $LOGIN_ID = check;
-my $mode = param('mode');
+my $mode = $::in{'mode'};
 my $message;
 
 my $data_dir; my $data_list;
-   if(param('type') eq 'm'){ $data_dir = $set::mons_dir; $data_list = $set::monslist; }
-elsif(param('type') eq 'i'){ $data_dir = $set::item_dir; $data_list = $set::itemlist; }
+   if($::in{'type'} eq 'm'){ $data_dir = $set::mons_dir; $data_list = $set::monslist; }
+elsif($::in{'type'} eq 'i'){ $data_dir = $set::item_dir; $data_list = $set::itemlist; }
 else                       { $data_dir = $set::char_dir; $data_list = $set::listfile; }
 
-if(!param('id')){ error('IDがありません。'); }
-if(!param('check1') || !param('check2') || !param('check3')){ error('確認のチェックが入っていません。'); }
+if(!$::in{'id'}){ error('IDがありません。'); }
+if(!$::in{'check1'} || !$::in{'check2'} || !$::in{'check3'}){ error('確認のチェックが入っていません。'); }
 
 my ($sheet_id, $sheet_user, $file);
-($sheet_id, $sheet_user, $file, undef) = getfile(param('id'),param('pass'),$LOGIN_ID);
+($sheet_id, $sheet_user, $file, undef) = getfile($::in{'id'},$::in{'pass'},$LOGIN_ID);
 if(!$file){ error('データが見つかりません。'); }
 
 ## キャラシ削除
@@ -28,7 +28,7 @@ if($mode eq 'delete'){
   seek($FH, 0, 0);
   foreach (@list){
     my($id, undef) = split /<>/;
-    if (param('id') eq $id){
+    if ($::in{'id'} eq $id){
       $message .= 'リストから削除しました。<br>';
     }else{
       print $FH $_;
@@ -43,7 +43,7 @@ if($mode eq 'delete'){
   seek($FH, 0, 0);
   foreach (@list){
     my($id, undef) = split /<>/;
-    if (param('id') eq $id){
+    if ($::in{'id'} eq $id){
       $message .= 'IDを削除しました。<br>';
     } else {
       print $FH $_;
@@ -107,7 +107,7 @@ elsif($mode eq 'img-delete'){
     if (unlink "${data_dir}${file}/image.jpg") { $message .= 'キャラクター画像を削除しました。<br>'; }
     if (unlink "${data_dir}${file}/image.gif") { $message .= 'キャラクター画像を削除しました。<br>'; }
   }
-  $message .= '<a href="./?id='.param('id').'">キャラクターシートを確認</a>';
+  $message .= '<a href="./?id='.$::in{'id'}.'">キャラクターシートを確認</a>';
   
   
   sysopen (my $FH, $::core_dir.'/data/delete.cgi', O_WRONLY | O_APPEND | O_CREAT, 0666) or $message .= 'デリートリストが開けませんでした。';

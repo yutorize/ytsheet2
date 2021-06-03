@@ -3,12 +3,11 @@ use strict;
 #use warnings;
 use utf8;
 use open ":utf8";
-use Encode;
 use HTML::Template;
 
 my $LOGIN_ID = check;
 
-my $mode = param('mode');
+my $mode = $::in{'mode'};
 
 require $set::data_mons;
 
@@ -33,7 +32,7 @@ $INDEX->param(type => 'm');
 ### データ処理 #######################################################################################
 ### クエリ --------------------------------------------------
 my $index_mode;
-if(!($mode eq 'mylist' || param('tag') || param('taxa') || param('name'))){
+if(!($mode eq 'mylist' || $::in{'tag'} || $::in{'taxa'} || $::in{'name'})){
   $index_mode = 1;
   $INDEX->param(modeIndex => 1);
 }
@@ -66,13 +65,13 @@ if($mode eq 'mylist'){
 elsif (
      !($set::masterid && $set::masterid eq $LOGIN_ID)
   && !($mode eq 'mylist')
-  && !param('tag')
+  && !$::in{'tag'}
 ){
   @list = grep { !(split(/<>/))[16] } @list;
 }
 
 ## 分類検索
-my $taxa_query = Encode::decode('utf8', param('taxa'));
+my $taxa_query = decode('utf8', $::in{'taxa'});
 if($taxa_query) {
   @list = grep { (split(/<>/))[6] eq $taxa_query } @list;
   
@@ -80,12 +79,12 @@ if($taxa_query) {
 $INDEX->param(group => $taxa_query);
 
 ## タグ検索
-my $tag_query = Encode::decode('utf8', param('tag'));
+my $tag_query = decode('utf8', $::in{'tag'});
 if($tag_query) { @list = grep { (split(/<>/))[15] =~ / $tag_query / } @list; }
 $INDEX->param(tag => $tag_query);
 
 ## 名前検索
-my $name_query = Encode::decode('utf8', param('name'));
+my $name_query = decode('utf8', $::in{'name'});
 if($name_query) { @list = grep { (split(/<>/))[4] =~ /$name_query/ } @list; }
 $INDEX->param(name => $name_query);
 

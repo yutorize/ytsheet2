@@ -7,14 +7,14 @@ use JSON::PP;
 
 
 ### コールバック関数読み込み #########################################################################
-my $callback = param('callback');
+my $callback = $::in{'callback'};
 
 ### バックアップ情報読み込み #########################################################################
-my $backup = param('backup');
+my $backup = $::in{'backup'};
 
 ### キャラクターデータ読み込み #######################################################################
-my $id  = param('id');
-my $url = param('url');
+my $id  = $::in{'id'};
+my $url = $::in{'url'};
 
 my ($file, $type);
 my %pc = ();
@@ -40,9 +40,9 @@ if($id){
     $pc{'imageURL'} = url()."${data_dir}${file}/image.$pc{'image'}";
   }
 }
-elsif(param('url')){
+elsif($::in{'url'}){
   require $set::lib_convert;
-  %pc = data_convert(param('url'));
+  %pc = data_convert($::in{'url'});
   $type = $pc{'type'};
 }
 

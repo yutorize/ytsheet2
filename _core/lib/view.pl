@@ -6,19 +6,16 @@ use open ":utf8";
 
 our $LOGIN_ID = check;
 
-our %in;
-for (param()){ $in{$_} = param($_); }
-
 our $file;
 my $type;
 our %conv_data = ();
 
-if(param('id')){
-  ($file, $type) = getfile_open(param('id'));
+if($::in{'id'}){
+  ($file, $type) = getfile_open($::in{'id'});
 }
-elsif(param('url')){
+elsif($::in{'url'}){
   require $set::lib_convert;
-  %conv_data = data_convert(param('url'));
+  %conv_data = data_convert($::in{'url'});
   $type = $conv_data{'type'};
 }
 
@@ -31,18 +28,18 @@ else               { require $set::lib_view_char; }
 ### データ取得 --------------------------------------------------
 sub pcDataGet {
   my %pc;
-  if($in{'id'}){
+  if($::in{'id'}){
     my $datadir = ($type eq 'm') ? $set::mons_dir : ($type eq 'i') ? $set::item_dir : $set::char_dir;
-    my $datafile = $in{'backup'} ? "${datadir}${file}/backup/$in{'backup'}.cgi" : "${datadir}${file}/data.cgi";
+    my $datafile = $::in{'backup'} ? "${datadir}${file}/backup/$::in{'backup'}.cgi" : "${datadir}${file}/data.cgi";
     open my $IN, '<', $datafile or error 'データがありません。';
     $_ =~ s/^(.+?)<>(.*)\n$/$pc{$1} = $2;/egi while <$IN>;
     close($IN);
-    if($in{'backup'}){
+    if($::in{'backup'}){
       ($pc{'protect'}, $pc{'forbidden'}) = protectTypeGet("${datadir}${file}/data.cgi");
-      $pc{'backupId'} = $in{'backup'};
+      $pc{'backupId'} = $::in{'backup'};
     }
   }
-  elsif($in{'url'}){
+  elsif($::in{'url'}){
     %pc = %conv_data;
     if(!$conv_data{'ver'}){
       require (($type eq 'm') ? $set::lib_calc_mons : ($type eq 'i') ? $set::lib_calc_item : $set::lib_calc_char);
