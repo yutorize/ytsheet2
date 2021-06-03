@@ -85,6 +85,7 @@ sub data_update_chara {
     ($pc{'aka'},$pc{'akaRuby'}) = split(':', $pc{'aka'});
   }
   $pc{'ver'} = $main::ver;
+  $pc{'lasttimever'} = $ver;
   return %pc;
 }
 
