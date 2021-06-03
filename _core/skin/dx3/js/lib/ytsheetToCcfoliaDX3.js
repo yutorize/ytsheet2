@@ -61,7 +61,7 @@ io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2DoubleCross3P
 			name: json.characterName || json.aka,
 			playerName: json.playerName,
 			memo: `${json.characterNameRuby ? '('+json.characterNameRuby+')\n' :''}PL: ${json.playerName || 'PL情報無し'}\n${json.works || ''} / ${json.cover || ''}\n${json.syndrome1 || ''}${json.syndrome2 ? '、'+json.syndrome2 : ''}${json.syndrome3 ? '、'+json.syndrome3 : ''}\n\n${json.imageURL ? '立ち絵：' + (json.imageCopyright || '権利情報なし') : ''}`,
-			initiative: json.initiativeTotal || '0',
+			initiative: Number(json.initiativeTotal || 0),
 			externalUrl: opt_sheetUrl,
 			status: [
 				{

@@ -92,7 +92,7 @@ io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2SwordWorld2PC
 			name: json.characterName,
 			playerName: json.playerName,
 			memo: `PL: ${json.playerName || 'PL情報無し'}\n${json.race || '種族不明'}\n\n${json.imageURL ? '立ち絵：' + (json.imageCopyright || '権利情報なし') : ''}`,
-			initiative: '2',
+			initiative: 2,
 			externalUrl: opt_sheetUrl,
 			status: [
 				{
@@ -186,7 +186,7 @@ io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2SwordWorldEne
 			name: json.characterName || json.monsterName,
 			playerName: 'GM',
 			memo: '',
-			initiative: '0',
+			initiative: 0,
 			externalUrl: opt_sheetUrl,
 			status: [],
 			params: defaultPalette.parameters || [],

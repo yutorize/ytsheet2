@@ -61,7 +61,7 @@ io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2BloodPathPC =
       name: json.characterName,
       playerName: json.playerName,
       memo: `${json.characterNameRuby ? '('+json.characterNameRuby+')\n' :''}PL: ${json.playerName || 'PL情報無し'}\n${json.factor || ''} / ${json.factorCore || ''} / ${json.factorStyle || ''}\n\n${json.imageURL ? '立ち絵：' + (json.imageCopyright || '権利情報なし') : ''}`,
-      initiative: json.initiative || '0',
+      initiative: Number(json.initiative || 0),
       externalUrl: opt_sheetUrl,
       status: [
         {
