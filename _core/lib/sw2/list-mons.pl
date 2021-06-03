@@ -98,6 +98,9 @@ foreach (@list) {
     $image, $tag, $hide
   ) = (split /<>/, $_)[0..16];
   
+  #グループ
+  $taxa = '未分類' if (!$taxa);
+  
   #カウント
   $count{$taxa}++;
   #最大表示制限
@@ -128,6 +131,8 @@ my @characterlists;
 @data::taxa = sort{$a->[1] <=> $b->[1]} @data::taxa;
 foreach (@data::taxa){
   my $name = $_->[0];
+  next if !$count{$name};
+  
   ## ソート
   unless($index_mode && $set::list_maxline){
     @{$grouplist{$name}} = sort { $a->{'LV'} <=> $b->{'LV'} } @{$grouplist{$name}};
