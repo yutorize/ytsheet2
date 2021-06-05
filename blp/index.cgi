@@ -8,7 +8,6 @@ use strict;
 #use warnings;
 use utf8;
 use open ":utf8";
-binmode STDIN, ":utf8";
 binmode STDOUT, ':utf8';
 use CGI::Carp qw(fatalsToBrowser);
 use CGI qw/:all/;
