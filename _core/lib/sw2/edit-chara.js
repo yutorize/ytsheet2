@@ -206,10 +206,11 @@ function changeRace(){
 let raceAbilityDef       = 0;
 let raceAbilityMp        = 0;
 let raceAbilityMndResist = 0;
+let raceAbilityMagicPower= 0;
 function checkRace(){
   raceAbilityDef       = 0;
   raceAbilityMp        = 0;
-  raceAbilityMndResist = 0;
+  raceAbilityMagicPower= 0;
   
   document.getElementById("classFig").classList.remove('fail');
   document.getElementById("classGra").classList.remove('fail');
@@ -273,6 +274,17 @@ function checkRace(){
   else if(race === 'フィー'){
     document.getElementById("classPri").classList.add('fail');
     document.getElementById("classMag").classList.add('fail');
+  }
+  else if(race === 'ハイマン'){
+    raceAbilityMagicPower += (level >= 11) ? 2 : 1;
+    document.getElementById("magic-power-raceability-value" ).innerHTML = raceAbilityMagicPower || 0;
+    document.getElementById("magic-power-raceability-name").innerHTML = '魔法の申し子';
+    document.getElementById("magic-power-raceability-type").innerHTML = '魔法全般';
+  }
+  else if(race.match(/^センティアン/)){
+    document.getElementById("magic-power-raceability-value" ).innerHTML = (level >= 11) ? 2 : (level >= 6) ? 1 : 0;
+    document.getElementById("magic-power-raceability-name").innerHTML = race.match('ルミエル') ? '神の御名と共に' : race.match('イグニス') ? '神への礼賛' : race.match('カルディア') ? '神への祈り' : '';
+    document.getElementById("magic-power-raceability-type").innerHTML = '神聖魔法';
   }
   else if(race === 'マナフレア'){
     document.getElementById("classSor").classList.add('fail');
@@ -992,7 +1004,10 @@ function calcMagic() {
       if(lv[key]){ openMagic++; }
       
       const seekerMagicAdd = (lvSeeker && checkSeekerAbility('魔力上昇') && lv[key] >= 15) ? 3 : 0;
-      const power = lv[key] + parseInt((sttInt + sttAddE + (form["magicPowerOwn"+key].checked ? 2 : 0)) / 6) + Number(form["magicPowerAdd"+key].value) + addPower + seekerMagicAdd;
+      let power = lv[key] + parseInt((sttInt + sttAddE + (form["magicPowerOwn"+key].checked ? 2 : 0)) / 6) + Number(form["magicPowerAdd"+key].value) + addPower + seekerMagicAdd + raceAbilityMagicPower;
+      if(key === 'Pri' && race.match(/^センティアン/)){
+        power += (level >= 11) ? 2 : (level >= 6) ? 1 : 0;
+      }
       document.getElementById("magic-power-"+eName+"-value").innerHTML  = power;
       document.getElementById("magic-cast-"+eName+"-value").innerHTML   = power + Number(form["magicCastAdd"+key].value) + addCast;
       document.getElementById("magic-damage-"+eName+"-value").innerHTML = Number(form["magicDamageAdd"+key].value) + addDamage;
@@ -1023,7 +1038,8 @@ function calcMagic() {
   });
   // 全体／その他の開閉
   document.getElementById("magic-power").style.display = (openMagic || openCraft) ? '' : 'none';
-  
+
+  document.getElementById("magic-power-raceability" ).style.display = race.match(/^ハイマン|^センティアン/)  ? '' : 'none';
   document.getElementById("magic-power-magicenhance").style.display = feats['魔力強化']      ? '' : 'none';
   document.getElementById("magic-power-common"      ).style.display = openMagic              ? '' : 'none';
   document.getElementById("magic-power-hr"          ).style.display = openMagic && openCraft ? '' : 'none';

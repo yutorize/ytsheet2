@@ -453,10 +453,17 @@ sub data_calc {
   $pc{'initiative'}  = max(@ini_class) + $pc{'initiativeAdd'};
 
   ## 魔力
-  foreach my $name (@data::class_names){
+  foreach my $name (@data::class_caster){
     next if (!$data::class{$name}{'magic'}{'jName'});
     my $id = $data::class{$name}{'id'};
     $pc{'magicPower'.$id} = $pc{'lv'.$id} ? ( $pc{'lv'.$id} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwn'.$id} ? 2 : 0)) / 6) + $pc{'magicPowerAdd'.$id} + $pc{'magicPowerAdd'} + $pc{'magicPowerEnhance'} ) : 0;
+    
+    if($pc{'race'} eq 'ハイマン'){
+      $pc{'magicPower'.$id} += $pc{'level'} >= 11 ? 2 : 1;
+    }
+    elsif($pc{'race'} =~ /^センティアン/ && $name eq 'プリースト'){
+      $pc{'magicPower'.$id} += $pc{'level'} >= 11 ? 2 : $pc{'level'} >= 6 ? 1 : 0;
+    }
     $pc{'magicPower'.$id} += $pc{'seekerAbilityMagic'} if $pc{'lv'.$id} >= 15; #求道者
   }
   ## 奏力ほか

@@ -740,6 +740,14 @@ print <<"HTML";
               <th></th><th></th><th>専用化</th><th>魔力／奏力</th><th>行使<small>／演奏など</small></th><th class="small">ダメージ<br>上昇効果</th>
             </tr>
             </thead>
+            <tr id="magic-power-raceability">
+              <td>［<span id="magic-power-raceability-name"></span>］</td>
+              <td id="magic-power-raceability-type"></td>
+              <td></td>
+              <td class="center">+<span id="magic-power-raceability-value">0</span></td>
+              <td></td>
+              <td></td>
+            </tr>
             <tr id="magic-power-magicenhance">
               <td>《魔力強化》</td>
               <td>魔法全般</td>
@@ -1684,7 +1692,7 @@ function calcPointBuy() {
   const E = Number(form.sttBaseE.value);
   const F = Number(form.sttBaseF.value);
   
-  const _race = race.match(/ナイトメア/) ? 'ナイトメア' : race;
+  const _race = race.match(/(ナイトメア|ウィークリング)/) ? RegExp.\$1 : race;
   
   let ptA;
   let ptB;

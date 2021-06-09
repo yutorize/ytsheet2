@@ -212,6 +212,9 @@ function checkFeats(){
           if(!f2 || level < 11 || levelCasters[1] < 10) { (auto) ? box.value = "魔力強化Ⅰ" : cL.add("error") }
         }
       }
+      else if (feat.match(/マルチガード/)){
+        if(level < 7 || !acquire.match('かばう')){ cL.add("error"); }
+      }
       else if (feat.match(/命中強化/)){
         if(level < 7){ cL.add("error"); }
         if(feat.match(/Ⅰ$/)){
