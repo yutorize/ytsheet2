@@ -89,10 +89,13 @@ elsif($pc{'forbidden'}){
   $pc{'syndrome2'}   = noiseText(4,8);
   $pc{'syndrome3'}   = noiseText(4,8);
   
-  $pc{'sttTotalBody'}   = noiseText(1);
-  $pc{'sttTotalSense'}  = noiseText(1);
-  $pc{'sttTotalMind'}   = noiseText(1);
-  $pc{'sttTotalSocial'} = noiseText(1);
+  foreach my $name ('Body','Sense','Mind','Social'){
+    $pc{'sttTotal'.$name} = noiseText(1);
+    $pc{'sttBase' .$name} = noiseText(1);
+    $pc{'sttWorks'.$name} = noiseText(1);
+    $pc{'sttGrow' .$name} = noiseText(1);
+    $pc{'sttAdd'  .$name} = noiseText(1);
+  }
   $pc{'maxHpTotal'}      = noiseText(1,2);
   $pc{'initiativeTotal'} = noiseText(1,2);
   $pc{'moveTotal'}       = noiseText(1,2);
@@ -103,9 +106,9 @@ elsif($pc{'forbidden'}){
   foreach my $name ('Melee','Ranged','RC','Negotiate','Dodge','Percept','Will','Procure'){
     $pc{'skillTotal'.$name} = noiseText(1);
   }
-  $pc{'skillNum'} = 0;
   foreach my $name ('Ride','Art','Know','Info'){
-    foreach my $num (1 .. $pc{'skillNum'}){
+    $pc{'skill'.$name.'Num'} = 1;
+    foreach my $num (1 .. $pc{'skill'.$name.'Num'}){
       $pc{'skill'.$name.$num.'Name'} = noiseText(4,8);
       $pc{'skillTotal'.$name.$num} = noiseText(1);
     }

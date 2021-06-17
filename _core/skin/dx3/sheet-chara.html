@@ -298,7 +298,7 @@ window.onload = function() {
 
       <section class="box" id="status">
         <h2>能力値</h2>
-        <span class="open-button" onclick="statusBreakdownOpen();">▼能力値内訳表示</span>
+        <TMPL_UNLESS forbiddenMode><span class="open-button" onclick="statusBreakdownOpen();">▼能力値内訳表示</span></TMPL_UNLESS>
         <table>
           <thead>
           <tr>
@@ -307,30 +307,32 @@ window.onload = function() {
             <th>精神</th><td data-edb><TMPL_VAR sttTotalMind></td>
             <th>社会</th><td data-edb><TMPL_VAR sttTotalSocial></td>
           </tr>
-          <tr class="breakdown">
-            <th>シンドローム</th><td><TMPL_VAR sttBaseBody></td>
-            <th>シンドローム</th><td><TMPL_VAR sttBaseSense></td>
-            <th>シンドローム</th><td><TMPL_VAR sttBaseMind></td>
-            <th>シンドローム</th><td><TMPL_VAR sttBaseSocial></td>
-          </tr>
-          <tr class="breakdown">
-            <th>ワークス</th><td><TMPL_VAR sttWorksBody></td>
-            <th>ワークス</th><td><TMPL_VAR sttWorksSense></td>
-            <th>ワークス</th><td><TMPL_VAR sttWorksMind></td>
-            <th>ワークス</th><td><TMPL_VAR sttWorksSocial></td>
-          </tr>
-          <tr class="breakdown">
-            <th>成長</th><td><TMPL_VAR sttGrowBody></td>
-            <th>成長</th><td><TMPL_VAR sttGrowSense></td>
-            <th>成長</th><td><TMPL_VAR sttGrowMind></td>
-            <th>成長</th><td><TMPL_VAR sttGrowSocial></td>
-          </tr>
-          <tr class="breakdown">
-            <th>その他修正</th><td><TMPL_VAR sttAddBody></td>
-            <th>その他修正</th><td><TMPL_VAR sttAddSense></td>
-            <th>その他修正</th><td><TMPL_VAR sttAddMind></td>
-            <th>その他修正</th><td><TMPL_VAR sttAddSocial></td>
-          </tr>
+          <TMPL_UNLESS forbiddenMode>
+            <tr class="breakdown">
+              <th>シンドローム</th><td><TMPL_VAR sttBaseBody></td>
+              <th>シンドローム</th><td><TMPL_VAR sttBaseSense></td>
+              <th>シンドローム</th><td><TMPL_VAR sttBaseMind></td>
+              <th>シンドローム</th><td><TMPL_VAR sttBaseSocial></td>
+            </tr>
+            <tr class="breakdown">
+              <th>ワークス</th><td><TMPL_VAR sttWorksBody></td>
+              <th>ワークス</th><td><TMPL_VAR sttWorksSense></td>
+              <th>ワークス</th><td><TMPL_VAR sttWorksMind></td>
+              <th>ワークス</th><td><TMPL_VAR sttWorksSocial></td>
+            </tr>
+            <tr class="breakdown">
+              <th>成長</th><td><TMPL_VAR sttGrowBody></td>
+              <th>成長</th><td><TMPL_VAR sttGrowSense></td>
+              <th>成長</th><td><TMPL_VAR sttGrowMind></td>
+              <th>成長</th><td><TMPL_VAR sttGrowSocial></td>
+            </tr>
+            <tr class="breakdown">
+              <th>その他修正</th><td><TMPL_VAR sttAddBody></td>
+              <th>その他修正</th><td><TMPL_VAR sttAddSense></td>
+              <th>その他修正</th><td><TMPL_VAR sttAddMind></td>
+              <th>その他修正</th><td><TMPL_VAR sttAddSocial></td>
+            </tr>
+        </TMPL_UNLESS>
           </thead>
           <tr>
             <td class="left">白兵</td><td class="right"><TMPL_VAR skillTotalMelee></td>
