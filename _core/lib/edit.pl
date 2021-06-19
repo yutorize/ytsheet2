@@ -207,7 +207,10 @@ sub option {
     my $value = $i;
     my $view;
     my $label = 0;
-    if($value =~ s/^label=//){
+    if($value =~ s/^def=//){
+      $text = '<option value="">'.$value;
+    }
+    elsif($value =~ s/^label=//){
       $text .= '</optgroup>' if $label;
       $text .= '<optgroup label="'.$value.'">';
       $label = 1;

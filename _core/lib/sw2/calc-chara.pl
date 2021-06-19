@@ -280,6 +280,7 @@ sub data_calc {
   $pc{'sttMnd'} = $pc{'sttBaseSpi'} + $pc{'sttBaseF'} + $pc{'sttGrowF'};
     # ウィークリング補正
     $pc{'sttAgi'} += 3 if $pc{'race'} eq 'ウィークリング（ガルーダ）';
+    $pc{'sttMnd'} += 3 if $pc{'race'} eq 'ウィークリング（タンノズ）';
     $pc{'sttStr'} += 3 if $pc{'race'} eq 'ウィークリング（ミノタウロス）';
     $pc{'sttInt'} += 3 if $pc{'race'} eq 'ウィークリング（バジリスク）';
     $pc{'sttMnd'} += 3 if $pc{'race'} eq 'ウィークリング（マーマン）';
@@ -328,17 +329,17 @@ sub data_calc {
   if($pc{'lvGra'} >= 7) { push(@abilities, "カウンター"); }
   if($pc{'lvFig'} >=13 || $pc{'lvGra'} >=13) { push(@abilities, "バトルマスター"); }
   if($pc{'lvCaster'} >= 11){ push(@abilities, "ルーンマスター"); }
-  if($pc{'lvSco'} >= 5) { push(@abilities, "トレジャーハント"); }
+  if($pc{'lvSco'} >= 5) { push(@abilities, $pc{'combatFeatsExcSco5'} || "トレジャーハント"); }
   if($pc{'lvSco'} >= 7) { push(@abilities, "ファストアクション"); }
   if($pc{'lvSco'} >=12) { push(@abilities, "トレジャーマスター"); }
   if($pc{'lvSco'} >=15) { push(@abilities, "匠の技"); }
   if($pc{'lvSco'} >= 9) { push(@abilities, "影走り"); }
-  if($pc{'lvRan'} >= 5) { push(@abilities, $::SW2_0?"治癒適性":"サバイバビリティ"); }
+  if($pc{'lvRan'} >= 5) { push(@abilities, $pc{'combatFeatsExcRan5'} || ($::SW2_0?"治癒適性":"サバイバビリティ")); }
   if($pc{'lvRan'} >= 7) { push(@abilities, "不屈"); }
   if($pc{'lvRan'} >= 9) { push(@abilities, "ポーションマスター"); }
   if($pc{'lvRan'} >=12) { push(@abilities, "縮地"); }
   if($pc{'lvRan'} >=15) { push(@abilities, "ランアンドガン"); }
-  if($pc{'lvSag'} >= 5) { push(@abilities, "鋭い目"); }
+  if($pc{'lvSag'} >= 5) { push(@abilities, $pc{'combatFeatsExcSag5'} || "鋭い目"); }
   if($pc{'lvSag'} >= 7) { push(@abilities, "弱点看破"); }
   if($pc{'lvSag'} >= 9) { push(@abilities, "マナセーブ"); }
   if($pc{'lvSag'} >=12) { push(@abilities, "マナ耐性"); }

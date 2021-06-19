@@ -191,10 +191,44 @@
 #combat-feats {
   margin-left: 0 !important;
 }
-#combat-feats > p:nth-last-child(2) {
+#combat-feats select {
+  margin-left: 1em;
+  width: calc(100% - 4px - 1em);
+}
+#combat-feats #combat-feat-vagrants-auto li {
+  display: grid;
+  grid-template-columns: 5em auto;
+}
+#combat-feats #combat-feat-vagrants-auto li::before {
+  content: attr(data-label);
+  align-self: end;
+  text-align: right;
+  white-space: nowrap;
   font-size: 90%;
+}
+#combat-feats #combat-feat-vagrants-auto li select {
+  margin-left: 5px;
+  width: calc(100% - 4px - 5px);
+}
+#combat-feats .feats-options {
+  margin: .3rem .5em;
   border-width: 0 0 1px;
-  border-style: dotted;
+  border-style: solid;
+}
+#combat-feats .feats-options h6 {
+  font-size: 85%;
+}
+#combat-feats .feats-options li {
+  display: inline-block;
+  border: none;
+  font-size: 90%;
+  line-height: 1;
+}
+#combat-feats .feats-options li input {
+  margin-right: .5em;
+}
+#combat-feats > p:last-child {
+  font-size: 90%;
 }
 
 #mystic-arts {
@@ -457,11 +491,6 @@
   #magic-power table td input[type=number] {
     width: 2.5em;
   }
-}
-
-#combat-feats select {
-  margin-left: 1em;
-  width: calc(100% - 4px - 1em);
 }
 
 #classes dl dt.zero-data,

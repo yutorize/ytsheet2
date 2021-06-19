@@ -425,6 +425,7 @@ function calcStt() {
   sttMnd = Number(form.sttBaseSpi.value) + Number(form.sttBaseF.value) + growMnd;
   
   if      (race === 'ウィークリング（ガルーダ）')     sttAgi += 3;
+  else if (race === 'ウィークリング（タンノズ）')     sttMnd += 3;
   else if (race === 'ウィークリング（ミノタウロス）') sttStr += 3;
   else if (race === 'ウィークリング（バジリスク）')   sttInt += 3;
   else if (race === 'ウィークリング（マーマン）')     sttMnd += 3;
@@ -474,6 +475,14 @@ function calcStt() {
 let feats = {};
 function checkFeats(){
   feats = {};
+
+  const featsVagrantsOn = form.featsVagrantsOn.checked;
+  const featsZeroOn     = form.featsZeroOn.checked;
+  document.querySelectorAll(`#combat-feats option.vagrants` ).forEach(obj=>{ obj.style.display = featsVagrantsOn ? '' : 'none'; });
+  document.querySelectorAll(`#combat-feats option.zero-data`).forEach(obj=>{ obj.style.display = featsZeroOn     ? '' : 'none'; });
+  document.getElementById('combat-feat-vagrants-sco5').style.display = (featsVagrantsOn && lv['Sco'] >= 5) ? '' : 'none';
+  document.getElementById('combat-feat-vagrants-ran5').style.display = (featsVagrantsOn && lv['Ran'] >= 5) ? '' : 'none';
+  document.getElementById('combat-feat-vagrants-sag5').style.display = (featsVagrantsOn && lv['Sag'] >= 5) ? '' : 'none';
   
   const array = featsLv;
   let acquire = '';

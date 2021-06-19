@@ -475,8 +475,13 @@ foreach my $lv (@set::feats_lv) {
       next if $lv < @$feats[1];
       next if $type ne @$feats[0];
       next if @$feats[3] =~ /2.0/ && !$set::all_class_on;
-      if(@$feats[3] =~ /2.0/){
+      if(@$feats[3] =~ /ヴァグランツ/){
+        print '<option class="vagrants"'.(($pc{"combatFeatsLv$lv"} eq @$feats[2])?' selected':'').' value="'.@$feats[2].'">'.@$feats[2];
+        $pc{'featsVagrantsOn'} = 1 if $pc{"combatFeatsLv$lv"} eq @$feats[2];
+      }
+      elsif(@$feats[3] =~ /2.0/){
         print '<option class="zero-data"'.(($pc{"combatFeatsLv$lv"} eq @$feats[2])?' selected':'').' value="'.@$feats[2].'">[2.0]'.@$feats[2];
+        $pc{'featsZeroOn'} = 1 if $pc{"combatFeatsLv$lv"} eq @$feats[2];
       }
       else { print '<option'.(($pc{"combatFeatsLv$lv"} eq @$feats[2])?' selected':'').'>'.@$feats[2]; }
     }
@@ -486,8 +491,19 @@ foreach my $lv (@set::feats_lv) {
 }
 print <<"HTML";
             </ul>
-            <p>置き換え可能な場合<span class="mark">この表示</span>になります。</p>
-            <p>@{[ input 'featsAutoOn','checkbox','checkFeats' ]}自動置き換え（非推奨）</p>
+            <ul id="combat-feat-vagrants-auto">
+              <li id="combat-feat-vagrants-sco5" data-label="スカウト5"  ><select name="combatFeatsExcSco5">@{[ option 'combatFeatsExcSco5', 'def=トレジャーハント','掠め取り','クルードテイク' ]}</select></li>
+              <li id="combat-feat-vagrants-ran5" data-label="レンジャー5"><select name="combatFeatsExcRan5">@{[ option 'combatFeatsExcRan5', 'def=サバイバビリティ','掠め取り','クルードテイク' ]}</select></li>
+              <li id="combat-feat-vagrants-sag5" data-label="セージ5"    ><select name="combatFeatsExcSag5">@{[ option 'combatFeatsExcSag5', 'def=鋭い目','掠め取り','クルードテイク' ]}</select></li>
+            </ul>
+            <div class="feats-options">
+              <ul>
+                <li>@{[ input 'featsVagrantsOn','checkbox','checkFeats' ]}<span>ヴァグランツ戦闘特技を追加</span></li>
+                <li>@{[ input 'featsZeroOn','checkbox','checkFeats' ]}<span>2.0戦闘特技を追加</span></li>
+                <li>@{[ input 'featsAutoOn','checkbox','checkFeats' ]}<span>特技自動置き換え（非推奨）</span></li>
+              </ul>
+            </div>
+            <p>置き換え可能な場合<span class="mark">強調</span>されます。</p>
           </div>
           <div class="box" id="mystic-arts" @{[ display $set::mystic_arts_on ]}>
             <h2>秘伝</h2>
