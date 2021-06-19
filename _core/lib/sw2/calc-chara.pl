@@ -100,7 +100,7 @@ sub data_calc {
   }
   
   ### 求道者 --------------------------------------------------
-  $pc{'expRest'} += $expS[$pc{'lvSeeker'}];
+  $pc{'expRest'} -= $expS[$pc{'lvSeeker'}];
   if($pc{'lvSeeker'}){
     $pc{'lvMonster'} = $pc{'level'};
     $pc{'lvMonster'} += $expS[$pc{'lvSeeker'}] >= 90001 ? 7 :
