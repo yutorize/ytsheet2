@@ -308,7 +308,7 @@ foreach my $class (@data::class_caster){
   next if !$data::class{$class}{'magic'}{'data'};
   my $lv = $pc{'lv'.$data::class{$class}{'id'}};
   my $add = $pc{ 'buildupAdd'.ucfirst($data::class{$class}{'magic'}{'eName'}) };
-  if($class eq 'ウィザード'){ $lv = max($pc{'lvSor'},$pc{'Con'}); }
+  if($class eq 'ウィザード'){ $lv = min($pc{'lvSor'},$pc{'lvCon'}); }
   next if !$lv;
   next if $data::class{$class}{'magic'}{'trancendOnly'} && $lv+$add <= 15;
   
@@ -443,7 +443,7 @@ foreach my $class (@data::class_caster){
   my $damage = $pc{'magicDamageAdd'.$id} + $pc{'magicDamageAdd'};
   
   my $title = $class.'<span class="small">技能レベル</span>'.$pc{'lv'.$id};
-  if($class eq 'ウィザード'){ $title = 'ウィザード<span class="small">最大魔法レベル</span>'.max($pc{'lvSor'},$pc{'Con'}); }
+  if($class eq 'ウィザード'){ $title = 'ウィザード<span class="small">最大魔法レベル</span>'.min($pc{'lvSor'},$pc{'lvCon'}); }
   
   my $magicname = $name;
   if($id eq 'Fai'){
