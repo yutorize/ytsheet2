@@ -212,25 +212,12 @@ function checkRace(){
   raceAbilityMp        = 0;
   raceAbilityMagicPower= 0;
   
-  document.getElementById("classFig").classList.remove('fail');
-  document.getElementById("classGra").classList.remove('fail');
-  document.getElementById("classFen").classList.remove('fail');
-  document.getElementById("classSho").classList.remove('fail');
-  document.getElementById("classSor").classList.remove('fail');
-  document.getElementById("classCon").classList.remove('fail');
-  document.getElementById("classPri").classList.remove('fail');
-  document.getElementById("classFai").classList.remove('fail');
-  document.getElementById("classMag").classList.remove('fail');
-  document.getElementById("classSco").classList.remove('fail');
-  document.getElementById("classRan").classList.remove('fail');
-  document.getElementById("classSag").classList.remove('fail');
-  document.getElementById("classEnh").classList.remove('fail');
-  document.getElementById("classBar").classList.remove('fail');
-  document.getElementById("classRid").classList.remove('fail');
-  document.getElementById("classAlc").classList.remove('fail');
+  for (const name of ['Fig', 'Gra', 'Fen', 'Sho', 'Sor', 'Con', 'Pri', 'Fai', 'Mag', 'Dru', 'Sco', 'Ran', 'Sag', 'Enh', 'Bar', 'Rid','Alc']) {
+    document.getElementById("class"+name).classList.remove('fail');
+  }
+  
   if(AllClassOn) document.getElementById("classWar").classList.remove('fail');
   if(AllClassOn) document.getElementById("classMys").classList.remove('fail');
-  if(AllClassOn) document.getElementById("classDem").classList.remove('fail');
   if(AllClassOn) document.getElementById("classPhy").classList.remove('fail');
   if(AllClassOn) document.getElementById("classGri").classList.remove('fail');
   if(AllClassOn) document.getElementById("classArt").classList.remove('fail');
@@ -270,6 +257,7 @@ function checkRace(){
       raceAbilityMp += 30;
     }
     document.getElementById("race-ability-def-name").innerHTML = '晶石の身体';
+    document.getElementById("classEnh").classList.add('fail');
   }
   else if(race === 'フィー'){
     document.getElementById("classPri").classList.add('fail');
@@ -292,7 +280,8 @@ function checkRace(){
     document.getElementById("classPri").classList.add('fail');
     document.getElementById("classFai").classList.add('fail');
     document.getElementById("classMag").classList.add('fail');
-    if(AllClassOn) document.getElementById("classDem").classList.add('fail');
+    document.getElementById("classDru").classList.add('fail');
+    document.getElementById("classDem").classList.add('fail');
     if(AllClassOn) document.getElementById("classGri").classList.add('fail');
   }
   else if(race === 'ダークトロール'){
