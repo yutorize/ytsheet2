@@ -857,6 +857,8 @@ function checkFeats(){
       else if(feat === "呪歌追加Ⅰ"){ feats['呪歌追加'] = 1; }
       else if(feat === "呪歌追加Ⅱ"){ feats['呪歌追加'] = 2; }
       else if(feat === "呪歌追加Ⅲ"){ feats['呪歌追加'] = 3; }
+      else if(feat === "抵抗強化Ⅰ"){ feats['抵抗強化'] = 1; }
+      else if(feat === "抵抗強化Ⅱ"){ feats['抵抗強化'] = 2; }
       
       cL.remove("fail","hidden");
     }
@@ -917,8 +919,8 @@ function calcSubStt() {
   
   const vitResistBase = level + bonusVit;
   const mndResistBase = level + bonusMnd;
-  const vitResistAutoAdd = 0 + seekerResistAdd;
-  const mndResistAutoAdd = raceAbilityMndResist + seekerResistAdd;
+  const vitResistAutoAdd = 0 + (feats['抵抗強化'] || 0) + seekerResistAdd;
+  const mndResistAutoAdd = raceAbilityMndResist + (feats['抵抗強化'] || 0) + seekerResistAdd;
   document.getElementById("vit-resist-base").innerHTML = vitResistBase;
   document.getElementById("mnd-resist-base").innerHTML = mndResistBase;
   document.getElementById("vit-resist-auto-add").innerHTML = vitResistAutoAdd;

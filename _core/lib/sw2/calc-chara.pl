@@ -380,17 +380,19 @@ sub data_calc {
       elsif($feat eq '呪歌追加Ⅰ')  { $pc{'songAddition'} = 1; }
       elsif($feat eq '呪歌追加Ⅱ')  { $pc{'songAddition'} = 2; }
       elsif($feat eq '呪歌追加Ⅲ')  { $pc{'songAddition'} = 3; }
+      elsif($feat eq '抵抗強化Ⅰ')  { $pc{'resistEnhance'} = 1; }
+      elsif($feat eq '抵抗強化Ⅱ')  { $pc{'resistEnhance'} = 2; }
     }
   }
 
   ### サブステータス --------------------------------------------------
   ## 生命抵抗力
   $pc{'vitResistBase'} = $st{'LvD'};
-  $pc{'vitResistAddTotal'} = s_eval($pc{'vitResistAdd'}) + $pc{'seekerAbilityResist'};
+  $pc{'vitResistAddTotal'} = s_eval($pc{'vitResistAdd'}) + $pc{'resistEnhance'} + $pc{'seekerAbilityResist'};
   $pc{'vitResistTotal'}  = $pc{'vitResistBase'} + $pc{'vitResistAddTotal'};
   ## 精神抵抗力
   $pc{'mndResistBase'} = $st{'LvF'};
-  $pc{'mndResistAddTotal'} = s_eval($pc{'mndResistAdd'}) + $pc{'raceAbilityMndResist'} + $pc{'seekerAbilityResist'};
+  $pc{'mndResistAddTotal'} = s_eval($pc{'mndResistAdd'}) + $pc{'raceAbilityMndResist'} + $pc{'resistEnhance'} + $pc{'seekerAbilityResist'};
   $pc{'mndResistTotal'}  = $pc{'mndResistBase'} + $pc{'mndResistAddTotal'};
   ## ＨＰＭＰ：装飾品
   foreach (
