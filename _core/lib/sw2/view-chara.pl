@@ -261,9 +261,13 @@ $SHEET->param(CommonClasses => \@common_classes);
 ### 戦闘特技 --------------------------------------------------
 my @feats_lv;
 foreach (@set::feats_lv){
-  next if !$pc{'combatFeatsLv'.$_};
   next if $pc{'level'} < $_;
   push(@feats_lv, { "NAME" => $pc{'combatFeatsLv'.$_}, "LV" => $_ } );
+}
+if($pc{'buildupAddFeats'}){
+  foreach ($pc{'level'}+1 .. $pc{'level'}+$pc{'buildupAddFeats'}){
+    push(@feats_lv, { "NAME" => $pc{'combatFeatsLv'.$_}, "LV" => '+' } );
+  }
 }
 $SHEET->param(CombatFeatsLv => \@feats_lv);
 
