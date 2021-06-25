@@ -983,13 +983,13 @@ function calcPackage() {
   const initWar = lv['War'] + bonusAgi;
   let init = initWar > initSco ? initWar : initSco;
       init += Number(form.initiativeAdd.value);
-  document.getElementById("initiative-value").innerHTML   = (lv['Sco'] || lv['War'])  > 0 ? init : 0;
+  document.getElementById("initiative-value").innerHTML = (lv['Sco'] || lv['War']) > 0 ? init : 0;
 }
 
 // 魔力計算 ----------------------------------------
 let magicPowers = {};
 function calcMagic() {
-  const addPower = Number(form.magicPowerAdd.value) + feats['魔力強化'] || 0;
+  const addPower = Number(form.magicPowerAdd.value) + (feats['魔力強化'] || 0);
   document.getElementById("magic-power-magicenhance-value").innerHTML = feats['魔力強化'] || 0;
   const addCast = Number(form.magicCastAdd.value);
   const addDamage = Number(form.magicDamageAdd.value);
@@ -1230,8 +1230,8 @@ function calcArmour(evaBase,defBase,maxReqd) {
     document.getElementById(`defense-total${i}-def`).innerHTML = def;
   }
   
-  form.armour1Reqd.classList.toggle(  'error', (safeEval(form.armour1Reqd.value)   || 0)   > maxReqd);
-  form.shield1Reqd.classList.toggle(  'error', (safeEval(form.shield1Reqd.value)   || 0)   > maxReqd);
+  form.armour1Reqd.classList.toggle(  'error', (safeEval(form.armour1Reqd.value)   || 0) > maxReqd);
+  form.shield1Reqd.classList.toggle(  'error', (safeEval(form.shield1Reqd.value)   || 0) > maxReqd);
   form.defOther1Reqd.classList.toggle('error', (safeEval(form.defOther1Reqd.value) || 0) > maxReqd);
   form.defOther2Reqd.classList.toggle('error', (safeEval(form.defOther2Reqd.value) || 0) > maxReqd);
   form.defOther3Reqd.classList.toggle('error', (safeEval(form.defOther3Reqd.value) || 0) > maxReqd);
