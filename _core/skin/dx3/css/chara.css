@@ -532,9 +532,13 @@ p.words span.brackets {
 }
 
 /* Lifepath */
+#lifepath {
+  display: grid;
+  grid-template-rows: max-content auto;
+}
 #lifepath table {
   width: 100%;
-  min-height: calc(100% - 1.4rem * 1.5);
+  /* min-height: calc(100% - 1.4rem * 1.5); */
   border-style: solid hidden hidden;
   empty-cells: hide;
 }

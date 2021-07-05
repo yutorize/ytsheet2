@@ -131,7 +131,7 @@ Content-type: text/html\n
     }
   </style>
 </head>
-<body>
+<body id="sw2.0">
   <script src="${main::core_dir}/skin/_common/js/common.js?${main::ver}"></script>
   <header>
     <h1>$set::title</h1>
@@ -263,6 +263,10 @@ print <<"HTML";
           <dd>@{[input("history0Exp",'number','changeRegu','step="500"'.($set::make_fix?' readonly':''))]}</dd>
           <dt>名誉点</dt>
           <dd>@{[input("history0Honor",'number','changeRegu', ($set::make_fix?' readonly':''))]}</dd>
+          <dt>蛮族名誉点</dt>
+          <dd>@{[input("history0HonorB",'number','changeRegu', ($set::make_fix?' readonly':''))]}</dd>
+          <dt>盟竜点</dt>
+          <dd>@{[input("history0HonorD",'number','changeRegu', ($set::make_fix?' readonly':''))]}</dd>
           <dt>所持金</dt>
           <dd>@{[input("history0Money",'number','changeRegu', ($set::make_fix?' readonly':''))]}</dd>
           <dt>初期成長</dt>
@@ -521,9 +525,10 @@ print <<"HTML";
             <div>所持名誉点：<span id="honor-value-MA"></span></div>
             <ul id="mystic-arts-list">
 HTML
+my @honortypes = ('def=human|<人族名誉点（通常の名誉点）>','barbaros|<蛮族名誉点>','dragon|<盟竜点>');
 $pc{'mysticArtsNum'} = 0 if !$set::mystic_arts_on;
 foreach my $num (1 .. $pc{'mysticArtsNum'}){
-  print '<li id="mystic-arts'.$num.'"><span class="handle"></span>'.(input 'mysticArts'.$num).(input 'mysticArts'.$num.'Pt', 'number', 'calcHonor').'</li>';
+  print '<li id="mystic-arts'.$num.'"><span class="handle"></span>'.(input 'mysticArts'.$num).'<span class="honor-pt"><select name="mysticArts'.$num.'PtType" oninput="calcHonor()">'.(option "mysticArts${num}PtType",@honortypes).'</select><span class="honor-select-view"></span>'.(input 'mysticArts'.$num.'Pt', 'number', 'calcHonor').'</span></li>';
 }
 print <<"HTML";
             </ul>
@@ -1231,22 +1236,22 @@ foreach my $num (1 .. 16){
 print <<"HTML";
           </ul>
           </div>
-          <dl class="box" id="honor">
-            <dt>名誉点</dt><dd id="honor-value">$pc{'honor'}</dd>
-            <dt>栄光</dt>
-            <dd id="honor-rank"></dd>
+          <dl class="box zero-data" id="honor">
+            <dt>人族名誉点</dt><dd id="honor-value">$pc{'honor'}</dd>
+            <dt>蛮族名誉点</dt><dd id="honor-barbaros-value">$pc{'honorBarbaros'}</dd>
+            <dt>盟竜点</dt><dd id="honor-dragon-value">$pc{'honorDragon'}</dd>
           </dl>
           <div class="box honor-items" id="honor-items">
             <h2>名誉アイテム</h2>
             <table class="edit-table side-margin" id="honor-items-table">
               <thead>
-                <tr><th></th><th></th><th>点数</th></tr>
+                <tr><th></th><th></th><th>種別｜点数</th></tr>
               </thead>
               <tbody>
-                <tr @{[ display $set::mystic_arts_on ]}><td class="center" class="center" colspan="2">秘伝</td><td id="mystic-arts-honor-value">0</td></tr>
+                <tr id="honor-items-mystic-arts" @{[ display $set::mystic_arts_on ]}><td class="center" class="center" colspan="2">秘伝</td><td id="mystic-arts-honor-value">0</td></tr>
 HTML
 foreach my $num (1 .. $pc{'honorItemsNum'}){
-  print '<tr id="honor-item'.$num.'"><td class="handle"></td><td>'.(input "honorItem${num}", "text").'</td><td>'.(input "honorItem${num}Pt", "number", "calcHonor").'</td></tr>';
+  print '<tr id="honor-item'.$num.'"><td class="handle"></td><td>'.(input "honorItem${num}", "text").'</td><td><span class="honor-pt"><select name="honorItem'.$num.'PtType" oninput="calcHonor()">'.(option "honorItem${num}PtType",@honortypes).'</select><span class="honor-select-view"></span>'.(input "honorItem${num}Pt", "number", "calcHonor").'</span></td></tr>';
 }
 print <<"HTML";
               </tbody>
@@ -1262,7 +1267,7 @@ print <<"HTML";
               <tbody>
 HTML
 foreach my $num (1 .. $pc{'dishonorItemsNum'}){
-  print '<tr id="dishonor-item'.$num.'"><td class="handle"></td><td>'.(input "dishonorItem${num}", "text").'</td><td>'.(input "dishonorItem${num}Pt", "number", "calcHonor").'</td></tr>';
+  print '<tr id="dishonor-item'.$num.'"><td class="handle"></td><td>'.(input "dishonorItem${num}", "text").'</td><td><span class="honor-pt"><select name="dishonorItem'.$num.'PtType" oninput="calcHonor()">'.(option "dishonorItem${num}PtType",@honortypes).'</select><span class="honor-select-view"></span>'.(input "dishonorItem${num}Pt", "number", "calcHonor").'</span></td></tr>';
 }
 print <<"HTML";
             </tbody>
@@ -1347,7 +1352,7 @@ print <<"HTML";
               <th>日付</th>
               <th>タイトル</th>
               <th>経験点</th>
-              <th>名誉点</th>
+              <th class="zero-data">名誉点</th>
               <th>ガメル</th>
               <th>成長</th>
               <th>GM</th>
@@ -1372,7 +1377,15 @@ print <<"HTML";
               <td rowspan="2">@{[input("history${num}Date")]}</td>
               <td rowspan="2">@{[input("history${num}Title")]}</td>
               <td>@{[input("history${num}Exp",'text','calcExp')]}</td>
-              <td>@{[input("history${num}Honor",'text','calcHonor')]}</td>
+              <td>
+                <span class="honor-pt">
+                  <select name="history${num}HonorType" oninput="calcHonor()">
+                    @{[ option "history${num}HonorType",@honortypes ]}
+                  </select>
+                  <span class="honor-select-view"></span>
+                  @{[input("history${num}Honor",'text','calcHonor')]}
+                </span>
+              </td>
               <td>@{[input("history${num}Money",'text','calcCash')]}</td>
               <td>@{[input("history${num}Grow",'text','calcStt','list="list-grow"')]}</td>
               <td>@{[input("history${num}Gm")]}</td>

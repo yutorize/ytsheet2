@@ -1120,14 +1120,21 @@ div#area-items-R {
   grid-template-columns: 1fr 1fr;
   grid-template-rows: auto;
 }
-  #honor dt,
-  #dishonor dt {
-    grid-row: 1;
-  }
-  #honor dd,
-  #dishonor dd {
-    grid-row: 2;
-  }
+#honor dt,
+#dishonor dt {
+  grid-row: 1;
+}
+#honor dd,
+#dishonor dd {
+  grid-row: 2;
+}
+#honor.zero-data {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+#honor.zero-data > *:not(:last-of-type){
+  border-right-width: 1px;
+  border-right-style: solid;
+}
 .honor-items table {
   margin-top: -1.5em !important;
 }

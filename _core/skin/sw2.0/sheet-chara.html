@@ -654,9 +654,10 @@ window.onload = function() {
             <ul class="data-table side-margin"><TMPL_LOOP BattleItems><li><TMPL_VAR ITEM DEFAULT="&nbsp;"></li></TMPL_LOOP></ul>
           </section>
           </TMPL_IF>
-          <dl class="box" id="honor">
+          <dl class="box zero-data" id="honor">
             <dt>名誉点</dt><dd><TMPL_VAR honor> / <TMPL_VAR honorMax></dd>
-            <dt>栄光</dt><dd><TMPL_VAR rank></dd>
+            <dt>蛮族名誉点</dt><dd><TMPL_VAR honorBarbaros></dd>
+            <dt>盟竜点</dt><dd><TMPL_VAR honorDragon></dd>
           </dl>
           <section class="box honor-items" id="honor-items">
             <h2>名誉アイテム</h2>

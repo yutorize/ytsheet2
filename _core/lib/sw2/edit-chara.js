@@ -1316,7 +1316,9 @@ function calcHonor(){
   document.getElementById("honor-value-MA").innerHTML = pointTotal;
   document.getElementById("rank-honor-value").innerHTML = rankNum;
   document.getElementById("mystic-arts-honor-value").innerHTML = mysticArtsPt;
+  document.getElementById('honor-items-mystic-arts').style.display = mysticArtsPt ? '' : 'none';
 }
+// 不名誉点計算
 function calcDishonor(){
   let pointTotal = 0;
   const dishonorItemsNum = form.dishonorItemsNum.value;
@@ -1462,6 +1464,7 @@ function delMysticArts(){
     num--;
     form.mysticArtsNum.value = num;
   }
+  calcHonor();
 }
 // ソート
 let mysticArtsSortable = Sortable.create(document.querySelector('#mystic-arts-list'), {
@@ -1617,7 +1620,7 @@ function addWeapons(copy){
   for(let i = 0; i < classes.length; i++){
     let op = document.createElement("option");
     op.text = classes[i];
-    op.selected = categories[i] === ini.category ? true : false;
+    op.selected = classes[i] === ini.class ? true : false;
     form["weapon"+num+"Class"].appendChild(op);
   }
   
@@ -1696,6 +1699,7 @@ function delHonorItems(){
     num--;
     form.honorItemsNum.value = num;
   }
+  calcHonor();
 }
 // ソート
 let honorSortable = Sortable.create(document.querySelector('#honor-items-table tbody'), {
@@ -1744,6 +1748,7 @@ function delDishonorItems(){
     num--;
     form.dishonorItemsNum.value = num;
   }
+  calcDishonor();
 }
 // ソート
 let dishonorSortable = Sortable.create(document.querySelector('#dishonor-items-table tbody'), {

@@ -173,8 +173,8 @@ table.edit-table tbody td textarea,
 table.edit-table tbody td input[type="text"],
 table.edit-table tbody td input[type="number"],
 table.edit-table tbody td input[type="url"] {
-  width: calc(100% - .1rem);
-  margin: .1rem .1rem 0 0;
+  width: calc(100% - 1px);
+  margin: 1px 1px 0 0;
 }
 table.edit-table:not(.side-margin).line-tbody tbody:nth-of-type(even),
 table.edit-table:not(.side-margin):not(.line-tbody) tbody tr:nth-of-type(even),

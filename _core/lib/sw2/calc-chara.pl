@@ -36,15 +36,22 @@ sub data_calc {
 
   ### 経験点／名誉点／ガメル計算 --------------------------------------------------
   ## 履歴から 
-  $pc{'moneyTotal'} = 0;
+  $pc{'moneyTotal'}   = 0;
   $pc{'depositTotal'} = 0;
-  $pc{'debtTotal'} = 0;
-  $pc{'honor'} = 0;
-  foreach my $i (0 .. $pc{'historyNum'}){
+  $pc{'debtTotal'}    = 0;
+  $pc{'expTotal'}   = s_eval($pc{"history0Exp"});
+  $pc{'moneyTotal'} = s_eval($pc{"history0Money"});
+  $pc{'honor'}         = s_eval($pc{"history0Honor"});
+  $pc{'honorBarbaros'} = s_eval($pc{"history0HonorB"});
+  $pc{'honorDragon'}   = s_eval($pc{"history0HonorD"});
+  foreach my $i (1 .. $pc{'historyNum'}){
     $pc{'expTotal'} += s_eval($pc{"history${i}Exp"});
     $pc{'moneyTotal'} += s_eval($pc{"history${i}Money"});
-    foreach (split /[|｜]/, $pc{"history${i}Honor"}) {
-      $pc{'honor'} += s_eval($_);
+    
+    if   ($pc{"history${i}HonorType"} eq 'barbaros'){ $pc{'honorBarbaros'} += s_eval($pc{"history${i}Honor"}); }
+    elsif($pc{"history${i}HonorType"} eq 'dragon'  ){ $pc{'honorDragon'}   += s_eval($pc{"history${i}Honor"}); }
+    else {
+      $pc{'honor'} += s_eval($pc{"history${i}Honor"});
     }
   }
   ## 収支履歴計算
@@ -62,12 +69,18 @@ sub data_calc {
     }
     $pc{'honor'} -= $pc{'dishonor'};
     $pc{'honorMax'} = $pc{'honor'};
+    $pc{'honorBarbarosMax'} = $pc{'honorBarbaros'};
+    $pc{'honorDragonMax'}   = $pc{'honorDragon'};
     ## 消費
     foreach (1 .. $pc{'honorItemsNum'}){
-      $pc{'honor'} -= $pc{'honorItem'.$_.'Pt'};
+      if   ($pc{"honorItem${_}PtType"} eq 'barbaros'){ $pc{'honorBarbaros'} -= $pc{'honorItem'.$_.'Pt'}; }
+      elsif($pc{"honorItem${_}PtType"} eq 'dragon'  ){ $pc{'honorDragon'}   -= $pc{'honorItem'.$_.'Pt'}; }
+      else { $pc{'honor'} -= $pc{'honorItem'.$_.'Pt'}; }
     }
     foreach (1 .. $pc{'mysticArtsNum'}){
-      $pc{'honor'} -= $pc{'mysticArts'.$_.'Pt'};
+      if   ($pc{"mysticArts${_}PtType"} eq 'barbaros'){ $pc{'honorBarbaros'} -= $pc{'mysticArts'.$_.'Pt'}; }
+      elsif($pc{"mysticArts${_}PtType"} eq 'dragon'  ){ $pc{'honorDragon'}   -= $pc{'mysticArts'.$_.'Pt'}; }
+      else { $pc{'honor'} -= $pc{'mysticArts'.$_.'Pt'}; }
     }
   }
   ## 名誉点2.5

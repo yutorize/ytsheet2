@@ -291,12 +291,16 @@ foreach (1..5){
 $SHEET->param(SeekerAbilities => \@seeker_abilities);
 
 ### 秘伝 --------------------------------------------------
-my @mystic_arts; my $mysticarts_honor = 0;
+my @mystic_arts; my %mysticarts_honor;
 foreach (1..$pc{'mysticArtsNum'}){
-  $mysticarts_honor += $pc{'mysticArts'.$_.'Pt'};
+  my $type = $pc{'mysticArts'.$_.'PtType'} || 'human';
+  $mysticarts_honor{$type} += $pc{'mysticArts'.$_.'Pt'};
   next if !$pc{'mysticArts'.$_};
   push(@mystic_arts, { "NAME" => $pc{'mysticArts'.$_} });
 }
+my $mysticarts_honor = $mysticarts_honor{'human'}
+                     .($mysticarts_honor{'barbaros'}?"<br><small>蛮</small>$mysticarts_honor{'barbaros'}":'')
+                     .($mysticarts_honor{'dragon'}  ?"<br><small>竜</small>$mysticarts_honor{'dragon'}"  :'');
 $SHEET->param(MysticArts => \@mystic_arts);
 $SHEET->param(MysticArtsHonor => $mysticarts_honor);
 
@@ -814,6 +818,8 @@ foreach (0 .. $pc{'historyNum'}){
   foreach my $mem (split(/　/,$pc{'history'.$_.'Member'})){
     $members .= '<span>'.$mem.'</span>';
   }
+  if   ($pc{"history${_}HonorType"} eq 'barbaros'){ $pc{"history${_}Honor"} = '蛮'.$pc{"history${_}Honor"}; }
+  elsif($pc{"history${_}HonorType"} eq 'dragon'  ){ $pc{"history${_}Honor"} = '竜'.$pc{"history${_}Honor"}; }
   push(@history, {
     "NUM"    => ($pc{'history'.$_.'Gm'} ? $h_num : ''),
     "DATE"   => $pc{'history'.$_.'Date'},
@@ -834,9 +840,12 @@ $SHEET->param(History => \@history);
 my @honoritems;
 foreach (1 .. $pc{'honorItemsNum'}) {
   next if !$pc{'honorItem'.$_} && !$pc{'honorItem'.$_.'Pt'};
+  my $type;
+  if   ($pc{"honorItem${_}PtType"} eq 'barbaros'){ $type = '<small>蛮</small>'; }
+  elsif($pc{"honorItem${_}PtType"} eq 'dragon'  ){ $type = '<small>竜</small>'; }
   push(@honoritems, {
     "NAME" => $pc{'honorItem'.$_},
-    "PT"   => $pc{'honorItem'.$_.'Pt'},
+    "PT"   => $type.$pc{'honorItem'.$_.'Pt'},
   } );
 }
 $SHEET->param(HonorItems => \@honoritems);
@@ -844,9 +853,12 @@ $SHEET->param(HonorItems => \@honoritems);
 my @dishonoritems;
 foreach (1 .. $pc{'dishonorItemsNum'}) {
   next if !$pc{'dishonorItem'.$_} && !$pc{'dishonorItem'.$_.'Pt'};
+  my $type;
+  if   ($pc{"dishonorItem${_}PtType"} eq 'barbaros'){ $type = '<small>蛮</small>'; }
+  elsif($pc{"dishonorItem${_}PtType"} eq 'dragon'  ){ $type = '<small>竜</small>'; }
   push(@dishonoritems, {
     "NAME" => $pc{'dishonorItem'.$_},
-    "PT"   => $pc{'dishonorItem'.$_.'Pt'},
+    "PT"   => $type.$pc{'dishonorItem'.$_.'Pt'},
   } );
 }
 $SHEET->param(DishonorItems => \@dishonoritems);
