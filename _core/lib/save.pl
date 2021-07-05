@@ -266,8 +266,8 @@ sub data_save {
     copy("${dir}${file}/data.cgi", "${dir}${file}/backup/${update_date}.cgi");
   }
 
-  if (!-d "${dir}"){ mkdir "${dir}"; }
-  if (!-d "${dir}${file}"){ mkdir "${dir}${file}"; }
+  if (!-d "${dir}"){ mkdir "${dir}" or error("データディレクトリの作成に失敗しました。"); }
+  if (!-d "${dir}${file}"){ mkdir "${dir}${file}" or error("データファイルの作成に失敗しました。"); }
   sysopen (my $FH, "${dir}${file}/data.cgi", O_WRONLY | O_TRUNC | O_CREAT, 0666);
     print $FH "ver<>".$main::ver."\n";
     foreach (sort keys %pc){
