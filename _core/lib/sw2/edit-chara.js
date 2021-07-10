@@ -1702,12 +1702,12 @@ function delHonorItems(){
   calcHonor();
 }
 // ソート
-let honorSortable = Sortable.create(document.querySelector('#honor-items-table tbody'), {
+let honorSortable = Sortable.create(document.querySelector('#honor-items-table'), {
   group: "honor",
   dataIdAttr: 'id',
   animation: 150,
   handle: '.handle',
-  filter: 'thead,tfoot',
+  //filter: 'thead,tfoot',
   ghostClass: 'sortable-ghost',
   onUpdate: function (evt) {
     const order = honorSortable.toArray();

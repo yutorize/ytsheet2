@@ -1243,12 +1243,14 @@ print <<"HTML";
           </dl>
           <div class="box honor-items" id="honor-items">
             <h2>名誉アイテム</h2>
-            <table class="edit-table side-margin" id="honor-items-table">
+            <table class="edit-table side-margin">
               <thead>
                 <tr><th></th><th></th><th>種別｜点数</th></tr>
               </thead>
               <tbody>
                 <tr id="honor-items-mystic-arts" @{[ display $set::mystic_arts_on ]}><td class="center" class="center" colspan="2">秘伝</td><td id="mystic-arts-honor-value">0</td></tr>
+              </tbody>
+              <tbody id="honor-items-table">
 HTML
 foreach my $num (1 .. $pc{'honorItemsNum'}){
   print '<tr id="honor-item'.$num.'"><td class="handle"></td><td>'.(input "honorItem${num}", "text").'</td><td><span class="honor-pt"><select name="honorItem'.$num.'PtType" oninput="calcHonor()">'.(option "honorItem${num}PtType",@honortypes).'</select><span class="honor-select-view"></span>'.(input "honorItem${num}Pt", "number", "calcHonor").'</span></td></tr>';
