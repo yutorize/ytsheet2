@@ -73,7 +73,10 @@ if($mode eq 'delete'){
   }
   
   if(rmdir "${data_dir}${file}"){ $message .= 'ディレクトリを削除しました。<br>'; }
-  else { rename("${data_dir}${file}", "${data_dir}del-${file}") }
+  else {
+    if (!-d "${data_dir}deleted"){ mkdir "${data_dir}deleted" or error("削除データのバックアップディレクトリの作成に失敗しました。"); }
+    rename("${data_dir}${file}", "${data_dir}deleted/${file}");
+  }
   
   info('キャラクターシートの削除',$message);
 }
