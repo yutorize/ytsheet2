@@ -23,23 +23,6 @@ const paletteTool = '<TMPL_VAR paletteTool>';
 const generateType = 'SwordWorld2Enemy';
 const defaultImage = '<TMPL_VAR coreDir>/skin/sw2/img/default_enemy.png';
 
-async function downloadAsCcfoliaE() {
-  const characterDataJson = await getJsonData();
-  const characterId = characterDataJson.birthTime;
-  const rawCount = window.prompt(`${characterDataJson.characterName || characterDataJson.monsterName}を一度に何体生成しますか？`, '1');
-  if(rawCount === null) {
-    return;
-  }
-  const count = Number(rawCount) || 1 ;
-  if(count > 26) {
-    alert('1度に作れるのは26体までです');
-    return;
-  }
-  const json = io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2SwordWorld2Enemies(count, characterDataJson, location.href, getAbsoluteUrl(defaultImage));
-  const ccfoliaUrl = await generateCcfoliaZipFile(characterId, json);
-  downloadFile(`ccfolia_data_${characterId}.zip`, ccfoliaUrl);
-}
-
 <TMPL_IF error>
 window.onload = function() {
   editOn();
@@ -116,7 +99,7 @@ window.onload = function() {
       <h2>保存</h2>
       <ul>
         <li id="downloadlist-udonarium"><a onclick="downloadAsUdonarium();">ユドナリウム向けのデータ</a></li>
-        <li id="downloadlist-ccfolia"><a onclick="downloadAsCcfoliaE();">ココフォリア向けのデータ</a></li>
+        <li id="downloadlist-ccfolia"><a onclick="downloadAsCcfolia();">ココフォリア向けのデータ</a></li>
         <li id="downloadlist-text"><a onclick="donloadAsText();">テキスト形式</a></li>
         <li id="downloadlist-json"><a onclick="donloadAsJson();">JSON 形式</a></li>
       </ul>

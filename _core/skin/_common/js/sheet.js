@@ -69,18 +69,6 @@ function generateUdonariumZipFile(title, data, image){
   });
 }
 
-function generateCcfoliaZipFile(title, data){
-  return new Promise((resolve, dummy)=>{
-    let zip = new JSZip();
-    zip.file("__data.json", data, {binary: false});
-    zip.file(".token", `0.${io.github.shunshun94.trpg.ccfolia.generateRndStr()}`);
-    zip.generateAsync({ type: "blob", compression: "DEFLATE", compressionOptions: {level: 9}}).then(blob => {
-      const dataUrl = URL.createObjectURL(blob);
-      resolve(dataUrl);
-    });
-  });
-}
-
 function downloadFile(title, url) {
   const a = document.createElement("a");
   document.body.appendChild(a);
@@ -108,10 +96,13 @@ async function downloadAsUdonarium() {
 
 async function downloadAsCcfolia() {
   const characterDataJson = await getJsonData();
-  const characterId = characterDataJson.birthTime;
-  const json = io.github.shunshun94.trpg.ccfolia[`generateCharacterJsonFromYtSheet2${generateType}`](characterDataJson, location.href, getAbsoluteUrl(defaultImage));
-  const ccfoliaUrl = await generateCcfoliaZipFile(characterId, json);
-  downloadFile(`ccfolia_data_${characterId}.zip`, ccfoliaUrl);
+  console.log(`generateCharacterJsonFromYtSheet2${generateType}`);
+  const json = io.github.shunshun94.trpg.ccfolia[`generateCharacterJsonFromYtSheet2${generateType}`](characterDataJson, location.href);
+  json.then((result)=>{
+    navigator.clipboard.writeText(result);
+    alert('クリップボードにコピーしました。ココフォリアにペーストすることでデータを取り込めます');
+  });
+  
 }
 
 async function donloadAsText() {

@@ -26,35 +26,11 @@ io.github.shunshun94 = io.github.shunshun94 || {};
 io.github.shunshun94.trpg = io.github.shunshun94.trpg || {};
 io.github.shunshun94.trpg.ccfolia = io.github.shunshun94.trpg.ccfolia || {};
 
-io.github.shunshun94.trpg.ccfolia.CONSTS = {};
-io.github.shunshun94.trpg.ccfolia.CONSTS.DEFAULT_PC_PICTURE = 'https://shunshun94.github.io/shared/hiyoko.jpg';
-
 io.github.shunshun94.trpg.ccfolia.getCharacterSeed = ()=>{
-	return {
-		meta: {
-			version: "1.1.0"
-		},
-		entities: {
-			room: {},
-			items: {},
-			decks: {},
-			characters: {},
-			scenes: {}
-		},
-		resources: {}
-	};
+	return { kind: "character" };
 };
 
-io.github.shunshun94.trpg.ccfolia.generateRndStr = () => {
-	let randomString = '';
-	const baseString ='0123456789abcdefghijklmnopqrstuvwxyz';
-	for(let i = 0; i < 64; i++) {
-		randomString += baseString.charAt( Math.floor( Math.random() * baseString.length));
-	}
-	return randomString;
-};
-
-io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2DoubleCross3PC = async (json, opt_sheetUrl = '', opt_defaultPictureUrl = io.github.shunshun94.trpg.ccfolia.CONSTS.DEFAULT_PC_PICTURE) => {
+io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2DoubleCross3PC = async (json, opt_sheetUrl = '') => {
 	const result = io.github.shunshun94.trpg.ccfolia.getCharacterSeed();
 	const defaultPalette = await io.github.shunshun94.trpg.ytsheet.getChatPalette(opt_sheetUrl);
 	const character = {
@@ -83,7 +59,6 @@ io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2DoubleCross3P
 				}
 			],
 			params: defaultPalette.parameters || [],
-			iconUrl: json.imageURL || opt_defaultPictureUrl,
 			faces: [],
 			x: 0, y: 0, z: 0,
 			angle: 0, width: 4, height: 4,
@@ -110,6 +85,6 @@ io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2DoubleCross3P
 		}
 	});
 
-	result.entities.characters[json.id] = character;
+	result.data = character;
 	return JSON.stringify(result);
 };
