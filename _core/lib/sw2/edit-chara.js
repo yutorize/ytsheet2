@@ -1683,7 +1683,7 @@ function addHonorItems(){
     <td><input type="text" name="honorItem${num}"></td>
     <td><input type="number" name="honorItem${num}Pt" oninput="calcHonor()"></td>
   `;
-  const target = document.querySelector("#honor-items-table tbody");
+  const target = document.querySelector("#honor-items-table");
   target.appendChild(tbody, target);
   form.honorItemsNum.value = num;
 }
@@ -1694,7 +1694,7 @@ function delHonorItems(){
     if(form[`honorItem${num}`].value || form[`honorItem${num}Pt`].value){
       if (!confirm(delConfirmText)) return false;
     }
-    const target = document.querySelector("#honor-items-table tbody tr:last-of-type");
+    const target = document.querySelector("#honor-items-table tr:last-of-type");
     target.parentNode.removeChild(target);
     num--;
     form.honorItemsNum.value = num;

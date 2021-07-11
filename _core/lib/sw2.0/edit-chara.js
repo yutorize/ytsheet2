@@ -595,7 +595,7 @@ function addHonorItems(){
       </span>
     </td>
   `;
-  const target = document.querySelector("#honor-items-table tbody");
+  const target = document.querySelector("#honor-items-table");
   target.appendChild(tbody, target);
   form.honorItemsNum.value = num;
 }
