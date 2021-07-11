@@ -101,7 +101,7 @@ io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2BloodPathPC =
   
   result.push('■傷号■\n');
   result.push(`［${json.scarName || ''}］`);
-  result.push(json.scarNote.replace(/&lt;br&gt;/gm, '\n').replace(/&quot;/gm, '"'));
+  result.push((json.scarNote || '').replace(/&lt;br&gt;/gm, '\n').replace(/&quot;/gm, '"'));
   result.push('');
   result.push('');
 
