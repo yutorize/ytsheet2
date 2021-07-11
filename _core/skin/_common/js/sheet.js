@@ -79,6 +79,18 @@ function downloadFile(title, url) {
   URL.revokeObjectURL(url);
 }
 
+function copyToClipboard(text) {
+  // navigator.clipboard.writeText(text); は許可されていなければ動作せず、
+  // 非 SSL で繋いでいる場合は許可することすらできないので利用できない。
+  const textarea = document.createElement('textarea');
+  document.body.appendChild(textarea);
+  textarea.value = text;
+  textarea.focus();
+  textarea.setSelectionRange(0, textarea.value.length);
+  document.execCommand('copy');
+  textarea.remove();
+}
+
 async function downloadAsUdonarium() {
   const characterDataJson = await getJsonData();
   const characterId = characterDataJson.birthTime;
@@ -90,10 +102,9 @@ async function downloadAsUdonarium() {
 
 async function downloadAsCcfolia() {
   const characterDataJson = await getJsonData();
-  console.log(`generateCharacterJsonFromYtSheet2${generateType}`);
   const json = io.github.shunshun94.trpg.ccfolia[`generateCharacterJsonFromYtSheet2${generateType}`](characterDataJson, location.href);
   json.then((result)=>{
-    navigator.clipboard.writeText(result);
+    copyToClipboard(result);
     alert('クリップボードにコピーしました。ココフォリアにペーストすることでデータを取り込めます');
   });
   
