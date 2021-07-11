@@ -83,7 +83,7 @@ function copyToClipboard(text) {
   // navigator.clipboard.writeText(text); は許可されていなければ動作せず、
   // 非 SSL で繋いでいる場合は許可することすらできないので利用できない。
   const textarea = document.createElement('textarea');
-  document.body.appendChild(textarea);
+  document.getElementById('downloadlist').appendChild(textarea);
   textarea.value = text;
   textarea.focus();
   textarea.setSelectionRange(0, textarea.value.length);
