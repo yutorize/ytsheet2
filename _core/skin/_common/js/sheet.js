@@ -69,18 +69,6 @@ function generateUdonariumZipFile(title, data, image){
   });
 }
 
-function generateCcfoliaZipFile(title, data){
-  return new Promise((resolve, dummy)=>{
-    let zip = new JSZip();
-    zip.file("__data.json", data, {binary: false});
-    zip.file(".token", `0.${io.github.shunshun94.trpg.ccfolia.generateRndStr()}`);
-    zip.generateAsync({ type: "blob", compression: "DEFLATE", compressionOptions: {level: 9}}).then(blob => {
-      const dataUrl = URL.createObjectURL(blob);
-      resolve(dataUrl);
-    });
-  });
-}
-
 function downloadFile(title, url) {
   const a = document.createElement("a");
   document.body.appendChild(a);
@@ -91,10 +79,16 @@ function downloadFile(title, url) {
   URL.revokeObjectURL(url);
 }
 
-function getAbsoluteUrl(path) {
-  const dummyLink = document.createElement('a');
-  dummyLink.href = path;
-  return dummyLink.href;
+function copyToClipboard(text) {
+  // navigator.clipboard.writeText(text); は許可されていなければ動作せず、
+  // 非 SSL で繋いでいる場合は許可することすらできないので利用できない。
+  const textarea = document.createElement('textarea');
+  document.getElementById('downloadlist').appendChild(textarea);
+  textarea.value = text;
+  textarea.focus();
+  textarea.setSelectionRange(0, textarea.value.length);
+  document.execCommand('copy');
+  textarea.remove();
 }
 
 async function downloadAsUdonarium() {
@@ -108,10 +102,12 @@ async function downloadAsUdonarium() {
 
 async function downloadAsCcfolia() {
   const characterDataJson = await getJsonData();
-  const characterId = characterDataJson.birthTime;
-  const json = io.github.shunshun94.trpg.ccfolia[`generateCharacterJsonFromYtSheet2${generateType}`](characterDataJson, location.href, getAbsoluteUrl(defaultImage));
-  const ccfoliaUrl = await generateCcfoliaZipFile(characterId, json);
-  downloadFile(`ccfolia_data_${characterId}.zip`, ccfoliaUrl);
+  const json = io.github.shunshun94.trpg.ccfolia[`generateCharacterJsonFromYtSheet2${generateType}`](characterDataJson, location.href);
+  json.then((result)=>{
+    copyToClipboard(result);
+    alert('クリップボードにコピーしました。ココフォリアにペーストすることでデータを取り込めます');
+  });
+  
 }
 
 async function donloadAsText() {
