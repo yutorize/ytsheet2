@@ -79,12 +79,6 @@ function downloadFile(title, url) {
   URL.revokeObjectURL(url);
 }
 
-function getAbsoluteUrl(path) {
-  const dummyLink = document.createElement('a');
-  dummyLink.href = path;
-  return dummyLink.href;
-}
-
 async function downloadAsUdonarium() {
   const characterDataJson = await getJsonData();
   const characterId = characterDataJson.birthTime;
