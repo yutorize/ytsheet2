@@ -112,13 +112,13 @@ io.github.shunshun94.trpg.ytsheet.separateParametersFromChatPalette = (chatPalet
 		parameters: []
 	};
 	const palette = [];
-	const parameterRegExp = /^\/\/(.+)=(\d+)/;
+	const parameterRegExp = /^\/\/(.+)=([0-9\+\-\/\*]+)?$/;
 	chatPalette.split('\n').forEach((line)=>{
 		const parameterExecResult = parameterRegExp.exec(line);
 		if(parameterExecResult) {
 			result.parameters.push({
 				label:parameterExecResult[1],
-				value:parameterExecResult[2]
+				value:(parameterExecResult[2] !== undefined ? parameterExecResult[2] : '')
 			});
 		} else {
 			palette.push(line);

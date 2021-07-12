@@ -175,7 +175,9 @@ io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2SwordWorld2P
 				if(s.name === param.label){ return `` }
 			}
 			if(param.label.match(/^(器用度|敏捷度|筋力|生命力|知力|精神力)$/)){ return `` }
-			return `        <data type="numberResource" currentValue="${param.value}" name="${param.label}">${param.value < 10 ? 10 : param.value}</data>`; 
+
+			if(param.value.match(/[^0-9]/) || param.value === ''){ return `        <data name="${param.label}">${param.value}</data>`; }
+			else { return `        <data type="numberResource" currentValue="${param.value}" name="${param.label}">${param.value < 10 ? 10 : param.value}</data>`; }
 		});
 	} else {
 		data_character_detail['能力値'] = [
