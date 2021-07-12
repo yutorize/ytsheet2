@@ -93,7 +93,7 @@ function copyToClipboard(text) {
 
 async function downloadAsUdonarium() {
   const characterDataJson = await getJsonData();
-  const characterId = characterDataJson.birthTime;
+  const characterId = characterDataJson.characterName || characterDataJson.monsterName || characterDataJson.aka || '無題';
   const image = await io.github.shunshun94.trpg.ytsheet.getPicture(characterDataJson.imageURL || defaultImage);
   const udonariumXml = io.github.shunshun94.trpg.udonarium[`generateCharacterXmlFromYtSheet2${generateType}`](characterDataJson, location.href, image.hash);
   const udonariumUrl = await generateUdonariumZipFile((characterDataJson.characterName||characterDataJson.aka), udonariumXml, image);
@@ -112,7 +112,7 @@ async function downloadAsCcfolia() {
 
 async function donloadAsText() {
   const characterDataJson = await getJsonData();
-  const characterId = characterDataJson.birthTime;
+  const characterId = characterDataJson.characterName || characterDataJson.monsterName || characterDataJson.aka || '無題';
   const textData = io.github.shunshun94.trpg.ytsheet[`generateCharacterTextFromYtSheet2${generateType}`](characterDataJson);
   const textUrl = window.URL.createObjectURL(new Blob([ textData ], { "type" : 'text/plain;charset=utf-8;' }));
   downloadFile(`data_${characterId}.txt`, textUrl);
@@ -120,7 +120,7 @@ async function donloadAsText() {
 
 async function donloadAsJson() {
   const characterDataJson = await getJsonData();
-  const characterId = characterDataJson.birthTime;
+  const characterId = characterDataJson.characterName || characterDataJson.monsterName || characterDataJson.aka || '無題';
   const jsonUrl = window.URL.createObjectURL(new Blob([ JSON.stringify(characterDataJson) ], { "type" : 'text/json;charset=utf-8;' }));
   downloadFile(`data_${characterId}.json`, jsonUrl);
 }
