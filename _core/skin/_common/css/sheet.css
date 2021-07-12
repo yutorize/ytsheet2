@@ -815,6 +815,13 @@ aside#backuplist ul li a:hover,
 aside#downloadlist ul li a:hover {
   background: linear-gradient(to top, rgba(100,200,255,0.2) 20%, transparent 20%);
 }
+aside#backuplist ul li a small,
+aside#downloadlist ul li a small {
+  display: block;
+  opacity: 0.6;
+  font-size: 80%;
+  text-align: right;
+}
 @media screen and (max-width:735px){
   aside#backuplist,
   aside#downloadlist {
