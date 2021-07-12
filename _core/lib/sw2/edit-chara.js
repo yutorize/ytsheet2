@@ -1072,6 +1072,7 @@ function calcAttack() {
   document.getElementById("attack-grappler-dmg"  ).innerHTML = lv['Gra'] + bonusStr;
   document.getElementById("attack-fencer-dmg"    ).innerHTML = lv['Fen'] + bonusStr;
   document.getElementById("attack-shooter-dmg"   ).innerHTML = lv['Sho'] + bonusStr;
+  document.getElementById("attack-enhancer-dmg"  ).innerHTML = lv['Enh'] + bonusStr;
   if(modeZero){ document.getElementById("attack-enhancer-dmg"  ).innerHTML = lv['Enh'] + bonusStr; }
 
   calcWeapon();
