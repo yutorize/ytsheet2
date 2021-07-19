@@ -431,6 +431,22 @@ input[type="button"]:hover {
 .add-del-button a:hover {
   opacity: 0.5;
 }
+.add-del-button a::before {
+  display: block;
+  transform: scale(0.4, 1);
+  position: absolute;
+  left: 0;
+  right: 0;
+  text-align: center;
+  color: var(--bg-color);
+  font-family: var(--base-font-family-mono);
+}
+.add-del-button a[onclick*="add"]::before {
+  content:"+";
+}
+.add-del-button a[onclick*="del"]::before {
+  content:"-";
+}
 /* メッセージ・注釈 */
 .message {
   max-width: 500px;
@@ -458,6 +474,10 @@ input[type="button"]:hover {
 .box .annotate {
   font-size: 90%;
   padding: 0 1rem;
+}
+.box .add-del-button + .annotate {
+  border-top-width: 1px;
+  border-top-style: solid;
 }
 .example {
   background: rgba(170,170,170,0.2);

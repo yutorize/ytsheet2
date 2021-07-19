@@ -655,11 +655,11 @@ print <<"HTML";
             <tr><th></th><th>名称</th><th>Lv</th><th>タイミング</th><th>技能</th><th>難易度</th><th>対象</th><th>射程</th><th>侵蝕値</th><th>制限</th></tr>
           </tfoot>
         </table>
+        <div class="add-del-button"><a onclick="addEffect()">▼</a><a onclick="delEffect()">▲</a></div>
         <div class="annotate">
         ※種別「自動」「Dロイス」を選択した場合、取得時（1Lv）の経験点を0として計算します。<br>
         　経験点修正の欄は、自動計算で対応しきれない例外的な取得・成長に使用してください（Dロイス転生者など）
         </div>
-        <div class="add-del-button"><a onclick="addEffect()">▼</a><a onclick="delEffect()">▲</a></div>
       </details>
       <div class="box trash-box" id="effect-trash">
         <h2><i class="fas fa-trash-alt"></i><span class="shorten">削除エフェクト</span></h2>
@@ -778,10 +778,10 @@ HTML
 }
 print <<"HTML";
         </div>
+        <div class="add-del-button"><a onclick="addCombo()">▼</a><a onclick="delCombo()">▲</a></div>
         <div class="annotate">
           @{[ input 'comboCalcOff','checkbox','calcComboAll' ]} 能力値・技能Lvを自動挿入しない（自分で計算する）
         </div>
-        <div class="add-del-button"><a onclick="addCombo()">▼</a><a onclick="delCombo()">▲</a></div>
       </details>
       
       <details class="box box-union" id="items" $open{'item'}>
