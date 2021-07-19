@@ -371,12 +371,14 @@ function checkFeats(){
       else if(feat === "キャパシティ"){ feats['キャパシティ'] += 15; }
       else if(feat === "射手の体術"){ feats['射手の体術'] = 1; }
       else if(feat.match(weaponsRegex)){
-        if     (RegExp.$1 === 'Ａ'){ feats['武器習熟／'+RegExp.$2] = 1; }
-        else if(RegExp.$1 === 'Ｓ'){ feats['武器習熟／'+RegExp.$2] = 2; }
+        feats['武器習熟／'+RegExp.$2] ||= 0;
+        if     (RegExp.$1 === 'Ａ'){ feats['武器習熟／'+RegExp.$2] += 1; }
+        else if(RegExp.$1 === 'Ｓ'){ feats['武器習熟／'+RegExp.$2] += 2; }
       }
       else if(feat.match(/防具習熟(Ａ|Ｓ)／(金属鎧|非金属鎧|盾)/)){
-        if     (RegExp.$1 === 'Ａ'){ feats['防具習熟／'+RegExp.$2] = 1; }
-        else if(RegExp.$1 === 'Ｓ'){ feats['防具習熟／'+RegExp.$2] = 2; }
+        feats['防具習熟／'+RegExp.$2] ||= 0;
+        if     (RegExp.$1 === 'Ａ'){ feats['防具習熟／'+RegExp.$2] += 1; }
+        else if(RegExp.$1 === 'Ｓ'){ feats['防具習熟／'+RegExp.$2] += 2; }
       }
       else if(feat === "魔器習熟Ａ"){ feats['魔器習熟'] += 1; }
       else if(feat === "魔器習熟Ｓ"){ feats['魔器習熟'] += 1; }
