@@ -466,7 +466,7 @@ print <<"HTML";
           <dd>
             <dl id="skill-social-table">
               <dt class="left">交渉</dt><dd>@{[input "skillNegotiate",'number','calcSkill']}+@{[input "skillAddNegotiate",'number']}</dd>
-              <dt class="left">調達</dt><dd>@{[input "skillProcure"  ,'number','calcSkill']}+@{[input "skillAddProcure",  'number','calcStock']}</dd>
+              <dt class="left">調達</dt><dd>@{[input "skillProcure"  ,'number','calcSkill();calcStock']}+@{[input "skillAddProcure",  'number','calcSkill();calcStock']}</dd>
 HTML
 foreach my $num (1 .. $pc{'skillInfoNum'}) {
 print <<"HTML";
