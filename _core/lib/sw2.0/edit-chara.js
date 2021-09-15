@@ -132,12 +132,12 @@ function checkFeats(){
         if(!acquire.match('両手利き')){ cL.add("error"); }
       }
       else if (feat.match(/代償軽減/)){
-        if(lv['Mys'] < 5){ cL.add("error"); }
+        if(lv['Mys'] < 3){ cL.add("error"); }
         if(feat.match(/Ⅰ$/)){
-          if (f2 && lv['Mys'] >= 7) { (auto) ? box.value = "スローイングⅡ" : cL.add("mark") }
+          if (f2 && lv['Mys'] >= 7) { (auto) ? box.value = "代償軽減Ⅱ" : cL.add("mark") }
         }
         else if(feat.match(/Ⅱ$/)){
-          if(!f2 || lv['Mys'] < 7) { (auto) ? box.value = "スローイングⅠ" : cL.add("error") }
+          if(!f2 || lv['Mys'] < 7) { (auto) ? box.value = "代償軽減Ⅰ" : cL.add("error") }
         }
       }
       else if (feat.match(/鷹の目/)){
@@ -192,10 +192,16 @@ function checkFeats(){
         if(level < 11 || !acquire.match('防具習熟Ｓ／')){ cL.add("error"); }
       }
       else if (feat.match(/魔器習熟Ｓ/)){
-        if(!acquire.match('魔器習熟Ａ')){ cL.add("error"); }
+        if(lv['Art'] < 5 || !acquire.match('魔器習熟Ａ')){ cL.add("error"); }
       }
       else if (feat.match(/魔器の達人/)){
-        if(!acquire.match('魔器習熟Ｓ')){ cL.add("error"); }
+        if(lv['Art'] < 11 || !acquire.match('魔器習熟Ｓ')){ cL.add("error"); }
+      }
+      else if (feat.match(/魔導書習熟Ｓ/)){
+        if(!acquire.match('魔導書習熟Ａ')){ cL.add("error"); }
+      }
+      else if (feat.match(/魔導書の達人/)){
+        if(lv['Gri'] < 11 || !acquire.match('魔導書習熟Ｓ')){ cL.add("error"); }
       }
       else if (feat.match(/魔晶石の達人/)){
         if(level < 9){ cL.add("error"); }
