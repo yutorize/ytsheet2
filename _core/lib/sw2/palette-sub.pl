@@ -119,6 +119,7 @@ sub palettePreset {
       $text .= "2d6+{@$_[1]}";
       if   ($name =~ /魔/){ $text .= "+{魔力修正}+{行使修正} ${name}行使\n"; }
       elsif($name =~ /歌/){ $text .= " 呪歌演奏\n"; }
+      elsif($name =~ /賦/){ $text .= ($::pc{'alchemyEnhance'} ? "+$::pc{'alchemyEnhance'}" : '')." 賦術\n"; }
       else                { $text .= " ${name}\n"; }
       
       foreach my $pow (@{$pows{$id}}) {
