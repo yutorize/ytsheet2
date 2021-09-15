@@ -42,7 +42,8 @@ sub pcDataGet {
       $mode = 'edit';
       $message .= 'データを更新しました。<a href="./?id='.$::in{'id'}.'">⇒シートを確認する</a>';
     }
-    (undef, undef, $file, undef) = getfile($::in{'id'},$::in{'pass'},$LOGIN_ID);
+    (undef, undef, $file, undef, my $user) = getfile($::in{'id'},$::in{'pass'},$LOGIN_ID);
+    $file = $user ? '_'.$user.'/'.$file : $file;
     my $datafile = $::in{'backup'} ? "${datadir}${file}/backup/$::in{'backup'}.cgi" : "${datadir}${file}/data.cgi";
     open my $IN, '<', $datafile or &login_error;
     $_ =~ s/^(.+?)<>(.*)\n$/$pc{$1} = $2;/egi while <$IN>;
@@ -95,6 +96,7 @@ sub login_error {
 
 ## 画像欄
 sub image_form {
+  my $image_maxsize_view = $set::image_maxsize >= 1048576 ? sprintf("%.3g",$set::image_maxsize/1048576).'MB' : sprintf("%.3g",$set::image_maxsize/1024).'KB';
   return <<"HTML";
     <div class="box" id="image" style="max-height:550px;">
       <h2>キャラクター画像</h2>
@@ -125,8 +127,8 @@ sub image_form {
         <p>
           プレビューエリアに画像ファイルをドロップ、<br>
           または
-          <input type="file" accept="image/*" name="imageFile" onchange="imagePreView(this.files[0])"><br>
-          ※ @{[ int($set::image_maxsize / 1024) ]}KBまでのJPG/PNG/GIF
+          <input type="file" accept="image/*" name="imageFile" onchange="imagePreView(this.files[0], $set::image_maxsize || 0)"><br>
+          ※ ファイルサイズ @{[ $image_maxsize_view ]} までの JPG/PNG/GIF
         </p>
         <script>
           document.getElementById('image-custom').addEventListener('dragover',function(e){
@@ -138,7 +140,7 @@ sub image_form {
           document.querySelector('.image-custom-view-area').addEventListener('drop', function (e) {
             const obj = document.querySelector("[name='imageFile']");
             obj.files = e.dataTransfer.files;
-            imagePreView(obj.files[0]);
+            imagePreView(obj.files[0], $set::image_maxsize || 0);
           });
         </script>
         <h3>画像レイアウト</h3>

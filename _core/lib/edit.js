@@ -57,13 +57,18 @@ function palettePresetChange (){
 }
 
 // 画像配置 ----------------------------------------
-function imagePreView(file){
-  const blobUrl = window.URL.createObjectURL(file);
-  document.getElementById('image').style.backgroundImage = 'url("'+blobUrl+'")';
-  document.querySelectorAll(".image-custom-view").forEach((el) => {
-    el.style.backgroundImage = 'url("'+blobUrl+'")';
-  });
-  console.log(blobUrl)
+function imagePreView(file, imageMaxSize){
+  if(file.size > imageMaxSize){
+    alert(`ファイルサイズが${ (imageMaxSize >= 1048576) ? (imageMaxSize / 1048576)+'MB' : (imageMaxSize / 1024)+'KB' }を超えています`);
+    form.imageFile.value = '';
+  }
+  else {
+    const blobUrl = window.URL.createObjectURL(file);
+    document.getElementById('image').style.backgroundImage = 'url("'+blobUrl+'")';
+    document.querySelectorAll(".image-custom-view").forEach((el) => {
+      el.style.backgroundImage = 'url("'+blobUrl+'")';
+    });
+  }
 }
 function imagePositionView(){
   document.getElementById('image-custom').style.display = 'grid';
