@@ -121,8 +121,9 @@ $pc{'tags'} =~ tr/＋－＊／．，＿/\+\-\*\/\.,_/;
 $pc{'tags'} =~ tr/ / /s;
 
 ### 画像アップロード --------------------------------------------------
+my $oldext;
 if($pc{'imageDelete'}){
-  unlink "${data_dir}${file}/image.$pc{'image'}"; # ファイルを削除
+  $oldext = $pc{'image'};
   $pc{'image'} = '';
 }
 my $imagedata; my $imageflag;
@@ -147,8 +148,7 @@ if($::in{'imageFile'}){
   elsif ($type eq "image/x-png") { $ext ="png"; } #PNG
   
   if($imageflag && $ext){
-    unlink "${data_dir}${file}/image.$pc{'image'}"; # 前のファイルを削除
-    
+    $oldext = $pc{'image'} || $oldext;
     $pc{'image'} = $ext;
     $pc{'imageUpdate'} = time;
   }
@@ -163,24 +163,38 @@ delete $pc{'pass'};
 delete $pc{'_token'};
 delete $pc{'registerkey'};
 $pc{'IP'} = $ENV{'REMOTE_ADDR'};
-data_save($mode, $data_dir, $file);
 ### passfile --------------------------------------------------
+if (!-d "${data_dir}"){ mkdir "${data_dir}" or error("データディレクトリの作成に失敗しました。"); }
+if ($LOGIN_ID && !-d "${data_dir}_${LOGIN_ID}"){ mkdir "${data_dir}_${LOGIN_ID}" or error("データディレクトリの作成に失敗しました。"); }
+my $user_dir;
 ## 新規
 if($mode eq 'make'){
-  passfile_write_make($pc{'id'},$pass,$LOGIN_ID,$pc{'protect'},$now)
+  $user_dir = passfile_write_make($pc{'id'},$pass,$LOGIN_ID,$pc{'protect'},$now,$data_dir);
 }
 ## 更新
 elsif($mode eq 'save'){
-  if($pc{'protect'} ne $pc{'protectOld'}){
-    passfile_write_save($pc{'id'},$pass,$LOGIN_ID,$pc{'protect'})
+  if($pc{'protect'} ne $pc{'protectOld'}
+    || ($imageflag && $pc{'image'})
+    || ($set::masterid && $LOGIN_ID eq $set::masterid)
+    || ($set::masterkey && $pass eq $set::masterkey)
+  ){
+    $user_dir = passfile_write_save($pc{'id'},$pass,$LOGIN_ID,$pc{'protect'},$data_dir);
   }
+  else {
+    $user_dir = ($pc{'protect'} eq 'account' && $LOGIN_ID) ? '_'.$LOGIN_ID.'/' : '';
+  }
+  data_save('save', $data_dir, $file, $pc{'protect'}, $user_dir);
 }
 ### 一覧データ更新 --------------------------------------------------
 list_save($listfile, $newline);
 
 ### 画像アップ更新 --------------------------------------------------
+if($pc{'imageDelete'}){
+  unlink "${data_dir}${user_dir}${file}/image.$pc{'image'}"; # ファイルを削除
+}
 if($imageflag && $pc{'image'}){
-  open(my $IMG, ">", "${data_dir}${file}/image.$pc{'image'}");
+  unlink "${data_dir}${user_dir}${file}/image.$oldext"; # 前のファイルを削除
+  open(my $IMG, ">", "${data_dir}${user_dir}${file}/image.$pc{'image'}");
   binmode($IMG);
   print $IMG $imagedata;
   close($IMG);
@@ -201,62 +215,37 @@ else {
 
 
 ### サブルーチン ###################################################################################
+use File::Copy qw/copy move/;
+
 sub time_convert {
   my ($min,$hour,$day,$mon,$year) = (localtime($_[0]))[1..5];
   $year += 1900; $mon++;
   return sprintf("%04d-%02d-%02d %02d:%02d",$year,$mon,$day,$hour,$min);
 }
 
-sub passfile_write_make {
-  my ($id, $pass ,$LOGIN_ID, $protect, $now) = @_;
-  sysopen (my $FH, $set::passfile, O_WRONLY | O_APPEND | O_CREAT, 0666);
-    my $passwrite;
-    if   ($protect eq 'account'&& $LOGIN_ID) { $passwrite = '['.$LOGIN_ID.']'; }
-    elsif($protect eq 'password')            { $passwrite = e_crypt($pass); }
-    print $FH "$id<>$passwrite<>$now<>".$::in{'type'}."<>\n";
-  close ($FH);
-}
-
-sub passfile_write_save {
-  my ($id, $pass ,$LOGIN_ID, $protect) = @_;
-  sysopen (my $FH, $set::passfile, O_RDWR);
-  flock($FH, 2);
-  my @list = <$FH>;
-  seek($FH, 0, 0);
-  foreach (@list){
-    my @data = split /<>/;
-    if ($data[0] eq $id){
-      my $passwrite = $data[1];
-      if   ($protect eq 'account')  {
-        if($passwrite !~ /^\[.+?\]$/) { $passwrite = '['.$LOGIN_ID.']'; }
-      }
-      elsif($protect eq 'password') {
-        if(!$passwrite || $passwrite =~ /^\[.+?\]$/) { $passwrite = e_crypt($pass); }
-      }
-      elsif($protect eq 'none') {
-        $passwrite = '';
-      }
-      print $FH "$data[0]<>$passwrite<>$data[2]<>$data[3]<>\n";
-    }else{
-      print $FH $_;
-    }
-  }
-  truncate($FH, tell($FH));
-  close($FH);
-}
-
 sub data_save {
   my $mode = shift;
   my $dir  = shift;
   my $file = shift;
-  if($mode eq 'make'){
-    if (-d "${dir}${file}"){
-      $make_error = '新規作成が衝突しました。再度保存してください。';
-      require $set::lib_edit; exit;
+  my $protect = shift;
+  my $user_dir = shift;
+
+  if($protect eq 'account' && $user_dir){
+    if (!-d "${dir}${user_dir}${file}"){
+      if($mode eq 'save' && -d "${dir}${file}"){ #v1.14のコンバート処理
+        move("${dir}${file}", "${dir}${user_dir}${file}");
+      }
+      else {
+        mkdir "${dir}${user_dir}${file}" or error("データファイルの作成に失敗しました。");
+      }
     }
+    $dir .= $user_dir;
   }
+  elsif(!-d "${dir}${file}") {
+    mkdir "${dir}${file}" or error("データファイルの作成に失敗しました。");
+  }
+
   if($mode eq 'save'){
-    use File::Copy qw/copy/;
     if (!-d "${dir}${file}/backup/"){ mkdir "${dir}${file}/backup/"; }
 
     my $modtime = (stat("${dir}${file}/data.cgi"))[9];
@@ -266,14 +255,80 @@ sub data_save {
     copy("${dir}${file}/data.cgi", "${dir}${file}/backup/${update_date}.cgi");
   }
 
-  if (!-d "${dir}"){ mkdir "${dir}" or error("データディレクトリの作成に失敗しました。"); }
-  if (!-d "${dir}${file}"){ mkdir "${dir}${file}" or error("データファイルの作成に失敗しました。"); }
-  sysopen (my $FH, "${dir}${file}/data.cgi", O_WRONLY | O_TRUNC | O_CREAT, 0666);
-    print $FH "ver<>".$main::ver."\n";
+  sysopen (my $DD, "${dir}${file}/data.cgi", O_WRONLY | O_TRUNC | O_CREAT, 0666);
+    print $DD "ver<>".$main::ver."\n";
     foreach (sort keys %pc){
-      if($pc{$_} ne "") { print $FH "$_<>".$pc{$_}."\n"; }
+      if($pc{$_} ne "") { print $DD "$_<>".$pc{$_}."\n"; }
     }
+  close($DD);
+}
+
+sub passfile_write_make {
+  my ($id, $pass ,$LOGIN_ID, $protect, $now, $data_dir) = @_;
+  sysopen (my $FH, $set::passfile, O_RDWR | O_APPEND | O_CREAT, 0666);
+  flock($FH, 2);
+  my @list = <$FH>;
+  foreach (@list){
+    my @data = split /<>/;
+    if ($data[2] eq $now){
+      close($FH);
+      $make_error = '新規作成が衝突しました。再度保存してください。';
+      require $set::lib_edit; exit;
+    }
+  }
+  my $passwrite; my $user_dir;
+  if   ($protect eq 'account'&& $LOGIN_ID) { $passwrite = '['.$LOGIN_ID.']'; $user_dir = '_'.$LOGIN_ID.'/'; }
+  elsif($protect eq 'password')            { $passwrite = e_crypt($pass); }
+  data_save('make', $data_dir, $file, $protect, $user_dir);
+  print $FH "$id<>$passwrite<>$now<>".$::in{'type'}."<>\n";
   close($FH);
+  return $user_dir;
+}
+
+sub passfile_write_save {
+  my ($id, $pass ,$LOGIN_ID, $protect, $dir) = @_;
+  my $move; my $old_dir; my $new_dir; my $file;
+  sysopen (my $FH, $set::passfile, O_RDWR);
+  flock($FH, 2);
+  my @list = <$FH>;
+  seek($FH, 0, 0);
+  foreach (@list){
+    my @data = split /<>/;
+    if ($data[0] eq $id){
+      $file = $data[2];
+      my $passwrite = $data[1];
+      if($passwrite =~ /^\[(.+?)\]$/){ $old_dir = '_'.$1.'/'; }
+      if   ($protect eq 'account')  {
+        if($passwrite !~ /^\[.+?\]$/) {
+          $passwrite = '['.$LOGIN_ID.']';
+          $move = 1;
+          $new_dir = '_'.$LOGIN_ID.'/';
+        }
+      }
+      elsif($protect eq 'password') {
+        if(!$passwrite || $passwrite =~ /^\[.+?\]$/) { $passwrite = e_crypt($pass); }
+        if($old_dir) { $move = 1; }
+      }
+      elsif($protect eq 'none') {
+        $passwrite = '';
+        if($old_dir) { $move = 1; }
+      }
+      print $FH "$data[0]<>$passwrite<>$data[2]<>$data[3]<>\n";
+    }else{
+      print $FH $_;
+    }
+  }
+  truncate($FH, tell($FH));
+  close($FH);
+
+  if($move){
+    if(!-d "${dir}${new_dir}"){ mkdir "${dir}${new_dir}" or error("データディレクトリの作成に失敗しました。"); }
+    move("${data_dir}${old_dir}${file}", "${data_dir}${new_dir}${file}");
+    return $new_dir;
+  }
+  else {
+    return $old_dir;
+  }
 }
 
 sub list_save {

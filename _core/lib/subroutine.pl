@@ -23,7 +23,9 @@ sub getfile {
       )
     ) {
       close($FH);
-      return ($id, $pass, $file, $type);
+      my $user;
+      if($pass =~ /^\[(.+?)\]$/){ $user =$1; }
+      return ($id, $pass, $file, $type, $user);
     }
   }
   close($FH);
@@ -33,9 +35,10 @@ sub getfile {
 sub getfile_open {
   open (my $FH, '<', $set::passfile) or die;
   while (<$FH>) {
-    my ($id, $file, $type) = (split /<>/, $_)[0,2,3];
+    my ($id, $pass, $file, $type) = (split /<>/, $_)[0,1,2,3];
     if($_[0] eq $id) {
       close($FH);
+      if($pass =~ /^\[(.+?)\]$/){ $file = '_'.$1.'/'.$file; }
       return ($file,$type);
     }
   }

@@ -31,7 +31,7 @@ sub pcDataGet {
   if($::in{'id'}){
     my $datadir = ($type eq 'm') ? $set::mons_dir : ($type eq 'i') ? $set::item_dir : $set::char_dir;
     my $datafile = $::in{'backup'} ? "${datadir}${file}/backup/$::in{'backup'}.cgi" : "${datadir}${file}/data.cgi";
-    open my $IN, '<', $datafile or error 'データがありません。';
+    open my $IN, '<', $datafile or viewNotFound($datadir);
     $_ =~ s/^(.+?)<>(.*)\n$/$pc{$1} = $2;/egi while <$IN>;
     close($IN);
     if($::in{'backup'}){
@@ -49,6 +49,21 @@ sub pcDataGet {
   return %pc;
 }
 
+sub viewNotFound { #v1.14のコンバート処理
+  my $dir = shift;
+  if(!$::in{'backup'} && $file =~ /^(.+)\/(.+?)$/){
+    my $user = $1;
+    my $file = $2;
+    if(-d "${dir}${file}"){
+      if(!-d "${dir}${user}"){ mkdir "${dir}${user}" or error("データディレクトリの作成に失敗しました。"); }
+      rename("${dir}${file}", "${dir}${user}/${file}");
+      print "Location:./?id=$::in{'id'}\n\n";
+      exit;
+    }
+  }
+  
+  error('データがありません');
+}
 
 ### 伏せ文字 --------------------------------------------------
 sub noiseText {

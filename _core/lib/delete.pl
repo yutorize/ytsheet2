@@ -16,9 +16,10 @@ else                       { $data_dir = $set::char_dir; $data_list = $set::list
 if(!$::in{'id'}){ error('IDがありません。'); }
 if(!$::in{'check1'} || !$::in{'check2'} || !$::in{'check3'}){ error('確認のチェックが入っていません。'); }
 
-my ($sheet_id, $sheet_user, $file);
-($sheet_id, $sheet_user, $file, undef) = getfile($::in{'id'},$::in{'pass'},$LOGIN_ID);
+my ($sheet_id, $sheet_user, $file, $user);
+($sheet_id, undef, $file, undef, $user) = getfile($::in{'id'},$::in{'pass'},$LOGIN_ID);
 if(!$file){ error('データが見つかりません。'); }
+my $file_dir = $user ? '_'.$user.'/'.$file : $file;
 
 ## キャラシ削除
 if($mode eq 'delete'){
@@ -52,13 +53,13 @@ if($mode eq 'delete'){
   truncate($FH, tell($FH));
   close($FH);
 
-  if (unlink "${data_dir}${file}/data.cgi")  { $message .= 'キャラクターデータを削除しました。<br>'; }
-  if (unlink "${data_dir}${file}/image.png") { $message .= 'キャラクター画像を削除しました。<br>'; }
-  if (unlink "${data_dir}${file}/image.jpg") { $message .= 'キャラクター画像を削除しました。<br>'; }
-  if (unlink "${data_dir}${file}/image.gif") { $message .= 'キャラクター画像を削除しました。<br>'; }
+  if (unlink "${data_dir}${file_dir}/data.cgi")  { $message .= 'キャラクターデータを削除しました。<br>'; }
+  if (unlink "${data_dir}${file_dir}/image.png") { $message .= 'キャラクター画像を削除しました。<br>'; }
+  if (unlink "${data_dir}${file_dir}/image.jpg") { $message .= 'キャラクター画像を削除しました。<br>'; }
+  if (unlink "${data_dir}${file_dir}/image.gif") { $message .= 'キャラクター画像を削除しました。<br>'; }
 
   if($set::del_back){
-    my $dir = "${data_dir}${file}/backup/";
+    my $dir = "${data_dir}${file_dir}/backup/";
     opendir (my $DIR, $dir);
     my @files = grep { !m/^(\.|\.\.)$/g } readdir $DIR;
     close ($DIR);
@@ -72,10 +73,10 @@ if($mode eq 'delete'){
     #else { print 'バックアップフォルダ'.$dir.'の削除に失敗しました。<br>'; }
   }
   
-  if(rmdir "${data_dir}${file}"){ $message .= 'ディレクトリを削除しました。<br>'; }
+  if(rmdir "${data_dir}${file_dir}"){ $message .= 'ディレクトリを削除しました。<br>'; }
   else {
     if (!-d "${data_dir}deleted"){ mkdir "${data_dir}deleted" or error("削除データのバックアップディレクトリの作成に失敗しました。"); }
-    rename("${data_dir}${file}", "${data_dir}deleted/${file}");
+    rename("${data_dir}${file_dir}", "${data_dir}deleted/${user}_${file}");
   }
   
   info('キャラクターシートの削除',$message);
@@ -85,36 +86,36 @@ elsif($mode eq 'img-delete'){
   # 画像差し替え
   if($set::beheaded){
     use File::Copy 'copy';
-    if (unlink "${data_dir}${file}/image.png") {
+    if (unlink "${data_dir}${file_dir}/image.png") {
       $message .= 'キャラクター画像を削除しました。<br>';
-      if(copy "${set::beheaded}.png", "${data_dir}${file}/image.png"){
+      if(copy "${set::beheaded}.png", "${data_dir}${file_dir}/image.png"){
         $message .= '差し替え画像を設定しました。<br>';
       }
     }
-    if (unlink "${data_dir}${file}/image.jpg") {
+    if (unlink "${data_dir}${file_dir}/image.jpg") {
       $message .= 'キャラクター画像を削除しました。<br>';
-      if(copy "${set::beheaded}.jpg", "${data_dir}${file}/image.jpg"){
+      if(copy "${set::beheaded}.jpg", "${data_dir}${file_dir}/image.jpg"){
         $message .= '差し替え画像を設定しました。<br>';
       }
     }
-    if (unlink "${data_dir}${file}/image.gif") {
+    if (unlink "${data_dir}${file_dir}/image.gif") {
       $message .= 'キャラクター画像を削除しました。<br>';
-      if(copy "${set::beheaded}.gif", "${data_dir}${file}/image.gif"){
+      if(copy "${set::beheaded}.gif", "${data_dir}${file_dir}/image.gif"){
         $message .= '差し替え画像を設定しました。<br>';
       }
     }
   }
   # 消すだけ
   else {
-    if (unlink "${data_dir}${file}/image.png") { $message .= 'キャラクター画像を削除しました。<br>'; }
-    if (unlink "${data_dir}${file}/image.jpg") { $message .= 'キャラクター画像を削除しました。<br>'; }
-    if (unlink "${data_dir}${file}/image.gif") { $message .= 'キャラクター画像を削除しました。<br>'; }
+    if (unlink "${data_dir}${file_dir}/image.png") { $message .= 'キャラクター画像を削除しました。<br>'; }
+    if (unlink "${data_dir}${file_dir}/image.jpg") { $message .= 'キャラクター画像を削除しました。<br>'; }
+    if (unlink "${data_dir}${file_dir}/image.gif") { $message .= 'キャラクター画像を削除しました。<br>'; }
   }
   $message .= '<a href="./?id='.$::in{'id'}.'">キャラクターシートを確認</a>';
   
   
   sysopen (my $FH, $::core_dir.'/data/delete.cgi', O_WRONLY | O_APPEND | O_CREAT, 0666) or $message .= 'デリートリストが開けませんでした。';
-    if($sheet_user =~ /^\[.+?\]$/){ print $FH "$sheet_id<>$sheet_user<>$file<>image<>".time."<>\n"; }
+    if($user){ print $FH "$sheet_id<>$user<>$file<>image<>".time."<>\n"; }
     else { print $FH "$sheet_id<>-----<>$file<>image<>".time."<>\n"; }
   close ($FH);
   
