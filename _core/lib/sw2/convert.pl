@@ -23,8 +23,8 @@ sub data_convert {
   my $file;
   
   ## キャラクター保管所
-  if($set_url =~ m"^https?://charasheet\.vampire-blood\.net/"){
-    my $data = data_get($set_url.'.js') or error 'キャラクター保管所のデータが取得できませんでした';
+  if($set_url =~ m"(^https?://charasheet\.vampire-blood\.net/m?[a-f0-9]+)"){
+    my $data = data_get($1.'.js') or error 'キャラクター保管所のデータが取得できませんでした';
     my %in = %{ decode_json(encode('utf8', (join '', $data))) };
     
     return convertHokanjoToYtsheet(\%in);
@@ -382,6 +382,9 @@ sub convertHokanjoToYtsheet {
   }
   $pc{'honorItemsNum'} = $i;
   ## 履歴
+  $pc{'history0Exp'}   = $in{'create_exp'}+$in{'create_ginou_exp'};
+  $pc{'history0Honor'} = 0;
+  $pc{'history0Money'} = 1200;
   my %bases = ( '1'=>'器用', '2'=>'敏捷', '3'=>'筋力', '4'=>'生命', '5'=>'知力', '6'=>'精神' );
   my $i = 0; my $growcount;
   foreach my $grow (@{$in{'V_SN_his'}}){
