@@ -382,9 +382,9 @@ sub convertHokanjoToYtsheet {
   }
   $pc{'honorItemsNum'} = $i;
   ## 履歴
-  $pc{'history0Exp'}   = $set::make_exp;
-  $pc{'history0Honor'} = $set::make_honor;
-  $pc{'history0Money'} = $set::make_money;
+  $pc{'history0Exp'}   = $in{'create_exp'}+$in{'create_ginou_exp'};
+  $pc{'history0Honor'} = 0;
+  $pc{'history0Money'} = 1200;
   my %bases = ( '1'=>'器用', '2'=>'敏捷', '3'=>'筋力', '4'=>'生命', '5'=>'知力', '6'=>'精神' );
   my $i = 0; my $growcount;
   foreach my $grow (@{$in{'V_SN_his'}}){
