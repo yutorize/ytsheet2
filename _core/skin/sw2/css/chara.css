@@ -1238,6 +1238,15 @@ div#area-items-R {
   transform: scale(0.8, 0.8);
   opacity: 0.8;
 }
+#history table tfoot tr td {
+  padding-top: .25em;
+  padding-bottom: .2em;
+}
+#history table tfoot tr td:nth-child(7)::after {
+  content: "回";
+  margin-left: 2px;
+  font-size: 1rem;
+}
 
 /* // Cashbook
 ---------------------------------------------------------------------------------------------------- */

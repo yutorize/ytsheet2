@@ -851,13 +851,9 @@ option.zero-data::before {
   border-top: hidden;
 }
 #history table tfoot th {
+  border-top-width: 1px;
+  border-top-style: solid;
   vertical-align: top;
-}
-#history table tfoot #history-grow-total {
-  display: block;
-  font-size: 85%;
-  font-weight: normal;
-  line-height: 1;
 }
 
 #history .annotate {

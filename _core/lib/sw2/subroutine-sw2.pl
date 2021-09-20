@@ -184,6 +184,20 @@ sub data_update_chara {
     ($pc{'characterName'},$pc{'characterNameRuby'}) = split(':', $pc{'characterName'});
     ($pc{'aka'},$pc{'akaRuby'}) = split(':', $pc{'aka'});
   }
+  if($ver < 1.15003){
+    foreach my $i (0 .. $pc{'historyNum'}){
+      $pc{'historyExpTotal'} += s_eval($pc{"history${i}Exp"});
+      $pc{'hisotryMoneyTotal'} += s_eval($pc{"history${i}Money"});
+      
+      if   ($pc{"history${i}HonorType"} eq 'barbaros'){ $pc{'historyHonorBarbarosTotal'} += s_eval($pc{"history${i}Honor"}); }
+      elsif($pc{"history${i}HonorType"} eq 'dragon'  ){ $pc{'historyHonorDragonTotal'}   += s_eval($pc{"history${i}Honor"}); }
+      else {
+        $pc{'historyHonorTotal'} += s_eval($pc{"history${i}Honor"});
+      }
+    }
+    $pc{'historyGrowTotal'} = $pc{'sttPreGrowA'}  + $pc{'sttPreGrowB'}  + $pc{'sttPreGrowC'}  + $pc{'sttPreGrowD'}  + $pc{'sttPreGrowE'}  + $pc{'sttPreGrowF'}
+                            + $pc{'sttHistGrowA'} + $pc{'sttHistGrowB'} + $pc{'sttHistGrowC'} + $pc{'sttHistGrowD'} + $pc{'sttHistGrowE'} + $pc{'sttHistGrowF'};
+  }
   $pc{'ver'} = $main::ver;
   $pc{'lasttimever'} = $ver;
   return %pc;

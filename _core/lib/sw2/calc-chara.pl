@@ -54,6 +54,9 @@ sub data_calc {
       $pc{'honor'} += s_eval($pc{"history${i}Honor"});
     }
   }
+  $pc{'historyExpTotal'} = $pc{'expTotal'};
+  $pc{'hisotryMoneyTotal'} = $pc{'moneyTotal'};
+  $pc{'historyHonorTotal'} = $pc{'honor'};
   ## 収支履歴計算
   my $cashbook = $pc{"cashbook"};
   $cashbook =~ s/::((?:[\+\-\*\/]?[0-9]+)+)/$pc{'moneyTotal'} += eval($1)/eg;
@@ -277,12 +280,16 @@ sub data_calc {
     $pc{'sttHistGrowE'} += ($grow =~ s/知/知/g);
     $pc{'sttHistGrowF'} += ($grow =~ s/精/精/g);
   }
+  $pc{'historyGrowTotal'} = $pc{'sttPreGrowA'}  + $pc{'sttPreGrowB'}  + $pc{'sttPreGrowC'}  + $pc{'sttPreGrowD'}  + $pc{'sttPreGrowE'}  + $pc{'sttPreGrowF'}
+                          + $pc{'sttHistGrowA'} + $pc{'sttHistGrowB'} + $pc{'sttHistGrowC'} + $pc{'sttHistGrowD'} + $pc{'sttHistGrowE'} + $pc{'sttHistGrowF'};
+
   $pc{'sttGrowA'} = $pc{'sttPreGrowA'} + $pc{'sttHistGrowA'} + $pc{'sttSeekerGrow'};
   $pc{'sttGrowB'} = $pc{'sttPreGrowB'} + $pc{'sttHistGrowB'} + $pc{'sttSeekerGrow'};
   $pc{'sttGrowC'} = $pc{'sttPreGrowC'} + $pc{'sttHistGrowC'} + $pc{'sttSeekerGrow'};
   $pc{'sttGrowD'} = $pc{'sttPreGrowD'} + $pc{'sttHistGrowD'} + $pc{'sttSeekerGrow'};
   $pc{'sttGrowE'} = $pc{'sttPreGrowE'} + $pc{'sttHistGrowE'} + $pc{'sttSeekerGrow'};
   $pc{'sttGrowF'} = $pc{'sttPreGrowF'} + $pc{'sttHistGrowF'} + $pc{'sttSeekerGrow'};
+
 
   ## 能力値算出
   $pc{'sttDex'} = $pc{'sttBaseTec'} + $pc{'sttBaseA'} + $pc{'sttGrowA'};

@@ -1376,13 +1376,22 @@ HTML
 print <<"HTML";
           <tfoot>
             <tr>
+              <td></td>
+              <td></td>
+              <td>取得総計</td>
+              <td id="history-exp-total"></td>
+              <td id="history-honor-total"></td>
+              <td id="history-money-total"></td>
+              <td id="history-grow-total"><span id="history-grow-total-value"></span><span id="history-grow-max-value"></span></td>
+            </tr>
+            <tr>
               <th></th>
               <th>日付</th>
               <th>タイトル</th>
               <th>経験点</th>
               <th>名誉点</th>
               <th>ガメル</th>
-              <th>成長<span id="history-grow-total">(<span id="history-grow-total-value"></span><span id="history-grow-max-value"></span>)</th>
+              <th>成長</th>
               <th>GM</th>
               <th>参加者</th>
             </tr>

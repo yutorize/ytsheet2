@@ -1255,6 +1255,7 @@ function calcExp(){
   }
   document.getElementById("exp-rest").innerHTML = expTotal - expUse;
   document.getElementById("exp-total").innerHTML = expTotal;
+  document.getElementById("history-exp-total").innerHTML = expTotal;
   
   // 最大成長回数
   let growMax = 0;
@@ -1297,6 +1298,7 @@ function calcHonor(){
       obj.classList.remove('error');
     }
   }
+  document.getElementById("history-honor-total").innerHTML = pointTotal;
   const honorItemsNum = form.honorItemsNum.value;
   for (let i = 1; i <= honorItemsNum; i++){
     let point = safeEval(form['honorItem'+i+'Pt'].value) || 0;
@@ -1354,6 +1356,7 @@ function calcCash(){
       obj
     }
   }
+  document.getElementById("history-money-total").innerHTML = cash;
   let s = form.cashbook.value;
   s.replace(
     /::([\+\-\*\/]?[0-9]+)+/g,
