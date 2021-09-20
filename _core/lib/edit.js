@@ -120,6 +120,7 @@ function wordsPreView(){
                .replace(/《《(.+?)》》/, '<span class="text-em">$1</span>')
                .replace(/^([「『（])/gm, '<span class="brackets">$1</span>')
                .replace(/(.+?(?:[，、。？」]|$))/g, '<span>$1</span>')
+               .replace(/\n<span>　/g, '\n<span>')
                .replace(/\n/g, '<br>');
   
   const wObj = document.getElementById('words-preview');

@@ -227,6 +227,7 @@ foreach ('','p1_','p2_'){
   $pc{$_.'words'} =~ s/<br>/\n/g;
   $pc{$_.'words'} =~ s/^([「『（])/<span class="brackets">$1<\/span>/gm;
   $pc{$_.'words'} =~ s/(.+?(?:[，、。？」』）]|$))/<span>$1<\/span>/g;
+  $pc{$_.'words'} =~ s/\n<span>　/\n<span>/g;
   $pc{$_.'words'} =~ s/\n/<br>/g;
   $SHEET->param($_."words" => $pc{$_.'words'});
   $SHEET->param($_."wordsX" => ($pc{$_.'wordsX'} eq '左' ? 'left:0;' : 'right:0;'));

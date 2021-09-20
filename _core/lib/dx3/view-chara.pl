@@ -246,6 +246,7 @@ $SHEET->param(Tags => \@tags);
 $pc{'words'} =~ s/<br>/\n/g;
 $pc{'words'} =~ s/^([「『（])/<span class="brackets">$1<\/span>/gm;
 $pc{'words'} =~ s/(.+?(?:[，、。？」』）]|$))/<span>$1<\/span>/g;
+$pc{'words'} =~ s/\n<span>　/\n<span>/g;
 $pc{'words'} =~ s/\n/<br>/g;
 $SHEET->param("words" => $pc{'words'});
 $SHEET->param("wordsX" => ($pc{'wordsX'} eq '左' ? 'left:0;' : 'right:0;'));
