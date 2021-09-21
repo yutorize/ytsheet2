@@ -1281,12 +1281,8 @@ function calcExp(){
 // 名誉点計算 ----------------------------------------
 function calcHonor(){
   let pointTotal = 0;
-  let mysticArtsPt = 0;
-  const rank = form["rank"].options[form["rank"].selectedIndex].value;
-  const rankNum = (adventurerRank[rank]["num"] === undefined) ? 0 : adventurerRank[rank]["num"];
-  const free = (adventurerRank[rank]["free"] === undefined) ? 0 : adventurerRank[rank]["free"];
+  // 履歴
   const historyNum = form.historyNum.value;
-  pointTotal -= rankNum;
   for (let i = 0; i <= historyNum; i++){
     const obj = form['history'+i+'Honor'];
     let point = safeEval(obj.value);
@@ -1299,6 +1295,12 @@ function calcHonor(){
     }
   }
   document.getElementById("history-honor-total").innerHTML = pointTotal;
+  // ランク
+  const rank = form["rank"].options[form["rank"].selectedIndex].value;
+  const rankNum = (adventurerRank[rank]["num"] === undefined) ? 0 : adventurerRank[rank]["num"];
+  const free = (adventurerRank[rank]["free"] === undefined) ? 0 : adventurerRank[rank]["free"];
+  pointTotal -= rankNum;
+  // 名誉アイテム
   const honorItemsNum = form.honorItemsNum.value;
   for (let i = 1; i <= honorItemsNum; i++){
     let point = safeEval(form['honorItem'+i+'Pt'].value) || 0;
@@ -1308,12 +1310,15 @@ function calcHonor(){
     if(point && point <= free) { cL.add("mark"); }
     else { cL.remove("mark"); }
   }
+  // 流派
+  let mysticArtsPt = 0;
   const mysticArtsNum = form.mysticArtsNum.value;
   for (let i = 1; i <= mysticArtsNum; i++){
     let point = safeEval(form['mysticArts'+i+'Pt'].value) || 0;
     mysticArtsPt += point;
   }
   pointTotal -= mysticArtsPt;
+  //
   pointTotal -= Number(form.honorOffset.value);
   document.getElementById("honor-value"   ).innerHTML = pointTotal;
   document.getElementById("honor-value-MA").innerHTML = pointTotal;
