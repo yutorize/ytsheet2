@@ -1272,7 +1272,7 @@ function calcExp(){
   else if(growType === 'O') {
     growMax = Math.floor((expTotal - 3000) / 1000);
   }
-  else { document.getElementById('history-grow-total').style.display = 'none'; return; }
+  else { return; }
   document.getElementById("stt-grow-max-value").innerHTML = ' / ' + growMax;
   document.getElementById("history-grow-max-value").innerHTML = '/' + growMax;
 }
