@@ -145,17 +145,31 @@
 #classes {
   flex-basis: 66%;
   flex-grow: 1;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
+  display: grid;
   position: relative;
+  grid-template-columns: 1fr 1fr;
 }
 #classes h2 {
-  flex-basis: 100%;
+  grid-column: span 2;
+}
+#classes h3 {
+  margin-top: 0;
+  font-size: 90%;
 }
 #common-classes {
   flex-grow: 1;
   margin: 0 0 0 1rem !important;
+}
+#classes #classes-weapon-user {
+  grid-column: 1;
+}
+#classes #classes-magic-user {
+  grid-column: 1;
+  align-self: end;
+}
+#classes #classes-other-user {
+  grid-column: 2;
+  grid-row: 2 / span 2;
 }
 
 #classes dl {
@@ -178,10 +192,16 @@
     font-size: 1.25em;
   }
   #classes {
+    display: block;
     width: 100%;
+  }
+  #classes h3 {
+    margin-top: .5em;
   }
   #classes dl {
     grid-template-columns: 1fr 5em;
+  }
+  #classes dl dt {
   }
   #common-classes {
     margin: 1rem 0 0 !important;

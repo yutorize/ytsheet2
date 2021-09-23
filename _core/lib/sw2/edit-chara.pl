@@ -426,21 +426,30 @@ print <<"HTML";
           <div class="box" id="classes">
             <h2>技能</h2>
             <div>使用経験点：<span id="exp-use"></span></div>
-            <dl>
 HTML
-my $i = 0;
-foreach my $name (@data::class_names){
-  next if $data::class{$name}{2.0} && !$set::all_class_on;
-  $i++;
+print '<div class="classes-group" id="classes-weapon-user"><h3>戦士系技能</h3><dl>';
+foreach my $name (@data::class_names){ print classInputBox($name) if $data::class{$name}{'type'} eq 'weapon-user'; }
+print '</dl></div>';
+print '<div class="classes-group" id="classes-magic-user"><h3>魔法使い系技能</h3><dl>';
+foreach my $name (@data::class_names){ print classInputBox($name) if $data::class{$name}{'type'} eq 'magic-user'; }
+print '</dl></div>';
+print '<div class="classes-group" id="classes-other-user"><h3>その他系技能</h3><dl>';
+foreach my $name (@data::class_names){ print classInputBox($name) if !$data::class{$name}{'type'}; }
+print '</dl></div>';
+
+sub classInputBox {
+  my $name = shift;
+  return if $data::class{$name}{2.0} && !$set::all_class_on;
   my $id = $data::class{$name}{'id'};
-  print '<dt id="class'.$id.'"';
-  print ' class="zero-data"' if $data::class{$name}{'2.0'};
-  print '>';
-  print '[2.0] ' if $data::class{$name}{'2.0'};
-  print $name;
-  print '<select name="faithType" style="width:auto;">'.option('faithType','†|<†セイクリッド系>','‡|<‡ヴァイス系>','†‡|<†‡両系統使用可>').'</select>' if($name eq 'プリースト');
-  print '</dt><dd>' . input("lv${id}", 'number','changeLv','min="0" max="17"') . '</dd>';
-  print '</dl><dl>' if ($i == int(scalar(@data::class_names) / 2));
+  my $out;
+  $out .= '<dt id="class'.$id.'"';
+  $out .= ' class="zero-data"' if $data::class{$name}{'2.0'};
+  $out .= '>';
+  $out .= '[2.0] ' if $data::class{$name}{'2.0'};
+  $out .= $name;
+  $out .= '<select name="faithType" style="width:auto;">'.option('faithType','†|<†セイクリッド系>','‡|<‡ヴァイス系>','†‡|<†‡両系統使用可>').'</select>' if($name eq 'プリースト');
+  $out .= '</dt><dd>' . input("lv${id}", 'number','changeLv','min="0" max="17"') . '</dd>';
+  return $out;
 }
 print <<"HTML";
             </dl>

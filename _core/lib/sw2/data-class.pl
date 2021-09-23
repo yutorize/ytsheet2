@@ -79,26 +79,31 @@ our @class_caster = (
 ### 技能詳細データ --------------------------------------------------
 our %class = (
   'ファイター' => {
+    'type'     => 'weapon-user',
     'expTable' => 'A',
     'id'       => 'Fig',
     'eName'    => 'fighter',
   },
   'グラップラー' => {
+    'type'     => 'weapon-user',
     'expTable' => 'A',
     'id'       => 'Gra',
     'eName'    => 'grappler',
   },
   'フェンサー' => {
+    'type'     => 'weapon-user',
     'expTable' => 'B',
     'id'       => 'Fen',
     'eName'    => 'fencer',
   },
   'シューター' => {
+    'type'     => 'weapon-user',
     'expTable' => 'B',
     'id'       => 'Sho',
     'eName'    => 'shooter',
   },
   'ソーサラー' => {
+    'type'     => 'magic-user',
     'expTable' => 'A',
     'id'       => 'Sor',
     'eName'    => 'sorcerer',
@@ -111,6 +116,7 @@ our %class = (
     },
   },
   'コンジャラー' => {
+    'type'     => 'magic-user',
     'expTable' => 'A',
     'id'       => 'Con',
     'eName'    => 'conjurer',
@@ -123,6 +129,7 @@ our %class = (
     },
   },
   'プリースト' => {
+    'type'     => 'magic-user',
     'expTable' => 'A',
     'id'       => 'Pri',
     'eName'    => 'priest',
@@ -132,6 +139,7 @@ our %class = (
     },
   },
   'フェアリーテイマー' => {
+    'type'     => 'magic-user',
     'expTable' => 'A',
     'id'       => 'Fai',
     'eName'    => 'fairytamer',
@@ -144,6 +152,7 @@ our %class = (
     },
   },
   'マギテック' => {
+    'type'     => 'magic-user',
     'expTable' => 'A',
     'id'       => 'Mag',
     'eName'    => 'magitech',
@@ -366,6 +375,7 @@ our %class = (
   },
   'ドルイド' => {
     '2.5' => 1,
+    'type'     => 'magic-user',
     'expTable' => 'A',
     'id'       => 'Dru',
     'eName'    => 'druid',
@@ -375,6 +385,7 @@ our %class = (
     },
   },
   'デーモンルーラー' => {
+    'type'     => 'magic-user',
     'expTable' => 'A',
     'id'       => 'Dem',
     'eName'    => 'demonruler',
@@ -593,6 +604,7 @@ our %class = (
   },
   'グリモワール' => {
     '2.0' => 1,
+    'type'     => 'magic-user',
     'expTable' => 'A',
     'id'       => 'Gri',
     'eName'    => 'grimoir',
