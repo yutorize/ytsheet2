@@ -25,9 +25,14 @@ article {
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  position: relative;
   
+  margin-top: 1.5em;
   border-width: 3px 0 0;
   border-style: solid;
+  border-color: #888;
+  background-image: linear-gradient(to bottom, var(--bg-color), transparent);
 }
 #area-monstername .lv {
   order: -1;
@@ -37,7 +42,8 @@ article {
   align-items: center;
   justify-content: center;
   width: 2em;
-  background: linear-gradient(to bottom, #aaa, #555);
+  background-color: #888;
+  background-image: linear-gradient(to bottom, transparent, rgba(0,0,0,0.4));
   color: #fff;
   text-shadow: 0 0 2px #000, 0 0 2px #000, 0 0 2px #000;
   text-align: center;
@@ -65,11 +71,20 @@ article {
   line-height: 1;
 }
 #area-monstername .taxa {
-  flex-grow: 1;
-  min-width: 5.5em;
-  padding-right: .5em;
-  text-align: right;
+  position: absolute;
+  top: -1.7em;
+  left: 0;
+  padding: .4em .5em .3em;
+  border-radius: 5px 5px 0 0;
+  line-height: 1;
+  background: #888;
+  color: #fff;
+  text-shadow: 0 0 1px #000, 0 0 1px #000, 0 0 1px #000;
+  font-weight: bold;
 }
+.night #area-monstername { border-color: #556 }
+.night #area-monstername .lv,
+.night #area-monstername .taxa { background-color: #556 }
 
 /* // Status
 ---------------------------------------------------------------------------------------------------- */

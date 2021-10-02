@@ -178,9 +178,8 @@ article{
   margin: 0 auto;
 }
 
-* + article{
-  border-width: 1px 0 0;
-  border-style: solid;
+nav + article {
+  border-width: 0;
 }
 article h1 {
   font-size: 2.5rem;
@@ -268,6 +267,10 @@ aside#sidebar-bottom {
   border-color: #aaa;
   grid-column: 2 / 3;
   text-align: center;
+}
+.night aside#sidebar-top,
+.night aside#sidebar-bottom {
+  border-color: #556;
 }
 aside#sidebar-top {
   padding: 5rem 0 0rem;
@@ -405,44 +408,76 @@ header nav ul li.small + li.very-small {
 /* // Main-Nav
 ---------------------------------------------------------------------------------------------------- */
 main nav {
+  margin: 1em 1em 0;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+}
+main nav::before,
+main nav::after {
+  content: '';
+  display: block;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: inherit;
+  background: linear-gradient(to top, rgba(125,125,125,0.2), transparent 10px);
 }
 main nav ul {
   display: flex;
-  padding-left: 2rem;
+  justify-content: center;
+  padding: 2rem 0 0;
 }
 main nav ul li {
-  max-width: 11.5em;
-  width: 100%;
-  margin: 1rem;
-  transform: skewX(-30deg);
-  background: linear-gradient(to top, #679, #cdf);
-  text-align: center;
-  font-weight: bold;
+  display: flex;
   font-size: 120%;
-  outline: 3px double #000;
-  overflow: hidden;
+}
+main nav ul li::before,
+main nav ul li::after {
+  content: '';
+  display: block;
+  width: 5px;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: inherit;
+  background: linear-gradient(to top, rgba(125,125,125,0.2), transparent 10px);
 }
 .night main nav ul li  {
-  outline-color: #78a;
 }
 main nav ul li a {
-  display: block;
-  transform: skewX(30deg);
-  margin: 0 -50%;
-  padding: .5rem 1rem;
-  text-decoration: none;
-  color: #fff !important;
-  text-shadow: -1px -1px 1px #000, 0px 1px 1px #789;
+  padding: .5em .8em;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: .5em .5em 0 0;
+  background: linear-gradient(to top, rgba(125,125,125,0.2), transparent 10px);
+  background-color: rgba(110,125,140,0.1);
+  color: inherit !important;
+  font-weight: bold;
+}
+.night main nav ul li a {
+  background-color: rgba(100,105,170,0.3);
+}
+.night main nav ul li:not(.current) a {
+  color: #ddf !important;
 }
 main nav ul li.current {
-  background: linear-gradient(to top, #eff, #bcd);
 }
 main nav ul li.current a {
-  color: #000 !important;
-  text-shadow: 0px 0px 2px #fff, 0px 0px 2px #fff, 0px 0px 2px #fff;
+  border-bottom-style: hidden;
+  background: linear-gradient(to bottom, var(--bg-color), transparent);
 }
-main nav ul li:hover {
-  opacity: 0.8;
+.night main nav ul li.current a {
+  background: linear-gradient(to bottom, #235, transparent);
+}
+main nav ul li a:hover {
+  background-color: rgba(100,200,255,0.2);
+}
+@media screen and (max-width:735px){
+  main nav  {
+    margin-top: 3em;
+  }
+  main nav ul li::before,
+  main nav ul li::after {
+    width: 2px;
+  }
 }
 
 /* // Button

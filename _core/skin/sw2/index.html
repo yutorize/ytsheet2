@@ -20,6 +20,7 @@
   </header>
   
   <main>
+    <TMPL_INCLUDE NAME="skin-add/main-header.html">
     <nav>
       <ul>
         <li class="<TMPL_IF modeMaking>current</TMPL_IF>"><a href="./?mode=making">能力値作成</a></li>
@@ -44,6 +45,7 @@
     </article>
     </TMPL_IF>
     <div class="back-button"><a href="./">⏎</a></div>
+    <TMPL_INCLUDE NAME="skin-add/main-footer.html">
   </main>
   <TMPL_INCLUDE NAME="skin-add/sidebar.html">
   <!-- add/sidebar.htmlに推奨の記述

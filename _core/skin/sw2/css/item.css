@@ -35,6 +35,7 @@ article {
   
   border-width: 3px 0 0;
   border-style: solid;
+  background-image: linear-gradient(to bottom, var(--bg-color), transparent);
 }
 #area-itemname h1 {
   flex-grow: 1;

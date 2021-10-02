@@ -20,10 +20,7 @@
   </header>
   
   <main>
-    <nav>
-      <ul>
-      </ul>
-    </nav>
+    <TMPL_INCLUDE NAME="skin-add/main-header.html">
     <TMPL_IF modeIndex><TMPL_INCLUDE NAME="skin-add/index-message.html"></TMPL_IF>
 
     <TMPL_IF modeList><TMPL_INCLUDE NAME="list-chara.html"></TMPL_IF>
@@ -40,6 +37,7 @@
     </article>
     </TMPL_IF>
     <div class="back-button"><a href="./">⏎</a></div>
+    <TMPL_INCLUDE NAME="skin-add/main-footer.html">
   </main>
   <TMPL_INCLUDE NAME="skin-add/sidebar.html">
   <!-- add/sidebar.htmlに推奨の記述
