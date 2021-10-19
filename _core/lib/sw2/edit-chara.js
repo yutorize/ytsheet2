@@ -954,36 +954,36 @@ function calcMobility() {
 
 // パッケージ計算 ----------------------------------------
 function calcPackage() {
-  document.getElementById("package-scout"    ).style.display = lv['Sco'] > 0 ? "" :"none";
-  document.getElementById("package-ranger"   ).style.display = lv['Ran'] > 0 ? "" :"none";
-  document.getElementById("package-sage"     ).style.display = lv['Sag'] > 0 ? "" :"none";
-  document.getElementById("package-rider"    ).style.display = lv['Rid'] > 0 ? "" :"none";
-  document.getElementById("package-alchemist").style.display = lv['Alc'] > 0 ? "" :"none";
-  document.getElementById("material-cards"   ).style.display = lv['Alc'] > 0 ? "" :"none";
+  const bonus = {
+    'A': bonusDex,
+    'B': bonusAgi,
+    'C': bonusStr,
+    'D': bonusVit,
+    'E': bonusInt,
+    'F': bonusMnd,
+  };
+  let lore = [];
+  let init = [];
+  Object.keys(classes).forEach(function(cId) {
+    if(classes[cId]['package']){
+      const className = classes[cId]['eName'];
+      const data = classes[cId]['package'];
+
+      document.getElementById(`package-${className}`).style.display = lv[cId] > 0 ? "" :"none";
+
+      Object.keys(data).forEach(function(pId) {
+        let v = lv[cId] + bonus[data[pId]['stt']] + Number(form[`pack${cId}${pId}Add`].value);
+        document.getElementById(`package-${className}-${pId.toLowerCase()}`).innerHTML = v;
+
+        if(data[pId]['monsterLore']){ lore.push(lv[cId] > 0 ? v : 0); }
+        if(data[pId]['initiative' ]){ init.push(lv[cId] > 0 ? v : 0); }
+      });
+    }
+  });
+
   
-  document.getElementById("package-scout-tec"    ).innerHTML = lv['Sco'] + bonusDex + Number(form.packScoTecAdd.value);
-  document.getElementById("package-scout-agi"    ).innerHTML = lv['Sco'] + bonusAgi + Number(form.packScoAgiAdd.value);
-  document.getElementById("package-scout-obs"    ).innerHTML = lv['Sco'] + bonusInt + Number(form.packScoObsAdd.value);
-  document.getElementById("package-ranger-tec"   ).innerHTML = lv['Ran'] + bonusDex + Number(form.packRanTecAdd.value);
-  document.getElementById("package-ranger-agi"   ).innerHTML = lv['Ran'] + bonusAgi + Number(form.packRanAgiAdd.value);
-  document.getElementById("package-ranger-obs"   ).innerHTML = lv['Ran'] + bonusInt + Number(form.packRanObsAdd.value);
-  document.getElementById("package-sage-kno"     ).innerHTML = lv['Sag'] + bonusInt + Number(form.packSagKnoAdd.value);
-  document.getElementById("package-rider-agi"    ).innerHTML = lv['Rid'] + bonusAgi + Number(form.packRidAgiAdd.value);
-  document.getElementById("package-rider-kno"    ).innerHTML = lv['Rid'] + bonusInt + Number(form.packRidKnoAdd.value);
-  document.getElementById("package-rider-obs"    ).innerHTML = lv['Rid'] + bonusInt + Number(form.packRidObsAdd.value);
-  document.getElementById("package-alchemist-kno").innerHTML = lv['Alc'] + bonusInt + Number(form.packAlcKnoAdd.value);
-  
-  const loreSag = lv['Sag'] + bonusInt + Number(form.packSagKnoAdd.value);
-  const loreRid = lv['Rid'] + bonusInt + Number(form.packRidKnoAdd.value);
-  let lore = loreRid > loreSag ? loreRid : loreSag;
-      lore += Number(form.monsterLoreAdd.value);
-  document.getElementById("monster-lore-value").innerHTML = (lv['Sag'] || lv['Rid']) ? lore : 0;
-  
-  const initSco = lv['Sco'] + bonusAgi + Number(form.packScoAgiAdd.value);
-  const initWar = lv['War'] + bonusAgi;
-  let init = initWar > initSco ? initWar : initSco;
-      init += Number(form.initiativeAdd.value);
-  document.getElementById("initiative-value").innerHTML = (lv['Sco'] || lv['War']) > 0 ? init : 0;
+  document.getElementById("monster-lore-value").innerHTML = (Math.max(...lore) || 0) + Number(form.monsterLoreAdd.value);
+  document.getElementById("initiative-value"  ).innerHTML = (Math.max(...init) || 0) + Number(form.initiativeAdd.value);
 }
 
 // 魔力計算 ----------------------------------------

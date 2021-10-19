@@ -3,6 +3,7 @@ use strict;
 #use warnings;
 use utf8;
 
+require $set::data_class;
 require $set::data_items;
 
 ### 魔法威力 #########################################################################################
@@ -76,18 +77,17 @@ sub palettePreset {
     $text .= "2d6+{冒険者}+{敏捷B} 冒険者＋敏捷\n";
     $text .= "2d6+{冒険者}+{筋力B} 冒険者＋筋力\n";
     $text .= "2d6+{冒険者}+{知力B} 冒険者＋知力\n";
-    $text .= "2d6+{スカウト技巧} スカウト技巧\n" if $::pc{'packScoTec'};
-    $text .= "2d6+{スカウト運動} スカウト運動\n" if $::pc{'packScoAgi'};
-    $text .= "2d6+{スカウト観察} スカウト観察\n" if $::pc{'packScoObs'};
-    $text .= "2d6+{レンジャー技巧} レンジャー技巧\n" if $::pc{'packRanTec'};
-    $text .= "2d6+{レンジャー運動} レンジャー運動\n" if $::pc{'packRanAgi'};
-    $text .= "2d6+{レンジャー観察} レンジャー観察\n" if $::pc{'packRanObs'};
-    $text .= "2d6+{セージ知識} セージ知識\n" if $::pc{'packSagKno'};
-    $text .= "2d6+{バード知識} バード知識\n" if $::pc{'packBarKno'};
-    $text .= "2d6+{ライダー運動} ライダー運動\n" if $::pc{'packRidAgi'};
-    $text .= "2d6+{ライダー知識} ライダー知識\n" if $::pc{'packRidKno'};
-    $text .= "2d6+{ライダー観察} ライダー観察\n" if $::pc{'packRidObs'};
-    $text .= "2d6+{アルケミスト知識} アルケミスト知識\n" if $::pc{'packAlcKno'};
+    foreach my $class (@data::class_names){
+      my $c_id = $data::class{$class}{'id'};
+      next if !$data::class{$class}{'package'} || !$::pc{'lv'.$c_id};
+      my %data = %{$data::class{$class}{'package'}};
+      foreach my $p_id (sort{$data{$a}{'stt'} cmp $data{$b}{'stt'} || $data{$a} cmp $data{$b}} keys %data){
+        my $name = $class.$data{$p_id}{'name'};
+        $text .= "2d6+{$name} $name\n";
+        if($data{$p_id}{'monsterLore'} && $::pc{'monsterLoreAdd'}){ $text .= "2d6+{$name}+$::pc{'monsterLoreAdd'} 魔物知識\n"; }
+        if($data{$p_id}{'initiative' } && $::pc{'initiativeAdd' }){ $text .= "2d6+{$name}+$::pc{'initiativeAdd' } 先制\n"; }
+      }
+    }
     $text .= "\n";
     
     $text .= "### ■魔法系\n";
@@ -221,20 +221,16 @@ sub palettePresetSimple {
     $text .= "2d6+$::pc{'level'}+$::pc{'bonusAgi'} 冒険者＋敏捷\n";
     $text .= "2d6+$::pc{'level'}+$::pc{'bonusStr'} 冒険者＋筋力\n";
     $text .= "2d6+$::pc{'level'}+$::pc{'bonusInt'} 冒険者＋知力\n";
+    foreach my $class (@data::class_names){
+      my $c_id = $data::class{$class}{'id'};
+      next if !$data::class{$class}{'package'} || !$::pc{'lv'.$c_id};
+      my %data = %{$data::class{$class}{'package'}};
+      foreach my $p_id (sort{$data{$a}{'stt'} cmp $data{$b}{'stt'} || $data{$a} cmp $data{$b}} keys %data){
+        $text .= "2d6+$::pc{'pack'.$c_id.$p_id} $class$data{$p_id}{'name'}\n";
+      }
+    }
     $text .= "2d6+$::pc{'monsterLore'} 魔物知識\n" if $::pc{'monsterLore'};
     $text .= "2d6+$::pc{'initiative'} 先制力\n" if $::pc{'initiative'};
-    $text .= "2d6+$::pc{'packScoTec'} スカウト技巧\n" if $::pc{'packScoTec'};
-    $text .= "2d6+$::pc{'packScoAgi'} スカウト運動\n" if $::pc{'packScoAgi'};
-    $text .= "2d6+$::pc{'packScoObs'} スカウト観察\n" if $::pc{'packScoObs'};
-    $text .= "2d6+$::pc{'packRanTec'} レンジャー技巧\n" if $::pc{'packRanTec'};
-    $text .= "2d6+$::pc{'packRanAgi'} レンジャー運動\n" if $::pc{'packRanAgi'};
-    $text .= "2d6+$::pc{'packRanObs'} レンジャー観察\n" if $::pc{'packRanObs'};
-    $text .= "2d6+$::pc{'packSagKno'} セージ知識\n" if $::pc{'packSagKno'};
-    $text .= "2d6+$::pc{'packBarKno'} バード知識\n" if $::pc{'packBarKno'};
-    $text .= "2d6+$::pc{'packRidAgi'} ライダー運動\n" if $::pc{'packRidAgi'};
-    $text .= "2d6+$::pc{'packRidKno'} ライダー知識\n" if $::pc{'packRidKno'};
-    $text .= "2d6+$::pc{'packRidObs'} ライダー観察\n" if $::pc{'packRidObs'};
-    $text .= "2d6+$::pc{'packAlcKno'} アルケミスト知識\n" if $::pc{'packAlcKno'};
     $text .= "\n";
     
     $text .= "### ■魔法系\n";
@@ -356,6 +352,14 @@ sub palettePresetSimple {
 }
 
 ### デフォルト変数 ###################################################################################
+my %stt_id_to_name = (
+  'A' => '器用',
+  'B' => '敏捷',
+  'C' => '筋力',
+  'D' => '生命',
+  'E' => '知力',
+  'F' => '精神',
+);
 sub paletteProperties {
   my $type = shift;
   my @propaties;
@@ -437,18 +441,16 @@ sub paletteProperties {
     push @propaties, '';
     #push @propaties, "//魔物知識=$::pc{'monsterLore'}" if $::pc{'monsterLore'};
     #push @propaties, "//先制力=$::pc{'initiative'}" if $::pc{'initiative'};
-    push @propaties, "//スカウト技巧={スカウト}+{器用B}"        .($::pc{'packScoTecAdd'}?"+$::pc{'packScoTecAdd'}":"") if $::pc{'packScoTec'};
-    push @propaties, "//スカウト運動={スカウト}+{敏捷B}"        .($::pc{'packScoAgiAdd'}?"+$::pc{'packScoAgiAdd'}":"") if $::pc{'packScoAgi'};
-    push @propaties, "//スカウト観察={スカウト}+{知力B}"        .($::pc{'packScoObsAdd'}?"+$::pc{'packScoObsAdd'}":"") if $::pc{'packScoObs'};
-    push @propaties, "//レンジャー技巧={レンジャー}+{器用B}"    .($::pc{'packRanTecAdd'}?"+$::pc{'packRanTecAdd'}":"") if $::pc{'packRanTec'};
-    push @propaties, "//レンジャー運動={レンジャー}+{敏捷B}"    .($::pc{'packRanAgiAdd'}?"+$::pc{'packRanAgiAdd'}":"") if $::pc{'packRanAgi'};
-    push @propaties, "//レンジャー観察={レンジャー}+{知力B}"    .($::pc{'packRanObsAdd'}?"+$::pc{'packRanObsAdd'}":"") if $::pc{'packRanObs'};
-    push @propaties, "//セージ知識={セージ}+{知力B}"            .($::pc{'packSagKnoAdd'}?"+$::pc{'packSagKnoAdd'}":"") if $::pc{'packSagKno'};
-    push @propaties, "//バード知識={バード}+{知力B}"            .($::pc{'packBarKnoAdd'}?"+$::pc{'packBarKnoAdd'}":"") if $::pc{'packBarKno'};
-    push @propaties, "//ライダー運動={ライダー}+{敏捷B}"        .($::pc{'packRidAgiAdd'}?"+$::pc{'packRidAgiAdd'}":"") if $::pc{'packRidAgi'};
-    push @propaties, "//ライダー知識={ライダー}+{知力B}"        .($::pc{'packRidKnoAdd'}?"+$::pc{'packRidKnoAdd'}":"") if $::pc{'packRidKno'};
-    push @propaties, "//ライダー観察={ライダー}+{知力B}"        .($::pc{'packRidObsAdd'}?"+$::pc{'packRidObsAdd'}":"") if $::pc{'packRidObs'};
-    push @propaties, "//アルケミスト知識={アルケミスト}+{知力B}".($::pc{'packAlcKnoAdd'}?"+$::pc{'packAlcKnoAdd'}":"") if $::pc{'packAlcKno'};
+    foreach my $class (@data::class_names){
+      my $c_id = $data::class{$class}{'id'};
+      next if !$data::class{$class}{'package'} || !$::pc{'lv'.$c_id};
+      my %data = %{$data::class{$class}{'package'}};
+      foreach my $p_id (sort{$data{$a}{'stt'} cmp $data{$b}{'stt'} || $data{$a} cmp $data{$b}} keys %data){
+        my $name = $class.$data{$p_id}{'name'};
+        my $stt  = $stt_id_to_name{$data{$p_id}{'stt'}};
+        push @propaties, "//$name=\{$class\}+\{${stt}B\}".($::pc{'pack'.$c_id.$p_id.'Add'} ? '+'.$::pc{'pack'.$c_id.$p_id.'Add'} : '');
+      }
+    }
     push @propaties, '';
     
     foreach (
