@@ -400,6 +400,9 @@ sub data_calc {
       elsif($feat eq '呪歌追加Ⅰ')  { $pc{'songAddition'} = 1; }
       elsif($feat eq '呪歌追加Ⅱ')  { $pc{'songAddition'} = 2; }
       elsif($feat eq '呪歌追加Ⅲ')  { $pc{'songAddition'} = 3; }
+      elsif($feat eq '鼓咆陣率追加Ⅰ')  { $pc{'commandAddition'} = 1; }
+      elsif($feat eq '鼓咆陣率追加Ⅱ')  { $pc{'commandAddition'} = 2; }
+      elsif($feat eq '鼓咆陣率追加Ⅲ')  { $pc{'commandAddition'} = 3; }
       elsif($feat eq '抵抗強化Ⅰ')  { $pc{'resistEnhance'} = 1; }
       elsif($feat eq '抵抗強化Ⅱ')  { $pc{'resistEnhance'} = 2; }
     }
@@ -453,27 +456,33 @@ sub data_calc {
   $pc{'mobilityLimited'} = $pc{'footwork'} ? 10 : 3;
 
   ## 判定パッケージ
-  $pc{'packScoTec'} = $st{'ScoA'} + $pc{'packScoTecAdd'};
-  $pc{'packScoAgi'} = $st{'ScoB'} + $pc{'packScoAgiAdd'};
-  $pc{'packScoObs'} = $st{'ScoE'} + $pc{'packScoObsAdd'};
-  $pc{'packRanTec'} = $st{'RanA'} + $pc{'packRanTecAdd'};
-  $pc{'packRanAgi'} = $st{'RanB'} + $pc{'packRanAgiAdd'};
-  $pc{'packRanObs'} = $st{'RanE'} + $pc{'packRanObsAdd'};
-  $pc{'packSagKno'} = $st{'SagE'} + $pc{'packSagKnoAdd'};
-  $pc{'packBarKno'} = $st{'BarE'} + $pc{'packBarKnoAdd'};
-  $pc{'packRidAgi'} = $st{'RidB'} + $pc{'packRidAgiAdd'};
-  $pc{'packRidKno'} = $st{'RidE'} + $pc{'packRidKnoAdd'};
-  $pc{'packRidObs'} = $st{'RidE'} + $pc{'packRidObsAdd'};
-  $pc{'packAlcKno'} = $st{'AlcE'} + $pc{'packAlcKnoAdd'};
+  my @pack_lore;
+  my @pack_init;
+  foreach my $class (@data::class_names){
+    next if !$data::class{$class}{'package'};
+    my $c_id = $data::class{$class}{'id'};
+    my $c_en = $data::class{$class}{'eName'};
+    my %data = %{$data::class{$class}{'package'}};
+    # 軍師の知略
+    if($c_id eq 'War'){
+      my $war_int_initiative;
+      foreach(1 .. $pc{'lvWar'}+$pc{'commandAddition'}){
+        if($pc{'craftCommand'.$_} =~ /軍師の知略$/){ $war_int_initiative = 1; last; }
+      }
+      if(!$war_int_initiative){ delete $data{'Int'} }
+    }
+    #
+    foreach my $p_id (keys %data){
+      my $value = $st{$c_id.$data{$p_id}{'stt'}} + $pc{'pack'.$c_id.$p_id.'Add'};
+      $pc{'pack'.$c_id.$p_id} = $value;
+      if($data{$p_id}{'monsterLore'}){ push @pack_lore, $value }
+      if($data{$p_id}{'initiative'} ){ push @pack_init, $value }
+    }
+  }
 
   ## 魔物知識／先制力
-  my @ini_class = ($pc{'packScoAgi'},$st{'WarB'});
-  push @ini_class, $st{$_} foreach (@set::ini_class_add);
-  foreach(1 .. $pc{'lvWar'}){
-    if($pc{'craftCommand'.$_} =~ /軍師の知略/){ push @ini_class, $st{'WarE'}; }
-  }
-  $pc{'monsterLore'} = max($pc{'packSagKno'},$pc{'packRidKno'}) + $pc{'monsterLoreAdd'};
-  $pc{'initiative'}  = max(@ini_class) + $pc{'initiativeAdd'};
+  $pc{'monsterLore'} = max(@pack_lore) + $pc{'monsterLoreAdd'};
+  $pc{'initiative'}  = max(@pack_init) + $pc{'initiativeAdd'};
 
   ## 魔力
   foreach my $name (@data::class_caster){

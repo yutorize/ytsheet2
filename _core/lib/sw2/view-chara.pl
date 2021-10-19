@@ -409,7 +409,13 @@ else {
 $SHEET->param(Language => \@language);
 
 ### パッケージ --------------------------------------------------
-$SHEET->param("PackageLv" => max($pc{'lvSco'},$pc{'lvRan'},$pc{'lvSag'},$pc{'lvBar'},$pc{'lvRid'},$pc{'lvAlc'}));
+## ウォーリーダー：軍師の知略
+my $war_int_initiative;
+foreach(1 .. $pc{'lvWar'}+$pc{'commandAddition'}){
+  if($pc{'craftCommand'.$_} =~ /軍師の知略$/){ $war_int_initiative = 1; last; }
+}
+if(!$war_int_initiative){ delete $data::class{'ウォーリーダー'}{'package'}{'Int'} }
+## 共通処理
 my @packages;
 foreach my $class (@data::class_names){
   my $c_id = $data::class{$class}{'id'};

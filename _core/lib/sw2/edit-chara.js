@@ -509,6 +509,20 @@ function checkFeats(){
       else if (feat.match(/^頑強/)){
         if(lv['Fig'] < 5 && lv['Gra'] < 5 && lv['Fen'] < 5){ cL.add("error"); }
       }
+      else if (feat.match(/鼓咆陣率追加/)){
+        if(lv['War'] < 1){ cL.add("error"); }
+        if(feat.match(/Ⅰ$/)){
+          if     (f3 && lv['War'] >= 13) { (auto) ? box.value = "鼓咆陣率追加Ⅲ" : cL.add("mark") }
+          else if(f2 && lv['War'] >=  7) { (auto) ? box.value = "鼓咆陣率追加Ⅱ" : cL.add("mark") }
+        }
+        else if(feat.match(/Ⅱ$/)){
+          if     (f3 && lv['War'] >= 13) { (auto) ? box.value = "鼓咆陣率追加Ⅲ" : cL.add("mark") }
+          else if(!f2 || lv['War'] <  7) { (auto) ? box.value = "鼓咆陣率追加Ⅰ" : cL.add("error") }
+        }
+        else if(feat.match(/Ⅲ$/)){
+          if     (!f2 || lv['War'] <  7) { (auto) ? box.value = "鼓咆陣率追加Ⅰ" : cL.add("error") }
+          else if(!f3 || lv['War'] < 13) { (auto) ? box.value = "鼓咆陣率追加Ⅱ" : cL.add("error") }
+        }
       }
       else if (feat.match(/射手の体術/)){
         if(lv['Sho'] < 7){ cL.add("error"); }
@@ -533,6 +547,12 @@ function checkFeats(){
       }
       else if (feat.match(/双撃/)){
         if(!acquire.match('両手利き')){ cL.add("error"); }
+      }
+      else if (feat.match(/相克の標的/)){
+        if(lv['Geo'] < 1){ cL.add("error"); }
+      }
+      else if (feat.match(/相克の別離/)){
+        if(lv['Geo'] < 3){ cL.add("error"); }
       }
       else if (feat.match(/鷹の目/)){
         if(!acquire.match('ターゲッティング')){ cL.add("error"); }
@@ -723,6 +743,9 @@ function checkFeats(){
           else if(!f3 || level < 11) { (auto) ? box.value = "牽制攻撃Ⅱ" : cL.add("error") }
         }
       }
+      else if (feat.match(/高度な柔軟性/)){
+        if(lv['War'] < 9){ cL.add("error"); }
+      }
       else if (feat.match(/シールドバッシュ/)){
         if(feat.match(/Ⅰ$/)){
           if (f2 && level >= 5) { (auto) ? box.value = "シールドバッシュⅡ" : cL.add("mark") }
@@ -892,6 +915,9 @@ function checkFeats(){
       else if(feat === "呪歌追加Ⅰ"){ feats['呪歌追加'] = 1; }
       else if(feat === "呪歌追加Ⅱ"){ feats['呪歌追加'] = 2; }
       else if(feat === "呪歌追加Ⅲ"){ feats['呪歌追加'] = 3; }
+      else if(feat === "鼓咆陣率追加Ⅰ"){ feats['鼓咆陣率追加'] = 1; }
+      else if(feat === "鼓咆陣率追加Ⅱ"){ feats['鼓咆陣率追加'] = 2; }
+      else if(feat === "鼓咆陣率追加Ⅲ"){ feats['鼓咆陣率追加'] = 3; }
       else if(feat === "抵抗強化Ⅰ"){ feats['抵抗強化'] = 1; }
       else if(feat === "抵抗強化Ⅱ"){ feats['抵抗強化'] = 2; }
       
@@ -918,8 +944,8 @@ function checkCraft() {
     if (classes[key]['craftData']){
       const eName = classes[key]['craft'];
       document.getElementById("craft-"+eName).style.display = cLv ? "block" : "none";
-      const cMax = (key === 'Bar') ? 20 : (key === 'Art') ? 19 : 17;
-      cLv += (key === 'Bar') ? (feats['呪歌追加'] || 0) : (key === 'Art' && lv.Art === 16) ? 1 : (key === 'Art' && lv.Art === 17) ? 2 : 0;
+      const cMax = (key.match(/Bar|War/)) ? 20 : (key === 'Art') ? 19 : 17;
+      cLv += (key === 'Bar') ? (feats['呪歌追加'] || 0) : (key === 'War') ? (feats['鼓咆陣率追加'] || 0) : (key === 'Art' && lv.Art === 16) ? 1 : (key === 'Art' && lv.Art === 17) ? 2 : 0;
       for (let i = 1; i <= cMax; i++) {
         let cL = document.getElementById("craft-"+eName+i).classList;
         if (i <= cLv){
@@ -1018,6 +1044,17 @@ function calcPackage() {
       document.getElementById(`package-${className}`).style.display = lv[cId] > 0 ? "" :"none";
 
       Object.keys(data).forEach(function(pId) {
+        if(cId === 'War' && pId === 'Int'){
+          let hit = 0;
+          for(let i = 1; i <= lv['War']+(feats['鼓咆陣率追加']||0); i++){
+            if(form[`craftCommand${i}`].value.match(/軍師の知略$/)){ hit = 1; break; }
+          }
+          if(!hit){
+            document.getElementById(`package-${className}-${pId.toLowerCase()}`).innerHTML = '―';
+            return;
+          }
+        }
+        
         let v = lv[cId] + bonus[data[pId]['stt']] + Number(form[`pack${cId}${pId}Add`].value);
         document.getElementById(`package-${className}-${pId.toLowerCase()}`).innerHTML = v;
 

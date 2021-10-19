@@ -198,6 +198,14 @@ sub data_update_chara {
     $pc{'historyGrowTotal'} = $pc{'sttPreGrowA'}  + $pc{'sttPreGrowB'}  + $pc{'sttPreGrowC'}  + $pc{'sttPreGrowD'}  + $pc{'sttPreGrowE'}  + $pc{'sttPreGrowF'}
                             + $pc{'sttHistGrowA'} + $pc{'sttHistGrowB'} + $pc{'sttHistGrowC'} + $pc{'sttHistGrowD'} + $pc{'sttHistGrowE'} + $pc{'sttHistGrowF'};
   }
+  if($ver < 1.15009){
+    foreach my $i (1 .. $pc{'lvWar'}){
+      $pc{'craftCommand'.$i} =~ s/濤/涛/g;
+      $pc{'craftCommand'.$i} =~ s/^軍師の知略$/陣率：軍師の知略/g;
+      $pc{'packWarAgi'} = $pc{'lvWar'} + $pc{'bonusAgi'};
+      $pc{'packWarInt'} = $pc{'lvWar'} + $pc{'bonusInt'};
+    }
+  }
   $pc{'ver'} = $main::ver;
   $pc{'lasttimever'} = $ver;
   return %pc;

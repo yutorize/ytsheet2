@@ -294,7 +294,8 @@ sub convertHokanjoToYtsheet {
     $pc{'craftSeal'      .($i+1)} = $in{'JI_name'}[$i];
     
     $pc{'craftCommand'.($i+1)} =~ s/:/：/g;
-    $pc{'craftCommand'.($i+1)} =~ s/涛/濤/g;
+    if($::SW2_0){ $pc{'craftCommand'.($i+1)} =~ s/涛/濤/g; }
+    else        { $pc{'craftCommand'.($i+1)} =~ s/濤/涛/g; }
     $pc{'magicGramarye'.($i+1)} =~ s/[=＝]/＝/g;
     foreach(@data::magic_gramarye){
       if ($pc{'magicGramarye'.($i+1)} eq @$_[2]){ $pc{'magicGramarye'.($i+1)} = @$_[1]; last }

@@ -569,7 +569,7 @@ foreach my $class (@data::class_names){
               <h2>$data::class{$class}{'craft'}{'jName'}</h2>
               <ul>
 HTML
-  my $c_max = $class eq 'バード' ? 20 : $class eq 'アーティザン' ? 19 : 17;
+  my $c_max = $class =~ /バード|ウォーリーダー/ ? 20 : $class eq 'アーティザン' ? 19 : 17;
   foreach my $lv (1..$c_max){
     print '<li id="craft-'.$name.$lv.'"><select name="craft'.$Name.$lv.'">';
     print '<option></option>';
@@ -579,6 +579,7 @@ HTML
       my $item = '<option'.(($pc{"craft${Name}${lv}"} eq @$data[1])?' selected':'').' value="'.@$data[1].'">'.@$data[1];
       
       if(@$data[2] =~ /^(.*?)専用/){ $only{@$data[2]} .= $item; }
+      if(@$data[2] =~ /^2.0/)      { $only{'旧(2.0)データ'} .= $item; }
       else { print $item; }
     }
     foreach my $key (sort keys %only) {
@@ -724,7 +725,7 @@ my $fairyset = <<"HTML";
   <label class="ft-dark" >@{[ input 'fairyContractDark' , 'checkbox','calcMagic' ]}<span>闇</span></label>
 </div>
 HTML
-foreach my $name (@data::class_names){
+foreach my $name (@data::class_caster){
   next if (!$data::class{$name}{'magic'}{'jName'});
   my $id    = $data::class{$name}{'id'};
   my $ename = $data::class{$name}{'eName'};
