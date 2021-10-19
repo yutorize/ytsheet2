@@ -439,13 +439,13 @@ print '</dl></div>';
 
 sub classInputBox {
   my $name = shift;
-  return if $data::class{$name}{2.0} && !$set::all_class_on;
+  return if $data::class{$name}{2.5} && !$set::all_class_on;
   my $id = $data::class{$name}{'id'};
   my $out;
   $out .= '<dt id="class'.$id.'"';
-  $out .= ' class="zero-data"' if $data::class{$name}{'2.0'};
+  $out .= ' class="zero-data"' if $data::class{$name}{'2.5'};
   $out .= '>';
-  $out .= '[2.0] ' if $data::class{$name}{'2.0'};
+  $out .= '[2.5] ' if $data::class{$name}{'2.5'};
   $out .= $name;
   $out .= '<select name="faithType" style="width:auto;">'.option('faithType','†|<†セイクリッド系>','‡|<‡ヴァイス系>','†‡|<†‡両系統使用可>').'</select>' if($name eq 'プリースト');
   $out .= '</dt><dd>' . input("lv${id}", 'number','changeLv','min="0" max="17"') . '</dd>';
