@@ -717,6 +717,7 @@ option.zero-data::before {
   font-family: inherit;
   white-space: normal;
   text-align: left;
+  padding-left: .5em;
 }
 
 

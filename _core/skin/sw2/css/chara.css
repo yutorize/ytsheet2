@@ -55,7 +55,7 @@ body {
 #character-name rt {
   font-family: Arial,var(--base-font-family-min);
 }
-#level {
+#level dd {
   font-family: 'Verdana';
 }
 #personal dd,
