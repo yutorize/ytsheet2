@@ -410,6 +410,30 @@ $SHEET->param(Language => \@language);
 
 ### パッケージ --------------------------------------------------
 $SHEET->param("PackageLv" => max($pc{'lvSco'},$pc{'lvRan'},$pc{'lvSag'},$pc{'lvBar'},$pc{'lvRid'},$pc{'lvAlc'}));
+my @packages;
+foreach my $class (@data::class_names){
+  my $c_id = $data::class{$class}{'id'};
+  next if !$data::class{$class}{'package'} || !$pc{'lv'.$c_id};
+
+  my $c_en = $data::class{$class}{'eName'};
+  my %data = %{$data::class{$class}{'package'}};
+  my @pack;
+  foreach my $p_id (sort{$data{$a}{'stt'} cmp $data{$b}{'stt'} || $data{$a} cmp $data{$b}} keys %data){
+    (my $p_name = $data{$p_id}{'name'}) =~ s/(\(.+?\))/<small>$1<\/small>/;
+    push(@pack, {
+      'name'  => $p_name,
+      'add'   => $pc{'pack'.$c_id.$p_id.'Add'},
+      'total' => $pc{'pack'.$c_id.$p_id},
+    });
+  }
+  push(@packages, {
+    'class'   => $class,
+    'lv'      => $pc{'lv'.$c_id},
+    'colspan' => scalar(@pack),
+    'Packs'   => \@pack,
+  });
+}
+$SHEET->param("Packages" => \@packages);
 
 ### 妖精契約 --------------------------------------------------
 my $fairy_contact;
