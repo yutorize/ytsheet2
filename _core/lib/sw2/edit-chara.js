@@ -486,11 +486,11 @@ function checkFeats(){
       let feat = box.options[box.selectedIndex].value;
       acquire += feat + ',';
       
-      if (feat.match(/足さばき/)){
-        if(level < 9){ cL.add("error"); }
+      if (feat.match(/追い打ち/)){
+        if(!acquire.match('シールドバッシュ')){ cL.add("error"); }
       }
       else if (feat.match(/ガーディアン/)){
-        if(level < 5 || !acquire.match('かばう')){ cL.add("error"); }
+        if(!acquire.match('かばう')){ cL.add("error"); }
         if(feat.match(/Ⅰ$/)){
           if (f2 && level >= 9) { (auto) ? box.value = "ガーディアンⅡ" : cL.add("mark") }
         }
@@ -499,7 +499,6 @@ function checkFeats(){
         }
       }
       else if (feat.match(/回避行動/)){
-        if(level < 3){ cL.add("error"); }
         if(feat.match(/Ⅰ$/)){
           if (f2 && lv['Fen'] >= 9) { (auto) ? box.value = "回避行動Ⅱ" : cL.add("mark") }
         }
@@ -510,8 +509,6 @@ function checkFeats(){
       else if (feat.match(/^頑強/)){
         if(lv['Fig'] < 5 && lv['Gra'] < 5 && lv['Fen'] < 5){ cL.add("error"); }
       }
-      else if (feat.match(/キャパシティ/)){
-        if(level < 11){ cL.add("error"); }
       }
       else if (feat.match(/射手の体術/)){
         if(lv['Sho'] < 7){ cL.add("error"); }
@@ -550,6 +547,14 @@ function checkFeats(){
       }
       else if (feat.match(/超頑強/)){
         if((lv['Fig'] < 7 && lv['Gra'] < 7)|| !acquire.match('頑強')){ cL.add("error"); }
+      }
+      else if (feat.match(/抵抗強化/)){
+        if(feat.match(/Ⅰ$/)){
+          if (f2 && level >= 11) { (auto) ? box.value = "抵抗強化Ⅱ" : cL.add("mark") }
+        }
+        else if(feat.match(/Ⅱ$/)){
+          if(!f2 || level < 11) { (auto) ? box.value = "抵抗強化Ⅰ" : cL.add("error") }
+        }
       }
       else if (feat.match(/特殊楽器習熟/)){
         if(lv['Bar'] < 1){ cL.add("error"); }
@@ -718,11 +723,44 @@ function checkFeats(){
           else if(!f3 || level < 11) { (auto) ? box.value = "牽制攻撃Ⅱ" : cL.add("error") }
         }
       }
-      else if (feat.match(/シェアパフォーマー/)){
+      else if (feat.match(/シールドバッシュ/)){
+        if(feat.match(/Ⅰ$/)){
+          if (f2 && level >= 5) { (auto) ? box.value = "シールドバッシュⅡ" : cL.add("mark") }
+        }
+        else if(feat.match(/Ⅱ$/)){
+          if(!f2 || level < 5) { (auto) ? box.value = "シールドバッシュⅠ" : cL.add("error") }
+        }
+      }
+      else if (feat.match(/シャドウステップ/)){
+        if(feat.match(/Ⅰ$/)){
+          if (f2 && level >= 7) { (auto) ? box.value = "シャドウステップⅡ" : cL.add("mark") }
+        }
+        else if(feat.match(/Ⅱ$/)){
+          if(!f2 || level < 7) { (auto) ? box.value = "シャドウステップⅠ" : cL.add("error") }
+        }
+      }
+      else if (feat.match(/シュアパフォーマー/)){
         if(lv['Bar'] < 3){ cL.add("error"); }
       }
       else if (feat.match(/スキルフルプレイ/)){
         if(lv['Bar'] < 7){ cL.add("error"); }
+      }
+      else if (feat.match(/捨て身攻撃/)){
+        if(feat.match(/Ⅰ$/)){
+          if     (f3 && level >= 15){ (auto) ? box.value = "捨て身攻撃Ⅲ" : cL.add("mark") }
+          else if(f2 && level >= 9) { (auto) ? box.value = "捨て身攻撃Ⅱ" : cL.add("mark") }
+        }
+        else if(feat.match(/Ⅱ$/)){
+          if     (f3 && level >= 15){ (auto) ? box.value = "捨て身攻撃Ⅲ" : cL.add("mark") }
+          else if(!f2 || level < 7) { (auto) ? box.value = "捨て身攻撃Ⅰ" : cL.add("error") }
+        }
+        else if(feat.match(/Ⅲ$/)){
+          if     (!f2 || level < 7) { (auto) ? box.value = "捨て身攻撃Ⅰ" : cL.add("error") }
+          else if(!f3 || level < 15){ (auto) ? box.value = "捨て身攻撃Ⅱ" : cL.add("error") }
+        }
+      }
+      else if (feat.match(/先陣の才覚/)){
+        if(lv['War'] < 5){ cL.add("error"); }
       }
       else if (feat.match(/全力攻撃/)){
         if(feat.match(/Ⅰ$/)){
@@ -811,6 +849,14 @@ function checkFeats(){
       }
       else if (feat.match(/魔法制御/)){
         if(!acquire.match('ターゲッティング') || !acquire.match('魔法収束')){ cL.add("error"); }
+      }
+      else if (feat.match(/乱撃/)){
+        if(feat.match(/Ⅰ$/)){
+          if (f2 && level >= 7) { (auto) ? box.value = "乱撃Ⅱ" : cL.add("mark") }
+        }
+        else if(feat.match(/Ⅱ$/)){
+          if(!f2 || level < 7) { (auto) ? box.value = "乱撃Ⅰ" : cL.add("error") }
+        }
       }
       feat = box.options[box.selectedIndex].value;
       
