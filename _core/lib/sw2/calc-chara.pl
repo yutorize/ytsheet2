@@ -32,7 +32,7 @@ sub data_calc {
   my $smax = max($pc{'lvSco'},$pc{'lvRan'},$pc{'lvSag'});
 
   ### ウィザードレベル算出 --------------------------------------------------
-  $pc{'lvWiz'} = max($pc{'lvSor'},$pc{'lvCon'}) if ($pc{'lvSor'} || $pc{'lvCon'});
+  $pc{'lvWiz'} = max($pc{'lvSor'},$pc{'lvCon'}) if ($pc{'lvSor'} && $pc{'lvCon'});
 
   ### 経験点／名誉点／ガメル計算 --------------------------------------------------
   ## 履歴から 

@@ -205,6 +205,12 @@ sub data_update_chara {
       $pc{'packWarAgi'} = $pc{'lvWar'} + $pc{'bonusAgi'};
       $pc{'packWarInt'} = $pc{'lvWar'} + $pc{'bonusInt'};
     }
+    if($pc{'lvSor'} && $pc{'lvCon'}){
+      $pc{'lvWiz'} = max($pc{'lvSor'},$pc{'lvCon'});
+      $pc{'magicPowerWiz'} = max($pc{'magicPowerSor'},$pc{'magicPowerCon'});
+      $pc{'magicPowerOwnWiz'} = ($pc{'magicPowerOwnSor'} && $pc{'magicPowerOwnCon'}) ? 1 : 0;
+    }
+    else { $pc{'lvWiz'} = 0; }
   }
   $pc{'ver'} = $main::ver;
   $pc{'lasttimever'} = $ver;

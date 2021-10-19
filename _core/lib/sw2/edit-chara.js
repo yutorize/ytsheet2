@@ -181,7 +181,7 @@ function calcLv(){
   level = Math.max.apply(null, Object.values(lv));
   document.getElementById("level-value").innerHTML = level;
   
-  lv['Wiz'] = Math.max(lv['Sor'],lv['Con']);
+  lv['Wiz'] = (lv['Sor'] && lv['Con']) ? Math.max(lv['Sor'],lv['Con']) : 0;
   levelCasters.sort( function(a,b){ return (a < b ? 1 : -1); } );
   if(battleItemOn){
     const sLevel = Math.max.apply(null, [ lv['Sco'], lv['Ran'], lv['Sag'] ]);
@@ -940,7 +940,7 @@ function checkFeats(){
 // 技芸 ----------------------------------------
 function checkCraft() {
   Object.keys(classes).forEach(function(key) {
-    let cLv = (key === 'Wiz') ? Math.min(lv['Sor'],lv['Con']) : lv[key];
+    let cLv = lv[key];
     if (classes[key]['craftData']){
       const eName = classes[key]['craft'];
       document.getElementById("craft-"+eName).style.display = cLv ? "block" : "none";

@@ -419,7 +419,7 @@ function checkFeats(){
 // 技芸 ----------------------------------------
 function checkCraft() {
   Object.keys(classes).forEach(function(key) {
-    let cLv = (key === 'Wiz') ? Math.min(lv['Sor'],lv['Con']) : lv[key];
+    let cLv = lv[key];
     if (classes[key]['craftData']){
       const eName = classes[key]['craft'];
       document.getElementById("craft-"+eName).style.display = cLv ? "block" : "none";
