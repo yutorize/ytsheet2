@@ -6,6 +6,8 @@ use open ":utf8";
 use LWP::UserAgent;
 use JSON::PP;
 
+require $set::data_class;
+
 sub data_get {
   my $url = shift;
   my $ua  = LWP::UserAgent->new;
@@ -150,14 +152,17 @@ sub convertHokanjoToYtsheet {
   }
   ## 信仰
   if($in{'priest_sinkou'}){
-    foreach my $gods (@data::gods){
+    require $set::data_faith;
+    foreach (@data::gods){
+      my $aka = @{$_}[2];
+      my $name = @{$_}[3];
       if(
-          ($in{'priest_sinkou'} eq "“@$gods[2]”@$gods[3]")
-        ||($in{'priest_sinkou'} eq "@$gods[2]@$gods[3]") 
-        ||(@$gods[2] && $in{'priest_sinkou'} =~ /(^|[“”"])@$gods[2]([“”"]|$)/)
-        ||(@$gods[3] && $in{'priest_sinkou'} eq @$gods[3])
+          ($in{'priest_sinkou'} eq "“${aka}”${name}")
+        ||($in{'priest_sinkou'} eq "${aka}${name}") 
+        ||($aka  && $in{'priest_sinkou'} =~ /(^|[“”"])${aka}([“”"]|$)/)
+        ||($name && $in{'priest_sinkou'} eq $name)
       ){
-        $pc{'faith'} = @$gods[2] && @$gods[3] ? "“@$gods[2]”@$gods[3]" : @$gods[2] ? "“@$gods[2]”" : @$gods[3];
+        $pc{'faith'} = $aka && $name ? "“${aka}”${name}" : $aka ? "“${aka}”" : $name;
         last;
       }
     }
@@ -206,18 +211,20 @@ sub convertHokanjoToYtsheet {
     $i++;
   }
   
+  
   my $i = 1;
-  foreach my $lang (@language){
-    my $next;
-    foreach my $default (@{$data::race_language{$pc{'race'}}}){
-      if(@$lang[0] eq @$default[0]){ $next = 1; last; }
-    }
-    next if $next;
-    $pc{'language'.$i} = @$lang[0];
-    $pc{'language'.$i.'Talk'} = @$lang[1];
-    $pc{'language'.$i.'Read'} = @$lang[2];
-    $i++;
-  }
+  #require $set::data_races;
+  #foreach my $lang (@language){
+  #  my $next;
+  #  foreach my $default (@{$data::race_language{$pc{'race'}}}){
+  #    if(@$lang[0] eq @$default[0]){ $next = 1; last; }
+  #  }
+  #  next if $next;
+  #  $pc{'language'.$i} = @$lang[0];
+  #  $pc{'language'.$i.'Talk'} = @$lang[1];
+  #  $pc{'language'.$i.'Read'} = @$lang[2];
+  #  $i++;
+  #}
   $pc{'languageNum'} = $i;
   $pc{'languageAutoOff'} = 1;
   
@@ -274,6 +281,10 @@ sub convertHokanjoToYtsheet {
     $pc{'combatFeatsLv'.$lv} =~ s|A|Ａ|;
     $pc{'combatFeatsLv'.$lv} =~ s|S|Ｓ|;
     $pc{'combatFeatsLv'.$lv} =~ s|MP|ＭＰ|;
+    if(!$::SW2_0){
+      $pc{'combatFeatsLv'.$lv} =~ s/^(精密射撃|魔法誘導)$/ターゲッティング/;
+      $pc{'combatFeatsLv'.$lv} =~ s/^クリティカルキャスト$/クリティカルキャストⅠ/;
+    }
     if($in{'ST_tlv'} > 0){
       $pc{'combatFeatsLv'.$lv} .= $nums{$in{'ST_tlv'}[$i]};
     }
@@ -297,7 +308,7 @@ sub convertHokanjoToYtsheet {
     if($::SW2_0){ $pc{'craftCommand'.($i+1)} =~ s/涛/濤/g; }
     else        { $pc{'craftCommand'.($i+1)} =~ s/濤/涛/g; }
     $pc{'magicGramarye'.($i+1)} =~ s/[=＝]/＝/g;
-    foreach(@data::magic_gramarye){
+    foreach(@{$data::class{'グリモワール'}{'magic'}{'data'}}){
       if ($pc{'magicGramarye'.($i+1)} eq @$_[2]){ $pc{'magicGramarye'.($i+1)} = @$_[1]; last }
     }
     $pc{'craftSeal'.($i+1)} =~ tr#０-９Ａ-Ｚａ-ｚ＋－/#0-9A-Za-z+\-／#;
@@ -450,7 +461,6 @@ sub convert1to2 {
   $pc{'sttPreGrowE'} = $pc{'make_grow_E'};
   $pc{'sttPreGrowF'} = $pc{'make_grow_F'};
   
-  require $set::data_class;
   foreach my $key (keys %data::class){
     my $id = $data::class{$key}{'id'};
     $pc{'lv'.$id} = $pc{'lv_'.lc($id)} || '';
