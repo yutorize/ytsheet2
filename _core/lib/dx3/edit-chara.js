@@ -1,5 +1,5 @@
 "use strict";
-const gameSystem = 'sw2';
+const gameSystem = 'dx3';
 
 let exps = {};
 let status = {};
