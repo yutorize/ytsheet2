@@ -123,6 +123,7 @@ sub image_form {
         </div>
       </div>
       <div class="image-custom-form">
+        $set::img_notice
         <h3>画像選択</h3>
         <p>
           プレビューエリアに画像ファイルをドロップ、<br>
