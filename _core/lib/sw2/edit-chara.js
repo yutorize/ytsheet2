@@ -512,16 +512,16 @@ function checkFeats(){
       else if (feat.match(/鼓咆陣率追加/)){
         if(lv['War'] < 1){ cL.add("error"); }
         if(feat.match(/Ⅰ$/)){
-          if     (f3 && lv['War'] >= 13) { (auto) ? box.value = "鼓咆陣率追加Ⅲ" : cL.add("mark") }
-          else if(f2 && lv['War'] >=  7) { (auto) ? box.value = "鼓咆陣率追加Ⅱ" : cL.add("mark") }
+          if     (f3 && lv['War'] >= 9) { (auto) ? box.value = "鼓咆陣率追加Ⅲ" : cL.add("mark") }
+          else if(f2 && lv['War'] >= 5) { (auto) ? box.value = "鼓咆陣率追加Ⅱ" : cL.add("mark") }
         }
         else if(feat.match(/Ⅱ$/)){
-          if     (f3 && lv['War'] >= 13) { (auto) ? box.value = "鼓咆陣率追加Ⅲ" : cL.add("mark") }
-          else if(!f2 || lv['War'] <  7) { (auto) ? box.value = "鼓咆陣率追加Ⅰ" : cL.add("error") }
+          if     (f3 && lv['War'] >= 9) { (auto) ? box.value = "鼓咆陣率追加Ⅲ" : cL.add("mark") }
+          else if(!f2 || lv['War'] < 5) { (auto) ? box.value = "鼓咆陣率追加Ⅰ" : cL.add("error") }
         }
         else if(feat.match(/Ⅲ$/)){
-          if     (!f2 || lv['War'] <  7) { (auto) ? box.value = "鼓咆陣率追加Ⅰ" : cL.add("error") }
-          else if(!f3 || lv['War'] < 13) { (auto) ? box.value = "鼓咆陣率追加Ⅱ" : cL.add("error") }
+          if     (!f2 || lv['War'] < 5) { (auto) ? box.value = "鼓咆陣率追加Ⅰ" : cL.add("error") }
+          else if(!f3 || lv['War'] < 9) { (auto) ? box.value = "鼓咆陣率追加Ⅱ" : cL.add("error") }
         }
       }
       else if (feat.match(/射手の体術/)){
