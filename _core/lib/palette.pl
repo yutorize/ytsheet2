@@ -28,6 +28,8 @@ if($backup eq "") {
 } else {
   open $IN, '<', "${data_dir}${file}/backup/${backup}.cgi" or "";
 }
+if($::in{'propertiesall'}){ $pc{'chatPalettePropertiesAll'} = 1 }
+
 if($tool){
   $_ =~ s/^(.+?)<>(.*)\n$/$pc{$1} = tag_unescape($2);/egi while <$IN>;
   $pc{'chatPalette'} =~ s/<br>/\n/g;
