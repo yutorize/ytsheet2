@@ -32,7 +32,7 @@ io.github.shunshun94.trpg.ccfolia.getCharacterSeed = ()=>{
 
 io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2DoubleCross3PC = async (json, opt_sheetUrl = '') => {
 	const result = io.github.shunshun94.trpg.ccfolia.getCharacterSeed();
-	const defaultPalette = await io.github.shunshun94.trpg.ytsheet.getChatPalette(opt_sheetUrl);
+	const defaultPalette = await io.github.shunshun94.trpg.ytsheet.getChatPalette(opt_sheetUrl+'&propertiesall=1');
 	const character = {
 			name: json.characterName || json.aka,
 			playerName: json.playerName,
@@ -69,21 +69,6 @@ io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2DoubleCross3P
 			commands: defaultPalette.palette || '',
 			speaking: true
 	};
-	io.github.shunshun94.trpg.ytsheet.consts.DX3_STATUS.forEach((s)=>{
-		character.params.push({
-			label: s.name, value: json['sttTotal' + s.column] || 0
-		});
-		s.skills.forEach((skill)=>{
-			character.params.push({
-				label: skill.name, value: json['skillTotal' + skill.column] || 0
-			});
-		});
-		let cursor = 1;
-		while(json[`skill${s.extendableSkill.column}${cursor}Name`]) {
-			character.params.push({label: json[`skill${s.extendableSkill.column}${cursor}Name`], value: json[`skillTotal${s.extendableSkill.column}${cursor}`] || 0});
-			cursor++;
-		}
-	});
 
 	result.data = character;
 	return JSON.stringify(result);
