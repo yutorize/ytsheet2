@@ -357,81 +357,16 @@ window.onload = function() {
           <section class="box" id="package">
             <h2>非戦闘判定</h2>
             <table class="data-table side-margin line-tbody">
-            <TMPL_IF lvSco><tbody>
-              <tr>
-                <th rowspan="3">スカウト<span class="small">技能レベル</span><TMPL_VAR lvSco></th>
-                <th>器用度</th>
-                <td><TMPL_IF packScoTecAdd>+<TMPL_VAR packScoTecAdd>=</TMPL_IF></td>
-                <td><TMPL_VAR packScoTec></td>
-              </tr>
-              <tr>
-                <th>敏捷度</th>
-                <td><TMPL_IF packScoAgiAdd>+<TMPL_VAR packScoAgiAdd>=</TMPL_IF></td>
-                <td><TMPL_VAR packScoAgi></td>
-              </tr>
-              <tr>
-                <th>知力</th>
-                <td><TMPL_IF packScoObsAdd>+<TMPL_VAR packScoObsAdd>=</TMPL_IF></td>
-                <td><TMPL_VAR packScoObs></td>
-              </tr>
-            </tbody></TMPL_IF>
-            <TMPL_IF lvRan><tbody>
-              <tr>
-                <th rowspan="3">レンジャー<span class="small">技能レベル</span><TMPL_VAR lvRan></th>
-                <th>器用度</th>
-                <td><TMPL_IF packRanTecAdd>+<TMPL_VAR packRanTecAdd>=</TMPL_IF></td>
-                <td><TMPL_VAR packRanTec></td>
-              </tr>
-              <tr>
-                <th>敏捷度</th>
-                <td><TMPL_IF packRanAgiAdd>+<TMPL_VAR packRanAgiAdd>=</TMPL_IF></td>
-                <td><TMPL_VAR packRanAgi></td>
-              </tr>
-              <tr>
-                <th>知力</th>
-                <td><TMPL_IF packRanObsAdd>+<TMPL_VAR packRanObsAdd>=</TMPL_IF></td>
-                <td><TMPL_VAR packRanObs></td>
-              </tr>
-            </tbody></TMPL_IF>
-            <TMPL_IF lvSag><tbody>
-              <tr>
-                <th>セージ<span class="small">技能レベル</span><TMPL_VAR lvSag></th>
-                <th>知力</th>
-                <td><TMPL_IF packSagKnoAdd>+<TMPL_VAR packSagKnoAdd>=</TMPL_IF></td>
-                <td><TMPL_VAR packSagKno></td>
-              </tr>
-            </tbody></TMPL_IF>
-            <TMPL_IF lvBar><tbody>
-              <tr>
-                <th>バード<span class="small">技能レベル</span><TMPL_VAR lvBar></th>
-                <th>見識</th>
-                <td><TMPL_IF packBarKnoAdd>+<TMPL_VAR packBarKnoAdd>=</TMPL_IF></td>
-                <td><TMPL_VAR packBarKno></td>
-              </tr>
-            </tbody></TMPL_IF>
-            <TMPL_IF lvRid><tbody>
-              <tr>
-                <th rowspan="<TMPL_IF riderObsOn>3<TMPL_ELSE>2</TMPL_IF>">ライダー<span class="small">技能レベル</span><TMPL_VAR lvRid></th>
-                <th>敏捷度</th>
-                <td><TMPL_IF packRidAgiAdd>+<TMPL_VAR packRidAgiAdd>=</TMPL_IF></td>
-                <td><TMPL_VAR packRidAgi></td>
-              </tr>
-              <tr>
-                <th>知力</th>
-                <td><TMPL_IF packRidKnoAdd>+<TMPL_VAR packRidKnoAdd>=</TMPL_IF></td>
-                <td><TMPL_VAR packRidKno></td>
-              </tr>
-            </tbody></TMPL_IF>
-            <TMPL_IF lvAlc><tbody>
-              <tr>
-                <th>アルケミスト<span class="small">技能レベル</span><TMPL_VAR lvAlc></th>
-                <th>知力</th>
-                <td><TMPL_IF packAlcKnoAdd>+<TMPL_VAR packAlcKnoAdd>=</TMPL_IF></td>
-                <td><TMPL_VAR packAlcKno></td>
-              </tr>
-            </tbody></TMPL_IF>
+              <TMPL_LOOP Packages><tbody>
+                <TMPL_LOOP Packs><tr>
+                  <TMPL_IF NAME="__first__"><th rowspan="<TMPL_VAR colspan>"><TMPL_VAR class><span class="small">技能レベル</span><TMPL_VAR lv></th></TMPL_IF>
+                  <th><TMPL_VAR name></th>
+                  <td><TMPL_IF add>+<TMPL_VAR add>=</TMPL_IF></td>
+                  <td><TMPL_VAR total></td>
+                </tr></TMPL_LOOP>
+              </tbody></TMPL_LOOP>
             </table>
-            <TMPL_UNLESS PackageLv><p><TMPL_IF forbiddenMode><TMPL_ELSE>なし</TMPL_IF></p></TMPL_UNLESS>
+            <TMPL_UNLESS Packages><p><TMPL_IF forbiddenMode><TMPL_ELSE>なし</TMPL_IF></p></TMPL_UNLESS>
           </section>
         </div>
         <div id="area-other-actions">

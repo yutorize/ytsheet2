@@ -853,7 +853,6 @@ option.zero-data::before {
 }
 
 #history table tbody td {
-  border: 0;
   padding: .4rem 0 .1rem !important;
   vertical-align: top;
 }
@@ -869,7 +868,6 @@ option.zero-data::before {
 }
 #history table tbody td.left {
   padding: 0 0 .4rem !important;
-  border-top: hidden;
 }
 #history table tfoot th {
   border-top-width: 1px;

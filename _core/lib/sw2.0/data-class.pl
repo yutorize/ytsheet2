@@ -20,6 +20,32 @@ our @class_caster = (
 );
 
 ### 技能詳細データ --------------------------------------------------
+$data::class{'スカウト'}{'package'} = {
+  'Dex' => { 'name' => '器用', 'stt' => 'A' },
+  'Agi' => { 'name' => '敏捷', 'stt' => 'B', 'initiative' => 1 },
+  'Int' => { 'name' => '知力', 'stt' => 'E' },
+};
+$data::class{'レンジャー'}{'package'} = {
+  'Dex' => { 'name' => '器用', 'stt' => 'A' },
+  'Agi' => { 'name' => '敏捷', 'stt' => 'B' },
+  'Int' => { 'name' => '知力', 'stt' => 'E' },
+};
+$data::class{'セージ'}{'package'} = {
+  'Int' => { 'name' => '知力', 'stt' => 'E' },
+};
+$data::class{'バード'}{'package'} = {
+  'Int' => { 'name' => '見識', 'stt' => 'E' },
+};
+$data::class{'ライダー'}{'package'} = {
+  'Agi' => { 'name' => '敏捷', 'stt' => 'B' },
+  'Int' => { 'name' => '知力', 'stt' => 'E', 'monsterLore' => 1 },
+};
+$data::class{'アルケミスト'}{'package'} = {
+  'Int' => { 'name' => '知力', 'stt' => 'E' },
+};
+$data::class{'ジオマンサー'}{'package'} = {
+  'Int' => { 'name' => '知力', 'stt' => 'E' },
+};
 $data::class{'ウィザード'} = {
   'expTable' => '',
   'id'       => 'Wiz',
@@ -29,7 +55,6 @@ $data::class{'ウィザード'} = {
     'eName' => 'wizardry',
   },
 };
-
 $data::class{'バード'}{'craft'}{'data'} = [
   [ 1,'アーリーバード'],
   [ 1,'アンビエント'],

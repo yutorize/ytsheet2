@@ -616,76 +616,28 @@ print <<"HTML";
           <div class="box" id="package">
             <h2>非戦闘判定</h2>
             <table class="edit-table side-margin">
-              <tbody id="package-scout"@{[ display $pc{'lvSco'} ]}>
-                <tr>
-                  <th rowspan="3">スカウト技能</th>
-                  <th>器用度</th>
-                  <td>+@{[ input 'packScoTecAdd', 'number','calcPackage' ]}</td>
-                  <td id="package-scout-tec">$pc{'packScoTec'}</td>
-                </tr>
-                <tr>
-                  <th>敏捷度</th>
-                  <td>+@{[ input 'packScoAgiAdd', 'number','calcPackage' ]}</td>
-                  <td id="package-scout-agi">$pc{'packScoAgi'}</td>
-                </tr>
-                <tr>
-                  <th>知力</th>
-                  <td>+@{[ input 'packScoObsAdd', 'number','calcPackage' ]}</td>
-                  <td id="package-scout-obs">$pc{'packScoObs'}</td>
-                </tr>
-              </tbody>
-              <tbody id="package-ranger"@{[ display $pc{'lvRan'} ]}>
-                <tr>
-                  <th rowspan="3">レンジャー技能</th>
-                  <th>器用度</th>
-                  <td>+@{[ input 'packRanTecAdd', 'number','calcPackage' ]}</td>
-                  <td id="package-ranger-tec">$pc{'packRanTec'}</td>
-                </tr>
-                <tr>
-                  <th>敏捷度</th>
-                  <td>+@{[ input 'packRanAgiAdd', 'number','calcPackage' ]}</td>
-                  <td id="package-ranger-agi">$pc{'packRanAgi'}</td>
-                </tr>
-                <tr>
-                  <th>知力</th>
-                  <td>+@{[ input 'packRanObsAdd', 'number','calcPackage' ]}</td>
-                  <td id="package-ranger-obs">$pc{'packRanObs'}</td>
-                </tr>
-              </tbody>
-              <tbody id="package-sage"@{[ display $pc{'lvSag'} ]}>
-                <tr>
-                  <th>セージ技能</th>
-                  <th>知力</th>
-                  <td>+@{[ input 'packSagKnoAdd', 'number','calcPackage' ]}</td>
-                  <td id="package-sage-kno">$pc{'packSagKno'}</td>
-                </tr>
-              </tbody>
-              <tbody id="package-rider"@{[ display $pc{'lvRid'} ]}>
-                <tr>
-                  <th rowspan="3">ライダー技能</th>
-                  <th>敏捷度</th>
-                  <td>+@{[ input 'packRidAgiAdd', 'number','calcPackage' ]}</td>
-                  <td id="package-rider-agi">$pc{'packRidAgi'}</td>
-                </tr>
-                <tr>
-                  <th>知力</th>
-                  <td>+@{[ input 'packRidKnoAdd', 'number','calcPackage' ]}</td>
-                  <td id="package-rider-kno">$pc{'packRidKno'}</td>
-                </tr>
-                <tr style="display:none;">
-                  <th>観察</th>
-                  <td>+@{[ input 'packRidObsAdd', 'number','calcPackage' ]}</td>
-                  <td id="package-rider-obs">$pc{'packRidObs'}</td>
-                </tr>
-              </tbody>
-              <tbody id="package-alchemist"@{[ display $pc{'lvAlc'} ]}>
-                <tr>
-                  <th>アルケミスト技能</th>
-                  <th>知力</th>
-                  <td>+@{[ input 'packAlcKnoAdd', 'number','calcPackage' ]}</td>
-                  <td id="package-alchemist-kno">$pc{'packAlcKno'}</td>
-                </tr>
-              </tbody>
+HTML
+foreach my $class (@data::class_names){
+  next if !$data::class{$class}{'package'};
+  my $c_id = $data::class{$class}{'id'};
+  my $c_en = $data::class{$class}{'eName'};
+  my %data = %{$data::class{$class}{'package'}};
+  my $rowspan = keys %data;
+  print '<tbody id="package-'. $c_en .'"'. display($pc{'lv'.$c_id}) .'>';
+  my $i;
+  foreach my $p_id (sort{$data{$a}{'stt'} cmp $data{$b}{'stt'}} keys %data){
+    (my $p_name = $data{$p_id}{'name'}) =~ s/(\(.+?\))/<small>$1<\/small>/;
+    print '<tr>';
+    print '<th rowspan="'.$rowspan.'">'.$class.'技能</th>' if !$i;
+    print '<th>'. $p_name .'</th>';
+    print '<td>+'. (input "pack${c_id}${p_id}Add", 'number','calcPackage' ) .'=</td>';
+    print '<td id="package-'.$c_en.'-'.lc($p_id).'">'. $data{"pack${c_id}${p_id}"} .'</td>';
+    print '</tr>';
+    $i++;
+  }
+  print "</tbody>\n";
+}
+print <<"HTML";
             </table>
           </div>
         </div>
@@ -1225,7 +1177,7 @@ print <<"HTML";
         <div id="area-items-R">
           <div class="box" id="material-cards"@{[ display $pc{'lvAlc'} ]}>
             <h2>マテリアルカード</h2>
-            <table class="edit-table" >
+            <table class="edit-table no-border-cells" >
             <tr><th>  </th><th>B</th><th>A</th><th>S</th><th>SS</th></tr>
             <tr class="cards-red"><th>赤</th><td>@{[input 'cardRedB','number']}</td><td>@{[input 'cardRedA','number']}</td><td>@{[input 'cardRedS','number']}</td><td>@{[input 'cardRedSS','number']}</td></tr>
             <tr class="cards-gre"><th>緑</th><td>@{[input 'cardGreB','number']}</td><td>@{[input 'cardGreA','number']}</td><td>@{[input 'cardGreS','number']}</td><td>@{[input 'cardGreSS','number']}</td></tr>
@@ -1355,7 +1307,7 @@ print <<"HTML";
       <div class="box" id="history">
         <h2>セッション履歴</h2>
         @{[input 'historyNum','hidden']}
-        <table class="edit-table line-tbody" id="history-table">
+        <table class="edit-table line-tbody no-border-cells" id="history-table">
           <thead>
             <tr>
               <th></th>
@@ -1694,7 +1646,8 @@ foreach my $key (keys %data::class) {
     'craftData' : @{[ $data::class{$key}{'craft'}{'data'} ? 1 : 0 ]},
     'craftStt'  : '$data::class{$key}{'craft'}{'stt'}',
     'craftPower': '$data::class{$key}{'craft'}{'power'}',
-    'language' : @{[ JSON::PP->new->encode($data::class{$key}{'language'} || '') ]},
+    'language' : @{[ $data::class{$key}{'language'} ? JSON::PP->new->encode($data::class{$key}{'language'}) : '""' ]},
+    'package'  : @{[ $data::class{$key}{'package'}  ? JSON::PP->new->encode($data::class{$key}{'package' }) : '""' ]},
   },
 HTML
 }
