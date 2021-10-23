@@ -212,10 +212,6 @@
   }
 }
 
-#lois table tbody td,
-#memory table tbody td {
-  border-width: 0 !important;
-}
 #lois table {
 }
 #lois table tbody tr td:first-child {
@@ -312,12 +308,10 @@
 
 #effect table tbody td {
   padding: .5rem 0 0;
-  border-width: 0;
   vertical-align: bottom;
 }
 #effect table tbody td[colspan] {
   padding: 0 0 .5rem;
-  border-top: hidden;
   vertical-align: middle;
   text-align: right;
 }
@@ -502,7 +496,6 @@
 }
 #magic table tbody td {
   padding: .5rem 0;
-  border-width: 0;
 }
 @media screen and (max-width:735px){
   #magic table {
@@ -658,10 +651,6 @@
 #items table.edit-table tbody td {
   vertical-align: top;
   padding: .4rem 0 0;
-  border: 0;
-}
-#items table:last-of-type tbody td {
-  border-width: 0;
 }
 @media screen and (max-width:735px){
   #items .box { overflow-x: auto; }
@@ -723,7 +712,6 @@
 }
 
 #history table tbody td {
-  border: 0;
   padding: .4rem 0 .1rem !important;
   vertical-align: top;
 }
@@ -732,7 +720,6 @@
 }
 #history table tbody td.left {
   padding: 0 0 .4rem !important;
-  border-top: hidden;
 }
 #history table tbody td:nth-child(4) input {
   width: 100%;

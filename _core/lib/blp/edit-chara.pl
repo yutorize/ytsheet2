@@ -436,7 +436,7 @@ print <<"HTML";
       
       <div class="box" id="bloodarts">
         <h2>血威</h2>
-        <table class="edit-table line-tbody" id="bloodarts-table">
+        <table class="edit-table line-tbody no-border-cells" id="bloodarts-table">
           <thead>
             <tr><th></th><th>名称</th><th>タイミング</th><th>対象</th><th class="left">解説</th></tr>
           </thead>
@@ -461,7 +461,7 @@ print <<"HTML";
       <div class="box" id="arts">
         <h2>特技</h2>
         @{[input 'artsNum','hidden']}
-        <table class="edit-table line-tbody" id="arts-table">
+        <table class="edit-table line-tbody no-border-cells" id="arts-table">
           <thead>
             <tr><th></th><th>名称</th><th>タイミング</th><th>対象</th><th>代償</th><th>条件</th><th class="left">解説</th></tr>
           </thead>
@@ -533,7 +533,7 @@ print <<"HTML";
       <div class="box" id="history">
         <h2>セッション履歴</h2>
         @{[input 'historyNum','hidden']}
-        <table class="edit-table line-tbody" id="history-table">
+        <table class="edit-table line-tbody no-border-cells" id="history-table">
           <thead>
           <tr>
             <th></th>

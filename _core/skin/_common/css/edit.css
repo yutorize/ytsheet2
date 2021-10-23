@@ -155,26 +155,51 @@ table.edit-table:not(.side-margin) thead th,
 }
 table.edit-table > tbody tr,
 .edit-tables table tbody tr {
-  border-width: .1rem 0;
+  border-width: 1px 0;
   border-style: solid;
 }
 table.edit-table:last-child {
   border-bottom-style: hidden !important;
 }
-table.edit-table:not(.side-margin) tbody > tr > *,
-.edit-tables:not(.side-margin) table tbody > tr > * {
+table.edit-table:not(.side-margin):not(.no-border-cells) tbody > tr > *,
+.edit-tables:not(.side-margin):not(.no-border-cells) table tbody > tr > * {
   border-left-width: 1px;
   border-right-width: 1px;
   border-left-style: dotted;
   border-right-style: dotted;
+}
+table.edit-table.line-tbody.no-border-cells tbody > tr {
+  border-width: 0px;
+}
+table.edit-table.line-tbody.no-border-cells tbody {
+  border-width: 1px 0;
+  border-style: solid;
+}
+table.edit-table:not(.line-tbody).no-border-cells tbody tr > * {
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+table.edit-table.line-tbody.no-border-cells tbody tr:first-child > * {
+  padding-top: 2px;
+}
+table.edit-table.line-tbody.no-border-cells tbody tr:last-child > * {
+  padding-bottom: 2px;
 }
 table.edit-table tbody td select,
 table.edit-table tbody td textarea,
 table.edit-table tbody td input[type="text"],
 table.edit-table tbody td input[type="number"],
 table.edit-table tbody td input[type="url"] {
+  width: calc(100% - 2px);
+  margin: 1px;
+}
+table.edit-table.no-border-cells tbody td select,
+table.edit-table.no-border-cells tbody td textarea,
+table.edit-table.no-border-cells tbody td input[type="text"],
+table.edit-table.no-border-cells tbody td input[type="number"],
+table.edit-table.no-border-cells tbody td input[type="url"] {
   width: calc(100% - 1px);
-  margin: 1px 1px 0 0;
+  margin: 1px 1px 1px 0;
 }
 table.edit-table:not(.side-margin).line-tbody tbody:nth-of-type(even),
 table.edit-table:not(.side-margin):not(.line-tbody) tbody tr:nth-of-type(even),
@@ -359,6 +384,9 @@ article > form > hr {
   min-width: 3em;
   margin: 2px;
   padding: 2px;
+}
+.box textarea {
+  resize: vertical;
 }
 .box input[type="text"],
 .box input[type="url"],

@@ -1155,7 +1155,7 @@ print <<"HTML";
         <div id="area-items-R">
           <div class="box" id="material-cards"@{[ display $pc{'lvAlc'} ]}>
             <h2>マテリアルカード</h2>
-            <table class="edit-table" >
+            <table class="edit-table no-border-cells" >
             <tr><th>  </th><th>B</th><th>A</th><th>S</th><th>SS</th></tr>
             <tr class="cards-red"><th>赤</th><td>@{[input 'cardRedB','number']}</td><td>@{[input 'cardRedA','number']}</td><td>@{[input 'cardRedS','number']}</td><td>@{[input 'cardRedSS','number']}</td></tr>
             <tr class="cards-gre"><th>緑</th><td>@{[input 'cardGreB','number']}</td><td>@{[input 'cardGreA','number']}</td><td>@{[input 'cardGreS','number']}</td><td>@{[input 'cardGreSS','number']}</td></tr>
@@ -1293,7 +1293,7 @@ print <<"HTML";
       <div class="box" id="history">
         <h2>セッション履歴</h2>
         @{[input 'historyNum','hidden']}
-        <table class="edit-table line-tbody" id="history-table">
+        <table class="edit-table line-tbody no-border-cells" id="history-table">
           <thead>
             <tr>
               <th></th>
@@ -1378,14 +1378,14 @@ print <<"HTML";
           <tbody>
           <tr>
             <td>-</td>
-            <td><input type="text" value="2018-08-11" disabled></td>
+            <td><input type="text" value="2015-05-01" disabled></td>
             <td><input type="text" value="第一話「記入例」" disabled></td>
             <td><input type="text" value="1100+50" disabled></td>
             <td><input type="text" value="17" disabled></td>
             <td><input type="text" value="1800" disabled></td>
-            <td><input type="text" value="器用" disabled></td>
+            <td><input type="text" value="筋力" disabled></td>
             <td><input type="text" value="サンプルさん" disabled></td>
-            <td><input type="text" value="アルバート　ラミット　ブランデン　レンダ・レイ　ナイルベルト" disabled></td>
+            <td><input type="text" value="ブラッド　マリー　ガス" disabled></td>
           </tr>
           </tbody>
         </table>

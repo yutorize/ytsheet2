@@ -546,7 +546,7 @@ print <<"HTML";
       </details>
       <details class="box" id="lois" $open{'lois'} style="position:relative">
         <summary>ロイス</summary>
-        <table class="edit-table" id="lois-table">
+        <table class="edit-table no-border-cells" id="lois-table">
           <colgroup><col><col><col><col><col><col><col></colgroup>
           <thead>
             <tr>
@@ -584,7 +584,7 @@ print <<"HTML";
       </details>
       <details class="box" id="memory" $open{'memory'}>
         <summary>メモリー [<span id="exp-memory">0</span>]</summary>
-        <table class="edit-table " id="memory-table">
+        <table class="edit-table no-border-cells" id="memory-table">
           <thead>
             <tr>
               <th>取得</th>
@@ -622,7 +622,7 @@ print <<"HTML";
       <details class="box" id="effect" $open{'effect'}>
         <summary>エフェクト [<span id="exp-effect">0</span>]</summary>
         @{[input 'effectNum','hidden']}
-        <table class="edit-table line-tbody" id="effect-table">
+        <table class="edit-table line-tbody no-border-cells" id="effect-table">
           <thead>
             <tr><th></th><th>名称</th><th>Lv</th><th>タイミング</th><th>技能</th><th>難易度</th><th>対象</th><th>射程</th><th>侵蝕値</th><th>制限</th></tr>
           </thead>
@@ -670,7 +670,7 @@ print <<"HTML";
       <details class="box cc-only" id="magic" $open{'magic'}>
         <summary>術式 [<span id="exp-magic">0</span>]</summary>
         @{[input 'magicNum','hidden']}
-        <table class="edit-table line-tbody" id="magic-table">
+        <table class="edit-table line-tbody no-border-cells" id="magic-table">
           <thead>
             <tr><th></th><th>名称</th><th>種別</th><th>経験点</th><th>発動値</th><th>侵蝕値</th><th>効果</th></tr>
           </thead>
@@ -788,7 +788,7 @@ print <<"HTML";
       <summary>アイテム [<span id="exp-item">0</span>]</summary>
       <div class="box">
         @{[input 'weaponNum','hidden']}
-        <table class="edit-table" id="weapon-table">
+        <table class="edit-table no-border-cells" id="weapon-table">
           <thead>
             <tr><th>武器</th><th>常備化</th><th>経験点</th><th>種別</th><th>技能</th><th>命中</th><th>攻撃力</th><th><span class="small">ガード値</span></th><th>射程</th><th>解説</th></tr>
           </thead>
@@ -817,7 +817,7 @@ print <<"HTML";
       </div>
       <div class="box">
         @{[input 'armorNum','hidden']}
-        <table class="edit-table" id="armor-table">
+        <table class="edit-table no-border-cells" id="armor-table">
           <thead>
             <tr><th>防具</th><th>常備化</th><th>経験点</th><th>種別</th><th></th><th>行動</th><th>ドッジ</th><th>装甲値</th><th>解説</th></tr>
           </thead>
@@ -845,7 +845,7 @@ print <<"HTML";
       </div>
       <div class="box">
         @{[input 'vehicleNum','hidden']}
-        <table class="edit-table" id="vehicle-table">
+        <table class="edit-table no-border-cells" id="vehicle-table">
           <thead>
             <tr><th>ヴィークル</th><th>常備化</th><th>経験点</th><th>種別</th><th>技能</th><th>行動</th><th>攻撃力</th><th>装甲値</th><th><span class="small">全力移動</span></th><th>解説</th></tr>
           </thead>
@@ -874,7 +874,7 @@ print <<"HTML";
       </div>
       <div class="box">
         @{[input 'itemNum','hidden']}
-        <table class="edit-table" id="item-table">
+        <table class="edit-table no-border-cells" id="item-table">
           <thead>
             <tr><th>一般アイテム</th><th>常備化</th><th>経験点</th><th>種別</th><th>技能</th><th>解説</th></tr>
           </thead>
@@ -960,7 +960,7 @@ print <<"HTML";
       <div class="box" id="history">
         <h2>セッション履歴</h2>
         @{[input 'historyNum','hidden']}
-        <table class="edit-table line-tbody" id="history-table">
+        <table class="edit-table line-tbody no-border-cells" id="history-table">
           <colgroup><col><col><col><col><col><col><col></colgroup>
           <thead>
           <tr>

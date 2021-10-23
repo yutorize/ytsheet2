@@ -205,7 +205,6 @@ body:not(.type-human) .h-only {
 }
 #bloodarts table tbody td,
 #arts table tbody td {
-  border: 0;
   padding: .3rem 0 .4rem !important;
 }
 @media screen and (max-width:735px){
@@ -259,7 +258,6 @@ body:not(.type-human) .h-only {
 }
 
 #history table tbody td {
-  border: 0;
   padding: .4rem 0 .1rem !important;
   vertical-align: top;
 }
@@ -268,7 +266,6 @@ body:not(.type-human) .h-only {
 }
 #history table tbody td.left {
   padding: 0 0 .4rem !important;
-  border-top: hidden;
 }
 
 #history .annotate {
