@@ -31,7 +31,7 @@ $data::class{'レンジャー'}{'package'} = {
   'Int' => { 'name' => '知力', 'stt' => 'E' },
 };
 $data::class{'セージ'}{'package'} = {
-  'Int' => { 'name' => '知力', 'stt' => 'E' },
+  'Int' => { 'name' => '知力', 'stt' => 'E', 'monsterLore' => 1 },
 };
 $data::class{'バード'}{'package'} = {
   'Int' => { 'name' => '見識', 'stt' => 'E' },
