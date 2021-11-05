@@ -986,7 +986,7 @@ if($pc{'forbidden'} eq 'all' && $pc{'forbiddenMode'}){
   $SHEET->param(characterNameTitle => '非公開データ');
 }
 else {
-  $SHEET->param(characterNameTitle => tag_delete name_plain $pc{'characterName'});
+  $SHEET->param(characterNameTitle => tag_delete name_plain($pc{'characterName'}||"“$pc{'aka'}”"));
 }
 
 ### 画像 --------------------------------------------------
