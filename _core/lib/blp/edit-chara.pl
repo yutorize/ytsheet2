@@ -79,7 +79,7 @@ $pc{'freeHistory'}   =~ s/&lt;br&gt;/\n/g;
 $pc{'chatPalette'}   =~ s/&lt;br&gt;/\n/g;
 
 ### フォーム表示 #####################################################################################
-my $titlebarname = tag_delete name_plain tag_unescape $pc{'characterName'} if $pc{'characterName'};
+my $titlebarname = tag_delete name_plain tag_unescape ($pc{'characterName'}||"“$pc{'aka'}”");
 print <<"HTML";
 Content-type: text/html\n
 <!DOCTYPE html>

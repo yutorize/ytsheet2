@@ -133,7 +133,7 @@ $pc{"vehicle${_}Note"} =~ s/&lt;br&gt;/\n/g foreach (1 .. $pc{'vehicleNum'});
 $pc{"item${_}Note"}    =~ s/&lt;br&gt;/\n/g foreach (1 .. $pc{'itemNum'});
 
 ### フォーム表示 #####################################################################################
-my $titlebarname = tag_delete name_plain tag_unescape $pc{'characterName'} if $pc{'characterName'};
+my $titlebarname = tag_delete name_plain tag_unescape ($pc{'characterName'}||"“$pc{'aka'}”");
 print <<"HTML";
 Content-type: text/html\n
 <!DOCTYPE html>

@@ -205,8 +205,10 @@ if($::in{'url'}){
   $SHEET->param("convertMode" => 1);
   $SHEET->param("convertUrl" => $::in{'url'});
 }
+
 ### キャラクター名 --------------------------------------------------
 $SHEET->param("characterName" => "<ruby>$pc{'characterName'}<rt>$pc{'characterNameRuby'}</rt></ruby>") if $pc{'characterNameRuby'};
+
 ### 二つ名 --------------------------------------------------
 $SHEET->param("aka" => "<ruby>$pc{'aka'}<rt>$pc{'akaRuby'}</rt></ruby>") if $pc{'akaRuby'};
 
@@ -643,7 +645,7 @@ if($pc{'forbidden'} eq 'all' && $pc{'forbiddenMode'}){
   $SHEET->param(characterNameTitle => '非公開データ');
 }
 else {
-  $SHEET->param(characterNameTitle => tag_delete name_plain $pc{'characterName'});
+  $SHEET->param(characterNameTitle => tag_delete name_plain($pc{'characterName'}||"“$pc{'aka'}”"));
 }
 
 ### 種族名 --------------------------------------------------
