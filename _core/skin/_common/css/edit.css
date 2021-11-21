@@ -84,6 +84,9 @@ dt.fail::before {
   font-weight: bold;
   color: #c00;
 }
+.night dt.fail::before {
+  color: #e80;
+}
 dt.fail > select,
 dt.fail + dd > input {
   background-color: transparent;
@@ -99,6 +102,15 @@ select.select,
 .error select {
   color: #c00;
   border-color: #f00;
+  border-style: dotted;
+  background-color: rgba(255,0,0,0.1);
+}
+.night input.error,
+.night select.select,
+.night .error input,
+.night .error select {
+  color: #ea0;
+  border-color: #f70;
   border-style: dotted;
   background-color: rgba(255,0,0,0.1);
 }
