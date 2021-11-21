@@ -207,7 +207,7 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
   display: grid;
   grid-gap: 1rem;
   grid-template-columns: 0.7fr 1.1fr 1.1fr 2.115fr;
-  grid-template-rows: auto;
+  grid-template-rows: auto auto auto 1fr;
   grid-template-areas:
     "PER PER WKS IMG"
     "REN REN REN IMG"
@@ -502,10 +502,11 @@ p.words span.brackets {
 }
 #exp dl {
   display: grid;
-  grid-template-columns: 2em 1fr;
+  grid-template-columns: max-content 1fr;
   align-items: end;;
   margin: 0 .5rem;
   line-height: 1;
+  white-space: nowrap;
 }
 #exp dl > * {
 }
@@ -521,7 +522,6 @@ p.words span.brackets {
 #exp dl dd {
   grid-column: 2;
   text-align: right;
-  white-space: nowrap;
   font-size: 120%;
   padding: .3rem 0 .1rem;
 }
@@ -533,8 +533,7 @@ p.words span.brackets {
 
 /* Lifepath */
 #lifepath {
-  display: grid;
-  grid-template-rows: max-content auto;
+  align-self: end;
 }
 #lifepath table {
   width: 100%;

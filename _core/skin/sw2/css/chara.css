@@ -215,7 +215,7 @@ dl.data-table:last-child > dt:last-of-type ~ dd,
   #area-status {
     display: grid;
     grid-gap: 5px;
-    grid-template-columns: 0.7fr 0.7fr 1.5fr 2.1fr;
+    grid-template-columns: 0.7fr 0.6fr 1.6fr 2.1fr;
     grid-template-rows: auto;
 
     grid-template-areas:
@@ -543,10 +543,11 @@ p.words span.brackets {
   transform: scaleY(1.1);
 }
 @media screen and (max-width:735px){
-  #sub-status dt span {
+  #sub-status dt > span {
     display: inline-block;
-    font-size: 90%;
-    transform: scaleY(calc(1/0.9));
+    margin-left : -5%;
+    margin-right: -5%;
+    transform: scaleX(0.9);
   }
 }
 
@@ -564,11 +565,25 @@ dl#level dd {
   
   font-size: 200%;
 }
-@media screen and (max-width:735px){
-  dl#level dt::after {
+@media screen and (min-width:1400px) and (max-width:1600px){
+  dl#level dt> span::after {
     content:'Lv'
   }
-  dl#level dt span {
+  dl#level dt span.shorten {
+    display: none;
+  }
+}
+@media screen and (max-width:735px){
+  dl#level dt > span {
+    display: inline-block;
+    margin-left : -5%;
+    margin-right: -5%;
+    transform: scaleX(0.9);
+  }
+  dl#level dt > span::after {
+    content:'Lv'
+  }
+  dl#level dt span.shorten {
     display: none;
   }
 }
@@ -579,8 +594,8 @@ dl#level dd {
 }
 #exp dl {
   display: grid;
-  grid-template-columns: 2em 1fr;
-  align-items: end;;
+  grid-template-columns: max-content 1fr;
+  align-items: end;
   margin: 0 .5rem;
   line-height: 1;
   white-space: nowrap;
@@ -601,6 +616,7 @@ dl#level dd {
   text-align: right;
   font-size: 120%;
   padding: .3rem 0 .1rem;
+  font-family: var(--font-proportional);
 }
 
 /* // Area-Ability
@@ -1253,14 +1269,13 @@ div#area-items-R {
 #cashbook {
   margin-top: 1rem;
   height: max-content;
+  overflow: hidden;
 }
 #cashbook > div {
   max-height: 16em;
   overflow: auto;
-  margin: 0 .5em;
 }
 #cashbook p {
-  margin: .3rem 0 0;
   line-height: 1.5;
   white-space: pre-wrap;
 }

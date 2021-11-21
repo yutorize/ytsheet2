@@ -232,11 +232,11 @@ window.onload = function() {
 
         <div class="box-union" id="sub-status">
           <dl class="box">
-            <dt><span>生命抵抗力</span></dt>
+            <dt><span>生命抵抗<span class="sp-del">力</span></span></dt>
             <dd><TMPL_IF vitResistAddTotal><span class="sp-del"><TMPL_VAR vitResistBase></span>+<TMPL_VAR vitResistAddTotal>=</TMPL_IF><b><TMPL_VAR vitResistTotal></b></dd>
           </dl>
           <dl class="box">
-            <dt><span>精神抵抗力</span></dt>
+            <dt><span>精神抵抗<span class="sp-del">力</span></span></dt>
             <dd><TMPL_IF mndResistAddTotal><span class="sp-del"><TMPL_VAR mndResistBase></span>+<TMPL_VAR mndResistAddTotal>=</TMPL_IF><b><TMPL_VAR mndResistTotal></b></dd>
           </dl>
           <dl class="box">
@@ -250,7 +250,7 @@ window.onload = function() {
         </div>
         
         <dl class="box" id="level">
-          <dt>冒険者<span>レベル</span></dt><dd><TMPL_VAR level></dd>
+          <dt><span>冒険者<span class="shorten">レベル</span></span></dt><dd><TMPL_VAR level></dd>
         </dl>
         <section class="box" id="exp">
           <h2>経験点</h2>
