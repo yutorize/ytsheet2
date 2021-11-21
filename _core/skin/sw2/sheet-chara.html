@@ -660,7 +660,7 @@ window.onload = function() {
       </section>
       <TMPL_IF cashbook>
       <section class="box" id="cashbook">
-        <h2>収支履歴</h2>
+        <h2><TMPL_IF head_cashbook><TMPL_VAR head_cashbook><TMPL_ELSE>収支履歴</TMPL_IF></h2>
         <div><p><TMPL_VAR cashbook></p></div>
       </section>
       </TMPL_IF>
