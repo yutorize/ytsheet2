@@ -663,47 +663,47 @@ textarea::placeholder {
 /* // Tags
 ---------------------------------------------------------------------------------------------------- */
 #tags {
+  display: flex;
+  gap: .3rem .5rem;
   margin: .5rem;
-  margin-right: -.5rem;
   min-height: 0.1px;
+  flex-wrap: wrap;
 }
 #tags a,
 #tags i {
-  display: inline-block;
-  margin-right: 1rem;
-  padding: .2rem .5rem .2rem .2rem;
+  display: inline-flex;
+  align-items: center;
+  background-image: none;
+}
+#tags > * {
+}
+#tags .tag {
+  padding: .2rem .5rem;
   border-radius: 12px 5px 5px 12px;
   background-color: rgba(140,170,200,0.3);
-  background-image: none;
   color: inherit;
 }
-#tags a::before {
+#tags .tag::before {
   content:"●";
-  color: #fff;
+  margin-left: -.3rem;
+  color: var(--bg-color);
   font-size: 80%;
 }
-.night #tags a::before {
-  color: #000;
-}
-#tags a:hover {
+#tags .tag:hover {
   background-color: rgba(120,220,220,0.4) !important;
 }
-#tags a#group {
-  margin-right: 1rem;
+#tags #group {
   padding: .2rem 1rem;
   border-radius: 5px;
   background-color: rgba(140,200,170,0.3);
   color: inherit;
 }
-#tags a#group::before {
-  content:'';
-}
-#tags i {
+#tags .stage {
   border-radius: 5px;
   padding: .1rem .5rem;
   font-style: normal;
   background-color: var(--bg-color);
-  box-shadow: var(--box-outside-border-color) 0 0 0 1px;
+  box-shadow: var(--box-outside-border-color) 0 0 0 1px inset;
 }
 
 

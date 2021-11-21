@@ -149,9 +149,9 @@ window.onload = function() {
       </div>
       
       <div id="tags">
-        <TMPL_IF group><a href="./?group=<TMPL_VAR group>" id="group"><TMPL_VAR groupName></a></TMPL_IF>
-        <TMPL_IF stage><i href="./?group=<TMPL_VAR group>" id="stage"><TMPL_VAR stage></i></TMPL_IF>
-        <TMPL_LOOP Tags><a href="./?tag=<TMPL_VAR URL>"><TMPL_VAR TEXT></a></TMPL_LOOP>
+        <TMPL_IF group><a id="group" href="./?group=<TMPL_VAR group>"><TMPL_VAR groupName></a></TMPL_IF>
+        <TMPL_IF stage><i class="stage" id="stage"><TMPL_VAR stage></i></TMPL_IF>
+        <TMPL_LOOP Tags><a class="tag" href="./?tag=<TMPL_VAR URL>"><TMPL_VAR TEXT></a></TMPL_LOOP>
       </div>
       <div class="column column-status"><!-- COLUMN -->
       <div id="area-status">
