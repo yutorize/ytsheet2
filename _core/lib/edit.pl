@@ -33,7 +33,7 @@ sub pcDataGet {
   # エラー
   if($main::make_error) {
     $mode = ($mode eq 'save') ? 'edit' : 'blanksheet';
-    for (param()){ $pc{$_} = param($_); }
+    for (param()){ $pc{$_} = decode('utf8', param($_)); }
     $message = $::make_error;
   }
   # 保存 / 編集 / 複製 / コンバート
