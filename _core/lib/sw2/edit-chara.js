@@ -820,7 +820,7 @@ function checkFeats(){
         }
       }
       else if (feat.match(/薙ぎ払い/)){
-        if(level < 3){ cL.add("error"); }
+        if(lv['Fig'] < 3){ cL.add("error"); }
         if(feat.match(/Ⅰ$/)){
           if (f2 && lv['Fig'] >= 9) { (auto) ? box.value = "薙ぎ払いⅡ" : cL.add("mark") }
         }
