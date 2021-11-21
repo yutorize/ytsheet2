@@ -50,7 +50,7 @@ textarea,tt {
   --bg-color: #000;
   --input-bg-color: rgba(0,0,0,0.8);
 }
-* {
+*, *::before, *::after {
   margin: 0px;
   padding: 0px;
   box-sizing: border-box;
