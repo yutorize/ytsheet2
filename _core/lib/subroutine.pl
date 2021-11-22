@@ -274,6 +274,19 @@ sub ceil {
   return int($num + $val);
 }
 
+### 正の数に+追加 --------------------------------------------------
+sub addNum {
+  my $num = shift;
+  return ($num > 0) ? "+$num" : ($num == 0) ? '' : $num;
+}
+
+### 数値3桁区切り --------------------------------------------------
+sub commify {
+  my $num = shift;
+  $num=~s/([0-9]{1,3})(?=(?:[0-9]{3})+(?![0-9]))/$1,/g;
+  return $num;
+}
+
 
 ### タグ変換 --------------------------------------------------
 sub tag_link_url {
@@ -300,8 +313,6 @@ sub tag_unescape_lines {
   $text =~ s/^CENTER:/<\/p><p class="center">/gim;
   $text =~ s/^RIGHT:/<\/p><p class="right">/gim;
   
-  $text =~ s/^RIGHT:/<\/p><p class="right">/gim;
-  
   my $d_count = 0;
   $d_count += ($text =~ s/^\[&gt;\]\*\*\*\*(.*?)$/<\/p><details><summary class="header4">$1<\/summary><div class="detail-body"><p>/gim);
   $d_count += ($text =~ s/^\[&gt;\]\*\*\*(.*?)$/<\/p><details><summary class="header3">$1<\/summary><div class="detail-body"><p>/gim);
@@ -321,8 +332,9 @@ sub tag_unescape_lines {
   $text =~ s/^\*(.*?)$/<\/p><h2>$1<\/h2><p>/gim;
   
   $text =~ s/^\|(.*?)\|$/&tablecall($1)/egim;
-  $text =~ s/(<\/tr>)\n/$1/gi;
-  $text =~ s/(?!<\/tr>|<table>)(<tr>.*?<\/tr>)(?!<tr>|<\/table>)/<\/p><table class="note-table">$1<\/table><p>/gi;
+  $text =~ s/^\|(.*?)\|c$/&colcall($1)/egim;
+  $text =~ s/(<\/tr>|<\/colgroup>)\n/$1/gi;
+  $text =~ s/(?!<\/tr>|<table>)(<colgroup>.*?<\/colgroup>)?(<tr>.*?<\/tr>)(?!<tr>|<\/table>)/<\/p><table class="note-table">$1$2<\/table><p>/gi;
   
   $text =~ s/^\:(.*?)\|(.*?)$/<dt>$1<\/dt><dd>$2<\/dd>/gim;
   $text =~ s/(<\/dd>)\n/$1/gi;
@@ -364,9 +376,18 @@ sub colcall {
   foreach(@col){
     push (@out, &tablestyle($_));
   }
-  return @out;
+  return '<colgroup>'.(join '', @out).'</colgroup>';
 }
-
+sub tablestyle {
+  if($_[0] =~ /([0-9]+)(px|em|\%)/){
+    my $num = $1; my $type = $2;
+    if   ($type eq 'px' && $num > 300){ $num = 300 }
+    elsif($type eq 'em' && $num >  20){ $num =  20 }
+    elsif($type eq  '%' && $num > 100){ $num = 100 }
+    return "<col style=\"width:calc(${num}${type} + 1em)\">";
+  }
+  else { return '<col>' }
+}
 ### タグ削除 --------------------------------------------------
 sub tag_delete {
   my $text = $_[0];

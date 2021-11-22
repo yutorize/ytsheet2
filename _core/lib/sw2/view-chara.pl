@@ -221,7 +221,11 @@ if($pc{'faith'} eq 'その他の信仰') { $SHEET->param("faith" => $pc{'faithOt
 $pc{'faith'} =~ s/“(.*)”//;
 
 ### 経験点 --------------------------------------------------
-$SHEET->param("expUsed" => $pc{'expTotal'} - $pc{'expRest'}) ;
+$pc{'expUsed'} = $pc{'expTotal'} - $pc{'expRest'};
+foreach('expUsed','expTotal','expRest'){
+  $pc{$_} = commify $pc{$_};
+  $SHEET->param($_ => $pc{$_});
+}
 
 ### 技能 --------------------------------------------------
 my @classes; my %classes; my $class_text;
@@ -851,6 +855,8 @@ foreach (0 .. $pc{'historyNum'}){
   }
   if   ($pc{"history${_}HonorType"} eq 'barbaros'){ $pc{"history${_}Honor"} = '蛮'.$pc{"history${_}Honor"}; }
   elsif($pc{"history${_}HonorType"} eq 'dragon'  ){ $pc{"history${_}Honor"} = '竜'.$pc{"history${_}Honor"}; }
+  $pc{'history'.$_.'Money'} =~ s/([0-9]+)/$1<wbr>/g;
+  $pc{'history'.$_.'Money'} =~ s/([0-9]+)/commify($1);/ge;
   push(@history, {
     "NUM"    => ($pc{'history'.$_.'Gm'} ? $h_num : ''),
     "DATE"   => $pc{'history'.$_.'Date'},
@@ -865,6 +871,9 @@ foreach (0 .. $pc{'historyNum'}){
   } );
 }
 $SHEET->param(History => \@history);
+$SHEET->param(historyExpTotal   => commify $pc{'historyExpTotal'}   );
+$SHEET->param(hisotryHonorTotal => commify $pc{'hisotryHonorTotal'} );
+$SHEET->param(hisotryMoneyTotal => commify $pc{'hisotryMoneyTotal'} );
 
 
 ### 名誉アイテム --------------------------------------------------
