@@ -73,7 +73,7 @@ io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2SwordWorld2E
 
 	let palette = `<chat-palette dicebot="SwordWorld2_5">\n`;
 	if(defaultPalette) {
-		palette += defaultPalette.palette.replace('&','&amp;').replace('<','&lt;').replace('>','&gt;');
+		palette += defaultPalette.palette.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 	}
 	palette += `  </chat-palette>`;
 
@@ -225,7 +225,7 @@ io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2SwordWorld2P
 
 	let palette = `<chat-palette dicebot="SwordWorld2_5">\n`;
 	if(defaultPalette) {
-		palette += defaultPalette.palette.replace('&','&amp;').replace('<','&lt;').replace('>','&gt;');
+		palette += defaultPalette.palette.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 	}
 	palette += `  </chat-palette>`;
 	return `<?xml version="1.0" encoding="UTF-8"?>
