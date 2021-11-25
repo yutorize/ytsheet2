@@ -874,8 +874,8 @@ foreach (0 .. $pc{'historyNum'}){
 }
 $SHEET->param(History => \@history);
 $SHEET->param(historyExpTotal   => commify $pc{'historyExpTotal'}   );
-$SHEET->param(hisotryHonorTotal => commify $pc{'hisotryHonorTotal'} );
-$SHEET->param(hisotryMoneyTotal => commify $pc{'hisotryMoneyTotal'} );
+$SHEET->param(historyHonorTotal => commify $pc{'historyHonorTotal'} );
+$SHEET->param(historyMoneyTotal => commify $pc{'historyMoneyTotal'} );
 
 
 ### 名誉アイテム --------------------------------------------------

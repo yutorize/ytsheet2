@@ -55,7 +55,7 @@ sub data_calc {
     }
   }
   $pc{'historyExpTotal'} = $pc{'expTotal'};
-  $pc{'hisotryMoneyTotal'} = $pc{'moneyTotal'};
+  $pc{'historyMoneyTotal'} = $pc{'moneyTotal'};
   $pc{'historyHonorTotal'} = $pc{'honor'};
   ## 収支履歴計算
   my $cashbook = $pc{"cashbook"};

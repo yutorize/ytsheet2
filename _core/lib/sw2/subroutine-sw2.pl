@@ -187,7 +187,7 @@ sub data_update_chara {
   if($ver < 1.15003){
     foreach my $i (0 .. $pc{'historyNum'}){
       $pc{'historyExpTotal'} += s_eval($pc{"history${i}Exp"});
-      $pc{'hisotryMoneyTotal'} += s_eval($pc{"history${i}Money"});
+      $pc{'historyMoneyTotal'} += s_eval($pc{"history${i}Money"});
       
       if   ($pc{"history${i}HonorType"} eq 'barbaros'){ $pc{'historyHonorBarbarosTotal'} += s_eval($pc{"history${i}Honor"}); }
       elsif($pc{"history${i}HonorType"} eq 'dragon'  ){ $pc{'historyHonorDragonTotal'}   += s_eval($pc{"history${i}Honor"}); }
@@ -211,6 +211,9 @@ sub data_update_chara {
       $pc{'magicPowerOwnWiz'} = ($pc{'magicPowerOwnSor'} && $pc{'magicPowerOwnCon'}) ? 1 : 0;
     }
     else { $pc{'lvWiz'} = 0; }
+  }
+  if($ver < 1.16013){
+    $pc{'historyMoneyTotal'} = $pc{'hisotryMoneyTotal'};
   }
   $pc{'ver'} = $main::ver;
   $pc{'lasttimever'} = $ver;
