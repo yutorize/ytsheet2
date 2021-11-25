@@ -11,6 +11,7 @@ sub magicPows {
   my %pows = (
     'Sor' => [10,20],
     'Con' => [ 0],
+    'Wiz' => [],
     'Pri' => [10],
     'Mag' => [],
     'Fai' => [10],
@@ -33,6 +34,10 @@ sub magicPows {
   if($::pc{'lvCon'} >=  8){ push(@{$pows{'Con'}}, 20) }
   if($::pc{'lvCon'} >=  9){ push(@{$pows{'Con'}}, 30) }
   if($::pc{'lvCon'} >= 15){ push(@{$pows{'Con'}}, 60) }
+  if(min($::pc{'lvSor'},$::pc{'lvCon'}) >=  8){ push(@{$pows{'Wiz'}}, 10) }
+  if(min($::pc{'lvSor'},$::pc{'lvCon'}) >=  4){ push(@{$pows{'Wiz'}}, 20) }
+  if(min($::pc{'lvSor'},$::pc{'lvCon'}) >= 10){ push(@{$pows{'Wiz'}}, 30) }
+  if(min($::pc{'lvSor'},$::pc{'lvCon'}) >= 13){ push(@{$pows{'Wiz'}}, 70) }
   if($::pc{'lvPri'} >=  5){ push(@{$pows{'Pri'}}, 20) }
   if($::pc{'lvPri'} >=  9){ push(@{$pows{'Pri'}}, 30) }
   if($::pc{'lvFai'} >=  5){ push(@{$pows{'Fai'}}, 20) }
@@ -103,6 +108,7 @@ sub palettePreset {
     foreach (
       ['Sor', '真語魔法'],
       ['Con', '操霊魔法'],
+      ['Wiz', '深智魔法'],
       ['Pri', '神聖魔法'],
       ['Mag', '魔動機術'],
       ['Fai', '妖精魔法'],
