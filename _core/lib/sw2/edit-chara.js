@@ -192,6 +192,7 @@ function calcLv(){
       else { cL.add("fail"); }
     }
   }
+  calcFairy();
 }
 
 // 種族変更 ----------------------------------------
@@ -1126,6 +1127,23 @@ function calcMagic() {
   document.getElementById("magic-power-magicenhance").style.display = feats['魔力強化']      ? '' : 'none';
   document.getElementById("magic-power-common"      ).style.display = openMagic              ? '' : 'none';
   document.getElementById("magic-power-hr"          ).style.display = openMagic && openCraft ? '' : 'none';
+}
+
+// 妖精魔法ランク計算 ----------------------------------------
+function calcFairy() {
+  const rank = {
+      4 : ['×','1','2','3','4','5','6','7','8','9','10','11','12','13','14','15'],
+      3 : ['×','×','×','4','5','6','8','9','10','12','13','14','15','15','15','15'],
+      6 : ['×','×','×','2&1','3&1','4&1','4&2','5&2','6&2','6&3','7&3','8&3','8&4','9&4','10&4','10&5'],
+  };
+  let i = 0;
+  Array('Earth','Water','Fire','Wind','Light','Dark').forEach((s) => {
+    if(form[`fairyContract${s}`].checked){ i++ }
+  });
+  let result = '×';
+  if(rank[i]){ result = rank[i][lv['Fai']] || '×'; }
+  else { result = '×'; }
+  document.getElementById('fairy-rank').innerHTML = result;
 }
 
 // 攻撃計算 ----------------------------------------
