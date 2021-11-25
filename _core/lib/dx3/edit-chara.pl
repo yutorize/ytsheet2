@@ -298,7 +298,7 @@ print <<"HTML";
       </details>
 
       <div id="area-status">
-        @{[ image_form ]}
+        @{[ image_form("${set::char_dir}${file}/image.$pc{'image'}?$pc{'imageUpdate'}") ]}
 
         <div class="box-union" id="personal">
           <dl class="box"><dt>年齢  </dt><dd>@{[input "age"]}</dd></dl>

@@ -283,7 +283,7 @@ print <<"HTML";
         </dl>
       </details>
       <div id="area-status">
-        @{[ image_form ]}
+        @{[ image_form("${set::char_dir}${file}/image.$pc{'image'}?$pc{'imageUpdate'}") ]}
 
         <div id="personal">
           <dl class="box" id="race">

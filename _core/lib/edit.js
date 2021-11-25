@@ -60,6 +60,7 @@ function palettePresetChange (){
 // ビューを開く
 function imagePositionView(){
   document.getElementById('image-custom').style.display = 'grid';
+  imageDragPointSet();
 }
 function imagePositionClose(){
   document.getElementById('image-custom').style.display = 'none';
@@ -82,6 +83,7 @@ function imageBlobPreview(blob){
     el.style.backgroundImage = 'url("'+blobURL+'")';
   });
   imgURL = blobURL;
+  imageDragPointSet();
 }
 // 圧縮
 let compress_scale = 1;
@@ -156,6 +158,108 @@ function imagePosition(){
   });
   
   document.getElementById("image-percent-bar").value = form.imagePercent.value;
+}
+// ドラッグ処理
+let dragFlag = 0;
+let dragPoint = {};
+function imageDragStart(e){
+  e.preventDefault();
+  dragFlag = 1;
+  dragPoint.x = e.x || e.changedTouches[0].pageX;
+  dragPoint.y = e.y || e.changedTouches[0].pageY;
+  console.log('start',dragPoint.x ,dragPoint.y)
+}
+let baseDistance = 0;
+function imageDragMove(e){
+  e.preventDefault();
+  const touches = e.changedTouches || 0;
+  // スマホ拡大縮小
+  if (touches.length > 1) {
+		const x1 = touches[0].pageX;
+		const y1 = touches[0].pageY;
+		const x2 = touches[1].pageX;
+		const y2 = touches[1].pageY;
+    const distance = Math.sqrt( Math.pow( x2-x1, 2 ) + Math.pow( y2-y1, 2 ) );
+    const obj = form.imagePercent;
+    if(baseDistance){
+      const gap = (distance - baseDistance);
+      if     (gap > 0){ obj.value = Number(obj.value)+5; }
+      else if(gap < 0){ obj.value = Number(obj.value)-5; }
+      if(obj.value < 0){ obj.value = 0 }
+    }
+    else { baseDistance = distance; }
+    imageDragPointSet();
+    imagePosition();
+  }
+  // ドラッグ移動
+  else {
+    if(dragFlag){
+      const objX = form.imagePositionX;
+      const objY = form.imagePositionY;
+      const objP = form.imagePercent;
+      const x = e.x || e.changedTouches[0].pageX;
+      const y = e.y || e.changedTouches[0].pageY;
+      objX.value = Number(objX.value) + (dragPoint.x - x) * pointWidth;
+      objY.value = Number(objY.value) + (dragPoint.y - y) * pointHeight;
+      dragPoint.x = x;
+      dragPoint.y = y;
+      console.log(dragPoint.x ,dragPoint.y)
+      imagePosition();
+    }
+  }
+}
+function imageDragEnd(){
+  dragFlag = 0;
+  baseDistance = 0;
+}
+function imageDragPointSet(){
+  let img = new Image();
+  img.src = imgURL;
+  img.onload = function() {
+    const type = form.imageFit.value;
+    const ratio = Number(form.imagePercent.value) / 100;
+    const imgWidth  = img.width;
+    const imgHeight = img.height;
+    const boxWidth  = document.getElementById('image-custom-frame-M').offsetWidth  || 350;
+    const boxHeight = document.getElementById('image-custom-frame-M').offsetHeight || 567;
+    let viewWidth  = boxWidth;
+    let viewHeight = boxHeight;
+    if     (type === 'percentX'){
+      viewWidth  = boxWidth * ratio;
+      viewHeight = boxWidth * ratio * (imgHeight / imgWidth);
+    }
+    else if(type === 'percentY'){
+      viewWidth  = boxHeight * ratio * (imgWidth / imgHeight);
+      viewHeight = boxHeight * ratio;
+    }
+    else if(type === 'unset'){
+      viewWidth  = imgWidth;
+      viewHeight = imgHeight;
+    }
+    else if(type === 'cover'){
+      if(boxWidth/boxHeight > imgWidth/imgHeight){
+        viewWidth = boxWidth;
+        viewHeight = boxWidth * (imgHeight / imgWidth);
+      }
+      else {
+        viewWidth  = boxHeight * (imgWidth / imgHeight);
+        viewHeight = boxHeight;
+      }
+    }
+    else if(type === 'contain'){
+      if(boxWidth/boxHeight < imgWidth/imgHeight){
+        viewWidth = boxWidth;
+        viewHeight = boxWidth * (imgHeight / imgWidth);
+      }
+      else {
+        viewWidth  = boxHeight * (imgWidth / imgHeight);
+        viewHeight = boxHeight;
+      }
+    }
+    pointWidth  = 100 / (viewWidth  - boxWidth);
+    pointHeight = 100 / (viewHeight - boxHeight);
+    console.log(imgURL,imgWidth,imgHeight,pointWidth,pointHeight)
+  }
 }
 // セリフプレビュー
 function wordsPreView(){

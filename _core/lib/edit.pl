@@ -96,6 +96,7 @@ sub login_error {
 
 ## 画像欄
 sub image_form {
+  my $imgurl = shift;
   my $image_maxsize_view = $set::image_maxsize >= 1048576 ? sprintf("%.3g",$set::image_maxsize/1048576).'MB' : sprintf("%.3g",$set::image_maxsize/1024).'KB';
   return <<"HTML";
     <div class="box" id="image" style="max-height:550px;">
@@ -112,14 +113,11 @@ sub image_form {
     
     <div id="image-custom" style="display:none">
       <div class="image-custom-view-area">
-        <div id="image-custom-frame-S1" class="image-custom-frame"><div class="image-custom-view"
- class="image-custom-view"><b>横幅が狭い時</b></div></div>
-        <div id="image-custom-frame-S2" class="image-custom-frame"><div class="image-custom-view"
- class="image-custom-view"><b>縦幅が狭い時</b></div></div>
-        <div id="image-custom-frame-M" class="image-custom-frame"><div class="image-custom-view"
- class="image-custom-view"><b>標準の比率　<small>※縦横比は適宜変動します</small></b><div class="words" id="words-preview"></div><div id="image-copyright-preview"></div></div>
-          @{[ input "imagePositionY",'range','imagePosition','' ]}
-          @{[ input "imagePositionX",'range','imagePosition','' ]}
+        <div id="image-custom-frame-S1" class="image-custom-frame"><div class="image-custom-view"><b>横幅が狭い時</b></div></div>
+        <div id="image-custom-frame-S2" class="image-custom-frame"><div class="image-custom-view"><b>縦幅が狭い時</b></div></div>
+        <div id="image-custom-frame-M"  class="image-custom-frame"><div class="image-custom-view"><b>標準の比率　<small>※縦横比は適宜変動します</small></b><div class="words" id="words-preview"></div><div id="image-copyright-preview"></div></div>
+          @{[ input "imagePositionY",'range','imagePosition','step="0.001"' ]}
+          @{[ input "imagePositionX",'range','imagePosition','step="0.001"' ]}
         </div>
       </div>
       <div class="image-custom-form">
@@ -147,6 +145,32 @@ sub image_form {
             obj.files = e.dataTransfer.files;
             imagePreView(obj.files[0], $set::image_maxsize || 0);
           });
+
+          // ホイールで拡大率調整
+          const mainArea = document.querySelector('#image-custom-frame-M .image-custom-view');
+          document.querySelector('.image-custom-view-area').addEventListener('wheel', function (e) {
+            e.preventDefault();
+          });
+          mainArea.addEventListener('wheel', function (e) {
+            const obj = form.imagePercent;
+            if     (e.deltaY > 0){ obj.value = Number(obj.value)+10 }
+            else if(e.deltaY < 0){ obj.value = Number(obj.value)-10 }
+            if(obj.value < 0){ obj.value = 0 }
+            imageDragPointSet();
+            imagePosition();
+          });
+          
+          // ドラッグで位置調整
+          let imgURL = "${imgurl}";
+          let pointWidth  = 1;
+          let pointHeight = 1;
+          mainArea.addEventListener('mousedown' , function (e) { imageDragStart(e); });
+          mainArea.addEventListener('mousemove' , function (e) { imageDragMove(e);  });
+          mainArea.addEventListener('mouseup'   , function (e) { imageDragEnd();    });
+          mainArea.addEventListener('mouseleave', function (e) { imageDragEnd();   });
+          mainArea.addEventListener('touchstart', function (e) { imageDragStart(e); });
+          mainArea.addEventListener('touchmove' , function (e) { imageDragMove(e);  });
+          mainArea.addEventListener('touchend'  , function (e) { imageDragEnd();   });
         </script>
         <h3>画像レイアウト</h3>
         <p>
@@ -154,7 +178,7 @@ sub image_form {
           <b>横基準位置</b>:<span id="image-positionX-view"></span><br>
         </p>
         <p>
-          <b>表示（トリミング）方式</b>：<br><select name="imageFit" oninput="imagePosition()">
+          <b>表示（トリミング）方式</b>：<br><select name="imageFit" oninput="imageDragPointSet();imagePosition()">
           <option value="cover"   @{[$::pc{'imageFit'} eq 'cover'  ?'selected':'']}>自動的に最低限のトリミング（表示域いっぱいに表示）
           <option value="contain" @{[$::pc{'imageFit'} eq 'contain'?'selected':'']}>トリミングしない（必ず画像全体を収める）
           <option value="percentX" @{[$::pc{'imageFit'} eq 'percentX'?'selected':'']}>任意のトリミング／横幅を基準
@@ -164,7 +188,7 @@ sub image_form {
           <small>※いずれの設定でも、クリックすると画像全体が表示されます。</small>
         </p>
         <p id="image-percent-config">
-          <b>拡大率</b>：@{[ input "imagePercent",'number','imagePosition','style="width:4em;"' ]}%<br>
+          <b>拡大率</b>：@{[ input "imagePercent",'number','imageDragPointSet();imagePosition','min="0"  style="width:4em;"' ]}%<br>
           <input type="range" id="image-percent-bar" min="10" max="1000" oninput="imagePercentBarChange(this.value)" style="width:100%;"><br>
           （100%で幅ピッタリ）<br>
         </p>

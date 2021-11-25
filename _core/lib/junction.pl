@@ -4,7 +4,7 @@ use strict;
 use utf8;
 use Encode;
 
-our $ver = "1.15.100";
+our $ver = "1.16.018";
 
 our %in;
 for (param()){ $in{$_} = param($_); }
