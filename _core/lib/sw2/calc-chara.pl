@@ -59,9 +59,9 @@ sub data_calc {
   $pc{'historyHonorTotal'} = $pc{'honor'};
   ## 収支履歴計算
   my $cashbook = $pc{"cashbook"};
-  $cashbook =~ s/::((?:[\+\-\*\/]?[0-9]+)+)/$pc{'moneyTotal'} += eval($1)/eg;
-  $cashbook =~ s/:>((?:[\+\-\*\/]?[0-9]+)+)/$pc{'depositTotal'} += eval($1)/eg;
-  $cashbook =~ s/:<((?:[\+\-\*\/]?[0-9]+)+)/$pc{'debtTotal'} += eval($1)/eg;
+  $cashbook =~ s/::((?:[\+\-\*\/]?[0-9,]+)+)/$pc{'moneyTotal'} += s_eval($1)/eg;
+  $cashbook =~ s/:>((?:[\+\-\*\/]?[0-9,]+)+)/$pc{'depositTotal'} += s_eval($1)/eg;
+  $cashbook =~ s/:<((?:[\+\-\*\/]?[0-9,]+)+)/$pc{'debtTotal'} += s_eval($1)/eg;
   $pc{'moneyTotal'} += $pc{'debtTotal'} - $pc{'depositTotal'};
 
   ## 名誉点2.0

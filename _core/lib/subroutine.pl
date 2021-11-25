@@ -93,14 +93,6 @@ sub c_crypt {
   return ($plain ne '' && $crypt ne '' && crypt($plain,$crypt) eq $crypt);
 }
 
-### 安全にevalする --------------------------------------------------
-sub s_eval {
-  my $i = shift;
-  $i =~ s/[ 　]//g;
-  if($i =~ /[^0-9\+\-\*\/\%\(\) ]/){ $i = 0; }
-  return eval($i);
-}
-
 ### ログイン --------------------------------------------------
 sub log_in {
   if($set::oauth_service){ error("$set::oauth_serviceでのログインのみ有効です"); }
@@ -285,6 +277,15 @@ sub commify {
   my $num = shift;
   $num=~s/([0-9]{1,3})(?=(?:[0-9]{3})+(?![0-9]))/$1,/g;
   return $num;
+}
+
+### 安全にevalする --------------------------------------------------
+sub s_eval {
+  my $i = shift;
+  $i =~ s/[ 　]//g;
+  if($i =~ /[^0-9,\+\-\*\/\%\(\) ]/){ $i = 0; }
+  $i =~ s/,([0-9]{3}(?![0-9]))/$1/g;
+  return eval($i);
 }
 
 

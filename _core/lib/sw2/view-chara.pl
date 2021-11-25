@@ -855,6 +855,8 @@ foreach (0 .. $pc{'historyNum'}){
   }
   if   ($pc{"history${_}HonorType"} eq 'barbaros'){ $pc{"history${_}Honor"} = '蛮'.$pc{"history${_}Honor"}; }
   elsif($pc{"history${_}HonorType"} eq 'dragon'  ){ $pc{"history${_}Honor"} = '竜'.$pc{"history${_}Honor"}; }
+  $pc{'history'.$_.'Exp'}   =~ s/([0-9]+)/$1<wbr>/g;
+  $pc{'history'.$_.'Exp'}   =~ s/([0-9]+)/commify($1);/ge;
   $pc{'history'.$_.'Money'} =~ s/([0-9]+)/$1<wbr>/g;
   $pc{'history'.$_.'Money'} =~ s/([0-9]+)/commify($1);/ge;
   push(@history, {
@@ -927,12 +929,12 @@ else {
 
 ### ガメル --------------------------------------------------
 if($pc{"money"} =~ /^(?:自動|auto)$/i){
-  $SHEET->param(money => $pc{'moneyTotal'});
+  $SHEET->param(money => commify($pc{'moneyTotal'}));
 }
 if($pc{"deposit"} =~ /^(?:自動|auto)$/i){
-  $SHEET->param(deposit => $pc{'depositTotal'}.' G ／ '.$pc{'debtTotal'});
+  $SHEET->param(deposit => commify($pc{'depositTotal'}).' G ／ '.commify($pc{'debtTotal'}));
 }
-$pc{"cashbook"} =~ s/(:(?:\:|&lt;|&gt;))((?:[\+\-\*\/]?[0-9]+)+)/$1.cashCheck($2)/eg;
+$pc{"cashbook"} =~ s/(:(?:\:|&lt;|&gt;))((?:[\+\-\*\/]?[0-9,]+)+)/$1.cashCheck($2)/eg;
   $SHEET->param(cashbook => $pc{'cashbook'});
 sub cashCheck(){
   my $text = shift;

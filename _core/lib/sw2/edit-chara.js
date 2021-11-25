@@ -175,8 +175,8 @@ function calcLv(){
     expUse += expTable['S'][ lvSeeker ];
   }
   
-  document.getElementById("exp-use").innerHTML = expUse;
-  document.getElementById("exp-rest").innerHTML = expTotal - expUse;
+  document.getElementById("exp-use").innerHTML = commify(expUse);
+  document.getElementById("exp-rest").innerHTML = commify(expTotal - expUse);
   
   level = Math.max.apply(null, Object.values(lv));
   document.getElementById("level-value").innerHTML = level;
@@ -1336,9 +1336,9 @@ function calcExp(){
       obj.classList.remove('error');
     }
   }
-  document.getElementById("exp-rest").innerHTML = expTotal - expUse;
-  document.getElementById("exp-total").innerHTML = expTotal;
-  document.getElementById("history-exp-total").innerHTML = expTotal;
+  document.getElementById("exp-rest").innerHTML = commify(expTotal - expUse);
+  document.getElementById("exp-total").innerHTML = commify(expTotal);
+  document.getElementById("history-exp-total").innerHTML = commify(expTotal);
   
   // 最大成長回数
   let growMax = 0;
@@ -1377,7 +1377,7 @@ function calcHonor(){
       obj.classList.remove('error');
     }
   }
-  document.getElementById("history-honor-total").innerHTML = pointTotal;
+  document.getElementById("history-honor-total").innerHTML = commify(pointTotal);
   // ランク
   const rank = form["rank"].options[form["rank"].selectedIndex].value;
   const rankNum = (adventurerRank[rank]["num"] === undefined) ? 0 : adventurerRank[rank]["num"];
@@ -1444,30 +1444,30 @@ function calcCash(){
       obj
     }
   }
-  document.getElementById("history-money-total").innerHTML = cash;
+  document.getElementById("history-money-total").innerHTML = commify(cash);
   let s = form.cashbook.value;
   s.replace(
-    /::([\+\-\*\/]?[0-9]+)+/g,
+    /::([\+\-\*\/]?[0-9,]+)+/g,
     function (num, idx, old) {
       cash += safeEval(num.slice(2)) || 0;
     }
   );
   s.replace(
-    /:>([\+\-\*\/]?[0-9]+)+/g,
+    /:>([\+\-\*\/]?[0-9,]+)+/g,
     function (num, idx, old) {
       deposit += safeEval(num.slice(2)) || 0;
     }
   );
   s.replace(
-    /:<([\+\-\*\/]?[0-9]+)+/g,
+    /:<([\+\-\*\/]?[0-9,]+)+/g,
     function (num, idx, old) {
       debt += safeEval(num.slice(2)) || 0;
     }
   );
   cash = cash - deposit + debt;
-  document.getElementById('cashbook-total-value').innerHTML = cash;
-  document.getElementById('cashbook-deposit-value').innerHTML = deposit;
-  document.getElementById('cashbook-debt-value').innerHTML = debt;
+  document.getElementById('cashbook-total-value').innerHTML = commify(cash);
+  document.getElementById('cashbook-deposit-value').innerHTML = commify(deposit);
+  document.getElementById('cashbook-debt-value').innerHTML = commify(debt);
 }
 
 // 装飾品欄 ----------------------------------------
