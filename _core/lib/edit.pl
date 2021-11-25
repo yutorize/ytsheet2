@@ -129,9 +129,13 @@ sub image_form {
           プレビューエリアに画像ファイルをドロップ、<br>
           または
           <input type="file" accept="image/*" name="imageFile" onchange="imagePreView(this.files[0], $set::image_maxsize || 0)"><br>
-          ※ ファイルサイズ @{[ $image_maxsize_view ]} までの JPG/PNG/GIF
+          ※ ファイルサイズ @{[ $image_maxsize_view ]} までの JPG/PNG/GIF/WebP
+          <small>（サイズを超過する場合、自動的にWebP形式に変換し、その上でまだ超過している場合は縮小処理が行われます）</small>
+          <input type="hidden" name="imageCompressed">
+          <input type="hidden" name="imageCompressedType">
         </p>
         <script>
+          // ドラッグ＆ドロップで画像アップ
           document.getElementById('image-custom').addEventListener('dragover',function(e){
             e.preventDefault();
           });

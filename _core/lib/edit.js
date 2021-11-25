@@ -57,29 +57,72 @@ function palettePresetChange (){
 }
 
 // 画像配置 ----------------------------------------
-function imagePreView(file, imageMaxSize){
-  if(file.size > imageMaxSize){
-    alert(`ファイルサイズが${ (imageMaxSize >= 1048576) ? (imageMaxSize / 1048576)+'MB' : (imageMaxSize / 1024)+'KB' }を超えています`);
-    form.imageFile.value = '';
-  }
-  else {
-    const blobUrl = window.URL.createObjectURL(file);
-    document.getElementById('image').style.backgroundImage = 'url("'+blobUrl+'")';
-    document.querySelectorAll(".image-custom-view").forEach((el) => {
-      el.style.backgroundImage = 'url("'+blobUrl+'")';
-    });
-  }
-}
+// ビューを開く
 function imagePositionView(){
   document.getElementById('image-custom').style.display = 'grid';
 }
 function imagePositionClose(){
   document.getElementById('image-custom').style.display = 'none';
 }
+// プレビュー
+function imagePreView(file, imageMaxSize){
+  if(file.size > imageMaxSize){
+    alert(`ファイルサイズが${ (imageMaxSize >= 1048576) ? (imageMaxSize / 1048576)+'MB' : (imageMaxSize / 1024)+'KB' }を超えているため、自動的に画像形式を変換・縮小されます。元画像が大きいと、変換・縮小処理に時間がかかることがあります。`);
+    form.imageFile.value = '';
+    imageCompressor(file, imageMaxSize);
+  }
+  else {
+    imageBlobPreview(file)
+  }
+}
+function imageBlobPreview(blob){
+  const blobURL = window.URL.createObjectURL(blob);
+  document.getElementById('image').style.backgroundImage = 'url("'+blobURL+'")';
+  document.querySelectorAll(".image-custom-view").forEach((el) => {
+    el.style.backgroundImage = 'url("'+blobURL+'")';
+  });
+  imgURL = blobURL;
+}
+// 圧縮
+let compress_scale = 1;
+function imageCompressor(data, imageMaxSize){
+  let image = new Image();
+  let blobURL = URL.createObjectURL(data);
+  image.src = blobURL;
+  image.onload = function () {
+    new Compressor(data, {
+      quality: 0.9,
+      success(result) {
+        if(result.size > imageMaxSize){
+          imageCompressor -= 0.1;
+          if(imageCompressor > 0){
+            console.log(`画像縮小: ${ imageCompressor * 100 } %`);
+            imageCompressor(result, imageMaxSize);
+          }
+          else { alert('画像サイズを既定まで下げることができませんでした。'); }
+        }
+        else {
+          imageBlobPreview(result);
+          let reader = new FileReader();
+          reader.readAsDataURL(result);
+          reader.onload = function() {
+            form.imageCompressed.value = reader.result;
+            form.imageCompressedType.value = result.type;
+          }
+        }
+      },
+      maxWidth : image.width * compress_scale,
+      mimeType: 'image/webp',
+      error(err) {  },
+    });
+  }
+}
+// パーセンテージゲージ変更
 function imagePercentBarChange(per){
   form.imagePercent.value = per;
   imagePosition();
 }
+// ポジション反映
 function imagePosition(){
   const bgSize = form.imageFit.options[form.imageFit.selectedIndex].value;
   if(bgSize === 'percentX'){
@@ -114,6 +157,7 @@ function imagePosition(){
   
   document.getElementById("image-percent-bar").value = form.imagePercent.value;
 }
+// セリフプレビュー
 function wordsPreView(){
   let words = form.words.value;
   words = words.replace(/[|｜](.+?)《(.+?)》/, '<ruby>$1<rt>$2</rt></ruby>')

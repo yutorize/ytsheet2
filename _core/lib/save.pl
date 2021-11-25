@@ -79,7 +79,7 @@ if ($make_error) { require $set::lib_edit; exit; } # エラーなら編集画面
 
 ### データ処理 #################################################################################
 my %pc;
-for (param()){ $pc{$_} = decode('utf8', param($_)) if $_ ne 'imageFile' }
+for (param()){ $pc{$_} = decode('utf8', param($_)) if $_ !~ /^(?:imageFile|imageCompressed)$/ }
 if($main::new_id){ $pc{'id'} = $main::new_id; }
 ## 現在時刻
 our $now = time;
@@ -126,27 +126,40 @@ if($pc{'imageDelete'}){
   $oldext = $pc{'image'};
   $pc{'image'} = '';
 }
+use MIME::Base64;
 my $imagedata; my $imageflag;
-if($::in{'imageFile'}){
-  my $imagefile = $::in{'imageFile'}; # ファイル名の取得
-  my $type = uploadInfo($imagefile)->{'Content-Type'}; # MIMEタイプの取得
-  
-  # ファイルの受け取り
-  my $buffer;
-  while(my $bytesread = read($imagefile, $buffer, 2048)) {
-    $imagedata .= $buffer;
+if($::in{'imageCompressed'} || $::in{'imageFile'}){
+  my $mime;
+  # 縮小済み
+  if($::in{'imageCompressed'}){
+    $imagedata = decode_base64( (split ',', $::in{'imageCompressed'})[1] );
+    $mime = $::in{'imageCompressedType'};
+  }
+  # オリジナル
+  elsif($::in{'imageFile'}){
+    my $imagefile = $::in{'imageFile'}; # ファイル名の取得
+    $mime = uploadInfo($imagefile)->{'Content-Type'}; # MIMEタイプの取得
+    
+    # ファイルの受け取り
+    my $buffer;
+    while(my $bytesread = read($imagefile, $buffer, 2048)) {
+      $imagedata .= $buffer;
+    }
   }
   # サイズチェック
   my $max_size = ( $set::image_maxsize ? $set::image_maxsize : 1024 * 1024 );
   if (length($imagedata) <= $max_size){ $imageflag = 1; }
-  # 形式チェック
-  my $ext;
-  if    ($type eq "image/gif")   { $ext ="gif"; } #GIF
-  elsif ($type eq "image/jpeg")  { $ext ="jpg"; } #JPG
-  elsif ($type eq "image/pjpeg") { $ext ="jpg"; } #JPG
-  elsif ($type eq "image/png")   { $ext ="png"; } #PNG
-  elsif ($type eq "image/x-png") { $ext ="png"; } #PNG
-  
+
+  # MIME-type -> 拡張子
+  my $ext; 
+  if    ($mime eq "image/gif")   { $ext ="gif"; } #GIF
+  elsif ($mime eq "image/jpeg")  { $ext ="jpg"; } #JPG
+  elsif ($mime eq "image/pjpeg") { $ext ="jpg"; } #JPG
+  elsif ($mime eq "image/png")   { $ext ="png"; } #PNG
+  elsif ($mime eq "image/x-png") { $ext ="png"; } #PNG
+  elsif ($mime eq "image/webp")  { $ext ="webp"; } #WebP
+
+  # 通して良しなら
   if($imageflag && $ext){
     $oldext = $pc{'image'} || $oldext;
     $pc{'image'} = $ext;

@@ -57,6 +57,7 @@ if($mode eq 'delete'){
   if (unlink "${data_dir}${file_dir}/image.png") { $message .= 'キャラクター画像を削除しました。<br>'; }
   if (unlink "${data_dir}${file_dir}/image.jpg") { $message .= 'キャラクター画像を削除しました。<br>'; }
   if (unlink "${data_dir}${file_dir}/image.gif") { $message .= 'キャラクター画像を削除しました。<br>'; }
+  if (unlink "${data_dir}${file_dir}/image.webp") { $message .= 'キャラクター画像を削除しました。<br>'; }
 
   if($set::del_back){
     my $dir = "${data_dir}${file_dir}/backup/";
@@ -104,12 +105,19 @@ elsif($mode eq 'img-delete'){
         $message .= '差し替え画像を設定しました。<br>';
       }
     }
+    if (unlink "${data_dir}${file_dir}/image.webp") {
+      $message .= 'キャラクター画像を削除しました。<br>';
+      if(copy "${set::beheaded}.webp", "${data_dir}${file_dir}/image.webp"){
+        $message .= '差し替え画像を設定しました。<br>';
+      }
+    }
   }
   # 消すだけ
   else {
     if (unlink "${data_dir}${file_dir}/image.png") { $message .= 'キャラクター画像を削除しました。<br>'; }
     if (unlink "${data_dir}${file_dir}/image.jpg") { $message .= 'キャラクター画像を削除しました。<br>'; }
     if (unlink "${data_dir}${file_dir}/image.gif") { $message .= 'キャラクター画像を削除しました。<br>'; }
+    if (unlink "${data_dir}${file_dir}/image.webp") { $message .= 'キャラクター画像を削除しました。<br>'; }
   }
   $message .= '<a href="./?id='.$::in{'id'}.'">キャラクターシートを確認</a>';
   
