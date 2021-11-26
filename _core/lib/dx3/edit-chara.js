@@ -83,6 +83,9 @@ function calcStt() {
     for(let i = base; i < base+grow; i++){
       exps['status'] += (i > 20) ? 30 : (i > 10) ? 20 : 10;
     }
+
+    // 能力値0の場合のエラー
+    form[`sttGrow${Stt}`].classList.toggle('error', syn1 && form.sttWorks.value && !(base + grow));
   }
   document.getElementById('exp-status').innerHTML = exps['status'];
   calcSubStt();
