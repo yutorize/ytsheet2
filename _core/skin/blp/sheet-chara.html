@@ -23,6 +23,11 @@ const paletteTool = '<TMPL_VAR paletteTool>';
 const generateType = 'BloodPathPC';
 const defaultImage = '<TMPL_VAR coreDir>/skin/blp/img/default.png';
 
+const images = {
+  '1' : "<TMPL_VAR imageSrc>",
+  'p1' : "<TMPL_VAR p1_imageSrc>",
+  'p2' : "<TMPL_VAR p2_imageSrc>",
+};
 <TMPL_IF error>
 window.onload = function() {
   editOn();
@@ -264,7 +269,7 @@ window.onload = function() {
         <div class="partner" id="partner1">
           <TMPL_IF p1_image> 
           <div class="image" style="background-image: url(<TMPL_VAR p1_imageSrc>);background-size:<TMPL_VAR p1_imageFit>;background-position:<TMPL_VAR p1_imagePositionX>% <TMPL_VAR p1_imagePositionY>%;">
-          <div onclick=""><p class="words" style="<TMPL_VAR p1_wordsX><TMPL_VAR p1_wordsY>"><TMPL_VAR p1_words></p></div>
+          <div onclick="popImage('p1')"><p class="words" style="<TMPL_VAR p1_wordsX><TMPL_VAR p1_wordsY>"><TMPL_VAR p1_words></p></div>
           <p class="image-copyright"><TMPL_VAR p1_imageCopyright></p>
           </div>
           <TMPL_ELSE>
@@ -294,7 +299,7 @@ window.onload = function() {
         <div class="partner" id="partner2">
           <TMPL_IF p2_image> 
           <div class="image" style="background-image: url(<TMPL_VAR p2_imageSrc>);background-size:<TMPL_VAR p2_imageFit>;background-position:<TMPL_VAR p2_imagePositionX>% <TMPL_VAR p2_imagePositionY>%;">
-          <div onclick=""><p class="words" style="<TMPL_VAR p2_wordsX><TMPL_VAR p2_wordsY>"><TMPL_VAR p2_words></p></div>
+          <div onclick="popImage('p2')"><p class="words" style="<TMPL_VAR p2_wordsX><TMPL_VAR p2_wordsY>"><TMPL_VAR p2_words></p></div>
           <p class="image-copyright"><TMPL_VAR p2_imageCopyright></p>
           </div>
           <TMPL_ELSE>

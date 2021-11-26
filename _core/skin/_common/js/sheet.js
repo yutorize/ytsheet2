@@ -1,7 +1,12 @@
 // 開閉系 ----------------------------------------
-function popImage() {
+function popImage(id) {
+  if(typeof images !== 'undefined'){
+    id ||= 1;
+    document.getElementById('image-box-image').src = images[id];
+  }
   document.getElementById("image-box").style.bottom = 0;
   document.getElementById("image-box").style.opacity = 1;
+
 }
 function closeImage() {
   document.getElementById("image-box").style.opacity = 0;
