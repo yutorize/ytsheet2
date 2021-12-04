@@ -213,7 +213,7 @@ function checkRace(){
   raceAbilityMp        = 0;
   raceAbilityMagicPower= 0;
   
-  for (const name of ['Fig', 'Gra', 'Fen', 'Sho', 'Sor', 'Con', 'Pri', 'Fai', 'Mag', 'Dru', 'Sco', 'Ran', 'Sag', 'Enh', 'Bar', 'Rid','Alc']) {
+  for (const name of ['Fig', 'Gra', 'Fen', 'Sho', 'Sor', 'Con', 'Pri', 'Fai', 'Mag', 'Dru', 'Dem', 'Sco', 'Ran', 'Sag', 'Enh', 'Bar', 'Rid','Alc']) {
     document.getElementById("class"+name).classList.remove('fail');
   }
   
