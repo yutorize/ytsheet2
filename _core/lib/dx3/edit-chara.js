@@ -10,6 +10,7 @@ window.onload = function() {
   
   nameSet();
   checkStage();
+  checkSyndrome();
   calcStt();
   calcEffect();
   calcMagic();
@@ -54,7 +55,15 @@ function checkStage(){
 // シンドローム変更 ----------------------------------------
 function changeSyndrome(num, syn){
   syndromes[num-1] = syn;
+  checkSyndrome();
   calcStt();
+}
+function checkSyndrome(){
+  const syn1 = syndromes[0];
+  const syn2 = syndromes[1];
+  const syn3 = syndromes[2];
+  form.syndrome1.classList.toggle('error', !syn1 && (syn2 || syn3));
+  form.syndrome2.classList.toggle('error', !syn2 && syn3);
 }
 
 // ステータス計算 ----------------------------------------
@@ -85,7 +94,7 @@ function calcStt() {
     }
 
     // 能力値0の場合のエラー
-    form[`sttGrow${Stt}`].classList.toggle('error', syn1 && form.sttWorks.value && !(base + grow));
+    document.getElementById('stt-total-'+stt).classList.toggle('error', syn1 && !status[stt]);
   }
   document.getElementById('exp-status').innerHTML = exps['status'];
   calcSubStt();
