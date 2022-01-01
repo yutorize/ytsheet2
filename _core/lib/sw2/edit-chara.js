@@ -162,7 +162,7 @@ function calcLv(){
   Object.keys(classes).forEach(function(key) {
     if(classes[key]['expTable']){
       lv[key] = Number(form['lv'+key].value);
-      if(classes[key]['2.0'] && !AllClassOn){ lv[key] = 0; }
+      if(classes[key]['2.0'] && !allClassOn){ lv[key] = 0; }
       
       expUse += expTable[ classes[key]['expTable'] ][ lv[key] ];
       
@@ -212,27 +212,19 @@ function checkRace(){
   raceAbilityDef       = 0;
   raceAbilityMp        = 0;
   raceAbilityMagicPower= 0;
+  Object.keys(classes).forEach(id => {
+    if(document.getElementById("class"+id)){
+      document.getElementById("class"+id).classList.remove('fail');
+      if(races[race]['restrictedClass'] && races[race]['restrictedClass'].includes(classes[id]['jName'])){
+        document.getElementById("class"+id).classList.add('fail');
+      }
+      else if(classes[id]['onlyRace'] && !classes[id]['onlyRace'].includes(race)){
+        document.getElementById("class"+id).classList.add('fail');
+      }
+    }
+  });
   
-  for (const name of ['Fig', 'Gra', 'Fen', 'Sho', 'Sor', 'Con', 'Pri', 'Fai', 'Mag', 'Dru', 'Sco', 'Ran', 'Sag', 'Enh', 'Bar', 'Rid','Alc']) {
-    document.getElementById("class"+name).classList.remove('fail');
-  }
-  
-  if(AllClassOn) document.getElementById("classWar").classList.remove('fail');
-  if(AllClassOn) document.getElementById("classMys").classList.remove('fail');
-  if(AllClassOn) document.getElementById("classPhy").classList.remove('fail');
-  if(AllClassOn) document.getElementById("classGri").classList.remove('fail');
-  if(AllClassOn) document.getElementById("classArt").classList.remove('fail');
-  if(AllClassOn) document.getElementById("classAri").classList.remove('fail');
-  
-  if(race === 'ルーンフォーク'){
-    document.getElementById("classPri").classList.add('fail');
-    document.getElementById("classFai").classList.add('fail');
-    document.getElementById("classDru").classList.add('fail');
-  }
-  else if(race === 'タビット'){
-    document.getElementById("classPri").classList.add('fail');
-  }
-  else if(race === 'リルドラケン'){
+  if(race === 'リルドラケン'){
     raceAbilityDef = 1;
     document.getElementById("race-ability-def-name").innerHTML = '鱗の皮膚';
   }
@@ -258,11 +250,6 @@ function checkRace(){
       raceAbilityMp += 30;
     }
     document.getElementById("race-ability-def-name").innerHTML = '晶石の身体';
-    document.getElementById("classEnh").classList.add('fail');
-  }
-  else if(race === 'フィー'){
-    document.getElementById("classPri").classList.add('fail');
-    document.getElementById("classMag").classList.add('fail');
   }
   else if(race === 'ハイマン'){
     raceAbilityMagicPower += (level >= 11) ? 2 : 1;
@@ -275,16 +262,6 @@ function checkRace(){
     document.getElementById("magic-power-raceability-name").innerHTML = race.match('ルミエル') ? '神の御名と共に' : race.match('イグニス') ? '神への礼賛' : race.match('カルディア') ? '神への祈り' : '';
     document.getElementById("magic-power-raceability-type").innerHTML = '神聖魔法';
   }
-  else if(race === 'マナフレア'){
-    document.getElementById("classSor").classList.add('fail');
-    document.getElementById("classCon").classList.add('fail');
-    document.getElementById("classPri").classList.add('fail');
-    document.getElementById("classFai").classList.add('fail');
-    document.getElementById("classMag").classList.add('fail');
-    document.getElementById("classDru").classList.add('fail');
-    document.getElementById("classDem").classList.add('fail');
-    if(AllClassOn) document.getElementById("classGri").classList.add('fail');
-  }
   else if(race === 'ダークトロール'){
     raceAbilityDef = 1;
     if(level >= 16){
@@ -292,50 +269,40 @@ function checkRace(){
     }
     document.getElementById("race-ability-def-name").innerHTML = 'トロールの体躯';
   }
-  else if(race === 'ケンタウロス'){
-    document.getElementById("classGra").classList.add('fail');
-  }
-  else if(race === 'バルカン'){
-    document.getElementById("classPri").classList.add('fail');
-  }
-  
-  if(race !== 'ドレイク（ナイト）' && race !== 'バジリスク'){
-    if(AllClassOn) document.getElementById("classPhy").classList.add('fail');
-  }
   
   let ability = '';
-  if(raceAbility[race]){
-    ability = raceAbility[race]['1'] || '';
-    if(level >= 6 && raceAbility[race]['6']){
-      if(raceAbility[race]['6'].match('ARRAY')){
+  if(races[race]['ability']){
+    ability = races[race]['ability'] || '';
+    if(level >= 6 && races[race]['abilityLv6']){
+      if(Array.isArray(races[race]['abilityLv6'])){
         form.raceAbilityLv6.classList.remove('hidden');
       }
       else{
-        ability += raceAbility[race]['6'];
+        ability += races[race]['abilityLv6'];
         form.raceAbilityLv6.classList.add('hidden');
       }
     }
     else {
       form.raceAbilityLv6.classList.add('hidden');
     }
-    if(level >= 11 && raceAbility[race]['11']){
-      if(raceAbility[race]['11'].match('ARRAY')){
+    if(level >= 11 && races[race]['abilityLv11']){
+      if(Array.isArray(races[race]['abilityLv11'])){
         form.raceAbilityLv11.classList.remove('hidden');
       }
       else{
-        ability += raceAbility[race]['11'];
+        ability += races[race]['abilityLv11'];
         form.raceAbilityLv11.classList.add('hidden');
       }
     }
     else {
       form.raceAbilityLv11.classList.add('hidden');
     }
-    if(level >= 16 && raceAbility[race]['16']){
-      if(raceAbility[race]['16'].match('ARRAY')){
+    if(level >= 16 && races[race]['abilityLv16']){
+      if(Array.isArray(races[race]['abilityLv16'])){
         form.raceAbilityLv16.classList.remove('hidden');
       }
       else{
-        ability += raceAbility[race]['16'];
+        ability += races[race]['abilityLv16'];
         form.raceAbilityLv16.classList.add('hidden');
       }
     }
@@ -350,8 +317,8 @@ function checkRace(){
 function setLanguageDefault(){
   if (!form.languageAutoOff.checked) {
     let text = '';
-    if(raceLanguage[race]){
-      for(let data of raceLanguage[race]){
+    if(races[race]['language']){
+      for(let data of races[race]['language']){
         text += `<dt>${data[0]}</dt><dd>${data[1]?'○':'―'}</dd><dd>${data[2]?'○':'―'}</dd>`;
       }
     }
@@ -1599,7 +1566,7 @@ let mysticArtsSortable = Sortable.create(document.querySelector('#mystic-arts-li
 // 言語欄 ----------------------------------------
 function checkLanguage(){
   let count = {}; let acqT = {}; let acqR = {};
-  if(raceLanguage[race]){ for(let data of raceLanguage[race]){ acqT[data[0]] = data[1]; acqR[data[0]] = data[2]; } }
+  if(races[race]['language']){ for(let data of races[race]['language']){ acqT[data[0]] = data[1]; acqR[data[0]] = data[2]; } }
   for (let i = 1; i <= form.languageNum.value; i++){
     let name = form[`language${i}`];
     let talk = form[`language${i}Talk`];
@@ -1990,83 +1957,120 @@ let battleItemsSortable = Sortable.create(document.querySelector('#battle-items-
 });
 
 // 割り振り計算 ----------------------------------------
-function point1(dice){
-  const type = form.pointbuyType.options[form.pointbuyType.selectedIndex].value;
-  let point;
-  if(type === '2.0'){
-         if(dice == 1){ point = -15; }
-    else if(dice == 2){ point = -10; }
-    else if(dice == 3){ point = -5; }
-    else if(dice == 4){ point = 0; }
-    else if(dice == 5){ point = 10; }
-    else if(dice == 6){ point = 20; }
-  } else {
-         if(dice == 1){ point = -15; }
-    else if(dice == 2){ point = -10; }
-    else if(dice == 3){ point = -5; }
-    else if(dice == 4){ point = 5; }
-    else if(dice == 5){ point = 10; }
-    else if(dice == 6){ point = 20; }
+function calcPointBuy() {
+  const type = String(form.pointbuyType.value || '2.5');
+  
+  let points = 0;
+  let errorFlag = 0;
+  ['A','B','C','D','E','F'].forEach((i) => { form[`sttBase${i}`].classList.remove('error') });
+  if(races[race] && races[race]['dice']){
+    ['A','B','C','D','E','F'].forEach((i) => {
+      const dice = String(races[race]['dice'][i]);
+      let num  = Number(form[`sttBase${i}`].value);
+      if(races[race]['dice'][`${i}+`]){ num -= races[race]['dice'][`${i}+`]; }
+      if(pointBuyList[type] && pointBuyList[type][dice] && pointBuyList[type][dice][num] != null){
+        points += pointBuyList[type][dice][num];
+      }
+      else {
+        errorFlag = 1;
+        if(form[`sttBase${i}`].value !== ''){ form[`sttBase${i}`].classList.add('error') }
+      }
+    });
   }
-  return(point);
+  else {
+    errorFlag = 1;
+  }
+  document.getElementById("stt-pointbuy-AtoF-value").innerHTML = errorFlag ? '×' : points;
+
+  if(form.birth.value === '冒険者'){
+    points = 0;
+    errorFlag = 0;
+    ['Tec','Phy','Spi'].forEach((i) => {
+      const num  = Number(form[`sttBase${i}`].value)
+      if(pointBuyList[type] && pointBuyList[type]['tps'][num] != null){
+        points += pointBuyList[type]['tps'][num];
+      }
+      else {
+        errorFlag = 1;
+      }
+    });
+    document.getElementById("stt-pointbuy-TPS-value").innerHTML = errorFlag ? '×' : points;
+  }
+  else {
+    document.getElementById("stt-pointbuy-TPS-value").innerHTML = '―';
+  }
 }
-function point2(dice){
-  const type = form.pointbuyType.options[form.pointbuyType.selectedIndex].value;
-  let point;
-  if(type === '2.0'){
-         if(dice == 2){ point = -30; }
-    else if(dice == 3){ point = -25; }
-    else if(dice == 4){ point = -20; }
-    else if(dice == 5){ point = -15; }
-    else if(dice == 6){ point = -10; }
-    else if(dice == 7){ point = -5; }
-    else if(dice == 8){ point = 0; }
-    else if(dice == 9){ point = 10; }
-    else if(dice == 10){ point = 20; }
-    else if(dice == 11){ point = 40; }
-    else if(dice == 12){ point = 70; }
-  } else {
-         if(dice == 2){ point = -25; }
-    else if(dice == 3){ point = -20; }
-    else if(dice == 4){ point = -15; }
-    else if(dice == 5){ point = -10; }
-    else if(dice == 6){ point = -5; }
-    else if(dice == 7){ point = 0; }
-    else if(dice == 8){ point = 5; }
-    else if(dice == 9){ point = 10; }
-    else if(dice == 10){ point = 20; }
-    else if(dice == 11){ point = 40; }
-    else if(dice == 12){ point = 70; }
+const pointBuyList = {
+  '2.0': {
+    '1' : {
+      1 : -15,
+      2 : -10,
+      3 :  -5,
+      4 :   0,
+      5 :  10,
+      6 :  20,
+    },
+    '2' : {
+       2 : -30,
+       3 : -25,
+       4 : -20,
+       5 : -15,
+       6 : -10,
+       7 :  -5,
+       8 :   0,
+       9 :  10,
+      10 :  20,
+      11 :  40,
+      12 :  70,
+    },
+    'tps' : {
+       2 : -100,
+       3 :  -80,
+       4 :  -60,
+       5 :  -40,
+       6 :  -20,
+       7 :    0,
+       8 :   20,
+       9 :   40,
+      10 :   60,
+      11 :  100,
+      12 :  160,
+    },
+  },
+  '2.5': {
+    '1' : {
+      1 : -15,
+      2 : -10,
+      3 :  -5,
+      4 :   5,
+      5 :  10,
+      6 :  20,
+    },
+    '2' : {
+       2 : -25,
+       3 : -20,
+       4 : -15,
+       5 : -10,
+       6 :  -5,
+       7 :   0,
+       8 :   5,
+       9 :  10,
+      10 :  20,
+      11 :  40,
+      12 :  70,
+    },
+    'tps' : {
+       2 : -100,
+       3 :  -80,
+       4 :  -60,
+       5 :  -40,
+       6 :  -20,
+       7 :    0,
+       8 :   20,
+       9 :   40,
+      10 :   70,
+      11 :  110,
+      12 :  160,
+    },
   }
-  return(point);
-}
-function pointx(dice){
-  const type = form.pointbuyType.options[form.pointbuyType.selectedIndex].value;
-  let point;
-  if(type === '2.0'){
-       if(dice == 2) { point = -100; }
-  else if(dice == 3) { point =  -80; }
-  else if(dice == 4) { point =  -60; }
-  else if(dice == 5) { point =  -40; }
-  else if(dice == 6) { point =  -20; }
-  else if(dice == 7) { point =    0; }
-  else if(dice == 8) { point =   20; }
-  else if(dice == 9) { point =   40; }
-  else if(dice == 10){ point =   60; }
-  else if(dice == 11){ point =  100; }
-  else if(dice == 12){ point =  160; }
-  } else {
-       if(dice == 2) { point = -100; }
-  else if(dice == 3) { point =  -80; }
-  else if(dice == 4) { point =  -60; }
-  else if(dice == 5) { point =  -40; }
-  else if(dice == 6) { point =  -20; }
-  else if(dice == 7) { point =    0; }
-  else if(dice == 8) { point =   20; }
-  else if(dice == 9) { point =   40; }
-  else if(dice == 10){ point =   70; }
-  else if(dice == 11){ point =  110; }
-  else if(dice == 12){ point =  160; }
-  }
-  return(point);
 }

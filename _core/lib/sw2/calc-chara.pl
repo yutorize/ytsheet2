@@ -178,15 +178,15 @@ sub data_calc {
     }
   }
   ### 種族特徴 --------------------------------------------------
-  $pc{'raceAbility'} = $data::race_ability{$pc{'race'}};
+  $pc{'raceAbility'} = $data::races{$pc{'race'}}{'ability'};
   if($pc{'level'} >= 6){
-    if(ref($data::race_ability_lv6{$pc{'race'}}) eq 'ARRAY'){
+    if(ref($data::races{$pc{'race'}}{'abilityLv6'}) eq 'ARRAY'){
       $pc{'raceAbility'} .= $pc{'raceAbilityLv6'};
     }
-    else { $pc{'raceAbility'} .= $data::race_ability_lv6{$pc{'race'}}; }
+    else { $pc{'raceAbility'} .= $data::races{$pc{'race'}}{'abilityLv6'}; }
   }
   if($pc{'level'} >= 11){
-    if(ref($data::race_ability_lv11{$pc{'race'}}) eq 'ARRAY'){
+    if(ref($data::races{$pc{'race'}}{'abilityLv11'}) eq 'ARRAY'){
       if($pc{'raceAbility'} =~ /$pc{'raceAbilityLv11'}/){
         (my $text = $pc{'raceAbilityLv11'}) =~ s/］/＋］/;
         $pc{'raceAbility'} =~ s/$pc{'raceAbilityLv11'}/$text/;
@@ -194,11 +194,11 @@ sub data_calc {
         $pc{'raceAbility'} .= $pc{'raceAbilityLv11'};
       }
     }
-    else { $pc{'raceAbility'} .= $data::race_ability_lv11{$pc{'race'}}; }
+    else { $pc{'raceAbility'} .= $data::races{$pc{'race'}}{'abilityLv11'}; }
   }
   if($pc{'level'} >= 16){
     $pc{'raceAbility'} = '［剣の託宣／運命凌駕］' . $pc{'raceAbility'};
-    if(ref($data::race_ability_lv16{$pc{'race'}}) eq 'ARRAY'){
+    if(ref($data::races{$pc{'race'}}{'abilityLv16'}) eq 'ARRAY'){
       if($pc{'raceAbility'} =~ /$pc{'raceAbilityLv16'}/){
         (my $text = $pc{'raceAbilityLv16'}) =~ s/］/＋］/;
         $pc{'raceAbility'} =~ s/$pc{'raceAbilityLv16'}/$text/;
@@ -206,10 +206,10 @@ sub data_calc {
         $pc{'raceAbility'} .= $pc{'raceAbilityLv16'};
       }
     }
-    else {  $pc{'raceAbility'} .= $data::race_ability_lv16{$pc{'race'}}; }
+    else {  $pc{'raceAbility'} .= $data::races{$pc{'race'}}{'abilityLv16'}; }
   }
   elsif($pc{'seekerAbilityRaceA'}){
-    if(ref($data::race_ability_lv16{$pc{'race'}}) eq 'ARRAY'){
+    if(ref($data::races{$pc{'race'}}{'abilityLv16'}) eq 'ARRAY'){
       if($pc{'raceAbility'} =~ /$pc{'raceAbilityLv16'}/){
         (my $text = $pc{'raceAbilityLv16'}) =~ s/］/＋］/;
         $pc{'raceAbility'} =~ s/$pc{'raceAbilityLv16'}/$text/;
@@ -217,7 +217,7 @@ sub data_calc {
         $pc{'raceAbility'} .= $pc{'raceAbilityLv16'};
       }
     }
-    else { $pc{'raceAbility'} = $pc{'raceAbility'} . $data::race_ability_lv16{$pc{'race'}}; }
+    else { $pc{'raceAbility'} .= $data::races{$pc{'race'}}{'abilityLv16'}; }
   }
   ### 種族チェック --------------------------------------------------
   if($pc{'race'} eq 'リルドラケン'){

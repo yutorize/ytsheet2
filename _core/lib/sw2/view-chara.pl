@@ -382,7 +382,7 @@ if($pc{'forbiddenMode'}){
 }
 else {
   my $exist_listen;
-  foreach (@{$data::race_language{ $pc{'race'} }}){
+  foreach (@{$data::races{ $pc{'race'} }{'language'}}){
     last if $pc{'languageAutoOff'};
     push(@language, {
       "NAME" => @$_[0],

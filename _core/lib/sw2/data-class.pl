@@ -613,6 +613,7 @@ our %class = (
     'expTable' => 'B',
     'id'       => 'Phy',
     'eName'    => 'physicalmaster',
+    'onlyRace' => ['ドレイク（ナイト）','バジリスク'],
     'craft' => {
       'jName' => '魔装',
       'eName' => 'potential',

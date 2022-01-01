@@ -52,19 +52,19 @@ while ($i <= $in{"repeat"} || ($average_max <= $set::average_over)){
     $in{'spi'} = dice(2);
   }
   
-  my $stt_A = dice($data::race_dices{$in{'race'}}{'A'});
-  my $stt_B = dice($data::race_dices{$in{'race'}}{'B'});
-  my $stt_C = dice($data::race_dices{$in{'race'}}{'C'});
-  my $stt_D = dice($data::race_dices{$in{'race'}}{'D'});
-  my $stt_E = dice($data::race_dices{$in{'race'}}{'E'});
-  my $stt_F = dice($data::race_dices{$in{'race'}}{'F'});
+  my $stt_A = dice($data::races{$in{'race'}}{'dice'}{'A'});
+  my $stt_B = dice($data::races{$in{'race'}}{'dice'}{'B'});
+  my $stt_C = dice($data::races{$in{'race'}}{'dice'}{'C'});
+  my $stt_D = dice($data::races{$in{'race'}}{'dice'}{'D'});
+  my $stt_E = dice($data::races{$in{'race'}}{'dice'}{'E'});
+  my $stt_F = dice($data::races{$in{'race'}}{'dice'}{'F'});
 
-  my $dicetotal  = $data::race_dices{$in{'race'}}{'A'}
-                 + $data::race_dices{$in{'race'}}{'B'}
-                 + $data::race_dices{$in{'race'}}{'C'}
-                 + $data::race_dices{$in{'race'}}{'D'}
-                 + $data::race_dices{$in{'race'}}{'E'}
-                 + $data::race_dices{$in{'race'}}{'F'};
+  my $dicetotal  = $data::races{$in{'race'}}{'dice'}{'A'}
+                 + $data::races{$in{'race'}}{'dice'}{'B'}
+                 + $data::races{$in{'race'}}{'dice'}{'C'}
+                 + $data::races{$in{'race'}}{'dice'}{'D'}
+                 + $data::races{$in{'race'}}{'dice'}{'E'}
+                 + $data::races{$in{'race'}}{'dice'}{'F'};
                  
   $stt_data .= "$in{'tec'},$in{'phy'},$in{'spi'},$stt_A,$stt_B,$stt_C,$stt_D,$stt_E,$stt_F,/";
 

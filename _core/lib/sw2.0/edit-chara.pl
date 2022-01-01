@@ -58,8 +58,9 @@ elsif($mode eq 'blanksheet' && !$::make_error){
   if($::in{'stt'}){
     ($pc{'sttBaseTec'}, $pc{'sttBasePhy'}, $pc{'sttBaseSpi'}, $pc{'sttBaseA'}, $pc{'sttBaseB'}, $pc{'sttBaseC'}, $pc{'sttBaseD'}, $pc{'sttBaseE'}, $pc{'sttBaseF'}) = split(/_/, $::in{'stt'});
     $pc{'race'} = decode('utf8', $::in{'race'});
-    $pc{'race'} = 'ナイトメア（人間）' if $pc{'race'} eq 'ナイトメア';
-    $pc{'race'} = 'ウィークリング（ガルーダ）' if $pc{'race'} eq 'ウィークリング';
+    if($data::races{$pc{'race'}}{'variant'}){
+      $pc{'race'} .= "（$data::races{$pc{'race'}}{'variantSort'}[0]）";
+    }
   }
   
   $pc{"defTotal1CheckArmour1"} = $pc{"defTotal1CheckShield1"} = $pc{"defTotal1CheckDefOther1"} = $pc{"defTotal1CheckDefOther2"} = $pc{"defTotal1CheckDefOther3"} = 1;
@@ -288,7 +289,7 @@ print <<"HTML";
 
         <div id="personal">
           <dl class="box" id="race">
-            <dt>種族</dt><dd><select name="race" oninput="changeRace()">@{[ option 'race', @data::race_names ]}</select></dd>
+            <dt>種族</dt><dd><select name="race" oninput="changeRace()">@{[ option 'race', @data::race_list ]}</select></dd>
           </dl>
           <dl class="box" id="gender">
             <dt>性別</dt><dd>@{[input('gender','','','list="list-gender"')]}</dd>
@@ -299,15 +300,15 @@ print <<"HTML";
           <dl class="box" id="race-ability">
             <dt>種族特徴</dt>
             <dd>
-              <span id="race-ability-value">$data::race_ability{$pc{'race'}}</span>
+              <span id="race-ability-value">$data::races{$pc{'race'}}{'ability'}</span>
               <select name="raceAbilityLv6" class="hidden">
-                @{[ option('raceAbilityLv6' , (ref($data::race_ability_lv6{$pc{'race'}})  eq 'ARRAY' ? @{$data::race_ability_lv6{$pc{'race'}}} : '')) ]}
+                @{[ option('raceAbilityLv6' , (ref($data::races{$pc{'race'}}{'abilityLv6'})  eq 'ARRAY' ? @{$data::races{$pc{'race'}}{'abilityLv6'}} : '')) ]}
               </select>
               <select name="raceAbilityLv11" class="hidden">
-                @{[ option('raceAbilityLv11', (ref($data::race_ability_lv11{$pc{'race'}}) eq 'ARRAY' ? @{$data::race_ability_lv11{$pc{'race'}}} : '')) ]}
+                @{[ option('raceAbilityLv11', (ref($data::races{$pc{'race'}}{'abilityLv11'}) eq 'ARRAY' ? @{$data::races{$pc{'race'}}{'abilityLv11'}} : '')) ]}
               </select>
               <select name="raceAbilityLv16" class="hidden">
-                @{[ option('raceAbilityLv16', (ref($data::race_ability_lv16{$pc{'race'}}) eq 'ARRAY' ? @{$data::race_ability_lv16{$pc{'race'}}} : '')) ]}
+                @{[ option('raceAbilityLv16', (ref($data::races{$pc{'race'}}{'abilityLv16'}) eq 'ARRAY' ? @{$data::races{$pc{'race'}}{'abilityLv16'}} : '')) ]}
               </select>
           </dl>
           <dl class="box" id="sin">
@@ -664,7 +665,7 @@ print <<"HTML";
           </table>
           <dl class="edit-table side-margin" id="language-default">
 HTML
-foreach (@{$data::race_language{ $pc{'race'} }}){
+foreach (@{$data::races{ $pc{'race'} }{'language'}}){
   print '<dt>'.@$_[0].'</dt><dd>'.(@$_[1] ? '○' : '－').'</dd><dd>'.(@$_[2] ? '○' : '－').'</dd>';
 }
 print <<"HTML";
@@ -1587,9 +1588,10 @@ print <<"HTML";
     <option value="魔神語">
   </datalist>
   <script>
-  const AllClassOn = @{[ $set::all_class_on ? 1 : 0 ]};
+  const allClassOn = @{[ $set::all_class_on ? 1 : 0 ]};
   const battleItemOn = @{[ $set::battleitem ? 1 : 0 ]};
   const growType = '@{[ $set::growtype ? $set::growtype : 0 ]}';
+  const races = @{[ JSON::PP->new->encode(\%data::races) ]};
 HTML
 print 'const featsLv = ["'. join('","', @set::feats_lv) . '"];'."\n";
 foreach (@data::weapons){
@@ -1607,27 +1609,6 @@ foreach (@data::weapons){
   print "'".@$_[1]."',";
 }
 print '];'."\n";
-## 種族
-print 'let raceAbility = {';
-foreach my $key ( keys(%data::race_ability) ){
-  print "\"$key\" : {";
-  print "\"1\" : \"$data::race_ability{$key}\",";
-  print "\"6\" : \"$data::race_ability_lv6{$key}\",";
-  print "\"11\" : \"$data::race_ability_lv11{$key}\",";
-  print "\"16\" : \"$data::race_ability_lv16{$key}\",";
-  print "},";
-}
-print "};\n";
-print 'let raceLanguage = {';
-foreach my $key ( keys(%data::race_language) ){
-  next if !@{$data::race_language{$key}};
-  print "\"$key\" : [";
-  foreach (@{$data::race_language{$key}}){
-    print "['@$_[0]', @$_[1], @$_[2] ],";
-  }
-  print "], ";
-}
-print "};\n";
 ## 技能
 print 'const classes = {';
 foreach my $key (keys %data::class) {
@@ -1649,6 +1630,7 @@ foreach my $key (keys %data::class) {
     'craftPower': '$data::class{$key}{'craft'}{'power'}',
     'language' : @{[ $data::class{$key}{'language'} ? JSON::PP->new->encode($data::class{$key}{'language'}) : '""' ]},
     'package'  : @{[ $data::class{$key}{'package'}  ? JSON::PP->new->encode($data::class{$key}{'package' }) : '""' ]},
+    'onlyRace'  : @{[ $data::class{$key}{'onlyRace'}  ? JSON::PP->new->encode($data::class{$key}{'onlyRace' }) : '""' ]},
   },
 HTML
 }
@@ -1668,49 +1650,6 @@ foreach(@set::notoriety_rank){
   print "'@$_[0]' : { 'num': @$_[1] },";
 }
 print "};\n";
-## 割り振り計算
-print <<"HTML";
-function calcPointBuy() {
-  const A = Number(form.sttBaseA.value);
-  const B = Number(form.sttBaseB.value);
-  const C = Number(form.sttBaseC.value);
-  const D = Number(form.sttBaseD.value);
-  const E = Number(form.sttBaseE.value);
-  const F = Number(form.sttBaseF.value);
-  
-  const _race = race.match(/(ナイトメア|ウィークリング)/) ? RegExp.\$1 : race;
-  
-  let ptA;
-  let ptB;
-  let ptC;
-  let ptD;
-  let ptE;
-  let ptF;
-  
-  if(race == ''){}
-HTML
-foreach my $key (keys %data::race_dices) {
-  print "else if (_race === '$key'){ ";
-  foreach ("A".."F"){
-    my $x = $data::race_dices{$key}{$_};
-    my $add = $data::race_dices{$key}{$_.'+'};
-    print "pt$_ = point${x}($_" . ($add ? " - $add" : '') . "); ";
-  } 
-  print "}\n";
-}
-print <<"HTML";
-  document.getElementById("stt-pointbuy-AtoF-value").innerHTML = ptA + ptB + ptC + ptD + ptE + ptF;
-  
-  if(form.birth.value === '冒険者'){
-    let ptTec = pointx(Number(form.sttBaseTec.value));
-    let ptPhy = pointx(Number(form.sttBasePhy.value));
-    let ptSpi = pointx(Number(form.sttBaseSpi.value));
-    document.getElementById("stt-pointbuy-TPS-value").innerHTML = ptTec + ptPhy + ptSpi;
-  } else {
-    document.getElementById("stt-pointbuy-TPS-value").innerHTML = '―';
-  }
-}
-HTML
 ## チャットパレット
 print <<"HTML";
   let palettePresetText = {
