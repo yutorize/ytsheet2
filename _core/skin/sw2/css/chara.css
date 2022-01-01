@@ -250,6 +250,7 @@ dl.data-table:last-child > dt:last-of-type ~ dd,
 }
 .image p.image-copyright {
   padding: 0 5px;
+  font-size: 86%;
   color: #fff;
   text-shadow: 
     #000  .1rem .1rem, #000 -.1rem -.1rem,

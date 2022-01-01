@@ -280,6 +280,7 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
 }
 .image p.image-copyright {
   padding: 0 5px;
+  font-size: 86%;
   color: #fff;
   text-shadow: 
     #000  .1rem .1rem, #000 -.1rem -.1rem,
