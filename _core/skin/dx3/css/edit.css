@@ -57,6 +57,17 @@
   cursor: pointer;
   transform: scale(1.5) translateY(.1em);
 }
+#syndrome-status tbody td.error {
+  color: #c00;
+  outline: 1px dotted #f00;
+  outline-offset: -1px;
+  background-color: rgba(255,0,0,0.1);
+}
+.night #syndrome-status tbody td.error {
+  color: #ea0;
+  outline: 1px dotted #f70;
+  background-color: rgba(255,0,0,0.1);
+}
 @media screen and (max-width:735px){
 #syndrome-status thead th:nth-last-child(-n+4) { width:   4em; }
 }
