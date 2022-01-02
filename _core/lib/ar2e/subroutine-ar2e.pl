@@ -6,18 +6,7 @@ use CGI::Cookie;
 use List::Util qw/max min/;
 use Fcntl;
 
-### サブルーチン-SW ##################################################################################
-
-### クラス色分け --------------------------------------------------
-sub class_color {
-  my $text = shift;
-  $text =~ s/((?:.*?)(?:[0-9]+))/<span>$1<\/span>/g;
-  $text =~ s/<span>((?:ファイター|グラップラー|フェンサー)(?:[0-9]+?))<\/span>/<span class="melee">$1<\/span>/;
-  $text =~ s/<span>((?:プリースト)(?:[0-9]+?))<\/span>/<span class="healer">$1<\/span>/;
-  $text =~ s/<span>((?:スカウト|ウォーリーダー|レンジャー)(?:[0-9]+?))<\/span>/<span class="initiative">$1<\/span>/;
-  $text =~ s/<span>((?:セージ)(?:[0-9]+?))<\/span>/<span class="knowledge">$1<\/span>/;
-  return $text;
-}
+### サブルーチン-AR ##################################################################################
 
 ### タグ変換 --------------------------------------------------
 sub tag_unescape {
@@ -31,10 +20,6 @@ sub tag_unescape {
   $text =~ s#(―+)#<span class="d-dash">$1</span>#g;
   
   $text =~ s{[©]}{<i class="s-icon copyright">©</i>}gi;
-  
-  $text =~ s/\[魔\]/<img alt="&#91;魔&#93;" class="i-icon" src="${set::icon_dir}wp_magic.png">/gi;
-  $text =~ s/\[刃\]/<img alt="&#91;刃&#93;" class="i-icon" src="${set::icon_dir}wp_edge.png">/gi;
-  $text =~ s/\[打\]/<img alt="&#91;打&#93;" class="i-icon" src="${set::icon_dir}wp_blow.png">/gi;
   
   $text =~ s/'''(.+?)'''/<span class="oblique">$1<\/span>/gi; # 斜体
   $text =~ s/''(.+?)''/<b>$1<\/b>/gi;  # 太字

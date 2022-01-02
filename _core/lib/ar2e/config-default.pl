@@ -90,12 +90,7 @@ package set;
   our $data_dir = './data/'; # データ格納ディレクトリ
   our $passfile = $data_dir . 'charpass.cgi'; # パスワード記録ファイル
   our $listfile = $data_dir . 'charlist.cgi'; # キャラクター一覧ファイル
-  our $monslist = $data_dir . 'monslist.cgi'; # 魔物一覧ファイル
-  our $itemlist = $data_dir . 'itemlist.cgi'; # アイテム一覧ファイル
-  our $makelist = $data_dir . 'makelist.cgi'; # 能力値作成データファイル
   our $char_dir = $data_dir . 'chara/'; # キャラクターデータ格納ディレクトリ
-  our $mons_dir = $data_dir . 'mons/';  # 魔物データ格納ディレクトリ
-  our $item_dir = $data_dir . 'item/';  # アイテムデータ格納ディレクトリ
   
   our $userfile    = $::core_dir . '/data/users.cgi';           # ユーザー一覧ファイル
   our $login_users = $::core_dir . '/data/login_users.cgi'; # ログイン情報保存ファイル
@@ -110,25 +105,17 @@ package set;
   # 編集画面
   our $lib_edit = $::core_dir . '/lib/edit.pl';
   our $lib_edit_char = $::core_dir . '/lib/ar2e/edit-chara.pl';
-  our $lib_edit_mons = $::core_dir . '/lib/ar2e/edit-mons.pl';
-  our $lib_edit_item = $::core_dir . '/lib/ar2e/edit-item.pl';
   # 保存処理
   our $lib_save   = $::core_dir . '/lib/save.pl';
   our $lib_calc_char = $::core_dir . '/lib/ar2e/calc-chara.pl';
-  our $lib_calc_mons = $::core_dir . '/lib/ar2e/calc-mons.pl';
-  our $lib_calc_item = $::core_dir . '/lib/ar2e/calc-item.pl';
   # シート表示
   our $lib_view   = $::core_dir . '/lib/view.pl';
   our $lib_view_char = $::core_dir . '/lib/ar2e/view-chara.pl';
-  our $lib_view_mons = $::core_dir . '/lib/ar2e/view-mons.pl';
-  our $lib_view_item = $::core_dir . '/lib/ar2e/view-item.pl';
   # チャットパレット
   our $lib_palette     = $::core_dir . '/lib/palette.pl';
   our $lib_palette_sub = $::core_dir . '/lib/ar2e/palette-sub.pl';
   # 一覧
   our $lib_list_char = $::core_dir . '/lib/ar2e/list-chara.pl';
-  our $lib_list_mons = $::core_dir . '/lib/ar2e/list-mons.pl';
-  our $lib_list_item = $::core_dir . '/lib/ar2e/list-item.pl';
   # JSON出力
   our $lib_json     = $::core_dir . '/lib/json.pl';
   our $lib_json_sub = $::core_dir . '/lib/ar2e/json-sub.pl';
@@ -137,17 +124,11 @@ package set;
 
   # 各種データ
   our $data_races = $::core_dir . '/lib/ar2e/data-races.pl';  # 種族
-  our $data_items = $::core_dir . '/lib/ar2e/data-items.pl';  # アイテムカテゴリ
-  our $data_faith = $::core_dir . '/lib/ar2e/data-faith.pl';  # 信仰
-  our $data_feats = $::core_dir . '/lib/ar2e/data-feats.pl';  # 戦闘特技
-  our $data_class = $::core_dir . '/lib/ar2e/data-class.pl';  # 技能、練技・呪歌など
-  our $data_mons  = $::core_dir . '/lib/ar2e/data-mons.pl';   # 魔物分類
+  our $data_class = $::core_dir . '/lib/ar2e/data-class.pl';  # クラス
 
   # HTMLテンプレート
   our $icon_dir   = $::core_dir . '/skin/ar2e/img/'; # 武器アイコンのあるディレクトリ
   our $skin_tmpl  = $::core_dir . '/skin/ar2e/index.html';         # 一覧／登録フォーム等の大枠
   our $skin_sheet = $::core_dir . '/skin/ar2e/sheet-chara.html';   # キャラクターシート
-  our $skin_mons  = $::core_dir . '/skin/ar2e/sheet-monster.html'; # 魔物シート
-  our $skin_item  = $::core_dir . '/skin/ar2e/sheet-item.html';    # アイテムシート
 
 1;
