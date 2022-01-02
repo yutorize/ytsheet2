@@ -177,7 +177,8 @@ delete $pc{'_token'};
 delete $pc{'registerkey'};
 $pc{'IP'} = $ENV{'REMOTE_ADDR'};
 ### passfile --------------------------------------------------
-if (!-d "${data_dir}"){ mkdir "${data_dir}" or error("データディレクトリの作成に失敗しました。"); }
+if (!-d $set::data_dir){ mkdir $set::data_dir or error("データディレクトリ($set::data_dir)の作成に失敗しました。"); }
+if (!-d $data_dir){ mkdir $data_dir or error("データディレクトリ($data_dir)の作成に失敗しました。"); }
 if ($LOGIN_ID && !-d "${data_dir}_${LOGIN_ID}"){ mkdir "${data_dir}_${LOGIN_ID}" or error("データディレクトリの作成に失敗しました。"); }
 my $user_dir;
 ## 新規

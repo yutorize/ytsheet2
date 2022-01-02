@@ -1,0 +1,832 @@
+@charset "utf-8";
+
+/* // キャラクター
+---------------------------------------------------------------------------------------------------- */
+#regulation {
+  margin: 10px 0;
+  overflow-y: auto;
+}
+#regulation > dl {
+  display: grid;
+  grid-template-columns: 1fr 1fr 4fr;
+  grid-template-rows: auto;
+  margin: 10px 0;
+}
+#regulation dl dt {
+  grid-row: 1 / 2;
+}
+#regulation dl dd {
+  grid-row: 2 / 3;
+  font-size: 1.2rem;
+}
+@media screen and (max-width:735px){
+  #regulation > dl {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: auto;
+    margin: 10px 0;
+  }
+  #regulation > dl > dt:last-of-type {
+    grid-column: 1 / span 3;
+    grid-row: 3;
+  }
+  #regulation > dl > dd:last-of-type {
+    grid-column: 1 / span 3;
+    grid-row: 4;
+  }
+}
+dd.area-tags {
+  text-align: left;
+  padding-right: .3em;
+}
+.box .tagify-custom {
+  --tags-border-color      : var(--box-input-border-color);
+  --tags-focus-border-color: var(--text-color);
+  --tag-bg   : var(--box-head-bg-color-pale);
+  --tag-hover: var(--box-base-bg-color);
+  --tag-text-color: var(--text-color);
+  --tag-remove-btn-color: var(--text-color);
+  --tag-text-color--edit: var(--text-color);
+  background-color: var(--input-bg-color);
+  border-radius: 5px;
+}
+.tags-look .tagify__dropdown__wrapper {
+  background-color: var(--bg-color);
+  border-color: var(--box-input-border-color);
+  border-radius: 5px;
+  padding: .5em
+}
+.tags-look .tagify__dropdown__item{
+  display: inline-block;
+  border-radius: 3px;
+  padding: .3em .5em;
+  border: 1px solid var(--box-input-border-color);
+  background: #F3F3F3;
+  color: black;
+  margin: .2em;
+  font-size: .85em;
+  transition: 0s;
+}
+
+#area-status {
+  min-height: 0;
+  grid-template-columns: 2.7fr .5fr 1.8fr;
+  grid-template-areas:
+    "PER  --- IMG"
+    "LPT  LPT IMG"
+    "CLS  CLS IMG"
+    "STT  STT STT"
+  ;
+}
+
+@media screen and (max-width:735px){
+  #area-status {
+    grid-template-columns: 2fr 1fr;
+    grid-gap: 10px 5px;
+
+    grid-template-areas:
+      "IMG  IMG "
+      "PER  PER "
+      "CLS  CLS "
+      "LPT  LPT "
+      "STT  STT "
+    ;
+  }
+}
+
+.select-or-input.free select {
+  margin-bottom: 0 !important;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.select-or-input.free input  {
+  margin-top: 0 !important;
+  border-top: 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+.select-or-input:not(.free) input { display: none; }
+
+#personal {
+  grid-area: PER;
+  display: grid;
+  grid-template-columns: 1.5fr 2fr;
+  gap: 10px;
+}
+#personal > .box-union {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  justify-self: end;
+}
+
+#lifepath #home {
+  grid-template-columns: 1fr 12em;
+}
+#lifepath tbody th {
+  width: 3em;
+  text-align: center;
+}
+#lifepath td:nth-child(2) {
+  width: 6em;
+}
+
+#classes {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+#classes input:read-only {
+  border: hidden;
+  text-align: center;
+  background-color: transparent;
+}
+#classes dl:nth-child(n+3) {
+  border-left-width: 0;
+}
+#classes dl:nth-child(n+3):not(:last-child) {
+  border-right-width: 1px;
+}
+
+#status {
+  overflow-x: auto;
+  display: grid;
+  grid-template-columns: 5.7fr 0.5fr 3.5fr;
+}
+#status-main {
+  grid-column: span 3;
+}
+#status-sub {
+}
+#status-weight {
+  grid-column: 3;
+}
+#status input:read-only {
+  border-style: dotted;
+  text-align: center;
+  background-color: transparent;
+}
+#status table{
+  table-layout: fixed;
+}
+#status table col.name   { width: 3em; }
+#status table col.text   { width: 4em; }
+#status table col.input  { width: 4.5em; }
+#status table col.indent1{ width: 1em; }
+#status table col.indent2{ width: 2em; }
+#status table col.dice   { width: 6em; }
+#status table#status-sub td:nth-last-child(3) {
+  font-weight: normal;
+}
+
+@media screen and (max-width:735px){
+  #status {
+    grid-template-columns: min-content 1em min-content;
+  }
+  #status table col.text  { width: 3em; }
+  #status table col.total { width: 4em; }
+}
+#status #make-bonus-total {
+  font-style: normal;
+}
+#status table tbody td:last-child {
+  padding-right: 0.2em;
+}
+#status table tbody td input {
+  width: calc(100% - 1em);
+}
+#status table tbody td.dice input {
+  width: calc(100% - 2em);
+}
+#status table tbody td:not([data-before="="]):not([rowspan]) {
+  border-right: hidden;
+}
+#status table.edit-table tbody td {
+  font-size: 1em;
+}
+#status table tbody td::before {
+  content: attr(data-before) !important;
+  display: inline-block !important;
+  position: static !important;
+  border: hidden !important;
+  float: left;
+  font-size: 90%;
+  margin-top: .12em;
+}
+#status table tbody td::after {
+  content: attr(data-after) !important;
+  display: inline-block !important;
+  position: static !important;
+  border: hidden !important;
+  float: right;
+  font-size: 90%;
+  margin-top: .12em;
+}
+#status table tbody td b {
+  display: inline-block;
+  transform: scale(1.1);
+}
+#status-sub {
+  border-right-width: 1px;
+  border-right-style: solid;
+  border-bottom: hidden;
+}
+#status-weight {
+  border-left-width: 1px;
+  border-left-style: solid;
+}
+
+#levelup {
+  overflow-x: auto;
+  margin-top: 1rem;
+}
+#levelup dl {
+  display: grid;
+  grid-template-columns: max-content 4em;
+  align-items: end;
+  padding: 0 .2em .2em;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+}
+#levelup table {
+}
+#levelup table thead th {
+  vertical-align: bottom;
+}
+#levelup table thead tr:first-child th:first-child {
+  width: 2.5em;
+}
+#levelup table thead tr:last-child th {
+  width: 2.2em;
+}
+#levelup table thead tr:first-child th:nth-child(3) {
+  width: 9em;
+  font-size: 90%;
+}
+#levelup table tbody tr {
+  background-color: transparent;
+}
+#levelup table tbody tr:nth-last-of-type(even) {
+  background-color: var(--box-even-rows-bg-color);
+}
+#levelup table tbody td.skill {
+  text-align: right;
+  position: relative;
+}
+#levelup table tbody td.skill input {
+  width: calc(100% - 1.5em - 1px);
+  border-left: none;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  font-size: inherit;
+}
+#levelup table tbody td.skill::before {
+  content: attr(data-lv);
+  display: grid;
+  align-items: center;
+  position: absolute;
+  left: 0;
+  width: 1.5em;
+  height: calc(1.2em + 3px * 2);
+  line-height: 1.2;
+  margin: 1px 0;
+  padding: 0;
+  border-radius: 5px 0 0 5px;
+  border-width: 1px;
+  border-style: solid dotted solid solid;
+  border-color: var(--box-input-border-color);
+  text-align: center;
+  background-color: var(--input-bg-color);
+}
+#levelup table tbody td.skill[data-lv=""]::before,
+#levelup table tbody td.skill:not([data-lv])::before {
+  content: 'Lv';
+  color: var(--box-input-border-color);
+}
+@media screen and (max-width:735px){
+  #levelup table {
+    width: 60em;
+  }
+  #levelup table tbody td.skill::before {
+    height: calc(1.6em + 2px * 2);
+  }
+}
+
+#skills {
+  overflow-x: auto;
+  margin-top: 1rem;
+}
+#skills table {
+}
+#skills table thead th:nth-child(1) { width: 1.4em; }
+#skills table thead th:nth-child(2) { width:  auto; } /* 名称 */
+#skills table thead th:nth-child(3) { width:   2em; } /* Lv */
+#skills table thead th:nth-child(4) { width: 8.9em; } /* タイミング */
+#skills table thead th:nth-child(5) { width: 7.4em; } /* 判定 */
+#skills table thead th:nth-child(6) { width: 6.3em; } /* 対象 */
+#skills table thead th:nth-child(7) { width: 5.3em; } /* 射程 */
+#skills table thead th:nth-child(8) { width: 3.9em; } /* コスト */
+#skills table thead th:nth-child(9) { width: 9.4em; } /* 使用条件 */
+#skills table tbody td {
+  padding: .5rem 0 0;
+  vertical-align: bottom;
+}
+#skills table tbody td[colspan] {
+  padding: 0 0 .5rem;
+  vertical-align: middle;
+  text-align: right;
+}
+#skills table tbody td[colspan] div {
+  display: grid;
+  grid-gap: .1rem;
+  grid-template-columns: 3.3em 9.5em 2.3em 6.5em 2.3em 1fr;
+  align-items: end;
+}
+#skills table tbody td[rowspan] {
+  vertical-align: middle;
+}
+#skills table tbody td b {
+  display: block;
+  font-size: 85%;
+  text-align: right;
+}
+#skills table tbody td .small {
+  font-size: 80%;
+  transform: scale(0.8,1);
+  white-space: nowrap;
+}
+#skills table tbody td b::after {
+  content: ":";
+  font-size: 1rem;
+}
+#skills table tbody td input[name$='Name'] {
+  font-weight: bold;
+}
+#skills td.calc {
+  position: relative;
+}
+#skills td.calc::after {
+  content: "\f1ec";
+  position: absolute;
+  left: 4px;
+  bottom: 2px;
+  font-family: "Font Awesome 5 Free";
+  font-weight: bold;
+  color: #7ad;
+}
+#skills td.calc input {
+  padding-left: calc(1.1em + 4px);
+}
+#skills table tbody.race    { background-image: linear-gradient(to right,hsla(120, 70%, 50%,0.2) 1em,transparent 2em) }
+#skills table tbody.style   { background-image: linear-gradient(to right,hsla( 60, 70%, 50%,0.2) 1em,transparent 2em) }
+#skills table tbody.general { background-image: linear-gradient(to right,hsla(200,100%, 50%,0.2),transparent) }
+#skills table tbody.geis    { background-image: linear-gradient(to right,hsla(270,100%, 50%,0.2),transparent) }
+#skills table tbody.add     { background-image: linear-gradient(to right,hsla(  0, 20%, 50%,0.1),transparent) }
+#skills table tbody.another { background-image: linear-gradient(to right,hsla(  0,100%, 50%,0.2),transparent) }
+#skills table tbody.power   { background-image: linear-gradient(to right,hsla( 40,100%, 50%,0.2),transparent) }
+.night #skills table tbody.another { background-image: linear-gradient(to right,hsla(  0,100%, 85%,0.2),transparent) }
+
+@media screen and (max-width:735px){
+  #skills table {
+    table-layout: fixed;
+  }
+  #skills table thead tr,
+  #skills table tbody tr {
+    display: table-row;
+  }
+  #skills table tbody td[rowspan] {
+    display: table-cell;
+  }
+  #skills table thead th:nth-child(3) {
+    display: table-cell;
+  }
+  #skills table tbody td[colspan] div {
+    grid-template-columns: max-content 7.5em max-content 7.5em max-content 1fr;
+  }
+  #skills table thead th:nth-child(1) { width: 1.4em !important; }
+  #skills table thead th:nth-child(2) { width:  14em !important; } /* 名称 */
+  #skills table thead th:nth-child(3) { width: 3.5em !important; } /* Lv */
+  #skills table thead th:nth-child(4) { width:   8em !important; } /* タイミング */
+  #skills table thead th:nth-child(5) { width:   8em !important; } /* 判定 */
+  #skills table thead th:nth-child(6) { width:   6em !important; } /* 対象 */
+  #skills table thead th:nth-child(7) { width:   5em !important; } /* 射程 */
+  #skills table thead th:nth-child(8) { width:   4em !important; } /* コスト */
+  #skills table thead th:nth-child(9) { width:   8em !important; } /* 制限 */
+  #skills table tbody td b {
+    white-space: nowrap;
+  }
+  #skills table tbody td:nth-child(3) input { min-width: 2em; } /* Lv */
+}
+
+.trash-box {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: calc((100vw - 940px) / 2 );
+}
+.trash-box::before {
+  content: "\f2ed";
+  display: block;
+  position: absolute;
+  top: 30vh;
+  left: 0;
+  right: 0;
+  bottom: auto;
+  margin:auto;
+  text-align: center;
+  font-family: "Font Awesome 5 Free";
+  font-size: calc((100vw - 940px) / 2 * 0.5 );
+  opacity: 0.1;
+  pointer-events: none;
+  z-index: -1;
+}
+.trash-box table {
+  display: block;
+  position: absolute;
+  height: calc(70vh - 1.5em);
+  overflow: auto;
+  z-index: 2;
+}
+.trash-box table:empty::before {
+  display: block;
+  content: 'ここにドロップで削除\A（保存時まで保留）';
+  margin-top: 1em;
+  white-space: pre;
+  text-align: center;
+}
+.trash-box table tbody {
+  display: block;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 5px;
+  margin: .2em;
+  cursor: move;
+}
+.trash-box table tbody tr,
+.trash-box table tbody td {
+  display: none;
+}
+.trash-box table tbody tr:first-child,
+.trash-box table tbody tr:first-child td:nth-child(2) {
+  border: none;
+  display: block;
+}
+.trash-box table tbody input {
+  padding: 1em .5em;
+  border-color: transparent;
+  background-color: transparent;
+  pointer-events: none;
+}
+.trash-box .annotate {
+  position: absolute;
+  bottom: 0;
+  font-size: 90%;
+}
+.trash-box .close-button {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  font-size: 1.2em;
+}
+.trash-box .close-button:hover {
+  opacity: 0.5;
+}
+
+@media screen and (max-width:1090px){
+  .trash-box  {
+    top: auto;
+    left: auto;
+    right: 0;
+    bottom: 2.3em;
+    width: 30vw;
+    height: 20vh;
+    z-index: 2;
+    background-color: var(--bg-color);
+  }
+  .trash-box  table {
+    height: calc(20vh - 1.5em);
+  }
+}
+@media screen and (max-width:735px){
+  .trash-box  {
+    width: 40vw;
+    height: 30vh;
+    bottom: 0;
+  }
+  .trash-box  table {
+    height: calc(30vh - 1.5em);
+  }
+  .trash-box table:empty::before {
+    display: block;
+    content: 'ここにドロップ\Aで削除\A（保存時まで保留）';
+  }
+}
+
+#battle {
+  margin-top: 1rem;
+}
+#battle #armaments tbody th,
+#battle #battle-rolls tbody th {
+  border-top: unset;
+  border-bottom: unset;
+}
+#battle col.head  { width:   3em; } /* 見出し */
+#battle col.name  { width:  11em; } /* 名称 */
+#battle col.weight{ width: 3.2em; } /* 重量 */
+#battle col.acc   { width: 3.2em; } /* 命中 */
+#battle col.atk   { width: 3.2em; } /* 攻撃 */
+#battle col.eva   { width: 3.2em; } /* 回避 */
+#battle col.def   { width: 3.2em; } /* 物防 */
+#battle col.mdef  { width: 3.2em; } /* 魔防 */
+#battle col.ini   { width: 3.2em; } /* 行動 */
+#battle col.move  { width: 3.2em; } /* 移動 */
+#battle col.range { width: 4.7em; } /* 射程 */
+#battle col.type  { width: auto; } /* 種別 */
+#battle col.usage { width: auto; } /* 部位 */
+#battle col.lv    { width: 3.2em; } /* Lv */
+#battle input[name$="Type"]{ min-width: 4em; }
+#battle input[name$="Usage"]{ min-width: 4em; }
+#battle #armaments tbody tr > td {
+}
+#battle #battle-rolls tbody tr td.left {
+  vertical-align: top;
+}
+#battle #battle-rolls tfoot tr td::before {
+  left: 0;
+}
+#battle #battle-rolls tfoot tr:first-child td:not(:nth-child(n+5)):before {
+  border-bottom-width: 0;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+#battle-rolls tfoot tr:not(:first-child) td:nth-child(n+2):not(:nth-child(n+5))::before {
+  top: 0;
+  border-top-width: 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+#battle-rolls tfoot tr:not(:last-child) td:nth-child(n+2):not(:nth-child(n+5))::before {
+  bottom: 0;
+  border-bottom-width: 0;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+#battle-rolls tfoot tr.one-hand td:nth-child(n+2):not(:nth-child(n+4))::before {
+  border-top-width: 1px !important;
+  border-top-style: dotted;
+}
+#battle #battle-rolls tfoot tr:last-child td::before {
+  left: 0;
+  top: 0;
+  border-top: 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+#battle #battle-rolls tfoot tr:last-child td {
+  padding-top: 0;
+  line-height: 1;
+}
+#battle-rolls tfoot td {
+  padding-bottom: .1em;
+}
+#battle-rolls tfoot td > span {
+  position: static;
+}
+#battle-rolls tfoot select[name="handedness"] {
+  width: max-content;
+}
+#battle-rolls tfoot .battle-total-value td > b.hide {
+  display: none;
+}
+#battle-rolls tfoot .battle-total-value td > b.hide + b {
+  border-top-width: 0;
+}
+#battle-rolls tfoot .battle-total-dice td {
+  font-size: .9em;
+}
+#battle-rolls tfoot .battle-total-dice td > b {
+  display: inline;
+  font-size: calc(1em / 0.9 * 1.2);
+}
+#battle-rolls tfoot .battle-total-dice td > b::before {
+  display: none;
+}
+@media screen and (max-width:735px){
+  #battle .box { overflow-x: auto; }
+  #battle table { table-layout: fixed; }
+  #battle col:nth-child(1) { width: 3.2em !important; }
+  #battle col:nth-child(2) { width: 11em !important; }
+  #battle col:nth-child(3) { width: 3.2em !important; }
+  #battle col:nth-child(4) { width: 3.2em !important; }
+  #battle col:nth-child(5) { width: 3.2em !important; }
+  #battle col:nth-child(6) { width: 3.2em !important; }
+  #battle col:nth-child(7) { width: 3.2em !important; }
+  #battle col:nth-child(8) { width: 3.2em !important; }
+  #battle col:nth-child(9) { width: 3.2em !important; }
+  #battle col:nth-child(10){ width: 3.2em !important; }
+  #battle col:nth-child(11){ width: 3.2em !important; }
+  #battle col:last-child   { width: 12em !important; }
+  #battle table thead tr,
+  #battle table tbody tr,
+  #battle table tfoot tr {
+    display: table-row;
+  }
+}
+
+#other-rolls {
+  margin-top: 1rem;
+}
+#other-rolls col:first-child { width: 44%; }
+#other-rolls col:last-child  { width: 5.5em; }
+#other-rolls table tbody td {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+#other-rolls table tbody td.roll {
+}
+#other-rolls table tbody td.roll > span {
+  position: absolute;
+  right: 5px;
+  bottom: 3px;
+  font-size: 80%;
+  margin-left :auto;
+}
+#other-rolls table tbody td.roll input {
+  width: 4em;
+}
+@media screen and (max-width:735px){
+  #other-rolls {
+    display: block;
+  }
+  #other-rolls table:first-of-type {
+    border-bottom-style: unset;
+  }
+  #other-rolls table:last-of-type {
+    margin-top: 0;
+  }
+  #other-rolls table:last-of-type thead {
+    display: none;
+  }
+}
+
+#area-items {
+  margin-top: 1rem;
+}
+@media screen and (max-width:735px){
+  #area-items {
+    display: block;
+  }
+  #area-items > * {
+    margin-top: 1rem;
+  }
+}
+#connections table col.handle,
+#geises table col.handle {
+  width: 1.1em;
+}
+#geises td {
+  vertical-align: top;
+}
+#geises textarea {
+  display: block;
+}
+
+@media screen and (max-width:735px){
+  #relations {
+    display: block;
+  }
+  #connections,
+  #geises { margin-top:1rem; }
+  #connections table col.name     { width: 30%; }
+  #connections table col.relation { width: 4em; }
+  #geises table col.name     { width: 30%; }
+  #geises table col.num      { width: 4em; }
+}
+
+#free-note,
+#free-history {
+  padding-bottom: .3rem;
+}
+#free-note textarea,
+#free-history textarea {
+  height: 18em;
+}
+
+#weight input {
+  width: 4em;
+}
+#money input {
+  width: calc(100% - 5em);
+}
+@media screen and (max-width:735px){
+  #items-and-money {
+    grid-template-columns: 1fr 1fr 2em;
+  }
+}
+#items {
+  border-bottom: 0;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+#cashbook {
+  grid-column: span 3;
+  margin-top: 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+#items textarea {
+  height: 20em;
+}
+#cashbook textarea {
+  height: 16em;
+}
+#cashbook-total-value {
+  font-size: 120%;
+  font-weight: bold;
+}
+#cashbook p {
+  font-size: 90%;
+  font-family: inherit;
+  white-space: normal;
+  text-align: left;
+  padding-left: .5em;
+}
+
+#history{
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+#history table {
+  width: calc(100% - 1px);
+}
+#history table thead th:nth-child(1) { width: 1.4em; }
+#history table thead th:nth-child(2) { width:   6em; } /* 日付 */
+#history table thead th:nth-child(3) { width:  12em; } /* タイトル */
+#history table thead th:nth-child(4) { width:   5em; } /* 経験点 */
+#history table thead th:nth-child(5) { width:   5em; } /* 経験点 */
+#history table thead th:nth-child(6) { width:   5em; } /* ゴールド */
+#history table thead th:nth-child(7) { width:   6em; } /* ＧＭ */
+#history table thead th:nth-child(8) { width:  auto; } /* 参加者 */
+@media screen and (max-width:735px){
+  #history table  { table-layout: fixed; }
+  #history table thead th:nth-child(3) { width: 12em; } /* タイトル */
+  #history table thead th:nth-child(8) { width: 16em; } /* 参加者 */
+}
+
+#history table thead td {
+  padding: 1px;
+  border-width: 1px;
+  border-style: solid dotted;
+  font-size: inherit;
+}
+
+#history table tbody td {
+  padding: .4rem 0 .1rem !important;
+  vertical-align: top;
+}
+#history table tbody td:nth-child(5)::after {
+  margin: 0 2px 0 -1px;
+  font-size: 1.1rem;
+}
+#history table tbody td:nth-child(5) input,
+#history table tbody td:nth-child(6) input {
+  width: calc(100% - 0.9em);
+}
+#history table tbody td.handle {
+  vertical-align: middle;
+}
+#history table tbody td.left {
+  padding: 0 0 .4rem !important;
+}
+#history table tfoot th {
+  border-top-width: 1px;
+  border-top-style: solid;
+  vertical-align: top;
+}
+
+#history .annotate {
+  width: 70%;
+  margin: auto 3px auto auto;
+}
+
+#exp-footer {
+  position: sticky;
+  bottom: 0;
+  margin-top: 1em;
+  padding: .2rem 0 .5rem;
+  border-radius: 0;
+  border-width: .2rem 0;
+  background: var(--bg-color);
+  font-size: 85%;
+  font-weight: bold;
+}
+#exp-footer input.auto {
+  width: 2.5em;
+  min-width: 0;
+  font-size: 110%;
+}
+#exp-footer input:first-child,
+#exp-footer input:last-child {
+  font-size: 120%;
+}
+
+

@@ -31,6 +31,10 @@
     var(--box-base-bg-color-h, 0),
     calc( var(--box-base-bg-color-s,   0%) * 0.3 ), 65%
   );
+  --box-emphasis-border-color: hsla(
+    var(--box-head-bg-color-h, 0),
+    calc( var(--box-head-bg-color-s,   0%) * 0.4 ), 50%, 0.5
+  );
   --box-even-rows-bg-color: rgba(127,127,127,0.15);
   --box-input-border-color: hsl(
     var(--box-base-bg-color-h, 0),

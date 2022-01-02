@@ -97,7 +97,7 @@ dt.fail + dd > input {
   color: #000;
 }
 input.error,
-select.select,
+select.error,
 .error input,
 .error select {
   color: #c00;
@@ -106,7 +106,7 @@ select.select,
   background-color: rgba(255,0,0,0.1);
 }
 .night input.error,
-.night select.select,
+.night select.error,
 .night .error input,
 .night .error select {
   color: #ea0;
