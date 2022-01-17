@@ -1030,12 +1030,13 @@ function addHistory(){
     <td rowspan="2" class="handle"></td>
     <td rowspan="2"><input name="history${num}Date"   type="text"></td>
     <td rowspan="2"><input name="history${num}Title"  type="text"></td>
-    <td><input name="history${num}Exp"    type="text" oninput="calcExp()"></td>
-    <td><input name="history${num}Money"  type="text" oninput="calcCash()"></td>
-    <td><input name="history${num}Gm"     type="text"></td>
-    <td><input name="history${num}Member" type="text"></td>
+    <td><input name="history${num}Exp"     type="text" oninput="calcExp()"></td>
+    <td><input name="history${num}Payment" type="number" oninput="calExp()"></td>
+    <td><input name="history${num}Money"   type="text" oninput="calcCash()"></td>
+    <td><input name="history${num}Gm"      type="text"></td>
+    <td><input name="history${num}Member"  type="text"></td>
   </tr>
-  <tr><td colspan="4" class="left"><input name="history${num}Note" type="text"></td></tr>`;
+  <tr><td colspan="5" class="left"><input name="history${num}Note" type="text"></td></tr>`;
   document.querySelector("#history-table tbody:last-of-type").after(tbody);
   
   form.historyNum.value = num;
