@@ -706,7 +706,8 @@ HTML
 HTML
 my %experienced;
 $experienced{ $pc{'classMainLv1'} }    = 1.1;
-$experienced{ $pc{'classSupportLv1'} } = 1.2;
+if($pc{'classSupportLv1'} eq 'free'){ $experienced{ $pc{'classSupportLv1Free'} } = 1.2 }
+else                                { $experienced{ $pc{'classSupportLv1'}     } = 1.2; }
 foreach my $lv (2 .. $pc{'level'}){
   if   ($pc{"lvUp${lv}Class"} eq 'fate' ){  } # フェイト+n
   elsif($pc{"lvUp${lv}Class"} eq 'free' ){ $experienced{ $pc{"lvUp${lv}ClassFree"} } = $lv; }
