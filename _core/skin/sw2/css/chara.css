@@ -488,8 +488,8 @@ p.words span.brackets {
   content: "";
   left: -1.9rem;
   bottom: 8px;
-  width: 1.4rem;
-  border-width: 0.2rem;
+  width: 1.9rem;
+  border-width: 0.4rem 0 0;
   border-style: solid;
   border-color: inherit;
 }
@@ -497,7 +497,7 @@ p.words span.brackets {
   position: absolute;
   content: "÷6";
   width: 2rem;
-  left: -2.2rem;
+  left: -2.1rem;
   bottom: 8px;
   font-size: 1.2rem;
   text-align: right;
