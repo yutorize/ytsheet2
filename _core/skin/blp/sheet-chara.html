@@ -173,11 +173,40 @@ window.onload = function() {
           <dl class="box" id="factor">
             <dt>ファクター</dt><dd><TMPL_VAR factor></dd>
           </dl>
-          <dl class="box" id="factor-types">
+          <dl class="box" id="factor-core">
             <dt><TMPL_IF typeH>信念</TMPL_IF><TMPL_IF typeV>起源</TMPL_IF></dt>
             <dd><TMPL_VAR factorCore></dd>
+          </dl>
+          <dl class="box" id="factor-style">
             <dt><TMPL_IF typeH>職能</TMPL_IF><TMPL_IF typeV>流儀</TMPL_IF></dt>
             <dd><TMPL_VAR factorStyle></dd>
+          </dl>
+        </div>
+
+        <div id="status" class="box-union">
+          <dl class="box" id="level">
+            <dt>練度</dt>
+            <dd><TMPL_VAR level></dd>
+          </dl>
+          <dl class="box" id="main-status">
+            <dt>能力値</dt>
+            <dd>
+              <dl>
+                <dt><TMPL_IF typeH><i class="spade">♠</i>技</TMPL_IF><TMPL_IF typeV><i class="heart">♥</i>血</TMPL_IF></dt>
+                <dd><b><TMPL_VAR statusMain1></b></dd>
+                <dt><TMPL_IF typeH><i class="club" >♣</i>情</TMPL_IF><TMPL_IF typeV><i class="dia"  >♦</i>想</TMPL_IF></dt>
+                <dd><b><TMPL_VAR statusMain2></b></dd>
+              </dl>
+            </dd>
+          </dl>
+          <dl class="box" id="sub-status">
+            <dt>副能力値</dt>
+            <dd>
+              <dl>
+                <dt>耐久値</dt><dd><b><TMPL_VAR endurance ></b><small>=<TMPL_VAR enduranceFormula ></small></dt>
+                <dt>先制値</dt><dd><b><TMPL_VAR initiative></b><small>=<TMPL_VAR initiativeFormula></small></dt>
+              </dl>
+            </dd>
           </dl>
         </div>
 
@@ -224,33 +253,6 @@ window.onload = function() {
             <dt>使用武器</dt>
             <dd><TMPL_VAR weapon></dd>
             <dd><div><TMPL_VAR weaponNote></div></dd>
-          </dl>
-        </div>
-
-        <div id="status" class="box-union">
-          <dl class="box" id="level">
-            <dt>練度</dt>
-            <dd><TMPL_VAR level></dd>
-          </dl>
-          <dl class="box" id="main-status">
-            <dt>能力値</dt>
-            <dd>
-              <dl>
-                <dt><TMPL_IF typeH><i class="spade">♠</i>技</TMPL_IF><TMPL_IF typeV><i class="heart">♥</i>血</TMPL_IF></dt>
-                <dd><b><TMPL_VAR statusMain1></b></dd>
-                <dt><TMPL_IF typeH><i class="club" >♣</i>情</TMPL_IF><TMPL_IF typeV><i class="dia"  >♦</i>想</TMPL_IF></dt>
-                <dd><b><TMPL_VAR statusMain2></b></dd>
-              </dl>
-            </dd>
-          </dl>
-          <dl class="box" id="sub-status">
-            <dt>副能力値</dt>
-            <dd>
-              <dl>
-                <dt>耐久値</dt><dd><b><TMPL_VAR endurance ></b><small>=<TMPL_VAR enduranceFormula ></small></dt>
-                <dt>先制値</dt><dd><b><TMPL_VAR initiative></b><small>=<TMPL_VAR initiativeFormula></small></dt>
-              </dl>
-            </dd>
           </dl>
         </div>
 

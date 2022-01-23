@@ -248,9 +248,11 @@ print <<"HTML";
           <dl class="box" id="factor">
             <dt>ファクター</dt><dd><select name="factor" oninput="changeFactor();">@{[option "factor",'人間','吸血鬼']}</select></dd>
           </dl>
-          <dl class="box" id="factor-types">
+          <dl class="box" id="factor-core">
             <dt><span class="h-only">信念</span><span class="v-only">起源</span></dt>
             <dd>@{[input "factorCore"]}</dd>
+          </dl>
+          <dl class="box" id="factor-style">
             <dt><span class="h-only">職能</span><span class="v-only">流儀</span></dt>
             <dd>@{[input "factorStyle"]}</dd>
           </dl>
@@ -374,7 +376,7 @@ print <<"HTML";
       </div>
       
       <div class="box partner-edit">
-        <h2 id="head-partner2">@{[ input 'partner2On','checkbox','togglePartner2' ]}血契２</h2>
+        <h2 id="head-partner2">@{[ input 'partner2On','checkbox','togglePartner2' ]}<span class="h-only">血契２</span><span class="v-only">連血鬼</span></h2>
         <div class="partner-table" id="partner2area">
           <dl class="partner-data">
             <dt>相手</dt>
@@ -588,7 +590,7 @@ print <<"HTML";
           <tbody>
           <tr>
             <td>-</td>
-            <td><input type="text" value="2000-12-29" disabled></td>
+            <td><input type="text" value="2021-08-26" disabled></td>
             <td><input type="text" value="第一話「記入例」" disabled></td>
             <td><select disabled><option><option>耐久値+5<option selected>先制値+2</select></td>
             <td class="gm"><input type="text" value="サンプルGM" disabled></td>
@@ -707,8 +709,8 @@ print <<"HTML";
     </article>
   </main>
   <footer>
-    <p class="notes"><span>『人鬼血盟RPG ブラッドパス』は、</span><span>「からすば晴／N.G.P.」の著作物です。</span></p>
-    <p class="copyright">ゆとシートⅡ for DX3rd ver.${main::ver} - ゆとらいず工房</p>
+    <p class="notes"><span>『人鬼血盟RPG ブラッドパス』は、</span><span>「からすば晴（N.G.P.）」及び「株式会社アークライト出版事業部」の著作物です。</span></p>
+    <p class="copyright">ゆとシートⅡ for BLP ver.${main::ver} - ゆとらいず工房</p>
   </footer>
   <datalist id="list-belief">
     <option value="義士">
