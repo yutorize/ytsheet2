@@ -330,37 +330,37 @@ window.onload = function() {
       <div id="area-battle">
         <section class="box" id="bloodarts">
           <h2>血威</h2>
-          <table class="data-table line-tbody">
+          <table class="data-table">
             <thead>
               <tr><th>名称</th><th>タイミング</th><th>対象</th><th class="left">解説</th></tr>
             </thead>
-            <TMPL_LOOP Bloodarts><tbody>
-               <tr>
+            <tbody>
+            <TMPL_LOOP Bloodarts><tr>
                 <td class="name"><TMPL_VAR NAME></td>
                 <td><TMPL_VAR TIMING></td>
                 <td><TMPL_VAR TARGET></td>
                 <td class="left"><TMPL_VAR NOTE></td>
-              </tr>
-            </tbody></TMPL_LOOP>
+              </tr></TMPL_LOOP>
+            </tbody>
           </table>
         </section>
         
         <section class="box" id="arts">
           <h2>特技</h2>
-          <table class="data-table line-tbody">
+          <table class="data-table">
             <thead>
               <tr><th>名称</th><th>タイミング</th><th>対象</th><th>代償</th><th>条件</th><th class="left">解説</th></tr>
             </thead>
-            <TMPL_LOOP Arts><tbody>
-               <tr>
+            <tbody>
+            <TMPL_LOOP Arts><tr>
                 <td class="name"><TMPL_VAR NAME></td>
                 <td><TMPL_VAR TIMING></td>
                 <td><TMPL_VAR TARGET></td>
                 <td><TMPL_VAR COST></td>
                 <td><TMPL_VAR LIMITED></td>
                 <td class="left"><TMPL_VAR NOTE></td>
-              </tr>
-            </tbody></TMPL_LOOP>
+              </tr></TMPL_LOOP>
+            </tbody>
           </table>
         </section>
       </div>

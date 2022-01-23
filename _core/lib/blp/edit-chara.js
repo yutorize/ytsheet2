@@ -166,9 +166,9 @@ function togglePartner2(){
 // 追加
 function addArts(){
   let num = Number(form.artsNum.value) + 1;
-  let tbody = document.createElement('tbody');
-  tbody.setAttribute('id',idNumSet('arts'));
-  tbody.innerHTML = `<tr>
+  let tr = document.createElement('tr');
+  tr.setAttribute('id',idNumSet('arts'));
+  tr.innerHTML = `
     <td class="handle"></td>
     <td><input name="arts${num}Name"    type="text"></td>
     <td><input name="arts${num}Timing"  type="text" list="list-timing"></td>
@@ -176,9 +176,9 @@ function addArts(){
     <td><input name="arts${num}Cost"    type="text" list="list-cost"></td>
     <td><input name="arts${num}Limited" type="text" list="list-limited"></td>
     <td><input name="arts${num}Note"    type="text"></td>
-  </tr>`;
-  const target = document.querySelector("#arts-table");
-  target.appendChild(tbody, target);
+  `;
+  const target = document.querySelector("#arts-list");
+  target.appendChild(tr, target);
   
   form.artsNum.value = num;
 }
@@ -189,19 +189,18 @@ function delArts(){
     if(form[`arts${num}Name`].value || form[`arts${num}Timing`].value || form[`arts${num}Target`].value || form[`arts${num}Cost`].value || form[`arts${num}Limited`].value || form[`arts${num}Note`].value){
       if (!confirm(delConfirmText)) return false;
     }
-    const target = document.querySelector("#arts-table tbody:last-of-type");
+    const target = document.querySelector("#arts-list tr:last-of-type");
     target.parentNode.removeChild(target);
     num--;
     form.artsNum.value = num;
   }
 }
 // ソート
-let artsSortable = Sortable.create(document.getElementById('arts-table'), {
+let artsSortable = Sortable.create(document.getElementById('arts-list'), {
   group: "arts",
   dataIdAttr: 'id',
   animation: 100,
   handle: '.handle',
-  filter: 'thead,tfoot',
   ghostClass: 'sortable-ghost',
   onUpdate: function(evt){
     const order = artsSortable.toArray();
@@ -220,12 +219,11 @@ let artsSortable = Sortable.create(document.getElementById('arts-table'), {
   }
 });
 // 血威ソート
-let bloodartsSortable = Sortable.create(document.getElementById('bloodarts-table'), {
+let bloodartsSortable = Sortable.create(document.getElementById('bloodarts-list'), {
   group: "bloodarts",
   dataIdAttr: 'id',
   animation: 100,
   handle: '.handle',
-  filter: 'thead,tfoot',
   ghostClass: 'sortable-ghost',
   onUpdate: function(evt){
     const order = bloodartsSortable.toArray();

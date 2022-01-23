@@ -437,40 +437,40 @@ print <<"HTML";
       
       <div class="box" id="bloodarts">
         <h2>血威</h2>
-        <table class="edit-table line-tbody no-border-cells" id="bloodarts-table">
+        <table class="edit-table no-border-cells">
           <thead>
             <tr><th></th><th>名称</th><th>タイミング</th><th>対象</th><th class="left">解説</th></tr>
           </thead>
+          <tbody id="bloodarts-list">
 HTML
 foreach my $num (1 .. 3) {
 print <<"HTML";
-          <tbody id="bloodarts${num}">
-            <tr>
+            <tr id="bloodarts${num}">
               <td class="handle"></td>
               <td>@{[input "bloodarts${num}Name"]}</td>
               <td>@{[input "bloodarts${num}Timing",'','','list="list-timing"']}</td>
               <td>@{[input "bloodarts${num}Target",'','','list="list-target"']}</td>
               <td>@{[input "bloodarts${num}Note"]}</td>
             </tr>
-          </tbody>
 HTML
 }
 print <<"HTML";
+          </tbody>
         </table>
       </div>
       
       <div class="box" id="arts">
         <h2>特技</h2>
         @{[input 'artsNum','hidden']}
-        <table class="edit-table line-tbody no-border-cells" id="arts-table">
+        <table class="edit-table no-border-cells" id="arts-table">
           <thead>
             <tr><th></th><th>名称</th><th>タイミング</th><th>対象</th><th>代償</th><th>条件</th><th class="left">解説</th></tr>
           </thead>
+          <tbody id="arts-list">
 HTML
 foreach my $num (1 .. $pc{'artsNum'}) {
 print <<"HTML";
-          <tbody id="arts${num}">
-            <tr>
+            <tr id="arts${num}">
               <td class="handle"></td>
               <td>@{[input "arts${num}Name"]}</td>
               <td>@{[input "arts${num}Timing" ,'','','list="list-timing"']}</td>
@@ -479,10 +479,10 @@ print <<"HTML";
               <td>@{[input "arts${num}Limited",'','','list="list-limited"']}</td>
               <td>@{[input "arts${num}Note"]}</td>
             </tr>
-          </tbody>
 HTML
 }
 print <<"HTML";
+          </tbody>
         </table>
         <div class="add-del-button"><a onclick="addArts()">▼</a><a onclick="delArts()">▲</a></div>
       </div>
