@@ -38,7 +38,8 @@ window.onload = function() {
 };
 </TMPL_IF>
   </script>
-  <TMPL_IF colorCustom><style>
+  <style>
+    <TMPL_IF colorCustom>
     :root {
       --box-head-bg-color-h: <TMPL_VAR colorHeadBgH>;
       --box-head-bg-color-s: <TMPL_VAR colorHeadBgS>%;
@@ -48,7 +49,46 @@ window.onload = function() {
       --box-base-bg-color-l: <TMPL_VAR colorBaseBgL>%;
       --box-base-bg-color-d: <TMPL_VAR colorBaseBgD>%;
     }
-  </style></TMPL_IF>
+    </TMPL_IF>
+    #partner1 {
+      <TMPL_IF p1_colorCustom>
+      --box-head-bg-color-h: <TMPL_VAR p1_colorHeadBgH>;
+      --box-head-bg-color-s: <TMPL_VAR p1_colorHeadBgS>%;
+      --box-head-bg-color-l: <TMPL_VAR p1_colorHeadBgL>%;
+      --box-base-bg-color-h: <TMPL_VAR p1_colorBaseBgH>;
+      --box-base-bg-color-s: <TMPL_VAR p1_colorBaseBgS>%;
+      --box-base-bg-color-l: <TMPL_VAR p1_colorBaseBgL>%;
+      --box-base-bg-color-d: <TMPL_VAR p1_colorBaseBgD>%;
+      <TMPL_ELSE>
+      --box-head-bg-color-h: 225;
+      --box-head-bg-color-s: 9%;
+      --box-head-bg-color-l: 65%;
+      --box-base-bg-color-h: 270;
+      --box-base-bg-color-s: 0%;
+      --box-base-bg-color-l: 100%;
+      --box-base-bg-color-d: 15%;
+      </TMPL_IF>
+    }
+    #partner2 {
+      <TMPL_IF p2_colorCustom>
+      --box-head-bg-color-h: <TMPL_VAR p2_colorHeadBgH>;
+      --box-head-bg-color-s: <TMPL_VAR p2_colorHeadBgS>%;
+      --box-head-bg-color-l: <TMPL_VAR p2_colorHeadBgL>%;
+      --box-base-bg-color-h: <TMPL_VAR p2_colorBaseBgH>;
+      --box-base-bg-color-s: <TMPL_VAR p2_colorBaseBgS>%;
+      --box-base-bg-color-l: <TMPL_VAR p2_colorBaseBgL>%;
+      --box-base-bg-color-d: <TMPL_VAR p2_colorBaseBgD>%;
+      <TMPL_ELSE>
+      --box-head-bg-color-h: 225;
+      --box-head-bg-color-s: 9%;
+      --box-head-bg-color-l: 65%;
+      --box-base-bg-color-h: 270;
+      --box-base-bg-color-s: 0%;
+      --box-base-bg-color-l: 100%;
+      --box-base-bg-color-d: 15%;
+      </TMPL_IF>
+    }
+  </style>
   <TMPL_INCLUDE NAME="skin-add/sheet-head.html">
 </head>
 <body>
@@ -278,7 +318,10 @@ window.onload = function() {
           <div class="image-none"><p class="words" style="<TMPL_VAR p1_wordsX><TMPL_VAR p1_wordsY>"><TMPL_VAR p1_words></p></div>
           </TMPL_IF>
         
-          <h1><TMPL_VAR head_p1>:<TMPL_IF partner1Url><a href="<TMPL_VAR partner1Url>"><TMPL_VAR partner1Name></a><TMPL_ELSE><TMPL_VAR partner1Name></TMPL_IF></h1>
+          <div class="partner-name">
+            <h1><TMPL_VAR head_p1>:<TMPL_IF partner1Url><a href="<TMPL_VAR partner1Url>"><TMPL_VAR partner1Name></a><TMPL_ELSE><TMPL_VAR partner1Name></TMPL_IF></h1>
+            <dl class="partner-playername"><dt>プレイヤー</dt><dd><TMPL_VAR p1_playerName></dd></dl>
+          </div>
           <div class="box-union partner-personal">
             <dl class="box"><dt><TMPL_IF typeH>起源／流儀</TMPL_IF><TMPL_IF typeV>信念／職能</TMPL_IF></dt><dd><TMPL_VAR partner1Factor></dd></dl>
             <dl class="box"><dt><TMPL_IF typeH>外見年齢／実</TMPL_IF>年齢</dt><dd><TMPL_VAR partner1Age></dd></dl>
@@ -308,7 +351,10 @@ window.onload = function() {
           <div class="image-none"><p class="words" style="<TMPL_VAR p2_wordsX><TMPL_VAR p2_wordsY>"><TMPL_VAR p2_words></p></div>
           </TMPL_IF>
         
-          <h1><TMPL_VAR head_p2>:<TMPL_IF partner2Url><a href="<TMPL_VAR partner2Url>"><TMPL_VAR partner2Name></a><TMPL_ELSE><TMPL_VAR partner2Name></TMPL_IF></h1>
+          <div class="partner-name">
+            <h1><TMPL_VAR head_p2>:<TMPL_IF partner2Url><a href="<TMPL_VAR partner2Url>"><TMPL_VAR partner2Name></a><TMPL_ELSE><TMPL_VAR partner2Name></TMPL_IF></h1>
+            <dl class="partner-playername"><dt>プレイヤー</dt><dd><TMPL_VAR p2_playerName></dd></dl>
+          </div>
           <div class="box-union partner-personal">
             <dl class="box"><dt>起源／流儀</dt><dd><TMPL_VAR partner2Factor></dd></dl>
             <dl class="box"><dt>外見年齢／実年齢</dt><dd><TMPL_VAR partner2Age></dd></dl>
@@ -423,7 +469,7 @@ window.onload = function() {
   <TMPL_INCLUDE NAME="skin-add/sheet-sidebar.html">
 
   <footer>
-    <p class="notes"><span>『人鬼血盟RPG ブラッドパス』は、</span><span>「からすば晴／N.G.P.」の著作物です。</span></p>
+    <p class="notes"><span>『人鬼血盟RPG ブラッドパス』は、</span><span>「からすば晴（N.G.P.）」及び「株式会社アークライト出版事業部」の著作物です。</span></p>
     <p class="copyright">ゆとシートⅡ for BLP ver.<TMPL_VAR ver> - <a href="https://yutorize.2-d.jp">ゆとらいず工房</a></p>
   </footer>
 </body>

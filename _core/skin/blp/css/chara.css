@@ -577,9 +577,46 @@ p.words span.brackets {
 .partner {
   display: grid;
   margin-top: 1rem;
-  grid-gap: 1rem;
+  grid-gap: .5rem 1rem;
   grid-template-columns: 1fr 4fr;
   grid-template-rows: auto auto 1fr;
+  
+  --box-head-bg-color: hsla(
+    var(--box-head-bg-color-h, 225),
+    var(--box-head-bg-color-s,  9%),
+    var(--box-head-bg-color-l, 65%),
+    var(--box-head-bg-color-a, 0.4)
+  );
+  --box-base-bg-color: hsla(
+    var(--box-base-bg-color-h,   0),
+    var(--box-base-bg-color-s,   0%),
+    var(--box-base-bg-color-l, 100%),
+    var(--box-base-bg-color-a, 0.5)
+  );
+  --box-outside-border-color: hsl(
+    var(--box-head-bg-color-h, 0),
+    calc( var(--box-head-bg-color-s,   0%) * 0.15 ), 60%
+  );
+  --box-inside-border-color: hsl(
+    var(--box-base-bg-color-h, 0),
+    calc( var(--box-base-bg-color-s,   0%) * 0.3 ), 65%
+  );
+}
+.night .partner {
+  --box-base-bg-color: hsla(
+    var(--box-base-bg-color-h,   0),
+    var(--box-base-bg-color-s,  0%),
+    var(--box-base-bg-color-d, 15%),
+    var(--box-base-bg-color-a, 0.5)
+  );
+  --box-outside-border-color: hsl(
+    var(--box-head-bg-color-h, 0),
+    calc( var(--box-head-bg-color-s,   0%) * 0.15 ), 35%
+  );
+  --box-inside-border-color: hsl(
+    var(--box-base-bg-color-h, 0),
+    calc( var(--box-base-bg-color-s,   0%) * 0.3 ), 25%
+  );
 }
 @media screen and (min-width:1400px){
   .partner:first-child {
@@ -601,10 +638,46 @@ p.words span.brackets {
 .partner .image-none p.words {
   display: none;
 }
-.partner h1 {
-  font-size: 1.8rem;
-  line-height: 1;
+.partner .partner-name {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  background-image: linear-gradient(to right, var(--box-head-bg-color), var(--box-base-bg-color));
+  border-width: 2px 0px 1px;
+  border-style: solid;
+  border-color: var(--box-outside-border-color, inherit);
+}
+.partner .partner-name h1 {
+  padding-left: .2em;
+  font-size: 1.5rem;
   font-family: var(--base-font-family-min);
+  text-shadow: var(--bg-color) 0px 0px .5em,
+    var(--bg-color)  .1rem .1rem, var(--bg-color) -.1rem -.1rem,
+    var(--bg-color) -.1rem .1rem, var(--bg-color)  .1rem -.1rem,
+    var(--bg-color)  .0rem .1rem, var(--bg-color)  .0rem -.1rem,
+    var(--bg-color) -.1rem .0rem, var(--bg-color)  .1rem  .0rem;
+}
+.partner .partner-name h1 a {
+  font-size: 1.8rem;
+}
+.partner .partner-name dl {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  margin: .2em .2em .2em auto;
+  line-height: 1;
+  align-self: end;
+}
+.partner .partner-name dl dt {
+  font-size: 78%;
+}
+.partner .partner-name dl dt::after {
+  content: ":";
+}
+.partner .partner-name dl dd {
+  font-size: 86%;
+  text-align: right;
+  flex-grow: 1;
 }
 .partner-personal {
   display: grid;
@@ -680,7 +753,7 @@ p.words span.brackets {
     grid-column: 1;
     grid-row: 2 / 4;
   }
-  .bigamy .partner h1 {
+  .bigamy .partner .partner-name {
     grid-column: 1 / 3 !important;
     grid-row: 1;
   }

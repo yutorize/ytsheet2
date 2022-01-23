@@ -76,8 +76,8 @@ main article a:link    { color: hsl(var(--box-head-bg-color-h,230),90%,40%); }
 main article a:visited { color: hsl(var(--box-base-bg-color-h,270),40%,40%); }
 main article a:hover   { color: #000; background: hsla(var(--box-head-bg-color-h,230),100%,80%,0.7); }
 .night main article a         { background: linear-gradient(to top, hsla(var(--box-head-bg-color-h,230),100%,20%,0.7) .2rem, transparent .2rem, transparent); }
-.night main article a:link    { color: hsl(var(--box-head-bg-color-h,210),100%,70%); }
-.night main article a:visited { color: hsl(var(--box-base-bg-color-h,270), 40%,60%); }
+.night main article a:link    { color: hsl(var(--box-head-bg-color-h,210),100%,80%); }
+.night main article a:visited { color: hsl(var(--box-base-bg-color-h,270), 40%,75%); }
 .night main article a:hover   { color: #fff; background: hsla(var(--box-head-bg-color-h,230),100%,20%,0.7); }
 
 main article a[onclick] { background: none; cursor: pointer;}

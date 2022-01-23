@@ -360,9 +360,11 @@ foreach (0 .. $pc{'historyNum'}){
 $SHEET->param(History => \@history);
 
 ### カラーカスタム --------------------------------------------------
-$SHEET->param(colorBaseBgS => $pc{colorBaseBgS} * 0.7);
-$SHEET->param(colorBaseBgL => 100 - $pc{colorBaseBgS} / 6);
-$SHEET->param(colorBaseBgD => 15);
+foreach ('','p1_','p2_'){
+  $SHEET->param($_."colorBaseBgS" => $pc{$_."colorBaseBgS"} * 0.7);
+  $SHEET->param($_."colorBaseBgL" => 100 - $pc{$_."colorBaseBgS"} / 6);
+  $SHEET->param($_."colorBaseBgD" => 15);
+}
 
 
 ### バックアップ --------------------------------------------------
@@ -416,11 +418,11 @@ $SHEET->param("imageSrc" => $imgsrc);
 
 ## パートナー
 foreach ('','p1_','p2_'){
-  if($pc{'imageFit'} eq 'percentY'){
-    $SHEET->param($_."imageFit" => $pc{$_.'imagePercent'}.'%');
+  if($pc{$_.'imageFit'} eq 'percentY'){
+    $SHEET->param($_."imageFit" => 'auto '.$pc{$_.'imagePercent'}.'%');
   }
   elsif($pc{$_.'imageFit'} =~ /^percentX?$/){
-    $SHEET->param($_."imageFit" => 'auto '.$pc{$_.'imagePercent'}.'%');
+    $SHEET->param($_."imageFit" => $pc{$_.'imagePercent'}.'%');
   }
   ## 権利表記
   if($pc{$_.'imageCopyrightURL'}){
