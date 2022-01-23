@@ -65,7 +65,6 @@ elsif($pc{'forbidden'}){
   $pc{'initiativeGrow'} = 0;
   
   $pc{'scarName'} = noiseText(4,6);
-  $pc{'scarName'} = noiseText(4,6);
   $pc{'scarNote'} = noiseText(10,15);
   
   foreach(1..3){
@@ -75,7 +74,7 @@ elsif($pc{'forbidden'}){
     $pc{'bloodarts'.$_.'Note'}     = noiseText(10,15);
   }
   $pc{'artsNum'} = int(rand 3) + 3;
-  foreach(1..$pc{'artsNum'}){
+  foreach('S',1..$pc{'artsNum'}){
     $pc{'arts'.$_.'Name'}     = noiseText(5,10);
     $pc{'arts'.$_.'Timing'}   = noiseText(3,4);
     $pc{'arts'.$_.'Target'}   = noiseText(2,5);
@@ -300,6 +299,17 @@ foreach (1 .. $pc{'artsNum'}){
     "COST"     => textCost($pc{'arts'.$_.'Cost'}),
     "LIMITED"  => textCost($pc{'arts'.$_.'Limited'}),
     "NOTE"     => $pc{'arts'.$_.'Note'},
+  });
+}
+if( $pc{'scarName'} && ($pc{'artsSLv'} || $pc{'artsSLv'} || $pc{'artsSTiming'} || $pc{'artsSTarget'} || $pc{'artsSCost'} || $pc{'artsSLimited'} || $pc{'artsSNote'}) ){
+  push(@arts, {
+    "NAME"     => '<b class="arts-scar-head">傷号:</b><span>'.$pc{'scarName'}.'</span>',
+    "LV"       => $pc{'artsSLv'},
+    "TIMING"   => $pc{'artsSTiming'},
+    "TARGET"   => textTarget($pc{'artsSTarget'}),
+    "COST"     => textCost($pc{'artsSCost'}),
+    "LIMITED"  => textCost($pc{'artsSLimited'}),
+    "NOTE"     => $pc{'artsSNote'},
   });
 }
 $SHEET->param(Arts => \@arts);

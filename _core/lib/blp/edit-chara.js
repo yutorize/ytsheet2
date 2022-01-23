@@ -7,7 +7,8 @@ window.onload = function() {
   nameSet();
   calcGrow();
   changeFactor();
-  
+  scarCheck();
+
   togglePartner2();
   autoInputPartner(1);
   autoInputPartner(2);
@@ -160,6 +161,14 @@ function autoInputPartner(num){
 }
 function togglePartner2(){
   document.getElementById('partner2area').style.display = form.partner2On.checked ? '' : 'none';
+}
+
+// 傷号 ----------------------------------------
+function scarCheck(){
+  const name = form.scarName.value;
+  document.getElementById('arts-scar').style.display = name ? '' : 'none';
+  document.getElementById('arts-scar-head').style.display = name ? '' : 'none';
+  document.getElementById('arts-scar-name').innerHTML = ruby(name);
 }
 
 // 特技欄 ----------------------------------------

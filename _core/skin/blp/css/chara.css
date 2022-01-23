@@ -562,6 +562,15 @@ p.words span.brackets {
 #arts table tbody td:nth-child(4) { font-size: 90%; } /* 代償 */
 #arts table tbody td:nth-child(5) { font-size: 90%; } /* 条件 */
 
+#arts b.arts-scar-head {
+  display: block;
+  margin-top: -.1em;
+  margin-left: .1em;
+  margin-bottom: -.2em;
+  font-size: 82%;
+  line-height: 1;
+  text-align: left;
+}
 
 /* // Partner
 ---------------------------------------------------------------------------------------------------- */

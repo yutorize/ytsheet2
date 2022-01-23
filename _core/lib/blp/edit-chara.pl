@@ -306,7 +306,7 @@ print <<"HTML";
         <div id="scar" class="box-union">
           <dl class="box">
             <dt>傷号</dt>
-            <dd>@{[input "scarName"]}</dd>
+            <dd>@{[input "scarName",'','scarCheck']}</dd>
             <dd><textarea name="scarNote" placeholder="設定" rows="3">$pc{'scarNote'}</textarea></dd>
           </dl>
         </div>
@@ -487,6 +487,22 @@ print <<"HTML";
           </tbody>
         </table>
         <div class="add-del-button"><a onclick="addArts()">▼</a><a onclick="delArts()">▲</a></div>
+        <h2 id="arts-scar-head">傷号特技</h2>
+        <table id="arts-scar" class="edit-table no-border-cells">
+          <thead>
+            <tr><th></th><th>名称</th><th>タイミング</th><th>対象</th><th>代償</th><th>条件</th><th class="left">解説</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td colspan="2" id="arts-scar-name"></td>
+              <td>@{[input "artsSTiming" ,'','','list="list-timing"']}</td>
+              <td>@{[input "artsSTarget" ,'','','list="list-target"']}</td>
+              <td>@{[input "artsSCost"   ,'','','list="list-cost"']}</td>
+              <td>@{[input "artsSLimited",'','','list="list-limited"']}</td>
+              <td>@{[input "artsSNote"]}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
       
       <details class="box" id="free-note" @{[$pc{'freeNote'}?'open':'']}>

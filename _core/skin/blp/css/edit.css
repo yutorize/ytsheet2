@@ -207,6 +207,21 @@ body:not(.type-human) .h-only {
 #arts table tbody td {
   padding: .3rem 0 .4rem !important;
 }
+
+#arts h2:not(:first-child) {
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+#arts #arts-scar {
+}
+#arts #arts-scar td:first-child {
+  font-size: 92%;
+  font-weight: normal;
+}
+#arts #arts-scar b.arts-scar-head {
+  margin-top: 0;
+}
 @media screen and (max-width:735px){
   #bloodarts,
   #arts {
