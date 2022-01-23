@@ -6,13 +6,15 @@ body {
   background-image: url(../../_common/img/back-pattern.png), url(../img/back-moon.png);
   background-blend-mode: normal, hard-light;
 }
-/* // Layout
----------------------------------------------------------------------------------------------------- */
 @media screen and (max-width:735px){
   body {
-    background-size: auto, 60%;
+    background-size: auto, 120%;
+    background-position-x: 0, 5vw;
+    background-position-y: 0, 110%;
   }
 }
+/* // Layout
+---------------------------------------------------------------------------------------------------- */
 @media screen and (min-width:1400px){
   body {
     grid-template-columns: minmax(0, 1fr) minmax(auto, 1800px) minmax(0, 1fr);
