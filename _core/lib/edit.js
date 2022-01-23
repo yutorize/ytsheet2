@@ -314,6 +314,19 @@ function sectionSelect(id){
   document.getElementById('section-'+id).style.display = 'block';
 }
 
+// セレクトorインプット ----------------------------------------
+function selectInputCheck(name,obj){
+  obj.parentNode.classList.toggle('free', obj.value === 'free');
+  if(obj.value === 'free'){
+    if(document.querySelector(`input[name="${name}Free"]`)) document.querySelector(`input[name="${name}Free"]`).setAttribute('name', name);
+    if(document.querySelector(`select[name="${name}"]`   )) document.querySelector(`select[name="${name}"]`   ).setAttribute('name', name+'Select');
+  }
+  else {
+    if(document.querySelector(`select[name="${name}Select"]`)) document.querySelector(`select[name="${name}Select"]`).setAttribute('name', name);
+    if(document.querySelector(`input[name="${name}"]`       )) document.querySelector(`input[name="${name}"]`       ).setAttribute('name', name+'Free');
+  }
+}
+
 // 表示／非表示 ----------------------------------------
 function view(viewId){
   let value = document.getElementById(viewId).style.display;

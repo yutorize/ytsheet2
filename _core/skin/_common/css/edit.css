@@ -128,6 +128,23 @@ span.mark {
   border-width: 1px;
   border-style: solid;
 }
+
+.select-input.free {
+  display: inline-block;
+}
+.select-input.free select {
+  margin-bottom: 0 !important;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+.select-input.free input  {
+  margin-top: 0 !important;
+  border-top: 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+.select-input:not(.free) input { display: none; }
+
 /* 非表示 */
 .hidden {
   display: none;

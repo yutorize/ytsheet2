@@ -254,6 +254,19 @@ sub option {
   }
   return $text;
 }
+sub selectInput {
+  my $name = shift;
+  my $func = shift;
+  if($func && $func !~ /\(.*?\)$/){ $func .= '()'; }
+  my $text = '<div class="select-input"><select name="'.$name.'" oninput="selectInputCheck(\''.$name.'\',this);'.$func.'"">'.option($name, @_);
+  $text .= '<option value="free">その他（自由記入）'; 
+  my $hit = 0;
+  foreach my $value (@_) { if($::pc{$name} eq $value){ $hit = 1; last; } }
+  if($::pc{$name} && !$hit){ $text .= '<option value="'.$::pc{$name}.'" selected>'.$::pc{$name}; }
+  $text .= '</select>';
+  $text .= '<input type="text" name="'.$name.'Free" list="list-'.$name.'"></div>';
+  return $text;
+}
 sub display {
   $_[0] ? ($_[1] ? " style=\"display:$_[1]\"" : '') : ' style="display:none"'
 }

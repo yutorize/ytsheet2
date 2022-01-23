@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <title><TMPL_VAR characterNameTitle> - <TMPL_VAR title></title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta property="og:title" content="<TMPL_VAR characterNameTitle> - <TMPL_VAR title>">
+  <meta property="og:type" content="artcle">
+  <meta property="og:url" content="<TMPL_VAR ogUrl>">
+  <meta property="og:site_name" content="<TMPL_VAR title>">
+  <meta property="og:description" content="<TMPL_VAR ogDescript>">
+  <TMPL_IF ogImg><meta property="og:image" content="<TMPL_VAR ogImg>"></TMPL_IF>
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@yutorize">
+  <link rel="stylesheet" media="all" href="<TMPL_VAR coreDir>/skin/_common/css/base.css?<TMPL_VAR ver>">
+  <link rel="stylesheet" media="all" href="<TMPL_VAR coreDir>/skin/_common/css/sheet.css?<TMPL_VAR ver>">
+  <link rel="stylesheet" media="all" href="<TMPL_VAR coreDir>/skin/kiz/css/chara.css?<TMPL_VAR ver>">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
+  <script>
+const sheetId = '<TMPL_VAR id>';
+const paletteTool = '<TMPL_VAR paletteTool>';
+const generateType = 'KizunaBulletPC';
+const defaultImage = '<TMPL_VAR coreDir>/skin/kiz/img/default.png';
+
+const images = {
+  '1' : "<TMPL_VAR imageSrc>",
+  'p1' : "<TMPL_VAR p1_imageSrc>",
+  'p2' : "<TMPL_VAR p2_imageSrc>",
+};
+<TMPL_IF error>
+window.onload = function() {
+  editOn();
+  setTimeout(function(){
+    document.getElementById("error").style.opacity = 0;
+    document.getElementById("error").style.top = '-5rem';
+  },2000);
+};
+</TMPL_IF>
+  </script>
+  <style>
+    <TMPL_IF colorCustom>
+    :root {
+      --box-head-bg-color-h: <TMPL_VAR colorHeadBgH>;
+      --box-head-bg-color-s: <TMPL_VAR colorHeadBgS>%;
+      --box-head-bg-color-l: <TMPL_VAR colorHeadBgL>%;
+      --box-base-bg-color-h: <TMPL_VAR colorBaseBgH>;
+      --box-base-bg-color-s: <TMPL_VAR colorBaseBgS>%;
+      --box-base-bg-color-l: <TMPL_VAR colorBaseBgL>%;
+      --box-base-bg-color-d: <TMPL_VAR colorBaseBgD>%;
+    }
+    </TMPL_IF>
+    #partner1 {
+      <TMPL_IF p1_colorCustom>
+      --box-head-bg-color-h: <TMPL_VAR p1_colorHeadBgH>;
+      --box-head-bg-color-s: <TMPL_VAR p1_colorHeadBgS>%;
+      --box-head-bg-color-l: <TMPL_VAR p1_colorHeadBgL>%;
+      --box-base-bg-color-h: <TMPL_VAR p1_colorBaseBgH>;
+      --box-base-bg-color-s: <TMPL_VAR p1_colorBaseBgS>%;
+      --box-base-bg-color-l: <TMPL_VAR p1_colorBaseBgL>%;
+      --box-base-bg-color-d: <TMPL_VAR p1_colorBaseBgD>%;
+      <TMPL_ELSE>
+      --box-head-bg-color-h: 225;
+      --box-head-bg-color-s: 9%;
+      --box-head-bg-color-l: 65%;
+      --box-base-bg-color-h: 270;
+      --box-base-bg-color-s: 0%;
+      --box-base-bg-color-l: 100%;
+      --box-base-bg-color-d: 15%;
+      </TMPL_IF>
+    }
+    #partner2 {
+      <TMPL_IF p2_colorCustom>
+      --box-head-bg-color-h: <TMPL_VAR p2_colorHeadBgH>;
+      --box-head-bg-color-s: <TMPL_VAR p2_colorHeadBgS>%;
+      --box-head-bg-color-l: <TMPL_VAR p2_colorHeadBgL>%;
+      --box-base-bg-color-h: <TMPL_VAR p2_colorBaseBgH>;
+      --box-base-bg-color-s: <TMPL_VAR p2_colorBaseBgS>%;
+      --box-base-bg-color-l: <TMPL_VAR p2_colorBaseBgL>%;
+      --box-base-bg-color-d: <TMPL_VAR p2_colorBaseBgD>%;
+      <TMPL_ELSE>
+      --box-head-bg-color-h: 225;
+      --box-head-bg-color-s: 9%;
+      --box-head-bg-color-l: 65%;
+      --box-base-bg-color-h: 270;
+      --box-base-bg-color-s: 0%;
+      --box-base-bg-color-l: 100%;
+      --box-base-bg-color-d: 15%;
+      </TMPL_IF>
+    }
+  </style>
+  <TMPL_INCLUDE NAME="skin-add/sheet-head.html">
+</head>
+<body>
+  <script src="<TMPL_VAR coreDir>/skin/_common/js/common.js?<TMPL_VAR ver>"></script>
+  <script src="<TMPL_VAR coreDir>/skin/_common/js/sheet.js?<TMPL_VAR ver>"></script>
+  <script src="<TMPL_VAR coreDir>/skin/_common/js/lib/sha256.js?<TMPL_VAR ver>"></script>
+  <script src="<TMPL_VAR coreDir>/skin/_common/js/lib/jszip.js?<TMPL_VAR ver>"></script>
+  <script src="<TMPL_VAR coreDir>/skin/_common/js/lib/ytsheetCommon.js?<TMPL_VAR ver>"></script>
+  <script src="<TMPL_VAR coreDir>/skin/kiz/js/lib/ytsheetToUdonariumKIZ.js?<TMPL_VAR ver>"></script>
+  <script src="<TMPL_VAR coreDir>/skin/kiz/js/lib/ytsheetToCcfoliaKIZ.js?<TMPL_VAR ver>"></script>
+  <script src="<TMPL_VAR coreDir>/skin/kiz/js/lib/ytsheetConstsKIZ.js?<TMPL_VAR ver>"></script>
+  <script src="<TMPL_VAR coreDir>/skin/kiz/js/lib/ytsheetToTextKIZ.js?<TMPL_VAR ver>"></script>
+  <header>
+    <h1><a href="./"><TMPL_VAR title></a></h1>
+    <nav>
+      <ul>
+        <li class="small"><a href="./">⏎</a></li>
+        <TMPL_IF convertMode>
+          <li><a href="./?mode=convert&url=<TMPL_VAR convertUrl>"><span>コンバート</span></a></li>
+        <TMPL_ELSE>
+          <TMPL_IF backupId>
+            <li class="small"><a onclick="backuplistOn()"><span>過去ログ</span></a></li>
+            <TMPL_IF ReqdPassword>
+              <li class="small"><a onclick="editOn()">復元</a></li>
+            <TMPL_ELSE>
+              <li class="small"><a href="./?mode=edit&id=<TMPL_VAR id>&backup=<TMPL_VAR backupId>">復元</a></li>
+            </TMPL_IF>
+          <TMPL_ELSE>
+            <TMPL_UNLESS forbiddenMode>
+              <li class="small"><a onclick="chatPaletteOn();"><span>パレット</span></a></li>
+              <li class="small"><a onclick="donwloadListOn();">出力</a></li>
+              <li class="small"><a onclick="backuplistOn()"><span>過去ログ</span></a></li>
+            </TMPL_UNLESS>
+            <TMPL_IF ReqdPassword>
+              <li class="small"><a onclick="editOn()">編集</a></li>
+            <TMPL_ELSE>
+              <li class="small"><a href="./?mode=edit&id=<TMPL_VAR id>">編集</a></li>
+            </TMPL_IF>
+          </TMPL_IF>
+        </TMPL_IF>
+        <li class="small"><a onclick="nightModeChange()" title="ナイトモード">☾✧</a></li>
+      </ul>
+    </nav>
+  </header>
+  
+  <TMPL_IF error>
+  <aside id="error">
+    <p>
+      <TMPL_VAR error>
+    </p>
+  </aside>
+  </TMPL_IF>
+  
+  <TMPL_UNLESS forbiddenMode>
+    <aside id="backuplist" class="float-box">
+      <h2>過去ログ（バックアップ）</h2>
+      <ul>
+        <li<TMPL_UNLESS backupId> class="backup-now"</TMPL_UNLESS>><a href="?id=<TMPL_VAR id>">最新</a></li>
+        <TMPL_LOOP Backup><li<TMPL_IF NOW> class="backup-now"</TMPL_IF>><a href="?id=<TMPL_VAR id>&backup=<TMPL_VAR URL>"><TMPL_VAR DATE></a></li></TMPL_LOOP>
+      </ul>
+    </aside>
+
+    <aside id="downloadlist" class="float-box">
+      <h2>出力</h2>
+      <ul>
+        <li id="downloadlist-udonarium"><a onclick="downloadAsUdonarium();">ユドナリウム用コマデータ<small>(zip形式ファイル)</small></a></li>
+        <li id="downloadlist-ccfolia"><a onclick="downloadAsCcfolia();">ココフォリア用コマデータ<small>(クリップボードへコピー)</small></a></li>
+        <li id="downloadlist-text"><a onclick="donloadAsText();">テキスト形式</a></li>
+        <li id="downloadlist-json"><a onclick="donloadAsJson();">JSON 形式</a></li>
+      </ul>
+    </aside>
+  </TMPL_UNLESS>
+
+  <form id="login-form" class="float-box" method="post" action="./">
+    <input type="hidden" name="mode" value="edit">
+    <input type="hidden" name="id" value="<TMPL_VAR id>">
+    <input type="password" name="pass" placeholder="password">
+    <input type="hidden" name="backup" value="<TMPL_VAR backupId>">
+    <input type="submit" value="編集">
+  </form>
+
+  <main id="character">
+    <TMPL_IF forbidden><aside class="information attention">
+      閲覧が制限されているデータです。<br>
+      <TMPL_IF forbiddenAuthor>あなた以外には一部または全てのデータが伏せられます。(<a href="./?id=<TMPL_VAR id>&checkView=1">⇒確認</a>)</TMPL_IF>
+    </aside></TMPL_IF>
+    
+    <TMPL_IF backupId><aside class="information">
+      <TMPL_VAR updateTime> 時点のバックアップデータです。
+    </aside></TMPL_IF>
+    
+    <TMPL_IF convertMode><aside class="information">
+      <a href="<TMPL_VAR convertUrl>" target="_blank"><TMPL_VAR convertSource></a> のデータを表示しています。
+    </aside></TMPL_IF>
+    
+    <article>
+      <div id="area-name">
+        <h1 id="character-name"><TMPL_IF aka><span id="aka">“<TMPL_VAR aka>”</span></TMPL_IF><TMPL_VAR characterName></h1>
+        <div>
+        <p id="update-time"><time><TMPL_VAR updateTime></time></p>
+        <p id="player-name">プレイヤー：<TMPL_VAR playerName></p>
+        </div>
+      </div>
+      
+      <div id="tags">
+        <TMPL_IF group><a id="group" href="./?group=<TMPL_VAR group>"><TMPL_VAR groupName></a></TMPL_IF>
+        <TMPL_IF stage><i class="stage" id="stage"><TMPL_VAR stage></i></TMPL_IF>
+        <TMPL_LOOP Tags><a class="tag" href="./?tag=<TMPL_VAR URL>"><TMPL_VAR TEXT></a></TMPL_LOOP>
+      </div>
+      <div class="column column-status"><!-- COLUMN -->
+      <div id="area-status">
+        <TMPL_IF image> 
+        <div id="image" class="image" style="background-image: url(<TMPL_VAR imageSrc>);background-size:<TMPL_VAR imageFit>;background-position:<TMPL_VAR imagePositionX>% <TMPL_VAR imagePositionY>%;">
+        <div onclick="popImage()"><p class="words" style="<TMPL_VAR wordsX><TMPL_VAR wordsY>"><TMPL_VAR words></p></div>
+        <p class="image-copyright"><TMPL_VAR imageCopyright></p>
+        </div>
+        <TMPL_ELSE>
+        <div id="image-none" class="image-none"><p class="words" style="<TMPL_VAR wordsX><TMPL_VAR wordsY>"><TMPL_VAR words></p></div>
+        </TMPL_IF>
+
+        <div id="classes" class="box-union">
+          <dl class="box" id="type">
+            <dt>種別</dt><dd><TMPL_VAR type></dd>
+          </dl>
+          <dl class="box" id="negai">
+            <dt>ネガイ</dt>
+            <dd>
+              <dl>
+                <dt>表:</dt><dd><TMPL_VAR negaiOutside></dd>
+                <dt>裏:</dt><dd><TMPL_VAR negaiInside></dd>
+              </dl>
+              </dd>
+          </dl>
+        </div>
+        
+        <div id="status" class="box-union">
+          <dl class="box" id="">
+            <dt>耐久値</dt>
+            <dd><b><TMPL_VAR endurance></b><small>=(<TMPL_VAR enduranceFormula>)</small></dd>
+          </dl>
+          <dl class="box" id="">
+            <dt>作戦力</dt>
+            <dd><b><TMPL_VAR operation></b><small>=(<TMPL_VAR operationFormula>)</small></dd>
+          </dl>
+        </div>
+
+        <section id="hitogara" class="box">
+          <h2>ヒトガラ</h2>
+          <table class="data-table">
+            <colgroup>
+              <col>
+              <col>
+              <col>
+              <col>
+            </colgroup>
+            <tr>
+              <th>年齢</th><td><TMPL_VAR age></td>
+              <th>性別</th><td><TMPL_VAR gender></td>
+            </tr>
+            <tr>
+              <th>過去</th>
+              <td colspan="3" class="left"><TMPL_VAR past></td>
+            </tr>
+            <tr>
+              <th>
+                <TMPL_IF typeH>遭遇</TMPL_IF>
+                <TMPL_IF typeO>経緯</TMPL_IF>
+              </th>
+              <td colspan="3" class="left"><TMPL_VAR background></td>
+            </tr>
+            <tr>
+              <th>外見の特徴</th>
+              <td colspan="3" class="left"><TMPL_VAR appearance></td>
+            </tr>
+            <tr>
+              <th>
+                <TMPL_IF typeH>ケージ</TMPL_IF>
+                <TMPL_IF typeO>住居</TMPL_IF>
+              </th>
+              <td colspan="3" class="left"><TMPL_VAR dwelling></td>
+            </tr>
+            <tr>
+              <th>好きなもの</th>
+              <td colspan="3" class="left"><TMPL_VAR like></td>
+            </tr>
+            <tr>
+              <th>嫌いなもの</th>
+              <td colspan="3" class="left"><TMPL_VAR dislike></td>
+            </tr>
+            <tr>
+              <th>得意なこと</th>
+              <td colspan="3" class="left"><TMPL_VAR good></td>
+            </tr>
+            <tr>
+              <th>苦手なこと</th>
+              <td colspan="3" class="left"><TMPL_VAR notgood></td>
+            </tr>
+            <tr>
+              <th>喪失</th>
+              <td colspan="3" class="left"><TMPL_VAR missing></td>
+            </tr>
+            <tr>
+              <th><span class="thin">
+                <TMPL_IF typeH>リミッターの影響</TMPL_IF>
+                <TMPL_IF typeO>ペアリングの副作用</TMPL_IF>
+              </span></th>
+              <td colspan="3" class="left"><TMPL_VAR sideeffect></td>
+            </tr>
+            <tr>
+              <th>
+                <TMPL_IF typeH>決意</TMPL_IF>
+                <TMPL_IF typeO>使命</TMPL_IF>
+              </th>
+              <td colspan="3" class="left"><TMPL_VAR resolution></td>
+            </tr>
+            <tr>
+              <th>所属</th>
+              <td colspan="3" class="left"><TMPL_VAR belong></td>
+            </tr>
+            <tr>
+              <th>おもな武器</th>
+              <td colspan="3" class="left"><TMPL_VAR weapon></td>
+            </tr>
+          </table>
+        </section>
+      </div>
+      
+      </div><!-- / COLUMN -->
+      
+      <div id="area-partner">
+        <div class="partner" id="partner1">
+          <TMPL_IF p1_image> 
+          <div class="image" style="background-image: url(<TMPL_VAR p1_imageSrc>);background-size:<TMPL_VAR p1_imageFit>;background-position:<TMPL_VAR p1_imagePositionX>% <TMPL_VAR p1_imagePositionY>%;">
+          <div onclick="popImage('p1')"><p class="words" style="<TMPL_VAR p1_wordsX><TMPL_VAR p1_wordsY>"><TMPL_VAR p1_words></p></div>
+          <p class="image-copyright"><TMPL_VAR p1_imageCopyright></p>
+          </div>
+          <TMPL_ELSE>
+          <div class="image-none"><p class="words" style="<TMPL_VAR p1_wordsX><TMPL_VAR p1_wordsY>"><TMPL_VAR p1_words></p></div>
+          </TMPL_IF>
+        
+          <div class="partner-name">
+            <h1><TMPL_VAR head_p1>:<TMPL_IF partner1Url><a href="<TMPL_VAR partner1Url>"><TMPL_VAR partner1Name></a><TMPL_ELSE><TMPL_VAR partner1Name></TMPL_IF></h1>
+            <dl class="partner-playername"><dt>プレイヤー</dt><dd><TMPL_VAR p1_playerName></dd></dl>
+          </div>
+          <div class="box-union partner-personal">
+            <dl class="box"><dt>年齢</dt><dd><TMPL_VAR partner1Age></dd></dl>
+            <dl class="box"><dt>性別</dt><dd><TMPL_VAR partner1Gender></dd></dl>
+            <dl class="box"><dt>ネガイ（表）</dt><dd><TMPL_VAR partner1NegaiOutside></dd></dl>
+            <dl class="box"><dt>ネガイ（裏）</dt><dd><TMPL_VAR partner1NegaiInside></dd></dl>
+            <dl class="box"><dt>リリースの方法</dt><dd><TMPL_VAR partner1Release></dd></dl>
+          </div>
+          <div class="box marker">
+            <h2>マーカー</h2>
+            <div class="marker-details">
+              <dl class="position"><dt>位置</dt><dd><TMPL_VAR fromPartner1MarkerPosition></dd></dl>
+              <dl class="color"   ><dt>色</dt><dd><TMPL_VAR fromPartner1MarkerColor></dd></dl>
+              <dl class="emotion1"><dt>相手からの感情1</dt><dd><TMPL_VAR fromPartner1Emotion1></dd></dl>
+              <dl class="emotion2"><dt>相手からの感情2</dt><dd><TMPL_VAR fromPartner1Emotion2></dd></dl>
+            </div>
+          </div>
+          <dl class="box memory"><dt>最初の思い出</dt><dd><TMPL_VAR partner1Memory></dd></dl>
+        </div>
+        
+        <TMPL_IF partner2On><!-- パートナー２ -->
+        <div class="partner <TMPL_VAR class_p2>" id="partner2">
+          <TMPL_IF p2_image> 
+          <div class="image" style="background-image: url(<TMPL_VAR p2_imageSrc>);background-size:<TMPL_VAR p2_imageFit>;background-position:<TMPL_VAR p2_imagePositionX>% <TMPL_VAR p2_imagePositionY>%;">
+          <div onclick="popImage('p2')"><p class="words" style="<TMPL_VAR p2_wordsX><TMPL_VAR p2_wordsY>"><TMPL_VAR p2_words></p></div>
+          <p class="image-copyright"><TMPL_VAR p2_imageCopyright></p>
+          </div>
+          <TMPL_ELSE>
+          <div class="image-none"><p class="words" style="<TMPL_VAR p2_wordsX><TMPL_VAR p2_wordsY>"><TMPL_VAR p2_words></p></div>
+          </TMPL_IF>
+        
+          <div class="partner-name">
+            <h1><TMPL_VAR head_p2>:<TMPL_IF partner2Url><a href="<TMPL_VAR partner2Url>"><TMPL_VAR partner2Name></a><TMPL_ELSE><TMPL_VAR partner2Name></TMPL_IF></h1>
+            <dl class="partner-playername"><dt>プレイヤー</dt><dd><TMPL_VAR p2_playerName></dd></dl>
+          </div>
+          <div class="box-union partner-personal">
+            <dl class="box"><dt>年齢</dt><dd><TMPL_VAR partner2Age></dd></dl>
+            <dl class="box"><dt>性別</dt><dd><TMPL_VAR partner2Gender></dd></dl>
+            <dl class="box"><dt>ネガイ（表）</dt><dd><TMPL_VAR partner2NegaiOutside></dd></dl>
+            <dl class="box"><dt>ネガイ（裏）</dt><dd><TMPL_VAR partner2NegaiInside></dd></dl>
+            <TMPL_IF typeO><dl class="box"><dt>リリースの方法</dt><dd><TMPL_VAR partner2Release></dd></dl></TMPL_IF>
+          </div>
+          <div class="box marker">
+            <h2>マーカー</h2>
+            <div class="marker-details">
+              <dl class="position"><dt>位置</dt><dd><TMPL_VAR fromPartner2MarkerPosition></dd></dl>
+              <dl class="color"   ><dt>色</dt><dd><TMPL_VAR fromPartner2MarkerColor></dd></dl>
+              <dl class="emotion1"><dt>相手からの感情1</dt><dd><TMPL_VAR fromPartner2Emotion1></dd></dl>
+              <dl class="emotion2"><dt>相手からの感情2</dt><dd><TMPL_VAR fromPartner2Emotion2></dd></dl>
+            </div>
+          </div>
+          <dl class="box memory"><dt><TMPL_IF typeO>最初の思い出</TMPL_IF><TMPL_IF typeH>協定</TMPL_IF></dt><dd><TMPL_VAR partner2Memory></dd></dl>
+        </div>
+        </TMPL_IF><!-- /パートナー２ -->
+      </div>
+
+      <section class="box" id="kizuna">
+        <h2>キズナ</h2>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th></th>
+              <th>物・人・場所など</th>
+              <th>感情・思い出など</th>
+              <th>ヒビ</th>
+              <th>ワレ</th>
+            </tr>
+          </thead>
+          <tbody>
+            <TMPL_LOOP Kizuna><tr class="<TMPL_VAR HIBI><TMPL_VAR WARE>">
+              <td></td>
+              <td><TMPL_VAR NAME></td>
+              <td class="left"><TMPL_VAR NOTE></td>
+              <td><TMPL_IF HIBI>✔</TMPL_IF></td>
+              <td><TMPL_IF WARE>✔</TMPL_IF></td>
+            </tr></TMPL_LOOP>
+          </tbody>
+        </table>
+      </section>
+      
+      <section class="box" id="kizuato">
+        <h2>キズアト</h2>
+        <TMPL_IF Kizuato>
+        <table class="data-table line-tbody">
+          <colgroup>
+            <col>
+            <col>
+            <col>
+            <col>
+            <col>
+            <col>
+          </colgroup>
+          <TMPL_LOOP Kizuato><tbody>
+            <tr>
+              <td class="name" colspan="6">《<TMPL_VAR NAME>》</td>
+            </tr>
+            <tr>
+              <th rowspan="2">ドラマ</th>
+              <th>ヒトガラ</th>
+              <th>タイミング</th>
+              <th>対象</th>
+              <th>制限</th>
+              <th>解説</th>
+            </tr>
+            <tr>
+              <td class="hitogara"><TMPL_VAR D-HITOGARA></td>
+              <td><TMPL_VAR D-TIMING></td>
+              <td><TMPL_VAR D-TARGET></td>
+              <td><TMPL_VAR D-LIMITED></td>
+              <td class="left"><TMPL_VAR D-NOTE></td>
+           </tr>
+           <tr>
+             <th rowspan="2">決戦</th>
+             <th>タイミング</th>
+             <th>対象</th>
+             <th>代償</th>
+             <th>制限</th>
+             <th>解説</th>
+           </tr>
+           <tr>
+             <td><TMPL_VAR B-TIMING></td>
+             <td><TMPL_VAR B-TARGET></td>
+             <td><TMPL_VAR B-COST></td>
+             <td><TMPL_VAR B-LIMITED></td>
+             <td class="left"><TMPL_VAR B-NOTE></td>
+          </tr>
+         </tbody></TMPL_LOOP>
+        </table>
+        <TMPL_ELSE>
+          <p>なし</p>
+        </TMPL_IF>
+      </section>
+      
+      <section class="box" id="free-note">
+        <h2><TMPL_IF head_freeNote><TMPL_VAR head_freeNote><TMPL_ELSE>設定・その他メモ</TMPL_IF></h2>
+        <p><TMPL_VAR freeNote></p>
+      </section>
+      <TMPL_IF freeHistory>
+      <section class="box" id="free-history">
+        <h2><TMPL_IF head_freeHistory><TMPL_VAR head_freeHistory><TMPL_ELSE>履歴</TMPL_IF></h2>
+        <p><TMPL_VAR freeHistory></p>
+      </section>
+      </TMPL_IF>
+      <section class="box" id="history">
+        <h2>セッション履歴</h2>
+        <table class="data-table line-tbody">
+          <thead>
+            <tr>
+              <th>No.</th>
+              <th>日付</th>
+              <th>タイトル</th>
+              <th>成長</th>
+              <th>GM</th>
+              <th>参加者</th>
+            </tr>
+          </thead>
+          <TMPL_LOOP History><tbody>
+            <tr>
+              <td <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR NUM></td>
+              <td <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR DATE></td>
+              <td <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR TITLE></td>
+              <td class="grow"><span><TMPL_VAR GROW></span></td>
+              <td class="gm"><span><TMPL_VAR GM></span></td>
+              <td class="member"><TMPL_VAR MEMBER></td>
+            </tr>
+            <TMPL_IF NOTE><tr>
+              <td colspan="3" class="note"><TMPL_VAR NOTE></td>
+            </tr></TMPL_IF>
+          </tbody></TMPL_LOOP>
+        </table>
+      </section>
+      <section class="box chat-palette float-box">
+        <h2>チャットパレット</h2>
+        <div class="chat-palette-menu">
+          <b>使用ダイスbot:</b>
+          <a onclick="chatPaletteSelect('')"       id="cp-switch-ytc">ゆとチャadv.</a>
+          <a onclick="chatPaletteSelect('bcdice')" id="cp-switch-bcdice">BCDice</a>
+        </div>
+        <textarea id="chatPaletteBox"></textarea>
+      </section>
+    </article>
+    <div class="back-button"><a href="./">⏎</a></div>
+    <TMPL_IF image><div id="image-box" onclick="closeImage()">
+      <img src="<TMPL_VAR imageSrc>" id="image-box-image">
+    </div></TMPL_IF> 
+  </main>
+  <TMPL_INCLUDE NAME="skin-add/sheet-sidebar.html">
+
+  <footer>
+    <p class="notes"><span>『キズナバレット』は、</span><span>「からすば晴（N.G.P.）」及び「株式会社アークライト出版事業部」の著作物です。</span></p>
+    <p class="copyright">ゆとシートⅡ for KIZ ver.<TMPL_VAR ver> - <a href="https://yutorize.2-d.jp">ゆとらいず工房</a></p>
+  </footer>
+</body>
+
+</html>

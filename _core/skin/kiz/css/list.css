@@ -1,0 +1,52 @@
+@charset "utf-8";
+
+/* ゆとシートⅡ for BLP - リスト */
+
+/* // Body
+---------------------------------------------------------------------------------------------------- */
+body {
+  background-image: url(../../_common/img/back-pattern.png), url(../img/back-kiz.png);
+  background-blend-mode: normal, normal;
+}
+@media screen and (max-width:735px){
+  body {
+    background-size: auto, 100%;
+  }
+}
+
+/* // List
+---------------------------------------------------------------------------------------------------- */
+.list table tr {
+  grid-template-columns: 28rem 0.7fr 0.7fr minmax(6.5em, 0.7fr) 1fr 0.6fr;
+}
+.list table thead tr {
+  grid-template-areas:
+  "NAME PL GEN TYPE BLNG DATE"
+  "NAME PL AGE  NGI  KIZ DATE"
+  ;
+}
+.list table tbody tr {
+  grid-template-areas:
+    "NAME PL GEN TYPE BLNG DATE"
+    "NAME PL AGE  NGI  KIZ DATE"
+  ;
+}
+.list table .name    { grid-area: NAME; }
+.list table .player  { grid-area:   PL; }
+.list table .race    { grid-area: RACE; }
+.list table .gender  { grid-area:  GEN; }
+.list table .age     { grid-area:  AGE; }
+.list table .type    { grid-area: TYPE; }
+.list table .negai   { grid-area:  NGI; }
+.list table .belong  { grid-area: BLNG; }
+.list table .kizuna  { grid-area:  KIZ; }
+.list table .date    { grid-area: DATE; }
+
+.list table td.belong {
+}
+
+@media screen and (max-width:735px){
+  .list table tr {
+    grid-template-columns: 18rem 6em 7em 0.7fr 1fr 4em;
+  }
+}
