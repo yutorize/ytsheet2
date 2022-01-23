@@ -823,6 +823,7 @@ input[type="button"]:hover {
   background-image: linear-gradient(var(--box-base-bg-color), var(--box-base-bg-color));
   border-top: 1px solid hsla(0,0%,50%,0.2);
   overflow-y: auto;
+  overscroll-behavior: contain;
 }
 .image-custom-form h3 {
   padding: .5em .5rem 1rem;
