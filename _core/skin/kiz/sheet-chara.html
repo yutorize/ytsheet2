@@ -403,8 +403,8 @@ window.onload = function() {
           <tbody>
             <TMPL_LOOP Kizuna><tr class="<TMPL_VAR HIBI><TMPL_VAR WARE>">
               <td></td>
-              <td><TMPL_VAR NAME></td>
-              <td class="left"><TMPL_VAR NOTE></td>
+              <td class="name"><div><TMPL_VAR NAME></div></td>
+              <td class="left"><div><TMPL_VAR NOTE></div></td>
               <td><TMPL_IF HIBI>✔</TMPL_IF></td>
               <td><TMPL_IF WARE>✔</TMPL_IF></td>
             </tr></TMPL_LOOP>
