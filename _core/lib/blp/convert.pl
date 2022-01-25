@@ -6,7 +6,7 @@ use open ":utf8";
 use LWP::UserAgent;
 use JSON::PP;
 
-sub data_get {
+sub urlDataGet {
   my $url = shift;
   my $ua  = LWP::UserAgent->new;
   my $res = $ua->get($url);
@@ -18,21 +18,21 @@ sub data_get {
   }
 }
 
-sub data_convert {
+sub dataConvert {
   my $set_url = shift;
   my $file;
   
   ## キャラクターシート倉庫
   if($set_url =~ m"^https?://character-sheets\.appspot\.com/bloodpath/edit.html"){
     $set_url =~ s/edit\.html\?/display\?ajax=1&/;
-    my $data = data_get($set_url) or error 'キャラクターシート倉庫のデータが取得できませんでした';
+    my $data = urlDataGet($set_url) or error 'キャラクターシート倉庫のデータが取得できませんでした';
     my %in = %{ decode_json(encode('utf8', (join '', $data))) };
     
     return convertSoukoToYtsheet(\%in);
   }
   ## ゆとシートⅡ
   {
-    my $data = data_get($set_url.'&mode=json') or error 'コンバート元のデータが取得できませんでした';
+    my $data = urlDataGet($set_url.'&mode=json') or error 'コンバート元のデータが取得できませんでした';
     if($data !~ /^{/){ error 'JSONデータが取得できませんでした' }
     my %pc = %{ decode_json(join '', $data) };
     if($pc{'result'} eq 'OK'){
@@ -50,21 +50,21 @@ sub data_convert {
   }
 }
 
-sub data_partner_get {
+sub dataPartnerGet {
   my $set_url = shift;
   my $file;
   
   ## キャラクターシート倉庫
   if($set_url =~ m"^https?://character-sheets\.appspot\.com/bloodpath/edit.html"){
     $set_url =~ s/edit\.html\?/display\?ajax=1&/;
-    my $data = data_get($set_url) or return;
+    my $data = urlDataGet($set_url) or return;
     my %in = %{ decode_json(encode('utf8', (join '', $data))) };
     
     return convertSoukoToYtsheet(\%in);
   }
   ## ゆとシートⅡ
   {
-    my $data = data_get($set_url.'&mode=json') or return;
+    my $data = urlDataGet($set_url.'&mode=json') or return;
     if($data !~ /^{/){ return }
     my %pc = %{ decode_json(join '', $data) };
     if($pc{'result'} eq 'OK'){

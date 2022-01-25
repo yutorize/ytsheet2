@@ -9,7 +9,7 @@ use JSON::PP;
 require $set::data_class;
 require $set::data_races;
 
-sub data_get {
+sub urlDataGet {
   my $url = shift;
   my $ua  = LWP::UserAgent->new;
   my $res = $ua->get($url);
@@ -21,20 +21,20 @@ sub data_get {
   }
 }
 
-sub data_convert {
+sub dataConvert {
   my $set_url = shift;
   my $file;
   
   ## キャラクター保管所
   if($set_url =~ m"(^https?://charasheet\.vampire-blood\.net/m?[a-f0-9]+)"){
-    my $data = data_get($1.'.js') or error 'キャラクター保管所のデータが取得できませんでした';
+    my $data = urlDataGet($1.'.js') or error 'キャラクター保管所のデータが取得できませんでした';
     my %in = %{ decode_json(encode('utf8', (join '', $data))) };
     
     return convertHokanjoToYtsheet(\%in);
   }
   ## ゆとシートⅡ
   {
-    my $data = data_get($set_url.'&mode=json') or error 'コンバート元のデータが取得できませんでした';
+    my $data = urlDataGet($set_url.'&mode=json') or error 'コンバート元のデータが取得できませんでした';
     if($data !~ /^{/){ error 'JSONデータが取得できませんでした' }
     my %pc = %{ decode_json(join '', $data) };
     if($pc{'result'} eq 'OK'){

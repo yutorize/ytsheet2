@@ -12,10 +12,26 @@ if($set::user_reqd && !check){ error('ログインしていません。'); }
 ### 個別処理 --------------------------------------------------
 my $type = $::in{'type'};
 our %conv_data = ();
-if($::in{'url'}){
-  require $set::lib_convert;
-  %conv_data = data_convert($::in{'url'});
-  $type = $conv_data{'type'};
+if($mode eq 'convert'){
+  if($::in{'url'}){
+    require $set::lib_convert;
+    %conv_data = dataConvert($::in{'url'});
+    $type = $conv_data{'type'};
+  }
+  elsif($::in{'file'}){
+    use JSON::PP;
+    my $file; my $buffer; my $i;
+    while(my $bytesread = read(param('file'), $buffer, 2048)) {
+      if(!$i && $buffer !~ /^{/){ error '有効なJSONデータではありません。' }
+      $file .= $buffer;
+      $i++;
+    }
+    %conv_data =  %{ decode_json( $file) };
+    $type = $conv_data{'type'};
+  }
+  else {
+    error('URLが入力されていない、または、ファイルが選択されていません。');
+  }
 }
 
 if   ($type eq 'm'){ require $set::lib_edit_mons; }

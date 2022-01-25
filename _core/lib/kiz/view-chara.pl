@@ -98,7 +98,7 @@ elsif($pc{'forbidden'}){
 require $set::lib_convert if !$::in{'url'};
 if(!$::in{'backup'}){
   if($pc{'partner1Url'} && $pc{'partner1Auto'}){
-    my %pr = data_partner_get($pc{'partner1Url'});
+    my %pr = dataPartnerGet($pc{'partner1Url'});
     if($pr{'convertSource'}){
       if($pr{'ver'}){ %pr = data_update_chara(\%pr); }
       $pc{'p1_'.$_} = $pr{$_} foreach keys %pr;
@@ -134,7 +134,7 @@ if(!$::in{'backup'}){
     }
   }
   if($pc{'partner2Url'} && $pc{'partner2Auto'}){
-    my %pr = data_partner_get($pc{'partner2Url'});
+    my %pr = dataPartnerGet($pc{'partner2Url'});
     if($pr{'convertSource'}){
       $pc{'p2_'.$_} = $pr{$_} foreach keys %pr;
       $pc{'partner2Name'}     = $pr{'characterName'};

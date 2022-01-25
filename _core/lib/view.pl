@@ -15,7 +15,7 @@ if($::in{'id'}){
 }
 elsif($::in{'url'}){
   require $set::lib_convert;
-  %conv_data = data_convert($::in{'url'});
+  %conv_data = dataConvert($::in{'url'});
   $type = $conv_data{'type'};
 }
 

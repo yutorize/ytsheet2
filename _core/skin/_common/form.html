@@ -161,11 +161,21 @@
     <article id="convertform">
       <section class="form">
         <h2>コンバート作成</h2>
+        <h3>URLから</h3>
         <form method="get" action="./">
           <input type="hidden" name="mode" value="convert">
           <p>
             入力したURLのデータを元にゆとシートⅡで新規作成します。<br>
-            <input type="url" name="url" style="width:50%;" placeholder="http://..."><input type="submit" value="作成">
+            <input type="url" name="url" style="width:50%;" placeholder="http://..." required><input type="submit" value="作成">
+          </p>
+        </form>
+        <hr>
+        <h3>ローカルファイルから</h3>
+        <form method="post" enctype="multipart/form-data" action="./">
+          <input type="hidden" name="mode" value="convert">
+          <p>
+            アップロードしたJSONファイルを元にゆとシートⅡで新規作成します。<br>
+            <input type="file" name="file" style="width:50%;" accept=".json,.txt" required><input type="submit" value="作成">
           </p>
         </form>
       </section>
@@ -174,7 +184,7 @@
         <form method="get" action="./">
           <p>
             入力したURLのデータをゆとシートⅡで表示します。（保存はされません）<br>
-            <input type="url" name="url" style="width:50%;" placeholder="http://..."><input type="submit" value="表示">
+            <input type="url" name="url" style="width:50%;" placeholder="http://..." required><input type="submit" value="表示">
           </p>
         </form>
       </section>

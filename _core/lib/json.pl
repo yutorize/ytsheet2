@@ -42,7 +42,7 @@ if($id){
 }
 elsif($::in{'url'}){
   require $set::lib_convert;
-  %pc = data_convert($::in{'url'});
+  %pc = dataConvert($::in{'url'});
   $type = $pc{'type'};
 }
 
