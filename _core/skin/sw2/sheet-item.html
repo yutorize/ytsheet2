@@ -36,14 +36,14 @@ window.onload = function() {
         <TMPL_ELSE>
           <TMPL_IF backupId>
             <li class="small"><a onclick="backuplistOn()"><span>過去ログ</span></a></li>
-            <TMPL_IF ReqdPassword>
+            <TMPL_IF reqdPassword>
               <li class="small"><a onclick="editOn()">復元</a></li>
             <TMPL_ELSE>
               <li class="small"><a href="./?mode=edit&id=<TMPL_VAR id>&backup=<TMPL_VAR backupId>&type=i">復元</a></li>
             </TMPL_IF>
           <TMPL_ELSE>
             <li class="small"><a onclick="backuplistOn()"><span>過去ログ</span></a></li>
-            <TMPL_IF ReqdPassword>
+            <TMPL_IF reqdPassword>
               <li class="small"><a onclick="editOn()">編集</a></li>
             <TMPL_ELSE>
               <li class="small"><a href="./?mode=edit&id=<TMPL_VAR id>&type=i">編集</a></li>
@@ -85,7 +85,7 @@ window.onload = function() {
   <main>
     <TMPL_IF forbidden><aside class="information attention">
       閲覧が制限されているデータです。<br>
-      <TMPL_IF forbiddenAuthor>あなた以外には一部または全てのデータが伏せられます。(<a href="./?id=<TMPL_VAR id>&checkView=1">⇒確認</a>)</TMPL_IF>
+      <TMPL_IF yourAuthor>あなた以外には一部または全てのデータが伏せられます。(<a href="./?id=<TMPL_VAR id>&checkView=1">⇒確認</a>)</TMPL_IF>
     </aside></TMPL_IF>
     
     <TMPL_IF backupId><aside class="information">

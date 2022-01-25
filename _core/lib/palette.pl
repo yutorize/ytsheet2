@@ -13,7 +13,7 @@ my $backup = $::in{'backup'};
 ### キャラクターデータ読み込み #######################################################################
 my $id = $::in{'id'};
 my $tool = $::in{'tool'};
-my ($file, $type) = getfile_open($id);
+my ($file, $type, undef) = getfile_open($id);
 
 my $data_dir;
    if($type eq 'm'){ $data_dir = $set::mons_dir; }

@@ -38,8 +38,9 @@ sub getfile_open {
     my ($id, $pass, $file, $type) = (split /<>/, $_)[0,1,2,3];
     if($_[0] eq $id) {
       close($FH);
-      if($pass =~ /^\[(.+?)\]$/){ $file = '_'.$1.'/'.$file; }
-      return ($file,$type);
+      my $user;
+      if($pass =~ /^\[(.+?)\]$/){ $file = '_'.$1.'/'.$file; $user = $1; }
+      return ($file,$type,$user);
     }
   }
   close($FH);

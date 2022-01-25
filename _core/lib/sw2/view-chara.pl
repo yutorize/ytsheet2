@@ -23,12 +23,7 @@ $SHEET = HTML::Template->new( filename => $set::skin_sheet, utf8 => 1,
 our %pc = pcDataGet();
 
 ### 閲覧禁止データ ###################################################################################
-if($::in{'checkView'}){ $::LOGIN_ID = ''; }
-
-if($pc{'forbidden'} && (getfile($::in{'id'},'',$::LOGIN_ID))[0]){
-  $pc{'forbiddenAuthor'} = 1;
-}
-elsif($pc{'forbidden'}){
+if($pc{'forbidden'}){
   my $author = $pc{'playerName'};
   my $protect   = $pc{'protect'};
   my $forbidden = $pc{'forbidden'};
@@ -1001,9 +996,6 @@ if($::in{'id'}){
   }
   $SHEET->param(Backup => \@backup);
 }
-
-### パスワード要求 --------------------------------------------------
-$SHEET->param(ReqdPassword => (!$pc{'protect'} || $pc{'protect'} eq 'password' ? 1 : 0) );
 
 ### フェロー --------------------------------------------------
 $SHEET->param(FellowMode => $::in{'f'});

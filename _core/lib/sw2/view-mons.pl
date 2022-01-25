@@ -24,12 +24,7 @@ if($pc{'description'} =~ s/#login-only//i){
   $pc{'forbidden'} = 'all' if !$::LOGIN_ID;
 }
 ### 閲覧禁止データ ###################################################################################
-if($::in{'checkView'}){ $::LOGIN_ID = ''; }
-
-if($pc{'forbidden'} && (getfile($::in{'id'},'',$::LOGIN_ID))[0]){
-  $pc{'forbiddenAuthor'} = 1;
-}
-elsif($pc{'forbidden'}){
+if($pc{'forbidden'}){
   my $author = $pc{'author'};
   my $protect   = $pc{'protect'};
   my $forbidden = $pc{'forbidden'};
@@ -194,9 +189,6 @@ if($::in{'id'}){
   }
   $SHEET->param(Backup => \@backup);
 }
-
-### パスワード要求 --------------------------------------------------
-$SHEET->param(ReqdPassword => (!$pc{'protect'} || $pc{'protect'} eq 'password' ? 1 : 0) );
 
 ### タイトル --------------------------------------------------
 $SHEET->param(title => $set::title);

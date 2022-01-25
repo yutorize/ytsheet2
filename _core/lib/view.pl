@@ -8,10 +8,11 @@ our $LOGIN_ID = check;
 
 our $file;
 my $type;
+my $author;
 our %conv_data = ();
 
 if($::in{'id'}){
-  ($file, $type) = getfile_open($::in{'id'});
+  ($file, $type, $author) = getfile_open($::in{'id'});
 }
 elsif($::in{'url'}){
   require $set::lib_convert;
@@ -45,6 +46,15 @@ sub pcDataGet {
       require (($type eq 'm') ? $set::lib_calc_mons : ($type eq 'i') ? $set::lib_calc_item : $set::lib_calc_char);
       %pc = data_calc(\%pc);
     }
+  }
+  if(!$::in{'checkView'} && (
+    ($pc{'protect'} eq 'none') || 
+    ($author && ($author eq $LOGIN_ID || $set::masterid eq $LOGIN_ID))
+  )){
+    $pc{'yourAuthor'} = 1;
+  }
+  if(!$pc{'protect'} || $pc{'protect'} eq 'password'){
+    $pc{'reqdPassword'} = 1;
   }
   return %pc;
 }
