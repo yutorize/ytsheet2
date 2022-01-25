@@ -666,10 +666,10 @@ header nav ul li a span {
 ---------------------------------------------------------------------------------------------------- */
 #login-form {
   position: absolute;
-  top: -5rem;
-  right: 10%;
+  top: -7.5rem;
+  right: 7rem;
   width: 300px;
-  padding: 4rem 2rem 1rem;
+  padding: 5.5rem 2rem 1rem;
   background: #fff;
   text-align: center;
   
@@ -682,7 +682,7 @@ header nav ul li a span {
   transition: top 0.3s;
 }
 #login-form.show {
-  top: 5rem;
+  top: 4rem;
 }
 .night #login-form {
   background: #334455;
