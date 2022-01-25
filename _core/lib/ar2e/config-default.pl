@@ -102,6 +102,8 @@ package set;
   our $lib_reminder = $::core_dir . '/lib/reminder.pl';
   our $lib_delete   = $::core_dir . '/lib/delete.pl';
   
+  our $lib_others   = $::core_dir . '/lib/others.pl';
+
   # 編集画面
   our $lib_edit = $::core_dir . '/lib/edit.pl';
   our $lib_edit_char = $::core_dir . '/lib/ar2e/edit-chara.pl';

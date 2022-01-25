@@ -75,6 +75,37 @@ sub viewNotFound { #v1.14のコンバート処理
   error('データがありません');
 }
 
+### バックアップ一覧 --------------------------------------------------
+sub getBackupList {
+  my $dir  = shift;
+  my $file = shift;
+  opendir(my $DIR,"${dir}${file}/backup");
+  my @backlist = readdir($DIR);
+  closedir($DIR);
+  my %backname;
+  open(my $FH,"${dir}${file}/buname.cgi");
+  foreach(<$FH>){
+    chomp;
+    my @data = split('<>', $_);
+    $backname{$data[0]} = $data[1];
+  }
+  close($FH);
+  my @backup; my $selectedname;
+  foreach my $date (reverse sort @backlist) {
+    if ($date =~ s/\.cgi//) {
+      my $url = $date;
+      my $selected = ($url eq $::in{'backup'} ? 1 : 0);
+      $date =~ s/^([0-9]{4}-[0-9]{2}-[0-9]{2})-([0-9]{2})-([0-9]{2})$/$1 $2\:$3/;
+      push(@backup, {
+        "NOW"  => $selected,
+        "URL"  => $url,
+        "DATE" => ($backname{$url} ? "<b>$backname{$url}</b>":'') . $date,
+      });
+      if($selected){ $selectedname = $backname{$url}; }
+    }
+  }
+  return $selectedname, \@backup;
+}
 ### 伏せ文字 --------------------------------------------------
 sub noiseText {
   my $min = shift;

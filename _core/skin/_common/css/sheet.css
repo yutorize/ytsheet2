@@ -568,6 +568,47 @@ aside.information a {
 aside.information + article {
   border-top: 0;
 }
+aside.information.backup h2 {
+  margin-top: -.3rem;
+  font-size: 1em;
+}
+aside.information.backup h2::before {
+  content: "【";
+}
+aside.information.backup h2::after {
+  content: "】";
+}
+aside.information.backup h2:empty {
+  display: none;
+}
+aside.information.backup p {
+  font-size: 90%;
+}
+aside.information.backup details {
+  width: max-content;
+  margin-left: auto;
+  margin-bottom: -.5rem;
+  font-size: 84%;
+  text-align: right;
+}
+aside.information.backup summary {
+  font-weight: normal;
+}
+aside.information.backup dl {
+  display: grid;
+  grid-gap: .1em .5em;
+  align-items: end;
+  width: max-content;
+  margin: 0 auto .3rem;
+}
+aside.information.backup dl dt { grid-column: 1; }
+aside.information.backup dl dd { grid-column: 2; }
+aside.information.backup dl dd + dd{ grid-column: 3; }
+aside.information.backup input {
+  padding: .2em .3em;
+}
+aside.information.backup input[type="text"]     { width: 12em; }
+aside.information.backup input[type="password"] { width: 12em; }
 @media screen and (max-width:735px){
   aside.information {
     margin-top: 2rem;
@@ -818,6 +859,18 @@ aside#downloadlist ul li a {
 aside#backuplist ul li a:hover,
 aside#downloadlist ul li a:hover {
   background: linear-gradient(to top, rgba(100,200,255,0.2) 20%, transparent 20%);
+}
+aside#backuplist ul li a b {
+  display: block;
+  font-size: 92%;
+  font-family: var(--font-proportional);
+}
+aside#backuplist ul li a b::before {
+  content: "【";
+  margin-left: -.5em;
+}
+aside#backuplist ul li a b::after {
+  content: "】";
 }
 aside#backuplist ul li a small,
 aside#downloadlist ul li a small {

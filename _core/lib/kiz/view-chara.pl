@@ -342,21 +342,13 @@ foreach ('','p1_','p2_'){
   $SHEET->param($_."colorBaseBgD" => 15);
 }
 
-
 ### バックアップ --------------------------------------------------
-opendir(my $DIR,"${set::char_dir}${main::file}/backup");
-my @backlist = readdir($DIR);
-closedir($DIR);
-my @backup;
-foreach (reverse sort @backlist) {
-  if ($_ =~ s/\.cgi//) {
-    my $url = $_;
-    $_ =~ s/^([0-9]{4}-[0-9]{2}-[0-9]{2})-([0-9]{2})-([0-9]{2})$/$1 $2\:$3/;
-    push(@backup, {
-      "NOW"  => ($url eq $::in{'backup'} ? 1 : 0),
-      "URL"  => $url,
-      "DATE" => $_,
-    });
+if($::in{'id'}){
+  my($selected, $list) = getBackupList($set::char_dir, $main::file);
+  $SHEET->param(Backup => $list);
+  $SHEET->param(selectedBackupName => $selected);
+  if($::in{'backup'} && ( $pc{'yourAuthor'} || $pc{'protect'} eq 'password' )){
+    $SHEET->param(viewBackupNaming => 1);
   }
 }
 

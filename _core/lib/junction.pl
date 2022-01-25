@@ -4,7 +4,7 @@ use strict;
 use utf8;
 use Encode;
 
-our $ver = "1.17.005";
+our $ver = "1.17.008";
 
 our %in;
 for (param()){ $in{$_} = param($_); }
@@ -48,6 +48,7 @@ elsif($mode eq 'convert')    { require $set::lib_edit; }   #コンバート編�
 elsif($mode eq 'convertform'){ require $set::lib_form; }   #コンバートフォーム
 elsif($mode eq 'make')       { require $set::lib_save; }   #新規作成
 elsif($mode eq 'save')       { require $set::lib_save; }   #更新
+elsif($mode eq 'bu-naming')  { require $set::lib_others; } #過去ログ命名
 elsif($mode eq 'delete')     { require $set::lib_delete; } #削除
 elsif($mode eq 'img-delete') { require $set::lib_delete; } #画像削除
 elsif($mode eq 'palette')    { require $set::lib_palette; }#チャットパレット表示

@@ -131,8 +131,22 @@ window.onload = function() {
       <TMPL_IF yourAuthor>あなた以外には一部または全てのデータが伏せられます。(<a href="./?id=<TMPL_VAR id>&checkView=1">⇒確認</a>)</TMPL_IF>
     </aside></TMPL_IF>
     
-    <TMPL_IF backupId><aside class="information">
-      <TMPL_VAR updateTime> 時点のバックアップデータです。
+    <TMPL_IF backupId><aside class="information backup">
+      <h2><TMPL_VAR selectedBackupName></h2>
+      <p><TMPL_VAR updateTime> 時点の過去ログ(バックアップ)データです。</p>
+      <TMPL_IF viewBackupNaming><details>
+        <summary>この過去ログ<TMPL_IF selectedBackupName>の名前をつけなおす<TMPL_ELSE>に名前をつける</TMPL_IF></summary>
+        <form id="backup-naming-form" method="post" action="./">
+          <input type="hidden" name="mode" value="bu-naming">
+          <input type="hidden" name="id" value="<TMPL_VAR id>">
+          <input type="hidden" name="date" value="<TMPL_VAR backupId>">
+          <dl>
+            <dt>名前</dt><dd><input type="text" name="backp-name"></dd>
+            <TMPL_IF reqdPassword><dt>パスワード</dt><dd><input type="password" name="pass"></dd></TMPL_IF>
+            <dd><input type="submit"></dd>
+          </dl>
+        </form>
+      </details></TMPL_IF>
     </aside></TMPL_IF>
     
     <TMPL_IF convertMode><aside class="information">
