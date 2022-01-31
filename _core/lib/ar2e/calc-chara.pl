@@ -54,8 +54,8 @@ sub data_calc {
     elsif ($type eq 'another'){ $pc{'skillLvTotal'} += $lv; $pc{'skillLvLimitAdd'} += $lv; }
     else                      { $pc{'skillLvTotal'} += $lv; }
 
-    if   ($name =~ /バイタリティ/  ){ $pc{'hpAuto'} = $lv }
-    elsif($name =~ /インテンション/){ $pc{'mpAuto'} = $lv }
+    if   ($name =~ /バイタリティ/  ){ $pc{'hpAuto'} = $pc{'level'} }
+    elsif($name =~ /インテンション/){ $pc{'mpAuto'} = $pc{'level'} }
     elsif($name =~ /エンラージリミット/){ $skill{'エンラージリミット'} = 1 }
     elsif($name =~ /ファランクススタイル[:：]器用/){ $skill{'ファランクススタイル'} = 'Dex' }
     elsif($name =~ /ファランクススタイル[:：]敏捷/){ $skill{'ファランクススタイル'} = 'Agi' }

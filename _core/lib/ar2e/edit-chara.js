@@ -359,13 +359,13 @@ function calcStt() {
     document.getElementById(`roll-${s.toLowerCase()}`).innerHTML = sttRoll[s];
     // HP／MP／フェイト使用上限／携帯可能重量
     if(s === 'Str'){
-      let hpAuto = autoCalcSkill['バイタリティ'] || 0;
+      let hpAuto = autoCalcSkill['バイタリティ'] ? level : 0;
       document.getElementById(`hp-base`).innerHTML = sttBase[s];
       document.getElementById(`hp-auto`).innerHTML = hpAuto;
       document.getElementById(`hp-total`).innerHTML = sttBase[s] + Number(form[`hpMain`].value) + Number(form[`hpSupport`].value) + Number(form[`hpAdd`].value) + hpAuto + hpGrow;
     }
     else if(s === 'Mnd'){
-      let mpAuto = autoCalcSkill['インテンション'] || 0;
+      let mpAuto = autoCalcSkill['インテンション'] ? level : 0;
       document.getElementById(`mp-base`).innerHTML = sttBase[s];
       document.getElementById(`mp-auto`).innerHTML = mpAuto;
       document.getElementById(`mp-total`).innerHTML = sttBase[s] + Number(form[`mpMain`].value) + Number(form[`mpSupport`].value) + Number(form[`mpAdd`].value) + mpAuto + mpGrow;
