@@ -24,7 +24,7 @@ if($pc{'description'} =~ s/#login-only//i){
   $pc{'forbidden'} = 'all' if !$::LOGIN_ID;
 }
 ### 閲覧禁止データ ###################################################################################
-if($pc{'forbidden'}){
+if($pc{'forbidden'} && !$pc{'yourAuthor'}){
   my $author = $pc{'author'};
   my $protect   = $pc{'protect'};
   my $forbidden = $pc{'forbidden'};

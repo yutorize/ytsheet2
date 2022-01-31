@@ -20,7 +20,7 @@ $SHEET = HTML::Template->new( filename => $set::skin_sheet, utf8 => 1,
 our %pc = pcDataGet();
 
 ### 閲覧禁止データ ###################################################################################
-if($pc{'forbidden'}){
+if($pc{'forbidden'} && !$pc{'yourAuthor'}){
   my $author = $pc{'playerName'};
   my $protect   = $pc{'protect'};
   my $forbidden = $pc{'forbidden'};
@@ -158,7 +158,7 @@ if($pc{'forbidden'}){
       $pc{'combo'.$_.'Fixed'.$i} = '';
     }
   }
-  $pc{'weaponNum'} = $pc{'armorNum'} = $pc{'itemNum'} = $pc{'historyNum'} = 0;
+  $pc{'weaponNum'} = $pc{'armorNum'} = $pc{'itemNum'} = $pc{'magicNum'} = $pc{'historyNum'} = 0;
   $pc{'history0Exp'} = noiseText(1,3);
   
   $pc{'playerName'} = $author;

@@ -121,7 +121,7 @@ sub noiseText {
 sub noiseTextTag {
   my $text = shift;
   $text =~ s/<br>/\n/g;
-  $text =~ s/^[██████████▇▆▅▄▃▂▚▞▙▛▜▟\n\s]+$/<span class="censored">$&<\/span>/s;
+  $text =~ s/^[█▇▆▅▄▃▂▚▞▙▛▜▟\n\s]+$/<span class="censored">$&<\/span>/s;
   $text =~ s/\n/<br>/g;
   return $text;
 }

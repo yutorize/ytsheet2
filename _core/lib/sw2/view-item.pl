@@ -20,7 +20,7 @@ $SHEET = HTML::Template->new( filename => $set::skin_item, utf8 => 1,
 our %pc = pcDataGet();
 
 ### 閲覧禁止データ ###################################################################################
-if($pc{'forbidden'}){
+if($pc{'forbidden'} && !$pc{'yourAuthor'}){
   my $author = $pc{'author'};
   my $protect   = $pc{'protect'};
   my $forbidden = $pc{'forbidden'};
