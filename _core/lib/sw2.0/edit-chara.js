@@ -670,6 +670,7 @@ function addHistory(){
     <td rowspan="2"><input name="history${num}Date"   type="text"></td>
     <td rowspan="2"><input name="history${num}Title"  type="text"></td>
     <td><input name="history${num}Exp"    type="text" oninput="calcExp()"></td>
+    <td><input name="history${num}Money"  type="text" oninput="calcCash()"></td>
     <td>
       <span class="honor-pt">
         <select name="history${num}HonorType" oninput="calcHonor()" data-type="human">
@@ -681,7 +682,6 @@ function addHistory(){
         <input name="history${num}Honor"  type="text" oninput="calcHonor()">
       </span>
     </td>
-    <td><input name="history${num}Money"  type="text" oninput="calcCash()"></td>
     <td><input name="history${num}Grow"   type="text" oninput="calcStt()" list="list-grow"></td>
     <td><input name="history${num}Gm"     type="text"></td>
     <td><input name="history${num}Member" type="text"></td>

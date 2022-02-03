@@ -100,6 +100,7 @@ sub tag_unescape_ytc {
 sub data_update_chara {
   my %pc = %{$_[0]};
   my $ver = $pc{'ver'};
+  delete $pc{'updateMessage'};
   $ver =~ s/^([0-9]+)\.([0-9]+)\.([0-9]+)$/$1.$2$3/;
   if($ver < 1.10){
     $pc{'fairyContractEarth'} = 1 if $pc{'ftElemental'} =~ /土|地/;
@@ -214,6 +215,9 @@ sub data_update_chara {
   }
   if($ver < 1.16013){
     $pc{'historyMoneyTotal'} = $pc{'hisotryMoneyTotal'};
+  }
+  if($ver < 1.17014){
+    $pc{'updateMessage'}{'ver.1.17.014'} = 'ルールブックに合わせ、<br>「性別」「年齢」の並びを「年齢」「性別」の順に変更、<br>「作成レギュレーション」「セッション履歴」における項目の並びを<br>「経験点・名誉点・所持金（ガメル）」から、<br>「経験点・所持金（ガメル）・名誉点」に変更しました。<br>記入の際はご注意ください。';
   }
   $pc{'ver'} = $main::ver;
   $pc{'lasttimever'} = $ver;

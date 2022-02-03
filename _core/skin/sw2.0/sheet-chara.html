@@ -185,11 +185,11 @@ window.onload = function() {
           <dl class="box" id="race">
             <dt>種族</dt><dd><TMPL_VAR race></dd>
           </dl>
-          <dl class="box" id="gender">
-            <dt>性別</dt><dd><TMPL_VAR gender></dd>
-          </dl>
           <dl class="box" id="age">
             <dt>年齢</dt><dd><TMPL_VAR age></dd>
+          </dl>
+          <dl class="box" id="gender">
+            <dt>性別</dt><dd><TMPL_VAR gender></dd>
           </dl>
           <dl class="box" id="race-ability">
             <dt>種族特徴</dt><dd><TMPL_VAR raceAbility></dd>
@@ -652,8 +652,8 @@ window.onload = function() {
               <th>日付</th>
               <th>タイトル</th>
               <th>経験点</th>
-              <th>名誉点</th>
               <th>ガメル</th>
+              <th>名誉点</th>
               <th>成長</th>
               <th>GM</th>
               <th>参加者</th>
@@ -665,8 +665,8 @@ window.onload = function() {
               <td <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR DATE></td>
               <td <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR TITLE></td>
               <td><TMPL_VAR EXP></td>
-              <td><TMPL_VAR HONOR></td>
               <td><TMPL_VAR MONEY></td>
+              <td><TMPL_VAR HONOR></td>
               <td><TMPL_VAR GROW></td>
               <td><span><TMPL_VAR GM></span></td>
               <td><TMPL_VAR MEMBER></td>

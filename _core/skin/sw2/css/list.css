@@ -15,17 +15,17 @@ body {
 /* // List
 ---------------------------------------------------------------------------------------------------- */
 .list table tr {
-    grid-template-columns: 28rem 0.7fr 0.3fr 0.5fr 2em 0.7fr 1.2fr 0.7fr;
+    grid-template-columns: 28rem 0.7fr 0.5fr 0.3fr 2em 0.7fr 1.2fr 0.7fr;
     grid-template-areas:
       "NAME PL RACE RACE RANK RANK CLS DATE"
-      "NAME PL  GEN  AGE  LVL  EXP CLS DATE"
+      "NAME PL  AGE  GEN  LVL  EXP CLS DATE"
     ;
 }
 .list table .name   { grid-area: NAME; }
 .list table .player { grid-area:   PL; }
 .list table .race   { grid-area: RACE; }
-.list table .gender { grid-area:  GEN; }
 .list table .age    { grid-area:  AGE; }
+.list table .gender { grid-area:  GEN; }
 .list table .rank   { grid-area: RANK; }
 .list table .lv     { grid-area:  LVL; }
 .list table .exp    { grid-area:  EXP; }
@@ -69,10 +69,10 @@ body {
 }
 @media screen and (max-width:735px){
   .list table tr {
-    grid-template-columns: 18rem 6em 2.8em 0.6fr 0.8fr 8em 4em;
+    grid-template-columns: 18rem 6em 0.6fr 2.8em 0.8fr 8em 4em;
     grid-template-areas:
       "NAME PL RACE RACE EXP CLS DATE"
-      "NAME PL  GEN  AGE EXP CLS DATE"
+      "NAME PL  AGE  GEN EXP CLS DATE"
     ;
   }
   .list table .rank,
