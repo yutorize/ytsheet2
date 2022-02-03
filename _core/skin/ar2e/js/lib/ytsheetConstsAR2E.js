@@ -34,7 +34,7 @@ io.github.shunshun94.trpg.ytsheet.consts.SKILL_COLUMNS = {
   target: '対象',
   range: '射程',
   cost: 'コスト',
-  condition: '使用条件',
+  reqd: '使用条件',
   note: '効果'
 };
 

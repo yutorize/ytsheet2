@@ -37,7 +37,7 @@ io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2Arianrhod2PC 
 			name: json.characterName || json.aka,
 			playerName: json.playerName,
 			memo: `${json.characterNameRuby ? '('+json.characterNameRuby+')\n' :''}PL: ${json.playerName || 'PL情報無し'}\n${json.age || ''} / ${json.gender || ''} / ${json.race || ''}\n${json.classMain || ''}${json.classSupport ? ' / '+json.classSupport : ''}${json.classTitle ? ' / '+json.classTitle : ''}\n\n${json.imageURL ? '立ち絵：' + (json.imageCopyright || '権利情報なし') : ''}`,
-			initiative: Number(json.initiativeTotal || 0),
+			initiative: Number(json.battleTotalIni || 0),
 			externalUrl: opt_sheetUrl,
 			status: [
 				{
