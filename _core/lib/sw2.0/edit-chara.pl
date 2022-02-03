@@ -320,7 +320,7 @@ print <<"HTML";
           </dl>
           <dl class="box" id="faith">
 HTML
-print '<dt>信仰</dt><dd><select name="faith" oninput="changeFaith(this)">';
+print '<dt>信仰</dt><dd class="select-input '.($pc{"faith"} eq 'その他の信仰' ? 'free' : '').'"><select name="faith" oninput="changeFaith(this)">';
 print '<option>';
 print '<option'.($pc{"faith"} eq 'なし' ? ' selected' : '').'>なし';
 foreach my $type (1,3,2,0) {
@@ -332,7 +332,7 @@ foreach my $type (1,3,2,0) {
   }
   print '</optgroup>';
 }
-print "</select>".input('faithOther','text','', ' placeholder="自由記入欄"'.($pc{"faith"} eq 'その他の信仰'?'':'style="display:none"'))."</dl>\n";
+print "</select>".input('faithOther','text','', ' placeholder="自由記入欄"')."</dl>\n";
 print <<"HTML";
         </div>
 

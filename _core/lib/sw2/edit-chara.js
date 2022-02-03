@@ -133,12 +133,8 @@ function changeRegu(){
 }
 
 // 信仰チェック ----------------------------------------
-function changeFaith(Faith) {
-  if(Faith.options[Faith.selectedIndex].value === 'その他の信仰'){
-    form.faithOther.style.display = '';
-  } else {
-    form.faithOther.style.display = 'none';
-  }
+function changeFaith(obj) {
+  obj.parentNode.classList.toggle('free', obj.value === 'その他の信仰');
 }
 
 // レベル変更 ----------------------------------------
