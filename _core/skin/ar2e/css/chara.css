@@ -1340,6 +1340,10 @@ dl#level dd {
   padding-top: .25em;
   padding-bottom: .2em;
 }
+#history table tfoot tr td:not(:empty) {
+  border-right-width: 1px;
+  border-right-style: dotted;
+}
 
 /* // Cashbook
 ---------------------------------------------------------------------------------------------------- */

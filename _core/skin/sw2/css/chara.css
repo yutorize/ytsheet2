@@ -1259,6 +1259,10 @@ div#area-items-R {
   padding-top: .25em;
   padding-bottom: .2em;
 }
+#history table tfoot tr td:not(:empty) {
+  border-right-width: 1px;
+  border-right-style: dotted;
+}
 #history table tfoot tr td:nth-child(7)::after {
   content: "回";
   margin-left: 2px;

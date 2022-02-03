@@ -592,7 +592,7 @@ print <<"HTML";
         </table>
         <div class="add-del-button"><a onclick="addHistory()">▼</a><a onclick="delHistory()">▲</a></div>
         <h2>記入例</h2>
-        <table class="example edit-table line-tbody">
+        <table class="example edit-table line-tbody no-border-cells">
           <thead>
           <tr>
             <th></th>

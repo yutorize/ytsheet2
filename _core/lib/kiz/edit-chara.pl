@@ -684,7 +684,7 @@ print <<"HTML";
         </table>
         <div class="add-del-button"><a onclick="addHistory()">▼</a><a onclick="delHistory()">▲</a></div>
         <h2>記入例</h2>
-        <table class="example edit-table line-tbody">
+        <table class="example edit-table line-tbody no-border-cells">
           <thead>
           <tr>
             <th></th>
@@ -698,7 +698,7 @@ print <<"HTML";
           <tbody>
           <tr>
             <td>-</td>
-            <td><input type="text" value="2000-12-29" disabled></td>
+            <td><input type="text" value="2017-04-07" disabled></td>
             <td><input type="text" value="第一話「記入例」" disabled></td>
             <td><select disabled><option><option>耐久値+2<option selected>作戦力+1</select></td>
             <td class="gm"><input type="text" value="サンプルGM" disabled></td>
