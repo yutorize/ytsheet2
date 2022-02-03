@@ -283,6 +283,7 @@ print <<"HTML";
             </dl>
           </dd>
         </dl>
+        <div class="annotate">※経験点は、初期所有技能のぶんを含みます。</div>
       </details>
       <div id="area-status">
         @{[ image_form("${set::char_dir}${file}/image.$pc{'image'}?$pc{'imageUpdate'}") ]}

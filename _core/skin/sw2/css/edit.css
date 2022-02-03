@@ -27,6 +27,12 @@
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
   grid-template-rows: auto;
 }
+@media screen and (min-width:736px){
+  #regulation .annotate {
+    margin-top: -1em;
+    margin-bottom: 10px;
+  }
+}
 @media screen and (max-width:735px){
   #regulation > dl {
     display: grid;
