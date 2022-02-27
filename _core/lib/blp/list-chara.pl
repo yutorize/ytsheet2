@@ -197,42 +197,58 @@ foreach (@list) {
   ){
     next;
   }
-  
-  #性別
-  $gender = genderConvert($gender);
-  
-  #年齢
-  $age = $ageapp.'／'.$age if $ageapp;
-  $age =~ s/^(.+?)[\(（].*?[）\)]$/$1/;
-  $age =~ tr/０-９/0-9/;
 
   #名前
   $name =~ s/^“(.*)”(.*)/<span>“$1”<\/span><span>$2<\/span>/;
   
-  #更新日時
-  my ($min,$hour,$day,$mon,$year) = (localtime($updatetime))[1..5];
-  $year += 1900; $mon++;
-  $updatetime = sprintf("<span>%04d-</span><span>%02d-%02d</span> <span>%02d:%02d</span>",$year,$mon,$day,$hour,$min);
-  
-  #出力用配列へ
-  my @characters;
-  push(@characters, {
-    "ID" => $id,
-    "NAME" => $name,
-    "PLAYER" => $player,
-    "GROUP" => $group,
-    "AGE" => $age,
-    "GENDER" => $gender,
-    "FACTOR" => $factor,
-    "FACTORS" => $core.'／'.$style,
-    "BELONG" => $belong,
-    "MISSING" => $missing,
-    "LEVEL" => $level,
-    "DATE" => $updatetime,
-    "HIDE" => $hide,
-  });
-
-  push(@{$grouplist{$group}}, @characters);
+  ## シンプルリスト
+  if($index_mode && $set::simplelist){
+    #出力用配列へ
+    my @characters;
+    push(@characters, {
+      "ID" => $id,
+      "NAME" => $name,
+      "PLAYER" => $player,
+      "GROUP" => $group,
+      "TYPE" => $factor,
+      "HIDE" => $hide,
+    });
+    push(@{$grouplist{$group}}, @characters);
+  }
+  ## 通常リスト
+  else {
+    #性別
+    $gender = genderConvert($gender);
+    
+    #年齢
+    $age = $ageapp.'／'.$age if $ageapp;
+    $age =~ s/^(.+?)[\(（].*?[）\)]$/$1/;
+    $age =~ tr/０-９/0-9/;
+    
+    #更新日時
+    my ($min,$hour,$day,$mon,$year) = (localtime($updatetime))[1..5];
+    $year += 1900; $mon++;
+    $updatetime = sprintf("<span>%04d-</span><span>%02d-%02d</span> <span>%02d:%02d</span>",$year,$mon,$day,$hour,$min);
+    
+    #出力用配列へ
+    my @characters;
+    push(@characters, {
+      "ID" => $id,
+      "NAME" => $name,
+      "PLAYER" => $player,
+      "GROUP" => $group,
+      "AGE" => $age,
+      "GENDER" => $gender,
+      "FACTOR" => $factor,
+      "FACTORS" => $core.'／'.$style,
+      "BELONG" => $belong,
+      "MISSING" => $missing,
+      "LEVEL" => $level,
+      "DATE" => $updatetime,
+      "HIDE" => $hide,
+    });
+    push(@{$grouplist{$group}}, @characters);
+  }
 }
 
 ### 出力用配列 --------------------------------------------------

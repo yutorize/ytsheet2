@@ -216,48 +216,65 @@ foreach (@list) {
     next;
   }
   
-  #クラス
-  (my $class_m, my $class_s, my $class_t) = (split '/', $classes);
-  
-  #種族
-  $race =~ s/（.*）|［.*］//;
-  $race = "<div>$race</div>" if length($race) >= 5;
-  
-  #性別
-  $gender = genderConvert($gender);
-  
-  #年齢
-  $age =~ s/^(.+?)[\(（].*?[）\)]$/$1/;
-  $age =~ tr/０-９/0-9/;
-  
   #名前
   $name =~ s/^“(.*)”(.*)$/<span>“$1”<\/span><span>$2<\/span>/;
   
-  #更新日時
-  my ($min,$hour,$day,$mon,$year) = (localtime($updatetime))[1..5];
-  $year += 1900; $mon++;
-  $updatetime = sprintf("<span>%04d-</span><span>%02d-%02d</span> <span>%02d:%02d</span>",$year,$mon,$day,$hour,$min);
-  
-  #出力用配列へ
-  my @characters;
-  push(@characters, {
-    "ID" => $id,
-    "NAME" => $name,
-    "PLAYER" => $player,
-    "GROUP" => $group,
-    "RACE" => $race,
-    "GENDER" => $gender,
-    "AGE" => $age,
-    "EXP" => $exp,
-    "LV" => $level,
-    "MAIN" => $class_m,
-    "SUPPORT" => $class_s,
-    "TITLE" => $class_t,
-    "DATE" => $updatetime,
-    "HIDE" => $hide,
-  });
-
-  push(@{$grouplist{$group}}, @characters);
+  ## シンプルリスト
+  if($index_mode && $set::simplelist){
+    #出力用配列へ
+    my @characters;
+    push(@characters, {
+      "ID" => $id,
+      "NAME" => $name,
+      "PLAYER" => $player,
+      "GROUP" => $group,
+      "EXP" => $exp,
+      "LV" => $level,
+      "HIDE" => $hide,
+    });
+    push(@{$grouplist{$group}}, @characters);
+  }
+  ## 通常リスト
+  else {
+    #クラス
+    (my $class_m, my $class_s, my $class_t) = (split '/', $classes);
+    
+    #種族
+    $race =~ s/（.*）|［.*］//;
+    $race = "<div>$race</div>" if length($race) >= 5;
+    
+    #性別
+    $gender = genderConvert($gender);
+    
+    #年齢
+    $age =~ s/^(.+?)[\(（].*?[）\)]$/$1/;
+    $age =~ tr/０-９/0-9/;
+    
+    #更新日時
+    my ($min,$hour,$day,$mon,$year) = (localtime($updatetime))[1..5];
+    $year += 1900; $mon++;
+    $updatetime = sprintf("<span>%04d-</span><span>%02d-%02d</span> <span>%02d:%02d</span>",$year,$mon,$day,$hour,$min);
+    
+    #出力用配列へ
+    my @characters;
+    push(@characters, {
+      "ID" => $id,
+      "NAME" => $name,
+      "PLAYER" => $player,
+      "GROUP" => $group,
+      "RACE" => $race,
+      "GENDER" => $gender,
+      "AGE" => $age,
+      "EXP" => $exp,
+      "LV" => $level,
+      "MAIN" => $class_m,
+      "SUPPORT" => $class_s,
+      "TITLE" => $class_t,
+      "DATE" => $updatetime,
+      "HIDE" => $hide,
+    });
+    push(@{$grouplist{$group}}, @characters);
+  }
 }
 
 ### 出力用配列 --------------------------------------------------

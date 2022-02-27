@@ -50,3 +50,9 @@ body {
     grid-template-columns: 18rem 6em 7em 0.7fr 1fr 4em;
   }
 }
+
+/* // List-Simple
+---------------------------------------------------------------------------------------------------- */
+.list ul li a::before {
+  content: attr(data-type);
+}

@@ -50,7 +50,7 @@ body {
   }
 }
 
-/* // List-Monster/Simple
+/* // List-Simple
 ---------------------------------------------------------------------------------------------------- */
 .list ul li a::before {
   content: attr(data-lv);

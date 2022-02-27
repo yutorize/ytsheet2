@@ -34,7 +34,7 @@
         <TMPL_IF simpleMode>
         <ul>
           <TMPL_LOOP Characters><li<TMPL_IF HIDE> class="hide"</TMPL_IF>>
-            <a href="./?id=<TMPL_VAR ID>" data-lv="<TMPL_VAR LV>"><TMPL_VAR NAME><small><TMPL_VAR PLAYER></small></a>
+            <a href="./?id=<TMPL_VAR ID>" data-type="<TMPL_VAR TYPE>"><TMPL_VAR NAME><small><TMPL_VAR PLAYER></small></a>
           </li></TMPL_LOOP>
         </ul>
         <TMPL_ELSE>

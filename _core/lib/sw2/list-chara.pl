@@ -250,61 +250,79 @@ foreach (@list) {
   ){
     next;
   }
-  
-  #技能レベル
-  my @levels = (split /\//, $classes);
-  my $level = max(@levels);
-  my %lv;
-  @lv{@class_name} = @levels;
-  my $class;
-  foreach (sort {$lv{$b} <=> $lv{$a}} keys %lv){
-    $class .= $_.$lv{$_} if $lv{$_};
-  }
-  $class = class_color($class);
-  
-  #種族
-  $race =~ s/（.*）|［.*］//;
-  $race = "<div>$race</div>" if length($race) >= 5;
-  
-  #性別
-  $gender = genderConvert($gender);
-  
-  #年齢
-  $age =~ s/^(.+?)[\(（].*?[）\)]$/$1/;
-  $age =~ tr/０-９/0-9/;
-  
-  #フェロー
-  if($fellow != 1) { $fellow = 0; }
 
   #名前
   $name =~ s/^“(.*)”(.*)$/<span>“$1”<\/span><span>$2<\/span>/;
   
-  #更新日時
-  my ($min,$hour,$day,$mon,$year) = (localtime($updatetime))[1..5];
-  $year += 1900; $mon++;
-  $updatetime = sprintf("<span>%04d-</span><span>%02d-%02d</span> <span>%02d:%02d</span>",$year,$mon,$day,$hour,$min);
-  
-  #出力用配列へ
-  my @characters;
-  push(@characters, {
-    "ID" => $id,
-    "NAME" => $name,
-    "PLAYER" => $player,
-    "GROUP" => $group,
-    "EXP" => $exp,
-    "LV" => $level,
-    "CLASS" => $class,
-    "RACE" => $race,
-    "GENDER" => $gender,
-    "AGE" => $age,
-    "FAITH" => $faith,
-    "RANK" => $rank,
-    "FELLOW" => $fellow,
-    "DATE" => $updatetime,
-    "HIDE" => $hide,
-  });
+  ## シンプルリスト
+  if($index_mode && $set::simplelist){
+    #出力用配列へ
+    my @characters;
+    push(@characters, {
+      "ID" => $id,
+      "NAME" => $name,
+      "PLAYER" => $player,
+      "GROUP" => $group,
+      "EXP" => $exp,
+      "LV" => max((split /\//, $classes)),
+      "RANK" => $rank,
+      "HIDE" => $hide,
+    });
+    push(@{$grouplist{$group}}, @characters);
+  }
+  ## 通常リスト
+  else {
+    #技能レベル
+    my @levels = (split /\//, $classes);
+    my $level = max(@levels);
+    my %lv;
+    @lv{@class_name} = @levels;
+    my $class;
+    foreach (sort {$lv{$b} <=> $lv{$a}} keys %lv){
+      $class .= $_.$lv{$_} if $lv{$_};
+    }
+    $class = class_color($class);
+    
+    #種族
+    $race =~ s/（.*）|［.*］//;
+    $race = "<div>$race</div>" if length($race) >= 5;
+    
+    #性別
+    $gender = genderConvert($gender);
+    
+    #年齢
+    $age =~ s/^(.+?)[\(（].*?[）\)]$/$1/;
+    $age =~ tr/０-９/0-9/;
+    
+    #フェロー
+    if($fellow != 1) { $fellow = 0; }
+    
+    #更新日時
+    my ($min,$hour,$day,$mon,$year) = (localtime($updatetime))[1..5];
+    $year += 1900; $mon++;
+    $updatetime = sprintf("<span>%04d-</span><span>%02d-%02d</span> <span>%02d:%02d</span>",$year,$mon,$day,$hour,$min);
 
-  push(@{$grouplist{$group}}, @characters);
+    #出力用配列へ
+    my @characters;
+    push(@characters, {
+      "ID" => $id,
+      "NAME" => $name,
+      "PLAYER" => $player,
+      "GROUP" => $group,
+      "EXP" => $exp,
+      "LV" => $level,
+      "CLASS" => $class,
+      "RACE" => $race,
+      "GENDER" => $gender,
+      "AGE" => $age,
+      "FAITH" => $faith,
+      "RANK" => $rank,
+      "FELLOW" => $fellow,
+      "DATE" => $updatetime,
+      "HIDE" => $hide,
+    });
+    push(@{$grouplist{$group}}, @characters);
+  }
 }
 
 ### 出力用配列 --------------------------------------------------
