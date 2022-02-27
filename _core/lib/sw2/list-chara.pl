@@ -36,6 +36,10 @@ $INDEX->param(mode => $mode);
 ### データ処理 #######################################################################################
 ### クエリ --------------------------------------------------
 my $index_mode;
+foreach (keys %::in) {
+  $::in{$_} =~ s/</&lt;/g;
+  $::in{$_} =~ s/>/&gt;/g;
+}
 if(!($mode eq 'mylist' || $::in{'tag'} || $::in{'group'} || $::in{'name'} || $::in{'player'} || $::in{'race'} || $::in{'exp-min'} || $::in{'exp-max'} || $::in{'class'} || $::in{'faith'} || $::in{'image'} || $::in{'fellow'})){
   $index_mode = 1;
   $INDEX->param(modeIndex => 1);
@@ -66,9 +70,8 @@ my @mylist;
 if($mode eq 'mylist'){
   $INDEX->param( playerName => (getplayername($LOGIN_ID))[0] );
   open (my $FH, "<", $set::passfile);
-  while(<$FH>){
-    my @data = (split /<>/, $_)[0,1];
-    if($data[1] eq "\[$LOGIN_ID\]"){ push(@mylist, $data[0]) }
+  while(my $line = <$FH>){
+    if($line =~ /^(.+?)<>\[$LOGIN_ID\]</){ push(@mylist, $1) }
   }
   close($FH);
 }
@@ -95,7 +98,7 @@ else { #通常
 ## マイリスト
 if($mode eq 'mylist'){
   my $regex = join('|', @mylist);
-  @list = grep { (split(/<>/))[0] =~ /^(?:$regex)$/ } @list;
+  @list = grep { $_ =~ /^(?:$regex)\</ } @list;
 }
 ## 非表示除外
 elsif (
@@ -103,7 +106,7 @@ elsif (
   && !($mode eq 'mylist')
   && !$::in{'tag'}
 ){
-  @list = grep { !(split(/<>/))[17] } @list;
+  @list = grep { $_ !~ /^(?:[^<]*?<>){17}[^<0]/ } @list;
 }
 
 ## グループ
@@ -127,29 +130,29 @@ $rank_sort{''} = -1;
 ## グループ検索
 my $group_query = $::in{'group'};
 if($group_query && $::in{'group'} ne 'all') {
-  if($group_query eq $set::group_default){ @list = grep { (split(/<>/))[6] =~ /^$group_query$|^$/ } @list; }
-  else { @list = grep { (split(/<>/))[6] eq $group_query } @list; }
+  if($group_query eq $set::group_default){ @list = grep { $_ =~ /^(?:[^<]*?<>){6}($group_query)?</ } @list; }
+  else { @list = grep { $_ =~ /^(?:[^<]*?<>){6}$group_query</ } @list; }
 }
 $INDEX->param(group => $group_name{$group_query});
 
 ## タグ検索
 my $tag_query = decode('utf8', $::in{'tag'});
-if($tag_query) { @list = grep { (split(/<>/))[16] =~ / $tag_query / } @list; }
+if($tag_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){16}[^<]*? $tag_query / } @list; }
 $INDEX->param(tag => $tag_query);
 
 ## 名前検索
 my $name_query = decode('utf8', $::in{'name'});
-if($name_query) { @list = grep { (split(/<>/))[4] =~ /$name_query/ } @list; }
+if($name_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){4}[^<]*?$name_query/i } @list; }
 $INDEX->param(name => $name_query);
 
 ## PL名検索
 my $pl_query = decode('utf8', $::in{'player'});
-if($pl_query) { @list = grep { (split(/<>/))[5] =~ /$pl_query/ } @list; }
+if($pl_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){5}[^<]*?$pl_query/i } @list; }
 $INDEX->param(player => $pl_query);
 
 ## 種族検索
 my $race_query = decode('utf8', $::in{'race'});
-if($race_query) { @list = grep { (split(/<>/))[9] =~ /^$race_query/ } @list; }
+if($race_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){4}$race_query/ } @list; }
 $INDEX->param(race => $race_query);
 
 ## 経験点検索
@@ -184,32 +187,46 @@ $INDEX->param(class => "@class_query");
 
 ## 信仰検索
 my $faith_query = decode('utf8', $::in{'faith'});
-if($faith_query) { @list = grep { (split(/<>/))[12] =~ /$faith_query/ } @list; }
+if($faith_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){12}[^<]*?$faith_query/ } @list; }
 $INDEX->param(faith => $faith_query);
 
 ## 画像フィルタ
 if($::in{'image'} == 1) {
-  @list = grep { (split(/<>/))[15] } @list;
+  @list = grep { $_ =~ /^(?:[^<]*?<>){15}[^<0]/ } @list;
   $INDEX->param(image => 1);
 }
 elsif($::in{'image'} eq 'N') {
-  @list = grep { !(split(/<>/))[15] } @list;
+  @list = grep { $_ !~ /^(?:[^<]*?<>){15}[^<0]/ } @list;
   $INDEX->param(image => 1);
 }
 
 ## フェローフィルタ
 if($::in{'fellow'} == 1) {
-  @list = grep { (split(/<>/))[18] } @list;
+  @list = grep {  $_ =~ /^(?:[^<]*?<>){18}[^<0]/ } @list;
   $INDEX->param(fellow => 1);
 }
 elsif($::in{'fellow'} eq 'N') {
-  @list = grep { !(split(/<>/))[18] } @list;
+  @list = grep { $_ !~ /^(?:[^<]*?<>){18}[^<0]/ } @list;
   $INDEX->param(fellow => 1);
 }
+### ソート --------------------------------------------------
+if   ($sort eq 'name')  { my @tmp = map { sortName((split /<>/)[4]) } @list; @list = @list[sort {$tmp[$a] cmp $tmp[$b]} 0 .. $#tmp]; }
+elsif($sort eq 'pl')    { my @tmp = map { (split /<>/)[5]           } @list; @list = @list[sort {$tmp[$a] cmp $tmp[$b]} 0 .. $#tmp]; }
+elsif($sort eq 'rank')  { my @tmp = map { sortRank((split /<>/)[8]) } @list; @list = @list[sort {$tmp[$b] <=> $tmp[$a]} 0 .. $#tmp]; }
+elsif($sort eq 'lv')    { my @tmp = map { sortLv((split /<>/)[13])  } @list; @list = @list[sort {$tmp[$b] <=> $tmp[$a]} 0 .. $#tmp]; }
+elsif($sort eq 'exp')   { my @tmp = map { (split /<>/)[7]           } @list; @list = @list[sort {$tmp[$b] <=> $tmp[$a]} 0 .. $#tmp]; }
+elsif($sort eq 'date')  { my @tmp = map { (split /<>/)[3]           } @list; @list = @list[sort {$tmp[$b] <=> $tmp[$a]} 0 .. $#tmp]; }
+
+sub sortName { $_[0] =~ s/^“.*”//; return $_[0]; }
+sub sortRank { return $rank_sort{$_[0]}; }
+sub sortLv   { my @levels = (split /\//, $_[0]); return max(@levels); }
 
 ### リストを回す --------------------------------------------------
 my %count; my %pl_flag;
 my %grouplist;
+my $page = $::in{'page'} ? $::in{'page'} : 1;
+my $pagestart = $page * $set::pagemax - $set::pagemax;
+my $pageend   = $page * $set::pagemax - 1;
 foreach (@list) {
   my (
     $id, undef, undef, $updatetime, $name, $player, $group,
@@ -225,8 +242,14 @@ foreach (@list) {
   $count{'PC'}{$group}++;
   $count{'PL'}{$group}++ if !$pl_flag{$group}{$player};
   $pl_flag{$group}{$player} = 1;
-  #最大表示制限
-  next if ($index_mode && $count{'PC'}{$group} > $set::list_maxline && $set::list_maxline);
+
+  #表示域以外は弾く
+  if (
+    ( $index_mode && $count{'PC'}{$group} > $set::list_maxline && $set::list_maxline) || #TOPページ
+    (!$index_mode && $set::pagemax && ($count{'PC'}{$group} < $pagestart || $count{'PC'}{$group} > $pageend)) #それ以外
+  ){
+    next;
+  }
   
   #技能レベル
   my @levels = (split /\//, $classes);
@@ -252,11 +275,7 @@ foreach (@list) {
   
   #フェロー
   if($fellow != 1) { $fellow = 0; }
-  
-  #ソート用データ
-  my $sort_data;
-  if    ($sort eq 'name'){ ($sort_data = $name) =~ s/^“.*”//; }
-  elsif ($sort eq 'rank'){  $sort_data = $rank_sort{$rank}; }
+
   #名前
   $name =~ s/^“(.*)”(.*)$/<span>“$1”<\/span><span>$2<\/span>/;
   
@@ -268,7 +287,6 @@ foreach (@list) {
   #出力用配列へ
   my @characters;
   push(@characters, {
-    "SORT" => $sort_data,
     "ID" => $id,
     "NAME" => $name,
     "PLAYER" => $player,
@@ -290,26 +308,11 @@ foreach (@list) {
 }
 
 ### 出力用配列 --------------------------------------------------
-my @characterlists; 
-my $page = $::in{'page'} ? $::in{'page'} : 1;
-my $pagestart = $page * $set::pagemax - $set::pagemax;
-my $pageend   = $page * $set::pagemax - 1;
+my @characterlists;
 foreach (sort {$group_sort{$a} <=> $group_sort{$b}} keys %grouplist){
-  ## ソート
-  if   ($sort eq 'name'){ @{$grouplist{$_}} = sort { $a->{'SORT'} cmp $b->{'SORT'} } @{$grouplist{$_}}; }
-  elsif($sort eq 'pl')  { @{$grouplist{$_}} = sort { $a->{'PLAYER'} cmp $b->{'PLAYER'} } @{$grouplist{$_}}; }
-  elsif($sort eq 'race'){ @{$grouplist{$_}} = sort { $a->{'RACE'} cmp $b->{'RACE'} } @{$grouplist{$_}}; }
-  elsif($sort eq 'gender'){ @{$grouplist{$_}} = sort { $a->{'GENDER'} cmp $b->{'GENDER'} } @{$grouplist{$_}}; }
-  elsif($sort eq 'rank'){ @{$grouplist{$_}} = sort { $b->{'SORT'} <=> $a->{'SORT'} } @{$grouplist{$_}}; }
-  elsif($sort eq 'lv')  { @{$grouplist{$_}} = sort { $b->{'LV'} <=> $a->{'LV'} } @{$grouplist{$_}}; }
-  elsif($sort eq 'exp') { @{$grouplist{$_}} = sort { $b->{'EXP'} <=> $a->{'EXP'} } @{$grouplist{$_}}; }
-  elsif($sort eq 'date'){ @{$grouplist{$_}} = sort { $b->{'DATE'} <=> $a->{'DATE'} } @{$grouplist{$_}}; }
-  
   ## ページネーション
   my $navbar;
   if($set::pagemax && !$index_mode && $::in{'group'}){
-    my $pageend = ($count{'PC'}{$_}-1 < $pageend) ? $count{'PC'}{$_}-1 : $pageend;
-    @{$grouplist{$_}} = @{$grouplist{$_}}[$pagestart .. $pageend];
     foreach(1 .. ceil($count{'PC'}{$_} / $set::pagemax)){
       if($_ == $page){  $navbar .= '<b>'.$_.'</b> '}
       else { $navbar .= '<a href="./?group='.$::in{'group'}.'&'.$q_links.'&page='.$_.'&sort='.$::in{'sort'}.'">'.$_.'</a> ' }

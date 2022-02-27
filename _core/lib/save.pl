@@ -269,8 +269,7 @@ sub passfile_write_make {
   flock($FH, 2);
   my @list = <$FH>;
   foreach (@list){
-    my @data = split /<>/;
-    if ($data[2] eq $now){
+    if ($_ =~ /^(?:[^<]*?<>){2}$now</){
       close($FH);
       $make_error = '新規作成が衝突しました。再度保存してください。';
       require $set::lib_edit; exit;
@@ -293,8 +292,8 @@ sub passfile_write_save {
   my @list = <$FH>;
   seek($FH, 0, 0);
   foreach (@list){
-    my @data = split /<>/;
-    if ($data[0] eq $id){
+    if ($_ =~ /^$id</){
+      my @data = split /<>/;
       $file = $data[2];
       my $passwrite = $data[1];
       if($passwrite =~ /^\[(.+?)\]$/){ $old_dir = '_'.$1.'/'; }
@@ -314,7 +313,8 @@ sub passfile_write_save {
         if($old_dir) { $move = 1; }
       }
       print $FH "$data[0]<>$passwrite<>$data[2]<>$data[3]<>\n";
-    }else{
+    }
+    else {
       print $FH $_;
     }
   }
@@ -336,14 +336,14 @@ sub list_save {
   my $newline  = shift;
   sysopen (my $FH, $listfile, O_RDWR | O_CREAT, 0666);
   flock($FH, 2);
-  my @list = sort { (split(/<>/,$b))[3] cmp (split(/<>/,$a))[3] } <$FH>;
+  my @list = <$FH>;
+  my @tmp = map { (split /<>/)[3] } @list;
+  @list = @list[sort {$tmp[$b] <=> $tmp[$a]} 0 .. $#tmp];
   seek($FH, 0, 0);
   print $FH "$newline\n";
   foreach (@list){
-    chomp $_;
-    my( $id, undef ) = split /<>/;
-    if ($id && $id ne $pc{'id'}){
-      print $FH $_,"\n";
+    if ($_ !~ /^$pc{'id'}</){
+      print $FH $_;
     }
   }
   truncate($FH, tell($FH));

@@ -59,9 +59,9 @@ foreach my $data (@lines) {
   $i++;
   chomp $data;
   
-  my ($num, $date, $id, $name, $comment, $race, $stt) = split(/<>/, $data);
-  next if $::in{"num"} && $::in{"num"} ne $num;
+  next if $::in{"num"} && $data !~ /^$::in{"num"}</;
   next if !$::in{"num"} && (($i <= $page) || ($i > $page+$page_items));
+  my ($num, $date, $id, $name, $comment, $race, $stt) = split(/<>/, $data);
   
   my $adventurer = ($race =~ s/（冒険者）//) ? 1 : 0;
   my @datalist;

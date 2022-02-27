@@ -33,6 +33,10 @@ $INDEX->param(type => 'i');
 ### データ処理 #######################################################################################
 ### クエリ --------------------------------------------------
 my $index_mode;
+foreach (keys %::in) {
+  $::in{$_} =~ s/</&lt;/g;
+  $::in{$_} =~ s/>/&gt;/g;
+}
 if(!($mode eq 'mylist' || $::in{'tag'} || $::in{'category'} || $::in{'name'} || $::in{'author'})){
   $index_mode = 1;
   $INDEX->param(modeIndex => 1);
@@ -56,9 +60,8 @@ my @mylist;
 if($mode eq 'mylist'){
   $INDEX->param( playerName => (getplayername($LOGIN_ID))[0] );
   open (my $FH, "<", $set::passfile);
-  while(<$FH>){
-    my @data = (split /<>/, $_)[0,1];
-    if($data[1] eq "\[$LOGIN_ID\]"){ push(@mylist, $data[0]) }
+  while(my $line = <$FH>){
+    if($line =~ /^(.+?)<>\[$LOGIN_ID\]</){ push(@mylist, $1) }
   }
   close($FH);
 }
@@ -82,7 +85,7 @@ my @list;
 ## マイリスト
 if($mode eq 'mylist'){
   my $regex = join('|', @mylist);
-  @list = grep { (split(/<>/))[0] =~ /^(?:$regex)$/ } @list;
+  @list = grep { $_ =~ /^(?:$regex)\</ } @list;
 }
 ## 非表示除外
 elsif (
@@ -90,30 +93,38 @@ elsif (
   && !($mode eq 'mylist')
   && !$::in{'tag'}
 ){
-  @list = grep { !(split(/<>/))[13] } @list;
+  @list = grep { $_ !~ /^(?:[^<]*?<>){13}[^<0]/ } @list;
 }
 
 ## 分類検索
 my $category_query = decode('utf8', $::in{'category'});
 if($category_query && $::in{'category'} ne 'all') {
-  @list = grep { (split(/<>/))[6] eq $category_query } @list;
+  @list = grep { $_ =~ /^(?:[^<]*?<>){6}$category_query</ } @list;
   
 }
 $INDEX->param(category => $category_query);
 
 ## タグ検索
 my $tag_query = decode('utf8', $::in{'tag'});
-if($tag_query) { @list = grep { (split(/<>/))[12] =~ / $tag_query / } @list; }
+if($tag_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){12}[^<]*? $tag_query / } @list; }
 $INDEX->param(tag => $tag_query);
 
 ## 名前検索
 my $name_query = decode('utf8', $::in{'name'});
-if($name_query) { @list = grep { (split(/<>/))[4] =~ /$name_query/ } @list; }
+if($name_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){4}[^<]*?$name_query/i } @list; }
 $INDEX->param(name => $name_query);
+
+### ソート --------------------------------------------------
+if   ($sort eq 'name')  { my @tmp = map { (split /<>/)[4] } @list; @list = @list[sort {$tmp[$a] cmp $tmp[$b]} 0 .. $#tmp]; }
+elsif($sort eq 'author'){ my @tmp = map { (split /<>/)[5] } @list; @list = @list[sort {$tmp[$a] cmp $tmp[$b]} 0 .. $#tmp]; }
+elsif($sort eq 'date')  { my @tmp = map { (split /<>/)[3] } @list; @list = @list[sort {$tmp[$b] <=> $tmp[$a]} 0 .. $#tmp]; }
 
 ### リストを回す --------------------------------------------------
 my %count;
 my %grouplist;
+my $page = $::in{'page'} ? $::in{'page'} : 1;
+my $pagestart = $page * $set::pagemax - $set::pagemax;
+my $pageend   = $page * $set::pagemax - 1;
 foreach (@list) {
   my (
     $id, undef, undef, $updatetime, $name, $author, $category, $price, $age, $summary, $type,
@@ -122,8 +133,14 @@ foreach (@list) {
   
   #カウント
   $count{'すべて'}++;
-  #最大表示制限
-  next if ($index_mode && $count{'すべて'} > $set::list_maxline && $set::list_maxline);
+
+  #表示域以外は弾く
+  if (
+    ( $index_mode && $count{'すべて'} > $set::list_maxline && $set::list_maxline) || #TOPページ
+    (!$index_mode && $set::pagemax && ($count{'すべて'} < $pagestart || $count{'すべて'} > $pageend)) #それ以外
+  ){
+    next;
+  }
   
   #グループ（分類）
   $category =~ s/[ 　]/<br>/g;
@@ -152,10 +169,7 @@ foreach (@list) {
 }
 
 ### 出力用配列 --------------------------------------------------
-my @characterlists; 
-my $page = $::in{'page'} ? $::in{'page'} : 1;
-my $pagestart = $page * $set::pagemax - $set::pagemax;
-my $pageend   = $page * $set::pagemax - 1;
+my @characterlists;
 our @categories = (
   ['すべて','']
 );
@@ -163,15 +177,9 @@ foreach (@categories){
   my $name = $_->[0];
   next if !$count{$name};
 
-  ## ソート
-  if($sort eq 'author')  { @{$grouplist{$name}} = sort { $a->{'AUTHOR'} cmp $b->{'AUTHOR'} } @{$grouplist{$name}}; }
-  elsif($sort eq 'date'){ @{$grouplist{$name}} = sort { $b->{'DATE'} <=> $a->{'DATE'} } @{$grouplist{$name}}; }
-  
   ## ページネーション
   my $navbar;
   if($set::pagemax && !$index_mode){
-    my $pageend = ($count{$name}-1 < $pageend) ? $count{$name}-1 : $pageend;
-    @{$grouplist{$name}} = @{$grouplist{$name}}[$pagestart .. $pageend];
     foreach(1 .. ceil($count{$name} / $set::pagemax)){
       if($_ == $page){  $navbar .= '<b>'.$_.'</b> '}
       else { $navbar .= '<a href="./?type=i&category='.$::in{'category'}.'&'.$q_links.'&page='.$_.'&sort='.$::in{'sort'}.'">'.$_.'</a> ' }

@@ -32,6 +32,10 @@ $INDEX->param(type => 'm');
 ### データ処理 #######################################################################################
 ### クエリ --------------------------------------------------
 my $index_mode;
+foreach (keys %::in) {
+  $::in{$_} =~ s/</&lt;/g;
+  $::in{$_} =~ s/>/&gt;/g;
+}
 if(!($mode eq 'mylist' || $::in{'tag'} || $::in{'taxa'} || $::in{'name'})){
   $index_mode = 1;
   $INDEX->param(modeIndex => 1);
@@ -43,9 +47,8 @@ my @mylist;
 if($mode eq 'mylist'){
   $INDEX->param( playerName => (getplayername($LOGIN_ID))[0] );
   open (my $FH, "<", $set::passfile);
-  while(<$FH>){
-    my @data = (split /<>/, $_)[0,1];
-    if($data[1] eq "\[$LOGIN_ID\]"){ push(@mylist, $data[0]) }
+  while(my $line = <$FH>){
+    if($line =~ /^(.+?)<>\[$LOGIN_ID\]</){ push(@mylist, $1) }
   }
   close($FH);
 }
@@ -71,7 +74,7 @@ else { #通常
 ## マイリスト
 if($mode eq 'mylist'){
   my $regex = join('|', @mylist);
-  @list = grep { (split(/<>/))[0] =~ /^(?:$regex)$/ } @list;
+  @list = grep { $_ =~ /^(?:$regex)\</ } @list;
 }
 ## 非表示除外
 elsif (
@@ -85,24 +88,35 @@ elsif (
 ## 分類検索
 my $taxa_query = decode('utf8', $::in{'taxa'});
 if($taxa_query) {
-  @list = grep { (split(/<>/))[6] eq $taxa_query } @list;
+  @list = grep { $_ =~ /^(?:[^<]*?<>){6}$taxa_query</ } @list;
   
 }
 $INDEX->param(group => $taxa_query);
 
 ## タグ検索
 my $tag_query = decode('utf8', $::in{'tag'});
-if($tag_query) { @list = grep { (split(/<>/))[15] =~ / $tag_query / } @list; }
+if($tag_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){15}[^<]*? $tag_query / } @list; }
 $INDEX->param(tag => $tag_query);
 
 ## 名前検索
 my $name_query = decode('utf8', $::in{'name'});
-if($name_query) { @list = grep { (split(/<>/))[4] =~ /$name_query/ } @list; }
+if($name_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){4}[^<]*?$name_query/i } @list; }
 $INDEX->param(name => $name_query);
+
+### ソート --------------------------------------------------
+#if   ($sort eq 'name')  { my @tmp = map { (split /<>/)[4] } @list; @list = @list[sort {$tmp[$a] cmp $tmp[$b]} 0 .. $#tmp]; }
+#elsif($sort eq 'author'){ my @tmp = map { (split /<>/)[5] } @list; @list = @list[sort {$tmp[$a] cmp $tmp[$b]} 0 .. $#tmp]; }
+#elsif($sort eq 'date')  { my @tmp = map { (split /<>/)[3] } @list; @list = @list[sort {$tmp[$b] <=> $tmp[$a]} 0 .. $#tmp]; }
+unless($index_mode && $set::list_maxline){
+  my @tmp = map { (split /<>/)[7] } @list; @list = @list[sort {$tmp[$a] <=> $tmp[$b]} 0 .. $#tmp];
+}
 
 ### リストを回す --------------------------------------------------
 my %count;
 my %grouplist;
+my $page = $::in{'page'} ? $::in{'page'} : 1;
+my $pagestart = $page * $set::pagemax - $set::pagemax;
+my $pageend   = $page * $set::pagemax - 1;
 foreach (@list) {
   my (
     $id, undef, undef, $updatetime, $name, $author, $taxa, $lv,
@@ -115,8 +129,14 @@ foreach (@list) {
   
   #カウント
   $count{$taxa}++;
-  #最大表示制限
-  next if ($index_mode && $count{$taxa} > $set::list_maxline && $set::list_maxline);
+
+  #表示域以外は弾く
+  if (
+    ( $index_mode && $count{$taxa} > $set::list_maxline && $set::list_maxline) || #TOPページ
+    (!$index_mode && $set::pagemax && ($count{$taxa} < $pagestart || $count{$taxa} > $pageend)) #それ以外
+  ){
+    next;
+  }
   
   #更新日時
   my ($min,$hour,$day,$mon,$year) = (localtime($updatetime))[1..5];
@@ -145,10 +165,6 @@ foreach (@data::taxa){
   my $name = $_->[0];
   next if !$count{$name};
   
-  ## ソート
-  unless($index_mode && $set::list_maxline){
-    @{$grouplist{$name}} = sort { $a->{'LV'} <=> $b->{'LV'} } @{$grouplist{$name}};
-  }
   ## ページネーション
   next if !$count{$name};
   push(@characterlists, {

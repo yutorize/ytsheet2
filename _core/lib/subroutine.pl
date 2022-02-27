@@ -34,9 +34,9 @@ sub getfile {
 ### ファイル名取得／パスorアカウント不要時 --------------------------------------------------
 sub getfile_open {
   open (my $FH, '<', $set::passfile) or die;
-  while (<$FH>) {
-    my ($id, $pass, $file, $type) = (split /<>/, $_)[0,1,2,3];
-    if($_[0] eq $id) {
+  while (my $line  = <$FH>) {
+    if($line =~ /^$_[0]</) {
+      my ($id, $pass, $file, $type) = (split /<>/, $line)[0,1,2,3];
       close($FH);
       my $user;
       if($pass =~ /^\[(.+?)\]$/){ $file = '_'.$1.'/'.$file; $user = $1; }
@@ -50,11 +50,11 @@ sub getfile_open {
 
 ### プレイヤー名取得 --------------------------------------------------
 sub getplayername {
-  my $login_id = shift;
+  my $in_id = shift;
   open (my $FH, '<', $set::userfile);
-    while (<$FH>) {
-      my ($id, $name, $mail) = (split /<>/, $_)[0,2,3];
-      if($id eq $login_id) {
+    while (my $line = <$FH>) {
+      if ($line =~ /^$in_id</) {
+        my ($id, $name, $mail) = (split /<>/, $line)[0,2,3];
         close($FH);
         return ($name,$mail);
       }
@@ -74,7 +74,7 @@ sub protectTypeGet {
     if   ($line =~ /^protect<>(.*)\n/)  { $protect = $1; }
     elsif($line =~ /^forbidden<>(.*)\n/){ $forbidden = $1; }
     
-    if($protect && $forbidden){ last; }
+    if($protect && $forbidden){ close($IN); last; }
   }
   close($IN);
   return ($protect, $forbidden);
@@ -127,8 +127,8 @@ sub key_get {
   my $in_id  = $_[0];
   my $in_pass= $_[1];
   open (my $FH, '<', $set::userfile);
-  while (<$FH>) {
-    my ($id, $pass) = (split /<>/, $_)[0,1];
+  while (my $line = <$FH>) {
+    my ($id, $pass) = (split /<>/, $line)[0,1];
     if ($in_id eq $id && (&c_crypt($in_pass, $pass))) {
       close($FH);
       my $s;
@@ -169,11 +169,13 @@ sub check {
   my ($in_id, $in_key) = &cookie_get;
   return 0 if !$in_id || !$in_key;
   open (my $FH, $set::login_users) or 0;
-  while (my $data = <$FH>){
-    my @line = (split/<>/, $data);
-    if ($in_id eq $line[0] && $in_key eq $line[1] && time - $line[2] < 86400*365) {
-      close($FH);
-      return ($in_id);
+  while (my $line = <$FH>){
+    if ($line =~ /^$in_id</){
+      my @data = (split/<>/, $line);
+      if ($in_key eq $data[1] && time - $data[2] < 86400*365) {
+        close($FH);
+        return ($in_id);
+      }
     }
   }
   close($FH);
