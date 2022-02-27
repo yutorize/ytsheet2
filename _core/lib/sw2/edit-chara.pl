@@ -54,6 +54,9 @@ elsif($mode eq 'blanksheet' && !$::make_error){
   $pc{'history0Honor'} = $set::make_honor;
   $pc{'history0Money'} = $set::make_money;
   $pc{'expTotal'} = $pc{'history0Exp'};
+
+  $pc{'money'}   = '自動';
+  $pc{'deposit'} = '自動';
   
   if($::in{'stt'}){
     ($pc{'sttBaseTec'}, $pc{'sttBasePhy'}, $pc{'sttBaseSpi'}, $pc{'sttBaseA'}, $pc{'sttBaseB'}, $pc{'sttBaseC'}, $pc{'sttBaseD'}, $pc{'sttBaseE'}, $pc{'sttBaseF'}) = split(/_/, $::in{'stt'});
@@ -1229,7 +1232,7 @@ print <<"HTML";
           </div>
         </div>
       </div>
-      <details class="box" id="cashbook" @{[$pc{'cashbook'}?'open':'']}>
+      <details class="box" id="cashbook" @{[ $pc{'cashbook'} || $pc{"money"} =~ /^(?:自動|auto)$/i ? 'open' : '' ]}>
         <summary>収支履歴</summary>
         <textarea name="cashbook" oninput="calcCash();" placeholder="例）冒険者セット  ::-100&#13;&#10;　　剣のかけら売却::+200">$pc{'cashbook'}</textarea>
         <p>

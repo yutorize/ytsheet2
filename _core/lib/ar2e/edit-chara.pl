@@ -80,6 +80,8 @@ elsif($mode eq 'blanksheet' && !$::make_error){
   $pc{'expTotal'} = $pc{'history0Exp'};
   
   $pc{'level'} = 1;
+
+  $pc{'money'} = '自動';
   
   $pc{'rollStrDice'} = $pc{'rollDexDice'} = $pc{'rollAgiDice'} =
   $pc{'rollIntDice'} = $pc{'rollSenDice'} = $pc{'rollMndDice'} = $pc{'rollLukDice'} =
@@ -1120,7 +1122,7 @@ print <<"HTML";
               （<code>n</code>には数値を入れてください）<br>
             </div>
           </div>
-          <details class="box" id="cashbook" @{[$pc{'cashbook'}?'open':'']}>
+          <details class="box" id="cashbook" @{[ $pc{'cashbook'} || $pc{"money"} =~ /^(?:自動|auto)$/i ? 'open' : '' ]}>
             <summary>収支履歴</summary>
             <textarea name="cashbook" oninput="calcCash();" placeholder="例）冒険者セット::-10&#13;&#10;　　HPポーション売却::+15">$pc{'cashbook'}</textarea>
             <p>

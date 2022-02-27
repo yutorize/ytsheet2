@@ -45,5 +45,12 @@
         <TMPL_IF modeIndex><p class="more"><a href="./?type=i&category=all">>>MORE</a></p></TMPL_IF>
       </section>
       </TMPL_LOOP>
+      <TMPL_IF ListGroups><section class="list">
+        <ul class="grouplist">
+        <TMPL_LOOP ListGroups><li>
+          <a href="./?type=i&category=<TMPL_VAR ID>"><TMPL_VAR NAME><small><TMPL_VAR TEXT></small></a>
+        </li></TMPL_LOOP>
+      </ul>
+      </section></TMPL_IF>
     </article>
     <div id="page-top-button"><a href="#"></a></div>
