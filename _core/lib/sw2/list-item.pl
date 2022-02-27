@@ -180,10 +180,21 @@ foreach (@categories){
   ## ページネーション
   my $navbar;
   if($set::pagemax && !$index_mode){
-    foreach(1 .. ceil($count{$name} / $set::pagemax)){
-      if($_ == $page){  $navbar .= '<b>'.$_.'</b> '}
-      else { $navbar .= '<a href="./?type=i&category='.$::in{'category'}.'&'.$q_links.'&page='.$_.'&sort='.$::in{'sort'}.'">'.$_.'</a> ' }
+    my $lastpage = ceil($count{$name} / $set::pagemax);
+    foreach(1 .. $lastpage){
+      if($_ == $page){
+        $navbar .= '<b>'.$_.'</b> ';
+      }
+      elsif(
+        ($_ <= $page + 4 && $_ >= $page - 4) ||
+        $_ == 1 ||
+        $_ == $lastpage
+      ){
+        $navbar .= '<a href="./?type=i&category='.$::in{'category'}.'&'.$q_links.'&page='.$_.'&sort='.$::in{'sort'}.'">'.$_.'</a> '
+      }
+      else { $navbar .= '...' }
     }
+    $navbar =~ s/\.{3,}/... /g;
   }
   $navbar = '<div class="navbar">'.$navbar.'</div>' if $navbar;
 

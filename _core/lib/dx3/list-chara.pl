@@ -257,10 +257,21 @@ foreach (sort {$group_sort{$a} <=> $group_sort{$b}} keys %grouplist){
   ## ページネーション
   my $navbar;
   if($set::pagemax && !$index_mode && $::in{'group'}){
-    foreach(1 .. ceil($count{'PC'}{$_} / $set::pagemax)){
-      if($_ == $page){  $navbar .= '<b>'.$_.'</b> '}
-      else { $navbar .= '<a href="./?group='.$::in{'group'}.'&'.$q_links.'&page='.$_.'&sort='.$::in{'sort'}.'">'.$_.'</a> ' }
+    my $lastpage = ceil($count{'PC'}{$_} / $set::pagemax);
+    foreach(1 .. $lastpage){
+      if($_ == $page){
+        $navbar .= '<b>'.$_.'</b> ';
+      }
+      elsif(
+        ($_ <= $page + 4 && $_ >= $page - 4) ||
+        $_ == 1 ||
+        $_ == $lastpage
+      ){
+        $navbar .= '<a href="./?group='.$::in{'group'}.'&'.$q_links.'&page='.$_.'&sort='.$::in{'sort'}.'">'.$_.'</a> '
+      }
+      else { $navbar .= '...' }
     }
+    $navbar =~ s/\.{3,}/... /g;
   }
   $navbar = '<div class="navbar">'.$navbar.'</div>' if $navbar;
   
