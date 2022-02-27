@@ -4,8 +4,8 @@
         <small>
         <TMPL_IF name>：名前「<TMPL_VAR name>」を含む</TMPL_IF>
         <TMPL_IF player>：ＰＬ名「<TMPL_VAR player>」を含む</TMPL_IF>
-        <TMPL_IF factor>：種別「<TMPL_VAR type>」を含む</TMPL_IF>
-          <TMPL_IF missing>：ネガイ「<TMPL_VAR negai>」を含む</TMPL_IF>
+        <TMPL_IF type>：種別「<TMPL_VAR type>」を含む</TMPL_IF>
+        <TMPL_IF negai>：ネガイ「<TMPL_VAR negai>」を含む</TMPL_IF>
         <TMPL_IF belong>：所属「<TMPL_VAR belong>」を含む</TMPL_IF>
         <TMPL_IF tag>：タグ「<TMPL_VAR tag>」</TMPL_IF>
         <TMPL_IF image>：画像あり</TMPL_IF>
@@ -21,7 +21,6 @@
           種別　：<input type="text" name="type" value="<TMPL_VAR type>"><br>
           ネガイ：<input type="text" name="negai" value="<TMPL_VAR negai>"><br>
           所属　：<input type="text" name="belong" value="<TMPL_VAR belong>"><br>
-          名前　：<input type="text" name="name" value="<TMPL_VAR name>"><br>
           タグ　：<input type="text" name="tag" value="<TMPL_VAR tag>"><br>
           画像　：<input type="checkbox" name="image" value="1" >あり<br>
           <input type="submit" value="検索">
