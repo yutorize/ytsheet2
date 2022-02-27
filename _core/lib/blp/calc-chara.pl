@@ -46,6 +46,13 @@ sub data_calc {
   $pc{'freeHistory'} =~ s/\r\n?|\n/<br>/g;
   $pc{'chatPalette'} =~ s/\r\n?|\n/<br>/g;
   $pc{'scarNote'}    =~ s/\r\n?|\n/<br>/g;
+  
+  #### 保存処理でなければここまで --------------------------------------------------
+  if(!$::mode_save){ return %pc; }
+  
+  #### エスケープ --------------------------------------------------
+  $pc{$_} = pcEscape($pc{$_}) foreach (keys %pc);
+  $pc{'tags'} = pcTagsEscape($pc{'tags'});
 
   ### newline --------------------------------------------------
   my $charactername = ($pc{'aka'} ? "“$pc{'aka'}”" : "").$pc{'characterName'};

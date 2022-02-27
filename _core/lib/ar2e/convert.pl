@@ -441,11 +441,11 @@ sub convertHokanjoToYtsheet {
 
   ## プロフィール追加
   my $profile;
-  $profile .= ":身長|$in{'pc_height'}&lt;br&gt;";
-  $profile .= ":体重|$in{'pc_weight'}&lt;br&gt;";
-  $profile .= ": 髪 |$in{'color_hair'}&lt;br&gt;";
-  $profile .= ": 瞳 |$in{'color_eye'}&lt;br&gt;";
-  $profile .= ": 肌 |$in{'color_skin'}&lt;br&gt;";
+  $profile .= ":身長|$in{'pc_height'}\n";
+  $profile .= ":体重|$in{'pc_weight'}\n";
+  $profile .= ": 髪 |$in{'color_hair'}\n";
+  $profile .= ": 瞳 |$in{'color_eye'}\n";
+  $profile .= ": 肌 |$in{'color_skin'}\n";
   
   $pc{'freeNote'} = $profile.$in{'pc_making_memo'};
   $pc{'freeNoteView'} = (tag_unescape tag_unescape_lines $profile).$in{'pc_making_memo'};

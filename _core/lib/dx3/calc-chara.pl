@@ -207,6 +207,14 @@ sub data_calc {
   $pc{"armor${_}Note"}   =~ s/\r\n?|\n/<br>/g foreach (1 .. $pc{'armorNum'});
   $pc{"vehicle${_}Note"} =~ s/\r\n?|\n/<br>/g foreach (1 .. $pc{'vehicleNum'});
   $pc{"item${_}Note"}    =~ s/\r\n?|\n/<br>/g foreach (1 .. $pc{'itemNum'});
+  
+  #### 保存処理でなければここまで --------------------------------------------------
+  if(!$::mode_save){ return %pc; }
+  
+  #### エスケープ --------------------------------------------------
+  $pc{$_} = pcEscape($pc{$_}) foreach (keys %pc);
+  $pc{'tags'} = pcTagsEscape($pc{'tags'});
+  $_ = pcEscape($_) foreach (@dloises);
 
   ### newline --------------------------------------------------
   my $charactername = ($pc{'aka'} ? "“$pc{'aka'}”" : "").$pc{'characterName'};

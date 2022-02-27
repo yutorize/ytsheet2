@@ -6,6 +6,8 @@ use open ":utf8";
 
 our $LOGIN_ID = check;
 
+our $mode_save = 1;
+
 our $mode = $::in{'mode'};
 our $pass = $::in{'pass'};
 our $new_id;
@@ -103,22 +105,6 @@ else                       { require $set::lib_calc_char; $data_dir = $set::char
 
 ## データ計算
 %pc = data_calc(\%pc);
-
-### エスケープ --------------------------------------------------
-foreach (keys %pc) {
-  $pc{$_} =~ s/&/&amp;/g;
-  $pc{$_} =~ s/"/&quot;/g;
-  $pc{$_} =~ s/</&lt;/g;
-  $pc{$_} =~ s/>/&gt;/g;
-  $pc{$_} =~ s/\r//g;
-  $pc{$_} =~ s/\n//g;
-}
-
-## タグ：全角スペース・英数を半角に変換 --------------------------------------------------
-$pc{'tags'} =~ tr/　/ /;
-$pc{'tags'} =~ tr/０-９Ａ-Ｚａ-ｚ/0-9A-Za-z/;
-$pc{'tags'} =~ tr/＋－＊／．，＿/\+\-\*\/\.,_/;
-$pc{'tags'} =~ tr/ / /s;
 
 ### 画像アップロード --------------------------------------------------
 my $oldext;

@@ -289,6 +289,25 @@ sub s_eval {
   return eval($i);
 }
 
+### エスケープ --------------------------------------------------
+sub pcEscape {
+  my $text = shift;
+  $text =~ s/&/&amp;/g;
+  $text =~ s/"/&quot;/g;
+  $text =~ s/</&lt;/g;
+  $text =~ s/>/&gt;/g;
+  $text =~ s/\r//g;
+  $text =~ s/\n//g;
+  return $text;
+}
+sub pcTagsEscape {
+  my $text = shift;
+  $text =~ s/\s/ /g; #空白統一
+  $text =~ tr/ / /s; #空白詰める
+  $text =~ tr/０-９Ａ-Ｚａ-ｚ/0-9A-Za-z/;
+  $text =~ tr/＋－＊／．，＿/\+\-\*\/\.,_/;
+  return $text;
+}
 
 ### タグ変換 --------------------------------------------------
 sub tag_link_url {

@@ -266,6 +266,13 @@ sub data_calc {
   foreach my $i (1 .. $pc{'geisesNum'}){
     $pc{"geis${i}Note"} =~ s/\r\n?|\n/<br>/g;
   }
+  
+  #### 保存処理でなければここまで --------------------------------------------------
+  if(!$::mode_save){ return %pc; }
+
+  #### エスケープ --------------------------------------------------
+  $pc{$_} = pcEscape($pc{$_}) foreach (keys %pc);
+  $pc{'tags'} = pcTagsEscape($pc{'tags'});
 
   ### newline --------------------------------------------------
   my $charactername = ($pc{'aka'} ? "“$pc{'aka'}”" : "").$pc{'characterName'};
