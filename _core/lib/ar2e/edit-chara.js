@@ -547,16 +547,16 @@ function calcSkills(){
     bg.toggle('another', type === 'another');
     
     let markFlag = 0;
-    if     (name.match(/インテンション/)    ){ autoCalcSkill['インテンション']     = lv; markFlag = 1; }
-    else if(name.match(/バイタリティ/)      ){ autoCalcSkill['バイタリティ']       = lv; markFlag = 1; }
-    else if(name.match(/エンラージリミット/)){ autoCalcSkill['エンラージリミット'] = lv; markFlag = 1; }
-    else if(name.match(/アストラルボディ/)  ){ autoCalcSkill['アストラルボディ']   = lv ? 'Mnd' : ''; markFlag = 1; }
-    else if(name.match(/ファランクススタイル[:：]器用/)){ autoCalcSkill['ファランクススタイル'] = lv ? 'Dex' : ''; markFlag = 1; }
-    else if(name.match(/ファランクススタイル[:：]敏捷/)){ autoCalcSkill['ファランクススタイル'] = lv ? 'Agi' : ''; markFlag = 1; }
-    else if(name.match(/ファランクススタイル[:：]知力/)){ autoCalcSkill['ファランクススタイル'] = lv ? 'Int' : ''; markFlag = 1; }
-    else if(name.match(/ファランクススタイル[:：]感知/)){ autoCalcSkill['ファランクススタイル'] = lv ? 'Sen' : ''; markFlag = 1; }
-    else if(name.match(/ファランクススタイル[:：]精神/)){ autoCalcSkill['ファランクススタイル'] = lv ? 'Mnd' : ''; markFlag = 1; }
-    else if(name.match(/ファランクススタイル[:：]幸運/)){ autoCalcSkill['ファランクススタイル'] = lv ? 'Luk' : ''; markFlag = 1; }
+    if     (name.match(/(^|[\/／])インテンション/)    ){ autoCalcSkill['インテンション']     = lv; markFlag = 1; }
+    else if(name.match(/(^|[\/／])バイタリティ/)      ){ autoCalcSkill['バイタリティ']       = lv; markFlag = 1; }
+    else if(name.match(/(^|[\/／])エンラージリミット/)){ autoCalcSkill['エンラージリミット'] = lv; markFlag = 1; }
+    else if(name.match(/(^|[\/／])アストラルボディ/)  ){ autoCalcSkill['アストラルボディ']   = lv ? 'Mnd' : ''; markFlag = 1; }
+    else if(name.match(/(^|[\/／])ファランクススタイル[:：]器用/)){ autoCalcSkill['ファランクススタイル'] = lv ? 'Dex' : ''; markFlag = 1; }
+    else if(name.match(/(^|[\/／])ファランクススタイル[:：]敏捷/)){ autoCalcSkill['ファランクススタイル'] = lv ? 'Agi' : ''; markFlag = 1; }
+    else if(name.match(/(^|[\/／])ファランクススタイル[:：]知力/)){ autoCalcSkill['ファランクススタイル'] = lv ? 'Int' : ''; markFlag = 1; }
+    else if(name.match(/(^|[\/／])ファランクススタイル[:：]感知/)){ autoCalcSkill['ファランクススタイル'] = lv ? 'Sen' : ''; markFlag = 1; }
+    else if(name.match(/(^|[\/／])ファランクススタイル[:：]精神/)){ autoCalcSkill['ファランクススタイル'] = lv ? 'Mnd' : ''; markFlag = 1; }
+    else if(name.match(/(^|[\/／])ファランクススタイル[:：]幸運/)){ autoCalcSkill['ファランクススタイル'] = lv ? 'Luk' : ''; markFlag = 1; }
     form[`skill${num}Name`].parentNode.classList.toggle('calc', markFlag);
   }
   document.getElementById('skills-lv-total').innerHTML = total;

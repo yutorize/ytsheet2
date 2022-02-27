@@ -54,15 +54,15 @@ sub data_calc {
     elsif ($type eq 'another'){ $pc{'skillLvTotal'} += $lv; $pc{'skillLvLimitAdd'} += $lv; }
     else                      { $pc{'skillLvTotal'} += $lv; }
 
-    if   ($name =~ /バイタリティ/  ){ $pc{'hpAuto'} = $pc{'level'} }
-    elsif($name =~ /インテンション/){ $pc{'mpAuto'} = $pc{'level'} }
-    elsif($name =~ /エンラージリミット/){ $skill{'エンラージリミット'} = 1 }
-    elsif($name =~ /ファランクススタイル[:：]器用/){ $skill{'ファランクススタイル'} = 'Dex' }
-    elsif($name =~ /ファランクススタイル[:：]敏捷/){ $skill{'ファランクススタイル'} = 'Agi' }
-    elsif($name =~ /ファランクススタイル[:：]知力/){ $skill{'ファランクススタイル'} = 'Int' }
-    elsif($name =~ /ファランクススタイル[:：]感知/){ $skill{'ファランクススタイル'} = 'Sen' }
-    elsif($name =~ /ファランクススタイル[:：]精神/){ $skill{'ファランクススタイル'} = 'Mnd' }
-    elsif($name =~ /ファランクススタイル[:：]幸運/){ $skill{'ファランクススタイル'} = 'Luk' }
+    if   ($name =~ /(?:^|[\/／])バイタリティ/  ){ $pc{'hpAuto'} = $pc{'level'} }
+    elsif($name =~ /(?:^|[\/／])インテンション/){ $pc{'mpAuto'} = $pc{'level'} }
+    elsif($name =~ /(?:^|[\/／])エンラージリミット/){ $skill{'エンラージリミット'} = 1 }
+    elsif($name =~ /(?:^|[\/／])ファランクススタイル[:：]器用/){ $skill{'ファランクススタイル'} = 'Dex' }
+    elsif($name =~ /(?:^|[\/／])ファランクススタイル[:：]敏捷/){ $skill{'ファランクススタイル'} = 'Agi' }
+    elsif($name =~ /(?:^|[\/／])ファランクススタイル[:：]知力/){ $skill{'ファランクススタイル'} = 'Int' }
+    elsif($name =~ /(?:^|[\/／])ファランクススタイル[:：]感知/){ $skill{'ファランクススタイル'} = 'Sen' }
+    elsif($name =~ /(?:^|[\/／])ファランクススタイル[:：]精神/){ $skill{'ファランクススタイル'} = 'Mnd' }
+    elsif($name =~ /(?:^|[\/／])ファランクススタイル[:：]幸運/){ $skill{'ファランクススタイル'} = 'Luk' }
   }
   $pc{'skillLvLimitAdd'} = !$pc{'skillLvLimitAdd'} ? '' : $pc{'skillLvLimitAdd'} > 0 ? "+$pc{'skillLvLimitAdd'}" : $pc{'skillLvLimitAdd'};
   ## 成長点消費
