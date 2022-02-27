@@ -81,7 +81,7 @@ body {
 
 /* // List-Simple/Monster
 ---------------------------------------------------------------------------------------------------- */
-.list ul li a::before {
+.list ul li a[data-lv]::before {
   content: 'Lv'attr(data-lv);
 }
 

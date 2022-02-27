@@ -51,10 +51,22 @@ if($mode eq 'mylist'){
 }
 
 ## リスト取得
-open (my $FH, "<", $set::monslist);
-my @list = <$FH>;
-close($FH);
-
+my @list;
+if($set::simpleindex && $index_mode){ #グループ見出しのみ
+  my @grouplist;
+  foreach (sort { $a->[1] cmp $b->[1] } @data::taxa){
+    push(@grouplist, {
+      "ID" => @$_[0],
+      "NAME" => @$_[0],
+    });
+  }
+  $INDEX->param("ListGroups" => \@grouplist);
+}
+else { #通常
+  open (my $FH, "<", $set::monslist);
+  @list = <$FH>;
+  close($FH);
+}
 ### フィルタ処理 --------------------------------------------------
 ## マイリスト
 if($mode eq 'mylist'){

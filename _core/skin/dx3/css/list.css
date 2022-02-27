@@ -53,5 +53,5 @@ body {
 /* // List-Monster/Simple
 ---------------------------------------------------------------------------------------------------- */
 .list ul li a::before {
-  content: 'Lv'attr(data-lv);
+  content: attr(data-lv);
 }

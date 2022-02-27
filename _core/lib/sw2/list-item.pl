@@ -64,10 +64,20 @@ if($mode eq 'mylist'){
 }
 
 ## リスト取得
-open (my $FH, "<", $set::itemlist);
-my @list = sort { (split(/<>/,$b))[3] <=> (split(/<>/,$a))[3] } <$FH>;
-close($FH);
-
+my @list;
+#if($set::simpleindex && $index_mode){ #グループ見出しのみ
+#  my @grouplist;
+#    push(@grouplist, {
+#      "ID" => 'all',
+#      "NAME" => 'すべて',
+#    });
+#  $INDEX->param("ListGroups" => \@grouplist);
+#}
+#else { #通常
+  open (my $FH, "<", $set::itemlist);
+  @list = <$FH>;
+  close($FH);
+#}
 ### フィルタ処理 --------------------------------------------------
 ## マイリスト
 if($mode eq 'mylist'){

@@ -336,3 +336,15 @@ form#form-search p input[type="submit"] {
 .list ul li a:hover {
   background: rgba(180,200,255,0.1);
 }
+
+.list ul.grouplist a {
+  text-align: left;
+  font-size: 125%;
+}
+.list ul.grouplist a small {
+  position: static;
+  font-size: 75%;
+}
+.list ul.grouplist a small::before {
+  content:""
+}
