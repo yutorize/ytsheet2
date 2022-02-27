@@ -6,7 +6,7 @@
 ---------------------------------------------------------------------------------------------------- */
 body {
   background-image: url(../../_common/img/back-pattern.png), url(../img/back-wheel.png);
-  background-blend-mode: normal, hard-light;
+  background-blend-mode: normal, normal;
 }
 @media screen and (max-width:735px){
   body {
