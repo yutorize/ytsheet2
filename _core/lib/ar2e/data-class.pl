@@ -514,6 +514,51 @@ our %class = (
       'HpGrow' => 7, 'MpGrow' => 8,
     },
   },
+
+  'ミリタント' => {
+    'sort' => 'a01',
+    'type' => 'legacy',
+    'limited' => 'ウォーリア',
+    'stt' => {
+      'Str' => 1, 'Dex' => 1, 'Agi' => 1,
+      'Int' => 0, 'Sen' => 0, 'Mnd' => 0,
+      'Luk' => 0,
+      'Hp' => 13, 'Mp' => 10,
+    },
+  },
+  'コントラクター' => {
+    'sort' => 'a02',
+    'type' => 'legacy',
+    'limited' => 'アコライト',
+    'stt' => {
+      'Str' => 0, 'Dex' => 1, 'Agi' => 0,
+      'Int' => 1, 'Sen' => 0, 'Mnd' => 1,
+      'Luk' => 0,
+      'Hp' => 11, 'Mp' => 12,
+    },
+  },
+  'ウォーロック' => {
+    'sort' => 'a03',
+    'type' => 'legacy',
+    'limited' => 'メイジ',
+    'stt' => {
+      'Str' => 0, 'Dex' => 0, 'Agi' => 0,
+      'Int' => 1, 'Sen' => 1, 'Mnd' => 1,
+      'Luk' => 0,
+      'Hp' => 10, 'Mp' => 13,
+    },
+  },
+  'フォーチュネイト' => {
+    'sort' => 'a04',
+    'type' => 'legacy',
+    'limited' => 'シーフ',
+    'stt' => {
+      'Str' => 0, 'Dex' => 1, 'Agi' => 1,
+      'Int' => 0, 'Sen' => 1, 'Mnd' => 0,
+      'Luk' => 0,
+      'Hp' => 12, 'Mp' => 11,
+    },
+  },
 );
 
 

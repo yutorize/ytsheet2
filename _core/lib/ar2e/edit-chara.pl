@@ -13,12 +13,13 @@ require $set::lib_palette_sub;
 ### 各種データライブラリ読み込み --------------------------------------------------
 require $set::data_races;
 require $set::data_class;
-my @main_class; my @adv_class; my @fate_class;
+my @main_class; my @adv_class; my @fate_class; my @legacy_class;
 my @support_class; my @area_names; my %area_class;
 foreach (sort{$data::class{$a}{'sort'} cmp $data::class{$b}{'sort'}} keys %data::class){
   if($data::class{$_}{'type'} eq 'main'){ push(@main_class, $_); push(@support_class, $_); }
-  elsif($data::class{$_}{'type'} eq 'adv' ){ push(@adv_class , $_); }
-  elsif($data::class{$_}{'type'} eq 'fate'){ push(@fate_class, $_); }
+  elsif($data::class{$_}{'type'} eq 'adv'   ){ push(@adv_class , $_); }
+  elsif($data::class{$_}{'type'} eq 'fate'  ){ push(@fate_class, $_); }
+  elsif($data::class{$_}{'type'} eq 'legacy'){ push(@legacy_class, $_); }
   else {
     if($data::class{$_}{'area'}){
       push(@area_names, $data::class{$_}{'area'}) if !$area_class{$data::class{$_}{'area'}};
@@ -38,6 +39,7 @@ foreach my $area (@area_names){
   push(@support_class, 'label='.$area, @{$area_class{$area}});
 }
 unshift(@support_class, 'label=基本クラス');
+push(@support_class, 'label=レガシークラス', @legacy_class);
 push(@support_class, 'label=その他', 'free|<その他（自由記入）>');
 
 ### データ読み込み ###################################################################################

@@ -273,11 +273,12 @@ function checkClass(){
     form[`mpSupport`].readOnly = true;
   }
 
+  // サポートクラス欄から条件に合わない選択肢を削除
   // レベルアップ履歴のクラスチェンジ欄から条件に合わない選択肢を削除
-  document.querySelectorAll(`#levelup select[name$="Class"] option`).forEach(opt => {
+  document.querySelectorAll(`#levelup select[name$="Class"] option, select[name="classSupportLv1"] option`).forEach(opt => {
     const name = opt.value;
-    if(classes[name] && classes[name]['base']){
-      opt.style.display = (classes[name]['base'] === classMainLv1 ? '' : 'none');
+    if(classes[name] && (classes[name]['base'] || classes[name]['limited'])){
+      opt.style.display = (classes[name]['base'] === classMainLv1 || classes[name]['limited'] === classMainLv1 ? '' : 'none');
     }
   });
   // スキルの種別選択肢のクラス部分を書き換え
@@ -309,7 +310,7 @@ function checkClass(){
     select.value = selected;
   }
   //ライフパスの見出し
-  document.querySelector(`#lifepath-motive th`).innerHTML = (classes[classMain]['type'] === 'fate') ? '運命' : '目的';
+  document.querySelector(`#lifepath-motive th`).innerHTML = (classes[classMain] && classes[classMain]['type'] === 'fate') ? '運命' : '目的';
 }
 // 成長チェック ----------------------------------------
 function checkGrow(num) {
