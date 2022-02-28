@@ -106,12 +106,12 @@ $INDEX->param(category => $category_query);
 
 ## タグ検索
 my $tag_query = decode('utf8', $::in{'tag'});
-if($tag_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){12}[^<]*? $tag_query / } @list; }
+if($tag_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){12}[^<]*? \Q$tag_query\E / } @list; }
 $INDEX->param(tag => $tag_query);
 
 ## 名前検索
 my $name_query = decode('utf8', $::in{'name'});
-if($name_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){4}[^<]*?$name_query/i } @list; }
+if($name_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){4}[^<]*?\Q$name_query\E/i } @list; }
 $INDEX->param(name => $name_query);
 
 ### ソート --------------------------------------------------

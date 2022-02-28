@@ -124,7 +124,7 @@ $INDEX->param(group => $group_name{$group_query});
 
 ## タグ検索
 my $tag_query = decode('utf8', $::in{'tag'});
-if($tag_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){17}[^<]*? $tag_query / } @list; }
+if($tag_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){17}[^<]*? \Q$tag_query\E / } @list; }
 $INDEX->param(tag => $tag_query);
 
 ## 名前検索

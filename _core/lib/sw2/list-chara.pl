@@ -130,29 +130,29 @@ $rank_sort{''} = -1;
 ## グループ検索
 my $group_query = $::in{'group'};
 if($group_query && $::in{'group'} ne 'all') {
-  if($group_query eq $set::group_default){ @list = grep { $_ =~ /^(?:[^<]*?<>){6}($group_query)?</ } @list; }
-  else { @list = grep { $_ =~ /^(?:[^<]*?<>){6}$group_query</ } @list; }
+  if($group_query eq $set::group_default){ @list = grep { $_ =~ /^(?:[^<]*?<>){6}(\Q$group_query\E)?</ } @list; }
+  else { @list = grep { $_ =~ /^(?:[^<]*?<>){6}\Q$group_query\E</ } @list; }
 }
 $INDEX->param(group => $group_name{$group_query});
 
 ## タグ検索
 my $tag_query = decode('utf8', $::in{'tag'});
-if($tag_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){16}[^<]*? $tag_query / } @list; }
+if($tag_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){16}[^<]*? \Q$tag_query\E / } @list; }
 $INDEX->param(tag => $tag_query);
 
 ## 名前検索
 my $name_query = decode('utf8', $::in{'name'});
-if($name_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){4}[^<]*?$name_query/i } @list; }
+if($name_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){4}[^<]*?\Q$name_query\E/i } @list; }
 $INDEX->param(name => $name_query);
 
 ## PL名検索
 my $pl_query = decode('utf8', $::in{'player'});
-if($pl_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){5}[^<]*?$pl_query/i } @list; }
+if($pl_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){5}[^<]*?\Q$pl_query\E/i } @list; }
 $INDEX->param(player => $pl_query);
 
 ## 種族検索
 my $race_query = decode('utf8', $::in{'race'});
-if($race_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){4}$race_query/ } @list; }
+if($race_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){9}\Q$race_query\E/ } @list; }
 $INDEX->param(race => $race_query);
 
 ## 経験点検索
@@ -187,7 +187,7 @@ $INDEX->param(class => "@class_query");
 
 ## 信仰検索
 my $faith_query = decode('utf8', $::in{'faith'});
-if($faith_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){12}[^<]*?$faith_query/ } @list; }
+if($faith_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){12}[^<]*?\Q$faith_query\E/ } @list; }
 $INDEX->param(faith => $faith_query);
 
 ## 画像フィルタ
