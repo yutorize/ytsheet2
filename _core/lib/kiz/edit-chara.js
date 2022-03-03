@@ -23,19 +23,19 @@ function changeRegu(){
 }
 
 // 種別変更 ----------------------------------------
-let type = '';
+let pcClass = '';
 function changeType(){
-  type = form.type.value;
+  pcClass = form.class.value;
   checkType();
 }
 function checkType(){
-  if     (type === 'ハウンド') {
-    document.body.classList.add('type-hound');
-    document.body.classList.remove('type-owner');
+  if     (pcClass === 'ハウンド') {
+    document.body.classList.add('class-hound');
+    document.body.classList.remove('class-owner');
   }
-  else if(type === 'オーナー'){
-    document.body.classList.add('type-owner');
-    document.body.classList.remove('type-hound');
+  else if(pcClass === 'オーナー'){
+    document.body.classList.add('class-owner');
+    document.body.classList.remove('class-hound');
   }
   calcStt();
 }
@@ -92,9 +92,9 @@ function autoInputPartner(num){
   form[`partner${num}Url`].classList.remove('error');
   let url = form[`partner${num}Url`].value;
   let from = 0;
-  if     (type === 'オーナー'){ from = 1; }
-  else if(type === 'ハウンド' && num === 1){ from = form.partnerOrder.value; }
-  else if(type === 'ハウンド' && num === 2){ from = 2; }
+  if     (pcClass === 'オーナー'){ from = 1; }
+  else if(pcClass === 'ハウンド' && num === 1){ from = form.partnerOrder.value; }
+  else if(pcClass === 'ハウンド' && num === 2){ from = 2; }
   if(on) {
     form[`partner${num}Name`  ].value = '';
     form[`partner${num}Age`   ].value = '';

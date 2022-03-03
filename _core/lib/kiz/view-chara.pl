@@ -47,7 +47,7 @@ if($pc{'forbidden'} && !$pc{'yourAuthor'}){
     $pc{'freeHistory'} = '';
   }
   
-  $pc{'type'}  = noiseText(4);
+  $pc{'class'}  = noiseText(4);
   $pc{'negaiOutside'} = noiseText(2);
   $pc{'negaiInside'}  = noiseText(2);
   $pc{'endurance'} = noiseText(1,2);
@@ -99,7 +99,7 @@ if(!$::in{'backup'}){
       $pc{'p1_'.$_} = $pr{$_} foreach keys %pr;
       $pc{'partner1Name'}     = $pr{'characterName'};
       $pc{'partner1NameRuby'} = $pr{'characterNameRuby'};
-      $pc{'partner1Type'}    = $pr{'type'};
+      $pc{'partner1Class'}    = $pr{'class'};
       $pc{'partner1Age'}     = $pr{'age'};
       $pc{'partner1Gender'}  = $pr{'gender'};
       $pc{'partner1NegaiOutside'} = $pr{'negaiOutside'};
@@ -134,12 +134,12 @@ if(!$::in{'backup'}){
       $pc{'p2_'.$_} = $pr{$_} foreach keys %pr;
       $pc{'partner2Name'}     = $pr{'characterName'};
       $pc{'partner2NameRuby'} = $pr{'characterNameRuby'};
-      $pc{'partner2Type'}    = $pr{'type'};
+      $pc{'partner2Class'}    = $pr{'class'};
       $pc{'partner2Age'}     = $pr{'age'};
       $pc{'partner2Gender'}  = $pr{'gender'};
       $pc{'partner2NegaiOutside'} = $pr{'negaiOutside'};
       $pc{'partner2NegaiInside'}  = $pr{'negaiInside'};
-      my $num = ($pc{'type'} eq 'オーナー') ? 1 : ($pc{'type'} eq 'ハウンド') ? 2 : 0;
+      my $num = ($pc{'class'} eq 'オーナー') ? 1 : ($pc{'class'} eq 'ハウンド') ? 2 : 0;
       $pc{'fromPartner2MarkerPosition'} = $pr{'toPartner'.$num.'MarkerPosition'};
       $pc{'fromPartner2MarkerColor'}    = $pr{'toPartner'.$num.'MarkerColor'};
       $pc{'fromPartner2Emotion1'}     = $pr{'toPartner'.$num.'Emotion1'};
@@ -227,14 +227,14 @@ foreach ('','p1_','p2_'){
 }
 
 ### 種別 --------------------------------------------------
-if   ($pc{'type'} eq 'オーナー'){
-  $SHEET->param(typeO  => 1);
+if   ($pc{'class'} eq 'オーナー'){
+  $SHEET->param(classO  => 1);
   $SHEET->param(head_p1 => 'パートナー'.($pc{'partner2On'}?'１':''));
   $SHEET->param(head_p2 => 'パートナー２');
   $SHEET->param(class_p2 => 'marker');
 }
-elsif($pc{'type'} eq 'ハウンド'){
-  $SHEET->param(typeH  => 1);
+elsif($pc{'class'} eq 'ハウンド'){
+  $SHEET->param(classH  => 1);
   $SHEET->param(head_p1 => 'パートナー');
   $SHEET->param(head_p2 => 'アナザー');
   $SHEET->param(class_p2 => 'another');
@@ -394,7 +394,7 @@ foreach ('','p1_','p2_'){
 ### OGP --------------------------------------------------
 $SHEET->param(ogUrl => url().($::in{'url'} ? "?url=$::in{'url'}" : "?id=$::in{'id'}"));
 if($pc{'image'}) { $SHEET->param(ogImg => url()."/".$imgsrc); }
-$SHEET->param(ogDescript => tag_delete "種別:$pc{'type'}　ネガイ:$pc{'negaiOutside'}／$pc{'negaiInside'}　性別:$pc{'gender'}　年齢:$pc{'age'}　所属:$pc{'belong'}");
+$SHEET->param(ogDescript => tag_delete "種別:$pc{'class'}　ネガイ:$pc{'negaiOutside'}／$pc{'negaiInside'}　性別:$pc{'gender'}　年齢:$pc{'age'}　所属:$pc{'belong'}");
 
 ### バージョン等 --------------------------------------------------
 $SHEET->param("ver" => $::ver);

@@ -34,7 +34,7 @@ foreach (keys %::in) {
   $::in{$_} =~ s/</&lt;/g;
   $::in{$_} =~ s/>/&gt;/g;
 }
-if(!($mode eq 'mylist' || $::in{'tag'} || $::in{'group'} || $::in{'name'} || $::in{'player'} || $::in{'type'} || $::in{'negai'} || $::in{'belong'} || $::in{'grow'} || $::in{'image'})){
+if(!($mode eq 'mylist' || $::in{'tag'} || $::in{'group'} || $::in{'name'} || $::in{'player'} || $::in{'class'} || $::in{'negai'} || $::in{'belong'} || $::in{'grow'} || $::in{'image'})){
   $index_mode = 1;
   $INDEX->param(modeIndex => 1);
   $INDEX->param(simpleMode => 1) if $set::simplelist;
@@ -46,7 +46,7 @@ foreach(
   #'group',
   'name',
   'player',
-  'type',
+  'class',
   'negai',
   'belong',
   'grow',
@@ -137,9 +137,9 @@ if($pl_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){5}[^<]*?\Q$pl_query\E/i } @l
 $INDEX->param(player => $pl_query);
 
 ## 種別検索
-my $type_query = decode('utf8', $::in{'type'});
-if($type_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){10}[^<]*?\Q$type_query\E/i } @list; }
-$INDEX->param(type => $type_query);
+my $class_query = decode('utf8', $::in{'class'});
+if($class_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){10}[^<]*?\Q$class_query\E/i } @list; }
+$INDEX->param(class => $class_query);
 
 ## ネガイ検索
 my @negai_query = split('\s', decode('utf8', $::in{'negai'}));

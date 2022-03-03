@@ -68,7 +68,7 @@ sub data_calc {
                "$pc{'birthTime'}<>$::now<>$charactername<>$pc{'playerName'}<>$pc{'group'}<>".
                "$pc{'image'}<> $pc{'tags'} <>$pc{'hide'}<>".
 
-               "$pc{'type'}<>$pc{'negaiOutside'}<>$pc{'negaiInside'}<>".
+               "$pc{'class'}<>$pc{'negaiOutside'}<>$pc{'negaiInside'}<>".
                "$pc{'gender'}<>$pc{'age'}<>".
                "$pc{'belong'}<>$pc{'partner2On'}<>".
                "$kizuna_count<>$hibiware_count<>";

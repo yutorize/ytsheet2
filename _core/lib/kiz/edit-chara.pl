@@ -267,7 +267,7 @@ print <<"HTML";
             <tbody>
               <tr>
                 <th>種別</th>
-                <td><select name="type" oninput="changeType();">@{[option "type",'ハウンド','オーナー']}</select></td>
+                <td><select name="class" oninput="changeType();">@{[option "class",'ハウンド','オーナー']}</select></td>
                 <td>@{[ input 'enduranceType','number','calcStt' ]}</td>
                 <td>@{[ input 'operationType','number','calcStt' ]}</td>
               </tr>
