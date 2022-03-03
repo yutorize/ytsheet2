@@ -50,7 +50,7 @@ elsif($mode eq 'option'){
       my @data= split(/<>/, $line);
       print $FH "$data[0]<>$data[1]<>".decode('utf8', $::in{'name'})."<>".$::in{'mail'}."<>\n";
     }else{
-      print $FH $_;
+      print $FH $line;
     }
   }
   truncate($FH, tell($FH));
