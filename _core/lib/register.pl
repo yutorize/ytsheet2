@@ -19,8 +19,8 @@ if($mode eq 'register'){
   }
 
   open (my $FH, '<', $set::userfile);
-  while (<$FH>){ 
-    if ($_ =~ /^$::in{'id'}<>/){ error('そのIDは使用されています'); }
+  while (my $line = <$FH>){
+    if(index($line, "$::in{'id'}<") == 0){ error('そのIDは使用されています'); }
   }
   close ($FH);
 
@@ -45,9 +45,9 @@ elsif($mode eq 'option'){
   flock($FH, 2);
   my @list = <$FH>;
   seek($FH, 0, 0);
-  foreach (@list){
-    my @data= split /<>/;
-    if ($data[0] eq $LOGIN_ID){
+  foreach my $line (@list){
+    if(index($line, "$LOGIN_ID<") == 0){
+      my @data= split(/<>/, $line);
       print $FH "$data[0]<>$data[1]<>".decode('utf8', $::in{'name'})."<>".$::in{'mail'}."<>\n";
     }else{
       print $FH $_;

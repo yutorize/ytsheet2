@@ -33,7 +33,11 @@ sub pcDataGet {
     my $datadir = ($type eq 'm') ? $set::mons_dir : ($type eq 'i') ? $set::item_dir : $set::char_dir;
     my $datafile = $::in{'backup'} ? "${datadir}${file}/backup/$::in{'backup'}.cgi" : "${datadir}${file}/data.cgi";
     open my $IN, '<', $datafile or viewNotFound($datadir);
-    $_ =~ s/^(.+?)<>(.*)\n$/$pc{$1} = $2;/egi while <$IN>;
+    while (<$IN>){
+      chomp;
+      my ($key, $value) = split(/<>/, $_, 2);
+      $pc{$key} = $value;
+    }
     close($IN);
     if($::in{'backup'}){
       ($pc{'protect'}, $pc{'forbidden'}) = protectTypeGet("${datadir}${file}/data.cgi");
@@ -86,7 +90,7 @@ sub getBackupList {
   open(my $FH,"${dir}${file}/buname.cgi");
   foreach(<$FH>){
     chomp;
-    my @data = split('<>', $_);
+    my @data = split('<>', $_, 2);
     $backname{$data[0]} = $data[1];
   }
   close($FH);

@@ -33,7 +33,11 @@ if($id){
     open $IN, '<', "${data_dir}${file}/backup/${backup}.cgi" or "";
   }
 
-  $_ =~ s/^(.+?)<>(.*)\n$/$pc{$1} = $2;/egi while <$IN>;
+  while (<$IN>){
+    chomp;
+    my ($key, $value) = split(/<>/, $_, 2);
+    $pc{$key} = $value;
+  }
   close($IN);
   
   if($pc{'image'}){

@@ -70,8 +70,8 @@ sub overlap_check {
   my $id = shift;
   my $flag;
   open (my $FH, '<', $set::passfile);
-  while (<$FH>){ 
-    if ($_ =~ /^$id<>/){ $flag = 1; }
+  while (my $line = <$FH>){ 
+    if(index($line, "$id<") == 0){ $flag = 1; }
   }
   close ($FH);
   return $flag;
@@ -174,7 +174,6 @@ if($mode eq 'make'){
 ## 更新
 elsif($mode eq 'save'){
   if($pc{'protect'} ne $pc{'protectOld'}
-    || ($imageflag && $pc{'image'})
     || ($set::masterid && $LOGIN_ID eq $set::masterid)
     || ($set::masterkey && $pass eq $set::masterkey)
   ){
@@ -292,7 +291,7 @@ sub passfile_write_save {
   my @list = <$FH>;
   seek($FH, 0, 0);
   foreach (@list){
-    if ($_ =~ /^$id</){
+    if(index($_, "$id<") == 0){
       my @data = split /<>/;
       $file = $data[2];
       my $passwrite = $data[1];
@@ -342,7 +341,7 @@ sub list_save {
   seek($FH, 0, 0);
   print $FH "$newline\n";
   foreach (@list){
-    if ($_ !~ /^$pc{'id'}</){
+    if(index($_, "$pc{'id'}<") != 0){
       print $FH $_;
     }
   }

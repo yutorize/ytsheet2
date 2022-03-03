@@ -12,20 +12,20 @@ use Fcntl;
 sub getfile {
   open (my $FH, '<', $set::passfile) or die;
   while (my $line = <$FH>) {
-    my ($id, $pass, $file, $type) = (split /<>/, $line)[0..3];
-    if(
-      $_[0] eq $id && (
-           (!$pass) # パス不要
-        || (&c_crypt($_[1], $pass)) # パス一致
-        || ($pass eq "[$_[2]]") # アカウント一致
-        || ($set::masterkey && $_[1] eq $set::masterkey) # 管理パス一致
-        || ($set::masterid && $_[2] eq $set::masterid) # 管理アカウント一致
-      )
-    ) {
+    if(index($line, "$_[0]<") == 0){ #まずID照会
       close($FH);
-      my $user;
-      if($pass =~ /^\[(.+?)\]$/){ $user =$1; }
-      return ($id, $pass, $file, $type, $user);
+      my ($id, $pass, $file, $type) = (split /<>/, $line)[0..3];
+      if ( (!$pass) # パス不要
+        || (&c_crypt($_[1], $pass)) # パス一致
+        || ($pass eq "[$_[2]]") # 編集権アカウント一致
+        || ($set::masterkey && $_[1] eq $set::masterkey) # 管理者パス一致
+        || ($set::masterid && $_[2] eq $set::masterid) # 管理者アカウント一致
+      ) {
+        my $user;
+        if($pass =~ /^\[(.+?)\]$/){ $user =$1; }
+        return ($id, $pass, $file, $type, $user);
+      }
+      return 0; #ID一致かつパス不一致
     }
   }
   close($FH);
@@ -35,9 +35,9 @@ sub getfile {
 sub getfile_open {
   open (my $FH, '<', $set::passfile) or die;
   while (my $line  = <$FH>) {
-    if($line =~ /^$_[0]</) {
-      my ($id, $pass, $file, $type) = (split /<>/, $line)[0,1,2,3];
+    if(index($line, "$_[0]<") == 0){
       close($FH);
+      my ($id, $pass, $file, $type) = (split /<>/, $line)[0,1,2,3];
       my $user;
       if($pass =~ /^\[(.+?)\]$/){ $file = '_'.$1.'/'.$file; $user = $1; }
       return ($file,$type,$user);
@@ -52,13 +52,13 @@ sub getfile_open {
 sub getplayername {
   my $in_id = shift;
   open (my $FH, '<', $set::userfile);
-    while (my $line = <$FH>) {
-      if ($line =~ /^$in_id</) {
-        my ($id, $name, $mail) = (split /<>/, $line)[0,2,3];
-        close($FH);
-        return ($name,$mail);
-      }
+  while (my $line = <$FH>) {
+    if(index($line, "$in_id<") == 0){
+      my ($id, $name, $mail) = (split /<>/, $line)[0,2,3];
+      close($FH);
+      return ($name,$mail);
     }
+  }
   close($FH);
   return '';
 }
@@ -170,7 +170,7 @@ sub check {
   return 0 if !$in_id || !$in_key;
   open (my $FH, $set::login_users) or 0;
   while (my $line = <$FH>){
-    if ($line =~ /^$in_id</){
+    if(index($line, "$in_id<") == 0){
       my @data = (split/<>/, $line);
       if ($in_key eq $data[1] && time - $data[2] < 86400*365) {
         close($FH);
@@ -314,8 +314,7 @@ sub pcEscape {
   $text =~ s/"/&quot;/g;
   $text =~ s/</&lt;/g;
   $text =~ s/>/&gt;/g;
-  $text =~ s/\r//g;
-  $text =~ s/\n//g;
+  $text =~ tr/\r\n//d;
   return $text;
 }
 sub pcTagsEscape {

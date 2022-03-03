@@ -28,8 +28,7 @@ if($mode eq 'delete'){
   my @list = <$FH>;
   seek($FH, 0, 0);
   foreach (@list){
-    my($id, undef) = split /<>/;
-    if ($::in{'id'} eq $id){
+    if(index($_, "$::in{'id'}<") == 0){
       $message .= 'リストから削除しました。<br>';
     }else{
       print $FH $_;
@@ -43,8 +42,7 @@ if($mode eq 'delete'){
   my @list = <$FH>;
   seek($FH, 0, 0);
   foreach (@list){
-    my($id, undef) = split /<>/;
-    if ($::in{'id'} eq $id){
+    if(index($_, "$::in{'id'}<") == 0){
       $message .= 'IDを削除しました。<br>';
     } else {
       print $FH $_;
