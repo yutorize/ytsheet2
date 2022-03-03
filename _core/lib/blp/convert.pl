@@ -62,7 +62,26 @@ sub dataPartnerGet {
     
     return convertSoukoToYtsheet(\%in);
   }
-  ## ゆとシートⅡ
+  ## 同じゆとシートⅡ
+  my $self = CGI->new()->url;
+  if($set_url =~ m"^$self\?id=(.+?)(?:$|&)"){
+    my $id = $1;
+    my ($file, $type, $author) = getfile_open($id);
+    my %pc;
+    open my $IN, '<', "${set::char_dir}${file}/data.cgi";
+    while (<$IN>){
+      chomp;
+      my ($key, $value) = split(/<>/, $_, 2);
+      $pc{$key} = $value;
+    }
+    close($IN);
+    if($pc{'image'}){
+      $pc{'imageURL'} = url()."${set::char_dir}${file}/image.$pc{'image'}";
+    }
+    $pc{'convertSource'} = '同じゆとシートⅡ';
+    return %pc;
+  }
+  ## 他のゆとシートⅡ
   {
     my $data = urlDataGet($set_url.'&mode=json') or return;
     if($data !~ /^{/){ return }
