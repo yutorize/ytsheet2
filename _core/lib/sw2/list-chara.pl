@@ -162,6 +162,8 @@ if($exp_min_query) { @list = grep { (split(/<>/))[7] >= $exp_min_query } @list; 
 if($exp_max_query) { @list = grep { (split(/<>/))[7] <= $exp_max_query } @list; }
 $INDEX->param(expMin => $exp_min_query);
 $INDEX->param(expMax => $exp_max_query);
+if   ($exp_min_query eq $exp_max_query){ $INDEX->param(exp => $exp_min_query); }
+elsif($exp_min_query || $exp_max_query){ $INDEX->param(exp => $exp_min_query.'～'.$exp_max_query); }
 
 ## 技能検索
 my @class_name = @data::class_list;
