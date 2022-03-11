@@ -16,10 +16,10 @@
   padding-left: .5em;
 }
 
-body:not(.type-hound) .h-only {
+body:not(.class-hound) .h-only {
   display: none !important;
 }
-body:not(.type-owner) .o-only {
+body:not(.class-owner) .o-only {
   display: none !important;
 }
 
@@ -148,8 +148,8 @@ body:not(.type-owner) .o-only {
   grid-template-columns: 1fr 1fr;
   grid-template-rows: auto auto auto auto;
 }
-.type-hound #partner2area.partner-table > dl.partner-from dd dl,
-.type-hound #partner2area.partner-table > dl.partner-to dd dl {
+.class-hound #partner2area.partner-table > dl.partner-from dd dl,
+.class-hound #partner2area.partner-table > dl.partner-to dd dl {
   grid-template-rows: auto auto;
 }
 

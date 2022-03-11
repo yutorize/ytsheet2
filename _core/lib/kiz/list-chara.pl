@@ -177,7 +177,7 @@ foreach (@list) {
   my (
     $id, undef, undef, $updatetime, $name, $player, $group, #0-6
     $image, $tag, $hide, #7-9
-    $type, $outside, $inside, $gender, $age, #10-14
+    $class, $outside, $inside, $gender, $age, #10-14
     $belong, $bigamy, $kizuna, $hibiware #15-18
   ) = (split /<>/, $_)[0..18];
   
@@ -210,7 +210,7 @@ foreach (@list) {
       "NAME" => $name,
       "PLAYER" => $player,
       "GROUP" => $group,
-      "TYPE" => $type,
+      "CLASS" => $class,
       "HIDE" => $hide,
     });
     push(@{$grouplist{$group}}, @characters);
@@ -238,7 +238,7 @@ foreach (@list) {
       "GROUP" => $group,
       "AGE" => $age,
       "GENDER" => $gender,
-      "TYPE" => $type,
+      "CLASS" => $class,
       "NEGAI" => $outside.'／'.$inside,
       "BELONG" => $belong,
       "KIZUNA" => $kizuna,

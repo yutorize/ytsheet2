@@ -68,7 +68,7 @@ io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2KizunaBulletP
   const result = [];
   
   result.push(`キャラクター名：${json.characterName}
-種別　　　：${json.type || ''}
+種別　　　：${json.class || ''}
 ネガイ(表)：${json.negaiOutside || ''}
 ネガイ(裏)：${json.negaiInside || ''}
 

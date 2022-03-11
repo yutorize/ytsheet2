@@ -36,7 +36,7 @@ io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2KizunaBulletP
   const character = {
       name: json.characterName,
       playerName: json.playerName,
-      memo: `${json.characterNameRuby ? '('+json.characterNameRuby+')\n' :''}PL: ${json.playerName || 'PL情報無し'}\n${json.type || ''} / ${json.negaiOutside || ''} / ${json.negaiInside || ''}\n\n${json.imageURL ? '立ち絵：' + (json.imageCopyright || '権利情報なし') : ''}`,
+      memo: `${json.characterNameRuby ? '('+json.characterNameRuby+')\n' :''}PL: ${json.playerName || 'PL情報無し'}\n${json.class || ''} / ${json.negaiOutside || ''} / ${json.negaiInside || ''}\n\n${json.imageURL ? '立ち絵：' + (json.imageCopyright || '権利情報なし') : ''}`,
       externalUrl: opt_sheetUrl,
       status: [
         {

@@ -30,7 +30,7 @@ io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2KizunaBullet
   const defaultPalette = await io.github.shunshun94.trpg.ytsheet.getChatPalette(opt_url);
   const data_character = {};
 
-  const typeH = json.type === 'ハウンド' ? 1 : 0;
+  const typeH = json.class === 'ハウンド' ? 1 : 0;
 
   data_character.image = `
     <data name="image">

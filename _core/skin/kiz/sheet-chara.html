@@ -224,8 +224,8 @@ window.onload = function() {
         </TMPL_IF>
 
         <div id="classes" class="box-union">
-          <dl class="box" id="type">
-            <dt>種別</dt><dd><TMPL_VAR type></dd>
+          <dl class="box" id="class">
+            <dt>種別</dt><dd><TMPL_VAR class></dd>
           </dl>
           <dl class="box" id="negai">
             <dt>ネガイ</dt>
@@ -268,8 +268,8 @@ window.onload = function() {
             </tr>
             <tr>
               <th>
-                <TMPL_IF typeH>遭遇</TMPL_IF>
-                <TMPL_IF typeO>経緯</TMPL_IF>
+                <TMPL_IF classH>遭遇</TMPL_IF>
+                <TMPL_IF classO>経緯</TMPL_IF>
               </th>
               <td colspan="3" class="left"><TMPL_VAR background></td>
             </tr>
@@ -279,8 +279,8 @@ window.onload = function() {
             </tr>
             <tr>
               <th>
-                <TMPL_IF typeH>ケージ</TMPL_IF>
-                <TMPL_IF typeO>住居</TMPL_IF>
+                <TMPL_IF classH>ケージ</TMPL_IF>
+                <TMPL_IF classO>住居</TMPL_IF>
               </th>
               <td colspan="3" class="left"><TMPL_VAR dwelling></td>
             </tr>
@@ -306,15 +306,15 @@ window.onload = function() {
             </tr>
             <tr>
               <th><span class="thin">
-                <TMPL_IF typeH>リミッターの影響</TMPL_IF>
-                <TMPL_IF typeO>ペアリングの副作用</TMPL_IF>
+                <TMPL_IF classH>リミッターの影響</TMPL_IF>
+                <TMPL_IF classO>ペアリングの副作用</TMPL_IF>
               </span></th>
               <td colspan="3" class="left"><TMPL_VAR sideeffect></td>
             </tr>
             <tr>
               <th>
-                <TMPL_IF typeH>決意</TMPL_IF>
-                <TMPL_IF typeO>使命</TMPL_IF>
+                <TMPL_IF classH>決意</TMPL_IF>
+                <TMPL_IF classO>使命</TMPL_IF>
               </th>
               <td colspan="3" class="left"><TMPL_VAR resolution></td>
             </tr>
@@ -386,7 +386,7 @@ window.onload = function() {
             <dl class="box"><dt>性別</dt><dd><TMPL_VAR partner2Gender></dd></dl>
             <dl class="box"><dt>ネガイ（表）</dt><dd><TMPL_VAR partner2NegaiOutside></dd></dl>
             <dl class="box"><dt>ネガイ（裏）</dt><dd><TMPL_VAR partner2NegaiInside></dd></dl>
-            <TMPL_IF typeO><dl class="box"><dt>リリースの方法</dt><dd><TMPL_VAR partner2Release></dd></dl></TMPL_IF>
+            <TMPL_IF classO><dl class="box"><dt>リリースの方法</dt><dd><TMPL_VAR partner2Release></dd></dl></TMPL_IF>
           </div>
           <div class="box marker">
             <h2>マーカー</h2>
@@ -397,7 +397,7 @@ window.onload = function() {
               <dl class="emotion2"><dt>相手からの感情2</dt><dd><TMPL_VAR fromPartner2Emotion2></dd></dl>
             </div>
           </div>
-          <dl class="box memory"><dt><TMPL_IF typeO>最初の思い出</TMPL_IF><TMPL_IF typeH>協定</TMPL_IF></dt><dd><TMPL_VAR partner2Memory></dd></dl>
+          <dl class="box memory"><dt><TMPL_IF classO>最初の思い出</TMPL_IF><TMPL_IF classH>協定</TMPL_IF></dt><dd><TMPL_VAR partner2Memory></dd></dl>
         </div>
         </TMPL_IF><!-- /パートナー２ -->
       </div>
