@@ -40,6 +40,19 @@ if(!($mode eq 'mylist' || $::in{'tag'} || $::in{'taxa'} || $::in{'name'} || $::i
   $index_mode = 1;
   $INDEX->param(modeIndex => 1);
 }
+if(!$::in{'taxa'} && $mode ne 'mylist'){ $INDEX->param(modeTaxaAll => 1); }
+my @q_links;
+foreach(
+  'mode',
+  'tag',
+  'taxa',
+  'name',
+  'lv-min',
+  'lv-max',
+  ){
+  push( @q_links, $_.'='.uri_escape_utf8(decode('utf8', param($_))) ) if param($_);
+}
+my $q_links = join('&', @q_links);
 
 ### ファイル読み込み --------------------------------------------------
 ## マイリスト取得
@@ -150,6 +163,7 @@ foreach (@list) {
   #表示域以外は弾く
   if (
     ( $index_mode && $count{$taxa} > $set::list_maxline && $set::list_maxline) || #TOPページ
+    ( !$::in{'taxa'} && $mode ne 'mylist' && $count{$taxa} > $set::list_maxline && $set::list_maxline) || #検索結果（分類指定なし／マイリストでもなし）
     (!$index_mode && $set::pagemax && ($count{$taxa} < $pagestart || $count{$taxa} > $pageend)) #それ以外
   ){
     next;
@@ -183,14 +197,37 @@ foreach (@data::taxa){
   next if !$count{$name};
   
   ## ページネーション
-  next if !$count{$name};
+  my $navbar;
+  if($set::pagemax && !$index_mode && $::in{'taxa'}){
+    my $lastpage = ceil($count{$name} / $set::pagemax);
+    foreach(1 .. $lastpage){
+      if($_ == $page){
+        $navbar .= '<b>'.$_.'</b> ';
+      }
+      elsif(
+        ($_ <= $page + 4 && $_ >= $page - 4) ||
+        $_ == 1 ||
+        $_ == $lastpage
+      ){
+        $navbar .= '<a href="./?type=m&group='.$::in{'group'}.'&'.$q_links.'&page='.$_.'&sort='.$::in{'sort'}.'">'.$_.'</a> '
+      }
+      else { $navbar .= '...' }
+    }
+    $navbar =~ s/\.{3,}/... /g;
+  }
+  $navbar = '<div class="navbar">'.$navbar.'</div>' if $navbar;
+
+  ##
   push(@characterlists, {
     "URL" => uri_escape_utf8($name),
     "NAME" => $name,
     "NUM" => $count{$name},
     "Characters" => [@{$grouplist{$name}}],
+    "NAV" => $navbar,
   });
 }
+
+$INDEX->param("qLinks" => $q_links);
 
 $INDEX->param("Lists" => \@characterlists);
 
