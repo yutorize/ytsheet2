@@ -36,7 +36,7 @@ foreach (keys %::in) {
   $::in{$_} =~ s/</&lt;/g;
   $::in{$_} =~ s/>/&gt;/g;
 }
-if(!($mode eq 'mylist' || $::in{'tag'} || $::in{'taxa'} || $::in{'name'})){
+if(!($mode eq 'mylist' || $::in{'tag'} || $::in{'taxa'} || $::in{'name'} || $::in{'lv-max'} || $::in{'lv-min'})){
   $index_mode = 1;
   $INDEX->param(modeIndex => 1);
 }
@@ -88,10 +88,17 @@ elsif (
 ## 分類検索
 my $taxa_query = decode('utf8', $::in{'taxa'});
 if($taxa_query) {
-  @list = grep { $_ =~ /^(?:[^<]*?<>){6}$taxa_query</ } @list;
-  
+  @list = grep { $_ =~ /^(?:[^<]*?<>){6}\Q$taxa_query\E</ } @list;
 }
 $INDEX->param(group => $taxa_query);
+my @taxalist;
+foreach (sort { $a->[1] cmp $b->[1] } @data::taxa){
+  push(@taxalist, {
+    "NAME" => @$_[0],
+    "SELECTED" => $taxa_query eq @$_[0] ? 'selected' : '',
+  });
+}
+$INDEX->param("Taxa" => \@taxalist);
 
 ## タグ検索
 my $tag_query = decode('utf8', $::in{'tag'});
@@ -102,6 +109,16 @@ $INDEX->param(tag => $tag_query);
 my $name_query = decode('utf8', $::in{'name'});
 if($name_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){4}[^<]*?\Q$name_query\E/i } @list; }
 $INDEX->param(name => $name_query);
+
+## レベル検索
+my $lv_min_query = $::in{'lv-min'};
+my $lv_max_query = $::in{'lv-max'};
+if($lv_min_query) { @list = grep { (split(/<>/))[7] >= $lv_min_query } @list; }
+if($lv_max_query) { @list = grep { (split(/<>/))[7] <= $lv_max_query } @list; }
+$INDEX->param(lvMin => $lv_min_query);
+$INDEX->param(lvMax => $lv_max_query);
+if   ($lv_min_query eq $lv_max_query){ $INDEX->param(level => $lv_min_query); }
+elsif($lv_min_query || $lv_max_query){ $INDEX->param(level => $lv_min_query.'～'.$lv_max_query); }
 
 ### ソート --------------------------------------------------
 #if   ($sort eq 'name')  { my @tmp = map { (split /<>/)[4] } @list; @list = @list[sort {$tmp[$a] cmp $tmp[$b]} 0 .. $#tmp]; }

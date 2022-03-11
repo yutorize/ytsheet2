@@ -34,7 +34,7 @@ foreach (keys %::in) {
   $::in{$_} =~ s/</&lt;/g;
   $::in{$_} =~ s/>/&gt;/g;
 }
-if(!($mode eq 'mylist' || $::in{'tag'} || $::in{'group'} || $::in{'name'} || $::in{'player'} || $::in{'exp-min'} || $::in{'exp-max'} || $::in{'syndrome'} || $::in{'works'} || $::in{'dlois'} || $::in{'image'})){
+if(!($mode eq 'mylist' || $::in{'tag'} || $::in{'group'} || $::in{'name'} || $::in{'player'} || $::in{'exp-min'} || $::in{'exp-max'} || $::in{'syndrome'} || $::in{'breed'} || $::in{'works'} || $::in{'dlois'} || $::in{'image'})){
   $index_mode = 1;
   $INDEX->param(modeIndex => 1);
   $INDEX->param(simpleMode => 1) if $set::simplelist;
@@ -49,6 +49,7 @@ foreach(
   'exp-min',
   'exp-max',
   'syndrome',
+  'breed',
   'works',
   'dlois',
   'image',
@@ -149,6 +150,13 @@ $INDEX->param(expMax => $exp_max_query);
 my $works_query = decode('utf8', $::in{'works'});
 if($works_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){12}[^<]*?$works_query/ } @list; }
 $INDEX->param(works => $works_query);
+
+## ブリード検索
+if($::in{'breed'}){
+  if   ($::in{'breed'} == 1){ @list = grep { $_ =~ "^(?:[^<]*?<>){13}[^/]+?//<"             } @list; $INDEX->param(breedSelected1 => 'selected'); $INDEX->param(breedText => 'ピュア'); }
+  elsif($::in{'breed'} == 2){ @list = grep { $_ =~ "^(?:[^<]*?<>){13}[^/]+?/[^/]+?/<"       } @list; $INDEX->param(breedSelected2 => 'selected'); $INDEX->param(breedText => 'クロス'); }
+  elsif($::in{'breed'} == 3){ @list = grep { $_ =~ "^(?:[^<]*?<>){13}[^/]+?/[^/]+?/[^<]+?<" } @list; $INDEX->param(breedSelected3 => 'selected'); $INDEX->param(breedText => 'トライ'); }
+}
 
 ## シンドローム検索
 my @syndrome_query = split('\s', decode('utf8', $::in{'syndrome'}));

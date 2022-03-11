@@ -2,8 +2,10 @@
       <h1>
         アイテム一覧
         <small>
-        <TMPL_IF name>：名前「<TMPL_VAR name>」を含む</TMPL_IF>
+        <TMPL_IF name>：名称「<TMPL_VAR name>」を含む</TMPL_IF>
         <TMPL_IF tag>：タグ「<TMPL_VAR tag>」</TMPL_IF>
+        <TMPL_IF category>：カテゴリ「<TMPL_VAR category>」</TMPL_IF>
+        <TMPL_IF age>：製作時期「<TMPL_VAR age>」</TMPL_IF>
         <TMPL_IF playerName>：<TMPL_VAR playerName>さん</TMPL_IF>
         </small>
       </h1>
@@ -11,8 +13,10 @@
         <h3 onclick="formSwitch()">検索フォーム▼</h3>
         <input type="hidden" name="type" value="i">
         <p id="form-search-area" style="display:none">
-          名前　：<input type="text" name="name" value="<TMPL_VAR name>"><br>
-          タグ　：<input type="text" name="tag" value="<TMPL_VAR tag>"><br>
+          名称　　：<input type="text" name="name" value="<TMPL_VAR name>"><br>
+          タグ　　：<input type="text" name="tag" value="<TMPL_VAR tag>"><br>
+          カテゴリ：<input type="text" name="category" value="<TMPL_VAR category>" placeholder="AND・マイナス検索有効"><br>
+          製作時期：<input type="text" name="age" value="<TMPL_VAR age>"><br>
           <input type="submit" value="検索">
         </p>
       </form>
@@ -24,7 +28,7 @@
         <table>
           <thead>
           <tr>
-            <th class="name"><span>名前</span></th>
+            <th class="name"><span>名称</span></th>
             <th class="author"><a href="./?type=i&<TMPL_VAR qLinks>&sort=author">製作者</a></th>
             <th class="category"><span>カテゴリ</span></th>
             <th class="price"><span>価格</span></th>
