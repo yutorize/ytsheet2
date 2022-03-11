@@ -111,6 +111,10 @@ form#form-search p input {
   margin: 1px;
   vertical-align:middle;
 }
+form#form-search p input::placeholder {
+  font-size: 80%;
+  opacity: 0.8;
+}
 form#form-search p input[type="submit"] {
   display: block;
   margin-left: auto;
