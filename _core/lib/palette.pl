@@ -42,8 +42,6 @@ else {
   $pc{'skills'} =~ s/<br>/\n/gi;
 }
 close($IN);
-$_ =~ s/&lt;/\</gi foreach values %pc;
-$_ =~ s/&gt;/\>/gi foreach values %pc;
 
 $pc{'ver'} =~ s/^([0-9]+)\.([0-9]+)\.([0-9]+)$/$1.$2$3/;
 if($pc{'ver'} < 1.11001){ $pc{'paletteUseBuff'} = 1; }
@@ -61,6 +59,11 @@ my $properties;
 $properties .= $_."\n" foreach( $pc{'chatPalettePropertiesAll'} ? paletteProperties($type) : palettePropertiesUsedOnly($pc{'chatPalette'},$type) );
 
 $properties =~ s/\n+$//g;
+
+$pc{'chatPalette'} =~ s/&lt;/\</gi;
+$pc{'chatPalette'} =~ s/&gt;/\>/gi;
+$properties =~ s/&lt;/\</gi;
+$properties =~ s/&gt;/\>/gi;
 
 ### 出力 #############################################################################################
 print "Content-type: text/plain; charset=UTF-8\n\n";
