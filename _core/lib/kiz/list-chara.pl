@@ -37,7 +37,7 @@ foreach (keys %::in) {
 if(!($mode eq 'mylist' || $::in{'tag'} || $::in{'group'} || $::in{'name'} || $::in{'player'} || $::in{'class'} || $::in{'negai'} || $::in{'belong'} || $::in{'grow'} || $::in{'image'})){
   $index_mode = 1;
   $INDEX->param(modeIndex => 1);
-  $INDEX->param(simpleMode => 1) if $set::simplelist;
+  $INDEX->param(simpleList => 1) if $set::simplelist;
 }
 my @q_links;
 foreach(
@@ -51,7 +51,6 @@ foreach(
   'belong',
   'grow',
   'image',
-  'fellow',
   ){
   push( @q_links, $_.'='.uri_escape_utf8(decode('utf8', param($_))) ) if param($_);
 }
@@ -71,16 +70,8 @@ if($mode eq 'mylist'){
 
 ## リスト取得
 my @list;
-if($set::simpleindex && $index_mode){ #グループ見出しのみ
-  my @grouplist;
-  foreach (sort { $a->[1] cmp $b->[1] } @set::groups){
-    push(@grouplist, {
-      "ID" => @$_[0],
-      "NAME" => @$_[2],
-      "TEXT" => @$_[3],
-    });
-  }
-  $INDEX->param("ListGroups" => \@grouplist);
+if($set::simpleindex && $index_mode) { #グループ見出しのみ
+  $INDEX->param(simpleIndex => 1);
 }
 else { #通常
   open (my $FH, "<", $set::listfile);
@@ -102,24 +93,17 @@ elsif (
   @list = grep { !(split(/<>/))[9] } @list;
 }
 
-## グループ
-my %group_sort;
-my %group_name;
-my %group_text;
-foreach (@set::groups){
-  $group_sort{@$_[0]} = @$_[1];
-  $group_name{@$_[0]} = @$_[2];
-  $group_text{@$_[0]} = @$_[3];
-}
-$group_name{'all'} = 'すべて' if $::in{'group'} eq 'all';
-
 ## グループ検索
 my $group_query = $::in{'group'};
+my %groups = groupArrayToHash();
+$groups{'all'}{'name'} = 'すべて' if $::in{'group'} eq 'all';
+$INDEX->param(Groups => groupArrayToList $group_query);
+
 if($group_query && $::in{'group'} ne 'all') {
   if($group_query eq $set::group_default){ @list = grep { $_ =~ /^(?:[^<]*?<>){6}(\Q$group_query\E)?</ } @list; }
   else { @list = grep { $_ =~ /^(?:[^<]*?<>){6}\Q$group_query\E</ } @list; }
 }
-$INDEX->param(group => $group_name{$group_query});
+$INDEX->param(group => $groups{$group_query}{'name'});
 
 ## タグ検索
 my $tag_query = decode('utf8', $::in{'tag'});
@@ -184,7 +168,7 @@ foreach (@list) {
   ) = (split /<>/, $_)[0..18];
   
   #グループ
-  $group = $set::group_default if (!$group || !$group_name{$group});
+  $group = $set::group_default if (!$group || !$groups{$group});
   $group = 'all' if $::in{'group'} eq 'all';
   
   #カウント
@@ -254,7 +238,7 @@ foreach (@list) {
 
 ### 出力用配列 --------------------------------------------------
 my @characterlists; 
-foreach (sort {$group_sort{$a} <=> $group_sort{$b}} keys %grouplist){
+foreach (sort {$groups{$a}{'sort'} <=> $groups{$b}{'sort'}} keys %grouplist){
   ## ページネーション
   my $navbar;
   if($set::pagemax && !$index_mode && $::in{'group'}){
@@ -279,8 +263,8 @@ foreach (sort {$group_sort{$a} <=> $group_sort{$b}} keys %grouplist){
   ##
   push(@characterlists, {
     "ID" => $_,
-    "NAME" => $group_name{$_},
-    "TEXT" => $group_text{$_},
+    "NAME" => $groups{$_}{'name'},
+    "TEXT" => $groups{$_}{'text'},
     "NUM-PC" => $count{'PC'}{$_},
     "NUM-PL" => $count{'PL'}{$_},
     "Characters" => [@{$grouplist{$_}}],

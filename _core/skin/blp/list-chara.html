@@ -4,10 +4,10 @@
         <small>
         <TMPL_IF name>：名前「<TMPL_VAR name>」を含む</TMPL_IF>
         <TMPL_IF player>：ＰＬ名「<TMPL_VAR player>」を含む</TMPL_IF>
+        <TMPL_IF tag>：タグ「<TMPL_VAR tag>」</TMPL_IF>
         <TMPL_IF factor>：ファクター「<TMPL_VAR factor>」を含む</TMPL_IF>
         <TMPL_IF belong>：所属「<TMPL_VAR belong>」を含む</TMPL_IF>
         <TMPL_IF missing>：喪失／欠落「<TMPL_VAR missing>」を含む</TMPL_IF>
-        <TMPL_IF tag>：タグ「<TMPL_VAR tag>」</TMPL_IF>
         <TMPL_IF image>：画像あり</TMPL_IF>
         <TMPL_IF playerName>：<TMPL_VAR playerName>さん</TMPL_IF>
         </small>
@@ -15,7 +15,7 @@
       <form method="get" action="./" name="search" id="form-search">
         <h3 onclick="formSwitch()">検索フォーム▼</h3>
         <p id="form-search-area" style="display:none">
-          <input type="hidden" name="group" value="all"><br>
+          グループ：<select name="group"><option value="all">すべて<TMPL_LOOP Groups><option value="<TMPL_VAR ID>" <TMPL_VAR SELECTED>><TMPL_VAR NAME></TMPL_LOOP></select><br>
           名前　：<input type="text" name="name" value="<TMPL_VAR name>"><br>
           ＰＬ名：<input type="text" name="player" value="<TMPL_VAR player>"><br>
           タグ　：<input type="text" name="tag" value="<TMPL_VAR tag>"><br>
@@ -31,7 +31,7 @@
       <section class="list" id="group-<TMPL_VAR ID>">
         <h2><TMPL_VAR NAME> <small><TMPL_VAR TEXT> (<TMPL_VAR NUM-PC>)</small></h2>
         <TMPL_VAR NAV>
-        <TMPL_IF simpleMode>
+        <TMPL_IF simpleList>
         <ul>
           <TMPL_LOOP Characters><li<TMPL_IF HIDE> class="hide"</TMPL_IF>>
             <a href="./?id=<TMPL_VAR ID>" data-type="<TMPL_VAR TYPE>"><TMPL_VAR NAME><small><TMPL_VAR PLAYER></small></a>
@@ -70,9 +70,9 @@
         <TMPL_IF modeIndex><p class="more"><a href="./?group=<TMPL_VAR ID>">>>MORE</a></p></TMPL_IF>
       </section>
       </TMPL_LOOP>
-      <TMPL_IF ListGroups><section class="list">
+      <TMPL_IF simpleIndex><section class="list">
         <ul class="grouplist">
-        <TMPL_LOOP ListGroups><li>
+        <TMPL_LOOP Groups><li>
           <a href="./?group=<TMPL_VAR ID>"><TMPL_VAR NAME><small><TMPL_VAR TEXT></small></a>
         </li></TMPL_LOOP>
       </ul>

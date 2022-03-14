@@ -43,7 +43,7 @@ foreach (keys %::in) {
 if(!($mode eq 'mylist' || $::in{'tag'} || $::in{'group'} || $::in{'name'} || $::in{'player'} || $::in{'race'} || $::in{'exp-min'} || $::in{'exp-max'} || $::in{'class'} || $::in{'faith'} || $::in{'image'} || $::in{'fellow'})){
   $index_mode = 1;
   $INDEX->param(modeIndex => 1);
-  $INDEX->param(simpleMode => 1) if $set::simplelist;
+  $INDEX->param(simpleList => 1) if $set::simplelist;
 }
 my @q_links;
 foreach(
@@ -78,16 +78,8 @@ if($mode eq 'mylist'){
 
 ## リスト取得
 my @list;
-if($set::simpleindex && $index_mode){ #グループ見出しのみ
-  my @grouplist;
-  foreach (sort { $a->[1] cmp $b->[1] } @set::groups){
-    push(@grouplist, {
-      "ID" => @$_[0],
-      "NAME" => @$_[2],
-      "TEXT" => @$_[3],
-    });
-  }
-  $INDEX->param("ListGroups" => \@grouplist);
+if($set::simpleindex && $index_mode) { #グループ見出しのみ
+  $INDEX->param(simpleIndex => 1);
 }
 else { #通常
   open (my $FH, "<", $set::listfile);
@@ -109,31 +101,17 @@ elsif (
   @list = grep { $_ !~ /^(?:[^<]*?<>){17}[^<0]/ } @list;
 }
 
-## グループ
-my %group_sort;
-my %group_name;
-my %group_text;
-foreach (@set::groups){
-  $group_sort{@$_[0]} = @$_[1];
-  $group_name{@$_[0]} = @$_[2];
-  $group_text{@$_[0]} = @$_[3];
-}
-$group_name{'all'} = 'すべて' if $::in{'group'} eq 'all';
-
-## ランク
-my %rank_sort;
-foreach (@set::adventurer_rank){
-  $rank_sort{@$_[0]} = @$_[1];
-}
-$rank_sort{''} = -1;
-
 ## グループ検索
 my $group_query = $::in{'group'};
+my %groups = groupArrayToHash();
+$groups{'all'}{'name'} = 'すべて' if $::in{'group'} eq 'all';
+$INDEX->param(Groups => groupArrayToList $group_query);
+
 if($group_query && $::in{'group'} ne 'all') {
   if($group_query eq $set::group_default){ @list = grep { $_ =~ /^(?:[^<]*?<>){6}(\Q$group_query\E)?</ } @list; }
   else { @list = grep { $_ =~ /^(?:[^<]*?<>){6}\Q$group_query\E</ } @list; }
 }
-$INDEX->param(group => $group_name{$group_query});
+$INDEX->param(group => $groups{$group_query}{'name'});
 
 ## タグ検索
 my $tag_query = decode('utf8', $::in{'tag'});
@@ -192,6 +170,30 @@ my $faith_query = decode('utf8', $::in{'faith'});
 if($faith_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){12}[^<]*?\Q$faith_query\E/ } @list; }
 $INDEX->param(faith => $faith_query);
 
+## ランク
+my $rank_query = decode('utf8', $::in{'rank'});
+my %rank_sort;
+my @rank_list;
+foreach (@set::adventurer_rank){
+  $rank_sort{@$_[0]} = @$_[1];
+  push(@rank_list, {
+    "NAME" => @$_[0],
+    "SELECTED" => $rank_query eq @$_[0] ? 'selected' : '',
+  });
+}
+$rank_sort{''} = -1;
+$INDEX->param(Ranks => \@rank_list);
+
+if($rank_query eq 'none') {
+  @list = grep { $_ =~ /^(?:[^<]*?<>){8}</ } @list;
+  $INDEX->param(rankNoneSelected => "selected");
+  $INDEX->param(rank => 'なし');
+}
+elsif($rank_query) {
+  @list = grep { $_ =~ /^(?:[^<]*?<>){8}\Q$rank_query\E</ } @list;
+  $INDEX->param(rank => $rank_query);
+}
+
 ## 画像フィルタ
 if($::in{'image'} == 1) {
   @list = grep { $_ =~ /^(?:[^<]*?<>){15}[^<0]/ } @list;
@@ -237,7 +239,7 @@ foreach (@list) {
   ) = (split /<>/, $_)[0..18];
   
   #グループ
-  $group = $set::group_default if (!$group || !$group_name{$group});
+  $group = $set::group_default if (!$group || !$groups{$group});
   $group = 'all' if $::in{'group'} eq 'all';
   
   #カウント
@@ -329,7 +331,7 @@ foreach (@list) {
 
 ### 出力用配列 --------------------------------------------------
 my @characterlists;
-foreach (sort {$group_sort{$a} <=> $group_sort{$b}} keys %grouplist){
+foreach (sort {$groups{$a}{'sort'} <=> $groups{$b}{'sort'}} keys %grouplist){
   ## ページネーション
   my $navbar;
   if($set::pagemax && !$index_mode && $::in{'group'}){
@@ -354,8 +356,8 @@ foreach (sort {$group_sort{$a} <=> $group_sort{$b}} keys %grouplist){
   ##
   push(@characterlists, {
     "ID" => $_,
-    "NAME" => $group_name{$_},
-    "TEXT" => $group_text{$_},
+    "NAME" => $groups{$_}{'name'},
+    "TEXT" => $groups{$_}{'text'},
     "NUM-PC" => $count{'PC'}{$_},
     "NUM-PL" => $count{'PL'}{$_},
     "Characters" => [@{$grouplist{$_}}],

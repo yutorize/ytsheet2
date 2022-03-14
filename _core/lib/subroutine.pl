@@ -290,6 +290,31 @@ sub s_eval {
   $i =~ s/,([0-9]{3}(?![0-9]))/$1/g;
   return eval($i);
 }
+### グループ設定の変換 --------------------------------------------------
+sub groupArrayToHash {
+  my %hash;
+  foreach (@set::groups){
+    $hash{@$_[0]} = {
+      "sort" => @$_[1],
+      "name" => @$_[2],
+      "text" => @$_[3],
+    };
+  }
+  return %hash;
+}
+sub groupArrayToList {
+  my $selected = shift;
+  my @list;
+  foreach (sort { $a->[1] cmp $b->[1] } @set::groups){
+    push(@list, {
+      "ID" => @$_[0],
+      "NAME" => @$_[2],
+      "TEXT" => @$_[3],
+      "SELECTED" => $selected eq @$_[0] ? 'selected' : '',
+    });
+  }
+  return \@list;
+}
 
 ### 性別記号変換 --------------------------------------------------
 sub genderConvert {
