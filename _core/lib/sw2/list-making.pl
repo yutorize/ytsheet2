@@ -125,20 +125,20 @@ foreach my $data (@lines) {
     "Data" => \@datalist,
   });
 }
-$INDEX->param("Posts" => \@posts);
+$INDEX->param(Posts => \@posts);
 
-$INDEX->param("pageId" => '&id='.$::in{'id'}) if $::in{'id'};
-$INDEX->param("pagePrev" => ($page - $page_items) / $page_items);
-$INDEX->param("pageNext" => ($page + $page_items) / $page_items);
+$INDEX->param(pageId => '&id='.$::in{'id'}) if $::in{'id'};
+$INDEX->param(pagePrev => ($page - $page_items) / $page_items);
+$INDEX->param(pageNext => ($page + $page_items) / $page_items);
 if(!$::in{"num"}) {
-  $INDEX->param("pagePrevOn" => $page - $page_items >= 0);
-  $INDEX->param("pageNextOn" => $page + $page_items < @lines);
+  $INDEX->param(pagePrevOn => $page - $page_items >= 0);
+  $INDEX->param(pageNextOn => $page + $page_items < @lines);
 }
-$INDEX->param("formOn" => 1) if !$::in{'num'} && !$::in{'id'};
+$INDEX->param(formOn => 1) if !$::in{'num'} && !$::in{'id'};
 
-$INDEX->param("title" => $set::title);
-$INDEX->param("ver" => $::ver);
-$INDEX->param("coreDir" => $::core_dir);
+$INDEX->param(title => $set::title);
+$INDEX->param(ver => $::ver);
+$INDEX->param(coreDir => $::core_dir);
 
 ### 出力 #############################################################################################
 print "Content-Type: text/html\n\n";

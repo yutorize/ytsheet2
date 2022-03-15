@@ -194,23 +194,23 @@ while (my ($key, $value) = each(%pc)){
   $SHEET->param("$key" => $value);
 }
 ### ID / URL--------------------------------------------------
-$SHEET->param("id" => $::in{'id'});
+$SHEET->param(id => $::in{'id'});
 
 if($::in{'url'}){
-  $SHEET->param("convertMode" => 1);
-  $SHEET->param("convertUrl" => $::in{'url'});
+  $SHEET->param(convertMode => 1);
+  $SHEET->param(convertUrl => $::in{'url'});
 }
 
 ### キャラクター名 --------------------------------------------------
-$SHEET->param("characterName" => "<ruby>$pc{'characterName'}<rt>$pc{'characterNameRuby'}</rt></ruby>") if $pc{'characterNameRuby'};
+$SHEET->param(characterName => "<ruby>$pc{'characterName'}<rt>$pc{'characterNameRuby'}</rt></ruby>") if $pc{'characterNameRuby'};
 
 ### 二つ名 --------------------------------------------------
-$SHEET->param("aka" => "<ruby>$pc{'aka'}<rt>$pc{'akaRuby'}</rt></ruby>") if $pc{'akaRuby'};
+$SHEET->param(aka => "<ruby>$pc{'aka'}<rt>$pc{'akaRuby'}</rt></ruby>") if $pc{'akaRuby'};
 
 ### プレイヤー名 --------------------------------------------------
 if($set::playerlist){
   my $pl_id = (split(/-/, $::in{'id'}))[0];
-  $SHEET->param("playerName" => '<a href="'.$set::playerlist.'?id='.$pl_id.'">'.$pc{'playerName'}.'</a>');
+  $SHEET->param(playerName => '<a href="'.$set::playerlist.'?id='.$pl_id.'">'.$pc{'playerName'}.'</a>');
 }
 ### グループ --------------------------------------------------
 if($::in{'url'}){
@@ -245,15 +245,15 @@ $pc{'words'} =~ s/^([「『（])/<span class="brackets">$1<\/span>/gm;
 $pc{'words'} =~ s/(.+?(?:[，、。？」』）]|$))/<span>$1<\/span>/g;
 $pc{'words'} =~ s/\n<span>　/\n<span>/g;
 $pc{'words'} =~ s/\n/<br>/g;
-$SHEET->param("words" => $pc{'words'});
-$SHEET->param("wordsX" => ($pc{'wordsX'} eq '左' ? 'left:0;' : 'right:0;'));
-$SHEET->param("wordsY" => ($pc{'wordsY'} eq '下' ? 'bottom:0;' : 'top:0;'));
+$SHEET->param(words => $pc{'words'});
+$SHEET->param(wordsX => ($pc{'wordsX'} eq '左' ? 'left:0;' : 'right:0;'));
+$SHEET->param(wordsY => ($pc{'wordsY'} eq '下' ? 'bottom:0;' : 'top:0;'));
 
 ### ステージ --------------------------------------------------
 if($pc{'stage'} =~ /クロウリングケイオス/){ $SHEET->param(ccOn => 1); }
 
 ### ブリード --------------------------------------------------
-$SHEET->param("breed" => 
+$SHEET->param(breed => 
   ($pc{'breed'} ? $pc{'breed'} : $pc{'syndrome3'} ? 'トライ' : $pc{'syndrome2'} ? 'クロス' : $pc{'syndrome1'} ? 'ピュア' : '') . '<span>ブリード</span>'
 );
 
@@ -264,9 +264,9 @@ foreach my $num (keys %status){
   my $base = 0;
   $base += $data::syndrome_status{$pc{'syndrome1'}}[$num];
   $base += $pc{'syndrome2'} ? $data::syndrome_status{$pc{'syndrome2'}}[$num] : $base;
-  $SHEET->param("sttBase".ucfirst($name) => $base);
+  $SHEET->param(sttBase.ucfirst($name) => $base);
 }
-$SHEET->param("sttWorks".ucfirst($pc{'sttWorks'}) => 1);
+$SHEET->param(sttWorks.ucfirst($pc{'sttWorks'}) => 1);
 
 ### 技能 --------------------------------------------------
 foreach my $name ('Melee','Ranged','RC','Negotiate','Dodge','Percept','Will','Procure'){
@@ -633,7 +633,7 @@ else {
 
 ### 種族名 --------------------------------------------------
 $pc{'race'} =~ s/［.*］//g;
-$SHEET->param("race" => $pc{'race'});
+$SHEET->param(race => $pc{'race'});
 
 ### 画像 --------------------------------------------------
 my $imgsrc;
@@ -641,7 +641,7 @@ if($pc{'convertSource'} eq 'キャラクターシート倉庫'){
   ($imgsrc = $::in{'url'}) =~ s/edit\.html/image/; 
   require LWP::UserAgent;
   my $code = LWP::UserAgent->new->simple_request(HTTP::Request->new(GET => $imgsrc))->code == 200;
-  $SHEET->param("image" => $code);
+  $SHEET->param(image => $code);
 }
 elsif($pc{'convertSource'} eq '別のゆとシートⅡ') {
   $imgsrc = $pc{'imageURL'}."?$pc{'imageUpdate'}";
@@ -649,13 +649,13 @@ elsif($pc{'convertSource'} eq '別のゆとシートⅡ') {
 else {
   $imgsrc = "${set::char_dir}${main::file}/image.$pc{'image'}?$pc{'imageUpdate'}";
 }
-$SHEET->param("imageSrc" => $imgsrc);
+$SHEET->param(imageSrc => $imgsrc);
 
 if($pc{'imageFit'} eq 'percentY'){
-  $SHEET->param("imageFit" => 'auto '.$pc{'imagePercent'}.'%');
+  $SHEET->param(imageFit => 'auto '.$pc{'imagePercent'}.'%');
 }
 elsif($pc{'imageFit'} =~ /^percentX?$/){
-  $SHEET->param("imageFit" => $pc{'imagePercent'}.'%');
+  $SHEET->param(imageFit => $pc{'imagePercent'}.'%');
 }
 
 ## 権利表記
@@ -670,8 +670,8 @@ if($pc{'image'}) { $SHEET->param(ogImg => url()."/".$imgsrc); }
 $SHEET->param(ogDescript => tag_delete "性別:$pc{'gender'}　年齢:$pc{'age'}　ワークス:$pc{'works'}　シンドローム:$pc{'syndrome1'} $pc{'syndrome2'} $pc{'syndrome3'}");
 
 ### バージョン等 --------------------------------------------------
-$SHEET->param("ver" => $::ver);
-$SHEET->param("coreDir" => $::core_dir);
+$SHEET->param(ver => $::ver);
+$SHEET->param(coreDir => $::core_dir);
 
 ### エラー --------------------------------------------------
 $SHEET->param(error => $main::login_error);

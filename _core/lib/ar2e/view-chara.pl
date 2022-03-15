@@ -215,23 +215,23 @@ while (my ($key, $value) = each(%pc)){
   $SHEET->param("$key" => $value);
 }
 ### ID / URL--------------------------------------------------
-$SHEET->param("id" => $::in{'id'});
+$SHEET->param(id => $::in{'id'});
 
 if($::in{'url'}){
-  $SHEET->param("convertMode" => 1);
-  $SHEET->param("convertUrl" => $::in{'url'});
+  $SHEET->param(convertMode => 1);
+  $SHEET->param(convertUrl => $::in{'url'});
 }
 
 ### キャラクター名 --------------------------------------------------
-$SHEET->param("characterName" => "<ruby>$pc{'characterName'}<rt>$pc{'characterNameRuby'}</rt></ruby>") if $pc{'characterNameRuby'};
+$SHEET->param(characterName => "<ruby>$pc{'characterName'}<rt>$pc{'characterNameRuby'}</rt></ruby>") if $pc{'characterNameRuby'};
 
 ### 二つ名 --------------------------------------------------
-$SHEET->param("aka" => "<ruby>$pc{'aka'}<rt>$pc{'akaRuby'}</rt></ruby>") if $pc{'akaRuby'};
+$SHEET->param(aka => "<ruby>$pc{'aka'}<rt>$pc{'akaRuby'}</rt></ruby>") if $pc{'akaRuby'};
 
 ### プレイヤー名 --------------------------------------------------
 if($set::playerlist){
   my $pl_id = (split(/-/, $::in{'id'}))[0];
-  $SHEET->param("playerName" => '<a href="'.$set::playerlist.'?id='.$pl_id.'">'.$pc{'playerName'}.'</a>');
+  $SHEET->param(playerName => '<a href="'.$set::playerlist.'?id='.$pl_id.'">'.$pc{'playerName'}.'</a>');
 }
 ### グループ --------------------------------------------------
 if($::in{'url'}){
@@ -273,28 +273,28 @@ $pc{'words'} =~ s/^([「『（])/<span class="brackets">$1<\/span>/gm;
 $pc{'words'} =~ s/(.+?(?:[，、。？」』）]|$))/<span>$1<\/span>/g;
 $pc{'words'} =~ s/\n<span>　/\n<span>/g;
 $pc{'words'} =~ s/\n/<br>/g;
-$SHEET->param("words" => $pc{'words'});
-$SHEET->param("wordsX" => ($pc{'wordsX'} eq '左' ? 'left:0;' : 'right:0;'));
-$SHEET->param("wordsY" => ($pc{'wordsY'} eq '下' ? 'bottom:0;' : 'top:0;'));
+$SHEET->param(words => $pc{'words'});
+$SHEET->param(wordsX => ($pc{'wordsX'} eq '左' ? 'left:0;' : 'right:0;'));
+$SHEET->param(wordsY => ($pc{'wordsY'} eq '下' ? 'bottom:0;' : 'top:0;'));
 
 ### 種族名 --------------------------------------------------
 if($pc{'race'} eq 'free'){ $pc{'race'} = $pc{'raceFree'} }
 my $race_length = length($pc{'race'});
 $pc{'race'} =~ s/(（.*）)/<span class="small">$1<\/span>/g;
 if($race_length > 10){ $pc{'race'} = '<span class="thin">'.$pc{'race'}.'</span>'; }
-$SHEET->param("race" => $pc{'race'});
+$SHEET->param(race => $pc{'race'});
 
 ### ステータス --------------------------------------------------
-$SHEET->param("hpAdd" => $pc{'hpAdd'} + $pc{'hpAuto'});
-$SHEET->param("mpAdd" => $pc{'mpAdd'} + $pc{'mpAuto'});
+$SHEET->param(hpAdd => $pc{'hpAdd'} + $pc{'hpAuto'});
+$SHEET->param(mpAdd => $pc{'mpAdd'} + $pc{'mpAuto'});
 
 ### ライフパス --------------------------------------------------
 if($pc{'race'} eq 'アーシアン' && $pc{'lifepathEarthian'}){
-  $SHEET->param("head_origin"     => '特異');
-  $SHEET->param("head_experience" => '転移');
+  $SHEET->param(head_origin     => '特異');
+  $SHEET->param(head_experience => '転移');
 }
 if($data::class{$pc{'classMain'}}{'type'} eq 'fate'){
-  $SHEET->param("head_motive"     => '運命');
+  $SHEET->param(head_motive     => '運命');
 }
 
 ### コネクション --------------------------------------------------
@@ -618,13 +618,13 @@ if($pc{'convertSource'} eq '別のゆとシートⅡ') {
 else {
   $imgsrc = "${set::char_dir}${main::file}/image.$pc{'image'}?$pc{'imageUpdate'}";
 }
-$SHEET->param("imageSrc" => $imgsrc);
+$SHEET->param(imageSrc => $imgsrc);
 
 if($pc{'imageFit'} eq 'percentY'){
-  $SHEET->param("imageFit" => 'auto '.$pc{'imagePercent'}.'%');
+  $SHEET->param(imageFit => 'auto '.$pc{'imagePercent'}.'%');
 }
 elsif($pc{'imageFit'} =~ /^percentX?$/){
-  $SHEET->param("imageFit" => $pc{'imagePercent'}.'%');
+  $SHEET->param(imageFit => $pc{'imagePercent'}.'%');
 }
 
 ## 権利表記
@@ -639,8 +639,8 @@ if($pc{'image'}) { $SHEET->param(ogImg => url()."/".$imgsrc); }
 $SHEET->param(ogDescript => tag_delete "種族:$pc{'race'}　性別:$pc{'gender'}　年齢:$pc{'age'}　クラス:$pc{'classMain'}／$pc{'classSupport'}".($pc{'classTitle'}?"／$pc{'classTitle'}":''));
 
 ### バージョン等 --------------------------------------------------
-$SHEET->param("ver" => $::ver);
-$SHEET->param("coreDir" => $::core_dir);
+$SHEET->param(ver => $::ver);
+$SHEET->param(coreDir => $::core_dir);
 
 ### エラー --------------------------------------------------
 $SHEET->param(error => $main::login_error);

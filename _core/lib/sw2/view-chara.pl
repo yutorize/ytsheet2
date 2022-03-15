@@ -148,20 +148,20 @@ while (my ($key, $value) = each(%pc)){
   $SHEET->param("$key" => $value);
 }
 ### ID / URL--------------------------------------------------
-$SHEET->param("id" => $::in{'id'});
+$SHEET->param(id => $::in{'id'});
 
 if($::in{'url'}){
-  $SHEET->param("convertMode" => 1);
-  $SHEET->param("convertUrl" => $::in{'url'});
+  $SHEET->param(convertMode => 1);
+  $SHEET->param(convertUrl => $::in{'url'});
 }
 
 ### 二つ名 --------------------------------------------------
-$SHEET->param("aka" => "<ruby>$pc{'aka'}<rt>$pc{'akaRuby'}</rt></ruby>") if $pc{'akaRuby'};
+$SHEET->param(aka => "<ruby>$pc{'aka'}<rt>$pc{'akaRuby'}</rt></ruby>") if $pc{'akaRuby'};
 
 ### プレイヤー名 --------------------------------------------------
 if($set::playerlist){
   my $pl_id = (split(/-/, $::in{'id'}))[0];
-  $SHEET->param("playerName" => '<a href="'.$set::playerlist.'?id='.$pl_id.'">'.$pc{'playerName'}.'</a>');
+  $SHEET->param(playerName => '<a href="'.$set::playerlist.'?id='.$pl_id.'">'.$pc{'playerName'}.'</a>');
 }
 ### グループ --------------------------------------------------
 if($::in{'url'}){
@@ -196,23 +196,23 @@ $pc{'words'} =~ s/^([「『（])/<span class="brackets">$1<\/span>/gm;
 $pc{'words'} =~ s/(.+?(?:[，、。？」』）]|$))/<span>$1<\/span>/g;
 $pc{'words'} =~ s/\n<span>　/\n<span>/g;
 $pc{'words'} =~ s/\n/<br>/g;
-$SHEET->param("words" => $pc{'words'});
-$SHEET->param("wordsX" => ($pc{'wordsX'} eq '左' ? 'left:0;' : 'right:0;'));
-$SHEET->param("wordsY" => ($pc{'wordsY'} eq '下' ? 'bottom:0;' : 'top:0;'));
+$SHEET->param(words => $pc{'words'});
+$SHEET->param(wordsX => ($pc{'wordsX'} eq '左' ? 'left:0;' : 'right:0;'));
+$SHEET->param(wordsY => ($pc{'wordsY'} eq '下' ? 'bottom:0;' : 'top:0;'));
 
 ### 種族名 --------------------------------------------------
 $pc{'race'} =~ s/［.*］//g;
-$SHEET->param("race" => $pc{'race'});
+$SHEET->param(race => $pc{'race'});
 
 ### 種族特徴 --------------------------------------------------
 $pc{'raceAbility'} =~ s/［(.*?)］/<span>［$1］<\/span>/g;
-$SHEET->param("raceAbility" => $pc{'raceAbility'});
+$SHEET->param(raceAbility => $pc{'raceAbility'});
 
 ### 穢れ --------------------------------------------------
-$SHEET->param("sin" => '―') if !$pc{'sin'} && $pc{'race'} =~ /^(?:ルーンフォーク|フィー)$/;
+$SHEET->param(sin => '―') if !$pc{'sin'} && $pc{'race'} =~ /^(?:ルーンフォーク|フィー)$/;
 
 ### 信仰 --------------------------------------------------
-if($pc{'faith'} eq 'その他の信仰') { $SHEET->param("faith" => $pc{'faithOther'}); }
+if($pc{'faith'} eq 'その他の信仰') { $SHEET->param(faith => $pc{'faithOther'}); }
 $pc{'faith'} =~ s/“(.*)”//;
 
 ### 経験点 --------------------------------------------------
@@ -438,7 +438,7 @@ foreach my $class (@data::class_names){
     'Packs'   => \@pack,
   });
 }
-$SHEET->param("Packages" => \@packages);
+$SHEET->param(Packages => \@packages);
 
 ### 妖精契約 --------------------------------------------------
 my $fairy_contact;
@@ -1007,13 +1007,13 @@ if($pc{'convertSource'} eq '別のゆとシートⅡ') {
 else {
   $imgsrc = "${set::char_dir}${main::file}/image.$pc{'image'}?$pc{'imageUpdate'}";
 }
-$SHEET->param("imageSrc" => $imgsrc);
+$SHEET->param(imageSrc => $imgsrc);
 
 if($pc{'imageFit'} eq 'percentY'){
-  $SHEET->param("imageFit" => 'auto '.$pc{'imagePercent'}.'%');
+  $SHEET->param(imageFit => 'auto '.$pc{'imagePercent'}.'%');
 }
 elsif($pc{'imageFit'} =~ /^percentX?$/){
-  $SHEET->param("imageFit" => $pc{'imagePercent'}.'%');
+  $SHEET->param(imageFit => $pc{'imagePercent'}.'%');
 }
 
 ## 権利表記
@@ -1028,8 +1028,8 @@ if($pc{'image'}) { $SHEET->param(ogImg => url()."/".$imgsrc); }
 $SHEET->param(ogDescript => tag_delete "種族:$pc{'race'}　性別:$pc{'gender'}　年齢:$pc{'age'}　技能:${class_text}");
 
 ### バージョン等 --------------------------------------------------
-$SHEET->param("ver" => $::ver);
-$SHEET->param("coreDir" => $::core_dir);
+$SHEET->param(ver => $::ver);
+$SHEET->param(coreDir => $::core_dir);
 
 ### エラー --------------------------------------------------
 $SHEET->param(error => $main::login_error);

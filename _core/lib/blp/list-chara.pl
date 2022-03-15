@@ -273,14 +273,14 @@ foreach (sort {$groups{$a}{'sort'} <=> $groups{$b}{'sort'}} keys %grouplist){
   });
 }
 
-$INDEX->param("qLinks" => $q_links);
+$INDEX->param(qLinks => $q_links);
 
-$INDEX->param("Lists" => \@characterlists);
+$INDEX->param(Lists => \@characterlists);
 
 
-$INDEX->param("title" => $set::title);
-$INDEX->param("ver" => $::ver);
-$INDEX->param("coreDir" => $::core_dir);
+$INDEX->param(title => $set::title);
+$INDEX->param(ver => $::ver);
+$INDEX->param(coreDir => $::core_dir);
 
 ### 出力 #############################################################################################
 print "Content-Type: text/html\n\n";

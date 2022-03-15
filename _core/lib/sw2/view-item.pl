@@ -55,7 +55,7 @@ if($pc{'forbidden'} && !$pc{'yourAuthor'}){
 }
 
 ### 置換前出力 #######################################################################################
-$SHEET->param("rawName" => $pc{'itemName'});
+$SHEET->param(rawName => $pc{'itemName'});
 
 ### 置換 #############################################################################################
 foreach (keys %pc) {
@@ -83,19 +83,19 @@ while (my ($key, $value) = each(%pc)){
   $SHEET->param("$key" => $value);
 }
 ### ID / URL--------------------------------------------------
-$SHEET->param("id" => $::in{'id'});
+$SHEET->param(id => $::in{'id'});
 
 if($::in{'url'}){
-  $SHEET->param("convertMode" => 1);
-  $SHEET->param("convertUrl" => $::in{'url'});
+  $SHEET->param(convertMode => 1);
+  $SHEET->param(convertUrl => $::in{'url'});
 }
 
 ### 魔法の武器アイコン --------------------------------------------------
-$SHEET->param("magic" => ($pc{'magic'} ? "<img class=\"i-icon\" src=\"${set::icon_dir}wp_magic.png\">" : ''));
+$SHEET->param(magic => ($pc{'magic'} ? "<img class=\"i-icon\" src=\"${set::icon_dir}wp_magic.png\">" : ''));
 
 ### カテゴリ --------------------------------------------------
 $pc{'category'} =~ s/[ 　]/<hr>/g;
-$SHEET->param("category" => $pc{'category'});
+$SHEET->param(category => $pc{'category'});
 
 ### 武器 --------------------------------------------------
 my @weapons;
@@ -165,11 +165,11 @@ else {
 ### 画像 --------------------------------------------------
 $pc{'imageUpdateTime'} = $pc{'updateTime'};
 $pc{'imageUpdateTime'} =~ s/[\-\ \:]//g;
-$SHEET->param("imageSrc" => "${set::item_dir}${main::file}/image.$pc{'image'}?$pc{'imageUpdateTime'}");
+$SHEET->param(imageSrc => "${set::item_dir}${main::file}/image.$pc{'image'}?$pc{'imageUpdateTime'}");
 
 ### バージョン等 --------------------------------------------------
-$SHEET->param("ver" => $::ver);
-$SHEET->param("coreDir" => $::core_dir);
+$SHEET->param(ver => $::ver);
+$SHEET->param(coreDir => $::core_dir);
 
 ### エラー --------------------------------------------------
 $SHEET->param(error => $main::login_error);

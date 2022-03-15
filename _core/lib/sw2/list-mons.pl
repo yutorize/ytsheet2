@@ -105,7 +105,7 @@ foreach (sort { $a->[1] cmp $b->[1] } @data::taxa){
     "SELECTED" => $taxa_query eq @$_[0] ? 'selected' : '',
   });
 }
-$INDEX->param("Taxa" => \@taxalist);
+$INDEX->param(Taxa => \@taxalist);
 
 ## タグ検索
 my $tag_query = decode('utf8', $::in{'tag'});
@@ -221,14 +221,14 @@ foreach (@data::taxa){
   });
 }
 
-$INDEX->param("qLinks" => $q_links);
+$INDEX->param(qLinks => $q_links);
 
-$INDEX->param("Lists" => \@characterlists);
+$INDEX->param(Lists => \@characterlists);
 
 
-$INDEX->param("title" => $set::title);
-$INDEX->param("ver" => $::ver);
-$INDEX->param("coreDir" => $::core_dir);
+$INDEX->param(title => $set::title);
+$INDEX->param(ver => $::ver);
+$INDEX->param(coreDir => $::core_dir);
 
 ### 出力 #############################################################################################
 print "Content-Type: text/html\n\n";

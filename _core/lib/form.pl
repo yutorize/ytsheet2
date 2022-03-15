@@ -26,37 +26,37 @@ my $INDEX = HTML::Template->new( filename => $set::skin_tmpl, utf8 => 1,
   path => ['./', $::core_dir],
   die_on_bad_params => 0, die_on_missing_include => 0, case_sensitive => 1);
 
-$INDEX->param("modeRegister" => 1) if $mode eq 'register';
-$INDEX->param("modeLogin"    => 1) if $mode eq 'login';
-$INDEX->param("modeReminder" => 1) if $mode eq 'reminder';
-$INDEX->param("modeReset"    => 1) if $mode eq 'reset';
-$INDEX->param("modeOption"   => 1) if $mode eq 'option';
-$INDEX->param("modeOption"   => 1) if $mode eq 'passchange';
-$INDEX->param("modeConvert"  => 1) if $mode eq 'convertform';
+$INDEX->param(modeRegister => 1) if $mode eq 'register';
+$INDEX->param(modeLogin    => 1) if $mode eq 'login';
+$INDEX->param(modeReminder => 1) if $mode eq 'reminder';
+$INDEX->param(modeReset    => 1) if $mode eq 'reset';
+$INDEX->param(modeOption   => 1) if $mode eq 'option';
+$INDEX->param(modeOption   => 1) if $mode eq 'passchange';
+$INDEX->param(modeConvert  => 1) if $mode eq 'convertform';
 
 if($mode eq 'option' || $mode eq 'passchange'){
-  $INDEX->param("setMessage" => $main::set_message);
-  $INDEX->param("userName" => (getplayername($LOGIN_ID))[0]);
-  $INDEX->param("userMail" => (getplayername($LOGIN_ID))[1]);
+  $INDEX->param(setMessage => $main::set_message);
+  $INDEX->param(userName => (getplayername($LOGIN_ID))[0]);
+  $INDEX->param(userMail => (getplayername($LOGIN_ID))[1]);
 }
 if($mode eq 'convertform'){
   my @urls;
   foreach (keys %set::convert_url){
     push(@urls, { 'URL' => $_ });
   }
-  $INDEX->param("ConvertURLs" => \@urls);
+  $INDEX->param(ConvertURLs => \@urls);
 }
 
-$INDEX->param("LOGIN_ID" => $LOGIN_ID);
-$INDEX->param("OAUTH_MODE" => $set::oauth_service);
-$INDEX->param("OAUTH_LOGIN_URL" => $set::oauth_login_url);
+$INDEX->param(LOGIN_ID => $LOGIN_ID);
+$INDEX->param(OAUTH_MODE => $set::oauth_service);
+$INDEX->param(OAUTH_LOGIN_URL => $set::oauth_login_url);
 
-$INDEX->param("token" => $token);
-$INDEX->param("registerkey" => 1) if $set::registerkey;
+$INDEX->param(token => $token);
+$INDEX->param(registerkey => 1) if $set::registerkey;
 
-$INDEX->param("title" => $set::title);
-$INDEX->param("ver" => $main::ver);
-$INDEX->param("coreDir" => $::core_dir);
+$INDEX->param(title => $set::title);
+$INDEX->param(ver => $main::ver);
+$INDEX->param(coreDir => $::core_dir);
 
 ### 出力 #############################################################################################
 print "Content-Type: text/html\n\n";

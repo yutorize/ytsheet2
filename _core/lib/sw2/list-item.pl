@@ -75,7 +75,7 @@ my @list;
 #      "ID" => 'all',
 #      "NAME" => 'すべて',
 #    });
-#  $INDEX->param("ListGroups" => \@grouplist);
+#  $INDEX->param(ListGroups => \@grouplist);
 #}
 #else { #通常
   open (my $FH, "<", $set::itemlist);
@@ -217,17 +217,14 @@ foreach (@categories){
   });
 }
 
-$INDEX->param("qLinks" => $q_links);
+$INDEX->param(qLinks => $q_links);
 
-$INDEX->param("Lists" => \@characterlists);
+$INDEX->param(Lists => \@characterlists);
 
 
-$INDEX->param("title" => $set::title);
-$INDEX->param("ver" => $::ver);
-$INDEX->param("coreDir" => $::core_dir);
-
-### ディレクトリ指定 --------------------------------------------------
-$INDEX->param("coreDir" => $::core_dir);
+$INDEX->param(title => $set::title);
+$INDEX->param(ver => $::ver);
+$INDEX->param(coreDir => $::core_dir);
 
 ### 出力 #############################################################################################
 print "Content-Type: text/html\n\n";

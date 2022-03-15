@@ -86,7 +86,7 @@ if($pc{'forbidden'} && !$pc{'yourAuthor'}){
 }
 
 ### 置換前出力 #######################################################################################
-$SHEET->param("rawName" => $pc{'characterName'}?"$pc{'characterName'}（$pc{'monsterName'}）":$pc{'monsterName'});
+$SHEET->param(rawName => $pc{'characterName'}?"$pc{'characterName'}（$pc{'monsterName'}）":$pc{'monsterName'});
 
 ### 置換 #############################################################################################
 foreach (keys %pc) {
@@ -116,11 +116,11 @@ while (my ($key, $value) = each(%pc)){
   $SHEET->param("$key" => $value);
 }
 ### ID / URL--------------------------------------------------
-$SHEET->param("id" => $::in{'id'});
+$SHEET->param(id => $::in{'id'});
 
 if($::in{'url'}){
-  $SHEET->param("convertMode" => 1);
-  $SHEET->param("convertUrl" => $::in{'url'});
+  $SHEET->param(convertMode => 1);
+  $SHEET->param(convertUrl => $::in{'url'});
 }
 ### タグ --------------------------------------------------
 my @tags;
@@ -133,8 +133,8 @@ foreach(split(/ /, $pc{'tags'})){
 $SHEET->param(Tags => \@tags);
 
 ### ステータス --------------------------------------------------
-$SHEET->param("vitResist" => $pc{'vitResist'} eq '' ? '' : $pc{'vitResist'}.(!$pc{'statusTextInput'}?' ('.$pc{'vitResistFix'}.')':''));
-$SHEET->param("mndResist" => $pc{'mndResist'} eq '' ? '' : $pc{'mndResist'}.(!$pc{'statusTextInput'}?' ('.$pc{'mndResistFix'}.')':''));
+$SHEET->param(vitResist => $pc{'vitResist'} eq '' ? '' : $pc{'vitResist'}.(!$pc{'statusTextInput'}?' ('.$pc{'vitResistFix'}.')':''));
+$SHEET->param(mndResist => $pc{'mndResist'} eq '' ? '' : $pc{'mndResist'}.(!$pc{'statusTextInput'}?' ('.$pc{'mndResistFix'}.')':''));
 
 my @status;
 foreach (1 .. $pc{'statusNum'}){
@@ -193,7 +193,7 @@ else {
 ### 画像 --------------------------------------------------
 $pc{'imageUpdateTime'} = $pc{'updateTime'};
 $pc{'imageUpdateTime'} =~ s/[\-\ \:]//g;
-$SHEET->param("imageSrc" => "${set::mons_dir}${main::file}/image.$pc{'image'}?$pc{'imageUpdateTime'}");
+$SHEET->param(imageSrc => "${set::mons_dir}${main::file}/image.$pc{'image'}?$pc{'imageUpdateTime'}");
 
 ### OGP --------------------------------------------------
 $SHEET->param(ogUrl => url().($::in{'url'} ? "?url=$::in{'url'}" : "?id=$::in{'id'}"));
@@ -201,8 +201,8 @@ $SHEET->param(ogUrl => url().($::in{'url'} ? "?url=$::in{'url'}" : "?id=$::in{'i
 $SHEET->param(ogDescript => "レベル:$pc{'lv'}　分類:$pc{'taxa'}".($pc{'partsNum'}>1?"　部位数:$pc{'partsNum'}":'')."　知名度:$pc{'reputation'}／$pc{'reputation+'}");
 
 ### バージョン等 --------------------------------------------------
-$SHEET->param("ver" => $::ver);
-$SHEET->param("coreDir" => $::core_dir);
+$SHEET->param(ver => $::ver);
+$SHEET->param(coreDir => $::core_dir);
 
 ### エラー --------------------------------------------------
 $SHEET->param(error => $main::login_error);
