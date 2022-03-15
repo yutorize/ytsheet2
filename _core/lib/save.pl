@@ -260,6 +260,31 @@ sub data_save {
       if($pc{$_} ne "") { print $DD "$_<>".$pc{$_}."\n"; }
     }
   close($DD);
+
+  ## 規定数以上のバックアップ削除
+  if($set::backup_max){
+    opendir(my $DIR,"${dir}${file}/backup");
+    my @backlist = readdir($DIR);
+    closedir($DIR);
+      
+    my %backname;
+    open(my $FH,"${dir}${file}/buname.cgi");
+    foreach(<$FH>){
+      chomp;
+      my @data = split('<>', $_, 2);
+      $backname{$data[0]} = $data[1];
+    }
+    close($FH);
+
+    my $i = 1; my $test = '';
+    foreach (reverse sort @backlist) {
+      next if ($_ eq '.' || $_ eq '..');
+      my ($date, undef) = split('\.', $_, 2);
+      if(exists $backname{$date}){ next; }
+      if($i > $set::backup_max){ unlink("${dir}${file}/backup/$_"); }
+      $i++;
+    }
+  }
 }
 
 sub passfile_write_make {
