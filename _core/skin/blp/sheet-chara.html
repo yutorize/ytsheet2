@@ -146,9 +146,21 @@ window.onload = function() {
     <aside id="backuplist" class="float-box">
       <h2>過去ログ（バックアップ）</h2>
       <ul>
-        <li<TMPL_UNLESS backupId> class="backup-now"</TMPL_UNLESS>><a href="?id=<TMPL_VAR id>">最新</a></li>
-        <TMPL_LOOP Backup><li<TMPL_IF NOW> class="backup-now"</TMPL_IF>><a href="?id=<TMPL_VAR id>&backup=<TMPL_VAR URL>"><TMPL_VAR DATE></a></li></TMPL_LOOP>
+        <TMPL_LOOP Backup><li<TMPL_IF NOW> class="backup-now"</TMPL_IF>><a href="?id=<TMPL_VAR id><TMPL_VAR URL>"><TMPL_VAR DATE></a></li></TMPL_LOOP>
       </ul>
+      <TMPL_IF viewBackupNaming><details id="backup-naming">
+        <summary>閲覧中のログ<TMPL_IF selectedBackupName>の名前をつけなおす<TMPL_ELSE>に名前をつける</TMPL_IF></summary>
+        <form id="backup-naming-form" method="post" action="./">
+          <input type="hidden" name="mode" value="bu-naming">
+          <input type="hidden" name="id" value="<TMPL_VAR id>">
+          <input type="hidden" name="date" value="<TMPL_VAR backupId>">
+          <dl>
+            <dt>名前</dt><dd><input type="text" name="backp-name" value="<TMPL_VAR selectedBackupName>"></dd>
+            <TMPL_IF reqdPassword><dt>パスワード</dt><dd><input type="password" name="pass"></dd></TMPL_IF>
+            <dd><input type="submit"></dd>
+          </dl>
+        </form>
+      </details></TMPL_IF>
     </aside>
 
     <aside id="downloadlist" class="float-box">
@@ -179,19 +191,6 @@ window.onload = function() {
     <TMPL_IF backupId><aside class="information backup">
       <h2><TMPL_VAR selectedBackupName></h2>
       <p><TMPL_VAR updateTime> 時点の過去ログ(バックアップ)データです。</p>
-      <TMPL_IF viewBackupNaming><details>
-        <summary>この過去ログ<TMPL_IF selectedBackupName>の名前をつけなおす<TMPL_ELSE>に名前をつける</TMPL_IF></summary>
-        <form id="backup-naming-form" method="post" action="./">
-          <input type="hidden" name="mode" value="bu-naming">
-          <input type="hidden" name="id" value="<TMPL_VAR id>">
-          <input type="hidden" name="date" value="<TMPL_VAR backupId>">
-          <dl>
-            <dt>名前</dt><dd><input type="text" name="backp-name"></dd>
-            <TMPL_IF reqdPassword><dt>パスワード</dt><dd><input type="password" name="pass"></dd></TMPL_IF>
-            <dd><input type="submit"></dd>
-          </dl>
-        </form>
-      </details></TMPL_IF>
     </aside></TMPL_IF>
     
     <TMPL_IF convertMode><aside class="information">

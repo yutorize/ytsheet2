@@ -584,36 +584,6 @@ aside.information.backup h2:empty {
 aside.information.backup p {
   font-size: 90%;
 }
-aside.information.backup details {
-  width: max-content;
-  margin-left: auto;
-  margin-bottom: -.5rem;
-  font-size: 84%;
-  text-align: right;
-}
-aside.information.backup summary {
-  font-weight: normal;
-}
-aside.information.backup dl {
-  display: grid;
-  grid-gap: .1em .5em;
-  align-items: end;
-  width: max-content;
-  margin: 0 auto .3rem;
-}
-aside.information.backup dl dt { grid-column: 1; }
-aside.information.backup dl dd { grid-column: 2; }
-aside.information.backup dl dd + dd{ grid-column: 3; }
-aside.information.backup input {
-  padding: .2em .3em;
-}
-aside.information.backup input[type="text"]     { width: 12em; }
-aside.information.backup input[type="password"] { width: 12em; }
-@media screen and (max-width:735px){
-  aside.information {
-    margin-top: 2rem;
-  }
-}
 
 /* // Nav
 ---------------------------------------------------------------------------------------------------- */
@@ -782,6 +752,8 @@ aside#downloadlist {
   min-width: 13rem;
   height: calc(100vh - 10rem);
   top: 8rem;
+
+  grid-template-rows: max-content 1fr max-content;
   
   padding-bottom: .5em;
   
@@ -790,8 +762,6 @@ aside#downloadlist {
   border-top-left-radius: 5px;
   border-bottom-left-radius: 5px;
   background: rgba(255,255,255,0.9);
-  
-  overflow-y: auto;
   
   z-index: 300;
 }
@@ -806,7 +776,7 @@ aside#downloadlist:not(.show) {
 
 aside#backuplist.show,
 aside#downloadlist.show {
-  display: block;
+  display: grid;
   animation-name: bulist-in;
   animation-duration: 0.2s;
   animation-fill-mode: forwards;
@@ -832,6 +802,7 @@ aside#downloadlist h2 {
 aside#backuplist ul,
 aside#downloadlist ul {
   white-space: nowrap;
+  overflow-y: auto;
 }
 aside#backuplist ul li,
 aside#downloadlist ul li {
@@ -843,7 +814,7 @@ aside#downloadlist ul li:last-child {
   border-bottom-width: 1px;
 }
 aside#backuplist ul li.backup-now {
-  background-color: rgba(100,200,255,0.2);
+  background-color: rgba(255,140,0,0.4);
 }
 aside#backuplist ul li a,
 aside#downloadlist ul li a {
@@ -884,6 +855,34 @@ aside#downloadlist ul li a small {
   aside#downloadlist {
     top: 10rem;
     height: calc(100vh - 12rem);
+  }
+}
+
+aside#backuplist #backup-naming {
+  min-height: 5em;
+  padding: .5em;
+  border-top-width: 1px;
+  border-top-style: solid;
+}
+aside#backuplist #backup-naming summary {
+}
+aside#backuplist #backup-naming form dl {
+  display: grid;
+  grid-template-columns: max-content auto;
+  grid-gap: .2em;
+  text-align: right;
+}
+aside#backuplist #backup-naming form dl dd {
+  grid-column: 2;
+}
+aside#backuplist #backup-naming form input{
+  padding: .2em .3em;
+}
+aside#backuplist #backup-naming form input[type="text"]     { width: 12em; }
+aside#backuplist #backup-naming form input[type="password"] { width: 12em; }
+@media screen and (max-width:735px){
+  aside.information {
+    margin-top: 2rem;
   }
 }
 
