@@ -244,6 +244,7 @@ sub data_save {
     mkdir "${dir}${file}" or error("データファイルの作成に失敗しました。");
   }
 
+  ## バックアップ作成
   if($mode eq 'save'){
     if (!-d "${dir}${file}/backup/"){ mkdir "${dir}${file}/backup/"; }
 
@@ -252,8 +253,29 @@ sub data_save {
     $year += 1900; $mon++;
     my $update_date = sprintf("%04d-%02d-%02d-%02d-%02d",$year,$mon,$day,$hour,$min);
     copy("${dir}${file}/data.cgi", "${dir}${file}/backup/${update_date}.cgi");
+
+    # 最新ログに名前がある場合の処理
+    if (-f "${dir}${file}/buname.cgi"){
+      sysopen (my $FH, "${dir}${file}/buname.cgi", O_RDWR);
+      flock($FH, 2);
+      my @list = sort { (split(/<>/,$b))[0] cmp (split(/<>/,$a))[0] } <$FH>;
+      seek($FH, 0, 0);
+      foreach (@list){
+        chomp $_;
+        my( $_date, $_name ) = split /<>/;
+        if ($_date eq 'latest'){
+          print $FH "${update_date}<>${_name}","\n";
+        }
+        else {
+          print $FH $_,"\n";
+        }
+      }
+      truncate($FH, tell($FH));
+      close($FH);
+    }
   }
 
+  ## data.cgiへ保存
   sysopen (my $DD, "${dir}${file}/data.cgi", O_WRONLY | O_TRUNC | O_CREAT, 0666);
     print $DD "ver<>".$main::ver."\n";
     foreach (sort keys %pc){

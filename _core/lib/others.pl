@@ -12,7 +12,7 @@ my $mode = $::in{'mode'};
 if($mode eq 'bu-naming'){
   my $type = $::in{'type'};
   my $id   = $::in{'id'};
-  my $date = $::in{'date'};
+  my $date = $::in{'date'} || 'latest';
   my $name = decode('utf8',$::in{'backp-name'});
   my $pass = $::in{'pass'};
 
@@ -20,15 +20,16 @@ if($mode eq 'bu-naming'){
   (undef, undef, my $file, undef, my $user) = getfile($id,$pass,$LOGIN_ID);
   if(!$file){ error('パスワードが間違っているか、編集権限がありません。'); }
 
-  ## 保存
+  ## ディレクトリ
   my $data_dir = ($type eq 'm') ? $set::mons_dir : ($type eq 'i') ? $set::item_dir : $set::char_dir;
   $file = $user ? '_'.$user.'/'.$file : $file;
 
+  ## 保存
   sysopen (my $FH, "${data_dir}${file}/buname.cgi", O_RDWR | O_CREAT, 0666);
   flock($FH, 2);
   my @list = sort { (split(/<>/,$b))[0] cmp (split(/<>/,$a))[0] } <$FH>;
   seek($FH, 0, 0);
-  print $FH "$date<>$name\n";
+  print $FH "$date<>$name\n" if $name ne '';
   foreach (@list){
     chomp $_;
     my( $_date, undef ) = split /<>/;
@@ -40,7 +41,8 @@ if($mode eq 'bu-naming'){
   close($FH);
 
   ## キャラシートへ移動／編集画面に戻る
-  print "Location: ./?id=${id}&backup=${date}\n\n";
+  if($date eq 'latest'){ print "Location: ./?id=${id}\n\n"; }
+  else                 { print "Location: ./?id=${id}&backup=${date}\n\n"; }
 }
 
 

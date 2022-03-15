@@ -148,7 +148,7 @@ if($::in{'id'}){
   my($selected, $list) = getBackupList($set::item_dir, $main::file);
   $SHEET->param(Backup => $list);
   $SHEET->param(selectedBackupName => $selected);
-  if($::in{'backup'} && ( $pc{'yourAuthor'} || $pc{'protect'} eq 'password' )){
+  if($pc{'yourAuthor'} || $pc{'protect'} eq 'password'){
     $SHEET->param(viewBackupNaming => 1);
   }
 }

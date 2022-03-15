@@ -94,7 +94,12 @@ sub getBackupList {
     $backname{$data[0]} = $data[1];
   }
   close($FH);
-  my @backup; my $selectedname;
+  my @backup = ({
+    "NOW"  => (!$::in{'backup'} ? 1 : 0),
+    "URL"  => '',
+    "DATE" => ($backname{'latest'} ? "<b>$backname{'latest'}</b>":'') . '最新',
+  });
+  my $selectedname = (!$::in{'backup'} ? $backname{'latest'} : '');
   foreach my $date (reverse sort @backlist) {
     if ($date =~ s/\.cgi//) {
       my $url = $date;
@@ -102,7 +107,7 @@ sub getBackupList {
       $date =~ s/^([0-9]{4}-[0-9]{2}-[0-9]{2})-([0-9]{2})-([0-9]{2})$/$1 $2\:$3/;
       push(@backup, {
         "NOW"  => $selected,
-        "URL"  => $url,
+        "URL"  => "&backup=$url",
         "DATE" => ($backname{$url} ? "<b>$backname{$url}</b>":'') . $date,
       });
       if($selected){ $selectedname = $backname{$url}; }
