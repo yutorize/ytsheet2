@@ -264,9 +264,9 @@ foreach my $num (keys %status){
   my $base = 0;
   $base += $data::syndrome_status{$pc{'syndrome1'}}[$num];
   $base += $pc{'syndrome2'} ? $data::syndrome_status{$pc{'syndrome2'}}[$num] : $base;
-  $SHEET->param(sttBase.ucfirst($name) => $base);
+  $SHEET->param('sttBase'.ucfirst($name) => $base);
 }
-$SHEET->param(sttWorks.ucfirst($pc{'sttWorks'}) => 1);
+$SHEET->param('sttWorks'.ucfirst($pc{'sttWorks'}) => 1);
 
 ### 技能 --------------------------------------------------
 foreach my $name ('Melee','Ranged','RC','Negotiate','Dodge','Percept','Will','Procure'){
