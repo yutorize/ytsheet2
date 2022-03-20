@@ -65,8 +65,6 @@ window.onload = function() {
           <li><a href="./?mode=convert&url=<TMPL_VAR convertUrl>"><span>コンバート</span></a></li>
         <TMPL_ELSE>
           <TMPL_IF backupId>
-            <TMPL_IF FellowMode><li><a href="./?id=<TMPL_VAR id>&backup=<TMPL_VAR backupId>">通常</a></li></TMPL_IF>
-            <TMPL_IF fellowPublic><TMPL_UNLESS FellowMode><li><a href="./?id=<TMPL_VAR id>&backup=<TMPL_VAR backupId>&f=1">フェロー</a></li></TMPL_UNLESS></TMPL_IF>
             <li class="small"><a onclick="backuplistOn()"><span>過去ログ</span></a></li>
             <TMPL_IF reqdPassword>
               <li class="small"><a onclick="editOn()">復元</a></li>
@@ -74,7 +72,6 @@ window.onload = function() {
               <li class="small"><a href="./?mode=edit&id=<TMPL_VAR id>&backup=<TMPL_VAR backupId>">復元</a></li>
             </TMPL_IF>
           <TMPL_ELSE>
-            <TMPL_IF FellowMode><li><a href="./?id=<TMPL_VAR id>">通常</a></li></TMPL_IF>
             <TMPL_UNLESS forbiddenMode>
               <li class="small"><a onclick="chatPaletteOn();"><span>パレット</span></a></li>
               <li class="small"><a onclick="donwloadListOn();">出力</a></li>
