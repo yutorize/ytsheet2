@@ -86,7 +86,7 @@ if($main::new_id){ $pc{'id'} = $main::new_id; }
 ## 現在時刻
 our $now = time;
 ## 最終更新
-$pc{'updateTime'} = time_convert($now);
+$pc{'updateTime'} = epocToDate($now);
 
 ## ファイル名取得
 our $file;
@@ -215,12 +215,6 @@ else {
 
 ### サブルーチン ###################################################################################
 use File::Copy qw/copy move/;
-
-sub time_convert {
-  my ($min,$hour,$day,$mon,$year) = (localtime($_[0]))[1..5];
-  $year += 1900; $mon++;
-  return sprintf("%04d-%02d-%02d %02d:%02d",$year,$mon,$day,$hour,$min);
-}
 
 sub data_save {
   my $mode = shift;

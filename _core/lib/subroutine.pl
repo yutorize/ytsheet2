@@ -282,6 +282,12 @@ sub commify {
   return $num;
 }
 
+
+### エポック秒 => 年-月-日 時:分 --------------------------------------------------
+sub epocToDate {
+  my ($min, $hour, $day, $mon, $year) = (localtime(shift))[1..5];
+  return sprintf("%04d-%02d-%02d %02d:%02d",$year+1900,$mon+1,$day,$hour,$min);
+}
 ### 安全にevalする --------------------------------------------------
 sub s_eval {
   my $i = shift;
