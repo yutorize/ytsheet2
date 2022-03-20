@@ -28,14 +28,6 @@ body {
     padding: 0 1.2rem;
     position: relative;
   }
-  .backup-message {
-    position: absolute;
-    top: -.5em;
-    left: 1em;
-  }
-  .backup-message + #area-name {
-    margin-top: 1em;
-  }
   #area-name, #tags {
     grid-column: span 2;
   }
