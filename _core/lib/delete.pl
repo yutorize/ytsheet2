@@ -52,10 +52,10 @@ if($mode eq 'delete'){
   close($FH);
 
   if (unlink "${data_dir}${file_dir}/data.cgi")  { $message .= 'キャラクターデータを削除しました。<br>'; }
-  if (unlink "${data_dir}${file_dir}/image.png") { $message .= 'キャラクター画像を削除しました。<br>'; }
-  if (unlink "${data_dir}${file_dir}/image.jpg") { $message .= 'キャラクター画像を削除しました。<br>'; }
-  if (unlink "${data_dir}${file_dir}/image.gif") { $message .= 'キャラクター画像を削除しました。<br>'; }
-  if (unlink "${data_dir}${file_dir}/image.webp") { $message .= 'キャラクター画像を削除しました。<br>'; }
+  if (unlink "${data_dir}${file_dir}/image.png") { $message .= '画像(png)を削除しました。<br>'; }
+  if (unlink "${data_dir}${file_dir}/image.jpg") { $message .= '画像(jpg)を削除しました。<br>'; }
+  if (unlink "${data_dir}${file_dir}/image.gif") { $message .= '画像(gif)を削除しました。<br>'; }
+  if (unlink "${data_dir}${file_dir}/image.webp"){ $message .= '画像(webp)を削除しました。<br>'; }
 
   if($set::del_back){
     my $dir = "${data_dir}${file_dir}/backup/";
@@ -72,10 +72,12 @@ if($mode eq 'delete'){
     #else { print 'バックアップフォルダ'.$dir.'の削除に失敗しました。<br>'; }
   }
   
-  if(rmdir "${data_dir}${file_dir}"){ $message .= 'ディレクトリを削除しました。<br>'; }
+  if(rmdir "${data_dir}${file_dir}"){ $message .= 'ディレクトリを削除しました。<br>シートを完全に削除しました。<br>'; }
   else {
     if (!-d "${data_dir}deleted"){ mkdir "${data_dir}deleted" or error("削除データのバックアップディレクトリの作成に失敗しました。"); }
-    rename("${data_dir}${file_dir}", "${data_dir}deleted/${user}_${file}");
+    if(rename("${data_dir}${file_dir}", "${data_dir}deleted/${user}_${file}")){
+       $message .= 'シートを削除しました。<br>';
+    }
   }
   
   info('キャラクターシートの削除',$message);
