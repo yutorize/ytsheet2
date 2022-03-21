@@ -122,15 +122,15 @@ async function downloadAsUdonarium() {
   downloadFile(`udonarium_data_${characterId}.zip`, udonariumUrl);
 }
 
-function isIOS() {
-  return /[ \(]iP/.test(navigator.userAgent) || navigator.userAgent.includes('Mac OS');
+function isTextAreaCopyMode() {
+  return location.search.includes('textareaCopyMode') || /[ \(]iP/.test(navigator.userAgent) || navigator.userAgent.includes('Mac OS');
 }
 
 async function downloadAsCcfolia() {
   const characterDataJson = await getJsonData();
   const json = io.github.shunshun94.trpg.ccfolia[`generateCharacterJsonFromYtSheet2${generateType}`](characterDataJson, location.href);
   json.then((result)=>{
-    if (isIOS()) {
+    if (isTextAreaCopyMode()) {
       popCopyText(result);
     } else {
       copyToClipboard(result);
