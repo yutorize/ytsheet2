@@ -14,6 +14,23 @@ function closeImage() {
     document.getElementById("image-box").style.bottom = '-100vh';
   },200);
 }
+function popCopyText(text) {
+  document.getElementById("copyText-box").style.bottom = 0;
+  document.getElementById("copyText-box").style.opacity = 1;
+  const textarea = document.getElementById("copyText-box-textarea");
+  textarea.focus();
+  textarea.value = text;
+  textarea.setSelectionRange(0, textarea.value.length);
+}
+function closeCopyText() {
+  document.getElementById("copyText-box").style.opacity = 0;
+  setTimeout(function(){
+    document.getElementById("copyText-box").style.bottom = '-100vh';
+  },200);
+}
+function stopPropagation(e) {
+  e.stopPropagation();
+}
 function editOn() {
   document.querySelectorAll('.float-box:not(#login-form)').forEach(obj => { obj.classList.remove('show') });
   document.getElementById("login-form").classList.toggle('show');
@@ -105,12 +122,20 @@ async function downloadAsUdonarium() {
   downloadFile(`udonarium_data_${characterId}.zip`, udonariumUrl);
 }
 
+function isIOS() {
+  return /[ \(]iP/.test(navigator.userAgent) || navigator.userAgent.includes('Mac OS');
+}
+
 async function downloadAsCcfolia() {
   const characterDataJson = await getJsonData();
   const json = io.github.shunshun94.trpg.ccfolia[`generateCharacterJsonFromYtSheet2${generateType}`](characterDataJson, location.href);
   json.then((result)=>{
-    copyToClipboard(result);
-    alert('クリップボードにコピーしました。ココフォリアにペーストすることでデータを取り込めます');
+    if (isIOS()) {
+      popCopyText(result);
+    } else {
+      copyToClipboard(result);
+      alert('クリップボードにコピーしました。ココフォリアにペーストすることでデータを取り込めます');
+    }
   });
   
 }

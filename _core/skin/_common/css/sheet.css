@@ -774,6 +774,31 @@ textarea::placeholder {
 }
 
 
+/* // CopyText-Box
+---------------------------------------------------------------------------------------------------- */
+#copyText-box {
+  position: fixed;
+  bottom: -100vh;
+  left:0;
+  width: 100%;
+  height: 100%;
+  z-index: 999;
+  opacity: 0;
+  background-color: rgba(0,0,0,0.7);
+  transition-property: opacity;
+  transition-duration: 0.2s;
+  transition-timing-function: ease-out;
+}
+#copyText-box-textarea {
+  position:absolute;
+  top: 40px;
+  bottom:40px;
+  left:20px;
+  right:20px;
+  resize:none;
+}
+
+
 /* // Backup
 ---------------------------------------------------------------------------------------------------- */
 aside#backuplist,

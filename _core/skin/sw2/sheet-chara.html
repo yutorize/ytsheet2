@@ -826,6 +826,9 @@ window.onload = function() {
     <TMPL_IF image><div id="image-box" onclick="closeImage()">
       <img src="<TMPL_VAR imageSrc>" id="image-box-image">
     </div></TMPL_IF> 
+    <div id="copyText-box" onclick="closeCopyText()">
+      <textarea id="copyText-box-textarea" onclick="stopPropagation(arguments[0])"></textarea>
+    </div>
   </main>
   <TMPL_INCLUDE NAME="skin-add/sheet-sidebar.html">
 
