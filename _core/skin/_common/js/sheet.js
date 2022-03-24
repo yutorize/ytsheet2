@@ -85,15 +85,25 @@ function downloadFile(title, url) {
 }
 
 function copyToClipboard(text) {
-  // navigator.clipboard.writeText(text); は許可されていなければ動作せず、
-  // 非 SSL で繋いでいる場合は許可することすらできないので利用できない。
   const textarea = document.createElement('textarea');
   document.getElementById('downloadlist').appendChild(textarea);
   textarea.value = text;
   textarea.focus();
   textarea.setSelectionRange(0, textarea.value.length);
-  document.execCommand('copy');
+  const isCopied = document.execCommand('copy')
   textarea.remove();
+  if (isCopied) {
+    return;
+  } else if (location.protocol === 'https:') {
+    if( navigator.clipboard ) {
+      navigator.clipboard.writeText(text);
+      return;
+    } else if ( window.clipboardData ) {
+      window.clipboardData.setData('Text', text);
+      return;
+    }
+  }
+  throw 'クリップボードへの書き込みに失敗しました';
 }
 
 async function downloadAsUdonarium() {
@@ -109,8 +119,12 @@ async function downloadAsCcfolia() {
   const characterDataJson = await getJsonData();
   const json = io.github.shunshun94.trpg.ccfolia[`generateCharacterJsonFromYtSheet2${generateType}`](characterDataJson, location.href);
   json.then((result)=>{
-    copyToClipboard(result);
-    alert('クリップボードにコピーしました。ココフォリアにペーストすることでデータを取り込めます');
+    try {
+      copyToClipboard(result);
+      alert('クリップボードにコピーしました。ココフォリアにペーストすることでデータを取り込めます');
+    } catch(e) {
+      alert(e);
+    }
   });
   
 }
