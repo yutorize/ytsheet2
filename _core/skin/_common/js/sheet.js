@@ -85,20 +85,24 @@ function downloadFile(title, url) {
 }
 
 function copyToClipboard(text) {
+  const confirmBehavior = (location.search.includes('confirmBehavior')) ? (text)=>{alert(text);} : ()=>{};
   const textarea = document.createElement('textarea');
   document.getElementById('downloadlist').appendChild(textarea);
   textarea.value = text;
   textarea.focus();
   textarea.setSelectionRange(0, textarea.value.length);
-  const isCopied = document.execCommand('copy')
+  const isCopied = document.execCommand('copy');
   textarea.remove();
   if (isCopied) {
+    confirmBehavior('isCopied is "true"');
     return;
   } else if (location.protocol === 'https:') {
     if( navigator.clipboard ) {
+      confirmBehavior('isCopied is "false". navigator.clipboard will be used');
       navigator.clipboard.writeText(text);
       return;
     } else if ( window.clipboardData ) {
+      confirmBehavior('isCopied is "false". window.clipboardData.setData will be used');
       window.clipboardData.setData('Text', text);
       return;
     }
