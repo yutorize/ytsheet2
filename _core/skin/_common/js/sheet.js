@@ -145,6 +145,7 @@ function getClipboardItem() {
       });
     }, (err)=>{
       console.error(err);
+      alert('キャラクターシートのデータ取得に失敗しました。通信状況等をご確認ください');
     })
   });
 }
