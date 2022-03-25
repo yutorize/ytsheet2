@@ -14,6 +14,25 @@ function closeImage() {
     document.getElementById("image-box").style.bottom = '-100vh';
   },200);
 }
+function closeTextareaForCopy() {
+  document.getElementById('copyText-box').remove();
+  document.getElementById('copyText-box-textarea').remove();
+}
+function popTextareaForCopy(text) {
+  const div = document.createElement('div');
+  div.id = 'copyText-box';
+  div.onclick = closeTextareaForCopy;
+
+  const textarea = document.createElement('textarea');
+  textarea.id = 'copyText-box-textarea';
+  textarea.value = text;
+
+  document.getElementsByTagName('main')[0].appendChild(div);
+  document.getElementsByTagName('main')[0].appendChild(textarea);
+
+  textarea.focus();
+  textarea.setSelectionRange(0, textarea.value.length);
+}
 function editOn() {
   document.querySelectorAll('.float-box:not(#login-form)').forEach(obj => { obj.classList.remove('show') });
   document.getElementById("login-form").classList.toggle('show');
@@ -137,7 +156,7 @@ function clipboardItemToTextareaClipboard(clipboardItem) {
         copyToClipboard(jsonText);
         alert('クリップボードにコピーしました。ココフォリアにペーストすることでデータを取り込めます');
       } catch (e) {
-        alert('クリップボードへのコピーに失敗しました');
+        popTextareaForCopy(jsonText);
       }
     });
   });
