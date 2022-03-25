@@ -85,34 +85,20 @@ function downloadFile(title, url) {
 }
 
 function copyToClipboard(text) {
-  const confirmBehavior = (location.search.includes('confirmBehavior')) ? (text)=>{alert(text);} : ()=>{};
-  return new Promise((resolve ,reject)=>{
-    const textarea = document.createElement('textarea');
-    document.getElementById('downloadlist').appendChild(textarea);
-    textarea.value = text;
-    textarea.focus();
-    textarea.setSelectionRange(0, textarea.value.length);
-    const isCopied = document.execCommand('copy');
-    textarea.remove();
-    if (isCopied) {
-      resolve();
-    } else if (location.protocol === 'https:') {
-      if( navigator.clipboard ) {
-        navigator.clipboard.writeText(text).then(resolve, (err)=>{
-          console.error(err);
-          reject(`クリップボードへのコピーに失敗しました。理由：${err.name}: ${err.message}（@ L${err.lineNumber || err.line} ${err.fileName || err.sourceURL}`);
-        });
-        return;
-      } else if ( window.clipboardData ) {
-        if(window.clipboardData.setData('Text', text)) {
-          resolve()
-        } else {
-          reject('クリップボードへのコピーに失敗しました');
-        }
-      }
-    }
-    reject('クリップボードへのコピーに失敗しました');
-  });
+  // navigator.clipboard.writeText(text); は許可されていなければ動作せず、
+  // 非 SSL で繋いでいる場合は許可することすらできないので利用できない。
+  const textarea = document.createElement('textarea');
+  document.getElementById('downloadlist').appendChild(textarea);
+  textarea.value = text;
+  textarea.focus();
+  textarea.setSelectionRange(0, textarea.value.length);
+  const isCopied = document.execCommand('copy');
+  textarea.remove();
+  if (isCopied) {
+    return;
+  } else{
+    throw 'クリップボードへのコピーに失敗しました';
+  }
 }
 
 async function downloadAsUdonarium() {
@@ -124,15 +110,50 @@ async function downloadAsUdonarium() {
   downloadFile(`udonarium_data_${characterId}.zip`, udonariumUrl);
 }
 
-async function downloadAsCcfolia() {
-  const characterDataJson = await getJsonData();
-  const json = io.github.shunshun94.trpg.ccfolia[`generateCharacterJsonFromYtSheet2${generateType}`](characterDataJson, location.href);
-  json.then((result)=>{
-    copyToClipboard(result).then((ok)=>{
-      alert('クリップボードにコピーしました。ココフォリアにペーストすることでデータを取り込めます');
-    }, alert);
+function getCcfoliaJson() {
+  return new Promise((resolve, reject)=>{
+    getJsonData().then((characterDataJson)=>{
+      io.github.shunshun94.trpg.ccfolia[`generateCharacterJsonFromYtSheet2${generateType}`](characterDataJson, location.href).then(resolve, reject);
+    }, reject);
   });
-  
+}
+
+function getClipboardItem() {
+  return new ClipboardItem({
+    'text/plain': getCcfoliaJson().then((json)=>{
+      return new Promise(async (resolve)=>{
+        resolve(new Blob([json]));
+      });
+    }, (err)=>{
+      console.error(err);
+    })
+  });
+}
+
+function clipboardItemToTextareaClipboard(clipboardItem) {
+  clipboardItem.getType('text/plain').then((blob)=>{
+    blob.text().then((jsonText)=>{
+      try {
+        copyToClipboard(jsonText);
+        alert('クリップボードにコピーしました。ココフォリアにペーストすることでデータを取り込めます');
+      } catch (e) {
+        alert('クリップボードへのコピーに失敗しました');
+      }
+    });
+  });
+}
+
+async function downloadAsCcfolia() {
+  const clipboardItem = getClipboardItem();
+  if(navigator.clipboard) {
+    navigator.clipboard.write([clipboardItem]).then((ok)=>{
+      alert('クリップボードにコピーしました。ココフォリアにペーストすることでデータを取り込めます');
+    }, (err)=>{
+      clipboardItemToTextareaClipboard(clipboardItem);
+    });
+  } else {
+    clipboardItemToTextareaClipboard(clipboardItem);
+  }  
 }
 
 async function donloadAsText() {
