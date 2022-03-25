@@ -86,28 +86,33 @@ function downloadFile(title, url) {
 
 function copyToClipboard(text) {
   const confirmBehavior = (location.search.includes('confirmBehavior')) ? (text)=>{alert(text);} : ()=>{};
-  const textarea = document.createElement('textarea');
-  document.getElementById('downloadlist').appendChild(textarea);
-  textarea.value = text;
-  textarea.focus();
-  textarea.setSelectionRange(0, textarea.value.length);
-  const isCopied = document.execCommand('copy');
-  textarea.remove();
-  if (isCopied) {
-    confirmBehavior('isCopied is "true"');
-    return;
-  } else if (location.protocol === 'https:') {
-    if( navigator.clipboard ) {
-      confirmBehavior('isCopied is "false". navigator.clipboard will be used');
-      navigator.clipboard.writeText(text);
-      return;
-    } else if ( window.clipboardData ) {
-      confirmBehavior('isCopied is "false". window.clipboardData.setData will be used');
-      window.clipboardData.setData('Text', text);
-      return;
+  return new Promise((resolve ,reject)=>{
+    const textarea = document.createElement('textarea');
+    document.getElementById('downloadlist').appendChild(textarea);
+    textarea.value = text;
+    textarea.focus();
+    textarea.setSelectionRange(0, textarea.value.length);
+    const isCopied = document.execCommand('copy');
+    textarea.remove();
+    if (isCopied) {
+      resolve();
+    } else if (location.protocol === 'https:') {
+      if( navigator.clipboard ) {
+        navigator.clipboard.writeText(text).then(resolve, (err)=>{
+          console.error(err);
+          reject(`クリップボードへのコピーに失敗しました。理由：${err.name}: ${err.message}（@ L${err.lineNumber || err.line} ${err.fileName || err.sourceURL}`);
+        });
+        return;
+      } else if ( window.clipboardData ) {
+        if(window.clipboardData.setData('Text', text)) {
+          resolve()
+        } else {
+          reject('クリップボードへのコピーに失敗しました');
+        }
+      }
     }
-  }
-  throw 'クリップボードへの書き込みに失敗しました';
+    reject('クリップボードへのコピーに失敗しました');
+  });
 }
 
 async function downloadAsUdonarium() {
@@ -123,12 +128,9 @@ async function downloadAsCcfolia() {
   const characterDataJson = await getJsonData();
   const json = io.github.shunshun94.trpg.ccfolia[`generateCharacterJsonFromYtSheet2${generateType}`](characterDataJson, location.href);
   json.then((result)=>{
-    try {
-      copyToClipboard(result);
+    copyToClipboard(result).then((ok)=>{
       alert('クリップボードにコピーしました。ココフォリアにペーストすることでデータを取り込めます');
-    } catch(e) {
-      alert(e);
-    }
+    }, alert);
   });
   
 }
