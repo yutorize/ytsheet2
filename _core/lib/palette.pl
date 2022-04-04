@@ -8,40 +8,60 @@ use feature 'say';
 require $set::lib_palette_sub;
 
 ### バックアップ情報読み込み #########################################################################
-my $backup = $::in{'backup'};
+my $log = $::in{'log'};
 
 ### キャラクターデータ読み込み #######################################################################
 my $id = $::in{'id'};
 my $tool = $::in{'tool'};
 my ($file, $type, undef) = getfile_open($id);
 
-my $data_dir;
-   if($type eq 'm'){ $data_dir = $set::mons_dir; }
-elsif($type eq 'i'){ $data_dir = $set::item_dir; }
-else               { $data_dir = $set::char_dir; }
+my $datadir;
+   if($type eq 'm'){ $datadir = $set::mons_dir; }
+elsif($type eq 'i'){ $datadir = $set::item_dir; }
+else               { $datadir = $set::char_dir; }
 
 our %pc = ();
-
-my $IN;
-if($backup eq "") {
-  open $IN, '<', "${data_dir}${file}/data.cgi" or "";
-} else {
-  open $IN, '<', "${data_dir}${file}/backup/${backup}.cgi" or "";
-}
 if($::in{'propertiesall'}){ $pc{'chatPalettePropertiesAll'} = 1 }
 
+my $datatype = ($::in{'log'}) ? 'logs' : 'data';
+
+my @lines;
+open my $IN, '<', "${datadir}${file}/${datatype}.cgi" or &login_error;
+if($datatype eq 'logs'){
+  my $hit = 0;
+  while (<$IN>){
+    if (index($_, "=") == 0){
+      if (index($_, "=$::in{'log'}=") == 0){ $hit = 1; next; }
+      if ($hit){ last; }
+    }
+    if (!$hit) { next; }
+    push(@lines, $_);
+  }
+}
+else {
+  @lines = <$IN>;
+}
+close($IN);
+
 if($tool){
-  $_ =~ s/^(.+?)<>(.*)\n$/$pc{$1} = tag_unescape($2);/egi while <$IN>;
+  foreach (@lines){
+    chomp;
+    my ($key, $value) = split(/<>/, $_, 2);
+    $pc{$key} = tag_unescape($value);
+  }
   $pc{'chatPalette'} =~ s/<br>/\n/g;
   $pc{'skills'} =~ s/<br>/\n/gi;
   $_ = tag_delete($_) foreach values %pc;
 }
 else {
-  $_ =~ s/^(.+?)<>(.*)\n$/$pc{$1} = tag_unescape_ytc($2);/egi while <$IN>;
+  foreach (@lines){
+    chomp;
+    my ($key, $value) = split(/<>/, $_, 2);
+    $pc{$key} = tag_unescape_ytc($value);
+  }
   $pc{'chatPalette'} =~ s/<br>/\n/g;
   $pc{'skills'} =~ s/<br>/\n/gi;
 }
-close($IN);
 
 $pc{'ver'} =~ s/^([0-9]+)\.([0-9]+)\.([0-9]+)$/$1.$2$3/;
 if($pc{'ver'} < 1.11001){ $pc{'paletteUseBuff'} = 1; }

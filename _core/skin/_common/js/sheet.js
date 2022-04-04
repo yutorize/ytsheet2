@@ -18,9 +18,9 @@ function editOn() {
   document.querySelectorAll('.float-box:not(#login-form)').forEach(obj => { obj.classList.remove('show') });
   document.getElementById("login-form").classList.toggle('show');
 }
-function backuplistOn() {
-  document.querySelectorAll('.float-box:not(#backuplist)').forEach(obj => { obj.classList.remove('show') });
-  document.getElementById("backuplist").classList.toggle('show');
+function loglistOn() {
+  document.querySelectorAll('.float-box:not(#loglist)').forEach(obj => { obj.classList.remove('show') });
+  document.getElementById("loglist").classList.toggle('show');
 }
 function donwloadListOn() {
   document.querySelectorAll('.float-box:not(#downloadlist)').forEach(obj => { obj.classList.remove('show') });

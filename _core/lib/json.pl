@@ -10,7 +10,7 @@ use JSON::PP;
 my $callback = $::in{'callback'};
 
 ### バックアップ情報読み込み #########################################################################
-my $backup = $::in{'backup'};
+my $log = $::in{'log'};
 
 ### キャラクターデータ読み込み #######################################################################
 my $id  = $::in{'id'};
@@ -21,27 +21,31 @@ my %pc = ();
 if($id){
   ($file, $type, undef) = getfile_open($id);
 
-  my $data_dir;
-     if($type eq 'm'){ $data_dir = $set::mons_dir; }
-  elsif($type eq 'i'){ $data_dir = $set::item_dir; }
-  else               { $data_dir = $set::char_dir; }
+  my $datadir;
+     if($type eq 'm'){ $datadir = $set::mons_dir; }
+  elsif($type eq 'i'){ $datadir = $set::item_dir; }
+  else               { $datadir = $set::char_dir; }
 
-  my $IN;
-  if($backup eq "") {
-    open $IN, '<', "${data_dir}${file}/data.cgi" or "";
-  } else {
-    open $IN, '<', "${data_dir}${file}/backup/${backup}.cgi" or "";
-  }
-
+  my $datatype = ($::in{'log'}) ? 'logs' : 'data';
+  my $hit = 0;
+  open my $IN, '<', "${datadir}${file}/${datatype}.cgi" or viewNotFound($datadir);
   while (<$IN>){
-    chomp;
+    if($datatype eq 'logs'){
+      if (index($_, "=") == 0){
+        if (index($_, "=$::in{'log'}=") == 0){ $hit = 1; next; }
+        if ($hit){ last; }
+      }
+      if (!$hit) { next; }
+    }
+    chomp $_;
     my ($key, $value) = split(/<>/, $_, 2);
     $pc{$key} = $value;
   }
   close($IN);
+  if($datatype eq 'logs' && !$hit){ error("過去ログ（$::in{'log'}）が見つかりません。"); }
   
   if($pc{'image'}){
-    $pc{'imageURL'} = url()."${data_dir}${file}/image.$pc{'image'}";
+    $pc{'imageURL'} = url()."${datadir}${file}/image.$pc{'image'}";
   }
 }
 elsif($::in{'url'}){
@@ -60,10 +64,10 @@ if($pc{'ver'} ne '') {
   delete $pc{'IP'};
 }
 else {
-  if($backup eq "") {
+  if($log eq "") {
     $pc{'result'} = "リクエストされたシートは見つかりませんでした。(id: ${id})";
   } else {
-    $pc{'result'} = "リクエストされたシートは見つかりませんでした。(id: ${id}, backup: ${backup})";
+    $pc{'result'} = "リクエストされたシートは見つかりませんでした。(id: ${id}, log: ${log})";
   }
 }
 

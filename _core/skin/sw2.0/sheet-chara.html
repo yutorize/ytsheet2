@@ -64,14 +64,14 @@ window.onload = function() {
         <TMPL_IF convertMode>
           <li><a href="./?mode=convert&url=<TMPL_VAR convertUrl>"><span>コンバート</span></a></li>
         <TMPL_ELSE>
-          <TMPL_IF backupId>
-            <TMPL_IF FellowMode><li><a href="./?id=<TMPL_VAR id>&backup=<TMPL_VAR backupId>">通常</a></li></TMPL_IF>
-            <TMPL_IF fellowPublic><TMPL_UNLESS FellowMode><li><a href="./?id=<TMPL_VAR id>&backup=<TMPL_VAR backupId>&f=1">フェロー</a></li></TMPL_UNLESS></TMPL_IF>
-            <li class="small"><a onclick="backuplistOn()"><span>過去ログ</span></a></li>
+          <TMPL_IF logId>
+            <TMPL_IF FellowMode><li><a href="./?id=<TMPL_VAR id>&log=<TMPL_VAR logId>">通常</a></li></TMPL_IF>
+            <TMPL_IF fellowPublic><TMPL_UNLESS FellowMode><li><a href="./?id=<TMPL_VAR id>&log=<TMPL_VAR logId>&f=1">フェロー</a></li></TMPL_UNLESS></TMPL_IF>
+            <li class="small"><a onclick="loglistOn()"><span>過去ログ</span></a></li>
             <TMPL_IF reqdPassword>
               <li class="small"><a onclick="editOn()">復元</a></li>
             <TMPL_ELSE>
-              <li class="small"><a href="./?mode=edit&id=<TMPL_VAR id>&backup=<TMPL_VAR backupId>">復元</a></li>
+              <li class="small"><a href="./?mode=edit&id=<TMPL_VAR id>&log=<TMPL_VAR logId>">復元</a></li>
             </TMPL_IF>
           <TMPL_ELSE>
             <TMPL_IF FellowMode><li><a href="./?id=<TMPL_VAR id>">通常</a></li></TMPL_IF>
@@ -79,7 +79,7 @@ window.onload = function() {
             <TMPL_UNLESS forbiddenMode>
               <li class="small"><a onclick="chatPaletteOn();"><span>パレット</span></a></li>
               <li class="small"><a onclick="donwloadListOn();">出力</a></li>
-              <li class="small"><a onclick="backuplistOn()"><span>過去ログ</span></a></li>
+              <li class="small"><a onclick="loglistOn()"><span>過去ログ</span></a></li>
             </TMPL_UNLESS>
             <TMPL_IF reqdPassword>
               <li class="small"><a onclick="editOn()">編集</a></li>
@@ -102,12 +102,24 @@ window.onload = function() {
   </TMPL_IF>
   
   <TMPL_UNLESS forbiddenMode>
-    <aside id="backuplist" class="float-box">
+    <aside id="loglist" class="float-box">
       <h2>過去ログ（バックアップ）</h2>
       <ul>
-        <li<TMPL_UNLESS backupId> class="backup-now"</TMPL_UNLESS>><a href="?id=<TMPL_VAR id>">最新</a></li>
-        <TMPL_LOOP Backup><li<TMPL_IF NOW> class="backup-now"</TMPL_IF>><a href="?id=<TMPL_VAR id>&backup=<TMPL_VAR URL>"><TMPL_VAR DATE></a></li></TMPL_LOOP>
+        <TMPL_LOOP LogList><li class="<TMPL_VAR SELECTED>"><a href="?id=<TMPL_VAR id><TMPL_VAR URL>"><TMPL_VAR DATE></a></li></TMPL_LOOP>
       </ul>
+      <TMPL_IF viewLogNaming><details id="log-naming">
+        <summary>閲覧中のログ<TMPL_IF selectedLogName>の名前をつけなおす<TMPL_ELSE>に名前をつける</TMPL_IF></summary>
+        <form id="log-naming-form" method="post" action="./">
+          <input type="hidden" name="mode" value="bu-naming">
+          <input type="hidden" name="id" value="<TMPL_VAR id>">
+          <input type="hidden" name="date" value="<TMPL_VAR logId>">
+          <dl>
+            <dt>名前</dt><dd><input type="text" name="log-name" value="<TMPL_VAR selectedLogName>"></dd>
+            <TMPL_IF reqdPassword><dt>パスワード</dt><dd><input type="password" name="pass"></dd></TMPL_IF>
+            <dd><input type="submit"></dd>
+          </dl>
+        </form>
+      </details></TMPL_IF>
     </aside>
 
     <aside id="downloadlist" class="float-box">
@@ -125,7 +137,7 @@ window.onload = function() {
     <input type="hidden" name="mode" value="edit">
     <input type="hidden" name="id" value="<TMPL_VAR id>">
     <input type="password" name="pass" placeholder="password">
-    <input type="hidden" name="backup" value="<TMPL_VAR backupId>">
+    <input type="hidden" name="log" value="<TMPL_VAR logId>">
     <input type="submit" value="編集">
   </form>
 
@@ -135,22 +147,9 @@ window.onload = function() {
       <TMPL_IF yourAuthor>あなた以外には一部または全てのデータが伏せられます。(<a href="./?id=<TMPL_VAR id>&checkView=1">⇒確認</a>)</TMPL_IF>
     </aside></TMPL_IF>
     
-    <TMPL_IF backupId><aside class="information backup">
-      <h2><TMPL_VAR selectedBackupName></h2>
+    <TMPL_IF logId><aside class="information log">
+      <h2><TMPL_VAR selectedLogName></h2>
       <p><TMPL_VAR updateTime> 時点の過去ログ(バックアップ)データです。</p>
-      <TMPL_IF viewBackupNaming><details>
-        <summary>この過去ログ<TMPL_IF selectedBackupName>の名前をつけなおす<TMPL_ELSE>に名前をつける</TMPL_IF></summary>
-        <form id="backup-naming-form" method="post" action="./">
-          <input type="hidden" name="mode" value="bu-naming">
-          <input type="hidden" name="id" value="<TMPL_VAR id>">
-          <input type="hidden" name="date" value="<TMPL_VAR backupId>">
-          <dl>
-            <dt>名前</dt><dd><input type="text" name="backp-name"></dd>
-            <TMPL_IF reqdPassword><dt>パスワード</dt><dd><input type="password" name="pass"></dd></TMPL_IF>
-            <dd><input type="submit"></dd>
-          </dl>
-        </form>
-      </details></TMPL_IF>
     </aside></TMPL_IF>
     
     <TMPL_IF convertMode><aside class="information">

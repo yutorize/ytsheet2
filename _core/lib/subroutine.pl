@@ -288,6 +288,11 @@ sub epocToDate {
   my ($min, $hour, $day, $mon, $year) = (localtime(shift))[1..5];
   return sprintf("%04d-%02d-%02d %02d:%02d",$year+1900,$mon+1,$day,$hour,$min);
 }
+sub epocToDateQuery {
+  my ($sec, $min, $hour, $day, $mon, $year) = (localtime(shift))[0..5];
+  return sprintf("%04d-%02d-%02d-%02d-%02d-%02d",$year+1900,$mon+1,$day,$hour,$min, $sec);
+}
+
 ### 安全にevalする --------------------------------------------------
 sub s_eval {
   my $i = shift;
@@ -296,6 +301,7 @@ sub s_eval {
   $i =~ s/,([0-9]{3}(?![0-9]))/$1/g;
   return eval($i);
 }
+
 ### グループ設定の変換 --------------------------------------------------
 sub groupArrayToHash {
   my %hash;
@@ -569,6 +575,7 @@ sub palettePropertiesUsedOnly {
   }
   return @propaties_out;
 }
+
 ### 案内画面 --------------------------------------------------
 sub info {
   our $header = shift;
@@ -584,5 +591,81 @@ sub error {
   require $set::lib_info;
   exit;
 }
+
+### アップデート・コンバート --------------------------------------------------
+## バックアップ形式変更
+sub logFileCheck {
+  my $dir = shift;
+  my $mode = shift;
+  if (-d "${dir}/backup") { logFileUpdate($dir,$mode); }
+}
+sub logFileUpdate {
+  my $dir = shift;
+  my $mode = shift;
+
+  my $lately_term    = 60*60*24;
+  my $interval_long  = 60 * ($set::log_interval_long  || 60);
+  my $interval_short = 60 * ($set::log_interval_short || 15);
+  
+  require Time::Local;
+
+  my %log_name;
+  open (my $IN, "${dir}/buname.cgi");
+  while (<$IN>){
+    chomp;
+    my ($date, $name) = split('<>', $_, 2);
+    if($name){ $log_name{$date} = $name; }
+  }
+  close($IN);
+
+  opendir(my $DIR,"${dir}/backup");
+  my @log_list;
+  while (my $date = readdir($DIR)){
+    if ($date =~ s/.cgi$//){
+      my ($year, $month, $day, $hour, $min) = split(/-/, $date);
+      my $epoc = Time::Local::timelocal(0, $min, $hour, $day, $month-1, $year-1900);
+      push(@log_list, { date => $date, epoc => $epoc });
+    }
+  }
+  closedir($DIR);
+
+  my @tmp = map { $_->{date} } @log_list;
+  @log_list = @log_list[sort {$tmp[$a] cmp $tmp[$b]} 0 .. $#tmp];
+
+  my $latest_epoc = (stat("${dir}/data.cgi"))[9];
+
+  sysopen (my $OUT, "${dir}/logs.cgi", O_WRONLY | O_TRUNC | O_CREAT, 0666);
+  flock($OUT, 2);
+  sysopen (my $BUL, "${dir}/log-list.cgi", O_WRONLY | O_TRUNC | O_CREAT, 0666);
+  flock($BUL, 2);
+  my $before_saved = 0;
+  foreach my $i (0 .. $#log_list){
+    my $date = $log_list[$i]{date};
+    my $epoc = $log_list[$i]{epoc};
+    my $next = $log_list[$i+1]{epoc} || $latest_epoc;
+    if (
+      $latest_epoc - $epoc <= $lately_term ||
+      $log_name{$date} ne '' ||
+      $next - $epoc >= $interval_long ||
+      ($next - $epoc >= $interval_short &&
+       $epoc - $before_saved >= $interval_long)
+    ){
+      $before_saved = $epoc;
+      print $OUT "=${date}=\n";
+      print $BUL "${date}<>$epoc<>$log_name{$date}\n";
+      open(my $IN,"${dir}/backup/${date}.cgi") or die;
+      while (my $line = <$IN>){ print $OUT $line; };
+      close($IN);
+    }
+    unlink("${dir}/backup/${date}.cgi");
+  }
+  print $BUL "latest<>$latest_epoc<>\n";
+  close($OUT);
+  close($BUL);
+  rmdir("${dir}/backup");
+  unlink("${dir}/buname.cgi");
+  if($mode eq 'view'){ print "Location:./?id=$::in{'id'}\n\n"; }
+}
+
 
 1;

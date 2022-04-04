@@ -568,20 +568,20 @@ aside.information a {
 aside.information + article {
   border-top: 0;
 }
-aside.information.backup h2 {
+aside.information.log h2 {
   margin-top: -.3rem;
   font-size: 1em;
 }
-aside.information.backup h2::before {
+aside.information.log h2::before {
   content: "【";
 }
-aside.information.backup h2::after {
+aside.information.log h2::after {
   content: "】";
 }
-aside.information.backup h2:empty {
+aside.information.log h2:empty {
   display: none;
 }
-aside.information.backup p {
+aside.information.log p {
   font-size: 90%;
 }
 
@@ -744,15 +744,16 @@ textarea::placeholder {
 }
 
 
-/* // Backup
+/* // LogList
 ---------------------------------------------------------------------------------------------------- */
-aside#backuplist,
+aside#loglist,
 aside#downloadlist {
   position: fixed;
-  min-width: 13rem;
+  min-width: 15em;
   height: calc(100vh - 10rem);
   top: 8rem;
 
+  display: grid;
   grid-template-rows: max-content 1fr max-content;
   
   padding-bottom: .5em;
@@ -766,7 +767,7 @@ aside#downloadlist {
   z-index: 300;
 }
 
-aside#backuplist:not(.show),
+aside#loglist:not(.show),
 aside#downloadlist:not(.show) {
   right: 0;
   animation-name: bulist-hide;
@@ -774,9 +775,8 @@ aside#downloadlist:not(.show) {
   animation-fill-mode: forwards;
 }
 
-aside#backuplist.show,
+aside#loglist.show,
 aside#downloadlist.show {
-  display: grid;
   animation-name: bulist-in;
   animation-duration: 0.2s;
   animation-fill-mode: forwards;
@@ -790,60 +790,64 @@ aside#downloadlist.show {
   100% { right: -100vw; display: none; }
 }
 
-.night aside#backuplist,
+.night aside#loglist,
 .night aside#downloadlist {
   background: rgba(0,0,0,0.9);
 }
-aside#backuplist h2,
+aside#loglist h2,
 aside#downloadlist h2 {
   font-size: 1em;
   padding-left: .2em;
 }
-aside#backuplist ul,
+aside#loglist ul,
 aside#downloadlist ul {
   white-space: nowrap;
   overflow-y: auto;
 }
-aside#backuplist ul li,
+aside#loglist ul li,
 aside#downloadlist ul li {
   border-width: 1px 0 0;
   border-style: dotted;
 }
-aside#backuplist ul li:last-child ,
+aside#loglist ul li:last-child ,
 aside#downloadlist ul li:last-child {
   border-bottom-width: 1px;
 }
-aside#backuplist ul li.backup-now {
+aside#loglist ul li.selected {
   background-color: rgba(255,140,0,0.4);
 }
-aside#backuplist ul li a,
+aside#loglist ul li a,
 aside#downloadlist ul li a {
   display: block;
-  padding: .3rem 3rem .3rem 1.5rem;
+  padding: .3rem 1.5rem .3rem 1.5rem;
   color: #000;
   cursor: pointer;
 }
-.night aside#backuplist ul li a,
+.night aside#loglist ul li a,
 .night aside#downloadlist ul li a {
   color: #fff;
 }
-aside#backuplist ul li a:hover,
+aside#loglist ul li a:hover,
 aside#downloadlist ul li a:hover {
   background: linear-gradient(to top, rgba(100,200,255,0.2) 20%, transparent 20%);
 }
-aside#backuplist ul li a b {
+aside#loglist ul li a {
+  text-align: right;
+}
+aside#loglist ul li a b {
   display: block;
   font-size: 92%;
   font-family: var(--font-proportional);
+  text-align: left;
 }
-aside#backuplist ul li a b::before {
+aside#loglist ul li a b::before {
   content: "【";
   margin-left: -.5em;
 }
-aside#backuplist ul li a b::after {
+aside#loglist ul li a b::after {
   content: "】";
 }
-aside#backuplist ul li a small,
+aside#loglist ul li a small,
 aside#downloadlist ul li a small {
   display: block;
   opacity: 0.6;
@@ -851,35 +855,55 @@ aside#downloadlist ul li a small {
   text-align: right;
 }
 @media screen and (max-width:735px){
-  aside#backuplist,
+  aside#loglist,
   aside#downloadlist {
     top: 10rem;
     height: calc(100vh - 12rem);
   }
 }
 
-aside#backuplist #backup-naming {
-  min-height: 5em;
+aside#loglist #log-naming {
+  position: relative;
+  min-height: 2em;
   padding: .5em;
   border-top-width: 1px;
   border-top-style: solid;
 }
-aside#backuplist #backup-naming summary {
+aside#loglist #log-naming summary {
+  position: absolute;
+  bottom: 0;
+  white-space: nowrap;
+  user-select: none;
 }
-aside#backuplist #backup-naming form dl {
+aside#loglist #log-naming summary::marker {
+  content: "";
+}
+aside#loglist #log-naming summary::before {
+  content: "▲";
+  display: inline-block;
+  transform: rotate(90deg) scale(0.8);
+  animation: ease-in 1s;
+}
+aside#loglist #log-naming[open] summary::before {
+  transform: rotate(0deg) scale(0.8);
+}
+aside#loglist #log-naming form {
+  margin-bottom: 1.5em;
+}
+aside#loglist #log-naming form dl {
   display: grid;
   grid-template-columns: max-content auto;
   grid-gap: .2em;
   text-align: right;
 }
-aside#backuplist #backup-naming form dl dd {
+aside#loglist #log-naming form dl dd {
   grid-column: 2;
 }
-aside#backuplist #backup-naming form input{
+aside#loglist #log-naming form input{
   padding: .2em .3em;
 }
-aside#backuplist #backup-naming form input[type="text"]     { width: 12em; }
-aside#backuplist #backup-naming form input[type="password"] { width: 12em; }
+aside#loglist #log-naming form input[type="text"]     { width: 12em; }
+aside#loglist #log-naming form input[type="password"] { width: 12em; }
 @media screen and (max-width:735px){
   aside.information {
     margin-top: 2rem;

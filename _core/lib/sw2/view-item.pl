@@ -145,11 +145,11 @@ $SHEET->param(Tags => \@tags);
 
 ### バックアップ --------------------------------------------------
 if($::in{'id'}){
-  my($selected, $list) = getBackupList($set::item_dir, $main::file);
-  $SHEET->param(Backup => $list);
-  $SHEET->param(selectedBackupName => $selected);
+  my($selected, $list) = getLogList($set::item_dir, $main::file);
+  $SHEET->param(LogList => $list);
+  $SHEET->param(selectedLogName => $selected);
   if($pc{'yourAuthor'} || $pc{'protect'} eq 'password'){
-    $SHEET->param(viewBackupNaming => 1);
+    $SHEET->param(viewLogNaming => 1);
   }
 }
 

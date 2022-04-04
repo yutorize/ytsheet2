@@ -51,25 +51,15 @@ if($mode eq 'delete'){
   truncate($FH, tell($FH));
   close($FH);
 
-  if (unlink "${data_dir}${file_dir}/data.cgi")  { $message .= 'キャラクターデータを削除しました。<br>'; }
   if (unlink "${data_dir}${file_dir}/image.png") { $message .= '画像(png)を削除しました。<br>'; }
   if (unlink "${data_dir}${file_dir}/image.jpg") { $message .= '画像(jpg)を削除しました。<br>'; }
   if (unlink "${data_dir}${file_dir}/image.gif") { $message .= '画像(gif)を削除しました。<br>'; }
   if (unlink "${data_dir}${file_dir}/image.webp"){ $message .= '画像(webp)を削除しました。<br>'; }
 
   if($set::del_back){
-    my $dir = "${data_dir}${file_dir}/backup/";
-    opendir (my $DIR, $dir);
-    my @files = grep { !m/^(\.|\.\.)$/g } readdir $DIR;
-    close ($DIR);
-    my $flag = @files;
-    if ($flag) {
-      foreach (@files) {
-        unlink "$dir$_";
-      }
-    }
-    if(rmdir $dir){ print 'バックアップを削除しました。<br>'; }
-    #else { print 'バックアップフォルダ'.$dir.'の削除に失敗しました。<br>'; }
+    if (unlink "${data_dir}${file_dir}/data.cgi")  { $message .= '最新データを削除しました。<br>'; }
+    if (unlink "${data_dir}${file_dir}/logs.cgi")  { $message .= '過去ログデータを削除しました。<br>'; }
+    if (unlink "${data_dir}${file_dir}/log-list.cgi")  { $message .= '過去ログ一覧を削除しました。<br>'; }
   }
   
   if(rmdir "${data_dir}${file_dir}"){ $message .= 'ディレクトリを削除しました。<br>シートを完全に削除しました。<br>'; }

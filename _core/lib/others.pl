@@ -13,8 +13,9 @@ if($mode eq 'bu-naming'){
   my $type = $::in{'type'};
   my $id   = $::in{'id'};
   my $date = $::in{'date'} || 'latest';
-  my $name = decode('utf8',$::in{'backp-name'});
+  my $name = pcEscape( decode('utf8',$::in{'log-name'}) );
   my $pass = $::in{'pass'};
+  
 
   ## パスワードチェック
   (undef, undef, my $file, undef, my $user) = getfile($id,$pass,$LOGIN_ID);
@@ -24,25 +25,27 @@ if($mode eq 'bu-naming'){
   my $data_dir = ($type eq 'm') ? $set::mons_dir : ($type eq 'i') ? $set::item_dir : $set::char_dir;
   $file = $user ? '_'.$user.'/'.$file : $file;
 
-  ## 保存
-  sysopen (my $FH, "${data_dir}${file}/buname.cgi", O_RDWR | O_CREAT, 0666);
+  ## 読込
+  sysopen (my $FH, "${data_dir}${file}/log-list.cgi", O_RDWR) or error('ログ一覧が開けません。');
   flock($FH, 2);
-  my @list = sort { (split(/<>/,$b))[0] cmp (split(/<>/,$a))[0] } <$FH>;
+  my @list = <$FH>;
+  
+  ## 保存
   seek($FH, 0, 0);
-  print $FH "$date<>$name\n" if $name ne '';
-  foreach (@list){
-    chomp $_;
-    my( $_date, undef ) = split /<>/;
-    if ($date ne $_date){
-      print $FH $_,"\n";
+  foreach my $line (@list) {
+    if(index($line, $date) == 0){
+      chomp $line;
+      my($_date, $_epoc, undef) = split(/<>/, $line);
+      print $FH "${_date}<>${_epoc}<>${name}\n";
     }
+    else { print $FH $line; }
   }
   truncate($FH, tell($FH));
   close($FH);
 
   ## キャラシートへ移動／編集画面に戻る
   if($date eq 'latest'){ print "Location: ./?id=${id}\n\n"; }
-  else                 { print "Location: ./?id=${id}&backup=${date}\n\n"; }
+  else                 { print "Location: ./?id=${id}&log=${date}\n\n"; }
 }
 
 

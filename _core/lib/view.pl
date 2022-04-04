@@ -11,6 +11,8 @@ my $type;
 my $author;
 our %conv_data = ();
 
+$::in{'log'} ||= $::in{'backup'};
+
 if($::in{'id'}){
   ($file, $type, $author) = getfile_open($::in{'id'});
 }
@@ -28,22 +30,36 @@ else               { require $set::lib_view_char; }
 
 ### データ取得 --------------------------------------------------
 sub pcDataGet {
+  
   my %pc;
+  ## データ読み込み
   if($::in{'id'}){
     my $datadir = ($type eq 'm') ? $set::mons_dir : ($type eq 'i') ? $set::item_dir : $set::char_dir;
-    my $datafile = $::in{'backup'} ? "${datadir}${file}/backup/$::in{'backup'}.cgi" : "${datadir}${file}/data.cgi";
-    open my $IN, '<', $datafile or viewNotFound($datadir);
+
+    my $datatype = ($::in{'log'}) ? 'logs' : 'data';
+    my $hit = 0;
+    open my $IN, '<', "${datadir}${file}/${datatype}.cgi" or viewNotFound($datadir);
     while (<$IN>){
-      chomp;
+      if($datatype eq 'logs'){
+        if (index($_, "=") == 0){
+          if (index($_, "=$::in{'log'}=") == 0){ $hit = 1; next; }
+          if ($hit){ last; }
+        }
+        if (!$hit) { next; }
+      }
+      chomp $_;
       my ($key, $value) = split(/<>/, $_, 2);
       $pc{$key} = $value;
     }
     close($IN);
-    if($::in{'backup'}){
+    if($datatype eq 'logs' && !$hit){ error("過去ログ（$::in{'log'}）が見つかりません。"); }
+
+    if($::in{'log'}){
       ($pc{'protect'}, $pc{'forbidden'}) = protectTypeGet("${datadir}${file}/data.cgi");
-      $pc{'backupId'} = $::in{'backup'};
+      $pc{'logId'} = $::in{'log'};
     }
   }
+  ## データ読み込み：コンバート
   elsif($::in{'url'}){
     %pc = %conv_data;
     if(!$conv_data{'ver'}){
@@ -51,6 +67,7 @@ sub pcDataGet {
       %pc = data_calc(\%pc);
     }
   }
+  ##
   if(!$::in{'checkView'} && (
     ($pc{'protect'} eq 'none') || 
     ($author && ($author eq $LOGIN_ID || $set::masterid eq $LOGIN_ID))
@@ -65,7 +82,7 @@ sub pcDataGet {
 
 sub viewNotFound { #v1.14のコンバート処理
   my $dir = shift;
-  if(!$::in{'backup'} && $file =~ /^(.+)\/(.+?)$/){
+  if(!$::in{'log'} && $file =~ /^(.+)\/(.+?)$/){
     my $user = $1;
     my $file = $2;
     if(-d "${dir}${file}"){
@@ -80,40 +97,32 @@ sub viewNotFound { #v1.14のコンバート処理
 }
 
 ### バックアップ一覧 --------------------------------------------------
-sub getBackupList {
+sub getLogList {
   my $dir  = shift;
   my $file = shift;
-  opendir(my $DIR,"${dir}${file}/backup");
-  my @backlist = readdir($DIR);
-  closedir($DIR);
-  my %backname;
-  open(my $FH,"${dir}${file}/buname.cgi");
-  foreach(<$FH>){
-    chomp;
-    my @data = split('<>', $_, 2);
-    $backname{$data[0]} = $data[1];
-  }
+  open(my $FH,"${dir}${file}/log-list.cgi") || logFileCheck("${dir}${file}",'view');
+  my @lines = reverse <$FH>;
   close($FH);
-  my @backup = ({
-    "NOW"  => (!$::in{'backup'} ? 1 : 0),
-    "URL"  => '',
-    "DATE" => ($backname{'latest'} ? "<b>$backname{'latest'}</b>":'') . '最新',
-  });
-  my $selectedname = (!$::in{'backup'} ? $backname{'latest'} : '');
-  foreach my $date (reverse sort @backlist) {
-    if ($date =~ s/\.cgi//) {
-      my $url = $date;
-      my $selected = ($url eq $::in{'backup'} ? 1 : 0);
-      $date =~ s/^([0-9]{4}-[0-9]{2}-[0-9]{2})-([0-9]{2})-([0-9]{2})$/$1 $2\:$3/;
-      push(@backup, {
-        "NOW"  => $selected,
-        "URL"  => "&backup=$url",
-        "DATE" => ($backname{$url} ? "<b>$backname{$url}</b>":'') . $date,
-      });
-      if($selected){ $selectedname = $backname{$url}; }
+  my @logs; my $selectedname;
+  foreach (@lines){
+    chomp;
+    my ($date, $epoc, $name) = split('<>', $_, 3);
+    
+    my ($selected, $query, $text);
+    if($date eq 'latest'){
+      $selected = (!$::in{'log'} ? 1 : 0);
+      $text     = ($name ? "<b>$name</b>":'') . '最新: ' .epocToDate($epoc);
     }
+    else {
+      (my $dateview = $date) =~ s/(\d{4}-\d{2}-\d{2})-(\d{2})-(\d{2})/$1 $2:$3/g;
+      $selected = ($date eq $::in{'log'} ? 1 : 0);
+      $query    = "&log=$date";
+      $text     = ($name ? "<b>$name</b>":'') .epocToDate($epoc);
+    }
+    push(@logs, { "SELECTED"  => ($selected ? 'selected' : ''), "URL"  => $query, "DATE" => $text });
+    if($selected){ $selectedname = $name }
   }
-  return $selectedname, \@backup;
+  return $selectedname, \@logs;
 }
 ### 伏せ文字 --------------------------------------------------
 sub noiseText {
