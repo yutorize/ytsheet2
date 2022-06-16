@@ -280,8 +280,8 @@ sub convertHokanjoToYtsheet {
     
     'rollTrapDetectDiceAdd'   => $in{'dice_wanatanti'}-2 || '',
     'rollTrapReleaseDiceAdd'  => $in{'dice_wanakaijo'}-2 || '',
-    'rollEnemyLoreDiceAdd'    => $in{'dice_kanti'}-2     || '',
-    'rollDangerDetectDiceAdd' => $in{'dice_sikibetu'}-2  || '',
+    'rollEnemyLoreDiceAdd'    => $in{'dice_sikibetu'}-2     || '',
+    'rollDangerDetectDiceAdd' => $in{'dice_kanti'}-2  || '',
     'rollAppraisalDiceAdd'    => $in{'dice_kantei'}-2    || '',
     'rollMagicDiceAdd'        => ($in{'dice_majutu'}+0 || 2)-2 || '',
     'rollSongDiceAdd'         => ($in{'dice_juka'}+0   || 2)-2 || '',
