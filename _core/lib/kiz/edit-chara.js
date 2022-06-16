@@ -7,6 +7,8 @@ window.onload = function() {
   nameSet();
   calcGrow();
   changeType();
+  checkNegai('Out',form.negaiOutside.value);
+  checkNegai('In',form.negaiInside.value);
   
   togglePartner2();
   autoInputPartner(1);
@@ -32,13 +34,45 @@ function checkType(){
   if     (pcClass === 'ハウンド') {
     document.body.classList.add('class-hound');
     document.body.classList.remove('class-owner');
+    form.enduranceType.value = 18;
+    form.operationType.value = 1;
   }
   else if(pcClass === 'オーナー'){
     document.body.classList.add('class-owner');
     document.body.classList.remove('class-hound');
+    form.enduranceType.value = 12;
+    form.operationType.value = 4;
+  }
+  else {
+    form.enduranceType.value = '';
+    form.operationType.value = '';
   }
   calcStt();
 }
+// ネガイ変更 ----------------------------------------
+function changeNegai(type,value){
+  checkNegai(type,value);
+  calcStt();
+}
+function checkNegai(type,negai){
+  if(negai in negaiData){
+    form[`endurance${type}side`].readOnly = true;
+    form[`operation${type}side`].readOnly = true;
+    form[`endurance${type}side`].value = negaiData[negai][type.toLowerCase()]['endurance'];
+    form[`operation${type}side`].value = negaiData[negai][type.toLowerCase()]['operation'];
+  }
+  else if (negai == '') {
+    form[`endurance${type}side`].readOnly = true;
+    form[`operation${type}side`].readOnly = true;
+    form[`endurance${type}side`].value = '';
+    form[`operation${type}side`].value = '';
+  }
+  else {
+    form[`endurance${type}side`].readOnly = false;
+    form[`operation${type}side`].readOnly = false;
+  }
+}
+
 
 // 成長計算 ----------------------------------------
 let level = 1;

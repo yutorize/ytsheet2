@@ -268,18 +268,18 @@ print <<"HTML";
               <tr>
                 <th>種別</th>
                 <td><select name="class" oninput="changeType();">@{[option "class",'ハウンド','オーナー']}</select></td>
-                <td>@{[ input 'enduranceType','number','calcStt' ]}</td>
-                <td>@{[ input 'operationType','number','calcStt' ]}</td>
+                <td>@{[ input 'enduranceType','number','calcStt', "readonly tabindex='-1'" ]}</td>
+                <td>@{[ input 'operationType','number','calcStt', "readonly tabindex='-1'" ]}</td>
               </tr>
               <tr>
                 <th>ネガイ(表)</th>
-                <td>@{[ selectInput "negaiOutside",'',@negai ]}</td>
+                <td>@{[ selectInput "negaiOutside","changeNegai('Out',this.value)",@negai ]}</td>
                 <td>@{[ input 'enduranceOutside','number','calcStt' ]}</td>
                 <td>@{[ input 'operationOutside','number','calcStt' ]}</td>
               </tr>
               <tr>
                 <th>ネガイ(裏)</th>
-                <td>@{[ selectInput "negaiInside",'',@negai ]}</td>
+                <td>@{[ selectInput "negaiInside","changeNegai('In',this.value)",@negai ]}</td>
                 <td>@{[ input 'enduranceInside','number','calcStt' ]}</td>
                 <td>@{[ input 'operationInside','number','calcStt' ]}</td>
               </tr>
@@ -908,23 +908,7 @@ print <<"HTML";
   </datalist>
   <script>
 HTML
-print 'const synStats = {';
-foreach (keys %data::syndrome_status) {
-  next if !$_;
-  my @ar = @{$data::syndrome_status{$_}};
-  print '"'.$_.'":{"body":'.$ar[0].',"sense":'.$ar[1].',"mind":'.$ar[2].',"social":'.$ar[3].'},'
-}
-print "};\n";
-print 'const awakens = {';
-foreach (@data::awakens) {
-  print '"'.@$_[0].'":'.@$_[1].','
-}
-print "};\n";
-print 'const impulses = {';
-foreach (@data::impulses) {
-  print '"'.@$_[0].'":'.@$_[1].','
-}
-print "};\n";
+print 'const negaiData = '.(JSON::PP->new->encode(\%negai)).";\n";
 ## チャットパレット
 print <<"HTML";
   let palettePresetText = {
