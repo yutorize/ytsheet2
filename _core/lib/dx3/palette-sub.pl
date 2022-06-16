@@ -49,6 +49,8 @@ sub palettePreset {
       next if !$::pc{'combo'.$num.'Name'};
       $text .= "### ■コンボ: $::pc{'combo'.$num.'Name'}\n";
       $text .= "【$::pc{'combo'.$num.'Name'}】：$::pc{'combo'.$num.'Combo'}\n";
+      $text .= textTiming($::pc{'combo'.$num.'Timing'})." / $::pc{'combo'.$num.'Skill'} / $::pc{'combo'.$num.'Dfclty'} / $::pc{'combo'.$num.'Target'} / $::pc{'combo'.$num.'Range'}\n";
+      if($bot{'YTC'}){ $text .= "\@侵蝕-$::pc{'combo'.$num.'Encroach'}\n" }
       foreach my $i (1..4) {
         next if !$::pc{'combo'.$num.'Condition'.$i};
         $text .= "▼$::pc{'combo'.$num.'Condition'.$i} ----------\n" if $bot{'YTC'};
@@ -139,6 +141,8 @@ sub palettePresetSimple {
       next if !$::pc{'combo'.$num.'Name'};
       $text .= "### ■コンボ: $::pc{'combo'.$num.'Name'}\n";
       $text .= "【$::pc{'combo'.$num.'Name'}】：$::pc{'combo'.$num.'Combo'}\n";
+      $text .= textTiming($::pc{'combo'.$num.'Timing'})." / $::pc{'combo'.$num.'Skill'} / $::pc{'combo'.$num.'Dfclty'} / $::pc{'combo'.$num.'Target'} / $::pc{'combo'.$num.'Range'}\n";
+      if($bot{'YTC'}){ $text .= "\@侵蝕-$::pc{'combo'.$num.'Encroach'}\n" }
       foreach my $i (1..4) {
         next if !$::pc{'combo'.$num.'Condition'.$i};
         $text .= "▼$::pc{'combo'.$num.'Condition'.$i} ----------\n" if $bot{'YTC'};
@@ -208,6 +212,14 @@ sub paletteProperties {
     }
   }
   return @propaties;
+}
+
+sub textTiming {
+  my $text = shift;
+  $text =~ s/(オート|メジャー|マイナー)(アクション)?/$1アクション/g;
+  $text =~ s/リアク?(ション)?/リアクション/g;
+  $text =~ s/(セットアップ|クリンナップ)(プロセス)?/$1プロセス/g;
+  return $text;
 }
 
 1;
