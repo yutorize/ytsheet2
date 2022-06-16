@@ -99,9 +99,9 @@ sub paletteProperties {
     push @propaties, "//回避={敏捷}".addNum($::pc{'battleAddEva'});
     push @propaties, "//回避ダイス=".$::pc{'battleDiceEva'};
     push @propaties, "//物理防御力=".$::pc{'battleTotalDef'};
-    push @propaties, "//魔法防御力={精神}".addNum($::pc{'battleTotalMDef'});
-    push @propaties, "//行動値=".$::pc{'battleAddIni'};
-    push @propaties, "//移動力=".$::pc{'battleAddMove'};
+    push @propaties, "//魔法防御力={精神}".addNum($::pc{'battleAddMDef'});
+    push @propaties, "//行動値=".$::pc{'battleTotalIni'};
+    push @propaties, "//移動力=".$::pc{'battleTotalMove'};
     push @propaties, "//トラップ探知={感知}".addNum($::pc{'rollTrapDetectAdd'});
     push @propaties, "//トラップ解除={器用}".addNum($::pc{'rollTrapReleaseAdd'});
     push @propaties, "//危険感知={感知}"    .addNum($::pc{'rollDangerDetectAdd'});
