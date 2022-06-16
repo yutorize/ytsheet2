@@ -362,6 +362,12 @@ sub pcTagsEscape {
   $text =~ tr/＋－＊／．，＿/\+\-\*\/\.,_/;
   return $text;
 }
+sub thanSignEscape {
+  my $text = shift;
+  $text =~ s/</&lt;/g;
+  $text =~ s/>/&gt;/g;
+  return $text;
+}
 
 ### タグ変換 --------------------------------------------------
 sub tag_link_url {

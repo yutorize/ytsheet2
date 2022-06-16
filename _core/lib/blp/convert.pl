@@ -34,6 +34,7 @@ sub dataConvert {
   {
     my $data = urlDataGet($set_url.'&mode=json') or error 'コンバート元のデータが取得できませんでした';
     if($data !~ /^{/){ error 'JSONデータが取得できませんでした' }
+    $data = thanSignEscape($data);
     my %pc = %{ decode_json(join '', $data) };
     if($pc{'result'} eq 'OK'){
       our $base_url = $set_url;
