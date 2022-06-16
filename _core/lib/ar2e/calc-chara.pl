@@ -57,6 +57,7 @@ sub data_calc {
     if   ($name =~ /(?:^|[\/／])バイタリティ/  ){ $pc{'hpAuto'} = $pc{'level'} }
     elsif($name =~ /(?:^|[\/／])インテンション/){ $pc{'mpAuto'} = $pc{'level'} }
     elsif($name =~ /(?:^|[\/／])エンラージリミット/){ $skill{'エンラージリミット'} = 1 }
+    elsif($name =~ /(?:^|[\/／])アストラルボディ/  ){ $skill{'アストラルボディ'} = 'Mnd' }
     elsif($name =~ /(?:^|[\/／])ファランクススタイル[:：]器用/){ $skill{'ファランクススタイル'} = 'Dex' }
     elsif($name =~ /(?:^|[\/／])ファランクススタイル[:：]敏捷/){ $skill{'ファランクススタイル'} = 'Agi' }
     elsif($name =~ /(?:^|[\/／])ファランクススタイル[:：]知力/){ $skill{'ファランクススタイル'} = 'Int' }
@@ -217,12 +218,23 @@ sub data_calc {
   $pc{'rollAlchemyDice'     } = $pc{'rollDexDice'} + $pc{'rollAlchemyDiceAdd'     };
   
   ### 傾向重量計算 --------------------------------------------------
-  my $items = $pc{'items'};
-  $pc{'weightItems'} = 0;
-  $pc{'weightLimitWeapon'} = $pc{'sttStrBase'} + $pc{'weightLimitAddWeapon'};
-  $pc{'weightLimitArmour'} = $pc{'stt'.($skill{'ファランクススタイル'} || 'Str').'Base'} + $pc{'weightLimitAddArmour'};
-  $pc{'weightLimitItems'}  = $pc{'sttStrBase'} * ($skill{'エンラージリミット'} ? 2 : 1) + $pc{'weightLimitAddItems'} ;
-  $items =~ s/[@＠]\[\s*?((?:[\+\-\*\/]?[0-9]+)+)\s*?\]/$pc{'weightItems'} += eval($1)/eg;
+  {
+    my $items = $pc{'items'};
+    my $ab = $skill{'アストラルボディ'};
+    my $fs = $skill{'ファランクススタイル'};
+    my $el = $skill{'エンラージリミット'};
+    $pc{'weightItems'} = 0;
+    $pc{'weightLimitWeapon'} = $pc{'stt'.($ab || 'Str').'Base'} + $pc{'weightLimitAddWeapon'};
+    $pc{'weightLimitArmour'} = ($fs && $ab ? max($pc{'stt'.$fs.'Base'}, $pc{'sttMndBase'})
+                             : $pc{'stt'.($fs || $ab || 'Str').'Base'}
+                             ) + $pc{'weightLimitAddArmour'};
+    $pc{'weightLimitItems'}  = ($el && $ab ? max($pc{'sttStrBase'}*2, $pc{'sttMndBase'})
+                             :  $el        ? $pc{'sttStrBase'} * 2
+                             :  $ab        ? $pc{'sttMndBase'}
+                             :  $pc{'sttStrBase'}
+                             ) + $pc{'weightLimitAddItems'};
+    $items =~ s/[@＠]\[\s*?((?:[\+\-\*\/]?[0-9]+)+)\s*?\]/$pc{'weightItems'} += eval($1)/eg;
+  }
 
   ### グレード自動変更 --------------------------------------------------
   if (@set::grades){

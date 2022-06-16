@@ -394,8 +394,10 @@ function calcStt() {
   document.getElementById('gskills-lv-limit').innerHTML = level + 1;
   //重量
   const weightBaseWeapon = sttBase[ autoCalcSkill['アストラルボディ'] || 'Str' ];
-  const weightBaseArmour = sttBase[ autoCalcSkill['ファランクススタイル'] || autoCalcSkill['アストラルボディ'] || 'Str' ];
-  const weightBaseItems  = autoCalcSkill['エンラージリミット'] ? sttBase['Str'] * 2
+  const weightBaseArmour = autoCalcSkill['ファランクススタイル'] && autoCalcSkill['アストラルボディ'] ? Math.max(sttBase[ autoCalcSkill['ファランクススタイル'] ], sttBase['Mnd'])
+                         : sttBase[ autoCalcSkill['ファランクススタイル'] || autoCalcSkill['アストラルボディ'] || 'Str' ];
+  const weightBaseItems  = autoCalcSkill['エンラージリミット'] && autoCalcSkill['アストラルボディ'] ? Math.max(sttBase['Str']*2, sttBase['Mnd'])
+                         : autoCalcSkill['エンラージリミット'] ? sttBase['Str'] * 2
                          : autoCalcSkill['アストラルボディ']   ? sttBase['Mnd']
                          : sttBase['Str'];
   const weightWeapon = weightBaseWeapon + Number(form.weightLimitAddWeapon.value);
