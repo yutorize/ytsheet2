@@ -263,6 +263,24 @@ foreach (1 .. $pc{'kizunaNum'}){
 }
 $SHEET->param(Kizuna => \@kizuna);
 
+### 傷号 --------------------------------------------------
+my @shougou;
+foreach (1 .. 3){
+  if($pc{'shougou'.$_}){
+    push(@shougou, {
+      "NUM"  => $_,
+      "NAME" => "［$pc{'shougou'.$_}］",
+    });
+  }
+  else {
+    push(@shougou, {
+      "NUM"  => '',
+      "NAME" => '',
+    });
+  }
+}
+$SHEET->param(Shougou => \@shougou) if ($pc{'shougou1'} || $pc{'shougou2'} || $pc{'shougou3'});
+
 ### キズアト --------------------------------------------------
 my @kizuato;
 foreach (1 .. $pc{'kizuatoNum'}){

@@ -62,6 +62,10 @@ body:not(.class-owner) .o-only {
 #classes table tbody input[type="number"] {
   width: 5em;
 }
+#classes table tbody input[readonly] {
+  border-style: dotted;
+  background-color: transparent;
+}
 
 @media screen and (max-width:735px){
   #status {

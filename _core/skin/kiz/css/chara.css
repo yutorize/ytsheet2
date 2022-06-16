@@ -43,7 +43,7 @@ body {
   #kizuna {
     grid-column: 1;
   }
-  #kizuato {
+  #area-kizu {
     grid-column: 2;
     grid-row: 4 / span 2;
   }
@@ -251,111 +251,8 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
 }
 
 /* Image */
-.image {
-  overflow: hidden;
-  background-size: cover;
-  background-position: center 20%;
-  background-repeat: no-repeat;
-  border-radius: 5px;
-  
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  justify-content: flex-end;
-  
-  position: relative;
-}
-.image div[onclick] {
-  flex-grow: 1;
-  width: 100%;
-  cursor: pointer;
-  position: relative;
-}
-.image p.image-copyright {
-  padding: 0 5px;
-  font-size: 86%;
-  color: #fff;
-  text-shadow: 
-    #000  .1rem .1rem, #000 -.1rem -.1rem,
-    #000 -.1rem .1rem, #000  .1rem -.1rem,
-    #000  .0rem .1rem, #000  .0rem -.1rem,
-    #000 -.1rem .0rem, #000  .1rem  .0rem,
-    #000 0 0 .3rem, #000 0 0 .3rem, #000 0 0 .3rem;
-  word-break: break-all;
-}
-.image p.image-copyright a,
-.image p.image-copyright i::before {
-  color: #fff !important;
-}
-.image-none {
-  overflow: hidden;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(127,127,127,0.1);
-  border-radius: 5px;
-  overflow: hidden;
-  font-family: "Times New Roman";
-}
-.image-none::before {
-  content: 'no image';
-  text-align: center;
-  font-size: 2.2rem;
-}
 .image-none::after {
-  content: 'KIZ';
-  position: absolute;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100px;
-  height: 100px;
-  line-height: 0.7;
-  font-size: 15rem;
-  font-weight: bold;
-  letter-spacing: -0.08em;
-  text-align: center;
   transform: scale(1, 1.5);
-  opacity: 0.1;
-  white-space: pre;
-}
-
-.image p.words,
-.image-none p.words {
-  position: absolute;
-  padding-top: 1em;
-  writing-mode: vertical-rl;
-  font-weight: bold;
-  font-size: 2rem;
-  color: var(--text-color);
-  text-shadow:
-    var(--bg-color) .2rem  .0rem, var(--bg-color) -.2rem  .0rem,
-    var(--bg-color) .0rem -.2rem, var(--bg-color)  .0rem  .2rem,
-    var(--bg-color) .2rem  .2rem, var(--bg-color) -.2rem  .2rem,
-    var(--bg-color) .2rem -.2rem, var(--bg-color) -.2rem -.2rem,
-    var(--bg-color) .1rem  .2rem, var(--bg-color) -.1rem  .2rem,
-    var(--bg-color) .1rem -.2rem, var(--bg-color) -.1rem -.2rem,
-    var(--bg-color) .2rem  .1rem, var(--bg-color) -.2rem  .1rem,
-    var(--bg-color) .2rem -.1rem, var(--bg-color) -.2rem -.1rem;
-}
-@media screen and (max-width:735px){
-  .image p.words,
-  .image-none p.words {
-    font-size: 1.6rem;
-  }
-}
-.image p.words .d-dash,
-.image-none p.words .d-dash {
-  display: inline-block;
-  font-family: inherit;
-  white-space: nowrap;
-}
-p.words span {
-  display: inline-block;
-}
-p.words span.brackets {
-  text-indent: -1em;
 }
 
 /* Class */
@@ -528,6 +425,53 @@ p.words span.brackets {
   #kizuna table tr.hibiware {
     background-position-x: calc(100% + .4em);
     background-size: 6em;
+  }
+}
+
+/* Area-Kizu */
+#area-kizu {
+  align-self: end;
+}
+/* Shougou */
+#shougou {
+  margin-top: 1rem;
+}
+#shougou dl {
+  display: grid;
+  grid-template-columns: max-content 1fr max-content 1fr max-content 1fr;
+  border-top-width: 1px;
+  border-top-style: solid;
+}
+#shougou dt {
+  padding-left: .5em;
+  font-size: 92%;
+  white-space: nowrap;
+}
+#shougou dt:not(:empty):after {
+  content: ":";
+}
+#shougou dd {
+  text-align: left;
+}
+#shougou dd:not(:last-child) {
+  border-right-width: 1px;
+  border-right-style: solid;
+}
+
+@media screen and (max-width:736px){
+  #shougou dl {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+  }
+  #shougou dt:nth-of-type(even),
+  #shougou dd:nth-of-type(even) {
+    background-color: var(--box-even-rows-bg-color);
+  }
+  #shougou dt:not(:last-of-type),
+  #shougou dd:not(:last-of-type) {
+    border-right-width: 0px;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
   }
 }
 

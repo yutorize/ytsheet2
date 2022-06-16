@@ -219,7 +219,7 @@ window.onload = function() {
         <p class="image-copyright"><TMPL_VAR imageCopyright></p>
         </div>
         <TMPL_ELSE>
-        <div id="image-none" class="image-none"><p class="words" style="<TMPL_VAR wordsX><TMPL_VAR wordsY>"><TMPL_VAR words></p></div>
+        <div id="image-none" class="image-none" data-title="KIZ"><p class="words" style="<TMPL_VAR wordsX><TMPL_VAR wordsY>"><TMPL_VAR words></p></div>
         </TMPL_IF>
 
         <div id="classes" class="box-union">
@@ -339,7 +339,7 @@ window.onload = function() {
           <p class="image-copyright"><TMPL_VAR p1_imageCopyright></p>
           </div>
           <TMPL_ELSE>
-          <div class="image-none"><p class="words" style="<TMPL_VAR p1_wordsX><TMPL_VAR p1_wordsY>"><TMPL_VAR p1_words></p></div>
+          <div class="image-none" data-title="KIZ"><p class="words" style="<TMPL_VAR p1_wordsX><TMPL_VAR p1_wordsY>"><TMPL_VAR p1_words></p></div>
           </TMPL_IF>
         
           <div class="partner-name">
@@ -373,7 +373,7 @@ window.onload = function() {
           <p class="image-copyright"><TMPL_VAR p2_imageCopyright></p>
           </div>
           <TMPL_ELSE>
-          <div class="image-none"><p class="words" style="<TMPL_VAR p2_wordsX><TMPL_VAR p2_wordsY>"><TMPL_VAR p2_words></p></div>
+          <div class="image-none" data-title="KIZ"><p class="words" style="<TMPL_VAR p2_wordsX><TMPL_VAR p2_wordsY>"><TMPL_VAR p2_words></p></div>
           </TMPL_IF>
         
           <div class="partner-name">
@@ -425,58 +425,69 @@ window.onload = function() {
         </table>
       </section>
       
-      <section class="box" id="kizuato">
-        <h2>キズアト</h2>
-        <TMPL_IF Kizuato>
-        <table class="data-table line-tbody">
-          <colgroup>
-            <col>
-            <col>
-            <col>
-            <col>
-            <col>
-            <col>
-          </colgroup>
-          <TMPL_LOOP Kizuato><tbody>
-            <tr>
-              <td class="name" colspan="6">《<TMPL_VAR NAME>》</td>
+      <div id="area-kizu">
+
+        <TMPL_IF Shougou><section class="box" id="shougou">
+          <h2>傷号</h2>
+          <dl>
+            <TMPL_LOOP Shougou><dt><TMPL_VAR NUM></dt><dd><TMPL_VAR NAME></dd></TMPL_LOOP>
+          </dl>
+        </section></TMPL_IF>
+
+        <section class="box" id="kizuato">
+          <h2>キズアト</h2>
+          <TMPL_IF Kizuato>
+          <table class="data-table line-tbody">
+            <colgroup>
+              <col>
+              <col>
+              <col>
+              <col>
+              <col>
+              <col>
+            </colgroup>
+            <TMPL_LOOP Kizuato><tbody>
+              <tr>
+                <td class="name" colspan="6">《<TMPL_VAR NAME>》</td>
+              </tr>
+              <tr>
+                <th rowspan="2">ドラマ</th>
+                <th>ヒトガラ</th>
+                <th>タイミング</th>
+                <th>対象</th>
+                <th>制限</th>
+                <th>解説</th>
+              </tr>
+              <tr>
+                <td class="hitogara"><TMPL_VAR D-HITOGARA></td>
+                <td><TMPL_VAR D-TIMING></td>
+                <td><TMPL_VAR D-TARGET></td>
+                <td><TMPL_VAR D-LIMITED></td>
+                <td class="left"><TMPL_VAR D-NOTE></td>
             </tr>
             <tr>
-              <th rowspan="2">ドラマ</th>
-              <th>ヒトガラ</th>
+              <th rowspan="2">決戦</th>
               <th>タイミング</th>
               <th>対象</th>
+              <th>代償</th>
               <th>制限</th>
               <th>解説</th>
             </tr>
             <tr>
-              <td class="hitogara"><TMPL_VAR D-HITOGARA></td>
-              <td><TMPL_VAR D-TIMING></td>
-              <td><TMPL_VAR D-TARGET></td>
-              <td><TMPL_VAR D-LIMITED></td>
-              <td class="left"><TMPL_VAR D-NOTE></td>
-           </tr>
-           <tr>
-             <th rowspan="2">決戦</th>
-             <th>タイミング</th>
-             <th>対象</th>
-             <th>代償</th>
-             <th>制限</th>
-             <th>解説</th>
-           </tr>
-           <tr>
-             <td><TMPL_VAR B-TIMING></td>
-             <td><TMPL_VAR B-TARGET></td>
-             <td><TMPL_VAR B-COST></td>
-             <td><TMPL_VAR B-LIMITED></td>
-             <td class="left"><TMPL_VAR B-NOTE></td>
-          </tr>
-         </tbody></TMPL_LOOP>
-        </table>
-        <TMPL_ELSE>
-          <p>なし</p>
-        </TMPL_IF>
-      </section>
+              <td><TMPL_VAR B-TIMING></td>
+              <td><TMPL_VAR B-TARGET></td>
+              <td><TMPL_VAR B-COST></td>
+              <td><TMPL_VAR B-LIMITED></td>
+              <td class="left"><TMPL_VAR B-NOTE></td>
+            </tr>
+          </tbody></TMPL_LOOP>
+          </table>
+          <TMPL_ELSE>
+            <p>なし</p>
+          </TMPL_IF>
+        </section>
+
+      </div>
       
       <section class="box" id="free-note">
         <h2><TMPL_IF head_freeNote><TMPL_VAR head_freeNote><TMPL_ELSE>設定・その他メモ</TMPL_IF></h2>
