@@ -738,6 +738,7 @@ textarea::placeholder {
   
   position: relative;
 
+  image-rendering: -webkit-optimize-contrast;
 }
 .image div[onclick] {
   flex-grow: 1;
@@ -852,6 +853,7 @@ p.words span.brackets {
   width: 100%;
   height: 100%;
   object-fit: scale-down;
+  image-rendering: -webkit-optimize-contrast;
 }
 
 

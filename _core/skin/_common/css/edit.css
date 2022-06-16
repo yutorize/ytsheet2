@@ -687,6 +687,8 @@ input[type="button"]:hover {
   background-position: center;
   
   cursor: unset;
+
+  image-rendering: -webkit-optimize-contrast;
 }
 #image > h2 {
   background-image: linear-gradient(to bottom, var(--box-head-bg-color), transparent);
@@ -759,6 +761,7 @@ input[type="button"]:hover {
   grid-template-columns: 1fr 25vh 350px 1fr;
   grid-template-rows: 1fr max-content max-content minmax(3em,1fr);
   background-color: hsla(0, 0%, 10%, 0.6);
+  image-rendering: -webkit-optimize-contrast;
 }
 .image-custom-view-area > div.image-custom-frame {  }
 .image-custom-view-area > div#image-custom-frame-M  { grid-column: 3; grid-row: 2 / span 2; height: 567px; }
