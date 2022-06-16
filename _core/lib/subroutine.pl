@@ -406,11 +406,8 @@ sub tag_unescape_lines {
   $text =~ s/\A\*(.*?)$/$main::pc{"head_$_"} = $1; ''/egim;
   $text =~ s/^\*(.*?)$/<\/p><h2>$1<\/h2><p>/gim;
   
-  $text =~ s/^\|(.*?)\|$/&tablecall($1)/egim;
-  $text =~ s/^\|(.*?)\|c$/&colcall($1)/egim;
-  $text =~ s/(<\/tr>|<\/colgroup>)\n/$1/gi;
-  $text =~ s/(?!<\/tr>|<table>)(<colgroup>.*?<\/colgroup>)?(<tr>.*?<\/tr>)(?!<tr>|<\/table>)/<\/p><table class="note-table">$1$2<\/table><p>/gi;
-  
+  $text =~ s/(?:^(?:\|(?:.*?))+\|[hc]?(?:\n|$))+/'<\/p><table class="note-table">'.&tableCreate($&).'<\/table><p>'/egim;
+
   $text =~ s/^\:(.*?)\|(.*?)$/<dt>$1<\/dt><dd>$2<\/dd>/gim;
   $text =~ s/(<\/dd>)\n/$1/gi;
   $text =~ s/<\/dd><dt>\s*<\/dt><dd>/&lt;br&gt;/gi;
@@ -430,30 +427,15 @@ sub tag_unescape_lines {
   return $text;
 }
 
-sub tablecall {
-  my $out = '<tr>';
-  my @td = split(/\|/, $_[0]);
-  my $col_num;
-  foreach(@td){
-    $col_num++;
-    if($_ eq '&gt;'){ $col_num++; next; }
-    
-    if($_ =~ /^~/){ $_ =~ s/^~//; $out .= '<th'.($col_num > 1 ? " colspan=\"$col_num\"" : '').'>'.$_.'</th>'; }
-    else          {               $out .= '<td'.($col_num > 1 ? " colspan=\"$col_num\"" : '').'>'.$_.'</td>'; }
-    $col_num = 0;
-  }
-  $out .= '</tr>';
-  return $out;
-}
-sub colcall {
+sub tableColCreate {
   my @out;
   my @col = split(/\|/, $_[0]);
   foreach(@col){
-    push (@out, &tablestyle($_));
+    push (@out, &tableStyleCreate($_));
   }
   return '<colgroup>'.(join '', @out).'</colgroup>';
 }
-sub tablestyle {
+sub tableStyleCreate {
   if($_[0] =~ /([0-9]+)(px|em|\%)/){
     my $num = $1; my $type = $2;
     if   ($type eq 'px' && $num > 300){ $num = 300 }
@@ -462,6 +444,58 @@ sub tablestyle {
     return "<col style=\"width:calc(${num}${type} + 1em)\">";
   }
   else { return '<col>' }
+}
+sub tableCreate {
+  my $text = shift;
+  my $output;
+  my @data;
+  foreach my $line (split("\n", $text)){
+    if   ($line =~ /c$/){ $output .= tableColCreate($line); next; }
+    elsif($line =~ /h$/){ $output .= tableHeaderCreate($line); next; }
+    $line =~ s/^\|//;
+    my @row = split('\|', $line);
+    push(@data, [ @row ]);
+  }
+  my $row_num = 0;
+  foreach my $row (@data){
+    $output .= "<tr>";
+    my $col_num = 0;
+    my $colspan = 1;
+    foreach my $col (@{$row}){
+      my $rowspan = 1;
+      my $td = 'td';
+      while($data[$row_num+$rowspan][$col_num] eq '~'){ $rowspan++; }
+      $col_num++;
+      if   ($col eq '&gt;'){ $colspan++; next; }
+      elsif($col eq '~')   { next; }
+      elsif($col =~ s/^~//){ $td = 'th' }
+      $output .= "<$td";
+      if($colspan > 1){ $output .= ' colspan="'.$colspan.'"'; }
+      if($rowspan > 1){ $output .= ' rowspan="'.$rowspan.'"'; }
+      $output .= ">$col</$td>";
+    }
+    $output .= "</tr>";
+    $row_num++;
+  }
+  return $output;
+}
+sub tableHeaderCreate {
+  my $line = shift;
+  my $output;
+  $line =~ s/^\|//;
+  $line =~ s/h$//;
+  $output .= "<thead><tr>";
+  my $colspan = 1;
+  foreach my $col (split('\|', $line)){
+    my $td = 'td';
+    if   ($col eq '&gt;'){ $colspan++; next; }
+    elsif($col =~ s/^~//){ $td = 'th' }
+    $output .= "<$td";
+    if($colspan > 1){ $output .= ' colspan="'.$colspan.'"'; }
+    $output .= ">$col</$td>";
+  }
+  $output .= "</tr></thead>";
+  return $output;
 }
 ### タグ削除 --------------------------------------------------
 sub tag_delete {
