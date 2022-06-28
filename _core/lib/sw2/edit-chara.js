@@ -1148,7 +1148,7 @@ function calcWeapon() {
     const ownDex = form["weapon"+i+"Own"].checked ? 2 : 0;
     const note = form["weapon"+i+"Note"].value;
     const weaponReqd = safeEval(form["weapon"+i+"Reqd"].value) || 0;
-    let attackClass;
+    let attackClass = 0;
     let accBase = 0;
     let dmgBase = 0;
     let maxReqd = reqdStr;
@@ -1166,13 +1166,14 @@ function calcWeapon() {
     if(attackClass) {
       // 基礎命中
       accBase += attackClass + parseInt((sttDex + sttAddA + ownDex) / 6);
-      // 基礎ダメージ
-      if     (category === 'クロスボウ') { dmgBase += attackClass; }
-      else if(category === 'ガン')       { dmgBase += magicPowers['Mag']; }
-      else if(!modeZero && classes === "デーモンルーラー"){ dmgBase = magicPowers['Dem']; }
-      else { dmgBase += attackClass + bonusStr; }
-      form["weapon"+i+"Category"].classList.remove('fail');
     }
+    // 基礎ダメージ
+    if     (category === 'クロスボウ')                  { dmgBase = attackClass; }
+    else if(category === 'ガン')                        { dmgBase = magicPowers['Mag']; }
+    else if(!modeZero && classes === "デーモンルーラー"){ dmgBase = magicPowers['Dem']; }
+    else if(attackClass)                                { dmgBase = attackClass + bonusStr; }
+    form["weapon"+i+"Category"].classList.remove('fail');
+
     // 習熟
     if(category === 'ガン（物理）') { dmgBase += feats['武器習熟／ガン'] || 0; }
     else if(category) { dmgBase += feats['武器習熟／'+category] || 0; }
@@ -1207,6 +1208,7 @@ function calcDefense() {
   const classes = form.evasionClass.options[form.evasionClass.selectedIndex].value;
   let evaClassLv = 0;
   let evaBase = 0;
+  let evaAdd = 0;
   let defBase = 0;
        if(classes === "ファイター")      { evaClassLv = lv['Fig']; }
   else if(classes === "グラップラー")    { evaClassLv = lv['Gra']; }
@@ -1252,17 +1254,17 @@ function calcDefense() {
   document.getElementById("mastery-shield-value").innerHTML         = feats['防具習熟／盾']       || 0;
   document.getElementById("mastery-artisan-def-value").innerHTML    = feats['魔器習熟']           || 0;
   // 回避行動
-  evaBase += feats['回避行動'] || 0;
+  evaAdd += feats['回避行動'] || 0;
   document.getElementById("evasive-maneuver").style.display = feats['回避行動'] > 0 ? "" :"none";
   document.getElementById("evasive-maneuver-value").innerHTML = feats['回避行動'] || 0;
   // 心眼
-  evaBase += feats['心眼'] || 0;
+  evaAdd += feats['心眼'] || 0;
   document.getElementById("minds-eye").style.display = feats['心眼'] > 0 ? "" :"none";
   document.getElementById("minds-eye-value").innerHTML = feats['心眼'] || 0;
   
-  calcArmour(evaBase,defBase,maxReqd);
+  calcArmour(evaBase,evaAdd,defBase,maxReqd);
 }
-function calcArmour(evaBase,defBase,maxReqd) {
+function calcArmour(evaBase,evaAdd,defBase,maxReqd) {
   const armour1Eva = Number(form.armour1Eva.value);
   const armour1Def = Number(form.armour1Def.value) + Math.max((feats['防具習熟／金属鎧'] || 0),(feats['防具習熟／非金属鎧'] || 0));
   const shield1Eva = Number(form.shield1Eva.value);
@@ -1279,7 +1281,7 @@ function calcArmour(evaBase,defBase,maxReqd) {
   
   for (let i = 1; i <= 3; i++){
     const ownAgi = form[`defTotal${i}CheckShield1`].checked && form.shield1Own.checked ? 2 : 0;
-    let eva = ( evaBase ? evaBase + parseInt((sttAgi + sttAddB + ownAgi) / 6) : 0 );
+    let eva = ( evaBase ? evaBase + evaAdd + parseInt((sttAgi + sttAddB + ownAgi) / 6) : 0 );
     let def = defBase;
     if(form[`defTotal${i}CheckArmour1`].checked)  { eva += armour1Eva; def += armour1Def; }
     if(form[`defTotal${i}CheckShield1`].checked)  { eva += shield1Eva; def += shield1Def; }
