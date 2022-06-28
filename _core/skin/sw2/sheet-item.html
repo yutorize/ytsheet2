@@ -42,6 +42,7 @@ window.onload = function() {
               <li class="small"><a href="./?mode=edit&id=<TMPL_VAR id>&log=<TMPL_VAR logId>&type=i">復元</a></li>
             </TMPL_IF>
           <TMPL_ELSE>
+            <li class="small"><a onclick="donwloadListOn();">出力</a></li>
             <li class="small"><a onclick="loglistOn()"><span>過去ログ</span></a></li>
             <TMPL_IF reqdPassword>
               <li class="small"><a onclick="editOn()">編集</a></li>
@@ -83,6 +84,13 @@ window.onload = function() {
           </dl>
         </form>
       </details></TMPL_IF>
+    </aside>
+
+    <aside id="downloadlist" class="float-box">
+      <h2>出力</h2>
+      <ul>
+        <li id="downloadlist-json"><a onclick="donloadAsJson();">JSON 形式</a></li>
+      </ul>
     </aside>
   </TMPL_UNLESS>
 
