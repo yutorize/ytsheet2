@@ -83,7 +83,7 @@ function imageBlobPreview(blob){
     el.style.backgroundImage = 'url("'+blobURL+'")';
   });
   imgURL = blobURL;
-  imageDragPointSet();
+  if(imageType == 'character'){ imageDragPointSet(); }
 }
 // 圧縮
 let compress_scale = 1;
@@ -167,7 +167,6 @@ function imageDragStart(e){
   dragFlag = 1;
   dragPoint.x = e.x || e.changedTouches[0].pageX;
   dragPoint.y = e.y || e.changedTouches[0].pageY;
-  console.log('start',dragPoint.x ,dragPoint.y)
 }
 let baseDistance = 0;
 function imageDragMove(e){
@@ -203,7 +202,6 @@ function imageDragMove(e){
       objY.value = Number(objY.value) + (dragPoint.y - y) * pointHeight;
       dragPoint.x = x;
       dragPoint.y = y;
-      console.log(dragPoint.x ,dragPoint.y)
       imagePosition();
     }
   }
@@ -258,7 +256,6 @@ function imageDragPointSet(){
     }
     pointWidth  = 100 / (viewWidth  - boxWidth);
     pointHeight = 100 / (viewHeight - boxHeight);
-    console.log(imgURL,imgWidth,imgHeight,pointWidth,pointHeight)
   }
 }
 // セリフプレビュー

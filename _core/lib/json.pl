@@ -24,6 +24,7 @@ if($id){
   my $datadir;
      if($type eq 'm'){ $datadir = $set::mons_dir; }
   elsif($type eq 'i'){ $datadir = $set::item_dir; }
+  elsif($type eq 'a'){ $datadir = $set::arts_dir; }
   else               { $datadir = $set::char_dir; }
 
   my $datatype = ($::in{'log'}) ? 'logs' : 'data';

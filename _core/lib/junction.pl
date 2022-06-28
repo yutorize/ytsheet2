@@ -4,7 +4,7 @@ use strict;
 use utf8;
 use Encode;
 
-our $ver = "1.17.027";
+our $ver = "1.18.000";
 
 our %in;
 for (param()){ $in{$_} = param($_); }
@@ -58,6 +58,7 @@ elsif($in{'url'}) { require $set::lib_view; }   #シート表示（コンバー�
 else {
   if   ($in{'type'} eq 'm' && $set::lib_list_mons){ require $set::lib_list_mons; }
   elsif($in{'type'} eq 'i' && $set::lib_list_item){ require $set::lib_list_item; }
+  elsif($in{'type'} eq 'a' && $set::lib_list_arts){ require $set::lib_list_arts; }
   else { require $set::lib_list_char; }
 }   #一覧表示
 

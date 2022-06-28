@@ -1081,9 +1081,6 @@ form#item div.box {
   margin: 1rem 0;
   overflow-x: auto;
 }
-form#item div.box {
-  margin: 1rem 0;
-}
 form#item #area-name {
   font-weight: bold;
 }
@@ -1108,11 +1105,6 @@ form#item div.input-data div {
 form#item div.input-data dl {
   display: flex;
   margin-right: 1.5em;
-}
-@media screen and (max-width:735px){
-  form#item div.input-data dl {
-    display: block;
-  }
 }
 form#item div.input-data dl dt {
   position: relative;
@@ -1179,4 +1171,113 @@ form#item textarea[name="description"] {
   padding: 2px;
 }
 
+@media screen and (max-width:735px){
+  form#item div.input-data dl {
+    display: block;
+  }
+}
 
+
+/* // 魔法
+---------------------------------------------------------------------------------------------------- */
+form#arts div.box {
+  margin: 1rem 0;
+  overflow-x: auto;
+}
+form#arts #group dl {
+  display: grid;
+  grid-template-columns: 2.5em 1fr;
+  grid-template-rows: auto;
+}
+form#arts #category dd {
+  text-align: left;
+}
+form#arts #category dd select {
+  width: max-content;
+}
+form#arts div.input-data div {
+  display: flex;
+  flex-wrap: wrap;
+}
+form#arts div.input-data dl {
+  display: flex;
+  margin-right: 1.5em;
+  margin: 0 1rem;
+}
+form#arts div.input-data dl dt {
+  position: relative;
+  width: 6em;
+  margin-right: 1em;
+  padding-top: 3px;
+  text-align-last: justify;
+}
+form#arts div.input-data dl dt::after {
+  content: ':';
+  position: absolute;
+  display: inline-block;
+  width: 1em;
+  text-align: center;
+  font-weight: normal;
+}
+form#arts div.input-data dl dd {
+  flex-grow: 1;
+  text-align: left;
+}
+form#arts div.input-data dl dd input {
+  max-width: 14em;
+}
+form#arts div.input-data dl.maxim input {
+  width: calc(100% - 3em);
+  max-width: none;
+}
+form#arts div.input-data dl.name dd input {
+  max-width: 24em;
+}
+form#arts div.input-data dl.aka dd input {
+  max-width: 10em;
+}
+form#arts div.input-data dl.class dd select {
+  max-width: max-content;
+}
+form#arts div.input-data dl.level dd input {
+  max-width: 5em;
+}
+form#arts div.input-data dl.summary dd input {
+  max-width: 100%;
+}
+form#arts textarea {
+  height: 6em;
+  padding: 2px;
+}
+form#arts textarea[name="godSymbol"] {
+  height: 10em;
+}
+form#arts textarea[name="godDeity"],
+form#arts textarea[name="godNote"] {
+  height: 16em;
+}
+@media screen and (max-width:735px){
+  form#arts div.input-data dl.name dd input {
+    width: 14em;
+  }
+  form#arts div.input-data dl dd small {
+    display: block;
+  }
+}
+
+form#arts #image {
+  float: right;
+  width: 280px;
+  margin: 5px;
+  border-width: 1px;
+  border-style: solid;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+@media screen and (max-width:735px){
+  form#arts #image {
+    float: none;
+    width: auto;
+  }
+}

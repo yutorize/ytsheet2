@@ -25,6 +25,7 @@ elsif($::in{'url'}){
 ### 各システム別処理 --------------------------------------------------
 if   ($type eq 'm'){ require $set::lib_view_mons; }
 elsif($type eq 'i'){ require $set::lib_view_item; }
+elsif($type eq 'a'){ require $set::lib_view_arts; }
 else               { require $set::lib_view_char; }
 
 
@@ -34,7 +35,7 @@ sub pcDataGet {
   my %pc;
   ## データ読み込み
   if($::in{'id'}){
-    my $datadir = ($type eq 'm') ? $set::mons_dir : ($type eq 'i') ? $set::item_dir : $set::char_dir;
+    my $datadir = ($type eq 'm') ? $set::mons_dir : ($type eq 'i') ? $set::item_dir : ($type eq 'a') ? $set::arts_dir : $set::char_dir;
 
     my $datatype = ($::in{'log'}) ? 'logs' : 'data';
     my $hit = 0;
@@ -63,7 +64,7 @@ sub pcDataGet {
   elsif($::in{'url'}){
     %pc = %conv_data;
     if(!$conv_data{'ver'}){
-      require (($type eq 'm') ? $set::lib_calc_mons : ($type eq 'i') ? $set::lib_calc_item : $set::lib_calc_char);
+      require (($type eq 'm') ? $set::lib_calc_mons : ($type eq 'i') ? $set::lib_calc_item : ($type eq 'a') ? $set::lib_calc_arts : $set::lib_calc_char);
       %pc = data_calc(\%pc);
     }
   }

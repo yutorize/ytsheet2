@@ -39,7 +39,7 @@ if ($mode eq 'make'){
   
   ## ID生成
   if($set::id_type && $LOGIN_ID){
-    my $type = ($::in{'type'} eq 'm') ? 'm' : ($::in{'type'} eq 'i') ? 'i' : '';
+    my $type = ($::in{'type'} eq 'm') ? 'm' : ($::in{'type'} eq 'i') ? 'i' : ($::in{'type'} eq 'a') ? 'a' : '';
     my $i = 1;
     $new_id = $LOGIN_ID.'-'.$type.sprintf("%03d",$i);
     # 重複チェック
@@ -101,6 +101,7 @@ elsif($mode eq 'save'){
 my $data_dir; my $listfile; our $newline;
 if   ($::in{'type'} eq 'm'){ require $set::lib_calc_mons; $data_dir = $set::mons_dir; $listfile = $set::monslist; }
 elsif($::in{'type'} eq 'i'){ require $set::lib_calc_item; $data_dir = $set::item_dir; $listfile = $set::itemlist; }
+elsif($::in{'type'} eq 'a'){ require $set::lib_calc_arts; $data_dir = $set::arts_dir; $listfile = $set::artslist; }
 else                       { require $set::lib_calc_char; $data_dir = $set::char_dir; $listfile = $set::listfile; }
 
 ## データ計算

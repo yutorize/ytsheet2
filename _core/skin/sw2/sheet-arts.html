@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <title><TMPL_VAR artsNameTitle> - <TMPL_VAR title></title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" media="all" href="<TMPL_VAR coreDir>/skin/_common/css/base.css?<TMPL_VAR ver>">
+  <link rel="stylesheet" media="all" href="<TMPL_VAR coreDir>/skin/_common/css/sheet.css?<TMPL_VAR ver>">
+  <link rel="stylesheet" media="all" href="<TMPL_VAR coreDir>/skin/sw2/css/arts.css?<TMPL_VAR ver>">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <script>
+const sheetId = '<TMPL_VAR id>';
+<TMPL_IF error>
+window.onload = function() {
+  editOn();
+  setTimeout(function(){
+    document.getElementById("error").style.opacity = 0;
+    document.getElementById("error").style.top = '-5rem';
+  },2000);
+};
+</TMPL_IF>
+  </script>
+  <TMPL_INCLUDE NAME="skin-add/sheet-head.html">
+</head>
+<body id="arts" <TMPL_IF categoryGod>class="wide"</TMPL_IF>>
+  <script src="<TMPL_VAR coreDir>/skin/_common/js/common.js?<TMPL_VAR ver>"></script>
+  <script src="<TMPL_VAR coreDir>/skin/_common/js/sheet.js?<TMPL_VAR ver>"></script>
+  <header>
+    <h1><a href="./?type=a"><TMPL_VAR title></a></h1>
+    <nav>
+      <ul>
+        <li class="small"><a href="./?type=a">⏎</a></li>
+        <TMPL_IF convertMode>
+          <li><a href="./?mode=convert&url=<TMPL_VAR convertUrl>"><span>コンバート</span></a></li>
+        <TMPL_ELSE>
+          <TMPL_IF logId>
+            <li class="small"><a onclick="loglistOn()"><span>過去ログ</span></a></li>
+            <TMPL_IF reqdPassword>
+              <li class="small"><a onclick="editOn()">復元</a></li>
+            <TMPL_ELSE>
+              <li class="small"><a href="./?mode=edit&id=<TMPL_VAR id>&log=<TMPL_VAR logId>&type=a">復元</a></li>
+            </TMPL_IF>
+          <TMPL_ELSE>
+            <li class="small"><a onclick="donwloadListOn();">出力</a></li>
+            <li class="small"><a onclick="loglistOn()"><span>過去ログ</span></a></li>
+            <TMPL_IF reqdPassword>
+              <li class="small"><a onclick="editOn()">編集</a></li>
+            <TMPL_ELSE>
+              <li class="small"><a href="./?mode=edit&id=<TMPL_VAR id>&type=a">編集</a></li>
+            </TMPL_IF>
+          </TMPL_IF>
+        </TMPL_IF>
+        <li class="small"><a onclick="nightModeChange()" title="ナイトモード">☾✧</a></li>
+      </ul>
+    </nav>
+  </header>
+  
+  <TMPL_IF error>
+  <aside id="error">
+    <p>
+      <TMPL_VAR error>
+    </p>
+  </aside>
+  </TMPL_IF>
+  
+  <TMPL_UNLESS forbiddenMode>
+    <aside id="loglist" class="float-box">
+      <h2>過去ログ（バックアップ）</h2>
+      <ul>
+        <TMPL_LOOP LogList><li class="<TMPL_VAR SELECTED>"><a href="?id=<TMPL_VAR id><TMPL_VAR URL>"><TMPL_VAR DATE></a></li></TMPL_LOOP>
+      </ul>
+      <TMPL_IF viewLogNaming><details id="log-naming">
+        <summary>閲覧中のログ<TMPL_IF selectedLogName>の名前をつけなおす<TMPL_ELSE>に名前をつける</TMPL_IF></summary>
+        <form id="log-naming-form" method="post" action="./">
+          <input type="hidden" name="mode" value="bu-naming">
+          <input type="hidden" name="type" value="a">
+          <input type="hidden" name="id" value="<TMPL_VAR id>">
+          <input type="hidden" name="date" value="<TMPL_VAR logId>">
+          <dl>
+            <dt>名前</dt><dd><input type="text" name="log-name" value="<TMPL_VAR selectedLogName>"></dd>
+            <TMPL_IF reqdPassword><dt>パスワード</dt><dd><input type="password" name="pass"></dd></TMPL_IF>
+            <dd><input type="submit"></dd>
+          </dl>
+        </form>
+      </details></TMPL_IF>
+    </aside>
+
+    <aside id="downloadlist" class="float-box">
+      <h2>出力</h2>
+      <ul>
+        <li id="downloadlist-json"><a onclick="donloadAsJson();">JSON 形式</a></li>
+      </ul>
+    </aside>
+  </TMPL_UNLESS>
+
+  <form id="login-form" class="float-box" method="post" action="./">
+    <input type="hidden" name="mode" value="edit">
+    <input type="hidden" name="type" value="a">
+    <input type="hidden" name="id" value="<TMPL_VAR id>">
+    <input type="password" name="pass" placeholder="password">
+    <input type="hidden" name="log" value="<TMPL_VAR logId>">
+    <input type="submit" value="編集">
+  </form>
+
+  <main>
+    <TMPL_IF forbidden><aside class="information attention">
+      閲覧が制限されているデータです。<br>
+      <TMPL_IF yourAuthor>あなた以外には一部または全てのデータが伏せられます。(<a href="./?id=<TMPL_VAR id>&checkView=1">⇒確認</a>)</TMPL_IF>
+    </aside></TMPL_IF>
+    
+    <TMPL_IF logId><aside class="information log">
+      <h2><TMPL_VAR selectedLogName></h2>
+      <p><TMPL_VAR updateTime> 時点の過去ログ(バックアップ)データです。</p>
+    </aside></TMPL_IF>
+    
+    <TMPL_IF convertMode><aside class="information">
+      <a href="<TMPL_VAR convertUrl>" target="_blank"><TMPL_VAR convertSource></a> のデータを表示しています。
+    </aside></TMPL_IF>
+    
+    <article class="arts">
+      
+      <!-- 魔法 -->
+      <TMPL_IF categoryMagic>
+      <section id="magic">
+        <div id="tags">
+          <TMPL_LOOP Tags><a class="tag" href="./?type=a&tag=<TMPL_VAR URL>"><TMPL_VAR TEXT></a></TMPL_LOOP>
+        </div>
+        <h2><TMPL_VAR magicClass></h2>
+        <div class="data-magic">
+          <dl class="name    "><dt><TMPL_VAR magicLevel></dt><dd><div><TMPL_VAR magicIcon>【<TMPL_VAR magicName>】</div><small><TMPL_VAR magicNameNotes></small></dd></dl>
+          <dl class="cost    "><dt>消費      </dt><dd><TMPL_VAR magicCost></dd></dl>
+          <dl class="target  "><dt>対象      </dt><dd><TMPL_VAR magicTarget></dd></dl>
+          <dl class="range   "><dt>射程/<br>形状</dt><dd><TMPL_VAR magicRange>／<TMPL_VAR magicForm></dd></dl>
+          <dl class="duration"><dt>時間      </dt><dd><TMPL_VAR magicDuration></dd></dl>
+          <dl class="resist  "><dt>抵抗      </dt><dd><TMPL_VAR magicResist></dd></dl>
+          <TMPL_IF magicElement><dl class="element" ><dt>属性</dt><dd><TMPL_VAR magicElement></dd></dl></TMPL_IF>
+          <dl class="surmmary"><dt>概要      </dt><dd><TMPL_VAR magicSummary></dd></dl>
+          <dl class="effect  "><dt>効果      </dt><dd><p><TMPL_VAR magicEffect></p></dd></dl>
+        </div>
+      </section>
+      <section class=" description">
+        <h2>由来・逸話など</h2>
+        <p><TMPL_VAR magicDescription></p>
+      </section>
+      </TMPL_IF>
+
+      <!-- 神格 -->
+      <TMPL_IF categoryGod>
+      <section id="god">
+        <div id="area-name">
+          <h1 id="god-name"><TMPL_IF godAka><span id="aka">“<TMPL_VAR godAka>”</span></TMPL_IF><TMPL_VAR godName></h1>
+            <small>（<TMPL_VAR godClass DEFAULT="―">／<TMPL_VAR godRank DEFAULT="―"><TMPL_IF godArea>:<TMPL_VAR godArea></TMPL_IF>）</small>
+        </div>
+      
+        <div id="tags">
+          <TMPL_LOOP Tags><a class="tag" href="./?type=i&tag=<TMPL_VAR URL>"><TMPL_VAR TEXT></a></TMPL_LOOP>
+        </div>
+
+        <div id="area-description">
+          <div id="symbol">
+            <TMPL_IF image>
+              <img src="<TMPL_VAR imageSrc>">
+            <TMPL_ELSE>
+              No Image
+            </TMPL_IF>
+          </div>
+          <section class="description">
+            <h2>聖印と神像</h2>
+            <p><TMPL_VAR godSymbol></p>
+          </section>
+          <section class="description">
+            <h2>神格と教義</h2>
+            <p><TMPL_VAR godDeity></p>
+          </section>
+          <section class="description">
+            <h2>格言</h2>
+            <p>「<TMPL_VAR godMaxim1>」</p>
+            <p>「<TMPL_VAR godMaxim2>」</p>
+            <p>「<TMPL_VAR godMaxim3>」</p>
+          </section>
+          <TMPL_IF godNote><section class="description">
+            <h2><TMPL_IF head_godNote><TMPL_VAR head_godNote><TMPL_ELSE>備考</TMPL_IF></h2>
+            <p><TMPL_VAR godNote></p>
+          </section></TMPL_IF>
+        </div>
+        <section id="magics" class="description">
+          <h2>特殊神聖魔法</h2>
+          <TMPL_LOOP MagicData>
+          <div class="data-magic">
+            <dl class="name    "><dt><TMPL_VAR LEVEL></dt><dd><div><TMPL_VAR ICON>【<TMPL_VAR NAME>】</div></dd></dl>
+            <dl class="cost    "><dt>消費      </dt><dd><TMPL_VAR COST></dd></dl>
+            <dl class="target  "><dt>対象      </dt><dd><TMPL_VAR TARGET></dd></dl>
+            <dl class="range   "><dt>射程/<br>形状</dt><dd><TMPL_VAR RANGE>／<br><TMPL_VAR FORM></dd></dl>
+            <dl class="duration"><dt>時間      </dt><dd><TMPL_VAR DURATION></dd></dl>
+            <dl class="resist  "><dt>抵抗      </dt><dd><TMPL_VAR RESIST></dd></dl>
+            <TMPL_IF ELEMENT><dl class="element" ><dt>属性</dt><dd><TMPL_VAR ELEMENT></dd></dl></TMPL_IF>
+            <dl class="surmmary"><dt>概要      </dt><dd><TMPL_VAR SUMMARY></dd></dl>
+            <dl class="effect  "><dt>効果      </dt><dd><p><TMPL_VAR EFFECT></p></dd></dl>
+          </div>
+        </TMPL_LOOP>
+      </section>
+      </section>
+      </TMPL_IF>
+      <div id="author">
+        製作者：<TMPL_VAR author>
+      </div>
+      <TMPL_UNLESS forbidden>
+      <div id="link-tag">
+        ゆとシート内リンク用タグ：<input type="text" onclick="this.select()" value="[<TMPL_VAR rawName>#<TMPL_VAR id>]">
+      </div>
+      </TMPL_UNLESS>
+    </article>
+    <div class="back-button"><a href="./?type=a">⏎</a></div>
+    <TMPL_IF image><div id="image-box" onclick="closeImage()">
+      <img src="<TMPL_VAR imageSrc>" id="image-box-image">
+    </div></TMPL_IF> 
+  </main>
+  <TMPL_INCLUDE NAME="skin-add/sheet-sidebar.html">
+
+  <footer>
+    <p class="notes"><span>『ソード・ワールド2.5』は、</span><span>「グループSNE」及び「KADOKAWA」の著作物です。</span></p>
+    <p class="copyright">ゆとシートⅡ for SW2.5 ver.<TMPL_VAR ver> - <a href="https://yutorize.2-d.jp">ゆとらいず工房</a></p>
+  </footer>
+</body>
+
+</html>

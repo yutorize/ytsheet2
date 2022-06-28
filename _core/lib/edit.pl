@@ -37,6 +37,7 @@ if($mode eq 'convert'){
 
 if   ($type eq 'm'){ require $set::lib_edit_mons; }
 elsif($type eq 'i'){ require $set::lib_edit_item; }
+elsif($type eq 'a'){ require $set::lib_edit_arts; }
 else               { require $set::lib_edit_char; }
 
 ### 共通サブルーチン --------------------------------------------------
@@ -46,7 +47,7 @@ sub pcDataGet {
   my %pc;
   my $file;
   my $message;
-  my $datadir = ($type eq 'm') ? $set::mons_dir : ($type eq 'i') ? $set::item_dir : $set::char_dir;
+  my $datadir = ($type eq 'm') ? $set::mons_dir : ($type eq 'i') ? $set::item_dir : ($type eq 'a') ? $set::arts_dir : $set::char_dir;
   # エラー
   if($main::make_error) {
     $mode = ($mode eq 'save') ? 'edit' : 'blanksheet';
@@ -174,6 +175,7 @@ sub image_form {
           <input type="hidden" name="imageCompressedType">
         </p>
         <script>
+          const imageType = 'character';
           // ドラッグ＆ドロップで画像アップ
           document.getElementById('image-custom').addEventListener('dragover',function(e){
             e.preventDefault();

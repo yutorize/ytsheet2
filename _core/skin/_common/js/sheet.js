@@ -125,7 +125,7 @@ async function donloadAsText() {
 
 async function donloadAsJson() {
   const characterDataJson = await getJsonData();
-  const characterId = characterDataJson.characterName || characterDataJson.monsterName || characterDataJson.aka || '無題';
+  const characterId = characterDataJson.characterName || characterDataJson.monsterName || characterDataJson.aka || characterDataJson.itemName || characterDataJson.artsName || '無題';
   const jsonUrl = window.URL.createObjectURL(new Blob([ JSON.stringify(characterDataJson) ], { "type" : 'text/json;charset=utf-8;' }));
   downloadFile(`data_${characterId}.json`, jsonUrl);
 }
