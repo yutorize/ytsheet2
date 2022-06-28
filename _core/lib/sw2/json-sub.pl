@@ -11,6 +11,7 @@ sub addJsonData {
   my $type = $_[1];
   if   ($type eq 'm'){  }
   elsif($type eq 'i'){  }
+  elsif($type eq 'a'){  }
   else {
     %pc = data_update_chara(\%pc);
     # 簡易プロフィール
