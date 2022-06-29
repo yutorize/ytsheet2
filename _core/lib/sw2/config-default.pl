@@ -158,7 +158,7 @@ package set;
   our $listfile = $data_dir . 'charlist.cgi'; # キャラクター一覧ファイル
   our $monslist = $data_dir . 'monslist.cgi'; # 魔物一覧ファイル
   our $itemlist = $data_dir . 'itemlist.cgi'; # アイテム一覧ファイル
-  our $artslist = $data_dir . 'artslist.cgi'; # アイテム一覧ファイル
+  our $artslist = $data_dir . 'artslist.cgi'; # 魔法一覧ファイル
   our $makelist = $data_dir . 'makelist.cgi'; # 能力値作成データファイル
   our $char_dir = $data_dir . 'chara/'; # キャラクターデータ格納ディレクトリ
   our $mons_dir = $data_dir . 'mons/';  # 魔物データ格納ディレクトリ

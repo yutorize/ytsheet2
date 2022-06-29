@@ -284,7 +284,7 @@ HTML
           <dl class="symbol"><dt>聖印と神像</dt><dd><textarea name="godSymbol">$pc{'godSymbol'}</textarea></dd></dl>
           <dl class="deity "><dt>神格と教義</dt><dd><textarea name="godDeity">$pc{'godDeity'}</textarea></dd></dl>
           <dl class="maxim "><dt>格言      </dt><dd>「@{[ input "godMaxim1" ]}」<br>「@{[ input "godMaxim2" ]}」<br>「@{[ input "godMaxim3" ]}」</dd></dl>
-          <dl class="deity "><dt>備考      </dt><dd><textarea name="godNote" placeholder="多神との関係やその他逸話、データの諸注意などなんでも">$pc{'godNote'}</textarea></dd></dl>
+          <dl class="deity "><dt>備考      </dt><dd><textarea name="godNote" placeholder="他神との関係やその他逸話、データの諸注意などなんでも">$pc{'godNote'}</textarea></dd></dl>
         </div>
         <div class="box input-data">
 HTML
