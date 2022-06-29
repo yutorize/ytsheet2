@@ -297,7 +297,7 @@ print <<"HTML";
           <dl class="range   "><dt>射程／形状</dt><dd>@{[ input "godMagic${lv}Range",'','','list="list-range"' ]}／@{[ input "godMagic${lv}Form",'','','list="list-form"' ]}</dd></dl>
           <dl class="duration"><dt>時間      </dt><dd>@{[ input "godMagic${lv}Duration",'','','list="list-duration"' ]}</dd></dl>
           <dl class="resist  "><dt>抵抗      </dt><dd>@{[ input "godMagic${lv}Resist",'','','list="list-resist"' ]}</dd></dl>
-          <dl class="element "><dt>属性      </dt><dd>@{[ input 'godMagic${lv}Element','','','list="list-element"' ]}</dd></dl>
+          <dl class="element "><dt>属性      </dt><dd>@{[ input "godMagic${lv}Element",'','','list="list-element"' ]}</dd></dl>
           <dl class="summary "><dt>概要      </dt><dd>@{[ input "godMagic${lv}Summary" ]}</dd></dl>
           <dl class="effect  "><dt>効果      </dt><dd><textarea name="godMagic${lv}Effect">$pc{"godMagic${lv}Effect"}</textarea></dd></dl>
 HTML
