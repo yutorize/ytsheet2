@@ -221,12 +221,6 @@ dl.box > dt,
 .box table hr {
   margin: .1rem .2rem;
 }
-.box hr.dotted {
-  border-style: dotted;
-}
-.box hr.dashed {
-  border-style: dashed;
-}
 .box h2:nth-child(n+2),
 .box details h2,
 .box .header1 {

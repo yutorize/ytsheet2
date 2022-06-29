@@ -72,6 +72,12 @@ hr {
   border-width: 1px 0 0;
   border-style: solid;
 }
+hr.dotted {
+  border-style: dotted;
+}
+hr.dashed {
+  border-style: dashed;
+}
 
 table, tr, th, td {
   border-width: 0;

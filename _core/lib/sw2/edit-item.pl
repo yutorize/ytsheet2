@@ -88,6 +88,7 @@ print <<"HTML";
       <div id="header-menu">
         <h2><span></span></h2>
         <ul>
+          <li onclick="view('text-rule')" class="help-button"></li>
           <li class="button">
 HTML
 if($mode eq 'edit'){
@@ -278,6 +279,17 @@ HTML
 }
 print <<"HTML";
     </article>
+HTML
+# ヘルプ
+my $text_rule = <<"HTML";
+        アイコン<br>
+        　魔法のアイテム：<code>[魔]</code>：<img class="i-icon" src="${set::icon_dir}wp_magic.png"><br>
+        　刃武器　　　　：<code>[刃]</code>：<img class="i-icon" src="${set::icon_dir}wp_edge.png"><br>
+        　打撃武器　　　：<code>[打]</code>：<img class="i-icon" src="${set::icon_dir}wp_blow.png"><br>
+HTML
+print textRuleArea( $text_rule,'「効果」「解説」' );
+
+print <<"HTML";
   </main>
   <footer>
     『ソード・ワールド2.5』は、「グループSNE」及び「KADOKAWA」の著作物です。<br>

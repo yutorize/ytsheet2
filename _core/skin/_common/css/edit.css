@@ -1062,6 +1062,62 @@ label.box.color-custom input:checked+i::before,
   border-radius: 0px;
 }
 
+
+/* // ヘルプ
+---------------------------------------------------------------------------------------------------- */
+.sticky-footer {
+  position: sticky;
+  bottom: 0;
+  margin-top: 1em;
+  padding: .2rem 0 .5rem;
+  border-radius: 0;
+  border-width: 2px 0 0;
+  border-style: solid;
+  background: var(--bg-color);
+}
+@media screen and (max-width:735px){
+  .sticky-footer {
+    position: fixed;
+  }
+}
+.sticky-footer h2 {
+  margin: 0;
+  padding: 0 .2em;
+  border-width: 0 0 1px;
+  border-style: dotted;
+  font-size: 1.2em;
+}
+.sticky-footer h2::before {
+  font-family: "Font Awesome 5 Free";
+  content: '\f059';
+}
+.sticky-footer .close-button {
+  position: absolute;
+  top: 1px;
+  right: 1px;
+}
+.sticky-footer .close-button::before {
+  font-family: "Font Awesome 5 Free";
+  content: '\f057';
+  font-weight: bold;
+  font-style: normal;
+  font-size: 1.8em;
+  line-height: 1;
+  cursor: pointer;
+}
+.sticky-footer > div {
+  max-height: 20vh;
+  padding: 0 1em;
+  font-size: 85%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.help-button::before {
+  font-family: "Font Awesome 5 Free";
+  content: '\f059';
+}
+
 /* // 
 ---------------------------------------------------------------------------------------------------- */
 @media screen and (min-width:1300px){

@@ -159,6 +159,7 @@ print <<"HTML";
           <li onclick="sectionSelect('common');"><span>キャラクター</span><span>データ</span></li>
           <li onclick="sectionSelect('palette');"><span>チャット</span><span>パレット</span></li>
           <li onclick="sectionSelect('color');"><span>カラー</span><span>カスタム</span></li>
+          <li onclick="view('text-rule')" class="help-button"></li>
           <li class="button">
 HTML
 if($mode eq 'edit'){
@@ -1264,45 +1265,6 @@ print <<"HTML";
       <details class="box" id="free-note" @{[$pc{'freeNote'}?'open':'']}>
         <summary>容姿・経歴・その他メモ</summary>
         <textarea name="freeNote">$pc{'freeNote'}</textarea>
-        <details class="annotate">
-        <summary>テキスト装飾・整形ルール（クリックで展開）</summary>
-        ※メモ欄以外でも有効です。<br>
-        太字　：<code>''テキスト''</code>：<b>テキスト</b><br>
-        斜体　：<code>'''テキスト'''</code>：<span class="oblique">テキスト</span><br>
-        打消線：<code>%%テキスト%%</code>：<span class="strike">テキスト</span><br>
-        下線　：<code>__テキスト__</code>：<span class="underline">テキスト</span><br>
-        透明　：<code>{{テキスト}}</code>：<span style="color:transparent">テキスト</span><br>
-        ルビ　：<code>|テキスト《てきすと》</code>：<ruby>テキスト<rt>てきすと</rt></ruby><br>
-        傍点　：<code>《《テキスト》》</code>：<span class="text-em">テキスト</span><br>
-        透明　：<code>{{テキスト}}</code>：<span style="color:transparent">テキスト</span>（ドラッグ反転で見える）<br>
-        リンク：<code>[[テキスト>URL]]</code><br>
-        別シートへのリンク：<code>[テキスト#シートのID]</code><br>
-        <br>
-        アイコン<br>
-        　魔法のアイテム：<code>[魔]</code>：<img class="i-icon" src="${set::icon_dir}wp_magic.png"><br>
-        　刃武器　　　　：<code>[刃]</code>：<img class="i-icon" src="${set::icon_dir}wp_edge.png"><br>
-        　打撃武器　　　：<code>[打]</code>：<img class="i-icon" src="${set::icon_dir}wp_blow.png"><br>
-        <hr>
-        ※以下は一部の複数行の欄でのみ有効です。<br>
-        （有効な欄：「容姿・経歴・その他メモ」「履歴（自由記入）」「所持品」「収支履歴」）<br>
-        大見出し：行頭に<code>*</code><br>
-        中見出し：行頭に<code>**</code><br>
-        少見出し：行頭に<code>***</code><br>
-        左寄せ　：行頭に<code>LEFT:</code>：以降のテキストがすべて左寄せになります。<br>
-        中央寄せ：行頭に<code>CENTER:</code>：以降のテキストがすべて中央寄せになります。<br>
-        右寄せ　：行頭に<code>RIGHT:</code>：以降のテキストがすべて右寄せになります。<br>
-        横罫線（直線）：<code>----</code>（4つ以上のハイフン）<br>
-        横罫線（点線）：<code> * * * *</code>（4つ以上の「スペース＋アスタリスク」）<br>
-        横罫線（破線）：<code> - - - -</code>（4つ以上の「スペース＋ハイフン」）<br>
-        表組み　　：<code>|テキスト|テキスト|</code><br>
-        定義リスト：<code>:項目名|説明文</code><br>
-        　　　　　　<code>:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|説明文2行目</code> 項目名を記入しないか、半角スペースで埋めると上と結合<br>
-        折り畳み：行頭に<code>[>]項目名</code>：以降のテキストがすべて折り畳みになります。<br>
-        　　　　　項目名を省略すると、自動的に「詳細」になります。<br>
-        折り畳み終了：行頭に<code>[---]</code>：（ハイフンは3つ以上任意）<br>
-        　　　　　　　省略すると、以後のテキストが全て折りたたまれます。<br>
-        コメントアウト：行頭に<code>//</code>：記述した行を非表示にします。
-        </details>
       </details>
       
       <details class="box" id="free-history" @{[$pc{'freeHistory'}?'open':'']}>
@@ -1527,6 +1489,17 @@ HTML
 }
 print <<"HTML";
     </article>
+HTML
+# ヘルプ
+my $text_rule = <<"HTML";
+        アイコン<br>
+        　魔法のアイテム：<code>[魔]</code>：<img class="i-icon" src="${set::icon_dir}wp_magic.png"><br>
+        　刃武器　　　　：<code>[刃]</code>：<img class="i-icon" src="${set::icon_dir}wp_edge.png"><br>
+        　打撃武器　　　：<code>[打]</code>：<img class="i-icon" src="${set::icon_dir}wp_blow.png"><br>
+HTML
+print textRuleArea( $text_rule,'「容姿・経歴・その他メモ」「履歴（自由記入）」「所持品」「収支履歴」' );
+
+print <<"HTML";
   </main>
   <footer>
     『ソード・ワールド2.5』は、「グループSNE」及び「KADOKAWA」の著作物です。<br>

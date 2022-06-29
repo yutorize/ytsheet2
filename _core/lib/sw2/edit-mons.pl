@@ -94,6 +94,7 @@ print <<"HTML";
         <ul>
           <li onclick="sectionSelect('common');"><span>キャラクター</span><span>データ</span></li>
           <li onclick="sectionSelect('palette');"><span>チャット</span><span>パレット</span></li>
+          <li onclick="view('text-rule')" class="help-button"></li>
           <li class="button">
 HTML
 if($mode eq 'edit'){
@@ -362,6 +363,11 @@ HTML
 }
 print <<"HTML";
     </article>
+HTML
+# ヘルプ
+print textRuleArea( '','「特殊能力」「解説」' );
+
+print <<"HTML";
   </main>
   <footer>
     『ソード・ワールド2.5』は、「グループSNE」及び「KADOKAWA」の著作物です。<br>
