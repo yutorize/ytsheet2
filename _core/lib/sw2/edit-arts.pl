@@ -81,11 +81,21 @@ Content-type: text/html\n
     window.onload = function() { checkCategory(); checkMagicClass(); }
     // 送信前チェック ----------------------------------------
     function formCheck(){
-      //if(form.magicName.value === ''){
-      //  alert('名称を入力してください。');
-      //  form.itemName.focus();
-      //  return false;
-      //}
+      if(form.category.value === ''){
+        alert('カテゴリを選択してください。');
+        form.category.focus();
+        return false;
+      }
+      else if(form.category.value === 'magic' && form.magicName.value === ''){
+        alert('名称を入力してください。');
+        form.magicName.focus();
+        return false;
+      }
+      else if(form.category.value === 'god' && form.godName.value === ''){
+        alert('名称を入力してください。');
+        form.godName.focus();
+        return false;
+      }
       if(form.protect.value === 'password' && form.pass.value === ''){
         alert('パスワードが入力されていません。');
         form.pass.focus();
