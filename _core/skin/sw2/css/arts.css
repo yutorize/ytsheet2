@@ -99,7 +99,6 @@ div.data-magic dl.effect   { grid-column: 1/5; }
 div.data-magic dl {
   display: grid;
   grid-template-columns: 3.5em 1fr;
-  background: background: rgba(0,0,0,0.3);
   border-width: 1px 0 0 1px;
   border-style: solid;
 }
@@ -177,12 +176,11 @@ div.data-magic dl.name dd .s-icon {
 div.data-magic dl.name dd .s-icon::before {
   color: #fff;
 }
-.night div.data-magic dl.name dd {
-  background: rgba(255,255,255,0.25);
-}
 div.data-magic dl.effect dd p {
   margin: 0;
   padding: 0;
+  background: none;
+  box-shadow: none;
 }
 
 @media screen and (max-width:735px){
@@ -299,6 +297,9 @@ h1#god-name {
 }
 #god .data-magic {
   margin-top: 1em;
+}
+#god div.data-magic + div.data-magic {
+  margin-top: 1.5em;
 }
 
 /* // Image
