@@ -37,7 +37,7 @@ foreach (keys %::in) {
   $::in{$_} =~ s/</&lt;/g;
   $::in{$_} =~ s/>/&gt;/g;
 }
-if(!($mode eq 'mylist' || $::in{'tag'} || $::in{'category'} || $::in{'name'} || $::in{'author'} || $::in{'age'})){
+if(!($mode eq 'mylist' || $::in{'tag'} || $::in{'name'} || $::in{'category'} || $::in{'sub'} || $::in{'author'})){
   $index_mode = 1;
   $INDEX->param(modeIndex => 1);
 }
@@ -48,8 +48,8 @@ foreach(
   #'group',
   'name',
   'category',
+  'sub',
   'author',
-  'age',
   ){
   push( @q_links, $_.'='.uri_escape_utf8(decode('utf8', param($_))) ) if param($_);
 }
@@ -149,12 +149,13 @@ foreach (@list) {
   ) = (split /<>/, $_)[0..13];
   
   #カウント
-  $count{'すべて'}++;
+  $count{$category}++;
 
   #表示域以外は弾く
   if (
-    ( $index_mode && $count{'すべて'} > $set::list_maxline && $set::list_maxline) || #TOPページ
-    (!$index_mode && $set::pagemax && ($count{'すべて'} < $pagestart || $count{'すべて'} > $pageend)) #それ以外
+    ( $index_mode && $count{$category} > $set::list_maxline && $set::list_maxline) || #TOPページ
+    ( !$::in{'category'} && $mode ne 'mylist' && $count{$category} > $set::list_maxline && $set::list_maxline) || #検索結果（分類指定なし／マイリストでもなし）
+    (!$index_mode && $set::pagemax && ($count{$category} < $pagestart || $count{$category} > $pageend)) #それ以外
   ){
     next;
   }
@@ -163,7 +164,7 @@ foreach (@list) {
   if($category eq 'magic'){ $name = '【'.$name.'】'; }
   
   #グループ（分類）
-  $category = $category{$category};
+  my $category_text = $category{$category};
   if($sub =~ /妖精/){ $sub =~ s#(／[0-9]+)#$1ランク#; }
   else { $sub =~ s#(／[0-9]+)#$1レベル#; }
   $sub = subTextShape($sub);
@@ -179,14 +180,14 @@ foreach (@list) {
     "ID" => $id,
     "NAME" => $name,
     "AUTHOR" => $author,
-    "CATEGORY" => $category,
+    "CATEGORY" => $category_text,
     "SUB" => $sub,
     "SUMMARY" => $summary,
     "DATE" => $updatetime,
     "HIDE" => $hide,
   });
   
-  push(@{$grouplist{'すべて'}}, @characters);
+  push(@{$grouplist{$category}}, @characters);
 }
 sub subTextShape {
   my @texts = split('／', shift);
@@ -196,17 +197,13 @@ sub subTextShape {
 
 ### 出力用配列 --------------------------------------------------
 my @characterlists;
-our @categories = (
-  ['すべて','']
-);
-foreach (@categories){
-  my $name = $_->[0];
-  next if !$count{$name};
+foreach my $id ('magic','god'){
+  next if !$count{$id};
 
   ## ページネーション
   my $navbar;
-  if($set::pagemax && !$index_mode){
-    my $lastpage = ceil($count{$name} / $set::pagemax);
+  if($set::pagemax && !$index_mode && $::in{'category'}){
+    my $lastpage = ceil($count{$id} / $set::pagemax);
     foreach(1 .. $lastpage){
       if($_ == $page){
         $navbar .= '<b>'.$_.'</b> ';
@@ -226,10 +223,10 @@ foreach (@categories){
 
   ##
   push(@characterlists, {
-    "URL" => uri_escape_utf8($name),
-    "NAME" => $name,
-    "NUM" => $count{$name},
-    "Characters" => [@{$grouplist{$name}}],
+    "URL" => $id,
+    "NAME" => $category{$id},
+    "NUM" => $count{$id},
+    "Characters" => [@{$grouplist{$id}}],
     "NAV" => $navbar,
   });
 }

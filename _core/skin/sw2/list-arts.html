@@ -4,7 +4,6 @@
         <small>
         <TMPL_IF name>：名称「<TMPL_VAR name>」を含む</TMPL_IF>
         <TMPL_IF tag>：タグ「<TMPL_VAR tag>」</TMPL_IF>
-        <TMPL_IF category>：大分類「<TMPL_VAR category>」</TMPL_IF>
         <TMPL_IF sub>：小分類「<TMPL_VAR sub>」</TMPL_IF>
         <TMPL_IF playerName>：<TMPL_VAR playerName>さん</TMPL_IF>
         </small>
@@ -46,7 +45,7 @@
           </tr></TMPL_LOOP>
         </table>
         <TMPL_VAR NAV>
-        <TMPL_IF modeIndex><p class="more"><a href="./?type=a&category=all">>>MORE</a></p></TMPL_IF>
+        <TMPL_IF modeIndex><p class="more"><a href="./?type=a&category=<TMPL_VAR URL>">>>MORE</a></p></TMPL_IF>
       </section>
       </TMPL_LOOP>
       <TMPL_IF ListGroups><section class="list">
