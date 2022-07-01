@@ -130,6 +130,7 @@ select {
 body {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(auto, 900px) minmax(0, 1fr);
+  grid-template-rows: max-content auto max-content max-content;
   position: relative;
   min-height: 100vh;
   background-color: var(--bg-color);
@@ -172,7 +173,6 @@ header a {
 main {
   grid-column: 2 / 3;
   grid-row: 2 / 3;
-  min-height: calc(100vh - 11rem);
   margin: 0;
   padding: 4rem 0 1rem;
   border-width: 0px 3px;
