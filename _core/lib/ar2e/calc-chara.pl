@@ -64,6 +64,7 @@ sub data_calc {
     elsif($name =~ /(?:^|[\/／])ファランクススタイル[:：]感知/){ $skill{'ファランクススタイル'} = 'Sen' }
     elsif($name =~ /(?:^|[\/／])ファランクススタイル[:：]精神/){ $skill{'ファランクススタイル'} = 'Mnd' }
     elsif($name =~ /(?:^|[\/／])ファランクススタイル[:：]幸運/){ $skill{'ファランクススタイル'} = 'Luk' }
+    elsif($name =~ /(?:^|[\/／])レガシーサイン/){ $skill{'レガシーサイン'} = 1 }
   }
   $pc{'skillLvLimitAdd'} = !$pc{'skillLvLimitAdd'} ? '' : $pc{'skillLvLimitAdd'} > 0 ? "+$pc{'skillLvLimitAdd'}" : $pc{'skillLvLimitAdd'};
   ## 成長点消費
@@ -73,6 +74,7 @@ sub data_calc {
   }
   #一般スキル
   $pc{'expUsedGeneralSkills'} = ($pc{'skillLvGeneral'} - 2) * 5;
+  $pc{'skillLvGeneral'} -= $skill{'レガシーサイン'};
   #誓約
   foreach my $num (1 .. $pc{'geisesNum'}){
     $pc{'expUsedGeises'} += $pc{"geis${num}Cost"};
