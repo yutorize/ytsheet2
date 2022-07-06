@@ -363,18 +363,15 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
 /* Scar */
 #scar {
   display: grid;
-}
-#scar dl {
-  display: grid;
   grid-template-columns: 10.2em auto;
 }
-#scar dl dd:last-child {
+#scar dd:last-child {
   grid-column: 2;
   grid-row: 1 / span 2;
   border-left-width: 1px;
   border-left-style: dotted;
 }
-#scar dl dd.left {
+#scar dd.left {
   text-align: left;
   padding-top : .5em;
   padding-left: .2em;
@@ -567,6 +564,9 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
   font-size: 86%;
   text-align: right;
   flex-grow: 1;
+}
+.partner .box dl dt {
+  padding-left: .2em;
 }
 .partner-personal {
   display: grid;

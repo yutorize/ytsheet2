@@ -309,13 +309,11 @@ window.onload = function() {
           </dl>
         </div>
 
-        <div id="scar" class="box-union">
-          <dl class="box">
-            <dt>傷号</dt>
-            <dd><TMPL_VAR scarName></dd>
-            <dd class="left"><TMPL_VAR scarNote></dd>
-          </dl>
-        </div>
+        <TMPL_IF scarName><dl id="scar" class="box">
+          <dt>傷号</dt>
+          <dd><TMPL_VAR scarName></dd>
+          <dd class="left"><TMPL_VAR scarNote></dd>
+        </dl></TMPL_IF>
       </div>
       
       </div><!-- / COLUMN -->

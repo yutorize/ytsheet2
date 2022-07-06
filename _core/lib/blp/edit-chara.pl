@@ -10,7 +10,7 @@ my $LOGIN_ID = $::LOGIN_ID;
 ### 読込前処理 #######################################################################################
 require $set::lib_palette_sub;
 ### 各種データライブラリ読み込み --------------------------------------------------
-# なし
+require $set::data_factor;
 
 ### データ読み込み ###################################################################################
 my ($data, $mode, $file, $message) = pcDataGet($::in{'mode'});
@@ -229,7 +229,7 @@ print <<"HTML";
       <details class="box" id="regulation" @{[$mode eq 'edit' ? '':'open']}>
         <summary>作成レギュレーション</summary>
         <dl>
-          <dt>初期練度</dt>
+          <dt>練度</dt>
           <dd id="level-pre-grow"></dd>
           <dt>耐久値+</dt>
           <dd>@{[input("endurancePreGrow",'number','changeRegu','step="5"'.($set::make_fix?' readonly':''))]}</dd>
@@ -239,24 +239,88 @@ print <<"HTML";
         <div class="annotate" @{[ $pc{'convertSource'} eq 'キャラクターシート倉庫' ? '' : 'style="display:none"' ]}>
           ※コンバート時、副能力値の基本値を超える値は、クローズ時の成長としてこの欄に振り分けられます。<br>
           　ただし、（耐久は5、先制は2で）割り切れない「あまり」の値は特技等による補正として、副能力値の補正欄に振り分けています。<br>
-          　また、練度は自動的に計算されます。
         </div>
+        <div class="annotate">※練度は自動的に計算されます。</div>
       </details>
       <div id="area-status">
         @{[ image_form("${set::char_dir}${file}/image.$pc{'image'}?$pc{'imageUpdate'}") ]}
 
-        <div id="factors" class="box-union">
-          <dl class="box" id="factor">
-            <dt>ファクター</dt><dd><select name="factor" oninput="changeFactor();">@{[option "factor",'人間','吸血鬼']}</select></dd>
-          </dl>
-          <dl class="box" id="factor-core">
-            <dt><span class="h-only">信念</span><span class="v-only">起源</span></dt>
-            <dd>@{[input "factorCore"]}</dd>
-          </dl>
-          <dl class="box" id="factor-style">
-            <dt><span class="h-only">職能</span><span class="v-only">流儀</span></dt>
-            <dd>@{[input "factorStyle"]}</dd>
-          </dl>
+        <div id="factors" class="box">
+          <h2>練度:<span id="level-value"></span> ／ 能力値</h2>
+          <table class="edit-table">
+            <thead>
+              <tr>
+                <th></th>
+                <th></th>
+                <th>
+                  <span class="h-only"><i>♠</i>技</span>
+                  <span class="v-only"><i>♥</i>血</span>
+                </th>
+                <th>
+                  <span class="h-only"><i>♣</i>情</span>
+                  <span class="v-only"><i>♦</i>想</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th>ファクター</th>
+                <td><select name="factor" oninput="changeFactor();">@{[option "factor",'人間','吸血鬼']}</select></td>
+                <td>―</td>
+                <td>―</td>
+              </tr>
+              <tr>
+                <th>
+                  <span class="h-only">信念</span>
+                  <span class="v-only">起源</span>
+                </th>
+                <td>@{[ selectInput "factorCore","checkSubFactor('Core',this.value);calcStt()",@{$data::factor_list{$pc{'factor'}}{'core'}} ]}</td>
+                <td>@{[ input 'statusMain1Core','number','calcStt' ]}</td>
+                <td>@{[ input 'statusMain2Core','number','calcStt' ]}</td>
+              </tr>
+              <tr>
+                <th>
+                  <span class="h-only">職能</span>
+                  <span class="v-only">流儀</span>
+                </th>
+                <td>@{[ selectInput "factorStyle","checkSubFactor('Style',this.value);calcStt()",@{$data::factor_list{$pc{'factor'}}{'style'}} ]}</td>
+                <td>@{[ input 'statusMain1Style','number','calcStt' ]}</td>
+                <td>@{[ input 'statusMain2Style','number','calcStt' ]}</td>
+              </tr>
+              <tr class="total">
+                <th colspan="2">合計</th>
+                <td id="main1-total"></td>
+                <td id="main2-total"></td>
+              </tr>
+          </table>
+          <h2>副能力値</h2>
+          <table class="edit-table">
+            <thead>
+              <tr>
+                <th></th>
+                <th></th>
+                <th class="center">耐久値<div class="small" id="endurance-base"></div></th>
+                <th class="center">先制値<div class="small" id="initiative-base"></div></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th colspan="2">成長</th>
+                <td id="endurance-grow"></td>
+                <td id="initiative-grow"></td>
+              </tr>
+              <tr>
+                <th colspan="2">その他修正</th>
+                <td>@{[ input 'enduranceAdd','number','calcStt' ]}</td>
+                <td>@{[ input 'initiativeAdd','number','calcStt' ]}</td>
+              </tr>
+              <tr class="total">
+                <th colspan="2">合計</th>
+                <td id="endurance-total"></td>
+                <td id="initiative-total"></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
 
         <div id="personal" class="box-union">
@@ -270,47 +334,12 @@ print <<"HTML";
           <dl class="box"><dt>住まい</dt><dd>@{[input "dwelling"]}</dd><dd>@{[input "dwellingNote",'','','placeholder="備考"']}</dd></dl>
           <dl class="box"><dt>使用武器</dt><dd>@{[input "weapon"]}</dd><dd>@{[input "weaponNote",'','','placeholder="備考"']}</dd></dl>
         </div>
-
-        <div id="status" class="box-union">
-          <dl class="box" id="level">
-            <dt>練度</dt>
-            <dd id="level-value">1</dd>
-          </dl>
-          <dl class="box">
-            <dt>能力値</dt>
-            <dd>
-              <dl>
-                <dt>
-                  <span class="h-only"><i>♠</i>技</span>
-                  <span class="v-only"><i>♥</i>血</span>
-                </dt>
-                <dd>@{[input "statusMain1",'number','calcStt']}</dd>
-                <dt>
-                  <span class="h-only"><i>♣</i>情</span>
-                  <span class="v-only"><i>♦</i>想</span>
-                </dt>
-                <dd>@{[input "statusMain2",'number','calcStt']}</dd>
-              </dl>
-            </dd>
-          </dl>
-          <dl class="box">
-            <dt>副能力値</dt>
-            <dd>
-              <dl>
-                <dt>耐久値</dt><dd><span class="small" id="endurance-base" >0</span> +@{[input "enduranceAdd" ,'number','calcStt']}=<b id="endurance-total" >0</b></dd>
-                <dt>先制値</dt><dd><span class="small" id="initiative-base">0</span> +@{[input "initiativeAdd",'number','calcStt']}=<b id="initiative-total">0</b></dd>
-              </dl>
-            </dd>
-          </dl>
-        </div>
         
-        <div id="scar" class="box-union">
-          <dl class="box">
-            <dt>傷号</dt>
-            <dd>@{[input "scarName",'','scarCheck']}</dd>
-            <dd><textarea name="scarNote" placeholder="設定" rows="3">$pc{'scarNote'}</textarea></dd>
-          </dl>
-        </div>
+        <dl id="scar" class="box">
+          <dt>傷号</dt>
+          <dd>@{[input "scarName",'','scarCheck']}</dd>
+          <dd><textarea name="scarNote" placeholder="設定" rows="3">$pc{'scarNote'}</textarea></dd>
+        </dl>
       </div>
       
       <div class="box partner-edit">
@@ -851,23 +880,8 @@ print <<"HTML";
   </datalist>
   <script>
 HTML
-print 'const synStats = {';
-foreach (keys %data::syndrome_status) {
-  next if !$_;
-  my @ar = @{$data::syndrome_status{$_}};
-  print '"'.$_.'":{"body":'.$ar[0].',"sense":'.$ar[1].',"mind":'.$ar[2].',"social":'.$ar[3].'},'
-}
-print "};\n";
-print 'const awakens = {';
-foreach (@data::awakens) {
-  print '"'.@$_[0].'":'.@$_[1].','
-}
-print "};\n";
-print 'const impulses = {';
-foreach (@data::impulses) {
-  print '"'.@$_[0].'":'.@$_[1].','
-}
-print "};\n";
+print 'const factorList = '.(JSON::PP->new->encode(\%data::factor_list)).";\n";
+print 'const factorData = '.(JSON::PP->new->encode(\%data::factor_data)).";\n";
 ## チャットパレット
 print <<"HTML";
   let palettePresetText = {
