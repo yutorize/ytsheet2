@@ -220,7 +220,10 @@ function autoInputPartner(num){
 function togglePartner2(){
   document.getElementById('partner2area').style.display = form.partner2On.checked ? '' : 'none';
 }
-
+// 血僕 ----------------------------------------
+function toggleServant(){
+  document.getElementById('servant').style.display = form.servantOn.checked ? '' : 'none';
+}
 // 傷号 ----------------------------------------
 function scarCheck(){
   const name = form.scarName.value;

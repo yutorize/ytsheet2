@@ -223,6 +223,33 @@ body:not(.type-human) .h-only {
   .partner-table > dl.partner-data > dd dl dd:nth-of-type(6) { grid-column: 1 ; grid-row: 8; }
 }
 
+#servant {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+#servant .servant-data {
+  border-right-width: 1px;
+  border-right-style: solid;
+}
+
+#servant .servant-data dl {
+  display: grid;
+  grid-template-columns: 2.5fr 1fr;
+}
+@media screen and (max-width:735px){
+  #servant {
+    display: block;
+  }
+}
+#servant #servant-master-term      + dd { grid-row: 2; }
+#servant #servant-class-term       + dd { grid-row: 2; }
+#servant #servant-background-term  + dd { grid-row: 4; grid-column: span 2; }
+
+#servant .partner-from {
+  grid-column: 2;
+  grid-row: 1;
+}
 
 #bloodarts,
 #arts {

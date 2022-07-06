@@ -343,6 +343,40 @@ print <<"HTML";
       </div>
       
       <div class="box partner-edit">
+        <h2 id="head-servant">@{[ input 'servantOn','checkbox','toggleServant' ]}血僕／隷印</h2>
+        <div class="partner-table" id="servant">
+          <dl class="servant-data">
+            <dt></dt>
+            <dd>
+              <dl>
+                <dt id="servant-master-term">主</dt>
+                <dd>@{[ input 'servantMaster' ]}</dd>
+                
+                <dt id="servant-class-term">区分</dt>
+                <dd>@{[ input 'servantClass','','','list="list-servant-class"' ]}</dd>
+                
+                <dt id="servant-background-term">従属経緯</dt>
+                <dd>@{[ input 'servantBackground' ]}</dd>
+              </dl>
+            </dd>
+          </dl>
+          <dl class="partner-from">
+            <dt>隷印</dt>
+            <dd>
+              <dl>
+                <dt>位置</dt>
+                <dd>@{[ input 'servantSealPosition','','','list="list-servant-seal-position"' ]}</dd>
+                <dt>形状</dt>
+                <dd>@{[ input 'servantSealShape','','','list="list-servant-seal-shape"' ]}</dd>
+                <dt>主からの感情1</dt><dd>@{[ input 'servantEmotion1','','','list="list-servant-emotion1"' ]}</dd>
+                <dt>主からの感情2</dt><dd>@{[ input 'servantEmotion2','','','list="list-servant-emotion2"' ]}</dd>
+              </dl>
+            </dd>
+          </dl>
+        </div>
+      </div>
+      
+      <div class="box partner-edit">
         <h2>血契</h2>
         <div class="partner-table" id="partner1area">
           <dl class="partner-data">
@@ -877,6 +911,47 @@ print <<"HTML";
     <option value="劣等感">
     <option value="安心感">
     <option value="不安">
+  </datalist>
+  <datalist id="list-servant-class">
+    <option value="戦奴">
+    <option value="玩倶">
+    <option value="働具">
+  </datalist>
+  <datalist id="list-servant-seal-position">
+    <option value="手首">
+    <option value="胸">
+    <option value="背中">
+    <option value="首">
+    <option value="足首">
+    <option value="腹">
+    <option value="舌">
+  </datalist>
+  <datalist id="list-servant-seal-shape">
+    <option value="鎖">
+    <option value="数字">
+    <option value="傷跡">
+    <option value="花">
+    <option value="目">
+    <option value="文字">
+    <option value="固有紋様">
+  </datalist>
+  <datalist id="list-servant-emotion1">
+    <option value="独占欲">
+    <option value="有為">
+    <option value="憐憫">
+    <option value="優越感">
+    <option value="滑稽">
+    <option value="偏愛">
+    <option value="嗜虐心">
+  </datalist>
+  <datalist id="list-servant-emotion2">
+    <option value="家畜">
+    <option value="美品">
+    <option value="消耗品">
+    <option value="美術品">
+    <option value="娯楽">
+    <option value="側近">
+    <option value="愛用品">
   </datalist>
   <script>
 HTML

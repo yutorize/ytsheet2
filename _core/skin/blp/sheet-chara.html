@@ -317,8 +317,28 @@ window.onload = function() {
       </div>
       
       </div><!-- / COLUMN -->
-      
       <div id="area-partner" <TMPL_IF partner2On>class="bigamy"</TMPL_IF>>
+      
+        <TMPL_IF servantOn><div id="servant" class="box">
+          <div>
+            <h2>血僕</h2>
+            <div id="servant-data">
+              <dl class="master"    ><dt>主      </dt><dd><TMPL_VAR servantMaster></dd></dl>
+              <dl class="class"     ><dt>区分    </dt><dd><TMPL_VAR servantClass></dd></dl>
+              <dl class="background"><dt>従属経緯</dt><dd><TMPL_VAR servantBackground></dd></dl>
+            </div>
+          </div>
+          <div>
+            <h2>隷印</h2>
+            <div class="seal-details">
+              <dl class="position"><dt>位置</dt><dd><TMPL_VAR fromPartner1SealPosition></dd></dl>
+              <dl class="shape"   ><dt>形状</dt><dd><TMPL_VAR fromPartner1SealShape></dd></dl>
+              <dl class="emotion1"><dt>主からの感情1</dt><dd><TMPL_VAR fromPartner1Emotion1></dd></dl>
+              <dl class="emotion2"><dt>主からの感情2</dt><dd><TMPL_VAR fromPartner1Emotion2></dd></dl>
+            </div>
+          </div>
+        </div></TMPL_IF>
+  
         <div class="partner" id="partner1">
           <TMPL_IF p1_image> 
           <div class="image" style="background-image: url(<TMPL_VAR p1_imageSrc>);background-size:<TMPL_VAR p1_imageFit>;background-position:<TMPL_VAR p1_imagePositionX>% <TMPL_VAR p1_imagePositionY>%;">
