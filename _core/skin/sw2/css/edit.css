@@ -1236,11 +1236,20 @@ form#arts div.input-data dl.name dd input {
 form#arts div.input-data dl.aka dd input {
   max-width: 10em;
 }
-form#arts div.input-data dl.class dd select {
-  max-width: max-content;
+form#arts div.input-data dl.class .select-input.free {
+  display: inline-block;
+  width: 14em;
+}
+form#arts div.input-data dl.class dd select,
+form#arts div.input-data dl.class dd input[type="text"] {
+  max-width: none;
+  width: 14em;
 }
 form#arts div.input-data dl.level dd input {
   max-width: 5em;
+}
+form#arts div.input-data dl.range dd input {
+  max-width: 6.5em;
 }
 form#arts div.input-data dl.summary dd input {
   max-width: 100%;
@@ -1257,8 +1266,14 @@ form#arts textarea[name="godNote"] {
   height: 16em;
 }
 @media screen and (max-width:735px){
-  form#arts div.input-data dl.name dd input {
+  form#arts div.input-data dl dt {
+    width: 6.5em;
+  }
+  form#arts div.input-data dl.name dd input[type="text"] {
     width: 14em;
+  }
+  form#arts div.input-data dl dd input[type="checkbox"] {
+    margin-right: .2em;
   }
   form#arts div.input-data dl dd small {
     display: block;

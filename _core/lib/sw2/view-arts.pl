@@ -216,6 +216,23 @@ else {
 }
 $SHEET->param(imageSrc => $imgsrc);
 
+### OGP --------------------------------------------------
+$SHEET->param(ogUrl => url().($::in{'url'} ? "?url=$::in{'url'}" : "?id=$::in{'id'}"));
+if($pc{'image'}) { $SHEET->param(ogImg => url()."/".$imgsrc); }
+{
+  my $sub; my $category;
+  if($pc{'category'} eq 'magic'){
+    $category = '魔法';
+    $sub = $pc{'magicClass'}.'／'.$pc{'magicLevel'};
+    if($pc{'magicMinor'}){ $sub .= '／小魔法'; }
+  }
+  if($pc{'category'} eq 'god'){
+    $category = '神格';
+    $sub = ($pc{'godClass'}||'―').'／'.($pc{'godRank'}||'―');
+  }
+  $SHEET->param(ogDescript => tag_delete "カテゴリ:${category}／${sub}");
+}
+
 ### バージョン等 --------------------------------------------------
 $SHEET->param(ver => $::ver);
 $SHEET->param(coreDir => $::core_dir);
