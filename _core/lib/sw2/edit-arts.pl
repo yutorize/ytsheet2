@@ -10,12 +10,21 @@ my $LOGIN_ID = $::LOGIN_ID;
 ### 各種データライブラリ読み込み --------------------------------------------------
 require $set::data_class;
 my @magic_classes;
-foreach(@data::class_caster){
+my @craft_classes;
+foreach(@data::class_names){
   if($_ eq 'フェアリーテイマー'){
     push(@magic_classes, '基本妖精魔法', '属性妖精魔法(土)', '属性妖精魔法(水・氷)', '属性妖精魔法(炎)', '属性妖精魔法(風)', '属性妖精魔法(光)', '属性妖精魔法(闇)', '特殊妖精魔法');
   }
-  else { push(@magic_classes, $data::class{$_}{'magic'}{'jName'}); }
+  elsif($_ eq 'バード'){
+    push(@craft_classes, $data::class{$_}{'craft'}{'jName'}, '終律');
+  }
+  elsif($_ eq 'ウォーリーダー'){
+    push(@craft_classes, '鼓咆','陣率');
+  }
+  elsif($data::class{$_}{'magic'}) { push(@magic_classes, $data::class{$_}{'magic'}{'jName'}); }
+  elsif($data::class{$_}{'craft'}) { push(@craft_classes, $data::class{$_}{'craft'}{'jName'}); }
 }
+push(@magic_classes, @craft_classes);
 ### データ読み込み ###################################################################################
 my ($data, $mode, $file, $message) = pcDataGet($::in{'mode'});
 our %pc = %{ $data };
@@ -113,7 +122,75 @@ Content-type: text/html\n
     }
     function checkMagicClass(){
       const magic = form.magicClass.value;
-      document.querySelector(`#data-magic .sphere`).style.display = magic == '魔動機術' ? '' : 'none';
+      if(magic == '練技'){
+        viewMagicInputs(['duration']);
+      }
+      else if(magic == '呪歌'){
+        viewMagicInputs(['song','condition','resist','element']);
+      }
+      else if(magic == '終律'){
+        viewMagicInputs(['cost','resist','element']);
+        if(form.magicCost.value == "MP"){ form.magicCost.value = '' }
+        form.magicCost.setAttribute('list', 'list-cost-song');
+      }
+      else if(magic == '騎芸'){
+        viewMagicInputs(['premise','rider','part']);
+      }
+      else if(magic == '賦術'){
+        viewMagicInputs(['cost','target','range','duration','resist']);
+        if(form.magicCost.value == "MP"){ form.magicCost.value = '' }
+        form.magicCost.setAttribute('list', 'list-cost-alchemy');
+      }
+      else if(magic == '相域'){
+        viewMagicInputs(['cost','duration','element']);
+        if(form.magicCost.value == "MP"){ form.magicCost.value = '' }
+        form.magicCost.setAttribute('list', 'list-cost-geomancy');
+      }
+      else if(magic == '鼓咆'){
+        viewMagicInputs(['type','rank','command','commcost']);
+      }
+      else if(magic == '陣率'){
+        viewMagicInputs(['premise','condition','commcost']);
+      }
+      else if(magic == '占瞳'){
+        viewMagicInputs(['type','target','range','duration']);
+      }
+      else if(magic == '魔装'){
+        viewMagicInputs(['premise','part']);
+      }
+      else if(magic == '呪印'){
+        viewMagicInputs(['type','premise']);
+      }
+      else if(magic == '貴格'){
+        viewMagicInputs(['type','target','premise']);
+      }
+      else if(magic == '魔動機術'){
+        viewMagicInputs(['cost','target','range','duration','resist','element','sphere']);
+        if(form.magicCost.value == ''){ form.magicCost.value = 'MP' }
+        form.magicCost.setAttribute('list', 'list-cost');
+      }
+      else {
+        viewMagicInputs(['cost','target','range','duration','resist','element']);
+        if(form.magicCost.value == ''){ form.magicCost.value = 'MP' }
+        form.magicCost.setAttribute('list', 'list-cost');
+      }
+      form.magicActionTypePassive.parentNode.style.display = (magic == '騎芸') ? '' : 'none';
+      form.magicActionTypeMajor.parentNode.style.display   = (magic == '騎芸') ? '' : 'none';
+      document.querySelector('#data-magic dl.summary').style.display   = (magic == '呪印' || magic == '貴格') ? 'none' : '';
+      document.querySelector('#data-magic dl.type      dt').innerHTML = (magic == '鼓咆') ? '鼓咆の系統' : (magic == '占瞳') ? 'タイプなど' : (magic == '貴格') ? '形態' : '対応';
+      document.querySelector('#data-magic dl.premise   dt').innerHTML = (magic == '呪印') ? '前提ＡＣ'   : '前提';
+      document.querySelector('#data-magic dl.condition dt').innerHTML = (magic == '呪歌') ? '効果発生条件' : (magic == '陣率') ? '使用条件' : '条件';
+    }
+    function viewMagicInputs(items){
+      document.querySelectorAll(`#data-magic dl`).forEach(obj => {
+        obj.style.display = 'none';
+      });
+      items.unshift('name','class','level','summary','effect');
+      for (const item of items) {
+        document.querySelectorAll(`#data-magic dl.\${item}`).forEach(obj => {
+          obj.style.display = '';
+        });
+      }
     }
   </script>
   <style>
@@ -222,7 +299,7 @@ HTML
         <div>
           <dl id="category">
             <dt>カテゴリ</dt>
-            <dd><select name="category" oninput="checkCategory();">@{[ option 'category','magic|<魔法>','god|<神格＋特殊神聖魔法>' ]}</select></dd>
+            <dd><select name="category" oninput="checkCategory();">@{[ option 'category','magic|<魔法／練技・呪歌など>','god|<神格＋特殊神聖魔法>' ]}</select></dd>
           </dl>
         </div>
         <dl id="player-name">
@@ -236,18 +313,30 @@ HTML
       <!-- 魔法 -->
       <div class="data-area" id="data-magic">
         <div class="box input-data">
-          <dl class="name    "><dt>名称      </dt><dd>【@{[ input 'magicName','',"nameSet('magicName')" ]}】<br>@{[ input 'magicActionTypeMinor','checkbox' ]}補助動作　@{[ input 'magicActionTypeSetup','checkbox' ]}戦闘準備</dd></dl>
-          <dl class="class   "><dt>系統      </dt><dd><select name="magicClass" oninput="checkMagicClass()">@{[ option 'magicClass',@magic_classes ]}</select> @{[ input 'magicMinor','checkbox' ]}小魔法</dd></dl>
-          <dl class="sphere  "><dt>マギスフィア</dt><dd>@{[ input 'magicMagisphere','','','list="list-sphere"' ]}</dd></dl>
-          <dl class="level   "><dt>習得レベル</dt><dd>@{[ input 'magicLevel' ]}</dd></dl>
-          <dl class="cost    "><dt>消費      </dt><dd>@{[ input 'magicCost' ]}</dd></dl>
-          <dl class="target  "><dt>対象      </dt><dd>@{[ input 'magicTarget','','','list="list-target"' ]}</dd></dl>
-          <dl class="range   "><dt>射程／形状</dt><dd>@{[ input 'magicRange','','','list="list-range"' ]}／@{[ input 'magicForm','','','list="list-form"' ]}</dd></dl>
-          <dl class="duration"><dt>時間      </dt><dd>@{[ input 'magicDuration','','','list="list-duration"' ]}</dd></dl>
-          <dl class="resist  "><dt>抵抗      </dt><dd>@{[ input 'magicResist','','','list="list-resist"' ]}</dd></dl>
-          <dl class="element "><dt>属性      </dt><dd>@{[ input 'magicElement','','','list="list-element"' ]}</dd></dl>
-          <dl class="summary "><dt>概要      </dt><dd>@{[ input 'magicSummary' ]}</dd></dl>
-          <dl class="effect  "><dt>効果      </dt><dd><textarea name="magicEffect">$pc{'magicEffect'}</textarea></dd></dl>
+          <dl class="name     "><dt>名称        </dt><dd>【@{[ input 'magicName','',"nameSet('magicName')" ]}】<br>
+                                                          @{[ checkbox 'magicActionTypePassive','常時' ]}@{[ checkbox 'magicActionTypeMajor','主動作' ]}@{[ checkbox 'magicActionTypeMinor','補助動作' ]}@{[ checkbox 'magicActionTypeSetup','戦闘準備' ]}</dd></dl>
+          <dl class="class    "><dt>系統        </dt><dd>@{[ selectInput "magicClass","checkMagicClass",@magic_classes ]} @{[ checkbox 'magicMinor','小魔法' ]}</dd></dl>
+          <dl class="sphere   "><dt>マギスフィア</dt><dd>@{[ input 'magicMagisphere','','','list="list-sphere"' ]}</dd></dl>
+          <dl class="level    "><dt>習得レベル  </dt><dd>@{[ input 'magicLevel' ]}</dd></dl>
+          <dl class="type     "><dt>対応        </dt><dd>@{[ input 'magicType','','','list="list-type"' ]}</dd></dl>
+          <dl class="premise  "><dt>前提        </dt><dd>@{[ input 'magicPremise' ]}</dd></dl>
+          <dl class="cost     "><dt>消費        </dt><dd>@{[ input 'magicCost','','','list="list-cost"' ]}</dd></dl>
+          <dl class="target   "><dt>対象        </dt><dd>@{[ input 'magicTarget','','','list="list-target"' ]}</dd></dl>
+          <dl class="range    "><dt>射程／形状  </dt><dd>@{[ input 'magicRange','','','list="list-range"' ]}／@{[ input 'magicForm','','','list="list-form"' ]}</dd></dl>
+          <dl class="duration "><dt>時間        </dt><dd>@{[ input 'magicDuration','','','list="list-duration"' ]}</dd></dl>
+          <dl class="song     "><dt>歌唱        </dt><dd>@{[ checkbox 'magicSongSing','必要' ]}</dd></dl>
+          <dl class="song     "><dt>ペット      </dt><dd>@{[ checkbox 'magicSongPetBird','小鳥' ]}@{[ checkbox 'magicSongPetFrog','蛙' ]}@{[ checkbox 'magicSongPetBug','虫' ]}</dd></dl>
+          <dl class="condition"><dt>条件        </dt><dd>@{[ input 'magicCondition','','','list="list-songpoint"' ]}</dd></dl>
+          <dl class="song     "><dt>楽素        </dt><dd>基礎@{[ input 'magicSongBasePoint','','','list="list-songpoint"' ]} 巧奏値@{[ input 'magicSongSetPoint' ]} 追加@{[ input 'magicSongAddPoint','','','list="list-songpoint"' ]}</dd></dl>
+          <dl class="rider    "><dt>対応        </dt><dd>@{[ checkbox 'magicMountTypeAnimal','動物' ]}@{[ checkbox 'magicMountTypeCryptid','幻獣' ]}@{[ checkbox 'magicMountTypeMachine','魔動機' ]}</dd></dl>
+          <dl class="part     "><dt>適用部位    </dt><dd>@{[ input 'magicApplyPart','','','list="list-part"' ]}</dd></dl>
+          <dl class="rank     "><dt>ランク      </dt><dd>@{[ input 'magicRank' ]}</dd></dl>
+          <dl class="commcost "><dt>陣気コスト  </dt><dd>@{[ input 'magicCommandCost','number' ]}消費</dd></dl>
+          <dl class="command  "><dt>陣気蓄積    </dt><dd>＋@{[ input 'magicCommandCharge','number' ]}</dd></dl>
+          <dl class="resist   "><dt>抵抗        </dt><dd>@{[ input 'magicResist','','','list="list-resist"' ]}</dd></dl>
+          <dl class="element  "><dt>属性        </dt><dd>@{[ input 'magicElement','','','list="list-element"' ]}</dd></dl>
+          <dl class="summary  "><dt>概要        </dt><dd>@{[ input 'magicSummary' ]}</dd></dl>
+          <dl class="effect   "><dt>効果        </dt><dd><textarea name="magicEffect">$pc{'magicEffect'}</textarea></dd></dl>
           
         </div>
         <div class="box">
@@ -291,7 +380,7 @@ HTML
 foreach my $lv (2,4,7,10,13){
 print <<"HTML";
           <h2>特殊神聖魔法 ${lv}レベル</h2>
-          <dl class="name    "><dt>名称      </dt><dd>【@{[ input "godMagic${lv}Name",'' ]}】<br>@{[ input "godMagic${lv}ActionTypeMinor",'checkbox' ]}補助動作　@{[ input "godMagic${lv}ActionTypeSetup",'checkbox' ]}戦闘準備</dd></dl>
+          <dl class="name    "><dt>名称      </dt><dd>【@{[ input "godMagic${lv}Name",'' ]}】<br>@{[ checkbox "godMagic${lv}ActionTypeMinor",'補助動作' ]}@{[ checkbox "godMagic${lv}ActionTypeSetup",'戦闘準備' ]}</dd></dl>
           <dl class="cost    "><dt>消費      </dt><dd>@{[ input "godMagic${lv}Cost" ]}</dd></dl>
           <dl class="target  "><dt>対象      </dt><dd>@{[ input "godMagic${lv}Target",'','','list="list-target"' ]}</dd></dl>
           <dl class="range   "><dt>射程／形状</dt><dd>@{[ input "godMagic${lv}Range",'','','list="list-range"' ]}／@{[ input "godMagic${lv}Form",'','','list="list-form"' ]}</dd></dl>
@@ -346,6 +435,32 @@ print <<"HTML";
     『ソード・ワールド2.5』は、「グループSNE」及び「KADOKAWA」の著作物です。<br>
     　ゆとシートⅡ for SW2.5 ver.${main::ver} - ゆとらいず工房
   </footer>
+  <datalist id="list-cost">
+    <option value="MP">
+    <option value="MP＋魔晶石＿点">
+    <option value="HP">
+  </datalist>
+  <datalist id="list-cost-song">
+    <option value="⤴">
+    <option value="⤵">
+    <option value="♡">
+    <option value="⤴⤵">
+    <option value="⤴♡">
+    <option value="⤵♡">
+    <option value="⤴⤵♡">
+  </datalist>
+  <datalist id="list-cost-alchemy">
+    <option value="赤">
+    <option value="緑">
+    <option value="黒">
+    <option value="白">
+    <option value="金">
+  </datalist>
+  <datalist id="list-cost-geomancy">
+    <option value="天の命脈点">
+    <option value="地の命脈点">
+    <option value="人の命脈点">
+  </datalist>
   <datalist id="list-target">
     <option value="術者">
     <option value="1体">
@@ -441,6 +556,14 @@ print <<"HTML";
     <option value="大">
     <option value="大中小">
     <option value="大（＿個）">
+  </datalist>
+  <datalist id="list-songpoint">
+    <option value="⤴">
+    <option value="⤵">
+    <option value="♡">
+    <option value="⤴⤵">
+    <option value="⤴♡">
+    <option value="⤵♡">
   </datalist>
 <script>
 function view(viewId){

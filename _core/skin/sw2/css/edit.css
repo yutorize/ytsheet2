@@ -1236,14 +1236,14 @@ form#arts div.input-data dl.name dd input {
 form#arts div.input-data dl.aka dd input {
   max-width: 10em;
 }
-form#arts div.input-data dl.class .select-input.free {
-  display: inline-block;
+form#arts div.input-data dl.class .select-input {
+  display: inline-flex;
   width: 14em;
 }
 form#arts div.input-data dl.class dd select,
 form#arts div.input-data dl.class dd input[type="text"] {
   max-width: none;
-  width: 14em;
+  width: 100%;
 }
 form#arts div.input-data dl.level dd input {
   max-width: 5em;
@@ -1253,6 +1253,16 @@ form#arts div.input-data dl.range dd input {
 }
 form#arts div.input-data dl.summary dd input {
   max-width: 100%;
+}
+form#arts div.input-data dl.song dd input[name$="Point"] {
+  width: 5.5em;
+}
+form#arts div.input-data dl.rider dd select {
+  width: max-content;
+}
+form#arts div.input-data dl.command dd input[type="number"],
+form#arts div.input-data dl.commcost dd input[type="number"] {
+  width: 4em;
 }
 form#arts textarea {
   height: 6em;

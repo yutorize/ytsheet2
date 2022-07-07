@@ -79,22 +79,185 @@ article {
 div.data-magic {
   display: grid;
   grid-template-columns: 1.1fr 1.1fr 1fr 0.8fr;
+  grid-template-areas:
+    "NAME NAME NAME COST"
+    "TRGT RANG DURA RESI"
+    "SMRY SMRY SMRY ELEM"
+    "EFCT EFCT EFCT EFCT"
+  ;
+
   border-width: 0 1px 1px 0;
   border-style: solid;
   
   background-color: var(--box-base-bg-color);
 }
 
-div.data-magic dl.name     { grid-column: 1/4; }
-div.data-magic dl.cost     { grid-column: 4/5; }
-div.data-magic dl.target   {  }
-div.data-magic dl.range    {  }
-div.data-magic dl.duration {  }
-div.data-magic dl.resist   {  }
-div.data-magic dl.element  { grid-column: 4/5; }
-div.data-magic dl.surmmary { grid-column: 1/5; }
-div.data-magic dl.element+dl.surmmary { grid-column: 1/4; grid-row: 3; }
-div.data-magic dl.effect   { grid-column: 1/5; }
+div.data-magic dl.name     { grid-area: NAME; }
+div.data-magic dl.cost     { grid-area: COST; }
+div.data-magic dl.target   { grid-area: TRGT; }
+div.data-magic dl.range    { grid-area: RANG; }
+div.data-magic dl.duration { grid-area: DURA; }
+div.data-magic dl.resist   { grid-area: RESI; }
+div.data-magic dl.element  { grid-area: ELEM; }
+div.data-magic dl.summary  { grid-area: SMRY; }
+div.data-magic dl:not(.element)+dl.summary { grid-column: 1/5; }
+div.data-magic dl.effect   { grid-area: EFCT; }
+
+div.data-magic dl.type      { grid-area: TYPE; }
+div.data-magic dl.rank      { grid-area: RANK; }
+div.data-magic dl.premise   { grid-area: PRMS; }
+div.data-magic dl.condition { grid-area: CDTN; }
+
+div.data-magic dl.sing      { grid-area: SING; }
+div.data-magic dl.pet       { grid-area: PET ; }
+div.data-magic dl.basepoint { grid-area: BAPT; }
+div.data-magic dl.setpoint  { grid-area: STPT; }
+div.data-magic dl.addpoint  { grid-area: ADPT; }
+
+div.data-magic dl.part      { grid-area: PART; }
+
+div.data-magic dl.ccost     { grid-area: CCST; }
+div.data-magic dl.ccharge   { grid-area: CCHG; }
+
+div.data-magic.enhance {
+  grid-template-areas:
+    "NAME NAME NAME DURA"
+    "SMRY SMRY SMRY SMRY"
+    "EFCT EFCT EFCT EFCT"
+  ;
+}
+div.data-magic.song {
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-areas:
+    "NAME NAME NAME"
+    "SING PET  PET "
+    "CDTN RESI ELEM"
+    "BAPT STPT ADPT"
+    "SMRY SMRY SMRY"
+    "EFCT EFCT EFCT"
+  ;
+}
+div.data-magic.song dl {
+  grid-template-columns: 6.2em 1fr;
+}
+div.data-magic.song dl.condition dt::before {
+  content: "効果発生"
+}
+div.data-magic.finale {
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-areas:
+    "NAME NAME NAME"
+    "COST RESI ELEM"
+    "SMRY SMRY SMRY"
+    "EFCT EFCT EFCT"
+  ;
+}
+div.data-magic.riding {
+  grid-template-columns: 1.3fr .8fr .9fr;
+  grid-template-areas:
+    "NAME NAME PRMS"
+    "TYPE PART PART"
+    "SMRY SMRY SMRY"
+    "EFCT EFCT EFCT"
+  ;
+}
+div.data-magic.riding dl {
+  grid-template-columns: 5em 1fr;
+}
+div.data-magic.riding dl.premise {
+  grid-template-columns: 3em 1fr;
+}
+div.data-magic.geomancy {
+  grid-template-columns: 2.1fr .9fr;
+  grid-template-areas:
+    "NAME COST"
+    "DURA ELEM"
+    "SMRY SMRY"
+    "EFCT EFCT"
+  ;
+}
+div.data-magic.geomancy dl {
+  grid-template-columns: 6em 1fr;
+}
+div.data-magic.geomancy dl.duration dt::before {
+  content: "効果の"
+}
+div.data-magic.command {
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas:
+    "NAME NAME"
+    "TYPE RANK"
+    "CCST CCHG"
+    "SMRY SMRY"
+    "EFCT EFCT"
+  ;
+}
+div.data-magic.command dl {
+  grid-template-columns: 6em 1fr;
+}
+div.data-magic.lead {
+  grid-template-columns: 2fr 1fr;
+  grid-template-areas:
+    "NAME PRMS"
+    "CDTN CDTN"
+    "CCST CCST"
+    "SMRY SMRY"
+    "EFCT EFCT"
+  ;
+}
+div.data-magic.lead dl {
+  grid-template-columns: 6em 1fr;
+}
+div.data-magic.lead dl.condition dt::before {
+  content: "使用"
+}
+div.data-magic.divination {
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-areas:
+    "NAME NAME NAME"
+    "TYPE TYPE TYPE"
+    "TRGT RANG DURA"
+    "SMRY SMRY SMRY"
+    "EFCT EFCT EFCT"
+  ;
+}
+div.data-magic.divination dl {
+  grid-template-columns: 6em 1fr;
+}
+div.data-magic.potential {
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas:
+    "NAME NAME"
+    "PRMS PART"
+    "SMRY SMRY"
+    "EFCT EFCT"
+  ;
+}
+div.data-magic.potential dl {
+  grid-template-columns: 5em 1fr;
+}
+div.data-magic.seal {
+  grid-template-columns: 2fr 1fr;
+  grid-template-areas:
+    "NAME NAME"
+    "PRMS TYPE"
+    "EFCT EFCT"
+  ;
+}
+div.data-magic.seal .summary {
+  display: none;
+}
+div.data-magic.dignity {
+  grid-template-columns: 0.6fr 1.2fr 1.2fr;
+  grid-template-areas:
+    "NAME NAME NAME"
+    "TYPE PRMS TRGT"
+    "EFCT EFCT EFCT"
+  ;
+}
+div.data-magic.dignity .summary {
+  display: none;
+}
 
 div.data-magic dl {
   display: grid;
@@ -107,10 +270,8 @@ div.data-magic dl {
 }
 
 @media screen and (max-width:735px){
-  div.data-magic { grid-template-columns: 1fr; }
+  div.data-magic { display: block }
   div.data-magic dl {
-    grid-column: 1/2 !important;
-    grid-row: auto !important;
     grid-template-columns: 5.5em 1fr !important;
   }
   div.data-magic dl dd {
@@ -125,6 +286,9 @@ div.data-magic dl dt {
   background: rgba(127,127,127,0.2);
   border-width: 0 1px 0 0;
   border-style: solid;
+}
+div.data-magic dl.name {
+  grid-template-columns: 3.5em 1fr;
 }
 div.data-magic dl dd {
   padding: .2em 0;
@@ -142,8 +306,16 @@ div.data-magic dl.element  dd {
   white-space: nowrap;
 }
 div.data-magic dl.name     dd,
-div.data-magic dl.surmmary dd,
-div.data-magic dl.effect   dd {
+div.data-magic dl.part     dd,
+div.data-magic dl.summary  dd,
+div.data-magic dl.effect   dd,
+div.data-magic.song     dl.pet      dd,
+div.data-magic.riding   dl.type     dd,
+div.data-magic.lead     dl.condition dd,
+div.data-magic.lead     dl.ccost dd,
+div.data-magic.geomancy dl.duration dd,
+div.data-magic.divination dl.type   dd,
+div.data-magic.potential  dl.premise dd {
   display: block;
   padding: .2em .5em;
   text-align: left;
@@ -170,15 +342,10 @@ div.data-magic dl.name dd small {
   margin-right: -.2em;
   transform: scaleY(1.3);
 }
-div.data-magic dl.name dd .s-icon {
-  overflow: hidden;
-}
 div.data-magic dl.name dd .s-icon::before {
   color: #fff;
 }
 div.data-magic dl.effect dd p {
-  margin: 0;
-  padding: 0;
   background: none;
   box-shadow: none;
 }
@@ -193,9 +360,6 @@ div.data-magic dl.effect dd p {
   div.data-magic dl dd {
     display: block; 
     padding: .2em .5em;
-  }
-  div.data-magic dl.effect dd {
-    padding: 0 .1em;
   }
   div.data dl.category dd hr {
     display: inline;

@@ -134,23 +134,35 @@ window.onload = function() {
         <div id="tags">
           <TMPL_LOOP Tags><a class="tag" href="./?type=a&tag=<TMPL_VAR URL>"><TMPL_VAR TEXT></a></TMPL_LOOP>
         </div>
-        <h2><TMPL_VAR magicClass></h2>
-        <div class="data-magic">
+        <h2><TMPL_VAR magicClass DEFAULT="未分類"></h2>
+        <div class="data-magic <TMPL_VAR magicClassEn>">
           <dl class="name    "><dt><TMPL_VAR magicLevel></dt><dd><div><TMPL_VAR magicIcon>【<TMPL_VAR magicName>】</div><small><TMPL_VAR magicNameNotes></small></dd></dl>
-          <dl class="cost    "><dt>消費      </dt><dd><TMPL_VAR magicCost></dd></dl>
-          <dl class="target  "><dt>対象      </dt><dd><TMPL_VAR magicTarget></dd></dl>
-          <dl class="range   "><dt>射程/<br>形状</dt><dd><TMPL_VAR magicRange>／<TMPL_VAR magicForm></dd></dl>
-          <dl class="duration"><dt>時間      </dt><dd><TMPL_VAR magicDuration></dd></dl>
-          <dl class="resist  "><dt>抵抗      </dt><dd><TMPL_VAR magicResist></dd></dl>
-          <TMPL_IF magicElement><dl class="element" ><dt>属性</dt><dd><TMPL_VAR magicElement></dd></dl></TMPL_IF>
-          <dl class="surmmary"><dt>概要      </dt><dd><TMPL_VAR magicSummary></dd></dl>
+          <TMPL_IF magicCostOn     ><dl class="cost     "><dt>消費         </dt><dd><TMPL_VAR magicCost></dd></dl></TMPL_IF>
+          <TMPL_IF magicTargetOn   ><dl class="target   "><dt>対象         </dt><dd><TMPL_VAR magicTarget></dd></dl></TMPL_IF>
+          <TMPL_IF magicRangeOn    ><dl class="range    "><dt>射程/<br>形状</dt><dd><TMPL_VAR magicRange>／<TMPL_VAR magicForm></dd></dl></TMPL_IF>
+          <TMPL_IF magicDurationOn ><dl class="duration "><dt>時間         </dt><dd><TMPL_VAR magicDuration></dd></dl></TMPL_IF>
+          <TMPL_IF magicResistOn   ><dl class="resist   "><dt>抵抗         </dt><dd><TMPL_VAR magicResist></dd></dl></TMPL_IF>
+          <TMPL_IF magicElementOn  ><dl class="element  "><dt>属性         </dt><dd><TMPL_VAR magicElement DEFAULT="―"></dd></dl></TMPL_IF>
+          <TMPL_IF magicSongOn     ><dl class="sing     "><dt>歌唱         </dt><dd><TMPL_VAR magicSongSing DEFAULT="なし"></dd></dl></TMPL_IF>
+          <TMPL_IF magicSongOn     ><dl class="pet      "><dt>ペット       </dt><dd><TMPL_VAR magicSongPet DEFAULT="―"></dd></dl></TMPL_IF>
+          <TMPL_IF magicConditionOn><dl class="condition"><dt>条件         </dt><dd><TMPL_VAR magicCondition></dd></dl></TMPL_IF>
+          <TMPL_IF magicSongOn     ><dl class="basepoint"><dt>基礎楽素     </dt><dd><TMPL_VAR magicSongBasePoint></dd></dl></TMPL_IF>
+          <TMPL_IF magicSongOn     ><dl class="setpoint "><dt>巧奏値       </dt><dd><TMPL_VAR magicSongSetPoint></dd></dl></TMPL_IF>
+          <TMPL_IF magicSongOn     ><dl class="addpoint "><dt>追加楽素     </dt><dd><TMPL_VAR magicSongAddPoint></dd></dl></TMPL_IF>
+          <TMPL_IF magicTypeOn     ><dl class="type     "><dt><TMPL_VAR magicTypeDt DEFAULT="対応"></dt><dd><TMPL_VAR magicType></dd></dl></TMPL_IF>
+          <TMPL_IF magicPremiseOn  ><dl class="premise  "><dt>前提         </dt><dd><TMPL_VAR magicPremise></dd></dl></TMPL_IF>
+          <TMPL_IF magicPartOn     ><dl class="part     "><dt>適用部位     </dt><dd><TMPL_VAR magicApplyPart></dd></dl></TMPL_IF>
+          <TMPL_IF magicRankOn     ><dl class="rank     "><dt>ランク       </dt><dd><TMPL_VAR magicRank></dd></dl></TMPL_IF>
+          <TMPL_IF magicCommandCostOn  ><dl class="ccost  "><dt>陣気コスト</dt><dd><TMPL_VAR magicCommandCost></dd></dl></TMPL_IF>
+          <TMPL_IF magicCommandChargeOn><dl class="ccharge"><dt>陣気蓄積  </dt><dd><TMPL_VAR magicCommandCharge></dd></dl></TMPL_IF>
+          <dl class="summary "><dt>概要      </dt><dd><TMPL_VAR magicSummary></dd></dl>
           <dl class="effect  "><dt>効果      </dt><dd><p><TMPL_VAR magicEffect></p></dd></dl>
         </div>
       </section>
-      <section class=" description">
+      <TMPL_IF magicDescription><section class=" description">
         <h2>由来・逸話など</h2>
         <p><TMPL_VAR magicDescription></p>
-      </section>
+      </section></TMPL_IF>
       </TMPL_IF>
 
       <!-- 神格 -->

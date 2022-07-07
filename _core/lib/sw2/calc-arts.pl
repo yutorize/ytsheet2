@@ -16,7 +16,9 @@ sub data_calc {
     $name = $pc{'magicName'};
     $sub = $pc{'magicClass'}.'／'.$pc{'magicLevel'};
     if($pc{'magicMinor'}){ $sub .= '／小魔法'; }
-    $summary = $pc{'magicSummary'};
+    if($pc{'magicClass'} =~ /呪印|貴格/) { $summary = substr($pc{'magicEffect'}, 0, 35).'..'; }
+    else { $summary = $pc{'magicSummary'}; }
+    $summary =~ s/\r|\n//g;
   }
   if($pc{'category'} eq 'god'){
     $name = ($pc{'godAka'} ? "“$pc{'godAka'}”" : "").$pc{'godName'};
@@ -25,6 +27,15 @@ sub data_calc {
     $summary =~ s/\r|\n//g;
   }
   $pc{'artsName'} = $name;
+
+  $pc{'magicSongPet'} = join('、', 
+      grep $_, ($pc{'magicSongPetBird'}?'小鳥':undef) ,($pc{'magicSongPetFrog'}?'蛙':undef),($pc{'magicSongPetBug'}?'虫':undef)
+    );
+  if($pc{'magicClass'} eq '騎芸'){
+    $pc{'magicType'} = join('、', 
+        grep $_, ($pc{'magicMountTypeAnimal'}?'動物':undef) ,($pc{'magicMountTypeCryptid'}?'幻獣':undef),($pc{'magicMountTypeMachine'}?'魔動機':undef)
+      );
+  }
   #### カテゴリの全角半角変換 --------------------------------------------------
   $pc{'category'} =~ tr/ａ-ｚＡ-Ｚ/a-zA-Z/;
 

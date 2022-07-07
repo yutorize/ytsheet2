@@ -463,17 +463,20 @@ dl.note-description dd {
   position: relative;
   width: 1em;
   height: 1em;
+  line-height: 1;
   color: transparent;
   text-align: center;
 }
 .s-icon::after,
 .s-icon::before {
-  display: inline-block;
+  display: inline-grid;
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
+  justify-items: center;
+  align-items: center;
   font-family: "Font Awesome 5 Free";
   font-style: normal;
   font-size: 85%;
@@ -505,6 +508,19 @@ dl.note-description dd {
   content: "\f075";
   font-weight: normal;
   transform: scale(-1, 1);
+}
+.s-icon.uplift::before {
+  content: "\f3e5";
+  font-weight: bold;
+  transform: rotate(90deg) scaleY(1.2);
+}
+.s-icon.calm::before {
+  content: "\f064";
+  font-weight: bold;
+  transform: rotate(90deg) scaleY(1.2);
+}
+.s-icon.heart::before {
+  content: "\f004";
 }
 
 .s-icon.major0::before {
