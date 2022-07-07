@@ -129,6 +129,59 @@ span.mark {
   border-style: solid;
 }
 
+label.radio-button,
+label.check-button {
+  margin: 0 1px;
+}
+label.radio-button input,
+label.check-button input {
+  display: none;
+}
+label.radio-button span,
+label.check-button span {
+  display: inline-block;
+  padding: 3px 4px;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 5px;
+  line-height: 1;
+  font-size: 88%;
+  opacity: 0.6;
+  cursor: pointer;
+  user-select: none;
+}
+label.radio-button span:hover,
+label.check-button span:hover {
+  opacity: 1;
+}
+label.radio-button input:checked + span,
+label.check-button input:checked + span {
+  opacity: 1;
+}
+label.radio-button span::before,
+label.check-button span::before {
+  display: inline-block;
+  font-family: "Font Awesome 5 Free";
+  margin-right: .2em;
+  transform: scale(1.3) translateY(1px);
+}
+label.radio-button span::before {
+  content: "\f111";
+  font-weight: thin;
+}
+label.radio-button input:checked + span::before {
+  content: "\f192";
+  font-weight: normal;
+}
+label.check-button span::before {
+  content: "\f0c8";
+  font-weight: thin;
+}
+label.check-button input:checked + span::before {
+  content: "\f14a";
+  font-weight: bold;
+}
+
 .select-input.free {
   display: inline-block;
 }

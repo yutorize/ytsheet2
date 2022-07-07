@@ -313,16 +313,43 @@ HTML
 
 ## 簡略化系
 sub input {
-  my ($name, $type, $oniput, $other) = @_;
-  if($oniput && $oniput !~ /\(.*?\)$/){ $oniput .= '()'; }
+  my ($name, $type, $oninput, $other) = @_;
+  if($oninput && $oninput !~ /\(.*?\)$/){ $oninput .= '()'; }
   '<input'.
   ' type="'.($type?$type:'text').'"'.
   ' name="'.$name.'"'.
   ' value="'.($_[1] eq 'checkbox' ? 1 : $::pc{$name}).'"'.
   ($other?" $other":"").
   ($type eq 'checkbox' && $::pc{$name}?" checked":"").
-  ($oniput?' oninput="'.$oniput.'"':"").
+  ($oninput?' oninput="'.$oninput.'"':"").
   '>';
+}
+sub checkbox {
+  my ($name, $text, $oninput) = @_;
+  if($oninput && $oninput !~ /\(.*?\)$/){ $oninput .= '()'; }
+  '<label class="check-button">'.
+  '<input type="checkbox"'.
+  ' name="'.$name.'"'.
+  ' value="1"'.
+  ($::pc{$name}?" checked":"").
+  ($oninput?' oninput="'.$oninput.'"':"").
+  '><span>'.$text.'</span></label>';
+}
+sub radio {
+  my $name = shift;
+  my $oninput = shift;
+  if($oninput && $oninput !~ /\(.*?\)$/){ $oninput .= '()'; }
+  my $out;
+  foreach my $value (@_) {
+    $out .= '<label class="radio-button">'.
+    '<input type="radio"'.
+    ' name="'.$name.'"'.
+    ' value="'.$value.'"'.
+    ($::pc{$name}?" checked":"").
+    ($oninput?' oninput="'.$oninput.'"':"").
+    '><span>'.$value.'</span></label>';
+  }
+  return $out;
 }
 sub option {
   my $name = shift;
