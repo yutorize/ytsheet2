@@ -34,6 +34,10 @@ if($mode eq 'blanksheet' && !$::make_error){
   $pc{'paletteUseBuff'} = 1;
 }
 
+## カラー
+setDefaultColors();
+
+## その他
 $pc{'statusNum'} ||= 1;
 $pc{'lootsNum'}  ||= 2;
 
@@ -339,6 +343,8 @@ print <<"HTML";
         </div>
       </div>
       </section>
+      
+      @{[ colorCostomForm ]}
     
       @{[ input 'birthTime','hidden' ]}
       @{[ input 'id','hidden' ]}

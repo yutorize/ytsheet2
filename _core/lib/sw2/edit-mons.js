@@ -3,6 +3,9 @@ const gameSystem = 'sw2';
 
 window.onload = function() {
   nameSet();
+
+  changeColor();
+
   palettePresetChange();
 }
 

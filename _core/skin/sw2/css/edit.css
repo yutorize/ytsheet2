@@ -1075,6 +1075,55 @@ form#monster ul#loots-num {
   background-color: rgba(127,127,127,0.3);
 }
 
+form#monster .color-sample .name {
+  border-width: 2px 0 0;
+  border-color: var(--monster-level-bg-color);
+  background: transparent;
+  position: relative;
+  padding-left: 1.8em;
+}
+form#monster .color-sample .name::before {
+  content: "！";
+  display: block;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 1.5em;
+  background-color: var(--monster-level-bg-color);
+  background-image: linear-gradient(to bottom, transparent, rgba(0,0,0,0.4));
+  color: #fff;
+  text-align: center;
+}
+form#monster .color-sample .box {
+  border-width: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: var(--box-base-bg-color);
+}
+form#monster .color-sample .data-table {
+  width: 100%;
+  border-width: 1.01px;
+  border-style: double;
+  border-color: var(--box-outside-border-color);
+}
+form#monster .color-sample .data-table th {
+  background-color: var(--monster-head-bg-color);
+}
+form#monster .color-sample .data-table td {
+  padding: .2rem;
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--box-inside-border-color);
+  text-align: center;
+}
+form#monster .color-sample .data-table tbody tr:nth-child(even) td {
+  background-color: var(--box-even-rows-bg-color);
+}
+form#monster .color-sample .box h2 {
+  padding: .3rem .5rem;
+  background-color: var(--monster-head-bg-color) !important;
+}
 /* // アイテム
 ---------------------------------------------------------------------------------------------------- */
 form#item div.box {
