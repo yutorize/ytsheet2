@@ -18,10 +18,14 @@
     var(--box-head-bg-color-a, 0.25)
   );
   --box-base-bg-color: hsla(
-    var(--box-base-bg-color-h,   0),
+    var(--box-base-bg-color-h, 235),
     var(--box-base-bg-color-s,   0%),
     var(--box-base-bg-color-l, 100%),
     var(--box-base-bg-color-a, 0.5)
+  );
+  --box-head-bg-color-dark: hsla(
+    var(--box-head-bg-color-h, 0),
+    calc( var(--box-head-bg-color-s,   0%) * 0.5 ), 50%, 0.4
   );
   --box-outside-border-color: hsl(
     var(--box-head-bg-color-h, 0),
@@ -161,9 +165,9 @@ dl.box > dt,
 .box td {
   text-align: center;
 }
-
-.box { border-color: var(--box-outside-border-color); }
-.box * { border-color: var(--box-inside-border-color); }
+.box,
+.box-union { border-color: var(--box-outside-border-color); }
+.box *     { border-color: var(--box-inside-border-color); }
 .box input,
 .box textarea,
 .box select { border-color: var(--box-input-border-color); }
@@ -247,7 +251,7 @@ dl.box > dt,
   content:'';
   position: absolute;
   top: 60%; left: 0; right: 0; bottom: 0;
-  background-image: linear-gradient(to right, var(--box-head-bg-color-pale), transparent);
+  background-image: linear-gradient(to right, var(--box-head-bg-color-dark), transparent);
   line-height: 1.2;
   z-index: -1;
 }
@@ -264,7 +268,7 @@ dl.box > dt,
   content:'';
   position: absolute;
   top: calc(100% - .2rem); left: 0; right: 0; bottom: 0;
-  background-image: linear-gradient(to right, var(--box-head-bg-color-pale), transparent);
+  background-image: linear-gradient(to right, var(--box-head-bg-color-dark), transparent);
   z-index: -1;
 }
 .box h5,
@@ -423,6 +427,9 @@ table.note-table td {
   padding: 0 .5em;
   border-width: 1px;
   border-style: solid;
+}
+table.note-table thead {
+  background-color: var(--box-head-bg-color-pale);
 }
 table.note-table th {
   text-align: center;
