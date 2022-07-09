@@ -39,7 +39,6 @@ window.onload = function() {
 </TMPL_IF>
   </script>
   <style>
-    <TMPL_IF colorCustom>
     :root {
       --box-head-bg-color-h: <TMPL_VAR colorHeadBgH>;
       --box-head-bg-color-s: <TMPL_VAR colorHeadBgS>%;
@@ -49,9 +48,7 @@ window.onload = function() {
       --box-base-bg-color-l: <TMPL_VAR colorBaseBgL>%;
       --box-base-bg-color-d: <TMPL_VAR colorBaseBgD>%;
     }
-    </TMPL_IF>
     #partner1 {
-      <TMPL_IF p1_colorCustom>
       --box-head-bg-color-h: <TMPL_VAR p1_colorHeadBgH>;
       --box-head-bg-color-s: <TMPL_VAR p1_colorHeadBgS>%;
       --box-head-bg-color-l: <TMPL_VAR p1_colorHeadBgL>%;
@@ -59,18 +56,8 @@ window.onload = function() {
       --box-base-bg-color-s: <TMPL_VAR p1_colorBaseBgS>%;
       --box-base-bg-color-l: <TMPL_VAR p1_colorBaseBgL>%;
       --box-base-bg-color-d: <TMPL_VAR p1_colorBaseBgD>%;
-      <TMPL_ELSE>
-      --box-head-bg-color-h: 225;
-      --box-head-bg-color-s: 9%;
-      --box-head-bg-color-l: 65%;
-      --box-base-bg-color-h: 270;
-      --box-base-bg-color-s: 0%;
-      --box-base-bg-color-l: 100%;
-      --box-base-bg-color-d: 15%;
-      </TMPL_IF>
     }
     #partner2 {
-      <TMPL_IF p2_colorCustom>
       --box-head-bg-color-h: <TMPL_VAR p2_colorHeadBgH>;
       --box-head-bg-color-s: <TMPL_VAR p2_colorHeadBgS>%;
       --box-head-bg-color-l: <TMPL_VAR p2_colorHeadBgL>%;
@@ -78,15 +65,6 @@ window.onload = function() {
       --box-base-bg-color-s: <TMPL_VAR p2_colorBaseBgS>%;
       --box-base-bg-color-l: <TMPL_VAR p2_colorBaseBgL>%;
       --box-base-bg-color-d: <TMPL_VAR p2_colorBaseBgD>%;
-      <TMPL_ELSE>
-      --box-head-bg-color-h: 225;
-      --box-head-bg-color-s: 9%;
-      --box-head-bg-color-l: 65%;
-      --box-base-bg-color-h: 270;
-      --box-base-bg-color-s: 0%;
-      --box-base-bg-color-l: 100%;
-      --box-base-bg-color-d: 15%;
-      </TMPL_IF>
     }
   </style>
   <TMPL_INCLUDE NAME="skin-add/sheet-head.html">

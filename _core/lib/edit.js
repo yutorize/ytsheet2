@@ -281,7 +281,6 @@ function wordsPreView(){
 
 // カラーカスタム ----------------------------------------
 function changeColor(){
-  const customOn = form.colorCustom.checked ? 1 : 0;
   let hH = Number(form.colorHeadBgH.value);
   let hS = Number(form.colorHeadBgS.value);
   let hL = Number(form.colorHeadBgL.value);
@@ -293,14 +292,21 @@ function changeColor(){
   document.getElementById('colorBaseBgHValue').innerHTML = bH;
   document.getElementById('colorBaseBgSValue').innerHTML = bS;
   
-  const boxes = document.querySelectorAll('.box');
-  document.documentElement.style.setProperty('--box-head-bg-color-h', customOn ? hH     : '');
-  document.documentElement.style.setProperty('--box-head-bg-color-s', customOn ? hS+'%' : '');
-  document.documentElement.style.setProperty('--box-head-bg-color-l', customOn ? hL+'%' : '');
-  document.documentElement.style.setProperty('--box-base-bg-color-h', customOn ? bH     : '');
-  document.documentElement.style.setProperty('--box-base-bg-color-s', customOn ? (bS*0.7)+'%' : '');
-  document.documentElement.style.setProperty('--box-base-bg-color-l', customOn ? (100-bS/6)+'%' : '');
-  document.documentElement.style.setProperty('--box-base-bg-color-d', customOn ? 15+'%' : '');
+  document.documentElement.style.setProperty('--box-head-bg-color-h', hH            );
+  document.documentElement.style.setProperty('--box-head-bg-color-s', hS+'%'        );
+  document.documentElement.style.setProperty('--box-head-bg-color-l', hL+'%'        );
+  document.documentElement.style.setProperty('--box-base-bg-color-h', bH            );
+  document.documentElement.style.setProperty('--box-base-bg-color-s', (bS*0.7)+'%'  );
+  document.documentElement.style.setProperty('--box-base-bg-color-l', (100-bS/6)+'%');
+  document.documentElement.style.setProperty('--box-base-bg-color-d', 15+'%'        );
+}
+function setDefaultColor(){
+  form.colorHeadBgH.value = 225;
+  form.colorHeadBgS.value =   9;
+  form.colorHeadBgL.value =  65;
+  form.colorBaseBgH.value = 235;
+  form.colorBaseBgS.value =   0;
+  changeColor();
 }
 
 // セクション選択 ----------------------------------------

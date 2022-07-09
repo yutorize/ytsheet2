@@ -31,7 +31,6 @@ else               { require $set::lib_view_char; }
 
 ### データ取得 --------------------------------------------------
 sub pcDataGet {
-  
   my %pc;
   ## データ読み込み
   if($::in{'id'}){
@@ -78,6 +77,7 @@ sub pcDataGet {
   if(!$pc{'protect'} || $pc{'protect'} eq 'password'){
     $pc{'reqdPassword'} = 1;
   }
+
   return %pc;
 }
 
@@ -124,6 +124,14 @@ sub getLogList {
     if($selected){ $selectedname = $name }
   }
   return $selectedname, \@logs;
+}
+### カラー出力 --------------------------------------------------
+sub setColors {
+  my $type = shift;
+  setDefaultColors($type);
+  $::pc{$type.'colorBaseBgS'} = $::pc{$type.'colorBaseBgS'} * 0.7;
+  $::pc{$type.'colorBaseBgL'} = 100 - $::pc{$type.'colorBaseBgS'} / 6;
+  $::pc{$type.'colorBaseBgD'} = 15;
 }
 ### 伏せ文字 --------------------------------------------------
 sub noiseText {

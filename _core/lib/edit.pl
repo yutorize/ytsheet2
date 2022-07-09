@@ -115,6 +115,7 @@ sub pcDataGet {
     $pc{'protect'} = 'password';
     $message = '「<a href="'.$::in{'url'}.'" target="_blank"><!NAME></a>」をコンバートして新規作成します。<br>（まだ保存はされていません）';
   }
+  ##
   return (\%pc, $mode, $file, $message)
 }
 ## トークン生成
@@ -258,6 +259,84 @@ sub image_form {
         <a class="button" onclick="imagePositionClose()">画像とセリフの設定を閉じる</a>
       </div>
     </div>
+HTML
+}
+
+## カラーカスタム欄
+sub colorCostomForm {
+  return <<"HTML";
+      <section id="section-color" style="display:none;">
+      <h2>シートのカラー設定</h2>
+      <div class="box-union">
+        <div class="box color-custom">
+          <h2>メインカラー</h2>
+          <table>
+          <tr class="color-range-H"><th>色相</th><td><input type="range" name="colorHeadBgH" min="0" max="360" value="$::pc{'colorHeadBgH'}" oninput="changeColor();"></td><td id="colorHeadBgHValue">$::pc{'colorHeadBgH'}</td></tr>
+          <tr class="color-range-S"><th>彩度</th><td><input type="range" name="colorHeadBgS" min="0" max="100" value="$::pc{'colorHeadBgS'}" oninput="changeColor();"></td><td id="colorHeadBgSValue">$::pc{'colorHeadBgS'}</td></tr>
+          <tr class="color-range-L"><th>輝度</th><td><input type="range" name="colorHeadBgL" min="0" max="100" value="$::pc{'colorHeadBgL'}" oninput="changeColor();"></td><td id="colorHeadBgLValue">$::pc{'colorHeadBgL'}</td></tr>
+          </table>
+        </div>
+        <div class="box color-custom">
+          <h2>サブカラー</h2>
+          <table>
+          <tr class="color-range-H"><th>色相</th><td><input type="range" name="colorBaseBgH"  min="0" max="360" value="$::pc{'colorBaseBgH'}" oninput="changeColor();"></td><td id="colorBaseBgHValue">$::pc{'colorBaseBgH'}</td></tr>
+          <tr class="color-range-S"><th>色の濃さ</th><td><input type="range" name="colorBaseBgS"  min="0" max="100" value="$::pc{'colorBaseBgS'}" oninput="changeColor();"></td><td id="colorBaseBgSValue">$::pc{'colorBaseBgS'}</td></tr>
+          </table>
+          <hr>
+          <p class="right"><span class="button" onclick="setDefaultColor();">デフォルトに戻す</span></p>
+        </div>
+      </div>
+      <div class="color-sample">
+        <div class="light">
+          <div class="name">色見本</div>
+          <div class="box">
+            <table class="data-table">
+              <thead><tr><th>データ表組み</th><th>項目1</th><th>項目2</th></tr></thead>
+              <tbody>
+                <tr><td>ＡＡＡ</td><td>+1</td><td>+0</td></tr>
+                <tr><td>ＢＢＢ</td><td>+2</td><td>+0</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="box">
+            <h2>大見出し</h2>
+            <h3>中見出し</h3>
+            <h4>小見出し</h4>
+            <table class="note-table">
+              <thead><tr><th>テーブルヘッダ</th><td></td></tr></thead>
+              <tbody><tr><th>テーブル見出し</th><td>テーブルセル</td></tr></tbody>
+            </table>
+            <p>
+              <a class="link">未読リンク</a> <a class="visited">既読リンク</a>
+            </p>
+          </div>
+        </div>
+        <div class="night">
+          <div class="name">色見本</div>
+          <div class="box">
+            <table class="data-table">
+              <thead><tr><th>データ表組み</th><th>項目1</th><th>項目2</th></tr></thead>
+              <tbody>
+                <tr><td>ＡＡＡ</td><td>+1</td><td>+0</td></tr>
+                <tr><td>ＢＢＢ</td><td>+2</td><td>+0</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="box">
+            <h2>大見出し</h2>
+            <h3>中見出し</h3>
+            <h4>小見出し</h4>
+            <table class="note-table">
+              <thead><tr><th>テーブルヘッダ</th><td></td></tr></thead>
+              <tbody><tr><th>テーブル見出し</th><td>テーブルセル</td></tr></tbody>
+            </table>
+            <p>
+              <a class="link">未読リンク</a> <a class="visited">既読リンク</a>
+            </p>
+          </div>
+        </div>
+      </div>
+      </section>
 HTML
 }
 
