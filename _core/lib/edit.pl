@@ -367,7 +367,7 @@ sub textRuleArea {
         （有効な欄：${multiline}）<br>
         大見出し：行頭に<code>*</code>：1行目に記述すると項目の見出しを差し替え<br>
         中見出し：行頭に<code>**</code><br>
-        少見出し：行頭に<code>***</code><br>
+        小見出し：行頭に<code>***</code><br>
         左寄せ　：行頭に<code>LEFT:</code>：以降のテキストがすべて左寄せになります。<br>
         中央寄せ：行頭に<code>CENTER:</code>：以降のテキストがすべて中央寄せになります。<br>
         右寄せ　：行頭に<code>RIGHT:</code>：以降のテキストがすべて右寄せになります。<br>
