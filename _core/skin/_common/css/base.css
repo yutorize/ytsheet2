@@ -412,6 +412,19 @@ header nav ul li.small + li.very-small {
   margin-left: 0.8rem;
 }
 
+header nav .nightmode-icon::before {
+  font-size: 1.4em;
+  line-height: 3;
+}
+.nightmode-icon::before {
+  content: "\f699";
+  font-family: "Font Awesome 5 Free";
+  font-weight: bold;
+}
+.night .nightmode-icon::before {
+  content: "\f185";
+}
+
 /* // Main-Nav
 ---------------------------------------------------------------------------------------------------- */
 main nav {
