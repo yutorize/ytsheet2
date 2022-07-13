@@ -10,6 +10,23 @@
 ---------------------------------------------------------------------------------------------------- */
 body {
   background-image: url(../../_common/img/back-pattern.png), url(../img/back-first.png);
+
+  --arts-name-bg-color: hsl(
+    var(--box-head-bg-color-h, 0),
+    calc( var(--box-head-bg-color-s,   0%) * 0.5 ), 20%
+  );
+  --arts-head-bg-color: hsla(
+    var(--box-head-bg-color-h, 225),
+    calc( var(--box-head-bg-color-s,  9%) * 0.9 ),
+    var(--box-head-bg-color-l, 65%),
+    var(--box-head-bg-color-a, 0.4)
+  );
+}
+.night {
+  --arts-name-bg-color: hsl(
+    var(--box-head-bg-color-h, 0),
+    calc( var(--box-head-bg-color-s,   0%) * 0.5 ), 5%
+  );
 }
 
 /* // Base
@@ -264,9 +281,7 @@ div.data-magic dl {
   grid-template-columns: 3.5em 1fr;
   border-width: 1px 0 0 1px;
   border-style: solid;
-}
-.night div.data-magic dl {
-  background: rgba(0,0,0,0.3);
+  border-color: var(--box-outside-border-color);
 }
 
 @media screen and (max-width:735px){
@@ -283,9 +298,10 @@ div.data-magic dl dt {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: rgba(127,127,127,0.2);
+  background-color: var(--arts-head-bg-color);
   border-width: 0 1px 0 0;
   border-style: solid;
+  border-color: var(--box-outside-border-color);
 }
 div.data-magic dl.name {
   grid-template-columns: 3.5em 1fr;
@@ -321,7 +337,7 @@ div.data-magic.potential  dl.premise dd {
   text-align: left;
 }
 div.data-magic dl.name dt {
-  background: rgba(0,0,0,0.8);
+  background: var(--arts-name-bg-color);
   color: #fff;
   font-size: 150%;
 }
@@ -330,7 +346,7 @@ div.data-magic dl.name dd {
   justify-content: space-between;
   align-items: end;
   flex-wrap: wrap;
-  background: rgba(0,0,0,0.8);
+  background: var(--arts-name-bg-color);
   color: #fff;
   font-size: 150%;
   font-weight: bold;
@@ -405,21 +421,33 @@ div.data dl.effects table.weapon-table td:not(.left) {
 .description {
   margin-top: 1.5em;
   border: 0;
-  background: none;
   box-shadow: none;
+  background-color: var(--box-base-bg-color);
+  border-radius: 0 0 5px 5px;
 }
 .description h2 {
   padding-left: .3em;
   border-width: 2px 0px;
   border-style: solid;
+  border-color: var(--box-outside-border-color);
   font-size: 115%;
+  background-image: linear-gradient(to right, var(--box-head-bg-color), var(--box-base-bg-color));
+  background-color: var(--bg-color);
+  text-shadow: 0px 0px .3em #fff;
+}
+.night .description h2 {
+  text-shadow: 0px 0px .3em #000;
+}
+.description .description-body p {
 }
 .description p {
   margin: 3px 0;
   padding: .4em;
-  border-radius: 5px;
-  background-color: var(--box-base-bg-color);
-  box-shadow: 0 0 5px var(--box-base-bg-color);
+}
+.description#magics {
+  background-color: transparent;
+}
+.description#magics h2 {
 }
 
 

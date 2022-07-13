@@ -29,6 +29,17 @@ window.onload = function() {
 };
 </TMPL_IF>
   </script>
+  <style>
+    :root {
+      --box-head-bg-color-h: <TMPL_VAR colorHeadBgH>;
+      --box-head-bg-color-s: <TMPL_VAR colorHeadBgS>%;
+      --box-head-bg-color-l: <TMPL_VAR colorHeadBgL>%;
+      --box-base-bg-color-h: <TMPL_VAR colorBaseBgH>;
+      --box-base-bg-color-s: <TMPL_VAR colorBaseBgS>%;
+      --box-base-bg-color-l: <TMPL_VAR colorBaseBgL>%;
+      --box-base-bg-color-d: <TMPL_VAR colorBaseBgD>%;
+    }
+  </style>
   <TMPL_INCLUDE NAME="skin-add/sheet-head.html">
 </head>
 <body id="item">

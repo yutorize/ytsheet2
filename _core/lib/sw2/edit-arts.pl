@@ -47,6 +47,10 @@ if($mode eq 'blanksheet' && !$::make_error){
   $pc{"magicCost"} = 'MP';
   foreach my $lv (2,4,7,10,13){ $pc{"godMagic${lv}Cost"} = 'MP' }
 }
+
+## カラー
+setDefaultColors();
+
 ### 改行処理 --------------------------------------------------
 foreach (
   'magicEffect',
@@ -87,7 +91,7 @@ Content-type: text/html\n
   <script src="${main::core_dir}/lib/edit.js?${main::ver}" defer></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer">
   <script>
-    window.onload = function() { checkCategory(); checkMagicClass(); }
+    window.onload = function() { checkCategory(); checkMagicClass(); changeColor(); }
     // 送信前チェック ----------------------------------------
     function formCheck(){
       if(form.category.value === ''){
@@ -220,6 +224,7 @@ print <<"HTML";
       <div id="header-menu">
         <h2><span></span></h2>
         <ul>
+          <li onclick="sectionSelect('color');" class="color-icon" title="カラーカスタム"></span></li>
           <li onclick="view('text-rule')" class="help-icon" title="テキスト整形ルール"></li>
           <li onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード切替"></li>
           <li class="button">
@@ -396,6 +401,8 @@ print <<"HTML";
         </div>
       </div>
     </section>
+      
+      @{[ colorCostomForm ]}
     
       @{[ input 'birthTime','hidden' ]}
       <input type="hidden" name="id" value="$::in{'id'}">

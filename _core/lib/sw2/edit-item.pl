@@ -28,6 +28,9 @@ if($mode_make && !$::make_error){
 ### 初期設定 --------------------------------------------------
 if($mode_make){ $pc{'protect'} = $LOGIN_ID ? 'account' : 'password'; }
 
+## カラー
+setDefaultColors();
+
 ### 改行処理 --------------------------------------------------
 $pc{'effects'}     =~ s/&lt;br&gt;/\n/g;
 $pc{'description'} =~ s/&lt;br&gt;/\n/g;
@@ -51,7 +54,7 @@ Content-type: text/html\n
   <script src="${main::core_dir}/lib/edit.js?${main::ver}" defer></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer">
   <script>
-    window.onload = function() { nameSet('itemName'); }
+    window.onload = function() { nameSet('itemName'); changeColor(); }
     // 送信前チェック ----------------------------------------
     function formCheck(){
       if(form.itemName.value === ''){
@@ -88,6 +91,7 @@ print <<"HTML";
       <div id="header-menu">
         <h2><span></span></h2>
         <ul>
+          <li onclick="sectionSelect('color');" class="color-icon" title="カラーカスタム"></span></li>
           <li onclick="view('text-rule')" class="help-icon" title="テキスト整形ルール"></li>
           <li onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード切替"></li>
           <li class="button">
@@ -256,6 +260,8 @@ HTML
       <textarea name="description">$pc{'description'}</textarea>
     </div>
     </section>
+      
+      @{[ colorCostomForm ]}
     
       @{[ input 'birthTime','hidden' ]}
       <input type="hidden" name="id" value="$::in{'id'}">
