@@ -256,7 +256,7 @@ HTML
       </table>
     </div>
     <div class="box">
-      <h2>解説</h2>
+      <h2>由来・逸話</h2>
       <textarea name="description">$pc{'description'}</textarea>
     </div>
     </section>
