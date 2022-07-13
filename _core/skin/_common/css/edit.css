@@ -343,7 +343,6 @@ input.auto {
   border-color: transparent;
   border-radius: 0 0 .5em .5em;
   color: #fff;
-  overflow: hidden;
 }
 #header-menu h2 {
   display: grid;
@@ -362,6 +361,7 @@ input.auto {
     #000  .0rem .1rem, #000  .0rem -.1rem,
     #000 -.1rem .0rem, #000  .1rem  .0rem;
   white-space: nowrap;
+  overflow: hidden;
 }
 #header-menu h2 .aka {
   margin-right: .5em;
@@ -373,7 +373,6 @@ input.auto {
   display: flex;
   line-height: 1;
   font-weight: bold;
-  overflow: hidden;
 }
 #header-menu ul li {
   display: flex;
@@ -415,6 +414,21 @@ section {
 }
 section > h2 {
   margin-top: 1rem;
+}
+
+#header-menu ul li[title] {
+  position: relative;
+}
+#header-menu ul li[title]:hover::after {
+  content: attr(title);
+  position: absolute;
+  display: block;
+  width: max-content;
+  padding: .5em;
+  background: rgba(0,0,0,0.5);
+  font-size: 90%;
+  font-weight: normal;
+  bottom: -2em;
 }
 
 #header-menu ul li[class$=icon] {
