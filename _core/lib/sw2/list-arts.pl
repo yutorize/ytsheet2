@@ -154,7 +154,7 @@ foreach (@list) {
   #表示域以外は弾く
   if (
     ( $index_mode && $count{$category} > $set::list_maxline && $set::list_maxline) || #TOPページ
-    ( !$::in{'category'} && $mode ne 'mylist' && $count{$category} > $set::list_maxline && $set::list_maxline) || #検索結果（分類指定なし／マイリストでもなし）
+    ( !$::in{'category'} && !$::in{'tag'} && $mode ne 'mylist' && $count{$category} > $set::list_maxline && $set::list_maxline) || #検索結果（分類指定なし／マイリストでもなし）
     (!$index_mode && $set::pagemax && ($count{$category} < $pagestart || $count{$category} > $pageend)) #それ以外
   ){
     next;
@@ -231,7 +231,7 @@ foreach my $id ('magic','god'){
   });
 }
 
-$INDEX->param(qLinks => $q_links);
+$INDEX->param(qLinks => '&'.$q_links);
 
 $INDEX->param(Lists => \@characterlists);
 

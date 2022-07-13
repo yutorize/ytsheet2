@@ -157,7 +157,7 @@ foreach (@list) {
   #表示域以外は弾く
   if (
     ( $index_mode && $count{$taxa} > $set::list_maxline && $set::list_maxline) || #TOPページ
-    ( !$::in{'taxa'} && $mode ne 'mylist' && $count{$taxa} > $set::list_maxline && $set::list_maxline) || #検索結果（分類指定なし／マイリストでもなし）
+    ( !$::in{'taxa'} && !$::in{'tag'} && $mode ne 'mylist' && $count{$taxa} > $set::list_maxline && $set::list_maxline) || #検索結果（分類指定なし／マイリストでもなし）
     (!$index_mode && $set::pagemax && ($count{$taxa} < $pagestart || $count{$taxa} > $pageend)) #それ以外
   ){
     next;
@@ -221,7 +221,7 @@ foreach (@data::taxa){
   });
 }
 
-$INDEX->param(qLinks => $q_links);
+$INDEX->param(qLinks => '&'.$q_links);
 
 $INDEX->param(Lists => \@characterlists);
 
