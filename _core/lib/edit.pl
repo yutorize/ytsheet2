@@ -116,7 +116,7 @@ sub pcDataGet {
     if($datatype eq 'logs' && !$hit){ error("過去ログ（$::in{'log'}）が見つかりません。"); }
 
     delete $pc{'image'};
-    $pc{'protect'} = 'password';
+    delete $pc{'protect'};
 
     $message  = '「<a href="./?id='.$::in{'id'}.'" target="_blank"><!NAME></a>」';
     $message .= 'の<br><a href="./?id='.$::in{'id'}.'&log='.$::in{'log'}.'" target="_blank">'.$pc{'updateTime'}.'</a> 時点のバックアップデータ' if $::in{'log'};
@@ -125,7 +125,7 @@ sub pcDataGet {
   elsif($mode eq 'convert'){
     %pc = %::conv_data;
     delete $pc{'image'};
-    $pc{'protect'} = 'password';
+    delete $pc{'protect'};
     $message = '「<a href="'.$::in{'url'}.'" target="_blank"><!NAME></a>」をコンバートして新規作成します。<br>（まだ保存はされていません）';
   }
   ##
