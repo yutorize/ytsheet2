@@ -400,6 +400,7 @@
   pointer-events: none;
 }
 #language select + .lang-select-view { background: var(--input-bg-color); }
+.night #language select option { color: var(--text-color); }
 #language select option[value="auto"],
 #language select[data-type="auto"] + .lang-select-view { background: #00ccff22; }
 #language select[data-type="auto"] + .lang-select-view::before { content: '自動'; }
