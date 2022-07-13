@@ -9,7 +9,7 @@ our $LOGIN_ID = check;
 our $mode = $::in{'mode'};
 $::in{'log'} ||= $::in{'backup'};
 
-if($set::user_reqd && !check){ error('ログインしていません。'); }
+if($set::user_reqd && !$LOGIN_ID){ error('ログインしていません。'); }
 ### 個別処理 --------------------------------------------------
 my $type = $::in{'type'};
 our %conv_data = ();
