@@ -224,6 +224,7 @@ print <<"HTML";
       <div id="header-menu">
         <h2><span></span></h2>
         <ul>
+          <li onclick="sectionSelect('common');"><span>魔法</span><span>データ</span></li>
           <li onclick="sectionSelect('color');" class="color-icon" title="カラーカスタム"></span></li>
           <li onclick="view('text-rule')" class="help-icon" title="テキスト整形ルール"></li>
           <li onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード切替"></li>

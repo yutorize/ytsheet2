@@ -91,6 +91,7 @@ print <<"HTML";
       <div id="header-menu">
         <h2><span></span></h2>
         <ul>
+          <li onclick="sectionSelect('common');"><span>アイテム</span><span>データ</span></li>
           <li onclick="sectionSelect('color');" class="color-icon" title="カラーカスタム"></span></li>
           <li onclick="view('text-rule')" class="help-icon" title="テキスト整形ルール"></li>
           <li onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード切替"></li>
@@ -167,7 +168,7 @@ HTML
           <dt>タグ</dt><dd>@{[ input 'tags' ]}</dd>
         </dl>
       </div>
-      
+
       <div class="box" id="name-form">
         <div>
           <dl id="character-name">

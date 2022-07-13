@@ -96,7 +96,7 @@ print <<"HTML";
       <div id="header-menu">
         <h2><span></span></h2>
         <ul>
-          <li onclick="sectionSelect('common');"><span>キャラクター</span><span>データ</span></li>
+          <li onclick="sectionSelect('common');"><span>魔物</span><span>データ</span></li>
           <li onclick="sectionSelect('palette');"><span>チャット</span><span>パレット</span></li>
           <li onclick="sectionSelect('color');" class="color-icon" title="カラーカスタム"></span></li>
           <li onclick="view('text-rule')" class="help-icon" title="テキスト整形ルール"></li>
@@ -181,7 +181,7 @@ print <<"HTML";
           <dt>タグ</dt><dd>@{[ input 'tags' ]}</dd>
         </dl>
       </div>
-      
+
       <div class="box" id="name-form">
         <div>
           <dl id="character-name">
