@@ -135,10 +135,6 @@ package set;
   our $adventurer_onlyonce = 0;
   our $making_interval = 0;
 
-## ●Cookie
- # Cookieの名前
-  our $cookie = 'ytsheet2';
-
 ## ●特殊ハウスルール向け
  # 戦闘用アイテム欄
  # our $battleitem = 1;
@@ -146,8 +142,9 @@ package set;
  # 成長タイプ O=1000毎 ／ A=1000＋(10*成長回数)
  # our $growtype = '';
 
- # レンジャー先制
- # our @ini_class_add = ('RanB');
+## ●Cookie
+ # Cookieの名前
+  our $cookie = 'ytsheet2'; 
 
 ## ●各種ファイルへのパス
   our $sendmail = '/usr/sbin/sendmail'; # sendmailのパス

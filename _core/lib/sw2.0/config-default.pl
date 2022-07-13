@@ -147,9 +147,6 @@ package set;
  # 成長タイプ O=1000毎 ／ A=1000＋(10*成長回数)
  # our $growtype = '';
 
- # レンジャー先制
- # our @ini_class_add = ('RanB');
-
 ## ●各種ファイルへのパス
   our $sendmail = '/usr/sbin/sendmail'; # sendmailのパス
   our $admimail = 'noreply@yutorize.2-d.jp'; # 管理者メールアドレス
