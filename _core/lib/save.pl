@@ -104,6 +104,24 @@ elsif($::in{'type'} eq 'i'){ require $set::lib_calc_item; $data_dir = $set::item
 elsif($::in{'type'} eq 'a'){ require $set::lib_calc_arts; $data_dir = $set::arts_dir; $listfile = $set::artslist; }
 else                       { require $set::lib_calc_char; $data_dir = $set::char_dir; $listfile = $set::listfile; }
 
+## 保存数チェック
+my $max_files = 32000;
+if($mode eq 'make' && $pc{'protect'} ne 'account'){
+  opendir my $dh, $data_dir;
+  my $num_files = () = readdir($dh);
+  if($num_files-2 >= $max_files){
+    $make_error = 'エラー：登録数上限です。<br>アカウントに紐づけないデータは、これ以上登録できません。';
+    require $set::lib_edit; exit;
+  }
+}
+if($mode eq 'save' && $pc{'protect'} ne 'account' && $pc{'protectOld'} eq 'account'){
+  opendir my $dh, $data_dir;
+  my $num_files = () = readdir($dh);
+  if($num_files-2 >= $max_files){
+    error '登録数上限です。<br>アカウントに紐づけないデータは、これ以上登録できないため、保護設定を変更できません。';
+  }
+}
+
 ## データ計算
 %pc = data_calc(\%pc);
 
@@ -409,23 +427,23 @@ sub passfile_write_save {
         $passwrite = '';
         if($old_dir) { $move = 1; }
       }
-      print $FH "$data[0]<>$passwrite<>$data[2]<>$data[3]<>\n";
-    }
-    else {
-      print $FH $_;
+      $_ = "$data[0]<>$passwrite<>$data[2]<>$data[3]<>\n";
     }
   }
+  my $user_dir;
+  if($move){
+    if(!-d "${dir}${new_dir}"){ mkdir "${dir}${new_dir}" or error("データディレクトリの作成に失敗しました。"); }
+    move("${data_dir}${old_dir}${file}", "${data_dir}${new_dir}${file}") or error("データディレクトリの移動に失敗しました。");;
+    $user_dir = $new_dir;
+  }
+  else {
+    $user_dir = $old_dir;
+  }
+  print $FH $_ foreach @list;
   truncate($FH, tell($FH));
   close($FH);
 
-  if($move){
-    if(!-d "${dir}${new_dir}"){ mkdir "${dir}${new_dir}" or error("データディレクトリの作成に失敗しました。"); }
-    move("${data_dir}${old_dir}${file}", "${data_dir}${new_dir}${file}");
-    return $new_dir;
-  }
-  else {
-    return $old_dir;
-  }
+  return $user_dir;
 }
 
 sub list_save {

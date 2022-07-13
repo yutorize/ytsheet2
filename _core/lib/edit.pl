@@ -34,6 +34,19 @@ if($mode eq 'convert'){
     error('URLが入力されていない、または、ファイルが選択されていません。');
   }
 }
+if(!$LOGIN_ID && $mode =~ /^(?:blanksheet|copy|convert)$/){
+  my $max_files = 32000;
+  my $data_dir;
+  if   ($type eq 'm'){ $data_dir = $set::mons_dir; }
+  elsif($type eq 'i'){ $data_dir = $set::item_dir; }
+  elsif($type eq 'a'){ $data_dir = $set::arts_dir; }
+  else               { $data_dir = $set::char_dir; }
+  opendir my $dh, $data_dir;
+  my $num_files = () = readdir($dh);
+  if($num_files-2 >= $max_files){
+    error("登録数上限です。($num_files/$max_files)<br>アカウントに紐づけないデータは、これ以上登録できないため、アカウント登録・ログインをしてから作成を行ってください。");
+  }
+}
 
 if   ($type eq 'm'){ require $set::lib_edit_mons; }
 elsif($type eq 'i'){ require $set::lib_edit_item; }
