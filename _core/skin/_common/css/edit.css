@@ -1188,6 +1188,14 @@ label.box.color-custom input:checked+i::before,
   font-family: var(--base-font-family-min);
   font-weight: bold;
 }
+.color-sample .light .name::after,
+.night .color-sample .night .name::after {
+  content: "：ライトモード";
+}
+.night .color-sample .light .name::after,
+.color-sample .night .name::after {
+  content: "：ナイトモード";
+}
 .color-sample .box {
   margin-top: 1rem;
 }
