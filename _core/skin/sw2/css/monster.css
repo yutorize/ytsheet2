@@ -231,6 +231,7 @@ table.status tbody tr:nth-child(even) td {
 ---------------------------------------------------------------------------------------------------- */
 .description {
   margin-top: 1.5em;
+  padding-bottom: .5em;
   border: 0;
   background: var(--box-base-bg-color);
   box-shadow: none !important;
@@ -240,6 +241,7 @@ table.status tbody tr:nth-child(even) td {
   border-width: 1px 0px;
   border-style: solid;
   font-size: 115%;
+  border-color: var(--box-outside-border-color);
 }
 
 /* // Author
