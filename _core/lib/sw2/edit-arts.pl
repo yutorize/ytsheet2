@@ -220,7 +220,8 @@ print <<"HTML";
       <div id="header-menu">
         <h2><span></span></h2>
         <ul>
-          <li onclick="view('text-rule')" class="help-button"></li>
+          <li onclick="view('text-rule')" class="help-icon" title="テキスト整形ルール"></li>
+          <li onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード切替"></li>
           <li class="button">
 HTML
 if($mode eq 'edit'){

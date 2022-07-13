@@ -416,6 +416,19 @@ section {
 section > h2 {
   margin-top: 1rem;
 }
+
+#header-menu ul li[class$=icon] {
+  width: 3em;
+}
+.help-icon::before {
+  font-family: "Font Awesome 5 Free";
+  content: '\f059';
+}
+.color-icon::before {
+  font-family: "Font Awesome 5 Free";
+  content: '\f576';
+}
+
 @media screen and (max-width:735px){
   #header-menu {
     position: fixed;
@@ -427,7 +440,11 @@ section > h2 {
     bottom: calc(-1em - 3px - 2rem);
   }
   #header-menu ul li:not(.button) {
+    min-width: 2.5em;
     text-align: center;
+  }
+  #header-menu ul li[class$=icon] {
+    font-size: 150%;
   }
   #header-menu ul li.button input[type="button"],
   #header-menu ul li.button input[type="submit"] {

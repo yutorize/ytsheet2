@@ -180,8 +180,9 @@ print <<"HTML";
         <ul>
           <li onclick="sectionSelect('common');"><span>キャラクター</span><span>データ</span></li>
           <li onclick="sectionSelect('palette');"><span>チャット</span><span>パレット</span></li>
-          <li onclick="sectionSelect('color');"><span>カラー</span><span>カスタム</span></li>
-          <li onclick="view('text-rule')" class="help-button"></li>
+          <li onclick="sectionSelect('color');" class="color-icon" title="カラーカスタム"></span></li>
+          <li onclick="view('text-rule')" class="help-icon" title="テキスト整形ルール"></li>
+          <li onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード切替"></li>
           <li class="button">
 HTML
 if($mode eq 'edit'){
