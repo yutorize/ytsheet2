@@ -14,6 +14,25 @@ function closeImage() {
     document.getElementById("image-box").style.bottom = '-100vh';
   },200);
 }
+function closeTextareaForCopy() {
+  document.getElementById('copyText-box').remove();
+  document.getElementById('copyText-box-textarea').remove();
+}
+function popTextareaForCopy(text) {
+  const div = document.createElement('div');
+  div.id = 'copyText-box';
+  div.onclick = closeTextareaForCopy;
+
+  const textarea = document.createElement('textarea');
+  textarea.id = 'copyText-box-textarea';
+  textarea.value = text;
+
+  document.getElementsByTagName('main')[0].appendChild(div);
+  document.getElementsByTagName('main')[0].appendChild(textarea);
+
+  textarea.focus();
+  textarea.setSelectionRange(0, textarea.value.length);
+}
 function editOn() {
   document.querySelectorAll('.float-box:not(#login-form)').forEach(obj => { obj.classList.remove('show') });
   document.getElementById("login-form").classList.toggle('show');
@@ -92,8 +111,13 @@ function copyToClipboard(text) {
   textarea.value = text;
   textarea.focus();
   textarea.setSelectionRange(0, textarea.value.length);
-  document.execCommand('copy');
+  const isCopied = document.execCommand('copy');
   textarea.remove();
+  if (isCopied) {
+    return;
+  } else{
+    throw 'クリップボードへのコピーに失敗しました';
+  }
 }
 
 async function downloadAsUdonarium() {
@@ -105,14 +129,51 @@ async function downloadAsUdonarium() {
   downloadFile(`udonarium_data_${characterId}.zip`, udonariumUrl);
 }
 
-async function downloadAsCcfolia() {
-  const characterDataJson = await getJsonData();
-  const json = io.github.shunshun94.trpg.ccfolia[`generateCharacterJsonFromYtSheet2${generateType}`](characterDataJson, location.href);
-  json.then((result)=>{
-    copyToClipboard(result);
-    alert('クリップボードにコピーしました。ココフォリアにペーストすることでデータを取り込めます');
+function getCcfoliaJson() {
+  return new Promise((resolve, reject)=>{
+    getJsonData().then((characterDataJson)=>{
+      io.github.shunshun94.trpg.ccfolia[`generateCharacterJsonFromYtSheet2${generateType}`](characterDataJson, location.href).then(resolve, reject);
+    }, reject);
   });
-  
+}
+
+function getClipboardItem() {
+  return new ClipboardItem({
+    'text/plain': getCcfoliaJson().then((json)=>{
+      return new Promise(async (resolve)=>{
+        resolve(new Blob([json]));
+      });
+    }, (err)=>{
+      console.error(err);
+      alert('キャラクターシートのデータ取得に失敗しました。通信状況等をご確認ください');
+    })
+  });
+}
+
+function clipboardItemToTextareaClipboard(clipboardItem) {
+  clipboardItem.getType('text/plain').then((blob)=>{
+    blob.text().then((jsonText)=>{
+      try {
+        copyToClipboard(jsonText);
+        alert('クリップボードにコピーしました。ココフォリアにペーストすることでデータを取り込めます');
+      } catch (e) {
+        popTextareaForCopy(jsonText);
+      }
+    });
+  });
+}
+
+async function downloadAsCcfolia() {
+  const clipboardItem = getClipboardItem();
+  if(navigator.clipboard) {
+    navigator.clipboard.write([clipboardItem]).then((ok)=>{
+      alert('クリップボードにコピーしました。ココフォリアにペーストすることでデータを取り込めます');
+    }, (err)=>{
+      clipboardItemToTextareaClipboard(clipboardItem);
+    });
+  } else {
+    clipboardItemToTextareaClipboard(clipboardItem);
+  }  
 }
 
 async function donloadAsText() {
