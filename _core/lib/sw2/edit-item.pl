@@ -110,18 +110,6 @@ print <<"HTML";
       <aside class="message">$message</aside>
       
       <section id="section-common">
-      <div class="box" id="name-form">
-        <div>
-          <dl id="character-name">
-            <dt>名称</dt>
-            <dd>@{[ input('itemName','text',"nameSet('itemName')") ]}</dd>
-          </dl>
-        </div>
-        <dl id="player-name">
-          <dt>製作者</dt>
-          <dd>@{[input('author')]}</dd>
-        </dl>
-      </div>
 HTML
 if($set::user_reqd){
   print <<"HTML";
@@ -177,6 +165,19 @@ HTML
       <div class="box" id="group">
         <dl>
           <dt>タグ</dt><dd>@{[ input 'tags' ]}</dd>
+        </dl>
+      </div>
+      
+      <div class="box" id="name-form">
+        <div>
+          <dl id="character-name">
+            <dt>名称</dt>
+            <dd>@{[ input('itemName','text',"nameSet('itemName')") ]}</dd>
+          </dl>
+        </div>
+        <dl id="player-name">
+          <dt>製作者</dt>
+          <dd>@{[input('author')]}</dd>
         </dl>
       </div>
       

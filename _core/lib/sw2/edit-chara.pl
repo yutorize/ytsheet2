@@ -173,24 +173,6 @@ print <<"HTML";
       <aside class="message">$message</aside>
       
       <section id="section-common">
-      <div class="box" id="name-form">
-        <div>
-          <dl id="character-name">
-            <dt>キャラクター名</dt>
-            <dd>@{[input('characterName','text',"nameSet")]}</dd>
-          </dl>
-          <dl id="aka">
-            <dt>二つ名</dt>
-            <dd>@{[input('aka','text',"nameSet")]}</dd>
-            <dt class="ruby">フリガナ</dt>
-            <dd>@{[input('akaRuby','text',"nameSet")]}</dd>
-          </dl>
-        </div>
-        <dl id="player-name">
-          <dt>プレイヤー名</dt>
-          <dd>@{[input('playerName')]}</dd>
-        </dl>
-      </div>
 HTML
 if($set::user_reqd){
   print <<"HTML";
@@ -259,6 +241,26 @@ print <<"HTML";
           <dt>タグ</dt><dd>@{[ input 'tags','','','' ]}</dd>
         </dl>
       </div>
+      
+      <div class="box" id="name-form">
+        <div>
+          <dl id="character-name">
+            <dt>キャラクター名</dt>
+            <dd>@{[input('characterName','text',"nameSet")]}</dd>
+          </dl>
+          <dl id="aka">
+            <dt>二つ名</dt>
+            <dd>@{[input('aka','text',"nameSet")]}</dd>
+            <dt class="ruby">フリガナ</dt>
+            <dd>@{[input('akaRuby','text',"nameSet")]}</dd>
+          </dl>
+        </div>
+        <dl id="player-name">
+          <dt>プレイヤー名</dt>
+          <dd>@{[input('playerName')]}</dd>
+        </dl>
+      </div>
+
       <details class="box" id="regulation" @{[$mode eq 'edit' ? '':'open']}>
         <summary>作成レギュレーション</summary>
         <dl>

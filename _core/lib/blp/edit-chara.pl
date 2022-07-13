@@ -145,20 +145,6 @@ print <<"HTML";
       <aside class="message">$message</aside>
       
       <section id="section-common">
-      <div class="box" id="name-form">
-        <div>
-          <dl id="character-name">
-            <dt>キャラクター名</dt>
-            <dd>@{[input('characterName','text',"nameSet",'required')]}</dd>
-            <dt class="ruby">ふりがな</dt>
-            <dd>@{[input('characterNameRuby','text',"nameSet")]}</dd>
-          </dl>
-        </div>
-        <dl id="player-name">
-          <dt>プレイヤー名</dt>
-          <dd>@{[input('playerName')]}</dd>
-        </dl>
-      </div>
 HTML
 if($set::user_reqd){
   print <<"HTML";
@@ -196,9 +182,9 @@ HTML
         <dt>閲覧可否設定</dt>
         <dd id="forbidden-checkbox">
           <select name="forbidden">
-            <option value="">内容を全て開示する
-            <option value="battle" @{[ $pc{'forbidden'} eq 'battle' ? 'selected' : '' ]}>データ・数値のみ秘匿する
-            <option value="all"    @{[ $pc{'forbidden'} eq 'all'    ? 'selected' : '' ]}>内容を全て秘匿する
+            <option value="">内容を全て開示
+            <option value="battle" @{[ $pc{'forbidden'} eq 'battle' ? 'selected' : '' ]}>データ・数値のみ秘匿
+            <option value="all"    @{[ $pc{'forbidden'} eq 'all'    ? 'selected' : '' ]}>内容を全て秘匿
           </select>
         </dd>
         <dd id="hide-checkbox">
@@ -225,6 +211,22 @@ print <<"HTML";
           <dt>タグ</dt><dd>@{[ input 'tags','','','' ]}</dd>
         </dl>
       </div>
+
+      <div class="box" id="name-form">
+        <div>
+          <dl id="character-name">
+            <dt>キャラクター名</dt>
+            <dd>@{[input('characterName','text',"nameSet",'required')]}</dd>
+            <dt class="ruby">ふりがな</dt>
+            <dd>@{[input('characterNameRuby','text',"nameSet")]}</dd>
+          </dl>
+        </div>
+        <dl id="player-name">
+          <dt>プレイヤー名</dt>
+          <dd>@{[input('playerName')]}</dd>
+        </dl>
+      </div>
+
       <details class="box" id="regulation" @{[$mode eq 'edit' ? '':'open']}>
         <summary>作成レギュレーション</summary>
         <dl>
