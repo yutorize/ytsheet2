@@ -64,9 +64,10 @@ function chatPaletteSelect(tool) {
 }
 // 保存系 ----------------------------------------
 function getJsonData() {
+  const paramId = /id=[1-9a-zA-Z]+/.exec(location.href)[0];
   return new Promise((resolve, reject)=>{
     let xhr = new XMLHttpRequest();
-    xhr.open('GET', `${location.href}&mode=json`, true);
+    xhr.open('GET', `./${paramId}&mode=json`, true);
     xhr.responseType = "json";
     xhr.onload = (e) => {
       resolve(e.currentTarget.response);
