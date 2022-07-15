@@ -128,11 +128,11 @@ io.github.shunshun94.trpg.ytsheet.separateParametersFromChatPalette = (chatPalet
 	return result;
 };
 
-io.github.shunshun94.trpg.ytsheet.getChatPalette = (sheetUrl) => {
+io.github.shunshun94.trpg.ytsheet.getChatPalette = () => {
+	const paramId = /id=[1-9a-zA-Z]+/.exec(location.href)[0];
 	return new Promise((resolve, reject)=>{
-		if(sheetUrl === '' || ! sheetUrl.startsWith(location.origin)) {resolve('');return;}
 		let xhr = new XMLHttpRequest();
-		xhr.open('GET', `${sheetUrl}&tool=bcdice&mode=palette`, true);
+		xhr.open('GET', `./?${paramId}&tool=bcdice&mode=palette`, true);
 		xhr.responseType = "text";
 		xhr.onload = (e) => {
 			resolve(io.github.shunshun94.trpg.ytsheet.separateParametersFromChatPalette(e.currentTarget.response));
