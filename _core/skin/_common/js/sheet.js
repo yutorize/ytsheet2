@@ -64,9 +64,10 @@ function chatPaletteSelect(tool) {
 }
 // 保存系 ----------------------------------------
 function getJsonData() {
+  const paramId = /id=[1-9a-zA-Z]+/.exec(location.href)[0];
   return new Promise((resolve, reject)=>{
     let xhr = new XMLHttpRequest();
-    xhr.open('GET', `${location.href}&mode=json`, true);
+    xhr.open('GET', `./?${paramId}&mode=json`, true);
     xhr.responseType = "json";
     xhr.onload = (e) => {
       resolve(e.currentTarget.response);
@@ -138,16 +139,31 @@ function getCcfoliaJson() {
 }
 
 function getClipboardItem() {
-  return new ClipboardItem({
-    'text/plain': getCcfoliaJson().then((json)=>{
-      return new Promise(async (resolve)=>{
-        resolve(new Blob([json]));
-      });
-    }, (err)=>{
-      console.error(err);
-      alert('キャラクターシートのデータ取得に失敗しました。通信状況等をご確認ください');
-    })
-  });
+  try {
+    return new ClipboardItem({
+      'text/plain': getCcfoliaJson().then((json)=>{
+        return new Promise(async (resolve)=>{
+          resolve(new Blob([json]));
+        });
+      }, (err)=>{
+        console.error(err);
+        alert('キャラクターシートのデータ取得に失敗しました。通信状況等をご確認ください');
+      })
+    });
+  } catch(e) { // FireFox は ClipboardItem が使えない（2022/07/16 v.102.0.1）
+    return {
+      getType: ()=>{
+        return new Promise((resolve, reject)=>{
+          getCcfoliaJson().then((json)=>{
+            resolve(new Blob([json]));
+          });
+        }, (err)=>{
+          console.error(err);
+          alert('キャラクターシートのデータ取得に失敗しました。通信状況等をご確認ください');
+        });
+      }
+    };
+  }
 }
 
 function clipboardItemToTextareaClipboard(clipboardItem) {
@@ -165,7 +181,7 @@ function clipboardItemToTextareaClipboard(clipboardItem) {
 
 async function downloadAsCcfolia() {
   const clipboardItem = getClipboardItem();
-  if(navigator.clipboard) {
+  if(navigator.clipboard && navigator.clipboard.write) { // FireFox は navigator.clipboard.write が使えない（2022/07/16 v.102.0.1）
     navigator.clipboard.write([clipboardItem]).then((ok)=>{
       alert('クリップボードにコピーしました。ココフォリアにペーストすることでデータを取り込めます');
     }, (err)=>{
