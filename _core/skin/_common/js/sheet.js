@@ -139,7 +139,7 @@ function getCcfoliaJson() {
 }
 
 function getClipboardItem() {
-  if(ClipboardItem) { // FireFox は ClipboardItem が使えない（2022/07/16 v.102.0.1）
+  try {
     return new ClipboardItem({
       'text/plain': getCcfoliaJson().then((json)=>{
         return new Promise(async (resolve)=>{
@@ -150,7 +150,7 @@ function getClipboardItem() {
         alert('キャラクターシートのデータ取得に失敗しました。通信状況等をご確認ください');
       })
     });
-  } else {
+  } catch(e) { // FireFox は ClipboardItem が使えない（2022/07/16 v.102.0.1）
     return {
       getType: ()=>{
         return new Promise((resolve, reject)=>{
@@ -181,7 +181,7 @@ function clipboardItemToTextareaClipboard(clipboardItem) {
 
 async function downloadAsCcfolia() {
   const clipboardItem = getClipboardItem();
-  if(navigator.clipboard) {
+  if(navigator.clipboard && navigator.clipboard.write) { // FireFox は navigator.clipboard.write が使えない（2022/07/16 v.102.0.1）
     navigator.clipboard.write([clipboardItem]).then((ok)=>{
       alert('クリップボードにコピーしました。ココフォリアにペーストすることでデータを取り込めます');
     }, (err)=>{
