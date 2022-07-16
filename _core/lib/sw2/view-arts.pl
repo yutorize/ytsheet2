@@ -106,14 +106,13 @@ if($pc{'forbidden'} && !$pc{'yourAuthor'}){
 if($pc{'category'} eq 'magic'){
   if($pc{'magicMinor'}){ $pc{'magicClass'} .= ' (小魔法)' }
   $SHEET->param(categoryMagic => 1);
-  $pc{'artsName'} = $pc{'magicName'};
-  $SHEET->param(rawName => $pc{'magicName'});
+  $pc{'artsName'} = '【'.$pc{'schoolName'}.'】';
 }
 if($pc{'category'} eq 'god'){
   $SHEET->param(categoryGod => 1);
-  $pc{'artsName'} = $pc{'godName'};
-  $SHEET->param(rawName => $pc{'godName'});
+  $pc{'artsName'} = ($pc{'godAka'} ? "“$pc{'godAka'}”" : "").$pc{'godName'};
 }
+  $SHEET->param(rawName => $pc{'artsName'});
 
 ### 置換 #############################################################################################
 foreach (keys %pc) {
