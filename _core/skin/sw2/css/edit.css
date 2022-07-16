@@ -1355,6 +1355,20 @@ form#arts textarea[name="godDeity"],
 form#arts textarea[name="godNote"] {
   height: 16em;
 }
+
+form#arts #data-school dl dt {
+  white-space: nowrap;
+}
+form#arts #school-item-list {
+  width: 100%;
+}
+form#arts #school-item-list thead th:nth-child(1) { width: 14em; }
+form#arts #school-item-list thead th:nth-child(2) { width: 10em; }
+form#arts #school-item-list thead th:nth-child(3) { width: auto; }
+form#arts #school-item-list thead th:nth-child(4) { width: 1em; }
+
+form#arts #school-item-list tbody td:nth-child(3) { font-size: 82%; }
+
 @media screen and (max-width:735px){
   form#arts div.input-data dl dt {
     width: 6.5em;
@@ -1368,6 +1382,10 @@ form#arts textarea[name="godNote"] {
   form#arts div.input-data dl dd small {
     display: block;
   }
+  form#arts #school-item-list thead th:nth-child(3),
+  form#arts #school-item-list tbody td:nth-child(3) { display: none; }
+  
+  form#arts #school-item-list tbody td { font-size: 82%; }
 }
 
 form#arts .color-sample .data-table th {

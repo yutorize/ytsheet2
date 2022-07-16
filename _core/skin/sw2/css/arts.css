@@ -49,7 +49,8 @@ article {
   .wide article {
     max-width: 1760px;
   }
-  .wide #god {
+  .wide #god,
+  .wide #school {
     max-width: 1760px;
     display: grid;
     grid-gap: 0 1.2rem;
@@ -63,7 +64,8 @@ article {
   #area-description {
     grid-column: 1;
   }
-  #magics {
+  #magics,
+  #mystic-arts {
     grid-column: 2;
     margin-top: 0;
   }
@@ -72,10 +74,12 @@ article {
 /* // Font
 ---------------------------------------------------------------------------------------------------- */
 #god-name,
+#school-name,
 .data-magic .name dd {
   font-family: var(--base-font-family-min);
 }
-#god-name small {
+#god-name small,
+#school-name small {
   font-family: var(--base-font-family-jp);
 }
 
@@ -108,8 +112,14 @@ div.data-magic {
   
   background-color: var(--box-base-bg-color);
 }
+.wide .data-magic {
+  margin-top: 1em;
+}
+.wide div.data-magic + div.data-magic {
+  margin-top: 1.5em;
+}
 
-div.data-magic dl.name     { grid-area: NAME; }
+div.data-magic   .name     { grid-area: NAME; }
 div.data-magic dl.cost     { grid-area: COST; }
 div.data-magic dl.target   { grid-area: TRGT; }
 div.data-magic dl.range    { grid-area: RANG; }
@@ -135,6 +145,12 @@ div.data-magic dl.part      { grid-area: PART; }
 
 div.data-magic dl.ccost     { grid-area: CCST; }
 div.data-magic dl.ccharge   { grid-area: CCHG; }
+
+div.data-magic dl.base      { grid-area: BASE; }
+div.data-magic dl.equip     { grid-area: EQIP; }
+div.data-magic dl.use       { grid-area: USE ; }
+div.data-magic dl.apply     { grid-area: APLY; }
+div.data-magic dl.risk      { grid-area: RISK; }
 
 div.data-magic.enhance {
   grid-template-areas:
@@ -276,6 +292,45 @@ div.data-magic.dignity .summary {
   display: none;
 }
 
+div.data-magic.data-arts {
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-areas:
+    "NAME NAME COST"
+    "BASE PRMS EQIP"
+    "USE  APLY RISK"
+    "SMRY SMRY SMRY"
+    "EFCT EFCT EFCT"
+  ;
+}
+div.data-magic.data-arts dl {
+  grid-template-columns: 5.2em 1fr;
+}
+div.data-magic.data-arts dl.premise,
+div.data-magic.data-arts dl.apply {
+  grid-template-columns: 3em 1fr;
+}
+div.data-magic.data-arts dl.cost {
+  grid-template-columns: 1fr max-content;
+  align-items: end;
+  justify-items: end;
+  padding: 0 .2em .1em 0;
+  border-left: 0;
+  background-color: var(--arts-name-bg-color);
+  color: #fff;
+}
+div.data-magic.data-arts dl.cost dt {
+  padding: 0;
+  background-color: transparent;
+  border-right: 0;
+}
+div.data-magic.data-arts dl.cost dt::after {
+  content: ":";
+}
+div.data-magic.data-arts dl.cost dd {
+  min-width: 1em;
+  padding: 0;
+}
+
 div.data-magic dl {
   display: grid;
   grid-template-columns: 3.5em 1fr;
@@ -294,6 +349,7 @@ div.data-magic dl {
   }
 }
 
+div.data-magic h3,
 div.data-magic dl dt {
   display: flex;
   justify-content: center;
@@ -321,6 +377,7 @@ div.data-magic dl.element  dd {
   font-family: var(--font-proportional);
   white-space: nowrap;
 }
+div.data-magic h3.name,
 div.data-magic dl.name     dd,
 div.data-magic dl.part     dd,
 div.data-magic dl.summary  dd,
@@ -335,6 +392,12 @@ div.data-magic.potential  dl.premise dd {
   display: block;
   padding: .2em .5em;
   text-align: left;
+}
+div.data-magic h3 {
+  border-width: 1px 0 0 1px;
+  background: var(--arts-name-bg-color);
+  color: #fff;
+  font-size: 130%;
 }
 div.data-magic dl.name dt {
   background: var(--arts-name-bg-color);
@@ -364,6 +427,8 @@ div.data-magic dl.name dd .s-icon::before {
 div.data-magic dl.effect dd p {
   background: none;
   box-shadow: none;
+  margin: 0;
+  padding: 0;
 }
 
 @media screen and (max-width:735px){
@@ -416,17 +481,67 @@ div.data dl.effects table.weapon-table td:not(.left) {
   white-space: nowrap;
 }
 
+#arts-list .input-data {
+  border-width: 0 0 1px;
+  border-style: solid;
+}
+
+/* // School
+---------------------------------------------------------------------------------------------------- */
+#school .box.req {
+  margin: 0 0 1em;
+  padding: .2em .5em;
+  display: grid;
+  grid-template-columns: max-content 1fr;
+}
+#school .box.req dt::after {
+  content: ":";
+}
+#school .box.req dd {
+  font-weight: bold;
+  text-align: left;
+}
+
+.item-table {
+  margin-top: 1em;
+}
+.item-table,
+.item-table th,
+.item-table td {
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--box-outside-border-color);
+  text-align: center;
+}
+.item-table thead {
+  background-color: var(--arts-head-bg-color);
+}
+.item-table thead .name       { width: 14.5em; }
+.item-table thead .reputation { width: 4em; }
+.item-table thead .category   { width: 10.5em; }
+.item-table thead .price      { width: 7em; }
+.item-table tbody td {
+  padding: .2em;
+}
+.item-table tbody td.left {
+  font-size: 92%;
+}
+
+
 /* // Description
 ---------------------------------------------------------------------------------------------------- */
 .description {
   margin-top: 1.5em;
   border: 0;
   box-shadow: none;
+  background-image: none;
   background-color: var(--box-base-bg-color);
-  border-radius: 0 0 5px 5px;
+  box-shadow: none !important;
 }
-.description h2 {
-  padding-left: .3em;
+.description h2,
+.description h2:nth-child(n+2) {
+  margin: 0;
+  padding: 0 .3em;
   border-width: 2px 0px;
   border-style: solid;
   border-color: var(--box-outside-border-color);
@@ -435,23 +550,19 @@ div.data dl.effects table.weapon-table td:not(.left) {
   background-color: var(--bg-color);
   text-shadow: 0px 0px .3em #fff;
 }
+.box.description h2 ~ h2 {
+  margin-top: 1em;
+}
 .night .description h2 {
   text-shadow: 0px 0px .3em #000;
 }
-.description .description-body p {
-}
-.description p {
-  margin: 3px 0;
-  padding: .4em;
-}
-.description#magics {
+.description#magics,
+.description#mystic-arts {
   background-color: transparent;
 }
-.description#magics h2 {
-}
 
 
-/* // GodData
+/* // NameArea
 ---------------------------------------------------------------------------------------------------- */
 #area-name {
   display: flex;
@@ -466,7 +577,7 @@ div.data dl.effects table.weapon-table td:not(.left) {
   background-color: var(--bg-color);
   border-color: var(--box-outside-border-color, inherit);
 }
-h1#god-name {
+#area-name > h1 {
   padding: 1rem;
   font-size: 2.2rem;
   font-weight: bold;
@@ -486,12 +597,6 @@ h1#god-name {
   font-size: 110%;
   font-weight: bold;
   text-shadow: 0px 0px .3em var(--bg-color), 0px 0px .3em var(--bg-color);
-}
-#god .data-magic {
-  margin-top: 1em;
-}
-#god div.data-magic + div.data-magic {
-  margin-top: 1.5em;
 }
 
 /* // Image

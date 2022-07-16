@@ -106,13 +106,20 @@ if($pc{'forbidden'} && !$pc{'yourAuthor'}){
 if($pc{'category'} eq 'magic'){
   if($pc{'magicMinor'}){ $pc{'magicClass'} .= ' (小魔法)' }
   $SHEET->param(categoryMagic => 1);
-  $pc{'artsName'} = '【'.$pc{'schoolName'}.'】';
+  $pc{'artsName'} = '【'.$pc{'magicName'}.'】';
 }
-if($pc{'category'} eq 'god'){
+elsif($pc{'category'} eq 'god'){
   $SHEET->param(categoryGod => 1);
+  $SHEET->param(wideMode => 1);
   $pc{'artsName'} = ($pc{'godAka'} ? "“$pc{'godAka'}”" : "").$pc{'godName'};
 }
-  $SHEET->param(rawName => $pc{'artsName'});
+elsif($pc{'category'} eq 'school'){
+  $SHEET->param(categorySchool => 1);
+  $SHEET->param(wideMode => 1);
+  $pc{'artsName'} = '【'.$pc{'schoolName'}.'】';
+}
+$SHEET->param(rawName => $pc{'artsName'});
+my $item_urls = $pc{'schoolItemList'};
 
 ### 置換 #############################################################################################
 foreach (keys %pc) {
@@ -259,6 +266,58 @@ foreach my $lv (2,4,7,10,13){
   } );
 }
 $SHEET->param(MagicData => \@magics);
+
+### 流派装備 --------------------------------------------------
+my @items;
+foreach my $set_url (split ',',$item_urls){
+  ## 同じゆとシートⅡ
+  my $self = CGI->new()->url;
+  my %item;
+  if($set_url =~ m"^$self\?id=(.+?)(?:$|&)"){
+    my $id = $1;
+    my ($file, $type, $author) = getfile_open($id);
+    
+    open my $IN, '<', "${set::item_dir}${file}/data.cgi";
+    while (<$IN>){
+      chomp;
+      my ($key, $value) = split(/<>/, $_, 2);
+      $item{$key} = tag_unescape($value);
+    }
+    close($IN);
+  }
+  else {
+  }
+  $item{'price'} =~ s/[+＋]/<br>＋/;
+  push(@items, {
+    "NAME"      => "<a href=\"$set_url\" target=\"_blank\">".$item{'itemName'}."</a>",
+    "PRICE"     => $item{'price'},
+    "CATEGORY"  => $item{'category'},
+    "REPUTATION"=> $item{'reputation'},
+    "AGE"       => $item{'age'},
+    "SUMMARY"   => $item{'summary'},
+  } );
+}
+$SHEET->param(SchoolItems => \@items);
+
+### 秘伝 --------------------------------------------------
+my @arts;
+foreach my $num (1..$pc{'schoolArtsNum'}){
+  my $icon;
+  push(@arts, {
+    "NAME"     => $pc{'schoolArts'.$num.'Name'},
+    "ICON"     => $icon,
+    "COST"     => $pc{'schoolArts'.$num.'Cost'},
+    "BASE"     => $pc{'schoolArts'.$num.'Base'},
+    "PREMISE"  => $pc{'schoolArts'.$num.'Premise'},
+    "EQUIP"    => $pc{'schoolArts'.$num.'Equip'},
+    "USE"      => $pc{'schoolArts'.$num.'Use'},
+    "APPLY"    => $pc{'schoolArts'.$num.'Apply'},
+    "RISK"     => $pc{'schoolArts'.$num.'Risk'},
+    "SUMMARY"  => $pc{'schoolArts'.$num.'Summary'},
+    "EFFECT"   => $pc{'schoolArts'.$num.'Effect'},
+  } );
+}
+$SHEET->param(ArtsData => \@arts);
 
 ### バックアップ --------------------------------------------------
 if($::in{'id'}){

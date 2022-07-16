@@ -42,7 +42,7 @@ window.onload = function() {
   </style>
   <TMPL_INCLUDE NAME="skin-add/sheet-head.html">
 </head>
-<body id="arts" <TMPL_IF categoryGod>class="wide"</TMPL_IF>>
+<body id="arts" <TMPL_IF wideMode>class="wide"</TMPL_IF>>
   <script src="<TMPL_VAR coreDir>/skin/_common/js/common.js?<TMPL_VAR ver>"></script>
   <script src="<TMPL_VAR coreDir>/skin/_common/js/sheet.js?<TMPL_VAR ver>"></script>
   <header>
@@ -170,7 +170,7 @@ window.onload = function() {
           <dl class="effect  "><dt>効果      </dt><dd><p><TMPL_VAR magicEffect></p></dd></dl>
         </div>
       </section>
-      <TMPL_IF magicDescription><section class=" description">
+      <TMPL_IF magicDescription><section class="box description">
         <h2>由来・逸話など</h2>
         <p><TMPL_VAR magicDescription></p>
       </section></TMPL_IF>
@@ -181,11 +181,11 @@ window.onload = function() {
       <section id="god">
         <div id="area-name">
           <h1 id="god-name"><TMPL_IF godAka><span id="aka">“<TMPL_VAR godAka>”</span></TMPL_IF><TMPL_VAR godName></h1>
-            <small>（<TMPL_VAR godClass DEFAULT="―">／<TMPL_VAR godRank DEFAULT="―"><TMPL_IF godArea>:<TMPL_VAR godArea></TMPL_IF>）</small>
+          <small>（<TMPL_VAR godClass DEFAULT="―">／<TMPL_VAR godRank DEFAULT="―"><TMPL_IF godArea>:<TMPL_VAR godArea></TMPL_IF>）</small>
         </div>
       
         <div id="tags">
-          <TMPL_LOOP Tags><a class="tag" href="./?type=i&tag=<TMPL_VAR URL>"><TMPL_VAR TEXT></a></TMPL_LOOP>
+          <TMPL_LOOP Tags><a class="tag" href="./?type=a&tag=<TMPL_VAR URL>"><TMPL_VAR TEXT></a></TMPL_LOOP>
         </div>
 
         <div id="area-description">
@@ -196,21 +196,21 @@ window.onload = function() {
               No Image
             </TMPL_IF>
           </div>
-          <section class="description">
+          <section class="box description">
             <h2>聖印と神像</h2>
             <p><TMPL_VAR godSymbol></p>
           </section>
-          <section class="description">
+          <section class="box description">
             <h2>神格と教義</h2>
             <p><TMPL_VAR godDeity></p>
           </section>
-          <section class="description">
+          <section class="box description">
             <h2>格言</h2>
             <p>「<TMPL_VAR godMaxim1>」</p>
             <p>「<TMPL_VAR godMaxim2>」</p>
             <p>「<TMPL_VAR godMaxim3>」</p>
           </section>
-          <TMPL_IF godNote><section class="description">
+          <TMPL_IF godNote><section class="box description">
             <h2><TMPL_IF head_godNote><TMPL_VAR head_godNote><TMPL_ELSE>備考</TMPL_IF></h2>
             <p><TMPL_VAR godNote></p>
           </section></TMPL_IF>
@@ -229,10 +229,75 @@ window.onload = function() {
             <dl class="summary "><dt>概要      </dt><dd><TMPL_VAR SUMMARY></dd></dl>
             <dl class="effect  "><dt>効果      </dt><dd><p><TMPL_VAR EFFECT></p></dd></dl>
           </div>
-        </TMPL_LOOP>
-      </section>
+          </TMPL_LOOP>
+        </section>
       </section>
       </TMPL_IF>
+
+      <!-- 流派 -->
+      <TMPL_IF categorySchool>
+      <section id="school">
+        <div id="area-name">
+          <h1 id="school-name">【<TMPL_VAR schoolName>】</h1>
+            <TMPL_IF schoolArea><small>（<TMPL_VAR schoolArea>）</TMPL_IF></small>
+        </div>
+      
+        <div id="tags">
+          <TMPL_LOOP Tags><a class="tag" href="./?type=a&tag=<TMPL_VAR URL>"><TMPL_VAR TEXT></a></TMPL_LOOP>
+        </div>
+
+        <div id="area-description">
+          <dl class="box description req">
+            <dt>入門条件</dt>
+            <dd><TMPL_VAR schoolReq></dd>
+          </dl>
+          <section class="box description">
+            <p><TMPL_VAR schoolNote></p>
+          </section>
+          <section class="box description">
+            <h2>流派装備</h2>
+            <p><TMPL_VAR schoolItemNote></p>
+            <TMPL_IF SchoolItems><table class="item-table">
+              <thead>
+                <th class="name      ">名称</th>
+                <th class="reputation">知名度</th>
+                <th class="category  ">カテゴリ</th>
+                <th class="price     ">価格</th>
+                <th class="summary">概要</th>
+              </thead>
+              <tbody>
+                <TMPL_LOOP SchoolItems><tr>
+                  <td class="name      "><TMPL_VAR NAME></td>
+                  <td class="reputation"><TMPL_VAR REPUTATION></td>
+                  <td class="category  "><TMPL_VAR CATEGORY></td>
+                  <td class="price     "><TMPL_VAR PRICE></td>
+                  <td class="summary left"><TMPL_VAR SUMMARY></td>
+                </tr></TMPL_LOOP>
+            </tbody>
+            </table></TMPL_IF>
+          </section>
+        </div>
+        <section id="mystic-arts" class="description">
+          <h2>秘伝</h2>
+          <TMPL_LOOP ArtsData>
+          <div class="data-magic data-arts">
+            <h3 class="name    "><dt><TMPL_VAR ICON>《<TMPL_VAR NAME>》</h3>
+            <dl class="cost    "><dt>必要名誉点</dt><dd><TMPL_VAR COST></dd></dl>
+            <dl class="base    "><dt>基礎特技  </dt><dd><TMPL_VAR BASE></dd></dl>
+            <dl class="premise "><dt>前提      </dt><dd><TMPL_VAR PREMISE></dd></dl>
+            <dl class="equip   "><dt>装備限定  </dt><dd><TMPL_VAR EQUIP></dd></dl>
+            <dl class="use     "><dt>使用      </dt><dd><TMPL_VAR USE></dd></dl>
+            <dl class="apply   "><dt>適用      </dt><dd><TMPL_VAR APPLY></dd></dl>
+            <dl class="risk    "><dt>リスク    </dt><dd><TMPL_VAR RISK></dd></dl>
+            <dl class="summary "><dt>概要      </dt><dd><TMPL_VAR SUMMARY></dd></dl>
+            <dl class="effect  "><dt>効果      </dt><dd><p><TMPL_VAR EFFECT></p></dd></dl>
+          </div>
+          </TMPL_LOOP>
+        </section>
+      </section>
+      </TMPL_IF>
+
+
       <div id="author">
         製作者：<TMPL_VAR author>
       </div>

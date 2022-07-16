@@ -98,7 +98,7 @@ elsif (
 }
 
 ## カテゴリ検索
-my %category = ('magic'=>'魔法','god'=>'神格');
+my %category = ('magic'=>'魔法','god'=>'神格','school'=>'流派');
 my $category_query = $::in{'category'};
 if($category_query && $::in{'category'} ne 'all'){
   @list = grep { $_ =~ /^(?:[^<]*?<>){6}(\Q$category_query\E)?</ } @list;
@@ -106,7 +106,7 @@ if($category_query && $::in{'category'} ne 'all'){
 }
 {
   my @categories;
-  foreach ('magic','god'){
+  foreach ('magic','god','school'){
     push(@categories, {
       "ID" => $_,
       "NAME" => $category{$_},
@@ -161,7 +161,7 @@ foreach (@list) {
   }
   
   #名前
-  if($category eq 'magic'){ $name = '【'.$name.'】'; }
+  if($category =~ /magic|school/){ $name = '【'.$name.'】'; }
   
   #グループ（分類）
   my $category_text = $category{$category};
@@ -197,7 +197,7 @@ sub subTextShape {
 
 ### 出力用配列 --------------------------------------------------
 my @characterlists;
-foreach my $id ('magic','god'){
+foreach my $id ('magic','god','school'){
   next if !$count{$id};
 
   ## ページネーション

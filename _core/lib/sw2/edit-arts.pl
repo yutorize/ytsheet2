@@ -46,10 +46,14 @@ if($mode_make){ $pc{'protect'} = $LOGIN_ID ? 'account' : 'password'; }
 if($mode eq 'blanksheet' && !$::make_error){
   $pc{"magicCost"} = 'MP';
   foreach my $lv (2,4,7,10,13){ $pc{"godMagic${lv}Cost"} = 'MP' }
+  $pc{'schoolReq'} = '＿名誉点';
 }
 
 ## カラー
 setDefaultColors();
+
+## その他
+$pc{"schoolArtsNum"} ||= 3;
 
 ### 改行処理 --------------------------------------------------
 foreach (
@@ -63,8 +67,13 @@ foreach (
   'godMagic7Effect',
   'godMagic10Effect',
   'godMagic13Effect',
+  'schoolNote',
+  'schoolItemNote',
 ){
   $pc{$_} =~ s/&lt;br&gt;/\n/g;
+}
+foreach my $num (1..$pc{'schoolArtsNum'}){
+  $pc{"schoolArts${num}Effect"} =~ s/&lt;br&gt;/\n/g;
 }
 
 ### 画像 --------------------------------------------------
@@ -89,114 +98,8 @@ Content-type: text/html\n
   <link rel="stylesheet" media="all" href="${main::core_dir}/skin/sw2/css/edit.css?${main::ver}">
   <script src="${main::core_dir}/skin/_common/js/lib/compressor.min.js"></script>
   <script src="${main::core_dir}/lib/edit.js?${main::ver}" defer></script>
+  <script src="${main::core_dir}/lib/sw2/edit-arts.js?${main::ver}" defer></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer">
-  <script>
-    window.onload = function() { checkCategory(); checkMagicClass(); changeColor(); }
-    // 送信前チェック ----------------------------------------
-    function formCheck(){
-      if(form.category.value === ''){
-        alert('カテゴリを選択してください。');
-        form.category.focus();
-        return false;
-      }
-      else if(form.category.value === 'magic' && form.magicName.value === ''){
-        alert('名称を入力してください。');
-        form.magicName.focus();
-        return false;
-      }
-      else if(form.category.value === 'god' && form.godName.value === ''){
-        alert('名称を入力してください。');
-        form.godName.focus();
-        return false;
-      }
-      if(form.protect.value === 'password' && form.pass.value === ''){
-        alert('パスワードが入力されていません。');
-        form.pass.focus();
-        return false;
-      }
-    }
-    
-    function checkCategory(){
-      const category = form.category.value;
-      document.querySelectorAll('article > form .data-area').forEach( obj => {
-        obj.style.display = 'none';
-      });
-      if(category){ document.getElementById('data-'+category).style.display = 'block'; nameSet(category+'Name'); }
-      else { document.getElementById('data-none').style.display = 'block'; }
-    }
-    function checkMagicClass(){
-      const magic = form.magicClass.value;
-      if(magic == '練技'){
-        viewMagicInputs(['duration']);
-      }
-      else if(magic == '呪歌'){
-        viewMagicInputs(['song','condition','resist','element']);
-      }
-      else if(magic == '終律'){
-        viewMagicInputs(['cost','resist','element']);
-        if(form.magicCost.value == "MP"){ form.magicCost.value = '' }
-        form.magicCost.setAttribute('list', 'list-cost-song');
-      }
-      else if(magic == '騎芸'){
-        viewMagicInputs(['premise','rider','part']);
-      }
-      else if(magic == '賦術'){
-        viewMagicInputs(['cost','target','range','duration','resist']);
-        if(form.magicCost.value == "MP"){ form.magicCost.value = '' }
-        form.magicCost.setAttribute('list', 'list-cost-alchemy');
-      }
-      else if(magic == '相域'){
-        viewMagicInputs(['cost','duration','element']);
-        if(form.magicCost.value == "MP"){ form.magicCost.value = '' }
-        form.magicCost.setAttribute('list', 'list-cost-geomancy');
-      }
-      else if(magic == '鼓咆'){
-        viewMagicInputs(['type','rank','command','commcost']);
-      }
-      else if(magic == '陣率'){
-        viewMagicInputs(['premise','condition','commcost']);
-      }
-      else if(magic == '占瞳'){
-        viewMagicInputs(['type','target','range','duration']);
-      }
-      else if(magic == '魔装'){
-        viewMagicInputs(['premise','part']);
-      }
-      else if(magic == '呪印'){
-        viewMagicInputs(['type','premise']);
-      }
-      else if(magic == '貴格'){
-        viewMagicInputs(['type','target','premise']);
-      }
-      else if(magic == '魔動機術'){
-        viewMagicInputs(['cost','target','range','duration','resist','element','sphere']);
-        if(form.magicCost.value == ''){ form.magicCost.value = 'MP' }
-        form.magicCost.setAttribute('list', 'list-cost');
-      }
-      else {
-        viewMagicInputs(['cost','target','range','duration','resist','element']);
-        if(form.magicCost.value == ''){ form.magicCost.value = 'MP' }
-        form.magicCost.setAttribute('list', 'list-cost');
-      }
-      form.magicActionTypePassive.parentNode.style.display = (magic == '騎芸') ? '' : 'none';
-      form.magicActionTypeMajor.parentNode.style.display   = (magic == '騎芸') ? '' : 'none';
-      document.querySelector('#data-magic dl.summary').style.display   = (magic == '呪印' || magic == '貴格') ? 'none' : '';
-      document.querySelector('#data-magic dl.type      dt').innerHTML = (magic == '鼓咆') ? '鼓咆の系統' : (magic == '占瞳') ? 'タイプなど' : (magic == '貴格') ? '形態' : '対応';
-      document.querySelector('#data-magic dl.premise   dt').innerHTML = (magic == '呪印') ? '前提ＡＣ'   : '前提';
-      document.querySelector('#data-magic dl.condition dt').innerHTML = (magic == '呪歌') ? '効果発生条件' : (magic == '陣率') ? '使用条件' : '条件';
-    }
-    function viewMagicInputs(items){
-      document.querySelectorAll(`#data-magic dl`).forEach(obj => {
-        obj.style.display = 'none';
-      });
-      items.unshift('name','class','level','summary','effect');
-      for (const item of items) {
-        document.querySelectorAll(`#data-magic dl.\${item}`).forEach(obj => {
-          obj.style.display = '';
-        });
-      }
-    }
-  </script>
   <style>
     #image {
       background-image: url("${set::arts_dir}${file}/image.$pc{'image'}?$pc{'imageUpdate'}");
@@ -306,7 +209,7 @@ HTML
         <div>
           <dl id="category">
             <dt>カテゴリ</dt>
-            <dd><select name="category" oninput="checkCategory();">@{[ option 'category','magic|<魔法／練技・呪歌など>','god|<神格＋特殊神聖魔法>' ]}</select></dd>
+            <dd><select name="category" oninput="checkCategory();">@{[ option 'category','magic|<魔法／練技・呪歌など>','god|<神格＋特殊神聖魔法>','school|<流派＋秘伝>' ]}</select></dd>
           </dl>
         </div>
         <dl id="player-name">
@@ -320,7 +223,7 @@ HTML
       <!-- 魔法 -->
       <div class="data-area" id="data-magic">
         <div class="box input-data">
-          <dl class="name     "><dt>名称        </dt><dd>【@{[ input 'magicName','',"nameSet('magicName')" ]}】<br>
+          <dl class="name     "><dt>名称        </dt><dd>【@{[ input 'magicName','',"nameSet" ]}】<br>
                                                           @{[ checkbox 'magicActionTypePassive','常時' ]}@{[ checkbox 'magicActionTypeMajor','主動作' ]}@{[ checkbox 'magicActionTypeMinor','補助動作' ]}@{[ checkbox 'magicActionTypeSetup','戦闘準備' ]}</dd></dl>
           <dl class="class    "><dt>系統        </dt><dd>@{[ selectInput "magicClass","checkMagicClass",@magic_classes ]} @{[ checkbox 'magicMinor','小魔法' ]}</dd></dl>
           <dl class="sphere   "><dt>マギスフィア</dt><dd>@{[ input 'magicMagisphere','','','list="list-sphere"' ]}</dd></dl>
@@ -373,8 +276,8 @@ HTML
             let imgURL = "${imgurl}";
           </script>
           </div>
-          <dl class="name  "><dt>名称      </dt><dd>@{[ input 'godName','',"nameSet('godName')" ]}</dd></dl>
-          <dl class="aka   "><dt>異名      </dt><dd>“@{[ input 'godAka','',"nameSet('godName')" ]}”</dd></dl>
+          <dl class="name  "><dt>名称      </dt><dd>@{[ input 'godName','',"nameSet" ]}</dd></dl>
+          <dl class="aka   "><dt>異名      </dt><dd>“@{[ input 'godAka','',"nameSet" ]}”</dd></dl>
           <dl class="class "><dt>系統      </dt><dd><select name="godClass">@{[ option 'godClass','第一の剣','第二の剣','第三の剣','不明' ]}</select>／<select name="godRank">@{[ option 'godRank','古代神','大神','小神' ]}</select></dd></dl>
           <dl class="area  "><dt>地域      </dt><dd>@{[ input 'godArea','','','placeholder="大陸・地方など"' ]}<small>※主に小神向けの項目です</small></dd></dl>
           <dl class="symbol"><dt>聖印と神像</dt><dd><textarea name="godSymbol">$pc{'godSymbol'}</textarea></dd></dl>
@@ -399,6 +302,55 @@ print <<"HTML";
 HTML
 }
 print <<"HTML";
+        </div>
+      </div>
+      <!-- 流派 -->
+      <div class="data-area" id="data-school">
+        <div class="box input-data">
+          <dl class="name  "><dt>名称      </dt><dd>【@{[ input 'schoolName','',"nameSet" ]}】</dd></dl>
+          <dl class="area  "><dt>地域      </dt><dd>@{[ input 'schoolArea','','','placeholder="地方など"' ]}</dd></dl>
+          <dl class="req   "><dt>入門条件  </dt><dd>@{[ input 'schoolReq' ]}</dd></dl>
+          <dl class="note  "><dt>詳細      </dt><dd><textarea name="schoolNote">$pc{'schoolNote'}</textarea></dd></dl>
+          <dl class="arms  "><dt>流派装備  </dt><dd><textarea name="schoolItemNote" placeholder="流派装備の概要">$pc{'schoolItemNote'}</textarea></dd></dl>
+          <dl class="arms  "><dt>流派装備一覧</dt>
+            <dd>
+              <input type="text" id="schoolItemUrl" placeholder="アイテムシートのURL"><span class="button" onclick="addSchoolItem()">追加</span>
+              @{[ input 'schoolItemList','hidden' ]}
+              <table id="school-item-list" class="data-table">
+              <thead>
+                <th>名前</th>
+                <th>カテゴリ</th>
+                <th>概要</th>
+                <th></th>
+              </thead>
+              <tbody></tbody>
+              </table>
+            </dd></dl>
+        </div>
+        @{[ input 'schoolArtsNum','hidden' ]}
+        <div class="box">
+          <h2>秘伝</h2>
+          <div id="arts-list">
+HTML
+foreach my $num (1..$pc{'schoolArtsNum'}){
+print <<"HTML";
+          <div class="input-data" id="arts${num}">
+            <dl class="name    "><dt>名称      </dt><dd>《@{[ input "schoolArts${num}Name",'' ]}》</dd></dl>
+            <dl class="cost    "><dt>必要名誉点</dt><dd>@{[ input "schoolArts${num}Cost" ]}</dd></dl>
+            <dl class="base    "><dt>基礎特技  </dt><dd>@{[ input "schoolArts${num}Base",'','','list="list-arts-base"' ]}</dd></dl>
+            <dl class="premise "><dt>前提      </dt><dd>@{[ input "schoolArts${num}Premise",'','','list="list-arts-base"' ]}</dd></dl>
+            <dl class="equip   "><dt>装備限定  </dt><dd>@{[ input "schoolArts${num}Equip" ]}</dd></dl>
+            <dl class="use     "><dt>使用      </dt><dd>@{[ input "schoolArts${num}Use" ]}</dd></dl>
+            <dl class="apply   "><dt>適用      </dt><dd>@{[ input "schoolArts${num}Apply",'','','list="list-arts-apply"' ]}</dd></dl>
+            <dl class="risk    "><dt>リスク    </dt><dd>@{[ input "schoolArts${num}Risk" ]}</dd></dl>
+            <dl class="summary "><dt>概要      </dt><dd>@{[ input "schoolArts${num}Summary" ]}</dd></dl>
+            <dl class="effect  "><dt>効果      </dt><dd><textarea name="schoolArts${num}Effect">$pc{"schoolArts${num}Effect"}</textarea></dd></dl>
+          </div>
+HTML
+}
+print <<"HTML";
+          </div>
+          <div class="add-del-button"><a onclick="addArts()">▼</a><a onclick="delArts()">▲</a></div>
         </div>
       </div>
     </section>
@@ -573,6 +525,18 @@ print <<"HTML";
     <option value="⤴⤵">
     <option value="⤴♡">
     <option value="⤵♡">
+  </datalist>
+  <datalist id="list-arts-base">
+    <option value="《》">
+    <option value="なし">
+  </datalist>
+  <datalist id="list-arts-apply">
+    <option value="1回の武器攻撃">
+    <option value="1回の近接攻撃">
+    <option value="1回の遠隔攻撃">
+    <option value="1回の射撃攻撃">
+    <option value="1回の魔法行使">
+    <option value="10秒（1ラウンド）持続">
   </datalist>
 <script>
 function view(viewId){

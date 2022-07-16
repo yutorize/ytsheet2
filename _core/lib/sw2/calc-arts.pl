@@ -18,14 +18,18 @@ sub data_calc {
     if($pc{'magicMinor'}){ $sub .= '／小魔法'; }
     if($pc{'magicClass'} =~ /呪印|貴格/) { $summary = substr($pc{'magicEffect'}, 0, 35).'..'; }
     else { $summary = $pc{'magicSummary'}; }
-    $summary =~ s/\r|\n//g;
   }
-  if($pc{'category'} eq 'god'){
+  elsif($pc{'category'} eq 'god'){
     $name = ($pc{'godAka'} ? "“$pc{'godAka'}”" : "").$pc{'godName'};
     $sub = ($pc{'godClass'}||'―').'／'.($pc{'godRank'}||'―');
     $summary = substr($pc{'godDeity'}, 0, 35).'..';
-    $summary =~ s/\r|\n//g;
   }
+  elsif($pc{'category'} eq 'school'){
+    $name = $pc{'schoolName'};
+    $sub = ($pc{'schoolArea'}||'―');
+    $summary = substr($pc{'schoolNote'}, 0, 35).'..';
+  }
+  $summary =~ s/\r|\n/ /g;
   $pc{'artsName'} = $name;
 
   $pc{'magicSongPet'} = join('、', 
@@ -51,8 +55,13 @@ sub data_calc {
     'godMagic7Effect',
     'godMagic10Effect',
     'godMagic13Effect',
+    'schoolNote',
+    'schoolItemNote',
   ){
     $pc{$_} =~ s/\r\n?|\n/<br>/g;
+  }
+  foreach my $num (1..$pc{'schoolArtsNum'}){
+      $pc{"schoolArts${num}Effect"} =~ s/\r\n?|\n/<br>/g;
   }
   
   #### 保存処理でなければここまで --------------------------------------------------
