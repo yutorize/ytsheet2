@@ -234,14 +234,20 @@ table.status tbody tr:nth-child(even) td {
   padding-bottom: .5em;
   border: 0;
   background: var(--box-base-bg-color);
+  border-radius: 0;
   box-shadow: none !important;
 }
-.description h2 {
-  padding-left: .5em;
+.description h2,
+.description h2:nth-child(n+2) {
+  margin: 0;
+  padding: 0 .3em;
   border-width: 1px 0px;
   border-style: solid;
-  font-size: 115%;
   border-color: var(--box-outside-border-color);
+  font-size: 115%;
+}
+.box.description h2 ~ h2 {
+  margin-top: 1em;
 }
 
 /* // Author

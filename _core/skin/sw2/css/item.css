@@ -163,6 +163,7 @@ div.data dl.category dd > div hr {
 div.data dl.effects dd.box {
   background: none;
   border: 0;
+  border-radius: 0;
   padding: 0;
 }
 div.data dl.effects dd.box *:first-child {
@@ -196,13 +197,20 @@ div.data dl.effects table.weapon-table td:not(.left) {
   padding-bottom: .5em;
   border: 0;
   background: var(--box-base-bg-color);
-  box-shadow: none;
+  border-radius: 0;
+  box-shadow: none !important;
 }
-.description h2 {
+.description h2,
+.description h2:nth-child(n+2) {
+  margin: 0;
+  padding: 0 .3em;
   border-width: 1px 0px;
   border-style: solid;
   border-color: var(--box-outside-border-color);
   font-size: 115%;
+}
+.box.description h2 ~ h2 {
+  margin-top: 1em;
 }
 
 /* // Author
