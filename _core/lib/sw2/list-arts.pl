@@ -45,15 +45,14 @@ my @q_links;
 foreach(
   'mode',
   'tag',
-  #'group',
   'name',
-  'category',
+  #'category',
   'sub',
   'author',
   ){
   push( @q_links, $_.'='.uri_escape_utf8(decode('utf8', param($_))) ) if param($_);
 }
-my $q_links = join('&', @q_links);
+my $q_links = @q_links ? '&'.join('&', @q_links) : '';
 
 ### ファイル読み込み --------------------------------------------------
 ## マイリスト取得
@@ -213,7 +212,7 @@ foreach my $id ('magic','god','school'){
         $_ == 1 ||
         $_ == $lastpage
       ){
-        $navbar .= '<a href="./?type=i&category='.$::in{'category'}.'&'.$q_links.'&page='.$_.'&sort='.$::in{'sort'}.'">'.$_.'</a> '
+        $navbar .= '<a href="./?type=a&category='.$::in{'category'}.$q_links.'&page='.$_.'&sort='.$::in{'sort'}.'">'.$_.'</a> '
       }
       else { $navbar .= '...' }
     }
@@ -231,7 +230,7 @@ foreach my $id ('magic','god','school'){
   });
 }
 
-$INDEX->param(qLinks => '&'.$q_links);
+$INDEX->param(qLinks => $q_links);
 
 $INDEX->param(Lists => \@characterlists);
 

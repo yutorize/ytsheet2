@@ -45,7 +45,6 @@ my @q_links;
 foreach(
   'mode',
   'tag',
-  #'group',
   'name',
   'category',
   'author',
@@ -53,7 +52,7 @@ foreach(
   ){
   push( @q_links, $_.'='.uri_escape_utf8(decode('utf8', param($_))) ) if param($_);
 }
-my $q_links = join('&', @q_links);
+my $q_links = @q_links ? '&'.join('&', @q_links) : '';
 
 ### ファイル読み込み --------------------------------------------------
 ## マイリスト取得
@@ -199,7 +198,7 @@ foreach (@categories){
         $_ == 1 ||
         $_ == $lastpage
       ){
-        $navbar .= '<a href="./?type=i&category='.$::in{'category'}.'&'.$q_links.'&page='.$_.'&sort='.$::in{'sort'}.'">'.$_.'</a> '
+        $navbar .= '<a href="./?type=i'.$q_links.'&page='.$_.'&sort='.$::in{'sort'}.'">'.$_.'</a> '
       }
       else { $navbar .= '...' }
     }

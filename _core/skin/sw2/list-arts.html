@@ -28,11 +28,11 @@
           <thead>
           <tr>
             <th class="name"><span>名称</span></th>
-            <th class="author"><a href="./?type=a&<TMPL_VAR qLinks>&sort=author">製作者</a></th>
+            <th class="author"><a href="./?type=a&category=<TMPL_VAR URL><TMPL_VAR qLinks>&sort=author">製作者</a></th>
             <th class="category"><span>大分類</span></th>
             <th class="sub"><span>小分類</span></th>
             <th class="summary"><span>概要</span></th>
-            <th class="date"><a href="./?type=a&<TMPL_VAR qLinks>&sort=date">更新日時</a></th>
+            <th class="date"><a href="./?type=a&category=<TMPL_VAR URL><TMPL_VAR qLinks>&sort=date">更新日時</a></th>
           </tr>
           </thead>
           <TMPL_LOOP Characters><tr<TMPL_IF HIDE> class="hide"</TMPL_IF>>

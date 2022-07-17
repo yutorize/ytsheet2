@@ -52,7 +52,7 @@ foreach(
   ){
   push( @q_links, $_.'='.uri_escape_utf8(decode('utf8', param($_))) ) if param($_);
 }
-my $q_links = join('&', @q_links);
+my $q_links = @q_links ? '&'.join('&', @q_links) : '';
 
 ### ファイル読み込み --------------------------------------------------
 ## マイリスト取得
@@ -203,7 +203,7 @@ foreach (@data::taxa){
         $_ == 1 ||
         $_ == $lastpage
       ){
-        $navbar .= '<a href="./?type=m&group='.$::in{'group'}.'&'.$q_links.'&page='.$_.'&sort='.$::in{'sort'}.'">'.$_.'</a> '
+        $navbar .= '<a href="./?type=m'.$q_links.'&page='.$_.'&sort='.$::in{'sort'}.'">'.$_.'</a> '
       }
       else { $navbar .= '...' }
     }
@@ -221,7 +221,7 @@ foreach (@data::taxa){
   });
 }
 
-$INDEX->param(qLinks => '&'.$q_links);
+$INDEX->param(qLinks => $q_links);
 
 $INDEX->param(Lists => \@characterlists);
 
