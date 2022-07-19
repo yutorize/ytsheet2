@@ -129,7 +129,7 @@ io.github.shunshun94.trpg.ytsheet.separateParametersFromChatPalette = (chatPalet
 };
 
 io.github.shunshun94.trpg.ytsheet.getChatPalette = () => {
-	const paramId = /id=[1-9a-zA-Z]+/.exec(location.href)[0];
+	const paramId = /id=[0-9a-zA-Z]+/.exec(location.href)[0];
 	return new Promise((resolve, reject)=>{
 		let xhr = new XMLHttpRequest();
 		xhr.open('GET', `./?${paramId}&tool=bcdice&mode=palette`, true);
