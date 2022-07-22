@@ -253,6 +253,7 @@ sub palettePresetSimple {
     foreach (
       ['Sor', '真語魔法'],
       ['Con', '操霊魔法'],
+      ['Wiz', '深智魔法'],
       ['Pri', '神聖魔法'],
       ['Mag', '魔動機術'],
       ['Fai', '妖精魔法'],
