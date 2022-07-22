@@ -377,6 +377,7 @@ sub data_calc {
       elsif($feat eq '回避行動Ⅰ')  { $pc{'evasiveManeuver'} = 1; }
       elsif($feat eq '回避行動Ⅱ')  { $pc{'evasiveManeuver'} = 2; }
       elsif($feat eq '心眼')        { $pc{'mindsEye'} = 4; }
+      elsif($feat eq '終律増強')    { $pc{'finaleEnhance'} = 10; }
       elsif($feat eq '魔力強化Ⅰ')  { $pc{'magicPowerEnhance'} = 1; }
       elsif($feat eq '魔力強化Ⅱ')  { $pc{'magicPowerEnhance'} = 2; }
       elsif($feat eq '賦術強化Ⅰ')  { $pc{'alchemyEnhance'} = 1; }

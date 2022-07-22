@@ -129,6 +129,7 @@ sub palettePreset {
       else                { $text .= " ${name}\n"; }
       
       foreach my $pow (@{$pows{$id}}) {
+        if($id eq 'Bar'){ $pow += $::pc{'finaleEnhance'} || 0; }
         $text .= "k${pow}[{魔法C}]+{$name}+{魔力修正}".($::pc{'magicDamageAdd'.$id}?"+$::pc{'magicDamageAdd'.$id}":'')."+{魔法D修正} ダメージ".($bot{'BCD'}?"／${name}":"")."\n";
         if ($bot{'YTC'}) { $text .= "k${pow}[13]+{$name}+{魔力修正}//" . ($::pc{'magicDamageAdd'.$id}?"+$::pc{'magicDamageAdd'.$id}":'') . "+{魔法D修正} 半減\n"; }
         if ($bot{'BCD'}) { $text .= "hk${pow}[13]+{$name}+{魔力修正} 半減／${name}\n"; }
@@ -273,6 +274,7 @@ sub palettePresetSimple {
       else                { $text .= " ${name}\n"; }
       
       foreach my $pow (@{$pows{$id}}) {
+        if($id eq 'Bar'){ $pow += $::pc{'finaleEnhance'} || 0; }
         my $add  = $::pc{'magicDamageAdd'.$id} ? "+$::pc{'magicDamageAdd'.$id}" : '';
         $text .= "k${pow}[{魔法C}]+$base+{魔力修正}".$add."+{魔法D修正} ダメージ".($bot{'BCD'}?"／${name}":"")."\n";
         $text .= "k${pow}[13]+$base+{魔力修正}//".$add."+{魔法D修正} 半減\n" if ($bot{'YTC'});
