@@ -189,6 +189,9 @@ function calcLv(){
       else { cL.add("fail"); }
     }
   }
+  
+  document.getElementById('material-cards').style.display = lv['Alc'] > 0 ? '' : 'none';
+  
   calcFairy();
 }
 
