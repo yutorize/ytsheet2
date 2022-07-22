@@ -15,6 +15,9 @@ foreach(@data::class_names){
   if($_ eq 'フェアリーテイマー'){
     push(@magic_classes, '基本妖精魔法', '属性妖精魔法(土)', '属性妖精魔法(水・氷)', '属性妖精魔法(炎)', '属性妖精魔法(風)', '属性妖精魔法(光)', '属性妖精魔法(闇)', '特殊妖精魔法');
   }
+  elsif($_ eq 'コンジャラー'){
+    push(@craft_classes, $data::class{$_}{'magic'}{'jName'}, '深智魔法');
+  }
   elsif($_ eq 'バード'){
     push(@craft_classes, $data::class{$_}{'craft'}{'jName'}, '終律');
   }
