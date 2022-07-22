@@ -3,6 +3,103 @@ const form = document.sheet;
 
 const delConfirmText = '項目に値が入っています。本当に削除しますか？';
 
+const saveState = document.getElementById('save-state');
+const saveButton = document.querySelector('#header-menu .submit');
+// 内容変更チェック ----------------------------------------
+let formChangeCount = 0;
+form.addEventListener('change', () => {
+  formChangeCount++;
+  saveInfo('unsaved');
+});
+window.addEventListener('beforeunload', function(e) {
+  if(formChangeCount) {
+    e.preventDefault();
+    e.returnValue = '他のページに移動しますか？';
+  }
+});
+
+// 送信 ----------------------------------------
+let saving = 0;
+function formSubmit() {
+  if(saving){ return; }
+  if(!formCheck()){ return false; }
+  const formData = new FormData(form)
+  const action = form.getAttribute("action")
+  const options = {
+    method: 'POST',
+    body: formData,
+  }
+  saveInfo('saving','保存中...');
+  saving = 1;
+  const sendCount = formChangeCount;
+  formChangeCount = 0;
+  fetch(action, options)
+    .then((response) => {
+      if(response.status === 200) {
+        return response.json()
+      }
+      if(!formChangeCount){ formChangeCount = sendCount; }
+      saveInfo('error');
+      alert("保存できませんでした。しばらく立ってから再度保存を試みてください。");
+    })
+    .then((data) => {
+      if     (data.result === 'make' ){ window.location.href = './?id='+data.message; }
+      else if(data.result === 'ok'   ){ saveInfo('saved'); console.log(data.message) }
+      else{
+        if(!formChangeCount){ formChangeCount = sendCount; }
+        saveInfo('error');
+        alert((data.result === 'error') ? 'エラー: '+data.message : "保存できませんでした。");
+      }
+    })
+}
+function formCheck(){
+  if(form.characterName.value === ''){
+    alert('キャラクター名を入力してください。');
+    form.characterName.focus();
+    return false;
+  }
+  if(form.protect.value === 'password' && form.pass.value === ''){
+    alert('パスワードが入力されていません。');
+    form.pass.focus();
+    return false;
+  }
+  return true;
+}
+function saveInfo(type,message){
+  if     (type === 'unsaved'){
+    message ||= `未保存`;
+  }
+  else if(type === 'saving'){
+    saveButton.classList.add('dimmed');
+  }
+  else if(type === 'saved'){
+    if(formChangeCount){ message ||= `未保存`; type = 'unsaved'; }
+    else               { message ||= `保存完了`; }
+    saveButton.classList.remove('dimmed');
+    saving = 0;
+  }
+  else if(type === 'error'){
+    if(formChangeCount){ message ||= `未保存`; type = 'unsaved'; }
+    saveButton.classList.remove('dimmed');
+    saving = 0;
+  }
+  saveState.classList.remove(...saveState.classList);
+  if(type){
+    saveState.classList.add(type);
+    saveState.innerHTML = message || '';
+  }
+}
+// ショートカット
+document.addEventListener('keydown', e => {
+  if (e.ctrlKey && (e.key === 's' || e.key === 'S')) {
+    e.preventDefault();
+    const nowFocus = document.activeElement;
+    document.activeElement.blur();
+    nowFocus.focus();
+    formSubmit();
+  }
+});
+
 // 名前 ----------------------------------------
 function nameSet(id){
   id = id ? id : 'characterName';

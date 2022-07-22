@@ -35,6 +35,7 @@ function formCheck(){
     form.pass.focus();
     return false;
   }
+  return true;
 }
 
 // 名前 ----------------------------------------

@@ -12,8 +12,17 @@ $::in{'log'} ||= $::in{'backup'};
 if($set::user_reqd && !$LOGIN_ID){ error('ログインしていません。'); }
 ### 個別処理 --------------------------------------------------
 my $type = $::in{'type'};
+my $file;
 our %conv_data = ();
-if($mode eq 'convert'){
+
+if($mode eq 'edit'){
+  (undef, undef, $file, $type, my $user) = getfile($::in{'id'},$::in{'pass'},$LOGIN_ID);
+  $file = $user ? '_'.$user.'/'.$file : $file;
+}
+elsif($mode eq 'copy'){
+  ($file, $type) = (getfile_open($::in{'id'}))[0,1];
+}
+elsif($mode eq 'convert'){
   if($::in{'url'}){
     require $set::lib_convert;
     %conv_data = dataConvert($::in{'url'});
@@ -21,13 +30,13 @@ if($mode eq 'convert'){
   }
   elsif($::in{'file'}){
     use JSON::PP;
-    my $file; my $buffer; my $i;
+    my $data; my $buffer; my $i;
     while(my $bytesread = read(param('file'), $buffer, 2048)) {
       if(!$i && $buffer !~ /^{/){ error '有効なJSONデータではありません。' }
-      $file .= $buffer;
+      $data .= $buffer;
       $i++;
     }
-    %conv_data =  %{ decode_json( $file) };
+    %conv_data =  %{ decode_json( $data) };
     $type = $conv_data{'type'};
   }
   else {
@@ -58,24 +67,10 @@ else               { require $set::lib_edit_char; }
 sub pcDataGet {
   my $mode = shift;
   my %pc;
-  my $file;
   my $message;
   my $datadir = ($type eq 'm') ? $set::mons_dir : ($type eq 'i') ? $set::item_dir : ($type eq 'a') ? $set::arts_dir : $set::char_dir;
-  # エラー
-  if($main::make_error) {
-    $mode = ($mode eq 'save') ? 'edit' : 'blanksheet';
-    for (param()){ $pc{$_} = decode('utf8', param($_)); }
-    $message = $::make_error;
-  }
   # 保存 / 編集 / 複製 / コンバート
-  elsif($mode eq 'edit' || $mode eq 'save'){
-    if($mode eq 'save'){
-      $mode = 'edit';
-      $message .= 'データを更新しました。<a href="./?id='.$::in{'id'}.'">⇒シートを確認する</a>';
-    }
-    (undef, undef, $file, undef, my $user) = getfile($::in{'id'},$::in{'pass'},$LOGIN_ID);
-    $file = $user ? '_'.$user.'/'.$file : $file;
-
+  if($mode eq 'edit'){
     my $datatype = ($::in{'log'}) ? 'logs' : 'data';
     my $hit = 0;
     open my $IN, '<', "${datadir}${file}/${datatype}.cgi" or &login_error;
@@ -98,7 +93,6 @@ sub pcDataGet {
     }
   }
   elsif($mode eq 'copy'){
-    $file = (getfile_open($::in{'id'}))[0];
     my $datatype = ($::in{'log'}) ? 'logs' : 'data';
     my $hit = 0;
     open my $IN, '<', "${datadir}${file}/${datatype}.cgi" or error 'データがありません。';

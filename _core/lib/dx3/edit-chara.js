@@ -36,6 +36,7 @@ function formCheck(){
     form.pass.focus();
     return false;
   }
+  return true;
 }
 
 // レギュレーション ----------------------------------------

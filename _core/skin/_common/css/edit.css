@@ -383,31 +383,37 @@ input.auto {
   cursor: pointer;
   user-select: none;
 }
-#header-menu ul li:not(.button) {
-  border-right: 1px solid rgba(200,200,200,0.3);
+#header-menu ul li:not(.buttons) {
+  border-width: 0 1px 0 0;
+  border-style: solid;
+  border-color: rgba(200,200,200,0.3);
 }
-#header-menu ul li:hover {
-  background: rgba(0,0,0,0.5);
+#header-menu ul li:not(.buttons):hover {
+  background: rgba(0,0,0,0.5) !important;
 }
 #header-menu ul li span {
   display: inline-block;
 }
-#header-menu ul li.button {
+
+#header-menu ul li.buttons {
   display: flex;
   flex-wrap: nowrap;
   margin-left: auto;
   padding: 0;
 }
-#header-menu ul li.button input {
-  padding: .3em .5em;
-  border: 0;
+#header-menu ul li.buttons li {
+  padding: .4em .5em;
+  border-width: 0 0 0 1px;
   border-radius: 0;
 }
-#header-menu ul li.button input + input {
-  margin-left: 1px;
-}
-#header-menu ul li.button input[type="submit"] {
+#header-menu ul li.buttons li.submit {
   padding: .3em 1em;
+  background: #3a55;
+  border-radius: 0 0 5px 0;
+}
+#header-menu ul li.buttons li.submit.dimmed {
+  opacity: 0.3;
+  cursor: progress;
 }
 section {
   margin-top: 2em;
@@ -442,6 +448,18 @@ section > h2 {
   font-family: "Font Awesome 5 Free";
   content: '\f576';
 }
+.view-icon::before {
+  font-family: "Font Awesome 5 Free";
+  content: '\f06e';
+}
+#header-menu ul li .view-icon {
+  position: relative;
+}
+#header-menu ul li .view-icon a {
+  position: absolute;
+  inset: 0;
+  background: none;
+}
 
 @media screen and (max-width:735px){
   #header-menu {
@@ -453,19 +471,51 @@ section > h2 {
   #header-menu ul {
     bottom: calc(-1em - 3px - 2rem);
   }
-  #header-menu ul li:not(.button) {
+  #header-menu ul li:not(.buttons) {
     min-width: 2.5em;
     text-align: center;
+    white-space: nowrap;
   }
   #header-menu ul li[class$=icon] {
     font-size: 150%;
   }
-  #header-menu ul li.button input[type="button"],
-  #header-menu ul li.button input[type="submit"] {
-    padding-top: .6em;
-    padding-bottom: .6em;
+  #header-menu ul li.buttons .submit {
+    font-size: 130%;
   }
 }
+
+
+/* 保存状態 */
+#save-state {
+  position: absolute;
+  width: max-content;
+  top  : 0;
+  right: 0;
+  padding: 6px .5em 6px 2em;
+  background-image: linear-gradient(to left, #222e 70%, transparent);
+  color: #fff;
+  font-weight: bold;
+  user-select: none;
+}
+#save-state:empty {
+  display: none;
+}
+#save-state.unsaved {
+  background-image: linear-gradient(to left, #530e 70%, transparent);
+}
+#save-state.saved {
+  background-image: linear-gradient(to left, #093e 70%, transparent);
+  opacity: 0;
+  animation-name: savedFade;
+  animation-duration: 3s;
+  animation-timing-function: ease-in;
+}
+
+@keyframes savedFade {
+  0%  { opacity: 1; }
+ 100% { opacity: 0; }
+}
+
 
 /* // フッタ付近
 ---------------------------------------------------------------------------------------------------- */
@@ -534,27 +584,28 @@ input[type="number"] {
   }
 }
 
-input[type="submit"] {
-  background: linear-gradient(to bottom, #ddeeff, #ccccff);
-  box-shadow: 1px 1px 0 0 #ffffff inset, -1px -1px 0 0 #bbbbee inset;
-}
 input[type="button"] {
   background: linear-gradient(to bottom, #e0e7ef, #c0c7cf);
   box-shadow: 1px 1px 0 0 #ffffff inset, -1px -1px 0 0 #bbbbdd inset;
 }
-input[type="submit"]:hover,
-input[type="button"]:hover {
+input[type="submit"] {
+  background: linear-gradient(to bottom, #ddeeff, #ccccff);
+  box-shadow: 1px 1px 0 0 #ffffff inset, -1px -1px 0 0 #bbbbee inset;
+}
+input[type="button"]:hover,
+input[type="submit"]:hover {
   background: linear-gradient(to bottom, rgba(50,150,250,0.5), rgba(50,50,250,0.5));
   color: #ffffff;
-}
-.night input[type="submit"] {
-  background: linear-gradient(to bottom, #445566, #333355);
-  box-shadow: 1px 1px 0 0 #777788 inset, -1px -1px 0 0 #000000 inset;
 }
 .night input[type="button"] {
   background: linear-gradient(to bottom, #50575f, #30373f);
   box-shadow: 1px 1px 0 0 #777788 inset, -1px -1px 0 0 #000000 inset;
 }
+.night input[type="submit"] {
+  background: linear-gradient(to bottom, #445566, #333355);
+  box-shadow: 1px 1px 0 0 #777788 inset, -1px -1px 0 0 #000000 inset;
+}
+.night input[type="button"]:hover,
 .night input[type="submit"]:hover {
   background: linear-gradient(to bottom, rgba(50,150,250,0.5), rgba(50,50,250,0.5));
   color: #ffffff;
@@ -672,14 +723,6 @@ input[type="button"]:hover {
   padding-bottom: 2px;
   border-width: 0 0 0 1px;
   border-style: solid;
-}
-#name-form input[type="submit"],
-#name-form input[type="button"] {
-  width: 100px;
-  align-self: stretch;
-}
-#name-form input[type="button"] {
-  width: 50px;
 }
 @media screen and (max-width:735px){
   #name-form {

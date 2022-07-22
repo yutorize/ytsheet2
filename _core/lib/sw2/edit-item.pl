@@ -22,7 +22,7 @@ if($message){
   $message =~ s/<!NAME>/$name/;
 }
 ### 製作者名 --------------------------------------------------
-if($mode_make && !$::make_error){
+if($mode_make){
   $pc{'author'} = (getplayername($LOGIN_ID))[0];
 }
 ### 初期設定 --------------------------------------------------
@@ -52,23 +52,8 @@ Content-type: text/html\n
   <link rel="stylesheet" media="all" href="${main::core_dir}/skin/_common/css/edit.css?${main::ver}">
   <link rel="stylesheet" media="all" href="${main::core_dir}/skin/sw2/css/edit.css?${main::ver}">
   <script src="${main::core_dir}/lib/edit.js?${main::ver}" defer></script>
+  <script src="${main::core_dir}/lib/sw2/edit-item.js?${main::ver}" defer></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer">
-  <script>
-    window.onload = function() { nameSet('itemName'); changeColor(); }
-    // 送信前チェック ----------------------------------------
-    function formCheck(){
-      if(form.itemName.value === ''){
-        alert('名称を入力してください。');
-        form.itemName.focus();
-        return false;
-      }
-      if(form.protect.value === 'password' && form.pass.value === ''){
-        alert('パスワードが入力されていません。');
-        form.pass.focus();
-        return false;
-      }
-    }
-  </script>
 </head>
 <body>
   <script src="${main::core_dir}/skin/_common/js/common.js?${main::ver}"></script>
@@ -78,7 +63,7 @@ Content-type: text/html\n
 
   <main>
     <article>
-      <form id="item" name="sheet" method="post" action="./" enctype="multipart/form-data" onsubmit="return formCheck();">
+      <form id="item" name="sheet" method="post" action="./" enctype="multipart/form-data">
       <input type="hidden" name="ver" value="${main::ver}">
       <input type="hidden" name="type" value="i">
 HTML
@@ -95,17 +80,15 @@ print <<"HTML";
           <li onclick="sectionSelect('color');" class="color-icon" title="カラーカスタム"></span></li>
           <li onclick="view('text-rule')" class="help-icon" title="テキスト整形ルール"></li>
           <li onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード切替"></li>
-          <li class="button">
-HTML
-if($mode eq 'edit'){
-print <<"HTML";
-            <input type="button" value="複製" onclick="window.open('./?mode=copy&type=i&id=$::in{'id'}@{[  $::in{'log'}?"&log=$::in{'log'}":'' ]}');">
-HTML
-}
-print <<"HTML";
-            <input type="submit" value="保存">
+          <li class="buttons">
+            <ul>
+              <li @{[ display ($mode eq 'edit') ]} class="view-icon" title="閲覧画面"><a href="./?id=$::in{'id'}"></a></li>
+              <li @{[ display ($mode eq 'edit') ]} class="copy" onclick="window.open('./?mode=copy&id=$::in{'id'}@{[  $::in{'log'}?"&log=$::in{'log'}":'' ]}');">複製</li>
+              <li class="submit" onclick="formSubmit()" title="Ctrl+S">保存</li>
+            </ul>
           </li>
         </ul>
+        <div id="save-state"></div>
       </div>
 
       <aside class="message">$message</aside>

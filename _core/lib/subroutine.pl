@@ -642,6 +642,16 @@ sub error {
   exit;
 }
 
+### JSON --------------------------------------------------
+sub infoJson {
+  our $type = shift;
+  our $message = shift;
+  $message =~ s/"//g;
+  print "Content-type: text/javascript\n\n";
+  print '{"result":"'.$type.'","message":"'.$message.'"}';
+  exit;
+}
+
 ### アップデート・コンバート --------------------------------------------------
 ## バックアップ形式変更
 sub logFileCheck {

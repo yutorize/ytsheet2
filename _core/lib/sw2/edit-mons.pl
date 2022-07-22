@@ -24,13 +24,13 @@ if($message){
   $message =~ s/<!NAME>/$name/;
 }
 ### 製作者名 --------------------------------------------------
-if($mode_make && !$::make_error){
+if($mode_make){
   $pc{'author'} = (getplayername($LOGIN_ID))[0];
 }
 ### 初期設定 --------------------------------------------------
 if($mode_make){ $pc{'protect'} = $LOGIN_ID ? 'account' : 'password'; }
 
-if($mode eq 'blanksheet' && !$::make_error){
+if($mode eq 'blanksheet'){
   $pc{'paletteUseBuff'} = 1;
 }
 
@@ -83,7 +83,7 @@ Content-type: text/html\n
 
   <main>
     <article>
-      <form id="monster" name="sheet" method="post" action="./" enctype="multipart/form-data" onsubmit="return formCheck();">
+      <form id="monster" name="sheet" method="post" action="./" enctype="multipart/form-data">
       <input type="hidden" name="ver" value="${main::ver}">
       <input type="hidden" name="type" value="m">
 HTML
@@ -101,17 +101,15 @@ print <<"HTML";
           <li onclick="sectionSelect('color');" class="color-icon" title="カラーカスタム"></span></li>
           <li onclick="view('text-rule')" class="help-icon" title="テキスト整形ルール"></li>
           <li onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード切替"></li>
-          <li class="button">
-HTML
-if($mode eq 'edit'){
-print <<"HTML";
-            <input type="button" value="複製" onclick="window.open('./?mode=copy&type=m&id=$::in{'id'}@{[  $::in{'log'}?"&log=$::in{'log'}":'' ]}');">
-HTML
-}
-print <<"HTML";
-            <input type="submit" value="保存">
+          <li class="buttons">
+            <ul>
+              <li @{[ display ($mode eq 'edit') ]} class="view-icon" title="閲覧画面"><a href="./?id=$::in{'id'}"></a></li>
+              <li @{[ display ($mode eq 'edit') ]} class="copy" onclick="window.open('./?mode=copy&id=$::in{'id'}@{[  $::in{'log'}?"&log=$::in{'log'}":'' ]}');">複製</li>
+              <li class="submit" onclick="formSubmit()" title="Ctrl+S">保存</li>
+            </ul>
           </li>
         </ul>
+        <div id="save-state"></div>
       </div>
 
       <aside class="message">$message</aside>
