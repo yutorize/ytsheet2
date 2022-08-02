@@ -160,12 +160,12 @@ Content-type: text/html\n
   <link rel="stylesheet" media="all" href="${main::core_dir}/skin/ar2e/css/edit.css?${main::ver}">
   <script src="${main::core_dir}/skin/_common/js/lib/Sortable.min.js"></script>
   <script src="${main::core_dir}/skin/_common/js/lib/compressor.min.js"></script>
-  <script src="https://unpkg.com/\@yaireo/tagify"></script>
-  <script src="https://unpkg.com/\@yaireo/tagify/dist/tagify.polyfills.min.js"></script>
-  <link href="https://unpkg.com/\@yaireo/tagify/dist/tagify.css" rel="stylesheet" type="text/css" />
+  <script src="https://cdn.jsdelivr.net/npm/\@yaireo/tagify"></script>
+  <script src="https://cdn.jsdelivr.net/npm/\@yaireo/tagify/dist/tagify.polyfills.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/\@yaireo/tagify/dist/tagify.css" rel="stylesheet" type="text/css">
   <script src="${main::core_dir}/lib/edit.js?${main::ver}" defer></script>
   <script src="${main::core_dir}/lib/ar2e/edit-chara.js?${main::ver}" defer></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/\@fortawesome/fontawesome-free\@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
   <style>
     #image,
     .image-custom-view {
