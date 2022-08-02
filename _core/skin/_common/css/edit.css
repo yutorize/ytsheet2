@@ -184,6 +184,7 @@ label.check-button input:checked + span::before {
 
 .select-input.free {
   display: inline-block;
+  line-height: 1;
 }
 .select-input.free select {
   margin-bottom: 0 !important;

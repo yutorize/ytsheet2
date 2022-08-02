@@ -542,19 +542,26 @@ foreach my $class (@data::class_names){
               <ul>
 HTML
   foreach my $lv (1..17){
-    print '<li id="magic-'.$name.$lv.'"><select name="magic'.$Name.$lv.'">';
+    print '<li id="magic-'.$name.$lv.'"><div class="select-input"><select name="magic'.$Name.$lv.'" oninput="selectInputCheck(\'magic'.$Name.$lv.'\',this);">';
     print '<option></option>';
-    my %only;
+    my %only; my $hit; my $value = $pc{"magic${Name}${lv}"};
     foreach my $data (@{$data::class{$class}{'magic'}{'data'}}){
       next if $lv < @$data[0];
-      my $item = '<option'.(($pc{"magic${Name}${lv}"} eq @$data[1])?' selected':'').' value="'.@$data[1].'">'.@$data[1];
+      my $item = '<option';
+      if($value eq @$data[1]){
+        $item .= ' selected';
+        $hit = 1;
+      }
+      $item .= ' value="'.@$data[1].'">'.@$data[1];
       print $item;
       if ($class eq 'グリモワール'){ print "（@$data[2]）"; }
     }
     foreach my $key (sort keys %only) {
       print "<optgroup label=\"${key}\">$only{$key}</optgroup>";
     }
-    print "</select></li>\n";
+    print '<option value="free">その他（自由記入）';
+    if(!$hit && $value){ print '<option value="'.$value.'" selected>'.$value; }
+    print '</select><input type="text" name="magic'.$Name.$lv.'Free"></div></li>'."\n";
   }
   print <<"HTML";
             </ul>
@@ -572,12 +579,17 @@ foreach my $class (@data::class_names){
 HTML
   my $c_max = $class =~ /バード|ウォーリーダー/ ? 20 : $class eq 'アーティザン' ? 19 : 17;
   foreach my $lv (1..$c_max){
-    print '<li id="craft-'.$name.$lv.'"><select name="craft'.$Name.$lv.'">';
+    print '<li id="craft-'.$name.$lv.'"><div class="select-input"><select name="craft'.$Name.$lv.'" oninput="selectInputCheck(\'craft'.$Name.$lv.'\',this);">';
     print '<option></option>';
-    my %only;
+    my %only; my $hit; my $value = $pc{"craft${Name}${lv}"};
     foreach my $data (@{$data::class{$class}{'craft'}{'data'}}){
       next if $lv < @$data[0];
-      my $item = '<option'.(($pc{"craft${Name}${lv}"} eq @$data[1])?' selected':'').' value="'.@$data[1].'">'.@$data[1];
+      my $item = '<option';
+      if($value eq @$data[1]){
+        $item .= ' selected';
+        $hit = 1;
+      }
+      $item .= ' value="'.@$data[1].'">'.@$data[1];
       
       if(@$data[2] =~ /^(.*?)専用/){ $only{@$data[2]} .= $item; }
       if(@$data[2] =~ /^2.0/)      { $only{'旧(2.0)データ'} .= $item; }
@@ -586,7 +598,9 @@ HTML
     foreach my $key (sort keys %only) {
       print "<optgroup label=\"${key}\">$only{$key}</optgroup>";
     }
-    print "</select></li>\n";
+    print '<option value="free">その他（自由記入）';
+    if(!$hit && $value){ print '<option value="'.$value.'" selected>'.$value; }
+    print '</select><input type="text" name="craft'.$Name.$lv.'Free"></div></li>'."\n";
   }
   print <<"HTML";
             </ul>
