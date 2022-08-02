@@ -107,18 +107,20 @@ if($pc{'category'} eq 'magic'){
   if($pc{'magicMinor'}){ $pc{'magicClass'} .= ' (小魔法)' }
   $SHEET->param(categoryMagic => 1);
   $pc{'artsName'} = '【'.$pc{'magicName'}.'】';
+  $SHEET->param(rawName => $pc{'magicName'});
 }
 elsif($pc{'category'} eq 'god'){
   $SHEET->param(categoryGod => 1);
   $SHEET->param(wideMode => 1);
   $pc{'artsName'} = ($pc{'godAka'} ? "“$pc{'godAka'}”" : "").$pc{'godName'};
+  $SHEET->param(rawName => $pc{'artsName'});
 }
 elsif($pc{'category'} eq 'school'){
   $SHEET->param(categorySchool => 1);
   $SHEET->param(wideMode => 1);
   $pc{'artsName'} = '【'.$pc{'schoolName'}.'】';
+  $SHEET->param(rawName => $pc{'schoolName'});
 }
-$SHEET->param(rawName => $pc{'artsName'});
 my $item_urls = $pc{'schoolItemList'};
 
 ### 置換 #############################################################################################
