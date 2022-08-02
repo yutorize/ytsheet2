@@ -545,6 +545,21 @@ print <<"HTML";
           </tbody>
         </table>
       </details>
+      <div id="enc-bonus" style="position: relative;">
+        <div class="box">
+          <h2>侵蝕率効果表</h2>
+          <p>
+            <!-- 現在侵蝕率:@{[ input 'currentEncroach','number','encroachBonusSet(this.value)','style="width: 4em;"' ]} -->
+            @{[ checkbox 'encroachEaOn','エフェクトアーカイブ適用','encroachBonusType' ]}
+          </p>
+          <table class="data-table" id="enc-table">
+            <colgroup></colgroup>
+            <tr id="enc-table-head"></tr>
+            <tr id="enc-table-dices"></tr>
+            <tr id="enc-table-level"></tr>
+          </table>
+        </div>
+      </div>
       <details class="box" id="lois" $open{'lois'} style="position:relative">
         <summary>ロイス</summary>
         <table class="edit-table no-border-cells" id="lois-table">
@@ -565,7 +580,7 @@ if(!$pc{"lois${num}State"}){ $pc{"lois${num}State"} = 'ロイス' }
 print <<"HTML";
             <tr id="lois${num}">
               <td><span class="handle"></span>@{[input "lois${num}Relation"]}</td>
-              <td>@{[input "lois${num}Name"]}</td>
+              <td>@{[input "lois${num}Name",'','encroachBonusType']}</td>
               <td class="emo">@{[input "lois${num}EmoPosiCheck",'checkbox',"emoP($num)"]}@{[input "lois${num}EmoPosi",'','','list="list-emotionP"']}</td>
               <td>／</td>
               <td class="emo">@{[input "lois${num}EmoNegaCheck",'checkbox',"emoN($num)"]}@{[input "lois${num}EmoNega",'','','list="list-emotionN"']}</td>

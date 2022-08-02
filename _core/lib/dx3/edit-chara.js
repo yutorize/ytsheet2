@@ -282,9 +282,56 @@ function calcEncroach(){
   const awaken  = awakens[form.lifepathAwaken.value]   || 0;
   const impulse = impulses[form.lifepathImpulse.value] || 0;
   const other   = Number(form.lifepathOtherEncroach.value);
+  const total   = awaken + impulse + other;
   document.getElementById('awaken-encroach' ).innerHTML = awaken;
   document.getElementById('impulse-encroach').innerHTML = impulse;
-  document.getElementById('base-encroach').innerHTML = awaken + impulse + other;
+  document.getElementById('base-encroach').innerHTML = total;
+  
+  //form.currentEncroach.value = total;
+  encroachBonusType();
+}
+
+let EA; let OR;
+let array = [];
+let lvbs  = {};
+let edbs  = {};
+function encroachBonusType(){
+  EA = form.encroachEaOn.checked;
+  OR = false;
+  [...Array(7)].map((_, i) => i + 1).forEach((num)=>{
+    if(form["lois"+num+"Name"].value.match(/起源種|オリジナルレネゲイド/)){ OR = true; return; }
+  });
+
+  array = OR && EA ? [200  ,150  ,100  ,80  ,0  ] : OR ? [150  ,100  ,80  ,0  ] : EA ? [300   ,260   ,220   ,190   ,160   ,130   ,100   ,80   ,60   ,0  ] : [300   ,240   ,200   ,160   ,130   ,100   ,80   ,60   ,0  ];
+  edbs  = OR && EA ? {200:0,150:0,100:0,80:0,0:0} : OR ? {150:0,100:0,80:0,0:0} : EA ? {300:7 ,260:6 ,220:5 ,190:5 ,160:4 ,130:4 ,100:3 ,80:2 ,60:1 ,0:0} : {300:8 ,240:7 ,200:6 ,160:5 ,130:4 ,100:3 ,80:2 ,60:1 ,0:0};
+  lvbs  = OR && EA ? {200:4,150:3,100:2,80:1,0:0} : OR ? {150:3,100:2,80:1,0:0} : EA ? {300:3 ,260:3 ,220:3 ,190:2 ,160:2 ,130:1 ,100:1 ,80:0 ,60:0 ,0:0} : {300:2 ,240:2 ,200:2 ,160:2 ,130:1 ,100:1 ,80:0 ,60:0 ,0:0};
+
+  document.querySelectorAll('#enc-table colgroup, #enc-table tr').forEach((obj) => { obj.innerHTML = '' })
+  
+  for(let i = 0; i < array.length; i++){
+    let col      = document.createElement("col"); col.id               = 'enc-col'+array[i];                                        document.querySelector('#enc-table colgroup').prepend(col);
+    let cellHead = document.createElement("th" ); cellHead.textContent = (i == 0) ? `${array[i]}-` : `${array[i]}-${array[i-1]-1}`; document.getElementById('enc-table-head').prepend(cellHead);
+    document.getElementById('enc-table-dices').insertCell(0).textContent = OR ? '―' : '+'+edbs[array[i]];
+    document.getElementById('enc-table-level').insertCell(0).textContent = '+'+lvbs[array[i]];
+  }
+  document.querySelector('#enc-table colgroup').prepend(document.createElement("col"));
+  let thHead  = document.createElement("th"); thHead.textContent  = ''       ; document.getElementById('enc-table-head' ).prepend(thHead);
+  let thBonus = document.createElement("th"); thBonus.textContent = 'ダイス' ; document.getElementById('enc-table-dices').prepend(thBonus);
+  let thLevel = document.createElement("th"); thLevel.textContent = 'Efct.Lv'; document.getElementById('enc-table-level').prepend(thLevel);
+  
+  //encroachBonusSet(form.currentEncroach.value);
+}
+function encroachBonusSet(enc){
+  for (let v of array){ document.getElementById('enc-col'+v).classList.remove('current'); }
+  for (let v of array){
+    if(enc >= v){
+      document.getElementById('enc-col'+v).classList.add('current');
+      document.querySelectorAll("[data-edb]").forEach(function(obj) {
+        obj.dataset.edb = edbs[v];
+      });
+      break;
+    }
+  }
 }
 
 // ロイス ----------------------------------------

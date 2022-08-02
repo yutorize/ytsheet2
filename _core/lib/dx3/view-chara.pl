@@ -315,7 +315,7 @@ foreach (1 .. 7){
     "NOTE"     => $pc{'lois'.$_.'Note'},
     "STATE"    => $pc{'lois'.$_.'State'},
   });
-  if($pc{'lois'.$_.'Name'} =~ /起源種|オリジナルレネゲイド/){ $SHEET->param(enchroachOrOn => 'checked'); }
+  if($pc{'lois'.$_.'Name'} =~ /起源種|オリジナルレネゲイド/){ $SHEET->param(encroachOrOn => 'checked'); }
 }
 $SHEET->param(Loises => \@loises);
 $SHEET->param(Skills => \@skills);
