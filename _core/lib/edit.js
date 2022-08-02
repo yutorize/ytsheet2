@@ -34,22 +34,23 @@ function formSubmit() {
   const sendCount = formChangeCount;
   formChangeCount = 0;
   fetch(action, options)
-    .then((response) => {
+    .then(response => {
       if(response.status === 200) {
         return response.json()
       }
-      if(!formChangeCount){ formChangeCount = sendCount; }
-      saveInfo('error');
-      alert("保存できませんでした。しばらく立ってから再度保存を試みてください。");
+      throw Error(response.statusText);
     })
-    .then((data) => {
+    .then(data => {
       if     (data.result === 'make' ){ window.location.href = './?id='+data.message; }
       else if(data.result === 'ok'   ){ saveInfo('saved'); console.log(data.message) }
       else{
-        if(!formChangeCount){ formChangeCount = sendCount; }
-        saveInfo('error');
-        alert((data.result === 'error') ? 'エラー: '+data.message : "保存できませんでした。");
+        throw Error(data.result === 'error' ? data.message : "保存できませんでした。");
       }
+    })
+    .catch(error => {
+      if(!formChangeCount){ formChangeCount = sendCount; }
+      saveInfo('error');
+      alert(error);
     })
 }
 function formCheck(){

@@ -26,16 +26,6 @@ if ($mode eq 'make'){
   if($set::user_reqd && !$LOGIN_ID) {
     infoJson('error','ログインしていません。');
   }
-
-  ## 二重投稿チェック
-  my $_token = $::in{'_token'};
-  if(!token_check($_token)){
-    my @query;
-    push(@query, 'mode=mylist') if $::in{'protect'} eq 'account';
-    push(@query, 'type='.$::in{'type'}) if $::in{'type'};
-    
-    infoJson('error','セッションの有効期限が切れたか、二重投稿です。一覧やマイリストを確認してください。');
-  }
   
   ## 登録キーチェック
   if(!$set::user_reqd && $set::registerkey && $set::registerkey ne $::in{'registerkey'}){
@@ -170,6 +160,14 @@ if($::in{'imageCompressed'} || $::in{'imageFile'}){
 
 ### 保存 #############################################################################################
 my $mask = umask 0;
+
+## 二重投稿チェック
+if ($mode eq 'make'){
+  my $_token = $::in{'_token'};
+  if(!token_check($_token)){
+    infoJson('error','セッションの有効期限が切れたか、二重投稿です。一覧やマイリストを確認してください。');
+  }
+}
 ### 個別データ保存 --------------------------------------------------
 delete $pc{'ver'};
 delete $pc{'pass'};
