@@ -1103,8 +1103,8 @@ print textRuleArea( '','「容姿・経歴・その他メモ」「履歴（自�
 print <<"HTML";
   </main>
   <footer>
-    <p class="notes"><span>『ダブルクロスThe 3rd Edition』は、</span><span>「矢野俊策」及び「有限会社F.E.A.R.」の著作物です。</span></p>
-    <p class="copyright">ゆとシートⅡ for DX3rd ver.${main::ver} - ゆとらいず工房</p>
+    <p class="notes">©FarEast Amusement Research Co.,Ltd.「ダブルクロスThe 3rd Edition」</p>
+    <p class="copyright">©<a href="https://yutorize.2-d.jp">ゆとらいず工房</a>「ゆとシートⅡ」ver.${main::ver}</p>
   </footer>
   <datalist id="list-stage">
     <option value="基本ステージ">

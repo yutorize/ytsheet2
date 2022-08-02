@@ -284,8 +284,8 @@ print textRuleArea( $text_rule,'「効果」「解説」' );
 print <<"HTML";
   </main>
   <footer>
-    『ソード・ワールド2.5』は、「グループSNE」及び「KADOKAWA」の著作物です。<br>
-    　ゆとシートⅡ for SW2.5 ver.${main::ver} - ゆとらいず工房
+    <p class="notes">(C)Group SNE「ソード・ワールド2.0／2.5」</p>
+    <p class="copyright">©<a href="https://yutorize.2-d.jp">ゆとらいず工房</a>「ゆとシートⅡ」ver.${main::ver}</p>
   </footer>
   <datalist id="list-usage">
     <option value="1H">

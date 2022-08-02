@@ -777,8 +777,8 @@ print textRuleArea( '','「容姿・経歴・その他メモ」「履歴（自�
 print <<"HTML";
   </main>
   <footer>
-    <p class="notes"><span>『キズナバレット』は、</span><span>「からすば晴（N.G.P.）」及び「株式会社アークライト出版事業部」の著作物です。</span></p>
-    <p class="copyright">ゆとシートⅡ for KIZ ver.${main::ver} - ゆとらいず工房</p>
+    <p class="notes">©からすば晴／N.G.P.／アークライト／新紀元社「キズナバレット」</p>
+    <p class="copyright">©<a href="https://yutorize.2-d.jp">ゆとらいず工房</a>「ゆとシートⅡ」ver.${main::ver}</p>
   </footer>
   <datalist id="list-gender">
     <option value="男">

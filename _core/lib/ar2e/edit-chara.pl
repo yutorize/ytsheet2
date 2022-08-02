@@ -1412,8 +1412,8 @@ print textRuleArea( '','「容姿・経歴・その他メモ」「履歴（自�
 print <<"HTML";
   </main>
   <footer>
-    『アリアンロッドRPG 2E』は、</span><span>「菊池たけし」「F.E.A.R.」「KADOKAWA」の著作物です。<br>
-    　ゆとシートⅡ for AR2E ver.${main::ver} - ゆとらいず工房
+    <p class="notes">©FarEast Amusement Research Co.,Ltd.「アリアンロッドRPG 2E」</p>
+    <p class="copyright">©<a href="https://yutorize.2-d.jp">ゆとらいず工房</a>「ゆとシートⅡ」ver.${main::ver}</p>
   </footer>
   <datalist id="list-gender">
     <option value="男">
