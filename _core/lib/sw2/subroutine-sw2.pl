@@ -102,6 +102,11 @@ sub data_update_chara {
   my $ver = $pc{'ver'};
   delete $pc{'updateMessage'};
   $ver =~ s/^([0-9]+)\.([0-9]+)\.([0-9]+)$/$1.$2$3/;
+  if($pc{'colorHeadBgA'}) {
+    ($pc{'colorHeadBgH'}, $pc{'colorHeadBgS'}, $pc{'colorHeadBgL'}) = rgb_to_hsl($pc{'colorHeadBgR'},$pc{'colorHeadBgG'},$pc{'colorHeadBgB'});
+    ($pc{'colorBaseBgH'}, $pc{'colorBaseBgS'}, undef) = rgb_to_hsl($pc{'colorBaseBgR'},$pc{'colorBaseBgG'},$pc{'colorBaseBgB'});
+    $pc{'colorBaseBgS'} = $pc{'colorBaseBgS'} * $pc{'colorBaseBgA'} * 10;
+  }
   if($ver < 1.10){
     $pc{'fairyContractEarth'} = 1 if $pc{'ftElemental'} =~ /土|地/;
     $pc{'fairyContractWater'} = 1 if $pc{'ftElemental'} =~ /水|氷/;

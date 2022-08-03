@@ -20,8 +20,6 @@ window.onload = function() {
   for(let i = 1; i <= 7; i++){ changeLoisColor(i); }
   imagePosition();
   changeColor();
-  
-  palettePresetChange();
 };
 
 // 送信前チェック ----------------------------------------

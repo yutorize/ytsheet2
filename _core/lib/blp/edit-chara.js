@@ -22,8 +22,6 @@ window.onload = function() {
   
   imagePosition();
   changeColor();
-  
-  palettePresetChange();
 };
 
 function changeRegu(){

@@ -17,10 +17,9 @@ window.onload = function() {
   calcWeight();
   calcCash();
   changeHandedness();
+  
   imagePosition();
   changeColor();
-  
-  palettePresetChange();
 };
 
 // 送信前チェック ----------------------------------------

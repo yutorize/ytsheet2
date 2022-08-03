@@ -5,8 +5,6 @@ window.onload = function() {
   nameSet();
 
   changeColor();
-
-  palettePresetChange();
 }
 
 // 送信前チェック ----------------------------------------

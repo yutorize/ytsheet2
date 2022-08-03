@@ -100,10 +100,9 @@ window.onload = function() {
   calcCash();
   calcHonor();
   calcDishonor();
+  
   imagePosition();
   changeColor();
-  
-  palettePresetChange();
 };
 
 // 送信前チェック ----------------------------------------
