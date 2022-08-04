@@ -13,10 +13,11 @@
   <TMPL_IF ogImg><meta property="og:image" content="<TMPL_VAR ogImg>"></TMPL_IF>
   <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@yutorize">
+  <TMPL_IF hide><meta name="robots" content="none"></TMPL_IF>
   <link rel="stylesheet" media="all" href="<TMPL_VAR coreDir>/skin/_common/css/base.css?<TMPL_VAR ver>">
   <link rel="stylesheet" media="all" href="<TMPL_VAR coreDir>/skin/_common/css/sheet.css?<TMPL_VAR ver>">
   <link rel="stylesheet" media="all" href="<TMPL_VAR coreDir>/skin/kiz/css/chara.css?<TMPL_VAR ver>">
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
   <script>
 const sheetId = '<TMPL_VAR id>';
 const paletteTool = '<TMPL_VAR paletteTool>';
@@ -39,7 +40,6 @@ window.onload = function() {
 </TMPL_IF>
   </script>
   <style>
-    <TMPL_IF colorCustom>
     :root {
       --box-head-bg-color-h: <TMPL_VAR colorHeadBgH>;
       --box-head-bg-color-s: <TMPL_VAR colorHeadBgS>%;
@@ -49,9 +49,7 @@ window.onload = function() {
       --box-base-bg-color-l: <TMPL_VAR colorBaseBgL>%;
       --box-base-bg-color-d: <TMPL_VAR colorBaseBgD>%;
     }
-    </TMPL_IF>
     #partner1 {
-      <TMPL_IF p1_colorCustom>
       --box-head-bg-color-h: <TMPL_VAR p1_colorHeadBgH>;
       --box-head-bg-color-s: <TMPL_VAR p1_colorHeadBgS>%;
       --box-head-bg-color-l: <TMPL_VAR p1_colorHeadBgL>%;
@@ -59,18 +57,8 @@ window.onload = function() {
       --box-base-bg-color-s: <TMPL_VAR p1_colorBaseBgS>%;
       --box-base-bg-color-l: <TMPL_VAR p1_colorBaseBgL>%;
       --box-base-bg-color-d: <TMPL_VAR p1_colorBaseBgD>%;
-      <TMPL_ELSE>
-      --box-head-bg-color-h: 225;
-      --box-head-bg-color-s: 9%;
-      --box-head-bg-color-l: 65%;
-      --box-base-bg-color-h: 270;
-      --box-base-bg-color-s: 0%;
-      --box-base-bg-color-l: 100%;
-      --box-base-bg-color-d: 15%;
-      </TMPL_IF>
     }
     #partner2 {
-      <TMPL_IF p2_colorCustom>
       --box-head-bg-color-h: <TMPL_VAR p2_colorHeadBgH>;
       --box-head-bg-color-s: <TMPL_VAR p2_colorHeadBgS>%;
       --box-head-bg-color-l: <TMPL_VAR p2_colorHeadBgL>%;
@@ -78,15 +66,6 @@ window.onload = function() {
       --box-base-bg-color-s: <TMPL_VAR p2_colorBaseBgS>%;
       --box-base-bg-color-l: <TMPL_VAR p2_colorBaseBgL>%;
       --box-base-bg-color-d: <TMPL_VAR p2_colorBaseBgD>%;
-      <TMPL_ELSE>
-      --box-head-bg-color-h: 225;
-      --box-head-bg-color-s: 9%;
-      --box-head-bg-color-l: 65%;
-      --box-base-bg-color-h: 270;
-      --box-base-bg-color-s: 0%;
-      --box-base-bg-color-l: 100%;
-      --box-base-bg-color-d: 15%;
-      </TMPL_IF>
     }
   </style>
   <TMPL_INCLUDE NAME="skin-add/sheet-head.html">
@@ -129,7 +108,7 @@ window.onload = function() {
             </TMPL_IF>
           </TMPL_IF>
         </TMPL_IF>
-        <li class="small"><a onclick="nightModeChange()" title="ナイトモード">☾✧</a></li>
+        <li class="small"><a onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード"></a></li>
       </ul>
     </nav>
   </header>
@@ -545,8 +524,8 @@ window.onload = function() {
   <TMPL_INCLUDE NAME="skin-add/sheet-sidebar.html">
 
   <footer>
-    <p class="notes"><span>『キズナバレット』は、</span><span>「からすば晴（N.G.P.）」及び「株式会社アークライト出版事業部」の著作物です。</span></p>
-    <p class="copyright">ゆとシートⅡ for KIZ ver.<TMPL_VAR ver> - <a href="https://yutorize.2-d.jp">ゆとらいず工房</a></p>
+    <p class="notes">©からすば晴／N.G.P.／アークライト／新紀元社「キズナバレット」</p>
+    <p class="copyright">©<a href="https://yutorize.2-d.jp">ゆとらいず工房</a>「ゆとシートⅡ」ver.<TMPL_VAR ver></p>
   </footer>
 </body>
 

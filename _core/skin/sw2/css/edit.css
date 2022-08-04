@@ -400,6 +400,7 @@
   pointer-events: none;
 }
 #language select + .lang-select-view { background: var(--input-bg-color); }
+.night #language select option { color: var(--text-color); }
 #language select option[value="auto"],
 #language select[data-type="auto"] + .lang-select-view { background: #00ccff22; }
 #language select[data-type="auto"] + .lang-select-view::before { content: '自動'; }
@@ -1075,14 +1076,72 @@ form#monster ul#loots-num {
   background-color: rgba(127,127,127,0.3);
 }
 
+form#monster .color-sample .name {
+  border-width: 2px 0 0;
+  border-color: var(--monster-level-bg-color);
+  background: transparent;
+  position: relative;
+  padding-left: 1.8em;
+}
+form#monster .color-sample .name::before {
+  content: "！";
+  display: block;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 1.5em;
+  background-color: var(--monster-level-bg-color);
+  background-image: linear-gradient(to bottom, transparent, rgba(0,0,0,0.4));
+  color: #fff;
+  text-align: center;
+}
+form#monster .color-sample .box,
+form#item .color-sample .box,
+form#arts .color-sample .box {
+  border-width: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: var(--box-base-bg-color);
+}
+.night form#monster .color-sample .night,
+.night form#item .color-sample .night,
+.night form#arts .color-sample .night {
+  --box-base-bg-color-d: var(--box-base-bg-color-l);
+}
+form#monster .color-sample .data-table,
+form#item .color-sample .data-table,
+form#arts .color-sample .data-table {
+  width: 100%;
+  border-width: 1.01px;
+  border-style: double;
+  border-color: var(--box-outside-border-color);
+}
+form#monster .color-sample .data-table th {
+  background-color: var(--monster-head-bg-color);
+}
+form#monster .color-sample .data-table td,
+form#item .color-sample .data-table td,
+form#arts .color-sample .data-table td {
+  padding: .2rem;
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--box-inside-border-color);
+  text-align: center;
+}
+form#monster .color-sample .data-table tbody tr:nth-child(even) td,
+form#item .color-sample .data-table tbody tr:nth-child(even) td {
+  background-color: var(--box-even-rows-bg-color);
+}
+form#monster .color-sample .box h2 {
+  padding: .3rem .5rem;
+  background-color: var(--monster-head-bg-color) !important;
+}
 /* // アイテム
 ---------------------------------------------------------------------------------------------------- */
 form#item div.box {
   margin: 1rem 0;
   overflow-x: auto;
-}
-form#item div.box {
-  margin: 1rem 0;
 }
 form#item #area-name {
   font-weight: bold;
@@ -1108,11 +1167,6 @@ form#item div.input-data div {
 form#item div.input-data dl {
   display: flex;
   margin-right: 1.5em;
-}
-@media screen and (max-width:735px){
-  form#item div.input-data dl {
-    display: block;
-  }
 }
 form#item div.input-data dl dt {
   position: relative;
@@ -1179,4 +1233,182 @@ form#item textarea[name="description"] {
   padding: 2px;
 }
 
+@media screen and (max-width:735px){
+  form#item div.input-data dl {
+    display: block;
+  }
+}
 
+form#item .color-sample .name {
+  border-width: 2px 0 0;
+  border-color: var(--box-outside-border-color);
+  background: transparent;
+  position: relative;
+  padding-left: .2em;
+}
+form#item .color-sample .data-table th {
+  background-color: var(--item-head-bg-color);
+}
+form#item .color-sample .box h2,
+form#arts .color-sample .box h2 {
+  border-width: 1px 0;
+  border-style: solid;
+  border-color: var(--box-outside-border-color);
+  padding-left: .3em;
+}
+
+
+/* // 魔法
+---------------------------------------------------------------------------------------------------- */
+form#arts div.box {
+  margin: 1rem 0;
+  overflow-x: auto;
+}
+form#arts #group dl {
+  display: grid;
+  grid-template-columns: 2.5em 1fr;
+  grid-template-rows: auto;
+}
+form#arts #category dd {
+  text-align: left;
+}
+form#arts #category dd select {
+  width: max-content;
+}
+form#arts div.input-data div {
+  display: flex;
+  flex-wrap: wrap;
+}
+form#arts div.input-data dl {
+  display: flex;
+  margin-right: 1.5em;
+  margin: 0 1rem;
+}
+form#arts div.input-data dl dt {
+  position: relative;
+  width: 6em;
+  margin-right: 1em;
+  padding-top: 3px;
+  text-align-last: justify;
+}
+form#arts div.input-data dl dt::after {
+  content: ':';
+  position: absolute;
+  display: inline-block;
+  width: 1em;
+  text-align: center;
+  font-weight: normal;
+}
+form#arts div.input-data dl dd {
+  flex-grow: 1;
+  text-align: left;
+}
+form#arts div.input-data dl dd input {
+  max-width: 14em;
+}
+form#arts div.input-data dl.maxim input {
+  width: calc(100% - 3em);
+  max-width: none;
+}
+form#arts div.input-data dl.name dd input {
+  max-width: 24em;
+}
+form#arts div.input-data dl.aka dd input {
+  max-width: 10em;
+}
+form#arts div.input-data dl.class .select-input {
+  display: inline-flex;
+  width: 14em;
+}
+form#arts div.input-data dl.class dd select,
+form#arts div.input-data dl.class dd input[type="text"] {
+  max-width: none;
+  width: 100%;
+}
+form#arts div.input-data dl.level dd input {
+  max-width: 5em;
+}
+form#arts div.input-data dl.range dd input {
+  max-width: 6.5em;
+}
+form#arts div.input-data dl.summary dd input {
+  max-width: 100%;
+}
+form#arts div.input-data dl.song dd input[name$="Point"] {
+  width: 5.5em;
+}
+form#arts div.input-data dl.rider dd select {
+  width: max-content;
+}
+form#arts div.input-data dl.command dd input[type="number"],
+form#arts div.input-data dl.commcost dd input[type="number"] {
+  width: 4em;
+}
+form#arts textarea {
+  height: 6em;
+  padding: 2px;
+}
+form#arts textarea[name="godSymbol"] {
+  height: 10em;
+}
+form#arts textarea[name="godDeity"],
+form#arts textarea[name="godNote"] {
+  height: 16em;
+}
+
+form#arts #data-school dl dt {
+  white-space: nowrap;
+}
+form#arts #school-item-list {
+  width: 100%;
+}
+form#arts #school-item-list thead th:nth-child(1) { width: 14em; }
+form#arts #school-item-list thead th:nth-child(2) { width: 10em; }
+form#arts #school-item-list thead th:nth-child(3) { width: auto; }
+form#arts #school-item-list thead th:nth-child(4) { width: 1em; }
+
+form#arts #school-item-list tbody td:nth-child(3) { font-size: 82%; }
+
+@media screen and (max-width:735px){
+  form#arts div.input-data dl dt {
+    width: 6.5em;
+  }
+  form#arts div.input-data dl.name dd input[type="text"] {
+    width: 14em;
+  }
+  form#arts div.input-data dl dd input[type="checkbox"] {
+    margin-right: .2em;
+  }
+  form#arts div.input-data dl dd small {
+    display: block;
+  }
+  form#arts #school-item-list thead th:nth-child(3),
+  form#arts #school-item-list tbody td:nth-child(3) { display: none; }
+  
+  form#arts #school-item-list tbody td { font-size: 82%; }
+}
+
+form#arts .color-sample .data-table th {
+  background-color: var(--arts-head-bg-color);
+}
+form#arts .color-sample .data-table th:first-child {
+  background-color: var(--arts-name-bg-color);
+  color: #fff;
+}
+
+form#arts #image {
+  float: right;
+  width: 280px;
+  margin: 5px;
+  border-width: 1px;
+  border-style: solid;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+@media screen and (max-width:735px){
+  form#arts #image {
+    float: none;
+    width: auto;
+  }
+}

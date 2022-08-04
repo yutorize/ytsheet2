@@ -54,7 +54,7 @@ if($message){
   $message =~ s/<!NAME>/$name/;
 }
 ### プレイヤー名 --------------------------------------------------
-if($mode_make && !$::make_error){
+if($mode_make){
   $pc{'playerName'} = (getplayername($LOGIN_ID))[0];
 }
 ### 初期設定 --------------------------------------------------
@@ -72,7 +72,7 @@ if($mode eq 'edit' || ($mode eq 'convert' && $pc{'ver'})){
     $message .= "</dl><small>前回保存時のバージョン:$lasttimever</small>";
   }
 }
-elsif($mode eq 'blanksheet' && !$::make_error){
+elsif($mode eq 'blanksheet'){
   $pc{'group'} = $set::group_default;
   
   $pc{'history0Exp'}   = $set::make_exp;
@@ -97,6 +97,7 @@ elsif($mode eq 'blanksheet' && !$::make_error){
   $pc{'paletteUseBuff'} = 1;
 }
 
+## 画像
 $pc{'imageFit'} = $pc{'imageFit'} eq 'percent' ? 'percentX' : $pc{'imageFit'};
 $pc{'imagePercent'} = $pc{'imagePercent'} eq '' ? '200' : $pc{'imagePercent'};
 $pc{'imagePositionX'} = $pc{'imagePositionX'} eq '' ? '50' : $pc{'imagePositionX'};
@@ -104,18 +105,10 @@ $pc{'imagePositionY'} = $pc{'imagePositionY'} eq '' ? '50' : $pc{'imagePositionY
 $pc{'wordsX'} ||= '右';
 $pc{'wordsY'} ||= '上';
 
-if($pc{'colorCustom'} && $pc{'colorHeadBgA'}) {
-  ($pc{'colorHeadBgH'}, $pc{'colorHeadBgS'}, $pc{'colorHeadBgL'}) = rgb_to_hsl($pc{'colorHeadBgR'},$pc{'colorHeadBgG'},$pc{'colorHeadBgB'});
-  ($pc{'colorBaseBgH'}, $pc{'colorBaseBgS'}, undef) = rgb_to_hsl($pc{'colorBaseBgR'},$pc{'colorBaseBgG'},$pc{'colorBaseBgB'});
-  $pc{'colorBaseBgS'} = $pc{'colorBaseBgS'} * $pc{'colorBaseBgA'} * 10;
-}
-$pc{'colorHeadBgH'} = $pc{'colorHeadBgH'} eq '' ? 225 : $pc{'colorHeadBgH'};
-$pc{'colorHeadBgS'} = $pc{'colorHeadBgS'} eq '' ?   9 : $pc{'colorHeadBgS'};
-$pc{'colorHeadBgL'} = $pc{'colorHeadBgL'} eq '' ?  65 : $pc{'colorHeadBgL'};
-$pc{'colorBaseBgH'} = $pc{'colorBaseBgH'} eq '' ? 210 : $pc{'colorBaseBgH'};
-$pc{'colorBaseBgS'} = $pc{'colorBaseBgS'} eq '' ?   0 : $pc{'colorBaseBgS'};
-$pc{'colorBaseBgL'} = $pc{'colorBaseBgL'} eq '' ? 100 : $pc{'colorBaseBgL'};
+## カラー
+setDefaultColors();
 
+## その他
 $pc{'skillsNum'}      ||=  3;
 $pc{'connectionsNum'} ||=  1;
 $pc{'geisesNum'}      ||=  1;
@@ -167,12 +160,12 @@ Content-type: text/html\n
   <link rel="stylesheet" media="all" href="${main::core_dir}/skin/ar2e/css/edit.css?${main::ver}">
   <script src="${main::core_dir}/skin/_common/js/lib/Sortable.min.js"></script>
   <script src="${main::core_dir}/skin/_common/js/lib/compressor.min.js"></script>
-  <script src="https://unpkg.com/\@yaireo/tagify"></script>
-  <script src="https://unpkg.com/\@yaireo/tagify/dist/tagify.polyfills.min.js"></script>
-  <link href="https://unpkg.com/\@yaireo/tagify/dist/tagify.css" rel="stylesheet" type="text/css" />
+  <script src="https://cdn.jsdelivr.net/npm/\@yaireo/tagify"></script>
+  <script src="https://cdn.jsdelivr.net/npm/\@yaireo/tagify/dist/tagify.polyfills.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/\@yaireo/tagify/dist/tagify.css" rel="stylesheet" type="text/css">
   <script src="${main::core_dir}/lib/edit.js?${main::ver}" defer></script>
   <script src="${main::core_dir}/lib/ar2e/edit-chara.js?${main::ver}" defer></script>
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/\@fortawesome/fontawesome-free\@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
   <style>
     #image,
     .image-custom-view {
@@ -188,7 +181,7 @@ Content-type: text/html\n
 
   <main>
     <article>
-      <form name="sheet" method="post" action="./" enctype="multipart/form-data" onsubmit="return formCheck();">
+      <form name="sheet" method="post" action="./" enctype="multipart/form-data">
       <input type="hidden" name="ver" value="${main::ver}">
 HTML
 if($mode_make){
@@ -202,43 +195,23 @@ print <<"HTML";
         <ul>
           <li onclick="sectionSelect('common');"><span>キャラクター</span><span>データ</span></li>
           <li onclick="sectionSelect('palette');"><span>チャット</span><span>パレット</span></li>
-          <li onclick="sectionSelect('color');"><span>カラー</span><span>カスタム</span></li>
-          <li class="button">
-HTML
-if($mode eq 'edit'){
-print <<"HTML";
-            <input type="button" value="複製" onclick="window.open('./?mode=copy&id=$::in{'id'}@{[  $::in{'log'}?"&log=$::in{'log'}":'' ]}');">
-HTML
-}
-print <<"HTML";
-            <input type="submit" value="保存">
+          <li onclick="sectionSelect('color');" class="color-icon" title="カラーカスタム"></span></li>
+          <li onclick="view('text-rule')" class="help-icon" title="テキスト整形ルール"></li>
+          <li onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード切替"></li>
+          <li class="buttons">
+            <ul>
+              <li @{[ display ($mode eq 'edit') ]} class="view-icon" title="閲覧画面"><a href="./?id=$::in{'id'}"></a></li>
+              <li @{[ display ($mode eq 'edit') ]} class="copy" onclick="window.open('./?mode=copy&id=$::in{'id'}@{[  $::in{'log'}?"&log=$::in{'log'}":'' ]}');">複製</li>
+              <li class="submit" onclick="formSubmit()" title="Ctrl+S">保存</li>
+            </ul>
           </li>
         </ul>
+        <div id="save-state"></div>
       </div>
 
       <aside class="message">$message</aside>
       
       <section id="section-common">
-      <div class="box" id="name-form">
-        <div>
-          <dl id="character-name">
-            <dt>キャラクター名</dt>
-            <dd>@{[input('characterName','text',"nameSet")]}</dd>
-            <dt class="ruby">ふりがな（アーシアン向け）</dt>
-            <dd>@{[input('characterNameRuby','text',"nameSet")]}</dd>
-          </dl>
-          <dl id="aka">
-            <dt>二つ名・異名など</dt>
-            <dd>@{[input('aka','text',"nameSet")]}</dd>
-            <dt class="ruby">フリガナ</dt>
-            <dd>@{[input('akaRuby','text',"nameSet")]}</dd>
-          </dl>
-        </div>
-        <dl id="player-name">
-          <dt>プレイヤー名</dt>
-          <dd>@{[input('playerName')]}</dd>
-        </dl>
-      </div>
 HTML
 if($set::user_reqd){
   print <<"HTML";
@@ -307,6 +280,28 @@ print <<"HTML";
           <dt>タグ</dt><dd>@{[ input 'tags','','','' ]}</dd>
         </dl>
       </div>
+      
+      <div class="box" id="name-form">
+        <div>
+          <dl id="character-name">
+            <dt>キャラクター名</dt>
+            <dd>@{[input('characterName','text',"nameSet")]}</dd>
+            <dt class="ruby">ふりがな（アーシアン向け）</dt>
+            <dd>@{[input('characterNameRuby','text',"nameSet")]}</dd>
+          </dl>
+          <dl id="aka">
+            <dt>二つ名・異名など</dt>
+            <dd>@{[input('aka','text',"nameSet")]}</dd>
+            <dt class="ruby">フリガナ</dt>
+            <dd>@{[input('akaRuby','text',"nameSet")]}</dd>
+          </dl>
+        </div>
+        <dl id="player-name">
+          <dt>プレイヤー名</dt>
+          <dd>@{[input('playerName')]}</dd>
+        </dl>
+      </div>
+      
       <details class="box" id="regulation" @{[$mode eq 'edit' ? '':'open']}>
         <summary>作成レギュレーション</summary>
         <dl>
@@ -1209,40 +1204,6 @@ print <<"HTML";
       <details class="box" id="free-note" @{[$pc{'freeNote'}?'open':'']}>
         <summary>容姿・経歴・その他メモ</summary>
         <textarea name="freeNote">$pc{'freeNote'}</textarea>
-        <details class="annotate">
-        <summary>テキスト装飾・整形ルール（クリックで展開）</summary>
-        ※メモ欄以外でも有効です。<br>
-        太字　：<code>''テキスト''</code>：<b>テキスト</b><br>
-        斜体　：<code>'''テキスト'''</code>：<span class="oblique">テキスト</span><br>
-        打消線：<code>%%テキスト%%</code>：<span class="strike">テキスト</span><br>
-        下線　：<code>__テキスト__</code>：<span class="underline">テキスト</span><br>
-        透明　：<code>{{テキスト}}</code>：<span style="color:transparent">テキスト</span><br>
-        ルビ　：<code>|テキスト《てきすと》</code>：<ruby>テキスト<rt>てきすと</rt></ruby><br>
-        傍点　：<code>《《テキスト》》</code>：<span class="text-em">テキスト</span><br>
-        透明　：<code>{{テキスト}}</code>：<span style="color:transparent">テキスト</span>（ドラッグ反転で見える）<br>
-        リンク：<code>[[テキスト>URL]]</code><br>
-        別シートへのリンク：<code>[テキスト#シートのID]</code><br>
-        <hr>
-        ※以下は一部の複数行の欄でのみ有効です。<br>
-        （有効な欄：「容姿・経歴・その他メモ」「履歴（自由記入）」「所持品」「収支履歴」）<br>
-        大見出し：行頭に<code>*</code><br>
-        中見出し：行頭に<code>**</code><br>
-        少見出し：行頭に<code>***</code><br>
-        左寄せ　：行頭に<code>LEFT:</code>：以降のテキストがすべて左寄せになります。<br>
-        中央寄せ：行頭に<code>CENTER:</code>：以降のテキストがすべて中央寄せになります。<br>
-        右寄せ　：行頭に<code>RIGHT:</code>：以降のテキストがすべて右寄せになります。<br>
-        横罫線（直線）：<code>----</code>（4つ以上のハイフン）<br>
-        横罫線（点線）：<code> * * * *</code>（4つ以上の「スペース＋アスタリスク」）<br>
-        横罫線（破線）：<code> - - - -</code>（4つ以上の「スペース＋ハイフン」）<br>
-        表組み　　：<code>|テキスト|テキスト|</code><br>
-        定義リスト：<code>:項目名|説明文</code><br>
-        　　　　　　<code>:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|説明文2行目</code> 項目名を記入しないか、半角スペースで埋めると上と結合<br>
-        折り畳み：行頭に<code>[>]項目名</code>：以降のテキストがすべて折り畳みになります。<br>
-        　　　　　項目名を省略すると、自動的に「詳細」になります。<br>
-        折り畳み終了：行頭に<code>[---]</code>：（ハイフンは3つ以上任意）<br>
-        　　　　　　　省略すると、以後のテキストが全て折りたたまれます。<br>
-        コメントアウト：行頭に<code>//</code>：記述した行を非表示にします。
-        </details>
       </details>
       
       <details class="box" id="free-history" @{[$pc{'freeHistory'}?'open':'']}>
@@ -1390,11 +1351,11 @@ print <<"HTML";
         <h2>プリセット （コピーペースト用）</h2>
         <textarea id="palettePreset" readonly style="height:20em"></textarea>
         <p>
-          <label>@{[ input 'paletteUseVar', 'checkbox','palettePresetChange']}デフォルト変数を使う</label>
+          <label>@{[ input 'paletteUseVar', 'checkbox','setChatPalette']}デフォルト変数を使う</label>
           ／
-          <label>@{[ input 'paletteUseBuff', 'checkbox','palettePresetChange']}バフデバフ用変数を使う</label>
+          <label>@{[ input 'paletteUseBuff', 'checkbox','setChatPalette']}バフデバフ用変数を使う</label>
           <br>
-          使用ダイスbot: <select name="paletteTool" onchange="palettePresetChange();" style="width:auto;">
+          使用ダイスbot: <select name="paletteTool" onchange="setChatPalette();" style="width:auto;">
           <option value="">ゆとチャadv.
           <option value="bcdice" @{[ $pc{'paletteTool'} eq 'bcdice' ? 'selected' : '']}>BCDice
           </select>
@@ -1402,29 +1363,8 @@ print <<"HTML";
         </div>
       </div>
       </section>
-      <section id="section-color" style="display:none;">
-      <h2>キャラクターシートのカラー設定</h2>
-      <label class="box color-custom">
-        <input type="checkbox" name="colorCustom" value="1" onchange="changeColor();" @{[ $pc{'colorCustom'} ? 'checked':'' ]}><i></i>キャラクターシートの色をカスタムする
-      </label>
-      <span class="box color-custom night-switch" onclick="nightModeChange()"><i></i>ナイトモード</span>
-      <div class="box color-custom">
-        <h2>見出し背景</h2>
-        <table>
-        <tr class="color-range-H"><th>色相</th><td><input type="range" name="colorHeadBgH" min="0" max="360" value="$pc{'colorHeadBgH'}" oninput="changeColor();"></td><td id="colorHeadBgHValue">$pc{'colorHeadBgH'}</td></tr>
-        <tr class="color-range-S"><th>彩度</th><td><input type="range" name="colorHeadBgS" min="0" max="100" value="$pc{'colorHeadBgS'}" oninput="changeColor();"></td><td id="colorHeadBgSValue">$pc{'colorHeadBgS'}</td></tr>
-        <tr class="color-range-L"><th>輝度</th><td><input type="range" name="colorHeadBgL" min="0" max="100" value="$pc{'colorHeadBgL'}" oninput="changeColor();"></td><td id="colorHeadBgLValue">$pc{'colorHeadBgL'}</td></tr>
-        </table>
-      </div>
-      <div class="box color-custom">
-        <h2>ベース背景</h2>
-        <table>
-        <tr class="color-range-H"><th>色相</th><td><input type="range" name="colorBaseBgH"  min="0" max="360" value="$pc{'colorBaseBgH'}" oninput="changeColor();"></td><td id="colorBaseBgHValue">$pc{'colorBaseBgH'}</td></tr>
-        <tr class="color-range-S"><th>色の濃さ</th><td><input type="range" name="colorBaseBgS"  min="0" max="100" value="$pc{'colorBaseBgS'}" oninput="changeColor();"></td><td id="colorBaseBgSValue">$pc{'colorBaseBgS'}</td></tr>
-        </table>
-      </div>
-      </section>
       
+      @{[ colorCostomForm ]}
       
       @{[ input 'birthTime','hidden' ]}
       <input type="hidden" name="id" value="$::in{'id'}">
@@ -1465,10 +1405,15 @@ HTML
 }
 print <<"HTML";
     </article>
+HTML
+# ヘルプ
+print textRuleArea( '','「容姿・経歴・その他メモ」「履歴（自由記入）」「所持品」「収支履歴」' );
+
+print <<"HTML";
   </main>
   <footer>
-    『アリアンロッドRPG 2E』は、</span><span>「菊池たけし」「F.E.A.R.」「KADOKAWA」の著作物です。<br>
-    　ゆとシートⅡ for AR2E ver.${main::ver} - ゆとらいず工房
+    <p class="notes">©FarEast Amusement Research Co.,Ltd.「アリアンロッドRPG 2E」</p>
+    <p class="copyright">©<a href="https://yutorize.2-d.jp">ゆとらいず工房</a>「ゆとシートⅡ」ver.${main::ver}</p>
   </footer>
   <datalist id="list-gender">
     <option value="男">
@@ -1624,12 +1569,7 @@ print <<"HTML";
     'geises'     : @{[ $pc{'expUsedGeises'} || 0 ]},
   };
 HTML
-## チャットパレット
 print <<"HTML";
-  let palettePresetText = {
-    'ytc'    : { 'full': `@{[ palettePreset()         ]}`, 'simple': `@{[ palettePresetSimple()         ]}` } ,
-    'bcdice' : { 'full': `@{[ palettePreset('bcdice') ]}`, 'simple': `@{[ palettePresetSimple('bcdice') ]}` } ,
-  };
   </script>
 </body>
 

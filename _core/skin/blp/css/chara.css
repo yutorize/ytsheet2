@@ -363,18 +363,15 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
 /* Scar */
 #scar {
   display: grid;
-}
-#scar dl {
-  display: grid;
   grid-template-columns: 10.2em auto;
 }
-#scar dl dd:last-child {
+#scar dd:last-child {
   grid-column: 2;
   grid-row: 1 / span 2;
   border-left-width: 1px;
   border-left-style: dotted;
 }
-#scar dl dd.left {
+#scar dd.left {
   text-align: left;
   padding-top : .5em;
   padding-left: .2em;
@@ -568,6 +565,9 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
   text-align: right;
   flex-grow: 1;
 }
+.partner .box dl dt {
+  padding-left: .2em;
+}
 .partner-personal {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
@@ -624,6 +624,43 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
 .seal-details dd:empty::before {
   content: '　';
 }
+#servant {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+#servant > div:first-child {
+  border-width: 0 1px 0 0;
+  border-style: solid;
+}
+#servant.box dl dt {
+  padding-left: .2em;
+}
+#servant-data {
+  display: grid;
+  grid-template-columns: 2.5fr 1fr;
+  border-width: 1px 0 0;
+  border-style: solid;
+}
+#servant-data .class {
+  border-width: 0 0 0 1px;
+  border-style: solid;
+}
+#servant-data .background {
+  grid-column: span 2;
+  border-width: 1px 0 0;
+  border-style: solid;
+}
+#servant .seal-details {
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas:
+    "POS EM1"
+    "SHP EM2"
+  ;
+}
+#servant .seal-details .position { border-width: 0 0 1px; }
+#servant .seal-details .shape    { border-width: 0;         background-color: var(--box-even-rows-bg-color); }
+#servant .seal-details .emotion1 { border-width: 0 1px 1px; }
+#servant .seal-details .emotion2 { border-width: 0 1px;     background-color: var(--box-even-rows-bg-color); }
 
 @media screen and (min-width:736px){
   .bigamy {
@@ -633,6 +670,9 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
   }
   .bigamy .box {
     font-size: 90%;
+  }
+  .bigamy #servant {
+    grid-column: span 2;
   }
   .bigamy .partner {
     grid-template-columns: 1fr 2fr;

@@ -5,10 +5,19 @@
   <meta charset="UTF-8">
   <title><TMPL_VAR itemNameTitle> - <TMPL_VAR title></title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta property="og:title" content="<TMPL_VAR itemNameTitle> - <TMPL_VAR title>">
+  <meta property="og:type" content="artcle">
+  <meta property="og:url" content="<TMPL_VAR ogUrl>">
+  <meta property="og:site_name" content="<TMPL_VAR title>">
+  <meta property="og:description" content="<TMPL_VAR ogDescript>">
+  <TMPL_IF ogImg><meta property="og:image" content="<TMPL_VAR ogImg>"></TMPL_IF>
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@yutorize">
+  <TMPL_IF hide><meta name="robots" content="none"></TMPL_IF>
   <link rel="stylesheet" media="all" href="<TMPL_VAR coreDir>/skin/_common/css/base.css?<TMPL_VAR ver>">
   <link rel="stylesheet" media="all" href="<TMPL_VAR coreDir>/skin/_common/css/sheet.css?<TMPL_VAR ver>">
   <link rel="stylesheet" media="all" href="<TMPL_VAR coreDir>/skin/sw2/css/item.css?<TMPL_VAR ver>">
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
   <script>
 const sheetId = '<TMPL_VAR id>';
 <TMPL_IF error>
@@ -21,6 +30,17 @@ window.onload = function() {
 };
 </TMPL_IF>
   </script>
+  <style>
+    :root {
+      --box-head-bg-color-h: <TMPL_VAR colorHeadBgH>;
+      --box-head-bg-color-s: <TMPL_VAR colorHeadBgS>%;
+      --box-head-bg-color-l: <TMPL_VAR colorHeadBgL>%;
+      --box-base-bg-color-h: <TMPL_VAR colorBaseBgH>;
+      --box-base-bg-color-s: <TMPL_VAR colorBaseBgS>%;
+      --box-base-bg-color-l: <TMPL_VAR colorBaseBgL>%;
+      --box-base-bg-color-d: <TMPL_VAR colorBaseBgD>%;
+    }
+  </style>
   <TMPL_INCLUDE NAME="skin-add/sheet-head.html">
 </head>
 <body id="item">
@@ -42,6 +62,7 @@ window.onload = function() {
               <li class="small"><a href="./?mode=edit&id=<TMPL_VAR id>&log=<TMPL_VAR logId>&type=i">復元</a></li>
             </TMPL_IF>
           <TMPL_ELSE>
+            <li class="small"><a onclick="donwloadListOn();">出力</a></li>
             <li class="small"><a onclick="loglistOn()"><span>過去ログ</span></a></li>
             <TMPL_IF reqdPassword>
               <li class="small"><a onclick="editOn()">編集</a></li>
@@ -50,7 +71,7 @@ window.onload = function() {
             </TMPL_IF>
           </TMPL_IF>
         </TMPL_IF>
-        <li class="small"><a onclick="nightModeChange()" title="ナイトモード">☾✧</a></li>
+        <li class="small"><a onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード"></a></li>
       </ul>
     </nav>
   </header>
@@ -83,6 +104,13 @@ window.onload = function() {
           </dl>
         </form>
       </details></TMPL_IF>
+    </aside>
+
+    <aside id="downloadlist" class="float-box">
+      <h2>出力</h2>
+      <ul>
+        <li id="downloadlist-json"><a onclick="donloadAsJson();">JSON 形式</a></li>
+      </ul>
     </aside>
   </TMPL_UNLESS>
 
@@ -182,8 +210,8 @@ window.onload = function() {
   <TMPL_INCLUDE NAME="skin-add/sheet-sidebar.html">
 
   <footer>
-    <p class="notes"><span>『ソード・ワールド2.5』は、</span><span>「グループSNE」及び「KADOKAWA」の著作物です。</span></p>
-    <p class="copyright">ゆとシートⅡ for SW2.5 ver.<TMPL_VAR ver> - <a href="https://yutorize.2-d.jp">ゆとらいず工房</a></p>
+    <p class="notes">(C)Group SNE「ソード・ワールド2.0／2.5」</p>
+    <p class="copyright">©<a href="https://yutorize.2-d.jp">ゆとらいず工房</a>「ゆとシートⅡ」ver.<TMPL_VAR ver></p>
   </footer>
 </body>
 

@@ -10,7 +10,7 @@ my $LOGIN_ID = $::LOGIN_ID;
 ### 読込前処理 #######################################################################################
 require $set::lib_palette_sub;
 ### 各種データライブラリ読み込み --------------------------------------------------
-# なし
+require $set::data_factor;
 
 ### データ読み込み ###################################################################################
 my ($data, $mode, $file, $message) = pcDataGet($::in{'mode'});
@@ -24,7 +24,7 @@ if($message){
   $message =~ s/<!NAME>/$name/;
 }
 ### プレイヤー名 --------------------------------------------------
-if($mode_make && !$::make_error){
+if($mode_make){
   $pc{'playerName'} = (getplayername($LOGIN_ID))[0];
 }
 ### 初期設定 --------------------------------------------------
@@ -42,7 +42,7 @@ if($mode eq 'edit' || ($mode eq 'convert' && $pc{'ver'})){
     $message .= "</dl><small>前回保存時のバージョン:$lasttimever</small>";
   }
 }
-elsif($mode eq 'blanksheet' && !$::make_error){
+elsif($mode eq 'blanksheet'){
   $pc{'group'} = $set::group_default;
   
   $pc{'endurancePreGrow'}  = $set::make_endurance  || 0;
@@ -54,6 +54,7 @@ elsif($mode eq 'blanksheet' && !$::make_error){
   $pc{'paletteUseBuff'} = 1;
 }
 
+## 画像
 $pc{'imageFit'} = $pc{'imageFit'} eq 'percent' ? 'percentX' : $pc{'imageFit'};
 $pc{'imagePercent'} = $pc{'imagePercent'} eq '' ? '200' : $pc{'imagePercent'};
 $pc{'imagePositionX'} = $pc{'imagePositionX'} eq '' ? '50' : $pc{'imagePositionX'};
@@ -61,13 +62,10 @@ $pc{'imagePositionY'} = $pc{'imagePositionY'} eq '' ? '50' : $pc{'imagePositionY
 $pc{'wordsX'} ||= '右';
 $pc{'wordsY'} ||= '上';
 
-$pc{'colorHeadBgH'} = $pc{'colorHeadBgH'} eq '' ? 225 : $pc{'colorHeadBgH'};
-$pc{'colorHeadBgS'} = $pc{'colorHeadBgS'} eq '' ?   9 : $pc{'colorHeadBgS'};
-$pc{'colorHeadBgL'} = $pc{'colorHeadBgL'} eq '' ?  65 : $pc{'colorHeadBgL'};
-$pc{'colorBaseBgH'} = $pc{'colorBaseBgH'} eq '' ? 210 : $pc{'colorBaseBgH'};
-$pc{'colorBaseBgS'} = $pc{'colorBaseBgS'} eq '' ?   0 : $pc{'colorBaseBgS'};
-$pc{'colorBaseBgL'} = $pc{'colorBaseBgL'} eq '' ? 100 : $pc{'colorBaseBgL'};
+## カラー
+setDefaultColors();
 
+## その他
 $pc{'historyNum'} ||= 3;
 $pc{'artsNum'} ||= 3;
 
@@ -98,7 +96,7 @@ Content-type: text/html\n
   <script src="${main::core_dir}/skin/_common/js/lib/compressor.min.js"></script>
   <script src="${main::core_dir}/lib/edit.js?${main::ver}" defer></script>
   <script src="${main::core_dir}/lib/blp/edit-chara.js?${main::ver}" defer></script>
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/\@fortawesome/fontawesome-free\@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
   <style>
     #image,
     .image-custom-view {
@@ -128,37 +126,23 @@ print <<"HTML";
         <ul>
           <li onclick="sectionSelect('common');"><span>キャラクター</span><span>データ</span></li>
           <li onclick="sectionSelect('palette');"><span>チャット</span><span>パレット</span></li>
-          <li onclick="sectionSelect('color');"><span>カラー</span><span>カスタム</span></li>
-          <li class="button">
-HTML
-if($mode eq 'edit'){
-print <<"HTML";
-            <input type="button" value="複製" onclick="window.open('./?mode=copy&id=$::in{'id'}@{[  $::in{'log'}?"&log=$::in{'log'}":'' ]}');">
-HTML
-}
-print <<"HTML";
-            <input type="submit" value="保存">
+          <li onclick="sectionSelect('color');" class="color-icon" title="カラーカスタム"></span></li>
+          <li onclick="view('text-rule')" class="help-icon" title="テキスト整形ルール"></li>
+          <li onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード切替"></li>
+          <li class="buttons">
+            <ul>
+              <li @{[ display ($mode eq 'edit') ]} class="view-icon" title="閲覧画面"><a href="./?id=$::in{'id'}"></a></li>
+              <li @{[ display ($mode eq 'edit') ]} class="copy" onclick="window.open('./?mode=copy&id=$::in{'id'}@{[  $::in{'log'}?"&log=$::in{'log'}":'' ]}');">複製</li>
+              <li class="submit" onclick="formSubmit()" title="Ctrl+S">保存</li>
+            </ul>
           </li>
         </ul>
+        <div id="save-state"></div>
       </div>
 
       <aside class="message">$message</aside>
       
       <section id="section-common">
-      <div class="box" id="name-form">
-        <div>
-          <dl id="character-name">
-            <dt>キャラクター名</dt>
-            <dd>@{[input('characterName','text',"nameSet",'required')]}</dd>
-            <dt class="ruby">ふりがな</dt>
-            <dd>@{[input('characterNameRuby','text',"nameSet")]}</dd>
-          </dl>
-        </div>
-        <dl id="player-name">
-          <dt>プレイヤー名</dt>
-          <dd>@{[input('playerName')]}</dd>
-        </dl>
-      </div>
 HTML
 if($set::user_reqd){
   print <<"HTML";
@@ -196,9 +180,9 @@ HTML
         <dt>閲覧可否設定</dt>
         <dd id="forbidden-checkbox">
           <select name="forbidden">
-            <option value="">内容を全て開示する
-            <option value="battle" @{[ $pc{'forbidden'} eq 'battle' ? 'selected' : '' ]}>データ・数値のみ秘匿する
-            <option value="all"    @{[ $pc{'forbidden'} eq 'all'    ? 'selected' : '' ]}>内容を全て秘匿する
+            <option value="">内容を全て開示
+            <option value="battle" @{[ $pc{'forbidden'} eq 'battle' ? 'selected' : '' ]}>データ・数値のみ秘匿
+            <option value="all"    @{[ $pc{'forbidden'} eq 'all'    ? 'selected' : '' ]}>内容を全て秘匿
           </select>
         </dd>
         <dd id="hide-checkbox">
@@ -225,10 +209,26 @@ print <<"HTML";
           <dt>タグ</dt><dd>@{[ input 'tags','','','' ]}</dd>
         </dl>
       </div>
+
+      <div class="box" id="name-form">
+        <div>
+          <dl id="character-name">
+            <dt>キャラクター名</dt>
+            <dd>@{[input('characterName','text',"nameSet",'required')]}</dd>
+            <dt class="ruby">ふりがな</dt>
+            <dd>@{[input('characterNameRuby','text',"nameSet")]}</dd>
+          </dl>
+        </div>
+        <dl id="player-name">
+          <dt>プレイヤー名</dt>
+          <dd>@{[input('playerName')]}</dd>
+        </dl>
+      </div>
+
       <details class="box" id="regulation" @{[$mode eq 'edit' ? '':'open']}>
         <summary>作成レギュレーション</summary>
         <dl>
-          <dt>初期練度</dt>
+          <dt>練度</dt>
           <dd id="level-pre-grow"></dd>
           <dt>耐久値+</dt>
           <dd>@{[input("endurancePreGrow",'number','changeRegu','step="5"'.($set::make_fix?' readonly':''))]}</dd>
@@ -238,24 +238,88 @@ print <<"HTML";
         <div class="annotate" @{[ $pc{'convertSource'} eq 'キャラクターシート倉庫' ? '' : 'style="display:none"' ]}>
           ※コンバート時、副能力値の基本値を超える値は、クローズ時の成長としてこの欄に振り分けられます。<br>
           　ただし、（耐久は5、先制は2で）割り切れない「あまり」の値は特技等による補正として、副能力値の補正欄に振り分けています。<br>
-          　また、練度は自動的に計算されます。
         </div>
+        <div class="annotate">※練度は自動的に計算されます。</div>
       </details>
       <div id="area-status">
         @{[ image_form("${set::char_dir}${file}/image.$pc{'image'}?$pc{'imageUpdate'}") ]}
 
-        <div id="factors" class="box-union">
-          <dl class="box" id="factor">
-            <dt>ファクター</dt><dd><select name="factor" oninput="changeFactor();">@{[option "factor",'人間','吸血鬼']}</select></dd>
-          </dl>
-          <dl class="box" id="factor-core">
-            <dt><span class="h-only">信念</span><span class="v-only">起源</span></dt>
-            <dd>@{[input "factorCore"]}</dd>
-          </dl>
-          <dl class="box" id="factor-style">
-            <dt><span class="h-only">職能</span><span class="v-only">流儀</span></dt>
-            <dd>@{[input "factorStyle"]}</dd>
-          </dl>
+        <div id="factors" class="box">
+          <h2>練度:<span id="level-value"></span> ／ 能力値</h2>
+          <table class="edit-table">
+            <thead>
+              <tr>
+                <th></th>
+                <th></th>
+                <th>
+                  <span class="h-only"><i>♠</i>技</span>
+                  <span class="v-only"><i>♥</i>血</span>
+                </th>
+                <th>
+                  <span class="h-only"><i>♣</i>情</span>
+                  <span class="v-only"><i>♦</i>想</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th>ファクター</th>
+                <td><select name="factor" oninput="changeFactor();">@{[option "factor",'人間','吸血鬼']}</select></td>
+                <td>―</td>
+                <td>―</td>
+              </tr>
+              <tr>
+                <th>
+                  <span class="h-only">信念</span>
+                  <span class="v-only">起源</span>
+                </th>
+                <td>@{[ selectInput "factorCore","checkSubFactor('Core',this.value);calcStt()",@{$data::factor_list{$pc{'factor'}}{'core'}} ]}</td>
+                <td>@{[ input 'statusMain1Core','number','calcStt' ]}</td>
+                <td>@{[ input 'statusMain2Core','number','calcStt' ]}</td>
+              </tr>
+              <tr>
+                <th>
+                  <span class="h-only">職能</span>
+                  <span class="v-only">流儀</span>
+                </th>
+                <td>@{[ selectInput "factorStyle","checkSubFactor('Style',this.value);calcStt()",@{$data::factor_list{$pc{'factor'}}{'style'}} ]}</td>
+                <td>@{[ input 'statusMain1Style','number','calcStt' ]}</td>
+                <td>@{[ input 'statusMain2Style','number','calcStt' ]}</td>
+              </tr>
+              <tr class="total">
+                <th colspan="2">合計</th>
+                <td id="main1-total"></td>
+                <td id="main2-total"></td>
+              </tr>
+          </table>
+          <h2>副能力値</h2>
+          <table class="edit-table">
+            <thead>
+              <tr>
+                <th></th>
+                <th></th>
+                <th class="center">耐久値<div class="small" id="endurance-base"></div></th>
+                <th class="center">先制値<div class="small" id="initiative-base"></div></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th colspan="2">成長</th>
+                <td id="endurance-grow"></td>
+                <td id="initiative-grow"></td>
+              </tr>
+              <tr>
+                <th colspan="2">その他修正</th>
+                <td>@{[ input 'enduranceAdd','number','calcStt' ]}</td>
+                <td>@{[ input 'initiativeAdd','number','calcStt' ]}</td>
+              </tr>
+              <tr class="total">
+                <th colspan="2">合計</th>
+                <td id="endurance-total"></td>
+                <td id="initiative-total"></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
 
         <div id="personal" class="box-union">
@@ -269,45 +333,44 @@ print <<"HTML";
           <dl class="box"><dt>住まい</dt><dd>@{[input "dwelling"]}</dd><dd>@{[input "dwellingNote",'','','placeholder="備考"']}</dd></dl>
           <dl class="box"><dt>使用武器</dt><dd>@{[input "weapon"]}</dd><dd>@{[input "weaponNote",'','','placeholder="備考"']}</dd></dl>
         </div>
-
-        <div id="status" class="box-union">
-          <dl class="box" id="level">
-            <dt>練度</dt>
-            <dd id="level-value">1</dd>
-          </dl>
-          <dl class="box">
-            <dt>能力値</dt>
-            <dd>
-              <dl>
-                <dt>
-                  <span class="h-only"><i>♠</i>技</span>
-                  <span class="v-only"><i>♥</i>血</span>
-                </dt>
-                <dd>@{[input "statusMain1",'number','calcStt']}</dd>
-                <dt>
-                  <span class="h-only"><i>♣</i>情</span>
-                  <span class="v-only"><i>♦</i>想</span>
-                </dt>
-                <dd>@{[input "statusMain2",'number','calcStt']}</dd>
-              </dl>
-            </dd>
-          </dl>
-          <dl class="box">
-            <dt>副能力値</dt>
-            <dd>
-              <dl>
-                <dt>耐久値</dt><dd><span class="small" id="endurance-base" >0</span> +@{[input "enduranceAdd" ,'number','calcStt']}=<b id="endurance-total" >0</b></dd>
-                <dt>先制値</dt><dd><span class="small" id="initiative-base">0</span> +@{[input "initiativeAdd",'number','calcStt']}=<b id="initiative-total">0</b></dd>
-              </dl>
-            </dd>
-          </dl>
-        </div>
         
-        <div id="scar" class="box-union">
-          <dl class="box">
-            <dt>傷号</dt>
-            <dd>@{[input "scarName",'','scarCheck']}</dd>
-            <dd><textarea name="scarNote" placeholder="設定" rows="3">$pc{'scarNote'}</textarea></dd>
+        <dl id="scar" class="box">
+          <dt>傷号</dt>
+          <dd>@{[input "scarName",'','scarCheck']}</dd>
+          <dd><textarea name="scarNote" placeholder="設定" rows="3">$pc{'scarNote'}</textarea></dd>
+        </dl>
+      </div>
+      
+      <div class="box partner-edit">
+        <h2 id="head-servant">@{[ input 'servantOn','checkbox','toggleServant' ]}血僕／隷印</h2>
+        <div class="partner-table" id="servant">
+          <dl class="servant-data">
+            <dt></dt>
+            <dd>
+              <dl>
+                <dt id="servant-master-term">主</dt>
+                <dd>@{[ input 'servantMaster' ]}</dd>
+                
+                <dt id="servant-class-term">区分</dt>
+                <dd>@{[ input 'servantClass','','','list="list-servant-class"' ]}</dd>
+                
+                <dt id="servant-background-term">従属経緯</dt>
+                <dd>@{[ input 'servantBackground' ]}</dd>
+              </dl>
+            </dd>
+          </dl>
+          <dl class="partner-from">
+            <dt>隷印</dt>
+            <dd>
+              <dl>
+                <dt>位置</dt>
+                <dd>@{[ input 'servantSealPosition','','','list="list-servant-seal-position"' ]}</dd>
+                <dt>形状</dt>
+                <dd>@{[ input 'servantSealShape','','','list="list-servant-seal-shape"' ]}</dd>
+                <dt>主からの感情1</dt><dd>@{[ input 'servantEmotion1','','','list="list-servant-emotion1"' ]}</dd>
+                <dt>主からの感情2</dt><dd>@{[ input 'servantEmotion2','','','list="list-servant-emotion2"' ]}</dd>
+              </dl>
+            </dd>
           </dl>
         </div>
       </div>
@@ -508,40 +571,6 @@ print <<"HTML";
       <details class="box" id="free-note" @{[$pc{'freeNote'}?'open':'']}>
         <summary>容姿・経歴・その他メモ</summary>
         <textarea name="freeNote">$pc{'freeNote'}</textarea>
-        <details class="annotate">
-        <summary>テキスト装飾・整形ルール（クリックで展開）</summary>
-        ※メモ欄以外でも有効です。<br>
-        太字　：<code>''テキスト''</code>：<b>テキスト</b><br>
-        斜体　：<code>'''テキスト'''</code>：<span class="oblique">テキスト</span><br>
-        打消線：<code>%%テキスト%%</code>：<span class="strike">テキスト</span><br>
-        下線　：<code>__テキスト__</code>：<span class="underline">テキスト</span><br>
-        透明　：<code>{{テキスト}}</code>：<span style="color:transparent">テキスト</span><br>
-        ルビ　：<code>|テキスト《てきすと》</code>：<ruby>テキスト<rt>てきすと</rt></ruby><br>
-        傍点　：<code>《《テキスト》》</code>：<span class="text-em">テキスト</span><br>
-        透明　：<code>{{テキスト}}</code>：<span style="color:transparent">テキスト</span>（ドラッグ反転で見える）<br>
-        リンク：<code>[[テキスト>URL]]</code><br>
-        別シートへのリンク：<code>[テキスト#シートのID]</code><br>
-        <hr>
-        ※以下は一部の複数行の欄でのみ有効です。<br>
-        （有効な欄：「容姿・経歴・その他メモ」「履歴（自由記入）」）<br>
-        大見出し：行頭に<code>*</code><br>
-        中見出し：行頭に<code>**</code><br>
-        少見出し：行頭に<code>***</code><br>
-        左寄せ　：行頭に<code>LEFT:</code>：以降のテキストがすべて左寄せになります。<br>
-        中央寄せ：行頭に<code>CENTER:</code>：以降のテキストがすべて中央寄せになります。<br>
-        右寄せ　：行頭に<code>RIGHT:</code>：以降のテキストがすべて右寄せになります。<br>
-        横罫線（直線）：<code>----</code>（4つ以上のハイフン）<br>
-        横罫線（点線）：<code> * * * *</code>（4つ以上の「スペース＋アスタリスク」）<br>
-        横罫線（破線）：<code> - - - -</code>（4つ以上の「スペース＋ハイフン」）<br>
-        表組み　　：<code>|テキスト|テキスト|</code><br>
-        定義リスト：<code>:項目名|説明文</code><br>
-        　　　　　　<code>:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|説明文2行目</code> 項目名を記入しないか、半角スペースで埋めると上と結合<br>
-        折り畳み：行頭に<code>[>]項目名</code>：以降のテキストがすべて折り畳みになります。<br>
-        　　　　　項目名を省略すると、自動的に「詳細」になります。<br>
-        折り畳み終了：行頭に<code>[---]</code>：（ハイフンは3つ以上任意）<br>
-        　　　　　　　省略すると、以後のテキストが全て折りたたまれます。<br>
-        コメントアウト：行頭に<code>//</code>：記述した行を非表示にします。
-        </details>
       </details>
       
       <details class="box" id="free-history" @{[$pc{'freeHistory'}?'open':'']}>
@@ -648,11 +677,11 @@ print <<"HTML";
         <h2>プリセット （コピーペースト用）</h2>
         <textarea id="palettePreset" readonly style="height:20em"></textarea>
         <p>
-          <label>@{[ input 'paletteUseVar', 'checkbox','palettePresetChange']}デフォルト変数を使う</label>
+          <label>@{[ input 'paletteUseVar', 'checkbox','setChatPalette']}デフォルト変数を使う</label>
           ／
-          <label>@{[ input 'paletteUseBuff', 'checkbox','palettePresetChange']}バフデバフ用変数を使う</label>
+          <label>@{[ input 'paletteUseBuff', 'checkbox','setChatPalette']}バフデバフ用変数を使う</label>
           <br>
-          使用ダイスbot: <select name="paletteTool" onchange="palettePresetChange();" style="width:auto;">
+          使用ダイスbot: <select name="paletteTool" onchange="setChatPalette();" style="width:auto;">
           <option value="">ゆとチャadv.
           <option value="bcdice" @{[ $pc{'paletteTool'} eq 'bcdice' ? 'selected' : '']}>BCDice
           </select>
@@ -660,29 +689,8 @@ print <<"HTML";
         </div>
       </div>
       </section>
-      <section id="section-color" style="display:none;">
-      <h2>キャラクターシートのカラー設定</h2>
-      <label class="box color-custom">
-        <input type="checkbox" name="colorCustom" value="1" onchange="changeColor();" @{[ $pc{'colorCustom'} ? 'checked':'' ]}><i></i>キャラクターシートの色をカスタムする
-      </label>
-      <span class="box color-custom night-switch" onclick="nightModeChange()"><i></i>ナイトモード</span>
-      <div class="box color-custom">
-        <h2>見出し背景</h2>
-        <table>
-        <tr class="color-range-H"><th>色相</th><td><input type="range" name="colorHeadBgH" min="0" max="360" value="$pc{'colorHeadBgH'}" oninput="changeColor();"></td><td id="colorHeadBgHValue">$pc{'colorHeadBgH'}</td></tr>
-        <tr class="color-range-S"><th>彩度</th><td><input type="range" name="colorHeadBgS" min="0" max="100" value="$pc{'colorHeadBgS'}" oninput="changeColor();"></td><td id="colorHeadBgSValue">$pc{'colorHeadBgS'}</td></tr>
-        <tr class="color-range-L"><th>輝度</th><td><input type="range" name="colorHeadBgL" min="0" max="100" value="$pc{'colorHeadBgL'}" oninput="changeColor();"></td><td id="colorHeadBgLValue">$pc{'colorHeadBgL'}</td></tr>
-        </table>
-      </div>
-      <div class="box color-custom">
-        <h2>ベース背景</h2>
-        <table>
-        <tr class="color-range-H"><th>色相</th><td><input type="range" name="colorBaseBgH"  min="0" max="360" value="$pc{'colorBaseBgH'}" oninput="changeColor();"></td><td id="colorBaseBgHValue">$pc{'colorBaseBgH'}</td></tr>
-        <tr class="color-range-S"><th>色の濃さ</th><td><input type="range" name="colorBaseBgS"  min="0" max="100" value="$pc{'colorBaseBgS'}" oninput="changeColor();"></td><td id="colorBaseBgSValue">$pc{'colorBaseBgS'}</td></tr>
-        </table>
-      </div>
-      </section>
       
+      @{[ colorCostomForm ]}
       
       @{[ input 'birthTime','hidden' ]}
       <input type="hidden" name="id" value="$::in{'id'}">
@@ -723,10 +731,15 @@ HTML
 }
 print <<"HTML";
     </article>
+HTML
+# ヘルプ
+print textRuleArea( '','「容姿・経歴・その他メモ」「履歴（自由記入）」' );
+
+print <<"HTML";
   </main>
   <footer>
-    <p class="notes"><span>『人鬼血盟RPG ブラッドパス』は、</span><span>「からすば晴（N.G.P.）」及び「株式会社アークライト出版事業部」の著作物です。</span></p>
-    <p class="copyright">ゆとシートⅡ for BLP ver.${main::ver} - ゆとらいず工房</p>
+    <p class="notes">©からすば晴／N.G.P.／アークライト／新紀元社「人鬼血盟RPG ブラッドパス」</p>
+    <p class="copyright">©<a href="https://yutorize.2-d.jp">ゆとらいず工房</a>「ゆとシートⅡ」ver.${main::ver}</p>
   </footer>
   <datalist id="list-belief">
     <option value="義士">
@@ -877,31 +890,52 @@ print <<"HTML";
     <option value="安心感">
     <option value="不安">
   </datalist>
+  <datalist id="list-servant-class">
+    <option value="戦奴">
+    <option value="玩倶">
+    <option value="働具">
+  </datalist>
+  <datalist id="list-servant-seal-position">
+    <option value="手首">
+    <option value="胸">
+    <option value="背中">
+    <option value="首">
+    <option value="足首">
+    <option value="腹">
+    <option value="舌">
+  </datalist>
+  <datalist id="list-servant-seal-shape">
+    <option value="鎖">
+    <option value="数字">
+    <option value="傷跡">
+    <option value="花">
+    <option value="目">
+    <option value="文字">
+    <option value="固有紋様">
+  </datalist>
+  <datalist id="list-servant-emotion1">
+    <option value="独占欲">
+    <option value="有為">
+    <option value="憐憫">
+    <option value="優越感">
+    <option value="滑稽">
+    <option value="偏愛">
+    <option value="嗜虐心">
+  </datalist>
+  <datalist id="list-servant-emotion2">
+    <option value="家畜">
+    <option value="美品">
+    <option value="消耗品">
+    <option value="美術品">
+    <option value="娯楽">
+    <option value="側近">
+    <option value="愛用品">
+  </datalist>
   <script>
 HTML
-print 'const synStats = {';
-foreach (keys %data::syndrome_status) {
-  next if !$_;
-  my @ar = @{$data::syndrome_status{$_}};
-  print '"'.$_.'":{"body":'.$ar[0].',"sense":'.$ar[1].',"mind":'.$ar[2].',"social":'.$ar[3].'},'
-}
-print "};\n";
-print 'const awakens = {';
-foreach (@data::awakens) {
-  print '"'.@$_[0].'":'.@$_[1].','
-}
-print "};\n";
-print 'const impulses = {';
-foreach (@data::impulses) {
-  print '"'.@$_[0].'":'.@$_[1].','
-}
-print "};\n";
-## チャットパレット
+print 'const factorList = '.(JSON::PP->new->encode(\%data::factor_list)).";\n";
+print 'const factorData = '.(JSON::PP->new->encode(\%data::factor_data)).";\n";
 print <<"HTML";
-  let palettePresetText = {
-    'ytc'    : { 'full': `@{[ palettePreset()         ]}`, 'simple': `@{[ palettePresetSimple()         ]}` } ,
-    'bcdice' : { 'full': `@{[ palettePreset('bcdice') ]}`, 'simple': `@{[ palettePresetSimple('bcdice') ]}` } ,
-  };
   </script>
 </body>
 

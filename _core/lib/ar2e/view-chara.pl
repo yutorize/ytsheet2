@@ -19,7 +19,7 @@ $SHEET = HTML::Template->new( filename => $set::skin_sheet, utf8 => 1,
 ### キャラクターデータ読み込み #######################################################################
 our %pc = pcDataGet();
 
-### 閲覧禁止データ ###################################################################################
+### 閲覧禁止データ --------------------------------------------------
 if($pc{'forbidden'} && !$pc{'yourAuthor'}){
   my $author = $pc{'playerName'};
   my $protect   = $pc{'protect'};
@@ -194,20 +194,13 @@ else {
   $pc{'freeNote'} = $pc{'freeNoteView'} if $pc{'freeNoteView'};
 }
 
-### コンバート --------------------------------------------------
-if($pc{'colorCustom'} && $pc{'colorHeadBgA'}) {
-  ($pc{'colorHeadBgH'}, $pc{'colorHeadBgS'}, $pc{'colorHeadBgL'}) = rgb_to_hsl($pc{'colorHeadBgR'},$pc{'colorHeadBgG'},$pc{'colorHeadBgB'});
-  ($pc{'colorBaseBgH'}, $pc{'colorBaseBgS'}, undef) = rgb_to_hsl($pc{'colorBaseBgR'},$pc{'colorBaseBgG'},$pc{'colorBaseBgB'});
-  $pc{'colorBaseBgS'} = $pc{'colorBaseBgS'} * $pc{'colorBaseBgA'} * 10;
-}
-foreach (1..17) {
-  $pc{'craftGramarye'.$_} = $pc{'craftGramarye'.$_} || $pc{'magicGramarye'.$_};
-}
-
 ### アップデート --------------------------------------------------
 if($pc{'ver'}){
   %pc = data_update_chara(\%pc);
 }
+
+### カラー設定 --------------------------------------------------
+setColors();
 
 ### 置換後出力 #######################################################################################
 ### データ全体 --------------------------------------------------
@@ -582,11 +575,6 @@ sub cashCheck(){
   elsif($num < 0) { return '<b class="cash minus">'.$text.'</b>'; }
   else { return '<b class="cash">'.$text.'</b>'; }
 }
-
-### カラーカスタム --------------------------------------------------
-$SHEET->param(colorBaseBgS => $pc{colorBaseBgS} * 0.7);
-$SHEET->param(colorBaseBgL => 100 - $pc{colorBaseBgS} / 6);
-$SHEET->param(colorBaseBgD => 15);
 
 ### バックアップ --------------------------------------------------
 if($::in{'id'}){

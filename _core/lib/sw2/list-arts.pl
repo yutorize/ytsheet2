@@ -19,16 +19,16 @@ $INDEX = HTML::Template->new( filename  => $set::skin_tmpl , utf8 => 1,
   search_path_on_include => 1,
   die_on_bad_params => 0, die_on_missing_include => 0, case_sensitive => 1, global_vars => 1);
 
-$INDEX->param(modeItemList => 1);
+$INDEX->param(modeArtsList => 1);
 $INDEX->param(modeMylist => 1) if $mode eq 'mylist';
-$INDEX->param(typeName => 'アイテム');
+$INDEX->param(typeName => '魔法');
 
 $INDEX->param(LOGIN_ID => $LOGIN_ID);
 $INDEX->param(OAUTH_MODE => $set::oauth_service);
 $INDEX->param(OAUTH_LOGIN_URL => $set::oauth_login_url);
 
 $INDEX->param(mode => $mode);
-$INDEX->param(type => 'i');
+$INDEX->param(type => 'a');
 
 ### データ処理 #######################################################################################
 ### クエリ --------------------------------------------------
@@ -37,7 +37,7 @@ foreach (keys %::in) {
   $::in{$_} =~ s/</&lt;/g;
   $::in{$_} =~ s/>/&gt;/g;
 }
-if(!($mode eq 'mylist' || $::in{'tag'} || $::in{'category'} || $::in{'name'} || $::in{'author'} || $::in{'age'})){
+if(!($mode eq 'mylist' || $::in{'tag'} || $::in{'name'} || $::in{'category'} || $::in{'sub'} || $::in{'author'})){
   $index_mode = 1;
   $INDEX->param(modeIndex => 1);
 }
@@ -46,9 +46,9 @@ foreach(
   'mode',
   'tag',
   'name',
-  'category',
+  #'category',
+  'sub',
   'author',
-  'age',
   ){
   push( @q_links, $_.'='.uri_escape_utf8(decode('utf8', param($_))) ) if param($_);
 }
@@ -77,7 +77,7 @@ my @list;
 #  $INDEX->param(ListGroups => \@grouplist);
 #}
 #else { #通常
-  open (my $FH, "<", $set::itemlist);
+  open (my $FH, "<", $set::artslist);
   @list = <$FH>;
   close($FH);
 #}
@@ -93,34 +93,42 @@ elsif (
   && !($mode eq 'mylist')
   && !$::in{'tag'}
 ){
-  @list = grep { $_ !~ /^(?:[^<]*?<>){13}[^<0]/ } @list;
+  @list = grep { $_ !~ /^(?:[^<]*?<>){11}[^<0]/ } @list;
 }
 
 ## カテゴリ検索
-if($::in{'category'} ne 'all'){
-  my @category_query = split('\s', decode('utf8', $::in{'category'}));
-  foreach (@category_query) {
-    my $q = $_;
-    if($q =~ s/^-//){ @list = grep { $_ !~ /^(?:[^<]*?<>){6}[^<]*?\Q$q\E/ } @list; } #マイナス検索
-    else            { @list = grep { $_ =~ /^(?:[^<]*?<>){6}[^<]*?\Q$q\E/ } @list; }
-  }
-  $INDEX->param(category => "@category_query");
+my %category = ('magic'=>'魔法','god'=>'神格','school'=>'流派');
+my $category_query = $::in{'category'};
+if($category_query && $::in{'category'} ne 'all'){
+  @list = grep { $_ =~ /^(?:[^<]*?<>){6}(\Q$category_query\E)?</ } @list;
+  $INDEX->param(category => $category{$category_query});
 }
+{
+  my @categories;
+  foreach ('magic','god','school'){
+    push(@categories, {
+      "ID" => $_,
+      "NAME" => $category{$_},
+      "SELECTED" => $category_query eq $_ ? 'selected' : '',
+    });
+  }
+  $INDEX->param(Groups => \@categories);
+}
+
+## 小分類検索
+my $sub_query = decode('utf8', $::in{'sub'});
+if($sub_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){7}[^<]*?\Q$sub_query\E/i } @list; }
+$INDEX->param(sub => $sub_query);
 
 ## タグ検索
 my $tag_query = decode('utf8', $::in{'tag'});
-if($tag_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){12}[^<]*? \Q$tag_query\E / } @list; }
+if($tag_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){10}[^<]*? \Q$tag_query\E / } @list; }
 $INDEX->param(tag => $tag_query);
 
 ## 名前検索
 my $name_query = decode('utf8', $::in{'name'});
 if($name_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){4}[^<]*?\Q$name_query\E/i } @list; }
 $INDEX->param(name => $name_query);
-
-## 製作時期検索
-my $age_query = decode('utf8', $::in{'age'});
-if($age_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){8}[^<]*?\Q$age_query\E/i } @list; }
-$INDEX->param(age => $age_query);
 
 ### ソート --------------------------------------------------
 if   ($sort eq 'name')  { my @tmp = map { (split /<>/)[4] } @list; @list = @list[sort {$tmp[$a] cmp $tmp[$b]} 0 .. $#tmp]; }
@@ -135,24 +143,31 @@ my $pagestart = $page * $set::pagemax - $set::pagemax;
 my $pageend   = $page * $set::pagemax - 1;
 foreach (@list) {
   my (
-    $id, undef, undef, $updatetime, $name, $author, $category, $price, $age, $summary, $type,
+    $id, undef, undef, $updatetime, $name, $author, $category, $sub, $summary,
     $image, $tag, $hide
   ) = (split /<>/, $_)[0..13];
   
   #カウント
-  $count{'すべて'}++;
+  $count{$category}++;
 
   #表示域以外は弾く
   if (
-    ( $index_mode && $count{'すべて'} > $set::list_maxline && $set::list_maxline) || #TOPページ
-    (!$index_mode && $set::pagemax && ($count{'すべて'} < $pagestart || $count{'すべて'} > $pageend)) #それ以外
+    ( $index_mode && $count{$category} > $set::list_maxline && $set::list_maxline) || #TOPページ
+    ( !$::in{'category'} && !$::in{'tag'} && $mode ne 'mylist' && $count{$category} > $set::list_maxline && $set::list_maxline) || #検索結果（分類指定なし／マイリストでもなし）
+    (!$index_mode && $set::pagemax && ($count{$category} < $pagestart || $count{$category} > $pageend)) #それ以外
   ){
     next;
   }
   
-  #グループ（分類）
-  $category =~ s/[ 　]/<br>/g;
+  #名前
+  if($category =~ /magic|school/){ $name = '【'.$name.'】'; }
   
+  #グループ（分類）
+  my $category_text = $category{$category};
+  if($sub =~ /妖精/){ $sub =~ s#(／[0-9]+)#$1ランク#; }
+  else { $sub =~ s#(／[0-9]+)#$1レベル#; }
+  $sub = subTextShape($sub);
+
   #更新日時
   my ($min,$hour,$day,$mon,$year) = (localtime($updatetime))[1..5];
   $year += 1900; $mon++;
@@ -164,31 +179,30 @@ foreach (@list) {
     "ID" => $id,
     "NAME" => $name,
     "AUTHOR" => $author,
-    "CATEGORY" => $category,
-    "PRICE" => $price,
-    "AGE" => $age,
+    "CATEGORY" => $category_text,
+    "SUB" => $sub,
     "SUMMARY" => $summary,
-    "MAGIC" => ($type =~ /\[ma\]/ ? "<img class=\"${set::icon_dir}wp_magic.png\">" : ''),
     "DATE" => $updatetime,
     "HIDE" => $hide,
   });
   
-  push(@{$grouplist{'すべて'}}, @characters);
+  push(@{$grouplist{$category}}, @characters);
+}
+sub subTextShape {
+  my @texts = split('／', shift);
+  foreach(@texts){ $_ = "<span>$_</span>"; }
+  return '<div>'.join('／', @texts).'</div>';
 }
 
 ### 出力用配列 --------------------------------------------------
 my @characterlists;
-our @categories = (
-  ['すべて','']
-);
-foreach (@categories){
-  my $name = $_->[0];
-  next if !$count{$name};
+foreach my $id ('magic','god','school'){
+  next if !$count{$id};
 
   ## ページネーション
   my $navbar;
-  if($set::pagemax && !$index_mode){
-    my $lastpage = ceil($count{$name} / $set::pagemax);
+  if($set::pagemax && !$index_mode && $::in{'category'}){
+    my $lastpage = ceil($count{$id} / $set::pagemax);
     foreach(1 .. $lastpage){
       if($_ == $page){
         $navbar .= '<b>'.$_.'</b> ';
@@ -198,7 +212,7 @@ foreach (@categories){
         $_ == 1 ||
         $_ == $lastpage
       ){
-        $navbar .= '<a href="./?type=i'.$q_links.'&page='.$_.'&sort='.$::in{'sort'}.'">'.$_.'</a> '
+        $navbar .= '<a href="./?type=a&category='.$::in{'category'}.$q_links.'&page='.$_.'&sort='.$::in{'sort'}.'">'.$_.'</a> '
       }
       else { $navbar .= '...' }
     }
@@ -208,10 +222,10 @@ foreach (@categories){
 
   ##
   push(@characterlists, {
-    "URL" => uri_escape_utf8($name),
-    "NAME" => $name,
-    "NUM" => $count{$name},
-    "Characters" => [@{$grouplist{$name}}],
+    "URL" => $id,
+    "NAME" => $category{$id},
+    "NUM" => $count{$id},
+    "Characters" => [@{$grouplist{$id}}],
     "NAV" => $navbar,
   });
 }

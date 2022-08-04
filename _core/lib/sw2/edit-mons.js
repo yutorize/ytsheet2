@@ -3,7 +3,8 @@ const gameSystem = 'sw2';
 
 window.onload = function() {
   nameSet();
-  palettePresetChange();
+
+  changeColor();
 }
 
 // 送信前チェック ----------------------------------------
@@ -18,6 +19,7 @@ function formCheck(){
     form.pass.focus();
     return false;
   }
+  return true;
 }
 
 // 名前 ----------------------------------------

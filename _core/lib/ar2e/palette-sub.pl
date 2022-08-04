@@ -84,6 +84,7 @@ sub paletteProperties {
   ## PC
   if  (!$type){
     push @propaties, "### ■能力値";
+    push @propaties, "//CL=$::pc{'level'}";
     push @propaties, "//筋力=$::pc{'rollStr'}";
     push @propaties, "//器用=$::pc{'rollDex'}";
     push @propaties, "//敏捷=$::pc{'rollAgi'}";

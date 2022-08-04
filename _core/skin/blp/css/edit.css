@@ -26,7 +26,12 @@ body:not(.type-human) .h-only {
 #area-status {
   min-height: 0%;
   margin: 0 0 1rem;
-    grid-template-columns: 2fr 1.3fr;
+  grid-template-columns: 2fr 1.3fr;
+  grid-template-areas:
+    "FAC IMG"
+    "PER IMG"
+    "SCR IMG"
+  ;
 }
 @media screen and (max-width:735px){
   #area-status {
@@ -37,7 +42,6 @@ body:not(.type-human) .h-only {
       "IMG "
       "FAC "
       "PER "
-      "STT "
       "SCR "
     ;
   }
@@ -55,16 +59,57 @@ body:not(.type-human) .h-only {
   width: 7em;
 }
 
-#status {
-  grid-template-columns: 0.4fr 0.9fr 1.7fr;
+#level-value {
+  display: inline-block;
+  margin: 0 .3em 0;
+  transform: scale(1.5) translateY(0.1em);
 }
-#status > dl dd dl dt {
-  display: flex;
-  align-items: center;
+#factors {
+  display: block;
 }
-#area-status #status input {
-  width: 4em;
+#factors h2 {
+  margin-top: 0;
+  padding-bottom: 0;
+  border-top: 0;
 }
+#factors table {
+  margin-top: -1em;
+}
+#factors table thead th { min-height: 1em; }
+#factors table thead th:nth-child(1) { width: 7em; }
+#factors table thead th:nth-child(2) { width: 8em; }
+#factors table thead th:empty::before { content:"　"; }
+#factors th div.small {
+  margin-top: 1px;
+  letter-spacing: 1px;
+  font-family: var(--font-proportional);
+}
+#factors th div.small::before { content:"("; }
+#factors th div.small::after  { content:")"; }
+#factors th i {
+  font-family: var(--base-font-family-min);
+  font-style: normal;
+}
+#factors table tbody th {
+  border-right-style: hidden;
+  text-align: right;
+  padding-right: .5em;
+}
+#factors table tbody th[colspan] {
+  border-right-style: dotted;
+}
+#factors table tbody tr.total td {
+  font-size: 110%;
+  font-weight: bold;
+}
+#factors table tbody input[type="number"] {
+  width: 5em;
+}
+#factors table tbody input[readonly] {
+  border-style: dotted;
+  background-color: transparent;
+}
+
 @media screen and (max-width:735px){
   #status {
     grid-template-columns: 1fr 2fr;
@@ -178,6 +223,33 @@ body:not(.type-human) .h-only {
   .partner-table > dl.partner-data > dd dl dd:nth-of-type(6) { grid-column: 1 ; grid-row: 8; }
 }
 
+#servant {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+#servant .servant-data {
+  border-right-width: 1px;
+  border-right-style: solid;
+}
+
+#servant .servant-data dl {
+  display: grid;
+  grid-template-columns: 2.5fr 1fr;
+}
+@media screen and (max-width:735px){
+  #servant {
+    display: block;
+  }
+}
+#servant #servant-master-term      + dd { grid-row: 2; }
+#servant #servant-class-term       + dd { grid-row: 2; }
+#servant #servant-background-term  + dd { grid-row: 4; grid-column: span 2; }
+
+#servant .partner-from {
+  grid-column: 2;
+  grid-row: 1;
+}
 
 #bloodarts,
 #arts {

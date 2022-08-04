@@ -72,6 +72,12 @@ hr {
   border-width: 1px 0 0;
   border-style: solid;
 }
+hr.dotted {
+  border-style: dotted;
+}
+hr.dashed {
+  border-style: dashed;
+}
 
 table, tr, th, td {
   border-width: 0;
@@ -124,6 +130,7 @@ select {
 body {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(auto, 900px) minmax(0, 1fr);
+  grid-template-rows: max-content auto max-content max-content;
   position: relative;
   min-height: 100vh;
   background-color: var(--bg-color);
@@ -166,7 +173,6 @@ header a {
 main {
   grid-column: 2 / 3;
   grid-row: 2 / 3;
-  min-height: calc(100vh - 11rem);
   margin: 0;
   padding: 4rem 0 1rem;
   border-width: 0px 3px;
@@ -199,7 +205,6 @@ footer {
   font-size: 1.6rem;
 }
 footer a {
-  margin-right: 1em;
   color: #ddf !important;
 }
 
@@ -406,6 +411,19 @@ header nav ul li.small + li.very-small {
   margin-left: 0.8rem;
 }
 
+header nav .nightmode-icon::before {
+  font-size: 1.4em;
+  line-height: 3;
+}
+.nightmode-icon::before {
+  content: "\f699";
+  font-family: "Font Awesome 5 Free";
+  font-weight: bold;
+}
+.night .nightmode-icon::before {
+  content: "\f185";
+}
+
 /* // Main-Nav
 ---------------------------------------------------------------------------------------------------- */
 main nav {
@@ -561,9 +579,3 @@ main nav ul li a:hover {
   margin: auto;
   text-align: center;
 }
-
-
-
-
-
-

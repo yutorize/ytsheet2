@@ -9,11 +9,20 @@ our $LOGIN_ID = check;
 our $mode = $::in{'mode'};
 $::in{'log'} ||= $::in{'backup'};
 
-if($set::user_reqd && !check){ error('ログインしていません。'); }
+if($set::user_reqd && !$LOGIN_ID){ error('ログインしていません。'); }
 ### 個別処理 --------------------------------------------------
 my $type = $::in{'type'};
+my $file;
 our %conv_data = ();
-if($mode eq 'convert'){
+
+if($mode eq 'edit'){
+  (undef, undef, $file, $type, my $user) = getfile($::in{'id'},$::in{'pass'},$LOGIN_ID);
+  $file = $user ? '_'.$user.'/'.$file : $file;
+}
+elsif($mode eq 'copy'){
+  ($file, $type) = (getfile_open($::in{'id'}))[0,1];
+}
+elsif($mode eq 'convert'){
   if($::in{'url'}){
     require $set::lib_convert;
     %conv_data = dataConvert($::in{'url'});
@@ -21,22 +30,36 @@ if($mode eq 'convert'){
   }
   elsif($::in{'file'}){
     use JSON::PP;
-    my $file; my $buffer; my $i;
+    my $data; my $buffer; my $i;
     while(my $bytesread = read(param('file'), $buffer, 2048)) {
       if(!$i && $buffer !~ /^{/){ error '有効なJSONデータではありません。' }
-      $file .= $buffer;
+      $data .= $buffer;
       $i++;
     }
-    %conv_data =  %{ decode_json( $file) };
+    %conv_data =  %{ decode_json( $data) };
     $type = $conv_data{'type'};
   }
   else {
     error('URLが入力されていない、または、ファイルが選択されていません。');
   }
 }
+if(!$LOGIN_ID && $mode =~ /^(?:blanksheet|copy|convert)$/){
+  my $max_files = 32000;
+  my $data_dir;
+  if   ($type eq 'm'){ $data_dir = $set::mons_dir; }
+  elsif($type eq 'i'){ $data_dir = $set::item_dir; }
+  elsif($type eq 'a'){ $data_dir = $set::arts_dir; }
+  else               { $data_dir = $set::char_dir; }
+  opendir my $dh, $data_dir;
+  my $num_files = () = readdir($dh);
+  if($num_files-2 >= $max_files){
+    error("登録数上限です。($num_files/$max_files)<br>アカウントに紐づけないデータは、これ以上登録できないため、アカウント登録・ログインをしてから作成を行ってください。");
+  }
+}
 
 if   ($type eq 'm'){ require $set::lib_edit_mons; }
 elsif($type eq 'i'){ require $set::lib_edit_item; }
+elsif($type eq 'a'){ require $set::lib_edit_arts; }
 else               { require $set::lib_edit_char; }
 
 ### 共通サブルーチン --------------------------------------------------
@@ -44,24 +67,10 @@ else               { require $set::lib_edit_char; }
 sub pcDataGet {
   my $mode = shift;
   my %pc;
-  my $file;
   my $message;
-  my $datadir = ($type eq 'm') ? $set::mons_dir : ($type eq 'i') ? $set::item_dir : $set::char_dir;
-  # エラー
-  if($main::make_error) {
-    $mode = ($mode eq 'save') ? 'edit' : 'blanksheet';
-    for (param()){ $pc{$_} = decode('utf8', param($_)); }
-    $message = $::make_error;
-  }
+  my $datadir = ($type eq 'm') ? $set::mons_dir : ($type eq 'i') ? $set::item_dir : ($type eq 'a') ? $set::arts_dir : $set::char_dir;
   # 保存 / 編集 / 複製 / コンバート
-  elsif($mode eq 'edit' || $mode eq 'save'){
-    if($mode eq 'save'){
-      $mode = 'edit';
-      $message .= 'データを更新しました。<a href="./?id='.$::in{'id'}.'">⇒シートを確認する</a>';
-    }
-    (undef, undef, $file, undef, my $user) = getfile($::in{'id'},$::in{'pass'},$LOGIN_ID);
-    $file = $user ? '_'.$user.'/'.$file : $file;
-
+  if($mode eq 'edit'){
     my $datatype = ($::in{'log'}) ? 'logs' : 'data';
     my $hit = 0;
     open my $IN, '<', "${datadir}${file}/${datatype}.cgi" or &login_error;
@@ -84,7 +93,6 @@ sub pcDataGet {
     }
   }
   elsif($mode eq 'copy'){
-    $file = (getfile_open($::in{'id'}))[0];
     my $datatype = ($::in{'log'}) ? 'logs' : 'data';
     my $hit = 0;
     open my $IN, '<', "${datadir}${file}/${datatype}.cgi" or error 'データがありません。';
@@ -102,7 +110,7 @@ sub pcDataGet {
     if($datatype eq 'logs' && !$hit){ error("過去ログ（$::in{'log'}）が見つかりません。"); }
 
     delete $pc{'image'};
-    $pc{'protect'} = 'password';
+    delete $pc{'protect'};
 
     $message  = '「<a href="./?id='.$::in{'id'}.'" target="_blank"><!NAME></a>」';
     $message .= 'の<br><a href="./?id='.$::in{'id'}.'&log='.$::in{'log'}.'" target="_blank">'.$pc{'updateTime'}.'</a> 時点のバックアップデータ' if $::in{'log'};
@@ -111,9 +119,10 @@ sub pcDataGet {
   elsif($mode eq 'convert'){
     %pc = %::conv_data;
     delete $pc{'image'};
-    $pc{'protect'} = 'password';
+    delete $pc{'protect'};
     $message = '「<a href="'.$::in{'url'}.'" target="_blank"><!NAME></a>」をコンバートして新規作成します。<br>（まだ保存はされていません）';
   }
+  ##
   return (\%pc, $mode, $file, $message)
 }
 ## トークン生成
@@ -174,6 +183,7 @@ sub image_form {
           <input type="hidden" name="imageCompressedType">
         </p>
         <script>
+          const imageType = 'character';
           // ドラッグ＆ドロップで画像アップ
           document.getElementById('image-custom').addEventListener('dragover',function(e){
             e.preventDefault();
@@ -259,18 +269,173 @@ sub image_form {
 HTML
 }
 
+## カラーカスタム欄
+sub colorCostomForm {
+  return <<"HTML";
+      <section id="section-color" style="display:none;">
+      <h2>シートのカラー設定</h2>
+      <div class="box-union">
+        <div class="box color-custom">
+          <h2>メインカラー</h2>
+          <table>
+          <tr class="color-range-H"><th>色相</th><td><input type="range" name="colorHeadBgH" min="0" max="360" value="$::pc{'colorHeadBgH'}" oninput="changeColor();"></td><td id="colorHeadBgHValue">$::pc{'colorHeadBgH'}</td></tr>
+          <tr class="color-range-S"><th>彩度</th><td><input type="range" name="colorHeadBgS" min="0" max="100" value="$::pc{'colorHeadBgS'}" oninput="changeColor();"></td><td id="colorHeadBgSValue">$::pc{'colorHeadBgS'}</td></tr>
+          <tr class="color-range-L"><th>輝度</th><td><input type="range" name="colorHeadBgL" min="0" max="100" value="$::pc{'colorHeadBgL'}" oninput="changeColor();"></td><td id="colorHeadBgLValue">$::pc{'colorHeadBgL'}</td></tr>
+          </table>
+        </div>
+        <div class="box color-custom">
+          <h2>サブカラー</h2>
+          <table>
+          <tr class="color-range-H"><th>色相</th><td><input type="range" name="colorBaseBgH"  min="0" max="360" value="$::pc{'colorBaseBgH'}" oninput="changeColor();"></td><td id="colorBaseBgHValue">$::pc{'colorBaseBgH'}</td></tr>
+          <tr class="color-range-S"><th>色の濃さ</th><td><input type="range" name="colorBaseBgS"  min="0" max="100" value="$::pc{'colorBaseBgS'}" oninput="changeColor();"></td><td id="colorBaseBgSValue">$::pc{'colorBaseBgS'}</td></tr>
+          </table>
+          <hr>
+          <p class="right"><span class="button" onclick="setDefaultColor();">デフォルトに戻す</span></p>
+        </div>
+      </div>
+      <div class="color-sample">
+        <div class="light">
+          <div class="name">色見本</div>
+          <div class="box">
+            <table class="data-table">
+              <thead><tr><th>データ表組み</th><th>項目1</th><th>項目2</th></tr></thead>
+              <tbody>
+                <tr><td>ＡＡＡ</td><td>+1</td><td>+0</td></tr>
+                <tr><td>ＢＢＢ</td><td>+2</td><td>+0</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="box">
+            <h2>大見出し</h2>
+            <h3>中見出し</h3>
+            <h4>小見出し</h4>
+            <table class="note-table">
+              <thead><tr><th>テーブルヘッダ</th><td></td></tr></thead>
+              <tbody><tr><th>テーブル見出し</th><td>テーブルセル</td></tr></tbody>
+            </table>
+            <p>
+              <a class="link">未読リンク</a> <a class="visited">既読リンク</a>
+            </p>
+          </div>
+        </div>
+        <div class="night">
+          <div class="name">色見本</div>
+          <div class="box">
+            <table class="data-table">
+              <thead><tr><th>データ表組み</th><th>項目1</th><th>項目2</th></tr></thead>
+              <tbody>
+                <tr><td>ＡＡＡ</td><td>+1</td><td>+0</td></tr>
+                <tr><td>ＢＢＢ</td><td>+2</td><td>+0</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="box">
+            <h2>大見出し</h2>
+            <h3>中見出し</h3>
+            <h4>小見出し</h4>
+            <table class="note-table">
+              <thead><tr><th>テーブルヘッダ</th><td></td></tr></thead>
+              <tbody><tr><th>テーブル見出し</th><td>テーブルセル</td></tr></tbody>
+            </table>
+            <p>
+              <a class="link">未読リンク</a> <a class="visited">既読リンク</a>
+            </p>
+          </div>
+        </div>
+      </div>
+      </section>
+HTML
+}
+
+## テキスト整形ルール
+sub textRuleArea {
+  my $system_rule = shift;
+  my $multiline = shift;
+  return <<"HTML";
+    <aside id="text-rule" class="sticky-footer" style="display:none">
+      <h2>テキスト装飾・整形ルール</h2>
+      <i class="close-button" onclick="view('text-rule')"></i>
+      <div>
+        以下の書式で記入することで、テキスト装飾・整形が行なえます。<br>
+        太字　：<code>''テキスト''</code>：<b>テキスト</b><br>
+        斜体　：<code>'''テキスト'''</code>：<span class="oblique">テキスト</span><br>
+        打消線：<code>%%テキスト%%</code>：<span class="strike">テキスト</span><br>
+        下線　：<code>__テキスト__</code>：<span class="underline">テキスト</span><br>
+        透明　：<code>{{テキスト}}</code>：<span style="color:transparent">テキスト</span><br>
+        ルビ　：<code>|テキスト《てきすと》</code>：<ruby>テキスト<rt>てきすと</rt></ruby><br>
+        傍点　：<code>《《テキスト》》</code>：<span class="text-em">テキスト</span><br>
+        透明　：<code>{{テキスト}}</code>：<span style="color:transparent">テキスト</span>（ドラッグ反転で見える）<br>
+        リンク：<code>[[テキスト>URL]]</code><br>
+        別のゆとシートへのリンク：<code>[テキスト#シートのID]</code><br>
+        <br>
+        ${system_rule}
+        <hr class="dotted">
+        ※以下は一部の複数行の欄でのみ有効です。<br>
+        （有効な欄：${multiline}）<br>
+        大見出し：行頭に<code>*</code>：1行目に記述すると項目の見出しを差し替え<br>
+        中見出し：行頭に<code>**</code><br>
+        小見出し：行頭に<code>***</code><br>
+        左寄せ　：行頭に<code>LEFT:</code>：以降のテキストがすべて左寄せになります。<br>
+        中央寄せ：行頭に<code>CENTER:</code>：以降のテキストがすべて中央寄せになります。<br>
+        右寄せ　：行頭に<code>RIGHT:</code>：以降のテキストがすべて右寄せになります。<br>
+        横罫線（直線）：<code>----</code>（4つ以上のハイフン）<br>
+        横罫線（点線）：<code> * * * *</code>（4つ以上の「スペース＋アスタリスク」）<br>
+        横罫線（破線）：<code> - - - -</code>（4つ以上の「スペース＋ハイフン」）<br>
+        表組み　　：<code>|テキスト|テキスト|</code>：表組み（テーブル）を作成します。<br>
+        　　　　　　<code>|~テキスト|</code>のようにセル頭に~で見出しセルになります。<br>
+        　　　　　　<code>|&gt;|テキスト|</code>のように&gt;単独で右のセルと結合します。<br>
+        　　　　　　<code>|~|</code>のように~単独で上のセルと結合します。<br>
+        定義リスト：<code>:項目名|説明文</code><br>
+        　　　　　　<code>:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|説明文2行目</code> 項目名を記入しないか、半角スペースで埋めると上と結合します。<br>
+        折り畳み：行頭に<code>[>]項目名</code>：以降のテキストがすべて折り畳みになります。<br>
+        　　　　　項目名を省略すると、自動的に「詳細」になります。<br>
+        折り畳み終了：行頭に<code>[---]</code>：（ハイフンは3つ以上任意）<br>
+        　　　　　　　省略すると、以後のテキストが全て折りたたまれます。<br>
+        コメントアウト：行頭に<code>//</code>：記述した行を非表示にします。
+      </div>
+    </aside>
+HTML
+}
+
 ## 簡略化系
 sub input {
-  my ($name, $type, $oniput, $other) = @_;
-  if($oniput && $oniput !~ /\(.*?\)$/){ $oniput .= '()'; }
+  my ($name, $type, $oninput, $other) = @_;
+  if($oninput && $oninput !~ /\(.*?\)$/){ $oninput .= '()'; }
   '<input'.
   ' type="'.($type?$type:'text').'"'.
   ' name="'.$name.'"'.
   ' value="'.($_[1] eq 'checkbox' ? 1 : $::pc{$name}).'"'.
   ($other?" $other":"").
   ($type eq 'checkbox' && $::pc{$name}?" checked":"").
-  ($oniput?' oninput="'.$oniput.'"':"").
+  ($oninput?' oninput="'.$oninput.'"':"").
   '>';
+}
+sub checkbox {
+  my ($name, $text, $oninput) = @_;
+  if($oninput && $oninput !~ /\(.*?\)$/){ $oninput .= '()'; }
+  '<label class="check-button">'.
+  '<input type="checkbox"'.
+  ' name="'.$name.'"'.
+  ' value="1"'.
+  ($::pc{$name}?" checked":"").
+  ($oninput?' oninput="'.$oninput.'"':"").
+  '><span>'.$text.'</span></label>';
+}
+sub radio {
+  my $name = shift;
+  my $oninput = shift;
+  if($oninput && $oninput !~ /\(.*?\)$/){ $oninput .= '()'; }
+  my $out;
+  foreach my $value (@_) {
+    $out .= '<label class="radio-button">'.
+    '<input type="radio"'.
+    ' name="'.$name.'"'.
+    ' value="'.$value.'"'.
+    ($::pc{$name}?" checked":"").
+    ($oninput?' oninput="'.$oninput.'"':"").
+    '><span>'.$value.'</span></label>';
+  }
+  return $out;
 }
 sub option {
   my $name = shift;

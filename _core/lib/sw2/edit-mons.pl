@@ -24,16 +24,20 @@ if($message){
   $message =~ s/<!NAME>/$name/;
 }
 ### 製作者名 --------------------------------------------------
-if($mode_make && !$::make_error){
+if($mode_make){
   $pc{'author'} = (getplayername($LOGIN_ID))[0];
 }
 ### 初期設定 --------------------------------------------------
 if($mode_make){ $pc{'protect'} = $LOGIN_ID ? 'account' : 'password'; }
 
-if($mode eq 'blanksheet' && !$::make_error){
+if($mode eq 'blanksheet'){
   $pc{'paletteUseBuff'} = 1;
 }
 
+## カラー
+setDefaultColors();
+
+## その他
 $pc{'statusNum'} ||= 1;
 $pc{'lootsNum'}  ||= 2;
 
@@ -61,7 +65,7 @@ Content-type: text/html\n
   <script src="${main::core_dir}/skin/_common/js/lib/Sortable.min.js"></script>
   <script src="${main::core_dir}/lib/edit.js?${main::ver}" defer></script>
   <script src="${main::core_dir}/lib/sw2/edit-mons.js?${main::ver}" defer></script>
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/\@fortawesome/fontawesome-free\@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
   <style>
     #image {
       background-image: url("${set::char_dir}${file}/image.$pc{'image'}");
@@ -79,7 +83,7 @@ Content-type: text/html\n
 
   <main>
     <article>
-      <form id="monster" name="sheet" method="post" action="./" enctype="multipart/form-data" onsubmit="return formCheck();">
+      <form id="monster" name="sheet" method="post" action="./" enctype="multipart/form-data">
       <input type="hidden" name="ver" value="${main::ver}">
       <input type="hidden" name="type" value="m">
 HTML
@@ -92,40 +96,25 @@ print <<"HTML";
       <div id="header-menu">
         <h2><span></span></h2>
         <ul>
-          <li onclick="sectionSelect('common');"><span>キャラクター</span><span>データ</span></li>
+          <li onclick="sectionSelect('common');"><span>魔物</span><span>データ</span></li>
           <li onclick="sectionSelect('palette');"><span>チャット</span><span>パレット</span></li>
-          <li class="button">
-HTML
-if($mode eq 'edit'){
-print <<"HTML";
-            <input type="button" value="複製" onclick="window.open('./?mode=copy&type=m&id=$::in{'id'}@{[  $::in{'log'}?"&log=$::in{'log'}":'' ]}');">
-HTML
-}
-print <<"HTML";
-            <input type="submit" value="保存">
+          <li onclick="sectionSelect('color');" class="color-icon" title="カラーカスタム"></span></li>
+          <li onclick="view('text-rule')" class="help-icon" title="テキスト整形ルール"></li>
+          <li onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード切替"></li>
+          <li class="buttons">
+            <ul>
+              <li @{[ display ($mode eq 'edit') ]} class="view-icon" title="閲覧画面"><a href="./?id=$::in{'id'}"></a></li>
+              <li @{[ display ($mode eq 'edit') ]} class="copy" onclick="window.open('./?mode=copy&id=$::in{'id'}@{[  $::in{'log'}?"&log=$::in{'log'}":'' ]}');">複製</li>
+              <li class="submit" onclick="formSubmit()" title="Ctrl+S">保存</li>
+            </ul>
           </li>
         </ul>
+        <div id="save-state"></div>
       </div>
 
       <aside class="message">$message</aside>
       
       <section id="section-common">
-      <div class="box" id="name-form">
-        <div>
-          <dl id="character-name">
-            <dt>名称</dt>
-            <dd>@{[ input('monsterName','text',"nameSet") ]}</dd>
-          </dl>
-          <dl id="aka">
-            <dt>名前</dt>
-            <dd>@{[ input 'characterName','text','nameSet','placeholder="※名前を持つ魔物のみ"' ]}</dd>
-          </dl>
-        </div>
-        <dl id="player-name">
-          <dt>製作者</dt>
-          <dd>@{[input('author')]}</dd>
-        </dl>
-      </div>
 HTML
 if($set::user_reqd){
   print <<"HTML";
@@ -190,6 +179,24 @@ print <<"HTML";
           <dt>タグ</dt><dd>@{[ input 'tags' ]}</dd>
         </dl>
       </div>
+
+      <div class="box" id="name-form">
+        <div>
+          <dl id="character-name">
+            <dt>名称</dt>
+            <dd>@{[ input('monsterName','text',"nameSet") ]}</dd>
+          </dl>
+          <dl id="aka">
+            <dt>名前</dt>
+            <dd>@{[ input 'characterName','text','nameSet','placeholder="※名前を持つ魔物のみ"' ]}</dd>
+          </dl>
+        </div>
+        <dl id="player-name">
+          <dt>製作者</dt>
+          <dd>@{[input('author')]}</dd>
+        </dl>
+      </div>
+
       <div class="box status">
         <dl><dt>レベル</dt><dd>@{[ input 'lv','number','','min="0"' ]}</dd></dl>
         <dl><dt>知能</dt><dd>@{[ input 'intellect','','','list="data-intellect"' ]}</dd></dl>
@@ -326,11 +333,11 @@ print <<"HTML";
         <h2>プリセット （コピーペースト用）</h2>
         <textarea id="palettePreset" readonly style="height:20em"></textarea>
         <p>
-          <label>@{[ input 'paletteUseVar', 'checkbox','palettePresetChange']}デフォルト変数を使う</label>
+          <label>@{[ input 'paletteUseVar', 'checkbox','setChatPalette']}デフォルト変数を使う</label>
           ／
-          <label>@{[ input 'paletteUseBuff', 'checkbox','palettePresetChange']}バフデバフ用変数を使う</label>
+          <label>@{[ input 'paletteUseBuff', 'checkbox','setChatPalette']}バフデバフ用変数を使う</label>
           <br>
-          使用ダイスbot: <select name="paletteTool" onchange="palettePresetChange();" style="width:auto;">
+          使用ダイスbot: <select name="paletteTool" onchange="setChatPalette();" style="width:auto;">
           <option value="">ゆとチャadv.
           <option value="bcdice" @{[ $pc{'paletteTool'} eq 'bcdice' ? 'selected' : '']}>BCDice
           </select>
@@ -338,6 +345,8 @@ print <<"HTML";
         </div>
       </div>
       </section>
+      
+      @{[ colorCostomForm ]}
     
       @{[ input 'birthTime','hidden' ]}
       @{[ input 'id','hidden' ]}
@@ -362,10 +371,15 @@ HTML
 }
 print <<"HTML";
     </article>
+HTML
+# ヘルプ
+print textRuleArea( '','「特殊能力」「解説」' );
+
+print <<"HTML";
   </main>
   <footer>
-    『ソード・ワールド2.5』は、「グループSNE」及び「KADOKAWA」の著作物です。<br>
-    　ゆとシートⅡ for SW2.5 ver.${main::ver} - ゆとらいず工房
+    <p class="notes">(C)Group SNE「ソード・ワールド2.0／2.5」</p>
+    <p class="copyright">©<a href="https://yutorize.2-d.jp">ゆとらいず工房</a>「ゆとシートⅡ」ver.${main::ver}</p>
   </footer>
   <datalist id="data-intellect">
   <option value="なし">
@@ -397,12 +411,6 @@ print <<"HTML";
   <option value="回復効果ダメージ+3点">
   <option value="なし">
   </datalist>
-  <script>
-  let palettePresetText = {
-    'ytc'    : { 'full': `@{[ palettePreset('','m')       ]}`, 'simple': `@{[ palettePresetSimple('','m')       ]}` } ,
-    'bcdice' : { 'full': `@{[ palettePreset('bcdice','m') ]}`, 'simple': `@{[ palettePresetSimple('bcdice','m') ]}` } ,
-  };
-  </script>
 </body>
 
 </html>

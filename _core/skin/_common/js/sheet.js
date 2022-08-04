@@ -14,6 +14,25 @@ function closeImage() {
     document.getElementById("image-box").style.bottom = '-100vh';
   },200);
 }
+function closeTextareaForCopy() {
+  document.getElementById('copyText-box').remove();
+  document.getElementById('copyText-box-textarea').remove();
+}
+function popTextareaForCopy(text) {
+  const div = document.createElement('div');
+  div.id = 'copyText-box';
+  div.onclick = closeTextareaForCopy;
+
+  const textarea = document.createElement('textarea');
+  textarea.id = 'copyText-box-textarea';
+  textarea.value = text;
+
+  document.getElementsByTagName('main')[0].appendChild(div);
+  document.getElementsByTagName('main')[0].appendChild(textarea);
+
+  textarea.focus();
+  textarea.setSelectionRange(0, textarea.value.length);
+}
 function editOn() {
   document.querySelectorAll('.float-box:not(#login-form)').forEach(obj => { obj.classList.remove('show') });
   document.getElementById("login-form").classList.toggle('show');
@@ -45,9 +64,10 @@ function chatPaletteSelect(tool) {
 }
 // 保存系 ----------------------------------------
 function getJsonData() {
+  const paramId = /id=[0-9a-zA-Z]+/.exec(location.href)[0];
   return new Promise((resolve, reject)=>{
     let xhr = new XMLHttpRequest();
-    xhr.open('GET', `${location.href}&mode=json`, true);
+    xhr.open('GET', `./?${paramId}&mode=json`, true);
     xhr.responseType = "json";
     xhr.onload = (e) => {
       resolve(e.currentTarget.response);
@@ -92,8 +112,13 @@ function copyToClipboard(text) {
   textarea.value = text;
   textarea.focus();
   textarea.setSelectionRange(0, textarea.value.length);
-  document.execCommand('copy');
+  const isCopied = document.execCommand('copy');
   textarea.remove();
+  if (isCopied) {
+    return;
+  } else{
+    throw 'クリップボードへのコピーに失敗しました';
+  }
 }
 
 async function downloadAsUdonarium() {
@@ -105,14 +130,66 @@ async function downloadAsUdonarium() {
   downloadFile(`udonarium_data_${characterId}.zip`, udonariumUrl);
 }
 
-async function downloadAsCcfolia() {
-  const characterDataJson = await getJsonData();
-  const json = io.github.shunshun94.trpg.ccfolia[`generateCharacterJsonFromYtSheet2${generateType}`](characterDataJson, location.href);
-  json.then((result)=>{
-    copyToClipboard(result);
-    alert('クリップボードにコピーしました。ココフォリアにペーストすることでデータを取り込めます');
+function getCcfoliaJson() {
+  return new Promise((resolve, reject)=>{
+    getJsonData().then((characterDataJson)=>{
+      io.github.shunshun94.trpg.ccfolia[`generateCharacterJsonFromYtSheet2${generateType}`](characterDataJson, location.href).then(resolve, reject);
+    }, reject);
   });
-  
+}
+
+function getClipboardItem() {
+  try {
+    return new ClipboardItem({
+      'text/plain': getCcfoliaJson().then((json)=>{
+        return new Promise(async (resolve)=>{
+          resolve(new Blob([json]));
+        });
+      }, (err)=>{
+        console.error(err);
+        alert('キャラクターシートのデータ取得に失敗しました。通信状況等をご確認ください');
+      })
+    });
+  } catch(e) { // FireFox は ClipboardItem が使えない（2022/07/16 v.102.0.1）
+    return {
+      getType: ()=>{
+        return new Promise((resolve, reject)=>{
+          getCcfoliaJson().then((json)=>{
+            resolve(new Blob([json]));
+          });
+        }, (err)=>{
+          console.error(err);
+          alert('キャラクターシートのデータ取得に失敗しました。通信状況等をご確認ください');
+        });
+      }
+    };
+  }
+}
+
+function clipboardItemToTextareaClipboard(clipboardItem) {
+  clipboardItem.getType('text/plain').then((blob)=>{
+    blob.text().then((jsonText)=>{
+      try {
+        copyToClipboard(jsonText);
+        alert('クリップボードにコピーしました。ココフォリアにペーストすることでデータを取り込めます');
+      } catch (e) {
+        popTextareaForCopy(jsonText);
+      }
+    });
+  });
+}
+
+async function downloadAsCcfolia() {
+  const clipboardItem = getClipboardItem();
+  if(navigator.clipboard && navigator.clipboard.write) { // FireFox は navigator.clipboard.write が使えない（2022/07/16 v.102.0.1）
+    navigator.clipboard.write([clipboardItem]).then((ok)=>{
+      alert('クリップボードにコピーしました。ココフォリアにペーストすることでデータを取り込めます');
+    }, (err)=>{
+      clipboardItemToTextareaClipboard(clipboardItem);
+    });
+  } else {
+    clipboardItemToTextareaClipboard(clipboardItem);
+  }  
 }
 
 async function donloadAsText() {
@@ -125,7 +202,7 @@ async function donloadAsText() {
 
 async function donloadAsJson() {
   const characterDataJson = await getJsonData();
-  const characterId = characterDataJson.characterName || characterDataJson.monsterName || characterDataJson.aka || '無題';
+  const characterId = characterDataJson.characterName || characterDataJson.monsterName || characterDataJson.aka || characterDataJson.itemName || characterDataJson.artsName || '無題';
   const jsonUrl = window.URL.createObjectURL(new Blob([ JSON.stringify(characterDataJson) ], { "type" : 'text/json;charset=utf-8;' }));
   downloadFile(`data_${characterId}.json`, jsonUrl);
 }

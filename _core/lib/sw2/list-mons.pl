@@ -52,7 +52,7 @@ foreach(
   ){
   push( @q_links, $_.'='.uri_escape_utf8(decode('utf8', param($_))) ) if param($_);
 }
-my $q_links = join('&', @q_links);
+my $q_links = @q_links ? '&'.join('&', @q_links) : '';
 
 ### ファイル読み込み --------------------------------------------------
 ## マイリスト取得
@@ -157,7 +157,7 @@ foreach (@list) {
   #表示域以外は弾く
   if (
     ( $index_mode && $count{$taxa} > $set::list_maxline && $set::list_maxline) || #TOPページ
-    ( !$::in{'taxa'} && $mode ne 'mylist' && $count{$taxa} > $set::list_maxline && $set::list_maxline) || #検索結果（分類指定なし／マイリストでもなし）
+    ( !$::in{'taxa'} && !$::in{'tag'} && $mode ne 'mylist' && $count{$taxa} > $set::list_maxline && $set::list_maxline) || #検索結果（分類指定なし／マイリストでもなし）
     (!$index_mode && $set::pagemax && ($count{$taxa} < $pagestart || $count{$taxa} > $pageend)) #それ以外
   ){
     next;
@@ -203,7 +203,7 @@ foreach (@data::taxa){
         $_ == 1 ||
         $_ == $lastpage
       ){
-        $navbar .= '<a href="./?type=m&group='.$::in{'group'}.'&'.$q_links.'&page='.$_.'&sort='.$::in{'sort'}.'">'.$_.'</a> '
+        $navbar .= '<a href="./?type=m'.$q_links.'&page='.$_.'&sort='.$::in{'sort'}.'">'.$_.'</a> '
       }
       else { $navbar .= '...' }
     }

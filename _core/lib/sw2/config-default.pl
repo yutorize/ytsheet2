@@ -135,10 +135,6 @@ package set;
   our $adventurer_onlyonce = 0;
   our $making_interval = 0;
 
-## ●Cookie
- # Cookieの名前
-  our $cookie = 'ytsheet2';
-
 ## ●特殊ハウスルール向け
  # 戦闘用アイテム欄
  # our $battleitem = 1;
@@ -146,8 +142,9 @@ package set;
  # 成長タイプ O=1000毎 ／ A=1000＋(10*成長回数)
  # our $growtype = '';
 
- # レンジャー先制
- # our @ini_class_add = ('RanB');
+## ●Cookie
+ # Cookieの名前
+  our $cookie = 'ytsheet2'; 
 
 ## ●各種ファイルへのパス
   our $sendmail = '/usr/sbin/sendmail'; # sendmailのパス
@@ -158,10 +155,12 @@ package set;
   our $listfile = $data_dir . 'charlist.cgi'; # キャラクター一覧ファイル
   our $monslist = $data_dir . 'monslist.cgi'; # 魔物一覧ファイル
   our $itemlist = $data_dir . 'itemlist.cgi'; # アイテム一覧ファイル
+  our $artslist = $data_dir . 'artslist.cgi'; # 魔法一覧ファイル
   our $makelist = $data_dir . 'makelist.cgi'; # 能力値作成データファイル
   our $char_dir = $data_dir . 'chara/'; # キャラクターデータ格納ディレクトリ
   our $mons_dir = $data_dir . 'mons/';  # 魔物データ格納ディレクトリ
   our $item_dir = $data_dir . 'item/';  # アイテムデータ格納ディレクトリ
+  our $arts_dir = $data_dir . 'arts/';  # 魔法データ格納ディレクトリ
   
   our $userfile    = $::core_dir . '/data/users.cgi';           # ユーザー一覧ファイル
   our $login_users = $::core_dir . '/data/login_users.cgi'; # ログイン情報保存ファイル
@@ -180,16 +179,19 @@ package set;
   our $lib_edit_char = $::core_dir . '/lib/sw2/edit-chara.pl';
   our $lib_edit_mons = $::core_dir . '/lib/sw2/edit-mons.pl';
   our $lib_edit_item = $::core_dir . '/lib/sw2/edit-item.pl';
+  our $lib_edit_arts = $::core_dir . '/lib/sw2/edit-arts.pl';
   # 保存処理
   our $lib_save   = $::core_dir . '/lib/save.pl';
   our $lib_calc_char = $::core_dir . '/lib/sw2/calc-chara.pl';
   our $lib_calc_mons = $::core_dir . '/lib/sw2/calc-mons.pl';
   our $lib_calc_item = $::core_dir . '/lib/sw2/calc-item.pl';
+  our $lib_calc_arts = $::core_dir . '/lib/sw2/calc-arts.pl';
   # シート表示
   our $lib_view   = $::core_dir . '/lib/view.pl';
   our $lib_view_char = $::core_dir . '/lib/sw2/view-chara.pl';
   our $lib_view_mons = $::core_dir . '/lib/sw2/view-mons.pl';
   our $lib_view_item = $::core_dir . '/lib/sw2/view-item.pl';
+  our $lib_view_arts = $::core_dir . '/lib/sw2/view-arts.pl';
   # チャットパレット
   our $lib_palette     = $::core_dir . '/lib/palette.pl';
   our $lib_palette_sub = $::core_dir . '/lib/sw2/palette-sub.pl';
@@ -199,6 +201,7 @@ package set;
   our $lib_list_char = $::core_dir . '/lib/sw2/list-chara.pl';
   our $lib_list_mons = $::core_dir . '/lib/sw2/list-mons.pl';
   our $lib_list_item = $::core_dir . '/lib/sw2/list-item.pl';
+  our $lib_list_arts = $::core_dir . '/lib/sw2/list-arts.pl';
   our $lib_list_make = $::core_dir . '/lib/sw2/list-making.pl';
   # JSON出力
   our $lib_json     = $::core_dir . '/lib/json.pl';
@@ -220,5 +223,6 @@ package set;
   our $skin_sheet = $::core_dir . '/skin/sw2/sheet-chara.html';   # キャラクターシート
   our $skin_mons  = $::core_dir . '/skin/sw2/sheet-monster.html'; # 魔物シート
   our $skin_item  = $::core_dir . '/skin/sw2/sheet-item.html';    # アイテムシート
+  our $skin_arts  = $::core_dir . '/skin/sw2/sheet-arts.html';    # 技・魔法シート
 
 1;

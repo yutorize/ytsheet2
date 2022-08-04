@@ -4,6 +4,17 @@
 ---------------------------------------------------------------------------------------------------- */
 body {
   background-image: url(../../_common/img/back-pattern.png), url(../img/back-first.png);
+  
+  --monster-level-bg-color: hsl(
+    var(--box-head-bg-color-h, 0),
+    calc( var(--box-head-bg-color-s,   0%) * 0.5 ), 50%
+  );
+  --monster-head-bg-color: hsla(
+    var(--box-head-bg-color-h, 225),
+    calc( var(--box-head-bg-color-s,  9%) * 0.9 ),
+    var(--box-head-bg-color-l, 65%),
+    var(--box-head-bg-color-a, 0.4)
+  );
 }
 
 /* // Base
@@ -31,7 +42,7 @@ article {
   margin-top: 1.5em;
   border-width: 3px 0 0;
   border-style: solid;
-  border-color: #888;
+  border-color: var(--monster-level-bg-color);
   background-image: linear-gradient(to bottom, var(--bg-color), transparent);
 }
 #area-monstername .lv {
@@ -42,7 +53,7 @@ article {
   align-items: center;
   justify-content: center;
   width: 2em;
-  background-color: #888;
+  background-color: var(--monster-level-bg-color);
   background-image: linear-gradient(to bottom, transparent, rgba(0,0,0,0.4));
   color: #fff;
   text-shadow: 0 0 2px #000, 0 0 2px #000, 0 0 2px #000;
@@ -77,23 +88,21 @@ article {
   padding: .4em .5em .3em;
   border-radius: 5px 5px 0 0;
   line-height: 1;
-  background: #888;
+  background: var(--monster-level-bg-color);
   color: #fff;
   text-shadow: 0 0 1px #000, 0 0 1px #000, 0 0 1px #000;
   font-weight: bold;
 }
-.night #area-monstername { border-color: #556 }
-.night #area-monstername .lv,
-.night #area-monstername .taxa { background-color: #556 }
 
 /* // Status
 ---------------------------------------------------------------------------------------------------- */
 div.status {
-  padding: 1rem;
+  margin: .5rem 0;
+  padding: .5rem 1rem;
+  background: var(--box-base-bg-color);
 }
 #tags + div.status {
-  border-top: 1px dotted rgba(127,127,127,0.5);
-  padding-top: .5rem;
+  border-top: 1px dotted var(--box-outside-border-color);
 }
 div.status div {
   display: flex;
@@ -116,7 +125,9 @@ div.status dl dt::after {
 table.status {
   width: 100%;
   border-width: 1px;
-  border-style: solid;
+  border-style: double;
+  border-color: var(--box-outside-border-color);
+  background-color: var(--box-base-bg-color);
 }
 table.status thead th:nth-child(1) { width: auto; }
 table.status thead th:nth-child(2) { width: 12%; }
@@ -126,20 +137,17 @@ table.status thead th:nth-child(5) { width: 12%; }
 table.status thead th:nth-child(6) { width: 12%; }
 table.status thead th:nth-child(7) { width: 12%; }
 table.status th {
-  background-color: rgba(127,127,127,0.4);
+  background-color: var(--monster-head-bg-color);
 }
 table.status td {
   padding: .2rem;
   border-width: 1px;
   border-style: solid;
-  background-color: rgba(255,255,255,0.3);
+  border-color: var(--box-inside-border-color);
   text-align: center;
 }
-.night table.status td {
-  background-color: rgba(0,0,0,0.3);
-}
 table.status tbody tr:nth-child(even) td {
-  background-color: rgba(127,127,127,0.2);
+  background-color: var(--box-even-rows-bg-color);
 }
 
 
@@ -148,8 +156,9 @@ table.status tbody tr:nth-child(even) td {
 .parts {
   display: flex;
   flex-wrap: wrap;
-  margin: 1rem;
-  padding-left: .5em;
+  margin: .5rem 0;
+  padding: .3em 1rem;
+  background: var(--box-base-bg-color);
 }
 .parts dl {
   display: flex;
@@ -168,20 +177,25 @@ table.status tbody tr:nth-child(even) td {
 ---------------------------------------------------------------------------------------------------- */
 .skills {
   border: 0;
-  margin: 1rem 0;
-  background: none !important;
+  margin: 1rem 0 0;
+  padding-bottom: .5em;
+  background: var(--box-base-bg-color);
+  border-radius: 0;
   box-shadow: none !important;
+}
+.parts + .skills {
+  margin-top: .5rem;
 }
 .skills h2 {
   padding: .3rem .5rem;
-  background-color: rgba(127,127,127,0.4) !important;
+  background: var(--monster-head-bg-color);
   font-size: 110%;
 }
 
 /* // Loots
 ---------------------------------------------------------------------------------------------------- */
 .loots {
-  margin-top: 2em;
+  margin-top: 1em;
 }
 .loots h2 {
   font-size: 110%;
@@ -192,11 +206,12 @@ table.status tbody tr:nth-child(even) td {
   grid-template-rows: auto;
   border-width: 1px;
   border-style: solid;
+  background-color: var(--box-base-bg-color);
 }
 .loots dl > dt {
   grid-column: 1;
   padding: .2rem;
-  background-color: rgba(127,127,127,0.3);
+  background-color: var(--monster-head-bg-color);
   border-width: 0px 1px 1px 0px;
   border-style: solid;
   text-align: center;
@@ -204,12 +219,8 @@ table.status tbody tr:nth-child(even) td {
 .loots dl > dd {
   grid-column: 2;
   padding: .2rem .5rem;
-  background-color: rgba(255,255,255,0.3);
   border-width: 0px 0px 1px;
   border-style: solid;
-}
-.night div.loots dl > dd {
-  background-color: rgba(0,0,0,0.3);
 }
 .loots dl > dt:last-of-type,
 .loots dl > dd:last-of-type {
@@ -220,14 +231,23 @@ table.status tbody tr:nth-child(even) td {
 ---------------------------------------------------------------------------------------------------- */
 .description {
   margin-top: 1.5em;
+  padding-bottom: .5em;
   border: 0;
-  background: none !important;
+  background: var(--box-base-bg-color);
+  border-radius: 0;
   box-shadow: none !important;
 }
-.description h2 {
+.description h2,
+.description h2:nth-child(n+2) {
+  margin: 0;
+  padding: 0 .3em;
   border-width: 1px 0px;
   border-style: solid;
+  border-color: var(--box-outside-border-color);
   font-size: 115%;
+}
+.box.description h2 ~ h2 {
+  margin-top: 1em;
 }
 
 /* // Author

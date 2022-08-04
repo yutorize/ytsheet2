@@ -9,6 +9,7 @@
   <link rel="stylesheet" media="all" href="<TMPL_VAR coreDir>/skin/_common/css/form.css?<TMPL_VAR ver>">
   <link rel="stylesheet" media="all" href="<TMPL_VAR coreDir>/skin/_common/css/list.css?<TMPL_VAR ver>">
   <link rel="stylesheet" media="all" href="<TMPL_VAR coreDir>/skin/sw2/css/list.css?<TMPL_VAR ver>">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
   <TMPL_INCLUDE NAME="skin-add/head.html">
 </head>
 
@@ -24,9 +25,10 @@
     <nav>
       <ul>
         <li class="<TMPL_IF modeMaking>current</TMPL_IF>"><a href="./?mode=making">能力値作成</a></li>
-        <li class="<TMPL_IF modeList>current</TMPL_IF>"><a href="./?<TMPL_IF mode>mode=<TMPL_VAR mode>&</TMPL_IF><TMPL_IF tag>tag=<TMPL_VAR tag></TMPL_IF>">キャラクターシート</a></li>
-        <li class="<TMPL_IF modeMonsList>current</TMPL_IF>"><a href="./?<TMPL_IF mode>mode=<TMPL_VAR mode>&</TMPL_IF><TMPL_IF tag>tag=<TMPL_VAR tag>&</TMPL_IF>type=m">魔物データ</a></li>
-        <li class="<TMPL_IF modeItemList>current</TMPL_IF>"><a href="./?<TMPL_IF mode>mode=<TMPL_VAR mode>&</TMPL_IF><TMPL_IF tag>tag=<TMPL_VAR tag>&</TMPL_IF>type=i">アイテムデータ</a></li>
+        <li class="<TMPL_IF modeList>current</TMPL_IF>"><a href="./?<TMPL_IF mode>mode=<TMPL_VAR mode>&</TMPL_IF><TMPL_IF tag>tag=<TMPL_VAR tag></TMPL_IF>">キャラクター</a></li>
+        <li class="<TMPL_IF modeMonsList>current</TMPL_IF>"><a href="./?<TMPL_IF mode>mode=<TMPL_VAR mode>&</TMPL_IF><TMPL_IF tag>tag=<TMPL_VAR tag>&</TMPL_IF>type=m">魔物</a></li>
+        <li class="<TMPL_IF modeItemList>current</TMPL_IF>"><a href="./?<TMPL_IF mode>mode=<TMPL_VAR mode>&</TMPL_IF><TMPL_IF tag>tag=<TMPL_VAR tag>&</TMPL_IF>type=i">アイテム</a></li>
+        <li class="<TMPL_IF modeArtsList>current</TMPL_IF>"><a href="./?<TMPL_IF mode>mode=<TMPL_VAR mode>&</TMPL_IF><TMPL_IF tag>tag=<TMPL_VAR tag>&</TMPL_IF>type=a">魔法/神格/流派</a></li>
       </ul>
     </nav>
     <TMPL_IF modeIndex><TMPL_INCLUDE NAME="skin-add/index-message.html"></TMPL_IF>
@@ -34,6 +36,7 @@
     <TMPL_IF modeList><TMPL_INCLUDE NAME="list-chara.html"></TMPL_IF>
     <TMPL_IF modeMonsList><TMPL_INCLUDE NAME="list-mons.html"></TMPL_IF>
     <TMPL_IF modeItemList><TMPL_INCLUDE NAME="list-item.html"></TMPL_IF>
+    <TMPL_IF modeArtsList><TMPL_INCLUDE NAME="list-arts.html"></TMPL_IF>
     <TMPL_IF modeMaking><TMPL_INCLUDE NAME="making.html"></TMPL_IF>
     <TMPL_INCLUDE NAME="../_common/form.html">
     <TMPL_IF modeInfo>
@@ -56,7 +59,7 @@
   -->
   
   <footer>
-    ゆとシートⅡ ver.<TMPL_VAR ver> - <a href="https://yutorize.2-d.jp">ゆとらいず工房</a>
+    ©<a href="https://yutorize.2-d.jp">ゆとらいず工房</a>「ゆとシートⅡ」ver.<TMPL_VAR ver>
   </footer>
 </body>
 </html>

@@ -3,6 +3,104 @@ const form = document.sheet;
 
 const delConfirmText = '項目に値が入っています。本当に削除しますか？';
 
+const saveState = document.getElementById('save-state');
+const saveButton = document.querySelector('#header-menu .submit');
+// 内容変更チェック ----------------------------------------
+let formChangeCount = 0;
+form.addEventListener('change', () => {
+  formChangeCount++;
+  saveInfo('unsaved');
+});
+window.addEventListener('beforeunload', function(e) {
+  if(formChangeCount) {
+    e.preventDefault();
+    e.returnValue = '他のページに移動しますか？';
+  }
+});
+
+// 送信 ----------------------------------------
+let saving = 0;
+function formSubmit() {
+  if(saving){ return; }
+  if(!formCheck()){ return false; }
+  const formData = new FormData(form)
+  const action = form.getAttribute("action")
+  const options = {
+    method: 'POST',
+    body: formData,
+  }
+  saveInfo('saving','保存中...');
+  saving = 1;
+  const sendCount = formChangeCount;
+  formChangeCount = 0;
+  fetch(action, options)
+    .then(response => {
+      if(response.status === 200) {
+        return response.json()
+      }
+      throw Error(response.statusText);
+    })
+    .then(data => {
+      if     (data.result === 'make' ){ window.location.href = './?id='+data.message; }
+      else if(data.result === 'ok'   ){ saveInfo('saved'); console.log(data.message) }
+      else{
+        throw Error(data.result === 'error' ? data.message : "保存できませんでした。");
+      }
+    })
+    .catch(error => {
+      if(!formChangeCount){ formChangeCount = sendCount; }
+      saveInfo('error');
+      alert(error);
+    })
+}
+function formCheck(){
+  if(form.characterName.value === ''){
+    alert('キャラクター名を入力してください。');
+    form.characterName.focus();
+    return false;
+  }
+  if(form.protect.value === 'password' && form.pass.value === ''){
+    alert('パスワードが入力されていません。');
+    form.pass.focus();
+    return false;
+  }
+  return true;
+}
+function saveInfo(type,message){
+  if     (type === 'unsaved'){
+    message ||= `未保存`;
+  }
+  else if(type === 'saving'){
+    saveButton.classList.add('dimmed');
+  }
+  else if(type === 'saved'){
+    if(formChangeCount){ message ||= `未保存`; type = 'unsaved'; }
+    else               { message ||= `保存完了`; }
+    saveButton.classList.remove('dimmed');
+    saving = 0;
+  }
+  else if(type === 'error'){
+    if(formChangeCount){ message ||= `未保存`; type = 'unsaved'; }
+    saveButton.classList.remove('dimmed');
+    saving = 0;
+  }
+  saveState.classList.remove(...saveState.classList);
+  if(type){
+    saveState.classList.add(type);
+    saveState.innerHTML = message || '';
+  }
+}
+// ショートカット
+document.addEventListener('keydown', e => {
+  if (e.ctrlKey && (e.key === 's' || e.key === 'S')) {
+    e.preventDefault();
+    const nowFocus = document.activeElement;
+    document.activeElement.blur();
+    nowFocus.focus();
+    formSubmit();
+  }
+});
+
 // 名前 ----------------------------------------
 function nameSet(id){
   id = id ? id : 'characterName';
@@ -21,39 +119,24 @@ function ruby(text){
 }
 
 // チャットパレット ----------------------------------------
-function palettePresetChange (){
-  const tool = form.paletteTool.value || 'ytc';
-  const type = form.paletteUseVar.checked ? 'full' : 'simple';
-  let presetText = palettePresetText[tool][type];
-  if(!form.paletteUseBuff.checked){
-    let property = {};
-    presetText.split("\n").forEach(text => {
-      if(text.match(/^\/\/(.+?)=(.*?)$/)){ property[RegExp.$1] = RegExp.$2; }
-    });
-    let hit;
-    for (let i=0; i<100; i++) {
-      hit = 0;
-      Object.keys(property).forEach(key => {
-        presetText = presetText.replace(new RegExp('{'+key+'}',"g"), ()=>{
-          hit = 1;
-          return property[key];
-        });
-      });
-      if(!hit) break;
-    };
-    if     (gameSystem == 'sw2'){
-      presetText = presetText.replace(/^\/\/(.+?)=(.*?)(\n|$)/gm, '');
-      presetText = presetText.replace(/\$\+0/g, '');
-      presetText = presetText.replace(/\+0/g, '');
-      presetText = presetText.replace(/\#0\$/g, '');
-    }
-    else if(gameSystem == 'dx3'){
-      presetText = presetText.replace(/^\/\/(.+?)=(.*?)(\n|$)/gm, '');
-      presetText = presetText.replace(/\+0/g, '');
-      presetText = presetText.replace(/^### ■バフ・デバフ\n/g, '');
-    }
+function setChatPalette(){
+  const formData = new FormData(form)
+  formData.set("mode", "palette");
+  formData.set("editingMode", "1");
+  formData.delete("password");
+  formData.delete("imageFile");
+  formData.delete("imageCompressed");
+  const action = form.getAttribute("action")
+  const options = {
+    method: 'POST',
+    body: formData,
   }
-  document.getElementById('palettePreset').value = presetText;
+  fetch(action, options)
+    .then(response => response.json())
+    .then(data => {
+      document.getElementById('paletteDefaultProperties').value = data['properties'] || '';
+      document.getElementById('palettePreset').value = data['preset'] || '';
+    })
 }
 
 // 画像配置 ----------------------------------------
@@ -83,7 +166,7 @@ function imageBlobPreview(blob){
     el.style.backgroundImage = 'url("'+blobURL+'")';
   });
   imgURL = blobURL;
-  imageDragPointSet();
+  if(imageType == 'character'){ imageDragPointSet(); }
 }
 // 圧縮
 let compress_scale = 1;
@@ -167,7 +250,6 @@ function imageDragStart(e){
   dragFlag = 1;
   dragPoint.x = e.x || e.changedTouches[0].pageX;
   dragPoint.y = e.y || e.changedTouches[0].pageY;
-  console.log('start',dragPoint.x ,dragPoint.y)
 }
 let baseDistance = 0;
 function imageDragMove(e){
@@ -203,7 +285,6 @@ function imageDragMove(e){
       objY.value = Number(objY.value) + (dragPoint.y - y) * pointHeight;
       dragPoint.x = x;
       dragPoint.y = y;
-      console.log(dragPoint.x ,dragPoint.y)
       imagePosition();
     }
   }
@@ -258,7 +339,6 @@ function imageDragPointSet(){
     }
     pointWidth  = 100 / (viewWidth  - boxWidth);
     pointHeight = 100 / (viewHeight - boxHeight);
-    console.log(imgURL,imgWidth,imgHeight,pointWidth,pointHeight)
   }
 }
 // セリフプレビュー
@@ -284,7 +364,6 @@ function wordsPreView(){
 
 // カラーカスタム ----------------------------------------
 function changeColor(){
-  const customOn = form.colorCustom.checked ? 1 : 0;
   let hH = Number(form.colorHeadBgH.value);
   let hS = Number(form.colorHeadBgS.value);
   let hL = Number(form.colorHeadBgL.value);
@@ -296,14 +375,21 @@ function changeColor(){
   document.getElementById('colorBaseBgHValue').innerHTML = bH;
   document.getElementById('colorBaseBgSValue').innerHTML = bS;
   
-  const boxes = document.querySelectorAll('.box');
-  document.documentElement.style.setProperty('--box-head-bg-color-h', customOn ? hH     : '');
-  document.documentElement.style.setProperty('--box-head-bg-color-s', customOn ? hS+'%' : '');
-  document.documentElement.style.setProperty('--box-head-bg-color-l', customOn ? hL+'%' : '');
-  document.documentElement.style.setProperty('--box-base-bg-color-h', customOn ? bH     : '');
-  document.documentElement.style.setProperty('--box-base-bg-color-s', customOn ? (bS*0.7)+'%' : '');
-  document.documentElement.style.setProperty('--box-base-bg-color-l', customOn ? (100-bS/6)+'%' : '');
-  document.documentElement.style.setProperty('--box-base-bg-color-d', customOn ? 15+'%' : '');
+  document.documentElement.style.setProperty('--box-head-bg-color-h', hH            );
+  document.documentElement.style.setProperty('--box-head-bg-color-s', hS+'%'        );
+  document.documentElement.style.setProperty('--box-head-bg-color-l', hL+'%'        );
+  document.documentElement.style.setProperty('--box-base-bg-color-h', bH            );
+  document.documentElement.style.setProperty('--box-base-bg-color-s', (bS*0.7)+'%'  );
+  document.documentElement.style.setProperty('--box-base-bg-color-l', (100-bS/6)+'%');
+  document.documentElement.style.setProperty('--box-base-bg-color-d', 15+'%'        );
+}
+function setDefaultColor(){
+  form.colorHeadBgH.value = 225;
+  form.colorHeadBgS.value =   9;
+  form.colorHeadBgL.value =  65;
+  form.colorBaseBgH.value = 235;
+  form.colorBaseBgS.value =   0;
+  changeColor();
 }
 
 // セクション選択 ----------------------------------------
@@ -312,6 +398,7 @@ function sectionSelect(id){
     obj.style.display = 'none';
   });
   document.getElementById('section-'+id).style.display = 'block';
+  if(id === 'palette'){ setChatPalette() }
 }
 
 // セレクトorインプット ----------------------------------------

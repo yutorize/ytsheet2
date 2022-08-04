@@ -358,7 +358,7 @@ sub data_calc {
   if($pc{'lvRan'} >= 7) { push(@abilities, "不屈"); }
   if($pc{'lvRan'} >= 9) { push(@abilities, "ポーションマスター"); }
   if($pc{'lvRan'} >=12) { push(@abilities, "縮地"); }
-  if($pc{'lvRan'} >=15) { push(@abilities, "ランアンドガン"); }
+  if($pc{'lvRan'} >=15) { push(@abilities, ($::SW2_0?"韋駄天":"ランアンドガン")); }
   if($pc{'lvSag'} >= 5) { push(@abilities, $pc{'combatFeatsExcSag5'} || "鋭い目"); }
   if($pc{'lvSag'} >= 7) { push(@abilities, "弱点看破"); }
   if($pc{'lvSag'} >= 9) { push(@abilities, "マナセーブ"); }
@@ -377,6 +377,7 @@ sub data_calc {
       elsif($feat eq '回避行動Ⅰ')  { $pc{'evasiveManeuver'} = 1; }
       elsif($feat eq '回避行動Ⅱ')  { $pc{'evasiveManeuver'} = 2; }
       elsif($feat eq '心眼')        { $pc{'mindsEye'} = 4; }
+      elsif($feat eq '終律増強')    { $pc{'finaleEnhance'} = 10; }
       elsif($feat eq '魔力強化Ⅰ')  { $pc{'magicPowerEnhance'} = 1; }
       elsif($feat eq '魔力強化Ⅱ')  { $pc{'magicPowerEnhance'} = 2; }
       elsif($feat eq '賦術強化Ⅰ')  { $pc{'alchemyEnhance'} = 1; }

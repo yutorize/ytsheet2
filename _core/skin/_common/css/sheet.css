@@ -18,10 +18,14 @@
     var(--box-head-bg-color-a, 0.25)
   );
   --box-base-bg-color: hsla(
-    var(--box-base-bg-color-h,   0),
+    var(--box-base-bg-color-h, 235),
     var(--box-base-bg-color-s,   0%),
     var(--box-base-bg-color-l, 100%),
     var(--box-base-bg-color-a, 0.5)
+  );
+  --box-head-bg-color-dark: hsla(
+    var(--box-head-bg-color-h, 0),
+    calc( var(--box-head-bg-color-s,   0%) * 0.5 ), 50%, 0.4
   );
   --box-outside-border-color: hsl(
     var(--box-head-bg-color-h, 0),
@@ -161,9 +165,9 @@ dl.box > dt,
 .box td {
   text-align: center;
 }
-
-.box { border-color: var(--box-outside-border-color); }
-.box * { border-color: var(--box-inside-border-color); }
+.box,
+.box-union { border-color: var(--box-outside-border-color); }
+.box *     { border-color: var(--box-inside-border-color); }
 .box input,
 .box textarea,
 .box select { border-color: var(--box-input-border-color); }
@@ -221,12 +225,6 @@ dl.box > dt,
 .box table hr {
   margin: .1rem .2rem;
 }
-.box hr.dotted {
-  border-style: dotted;
-}
-.box hr.dashed {
-  border-style: dashed;
-}
 .box h2:nth-child(n+2),
 .box details h2,
 .box .header1 {
@@ -253,7 +251,7 @@ dl.box > dt,
   content:'';
   position: absolute;
   top: 60%; left: 0; right: 0; bottom: 0;
-  background-image: linear-gradient(to right, var(--box-head-bg-color-pale), transparent);
+  background-image: linear-gradient(to right, var(--box-head-bg-color-dark), transparent);
   line-height: 1.2;
   z-index: -1;
 }
@@ -270,7 +268,7 @@ dl.box > dt,
   content:'';
   position: absolute;
   top: calc(100% - .2rem); left: 0; right: 0; bottom: 0;
-  background-image: linear-gradient(to right, var(--box-head-bg-color-pale), transparent);
+  background-image: linear-gradient(to right, var(--box-head-bg-color-dark), transparent);
   z-index: -1;
 }
 .box h5,
@@ -430,6 +428,9 @@ table.note-table td {
   border-width: 1px;
   border-style: solid;
 }
+table.note-table thead {
+  background-color: var(--box-head-bg-color-pale);
+}
 table.note-table th {
   text-align: center;
 }
@@ -469,17 +470,20 @@ dl.note-description dd {
   position: relative;
   width: 1em;
   height: 1em;
+  line-height: 1;
   color: transparent;
   text-align: center;
 }
 .s-icon::after,
 .s-icon::before {
-  display: inline-block;
+  display: inline-grid;
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
+  justify-items: center;
+  align-items: center;
   font-family: "Font Awesome 5 Free";
   font-style: normal;
   font-size: 85%;
@@ -511,6 +515,19 @@ dl.note-description dd {
   content: "\f075";
   font-weight: normal;
   transform: scale(-1, 1);
+}
+.s-icon.uplift::before {
+  content: "\f3e5";
+  font-weight: bold;
+  transform: rotate(90deg) scaleY(1.2);
+}
+.s-icon.calm::before {
+  content: "\f064";
+  font-weight: bold;
+  transform: rotate(90deg) scaleY(1.2);
+}
+.s-icon.heart::before {
+  content: "\f004";
 }
 
 .s-icon.major0::before {
@@ -659,6 +676,8 @@ header nav ul li a span {
 }
 
 #login-form input {
+  appearance: none;
+  -webkit-appearance: none;
   border-width: 1px;
   border-style: solid;
   border-radius: 5px;
@@ -856,6 +875,30 @@ p.words span.brackets {
   image-rendering: -webkit-optimize-contrast;
 }
 
+/* // CopyText-Box
+---------------------------------------------------------------------------------------------------- */
+#copyText-box {
+  position: fixed;
+  bottom: 0;
+  left:0;
+  width: 100%;
+  height: 100%;
+  z-index: 998;
+  opacity: 1;
+  background-color: rgba(0,0,0,0.7);
+  transition-property: opacity;
+  transition-duration: 0.2s;
+  transition-timing-function: ease-out;
+}
+#copyText-box-textarea {
+  position:absolute;
+  top: 40px;
+  bottom:40px;
+  left:20px;
+  right:20px;
+  z-index: 999;
+  resize:none;
+}
 
 /* // LogList
 ---------------------------------------------------------------------------------------------------- */

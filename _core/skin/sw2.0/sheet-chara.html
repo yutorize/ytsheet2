@@ -13,10 +13,11 @@
   <TMPL_IF ogImg><meta property="og:image" content="<TMPL_VAR ogImg>"></TMPL_IF>
   <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@yutorize">
+  <TMPL_IF hide><meta name="robots" content="none"></TMPL_IF>
   <link rel="stylesheet" media="all" href="<TMPL_VAR coreDir>/skin/_common/css/base.css?<TMPL_VAR ver>">
   <link rel="stylesheet" media="all" href="<TMPL_VAR coreDir>/skin/_common/css/sheet.css?<TMPL_VAR ver>">
   <link rel="stylesheet" media="all" href="<TMPL_VAR coreDir>/skin/sw2/css/chara.css?<TMPL_VAR ver>">
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
   <script>
 const sheetId = '<TMPL_VAR id>';
 const paletteTool = '<TMPL_VAR paletteTool>';
@@ -33,7 +34,7 @@ window.onload = function() {
 };
 </TMPL_IF>
   </script>
-  <TMPL_IF colorCustom><style>
+  <style>
     :root {
       --box-head-bg-color-h: <TMPL_VAR colorHeadBgH>;
       --box-head-bg-color-s: <TMPL_VAR colorHeadBgS>%;
@@ -43,7 +44,7 @@ window.onload = function() {
       --box-base-bg-color-l: <TMPL_VAR colorBaseBgL>%;
       --box-base-bg-color-d: <TMPL_VAR colorBaseBgD>%;
     }
-  </style></TMPL_IF>
+  </style>
   <TMPL_INCLUDE NAME="skin-add/sheet-head.html">
 </head>
 <body>
@@ -88,7 +89,7 @@ window.onload = function() {
             </TMPL_IF>
           </TMPL_IF>
         </TMPL_IF>
-        <li class="small"><a onclick="nightModeChange()" title="ナイトモード">☾✧</a></li>
+        <li class="small"><a onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード"></a></li>
       </ul>
     </nav>
   </header>
@@ -700,8 +701,8 @@ window.onload = function() {
   <TMPL_INCLUDE NAME="skin-add/sheet-sidebar.html">
 
   <footer>
-    <p class="notes"><span>『ソード・ワールド2.0』は、</span><span>「グループSNE」及び「KADOKAWA」の著作物です。</span></p>
-    <p class="copyright">ゆとシートⅡ for SW2.0 ver.<TMPL_VAR ver> - <a href="https://yutorize.2-d.jp">ゆとらいず工房</a></p>
+    <p class="notes">(C)Group SNE「ソード・ワールド2.0」</p>
+    <p class="copyright">©<a href="https://yutorize.2-d.jp">ゆとらいず工房</a>「ゆとシートⅡ」ver.<TMPL_VAR ver></p>
   </footer>
 </body>
 

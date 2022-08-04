@@ -22,11 +22,14 @@ if($message){
   $message =~ s/<!NAME>/$name/;
 }
 ### 製作者名 --------------------------------------------------
-if($mode_make && !$::make_error){
+if($mode_make){
   $pc{'author'} = (getplayername($LOGIN_ID))[0];
 }
 ### 初期設定 --------------------------------------------------
 if($mode_make){ $pc{'protect'} = $LOGIN_ID ? 'account' : 'password'; }
+
+## カラー
+setDefaultColors();
 
 ### 改行処理 --------------------------------------------------
 $pc{'effects'}     =~ s/&lt;br&gt;/\n/g;
@@ -45,27 +48,12 @@ Content-type: text/html\n
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" media="all" href="${main::core_dir}/skin/_common/css/base.css?${main::ver}">
   <link rel="stylesheet" media="all" href="${main::core_dir}/skin/_common/css/sheet.css?${main::ver}">
-  <link rel="stylesheet" media="all" href="${main::core_dir}/skin/sw2/css/item.css?{main::ver}">
+  <link rel="stylesheet" media="all" href="${main::core_dir}/skin/sw2/css/item.css?${main::ver}">
   <link rel="stylesheet" media="all" href="${main::core_dir}/skin/_common/css/edit.css?${main::ver}">
-  <link rel="stylesheet" media="all" href="${main::core_dir}/skin/sw2/css/edit.css?{main::ver}">
+  <link rel="stylesheet" media="all" href="${main::core_dir}/skin/sw2/css/edit.css?${main::ver}">
   <script src="${main::core_dir}/lib/edit.js?${main::ver}" defer></script>
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
-  <script>
-    window.onload = function() { nameSet('itemName'); }
-    // 送信前チェック ----------------------------------------
-    function formCheck(){
-      if(form.itemName.value === ''){
-        alert('名称を入力してください。');
-        form.itemName.focus();
-        return false;
-      }
-      if(form.protect.value === 'password' && form.pass.value === ''){
-        alert('パスワードが入力されていません。');
-        form.pass.focus();
-        return false;
-      }
-    }
-  </script>
+  <script src="${main::core_dir}/lib/sw2/edit-item.js?${main::ver}" defer></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/\@fortawesome/fontawesome-free\@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
 </head>
 <body>
   <script src="${main::core_dir}/skin/_common/js/common.js?${main::ver}"></script>
@@ -75,7 +63,7 @@ Content-type: text/html\n
 
   <main>
     <article>
-      <form id="item" name="sheet" method="post" action="./" enctype="multipart/form-data" onsubmit="return formCheck();">
+      <form id="item" name="sheet" method="post" action="./" enctype="multipart/form-data">
       <input type="hidden" name="ver" value="${main::ver}">
       <input type="hidden" name="type" value="i">
 HTML
@@ -88,34 +76,24 @@ print <<"HTML";
       <div id="header-menu">
         <h2><span></span></h2>
         <ul>
-          <li class="button">
-HTML
-if($mode eq 'edit'){
-print <<"HTML";
-            <input type="button" value="複製" onclick="window.open('./?mode=copy&type=i&id=$::in{'id'}@{[  $::in{'log'}?"&log=$::in{'log'}":'' ]}');">
-HTML
-}
-print <<"HTML";
-            <input type="submit" value="保存">
+          <li onclick="sectionSelect('common');"><span>アイテム</span><span>データ</span></li>
+          <li onclick="sectionSelect('color');" class="color-icon" title="カラーカスタム"></span></li>
+          <li onclick="view('text-rule')" class="help-icon" title="テキスト整形ルール"></li>
+          <li onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード切替"></li>
+          <li class="buttons">
+            <ul>
+              <li @{[ display ($mode eq 'edit') ]} class="view-icon" title="閲覧画面"><a href="./?id=$::in{'id'}"></a></li>
+              <li @{[ display ($mode eq 'edit') ]} class="copy" onclick="window.open('./?mode=copy&id=$::in{'id'}@{[  $::in{'log'}?"&log=$::in{'log'}":'' ]}');">複製</li>
+              <li class="submit" onclick="formSubmit()" title="Ctrl+S">保存</li>
+            </ul>
           </li>
         </ul>
+        <div id="save-state"></div>
       </div>
 
       <aside class="message">$message</aside>
       
       <section id="section-common">
-      <div class="box" id="name-form">
-        <div>
-          <dl id="character-name">
-            <dt>名称</dt>
-            <dd>@{[ input('itemName','text',"nameSet('itemName')") ]}</dd>
-          </dl>
-        </div>
-        <dl id="player-name">
-          <dt>製作者</dt>
-          <dd>@{[input('author')]}</dd>
-        </dl>
-      </div>
 HTML
 if($set::user_reqd){
   print <<"HTML";
@@ -171,6 +149,19 @@ HTML
       <div class="box" id="group">
         <dl>
           <dt>タグ</dt><dd>@{[ input 'tags' ]}</dd>
+        </dl>
+      </div>
+
+      <div class="box" id="name-form">
+        <div>
+          <dl id="character-name">
+            <dt>名称</dt>
+            <dd>@{[ input('itemName','text',"nameSet('itemName')") ]}</dd>
+          </dl>
+        </div>
+        <dl id="player-name">
+          <dt>製作者</dt>
+          <dd>@{[input('author')]}</dd>
         </dl>
       </div>
       
@@ -250,10 +241,12 @@ HTML
       </table>
     </div>
     <div class="box">
-      <h2>解説</h2>
+      <h2>由来・逸話</h2>
       <textarea name="description">$pc{'description'}</textarea>
     </div>
     </section>
+      
+      @{[ colorCostomForm ]}
     
       @{[ input 'birthTime','hidden' ]}
       <input type="hidden" name="id" value="$::in{'id'}">
@@ -278,10 +271,21 @@ HTML
 }
 print <<"HTML";
     </article>
+HTML
+# ヘルプ
+my $text_rule = <<"HTML";
+        アイコン<br>
+        　魔法のアイテム：<code>[魔]</code>：<img class="i-icon" src="${set::icon_dir}wp_magic.png"><br>
+        　刃武器　　　　：<code>[刃]</code>：<img class="i-icon" src="${set::icon_dir}wp_edge.png"><br>
+        　打撃武器　　　：<code>[打]</code>：<img class="i-icon" src="${set::icon_dir}wp_blow.png"><br>
+HTML
+print textRuleArea( $text_rule,'「効果」「解説」' );
+
+print <<"HTML";
   </main>
   <footer>
-    『ソード・ワールド2.5』は、「グループSNE」及び「KADOKAWA」の著作物です。<br>
-    　ゆとシートⅡ for SW2.5 ver.${main::ver} - ゆとらいず工房
+    <p class="notes">(C)Group SNE「ソード・ワールド2.0／2.5」</p>
+    <p class="copyright">©<a href="https://yutorize.2-d.jp">ゆとらいず工房</a>「ゆとシートⅡ」ver.${main::ver}</p>
   </footer>
   <datalist id="list-usage">
     <option value="1H">

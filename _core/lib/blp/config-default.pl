@@ -125,6 +125,7 @@ package set;
   our $lib_convert = $::core_dir . '/lib/blp/convert.pl';
 
   # 各種データ
+  our $data_factor = $::core_dir . '/lib/blp/data-factor.pl';
 
   # HTMLテンプレート
   our $skin_tmpl  = $::core_dir . '/skin/blp/index.html';      # 一覧／登録フォーム等の大枠

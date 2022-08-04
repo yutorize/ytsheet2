@@ -22,6 +22,10 @@ sub data_calc {
   }
 
   ### 能力値 --------------------------------------------------
+  if($pc{'convertSource'} ne 'キャラクターシート倉庫'){
+    $pc{'statusMain1'} = $pc{'statusMain1Core'} + $pc{'statusMain1Style'};
+    $pc{'statusMain2'} = $pc{'statusMain2Core'} + $pc{'statusMain2Style'};
+  }
   if   ($pc{'factor'} eq '人間'){
     $pc{'endurance'}  = $pc{'statusMain1'} * 2 + $pc{'statusMain2'};
     $pc{'initiative'} = $pc{'statusMain2'} + 10;

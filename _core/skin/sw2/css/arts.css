@@ -1,0 +1,659 @@
+@charset "utf-8";
+
+@media screen and (max-width:550px){
+  html {
+    font-size: 1.8vw;
+  }
+}
+
+/* // Body
+---------------------------------------------------------------------------------------------------- */
+body {
+  background-image: url(../../_common/img/back-pattern.png), url(../img/back-first.png);
+
+  --arts-name-bg-color: hsl(
+    var(--box-head-bg-color-h, 0),
+    calc( var(--box-head-bg-color-s,   0%) * 0.5 ), 20%
+  );
+  --arts-head-bg-color: hsla(
+    var(--box-head-bg-color-h, 225),
+    calc( var(--box-head-bg-color-s,  9%) * 0.9 ),
+    var(--box-head-bg-color-l, 65%),
+    var(--box-head-bg-color-a, 0.4)
+  );
+}
+.night {
+  --arts-name-bg-color: hsl(
+    var(--box-head-bg-color-h, 0),
+    calc( var(--box-head-bg-color-s,   0%) * 0.5 ), 5%
+  );
+}
+
+/* // Base
+---------------------------------------------------------------------------------------------------- */
+article {
+  max-width: 800px;
+}
+/* // Layout
+---------------------------------------------------------------------------------------------------- */
+#area-description > section:first-of-type {
+  margin-top: 0;
+}
+@media screen and (min-width:1400px){
+  body.wide {
+    grid-template-columns: minmax(0, 1fr) minmax(auto, 1800px) minmax(0, 1fr);
+  }
+  .wide header nav {
+    max-width: 1800px;
+  }
+  .wide article {
+    max-width: 1760px;
+  }
+  .wide #god,
+  .wide #school {
+    max-width: 1760px;
+    display: grid;
+    grid-gap: 0 1.2rem;
+    grid-template-columns: 1fr 1fr;
+    padding: 0 1.2rem;
+    position: relative;
+  }
+  .wide #area-name, .wide #tags {
+    grid-column: span 2;
+  }
+  #area-description {
+    grid-column: 1;
+  }
+  #magics,
+  #mystic-arts {
+    grid-column: 2;
+    margin-top: 0;
+  }
+}
+
+/* // Font
+---------------------------------------------------------------------------------------------------- */
+#god-name,
+#school-name,
+.data-magic .name dd {
+  font-family: var(--base-font-family-min);
+}
+#god-name small,
+#school-name small {
+  font-family: var(--base-font-family-jp);
+}
+
+
+/* // MagicData
+---------------------------------------------------------------------------------------------------- */
+#magic h2 {
+  width: max-content;
+  padding: .4em .5em .3em;
+  border-radius: 5px 5px 0 0;
+  line-height: 1;
+  background: #888;
+  color: #fff;
+  text-shadow: 0 0 1px #000, 0 0 1px #000, 0 0 1px #000;
+  font-weight: bold;
+  font-size: 100%;
+}
+div.data-magic {
+  display: grid;
+  grid-template-columns: 1.1fr 1.1fr 1fr 0.8fr;
+  grid-template-areas:
+    "NAME NAME NAME COST"
+    "TRGT RANG DURA RESI"
+    "SMRY SMRY SMRY ELEM"
+    "EFCT EFCT EFCT EFCT"
+  ;
+
+  border-width: 0 1px 1px 0;
+  border-style: solid;
+  
+  background-color: var(--box-base-bg-color);
+}
+.wide .data-magic {
+  margin-top: 1em;
+}
+.wide div.data-magic + div.data-magic {
+  margin-top: 1.5em;
+}
+
+div.data-magic   .name     { grid-area: NAME; }
+div.data-magic dl.cost     { grid-area: COST; }
+div.data-magic dl.target   { grid-area: TRGT; }
+div.data-magic dl.range    { grid-area: RANG; }
+div.data-magic dl.duration { grid-area: DURA; }
+div.data-magic dl.resist   { grid-area: RESI; }
+div.data-magic dl.element  { grid-area: ELEM; }
+div.data-magic dl.summary  { grid-area: SMRY; }
+div.data-magic dl:not(.element)+dl.summary { grid-column: 1/5; }
+div.data-magic dl.effect   { grid-area: EFCT; }
+
+div.data-magic dl.type      { grid-area: TYPE; }
+div.data-magic dl.rank      { grid-area: RANK; }
+div.data-magic dl.premise   { grid-area: PRMS; }
+div.data-magic dl.condition { grid-area: CDTN; }
+
+div.data-magic dl.sing      { grid-area: SING; }
+div.data-magic dl.pet       { grid-area: PET ; }
+div.data-magic dl.basepoint { grid-area: BAPT; }
+div.data-magic dl.setpoint  { grid-area: STPT; }
+div.data-magic dl.addpoint  { grid-area: ADPT; }
+
+div.data-magic dl.part      { grid-area: PART; }
+
+div.data-magic dl.ccost     { grid-area: CCST; }
+div.data-magic dl.ccharge   { grid-area: CCHG; }
+
+div.data-magic dl.base      { grid-area: BASE; }
+div.data-magic dl.equip     { grid-area: EQIP; }
+div.data-magic dl.use       { grid-area: USE ; }
+div.data-magic dl.apply     { grid-area: APLY; }
+div.data-magic dl.risk      { grid-area: RISK; }
+
+div.data-magic.enhance {
+  grid-template-areas:
+    "NAME NAME NAME DURA"
+    "SMRY SMRY SMRY SMRY"
+    "EFCT EFCT EFCT EFCT"
+  ;
+}
+div.data-magic.song {
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-areas:
+    "NAME NAME NAME"
+    "SING PET  PET "
+    "CDTN RESI ELEM"
+    "BAPT STPT ADPT"
+    "SMRY SMRY SMRY"
+    "EFCT EFCT EFCT"
+  ;
+}
+div.data-magic.song dl {
+  grid-template-columns: 6.2em 1fr;
+}
+div.data-magic.song dl.condition dt::before {
+  content: "効果発生"
+}
+div.data-magic.finale {
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-areas:
+    "NAME NAME NAME"
+    "COST RESI ELEM"
+    "SMRY SMRY SMRY"
+    "EFCT EFCT EFCT"
+  ;
+}
+div.data-magic.riding {
+  grid-template-columns: 1.3fr .8fr .9fr;
+  grid-template-areas:
+    "NAME NAME PRMS"
+    "TYPE PART PART"
+    "SMRY SMRY SMRY"
+    "EFCT EFCT EFCT"
+  ;
+}
+div.data-magic.riding dl {
+  grid-template-columns: 5em 1fr;
+}
+div.data-magic.riding dl.premise {
+  grid-template-columns: 3em 1fr;
+}
+div.data-magic.geomancy {
+  grid-template-columns: 2.1fr .9fr;
+  grid-template-areas:
+    "NAME COST"
+    "DURA ELEM"
+    "SMRY SMRY"
+    "EFCT EFCT"
+  ;
+}
+div.data-magic.geomancy dl {
+  grid-template-columns: 6em 1fr;
+}
+div.data-magic.geomancy dl.duration dt::before {
+  content: "効果の"
+}
+div.data-magic.command {
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas:
+    "NAME NAME"
+    "TYPE RANK"
+    "CCST CCHG"
+    "SMRY SMRY"
+    "EFCT EFCT"
+  ;
+}
+div.data-magic.command dl {
+  grid-template-columns: 6em 1fr;
+}
+div.data-magic.lead {
+  grid-template-columns: 2fr 1fr;
+  grid-template-areas:
+    "NAME PRMS"
+    "CDTN CDTN"
+    "CCST CCST"
+    "SMRY SMRY"
+    "EFCT EFCT"
+  ;
+}
+div.data-magic.lead dl {
+  grid-template-columns: 6em 1fr;
+}
+div.data-magic.lead dl.condition dt::before {
+  content: "使用"
+}
+div.data-magic.divination {
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-areas:
+    "NAME NAME NAME"
+    "TYPE TYPE TYPE"
+    "TRGT RANG DURA"
+    "SMRY SMRY SMRY"
+    "EFCT EFCT EFCT"
+  ;
+}
+div.data-magic.divination dl {
+  grid-template-columns: 6em 1fr;
+}
+div.data-magic.potential {
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas:
+    "NAME NAME"
+    "PRMS PART"
+    "SMRY SMRY"
+    "EFCT EFCT"
+  ;
+}
+div.data-magic.potential dl {
+  grid-template-columns: 5em 1fr;
+}
+div.data-magic.seal {
+  grid-template-columns: 2fr 1fr;
+  grid-template-areas:
+    "NAME NAME"
+    "PRMS TYPE"
+    "EFCT EFCT"
+  ;
+}
+div.data-magic.seal .summary {
+  display: none;
+}
+div.data-magic.dignity {
+  grid-template-columns: 0.6fr 1.2fr 1.2fr;
+  grid-template-areas:
+    "NAME NAME NAME"
+    "TYPE PRMS TRGT"
+    "EFCT EFCT EFCT"
+  ;
+}
+div.data-magic.dignity .summary {
+  display: none;
+}
+
+div.data-magic.data-arts {
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-areas:
+    "NAME NAME COST"
+    "BASE PRMS EQIP"
+    "USE  APLY RISK"
+    "SMRY SMRY SMRY"
+    "EFCT EFCT EFCT"
+  ;
+}
+div.data-magic.data-arts dl {
+  grid-template-columns: 5.2em 1fr;
+}
+div.data-magic.data-arts dl.premise,
+div.data-magic.data-arts dl.apply {
+  grid-template-columns: 3em 1fr;
+}
+div.data-magic.data-arts dl.cost {
+  grid-template-columns: 1fr max-content;
+  align-items: end;
+  justify-items: end;
+  padding: 0 .2em .1em 0;
+  border-left: 0;
+  background-color: var(--arts-name-bg-color);
+  color: #fff;
+}
+div.data-magic.data-arts dl.cost dt {
+  padding: 0;
+  background-color: transparent;
+  border-right: 0;
+}
+div.data-magic.data-arts dl.cost dt::after {
+  content: ":";
+}
+div.data-magic.data-arts dl.cost dd {
+  min-width: 1em;
+  padding: 0;
+}
+
+div.data-magic dl {
+  display: grid;
+  grid-template-columns: 3.5em 1fr;
+  border-width: 1px 0 0 1px;
+  border-style: solid;
+  border-color: var(--box-outside-border-color);
+}
+
+@media screen and (max-width:735px){
+  div.data-magic { display: block }
+  div.data-magic dl {
+    grid-template-columns: 5.5em 1fr !important;
+  }
+  div.data-magic dl dd {
+    text-align: left !important;
+  }
+}
+
+div.data-magic h3,
+div.data-magic dl dt {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--arts-head-bg-color);
+  border-width: 0 1px 0 0;
+  border-style: solid;
+  border-color: var(--box-outside-border-color);
+}
+div.data-magic dl.name {
+  grid-template-columns: 3.5em 1fr;
+}
+div.data-magic dl dd {
+  padding: .2em 0;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+div.data-magic dl.cost     dd,
+div.data-magic dl.target   dd,
+div.data-magic dl.range    dd,
+div.data-magic dl.duration dd,
+div.data-magic dl.element  dd {
+  font-family: var(--font-proportional);
+  white-space: nowrap;
+}
+div.data-magic h3.name,
+div.data-magic dl.name     dd,
+div.data-magic dl.part     dd,
+div.data-magic dl.summary  dd,
+div.data-magic dl.effect   dd,
+div.data-magic.song     dl.pet      dd,
+div.data-magic.riding   dl.type     dd,
+div.data-magic.lead     dl.condition dd,
+div.data-magic.lead     dl.ccost dd,
+div.data-magic.geomancy dl.duration dd,
+div.data-magic.divination dl.type   dd,
+div.data-magic.potential  dl.premise dd {
+  display: block;
+  padding: .2em .5em;
+  text-align: left;
+}
+div.data-magic h3 {
+  border-width: 1px 0 0 1px;
+  background: var(--arts-name-bg-color);
+  color: #fff;
+  font-size: 130%;
+}
+div.data-magic dl.name dt {
+  background: var(--arts-name-bg-color);
+  color: #fff;
+  font-size: 150%;
+}
+div.data-magic dl.name dd {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  flex-wrap: wrap;
+  background: var(--arts-name-bg-color);
+  color: #fff;
+  font-size: 150%;
+  font-weight: bold;
+}
+div.data-magic dl.name dd small {
+  display: block;
+  font-size: 55%;
+  margin-left: auto;
+  margin-right: -.2em;
+  transform: scaleY(1.3);
+}
+div.data-magic dl.name dd .s-icon::before {
+  color: #fff;
+}
+div.data-magic dl.effect dd p {
+  background: none;
+  box-shadow: none;
+  margin: 0;
+  padding: 0;
+}
+
+@media screen and (max-width:735px){
+  div.data-magic dl br {
+    display: none;
+  }
+  div.data-magic dl.effect br {
+    display:unset;
+  }
+  div.data-magic dl dd {
+    display: block; 
+    padding: .2em .5em;
+  }
+  div.data dl.category dd hr {
+    display: inline;
+    border: 0;
+  }
+  div.data dl.category dd hr::before {
+    content: '／';
+    margin: 0 0.3em;
+  }
+}
+
+div.data dl.effects dd.box {
+  background: none;
+  border: 0;
+  padding: 0;
+}
+div.data dl.effects dd.box *:first-child {
+  margin-top: .2em;
+}
+div.data dl.effects table,
+div.data dl.effects table th,
+div.data dl.effects table td {
+  margin: .5em;
+  border-width: 1px;
+  border-style: solid;
+}
+div.data dl.effects table th,
+div.data dl.effects table td {
+  padding: .2em .5em;
+}
+div.data dl.effects table th {
+  background: rgba(127,127,127,0.2);
+}
+div.data dl.effects table.weapon-table th {
+  white-space: nowrap;
+}
+div.data dl.effects table.weapon-table td:not(.left) {
+  white-space: nowrap;
+}
+
+#arts-list .input-data {
+  border-width: 0 0 1px;
+  border-style: solid;
+}
+
+/* // School
+---------------------------------------------------------------------------------------------------- */
+#school .box.req {
+  margin: 0 0 1em;
+  padding: .2em .5em;
+  display: grid;
+  grid-template-columns: max-content 1fr;
+}
+#school .box.req dt::after {
+  content: ":";
+}
+#school .box.req dd {
+  font-weight: bold;
+  text-align: left;
+}
+
+.item-table {
+  margin-top: 1em;
+}
+.item-table,
+.item-table th,
+.item-table td {
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--box-outside-border-color);
+  text-align: center;
+}
+.item-table thead {
+  background-color: var(--arts-head-bg-color);
+}
+.item-table thead .name       { width: 14.5em; }
+.item-table thead .reputation { width: 4em; }
+.item-table thead .category   { width: 10.5em; }
+.item-table thead .price      { width: 7em; }
+.item-table tbody td {
+  padding: .2em;
+}
+.item-table tbody td.left {
+  font-size: 92%;
+}
+
+
+/* // Description
+---------------------------------------------------------------------------------------------------- */
+.description {
+  margin-top: 1.5em;
+  border: 0;
+  box-shadow: none;
+  background-image: none;
+  background-color: var(--box-base-bg-color);
+  box-shadow: none !important;
+}
+.description h2,
+.description h2:nth-child(n+2) {
+  margin: 0;
+  padding: 0 .3em;
+  border-width: 2px 0px;
+  border-style: solid;
+  border-color: var(--box-outside-border-color);
+  font-size: 115%;
+  background-image: linear-gradient(to right, var(--box-head-bg-color), var(--box-base-bg-color));
+  background-color: var(--bg-color);
+  text-shadow: 0px 0px .3em #fff;
+}
+.box.description h2 ~ h2 {
+  margin-top: 1em;
+}
+.night .description h2 {
+  text-shadow: 0px 0px .3em #000;
+}
+.description#magics,
+.description#mystic-arts {
+  background-color: transparent;
+}
+
+
+/* // NameArea
+---------------------------------------------------------------------------------------------------- */
+#area-name {
+  display: flex;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  
+  padding: 0px 5px;
+  border-width: 3px 0px;
+  border-style: solid;
+  
+  background-image: linear-gradient(to right, var(--box-head-bg-color), var(--box-base-bg-color));
+  background-color: var(--bg-color);
+  border-color: var(--box-outside-border-color, inherit);
+}
+#area-name > h1 {
+  padding: 1rem;
+  font-size: 2.2rem;
+  font-weight: bold;
+  text-shadow: var(--bg-color) 0px 0px .5em,
+    var(--bg-color)  .1rem .1rem, var(--bg-color) -.1rem -.1rem,
+    var(--bg-color) -.1rem .1rem, var(--bg-color)  .1rem -.1rem,
+    var(--bg-color)  .0rem .1rem, var(--bg-color)  .0rem -.1rem,
+    var(--bg-color) -.1rem .0rem, var(--bg-color)  .1rem  .0rem;
+}
+#aka {
+  margin-right: .5em;
+}
+#area-name small {
+  display: block;
+  margin-top: -1em;
+  margin-left: auto;
+  font-size: 110%;
+  font-weight: bold;
+  text-shadow: 0px 0px .3em var(--bg-color), 0px 0px .3em var(--bg-color);
+}
+
+/* // Image
+---------------------------------------------------------------------------------------------------- */
+#symbol {
+  display: grid;
+  justify-items: center;
+  align-items: center;
+  float: right;
+  width : 208px;
+  height: 208px;
+  overflow: hidden;
+  margin: 5px;
+  padding:3px;
+  border: 1px solid #777;
+  border-radius: 5px;
+  background: var(--bg-color);
+}
+#symbol img {
+  width : 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 0 10px #0005);
+}
+.night #symbol img {
+  filter: drop-shadow(0 0 10px #fff9);
+}
+
+@media screen and (max-width:735px){
+  #symbol {
+    width : 30vw;
+    height: 30vw;
+  }
+}
+
+/* // Author
+---------------------------------------------------------------------------------------------------- */
+#author {
+  width: 50%;
+  margin: 2em 0 0 auto;
+  padding: .5em;
+  text-align: right;
+  border-width: 0 1px 1px 0px;
+  border-style: solid;
+}
+
+#link-tag {
+  padding: .5em;
+  text-align: right;
+}
+#link-tag input {
+  width: 18em;
+  padding: 0.2em;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: .5rem;
+  font-size: 0.9em;
+}
+
+

@@ -114,6 +114,32 @@ body {
   height: 1em;
 }
 
+/* // List-Arts
+---------------------------------------------------------------------------------------------------- */
+.list.arts table tr {
+    display: grid;
+    grid-template-columns: 24rem 0.5fr 4em 0.6fr 1fr 0.4fr;
+    grid-template-rows: auto;
+    grid-template-areas:
+      "NAME AUTHOR CATEGORY SUB SUMMARY DATE"
+    ;
+}
+.list.arts table .name    { grid-area: NAME; }
+.list.arts table .author  { grid-area: AUTHOR; }
+.list.arts table .category{ grid-area: CATEGORY; }
+.list.arts table .sub     { grid-area: SUB; }
+.list.arts table .summary { grid-area: SUMMARY; }
+.list.arts table .date    { grid-area: DATE; }
+.list.arts table td.name a {
+  font-size: 1.4rem;
+}
+.list.arts table td.sub span {
+  display: inline-block;
+}
+.list.arts table td.summary {
+  font-size: 1.2rem;
+}
+
 /* // List-Making
 ---------------------------------------------------------------------------------------------------- */
 #making {

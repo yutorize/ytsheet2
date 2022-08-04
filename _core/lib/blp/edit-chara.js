@@ -1,22 +1,27 @@
 "use strict";
 const gameSystem = 'blp';
 
+let factor = '';
+let subFactor = {'Core':'', 'Style':''};
 // ----------------------------------------
 window.onload = function() {
+  factor = form.factor.value;
+  checkSubFactor('Core' , form.factorCore.value);
+  checkSubFactor('Style', form.factorStyle.value);
   
   nameSet();
   calcGrow();
-  changeFactor();
+  checkFactor();
   scarCheck();
 
   togglePartner2();
   autoInputPartner(1);
   autoInputPartner(2);
+
+  toggleServant();
   
   imagePosition();
   changeColor();
-  
-  palettePresetChange();
 };
 
 function changeRegu(){
@@ -24,9 +29,13 @@ function changeRegu(){
 }
 
 // ファクター変更 ----------------------------------------
-let factor = '';
 function changeFactor(){
+  if(form.factorCore.value || form.factorStyle.value){
+    if (!confirm('関連項目が入力済みです。本当にファクターを変更しますか？')) return false;
+  }
   factor = form.factor.value;
+  changeSubFactorList('Core');
+  changeSubFactorList('Style');
   checkFactor();
 }
 function checkFactor(){
@@ -45,6 +54,49 @@ function checkFactor(){
     form.factorStyle.setAttribute("list","list-style");
   }
   calcStt();
+}
+function changeSubFactorList(type){
+  const select = document.querySelector(`select[name^="factor${type}"]`);
+  const selected = select.value;
+  document.querySelectorAll(`select[name^="factor${type}"] option`).forEach(opt => {
+    const name = opt.value;
+    if(name != 'free' && factorData[name] || !name){
+      opt.remove();
+    }
+  });
+  if(factor){
+    Array.from(new Set(factorList[factor][type.toLowerCase()])).reverse().forEach(name => {
+      const option = document.createElement('option');
+      option.value = name;
+      option.text = name;
+      select.prepend(option);
+    });
+  }
+  const option = document.createElement('option');
+  select.prepend(option);
+  select.value = selected;
+  
+  checkSubFactor(type, selected in factorData ? '' : selected);
+}
+function checkSubFactor(type,selected){
+  subFactor[type] = selected;
+
+  if(subFactor[type] in factorData){
+    form['statusMain1'+type].readOnly = true;
+    form['statusMain2'+type].readOnly = true;
+    form['statusMain1'+type].value = factorData[selected]['stt1'];
+    form['statusMain2'+type].value = factorData[selected]['stt2'];
+  }
+  else if (subFactor[type] == '') {
+    form['statusMain1'+type].readOnly = true;
+    form['statusMain2'+type].readOnly = true;
+    form['statusMain1'+type].value = '';
+    form['statusMain2'+type].value = '';
+  }
+  else {
+    form['statusMain1'+type].readOnly = false;
+    form['statusMain2'+type].readOnly = false;
+  }
 }
 
 // 成長計算 ----------------------------------------
@@ -68,15 +120,15 @@ function calcGrow(){
 
 // ステータス計算 ----------------------------------------
 function calcStt() {
-  let main1 = Number(form.statusMain1.value);
-  let main2 = Number(form.statusMain2.value);
+  let main1 = Number(form.statusMain1Core.value)+Number(form.statusMain1Style.value);
+  let main2 = Number(form.statusMain2Core.value)+Number(form.statusMain2Style.value);
   let enduranceTotal  = Number(form.enduranceAdd.value) +enduranceGrow;
   let initiativeTotal = Number(form.initiativeAdd.value)+initiativeGrow;
   if     (factor === '人間') {
     enduranceTotal  += main1 * 2 + main2;
     initiativeTotal += main2 + 10;
-    document.getElementById("endurance-base").innerHTML  = `[${main1}×2+${main2}]`+(enduranceGrow?`+${enduranceGrow}`:'');
-    document.getElementById("initiative-base").innerHTML = `[${main2}+10]`+(initiativeGrow?`+${initiativeGrow}`:'');
+    document.getElementById("endurance-base").innerHTML  = '【技】×2+【情】';
+    document.getElementById("initiative-base").innerHTML = '【情】+10';
     document.getElementById("partner1-factor-term").innerHTML = '起源／流儀';
     document.getElementById("partner1-missing-term").innerHTML = '欠落';
     document.getElementById("partner1-age-term").innerHTML = '外見年齢／実年齢';
@@ -84,12 +136,16 @@ function calcStt() {
   else if(factor === '吸血鬼'){
     enduranceTotal  += main1 + 20;
     initiativeTotal += main2 + 4;
-    document.getElementById("endurance-base").innerHTML  = `[${main1}+20]`+(enduranceGrow?`+${enduranceGrow}`:'');
-    document.getElementById("initiative-base").innerHTML = `[${main2}+4]`+(initiativeGrow?`+${initiativeGrow}`:'');
+    document.getElementById("endurance-base").innerHTML  = '【血】+20';
+    document.getElementById("initiative-base").innerHTML = '【想】+4';
     document.getElementById("partner1-factor-term").innerHTML = '信念／職能';
     document.getElementById("partner1-missing-term").innerHTML = '喪失';
     document.getElementById("partner1-age-term").innerHTML = '年齢';
   }
+  document.getElementById("main1-total").innerHTML = main1;
+  document.getElementById("main2-total").innerHTML = main2;
+  document.getElementById("endurance-grow").innerHTML  = enduranceGrow;
+  document.getElementById("initiative-grow").innerHTML = initiativeGrow;
   document.getElementById("endurance-total").innerHTML  = enduranceTotal;
   document.getElementById("initiative-total").innerHTML = initiativeTotal;
 }
@@ -162,7 +218,10 @@ function autoInputPartner(num){
 function togglePartner2(){
   document.getElementById('partner2area').style.display = form.partner2On.checked ? '' : 'none';
 }
-
+// 血僕 ----------------------------------------
+function toggleServant(){
+  document.getElementById('servant').style.display = form.servantOn.checked ? '' : 'none';
+}
 // 傷号 ----------------------------------------
 function scarCheck(){
   const name = form.scarName.value;

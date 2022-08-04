@@ -77,6 +77,9 @@ $pc{'effects'} = "<p>$pc{'effects'}</p>";
 $pc{'effects'} =~ s/<p><\/p>//gi;
 $pc{'effects'} =~ s/\n/<br>/gi;
 
+### カラー設定 --------------------------------------------------
+setColors();
+
 ### 出力準備 #########################################################################################
 ### データ全体 --------------------------------------------------
 while (my ($key, $value) = each(%pc)){
@@ -166,6 +169,11 @@ else {
 $pc{'imageUpdateTime'} = $pc{'updateTime'};
 $pc{'imageUpdateTime'} =~ s/[\-\ \:]//g;
 $SHEET->param(imageSrc => "${set::item_dir}${main::file}/image.$pc{'image'}?$pc{'imageUpdateTime'}");
+
+### OGP --------------------------------------------------
+$SHEET->param(ogUrl => url().($::in{'url'} ? "?url=$::in{'url'}" : "?id=$::in{'id'}"));
+#if($pc{'image'}) { $SHEET->param(ogImg => url()."/".$imgsrc); }
+$SHEET->param(ogDescript => "カテゴリ:$pc{'category'}　形状:$pc{'shape'}　製作時期:$pc{'age'}　概要:$pc{'summary'}");
 
 ### バージョン等 --------------------------------------------------
 $SHEET->param(ver => $::ver);
