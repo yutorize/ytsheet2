@@ -448,7 +448,7 @@ dd.area-tags {
 }
 .trash-box table:empty::before {
   display: block;
-  content: 'ここにドロップで削除\A（保存時まで保留）';
+  content: 'ここにドロップで削除\A（ページ移動するまで保留）';
   margin-top: 1em;
   white-space: pre;
   text-align: center;
