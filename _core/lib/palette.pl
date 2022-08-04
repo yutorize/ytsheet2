@@ -8,7 +8,7 @@ use feature 'say';
 require $set::lib_palette_sub;
 
 my $id   = $::in{'id'};
-my $tool = $::in{'tool'};
+my $tool = $::in{'tool'} || $::in{'paletteTool'};
 my $log  = $::in{'log'}; #バックアップ情報読み込み
 my $editing = $::in{'editingMode'};
 
