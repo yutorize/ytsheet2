@@ -348,8 +348,8 @@ input.auto {
 #header-menu h2 {
   display: grid;
   align-items: flex-end;
-  height: calc(1.6em + 5px);
-  padding: 0 .2em 3px;
+  height: calc(1.6em + 6px);
+  padding: 1px .2em 3px;
   border-width: 0 0 1px;
   border-style: solid;
   border-color: rgba(200,200,200,0.3);
@@ -369,6 +369,11 @@ input.auto {
 }
 #header-menu h2 ruby rt {
   font-size: 0.6em;
+}
+@-moz-document url-prefix() {
+  #header-menu h2 ruby rt {
+    margin-bottom: -.8ex;
+  }
 }
 #header-menu ul {
   display: flex;
