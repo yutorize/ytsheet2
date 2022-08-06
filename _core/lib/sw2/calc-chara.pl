@@ -357,8 +357,8 @@ sub data_calc {
   if($pc{'lvRan'} >= 5) { push(@abilities, $pc{'combatFeatsExcRan5'} || ($::SW2_0?"治癒適性":"サバイバビリティ")); }
   if($pc{'lvRan'} >= 7) { push(@abilities, "不屈"); }
   if($pc{'lvRan'} >= 9) { push(@abilities, "ポーションマスター"); }
-  if($pc{'lvRan'} >=12) { push(@abilities, "縮地"); }
-  if($pc{'lvRan'} >=15) { push(@abilities, ($::SW2_0?"韋駄天":"ランアンドガン")); }
+  if($pc{'lvRan'} >=12) { push(@abilities, ($::SW2_0?"韋駄天":"縮地")); }
+  if($pc{'lvRan'} >=15) { push(@abilities, ($::SW2_0?"縮地":"ランアンドガン")); }
   if($pc{'lvSag'} >= 5) { push(@abilities, $pc{'combatFeatsExcSag5'} || "鋭い目"); }
   if($pc{'lvSag'} >= 7) { push(@abilities, "弱点看破"); }
   if($pc{'lvSag'} >= 9) { push(@abilities, "マナセーブ"); }
