@@ -10,7 +10,7 @@ sub addJsonData {
   
   %pc = data_update_chara(\%pc);
   
-  ### ロイス数 --------------------------------------------------
+  ## ロイス数
   my @dloises; $pc{'loisHave'} = 0; $pc{'loisMax'} = 0; $pc{'titusHave'} = 0; $pc{'sublimated'} = 0;
   foreach my $num (1..7){
     if($pc{"lois${num}Relation"} =~ /[DＤ]ロイス|^[DＤ]$/){
@@ -30,7 +30,7 @@ sub addJsonData {
       }
     }
   }
-  ### 簡易プロフィール --------------------------------------------------
+  ## 簡易プロフィール
   my @classes;
   foreach (@data::class_names){
     push(@classes, { "NAME" => $_, "LV" => $pc{'lv'.$data::class{$_}{'id'}} } );
@@ -50,6 +50,15 @@ sub addJsonData {
   
   $pc{'sheetDescriptionS'} = $base."\n".$works."\n".$syndrome;
   $pc{'sheetDescriptionM'} = $base."　".$sub."\n".$works."\n".$syndrome.($dlois?"\n$dlois":'');
+  
+  ## ゆとチャユニット用ステータス
+  $pc{'unitStatus'} = [
+    { 'HP' => $pc{'maxHpTotal'}.'/'.$pc{'maxHpTotal'} },
+    { '侵蝕' => $pc{'baseEncroach'} },
+    { 'ロイス' => $pc{'loisHave'}.'/'.$pc{'loisMax'} },
+    { '財産' => $pc{'savingTotal'} },
+    { '行動' => $pc{'initiativeTotal'} },
+  ];
   
   return \%pc;
 }

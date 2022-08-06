@@ -9,12 +9,41 @@ require $set::data_class;
 sub addJsonData {
   my %pc = %{ $_[0] };
   my $type = $_[1];
-  if   ($type eq 'm'){  }
-  elsif($type eq 'i'){  }
-  elsif($type eq 'a'){  }
+  ### 魔物 --------------------------------------------------
+  if ($pc{'type'} eq 'm'){
+    ## ゆとチャユニット用ステータス
+    my @n2a = ('','A' .. 'Z');
+    if($pc{'statusNum'} > 1){
+      my @hp; my @mp; my @def;
+      my %multiple;
+      foreach my $i (1 .. $pc{'statusNum'}){
+        ($pc{"part${i}"} = $pc{"status${i}Style"}) =~ s/^.+[(（)](.+?)[)）]$/$1/;
+        $multiple{ $pc{"part${i}"} }++;
+      }
+      my %count;
+      foreach my $i (1 .. $pc{'statusNum'}){
+        if($multiple{ $pc{"part${i}"} } > 1){
+          $count{ $pc{"part${i}"} }++;
+          $pc{"part${i}"} .= $n2a[ $count{ $pc{"part${i}"} } ];
+        }
+        push(@hp , {$pc{"part${i}"}.':HP' => $pc{"status${i}Hp"}.'/'.$pc{"status${i}Hp"}});
+        push(@mp , {$pc{"part${i}"}.':MP' => $pc{"status${i}Mp"}.'/'.$pc{"status${i}Mp"}});
+        push(@def, $pc{"part${i}"}.$pc{"status${i}Defense"});
+      }
+      $pc{'unitStatus'} = [ @hp,'|', @mp,'|', {'メモ' => '防護:'.join('／',@def)}];
+    }
+    my $taxa = "分類:$pc{'taxa'}";
+    my $data1 = "知能:$pc{'intellect'}　知覚:$pc{'perception'}　反応:$pc{'disposition'}";
+       $data1 .= "穢れ:${'sin'}" if $pc{'sin'};
+    my $data2  = "言語:$pc{'language'}　生息地:$pc{'habitat'}";
+    my $data3  = "弱点:$pc{'weakness'}\n先制値:$pc{'initiative'}　生命抵抗力:$pc{'vitResist'}\($pc{'vitResistFix'}\)　精神抵抗力:$pc{'mndResist'}\($pc{'mndResistFix'}\)";
+    $pc{'sheetDescriptionS'} = $taxa."\n".$data3;
+    $pc{'sheetDescriptionM'} = $taxa."　".$data1."\n".$data2."\n".$data3;
+  }
+  ### キャラクター --------------------------------------------------
   else {
     %pc = data_update_chara(\%pc);
-    # 簡易プロフィール
+    ## 簡易プロフィール
     my @classes;
     foreach (@data::class_names){
       push(@classes, { "NAME" => $_, "LV" => $pc{'lv'.$data::class{$_}{'id'}} } );
@@ -35,14 +64,21 @@ sub addJsonData {
                 .      "／精神$pc{'sttMnd'}".($pc{'sttAddF'}?"+$pc{'sttAddF'}":'')."\[$pc{'bonusMnd'}\]";
     $pc{'sheetDescriptionS'} = $base."\n".$classes;
     $pc{'sheetDescriptionM'} = $base."\n".$sub."\n".$classes."\n".$status;
+    ## 防護点
+    if($pc{'defenseTotalAllDef'} eq ''){
+      $pc{'defenseTotalAllDef'} = $pc{'defenseTotal1Def'} ne '' ? $pc{'defenseTotal1Def'}
+                                : $pc{'defenseTotal2Def'} ne '' ? $pc{'defenseTotal2Def'}
+                                : $pc{'defenseTotal3Def'} ne '' ? $pc{'defenseTotal3Def'}
+                                : 0;
+    }
+    ## ゆとチャユニット用ステータス
+    $pc{'unitStatus'} = [
+      { 'HP' => $pc{'hpTotal'}.'/'.$pc{'hpTotal'} },
+      { 'MP' => $pc{'mpTotal'}.'/'.$pc{'mpTotal'} },
+      { '防護' => $pc{'defenseTotalAllDef'} },
+    ];
   }
-  # 防護点
-  if($pc{'defenseTotalAllDef'} eq ''){
-    $pc{'defenseTotalAllDef'} = $pc{'defenseTotal1Def'} ne '' ? $pc{'defenseTotal1Def'}
-                              : $pc{'defenseTotal2Def'} ne '' ? $pc{'defenseTotal2Def'}
-                              : $pc{'defenseTotal3Def'} ne '' ? $pc{'defenseTotal3Def'}
-                              : 0;
-  }
+  
   return \%pc;
 }
 
