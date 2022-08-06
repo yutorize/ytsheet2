@@ -12,7 +12,7 @@ $::in{'log'} ||= $::in{'backup'};
 if($set::user_reqd && !$LOGIN_ID){ error('ログインしていません。'); }
 ### 個別処理 --------------------------------------------------
 my $type = $::in{'type'};
-my $file;
+my $file; my $author;
 our %conv_data = ();
 
 if($mode eq 'edit'){
@@ -20,7 +20,7 @@ if($mode eq 'edit'){
   $file = $user ? '_'.$user.'/'.$file : $file;
 }
 elsif($mode eq 'copy'){
-  ($file, $type) = (getfile_open($::in{'id'}))[0,1];
+  ($file, $type, $author) = (getfile_open($::in{'id'}))[0..2];
 }
 elsif($mode eq 'convert'){
   if($::in{'url'}){
@@ -108,6 +108,18 @@ sub pcDataGet {
     }
     close($IN);
     if($datatype eq 'logs' && !$hit){ error("過去ログ（$::in{'log'}）が見つかりません。"); }
+    
+    if($pc{'forbidden'}){
+      if($::in{'log'}){
+        ($pc{'protect'}, $pc{'forbidden'}) = protectTypeGet("${datadir}${file}/data.cgi");
+      }
+      unless(
+        ($pc{'protect'} eq 'none') || 
+        ($author && ($author eq $LOGIN_ID || $set::masterid eq $LOGIN_ID))
+      ){
+        error("閲覧・編集権限がありません。");
+      }
+    }
 
     delete $pc{'image'};
     delete $pc{'protect'};

@@ -647,7 +647,7 @@ sub infoJson {
   our $type = shift;
   our $message = shift;
   $message =~ s/"//g;
-  print "Content-type: text/javascript\n\n";
+  print "Content-type: text/javascript; charset=utf-8\n\n";
   print '{"result":"'.$type.'","message":"'.$message.'"}';
   exit;
 }

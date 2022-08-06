@@ -16,10 +16,10 @@ my $log = $::in{'log'};
 my $id  = $::in{'id'};
 my $url = $::in{'url'};
 
-my ($file, $type);
+my ($file, $type,$author);
 my %pc = ();
 if($id){
-  ($file, $type, undef) = getfile_open($id);
+  ($file, $type, $author) = getfile_open($id);
 
   my $datadir;
      if($type eq 'm'){ $datadir = $set::mons_dir; }
@@ -44,6 +44,19 @@ if($id){
   }
   close($IN);
   if($datatype eq 'logs' && !$hit){ error("過去ログ（$::in{'log'}）が見つかりません。"); }
+  
+  if($pc{'forbidden'}){
+    my $LOGIN_ID = check;
+    if($::in{'log'}){
+      ($pc{'protect'}, $pc{'forbidden'}) = protectTypeGet("${datadir}${file}/data.cgi");
+    }
+    unless(
+      ($pc{'protect'} eq 'none') || 
+      ($author && ($author eq $LOGIN_ID || $set::masterid eq $LOGIN_ID))
+    ){
+      infoJson('error',"閲覧権限がありません。");
+    }
+  }
   
   if($pc{'image'}){
     $pc{'imageURL'} = url()."${datadir}${file}/image.$pc{'image'}";
