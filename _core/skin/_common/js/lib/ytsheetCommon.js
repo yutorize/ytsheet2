@@ -56,7 +56,12 @@ io.github.shunshun94.trpg.ytsheet._convertList = (list, columns, opt_separator =
 	const convertDataToString = (data) => {
 		const result = [];
 		for(var key in headerLength) {
-			result.push(`${data[key]}${''.padEnd(length[key] - io.github.shunshun94.trpg.ytsheet.length(data[key]), ' ')}`);
+			if(data === '-'){
+				result.push(''.padEnd(length[key], '-'));
+			}
+			else {
+				result.push(`${data[key]}${''.padEnd(length[key] - io.github.shunshun94.trpg.ytsheet.length(data[key]), ' ')}`);
+			}
 		}
 		result.push(data.note);
 		return result.join(opt_separator);
@@ -128,11 +133,11 @@ io.github.shunshun94.trpg.ytsheet.separateParametersFromChatPalette = (chatPalet
 	return result;
 };
 
-io.github.shunshun94.trpg.ytsheet.getChatPalette = () => {
-	const paramId = /id=[0-9a-zA-Z]+/.exec(location.href)[0];
+io.github.shunshun94.trpg.ytsheet.getChatPalette = (sheetUrl) => {
+	sheetUrl = sheetUrl.replace(/&?mode=([^&]+)/g, '');
 	return new Promise((resolve, reject)=>{
 		let xhr = new XMLHttpRequest();
-		xhr.open('GET', `./?${paramId}&tool=bcdice&mode=palette`, true);
+		xhr.open('GET', `${sheetUrl}&mode=palette&tool=bcdice`, true);
 		xhr.responseType = "text";
 		xhr.onload = (e) => {
 			resolve(io.github.shunshun94.trpg.ytsheet.separateParametersFromChatPalette(e.currentTarget.response));
