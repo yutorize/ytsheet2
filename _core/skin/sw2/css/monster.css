@@ -113,6 +113,9 @@ div.status dl {
   display: flex;
   margin-right: 1.5em;
 }
+div.status dl dt {
+  white-space: nowrap;
+}
 div.status dl dt::after {
   content: ':';
   display: inline-block;
