@@ -43,36 +43,22 @@ sub palettePreset {
 sub palettePresetSimple {
   my $tool = shift;
   my $type = shift;
-  my $text;
-  my %bot;
-  if   (!$tool)           { $bot{'YTC'} = 1; }
-  elsif($tool eq 'bcdice'){ $bot{'BCD'} = 1; }
-  ## ＰＣ
-  if(!$type){
-    # 基本判定
-    $text .= "### ■判定\n";
-    $text .= "$::pc{'rollStr'}+$::pc{'rollStrDice'}D 【筋力】判定\n";
-    $text .= "$::pc{'rollDex'}+$::pc{'rollDexDice'}D 【器用】判定\n";
-    $text .= "$::pc{'rollAgi'}+$::pc{'rollAgiDice'}D 【敏捷】判定\n";
-    $text .= "$::pc{'rollInt'}+$::pc{'rollIntDice'}D 【知力】判定\n";
-    $text .= "$::pc{'rollSen'}+$::pc{'rollSenDice'}D 【感知】判定\n";
-    $text .= "$::pc{'rollMnd'}+$::pc{'rollMndDice'}D 【精神】判定\n";
-    $text .= "$::pc{'rollLuk'}+$::pc{'rollLukDice'}D 【幸運】判定\n";
-    $text .= "\n";
-    $text .= "$::pc{'battleTotalAcc'}+$::pc{'battleDiceAcc'}D 命中判定\n";
-    $text .= "$::pc{'battleTotalAtk'}+$::pc{'battleDiceAtk'}D 攻撃力\n";
-    $text .= "$::pc{'battleTotalEva'}+$::pc{'battleDiceEva'}D 回避判定\n";
-    $text .= "\n";
-    $text .= "$::pc{'rollTrapDetect'}+$::pc{'rollTrapDetectDice'}D トラップ探知判定\n";
-    $text .= "$::pc{'rollTrapRelease'}+$::pc{'rollTrapReleaseDice'}D トラップ解除判定\n";
-    $text .= "$::pc{'rollDangerDetect'}+$::pc{'rollDangerDetectDice'}D 危険感知判定\n";
-    $text .= "$::pc{'rollEnemyLore'}+$::pc{'rollEnemyLoreDice'}D エネミー識別判定\n";
-    $text .= "$::pc{'rollAppraisal'}+$::pc{'rollAppraisalDice'}D アイテム鑑定判定\n";
-    $text .= "$::pc{'rollMagic'}+$::pc{'rollMagicDice'}D 魔術判定\n";
-    $text .= "$::pc{'rollSong'}+$::pc{'rollSongDice'}D 呪歌判定\n";
-    $text .= "$::pc{'rollAlchemy'}+$::pc{'rollAlchemyDice'}D 錬金術判定\n";
-    $text .= "\n";
+  
+  my $text = palettePreset($tool,$type);
+  my %propaty;
+  foreach (paletteProperties($type)){
+    if($_ =~ /^\/\/(.+?)=(.*)$/){
+      $propaty{$1} = $2;
+    }
   }
+  my $hit = 1;
+  while ($hit){
+    $hit = 0;
+    foreach(keys %propaty){
+      if($text =~ s/\{$_\}/$propaty{$_}/i){ $hit = 1 }
+    }
+  }
+  1 while $text =~ s/\([+\-*0-9]+\)/s_eval($&)/egi;
   
   return $text;
 }

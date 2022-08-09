@@ -608,7 +608,7 @@ sub palettePropertiesUsedOnly {
   foreach (0 .. 100){
     $hit = 0;
     foreach my $line (@propaties_in){
-      if($line =~ "^//(.+?)="){
+      if($line =~ "^//(\Q.+?\E)="){
         if   ($palette =~ /^\/\/$1=/m){ ; }
         elsif($palette =~ /\{($1)\}/){ $palette .= $line."\n"; $hit = 1 }
       }
@@ -616,7 +616,7 @@ sub palettePropertiesUsedOnly {
     last if !$hit;
   }
   foreach (@propaties_in){
-    if($_ =~ "^//(.+?)="){
+    if($_ =~ "^//(\Q.+?\E)="){
       if($palette =~ /\{($1)\}/){ push @propaties_out, $_; }
     }
     else {
