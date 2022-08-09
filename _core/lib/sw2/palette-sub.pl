@@ -66,6 +66,8 @@ sub magicPows {
   return (\%pows, \%heals);
 }
 
+my $skill_mark = "[○◯〇△＞▶〆☆≫»□☑🗨]|&gt;&gt;";
+
 ### プリセット #######################################################################################
 sub palettePreset {
   my $tool = shift;
@@ -192,26 +194,97 @@ sub palettePreset {
   }
   ## 魔物
   elsif($type eq 'm') {
-    $text .= "2d6+{生命抵抗} 生命抵抗力\n";
-    $text .= "2d6+{精神抵抗} 精神抵抗力\n";
+    $text .= "//生命抵抗修正=0\n";
+    $text .= "//精神抵抗修正=0\n";
+    $text .= "//回避修正=0\n";
+    $text .= "2d6+{生命抵抗}+{生命抵抗修正} 生命抵抗力\n";
+    $text .= "2d6+{精神抵抗}+{精神抵抗修正} 精神抵抗力\n";
+    foreach (1 .. $::pc{'statusNum'}){
+      (my $part   = $::pc{'status'.$_.'Style'}) =~ s/^.+?[（(](.+?)[)）]$/$1/;
+      $text .= "2d6+{回避$_}+{回避修正} 回避／".$part."\n" if $::pc{'status'.$_.'Evasion'} ne '';
+    }
     $text .= "\n";
 
+    $text .= "//命中修正=0\n";
+    $text .= "//打撃修正=0\n";
     foreach (1 .. $::pc{'statusNum'}){
-      $text .= "2d6+{命中$_} 命中力／$::pc{'status'.$_.'Style'}\n" if $::pc{'status'.$_.'Accuracy'} ne '';
-      $text .= "{ダメージ$_} ダメージ\n" if $::pc{'status'.$_.'Damage'} ne '';
-      $text .= "2d6+{回避$_} 回避\n" if $::pc{'status'.$_.'Evasion'} ne '';
+      (my $part   = $::pc{'status'.$_.'Style'}) =~ s/^.+?[（(](.+?)[)）]$/$1/;
+      (my $weapon = $::pc{'status'.$_.'Style'}) =~ s/^(.+?)[（(].+?[)）]$/$1/;
+      if($part ne $weapon){ $weapon = $::pc{'status'.$_.'Style'}; }
+      $text .= "2d6+{命中$_}+{命中修正} 命中力／$weapon\n" if $::pc{'status'.$_.'Accuracy'} ne '';
+      $text .= "{ダメージ$_}+{打撃修正} ダメージ／".$weapon."\n" if $::pc{'status'.$_.'Damage'} ne '';
       $text .= "\n";
     }
     my $skills = $::pc{'skills'};
     $skills =~ tr/０-９（）/0-9\(\)/;
+    $skills =~ s/\|/｜/g;
     $skills =~ s/<br>/\n/gi;
-    $skills =~ s/^(?:[○◯〇△＞▶〆☆≫»□☑🗨]|&gt;&gt;)+(.+?)(?:[0-9]+(?:レベル|LV)|\(.+\))*[\/／](?:魔力)([0-9]+)[(（][0-9]+[）)]/$text .= "2d6+{$1} $1\n";/megi;
-    $skills =~ s/^(?:[○◯〇△＞▶〆☆≫»□☑🗨]|&gt;&gt;)+(.+)[\/／]([0-9]+)[(（][0-9]+[）)]/$text .= "2d6+{$1} $1\n";/megi;
+    $skills =~ s/^
+      (?:$skill_mark)+
+      (?<name>.+?)
+      (?: [0-9]+(?:レベル|LV)|\(.+\) )*
+      [\/／]
+      (?:魔力)
+      ([0-9]+)
+      [(（][0-9]+[）)]
+      /$text .= "2d6+{$+{name}} $+{name}\n\n";/megix;
+    
+    $skills =~ s/^
+      (?<head>
+        (?<icon>(?:$skill_mark)+)
+        (?<name>.+)
+        [\/／]
+        (
+          (?<dice>(?<base>[0-9]+)  [(（]  (?<fix>[0-9]+)  [）)]  )
+          |
+          (?<fix>[0-9]+)
+        )
+        (?<other>.+?)
+      )
+      \s
+      (?<note>[\s\S]*?)
+      (?=^$skill_mark|^●|\z)
+      /
+      $text .= convertIcon($+{icon})."$+{name}／$+{fix}$+{other}\n"
+            .($+{base} ne '' ?"2d6+{$+{name}} ".convertIcon($+{icon})."$+{name}$+{other}\n":'')
+            .skillNote($+{head},$+{name},$+{note})."\n";/megix;
+
   }
   
   return $text;
-}
 
+  sub skillNote {
+    my $head = shift;
+    my $name = shift;
+    my $note = shift;
+    my $half = ($head =~ /半減/ ? 1 : 0);
+    $note =~ tr#＋－×÷#+\-*/#;
+    my $out;
+    $note =~ s/「?(?<dice>[0-9]+[DＤ][0-9]*[+\-*\/()0-9]*)」?点の(?<elm>.+属性)?の?(?<dmg>物理|魔法|落下|確定)?ダメージ/$out .= "{${name}ダメージ} $+{elm}$+{dmg}ダメージ\n".($half?"{${name}ダメージ}\/\/2 $+{elm}$+{dmg}ダメージ（半減）\n":'');/smegi if $bot{'YTC'};
+    $note =~ s/「?(?<dice>[0-9]+[DＤ][0-9]*[+\-*\/()0-9]*)」?点の(?<elm>.+属性)?の?(?<dmg>物理|魔法|落下|確定)?ダメージ/$out .= "{${name}ダメージ} $+{elm}$+{dmg}ダメージ／${name}\n".($half?"({${name}ダメージ})\/2U $+{elm}$+{dmg}ダメージ（半減）／${name}\n":'');/smegi if $bot{'BCD'};
+    return $out;
+  }
+  sub convertIcon {
+    my $text = shift;
+    return $text if $bot{'BCD'}; #BCDは変換しない
+    if($::SW2_0){
+      $text =~ s{[○◯〇]}{[常]}gi;
+      $text =~ s{[＞▶〆]}{[主]}gi;
+      $text =~ s{[☆≫»]|&gt;&gt;}{[補]}gi;
+      $text =~ s{[□☑🗨]}{[宣]}gi;
+      $text =~ s{[▽]}{▽}gi;
+      $text =~ s{[▼]}{▼}gi;
+    } else {
+      $text =~ s{[○◯〇]}{[常]}gi;
+      $text =~ s{[△]}{[準]}gi;
+      $text =~ s{[＞▶〆]}{[主]}gi;
+      $text =~ s{[☆≫»]|&gt;&gt;}{[補]}gi;
+      $text =~ s{[□☑🗨]}{[宣]}gi;
+    }
+    
+    return $text;
+  }
+}
 ### プリセット（シンプル） ###########################################################################
 sub palettePresetSimple {
   my $tool = shift;
@@ -377,13 +450,13 @@ sub paletteProperties {
 
       push @propaties, "//武器$_=$::pc{'weapon'.$_.'Name'}";
 
-      if(!$::pc{'weapon'.$_.'Class'} || $::pc{'weapon'.$_.'Class'} eq '自動計算しない'){ @propaties, "//命中$_=$::pc{'weapon'.$_.'Acc'}"; }
+      if(!$::pc{'weapon'.$_.'Class'} || $::pc{'weapon'.$_.'Class'} eq '自動計算しない'){ push @propaties, "//命中$_=$::pc{'weapon'.$_.'Acc'}"; }
       else { push @propaties, "//命中$_=({$::pc{'weapon'.$_.'Class'}}+({器用}".($::pc{'weapon'.$_.'Own'}?"+2":"").")/6+".($::pc{'weapon'.$_.'Acc'}||0).")"; }
 
       push @propaties, "//威力$_=$::pc{'weapon'.$_.'Rate'}";
       push @propaties, "//C値$_=$::pc{'weapon'.$_.'Crit'}";
 
-      if(!$::pc{'weapon'.$_.'Class'} || $::pc{'weapon'.$_.'Class'} eq '自動計算しない'){ @propaties, "//追加D$_=$::pc{'weapon'.$_.'Dmg'}"; }
+      if(!$::pc{'weapon'.$_.'Class'} || $::pc{'weapon'.$_.'Class'} eq '自動計算しない'){ push @propaties, "//追加D$_=$::pc{'weapon'.$_.'Dmg'}"; }
       else {
         my $basetext;
         if   ($::pc{'weapon'.$_.'Category'} eq 'クロスボウ'){ $basetext = "{$::pc{'weapon'.$_.'Class'}}"; }
@@ -434,11 +507,37 @@ sub paletteProperties {
     }
     my $skills = $::pc{'skills'};
     $skills =~ tr/０-９（）/0-9\(\)/;
-    $skills =~ s/^(?:[○◯〇△＞▶〆☆≫»□☑🗨]|&gt;&gt;)+(.+?)(?:[0-9]+(?:レベル|LV)|\(.+\))*[\/／](?:魔力)([0-9]+)[(（][0-9]+[）)]/push @propaties, "\/\/$1=$2";/megi;
-    $skills =~ s/^(?:[○◯〇△＞▶〆☆≫»□☑🗨]|&gt;&gt;)+(.+)[\/／]([0-9]+)[(（][0-9]+[）)]/push @propaties, "\/\/$1=$2";/megi;
+    $skills =~ s/\|/｜/g;
+    $skills =~ s/<br>/\n/g;
+    $skills =~ s/^(?:$skill_mark)+(.+?)(?:[0-9]+(?:レベル|LV)|\(.+\))*[\/／](?:魔力)([0-9]+)[(（][0-9]+[）)]/push @propaties, "\/\/$1=$2";/megi;
+
+    $skills =~ s/^
+      (?<head>
+        (?:$skill_mark)+
+        (?<name>.+)
+        [\/／]
+        (
+          (?<dice> (?<value>[0-9]+)  [(（]  [0-9]+  [）)]  )
+          |
+          [0-9]+
+        )
+      .+?)
+      \s
+      (?<note>[\s\S]*?)
+      (?=^$skill_mark|^●|\z)
+      /push @propaties, "\/\/$+{name}=$+{value}";push @propaties, skillNoteP($+{name},$+{note});/megix;
   }
   
   return @propaties;
+
+  sub skillNoteP {
+    my $name = shift;
+    my $note = shift;
+    $note =~ tr#＋－×÷#+\-*/#;
+    my $out;
+    $note =~ s/「?(?<dice>[0-9]+[DＤ][0-9]*[+\-*\/()0-9]*)」?点の(?<elm>.+属性)?の?(?<dmg>物理|魔法|落下|確定)?ダメージ/$out .= "\/\/${name}ダメージ=$+{dice}\n";/egi;
+    return $out;
+  }
 }
 
 1;
