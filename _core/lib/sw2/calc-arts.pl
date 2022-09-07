@@ -21,7 +21,7 @@ sub data_calc {
   }
   elsif($pc{'category'} eq 'god'){
     $name = ($pc{'godAka'} ? "“$pc{'godAka'}”" : "").$pc{'godName'};
-    $sub = ($pc{'godClass'}||'―') . '／'.($pc{'godRank'}||'―') . ($pc{'godArea'}?"／$pc{'godArea'}": '―');
+    $sub = ($pc{'godClass'}||'―') . '／' . ($pc{'godRank'}||'―') . '／' . ($pc{'godArea'}||'―');
     $summary = substr($pc{'godDeity'}, 0, 35).'..';
   }
   elsif($pc{'category'} eq 'school'){
