@@ -231,7 +231,7 @@ sub palettePreset {
     
     $skills =~ s/^
       (?<head>
-        (?<icon>(?:$skill_mark)+)
+        (?<mark>(?:$skill_mark)+)
         (?<name>.+)
         [\/／]
         (
@@ -245,10 +245,10 @@ sub palettePreset {
       (?<note>[\s\S]*?)
       (?=^$skill_mark|^●|\z)
       /
-      $text .= convertIcon($+{icon})."$+{name}／$+{fix}$+{other}\n"
-            .($+{base} ne '' ?"2d6+{$+{name}} ".convertIcon($+{icon})."$+{name}$+{other}\n":'')
-            .skillNote($+{head},$+{name},$+{note})."\n";/megix;
-
+      $text .= convertMark($+{mark})."$+{name}／$+{fix}$+{other}\n"
+            .($+{base} ne '' ?"2d6+{$+{name}} ".convertMark($+{mark})."$+{name}$+{other}\n":'')
+            .skillNote($+{head},$+{name},$+{note})."\n";
+      /megix;
   }
   
   return $text;
@@ -264,7 +264,7 @@ sub palettePreset {
     $note =~ s/「?(?<dice>[0-9]+[DＤ][0-9]*[+\-*\/()0-9]*)」?点の(?<elm>.+属性)?の?(?<dmg>物理|魔法|落下|確定)?ダメージ/$out .= "{${name}ダメージ} $+{elm}$+{dmg}ダメージ／${name}\n".($half?"({${name}ダメージ})\/2U $+{elm}$+{dmg}ダメージ（半減）／${name}\n":'');/smegi if $bot{'BCD'};
     return $out;
   }
-  sub convertIcon {
+  sub convertMark {
     my $text = shift;
     return $text if $bot{'BCD'}; #BCDは変換しない
     if($::SW2_0){
@@ -354,6 +354,7 @@ sub paletteProperties {
       ['Alc','アルケミスト'],
       ['Dru','ドルイド'],
       ['Dem','デーモンルーラー'],
+      ['Geo','ジオマンサー'],
       ['War','ウォーリーダー'],
       ['Mys','ミスティック'],
       ['Phy','フィジカルマスター'],
