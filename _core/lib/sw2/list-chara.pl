@@ -152,7 +152,9 @@ if(@class_query){
   foreach (@class_name){ $num{$_} = $i; $i++; }
   foreach my $class (@class_query){
     my $op = ''; my $lv = '';
-    (my $name = $class) =~ s/(>=?|<=?)?([0-9]+)$/$op = $1;$lv = $2;''/e;
+    $class =~ s/&lt;/</g;
+    $class =~ s/&gt;/>/g;
+    (my $name = $class) =~ s/(?<op>\>=?|\<=?)?(?<lv>[0-9]+)$/$op = $+{op};$lv = $+{lv};''/e;
     if($lv ne ''){
       if   ($op eq '>='){ @list = grep { (split '/' ,(split /<>/)[13])[$num{$name}] >= $lv } @list; }
       elsif($op eq '<='){ @list = grep { (split '/' ,(split /<>/)[13])[$num{$name}] <= $lv } @list; }
