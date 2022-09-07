@@ -591,8 +591,9 @@ sub palettePresetBuffDelete {
     last if !$hit
   }
   $text =~ s#^//.+?=.*?(\n|$)##gm;
+  $text =~ s/\$\+0//g;
+  $text =~ s/\#0//g;
   $text =~ s/\+0//g;
-  $text =~ s/\#0\$//g;
   $text =~ s/^### ■バフ・デバフ\n//g;
   
   return $text;
