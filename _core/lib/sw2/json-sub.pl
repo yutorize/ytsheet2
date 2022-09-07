@@ -32,6 +32,13 @@ sub addJsonData {
       }
       $pc{'unitStatus'} = [ @hp,'|', @mp,'|', {'メモ' => '防護:'.join('／',@def)}];
     }
+    else {
+      $pc{'unitStatus'} = [
+        { 'HP' => $pc{'status1Hp'}.'/'.$pc{'status1Hp'} },
+        { 'MP' => $pc{'status1Mp'}.'/'.$pc{'status1Mp'} },
+        { '防護' => $pc{'status1Defense'} },
+      ];
+    }
     my $taxa = "分類:$pc{'taxa'}";
     my $data1 = "知能:$pc{'intellect'}　知覚:$pc{'perception'}　反応:$pc{'disposition'}";
        $data1 .= "穢れ:$pc{'sin'}" if $pc{'sin'};
