@@ -138,7 +138,7 @@ sub paletteProperties {
   push @propaties, "//交渉=".($::pc{'skillTotalNegotiate'}||0);
   push @propaties, "//調達=".($::pc{'skillTotalProcure'}  ||0);
   foreach my $name ('Ride','Art','Know','Info'){
-    foreach my $num (1 .. $::pc{'skillNum'}){
+    foreach my $num (1 .. $::pc{'skill'.$name.'Num'}){
       next if !$::pc{'skill'.$name.$num.'Name'};
       push @propaties, "//$::pc{'skill'.$name.$num.'Name'}=".($::pc{'skillTotal'.$name.$num}||0);
     }
