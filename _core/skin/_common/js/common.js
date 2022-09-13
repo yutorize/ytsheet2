@@ -1,10 +1,10 @@
 // ナイトモード
-const bodyClass = document.body.classList;
+const htmlClass = document.getElementsByTagName('html')[0].classList;
 let nightMode = localStorage.getItem("nightMode");
-if(nightMode == 1) { bodyClass.add('night'); }
+if(nightMode == 1) { htmlClass.add('night'); }
 function nightModeChange() {
-  if(nightMode != 1) { bodyClass.add('night');nightMode = 1; }
-  else { bodyClass.remove('night'); nightMode = 0; }
+  if(nightMode != 1) { htmlClass.add('night');nightMode = 1; }
+  else { htmlClass.remove('night'); nightMode = 0; }
   localStorage.setItem("nightMode", nightMode);
 }
 // 検索フォーム

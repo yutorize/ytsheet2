@@ -31,10 +31,17 @@ sub tag_unescape {
   $text =~ s#(―+)#<span class="d-dash">$1</span>#g;
   
   $text =~ s{[©]}{<i class="s-icon copyright">©</i>}gi;
-  
-  $text =~ s/\[魔\]/<img alt="&#91;魔&#93;" class="i-icon" src="${set::icon_dir}wp_magic.png">/gi;
-  $text =~ s/\[刃\]/<img alt="&#91;刃&#93;" class="i-icon" src="${set::icon_dir}wp_edge.png">/gi;
-  $text =~ s/\[打\]/<img alt="&#91;打&#93;" class="i-icon" src="${set::icon_dir}wp_blow.png">/gi;
+
+  if($::in{'mode'} ne 'download'){
+    $text =~ s/\[魔\]/<img alt="&#91;魔&#93;" class="i-icon" src="${set::icon_dir}wp_magic.png">/gi;
+    $text =~ s/\[刃\]/<img alt="&#91;刃&#93;" class="i-icon" src="${set::icon_dir}wp_edge.png">/gi;
+    $text =~ s/\[打\]/<img alt="&#91;打&#93;" class="i-icon" src="${set::icon_dir}wp_blow.png">/gi;
+  }
+  else {
+    $text =~ s|\[魔\]|<img alt="&#91;魔&#93;" class="i-icon" src="data:image/webp;base64,UklGRqwAAABXRUJQVlA4TJ8AAAAvD8ADED9AqIGhhP5FvFQxEa6LmgCEILtJBvnkvBhvESIBCHf8jwZ44QAfzH8IQD8sZ2K6bB8tgeNGktymAZLSmz6E/R5A9z5wI6BJQfzavcsfUBAR/U/AwRmBrkMMOtVnMZxWXvYvc5Vfi8Gc57JPOM2vxTRxVS5767suXovlPnGH7G2uCU+wPO/h+bW57+GIwWvCGbqoHZxfuo7/BAAA">|gi;
+    $text =~ s|\[刃\]|<img alt="&#91;刃&#93;" class="i-icon" src="data:image/webp;base64,UklGRmgAAABXRUJQVlA4TFwAAAAvD8ADECcgECD8r1ix5EMgQOhXpkaDgrQNmPq33J35D8B/Cs4KriLZDZv9EAIHgs2gAiCNzR+VyiGi/wGIWX8565unQe15VkDtBrkCr3ZDnhVQt41fgHwX6nojAA==">|gi;
+    $text =~ s|\[打\]|<img alt="&#91;打&#93;" class="i-icon" src="data:image/webp;base64,UklGRnAAAABXRUJQVlA4TGMAAAAvD8ADEB+gkG0EODSdId0jEEgC2V9sEQVpG7C49roz/wF8ppPAprb2Ji8JxUO38jthZ84eCzQJHTURgQSmbiOi/4GE4Cs4f8Xxx4x/SfOVNJdDdkez1dghIZdQYvAKLJADIQAA">|gi;
+  }
   
   $text =~ s/'''(.+?)'''/<span class="oblique">$1<\/span>/gi; # 斜体
   $text =~ s/''(.+?)''/<b>$1<\/b>/gi;  # 太字

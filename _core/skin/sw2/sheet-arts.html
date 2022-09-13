@@ -2,75 +2,24 @@
 <html lang="ja">
 
 <head>
-  <meta charset="UTF-8">
-  <title><TMPL_VAR artsNameTitle> - <TMPL_VAR title></title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta property="og:title" content="<TMPL_VAR artsNameTitle> - <TMPL_VAR title>">
-  <meta property="og:type" content="artcle">
-  <meta property="og:url" content="<TMPL_VAR ogUrl>">
-  <meta property="og:site_name" content="<TMPL_VAR title>">
-  <meta property="og:description" content="<TMPL_VAR ogDescript>">
-  <TMPL_IF ogImg><meta property="og:image" content="<TMPL_VAR ogImg>"></TMPL_IF>
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:site" content="@yutorize">
-  <TMPL_IF hide><meta name="robots" content="none"></TMPL_IF>
-  <link rel="stylesheet" media="all" href="<TMPL_VAR coreDir>/skin/_common/css/base.css?<TMPL_VAR ver>">
-  <link rel="stylesheet" media="all" href="<TMPL_VAR coreDir>/skin/_common/css/sheet.css?<TMPL_VAR ver>">
-  <link rel="stylesheet" media="all" href="<TMPL_VAR coreDir>/skin/sw2/css/arts.css?<TMPL_VAR ver>">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+<TMPL_INCLUDE NAME="../_common/sheet-head.html">
+<TMPL_IF modeDownload>
   <script>
-const sheetId = '<TMPL_VAR id>';
-<TMPL_IF error>
-window.onload = function() {
-  editOn();
-  setTimeout(function(){
-    document.getElementById("error").style.opacity = 0;
-    document.getElementById("error").style.top = '-5rem';
-  },2000);
-};
-</TMPL_IF>
-  </script>
-  <style>
-    :root {
-      --box-head-bg-color-h: <TMPL_VAR colorHeadBgH>;
-      --box-head-bg-color-s: <TMPL_VAR colorHeadBgS>%;
-      --box-head-bg-color-l: <TMPL_VAR colorHeadBgL>%;
-      --box-base-bg-color-h: <TMPL_VAR colorBaseBgH>;
-      --box-base-bg-color-s: <TMPL_VAR colorBaseBgS>%;
-      --box-base-bg-color-l: <TMPL_VAR colorBaseBgL>%;
-      --box-base-bg-color-d: <TMPL_VAR colorBaseBgD>%;
+  document.addEventListener('DOMContentLoaded', () => {
+    if(document.querySelector('#symbol img')){
+      document.querySelector('#symbol img').src = images['1'];
     }
-  </style>
-  <TMPL_INCLUDE NAME="skin-add/sheet-head.html">
+  });
+  </script>
+</TMPL_IF>
 </head>
 <body id="arts" <TMPL_IF wideMode>class="wide"</TMPL_IF>>
-  <script src="<TMPL_VAR coreDir>/skin/_common/js/common.js?<TMPL_VAR ver>"></script>
-  <script src="<TMPL_VAR coreDir>/skin/_common/js/sheet.js?<TMPL_VAR ver>"></script>
   <header>
-    <h1><a href="./?type=a"><TMPL_VAR title></a></h1>
+    <h1><a href="./"><TMPL_VAR title></a></h1>
     <nav>
       <ul>
-        <li class="small"><a href="./?type=a">⏎</a></li>
-        <TMPL_IF convertMode>
-          <li><a href="./?mode=convert&url=<TMPL_VAR convertUrl>"><span>コンバート</span></a></li>
-        <TMPL_ELSE>
-          <TMPL_IF logId>
-            <li class="small"><a onclick="loglistOn()"><span>過去ログ</span></a></li>
-            <TMPL_IF reqdPassword>
-              <li class="small"><a onclick="editOn()">復元</a></li>
-            <TMPL_ELSE>
-              <li class="small"><a href="./?mode=edit&id=<TMPL_VAR id>&log=<TMPL_VAR logId>&type=a">復元</a></li>
-            </TMPL_IF>
-          <TMPL_ELSE>
-            <li class="small"><a onclick="donwloadListOn();">出力</a></li>
-            <li class="small"><a onclick="loglistOn()"><span>過去ログ</span></a></li>
-            <TMPL_IF reqdPassword>
-              <li class="small"><a onclick="editOn()">編集</a></li>
-            <TMPL_ELSE>
-              <li class="small"><a href="./?mode=edit&id=<TMPL_VAR id>&type=a">編集</a></li>
-            </TMPL_IF>
-          </TMPL_IF>
-        </TMPL_IF>
+        <TMPL_LOOP Menu><li class="<TMPL_VAR SIZE>"><a <TMPL_VAR TYPE>="<TMPL_VAR VALUE>"><TMPL_VAR TEXT></a></li>
+        </TMPL_LOOP>
         <li class="small"><a onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード"></a></li>
       </ul>
     </nav>

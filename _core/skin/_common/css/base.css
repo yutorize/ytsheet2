@@ -139,7 +139,7 @@ body {
   background-attachment: scroll, fixed;
   color: var(--text-color);
 }
-body.night {
+.night body {
   background-blend-mode: hard-light, hard-light;
 }
 

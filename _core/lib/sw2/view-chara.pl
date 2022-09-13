@@ -986,10 +986,10 @@ $SHEET->param(FellowMode => $::in{'f'});
 ### タイトル --------------------------------------------------
 $SHEET->param(title => $set::title);
 if($pc{'forbidden'} eq 'all' && $pc{'forbiddenMode'}){
-  $SHEET->param(characterNameTitle => '非公開データ');
+  $SHEET->param(titleName => '非公開データ');
 }
 else {
-  $SHEET->param(characterNameTitle => tag_delete name_plain($pc{'characterName'}||"“$pc{'aka'}”"));
+  $SHEET->param(titleName => tag_delete name_plain($pc{'characterName'}||"“$pc{'aka'}”"));
 }
 
 ### 画像 --------------------------------------------------
@@ -1023,6 +1023,38 @@ $SHEET->param(ogDescript => tag_delete "種族:$pc{'race'}　性別:$pc{'gender'
 ### バージョン等 --------------------------------------------------
 $SHEET->param(ver => $::ver);
 $SHEET->param(coreDir => $::core_dir);
+$SHEET->param(gameDir => 'sw2');
+$SHEET->param(sheetType => 'chara');
+$SHEET->param(generateType => 'SwordWorld2PC');
+$SHEET->param(defaultImage => $::core_dir.'/skin/sw2/img/default_pc.png');
+
+### メニュー --------------------------------------------------
+my @menu = ();
+  push(@menu, { TEXT => '⏎', TYPE => "href", VALUE => './', SIZE => "small" });
+  if($::in{'url'}){
+    push(@menu, { TEXT => 'コンバート', TYPE => "href", VALUE => "./?mode=convert&url=$::in{'url'}" });
+  }
+  else {
+    if($pc{'logId'}){
+      if   ($::in{'f'}         ){ push(@menu, { TEXT => '通常'    , TYPE => "href", VALUE => "./?id=$::in{'id'}&log=$pc{'logId'}" }); }
+      elsif($pc{'fellowPublic'}){ push(@menu, { TEXT => 'フェロー', TYPE => "href", VALUE => "./?id=$::in{'id'}&log=$pc{'logId'}&f=1" }); }
+      push(@menu, { TEXT => '過去ログ', TYPE => "onclick", VALUE => 'loglistOn()', SIZE => "small" });
+      if($pc{'reqdPassword'}){ push(@menu, { TEXT => '復元', TYPE => "onclick", VALUE => "editOn()", SIZE => "small" }); }
+      else                   { push(@menu, { TEXT => '復元', TYPE => "href"   , VALUE => "./?mode=edit&id=$::in{'id'}&log=$pc{'logId'}", SIZE => "small" }); }
+    }
+    else {
+      if   ($::in{'f'}         ){ push(@menu, { TEXT => '通常'    , TYPE => "href", VALUE => "./?id=$::in{'id'}" }); }
+      elsif($pc{'fellowPublic'}){ push(@menu, { TEXT => 'フェロー', TYPE => "href", VALUE => "./?id=$::in{'id'}&f=1" }); }
+      if(!$pc{'forbiddenMode'}){
+        push(@menu, { TEXT => 'パレット', TYPE => "onclick", VALUE => "chatPaletteOn()",  SIZE => "small"  });
+        push(@menu, { TEXT => '出力'    , TYPE => "onclick", VALUE => "downloadListOn()", SIZE => "small"  });
+        push(@menu, { TEXT => '過去ログ', TYPE => "onclick", VALUE => "loglistOn()",      SIZE => "small" });
+      }
+      if($pc{'reqdPassword'}){ push(@menu, { TEXT => '編集', TYPE => "onclick", VALUE => "editOn()", SIZE => "small" }); }
+      else                   { push(@menu, { TEXT => '編集', TYPE => "href"   , VALUE => "./?mode=edit&id=$::in{'id'}", SIZE => "small" }); }
+    }
+  }
+$SHEET->param(Menu => sheetMenuCreate @menu);
 
 ### エラー --------------------------------------------------
 $SHEET->param(error => $main::login_error);

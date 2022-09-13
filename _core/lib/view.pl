@@ -68,6 +68,11 @@ sub pcDataGet {
     }
   }
   ##
+  if   ($type eq 'm'){ $pc{'sheetType'} = 'mons'; }
+  elsif($type eq 'i'){ $pc{'sheetType'} = 'item'; }
+  elsif($type eq 'a'){ $pc{'sheetType'} = 'arts'; }
+  else               { $pc{'sheetType'} = 'chara'; }
+
   if(!$::in{'checkView'} && (
     ($pc{'protect'} eq 'none') || 
     ($author && ($author eq $LOGIN_ID || $set::masterid eq $LOGIN_ID))

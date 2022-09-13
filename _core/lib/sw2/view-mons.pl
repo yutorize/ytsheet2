@@ -187,11 +187,13 @@ if($::in{'id'}){
 ### タイトル --------------------------------------------------
 $SHEET->param(title => $set::title);
 if($pc{'forbidden'} eq 'all' && $pc{'forbiddenMode'}){
-  $SHEET->param(monsterNameTitle => '非公開データ');
+  $SHEET->param(titleName => "非公開データ - $set::title");
 }
 else {
-  $SHEET->param(characterNameTitle => tag_delete name_plain $pc{'characterName'});
-  $SHEET->param(monsterNameTitle => tag_delete name_plain $pc{'monsterName'});
+  my $name    = tag_delete name_plain($pc{'characterName'});
+  my $species = tag_delete name_plain($pc{'monsterName'});
+  if($name && $species){ $SHEET->param(titleName => "${name}（${species}）"); }
+  else { $SHEET->param(titleName => $name || $species); }
 }
 
 ### 画像 --------------------------------------------------
@@ -207,6 +209,34 @@ $SHEET->param(ogDescript => "レベル:$pc{'lv'}　分類:$pc{'taxa'}".($pc{'par
 ### バージョン等 --------------------------------------------------
 $SHEET->param(ver => $::ver);
 $SHEET->param(coreDir => $::core_dir);
+$SHEET->param(gameDir => 'sw2');
+$SHEET->param(sheetType => 'monster');
+$SHEET->param(generateType => 'SwordWorld2Enemy');
+$SHEET->param(defaultImage => $::core_dir.'/skin/sw2/img/default_enemy.png');
+
+### メニュー --------------------------------------------------
+my @menu = ();
+  push(@menu, { TEXT => '⏎', TYPE => "href", VALUE => './?type=m', SIZE => "small" });
+  if($::in{'url'}){
+    push(@menu, { TEXT => 'コンバート', TYPE => "href", VALUE => "./?mode=convert&url=$::in{'url'}" });
+  }
+  else {
+    if($pc{'logId'}){
+      push(@menu, { TEXT => '過去ログ', TYPE => "onclick", VALUE => 'loglistOn()', SIZE => "small" });
+      if($pc{'reqdPassword'}){ push(@menu, { TEXT => '復元', TYPE => "onclick", VALUE => "editOn()", SIZE => "small" }); }
+      else                   { push(@menu, { TEXT => '復元', TYPE => "href"   , VALUE => "./?mode=edit&id=$::in{'id'}&log=$pc{'logId'}", SIZE => "small" }); }
+    }
+    else {
+      if(!$pc{'forbiddenMode'}){
+        push(@menu, { TEXT => 'パレット', TYPE => "onclick", VALUE => "chatPaletteOn()",  SIZE => "small"  });
+        push(@menu, { TEXT => '出力'    , TYPE => "onclick", VALUE => "downloadListOn()", SIZE => "small"  });
+        push(@menu, { TEXT => '過去ログ', TYPE => "onclick", VALUE => "loglistOn()",      SIZE => "small" });
+      }
+      if($pc{'reqdPassword'}){ push(@menu, { TEXT => '編集', TYPE => "onclick", VALUE => "editOn()", SIZE => "small" }); }
+      else                   { push(@menu, { TEXT => '編集', TYPE => "href"   , VALUE => "./?mode=edit&id=$::in{'id'}", SIZE => "small" }); }
+    }
+  }
+$SHEET->param(Menu => sheetMenuCreate @menu);
 
 ### エラー --------------------------------------------------
 $SHEET->param(error => $main::login_error);

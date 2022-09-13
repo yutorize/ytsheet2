@@ -159,10 +159,10 @@ if($::in{'id'}){
 ### タイトル --------------------------------------------------
 $SHEET->param(title => $set::title);
 if($pc{'forbidden'} eq 'all' && $pc{'forbiddenMode'}){
-  $SHEET->param(itemNameTitle => '非公開データ');
+  $SHEET->param(titleName => '非公開データ');
 }
 else {
-  $SHEET->param(itemNameTitle => tag_delete name_plain $pc{'itemName'});
+  $SHEET->param(titleName => tag_delete name_plain $pc{'itemName'});
 }
 
 ### 画像 --------------------------------------------------
@@ -178,6 +178,31 @@ $SHEET->param(ogDescript => tag_delete "カテゴリ:$pc{'category'}　形状:$p
 ### バージョン等 --------------------------------------------------
 $SHEET->param(ver => $::ver);
 $SHEET->param(coreDir => $::core_dir);
+$SHEET->param(gameDir => 'sw2');
+$SHEET->param(sheetType => 'item');
+
+### メニュー --------------------------------------------------
+my @menu = ();
+  push(@menu, { TEXT => '⏎', TYPE => "href", VALUE => './?type=i', SIZE => "small" });
+  if($::in{'url'}){
+    push(@menu, { TEXT => 'コンバート', TYPE => "href", VALUE => "./?mode=convert&url=$::in{'url'}" });
+  }
+  else {
+    if($pc{'logId'}){
+      push(@menu, { TEXT => '過去ログ', TYPE => "onclick", VALUE => 'loglistOn()', SIZE => "small" });
+      if($pc{'reqdPassword'}){ push(@menu, { TEXT => '復元', TYPE => "onclick", VALUE => "editOn()", SIZE => "small" }); }
+      else                   { push(@menu, { TEXT => '復元', TYPE => "href"   , VALUE => "./?mode=edit&id=$::in{'id'}&log=$pc{'logId'}", SIZE => "small" }); }
+    }
+    else {
+      if(!$pc{'forbiddenMode'}){
+        push(@menu, { TEXT => '出力'    , TYPE => "onclick", VALUE => "downloadListOn()", SIZE => "small"  });
+        push(@menu, { TEXT => '過去ログ', TYPE => "onclick", VALUE => "loglistOn()",      SIZE => "small" });
+      }
+      if($pc{'reqdPassword'}){ push(@menu, { TEXT => '編集', TYPE => "onclick", VALUE => "editOn()", SIZE => "small" }); }
+      else                   { push(@menu, { TEXT => '編集', TYPE => "href"   , VALUE => "./?mode=edit&id=$::in{'id'}", SIZE => "small" }); }
+    }
+  }
+$SHEET->param(Menu => sheetMenuCreate @menu);
 
 ### エラー --------------------------------------------------
 $SHEET->param(error => $main::login_error);
