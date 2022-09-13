@@ -169,7 +169,7 @@ function imageBlobPreview(blob){
   if(imageType == 'character'){ imageDragPointSet(); }
 }
 // 圧縮
-let compress_scale = 1;
+let compressScale = 1;
 function imageCompressor(data, imageMaxSize){
   let image = new Image();
   let blobURL = URL.createObjectURL(data);
@@ -179,9 +179,9 @@ function imageCompressor(data, imageMaxSize){
       quality: 0.9,
       success(result) {
         if(result.size > imageMaxSize){
-          imageCompressor -= 0.1;
-          if(imageCompressor > 0){
-            console.log(`画像縮小: ${ imageCompressor * 100 } %`);
+          compressScale -= 0.1;
+          if(compressScale > 0){
+            console.log(`画像縮小: ${ compressScale * 100 } %`);
             imageCompressor(result, imageMaxSize);
           }
           else { alert('画像サイズを既定まで下げることができませんでした。'); }
@@ -196,7 +196,7 @@ function imageCompressor(data, imageMaxSize){
           }
         }
       },
-      maxWidth : image.width * compress_scale,
+      maxWidth : image.width * compressScale,
       mimeType: 'image/webp',
       error(err) {  },
     });
