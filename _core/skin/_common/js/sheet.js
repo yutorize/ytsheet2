@@ -212,3 +212,38 @@ async function downloadAsHtml(){
   const url = location.href.replace(/#(.+)$/,'').replace(/&mode=(.+?)(&|$)/,'')+'&mode=download';
   downloadFile(title+'.html', url);
 }
+async function downloadAsFullSet(){
+  const title = document.querySelector('title').innerHTML;
+  const name = title.replace(/ - .+?$/,'');
+  const url = location.href.replace(/#(.+)$/,'').replace(/&mode=(.+?)(&|$)/,'');
+  let zip = new JSZip();
+  zip.file(name+'.html', await JSZipUtils.getBinaryContent(url+'&mode=download'));
+  zip.file(name+'.json', await JSZipUtils.getBinaryContent(url+'&mode=json'));
+  if(document.getElementById('chatPaletteBox')) zip.file(name+'_チャットパレット.txt', await JSZipUtils.getBinaryContent(url+'&mode=palette'));
+  
+  const characterDataJson = await getJsonData();
+  // ユドナリウム
+  if(document.getElementById('downloadlist-udonarium')){
+    const image = await io.github.shunshun94.trpg.ytsheet.getPicture(characterDataJson.imageURL || defaultImage);
+    const udonariumXml = io.github.shunshun94.trpg.udonarium[`generateCharacterXmlFromYtSheet2${generateType}`](characterDataJson, location.href, image.hash);
+    const udonariumUrl = await generateUdonariumZipFile((characterDataJson.characterName||characterDataJson.aka), udonariumXml, image);
+    zip.file(name+'_udonarium.zip', await JSZipUtils.getBinaryContent(udonariumUrl));
+  }
+  // ココフォリア
+  if(document.getElementById('downloadlist-ccfolia')){
+    zip.file(name+'_ccfolia.txt', await getCcfoliaJson());
+  }
+
+  // ダウンロード
+  zip.generateAsync({type:"blob"})
+    .then(function(content) {
+      const url = URL.createObjectURL(content);
+      const a = document.createElement("a");
+      document.body.appendChild(a);
+      a.download = title+'.zip';
+      a.href = url;
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    });
+}
