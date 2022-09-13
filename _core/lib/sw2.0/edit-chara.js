@@ -552,7 +552,7 @@ function calcHonor(){
   pointTotal['human']    -= pointLost['human'];
   pointTotal['barbaros'] -= pointLost['barbaros'];
   pointTotal['dragon']   -= pointLost['dragon'];
-  const pointMax = Object.create(pointTotal);
+  const pointMax = { ... pointTotal };
   
   const honorItemsNum = form.honorItemsNum.value;
   for (let i = 1; i <= honorItemsNum; i++){
