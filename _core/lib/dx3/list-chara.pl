@@ -34,7 +34,7 @@ foreach (keys %::in) {
   $::in{$_} =~ s/</&lt;/g;
   $::in{$_} =~ s/>/&gt;/g;
 }
-if(!($mode eq 'mylist' || $::in{'tag'} || $::in{'group'} || $::in{'name'} || $::in{'player'} || $::in{'exp-min'} || $::in{'exp-max'} || $::in{'syndrome'} || $::in{'breed'} || $::in{'works'} || $::in{'dlois'} || $::in{'image'})){
+if(!($mode eq 'mylist' || $::in{'tag'} || $::in{'group'} || $::in{'name'} || $::in{'player'} || $::in{'exp-min'} || $::in{'exp-max'} || $::in{'syndrome'} || $::in{'breed'} || $::in{'works'} || $::in{'dlois'} || $::in{'sign'} || $::in{'image'})){
   $index_mode = 1;
   $INDEX->param(modeIndex => 1);
   $INDEX->param(simpleList => 1) if $set::simplelist;
@@ -52,6 +52,7 @@ foreach(
   'breed',
   'works',
   'dlois',
+  'sign',
   'image',
   'fellow',
   ){
@@ -154,6 +155,27 @@ $INDEX->param(syndrome => "@syndrome_query");
 my @dlois_query = split('\s', decode('utf8', $::in{'dlois'}));
 foreach my $q (@dlois_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){14}[^<]*?$q/ } @list; }
 $INDEX->param(dlois => "@dlois_query");
+
+## 星座検索
+my $sign_query = decode('utf8', $::in{'sign'});
+if($sign_query) {
+  if   ($sign_query =~ /山羊|磨羯|やぎ/       ){ $sign_query = "山羊|磨羯|やぎ";        $INDEX->param(sign => "山羊座（磨羯宮）"); }
+  elsif($sign_query =~ /水瓶|宝瓶|みずがめ/   ){ $sign_query = "水瓶|宝瓶|みずがめ";    $INDEX->param(sign => "水瓶座（宝瓶宮）"); }
+  elsif($sign_query =~ /双?魚|うお/           ){ $sign_query = "双?魚|うお";            $INDEX->param(sign => "魚座（双魚宮）"); }
+  elsif($sign_query =~ /[牡雄お]羊|おひつじ/  ){ $sign_query = "[牡雄お]羊|おひつじ";   $INDEX->param(sign => "牡羊座（白羊宮）"); }
+  elsif($sign_query =~ /[牡雄お]牛|おうし/    ){ $sign_query = "[牡雄お]牛|おうし";     $INDEX->param(sign => "牡牛座（金牛宮）"); }
+  elsif($sign_query =~ /双[子児]|ふたご/      ){ $sign_query = "双[子児]|ふたご";       $INDEX->param(sign => "双子座（双児宮）"); }
+  elsif($sign_query =~ /蟹|かに/              ){ $sign_query = "蟹|かに";               $INDEX->param(sign => "蟹座（巨蟹宮）"); }
+  elsif($sign_query =~ /獅子|しし/            ){ $sign_query = "獅子|しし";             $INDEX->param(sign => "獅子座（獅子宮）"); }
+  elsif($sign_query =~ /[乙処]女|おとめ/      ){ $sign_query = "[乙処]女|おとめ";       $INDEX->param(sign => "乙女座（処女宮）"); }
+  elsif($sign_query =~ /天秤|てんびん/        ){ $sign_query = "天秤|てんびん";         $INDEX->param(sign => "天秤座（天秤宮）"); }
+  elsif($sign_query =~ /蠍|天蝎|さそり|サソリ/){ $sign_query = "蠍|天蝎|さそり|サソリ"; $INDEX->param(sign => "蠍座（天蝎宮）"); }
+  elsif($sign_query =~ /人馬|射手|いて/       ){ $sign_query = "人馬|射手|いて";        $INDEX->param(sign => "射手座（人馬宮）"); }
+  elsif($sign_query =~ /(蛇|へび)(使|遣|つか)/){ $sign_query = "(蛇|へび)(使|遣|つか)"; $INDEX->param(sign => "蛇遣座"); }
+  else { $INDEX->param(sign => $sign_query); }
+  
+  @list = grep { $_ =~ /^(?:[^<]*?<>){10}[^<]*?(?:$sign_query)/ } @list;
+}
 
 ## 画像フィルタ
 if($::in{'image'} == 1) {
