@@ -61,7 +61,7 @@ sub dataPartnerGet {
     }
     close($IN);
     if($pc{'image'}){
-      $pc{'imageURL'} = url()."${set::char_dir}${file}/image.$pc{'image'}";
+      $pc{'imageURL'} = "${set::char_dir}${file}/image.$pc{'image'}";
     }
     $pc{'convertSource'} = '同じゆとシートⅡ';
     return %pc;

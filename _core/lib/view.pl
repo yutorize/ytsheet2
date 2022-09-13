@@ -83,6 +83,10 @@ sub pcDataGet {
     $pc{'reqdPassword'} = 1;
   }
 
+  if($::in{'mode'} eq 'download'){
+    $pc{'modeDownload'} = 1;
+  }
+
   return %pc;
 }
 
@@ -156,6 +160,46 @@ sub noiseTextTag {
   $text =~ s/^[█▇▆▅▄▃▂▚▞▙▛▜▟\n\s]+$/<span class="censored">$&<\/span>/s;
   $text =~ s/\n/<br>/g;
   return $text;
+}
+### メニュー --------------------------------------------------
+sub sheetMenuCreate {
+  my @menu = @_;
+  foreach my $line (@menu){
+    if   (length($line->{TEXT}) >= 4 && $line->{SIZE} eq 'small'){ $line->{TEXT} = "<span>$line->{TEXT}</span>" }
+    elsif(length($line->{TEXT}) >= 5                            ){ $line->{TEXT} = "<span>$line->{TEXT}</span>" }
+  }
+  return \@menu;
+}
+### ダウンロード用 --------------------------------------------------
+sub downloadModeSheetConvert {
+  my $sheet = shift;
+  $sheet =~ s#<link rel="stylesheet" data-dl href="(.+?)(\?.+?)?">#"<style>\n".styleToHtml($1)."\n</style>"#gie;
+  $sheet =~ s#<script data-dl src="(.+?)(\?.+?)?"></script>#"<script>\n".styleToHtml($1)."\n</script>"#gie;
+  return $sheet;
+}
+sub styleToHtml {
+  my $output;
+  open(my $FH, '<', $_[0]);
+  $output .= $_ foreach <$FH>;
+  close($FH);
+  
+  (my $dir = $_[0]) =~ s#/[^/]+?$##;
+  $output =~ s/url\((.+?\.png|jpg|gif|webp)\)/"url(".urlToBase64("$dir\/$1").")"/gie;
+  return "$output";
+}
+use MIME::Base64;
+sub urlToBase64 {
+  my $url = shift;
+  $url =~ s#\?.*?$##;
+  (my $ext = $url) =~ s/^.+\.(png|jpg|gif|webp)$/$1/;
+  if ($ext eq "jpg") { $ext ="jpeg"; }
+  open(my $IMG, '<', "$url");
+  binmode $IMG;
+  my $binary; my $buffer;
+  while(read($IMG, $buffer, 2048)) { $binary .= $buffer }
+  close($IMG);
+  my $base64 = encode_base64($binary, '');
+  return "data:image/$ext;base64,$base64";
 }
 
 1;

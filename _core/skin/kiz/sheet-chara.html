@@ -56,45 +56,48 @@
   </aside>
   </TMPL_IF>
   
-  <TMPL_UNLESS forbiddenMode>
-    <aside id="loglist" class="float-box">
-      <h2>過去ログ（バックアップ）</h2>
-      <ul>
-        <TMPL_LOOP LogList><li class="<TMPL_VAR SELECTED>"><a href="?id=<TMPL_VAR id><TMPL_VAR URL>"><TMPL_VAR DATE></a></li></TMPL_LOOP>
-      </ul>
-      <TMPL_IF viewLogNaming><details id="log-naming">
-        <summary>閲覧中のログ<TMPL_IF selectedLogName>の名前をつけなおす<TMPL_ELSE>に名前をつける</TMPL_IF></summary>
-        <form id="log-naming-form" method="post" action="./">
-          <input type="hidden" name="mode" value="bu-naming">
-          <input type="hidden" name="id" value="<TMPL_VAR id>">
-          <input type="hidden" name="date" value="<TMPL_VAR logId>">
-          <dl>
-            <dt>名前</dt><dd><input type="text" name="log-name" value="<TMPL_VAR selectedLogName>"></dd>
-            <TMPL_IF reqdPassword><dt>パスワード</dt><dd><input type="password" name="pass"></dd></TMPL_IF>
-            <dd><input type="submit"></dd>
-          </dl>
-        </form>
-      </details></TMPL_IF>
-    </aside>
+  <TMPL_UNLESS modeDownload>
+    <TMPL_UNLESS forbiddenMode>
+      <aside id="loglist" class="float-box">
+        <h2>過去ログ（バックアップ）</h2>
+        <ul>
+          <TMPL_LOOP LogList><li class="<TMPL_VAR SELECTED>"><a href="?id=<TMPL_VAR id><TMPL_VAR URL>"><TMPL_VAR DATE></a></li></TMPL_LOOP>
+        </ul>
+        <TMPL_IF viewLogNaming><details id="log-naming">
+          <summary>閲覧中のログ<TMPL_IF selectedLogName>の名前をつけなおす<TMPL_ELSE>に名前をつける</TMPL_IF></summary>
+          <form id="log-naming-form" method="post" action="./">
+            <input type="hidden" name="mode" value="bu-naming">
+            <input type="hidden" name="id" value="<TMPL_VAR id>">
+            <input type="hidden" name="date" value="<TMPL_VAR logId>">
+            <dl>
+              <dt>名前</dt><dd><input type="text" name="log-name" value="<TMPL_VAR selectedLogName>"></dd>
+              <TMPL_IF reqdPassword><dt>パスワード</dt><dd><input type="password" name="pass"></dd></TMPL_IF>
+              <dd><input type="submit"></dd>
+            </dl>
+          </form>
+        </details></TMPL_IF>
+      </aside>
 
-    <aside id="downloadlist" class="float-box">
-      <h2>出力</h2>
-      <ul>
-        <li id="downloadlist-udonarium"><a onclick="downloadAsUdonarium();">ユドナリウム用コマデータ<small>(zip形式ファイル)</small></a></li>
-        <li id="downloadlist-ccfolia"><a onclick="downloadAsCcfolia();">ココフォリア用コマデータ<small>(クリップボードへコピー)</small></a></li>
-        <li id="downloadlist-text"><a onclick="donloadAsText();">テキスト形式</a></li>
-        <li id="downloadlist-json"><a onclick="donloadAsJson();">JSON 形式</a></li>
-      </ul>
-    </aside>
+      <aside id="downloadlist" class="float-box">
+        <h2>出力</h2>
+        <ul>
+          <li id="downloadlist-udonarium"><a onclick="downloadAsUdonarium();">ユドナリウム用コマデータ<small>(zip形式ファイル)</small></a></li>
+          <li id="downloadlist-ccfolia"><a onclick="downloadAsCcfolia();">ココフォリア用コマデータ<small>(クリップボードへコピー)</small></a></li>
+          <li id="downloadlist-text"><a onclick="downloadAsText();">テキスト形式</a></li>
+          <li id="downloadlist-json"><a onclick="downloadAsJson();">JSON 形式</a></li>
+          <li id="downloadlist-html"><a onclick="downloadAsHtml();">HTML 形式</a></li>
+        </ul>
+      </aside>
+    </TMPL_UNLESS>
+
+    <form id="login-form" class="float-box" method="post" action="./">
+      <input type="hidden" name="mode" value="edit">
+      <input type="hidden" name="id" value="<TMPL_VAR id>">
+      <input type="password" name="pass" placeholder="password">
+      <input type="hidden" name="log" value="<TMPL_VAR logId>">
+      <input type="submit" value="編集">
+    </form>
   </TMPL_UNLESS>
-
-  <form id="login-form" class="float-box" method="post" action="./">
-    <input type="hidden" name="mode" value="edit">
-    <input type="hidden" name="id" value="<TMPL_VAR id>">
-    <input type="password" name="pass" placeholder="password">
-    <input type="hidden" name="log" value="<TMPL_VAR logId>">
-    <input type="submit" value="編集">
-  </form>
 
   <main id="character">
     <TMPL_IF forbidden><aside class="information attention">
@@ -452,9 +455,9 @@
       </section>
     </article>
     <div class="back-button"><a href="./">⏎</a></div>
-    <TMPL_IF image><div id="image-box" onclick="closeImage()">
-      <img src="<TMPL_VAR imageSrc>" id="image-box-image">
-    </div></TMPL_IF> 
+    <div id="image-box" onclick="closeImage()">
+      <img <TMPL_IF image>src="<TMPL_VAR imageSrc>"</TMPL_IF> id="image-box-image">
+    </div>
   </main>
   <TMPL_INCLUDE NAME="skin-add/sheet-sidebar.html">
 

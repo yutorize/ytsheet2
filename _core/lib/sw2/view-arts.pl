@@ -342,13 +342,16 @@ else {
 
 ### 画像 --------------------------------------------------
 my $imgsrc;
-if($pc{'convertSource'} eq '別のゆとシートⅡ') {
-  $imgsrc = $pc{'imageURL'}."?$pc{'imageUpdate'}";
+if($pc{'image'}){
+  if($pc{'convertSource'} eq '別のゆとシートⅡ') {
+    $imgsrc = $pc{'imageURL'}."?$pc{'imageUpdate'}";
+  }
+  else {
+    $imgsrc = "${set::arts_dir}${main::file}/image.$pc{'image'}?$pc{'imageUpdate'}";
+  }
+  $SHEET->param(imageSrc => $imgsrc);
+  $SHEET->param(images    => "'1': \"".($pc{'modeDownload'} ? urlToBase64($imgsrc) : $imgsrc)."\", ");
 }
-else {
-  $imgsrc = "${set::arts_dir}${main::file}/image.$pc{'image'}?$pc{'imageUpdate'}";
-}
-$SHEET->param(imageSrc => $imgsrc);
 
 ### OGP --------------------------------------------------
 $SHEET->param(ogUrl => url().($::in{'url'} ? "?url=$::in{'url'}" : "?id=$::in{'id'}"));
@@ -377,6 +380,7 @@ $SHEET->param(defaultImage => $::core_dir.'/skin/sw2/img/default_pc.png');
 
 ### メニュー --------------------------------------------------
 my @menu = ();
+if(!$pc{'modeDownload'}){
   push(@menu, { TEXT => '⏎', TYPE => "href", VALUE => './?type=i', SIZE => "small" });
   if($::in{'url'}){
     push(@menu, { TEXT => 'コンバート', TYPE => "href", VALUE => "./?mode=convert&url=$::in{'url'}" });
@@ -396,6 +400,7 @@ my @menu = ();
       else                   { push(@menu, { TEXT => '編集', TYPE => "href"   , VALUE => "./?mode=edit&id=$::in{'id'}", SIZE => "small" }); }
     }
   }
+}
 $SHEET->param(Menu => sheetMenuCreate @menu);
 
 ### エラー --------------------------------------------------
@@ -403,6 +408,12 @@ $SHEET->param(error => $main::login_error);
 
 ### 出力 #############################################################################################
 print "Content-Type: text/html\n\n";
-print $SHEET->output;
+if($pc{'modeDownload'}){
+  if($pc{'forbidden'} && $pc{'yourAuthor'}){ $SHEET->param(forbidden => ''); }
+  print downloadModeSheetConvert $SHEET->output;
+}
+else {
+  print $SHEET->output;
+}
 
 1;

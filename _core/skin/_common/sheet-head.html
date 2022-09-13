@@ -1,6 +1,7 @@
   <meta charset="UTF-8">
   <title><TMPL_VAR titleName> - <TMPL_VAR title></title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <TMPL_UNLESS modeDownload>
     <meta property="og:title" content="<TMPL_VAR titleName> - <TMPL_VAR title>">
     <meta property="og:type" content="artcle">
     <meta property="og:url" content="<TMPL_VAR ogUrl>">
@@ -10,6 +11,7 @@
     <meta name="twitter:card" content="summary">
     <meta name="twitter:site" content="@yutorize">
     <TMPL_IF hide><meta name="robots" content="none"></TMPL_IF>
+  </TMPL_UNLESS>
   <link rel="stylesheet" data-dl href="<TMPL_VAR coreDir>/skin/_common/css/base.css?<TMPL_VAR ver>">
   <link rel="stylesheet" data-dl href="<TMPL_VAR coreDir>/skin/_common/css/sheet.css?<TMPL_VAR ver>">
   <link rel="stylesheet" data-dl href="<TMPL_VAR coreDir>/skin/<TMPL_VAR gameDir>/css/<TMPL_VAR sheetType>.css?<TMPL_VAR ver>">
@@ -30,6 +32,12 @@ window.onload = function() {
   },2000);
 }
 </TMPL_IF>
+<TMPL_IF modeDownload>
+document.addEventListener('DOMContentLoaded', () => {
+  if(document.getElementById('image')){
+    document.getElementById('image').style.backgroundImage = `url(${images['1']})`;
+  }
+});
 </TMPL_IF>
   </script>
   <style>
@@ -46,6 +54,7 @@ window.onload = function() {
   <TMPL_INCLUDE NAME="skin-add/sheet-head.html">
   <script data-dl src="<TMPL_VAR coreDir>/skin/_common/js/common.js?<TMPL_VAR ver>"></script>
   <script data-dl src="<TMPL_VAR coreDir>/skin/_common/js/sheet.js?<TMPL_VAR ver>"></script>
+  <TMPL_UNLESS modeDownload>
     <script src="<TMPL_VAR coreDir>/skin/_common/js/lib/sha256.js"></script>
     <script src="<TMPL_VAR coreDir>/skin/_common/js/lib/jszip.min.js"></script>
     <script src="<TMPL_VAR coreDir>/skin/_common/js/lib/jszip-utils.min.js"></script>
@@ -54,3 +63,4 @@ window.onload = function() {
     <script src="<TMPL_VAR coreDir>/skin/<TMPL_VAR gameDir>/js/lib/ytsheetToCcfolia.js?<TMPL_VAR ver>"></script>
     <script src="<TMPL_VAR coreDir>/skin/<TMPL_VAR gameDir>/js/lib/ytsheetConsts.js?<TMPL_VAR ver>"></script>
     <script src="<TMPL_VAR coreDir>/skin/<TMPL_VAR gameDir>/js/lib/ytsheetToText.js?<TMPL_VAR ver>"></script>
+  </TMPL_UNLESS>

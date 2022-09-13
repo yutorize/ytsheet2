@@ -634,19 +634,22 @@ $SHEET->param(race => $pc{'race'});
 
 ### 画像 --------------------------------------------------
 my $imgsrc;
-if($pc{'convertSource'} eq 'キャラクターシート倉庫'){
-  ($imgsrc = $::in{'url'}) =~ s/edit\.html/image/; 
-  require LWP::UserAgent;
-  my $code = LWP::UserAgent->new->simple_request(HTTP::Request->new(GET => $imgsrc))->code == 200;
-  $SHEET->param(image => $code);
+if($pc{'image'}){
+  if($pc{'convertSource'} eq 'キャラクターシート倉庫'){
+    ($imgsrc = $::in{'url'}) =~ s/edit\.html/image/; 
+    require LWP::UserAgent;
+    my $code = LWP::UserAgent->new->simple_request(HTTP::Request->new(GET => $imgsrc))->code == 200;
+    $SHEET->param(image => $code);
+  }
+  elsif($pc{'convertSource'} eq '別のゆとシートⅡ') {
+    $imgsrc = $pc{'imageURL'}."?$pc{'imageUpdate'}";
+  }
+  else {
+    $imgsrc = "${set::char_dir}${main::file}/image.$pc{'image'}?$pc{'imageUpdate'}";
+  }
+  $SHEET->param(imageSrc => $imgsrc);
+  $SHEET->param(images    => "'1': \"".($pc{'modeDownload'} ? urlToBase64($imgsrc) : $imgsrc)."\", ");
 }
-elsif($pc{'convertSource'} eq '別のゆとシートⅡ') {
-  $imgsrc = $pc{'imageURL'}."?$pc{'imageUpdate'}";
-}
-else {
-  $imgsrc = "${set::char_dir}${main::file}/image.$pc{'image'}?$pc{'imageUpdate'}";
-}
-$SHEET->param(imageSrc => $imgsrc);
 
 if($pc{'imageFit'} eq 'percentY'){
   $SHEET->param(imageFit => 'auto '.$pc{'imagePercent'}.'%');
@@ -676,6 +679,7 @@ $SHEET->param(defaultImage => $::core_dir.'/skin/dx3/img/default_pc.png');
 
 ### メニュー --------------------------------------------------
 my @menu = ();
+if(!$pc{'modeDownload'}){
   push(@menu, { TEXT => '⏎', TYPE => "href", VALUE => './', SIZE => "small" });
   if($::in{'url'}){
     push(@menu, { TEXT => 'コンバート', TYPE => "href", VALUE => "./?mode=convert&url=$::in{'url'}" });
@@ -696,6 +700,7 @@ my @menu = ();
       else                   { push(@menu, { TEXT => '編集', TYPE => "href"   , VALUE => "./?mode=edit&id=$::in{'id'}", SIZE => "small" }); }
     }
   }
+}
 $SHEET->param(Menu => sheetMenuCreate @menu);
 
 ### エラー --------------------------------------------------
@@ -703,6 +708,12 @@ $SHEET->param(error => $main::login_error);
 
 ### 出力 #############################################################################################
 print "Content-Type: text/html\n\n";
-print $SHEET->output;
+if($pc{'modeDownload'}){
+  if($pc{'forbidden'} && $pc{'yourAuthor'}){ $SHEET->param(forbidden => ''); }
+  print downloadModeSheetConvert $SHEET->output;
+}
+else {
+  print $SHEET->output;
+}
 
 1;

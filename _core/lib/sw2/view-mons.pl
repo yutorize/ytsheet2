@@ -216,6 +216,7 @@ $SHEET->param(defaultImage => $::core_dir.'/skin/sw2/img/default_enemy.png');
 
 ### メニュー --------------------------------------------------
 my @menu = ();
+if(!$pc{'modeDownload'}){
   push(@menu, { TEXT => '⏎', TYPE => "href", VALUE => './?type=m', SIZE => "small" });
   if($::in{'url'}){
     push(@menu, { TEXT => 'コンバート', TYPE => "href", VALUE => "./?mode=convert&url=$::in{'url'}" });
@@ -236,6 +237,7 @@ my @menu = ();
       else                   { push(@menu, { TEXT => '編集', TYPE => "href"   , VALUE => "./?mode=edit&id=$::in{'id'}", SIZE => "small" }); }
     }
   }
+}
 $SHEET->param(Menu => sheetMenuCreate @menu);
 
 ### エラー --------------------------------------------------
@@ -243,6 +245,12 @@ $SHEET->param(error => $main::login_error);
 
 ### 出力 #############################################################################################
 print "Content-Type: text/html\n\n";
-print $SHEET->output;
+if($pc{'modeDownload'}){
+  if($pc{'forbidden'} && $pc{'yourAuthor'}){ $SHEET->param(forbidden => ''); }
+  print downloadModeSheetConvert $SHEET->output;
+}
+else {
+  print $SHEET->output;
+}
 
 1;

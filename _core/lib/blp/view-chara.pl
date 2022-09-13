@@ -144,7 +144,7 @@ if(!$::in{'log'}){
         $pc{'fromPartner2SealShape'}    = $pr{'toPartner'.$num.'SealShape'};
         $pc{'fromPartner2Emotion1'}     = $pr{'toPartner'.$num.'Emotion1'};
         $pc{'fromPartner2Emotion2'}     = $pr{'toPartner'.$num.'Emotion2'};
-        $pc{'p2_imageSrc'} = $pr{'imageURL'}."?$pr{'imageUpdate'}";;
+        $pc{'p2_imageSrc'} = $pr{'imageURL'}."?$pr{'imageUpdate'}";
       }
     }
   }
@@ -383,21 +383,30 @@ $pc{'race'} =~ s/［.*］//g;
 $SHEET->param(race => $pc{'race'});
 
 ### 画像 --------------------------------------------------
-my $imgsrc;
-if($pc{'convertSource'} eq 'キャラクターシート倉庫'){
-  ($imgsrc = $::in{'url'}) =~ s/edit\.html/image/;
-  my $code = LWP::UserAgent->new->simple_request(HTTP::Request->new(GET => $imgsrc))->code == 200;
-  $SHEET->param(image => $code);
+my $imgsrc; my $images;
+if($pc{'image'}){
+  if($pc{'convertSource'} eq 'キャラクターシート倉庫'){
+    ($imgsrc = $::in{'url'}) =~ s/edit\.html/image/; 
+    require LWP::UserAgent;
+    my $code = LWP::UserAgent->new->simple_request(HTTP::Request->new(GET => $imgsrc))->code == 200;
+    $SHEET->param(image => $code);
+  }
+  elsif($pc{'convertSource'} eq '別のゆとシートⅡ') {
+    $imgsrc = $pc{'imageURL'}."?$pc{'imageUpdate'}";
+  }
+  else {
+    $imgsrc = "${set::char_dir}${main::file}/image.$pc{'image'}?$pc{'imageUpdate'}";
+  }
+  $SHEET->param(imageSrc => $imgsrc);
+  $images     .= "'1': \"".($pc{'modeDownload'} ? urlToBase64($imgsrc) : $imgsrc)."\", ";
 }
-elsif($pc{'convertSource'} eq '別のゆとシートⅡ') {
-  $imgsrc = $pc{'imageURL'}."?$pc{'imageUpdate'}";
+if($pc{'p1_image'}){
+  $images     .= "'p1': \"".($pc{'modeDownload'} ? urlToBase64($pc{'p1_imageSrc'}) : $pc{'p1_imageSrc'})."\", ";
 }
-else {
-  $imgsrc = "${set::char_dir}${main::file}/image.$pc{'image'}?$pc{'imageUpdate'}";
+if($pc{'p2_image'}){
+  $images     .= "'p2': \"".($pc{'modeDownload'} ? urlToBase64($pc{'p2_imageSrc'}) : $pc{'p2_imageSrc'})."\", ";
 }
-$SHEET->param(imageSrc => $imgsrc);
 
-## パートナー
 foreach ('','p1_','p2_'){
   if($pc{$_.'imageFit'} eq 'percentY'){
     $SHEET->param($_."imageFit" => 'auto '.$pc{$_.'imagePercent'}.'%');
@@ -411,6 +420,7 @@ foreach ('','p1_','p2_'){
     $SHEET->param($_."imageCopyright" => "<a href=\"$pc{$_.'imageCopyrightURL'}\" target=\"_blank\">$pc{$_.'imageCopyright'}</a>");
   }
 }
+$SHEET->param(images    => $images);
 
 ### OGP --------------------------------------------------
 $SHEET->param(ogUrl => url().($::in{'url'} ? "?url=$::in{'url'}" : "?id=$::in{'id'}"));
@@ -427,6 +437,7 @@ $SHEET->param(defaultImage => $::core_dir.'/skin/blp/img/default_pc.png');
 
 ### メニュー --------------------------------------------------
 my @menu = ();
+if(!$pc{'modeDownload'}){
   push(@menu, { TEXT => '⏎', TYPE => "href", VALUE => './', SIZE => "small" });
   if($::in{'url'}){
     push(@menu, { TEXT => 'コンバート', TYPE => "href", VALUE => "./?mode=convert&url=$::in{'url'}" });
@@ -447,6 +458,7 @@ my @menu = ();
       else                   { push(@menu, { TEXT => '編集', TYPE => "href"   , VALUE => "./?mode=edit&id=$::in{'id'}", SIZE => "small" }); }
     }
   }
+}
 $SHEET->param(Menu => sheetMenuCreate @menu);
 
 ### エラー --------------------------------------------------
@@ -454,6 +466,12 @@ $SHEET->param(error => $main::login_error);
 
 ### 出力 #############################################################################################
 print "Content-Type: text/html\n\n";
-print $SHEET->output;
+if($pc{'modeDownload'}){
+  if($pc{'forbidden'} && $pc{'yourAuthor'}){ $SHEET->param(forbidden => ''); }
+  print downloadModeSheetConvert $SHEET->output;
+}
+else {
+  print $SHEET->output;
+}
 
 1;
