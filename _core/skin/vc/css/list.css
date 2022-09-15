@@ -1,0 +1,62 @@
+@charset "utf-8";
+
+/* ゆとシートⅡ for AR2E - リスト */
+
+/* // Body
+---------------------------------------------------------------------------------------------------- */
+body {
+  background-image: url(../../_common/img/back-pattern.png), url(../img/back-circle.png);
+  background-blend-mode: normal, normal;
+  background-position: center, bottom -80px right -50px;
+}
+.night body {
+  background-blend-mode: hard-light, normal;
+}
+@media screen and (max-width:735px){
+  body {
+    background-size: auto, 100%;
+    background-position-x: 0, 15vw;
+  }
+}
+
+/* // List
+---------------------------------------------------------------------------------------------------- */
+.list table tr {
+    grid-template-columns: 28rem 0.7fr 1fr 4em 1.8fr 0.7fr;
+    grid-template-areas:
+      "NAME PL RACE RACE STYL DATE"
+      "NAME PL  CLS  LVL  PRF DATE"
+    ;
+}
+.list table .name   { grid-area: NAME; }
+.list table .player { grid-area:   PL; }
+.list table .race   { grid-area: RACE; }
+.list table .class  { grid-area:  CLS; }
+.list table .styles { grid-area: STYL; }
+.list table .lv     { grid-area:  LVL; }
+.list table .profile{ grid-area:  PRF; }
+.list table .date   { grid-area: DATE; }
+
+.list table .name {
+  position: relative;
+}
+.list table td.lv {
+  font-size: 1.15em;
+  line-height: 1;
+}
+@media screen and (max-width:735px){
+  .list table tr {
+    grid-template-columns: 18rem 6em 1fr 3.2em 1.9fr 3.5em;
+    grid-template-areas:
+    "NAME PL RACE RACE STYL DATE"
+    "NAME PL  CLS  LVL  PRF DATE"
+    ;
+  }
+  .list table .geis { display: none; }
+}
+
+/* // List-Simple/Monster
+---------------------------------------------------------------------------------------------------- */
+.list ul li a::before {
+  content: 'Lv'attr(data-lv);
+}

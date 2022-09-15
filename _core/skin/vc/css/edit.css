@@ -1,0 +1,232 @@
+@charset "utf-8";
+
+/* // キャラクター
+---------------------------------------------------------------------------------------------------- */
+#regulation {
+  margin: 10px 0;
+  overflow-y: auto;
+}
+#regulation > dl {
+  display: grid;
+  grid-template-columns: 1fr 1fr 4fr;
+  grid-template-rows: auto;
+  margin: 10px 0;
+}
+#regulation dl dt {
+  grid-row: 1 / 2;
+}
+#regulation dl dd {
+  grid-row: 2 / 3;
+  font-size: 1.2rem;
+}
+@media screen and (max-width:735px){
+  #regulation > dl {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: auto;
+    margin: 10px 0;
+  }
+  #regulation > dl > dt:last-of-type {
+    grid-column: 1 / span 3;
+    grid-row: 3;
+  }
+  #regulation > dl > dd:last-of-type {
+    grid-column: 1 / span 3;
+    grid-row: 4;
+  }
+}
+
+#area-status {
+  min-height: 0;
+  grid-template-columns: 1.9fr 1.6fr 1.5fr;
+  grid-template-areas:
+    "LVL  APP IMG"
+    "PER  APP IMG"
+    "STT  STT IMG"
+  ;
+}
+
+@media screen and (max-width:735px){
+  #area-status {
+    grid-template-columns: 2fr 1fr;
+    grid-gap: 10px 5px;
+
+    grid-template-areas:
+      "IMG  IMG "
+      "LVL  LVL "
+      "PER  PER "
+      "APP  APP "
+      "STT  STT "
+    ;
+  }
+}
+
+#levels input[name="history0Result"] {
+  width: 4.5em;
+}
+#levels b {
+  font-size: 120%;
+}
+
+#personal dl {
+  display: grid;
+  grid-template-columns: 4.5em 1fr;
+}
+#personal dt {
+  text-align: center;
+}
+#personal dd {
+  grid-column: 2;
+}
+#hp-and-stamina {
+  display: grid;
+}
+#hp-and-stamina dl {
+  grid-template-columns: 4.5em 1fr;
+}
+#hp-and-stamina dl dt {
+  grid-column: 1;
+}
+#hp-and-stamina dl dd {
+  grid-column: 2;
+  align-self: end;
+  text-align: left;
+  padding-left: .5em;
+}
+
+@media screen and (max-width:735px){
+  #levels {
+    grid-template-columns: 1fr 6em;
+  }
+  #hp-and-stamina dl dd small {
+    top: -1.2em;
+    right: 0;
+    bottom: auto;
+    font-size: 75%;
+  }
+}
+
+
+#goods,
+#battle {
+  margin-top: 1rem;
+}
+@media screen and (max-width:735px){
+  #specialities {
+    margin-top: 1rem;
+  }
+}
+
+#goods table {}
+#goods table thead th:nth-child(1) { width:  1em; }
+#goods table thead th:nth-child(2) { width: 14em; }
+#goods table thead th:nth-child(3) { width:  6em; }
+#goods table thead th:nth-child(4) { width:  4em; }
+#goods table thead th:nth-child(5) { width: auto; }
+#items table {}
+#items table thead th:nth-child(1) { width:  1em; }
+#items table thead th:nth-child(2) { width: 14em; }
+#items table thead th:nth-child(3) { width:  6em; }
+#items table thead th:nth-child(4) { width:  4em; }
+#items table thead th:nth-child(5) { width:  4em; }
+#items table thead th:nth-child(6) { width: auto; }
+
+#battle table {}
+#battle table colgroup col.head { width:4.5em; }
+#battle table colgroup col.name { width: auto; }
+#battle table colgroup col      { width:4.2em; }
+@media screen and (max-width:735px){
+  #goods,
+  #items,
+  #battle { overflow-x: auto; }
+  #goods table,
+  #items table,
+  #battle table { table-layout: fixed; }
+  #goods table thead th:nth-child(2),
+  #items table thead th:nth-child(2),
+  #battle table colgroup col.name { width: 8em; }
+  #goods table thead th:nth-child(3),
+  #items table thead th:nth-child(3) { width:  5em; }
+  #items table thead th:nth-child(4) { width:3.4em; }
+  #battle table colgroup col      { width:3.2em; }
+}
+
+
+#free-note,
+#free-history {
+  padding-bottom: .3rem;
+}
+#free-note textarea,
+#free-history textarea {
+  height: 18em;
+}
+
+#history{
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+#history table {
+  width: calc(100% - 1px);
+}
+#history table thead th:nth-child(1) { width: 1.4em; }
+#history table thead th:nth-child(2) { width:   6em; } /* 日付 */
+#history table thead th:nth-child(3) { width:  14em; } /* タイトル */
+#history table thead th:nth-child(4) { width:   5em; } /* 経験点 */
+#history table thead th:nth-child(5) { width:   6em; } /* ＧＭ */
+#history table thead th:nth-child(6) { width:  auto; } /* 参加者 */
+@media screen and (max-width:735px){
+  #history table  { table-layout: fixed; }
+  #history table thead th:nth-child(3) { width: 12em; } /* タイトル */
+  #history table thead th:nth-child(6) { width: 16em; } /* 参加者 */
+}
+
+#history table thead td {
+  padding: 1px;
+  border-width: 1px;
+  border-style: solid dotted;
+  font-size: inherit;
+}
+
+#history table tbody td {
+  padding: .4rem 0 .1rem !important;
+  vertical-align: top;
+}
+#history table tbody td.handle {
+  vertical-align: middle;
+}
+#history table tbody td.left {
+  padding: 0 0 .4rem !important;
+}
+#history table tfoot th {
+  border-top-width: 1px;
+  border-top-style: solid;
+  vertical-align: top;
+}
+
+#history .annotate {
+  width: 70%;
+  margin: auto 3px auto auto;
+}
+
+#exp-footer {
+  position: sticky;
+  bottom: 0;
+  margin-top: 1em;
+  padding: .2rem 0 .5rem;
+  border-radius: 0;
+  border-width: .2rem 0;
+  background: var(--bg-color);
+  font-size: 85%;
+  font-weight: bold;
+}
+#exp-footer input.auto {
+  width: 2.5em;
+  min-width: 0;
+  font-size: 110%;
+}
+#exp-footer input:first-child,
+#exp-footer input:last-child {
+  font-size: 120%;
+}
+
+
