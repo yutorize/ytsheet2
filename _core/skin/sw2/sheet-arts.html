@@ -235,11 +235,11 @@
           <h2>秘伝</h2>
           <TMPL_LOOP ArtsData>
           <div class="data-magic data-arts">
-            <h3 class="name    "><dt><TMPL_VAR ICON>《<TMPL_VAR NAME>》</h3>
-            <dl class="cost    "><dt>必要名誉点</dt><dd><TMPL_VAR COST></dd></dl>
-            <dl class="base    "><dt>基礎特技  </dt><dd><TMPL_VAR BASE></dd></dl>
+            <h3 class="name    "><TMPL_VAR ICON>《<TMPL_VAR NAME>》</h3>
+            <dl class="cost    "><dt><span>必要名誉点</span></dt><dd><TMPL_VAR COST></dd></dl>
+            <dl class="type    "><dt>タイプ    </dt><dd><TMPL_VAR TYPE></dd></dl>
             <dl class="premise "><dt>前提      </dt><dd><TMPL_VAR PREMISE></dd></dl>
-            <dl class="equip   "><dt>装備限定  </dt><dd><TMPL_VAR EQUIP></dd></dl>
+            <dl class="equip   "><dt>限定条件  </dt><dd><TMPL_VAR EQUIP></dd></dl>
             <dl class="use     "><dt>使用      </dt><dd><TMPL_VAR USE></dd></dl>
             <dl class="apply   "><dt>適用      </dt><dd><TMPL_VAR APPLY></dd></dl>
             <dl class="risk    "><dt>リスク    </dt><dd><TMPL_VAR RISK></dd></dl>

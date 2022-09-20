@@ -131,6 +131,11 @@ foreach (keys %pc) {
   $pc{$_} = tag_unescape($pc{$_});
 }
 
+### アップデート --------------------------------------------------
+if($pc{'ver'}){
+  %pc = data_update_arts(\%pc);
+}
+
 ### カラー設定 --------------------------------------------------
 setColors();
 
@@ -309,7 +314,7 @@ foreach my $num (1..$pc{'schoolArtsNum'}){
     "NAME"     => $pc{'schoolArts'.$num.'Name'},
     "ICON"     => $icon,
     "COST"     => $pc{'schoolArts'.$num.'Cost'},
-    "BASE"     => $pc{'schoolArts'.$num.'Base'},
+    "TYPE"     => $pc{'schoolArts'.$num.'Type'},
     "PREMISE"  => $pc{'schoolArts'.$num.'Premise'},
     "EQUIP"    => $pc{'schoolArts'.$num.'Equip'},
     "USE"      => $pc{'schoolArts'.$num.'Use'},

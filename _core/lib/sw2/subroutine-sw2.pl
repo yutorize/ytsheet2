@@ -235,5 +235,20 @@ sub data_update_chara {
   $pc{'lasttimever'} = $ver;
   return %pc;
 }
+sub data_update_arts {
+  my %pc = %{$_[0]};
+  my $ver = $pc{'ver'};
+  delete $pc{'updateMessage'};
+
+  if($ver < 1.20000){
+    foreach my $num (1..$pc{'schoolArtsNum'}){
+      $pc{"schoolArts${num}Type"} = $pc{"schoolArts${num}Base"};
+    }
+  }
+
+  $pc{'ver'} = $main::ver;
+  $pc{'lasttimever'} = $ver;
+  return %pc;
+}
 
 1;

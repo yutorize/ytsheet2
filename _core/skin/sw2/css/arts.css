@@ -75,7 +75,8 @@ article {
 ---------------------------------------------------------------------------------------------------- */
 #god-name,
 #school-name,
-.data-magic .name dd {
+.data-magic .name dd,
+.data-magic h3.name {
   font-family: var(--base-font-family-min);
 }
 #god-name small,
@@ -109,6 +110,7 @@ div.data-magic {
 
   border-width: 0 1px 1px 0;
   border-style: solid;
+  border-color: var(--box-outside-border-color);
   
   background-color: var(--box-base-bg-color);
 }
@@ -146,7 +148,7 @@ div.data-magic dl.part      { grid-area: PART; }
 div.data-magic dl.ccost     { grid-area: CCST; }
 div.data-magic dl.ccharge   { grid-area: CCHG; }
 
-div.data-magic dl.base      { grid-area: BASE; }
+div.data-magic dl.type      { grid-area: TYPE; }
 div.data-magic dl.equip     { grid-area: EQIP; }
 div.data-magic dl.use       { grid-area: USE ; }
 div.data-magic dl.apply     { grid-area: APLY; }
@@ -293,42 +295,33 @@ div.data-magic.dignity .summary {
 }
 
 div.data-magic.data-arts {
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr .45fr .55fr;
   grid-template-areas:
-    "NAME NAME COST"
-    "BASE PRMS EQIP"
-    "USE  APLY RISK"
-    "SMRY SMRY SMRY"
-    "EFCT EFCT EFCT"
+    "NAME NAME NAME COST"
+    "TYPE PRMS EQIP EQIP"
+    "USE  APLY RISK RISK"
+    "SMRY SMRY SMRY SMRY"
+    "EFCT EFCT EFCT EFCT"
   ;
 }
 div.data-magic.data-arts dl {
-  grid-template-columns: 5.2em 1fr;
+  grid-template-columns: 3.2em 1fr;
 }
 div.data-magic.data-arts dl.premise,
 div.data-magic.data-arts dl.apply {
   grid-template-columns: 3em 1fr;
 }
+div.data-magic.data-arts dl.equip,
+div.data-magic.data-arts dl.risk {
+  grid-template-columns: 4.2em 1fr;
+}
 div.data-magic.data-arts dl.cost {
-  grid-template-columns: 1fr max-content;
-  align-items: end;
-  justify-items: end;
-  padding: 0 .2em .1em 0;
-  border-left: 0;
-  background-color: var(--arts-name-bg-color);
-  color: #fff;
+  grid-template-columns: 4.2em 1fr;
 }
-div.data-magic.data-arts dl.cost dt {
-  padding: 0;
-  background-color: transparent;
-  border-right: 0;
-}
-div.data-magic.data-arts dl.cost dt::after {
-  content: ":";
-}
-div.data-magic.data-arts dl.cost dd {
-  min-width: 1em;
-  padding: 0;
+div.data-magic.data-arts dl.cost dt > span {
+  display: inline-block;
+  font-size: 75%;
+  transform: scaleY(calc(1/0.75));
 }
 
 div.data-magic dl {
@@ -490,9 +483,13 @@ div.data dl.effects table.weapon-table td:not(.left) {
 ---------------------------------------------------------------------------------------------------- */
 #school .box.req {
   margin: 0 0 1em;
-  padding: .2em .5em;
+  padding: .2em .5em .1em;
   display: grid;
   grid-template-columns: max-content 1fr;
+  border-width: 0 0 1px;
+  border-style: solid;
+  border-bottom-left-radius:0;
+  border-bottom-right-radius:0;
 }
 #school .box.req dt::after {
   content: ":";

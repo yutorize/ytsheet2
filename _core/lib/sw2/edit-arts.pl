@@ -46,6 +46,9 @@ if($mode_make){
 ### 初期設定 --------------------------------------------------
 if($mode_make){ $pc{'protect'} = $LOGIN_ID ? 'account' : 'password'; }
 
+if($mode eq 'edit' || ($mode eq 'convert' && $pc{'ver'})){
+  %pc = data_update_arts(\%pc);
+}
 if($mode eq 'blanksheet'){
   $pc{"magicCost"} = 'MP';
   foreach my $lv (2,4,7,10,13){ $pc{"godMagic${lv}Cost"} = 'MP' }
@@ -309,8 +312,8 @@ print <<"HTML";
       <div class="data-area" id="data-school">
         <div class="box input-data">
           <dl class="name  "><dt>名称      </dt><dd>【@{[ input 'schoolName','',"nameSet" ]}】</dd></dl>
-          <dl class="area  "><dt>地域      </dt><dd>@{[ input 'schoolArea','','','placeholder="地方など"' ]}</dd></dl>
-          <dl class="req   "><dt>入門条件  </dt><dd>@{[ input 'schoolReq' ]}</dd></dl>
+          <dl class="area  "><dt>地域      </dt><dd>@{[ input 'schoolArea','','','placeholder="大陸・地方など"' ]}</dd></dl>
+          <dl class="req   "><dt>入門条件  </dt><dd>@{[ input 'schoolReq','','','list="list-school-req"' ]}</dd></dl>
           <dl class="note  "><dt>詳細      </dt><dd><textarea name="schoolNote">$pc{'schoolNote'}</textarea></dd></dl>
           <dl class="arms  "><dt>流派装備  </dt><dd><textarea name="schoolItemNote" placeholder="流派装備の概要">$pc{'schoolItemNote'}</textarea></dd></dl>
           <dl class="arms  "><dt>流派装備一覧</dt>
@@ -330,7 +333,7 @@ print <<"HTML";
         </div>
         @{[ input 'schoolArtsNum','hidden' ]}
         <div class="box">
-          <h2>秘伝</h2>
+          <h2>流派秘伝</h2>
           <div id="arts-list">
 HTML
 foreach my $num (1..$pc{'schoolArtsNum'}){
@@ -338,9 +341,9 @@ print <<"HTML";
           <div class="input-data" id="arts${num}">
             <dl class="name    "><dt>名称      </dt><dd>《@{[ input "schoolArts${num}Name",'' ]}》</dd></dl>
             <dl class="cost    "><dt>必要名誉点</dt><dd>@{[ input "schoolArts${num}Cost" ]}</dd></dl>
-            <dl class="base    "><dt>基礎特技  </dt><dd>@{[ input "schoolArts${num}Base",'','','list="list-arts-base"' ]}</dd></dl>
+            <dl class="type    "><dt>タイプ    </dt><dd>@{[ input "schoolArts${num}Type",'','','list="list-arts-type"' ]}</dd></dl>
             <dl class="premise "><dt>前提      </dt><dd>@{[ input "schoolArts${num}Premise",'','','list="list-arts-base"' ]}</dd></dl>
-            <dl class="equip   "><dt>装備限定  </dt><dd>@{[ input "schoolArts${num}Equip" ]}</dd></dl>
+            <dl class="equip   "><dt>限定条件  </dt><dd>@{[ input "schoolArts${num}Equip" ]}</dd></dl>
             <dl class="use     "><dt>使用      </dt><dd>@{[ input "schoolArts${num}Use" ]}</dd></dl>
             <dl class="apply   "><dt>適用      </dt><dd>@{[ input "schoolArts${num}Apply",'','','list="list-arts-apply"' ]}</dd></dl>
             <dl class="risk    "><dt>リスク    </dt><dd>@{[ input "schoolArts${num}Risk" ]}</dd></dl>
@@ -527,9 +530,14 @@ print <<"HTML";
     <option value="⤴♡">
     <option value="⤵♡">
   </datalist>
-  <datalist id="list-arts-base">
-    <option value="《》">
-    <option value="なし">
+  <datalist id="list-school-req">
+    <option value="50名誉点">
+  </datalist>
+  <datalist id="list-arts-type">
+    <option value="常時型">
+    <option value="主動作型">
+    <option value="《》変化型">
+    <option value="独自宣言型">
   </datalist>
   <datalist id="list-arts-apply">
     <option value="1回の武器攻撃">
