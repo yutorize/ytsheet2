@@ -40,6 +40,7 @@ function formCheck(){
 // レギュレーション ----------------------------------------
 function changeRegu(){
   document.getElementById("history0-exp").innerHTML = form.history0Exp.value;
+  calcExp();
 }
 
 // ステージチェック ----------------------------------------
