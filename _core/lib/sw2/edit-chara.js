@@ -1114,39 +1114,30 @@ function calcFairy() {
 
 // 攻撃計算 ----------------------------------------
 function calcAttack() {
-  document.getElementById("attack-fighter"   ).style.display = lv['Fig'] >   0 ? "" :"none";
-  document.getElementById("attack-grappler"  ).style.display = lv['Gra'] >   0 ? "" :"none";
-  document.getElementById("attack-fencer"    ).style.display = lv['Fen'] >   0 ? "" :"none";
-  document.getElementById("attack-shooter"   ).style.display = lv['Sho'] >   0 ? "" :"none";
+  for(const name of weaponsUsers){
+    const id    = classNameToId[name];
+    const eName = classes[id].eName;
+    document.getElementById(`attack-${eName}`).style.display = lv[id] > 0 ? "" :"none";
+    document.getElementById(`attack-${eName}-str`).innerHTML = id == 'Fen' ? reqdStrHalf : reqdStr;
+    document.getElementById(`attack-${eName}-acc`).innerHTML = lv[id] + bonusDex;
+    document.getElementById(`attack-${eName}-dmg`).innerHTML = lv[id] + bonusStr;
+  }
   document.getElementById("attack-enhancer"  ).style.display = lv['Enh'] >= 10 ? "" :"none";
-  document.getElementById("attack-demonruler").style.display = modeZero && lv['Dem'] >  0 ? "" :"none";
-
-  document.getElementById("attack-fighter-str"   ).innerHTML = reqdStr;
-  document.getElementById("attack-grappler-str"  ).innerHTML = reqdStr;
-  document.getElementById("attack-fencer-str"    ).innerHTML = reqdStrHalf;
-  document.getElementById("attack-shooter-str"   ).innerHTML = reqdStr;
-  document.getElementById("attack-enhancer-str"  ).innerHTML = reqdStr;
-  document.getElementById("attack-demonruler-str").innerHTML = reqdStr;
-
-  document.getElementById("attack-fighter-acc"   ).innerHTML = lv['Fig'] + bonusDex;
-  document.getElementById("attack-grappler-acc"  ).innerHTML = lv['Gra'] + bonusDex;
-  document.getElementById("attack-fencer-acc"    ).innerHTML = lv['Fen'] + bonusDex;
-  document.getElementById("attack-shooter-acc"   ).innerHTML = lv['Sho'] + bonusDex;
+  document.getElementById("attack-enhancer-str").innerHTML   = reqdStr;
   document.getElementById("attack-enhancer-acc"  ).innerHTML = lv['Enh'] + bonusDex;
-  document.getElementById("attack-demonruler-acc").innerHTML = lv['Dem'] + bonusDex;
-
-  document.getElementById("attack-fighter-dmg"   ).innerHTML = lv['Fig'] + bonusStr;
-  document.getElementById("attack-grappler-dmg"  ).innerHTML = lv['Gra'] + bonusStr;
-  document.getElementById("attack-fencer-dmg"    ).innerHTML = lv['Fen'] + bonusStr;
-  document.getElementById("attack-shooter-dmg"   ).innerHTML = lv['Sho'] + bonusStr;
   document.getElementById("attack-enhancer-dmg"  ).innerHTML = lv['Enh'] + bonusStr;
-  if(modeZero){ document.getElementById("attack-enhancer-dmg"  ).innerHTML = lv['Enh'] + bonusStr; }
+
+  document.getElementById("attack-demonruler").style.display = lv['Dem'] >= 10 ? "" : modeZero && lv['Dem'] > 0 ? "" :"none";
+  document.getElementById("attack-demonruler-str").innerHTML = reqdStr;
+  document.getElementById("attack-demonruler-acc").innerHTML = lv['Dem'] + bonusDex;
+  document.getElementById("attack-demonruler-dmg").innerHTML = modeZero ? lv['Dem'] + bonusStr : '―';
 
   calcWeapon();
 }
 function calcWeapon() {
   for (let i = 1; i <= form.weaponNum.value; i++){
-    const classes = form["weapon"+i+"Class"].value;
+    const className = form["weapon"+i+"Class"].value;
+    const classId   = classNameToId[className];
     const category = form["weapon"+i+"Category"].value;
     const ownDex = form["weapon"+i+"Own"].checked ? 2 : 0;
     const note = form["weapon"+i+"Note"].value;
@@ -1157,12 +1148,12 @@ function calcWeapon() {
     let maxReqd = reqdStr;
     accBase += feats['命中強化'] || 0; //命中強化
     // 使用技能
-         if(classes === "ファイター")       { attackClass = lv['Fig']; }
-    else if(classes === "グラップラー")     { attackClass = lv['Gra']; }
-    else if(classes === "フェンサー")       { attackClass = lv['Fen']; maxReqd = reqdStrHalf; }
-    else if(classes === "シューター")       { attackClass = lv['Sho']; }
-    else if(classes === "エンハンサー")     { attackClass = lv['Enh']; }
-    else if(classes === "デーモンルーラー") { attackClass = lv['Dem']; }
+    if(classId && classes[classId].type == 'weapon-user'){
+      attackClass = lv[classId];
+      if(className === "フェンサー"){ maxReqd = reqdStrHalf; }
+    }
+    else if(className === "エンハンサー")     { attackClass = lv['Enh']; }
+    else if(className === "デーモンルーラー") { attackClass = lv['Dem']; }
     // 必筋チェック
     form["weapon"+i+"Reqd"].classList.toggle('error', weaponReqd > maxReqd);
     // 武器カテゴリ
@@ -1173,7 +1164,7 @@ function calcWeapon() {
     // 基礎ダメージ
     if     (category === 'クロスボウ')                  { dmgBase = attackClass; }
     else if(category === 'ガン')                        { dmgBase = magicPowers['Mag']; }
-    else if(!modeZero && classes === "デーモンルーラー"){ dmgBase = magicPowers['Dem']; }
+    else if(!modeZero && className === "デーモンルーラー"){ dmgBase = magicPowers['Dem']; }
     else if(attackClass)                                { dmgBase = attackClass + bonusStr; }
     form["weapon"+i+"Category"].classList.remove('fail');
 
@@ -1184,7 +1175,7 @@ function calcWeapon() {
     if(category === '投擲') { accBase += feats['スローイング'] ? 1 : 0; }
     if(note.match(/〈魔器〉/)){ dmgBase += feats['魔器習熟'] || 0; }
     // 命中追加D出力
-    if(classes === "自動計算しない"){
+    if(className === "自動計算しない"){
       document.getElementById("weapon"+i+"-acc-total").innerHTML = Number(form["weapon"+i+"Acc"].value);
       document.getElementById("weapon"+i+"-dmg-total").innerHTML = Number(form["weapon"+i+"Dmg"].value);
     }
@@ -1208,26 +1199,26 @@ function calcWeapon() {
 
 // 防御計算 ----------------------------------------
 function calcDefense() {
-  const classes = form.evasionClass.options[form.evasionClass.selectedIndex].value;
+  const className = form.evasionClass.options[form.evasionClass.selectedIndex].value;
+  const classId   = classNameToId[className];
   let evaClassLv = 0;
   let evaBase = 0;
   let evaAdd = 0;
   let defBase = 0;
-       if(classes === "ファイター")      { evaClassLv = lv['Fig']; }
-  else if(classes === "グラップラー")    { evaClassLv = lv['Gra']; }
-  else if(classes === "フェンサー")      { evaClassLv = lv['Fen']; }
-  else if(classes === "シューター")      { evaClassLv = lv['Sho']; }
-  else if(classes === "デーモンルーラー"){ evaClassLv = lv['Dem']; }
+  if(classId && classes[classId].type == 'weapon-user'){
+    evaClassLv = lv[classId];
+  }
+  else if(className === "デーモンルーラー"){ evaClassLv = lv['Dem']; }
   else { evaClassLv = 0; }
   evaBase = evaClassLv || 0;
   
-  const maxReqd = (classes === "フェンサー") ? reqdStrHalf : reqdStr;
+  const maxReqd = (className === "フェンサー") ? reqdStrHalf : reqdStr;
   document.getElementById("evasion-str").innerHTML = maxReqd;
   document.getElementById("evasion-eva").innerHTML = evaClassLv ? (evaClassLv + bonusAgi) : 0;
   
   // 技能選択のエラー表示
   let cL = document.getElementById("evasion-classes").classList;
-  if(classes === "シューター" && !feats['射手の体術'] || classes === "デーモンルーラー" && lv['Dem'] < 2){ 
+  if(className === "シューター" && !feats['射手の体術'] || className === "デーモンルーラー" && lv['Dem'] < 2){ 
     cL.add('error');
   }
   else { cL.remove('error'); }
@@ -1694,7 +1685,7 @@ function addWeapons(copy){
     op.selected = categories[i] === ini.category ? true : false;
     form["weapon"+num+"Category"].appendChild(op);
   }
-  const classes = ['ファイター','グラップラー','フェンサー','シューター','エンハンサー','デーモンルーラー','自動計算しない'];
+  const classes = weaponsUsers.concat('エンハンサー','デーモンルーラー','自動計算しない');
   for(let i = 0; i < classes.length; i++){
     let op = document.createElement("option");
     op.text = classes[i];

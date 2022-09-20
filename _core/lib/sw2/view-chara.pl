@@ -558,22 +558,17 @@ $SHEET->param(MagicPowers => \@magic);
 ### 攻撃技能／特技 --------------------------------------------------
 my @atacck;
 if(!$pc{'forbiddenMode'}){
-  foreach (
-    ['ファイター',      'Fig'],
-    ['グラップラー',    'Gra'],
-    ['フェンサー',      'Fen'],
-    ['シューター',      'Sho'],
-    ['エンハンサー',    'Enh'],
-    ['デーモンルーラー','Dem'],
-  ){
-    next if !$pc{'lv'.@$_[1]};
-    next if @$_[0] eq 'エンハンサー' && !$enhance_attack_on;
+  foreach my $name (@data::class_names){
+    my $id    = $data::class{$name}{'id'};
+    next if !$pc{'lv'.$id};
+    next if !($data::class{$name}{'type'} eq 'weapon-user' || $id =~ /Enh|Dem/);
+    next if $id eq 'Enh' && !$enhance_attack_on;
     push(@atacck, {
-      "NAME" => @$_[0]."<span class=\"small\">技能レベル</span>".$pc{'lv'.@$_[1]},
-      "STR"  => (@$_[1] eq 'Fen' ? $pc{'reqdStrF'} : $pc{'reqdStr'}),
-      "ACC"  => $pc{'lv'.@$_[1]}+$pc{'bonusDex'},
-      (@$_[1] eq 'Fen' ? ("CRIT" => '-1') : ('' => '')),
-      "DMG"  => @$_[1] eq 'Dem' ? '―' : $pc{'lv'.@$_[1]}+$pc{'bonusStr'},
+      "NAME" => $name."<span class=\"small\">技能レベル</span>".$pc{'lv'.$id},
+      "STR"  => ($id eq 'Fen' ? $pc{'reqdStrF'} : $pc{'reqdStr'}),
+      "ACC"  => $pc{'lv'.$id}+$pc{'bonusDex'},
+      ($id eq 'Fen' ? ("CRIT" => '-1') : ('' => '')),
+      "DMG"  => $id eq 'Dem' ? '―' : $pc{'lv'.$id}+$pc{'bonusStr'},
     } );
   }
   foreach (@data::weapons) {
@@ -662,21 +657,17 @@ $SHEET->param(Weapons => \@weapons);
 ### 回避技能／特技 --------------------------------------------------
 if(!$pc{'forbiddenMode'}){
   my @evasion;
-  foreach (
-    ['ファイター',      'Fig'],
-    ['グラップラー',    'Gra'],
-    ['フェンサー',      'Fen'],
-    ['シューター',      'Sho'],
-    ['デーモンルーラー','Dem'],
-  ){
-    next if @$_[0] ne $pc{'evasionClass'};
-    push(@evasion, {
-      "NAME" => @$_[0]."<span class=\"small\">技能レベル</span>".$pc{'lv'.@$_[1]},
-      "STR"  => (@$_[1] eq 'Fen' ? $pc{'reqdStrF'} : $pc{'reqdStr'}),
-      "EVA"  => $pc{'lv'.@$_[1]}+$pc{'bonusAgi'},
-    } );
+  if($pc{'evasionClass'}){
+    my $id = $data::class{$pc{'evasionClass'}}{'id'};
+    if($pc{'lv'.$id}){
+      push(@evasion, {
+        "NAME" => $pc{'evasionClass'}."<span class=\"small\">技能レベル</span>".$pc{'lv'.$id},
+        "STR"  => ($id eq 'Fen' ? $pc{'reqdStrF'} : $pc{'reqdStr'}),
+        "EVA"  => $pc{'lv'.$id}+$pc{'bonusAgi'},
+      } );
+    }
   }
-  if(!$pc{'evasionClass'}){
+  else{
     push(@evasion, {
       "NAME" => '技能なし',
       "STR"  => $pc{'reqdStr'},

@@ -822,38 +822,24 @@ print <<"HTML";
               </tr>
             </thead>
             <tbody>
-              <tr id="attack-fighter"@{[ display $pc{'lvFig'} ]}>
-                <td>ファイター技能</td>
-                <td id="attack-fighter-str">0</td>
-                <td id="attack-fighter-acc">0</td>
+HTML
+my @weapon_users;
+foreach my $name (@data::class_names){
+  next if $data::class{$name}{'type'} ne 'weapon-user';
+  push(@weapon_users, $name);
+  my $ename = $data::class{$name}{'eName'};
+  print <<"HTML";
+              <tr id="attack-${ename}"@{[ display $pc{'lv'.$data::class{$name}{'id'}} ]}>
+                <td>${name}技能</td>
+                <td id="attack-${ename}-str">0</td>
+                <td id="attack-${ename}-acc">0</td>
                 <td>―</td>
-                <td>―</td>
-                <td id="attack-fighter-dmg">―</td>
+                <td>@{[ $name eq 'フェンサー' ? '-1' : '―' ]}</td>
+                <td id="attack-${ename}-dmg">―</td>
               </tr>
-              <tr id="attack-grappler"@{[ display $pc{'lvGra'} ]}>
-                <td>グラップラー技能</td>
-                <td id="attack-grappler-str">0</td>
-                <td id="attack-grappler-acc">0</td>
-                <td>―</td>
-                <td>―</td>
-                <td id="attack-grappler-dmg">0</td>
-              </tr>
-              <tr id="attack-fencer"@{[ display $pc{'lvFen'} ]}>
-                <td>フェンサー技能</td>
-                <td id="attack-fencer-str">0</td>
-                <td id="attack-fencer-acc">0</td>
-                <td>―</td>
-                <td>-1</td>
-                <td id="attack-fencer-dmg">0</td>
-              </tr>
-              <tr id="attack-shooter"@{[ display $pc{'lvSho'} ]}>
-                <td>シューター技能</td>
-                <td id="attack-shooter-str">0</td>
-                <td id="attack-shooter-acc">0</td>
-                <td>―</td>
-                <td>―</td>
-                <td id="attack-shooter-dmg">0</td>
-              </tr>
+HTML
+}
+print <<"HTML";
               <tr id="attack-enhancer"@{[ display ($pc{'lvEnh'} >= 10) ]}>
                 <td>エンハンサー技能</td>
                 <td id="attack-enhancer-str">0</td>
@@ -1580,6 +1566,7 @@ foreach my $key (keys %data::class) {
   '$data::class{$key}{'id'}' : {
     '2.0'       : '$data::class{$key}{'2.0'}',
     '2.5'       : '$data::class{$key}{'2.5'}',
+    'type'      : '$data::class{$key}{'type'}',
     'expTable'  : '$data::class{$key}{'expTable'}',
     'jName'     : '$key',
     'eName'     : '$data::class{$key}{'eName'}',
@@ -1599,6 +1586,14 @@ foreach my $key (keys %data::class) {
 HTML
 }
 print "};\n";
+print 'let classNameToId = {';
+foreach (keys %data::class){
+  print "'".$_."' : '$data::class{$_}{id}',";
+}
+print '};'."\n";
+print 'let weaponsUsers = [';
+foreach (@weapon_users){ print "'".$_."',"; }
+print '];'."\n";
 ## 言語
 print 'const langOptionT = `'.(option "",@langoptionT)."`;\n";
 print 'const langOptionR = `'.(option "",@langoptionR)."`;\n";

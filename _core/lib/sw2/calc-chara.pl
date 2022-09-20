@@ -512,17 +512,12 @@ sub data_calc {
   ### 装備 --------------------------------------------------
   ## 武器
   foreach (1 .. $pc{'weaponNum'}){
-    my $class;
-    if   ($pc{'weapon'.$_.'Class'} eq "ファイター"       && $pc{'lvFig'}){ $class = 'Fig'; }
-    elsif($pc{'weapon'.$_.'Class'} eq "グラップラー"     && $pc{'lvGra'}){ $class = 'Gra'; }
-    elsif($pc{'weapon'.$_.'Class'} eq "フェンサー"       && $pc{'lvFen'}){ $class = 'Fen'; }
-    elsif($pc{'weapon'.$_.'Class'} eq "シューター"       && $pc{'lvSho'}){ $class = 'Sho'; }
-    elsif($pc{'weapon'.$_.'Class'} eq "エンハンサー"     && $pc{'lvEnh'}){ $class = 'Enh'; }
-    elsif($pc{'weapon'.$_.'Class'} eq "デーモンルーラー" && $pc{'lvDem'}){ $class = 'Dem'; }
+    my $name = $pc{'weapon'.$_.'Class'};
+    my $id   = $data::class{$name}{'id'};
     ## 命中
     my $own_dex = $pc{'weapon'.$_.'Own'} ? 2 : 0; # 専用化補正
     $pc{'weapon'.$_.'AccTotal'} = 0;
-    $pc{'weapon'.$_.'AccTotal'} = $pc{'lv'.$class} + int( ($pc{'sttDex'} + $pc{'sttAddA'} + $own_dex) / 6 ) if $pc{'lv'.$class};
+    $pc{'weapon'.$_.'AccTotal'} = $pc{'lv'.$id} + int( ($pc{'sttDex'} + $pc{'sttAddA'} + $own_dex) / 6 ) if $pc{'lv'.$id};
     $pc{'weapon'.$_.'AccTotal'} += $pc{'accuracyEnhance'}; # 命中強化
     $pc{'weapon'.$_.'AccTotal'} += 1 if $pc{'throwing'} && $pc{'weapon'.$_.'Category'} eq '投擲'; # スローイング
     $pc{'weapon'.$_.'AccTotal'} += $pc{'weapon'.$_.'Acc'}; # 武器の修正値
@@ -538,7 +533,7 @@ sub data_calc {
       $pc{'weapon'.$_.'DmgTotal'} += $pc{'magicPowerDem'};
     }
     else {
-      $pc{'weapon'.$_.'DmgTotal'} += $st{$class.'C'};
+      $pc{'weapon'.$_.'DmgTotal'} += $st{$id.'C'};
     }
 
     $pc{'weapon'.$_.'DmgTotal'} += $pc{'mastery' . ucfirst($data::weapon_id{ $pc{'weapon'.$_.'Category'} }) };
@@ -551,23 +546,21 @@ sub data_calc {
     }
   }
 
+  {
   ## 基本回避力
     use POSIX 'ceil';
     $pc{'reqdStr'}  = $pc{'sttStr'} + $pc{'sttAddC'};
     $pc{'reqdStrF'} = ceil($pc{'reqdStr'} / 2);
-    my $eva_class;
-    if   ($pc{'evasionClass'} eq "ファイター"       && $pc{'lvFig'}){ $eva_class = $pc{'lvFig'}; $pc{'evasionStr'} = $pc{'reqdStr'}; }
-    elsif($pc{'evasionClass'} eq "グラップラー"     && $pc{'lvGra'}){ $eva_class = $pc{'lvGra'}; $pc{'evasionStr'} = $pc{'reqdStr'}; }
-    elsif($pc{'evasionClass'} eq "フェンサー"       && $pc{'lvFen'}){ $eva_class = $pc{'lvFen'}; $pc{'evasionStr'} = $pc{'reqdStrF'}; }
-    elsif($pc{'evasionClass'} eq "シューター"       && $pc{'lvSho'}){ $eva_class = $pc{'lvSho'}; $pc{'evasionStr'} = $pc{'reqdStr'}; }
-    elsif($pc{'evasionClass'} eq "デーモンルーラー" && $pc{'lvDem'}){ $eva_class = $pc{'lvDem'}; $pc{'evasionStr'} = $pc{'reqdStr'}; }
-    else{ $eva_class = 0; $pc{'evasionStr'} = $pc{'reqdStr'}; }
+    my $name = $pc{'evasionClass'};
+    my $id   = $data::class{$name}{'id'};
+    my $lv = $pc{'lv'.$id} || 0;
+    $pc{'evasionStr'} = ($pc{'evasionClass'} eq "フェンサー") ? $pc{'reqdStrF'} : $pc{'reqdStr'};
 
   ## 防具
     foreach my $i (1..3){
       my $own_agi = $pc{"defTotal${i}CheckShield1"} && $pc{'shield1Own'} ? 2 : 0;
       my $art_def = 0;
-      my $eva = ( $eva_class ? $eva_class + int(($pc{'sttAgi'}+$pc{'sttAddB'}+$own_agi)/6) : 0 ) + $pc{'evasiveManeuver'} + $pc{'mindsEye'};
+      my $eva = ( $lv ? $lv + int(($pc{'sttAgi'}+$pc{'sttAddB'}+$own_agi)/6) : 0 ) + $pc{'evasiveManeuver'} + $pc{'mindsEye'};
       my $def = $pc{'raceAbilityDef'} + $pc{'defenseSeeker'};
       my $flag = 0;
       if($pc{"defTotal${i}CheckArmour1"}  ){ $flag++; $eva += $pc{'armour1Eva'};    $def += $pc{'armour1Def'} + max($pc{'masteryMetalArmour'},$pc{'masteryNonMetalArmour'}); }
@@ -584,6 +577,7 @@ sub data_calc {
         $pc{"defenseTotal${i}Def"} = $def;
       }
     }
+  }
 
   ### グレード自動変更 --------------------------------------------------
   if (@set::grades){
