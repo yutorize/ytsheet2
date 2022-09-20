@@ -5,6 +5,11 @@ use utf8;
 
 require $set::data_class;
 require $set::data_items;
+my @class_names;
+foreach(@data::class_names){
+  push(@class_names, $_);
+  if($_ eq 'コンジャラー'){ push(@class_names, 'ウィザード'); }
+}
 
 ### 魔法威力 #########################################################################################
 sub magicPows {
@@ -84,7 +89,7 @@ sub palettePreset {
     $text .= "2d6+{冒険者}+{敏捷B} 冒険者＋敏捷\n";
     $text .= "2d6+{冒険者}+{筋力B} 冒険者＋筋力\n";
     $text .= "2d6+{冒険者}+{知力B} 冒険者＋知力\n";
-    foreach my $class (@data::class_names){
+    foreach my $class (@class_names){
       my $c_id = $data::class{$class}{'id'};
       next if !$data::class{$class}{'package'} || !$::pc{'lv'.$c_id};
       my %data = %{$data::class{$class}{'package'}};
@@ -107,24 +112,13 @@ sub palettePreset {
     $text .= "//行使修正=".($::pc{'magicCastAdd'}||0)."\n";
     $text .= "//魔法C=10\n";
     $text .= "//魔法D修正=".($::pc{'magicDamageAdd'}||0)."\n";
-    foreach (
-      ['Sor', '真語魔法'],
-      ['Con', '操霊魔法'],
-      ['Wiz', '深智魔法'],
-      ['Pri', '神聖魔法'],
-      ['Mag', '魔動機術'],
-      ['Fai', '妖精魔法'],
-      ['Dru', '森羅魔法'],
-      ['Dem', '召異魔法'],
-      ['Gri', '秘奥魔法'],
-      ['Bar', '呪歌'],
-      ['Alc', '賦術'],
-      ['Mys', '占瞳'],
-    ){
-      my ($id, $name) = @$_;
+    foreach my $name (@class_names){
+      next if !(exists($data::class{$name}{'magic'}) || exists($data::class{$name}{'craft'}{'power'}));
+      my $id   = $data::class{$name}{'id'};
+      my $name = $data::class{$name}{'magic'}{'jName'} || $data::class{$name}{'craft'}{'jName'};
       next if !$::pc{'lv'.$id};
       
-      $text .= "2d6+{@$_[1]}";
+      $text .= "2d6+{$name}";
       if   ($name =~ /魔/){ $text .= "+{魔力修正}+{行使修正} ${name}行使\n"; }
       elsif($name =~ /歌/){ $text .= " 呪歌演奏\n"; }
       elsif($name =~ /賦/){ $text .= ($::pc{'alchemyEnhance'} ? "+$::pc{'alchemyEnhance'}" : '')." 賦術\n"; }
@@ -335,36 +329,11 @@ sub paletteProperties {
     push @propaties, "### ■技能レベル";
     push @propaties, "//冒険者レベル=$::pc{'level'}";
     my @classes_en;
-    foreach (
-      ['Fig','ファイター'],
-      ['Gra','グラップラー'],
-      ['Fen','フェンサー'],
-      ['Sho','シューター'],
-      ['Sor','ソーサラー'],
-      ['Con','コンジャラー'],
-      ['Pri','プリースト'],
-      ['Fai','フェアリーテイマー'],
-      ['Mag','マギテック'],
-      ['Sco','スカウト'],
-      ['Ran','レンジャー'],
-      ['Sag','セージ'],
-      ['Enh','エンハンサー'],
-      ['Bar','バード'],
-      ['Rid','ライダー'],
-      ['Alc','アルケミスト'],
-      ['Dru','ドルイド'],
-      ['Dem','デーモンルーラー'],
-      ['Geo','ジオマンサー'],
-      ['War','ウォーリーダー'],
-      ['Mys','ミスティック'],
-      ['Phy','フィジカルマスター'],
-      ['Gri','グリモワール'],
-      ['Ari','アリストクラシー'],
-      ['Art','アーティザン'],
-    ){
-      next if !$::pc{'lv'.@$_[0]};
-      push @propaties, "//@$_[1]=$::pc{'lv'.@$_[0]}";
-      push @classes_en, "//".uc(@$_[0])."={@$_[1]}";
+    foreach my $name (@class_names){
+      my $id = $data::class{$name}{'id'};
+      next if !$::pc{'lv'.$id};
+      push @propaties, "//$name=$::pc{'lv'.$id}";
+      push @classes_en, "//".uc($id)."={$name}";
     }
     push @propaties, '';
     push @propaties, "### ■代入パラメータ";
@@ -402,7 +371,7 @@ sub paletteProperties {
     push @propaties, '';
     #push @propaties, "//魔物知識=$::pc{'monsterLore'}" if $::pc{'monsterLore'};
     #push @propaties, "//先制力=$::pc{'initiative'}" if $::pc{'initiative'};
-    foreach my $class (@data::class_names){
+    foreach my $class (@class_names){
       my $c_id = $data::class{$class}{'id'};
       next if !$data::class{$class}{'package'} || !$::pc{'lv'.$c_id};
       my %data = %{$data::class{$class}{'package'}};
@@ -414,24 +383,16 @@ sub paletteProperties {
     }
     push @propaties, '';
     
-    foreach (
-      ['Sor', '真語魔法', '知力', 'ソーサラー'],
-      ['Con', '操霊魔法', '知力', 'コンジャラー'],
-      ['Pri', '神聖魔法', '知力', 'プリースト'],
-      ['Mag', '魔動機術', '知力', 'マギテック'],
-      ['Fai', '妖精魔法', '知力', 'フェアリーテイマー'],
-      ['Dru', '森羅魔法', '知力', 'ドルイド'],
-      ['Dem', '召異魔法', '知力', 'デーモンルーラー'],
-      ['Gri', '秘奥魔法', '知力', 'グリモワール'],
-      ['Bar', '呪歌',     '精神', 'バード'],
-      ['Alc', '賦術',     '知力', 'アルケミスト'],
-      ['Mys', '占瞳',     '知力', 'ミスティック'],
-    ){
-      next if !$::pc{'lv'.@$_[0]};
-      my $own = $::pc{'magicPowerOwn'.@$_[0]} ? "+2" : "";
-      my $add = $::pc{'magicPowerAdd'.@$_[0]} ? "+$::pc{'magicPowerAdd'.@$_[0]}" : '';
+    foreach my $name (@class_names){
+      next if !(exists($data::class{$name}{'magic'}) || exists($data::class{$name}{'craft'}{'stt'}));
+      my $id = $data::class{$name}{'id'};
+      next if !$::pc{'lv'.$id};
+      my $magic = $data::class{$name}{'magic'} ? $data::class{$name}{'magic'}{'jName'} : $data::class{$name}{'craft'}{'jName'};
+      my $stt = $data::class{$name}{'magic'} ? '知力' : $data::class{$name}{'craft'}{'stt'};
+      my $own = $::pc{'magicPowerOwn'.$id} ? "+2" : "";
+      my $add = $::pc{'magicPowerAdd'.$id} ? "+$::pc{'magicPowerAdd'.$id}" : '';
       my $enh = $::pc{'magicPowerEnhance'} ? "+$::pc{'magicPowerEnhance'}" : '';
-      push @propaties, "//".@$_[1]."=({".@$_[3]."}+({".@$_[2]."}".$own.")/6)".$enh.$add;
+      push @propaties, "//".$magic."=({".$name."}+({".$stt."}".$own.")/6)".$enh.$add;
     }
     push @propaties, '';
     
