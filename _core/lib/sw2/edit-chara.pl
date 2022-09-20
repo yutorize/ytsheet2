@@ -517,12 +517,12 @@ print <<"HTML";
             </div>
             <p>置き換え可能な場合<span class="mark">強調</span>されます。</p>
           </div>
-          <div class="box" id="mystic-arts" @{[ display $set::mystic_arts_on ]}>
+          <div class="box" id="mystic-arts">
             <h2>秘伝</h2>
             <div>所持名誉点：<span id="honor-value-MA"></span></div>
             <ul id="mystic-arts-list">
 HTML
-$pc{'mysticArtsNum'} = 0 if !$set::mystic_arts_on;
+$pc{'mysticArtsNum'} ||= 0;
 foreach my $num (1 .. $pc{'mysticArtsNum'}){
   print '<li id="mystic-arts'.$num.'"><span class="handle"></span>'.(input 'mysticArts'.$num).(input 'mysticArts'.$num.'Pt', 'number', 'calcHonor').'</li>';
 }
@@ -1191,7 +1191,7 @@ print <<"HTML";
               </thead>
               <tbody>
                 <tr><td class="center" colspan="2">冒険者ランク</td><td id="rank-honor-value">0</td></tr>
-                <tr id="honor-items-mystic-arts" @{[ display $set::mystic_arts_on ]}><td class="center" class="center" colspan="2">秘伝</td><td id="mystic-arts-honor-value">0</td></tr>
+                <tr id="honor-items-mystic-arts"><td class="center" class="center" colspan="2">秘伝</td><td id="mystic-arts-honor-value">0</td></tr>
               </tbody>
               <tbody id="honor-items-table">
 HTML

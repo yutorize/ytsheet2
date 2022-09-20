@@ -1370,9 +1370,7 @@ function calcHonor(){
     let point = safeEval(form['honorItem'+i+'Pt'].value) || 0;
     pointTotal -= point;
     
-    let cL = form['honorItem'+i+'Pt'].classList;
-    if(point && point <= free) { cL.add("mark"); }
-    else { cL.remove("mark"); }
+    form['honorItem'+i+'Pt'].classList.toggle('mark', (point && point <= free));
   }
   // 流派
   let mysticArtsPt = 0;
@@ -1380,6 +1378,7 @@ function calcHonor(){
   for (let i = 1; i <= mysticArtsNum; i++){
     let point = safeEval(form['mysticArts'+i+'Pt'].value) || 0;
     mysticArtsPt += point;
+    form['mysticArts'+i+'Pt'].classList.toggle('mark', (point && point <= free));
   }
   pointTotal -= mysticArtsPt;
   //

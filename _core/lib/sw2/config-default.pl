@@ -97,8 +97,6 @@ package set;
 ## ●2.5未実装要素の表示設定 (ON=1)
  # 全ての技能を表示
   our $all_class_on = 1;
- # 秘伝
-  our $mystic_arts_on = 1;
 
 
 ## ●名誉ランク

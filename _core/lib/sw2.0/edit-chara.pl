@@ -531,13 +531,13 @@ foreach my $i (1..5) {
 print <<"HTML";
             </ul>
           </div>
-          <div class="box" id="mystic-arts" @{[ display $set::mystic_arts_on ]}>
+          <div class="box" id="mystic-arts">
             <h2>秘伝</h2>
             <div>所持名誉点：<span id="honor-value-MA"></span></div>
             <ul id="mystic-arts-list">
 HTML
 my @honortypes = ('def=human|<人族名誉点（通常の名誉点）>','barbaros|<蛮族名誉点>','dragon|<盟竜点>');
-$pc{'mysticArtsNum'} = 0 if !$set::mystic_arts_on;
+$pc{'mysticArtsNum'} ||= 0;
 foreach my $num (1 .. $pc{'mysticArtsNum'}){
   print '<li id="mystic-arts'.$num.'"><span class="handle"></span>'.(input 'mysticArts'.$num).'<span class="honor-pt"><select name="mysticArts'.$num.'PtType" oninput="calcHonor()">'.(option "mysticArts${num}PtType",@honortypes).'</select><span class="honor-select-view"></span>'.(input 'mysticArts'.$num.'Pt', 'number', 'calcHonor').'</span></li>';
 }
@@ -1211,7 +1211,7 @@ print <<"HTML";
                 <tr><th></th><th></th><th>種別｜点数</th></tr>
               </thead>
               <tbody>
-                <tr id="honor-items-mystic-arts" @{[ display $set::mystic_arts_on ]}><td class="center" class="center" colspan="2">秘伝</td><td id="mystic-arts-honor-value">0</td></tr>
+                <tr id="honor-items-mystic-arts"><td class="center" class="center" colspan="2">秘伝</td><td id="mystic-arts-honor-value">0</td></tr>
               </tbody>
               <tbody id="honor-items-table">
 HTML
