@@ -347,7 +347,8 @@ sub data_calc {
   if($pc{'lvGra'} >= 1) { push(@abilities, "追加攻撃"); }
   if($pc{'lvGra'} >= 1 && $::SW2_0) { push(@abilities, "投げ攻撃"); }
   if($pc{'lvGra'} >= 7) { push(@abilities, "カウンター"); }
-  if($pc{'lvFig'} >=13 || $pc{'lvGra'} >=13) { push(@abilities, "バトルマスター"); }
+  if($pc{'lvBat'} >= 7) { push(@abilities, "舞い流し"); }
+  if($pc{'lvFig'} >=13 || $pc{'lvGra'} >=13 || $pc{'lvBat'} >=13) { push(@abilities, "バトルマスター"); }
   if($pc{'lvCaster'} >= 11){ push(@abilities, "ルーンマスター"); }
   if($pc{'lvSco'} >= 5) { push(@abilities, $pc{'combatFeatsExcSco5'} || "トレジャーハント"); }
   if($pc{'lvSco'} >= 7) { push(@abilities, "ファストアクション"); }

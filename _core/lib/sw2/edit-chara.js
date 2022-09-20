@@ -445,6 +445,10 @@ function checkFeats(){
   for (let i = 0; i < array.length; i++) {
     let cL = document.getElementById("combat-feats-lv"+array[i]).classList;
     cL.remove("mark","error");
+    if(array[i].match(/bat/) && lv['Bat'] <= 0){
+      cL.add('hidden');
+      continue;
+    }
     if(level >= Number( array[i].replace(/[^0-9]/g, '') )){
       const f2 = (array[i+1] && level >= Number( array[i+1].replace(/[^0-9]/g, '') )) ? 1 : 0; //次枠の開放状況
       const f3 = (array[i+2] && level >= Number( array[i+2].replace(/[^0-9]/g, '') )) ? 1 : 0; //次々枠の開放状況
@@ -467,14 +471,14 @@ function checkFeats(){
       }
       else if (feat.match(/回避行動/)){
         if(feat.match(/Ⅰ$/)){
-          if (f2 && lv['Fen'] >= 9) { (auto) ? box.value = "回避行動Ⅱ" : cL.add("mark") }
+          if (f2 && (lv['Fen'] >= 9 || lv['Bat'] >= 9)) { (auto) ? box.value = "回避行動Ⅱ" : cL.add("mark") }
         }
         else if(feat.match(/Ⅱ$/)){
-          if(!f2 || lv['Fen'] < 9) { (auto) ? box.value = "回避行動Ⅰ" : cL.add("error") }
+          if(!f2 || (lv['Fen'] < 9 && lv['Bat'] < 9)) { (auto) ? box.value = "回避行動Ⅰ" : cL.add("error") }
         }
       }
       else if (feat.match(/^頑強/)){
-        if(lv['Fig'] < 5 && lv['Gra'] < 5 && lv['Fen'] < 5){ cL.add("error"); }
+        if(lv['Fig'] < 5 && lv['Gra'] < 5 && lv['Fen'] < 5 && lv['Bat'] < 5){ cL.add("error"); }
       }
       else if (feat.match(/鼓咆陣率追加/)){
         if(lv['War'] < 1){ cL.add("error"); }
@@ -592,12 +596,12 @@ function checkFeats(){
         if(lv['Gra'] < 5){ cL.add("error"); }
       }
       else if (feat.match(/変幻自在/)){
-        if(lv['Gra'] < 5 && lv['Fen'] < 5){ cL.add("error"); }
+        if(lv['Gra'] < 5 && lv['Fen'] < 5 && lv['Bat'] < 5){ cL.add("error"); }
         if(feat.match(/Ⅰ$/)){
-          if (f2 && (lv['Gra'] >= 13 || lv['Fen'] >= 13)) { (auto) ? box.value = "変幻自在Ⅱ" : cL.add("mark") }
+          if (f2 && (lv['Gra'] >= 13 || lv['Fen'] >= 13 || lv['Bat'] >= 13)) { (auto) ? box.value = "変幻自在Ⅱ" : cL.add("mark") }
         }
         else if(feat.match(/Ⅱ$/)){
-          if(!f2 || (lv['Gra'] < 13 && lv['Fen'] < 13)) { (auto) ? box.value = "変幻自在Ⅰ" : cL.add("error") }
+          if(!f2 || (lv['Gra'] < 13 && lv['Fen'] < 13 && lv['Bat'] < 13)) { (auto) ? box.value = "変幻自在Ⅰ" : cL.add("error") }
         }
       }
       else if (feat.match(/防具習熟Ｓ／(.*)/)){
@@ -677,14 +681,14 @@ function checkFeats(){
         if(lv['Sho'] < 9){ cL.add("error"); }
       }
       else if (feat.match(/牙折り/)){
-        if(lv['Gra'] < 9){ cL.add("error"); }
+        if(lv['Gra'] < 9 && lv['Bat'] < 9){ cL.add("error"); }
       }
       else if (feat.match(/斬り返し/)){
         if(feat.match(/Ⅰ$/)){
-          if (f2 && (lv['Fig'] >= 7 || lv['Fen'] >= 7)) { (auto) ? box.value = "斬り返しⅡ" : cL.add("mark") }
+          if (f2 && (lv['Fig'] >= 7 || lv['Fen'] >= 7 || lv['Bat'] >= 7)) { (auto) ? box.value = "斬り返しⅡ" : cL.add("mark") }
         }
         else if(feat.match(/Ⅱ$/)){
-          if(!f2 || (lv['Fig'] < 7 && lv['Fen'] < 7)) { (auto) ? box.value = "斬り返しⅠ" : cL.add("error") }
+          if(!f2 || (lv['Fig'] < 7 && lv['Fen'] < 7 && lv['Bat'] < 7)) { (auto) ? box.value = "斬り返しⅠ" : cL.add("error") }
         }
       }
       else if (feat.match(/クリティカルキャスト/)){
@@ -755,14 +759,14 @@ function checkFeats(){
       else if (feat.match(/全力攻撃/)){
         if(feat.match(/Ⅰ$/)){
           if     (f3 && lv['Fig'] >= 15)               { (auto) ? box.value = "全力攻撃Ⅲ" : cL.add("mark") }
-          else if(f2 && (lv['Fig'] >= 9 || lv['Gra'] >= 9)){ (auto) ? box.value = "全力攻撃Ⅱ" : cL.add("mark") }
+          else if(f2 && (lv['Fig'] >= 9 || lv['Gra'] >= 9 || lv['Bat'] >= 9)){ (auto) ? box.value = "全力攻撃Ⅱ" : cL.add("mark") }
         }
         else if(feat.match(/Ⅱ$/)){
           if     (f3 && lv['Fig'] >= 15)               { (auto) ? box.value = "全力攻撃Ⅲ" : cL.add("mark") }
-          else if(!f2 || (lv['Fig'] < 9 && lv['Gra'] < 9)) { (auto) ? box.value = "全力攻撃Ⅰ" : cL.add("error") }
+          else if(!f2 || (lv['Fig'] < 9 && lv['Gra'] < 9 && lv['Bat'] < 9)) { (auto) ? box.value = "全力攻撃Ⅰ" : cL.add("error") }
         }
         else if(feat.match(/Ⅲ$/)){
-          if     (!f2 || (lv['Fig'] < 9 && lv['Gra'] < 9)) { (auto) ? box.value = "全力攻撃Ⅰ" : cL.add("error") }
+          if     (!f2 || (lv['Fig'] < 9 && lv['Gra'] < 9 && lv['Bat'] < 9)) { (auto) ? box.value = "全力攻撃Ⅰ" : cL.add("error") }
           else if(!f3 || lv['Fig'] < 15)               { (auto) ? box.value = "全力攻撃Ⅱ" : cL.add("error") }
         }
       }
@@ -771,10 +775,10 @@ function checkFeats(){
       }
       else if (feat.match(/挑発攻撃/)){
         if(feat.match(/Ⅰ$/)){
-          if (f2 && lv['Fen'] >= 7) { (auto) ? box.value = "挑発攻撃Ⅱ" : cL.add("mark") }
+          if (f2 && (lv['Fen'] >= 7 || lv['Bat'] >= 7)) { (auto) ? box.value = "挑発攻撃Ⅱ" : cL.add("mark") }
         }
         else if(feat.match(/Ⅱ$/)){
-          if(!f2 ||  lv['Fen'] < 7) { (auto) ? box.value = "挑発攻撃Ⅰ" : cL.add("error") }
+          if(!f2 || (lv['Fen'] <  7 &&  lv['Bat'] < 7)) { (auto) ? box.value = "挑発攻撃Ⅰ" : cL.add("error") }
         }
       }
       else if (feat.match(/テイルスイング/)){
@@ -787,12 +791,12 @@ function checkFeats(){
         }
       }
       else if (feat.match(/薙ぎ払い/)){
-        if(lv['Fig'] < 3){ cL.add("error"); }
+        if(lv['Fig'] < 3 && lv['Bat'] < 3){ cL.add("error"); }
         if(feat.match(/Ⅰ$/)){
-          if (f2 && lv['Fig'] >= 9) { (auto) ? box.value = "薙ぎ払いⅡ" : cL.add("mark") }
+          if (f2 && (lv['Fig'] >= 9 || lv['Bat'] >= 9)) { (auto) ? box.value = "薙ぎ払いⅡ" : cL.add("mark") }
         }
         else if(feat.match(/Ⅱ$/)){
-          if(!f2 || lv['Fig'] < 9) { (auto) ? box.value = "薙ぎ払いⅠ" : cL.add("error") }
+          if(!f2 || (lv['Fig'] < 9 && lv['Bat'] < 9)) { (auto) ? box.value = "薙ぎ払いⅠ" : cL.add("error") }
         }
       }
       else if (feat.match(/バイオレントキャスト/)){
@@ -805,16 +809,16 @@ function checkFeats(){
       }
       else if (feat.match(/必殺攻撃/)){
         if(feat.match(/Ⅰ$/)){
-          if     (f3 && lv['Fen'] >= 11) { (auto) ? box.value = "必殺攻撃Ⅲ" : cL.add("mark") }
+          if     (f3 && (lv['Fen'] >= 11 || lv['Bat'] >= 11)) { (auto) ? box.value = "必殺攻撃Ⅲ" : cL.add("mark") }
           else if(f2 && level >=  7) { (auto) ? box.value = "必殺攻撃Ⅱ" : cL.add("mark") }
         }
         else if(feat.match(/Ⅱ$/)){
-          if     (f3 && lv['Fen'] >= 11) { (auto) ? box.value = "必殺攻撃Ⅲ" : cL.add("mark") }
+          if     (f3 && (lv['Fen'] >= 11 || lv['Bat'] >= 11)) { (auto) ? box.value = "必殺攻撃Ⅲ" : cL.add("mark") }
           else if(!f2 || level <  7) { (auto) ? box.value = "必殺攻撃Ⅰ" : cL.add("error") }
         }
         else if(feat.match(/Ⅲ$/)){
           if     (!f2 || level <  7) { (auto) ? box.value = "必殺攻撃Ⅰ" : cL.add("error") }
-          else if(!f3 || lv['Fen'] < 11) { (auto) ? box.value = "必殺攻撃Ⅱ" : cL.add("error") }
+          else if(!f3 || (lv['Fen'] < 11 && lv['Bat'] < 11)) { (auto) ? box.value = "必殺攻撃Ⅱ" : cL.add("error") }
         }
       }
       else if (feat.match(/マルチアクション/)){

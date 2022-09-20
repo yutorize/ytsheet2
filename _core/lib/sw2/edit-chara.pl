@@ -476,15 +476,17 @@ print <<"HTML";
             <h2>戦闘特技</h2>
             <ul>
 HTML
-foreach my $lv (@set::feats_lv) {
-  print '<li id="combat-feats-lv'.$lv.'" data-lv="'.$lv.'"><select name="combatFeatsLv'.$lv.'" oninput="checkFeats()">';
+foreach my $lv ('1bat',@set::feats_lv) {
+  (my $data_lv = $lv) =~ s/^([0-9]+)[^0-9].*?$/$1/;
+  print '<li id="combat-feats-lv'.$lv.'" data-lv="'.$data_lv.($data_lv eq $lv ? '':'+').'"><select name="combatFeatsLv'.$lv.'" oninput="checkFeats()">';
   print '<option></option>';
   foreach my $type ('常','宣','主') {
     print '<optgroup label="'.($type eq '常' ? '常時' : $type eq '宣' ? '宣言' : $type eq '宣' ? '宣言' : '主動作').'特技">';
     foreach my $feats (@data::combat_feats){
-      next if $lv < @$feats[1];
+      next if $data_lv < @$feats[1];
       next if $type ne @$feats[0];
       next if @$feats[3] =~ /2.0/ && !$set::all_class_on;
+      if($lv =~ /bat/ && @$feats[3] !~ /バトルダンサー/){ next; }
       if(@$feats[3] =~ /ヴァグランツ/){
         print '<option class="vagrants"'.(($pc{"combatFeatsLv$lv"} eq @$feats[2])?' selected':'').' value="'.@$feats[2].'">'.@$feats[2];
         $pc{'featsVagrantsOn'} = 1 if $pc{"combatFeatsLv$lv"} eq @$feats[2];
@@ -1620,7 +1622,7 @@ print <<"HTML";
   const growType = '@{[ $set::growtype ? $set::growtype : 0 ]}';
   const races = @{[ JSON::PP->new->encode(\%data::races) ]};
 HTML
-print 'const featsLv = ["'. join('","', @set::feats_lv) . '"];'."\n";
+print 'const featsLv = ["'. join('","', '1bat',@set::feats_lv) . '"];'."\n";
 print 'let weapons = [';
 foreach (@data::weapons){
   print "'".@$_[0]."',";
