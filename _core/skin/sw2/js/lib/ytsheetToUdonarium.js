@@ -71,7 +71,7 @@ io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2SwordWorld2E
 	}
 	data_character.detail += `    </data>`;
 
-	let palette = `<chat-palette dicebot="SwordWorld2_5">\n`;
+	let palette = `<chat-palette dicebot="SwordWorld2.5">\n`;
 	if(defaultPalette) {
 		palette += defaultPalette.palette.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 	}
@@ -223,7 +223,7 @@ io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2SwordWorld2P
 	}
 	data_character.detail += `    </data>`;
 
-	let palette = `<chat-palette dicebot="SwordWorld2_5">\n`;
+	let palette = `<chat-palette dicebot="SwordWorld2.5">\n`;
 	if(defaultPalette) {
 		palette += defaultPalette.palette.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 	}
