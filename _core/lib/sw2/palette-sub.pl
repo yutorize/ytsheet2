@@ -51,6 +51,9 @@ sub magicPows {
   if($::pc{'lvFai'} >= 14){ push(@{$pows{'Fai'}}, 60) }
   if($::pc{'lvMag'} >=  5){ push(@{$pows{'Mag'}}, 30) }
   if($::pc{'lvMag'} >= 15){ push(@{$pows{'Mag'}}, 90) }
+  if($::pc{'lvDru'} >=  4){ push(@{$pows{'Dru'}}, 10,20) }
+  if($::pc{'lvDru'} >= 13){ push(@{$pows{'Dru'}}, 30) }
+  if($::pc{'lvDru'} >= 15){ push(@{$pows{'Dru'}}, 50) }
   if($::pc{'lvDem'} >=  5){ push(@{$pows{'Dem'}}, 30); push(@{$pows{'Dem'}}, 40); push(@{$pows{'Dem'}}, 50) }
   if($::pc{'lvGri'} >=  4){ push(@{$pows{'Gri'}}, 30) }
   if($::pc{'lvGri'} >=  7){ push(@{$pows{'Gri'}}, 40); push(@{$pows{'Gri'}}, 50) }
@@ -130,6 +133,25 @@ sub palettePreset {
         if ($bot{'YTC'}) { $text .= "k${pow}[13]+{$name}+{魔力修正}//" . ($::pc{'magicDamageAdd'.$id}?"+$::pc{'magicDamageAdd'.$id}":'') . "+{魔法D修正} 半減\n"; }
         if ($bot{'BCD'}) { $text .= "hk${pow}[13]+{$name}+{魔力修正} 半減／${name}\n"; }
       }
+      if($id eq 'Dru'){
+        if($bot{'YTC'}){
+          $text .= "kソーンバッシュ+{$name}+{魔力修正} ダメージ\n"     if($::pc{'lvDru'} >=  3);
+          $text .= "kコングスマッシュ+{$name}+{魔力修正} ダメージ\n"   if($::pc{'lvDru'} >=  7);
+          $text .= "kボアラッシュ+{$name}+{魔力修正} ダメージ\n"       if($::pc{'lvDru'} >=  9);
+          $text .= "kマルサーヴラプレス+{$name}+{魔力修正} ダメージ\n" if($::pc{'lvDru'} >= 10);
+          $text .= "kルナアタック+{$name}+{魔力修正} ダメージ\n"       if($::pc{'lvDru'} >= 13);
+          $text .= "kダブルストンプ+{$name}+{魔力修正} ダメージ\n"     if($::pc{'lvDru'} >= 15);
+        }
+        elsif ($bot{'BCD'}) {
+          $text .= "Dru[4,7,13]+{$name}+{魔力修正} ダメージ／ソーンバッシュ\n"   if($::pc{'lvDru'} >=  3);
+          $text .= "Dru[12,15,18]+{$name}+{魔力修正} ダメージ／コングスマッシュ\n" if($::pc{'lvDru'} >=  7);
+          $text .= "Dru[13,16,19]+{$name}+{魔力修正} ダメージ／ボアラッシュ\n" if($::pc{'lvDru'} >=  9);
+          $text .= "Dru[18,21,24]+{$name}+{魔力修正} ダメージ／マルサーヴラプレス\n" if($::pc{'lvDru'} >= 10);
+          $text .= "Dru[18,21,36]+{$name}+{魔力修正} ダメージ／ルナアタック\n" if($::pc{'lvDru'} >= 13);
+          $text .= "Dru[24,27,30]+{$name}+{魔力修正} ダメージ／ダブルストンプ\n" if($::pc{'lvDru'} >= 15);
+        }
+      }
+      
       foreach my $pow (@{$heals{$id}}) {
         $text .= "k${pow}[13]+{$name}+{魔力修正} 回復量".($bot{'BCD'}?"／${name}":"")."\n"
       }
