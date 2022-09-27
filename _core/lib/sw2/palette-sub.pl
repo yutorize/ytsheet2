@@ -181,7 +181,7 @@ sub palettePreset {
       $::pc{'weapon'.$_.'Crit'} =~ s/⑫/12/;
       $::pc{'weapon'.$_.'Crit'} =~ s/⑬/13/;
       if   ($bot{'YTC'} ){ $text .= "k$::pc{'weapon'.$_.'Rate'}\[$::pc{'weapon'.$_.'Crit'}+{C修正}\]+{追加D$_}+{追加D修正}{出目修正}"; }
-      elsif($bot{'BCD'} ){ $text .= "k$::pc{'weapon'.$_.'Rate'}+{追加D$_}+{追加D修正}\@($::pc{'weapon'.$_.'Crit'}+{C修正}){出目修正}"; }
+      elsif($bot{'BCD'} ){ $text .= "k$::pc{'weapon'.$_.'Rate'}\[($::pc{'weapon'.$_.'Crit'}+{C修正})\]+{追加D$_}+{追加D修正}{出目修正}"; }
       
       if($::pc{'weapon'.$_.'Name'} =~ /首切/ || $::pc{'weapon'.$_.'Note'} =~ /首切/){
         $text .= $bot{'YTC'} ? '首切' : $bot{'BCD'} ? 'r5' : '';
