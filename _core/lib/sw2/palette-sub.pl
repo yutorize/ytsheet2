@@ -116,7 +116,7 @@ sub palettePreset {
     $text .= "//魔法C=10\n";
     $text .= "//魔法D修正=".($::pc{'magicDamageAdd'}||0)."\n";
     foreach my $name (@class_names){
-      next if !(exists($data::class{$name}{'magic'}) || exists($data::class{$name}{'craft'}{'power'}));
+      next if !($data::class{$name}{'magic'}{'jName'} || $data::class{$name}{'craft'}{'stt'});
       my $id   = $data::class{$name}{'id'};
       my $name = $data::class{$name}{'magic'}{'jName'} || $data::class{$name}{'craft'}{'jName'};
       next if !$::pc{'lv'.$id};
@@ -124,7 +124,6 @@ sub palettePreset {
       $text .= "2d6+{$name}";
       if   ($name =~ /魔/){ $text .= "+{魔力修正}+{行使修正} ${name}行使\n"; }
       elsif($name =~ /歌/){ $text .= " 呪歌演奏\n"; }
-      elsif($name =~ /賦/){ $text .= ($::pc{'alchemyEnhance'} ? "+$::pc{'alchemyEnhance'}" : '')." 賦術\n"; }
       else                { $text .= " ${name}\n"; }
       
       foreach my $pow (@{$pows{$id}}) {
@@ -153,7 +152,7 @@ sub palettePreset {
       }
       
       foreach my $pow (@{$heals{$id}}) {
-        $text .= "k${pow}[13]+{$name}+{魔力修正} 回復量".($bot{'BCD'}?"／${name}":"")."\n"
+        $text .= "k${pow}[13]+{$name}".($name =~ /魔/?'+{魔力修正}':'')." 回復量".($bot{'BCD'}?"／${name}":"")."\n"
       }
       $text .= "\n";
     }
@@ -406,15 +405,21 @@ sub paletteProperties {
     push @propaties, '';
     
     foreach my $name (@class_names){
-      next if !(exists($data::class{$name}{'magic'}) || exists($data::class{$name}{'craft'}{'stt'}));
+      next if !($data::class{$name}{'magic'}{'jName'} || $data::class{$name}{'craft'}{'stt'});
       my $id = $data::class{$name}{'id'};
       next if !$::pc{'lv'.$id};
-      my $magic = $data::class{$name}{'magic'} ? $data::class{$name}{'magic'}{'jName'} : $data::class{$name}{'craft'}{'jName'};
+      my $magic = $data::class{$name}{'magic'}{'jName'} || $data::class{$name}{'craft'}{'jName'};
       my $stt = $data::class{$name}{'magic'} ? '知力' : $data::class{$name}{'craft'}{'stt'};
       my $own = $::pc{'magicPowerOwn'.$id} ? "+2" : "";
-      my $add = $::pc{'magicPowerAdd'.$id} ? "+$::pc{'magicPowerAdd'.$id}" : '';
-      my $enh = $::pc{'magicPowerEnhance'} ? "+$::pc{'magicPowerEnhance'}" : '';
-      push @propaties, "//".$magic."=({".$name."}+({".$stt."}".$own.")/6)".$enh.$add;
+      my $add;
+      if($data::class{$name}{'magic'}{'jName'}){
+        $add .= addNum $::pc{'magicPowerEnhance'};
+        $add .= addNum $::pc{'magicPowerAdd'.$id};
+      }
+      elsif($id eq 'Alc') {
+        $add .= addNum($::pc{'alchemyEnhance'});
+      }
+      push @propaties, "//".$magic."=({".$name."}+({".$stt."}".$own.")/6)".$add;
     }
     push @propaties, '';
     
