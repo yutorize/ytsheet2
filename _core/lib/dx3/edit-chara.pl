@@ -519,7 +519,7 @@ print <<"HTML";
           <tbody>
           <tr>
             <th rowspan="2">衝動</th>
-            <td><select name="lifepathImpulse" oninput="calcEncroach()">@{[option "lifepathImpulse",@impulses]}</select></td>
+            <td><select name="lifepathImpulse" oninput="refreshByImpulse()">@{[option "lifepathImpulse",@impulses]}</select></td>
             <th class="small">侵蝕値</th>
             <td class="center" id="impulse-encroach"></td>
             <td class="left">@{[input "lifepathImpulseNote",'','','placeholder="備考"']}</td>
@@ -1406,7 +1406,7 @@ print <<"HTML";
     <option value="ピュア">
     <option value="80%">
     <option value="100%">
-    <option value="120%">
+    <option value="120%" class="percent120">
     <option value="Dロイス">
     <option value="リミット">
     <option value="RB">

@@ -16,7 +16,7 @@ window.onload = function() {
   calcMagic();
   calcItem();
   calcMemory();
-  calcEncroach();
+  refreshByImpulse();
   for(let i = 1; i <= 7; i++){ changeLoisColor(i); }
   imagePosition();
   changeColor();
@@ -274,6 +274,30 @@ function calcExp(){
   document.getElementById("exp-used-item"  ).innerHTML = exps['item']   || 0;
   document.getElementById("exp-used-memory").innerHTML = exps['memory'] || 0;
   document.getElementById("exp-rest").innerHTML = rest;
+}
+
+// 「衝動」由来の更新
+function refreshByImpulse(){
+  calcEncroach();
+
+  const optionClass = 'restrict-option-for-impulse';
+
+  const oldElement = document.querySelector(`#list-restrict .${optionClass}`);
+  if (oldElement != null) {
+    oldElement.parentNode.removeChild(oldElement);
+  }
+
+  const impulseName = document.querySelector('select[name="lifepathImpulse"]').value;
+
+  if (impulseName == null || impulseName === '') {
+    return;
+  }
+
+  const newElement = document.createElement('option');
+  newElement.classList.add(optionClass);
+  newElement.setAttribute('value', `${impulseName}、120%`);
+
+  document.querySelector('#list-restrict .percent120').after(newElement);
 }
 
 // 侵蝕値 ----------------------------------------
