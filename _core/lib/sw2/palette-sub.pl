@@ -409,7 +409,7 @@ sub paletteProperties {
       my $id = $data::class{$name}{'id'};
       next if !$::pc{'lv'.$id};
       my $magic = $data::class{$name}{'magic'}{'jName'} || $data::class{$name}{'craft'}{'jName'};
-      my $stt = $data::class{$name}{'magic'} ? '知力' : $data::class{$name}{'craft'}{'stt'};
+      my $stt = $data::class{$name}{'craft'}{'stt'} || '知力';
       my $own = $::pc{'magicPowerOwn'.$id} ? "+2" : "";
       my $add;
       if($data::class{$name}{'magic'}{'jName'}){
