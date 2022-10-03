@@ -207,9 +207,9 @@ function addArts(){
   div.innerHTML = `
     <dl class="name    "><dt>名称      </dt><dd>《<input type="text" name="schoolArts${num}Name">》</dd></dl>
     <dl class="cost    "><dt>必要名誉点</dt><dd><input type="text" name="schoolArts${num}Cost"></dd></dl>
-    <dl class="base    "><dt>基礎特技  </dt><dd>《<input type="text" name="schoolArts${num}Base">》</dd></dl>
+    <dl class="type    "><dt>タイプ    </dt><dd><input type="text" name="schoolArts${num}Type" list="list-arts-type></dd></dl>
     <dl class="premise "><dt>前提      </dt><dd><input type="text" name="schoolArts${num}Premise"></dd></dl>
-    <dl class="equip   "><dt>装備限定  </dt><dd><input type="text" name="schoolArts${num}Equip"></dd></dl>
+    <dl class="equip   "><dt>限定条件  </dt><dd><input type="text" name="schoolArts${num}Equip"></dd></dl>
     <dl class="use     "><dt>使用      </dt><dd><input type="text" name="schoolArts${num}Use"></dd></dl>
     <dl class="apply   "><dt>適用      </dt><dd><input type="text" name="schoolArts${num}Apply"></dd></dl>
     <dl class="risk    "><dt>リスク    </dt><dd><input type="text" name="schoolArts${num}Risk"></dd></dl>
