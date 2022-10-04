@@ -1058,6 +1058,9 @@ aside#loglist #log-naming form dl dd {
 aside#loglist #log-naming form input{
   padding: .2em .3em;
 }
+aside#loglist #log-naming form input[type="submit"]{
+  cursor: pointer;
+}
 aside#loglist #log-naming form input[type="text"]     { width: 12em; }
 aside#loglist #log-naming form input[type="password"] { width: 12em; }
 @media screen and (max-width:735px){
