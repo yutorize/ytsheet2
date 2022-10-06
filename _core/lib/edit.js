@@ -42,7 +42,7 @@ function formSubmit() {
     })
     .then(data => {
       if     (data.result === 'make' ){ window.location.href = './?id='+data.message; }
-      else if(data.result === 'ok'   ){ saveInfo('saved'); console.log(data.message) }
+      else if(data.result === 'ok'   ){ saveInfo('saved'); console.log(data.message); form.protectOld.value = form.protect.value; }
       else{
         throw Error(data.result === 'error' ? data.message : "保存できませんでした。");
       }

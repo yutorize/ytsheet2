@@ -430,7 +430,7 @@ sub passfile_write_save {
   my $user_dir;
   if($move){
     if(!-d "${dir}${new_dir}"){ mkdir "${dir}${new_dir}" or infoJson('error',"データディレクトリの作成に失敗しました。"); }
-    move("${data_dir}${old_dir}${file}", "${data_dir}${new_dir}${file}") or infoJson('error',"データディレクトリの移動に失敗しました。");
+    move("${data_dir}${old_dir}${file}", "${data_dir}${new_dir}${file}") or infoJson('error',"データディレクトリの移動に失敗しました。（${old_dir}⇒${new_dir}）");
     $user_dir = $new_dir;
   }
   else {
