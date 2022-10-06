@@ -655,7 +655,7 @@ print <<"HTML";
               <td>@{[input "effect${num}Dfclty",'','','placeholder="難易度" list="list-dfclty"']}</td>
               <td>@{[input "effect${num}Target",'','','placeholder="対象" list="list-target"']}</td>
               <td>@{[input "effect${num}Range",'','','placeholder="射程" list="list-range"']}</td>
-              <td>@{[input "effect${num}Encroach",'','','placeholder="侵蝕値"']}</td>
+              <td>@{[input "effect${num}Encroach",'','','placeholder="侵蝕値" list="list-encroach"']}</td>
               <td>@{[input "effect${num}Restrict",'','','placeholder="制限" list="list-restrict"']}</td>
             </tr>
             <tr><td colspan="9"><div>
@@ -1399,6 +1399,23 @@ print <<"HTML";
     <option value="至近">
     <option value="武器">
     <option value="視界">
+    <option value="効果参照">
+  </datalist>
+  <datalist id="list-encroach">
+    <option value="―">
+    <option value="1">
+    <option value="2">
+    <option value="3">
+    <option value="4">
+    <option value="5">
+    <option value="6">
+    <option value="7">
+    <option value="8">
+    <option value="10">
+    <option value="20">
+    <option value="1D10">
+    <option value="2D10">
+    <option value="4D10">
     <option value="効果参照">
   </datalist>
   <datalist id="list-restrict">

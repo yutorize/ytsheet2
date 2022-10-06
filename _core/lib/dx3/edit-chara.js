@@ -493,7 +493,7 @@ function addEffect(){
     <td><input name="effect${num}Dfclty"   type="text"   placeholder="難易度" list="list-dfclty"></td>
     <td><input name="effect${num}Target"   type="text"   placeholder="対象"   list="list-target"></td>
     <td><input name="effect${num}Range"    type="text"   placeholder="射程"   list="list-range"></td>
-    <td><input name="effect${num}Encroach" type="text"   placeholder="侵蝕値"></td>
+    <td><input name="effect${num}Encroach" type="text"   placeholder="侵蝕値" list="list-encroach"></td>
     <td><input name="effect${num}Restrict" type="text"   placeholder="制限"   list="list-restrict"></td>
   </tr>
   <tr><td colspan="9"><div>
