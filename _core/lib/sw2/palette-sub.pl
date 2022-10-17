@@ -130,7 +130,7 @@ sub palettePreset {
         if($id eq 'Bar'){ $pow += $::pc{'finaleEnhance'} || 0; }
         $text .= "k${pow}[{魔法C}]+{$name}".($name =~ /魔/?'+{魔力修正}':'').addNum($::pc{'magicDamageAdd'.$id})."+{魔法D修正} ダメージ".($bot{'BCD'}?"／${name}":"")."\n";
         if ($bot{'YTC'}) { $text .= "k${pow}[13]+{$name}" . ($name =~ /魔/?'+{魔力修正}':'') . "//" . addNum($::pc{'magicDamageAdd'.$id}) . "+{魔法D修正} 半減\n"; }
-        if ($bot{'BCD'}) { $text .= "k${pow}[13]+{$name}" . ($name =~ /魔/?'+{魔力修正}':'') . "h"  . addNum($::pc{'magicDamageAdd'.$id}) . "+{魔法D修正} 半減／${name}\n"; }
+        if ($bot{'BCD'}) { $text .= "k${pow}[13]+{$name}" . ($name =~ /魔/?'+{魔力修正}':'') . "h+("  . ($::pc{'magicDamageAdd'.$id} || 0) . "+{魔法D修正}) 半減／${name}\n"; }
       }
       if($id eq 'Dru'){
         if($bot{'YTC'}){
