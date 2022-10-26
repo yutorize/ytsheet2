@@ -386,7 +386,7 @@ sub tag_unescape_lines {
   my $text = $_[0];
   $text =~ s/&lt;br&gt;/\n/gi;
   
-  $text =~ s|^//(.*?)$||gm; # コメントアウト
+  $text =~ s|^//(.*?)\n?$||gm; # コメントアウト
   
   $text =~ s/\\\\\n/<br>/gi;
   
