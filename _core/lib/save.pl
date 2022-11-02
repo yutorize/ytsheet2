@@ -38,7 +38,7 @@ if ($mode eq 'make'){
     my $i = 1;
     $new_id = $LOGIN_ID.'-'.$type.sprintf("%03d",$i);
     # 重複チェック
-    while (overlap_check($new_id)) {
+    while (overlapCheck($new_id)) {
       $i++;
       $new_id = $LOGIN_ID.'-'.$type.sprintf("%03d",$i);
     }
@@ -46,14 +46,14 @@ if ($mode eq 'make'){
   else {
     $new_id = random_id(6);
     # 重複チェック
-    while (overlap_check($new_id)) {
+    while (overlapCheck($new_id)) {
       $new_id = random_id(6);
     }
   }
 }
 
 ## 重複チェックサブルーチン
-sub overlap_check {
+sub overlapCheck {
   my $id = shift;
   my $flag;
   open (my $FH, '<', $set::passfile);
@@ -189,15 +189,15 @@ elsif($mode eq 'save'){
     || ($set::masterid && $LOGIN_ID eq $set::masterid)
     || ($set::masterkey && $pass eq $set::masterkey)
   ){
-    $user_dir = passfile_write_save($pc{'id'},$pass,$LOGIN_ID,$pc{'protect'},$data_dir);
+    $user_dir = passfileWriteSave($pc{'id'},$pass,$LOGIN_ID,$pc{'protect'},$data_dir);
   }
   else {
     $user_dir = ($pc{'protect'} eq 'account' && $LOGIN_ID) ? '_'.$LOGIN_ID.'/' : '';
   }
-  data_save('save', $data_dir, $file, $pc{'protect'}, $user_dir);
+  dataSave('save', $data_dir, $file, $pc{'protect'}, $user_dir);
 }
 ### 一覧データ更新 --------------------------------------------------
-list_save($listfile, $newline);
+listSave($listfile, $newline);
 
 ### 画像アップ更新 --------------------------------------------------
 if($pc{'imageDelete'}){
@@ -232,7 +232,7 @@ else {
 ### サブルーチン ###################################################################################
 use File::Copy qw/move/;
 
-sub data_save {
+sub dataSave {
   my $mode = shift;
   my $dir  = shift;
   my $file = shift;
@@ -375,7 +375,7 @@ sub data_save {
   close($DD);
 }
 
-sub passfile_write_make {
+sub passfileWriteMake {
   my ($id, $pass ,$LOGIN_ID, $protect, $now, $data_dir) = @_;
   sysopen (my $FH, $set::passfile, O_RDWR | O_APPEND | O_CREAT, 0666);
   flock($FH, 2);
@@ -390,13 +390,13 @@ sub passfile_write_make {
   my $passwrite; my $user_dir;
   if   ($protect eq 'account'&& $LOGIN_ID) { $passwrite = '['.$LOGIN_ID.']'; $user_dir = '_'.$LOGIN_ID.'/'; }
   elsif($protect eq 'password')            { $passwrite = e_crypt($pass); }
-  data_save('make', $data_dir, $file, $protect, $user_dir);
+  dataSave('make', $data_dir, $file, $protect, $user_dir);
   print $FH "$id<>$passwrite<>$now<>".$::in{'type'}."<>\n";
   close($FH);
   return $user_dir;
 }
 
-sub passfile_write_save {
+sub passfileWriteSave {
   my ($id, $pass ,$LOGIN_ID, $protect, $dir) = @_;
   my $move; my $old_dir; my $new_dir; my $file;
   sysopen (my $FH, $set::passfile, O_RDWR);
@@ -443,7 +443,7 @@ sub passfile_write_save {
   return $user_dir;
 }
 
-sub list_save {
+sub listSave {
   my $listfile = shift;
   my $newline  = shift;
   sysopen (my $FH, $listfile, O_RDWR | O_CREAT, 0666);

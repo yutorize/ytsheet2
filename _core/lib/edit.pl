@@ -138,7 +138,7 @@ sub pcDataGet {
   return (\%pc, $mode, $file, $message)
 }
 ## トークン生成
-sub token_make {
+sub tokenMake {
   my $token = random_id(12);
 
   my $mask = umask 0;
@@ -150,14 +150,14 @@ sub token_make {
 }
 
 ## ログインエラー
-sub login_error {
+sub loginError {
   our $login_error = 'パスワードが間違っているか、<br>編集権限がありません。';
   require $set::lib_view;
   exit;
 }
 
 ## 画像欄
-sub image_form {
+sub imageForm {
   my $imgurl = shift;
   my $image_maxsize_view = $set::image_maxsize >= 1048576 ? sprintf("%.3g",$set::image_maxsize/1048576).'MB' : sprintf("%.3g",$set::image_maxsize/1024).'KB';
   return <<"HTML";

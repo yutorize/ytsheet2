@@ -68,7 +68,7 @@ Content-type: text/html\n
       <input type="hidden" name="type" value="i">
 HTML
 if($mode_make){
-  print '<input type="hidden" name="_token" value="'.token_make().'">'."\n";
+  print '<input type="hidden" name="_token" value="'.tokenMake().'">'."\n";
 }
 print <<"HTML";
       <input type="hidden" name="mode" value="@{[ $mode eq 'edit' ? 'save' : 'make' ]}">
