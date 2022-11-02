@@ -92,7 +92,7 @@ else                       { require $set::lib_calc_char; $data_dir = $set::char
 ## 保存数チェック
 my $max_files = 32000;
 if($mode eq 'make' && $pc{'protect'} ne 'account'){
-  opendir my $dh, $data_dir;
+  opendir my $dh, "${data_dir}anonymous/";
   my $num_files = () = readdir($dh);
   if($num_files-2 >= $max_files){
     infoJson('error','登録数上限です。\nアカウントに紐づけないデータは、これ以上登録できません。');
@@ -100,7 +100,7 @@ if($mode eq 'make' && $pc{'protect'} ne 'account'){
   }
 }
 if($mode eq 'save' && $pc{'protect'} ne 'account' && $pc{'protectOld'} eq 'account'){
-  opendir my $dh, $data_dir;
+  opendir my $dh, "${data_dir}anonymous/";
   my $num_files = () = readdir($dh);
   if($num_files-2 >= $max_files){
     infoJson('error','登録数上限です。\nアカウントに紐づけないデータは、これ以上登録できないため、保護設定を変更できません。');
@@ -177,11 +177,10 @@ $pc{'IP'} = $ENV{'REMOTE_ADDR'};
 ### passfile --------------------------------------------------
 if (!-d $set::data_dir){ mkdir $set::data_dir or infoJson('error',"データディレクトリ($set::data_dir)の作成に失敗しました。"); }
 if (!-d $data_dir){ mkdir $data_dir or infoJson('error',"データディレクトリ($data_dir)の作成に失敗しました。"); }
-if ($LOGIN_ID && !-d "${data_dir}_${LOGIN_ID}"){ mkdir "${data_dir}_${LOGIN_ID}" or infoJson('error',"データディレクトリの作成に失敗しました。"); }
 my $user_dir;
 ## 新規
 if($mode eq 'make'){
-  $user_dir = passfile_write_make($pc{'id'},$pass,$LOGIN_ID,$pc{'protect'},$now,$data_dir);
+  $user_dir = passfileWriteMake($pc{'id'},$pass,$LOGIN_ID,$pc{'protect'},$now,$data_dir);
 }
 ## 更新
 elsif($mode eq 'save'){
@@ -192,7 +191,7 @@ elsif($mode eq 'save'){
     $user_dir = passfileWriteSave($pc{'id'},$pass,$LOGIN_ID,$pc{'protect'},$data_dir);
   }
   else {
-    $user_dir = ($pc{'protect'} eq 'account' && $LOGIN_ID) ? '_'.$LOGIN_ID.'/' : '';
+    $user_dir = ($pc{'protect'} eq 'account' && $LOGIN_ID) ? "_${LOGIN_ID}/" : 'anonymous/';
   }
   dataSave('save', $data_dir, $file, $pc{'protect'}, $user_dir);
 }
@@ -239,20 +238,18 @@ sub dataSave {
   my $protect = shift;
   my $user_dir = shift;
 
-  if($protect eq 'account' && $user_dir){
-    if (!-d "${dir}${user_dir}${file}"){
-      if($mode eq 'save' && -d "${dir}${file}"){ #v1.14のコンバート処理
-        move("${dir}${file}", "${dir}${user_dir}${file}");
-      }
-      else {
-        mkdir "${dir}${user_dir}${file}" or infoJson('error',"データファイルの作成に失敗しました。");
-      }
+  if (!-d "${dir}${user_dir}"){
+    mkdir "${dir}${user_dir}" or infoJson('error',"データディレクトリの作成に失敗しました。");
+  }
+  if (!-d "${dir}${user_dir}${file}"){
+    if($mode eq 'save' && -d "${dir}${file}"){ #v1.14/v1.20のコンバート処理
+      move("${dir}${file}", "${dir}${user_dir}${file}") or infoJson('error',"データディレクトリの移動に失敗しました。");
     }
-    $dir .= $user_dir;
+    else {
+      mkdir "${dir}${user_dir}${file}" or infoJson('error',"データファイルの作成に失敗しました。");
+    }
   }
-  elsif(!-d "${dir}${file}") {
-    mkdir "${dir}${file}" or infoJson('error',"データファイルの作成に失敗しました。");
-  }
+  $dir .= $user_dir;
 
   ## バックアップ作成
   if($mode eq 'save'){
@@ -390,6 +387,7 @@ sub passfileWriteMake {
   my $passwrite; my $user_dir;
   if   ($protect eq 'account'&& $LOGIN_ID) { $passwrite = '['.$LOGIN_ID.']'; $user_dir = '_'.$LOGIN_ID.'/'; }
   elsif($protect eq 'password')            { $passwrite = e_crypt($pass); }
+  $user_dir ||= 'anonymous/';
   dataSave('make', $data_dir, $file, $protect, $user_dir);
   print $FH "$id<>$passwrite<>$now<>".$::in{'type'}."<>\n";
   close($FH);
@@ -427,6 +425,8 @@ sub passfileWriteSave {
       $_ = "$data[0]<>$passwrite<>$data[2]<>$data[3]<>\n";
     }
   }
+  $old_dir ||= 'anonymous/';
+  $new_dir ||= 'anonymous/';
   my $user_dir;
   if($move){
     if(!-d "${dir}${new_dir}"){ mkdir "${dir}${new_dir}" or infoJson('error',"データディレクトリの作成に失敗しました。"); }

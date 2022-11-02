@@ -40,6 +40,7 @@ sub getfile_open {
       my ($id, $pass, $file, $type) = (split /<>/, $line)[0,1,2,3];
       my $user;
       if($pass =~ /^\[(.+?)\]$/){ $file = '_'.$1.'/'.$file; $user = $1; }
+      else { $file = 'anonymous/'.$file; }
       return ($file,$type,$user);
     }
   }

@@ -90,7 +90,7 @@ sub pcDataGet {
   return %pc;
 }
 
-sub viewNotFound { #v1.14のコンバート処理
+sub viewNotFound { #v1.14/v1.20のコンバート処理
   my $dir = shift;
   if(!$::in{'log'} && $file =~ /^(.+)\/(.+?)$/){
     my $user = $1;
