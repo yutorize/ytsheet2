@@ -52,7 +52,7 @@ foreach my $factor (keys %factors){
     foreach my $data (@{$factors{$factor}{$type}}){
       my $name = (keys %{$data})[0];
       push(@list, $name);
-      $factor_data{$name} = %{$data}{$name};
+      $factor_data{$name} = $data->{$name};
     }
     $factor_list{$factor}{$type} = \@list;
   }
