@@ -19,6 +19,7 @@ sub data_calc {
   
   ### 能力値 --------------------------------------------------
   my %status = (0=>'body', 1=>'sense', 2=>'mind', 3=>'social');
+  $pc{'expUsedStatus'} = 0;
   foreach my $num (keys %status){
     my $name = $status{$num};
     my $Name = ucfirst $name;
