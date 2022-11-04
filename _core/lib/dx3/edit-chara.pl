@@ -1427,6 +1427,7 @@ print <<"HTML";
     <option value="Dロイス">
     <option value="リミット">
     <option value="RB">
+    <option value="従者専用">
   </datalist>
   <datalist id="list-magic-type">
     <option value="通常">
