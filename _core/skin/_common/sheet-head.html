@@ -11,13 +11,13 @@
     <meta name="twitter:card" content="summary">
     <meta name="twitter:site" content="@yutorize">
     <TMPL_IF hide><meta name="robots" content="none"></TMPL_IF>
+    <TMPL_IF convertUrl>
+      <link rel="ytchat-body-exporting-point" type="application/json" href="./?url=<TMPL_VAR convertUrl>&mode=json">
+    <TMPL_ELSE>
+      <link rel="ytchat-body-exporting-point" type="application/json" href="./?id=<TMPL_VAR id>&mode=json">
+      <link rel="ytchat-palette-exporting-point" type="text/plain" href="./?id=<TMPL_VAR id>&mode=palette">
+    </TMPL_IF>
   </TMPL_UNLESS>
-  <TMPL_IF convertUrl>
-  <link rel="ytchat-body-exporting-point" type="application/json" href="./?url=<TMPL_VAR convertUrl>&mode=json">
-  <TMPL_ELSE>
-  <link rel="ytchat-body-exporting-point" type="application/json" href="./?id=<TMPL_VAR id>&mode=json">
-  <link rel="ytchat-palette-exporting-point" type="text/plain" href="./?id=<TMPL_VAR id>&mode=palette">
-  </TMPL_IF>
   <link rel="stylesheet" data-dl href="<TMPL_VAR coreDir>/skin/_common/css/base.css?<TMPL_VAR ver>">
   <link rel="stylesheet" data-dl href="<TMPL_VAR coreDir>/skin/_common/css/sheet.css?<TMPL_VAR ver>">
   <link rel="stylesheet" data-dl href="<TMPL_VAR coreDir>/skin/<TMPL_VAR gameDir>/css/<TMPL_VAR sheetType>.css?<TMPL_VAR ver>">
@@ -27,7 +27,7 @@ const sheetId = '<TMPL_VAR id>';
 const paletteTool = '<TMPL_VAR paletteTool>';
 const generateType = '<TMPL_VAR generateType>';
 const defaultImage = '<TMPL_VAR defaultImage>';
-const images = { <TMPL_VAR images> };
+const images = { <TMPL_VAR images /> };
 
 <TMPL_IF error>
 window.onload = function() {
