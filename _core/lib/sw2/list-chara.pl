@@ -114,7 +114,7 @@ if($group_query && $::in{'group'} ne 'all') {
 $INDEX->param(group => $groups{$group_query}{'name'});
 
 ## タグ検索
-my $tag_query = decode('utf8', $::in{'tag'});
+my $tag_query = pcTagsEscape(decode('utf8', $::in{'tag'}));
 if($tag_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){16}[^<]*? \Q$tag_query\E / } @list; }
 $INDEX->param(tag => $tag_query);
 

@@ -108,7 +108,7 @@ if($::in{'category'} ne 'all'){
 }
 
 ## タグ検索
-my $tag_query = decode('utf8', $::in{'tag'});
+my $tag_query = pcTagsEscape(decode('utf8', $::in{'tag'}));
 if($tag_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){12}[^<]*? \Q$tag_query\E / } @list; }
 $INDEX->param(tag => $tag_query);
 
