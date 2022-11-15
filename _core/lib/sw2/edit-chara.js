@@ -742,7 +742,7 @@ function checkFeats(){
       else if (feat.match(/捨て身攻撃/)){
         if(feat.match(/Ⅰ$/)){
           if     (f3 && level >= 15){ (auto) ? box.value = "捨て身攻撃Ⅲ" : cL.add("mark") }
-          else if(f2 && level >= 9) { (auto) ? box.value = "捨て身攻撃Ⅱ" : cL.add("mark") }
+          else if(f2 && level >= 7) { (auto) ? box.value = "捨て身攻撃Ⅱ" : cL.add("mark") }
         }
         else if(feat.match(/Ⅱ$/)){
           if     (f3 && level >= 15){ (auto) ? box.value = "捨て身攻撃Ⅲ" : cL.add("mark") }
