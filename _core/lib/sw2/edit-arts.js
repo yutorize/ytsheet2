@@ -207,7 +207,7 @@ function addArts(){
   div.innerHTML = `
     <dl class="name    "><dt>名称      </dt><dd>《<input type="text" name="schoolArts${num}Name">》</dd></dl>
     <dl class="cost    "><dt>必要名誉点</dt><dd><input type="text" name="schoolArts${num}Cost"></dd></dl>
-    <dl class="type    "><dt>タイプ    </dt><dd><input type="text" name="schoolArts${num}Type" list="list-arts-type></dd></dl>
+    <dl class="type    "><dt>タイプ    </dt><dd><input type="text" name="schoolArts${num}Type" list="list-arts-type"></dd></dl>
     <dl class="premise "><dt>前提      </dt><dd><input type="text" name="schoolArts${num}Premise"></dd></dl>
     <dl class="equip   "><dt>限定条件  </dt><dd><input type="text" name="schoolArts${num}Equip"></dd></dl>
     <dl class="use     "><dt>使用      </dt><dd><input type="text" name="schoolArts${num}Use"></dd></dl>
@@ -223,7 +223,7 @@ function addArts(){
 function delArts(){
   let num = Number(form.schoolArtsNum.value);
   if(num > 1){
-    if(form[`schoolArts${num}Name`].value || form[`schoolArts${num}Cost`].value || form[`schoolArts${num}Base`].value || form[`schoolArts${num}Premise`].value || form[`schoolArts${num}Equip`].value || form[`schoolArts${num}Use`].value || form[`schoolArts${num}Apply`].value || form[`schoolArts${num}Risk`].value || form[`schoolArts${num}Summary`].value || form[`schoolArts${num}Effect`].value){
+    if(form[`schoolArts${num}Name`].value || form[`schoolArts${num}Cost`].value || form[`schoolArts${num}Type`].value || form[`schoolArts${num}Premise`].value || form[`schoolArts${num}Equip`].value || form[`schoolArts${num}Use`].value || form[`schoolArts${num}Apply`].value || form[`schoolArts${num}Risk`].value || form[`schoolArts${num}Summary`].value || form[`schoolArts${num}Effect`].value){
       if (!confirm(delConfirmText)) return false;
     }
     document.querySelector("#arts-list .input-data:last-child").remove();
