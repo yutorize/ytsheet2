@@ -810,7 +810,7 @@ function addCombo(){
       <dl><dt>侵蝕値    </dt><dd><input name="combo${num}Encroach" type="text"></dd></dl>
     </div>
     <dl class="combo-out">
-      <dt class="combo-cond">条件</dt>
+      <dt class="combo-cond">条件<span class="combo-condition-utility"></span></dt>
       <dt class="combo-dice">ダイス</dt>
       <dt class="combo-crit">Ｃ値</dt>
       <dt class="combo-fixed">判定固定値</dt>
@@ -853,6 +853,7 @@ function addCombo(){
   const target = document.querySelector("#combo-list");
   target.appendChild(div);
   comboSkillSet(num);
+  makeComboConditionUtility(div);
   form.comboNum.value = num;
 }
 // 削除
@@ -926,6 +927,119 @@ let comboSortable = Sortable.create(document.getElementById('combo-list'), {
     }
   }
 });
+// 条件
+function makeComboConditionUtility(comboNode) {
+  const utilityIcon = comboNode.querySelector('.combo-out .combo-cond .combo-condition-utility');
+  if (utilityIcon == null) {
+    return;
+  }
+
+  /** @return {Array.<{label: string, conditionTexts: [string, string, string, string, string]}>} */
+  function makeMenuItems() {
+    function makeConditionItem(label, text1 = '', text2 = '', text3 = '', text4 = '', text5 = '') {
+      return {label: label, conditionTexts: [text1, text2, text3, text4, text5]};
+    }
+
+    let menuItems = [
+      makeConditionItem("すべての条件を消去"),
+      makeConditionItem("100%未満／100%以上", "100%未満", "100%以上"),
+    ];
+
+    menuItems = menuItems.concat(
+        document.querySelector('#enc-table-dices td').textContent !== '―'
+            ? [
+              makeConditionItem("-99／100-", "～99%", "100%～"),
+              makeConditionItem("-99／100-159／160-", "～99%", "100%～159%", "160%～"),
+              makeConditionItem("-99／100-159／160-219／220-", "～99%", "100%～159%", "160%～220%", "220%～"),
+              makeConditionItem("80-99／100-", "80%～99%", "100%～"),
+              makeConditionItem("80-99／100-159／160-", "80%～99%", "100%～159%", "160%～"),
+              makeConditionItem("80-99／100-159／160-219／220-", "80%～99%", "100%～159%", "160%～219%", "220%～"),
+              makeConditionItem("100-", "100%～"),
+              makeConditionItem("100-159／160-", "100%～159%", "160%～"),
+              makeConditionItem("100-159／160-219／220-", "100%～159%", "160%～219%", "220%～"),
+              makeConditionItem("120-", "120%～"),
+              makeConditionItem("120-159／160-", "120%～159%", "160%～"),
+              makeConditionItem("120-159／160-219／220-", "120%～159%", "160%～219%", "220%～"),
+            ]
+            : [
+              makeConditionItem("-79／80-", "～79%", "80%～"),
+              makeConditionItem("-79／80-99／100-", "～79%", "80%～99%", "100%～"),
+              makeConditionItem("-79／80-99／100-149／150-", "～79%", "80%～99%", "100%～149%", "150%～"),
+              makeConditionItem("-79／80-99／100-149／150-199／200-", "～79%", "80%～99%", "100%～149%", "150%～199%", "200%～"),
+              makeConditionItem("80-99／100-", "80%～99%", "100%～"),
+              makeConditionItem("80-99／100-149／150-", "80%～99%", "100%～149%", "150%～"),
+              makeConditionItem("80-99／100-149／150-199／200-", "80%～99%", "100%～149%", "150%～199%", "200%～"),
+              makeConditionItem("100-", "100%～"),
+              makeConditionItem("100-149／150-", "100%～149%", "150%～"),
+              makeConditionItem("100-149／150-199／200-", "100%～149%", "150%～199%", "200%～"),
+              makeConditionItem("120-", "120%～"),
+              makeConditionItem("120-149／150-", "120%～149%", "150%～"),
+              makeConditionItem("120-149／150-199／200-", "120%～149%", "150%～199%", "200%～"),
+            ]
+    );
+
+    if (!document.querySelector('[name="encroachEaOn"]').checked) {
+      menuItems = menuItems.filter(x => !(x.label.includes('220') || x.label.includes('200')));
+    }
+
+    return menuItems;
+  }
+
+  utilityIcon.addEventListener(
+      'click',
+      () => {
+        const oldMenu = document.querySelector('.combo-condition-utility-menu');
+        if (oldMenu != null) {
+          oldMenu.parentNode.removeChild(oldMenu);
+          return;
+        }
+
+        const iconRect = utilityIcon.getBoundingClientRect();
+
+        const menuNode = document.createElement('div');
+        menuNode.classList.add('combo-condition-utility-menu');
+        menuNode.style.left = `${window.pageXOffset + iconRect.left + iconRect.width / 2}px`;
+        menuNode.style.top = `calc(${window.pageYOffset + iconRect.bottom}px - 0.35rem)`;
+
+        makeMenuItems().forEach(
+            itemSettings => {
+              const menuItemNode = document.createElement('a');
+              menuItemNode.classList.add('item');
+              menuItemNode.textContent = itemSettings.label;
+              menuNode.appendChild(menuItemNode);
+
+              menuItemNode.addEventListener(
+                  'click',
+                  () =>
+                      comboNode.querySelectorAll('.combo-out dd input[type="text"][name*="Condition"]').forEach(
+                          (node, index) => node.value = itemSettings.conditionTexts[index] ?? ''
+                      )
+              );
+            }
+        );
+
+        const body = document.querySelector('body');
+
+        const menuRemover = event => {
+          if (event != null) {
+            if (event.path.some(node => node === utilityIcon)) {
+              return;
+            }
+          }
+
+          if (menuNode.parentNode != null) {
+            menuNode.parentNode.removeChild(menuNode);
+          }
+
+          body.removeEventListener('click', menuRemover);
+        };
+
+        body.addEventListener('click', menuRemover);
+        body.appendChild(menuNode);
+      }
+  );
+}
+document.querySelectorAll('#combo .combo-table').forEach(node => makeComboConditionUtility(node));
 
 // 武器欄 ----------------------------------------
 // 追加
