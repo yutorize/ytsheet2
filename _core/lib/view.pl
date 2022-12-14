@@ -165,8 +165,8 @@ sub noiseTextTag {
 sub sheetMenuCreate {
   my @menu = @_;
   foreach my $line (@menu){
-    if   (length($line->{TEXT}) >= 4 && $line->{SIZE} eq 'small'){ $line->{TEXT} = "<span>$line->{TEXT}</span>" }
-    elsif(length($line->{TEXT}) >= 5                            ){ $line->{TEXT} = "<span>$line->{TEXT}</span>" }
+    if   (length($line->{TEXT}) >= 4){ $line->{TEXT} = "<span>$line->{TEXT}</span>" }
+    elsif(length($line->{TEXT}) >= 5){ $line->{TEXT} = "<span>$line->{TEXT}</span>" }
   }
   return \@menu;
 }

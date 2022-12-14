@@ -558,16 +558,13 @@ aside.information.log p {
 ---------------------------------------------------------------------------------------------------- */
 header nav ul li  {
   margin: 0.6rem 1.2rem 0;
-  width: 4.2rem;
-  height: 4.2rem;
-  font-size: 1.2rem;
-  line-height: calc(4.2rem + 1rem + 1.2rem);
-}
-header nav ul li.small  {
   width: 3rem;
   height: 3rem;
-  margin-left: 3rem;
-  line-height: calc(3rem + 1rem + 1rem);
+  font-size: 1.1rem;
+}
+header nav ul li.large  {
+  width: 4.2rem;
+  height: 4.2rem;
 }
 
 header nav ul li:nth-last-child(even)  {
@@ -577,20 +574,14 @@ header nav ul li:nth-last-child(odd)  {
   top: 0rem;
 }
 header nav ul li + li {
-  margin-left: 0.5rem;
-}
-header nav ul li + li.small {
-  margin-left: 0.3rem;
-}
-header nav ul li.small + li.small {
   margin-left: 0rem;
+}
+header nav ul li a {
 }
 header nav ul li a span {
   display: inline-block;
-  white-space: nowrap;
-  margin: 0 -15%;
-  transform: scaleX(0.8);
-  font-size: 90%;
+  transform: scale(0.75, 0.9);
+  transform-origin: bottom;
 }
 @media screen and (max-width:735px){
   header nav {
