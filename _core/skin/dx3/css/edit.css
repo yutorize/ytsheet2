@@ -395,7 +395,7 @@
   width: calc((100vw - 940px) / 2 );
 }
 .trash-box::before {
-  content: "\f2ed";
+  content: "\e872";
   display: block;
   position: absolute;
   top: 30vh;
@@ -404,7 +404,7 @@
   bottom: auto;
   margin:auto;
   text-align: center;
-  font-family: "Font Awesome 5 Free";
+  font-family: "Material Symbols Outlined";
   font-size: calc((100vw - 940px) / 2 * 0.5 );
   opacity: 0.1;
   pointer-events: none;

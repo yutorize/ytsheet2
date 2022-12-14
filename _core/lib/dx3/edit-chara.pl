@@ -150,7 +150,6 @@ Content-type: text/html\n
   <script src="${main::core_dir}/skin/_common/js/lib/compressor.min.js"></script>
   <script src="${main::core_dir}/lib/edit.js?${main::ver}" defer></script>
   <script src="${main::core_dir}/lib/dx3/edit-chara.js?${main::ver}" defer></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/\@fortawesome/fontawesome-free\@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
   <style>
     #image,
     .image-custom-view {
@@ -678,9 +677,9 @@ print <<"HTML";
         </div>
       </details>
       <div class="box trash-box" id="effect-trash">
-        <h2><i class="fas fa-trash-alt"></i><span class="shorten">削除エフェクト</span></h2>
+        <h2><span class="material-symbols-outlined">delete</span><span class="shorten">削除エフェクト</span></h2>
         <table class="edit-table line-tbody" id="effect-trash-table"></table>
-        <i class="fas fa-times close-button" onclick="document.getElementById('effect-trash').style.display = 'none';"></i>
+        <i class="material-symbols-outlined close-button" onclick="document.getElementById('effect-trash').style.display = 'none';">close</i>
       </div>
 
       <details class="box cc-only" id="magic" $open{'magic'}>
@@ -712,9 +711,9 @@ print <<"HTML";
         <div class="add-del-button"><a onclick="addMagic()">▼</a><a onclick="delMagic()">▲</a></div>
       </details>
       <div class="box trash-box" id="magic-trash">
-        <h2><i class="fas fa-trash-alt"></i><span class="shorten">削除術式</span></h2>
+        <h2><span class="material-symbols-outlined">delete</span><span class="shorten">削除術式</span></h2>
         <table class="edit-table line-tbody" id="magic-trash-table"></table>
-        <i class="fas fa-times close-button" onclick="document.getElementById('magic-trash').style.display = 'none';"></i>
+        <i class="material-symbols-outlined close-button" onclick="document.getElementById('magic-trash').style.display = 'none';">close</i>
       </div>
       
       <details class="box" id="combo" $open{'combo'} style="position:relative">

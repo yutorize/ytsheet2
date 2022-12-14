@@ -523,23 +523,26 @@ dl#level dd {
 }
 #items i.weight {
   display: inline-block;
+  position: relative;
   min-width: calc(2.6em/0.9);
   margin: 0 calc(.2em/0.9);
-  padding: 0 .1em;
+  padding: .3em .2em .3em 1.2em;
   border-radius: .3em;
   background-color: hsla(var(--box-head-bg-color-h,230),100%,50%,0.2);
   font-style: normal;
   font-size: 90%;
+  line-height: 1;
   text-align: center;
   white-space: nowrap;
 }
 #items i.weight::before {
-  content: "\f5cd";
-  margin-right: .2em;
-  font-family: "Font Awesome 5 Free";
-  font-weight: bold;
-  font-size: 90%;
-  
+  content: "\e13d";
+  display: inline-block;
+  position: absolute;
+  left: .3em;
+  font-family: "Material Symbols Outlined";
+  font-variation-settings: 'FILL' 1;
+  transform: scale(1.2) translateX(-.1em);
 }
 
 #relations {
@@ -1128,20 +1131,24 @@ dl#level dd {
   padding: 0;
 }
 #levelup tbody td.checked::before {
-  content: "\f00c";
+  content: "\e5ca";
+  font-family: "Material Symbols Outlined";
+  font-variation-settings: 'wght' 300, 'FILL' 1;
   display: grid;
   align-items: center;
-  width: 1.6em;
-  height: 1.6em;
+  width: 1em;
+  height: 1em;
   margin: auto;
   background-color: hsla(
     var(--box-head-bg-color-h, 0),
-    calc( var(--box-head-bg-color-s,   0%) * 0.6 ), 50%, 0.5
+    calc( var(--box-head-bg-color-s,   0%) * 0.6 ), 50%, 0.7
   );
   border-radius: 5px;
-  color: white;
-  font-family: "Font Awesome 5 Free";
+  font-size: 1.4em;
   font-weight: bold;
+  line-height: 1;
+  color: white;
+  text-shadow: 0 0 0 white;
 }
 #levelup tbody td.skill {
   font-size: 92%;

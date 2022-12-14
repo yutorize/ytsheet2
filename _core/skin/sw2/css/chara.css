@@ -981,15 +981,20 @@ div#area-items-R {
   text-align: center;
 }
 #material-cards table tbody tr th:first-child::before {
-  font-family: "Font Awesome 5 Free";
+  font-family: "Material Symbols Outlined";
+  font-variation-settings: 'FILL' 1;
   margin-right: .3rem;
+  line-height: 1;
   font-weight: bold;
+  display: inline-block;
+  transform: scale(1.15);
+  transform-origin: top;
 }
-#material-cards table tbody tr.cards-red { background-color: rgba(255,  0,  0,0.15); } #material-cards > h2 + table tr.cards-red th::before { content:'\f1b0'; color: #a00; }
-#material-cards table tbody tr.cards-gre { background-color: rgba( 50,255,220,0.15); } #material-cards > h2 + table tr.cards-gre th::before { content:'\f06c'; color: #0c3; }
-#material-cards table tbody tr.cards-bla { background-color: rgba(125,125,125,0.2); } #material-cards > h2 + table tr.cards-bla th::before { content:'\f013'; color: #777; }
-#material-cards table tbody tr.cards-whi { background-color: rgba(255,255,255,0.2); } #material-cards > h2 + table tr.cards-whi th::before { content:'\f02d'; color: #bbb; }
-#material-cards table tbody tr.cards-gol { background-color: rgba(255,210, 50,0.15); } #material-cards > h2 + table tr.cards-gol th::before { content:'\f666'; color: #f90; }
+#material-cards table tbody tr.cards-red { background-color: rgba(255,  0,  0,0.15); } #material-cards > h2 + table tr.cards-red th::before { content:'\e91d'; color: #a00; }
+#material-cards table tbody tr.cards-gre { background-color: rgba( 50,255,220,0.15); } #material-cards > h2 + table tr.cards-gre th::before { content:'\e123'; color: #0c3; }
+#material-cards table tbody tr.cards-bla { background-color: rgba(125,125,125,0.2); } #material-cards > h2 + table tr.cards-bla th::before { content:'\ead5'; color: #777; }
+#material-cards table tbody tr.cards-whi { background-color: rgba(255,255,255,0.2); } #material-cards > h2 + table tr.cards-whi th::before { content:'\e87d'; color: #bbb; }
+#material-cards table tbody tr.cards-gol { background-color: rgba(255,210, 50,0.15); } #material-cards > h2 + table tr.cards-gol th::before { content:'\e3e4'; color: #f90; }
 #material-cards table tbody tr td {
   background-color: transparent;
 }

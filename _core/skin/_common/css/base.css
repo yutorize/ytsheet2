@@ -8,6 +8,7 @@
 @import url('https://fonts.googleapis.com/css?family=Raleway:500,700&text=ABCČĆDĐEFGHIJKLMNOPQRSŠTUVWXYZŽabcčćdđefghijklmnopqrsštuvwxyzž%26%20');
 @import url('https://fonts.googleapis.com/css?family=Kosugi&text=%E2%80%9C%E2%80%9D');
 @import url('https://fonts.googleapis.com/css?family=Noto+Serif+JP:400,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,300..700,0..1,-25');
 @font-face { font-family: "Arial"; src: local("Arial"); unicode-range: U+0020-0039,U+003F-007F; }
 
 :root {
@@ -36,6 +37,48 @@ input, select {
 textarea,tt {
   font-family: var(--base-font-family-mono);
   font-size: inherit;
+}
+
+.left   { text-align: left !important; }
+.center { text-align: center !important; }
+.right  { text-align: right !important; }
+ruby {
+}
+ruby rt {
+  font-family: Arial,var(--base-font-family-jp);
+  transform: translateY(0.2em);
+}
+.bold {
+  font-weight: bold;
+}
+.oblique {
+  font-style: oblique;
+}
+.strike {
+  text-decoration: line-through;
+}
+.underline {
+  background: linear-gradient(to top, transparent 10%, rgba(255,100,0,0.5) 10%, rgba(255,100,0,0.5) 25%, transparent 25%);
+}
+.text-em {
+  -webkit-text-emphasis: dot filled;
+  text-emphasis: dot filled;
+}
+.d-dash {
+  display: inline-block;
+  font-family: "Meiryo","小塚明朝 Pro","Kozuka Mincho Pro","Kozuka Mincho Std",sans-serif;
+  transform: scaleX(0.90);
+}
+.d-dash > span {
+  display: inline-block;
+  transform: scaleX(1.2);
+}
+.small {
+  font-size: 85%;
+}
+.material-symbols-outlined {
+  font-size: 1.2em;
+  vertical-align: text-bottom;
 }
 
 /* // Base
@@ -416,12 +459,13 @@ header nav .nightmode-icon::before {
   line-height: 3;
 }
 .nightmode-icon::before {
-  content: "\f699";
-  font-family: "Font Awesome 5 Free";
-  font-weight: bold;
+  content: "\e3a9";
+  font-family: "Material Symbols Outlined";
+  font-variation-settings: 'FILL' 1;
+  font-weight: 100;
 }
 .night .nightmode-icon::before {
-  content: "\f185";
+  content: "\e3ac";
 }
 
 /* // Main-Nav

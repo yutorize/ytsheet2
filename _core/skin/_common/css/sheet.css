@@ -295,11 +295,11 @@ dl.box > dt,
 
 .box a[target="_blank"]::after,
 .image a[target="_blank"]::after {
-  content: '\f35d';
+  content: '\e89e';
   display: inline-block;
   margin-left: .25em;
   margin-top: .1em;
-  font-family: "Font Awesome 5 Free";
+  font-family: "Material Symbols Outlined";
   font-weight: bold;
   font-size: 85%;
   vertical-align: top;
@@ -345,6 +345,7 @@ dl.box > dt,
   border-width: 0 0 0 .1rem;
   border-style: solid;
   text-align: center;
+  cursor: pointer;
 }
 .box.chat-palette .chat-palette-menu > a::before {
   content: "";
@@ -356,13 +357,13 @@ dl.box > dt,
   border: .1rem solid rgba(127,127,127,0.6);
   border-radius: .2em;
   background:  rgba(127,127,127,0.1);
-  font-family: "Font Awesome 5 Free";
+  font-family: "Material Symbols Outlined";
   font-weight: bold;
   font-style: normal;
   text-align: center;
 }
 .box.chat-palette .chat-palette-menu > a.check::before {
-  content: '\f00c';
+  content: '\e876';
 }
 .box.chat-palette textarea {
   width: calc(100% - 2em);
@@ -383,43 +384,6 @@ dl.box > dt,
 }
 
 /* テキスト処理 */
-.left   { text-align: left !important; }
-.center { text-align: center !important; }
-.right  { text-align: right !important; }
-ruby {
-}
-ruby rt {
-  font-family: Arial,var(--base-font-family-jp);
-  transform: translateY(0.2em);
-}
-.bold {
-  font-weight: bold;
-}
-.oblique {
-  font-style: oblique;
-}
-.strike {
-  text-decoration: line-through;
-}
-.underline {
-  background: linear-gradient(to top, transparent 10%, rgba(255,100,0,0.5) 10%, rgba(255,100,0,0.5) 25%, transparent 25%);
-}
-.text-em {
-  -webkit-text-emphasis: dot filled;
-  text-emphasis: dot filled;
-}
-.d-dash {
-  display: inline-block;
-  font-family: "Meiryo","小塚明朝 Pro","Kozuka Mincho Pro","Kozuka Mincho Std",sans-serif;
-  transform: scaleX(0.90);
-}
-.d-dash > span {
-  display: inline-block;
-  transform: scaleX(1.2);
-}
-.small {
-  font-size: 85%;
-}
 table.note-table,
 table.note-table th,
 table.note-table td {
@@ -470,64 +434,54 @@ dl.note-description dd {
   position: relative;
   width: 1em;
   height: 1em;
-  line-height: 1;
   color: transparent;
   text-align: center;
+  line-height: 1;
 }
 .s-icon::after,
 .s-icon::before {
   display: inline-grid;
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: -100%;
   justify-items: center;
   align-items: center;
-  font-family: "Font Awesome 5 Free";
+  font-family: "Material Symbols Outlined";
   font-style: normal;
-  font-size: 85%;
   color: var(--text-color);
+  pointer-events: none;
 }
 .s-icon.passive::before {
-  content: "\f111";
-  font-weight: normal;
+  content: "\ef4a";
 }
 .s-icon.setup::before {
-  content: "△";
-  font-family: inherit;
-  text-shadow: 0 0 0 var(--text-color);
+  content: "\e86b";
 }
 .s-icon.major::before {
-  content: "\f04b";
-  font-weight: bold;
+  content: "\e037";
+  font-variation-settings: 'FILL' 1;
+  transform: scale(1.2) translateX(-.1em);
 }
 .s-icon.minor::before {
-  content:"\f04e";
-  font-weight: bold;
-}
-.s-icon.active::after {
-  content: "\f00c";
-  font-weight: bold;
-  transform: scale(0.6,0.6);
+  content:"\e01f";
+  font-variation-settings: 'FILL' 1;
+  transform: scaleY(1.4);
 }
 .s-icon.active::before {
-  content: "\f075";
-  font-weight: normal;
-  transform: scale(-1, 1);
+  content: "\f054";
+  transform: scale(-1, 1) translateX(.05em);
 }
 .s-icon.uplift::before {
-  content: "\f3e5";
-  font-weight: bold;
-  transform: rotate(90deg) scaleY(1.2);
+  content: "\eba6";
+  transform: rotate(90deg) scaleX(1.2);
+  text-shadow: 0 0 0 var(--text-color), 0 0 0 var(--text-color);
 }
 .s-icon.calm::before {
-  content: "\f064";
-  font-weight: bold;
-  transform: rotate(90deg) scaleY(1.2);
+  content: "\ebab";
+  transform: rotate(90deg) scaleX(1.2);
+  text-shadow: 0 0 0 var(--text-color), 0 0 0 var(--text-color);
 }
 .s-icon.heart::before {
-  content: "\f004";
+  content: "\e87d";
 }
 
 .s-icon.major0::before {
@@ -535,12 +489,10 @@ dl.note-description dd {
   font-family: inherit;
 }
 .s-icon.minor0::before {
-  content: "\f005";
-  font-weight: normal;
+  content: "\e838";
 }
 .s-icon.active0::before {
-  content: "\f14a";
-  font-weight: normal;
+  content: "\e834";
 }
 .s-icon.condition::before {
   content: "▽";

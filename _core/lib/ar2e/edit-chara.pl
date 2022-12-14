@@ -165,7 +165,6 @@ Content-type: text/html\n
   <link href="https://cdn.jsdelivr.net/npm/\@yaireo/tagify/dist/tagify.css" rel="stylesheet" type="text/css">
   <script src="${main::core_dir}/lib/edit.js?${main::ver}" defer></script>
   <script src="${main::core_dir}/lib/ar2e/edit-chara.js?${main::ver}" defer></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/\@fortawesome/fontawesome-free\@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
   <style>
     #image,
     .image-custom-view {
@@ -747,13 +746,13 @@ print <<"HTML";
         <div class="add-del-button"><a onclick="addSkill()">▼</a><a onclick="delSkill()">▲</a></div>
         <div class="annotate">
         ※コスト欄は1以上でなければ自動的に「―」になります。<br>
-        ※<i class="fas fa-calculator" style="color:#7ad;"></i>マークがついているスキルは、ステータス類への修正が自動計算されています。
+        ※<span class="material-symbols-outlined" style="color:#5ad;font-variation-settings:'FILL' 1;vertical-align:text-bottom;font-size:1.5em;">calculate</span>マークがついているスキルは、ステータス類への修正が自動計算されています。
         </div>
       </details>
       <div class="box trash-box" id="skills-trash">
-        <h2><i class="fas fa-trash-alt"></i><span class="shorten">削除スキル</span></h2>
+        <h2><span class="material-symbols-outlined">delete</span><span class="shorten">削除スキル</span></h2>
         <table class="edit-table line-tbody" id="skills-trash-table"></table>
-        <i class="fas fa-times close-button" onclick="document.getElementById('skills-trash').style.display = 'none';"></i>
+        <i class="material-symbols-outlined close-button" onclick="document.getElementById('skills-trash').style.display = 'none';">close</i>
       </div>
 
       <div class="box-union" id="battle">

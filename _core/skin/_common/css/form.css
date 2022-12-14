@@ -8,6 +8,9 @@ section.form {
   border-style: solid;
   border-radius: 10px;
 }
+.night :is(section, aside).form {
+  background-color: #fff1;
+}
 section.form h2 {
   font-size: 2rem;
 }
@@ -44,9 +47,6 @@ form p > input[type="submit"] {
 #convertform section.form {
   margin: 5% 10%;
 }
-#convertform aside.form {
-  padding: .5em;
-}
 #convertform .form section+section {
   margin-top: 1em;
   border-top-width: 1px;
@@ -55,11 +55,17 @@ form p > input[type="submit"] {
 #convertform .form h4 {
   font-size: 110%;
 }
+#convertform .form h4::before {
+  content: "●";
+}
 #convertform .form p {
-  margin: .5em 0 1em;
+  margin: .5em .5em 1em;
 }
 #convertform .form section:last-child p:last-child {
   margin-bottom: .5em;
+}
+#convertform .form dl {
+  margin-left: .5em;
 }
 #convertform .form dl + dl {
   margin-top: .8em;

@@ -363,13 +363,18 @@ dd.area-tags {
   position: relative;
 }
 #skills td.calc::after {
-  content: "\f1ec";
+  content: "\ea5f";
+  display: inline-grid;
+  place-items: center;
   position: absolute;
-  left: 4px;
-  bottom: 2px;
-  font-family: "Font Awesome 5 Free";
-  font-weight: bold;
-  color: #7ad;
+  left: 0px;
+  top: 4px;
+  bottom: 0px;
+  font-family: "Material Symbols Outlined";
+  font-variation-settings: 'FILL' 1;
+  font-size: 150%;
+  line-height: 1;
+  color: #5ad;
 }
 #skills td.calc input {
   padding-left: calc(1.1em + 4px);
@@ -424,7 +429,7 @@ dd.area-tags {
   width: calc((100vw - 940px) / 2 );
 }
 .trash-box::before {
-  content: "\f2ed";
+  content: "\e872";
   display: block;
   position: absolute;
   top: 30vh;
@@ -433,7 +438,7 @@ dd.area-tags {
   bottom: auto;
   margin:auto;
   text-align: center;
-  font-family: "Font Awesome 5 Free";
+  font-family: "Material Symbols Outlined";
   font-size: calc((100vw - 940px) / 2 * 0.5 );
   opacity: 0.1;
   pointer-events: none;

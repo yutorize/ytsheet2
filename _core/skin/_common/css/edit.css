@@ -129,57 +129,37 @@ span.mark {
   border-style: solid;
 }
 
-label.radio-button,
-label.check-button {
-  margin: 0 1px;
-}
-label.radio-button input,
-label.check-button input {
-  display: none;
-}
-label.radio-button span,
-label.check-button span {
+label:is(.radio-button, .check-button) {
   display: inline-block;
-  padding: 3px 4px;
+  margin: 0 1px;
+  padding: 3px 4px 1px 2px;
   border-width: 1px;
   border-style: solid;
   border-radius: 5px;
   line-height: 1;
   font-size: 88%;
-  opacity: 0.6;
   cursor: pointer;
   user-select: none;
 }
-label.radio-button span:hover,
-label.check-button span:hover {
+label:is(.radio-button, .check-button) input {
+  cursor: pointer;
+  margin: 0 .1em 0 0 !important;
+  transform: none !important;
+  vertical-align: text-top;
+}
+label:is(.radio-button, .check-button) span {
+  opacity: 0.6;
+}
+label:is(.radio-button, .check-button):hover span {
   opacity: 1;
 }
-label.radio-button input:checked + span,
-label.check-button input:checked + span {
+label:is(.radio-button, .check-button) input:checked + span {
   opacity: 1;
 }
-label.radio-button span::before,
-label.check-button span::before {
+label:is(.radio-button, .check-button) span::before {
   display: inline-block;
-  font-family: "Font Awesome 5 Free";
   margin-right: .2em;
   transform: scale(1.3) translateY(1px);
-}
-label.radio-button span::before {
-  content: "\f111";
-  font-weight: thin;
-}
-label.radio-button input:checked + span::before {
-  content: "\f192";
-  font-weight: normal;
-}
-label.check-button span::before {
-  content: "\f0c8";
-  font-weight: thin;
-}
-label.check-button input:checked + span::before {
-  content: "\f14a";
-  font-weight: bold;
 }
 
 .select-input.free {
@@ -446,17 +426,19 @@ section > h2 {
 #header-menu ul li[class$=icon] {
   width: 3em;
 }
+#header-menu ul li:is(.help-icon, .color-icon, .view-icon, .nightmode-icon)::before {
+  font-family: "Material Symbols Outlined";
+  font-variation-settings: 'FILL' 1;
+  transform: scale(1.3);
+}
 .help-icon::before {
-  font-family: "Font Awesome 5 Free";
-  content: '\f059';
+  content: '\e887';
 }
 .color-icon::before {
-  font-family: "Font Awesome 5 Free";
-  content: '\f576';
+  content: '\e23a';
 }
 .view-icon::before {
-  font-family: "Font Awesome 5 Free";
-  content: '\f06e';
+  content: '\e8f4';
 }
 #header-menu ul li .view-icon {
   position: relative;
@@ -690,11 +672,6 @@ input[type="submit"]:hover {
   grid-gap: 1em;
   margin: 1rem 0;
   position: relative;
-}
-.night #name-form {
-  background-color: #222;
-}
-#name-form > div:first-child {
 }
 #name-form input {
   width: calc(100% - 4px);
@@ -1102,42 +1079,6 @@ input[type="submit"]:hover {
 .box.color-custom + .box.color-custom {
   border-top-width: 1px;
 }
-span.box.color-custom,
-label.box.color-custom {
-  display: inline-block;
-  cursor: pointer;
-  padding: .1em;
-  padding-left: 1.4em;
-  position: relative;
-}
-label.box.color-custom input {
-  display: none;
-}
-label.box.color-custom input+i,
-.color-custom.night-switch i {
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  margin: auto .3rem;
-  display: inline-block;
-  width: 1.3em;
-  height: 1.3em;
-  border-radius: .4rem;
-  font-size: 80%;
-  font-family: "Font Awesome 5 Free";
-  font-weight: bold;
-  font-style: normal;
-  text-align: center;
-  background: #fff;
-  box-shadow: #777 inset 0 0 .2rem;
-  color: #000;
-  overflow: hidden;
-}
-label.box.color-custom input:checked+i::before,
-.night .color-custom.night-switch i::before {
-  content: '\f00c';
-}
 .box.color-custom table {
   margin-left: 1em;
 }
@@ -1298,14 +1239,20 @@ label.box.color-custom input:checked+i::before,
 }
 .sticky-footer h2 {
   margin: 0;
-  padding: 0 .2em;
+  padding: .2em;
   border-width: 0 0 1px;
   border-style: dotted;
   font-size: 1.2em;
+  line-height: 1;
 }
 .sticky-footer h2::before {
-  font-family: "Font Awesome 5 Free";
-  content: '\f059';
+  display: inline-block;
+  font-family: "Material Symbols Outlined";
+  font-variation-settings: 'FILL' 1;
+  content: '\e887';
+  font-size: 1.2em;
+  line-height: 1;
+  vertical-align: text-top;
 }
 .sticky-footer .close-button {
   position: absolute;
@@ -1313,8 +1260,8 @@ label.box.color-custom input:checked+i::before,
   right: 1px;
 }
 .sticky-footer .close-button::before {
-  font-family: "Font Awesome 5 Free";
-  content: '\f057';
+  font-family: "Material Symbols Outlined";
+  content: '\e5c9';
   font-weight: bold;
   font-style: normal;
   font-size: 1.8em;
