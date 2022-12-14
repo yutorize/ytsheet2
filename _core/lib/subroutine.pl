@@ -332,15 +332,19 @@ sub groupArrayToList {
 ### 性別記号変換 --------------------------------------------------
 sub genderConvert {
   my $gender = shift;
-  my $m_flag; my $f_flag;
+  my $m_flag; my $f_flag; my $n_flag;
   $gender =~ s/^(.+?)[\(（].*?[）\)]$/$1/;
-  if($gender =~ /男|♂|雄|オス|爺|漢|(?<!fe)male|(?<!wo)man/i) { $m_flag = 1 }
-  if($gender =~ /女|♀|雌|メス|婆|娘|female|woman/i)           { $f_flag = 1 }
-  if($m_flag && $f_flag){ $gender = '？' }
-  elsif($m_flag){ $gender = '♂' }
-  elsif($f_flag){ $gender = '♀' }
-  elsif($gender){ $gender = '？' }
-  else { $gender = '？' }
+  $gender =~ tr/Ａ-Ｚａ-ｚ/A-Za-z/;
+  if($gender =~ /男|おとこ|オトコ|♂|雄|オス|爺|漢|(?<!fe)male|(?<!wo)man/i) { $m_flag = 1 }
+  if($gender =~ /女|おんな|オンナ|♀|雌|メス|婆|娘|female|woman/i)           { $f_flag = 1 }
+  if($gender =~ /無|なし|^[\-ー‐‑–—―−ｰ]$|non/i)               { $n_flag = 1 }
+  if($gender =~ /両|半|トランス|ノンバ|non|Ft[MX]|Mt[FX]|^[XA]/i) { $m_flag = 1; $f_flag = 1 }
+
+  if   ($n_flag){ $gender = '<span data-gender="none">―</span>' }
+  elsif($m_flag && $f_flag){ $gender = '<span data-gender="cross">⚧</span>' }
+  elsif($m_flag){ $gender = '<span data-gender="male">♂</span>' }
+  elsif($f_flag){ $gender = '<span data-gender="female">♀</span>' }
+  else { $gender = '<span data-gender="unknown">？</span>' }
 
   return $gender;
 }

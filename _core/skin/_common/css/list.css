@@ -248,6 +248,35 @@ form#form-search p input[type="submit"] {
 .list table td.player {
   word-break: break-all;
 }
+.list table td span[data-gender] {
+  display: inline-block;
+  position: relative;
+  width: calc(1em + 6px);
+  padding: 3px;
+  border-radius: 3px;
+  font-size: 90%;
+  line-height: 1;
+  color: transparent;
+}
+.list table td span[data-gender=male]   { background-color: #07f3; }
+.list table td span[data-gender=female] { background-color: #f003; }
+.list table td span[data-gender=cross]  { background-color: #70f3; }
+.list table td span[data-gender=none]   { background-color: #7773; }
+.list table td span[data-gender=unknown]{ background-color: #7773; }
+.list table td span[data-gender]::before {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-family: "Material Symbols Outlined";
+  color: var(--text-color);
+  font-size: 1.2em;
+}
+.list table td span[data-gender=male]::before   { content:"\e58e"; }
+.list table td span[data-gender=female]::before { content:"\e590"; }
+.list table td span[data-gender=cross]::before  { content:"\e58d"; }
+.list table td span[data-gender=none]::before   { content:"\f108"; }
+.list table td span[data-gender=unknown]::before{ content:"\eb8b"; }
 .list table td.date {
   font-family: Arial;
   font-size: 85%;
