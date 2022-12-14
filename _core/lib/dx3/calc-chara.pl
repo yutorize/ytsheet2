@@ -216,6 +216,11 @@ sub data_calc {
   $pc{$_} = pcEscape($pc{$_}) foreach (keys %pc);
   $pc{'tags'} = pcTagsEscape($pc{'tags'});
   $_ = pcEscape($_) foreach (@dloises);
+  
+  ### 最終参加卓 --------------------------------------------------
+  foreach my $i (reverse 1 .. $pc{'historyNum'}){
+    if($pc{"history${i}Gm"} && $pc{"history${i}Title"}){ $pc{"lastSession"} = tag_delete tag_unescape $pc{"history${i}Title"}; last; }
+  }
 
   ### newline --------------------------------------------------
   my $charactername = ($pc{'aka'} ? "“$pc{'aka'}”" : "").$pc{'characterName'};
@@ -229,7 +234,7 @@ sub data_calc {
                "$pc{'syndrome1'}/$pc{'syndrome2'}/$pc{'syndrome3'}<>".
                join('/',@dloises).'<>'.
                
-               "$pc{'sessionTotal'}<>$pc{'image'}<> $pc{'tags'} <>$pc{'hide'}<>$pc{'stage'}<>";
+               "$pc{'lastSession'}<>$pc{'image'}<> $pc{'tags'} <>$pc{'hide'}<>$pc{'stage'}<>";
 
   return %pc;
 }

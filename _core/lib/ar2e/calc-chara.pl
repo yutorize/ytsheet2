@@ -287,11 +287,17 @@ sub data_calc {
   #### エスケープ --------------------------------------------------
   $pc{$_} = pcEscape($pc{$_}) foreach (keys %pc);
   $pc{'tags'} = pcTagsEscape($pc{'tags'});
+  
+  ### 最終参加卓 --------------------------------------------------
+  foreach my $i (reverse 1 .. $pc{'historyNum'}){
+    if($pc{"history${i}Gm"} && $pc{"history${i}Title"}){ $pc{"lastSession"} = tag_delete tag_unescape $pc{"history${i}Title"}; last; }
+  }
 
   ### newline --------------------------------------------------
   my $charactername = ($pc{'aka'} ? "“$pc{'aka'}”" : "").$pc{'characterName'};
   $charactername =~ s/[|｜]([^|｜]+?)《.+?》/$1/g;
   my $race = $pc{'race'} eq 'free' ? $pc{'raceFree'} : $pc{'race'};
+  $pc{'lastSession'} = tag_delete tag_unescape $pc{'lastSession'};
   $::newline = "$pc{'id'}<>$::file<>".
                "$pc{'birthTime'}<>$::now<>$charactername<>$pc{'playerName'}<>$pc{'group'}<>".
                "$pc{'image'}<> $pc{'tags'} <>$pc{'hide'}<>".
@@ -299,7 +305,8 @@ sub data_calc {
                "$race<>$pc{'gender'}<>$pc{'age'}<>".
                "$pc{'expTotal'}<>$pc{'level'}<>".
                "$pc{'classMain'}/$pc{'classSupport'}/$pc{'classTitle'}<>".
-               "$pc{'homeArea'}<> $pc{'areaTags'} <>$pc{'guildName'}<>$pc{'payment'}<>";
+               "$pc{'homeArea'}<> $pc{'areaTags'} <>$pc{'guildName'}<>$pc{'payment'}<>".
+               "$pc{'lastSession'}<>";
 
   return %pc;
 }

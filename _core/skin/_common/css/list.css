@@ -168,8 +168,8 @@ form#form-search p input[type="submit"] {
   display: block;
 }
 .list table tr {
-    display: grid;
-    grid-template-rows: auto;
+  display: grid;
+  grid-template-rows: auto;
 }
 .list table tr > th {
   display: grid;
@@ -178,6 +178,9 @@ form#form-search p input[type="submit"] {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+.list table tr td:not(.name) {
+  flex-wrap: wrap;
 }
 .list table th > a,
 .list table th > span {
@@ -196,7 +199,6 @@ form#form-search p input[type="submit"] {
 .list table tbody tr {
   border-bottom-width: 1px;
   border-bottom-style: solid;
-  padding-top: 5px;
   position: relative;
 }
 .list table tbody tr:nth-child(even) {
@@ -220,7 +222,7 @@ form#form-search p input[type="submit"] {
   background-position: top left;
 }
 .list table td {
-  padding: 0 5px 5px;
+  padding: 2.5px 5px 2.5px;
   text-align: center;
 }
 .list table td.name {
@@ -236,10 +238,8 @@ form#form-search p input[type="submit"] {
   justify-content: center;
   flex-direction: column;
   height: calc(100% + 5px);
-  margin-top: -5px;
-  padding: 5px;
   
-  font-size: 1.6rem;
+  font-size: 1.1em;
   font-weight: bold;
 }
 .list table td.name a:hover {
@@ -254,6 +254,50 @@ form#form-search p input[type="submit"] {
 }
 .list table td.date > div > span {
   display: inline-block;
+}
+.list table td.date {
+  font-family: Arial;
+  font-size: 85%;
+}
+.list table td.tags {
+  padding: 0 .2em 0;
+  flex-wrap: wrap;
+  justify-content: start;
+  border-top: 1px solid #7775;
+}
+.list table td.tags:empty {
+  display: none;
+}
+.list table td.tags a {
+  margin: .2em 1em .2em 0;
+  padding: .3rem .5rem;
+  border-radius: 12px 5px 5px 12px;
+  background-color: rgba(140,170,200,0.2);
+  color: inherit;
+  font-size: 80%;
+  line-height: 1;
+}
+.list table td.tags a:first-child {
+  margin-left: 0;
+}
+.list table td.tags a::before {
+  content:"●";
+  display: inline-block;
+  margin-left: -.3rem;
+  color: var(--bg-color);
+  font-size: 80%;
+  transform: scale(0.8);
+}
+.list table td.tags a:hover {
+  background-color: rgba(120,220,220,0.4) !important;
+}
+.list table td.tags span.session {
+  margin-left: auto;
+  font-size: 80%;
+}
+.list table td.tags span.session::before {
+  content: "";
+  font-size: 90%;
 }
 .list .more {
   padding: .5rem;

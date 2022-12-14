@@ -60,6 +60,11 @@ sub data_calc {
   #### エスケープ --------------------------------------------------
   $pc{$_} = pcEscape($pc{$_}) foreach (keys %pc);
   $pc{'tags'} = pcTagsEscape($pc{'tags'});
+  
+  ### 最終参加卓 --------------------------------------------------
+  foreach my $i (reverse 1 .. $pc{'historyNum'}){
+    if($pc{"history${i}Gm"} && $pc{"history${i}Title"}){ $pc{"lastSession"} = tag_delete tag_unescape $pc{"history${i}Title"}; last; }
+  }
 
   ### newline --------------------------------------------------
   my $charactername = ($pc{'aka'} ? "“$pc{'aka'}”" : "").$pc{'characterName'};
@@ -71,7 +76,7 @@ sub data_calc {
                "$pc{'class'}<>$pc{'negaiOutside'}<>$pc{'negaiInside'}<>".
                "$pc{'gender'}<>$pc{'age'}<>".
                "$pc{'belong'}<>$pc{'partner2On'}<>".
-               "$kizuna_count<>$hibiware_count<>";
+               "$kizuna_count<>$hibiware_count<>$pc{'lastSession'}<>";
 
   return %pc;
 }

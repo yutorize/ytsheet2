@@ -22,10 +22,11 @@ body {
 /* // List
 ---------------------------------------------------------------------------------------------------- */
 .list table tr {
-    grid-template-columns: 28rem 0.7fr 1fr 4em 1.8fr 0.7fr;
+    grid-template-columns: 26rem 0.7fr 1fr 4em 1.9fr 0.7fr;
     grid-template-areas:
-      "NAME PL RACE RACE STYL DATE"
-      "NAME PL  CLS  LVL  PRF DATE"
+      "NAME   PL RACE RACE STYL DATE"
+      "NAME   PL  CLS  LVL  PRF DATE"
+      "NAME TAGS TAGS TAGS TAGS DATE"
     ;
 }
 .list table .name   { grid-area: NAME; }
@@ -35,6 +36,7 @@ body {
 .list table .styles { grid-area: STYL; }
 .list table .lv     { grid-area:  LVL; }
 .list table .profile{ grid-area:  PRF; }
+.list table .tags   { grid-area: TAGS; }
 .list table .date   { grid-area: DATE; }
 
 .list table .name {

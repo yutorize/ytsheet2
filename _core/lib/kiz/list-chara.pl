@@ -162,10 +162,11 @@ my $pageend   = $page * $set::pagemax - 1;
 foreach (@list) {
   my (
     $id, undef, undef, $updatetime, $name, $player, $group, #0-6
-    $image, $tag, $hide, #7-9
+    $image, $tags, $hide, #7-9
     $class, $outside, $inside, $gender, $age, #10-14
-    $belong, $bigamy, $kizuna, $hibiware #15-18
-  ) = (split /<>/, $_)[0..18];
+    $belong, $bigamy, $kizuna, $hibiware, #15-18
+    $session,
+  ) = (split /<>/, $_)[0..19];
   
   #グループ
   $group = $set::group_default if (!$group || !$groups{$group});
@@ -207,8 +208,14 @@ foreach (@list) {
     $gender = genderConvert($gender);
     
     #年齢
-    $age =~ s/^(.+?)[\(（].*?[）\)]$/$1/;
-    $age =~ tr/０-９/0-9/;
+    $age = ageConvert($age);
+
+    #タグ
+    my $tags_links;
+    foreach(grep $_, split(/ /, $tags)){ $tags_links .= '<a href="./?tag='.uri_escape_utf8($_).'">'.$_.'</a>'; }
+    
+    #最終参加セッション
+    if($session){ $tags_links .= '<span class="session">'.$session.'</span>' }
     
     #更新日時
     my ($min,$hour,$day,$mon,$year) = (localtime($updatetime))[1..5];
@@ -229,6 +236,7 @@ foreach (@list) {
       "BELONG" => $belong,
       "KIZUNA" => $kizuna,
       "HIBIWARE" => $hibiware,
+      "TAGS" => $tags_links,
       "DATE" => $updatetime,
       "HIDE" => $hide,
     });

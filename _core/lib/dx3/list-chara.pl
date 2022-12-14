@@ -205,7 +205,7 @@ foreach (@list) {
     $id, undef, undef, $updatetime, $name, $player, $group, #0-6
     $exp, $gender, $age, $sign, $blood, $works, #7-12
     $syndrome, $dlois, #13-14
-    $session, $image, $tag, $hide, $stage #15-19
+    $session, $image, $tags, $hide, $stage #15-19
   ) = (split /<>/, $_)[0..19];
   
   #グループ
@@ -247,14 +247,20 @@ foreach (@list) {
     $gender = genderConvert($gender);
     
     #年齢
-    $age =~ s/^(.+?)[\(（].*?[）\)]$/$1/;
-    $age =~ tr/０-９/0-9/;
+    $age = ageConvert($age);
     
     #シンドローム
     my @syndromes;
     push(@syndromes, "<span>$_</span>") foreach (split '/', $syndrome);
     my @dloises;
     push(@dloises, "<span>$_</span>") foreach (split '/', $dlois);
+
+    #タグ
+    my $tags_links;
+    foreach(grep $_, split(/ /, $tags)){ $tags_links .= '<a href="./?tag='.uri_escape_utf8($_).'">'.$_.'</a>'; }
+    
+    #最終参加セッション
+    if($session){ $tags_links .= '<span class="session">'.$session.'</span>' }
     
     #更新日時
     my ($min,$hour,$day,$mon,$year) = (localtime($updatetime))[1..5];
@@ -276,6 +282,7 @@ foreach (@list) {
       "WORKS" => $works,
       "SYNDROME" => join('',@syndromes),
       "DLOIS" => join(' ',@dloises),
+      "TAGS" => $tags_links,
       "DATE" => $updatetime,
       "HIDE" => $hide,
     });

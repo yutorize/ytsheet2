@@ -15,11 +15,12 @@ body {
 /* // List
 ---------------------------------------------------------------------------------------------------- */
 .list table tr {
-    grid-template-columns: 28rem 0.7fr 0.5fr 0.3fr 2em 0.7fr 1.2fr 0.7fr;
-    grid-template-areas:
-      "NAME PL RACE RACE RANK RANK CLS DATE"
-      "NAME PL  AGE  GEN  LVL  EXP CLS DATE"
-    ;
+  grid-template-columns: 26rem 0.7fr 2.5em 5.5em 2em 4.8em 1.7fr 0.6fr;
+  grid-template-areas:
+    "NAME   PL RACE RACE RANK RANK  CLS DATE"
+    "NAME   PL  GEN  AGE  LVL  EXP  CLS DATE"
+    "NAME TAGS TAGS TAGS TAGS TAGS TAGS DATE"
+  ;
 }
 .list table .name   { grid-area: NAME; }
 .list table .player { grid-area:   PL; }
@@ -30,6 +31,7 @@ body {
 .list table .lv     { grid-area:  LVL; }
 .list table .exp    { grid-area:  EXP; }
 .list table .class  { grid-area:  CLS; }
+.list table .tags   { grid-area: TAGS; }
 .list table .date   { grid-area: DATE; }
 
 .list table .name {
@@ -43,20 +45,23 @@ body {
   line-height: 1;
   font-weight: normal;
 }
+.list table th.gender span.small {
+  display: inline-block;
+  transform: scaleY(calc(1/0.8));
+  font-size: 0.8em;
+}
 .list table td.lv {
   font-size: 1.15em;
   line-height: 1;
 }
-.list table td.race {
+.list table td:is(.race, .rank) span.small {
+  display: inline-block;
+  transform: scaleY(calc(1/0.85));
 }
 .list table td.class {
   text-align: left;
   font-size: 80%;
-}
-.list table td.race > div {
-  flex-grow: 1;
-  margin: 0 -6%;
-  transform: scaleX(0.88);
+  line-height: 1;
 }
 .list table td.class > div {
   flex-grow: 1;
@@ -66,13 +71,15 @@ body {
 .list table td.class > div > span {
   display: inline-block;
   margin-right: 1em;
+  padding: .1em 0;
 }
 @media screen and (max-width:735px){
   .list table tr {
-    grid-template-columns: 18rem 6em 0.6fr 2.8em 0.8fr 8em 4em;
+    grid-template-columns: 18rem 6em 2em 1fr 5em 2fr 3.5em;
     grid-template-areas:
-      "NAME PL RACE RACE EXP CLS DATE"
-      "NAME PL  AGE  GEN EXP CLS DATE"
+      "NAME   PL RACE RACE  EXP  CLS DATE"
+      "NAME   PL  GEN  AGE  EXP  CLS DATE"
+      "NAME TAGS TAGS TAGS TAGS TAGS DATE"
     ;
   }
   .list table .rank,

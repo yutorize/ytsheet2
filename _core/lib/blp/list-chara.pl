@@ -164,8 +164,8 @@ foreach (@list) {
     $id, undef, undef, $updatetime, $name, $player, $group, #0-6
     $factor, $core, $style, $gender, $age, $ageapp, #7-12
     $belong, $missing, $level, #13-15
-    $session, $image, $tag, $hide #16-19
-  ) = (split /<>/, $_)[0..19];
+    $session, $image, $tags, $hide #16-19
+  ) = (split /<>/, $_)[0..20];
   
   #グループ
   $group = $set::group_default if (!$group || !$groups{$group});
@@ -210,6 +210,13 @@ foreach (@list) {
     $age = $ageapp.'／'.$age if $ageapp;
     $age =~ s/^(.+?)[\(（].*?[）\)]$/$1/;
     $age =~ tr/０-９/0-9/;
+
+    #タグ
+    my $tags_links;
+    foreach(grep $_, split(/ /, $tags)){ $tags_links .= '<a href="./?tag='.uri_escape_utf8($_).'">'.$_.'</a>'; }
+    
+    #最終参加セッション
+    if($session){ $tags_links .= '<span class="session">'.$session.'</span>' }
     
     #更新日時
     my ($min,$hour,$day,$mon,$year) = (localtime($updatetime))[1..5];
@@ -230,6 +237,7 @@ foreach (@list) {
       "BELONG" => $belong,
       "MISSING" => $missing,
       "LEVEL" => $level,
+      "TAGS" => $tags_links,
       "DATE" => $updatetime,
       "HIDE" => $hide,
     });

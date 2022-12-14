@@ -237,7 +237,7 @@ foreach (@list) {
   my (
     $id, undef, undef, $updatetime, $name, $player, $group,
     $exp, $rank, $race, $gender, $age, $faith,
-    $classes, $session, $image, $tag, $hide, $fellow
+    $classes, $session, $image, $tags, $hide, $fellow
   ) = (split /<>/, $_)[0..18];
   
   #グループ
@@ -291,15 +291,24 @@ foreach (@list) {
     
     #種族
     $race =~ s/（.*）|［.*］//;
-    $race = "<div>$race</div>" if length($race) >= 5;
+    $race = "<span class=\"small\">$race</span>" if length($race) >= 6;
     
     #性別
     $gender = genderConvert($gender);
     
     #年齢
-    $age =~ s/^(.+?)[\(（].*?[）\)]$/$1/;
-    $age =~ tr/０-９/0-9/;
+    $age = ageConvert($age);
+
+    #ランク
+    $rank = "<span class=\"small\">$rank</span>" if length($rank) >= 6;
+
+    #タグ
+    my $tags_links;
+    foreach(grep $_, split(/ /, $tags)){ $tags_links .= '<a href="./?tag='.uri_escape_utf8($_).'">'.$_.'</a>'; }
     
+    #最終参加セッション
+    if($session){ $tags_links .= '<span class="session">'.$session.'</span>' }
+
     #フェロー
     if($fellow != 1) { $fellow = 0; }
     
@@ -315,7 +324,7 @@ foreach (@list) {
       "NAME" => $name,
       "PLAYER" => $player,
       "GROUP" => $group,
-      "EXP" => $exp,
+      "EXP" => commify($exp),
       "LV" => $level,
       "CLASS" => $class,
       "RACE" => $race,
@@ -323,6 +332,7 @@ foreach (@list) {
       "AGE" => $age,
       "FAITH" => $faith,
       "RANK" => $rank,
+      "TAGS" => $tags_links,
       "FELLOW" => $fellow,
       "DATE" => $updatetime,
       "HIDE" => $hide,

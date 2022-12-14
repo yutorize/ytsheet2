@@ -16,10 +16,11 @@ body {
 /* // List
 ---------------------------------------------------------------------------------------------------- */
 .list table tr {
-    grid-template-columns: 28rem 0.7fr 4.5em 1fr 1fr 4em 0.7fr;
+    grid-template-columns: 26rem 0.7fr 6.2em 1fr 1fr 4em 0.6fr;
     grid-template-areas:
-      "NAME PL  AGE WORK SYN EXP DATE"
-      "NAME PL  GEN DLOI SYN EXP DATE"
+      "NAME   PL  AGE WORK  SYN  EXP DATE"
+      "NAME   PL  GEN DLOI  SYN  EXP DATE"
+      "NAME TAGS TAGS TAGS TAGS TAGS DATE"
     ;
 }
 .list table .name    { grid-area: NAME; }
@@ -33,8 +34,12 @@ body {
 .list table .exp     { grid-area:  EXP; }
 .list table .syndrome{ grid-area:  SYN; }
 .list table .dlois   { grid-area: DLOI; }
+.list table .tags    { grid-area: TAGS; }
 .list table .date    { grid-area: DATE; }
 
+.list table td.age {
+  align-items: end;
+}
 .list table td.dlois span {
   display: inline-block;
 }

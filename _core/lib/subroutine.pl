@@ -345,6 +345,16 @@ sub genderConvert {
   return $gender;
 }
 
+### 年齢変換 --------------------------------------------------
+sub ageConvert {
+  my $age = shift;
+  $age =~ s/^(.+?)[\(（].*?[）\)]$/$1/;
+  $age =~ tr/０-９/0-9/;
+  if($age =~ /[0-9]$/){ $age .= '歳'; }
+  $age =~ s/([^0-9]+)/<span class="small">$1<\/span>/g;
+  return $age;
+}
+
 ### エスケープ --------------------------------------------------
 sub pcEscape {
   my $text = shift;
