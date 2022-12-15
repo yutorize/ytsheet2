@@ -373,7 +373,6 @@ sub textRuleArea {
         斜体　：<code>'''テキスト'''</code>：<span class="oblique">テキスト</span><br>
         打消線：<code>%%テキスト%%</code>：<span class="strike">テキスト</span><br>
         下線　：<code>__テキスト__</code>：<span class="underline">テキスト</span><br>
-        透明　：<code>{{テキスト}}</code>：<span style="color:transparent">テキスト</span><br>
         ルビ　：<code>|テキスト《てきすと》</code>：<ruby>テキスト<rt>てきすと</rt></ruby><br>
         傍点　：<code>《《テキスト》》</code>：<span class="text-em">テキスト</span><br>
         透明　：<code>{{テキスト}}</code>：<span style="color:transparent">テキスト</span>（ドラッグ反転で見える）<br>
