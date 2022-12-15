@@ -15,7 +15,18 @@ body {
     var(--box-head-bg-color-l, 65%),
     var(--box-head-bg-color-a, 0.4)
   );
+  --s-icon-color: hsl(
+    var(--box-head-bg-color-h, 0),
+    calc( var(--box-head-bg-color-s,   0%) * 0.9 ), 40%
+  );
 }
+.night body {
+  --s-icon-color: hsl(
+    var(--box-head-bg-color-h, 0),
+    calc( var(--box-head-bg-color-s,   0%) * 0.9 ), 70%
+  );
+}
+
 
 /* // Base
 ---------------------------------------------------------------------------------------------------- */
@@ -193,6 +204,12 @@ table.status tbody tr:nth-child(even) td {
   padding: .3rem .5rem;
   background: var(--monster-head-bg-color);
   font-size: 110%;
+}
+.skills h3::first-letter {
+  color: var(--s-icon-color);
+}
+.skills .s-icon::before {
+  color: var(--s-icon-color);
 }
 
 /* // Loots

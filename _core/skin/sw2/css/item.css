@@ -17,6 +17,16 @@ body {
     var(--box-head-bg-color-l, 65%),
     var(--box-head-bg-color-a, 0.4)
   );
+  --s-icon-color: hsl(
+    var(--box-head-bg-color-h, 0),
+    calc( var(--box-head-bg-color-s,   0%) * 0.9 ), 40%
+  );
+}
+.night body {
+  --s-icon-color: hsl(
+    var(--box-head-bg-color-h, 0),
+    calc( var(--box-head-bg-color-s,   0%) * 0.9 ), 70%
+  );
 }
 
 /* // Base
@@ -168,6 +178,9 @@ div.data dl.effects dd.box {
 }
 div.data dl.effects dd.box *:first-child {
   margin-top: .2em;
+}
+div.data dl.effects .s-icon::before {
+  color: var(--s-icon-color);
 }
 div.data dl.effects table,
 div.data dl.effects table th,
