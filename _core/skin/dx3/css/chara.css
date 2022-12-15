@@ -929,9 +929,7 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
   margin: 0;
   border-width: 0 0 1px;
   border-style: solid;
-}
-#combo .combo-table h3::after {
-  display: none;
+  background: none;
 }
 #combo .combo-table dl dt {
   padding: .2rem 0 .1rem;

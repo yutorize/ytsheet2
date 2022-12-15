@@ -170,6 +170,29 @@ select {
   border-color: #234;
 }
 
+details > summary {
+  transition: background-color 0.2s ease;
+}
+details:not([open]) > summary {
+  overflow: hidden;
+}
+details > summary::marker {
+  content: "";
+}
+details > summary::before {
+  content: "\e5e1";
+  display: inline-block;
+  vertical-align: top;
+  margin-right: .2rem;
+  font-family: "Material Symbols Outlined";
+  font-variation-settings: 'FILL' 1;
+  transition: transform 0.2s ease;
+  transform: rotate(0deg);
+}
+details[open] > summary::before {
+  transform: rotate(90deg) translateX(-2px);
+}
+
 body {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(auto, 900px) minmax(0, 1fr);

@@ -159,6 +159,15 @@ dl.box > dt,
 .night .box > table:first-child > tbody > tr > th {
   text-shadow: 0px 0px .3em #000;
 }
+details:not([open]) > summary::after {
+  content: "（クリックで展開）";
+  font-size: 80%;
+  font-weight: normal;
+  opacity: 0.8;
+}
+details:not([open]).box > summary:hover {
+  background-color: var(--box-head-bg-color);
+}
 
 .box dd,
 .box li,
@@ -193,7 +202,6 @@ dl.box > dt,
   font-weight: normal;
 }
 .box details summary:not([class]) {
-  padding-left: .5em;
   font-weight: normal;
 }
 .box .header1 + .detail-body,
@@ -245,15 +253,10 @@ dl.box > dt,
   line-height: 1.2;
   font-size: 110%;
   z-index: 0;
-}
-.box h3::after,
-.box .header2::after {
-  content:'';
-  position: absolute;
-  top: 60%; left: 0; right: 0; bottom: 0;
   background-image: linear-gradient(to right, var(--box-head-bg-color-dark), transparent);
-  line-height: 1.2;
-  z-index: -1;
+  background-size: 100% .45em;
+  background-repeat: no-repeat;
+  background-position: bottom;
 }
 .box h4,
 .box .header3 {
@@ -262,14 +265,10 @@ dl.box > dt,
   line-height: 1.2;
   font-size: 105%;
   z-index: 0;
-}
-.box h4::after,
-.box .header3::after {
-  content:'';
-  position: absolute;
-  top: calc(100% - .2rem); left: 0; right: 0; bottom: 0;
   background-image: linear-gradient(to right, var(--box-head-bg-color-dark), transparent);
-  z-index: -1;
+  background-size: 100% .2rem;
+  background-repeat: no-repeat;
+  background-position: bottom;
 }
 .box h5,
 .box .header4 {
@@ -974,7 +973,8 @@ aside#loglist #log-naming summary {
   white-space: nowrap;
   user-select: none;
 }
-aside#loglist #log-naming summary::marker {
+aside#loglist #log-naming summary::marker,
+aside#loglist #log-naming summary::after {
   content: "";
 }
 aside#loglist #log-naming summary::before {
