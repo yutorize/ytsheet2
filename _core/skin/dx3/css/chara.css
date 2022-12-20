@@ -957,6 +957,10 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
   text-align: left;
   padding-left: .5em;
 }
+#combo .combo-table .combo-combo dd:empty::before {
+  content: "";
+  display: inline-block;
+}
 #combo .combo-table .combo-in {
   display: flex;
   border-width: 0 1px 0 0;
