@@ -774,7 +774,7 @@ print <<"HTML";
             <dt class="combo-fixed">判定固定値</dt>
             <dt class="combo-atk">攻撃力</dt>
 HTML
-  foreach my $i (1 .. 4) {
+  foreach my $i (1 .. 5) {
   print <<"HTML";
             <dd>@{[input "combo${num}Condition${i}"]}</dd>
             <dd id="combo${num}Stt${i}"></dd>
