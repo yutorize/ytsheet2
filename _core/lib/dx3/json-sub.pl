@@ -13,7 +13,7 @@ sub addJsonData {
   ## ロイス数
   my @dloises; $pc{loisHave} = 0; $pc{loisMax} = 0; $pc{titusHave} = 0; $pc{sublimated} = 0;
   foreach my $num (1..7){
-    if($pc{"lois${num}Relation"} =~ /[DＤ]ロイス|^[DＤ]$/){
+    if($pc{"lois${num}Relation"} =~ /[DＤEＥ]ロイス|^[DＤEＥ]$/){
       $pc{"lois${num}Name"} =~ s#/#／#g;
       push(@dloises, $pc{"lois${num}Name"});
     }
