@@ -10,26 +10,6 @@ sub addJsonData {
   
   %pc = data_update_chara(\%pc);
   
-  ### ロイス数 --------------------------------------------------
-  my @dloises; $pc{'loisHave'} = 0; $pc{'loisMax'} = 0; $pc{'titusHave'} = 0; $pc{'sublimated'} = 0;
-  foreach my $num (1..7){
-    if($pc{"lois${num}Relation"} =~ /[DＤ]ロイス|^[DＤ]$/){
-      $pc{"lois${num}Name"} =~ s#/#／#g;
-      push(@dloises, $pc{"lois${num}Name"});
-    }
-    else {
-      if($pc{"lois${num}State"} =~ /タイタス/){
-        $pc{'titusHave'}++;
-      }
-      elsif($pc{"lois${num}State"} =~ /昇華/){
-        $pc{'sublimated'}++;
-      }
-      else{
-        $pc{'loisMax'}++;
-        $pc{'loisHave'}++ if($pc{"lois${num}Name"});
-      }
-    }
-  }
   ### 簡易プロフィール --------------------------------------------------
   my @classes;
   foreach (@data::class_names){
