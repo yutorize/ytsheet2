@@ -412,6 +412,7 @@ sub convertSoukoToYtsheet {
   my $i = 1;
   foreach (@{$in{'lois'}}){
     @$_{'type'} =~ s/^[DＤ]$/Dロイス/;
+    @$_{'type'} =~ s/^[EＥ]$/Eロイス/;
     $pc{"lois${i}Relation"} = @$_{'type'};
     $pc{"lois${i}Name"}     = @$_{'name'};
     $pc{"lois${i}EmoPosi"}  = @$_{'Pfeel'}; $pc{"lois${i}EmoPosiCheck"} = @$_{'Pemotion'};
