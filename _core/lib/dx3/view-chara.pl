@@ -318,7 +318,6 @@ foreach (1 .. 7){
   if($pc{'lois'.$_.'Name'} =~ /起源種|オリジナルレネゲイド/){ $SHEET->param(encroachOrOn => 'checked'); }
 }
 $SHEET->param(Loises => \@loises);
-$SHEET->param(Skills => \@skills);
 
 ### メモリー --------------------------------------------------
 my @memories;
