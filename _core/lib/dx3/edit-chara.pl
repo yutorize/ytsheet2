@@ -1018,11 +1018,11 @@ print <<"HTML";
         <p>
         経験点[<b id="exp-total"></b>] - 
         ( 能力値[<b id="exp-used-status"></b>]
-        - 技能[<b id="exp-used-skill"></b>]
-        - エフェクト[<b id="exp-used-effect"></b>]
-        <span class="cc-only">- 術式[<b id="exp-used-magic"></b>]</span>
-        - アイテム[<b id="exp-used-item"></b>]
-        - メモリー[<b id="exp-used-memory"></b>]
+        + 技能[<b id="exp-used-skill"></b>]
+        + エフェクト[<b id="exp-used-effect"></b>]
+        <span class="cc-only">+ 術式[<b id="exp-used-magic"></b>]</span>
+        + アイテム[<b id="exp-used-item"></b>]
+        + メモリー[<b id="exp-used-memory"></b>]
         ) = 残り[<b id="exp-rest"></b>]点
         </p>
       </div>
