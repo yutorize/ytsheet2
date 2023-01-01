@@ -599,8 +599,13 @@ foreach (0 .. $pc{'historyNum'}){
     $members .= '<span>'.$mem.'</span>';
   }
   if($_ && !$pc{'history'.$_.'ExpApply'}) {
-    $pc{'history'.$_.'Exp'} = '<s>'.$pc{'history'.$_.'Exp'}.'</s>';
+    $pc{'history'.$_.'Exp'} = $pc{'history'.$_.'Exp'} ? '<s>'.$pc{'history'.$_.'Exp'}.'</s>' : '';
   }
+
+  if (!($pc{'history'.$_.'Date'} || $pc{'history'.$_.'Title'} || $pc{'history'.$_.'Exp'} || $pc{'history'.$_.'Gm'} || $members || $pc{'history'.$_.'Note'})) {
+    next;
+  }
+
   push(@history, {
     "NUM"    => ($pc{'history'.$_.'Gm'} ? $h_num : ''),
     "DATE"   => $pc{'history'.$_.'Date'},
