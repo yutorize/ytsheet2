@@ -281,10 +281,10 @@ foreach (1 .. max($pc{'skillRideNum'},$pc{'skillArtNum'},$pc{'skillKnowNum'},$pc
     && !$pc{'skillTotalRide'.$_} && !$pc{'skillTotalArt'.$_} && !$pc{'skillTotalKnow'.$_} && !$pc{'skillTotalInfo'.$_}
   );
   push(@skills, {
-    "RIDE" => $pc{'skillRide'.$_.'Name'}, "RIDELV" => ($pc{'skillAddRide'.$_}?"<span class=\"small\">+$pc{'skillAddRide'.$_}=</span>":'').$pc{'skillTotalRide'.$_},
-    "ART"  => $pc{'skillArt' .$_.'Name'}, "ARTLV"  => ($pc{'skillAddArt'.$_} ?"<span class=\"small\">+$pc{'skillAddArt'.$_}=</span>" :'').$pc{'skillTotalArt'.$_},
-    "KNOW" => $pc{'skillKnow'.$_.'Name'}, "KNOWLV" => ($pc{'skillAddKnow'.$_}?"<span class=\"small\">+$pc{'skillAddKnow'.$_}=</span>":'').$pc{'skillTotalKnow'.$_},
-    "INFO" => $pc{'skillInfo'.$_.'Name'}, "INFOLV" => ($pc{'skillAddInfo'.$_}?"<span class=\"small\">+$pc{'skillAddInfo'.$_}=</span>":'').$pc{'skillTotalInfo'.$_},
+    "RIDE" => $pc{'skillRide'.$_.'Name'}, "RIDELV" => ($pc{'skillAddRide'.$_}?"<span class=\"small\">+$pc{'skillAddRide'.$_}=</span>":'').$pc{'skillTotalRide'.$_}, "RIDE-NONE" => !($pc{'skillRide'.$_.'Name'} || $pc{'skillTotalRide'.$_}),
+    "ART"  => $pc{'skillArt' .$_.'Name'}, "ARTLV"  => ($pc{'skillAddArt'.$_} ?"<span class=\"small\">+$pc{'skillAddArt'.$_}=</span>" :'').$pc{'skillTotalArt'.$_}, "ART-NONE" => !($pc{'skillArt'.$_.'Name'} || $pc{'skillTotalArt'.$_}),
+    "KNOW" => $pc{'skillKnow'.$_.'Name'}, "KNOWLV" => ($pc{'skillAddKnow'.$_}?"<span class=\"small\">+$pc{'skillAddKnow'.$_}=</span>":'').$pc{'skillTotalKnow'.$_}, "KNOW-NONE" => !($pc{'skillKnow'.$_.'Name'} || $pc{'skillTotalKnow'.$_}),
+    "INFO" => $pc{'skillInfo'.$_.'Name'}, "INFOLV" => ($pc{'skillAddInfo'.$_}?"<span class=\"small\">+$pc{'skillAddInfo'.$_}=</span>":'').$pc{'skillTotalInfo'.$_}, "INFO-NONE" => !($pc{'skillInfo'.$_.'Name'} || $pc{'skillTotalInfo'.$_}),
   });
 }
 $SHEET->param(Skills => \@skills);

@@ -522,7 +522,7 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
   font-size: 70%;
   transform: scaleX(0.8);
 }
-#status table tbody td.right::after {
+#status table tbody td.right:not(.none)::after {
   content: 'Lv';
   margin-left: .1em;
   font-size: 70%;

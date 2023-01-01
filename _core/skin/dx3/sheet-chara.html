@@ -292,10 +292,10 @@
             <td class="left">調達</td><td class="right"><TMPL_VAR skillTotalProcure></td>
           </tr>
           <TMPL_LOOP Skills><tr>
-            <td class="left"><TMPL_VAR RIDE></td><td class="right"><TMPL_VAR RIDELV></td>
-            <td class="left"><TMPL_VAR ART ></td><td class="right"><TMPL_VAR ARTLV ></td>
-            <td class="left"><TMPL_VAR KNOW></td><td class="right"><TMPL_VAR KNOWLV></td>
-            <td class="left"><TMPL_VAR INFO></td><td class="right"><TMPL_VAR INFOLV></td>
+            <td class="left"><TMPL_VAR RIDE></td><td class="right <TMPL_IF RIDE-NONE>none</TMPL_IF>"><TMPL_VAR RIDELV></td>
+            <td class="left"><TMPL_VAR ART ></td><td class="right <TMPL_IF ART-NONE>none</TMPL_IF>"><TMPL_VAR ARTLV ></td>
+            <td class="left"><TMPL_VAR KNOW></td><td class="right <TMPL_IF KNOW-NONE>none</TMPL_IF>"><TMPL_VAR KNOWLV></td>
+            <td class="left"><TMPL_VAR INFO></td><td class="right <TMPL_IF INFO-NONE>none</TMPL_IF>"><TMPL_VAR INFOLV></td>
           </tr></TMPL_LOOP>
         </table>
       </section>
