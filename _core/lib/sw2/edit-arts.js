@@ -240,6 +240,8 @@ function addSchoolMagic(){
   div.setAttribute('class','input-data');
   div.innerHTML = `
   <dl class="name    "><dt>名称      </dt><dd>【<input type="text" name="schoolMagic${num}Name" value="">】<br><label class="check-button"><input type="checkbox" name="schoolMagic${num}ActionTypeMinor" value="1"><span>補助動作</span></label><label class="check-button"><input type="checkbox" name="schoolMagic${num}ActionTypeSetup" value="1"><span>戦闘準備</span></label></dd></dl>
+  <dl class="cost    "><dt>必要名誉点</dt><dd><input type="text" name="schoolMagic${num}AcquireCost" value=""></dd></dl>
+  <dl class="level    "><dt>習得レベル</dt><dd><input type="text" name="schoolMagic${num}Lv" value=""></dd></dl>
   <dl class="cost    "><dt>消費      </dt><dd><input type="text" name="schoolMagic${num}Cost" value=""></dd></dl>
   <dl class="target  "><dt>対象      </dt><dd><input type="text" name="schoolMagic${num}Target" value="" list="list-target"></dd></dl>
   <dl class="range   "><dt>射程／形状</dt><dd><input type="text" name="schoolMagic${num}Range" value="" list="list-range">／<input type="text" name="schoolMagic${num}Form" value="" list="list-form"></dd></dl>
