@@ -651,16 +651,18 @@ sub palettePropertiesUsedOnly {
   foreach (0 .. 100){
     $hit = 0;
     foreach my $line (@propaties_in){
-      if($line =~ "^//(\Q.+?\E)="){
-        if   ($palette =~ /^\/\/$1=/m){ ; }
-        elsif($palette =~ /\{($1)\}/){ $palette .= $line."\n"; $hit = 1 }
+      if($line =~ "^//(.+?)="){
+        my $var = $1;
+        if   ($palette =~ "^//\Q$var\E="){ ; }
+        elsif($palette =~ /\{\Q$var\E\}/){ $palette .= $line."\n"; $hit = 1 }
       }
     }
     last if !$hit;
   }
   foreach (@propaties_in){
-    if($_ =~ "^//(\Q.+?\E)="){
-      if($palette =~ /\{($1)\}/){ push @propaties_out, $_; }
+    if($_ =~ "^//(.+?)="){
+      my $var = $1;
+      if($palette =~ /\{\Q$var\E\}/){ push @propaties_out, $_; }
     }
     else {
       push @propaties_out, $_;
