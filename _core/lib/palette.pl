@@ -69,6 +69,7 @@ sub outputChatPalette {
 
   my $preset = $pc{'paletteUseVar'} ? palettePreset($tool,$type) :  palettePresetSimple($tool,$type) ;
   $preset = palettePresetBuffDelete($preset) if !$pc{'paletteUseBuff'};
+  if(!$tool){ $preset = palettePresetSwapWordAndCommand($preset); }
 
   if ($pc{'paletteInsertType'} eq 'begin'){ $pc{'chatPalette'} = $pc{'chatPalette'}."\n".$preset; }
   elsif($pc{'paletteInsertType'} eq 'end'){ $pc{'chatPalette'} = $preset."\n".$pc{'chatPalette'}; }
@@ -92,6 +93,19 @@ sub outputChatPalette {
   say $properties;
 }
 
+sub palettePresetSwapWordAndCommand {
+  my @palette = split(/\n/, shift);
+  foreach (@palette){
+    if($_ =~ /^[0-9a-z:+\-\{]/i){
+      my ($command, $word) = split(/ /, $_, 2);
+      if($command && $word){
+        $_ = "$word $command";
+      }
+    }
+  }
+  return join("\n", @palette);
+}
+
 sub outputChatPaletteTemplate {
   use JSON::PP;
   my $type = $::in{'type'};
@@ -103,6 +117,7 @@ sub outputChatPaletteTemplate {
   my %json;
   $json{'preset'} = $pc{'paletteUseVar'} ? palettePreset($tool,$type) :  palettePresetSimple($tool,$type);
   $json{'preset'} = palettePresetBuffDelete($json{'preset'}) if !$pc{'paletteUseBuff'};
+  if(!$pc{'paletteTool'}){ $json{'preset'} = palettePresetSwapWordAndCommand($json{'preset'}); }
   $json{'properties'} .= "$_\n" foreach( paletteProperties($type) );
   print "Content-type: text/javascript; charset=UTF-8\n\n";
   print JSON::PP->new->canonical(1)->encode( \%json );
