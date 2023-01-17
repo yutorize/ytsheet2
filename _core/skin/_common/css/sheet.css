@@ -226,8 +226,6 @@ details:not([open]).box > summary:hover {
 }
 
 .box hr {
-  border-width: 1px 0 0;
-  border-style: solid;
   margin: .8em .5em;
 }
 .box table hr {
@@ -437,7 +435,6 @@ dl.note-description dd {
   text-align: center;
   font-style: normal;
   line-height: 1;
-  vertical-align: middle;
 }
 .s-icon::after,
 .s-icon::before {
