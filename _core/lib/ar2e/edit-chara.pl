@@ -168,7 +168,7 @@ Content-type: text/html\n
   <style>
     #image,
     .image-custom-view {
-      background-image: url("${set::char_dir}${file}/image.$pc{'image'}?$pc{'imageUpdate'}");
+      background-image: url("./?id=$::in{'id'}&mode=image&cache=$pc{'imageUpdate'}");
     }
   </style>
 </head>
@@ -353,7 +353,7 @@ print <<"HTML";
         </dl>
       </details>
       <div id="area-status">
-        @{[ imageForm("${set::char_dir}${file}/image.$pc{'image'}?$pc{'imageUpdate'}") ]}
+        @{[ imageForm("./?id=$::in{'id'}&mode=image&cache=$pc{'imageUpdate'}") ]}
 
         <div id="personal">
           <dl class="box select-or-input" id="race">

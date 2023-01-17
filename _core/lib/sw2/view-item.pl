@@ -165,11 +165,6 @@ else {
   $SHEET->param(titleName => tag_delete name_plain $pc{'itemName'});
 }
 
-### 画像 --------------------------------------------------
-$pc{'imageUpdateTime'} = $pc{'updateTime'};
-$pc{'imageUpdateTime'} =~ s/[\-\ \:]//g;
-$SHEET->param(imageSrc => "${set::item_dir}${main::file}/image.$pc{'image'}?$pc{'imageUpdateTime'}");
-
 ### OGP --------------------------------------------------
 $SHEET->param(ogUrl => url().($::in{'url'} ? "?url=$::in{'url'}" : "?id=$::in{'id'}"));
 #if($pc{'image'}) { $SHEET->param(ogImg => url()."/".$imgsrc); }

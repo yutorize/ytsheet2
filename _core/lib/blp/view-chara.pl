@@ -110,7 +110,7 @@ if(!$::in{'log'}){
         $pc{'fromPartner1SealShape'}    = $pr{'toPartner'.$pc{'partnerOrder'}.'SealShape'};
         $pc{'fromPartner1Emotion1'}     = $pr{'toPartner'.$pc{'partnerOrder'}.'Emotion1'};
         $pc{'fromPartner1Emotion2'}     = $pr{'toPartner'.$pc{'partnerOrder'}.'Emotion2'};
-        $pc{'p1_imageSrc'} = $pr{'imageURL'}."?$pr{'imageUpdate'}";
+        $pc{'p1_imageSrc'} = $pr{'imageURL'};
       }
       if($pr{'forbidden'}){
         $pc{'partner1Name'} = noiseText(6,14);
@@ -144,7 +144,7 @@ if(!$::in{'log'}){
         $pc{'fromPartner2SealShape'}    = $pr{'toPartner'.$num.'SealShape'};
         $pc{'fromPartner2Emotion1'}     = $pr{'toPartner'.$num.'Emotion1'};
         $pc{'fromPartner2Emotion2'}     = $pr{'toPartner'.$num.'Emotion2'};
-        $pc{'p2_imageSrc'} = $pr{'imageURL'}."?$pr{'imageUpdate'}";
+        $pc{'p2_imageSrc'} = $pr{'imageURL'};
       }
     }
   }
@@ -392,10 +392,10 @@ if($pc{'image'}){
     $SHEET->param(image => $code);
   }
   elsif($pc{'convertSource'} eq '別のゆとシートⅡ') {
-    $imgsrc = $pc{'imageURL'}."?$pc{'imageUpdate'}";
+    $imgsrc = $pc{'imageURL'};
   }
   else {
-    $imgsrc = "${set::char_dir}${main::file}/image.$pc{'image'}?$pc{'imageUpdate'}";
+    $imgsrc = "./?id=$::in{'id'}&mode=image&cache=$pc{'imageUpdate'}";
   }
   $SHEET->param(imageSrc => $imgsrc);
   $images     .= "'1': \"".($pc{'modeDownload'} ? urlToBase64($imgsrc) : $imgsrc)."\", ";

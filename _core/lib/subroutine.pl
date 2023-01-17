@@ -48,6 +48,33 @@ sub getfile_open {
   return 0;
 }
 
+### 画像リダイレクト --------------------------------------------------
+sub imageRedirect {
+  my $id   = shift;
+  my $type = shift;
+  my ($file,$type,$user) = getfile_open($id);
+  my $datadir = ($type eq 'm') ? $set::mons_dir
+              : ($type eq 'i') ? $set::item_dir
+              : ($type eq 'a') ? $set::arts_dir
+              : $set::char_dir;
+  my $ext;
+  open(my $DATA, "./${datadir}/${file}/data.cgi") or die;
+  while(<$DATA>){
+    if($_ =~ /^image<>(.*?)\n/){ $ext = $1; last }
+  }
+  close($DATA);
+
+  open(my $IMG, "./${datadir}/${file}/image.${ext}") or die;
+  binmode $IMG;
+  binmode STDOUT;
+  print "Content-type: image/".($ext eq 'jpg' ? 'jpeg' : $ext)."\n";
+  print "Cache-Control: public, max-age=604800\n";
+  print "Content-Disposition: inline; filename=\"ytsheet_$::in{id}.$ext\"\n";
+  print "\n";
+  print while (<$IMG>);
+  close($IMG);
+  exit;
+}
 
 ### プレイヤー名取得 --------------------------------------------------
 sub getplayername {

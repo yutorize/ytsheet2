@@ -65,14 +65,6 @@ Content-type: text/html\n
   <script src="${main::core_dir}/skin/_common/js/lib/Sortable.min.js"></script>
   <script src="${main::core_dir}/lib/edit.js?${main::ver}" defer></script>
   <script src="${main::core_dir}/lib/sw2/edit-mons.js?${main::ver}" defer></script>
-  <style>
-    #image {
-      background-image: url("${set::char_dir}${file}/image.$pc{'image'}");
-    }
-    #image > * {
-      background: rgba(255,255,255,0.8);
-    }
-  </style>
 </head>
 <body>
   <script src="${main::core_dir}/skin/_common/js/common.js?${main::ver}"></script>

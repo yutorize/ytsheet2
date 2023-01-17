@@ -120,7 +120,7 @@ Content-type: text/html\n
   <script src="${main::core_dir}/lib/sw2/edit-arts.js?${main::ver}" defer></script>
   <style>
     #image {
-      background-image: url("${set::arts_dir}${file}/image.$pc{'image'}?$pc{'imageUpdate'}");
+      background-image: url("./?id=$::in{'id'}&mode=image&cache=$pc{'imageUpdate'}");
     }
   </style>
 </head>
