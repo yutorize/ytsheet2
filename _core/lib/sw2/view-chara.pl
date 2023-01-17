@@ -297,7 +297,13 @@ foreach (1..$pc{'mysticArtsNum'}){
   my $type = $pc{'mysticArts'.$_.'PtType'} || 'human';
   $mysticarts_honor{$type} += $pc{'mysticArts'.$_.'Pt'};
   next if !$pc{'mysticArts'.$_};
-  push(@mystic_arts, { "NAME" => $pc{'mysticArts'.$_} });
+  push(@mystic_arts, { "NAME" => '《'.$pc{'mysticArts'.$_}.'》' });
+}
+foreach (1..$pc{'mysticMagicNum'}){
+  my $type = $pc{'mysticMagic'.$_.'PtType'} || 'human';
+  $mysticarts_honor{$type} += $pc{'mysticMagic'.$_.'Pt'};
+  next if !$pc{'mysticMagic'.$_};
+  push(@mystic_arts, { "NAME" => '【'.$pc{'mysticMagic'.$_}.'】' });
 }
 my $mysticarts_honor = $mysticarts_honor{'human'}
                      .($mysticarts_honor{'barbaros'}?"<br><small>蛮</small>$mysticarts_honor{'barbaros'}":'')

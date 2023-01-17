@@ -275,6 +275,9 @@
 #mystic-arts h2 + div span {
   font-size: 120%;
 }
+#mystic-arts h2:nth-child(n+2) {
+  margin-top: 0;
+}
 #mystic-arts ul li {
   display: grid;
   grid-template-columns: max-content 1fr 4em;
@@ -1260,7 +1263,7 @@ form#arts .color-sample .box h2 {
 
 /* // 魔法
 ---------------------------------------------------------------------------------------------------- */
-form#arts div.box {
+form#arts :is(div,details).box {
   margin: 1rem 0;
   overflow-x: auto;
 }

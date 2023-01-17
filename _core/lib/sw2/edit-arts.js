@@ -199,13 +199,13 @@ function delSchoolItem(obj, url){
 }
 // 秘伝欄 ----------------------------------------
 // 追加
-function addArts(){
+function addSchoolArts(){
   let num = Number(form.schoolArtsNum.value) + 1;
   let div = document.createElement('div');
   div.setAttribute('id',idNumSet('arts'));
   div.setAttribute('class','input-data');
   div.innerHTML = `
-    <dl class="name    "><dt>名称      </dt><dd>《<input type="text" name="schoolArts${num}Name">》</dd></dl>
+    <dl class="name    "><dt>名称      </dt><dd>《<input type="text" name="schoolArts${num}Name">》<br><label class="check-button"><input type="checkbox" name="schoolArts${num}ActionTypeSetup" value="1"><span>戦闘準備</span></label></dd></dl>
     <dl class="cost    "><dt>必要名誉点</dt><dd><input type="text" name="schoolArts${num}Cost"></dd></dl>
     <dl class="type    "><dt>タイプ    </dt><dd><input type="text" name="schoolArts${num}Type" list="list-arts-type"></dd></dl>
     <dl class="premise "><dt>前提      </dt><dd><input type="text" name="schoolArts${num}Premise"></dd></dl>
@@ -220,14 +220,47 @@ function addArts(){
   form.schoolArtsNum.value = num;
 }
 // 削除
-function delArts(){
+function delSchoolArts(){
   let num = Number(form.schoolArtsNum.value);
-  if(num > 1){
+  if(num > 0){
     if(form[`schoolArts${num}Name`].value || form[`schoolArts${num}Cost`].value || form[`schoolArts${num}Type`].value || form[`schoolArts${num}Premise`].value || form[`schoolArts${num}Equip`].value || form[`schoolArts${num}Use`].value || form[`schoolArts${num}Apply`].value || form[`schoolArts${num}Risk`].value || form[`schoolArts${num}Summary`].value || form[`schoolArts${num}Effect`].value){
       if (!confirm(delConfirmText)) return false;
     }
     document.querySelector("#arts-list .input-data:last-child").remove();
     num--;
     form.schoolArtsNum.value = num;
+  }
+}
+// 秘伝魔法欄 ----------------------------------------
+// 追加
+function addSchoolMagic(){
+  let num = Number(form.schoolMagicNum.value) + 1;
+  let div = document.createElement('div');
+  div.setAttribute('id',idNumSet('school-magic'));
+  div.setAttribute('class','input-data');
+  div.innerHTML = `
+  <dl class="name    "><dt>名称      </dt><dd>【<input type="text" name="schoolMagic${num}Name" value="">】<br><label class="check-button"><input type="checkbox" name="schoolMagic${num}ActionTypeMinor" value="1"><span>補助動作</span></label><label class="check-button"><input type="checkbox" name="schoolMagic${num}ActionTypeSetup" value="1"><span>戦闘準備</span></label></dd></dl>
+  <dl class="cost    "><dt>消費      </dt><dd><input type="text" name="schoolMagic${num}Cost" value=""></dd></dl>
+  <dl class="target  "><dt>対象      </dt><dd><input type="text" name="schoolMagic${num}Target" value="" list="list-target"></dd></dl>
+  <dl class="range   "><dt>射程／形状</dt><dd><input type="text" name="schoolMagic${num}Range" value="" list="list-range">／<input type="text" name="schoolMagic${num}Form" value="" list="list-form"></dd></dl>
+  <dl class="duration"><dt>時間      </dt><dd><input type="text" name="schoolMagic${num}Duration" value="" list="list-duration"></dd></dl>
+  <dl class="resist  "><dt>抵抗      </dt><dd><input type="text" name="schoolMagic${num}Resist" value="" list="list-resist"></dd></dl>
+  <dl class="element "><dt>属性      </dt><dd><input type="text" name="schoolMagic${num}Element" value="" list="list-element"></dd></dl>
+  <dl class="summary "><dt>概要      </dt><dd><input type="text" name="schoolMagic${num}Summary" value=""></dd></dl>
+  <dl class="effect  "><dt>効果      </dt><dd><textarea name="schoolMagic${num}Effect"></textarea></dd></dl>
+  `;
+  document.querySelector("#school-magic-list").appendChild(div);
+  form.schoolMagicNum.value = num;
+}
+// 削除
+function delSchoolMagic(){
+  let num = Number(form.schoolMagicNum.value);
+  if(num > 0){
+    if(form[`schoolMagic${num}Name`].value || form[`schoolMagic${num}Cost`].value || form[`schoolMagic${num}Target`].value || form[`schoolMagic${num}Range`].value || form[`schoolMagic${num}Form`].value || form[`schoolMagic${num}Duration`].value || form[`schoolMagic${num}Resist`].value || form[`schoolMagic${num}Element`].value || form[`schoolMagic${num}Summary`].value || form[`schoolMagic${num}Effect`].value){
+      if (!confirm(delConfirmText)) return false;
+    }
+    document.querySelector("#school-magic-list .input-data:last-child").remove();
+    num--;
+    form.schoolMagicNum.value = num;
   }
 }

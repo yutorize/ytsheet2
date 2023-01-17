@@ -60,6 +60,14 @@ setDefaultColors();
 
 ## その他
 $pc{"schoolArtsNum"} ||= 3;
+$pc{"schoolMagicNum"} ||= 1;
+
+### 折り畳み判断 --------------------------------------------------
+my %open;
+foreach (1..$pc{'schoolArtsNum'} ){ if($pc{"schoolArts${_}Name"} ){ $open{'schoolArts'}  = 'open'; last; } }
+foreach (1..$pc{'schoolMagicNum'}){ if($pc{"schoolMagic${_}Name"}){ $open{'schoolMagic'} = 'open'; last; } }
+if($pc{'schoolArtsNote'} ){ $open{'schoolArts'}  = 'open'; }
+if($pc{'schoolMagicNote'}){ $open{'schoolMagic'} = 'open'; }
 
 ### 改行処理 --------------------------------------------------
 foreach (
@@ -75,11 +83,16 @@ foreach (
   'godMagic13Effect',
   'schoolNote',
   'schoolItemNote',
+  'schoolArtsNote',
+  'schoolMagicNote',
 ){
   $pc{$_} =~ s/&lt;br&gt;/\n/g;
 }
 foreach my $num (1..$pc{'schoolArtsNum'}){
   $pc{"schoolArts${num}Effect"} =~ s/&lt;br&gt;/\n/g;
+}
+foreach my $num (1..$pc{'schoolMagicNum'}){
+  $pc{"schoolMagic${num}Effect"} =~ s/&lt;br&gt;/\n/g;
 }
 
 ### 画像 --------------------------------------------------
@@ -331,14 +344,15 @@ print <<"HTML";
             </dd></dl>
         </div>
         @{[ input 'schoolArtsNum','hidden' ]}
-        <div class="box">
-          <h2>流派秘伝</h2>
+        <details class="box" $open{'schoolArts'}>
+          <summary>流派秘伝</summary>
+          <textarea name="schoolArtsNote" placeholder="流派秘伝全体の注釈（あれば）">$pc{'schoolArtsNote'}</textarea>
           <div id="arts-list">
 HTML
 foreach my $num (1..$pc{'schoolArtsNum'}){
 print <<"HTML";
           <div class="input-data" id="arts${num}">
-            <dl class="name    "><dt>名称      </dt><dd>《@{[ input "schoolArts${num}Name",'' ]}》</dd></dl>
+            <dl class="name    "><dt>名称      </dt><dd>《@{[ input "schoolArts${num}Name",'' ]}》<br>@{[ checkbox "schoolArts${num}ActionTypeSetup",'戦闘準備' ]}</dd></dl>
             <dl class="cost    "><dt>必要名誉点</dt><dd>@{[ input "schoolArts${num}Cost" ]}</dd></dl>
             <dl class="type    "><dt>タイプ    </dt><dd>@{[ input "schoolArts${num}Type",'','','list="list-arts-type"' ]}</dd></dl>
             <dl class="premise "><dt>前提      </dt><dd>@{[ input "schoolArts${num}Premise",'','','list="list-arts-base"' ]}</dd></dl>
@@ -353,9 +367,35 @@ HTML
 }
 print <<"HTML";
           </div>
-          <div class="add-del-button"><a onclick="addArts()">▼</a><a onclick="delArts()">▲</a></div>
-        </div>
-      </div>
+          <div class="add-del-button"><a onclick="addSchoolArts()">▼</a><a onclick="delSchoolArts()">▲</a></div>
+        </details>
+        @{[ input 'schoolMagicNum','hidden' ]}
+        <details class="box" $open{'schoolMagic'}>
+          <summary>流派秘伝魔法</summary>
+          <textarea name="schoolMagicNote" placeholder="流派秘伝魔法全体の注釈（あれば）">$pc{'schoolMagicNote'}</textarea>
+          <div id="school-magic-list">
+HTML
+foreach my $num (1..$pc{'schoolMagicNum'}){
+print <<"HTML";
+          <div class="input-data" id="school-magic${num}">
+            <dl class="name    "><dt>名称      </dt><dd>【@{[ input "schoolMagic${num}Name",'' ]}】<br>@{[ checkbox "schoolMagic${num}ActionTypeMinor",'補助動作' ]}@{[ checkbox "schoolMagic${num}ActionTypeSetup",'戦闘準備' ]}</dd></dl>
+            <dl class="cost    "><dt>必要名誉点</dt><dd>@{[ input "schoolMagic${num}AcquireCost" ]}</dd></dl>
+            <dl class="level    "><dt>習得レベル</dt><dd>@{[ input "schoolMagic${num}Lv" ]}</dd></dl>
+            <dl class="cost    "><dt>消費      </dt><dd>@{[ input "schoolMagic${num}Cost" ]}</dd></dl>
+            <dl class="target  "><dt>対象      </dt><dd>@{[ input "schoolMagic${num}Target",'','','list="list-target"' ]}</dd></dl>
+            <dl class="range   "><dt>射程／形状</dt><dd>@{[ input "schoolMagic${num}Range",'','','list="list-range"' ]}／@{[ input "schoolMagic${num}Form",'','','list="list-form"' ]}</dd></dl>
+            <dl class="duration"><dt>時間      </dt><dd>@{[ input "schoolMagic${num}Duration",'','','list="list-duration"' ]}</dd></dl>
+            <dl class="resist  "><dt>抵抗      </dt><dd>@{[ input "schoolMagic${num}Resist",'','','list="list-resist"' ]}</dd></dl>
+            <dl class="element "><dt>属性      </dt><dd>@{[ input "schoolMagic${num}Element",'','','list="list-element"' ]}</dd></dl>
+            <dl class="summary "><dt>概要      </dt><dd>@{[ input "schoolMagic${num}Summary" ]}</dd></dl>
+            <dl class="effect  "><dt>効果      </dt><dd><textarea name="schoolMagic${num}Effect">$pc{"schoolMagic${num}Effect"}</textarea></dd></dl>
+          </div>
+HTML
+}
+print <<"HTML";
+          </div>
+          <div class="add-del-button"><a onclick="addSchoolMagic()">▼</a><a onclick="delSchoolMagic()">▲</a></div>
+      </details>
     </section>
       
       @{[ colorCostomForm ]}

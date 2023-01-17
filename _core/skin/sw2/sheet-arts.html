@@ -232,7 +232,8 @@
           </section>
         </div>
         <section id="mystic-arts" class="description">
-          <h2>秘伝</h2>
+          <TMPL_IF ArtsView><h2>秘伝</h2>
+          <TMPL_IF schoolArtsNote><div class="box"><p><TMPL_VAR schoolArtsNote></p></div></TMPL_IF>
           <TMPL_LOOP ArtsData>
           <div class="data-magic data-arts">
             <h3 class="name    "><TMPL_VAR ICON>《<TMPL_VAR NAME>》</h3>
@@ -246,7 +247,24 @@
             <dl class="summary "><dt>概要      </dt><dd><TMPL_VAR SUMMARY></dd></dl>
             <dl class="effect  "><dt>効果      </dt><dd><p><TMPL_VAR EFFECT></p></dd></dl>
           </div>
-          </TMPL_LOOP>
+          </TMPL_LOOP></TMPL_IF>
+          
+          <TMPL_IF schoolMagicView><h2>秘伝魔法</h2>
+          <TMPL_IF schoolMagicNote><div class="box"><p><TMPL_VAR schoolMagicNote></p></div></TMPL_IF>
+          <TMPL_LOOP schoolMagicData>
+          <div class="data-magic">
+            <dl class="name    "><dt><TMPL_VAR LEVEL></dt><dd><div><TMPL_VAR ICON>【<TMPL_VAR NAME>】</div></dd></dl>
+            <dl class="a-cost  "><dt><span>必要名誉点</span></dt><dd><TMPL_VAR A-COST></dd></dl>
+            <dl class="cost    "><dt>消費      </dt><dd><TMPL_VAR COST></dd></dl>
+            <dl class="target  "><dt>対象      </dt><dd><TMPL_VAR TARGET></dd></dl>
+            <dl class="range   "><dt>射程/<br>形状</dt><dd><TMPL_VAR RANGE>／<br><TMPL_VAR FORM></dd></dl>
+            <dl class="duration"><dt>時間      </dt><dd><TMPL_VAR DURATION></dd></dl>
+            <dl class="resist  "><dt>抵抗      </dt><dd><TMPL_VAR RESIST></dd></dl>
+            <TMPL_IF ELEMENT><dl class="element" ><dt>属性</dt><dd><TMPL_VAR ELEMENT></dd></dl></TMPL_IF>
+            <dl class="summary "><dt>概要      </dt><dd><TMPL_VAR SUMMARY></dd></dl>
+            <dl class="effect  "><dt>効果      </dt><dd><p><TMPL_VAR EFFECT></p></dd></dl>
+          </div>
+          </TMPL_LOOP></TMPL_IF>
         </section>
       </section>
       </TMPL_IF>

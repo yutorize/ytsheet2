@@ -529,6 +529,18 @@ print <<"HTML";
             </ul>
             <div class="add-del-button"><a onclick="addMysticArts()">▼</a><a onclick="delMysticArts()">▲</a></div>
             @{[input('mysticArtsNum','hidden')]}
+
+            <h2>秘伝魔法</h2>
+            <ul id="mystic-magic-list">
+HTML
+$pc{'mysticMagicNum'} ||= 0;
+foreach my $num (1 .. $pc{'mysticMagicNum'}){
+  print '<li id="mystic-magic'.$num.'"><span class="handle"></span>'.(input 'mysticMagic'.$num).(input 'mysticMagic'.$num.'Pt', 'number', 'calcHonor').'</li>';
+}
+print <<"HTML";
+            </ul>
+            <div class="add-del-button"><a onclick="addMysticMagic()">▼</a><a onclick="delMysticMagic()">▲</a></div>
+            @{[input('mysticMagicNum','hidden')]}
           </div>
         </div>
         <div id="crafts">
@@ -1190,7 +1202,7 @@ print <<"HTML";
               </thead>
               <tbody>
                 <tr><td class="center" colspan="2">冒険者ランク</td><td id="rank-honor-value">0</td></tr>
-                <tr id="honor-items-mystic-arts"><td class="center" class="center" colspan="2">秘伝</td><td id="mystic-arts-honor-value">0</td></tr>
+                <tr id="honor-items-mystic-arts"><td class="center" class="center" colspan="2">秘伝／秘伝魔法</td><td id="mystic-arts-honor-value">0</td></tr>
               </tbody>
               <tbody id="honor-items-table">
 HTML

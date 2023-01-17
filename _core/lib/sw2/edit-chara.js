@@ -1374,11 +1374,15 @@ function calcHonor(){
   }
   // 流派
   let mysticArtsPt = 0;
-  const mysticArtsNum = form.mysticArtsNum.value;
-  for (let i = 1; i <= mysticArtsNum; i++){
+  for (let i = 1; i <= form.mysticArtsNum.value; i++){
     let point = safeEval(form['mysticArts'+i+'Pt'].value) || 0;
     mysticArtsPt += point;
     form['mysticArts'+i+'Pt'].classList.toggle('mark', (point && point <= free));
+  }
+  for (let i = 1; i <= form.mysticMagicNum.value; i++){
+    let point = safeEval(form['mysticMagic'+i+'Pt'].value) || 0;
+    mysticArtsPt += point;
+    form['mysticMagic'+i+'Pt'].classList.toggle('mark', (point && point <= free));
   }
   pointTotal -= mysticArtsPt;
   //
@@ -1552,6 +1556,54 @@ let mysticArtsSortable = Sortable.create(document.querySelector('#mystic-arts-li
       if(document.getElementById(id)){
         document.querySelector(`#${id} input:first-of-type`).setAttribute('name',`mysticArts${num}`);
         document.querySelector(`#${id} [name$="Pt"]`).setAttribute('name',`mysticArts${num}Pt`);
+        num++;
+      }
+    }
+  }
+});
+// 秘伝魔法欄 ----------------------------------------
+// 追加
+function addMysticMagic(){
+  let num = Number(form.mysticMagicNum.value) + 1;
+  let tbody = document.createElement('li');
+  tbody.setAttribute('id',idNumSet('mystic-magic'));
+  tbody.innerHTML = `
+    <span class="handle"></span>
+    <input type="text" name="mysticMagic${num}">
+    <input type="number" name="mysticMagic${num}Pt" oninput="calcHonor()">
+  `;
+  const target = document.querySelector("#mystic-magic-list");
+  target.appendChild(tbody, target);
+  form.mysticMagicNum.value = num;
+}
+// 削除
+function delMysticMagic(){
+  let num = Number(form.mysticMagicNum.value);
+  if(num > 0){
+    if(form[`mysticMagic${num}`].value || form[`mysticMagic${num}Pt`].value){
+      if (!confirm(delConfirmText)) return false;
+    }
+    let target = document.getElementById("mystic-magic-list");
+    target.removeChild(target.lastElementChild);
+    num--;
+    form.mysticMagicNum.value = num;
+  }
+  calcHonor();
+}
+// ソート
+let mysticMagicSortable = Sortable.create(document.querySelector('#mystic-magic-list'), {
+  group: "mysticmagic",
+  dataIdAttr: 'id',
+  animation: 150,
+  handle: '.handle',
+  ghostClass: 'sortable-ghost',
+  onUpdate: function (evt) {
+    const order = mysticArtsSortable.toArray();
+    let num = 1;
+    for(let id of order) {
+      if(document.getElementById(id)){
+        document.querySelector(`#${id} input:first-of-type`).setAttribute('name',`mysticMagic${num}`);
+        document.querySelector(`#${id} [name$="Pt"]`).setAttribute('name',`mysticMagic${num}Pt`);
         num++;
       }
     }

@@ -57,11 +57,16 @@ sub data_calc {
     'godMagic13Effect',
     'schoolNote',
     'schoolItemNote',
+    'schoolArtsNote',
+    'schoolMagicNote',
   ){
     $pc{$_} =~ s/\r\n?|\n/<br>/g;
   }
   foreach my $num (1..$pc{'schoolArtsNum'}){
-      $pc{"schoolArts${num}Effect"} =~ s/\r\n?|\n/<br>/g;
+    $pc{"schoolArts${num}Effect"} =~ s/\r\n?|\n/<br>/g;
+  }
+  foreach my $num (1..$pc{'schoolMagicNum'}){
+    $pc{"schoolMagic${num}Effect"} =~ s/\r\n?|\n/<br>/g;
   }
   
   #### 保存処理でなければここまで --------------------------------------------------

@@ -309,7 +309,9 @@ $SHEET->param(SchoolItems => \@items);
 ### 秘伝 --------------------------------------------------
 my @arts;
 foreach my $num (1..$pc{'schoolArtsNum'}){
+  next if !($pc{'schoolArts'.$num.'Name'});
   my $icon;
+  if($pc{'schoolArts'.$num.'ActionTypeSetup'}){ $icon .= '<i class="s-icon setup">△</i>' }
   push(@arts, {
     "NAME"     => $pc{'schoolArts'.$num.'Name'},
     "ICON"     => $icon,
@@ -325,6 +327,32 @@ foreach my $num (1..$pc{'schoolArtsNum'}){
   } );
 }
 $SHEET->param(ArtsData => \@arts);
+if(@arts || $pc{'schoolArtsNote'}){ $SHEET->param(ArtsView => 1); }
+
+my @schoolmagics;
+foreach my $num (1..$pc{'schoolMagicNum'}){
+  next if !($pc{'schoolMagic'.$num.'Name'});
+  my $icon;
+  if($pc{'schoolMagic'.$num.'ActionTypeMinor'}){ $icon .= '<i class="s-icon minor">≫</i>' }
+  if($pc{'schoolMagic'.$num.'ActionTypeSetup'}){ $icon .= '<i class="s-icon setup">△</i>' }
+  push(@schoolmagics, {
+    "NAME"     => $pc{'schoolMagic'.$num.'Name'},
+    "LEVEL"    => $pc{'schoolMagic'.$num.'Lv'},
+    "ICON"     => $icon,
+    "A-COST"   => $pc{'schoolMagic'.$num.'AcquireCost'},
+    "COST"     => $pc{'schoolMagic'.$num.'Cost'},
+    "TARGET"   => textMagic($pc{'schoolMagic'.$num.'Target'}),
+    "RANGE"    => $pc{'schoolMagic'.$num.'Range'},
+    "FORM"     => $pc{'schoolMagic'.$num.'Form'},
+    "DURATION" => textMagic($pc{'schoolMagic'.$num.'Duration'}),
+    "RESIST"   => $pc{'schoolMagic'.$num.'Resist'},
+    "ELEMENT"  => $pc{'schoolMagic'.$num.'Element'},
+    "SUMMARY"  => $pc{'schoolMagic'.$num.'Summary'},
+    "EFFECT"   => $pc{'schoolMagic'.$num.'Effect'},
+  } );
+}
+$SHEET->param(schoolMagicData => \@schoolmagics);
+if(@schoolmagics || $pc{'schoolMagicNote'}){ $SHEET->param(schoolMagicView => 1); }
 
 ### バックアップ --------------------------------------------------
 if($::in{'id'}){

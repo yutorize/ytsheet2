@@ -85,6 +85,11 @@ sub data_calc {
       elsif($pc{"mysticArts${_}PtType"} eq 'dragon'  ){ $pc{'honorDragon'}   -= $pc{'mysticArts'.$_.'Pt'}; }
       else { $pc{'honor'} -= $pc{'mysticArts'.$_.'Pt'}; }
     }
+    foreach (1 .. $pc{'mysticMagicNum'}){
+      if   ($pc{"mysticMagic${_}PtType"} eq 'barbaros'){ $pc{'honorBarbaros'} -= $pc{'mysticMagic'.$_.'Pt'}; }
+      elsif($pc{"mysticMagic${_}PtType"} eq 'dragon'  ){ $pc{'honorDragon'}   -= $pc{'mysticMagic'.$_.'Pt'}; }
+      else { $pc{'honor'} -= $pc{'mysticMagic'.$_.'Pt'}; }
+    }
   }
   ## 名誉点2.5
   else {
@@ -97,6 +102,9 @@ sub data_calc {
     }
     foreach (1 .. $pc{'mysticArtsNum'}){
       $pc{'honor'} -= $pc{'mysticArts'.$_.'Pt'};
+    }
+    foreach (1 .. $pc{'mysticMagicNum'}){
+      $pc{'honor'} -= $pc{'mysticMagic'.$_.'Pt'};
     }
     foreach (1 .. $pc{'dishonorItemsNum'}){
       $pc{'dishonor'} += $pc{'dishonorItem'.$_.'Pt'};
