@@ -86,10 +86,74 @@ body {
   .list table .lv { display: none; }
 }
 
-/* // List-Simple/Monster
+/* // List-Simple
 ---------------------------------------------------------------------------------------------------- */
 .list ul li a[data-lv]::before {
   content: 'Lv'attr(data-lv);
+}
+
+/* // List-Monster
+---------------------------------------------------------------------------------------------------- */
+.list.monster table tr {
+    grid-template-columns: 24rem 0.6fr 6.8em 3.2em 3.2em 6.8em 1fr 0.5fr;
+    grid-template-areas:
+      "NAME AUTHOR TAXA   LV PARTS DISPO HABIT DATE"
+      "NAME   TAGS TAGS TAGS  TAGS  TAGS  TAGS DATE"
+    ;
+}
+.list.monster table tr:has(.tags:empty) {
+  grid-template-areas:
+    "NAME AUTHOR TAXA   LV PARTS DISPO HABIT DATE"
+  ;
+}
+.list.monster table .name        { grid-area: NAME; }
+.list.monster table .author      { grid-area: AUTHOR; }
+.list.monster table .taxa        { grid-area: TAXA; }
+.list.monster table .level       { grid-area: LV; }
+.list.monster table .parts       { grid-area: PARTS; }
+.list.monster table .disposition { grid-area: DISPO; }
+.list.monster table .habitat     { grid-area: HABIT; }
+.list.monster table .date        { grid-area: DATE; }
+
+.list.monster table th:is(.level, .parts) span.small {
+  display: inline-block;
+  transform: scaleY(calc(1/0.8));
+  font-size: 0.8em;
+}
+.list.monster table td.name a {
+  font-size: 1.4rem;
+}
+.list.monster table td.level {
+  font-size: 1.2em;
+}
+.list.monster table td:is(.taxa) span.small {
+  display: inline-block;
+  transform: scaleY(calc(1/0.85));
+}
+.list.monster table.mount tr {
+  grid-template-columns: 24rem 1fr 7.2em 5.2em 3.2em 2fr 0.8fr;
+  grid-template-areas:
+    "NAME AUTHOR TAXA   LV PARTS PRICE DATE"
+    "NAME   TAGS TAGS TAGS  TAGS  TAGS DATE"
+  ;
+}
+.list.monster table.mount tr:has(.tags:empty) {
+  grid-template-areas:
+    "NAME AUTHOR TAXA   LV PARTS PRICE DATE"
+  ;
+}
+.list.monster table .price { grid-area: PRICE; }
+
+@media screen and (max-width:735px){
+  .list.monster table tr {
+    grid-template-columns: 18rem 6em 5em 3.2em 3.2em 5.8em 1fr 3.5em;
+  }
+  .list.monster table.mount tr {
+    grid-template-columns: 18rem 6em 6.2em 4.2em 3.2em 1fr 3.5em;
+  }
+  .list.monster table td:is(.taxa, .disposition, .habitat, .price){
+    font-size: 90%;
+  }
 }
 
 /* // List-Item

@@ -38,8 +38,11 @@ if($mode eq 'blanksheet'){
 setDefaultColors();
 
 ## その他
+$pc{'partsNum'}  ||= 1;
 $pc{'statusNum'} ||= 1;
 $pc{'lootsNum'}  ||= 2;
+
+my $status_text_input = $pc{'statusTextInput'} || $pc{'mount'} || 0;
 
 ### 改行処理 --------------------------------------------------
 $pc{'skills'}      =~ s/&lt;br&gt;/\n/g;
@@ -74,7 +77,7 @@ Content-type: text/html\n
 
   <main>
     <article>
-      <form id="monster" name="sheet" method="post" action="./" enctype="multipart/form-data">
+      <form id="monster" name="sheet" method="post" action="./" enctype="multipart/form-data" class="@{[ $pc{'statusTextInput'} ? 'not-calc' : '' ]}">
       <input type="hidden" name="ver" value="${main::ver}">
       <input type="hidden" name="type" value="m">
 HTML
@@ -167,6 +170,7 @@ foreach (@data::taxa){
 }
 print <<"HTML";
           </select></dd>
+          <dd>@{[ checkbox 'mount','騎獣','checkMount' ]}</dd>
           <dt>タグ</dt><dd>@{[ input 'tags' ]}</dd>
         </dl>
       </div>
@@ -189,62 +193,146 @@ print <<"HTML";
       </div>
 
       <div class="box status">
-        <dl><dt>レベル</dt><dd>@{[ input 'lv','number','','min="0"' ]}</dd></dl>
-        <dl><dt>知能</dt><dd>@{[ input 'intellect','','','list="data-intellect"' ]}</dd></dl>
-        <dl><dt>知覚</dt><dd>@{[ input 'perception','','','list="data-perception"' ]}</dd></dl>
-        <dl><dt>反応</dt><dd>@{[ input 'disposition','','','list="data-disposition"' ]}</dd></dl>
-        <dl><dt>穢れ</dt><dd>@{[ input 'sin','number','','min="0"' ]}</dd></dl>
-        <dl><dt>言語</dt><dd>@{[ input 'language' ]}</dd></dl>
-        <dl><dt>生息地</dt><dd>@{[ input 'habitat' ]}</dd></dl>
-        <dl><dt>知名度／弱点値</dt><dd>@{[ input 'reputation' ]}／@{[ input 'reputation+' ]}</dd></dl>
-        <dl><dt>弱点</dt><dd>@{[ input 'weakness','','','list="data-weakness"' ]}</dd></dl>
-        <dl><dt>先制値</dt><dd>@{[ input 'initiative' ]}</dd></dl>
-        <dl><dt>移動速度</dt><dd>@{[ input 'mobility' ]}</dd></dl>
-        <dl><dt>生命抵抗力</dt><dd>@{[ input 'vitResist',($pc{'statusTextInput'} ? 'text':'number'),'calcVit' ]} (@{[ input 'vitResistFix',$pc{'statusTextInput'} ? 'hidden':'number','calcVitF' ]})</dd></dl>
-        <dl><dt>精神抵抗力</dt><dd>@{[ input 'mndResist',($pc{'statusTextInput'} ? 'text':'number'),'calcMnd' ]} (@{[ input 'mndResistFix',$pc{'statusTextInput'} ? 'hidden':'number','calcMndF' ]})</dd></dl>
+        <dl class="mount-only price">
+          <dt>価格</dt>
+          <dd>購入@{[ input 'price' ]}G</dd>
+          <dd>レンタル@{[ input 'priceRental' ]}G</dd>
+          <dd>部位再生@{[ input 'priceRegenerate' ]}G</dd>
+        </dl>
+        <dl class="mount-only">
+          <dt>適性レベル</dt>
+          <dd>@{[ input 'lvMin','number','checkMountLevel','min="0"' ]} ～ @{[ input 'lvMax','number','checkMountLevel','min="0"' ]}</dd>
+        </dl>
+        <dl>
+          <dt><span class="mount-only">騎獣</span>レベル</dt>
+          <dd>@{[ input 'lv','number','checkLevel','min="0"' ]}</dd>
+          <dd class="mount-only small" style="display:inline-block">※入力すると、閲覧画面では現在の騎獣レベルのステータスのみ表示されます</dd>
+        </dl>
+        <dl>
+          <dt>知能</dt>
+          <dd>@{[ input 'intellect','','','list="data-intellect"' ]}</dd>
+        </dl>
+        <dl>
+          <dt>知覚</dt>
+          <dd>@{[ input 'perception','','','list="data-perception"' ]}</dd>
+        </dl>
+        <dl class="monster-only">
+          <dt>反応</dt>
+          <dd>@{[ input 'disposition','','','list="data-disposition"' ]}</dd>
+        </dl>
+        <dl>
+          <dt>穢れ</dt>
+          <dd>@{[ input 'sin','number','','min="0"' ]}</dd>
+        </dl>
+        <dl>
+          <dt>言語</dt>
+          <dd>@{[ input 'language' ]}</dd>
+        </dl>
+        <dl class="monster-only">
+          <dt>生息地</dt>
+          <dd>@{[ input 'habitat' ]}</dd>
+        </dl>
+        <dl class="monster-only">
+          <dt>知名度／弱点値</dt>
+          <dd>@{[ input 'reputation' ]}／@{[ input 'reputation+' ]}</dd>
+        </dl>
+        <dl>
+          <dt>弱点</dt>
+          <dd>@{[ input 'weakness','','','list="data-weakness"' ]}</dd>
+        </dl>
+        <dl class="monster-only">
+          <dt>先制値</dt>
+          <dd>@{[ input 'initiative' ]}</dd>
+        </dl>
+        <dl>
+          <dt>移動速度</dt><dd>@{[ input 'mobility' ]}</dd>
+        </dl>
+        <dl class="monster-only">
+          <dt>生命抵抗力</dt>
+          <dd>@{[ input 'vitResist',($status_text_input ? 'text':'number'),'calcVit' ]} <span class=" calc-only">(@{[ input 'vitResistFix','number','calcVitF' ]})</span></dd>
+        </dl>
+        <dl class="monster-only">
+          <dt>精神抵抗力</dt>
+          <dd>@{[ input 'mndResist',($status_text_input ? 'text':'number'),'calcMnd' ]} <span class=" calc-only">(@{[ input 'mndResistFix','number','calcMndF' ]})</span></dd>
+        </dl>
       </div>
-      <p>@{[ input "statusTextInput",'checkbox','statusTextInputToggle']}命中・回避・抵抗に数値以外を入力</p>
+      <p class="monster-only">@{[ input "statusTextInput",'checkbox','statusTextInputToggle']}命中・回避・抵抗に数値以外を入力</p>
       <div class="box">
       <table id="status-table" class="status">
         <thead>
           <tr>
-            <th></th>
-            <th>攻撃方法</th>
-            <th>命中力</th>
-            <th>打撃点</th>
-            <th>回避力</th>
-            <th>防護点</th>
-            <th>ＨＰ</th>
-            <th>ＭＰ</th>
+            <th class="lv mount-only">Lv</th>
+            <th class="handle"></th>
+            <th class="name">攻撃方法（部位）</th>
+            <th class="acc">命中力</th>
+            <th class="atk">打撃点</th>
+            <th class="eva">回避力</th>
+            <th class="def">防護点</th>
+            <th class="hp">ＨＰ</th>
+            <th class="mp">ＭＰ</th>
+            <th class="vit mount-only">生命抵抗</th>
+            <th class="mnd mount-only">精神抵抗</th>
             <th></th>
           </tr>
         </thead>
-        <tbody>
+        <tbody id="status-tbody">
 HTML
 foreach my $num (1 .. $pc{'statusNum'}){
-$pc{"status${num}Damage"} = '2d6+' if $pc{"status${num}Damage"} eq '' && $mode eq 'blanksheet';
-print <<"HTML";
+  $pc{"status${num}Damage"} = '2d+' if $pc{"status${num}Damage"} eq '' && $mode eq 'blanksheet';
+  print <<"HTML";
         <tr id="status-row${num}">
+          <th class="mount-only"></th>
           <td class="handle"></td>
-          <td>@{[ input "status${num}Style" ]}</td>
-          <td>@{[ input "status${num}Accuracy",($pc{'statusTextInput'} ? 'text':'number'),"calcAcc($num)" ]}<br>(@{[ input "status${num}AccuracyFix",($pc{'statusTextInput'} ? 'hidden':'number'),"calcAccF($num)" ]})</td>
+          <td>@{[ input "status${num}Style",'text',"checkStyle(${num})" ]}</td>
+          <td>@{[ input "status${num}Accuracy",($status_text_input ? 'text':'number'),"calcAcc($num)" ]}<span class="monster-only calc-only"><br>(@{[ input "status${num}AccuracyFix",'number',"calcAccF($num)" ]})</span></td>
           <td>@{[ input "status${num}Damage" ]}</td>
-          <td>@{[ input "status${num}Evasion",($pc{'statusTextInput'} ? 'text':'number'),"calcEva($num)" ]}<br>(@{[ input "status${num}EvasionFix",($pc{'statusTextInput'} ? 'hidden':'number'),"calcEvaF($num)" ]})</td>
+          <td>@{[ input "status${num}Evasion",($status_text_input ? 'text':'number'),"calcEva($num)" ]}<span class="monster-only calc-only"><br>(@{[ input "status${num}EvasionFix",'number',"calcEvaF($num)" ]})</span></td>
           <td>@{[ input "status${num}Defense" ]}</td>
           <td>@{[ input "status${num}Hp" ]}</td>
           <td>@{[ input "status${num}Mp" ]}</td>
+          <td class="mount-only">@{[ input "status${num}Vit" ]}</td>
+          <td class="mount-only">@{[ input "status${num}Mnd" ]}</td>
           <td><span class="button" onclick="addStatus(${num});">複<br>製</span></td>
         </tr>
 HTML
 }
 print <<"HTML";
-        </tobdy>
+        </tbody>
+HTML
+foreach my $lv (2 .. ($pc{'lvMax'}-$pc{'lvMin'}+1)){
+  print <<"HTML";
+        <tbody class="mount-only" id="status-tbody${lv}" data-lv="${lv}">
+HTML
+  foreach my $num (1 .. $pc{'statusNum'}){
+    $pc{"status${num}Damage"} = '2d6+' if $pc{"status${num}Damage"} eq '' && $mode eq 'blanksheet';
+    print <<~"HTML";
+        <tr id="status-row${num}-${lv}">
+          <th></th>
+          <td></td>
+          <td class="name" data-style="${num}">$pc{"status${num}Style"}</td>
+          <td>@{[ input "status${num}-${lv}Accuracy",($status_text_input ? 'text':'number') ]}</td>
+          <td>@{[ input "status${num}-${lv}Damage" ]}</td>
+          <td>@{[ input "status${num}-${lv}Evasion",($status_text_input ? 'text':'number') ]}</td>
+          <td>@{[ input "status${num}-${lv}Defense" ]}</td>
+          <td>@{[ input "status${num}-${lv}Hp" ]}</td>
+          <td>@{[ input "status${num}-${lv}Mp" ]}</td>
+          <td>@{[ input "status${num}-${lv}Vit" ]}</td>
+          <td>@{[ input "status${num}-${lv}Mnd" ]}</td>
+          <td></td>
+        </tr>
+    HTML
+  }
+  print <<"HTML";
+        </tbody>
+HTML
+}
+print <<"HTML";
       </table>
       <div class="add-del-button"><a onclick="addStatus()">▼</a><a onclick="delStatus()">▲</a></div>
       @{[input('statusNum','hidden')]}
       </div>
       <div class="box parts">
-        <dl><dt>部位数</dt><dd>@{[ input 'partsNum','number','','min="0"' ]} (@{[ input 'parts' ]}) </dd></dl>
+        <dl><dt>部位数</dt><dd>@{[ input 'partsNum','number','','min="1"' ]} (@{[ input 'parts' ]}) </dd></dl>
         <dl><dt>コア部位</dt><dd>@{[ input 'coreParts' ]}</dd></dl>
       </div>
       <div class="box">

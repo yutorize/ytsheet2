@@ -134,6 +134,23 @@ div.status dl dt::after {
   text-align: center;
   font-weight: normal;
 }
+div.status dl dl.price {
+  align-items: end;
+}
+div.status dl dl.price dt {
+  font-size: 85%;
+  margin-right: .2em;
+}
+div.status dl dl.price dd + dt::before {
+  content: '／';
+  margin: 0 .5em;
+}
+div.status dl dl.price dt::after {
+  display: none;
+}
+div.status dl dl.price dd small {
+  margin-left: .2em;
+}
 
 
 table.status {
@@ -143,24 +160,57 @@ table.status {
   border-color: var(--box-outside-border-color);
   background-color: var(--box-base-bg-color);
 }
-table.status thead th:nth-child(1) { width: auto; }
-table.status thead th:nth-child(2) { width: 12%; }
-table.status thead th:nth-child(3) { width: 12%; }
-table.status thead th:nth-child(4) { width: 12%; }
-table.status thead th:nth-child(5) { width: 12%; }
-table.status thead th:nth-child(6) { width: 12%; }
-table.status thead th:nth-child(7) { width: 12%; }
+table.status thead th.lv     { width: 0em; }
+table.status thead th.name   { width: auto; }
+table.status thead th.acc    { width: 12%; }
+table.status thead th.atk    { width: 12%; }
+table.status thead th.eva    { width: 12%; }
+table.status thead th.def    { width: 12%; }
+table.status thead th.hp     { width: 12%; }
+table.status thead th.mp     { width: 12%; }
+
+.mount table.status thead th.lv     { width: 1.8em; }
+.mount table.status thead th.name   { width: auto; }
+.mount table.status thead th.acc    { width: 8.5%; }
+.mount table.status thead th.atk    { width: 8.5%; }
+.mount table.status thead th.eva    { width: 8.5%; }
+.mount table.status thead th.def    { width: 8.5%; }
+.mount table.status thead th.hp     { width: 8.5%; }
+.mount table.status thead th.mp     { width: 8.5%; }
+.mount table.status thead th.vit    { width: 8.5%; }
+.mount table.status thead th.mnd    { width: 8.5%; }
+
+table.status tbody {
+  border-top-width: 1px;
+  border-top-style: solid;
+}
 table.status th {
   background-color: var(--monster-head-bg-color);
 }
 table.status td {
   padding: .2rem;
-  border-width: 1px;
+  border-width: 0 1px;
   border-style: solid;
   border-color: var(--box-inside-border-color);
   text-align: center;
 }
 table.status tbody tr:nth-child(even) td {
+  background-color: var(--box-even-rows-bg-color);
+}
+
+.mount table.status tbody td.lv {
+  background-color: transparent;
+  border-width: 0;
+}
+.mount table.status tbody tr:first-child td.lv {
+  border-top-width: 1px;
+  font-weight: bold;
+}
+.mount table.status tbody tr:not(:first-child) td.lv {
+  font-size: 0px;
+  color: transparent;
+}
+table.status tbody:nth-of-type(even) tr td.lv {
   background-color: var(--box-even-rows-bg-color);
 }
 

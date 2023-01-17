@@ -245,8 +245,9 @@ form#form-search p input[type="submit"] {
 .list table td.name a:hover {
   background: rgba(180,200,255,0.1);
 }
-.list table td.player {
+.list table td:is(.player, .author) {
   word-break: break-all;
+  font-size: 90%;
 }
 .list table td span[data-gender] {
   display: inline-block;
@@ -277,16 +278,15 @@ form#form-search p input[type="submit"] {
 .list table td span[data-gender=cross]::before  { content:"\e58d"; }
 .list table td span[data-gender=none]::before   { content:"\f108"; }
 .list table td span[data-gender=unknown]::before{ content:"\eb8b"; }
+.list table th.date {
+  font-size: 80%;
+}
 .list table td.date {
   font-family: Arial;
-  font-size: 85%;
+  font-size: 80%;
 }
 .list table td.date > div > span {
   display: inline-block;
-}
-.list table td.date {
-  font-family: Arial;
-  font-size: 85%;
 }
 .list table td.tags {
   padding: 0 .2em 0;

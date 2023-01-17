@@ -973,6 +973,18 @@ form#monster div.box {
 form#monster .box h2 {
   font-size: 100%;
 }
+form#monster #group dl {
+  grid-template-columns: 4em 1fr 4em 2.5em 3fr;
+}
+form#monster.mount .monster-only {
+  display: none;
+}
+form#monster:not(.mount) .mount-only {
+  display: none;
+}
+form#monster.not-calc .calc-only {
+  display: none;
+}
 form#monster #area-name {
   font-weight: bold;
 }
@@ -984,52 +996,113 @@ form#monster #monster-name input {
 }
 form#monster div.status dl {
   margin: .5rem 0;
+  place-items: center start;
 }
-form#monster div.status input[name="lv"],
+form#monster div.status dl dd {
+  text-align: left;
+}
+form#monster div.status dl.price dd + dd::before {
+  content: "／";
+}
+form#monster div.status input[name^="lv"],
 form#monster div.status input[name="sin"],
 form#monster div.status input[name^="reputation"],
 form#monster div.status input[name="initiative"],
 form#monster div.status input[name*="Resist"] {
   width: 5em;
 }
+form#monster div.status input[name^="price"] {
+  width: 6em;
+}
+form#monster div.status input[name="price"] {
+  width: 8em;
+}
 form#monster div.status input[name="language"] {
   width: 25em;
 }
 @media screen and (max-width:735px){
+  form#monster #group dl {
+    grid-template-columns: 2em 1fr 4em;
+    grid-template-rows: auto auto;
+  }
   form#monster div.status input[name="language"] {
     width: 18em;
+  }
+  form#monster div.status dl {
+    flex-wrap: wrap;
+  }
+  form#monster div.status dl dd + dd::before {
+    margin-left: 3em;
   }
 }
 
 form#monster table.status {
   border-width: 0;
 }
-form#monster table.status thead th:nth-child(1) { width: 1.4em; }
-form#monster table.status thead th:nth-child(2) { width: auto; }
-form#monster table.status thead th:nth-child(3) { width: 12%; }
-form#monster table.status thead th:nth-child(4) { width: 12%; }
-form#monster table.status thead th:nth-child(5) { width: 12%; }
-form#monster table.status thead th:nth-child(6) { width: 12%; }
-form#monster table.status thead th:nth-child(7) { width: 12%; }
-form#monster table.status thead th:nth-child(8) { width: 12%; }
+form#monster table.status thead th.lv     { width: 0em; }
+form#monster table.status thead th.handle { width: 1.4em; cursor: unset; }
+form#monster table.status thead th.name   { width: auto; }
+form#monster table.status thead th.acc    { width: 12%; }
+form#monster table.status thead th.atk    { width: 12%; }
+form#monster table.status thead th.eva    { width: 12%; }
+form#monster table.status thead th.def    { width: 12%; }
+form#monster table.status thead th.hp     { width: 12%; }
+form#monster table.status thead th.mp     { width: 12%; }
 
+form#monster.mount table.status thead th.lv     { width: 1.8em; }
+form#monster.mount table.status thead th.handle { width: 1.4em; }
+form#monster.mount table.status thead th.name   { width: auto; }
+form#monster.mount table.status thead th.acc    { width: 8.5%; }
+form#monster.mount table.status thead th.atk    { width: 8.5%; }
+form#monster.mount table.status thead th.eva    { width: 8.5%; }
+form#monster.mount table.status thead th.def    { width: 8.5%; }
+form#monster.mount table.status thead th.hp     { width: 8.5%; }
+form#monster.mount table.status thead th.mp     { width: 8.5%; }
+form#monster.mount table.status thead th.vit    { width: 8.5%; }
+form#monster.mount table.status thead th.mnd    { width: 8.5%; }
+
+form#monster table.status thead th.handle::before { content: ""; }
+form#monster table.status tbody + tbody {
+  border-top-width: 3px;
+  border-top-style: double;
+}
+form#monster table.status tbody:last-of-type {
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+}
 form#monster table.status tr {
   border-right: hidden;
+}
+form#monster table.status tbody:has(.current) th {
+  background-color: #fb07;
 }
 form#monster table.status th {
   background: transparent;
 }
+form#monster table.status tbody tr:not(:first-child) th {
+}
 form#monster table.status td {
   white-space: nowrap;
 }
-form#monster table.status td:first-child {
+form#monster:not(.mount) table.status td.handle {
   border-left: 0;
 }
-form#monster table.status input {
+form#monster table.status td:last-child {
+  border-right: 0;
+}
+form#monster:not(.mount) table.status input {
   width: calc(100% - 1.8em);
 }
 form#monster table.status input[name$="Style"] {
   width: calc(100% - 4px);
+}
+form#monster.mount table.status td:has(.button) {
+  padding: 1px;
+}
+form#monster.mount table.status .button {
+  font-size: 85%;
+  padding-top: 2px;
+  padding-bottom: 2px;
 }
 form#monster div.parts input {
   width: auto;

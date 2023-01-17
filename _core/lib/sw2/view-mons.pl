@@ -136,19 +136,36 @@ foreach(split(/ /, $pc{'tags'})){
 }
 $SHEET->param(Tags => \@tags);
 
+### 価格 --------------------------------------------------
+{
+  my $price;
+  $price .= "<dt>購入</dt><dd>$pc{'price'}<small>G</small></dd>" if $pc{'price'};
+  $price .= "<dt>レンタル</dt><dd>$pc{'priceRental'}<small>G</small></dd>"     if $pc{'priceRental'};
+  $price .= "<dt>部位再生</dt><dd>$pc{'priceRegenerate'}<small>G</small></dd>" if $pc{'priceRegenerate'};
+  if(!$price){ $price = '―' }
+  $SHEET->param(price => "<dl class=\"price\">$price</dl>");
+}
+### 適正レベル --------------------------------------------------
+{
+  $SHEET->param(appLv => $pc{'lvMin'}.($pc{'lvMax'} != $pc{'lvMin'} ? " ～ $pc{'lvMax'}":''));
+}
 ### ステータス --------------------------------------------------
 $SHEET->param(vitResist => $pc{'vitResist'} eq '' ? '' : $pc{'vitResist'}.(!$pc{'statusTextInput'}?' ('.$pc{'vitResistFix'}.')':''));
 $SHEET->param(mndResist => $pc{'mndResist'} eq '' ? '' : $pc{'mndResist'}.(!$pc{'statusTextInput'}?' ('.$pc{'mndResistFix'}.')':''));
 
-my @status;
+my @status_tbody;
+my @status_row;
 foreach (1 .. $pc{'statusNum'}){
-  $pc{'status'.$_.'Accuracy'} = $pc{'status'.$_.'Accuracy'} eq '' ? '―' : $pc{'status'.$_.'Accuracy'}.(!$pc{'statusTextInput'}?' ('.$pc{'status'.$_.'AccuracyFix'}.')':'');
-  $pc{'status'.$_.'Evasion'}  = $pc{'status'.$_.'Evasion'}  eq '' ? '―' : $pc{'status'.$_.'Evasion'} .(!$pc{'statusTextInput'}?' ('.$pc{'status'.$_.'EvasionFix'}.')' :'');
-  $pc{'status'.$_.'Damage'}  = '―' if $pc{'status'.$_.'Damage'} eq '';
-  $pc{'status'.$_.'Defense'} = '―' if $pc{'status'.$_.'Defense'} eq '';
-  $pc{'status'.$_.'Hp'} = '―' if $pc{'status'.$_.'Hp'} eq '';
-  $pc{'status'.$_.'Mp'} = '―' if $pc{'status'.$_.'Mp'} eq '';
-  push(@status, {
+  $pc{'status'.$_.'Accuracy'} = $pc{'status'.$_.'Accuracy'} eq '' ? '―' : $pc{'status'.$_.'Accuracy'}.(!$pc{'statusTextInput'} && !$pc{'mount'}?' ('.$pc{'status'.$_.'AccuracyFix'}.')':'');
+  $pc{'status'.$_.'Evasion'}  = $pc{'status'.$_.'Evasion'}  eq '' ? '―' : $pc{'status'.$_.'Evasion'} .(!$pc{'statusTextInput'} && !$pc{'mount'}?' ('.$pc{'status'.$_.'EvasionFix'}.')' :'');
+  $pc{'status'.$_.'Damage'}   = $pc{'status'.$_.'Damage'}   eq '' ? '―' : $pc{'status'.$_.'Damage'} ;
+  $pc{'status'.$_.'Defense'}  = $pc{'status'.$_.'Defense'}  eq '' ? '―' : $pc{'status'.$_.'Defense'};
+  $pc{'status'.$_.'Hp'}       = $pc{'status'.$_.'Hp'}       eq '' ? '―' : $pc{'status'.$_.'Hp'}     ;
+  $pc{'status'.$_.'Mp'}       = $pc{'status'.$_.'Mp'}       eq '' ? '―' : $pc{'status'.$_.'Mp'}     ;
+  $pc{'status'.$_.'Vit'}      = $pc{'status'.$_.'Vit'}      eq '' ? '―' : $pc{'status'.$_.'Vit'}    ;
+  $pc{'status'.$_.'Mnd'}      = $pc{'status'.$_.'Mnd'}      eq '' ? '―' : $pc{'status'.$_.'Mnd'}    ;
+  push(@status_row, {
+    "LV"       => $pc{'lvMin'},
     "STYLE"    => $pc{'status'.$_.'Style'},
     "ACCURACY" => $pc{'status'.$_.'Accuracy'},
     "DAMAGE"   => $pc{'status'.$_.'Damage'},
@@ -156,9 +173,39 @@ foreach (1 .. $pc{'statusNum'}){
     "DEFENSE"  => $pc{'status'.$_.'Defense'},
     "HP"       => $pc{'status'.$_.'Hp'},
     "MP"       => $pc{'status'.$_.'Mp'},
+    "VIT"      => $pc{'status'.$_.'Vit'},
+    "MND"      => $pc{'status'.$_.'Mnd'},
   } );
 }
-$SHEET->param(Status => \@status);
+push(@status_tbody, { "ROW" => \@status_row }) if !$pc{'mount'} || $pc{'lv'} eq '' || $pc{'lvMin'} == $pc{'lv'};
+foreach my $lv (2 .. ($pc{'lvMax'}-$pc{'lvMin'}+1)){
+  my @status_row;
+  foreach (1 .. $pc{'statusNum'}){
+    my $num = "$_-$lv";
+    $pc{'status'.$num.'Accuracy'} = $pc{'status'.$num.'Accuracy'} eq '' ? '―' : $pc{'status'.$num.'Accuracy'};
+    $pc{'status'.$num.'Evasion'}  = $pc{'status'.$num.'Evasion'}  eq '' ? '―' : $pc{'status'.$num.'Evasion'} ;
+    $pc{'status'.$num.'Damage'}   = $pc{'status'.$num.'Damage'}   eq '' ? '―' : $pc{'status'.$num.'Damage'}  ;
+    $pc{'status'.$num.'Defense'}  = $pc{'status'.$num.'Defense'}  eq '' ? '―' : $pc{'status'.$num.'Defense'} ;
+    $pc{'status'.$num.'Hp'}       = $pc{'status'.$num.'Hp'}       eq '' ? '―' : $pc{'status'.$num.'Hp'}      ;
+    $pc{'status'.$num.'Mp'}       = $pc{'status'.$num.'Mp'}       eq '' ? '―' : $pc{'status'.$num.'Mp'}      ;
+    $pc{'status'.$num.'Vit'}      = $pc{'status'.$num.'Vit'}      eq '' ? '―' : $pc{'status'.$num.'Vit'}     ;
+    $pc{'status'.$num.'Mnd'}      = $pc{'status'.$num.'Mnd'}      eq '' ? '―' : $pc{'status'.$num.'Mnd'}     ;
+    push(@status_row, {
+      "LV"       => $lv+$pc{'lvMin'}-1,
+      "STYLE"    => $pc{'status'.$_.'Style'},
+      "ACCURACY" => $pc{'status'.$num.'Accuracy'},
+      "DAMAGE"   => $pc{'status'.$num.'Damage'},
+      "EVASION"  => $pc{'status'.$num.'Evasion'},
+      "DEFENSE"  => $pc{'status'.$num.'Defense'},
+      "HP"       => $pc{'status'.$num.'Hp'},
+      "MP"       => $pc{'status'.$num.'Mp'},
+      "VIT"      => $pc{'status'.$num.'Vit'},
+      "MND"      => $pc{'status'.$num.'Mnd'},
+    } );
+  }
+  push(@status_tbody, { "ROW" => \@status_row }) if !$pc{'mount'} || $pc{'lv'} eq '' || $lv+$pc{'lvMin'}-1 == $pc{'lv'};
+}
+$SHEET->param(Status => \@status_tbody);
 
 ### 部位 --------------------------------------------------
 $SHEET->param(partsOn => 1) if ($pc{'partsNum'} > 1 || $pc{'parts'} || $pc{'coreParts'});
