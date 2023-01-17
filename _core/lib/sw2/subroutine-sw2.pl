@@ -58,9 +58,9 @@ sub tag_unescape {
   $text =~ s/\n/<br>/gi;
   
   if($::SW2_0){
-    $text =~ s/「((?:[○◯〇＞▶〆☆≫»□☑🗨▽▼]|&gt;&gt;)+)/"「".&text_convert_icon($1);/egi;
+    $text =~ s/「((?:[○◯〇＞▶〆☆≫»□☐☑🗨▽▼]|&gt;&gt;)+)/"「".&text_convert_icon($1);/egi;
   } else {
-    $text =~ s/「((?:[○◯〇△＞▶〆☆≫»□☑🗨]|&gt;&gt;)+)/"「".&text_convert_icon($1);/egi;
+    $text =~ s/「((?:[○◯〇△＞▶〆☆≫»□☐☑🗨]|&gt;&gt;)+)/"「".&text_convert_icon($1);/egi;
   }
   
   return $text;
@@ -71,7 +71,7 @@ sub text_convert_icon {
     $text =~ s{[○◯〇]}{<i class="s-icon passive">○</i>}gi;
     $text =~ s{[＞▶〆]}{<i class="s-icon major0">〆</i>}gi;
     $text =~ s{[☆≫»]|&gt;&gt;}{<i class="s-icon minor0">☆</i>}gi;
-    $text =~ s{[□☑🗨]}{<i class="s-icon active0">☑</i>}gi;
+    $text =~ s{[□☐☑🗨]}{<i class="s-icon active0">☑</i>}gi;
     $text =~ s{[▽]}{<i class="s-icon condition">▽</i>}gi;
     $text =~ s{[▼]}{<i class="s-icon selection">▼</i>}gi;
   } else {
@@ -79,7 +79,7 @@ sub text_convert_icon {
     $text =~ s{[△]}{<i class="s-icon setup">△</i>}gi;
     $text =~ s{[＞▶〆]}{<i class="s-icon major">▶</i>}gi;
     $text =~ s{[☆≫»]|&gt;&gt;}{<i class="s-icon minor">≫</i>}gi;
-    $text =~ s{[□☑🗨]}{<i class="s-icon active">☑</i>}gi;
+    $text =~ s{[□☐☑🗨]}{<i class="s-icon active">☑</i>}gi;
   }
   
   return $text;
