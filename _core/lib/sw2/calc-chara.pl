@@ -649,6 +649,7 @@ sub data_calc {
   foreach my $class (@data::class_list){
     $classlv .= $pc{'lv'.$data::class{$class}{'id'}}.'/';
   }
+  my $faith = $pc{'faith'} eq 'その他の信仰' ? ($pc{'faithOther'} || $pc{'faith'}) : $pc{'faith'}; 
   $::newline = "$pc{'id'}<>$::file<>".
                "$pc{'birthTime'}<>$::now<>$charactername<>$pc{'playerName'}<>$pc{'group'}<>".
                "$pc{'expTotal'}<>$pc{'rank'}<>$pc{'race'}<>$pc{'gender'}<>$pc{'age'}<>$pc{'faith'}<>".
