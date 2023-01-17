@@ -346,6 +346,7 @@ sub data_calc {
   if($pc{'lvFig'} >= 7) { push(@abilities, "タフネス"); }
   if($pc{'lvGra'} >= 1) { push(@abilities, "追加攻撃"); }
   if($pc{'lvGra'} >= 1 && $::SW2_0) { push(@abilities, "投げ攻撃"); }
+  if($pc{'lvGra'} >= 5 && $::SW2_0) { push(@abilities, "鎧貫き"); }
   if($pc{'lvGra'} >= 7) { push(@abilities, "カウンター"); }
   if($pc{'lvBat'} >= 7) { push(@abilities, "舞い流し"); }
   if($pc{'lvFig'} >=13 || $pc{'lvGra'} >=13 || $pc{'lvBat'} >=13) { push(@abilities, "バトルマスター"); }
