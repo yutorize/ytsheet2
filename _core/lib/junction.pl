@@ -53,6 +53,7 @@ elsif($mode eq 'delete')     { require $set::lib_delete; } #削除
 elsif($mode eq 'img-delete') { require $set::lib_delete; } #画像削除
 elsif($mode eq 'palette')    { require $set::lib_palette; }#チャットパレット表示
 elsif($mode eq 'json')       { require $set::lib_json; }   #外部アプリ連携
+elsif($mode eq 'image')      { &imageRedirect($in{'id'}); }   #外部アプリ連携
 elsif($in{'id'}) { require $set::lib_view; }   #シート表示
 elsif($in{'url'}) { require $set::lib_view; }   #シート表示（コンバート）
 else {
