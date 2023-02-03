@@ -176,8 +176,10 @@ details > summary {
 details:not([open]) > summary {
   overflow: hidden;
 }
-details > summary::marker {
+details > summary::marker,
+details > summary::-webkit-details-marker {
   content: "";
+  display: none;
 }
 details > summary::before {
   content: "\e5e1";
