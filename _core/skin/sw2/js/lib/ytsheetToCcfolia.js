@@ -109,28 +109,36 @@ io.github.shunshun94.trpg.ccfolia.getPartsFromYtSheetEnemyWithPartsNum = (json, 
 			status: [],
 			commands: ''
 	};
-	const name = opt_num ? (json[`status${opt_num}Style`] || `? (${opt_num})`) : '';	
+	let name = opt_num ? (json[`status${opt_num}Style`] || `? (${opt_num})`) : '';
+	name = name.replace(/^.+?[(（](.+?)[）)]$/, "$1");
+	let num = opt_num || 1;
+	if(json.mount){
+		if(json.lv){
+			const lvNum = (json.lv - json.lvMin + 1);
+			num += lvNum > 1 ? "-"+lvNum : '';
+		}
+	}
 	result.status.push({
 		label: `${name}HP`,
-		value: Number(json[`status${opt_num || '1'}Hp`]) || 0,
-		max: Number(json[`status${opt_num || '1'}Hp`]) || 0
+		value: Number(json[`status${num}Hp`]) || 0,
+		max: Number(json[`status${num}Hp`]) || 0
 	});
 
 	result.status.push({
 		label: `${name}MP`,
-		value: Number(json[`status${opt_num || '1'}Mp`]) || 0,
-		max: Number(json[`status${opt_num || '1'}Mp`]) || 0
+		value: Number(json[`status${num}Mp`]) || 0,
+		max: Number(json[`status${num}Mp`]) || 0
 	});
 
 	result.commands = [
-		{name:'命中判定', column:`status${opt_num || '1'}Accuracy`},
-		{name:'回避判定', column:`status${opt_num || '1'}Evasion`}
+		{name:'命中判定', column:`status${num}Accuracy`},
+		{name:'回避判定', column:`status${num}Evasion`}
 	].filter((d)=>{
 		return Number(json[d.column])
 	}).map((d)=>{
 		return `2d6+${json[d.column]}+0 ${name} ${d.name}`;
 	}).join('\n');
-	result.commands += `\n${json[`status${opt_num || '1'}Damage`] || '0'} ${name} ダメージ`;
+	result.commands += `\n${json[`status${num}Damage`] || '0'} ${name} ダメージ`;
 	return result;
 };
 

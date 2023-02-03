@@ -49,10 +49,18 @@ io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2SwordWorld2E
 		);
 	} else {
 		for(let i = 0; i < statusLenght; i++) {
-			const cursor = i + 1;
+			let cursor = i + 1;
+			let name = json['status' + cursor + 'Style'] || '';
+			name = name.replace(/^.+?[(（](.+?)[）)]$/, "$1");
+			if(json.mount){
+				if(json.lv){
+					const lvNum = (json.lv - json.lvMin + 1);
+					cursor += lvNum > 1 ? "-"+lvNum : '';
+				}
+			}
 			data_character_detail['リソース'].push(
-					`        <data type="numberResource" currentValue="${json['status' + cursor + 'Hp'] || '0'}" name="HP${cursor}">${json['status' + cursor + 'Hp'] || '0'}</data>`,
-					`        <data type="numberResource" currentValue="${json['status' + cursor + 'Mp'] || '0'}" name="MP${cursor}">${json['status' + cursor + 'Mp'] || '0'}</data>`
+					`        <data type="numberResource" currentValue="${json['status' + cursor + 'Hp'] || '0'}" name="${name}HP">${json['status' + cursor + 'Hp'] || '0'}</data>`,
+					`        <data type="numberResource" currentValue="${json['status' + cursor + 'Mp'] || '0'}" name="${name}MP">${json['status' + cursor + 'Mp'] || '0'}</data>`
 			);
 		}
 	}
