@@ -504,8 +504,9 @@ dl.note-description dd {
 }
 /* コピーライト */
 .s-icon.copyright::before {
-  content: "\f1f9";
+  content: "\e90c";
   font-weight: normal;
+  transform: scale(1.2) translateX(-1px);
 }
 /* 狭いときに消す */
 @media screen and (max-width:735px){
