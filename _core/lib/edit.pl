@@ -91,6 +91,7 @@ sub pcDataGet {
       ($pc{'protect'}, $pc{'forbidden'}) = protectTypeGet("${datadir}${file}/data.cgi");
       $message = $pc{'updateTime'}.' 時点のバックアップデータから編集しています。';
     }
+    $pc{'imageURL'} = $pc{'image'} ? "./?id=$::in{'id'}&mode=image&cache=$pc{'imageUpdate'}" : '';
   }
   elsif($mode eq 'copy'){
     my $datatype = ($::in{'log'}) ? 'logs' : 'data';

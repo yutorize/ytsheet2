@@ -99,7 +99,7 @@ Content-type: text/html\n
   <style>
     #image,
     .image-custom-view {
-      background-image: url("./?id=$::in{'id'}&mode=image&cache=$pc{'imageUpdate'}");
+      background-image: url("$pc{'imageURL'}");
     }
   </style>
 </head>
@@ -241,7 +241,7 @@ print <<"HTML";
         <div class="annotate">※練度は自動的に計算されます。</div>
       </details>
       <div id="area-status">
-        @{[ imageForm("./?id=$::in{'id'}&mode=image&cache=$pc{'imageUpdate'}") ]}
+        @{[ imageForm($pc{'imageURL'}) ]}
 
         <div id="factors" class="box">
           <h2>練度:<span id="level-value"></span> ／ 能力値</h2>

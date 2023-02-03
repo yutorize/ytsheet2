@@ -126,7 +126,7 @@ Content-type: text/html\n
   <style>
     #image,
     .image-custom-view {
-      background-image: url("./?id=$::in{'id'}&mode=image&cache=$pc{'imageUpdate'}");
+      background-image: url("$pc{'imageURL'}");
     }
   </style>
 </head>
@@ -282,7 +282,7 @@ print <<"HTML";
         <div class="annotate">※経験点は、初期所有技能のぶんを含みます。</div>
       </details>
       <div id="area-status">
-        @{[ imageForm("./?id=$::in{'id'}&mode=image&cache=$pc{'imageUpdate'}") ]}
+        @{[ imageForm($pc{'imageURL'}) ]}
 
         <div id="personal">
           <dl class="box" id="race">

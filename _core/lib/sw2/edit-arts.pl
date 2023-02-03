@@ -96,9 +96,8 @@ foreach my $num (1..$pc{'schoolMagicNum'}){
 }
 
 ### 画像 --------------------------------------------------
-my $imgurl = shift;
 my $image_maxsize = $set::image_maxsize / 4;
-  my $image_maxsize_view = $image_maxsize >= 1048576 ? sprintf("%.3g",$image_maxsize/1048576).'MB' : sprintf("%.3g",$image_maxsize/1024).'KB';
+my $image_maxsize_view = $image_maxsize >= 1048576 ? sprintf("%.3g",$image_maxsize/1048576).'MB' : sprintf("%.3g",$image_maxsize/1024).'KB';
 
 ### フォーム表示 #####################################################################################
 print <<"HTML";
@@ -120,7 +119,7 @@ Content-type: text/html\n
   <script src="${main::core_dir}/lib/sw2/edit-arts.js?${main::ver}" defer></script>
   <style>
     #image {
-      background-image: url("./?id=$::in{'id'}&mode=image&cache=$pc{'imageUpdate'}");
+      background-image: url("$pc{'imageURL'}");
     }
   </style>
 </head>
@@ -289,7 +288,7 @@ HTML
             </p>
           <script>
             const imageType = 'symbol';
-            let imgURL = "${imgurl}";
+            let imgURL = "$pc{'imageURL'}";
           </script>
           </div>
           <dl class="name  "><dt>名称      </dt><dd>@{[ input 'godName','',"nameSet" ]}</dd></dl>
