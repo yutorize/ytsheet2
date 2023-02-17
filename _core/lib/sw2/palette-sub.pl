@@ -399,7 +399,8 @@ sub paletteProperties {
       foreach my $p_id (sort{$data{$a}{'stt'} cmp $data{$b}{'stt'} || $data{$a} cmp $data{$b}} keys %data){
         my $name = $class.$data{$p_id}{'name'};
         my $stt  = $stt_id_to_name{$data{$p_id}{'stt'}};
-        push @propaties, "//$name=\{$class\}+\{${stt}B\}".($::pc{'pack'.$c_id.$p_id.'Add'} ? '+'.$::pc{'pack'.$c_id.$p_id.'Add'} : '');
+        my $add  = $::pc{'pack'.$c_id.$p_id.'Add'} + $::pc{'pack'.$c_id.$p_id.'Auto'};
+        push @propaties, "//$name=\{$class\}+\{${stt}B\}".addNum($add);
       }
     }
     push @propaties, '';

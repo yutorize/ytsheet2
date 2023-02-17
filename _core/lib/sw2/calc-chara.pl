@@ -474,18 +474,18 @@ sub data_calc {
     my $c_id = $data::class{$class}{'id'};
     my $c_en = $data::class{$class}{'eName'};
     my %data = %{$data::class{$class}{'package'}};
-    # 軍師の知略
-    if($c_id eq 'War'){
-      my $war_int_initiative;
-      foreach(1 .. $pc{'lvWar'}+$pc{'commandAddition'}){
-        if($pc{'craftCommand'.$_} =~ /軍師の知略$/){ $war_int_initiative = 1; last; }
-      }
-      if(!$war_int_initiative){ delete $data{'Int'} }
-    }
-    #
+    
     foreach my $p_id (keys %data){
-      my $value = $st{$c_id.$data{$p_id}{'stt'}} + $pc{'pack'.$c_id.$p_id.'Add'};
+      my $auto = 0;
+      if($c_id eq 'War' && $p_id eq 'Int'){ # 軍師の知略
+        my $war_int_initiative;
+        foreach(1 .. $pc{'lvWar'}+$pc{'commandAddition'}){
+          if($pc{'craftCommand'.$_} =~ /軍師の知略$/){ $war_int_initiative = 1; $auto += $pc{'craftCommand'.$_} =~ /^陣率/ ? 1 : 0; last; }
+        }
+      }
+      my $value = $st{$c_id.$data{$p_id}{'stt'}} + $pc{'pack'.$c_id.$p_id.'Add'} + $auto;
       $pc{'pack'.$c_id.$p_id} = $value;
+      $pc{'pack'.$c_id.$p_id.'Auto'} = $auto;
       if($data{$p_id}{'monsterLore'}){ push @pack_lore, $value }
       if($data{$p_id}{'initiative'} ){ push @pack_init, $value }
     }

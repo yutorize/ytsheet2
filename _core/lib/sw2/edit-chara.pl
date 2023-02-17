@@ -641,8 +641,9 @@ foreach my $class (@data::class_names){
   foreach my $p_id (sort{$data{$a}{'stt'} cmp $data{$b}{'stt'}} keys %data){
     (my $p_name = $data{$p_id}{'name'}) =~ s/(\(.+?\))/<small>$1<\/small>/;
     print '<tr>';
-    print '<th rowspan="'.$rowspan.'">'.$class.'技能</th>' if !$i;
+    print '<th rowspan="'.$rowspan.'">'.$class.'</th>' if !$i;
     print '<th>'. $p_name .'</th>';
+    print '<td id="package-'.$c_en.'-'.lc($p_id).'-auto" class="small"></td>';
     print '<td>+'. (input "pack${c_id}${p_id}Add", 'number','calcPackage' ) .'=</td>';
     print '<td id="package-'.$c_en.'-'.lc($p_id).'">'. $data{"pack${c_id}${p_id}"} .'</td>';
     print '</tr>';

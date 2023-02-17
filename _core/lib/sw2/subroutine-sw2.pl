@@ -231,6 +231,10 @@ sub data_update_chara {
   if($ver < 1.17014){
     $pc{'updateMessage'}{'ver.1.17.014'} = 'ルールブックに合わせ、<br>「性別」「年齢」の並びを「年齢」「性別」の順に変更、<br>「作成レギュレーション」「セッション履歴」における項目の並びを<br>「経験点・名誉点・所持金（ガメル）」から、<br>「経験点・所持金（ガメル）・名誉点」に変更しました。<br>記入の際はご注意ください。';
   }
+  if($ver < 1.20109){
+    $pc{'packWarIntAdd'} -= 1 if $pc{'packWarIntAdd'} > 0;
+    $pc{'packWarIntAuto'} = 1;
+  }
   $pc{'ver'} = $main::ver;
   $pc{'lasttimever'} = $ver;
   return %pc;
