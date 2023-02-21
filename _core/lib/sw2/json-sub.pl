@@ -22,15 +22,23 @@ sub addJsonData {
       }
       my %count;
       foreach my $i (1 .. $pc{'statusNum'}){
+        my $partname = $pc{"part${i}"};
+        if($pc{'mount'}){
+          if($pc{'lv'}){
+            my $ii = ($pc{'lv'} - $pc{'lvMin'} +1);
+            $i = $ii > 1 ? "-$ii" : '';
+          }
+        }
         if($multiple{ $pc{"part${i}"} } > 1){
           $count{ $pc{"part${i}"} }++;
           $pc{"part${i}"} .= $n2a[ $count{ $pc{"part${i}"} } ];
         }
-        push(@hp , {$pc{"part${i}"}.':HP' => $pc{"status${i}Hp"}.'/'.$pc{"status${i}Hp"}});
-        push(@mp , {$pc{"part${i}"}.':MP' => $pc{"status${i}Mp"}.'/'.$pc{"status${i}Mp"}});
-        push(@def, $pc{"part${i}"}.$pc{"status${i}Defense"});
+        push(@hp , {$partname.':HP' => $pc{"status${i}Hp"}.'/'.$pc{"status${i}Hp"}});
+        push(@mp , {$partname.':MP' => $pc{"status${i}Mp"}.'/'.$pc{"status${i}Mp"}});
+        push(@def, $partname.$pc{"status${i}Defense"});
       }
       $pc{'unitStatus'} = [ @hp,'|', @mp,'|', {'メモ' => '防護:'.join('／',@def)}];
+      $pc{'unitExceptStatus'} = { 'HP'=>1,'MP'=>1,'防護'=>1 }
     }
     else {
       $pc{'unitStatus'} = [
