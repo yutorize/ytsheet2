@@ -305,7 +305,7 @@ foreach my $lv (2 .. ($pc{'lvMax'}-$pc{'lvMin'}+1)){
 HTML
   foreach my $num (1 .. $pc{'statusNum'}){
     $pc{"status${num}Damage"} = '2d6+' if $pc{"status${num}Damage"} eq '' && $mode eq 'blanksheet';
-    print <<~"HTML";
+    print <<"HTML";
         <tr id="status-row${num}-${lv}">
           <th></th>
           <td></td>
@@ -320,7 +320,7 @@ HTML
           <td>@{[ input "status${num}-${lv}Mnd" ]}</td>
           <td></td>
         </tr>
-    HTML
+HTML
   }
   print <<"HTML";
         </tbody>
