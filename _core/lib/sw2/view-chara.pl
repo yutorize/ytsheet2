@@ -434,7 +434,7 @@ foreach my $class (@data::class_names){
     (my $p_name = $data{$p_id}{'name'}) =~ s/(\(.+?\))/<small>$1<\/small>/;
     push(@pack, {
       'name'  => $p_name,
-      'add'   => $pc{'pack'.$c_id.$p_id.'Add'},
+      'add'   => $pc{'pack'.$c_id.$p_id.'Add'}+$pc{'pack'.$c_id.$p_id.'Auto'},
       'total' => $pc{'pack'.$c_id.$p_id},
     });
   }
