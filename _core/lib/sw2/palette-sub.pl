@@ -88,90 +88,120 @@ sub palettePreset {
   if(!$type){
     # 基本判定
     $text .= "### ■非戦闘系\n";
-    $text .= "2d6+{冒険者}+{器用B} 冒険者＋器用\n";
-    $text .= "2d6+{冒険者}+{敏捷B} 冒険者＋敏捷\n";
-    $text .= "2d6+{冒険者}+{筋力B} 冒険者＋筋力\n";
-    $text .= "2d6+{冒険者}+{知力B} 冒険者＋知力\n";
+    $text .= "2d+{冒険者}+{器用B} 冒険者＋器用\n";
+    $text .= "2d+{冒険者}+{敏捷B} 冒険者＋敏捷\n";
+    $text .= "2d+{冒険者}+{筋力B} 冒険者＋筋力\n";
+    $text .= "2d+{冒険者}+{知力B} 冒険者＋知力\n";
     foreach my $class (@class_names){
       my $c_id = $data::class{$class}{'id'};
       next if !$data::class{$class}{'package'} || !$::pc{'lv'.$c_id};
       my %data = %{$data::class{$class}{'package'}};
       foreach my $p_id (sort{$data{$a}{'stt'} cmp $data{$b}{'stt'} || $data{$a} cmp $data{$b}} keys %data){
         my $name = $class.$data{$p_id}{'name'};
-        $text .= "2d6+{$name} $name\n";
-        if($data{$p_id}{'monsterLore'} && $::pc{'monsterLoreAdd'}){ $text .= "2d6+{$name}+$::pc{'monsterLoreAdd'} 魔物知識\n"; }
-        if($data{$p_id}{'initiative' } && $::pc{'initiativeAdd' }){ $text .= "2d6+{$name}+$::pc{'initiativeAdd' } 先制\n"; }
+        $text .= "2d+{$name} $name\n";
+        if($data{$p_id}{'monsterLore'} && $::pc{'monsterLoreAdd'}){ $text .= "2d+{$name}+$::pc{'monsterLoreAdd'} 魔物知識\n"; }
+        if($data{$p_id}{'initiative' } && $::pc{'initiativeAdd' }){ $text .= "2d+{$name}+$::pc{'initiativeAdd' } 先制\n"; }
       }
     }
     $text .= "\n";
     
-    $text .= "### ■魔法系\n";
     # 魔法
     my ($pows, $heals) = magicPows();
     my %pows  = %{$pows};
     my %heals = %{$heals};
     
-    $text .= "//魔力修正=".($::pc{'magicPowerAdd'}||0)."\n";
-    $text .= "//行使修正=".($::pc{'magicCastAdd'}||0)."\n";
-    $text .= "//魔法C=10\n";
-    $text .= "//魔法D修正=".($::pc{'magicDamageAdd'}||0)."\n";
+    foreach my $name (@class_names){
+      next if !($data::class{$name}{'magic'}{'jName'} || $data::class{$name}{'craft'}{'stt'});
+      next if !$::pc{'lv' . $data::class{$name}{'id'} };
+      $text .= "### ■魔法系\n";
+      $text .= "//魔力修正=".($::pc{'magicPowerAdd'}||0)."\n";
+      $text .= "//行使修正=".($::pc{'magicCastAdd'}||0)."\n";
+      $text .= "//魔法C=10\n";
+      $text .= "//魔法D修正=".($::pc{'magicDamageAdd'}||0)."\n";
+      $text .= "//物理魔法D修正=".($::pc{'magicDamageAdd'}||0)."\n" if $::pc{'lvDru'};
+      $text .= "//回復量修正=0\n" if $::pc{'lvCon'} || $::pc{'lvPri'} || $::pc{'lvGri'} || $::pc{'lvBar'} || $::pc{'lvMag'} >= 2;
+      last;
+    }
+
     foreach my $name (@class_names){
       next if !($data::class{$name}{'magic'}{'jName'} || $data::class{$name}{'craft'}{'stt'});
       my $id   = $data::class{$name}{'id'};
       my $name = $data::class{$name}{'magic'}{'jName'} || $data::class{$name}{'craft'}{'jName'};
       next if !$::pc{'lv'.$id};
       
-      $text .= "2d6+{$name}";
+      $text .= "2d+{$name}";
       if   ($name =~ /魔/){ $text .= "+{魔力修正}+{行使修正} ${name}行使\n"; }
       elsif($name =~ /歌/){ $text .= " 呪歌演奏\n"; }
       else                { $text .= " ${name}\n"; }
       
       foreach my $pow (@{$pows{$id}}) {
         if($id eq 'Bar'){ $pow += $::pc{'finaleEnhance'} || 0; }
-        $text .= "k${pow}[{魔法C}]+{$name}".($name =~ /魔/?'+{魔力修正}':'').addNum($::pc{'magicDamageAdd'.$id})."+{魔法D修正} ダメージ".($bot{'BCD'}?"／${name}":"")."\n";
-        if ($bot{'YTC'}) { $text .= "k${pow}[13]+{$name}" . ($name =~ /魔/?'+{魔力修正}':'') . "//" . addNum($::pc{'magicDamageAdd'.$id}) . "+{魔法D修正} 半減\n"; }
-        if ($bot{'BCD'}) { $text .= "k${pow}[13]+{$name}" . ($name =~ /魔/?'+{魔力修正}':'') . "h+("  . ($::pc{'magicDamageAdd'.$id} || 0) . "+{魔法D修正}) 半減／${name}\n"; }
+        $text .= "k${pow}[{魔法C}]+{$name}".($name =~ /魔/ ?'+{魔力修正}':'').addNum($::pc{'magicDamageAdd'.$id})."+{魔法D修正} ダメージ".($bot{'BCD'}?"／$name":"")."\n";
+        if ($bot{'YTC'}) { $text .= "k${pow}[13]+{$name}" . ($name =~ /魔/ ?'+{魔力修正}':'') . "//" . addNum($::pc{'magicDamageAdd'.$id}) . "+{魔法D修正} 半減\n"; }
+        if ($bot{'BCD'}) { $text .= "k${pow}[13]+{$name}" . ($name =~ /魔/ ?'+{魔力修正}':'') . "h+("  . ($::pc{'magicDamageAdd'.$id} || 0) . "+{魔法D修正}) 半減／${name}\n"; }
       }
       if($id eq 'Dru'){
         if($bot{'YTC'}){
-          $text .= "kソーンバッシュ+{$name}+{魔力修正} ダメージ\n"     if($::pc{'lvDru'} >=  3);
-          $text .= "kコングスマッシュ+{$name}+{魔力修正} ダメージ\n"   if($::pc{'lvDru'} >=  7);
-          $text .= "kボアラッシュ+{$name}+{魔力修正} ダメージ\n"       if($::pc{'lvDru'} >=  9);
-          $text .= "kマルサーヴラプレス+{$name}+{魔力修正} ダメージ\n" if($::pc{'lvDru'} >= 10);
-          $text .= "kルナアタック+{$name}+{魔力修正} ダメージ\n"       if($::pc{'lvDru'} >= 13);
-          $text .= "kダブルストンプ+{$name}+{魔力修正} ダメージ\n"     if($::pc{'lvDru'} >= 15);
+          $text .= "kウルフバイト+{$name}+{魔力修正}+{物理魔法D修正} 物理ダメージ\n"       if($::pc{'lvDru'} >=  1);
+          $text .= "kソーンバッシュ+{$name}+{魔力修正}+{物理魔法D修正} 物理ダメージ\n"     if($::pc{'lvDru'} >=  3);
+          $text .= "kコングスマッシュ+{$name}+{魔力修正}+{物理魔法D修正} 物理ダメージ\n"   if($::pc{'lvDru'} >=  7);
+          $text .= "kボアラッシュ+{$name}+{魔力修正}+{物理魔法D修正} 物理ダメージ\n"       if($::pc{'lvDru'} >=  9);
+          $text .= "kマルサーヴラプレス+{$name}+{魔力修正}+{物理魔法D修正} 物理ダメージ\n" if($::pc{'lvDru'} >= 10);
+          $text .= "kルナアタック+{$name}+{魔力修正}+{物理魔法D修正} 物理ダメージ\n"       if($::pc{'lvDru'} >= 13);
+          $text .= "kダブルストンプ+{$name}+{魔力修正}+{物理魔法D修正} 物理ダメージ\n"     if($::pc{'lvDru'} >= 15);
         }
         elsif ($bot{'BCD'}) {
-          $text .= "Dru[4,7,13]+{$name}+{魔力修正} ダメージ／ソーンバッシュ\n"   if($::pc{'lvDru'} >=  3);
-          $text .= "Dru[12,15,18]+{$name}+{魔力修正} ダメージ／コングスマッシュ\n" if($::pc{'lvDru'} >=  7);
-          $text .= "Dru[13,16,19]+{$name}+{魔力修正} ダメージ／ボアラッシュ\n" if($::pc{'lvDru'} >=  9);
-          $text .= "Dru[18,21,24]+{$name}+{魔力修正} ダメージ／マルサーヴラプレス\n" if($::pc{'lvDru'} >= 10);
-          $text .= "Dru[18,21,36]+{$name}+{魔力修正} ダメージ／ルナアタック\n" if($::pc{'lvDru'} >= 13);
-          $text .= "Dru[24,27,30]+{$name}+{魔力修正} ダメージ／ダブルストンプ\n" if($::pc{'lvDru'} >= 15);
+          $text .= "Dru[0,3,6]+{$name}+{魔力修正}+{物理魔法D修正} ダメージ／【ウルフバイト】\n"   if($::pc{'lvDru'} >=  3);
+          $text .= "Dru[4,7,13]+{$name}+{魔力修正}+{物理魔法D修正} ダメージ／【ソーンバッシュ】\n"   if($::pc{'lvDru'} >=  3);
+          $text .= "Dru[12,15,18]+{$name}+{魔力修正}+{物理魔法D修正} ダメージ／【コングスマッシュ】\n" if($::pc{'lvDru'} >=  7);
+          $text .= "Dru[13,16,19]+{$name}+{魔力修正}+{物理魔法D修正} ダメージ／【ボアラッシュ】\n" if($::pc{'lvDru'} >=  9);
+          $text .= "Dru[18,21,24]+{$name}+{魔力修正}+{物理魔法D修正} ダメージ／【マルサーヴラプレス】\n" if($::pc{'lvDru'} >= 10);
+          $text .= "Dru[18,21,36]+{$name}+{魔力修正}+{物理魔法D修正} ダメージ／【ルナアタック】\n" if($::pc{'lvDru'} >= 13);
+          $text .= "Dru[24,27,30]+{$name}+{魔力修正}+{物理魔法D修正} ダメージ／【ダブルストンプ】\n" if($::pc{'lvDru'} >= 15);
         }
       }
       
       foreach my $pow (@{$heals{$id}}) {
-        $text .= "k${pow}[13]+{$name}".($name =~ /魔/?'+{魔力修正}':'')." 回復量".($bot{'BCD'}?"／${name}":"")."\n"
+        $text .= "k${pow}[13]+{$name}".($name =~ /魔/ ?'+{魔力修正}':'')."+{回復量修正} 威力${pow}回復量".($bot{'BCD'}?"／${name}":"")."\n"
       }
       $text .= "\n";
     }
     
     # 攻撃
-    $text .= "### ■武器攻撃系\n";
-    $text .= "//命中修正=0\n";
-    $text .= "//C修正=0\n";
-    $text .= "//追加D修正=0\n";
-    $text .= "//必殺効果=0\n";
-    $text .= "//クリレイ=0\n";
+    foreach (1 .. $::pc{'weaponNum'}){
+      next if $::pc{'weapon'.$_.'Acc'}.$::pc{'weapon'.$_.'Rate'}.
+              $::pc{'weapon'.$_.'Crit'}.$::pc{'weapon'.$_.'Dmg'} eq '';
+      $text .= "### ■武器攻撃系\n";
+      $text .= "//命中修正=0\n";
+      $text .= "//C修正=0\n";
+      $text .= "//追加D修正=0\n";
+      $text .= "//必殺効果=0\n";
+      $text .= "//クリレイ=0\n";
+      last;
+    }
+    
+    foreach (1 .. $::pc{'weaponNum'}){
+      if($::pc{'weapon'.$_.'Category'} eq 'ガン'){
+        $text .= "//ガン追加D修正=0\n";
+        last;
+      }
+    }
     
     foreach (1 .. $::pc{'weaponNum'}){
       next if $::pc{'weapon'.$_.'Acc'}.$::pc{'weapon'.$_.'Rate'}.
               $::pc{'weapon'.$_.'Crit'}.$::pc{'weapon'.$_.'Dmg'} eq '';
+      next if (
+        $::pc{'weapon'.$_.'Name'}  eq $::pc{'weapon'.($_-1).'Name'}  &&
+        $::pc{'weapon'.$_.'Usage'} eq $::pc{'weapon'.($_-1).'Usage'} &&
+        $::pc{'weapon'.$_.'Acc'}   eq $::pc{'weapon'.($_-1).'Acc'}   &&
+        $::pc{'weapon'.$_.'Rate'}  eq $::pc{'weapon'.($_-1).'Rate'}  &&
+        $::pc{'weapon'.$_.'Crit'}  eq $::pc{'weapon'.($_-1).'Crit'}  &&
+        $::pc{'weapon'.$_.'Dmg'}   eq $::pc{'weapon'.($_-1).'Dmg'}
+      );
       
       $::pc{'weapon'.$_.'Name'} = $::pc{'weapon'.$_.'Name'} || $::pc{'weapon'.($_-1).'Name'};
-      $text .= "2d6+{命中$_}+{命中修正}";
-      $text .= " 命中力／$::pc{'weapon'.$_.'Name'}\n";
+      $text .= "2d+{命中$_}+{命中修正}";
+      $text .= " 命中力／$::pc{'weapon'.$_.'Name'}$::pc{'weapon'.$_.'Usage'}\n";
       
       $::pc{'weapon'.$_.'Crit'} =~ s/⑦|➆/7/;
       $::pc{'weapon'.$_.'Crit'} =~ s/⑧|➇/8/;
@@ -180,28 +210,70 @@ sub palettePreset {
       $::pc{'weapon'.$_.'Crit'} =~ s/⑪/11/;
       $::pc{'weapon'.$_.'Crit'} =~ s/⑫/12/;
       $::pc{'weapon'.$_.'Crit'} =~ s/⑬/13/;
-      if   ($bot{'YTC'} ){ $text .= "k$::pc{'weapon'.$_.'Rate'}\[$::pc{'weapon'.$_.'Crit'}+{C修正}\]+{追加D$_}+{追加D修正}{出目修正}"; }
-      elsif($bot{'BCD'} ){ $text .= "k$::pc{'weapon'.$_.'Rate'}\[($::pc{'weapon'.$_.'Crit'}+{C修正})\]+{追加D$_}+{追加D修正}{出目修正}"; }
-      
-      if($::pc{'weapon'.$_.'Name'} =~ /首切/ || $::pc{'weapon'.$_.'Note'} =~ /首切/){
-        $text .= $bot{'YTC'} ? '首切' : $bot{'BCD'} ? 'r5' : '';
+      if($::pc{'weapon'.$_.'Category'} eq 'ガン'){
+        my @power = (
+          { lv =>  1, p => 20, c => '' },
+          { lv =>  2, p => 20, c => -1 },
+          { lv =>  6, p => 30, c => '' },
+          { lv =>  7, p => 10, c => '' },
+          { lv =>  9, p => 30, c => -1 },
+          { lv => 12, p => 40, c => '' },
+          { lv => 15, p => 90, c => '' },
+        );
+        foreach my $bullet (sort {$a->{p} <=> $b->{p}} @power){
+          next if $::pc{'lvMag'} < $bullet->{lv};
+          $text .= "k$bullet->{p}\[";
+          $text .= "(" if $bot{'BCD'};
+          $text .= "$::pc{'weapon'.$_.'Crit'}$bullet->{c}";
+          $text .= ")" if $bot{'BCD'};
+          $text .= "\]+{追加D$_}+{ガン追加D修正}";
+          $text .= " ダメージ";
+          $text .= "\n";
+        }
+        my @heal = (
+          { lv =>  2, p =>  0 },
+          { lv => 10, p => 30 },
+          { lv => 13, p => 20 },
+        );
+        foreach my $bullet (sort {$a->{p} <=> $b->{p}} @heal){
+          next if $::pc{'lvMag'} < $bullet->{lv};
+          $text .= "k$bullet->{p}\[";
+          $text .= "(" if $bot{'BCD'};
+          $text .= "$::pc{'weapon'.$_.'Crit'}$bullet->{c}";
+          $text .= ")" if $bot{'BCD'};
+          $text .= "\]+{追加D$_}+{回復量修正}";
+          $text .= " 回復量";
+          $text .= "\n";
+        }
       }
-      $text .= " ダメージ";
-      $text .= "／$::pc{'weapon'.$_.'Name'}" if $bot{'BCD'};
-      $text .= "\n";
+      else {
+        $text .= "k$::pc{'weapon'.$_.'Rate'}\[";
+        $text .= "(" if $bot{'BCD'};
+        $text .= "$::pc{'weapon'.$_.'Crit'}+{C修正}";
+        $text .= ")" if $bot{'BCD'};
+        $text .= "\]+{追加D$_}+{追加D修正}{出目修正}";
+
+        if($::pc{'weapon'.$_.'Name'} =~ /首切/ || $::pc{'weapon'.$_.'Note'} =~ /首切/){
+          $text .= $bot{'YTC'} ? '首切' : $bot{'BCD'} ? 'r5' : '';
+        }
+        $text .= " ダメージ";
+        $text .= "／$::pc{'weapon'.$_.'Name'}$::pc{'weapon'.$_.'Usage'}" if $bot{'BCD'};
+        $text .= "\n";
+      }
+      
       $text .= "\n";
     }
-    $text .= "//出目修正=\$+{クリレイ}\#{必殺効果}\n";
+    $text .= "//出目修正=\$+{クリレイ}\#{必殺効果}\n" if $text =~ /■武器攻撃系/;
     # 抵抗回避
     $text .= "### ■抵抗回避\n";
     $text .= "//生命抵抗修正=0\n";
     $text .= "//精神抵抗修正=0\n";
     $text .= "//回避修正=0\n";
-    $text .= "2d6+{生命抵抗}+{生命抵抗修正} 生命抵抗力\n";
-    $text .= "2d6+{精神抵抗}+{精神抵抗修正} 精神抵抗力\n";
-    $text .= "2d6+{回避1}+{回避修正} 回避力".($::pc{'defenseTotal1Note'}?"／$::pc{'defenseTotal1Note'}":'')."\n";
-    $text .= "2d6+{回避2}+{回避修正} 回避力".($::pc{'defenseTotal2Note'}?"／$::pc{'defenseTotal2Note'}":'')."\n" if $::pc{'defenseTotal2Eva'} ne '';
-    $text .= "2d6+{回避3}+{回避修正} 回避力".($::pc{'defenseTotal3Note'}?"／$::pc{'defenseTotal3Note'}":'')."\n" if $::pc{'defenseTotal3Eva'} ne '';
+    $text .= "2d+{生命抵抗}+{生命抵抗修正} 生命抵抗力\n";
+    $text .= "2d+{精神抵抗}+{精神抵抗修正} 精神抵抗力\n";
+    $text .= "2d+{回避1}+{回避修正} 回避力".($::pc{'defenseTotal1Note'}?"／$::pc{'defenseTotal1Note'}":'')."\n";
+    $text .= "2d+{回避2}+{回避修正} 回避力".($::pc{'defenseTotal2Note'}?"／$::pc{'defenseTotal2Note'}":'')."\n" if $::pc{'defenseTotal2Eva'} ne '';
+    $text .= "2d+{回避3}+{回避修正} 回避力".($::pc{'defenseTotal3Note'}?"／$::pc{'defenseTotal3Note'}":'')."\n" if $::pc{'defenseTotal3Eva'} ne '';
     $text .= "\n";
     
     #
@@ -212,11 +284,11 @@ sub palettePreset {
     $text .= "//生命抵抗修正=0\n";
     $text .= "//精神抵抗修正=0\n";
     $text .= "//回避修正=0\n";
-    $text .= "2d6+{生命抵抗}+{生命抵抗修正} 生命抵抗力\n";
-    $text .= "2d6+{精神抵抗}+{精神抵抗修正} 精神抵抗力\n";
+    $text .= "2d+{生命抵抗}+{生命抵抗修正} 生命抵抗力\n";
+    $text .= "2d+{精神抵抗}+{精神抵抗修正} 精神抵抗力\n";
     foreach (1 .. $::pc{'statusNum'}){
       (my $part   = $::pc{'status'.$_.'Style'}) =~ s/^.+?[（(](.+?)[)）]$/$1/;
-      $text .= "2d6+{回避$_}+{回避修正} 回避／".$part."\n" if $::pc{'status'.$_.'Evasion'} ne '';
+      $text .= "2d+{回避$_}+{回避修正} 回避／".$part."\n" if $::pc{'status'.$_.'Evasion'} ne '';
     }
     $text .= "\n";
 
@@ -226,7 +298,7 @@ sub palettePreset {
       (my $part   = $::pc{'status'.$_.'Style'}) =~ s/^.+?[（(](.+?)[)）]$/$1/;
       (my $weapon = $::pc{'status'.$_.'Style'}) =~ s/^(.+?)[（(].+?[)）]$/$1/;
       if($part ne $weapon){ $weapon = $::pc{'status'.$_.'Style'}; }
-      $text .= "2d6+{命中$_}+{命中修正} 命中力／$weapon\n" if $::pc{'status'.$_.'Accuracy'} ne '';
+      $text .= "2d+{命中$_}+{命中修正} 命中力／$weapon\n" if $::pc{'status'.$_.'Accuracy'} ne '';
       $text .= "{ダメージ$_}+{打撃修正} ダメージ／".$weapon."\n" if $::pc{'status'.$_.'Damage'} ne '';
       $text .= "\n";
     }
@@ -242,7 +314,7 @@ sub palettePreset {
       (?:魔力)
       ([0-9]+)
       [(（][0-9]+[）)]
-      /$text .= "2d6+{$+{name}} $+{name}\n\n";/megix;
+      /$text .= "2d+{$+{name}} $+{name}\n\n";/megix;
     
     $skills =~ s/^
       (?<head>
@@ -261,7 +333,7 @@ sub palettePreset {
       (?=^$skill_mark|^●|\z)
       /
       $text .= convertMark($+{mark})."$+{name}／$+{fix}$+{other}\n"
-            .($+{base} ne '' ?"2d6+{$+{name}} ".convertMark($+{mark})."$+{name}$+{other}\n":'')
+            .($+{base} ne '' ?"2d+{$+{name}} ".convertMark($+{mark})."$+{name}$+{other}\n":'')
             .skillNote($+{head},$+{name},$+{note})."\n";
       /megix;
   }
@@ -341,12 +413,12 @@ sub paletteProperties {
   ## PC
   if  (!$type){
     push @propaties, "### ■能力値";
-    push @propaties, "//器用度=$::pc{'sttDex'}".($::pc{'sttAddA'}?"+$::pc{'sttAddA'}":"");
-    push @propaties, "//敏捷度=$::pc{'sttAgi'}".($::pc{'sttAddB'}?"+$::pc{'sttAddB'}":"");
-    push @propaties, "//筋力=$::pc{'sttStr'}".($::pc{'sttAddC'}?"+$::pc{'sttAddC'}":"");
-    push @propaties, "//生命力=$::pc{'sttVit'}".($::pc{'sttAddD'}?"+$::pc{'sttAddD'}":"");
-    push @propaties, "//知力=$::pc{'sttInt'}".($::pc{'sttAddE'}?"+$::pc{'sttAddE'}":"");
-    push @propaties, "//精神力=$::pc{'sttMnd'}".($::pc{'sttAddF'}?"+$::pc{'sttAddF'}":"");
+    push @propaties, "//器用度=$::pc{'sttDex'}".addNum($::pc{'sttAddA'});
+    push @propaties, "//敏捷度=$::pc{'sttAgi'}".addNum($::pc{'sttAddB'});
+    push @propaties, "//筋力=$::pc{'sttStr'}"  .addNum($::pc{'sttAddC'});
+    push @propaties, "//生命力=$::pc{'sttVit'}".addNum($::pc{'sttAddD'});
+    push @propaties, "//知力=$::pc{'sttInt'}"  .addNum($::pc{'sttAddE'});
+    push @propaties, "//精神力=$::pc{'sttMnd'}".addNum($::pc{'sttAddF'});
     push @propaties, "### ■技能レベル";
     push @propaties, "//冒険者レベル=$::pc{'level'}";
     my @classes_en;
@@ -453,7 +525,7 @@ sub paletteProperties {
         elsif($::pc{'weapon'.$_.'Category'} eq 'ガン'      ){ $basetext = "{魔動機術}"; }
         else { $basetext = "{$::pc{'weapon'.$_.'Class'}}+({筋力})/6"; }
         my $mastery = $::pc{'mastery' . ucfirst($data::weapon_id{ $::pc{'weapon'.$_.'Category'} }) };
-           $basetext .= $mastery ? "+$mastery" : '';
+           $basetext .= addNum($mastery);
         push @propaties, "//追加D$_=(${basetext}+".($::pc{'weapon'.$_.'Dmg'}||0).")";
       }
 
@@ -484,15 +556,32 @@ sub paletteProperties {
     push @propaties, "### ■パラメータ";
     push @propaties, "//LV=$::pc{'lv'}";
     push @propaties, '';
-    push @propaties, "//生命抵抗=$::pc{'vitResist'}";
-    push @propaties, "//精神抵抗=$::pc{'mndResist'}";
+    if($::pc{'mount'}){
+        if($::pc{'lv'}){
+          my $i = ($::pc{'lv'} - $::pc{'lvMin'} +1);
+          my $num = $i > 1 ? "1-$i" : '1';
+          push @propaties, "//生命抵抗=$::pc{'status'.$num.'Vit'}";
+          push @propaties, "//精神抵抗=$::pc{'status'.$num.'Mnd'}";
+        }
+    }
+    else {
+      push @propaties, "//生命抵抗=$::pc{'vitResist'}";
+      push @propaties, "//精神抵抗=$::pc{'mndResist'}";
+    }
     
     push @propaties, '';
     foreach (1 .. $::pc{'statusNum'}){
-      push @propaties, "//部位$_=$::pc{'status'.$_.'Style'}";
-      push @propaties, "//命中$_=$::pc{'status'.$_.'Accuracy'}" if $::pc{'status'.$_.'Accuracy'} ne '';
-      push @propaties, "//ダメージ$_=$::pc{'status'.$_.'Damage'}" if $::pc{'status'.$_.'Damage'} ne '';
-      push @propaties, "//回避$_=$::pc{'status'.$_.'Evasion'}" if $::pc{'status'.$_.'Evasion'} ne '';
+      my $num = $_;
+      if($::pc{'mount'}){
+        if($::pc{'lv'}){
+          my $i = ($::pc{'lv'} - $::pc{'lvMin'} +1);
+          $_ .= $i > 1 ? "-$i" : '';
+        }
+      }
+      push @propaties, "//部位$num=$::pc{'status'.$num.'Style'}";
+      push @propaties, "//命中$num=$::pc{'status'.$_.'Accuracy'}" if $::pc{'status'.$_.'Accuracy'} ne '';
+      push @propaties, "//ダメージ$num=$::pc{'status'.$_.'Damage'}" if $::pc{'status'.$_.'Damage'} ne '';
+      push @propaties, "//回避$num=$::pc{'status'.$_.'Evasion'}" if $::pc{'status'.$_.'Evasion'} ne '';
       push @propaties, '';
     }
     my $skills = $::pc{'skills'};
