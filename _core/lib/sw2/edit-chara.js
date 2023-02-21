@@ -1600,7 +1600,7 @@ let mysticMagicSortable = Sortable.create(document.querySelector('#mystic-magic-
   handle: '.handle',
   ghostClass: 'sortable-ghost',
   onUpdate: function (evt) {
-    const order = mysticArtsSortable.toArray();
+    const order = mysticMagicSortable.toArray();
     let num = 1;
     for(let id of order) {
       if(document.getElementById(id)){
