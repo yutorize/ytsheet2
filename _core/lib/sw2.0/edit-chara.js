@@ -612,19 +612,6 @@ function addHonorItems(){
   target.appendChild(tbody, target);
   form.honorItemsNum.value = num;
 }
-// ソート
-honorSortable.option("onUpdate", function (evt) {
-    const order = honorSortable.toArray();
-    let num = 1;
-    for(let id of order) {
-      if(document.getElementById(id)){
-        document.querySelector(`#${id} [type="text"]`  ).setAttribute('name',`honorItem${num}`);
-        document.querySelector(`#${id} [type="number"]`).setAttribute('name',`honorItem${num}Pt`);
-        document.querySelector(`#${id} select`         ).setAttribute('name',`honorItem${num}PtType`);
-        num++;
-      }
-    }
-});
 // 不名誉欄 ----------------------------------------
 function calcDishonor(){
 }
@@ -651,18 +638,6 @@ function addDishonorItems(){
   target.appendChild(tbody, target);
   form.dishonorItemsNum.value = num;
 }
-dishonorSortable.option("onUpdate", function (evt) {
-    const order = dishonorSortable.toArray();
-    let num = 1;
-    for(let id of order) {
-      if(document.getElementById(id)){
-        document.querySelector(`#${id} [type="text"]`  ).setAttribute('name',`honorItem${num}`);
-        document.querySelector(`#${id} [type="number"]`).setAttribute('name',`honorItem${num}Pt`);
-        document.querySelector(`#${id} select`         ).setAttribute('name',`honorItem${num}PtType`);
-        num++;
-      }
-    }
-});
 // 履歴欄 ----------------------------------------
 // 追加
 function addHistory(){

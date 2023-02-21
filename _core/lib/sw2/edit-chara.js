@@ -1842,6 +1842,7 @@ let honorSortable = Sortable.create(document.querySelector('#honor-items-table')
       if(document.getElementById(id)){
         document.querySelector(`#${id} [type="text"]`  ).setAttribute('name',`honorItem${num}`);
         document.querySelector(`#${id} [type="number"]`).setAttribute('name',`honorItem${num}Pt`);
+        if(modeZero){ document.querySelector(`#${id} select`).setAttribute('name',`honorItem${num}PtType`); }
         num++;
       }
     }
@@ -1891,6 +1892,7 @@ let dishonorSortable = Sortable.create(document.querySelector('#dishonor-items-t
       if(document.getElementById(id)){
         document.querySelector(`#${id} [type="text"]`  ).setAttribute('name',`dishonorItem${num}`);
         document.querySelector(`#${id} [type="number"]`).setAttribute('name',`dishonorItem${num}Pt`);
+        if(modeZero){ document.querySelector(`#${id} select`).setAttribute('name',`dishonorItem${num}PtType`); }
         num++;
       }
     }
