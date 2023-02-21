@@ -281,7 +281,7 @@ foreach (@taxa,['騎獣', 'XX' , '']){
         $_ == 1 ||
         $_ == $lastpage
       ){
-        $navbar .= '<a href="./?type=m&taxa='.uri_escape_utf8($taxa_query).$q_links.'&page='.$_.'&sort='.$::in{'sort'}.'">'.$_.'</a> '
+        $navbar .= '<a href="./?type=m&taxa='.uri_escape_utf8($taxa_query||'all').$q_links.'&page='.$_.'&sort='.$::in{'sort'}.'">'.$_.'</a> '
       }
       else { $navbar .= '...' }
     }
@@ -295,7 +295,7 @@ foreach (@taxa,['騎獣', 'XX' , '']){
     "NAME" => $name,
     "NUM" => $count{$name},
     "MOUNT" => ($name eq '騎獣' ? 1 : 0),
-    "Characters" => [@{$grouplist{$name}}],
+    "Characters" => ($grouplist{$name} ? [@{$grouplist{$name}}] : []),
     "NAV" => $navbar,
   });
 }
