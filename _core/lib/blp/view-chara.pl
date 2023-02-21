@@ -378,10 +378,6 @@ else {
   $SHEET->param(titleName => tag_delete name_plain($pc{'characterName'}||"“$pc{'aka'}”"));
 }
 
-### 種族名 --------------------------------------------------
-$pc{'race'} =~ s/［.*］//g;
-$SHEET->param(race => $pc{'race'});
-
 ### 画像 --------------------------------------------------
 my $imgsrc; my $images;
 if($pc{'image'}){
