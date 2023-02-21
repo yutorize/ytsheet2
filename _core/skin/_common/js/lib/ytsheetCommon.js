@@ -83,13 +83,13 @@ io.github.shunshun94.trpg.ytsheet.isNumberValue = (value) => {
 	return Number(value) || (value === '0');
 };
 
-io.github.shunshun94.trpg.ytsheet.getPicture = (src) => {
+io.github.shunshun94.trpg.ytsheet.getPicture = (src, fileName) => {
 	return new Promise((resolve, reject) => {
 		let xhr = new XMLHttpRequest();
 		xhr.open('GET', src, true);
 		xhr.responseType = "blob";
 		xhr.onload = (e) => {
-			const fileName = src.slice(src.lastIndexOf("/") + 1);
+			fileName ||= src.slice(src.lastIndexOf("/") + 1);
 			const currentTarget = e.currentTarget;
 			if(! Boolean(jsSHA)) {
 				console.warn('To calculate SHA256 value of the picture, jsSHA is required: https://github.com/Caligatio/jsSHA');

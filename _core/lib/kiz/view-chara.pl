@@ -113,7 +113,7 @@ if(!$::in{'log'}){
         $pc{'fromPartner1MarkerColor'}    = $pr{'toPartner'.$pc{'partnerOrder'}.'MarkerColor'};
         $pc{'fromPartner1Emotion1'}     = $pr{'toPartner'.$pc{'partnerOrder'}.'Emotion1'};
         $pc{'fromPartner1Emotion2'}     = $pr{'toPartner'.$pc{'partnerOrder'}.'Emotion2'};
-        $pc{'p1_imageSrc'} = $pr{'imageURL'}."?$pr{'imageUpdate'}";
+        $pc{'p1_imageSrc'} = $pr{'imageURL'};
       }
       if($pr{'forbidden'}){
         $pc{'partner1Name'} = noiseText(6,14);
@@ -393,13 +393,13 @@ if($pc{'image'}){
     $imgsrc = "./?id=$::in{'id'}&mode=image&cache=$pc{'imageUpdate'}";
   }
   $SHEET->param(imageSrc => $imgsrc);
-  $images     .= "'1': \"".($pc{'modeDownload'} ? urlToBase64($imgsrc) : $imgsrc)."\", ";
+  $images     .= "'1': \"".($pc{'modeDownload'} ? urlToBase64("${set::char_dir}${main::file}/image.$pc{'image'}") : $imgsrc)."\", ";
 }
 if($pc{'p1_image'}){
-  $images     .= "'p1': \"".($pc{'modeDownload'} ? urlToBase64($pc{'p1_imageSrc'}) : $pc{'p1_imageSrc'})."\", ";
+  $images     .= "'p1': \"".($pc{'modeDownload'} ? urlToBase64($pc{'p1_imageRawURL'}) : $pc{'p1_imageSrc'})."\", ";
 }
 if($pc{'p2_image'}){
-  $images     .= "'p2': \"".($pc{'modeDownload'} ? urlToBase64($pc{'p2_imageSrc'}) : $pc{'p2_imageSrc'})."\", ";
+  $images     .= "'p2': \"".($pc{'modeDownload'} ? urlToBase64($pc{'p2_imageRawURL'}) : $pc{'p2_imageSrc'})."\", ";
 }
 
 foreach ('','p1_','p2_'){

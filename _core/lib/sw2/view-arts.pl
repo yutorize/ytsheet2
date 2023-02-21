@@ -383,7 +383,7 @@ if($pc{'image'}){
     $imgsrc = "./?id=$::in{'id'}&mode=image&cache=$pc{'imageUpdate'}";
   }
   $SHEET->param(imageSrc => $imgsrc);
-  $SHEET->param(images    => "'1': \"".($pc{'modeDownload'} ? urlToBase64($imgsrc) : $imgsrc)."\", ");
+  $SHEET->param(images    => "'1': \"".($pc{'modeDownload'} ? urlToBase64("${set::arts_dir}${main::file}/image.$pc{'image'}") : $imgsrc)."\", ");
 }
 
 ### OGP --------------------------------------------------

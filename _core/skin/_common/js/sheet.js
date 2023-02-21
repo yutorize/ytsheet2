@@ -124,7 +124,7 @@ function copyToClipboard(text) {
 async function downloadAsUdonarium() {
   const characterDataJson = await getJsonData();
   const characterId = characterDataJson.characterName || characterDataJson.monsterName || characterDataJson.aka || '無題';
-  const image = await io.github.shunshun94.trpg.ytsheet.getPicture(characterDataJson.imageURL || defaultImage);
+  const image = await io.github.shunshun94.trpg.ytsheet.getPicture(characterDataJson.imageURL || defaultImage, "image."+characterDataJson.image);
   const udonariumXml = io.github.shunshun94.trpg.udonarium[`generateCharacterXmlFromYtSheet2${generateType}`](characterDataJson, location.href, image.hash);
   const udonariumUrl = await generateUdonariumZipFile((characterDataJson.characterName||characterDataJson.aka), udonariumXml, image);
   downloadFile(`udonarium_data_${characterId}.zip`, udonariumUrl);
@@ -224,7 +224,7 @@ async function downloadAsFullSet(){
   const characterDataJson = await getJsonData();
   // ユドナリウム
   if(document.getElementById('downloadlist-udonarium')){
-    const image = await io.github.shunshun94.trpg.ytsheet.getPicture(characterDataJson.imageURL || defaultImage);
+    const image = await io.github.shunshun94.trpg.ytsheet.getPicture(characterDataJson.imageURL || defaultImage, "image."+characterDataJson.image);
     const udonariumXml = io.github.shunshun94.trpg.udonarium[`generateCharacterXmlFromYtSheet2${generateType}`](characterDataJson, location.href, image.hash);
     const udonariumUrl = await generateUdonariumZipFile((characterDataJson.characterName||characterDataJson.aka), udonariumXml, image);
     zip.file(name+'_udonarium.zip', await JSZipUtils.getBinaryContent(udonariumUrl));

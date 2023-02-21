@@ -190,9 +190,12 @@ sub styleToHtml {
 use MIME::Base64;
 sub urlToBase64 {
   my $url = shift;
+  my $ext = shift;
   $url =~ s#\?.*?$##;
-  (my $ext = $url) =~ s/^.+\.(png|jpg|gif|webp)$/$1/;
-  if ($ext eq "jpg") { $ext ="jpeg"; }
+  if(!$ext){
+    ($ext = $url) =~ s/^.+\.(png|jpg|gif|webp)$/$1/;
+    if ($ext eq "jpg") { $ext ="jpeg"; }
+  }
   open(my $IMG, '<', "$url");
   binmode $IMG;
   my $binary; my $buffer;
