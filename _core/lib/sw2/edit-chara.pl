@@ -64,6 +64,13 @@ elsif($mode eq 'blanksheet'){
     if($data::races{$pc{'race'}}{'variant'}){
       $pc{'race'} .= "（$data::races{$pc{'race'}}{'variantSort'}[0]）";
     }
+    if($::in{'making_num'}){
+      if($::in{'making_trial'}){
+        $pc{'freeHistory'} = "[[こちら>./?mode=making&num=$::in{'making_num'}]]の$::in{'making_trial'}番目のステータスを採用しています";
+      }else{
+        $pc{'freeHistory'} = "[[こちら>./?mode=making&num=$::in{'making_num'}]]のステータスを採用しています";
+      }
+    }
   }
   
   $pc{"defTotal1CheckArmour1"} = $pc{"defTotal1CheckShield1"} = $pc{"defTotal1CheckDefOther1"} = $pc{"defTotal1CheckDefOther2"} = $pc{"defTotal1CheckDefOther3"} = 1;

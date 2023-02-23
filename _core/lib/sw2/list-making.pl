@@ -65,7 +65,9 @@ foreach my $data (@lines) {
   
   my $adventurer = ($race =~ s/（冒険者）//) ? 1 : 0;
   my @datalist;
+  my $trial = 0;
   foreach my $stt_data (split(/\//, $stt)){
+    $trial++;
     my ($tec, $phy, $spi, $stt_A, $stt_B, $stt_C, $stt_D, $stt_E, $stt_F) = split(/,/, $stt_data);
     
     my $dicetotal = $data::races{$race}{'dice'}{'A'}
@@ -114,6 +116,8 @@ foreach my $data (@lines) {
       "TOTAL" => $stt_A + $stt_B + $stt_C + $stt_D + $stt_E + $stt_F + ($tec + $phy + $spi) * 2 + $addtotal,
       "URLRACE" => uri_escape_utf8($race),
       "URLSTT" => $url,
+      "NUM" => $num,
+      "TRIAL" => $trial
     });
   }
   my ($sec, $min, $hour, $day, $mon, $year) = localtime($date);
