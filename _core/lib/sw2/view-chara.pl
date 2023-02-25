@@ -4,6 +4,7 @@ use strict;
 use utf8;
 use open ":utf8";
 use HTML::Template;
+use URI;
 
 ### データ読み込み ###################################################################################
 require $set::data_class;
@@ -1013,7 +1014,7 @@ if($pc{'imageCopyrightURL'}){
 
 ### OGP --------------------------------------------------
 $SHEET->param(ogUrl => url().($::in{'url'} ? "?url=$::in{'url'}" : "?id=$::in{'id'}"));
-if($pc{'image'}) { $SHEET->param(ogImg => url()."/".$imgsrc); }
+if($pc{'image'}) { $SHEET->param(ogImg => URI->new_abs($imgsrc, url())); }
 $SHEET->param(ogDescript => tag_delete "種族:$pc{'race'}　性別:$pc{'gender'}　年齢:$pc{'age'}　技能:${class_text}");
 
 ### バージョン等 --------------------------------------------------

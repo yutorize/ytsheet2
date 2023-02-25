@@ -4,6 +4,7 @@ use strict;
 use utf8;
 use open ":utf8";
 use HTML::Template;
+use URI;
 
 ### データ読み込み ###################################################################################
 require $set::data_races;
@@ -203,7 +204,7 @@ $SHEET->param(imageSrc => "${set::mons_dir}${main::file}/image.$pc{'image'}?$pc{
 
 ### OGP --------------------------------------------------
 $SHEET->param(ogUrl => url().($::in{'url'} ? "?url=$::in{'url'}" : "?id=$::in{'id'}"));
-#if($pc{'image'}) { $SHEET->param(ogImg => url()."/".$imgsrc); }
+#if($pc{'image'}) { $SHEET->param(ogImg => URI->new_abs($imgsrc, url())); }
 $SHEET->param(ogDescript => "レベル:$pc{'lv'}　分類:$pc{'taxa'}".($pc{'partsNum'}>1?"　部位数:$pc{'partsNum'}":'')."　知名度:$pc{'reputation'}／$pc{'reputation+'}");
 
 ### バージョン等 --------------------------------------------------

@@ -4,6 +4,7 @@ use strict;
 use utf8;
 use open ":utf8";
 use HTML::Template;
+use URI;
 
 ### データ読み込み ###################################################################################
 # なし
@@ -360,7 +361,7 @@ if($pc{'image'}){
 
 ### OGP --------------------------------------------------
 $SHEET->param(ogUrl => url().($::in{'url'} ? "?url=$::in{'url'}" : "?id=$::in{'id'}"));
-if($pc{'image'}) { $SHEET->param(ogImg => url()."/".$imgsrc); }
+if($pc{'image'}) { $SHEET->param(ogImg => URI->new_abs($imgsrc, url())); }
 {
   my $sub; my $category;
   if($pc{'category'} eq 'magic'){

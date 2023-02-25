@@ -4,6 +4,7 @@ use strict;
 use utf8;
 use open ":utf8";
 use HTML::Template;
+use URI;
 
 ### データ読み込み ###################################################################################
 # なし
@@ -424,7 +425,7 @@ $SHEET->param(images    => $images);
 
 ### OGP --------------------------------------------------
 $SHEET->param(ogUrl => url().($::in{'url'} ? "?url=$::in{'url'}" : "?id=$::in{'id'}"));
-if($pc{'image'}) { $SHEET->param(ogImg => url()."/".$imgsrc); }
+if($pc{'image'}) { $SHEET->param(ogImg => URI->new_abs($imgsrc, url())); }
 $SHEET->param(ogDescript => tag_delete "ファクター:$pc{'factor'}／$pc{'factorCore'}／$pc{'factorStyle'}　性別:$pc{'gender'}　年齢:$pc{'age'}　".($pc{'factor'} eq '吸血鬼' ? '欠落':'喪失').":$pc{'missing'}　所属:$pc{'belong'}");
 
 ### バージョン等 --------------------------------------------------
