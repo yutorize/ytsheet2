@@ -489,8 +489,10 @@ sub data_calc {
       my $value = $st{$c_id.$data{$p_id}{'stt'}} + $pc{'pack'.$c_id.$p_id.'Add'} + $auto;
       $pc{'pack'.$c_id.$p_id} = $value;
       $pc{'pack'.$c_id.$p_id.'Auto'} = $auto;
-      if($data{$p_id}{'monsterLore'}){ push @pack_lore, $value }
-      if($data{$p_id}{'initiative'} ){ push @pack_init, $value }
+      if($pc{'lv'.$c_id}){
+        if($data{$p_id}{'monsterLore'}){ push @pack_lore, $value }
+        if($data{$p_id}{'initiative'} ){ push @pack_init, $value }
+      }
     }
   }
 
