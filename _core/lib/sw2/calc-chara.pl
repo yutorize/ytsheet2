@@ -112,6 +112,9 @@ sub data_calc {
     $pc{'honor'}    -= $pc{'honorOffset'};
     $pc{'dishonor'} -= $pc{'honorOffset'};
   }
+  ## 冒険者ランク
+  if($pc{'rank'} !~ /★$/ || $pc{'rankStar'} <= 1){ $pc{'rankStar'} = '' }
+  if($pc{'rank'} =~ /★$/ && $pc{'rankStar'} >= 2){ $pc{'honor'} -= 500 * ($pc{'rankStar'}-1) }
 
   ## 経験点消費
   my @expA = ( 0, 1000, 2000, 3500, 5000, 7000, 9500, 12500, 16500, 21500, 27500, 35000, 44000, 54500, 66500, 80000, 95000, 125000 );

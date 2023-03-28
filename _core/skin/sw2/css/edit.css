@@ -747,6 +747,15 @@ option.zero-data::before {
   text-align: right;
 }
 
+#honor {
+  grid-template-columns: .95fr 1.05fr;
+}
+#honor-rank {
+  display: flex;
+}
+#honor-rank > input {
+  flex-basis: 3.5em;
+}
 
 .honor-items table td.handle::before {
   display: block;
