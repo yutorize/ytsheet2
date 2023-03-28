@@ -341,6 +341,8 @@ function encroachBonusType(){
   let thHead  = document.createElement("th"); thHead.textContent  = ''       ; document.getElementById('enc-table-head' ).prepend(thHead);
   let thBonus = document.createElement("th"); thBonus.textContent = 'ダイス' ; document.getElementById('enc-table-dices').prepend(thBonus);
   let thLevel = document.createElement("th"); thLevel.textContent = 'Efct.Lv'; document.getElementById('enc-table-level').prepend(thLevel);
+
+  document.getElementById('combo').classList.toggle('original-renegade-mode', OR); //コンボ欄5行目ON/OFF
   
   //encroachBonusSet(form.currentEncroach.value);
 }
