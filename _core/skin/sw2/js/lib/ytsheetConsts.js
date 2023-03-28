@@ -44,6 +44,7 @@ io.github.shunshun94.trpg.ytsheet.consts.skills = {
 	lvGra : 'グラップラー',
 	lvFen : 'フェンサー',
 	lvSho : 'シューター',
+	lvBat : 'バトルダンサー',
 	lvSor : 'ソーサラー',
 	lvCon : 'コンジャラー',
 	lvPri : 'プリースト',
