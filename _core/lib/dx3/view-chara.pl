@@ -428,6 +428,7 @@ foreach (1 .. $pc{'comboNum'}){
   if(!$pc{'combo'.$_.'Condition2'}){ $blankrow++; }
   if(!$pc{'combo'.$_.'Condition3'}){ $blankrow++; }
   if(!$pc{'combo'.$_.'Condition4'}){ $blankrow++; }
+  if(!$pc{'combo'.$_.'Condition5'}){ $blankrow++; }
   push(@combos, {
     "NAME"     => textShrink(15,17,19,23,$pc{'combo'.$_.'Name'}),
     "COMBO"    => textCombo($pc{'combo'.$_.'Combo'}),
@@ -458,6 +459,11 @@ foreach (1 .. $pc{'comboNum'}){
     "CRIT4"      => $pc{'combo'.$_.'Crit4'},
     "ATK4"       => $pc{'combo'.$_.'Atk4'},
     "FIXED4"     => $pc{'combo'.$_.'Fixed4'},
+    "CONDITION5" => $pc{'combo'.$_.'Condition5'},
+    "DICE5"      => $pc{'combo'.$_.'Dice5'},
+    "CRIT5"      => $pc{'combo'.$_.'Crit5'},
+    "ATK5"       => $pc{'combo'.$_.'Atk5'},
+    "FIXED5"     => $pc{'combo'.$_.'Fixed5'},
     "BLANKROW"   => $blankrow,
   });
 }

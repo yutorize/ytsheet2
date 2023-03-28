@@ -120,7 +120,7 @@ sub data_calc {
     if($pc{'comboCalcOff'}){
       $lv = 0; $stt = 0;
     }
-    foreach (1..4) {
+    foreach (1..5) {
       my $dadd = $pc{"combo${num}DiceAdd".$_};
       my $fadd = $pc{"combo${num}FixedAdd".$_};
       $pc{"combo${num}Dice" .$_} = ($stt && $dadd) ? "$stt+$dadd" : ($stt||$dadd) if !$pc{"combo${num}Dice" .$_};

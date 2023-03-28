@@ -777,7 +777,7 @@ function calcCombo(num){
     return [lv, stt];
   })();
   
-  for (const i of [1,2,3,4]){
+  for (const i of [1,2,3,4,5]){
     document.getElementById(`combo${num}Stt${i}`).innerHTML = stt;
     document.getElementById(`combo${num}SkillLv${i}`).innerHTML = lv;
   }
@@ -847,6 +847,14 @@ function addCombo(){
       <dd id="combo${num}SkillLv4"></dd>
       <dd><input name="combo${num}FixedAdd4"  type="text"></dd>
       <dd><input name="combo${num}Atk4"       type="text"></dd>
+
+      <dd><input name="combo${num}Condition5" type="text"></dd>
+      <dd id="combo${num}Stt5"></dd>
+      <dd><input name="combo${num}DiceAdd5"   type="text"></dd>
+      <dd><input name="combo${num}Crit5"      type="text"></dd>
+      <dd id="combo${num}SkillLv5"></dd>
+      <dd><input name="combo${num}FixedAdd5"  type="text"></dd>
+      <dd><input name="combo${num}Atk5"       type="text"></dd>
     </dl>
     <p class="combo-note"><textarea name="combo${num}Note" rows="3" placeholder="解説"></textarea></p>
   `;
@@ -895,32 +903,39 @@ let comboSortable = Sortable.create(document.getElementById('combo-list'), {
         document.querySelector(`#${id} [name$="Condition2"]`).setAttribute('name',`combo${num}Condition2`);
         document.querySelector(`#${id} [name$="Condition3"]`).setAttribute('name',`combo${num}Condition3`);
         document.querySelector(`#${id} [name$="Condition4"]`).setAttribute('name',`combo${num}Condition4`);
+        document.querySelector(`#${id} [name$="Condition5"]`).setAttribute('name',`combo${num}Condition5`);
         document.querySelector(`#${id} [name$="DiceAdd1"]`  ).setAttribute('name',`combo${num}DiceAdd1`);
         document.querySelector(`#${id} [name$="DiceAdd2"]`  ).setAttribute('name',`combo${num}DiceAdd2`);
         document.querySelector(`#${id} [name$="DiceAdd3"]`  ).setAttribute('name',`combo${num}DiceAdd3`);
         document.querySelector(`#${id} [name$="DiceAdd4"]`  ).setAttribute('name',`combo${num}DiceAdd4`);
+        document.querySelector(`#${id} [name$="DiceAdd5"]`  ).setAttribute('name',`combo${num}DiceAdd5`);
         document.querySelector(`#${id} [name$="Crit1"]`     ).setAttribute('name',`combo${num}Crit1`);
         document.querySelector(`#${id} [name$="Crit2"]`     ).setAttribute('name',`combo${num}Crit2`);
         document.querySelector(`#${id} [name$="Crit3"]`     ).setAttribute('name',`combo${num}Crit3`);
         document.querySelector(`#${id} [name$="Crit4"]`     ).setAttribute('name',`combo${num}Crit4`);
+        document.querySelector(`#${id} [name$="Crit5"]`     ).setAttribute('name',`combo${num}Crit5`);
         document.querySelector(`#${id} [name$="Atk1"]`      ).setAttribute('name',`combo${num}Atk1`);
         document.querySelector(`#${id} [name$="Atk2"]`      ).setAttribute('name',`combo${num}Atk2`);
         document.querySelector(`#${id} [name$="Atk3"]`      ).setAttribute('name',`combo${num}Atk3`);
         document.querySelector(`#${id} [name$="Atk4"]`      ).setAttribute('name',`combo${num}Atk4`);
+        document.querySelector(`#${id} [name$="Atk5"]`      ).setAttribute('name',`combo${num}Atk5`);
         document.querySelector(`#${id} [name$="FixedAdd1"]` ).setAttribute('name',`combo${num}FixedAdd1`);
         document.querySelector(`#${id} [name$="FixedAdd2"]` ).setAttribute('name',`combo${num}FixedAdd2`);
         document.querySelector(`#${id} [name$="FixedAdd3"]` ).setAttribute('name',`combo${num}FixedAdd3`);
         document.querySelector(`#${id} [name$="FixedAdd4"]` ).setAttribute('name',`combo${num}FixedAdd4`);
+        document.querySelector(`#${id} [name$="FixedAdd5"]` ).setAttribute('name',`combo${num}FixedAdd5`);
         document.querySelector(`#${id} [name$="Skill"]`   ).setAttribute('oninput',`calcCombo(${num})`);
         document.querySelector(`#${id} [name$="Stt"]`     ).setAttribute('oninput',`calcCombo(${num})`);
         document.querySelector(`#${id} [id$="Stt1"]`    ).setAttribute('id',`combo${num}Stt1`);
         document.querySelector(`#${id} [id$="Stt2"]`    ).setAttribute('id',`combo${num}Stt2`);
         document.querySelector(`#${id} [id$="Stt3"]`    ).setAttribute('id',`combo${num}Stt3`);
         document.querySelector(`#${id} [id$="Stt4"]`    ).setAttribute('id',`combo${num}Stt4`);
+        document.querySelector(`#${id} [id$="Stt5"]`    ).setAttribute('id',`combo${num}Stt5`);
         document.querySelector(`#${id} [id$="SkillLv1"]`).setAttribute('id',`combo${num}SkillLv1`);
         document.querySelector(`#${id} [id$="SkillLv2"]`).setAttribute('id',`combo${num}SkillLv2`);
         document.querySelector(`#${id} [id$="SkillLv3"]`).setAttribute('id',`combo${num}SkillLv3`);
         document.querySelector(`#${id} [id$="SkillLv4"]`).setAttribute('id',`combo${num}SkillLv4`);
+        document.querySelector(`#${id} [id$="SkillLv5"]`).setAttribute('id',`combo${num}SkillLv5`);
         num++;
       }
     }

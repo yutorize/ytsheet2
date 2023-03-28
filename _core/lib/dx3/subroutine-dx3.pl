@@ -59,7 +59,7 @@ sub data_update_chara {
     $pc{'comboCalcOff'} = 1;
     foreach my $num (1 .. $pc{'comboNum'}){
       $pc{"combo${num}Skill"} =~ s/[〈〉<>]//g;
-      foreach (1..4) {
+      foreach (1..5) {
         $pc{"combo${num}DiceAdd".$_}  = $pc{"combo${num}Dice".$_};
         $pc{"combo${num}FixedAdd".$_} = $pc{"combo${num}Fixed".$_};
       }

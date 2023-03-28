@@ -619,6 +619,12 @@
   display: inline;
   margin-right: -.1rem;
 }
+#combo .combo-table .combo-out dd:nth-of-type(n+29) { /* 条件の５行目（デフォルトでは非表示） */
+  display: none;
+}
+#combo.original-renegade-mode .combo-table .combo-out dd:nth-of-type(n+29) { /* 条件の５行目（起源種のみ表示） */
+  display: grid;
+}
 #combo .combo-table .combo-note {
   padding-top: .5rem;
 }
