@@ -538,6 +538,12 @@ div.data dl.effects table.weapon-table td:not(.left) {
   font-size: 92%;
 }
 
+@media screen and (max-width:735px){
+  .item-table thead .name       { width: 10.5em; }
+  .item-table thead .reputation { width: 3.5em; }
+  .item-table thead .category   { width: 8.5em; }
+  .item-table thead .price      { width: 6em; }
+}
 
 /* // Description
 ---------------------------------------------------------------------------------------------------- */
