@@ -768,7 +768,7 @@ print <<"HTML";
             <dl><dt>侵蝕値    </dt><dd>@{[input "combo${num}Encroach"]}</dd></dl>
           </div>
           <dl class="combo-out">
-            <dt class="combo-cond">条件</dt>
+            <dt class="combo-cond">条件<span class="combo-condition-utility"></span></dt>
             <dt class="combo-dice">ダイス</dt>
             <dt class="combo-crit">Ｃ値</dt>
             <dt class="combo-fixed">判定固定値</dt>
