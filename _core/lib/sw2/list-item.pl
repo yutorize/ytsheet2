@@ -97,8 +97,8 @@ elsif (
 }
 
 ## カテゴリ検索
+my @category_query = split('\s', decode('utf8', $::in{'category'}));
 if($::in{'category'} ne 'all'){
-  my @category_query = split('\s', decode('utf8', $::in{'category'}));
   foreach (@category_query) {
     my $q = $_;
     if($q =~ s/^-//){ @list = grep { $_ !~ /^(?:[^<]*?<>){6}[^<]*?\Q$q\E/ } @list; } #マイナス検索
@@ -220,6 +220,14 @@ $INDEX->param(qLinks => $q_links);
 
 $INDEX->param(Lists => \@characterlists);
 
+
+$INDEX->param(ogUrl => self_url());
+$INDEX->param(ogDescript => 
+  ($name_query  ? "名称「${name_query}」を含む " : '') .
+  ($tag_query   ? "タグ「${tag_query}」 " : '') .
+  (@category_query ? "カテゴリ「@{category_query}」 " : '') .
+  ($age_query      ? "製作時期「${age_query}」 " : '')
+);
 
 $INDEX->param(title => $set::title);
 $INDEX->param(ver => $::ver);

@@ -131,8 +131,10 @@ if($exp_min_query) { @list = grep { (split(/<>/))[7] >= $exp_min_query } @list; 
 if($exp_max_query) { @list = grep { (split(/<>/))[7] <= $exp_max_query } @list; }
 $INDEX->param(expMin => $exp_min_query);
 $INDEX->param(expMax => $exp_max_query);
-if   ($exp_min_query eq $exp_max_query){ $INDEX->param(exp => $exp_min_query); }
-elsif($exp_min_query || $exp_max_query){ $INDEX->param(exp => $exp_min_query.'～'.$exp_max_query); }
+my $exp_query;
+if   ($exp_min_query eq $exp_max_query){ $exp_query = $exp_min_query; }
+elsif($exp_min_query || $exp_max_query){ $exp_query = $exp_min_query.'～'.$exp_max_query; }
+$INDEX->param(exp => $exp_query);
 
 ## ワークス検索
 my $works_query = decode('utf8', $::in{'works'});
@@ -140,11 +142,13 @@ if($works_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){12}[^<]*?\Q$works_query\E
 $INDEX->param(works => $works_query);
 
 ## ブリード検索
+my $breed_text;
 if($::in{'breed'}){
-  if   ($::in{'breed'} == 1){ @list = grep { $_ =~ "^(?:[^<]*?<>){13}[^/]+?//<"             } @list; $INDEX->param(breedSelected1 => 'selected'); $INDEX->param(breedText => 'ピュア'); }
-  elsif($::in{'breed'} == 2){ @list = grep { $_ =~ "^(?:[^<]*?<>){13}[^/]+?/[^/]+?/<"       } @list; $INDEX->param(breedSelected2 => 'selected'); $INDEX->param(breedText => 'クロス'); }
-  elsif($::in{'breed'} == 3){ @list = grep { $_ =~ "^(?:[^<]*?<>){13}[^/]+?/[^/]+?/[^<]+?<" } @list; $INDEX->param(breedSelected3 => 'selected'); $INDEX->param(breedText => 'トライ'); }
+  if   ($::in{'breed'} == 1){ @list = grep { $_ =~ "^(?:[^<]*?<>){13}[^/]+?//<"             } @list; $INDEX->param(breedSelected1 => 'selected'); $breed_text = 'ピュア'; }
+  elsif($::in{'breed'} == 2){ @list = grep { $_ =~ "^(?:[^<]*?<>){13}[^/]+?/[^/]+?/<"       } @list; $INDEX->param(breedSelected2 => 'selected'); $breed_text = 'クロス'; }
+  elsif($::in{'breed'} == 3){ @list = grep { $_ =~ "^(?:[^<]*?<>){13}[^/]+?/[^/]+?/[^<]+?<" } @list; $INDEX->param(breedSelected3 => 'selected'); $breed_text = 'トライ'; }
 }
+$INDEX->param(breedText => $breed_text);
 
 ## シンドローム検索
 my @syndrome_query = split('\s', decode('utf8', $::in{'syndrome'}));
@@ -330,6 +334,18 @@ $INDEX->param(qLinks => $q_links);
 
 $INDEX->param(Lists => \@characterlists);
 
+
+$INDEX->param(ogUrl => self_url());
+$INDEX->param(ogDescript => 
+  ($name_query ? "名前「${name_query}」を含む " : '') .
+  ($pl_query   ? "ＰＬ名「${pl_query}」を含む " : '') .
+  ($tag_query  ? "タグ「${tag_query}」 " : '') .
+  ($exp_query      ? "経験点「${exp_query}」 " : '') .
+  ($breed_text     ? "ブリード「${breed_text}}」" : '') . 
+  (@syndrome_query ? "シンドローム「@{syndrome_query}}」" : '') . 
+  (@dlois_query    ? "Ｄロイス「@{dlois_query}}」" : '') . 
+  ($works_query    ? "ワークス「${works_query}}」" : '') 
+);
 
 $INDEX->param(title => $set::title);
 $INDEX->param(ver => $::ver);

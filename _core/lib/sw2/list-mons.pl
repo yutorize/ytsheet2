@@ -165,8 +165,10 @@ if($lv_min_query) { @list = grep { (split(/<>/))[7] >= $lv_min_query } @list; }
 if($lv_max_query) { @list = grep { lvMaxCheck((split(/<>/))[7]) <= $lv_max_query } @list; }
 $INDEX->param(lvMin => $lv_min_query);
 $INDEX->param(lvMax => $lv_max_query);
-if   ($lv_min_query eq $lv_max_query){ $INDEX->param(level => $lv_min_query); }
-elsif($lv_min_query || $lv_max_query){ $INDEX->param(level => $lv_min_query.'～'.$lv_max_query); }
+my $lv_query;
+if   ($lv_min_query eq $lv_max_query){ $lv_query = $lv_min_query; }
+elsif($lv_min_query || $lv_max_query){ $lv_query = $lv_min_query.'～'.$lv_max_query; }
+$INDEX->param(level => $lv_query);
 
 ## 部位数検索
 my $parts_min_query = $::in{'parts-min'};
@@ -175,8 +177,10 @@ if($parts_min_query) { @list = grep { (split(/<>/))[17] >= $parts_min_query } @l
 if($parts_max_query) { @list = grep { (split(/<>/))[17] <= $parts_max_query } @list; }
 $INDEX->param(partsMin => $parts_min_query);
 $INDEX->param(partsMax => $parts_max_query);
-if   ($parts_min_query eq $parts_max_query){ $INDEX->param(parts => $parts_min_query); }
-elsif($parts_min_query || $parts_max_query){ $INDEX->param(parts => $parts_min_query.'～'.$lv_max_query); }
+my $parts_query;
+if   ($parts_min_query eq $parts_max_query){ $parts_query = $parts_min_query; }
+elsif($parts_min_query || $parts_max_query){ $parts_query = $parts_min_query.'～'.$lv_max_query; }
+$INDEX->param(parts => $parts_query);
 sub lvMaxCheck {
   my ($min, $max) = split(/-/, shift);
   return $max || $min;
@@ -313,6 +317,20 @@ $INDEX->param(qLinks => $q_links);
 
 $INDEX->param(Lists => \@characterlists);
 
+
+$INDEX->param(ogUrl => self_url());
+$INDEX->param(ogDescript => 
+  ($taxa_query ? "分類「${taxa_query}」" : '') .
+  ($name_query ? "名称「${name_query}」を含む " : '') .
+  ($tag_query  ? "タグ「${tag_query}」 " : '') .
+  ($lv_query          ? "レベル「${lv_query}」 " : '') .
+  ($parts_query       ? "部位数「${parts_query}」 " : '') .
+  ($intellect_query   ? "知能「${intellect_query}」 " : '') .
+  ($perception_query  ? "知覚「${perception_query}」 " : '') .
+  ($disposition_query ? "反応「${disposition_query}」 " : '') .
+  ($habitat_query     ? "生息地「${habitat_query}」 " : '') .
+  ($weakness_query    ? "弱点「${weakness_query}」 " : '')
+);
 
 $INDEX->param(title => $set::title);
 $INDEX->param(ver => $::ver);
