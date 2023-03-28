@@ -131,12 +131,12 @@ $INDEX->param(race => $race_query);
 
 ## クラス検索
 my $class_query = decode('utf8', $::in{'class'});
-if($class_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){10}\Q$class_query\E/ } @list; }
+if($class_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){11}\Q$class_query\E/ } @list; }
 $INDEX->param(class => $class_query);
 
 ## スタイル検索
-my @style_query = decode('utf8', $::in{'style'});
-foreach my $q (@style_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){11}[^<]*?\Q$q\E/ } @list; }
+my @style_query = split('\s', decode('utf8', $::in{'style'}));
+foreach my $q (@style_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){12}[^<]*?\Q$q\E/ } @list; }
 $INDEX->param(styles => "@style_query");
 
 ## 画像フィルタ
