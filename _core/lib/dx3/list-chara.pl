@@ -116,12 +116,12 @@ $INDEX->param(tag => $tag_query);
 
 ## 名前検索
 my $name_query = decode('utf8', $::in{'name'});
-if($name_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){4}[^<]*?$name_query/i } @list; }
+if($name_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){4}[^<]*?\Q$name_query\E/i } @list; }
 $INDEX->param(name => $name_query);
 
 ## PL名検索
 my $pl_query = decode('utf8', $::in{'player'});
-if($pl_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){5}[^<]*?$pl_query/i } @list; }
+if($pl_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){5}[^<]*?\Q$pl_query\E/i } @list; }
 $INDEX->param(player => $pl_query);
 
 ## 経験点検索
@@ -136,7 +136,7 @@ elsif($exp_min_query || $exp_max_query){ $INDEX->param(exp => $exp_min_query.'�
 
 ## ワークス検索
 my $works_query = decode('utf8', $::in{'works'});
-if($works_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){12}[^<]*?$works_query/ } @list; }
+if($works_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){12}[^<]*?\Q$works_query\E/ } @list; }
 $INDEX->param(works => $works_query);
 
 ## ブリード検索
@@ -148,12 +148,12 @@ if($::in{'breed'}){
 
 ## シンドローム検索
 my @syndrome_query = split('\s', decode('utf8', $::in{'syndrome'}));
-foreach my $q (@syndrome_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){13}[^<]*?$q/ } @list; }
+foreach my $q (@syndrome_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){13}[^<]*?\Q$q\E/ } @list; }
 $INDEX->param(syndrome => "@syndrome_query");
 
 ## Dロイス検索
 my @dlois_query = split('\s', decode('utf8', $::in{'dlois'}));
-foreach my $q (@dlois_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){14}[^<]*?$q/ } @list; }
+foreach my $q (@dlois_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){14}[^<]*?\Q$q\E/ } @list; }
 $INDEX->param(dlois => "@dlois_query");
 
 ## 星座検索
@@ -174,7 +174,7 @@ if($sign_query) {
   elsif($sign_query =~ /(蛇|へび)(使|遣|つか)/){ $sign_query = "(蛇|へび)(使|遣|つか)"; $INDEX->param(sign => "蛇遣座"); }
   else { $INDEX->param(sign => $sign_query); }
   
-  @list = grep { $_ =~ /^(?:[^<]*?<>){10}[^<]*?(?:$sign_query)/ } @list;
+  @list = grep { $_ =~ /^(?:[^<]*?<>){10}[^<]*?(?:\Q$sign_query\E)/ } @list;
 }
 
 ## 画像フィルタ
