@@ -8,7 +8,7 @@
         <TMPL_IF race>：種族「<TMPL_VAR race>」</TMPL_IF>
         <TMPL_IF class>：クラス「<TMPL_VAR class>」</TMPL_IF>
         <TMPL_IF styles>：スタイル「<TMPL_VAR styles>」</TMPL_IF>
-        <TMPL_IF exp>：レベル「<TMPL_VAR level>」</TMPL_IF>
+        <TMPL_IF level>：レベル「<TMPL_VAR level>」</TMPL_IF>
         <TMPL_IF image>：画像あり</TMPL_IF>
         <TMPL_IF playerName>：<TMPL_VAR playerName>さん</TMPL_IF>
         </small>
@@ -22,7 +22,7 @@
           タグ　　：<input type="text" name="tag" value="<TMPL_VAR tag>"><br>
           種族　　：<input type="text" name="race" value="<TMPL_VAR race>"><br>
           クラス　：<input type="text" name="class" value="<TMPL_VAR class>"><br>
-          スタイル：<input type="text" name="class" value="<TMPL_VAR class>"><br>
+          スタイル：<input type="text" name="style" value="<TMPL_VAR styles>"><br>
           画像　：<input type="checkbox" name="image" value="1" >あり<br>
           <TMPL_IF LOGIN_ID>マイリスト内検索：<input type="checkbox" name="mode" value="mylist" <TMPL_IF modeMylist>checked</TMPL_IF>></TMPL_IF><br>
           <input type="submit" value="検索">
