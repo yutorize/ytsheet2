@@ -558,7 +558,7 @@ sub tag_delete {
   return $text;
 }
 sub name_plain {
-  my($name, undef) = split(/:/,shift);
+  my $name = shift;
   $name =~ s#<rt>.*?</rt>|<rp>.*?</rp>##g;
   return $name;
 }
