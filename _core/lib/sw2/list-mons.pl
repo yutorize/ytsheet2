@@ -290,8 +290,17 @@ foreach (@taxa,['騎獣', 'XX' , '']){
   $navbar = '<div class="navbar">'.$navbar.'</div>' if $navbar;
 
   ##
+  my $urltaxa;
+  if($name eq '騎獣'){
+    if($taxa_query){ $urltaxa = uri_escape_utf8($taxa_query); }
+    else { $urltaxa = 'all'; }
+  }
+  else {
+    $urltaxa = uri_escape_utf8($name);
+  }
+  if($name eq '騎獣' && !$::in{'mount'}){ $urltaxa .= '&mount=1' }
   push(@characterlists, {
-    "URL" => ($name eq '騎獣' ? 'mount=1' : 'taxa='.($name eq 'すべて' ? 'all' :uri_escape_utf8($name))),
+    "URL" => 'taxa='.$urltaxa,
     "NAME" => $name,
     "NUM" => $count{$name},
     "MOUNT" => ($name eq '騎獣' ? 1 : 0),
