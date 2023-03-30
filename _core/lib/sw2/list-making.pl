@@ -54,13 +54,15 @@ close($FH);
 
 @lines = grep { (split /<>/)[2]  eq $::in{'id'} } @lines if $::in{'id'};
 
+my ($in_num, $in_trial) = split('-', $::in{"num"});
+
 my @posts;
 foreach my $data (@lines) {
   $i++;
   chomp $data;
   
-  next if $::in{"num"} && $data !~ /^$::in{"num"}</;
-  next if !$::in{"num"} && (($i <= $page) || ($i > $page+$page_items));
+  next if $in_num && $data !~ /^$in_num</;
+  next if !$in_num && (($i <= $page) || ($i > $page+$page_items));
   my ($num, $date, $id, $name, $comment, $race, $stt) = split(/<>/, $data);
   
   my $adventurer = ($race =~ s/（冒険者）//) ? 1 : 0;
@@ -117,7 +119,8 @@ foreach my $data (@lines) {
       "URLRACE" => uri_escape_utf8($race),
       "URLSTT" => $url,
       "NUM" => $num,
-      "TRIAL" => $trial
+      "TRIAL" => $trial,
+      "SELECTED" => ($in_trial eq $trial ? 'selected' : ''),
     });
   }
   my ($sec, $min, $hour, $day, $mon, $year) = localtime($date);
@@ -134,7 +137,7 @@ $INDEX->param(Posts => \@posts);
 $INDEX->param(pageId => '&id='.$::in{'id'}) if $::in{'id'};
 $INDEX->param(pagePrev => ($page - $page_items) / $page_items);
 $INDEX->param(pageNext => ($page + $page_items) / $page_items);
-if(!$::in{"num"}) {
+if(!$in_num) {
   $INDEX->param(pagePrevOn => $page - $page_items >= 0);
   $INDEX->param(pageNextOn => $page + $page_items < @lines);
 }

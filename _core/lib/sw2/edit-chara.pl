@@ -65,11 +65,7 @@ elsif($mode eq 'blanksheet'){
       $pc{'race'} .= "（$data::races{$pc{'race'}}{'variantSort'}[0]）";
     }
     if($::in{'making_num'}){
-      if($::in{'making_trial'}){
-        $pc{'freeHistory'} = "[[こちら>./?mode=making&num=$::in{'making_num'}]]の$::in{'making_trial'}番目のステータスを採用しています";
-      }else{
-        $pc{'freeHistory'} = "[[こちら>./?mode=making&num=$::in{'making_num'}]]のステータスを採用しています";
-      }
+      $pc{'history0Note'} = "[能力値作成履歴#$::in{'making_num'}#making$::in{'making_num'}]";
     }
   }
   

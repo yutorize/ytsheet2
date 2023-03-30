@@ -64,6 +64,9 @@ elsif($mode eq 'blanksheet'){
     if($data::races{$pc{'race'}}{'variant'}){
       $pc{'race'} .= "（$data::races{$pc{'race'}}{'variantSort'}[0]）";
     }
+    if($::in{'making_num'}){
+      $pc{'history0Note'} = "[能力値作成履歴#$::in{'making_num'}#making$::in{'making_num'}]";
+    }
   }
   
   $pc{"defTotal1CheckArmour1"} = $pc{"defTotal1CheckShield1"} = $pc{"defTotal1CheckDefOther1"} = $pc{"defTotal1CheckDefOther2"} = $pc{"defTotal1CheckDefOther3"} = 1;

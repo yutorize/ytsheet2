@@ -272,6 +272,9 @@ body {
   border-style: solid;
   text-align: center;
 }
+#making-posts .post table.selected {
+  outline: 1px solid #f70;
+}
 #making-posts .post table tr {
   border-width: 1px;
   border-style: solid;

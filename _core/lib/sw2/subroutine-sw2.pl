@@ -52,6 +52,7 @@ sub tag_unescape {
   $text =~ s/《《(.+?)》》/<span class="text-em">$1<\/span>/gi; # カクヨム式傍点
   
   $text =~ s/\[\[(.+?)&gt;((?:(?!<br>)[^"])+?)\]\]/&tag_link_url($2,$1)/egi; # リンク
+  $text =~ s/(making|能力値作成(?:履歴)?#([0-9]+(?:-[0-9]+)?))/<a href="?&mode=making&num=$2">$1<\/a>/gi; # メイキングリンク
   $text =~ s/\[(.+?)#([a-zA-Z0-9\-]+?)\]/<a href="?id=$2">$1<\/a>/gi; # シート内リンク
   $text =~ s/(?<!href=")(https?:\/\/[^\s\<]+)/<a href="$1" target="_blank">$1<\/a>/gi; # 自動リンク
   
