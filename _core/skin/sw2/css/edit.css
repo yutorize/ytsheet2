@@ -5,7 +5,7 @@
 #regulation > dl {
   grid-template-columns: 1fr 1fr 1fr 4fr;
 }
-#sw2\.0 #regulation > dl {
+#sw2\.0 #regulation > dl:first-of-type {
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr 5fr;
 }
 #regulation dl.regulation-grow {

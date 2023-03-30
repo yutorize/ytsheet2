@@ -272,6 +272,9 @@ body {
   border-style: solid;
   text-align: center;
 }
+#making-posts .post table.selected {
+  outline: 1px solid #f70;
+}
 #making-posts .post table tr {
   border-width: 1px;
   border-style: solid;
@@ -282,7 +285,7 @@ body {
   background: rgba(100,120,190,0.15);
   text-align: left;
 }
-#making-posts .post table th a {
+#making-posts .post table th a.to-blanksheet {
   display: inline-block;
   position: absolute;
   top: 0.4em;

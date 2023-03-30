@@ -64,6 +64,9 @@ elsif($mode eq 'blanksheet'){
     if($data::races{$pc{'race'}}{'variant'}){
       $pc{'race'} .= "（$data::races{$pc{'race'}}{'variantSort'}[0]）";
     }
+    if($::in{'making_num'}){
+      $pc{'history0Note'} = "能力値作成履歴#$::in{'making_num'}";
+    }
   }
   
   $pc{"defTotal1CheckArmour1"} = $pc{"defTotal1CheckShield1"} = $pc{"defTotal1CheckDefOther1"} = $pc{"defTotal1CheckDefOther2"} = $pc{"defTotal1CheckDefOther3"} = 1;
@@ -270,7 +273,7 @@ print <<"HTML";
           <dd>@{[input("history0HonorD",'number','changeRegu', ($set::make_fix?' readonly':''))]}</dd>
           <dt>初期成長</dt>
           <dd>
-            <dl id="regulation-grow">
+            <dl class="regulation-grow">
               <dt>器用度</dt><dd>@{[ input "sttPreGrowA",'number','calcStt' ]}</dd>
               <dt>敏捷度</dt><dd>@{[ input "sttPreGrowB",'number','calcStt' ]}</dd>
               <dt>筋力  </dt><dd>@{[ input "sttPreGrowC",'number','calcStt' ]}</dd>
