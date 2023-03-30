@@ -140,8 +140,10 @@ if($exp_min_query) { @list = grep { (split(/<>/))[7] >= $exp_min_query } @list; 
 if($exp_max_query) { @list = grep { (split(/<>/))[7] <= $exp_max_query } @list; }
 $INDEX->param(expMin => $exp_min_query);
 $INDEX->param(expMax => $exp_max_query);
-if   ($exp_min_query eq $exp_max_query){ $INDEX->param(exp => $exp_min_query); }
-elsif($exp_min_query || $exp_max_query){ $INDEX->param(exp => $exp_min_query.'～'.$exp_max_query); }
+my $exp_query;
+if   ($exp_min_query eq $exp_max_query){ $exp_query = $exp_min_query; }
+elsif($exp_min_query || $exp_max_query){ $exp_query = $exp_min_query.'～'.$exp_max_query; }
+$INDEX->param(exp => $exp_query);
 
 ## 技能検索
 my @class_name = @data::class_list;
@@ -381,6 +383,17 @@ $INDEX->param(qLinks => $q_links);
 
 $INDEX->param(Lists => \@characterlists);
 
+
+$INDEX->param(ogUrl => self_url());
+$INDEX->param(ogDescript => 
+  ($name_query ? "名前「${name_query}」を含む " : '') .
+  ($pl_query   ? "ＰＬ名「${pl_query}」を含む " : '') .
+  ($tag_query  ? "タグ「${tag_query}」 " : '') .
+  ($exp_query   ? "経験点「${exp_query}」 " : '') .
+  ($race_query  ? "種族「${race_query}」 "  : '') .
+  (@class_query ? "技能「@{class_query}」 " : '') .
+  ($faith_query ? "信仰「${faith_query}」 " : '')
+);
 
 $INDEX->param(title => $set::title);
 $INDEX->param(ver => $::ver);

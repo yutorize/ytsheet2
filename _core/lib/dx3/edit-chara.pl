@@ -293,6 +293,7 @@ print <<"HTML";
           <dd>@{[input("history0Exp",'number','changeRegu',($set::make_fix?' readonly':''))]}</dd>
         </dl>
         <div class="annotate">※ステージの入力値に「クロウリングケイオス」が含まれる場合、専用項目が表示されます。</div>
+        <dl class="regulation-note"><dt>備考</dt><dd>@{[ input "history0Note" ]}</dd></dl>
       </details>
 
       <div id="area-status">
@@ -768,13 +769,13 @@ print <<"HTML";
             <dl><dt>侵蝕値    </dt><dd>@{[input "combo${num}Encroach"]}</dd></dl>
           </div>
           <dl class="combo-out">
-            <dt class="combo-cond">条件</dt>
+            <dt class="combo-cond">条件<span class="combo-condition-utility"></span></dt>
             <dt class="combo-dice">ダイス</dt>
             <dt class="combo-crit">Ｃ値</dt>
             <dt class="combo-fixed">判定固定値</dt>
             <dt class="combo-atk">攻撃力</dt>
 HTML
-  foreach my $i (1 .. 4) {
+  foreach my $i (1 .. 5) {
   print <<"HTML";
             <dd>@{[input "combo${num}Condition${i}"]}</dd>
             <dd id="combo${num}Stt${i}"></dd>
@@ -1018,11 +1019,11 @@ print <<"HTML";
         <p>
         経験点[<b id="exp-total"></b>] - 
         ( 能力値[<b id="exp-used-status"></b>]
-        - 技能[<b id="exp-used-skill"></b>]
-        - エフェクト[<b id="exp-used-effect"></b>]
-        <span class="cc-only">- 術式[<b id="exp-used-magic"></b>]</span>
-        - アイテム[<b id="exp-used-item"></b>]
-        - メモリー[<b id="exp-used-memory"></b>]
+        + 技能[<b id="exp-used-skill"></b>]
+        + エフェクト[<b id="exp-used-effect"></b>]
+        <span class="cc-only">+ 術式[<b id="exp-used-magic"></b>]</span>
+        + アイテム[<b id="exp-used-item"></b>]
+        + メモリー[<b id="exp-used-memory"></b>]
         ) = 残り[<b id="exp-rest"></b>]点
         </p>
       </div>
@@ -1426,6 +1427,7 @@ print <<"HTML";
     <option value="Dロイス">
     <option value="リミット">
     <option value="RB">
+    <option value="従者専用">
   </datalist>
   <datalist id="list-magic-type">
     <option value="通常">

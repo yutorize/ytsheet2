@@ -285,6 +285,16 @@ $INDEX->param(qLinks => $q_links);
 $INDEX->param(Lists => \@characterlists);
 
 
+$INDEX->param(ogUrl => self_url());
+$INDEX->param(ogDescript => 
+  ($name_query ? "名前「${name_query}」を含む " : '') .
+  ($pl_query   ? "ＰＬ名「${pl_query}」を含む " : '') .
+  ($tag_query  ? "タグ「${tag_query}」 " : '') .
+  ($class_query  ? "種別「${class_query}」" : '') .
+  (@negai_query  ? "ネガイ「@{negai_query}」"  : '') .
+  (@belong_query ? "所属「@{belong_query}」" : '')
+);
+
 $INDEX->param(title => $set::title);
 $INDEX->param(ver => $::ver);
 $INDEX->param(coreDir => $::core_dir);

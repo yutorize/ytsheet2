@@ -341,6 +341,8 @@ function encroachBonusType(){
   let thHead  = document.createElement("th"); thHead.textContent  = ''       ; document.getElementById('enc-table-head' ).prepend(thHead);
   let thBonus = document.createElement("th"); thBonus.textContent = 'ダイス' ; document.getElementById('enc-table-dices').prepend(thBonus);
   let thLevel = document.createElement("th"); thLevel.textContent = 'Efct.Lv'; document.getElementById('enc-table-level').prepend(thLevel);
+
+  document.getElementById('combo').classList.toggle('original-renegade-mode', OR); //コンボ欄5行目ON/OFF
   
   //encroachBonusSet(form.currentEncroach.value);
 }
@@ -777,7 +779,7 @@ function calcCombo(num){
     return [lv, stt];
   })();
   
-  for (const i of [1,2,3,4]){
+  for (const i of [1,2,3,4,5]){
     document.getElementById(`combo${num}Stt${i}`).innerHTML = stt;
     document.getElementById(`combo${num}SkillLv${i}`).innerHTML = lv;
   }
@@ -810,7 +812,7 @@ function addCombo(){
       <dl><dt>侵蝕値    </dt><dd><input name="combo${num}Encroach" type="text"></dd></dl>
     </div>
     <dl class="combo-out">
-      <dt class="combo-cond">条件</dt>
+      <dt class="combo-cond">条件<span class="combo-condition-utility"></span></dt>
       <dt class="combo-dice">ダイス</dt>
       <dt class="combo-crit">Ｃ値</dt>
       <dt class="combo-fixed">判定固定値</dt>
@@ -847,12 +849,21 @@ function addCombo(){
       <dd id="combo${num}SkillLv4"></dd>
       <dd><input name="combo${num}FixedAdd4"  type="text"></dd>
       <dd><input name="combo${num}Atk4"       type="text"></dd>
+
+      <dd><input name="combo${num}Condition5" type="text"></dd>
+      <dd id="combo${num}Stt5"></dd>
+      <dd><input name="combo${num}DiceAdd5"   type="text"></dd>
+      <dd><input name="combo${num}Crit5"      type="text"></dd>
+      <dd id="combo${num}SkillLv5"></dd>
+      <dd><input name="combo${num}FixedAdd5"  type="text"></dd>
+      <dd><input name="combo${num}Atk5"       type="text"></dd>
     </dl>
     <p class="combo-note"><textarea name="combo${num}Note" rows="3" placeholder="解説"></textarea></p>
   `;
   const target = document.querySelector("#combo-list");
   target.appendChild(div);
   comboSkillSet(num);
+  makeComboConditionUtility(div);
   form.comboNum.value = num;
 }
 // 削除
@@ -895,37 +906,157 @@ let comboSortable = Sortable.create(document.getElementById('combo-list'), {
         document.querySelector(`#${id} [name$="Condition2"]`).setAttribute('name',`combo${num}Condition2`);
         document.querySelector(`#${id} [name$="Condition3"]`).setAttribute('name',`combo${num}Condition3`);
         document.querySelector(`#${id} [name$="Condition4"]`).setAttribute('name',`combo${num}Condition4`);
+        document.querySelector(`#${id} [name$="Condition5"]`).setAttribute('name',`combo${num}Condition5`);
         document.querySelector(`#${id} [name$="DiceAdd1"]`  ).setAttribute('name',`combo${num}DiceAdd1`);
         document.querySelector(`#${id} [name$="DiceAdd2"]`  ).setAttribute('name',`combo${num}DiceAdd2`);
         document.querySelector(`#${id} [name$="DiceAdd3"]`  ).setAttribute('name',`combo${num}DiceAdd3`);
         document.querySelector(`#${id} [name$="DiceAdd4"]`  ).setAttribute('name',`combo${num}DiceAdd4`);
+        document.querySelector(`#${id} [name$="DiceAdd5"]`  ).setAttribute('name',`combo${num}DiceAdd5`);
         document.querySelector(`#${id} [name$="Crit1"]`     ).setAttribute('name',`combo${num}Crit1`);
         document.querySelector(`#${id} [name$="Crit2"]`     ).setAttribute('name',`combo${num}Crit2`);
         document.querySelector(`#${id} [name$="Crit3"]`     ).setAttribute('name',`combo${num}Crit3`);
         document.querySelector(`#${id} [name$="Crit4"]`     ).setAttribute('name',`combo${num}Crit4`);
+        document.querySelector(`#${id} [name$="Crit5"]`     ).setAttribute('name',`combo${num}Crit5`);
         document.querySelector(`#${id} [name$="Atk1"]`      ).setAttribute('name',`combo${num}Atk1`);
         document.querySelector(`#${id} [name$="Atk2"]`      ).setAttribute('name',`combo${num}Atk2`);
         document.querySelector(`#${id} [name$="Atk3"]`      ).setAttribute('name',`combo${num}Atk3`);
         document.querySelector(`#${id} [name$="Atk4"]`      ).setAttribute('name',`combo${num}Atk4`);
+        document.querySelector(`#${id} [name$="Atk5"]`      ).setAttribute('name',`combo${num}Atk5`);
         document.querySelector(`#${id} [name$="FixedAdd1"]` ).setAttribute('name',`combo${num}FixedAdd1`);
         document.querySelector(`#${id} [name$="FixedAdd2"]` ).setAttribute('name',`combo${num}FixedAdd2`);
         document.querySelector(`#${id} [name$="FixedAdd3"]` ).setAttribute('name',`combo${num}FixedAdd3`);
         document.querySelector(`#${id} [name$="FixedAdd4"]` ).setAttribute('name',`combo${num}FixedAdd4`);
+        document.querySelector(`#${id} [name$="FixedAdd5"]` ).setAttribute('name',`combo${num}FixedAdd5`);
         document.querySelector(`#${id} [name$="Skill"]`   ).setAttribute('oninput',`calcCombo(${num})`);
         document.querySelector(`#${id} [name$="Stt"]`     ).setAttribute('oninput',`calcCombo(${num})`);
         document.querySelector(`#${id} [id$="Stt1"]`    ).setAttribute('id',`combo${num}Stt1`);
         document.querySelector(`#${id} [id$="Stt2"]`    ).setAttribute('id',`combo${num}Stt2`);
         document.querySelector(`#${id} [id$="Stt3"]`    ).setAttribute('id',`combo${num}Stt3`);
         document.querySelector(`#${id} [id$="Stt4"]`    ).setAttribute('id',`combo${num}Stt4`);
+        document.querySelector(`#${id} [id$="Stt5"]`    ).setAttribute('id',`combo${num}Stt5`);
         document.querySelector(`#${id} [id$="SkillLv1"]`).setAttribute('id',`combo${num}SkillLv1`);
         document.querySelector(`#${id} [id$="SkillLv2"]`).setAttribute('id',`combo${num}SkillLv2`);
         document.querySelector(`#${id} [id$="SkillLv3"]`).setAttribute('id',`combo${num}SkillLv3`);
         document.querySelector(`#${id} [id$="SkillLv4"]`).setAttribute('id',`combo${num}SkillLv4`);
+        document.querySelector(`#${id} [id$="SkillLv5"]`).setAttribute('id',`combo${num}SkillLv5`);
         num++;
       }
     }
   }
 });
+// 条件
+function makeComboConditionUtility(comboNode) {
+  const utilityIcon = comboNode.querySelector('.combo-out .combo-cond .combo-condition-utility');
+  if (utilityIcon == null) {
+    return;
+  }
+
+  /** @return {Array.<{label: string, conditionTexts: [string, string, string, string, string]}>} */
+  function makeMenuItems() {
+    function makeConditionItem(label, text1 = '', text2 = '', text3 = '', text4 = '', text5 = '') {
+      return {label: label, conditionTexts: [text1, text2, text3, text4, text5]};
+    }
+
+    let menuItems = [
+      makeConditionItem("すべての条件を消去"),
+      makeConditionItem("100%未満／100%以上", "100%未満", "100%以上"),
+    ];
+
+    menuItems = menuItems.concat(
+        document.querySelector('#enc-table-dices td').textContent !== '―'
+            ? [
+              makeConditionItem("-99／100-", "～99%", "100%～"),
+              makeConditionItem("-99／100-159／160-", "～99%", "100%～159%", "160%～"),
+              makeConditionItem("-99／100-159／160-219／220-", "～99%", "100%～159%", "160%～220%", "220%～"),
+              makeConditionItem("80-99／100-", "80%～99%", "100%～"),
+              makeConditionItem("80-99／100-159／160-", "80%～99%", "100%～159%", "160%～"),
+              makeConditionItem("80-99／100-159／160-219／220-", "80%～99%", "100%～159%", "160%～219%", "220%～"),
+              makeConditionItem("100-", "100%～"),
+              makeConditionItem("100-159／160-", "100%～159%", "160%～"),
+              makeConditionItem("100-159／160-219／220-", "100%～159%", "160%～219%", "220%～"),
+              makeConditionItem("120-", "120%～"),
+              makeConditionItem("120-159／160-", "120%～159%", "160%～"),
+              makeConditionItem("120-159／160-219／220-", "120%～159%", "160%～219%", "220%～"),
+            ]
+            : [
+              makeConditionItem("-79／80-", "～79%", "80%～"),
+              makeConditionItem("-79／80-99／100-", "～79%", "80%～99%", "100%～"),
+              makeConditionItem("-79／80-99／100-149／150-", "～79%", "80%～99%", "100%～149%", "150%～"),
+              makeConditionItem("-79／80-99／100-149／150-199／200-", "～79%", "80%～99%", "100%～149%", "150%～199%", "200%～"),
+              makeConditionItem("80-99／100-", "80%～99%", "100%～"),
+              makeConditionItem("80-99／100-149／150-", "80%～99%", "100%～149%", "150%～"),
+              makeConditionItem("80-99／100-149／150-199／200-", "80%～99%", "100%～149%", "150%～199%", "200%～"),
+              makeConditionItem("100-", "100%～"),
+              makeConditionItem("100-149／150-", "100%～149%", "150%～"),
+              makeConditionItem("100-149／150-199／200-", "100%～149%", "150%～199%", "200%～"),
+              makeConditionItem("120-", "120%～"),
+              makeConditionItem("120-149／150-", "120%～149%", "150%～"),
+              makeConditionItem("120-149／150-199／200-", "120%～149%", "150%～199%", "200%～"),
+            ]
+    );
+
+    if (!document.querySelector('[name="encroachEaOn"]').checked) {
+      menuItems = menuItems.filter(x => !(x.label.includes('220') || x.label.includes('200')));
+    }
+
+    return menuItems;
+  }
+
+  utilityIcon.addEventListener(
+      'click',
+      () => {
+        const oldMenu = document.querySelector('.combo-condition-utility-menu');
+        if (oldMenu != null) {
+          oldMenu.parentNode.removeChild(oldMenu);
+          return;
+        }
+
+        const iconRect = utilityIcon.getBoundingClientRect();
+
+        const menuNode = document.createElement('div');
+        menuNode.classList.add('combo-condition-utility-menu');
+        menuNode.style.left = `${window.pageXOffset + iconRect.left + iconRect.width / 2}px`;
+        menuNode.style.top = `calc(${window.pageYOffset + iconRect.bottom}px - 0.35rem)`;
+
+        makeMenuItems().forEach(
+            itemSettings => {
+              const menuItemNode = document.createElement('a');
+              menuItemNode.classList.add('item');
+              menuItemNode.textContent = itemSettings.label;
+              menuNode.appendChild(menuItemNode);
+
+              menuItemNode.addEventListener(
+                  'click',
+                  () =>
+                      comboNode.querySelectorAll('.combo-out dd input[type="text"][name*="Condition"]').forEach(
+                          (node, index) => node.value = itemSettings.conditionTexts[index] ?? ''
+                      )
+              );
+            }
+        );
+
+        const body = document.querySelector('body');
+
+        const menuRemover = event => {
+          if (event != null) {
+            if (event.path.some(node => node === utilityIcon)) {
+              return;
+            }
+          }
+
+          if (menuNode.parentNode != null) {
+            menuNode.parentNode.removeChild(menuNode);
+          }
+
+          body.removeEventListener('click', menuRemover);
+        };
+
+        body.addEventListener('click', menuRemover);
+        body.appendChild(menuNode);
+      }
+  );
+}
+document.querySelectorAll('#combo .combo-table').forEach(node => makeComboConditionUtility(node));
 
 // 武器欄 ----------------------------------------
 // 追加

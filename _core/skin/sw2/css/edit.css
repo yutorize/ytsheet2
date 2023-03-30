@@ -2,41 +2,16 @@
 
 /* // キャラクター
 ---------------------------------------------------------------------------------------------------- */
-#regulation {
-  margin: 10px 0;
-  overflow-y: auto;
-}
 #regulation > dl {
-  display: grid;
   grid-template-columns: 1fr 1fr 1fr 4fr;
-  grid-template-rows: auto;
-  margin: 10px 0 0;
 }
 #sw2\.0 #regulation > dl {
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr 5fr;
-}
-#regulation dl dt {
-  grid-row: 1 / 2;
-}
-#regulation dl dd {
-  grid-row: 2 / 3;
-  font-size: 1.2rem;
 }
 #regulation dl.regulation-grow {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
   grid-template-rows: auto;
-}
-#regulation dl.regulation-note {
-  display: grid;
-  grid-template-columns: 3em 1fr;
-}
-#regulation dl.regulation-note dt {
-  text-align: center;
-  align-self: center;
-}
-#regulation dl.regulation-note dd {
-  grid-row: 1;
 }
 @media screen and (min-width:736px){
   #regulation .annotate {
@@ -46,10 +21,7 @@
 }
 @media screen and (max-width:735px){
   #regulation > dl {
-    display: grid;
     grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: auto;
-    margin: 10px 0;
   }
   #sw2\.0 #regulation > dl {
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
@@ -758,6 +730,15 @@ option.zero-data::before {
   text-align: right;
 }
 
+#honor {
+  grid-template-columns: .95fr 1.05fr;
+}
+#honor-rank {
+  display: flex;
+}
+#honor-rank > input {
+  flex-basis: 3.5em;
+}
 
 .honor-items table td.handle::before {
   display: block;

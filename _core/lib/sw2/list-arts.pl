@@ -235,6 +235,14 @@ $INDEX->param(qLinks => $q_links);
 $INDEX->param(Lists => \@characterlists);
 
 
+$INDEX->param(ogUrl => self_url());
+$INDEX->param(ogDescript => 
+  ($name_query ? "名称「${name_query}」を含む " : '') .
+  ($tag_query  ? "タグ「${tag_query}」 " : '') .
+  ($category_query ? "大分類「$category{$category_query}」 " : '') .
+  ($sub_query      ? "小分類「${sub_query}」 " : '')
+);
+
 $INDEX->param(title => $set::title);
 $INDEX->param(ver => $::ver);
 $INDEX->param(coreDir => $::core_dir);

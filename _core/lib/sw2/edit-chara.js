@@ -1363,8 +1363,12 @@ function calcHonor(){
   document.getElementById("history-honor-total").innerHTML = commify(pointTotal);
   // ランク
   const rank = form["rank"].options[form["rank"].selectedIndex].value;
-  const rankNum = (adventurerRank[rank]["num"] === undefined) ? 0 : adventurerRank[rank]["num"];
-  const free = (adventurerRank[rank]["free"] === undefined) ? 0 : adventurerRank[rank]["free"];
+  const topRank = rank.match(/★$/) ? 1 : 0;
+  const rankStar = topRank ? Number(form.rankStar.value||1)-1 : 0;
+  form.rankStar.style.display = topRank ? '' : 'none';
+
+  const rankNum = (adventurerRank[rank]["num"] === undefined) ? 0 : adventurerRank[rank]["num"] + rankStar*500;
+  const free = (adventurerRank[rank]["free"] === undefined) ? 0 : adventurerRank[rank]["free"] + rankStar*50;
   pointTotal -= rankNum;
   // 名誉アイテム
   const honorItemsNum = form.honorItemsNum.value;

@@ -107,7 +107,7 @@ $INDEX->param(group => $groups{$group_query}{'name'});
 
 ## タグ検索
 my $tag_query = pcTagsEscape(decode('utf8', $::in{'tag'}));
-if($tag_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){17}[^<]*? \Q$tag_query\E / } @list; }
+if($tag_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){18}[^<]*? \Q$tag_query\E / } @list; }
 $INDEX->param(tag => $tag_query);
 
 ## 名前検索
@@ -285,6 +285,16 @@ $INDEX->param(qLinks => $q_links);
 
 $INDEX->param(Lists => \@characterlists);
 
+
+$INDEX->param(ogUrl => self_url());
+$INDEX->param(ogDescript => 
+  ($name_query ? "名前「${name_query}」を含む " : '') .
+  ($pl_query   ? "ＰＬ名「${pl_query}」を含む " : '') .
+  ($tag_query  ? "タグ「${tag_query}」 " : '') .
+  (@factor_query  ? "ファクター「@{factor_query}」"  : '') . 
+  (@belong_query  ? "所属「@{belong_query}」"        : '') .
+  (@missing_query ? "喪失／欠落「@{missing_query}」" : '') 
+);
 
 $INDEX->param(title => $set::title);
 $INDEX->param(ver => $::ver);

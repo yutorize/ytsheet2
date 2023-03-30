@@ -51,7 +51,7 @@ sub palettePreset {
       $text .= "【$::pc{'combo'.$num.'Name'}】：$::pc{'combo'.$num.'Combo'}\n";
       $text .= textTiming($::pc{'combo'.$num.'Timing'})." / $::pc{'combo'.$num.'Skill'} / $::pc{'combo'.$num.'Dfclty'} / $::pc{'combo'.$num.'Target'} / $::pc{'combo'.$num.'Range'}\n";
       $text .= ($bot{'YTC'} ? '@侵蝕' : ':侵蝕率')  . "+$::pc{'combo'.$num.'Encroach'}\n";
-      foreach my $i (1..4) {
+      foreach my $i (1..5) {
         next if !$::pc{'combo'.$num.'Condition'.$i};
         $text .= "▼$::pc{'combo'.$num.'Condition'.$i} ----------\n" if $bot{'YTC'};
         if(!$::pc{'comboCalcOff'}){

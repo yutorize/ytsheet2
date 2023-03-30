@@ -15,6 +15,7 @@
       </ul>
     </nav>
   </header>
+  <div class="header-back-name"><TMPL_VAR titleName> - <TMPL_VAR title></div>
   
   <TMPL_IF error>
   <aside id="error">
@@ -421,7 +422,7 @@
           <h2>コンボ</h2>
           <TMPL_LOOP Combos><div class="combo-table">
             <h3><span><TMPL_VAR NAME></span></h3>
-            <dl class="combo-combo"><dt>組み合わせ</dt><dd><TMPL_VAR COMBO DEFAULT="　"></dd></dl>
+            <dl class="combo-combo"><dt>組み合わせ</dt><dd><TMPL_VAR COMBO></dd></dl>
             <div class="combo-in">
               <dl><dt>タイミング</dt><dd><span><TMPL_VAR TIMING  ></span></dd></dl>
               <dl><dt>技能      </dt><dd><span><TMPL_VAR SKILL   ></span></dd></dl>
@@ -441,6 +442,7 @@
               <TMPL_IF CONDITION2><dd class="combo-cond"><b><TMPL_VAR CONDITION2></b></dd><dd class="combo-dice" data-edb="0"><TMPL_VAR DICE2></dd><dd class="combo-crit"><TMPL_VAR CRIT2></dd><dd class="combo-fixed"><TMPL_VAR FIXED2></dd><dd class="combo-atk"><TMPL_VAR ATK2></dd></TMPL_IF>
               <TMPL_IF CONDITION3><dd class="combo-cond"><b><TMPL_VAR CONDITION3></b></dd><dd class="combo-dice" data-edb="0"><TMPL_VAR DICE3></dd><dd class="combo-crit"><TMPL_VAR CRIT3></dd><dd class="combo-fixed"><TMPL_VAR FIXED3></dd><dd class="combo-atk"><TMPL_VAR ATK3></dd></TMPL_IF>
               <TMPL_IF CONDITION4><dd class="combo-cond"><b><TMPL_VAR CONDITION4></b></dd><dd class="combo-dice" data-edb="0"><TMPL_VAR DICE4></dd><dd class="combo-crit"><TMPL_VAR CRIT4></dd><dd class="combo-fixed"><TMPL_VAR FIXED4></dd><dd class="combo-atk"><TMPL_VAR ATK4></dd></TMPL_IF>
+              <TMPL_IF CONDITION5><dd class="combo-cond"><b><TMPL_VAR CONDITION5></b></dd><dd class="combo-dice" data-edb="0"><TMPL_VAR DICE5></dd><dd class="combo-crit"><TMPL_VAR CRIT5></dd><dd class="combo-fixed"><TMPL_VAR FIXED5></dd><dd class="combo-atk"><TMPL_VAR ATK5></dd></TMPL_IF>
             </dl>
             <p class="combo-note"><TMPL_VAR NOTE></p>
           </div></TMPL_LOOP>

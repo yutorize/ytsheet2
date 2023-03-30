@@ -58,13 +58,18 @@ sub imageRedirect {
               : ($type eq 'a') ? $set::arts_dir
               : $set::char_dir;
   my $ext;
-  open(my $DATA, "./${datadir}/${file}/data.cgi") or die;
+
+  if(!$file){ error("ファイルがありません。") }
+
+  open(my $DATA, "./${datadir}/${file}/data.cgi") or die("file open error: $id:$file,$type // $!");
   while(<$DATA>){
     if($_ =~ /^image<>(.*?)\n/){ $ext = $1; last }
   }
   close($DATA);
 
-  open(my $IMG, "./${datadir}/${file}/image.${ext}") or die;
+  if(!$ext){ error("画像がありません。") }
+
+  open(my $IMG, "./${datadir}/${file}/image.${ext}") or die("image open error: $id:$file,$type // $!");
   binmode $IMG;
   binmode STDOUT;
   print "Content-type: image/".($ext eq 'jpg' ? 'jpeg' : $ext)."\n";
@@ -553,7 +558,7 @@ sub tag_delete {
   return $text;
 }
 sub name_plain {
-  my($name, undef) = split(/:/,shift);
+  my $name = shift;
   $name =~ s#<rt>.*?</rt>|<rp>.*?</rp>##g;
   return $name;
 }

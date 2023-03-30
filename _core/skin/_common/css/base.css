@@ -217,12 +217,14 @@ header {
   height: 4rem;
   position: relative;
   padding: 0px 10px;
+  
+  z-index: 100;
+}
+header, .header-back-name {
   border-bottom: 1px solid #aaa;
   background-image: url(../img/back-abstract.png);
   background-position: left center;
   background-repeat: no-repeat;
-  
-  z-index: 100;
 }
 
 header h1 {
@@ -277,6 +279,7 @@ footer a {
 }
 
 header,
+.header-back-name,
 footer {
   background-color: #fff;
   color: #fff;
@@ -288,6 +291,7 @@ footer {
   font-weight: bold;
 }
 .night header,
+.night .header-back-name,
 .night footer {
   background-color: #456;
   background-blend-mode: color-burn;
@@ -308,6 +312,7 @@ footer .copyright {
 
 @media print{
   header,
+  .header-back-name,
   footer,
   #login-form,
   #link-tag,
@@ -382,7 +387,7 @@ header nav ul li  {
   background: linear-gradient(-45deg, #457, #abd);
   text-align: center;
   
-  outline: 3px double #000;
+  outline: 1px solid #000;
   overflow: hidden;
   font-size: 1.5rem;
   font-weight: bold;

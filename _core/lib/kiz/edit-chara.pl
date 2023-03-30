@@ -632,12 +632,14 @@ print <<"HTML";
             <th>GM</th>
             <th>参加者</th>
           </tr>
+          <!--
           <tr>
             <td>-</td>
             <td></td>
             <td>キャラクター作成</td>
             <td id="history0-exp">$pc{'history0Exp'}</td>
           </tr>
+          -->
           </thead>
 HTML
 foreach my $num (1 .. $pc{'historyNum'}) {

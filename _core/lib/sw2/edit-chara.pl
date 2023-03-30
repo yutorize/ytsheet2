@@ -1197,7 +1197,7 @@ print <<"HTML";
           <dl class="box" id="honor">
             <dt>名誉点</dt><dd id="honor-value">$pc{'honor'}</dd>
             <dt>ランク</dt>
-            <dd><select name="rank" oninput="calcHonor()">@{[ option "rank",@set::adventurer_rank_name ]}</select></dd>
+            <dd id="honor-rank"><select name="rank" oninput="calcHonor()">@{[ option "rank",@set::adventurer_rank_name ]}</select>@{[ input 'rankStar','number','calcHonor','min="1"' ]}</dd>
           </dl>
           <div class="box honor-items" id="honor-items">
             <h2>名誉アイテム</h2>

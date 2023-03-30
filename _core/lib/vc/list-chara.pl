@@ -131,12 +131,12 @@ $INDEX->param(race => $race_query);
 
 ## クラス検索
 my $class_query = decode('utf8', $::in{'class'});
-if($class_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){10}\Q$class_query\E/ } @list; }
+if($class_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){11}\Q$class_query\E/ } @list; }
 $INDEX->param(class => $class_query);
 
 ## スタイル検索
-my @style_query = decode('utf8', $::in{'style'});
-foreach my $q (@style_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){11}[^<]*?\Q$q\E/ } @list; }
+my @style_query = split('\s', decode('utf8', $::in{'style'}));
+foreach my $q (@style_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){12}[^<]*?\Q$q\E/ } @list; }
 $INDEX->param(styles => "@style_query");
 
 ## 画像フィルタ
@@ -290,6 +290,16 @@ $INDEX->param(qLinks => $q_links);
 
 $INDEX->param(Lists => \@characterlists);
 
+
+$INDEX->param(ogUrl => self_url());
+$INDEX->param(ogDescript => 
+  ($name_query ? "名前「${name_query}」を含む " : '') .
+  ($pl_query   ? "ＰＬ名「${pl_query}」を含む " : '') .
+  ($tag_query  ? "タグ「${tag_query}」 " : '') .
+  ($race_query  ? "種族「${race_query}」 "  : '') .
+  ($class_query ? "クラス「${class_query}」 " : '') .
+  (@style_query ? "スタイル「@{style_query}」 " : '')
+);
 
 $INDEX->param(title => $set::title);
 $INDEX->param(ver => $::ver);

@@ -239,6 +239,7 @@ print <<"HTML";
           　ただし、（耐久は5、先制は2で）割り切れない「あまり」の値は特技等による補正として、副能力値の補正欄に振り分けています。<br>
         </div>
         <div class="annotate">※練度は自動的に計算されます。</div>
+        <dl class="regulation-note"><dt>備考</dt><dd>@{[ input "history0Note" ]}</dd></dl>
       </details>
       <div id="area-status">
         @{[ imageForm($pc{'imageURL'}) ]}

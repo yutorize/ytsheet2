@@ -99,6 +99,25 @@ body {
   word-break: break-word;
 }
 
+header {
+}
+header nav {
+  position: fixed;
+  top: 0;
+}
+.header-back-name {
+  position: fixed;
+  inset: 0 0 auto;
+  height: 2rem;
+  padding: .3rem 3em .2rem 1em;
+  line-height: 1;
+  font-size: 1.2rem;
+  font-weight: bold;
+  font-family: var(--base-font-family-min);
+  color: #fff;
+  z-index: 1;
+}
+
 main {
   padding: 1rem 0 3rem;
 }
@@ -569,7 +588,7 @@ header nav ul li.large  {
 }
 
 header nav ul li:nth-last-child(even)  {
-  top: 1.5rem;
+  top: 1rem;
 }
 header nav ul li:nth-last-child(odd)  {
   top: 0rem;
@@ -586,7 +605,8 @@ header nav ul li a span {
 }
 @media screen and (max-width:735px){
   header nav {
-    margin-top: 2.7rem;
+    margin-top: 1.7rem;
+    right: -1rem;
   }
   main {
     padding-top: 4.5rem;
