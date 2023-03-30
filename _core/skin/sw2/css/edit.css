@@ -22,10 +22,21 @@
   grid-row: 2 / 3;
   font-size: 1.2rem;
 }
-#regulation dl#regulation-grow {
+#regulation dl.regulation-grow {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
   grid-template-rows: auto;
+}
+#regulation dl.regulation-note {
+  display: grid;
+  grid-template-columns: 3em 1fr;
+}
+#regulation dl.regulation-note dt {
+  text-align: center;
+  align-self: center;
+}
+#regulation dl.regulation-note dd {
+  grid-row: 1;
 }
 @media screen and (min-width:736px){
   #regulation .annotate {
