@@ -786,6 +786,36 @@ input[type="submit"]:hover {
     grid-column: 1;
   }
 }
+/* レギュレーション */
+#regulation {
+  margin: 10px 0;
+  overflow-y: auto;
+}
+#regulation > dl {
+  display: grid;
+  grid-template-rows: auto;
+  margin: 10px 0 0;
+}
+#regulation dl dt {
+  grid-row: 1 / 2;
+  padding-left: 2px;
+}
+#regulation dl dd {
+  grid-row: 2 / 3;
+  font-size: 1.2rem;
+}
+#regulation dl.regulation-note {
+  display: grid;
+  grid-template-columns: 3em 1fr;
+}
+#regulation dl.regulation-note dt {
+  text-align: center;
+  align-self: center;
+}
+#regulation dl.regulation-note dd {
+  grid-row: 1;
+}
+
 /* 画像 */
 #area-status #image {
   display: flex;

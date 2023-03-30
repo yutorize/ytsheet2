@@ -293,6 +293,7 @@ print <<"HTML";
           <dd>@{[input("history0Exp",'number','changeRegu',($set::make_fix?' readonly':''))]}</dd>
         </dl>
         <div class="annotate">※ステージの入力値に「クロウリングケイオス」が含まれる場合、専用項目が表示されます。</div>
+        <dl class="regulation-note"><dt>備考</dt><dd>@{[ input "history0Note" ]}</dd></dl>
       </details>
 
       <div id="area-status">

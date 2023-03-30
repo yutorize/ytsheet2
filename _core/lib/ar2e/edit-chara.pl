@@ -351,6 +351,7 @@ print <<"HTML";
             </script>
           </dd>
         </dl>
+        <dl class="regulation-note"><dt>備考</dt><dd>@{[ input "history0Note" ]}</dd></dl>
       </details>
       <div id="area-status">
         @{[ imageForm($pc{'imageURL'}) ]}

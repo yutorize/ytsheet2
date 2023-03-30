@@ -281,6 +281,7 @@ print <<"HTML";
           </dd>
         </dl>
         <div class="annotate">※経験点は、初期所有技能のぶんを含みます。</div>
+        <dl class="regulation-note"><dt>備考</dt><dd>@{[ input "history0Note" ]}</dd></dl>
       </details>
       <div id="area-status">
         @{[ imageForm($pc{'imageURL'}) ]}

@@ -2,27 +2,13 @@
 
 /* // キャラクター
 ---------------------------------------------------------------------------------------------------- */
-#regulation {
-  margin: 10px 0;
-  overflow-y: auto;
-}
 #regulation > dl {
-  display: grid;
   grid-template-columns: 1fr 1fr 1fr 4fr;
-  grid-template-rows: auto;
-  margin: 10px 0 0;
 }
 #sw2\.0 #regulation > dl {
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr 5fr;
 }
-#regulation dl dt {
-  grid-row: 1 / 2;
-}
-#regulation dl dd {
-  grid-row: 2 / 3;
-  font-size: 1.2rem;
-}
-#regulation dl#regulation-grow {
+#regulation dl.regulation-grow {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
   grid-template-rows: auto;
@@ -35,10 +21,7 @@
 }
 @media screen and (max-width:735px){
   #regulation > dl {
-    display: grid;
     grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: auto;
-    margin: 10px 0;
   }
   #sw2\.0 #regulation > dl {
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr;

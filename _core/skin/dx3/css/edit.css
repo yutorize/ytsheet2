@@ -7,13 +7,16 @@
   overflow-y: auto;
 }
 #regulation dl {
-  display: grid;
   grid-template-columns: max-content 14em max-content 6em 1fr;
-  grid-template-rows: auto;
-  margin: 1rem;
 }
 #regulation dl dt {
+  grid-row: 1;
   padding-left: .5em;
+  align-self: center;
+}
+#regulation dl dd {
+  grid-row: 1;
+  font-size: 1.2rem;
 }
 
 #area-status {
