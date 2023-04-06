@@ -932,11 +932,13 @@ print <<"HTML";
       <details class="box" id="free-note" @{[$pc{'freeNote'}?'open':'']}>
         <summary>容姿・経歴・その他メモ</summary>
         <textarea name="freeNote">$pc{'freeNote'}</textarea>
+        @{[ $::in{'log'} ? '<button type="button" class="set-newest" onclick="setNewestSingleData(\'freeNote\')">最新のメモを適用する</button>' : '' ]}
       </details>
       
       <details class="box" id="free-history" @{[$pc{'freeHistory'}?'open':'']}>
         <summary>履歴（自由記入）</summary>
         <textarea name="freeHistory">$pc{'freeHistory'}</textarea>
+        @{[ $::in{'log'} ? '<button type="button" class="set-newest" onclick="setNewestSingleData(\'freeHistory\')">最新の履歴（自由記入）を適用する</button>' : '' ]}
       </details>
       
       <div class="box" id="history">
@@ -1013,6 +1015,7 @@ print <<"HTML";
         ※経験点欄は<code>10+5+1</code>など四則演算が有効です（獲得条件の違う経験点などを分けて書けます）。<br>
         　経験点欄の右の適用チェックを入れると、その経験点が適用されます。
         </div>
+        @{[ $::in{'log'} ? '<button type="button" class="set-newest" onclick="setNewestHistoryData()">最新のセッション履歴を適用する</button>' : '' ]}
       </div>
       
       <div class="box" id="exp-footer">
