@@ -6,6 +6,22 @@ use open ":utf8";
 
 our $LOGIN_ID = check;
 
+if($::in{'base64mode'}){
+  use MIME::Base64;
+  foreach(keys %::in){
+    next if $_ eq 'mode';
+    next if !$_;
+    next if $_ =~ 'imageFile';
+    $::in{$_} = decode('utf8', decode_base64($::in{$_}) );
+  }
+}
+else {
+  foreach(keys %::in){
+    next if $_ =~ /^(?:imageFile|imageCompressed)$/;
+    $::in{$_} = decode('utf8', param($_))
+  }
+}
+
 our $mode_save = 1;
 
 our $mode = $::in{'mode'};
@@ -65,8 +81,7 @@ sub overlapCheck {
 }
 
 ### データ処理 #################################################################################
-my %pc;
-for (param()){ $pc{$_} = decode('utf8', param($_)) if $_ !~ /^(?:imageFile|imageCompressed)$/ }
+my %pc = %::in;
 if($main::new_id){ $pc{'id'} = $main::new_id; }
 ## 現在時刻
 our $now = time;

@@ -76,6 +76,12 @@ package set;
 
 ## ●キャラクターシートの各種初期値
 
+
+## ●保存時の送信モード
+ # Base64にして送信するかどうか
+ #（ロリポップなどでファイアウォールに引っ掛かる場合、「1」（=ON）にする）
+  our $base64mode = 0;
+
 ## ●Cookie
  # Cookieの名前
   our $cookie = 'ytsheet2';

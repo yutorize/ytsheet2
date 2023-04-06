@@ -939,6 +939,7 @@ HTML
 print 'const factorList = '.(JSON::PP->new->encode(\%data::factor_list)).";\n";
 print 'const factorData = '.(JSON::PP->new->encode(\%data::factor_data)).";\n";
 print <<"HTML";
+@{[ &commonJSVariable ]}
   </script>
 </body>
 

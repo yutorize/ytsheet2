@@ -1465,6 +1465,7 @@ foreach (@data::impulses) {
 }
 print "};\n";
 print <<"HTML";
+@{[ &commonJSVariable ]}
   </script>
 </body>
 

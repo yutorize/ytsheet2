@@ -1573,6 +1573,7 @@ print <<"HTML";
   };
 HTML
 print <<"HTML";
+@{[ &commonJSVariable ]}
   </script>
 </body>
 

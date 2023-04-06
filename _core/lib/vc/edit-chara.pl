@@ -764,6 +764,7 @@ print <<"HTML";
     'connections': @{[ $pc{'expUsedConnections'  } || 0 ]},
     'geises'     : @{[ $pc{'expUsedGeises'} || 0 ]},
   };
+@{[ &commonJSVariable ]}
   </script>
 </body>
 

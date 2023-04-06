@@ -141,6 +141,12 @@ package set;
  # 成長タイプ O=1000毎 ／ A=1000＋(10*成長回数)
  # our $growtype = '';
 
+
+## ●保存時の送信モード
+ # Base64にして送信するかどうか
+ #（ロリポップなどでファイアウォールに引っ掛かる場合、「1」（=ON）にする）
+  our $base64mode = 0;
+
 ## ●Cookie
  # Cookieの名前
   our $cookie = 'ytsheet2'; 

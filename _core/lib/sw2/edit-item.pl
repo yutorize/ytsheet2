@@ -340,12 +340,9 @@ print <<"HTML";
     <option value="冒険道具類">
     <option value="冒険道具類（消耗品）">
   </datalist>
-<script>
-function view(viewId){
-  let value = document.getElementById(viewId).style.display;
-  document.getElementById(viewId).style.display = (value === 'none') ? '' : 'none';
-}
-</script>
+  <script>
+@{[ &commonJSVariable ]}
+  </script>
 </body>
 </html>
 HTML

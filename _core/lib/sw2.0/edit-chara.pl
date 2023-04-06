@@ -1631,6 +1631,7 @@ foreach(@set::notoriety_rank){
 }
 print "};\n";
 print <<"HTML";
+@{[ &commonJSVariable ]}
   </script>
 </body>
 

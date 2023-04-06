@@ -157,6 +157,13 @@ sub loginError {
   exit;
 }
 
+## Javascript用共通変数
+sub commonJSVariable {
+  return <<"HTML";
+  const base64Mode = @{[ $set::base64mode || 0 ]};
+HTML
+}
+
 ## 画像欄
 sub imageForm {
   my $imgurl = shift;

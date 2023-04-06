@@ -883,6 +883,7 @@ print <<"HTML";
 HTML
 print 'const negaiData = '.(JSON::PP->new->encode(\%negai)).";\n";
 print <<"HTML";
+@{[ &commonJSVariable ]}
   </script>
 </body>
 

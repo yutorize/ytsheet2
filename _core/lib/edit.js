@@ -23,8 +23,17 @@ let saving = 0;
 function formSubmit() {
   if(saving){ return; }
   if(!formCheck()){ return false; }
-  const formData = new FormData(form)
-  const action = form.getAttribute("action")
+  const formData = new FormData(form);
+  const action = form.getAttribute("action");
+  if(base64Mode){
+    for(let item of formData){
+      if(item[0] === 'mode'){ continue; }
+      if(typeof item[1] === 'string' || typeof item[1] === 'number'){
+        formData.set(item[0], btoa(unescape(encodeURIComponent(item[1]))) );
+      }
+    }
+    formData.set('base64mode', 1);
+  }
   const options = {
     method: 'POST',
     body: formData,

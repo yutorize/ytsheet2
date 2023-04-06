@@ -490,6 +490,9 @@ print <<"HTML";
   <option value="回復効果ダメージ+3点">
   <option value="なし">
   </datalist>
+  <script>
+@{[ &commonJSVariable ]}
+  </script>
 </body>
 
 </html>

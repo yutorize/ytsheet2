@@ -585,12 +585,9 @@ print <<"HTML";
     <option value="1回の魔法行使">
     <option value="10秒（1ラウンド）持続">
   </datalist>
-<script>
-function view(viewId){
-  let value = document.getElementById(viewId).style.display;
-  document.getElementById(viewId).style.display = (value === 'none') ? '' : 'none';
-}
-</script>
+  <script>
+@{[ &commonJSVariable ]}
+  </script>
 </body>
 </html>
 HTML
