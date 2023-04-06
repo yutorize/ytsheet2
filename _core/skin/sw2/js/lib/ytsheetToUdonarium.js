@@ -144,6 +144,7 @@ io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2SwordWorld2P
 		{level:json.level, name:'冒険者レベル'},
 		{level:json.lvFig, name:'ファイター'},
 		{level:json.lvGra, name:'グラップラー'},
+		{level:json.lvBat, name:'バトルダンサー'},
 		{level:json.lvFen, name:'フェンサー'},
 		{level:json.lvSho, name:'シューター'},
 		{level:json.lvSor, name:'ソーサラー'},
