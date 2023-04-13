@@ -12,8 +12,10 @@ sub addJsonData {
   ### 魔物 --------------------------------------------------
   if ($pc{'type'} eq 'm'){
     ## ゆとチャユニット用ステータス
+    my $vitresist = "$pc{'vitResist'}\($pc{'vitResistFix'}\)";
+    my $mndresist = "$pc{'mndResist'}\($pc{'mndResistFix'}\)";
     my @n2a = ('','A' .. 'Z');
-    if($pc{'statusNum'} > 1){
+    if($pc{'statusNum'} > 1){ # 2部位以上
       my @hp; my @mp; my @def;
       my %multiple;
       foreach my $i (1 .. $pc{'statusNum'}){
@@ -26,7 +28,7 @@ sub addJsonData {
         if($pc{'mount'}){
           if($pc{'lv'}){
             my $ii = ($pc{'lv'} - $pc{'lvMin'} +1);
-            $i = $ii > 1 ? "-$ii" : '';
+            $i .= $ii > 1 ? "-$ii" : '';
           }
         }
         if($multiple{ $pc{"part${i}"} } > 1){
@@ -36,22 +38,33 @@ sub addJsonData {
         push(@hp , {$partname.':HP' => $pc{"status${i}Hp"}.'/'.$pc{"status${i}Hp"}});
         push(@mp , {$partname.':MP' => $pc{"status${i}Mp"}.'/'.$pc{"status${i}Mp"}});
         push(@def, $partname.$pc{"status${i}Defense"});
+        $vitresist = $pc{"status${i}Vit"};
+        $mndresist = $pc{"status${i}Mnd"};
       }
       $pc{'unitStatus'} = [ @hp,'|', @mp,'|', {'メモ' => '防護:'.join('／',@def)}];
       $pc{'unitExceptStatus'} = { 'HP'=>1,'MP'=>1,'防護'=>1 }
     }
-    else {
+    else { # 1部位
+      my $i = 1;
+      if($pc{'mount'}){
+        if($pc{'lv'}){
+          my $ii = ($pc{'lv'} - $pc{'lvMin'} +1);
+          $i .= $ii > 1 ? "-$ii" : '';
+        }
+      }
       $pc{'unitStatus'} = [
-        { 'HP' => $pc{'status1Hp'}.'/'.$pc{'status1Hp'} },
-        { 'MP' => $pc{'status1Mp'}.'/'.$pc{'status1Mp'} },
-        { '防護' => $pc{'status1Defense'} },
+        { 'HP' => $pc{"status${i}Hp"}.'/'.$pc{"status${i}Hp"} },
+        { 'MP' => $pc{"status${i}Mp"}.'/'.$pc{"status${i}Mp"} },
+        { '防護' => $pc{"status${i}Defense"} },
       ];
+      $vitresist = $pc{"status${i}Vit"};
+      $mndresist = $pc{"status${i}Mnd"};
     }
     my $taxa = "分類:$pc{'taxa'}";
-    my $data1 = "知能:$pc{'intellect'}　知覚:$pc{'perception'}　反応:$pc{'disposition'}";
+    my $data1 = "知能:$pc{'intellect'}　知覚:$pc{'perception'}".($pc{'mount'}?'':"　反応:$pc{'disposition'}");
        $data1 .= "　穢れ:$pc{'sin'}" if $pc{'sin'};
-    my $data2  = "言語:$pc{'language'}　生息地:$pc{'habitat'}";
-    my $data3  = "弱点:$pc{'weakness'}\n先制値:$pc{'initiative'}　生命抵抗力:$pc{'vitResist'}\($pc{'vitResistFix'}\)　精神抵抗力:$pc{'mndResist'}\($pc{'mndResistFix'}\)";
+    my $data2  = "言語:$pc{'language'}".($pc{'mount'}?'':"　生息地:$pc{'habitat'}");
+    my $data3  = "弱点:$pc{'weakness'}\n".($pc{'mount'}?'':"先制値:$pc{'initiative'}　")."生命抵抗力:${vitresist}　精神抵抗力:${mndresist}";
     $pc{'sheetDescriptionS'} = $taxa."\n".$data3;
     $pc{'sheetDescriptionM'} = $taxa."　".$data1."\n".$data2."\n".$data3;
   }
