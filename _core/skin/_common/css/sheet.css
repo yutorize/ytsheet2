@@ -372,14 +372,20 @@ details:not([open]).box > summary:hover {
   height: 1.3em;
   border: .1rem solid rgba(127,127,127,0.6);
   border-radius: .2em;
-  background:  rgba(127,127,127,0.1);
+  background-color: var(--bg-color);
   font-family: "Material Symbols Outlined";
   font-weight: bold;
   font-style: normal;
   text-align: center;
 }
+.box.chat-palette .chat-palette-menu > a.check {
+  background-color: #f705;
+}
 .box.chat-palette .chat-palette-menu > a.check::before {
   content: '\e876';
+}
+.box.chat-palette .chat-palette-menu > a:hover {
+  background-color: #0af5;
 }
 .box.chat-palette textarea {
   width: calc(100% - 2em);

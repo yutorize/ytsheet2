@@ -83,6 +83,7 @@ sub palettePreset {
   my $text;
   my %bot;
   if   (!$tool)           { $bot{'YTC'} = 1; }
+  elsif($tool eq 'tekey' ){ $bot{'TKY'} = $bot{'BCD'} = 1; }
   elsif($tool eq 'bcdice'){ $bot{'BCD'} = 1; }
   ## ＰＣ
   if(!$type){
@@ -113,6 +114,7 @@ sub palettePreset {
     foreach my $name (@class_names){
       next if !($data::class{$name}{'magic'}{'jName'} || $data::class{$name}{'craft'}{'stt'});
       next if !$::pc{'lv' . $data::class{$name}{'id'} };
+      $text .= "###\n" if $bot{'TKY'};
       $text .= "### ■魔法系\n";
       $text .= "//魔力修正=".($::pc{'magicPowerAdd'}||0)."\n";
       $text .= "//行使修正=".($::pc{'magicCastAdd'}||0)."\n";
@@ -171,6 +173,7 @@ sub palettePreset {
     foreach (1 .. $::pc{'weaponNum'}){
       next if $::pc{'weapon'.$_.'Acc'}.$::pc{'weapon'.$_.'Rate'}.
               $::pc{'weapon'.$_.'Crit'}.$::pc{'weapon'.$_.'Dmg'} eq '';
+      $text .= "###\n" if $bot{'TKY'};
       $text .= "### ■武器攻撃系\n";
       $text .= "//命中修正=0\n";
       $text .= "//C修正=0\n";
@@ -265,6 +268,7 @@ sub palettePreset {
     }
     $text .= "//出目修正=\$+{クリレイ}\#{必殺効果}\n" if $text =~ /■武器攻撃系/;
     # 抵抗回避
+    $text .= "###\n" if $bot{'TKY'};
     $text .= "### ■抵抗回避\n";
     $text .= "//生命抵抗修正=0\n";
     $text .= "//精神抵抗修正=0\n";
@@ -277,7 +281,7 @@ sub palettePreset {
     $text .= "\n";
     
     #
-    $text .= "###\n";
+    $text .= "###\n" if $bot{'YTC'} || $bot{'TKY'};
   }
   ## 魔物
   elsif($type eq 'm') {
@@ -408,6 +412,7 @@ my %stt_id_to_name = (
   'F' => '精神',
 );
 sub paletteProperties {
+  my $tool = shift;
   my $type = shift;
   my @propaties;
   ## PC
@@ -419,6 +424,7 @@ sub paletteProperties {
     push @propaties, "//生命力=$::pc{'sttVit'}".addNum($::pc{'sttAddD'});
     push @propaties, "//知力=$::pc{'sttInt'}"  .addNum($::pc{'sttAddE'});
     push @propaties, "//精神力=$::pc{'sttMnd'}".addNum($::pc{'sttAddF'});
+    push @propaties, "###" if $tool eq 'tekey';
     push @propaties, "### ■技能レベル";
     push @propaties, "//冒険者レベル=$::pc{'level'}";
     my @classes_en;
@@ -429,6 +435,7 @@ sub paletteProperties {
       push @classes_en, "//".uc($id)."={$name}";
     }
     push @propaties, '';
+    push @propaties, "###" if $tool eq 'tekey';
     push @propaties, "### ■代入パラメータ";
     push @propaties, "//器用={器用度}";
     push @propaties, "//敏捷={敏捷度}";

@@ -10,6 +10,7 @@ sub palettePreset {
   my $text;
   my %bot;
   if   (!$tool)           { $bot{'YTC'} = 1; }
+  elsif($tool eq 'tekey' ){ $bot{'TKY'} = $bot{'BCD'} = 1; }
   elsif($tool eq 'bcdice'){ $bot{'BCD'} = 1; }
   ## ＰＣ
   if(!$type){
@@ -33,7 +34,8 @@ sub palettePreset {
     $text .= "{魔術判定}+$::pc{'rollMagicDice'}D 魔術判定\n";
     $text .= "{呪歌判定}+$::pc{'rollSongDice'}D 呪歌判定\n";
     $text .= "{錬金術判定}+$::pc{'rollAlchemyDice'}D 錬金術判定\n";
-    $text .= "\n";
+    
+    $text .= "###\n" if $bot{'YTC'} || $bot{'TKY'};
   }
   
   return $text;
@@ -65,6 +67,7 @@ sub palettePresetSimple {
 
 ### デフォルト変数 ###################################################################################
 sub paletteProperties {
+  my $tool = shift;
   my $type = shift;
   my @propaties;
   ## PC

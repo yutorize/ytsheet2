@@ -29,6 +29,7 @@ sub palettePresetSimple {
 
 ### デフォルト変数 ###################################################################################
 sub paletteProperties {
+  my $tool = shift;
   my $type = shift;
   my @propaties;
   return @propaties;

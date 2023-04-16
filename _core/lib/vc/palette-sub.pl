@@ -10,6 +10,7 @@ sub palettePreset {
   my $text;
   my %bot;
   if   (!$tool)           { $bot{'YTC'} = 1; }
+  elsif($tool eq 'tekey' ){ $bot{'TKY'} = $bot{'BCD'} = 1; }
   elsif($tool eq 'bcdice'){ $bot{'BCD'} = 1; }
   
   if(!$type){
@@ -28,7 +29,8 @@ sub palettePreset {
     $text .= "2d6+{魔防値} 【魔防値】判定\n";
     $text .= "2d6+{行動値} 【行動値】判定\n";
     $text .= "2d6+{耐久値} 【耐久値】判定\n";
-    $text .= "\n";
+    
+    $text .= "###\n" if $bot{'YTC'} || $bot{'TKY'};
   }
   
   return $text;
@@ -60,6 +62,7 @@ sub palettePresetSimple {
 
 ### デフォルト変数 ###################################################################################
 sub paletteProperties {
+  my $tool = shift;
   my $type = shift;
   my @propaties;
   

@@ -648,9 +648,10 @@ sub palettePresetBuffDelete {
 
 sub palettePropertiesUsedOnly {
   my $palette = shift;
+  my $tool = shift;
   my $type = shift;
   my %used;
-  my @propaties_in = paletteProperties($type);
+  my @propaties_in = paletteProperties($tool,$type);
   my @propaties_out;
   my $hit = 1;
   foreach (0 .. 100){

@@ -78,7 +78,7 @@ sub outputChatPalette {
   }
 
   my $properties;
-  $properties .= $_."\n" foreach( $pc{'chatPalettePropertiesAll'} ? paletteProperties($type) : palettePropertiesUsedOnly($pc{'chatPalette'},$type) );
+  $properties .= $_."\n" foreach( $pc{'chatPalettePropertiesAll'} ? paletteProperties($tool,$type) : palettePropertiesUsedOnly($pc{'chatPalette'},$tool,$type) );
 
   $properties =~ s/\n+$//g;
 

@@ -724,8 +724,9 @@ print <<"HTML";
           ／
           <label>@{[ input 'paletteUseBuff', 'checkbox','setChatPalette']}バフデバフ用変数を使う</label>
           <br>
-          使用ダイスbot: <select name="paletteTool" onchange="setChatPalette();" style="width:auto;">
+          使用ツール: <select name="paletteTool" onchange="setChatPalette();" style="width:auto;">
           <option value="">ゆとチャadv.
+          <option value="tekey" @{[ $pc{'paletteTool'} eq 'tekey' ? 'selected' : '']}>Tekey
           <option value="bcdice" @{[ $pc{'paletteTool'} eq 'bcdice' ? 'selected' : '']}>BCDice
           </select>
         </p>
