@@ -902,6 +902,9 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
 
 
 /* Combos */
+#combo .open-button::before {
+  content: "▼";
+}
 #combo .combo-table {
   display: grid;
   grid-template-columns: 1.7fr 1.3fr 2fr;
@@ -1091,6 +1094,28 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
   #combo .shorten {
     display: none !important;
   }
+}
+
+#combo[data-display-mode="simple"] .combo-table h3 {
+  border-bottom: none;
+}
+#combo[data-display-mode="simple"] .combo-table .combo-combo {
+  border-bottom: none;
+}
+#combo[data-display-mode="simple"] .combo-table .combo-combo > dt {
+  display: none;
+}
+#combo[data-display-mode="simple"] .combo-table .combo-combo > dd {
+  border-top: none;
+}
+#combo[data-display-mode="simple"] .combo-table .combo-in {
+  display: none;
+}
+#combo[data-display-mode="simple"] .combo-table .combo-out {
+  display: none;
+}
+#combo[data-display-mode="simple"] .combo-table .combo-note {
+  display: none;
 }
 
 /* Items */
