@@ -26,7 +26,7 @@ sub tag_unescape {
   $text =~ s/%%(.+?)%%/<span class="strike">$1<\/span>/gi;  # 打ち消し線
   $text =~ s/__(.+?)__/<span class="underline">$1<\/span>/gi;  # 下線
   $text =~ s/\{\{(.+?)\}\}/<span style="color:transparent">$1<\/span>/gi;  # 透明
-  $text =~ s/[|｜]([^|｜]+?)《(.+?)》/<span><ruby>$1<rp>(<\/rp><rt>$2<\/rt><rp>)<\/rp><\/ruby><\/span>/gi; # なろう式ルビ
+  $text =~ s/[|｜]([^|｜\n]+?)《(.+?)》/<span><ruby>$1<rp>(<\/rp><rt>$2<\/rt><rp>)<\/rp><\/ruby><\/span>/gi; # なろう式ルビ
   $text =~ s/《《(.+?)》》/<span class="text-em">$1<\/span>/gi; # カクヨム式傍点
   
   $text =~ s/\[\[(.+?)&gt;((?:(?!<br>)[^"])+?)\]\]/&tag_link_url($2,$1)/egi; # リンク
