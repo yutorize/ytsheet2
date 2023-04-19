@@ -1039,7 +1039,17 @@ function makeComboConditionUtility(comboNode) {
 
         const menuRemover = event => {
           if (event != null) {
-            if (event.path.some(node => node === utilityIcon)) {
+            function getNodePath(node) {
+              const path = [];
+              let current = node;
+              while (current != null) {
+                path.unshift(current);
+                current = current.parentNode;
+              }
+              return path;
+            }
+
+            if (getNodePath(event.target).some(node => node === utilityIcon)) {
               return;
             }
           }
