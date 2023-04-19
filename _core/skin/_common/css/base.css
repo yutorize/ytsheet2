@@ -108,6 +108,8 @@ body {
   font-size  : 1.4rem;
   line-height: 1.5;
   line-break: strict;
+  text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
   -webkit-print-color-adjust: exact;
 }
 
