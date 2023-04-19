@@ -132,6 +132,7 @@ sub pcDataGet {
   elsif($mode eq 'convert'){
     %pc = %::conv_data;
     delete $pc{'image'};
+    delete $pc{'imageURL'};
     delete $pc{'protect'};
     $message = '「<a href="'.$::in{'url'}.'" target="_blank"><!NAME></a>」をコンバートして新規作成します。<br>（まだ保存はされていません）';
   }
