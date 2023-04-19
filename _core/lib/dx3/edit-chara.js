@@ -404,6 +404,8 @@ let loisSortable = Sortable.create(document.querySelector('#lois-table tbody'), 
         document.querySelector(`#${id} [name$="Color"]`       ).setAttribute('name',`lois${num}Color`);
         document.querySelector(`#${id} [name$="Note"]`        ).setAttribute('name',`lois${num}Note`);
         document.querySelector(`#${id} [name$="State"]`       ).setAttribute('name',`lois${num}State`);
+        document.querySelector(`#${id} [name$="EmoPosiCheck"]`).setAttribute('oninput',`emoP(${num})`);
+        document.querySelector(`#${id} [name$="EmoNegaCheck"]`).setAttribute('oninput',`emoN(${num})`);
         num++;
       }
     }
