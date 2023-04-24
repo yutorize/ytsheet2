@@ -402,7 +402,7 @@ print <<"HTML";
         <h2>デフォルト変数 （自動的に末尾に出力されます）</h2>
         <textarea id="paletteDefaultProperties" readonly style="height:20em">
 HTML
-  say $_ foreach(paletteProperties('m'));
+  say $_ foreach(paletteProperties('','m'));
 print <<"HTML";
 </textarea>
           <label>@{[ input 'chatPalettePropertiesAll', 'checkbox']} 全ての変数を出力する</label><br>

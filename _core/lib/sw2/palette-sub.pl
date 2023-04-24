@@ -383,7 +383,7 @@ sub palettePresetSimple {
   
   my $text = palettePreset($tool,$type);
   my %propaty;
-  foreach (paletteProperties($type)){
+  foreach (paletteProperties($tool,$type)){
     if($_ =~ /^\/\/(.+?)=(.*)$/){
       $propaty{$1} = $2;
     }

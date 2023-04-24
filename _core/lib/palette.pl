@@ -118,7 +118,7 @@ sub outputChatPaletteTemplate {
   $json{'preset'} = $pc{'paletteUseVar'} ? palettePreset($tool,$type) :  palettePresetSimple($tool,$type);
   $json{'preset'} = palettePresetBuffDelete($json{'preset'}) if !$pc{'paletteUseBuff'};
   if(!$pc{'paletteTool'}){ $json{'preset'} = palettePresetSwapWordAndCommand($json{'preset'}); }
-  $json{'properties'} .= "$_\n" foreach( paletteProperties($type) );
+  $json{'properties'} .= "$_\n" foreach( paletteProperties($tool,$type) );
   print "Content-type: text/javascript; charset=UTF-8\n\n";
   print JSON::PP->new->canonical(1)->encode( \%json );
 }
