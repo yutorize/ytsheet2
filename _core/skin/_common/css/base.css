@@ -525,7 +525,7 @@ main nav ul {
 }
 main nav ul li {
   display: flex;
-  font-size: 120%;
+  font-size: 100%;
 }
 main nav ul li::before,
 main nav ul li::after {
@@ -540,7 +540,7 @@ main nav ul li::after {
 .night main nav ul li  {
 }
 main nav ul li a {
-  padding: .5em .8em;
+  padding: .7em .8em;
   border-width: 1px;
   border-style: solid;
   border-radius: .5em .5em 0 0;

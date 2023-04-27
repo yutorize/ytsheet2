@@ -85,10 +85,11 @@
       </TMPL_LOOP>
       <TMPL_IF simpleIndex><section class="list">
         <ul class="grouplist">
-        <TMPL_LOOP Taxa><li>
-          <a href="./?type=m&taxa=<TMPL_VAR ID>"><TMPL_VAR NAME><small><TMPL_VAR TEXT></small></a>
-        </li></TMPL_LOOP>
-      </ul>
+          <TMPL_LOOP Taxa><li>
+            <a href="./?type=m&taxa=<TMPL_VAR ID>"><TMPL_VAR NAME><small><TMPL_VAR TEXT></small></a>
+          </li></TMPL_LOOP>
+          <li><a href="./?type=m&taxa=all&mount=1">騎獣</a></li>
+        </ul>
       </section></TMPL_IF>
     </article>
     <div id="page-top-button"><a href="#"></a></div>
