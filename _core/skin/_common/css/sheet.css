@@ -4,7 +4,7 @@
 
 /* // Base
 ---------------------------------------------------------------------------------------------------- */
-:root {
+article, .color-set {
   --box-head-bg-color: hsla(
     var(--box-head-bg-color-h, 225),
     var(--box-head-bg-color-s,  9%),
@@ -45,7 +45,8 @@
     calc( var(--box-base-bg-color-s,   0%) * 0.3 ), 75%
   );
 }
-.night {
+.night article,
+.night .color-set {
   --box-base-bg-color: hsla(
     var(--box-base-bg-color-h,   0),
     var(--box-base-bg-color-s,  0%),
@@ -64,6 +65,16 @@
     var(--box-base-bg-color-h, 0),
     calc( var(--box-base-bg-color-s,   0%) * 0.3 ), 15%
   );
+}
+
+.colorless body {
+  --box-head-bg-color-h: 225;
+  --box-head-bg-color-s: 9%;
+  --box-head-bg-color-l: 65%;
+  --box-base-bg-color-h: 235;
+  --box-base-bg-color-s: 0%;
+  --box-base-bg-color-l: 100%;
+  --box-base-bg-color-d: 15%;
 }
 
 html {

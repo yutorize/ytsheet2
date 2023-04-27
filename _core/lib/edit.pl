@@ -315,7 +315,7 @@ sub colorCostomForm {
         </div>
       </div>
       <div class="color-sample">
-        <div class="light">
+        <div class="light color-set">
           <div class="name">色見本</div>
           <div class="box">
             <table class="data-table">
@@ -340,8 +340,8 @@ sub colorCostomForm {
           </div>
         </div>
         <div class="night">
-          <div class="name">色見本</div>
-          <div class="box">
+          <div class="name color-set">色見本</div>
+          <div class="box color-set">
             <table class="data-table">
               <thead><tr><th>データ表組み</th><th>項目1</th><th>項目2</th></tr></thead>
               <tbody>
@@ -350,7 +350,7 @@ sub colorCostomForm {
               </tbody>
             </table>
           </div>
-          <div class="box">
+          <div class="box color-set">
             <h2>大見出し</h2>
             <h3>中見出し</h3>
             <h4>小見出し</h4>

@@ -10,7 +10,8 @@
 ---------------------------------------------------------------------------------------------------- */
 body {
   background-image: url(../../_common/img/back-pattern.png), url(../img/back-first.png);
-
+}
+article, .color-set {
   --item-head-bg-color: hsla(
     var(--box-head-bg-color-h, 225),
     calc( var(--box-head-bg-color-s,  9%) * 0.9 ),
@@ -22,7 +23,8 @@ body {
     calc( var(--box-head-bg-color-s,   0%) * 0.9 ), 40%
   );
 }
-.night body {
+.night article,
+.night .color-set {
   --s-icon-color: hsl(
     var(--box-head-bg-color-h, 0),
     calc( var(--box-head-bg-color-s,   0%) * 0.9 ), 70%
@@ -37,14 +39,14 @@ article {
 
 /* // Font
 ---------------------------------------------------------------------------------------------------- */
-#area-itemname h1 {
+#area-name h1 {
   font-family: var(--base-font-family-min);
 }
 
 
 /* // Name
 ---------------------------------------------------------------------------------------------------- */
-#area-itemname {
+#area-name {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -56,7 +58,7 @@ article {
   border-color: var(--box-outside-border-color);
   background-image: linear-gradient(to bottom, var(--bg-color), transparent);
 }
-#area-itemname h1 {
+#area-name h1 {
   flex-grow: 1;
   padding: .25em 1rem;
   text-align: left;
@@ -64,17 +66,17 @@ article {
   font-weight: bold;
   line-height: 1;
 }
-#area-itemname h1 small {
+#area-name h1 small {
   display: inline-block;
   font-size: 70%;
   line-height: 1;
 }
-#area-itemname .price {
+#area-name .price {
   flex-grow: 1;
   padding-right: .5em;
   text-align: right;
 }
-#area-itemname h1 .i-icon {
+#area-name h1 .i-icon {
   width: .7em;
   height: .7em;
 }

@@ -102,7 +102,7 @@
         </div>
         <h2><TMPL_VAR magicClass DEFAULT="未分類"></h2>
         <div class="data-magic <TMPL_VAR magicClassEn>">
-          <dl class="name    "><dt><TMPL_VAR magicLevel></dt><dd><div><TMPL_VAR magicIcon>【<TMPL_VAR magicName>】</div><small><TMPL_VAR magicNameNotes></small></dd></dl>
+          <dl class="name color-set"><dt><TMPL_VAR magicLevel></dt><dd><div><TMPL_VAR magicIcon>【<TMPL_VAR magicName>】</div><small><TMPL_VAR magicNameNotes></small></dd></dl>
           <TMPL_IF magicCostOn     ><dl class="cost     "><dt>消費         </dt><dd><TMPL_VAR magicCost></dd></dl></TMPL_IF>
           <TMPL_IF magicTargetOn   ><dl class="target   "><dt>対象         </dt><dd><TMPL_VAR magicTarget></dd></dl></TMPL_IF>
           <TMPL_IF magicRangeOn    ><dl class="range    "><dt>射程/<br>形状</dt><dd><TMPL_VAR magicRange>／<TMPL_VAR magicForm></dd></dl></TMPL_IF>
@@ -134,7 +134,7 @@
       <!-- 神格 -->
       <TMPL_IF categoryGod>
       <section id="god">
-        <div id="area-name">
+        <div id="area-name" class="color-set">
           <h1 id="god-name"><TMPL_IF godAka><span id="aka">“<TMPL_VAR godAka>”</span></TMPL_IF><TMPL_VAR godName></h1>
           <small>（<TMPL_VAR godClass DEFAULT="―">／<TMPL_VAR godRank DEFAULT="―"><TMPL_IF godArea>:<TMPL_VAR godArea></TMPL_IF>）</small>
         </div>
@@ -192,7 +192,7 @@
       <!-- 流派 -->
       <TMPL_IF categorySchool>
       <section id="school">
-        <div id="area-name">
+        <div id="area-name" class="color-set">
           <h1 id="school-name">【<TMPL_VAR schoolName>】</h1>
             <TMPL_IF schoolArea><small>（<TMPL_VAR schoolArea>）</TMPL_IF></small>
         </div>

@@ -434,6 +434,15 @@ function changeColor(){
   document.documentElement.style.setProperty('--box-base-bg-color-s', (bS*0.7)+'%'  );
   document.documentElement.style.setProperty('--box-base-bg-color-l', (100-bS/6)+'%');
   document.documentElement.style.setProperty('--box-base-bg-color-d', 15+'%'        );
+
+  const colorSample = document.querySelector('#section-color');
+  colorSample.style.setProperty('--box-head-bg-color-h', hH            );
+  colorSample.style.setProperty('--box-head-bg-color-s', hS+'%'        );
+  colorSample.style.setProperty('--box-head-bg-color-l', hL+'%'        );
+  colorSample.style.setProperty('--box-base-bg-color-h', bH            );
+  colorSample.style.setProperty('--box-base-bg-color-s', (bS*0.7)+'%'  );
+  colorSample.style.setProperty('--box-base-bg-color-l', (100-bS/6)+'%');
+  colorSample.style.setProperty('--box-base-bg-color-d', 15+'%'        );
 }
 function setDefaultColor(){
   form.colorHeadBgH.value = 225;

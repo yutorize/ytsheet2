@@ -10,7 +10,9 @@
 ---------------------------------------------------------------------------------------------------- */
 body {
   background-image: url(../../_common/img/back-pattern.png), url(../img/back-first.png);
-
+}
+article,
+.color-set {
   --arts-name-bg-color: hsl(
     var(--box-head-bg-color-h, 0),
     calc( var(--box-head-bg-color-s,   0%) * 0.5 ), 20%
@@ -22,11 +24,8 @@ body {
     var(--box-head-bg-color-a, 0.4)
   );
 }
-.night {
-  --arts-name-bg-color: hsl(
-    var(--box-head-bg-color-h, 0),
-    calc( var(--box-head-bg-color-s,   0%) * 0.5 ), 5%
-  );
+.night article,
+.night .color-set {
 }
 
 /* // Base

@@ -4,7 +4,8 @@
 ---------------------------------------------------------------------------------------------------- */
 body {
   background-image: url(../../_common/img/back-pattern.png), url(../img/back-first.png);
-  
+}
+article, .color-set {
   --monster-level-bg-color: hsl(
     var(--box-head-bg-color-h, 0),
     calc( var(--box-head-bg-color-s,   0%) * 0.5 ), 50%
@@ -20,7 +21,8 @@ body {
     calc( var(--box-head-bg-color-s,   0%) * 0.9 ), 40%
   );
 }
-.night body {
+.night article,
+.night .color-set {
   --s-icon-color: hsl(
     var(--box-head-bg-color-h, 0),
     calc( var(--box-head-bg-color-s,   0%) * 0.9 ), 70%
@@ -36,14 +38,14 @@ article {
 
 /* // Font
 ---------------------------------------------------------------------------------------------------- */
-#area-monstername h1 {
+#area-name h1 {
   font-family: var(--base-font-family-min);
 }
 
 
 /* // Name
 ---------------------------------------------------------------------------------------------------- */
-#area-monstername {
+#area-name {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -56,7 +58,7 @@ article {
   border-color: var(--monster-level-bg-color);
   background-image: linear-gradient(to bottom, var(--bg-color), transparent);
 }
-#area-monstername .lv {
+#area-name .lv {
   order: -1;
   flex-shrink: 0;
   align-self: stretch;
@@ -72,14 +74,14 @@ article {
   font-size: 200%;
   font-weight: bold;
 }
-#area-monstername .name-taxa {
+#area-name .name-taxa {
   flex-grow: 1;
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
 }
-#area-monstername h1 {
+#area-name h1 {
   flex-grow: 1;
   padding: .25em 1rem;
   text-align: left;
@@ -87,12 +89,12 @@ article {
   font-weight: bold;
   line-height: 1;
 }
-#area-monstername h1 small {
+#area-name h1 small {
   display: inline-block;
   font-size: 70%;
   line-height: 1;
 }
-#area-monstername .taxa {
+#area-name .taxa {
   position: absolute;
   top: -1.7em;
   left: 0;
