@@ -324,6 +324,57 @@ footer .copyright {
   }
 }
 
+/* トグルボタン */
+label.toggle-button input {
+  display: none;
+}
+label.toggle-button {
+  display: inline-block;
+  position: relative;
+  width: 4.5em;
+  padding: 2px 1em;
+  border: 1px solid var(--text-color);
+  border-radius: 2em;
+  line-height: 1;
+  text-align: center;
+  cursor: pointer;
+}
+label.toggle-button:has(input:checked) {
+  padding-left: 0;
+}
+label.toggle-button:has(input:not(:checked)) {
+  padding-right: 0;
+}
+label.toggle-button::before {
+  font-size: 85%;
+  font-weight: bold;
+  white-space: nowrap;
+}
+label.toggle-button:has(input:checked)::before {
+  content: 'ON';
+}
+label.toggle-button:has(input:not(:checked))::before {
+  content: 'OFF';
+  color: #777;
+}
+label.toggle-button::after {
+  content: '';
+  position: absolute;
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  border-radius: 100%;
+  transition: .2s;
+}
+label.toggle-button:has(input:checked)::after {
+  right: 2px;
+  background-color: var(--text-color);
+}
+label.toggle-button:has(input:not(:checked))::after {
+  right: calc(3.5em - 4px);
+  background-color: #777;
+}
+
 /* // Sidebar
 ---------------------------------------------------------------------------------------------------- */
 aside#sidebar-left,
