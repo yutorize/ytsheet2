@@ -420,6 +420,7 @@
 
         <section class="box" id="combo">
           <h2>コンボ</h2>
+          <span class="open-button" onclick="swapComboDisplayMode();">簡易表示</span>
           <TMPL_LOOP Combos><div class="combo-table">
             <h3><span><TMPL_VAR NAME></span></h3>
             <dl class="combo-combo"><dt>組み合わせ</dt><dd><TMPL_VAR COMBO></dd></dl>
@@ -447,6 +448,14 @@
             <p class="combo-note"><TMPL_VAR NOTE></p>
           </div></TMPL_LOOP>
         </section>
+        <script>
+          let comboDisplayFull = true;
+          function swapComboDisplayMode() {
+            comboDisplayFull = !comboDisplayFull;
+            document.getElementById('combo').dataset.displayMode = comboDisplayFull ? 'full' : 'simple';
+            document.querySelector('#combo .open-button').textContent = comboDisplayFull ? "簡易表示" : "詳細表示";
+          }
+        </script>
         
         <div class="box-union" id="items">
           <TMPL_IF Weapons><section class="box">
