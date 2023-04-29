@@ -34,7 +34,7 @@ sub dataConvert {
     $set_url =~ s/edit\.html\?/display\?ajax=1&/;
     my $data = urlDataGet($set_url) or error 'キャラクターシート倉庫のデータが取得できませんでした';
     my %in = %{ decode_json(encode('utf8', (join '', $data))) };
-    
+
     return convertSoukoToYtsheet(\%in);
   }
   ## 旧ゆとシート
@@ -530,6 +530,10 @@ sub convertSoukoToYtsheet {
   
   ## チャットパレット
   $pc{'paletteUseBuff'} = 1;
+
+  ## 画像
+  ($pc{'imageURL'} = $::in{'url'}) =~ s/edit\.html/image/; 
+  $pc{'image'} = LWP::UserAgent->new->simple_request(HTTP::Request->new(GET => $pc{'imageURL'}))->code == 200;
 
   ## 〆
   $pc{'ver'} = 0;

@@ -125,6 +125,7 @@ my $item_urls = $pc{'schoolItemList'};
 
 ### 置換 #############################################################################################
 foreach (keys %pc) {
+  next if($_ =~ /^image/);
   if($_ =~ /(?:Effect|Description|Note)$/){
     $pc{$_} = tag_unescape_lines($pc{$_});
   }

@@ -62,7 +62,7 @@ sub dataPartnerGet {
     close($IN);
     if($pc{'image'}){
       $pc{'imageURL'} = "./?id=$id&mode=image&cache=$pc{'imageUpdate'}";
-      $pc{'imageRawURL'} = "${set::char_dir}${file}/image.$pc{'image'}";
+      $pc{'imagePath'} = "${set::char_dir}${file}/image.$pc{'image'}";
     }
     $pc{'convertSource'} = '同じゆとシートⅡ';
     return %pc;

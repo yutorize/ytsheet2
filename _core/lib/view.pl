@@ -32,10 +32,9 @@ else               { require $set::lib_view_char; }
 ### データ取得 --------------------------------------------------
 sub pcDataGet {
   my %pc;
+  my $datadir = ($type eq 'm') ? $set::mons_dir : ($type eq 'i') ? $set::item_dir : ($type eq 'a') ? $set::arts_dir : $set::char_dir;
   ## データ読み込み
   if($::in{'id'}){
-    my $datadir = ($type eq 'm') ? $set::mons_dir : ($type eq 'i') ? $set::item_dir : ($type eq 'a') ? $set::arts_dir : $set::char_dir;
-
     my $datatype = ($::in{'log'}) ? 'logs' : 'data';
     my $hit = 0;
     open my $IN, '<', "${datadir}${file}/${datatype}.cgi" or viewNotFound($datadir);
@@ -67,6 +66,7 @@ sub pcDataGet {
       %pc = data_calc(\%pc);
     }
   }
+
   ##
   if   ($type eq 'm'){ $pc{'sheetType'} = 'mons'; }
   elsif($type eq 'i'){ $pc{'sheetType'} = 'item'; }
@@ -86,6 +86,32 @@ sub pcDataGet {
   if($::in{'mode'} eq 'download'){
     $pc{'modeDownload'} = 1;
   }
+  
+  ## キャラクター画像
+  if($pc{'image'}){
+    if($pc{'convertSource'}) {
+      $pc{'imageSrc'} = $pc{'imageURL'};
+    }
+    else {
+      $pc{'imageSrc'} =     "./?id=$::in{'id'}&mode=image&cache=$pc{'imageUpdate'}";
+      $pc{'imageURL'} = url()."?id=$::in{'id'}&mode=image&cache=$pc{'imageUpdate'}";
+    }
+    $pc{'images'} = "'1': \"".($pc{'modeDownload'} ? urlToBase64("${datadir}${file}/image.$pc{'image'}") : $pc{'imageSrc'})."\", ";
+    
+    if($pc{'imageFit'} eq 'percentY'){
+      $pc{'imageFit'} = 'auto '.$pc{'imagePercent'}.'%';
+    }
+    elsif($pc{'imageFit'} =~ /^percentX?$/){
+      $pc{'imageFit'} = $pc{'imagePercent'}.'%';
+    }
+    
+    ## 権利表記
+    if($pc{'imageCopyrightURL'}){
+      $pc{'imageCopyright'} = "<a href=\"$pc{'imageCopyrightURL'}\" target=\"_blank\">".($pc{'imageCopyright'}||$pc{'imageCopyrightURL'})."</a>";
+    }
+  }
+
+  ## 
 
   return %pc;
 }

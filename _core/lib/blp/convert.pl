@@ -28,6 +28,8 @@ sub dataConvert {
     my $data = urlDataGet($set_url) or error 'キャラクターシート倉庫のデータが取得できませんでした';
     my %in = %{ decode_json(encode('utf8', (join '', $data))) };
     
+    ($in{'image_url'} = $set_url) =~ s/display\?ajax=1&/image?/; 
+
     return convertSoukoToYtsheet(\%in);
   }
   ## ゆとシートⅡ
@@ -60,6 +62,8 @@ sub dataPartnerGet {
     $set_url =~ s/edit\.html\?/display\?ajax=1&/;
     my $data = urlDataGet($set_url) or return;
     my %in = %{ decode_json(encode('utf8', (join '', $data))) };
+
+    ($in{'image_url'} = $set_url) =~ s/display\?ajax=1&/image?/; 
     
     return convertSoukoToYtsheet(\%in);
   }
@@ -78,7 +82,7 @@ sub dataPartnerGet {
     close($IN);
     if($pc{'image'}){
       $pc{'imageURL'} = "./?id=$id&mode=image&cache=$pc{'imageUpdate'}";
-      $pc{'imageRawURL'} = "${set::char_dir}${file}/image.$pc{'image'}";
+      $pc{'imagePath'} = "${set::char_dir}${file}/image.$pc{'image'}";
     }
     $pc{'convertSource'} = '同じゆとシートⅡ';
     return %pc;
@@ -213,8 +217,14 @@ sub convertSoukoToYtsheet {
     $i++;
   }
   $pc{'artsNum'} = $i-1;
+  
   ## 履歴
   $pc{'historyNum'} = 3;
+
+  ## 画像
+  $pc{'imageURL'} = $in{'image_url'}; 
+  $pc{'image'} = LWP::UserAgent->new->simple_request(HTTP::Request->new(GET => $pc{'imageURL'}))->code == 200;
+
   ## 〆
   $pc{'ver'} = 0;
   return %pc;

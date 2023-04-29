@@ -180,7 +180,7 @@ if($pc{'forbidden'} && !$pc{'yourAuthor'}){
 ### 置換 #############################################################################################
 if($pc{'ver'}){
   foreach (keys %pc) {
-    next if($_ =~ /^(?:imageURL|imageCopyrightURL)$/);
+    next if($_ =~ /^image/);
     if($_ =~ /^(?:items|freeNote|freeHistory|cashbook)$/){
       $pc{$_} = tag_unescape_lines($pc{$_});
     }
@@ -598,35 +598,9 @@ else {
   $SHEET->param(titleName => tag_delete name_plain($pc{'characterName'}||"“$pc{'aka'}”"));
 }
 
-### 画像 --------------------------------------------------
-my $imgsrc;
-if($pc{'image'}){
-  if($pc{'convertSource'} eq '別のゆとシートⅡ') {
-    $imgsrc = $pc{'imageURL'};
-  }
-  else {
-    $imgsrc = "./?id=$::in{'id'}&mode=image&cache=$pc{'imageUpdate'}";
-  }
-  $SHEET->param(imageSrc => $imgsrc);
-  $SHEET->param(images    => "'1': \"".($pc{'modeDownload'} ? urlToBase64("${set::char_dir}${main::file}/image.$pc{'image'}") : $imgsrc)."\", ");
-}
-
-if($pc{'imageFit'} eq 'percentY'){
-  $SHEET->param(imageFit => 'auto '.$pc{'imagePercent'}.'%');
-}
-elsif($pc{'imageFit'} =~ /^percentX?$/){
-  $SHEET->param(imageFit => $pc{'imagePercent'}.'%');
-}
-
-## 権利表記
-if($pc{'imageCopyrightURL'}){
-  $pc{'imageCopyright'} = $pc{'imageCopyrightURL'} if !$pc{'imageCopyright'};
-  $SHEET->param(imageCopyright => "<a href=\"$pc{'imageCopyrightURL'}\" target=\"_blank\">$pc{'imageCopyright'}</a>");
-}
-
 ### OGP --------------------------------------------------
 $SHEET->param(ogUrl => url().($::in{'url'} ? "?url=$::in{'url'}" : "?id=$::in{'id'}"));
-if($pc{'image'}) { $SHEET->param(ogImg => url()."/".$imgsrc); }
+if($pc{'image'}) { $SHEET->param(ogImg => $pc{'imageURL'}); }
 $SHEET->param(ogDescript => tag_delete "種族:$pc{'race'}　性別:$pc{'gender'}　年齢:$pc{'age'}　クラス:$pc{'classMain'}／$pc{'classSupport'}".($pc{'classTitle'}?"／$pc{'classTitle'}":''));
 
 ### バージョン等 --------------------------------------------------

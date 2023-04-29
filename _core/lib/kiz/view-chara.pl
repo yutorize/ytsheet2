@@ -103,18 +103,11 @@ if(!$::in{'log'}){
       $pc{'partner1Gender'}  = $pr{'gender'};
       $pc{'partner1NegaiOutside'} = $pr{'negaiOutside'};
       $pc{'partner1NegaiInside'}  = $pr{'negaiInside'};
-      if($pr{'convertSource'} eq 'キャラクターシート倉庫'){
-        ($pc{'p1_imageSrc'} = $pc{'partner1Url'}) =~ s/edit\.html/image/;
-        $pc{'p1_image'} = LWP::UserAgent->new->simple_request(HTTP::Request->new(GET => $pc{'p1_imageSrc'}))->code == 200;
-        $pc{'partner1Url'} = './?url='.$pc{'partner1Url'};
-      }
-      else {
-        $pc{'fromPartner1MarkerPosition'} = $pr{'toPartner'.$pc{'partnerOrder'}.'MarkerPosition'};
-        $pc{'fromPartner1MarkerColor'}    = $pr{'toPartner'.$pc{'partnerOrder'}.'MarkerColor'};
-        $pc{'fromPartner1Emotion1'}     = $pr{'toPartner'.$pc{'partnerOrder'}.'Emotion1'};
-        $pc{'fromPartner1Emotion2'}     = $pr{'toPartner'.$pc{'partnerOrder'}.'Emotion2'};
-        $pc{'p1_imageSrc'} = $pr{'imageURL'};
-      }
+      $pc{'fromPartner1MarkerPosition'} = $pr{'toPartner'.$pc{'partnerOrder'}.'MarkerPosition'};
+      $pc{'fromPartner1MarkerColor'}    = $pr{'toPartner'.$pc{'partnerOrder'}.'MarkerColor'};
+      $pc{'fromPartner1Emotion1'}     = $pr{'toPartner'.$pc{'partnerOrder'}.'Emotion1'};
+      $pc{'fromPartner1Emotion2'}     = $pr{'toPartner'.$pc{'partnerOrder'}.'Emotion2'};
+
       if($pr{'forbidden'}){
         $pc{'partner1Name'} = noiseText(6,14);
         $pc{'partner1Type'} = noiseTextTag(noiseText(4));
@@ -127,6 +120,7 @@ if(!$::in{'log'}){
       }
     }
   }
+  ## パートナー2
   if($pc{'partner2Url'} && $pc{'partner2Auto'}){
     my %pr = dataPartnerGet($pc{'partner2Url'});
     if($pr{'convertSource'}){
@@ -144,6 +138,32 @@ if(!$::in{'log'}){
       $pc{'fromPartner2Emotion1'}     = $pr{'toPartner'.$num.'Emotion1'};
       $pc{'fromPartner2Emotion2'}     = $pr{'toPartner'.$num.'Emotion2'};
       $pc{'p2_imageSrc'} = $pr{'imageURL'}."?$pr{'imageUpdate'}";
+      
+      if($pr{'forbidden'}){
+        $pc{'partner2Name'} = noiseText(6,14);
+        $pc{'partner2Type'} = noiseTextTag(noiseText(4));
+        if($pr{'forbidden'} ne 'battle'){
+          $pc{'partner2Age'}     = noiseTextTag(noiseText(2));
+          $pc{'partner2Gender'}  = noiseTextTag(noiseText(2));
+          $pc{'partner2NegaiOutside'} = noiseTextTag(noiseText(2));
+          $pc{'partner2NegaiInside'}  = noiseTextTag(noiseText(2));
+        }
+      }
+    }
+  }
+  ## パートナー画像
+  foreach my $num (1,2){
+    next if !$pc{"p${num}_imageURL"};
+    $pc{"p${num}_imageSrc"} = $pc{"p${num}_imageURL"};
+    $pc{'images'} .= "'p${num}': \"".($pc{'modeDownload'} ? urlToBase64($pc{"p${num}_imagePath"}) : $pc{"p${num}_imageURL"})."\", ";
+    if($pc{"p${num}_imageFit"} eq "p${num}_percentY"){
+      $pc{"p${num}_imageFit"} = 'auto '.$pc{'imagePercent'}.'%';
+    }
+    elsif($pc{"p${num}_imageFit"} =~ /^percentX?$/){
+      $pc{"p${num}_imageFit"} = $pc{"p${num}_imagePercent"}.'%';
+    }
+    if($pc{"p${num}_imageCopyrightURL"}){
+      $pc{"p${num}_imageCopyright"} = "<a href=\"$pc{\"p${num}_imageCopyrightURL\"}\" target=\"_blank\">".($pc{"p${num}_imageCopyright"}||$pc{"p${num}_imageCopyrightURL"})."</a>";
     }
   }
 }
@@ -151,7 +171,7 @@ if(!$::in{'log'}){
 ### 置換 #############################################################################################
 if($pc{'ver'}){
   foreach (keys %pc) {
-    next if($_ =~ /^(?:partner[12]Url|(?:p[12]_)?(?:imageURL|imageSrc|imageCopyrightURL))$/);
+    next if($_ =~ /^(?:partner[12]Url|(?:p[12]_)?(?:image))/);
     if($_ =~ /^(?:freeNote|freeHistory)$/){
       $pc{$_} = tag_unescape_lines($pc{$_});
     }
@@ -377,49 +397,9 @@ else {
   $SHEET->param(titleName => tag_delete name_plain($pc{'characterName'}||"“$pc{'aka'}”"));
 }
 
-### 画像 --------------------------------------------------
-my $imgsrc; my $images;
-if($pc{'image'}){
-  if($pc{'convertSource'} eq 'キャラクターシート倉庫'){
-    ($imgsrc = $::in{'url'}) =~ s/edit\.html/image/; 
-    require LWP::UserAgent;
-    my $code = LWP::UserAgent->new->simple_request(HTTP::Request->new(GET => $imgsrc))->code == 200;
-    $SHEET->param(image => $code);
-  }
-  elsif($pc{'convertSource'} eq '別のゆとシートⅡ') {
-    $imgsrc = $pc{'imageURL'};
-  }
-  else {
-    $imgsrc = "./?id=$::in{'id'}&mode=image&cache=$pc{'imageUpdate'}";
-  }
-  $SHEET->param(imageSrc => $imgsrc);
-  $images     .= "'1': \"".($pc{'modeDownload'} ? urlToBase64("${set::char_dir}${main::file}/image.$pc{'image'}") : $imgsrc)."\", ";
-}
-if($pc{'p1_image'}){
-  $images     .= "'p1': \"".($pc{'modeDownload'} ? urlToBase64($pc{'p1_imageRawURL'}) : $pc{'p1_imageSrc'})."\", ";
-}
-if($pc{'p2_image'}){
-  $images     .= "'p2': \"".($pc{'modeDownload'} ? urlToBase64($pc{'p2_imageRawURL'}) : $pc{'p2_imageSrc'})."\", ";
-}
-
-foreach ('','p1_','p2_'){
-  if($pc{$_.'imageFit'} eq 'percentY'){
-    $SHEET->param($_."imageFit" => 'auto '.$pc{$_.'imagePercent'}.'%');
-  }
-  elsif($pc{$_.'imageFit'} =~ /^percentX?$/){
-    $SHEET->param($_."imageFit" => $pc{$_.'imagePercent'}.'%');
-  }
-  ## 権利表記
-  if($pc{$_.'imageCopyrightURL'}){
-    $pc{$_.'imageCopyright'} = $pc{$_.'imageCopyrightURL'} if !$pc{$_.'imageCopyright'};
-    $SHEET->param($_."imageCopyright" => "<a href=\"$pc{$_.'imageCopyrightURL'}\" target=\"_blank\">$pc{$_.'imageCopyright'}</a>");
-  }
-}
-$SHEET->param(images    => $images);
-
 ### OGP --------------------------------------------------
 $SHEET->param(ogUrl => url().($::in{'url'} ? "?url=$::in{'url'}" : "?id=$::in{'id'}"));
-if($pc{'image'}) { $SHEET->param(ogImg => url()."/".$imgsrc); }
+if($pc{'image'}) { $SHEET->param(ogImg => $pc{'imageURL'}); }
 $SHEET->param(ogDescript => tag_delete "種別:$pc{'class'}　ネガイ:$pc{'negaiOutside'}／$pc{'negaiInside'}　性別:$pc{'gender'}　年齢:$pc{'age'}　所属:$pc{'belong'}");
 
 ### バージョン等 --------------------------------------------------
