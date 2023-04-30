@@ -63,6 +63,16 @@ function chatPaletteSelect(tool) {
   document.getElementById('cp-switch-'+(tool||'ytc')).classList.add('check');
 }
 
+// スクロール位置 ----------------------------------------
+window.addEventListener('DOMContentLoaded', ()=>{
+  document.querySelector('.header-back-name').addEventListener('click', ()=>{
+    window.scroll({
+      top: 0,
+      behavior: "smooth",
+    });
+  })
+});
+
 // 保存系 ----------------------------------------
 function getJsonData() {
   const paramId = /id=[0-9a-zA-Z\-]+/.exec(location.href)[0];

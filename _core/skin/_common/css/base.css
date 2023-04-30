@@ -423,6 +423,7 @@ header nav {
   left: 0;
   right: 0;
   margin: auto;
+  pointer-events: none;
 }
 header nav ul  {
   display: flex;
@@ -447,6 +448,7 @@ header nav ul li  {
   line-height: 1;
   
   cursor: pointer;
+  pointer-events: auto;
   
   z-index: 200;
 }

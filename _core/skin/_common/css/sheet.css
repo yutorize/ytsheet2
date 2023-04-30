@@ -126,6 +126,9 @@ header nav {
   font-weight: bold;
   font-family: var(--base-font-family-min);
   color: #fff;
+  
+  cursor: pointer;
+
   z-index: 1;
 }
 
