@@ -332,6 +332,46 @@ details:not([open]).box > summary:hover {
   vertical-align: top;
 }
 
+.box {
+  position: relative;
+}
+.box .open-button {
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  padding: 3px 3px 3px 5px;
+  border: 1px solid var(--box-outside-border-color);
+  border-radius: 1em;
+  font-size: 80%;
+  line-height: 1;
+  background-color: hsl(var(--box-head-bg-color-h,230),var(--box-head-bg-color-s,9%),92%);
+  color: var(--text-color);
+  cursor: pointer;
+  user-select: none;
+}
+.night .box .open-button {
+  background-color: var(--box-head-bg-color-dark);
+  border-color: #000;
+}
+.box .open-button:hover {
+  background-color: hsla(var(--box-head-bg-color-h,230),100%,80%,0.5);
+}
+.box .open-button::after {
+  font-family: "Material Symbols Outlined";
+  font-variation-settings: 'FILL' 1;
+  font-weight: 400;
+  display: inline-block;
+  vertical-align: text-bottom;
+  transform: scale(1.4);
+}
+.box .open-button::before                   { content: attr(data-text-open);  }
+.box .open-button[data-open="true"]::before { content: attr(data-text-close); }
+.box .open-button::after                   { content: "\ead0"; }
+.box .open-button[data-open="true"]::after {
+  transform: scale(1.4,-1.4);
+}
+
+/* チャットパレット */
 .box.chat-palette {
   position: fixed;
   top: -100vh;

@@ -573,7 +573,7 @@
       <div class="column" id="column-skills"><!-- COLUMN -->
       <section class="box skills" id="skills">
         <h2>スキル</h2>
-        <span class="open-button" onclick="skillNoteFullOpen();"><TMPL_IF skillNoteOpen>▲効果折畳み<TMPL_ELSE>▼効果全展開</TMPL_IF></span>
+        <button class="open-button" onclick="switchSkillNoteFullOpen();" data-open="<TMPL_VAR skillNoteOpen>" data-text-open="効果を全展開" data-text-close="効果を折畳む"></button>
         <table class="data-table line-tbody">
           <thead>
             <tr>
@@ -610,11 +610,11 @@
         </p>
       </section>
       <script>
-      let skillNoteOpenFlag = <TMPL_VAR skillNoteOpen>;
-      function skillNoteFullOpen(){
-        skillNoteOpenFlag = skillNoteOpenFlag ? 0 : 1;
-        document.querySelectorAll('#skills table td.left').forEach(obj => obj.style.display = skillNoteOpenFlag ? 'table-cell' : '');
-        document.querySelector('#skills .open-button').innerHTML = skillNoteOpenFlag ? '▲効果折畳み' : '▼効果全展開';
+      let skillNoteOpen = <TMPL_VAR skillNoteOpen DEFAULT="false" />;
+      function switchSkillNoteFullOpen(){
+        skillNoteOpen = !skillNoteOpen;
+        document.querySelectorAll('#skills table td.left').forEach(obj => obj.style.display = skillNoteOpen ? 'table-cell' : '');
+        document.querySelector('#skills .open-button').dataset.open = skillNoteOpen ? 'true' : '';
       }
       </script>
 

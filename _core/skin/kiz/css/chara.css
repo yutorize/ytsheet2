@@ -199,16 +199,6 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
   transform: scaleY(calc(1/0.8)) translateY(-.1rem);
   font-size: 70%;
 }
-.box {
-  position: relative;
-}
-.box .open-button {
-  position: absolute;
-  top: .1em;
-  right: .3em;
-  cursor: pointer;
-  font-size: 90%;
-}
 
 /* // Area-Status
 ---------------------------------------------------------------------------------------------------- */

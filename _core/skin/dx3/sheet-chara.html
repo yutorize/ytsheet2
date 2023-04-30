@@ -243,7 +243,7 @@
 
       <section class="box" id="status">
         <h2>能力値</h2>
-        <TMPL_UNLESS forbiddenMode><span class="open-button" onclick="statusBreakdownOpen();">▼能力値内訳表示</span></TMPL_UNLESS>
+        <TMPL_UNLESS forbiddenMode><button class="open-button" onclick="switchStatusBreakdown();" data-open="" data-text-open="能力値内訳を表示" data-text-close="能力値内訳を畳む"></button></TMPL_UNLESS>
         <table>
           <thead>
           <tr>
@@ -300,11 +300,11 @@
         </table>
       </section>
       <script>
-      let statusBreakdownOpenFlag = 0;
-      function statusBreakdownOpen(){
-        document.querySelectorAll('#status table tr.breakdown').forEach(obj => obj.style.display = statusBreakdownOpenFlag ? 'none' : 'table-row');
-        document.querySelector('#status .open-button').innerHTML = statusBreakdownOpenFlag ? '▼能力値内訳表示' : '▲能力値内訳折畳み';
-        statusBreakdownOpenFlag = statusBreakdownOpenFlag ? 0 : 1;
+      let statusBreakdownOpen = false;
+      function switchStatusBreakdown(){
+        statusBreakdownOpen = !statusBreakdownOpen;
+        document.querySelectorAll('#status table tr.breakdown').forEach(obj => obj.style.display = statusBreakdownOpen ? 'table-row' : 'none');
+        document.querySelector('#status .open-button').dataset.open = statusBreakdownOpen ? 'true' : '';
       }
       </script>
       
@@ -365,7 +365,7 @@
       <div id="area-battle">
         <section class="box effects" id="effect">
           <h2>エフェクト</h2>
-          <span class="open-button" onclick="effectNoteFullOpen();">▼効果全展開</span>
+          <button class="open-button" onclick="switchEffectNoteFullOpen();" data-open="" data-text-open="効果を全展開" data-text-close="効果を折畳む"></button>
           <table class="data-table line-tbody">
             <thead>
               <tr><th>種別</th><th>名称</th><th>Lv</th><th>タイミング</th><th>技能</th><th>難易度</th><th>対象</th><th>射程</th><th>侵蝕値</th><th>制限</th></tr>
@@ -391,11 +391,11 @@
           </table>
         </section>
         <script>
-        let effectNoteOpenFlag = 0;
-        function effectNoteFullOpen(){
-          document.querySelectorAll('#effect table td.left').forEach(obj => obj.style.display = effectNoteOpenFlag ? '' : 'table-cell');
-          document.querySelector('#effect .open-button').innerHTML = effectNoteOpenFlag ? '▼効果全展開' : '▲効果折畳み';
-          effectNoteOpenFlag = effectNoteOpenFlag ? 0 : 1;
+        let effectFullOpen = false;
+        function switchEffectNoteFullOpen(){
+          effectFullOpen = !effectFullOpen;
+          document.querySelectorAll('#effect table td.left').forEach(obj => obj.style.display = effectFullOpen ? 'table-cell' : '');
+          document.querySelector('#effect .open-button').dataset.open = effectFullOpen ? 'true' : '';
         }
         </script>
         
@@ -420,10 +420,10 @@
 
         <section class="box" id="combo">
           <h2>コンボ</h2>
-          <span class="open-button" onclick="swapComboDisplayMode();">簡易表示</span>
+          <button class="open-button" onclick="swapComboDisplayMode();" data-open="true" data-text-open="詳細表示にする" data-text-close="簡易表示にする"></button>
           <TMPL_LOOP Combos><div class="combo-table">
             <h3><span><TMPL_VAR NAME></span></h3>
-            <dl class="combo-combo"><dt>組み合わせ</dt><dd><TMPL_VAR COMBO></dd></dl>
+            <dl class="combo-combo"><dt>組み合わせ</dt><dd><span><TMPL_VAR COMBO></span></dd></dl>
             <div class="combo-in">
               <dl><dt>タイミング</dt><dd><span><TMPL_VAR TIMING  ></span></dd></dl>
               <dl><dt>技能      </dt><dd><span><TMPL_VAR SKILL   ></span></dd></dl>
@@ -453,7 +453,7 @@
           function swapComboDisplayMode() {
             comboDisplayFull = !comboDisplayFull;
             document.getElementById('combo').dataset.displayMode = comboDisplayFull ? 'full' : 'simple';
-            document.querySelector('#combo .open-button').textContent = comboDisplayFull ? "簡易表示" : "詳細表示";
+            document.querySelector('#combo .open-button').dataset.open = comboDisplayFull ? 'true' : '';
           }
         </script>
         
