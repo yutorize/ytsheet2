@@ -33,6 +33,7 @@ sub dataConvert {
   }
   ## 旧ゆとシート
   {
+    # 同一サーバから取得
     foreach my $url (keys %set::convert_url){
       if($set_url =~ s"^${url}data/(.*?).html"$1"){
         open my $IN, '<', "$set::convert_url{$url}data/${set_url}.cgi" or error '旧ゆとシートのデータが開けませんでした';
@@ -43,6 +44,15 @@ sub dataConvert {
           return convertMto2(\%pc);
         }
         else { return convert1to2(\%pc); }
+      }
+    }
+
+    # HTML をパースして取得
+    if($set_url =~ /\d+.html/){
+      require $set::lib_ytsheetMConvert;
+      my %tmpData = get_parsed_enemy_data_from_ytsheet_one_mons($set_url);
+      if( $tmpData{'convertSource'} ) {
+        return %tmpData;
       }
     }
   }
