@@ -869,6 +869,11 @@ foreach (0 .. $pc{'historyNum'}){
   $pc{'history'.$_.'Exp'}   =~ s/([0-9]+)/commify($1);/ge;
   $pc{'history'.$_.'Money'} =~ s/([0-9]+)/$1<wbr>/g;
   $pc{'history'.$_.'Money'} =~ s/([0-9]+)/commify($1);/ge;
+
+  if (!($pc{'history'.$_.'Date'} || $pc{'history'.$_.'Title'} || $pc{'history'.$_.'Exp'} || $pc{'history'.$_.'Honor'} || $pc{'history'.$_.'Money'} || $pc{'history'.$_.'Grow'} || $pc{'history'.$_.'Gm'} || $members || $pc{'history'.$_.'Note'})) {
+    next;
+  }
+
   push(@history, {
     "NUM"    => ($pc{'history'.$_.'Gm'} ? $h_num : ''),
     "DATE"   => $pc{'history'.$_.'Date'},
