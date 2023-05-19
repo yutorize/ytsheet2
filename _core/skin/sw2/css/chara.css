@@ -1152,6 +1152,7 @@ div#area-items-R {
 #history table tfoot tr td {
   padding-top: .25em;
   padding-bottom: .2em;
+  font-weight: bolder;
 }
 #history table tfoot tr td:not(:empty) {
   border-right-width: 1px;
