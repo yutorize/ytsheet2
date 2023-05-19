@@ -1149,6 +1149,13 @@ div#area-items-R {
   transform: scale(0.8, 0.8);
   opacity: 0.8;
 }
+#history[data-history-num$="0"] table tfoot,
+#history[data-history-num$="2"] table tfoot,
+#history[data-history-num$="4"] table tfoot,
+#history[data-history-num$="6"] table tfoot,
+#history[data-history-num$="8"] table tfoot {
+  background-color: var(--box-even-rows-bg-color);
+}
 #history table tfoot tr td {
   padding-top: .25em;
   padding-bottom: .2em;

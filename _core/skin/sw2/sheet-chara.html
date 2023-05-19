@@ -554,7 +554,7 @@
         <p><TMPL_VAR freeHistory></p>
       </section>
       </TMPL_IF>
-      <section class="box" id="history">
+      <section class="box" id="history" data-history-num="<TMPL_VAR HistoryNum>">
         <h2>セッション履歴</h2>
         <table class="data-table line-tbody">
           <thead>
@@ -595,6 +595,7 @@
               <td><TMPL_VAR historyMoneyTotal></td>
               <td><TMPL_VAR historyHonorTotal></td>
               <td><TMPL_VAR historyGrowTotal></td>
+              <td colspan="2">&nbsp;</td>
             </tr>
           </tfoot>
         </table>

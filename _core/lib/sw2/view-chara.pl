@@ -883,6 +883,7 @@ foreach (0 .. $pc{'historyNum'}){
   } );
 }
 $SHEET->param(History => \@history);
+$SHEET->param(HistoryNum => $#history);
 $SHEET->param(historyExpTotal   => commify $pc{'historyExpTotal'}   );
 $SHEET->param(historyHonorTotal => commify $pc{'historyHonorTotal'} );
 $SHEET->param(historyMoneyTotal => commify $pc{'historyMoneyTotal'} );
