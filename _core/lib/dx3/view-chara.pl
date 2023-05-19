@@ -256,9 +256,8 @@ $SHEET->param(wordsY => ($pc{'wordsY'} eq '下' ? 'bottom:0;' : 'top:0;'));
 if($pc{'stage'} =~ /クロウリングケイオス/){ $SHEET->param(ccOn => 1); }
 
 ### ブリード --------------------------------------------------
-$SHEET->param(breed => 
-  ($pc{'breed'} ? $pc{'breed'} : $pc{'syndrome3'} ? 'トライ' : $pc{'syndrome2'} ? 'クロス' : $pc{'syndrome1'} ? 'ピュア' : '') . '<span>ブリード</span>'
-);
+my $breedPrefix = ($pc{'breed'} ? $pc{'breed'} : $pc{'syndrome3'} ? 'トライ' : $pc{'syndrome2'} ? 'クロス' : $pc{'syndrome1'} ? 'ピュア' : '');
+$SHEET->param(breed => $breedPrefix ? "$breedPrefix<span>ブリード</span>" : '');
 
 ### 能力値 --------------------------------------------------
 my %status = (0=>'body', 1=>'sense', 2=>'mind', 3=>'social');
