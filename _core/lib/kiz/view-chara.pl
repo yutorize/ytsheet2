@@ -364,6 +364,9 @@ foreach (0 .. $pc{'historyNum'}){
   foreach my $mem (split(/　/,$pc{'history'.$_.'Member'})){
     $members .= '<span>'.$mem.'</span>';
   }
+  if (!($pc{'history'.$_.'Gm'} || $pc{'history'.$_.'Date'} || $pc{'history'.$_.'Title'} || $pc{'history'.$_.'Grow'} || $members || $pc{'history'.$_.'Note'})) {
+    next;
+  }
   push(@history, {
     "NUM"    => ($pc{'history'.$_.'Gm'} ? $h_num : ''),
     "DATE"   => $pc{'history'.$_.'Date'},
