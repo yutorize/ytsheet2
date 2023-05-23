@@ -89,7 +89,10 @@ div.data {
   grid-template-columns: 10em 2fr 18em;
   border-width: 0 1px 1px 0;
   border-style: solid;
-  
+  border-color: var(--box-outside-border-color);
+}
+div.data * {
+  border-color: var(--box-outside-border-color);
 }
 
 div.data dl.reputation {  }
@@ -173,10 +176,11 @@ div.data dl.category dd > div hr {
 }
 
 div.data dl.effects dd.box {
-  background: none;
-  border: 0;
-  border-radius: 0;
   padding: 0;
+  border-width: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
 }
 div.data dl.effects dd.box *:first-child {
   margin-top: .2em;
@@ -205,6 +209,11 @@ div.data dl.effects table.weapon-table td:not(.left) {
   white-space: nowrap;
 }
 
+div.data dl.effects :is(dt,dd):nth-of-type(n+2) {
+  border-top-width: 1px;
+  border-top-style: solid;
+}
+
 /* // Description
 ---------------------------------------------------------------------------------------------------- */
 .description {
@@ -215,13 +224,13 @@ div.data dl.effects table.weapon-table td:not(.left) {
   border-radius: 0;
   box-shadow: none !important;
 }
-.description h2,
-.description h2:nth-child(n+2) {
+.description :is(h2, h2:nth-child(n+2)) {
   margin: 0;
   padding: 0 .3em;
   border-width: 1px 0px;
   border-style: solid;
   border-color: var(--box-outside-border-color);
+  background-image: none;
   font-size: 115%;
 }
 .box.description h2 ~ h2 {

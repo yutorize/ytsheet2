@@ -177,7 +177,7 @@
       </div>
       </TMPL_IF>
       <section class="box skills">
-        <h2>特殊能力</h2>
+        <h2><TMPL_IF head_skills><TMPL_VAR head_skills><TMPL_ELSE>特殊能力</TMPL_IF></h2>
         <TMPL_VAR skills>
       </section>
       <TMPL_IF Loots>
@@ -189,7 +189,7 @@
       </section>
       </TMPL_IF>
       <section class="box description">
-        <h2>解説</h2>
+        <h2><TMPL_IF head_description><TMPL_VAR head_description><TMPL_ELSE>解説</TMPL_IF></h2>
         <p><TMPL_VAR description></p>
       </section>
       <div id="author">

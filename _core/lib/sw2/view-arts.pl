@@ -131,6 +131,7 @@ foreach (keys %pc) {
   }
   $pc{$_} = tagUnescape($pc{$_});
 }
+$pc{'magicEffect'} =~ s#<h2>(.+?)</h2>#</dd><dt>$1</dt><dd class="box">#gi;
 
 ### アップデート --------------------------------------------------
 if($pc{'ver'}){
@@ -258,6 +259,7 @@ foreach my $lv (2,4,7,10,13){
   my $icon;
   if($pc{'godMagic'.$lv.'ActionTypeMinor'}){ $icon .= '<i class="s-icon minor">≫</i>' }
   if($pc{'godMagic'.$lv.'ActionTypeSetup'}){ $icon .= '<i class="s-icon setup">△</i>' }
+  $pc{'godMagic'.$lv.'Effect'} =~ s#<h2>(.+?)</h2>#</dd><dt>$1</dt><dd class="box">#gi;
   push(@magics, {
     "NAME"     => $pc{'godMagic'.$lv.'Name'},
     "LEVEL"    => $lv,
@@ -271,6 +273,7 @@ foreach my $lv (2,4,7,10,13){
     "ELEMENT"  => $pc{'godMagic'.$lv.'Element'},
     "SUMMARY"  => $pc{'godMagic'.$lv.'Summary'},
     "EFFECT"   => $pc{'godMagic'.$lv.'Effect'},
+    "head_EFFECT"   => $pc{'head_godMagic'.$lv.'Effect'},
   } );
 }
 $SHEET->param(MagicData => \@magics);
@@ -313,6 +316,7 @@ foreach my $num (1..$pc{'schoolArtsNum'}){
   next if !($pc{'schoolArts'.$num.'Name'});
   my $icon;
   if($pc{'schoolArts'.$num.'ActionTypeSetup'}){ $icon .= '<i class="s-icon setup">△</i>' }
+  $pc{'schoolArts'.$num.'Effect'} =~ s#<h2>(.+?)</h2>#</dd><dt>$1</dt><dd class="box">#gi;
   push(@arts, {
     "NAME"     => $pc{'schoolArts'.$num.'Name'},
     "ICON"     => $icon,
@@ -325,6 +329,7 @@ foreach my $num (1..$pc{'schoolArtsNum'}){
     "RISK"     => $pc{'schoolArts'.$num.'Risk'},
     "SUMMARY"  => $pc{'schoolArts'.$num.'Summary'},
     "EFFECT"   => $pc{'schoolArts'.$num.'Effect'},
+    "head_EFFECT"   => $pc{'head_schoolArts'.$num.'Effect'},
   } );
 }
 $SHEET->param(ArtsData => \@arts);
@@ -336,6 +341,7 @@ foreach my $num (1..$pc{'schoolMagicNum'}){
   my $icon;
   if($pc{'schoolMagic'.$num.'ActionTypeMinor'}){ $icon .= '<i class="s-icon minor">≫</i>' }
   if($pc{'schoolMagic'.$num.'ActionTypeSetup'}){ $icon .= '<i class="s-icon setup">△</i>' }
+  $pc{'schoolMagic'.$num.'Effect'} =~ s#<h2>(.+?)</h2>#</dd><dt>$1</dt><dd class="box">#gi;
   push(@schoolmagics, {
     "NAME"     => $pc{'schoolMagic'.$num.'Name'},
     "LEVEL"    => $pc{'schoolMagic'.$num.'Lv'},
@@ -350,6 +356,7 @@ foreach my $num (1..$pc{'schoolMagicNum'}){
     "ELEMENT"  => $pc{'schoolMagic'.$num.'Element'},
     "SUMMARY"  => $pc{'schoolMagic'.$num.'Summary'},
     "EFFECT"   => $pc{'schoolMagic'.$num.'Effect'},
+    "head_EFFECT"   => $pc{'head_schoolMagic'.$num.'Effect'},
   } );
 }
 $SHEET->param(schoolMagicData => \@schoolmagics);

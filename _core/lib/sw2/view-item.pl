@@ -75,6 +75,7 @@ $pc{'effects'} =~ s/\n+<\/p>/<\/p>/gi;
 $pc{'effects'} =~ s/(^|<p(?:.*?)>|<hr(?:.*?)>)\n/$1/gi;
 $pc{'effects'} = "<p>$pc{'effects'}</p>";
 $pc{'effects'} =~ s/<p><\/p>//gi;
+$pc{'effects'} =~ s#<h2>(.+?)</h2>#</dd><dt>$1</dt><dd class="box">#gi;
 $pc{'effects'} =~ s/\n/<br>/gi;
 
 ### カラー設定 --------------------------------------------------
