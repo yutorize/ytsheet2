@@ -43,12 +43,14 @@ textarea,tt {
 .center { text-align: center !important; }
 .right  { text-align: right !important; }
 ruby {
+  position: relative;
 }
 ruby rt {
   font-family: Arial,var(--base-font-family-jp);
   transform: translateY(0.2em);
 }
 ruby rp {
+  position: absolute;
   display: inline;
   font-size: 0;
 }
