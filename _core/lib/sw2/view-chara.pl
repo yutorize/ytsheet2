@@ -155,7 +155,7 @@ if($::in{'url'}){
 }
 
 ### 二つ名 --------------------------------------------------
-$SHEET->param(aka => "<ruby>$pc{'aka'}<rt>$pc{'akaRuby'}</rt></ruby>") if $pc{'akaRuby'};
+$SHEET->param(aka => "<ruby>$pc{'aka'}<rp>(</rp><rt>$pc{'akaRuby'}</rt><rp>)</rp></ruby>") if $pc{'akaRuby'};
 
 ### プレイヤー名 --------------------------------------------------
 if($set::playerlist){

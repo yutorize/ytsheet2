@@ -216,10 +216,10 @@ if($::in{'url'}){
 }
 
 ### キャラクター名 --------------------------------------------------
-$SHEET->param(characterName => "<ruby>$pc{'characterName'}<rt>$pc{'characterNameRuby'}</rt></ruby>") if $pc{'characterNameRuby'};
+$SHEET->param(characterName => "<ruby>$pc{'characterName'}<rp>(</rp><rt>$pc{'characterNameRuby'}</rt><rp>)</rp></ruby>") if $pc{'characterNameRuby'};
 
 ### 二つ名 --------------------------------------------------
-$SHEET->param(aka => "<ruby>$pc{'aka'}<rt>$pc{'akaRuby'}</rt></ruby>") if $pc{'akaRuby'};
+$SHEET->param(aka => "<ruby>$pc{'aka'}<rp>(</rp><rt>$pc{'akaRuby'}</rt><rp>)</rp></ruby>") if $pc{'akaRuby'};
 
 ### プレイヤー名 --------------------------------------------------
 if($set::playerlist){

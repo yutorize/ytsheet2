@@ -48,6 +48,10 @@ ruby rt {
   font-family: Arial,var(--base-font-family-jp);
   transform: translateY(0.2em);
 }
+ruby rp {
+  display: inline;
+  font-size: 0;
+}
 .bold {
   font-weight: bold;
 }

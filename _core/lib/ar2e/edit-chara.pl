@@ -607,7 +607,7 @@ print <<"HTML";
       <details class="box" id="levelup" open>
         <summary>レベルアップ</summary>
         <dl>
-          <dt><ruby>ＣＬ<rt>キャラクターレベル</rt></ruby>:</dt><dd>@{[ input 'level','number','changeLv','min="1"' ]}</dd>
+          <dt><ruby>ＣＬ<rp>(</rp><rt>キャラクターレベル</rt><rp>)</rp></ruby>:</dt><dd>@{[ input 'level','number','changeLv','min="1"' ]}</dd>
         </dl>
         <table class="edit-table no-border-cells">
           <thead>
