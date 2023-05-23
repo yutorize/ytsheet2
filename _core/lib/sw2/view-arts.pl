@@ -127,9 +127,9 @@ my $item_urls = $pc{'schoolItemList'};
 foreach (keys %pc) {
   next if($_ =~ /^image/);
   if($_ =~ /(?:Effect|Description|Note)$/){
-    $pc{$_} = tag_unescape_lines($pc{$_});
+    $pc{$_} = tagUnescapeLines($pc{$_});
   }
-  $pc{$_} = tag_unescape($pc{$_});
+  $pc{$_} = tagUnescape($pc{$_});
 }
 
 ### アップデート --------------------------------------------------
@@ -289,7 +289,7 @@ foreach my $set_url (split ',',$item_urls){
     while (<$IN>){
       chomp;
       my ($key, $value) = split(/<>/, $_, 2);
-      $item{$key} = tag_unescape($value);
+      $item{$key} = tagUnescape($value);
     }
     close($IN);
   }
@@ -371,7 +371,7 @@ if($pc{'forbidden'} eq 'all' && $pc{'forbiddenMode'}){
   $SHEET->param(titleName => '非公開データ');
 }
 else {
-  $SHEET->param(titleName => tag_delete name_plain $pc{'artsName'});
+  $SHEET->param(titleName => tagDelete nameToPlain $pc{'artsName'});
 }
 
 ### 画像 --------------------------------------------------
@@ -401,7 +401,7 @@ if($pc{'image'}) { $SHEET->param(ogImg => url()."/".$imgsrc); }
     $category = '神格';
     $sub = ($pc{'godClass'}||'―').'／'.($pc{'godRank'}||'―');
   }
-  $SHEET->param(ogDescript => tag_delete "カテゴリ:${category}／${sub}");
+  $SHEET->param(ogDescript => tagDelete "カテゴリ:${category}／${sub}");
 }
 
 ### バージョン等 --------------------------------------------------

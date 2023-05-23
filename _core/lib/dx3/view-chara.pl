@@ -172,9 +172,9 @@ if($pc{'ver'}){
   foreach (keys %pc) {
     next if($_ =~ /^image/);
     if($_ =~ /^(?:freeNote|freeHistory)$/){
-      $pc{$_} = tag_unescape_lines($pc{$_});
+      $pc{$_} = tagUnescapeLines($pc{$_});
     }
-    $pc{$_} = tag_unescape($pc{$_});
+    $pc{$_} = tagUnescape($pc{$_});
 
     $pc{$_} = noiseTextTag $pc{$_} if $pc{'forbiddenMode'};
   }
@@ -629,7 +629,7 @@ if($pc{'forbidden'} eq 'all' && $pc{'forbiddenMode'}){
   $SHEET->param(titleName => '非公開データ');
 }
 else {
-  $SHEET->param(titleName => tag_delete name_plain($pc{'characterName'}||"“$pc{'aka'}”"));
+  $SHEET->param(titleName => tagDelete nameToPlain($pc{'characterName'}||"“$pc{'aka'}”"));
 }
 
 ### 種族名 --------------------------------------------------
@@ -639,7 +639,7 @@ $SHEET->param(race => $pc{'race'});
 ### OGP --------------------------------------------------
 $SHEET->param(ogUrl => url().($::in{'url'} ? "?url=$::in{'url'}" : "?id=$::in{'id'}"));
 if($pc{'image'}) { $SHEET->param(ogImg => $pc{'imageURL'}); }
-$SHEET->param(ogDescript => tag_delete "性別:$pc{'gender'}　年齢:$pc{'age'}　ワークス:$pc{'works'}　シンドローム:$pc{'syndrome1'} $pc{'syndrome2'} $pc{'syndrome3'}");
+$SHEET->param(ogDescript => tagDelete "性別:$pc{'gender'}　年齢:$pc{'age'}　ワークス:$pc{'works'}　シンドローム:$pc{'syndrome1'} $pc{'syndrome2'} $pc{'syndrome3'}");
 
 ### バージョン等 --------------------------------------------------
 $SHEET->param(ver => $::ver);

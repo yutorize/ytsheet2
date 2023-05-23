@@ -173,9 +173,9 @@ if($pc{'ver'}){
   foreach (keys %pc) {
     next if($_ =~ /^(?:partner[12]Url|(?:p[12]_)?(?:image))/);
     if($_ =~ /^(?:freeNote|freeHistory)$/){
-      $pc{$_} = tag_unescape_lines($pc{$_});
+      $pc{$_} = tagUnescapeLines($pc{$_});
     }
-    $pc{$_} = tag_unescape($pc{$_});
+    $pc{$_} = tagUnescape($pc{$_});
 
     $pc{$_} = noiseTextTag $pc{$_} if $pc{'forbiddenMode'};
   }
@@ -394,13 +394,13 @@ if($pc{'forbidden'} eq 'all' && $pc{'forbiddenMode'}){
   $SHEET->param(titleName => '非公開データ');
 }
 else {
-  $SHEET->param(titleName => tag_delete name_plain($pc{'characterName'}||"“$pc{'aka'}”"));
+  $SHEET->param(titleName => tagDelete nameToPlain($pc{'characterName'}||"“$pc{'aka'}”"));
 }
 
 ### OGP --------------------------------------------------
 $SHEET->param(ogUrl => url().($::in{'url'} ? "?url=$::in{'url'}" : "?id=$::in{'id'}"));
 if($pc{'image'}) { $SHEET->param(ogImg => $pc{'imageURL'}); }
-$SHEET->param(ogDescript => tag_delete "種別:$pc{'class'}　ネガイ:$pc{'negaiOutside'}／$pc{'negaiInside'}　性別:$pc{'gender'}　年齢:$pc{'age'}　所属:$pc{'belong'}");
+$SHEET->param(ogDescript => tagDelete "種別:$pc{'class'}　ネガイ:$pc{'negaiOutside'}／$pc{'negaiInside'}　性別:$pc{'gender'}　年齢:$pc{'age'}　所属:$pc{'belong'}");
 
 ### バージョン等 --------------------------------------------------
 $SHEET->param(ver => $::ver);

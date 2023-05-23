@@ -375,7 +375,7 @@ sub convertHokanjoToYtsheet {
   }
   if($pc{'items'}){ $pc{'items'} = "|${itemlength}em| |c\n".$pc{'items'}; }
   if($in{'debt'}){ $pc{'items'} = "借金：$in{'debt'} G".$pc{'items'}; }
-  $pc{'itemsView'} = tag_unescape tag_unescape_lines $pc{'items'};
+  $pc{'itemsView'} = tagUnescape tagUnescapeLines $pc{'items'};
   $pc{'itemsView'} =~ s/\r\n?|\n/<br>/g;
 
   ## レベルアップ履歴
@@ -449,7 +449,7 @@ sub convertHokanjoToYtsheet {
   $profile .= ": 肌 |$in{'color_skin'}\n";
   
   $pc{'freeNote'} = $profile.$in{'pc_making_memo'};
-  $pc{'freeNoteView'} = (tag_unescape tag_unescape_lines $profile).$in{'pc_making_memo'};
+  $pc{'freeNoteView'} = (tagUnescape tagUnescapeLines $profile).$in{'pc_making_memo'};
   $pc{'freeNoteView'} =~ s/\r\n?|\n/<br>/g;
   
   ## チャットパレット

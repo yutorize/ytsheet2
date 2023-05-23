@@ -24,7 +24,7 @@ my $mode_make = ($mode =~ /^(blanksheet|copy|convert)$/) ? 1 : 0;
 
 ### 出力準備 #########################################################################################
 if($message){
-  my $name = tag_unescape($pc{'characterName'} || $pc{'aka'} || '無題');
+  my $name = tagUnescape($pc{'characterName'} || $pc{'aka'} || '無題');
   $message =~ s/<!NAME>/$name/;
 }
 ### プレイヤー名 --------------------------------------------------
@@ -131,7 +131,7 @@ $pc{"vehicle${_}Note"} =~ s/&lt;br&gt;/\n/g foreach (1 .. $pc{'vehicleNum'});
 $pc{"item${_}Note"}    =~ s/&lt;br&gt;/\n/g foreach (1 .. $pc{'itemNum'});
 
 ### フォーム表示 #####################################################################################
-my $titlebarname = tag_delete name_plain tag_unescape ($pc{'characterName'}||"“$pc{'aka'}”");
+my $titlebarname = tagDelete nameToPlain tagUnescape ($pc{'characterName'}||"“$pc{'aka'}”");
 print <<"HTML";
 Content-type: text/html\n
 <!DOCTYPE html>

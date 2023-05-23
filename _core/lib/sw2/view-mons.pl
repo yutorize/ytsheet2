@@ -92,17 +92,17 @@ $SHEET->param(rawName => $pc{'characterName'}?"$pc{'characterName'}（$pc{'monst
 ### 置換 #############################################################################################
 foreach (keys %pc) {
   if($_ =~ /^(?:skills|description)$/){
-    $pc{$_} = tag_unescape_lines($pc{$_});
+    $pc{$_} = tagUnescapeLines($pc{$_});
   }
-  $pc{$_} = tag_unescape($pc{$_},$pc{'oldSignConv'});
+  $pc{$_} = tagUnescape($pc{$_});
 }
 $pc{'skills'} =~ s/<br>/\n/gi;
 $pc{'skills'} =~ s#(<p>|</p>|</details>)#$1\n#gi;
 $pc{'skills'} =~ s/^●(.*?)$/<\/p><h3>●$1<\/h3><p>/gim;
 if($::SW2_0){
-  $pc{'skills'} =~ s/^((?:[○◯〇＞▶〆☆≫»□☐☑🗨▽▼]|&gt;&gt;)+.*?)(　|$)/"<\/p><h5>".&text_convert_icon($1)."<\/h5><p>".$2;/egim;
+  $pc{'skills'} =~ s/^((?:[○◯〇＞▶〆☆≫»□☐☑🗨▽▼]|&gt;&gt;)+.*?)(　|$)/"<\/p><h5>".&textToIcon($1)."<\/h5><p>".$2;/egim;
 } else {
-  $pc{'skills'} =~ s/^((?:[○◯〇△＞▶〆☆≫»□☐☑🗨]|&gt;&gt;)+.*?)(　|$)/"<\/p><h5>".&text_convert_icon($1)."<\/h5><p>".$2;/egim;
+  $pc{'skills'} =~ s/^((?:[○◯〇△＞▶〆☆≫»□☐☑🗨]|&gt;&gt;)+.*?)(　|$)/"<\/p><h5>".&textToIcon($1)."<\/h5><p>".$2;/egim;
 }
 $pc{'skills'} =~ s/\n+<\/p>/<\/p>/gi;
 $pc{'skills'} =~ s/(^|<p(?:.*?)>|<hr(?:.*?)>)\n/$1/gi;
@@ -237,8 +237,8 @@ if($pc{'forbidden'} eq 'all' && $pc{'forbiddenMode'}){
   $SHEET->param(titleName => "非公開データ - $set::title");
 }
 else {
-  my $name    = tag_delete name_plain($pc{'characterName'});
-  my $species = tag_delete name_plain($pc{'monsterName'});
+  my $name    = tagDelete nameToPlain($pc{'characterName'});
+  my $species = tagDelete nameToPlain($pc{'monsterName'});
   if($name && $species){ $SHEET->param(titleName => "${name}（${species}）"); }
   else { $SHEET->param(titleName => $name || $species); }
 }

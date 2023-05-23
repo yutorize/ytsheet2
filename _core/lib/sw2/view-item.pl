@@ -60,16 +60,16 @@ $SHEET->param(rawName => $pc{'itemName'});
 ### 置換 #############################################################################################
 foreach (keys %pc) {
   if($_ =~ /^(?:effects|description)$/){
-    $pc{$_} = tag_unescape_lines($pc{$_});
+    $pc{$_} = tagUnescapeLines($pc{$_});
   }
-  $pc{$_} = tag_unescape($pc{$_},$pc{'oldSignConv'});
+  $pc{$_} = tagUnescape($pc{$_});
 }
 $pc{'effects'} =~ s/<br>/\n/gi;
 $pc{'effects'} =~ s/^●(.*?)$/<\/p><h3>●$1<\/h3><p>/gim;
 if($::SW2_0){
-  $pc{'effects'} =~ s/^((?:[○◯〇＞▶〆☆≫»□☑🗨▽▼]|&gt;&gt;)+)(.*?)([ 　]|$)/"<\/p><h5>".&text_convert_icon($1)."$2<\/h5><p>".$3;/egim;
+  $pc{'effects'} =~ s/^((?:[○◯〇＞▶〆☆≫»□☑🗨▽▼]|&gt;&gt;)+)(.*?)([ 　]|$)/"<\/p><h5>".&textToIcon($1)."$2<\/h5><p>".$3;/egim;
 } else {
-  $pc{'effects'} =~ s/^((?:[○◯〇△＞▶〆☆≫»□☑🗨]|&gt;&gt;)+)(.*?)([ 　]|$)/"<\/p><h5>".&text_convert_icon($1)."$2<\/h5><p>".$3;/egim;
+  $pc{'effects'} =~ s/^((?:[○◯〇△＞▶〆☆≫»□☑🗨]|&gt;&gt;)+)(.*?)([ 　]|$)/"<\/p><h5>".&textToIcon($1)."$2<\/h5><p>".$3;/egim;
 }
 $pc{'effects'} =~ s/\n+<\/p>/<\/p>/gi;
 $pc{'effects'} =~ s/(^|<p(?:.*?)>|<hr(?:.*?)>)\n/$1/gi;
@@ -162,13 +162,13 @@ if($pc{'forbidden'} eq 'all' && $pc{'forbiddenMode'}){
   $SHEET->param(titleName => '非公開データ');
 }
 else {
-  $SHEET->param(titleName => tag_delete name_plain $pc{'itemName'});
+  $SHEET->param(titleName => tagDelete nameToPlain $pc{'itemName'});
 }
 
 ### OGP --------------------------------------------------
 $SHEET->param(ogUrl => url().($::in{'url'} ? "?url=$::in{'url'}" : "?id=$::in{'id'}"));
 #if($pc{'image'}) { $SHEET->param(ogImg => url()."/".$imgsrc); }
-$SHEET->param(ogDescript => tag_delete "カテゴリ:$pc{'category'}　形状:$pc{'shape'}　製作時期:$pc{'age'}　概要:$pc{'summary'}");
+$SHEET->param(ogDescript => tagDelete "カテゴリ:$pc{'category'}　形状:$pc{'shape'}　製作時期:$pc{'age'}　概要:$pc{'summary'}");
 
 ### バージョン等 --------------------------------------------------
 $SHEET->param(ver => $::ver);

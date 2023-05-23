@@ -283,7 +283,7 @@ sub convertHokanjoToYtsheet {
   $profile .= ": 肌 |$in{'color_skin'}\n";
   
   $pc{'freeNote'} = $profile.$in{'pc_making_memo'};
-  $pc{'freeNoteView'} = (tag_unescape tag_unescape_lines $profile).$in{'pc_making_memo'};
+  $pc{'freeNoteView'} = (tagUnescape tagUnescapeLines $profile).$in{'pc_making_memo'};
   $pc{'freeNoteView'} =~ s/\r\n?|\n/<br>/g;
   
   ## チャットパレット

@@ -18,7 +18,7 @@ my $mode_make = ($mode =~ /^(blanksheet|copy|convert)$/) ? 1 : 0;
 
 ### 出力準備 #########################################################################################
 if($message){
-  my $name = tag_unescape($pc{'itemName'} || '無題');
+  my $name = tagUnescape($pc{'itemName'} || '無題');
   $message =~ s/<!NAME>/$name/;
 }
 ### 製作者名 --------------------------------------------------

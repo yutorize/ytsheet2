@@ -417,9 +417,73 @@ sub thanSignEscape {
 }
 
 ### タグ変換 --------------------------------------------------
-sub tag_link_url {
-  my $url = $_[0];
-  my $txt = $_[1];
+sub tagUnescape {
+  my $text = shift;
+  $text =~ s/&amp;/&/g;
+  $text =~ s/&quot;/"/g;
+  $text =~ s/&lt;br&gt;/\n/gi;
+  
+  #$text =~ s/\{\{([0-9\+\-\*\/\%\(\) ]+?)\}\}/s_eval($1);/eg;
+  
+  $text =~ s#(―+)#<span class="d-dash">$1</span>#g;
+  
+  $text =~ s{[©]}{<i class="s-icon copyright">©</i>}gi;
+
+  if($set::game eq 'sw2'){
+    if($::in{'mode'} ne 'download'){
+      $text =~ s/\[魔\]/<img alt="&#91;魔&#93;" class="i-icon" src="${set::icon_dir}wp_magic.png">/gi;
+      $text =~ s/\[刃\]/<img alt="&#91;刃&#93;" class="i-icon" src="${set::icon_dir}wp_edge.png">/gi;
+      $text =~ s/\[打\]/<img alt="&#91;打&#93;" class="i-icon" src="${set::icon_dir}wp_blow.png">/gi;
+    }
+    else {
+      $text =~ s|\[魔\]|<img alt="&#91;魔&#93;" class="i-icon" src="data:image/webp;base64,UklGRqwAAABXRUJQVlA4TJ8AAAAvD8ADED9AqIGhhP5FvFQxEa6LmgCEILtJBvnkvBhvESIBCHf8jwZ44QAfzH8IQD8sZ2K6bB8tgeNGktymAZLSmz6E/R5A9z5wI6BJQfzavcsfUBAR/U/AwRmBrkMMOtVnMZxWXvYvc5Vfi8Gc57JPOM2vxTRxVS5767suXovlPnGH7G2uCU+wPO/h+bW57+GIwWvCGbqoHZxfuo7/BAAA">|gi;
+      $text =~ s|\[刃\]|<img alt="&#91;刃&#93;" class="i-icon" src="data:image/webp;base64,UklGRmgAAABXRUJQVlA4TFwAAAAvD8ADECcgECD8r1ix5EMgQOhXpkaDgrQNmPq33J35D8B/Cs4KriLZDZv9EAIHgs2gAiCNzR+VyiGi/wGIWX8565unQe15VkDtBrkCr3ZDnhVQt41fgHwX6nojAA==">|gi;
+      $text =~ s|\[打\]|<img alt="&#91;打&#93;" class="i-icon" src="data:image/webp;base64,UklGRnAAAABXRUJQVlA4TGMAAAAvD8ADEB+gkG0EODSdId0jEEgC2V9sEQVpG7C49roz/wF8ppPAprb2Ji8JxUO38jthZ84eCzQJHTURgQSmbiOi/4GE4Cs4f8Xxx4x/SfOVNJdDdkez1dghIZdQYvAKLJADIQAA">|gi;
+    }
+  }
+  
+  $text =~ s/'''(.+?)'''/<span class="oblique">$1<\/span>/gi; # 斜体
+  $text =~ s/''(.+?)''/<b>$1<\/b>/gi;  # 太字
+  $text =~ s/%%(.+?)%%/<span class="strike">$1<\/span>/gi;  # 打ち消し線
+  $text =~ s/__(.+?)__/<span class="underline">$1<\/span>/gi;  # 下線
+  $text =~ s/\{\{(.+?)\}\}/<span style="color:transparent">$1<\/span>/gi;  # 透明
+  $text =~ s/[|｜]([^|｜\n]+?)《(.+?)》/<ruby>$1<rp>(<\/rp><rt>$2<\/rt><rp>)<\/rp><\/ruby>/gi; # なろう式ルビ
+  $text =~ s/《《(.+?)》》/<span class="text-em">$1<\/span>/gi; # カクヨム式傍点
+  
+  $text =~ s/\[\[(.+?)&gt;((?:(?!<br>)[^"])+?)\]\]/&tagLinkUrl($2,$1)/egi; # リンク
+  if($set::game eq 'sw2'){ $text =~ s/((?:making|能力値作成(?:履歴)?)#([0-9]+(?:-[0-9]+)?))/<a href="?&mode=making&num=$2">$1<\/a>/gi; } # メイキングリンク
+  $text =~ s/\[(.+?)#([a-zA-Z0-9\-]+?)\]/<a href="?id=$2">$1<\/a>/gi; # シート内リンク
+  $text =~ s/(?<!href=")(https?:\/\/[^\s\<]+)/<a href="$1" target="_blank">$1<\/a>/gi; # 自動リンク
+  
+  $text =~ s/\n/<br>/gi;
+
+  if($set::game eq 'sw2'){
+    if($::SW2_0){
+      $text =~ s/「((?:[○◯〇＞▶〆☆≫»□☐☑🗨▽▼]|&gt;&gt;)+)/"「".&textToIcon($1);/egi;
+    } else {
+      $text =~ s/「((?:[○◯〇△＞▶〆☆≫»□☐☑🗨]|&gt;&gt;)+)/"「".&textToIcon($1);/egi;
+    }
+  }
+  
+  return $text;
+}
+sub tagUnescapeYtc {
+  my $text = shift;
+  $text =~ s/&amp;/&/g;
+  $text =~ s/&quot;/"/g;
+  $text =~ s/&lt;br&gt;/\n/gi;
+  
+  $text =~ s/\[\[(.+?)&gt;((?:(?!<br>)[^"])+?)\]\]/$1/gi; # リンク削除
+  $text =~ s/\[(.+?)#([a-zA-Z0-9\-]+?)\]/$1/gi; # シート内リンク削除
+  
+  $text =~ s/&#91;(.)&#93;/[$1]/g;
+  
+  $text =~ s/\n/<br>/gi;
+  return $text;
+}
+sub tagLinkUrl {
+  my $url = shift;
+  my $txt = shift;
   #foreach my $safe (@set::safeurl){
   #  next if !$safe;
   #  if($url =~ /^$safe/) { return '<a href="'.$url.'" target="_blank">'.$txt.'</a>'; }
@@ -428,9 +492,8 @@ sub tag_link_url {
   return '<a href="'.$url.'" target="_blank">'.$txt.'</a>';
   #return '<a href="../'.$set::cgi.'?jump='.$url.'" target="_blank">'.$txt.'</a>';
 }
-
-sub tag_unescape_lines {
-  my $text = $_[0];
+sub tagUnescapeLines {
+  my $text = shift;
   $text =~ s/&lt;br&gt;/\n/gi;
   
   $text =~ s|^//(.*?)\n?$||gm; # コメントアウト
@@ -551,13 +614,13 @@ sub tableHeaderCreate {
   return $output;
 }
 ### タグ削除 --------------------------------------------------
-sub tag_delete {
+sub tagDelete {
   my $text = $_[0];
   $text =~ s/<img alt="&#91;(.)&#93;"/[$1]<img /g;
   $text =~ s/<.+?>//g;
   return $text;
 }
-sub name_plain {
+sub nameToPlain {
   my $name = shift;
   $name =~ s#<rt>.*?</rt>|<rp>.*?</rp>##g;
   return $name;

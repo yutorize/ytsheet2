@@ -63,7 +63,7 @@ sub data_calc {
   
   ### 最終参加卓 --------------------------------------------------
   foreach my $i (reverse 1 .. $pc{'historyNum'}){
-    if($pc{"history${i}Gm"} && $pc{"history${i}Title"}){ $pc{"lastSession"} = tag_delete tag_unescape $pc{"history${i}Title"}; last; }
+    if($pc{"history${i}Gm"} && $pc{"history${i}Title"}){ $pc{"lastSession"} = tagDelete tagUnescape $pc{"history${i}Title"}; last; }
   }
 
   ### newline --------------------------------------------------

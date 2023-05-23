@@ -290,14 +290,14 @@ sub data_calc {
   
   ### 最終参加卓 --------------------------------------------------
   foreach my $i (reverse 1 .. $pc{'historyNum'}){
-    if($pc{"history${i}Gm"} && $pc{"history${i}Title"}){ $pc{"lastSession"} = tag_delete tag_unescape $pc{"history${i}Title"}; last; }
+    if($pc{"history${i}Gm"} && $pc{"history${i}Title"}){ $pc{"lastSession"} = tagDelete tagUnescape $pc{"history${i}Title"}; last; }
   }
 
   ### newline --------------------------------------------------
   my $charactername = ($pc{'aka'} ? "“$pc{'aka'}”" : "").$pc{'characterName'};
   $charactername =~ s/[|｜]([^|｜]+?)《.+?》/$1/g;
   my $race = $pc{'race'} eq 'free' ? $pc{'raceFree'} : $pc{'race'};
-  $pc{'lastSession'} = tag_delete tag_unescape $pc{'lastSession'};
+  $pc{'lastSession'} = tagDelete tagUnescape $pc{'lastSession'};
   $::newline = "$pc{'id'}<>$::file<>".
                "$pc{'birthTime'}<>$::now<>$charactername<>$pc{'playerName'}<>$pc{'group'}<>".
                "$pc{'image'}<> $pc{'tags'} <>$pc{'hide'}<>".

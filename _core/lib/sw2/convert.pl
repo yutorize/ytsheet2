@@ -432,7 +432,7 @@ sub convertHokanjoToYtsheet {
   $profile .= ":    |$in{'keireki'}[2]\n";
   
   $pc{'freeNote'} = $profile.$in{'pc_making_memo'},
-  $pc{'freeNoteView'} = (tag_unescape tag_unescape_lines $profile).$in{'pc_making_memo'};
+  $pc{'freeNoteView'} = (tagUnescape tagUnescapeLines $profile).$in{'pc_making_memo'};
   $pc{'freeNoteView'} =~ s/\r\n?|\n/<br>/g;
   
   ## チャットパレット

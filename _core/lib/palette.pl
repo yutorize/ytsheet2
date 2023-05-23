@@ -48,17 +48,17 @@ sub outputChatPalette {
     foreach (@lines){
       chomp;
       my ($key, $value) = split(/<>/, $_, 2);
-      $pc{$key} = tag_unescape($value);
+      $pc{$key} = tagUnescape($value);
     }
     $pc{'chatPalette'} =~ s/<br>/\n/g;
     $pc{'skills'} =~ s/<br>/\n/gi;
-    $_ = tag_delete($_) foreach values %pc;
+    $_ = tagDelete($_) foreach values %pc;
   }
   else {
     foreach (@lines){
       chomp;
       my ($key, $value) = split(/<>/, $_, 2);
-      $pc{$key} = tag_unescape_ytc($value);
+      $pc{$key} = tagUnescapeYtc($value);
     }
     $pc{'chatPalette'} =~ s/<br>/\n/g;
     $pc{'skills'} =~ s/<br>/\n/gi;

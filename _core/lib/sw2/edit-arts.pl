@@ -36,7 +36,7 @@ my $mode_make = ($mode =~ /^(blanksheet|copy|convert)$/) ? 1 : 0;
 
 ### 出力準備 #########################################################################################
 if($message){
-  my $name = tag_unescape($pc{'category'} eq 'magic' ? $pc{'magicName'} : $pc{'category'} eq 'god' ? $pc{'godAka'}.$pc{'godName'} : '無題');
+  my $name = tagUnescape($pc{'category'} eq 'magic' ? $pc{'magicName'} : $pc{'category'} eq 'god' ? $pc{'godAka'}.$pc{'godName'} : '無題');
   $message =~ s/<!NAME>/$name/;
 }
 ### 製作者名 --------------------------------------------------
