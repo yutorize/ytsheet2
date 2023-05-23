@@ -28,7 +28,7 @@ sub data_calc {
   $name =~ s/[|｜]([^|｜]+?)《.+?》/$1/g;
   $pc{'hide'} = 'IN' if(!$pc{'hide'} && $pc{'description'} =~ /#login-only/i);
   my $taxa = ($pc{'mount'} ? '騎獣／':'').$pc{'taxa'};
-  my $lv = $pc{'mount'} ? "$pc{'lvMin'}-$pc{'lvMax'}" : $pc{'lv'};
+  my $lv = ($pc{'mount'} && $pc{'lv'} eq '') ? "$pc{'lvMin'}-$pc{'lvMax'}" : $pc{'lv'};
   my $disposition = $pc{'mount'} ? '' : $pc{'disposition'};
   my $initiative  = $pc{'mount'} ? '' : $pc{'initiative'};
   my $habitat     = $pc{'mount'} ? '' : $pc{'habitat'};
