@@ -1084,14 +1084,6 @@ div#area-items-R {
 #history {
   margin-top: 1rem;
 }
-#history table{
-}
-#history table th {
-  white-space: nowrap;
-}
-#history table td {
-  font-size: .85em;
-}
 #history table thead th:nth-child(1) { width:   2em; } /* No. */
 #history table thead th:nth-child(2) { width: 5.2em; } /* 日付 */
 #history table thead th:nth-child(3) { width:  auto; } /* タイトル */
@@ -1113,50 +1105,10 @@ div#area-items-R {
 #history table tr td:nth-child(5):empty::after {
   content: "";
 }
-#history table tr td:nth-child(8),
-#history table tr td:nth-child(9) {
+#history table tr td:is(.gm, .member) {
   font-size: 1.1rem;
 }
-#history table tr td:nth-child(8) span {
-  display: block;
-  min-width: 5em;
-}
-#history table tr td:nth-child(9) {
-  padding: 1px 0;
-  text-align: left;
-}
-#history table tr td:nth-child(9) > span {
-  display: inline-block;
-  padding: 0 .5em;
-}
-#history table tr td[colspan] {
-  padding-left: .5rem;
-  text-align: left;
-}
-#history table tr td[colspan]:empty {
-  display: none;
-}
-#history table tr td:nth-child(2) a,
-#history table tr td a[data-num] {
-  display: block;
-  background: none;
-}
-#history table tr td a[data-num]:before {
-  content:"#"attr(data-num);
-  float: left;
-  margin: 0 -0.1em;
-  font-size: 90%;
-  transform: scale(0.8, 0.8);
-  opacity: 0.8;
-}
-#history table tfoot tr td {
-  padding-top: .25em;
-  padding-bottom: .2em;
-}
-#history table tfoot tr td:not(:empty) {
-  border-right-width: 1px;
-  border-right-style: dotted;
-}
+
 #history table tfoot tr td:nth-child(7)::after {
   content: "回";
   margin-left: 2px;

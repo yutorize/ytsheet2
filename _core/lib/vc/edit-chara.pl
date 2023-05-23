@@ -593,6 +593,7 @@ print <<"HTML";
               <td></td>
               <td>取得総計</td>
               <td id="history-result-total"></td>
+              <td colspan="2"></td>
             </tr>
             <tr>
               <th></th>

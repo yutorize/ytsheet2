@@ -588,20 +588,32 @@
           </thead>
           <TMPL_LOOP History><tbody>
             <tr>
-              <td <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR NUM></td>
-              <td <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR DATE></td>
-              <td <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR TITLE></td>
+              <td class="num" <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR NUM></td>
+              <td class="date" <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR DATE></td>
+              <td class="title" <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR TITLE></td>
               <td><TMPL_VAR EXP></td>
               <td><TMPL_VAR MONEY></td>
               <td><TMPL_VAR HONOR></td>
               <td><TMPL_VAR GROW></td>
-              <td><span><TMPL_VAR GM></span></td>
-              <td><TMPL_VAR MEMBER></td>
+              <td class="gm"><span><TMPL_VAR GM></span></td>
+              <td class="member"><TMPL_VAR MEMBER></td>
             </tr>
           <TMPL_IF NOTE><tr>
             <td colspan="6" class="note"><TMPL_VAR NOTE></td>
           </tr></TMPL_IF>
           </tbody></TMPL_LOOP>
+          <tfoot>
+            <tr>
+              <td></td>
+              <td></td>
+              <td>取得総計</td>
+              <td><TMPL_VAR historyExpTotal></td>
+              <td><TMPL_VAR historyMoneyTotal></td>
+              <td><TMPL_VAR historyHonorTotal></td>
+              <td><TMPL_VAR historyGrowTotal></td>
+              <td colspan="2"></td>
+            </tr>
+          </tfoot>
         </table>
       </section>
       <TMPL_IF cashbook>

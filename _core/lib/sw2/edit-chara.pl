@@ -1328,6 +1328,7 @@ print <<"HTML";
               <td id="history-money-total"></td>
               <td id="history-honor-total"></td>
               <td id="history-grow-total"><span id="history-grow-total-value"></span><span id="history-grow-max-value"></span></td>
+              <td colspan="2"></td>
             </tr>
             <tr>
               <th></th>

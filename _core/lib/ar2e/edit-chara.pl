@@ -1264,6 +1264,7 @@ print <<"HTML";
               <td id="history-exp-total"></td>
               <td id="history-payment-total"></td>
               <td id="history-money-total"></td>
+              <td colspan="2"></td>
             </tr>
             <tr>
               <th></th>

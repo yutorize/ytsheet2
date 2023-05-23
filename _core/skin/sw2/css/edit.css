@@ -824,13 +824,6 @@ option.zero-data::before {
   height: 18em;
 }
 
-#history{
-  overflow-x: auto;
-  overflow-y: hidden;
-}
-#history table {
-  width: calc(100% - 1px);
-}
 #history table thead th:nth-child(1) { width: 1.4em; }
 #history table thead th:nth-child(2) { width:   6em; } /* 日付 */
 #history table thead th:nth-child(3) { width:  12em; } /* タイトル */
@@ -841,23 +834,14 @@ option.zero-data::before {
 #history table thead th:nth-child(7) { width: 4.5em; } /* 成長 */
 #history table thead th:nth-child(8) { width:   6em; } /* ＧＭ */
 #history table thead th:nth-child(9) { width:  auto; } /* 参加者 */
+
 @media screen and (max-width:735px){
   #history table  { table-layout: fixed; }
   #history table thead th:nth-child(3) { width: 12em; } /* タイトル */
   #history table thead th:nth-child(9) { width: 16em; } /* 参加者 */
 }
 
-#history table thead td {
-  padding: 1px;
-  border-width: 1px;
-  border-style: solid dotted;
-  font-size: inherit;
-}
 
-#history table tbody td {
-  padding: .4rem 0 .1rem !important;
-  vertical-align: top;
-}
 #history table tbody td:nth-child(5)::after {
   margin: 0 2px 0 -1px;
   font-size: 1.1rem;
@@ -865,22 +849,7 @@ option.zero-data::before {
 #history table tbody td:nth-child(5) input {
   width: calc(100% - 0.9em);
 }
-#history table tbody td.handle {
-  vertical-align: middle;
-}
-#history table tbody td.left {
-  padding: 0 0 .4rem !important;
-}
-#history table tfoot th {
-  border-top-width: 1px;
-  border-top-style: solid;
-  vertical-align: top;
-}
 
-#history .annotate {
-  width: 70%;
-  margin: auto 3px auto auto;
-}
 
 article > form > hr {
   margin: 5rem 0px;

@@ -1094,7 +1094,59 @@ aside#loglist #log-naming form input[type="password"] { width: 12em; }
   }
 }
 
-
+/* // History
+---------------------------------------------------------------------------------------------------- */
+#history table th {
+  white-space: nowrap;
+}
+#history table td {
+  font-size: .85em;
+}
+#history table tr td.date a,
+#history table tr td a[data-num] {
+  display: block;
+  background: none;
+}
+#history table tr td a[data-num]:before {
+  content:"#"attr(data-num);
+  float: left;
+  margin: 0 -0.1em;
+  font-size: 90%;
+  transform: scale(0.8, 0.8);
+  opacity: 0.8;
+}
+#history table tbody td.gm span {
+  display: block;
+  min-width: 5em;
+}
+#history table tbody td.member {
+  padding: 1px 0;
+  text-align: left;
+}
+#history table tbody td.member > span {
+  display: inline-block;
+  padding: 0 .5em;
+}
+#history table tbody td.note {
+  padding-left: .5rem;
+  text-align: left;
+}
+#history table tfoot {
+  border-top-width: 3px;
+  border-top-style: double;
+}
+#history table tbody:last-of-type:nth-of-type(odd) + tfoot {
+  background-color: var(--box-even-rows-bg-color);
+}
+#history table tfoot tr td {
+  padding-top: .25em;
+  padding-bottom: .2em;
+  font-weight: bold;
+}
+#history table tfoot tr td:not(:empty) {
+  border-right-width: 1px;
+  border-right-style: dotted;
+}
 /* // Error
 ---------------------------------------------------------------------------------------------------- */
 aside#error {

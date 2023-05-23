@@ -827,6 +827,51 @@ button.set-newest {
   position: absolute;
   inset: -1px 0 auto auto;
 }
+#history{
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+#history table {
+  width: calc(100% - 1px);
+}
+#history table thead td {
+  padding: 1px;
+  border-width: 1px;
+  border-style: solid dotted;
+  font-size: inherit;
+}
+#history table tbody td {
+  padding: .4rem 0 .1rem !important;
+  vertical-align: top;
+}
+#history table tbody td.handle {
+  vertical-align: middle;
+}
+#history table tbody td.left {
+  padding: 0 0 .4rem !important;
+}
+#history table tfoot {
+  border-top-width: 0;
+  background: transparent !important;
+}
+#history table tfoot td {
+  border-top-width: 3px;
+  border-top-style: double;
+}
+#history table tfoot th {
+  border-top-width: 1px;
+  border-top-style: solid;
+  vertical-align: top;
+}
+#history table tbody:last-of-type:nth-of-type(odd) + tfoot td {
+  background-color: var(--box-even-rows-bg-color);
+}
+
+#history .annotate {
+  width: 70%;
+  margin: auto 3px auto auto;
+}
+
 
 /* 画像 */
 #area-status #image {

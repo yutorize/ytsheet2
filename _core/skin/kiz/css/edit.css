@@ -211,47 +211,21 @@ body:not(.class-owner) .o-only {
   height: 18em;
 }
 
-#history{
-  overflow-x: auto;
-  overflow-y: hidden;
-}
-#history table {
-  width: calc(100% - 1px);
-}
 #history table thead th:nth-child(1) { width: 1.4em; }
 #history table thead th:nth-child(2) { width:   6em; } /* 日付 */
 #history table thead th:nth-child(3) { width:  12em; } /* タイトル */
 #history table thead th:nth-child(4) { width:   6em; } /* 成長 */
 #history table thead th:nth-child(5) { width:   6em; } /* ＧＭ */
 #history table thead th:nth-child(6) { width:  auto; } /* 参加者 */
+
 @media screen and (max-width:735px){
   #history table  { table-layout: fixed; }
   #history table thead th:nth-child(3) { width: 12em; } /* タイトル */
   #history table thead th:nth-child(6) { width: 16em; } /* 参加者 */
 }
 
-#history table thead td {
-  padding: 1px;
-  border-width: 1px;
-  border-style: solid dotted;
-  font-size: inherit;
-}
 
-#history table tbody td {
-  padding: .4rem 0 .1rem !important;
-  vertical-align: top;
-}
-#history table tbody td.handle {
-  vertical-align: middle;
-}
-#history table tbody td.left {
-  padding: 0 0 .4rem !important;
-}
 
-#history .annotate {
-  width: 70%;
-  margin: auto 3px auto auto;
-}
 
 #exp-footer {
   position: sticky;
