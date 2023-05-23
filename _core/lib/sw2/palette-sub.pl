@@ -12,67 +12,108 @@ foreach(@data::class_names){
 }
 
 ### 魔法威力 #########################################################################################
-sub magicPows {
-  my %pows = (
-    'Sor' => [10,20],
-    'Con' => [ 0],
-    'Wiz' => [],
-    'Pri' => [10],
-    'Mag' => [],
-    'Fai' => [10],
-    'Dru' => [],
-    'Dem' => [10,20],
-    'Gri' => [10,20],
-    'Bar' => [10],
-  );
-  my %heals = (
-    'Con' => [ 0],
-    'Pri' => [10],
-    'Gri' => [20],
-    'Bar' => [ 0,10,20],
-  );
-  if($::pc{'lvSor'} >=  5){ push(@{$pows{'Sor'}}, 30) }
-  if($::pc{'lvSor'} >=  8){ push(@{$pows{'Sor'}}, 40) }
-  if($::pc{'lvSor'} >= 11){ push(@{$pows{'Sor'}}, 50) }
-  if($::pc{'lvSor'} >= 14){ push(@{$pows{'Sor'}}, 60) }
-  if($::pc{'lvSor'} >= 15){ push(@{$pows{'Sor'}},100) }
-  if($::pc{'lvCon'} >=  8){ push(@{$pows{'Con'}}, 20) }
-  if($::pc{'lvCon'} >=  9){ push(@{$pows{'Con'}}, 30) }
-  if($::pc{'lvCon'} >= 15){ push(@{$pows{'Con'}}, 60) }
-  if(min($::pc{'lvSor'},$::pc{'lvCon'}) >=  8){ push(@{$pows{'Wiz'}}, 10) }
-  if(min($::pc{'lvSor'},$::pc{'lvCon'}) >=  4){ push(@{$pows{'Wiz'}}, 20) }
-  if(min($::pc{'lvSor'},$::pc{'lvCon'}) >= 10){ push(@{$pows{'Wiz'}}, 30) }
-  if(min($::pc{'lvSor'},$::pc{'lvCon'}) >= 13){ push(@{$pows{'Wiz'}}, 70) }
-  if($::pc{'lvPri'} >=  5){ push(@{$pows{'Pri'}}, 20) }
-  if($::pc{'lvPri'} >=  9){ push(@{$pows{'Pri'}}, 30) }
-  if($::pc{'lvFai'} >=  5){ push(@{$pows{'Fai'}}, 20) }
-  if($::pc{'lvFai'} >= 10){ push(@{$pows{'Fai'}}, 40) }
-  if($::pc{'lvFai'} >= 11){ push(@{$pows{'Fai'}}, 50) }
-  if($::pc{'lvFai'} >= 14){ push(@{$pows{'Fai'}}, 60) }
-  if($::pc{'lvMag'} >=  5){ push(@{$pows{'Mag'}}, 30) }
-  if($::pc{'lvMag'} >= 15){ push(@{$pows{'Mag'}}, 90) }
-  if($::pc{'lvDru'} >=  4){ push(@{$pows{'Dru'}}, 10,20) }
-  if($::pc{'lvDru'} >= 13){ push(@{$pows{'Dru'}}, 30) }
-  if($::pc{'lvDru'} >= 15){ push(@{$pows{'Dru'}}, 50) }
-  if($::pc{'lvDem'} >=  5){ push(@{$pows{'Dem'}}, 30); push(@{$pows{'Dem'}}, 40); push(@{$pows{'Dem'}}, 50) }
-  if($::pc{'lvGri'} >=  4){ push(@{$pows{'Gri'}}, 30) }
-  if($::pc{'lvGri'} >=  7){ push(@{$pows{'Gri'}}, 40); push(@{$pows{'Gri'}}, 50) }
-  if($::pc{'lvGri'} >= 10){ push(@{$pows{'Gri'}}, 60) }
-  if($::pc{'lvGri'} >= 13){ push(@{$pows{'Gri'}}, 80); push(@{$pows{'Gri'}},100) }
-  if($::pc{'lvBar'} >=  5){ push(@{$pows{'Bar'}}, 20) }
-  if($::pc{'lvBar'} >= 10){ push(@{$pows{'Bar'}}, 30) }
-  
-  if($::pc{'lvCon'} >= 11){ push(@{$heals{'Con'}}, 30) }
-  if($::pc{'lvPri'} >=  5){ push(@{$heals{'Pri'}}, 30) }
-  if($::pc{'lvPri'} >= 10){ push(@{$heals{'Pri'}}, 50) }
-  if($::pc{'lvPri'} >= 13){ push(@{$heals{'Pri'}}, 70) }
-  if($::pc{'lvGri'} >=  7){ push(@{$heals{'Gri'}}, 40) }
-  if($::pc{'lvGri'} >= 13){ push(@{$heals{'Gri'}},100) }
-  if($::pc{'lvBar'} >=  5){ push(@{$heals{'Bar'}}, 30) }
-  if($::pc{'lvBar'} >= 10){ push(@{$heals{'Bar'}}, 40) }
-  
-  return (\%pows, \%heals);
+my %pows = (
+  'Sor' => {
+    10  =>  1,
+    20  =>  3,
+    30  =>  5,
+    40  =>  8,
+    50  => 11,
+    60  => 14,
+    100 => 15,
+  },
+  'Con' => {
+    0   =>  1,
+    20  =>  8,
+    30  =>  9,
+    60  => 15,
+  },
+  'Wiz' => {
+    10  =>  8,
+    20  =>  4,
+    30  => 10,
+    70  => 13,
+  },
+  'Pri' => {
+    10  =>  3,
+    20  =>  5,
+    30  =>  9,
+    50  => 11,
+  },
+  'Mag' => {
+    30  =>  5,
+    90  => 15,
+  },
+  'Fai' => {
+    10  =>  2,
+    20  =>  5,
+    40  => 10,
+    50  => 11,
+    60  => 14
+  },
+  'Dru' => {
+    10  =>  4,
+    20  =>  4,
+    30  => 13,
+    50  => 15,
+  },
+  'Dem' => {
+    10  =>  5,
+    20  =>  2,
+    30  => 15,
+    40  =>  9,
+    70  => 14,
+  },
+  'Gri' => {
+    10  =>  1,
+    20  =>  1,
+    30  =>  4,
+    40  =>  7,
+    50  =>  7,
+    60  => 10,
+    80  => 13,
+    100 => 13,
+  },
+  'Bar' => {
+    10  =>  1,
+    20  =>  5,
+    30  => 10,
+  },
+);
+if($::SW2_0){
+  $pows{'Dem'} = {
+    10  =>  1,
+    20  =>  1,
+    30  =>  5,
+    40  =>  5,
+    50  =>  5,
+  };
 }
+
+my %heals = (
+  'Con' => {
+    0   =>  2,
+    30  => 11,
+  },
+  'Pri' => {
+    10  =>  2,
+    30  =>  5,
+    50  => 10,
+    70  => 13,
+  },
+  'Gri' => {
+    20  =>  1,
+    40  =>  7,
+    100 => 13,
+  },
+  'Bar' => {
+    0   =>  1,
+    10  =>  1,
+    20  =>  1,
+    30  =>  5,
+    40  => 10,
+  },
+);
 
 my $skill_mark = "[○◯〇△＞▶〆☆≫»□☑🗨]|&gt;&gt;";
 
@@ -107,10 +148,6 @@ sub palettePreset {
     $text .= "\n";
     
     # 魔法
-    my ($pows, $heals) = magicPows();
-    my %pows  = %{$pows};
-    my %heals = %{$heals};
-    
     foreach my $name (@class_names){
       next if !($data::class{$name}{'magic'}{'jName'} || $data::class{$name}{'craft'}{'stt'});
       next if !$::pc{'lv' . $data::class{$name}{'id'} };
@@ -136,7 +173,10 @@ sub palettePreset {
       elsif($name =~ /歌/){ $text .= " 呪歌演奏\n"; }
       else                { $text .= " ${name}\n"; }
       
-      foreach my $pow (@{$pows{$id}}) {
+      foreach my $pow (sort {$a <=> $b} keys %{$pows{$id}}) {
+        next if($pows{$id}{$pow} > $::pc{'lv'.$id} && $id ne 'Fai');
+        next if($id eq 'Wiz' && $pows{$id}{$pow} > min($::pc{'lvSor'},$::pc{'lvCon'}));
+        next if($id eq 'Fai' && $pows{$id}{$pow} > fairyRank($::pc{'lvFai'},$::pc{'fairyContractEarth'},$::pc{'fairyContractWater'},$::pc{'fairyContractFire' },$::pc{'fairyContractWind' },$::pc{'fairyContractLight'},$::pc{'fairyContractDark' }));
         if($id eq 'Bar'){ $pow += $::pc{'finaleEnhance'} || 0; }
         $text .= "k${pow}[{魔法C}]+{$name}".($name =~ /魔/ ?'+{魔力修正}':'').addNum($::pc{'magicDamageAdd'.$id})."+{魔法D修正} ダメージ".($bot{'BCD'}?"／$name":"")."\n";
         if ($bot{'YTC'}) { $text .= "k${pow}[13]+{$name}" . ($name =~ /魔/ ?'+{魔力修正}':'') . "//" . addNum($::pc{'magicDamageAdd'.$id}) . "+{魔法D修正} 半減\n"; }
@@ -163,8 +203,9 @@ sub palettePreset {
         }
       }
       
-      foreach my $pow (@{$heals{$id}}) {
-        $text .= "k${pow}[13]+{$name}".($name =~ /魔/ ?'+{魔力修正}':'')."+{回復量修正} 威力${pow}回復量".($bot{'BCD'}?"／${name}":"")."\n"
+      foreach my $pow (sort {$a <=> $b} keys %{$heals{$id}}) {
+        next if($::pc{'lv'.$id} < $heals{$id}{$pow});
+        $text .= "k${pow}[13]+{$name}".($name =~ /魔/ ?'+{魔力修正}':'')."+{回復量修正} 回復量".($bot{'BCD'}?"／${name}":"")."\n"
       }
       $text .= "\n";
     }

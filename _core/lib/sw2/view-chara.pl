@@ -475,20 +475,6 @@ else {
   $fairy_contact .= '<span class="ft-light">光</span>' if $pc{'fairyContractLight'};
   $fairy_contact .= '<span class="ft-dark" >闇</span>' if $pc{'fairyContractDark' };
 }
-sub fairyRank (){
-  my $i = $pc{'fairyContractEarth'}
-        + $pc{'fairyContractWater'}
-        + $pc{'fairyContractFire' }
-        + $pc{'fairyContractWind' }
-        + $pc{'fairyContractLight'}
-        + $pc{'fairyContractDark' };
-  my %rank = (
-    '4' => ['×','1','2','3','4','5','6','7','8','9','10','11','12','13','14','15'],
-    '3' => ['×','×','×','4','5','6','8','9','10','12','13','14','15','15','15','15'],
-    '6' => ['×','×','×','2&1','3&1','4&1','4&2','5&2','6&2','6&3','7&3','8&3','8&4','9&4','10&4','10&5'],
-  );
-  return $rank{$i}[$pc{'lvFai'}] || '×';
-}
 ### 魔力 --------------------------------------------------
 my @magic;
 foreach my $class (@data::class_caster){
@@ -509,7 +495,7 @@ foreach my $class (@data::class_caster){
     $magicname = ($fairy_sim_url ? "<a href=\"$fairy_sim_url\" target=\"_blank\">$name</a>" : $name)
                . ($fairy_contact ? "<div id=\"fairycontact\">$fairy_contact</div>" : '');
     if(!$::SW2_0){
-      $title .= '<br><span class="small">使用可能ランク</span>'.fairyRank();
+      $title .= '<br><span class="small">使用可能ランク</span>'.fairyRank($pc{'lvFai'},$pc{'fairyContractEarth'},$pc{'fairyContractWater'},$pc{'fairyContractFire' },$pc{'fairyContractWind' },$pc{'fairyContractLight'},$pc{'fairyContractDark' });
     }
   }
   push(@magic, {
