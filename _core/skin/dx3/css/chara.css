@@ -527,6 +527,9 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
   margin-left: .1em;
   font-size: 70%;
 }
+#status table tbody td.left:empty + td.right:empty::after {
+  content: '';
+}
 @media screen and (max-width:735px){
   #status table thead td {
     width: 2.2em;
