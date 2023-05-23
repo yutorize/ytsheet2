@@ -571,9 +571,9 @@
       </div>
       </div><!-- / COLUMN -->
       <div class="column" id="column-skills"><!-- COLUMN -->
-      <section class="box skills" id="skills">
+      <section class="box skills" id="skills" data-full-open="<TMPL_VAR skillFullOpen>">
         <h2>スキル</h2>
-        <button class="open-button" onclick="switchSkillNoteFullOpen();" data-open="<TMPL_VAR skillNoteOpen>" data-text-open="効果を全展開" data-text-close="効果を折畳む"></button>
+        <button class="open-button" onclick="switchSkillNoteFullOpen();" data-open="<TMPL_VAR skillFullOpen>" data-text-open="効果を全展開" data-text-close="効果を折畳む"></button>
         <table class="data-table line-tbody">
           <thead>
             <tr>
@@ -601,7 +601,7 @@
               <td><TMPL_VAR COST></td>
               <td><TMPL_VAR REQD></td>
             </tr>
-            <tr><td class="left" colspan="8" <TMPL_IF skillNoteOpen>style="display:table-cell"</TMPL_IF>><TMPL_VAR NOTE></td></tr>
+            <tr><td class="left" colspan="8"><TMPL_VAR NOTE></td></tr>
           </tbody></TMPL_LOOP>
         </table>
         <p class="right">
@@ -610,11 +610,11 @@
         </p>
       </section>
       <script>
-      let skillNoteOpen = <TMPL_VAR skillNoteOpen DEFAULT="false" />;
+      let skillFullOpen = <TMPL_VAR skillFullOpen DEFAULT="false" />;
       function switchSkillNoteFullOpen(){
-        skillNoteOpen = !skillNoteOpen;
-        document.querySelectorAll('#skills table td.left').forEach(obj => obj.style.display = skillNoteOpen ? 'table-cell' : '');
-        document.querySelector('#skills .open-button').dataset.open = skillNoteOpen ? 'true' : '';
+        skillFullOpen = !skillFullOpen;
+        document.getElementById('skills').dataset.fullOpen = skillFullOpen ? 'true' : '';
+        document.querySelector('#skills .open-button').dataset.open = skillFullOpen ? 'true' : '';
       }
       </script>
 

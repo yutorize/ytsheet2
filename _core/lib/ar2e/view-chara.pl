@@ -417,7 +417,7 @@ foreach (1 .. $pc{'skillsNum'}){
   $skillCount++;
 }
 $SHEET->param(Skills => \@skills);
-$SHEET->param(skillNoteOpen => 'true') if $skillCount <= 10;
+$SHEET->param(skillFullOpen => 'true') if $skillCount <= 10;
 sub checkType {
   my $text = shift;
   return '' if !$text;

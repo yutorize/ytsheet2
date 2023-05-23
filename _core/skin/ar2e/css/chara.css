@@ -951,6 +951,9 @@ dl#level dd {
 #skills table tbody:hover td.left {
   display: table-cell;
 }
+#skills[data-full-open="true"] table tbody td.left {
+  display: table-cell;
+}
 #skills table tbody td.left span.right {
   float: right;
   font-size: 90%;

@@ -743,6 +743,9 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
 #effect table tbody:hover td.left {
   display: table-cell;
 }
+#effect[data-full-open="true"] table tbody td.left {
+  display: table-cell;
+}
 #effect table tbody td.left span.right {
   float: right;
   font-size: 90%;
