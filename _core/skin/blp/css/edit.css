@@ -25,8 +25,9 @@ body:not(.type-human) .h-only {
 
 #area-status {
   min-height: 0%;
-  margin: 0 0 1rem;
+  margin: 0 0 var(--box-v-gap);
   grid-template-columns: 2fr 1.3fr;
+  grid-template-rows: auto auto 1fr;
   grid-template-areas:
     "FAC IMG"
     "PER IMG"
@@ -36,7 +37,8 @@ body:not(.type-human) .h-only {
 @media screen and (max-width:735px){
   #area-status {
     grid-template-columns: 1fr;
-    grid-gap: 10px 5px;
+    grid-gap: var(--box-v-gap) var(--box-h-gap);
+    grid-template-rows: auto auto 1fr auto;
 
     grid-template-areas:
       "IMG "
@@ -121,7 +123,7 @@ body:not(.type-human) .h-only {
   }
 }
 .partner-edit {
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
 }
 .partner-data    { grid-area: DATA; }
 .partner-from    { grid-area: FROM; }
@@ -253,7 +255,7 @@ body:not(.type-human) .h-only {
 
 #bloodarts,
 #arts {
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
 }
 #bloodarts table,
 #arts table {

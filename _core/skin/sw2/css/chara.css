@@ -178,7 +178,7 @@ dl.data-table:last-child > dt:last-of-type ~ dd,
 ---------------------------------------------------------------------------------------------------- */
 #area-status {
   display: grid;
-  grid-gap: 1rem;
+  grid-gap: var(--box-v-gap);
   grid-template-columns: 0.8fr 0.6fr 1.5fr 2.115fr;
   grid-template-rows: auto;
   
@@ -199,7 +199,7 @@ dl.data-table:last-child > dt:last-of-type ~ dd,
 
 @media screen and (max-width:767px){
   #area-status {
-    grid-gap: .5rem;
+    grid-gap: calc(var(--box-v-gap) / 2) calc(var(--box-h-gap) / 2);
     grid-template-columns: 0.7fr 0.7fr 1.5fr 2.1fr;
     grid-template-rows: auto;
 
@@ -214,7 +214,6 @@ dl.data-table:last-child > dt:last-of-type ~ dd,
 @media screen and (max-width:735px){
   #area-status {
     display: grid;
-    grid-gap: 5px;
     grid-template-columns: 0.7fr 0.6fr 1.6fr 2.1fr;
     grid-template-rows: auto;
 
@@ -256,13 +255,13 @@ dl.data-table:last-child > dt:last-of-type ~ dd,
 /* Status */
 #status {
   display: grid;
-  grid-gap: 0.8rem 1rem;
+  grid-gap: 8px 10px;
   grid-template-columns: 1fr 1fr 1fr 1.3fr 0.8fr 1.2fr;
   grid-template-rows: auto;
 }
 @media screen and (max-width:735px){
   #status {
-    grid-gap: 5px 1rem;
+    grid-gap: 5px 8px;
     grid-template-columns: 1fr 1fr 1fr 1.4fr 0.7fr 1.4fr;
   }
 }
@@ -515,20 +514,20 @@ dl#level dd {
   display: flex;
   justify-content: space-between;
   
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
   line-height: 1.8;
 }
 #area-ability > * {
   flex-basis: 30%;
   flex-grow: 1;
-  margin-left: 1rem;
+  margin-left: var(--box-h-gap);
 }
 #area-ability > *:first-child {
   margin-left: 0px;
 }
 
 #area-ability .box + .box {
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
 }
 @media screen and (max-width:735px){
   #area-ability {
@@ -538,7 +537,7 @@ dl#level dd {
     flex-basis: calc(50% - 1rem);
   }
   #area-ability > *:last-child {
-    margin-top: 1rem;
+    margin-top: var(--box-v-gap);
     margin-left: 0px;
   }
 }
@@ -621,7 +620,7 @@ dl#level dd {
   #crafts > .box {
     width: auto;
     flex-basis: 49%;
-    margin-bottom: 1rem;
+    margin-bottom: var(--box-v-gap);
   }
   #crafts > .box + .box {
     margin-top: 0;
@@ -654,7 +653,7 @@ dl#level dd {
   align-items: flex-end;
   flex-wrap: wrap;
   
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
   line-height: 1.8;
 }
 @media screen and (min-width:1400px){
@@ -665,7 +664,7 @@ dl#level dd {
 #area-actions > * {
   flex-basis: 30%;
   flex-grow: 1;
-  margin-left: 1rem;
+  margin-left: var(--box-h-gap);
 }
 #area-actions > *:first-child {
   margin-left: 0px;
@@ -680,7 +679,7 @@ dl#level dd {
 @media screen and (max-width:735px){
   #area-actions {
     display: grid;
-    grid-gap: 1rem;
+    grid-gap: var(--box-v-gap);
     grid-template-columns: 1fr 1fr;
     margin: 0;
   }
@@ -746,7 +745,7 @@ dl#level dd {
   grid-template-columns: auto;
   grid-template-rows: auto auto;
   
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
 }
 #mobility dt {
   grid-row: 1;
@@ -763,7 +762,7 @@ dl#level dd {
 #magic-power{
   flex-basis: auto;
   flex-grow: 0;
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
   margin-left: 0;
 }
 #magic-power table {
@@ -845,7 +844,7 @@ dl#level dd {
 #area-equipment {
 }
 #area-equipment > .box {
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
 }
 
 #area-equipment table.data-table tbody th {
@@ -949,7 +948,7 @@ dl#level dd {
   line-height: 1.8;
 }
 #area-items > div > .box {
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
 }
 
 div#area-items-L {
@@ -957,7 +956,7 @@ div#area-items-L {
 }
 div#area-items-R {
   flex-basis: 40%;
-  margin-left: 1rem;
+  margin-left: var(--box-h-gap);
 }
 /* Money */
 #money{
@@ -1075,14 +1074,14 @@ div#area-items-R {
 ---------------------------------------------------------------------------------------------------- */
 #free-note,
 #free-history{
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
 }
 
 
 /* // History
 ---------------------------------------------------------------------------------------------------- */
 #history {
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
 }
 #history table thead th:nth-child(1) { width:   2em; } /* No. */
 #history table thead th:nth-child(2) { width: 5.2em; } /* 日付 */
@@ -1118,7 +1117,7 @@ div#area-items-R {
 /* // Cashbook
 ---------------------------------------------------------------------------------------------------- */
 #cashbook {
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
   height: max-content;
   overflow: hidden;
 }
@@ -1148,7 +1147,7 @@ div#area-items-R {
   width: 100%;
   margin-top: 2rem;
   display: grid;
-  grid-gap: 1rem;
+  grid-gap: var(--box-v-gap);
   grid-template-columns: 100px 1.1fr 0.3fr 0.6fr;
   grid-template-rows: auto;
   

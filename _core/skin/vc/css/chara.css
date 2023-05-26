@@ -203,7 +203,7 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
 #area-status {
   min-height: 56.7rem;
   display: grid;
-  grid-gap: 1rem;
+  grid-gap: var(--box-v-gap) var(--box-h-gap);
   grid-template-columns: 1.6fr 1.4fr 2.14fr;
   grid-template-rows: auto auto auto auto 1fr;
   
@@ -261,7 +261,7 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
   padding-bottom: .2em;
 }
 #style {
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
 }
 #personal .box-union + .box-union {
   margin-top: 10px;
@@ -408,7 +408,7 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
 /* // Area-Goods
 ---------------------------------------------------------------------------------------------------- */
 #items {
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
 }
 #items table { margin-top: -1em; }
 #items table thead th:nth-child(1) { width: 12em; }
@@ -421,7 +421,7 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
 
 /* // Battle
 ---------------------------------------------------------------------------------------------------- */
-#battle { margin-top: 1rem; }
+#battle { margin-top: var(--box-v-gap); }
 #battle table { margin-top: -1em; }
 #battle table colgroup col.head { width:4.5em; }
 #battle table colgroup col.name { width: 14em; }
@@ -462,14 +462,14 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
 ---------------------------------------------------------------------------------------------------- */
 #free-note,
 #free-history{
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
 }
 
 
 /* // History
 ---------------------------------------------------------------------------------------------------- */
 #history {
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
 }
 #history table thead th:nth-child(1) { width:   2em; } /* No. */
 #history table thead th:nth-child(2) { width: 5.2em; } /* 日付 */
@@ -486,7 +486,7 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
 /* // Cashbook
 ---------------------------------------------------------------------------------------------------- */
 #cashbook {
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
   height: max-content;
   overflow: hidden;
 }

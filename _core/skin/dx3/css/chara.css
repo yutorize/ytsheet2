@@ -187,7 +187,7 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
 #area-status {
   min-height: 56.7rem;
   display: grid;
-  grid-gap: 1rem;
+  grid-gap: var(--box-v-gap) var(--box-h-gap);
   grid-template-columns: 0.7fr 1.1fr 1.1fr 2.115fr;
   grid-template-rows: auto auto auto 1fr;
   grid-template-areas:
@@ -285,7 +285,7 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
 }
 #syndrome {
   display: grid;
-  grid-gap: 0 1rem;
+  grid-gap: 0 .8em;
   grid-template-columns: 1fr 1fr 1fr;
 }
 #syndrome dt:last-of-type {
@@ -469,7 +469,7 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
 /* // Status / Skills
 ---------------------------------------------------------------------------------------------------- */
 #status {
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
 }
 #status table {
   width: 100%;
@@ -554,7 +554,7 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
 #lois,
 #memory,
 #insanity {
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
 }
 #lois table,
 #memory table {
@@ -684,11 +684,11 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
 }
 @media screen and (min-width:1400px){
   #area-battle {
-    margin-top: -1rem;
+    margin-top: calc(-1 * var(--box-v-gap));
   }
 }
 #area-battle > .box {
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
 }
 #area-battle > .box > table {
   width: 100%;
@@ -1118,7 +1118,7 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
 }
 /* Items */
 #items {
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
 }
 #items table {
   border-width: 0 0 1px;
@@ -1190,7 +1190,7 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
 #enc-bonus {
   position: sticky;
   bottom: 0;
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
   background-image: none;
   background-color: var(--bg-color);
   border-radius: 5px;
@@ -1272,14 +1272,14 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
 ---------------------------------------------------------------------------------------------------- */
 #free-note,
 #free-history{
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
 }
 
 
 /* // History
 ---------------------------------------------------------------------------------------------------- */
 #history {
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
 }
 #history table thead th:nth-child(1) { width:   2em; } /* No. */
 #history table thead th:nth-child(2) { width: 5.2em; } /* 日付 */

@@ -2,6 +2,15 @@
 
 /* // 
 ---------------------------------------------------------------------------------------------------- */
+:root {
+  --box-v-gap: 20px;
+}
+@media screen and (max-width:735px){
+  :root {
+    --box-v-gap: 2.5em;
+    --box-h-gap: 10px;
+  }
+}
 body {
   grid-template-rows: 0 auto max-content;
 }
@@ -36,6 +45,8 @@ main {
 @media screen and (max-width:735px){
   main {
     padding-top: 6em;
+    border-width: 0 10px;
+    border-color: transparent;
     overflow-x: hidden;
   }
 }
@@ -407,7 +418,7 @@ section {
   margin-top: 2em;
 }
 section > h2 {
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
 }
 
 #header-menu ul li[title] {
@@ -657,6 +668,12 @@ input[type="submit"]:hover {
   font-size: 90%;
   padding: 0 1rem;
 }
+@media screen and (max-width:735px){
+  .box .annotate {
+    position: sticky;
+    left: 0;
+  }
+}
 .box .add-del-button + .annotate {
   border-top-width: 1px;
   border-top-style: solid;
@@ -672,7 +689,7 @@ input[type="submit"]:hover {
   display: grid;
   grid-template-columns: 3fr 1fr;
   grid-gap: 1em;
-  margin: 1rem 0;
+  margin: var(--box-v-gap) 0;
   position: relative;
 }
 #name-form input {
@@ -726,7 +743,7 @@ input[type="submit"]:hover {
 
 /* 編集保護 */
 #edit-protect {
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
 }
 /* 閲覧可否 */
 #hide-options {
@@ -734,7 +751,7 @@ input[type="submit"]:hover {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
   align-items: center;
 }
 #forbidden-checkbox {
@@ -759,11 +776,14 @@ input[type="submit"]:hover {
   #hide-options dt {
     flex-basis: 100%;
   }
+  #hide-options select {
+    float: left;
+  }
 }
 
 /* グループ */
 #group {
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
 }
 #group dl {
   display: grid;
@@ -790,7 +810,7 @@ input[type="submit"]:hover {
 }
 /* レギュレーション */
 #regulation {
-  margin: 10px 0;
+  margin: var(--box-v-gap) 0;
   overflow-y: auto;
 }
 #regulation > dl {
@@ -1274,7 +1294,7 @@ button.set-newest {
   content: "：ナイトモード";
 }
 .color-sample .box {
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
 }
 .night .color-sample .night {
   background-color: #fff;

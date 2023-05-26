@@ -2,10 +2,6 @@
 
 /* // キャラクター
 ---------------------------------------------------------------------------------------------------- */
-#regulation {
-  margin: 10px 0;
-  overflow-y: auto;
-}
 #regulation > dl {
   display: grid;
   grid-template-columns: 1fr 1fr 4fr;
@@ -39,6 +35,7 @@
 #area-status {
   min-height: 0;
   grid-template-columns: 1.9fr 1.6fr 1.5fr;
+  grid-template-rows: auto auto auto auto;
   grid-template-areas:
     "LVL  APP IMG"
     "PER  APP IMG"
@@ -49,7 +46,8 @@
 @media screen and (max-width:735px){
   #area-status {
     grid-template-columns: 2fr 1fr;
-    grid-gap: 10px 5px;
+    grid-gap: var(--box-v-gap) var(--box-h-gap);
+    grid-template-rows: auto auto auto auto auto;
 
     grid-template-areas:
       "IMG  IMG "
@@ -109,11 +107,11 @@
 
 #goods,
 #battle {
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
 }
 @media screen and (max-width:735px){
   #specialities {
-    margin-top: 1rem;
+    margin-top: var(--box-v-gap);
   }
 }
 

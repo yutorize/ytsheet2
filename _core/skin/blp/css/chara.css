@@ -198,7 +198,7 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
 #area-status {
   min-height: 56.7rem;
   display: grid;
-  grid-gap: 1rem;
+  grid-gap: var(--box-v-gap) var(--box-h-gap);
   grid-template-columns: 2fr 1.4fr;
   grid-template-rows: auto auto 1fr auto;
   grid-template-areas:
@@ -374,7 +374,7 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
   align-self: end;
 }
 #area-battle > .box {
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
 }
 #area-battle > .box > table {
   width: 100%;
@@ -396,7 +396,7 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
 }
 #arts table,
 #bloodarts table {
-  margin-top: -1rem;
+  margin-top: calc(-1 * var(--box-v-gap));
 }
 #arts table thead th,
 #bloodarts table thead th {
@@ -452,8 +452,8 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
 ---------------------------------------------------------------------------------------------------- */
 .partner {
   display: grid;
-  margin-top: 1rem;
-  grid-gap: .5rem 1rem;
+  margin-top: var(--box-v-gap);
+  grid-gap: calc(var(--box-v-gap) / 2) var(--box-h-gap);
   grid-template-columns: 1fr 4fr;
   grid-template-rows: auto auto 1fr;
   
@@ -655,7 +655,7 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
 @media screen and (min-width:736px){
   .bigamy {
     display: grid;
-    grid-gap: 1rem;
+    grid-gap: var(--box-v-gap) var(--box-h-gap);
     grid-template-columns: 1fr 1fr;
   }
   .bigamy .box {
@@ -727,14 +727,14 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
 ---------------------------------------------------------------------------------------------------- */
 #free-note,
 #free-history{
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
 }
 
 
 /* // History
 ---------------------------------------------------------------------------------------------------- */
 #history {
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
 }
 #history table thead th:nth-child(1) { width:   2em; } /* No. */
 #history table thead th:nth-child(2) { width: 5.2em; } /* 日付 */

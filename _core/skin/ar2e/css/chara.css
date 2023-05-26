@@ -200,7 +200,7 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
 #area-status {
   min-height: 56.7rem;
   display: grid;
-  grid-gap: 1rem;
+  grid-gap: var(--box-v-gap) var(--box-h-gap);
   grid-template-columns: 1.9fr 0.5fr 0.5fr 2.115fr;
   grid-template-rows: auto auto auto 1fr;
   
@@ -223,7 +223,7 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
 
 @media screen and (max-width:767px){
   #area-status {
-    grid-gap: .5rem;
+    grid-gap: calc(var(--box-v-gap) / 2) calc(var(--box-h-gap) / 2);
     grid-template-columns: 1.9fr 0.5fr .5fr 2.1fr;
 
     grid-template-areas:
@@ -237,7 +237,6 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
 @media screen and (max-width:735px){
   #area-status {
     display: grid;
-    grid-gap: 5px;
     grid-template-columns: 1.5fr 0.8fr .6fr 2.1fr;
 
     grid-template-areas:
@@ -490,7 +489,7 @@ dl#level dd {
   grid-row: 1 / -1;
   display: grid;
   grid-template-columns: 1fr 1fr 2fr;
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
 }
 #weight {
   border-right-width: 0;
@@ -538,9 +537,9 @@ dl#level dd {
 #relations {
   display: grid;
   grid-template-columns: 1fr 3fr;
-  grid-gap: 1rem;
+  grid-gap: var(--box-v-gap) var(--box-h-gap);
   align-items: start;
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
 }
 #guild {
 }
@@ -572,17 +571,17 @@ dl#level dd {
 @media screen and (max-width:735px){
   #guild,
   #connections {
-    margin-top: 1rem;
+    margin-top: var(--box-v-gap);
   }
 }
 
 /* // Area-Equipments
 ---------------------------------------------------------------------------------------------------- */
 #area-armaments {
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
 }
 #area-armaments > .box:not(:first-child) {
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
 }
 
 #battle col.head  { width:   3em; }
@@ -887,7 +886,7 @@ dl#level dd {
 ---------------------------------------------------------------------------------------------------- */
 #skills {
   position: relative;
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
 }
 @media screen and (min-width:1400px){
   #skills {
@@ -1100,7 +1099,7 @@ dl#level dd {
 /* // LvUpHistory
 ---------------------------------------------------------------------------------------------------- */
 #levelup {
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
 }
 #levelup {
   table-layout: fixed;
@@ -1151,14 +1150,14 @@ dl#level dd {
 ---------------------------------------------------------------------------------------------------- */
 #free-note,
 #free-history{
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
 }
 
 
 /* // History
 ---------------------------------------------------------------------------------------------------- */
 #history {
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
 }
 #history table thead th:nth-child(1) { width:   2em; } /* No. */
 #history table thead th:nth-child(2) { width: 5.2em; } /* 日付 */
@@ -1192,7 +1191,7 @@ dl#level dd {
 /* // Cashbook
 ---------------------------------------------------------------------------------------------------- */
 #cashbook {
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
   height: max-content;
   overflow: hidden;
 }

@@ -2,10 +2,6 @@
 
 /* // キャラクター
 ---------------------------------------------------------------------------------------------------- */
-#regulation {
-  margin: 10px 0;
-  overflow-y: auto;
-}
 #regulation dl {
   grid-template-columns: max-content 14em max-content 6em 1fr;
 }
@@ -22,8 +18,7 @@
 #area-status {
   min-height: 0%;
   grid-template-columns: 0.6fr 1.2fr 0.9fr 1.8fr;
-}
-#area-status {
+  grid-template-rows: auto auto 1fr;
   grid-template-areas:
     "PER PER WKS IMG"
     "SYN SYN SYN IMG"
@@ -36,7 +31,8 @@
 @media screen and (max-width:735px){
   #area-status {
     grid-template-columns: 1fr 1fr 2fr;
-    grid-gap: 10px 5px;
+    grid-gap: var(--box-v-gap) var(--box-h-gap);
+    grid-template-rows: auto auto auto 1fr;
 
     grid-template-areas:
       "IMG  IMG  IMG"
@@ -82,7 +78,7 @@
   width: 2.5em;
 }
 #lifepath {
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
 }
 #lifepath table tbody tr:before {
   display: none;
@@ -291,9 +287,12 @@
   #lois table colgroup col:nth-child(3) { width:   6em; }
   #lois table colgroup col:nth-child(4) { width: 1.5em; }
   #lois table colgroup col:nth-child(5) { width:   6em; }
-  #lois table colgroup col:nth-child(6) { width:   4em; }
+  #lois table colgroup col:nth-child(6) { width:   3em; }
   #lois table colgroup col:nth-child(7) { width:  14em; }
-  #lois table colgroup col:nth-child(8) { width:   3em; }
+  #lois table colgroup col:nth-child(8) { width: 2.6em; }
+
+  #lois table tbody td span[data-state] { padding: .5em 0; }
+
   #memory { overflow-x: auto; }
   #memory table  { table-layout: fixed; white-space: nowrap; margin-top: .5em; }
   #memory table thead th:nth-child(1) { width:   3em; } 
@@ -305,7 +304,7 @@
 
 #effect {
   overflow-x: auto;
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
 }
 #effect table {
 }
@@ -321,11 +320,11 @@
 #effect table thead th:nth-child(10){ width: 5.4em; } /* 制限 */
 
 #effect table tbody td {
-  padding: .5rem 0 0;
+  padding: 5px 0 0;
   vertical-align: bottom;
 }
 #effect table tbody td[colspan] {
-  padding: 0 0 .5rem;
+  padding: 0 0 5px;
   vertical-align: middle;
   text-align: right;
 }
@@ -388,6 +387,12 @@
     white-space: nowrap;
   }
   #effect table tbody td:nth-child(3) input { min-width: 2em; } /* Lv */
+  #skills table tbody td {
+    padding: .5em 0 0;
+  }
+  #skills table tbody td[colspan] {
+    padding: 0 0 .5em;
+  }
 }
 .trash-box {
   display: none;
@@ -496,7 +501,7 @@
 
 #magic {
   overflow-x: auto;
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
 }
 #magic table thead th:nth-child(1) { width: 1.4em; }
 #magic table thead th:nth-child(2) { width:  15em; } /* 名称 */
@@ -539,7 +544,7 @@
 }
 
 #combo {
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
 }
 #combo .combo-table {
   display: grid;
@@ -661,6 +666,7 @@
 }
 @media screen and (max-width:735px){
   #combo .combo-table {
+    padding: .5em 0;
     grid-template-columns: 1.5em 11fr;
     grid-template-areas:
       "HNDL NAME"
@@ -719,7 +725,7 @@
 }
 
 #items {
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
 }
 #items table thead th:nth-child(1) { width:  11em !important; } /* 名称 */
 #items table thead th:nth-child(2) { width: 3.4em !important; } /* 常備化 */

@@ -65,7 +65,7 @@ dd.area-tags {
 @media screen and (max-width:735px){
   #area-status {
     grid-template-columns: 2fr 1fr;
-    grid-gap: 10px 5px;
+    grid-gap: var(--box-v-gap) var(--box-h-gap);
 
     grid-template-areas:
       "IMG  IMG "
@@ -218,7 +218,7 @@ dd.area-tags {
 
 #levelup {
   overflow-x: auto;
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
 }
 #levelup dl {
   display: grid;
@@ -294,7 +294,7 @@ dd.area-tags {
 
 #skills {
   overflow-x: auto;
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
 }
 #skills table {
 }
@@ -308,11 +308,11 @@ dd.area-tags {
 #skills table thead th:nth-child(8) { width: 3.9em; } /* コスト */
 #skills table thead th:nth-child(9) { width: 9.4em; } /* 使用条件 */
 #skills table tbody td {
-  padding: .5rem 0 0;
+  padding: 5px 0 0;
   vertical-align: bottom;
 }
 #skills table tbody td[colspan] {
-  padding: 0 0 .5rem;
+  padding: 0 0 5px;
   vertical-align: middle;
   text-align: right;
 }
@@ -401,6 +401,12 @@ dd.area-tags {
     white-space: nowrap;
   }
   #skills table tbody td:nth-child(3) input { min-width: 2em; } /* Lv */
+  #skills table tbody td {
+    padding: .5em 0 0;
+  }
+  #skills table tbody td[colspan] {
+    padding: 0 0 .5em;
+  }
 }
 
 .trash-box {
@@ -510,7 +516,7 @@ dd.area-tags {
 }
 
 #battle {
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
 }
 #battle #armaments tbody th,
 #battle #battle-rolls tbody th {
@@ -621,7 +627,7 @@ dd.area-tags {
 }
 
 #other-rolls {
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
 }
 #other-rolls col:first-child { width: 44%; }
 #other-rolls col:last-child  { width: 5.5em; }
@@ -657,14 +663,14 @@ dd.area-tags {
 }
 
 #area-items {
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
 }
 @media screen and (max-width:735px){
   #area-items {
     display: block;
   }
   #area-items > * {
-    margin-top: 1rem;
+    margin-top: var(--box-v-gap);
   }
 }
 #connections table col.handle,
@@ -683,7 +689,7 @@ dd.area-tags {
     display: block;
   }
   #connections,
-  #geises { margin-top:1rem; }
+  #geises { margin-top: var(--box-v-gap); }
   #connections table col.name     { width: 30%; }
   #connections table col.relation { width: 4em; }
   #geises table col.name     { width: 30%; }

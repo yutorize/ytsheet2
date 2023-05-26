@@ -4,6 +4,10 @@
 
 /* // Base
 ---------------------------------------------------------------------------------------------------- */
+:root {
+  --box-v-gap: 10px;
+  --box-h-gap: 10px;
+}
 article, .color-set {
   --box-head-bg-color: hsla(
     var(--box-head-bg-color-h, 225),

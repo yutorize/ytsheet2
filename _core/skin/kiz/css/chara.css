@@ -205,7 +205,7 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
 #area-status {
   min-height: 56.7rem;
   display: grid;
-  grid-gap: 1rem;
+  grid-gap: var(--box-v-gap) var(--box-h-gap);
   grid-template-columns: 2fr 1.4fr;
   grid-template-rows: auto auto 1fr;
   grid-template-areas:
@@ -342,7 +342,7 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
 ---------------------------------------------------------------------------------------------------- */
 /* Kizuna */
 #kizuna {
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
 }
 #kizuna table,
 #kizuna table thead,
@@ -424,7 +424,7 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
 }
 /* Shougou */
 #shougou {
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
 }
 #shougou dl {
   display: grid;
@@ -468,7 +468,7 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
 /* Kizuato */
 #kizuato {
   position: relative;
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
   align-self: end;
 }
 #kizuato table {
@@ -521,8 +521,8 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
 ---------------------------------------------------------------------------------------------------- */
 .partner {
   display: grid;
-  margin-top: 1rem;
-  grid-gap: .5rem 1rem;
+  margin-top: var(--box-v-gap);
+  grid-gap: calc(var(--box-v-gap) / 2) var(--box-h-gap);
   grid-template-columns: 1fr 1.4fr 2.6fr;
   grid-template-rows: auto auto 1fr;
   
@@ -712,14 +712,14 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
 ---------------------------------------------------------------------------------------------------- */
 #free-note,
 #free-history{
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
 }
 
 
 /* // History
 ---------------------------------------------------------------------------------------------------- */
 #history {
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
 }
 #history table thead th:nth-child(1) { width:   2em; } /* No. */
 #history table thead th:nth-child(2) { width: 5.2em; } /* 日付 */

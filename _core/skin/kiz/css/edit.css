@@ -2,15 +2,11 @@
 
 /* // キャラクター
 ---------------------------------------------------------------------------------------------------- */
-#regulation {
-  margin: 10px 0;
-  overflow-y: auto;
-}
 #regulation dl {
   display: grid;
   grid-template-columns: max-content 2em max-content 6em max-content 6em 1fr;
   grid-template-rows: auto;
-  margin: 1rem;
+  margin: var(--box-v-gap);
 }
 #regulation dl dt {
   padding-left: .5em;
@@ -25,8 +21,9 @@ body:not(.class-owner) .o-only {
 
 #area-status {
   min-height: 0%;
-  margin: 1rem 0 1rem;
+  margin: var(--box-v-gap) 0;
   grid-template-columns: 2fr 1.3fr;
+  grid-template-rows: auto auto;
   grid-template-areas:
     "CLS IMG"
     "PER IMG"
@@ -35,7 +32,8 @@ body:not(.class-owner) .o-only {
 @media screen and (max-width:735px){
   #area-status {
     grid-template-columns: 1fr;
-    grid-gap: 10px 5px;
+    grid-gap: var(--box-v-gap) var(--box-h-gap);
+    grid-template-rows: auto auto auto;
 
     grid-template-areas:
       "IMG "
@@ -81,7 +79,7 @@ body:not(.class-owner) .o-only {
   }
 }
 .partner-edit {
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
 }
 .partner-data    { grid-area: DATA; }
 .partner-from    { grid-area: FROM; }
@@ -186,7 +184,7 @@ body:not(.class-owner) .o-only {
 }
 
 #kizuato {
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
 }
 #kizuato table td.name input {
   width: calc(100% - 6em);

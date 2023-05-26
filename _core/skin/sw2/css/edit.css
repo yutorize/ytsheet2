@@ -43,7 +43,7 @@
 @media screen and (max-width:735px){
   #area-status {
     grid-template-columns: 2fr 1fr;
-    grid-gap: 10px 5px;
+    grid-gap: var(--box-v-gap) var(--box-h-gap);
 
     grid-template-areas:
       "IMG  IMG "
@@ -114,7 +114,7 @@
   align-items: flex-start;
 }
 #area-ability > * {
-  margin-bottom: 1rem;
+  margin-bottom: var(--box-v-gap);
   margin-left: 0;
 }
 #area-ability > p {
@@ -128,7 +128,7 @@
 }
 #area-classes.common-classes-off {
   flex-basis: calc(66% - 1rem);
-  margin-right: 1rem;
+  margin-right: var(--box-h-gap);
 }
 
 #classes {
@@ -147,7 +147,7 @@
 }
 #common-classes {
   flex-grow: 1;
-  margin: 0 0 0 1rem !important;
+  margin: 0 0 0 var(--box-h-gap) !important;
 }
 #classes #classes-weapon-user {
   grid-column: 1;
@@ -188,12 +188,21 @@
     margin-top: .5em;
   }
   #classes dl {
+    padding-left: 2em;
+    padding-right: 2em;
     grid-template-columns: 1fr 5em;
   }
   #classes dl dt {
+    display: flex;
+    align-items: center;
   }
   #common-classes {
-    margin: 1rem 0 0 !important;
+    margin: var(--box-v-gap) 0 0 !important;
+  }
+  #common-classes table {
+    width: calc(100% - 1rem - 3.6em);
+    min-width: 0;
+    margin: 0 1.8em;
   }
   #common-classes td:last-child {
     width: 5em;
@@ -245,7 +254,12 @@
 #combat-feats > p:last-child {
   font-size: 90%;
 }
-
+@media screen and (max-width:735px){
+  #combat-feats ul {
+    padding-left: 2em;
+    padding-right: 2em;
+  }
+}
 #mystic-arts {
   position: relative;
 }
@@ -279,6 +293,12 @@
   width: 1.2em;
   margin-left: -.5rem;
 }
+@media screen and (max-width:735px){
+  #mystic-arts ul {
+    padding-left: 1em;
+    padding-right: 1em;
+  }
+}
 
 #crafts {
   flex-basis: 66%;
@@ -290,7 +310,7 @@
 }
 #crafts > .box {
   flex-basis: calc(50% - 1rem);
-  margin: 0 0 1rem 1rem !important;
+  margin: 0 0 var(--box-v-gap) var(--box-h-gap) !important;
 }
 #area-classes.common-classes-off + div + #crafts > .box {
   flex-basis: calc(33% - 1rem);
@@ -314,13 +334,17 @@
     display: block;
   }
   #crafts > .box {
-    margin: 0 0 1rem !important;
+    margin: 0 0 var(--box-v-gap) !important;
+  }
+  #crafts ul {
+    padding-left: 2em;
+    padding-right: 2em;
   }
 }
 
 
 #area-status + p {
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
 }
 
 #area-package #package table {
@@ -414,7 +438,12 @@
     display: block;
   }
   #area-actions .box {
-    margin: 1rem 0 0;
+    margin: var(--box-v-gap) 0 0;
+  }
+  #language :is(table, dl) {
+    width: calc(100% - 1rem - 3em);
+    min-width: 0;
+    margin: 0 1.5em;
   }
 }
 
@@ -860,22 +889,22 @@ article > form > hr {
 #f-public,
 #f-checkboxes {
   width: 16em;
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
   padding: .5em;
 }
 
 #f-profile {
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
 }
 #f-profile textarea {
   height: 10em;
 }
 
 #f-actions {
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
 }
 #f-actions table {
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
 }
 #f-actions table {
   width: 100%;
@@ -904,7 +933,7 @@ article > form > hr {
 
 #f-note {
   min-height: auto;
-  margin-top: 1rem;
+  margin-top: var(--box-v-gap);
 }
 #f-note textarea {
   height: 10em;
@@ -928,7 +957,7 @@ article > form > hr {
 /* // モンスター
 ---------------------------------------------------------------------------------------------------- */
 form#monster div.box {
-  margin: 1rem 0;
+  margin: var(--box-v-gap) 0;
   overflow-x: auto;
 }
 form#monster .box h2 {
@@ -1177,7 +1206,7 @@ form#monster .color-sample .box h2 {
 /* // アイテム
 ---------------------------------------------------------------------------------------------------- */
 form#item div.box {
-  margin: 1rem 0;
+  margin: var(--box-v-gap) 0;
   overflow-x: auto;
 }
 form#item #area-name {
@@ -1298,7 +1327,7 @@ form#arts .color-sample .box h2 {
 /* // 魔法
 ---------------------------------------------------------------------------------------------------- */
 form#arts :is(div,details).box {
-  margin: 1rem 0;
+  margin: var(--box-v-gap) 0;
   overflow-x: auto;
 }
 form#arts #group dl {
@@ -1319,7 +1348,7 @@ form#arts div.input-data div {
 form#arts div.input-data dl {
   display: flex;
   margin-right: 1.5em;
-  margin: 0 1rem;
+  margin: 0 var(--box-v-gap);
 }
 form#arts div.input-data dl dt {
   position: relative;
