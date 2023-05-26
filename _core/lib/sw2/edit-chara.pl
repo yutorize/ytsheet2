@@ -473,7 +473,7 @@ print <<"HTML";
             </table>
           </div>
         </div>
-        <p class="right">@{[ input "failView", "checkbox", "checkFeats()" ]} 習得レベルの足りない項目（特技／練技・呪歌など）も表示する</p>
+        <p class="left">@{[ input "failView", "checkbox", "checkFeats()" ]} 習得レベルの足りない項目（特技／練技・呪歌など）も表示する</p>
         <div>
           <div class="box" id="combat-feats">
             <h2>戦闘特技</h2>
