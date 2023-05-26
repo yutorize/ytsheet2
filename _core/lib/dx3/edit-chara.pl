@@ -563,7 +563,7 @@ print <<"HTML";
       <details class="box" id="lois" $open{'lois'} style="position:relative">
         <summary>ロイス</summary>
         <table class="edit-table no-border-cells" id="lois-table">
-          <colgroup><col><col><col><col><col><col><col></colgroup>
+          <colgroup><col><col><col><col><col><col><col><col></colgroup>
           <thead>
             <tr>
               <th>関係</th>
