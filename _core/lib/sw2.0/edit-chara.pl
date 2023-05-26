@@ -1383,14 +1383,14 @@ print <<"HTML";
           <tbody>
           <tr>
             <td>-</td>
-            <td><input type="text" value="2018-08-11" disabled></td>
-            <td><input type="text" value="第一話「記入例」" disabled></td>
-            <td><input type="text" value="1100+50" disabled></td>
-            <td><input type="text" value="1800" disabled></td>
-            <td><input type="text" value="17" disabled></td>
-            <td><input type="text" value="器用" disabled></td>
+            <td><input type="text" value="2015-05-01" disabled></td>
+            <td><input type="text" value="最終話「記入例」" disabled></td>
+            <td><input type="text" value="500+50*3" disabled></td>
+            <td><input type="text" value="0" disabled></td>
+            <td><input type="text" value="300" disabled></td>
+            <td><input type="text" value="筋力" disabled></td>
             <td><input type="text" value="サンプルさん" disabled></td>
-            <td><input type="text" value="アルバート　ラミット　ブランデン　レンダ・レイ　ナイルベルト" disabled></td>
+            <td><input type="text" value="ブラッド　マリー　ガス" disabled></td>
           </tr>
           </tbody>
         </table>
