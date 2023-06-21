@@ -432,22 +432,11 @@ sub data_calc {
   $pc{'mndResistAddTotal'} = s_eval($pc{'mndResistAdd'}) + $pc{'raceAbilityMndResist'} + $pc{'resistEnhance'} + $pc{'seekerAbilityResist'};
   $pc{'mndResistTotal'}  = $pc{'mndResistBase'} + $pc{'mndResistAddTotal'};
   ## ＨＰＭＰ：装飾品
-  foreach (
-    'Head',  'Head_',
-    'Ear',   'Ear_',
-    'Face',  'Face_',
-    'Neck',  'Neck_',
-    'Back',  'Back_',
-    'HandR', 'HandR_',
-    'HandL', 'HandL_',
-    'Waist', 'Waist_',
-    'Leg',   'Leg_',
-    'Other', 'Other_',
-    'Other2','Other2_',
-    'Other3','Other3_',
-    'Other4','Other4_',) {
-    $pc{'hpAccessory'} = 2 if $pc{"accessory$_".'Own'} eq 'HP';
-    $pc{'mpAccessory'} = 2 if $pc{"accessory$_".'Own'} eq 'MP';
+  foreach my $type ('Head', 'Ear', 'Face', 'Neck', 'Back', 'HandR', 'HandL', 'Waist', 'Leg', 'Other', 'Other2','Other3','Other4') {
+    foreach my $add ('','_','__'){
+      $pc{'hpAccessory'} = 2 if $pc{"accessory$type$add".'Own'} eq 'HP';
+      $pc{'mpAccessory'} = 2 if $pc{"accessory$type$add".'Own'} eq 'MP';
+    }
   }
   ## ＨＰ
   $pc{'hpBase'} = $pc{'level'} * 3 + $pc{'sttVit'} + $pc{'sttAddD'};

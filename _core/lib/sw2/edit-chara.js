@@ -960,14 +960,14 @@ function calcSubStt() {
   document.getElementById("vit-resist-total").innerHTML = vitResistBase + Number(form.vitResistAdd.value) + vitResistAutoAdd;
   document.getElementById("mnd-resist-total").innerHTML = mndResistBase + Number(form.mndResistAdd.value) + mndResistAutoAdd;
   
-  const accessories = [
-    "Head", "Head_", "Face", "Face_", "Ear", "Ear_", "Neck", "Neck_", "Back", "Back_", "HandR", "HandR_", "HandL", "HandL_", "Waist", "Waist_", "Leg", "Leg_", "Other", "Other_", "Other2", "Other2_", "Other3", "Other3_", "Other4", "Other4_"
-  ]
   let hpAccessory = 0;
   let mpAccessory = 0;
-  for (let i of accessories){
-    if(form["accessory"+i+"Own"].options[form["accessory"+i+"Own"].selectedIndex].value === "HP"){ hpAccessory = 2 }
-    if(form["accessory"+i+"Own"].options[form["accessory"+i+"Own"].selectedIndex].value === "MP"){ mpAccessory = 2 }
+  for (let type of ["Head", "Face",  "Ear", "Neck", "Back", "HandR", "HandL", "Waist", "Leg", "Other", "Other2", "Other3", "Other4"]){
+    for (let add of ['','_','__']){
+      const name = type + add;
+      if(form["accessory"+name+"Own"].options[form["accessory"+name+"Own"].selectedIndex].value === "HP"){ hpAccessory = 2 }
+      if(form["accessory"+name+"Own"].options[form["accessory"+name+"Own"].selectedIndex].value === "MP"){ mpAccessory = 2 }
+    }
   }
   
   const hpBase = level * 3 + sttVit + sttAddD;
