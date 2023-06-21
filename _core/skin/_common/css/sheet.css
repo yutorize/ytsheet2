@@ -1100,6 +1100,9 @@ aside#loglist #log-naming form input[type="password"] { width: 12em; }
 
 /* // History
 ---------------------------------------------------------------------------------------------------- */
+#history {
+  align-self: start;
+}
 #history table th {
   white-space: nowrap;
 }
