@@ -177,6 +177,7 @@ dl.data-table:last-child > dt:last-of-type ~ dd,
 /* // Area-Status
 ---------------------------------------------------------------------------------------------------- */
 #area-status {
+  min-height: 56.7rem;
   display: grid;
   grid-gap: var(--box-v-gap);
   grid-template-columns: 0.8fr 0.6fr 1.5fr 2.115fr;
@@ -255,7 +256,7 @@ dl.data-table:last-child > dt:last-of-type ~ dd,
 /* Status */
 #status {
   display: grid;
-  grid-gap: 8px 10px;
+  grid-gap: 7px 10px;
   grid-template-columns: 1fr 1fr 1fr 1.3fr 0.8fr 1.2fr;
   grid-template-rows: auto;
 }
