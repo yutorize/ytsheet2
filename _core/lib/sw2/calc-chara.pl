@@ -474,7 +474,9 @@ sub data_calc {
         foreach(1 .. $pc{'lvWar'}+$pc{'commandAddition'}){
           if($pc{'craftCommand'.$_} =~ /軍師の知略$/){ $war_int_initiative = 1; $auto += $pc{'craftCommand'.$_} =~ /^陣率/ ? 1 : 0; last; }
         }
+        if(!$war_int_initiative){ next; }
       }
+      
       my $value = $st{$c_id.$data{$p_id}{'stt'}} + $pc{'pack'.$c_id.$p_id.'Add'} + $auto;
       $pc{'pack'.$c_id.$p_id} = $value;
       $pc{'pack'.$c_id.$p_id.'Auto'} = $auto;
