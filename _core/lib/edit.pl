@@ -439,7 +439,9 @@ sub checkbox {
   ' value="1"'.
   ($::pc{$name}?" checked":"").
   ($oninput?' oninput="'.$oninput.'"':"").
-  '><span>'.$text.'</span></label>';
+  '>'.
+  ($text?'<span>'.$text.'</span>':'').
+  '</label>';
 }
 sub radio {
   my $name = shift;

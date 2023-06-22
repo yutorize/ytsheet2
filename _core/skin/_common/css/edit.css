@@ -160,6 +160,13 @@ label:is(.radio-button, .check-button) input {
   transform: none !important;
   vertical-align: text-top;
 }
+label:is(.radio-button, .check-button):not(:has(span)) {
+  padding-right: 2px;
+}
+label:is(.radio-button, .check-button):not(:has(span)) input {
+  margin-right: 0 !important;
+  transform: scale(1.2) !important;
+}
 label:is(.radio-button, .check-button) span {
   opacity: 0.6;
 }
