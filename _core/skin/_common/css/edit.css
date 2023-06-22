@@ -73,6 +73,14 @@ input[type=checkbox] {
 input::placeholder {
   opacity: 0.5;
 }
+input[list]::-webkit-calendar-picker-indicator {
+  width: .5em !important;
+  padding-inline-start: 2px !important;
+  padding-inline-end: 2px !important;
+}
+input[list]:is(:not(:hover),:focus)::-webkit-calendar-picker-indicator {
+  display: none !important;
+}
 
 h2[onclick],
 h4[onclick] {
