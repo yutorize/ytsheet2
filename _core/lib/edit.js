@@ -481,6 +481,31 @@ function view(viewId){
   document.getElementById(viewId).style.display = (value === 'none') ? '' : 'none';
 }
 
+// ラジオボタン解除 ----------------------------------------
+document.querySelectorAll('input[type="radio"]:not([name="protect"])').forEach(radioButton => {
+  let label = document.querySelector(`label[for="${radioButton.id}"]`)
+
+  radioButton.addEventListener("mouseup", ()=>{
+    if(radioButton.checked){
+      clearRadioButton(radioButton)
+    }
+  });
+
+  if(label){
+    label.addEventListener("mouseup", ()=>{
+      if(radioButton.checked){
+        clearRadioButton(radioButton)
+      }
+    });
+  }
+});
+function clearRadioButton(radioButton) {
+  setTimeout(()=>{
+    radioButton.checked = false;
+    radioButton.dispatchEvent(new Event('input'));
+  },100)
+}
+
 // 連番ID生成 ----------------------------------------
 function idNumSet (id,after){
   let num = 1;
