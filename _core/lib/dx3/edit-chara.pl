@@ -342,10 +342,10 @@ print <<"HTML";
               </tr>
               <tr>
                 <th colspan="2" class="right">ワークスによる修正</th>
-                <td><input type="radio" name="sttWorks" value="body"   onchange="calcStt();" @{[ $pc{'sttWorks'} eq 'body'   ? 'checked':'' ]}></td>
-                <td><input type="radio" name="sttWorks" value="sense"  onchange="calcStt();" @{[ $pc{'sttWorks'} eq 'sense'  ? 'checked':'' ]}></td>
-                <td><input type="radio" name="sttWorks" value="mind"   onchange="calcStt();" @{[ $pc{'sttWorks'} eq 'mind'   ? 'checked':'' ]}></td>
-                <td><input type="radio" name="sttWorks" value="social" onchange="calcStt();" @{[ $pc{'sttWorks'} eq 'social' ? 'checked':'' ]}></td>
+                <td>@{[ radio 'sttWorks', 'calcStt', 'body'   ]}
+                <td>@{[ radio 'sttWorks', 'calcStt', 'sense'  ]}
+                <td>@{[ radio 'sttWorks', 'calcStt', 'mind'   ]}
+                <td>@{[ radio 'sttWorks', 'calcStt', 'social' ]}
               </tr>
               </tr>
               <tr>
