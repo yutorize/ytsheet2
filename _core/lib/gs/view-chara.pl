@@ -276,10 +276,15 @@ else {
 }
 $SHEET->param(Classes => \@classes);
 
-### アイテム名称 --------------------------------------------------
+### ルビチェック --------------------------------------------------
 sub itemNameRubyCheck {
   my $name = shift;
-  $name =~ s/^(魔法の)?(.+?)[（(](.+?)[)）](\[+＋][0-9]+)?$/$1<ruby>$2<rp>(<rt>$3<rp>)<\/ruby>$4/;
+  $name =~ s/^(魔法の)?(.+?)[（(]([ぁ-ゟァ-ヿ\-‐―－～=＝]+?)[)）](\[+＋][0-9]+)?$/$1<ruby>$2<rp>(<rt>$3<rp>)<\/ruby>$4/;
+  return $name;
+}
+sub spellNameRubyCheck {
+  my $name = shift;
+  $name =~ s/^(.+?)[（(]([ぁ-ゟァ-ヿ\-‐―－～=＝]+?)[)）]$/<ruby>$1<rp>(<rt>$2<rp>)<\/ruby>$3/;
   return $name;
 }
 
@@ -518,7 +523,7 @@ else {
   foreach (1..$pc{'spellNum'}){
     next if !$pc{'spell'.$_.'Name'} && !$pc{'spell'.$_.'Note'};
     push(@spells, {
-      NAME   => $pc{'spell'.$_.'Name'},
+      NAME   => spellNameRubyCheck($pc{'spell'.$_.'Name'}),
       SYSTEM => $pc{'spell'.$_.'System'},
       TYPE   => "$pc{'spell'.$_.'Type'}($pc{'spell'.$_.'Attr'})",
       DFCLT  => $pc{'spell'.$_.'Dfclt'},
