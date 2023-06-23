@@ -23,9 +23,11 @@ our @race_names = (
   'シャドウ',
   'ソレイユ',
   'ウィークリング',
-  'フィー',
-  'フロウライト',
+  'スプリガン',
+  'アビスボーン',
   'ハイマン',
+  'フロウライト',
+  'フィー',
   'ミアキス',
   'ヴァルキリー',
   'センティアン（ルミエル）',
@@ -69,7 +71,17 @@ our %races = (
     ],
     'dice' => {
       'A' => 2, 'B' => 2, 'C' => 1, 'D' => 2, 'E' => 2, 'F' => 2,
-    }
+    },
+    'variantSort' => ['スノウエルフ'],
+    'variant' => {
+      'スノウエルフ' => {
+        'ability' => '［暗視］［剣の加護／厳つき氷］',
+        'language' => [
+          ['交易共通語', 1, 1 ],
+          ['エルフ語', 1, 1 ],
+        ],
+      },
+    },
   },
   'ドワーフ' => {
     'type' => '人族',
@@ -107,6 +119,16 @@ our %races = (
       'A' => 2, 'B' => 1, 'C' => 2, 'D' => 2, 'E' => 2, 'F' => 1,
     },
     'restrictedClass' => ['プリースト','フェアリーテイマー','ドルイド'],
+    'variantSort' => ['戦闘用ルーンフォーク'],
+    'variant' => {
+      '戦闘用ルーンフォーク' => {
+        'ability' => '［暗視］［任務遂行の意志］',
+        'language' => [
+          ['交易共通語', 1, 1 ],
+          ['魔動機文明語', 1, 1 ],
+        ],
+      },
+    },
   },
   'ナイトメア' => {
     'type' => '人族',
@@ -293,6 +315,20 @@ our %races = (
         ],
       },
     },
+  },
+  'スプリガン' => {
+    'type' => '人族',
+    'ability' => '［暗視］［巨人化］',
+    'language' => [
+      ['交易共通語', 1, 1 ],
+    ],
+  },
+  'アビスボーン' => {
+    'type' => '人族',
+    'ability' => '［奈落の落とし子］［奈落の身体］',
+    'language' => [
+      ['交易共通語', 1, 1 ],
+    ],
   },
   'フィー' => {
     'type' => '人族',
@@ -591,6 +627,7 @@ foreach my $name (keys %races){
 our @race_list;
 foreach my $name (@race_names){
   if($races{$name}{'variant'}){
+    if($races{$name}{'ability'}){ push(@race_list, $name); }
     foreach my $varname (@{ $races{$name}{'variantSort'} }){ push(@race_list, "${name}（${varname}）") }
   }
   else {

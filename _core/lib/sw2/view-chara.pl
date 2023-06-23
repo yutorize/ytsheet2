@@ -204,8 +204,10 @@ $SHEET->param(wordsY => ($pc{'wordsY'} eq '下' ? 'bottom:0;' : 'top:0;'));
 
 ### 種族名 --------------------------------------------------
 $pc{'race'} =~ s/［.*］//g;
-$SHEET->param(race => $pc{'race'});
-
+{
+  (my $race = $pc{'race'}) =~ s|（.+?）|<span class="variant">$&</span>|g;
+  $SHEET->param(race => $race);
+}
 ### 種族特徴 --------------------------------------------------
 $pc{'raceAbility'} =~ s/［(.*?)］/<span>［$1］<\/span>/g;
 $SHEET->param(raceAbility => $pc{'raceAbility'});
