@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <title><TMPL_VAR title></title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" media="all" href="<TMPL_VAR coreDir>/skin/_common/css/base.css?<TMPL_VAR ver>">
+  <link rel="stylesheet" media="all" href="<TMPL_VAR coreDir>/skin/_common/css/form.css?<TMPL_VAR ver>">
+  <link rel="stylesheet" media="all" href="<TMPL_VAR coreDir>/skin/_common/css/list.css?<TMPL_VAR ver>">
+  <link rel="stylesheet" media="all" href="<TMPL_VAR coreDir>/skin/gs/css/list.css?<TMPL_VAR ver>">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+  <meta property="og:title" content="<TMPL_VAR title>">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="<TMPL_VAR ogUrl>">
+  <meta property="og:site_name" content="<TMPL_VAR title>">
+  <meta property="og:description" content="<TMPL_VAR ogDescript>">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@yutorize">
+  <TMPL_INCLUDE NAME="skin-add/head.html">
+</head>
+
+<body>
+  <script src="<TMPL_VAR coreDir>/skin/_common/js/common.js?<TMPL_VAR ver>"></script>
+  <header>
+    <h1><a href="./"><TMPL_VAR title></a></h1>
+    <nav><TMPL_INCLUDE NAME="../_common/index-menu.html"></nav>
+  </header>
+  
+  <main>
+    <TMPL_INCLUDE NAME="skin-add/main-header.html">
+    <TMPL_IF modeIndex><TMPL_INCLUDE NAME="skin-add/index-message.html"></TMPL_IF>
+
+    <TMPL_IF modeList><TMPL_INCLUDE NAME="list-chara.html"></TMPL_IF>
+    <TMPL_IF modeMonsList><TMPL_INCLUDE NAME="list-mons.html"></TMPL_IF>
+    <TMPL_IF modeItemList><TMPL_INCLUDE NAME="list-item.html"></TMPL_IF>
+    <TMPL_IF modeMaking><TMPL_INCLUDE NAME="making.html"></TMPL_IF>
+    <TMPL_INCLUDE NAME="../_common/form.html">
+    <TMPL_IF modeInfo>
+    <article>
+      <section class="info">
+        <h2><TMPL_VAR header></h2>
+        <p><TMPL_VAR message></p>
+      </section>
+    </article>
+    </TMPL_IF>
+    <div class="back-button"><a href="./">⏎</a></div>
+    <TMPL_INCLUDE NAME="skin-add/main-footer.html">
+  </main>
+  <TMPL_INCLUDE NAME="skin-add/sidebar.html">
+  <!-- add/sidebar.htmlに推奨の記述
+  <aside id="sidebar-left">（サイドバー・左／画面幅が広い時のみ）</aside>
+  <aside id="sidebar-right">（サイドバー・右／画面幅が広い時のみ）</aside>
+  <aside id="sidebar-top">（フリースペース・上／画面幅が狭い時のみ）</aside>
+  <aside id="sidebar-bottom">（フリースペース・下／画面幅が狭い時のみ）</aside>
+  -->
+  
+  <footer>
+    ©<a href="https://yutorize.2-d.jp">ゆとらいず工房</a>「ゆとシートⅡ」ver.<TMPL_VAR ver>
+  </footer>
+</body>
+</html>

@@ -648,6 +648,7 @@ else {
   }
 }
 $SHEET->param(Weapons => \@weapons);
+
 ### 回避技能／特技 --------------------------------------------------
 if(!$pc{'forbiddenMode'}){
   my @evasion;

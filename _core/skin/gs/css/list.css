@@ -1,0 +1,89 @@
+@charset "utf-8";
+
+/* ゆとシートⅡ for GS - リスト */
+
+/* // Body
+---------------------------------------------------------------------------------------------------- */
+body {
+  background-image: url(../../_common/img/back-pattern.png), url(../img/back-sword.png);
+  background-blend-mode: normal, normal;
+}
+.night body {
+  background-blend-mode: hard-light, normal;
+}
+@media screen and (max-width:735px){
+  body {
+    background-size: auto, 80%;
+  }
+}
+/* // List
+---------------------------------------------------------------------------------------------------- */
+.list table tr {
+  grid-template-columns: 26rem 0.7fr 2.5em 8.5em 2em 4.8em 1.7fr 0.6fr;
+  grid-template-areas:
+    "NAME   PL RACE RACE RANK RANK  CLS DATE"
+    "NAME   PL  GEN  AGE  LVL  EXP  CLS DATE"
+    "NAME TAGS TAGS TAGS TAGS TAGS TAGS DATE"
+  ;
+}
+.list table .name   { grid-area: NAME; }
+.list table .player { grid-area:   PL; }
+.list table .race   { grid-area: RACE; }
+.list table .age    { grid-area:  AGE; }
+.list table .gender { grid-area:  GEN; }
+.list table .rank   { grid-area: RANK; }
+.list table .lv     { grid-area:  LVL; }
+.list table .exp    { grid-area:  EXP; }
+.list table .class  { grid-area:  CLS; }
+.list table .tags   { grid-area: TAGS; }
+.list table .date   { grid-area: DATE; }
+
+.list table .name {
+  position: relative;
+}
+.list table th.gender span.small {
+  display: inline-block;
+  transform: scaleY(calc(1/0.8));
+  font-size: 0.8em;
+}
+.list table td.lv {
+  font-size: 1.15em;
+  line-height: 1;
+}
+.list table td:is(.race, .rank) span.small {
+  display: inline-block;
+  transform: scaleY(calc(1/0.85));
+}
+.list table td.class {
+  text-align: left;
+  line-height: 1;
+}
+.list table td.class > div {
+  flex-grow: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 1em;
+}
+.list table td.class > div > span {
+  display: inline-block;
+  padding: .1em 0;
+}
+@media screen and (max-width:735px){
+  .list table tr {
+    grid-template-columns: 18rem 6em 2em 8em 5em auto 3.5em;
+    grid-template-areas:
+      "NAME   PL RACE RACE  EXP  CLS DATE"
+      "NAME   PL  GEN  AGE  EXP  CLS DATE"
+      "NAME TAGS TAGS TAGS TAGS TAGS DATE"
+    ;
+  }
+  .list table .rank,
+  .list table .lv { display: none; }
+}
+
+/* // List-Simple
+---------------------------------------------------------------------------------------------------- */
+.list ul li a[data-lv]::before {
+  content: 'Lv'attr(data-lv);
+}
+

@@ -86,6 +86,9 @@ ruby rp {
   font-size: 1.2em;
   vertical-align: text-bottom;
 }
+.nowrap {
+  white-space: nowrap;
+}
 
 /* // Base
 ---------------------------------------------------------------------------------------------------- */

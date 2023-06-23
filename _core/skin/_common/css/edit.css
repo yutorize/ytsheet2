@@ -338,6 +338,7 @@ input.auto {
   content: '::';
   font-family: Arial;
   font-weight: bold;
+  white-space: nowrap;
 }
 
 /* // メニュー

@@ -1,0 +1,624 @@
+@charset "utf-8";
+
+/* // キャラクター
+---------------------------------------------------------------------------------------------------- */
+#regulation > dl {
+  grid-template-columns: 8em 8em 8em 10em
+}
+@media screen and (min-width:736px){
+  #regulation .annotate {
+    margin-bottom: 10px;
+  }
+}
+@media screen and (max-width:735px){
+  #regulation > dl {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+  #regulation > dl > dt:last-of-type {
+    grid-column: 1 / span 3;
+    grid-row: 3;
+  }
+  #regulation > dl > dd:last-of-type {
+    grid-column: 1 / span 3;
+    grid-row: 4;
+  }
+}
+
+#area-status {
+  grid-template-columns: 0.8fr 0.7fr 0.6fr .6fr 1.8fr;
+  grid-template-rows: auto;
+  grid-template-areas:
+    "PER PER PER PER IMG"
+    "ABL ABL ABL ABL IMG"
+    "ABL ABL ABL ABL IMG"
+    "STT STT STT STT IMG"
+    "SSN LVL EXP ADP IMG"
+  ;
+}
+
+@media screen and (max-width:735px){
+  #area-status {
+    grid-template-columns: 2fr 1fr;
+    grid-gap: var(--box-v-gap) var(--box-h-gap);
+
+    grid-template-areas:
+      "IMG  IMG"
+      "PER  PER"
+      "ABL  ABL"
+      "ABL  ABL"
+      "STT  STT"
+      "EXP  ADP"
+      "SSN  LVL"
+    ;
+  }
+}
+
+#personal dl#race   { flex-basis: 61%; order: 1; }
+#personal dl#age    { flex-basis: 18%; order: 2; }
+#personal dl#gender { flex-basis: 18%; order: 3; }
+#personal dl#rank   { flex-basis: 25%; order: 4; }
+#personal dl#career { flex-basis: 62%; order: 5; }
+
+#personal #race dd {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+}
+#personal #race dt#race-base.hide,
+#personal #race dt#race-base.hide + dd {
+  display: none;
+}
+#personal dl#rank dd {
+  align-self: center;
+}
+
+#personal #career dd {
+  display: flex;
+  align-items: center;
+}
+@media screen and (max-width:735px){
+  #personal dl#career { flex-basis: 73%; }
+}
+
+#ability table col:nth-child(3) { width: 2.8em; }
+#ability table col:nth-child(4) { width: 3.4em; }
+#ability table span.thin {
+  display: inline-block;
+  margin: 0 -.7em;
+  transform: scaleX(0.6);
+}
+
+#ability table th {
+  background-color: transparent !important;
+}
+#ability table th dl {
+  display: grid;
+  grid-template-columns: max-content auto;
+}
+#ability table th dl dt {
+}
+#ability table th dl dd {
+  padding: 0;
+}
+#ability table tbody tr:first-child {
+  border-bottom-width: 1px;
+}
+#ability table tbody tr:nth-child(2) {
+  border-bottom-width: 2px;
+}
+#ability table td:first-of-type,
+#ability table tbody tr:first-child th:nth-of-type(2) {
+  border-left-width: 1px;
+}
+#ability table tr:nth-child(n+3) td:nth-of-type(3),
+#ability table tbody tr:first-child th:nth-of-type(2),
+#ability table tbody tr:nth-child(2) td:nth-of-type(1) {
+  border-left-width: 2px;
+}
+#ability table tbody input[name$='Mod'] {
+  max-width: 3.5em;
+}
+
+@media screen and (max-width:735px){
+  #ability table :is(th,td) dl {
+    display: block;
+  }
+}
+
+#status table {
+  margin-top: -1em;
+}
+#status table thead th:first-child  { width: 9em; }
+#status table thead th:nth-child(2) { width: 4em; }
+#status table thead th:nth-child(4) { width: 4em; }
+#status table thead th:last-child   { width: 5em; }
+
+#status table tbody td:nth-child(3) {
+  font-size: 80%;
+}
+#status table tbody td:nth-child(3) b {
+  display: inline-block;
+  width: 1.3em;
+  font-size: 115%;
+}
+#status table tbody th.right { padding-right: .2em;; }
+#status table tbody td.bold { font-size: 1.2em; }
+
+@media screen and (max-width:735px){
+  #status table thead th:first-child  { width: 4em; }
+  #status table thead th:nth-child(2) { width: 3em; }
+  #status table thead th:nth-child(4) { width: 3em; }
+  #status table thead th:last-child   { width: 3em; }
+  #status table tbody th {
+    white-space: wrap;
+    font-size: 75%;
+  }
+  #status table tbody td:nth-child(3):not(:last-child) {
+    font-size: 70%;
+  }
+}
+
+
+#area-classes {
+  display: flex;
+  gap: var(--box-h-gap);
+}
+
+#adp-and-faith {
+  order: 2;
+}
+
+#classes {
+  flex-basis: 50%;
+  display: grid;
+  grid-gap: 0 10px;
+  position: relative;
+  grid-template-columns: 1fr 1fr;
+}
+#classes h2 {
+  grid-column: span 2;
+}
+#classes h2::after {
+  content: "";
+}
+#classes h3 {
+  margin-top: 0;
+  font-size: 90%;
+}
+
+#classes dl {
+  flex-grow: 1;
+  flex-basis: calc(50% - 10px);
+  grid-template-columns: 1fr 3.5em;
+}
+#classes dl dt {
+  font-size: inherit;
+}
+#classes dl dt ruby {
+  line-height: 1.8;
+}
+#adp-from-exp {
+  width: 10em;
+}
+#adp-from-exp input {
+  width: 5em;
+}
+:is(#level, #session-total) {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: max-content auto;
+}
+:is(#level, #session-total)  dd {
+  align-self: center;
+  justify-self: center;
+}
+#faith {
+  width: 10em;
+  margin-top: var(--box-v-gap);
+}
+@media screen and (max-width:735px){
+  #area-classes {
+    display: block;
+  }
+  #adp-and-faith {
+    display: flex;
+    align-items: end;
+    gap: var(--box-h-gap);
+    margin-bottom: var(--box-v-gap);
+  }
+  #faith {
+    margin-top: 0;
+  }
+  #ability dl:nth-child(n+16):nth-child(-n+21) dd {
+    transform: none;
+    font-size: 1.25em;
+  }
+  #classes {
+    display: block;
+    width: 100%;
+  }
+  #classes h3 {
+    margin-top: .5em;
+  }
+  #classes dl {
+    padding-left: 2em;
+    padding-right: 2em;
+    grid-template-columns: 1fr 5em;
+  }
+  #classes dl dt {
+    display: flex;
+    align-items: center;
+  }
+}
+
+#area-equipment {
+  
+  margin-top: var(--box-v-gap);
+}
+
+#area-equipment table :is(th,td) span.flex {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+#area-equipment b.bold {
+  font-weight: bold;
+}
+#area-equipment select[name$="Weight"] {
+  width: 3.1em;
+}
+#area-equipment select[name$="Class"] optgroup option[value=""] {
+  display: none;
+}
+
+#attack-classes {
+  width: calc(25% + 18.5em + 1px);
+}
+#attack-classes table {
+}
+#attack-classes table tbody tr.attack-ability-row {
+  border-bottom-style: hidden !important;
+}
+#attack-classes table tr#attack-skill {
+  border-bottom-width: 2px;
+  border-bottom-style: solid;
+}
+#attack-classes table th input {
+  font-weight: normal;
+}
+#attack-classes table td.level {
+  border-right-style: solid;
+}
+#attack-classes table td.level::before {
+  content: "レベル";
+  margin-right: .3em;
+  font-size: 85%;
+}
+
+
+#weapons {
+  width: 100%;
+}
+#weapons table {
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+}
+#weapons thead th.name  { width:   25%; } /* 名前 */
+#weapons thead th.type  { width:   6em; } /* 種別 */
+#weapons thead th.usage { width: 4.9em; } /* 用法 */
+#weapons thead th.attr  { width: 4.5em; } /* 属性 */
+#weapons thead th.hit   { width: 7.5em; } /* 命中 */
+#weapons thead th.power { width:  11em; } /* 威力 */
+#weapons thead th.range { width:   5em; } /* 射程 */
+#weapons thead th:last-child   { width: 1.7em; } /* 複製ボタン */
+
+#weapons table td {
+  font-size: 90%;
+  vertical-align: top;
+}
+#weapons table td b {
+  display: inline-block;
+  width: 3em;
+}
+#weapons table td.type .flex {
+  justify-content: end;
+}
+#weapons table td.hit {
+  padding-left: .1em;
+  padding-right: .1em;
+}
+#weapons table td.note span.flex {
+  align-items: end;
+}
+#weapons table td.note b {
+  width: 14em;
+  font-size: 100%;
+}
+#weapons table td:last-child {
+  padding: 0;
+  border-right: 0;
+  vertical-align: middle;
+}
+#weapons table td.hit {
+}
+
+#weapons .annotate {
+  text-align: center;
+}
+#weapons td span.handle {
+  display: block;
+  width: 2em;
+  line-height: 2.2;
+  margin-right: auto;
+}
+#weapons td:last-child span[onclick] {
+  padding: 7px 5px;
+}
+
+@media screen and (max-width:735px){
+  #attack-classes {
+    overflow-x: auto;
+  }
+  #attack-skill th b {
+    display: inline-block;
+    flex-basis: 5.8em;
+    white-space: wrap;
+    line-height: 1.2;
+  }
+  #weapons {
+    overflow-x: auto;
+  }
+  #weapons table {
+    table-layout: fixed;
+  }
+  #weapons thead th.name  { width:  12em; } /* 名前 */
+  #weapons thead th.type  { width:   6em; } /* 種別 */
+  #weapons thead th.usage { width: 4.9em; } /* 用法 */
+  #weapons thead th.attr  { width: 4.5em; } /* 属性 */
+  #weapons thead th.hit   { width: 7.5em; } /* 命中 */
+  #weapons thead th.power { width:  11em; } /* 威力 */
+  #weapons thead th.range { width:   5em; } /* 射程 */
+  #weapons thead th.class { width: 5.5em; } /* 職業 */
+  #weapons thead th:last-child   { width: 1.7em; } /* 複製ボタン */
+}
+
+#dodge-classes {
+  width: calc(20% + 23.5em + 1px);
+}
+#dodge-classes th:nth-child(1) { width:   6em; } /* 名前 */
+#dodge-classes th:nth-child(2) { width:  auto; } /*  */
+#dodge-classes th:nth-child(3) { width:   4em; } /* 回避 */
+#dodge-classes th:nth-child(4) { width: 3.5em; } /* 装甲 */
+#dodge-classes th:nth-child(5) { width:   4em; } /* 隠密 */
+#dodge-classes th:nth-child(6) { width:   4em; } /* 移動 */
+
+#armor thead th.name   { width:   20%; } /* 名前 */
+#armor thead th.type   { width:   8em; } /* 種別 */
+#armor thead th.dodge  { width:   4em; } /* 回避 */
+#armor thead th.armor  { width: 3.5em; } /* 装甲 */
+#armor thead th.stealth{ width:   4em; } /* 隠密 */
+#armor thead th.move   { width:   4em; } /* 移動 */
+#armor thead th.note   { width:  auto; } /* 備考 */
+
+#block-classes {
+  width: calc(20% + 12em + 1px);
+}
+#block-classes th:nth-child(1) { width:   6em; } /* 名前 */
+#block-classes th:nth-child(2) { width:  auto; } /*  */
+#block-classes th:nth-child(3) { width:   4em; } /* 回避 */
+
+#shield thead th.name   { width:   20%; } /* 名前 */
+#shield thead th.type   { width:   8em; } /* 種別 */
+#shield thead th.block  { width:   4em; } /* 基準値 */
+#shield thead th.armor  { width:   4em; } /* 装甲 */
+#shield thead th.stealth{ width:   4em; } /* 隠密 */
+#shield thead th.note   { width:  auto; } /* 備考 */
+
+:is(#armor, #shield) tbody {
+  vertical-align: top;
+}
+@media screen and (max-width:735px){
+  :is(#dodge-classes, #armor, #block-classes, #shield) {
+    width: 100%;
+    overflow-x: auto;
+  }
+  :is(#dodge-classes, #armor, #block-classes, #shield) table {
+    table-layout: fixed;
+  }
+  :is(#dodge-classes, #block-classes) tbody th {
+    font-size: 80%;
+  }
+  #dodge-classes th:nth-child(2) { width:  12em; } /*  */
+  #block-classes th:nth-child(2) { width:  12em; } /*  */
+  
+  #armor thead th.name   { width:  12em; } /* 名前 */
+  #armor thead th.note   { width:  12em; } /* 備考 */
+  
+  #shield thead th.name   { width:  12em; } /* 名前 */
+  #shield thead th.note   { width:  12em; } /* 備考 */
+}
+
+#area-items {
+  margin-top: var(--box-v-gap);
+}
+
+@media screen and (max-width:735px){
+  #area-items {
+    flex-direction: column;
+  }
+  div#area-items-R {
+    margin-left: 0;
+  }
+}
+
+#money input[type="text"] {
+  width: calc(100% - 3em);
+}
+#money input[readonly] {
+  border:hidden;
+  margin-bottom: 0;
+  padding: 0;
+  background: transparent;
+  text-align: center;
+  color: inherit;
+}
+#money > dt > label {
+  float: right;
+}
+#money dd > dl {
+  margin-right: .5em;
+}
+#money dd > dl dt {
+  font-size: 90%;
+}
+#money dd > dl dd {
+  display: grid;
+  grid-template-columns: auto 1em;
+  white-space: nowrap;
+}
+#money dd > dl dd input {
+  width: calc(100% - 3px) !important;
+  vertical-align: bottom;
+}
+#money dd > dl dd::after {
+  content: "枚";
+  text-align: right;
+}
+#money #money-coins:not(.full-open) :is(#money-coins-g, #money-coins-l),
+#money #money-coins:not(.full-open) :is(#money-coins-g, #money-coins-l) + dd {
+  display: none;
+}
+#money > :is(dt,dd):first-of-type {
+  border-right-width: 1px;
+  border-right-style: dotted;
+}
+
+#items textarea {
+  height: 20em;
+}
+
+#cashbook textarea {
+  height: 16em;
+}
+#cashbook-total-value {
+  font-size: 120%;
+  font-weight: bold;
+}
+#cashbook p {
+  font-size: 90%;
+  font-family: inherit;
+  white-space: normal;
+  text-align: left;
+  padding-left: .5em;
+}
+
+
+:is(#skills, #general-skills, #spells) .flex { display: flex; align-items: end; }
+
+:is(#skills, #general-skills, #spells, #arts) thead th:first-child { width: 1em; }
+
+#spells thead th.name   { width:  12em; } /* 名前 */
+#spells thead th.system { width: 5.9em; } /* 系統 */
+#spells thead th.type   { width: 3.9em; } /* 種別 */
+#spells thead th.attr   { width: 5.9em; } /* 属性 */
+#spells thead th.dfclt  { width: 3.9em; } /* 難易度 */
+#spells thead th.note   { width:  auto; } /* 効果 */
+#spells thead th.page   { width:   5em; } /* 参照 */
+
+#arts tbody td:is(.weapon,.skill,.cost,.terms) input { font-size: 90%; }
+
+
+@media screen and (max-width:735px){
+  :is(#skills, #general-skills, #spells, #arts) { overflow-x: auto; }
+  :is(#skills, #general-skills, #spells, #arts) table  { table-layout: fixed; }
+
+  :is(#skills, #general-skills, #spells, #arts) table th.note { width: 12em; }
+  :is(#skills, #general-skills, #spells, #arts) table tbody { font-size:90%; }
+}
+
+#physical-traits {
+  display: grid;
+  grid-template-columns: max-content 1fr 2em 6.5em 2em 6.5em;
+  align-items: center;
+  text-align: right;
+
+  margin-top: var(--box-v-gap);
+}
+@media screen and (max-width:735px){
+  #physical-traits {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  #physical-traits dt {
+    flex-basise: max-content;
+  }
+  #physical-traits dd:first-of-type {
+    flex-basis: calc(100% - 5.2em);
+  }
+  #physical-traits dt:not(:first-of-type) {
+    flex-basis: 2em;
+  }
+  #physical-traits dd:not(:first-of-type) {
+    flex-basis: calc(50% - 2em);
+  }
+}
+
+#free-note,
+#free-history {
+  padding-bottom: .3rem;
+}
+#free-note textarea,
+#free-history textarea {
+  height: 18em;
+}
+
+#history table thead thfirst-child { width: 1.4em; }
+#history table thead th.date       { width:   6em; } /* 日付 */
+#history table thead th.title      { width:  12em; } /* タイトル */
+#history table thead th.comp       { width:   4em; } /* 経験点 */
+#history table thead th.exp        { width: 5.5em; } /* 経験点 */
+#history table thead th.adp        { width: 3.5em; } /* 成長点 */
+#history table thead th.money      { width:   5em; } /* 銀貨 */
+#history table thead th.gm         { width:   6em; } /* ＧＭ */
+#history table thead th.member     { width:  auto; } /* 参加者 */
+
+@media screen and (max-width:735px){
+  #history table  { table-layout: fixed; }
+  #history table thead th.title  { width: 12em; } /* タイトル */
+  #history table thead th.member { width: 16em; } /* 参加者 */
+}
+
+
+#history table tbody td.money {
+  white-space: nowrap;
+}
+#history table tbody td.money::after {
+  margin: 0 2px 0 -2px;
+  font-size: 0.9em;
+}
+#history table tbody td.money input {
+  margin-right: 0;
+  width: calc(100% - 1.1em);
+}
+
+
+article > form > hr {
+  margin: 5rem 0px;
+  border-width: 1px 0 0;
+  border-style: solid;
+}
+
+
+#deleteform {
+  margin-top: 5rem;
+  padding-top: 5rem;
+  border-width: 1px 0 0;
+  border-style: solid;
+  text-align: right;
+}
+
+#deleteform input[type="submit"] {
+  margin-left: .5rem;
+  padding: .3rem .5rem;
+}
