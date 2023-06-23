@@ -181,7 +181,7 @@ dl.data-table:last-child > dt:last-of-type ~ dd,
   display: grid;
   grid-gap: var(--box-v-gap);
   grid-template-columns: 0.8fr 0.6fr 1.5fr 2.115fr;
-  grid-template-rows: auto;
+  grid-template-rows: 1fr auto auto auto;
   
   grid-template-areas:
     "PER  PER  PER  IMG"
@@ -231,14 +231,24 @@ dl.data-table:last-child > dt:last-of-type ~ dd,
 #personal {
   display: flex;
   flex-wrap: wrap;
+  gap: 6px 0;
   justify-content: space-between;
-  margin-bottom: -0.6rem;
 }
 #personal dl {
   flex-basis: 33%;
-  margin-bottom: 0.6rem;
+  display: grid;
+  grid-template-rows: max-content 1fr;
 }
 #personal dl dt {
+}
+#personal dl dd {
+  align-self: center;
+  line-height: 1;
+}
+@media screen and (max-width:767px){
+  #personal dl dd {
+    line-height: inherit;
+  }
 }
 #personal dl#race         { flex-basis: 58%; order: 1; }
 #personal dl#age          { flex-basis: 20%; order: 2; }
@@ -249,6 +259,10 @@ dl.data-table:last-child > dt:last-of-type ~ dd,
 #personal dl#rank         { flex-basis: 24%; order: 8; }
 #personal dl#sin          { flex-basis: 14%; order: 5; }
 
+#personal dl#race dd span.variant {
+  display: inline-block;
+  font-size: 90%;
+}
 #personal dl#race-ability dd span {
   display: inline-block;
 }
