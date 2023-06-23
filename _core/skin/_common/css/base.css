@@ -165,6 +165,9 @@ main p a {
 .night main p a {
   background: linear-gradient(to top, #338 .3rem, transparent .3rem, transparent);
 }
+a[onclick] {
+  cursor: pointer;
+}
 
 input,
 textarea,

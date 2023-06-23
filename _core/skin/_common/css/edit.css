@@ -634,7 +634,6 @@ input[type="submit"]:hover {
 .add-del-button a {
   display: inline-block;
   margin: 0px 2em;
-  cursor: pointer;
   transform: scale(3.5, 1);
 }
 .add-del-button a:hover {
