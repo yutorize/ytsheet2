@@ -33,6 +33,7 @@ io.github.shunshun94.trpg.ytsheet.consts.levelSkills = {
 	craftCommand : '鼓咆',
 	craftSong : '呪歌',
 	craftRiding : '騎芸',
+	craftGeomancy : '相域',
 	craftPotential : '魔装',
 	craftSeal : '呪印',
 	craftDignity : '貴格',
