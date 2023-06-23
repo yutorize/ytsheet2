@@ -991,7 +991,7 @@ aside:is(#loglist,#downloadlist) ul li:last-child {
 aside#loglist ul li.selected {
   background-color: rgba(255,140,0,0.4);
 }
-aside:is(#loglist,#downloadlist) ul li a {
+aside:is(#loglist,#downloadlist) ul li > :is(a, span) {
   display: block;
   padding: .3rem 1.5rem .3rem 1.5rem;
   color: inherit;
@@ -1020,6 +1020,13 @@ aside:is(#loglist,#downloadlist) ul li a small {
   opacity: 0.6;
   font-size: 80%;
   text-align: right;
+}
+aside:is(#loglist,#downloadlist) ul li.link-tag {
+  border-top-style: solid;
+  border-bottom: hidden;
+}
+aside:is(#loglist,#downloadlist) ul li.link-tag input {
+  padding: .2em;
 }
 @media screen and (max-width:735px){
   aside:is(#loglist,#downloadlist) {

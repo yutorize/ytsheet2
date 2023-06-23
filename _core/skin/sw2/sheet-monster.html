@@ -51,12 +51,13 @@
       <aside id="downloadlist" class="float-box">
         <h2>出力</h2>
         <ul>
-          <li id="downloadlist-udonarium"><a onclick="downloadAsUdonarium();">ユドナリウム用コマデータ<small>(zip形式ファイル)</small></a></li>
-          <li id="downloadlist-ccfolia"><a onclick="downloadAsCcfolia();">ココフォリア用コマデータ<small>(クリップボードへコピー)</small></a></li>
-          <li id="downloadlist-text"><a onclick="downloadAsText();">テキスト形式</a></li>
-          <li id="downloadlist-json"><a onclick="downloadAsJson();">JSON 形式</a></li>
-          <li id="downloadlist-html"><a onclick="downloadAsHtml();">HTML 形式</a></li>
-          <li id="downloadlist-html"><a onclick="downloadAsFullSet();">ZIP 形式（上記全部入り）</a></li>
+          <li id="downloadlist-udonarium"><a onclick="downloadAsUdonarium();">ユドナリウム用コマデータ<small>(zip形式ファイル)</small></a>
+          <li id="downloadlist-ccfolia"><a onclick="downloadAsCcfolia();">ココフォリア用コマデータ<small>(クリップボードへコピー)</small></a>
+          <li id="downloadlist-text"><a onclick="downloadAsText();">テキスト形式</a>
+          <li id="downloadlist-json"><a onclick="downloadAsJson();">JSON 形式</a>
+          <li id="downloadlist-html"><a onclick="downloadAsHtml();">HTML 形式</a>
+          <li id="downloadlist-html"><a onclick="downloadAsFullSet();">ZIP 形式（上記全部入り）</a>
+          <li class="link-tag"><span>ゆとシート内リンク用タグ<br><input type="text" onclick="this.select()" value="[<TMPL_VAR rawName>#<TMPL_VAR id>]"></span>
         </ul>
       </aside>
     </TMPL_UNLESS>
@@ -195,11 +196,6 @@
       <div id="author">
         製作者：<TMPL_VAR author>
       </div>
-      <TMPL_UNLESS forbiddenMode>
-      <div id="link-tag">
-        ゆとシート内リンク用タグ：<input type="text" onclick="this.select()" value="[<TMPL_VAR rawName>#<TMPL_VAR id>]">
-      </div>
-      </TMPL_UNLESS>
       <section class="box chat-palette float-box">
         <h2>チャットパレット</h2>
         <div class="chat-palette-menu">

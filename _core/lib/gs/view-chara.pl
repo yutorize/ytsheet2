@@ -96,6 +96,9 @@ if($pc{'forbidden'} && !$pc{'yourAuthor'}){
   $pc{forbiddenMode} = 1;
 }
 
+### その他 --------------------------------------------------
+$SHEET->param(rawName => $pc{characterName} || ($pc{aka} ? "“$pc{aka}”" : ''));
+
 ### タグ置換 #########################################################################################
 if($pc{ver}){
   foreach (keys %pc) {

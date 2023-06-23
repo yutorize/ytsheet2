@@ -674,17 +674,4 @@ div.data dl.effects :is(dt,dd):nth-of-type(n+2) {
   border-style: solid;
 }
 
-#link-tag {
-  padding: .5em;
-  text-align: right;
-}
-#link-tag input {
-  width: 18em;
-  padding: 0.2em;
-  border-width: 1px;
-  border-style: solid;
-  border-radius: .5rem;
-  font-size: 0.9em;
-}
-
 
