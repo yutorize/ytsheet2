@@ -20,7 +20,7 @@ sub data_calc {
   $pc{depositTotal} = 0;
   $pc{debtTotal}    = 0;
   $pc{expTotal}   = s_eval($pc{history0Exp});
-  $pc{adpTotal}   = s_eval($pc{history0Adp});
+  $pc{adpTotal}   = s_eval($pc{history0Adp}) + $pc{adpFromExp};
   $pc{moneyTotal} = s_eval($pc{history0Money});
   $pc{adventures} = s_eval($pc{history0Adventures}) || 0;
   $pc{completed}  = s_eval($pc{history0Completed}) || 0;
@@ -58,15 +58,15 @@ sub data_calc {
   ## 冒険者レベル／成長点
   my %adventurerExpTable = (
        0 => { lv=> 1, pt=> 10 },
-    4000 => { lv=> 2, pt=> 25 },
-    7000 => { lv=> 3, pt=> 40 },
-   11000 => { lv=> 4, pt=> 60 },
-   16000 => { lv=> 5, pt=> 80 },
-   23000 => { lv=> 6, pt=>105 },
-   33000 => { lv=> 7, pt=>130 },
-   47000 => { lv=> 8, pt=>160 },
-   66000 => { lv=> 9, pt=>190 },
-   91000 => { lv=>10, pt=>225 },
+    4000 => { lv=> 2, pt=> 15 },
+    7000 => { lv=> 3, pt=> 15 },
+   11000 => { lv=> 4, pt=> 20 },
+   16000 => { lv=> 5, pt=> 20 },
+   23000 => { lv=> 6, pt=> 25 },
+   33000 => { lv=> 7, pt=> 25 },
+   47000 => { lv=> 8, pt=> 30 },
+   66000 => { lv=> 9, pt=> 30 },
+   91000 => { lv=>10, pt=> 35 },
   );
   foreach my $key (sort {$a <=> $b} keys %adventurerExpTable){
     if($pc{'expTotal'} >= $key) {

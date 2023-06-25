@@ -99,15 +99,15 @@ function checkRace(){
 // 経験点・レベル計算 ----------------------------------------
 const adventurerExpTable = {
        0: { lv: 1, pt: 10 },
-    4000: { lv: 2, pt: 25 },
-    7000: { lv: 3, pt: 40 },
-   11000: { lv: 4, pt: 60 },
-   16000: { lv: 5, pt: 80 },
-   23000: { lv: 6, pt:105 },
-   33000: { lv: 7, pt:130 },
-   47000: { lv: 8, pt:160 },
-   66000: { lv: 9, pt:190 },
-   91000: { lv:10, pt:225 },
+    4000: { lv: 2, pt: 15 },
+    7000: { lv: 3, pt: 15 },
+   11000: { lv: 4, pt: 20 },
+   16000: { lv: 5, pt: 20 },
+   23000: { lv: 6, pt: 25 },
+   33000: { lv: 7, pt: 25 },
+   47000: { lv: 8, pt: 30 },
+   66000: { lv: 9, pt: 30 },
+   91000: { lv:10, pt: 35 },
 };
 const classExpTable = [
       0,
@@ -702,7 +702,7 @@ function addSkill(){
     <td class="exp  ">0
     <td class="auto "><label class="check-button"><input type="checkbox" name="skill${num}Auto" value="1" oninput="calcAdp()"></label>
     <td class="name "><span class="flex">【<input name="skill${num}Name" type="text">】</span>
-    <td class="grade"><select name="skill${num}Grade" onchange="calcSkill()"><option><option>初歩<option>習熟<option>熟練<option>達人<option>伝説</select>
+    <td class="grade"><select name="skill${num}Grade" onchange="calcAdp()"><option><option>初歩<option>習熟<option>熟練<option>達人<option>伝説</select>
     <td class="note "><input name="skill${num}Note" type="text">
     <td class="ref  "><input name="skill${num}Ref" type="text">
   `;
@@ -761,7 +761,7 @@ function addGeneralSkill(){
     <td class="exp  ">0
     <td class="auto "><label class="check-button"><input type="checkbox" name="generalSkill${num}Auto" value="1" oninput="calcAdp()"></label>
     <td class="name "><span class="flex">【<input name="generalSkill${num}Name" type="text">】</span>
-    <td class="grade"><select name="generalSkill${num}Grade" onchange="calcSkill()"><option><option>初歩<option>習熟<option>熟練</select>
+    <td class="grade"><select name="generalSkill${num}Grade" onchange="calcAdp()"><option><option>初歩<option>習熟<option>熟練</select>
     <td class="note "><input name="generalSkill${num}Note" type="text">
     <td class="ref  "><input name="generalSkill${num}Ref" type="text">
   `;
