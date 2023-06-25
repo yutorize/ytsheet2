@@ -962,9 +962,10 @@ function addHistory(){
     <td rowspan="2" class="handle">
     <td class="date  " rowspan="2"><input name="history${num}Date"   type="text">
     <td class="title " rowspan="2"><input name="history${num}Title"  type="text">
+    <td class="comp  "><select name="history${num}Completed" oninput="calcAdvCompleted()"><option><option value="1">達成<option value="-1">失敗</select>
     <td class="exp   "><input name="history${num}Exp"    type="text" oninput="calcExp()">
-    <td class="money "><input name="history${num}Money"  type="text" oninput="calcCash()">
     <td class="adp   "><input name="history${num}Adp"    type="text" oninput="calcAdp()">
+    <td class="money "><input name="history${num}Money"  type="text" oninput="calcCash()">
     <td class="gm    "><input name="history${num}Gm"     type="text">
     <td class="member"><input name="history${num}Member" type="text">
   <tr><td colspan="5" class="left"><input name="history${num}Note" type="text">`;
