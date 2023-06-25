@@ -124,6 +124,7 @@ Content-type: text/html\n
   <link rel="stylesheet" media="all" href="${main::core_dir}/skin/sw2/css/edit.css?${main::ver}">
   <script src="${main::core_dir}/skin/_common/js/lib/Sortable.min.js"></script>
   <script src="${main::core_dir}/skin/_common/js/lib/compressor.min.js"></script>
+  <script src="./?mode=js-consts&ver=${main::ver}"></script>
   <script src="${main::core_dir}/lib/edit.js?${main::ver}" defer></script>
   <script src="${main::core_dir}/lib/sw2/edit-chara.js?${main::ver}" defer></script>
   <style>
@@ -1637,73 +1638,12 @@ print <<"HTML";
     <option value="翼人語">
     <option value="魔神語">
   </datalist>
-  <script>
-  const allClassOn = @{[ $set::all_class_on ? 1 : 0 ]};
-  const battleItemOn = @{[ $set::battleitem ? 1 : 0 ]};
-  const growType = '@{[ $set::growtype ? $set::growtype : 0 ]}';
-  const races = @{[ JSON::PP->new->encode(\%data::races) ]};
 HTML
-print 'const featsLv = ["'. join('","', '1bat',@set::feats_lv) . '"];'."\n";
-print 'let weapons = [';
-foreach (@data::weapons){
-  print "'".@$_[0]."',";
-}
-print '];'."\n";
-print 'let weaponsId = [';
-foreach (@data::weapons){
-  print "'".@$_[1]."',";
-}
-print '];'."\n";
-## 技能
-print 'const classes = {';
-foreach my $key (keys %data::class) {
-  print <<"HTML";
-  '$data::class{$key}{'id'}' : {
-    '2.0'       : '$data::class{$key}{'2.0'}',
-    'type'      : '$data::class{$key}{'type'}',
-    'expTable'  : '$data::class{$key}{'expTable'}',
-    'jName'     : '$key',
-    'eName'     : '$data::class{$key}{'eName'}',
-    'magic'     : '$data::class{$key}{'magic'}{'eName'}',
-    'magicData' : @{[ $data::class{$key}{'magic'}{'data'} ? 1 : 0 ]},
-    'craft'     : '$data::class{$key}{'craft'}{'eName'}',
-    'craftData' : @{[ $data::class{$key}{'craft'}{'data'} ? 1 : 0 ]},
-    'craftStt'  : '$data::class{$key}{'craft'}{'stt'}',
-    'craftPower': '$data::class{$key}{'craft'}{'power'}',
-    'craftPower': '$data::class{$key}{'craft'}{'power'}',
-    'language' : @{[ $data::class{$key}{'language'} ? JSON::PP->new->encode($data::class{$key}{'language'}) : '""' ]},
-    'package'  : @{[ $data::class{$key}{'package'}  ? JSON::PP->new->encode($data::class{$key}{'package' }) : '""' ]},
-    'onlyRace'  : @{[ $data::class{$key}{'onlyRace'}  ? JSON::PP->new->encode($data::class{$key}{'onlyRace' }) : '""' ]},
-  },
-HTML
-}
-print "};\n";
-print 'let classNameToId = {';
-foreach (keys %data::class){
-  print "'".$_."' : '$data::class{$_}{id}',";
-}
-print '};'."\n";
-print 'let weaponsUsers = [';
-foreach (@weapon_users){ print "'".$_."',"; }
-print '];'."\n";
+print '<script>';
 ## 言語
 print 'const langOptionT = `'.(option "",@langoptionT)."`;\n";
 print 'const langOptionR = `'.(option "",@langoptionR)."`;\n";
-## 冒険者ランク
-print 'const adventurerRank = {';
-print " '' : { 'num':0, 'free':0 },";
-foreach(@set::adventurer_rank){
-  print "'@$_[0]' : { 'num': @$_[1], 'free':@$_[2] },";
-}
-print "};\n";
-## 不名誉称号
-print 'const notorietyRank = {';
-foreach(@set::notoriety_rank){
-  print "'@$_[0]' : { 'num': @$_[1] },";
-}
-print "};\n";
 print <<"HTML";
-@{[ &commonJSVariable ]}
   </script>
 </body>
 

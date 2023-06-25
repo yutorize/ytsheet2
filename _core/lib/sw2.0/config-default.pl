@@ -208,6 +208,8 @@ package set;
   our $lib_list_item = $::core_dir . '/lib/sw2/list-item.pl';
   our $lib_list_arts = $::core_dir . '/lib/sw2/list-arts.pl';
   our $lib_list_make = $::core_dir . '/lib/sw2/list-making.pl';
+  # JS
+  our $lib_js_consts = $::core_dir . '/lib/sw2/js-consts.pl';
   # JSON出力
   our $lib_json     = $::core_dir . '/lib/json.pl';
   our $lib_json_sub = $::core_dir . '/lib/sw2/json-sub.pl';

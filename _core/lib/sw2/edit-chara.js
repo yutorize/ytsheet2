@@ -1,5 +1,5 @@
 "use strict";
-const gameSystem = 'sw2';
+const gameSystem = SET.gameSystem;
 let modeZero;
 
 const expTable = {
@@ -91,6 +91,8 @@ let level = 0;
 let levelCasters = [];
 
 window.onload = function() {
+  console.log('=====START=====');
+
   nameSet();
   race = form.race.value;
   calcExp();
@@ -155,17 +157,18 @@ function calcLv(){
   expUse = 0;
   let allClassLv = [];
   levelCasters = [];
-  Object.keys(classes).forEach(function(key) {
-    if(classes[key]['expTable']){
-      lv[key] = Number(form['lv'+key].value);
-      if(classes[key]['2.0'] && !allClassOn){ lv[key] = 0; }
+  for(const key in SET.class){
+    const id = SET.class[key].id;
+    if(SET.class[key].expTable){
+      lv[id] = Number(form['lv'+id].value);
+      if(SET.class[key]['2.0'] && !SET.allClassOn){ lv[id] = 0; }
       
-      expUse += expTable[ classes[key]['expTable'] ][ lv[key] ];
+      expUse += expTable[ SET.class[key].expTable ][ lv[id] ];
       
-      allClassLv.push(lv[key]);
-      if(classes[key]['magic']){ levelCasters.push(lv[key]); }
+      allClassLv.push(lv[id]);
+      if(SET.class[key].magic){ levelCasters.push(lv[id]); }
     }
-  });
+  }
   if(form.lvSeeker){
     lvSeeker = Number(form.lvSeeker.value);
     expUse += expTable['S'][ lvSeeker ];
@@ -179,7 +182,7 @@ function calcLv(){
   
   lv['Wiz'] = (lv['Sor'] && lv['Con']) ? Math.max(lv['Sor'],lv['Con']) : 0;
   levelCasters.sort( function(a,b){ return (a < b ? 1 : -1); } );
-  if(battleItemOn){
+  if(SET.battleItemOn){
     const sLevel = Math.max.apply(null, [ lv['Sco'], lv['Ran'], lv['Sag'] ]);
     const maxBattleItems = 8 + Math.ceil(sLevel / 2);
     for (let i = 1; i <= 16; i++) {
@@ -211,17 +214,18 @@ function checkRace(){
   raceAbilityDef       = 0;
   raceAbilityMp        = 0;
   raceAbilityMagicPower= 0;
-  Object.keys(classes).forEach(id => {
+  for(const name in SET.class){
+    const id = SET.class[name].id;
     if(document.getElementById("class"+id)){
       document.getElementById("class"+id).classList.remove('fail');
-      if(races[race]['restrictedClass'] && races[race]['restrictedClass'].includes(classes[id]['jName'])){
+      if(SET.races[race] && SET.races[race].restrictedClass && SET.races[race].restrictedClass.includes(SET.class[name].jName)){
         document.getElementById("class"+id).classList.add('fail');
       }
-      else if(classes[id]['onlyRace'] && !classes[id]['onlyRace'].includes(race)){
+      else if(SET.class[name].onlyRace && !SET.class[name].onlyRace.includes(race)){
         document.getElementById("class"+id).classList.add('fail');
       }
     }
-  });
+  }
   
   if(race === 'リルドラケン'){
     raceAbilityDef = 1;
@@ -270,38 +274,38 @@ function checkRace(){
   }
   
   let ability = '';
-  if(races[race]['ability']){
-    ability = races[race]['ability'] || '';
-    if(level >= 6 && races[race]['abilityLv6']){
-      if(Array.isArray(races[race]['abilityLv6'])){
+  if(SET.races[race] && SET.races[race].ability){
+    ability = SET.races[race].ability || '';
+    if(level >= 6 && SET.races[race].abilityLv6){
+      if(Array.isArray(SET.races[race].abilityLv6)){
         form.raceAbilityLv6.classList.remove('hidden');
       }
       else{
-        ability += races[race]['abilityLv6'];
+        ability += SET.races[race].abilityLv6;
         form.raceAbilityLv6.classList.add('hidden');
       }
     }
     else {
       form.raceAbilityLv6.classList.add('hidden');
     }
-    if(level >= 11 && races[race]['abilityLv11']){
-      if(Array.isArray(races[race]['abilityLv11'])){
+    if(level >= 11 && SET.races[race].abilityLv11){
+      if(Array.isArray(SET.races[race].abilityLv11)){
         form.raceAbilityLv11.classList.remove('hidden');
       }
       else{
-        ability += races[race]['abilityLv11'];
+        ability += SET.races[race].abilityLv11;
         form.raceAbilityLv11.classList.add('hidden');
       }
     }
     else {
       form.raceAbilityLv11.classList.add('hidden');
     }
-    if(level >= 16 && races[race]['abilityLv16']){
-      if(Array.isArray(races[race]['abilityLv16'])){
+    if(level >= 16 && SET.races[race].abilityLv16){
+      if(Array.isArray(SET.races[race].abilityLv16)){
         form.raceAbilityLv16.classList.remove('hidden');
       }
       else{
-        ability += races[race]['abilityLv16'];
+        ability += SET.races[race].abilityLv16;
         form.raceAbilityLv16.classList.add('hidden');
       }
     }
@@ -316,8 +320,8 @@ function checkRace(){
 function setLanguageDefault(){
   if (!form.languageAutoOff.checked) {
     let text = '';
-    if(races[race]['language']){
-      for(let data of races[race]['language']){
+    if(SET.races[race] && SET.races[race].language){
+      for(let data of SET.races[race].language){
         text += `<dt>${data[0]}</dt><dd>${data[1]?'○':'―'}</dd><dd>${data[2]?'○':'―'}</dd>`;
       }
     }
@@ -440,7 +444,7 @@ function checkFeats(){
   document.getElementById('combat-feat-vagrants-ran5').style.display = (featsVagrantsOn && lv['Ran'] >= 5) ? '' : 'none';
   document.getElementById('combat-feat-vagrants-sag5').style.display = (featsVagrantsOn && lv['Sag'] >= 5) ? '' : 'none';
   
-  const array = featsLv;
+  const array = SET.featsLv.map(n=>String(n));
   let acquire = '';
   for (let i = 0; i < array.length; i++) {
     let cL = document.getElementById("combat-feats-lv"+array[i]).classList;
@@ -854,7 +858,7 @@ function checkFeats(){
       }
       feat = box.options[box.selectedIndex].value;
       
-      const weaponsRegex = new RegExp('武器習熟(Ａ|Ｓ)／(' + weapons.join('|') + ')');
+      const weaponsRegex = new RegExp('武器習熟(Ａ|Ｓ)／(' + SET.weapons.map(d => d[0]).join('|') + ')');
       if     (feat === "足さばき"){ feats['足さばき'] = 1; }
       else if(feat === "回避行動Ⅰ"){ feats['回避行動'] = 1; }
       else if(feat === "回避行動Ⅱ"){ feats['回避行動'] = 2; }
@@ -910,38 +914,47 @@ function checkFeats(){
 
 // 技芸 ----------------------------------------
 function checkCraft() {
-  Object.keys(classes).forEach(function(key) {
-    let cLv = lv[key];
-    if (classes[key]['craftData']){
-      const eName = classes[key]['craft'];
+  for(const key in SET.class){
+    const cId  = SET.class[key].id;
+    const cLv = lv[cId];
+    if (SET.class[key].craft && SET.class[key].craft.data){
+      const eName = SET.class[key].craft.eName;
       document.getElementById("craft-"+eName).style.display = cLv ? "block" : "none";
-      const cMax = (key.match(/Bar|War/)) ? 20 : (key === 'Art') ? 19 : 17;
-      cLv += (key === 'Bar') ? (feats['呪歌追加'] || 0) : (key === 'War') ? (feats['鼓咆陣率追加'] || 0) : (key === 'Art' && lv.Art === 16) ? 1 : (key === 'Art' && lv.Art === 17) ? 2 : 0;
+      const cMax = (cId.match(/Bar|War/)) ? 20 : (cId === 'Art') ? 19 : 17;
+      const rows = cLv + (
+            (cId === 'Bar') ? (feats['呪歌追加'] || 0)
+          : (cId === 'War') ? (feats['鼓咆陣率追加'] || 0)
+          : (cId === 'Art' && lv.Art === 16) ? 1
+          : (cId === 'Art' && lv.Art === 17) ? 2
+          : 0
+        );
       for (let i = 1; i <= cMax; i++) {
-        let cL = document.getElementById("craft-"+eName+i).classList;
-        if (i <= cLv){
-          cL.remove("fail","hidden");
+        let objCL = document.getElementById("craft-"+eName+i).classList;
+        if (i <= rows){
+          objCL.remove("fail","hidden");
         }
         else {
-          cL.add("fail");
-          if(form.failView.checked){ cL.remove("hidden") } else { cL.add("hidden"); };
+          objCL.add("fail");
+          objCL.toggle("hidden", !form.failView.checked);
         }
       }
     }
-    else if (classes[key]['magicData']){
-      const eName = classes[key]['magic'];
-      document.getElementById("magic-"+eName).style.display = lv[key] ? "block" : "none";
+    else if (SET.class[key].magic && SET.class[key].magic.data){
+      const eName = SET.class[key].magic.eName;
+      document.getElementById("magic-"+eName).style.display = cLv ? "block" : "none";
       const cMax = 17;
       for (let i = 1; i <= cMax; i++) {
-        let cL = document.getElementById("magic-"+eName+i).classList;
-        if(i <= lv[key]){ cL.remove("fail","hidden"); }
+        let objCL = document.getElementById("magic-"+eName+i).classList;
+        if(i <= cLv){
+          objCL.remove("fail","hidden");
+        }
         else {
-          cL.add("fail");
-          if(form.failView.checked){ cL.remove("hidden") } else { cL.add("hidden"); };
+          objCL.add("fail");
+          objCL.toggle("hidden", !form.failView.checked);
         }
       }
     }
-  });
+  }
 }
 
 // ＨＰＭＰ抵抗力計算 ----------------------------------------
@@ -1007,35 +1020,37 @@ function calcPackage() {
   };
   let lore = [];
   let init = [];
-  Object.keys(classes).forEach(function(cId) {
-    if(classes[cId]['package']){
-      const className = classes[cId]['eName'];
-      const data = classes[cId]['package'];
+  for(const key in SET.class){
+    if(SET.class[key]['package']){
+      const eName = SET.class[key].eName;
+      const cId   = SET.class[key].id
+      const pData = SET.class[key].package;
+      const cLv = lv[cId];
 
-      document.getElementById(`package-${className}`).style.display = lv[cId] > 0 ? "" :"none";
-
-      Object.keys(data).forEach(function(pId) {
+      document.getElementById(`package-${eName}`).style.display = cLv > 0 ? "" :"none";
+      
+      for(const pId in pData){
         let autoBonus = 0;
         if(cId === 'War' && pId === 'Int'){
           let hit = 0;
-          for(let i = 1; i <= lv['War']+(feats['鼓咆陣率追加']||0); i++){
+          for(let i = 1; i <= lv.War+(feats['鼓咆陣率追加']||0); i++){
             if(form[`craftCommand${i}`].value.match(/軍師の知略$/)){ hit = 1; autoBonus += form[`craftCommand${i}`].value.match(/^陣率/) ? 1 : 0; break; }
           }
           if(!hit){
-            document.getElementById(`package-${className}-${pId.toLowerCase()}`).innerHTML = '―';
-            return;
+            document.getElementById(`package-${eName}-${pId.toLowerCase()}`).innerHTML = '―';
+            break;
           }
         }
         
-        let v = lv[cId] + bonus[data[pId]['stt']] + Number(form[`pack${cId}${pId}Add`].value) + autoBonus;
-        document.getElementById(`package-${className}-${pId.toLowerCase()}-auto`).innerHTML = autoBonus ? '+'+autoBonus : '';
-        document.getElementById(`package-${className}-${pId.toLowerCase()}`).innerHTML = v;
+        let value = cLv + bonus[pData[pId].stt] + Number(form[`pack${cId}${pId}Add`].value) + autoBonus;
+        document.getElementById(`package-${eName}-${pId.toLowerCase()}-auto`).innerHTML = autoBonus ? '+'+autoBonus : '';
+        document.getElementById(`package-${eName}-${pId.toLowerCase()}`).innerHTML = value;
 
-        if(data[pId]['monsterLore']){ lore.push(lv[cId] > 0 ? v : 0); }
-        if(data[pId]['initiative' ]){ init.push(lv[cId] > 0 ? v : 0); }
-      });
+        if(pData[pId].monsterLore){ lore.push(cLv > 0 ? value : 0); }
+        if(pData[pId].initiative ){ init.push(cLv > 0 ? value : 0); }
+      }
     }
-  });
+  }
 
   
   document.getElementById("monster-lore-value").innerHTML = (Math.max(...lore) || 0) + Number(form.monsterLoreAdd.value);
@@ -1052,46 +1067,47 @@ function calcMagic() {
   
   let openMagic = 0;
   let openCraft = 0;
-  Object.keys(classes).forEach(function(key) {
+  for(const key in SET.class){
+    const id = SET.class[key].id
+    const cLv = lv[id];
+    const eName = SET.class[key].eName;
     // 魔法
-    if(classes[key]['magic']){
-      const eName = classes[key]['eName'];
-      document.getElementById("magic-power-"+eName).style.display = lv[key] ? '' : 'none';
-      if(lv[key]){ openMagic++; }
+    if(SET.class[key].magic){
+      document.getElementById("magic-power-"+eName).style.display = cLv ? '' : 'none';
+      if(cLv){ openMagic++; }
       
-      const seekerMagicAdd = (lvSeeker && checkSeekerAbility('魔力上昇') && lv[key] >= 15) ? 3 : 0;
-      let power = lv[key] + parseInt((sttInt + sttAddE + (form["magicPowerOwn"+key].checked ? 2 : 0)) / 6) + Number(form["magicPowerAdd"+key].value) + addPower + seekerMagicAdd + raceAbilityMagicPower;
-      if(key === 'Pri' && race.match(/^センティアン/)){
+      const seekerMagicAdd = (lvSeeker && checkSeekerAbility('魔力上昇') && cLv >= 15) ? 3 : 0;
+      let power = cLv + parseInt((sttInt + sttAddE + (form["magicPowerOwn"+id].checked ? 2 : 0)) / 6) + Number(form["magicPowerAdd"+id].value) + addPower + seekerMagicAdd + raceAbilityMagicPower;
+      if(id === 'Pri' && race.match(/^センティアン/)){
         power += (level >= 11) ? 2 : (level >= 6) ? 1 : 0;
       }
       document.getElementById("magic-power-"+eName+"-value").innerHTML  = power;
-      document.getElementById("magic-cast-"+eName+"-value").innerHTML   = power + Number(form["magicCastAdd"+key].value) + addCast;
-      document.getElementById("magic-damage-"+eName+"-value").innerHTML = Number(form["magicDamageAdd"+key].value) + addDamage;
-      magicPowers[key] = lv[key] ? power : 0;
+      document.getElementById("magic-cast-"+eName+"-value").innerHTML   = power + Number(form["magicCastAdd"+id].value) + addCast;
+      document.getElementById("magic-damage-"+eName+"-value").innerHTML = Number(form["magicDamageAdd"+id].value) + addDamage;
+      magicPowers[id] = cLv ? power : 0;
     }
     // 呪歌など
-    else if(classes[key]['craftStt']){
-      const eName = classes[key]['eName'];
-      document.getElementById("magic-power-"+eName).style.display = lv[key] ? '' : 'none';
-      if(lv[key]){ openCraft++; }
+    else if(SET.class[key].craft && SET.class[key].craft.stt){
+      document.getElementById("magic-power-"+eName).style.display = cLv ? '' : 'none';
+      if(cLv){ openCraft++; }
       
-      let power = lv[key];
-      if     (classes[key]['craftStt'] === '知力')  {
-        power += parseInt((sttInt + sttAddE + (form["magicPowerOwn"+key].checked ? 2 : 0)) / 6);
+      let power = cLv;
+      if     (SET.class[key].craft.stt === '知力')  {
+        power += parseInt((sttInt + sttAddE + (form["magicPowerOwn"+id].checked ? 2 : 0)) / 6);
       }
-      else if(classes[key]['craftStt'] === '精神力'){
-        power += parseInt((sttMnd + sttAddF + (form["magicPowerOwn"+key].checked ? 2 : 0)) / 6);
+      else if(SET.class[key].craft.stt === '精神力'){
+        power += parseInt((sttMnd + sttAddF + (form["magicPowerOwn"+id].checked ? 2 : 0)) / 6);
       }
-      if(classes[key]['craftPower']){
-        power += Number(form["magicPowerAdd"+key].value);
+      if(SET.class[key].craft.power){
+        power += Number(form["magicPowerAdd"+id].value);
         document.getElementById("magic-power-"+eName+"-value").innerHTML  = power;
-        document.getElementById("magic-damage-"+eName+"-value").innerHTML = Number(form["magicDamageAdd"+key].value);
+        document.getElementById("magic-damage-"+eName+"-value").innerHTML = Number(form["magicDamageAdd"+id].value);
       }
       
-      if(key === 'Alc'){ power += feats['賦術強化'] || 0 }
-      document.getElementById("magic-cast-"+eName+"-value").innerHTML   = power + Number(form["magicCastAdd"+key].value);
+      if(id === 'Alc'){ power += feats['賦術強化'] || 0 }
+      document.getElementById("magic-cast-"+eName+"-value").innerHTML   = power + Number(form["magicCastAdd"+id].value);
     }
-  });
+  }
   // 全体／その他の開閉
   document.getElementById("magic-power").style.display = (openMagic || openCraft) ? '' : 'none';
 
@@ -1120,9 +1136,10 @@ function calcFairy() {
 
 // 攻撃計算 ----------------------------------------
 function calcAttack() {
-  for(const name of weaponsUsers){
-    const id    = classNameToId[name];
-    const eName = classes[id].eName;
+  for(const name in SET.class){
+    if(SET.class[name].type !== 'weapon-user'){ continue; }
+    const id    = SET.class[name].id;
+    const eName = SET.class[name].eName;
     document.getElementById(`attack-${eName}`).style.display = lv[id] > 0 ? "" :"none";
     document.getElementById(`attack-${eName}-str`).innerHTML = id == 'Fen' ? reqdStrHalf : reqdStr;
     document.getElementById(`attack-${eName}-acc`).innerHTML = lv[id] + bonusDex;
@@ -1138,12 +1155,22 @@ function calcAttack() {
   document.getElementById("attack-demonruler-acc").innerHTML = lv['Dem'] + bonusDex;
   document.getElementById("attack-demonruler-dmg").innerHTML = modeZero ? lv['Dem'] + bonusStr : '―';
 
+  for(let i = 0; i < SET.weapons.length; i++){
+    document.getElementById(`attack-${SET.weapons[i][1]}-mastery`).style.display = feats['武器習熟／'+SET.weapons[i][0]] ? '' : 'none';
+    document.getElementById(`attack-${SET.weapons[i][1]}-mastery-dmg`).innerHTML = feats['武器習熟／'+SET.weapons[i][0]] || 0;
+  }
+  document.getElementById("attack-artisan-mastery").style.display  = feats['魔器習熟'] ? '' : 'none';
+  document.getElementById("attack-artisan-mastery-dmg").innerHTML  = feats['魔器習熟'] || 0 ;
+  document.getElementById("artisan-annotate").style.display        = feats['魔器習熟'] ? '' : 'none'; 
+  document.getElementById("accuracy-enhance").style.display        = feats['命中強化'] ? '' : 'none';
+  document.getElementById("accuracy-enhance-acc").innerHTML        = feats['命中強化'] || 0;
+  document.getElementById("throwing").style.display                = feats['スローイング'] ? '' : 'none';
+
   calcWeapon();
 }
 function calcWeapon() {
   for (let i = 1; i <= form.weaponNum.value; i++){
     const className = form["weapon"+i+"Class"].value;
-    const classId   = classNameToId[className];
     const category = form["weapon"+i+"Category"].value;
     const ownDex = form["weapon"+i+"Own"].checked ? 2 : 0;
     const note = form["weapon"+i+"Note"].value;
@@ -1154,8 +1181,8 @@ function calcWeapon() {
     let maxReqd = reqdStr;
     accBase += feats['命中強化'] || 0; //命中強化
     // 使用技能
-    if(classId && classes[classId].type == 'weapon-user'){
-      attackClass = lv[classId];
+    if(SET.class[className] && SET.class[className].type == 'weapon-user'){
+      attackClass = lv[ SET.class[className].id ];
       if(className === "フェンサー"){ maxReqd = reqdStrHalf; }
     }
     else if(className === "エンハンサー")     { attackClass = lv['Enh']; }
@@ -1190,29 +1217,17 @@ function calcWeapon() {
       document.getElementById("weapon"+i+"-dmg-total").innerHTML = dmgBase + Number(form["weapon"+i+"Dmg"].value);
     }
   }
-  
-  for(let i = 0; i < weapons.length; i++){
-    document.getElementById(`attack-${weaponsId[i]}-mastery`).style.display = feats['武器習熟／'+weapons[i]] ? '' : 'none';
-    document.getElementById(`attack-${weaponsId[i]}-mastery-dmg`).innerHTML = feats['武器習熟／'+weapons[i]] || 0;
-  }
-  document.getElementById("attack-artisan-mastery").style.display  = feats['魔器習熟'] ? '' : 'none';
-  document.getElementById("attack-artisan-mastery-dmg").innerHTML  = feats['魔器習熟'] || 0 ;
-  document.getElementById("artisan-annotate").style.display        = feats['魔器習熟'] ? '' : 'none'; 
-  document.getElementById("accuracy-enhance").style.display        = feats['命中強化'] ? '' : 'none';
-  document.getElementById("accuracy-enhance-acc").innerHTML        = feats['命中強化'] || 0;
-  document.getElementById("throwing").style.display                = feats['スローイング'] ? '' : 'none';
 }
 
 // 防御計算 ----------------------------------------
 function calcDefense() {
   const className = form.evasionClass.options[form.evasionClass.selectedIndex].value;
-  const classId   = classNameToId[className];
   let evaClassLv = 0;
   let evaBase = 0;
   let evaAdd = 0;
   let defBase = 0;
-  if(classId && classes[classId].type == 'weapon-user'){
-    evaClassLv = lv[classId];
+  if(SET.class[className] && SET.class[className].type == 'weapon-user'){
+    evaClassLv = lv[ SET.class[className].id ];
   }
   else if(className === "デーモンルーラー"){ evaClassLv = lv['Dem']; }
   else { evaClassLv = 0; }
@@ -1325,7 +1340,7 @@ function calcExp(){
   
   // 最大成長回数
   let growMax = 0;
-  if(growType === 'A'){
+  if(SET.growType === 'A'){
     let count = 0;
     let exp = 3000;
     for(let i = 0; exp <= expTotal; i++){
@@ -1335,7 +1350,7 @@ function calcExp(){
     }
     growMax = count;
   }
-  else if(growType === 'O') {
+  else if(SET.growType === 'O') {
     growMax = Math.floor((expTotal - 3000) / 1000);
   }
   else { return; }
@@ -1345,6 +1360,7 @@ function calcExp(){
 
 
 // 名誉点計算 ----------------------------------------
+
 function calcHonor(){
   let pointTotal = 0;
   // 履歴
@@ -1366,9 +1382,9 @@ function calcHonor(){
   const topRank = rank.match(/★$/) ? 1 : 0;
   const rankStar = topRank ? Number(form.rankStar.value||1)-1 : 0;
   form.rankStar.style.display = topRank ? '' : 'none';
-
-  const rankNum = (adventurerRank[rank]["num"] === undefined) ? 0 : adventurerRank[rank]["num"] + rankStar*500;
-  const free = (adventurerRank[rank]["free"] === undefined) ? 0 : adventurerRank[rank]["free"] + rankStar*50;
+  
+  const rankNum = (SET.aRank[rank]) ? SET.aRank[rank].num  + rankStar*500 : 0;
+  const free    = (SET.aRank[rank]) ? SET.aRank[rank].free + rankStar*50  : 0;
   pointTotal -= rankNum;
   // 名誉アイテム
   const honorItemsNum = form.honorItemsNum.value;
@@ -1409,8 +1425,8 @@ function calcDishonor(){
   }
   pointTotal -= Number(form.honorOffset.value);
   document.getElementById("dishonor-value").innerHTML = pointTotal;
-  for(const key in notorietyRank){
-    if(pointTotal >= notorietyRank[key]['num']) { document.getElementById("notoriety").innerHTML = key; }
+  for(const key in SET.nRank){
+    if(pointTotal >= SET.nRank[key].num) { document.getElementById("notoriety").innerHTML = key; }
   }
 }
 
@@ -1619,7 +1635,9 @@ let mysticMagicSortable = Sortable.create(document.querySelector('#mystic-magic-
 // 言語欄 ----------------------------------------
 function checkLanguage(){
   let count = {}; let acqT = {}; let acqR = {};
-  if(races[race]['language']){ for(let data of races[race]['language']){ acqT[data[0]] = data[1]; acqR[data[0]] = data[2]; } }
+  if(SET.races[race] && SET.races[race].language){
+    for(let data of SET.races[race].language){ acqT[data[0]] = data[1]; acqR[data[0]] = data[2]; }
+  }
   for (let i = 1; i <= form.languageNum.value; i++){
     let name = form[`language${i}`];
     let talk = form[`language${i}Talk`];
@@ -1631,18 +1649,21 @@ function checkLanguage(){
     count[read.value] ||= 0; count[read.value]++;
   }
   let notice = '';
-  for (let key in classes){
-    if(!classes[key]['language']){ continue; }
-    for (let langName in classes[key]['language']){
-      const data = classes[key]['language'][langName];
+  for (let key in SET.class){
+    if(!SET.class[key].language){ continue; }
+    const className = key;
+    const classId = SET.class[key].id;
+    const classLv = lv[ classId ];
+    for (let langName in SET.class[key].language){
+      const data = SET.class[key].language[langName];
       const notT = (data.talk && !acqT[langName]) ? true : false;
       const notR = (data.read && !acqR[langName]) ? true : false;
       if(langName === 'any'){
-        const v = lv[key] - (count[key] || 0);
-        if     (v > 0){ notice += `${classes[key]['jName']}技能であと「${v}」習得できます<br>`; }
-        else if(v < 0){ notice += `${classes[key]['jName']}技能での習得が「${v*-1}」過剰です<br>`; }
+        const v = classLv - (count[classId] || 0);
+        if     (v > 0){ notice += `${className}技能であと「${v}」習得できます<br>`; }
+        else if(v < 0){ notice += `${className}技能での習得が「${v*-1}」過剰です<br>`; }
       }
-      else if(lv[key] && (notT || notR)) {
+      else if(classLv && (notT || notR)) {
         notice += `${langName}の`;
         if(notT){ acqT[langName] = true; notice += `会話`+(notR ? '/' : '');  }
         if(notR){ acqR[langName] = true; notice += `読文`;  }
@@ -1686,13 +1707,13 @@ let languageSortable = Sortable.create(document.querySelector('#language-table t
   dataIdAttr: 'id',
   animation: 150,
   handle: '.handle',
-  filter: 'thead,tfoot',
+  filter: 'template',
   ghostClass: 'sortable-ghost',
   onUpdate: function (evt) {
     const order = languageSortable.toArray();
     let num = 1;
     for(let id of order) {
-      if(document.getElementById(id)){
+      if(document.querySelector(`tr#${id}`)){
         document.querySelector(`#${id} input:first-child`).setAttribute('name',`language${num}`);
         document.querySelector(`#${id} [name$="Talk"]`).setAttribute('name',`language${num}Talk`);
         document.querySelector(`#${id} [name$="Read"]`).setAttribute('name',`language${num}Read`);
@@ -1739,14 +1760,19 @@ function addWeapons(copy){
   const target = document.querySelector("#weapons-table");
   target.appendChild(tbody, target);
   
-  const categories = weapons.concat("ガン（物理）","盾");
+  const categories = SET.weapons.map(d=>d[0]).concat("ガン（物理）","盾");
   for(let i = 0; i < categories.length; i++){
     let op = document.createElement("option");
     op.text = categories[i];
     op.selected = categories[i] === ini.category ? true : false;
     form["weapon"+num+"Category"].appendChild(op);
   }
-  const classes = weaponsUsers.concat('エンハンサー','デーモンルーラー','自動計算しない');
+
+  const classes =
+    SET.classNames
+    .filter(name => SET.class[name].type == 'weapon-user')
+    .concat('エンハンサー','デーモンルーラー','自動計算しない');
+  
   for(let i = 0; i < classes.length; i++){
     let op = document.createElement("option");
     op.text = classes[i];
@@ -2018,11 +2044,11 @@ function calcPointBuy() {
   let points = 0;
   let errorFlag = 0;
   ['A','B','C','D','E','F'].forEach((i) => { form[`sttBase${i}`].classList.remove('error') });
-  if(races[race] && races[race]['dice']){
+  if(SET.races[race] && SET.races[race].dice){
     ['A','B','C','D','E','F'].forEach((i) => {
-      const dice = String(races[race]['dice'][i]);
+      const dice = String(SET.races[race].dice[i]);
       let num  = Number(form[`sttBase${i}`].value);
-      if(races[race]['dice'][`${i}+`]){ num -= races[race]['dice'][`${i}+`]; }
+      if(SET.races[race].dice[`${i}+`]){ num -= SET.races[race].dice[`${i}+`]; }
       if(pointBuyList[type] && pointBuyList[type][dice] && pointBuyList[type][dice][num] != null){
         points += pointBuyList[type][dice][num];
       }

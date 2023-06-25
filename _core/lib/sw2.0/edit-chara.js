@@ -68,7 +68,7 @@ function checkFeats(){
 
   Object.keys(feats).forEach(key => { feats[key] = 0; });
   
-  const array = featsLv;
+  const array = SET.featsLv.map(n=>String(n));
   let acquire = '';
   let featMax = level;
       featMax += checkSeekerBuildup('戦闘特技');
@@ -366,7 +366,7 @@ function checkFeats(){
       }
       feat = box.options[box.selectedIndex].value;
       
-      const weaponsRegex = new RegExp('武器習熟(Ａ|Ｓ)／(' + weapons.join('|') + ')');
+      const weaponsRegex = new RegExp('武器習熟(Ａ|Ｓ)／(' + SET.weapons.map(d => d[0]).join('|') + ')');
       if     (feat === "足さばき"){ feats['足さばき'] = 1; }
       else if(feat === "回避行動Ⅰ"){ feats['回避行動'] = 1; }
       else if(feat === "回避行動Ⅱ"){ feats['回避行動'] = 2; }
@@ -422,17 +422,18 @@ function checkFeats(){
 
 // 技芸 ----------------------------------------
 function checkCraft() {
-  Object.keys(classes).forEach(function(key) {
-    let cLv = lv[key];
-    if (classes[key]['craftData']){
-      const eName = classes[key]['craft'];
+  for(const key in SET.class){
+    const id  = SET.class[key].id;
+    const cLv = lv[id];
+    if (SET.class[key].craft && SET.class[key].craft.data){
+      const eName = SET.class[key].craft.eName;
       document.getElementById("craft-"+eName).style.display = cLv ? "block" : "none";
       const cMax = 20;
-      cLv += checkSeekerBuildup(classes[key]['craftName']);
-      cLv += (key === 'Art' && lv.Art >= 17) ? 2 : (key === 'Art' && lv.Art >= 16) ? 1 : 0;
+      let rows = cLv + checkSeekerBuildup(SET.class[key].craft.jName);
+      rows += (key === 'Art' && lv.Art >= 17) ? 2 : (key === 'Art' && lv.Art >= 16) ? 1 : 0;
       for (let i = 1; i <= cMax; i++) {
         let cL = document.getElementById("craft-"+eName+i).classList;
-        if (i <= cLv){
+        if (i <= rows){
           cL.remove("fail","hidden");
         }
         else {
@@ -449,20 +450,20 @@ function checkCraft() {
         }
       }
     }
-    else if (classes[key]['magicData']){
-      cLv += checkSeekerBuildup(classes[key]['magicName']);
-      const eName = classes[key]['magic'];
-      if(classes[key]['trancend']){
-        document.getElementById("magic-"+eName).style.display = cLv > 15 ? "block" : "none";
+    else if (SET.class[key].magic && SET.class[key].magic.data){
+      const rows = cLv + checkSeekerBuildup(SET.class[key].magic.jName);
+      const eName = SET.class[key].magic.eName;
+      if(SET.class[key].magic.trancendOnly){
+        document.getElementById("magic-"+eName).style.display = rows > 15 ? "block" : "none";
       }
       else {
-        document.getElementById("magic-"+eName).style.display = cLv ? "block" : "none";
+        document.getElementById("magic-"+eName).style.display = rows ? "block" : "none";
       }
-      const cMin = classes[key]['trancend'] ? 16 : 1;
+      const cMin = SET.class[key].magic.trancendOnly ? 16 : 1;
       const cMax = 20;
       for (let i = cMin; i <= cMax; i++) {
         let cL = document.getElementById("magic-"+eName+i).classList;
-        if(i <= cLv){ cL.remove("fail","hidden"); }
+        if(i <= rows){ cL.remove("fail","hidden"); }
         else {
           cL.add("fail");
           if(form.failView.checked && i <= 17){
@@ -477,7 +478,7 @@ function checkCraft() {
         }
       }
     }
-  });
+  }
   calcFairy();
 }
 

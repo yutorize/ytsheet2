@@ -756,6 +756,20 @@ sub error {
   exit;
 }
 
+### JSファイル --------------------------------------------------
+sub printJS {
+  my $mode = shift;
+  print "Content-type: text/javascript; charset=utf-8\n";
+  print "Cache-Control: public, max-age=604800\n";
+  print "\n";
+  print "// ytsheet JS output mode:$mode \n\n";
+  if($mode eq 'consts' && $set::lib_js_consts){
+    print "const base64Mode = ".($set::base64mode || 0).";\n";
+    require $set::lib_js_consts;
+  }
+  exit;
+}
+
 ### JSON --------------------------------------------------
 sub infoJson {
   our $type = shift;
