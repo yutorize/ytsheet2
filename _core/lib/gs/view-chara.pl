@@ -560,7 +560,7 @@ my $h_num = 0;
 $pc{'history0Title'} = 'キャラクター作成';
 foreach (0 .. $pc{'historyNum'}){
   #next if !$pc{'history'.$_.'Title'};
-  $h_num++ if $pc{'history'.$_.'Gm'};
+  $h_num++ if $pc{'history'.$_.'Gm'} || $pc{'history'.$_.'Completed'};
   if ($set::log_dir && $pc{'history'.$_.'Date'} =~ s/([^0-9]*?_[0-9]+(?:#[0-9a-zA-Z]+?)?)$//){
     my $room = $1;
     (my $date = $pc{'history'.$_.'Date'}) =~ s/[\-\/]//g;
@@ -589,7 +589,7 @@ foreach (0 .. $pc{'historyNum'}){
     else { $completed = '―'; }
   }
   push(@history, {
-    NUM    => ($pc{'history'.$_.'Gm'} ? $h_num : ''),
+    NUM    => ($completed || $pc{'history'.$_.'Gm'} ? $h_num : ''),
     DATE   => $pc{'history'.$_.'Date'},
     TITLE  => $pc{'history'.$_.'Title'},
     COMP   => $completed,

@@ -369,12 +369,12 @@
             </thead>
               <TMPL_LOOP Arts><tbody>
                 <tr>
-                  <th class="name  " rowspan="2"><TMPL_VAR NAME>
-                  <th class="weapon"><TMPL_VAR WEAPON>
-                  <th class="skill "><TMPL_VAR SKILL>
-                  <th class="cost  "><TMPL_VAR COST>
-                  <th class="terms "><TMPL_VAR TERMS>
-                  <th class="page  "><TMPL_VAR PAGE>
+                  <td class="name  " rowspan="2"><TMPL_VAR NAME>
+                  <td class="weapon"><TMPL_VAR WEAPON>
+                  <td class="skill "><TMPL_VAR SKILL>
+                  <td class="cost  "><TMPL_VAR COST>
+                  <td class="terms "><TMPL_VAR TERMS>
+                  <td class="page  "><TMPL_VAR PAGE>
                 <tr>
                   <td class="note left" colspan="5"><TMPL_VAR NOTE>
               </TMPL_LOOP>
@@ -635,10 +635,10 @@
               <td></td>
               <td></td>
               <td>取得総計</td>
-              <td><TMPL_VAR adventures> / <TMPL_VAR completed></td>
-              <td><TMPL_VAR historyExpTotal></td>
-              <td><TMPL_VAR historyAdpTotal></td>
-              <td><TMPL_VAR historyMoneyTotal></td>
+              <td class="comp  "><TMPL_VAR adventures> / <TMPL_VAR completed></td>
+              <td class="exp   "><TMPL_VAR historyExpTotal></td>
+              <td class="adp   "><TMPL_VAR historyAdpTotal></td>
+              <td class="money "><TMPL_VAR historyMoneyTotal></td>
               <td colspan="2"></td>
             </tr>
           </tfoot>

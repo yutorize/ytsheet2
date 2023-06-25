@@ -970,7 +970,7 @@ print <<"HTML";
         </table>
         <div class="annotate">
         ※達成欄の値が（達成でも失敗でも）選択されているぶんだけ「冒険回数」が増加します。<br>
-        ※経験点欄は<code>1000+50*2</code>など四則演算が有効です。<br>
+        ※経験点欄は<code>1000+100</code>など四則演算が有効です。<br>
         </div>
         @{[ $::in{'log'} ? '<button type="button" class="set-newest" onclick="setNewestHistoryData()">最新のセッション履歴を適用する</button>' : '' ]}
       </div>

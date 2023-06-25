@@ -69,7 +69,8 @@ sub convertHokanjoToYtsheet {
     birth => $in{'umare_name'},
     age => $in{'age'},
     gender => $in{'sex'},
-    traits => "$in{'pc_height'}／$in{'pc_weight'}／肌の色:$in{'color_skin'}",
+    traits => "$in{'pc_height'}／$in{'pc_weight'}"
+            . ($in{'color_skin'}?"／肌の色:$in{'color_skin'}":''),
     traitsHair => $in{'color_hair'},
     traitsEyes => $in{'color_eye'},
     money => $in{'money'},
