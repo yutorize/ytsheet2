@@ -93,9 +93,9 @@ $pc{historyNum}      ||=  3;
 ### 折り畳み判断 --------------------------------------------------
 my %open;
 foreach (1..$pc{skillNum}) { if($pc{"skill${_}Name"})  { $open{skill} = 'open'; last; } }
-foreach (1..$pc{generalSkillNum}) { if($pc{"generalSkillN${_}Name"})  { $open{generalSkill} = 'open'; last; } }
+foreach (1..$pc{generalSkillNum}) { if($pc{"generalSkill${_}Name"})  { $open{generalSkill} = 'open'; last; } }
 foreach (1..$pc{spellNum}) { if($pc{"spell${_}Name"})  { $open{spell} = 'open'; last; } }
-foreach (1..$pc{artsNum}) { if($pc{"spell${_}Name"})  { $open{spell} = 'open'; last; } }
+foreach (1..$pc{artsNum}) { if($pc{"arts${_}Name"})  { $open{arts} = 'open'; last; } }
 
 ### 改行処理 --------------------------------------------------
 $pc{'words'}         =~ s/&lt;br&gt;/\n/g;
