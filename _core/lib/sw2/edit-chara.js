@@ -1360,7 +1360,6 @@ function calcExp(){
 
 
 // 名誉点計算 ----------------------------------------
-
 function calcHonor(){
   let pointTotal = 0;
   // 履歴
@@ -1417,6 +1416,7 @@ function calcHonor(){
 }
 // 不名誉点計算
 function calcDishonor(){
+  if(modeZero){ return; }
   let pointTotal = 0;
   const dishonorItemsNum = form.dishonorItemsNum.value;
   for (let i = 1; i <= dishonorItemsNum; i++){
