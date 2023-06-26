@@ -186,11 +186,11 @@ let itemsSortable = Sortable.create(document.querySelector("#items-table tbody")
     let num = 1;
     for(let id of order) {
       if(document.getElementById(id)){
-        document.querySelector(`#${id} [name$="Name"]`).setAttribute('name',`items${num}Name`);
-        document.querySelector(`#${id} [name$="Type"]`).setAttribute('name',`items${num}Type`);
-        document.querySelector(`#${id} [name$="Lv"]`  ).setAttribute('name',`items${num}Lv`);
-        document.querySelector(`#${id} [name$="Cost"]`).setAttribute('name',`items${num}Cost`);
-        document.querySelector(`#${id} [name$="Note"]`).setAttribute('name',`items${num}Note`);
+        document.querySelector(`#${id} [name$="Name"]`).setAttribute('name',`item${num}Name`);
+        document.querySelector(`#${id} [name$="Type"]`).setAttribute('name',`item${num}Type`);
+        document.querySelector(`#${id} [name$="Lv"]`  ).setAttribute('name',`item${num}Lv`);
+        document.querySelector(`#${id} [name$="Cost"]`).setAttribute('name',`item${num}Cost`);
+        document.querySelector(`#${id} [name$="Note"]`).setAttribute('name',`item${num}Note`);
         num++;
       }
     }
