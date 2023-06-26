@@ -9,9 +9,9 @@
     <h1><a href="./?type=i"><TMPL_VAR title></a></h1>
     <nav>
       <ul>
-        <TMPL_LOOP Menu><li class="<TMPL_VAR SIZE>"><a <TMPL_VAR TYPE>="<TMPL_VAR VALUE>"><TMPL_VAR TEXT></a></li>
+        <TMPL_LOOP Menu><li class="<TMPL_VAR SIZE>"><a <TMPL_VAR TYPE>="<TMPL_VAR VALUE>"><TMPL_VAR TEXT></a>
         </TMPL_LOOP>
-        <li><a onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード"></a></li>
+        <li><a onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード"></a>
       </ul>
     </nav>
   </header>
@@ -30,7 +30,7 @@
       <aside id="loglist" class="float-box">
         <h2>過去ログ（バックアップ）</h2>
         <ul>
-          <TMPL_LOOP LogList><li class="<TMPL_VAR SELECTED>"><a href="?id=<TMPL_VAR id><TMPL_VAR URL>"><TMPL_VAR DATE></a></li></TMPL_LOOP>
+          <TMPL_LOOP LogList><li class="<TMPL_VAR SELECTED>"><a href="?id=<TMPL_VAR id><TMPL_VAR URL>"><TMPL_VAR DATE></a></TMPL_LOOP>
         </ul>
         <TMPL_IF viewLogNaming><details id="log-naming">
           <summary>閲覧中のログ<TMPL_IF selectedLogName>の名前をつけなおす<TMPL_ELSE>に名前をつける</TMPL_IF></summary>
@@ -40,9 +40,9 @@
             <input type="hidden" name="id" value="<TMPL_VAR id>">
             <input type="hidden" name="date" value="<TMPL_VAR logId>">
             <dl>
-              <dt>名前</dt><dd><input type="text" name="log-name" value="<TMPL_VAR selectedLogName>"></dd>
-              <TMPL_IF reqdPassword><dt>パスワード</dt><dd><input type="password" name="pass"></dd></TMPL_IF>
-              <dd><input type="submit" value="命名"></dd>
+              <dt>名前<dd><input type="text" name="log-name" value="<TMPL_VAR selectedLogName>">
+              <TMPL_IF reqdPassword><dt>パスワード<dd><input type="password" name="pass"></TMPL_IF>
+              <dd><input type="submit" value="命名">
             </dl>
           </form>
         </details></TMPL_IF>
@@ -95,44 +95,40 @@
       </div>
       
       <div class="data">
-      <dl class="reputation"><dt>知名度</dt><dd><TMPL_VAR reputation></dd></dl>
-      <dl class="shape"><dt>形状</dt><dd><div><TMPL_VAR shape></div></dd></dl>
-      <dl class="category"><dt>カテゴリ</dt><dd><div><TMPL_VAR category></div></dd></dl>
-      <dl class="age"><dt>製作時期</dt><dd><TMPL_VAR age></dd></dl>
-      <dl class="summary"><dt>概要</dt><dd><TMPL_VAR summary></dd></dl>
-      <dl class="effects"><dt><TMPL_IF head_effects><TMPL_VAR head_effects><TMPL_ELSE>効果</TMPL_IF></dt><dd class="box">
+      <dl class="reputation"><dt>知名度<dd><TMPL_VAR reputation></dl>
+      <dl class="shape"><dt>形状<dd><div><TMPL_VAR shape></div></dl>
+      <dl class="category"><dt>カテゴリ<dd><div><TMPL_VAR category></div></dl>
+      <dl class="age"><dt>製作時期<dd><TMPL_VAR age></dl>
+      <dl class="summary"><dt>概要<dd><TMPL_VAR summary></dl>
+      <dl class="effects"><dt><TMPL_IF head_effects><TMPL_VAR head_effects><TMPL_ELSE>効果</TMPL_IF><dd class="box">
         <TMPL_VAR effects>
         <TMPL_IF WeaponData>
           <table class="weapon-table">
-            <tr><th>用法</th><th>必筋</th><th>命中</th><th>威力</th><th>C値</th><th>追加D</th><th class="left">備考</th></tr>
-            <TMPL_LOOP WeaponData>
-            <tr>
-            <td><TMPL_VAR USAGE></td>
-            <td><TMPL_VAR REQD></td>
-            <td><TMPL_VAR ACC></td>
-            <td><TMPL_VAR RATE></td>
-            <td><TMPL_VAR CRIT></td>
-            <td><TMPL_VAR DMG></td>
-            <td class="left"><TMPL_VAR NOTE></td>
-            </tr>
+            <tr><th>用法<th>必筋<th>命中<th>威力<th>C値<th>追加D<th class="left">備考
+            <TMPL_LOOP WeaponData><tr>
+              <td><TMPL_VAR USAGE>
+              <td><TMPL_VAR REQD>
+              <td><TMPL_VAR ACC>
+              <td><TMPL_VAR RATE>
+              <td><TMPL_VAR CRIT>
+              <td><TMPL_VAR DMG>
+              <td class="left"><TMPL_VAR NOTE>
             </TMPL_LOOP>
           </table>
         </TMPL_IF>
         <TMPL_IF ArmourData>
           <table class="weapon-table">
-          <tr><th>用法</th><th>必筋</th><th>回避</th><th>防護</th><th class="left">備考</th></tr>
-          <TMPL_LOOP ArmourData>
-          <tr>
-          <td><TMPL_VAR USAGE></td>
-          <td><TMPL_VAR REQD></td>
-          <td><TMPL_VAR EVA></td>
-          <td><TMPL_VAR DEF></td>
-          <td class="left"><TMPL_VAR NOTE></td>
-          </tr>
-          </TMPL_LOOP>
+          <tr><th>用法<th>必筋<th>回避<th>防護<th class="left">備考
+            <TMPL_LOOP ArmourData><tr>
+              <td><TMPL_VAR USAGE>
+              <td><TMPL_VAR REQD>
+              <td><TMPL_VAR EVA>
+              <td><TMPL_VAR DEF>
+              <td class="left"><TMPL_VAR NOTE>
+            </TMPL_LOOP>
           </table>
         </TMPL_IF>
-      </dd></dl>
+      </dl>
       </div>
       
       <TMPL_IF description><section class="box description">

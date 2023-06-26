@@ -9,9 +9,9 @@
     <h1><a href="./"><TMPL_VAR title></a></h1>
     <nav>
       <ul>
-        <TMPL_LOOP Menu><li class="<TMPL_VAR SIZE>"><a <TMPL_VAR TYPE>="<TMPL_VAR VALUE>"><TMPL_VAR TEXT></a></li>
+        <TMPL_LOOP Menu><li class="<TMPL_VAR SIZE>"><a <TMPL_VAR TYPE>="<TMPL_VAR VALUE>"><TMPL_VAR TEXT></a>
         </TMPL_LOOP>
-        <li><a onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード"></a></li>
+        <li><a onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード"></a>
       </ul>
     </nav>
   </header>
@@ -30,7 +30,7 @@
       <aside id="loglist" class="float-box">
         <h2>過去ログ（バックアップ）</h2>
         <ul>
-          <TMPL_LOOP LogList><li class="<TMPL_VAR SELECTED>"><a href="?id=<TMPL_VAR id><TMPL_VAR URL>"><TMPL_VAR DATE></a></li></TMPL_LOOP>
+          <TMPL_LOOP LogList><li class="<TMPL_VAR SELECTED>"><a href="?id=<TMPL_VAR id><TMPL_VAR URL>"><TMPL_VAR DATE></a></TMPL_LOOP>
         </ul>
         <TMPL_IF viewLogNaming><details id="log-naming">
           <summary>閲覧中のログ<TMPL_IF selectedLogName>の名前をつけなおす<TMPL_ELSE>に名前をつける</TMPL_IF></summary>
@@ -39,9 +39,9 @@
             <input type="hidden" name="id" value="<TMPL_VAR id>">
             <input type="hidden" name="date" value="<TMPL_VAR logId>">
             <dl>
-              <dt>名前</dt><dd><input type="text" name="log-name" value="<TMPL_VAR selectedLogName>"></dd>
-              <TMPL_IF reqdPassword><dt>パスワード</dt><dd><input type="password" name="pass"></dd></TMPL_IF>
-              <dd><input type="submit" value="命名"></dd>
+              <dt>名前<dd><input type="text" name="log-name" value="<TMPL_VAR selectedLogName>">
+              <TMPL_IF reqdPassword><dt>パスワード<dd><input type="password" name="pass"></TMPL_IF>
+              <dd><input type="submit" value="命名">
             </dl>
           </form>
         </details></TMPL_IF>
@@ -111,68 +111,68 @@
         </TMPL_IF>
 
         <div id="personal" class="box-union">
-          <dl class="box"><dt>年齢</dt><dd><TMPL_VAR age></dd></dl>
-          <dl class="box"><dt>性別</dt><dd><TMPL_VAR gender></dd></dl>
-          <dl class="box"><dt>星座</dt><dd><TMPL_VAR sign></dd></dl>
-          <dl class="box"><dt>身長</dt><dd><TMPL_VAR height></dd></dl>
-          <dl class="box"><dt>体重</dt><dd><TMPL_VAR weight></dd></dl>
-          <dl class="box"><dt>血液型</dt><dd><TMPL_VAR blood></dd></dl>
+          <dl class="box"><dt>年齢<dd><TMPL_VAR age></dl>
+          <dl class="box"><dt>性別<dd><TMPL_VAR gender></dl>
+          <dl class="box"><dt>星座<dd><TMPL_VAR sign></dl>
+          <dl class="box"><dt>身長<dd><TMPL_VAR height></dl>
+          <dl class="box"><dt>体重<dd><TMPL_VAR weight></dl>
+          <dl class="box"><dt>血液型<dd><TMPL_VAR blood></dl>
         </div>
         <div id="works-cover" class="box-union">
-          <dl class="box"><dt>ワークス</dt><dd><TMPL_VAR works></dd></dl>
-          <dl class="box"><dt>カヴァー</dt><dd><TMPL_VAR cover></dd></dl>
+          <dl class="box"><dt>ワークス<dd><TMPL_VAR works></dl>
+          <dl class="box"><dt>カヴァー<dd><TMPL_VAR cover></dl>
         </div>
 
         <div id="renegade" class="box-union">
           <dl class="box" id="breed">
-            <dt>ブリード</dt><dd><TMPL_VAR breed></dd>
+            <dt>ブリード<dd><TMPL_VAR breed>
           </dl>
           <dl class="box" id="syndrome">
-            <dt>シンドローム</dt>
-            <dd><TMPL_VAR syndrome1></dd>
-            <dd><TMPL_VAR syndrome2></dd>
-            <dt>オプショナル</dt>
-            <dd><TMPL_VAR syndrome3></dd>
+            <dt>シンドローム
+            <dd><TMPL_VAR syndrome1>
+            <dd><TMPL_VAR syndrome2>
+            <dt>オプショナル
+            <dd><TMPL_VAR syndrome3>
           </dl>
         </div>
 
         <div id="sub-status" class="box-union">
           <dl class="box" id="max-hp">
-            <dt>HP最大値</dt>
-            <dd><TMPL_IF maxHpAdd>+<TMPL_VAR maxHpAdd>=</TMPL_IF><b><TMPL_VAR maxHpTotal></b></dd>
+            <dt>HP最大値
+            <dd><TMPL_IF maxHpAdd>+<TMPL_VAR maxHpAdd>=</TMPL_IF><b><TMPL_VAR maxHpTotal></b>
           </dl>
           <dl class="box" id="stock-pt">
-            <dt>常備化<span class="shorten">ポイント</span></dt>
-            <dd><TMPL_IF stockAdd>+<TMPL_VAR stockAdd>=</TMPL_IF><b><TMPL_VAR stockTotal></b></dd>
+            <dt>常備化<span class="shorten">ポイント</span>
+            <dd><TMPL_IF stockAdd>+<TMPL_VAR stockAdd>=</TMPL_IF><b><TMPL_VAR stockTotal></b>
           </dl>
           <dl class="box" id="saving">
-            <dt>財産<span class="shorten">ポイント</span></dt>
-            <dd><TMPL_IF savingAdd>+<TMPL_VAR savingAdd>=</TMPL_IF><b><TMPL_VAR savingTotal></b></dd>
+            <dt>財産<span class="shorten">ポイント</span>
+            <dd><TMPL_IF savingAdd>+<TMPL_VAR savingAdd>=</TMPL_IF><b><TMPL_VAR savingTotal></b>
           </dl>
           <dl class="box" id="initiative">
-            <dt>行動値</dt>
-            <dd><TMPL_IF initiativeAdd>+<TMPL_VAR initiativeAdd>=</TMPL_IF><b><TMPL_VAR initiativeTotal></b></dd>
+            <dt>行動値
+            <dd><TMPL_IF initiativeAdd>+<TMPL_VAR initiativeAdd>=</TMPL_IF><b><TMPL_VAR initiativeTotal></b>
           </dl>
           <dl class="box" id="move">
-            <dt>戦闘移動</dt>
-            <dd><TMPL_IF moveAdd>+<TMPL_VAR moveAdd>=</TMPL_IF><b><TMPL_VAR moveTotal></b></dd>
+            <dt>戦闘移動
+            <dd><TMPL_IF moveAdd>+<TMPL_VAR moveAdd>=</TMPL_IF><b><TMPL_VAR moveTotal></b>
           </dl>
           <dl class="box" id="dash">
-            <dt>全力移動</dt>
-            <dd><TMPL_IF dashAdd>+<TMPL_VAR dashAdd>=</TMPL_IF><b><TMPL_VAR dashTotal></b></dd>
+            <dt>全力移動
+            <dd><TMPL_IF dashAdd>+<TMPL_VAR dashAdd>=</TMPL_IF><b><TMPL_VAR dashTotal></b>
           </dl>
           <TMPL_IF ccOn><dl class="box" id="magic-dice">
-            <dt>魔術<span class="shorten">ダイス</span></dt>
-            <dd><TMPL_IF magicAdd>+<TMPL_VAR magicAdd>=</TMPL_IF><b><TMPL_VAR magicTotal></b></dd>
+            <dt>魔術<span class="shorten">ダイス</span>
+            <dd><TMPL_IF magicAdd>+<TMPL_VAR magicAdd>=</TMPL_IF><b><TMPL_VAR magicTotal></b>
           </dl></TMPL_IF>
         </div>
         
         <section class="box" id="exp">
         <h2>経験点</h2>
         <dl>
-          <dt>使<span class="shorten">用</span></dt><dd><TMPL_VAR expUsed></dd>
-          <dt>残<span class="shorten">り</span></dt><dd><TMPL_VAR expRest></dd>
-          <dt>総<span class="shorten">計</span></dt><dd><TMPL_VAR expTotal></dd>
+          <dt>使<span class="shorten">用</span><dd><TMPL_VAR expUsed>
+          <dt>残<span class="shorten">り</span><dd><TMPL_VAR expRest>
+          <dt>総<span class="shorten">計</span><dd><TMPL_VAR expTotal>
         </dl>
         </section>
         
@@ -181,62 +181,46 @@
           <table class="data-table line-tbody">
             <tbody>
               <tr>
-                <th class="left" colspan="2">出自</th>
-                <td rowspan="2" class="left"><TMPL_VAR lifepathOriginNote></td>
-              </tr>
+                <th class="left" colspan="2">出自
+                <td rowspan="2" class="left"><TMPL_VAR lifepathOriginNote>
               <tr>
                 <td colspan="2"><TMPL_VAR lifepathOrigin></td>
-              </tr>
-            </tbody>
             <tbody>
               <tr>
-                <th class="left" colspan="2">経験</th>
-                <td rowspan="2" class="left"><TMPL_VAR lifepathExperienceNote></td>
-              </tr>
+                <th class="left" colspan="2">経験
+                <td rowspan="2" class="left"><TMPL_VAR lifepathExperienceNote>
               <tr>
                 <td colspan="2"><TMPL_VAR lifepathExperience></td>
-              </tr>
-            </tbody>
             <tbody>
               <tr>
-                <th class="left" colspan="2">邂逅／欲望</th>
-                <td rowspan="2" class="left"><TMPL_VAR lifepathEncounterNote></td>
-              </tr>
+                <th class="left" colspan="2">邂逅／欲望
+                <td rowspan="2" class="left"><TMPL_VAR lifepathEncounterNote>
               <tr>
                 <td colspan="2"><TMPL_VAR lifepathEncounter></td>
-              </tr>
-            </tbody>
             <tbody>
               <tr>
-                <th class="left">覚醒</th>
-                <th class="small">侵蝕値</th>
-                <td rowspan="2" class="left"><TMPL_VAR lifepathAwakenNote></td>
-              </tr>
+                <th class="left">覚醒
+                <th class="small">侵蝕値
+                <td rowspan="2" class="left"><TMPL_VAR lifepathAwakenNote>
               <tr>
-                <td><TMPL_VAR lifepathAwaken></td>
+                <td><TMPL_VAR lifepathAwaken>
                 <td class="center"><TMPL_VAR lifepathAwakenEncroach></td>
-              </tr>
-            </tbody>
             <tbody>
               <tr>
-                <th class="left">衝動</th>
-                <th class="small">侵蝕値</th>
-                <td rowspan="2" class="left"><TMPL_VAR lifepathImpulseNote></td>
-              </tr>
+                <th class="left">衝動
+                <th class="small">侵蝕値
+                <td rowspan="2" class="left"><TMPL_VAR lifepathImpulseNote>
               <tr>
                 <td <TMPL_IF lifepathUrgeCheck>style="border-bottom:hidden"</TMPL_IF>><TMPL_VAR lifepathImpulse></td>
-                <td class="center"><TMPL_VAR lifepathImpulseEncroach></td>
-              </tr>
+                <td class="center"><TMPL_VAR lifepathImpulseEncroach>
               <TMPL_IF lifepathUrgeCheck><tr class="urge">
-                <th colspan="2" class="right">／変異暴走</th>
+                <th colspan="2" class="right">／変異暴走
                 <td colspan="2" class="left"><TMPL_VAR lifepathUrgeNote></td>
-              </tr></TMPL_IF>
-            </tbody>
+              </TMPL_IF>
             <tbody>
-              <tr><th class="right small">その他の修正</th><td class="center"><TMPL_VAR lifepathOtherEncroach></td><td class="left"><TMPL_VAR lifepathOtherNote></td></tr>
-            </tbody>
+              <tr><th class="right small">その他の修正<td class="center"><TMPL_VAR lifepathOtherEncroach><td class="left"><TMPL_VAR lifepathOtherNote>
             <tbody>
-              <tr><th class="right">侵蝕率基本値</th><td class="center bold"><TMPL_VAR baseEncroach></td></tr>
+              <tr><th class="right">侵蝕率基本値<td class="center bold"><TMPL_VAR baseEncroach>
             </tbody>
           </table>
         </section>
@@ -248,56 +232,50 @@
         <table>
           <thead>
           <tr>
-            <th>肉体</th><td data-edb><TMPL_VAR sttTotalBody></td>
-            <th>感覚</th><td data-edb><TMPL_VAR sttTotalSense></td>
-            <th>精神</th><td data-edb><TMPL_VAR sttTotalMind></td>
-            <th>社会</th><td data-edb><TMPL_VAR sttTotalSocial></td>
-          </tr>
+            <th>肉体<td data-edb><TMPL_VAR sttTotalBody>
+            <th>感覚<td data-edb><TMPL_VAR sttTotalSense>
+            <th>精神<td data-edb><TMPL_VAR sttTotalMind>
+            <th>社会<td data-edb><TMPL_VAR sttTotalSocial>
           <TMPL_UNLESS forbiddenMode>
             <tr class="breakdown">
-              <th>シンドローム</th><td><TMPL_VAR sttBaseBody></td>
-              <th>シンドローム</th><td><TMPL_VAR sttBaseSense></td>
-              <th>シンドローム</th><td><TMPL_VAR sttBaseMind></td>
-              <th>シンドローム</th><td><TMPL_VAR sttBaseSocial></td>
-            </tr>
+              <th>シンドローム<td><TMPL_VAR sttBaseBody>
+              <th>シンドローム<td><TMPL_VAR sttBaseSense>
+              <th>シンドローム<td><TMPL_VAR sttBaseMind>
+              <th>シンドローム<td><TMPL_VAR sttBaseSocial>
             <tr class="breakdown">
-              <th>ワークス</th><td><TMPL_VAR sttWorksBody></td>
-              <th>ワークス</th><td><TMPL_VAR sttWorksSense></td>
-              <th>ワークス</th><td><TMPL_VAR sttWorksMind></td>
-              <th>ワークス</th><td><TMPL_VAR sttWorksSocial></td>
-            </tr>
+              <th>ワークス<td><TMPL_VAR sttWorksBody>
+              <th>ワークス<td><TMPL_VAR sttWorksSense>
+              <th>ワークス<td><TMPL_VAR sttWorksMind>
+              <th>ワークス<td><TMPL_VAR sttWorksSocial>
             <tr class="breakdown">
-              <th>成長</th><td><TMPL_VAR sttGrowBody></td>
-              <th>成長</th><td><TMPL_VAR sttGrowSense></td>
-              <th>成長</th><td><TMPL_VAR sttGrowMind></td>
-              <th>成長</th><td><TMPL_VAR sttGrowSocial></td>
-            </tr>
+              <th>成長<td><TMPL_VAR sttGrowBody>
+              <th>成長<td><TMPL_VAR sttGrowSense>
+              <th>成長<td><TMPL_VAR sttGrowMind>
+              <th>成長<td><TMPL_VAR sttGrowSocial>
             <tr class="breakdown">
-              <th>その他修正</th><td><TMPL_VAR sttAddBody></td>
-              <th>その他修正</th><td><TMPL_VAR sttAddSense></td>
-              <th>その他修正</th><td><TMPL_VAR sttAddMind></td>
-              <th>その他修正</th><td><TMPL_VAR sttAddSocial></td>
+              <th>その他修正<td><TMPL_VAR sttAddBody>
+              <th>その他修正<td><TMPL_VAR sttAddSense>
+              <th>その他修正<td><TMPL_VAR sttAddMind>
+              <th>その他修正<td><TMPL_VAR sttAddSocial>
             </tr>
         </TMPL_UNLESS>
           </thead>
           <tr>
-            <td class="left">白兵</td><td class="right"><TMPL_VAR skillTotalMelee></td>
-            <td class="left">射撃</td><td class="right"><TMPL_VAR skillTotalRanged></td>
-            <td class="left">ＲＣ</td><td class="right"><TMPL_VAR skillTotalRC></td>
-            <td class="left">交渉</td><td class="right"><TMPL_VAR skillTotalNegotiate></td>
-          </tr>
+            <td class="left">白兵<td class="right"><TMPL_VAR skillTotalMelee></td>
+            <td class="left">射撃<td class="right"><TMPL_VAR skillTotalRanged></td>
+            <td class="left">ＲＣ<td class="right"><TMPL_VAR skillTotalRC></td>
+            <td class="left">交渉<td class="right"><TMPL_VAR skillTotalNegotiate></td>
           <tr>
-            <td class="left">回避</td><td class="right"><TMPL_VAR skillTotalDodge></td>
-            <td class="left">知覚</td><td class="right"><TMPL_VAR skillTotalPercept></td>
-            <td class="left">意志</td><td class="right"><TMPL_VAR skillTotalWill></td>
-            <td class="left">調達</td><td class="right"><TMPL_VAR skillTotalProcure></td>
-          </tr>
+            <td class="left">回避<td class="right"><TMPL_VAR skillTotalDodge></td>
+            <td class="left">知覚<td class="right"><TMPL_VAR skillTotalPercept></td>
+            <td class="left">意志<td class="right"><TMPL_VAR skillTotalWill></td>
+            <td class="left">調達<td class="right"><TMPL_VAR skillTotalProcure></td>
           <TMPL_LOOP Skills><tr>
-            <td class="left"><TMPL_VAR RIDE></td><td class="right"><TMPL_VAR RIDELV></td>
-            <td class="left"><TMPL_VAR ART ></td><td class="right"><TMPL_VAR ARTLV ></td>
-            <td class="left"><TMPL_VAR KNOW></td><td class="right"><TMPL_VAR KNOWLV></td>
-            <td class="left"><TMPL_VAR INFO></td><td class="right"><TMPL_VAR INFOLV></td>
-          </tr></TMPL_LOOP>
+            <td class="left"><TMPL_VAR RIDE><td class="right"><TMPL_VAR RIDELV></td>
+            <td class="left"><TMPL_VAR ART ><td class="right"><TMPL_VAR ARTLV ></td>
+            <td class="left"><TMPL_VAR KNOW><td class="right"><TMPL_VAR KNOWLV></td>
+            <td class="left"><TMPL_VAR INFO><td class="right"><TMPL_VAR INFOLV></td>
+          </TMPL_LOOP>
         </table>
       </section>
       <script>
@@ -314,24 +292,24 @@
         <table class="data-table">
           <thead>
             <tr>
-              <th>関係</th>
-              <th>名前</th>
-              <th colspan="3">感情<span class="small">(Posi／Nega)</span></th>
-              <th>属性</th>
-              <th colspan="2" class="right">状態</th>
-            </tr>
+              <th>関係
+              <th>名前
+              <th colspan="3">感情<span class="small">(Posi／Nega)</span>
+              <th>属性
+              <th colspan="2" class="right">状態
+            
           </thead>
           <tbody>
             <TMPL_LOOP Loises><tr>
-              <td><TMPL_VAR RELATION></td>
-              <td><TMPL_VAR NAME></td>
-              <td class="emo <TMPL_IF P-CHECK>checked</TMPL_IF>"><TMPL_VAR POSI></td>
-              <td>／</td>
-              <td class="emo <TMPL_IF N-CHECK>checked</TMPL_IF>"><TMPL_VAR NEGA></td>
-              <td style="<TMPL_VAR COLOR-BG>"><TMPL_VAR COLOR></td>
-              <td class="left"><TMPL_VAR NOTE></td>
-              <td class="right"><span data-state="<TMPL_VAR STATE>"></span></td>
-            </tr></TMPL_LOOP>
+              <td><TMPL_VAR RELATION>
+              <td><TMPL_VAR NAME>
+              <td class="emo <TMPL_IF P-CHECK>checked</TMPL_IF>"><TMPL_VAR POSI>
+              <td>／
+              <td class="emo <TMPL_IF N-CHECK>checked</TMPL_IF>"><TMPL_VAR NEGA>
+              <td style="<TMPL_VAR COLOR-BG>"><TMPL_VAR COLOR>
+              <td class="left"><TMPL_VAR NOTE>
+              <td class="right"><span data-state="<TMPL_VAR STATE>"></span>
+            </TMPL_LOOP>
           </tbody>
         </table>
       </section>
@@ -340,15 +318,15 @@
         <h2>メモリー</h2>
         <table class="data-table">
           <thead>
-            <tr><th>関係</th><th>名前</th><th>感情</th><th></th></tr>
+            <tr><th>関係<th>名前<th>感情<th>
           </thead>
           <tbody>
             <TMPL_LOOP Memories><tr>
-              <td><TMPL_VAR RELATION></td>
-              <td><TMPL_VAR NAME></td>
-              <td><TMPL_VAR EMOTION></td>
-              <td class="left"><TMPL_VAR NOTE></td>
-            </tr></TMPL_LOOP>
+              <td><TMPL_VAR RELATION>
+              <td><TMPL_VAR NAME>
+              <td><TMPL_VAR EMOTION>
+              <td class="left"><TMPL_VAR NOTE>
+            </TMPL_LOOP>
           </tbody>
         </table>
       </section></TMPL_IF>
@@ -356,8 +334,8 @@
       <TMPL_IF insanity><section class="box" id="insanity">
         <h2>永続的狂気</h2>
         <dl>
-          <dt><TMPL_VAR insanity></dt>
-          <dd><TMPL_VAR insanityNote></dd>
+          <dt><TMPL_VAR insanity>
+          <dd><TMPL_VAR insanityNote>
         </dl>
       </section></TMPL_IF>
       
@@ -369,26 +347,23 @@
           <button class="open-button" onclick="switchEffectNoteFullOpen();" data-open="" data-text-open="効果を全展開" data-text-close="効果を折畳む"></button>
           <table class="data-table line-tbody">
             <thead>
-              <tr><th>種別</th><th>名称</th><th>Lv</th><th>タイミング</th><th>技能</th><th>難易度</th><th>対象</th><th>射程</th><th>侵蝕値</th><th>制限</th></tr>
+              <tr><th>種別<th>名称<th>Lv<th>タイミング<th>技能<th>難易度<th>対象<th>射程<th>侵蝕値<th>制限
             </thead>
             <TMPL_LOOP Effects><tbody>
                <tr>
-                <td rowspan="2"><TMPL_IF TYPE><i class="ef-<TMPL_VAR TYPE>"></i></TMPL_IF></td>
-                <td class="name"><TMPL_VAR NAME></td>
-                <td><TMPL_VAR LV></td>
-                <td><TMPL_VAR TIMING></td>
-                <td><TMPL_VAR SKILL></td>
-                <td><TMPL_VAR DFCLTY></td>
-                <td><TMPL_VAR TARGET></td>
-                <td><TMPL_VAR RANGE></td>
-                <td><TMPL_VAR ENCROACH></td>
-                <td><TMPL_VAR RESTRICT></td>
-              </tr>
-              <tr><td class="left" colspan="9">
-                <TMPL_VAR NOTE>
-                  <TMPL_IF EXP><span class="right">［<b>経験点修正</b>:<TMPL_VAR EXP>点］</span></TMPL_IF>
-              </td></tr>
-            </tbody></TMPL_LOOP>
+                <td rowspan="2"><TMPL_IF TYPE><i class="ef-<TMPL_VAR TYPE>"></i></TMPL_IF>
+                <td class="name"><TMPL_VAR NAME>
+                <td><TMPL_VAR LV>
+                <td><TMPL_VAR TIMING>
+                <td><TMPL_VAR SKILL>
+                <td><TMPL_VAR DFCLTY>
+                <td><TMPL_VAR TARGET>
+                <td><TMPL_VAR RANGE>
+                <td><TMPL_VAR ENCROACH>
+                <td><TMPL_VAR RESTRICT>
+              <tr>
+                <td class="left" colspan="9"><TMPL_VAR NOTE><TMPL_IF EXP><span class="right">［<b>経験点修正</b>:<TMPL_VAR EXP>点］</span></TMPL_IF></td>
+            </TMPL_LOOP>
           </table>
         </section>
         <script>
@@ -404,18 +379,18 @@
           <h2>術式</h2>
           <table class="data-table line-tbody">
             <thead>
-              <tr><th>名称</th><th>種別</th><th>経験点</th><th>発動値</th><th>侵蝕値</th><th>効果</th></tr>
+              <tr><th>名称<th>種別<th>経験点<th>発動値<th>侵蝕値<th>効果
             </thead>
             <TMPL_LOOP Magics><tbody>
                <tr>
                 <td class="name"><TMPL_VAR NAME></td>
-                <td><TMPL_VAR TYPE></td>
-                <td><TMPL_VAR EXP></td>
-                <td><TMPL_VAR ACTIVATE></td>
-                <td><TMPL_VAR ENCROACH></td>
-                <td><TMPL_VAR NOTE></td>
+                <td><TMPL_VAR TYPE>
+                <td><TMPL_VAR EXP>
+                <td><TMPL_VAR ACTIVATE>
+                <td><TMPL_VAR ENCROACH>
+                <td><TMPL_VAR NOTE>
               </tr>
-            </tbody></TMPL_LOOP>
+            </TMPL_LOOP>
           </table>
         </section></TMPL_IF>
 
@@ -424,27 +399,27 @@
           <button class="open-button" onclick="swapComboDisplayMode();" data-open="true" data-text-open="詳細表示にする" data-text-close="簡易表示にする"></button>
           <TMPL_LOOP Combos><div class="combo-table">
             <h3><span><TMPL_VAR NAME></span></h3>
-            <dl class="combo-combo"><dt>組み合わせ</dt><dd><span><TMPL_VAR COMBO></span></dd></dl>
+            <dl class="combo-combo"><dt>組み合わせ<dd><span><TMPL_VAR COMBO></span></dl>
             <div class="combo-in">
-              <dl><dt>タイミング</dt><dd><span><TMPL_VAR TIMING  ></span></dd></dl>
-              <dl><dt>技能      </dt><dd><span><TMPL_VAR SKILL   ></span></dd></dl>
-              <dl><dt>難易度    </dt><dd><span><TMPL_VAR DFCLTY  ></span></dd></dl>
-              <dl><dt>対象      </dt><dd><span><TMPL_VAR TARGET  ></span></dd></dl>
-              <dl><dt>射程      </dt><dd><span><TMPL_VAR RANGE   ></span></dd></dl>
-              <dl><dt>侵蝕値    </dt><dd><span><TMPL_VAR ENCROACH></span></dd></dl>
+              <dl><dt>タイミング<dd><span><TMPL_VAR TIMING  ></span></dl>
+              <dl><dt>技能      <dd><span><TMPL_VAR SKILL   ></span></dl>
+              <dl><dt>難易度    <dd><span><TMPL_VAR DFCLTY  ></span></dl>
+              <dl><dt>対象      <dd><span><TMPL_VAR TARGET  ></span></dl>
+              <dl><dt>射程      <dd><span><TMPL_VAR RANGE   ></span></dl>
+              <dl><dt>侵蝕値    <dd><span><TMPL_VAR ENCROACH></span></dl>
             </div>
             <dl class="combo-out">
-              <dt class="combo-cond">条件</dt>
-              <dt class="combo-dice">ダイス</dt>
-              <dt class="combo-crit">Ｃ値</dt>
-              <dt class="combo-fixed">判定固定値</dt>
-              <dt class="combo-atk">攻撃力</dt>
+              <dt class="combo-cond">条件
+              <dt class="combo-dice">ダイス
+              <dt class="combo-crit">Ｃ値
+              <dt class="combo-fixed">判定固定値
+              <dt class="combo-atk">攻撃力
               
-              <dd class="combo-cond"><b><TMPL_VAR CONDITION1></b></dd><dd class="combo-dice" data-edb="0"><TMPL_VAR DICE1></dd><dd class="combo-crit"><TMPL_VAR CRIT1></dd><dd class="combo-fixed"><TMPL_VAR FIXED1></dd><dd class="combo-atk"><TMPL_VAR ATK1></dd>
-              <TMPL_IF CONDITION2><dd class="combo-cond"><b><TMPL_VAR CONDITION2></b></dd><dd class="combo-dice" data-edb="0"><TMPL_VAR DICE2></dd><dd class="combo-crit"><TMPL_VAR CRIT2></dd><dd class="combo-fixed"><TMPL_VAR FIXED2></dd><dd class="combo-atk"><TMPL_VAR ATK2></dd></TMPL_IF>
-              <TMPL_IF CONDITION3><dd class="combo-cond"><b><TMPL_VAR CONDITION3></b></dd><dd class="combo-dice" data-edb="0"><TMPL_VAR DICE3></dd><dd class="combo-crit"><TMPL_VAR CRIT3></dd><dd class="combo-fixed"><TMPL_VAR FIXED3></dd><dd class="combo-atk"><TMPL_VAR ATK3></dd></TMPL_IF>
-              <TMPL_IF CONDITION4><dd class="combo-cond"><b><TMPL_VAR CONDITION4></b></dd><dd class="combo-dice" data-edb="0"><TMPL_VAR DICE4></dd><dd class="combo-crit"><TMPL_VAR CRIT4></dd><dd class="combo-fixed"><TMPL_VAR FIXED4></dd><dd class="combo-atk"><TMPL_VAR ATK4></dd></TMPL_IF>
-              <TMPL_IF CONDITION5><dd class="combo-cond"><b><TMPL_VAR CONDITION5></b></dd><dd class="combo-dice" data-edb="0"><TMPL_VAR DICE5></dd><dd class="combo-crit"><TMPL_VAR CRIT5></dd><dd class="combo-fixed"><TMPL_VAR FIXED5></dd><dd class="combo-atk"><TMPL_VAR ATK5></dd></TMPL_IF>
+              <dd class="combo-cond"><b><TMPL_VAR CONDITION1></b><dd class="combo-dice" data-edb="0"><TMPL_VAR DICE1><dd class="combo-crit"><TMPL_VAR CRIT1><dd class="combo-fixed"><TMPL_VAR FIXED1><dd class="combo-atk"><TMPL_VAR ATK1>
+              <TMPL_IF CONDITION2><dd class="combo-cond"><b><TMPL_VAR CONDITION2></b><dd class="combo-dice" data-edb="0"><TMPL_VAR DICE2><dd class="combo-crit"><TMPL_VAR CRIT2><dd class="combo-fixed"><TMPL_VAR FIXED2><dd class="combo-atk"><TMPL_VAR ATK2></TMPL_IF>
+              <TMPL_IF CONDITION3><dd class="combo-cond"><b><TMPL_VAR CONDITION3></b><dd class="combo-dice" data-edb="0"><TMPL_VAR DICE3><dd class="combo-crit"><TMPL_VAR CRIT3><dd class="combo-fixed"><TMPL_VAR FIXED3><dd class="combo-atk"><TMPL_VAR ATK3></TMPL_IF>
+              <TMPL_IF CONDITION4><dd class="combo-cond"><b><TMPL_VAR CONDITION4></b><dd class="combo-dice" data-edb="0"><TMPL_VAR DICE4><dd class="combo-crit"><TMPL_VAR CRIT4><dd class="combo-fixed"><TMPL_VAR FIXED4><dd class="combo-atk"><TMPL_VAR ATK4></TMPL_IF>
+              <TMPL_IF CONDITION5><dd class="combo-cond"><b><TMPL_VAR CONDITION5></b><dd class="combo-dice" data-edb="0"><TMPL_VAR DICE5><dd class="combo-crit"><TMPL_VAR CRIT5><dd class="combo-fixed"><TMPL_VAR FIXED5><dd class="combo-atk"><TMPL_VAR ATK5></TMPL_IF>
             </dl>
             <p class="combo-note"><TMPL_VAR NOTE></p>
           </div></TMPL_LOOP>
@@ -462,79 +437,79 @@
           <TMPL_IF Weapons><section class="box">
             <table class="data-table">
               <thead>
-                <tr><th>武器</th><th>常備化</th><th>経験点</th><th>種別</th><th>技能</th><th>命中</th><th>攻撃力</th><th><span class="small">ガード<br>値</span></th><th>射程</th><th>解説</th></tr>
+                <tr><th>武器<th>常備化<th>経験点<th>種別<th>技能<th>命中<th>攻撃力<th><span class="small">ガード<br>値</span><th>射程<th>解説
               </thead>
               <tbody>
                 <TMPL_LOOP Weapons><tr>
-                  <td><TMPL_VAR NAME></td>
-                  <td><TMPL_VAR STOCK></td>
-                  <td><TMPL_VAR EXP></td>
-                  <td><TMPL_VAR TYPE></td>
-                  <td><TMPL_VAR SKILL></td>
-                  <td><TMPL_VAR ACC></td>
-                  <td><TMPL_VAR ATK></td>
-                  <td><TMPL_VAR GUARD></td>
-                  <td class="range"><TMPL_VAR RANGE></td>
-                  <td class="left"><TMPL_VAR NOTE></td>
-                </tr></TMPL_LOOP>
+                  <td><TMPL_VAR NAME>
+                  <td><TMPL_VAR STOCK>
+                  <td><TMPL_VAR EXP>
+                  <td><TMPL_VAR TYPE>
+                  <td><TMPL_VAR SKILL>
+                  <td><TMPL_VAR ACC>
+                  <td><TMPL_VAR ATK>
+                  <td><TMPL_VAR GUARD>
+                  <td class="range"><TMPL_VAR RANGE>
+                  <td class="left"><TMPL_VAR NOTE>
+                </TMPL_LOOP>
               </tbody>
             </table>
           </section></TMPL_IF>
           <TMPL_IF Armors><section class="box">
             <table class="data-table">
               <thead>
-                <tr><th>防具</th><th>常備化</th><th>経験点</th><th>種別</th><th></th><th>行動</th><th>ドッジ</th><th>装甲値</th><th>解説</th></tr>
+                <tr><th>防具<th>常備化<th>経験点<th>種別<th><th>行動<th>ドッジ<th>装甲値<th>解説
               </thead>
               <tbody>
                 <TMPL_LOOP Armors><tr>
-                  <td><TMPL_VAR NAME></td>
-                  <td><TMPL_VAR STOCK></td>
-                  <td><TMPL_VAR EXP></td>
-                  <td><TMPL_VAR TYPE></td>
-                  <td></td>
-                  <td><TMPL_VAR INITIATIVE></td>
-                  <td><TMPL_VAR DODGE></td>
-                  <td><TMPL_VAR ARMOR></td>
-                  <td class="left"><TMPL_VAR NOTE></td>
-                </tr></TMPL_LOOP>
+                  <td><TMPL_VAR NAME>
+                  <td><TMPL_VAR STOCK>
+                  <td><TMPL_VAR EXP>
+                  <td><TMPL_VAR TYPE>
+                  <td>
+                  <td><TMPL_VAR INITIATIVE>
+                  <td><TMPL_VAR DODGE>
+                  <td><TMPL_VAR ARMOR>
+                  <td class="left"><TMPL_VAR NOTE>
+                </TMPL_LOOP>
               </tbody>
             </table>
           </section></TMPL_IF>
           <TMPL_IF Vehicles><section class="box">
             <table class="data-table">
               <thead>
-                <tr><th>ヴィークル</th><th>常備化</th><th>経験点</th><th>種別</th><th>技能</th><th>行動</th><th>攻撃力</th><th>装甲値</th><th><span class="small">全力<br>移動</span></th><th>解説</th></tr>
+                <tr><th>ヴィークル<th>常備化<th>経験点<th>種別<th>技能<th>行動<th>攻撃力<th>装甲値<th><span class="small">全力<br>移動</span><th>解説
               </thead>
               <tbody>
                 <TMPL_LOOP Vehicles><tr>
-                  <td><TMPL_VAR NAME></td>
-                  <td><TMPL_VAR STOCK></td>
-                  <td><TMPL_VAR EXP></td>
-                  <td><TMPL_VAR TYPE></td>
-                  <td><TMPL_VAR SKILL></td>
-                  <td><TMPL_VAR INITIATIVE></td>
-                  <td><TMPL_VAR ATK></td>
-                  <td><TMPL_VAR ARMOR></td>
-                  <td class="range"><TMPL_VAR DASH></td>
-                  <td class="left"><TMPL_VAR NOTE></td>
-                </tr></TMPL_LOOP>
+                  <td><TMPL_VAR NAME>
+                  <td><TMPL_VAR STOCK>
+                  <td><TMPL_VAR EXP>
+                  <td><TMPL_VAR TYPE>
+                  <td><TMPL_VAR SKILL>
+                  <td><TMPL_VAR INITIATIVE>
+                  <td><TMPL_VAR ATK>
+                  <td><TMPL_VAR ARMOR>
+                  <td class="range"><TMPL_VAR DASH>
+                  <td class="left"><TMPL_VAR NOTE>
+                </TMPL_LOOP>
               </tbody>
             </table>
           </section></TMPL_IF>
           <TMPL_IF Items><section class="box">
             <table class="data-table">
               <thead>
-                <tr><th>一般アイテム</th><th>常備化</th><th>経験点</th><th>種別</th><th>技能</th><th>解説</th></tr>
+                <tr><th>一般アイテム<th>常備化<th>経験点<th>種別<th>技能<th>解説
               </thead>
               <tbody>
                 <TMPL_LOOP Items><tr>
-                  <td><TMPL_VAR NAME></td>
-                  <td><TMPL_VAR STOCK></td>
-                  <td><TMPL_VAR EXP></td>
-                  <td><TMPL_VAR TYPE></td>
-                  <td><TMPL_VAR SKILL></td>
-                  <td class="left"><TMPL_VAR NOTE></td>
-                </tr></TMPL_LOOP>
+                  <td><TMPL_VAR NAME>
+                  <td><TMPL_VAR STOCK>
+                  <td><TMPL_VAR EXP>
+                  <td><TMPL_VAR TYPE>
+                  <td><TMPL_VAR SKILL>
+                  <td class="left"><TMPL_VAR NOTE>
+                </TMPL_LOOP>
               </tbody>
             </table>
           </section></TMPL_IF>
@@ -545,27 +520,25 @@
           <table>
             <thead>
               <tr>
-                <th>能力値</th>
-                <th>技能</th>
-                <th>エフェクト</th>
-                <TMPL_IF Magics><th>術式</th></TMPL_IF>
-                <th>アイテム</th>
-                <th>メモリー</th>
-                <th>使用総計</th>
-                <th>残／合計</th>
-              </tr>
+                <th>能力値
+                <th>技能
+                <th>エフェクト
+                <TMPL_IF Magics><th>術式</TMPL_IF>
+                <th>アイテム
+                <th>メモリー
+                <th>使用総計
+                <th>残／合計
             </thead>
             <tbody>
               <tr>
-                <td><TMPL_VAR expUsedStatus></td>
-                <td><TMPL_VAR expUsedSkill></td>
-                <td><TMPL_VAR expUsedEffect></td>
-                <TMPL_IF Magics><td><TMPL_VAR expUsedMagic></td></TMPL_IF>
-                <td><TMPL_VAR expUsedItem></td>
-                <td><TMPL_VAR expUsedMemory></td>
-                <td><TMPL_VAR expUsed></td>
-                <td><TMPL_VAR expRest>／<TMPL_VAR expTotal></td>
-              </tr>
+                <td><TMPL_VAR expUsedStatus>
+                <td><TMPL_VAR expUsedSkill>
+                <td><TMPL_VAR expUsedEffect>
+                <TMPL_IF Magics><td><TMPL_VAR expUsedMagic></TMPL_IF>
+                <td><TMPL_VAR expUsedItem>
+                <td><TMPL_VAR expUsedMemory>
+                <td><TMPL_VAR expUsed>
+                <td><TMPL_VAR expRest>／<TMPL_VAR expTotal>
             </tbody>
           </table>
         </section>
@@ -644,14 +617,13 @@
         <table class="data-table line-tbody">
           <thead>
             <tr>
-              <th>No.</th>
-              <th>日付</th>
-              <th>タイトル</th>
-              <th>経験点</th>
-              <th>GM</th>
-              <th>参加者</th>
+              <th>No.
+              <th>日付
+              <th>タイトル
+              <th>経験点
+              <th>GM
+              <th>参加者
             </tr>
-          </thead>
           <TMPL_LOOP History><tbody>
             <tr>
               <td class="num" <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR NUM></td>
@@ -660,11 +632,8 @@
               <td><TMPL_VAR EXP></td>
               <td class="gm"><span><TMPL_VAR GM></span></td>
               <td class="member"><TMPL_VAR MEMBER></td>
-            </tr>
-            <TMPL_IF NOTE><tr>
-              <td colspan="3" class="note"><TMPL_VAR NOTE></td>
-            </tr></TMPL_IF>
-          </tbody></TMPL_LOOP>
+            <TMPL_IF NOTE><tr><td colspan="3" class="note"><TMPL_VAR NOTE></TMPL_IF>
+          </TMPL_LOOP>
         </table>
       </section>
       <section class="box chat-palette float-box">

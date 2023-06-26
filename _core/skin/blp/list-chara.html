@@ -36,36 +36,35 @@
         <ul>
           <TMPL_LOOP Characters><li<TMPL_IF HIDE> class="hide"</TMPL_IF>>
             <a href="./?id=<TMPL_VAR ID>" data-type="<TMPL_VAR TYPE>"><TMPL_VAR NAME><small><TMPL_VAR PLAYER></small></a>
-          </li></TMPL_LOOP>
+          </TMPL_LOOP>
         </ul>
         <TMPL_ELSE>
         <table>
           <thead>
-          <tr>
-            <th class="name"><a href="./?group=<TMPL_VAR ID><TMPL_VAR qLinks>&sort=name">名前</a></th>
-            <th class="player"><a href="./?group=<TMPL_VAR ID><TMPL_VAR qLinks>&sort=pl">プレイヤー</a></th>
-            <th class="factor"><span>ファクター</span></th>
-            <th class="gender"><span>性別</span></th>
-            <th class="age"><span>年齢</span></th>
-            <th class="belong"><span>所属</span></th>
-            <th class="missing"><span>喪失／欠落</span></th>
-            <th class="level"><a href="./?group=<TMPL_VAR ID><TMPL_VAR qLinks>&sort=level"><span>練<br>度</span></a></th>
-            <th class="date"><a href="./?group=<TMPL_VAR ID><TMPL_VAR qLinks>&sort=date">更新<br>日時</a></th>
-          </tr>
+            <tr>
+              <th class="name"><a href="./?group=<TMPL_VAR ID><TMPL_VAR qLinks>&sort=name">名前</a>
+              <th class="player"><a href="./?group=<TMPL_VAR ID><TMPL_VAR qLinks>&sort=pl">プレイヤー</a>
+              <th class="factor"><span>ファクター</span>
+              <th class="gender"><span>性別</span>
+              <th class="age"><span>年齢</span>
+              <th class="belong"><span>所属</span>
+              <th class="missing"><span>喪失／欠落</span>
+              <th class="level"><a href="./?group=<TMPL_VAR ID><TMPL_VAR qLinks>&sort=level"><span>練<br>度</span></a>
+              <th class="date"><a href="./?group=<TMPL_VAR ID><TMPL_VAR qLinks>&sort=date">更新<br>日時</a>
           </thead>
           <TMPL_LOOP Characters><tr<TMPL_IF HIDE> class="hide"</TMPL_IF>>
-            <td class="name"><a href="./?id=<TMPL_VAR ID>"><TMPL_VAR NAME></a></td>
-            <td class="player"><TMPL_VAR PLAYER></td>
-            <td class="factor"><TMPL_VAR FACTOR></td>
-            <td class="gender"><TMPL_VAR GENDER></td>
-            <td class="age"><TMPL_VAR AGE></td>
-            <td class="factors"><TMPL_VAR FACTORS></td>
-            <td class="belong"><TMPL_VAR BELONG></td>
-            <td class="missing"><TMPL_VAR MISSING></td>
-            <td class="level"><TMPL_VAR LEVEL></td>
+            <td class="name"><a href="./?id=<TMPL_VAR ID>"><TMPL_VAR NAME></a>
+            <td class="player"><TMPL_VAR PLAYER>
+            <td class="factor"><TMPL_VAR FACTOR>
+            <td class="gender"><TMPL_VAR GENDER>
+            <td class="age"><TMPL_VAR AGE>
+            <td class="factors"><TMPL_VAR FACTORS>
+            <td class="belong"><TMPL_VAR BELONG>
+            <td class="missing"><TMPL_VAR MISSING>
+            <td class="level"><TMPL_VAR LEVEL>
             <td class="tags"><TMPL_VAR TAGS></td>
-            <td class="date"><div><TMPL_VAR DATE></div></td>
-          </tr></TMPL_LOOP>
+            <td class="date"><div><TMPL_VAR DATE></div>
+          </TMPL_LOOP>
         </table>
         </TMPL_IF>
         <TMPL_VAR NAV>
@@ -74,10 +73,8 @@
       </TMPL_LOOP>
       <TMPL_IF simpleIndex><section class="list">
         <ul class="grouplist">
-        <TMPL_LOOP Groups><li>
-          <a href="./?group=<TMPL_VAR ID>"><TMPL_VAR NAME><small><TMPL_VAR TEXT></small></a>
-        </li></TMPL_LOOP>
-      </ul>
+        <TMPL_LOOP Groups><li><a href="./?group=<TMPL_VAR ID>"><TMPL_VAR NAME><small><TMPL_VAR TEXT></small></a></TMPL_LOOP>
+        </ul>
       </section></TMPL_IF>
     </article>
     <div id="page-top-button"><a href="#"></a></div>

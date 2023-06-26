@@ -152,16 +152,16 @@ print <<"HTML";
       <div id="header-menu">
         <h2><span></span></h2>
         <ul>
-          <li onclick="sectionSelect('common');"><span>キャラクター</span><span>データ</span></li>
-          <li onclick="sectionSelect('palette');"><span>チャット</span><span>パレット</span></li>
-          <li onclick="sectionSelect('color');" class="color-icon" title="カラーカスタム"></span></li>
-          <li onclick="view('text-rule')" class="help-icon" title="テキスト整形ルール"></li>
-          <li onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード切替"></li>
+          <li onclick="sectionSelect('common');"><span>キャラクター</span><span>データ</span>
+          <li onclick="sectionSelect('palette');"><span>チャット</span><span>パレット</span>
+          <li onclick="sectionSelect('color');" class="color-icon" title="カラーカスタム"></span>
+          <li onclick="view('text-rule')" class="help-icon" title="テキスト整形ルール">
+          <li onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード切替">
           <li class="buttons">
             <ul>
-              <li @{[ display ($mode eq 'edit') ]} class="view-icon" title="閲覧画面"><a href="./?id=$::in{'id'}"></a></li>
-              <li @{[ display ($mode eq 'edit') ]} class="copy" onclick="window.open('./?mode=copy&id=$::in{'id'}@{[  $::in{'log'}?"&log=$::in{'log'}":'' ]}');">複製</li>
-              <li class="submit" onclick="formSubmit()" title="Ctrl+S">保存</li>
+              <li @{[ display ($mode eq 'edit') ]} class="view-icon" title="閲覧画面"><a href="./?id=$::in{'id'}"></a>
+              <li @{[ display ($mode eq 'edit') ]} class="copy" onclick="window.open('./?mode=copy&id=$::in{'id'}@{[  $::in{'log'}?"&log=$::in{'log'}":'' ]}');">複製
+              <li class="submit" onclick="formSubmit()" title="Ctrl+S">保存
             </ul>
           </li>
         </ul>
@@ -205,27 +205,24 @@ HTML
 }
   print <<"HTML";
       <dl class="box" id="hide-options">
-        <dt>閲覧可否設定</dt>
+        <dt>閲覧可否設定
         <dd id="forbidden-checkbox">
           <select name="forbidden">
             <option value="">内容を全て開示
             <option value="battle" @{[ $pc{'forbidden'} eq 'battle' ? 'selected' : '' ]}>データ・数値のみ秘匿
             <option value="all"    @{[ $pc{'forbidden'} eq 'all'    ? 'selected' : '' ]}>内容を全て秘匿
           </select>
-        </dd>
         <dd id="hide-checkbox">
           <select name="hide">
             <option value="">一覧に表示
             <option value="1" @{[ $pc{'hide'} ? 'selected' : '' ]}>一覧には非表示
           </select>
-        </dd>
-        <dd>
-          ※一覧に非表示でもタグ検索結果・マイリストには表示されます
-        </dd>
+        <dd>※「一覧に非表示」でもタグ検索結果・マイリストには表示されます
       </dl>
       <div class="box" id="group">
         <dl>
-          <dt>グループ</dt><dd><select name="group">
+          <dt>グループ
+          <dd><select name="group">
 HTML
 foreach (@set::groups){
   my $id   = @$_[0];
@@ -235,21 +232,22 @@ foreach (@set::groups){
   print '<option value="'.$id.'"'.($pc{'group'} eq $id ? ' selected': '').'>'.$name.'</option>';
 }
 print <<"HTML";
-          </select></dd>
-          <dt>タグ</dt><dd>@{[ input 'tags','','','' ]}</dd>
+          </select>
+          <dt>タグ
+          <dd>@{[ input 'tags','','','' ]}
         </dl>
       </div>
       
       <div class="box" id="name-form">
         <div>
           <dl id="character-name">
-            <dt>キャラクター名</dt>
-            <dd>@{[input('characterName','text',"nameSet")]}</dd>
+            <dt>キャラクター名
+            <dd>@{[input('characterName','text',"nameSet")]}
           </dl>
         </div>
         <dl id="player-name">
-          <dt>プレイヤー名</dt>
-          <dd>@{[input('playerName')]}</dd>
+          <dt>プレイヤー名
+          <dd>@{[input('playerName')]}
         </dl>
       </div>
 
@@ -269,7 +267,7 @@ print <<"HTML";
             @{[ input "history0Completed",'number','changeRegu', ($set::make_fix?' readonly':'') ]}
         </dl>
         <div class="annotate">※成長点は、初期10点と累計経験点による追加を除きます。</div>
-        <dl class="regulation-note"><dt>備考</dt><dd>@{[ input "history0Note" ]}</dd></dl>
+        <dl class="regulation-note"><dt>備考<dd>@{[ input "history0Note" ]}</dl>
       </details>
       <div id="area-status">
         @{[ imageForm($pc{'imageURL'}) ]}
@@ -403,28 +401,28 @@ print <<"HTML";
         </div>
         
         <dl class="box" id="level">
-          <dt>冒険者レベル</dt><dd id="level-value">$pc{'level'}</dd>
+          <dt>冒険者レベル<dd id="level-value">$pc{'level'}
         </dl>
         <div class="box" id="exp">
           <h2>経験点</h2>
           <dl>
-            <dt>消費</dt><dd><span id="exp-used">$pc{'expUsed'}</span>
-            <dt>現在</dt><dd><span id="exp-rest">$pc{'expRest'}</span>
-            <dt>累計</dt><dd><span id="exp-total">$pc{'expTotal'}</span>
+            <dt>消費<dd><span id="exp-used">$pc{'expUsed'}</span>
+            <dt>現在<dd><span id="exp-rest">$pc{'expRest'}</span>
+            <dt>累計<dd><span id="exp-total">$pc{'expTotal'}</span>
           </dl>
         </div>
         
         <div class="box" id="adp">
           <h2>成長点</h2>
           <dl>
-            <dt>消費</dt><dd><span id="adp-used">$pc{'growPointUsed'}</span>
-            <dt>現在</dt><dd><span id="adp-rest">$pc{'growPointRest'}</span>
-            <dt>累計</dt><dd><span id="adp-total">$pc{'growPointTotal'}</span>
+            <dt>消費<dd><span id="adp-used">$pc{'growPointUsed'}</span>
+            <dt>現在<dd><span id="adp-rest">$pc{'growPointRest'}</span>
+            <dt>累計<dd><span id="adp-total">$pc{'growPointTotal'}</span>
           </dl>
         </div>
 
         <dl class="box" id="session-total">
-          <dt>冒険回数／達成数</dt><dd><span id="adventures-value">0</span> 回 ／ <span id="adventures-complete-value">0</span> 回</dd>
+          <dt>冒険回数／達成数<dd><span id="adventures-value">0</span> 回 ／ <span id="adventures-complete-value">0</span> 回
         </dl>
       </div>
       
@@ -453,10 +451,9 @@ sub classInputBox {
   my $name = shift;
   my $id = $data::class{$name}{'id'};
   my $out;
-  $out .= '<dt id="class'.$id.'"';
-  $out .= '>';
+  $out .= '<dt id="class'.$id.'">';
   $out .= '<ruby>'.$name.'<rt>'.$data::class{$name}{'kana'}.'</ruby>';
-  $out .= '</dt><dd>' . input("lv${id}", 'number','changeLv','min="0" max="10"') . '</dd>';
+  $out .= '<dd>' . input("lv${id}", 'number','changeLv','min="0" max="10"');
   return $out;
 }
 print <<"HTML";
@@ -477,7 +474,7 @@ print <<"HTML";
               <th class="grade">習得段階
               <th class="note ">効果
               <th class="page ">参照
-          </thead>
+            </tr>
           <tbody>
 HTML
 foreach my $num ('TMPL',1 .. $pc{'skillNum'}) {
@@ -516,7 +513,7 @@ print <<"HTML";
               <th class="grade">習得段階
               <th class="note ">効果
               <th class="page ">参照
-          </thead>
+            </tr>
           <tbody>
 HTML
 foreach my $num ('TMPL',1 .. $pc{'generalSkillNum'}) {
@@ -556,7 +553,7 @@ print <<"HTML";
               <th class="dfclt ">難易度
               <th class="note  ">効果
               <th class="page  ">参照
-          </thead>
+            </tr>
           <tbody>
 HTML
 my @spell_names;
@@ -594,7 +591,7 @@ print <<"HTML";
               <th class="cost  ">消費／回数制限
               <th class="terms ">使用条件
               <th class="page  ">参照
-          </thead>
+            </tr>
 HTML
 foreach my $num ('TMPL',1 .. $pc{'artsNum'}) {
   if($num eq 'TMPL'){ print '<template id="arts-template">' }
@@ -680,7 +677,6 @@ print <<"HTML";
                 <th class="class small">判定に<br>適用する職業
                 <th>
               <tr>
-            </thead>
 HTML
 foreach my $num ('TMPL',1 .. $pc{'weaponNum'}) {
   if($num eq 'TMPL'){ print '<template id="weapon-template">' }
@@ -745,16 +741,15 @@ print <<"HTML";
         <div class="box" id="armor">
           <table>
             <thead>
-            <tr>
-              <th class="name   ">鎧
-              <th class="type   ">種別
-              <th class="dodge  ">回避<br>基準値
-              <th class="armor  ">装甲値
-              <th class="stealth">隠密性
-              <th class="move   ">移動力
-              <th class="note   ">備考
-            </tr>
-            </thead>
+              <tr>
+                <th class="name   ">鎧
+                <th class="type   ">種別
+                <th class="dodge  ">回避<br>基準値
+                <th class="armor  ">装甲値
+                <th class="stealth">隠密性
+                <th class="move   ">移動力
+                <th class="note   ">備考
+              </tr>
             <tbody>
               <tr>
                 <td>@{[ input 'armor1Name' ]}
@@ -802,15 +797,14 @@ print <<"HTML";
         <div class="box" id="shield">
           <table>
             <thead>
-            <tr>
-              <th class="name   ">盾
-              <th class="type   ">種別
-              <th class="block  ">盾受け<br>基準値
-              <th class="armor  ">盾受け値<br><span class="small">+装甲値</span>
-              <th class="stealth">隠密性
-              <th class="note   ">備考
-            </tr>
-            </thead>
+              <tr>
+                <th class="name   ">盾
+                <th class="type   ">種別
+                <th class="block  ">盾受け<br>基準値
+                <th class="armor  ">盾受け値<br><span class="small">+装甲値</span>
+                <th class="stealth">隠密性
+                <th class="note   ">備考
+              </tr>
             <tbody>
               <tr>
                 <td>@{[ input 'shield1Name' ]}
@@ -906,14 +900,14 @@ print <<"HTML";
               <td id="history0-exp">$pc{'history0Exp'}
               <td id="history0-adp">$pc{'history0Adp'}
               <td id="history0-money" class="money">$pc{'history0Money'}
-          </thead>
+            </tr>
 HTML
 foreach my $num ('TMPL',1 .. $pc{'historyNum'}) {
   if($num eq 'TMPL'){ print '<template id="history-template">' }
 print <<"HTML";
           <tbody id="history${num}">
             <tr>
-              <td rowspan="2" class="handle">
+              <td class="handle" rowspan="2">
               <td class="date  " rowspan="2">@{[ input "history${num}Date" ]}
               <td class="title " rowspan="2">@{[ input "history${num}Title" ]}
               <td class="comp  "><select name="history${num}Completed" oninput="calcAdvCompleted()">@{[ option "history${num}Completed", '1|<達成>','-1|<失敗>' ]}</select>
@@ -922,14 +916,13 @@ print <<"HTML";
               <td class="money ">@{[ input "history${num}Money",'text','calcCash' ]}
               <td class="gm    ">@{[ input "history${num}Gm" ]}
               <td class="member">@{[ input "history${num}Member" ]}
-            </tr>
-            <tr><td colspan="5" class="left">@{[input("history${num}Note",'','','placeholder="備考"')]}</td></tr>
-          </tbody>
+            <tr>
+              <td colspan="5" class="left">@{[input("history${num}Note",'','','placeholder="備考"')]}
 HTML
   if($num eq 'TMPL'){ print '</template>' }
 }
 print <<"HTML";
-          <tfoot>
+          <tfoot id="history-foot">
             <tr>
               <td>
               <td>
@@ -938,8 +931,7 @@ print <<"HTML";
               <td id="history-exp-total">
               <td id="history-adp-total">
               <td id="history-money-total" class="money">
-              <td colspan="2"></td>
-            </tr>
+              <td colspan="2">
             <tr>
               <th>
               <th class="date  ">日付
@@ -950,6 +942,7 @@ print <<"HTML";
               <th class="money ">銀貨
               <th class="gm    ">GM
               <th class="member">参加者
+            </tr>
           </tfoot>
         </table>
         <div class="add-del-button"><a onclick="addHistory()">▼</a><a onclick="delHistory()">▲</a></div>
@@ -977,7 +970,7 @@ print <<"HTML";
               <td class="money "><input type="text" value="30" disabled>
               <td class="gm    "><input type="text" value="サンプルさん" disabled>
               <td class="member"><input type="text" value="小鬼殺し　女神官　妖精弓手　鉱人道士　蜥蜴僧侶" disabled>
-          </tr>
+            </tr>
           </tbody>
         </table>
         <div class="annotate">

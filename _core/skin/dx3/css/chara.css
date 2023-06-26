@@ -189,7 +189,7 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
   display: grid;
   grid-gap: var(--box-v-gap) var(--box-h-gap);
   grid-template-columns: 0.7fr 1.1fr 1.1fr 2.115fr;
-  grid-template-rows: auto auto auto 1fr;
+  grid-template-rows: auto max-content max-content auto;
   grid-template-areas:
     "PER PER WKS IMG"
     "REN REN REN IMG"
@@ -239,6 +239,15 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
   content: '　';
 }
 
+:is(#personal, #works-cover) dl {
+  display: grid;
+  grid-template-rows: max-content 1fr;
+}
+:is(#personal, #works-cover) dl dd {
+  line-height: 1;
+  align-self: center;
+}
+
 /* Image */
 
 /* Personal */
@@ -272,8 +281,7 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
 #renegade dd {
   font-family: var(--font-proportional);
   font-feature-settings: "palt";
-}
-#renegade dl:first-child {
+  min-height: 1.8em;
 }
 #renegade dl:last-child {
   border-left-width: 1px;
@@ -342,10 +350,6 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
   border-left-width: 1px;
   border-left-style: dotted;
 }
-#sub-status dl:nth-child(n+4) {
-}
-#sub-status dl:not(:nth-child(1)):not(:nth-child(4)) {
-}
 #sub-status dl dd b {
   display: inline-block;
   font-weight: normal;
@@ -384,8 +388,6 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
   margin: 0 .5rem;
   line-height: 1;
   white-space: nowrap;
-}
-#exp dl > * {
 }
 #exp dl > *:not(:last-of-type) {
   border-width: 0 0 .1rem;
@@ -448,6 +450,7 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
 #lifepath table td.center {
   width: 2.2em;
   font-size: 110%;
+  line-height: calc(1.4 / 1.1);
 }
 #lifepath table td.center.bold {
   font-size: 130%;
@@ -958,7 +961,7 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
   text-align: left;
   padding-left: .5em;
 }
-#combo .combo-table .combo-combo dd:empty::before {
+#combo .combo-table .combo-combo dd span:empty::before {
   content: "";
   display: inline-block;
 }

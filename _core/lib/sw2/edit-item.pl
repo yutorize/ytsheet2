@@ -75,15 +75,15 @@ print <<"HTML";
       <div id="header-menu">
         <h2><span></span></h2>
         <ul>
-          <li onclick="sectionSelect('common');"><span>アイテム</span><span>データ</span></li>
-          <li onclick="sectionSelect('color');" class="color-icon" title="カラーカスタム"></span></li>
-          <li onclick="view('text-rule')" class="help-icon" title="テキスト整形ルール"></li>
-          <li onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード切替"></li>
+          <li onclick="sectionSelect('common');"><span>アイテム</span><span>データ</span>
+          <li onclick="sectionSelect('color');" class="color-icon" title="カラーカスタム"></span>
+          <li onclick="view('text-rule')" class="help-icon" title="テキスト整形ルール">
+          <li onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード切替">
           <li class="buttons">
             <ul>
-              <li @{[ display ($mode eq 'edit') ]} class="view-icon" title="閲覧画面"><a href="./?id=$::in{'id'}"></a></li>
-              <li @{[ display ($mode eq 'edit') ]} class="copy" onclick="window.open('./?mode=copy&id=$::in{'id'}@{[  $::in{'log'}?"&log=$::in{'log'}":'' ]}');">複製</li>
-              <li class="submit" onclick="formSubmit()" title="Ctrl+S">保存</li>
+              <li @{[ display ($mode eq 'edit') ]} class="view-icon" title="閲覧画面"><a href="./?id=$::in{'id'}"></a>
+              <li @{[ display ($mode eq 'edit') ]} class="copy" onclick="window.open('./?mode=copy&id=$::in{'id'}@{[  $::in{'log'}?"&log=$::in{'log'}":'' ]}');">複製
+              <li class="submit" onclick="formSubmit()" title="Ctrl+S">保存
             </ul>
           </li>
         </ul>
@@ -127,40 +127,36 @@ HTML
 }
   print <<"HTML";
       <dl class="box" id="hide-options">
-        <dt>閲覧可否設定</dt>
+        <dt>閲覧可否設定
         <dd id="forbidden-checkbox">
           <select name="forbidden">
             <option value="">内容を全て開示
             <option value="battle" @{[ $pc{'forbidden'} eq 'battle' ? 'selected' : '' ]}>データ・数値のみ秘匿
             <option value="all"    @{[ $pc{'forbidden'} eq 'all'    ? 'selected' : '' ]}>内容を全て秘匿
           </select>
-        </dd>
         <dd id="hide-checkbox">
           <select name="hide">
             <option value="">一覧に表示
             <option value="1" @{[ $pc{'hide'} ? 'selected' : '' ]}>一覧には非表示
           </select>
-        </dd>
-        <dd>
-          ※一覧に非表示でもタグ検索結果・マイリストには表示されます
-        </dd>
+        <dd>※「一覧に非表示」でもタグ検索結果・マイリストには表示されます
       </dl>
       <div class="box" id="group">
         <dl>
-          <dt>タグ</dt><dd>@{[ input 'tags' ]}</dd>
+          <dt>タグ<dd>@{[ input 'tags' ]}
         </dl>
       </div>
 
       <div class="box" id="name-form">
         <div>
           <dl id="character-name">
-            <dt>名称</dt>
-            <dd>@{[ input('itemName','text',"nameSet('itemName')") ]}</dd>
+            <dt>名称
+            <dd>@{[ input('itemName','text',"nameSet('itemName')") ]}
           </dl>
         </div>
         <dl id="player-name">
-          <dt>製作者</dt>
-          <dd>@{[input('author')]}</dd>
+          <dt>製作者
+          <dd>@{[input('author')]}
         </dl>
       </div>
       
@@ -168,75 +164,71 @@ HTML
       <label>@{[ input 'magic', 'checkbox' ]}<span>魔法のアイテム</span></label>
       <!-- <label>@{[ input 'school', 'checkbox' ]}　流派装備</label> -->
       <hr>
-      <dl><dt>基本取引価格</dt><dd>@{[ input 'price' ]}G</dd></dl>
-      <dl><dt>知名度  </dt><dd>@{[ input 'reputation', 'text','','pattern="^[0-9\/／]+$"' ]} 数字と／のみ入力可</dd></dl>
-      <dl><dt>形状    </dt><dd>@{[ input 'shape' ]}</dd></dl>
-      <dl><dt>カテゴリ</dt><dd>@{[ input 'category','text','','list="list-category"' ]}
-        複数カテゴリの場合、スペースで区切ってください。</dd></dl>
-      <dl><dt>製作時期</dt><dd>@{[ input 'age','text','','list="list-age"' ]}</dd></dl>
-      <dl><dt>概要    </dt><dd>@{[ input 'summary' ]}</dd></dl>
+      <dl><dt>基本取引価格<dd>@{[ input 'price' ]}G</dl>
+      <dl><dt>知名度  <dd>@{[ input 'reputation', 'text','','pattern="^[0-9\/／]+$"' ]} 数字と／のみ入力可</dl>
+      <dl><dt>形状    <dd>@{[ input 'shape' ]}</dl>
+      <dl><dt>カテゴリ<dd>@{[ input 'category','text','','list="list-category"' ]}
+        複数カテゴリの場合、スペースで区切ってください。</dl>
+      <dl><dt>製作時期<dd>@{[ input 'age','text','','list="list-age"' ]}</dl>
+      <dl><dt>概要    <dd>@{[ input 'summary' ]}</dl>
     </div>
     <div class="box">
       <h2>効果</h2>
       <textarea name="effects">$pc{'effects'}</textarea>
       <h4>武器データ</h4>
       <table class="input-weapon-data">
-      <tr><th>用法</th><th>必筋</th><th>命中</th><th>威力</th><th>C値</th><th>追加D</th><th>備考</th></tr>
-      <tr>
-        <td>@{[ input 'weapon1Usage','text','','list="list-usage"' ]}</td>
-        <td>@{[ input 'weapon1Reqd' ]}</td>
-        <td>@{[ input 'weapon1Acc' ]}</td>
-        <td>@{[ input 'weapon1Rate' ]}</td>
-        <td>@{[ input 'weapon1Crit' ]}</td>
-        <td>@{[ input 'weapon1Dmg' ]}</td>
-        <td>@{[ input 'weapon1Note' ]}</td>
-      </tr>
-      <tr>
-        <td>@{[ input 'weapon2Usage','text','','list="list-usage"' ]}</td>
-        <td>@{[ input 'weapon2Reqd' ]}</td>
-        <td>@{[ input 'weapon2Acc' ]}</td>
-        <td>@{[ input 'weapon2Rate' ]}</td>
-        <td>@{[ input 'weapon2Crit' ]}</td>
-        <td>@{[ input 'weapon2Dmg' ]}</td>
-        <td>@{[ input 'weapon2Note' ]}</td>
-      </tr>
-      <tr>
-        <td>@{[ input 'weapon3Usage','text','','list="list-usage"' ]}</td>
-        <td>@{[ input 'weapon3Reqd' ]}</td>
-        <td>@{[ input 'weapon3Acc' ]}</td>
-        <td>@{[ input 'weapon3Rate' ]}</td>
-        <td>@{[ input 'weapon3Crit' ]}</td>
-        <td>@{[ input 'weapon3Dmg' ]}</td>
-        <td>@{[ input 'weapon3Note' ]}</td>
-      </tr>
+        <tr><th>用法<th>必筋<th>命中<th>威力<th>C値<th>追加D<th>備考
+        <tr>
+          <td>@{[ input 'weapon1Usage','text','','list="list-usage"' ]}
+          <td>@{[ input 'weapon1Reqd' ]}
+          <td>@{[ input 'weapon1Acc' ]}
+          <td>@{[ input 'weapon1Rate' ]}
+          <td>@{[ input 'weapon1Crit' ]}
+          <td>@{[ input 'weapon1Dmg' ]}
+          <td>@{[ input 'weapon1Note' ]}
+        <tr>
+          <td>@{[ input 'weapon2Usage','text','','list="list-usage"' ]}
+          <td>@{[ input 'weapon2Reqd' ]}
+          <td>@{[ input 'weapon2Acc' ]}
+          <td>@{[ input 'weapon2Rate' ]}
+          <td>@{[ input 'weapon2Crit' ]}
+          <td>@{[ input 'weapon2Dmg' ]}
+          <td>@{[ input 'weapon2Note' ]}
+        <tr>
+          <td>@{[ input 'weapon3Usage','text','','list="list-usage"' ]}
+          <td>@{[ input 'weapon3Reqd' ]}
+          <td>@{[ input 'weapon3Acc' ]}
+          <td>@{[ input 'weapon3Rate' ]}
+          <td>@{[ input 'weapon3Crit' ]}
+          <td>@{[ input 'weapon3Dmg' ]}
+          <td>@{[ input 'weapon3Note' ]}
+        </tr>
       </table>
       <p>
       <code>[刃]</code> <code>[打]</code> でそれぞれ<img class="i-icon" src="${set::icon_dir}wp_edge.png"><img class="i-icon" src="${set::icon_dir}wp_blow.png">に置き換え
       <p>
       <h4>防具データ</h4>
       <table class="input-armour-data">
-      <tr><th>用法</th><th>必筋</th><th>回避</th><th>防護</th><th>備考</th></tr>
-      <tr>
-        <td>@{[ input 'armour1Usage','text','','list="list-usage"' ]}</td>
-        <td>@{[ input 'armour1Reqd' ]}</td>
-        <td>@{[ input 'armour1Eva' ]}</td>
-        <td>@{[ input 'armour1Def' ]}</td>
-        <td>@{[ input 'armour1Note' ]}</td>
-      </tr>
-      <tr>
-        <td>@{[ input 'armour2Usage','text','','list="list-usage"' ]}</td>
-        <td>@{[ input 'armour2Reqd' ]}</td>
-        <td>@{[ input 'armour2Eva' ]}</td>
-        <td>@{[ input 'armour2Def' ]}</td>
-        <td>@{[ input 'armour2Note' ]}</td>
-      </tr>
-      <tr>
-        <td>@{[ input 'armour3Usage','text','','list="list-usage"' ]}</td>
-        <td>@{[ input 'armour3Reqd' ]}</td>
-        <td>@{[ input 'armour3Eva' ]}</td>
-        <td>@{[ input 'armour3Def' ]}</td>
-        <td>@{[ input 'armour3Note' ]}</td>
-      </tr>
+        <tr><th>用法<th>必筋<th>回避<th>防護<th>備考
+        <tr>
+          <td>@{[ input 'armour1Usage','text','','list="list-usage"' ]}
+          <td>@{[ input 'armour1Reqd' ]}
+          <td>@{[ input 'armour1Eva' ]}
+          <td>@{[ input 'armour1Def' ]}
+          <td>@{[ input 'armour1Note' ]}
+        <tr>
+          <td>@{[ input 'armour2Usage','text','','list="list-usage"' ]}
+          <td>@{[ input 'armour2Reqd' ]}
+          <td>@{[ input 'armour2Eva' ]}
+          <td>@{[ input 'armour2Def' ]}
+          <td>@{[ input 'armour2Note' ]}
+        <tr>
+          <td>@{[ input 'armour3Usage','text','','list="list-usage"' ]}
+          <td>@{[ input 'armour3Reqd' ]}
+          <td>@{[ input 'armour3Eva' ]}
+          <td>@{[ input 'armour3Def' ]}
+          <td>@{[ input 'armour3Note' ]}
+        </tr>
       </table>
     </div>
     <div class="box">

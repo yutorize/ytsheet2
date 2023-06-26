@@ -262,9 +262,6 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
   border-left-width: 1px;
   border-left-style: solid;
 }
-#classes dd:empty::before {
-  content: "　";
-}
 #classes dd span {
   display: inline-block;
 }

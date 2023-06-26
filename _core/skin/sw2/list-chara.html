@@ -40,37 +40,36 @@
         <ul>
           <TMPL_LOOP Characters><li<TMPL_IF HIDE> class="hide"</TMPL_IF>>
             <a href="./?id=<TMPL_VAR ID>" data-lv="<TMPL_VAR LV>"><TMPL_VAR NAME><small><TMPL_VAR PLAYER></small></a>
-          </li></TMPL_LOOP>
+          </TMPL_LOOP>
         </ul>
         <TMPL_ELSE>
         <table>
           <thead>
-          <tr>
-            <th class="name"><a href="./?group=<TMPL_VAR ID><TMPL_VAR qLinks>&sort=name">名前</a><small class="fellow">[F]=フェローあり</small></th>
-            <th class="player"><a href="./?group=<TMPL_VAR ID><TMPL_VAR qLinks>&sort=pl">プレイヤー</a></th>
-            <th class="race"><span>種族</span></th>
-            <th class="gender"><span><span class="small">性別</span></span></th>
-            <th class="age"><span>年齢</span></th>
-            <th class="rank"><a href="./?group=<TMPL_VAR ID><TMPL_VAR qLinks>&sort=rank">ランク</a></th>
-            <th class="lv"><a href="./?group=<TMPL_VAR ID><TMPL_VAR qLinks>&sort=lv">Lv</a></th>
-            <th class="exp"><a href="./?group=<TMPL_VAR ID><TMPL_VAR qLinks>&sort=exp">経験点</a></th>
-            <th class="class"><span>技能</span></th>
-            <th class="date"><a href="./?group=<TMPL_VAR ID><TMPL_VAR qLinks>&sort=date">更新<br>日時</a></th>
-          </tr>
+            <tr>
+              <th class="name"><a href="./?group=<TMPL_VAR ID><TMPL_VAR qLinks>&sort=name">名前</a><small class="fellow">[F]=フェローあり</small>
+              <th class="player"><a href="./?group=<TMPL_VAR ID><TMPL_VAR qLinks>&sort=pl">プレイヤー</a>
+              <th class="race"><span>種族</span>
+              <th class="gender"><span><span class="small">性別</span></span>
+              <th class="age"><span>年齢</span>
+              <th class="rank"><a href="./?group=<TMPL_VAR ID><TMPL_VAR qLinks>&sort=rank">ランク</a>
+              <th class="lv"><a href="./?group=<TMPL_VAR ID><TMPL_VAR qLinks>&sort=lv">Lv</a>
+              <th class="exp"><a href="./?group=<TMPL_VAR ID><TMPL_VAR qLinks>&sort=exp">経験点</a>
+              <th class="class"><span>技能</span>
+              <th class="date"><a href="./?group=<TMPL_VAR ID><TMPL_VAR qLinks>&sort=date">更新<br>日時</a>
           </thead>
           <TMPL_LOOP Characters><tr<TMPL_IF HIDE> class="hide"</TMPL_IF>>
-            <td class="name"><a href="./?id=<TMPL_VAR ID>"><TMPL_VAR NAME><TMPL_IF FELLOW><small class="fellow">[F]</small></TMPL_IF></a></td>
-            <td class="player"><TMPL_VAR PLAYER></td>
-            <td class="race"><TMPL_VAR RACE></td>
-            <td class="gender"><TMPL_VAR GENDER></td>
-            <td class="age"><span><TMPL_VAR AGE></span></td>
-            <td class="rank"><TMPL_VAR RANK></td>
-            <td class="lv"><TMPL_VAR LV></td>
-            <td class="exp"><TMPL_VAR EXP></td>
-            <td class="class"><div><TMPL_VAR CLASS></div></td>
+            <td class="name"><a href="./?id=<TMPL_VAR ID>"><TMPL_VAR NAME><TMPL_IF FELLOW><small class="fellow">[F]</small></TMPL_IF></a>
+            <td class="player"><TMPL_VAR PLAYER>
+            <td class="race"><TMPL_VAR RACE>
+            <td class="gender"><TMPL_VAR GENDER>
+            <td class="age"><span><TMPL_VAR AGE></span>
+            <td class="rank"><TMPL_VAR RANK>
+            <td class="lv"><TMPL_VAR LV>
+            <td class="exp"><TMPL_VAR EXP>
+            <td class="class"><div><TMPL_VAR CLASS></div>
             <td class="tags"><TMPL_VAR TAGS></td>
-            <td class="date"><div><TMPL_VAR DATE></div></td>
-          </tr></TMPL_LOOP>
+            <td class="date"><div><TMPL_VAR DATE></div>
+          </TMPL_LOOP>
         </table>
         </TMPL_IF>
         <TMPL_VAR NAV>
@@ -79,10 +78,8 @@
       </TMPL_LOOP>
       <TMPL_IF simpleIndex><section class="list">
         <ul class="grouplist">
-        <TMPL_LOOP Groups><li>
-          <a href="./?group=<TMPL_VAR ID>"><TMPL_VAR NAME><small><TMPL_VAR TEXT></small></a>
-        </li></TMPL_LOOP>
-      </ul>
+        <TMPL_LOOP Groups><li><a href="./?group=<TMPL_VAR ID>"><TMPL_VAR NAME><small><TMPL_VAR TEXT></small></a></TMPL_LOOP>
+        </ul>
       </section></TMPL_IF>
     </article>
     <div id="page-top-button"><a href="#"></a></div>

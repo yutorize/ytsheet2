@@ -232,11 +232,6 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
   }
 }
 
-#area-status dd:empty::before,
-#area-status td:empty::before {
-  content: '　';
-}
-
 /* Image */
 .image-none::after {
   transform: scale(1, 1.5);
@@ -258,6 +253,7 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
   display: grid;
   align-items: center;
   white-space: nowrap;
+  min-height: 1.8em;
 }
 
 /* Personal */

@@ -9,9 +9,9 @@
     <h1><a href="./"><TMPL_VAR title></a></h1>
     <nav>
       <ul>
-        <TMPL_LOOP Menu><li class="<TMPL_VAR SIZE>"><a <TMPL_VAR TYPE>="<TMPL_VAR VALUE>"><TMPL_VAR TEXT></a></li>
+        <TMPL_LOOP Menu><li class="<TMPL_VAR SIZE>"><a <TMPL_VAR TYPE>="<TMPL_VAR VALUE>"><TMPL_VAR TEXT></a>
         </TMPL_LOOP>
-        <li><a onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード"></a></li>
+        <li><a onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード"></a>
       </ul>
     </nav>
   </header>
@@ -30,7 +30,7 @@
       <aside id="loglist" class="float-box">
         <h2>過去ログ（バックアップ）</h2>
         <ul>
-          <TMPL_LOOP LogList><li class="<TMPL_VAR SELECTED>"><a href="?id=<TMPL_VAR id><TMPL_VAR URL>"><TMPL_VAR DATE></a></li></TMPL_LOOP>
+          <TMPL_LOOP LogList><li class="<TMPL_VAR SELECTED>"><a href="?id=<TMPL_VAR id><TMPL_VAR URL>"><TMPL_VAR DATE></a></TMPL_LOOP>
         </ul>
         <TMPL_IF viewLogNaming><details id="log-naming">
           <summary>閲覧中のログ<TMPL_IF selectedLogName>の名前をつけなおす<TMPL_ELSE>に名前をつける</TMPL_IF></summary>
@@ -39,9 +39,9 @@
             <input type="hidden" name="id" value="<TMPL_VAR id>">
             <input type="hidden" name="date" value="<TMPL_VAR logId>">
             <dl>
-              <dt>名前</dt><dd><input type="text" name="log-name" value="<TMPL_VAR selectedLogName>"></dd>
-              <TMPL_IF reqdPassword><dt>パスワード</dt><dd><input type="password" name="pass"></dd></TMPL_IF>
-              <dd><input type="submit" value="命名"></dd>
+              <dt>名前<dd><input type="text" name="log-name" value="<TMPL_VAR selectedLogName>">
+              <TMPL_IF reqdPassword><dt>パスワード<dd><input type="password" name="pass"></TMPL_IF>
+              <dd><input type="submit" value="命名">
             </dl>
           </form>
         </details></TMPL_IF>
@@ -148,7 +148,6 @@
                 <dt>髪<dd>(<span><TMPL_VAR traitsHair></span>)
                 <dt>瞳<dd>(<span><TMPL_VAR traitsEyes></span>)
               </dl>
-            </dd>
           </dl>
         </div>
 
@@ -198,10 +197,10 @@
         <div class="box" id="status">
           <h2>状態</h2>
           <dl id="lifeforce">
-            <dt>生命力</dt>
-            <dd class="total"><b><TMPL_VAR statusLife></b></dd>
-            <dt>×2</dt>
-            <dd class="total"><b><TMPL_VAR statusLifeX2></b></dd>
+            <dt>生命力
+            <dd class="total"><b><TMPL_VAR statusLife></b>
+            <dt>×2
+            <dd class="total"><b><TMPL_VAR statusLifeX2></b>
             <dd class="calc">
               <b>【<TMPL_VAR statusLifeDice>】</b>
               <div>
@@ -212,8 +211,8 @@
               </div>
           </dl>
           <dl id="movement">
-            <dt>移動力</dt>
-            <dd class="total"><b><TMPL_VAR statusMove></b></dd>
+            <dt>移動力
+            <dd class="total"><b><TMPL_VAR statusMove></b>
             <dd class="calc">
               <b>【<TMPL_VAR statusMoveDice>】</b>
               <div>
@@ -222,8 +221,8 @@
               </div>
           </dl>
           <dl>
-            <dt>呪文使用回数</dt>
-            <dd class="total"><b><TMPL_VAR statusSpell></b></dd>
+            <dt>呪文使用回数
+            <dd class="total"><b><TMPL_VAR statusSpell></b>
             <dd class="calc">
               <b>【<TMPL_VAR statusSpellDice>】</b>
               <div>
@@ -232,8 +231,8 @@
                 </div>
           </dl>
           <dl>
-            <dt>呪文抵抗基準値</dt>
-            <dd class="total"><b><TMPL_VAR statusResist></b></dd>
+            <dt>呪文抵抗基準値
+            <dd class="total"><b><TMPL_VAR statusResist></b>
             <dd class="calc">
               <b></b>
               <div>
@@ -258,29 +257,29 @@
 
         <div id="level-and-points">
           <dl class="box" id="level">
-            <dt><span>冒険者<span class="shorten">レベル</span></span></dt><dd><TMPL_VAR level></dd>
+            <dt><span>冒険者<span class="shorten">レベル</span></span><dd><TMPL_VAR level>
           </dl>
           
           <section class="box" id="exp">
             <h2>経験点</h2>
             <dl>
-              <dt>消費</dt><dd><TMPL_VAR expUsed></dd>
-              <dt>現在</dt><dd><TMPL_VAR expRest></dd>
-              <dt>累計</dt><dd><TMPL_VAR expTotal></dd>
+              <dt>消費<dd><TMPL_VAR expUsed>
+              <dt>現在<dd><TMPL_VAR expRest>
+              <dt>累計<dd><TMPL_VAR expTotal>
             </dl>
           </section>
           
           <dl class="box" id="adp">
             <h2>成長点</h2>
             <dl>
-              <dt>消費</dt><dd><TMPL_VAR adpUsed></dd>
-              <dt>現在</dt><dd><TMPL_VAR adpRest></dd>
-              <dt>累計</dt><dd><TMPL_VAR adpTotal></dd>
+              <dt>消費<dd><TMPL_VAR adpUsed>
+              <dt>現在<dd><TMPL_VAR adpRest>
+              <dt>累計<dd><TMPL_VAR adpTotal>
             </dl>
           </dl>
 
           <dl class="box" id="session-total">
-            <dt>冒険回数／達成数</dt><dd><TMPL_VAR adventures> 回 ／ <TMPL_VAR completed> 回</dd>
+            <dt>冒険回数／達成数<dd><TMPL_VAR adventures> 回 ／ <TMPL_VAR completed> 回
           </dl>
         </div>
       </div>
@@ -406,14 +405,13 @@
                 <th>基本値
                 <td colspan="2">技量集中
                 <td colspan="3"><b id="attack-ability-value"><TMPL_VAR abilityTecFoc></b>
-              </tr>
               <TMPL_IF existsHitScoreMod><tr id="attack-skill">
                 <th class="small">技能など
                 <td colspan="2"><TMPL_VAR hitScoreModName>
                 <td><TMPL_VAR hitScoreModMelee     >
                 <td><TMPL_VAR hitScoreModThrowing  >
                 <td><TMPL_VAR hitScoreModProjectile>
-              </tr></TMPL_IF>
+              </TMPL_IF>
               <TMPL_IF AttackClasses><tr id="attack-class-head-row">
                 <th rowspan="5" class="attack-class-head">職業
               <tr></TMPL_IF>
@@ -439,8 +437,7 @@
                 <th class="note ">備考
                 <th>
               </tr>
-            </thead>
-            <tbody><TMPL_LOOP Weapons><TMPL_IF CLOSE></tbody><tbody></TMPL_IF>
+            <tbody><TMPL_LOOP Weapons><TMPL_IF CLOSE><tbody></TMPL_IF>
               <tr>
                 <TMPL_UNLESS NAMEOFF><td class="name " rowspan="<TMPL_VAR ROWSPAN>"><TMPL_VAR NAME></TMPL_UNLESS>
                 <td class="type "><TMPL_VAR TYPE><span>／<TMPL_VAR WEIGHT></span>
@@ -550,7 +547,6 @@
                 <th class="stealth">隠密性
                 <th class="note   ">備考
               </tr>
-            </thead>
             <tbody>
               <TMPL_LOOP Shields><tr>
                 <td class="name   "><TMPL_VAR NAME>
@@ -603,7 +599,7 @@
         <table class="data-table line-tbody">
           <thead>
             <tr>
-              <th>No.</th>
+              <th>No.
               <th class="date  ">日付
               <th class="title ">タイトル
               <th class="comp  "><span class="small">目標<br>達成</span>
@@ -613,7 +609,6 @@
               <th class="gm    ">GM
               <th class="member">参加者
             </tr>
-          </thead>
           <TMPL_LOOP History><tbody>
             <tr>
               <td class="num   " <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR NUM></td>
@@ -626,20 +621,18 @@
               <td class="gm    "><span><TMPL_VAR GM></span></td>
               <td class="member"><TMPL_VAR MEMBER></td>
             </tr>
-          <TMPL_IF NOTE><tr>
-            <td colspan="6" class="note"><TMPL_VAR NOTE></td>
-          </tr></TMPL_IF>
-          </tbody></TMPL_LOOP>
+            <TMPL_IF NOTE><tr><td colspan="6" class="note"><TMPL_VAR NOTE></TMPL_IF>
+          </TMPL_LOOP>
           <tfoot>
             <tr>
-              <td></td>
-              <td></td>
-              <td>取得総計</td>
-              <td class="comp  "><TMPL_VAR adventures> / <TMPL_VAR completed></td>
-              <td class="exp   "><TMPL_VAR historyExpTotal></td>
-              <td class="adp   "><TMPL_VAR historyAdpTotal></td>
+              <td>
+              <td>
+              <td>取得総計
+              <td class="comp  "><TMPL_VAR adventures> / <TMPL_VAR completed>
+              <td class="exp   "><TMPL_VAR historyExpTotal>
+              <td class="adp   "><TMPL_VAR historyAdpTotal>
               <td class="money "><TMPL_VAR historyMoneyTotal></td>
-              <td colspan="2"></td>
+              <td colspan="2">
             </tr>
           </tfoot>
         </table>
