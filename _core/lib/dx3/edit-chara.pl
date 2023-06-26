@@ -639,11 +639,12 @@ print <<"HTML";
         <summary>エフェクト [<span id="exp-effect">0</span>]</summary>
         @{[input 'effectNum','hidden']}
         <table class="edit-table line-tbody no-border-cells" id="effect-table">
-          <thead>
+          <thead id="effect-head">
             <tr><th></th><th>名称</th><th>Lv</th><th>タイミング</th><th>技能</th><th>難易度</th><th>対象</th><th>射程</th><th>侵蝕値</th><th>制限</th></tr>
           </thead>
 HTML
-foreach my $num (1 .. $pc{'effectNum'}) {
+foreach my $num ('TMPL',1 .. $pc{'effectNum'}) {
+  if($num eq 'TMPL'){ print '<template id="effect-template">' }
 print <<"HTML";
           <tbody id="effect${num}">
             <tr>
@@ -665,9 +666,10 @@ print <<"HTML";
             </div></td></tr>
           </tbody>
 HTML
+  if($num eq 'TMPL'){ print '</template>' }
 }
 print <<"HTML";
-          <tfoot>
+          <tfoot id="effect-foot">
             <tr><th></th><th>名称</th><th>Lv</th><th>タイミング</th><th>技能</th><th>難易度</th><th>対象</th><th>射程</th><th>侵蝕値</th><th>制限</th></tr>
           </tfoot>
         </table>
@@ -687,11 +689,12 @@ print <<"HTML";
         <summary>術式 [<span id="exp-magic">0</span>]</summary>
         @{[input 'magicNum','hidden']}
         <table class="edit-table line-tbody no-border-cells" id="magic-table">
-          <thead>
+          <thead id="magic-head">
             <tr><th></th><th>名称</th><th>種別</th><th>経験点</th><th>発動値</th><th>侵蝕値</th><th>効果</th></tr>
           </thead>
 HTML
-foreach my $num (1 .. $pc{'magicNum'}) {
+foreach my $num ('TMPL',1 .. $pc{'magicNum'}) {
+  if($num eq 'TMPL'){ print '<template id="magic-template">' }
 print <<"HTML";
           <tbody id="magic${num}">
             <tr>
@@ -705,9 +708,9 @@ print <<"HTML";
             </tr>
           </tbody>
 HTML
+  if($num eq 'TMPL'){ print '</template>' }
 }
 print <<"HTML";
-        <tfoot></tfoot>
         </table>
         <div class="add-del-button"><a onclick="addMagic()">▼</a><a onclick="delMagic()">▲</a></div>
       </details>
@@ -753,7 +756,8 @@ sub comboStatusSet {
   $output .= '</optgroup>';
   return $output;
 }
-foreach my $num (1 .. $pc{'comboNum'}) {
+foreach my $num ('TMPL',1 .. $pc{'comboNum'}) {
+  if($num eq 'TMPL'){ print '<template id="combo-template">' }
 print <<"HTML";
         <div class="combo-table" id="combo${num}">
           <div class="handle"></div>
@@ -791,6 +795,7 @@ print <<"HTML";
           <p class="combo-note"><textarea name="combo${num}Note" rows="3" placeholder="解説">$pc{"combo${num}Note"}</textarea></p>
         </div>
 HTML
+  if($num eq 'TMPL'){ print '</template>' }
 }
 print <<"HTML";
         </div>
@@ -810,7 +815,8 @@ print <<"HTML";
           </thead>
           <tbody>
 HTML
-foreach my $num (1 .. $pc{'weaponNum'}) {
+foreach my $num ('TMPL',1 .. $pc{'weaponNum'}) {
+  if($num eq 'TMPL'){ print '<template id="weapon-template">' }
 print <<"HTML";
             <tr id="weapon${num}">
               <td>@{[input "weapon${num}Name"]}<span class="handle"></span></td>
@@ -825,6 +831,7 @@ print <<"HTML";
               <td><textarea name="weapon${num}Note" rows="2">$pc{"weapon${num}Note"}</textarea></td>
             </tr>
 HTML
+  if($num eq 'TMPL'){ print '</template>' }
 }
 print <<"HTML";
           </tbody>
@@ -839,7 +846,8 @@ print <<"HTML";
           </thead>
           <tbody>
 HTML
-foreach my $num (1 .. $pc{'armorNum'}) {
+foreach my $num ('TMPL',1 .. $pc{'armorNum'}) {
+  if($num eq 'TMPL'){ print '<template id="armor-template">' }
 print <<"HTML";
             <tr id="armor${num}">
               <td>@{[input "armor${num}Name"]}<span class="handle"></span></td>
@@ -853,6 +861,7 @@ print <<"HTML";
               <td><textarea name="armor${num}Note" rows="2">$pc{"armor${num}Note"}</textarea></td>
             </tr>
 HTML
+  if($num eq 'TMPL'){ print '</template>' }
 }
 print <<"HTML";
           </tbody>
@@ -867,7 +876,8 @@ print <<"HTML";
           </thead>
           <tbody>
 HTML
-foreach my $num (1 .. $pc{'vehicleNum'}) {
+foreach my $num ('TMPL',1 .. $pc{'vehicleNum'}) {
+  if($num eq 'TMPL'){ print '<template id="vehicle-template">' }
 print <<"HTML";
             <tr id="vehicle${num}">
               <td>@{[input "vehicle${num}Name"]}<span class="handle"></span></td>
@@ -882,6 +892,7 @@ print <<"HTML";
               <td><textarea name="vehicle${num}Note" rows="2">$pc{"vehicle${num}Note"}</textarea></td>
             </tr>
 HTML
+  if($num eq 'TMPL'){ print '</template>' }
 }
 print <<"HTML";
           </tbody>
@@ -896,7 +907,8 @@ print <<"HTML";
           </thead>
           <tbody>
 HTML
-foreach my $num (1 .. $pc{'itemNum'}) {
+foreach my $num ('TMPL',1 .. $pc{'itemNum'}) {
+  if($num eq 'TMPL'){ print '<template id="item-template">' }
 print <<"HTML";
             <tr id="item${num}">
               <td>@{[input "item${num}Name"]}<span class="handle"></span></td>
@@ -909,7 +921,6 @@ print <<"HTML";
 HTML
 }
 print <<"HTML";
-          </tbody>
         </table>
         <div class="add-del-button"><a onclick="addItem()">▼</a><a onclick="delItem()">▲</a></div>
       </div>
@@ -945,8 +956,16 @@ print <<"HTML";
         <h2>セッション履歴</h2>
         @{[input 'historyNum','hidden']}
         <table class="edit-table line-tbody no-border-cells" id="history-table">
-          <colgroup><col><col><col><col><col><col><col></colgroup>
-          <thead>
+          <colgroup id="history-col">
+            <col>
+            <col class="date  ">
+            <col class="title ">
+            <col class="exp   ">
+            <col class="apply ">
+            <col class="gm    ">
+            <col class="member">
+          </colgroup>
+          <thead id="history-head">
           <tr>
             <th></th>
             <th>日付</th>
@@ -964,7 +983,8 @@ print <<"HTML";
           </tr>
           </thead>
 HTML
-foreach my $num (1 .. $pc{'historyNum'}) {
+foreach my $num ('TMPL',1 .. $pc{'historyNum'}) {
+  if($num eq 'TMPL'){ print '<template id="history-template">' }
 print <<"HTML";
           <tbody id="history${num}">
           <tr>
@@ -979,9 +999,10 @@ print <<"HTML";
           <tr><td colspan="4" class="left">@{[input("history${num}Note",'','','placeholder="備考"')]}</td></tr>
           </tbody>
 HTML
+  if($num eq 'TMPL'){ print '</template>' }
 }
 print <<"HTML";
-          <tfoot>
+          <tfoot id="history-foot">
             <tr><th></th><th>日付</th><th>タイトル</th><th colspan="2">経験点</th><th>GM</th><th>参加者</th></tr>
           </tfoot>
         </table>

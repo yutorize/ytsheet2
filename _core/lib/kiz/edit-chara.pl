@@ -526,7 +526,8 @@ print <<"HTML";
           </thead>
           <tbody>
 HTML
-foreach my $num (1 .. $pc{'kizunaNum'}) {
+foreach my $num ('TMPL',1 .. $pc{'kizunaNum'}) {
+  if($num eq 'TMPL'){ print '<template id="kizuna-template">' }
 print <<"HTML";
             <tr id="kizuna${num}" class="@{[ $pc{"kizuna${num}Hibi"} ? 'hibi':'' ]}@{[ $pc{"kizuna${num}Ware"} ? 'ware':'' ]}">
               <td class="handle"></td>
@@ -556,7 +557,7 @@ print <<"HTML";
         <h2>キズアト</h2>
         @{[input 'kizuatoNum','hidden']}
           <table class="edit-table line-tbody no-border-cells" id="kizuato-table">
-            <colgroup>
+            <colgroup id="kizuato-col">
               <col>
               <col>
               <col>
@@ -565,7 +566,8 @@ print <<"HTML";
               <col>
             </colgroup>
 HTML
-foreach my $num (1 .. $pc{'kizuatoNum'}) {
+foreach my $num ('TMPL',1 .. $pc{'kizuatoNum'}) {
+  if($num eq 'TMPL'){ print '<template id="kizuato-template">' }
 print <<"HTML";
             <tbody id="kizuato${num}">
               <tr>
@@ -603,6 +605,7 @@ print <<"HTML";
             </tr>
           </tbody>
 HTML
+  if($num eq 'TMPL'){ print '</template>' }
 }
 print <<"HTML";
         </table>
@@ -625,7 +628,7 @@ print <<"HTML";
         <h2>セッション履歴</h2>
         @{[input 'historyNum','hidden']}
         <table class="edit-table line-tbody no-border-cells" id="history-table">
-          <thead>
+          <thead id="history-head">
           <tr>
             <th></th>
             <th>日付</th>
@@ -644,7 +647,8 @@ print <<"HTML";
           -->
           </thead>
 HTML
-foreach my $num (1 .. $pc{'historyNum'}) {
+foreach my $num ('TMPL',1 .. $pc{'historyNum'}) {
+  if($num eq 'TMPL'){ print '<template id="history-template">' }
 print <<"HTML";
           <tbody id="history${num}">
           <tr>
@@ -658,9 +662,10 @@ print <<"HTML";
           <tr><td colspan="5" class="left">@{[input("history${num}Note",'','','placeholder="備考"')]}</td></tr>
           </tbody>
 HTML
+  if($num eq 'TMPL'){ print '</template>' }
 }
 print <<"HTML";
-          <tfoot>
+          <tfoot id="history-foot">
             <tr><th></th><th>日付</th><th>タイトル</th><th>経験点</th><th>GM</th><th>参加者</th></tr>
           </tfoot>
         </table>

@@ -234,19 +234,11 @@ function scarCheck(){
 // 追加
 function addArts(){
   let num = Number(form.artsNum.value) + 1;
-  let tr = document.createElement('tr');
-  tr.setAttribute('id',idNumSet('arts'));
-  tr.innerHTML = `
-    <td class="handle"></td>
-    <td><input name="arts${num}Name"    type="text"></td>
-    <td><input name="arts${num}Timing"  type="text" list="list-timing"></td>
-    <td><input name="arts${num}Target"  type="text" list="list-target"></td>
-    <td><input name="arts${num}Cost"    type="text" list="list-cost"></td>
-    <td><input name="arts${num}Limited" type="text" list="list-limited"></td>
-    <td><input name="arts${num}Note"    type="text"></td>
-  `;
-  const target = document.querySelector("#arts-list");
-  target.appendChild(tr, target);
+
+  let row = document.querySelector('#arts-template').content.firstElementChild.cloneNode(true);
+  row.id = idNumSet('arts');
+  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
+  document.querySelector("#arts-list").append(row);
   
   form.artsNum.value = num;
 }
@@ -257,8 +249,7 @@ function delArts(){
     if(form[`arts${num}Name`].value || form[`arts${num}Timing`].value || form[`arts${num}Target`].value || form[`arts${num}Cost`].value || form[`arts${num}Limited`].value || form[`arts${num}Note`].value){
       if (!confirm(delConfirmText)) return false;
     }
-    const target = document.querySelector("#arts-list tr:last-of-type");
-    target.parentNode.removeChild(target);
+    document.querySelector("#arts-list tr:last-of-type").remove();
     num--;
     form.artsNum.value = num;
   }
@@ -269,12 +260,13 @@ let artsSortable = Sortable.create(document.getElementById('arts-list'), {
   dataIdAttr: 'id',
   animation: 100,
   handle: '.handle',
+  filter: 'thead,tfoot,template',
   ghostClass: 'sortable-ghost',
   onUpdate: function(evt){
     const order = artsSortable.toArray();
     let num = 1;
     for(let id of order) {
-      if(document.getElementById(id)){
+      if(document.querySelector(`tr#${id}`)){
         document.querySelector(`#${id} [name$="Name"]`   ).setAttribute('name',`arts${num}Name`);
         document.querySelector(`#${id} [name$="Timing"]` ).setAttribute('name',`arts${num}Timing`);
         document.querySelector(`#${id} [name$="Target"]` ).setAttribute('name',`arts${num}Target`);
@@ -312,19 +304,11 @@ let bloodartsSortable = Sortable.create(document.getElementById('bloodarts-list'
 // 追加
 function addHistory(){
   let num = Number(form.historyNum.value) + 1;
-  let tbody = document.createElement('tbody');
-  tbody.setAttribute('id',idNumSet('history'));
-  tbody.innerHTML = `<tr>
-    <td rowspan="2" class="handle"></td>
-    <td rowspan="2"><input name="history${num}Date"   type="text"></td>
-    <td rowspan="2"><input name="history${num}Title"  type="text"></td>
-    <td><select name="history${num}Grow" oninput="calcGrow()"><option><option value="endurance">耐久値+5<option value="initiative">先制値+2</select></td>
-    <td><input name="history${num}Gm"     type="text"></td>
-    <td><input name="history${num}Member" type="text"></td>
-  </tr>
-  <tr><td colspan="5" class="left"><input name="history${num}Note" type="text"></td></tr>`;
-  const target = document.querySelector("#history-table tfoot");
-  target.parentNode.insertBefore(tbody, target);
+
+  let row = document.querySelector('#history-template').content.firstElementChild.cloneNode(true);
+  row.id = idNumSet('history');
+  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
+  document.querySelector("#history-table tbody:last-of-type").after(row);
   
   form.historyNum.value = num;
 }
@@ -335,8 +319,7 @@ function delHistory(){
     if(form[`history${num}Date`].value || form[`history${num}Title`].value || form[`history${num}Grow`].value || form[`history${num}Gm`].value || form[`history${num}Member`].value || form[`history${num}Note`].value){
       if (!confirm(delConfirmText)) return false;
     }
-    const target = document.querySelector("#history-table tbody:last-of-type");
-    target.parentNode.removeChild(target);
+    document.querySelector("#history-table tbody:last-of-type").remove();
     num--;
     form.historyNum.value = num;
   }
@@ -347,13 +330,13 @@ let historySortable = Sortable.create(document.getElementById('history-table'), 
   dataIdAttr: 'id',
   animation: 100,
   handle: '.handle',
-  filter: 'thead,tfoot',
+  filter: 'thead,tfoot,template',
   ghostClass: 'sortable-ghost',
   onUpdate: function (evt) {
     const order = historySortable.toArray();
     let num = 1;
     for(let id of order) {
-      if(document.getElementById(id)){
+      if(document.querySelector(`tbody#${id}`)){
         document.querySelector(`#${id} [name$="Date"]`  ).setAttribute('name',`history${num}Date`);
         document.querySelector(`#${id} [name$="Title"]` ).setAttribute('name',`history${num}Title`);
         document.querySelector(`#${id} [name$="Grow"]`  ).setAttribute('name',`history${num}Grow`);

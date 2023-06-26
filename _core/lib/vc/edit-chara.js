@@ -88,16 +88,11 @@ function calcResultPoint(){
 // 追加
 function addGoods(){
   let num = Number(form.goodsNum.value) + 1;
-  let tr = document.createElement('tr');
-  tr.setAttribute('id',idNumSet('goods'));
-  tr.innerHTML = `
-    <td class="handle"></td>
-    <td><input name="goods${num}Name" type="text"></td>
-    <td><input name="goods${num}Type" type="text" list="list-goods-type"></td>
-    <td><input name="goods${num}Cost" type="number"></td>
-    <td><input name="goods${num}Note" type="text"></td>
-  `;
-  document.querySelector("#goods-table tbody tr:last-of-type").after(tr);
+
+  let row = document.querySelector('#goods-template').content.firstElementChild.cloneNode(true);
+  row.id = idNumSet('goods');
+  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
+  document.querySelector("#goods-table tbody").append(row);
   
   form.goodsNum.value = num;
 }
@@ -105,10 +100,10 @@ function addGoods(){
 function delGoods(){
   let num = Number(form.goodsNum.value);
   if(num > 1){
-    if(form[`goods${num}Name`].value || 
-       form[`goods${num}Type`].value || 
-       form[`goods${num}Cost`].value || 
-       form[`goods${num}Note`].value
+    if ( form[`goods${num}Name`].value
+      || form[`goods${num}Type`].value
+      || form[`goods${num}Cost`].value
+      || form[`goods${num}Note`].value
     ){
       if (!confirm(delConfirmText)) return false;
     }
@@ -124,12 +119,13 @@ let goodsSortable = Sortable.create(document.querySelector("#goods-table tbody")
   animation: 150,
   handle: '.handle',
   scroll: true,
+  filter: 'template',
   ghostClass: 'sortable-ghost',
   onUpdate: function (evt) {
     const order = goodsSortable.toArray();
     let num = 1;
     for(let id of order) {
-      if(document.getElementById(id)){
+      if(document.querySelector(`tr#${id}`)){
         document.querySelector(`#${id} [name$="Name"]`  ).setAttribute('name',`goods${num}Name`);
         document.querySelector(`#${id} [name$="Type"]`  ).setAttribute('name',`goods${num}Type`);
         document.querySelector(`#${id} [name$="Cost"]`  ).setAttribute('name',`goods${num}Cost`);
@@ -143,17 +139,11 @@ let goodsSortable = Sortable.create(document.querySelector("#goods-table tbody")
 // 追加
 function addItem(){
   let num = Number(form.itemsNum.value) + 1;
-  let tr = document.createElement('tr');
-  tr.setAttribute('id',idNumSet('item'));
-  tr.innerHTML = `
-    <td class="handle"></td>
-    <td><input name="item${num}Name" type="text"></td>
-    <td><input name="item${num}Type" type="text" list="list-item-type"></td>
-    <td><input name="item${num}Lv"   type="number"></td>
-    <td><input name="item${num}Cost" type="number"></td>
-    <td><input name="item${num}Note" type="text"></td>
-  `;
-  document.querySelector("#items-table tbody tr:last-of-type").after(tr);
+
+  let row = document.querySelector('#item-template').content.firstElementChild.cloneNode(true);
+  row.id = idNumSet('item');
+  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
+  document.querySelector("#items-table tbody").append(row);
   
   form.itemsNum.value = num;
 }
@@ -161,10 +151,10 @@ function addItem(){
 function delItem(){
   let num = Number(form.itemsNum.value);
   if(num > 1){
-    if(form[`item${num}Name`].value || 
-       form[`item${num}Type`].value || 
-       form[`item${num}Cost`].value || 
-       form[`item${num}Note`].value
+    if ( form[`item${num}Name`].value
+      || form[`item${num}Type`].value
+      || form[`item${num}Cost`].value
+      || form[`item${num}Note`].value
     ){
       if (!confirm(delConfirmText)) return false;
     }
@@ -180,12 +170,13 @@ let itemsSortable = Sortable.create(document.querySelector("#items-table tbody")
   animation: 150,
   handle: '.handle',
   scroll: true,
+  filter: 'template',
   ghostClass: 'sortable-ghost',
   onUpdate: function (evt) {
     const order = itemsSortable.toArray();
     let num = 1;
     for(let id of order) {
-      if(document.getElementById(id)){
+      if(document.querySelector(`tr#${id}`)){
         document.querySelector(`#${id} [name$="Name"]`).setAttribute('name',`item${num}Name`);
         document.querySelector(`#${id} [name$="Type"]`).setAttribute('name',`item${num}Type`);
         document.querySelector(`#${id} [name$="Lv"]`  ).setAttribute('name',`item${num}Lv`);
@@ -201,18 +192,11 @@ let itemsSortable = Sortable.create(document.querySelector("#items-table tbody")
 // 追加
 function addHistory(){
   let num = Number(form.historyNum.value) + 1;
-  let tbody = document.createElement('tbody');
-  tbody.setAttribute('id',idNumSet('history'));
-  tbody.innerHTML = `<tr>
-    <td rowspan="2" class="handle"></td>
-    <td rowspan="2"><input name="history${num}Date"   type="text"></td>
-    <td rowspan="2"><input name="history${num}Title"  type="text"></td>
-    <td><input name="history${num}Result"  type="text" oninput="calcResult()"></td>
-    <td><input name="history${num}Gm"      type="text"></td>
-    <td><input name="history${num}Member"  type="text"></td>
-  </tr>
-  <tr><td colspan="5" class="left"><input name="history${num}Note" type="text"></td></tr>`;
-  document.querySelector("#history-table tbody:last-of-type").after(tbody);
+
+  let row = document.querySelector('#history-template').content.firstElementChild.cloneNode(true);
+  row.id = idNumSet('history');
+  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
+  document.querySelector("#history-table tbody:last-of-type").after(row);
   
   form.historyNum.value = num;
 }
@@ -220,12 +204,12 @@ function addHistory(){
 function delHistory(){
   let num = Number(form.historyNum.value);
   if(num > 1){
-    if(form[`history${num}Date`  ].value || 
-       form[`history${num}Title` ].value || 
-       form[`history${num}Result`].value || 
-       form[`history${num}Gm`    ].value || 
-       form[`history${num}Member`].value || 
-       form[`history${num}Note`  ].value
+    if ( form[`history${num}Date`  ].value
+      || form[`history${num}Title` ].value
+      || form[`history${num}Result`].value
+      || form[`history${num}Gm`    ].value
+      || form[`history${num}Member`].value
+      || form[`history${num}Note`  ].value
     ){
       if (!confirm(delConfirmText)) return false;
     }
@@ -242,13 +226,13 @@ let historySortable = Sortable.create(document.getElementById('history-table'), 
   animation: 150,
   handle: '.handle',
   scroll: true,
-  filter: 'thead,tfoot',
+  filter: 'thead,tfoot,template',
   ghostClass: 'sortable-ghost',
   onUpdate: function (evt) {
     const order = historySortable.toArray();
     let num = 1;
     for(let id of order) {
-      if(document.getElementById(id)){
+      if(document.querySelector(`tbody#${id}`)){
         document.querySelector(`#${id} [name$="Date"]`  ).setAttribute('name',`history${num}Date`);
         document.querySelector(`#${id} [name$="Title"]` ).setAttribute('name',`history${num}Title`);
         document.querySelector(`#${id} [name$="Result"]`).setAttribute('name',`history${num}Result`);

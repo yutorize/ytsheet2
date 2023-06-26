@@ -584,52 +584,26 @@ function calcAdvCompleted(){
 // 武器欄 ----------------------------------------
 // 追加
 function addWeapons(copy){
-  const ini = {
-    name    : copy ? form[`weapon${copy}Name`    ].value : '',
-    category: copy ? form[`weapon${copy}Type`    ].value : '',
-    weight  : copy ? form[`weapon${copy}Weight`  ].value : '',
-    usage   : copy ? form[`weapon${copy}Usage`   ].value : '',
-    attr    : copy ? form[`weapon${copy}Attr`    ].value : '',
-    hitmod  : copy ? form[`weapon${copy}HitMod`  ].value : '',
-    power   : copy ? form[`weapon${copy}Power`   ].value : '',
-    powermod: copy ? form[`weapon${copy}PowerMod`].value : '',
-    range   : copy ? form[`weapon${copy}Range`   ].value : '',
-    class   : copy ? form[`weapon${copy}Class`   ].value : '',
-    note    : copy ? form[`weapon${copy}Note`    ].value : '',
-    hittotal: copy ? document.getElementById(`weapon${copy}-hit-total`).textContent : abilityScore.TecFoc,
-    powerlv : copy ? document.getElementById(`weapon${copy}-power-lv`).textContent : 0,
-  };
   let num = Number(form.weaponNum.value) + 1;
-  let tbody = document.createElement('tbody');
-  tbody.setAttribute('id',idNumSet('weapon-row'));
-  tbody.innerHTML = `<tr>
-    <td class="name " rowspan="2"><input name="weapon${num}Name"  type="text" value="${ini.name}" placeholder="武器名"><span class="handle"></span>
-    <td class="type " rowspan="2"><select name="weapon${num}Type" oninput="calcWeapon()"><option></select><span class="flex">／<select name="weapon${num}Weight"><option><option>軽<option>重</select></span>
-    <td class="usage" rowspan="2"><input name="weapon${num}Usage" type="text" value="${ini.usage}" list="list-usage"><input name="weapon${num}Attr" type="text" value="${ini.attr}" list="list-attr">
-    <td class="hit  "><span class="flex">+<input name="weapon${num}HitMod" type="number" value="${ini.hitmod}" oninput="calcWeapon()">=<b id="weapon${num}-hit-total" class="bold">${ini.hittotal}</b></span>
-    <td class="power"><span class="flex"><input name="weapon${num}Power" type="text" value="${ini.power}">+<b id="weapon${num}-power-lv">${ini.powerlv}</b>+<input name="weapon${num}PowerMod" type="number" value="${ini.powermod}">
-    <td class="range"><input name="weapon${num}Range" type="text" value="${ini.range}" list="list-range">
-    <td class="class"><select name="weapon${num}Class" oninput="calcWeapon()"><option></select></td>
-    <td rowspan="2"><span class="button" onclick="addWeapons(${num});">複<br>製</span></td>
-  <tr>
-    <td class="note right" colspan="4"><span class="flex"><b class="bold">備考</b><input name="weapon${num}Note" type="text" value="${ini.note}" oninput="calcWeapon()"></span>`;
-  const target = document.querySelector("#weapons-table");
-  target.appendChild(tbody, target);
 
-  if(ini.weight){ form["weapon"+num+"Weight"].value = ini.weight }
+  let row = document.querySelector('#weapon-template').content.firstElementChild.cloneNode(true);
+  row.id = idNumSet('weapons-row');
+  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
+  document.querySelector("#weapons-table").append(row);
   
-  for(let name of weapons){
-    let op = document.createElement("option");
-    op.text = name;
-    op.selected = name === ini.category ? true : false;
-    form["weapon"+num+"Type"].appendChild(op);
-  }
-  for(const name in classes){
-    if (!classes[name].type.match(/warrior/)){ continue }
-    let op = document.createElement("option");
-    op.text = name;
-    op.selected = name === ini.class ? true : false;
-    form["weapon"+num+"Class"].appendChild(op);
+  if(copy){
+    form[`weapon${num}Name`    ].value = form[`weapon${copy}Name`    ].value;
+    form[`weapon${num}Type`    ].value = form[`weapon${copy}Type`    ].value;
+    form[`weapon${num}Weight`  ].value = form[`weapon${copy}Weight`  ].value;
+    form[`weapon${num}Usage`   ].value = form[`weapon${copy}Usage`   ].value;
+    form[`weapon${num}Attr`    ].value = form[`weapon${copy}Attr`    ].value;
+    form[`weapon${num}HitMod`  ].value = form[`weapon${copy}HitMod`  ].value;
+    form[`weapon${num}Power`   ].value = form[`weapon${copy}Power`   ].value;
+    form[`weapon${num}PowerMod`].value = form[`weapon${copy}PowerMod`].value;
+    form[`weapon${num}Range`   ].value = form[`weapon${copy}Range`   ].value;
+    form[`weapon${num}Class`   ].value = form[`weapon${copy}Class`   ].value;
+    form[`weapon${num}Note`    ].value = form[`weapon${copy}Note`    ].value;
+    calcWeapon();
   }
   
   form.weaponNum.value = num;
@@ -651,8 +625,7 @@ function delWeapons(){
     ){
       if (!confirm(delConfirmText)) return false;
     }
-    const target = document.querySelector("#weapons-table tbody:last-of-type");
-    target.parentNode.removeChild(target);
+    document.querySelector("#weapons-table tbody:last-of-type").remove();
     num--;
     form.weaponNum.value = num;
   }
@@ -663,13 +636,13 @@ let weaponsSortable = Sortable.create(document.getElementById('weapons-table'), 
   dataIdAttr: 'id',
   animation: 150,
   handle: '.handle',
-  filter: 'thead,tfoot',
+  filter: 'thead,tfoot,template',
   ghostClass: 'sortable-ghost',
   onUpdate: function (evt) {
     const order = weaponsSortable.toArray();
     let num = 1;
     for(let id of order) {
-      if(document.getElementById(id)){
+      if(document.querySelector(`tbody#${id}`)){
         document.querySelector(`#${id} [name$="Name"]`    ).setAttribute('name',`weapon${num}Name`);
         document.querySelector(`#${id} [name$="Type"]`    ).setAttribute('name',`weapon${num}Type`);
         document.querySelector(`#${id} [name$="Usage"]`   ).setAttribute('name',`weapon${num}Usage`);
@@ -695,18 +668,11 @@ let weaponsSortable = Sortable.create(document.getElementById('weapons-table'), 
 // 追加
 function addSkill(){
   let num = Number(form.skillNum.value) + 1;
-  let tr = document.createElement('tr');
-  tr.setAttribute('id',idNumSet('skill'));
-  tr.innerHTML = `
-    <td class="handle">
-    <td class="exp  ">0
-    <td class="auto "><label class="check-button"><input type="checkbox" name="skill${num}Auto" value="1" oninput="calcAdp()"></label>
-    <td class="name "><span class="flex">【<input name="skill${num}Name" type="text">】</span>
-    <td class="grade"><select name="skill${num}Grade" onchange="calcAdp()"><option><option>初歩<option>習熟<option>熟練<option>達人<option>伝説</select>
-    <td class="note "><input name="skill${num}Note" type="text">
-    <td class="ref  "><input name="skill${num}Ref" type="text">
-  `;
-  document.querySelector("#skills-table tbody").append(tr);
+
+  let row = document.querySelector('#skill-template').content.firstElementChild.cloneNode(true);
+  row.id = idNumSet('skill');
+  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
+  document.querySelector("#skills-table tbody").append(row);
   
   form.skillNum.value = num;
 }
@@ -715,10 +681,10 @@ function delSkill(){
   let num = Number(form.skillNum.value);
   if(num > 1){
     if ( form[`skill${num}Name`].value
-      || form[`skill${num}Auto`].value
+      || form[`skill${num}Auto`].checked
       || form[`skill${num}Grade`].value
       || form[`skill${num}Note`].value
-      || form[`skill${num}Ref`].value
+      || form[`skill${num}Page`].value
     ){
       if (!confirm(delConfirmText)) return false;
     }
@@ -733,18 +699,18 @@ let skillsSortable = Sortable.create(document.querySelector("#skills-table tbody
   dataIdAttr: 'id',
   animation: 150,
   handle: '.handle',
-  filter: 'thead,tfoot',
+  filter: 'thead,tfoot,template',
   ghostClass: 'sortable-ghost',
   onUpdate: function (evt) {
     const order = skillsSortable.toArray();
     let num = 1;
     for(let id of order) {
-      if(document.getElementById(id)){
+      if(document.querySelector(`tr#${id}`)){
         document.querySelector(`#${id} [name$="Auto"]` ).setAttribute('name',`skill${num}Auto`);
         document.querySelector(`#${id} [name$="Name"]` ).setAttribute('name',`skill${num}Name`);
         document.querySelector(`#${id} [name$="Grade"]`).setAttribute('name',`skill${num}Grade`);
         document.querySelector(`#${id} [name$="Note"]` ).setAttribute('name',`skill${num}Note`);
-        document.querySelector(`#${id} [name$="Ref"]`  ).setAttribute('name',`skill${num}Ref`);
+        document.querySelector(`#${id} [name$="Page"]` ).setAttribute('name',`skill${num}Page`);
         num++;
       }
     }
@@ -754,18 +720,11 @@ let skillsSortable = Sortable.create(document.querySelector("#skills-table tbody
 // 追加
 function addGeneralSkill(){
   let num = Number(form.generalSkillNum.value) + 1;
-  let tr = document.createElement('tr');
-  tr.setAttribute('id',idNumSet('general-skill'));
-  tr.innerHTML = `
-    <td class="handle">
-    <td class="exp  ">0
-    <td class="auto "><label class="check-button"><input type="checkbox" name="generalSkill${num}Auto" value="1" oninput="calcAdp()"></label>
-    <td class="name "><span class="flex">【<input name="generalSkill${num}Name" type="text">】</span>
-    <td class="grade"><select name="generalSkill${num}Grade" onchange="calcAdp()"><option><option>初歩<option>習熟<option>熟練</select>
-    <td class="note "><input name="generalSkill${num}Note" type="text">
-    <td class="ref  "><input name="generalSkill${num}Ref" type="text">
-  `;
-  document.querySelector("#general-skills-table tbody").append(tr);
+
+  let row = document.querySelector('#general-skill-template').content.firstElementChild.cloneNode(true);
+  row.id = idNumSet('general-skill');
+  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
+  document.querySelector("#general-skills-table tbody").append(row);
   
   form.generalSkillNum.value = num;
 }
@@ -774,10 +733,10 @@ function delGeneralSkill(){
   let num = Number(form.generalSkillNum.value);
   if(num > 1){
     if ( form[`generalSkill${num}Name`].value
-      || form[`generalSkill${num}Auto`].value
+      || form[`generalSkill${num}Auto`].checked
       || form[`generalSkill${num}Grade`].value
       || form[`generalSkill${num}Note`].value
-      || form[`generalSkill${num}Ref`].value
+      || form[`generalSkill${num}Page`].value
     ){
       if (!confirm(delConfirmText)) return false;
     }
@@ -792,18 +751,18 @@ let generalSkillsSortable = Sortable.create(document.querySelector("#general-ski
   dataIdAttr: 'id',
   animation: 150,
   handle: '.handle',
-  filter: 'thead,tfoot',
+  filter: 'thead,tfoot,template',
   ghostClass: 'sortable-ghost',
   onUpdate: function (evt) {
     const order = generalSkillsSortable.toArray();
     let num = 1;
     for(let id of order) {
-      if(document.getElementById(id)){
+      if(document.querySelector(`tr#${id}`)){
         document.querySelector(`#${id} [name$="Auto"]` ).setAttribute('name',`generalSkill${num}Auto`);
         document.querySelector(`#${id} [name$="Name"]` ).setAttribute('name',`generalSkill${num}Name`);
         document.querySelector(`#${id} [name$="Grade"]`).setAttribute('name',`generalSkill${num}Grade`);
         document.querySelector(`#${id} [name$="Note"]` ).setAttribute('name',`generalSkill${num}Note`);
-        document.querySelector(`#${id} [name$="Ref"]`  ).setAttribute('name',`generalSkill${num}Ref`);
+        document.querySelector(`#${id} [name$="Page"]` ).setAttribute('name',`generalSkill${num}Page`);
         num++;
       }
     }
@@ -815,19 +774,11 @@ let generalSkillsSortable = Sortable.create(document.querySelector("#general-ski
 // 追加
 function addSpell(){
   let num = Number(form.spellNum.value) + 1;
-  let tr = document.createElement('tr');
-  tr.setAttribute('id',idNumSet('spell'));
-  tr.innerHTML = `
-    <td class="handle">
-    <td class="name  "><span class="flex">《<input type="text" name="spell${num}Name">》</span>
-    <td class="system"><select name="spell${num}System"><option></select>
-    <td class="type  "><select name="spell${num}Type"><option><option>攻撃<option>付与<option>創造<option>支配<option>治癒<option>汎用</select>
-    <td class="attr  "><input type="text" name="spell${num}Attr" list="list-spell-attr">
-    <td class="dfclt "><input type="text" name="spell${num}Dfclt">
-    <td class="note  "><input type="text" name="spell${num}Note">
-    <td class="ref   "><input type="text" name="spell${num}Ref">
-  `;
-  document.querySelector("#spells-table tbody").append(tr);
+
+  let row = document.querySelector('#spell-template').content.firstElementChild.cloneNode(true);
+  row.id = idNumSet('spell');
+  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
+  document.querySelector("#spells-table tbody").append(row);
   
   for(const name in classes){
     if (!classes[name].magic){ continue }
@@ -862,20 +813,20 @@ let spellsSortable = Sortable.create(document.querySelector("#spells-table tbody
   dataIdAttr: 'id',
   animation: 150,
   handle: '.handle',
-  filter: 'thead,tfoot',
+  filter: 'thead,tfoot,template',
   ghostClass: 'sortable-ghost',
   onUpdate: function (evt) {
     const order = spellsSortable.toArray();
     let num = 1;
     for(let id of order) {
-      if(document.getElementById(id)){
+      if(document.querySelector(`tr#${id}`)){
         document.querySelector(`#${id} [name$="Name"]`  ).setAttribute('name',`spell${num}Name`);
         document.querySelector(`#${id} [name$="System"]`).setAttribute('name',`spell${num}System`);
         document.querySelector(`#${id} [name$="Type"]`  ).setAttribute('name',`spell${num}Type`);
         document.querySelector(`#${id} [name$="Attr"]`  ).setAttribute('name',`spell${num}Attr`);
         document.querySelector(`#${id} [name$="Dfclt"]` ).setAttribute('name',`spell${num}Dfclt`);
         document.querySelector(`#${id} [name$="Note"]`  ).setAttribute('name',`spell${num}Note`);
-        document.querySelector(`#${id} [name$="Ref"]`   ).setAttribute('name',`spell${num}Ref`);
+        document.querySelector(`#${id} [name$="Page"]`  ).setAttribute('name',`spell${num}Page`);
         num++;
       }
     }
@@ -887,22 +838,11 @@ let spellsSortable = Sortable.create(document.querySelector("#spells-table tbody
 // 追加
 function addArts(){
   let num = Number(form.artsNum.value) + 1;
-  let tbody = document.createElement('tbody');
-  tbody.setAttribute('id',idNumSet('arts'));
-  tbody.innerHTML = `
-    <tr>
-      <td rowspan="2" class="handle">
-      <td class="name  "><input type="text" name="arts${num}Name">
-      <td class="weapon"><input type="text" name="arts${num}Weapon">
-      <td class="skill "><input type="text" name="arts${num}Skill">
-      <td class="cost  "><input type="text" name="arts${num}Cost">
-      <td class="terms "><input type="text" name="arts${num}Terms">
-      <td class="ref   "><input type="text" name="arts${num}Ref">
-    <tr>
-      <th class="right">効果
-      <td colspan="5"><input type="text" name="arts${num}Note">
-  `;
-  document.querySelector("#arts-table").append(tbody);
+
+  let row = document.querySelector('#arts-template').content.firstElementChild.cloneNode(true);
+  row.id = idNumSet('arts');
+  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
+  document.querySelector("#arts-table").append(row);
 
   form.artsNum.value = num;
 }
@@ -931,20 +871,20 @@ let artsSortable = Sortable.create(document.querySelector("#arts-table"), {
   dataIdAttr: 'id',
   animation: 150,
   handle: '.handle',
-  filter: 'thead,tfoot',
+  filter: 'thead,tfoot,template',
   ghostClass: 'sortable-ghost',
   onUpdate: function (evt) {
     const order = artsSortable.toArray();
     let num = 1;
     for(let id of order) {
-      if(document.getElementById(id)){
+      if(document.querySelector(`tbody#${id}`)){
         document.querySelector(`#${id} [name$="Name"]`  ).setAttribute('name',`arts${num}Name`);
         document.querySelector(`#${id} [name$="Weapon"]`).setAttribute('name',`arts${num}Weapon`);
         document.querySelector(`#${id} [name$="Skill"]` ).setAttribute('name',`arts${num}Skill`);
         document.querySelector(`#${id} [name$="Cost"]`  ).setAttribute('name',`arts${num}Cost`);
         document.querySelector(`#${id} [name$="Terms"]` ).setAttribute('name',`arts${num}Terms`);
         document.querySelector(`#${id} [name$="Note"]`  ).setAttribute('name',`arts${num}Note`);
-        document.querySelector(`#${id} [name$="Ref"]`   ).setAttribute('name',`arts${num}Ref`);
+        document.querySelector(`#${id} [name$="Page"]`  ).setAttribute('name',`arts${num}Page`);
         num++;
       }
     }
@@ -956,21 +896,13 @@ let artsSortable = Sortable.create(document.querySelector("#arts-table"), {
 // 追加
 function addHistory(){
   let num = Number(form.historyNum.value) + 1;
-  let tbody = document.createElement('tbody');
-  tbody.setAttribute('id',idNumSet('history'));
-  tbody.innerHTML = `<tr>
-    <td rowspan="2" class="handle">
-    <td class="date  " rowspan="2"><input name="history${num}Date"   type="text">
-    <td class="title " rowspan="2"><input name="history${num}Title"  type="text">
-    <td class="comp  "><select name="history${num}Completed" oninput="calcAdvCompleted()"><option><option value="1">達成<option value="-1">失敗</select>
-    <td class="exp   "><input name="history${num}Exp"    type="text" oninput="calcExp()">
-    <td class="adp   "><input name="history${num}Adp"    type="text" oninput="calcAdp()">
-    <td class="money "><input name="history${num}Money"  type="text" oninput="calcCash()">
-    <td class="gm    "><input name="history${num}Gm"     type="text">
-    <td class="member"><input name="history${num}Member" type="text">
-  <tr><td colspan="5" class="left"><input name="history${num}Note" type="text">`;
-  const target = document.querySelector("#history-table tfoot");
-  target.parentNode.insertBefore(tbody, target);
+
+  let row = document.querySelector('#history-template').content.firstElementChild.cloneNode(true);
+  row.id = idNumSet('history');
+  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
+  document.querySelector("#history-table").append(row);
+
+  document.querySelector("#history-table tbody:last-of-type").after(row);
   
   form.historyNum.value = num;
 }
@@ -988,8 +920,7 @@ function delHistory(){
     ){
       if (!confirm(delConfirmText)) return false;
     }
-    const target = document.querySelector("#history-table tbody:last-of-type");
-    target.parentNode.removeChild(target);
+    document.querySelector("#history-table tbody:last-of-type").remove();
     num--;
     form.historyNum.value = num;
     calcExp(); calcHonor(); calcCash(); calcStt();
@@ -1002,13 +933,13 @@ let historySortable = Sortable.create(document.getElementById('history-table'), 
   animation: 150,
   handle: '.handle',
   scroll: true,
-  filter: 'thead,tfoot',
+  filter: 'thead,tfoot,template',
   ghostClass: 'sortable-ghost',
   onUpdate: function (evt) {
     const order = historySortable.toArray();
     let num = 1;
     for(let id of order) {
-      if(document.getElementById(id)){
+      if(document.querySelector(`tbody#${id}`)){
         document.querySelector(`#${id} [name$="Date"]`  ).setAttribute('name',`history${num}Date`);
         document.querySelector(`#${id} [name$="Title"]` ).setAttribute('name',`history${num}Title`);
         document.querySelector(`#${id} [name$="Exp"]`   ).setAttribute('name',`history${num}Exp`);

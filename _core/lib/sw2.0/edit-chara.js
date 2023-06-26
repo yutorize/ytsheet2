@@ -501,30 +501,6 @@ function calcFairy(){
     + a6.toString(18);
 }
 
-// 秘伝欄 ----------------------------------------
-// 追加
-function addMysticArts(){
-  let num = Number(form.mysticArtsNum.value) + 1;
-  let tbody = document.createElement('li');
-  tbody.setAttribute('id',idNumSet('mystic-arts'));
-  tbody.innerHTML = `
-    <span class="handle"></span>
-    <input type="text" name="mysticArts${num}">
-    <span class="honor-pt">
-      <select name="mysticArts${num}PtType" oninput="calcHonor()" data-type="human">
-      <option value="">人族名誉点
-      <option value="barbaros">蛮族名誉点
-      <option value="dragon">盟竜点
-      </select>
-      <span class="honor-select-view"></span>
-      <input type="number" name="mysticArts${num}Pt" oninput="calcHonor()">
-    </span>
-  `;
-  const target = document.querySelector("#mystic-arts-list");
-  target.appendChild(tbody, target);
-  form.mysticArtsNum.value = num;
-}
-
 // 名誉欄 ----------------------------------------
 function calcHonor(){
   let pointTotal = {
@@ -588,87 +564,4 @@ function calcHonor(){
   document.getElementById("honor-barbaros-value").innerHTML = pointTotal['barbaros']+' / '+pointMax['barbaros'];
   document.getElementById("honor-dragon-value").innerHTML = pointTotal['dragon']+' / '+pointMax['dragon'];
   document.getElementById("mystic-arts-honor-value").innerHTML = mysticArtsPt['human']+'／'+mysticArtsPt['barbaros']+'／'+mysticArtsPt['dragon'];
-}
-// 追加
-function addHonorItems(){
-  let num = Number(form.honorItemsNum.value) + 1;
-  let tbody = document.createElement('tr');
-  tbody.setAttribute('id',idNumSet('honor-item'));
-  tbody.innerHTML = `
-    <td class="handle"></td>
-    <td><input type="text" name="honorItem${num}"></td>
-    <td>
-      <span class="honor-pt">
-        <select name="honorItem'.$num.'PtType" oninput="calcHonor()" data-type="human">
-          <option value="">人族名誉点
-          <option value="barbaros">蛮族名誉点
-          <option value="dragon">盟竜点
-        </select>
-        <span class="honor-select-view"></span>
-        <input type="number" name="honorItem${num}Pt" oninput="calcHonor()">
-      </span>
-    </td>
-  `;
-  const target = document.querySelector("#honor-items-table");
-  target.appendChild(tbody, target);
-  form.honorItemsNum.value = num;
-}
-// 不名誉欄 ----------------------------------------
-function calcDishonor(){
-}
-function addDishonorItems(){
-  let num = Number(form.dishonorItemsNum.value) + 1;
-  let tbody = document.createElement('tr');
-  tbody.setAttribute('id',idNumSet('dishonor-item'));
-  tbody.innerHTML = `
-    <td class="handle"></td>
-    <td><input type="text" name="dishonorItem${num}"></td>
-    <td>
-      <span class="honor-pt">
-        <select name="dishonorItem${num}PtType" oninput="calcHonor()" data-type="human">
-          <option value="" selected>人族名誉点
-          <option value="barbaros">蛮族名誉点
-          <option value="dragon">盟竜点
-        </select>
-        <span class="honor-select-view"></span>
-        <input type="number" name="dishonorItem${num}Pt" oninput="calcHonor()">
-      </span>
-    </td>
-  `;
-  const target = document.querySelector("#dishonor-items-table tbody");
-  target.appendChild(tbody, target);
-  form.dishonorItemsNum.value = num;
-}
-// 履歴欄 ----------------------------------------
-// 追加
-function addHistory(){
-  let num = Number(form.historyNum.value) + 1;
-  let tbody = document.createElement('tbody');
-  tbody.setAttribute('id',idNumSet('history'));
-  tbody.innerHTML = `<tr>
-    <td rowspan="2" class="handle"></td>
-    <td rowspan="2"><input name="history${num}Date"   type="text"></td>
-    <td rowspan="2"><input name="history${num}Title"  type="text"></td>
-    <td><input name="history${num}Exp"    type="text" oninput="calcExp()"></td>
-    <td><input name="history${num}Money"  type="text" oninput="calcCash()"></td>
-    <td>
-      <span class="honor-pt">
-        <select name="history${num}HonorType" oninput="calcHonor()" data-type="human">
-          <option value="">人族名誉点
-          <option value="barbaros">蛮族名誉点
-          <option value="dragon">盟竜点
-        </select>
-        <span class="honor-select-view"></span>
-        <input name="history${num}Honor"  type="text" oninput="calcHonor()">
-      </span>
-    </td>
-    <td><input name="history${num}Grow"   type="text" oninput="calcStt()" list="list-grow"></td>
-    <td><input name="history${num}Gm"     type="text"></td>
-    <td><input name="history${num}Member" type="text"></td>
-  </tr>
-  <tr><td colspan="6" class="left"><input name="history${num}Note" type="text"></td></tr>`;
-  const target = document.querySelector("#history-table tfoot");
-  target.parentNode.insertBefore(tbody, target);
-  
-  form.historyNum.value = num;
 }

@@ -799,34 +799,11 @@ function calcExp(){
 // 追加
 function addSkill(){
   let num = Number(form.skillsNum.value) + 1;
-  let tbody = document.createElement('tbody');
-  tbody.setAttribute('id',idNumSet('skill'));
-  tbody.innerHTML = `<tr>
-    <td rowspan="2" class="handle"></td>
-    <td><input name="skill${num}Name"   type="text"   placeholder="名称" onchange="calcSkills()"></td>
-    <td><input name="skill${num}Lv"     type="number" placeholder="Lv" oninput="calcSkills()"></td>
-    <td><input name="skill${num}Timing" type="text"   placeholder="タイミング" list="list-timing"></td>
-    <td><input name="skill${num}Roll"   type="text"   placeholder="判定"   list="list-roll"></td>
-    <td><input name="skill${num}Target" type="text"   placeholder="対象"   list="list-target"></td>
-    <td><input name="skill${num}Range"  type="text"   placeholder="射程"   list="list-range"></td>
-    <td><input name="skill${num}Cost"   type="number" placeholder="ｺｽﾄ" min="0"></td>
-    <td><input name="skill${num}Reqd"   type="text"   placeholder="使用条件"   list="list-reqd"></td>
-  </tr>
-  <tr><td colspan="8"><div>
-    <b>取得元</b><select name="skill${num}Type" onchange="calcSkills();calcLvUpSkills();">
-      <option value="">
-      <option value="race">種族
-      <option value="general">一般
-      <option value="style">流派
-      <option value="geis">誓約
-      <option value="add">他スキル
-      <option value="another">異才
-      <option value="power">パワー（共通）
-    </select>
-    <b>分類</b><input name="skill${num}Category" type="text" list="list-category">
-    <b>効果</b><input name="skill${num}Note" type="text">
-  </div></td></tr>`;
-  document.querySelector("#skills-table tbody:last-of-type").after(tbody);
+
+  let row = document.querySelector('#skill-template').content.firstElementChild.cloneNode(true);
+  row.id = idNumSet('skill');
+  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
+  document.querySelector("#skills-table tbody:last-of-type").after(row);
   
   form.skillsNum.value = num;
   checkClass();
@@ -859,7 +836,7 @@ let skillsSortable = Sortable.create(document.getElementById('skills-table'), {
   dataIdAttr: 'id',
   animation: 100,
   handle: '.handle',
-  filter: 'thead,tfoot',
+  filter: 'thead,tfoot,template',
   ghostClass: 'sortable-ghost',
   onSort: function(evt){ skillsSortAfter(); },
   onStart: function(evt){
@@ -874,7 +851,7 @@ let skillsSortableTrash = Sortable.create(document.getElementById('skills-trash-
   group: "skills",
   dataIdAttr: 'id',
   animation: 100,
-  filter: 'thead,tfoot',
+  filter: 'thead,tfoot,template',
   ghostClass: 'sortable-ghost'
 });
 let skillTrashNum = 0;
@@ -882,7 +859,7 @@ function skillsSortAfter(){
   const order = skillsSortable.toArray();
   let num = 1;
   for(let id of order) {
-    if(document.getElementById(id)){
+    if(document.querySelector(`tbody#${id}`)){
       document.querySelector(`#${id} [name$="Type"]`    ).setAttribute('name',`skill${num}Type`);
       document.querySelector(`#${id} [name$="Category"]`).setAttribute('name',`skill${num}Category`);
       document.querySelector(`#${id} [name$="Name"]`    ).setAttribute('name',`skill${num}Name`);
@@ -901,7 +878,7 @@ function skillsSortAfter(){
   let del = 0;
   const trashOrder = skillsSortableTrash.toArray();
   for(let id of trashOrder) {
-    if(document.getElementById(id)){
+    if(document.querySelector(`tbody#${id}`)){
       del++;
       document.querySelector(`#${id} [name$="Type"]`    ).setAttribute('name',`skillD${del}Type`);
       document.querySelector(`#${id} [name$="Category"]`).setAttribute('name',`skillD${del}Category`);
@@ -925,15 +902,11 @@ function skillsSortAfter(){
 // 追加
 function addConnection(){
   let num = Number(form.connectionsNum.value) + 1;
-  let tr = document.createElement('tr');
-  tr.setAttribute('id',idNumSet('connection'));
-  tr.innerHTML = `
-    <td class="handle"> </td>
-    <td><input name="connection${num}Name"     type="text" onchange="calcConnections()"></td>
-    <td><input name="connection${num}Relation" type="text"></td>
-    <td><input name="connection${num}Note"     type="text"></td>
-  `;
-  document.querySelector("#connections-table tbody tr:last-of-type").after(tr);
+
+  let row = document.querySelector('#connection-template').content.firstElementChild.cloneNode(true);
+  row.id = idNumSet('connection');
+  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
+  document.querySelector("#connections-table tbody").append(row);
   
   form.connectionsNum.value = num;
 }
@@ -941,7 +914,7 @@ function addConnection(){
 function delConnection(){
   let num = Number(form.connectionsNum.value);
   if(num > 1){
-    if(form[`connection${num}Name`].value || form[`connection${num}Relation`].value){
+    if(form[`connection${num}Name`].value || form[`connection${num}Relation`].value || form[`connection${num}Note`].value){
       if (!confirm(delConfirmText)) return false;
     }
     document.querySelector("#connections-table tbody tr:last-of-type").remove();
@@ -957,13 +930,13 @@ let connectionsSortable = Sortable.create(document.querySelector('#connections-t
   dataIdAttr: 'id',
   animation: 100,
   handle: '.handle',
-  filter: 'thead,tfoot',
+  filter: 'thead,tfoot,template',
   ghostClass: 'sortable-ghost',
   onUpdate: function (evt) {
     const order = connectionsSortable.toArray();
     let num = 1;
     for(let id of order) {
-      if(document.getElementById(id)){
+      if(document.querySelector(`tr#${id}`)){
         document.querySelector(`#${id} [name$="Name"]`    ).setAttribute('name',`connection${num}Name`);
         document.querySelector(`#${id} [name$="Relation"]`).setAttribute('name',`connection${num}Relation`);
         document.querySelector(`#${id} [name$="Note"]`    ).setAttribute('name',`connection${num}Note`);
@@ -977,15 +950,11 @@ let connectionsSortable = Sortable.create(document.querySelector('#connections-t
 // 追加
 function addGeis(){
   let num = Number(form.geisesNum.value) + 1;
-  let tr = document.createElement('tr');
-  tr.setAttribute('id',idNumSet('geis'));
-  tr.innerHTML = `
-    <td class="handle"> </td>
-    <td><input name="geis${num}Name" type="text"></td>
-    <td><input name="geis${num}Cost" type="number" oninput="calcGeises()"></td>
-    <td><textarea name="geis${num}Note"></textarea></td>
-  `;
-  document.querySelector("#geises-table tbody tr:last-of-type").after(tr);
+
+  let row = document.querySelector('#geis-template').content.firstElementChild.cloneNode(true);
+  row.id = idNumSet('geis');
+  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
+  document.querySelector("#geises-table tbody").append(row);
   
   form.geisesNum.value = num;
 }
@@ -1008,13 +977,13 @@ let geisesSortable = Sortable.create(document.querySelector('#geises-table tbody
   dataIdAttr: 'id',
   animation: 100,
   handle: '.handle',
-  filter: 'thead,tfoot',
+  filter: 'thead,tfoot,template',
   ghostClass: 'sortable-ghost',
   onUpdate: function (evt) {
     const order = geisesSortable.toArray();
     let num = 1;
     for(let id of order) {
-      if(document.getElementById(id)){
+      if(document.querySelector(`tr#${id}`)){
         document.querySelector(`#${id} [name$="Name"]`).setAttribute('name',`geis${num}Name`);
         document.querySelector(`#${id} [name$="Cost"]`).setAttribute('name',`geis${num}Cost`);
         document.querySelector(`#${id} [name$="Note"]`).setAttribute('name',`geis${num}Note`);
@@ -1028,20 +997,11 @@ let geisesSortable = Sortable.create(document.querySelector('#geises-table tbody
 // 追加
 function addHistory(){
   let num = Number(form.historyNum.value) + 1;
-  let tbody = document.createElement('tbody');
-  tbody.setAttribute('id',idNumSet('history'));
-  tbody.innerHTML = `<tr>
-    <td rowspan="2" class="handle"></td>
-    <td rowspan="2"><input name="history${num}Date"   type="text"></td>
-    <td rowspan="2"><input name="history${num}Title"  type="text"></td>
-    <td><input name="history${num}Exp"     type="text" oninput="calcExp()"></td>
-    <td><input name="history${num}Payment" type="number" oninput="calExp()"></td>
-    <td><input name="history${num}Money"   type="text" oninput="calcCash()"></td>
-    <td><input name="history${num}Gm"      type="text"></td>
-    <td><input name="history${num}Member"  type="text"></td>
-  </tr>
-  <tr><td colspan="5" class="left"><input name="history${num}Note" type="text"></td></tr>`;
-  document.querySelector("#history-table tbody:last-of-type").after(tbody);
+
+  let row = document.querySelector('#history-template').content.firstElementChild.cloneNode(true);
+  row.id = idNumSet('history');
+  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
+  document.querySelector("#history-table tbody:last-of-type").after(row);
   
   form.historyNum.value = num;
 }
@@ -1072,13 +1032,13 @@ let historySortable = Sortable.create(document.getElementById('history-table'), 
   animation: 150,
   handle: '.handle',
   scroll: true,
-  filter: 'thead,tfoot',
+  filter: 'thead,tfoot,template',
   ghostClass: 'sortable-ghost',
   onUpdate: function (evt) {
     const order = historySortable.toArray();
     let num = 1;
     for(let id of order) {
-      if(document.getElementById(id)){
+      if(document.querySelector(`tbody#${id}`)){
         document.querySelector(`#${id} [name$="Date"]`  ).setAttribute('name',`history${num}Date`);
         document.querySelector(`#${id} [name$="Title"]` ).setAttribute('name',`history${num}Title`);
         document.querySelector(`#${id} [name$="Exp"]`   ).setAttribute('name',`history${num}Exp`);

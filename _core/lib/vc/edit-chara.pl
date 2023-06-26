@@ -363,7 +363,8 @@ print <<"HTML";
           </thead>
           <tbody>
 HTML
-foreach my $num (1 .. $pc{'goodsNum'}){
+foreach my $num ('TMPL',1 .. $pc{'goodsNum'}){
+  if($num eq 'TMPL'){ print '<template id="goods-template">' }
   print <<"HTML";
             <tr id="goods${num}">
               <td class="handle"></td>
@@ -373,6 +374,7 @@ foreach my $num (1 .. $pc{'goodsNum'}){
               <td>@{[input "goods${num}Note" ]}</td>
             </tr>
 HTML
+  if($num eq 'TMPL'){ print '</template>' }
 }
   print <<"HTML";
           </tbody>
@@ -518,7 +520,8 @@ print <<"HTML";
           </thead>
           <tbody>
 HTML
-foreach my $num (1 .. $pc{'itemsNum'}){
+foreach my $num ('TMPL',1 .. $pc{'itemsNum'}){
+  if($num eq 'TMPL'){ print '<template id="item-template">' }
   print <<"HTML";
             <tr id="item${num}">
               <td class="handle"></td>
@@ -529,6 +532,7 @@ foreach my $num (1 .. $pc{'itemsNum'}){
               <td>@{[input "item${num}Note" ]}</td>
             </tr>
 HTML
+  if($num eq 'TMPL'){ print '</template>' }
 }
   print <<"HTML";
           </tbody>
@@ -552,7 +556,7 @@ HTML
         <h2>セッション履歴</h2>
         @{[input 'historyNum','hidden']}
         <table class="edit-table line-tbody no-border-cells" id="history-table">
-          <thead>
+          <thead id="history-head">
             <tr>
               <th></th>
               <th>日付</th>
@@ -571,7 +575,8 @@ HTML
             </tr>
           </thead>
 HTML
-foreach my $num (1 .. $pc{'historyNum'}) {
+foreach my $num ('TMPL',1 .. $pc{'historyNum'}) {
+  if($num eq 'TMPL'){ print '<template id="history-template">' }
 print <<"HTML";
           <tbody id="history${num}">
             <tr>
@@ -585,9 +590,10 @@ print <<"HTML";
             <tr><td colspan="6" class="left">@{[input("history${num}Note",'','','placeholder="備考"')]}</td></tr>
           </tbody>
 HTML
+  if($num eq 'TMPL'){ print '</template>' }
 }
 print <<"HTML";
-          <tfoot>
+          <tfoot id="history-foot">
             <tr>
               <td></td>
               <td></td>

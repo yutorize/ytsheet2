@@ -699,7 +699,7 @@ HTML
         </summary>
         @{[input 'skillsNum','hidden']}
         <table class="edit-table line-tbody no-border-cells" id="skills-table">
-          <thead>
+          <thead id="skill-head">
             <tr><th></th><th>名称</th><th>Lv</th><th>タイミング</th><th>判定</th><th>対象</th><th>射程</th><th>コスト</th><th>使用条件</th></tr>
           </thead>
 HTML
@@ -717,7 +717,8 @@ my @experienced = sort { $experienced{$a} <=> $experienced{$b} } keys %experienc
 if($data::class{$pc{"classMain"}} && $data::class{$pc{"classMain"}}{'type'} eq 'fate'){
   unshift(@experienced, 'power|<パワー（共通）>', 'another|<異才>')
 }
-foreach my $num (1 .. $pc{'skillsNum'}) {
+foreach my $num ('TMPL',1 .. $pc{'skillsNum'}) {
+  if($num eq 'TMPL'){ print '<template id="skill-template">' }
 print <<"HTML";
           <tbody id="skill${num}">
             <tr>
@@ -738,9 +739,10 @@ print <<"HTML";
             </div></td></tr>
           </tbody>
 HTML
+  if($num eq 'TMPL'){ print '</template>' }
 }
 print <<"HTML";
-          <tfoot>
+          <tfoot id="skill-foot">
             <tr><th></th><th>名称</th><th>Lv</th><th>タイミング</th><th>判定</th><th>対象</th><th>射程</th><th>コスト</th><th>使用条件</th></tr>
           </tfoot>
         </table>
@@ -1145,7 +1147,8 @@ print <<"HTML";
               <thead><tr><th></th><th></th><th>成長点</th><th class="left">恩恵・束縛など</th></tr></thead>
               <tbody>
 HTML
-foreach my $num (1 .. $pc{'geisesNum'}){
+foreach my $num ('TMPL',1 .. $pc{'geisesNum'}){
+  if($num eq 'TMPL'){ print '<template id="geis-template">' }
 print <<"HTML";
                 <tr id="geis${num}">
                   <td class="handle"> </td>
@@ -1154,6 +1157,7 @@ print <<"HTML";
                   <td><textarea name="geis${num}Note">$pc{"geis${num}Note"}</textarea></td>
                 </tr>
 HTML
+  if($num eq 'TMPL'){ print '</template>' }
 }
 print <<"HTML";
               </tbody>
@@ -1182,7 +1186,8 @@ print <<"HTML";
               <thead><tr><th></th><th></th><th>関係</th><th class="left">備考</th></tr></thead>
               <tbody>
 HTML
-foreach my $num (1 .. $pc{'connectionsNum'}){
+foreach my $num ('TMPL',1 .. $pc{'connectionsNum'}){
+  if($num eq 'TMPL'){ print '<template id="connection-template">' }
 print <<"HTML";
                 <tr id="connection${num}">
                   <td class="handle"> </td>
@@ -1191,6 +1196,7 @@ print <<"HTML";
                   <td>@{[ input "connection${num}Note" ]}</td>
                 </tr>
 HTML
+  if($num eq 'TMPL'){ print '</template>' }
 }
 print <<"HTML";
               </tbody>
@@ -1217,7 +1223,7 @@ print <<"HTML";
         <h2>セッション履歴</h2>
         @{[input 'historyNum','hidden']}
         <table class="edit-table line-tbody no-border-cells" id="history-table">
-          <thead>
+          <thead id="history-head">
             <tr>
               <th></th>
               <th>日付</th>
@@ -1238,7 +1244,8 @@ print <<"HTML";
             </tr>
           </thead>
 HTML
-foreach my $num (1 .. $pc{'historyNum'}) {
+foreach my $num ('TMPL',1 .. $pc{'historyNum'}) {
+  if($num eq 'TMPL'){ print '<template id="history-template">' }
 print <<"HTML";
           <tbody id="history${num}">
             <tr>
@@ -1254,9 +1261,10 @@ print <<"HTML";
             <tr><td colspan="6" class="left">@{[input("history${num}Note",'','','placeholder="備考"')]}</td></tr>
           </tbody>
 HTML
+  if($num eq 'TMPL'){ print '</template>' }
 }
 print <<"HTML";
-          <tfoot>
+          <tfoot id="history-foot">
             <tr>
               <td></td>
               <td></td>

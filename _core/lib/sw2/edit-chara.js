@@ -1539,15 +1539,12 @@ let accesorySortable = Sortable.create(document.getElementById('accessories-tabl
 // 追加
 function addMysticArts(){
   let num = Number(form.mysticArtsNum.value) + 1;
-  let tbody = document.createElement('li');
-  tbody.setAttribute('id',idNumSet('mystic-arts'));
-  tbody.innerHTML = `
-    <span class="handle"></span>
-    <input type="text" name="mysticArts${num}">
-    <input type="number" name="mysticArts${num}Pt" oninput="calcHonor()">
-  `;
-  const target = document.querySelector("#mystic-arts-list");
-  target.appendChild(tbody, target);
+
+  let row = document.querySelector('#mystic-arts-template').content.firstElementChild.cloneNode(true);
+  row.id = idNumSet('mystic-arts-item');
+  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
+  document.querySelector("#mystic-arts-list").append(row);
+
   form.mysticArtsNum.value = num;
 }
 // 削除
@@ -1557,8 +1554,7 @@ function delMysticArts(){
     if(form[`mysticArts${num}`].value || form[`mysticArts${num}Pt`].value){
       if (!confirm(delConfirmText)) return false;
     }
-    let target = document.getElementById("mystic-arts-list");
-    target.removeChild(target.lastElementChild);
+    document.querySelector("#mystic-arts-list li:last-of-type").remove();
     num--;
     form.mysticArtsNum.value = num;
   }
@@ -1570,14 +1566,16 @@ let mysticArtsSortable = Sortable.create(document.querySelector('#mystic-arts-li
   dataIdAttr: 'id',
   animation: 150,
   handle: '.handle',
+  filter: 'template',
   ghostClass: 'sortable-ghost',
   onUpdate: function (evt) {
     const order = mysticArtsSortable.toArray();
     let num = 1;
     for(let id of order) {
-      if(document.getElementById(id)){
+      if(document.querySelector(`li#${id}`)){
         document.querySelector(`#${id} input:first-of-type`).setAttribute('name',`mysticArts${num}`);
         document.querySelector(`#${id} [name$="Pt"]`).setAttribute('name',`mysticArts${num}Pt`);
+        if(modeZero){ document.querySelector(`#${id} [name$="PtType"]`).setAttribute('name',`mysticArts${num}PtType`); }
         num++;
       }
     }
@@ -1587,15 +1585,12 @@ let mysticArtsSortable = Sortable.create(document.querySelector('#mystic-arts-li
 // 追加
 function addMysticMagic(){
   let num = Number(form.mysticMagicNum.value) + 1;
-  let tbody = document.createElement('li');
-  tbody.setAttribute('id',idNumSet('mystic-magic'));
-  tbody.innerHTML = `
-    <span class="handle"></span>
-    <input type="text" name="mysticMagic${num}">
-    <input type="number" name="mysticMagic${num}Pt" oninput="calcHonor()">
-  `;
-  const target = document.querySelector("#mystic-magic-list");
-  target.appendChild(tbody, target);
+
+  let row = document.querySelector('#mystic-magic-template').content.firstElementChild.cloneNode(true);
+  row.id = idNumSet('mystic-magic-item');
+  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
+  document.querySelector("#mystic-magic-list").append(row);
+  
   form.mysticMagicNum.value = num;
 }
 // 削除
@@ -1605,8 +1600,7 @@ function delMysticMagic(){
     if(form[`mysticMagic${num}`].value || form[`mysticMagic${num}Pt`].value){
       if (!confirm(delConfirmText)) return false;
     }
-    let target = document.getElementById("mystic-magic-list");
-    target.removeChild(target.lastElementChild);
+    document.querySelector("#mystic-magic-list li:last-of-type").remove();
     num--;
     form.mysticMagicNum.value = num;
   }
@@ -1623,7 +1617,7 @@ let mysticMagicSortable = Sortable.create(document.querySelector('#mystic-magic-
     const order = mysticMagicSortable.toArray();
     let num = 1;
     for(let id of order) {
-      if(document.getElementById(id)){
+      if(document.querySelector(`li#${id}`)){
         document.querySelector(`#${id} input:first-of-type`).setAttribute('name',`mysticMagic${num}`);
         document.querySelector(`#${id} [name$="Pt"]`).setAttribute('name',`mysticMagic${num}Pt`);
         num++;
@@ -1676,16 +1670,12 @@ function checkLanguage(){
 // 追加
 function addLanguage(){
   let num = Number(form.languageNum.value) + 1;
-  let tbody = document.createElement('tr');
-  tbody.setAttribute('id',idNumSet('language-item'));
-  tbody.innerHTML = `
-    <td class="handle"></td>
-    <td><input name="language${num}" type="text" oninput="checkLanguage()" list="list-language"></td>
-    <td><select name="language${num}Talk" oninput="checkLanguage()">${langOptionT}</select><span class="lang-select-view"></span></td>
-    <td><select name="language${num}Read" oninput="checkLanguage()">${langOptionR}</select><span class="lang-select-view"></span></td>
-  `;
-  const target = document.querySelector("#language-table tbody");
-  target.appendChild(tbody, target);
+
+  let row = document.querySelector('#language-template').content.firstElementChild.cloneNode(true);
+  row.id = idNumSet('language-item');
+  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
+  document.querySelector("#language-table tbody").append(row);
+
   form.languageNum.value = num;
 }
 // 削除
@@ -1695,8 +1685,7 @@ function delLanguage(){
     if(form[`language${num}`].value){
       if (!confirm(delConfirmText)) return false;
     }
-    const target = document.querySelector("#language-table tbody tr:last-of-type");
-    target.parentNode.removeChild(target);
+    document.querySelector("#language-table tbody tr:last-of-type").remove();
     num--;
     form.languageNum.value = num;
   }
@@ -1727,57 +1716,25 @@ let languageSortable = Sortable.create(document.querySelector('#language-table t
 // 武器欄 ----------------------------------------
 // 追加
 function addWeapons(copy){
-  const ini = {
-    "name"    : copy ? form[`weapon${copy}Name`    ].value : '',
-    "usage"   : copy ? form[`weapon${copy}Usage`   ].value : '',
-    "reqd"    : copy ? form[`weapon${copy}Reqd`    ].value : '',
-    "acc"     : copy ? form[`weapon${copy}Acc`     ].value : '',
-    "rate"    : copy ? form[`weapon${copy}Rate`    ].value : '',
-    "crit"    : copy ? form[`weapon${copy}Crit`    ].value : '',
-    "dmg"     : copy ? form[`weapon${copy}Dmg`     ].value : '',
-    "own"     : copy ? form[`weapon${copy}Own`     ].checked : false,
-    "category": copy ? form[`weapon${copy}Category`].value : '',
-    "class"   : copy ? form[`weapon${copy}Class`   ].value : '',
-    "note"    : copy ? form[`weapon${copy}Note`    ].value : '',
-  };
   let num = Number(form.weaponNum.value) + 1;
-  let tbody = document.createElement('tbody');
-  tbody.setAttribute('id',idNumSet('weapon-row'));
-  tbody.innerHTML = `<tr>
-    <td rowspan="2"><input name="weapon${num}Name"  type="text" value="${ini.name}"><span class="handle"></span></td>
-    <td rowspan="2"><input name="weapon${num}Usage" type="text" value="${ini.usage}" list="list-usage"></td>
-    <td rowspan="2"><input name="weapon${num}Reqd"  type="text" value="${ini.reqd}"></td>
-    <td rowspan="2">+<input name="weapon${num}Acc" type="number" value="${ini.acc}" oninput="calcWeapon()"><b id="weapon${num}-acc-total">0</b></td>
-    <td rowspan="2"><input name="weapon${num}Rate" type="text" value="${ini.rate}"></td>
-    <td rowspan="2"><input name="weapon${num}Crit" type="text" value="${ini.crit}"></td>
-    <td rowspan="2">+<input name="weapon${num}Dmg" type="number" value="${ini.dmg}" oninput="calcWeapon()"><b id="weapon${num}-dmg-total">0</b></td>
-    <td><input name="weapon${num}Own" type="checkbox" value="1" ${ini.own?'checked':''} oninput="calcWeapon()"></td>
-    <td><select name="weapon${num}Category" oninput="calcWeapon()"><option></select></td>
-    <td><select name="weapon${num}Class" oninput="calcWeapon()"><option></select></td>
-    <td rowspan="2"><span class="button" onclick="addWeapons(${num});">複<br>製</span></td>
-  </tr>
-  <tr><td colspan="3"><input name="weapon${num}Note" type="text" value="${ini.note}" oninput="calcWeapon()"></td></tr>`;
-  const target = document.querySelector("#weapons-table");
-  target.appendChild(tbody, target);
-  
-  const categories = SET.weapons.map(d=>d[0]).concat("ガン（物理）","盾");
-  for(let i = 0; i < categories.length; i++){
-    let op = document.createElement("option");
-    op.text = categories[i];
-    op.selected = categories[i] === ini.category ? true : false;
-    form["weapon"+num+"Category"].appendChild(op);
-  }
 
-  const classes =
-    SET.classNames
-    .filter(name => SET.class[name].type == 'weapon-user')
-    .concat('エンハンサー','デーモンルーラー','自動計算しない');
-  
-  for(let i = 0; i < classes.length; i++){
-    let op = document.createElement("option");
-    op.text = classes[i];
-    op.selected = classes[i] === ini.class ? true : false;
-    form["weapon"+num+"Class"].appendChild(op);
+  let row = document.querySelector('#weapon-template').content.firstElementChild.cloneNode(true);
+  row.id = idNumSet('weapons-row');
+  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
+  document.querySelector("#weapons-table").append(row);
+
+  if(copy){
+    form[`weapon${num}Name`    ].value   = form[`weapon${copy}Name`    ].value;
+    form[`weapon${num}Usage`   ].value   = form[`weapon${copy}Usage`   ].value;
+    form[`weapon${num}Reqd`    ].value   = form[`weapon${copy}Reqd`    ].value;
+    form[`weapon${num}Acc`     ].value   = form[`weapon${copy}Acc`     ].value;
+    form[`weapon${num}Rate`    ].value   = form[`weapon${copy}Rate`    ].value;
+    form[`weapon${num}Crit`    ].value   = form[`weapon${copy}Crit`    ].value;
+    form[`weapon${num}Dmg`     ].value   = form[`weapon${copy}Dmg`     ].value;
+    form[`weapon${num}Own`     ].checked = form[`weapon${copy}Own`     ].checked;
+    form[`weapon${num}Category`].value   = form[`weapon${copy}Category`].value;
+    form[`weapon${num}Class`   ].value   = form[`weapon${copy}Class`   ].value;
+    form[`weapon${num}Note`    ].value   = form[`weapon${copy}Note`    ].value;
   }
   
   form.weaponNum.value = num;
@@ -1789,8 +1746,7 @@ function delWeapons(){
     if(form[`weapon${num}Name`].value || form[`weapon${num}Usage`].value || form[`weapon${num}Reqd`].value || form[`weapon${num}Acc`].value || form[`weapon${num}Rate`].value || form[`weapon${num}Crit`].value || form[`weapon${num}Note`].value){
       if (!confirm(delConfirmText)) return false;
     }
-    const target = document.querySelector("#weapons-table tbody:last-of-type");
-    target.parentNode.removeChild(target);
+    document.querySelector("#weapons-table tbody:last-of-type").remove();
     num--;
     form.weaponNum.value = num;
   }
@@ -1801,13 +1757,13 @@ let weaponsSortable = Sortable.create(document.getElementById('weapons-table'), 
   dataIdAttr: 'id',
   animation: 150,
   handle: '.handle',
-  filter: 'thead,tfoot',
+  filter: 'thead,tfoot,template',
   ghostClass: 'sortable-ghost',
   onUpdate: function (evt) {
     const order = weaponsSortable.toArray();
     let num = 1;
     for(let id of order) {
-      if(document.getElementById(id)){
+      if(document.querySelector(`tbody#${id}`)){
         document.querySelector(`#${id} [name$="Name"]`    ).setAttribute('name',`weapon${num}Name`);
         document.querySelector(`#${id} [name$="Usage"]`   ).setAttribute('name',`weapon${num}Usage`);
         document.querySelector(`#${id} [name$="Reqd"]`    ).setAttribute('name',`weapon${num}Reqd`);
@@ -1832,15 +1788,12 @@ let weaponsSortable = Sortable.create(document.getElementById('weapons-table'), 
 // 追加
 function addHonorItems(){
   let num = Number(form.honorItemsNum.value) + 1;
-  let tbody = document.createElement('tr');
-  tbody.setAttribute('id',idNumSet('honor-item'));
-  tbody.innerHTML = `
-    <td class="handle"></td>
-    <td><input type="text" name="honorItem${num}"></td>
-    <td><input type="number" name="honorItem${num}Pt" oninput="calcHonor()"></td>
-  `;
-  const target = document.querySelector("#honor-items-table");
-  target.appendChild(tbody, target);
+
+  let row = document.querySelector('#honor-item-template').content.firstElementChild.cloneNode(true);
+  row.id = idNumSet('honor-item');
+  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
+  document.querySelector("#honor-items-table").append(row);
+
   form.honorItemsNum.value = num;
 }
 // 削除
@@ -1850,8 +1803,7 @@ function delHonorItems(){
     if(form[`honorItem${num}`].value || form[`honorItem${num}Pt`].value){
       if (!confirm(delConfirmText)) return false;
     }
-    const target = document.querySelector("#honor-items-table tr:last-of-type");
-    target.parentNode.removeChild(target);
+    document.querySelector("#honor-items-table tr:last-of-type").remove();
     num--;
     form.honorItemsNum.value = num;
   }
@@ -1863,13 +1815,13 @@ let honorSortable = Sortable.create(document.querySelector('#honor-items-table')
   dataIdAttr: 'id',
   animation: 150,
   handle: '.handle',
-  //filter: 'thead,tfoot',
+  filter: 'template',
   ghostClass: 'sortable-ghost',
   onUpdate: function (evt) {
     const order = honorSortable.toArray();
     let num = 1;
     for(let id of order) {
-      if(document.getElementById(id)){
+      if(document.querySelector(`tr#${id}`)){
         document.querySelector(`#${id} [type="text"]`  ).setAttribute('name',`honorItem${num}`);
         document.querySelector(`#${id} [type="number"]`).setAttribute('name',`honorItem${num}Pt`);
         if(modeZero){ document.querySelector(`#${id} select`).setAttribute('name',`honorItem${num}PtType`); }
@@ -1882,15 +1834,12 @@ let honorSortable = Sortable.create(document.querySelector('#honor-items-table')
 // 追加
 function addDishonorItems(){
   let num = Number(form.dishonorItemsNum.value) + 1;
-  let tbody = document.createElement('tr');
-  tbody.setAttribute('id',idNumSet('dishonor-item'));
-  tbody.innerHTML = `
-    <td class="handle"></td>
-    <td><input type="text" name="dishonorItem${num}"></td>
-    <td><input type="number" name="dishonorItem${num}Pt" oninput="calcDishonor()"></td>
-  `;
-  const target = document.querySelector("#dishonor-items-table tbody");
-  target.appendChild(tbody, target);
+
+  let row = document.querySelector('#dishonor-item-template').content.firstElementChild.cloneNode(true);
+  row.id = idNumSet('dishonor-item');
+  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
+  document.querySelector("#dishonor-items-table").append(row);
+
   form.dishonorItemsNum.value = num;
 }
 // 削除
@@ -1900,26 +1849,25 @@ function delDishonorItems(){
     if(form[`dishonorItem${num}`].value || form[`dishonorItem${num}Pt`].value){
       if (!confirm(delConfirmText)) return false;
     }
-    const target = document.querySelector("#dishonor-items-table tbody tr:last-of-type");
-    target.parentNode.removeChild(target);
+    document.querySelector("#dishonor-items-table tr:last-of-type").remove();
     num--;
     form.dishonorItemsNum.value = num;
   }
   calcDishonor();
 }
 // ソート
-let dishonorSortable = Sortable.create(document.querySelector('#dishonor-items-table tbody'), {
+let dishonorSortable = Sortable.create(document.querySelector('#dishonor-items-table'), {
   group: "dishonor",
   dataIdAttr: 'id',
   animation: 150,
   handle: '.handle',
-  filter: 'thead,tfoot',
+  filter: 'template',
   ghostClass: 'sortable-ghost',
   onUpdate: function (evt) {
     const order = dishonorSortable.toArray();
     let num = 1;
     for(let id of order) {
-      if(document.getElementById(id)){
+      if(document.querySelector(`tr#${id}`)){
         document.querySelector(`#${id} [type="text"]`  ).setAttribute('name',`dishonorItem${num}`);
         document.querySelector(`#${id} [type="number"]`).setAttribute('name',`dishonorItem${num}Pt`);
         if(modeZero){ document.querySelector(`#${id} select`).setAttribute('name',`dishonorItem${num}PtType`); }
@@ -1955,22 +1903,11 @@ let commonClassSortable = Sortable.create(document.querySelector('#common-classe
 // 追加
 function addHistory(){
   let num = Number(form.historyNum.value) + 1;
-  let tbody = document.createElement('tbody');
-  tbody.setAttribute('id',idNumSet('history'));
-  tbody.innerHTML = `<tr>
-    <td rowspan="2" class="handle"></td>
-    <td rowspan="2"><input name="history${num}Date"   type="text"></td>
-    <td rowspan="2"><input name="history${num}Title"  type="text"></td>
-    <td><input name="history${num}Exp"    type="text" oninput="calcExp()"></td>
-    <td><input name="history${num}Money"  type="text" oninput="calcCash()"></td>
-    <td><input name="history${num}Honor"  type="text" oninput="calcHonor()"></td>
-    <td><input name="history${num}Grow"   type="text" oninput="calcStt()" list="list-grow"></td>
-    <td><input name="history${num}Gm"     type="text"></td>
-    <td><input name="history${num}Member" type="text"></td>
-  </tr>
-  <tr><td colspan="6" class="left"><input name="history${num}Note" type="text"></td></tr>`;
-  const target = document.querySelector("#history-table tfoot");
-  target.parentNode.insertBefore(tbody, target);
+
+  let row = document.querySelector('#history-template').content.firstElementChild.cloneNode(true);
+  row.id = idNumSet('history');
+  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
+  document.querySelector("#history-table tbody:last-of-type").after(row);
   
   form.historyNum.value = num;
 }
@@ -1981,8 +1918,7 @@ function delHistory(){
     if(form[`history${num}Date`].value || form[`history${num}Title`].value || form[`history${num}Exp`].value || form[`history${num}Honor`].value || form[`history${num}Money`].value || form[`history${num}Grow`].value || form[`history${num}Gm`].value || form[`history${num}Member`].value || form[`history${num}Note`].value){
       if (!confirm(delConfirmText)) return false;
     }
-    const target = document.querySelector("#history-table tbody:last-of-type");
-    target.parentNode.removeChild(target);
+    document.querySelector("#history-table tbody:last-of-type").remove();
     num--;
     form.historyNum.value = num;
     calcExp(); calcHonor(); calcCash(); calcStt();
@@ -1995,13 +1931,13 @@ let historySortable = Sortable.create(document.getElementById('history-table'), 
   animation: 150,
   handle: '.handle',
   scroll: true,
-  filter: 'thead,tfoot',
+  filter: 'thead,tfoot,template',
   ghostClass: 'sortable-ghost',
   onUpdate: function (evt) {
     const order = historySortable.toArray();
     let num = 1;
     for(let id of order) {
-      if(document.getElementById(id)){
+      if(document.querySelector(`tbody#${id}`)){
         document.querySelector(`#${id} [name$="Date"]`  ).setAttribute('name',`history${num}Date`);
         document.querySelector(`#${id} [name$="Title"]` ).setAttribute('name',`history${num}Title`);
         document.querySelector(`#${id} [name$="Exp"]`   ).setAttribute('name',`history${num}Exp`);
@@ -2011,6 +1947,8 @@ let historySortable = Sortable.create(document.getElementById('history-table'), 
         document.querySelector(`#${id} [name$="Gm"]`    ).setAttribute('name',`history${num}Gm`);
         document.querySelector(`#${id} [name$="Member"]`).setAttribute('name',`history${num}Member`);
         document.querySelector(`#${id} [name$="Note"]`  ).setAttribute('name',`history${num}Note`);
+        if(modeZero){ 
+          document.querySelector(`#${id} [name$="HonorType"]`).setAttribute('name',`history${num}HonorType`); }
         num++;
       }
     }

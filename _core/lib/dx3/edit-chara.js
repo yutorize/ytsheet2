@@ -510,33 +510,11 @@ function delSkill(type){
 // 追加
 function addEffect(){
   let num = Number(form.effectNum.value) + 1;
-  let tbody = document.createElement('tbody');
-  tbody.setAttribute('id',idNumSet('effect'));
-  tbody.innerHTML = `<tr>
-    <td rowspan="2" class="handle"></td>
-    <td><input name="effect${num}Name"     type="text"   placeholder="名称"></td>
-    <td><input name="effect${num}Lv"       type="number" placeholder="Lv" oninput="calcEffect()"></td>
-    <td><input name="effect${num}Timing"   type="text"   placeholder="タイミング" list="list-timing"></td>
-    <td><input name="effect${num}Skill"    type="text"   placeholder="技能"   list="list-effect-skill"></td>
-    <td><input name="effect${num}Dfclty"   type="text"   placeholder="難易度" list="list-dfclty"></td>
-    <td><input name="effect${num}Target"   type="text"   placeholder="対象"   list="list-target"></td>
-    <td><input name="effect${num}Range"    type="text"   placeholder="射程"   list="list-range"></td>
-    <td><input name="effect${num}Encroach" type="text"   placeholder="侵蝕値" list="list-encroach"></td>
-    <td><input name="effect${num}Restrict" type="text"   placeholder="制限"   list="list-restrict"></td>
-  </tr>
-  <tr><td colspan="9"><div>
-    <b>種別</b><select name="effect${num}Type" oninput="calcEffect()">
-      <option value="">
-      <option value="auto">自動取得
-      <option value="dlois">Dロイス
-      <option value="easy">イージー
-      <option value="enemy">エネミー
-    </select>
-    <b class="small">経験点修正</b><input name="effect${num}Exp" type="number" oninput="calcEffect()">
-    <b>効果</b><input name="effect${num}Note" type="text">
-  </div></td></tr>`;
-  const target = document.querySelector("#effect-table tfoot");
-  target.parentNode.insertBefore(tbody, target);
+
+  let row = document.querySelector('#effect-template').content.firstElementChild.cloneNode(true);
+  row.id = idNumSet('effect');
+  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
+  document.querySelector("#effect-table").append(row);
   
   form.effectNum.value = num;
 }
@@ -547,8 +525,7 @@ function delEffect(){
     if(form[`effect${num}Name`].value || form[`effect${num}Lv`].value || form[`effect${num}Timing`].value || form[`effect${num}Skill`].value || form[`effect${num}Dfclty`].value || form[`effect${num}Target`].value || form[`effect${num}Range`].value || form[`effect${num}Encroach`].value || form[`effect${num}Restrict`].value || form[`effect${num}Exp`].value || form[`effect${num}Note`].value){
       if (!confirm(delConfirmText)) return false;
     }
-    const target = document.querySelector("#effect-table tbody:last-of-type");
-    target.parentNode.removeChild(target);
+    document.querySelector("#effect-table tbody:last-of-type").remove();
     num--;
     form.effectNum.value = num;
     calcEffect();
@@ -560,7 +537,7 @@ let effectSortable = Sortable.create(document.getElementById('effect-table'), {
   dataIdAttr: 'id',
   animation: 100,
   handle: '.handle',
-  filter: 'thead,tfoot',
+  filter: 'thead,tfoot,template',
   ghostClass: 'sortable-ghost',
   onSort: function(evt){ effectSortAfter(); },
   onStart: function(evt){
@@ -575,7 +552,7 @@ let effectSortableTrash = Sortable.create(document.getElementById('effect-trash-
   group: "effect",
   dataIdAttr: 'id',
   animation: 100,
-  filter: 'thead,tfoot',
+  filter: 'thead,tfoot,template',
   ghostClass: 'sortable-ghost'
 });
 let effectTrashNum = 0;
@@ -583,7 +560,7 @@ function effectSortAfter(){
   const order = effectSortable.toArray();
   let num = 1;
   for(let id of order) {
-    if(document.getElementById(id)){
+    if(document.querySelector(`tbody#${id}`)){
       document.querySelector(`#${id} [name$="Type"]`    ).setAttribute('name',`effect${num}Type`);
       document.querySelector(`#${id} [name$="Name"]`    ).setAttribute('name',`effect${num}Name`);
       document.querySelector(`#${id} [name$="Lv"]`      ).setAttribute('name',`effect${num}Lv`);
@@ -603,7 +580,7 @@ function effectSortAfter(){
   let del = 0;
   const trashOrder = effectSortableTrash.toArray();
   for(let id of trashOrder) {
-    if(document.getElementById(id)){
+    if(document.querySelector(`tbody#${id}`)){
       del++;
       document.querySelector(`#${id} [name$="Type"]`    ).setAttribute('name',`effectD${del}Type`);
       document.querySelector(`#${id} [name$="Name"]`    ).setAttribute('name',`effectD${del}Name`);
@@ -628,19 +605,11 @@ function effectSortAfter(){
 // 追加
 function addMagic(){
   let num = Number(form.magicNum.value) + 1;
-  let tbody = document.createElement('tbody');
-  tbody.setAttribute('id',idNumSet('magic'));
-  tbody.innerHTML = `<tr>
-    <td class="handle"></td>
-    <td><input name="magic${num}Name"     type="text"   placeholder="名称"></td>
-    <td><input name="magic${num}Type"     type="text"   placeholder="種別" list="list-magic-type"></td>
-    <td><input name="magic${num}Exp"      type="number" placeholder="" oninput="calcMagic()"></td>
-    <td><input name="magic${num}Activate" type="text"   placeholder="発動値"></td>
-    <td><input name="magic${num}Encroach" type="text"   placeholder="侵蝕値"></td>
-    <td><input name="magic${num}Note"     type="text"   placeholder="効果"></td>
-  </tr>`;
-  const target = document.querySelector("#magic-table tfoot");
-  target.parentNode.insertBefore(tbody, target);
+
+  let row = document.querySelector('#magic-template').content.firstElementChild.cloneNode(true);
+  row.id = idNumSet('magic');
+  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
+  document.querySelector("#magic-table").append(row);
   
   form.magicNum.value = num;
 }
@@ -651,8 +620,7 @@ function delMagic(){
     if(form[`magic${num}Name`].value || form[`magic${num}Type`].value || form[`magic${num}Exp`].value || form[`magic${num}Activate`].value || form[`magic${num}Encroach`].value || form[`magic${num}Note`].value){
       if (!confirm(delConfirmText)) return false;
     }
-    const target = document.querySelector("#magic-table tbody:last-of-type");
-    target.parentNode.removeChild(target);
+    document.querySelector("#magic-table tbody:last-of-type").remove();
     num--;
     form.magicNum.value = num;
     calcMagic();
@@ -664,7 +632,7 @@ let magicSortable = Sortable.create(document.getElementById('magic-table'), {
   dataIdAttr: 'id',
   animation: 100,
   handle: '.handle',
-  filter: 'thead,tfoot',
+  filter: 'thead,tfoot,template',
   ghostClass: 'sortable-ghost',
   onSort: function(evt){ magicSortAfter(); },
   onStart: function(evt){
@@ -687,7 +655,7 @@ function magicSortAfter(){
   const order = magicSortable.toArray();
   let num = 1;
   for(let id of order) {
-    if(document.getElementById(id)){
+    if(document.querySelector(`tbody#${id}`)){
       document.querySelector(`#${id} [name$="Name"]`    ).setAttribute('name',`magic${num}Name`);
       document.querySelector(`#${id} [name$="Type"]`    ).setAttribute('name',`magic${num}Type`);
       document.querySelector(`#${id} [name$="Exp"]`     ).setAttribute('name',`magic${num}Exp`);
@@ -701,7 +669,7 @@ function magicSortAfter(){
   let del = 0;
   const trashOrder = magicSortableTrash.toArray();
   for(let id of trashOrder) {
-    if(document.getElementById(id)){
+    if(document.querySelector(`tbody#${id}`)){
       del++;
       document.querySelector(`#${id} [name$="Name"]`    ).setAttribute('name',`magic${del}Name`);
       document.querySelector(`#${id} [name$="Type"]`    ).setAttribute('name',`magic${del}Type`);
@@ -789,83 +757,14 @@ function calcCombo(num){
 // 追加
 function addCombo(){
   let num = Number(form.comboNum.value) + 1;
-  let div = document.createElement('div');
-  div.setAttribute('id',idNumSet('combo'));
-  div.classList.add('combo-table');
-  div.innerHTML = `
-    <div class="handle"></div>
-    <dl class="combo-name"><dt>名称</dt><dd><input name="combo${num}Name" type="text"></dd></dl>
-    <dl class="combo-combo"><dt>組み合わせ</dt><dd><input name="combo${num}Combo" type="text"></dl>
-    <div class="combo-in">
-      <dl><dt>タイミング</dt><dd><input name="combo${num}Timing"   type="text" list="list-timing"></dd></dl>
-      <dl><dt>技能      </dt><dd><select name="combo${num}Skill" oninput="calcCombo(${num})"></select></dd></dl>
-      <dl><dt>能力値    </dt><dd><select name="combo${num}Stt" oninput="calcCombo(${num})">
-        <option value="">自動（技能に合った能力値）
-        <optgroup label="▼エフェクト等による差し替え">
-          <option>肉体
-          <option>感覚
-          <option>精神
-          <option>社会
-        </optgroup>
-      </select></dd></dl>
-      <dl><dt>難易度    </dt><dd><input name="combo${num}Dfclty"   type="text" list="list-dfclty"></dd></dl>
-      <dl><dt>対象      </dt><dd><input name="combo${num}Target"   type="text" list="list-target"></dd></dl>
-      <dl><dt>射程      </dt><dd><input name="combo${num}Range"    type="text" list="list-range"></dd></dl>
-      <dl><dt>侵蝕値    </dt><dd><input name="combo${num}Encroach" type="text"></dd></dl>
-    </div>
-    <dl class="combo-out">
-      <dt class="combo-cond">条件<span class="combo-condition-utility"></span></dt>
-      <dt class="combo-dice">ダイス</dt>
-      <dt class="combo-crit">Ｃ値</dt>
-      <dt class="combo-fixed">判定固定値</dt>
-      <dt class="combo-atk">攻撃力</dt>
 
-      <dd><input name="combo${num}Condition1" type="text" value="100%未満"></dd>
-      <dd id="combo${num}Stt1"></dd>
-      <dd><input name="combo${num}DiceAdd1"   type="text"></dd>
-      <dd><input name="combo${num}Crit1"      type="text"></dd>
-      <dd id="combo${num}SkillLv1"></dd>
-      <dd><input name="combo${num}FixedAdd1"  type="text"></dd>
-      <dd><input name="combo${num}Atk1"       type="text"></dd>
+  let row = document.querySelector('#combo-template').content.firstElementChild.cloneNode(true);
+  row.id = idNumSet('combo');
+  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
+  document.querySelector("#combo-list").append(row);
 
-      <dd><input name="combo${num}Condition2" type="text" value="100%以上"></dd>
-      <dd id="combo${num}Stt2"></dd>
-      <dd><input name="combo${num}DiceAdd2"   type="text"></dd>
-      <dd><input name="combo${num}Crit2"      type="text"></dd>
-      <dd id="combo${num}SkillLv2"></dd>
-      <dd><input name="combo${num}FixedAdd2"  type="text"></dd>
-      <dd><input name="combo${num}Atk2"       type="text"></dd>
-
-      <dd><input name="combo${num}Condition3" type="text"></dd>
-      <dd id="combo${num}Stt3"></dd>
-      <dd><input name="combo${num}DiceAdd3"   type="text"></dd>
-      <dd><input name="combo${num}Crit3"      type="text"></dd>
-      <dd id="combo${num}SkillLv3"></dd>
-      <dd><input name="combo${num}FixedAdd3"  type="text"></dd>
-      <dd><input name="combo${num}Atk3"       type="text"></dd>
-
-      <dd><input name="combo${num}Condition4" type="text"></dd>
-      <dd id="combo${num}Stt4"></dd>
-      <dd><input name="combo${num}DiceAdd4"   type="text"></dd>
-      <dd><input name="combo${num}Crit4"      type="text"></dd>
-      <dd id="combo${num}SkillLv4"></dd>
-      <dd><input name="combo${num}FixedAdd4"  type="text"></dd>
-      <dd><input name="combo${num}Atk4"       type="text"></dd>
-
-      <dd><input name="combo${num}Condition5" type="text"></dd>
-      <dd id="combo${num}Stt5"></dd>
-      <dd><input name="combo${num}DiceAdd5"   type="text"></dd>
-      <dd><input name="combo${num}Crit5"      type="text"></dd>
-      <dd id="combo${num}SkillLv5"></dd>
-      <dd><input name="combo${num}FixedAdd5"  type="text"></dd>
-      <dd><input name="combo${num}Atk5"       type="text"></dd>
-    </dl>
-    <p class="combo-note"><textarea name="combo${num}Note" rows="3" placeholder="解説"></textarea></p>
-  `;
-  const target = document.querySelector("#combo-list");
-  target.appendChild(div);
   comboSkillSet(num);
-  makeComboConditionUtility(div);
+  makeComboConditionUtility(row);
   form.comboNum.value = num;
 }
 // 削除
@@ -887,13 +786,13 @@ let comboSortable = Sortable.create(document.getElementById('combo-list'), {
   dataIdAttr: 'id',
   animation: 100,
   handle: '.handle',
-  filter: '',
+  filter: 'template',
   ghostClass: 'sortable-ghost',
   onUpdate: function (evt) {
     const order = comboSortable.toArray();
     let num = 1;
     for(let id of order) {
-      if(document.getElementById(id)){
+      if(document.querySelector(`div#${id}`)){
         document.querySelector(`#${id} [name$="Name"]`    ).setAttribute('name',`combo${num}Name`);
         document.querySelector(`#${id} [name$="Combo"]`   ).setAttribute('name',`combo${num}Combo`);
         document.querySelector(`#${id} [name$="Timing"]`  ).setAttribute('name',`combo${num}Timing`);
@@ -1074,22 +973,11 @@ document.querySelectorAll('#combo .combo-table').forEach(node => makeComboCondit
 // 追加
 function addWeapon(){
   let num = Number(form.weaponNum.value) + 1;
-  let tbody = document.createElement('tr');
-  tbody.setAttribute('id',idNumSet('weapon'));
-  tbody.innerHTML = `
-    <td><input name="weapon${num}Name"  type="text"><span class="handle"></span></td>
-    <td><input name="weapon${num}Stock" type="number" oninput="calcItem()"></td>
-    <td><input name="weapon${num}Exp"   type="number" oninput="calcItem()"></td>
-    <td><input name="weapon${num}Type"  type="text" list="list-weapon-type"></td>
-    <td><input name="weapon${num}Skill" type="text" list="list-weapon-skill"></td>
-    <td><input name="weapon${num}Acc"   type="text"></td>
-    <td><input name="weapon${num}Atk" type="text"></td>
-    <td><input name="weapon${num}Guard" type="text"></td>
-    <td><input name="weapon${num}Range" type="text"></td>
-    <td><textarea name="weapon${num}Note" rows="2"></textarea></td>
-  `;
-  const target = document.querySelector("#weapon-table tbody");
-  target.appendChild(tbody, target);
+
+  let row = document.querySelector('#weapon-template').content.firstElementChild.cloneNode(true);
+  row.id = idNumSet('weapon');
+  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
+  document.querySelector("#weapon-table tbody").append(row);
   
   form.weaponNum.value = num;
 }
@@ -1113,13 +1001,13 @@ let weaponSortable = Sortable.create(document.querySelector('#weapon-table tbody
   dataIdAttr: 'id',
   animation: 100,
   handle: '.handle',
-  filter: 'thead,tfoot',
+  filter: 'thead,tfoot,template',
   ghostClass: 'sortable-ghost',
   onUpdate: function (evt) {
     const order = weaponSortable.toArray();
     let num = 1;
     for(let id of order) {
-      if(document.getElementById(id)){
+      if(document.querySelector(`tr#${id}`)){
         document.querySelector(`#${id} [name$="Name"]` ).setAttribute('name',`weapon${num}Name`);
         document.querySelector(`#${id} [name$="Stock"]`).setAttribute('name',`weapon${num}Stock`);
         document.querySelector(`#${id} [name$="Exp"]`  ).setAttribute('name',`weapon${num}Exp`);
@@ -1139,21 +1027,12 @@ let weaponSortable = Sortable.create(document.querySelector('#weapon-table tbody
 // 追加
 function addArmor(){
   let num = Number(form.armorNum.value) + 1;
-  let tbody = document.createElement('tr');
-  tbody.setAttribute('id',idNumSet('armor'));
-  tbody.innerHTML = `
-    <td><input name="armor${num}Name"  type="text"><span class="handle"></span></td>
-    <td><input name="armor${num}Stock" type="number" oninput="calcItem()"></td>
-    <td><input name="armor${num}Exp"   type="number" oninput="calcItem()"></td>
-    <td><input name="armor${num}Type"  type="text" value="防具" list="list-armor-type"></td>
-    <td></td>
-    <td><input name="armor${num}Initiative" type="text"></td>
-    <td><input name="armor${num}Dodge"      type="text"></td>
-    <td><input name="armor${num}Armor"      type="text"></td>
-    <td><textarea name="armor${num}Note" rows="2"></textarea></td>
-  `;
-  const target = document.querySelector("#armor-table tbody");
-  target.appendChild(tbody, target);
+
+  let row = document.querySelector('#armor-template').content.firstElementChild.cloneNode(true);
+  row.id = idNumSet('armor');
+  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
+  document.querySelector("#armor-table tbody").append(row);
+
   form.armorNum.value = num;
 }
 // 削除
@@ -1176,13 +1055,13 @@ let armorSortable = Sortable.create(document.querySelector('#armor-table tbody')
   dataIdAttr: 'id',
   animation: 100,
   handle: '.handle',
-  filter: 'thead,tfoot',
+  filter: 'thead,tfoot,template',
   ghostClass: 'sortable-ghost',
   onUpdate: function (evt) {
     const order = armorSortable.toArray();
     let num = 1;
     for(let id of order) {
-      if(document.getElementById(id)){
+      if(document.querySelector(`tr#${id}`)){
         document.querySelector(`#${id} [name$="Name"]`      ).setAttribute('name',`armor${num}Name`);
         document.querySelector(`#${id} [name$="Stock"]`     ).setAttribute('name',`armor${num}Stock`);
         document.querySelector(`#${id} [name$="Exp"]`       ).setAttribute('name',`armor${num}Exp`);
@@ -1200,22 +1079,12 @@ let armorSortable = Sortable.create(document.querySelector('#armor-table tbody')
 // 追加
 function addVehicle(){
   let num = Number(form.vehicleNum.value) + 1;
-  let tbody = document.createElement('tr');
-  tbody.setAttribute('id',idNumSet('vehicle'));
-  tbody.innerHTML = `
-    <td><input name="vehicle${num}Name"  type="text"><span class="handle"></span></td>
-    <td><input name="vehicle${num}Stock" type="number" oninput="calcItem()"></td>
-    <td><input name="vehicle${num}Exp"   type="number" oninput="calcItem()"></td>
-    <td><input name="vehicle${num}Type"  type="text" value="ヴィークル"></td>
-    <td><input name="vehicle${num}Skill" type="text" list="list-vehicle-skill"></td>
-    <td><input name="vehicle${num}Initiative" type="text"></td>
-    <td><input name="vehicle${num}Atk"        type="text"></td>
-    <td><input name="vehicle${num}Armor"      type="text"></td>
-    <td><input name="vehicle${num}Dash"       type="text"></td>
-    <td><textarea name="vehicle${num}Note" rows="2"></textarea></td>
-  `;
-  const target = document.querySelector("#vehicle-table tbody");
-  target.appendChild(tbody, target);
+
+  let row = document.querySelector('#vehicle-template').content.firstElementChild.cloneNode(true);
+  row.id = idNumSet('vehicle');
+  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
+  document.querySelector("#vehicle-table tbody").append(row);
+  
   form.vehicleNum.value = num;
 }
 // 削除
@@ -1238,13 +1107,13 @@ let vehicleSortable = Sortable.create(document.querySelector('#vehicle-table tbo
   dataIdAttr: 'id',
   animation: 100,
   handle: '.handle',
-  filter: 'thead,tfoot',
+  filter: 'thead,tfoot,template',
   ghostClass: 'sortable-ghost',
   onUpdate: function (evt) {
     const order = vehicleSortable.toArray();
     let num = 1;
     for(let id of order) {
-      if(document.getElementById(id)){
+      if(document.querySelector(`tr#${id}`)){
         document.querySelector(`#${id} [name$="Name"]`      ).setAttribute('name',`vehicle${num}Name`);
         document.querySelector(`#${id} [name$="Stock"]`     ).setAttribute('name',`vehicle${num}Stock`);
         document.querySelector(`#${id} [name$="Exp"]`       ).setAttribute('name',`vehicle${num}Exp`);
@@ -1265,18 +1134,11 @@ let vehicleSortable = Sortable.create(document.querySelector('#vehicle-table tbo
 // 追加
 function addItem(){
   let num = Number(form.itemNum.value) + 1;
-  let tbody = document.createElement('tr');
-  tbody.setAttribute('id',idNumSet('item'));
-  tbody.innerHTML = `
-    <td><input name="item${num}Name"  type="text"><span class="handle"></span></td>
-    <td><input name="item${num}Stock" type="number" oninput="calcItem()"></td>
-    <td><input name="item${num}Exp"   type="number" oninput="calcItem()"></td>
-    <td><input name="item${num}Type"  type="text" list="list-item-type"></td>
-    <td><input name="item${num}Skill" type="text" list="list-item-skill"></td>
-    <td><textarea name="item${num}Note" rows="2"></textarea></td>
-  `;
-  const target = document.querySelector("#item-table tbody");
-  target.appendChild(tbody, target);
+
+  let row = document.querySelector('#item-template').content.firstElementChild.cloneNode(true);
+  row.id = idNumSet('item');
+  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
+  document.querySelector("#item-table tbody").append(row);
   
   form.itemNum.value = num;
 }
@@ -1287,8 +1149,7 @@ function delItem(){
     if(form[`item${num}Name`].value || form[`item${num}Stock`].value || form[`item${num}Exp`].value || form[`item${num}Type`].value || form[`item${num}Skill`].value || form[`item${num}Note`].value){
       if (!confirm(delConfirmText)) return false;
     }
-    const target = document.querySelector("#item-table tbody tr:last-of-type");
-    target.parentNode.removeChild(target);
+    document.querySelector("#item-table tbody tr:last-of-type").remove();
     num--;
     form.itemNum.value = num;
     calcItem();
@@ -1300,13 +1161,13 @@ let itemSortable = Sortable.create(document.querySelector('#item-table tbody'), 
   dataIdAttr: 'id',
   animation: 100,
   handle: '.handle',
-  filter: 'thead,tfoot',
+  filter: 'thead,tfoot,template',
   ghostClass: 'sortable-ghost',
   onUpdate: function (evt) {
     const order = itemSortable.toArray();
     let num = 1;
     for(let id of order) {
-      if(document.getElementById(id)){
+      if(document.querySelector(`tr#${id}`)){
         document.querySelector(`#${id} [name$="Name"]`      ).setAttribute('name',`item${num}Name`);
         document.querySelector(`#${id} [name$="Stock"]`     ).setAttribute('name',`item${num}Stock`);
         document.querySelector(`#${id} [name$="Exp"]`       ).setAttribute('name',`item${num}Exp`);
@@ -1323,20 +1184,11 @@ let itemSortable = Sortable.create(document.querySelector('#item-table tbody'), 
 // 追加
 function addHistory(){
   let num = Number(form.historyNum.value) + 1;
-  let tbody = document.createElement('tbody');
-  tbody.setAttribute('id',idNumSet('history'));
-  tbody.innerHTML = `<tr>
-    <td rowspan="2" class="handle"></td>
-    <td rowspan="2"><input name="history${num}Date"   type="text"></td>
-    <td rowspan="2"><input name="history${num}Title"  type="text"></td>
-    <td><input name="history${num}Exp"    type="text" oninput="calcExp()"></td>
-    <td><label><input name="history${num}ExpApply" type="checkbox" oninput="calcExp()"><b>適用</b></label></td>
-    <td><input name="history${num}Gm"     type="text"></td>
-    <td><input name="history${num}Member" type="text"></td>
-  </tr>
-  <tr><td colspan="5" class="left"><input name="history${num}Note" type="text"></td></tr>`;
-  const target = document.querySelector("#history-table tfoot");
-  target.parentNode.insertBefore(tbody, target);
+
+  let row = document.querySelector('#history-template').content.firstElementChild.cloneNode(true);
+  row.id = idNumSet('history');
+  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
+  document.querySelector("#history-table tbody:last-of-type").after(row);
   
   form.historyNum.value = num;
 }
@@ -1359,13 +1211,13 @@ let historySortable = Sortable.create(document.getElementById('history-table'), 
   dataIdAttr: 'id',
   animation: 100,
   handle: '.handle',
-  filter: 'thead,tfoot',
+  filter: 'thead,tfoot,template',
   ghostClass: 'sortable-ghost',
   onUpdate: function (evt) {
     const order = historySortable.toArray();
     let num = 1;
     for(let id of order) {
-      if(document.getElementById(id)){
+      if(document.querySelector(`tbody#${id}`)){
         document.querySelector(`#${id} [name$="Date"]`  ).setAttribute('name',`history${num}Date`);
         document.querySelector(`#${id} [name$="Title"]` ).setAttribute('name',`history${num}Title`);
         document.querySelector(`#${id} [name$="Exp"]`   ).setAttribute('name',`history${num}Exp`);

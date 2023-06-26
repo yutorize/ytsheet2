@@ -480,7 +480,8 @@ print <<"HTML";
           </thead>
           <tbody>
 HTML
-foreach my $num (1 .. $pc{'skillNum'}) {
+foreach my $num ('TMPL',1 .. $pc{'skillNum'}) {
+  if($num eq 'TMPL'){ print '<template id="skill-template">' }
 print <<"HTML";
             <tr id="skill${num}">
               <td class="handle">
@@ -491,6 +492,7 @@ print <<"HTML";
               <td class="note ">@{[ input "skill${num}Note" ]}
               <td class="page ">@{[ input "skill${num}Page",'','','list="list-page"' ]}
 HTML
+  if($num eq 'TMPL'){ print '</template>' }
 }
 print <<"HTML";
         </table>
@@ -517,7 +519,8 @@ print <<"HTML";
           </thead>
           <tbody>
 HTML
-foreach my $num (1 .. $pc{'generalSkillNum'}) {
+foreach my $num ('TMPL',1 .. $pc{'generalSkillNum'}) {
+  if($num eq 'TMPL'){ print '<template id="general-skill-template">' }
 print <<"HTML";
             <tr id="general-skill${num}">
               <td class="handle">
@@ -528,6 +531,7 @@ print <<"HTML";
               <td class="note ">@{[ input "generalSkill${num}Note" ]}
               <td class="page ">@{[ input "generalSkill${num}Page",'','','list="list-page"' ]}
 HTML
+  if($num eq 'TMPL'){ print '</template>' }
 }
 print <<"HTML";
         </table>
@@ -557,7 +561,8 @@ print <<"HTML";
 HTML
 my @spell_names;
 push(@spell_names, $data::class{$_}{magic}) foreach(grep { $data::class{$_}{magic} } @data::class_names);
-foreach my $num (1 .. $pc{'spellNum'}) {
+foreach my $num ('TMPL',1 .. $pc{'spellNum'}) {
+  if($num eq 'TMPL'){ print '<template id="spell-template">' }
 print <<"HTML";
             <tr id="spell${num}">
               <td class="handle">
@@ -569,6 +574,7 @@ print <<"HTML";
               <td class="note  ">@{[ input "spell${num}Note" ]}
               <td class="page  ">@{[ input "spell${num}Page",'','','list="list-page"' ]}
 HTML
+  if($num eq 'TMPL'){ print '</template>' }
 }
 print <<"HTML";
         </table>
@@ -579,7 +585,7 @@ print <<"HTML";
         <summary>武技</summary>
         @{[input 'artsNum','hidden']}
         <table class="edit-table line-tbody no-border-cells" id="arts-table">
-          <thead>
+          <thead id="arts-head">
             <tr>
               <th>
               <th class="name  ">名称
@@ -590,7 +596,8 @@ print <<"HTML";
               <th class="page  ">参照
           </thead>
 HTML
-foreach my $num (1 .. $pc{'artsNum'}) {
+foreach my $num ('TMPL',1 .. $pc{'artsNum'}) {
+  if($num eq 'TMPL'){ print '<template id="arts-template">' }
 print <<"HTML";
           <tbody id="arts${num}">
             <tr>
@@ -605,6 +612,7 @@ print <<"HTML";
               <th class="right">効果
               <td colspan="5">@{[ input "arts${num}Note" ]}
 HTML
+  if($num eq 'TMPL'){ print '</template>' }
 }
 print <<"HTML";
         </table>
@@ -661,7 +669,7 @@ print <<"HTML";
         </div>
         <div class="box" id="weapons">
           <table class="line-tbody" id="weapons-table">
-            <thead>
+            <thead id="weapon-head">
               <tr>
                 <th class="name ">武器
                 <th class="type ">種別
@@ -674,7 +682,8 @@ print <<"HTML";
               <tr>
             </thead>
 HTML
-foreach my $num (1 .. $pc{'weaponNum'}) {
+foreach my $num ('TMPL',1 .. $pc{'weaponNum'}) {
+  if($num eq 'TMPL'){ print '<template id="weapon-template">' }
   print <<"HTML";
             <tbody id="weapon-row$num">
               <tr>
@@ -682,13 +691,14 @@ foreach my $num (1 .. $pc{'weaponNum'}) {
                 <td class="type " rowspan="2"><select name="weapon${num}Type" oninput="calcWeapon()">@{[ option "weapon${num}Type", @set::weapon_names ]}</select><span class="flex">／<select name="weapon${num}Weight" oninput="calcWeapon()">@{[ option "weapon${num}Weight", '軽','重' ]}</select></span>
                 <td class="usage" rowspan="2">@{[ input "weapon${num}Usage","text",'','list="list-usage"' ]}@{[ input "weapon${num}Attr",'text','','list="list-attr"' ]}
                 <td class="hit  "><span class="flex">+@{[ input "weapon${num}HitMod",'number','calcWeapon' ]}=<b id="weapon${num}-hit-total" class="bold">$pc{"weapon${num}HitMod"}</b></span>
-                <td class="power"><span class="flex">@{[ input "weapon${num}Power",'','','placeholder="xDy+z"' ]}+<b id="weapon${num}-power-lv">Lv</b>+@{[ input "weapon${num}PowerMod",'number' ]}
+                <td class="power"><span class="flex">@{[ input "weapon${num}Power",'','','placeholder="xDy+z"' ]}+<b id="weapon${num}-power-lv">0</b>+@{[ input "weapon${num}PowerMod",'number' ]}
                 <td class="range">@{[ input "weapon${num}Range",'','','list="list-range"' ]}
                 <td class="class"><select name="weapon${num}Class" oninput="calcWeapon()">@{[ option "weapon${num}Class", (grep { $data::class{$_}{type} =~ /warrior/ } @data::class_names) ]}</select>
                 <td rowspan="2"><span class="button" onclick="addWeapons(${num});">複<br>製</span>
               <tr>
                 <td class="note right" colspan="4"><span class="flex"><b class="bold">備考</b>@{[ input "weapon${num}Note",'','calcWeapon' ]}</span>
 HTML
+  if($num eq 'TMPL'){ print '</template>' }
 }
 print <<"HTML";
           </table>
@@ -877,7 +887,7 @@ print <<"HTML";
         <h2>セッション履歴</h2>
         @{[input 'historyNum','hidden']}
         <table class="edit-table line-tbody no-border-cells" id="history-table">
-          <thead>
+          <thead id="history-head">
             <tr>
               <th>
               <th class="date  ">日付
@@ -898,7 +908,8 @@ print <<"HTML";
               <td id="history0-money" class="money">$pc{'history0Money'}
           </thead>
 HTML
-foreach my $num (1 .. $pc{'historyNum'}) {
+foreach my $num ('TMPL',1 .. $pc{'historyNum'}) {
+  if($num eq 'TMPL'){ print '<template id="history-template">' }
 print <<"HTML";
           <tbody id="history${num}">
             <tr>
@@ -915,6 +926,7 @@ print <<"HTML";
             <tr><td colspan="5" class="left">@{[input("history${num}Note",'','','placeholder="備考"')]}</td></tr>
           </tbody>
 HTML
+  if($num eq 'TMPL'){ print '</template>' }
 }
 print <<"HTML";
           <tfoot>

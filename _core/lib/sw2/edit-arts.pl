@@ -348,7 +348,8 @@ print <<"HTML";
           <textarea name="schoolArtsNote" placeholder="流派秘伝全体の注釈（あれば）">$pc{'schoolArtsNote'}</textarea>
           <div id="arts-list">
 HTML
-foreach my $num (1..$pc{'schoolArtsNum'}){
+foreach my $num ('TMPL',1..$pc{'schoolArtsNum'}){
+  if($num eq 'TMPL'){ print '<template id="arts-template">' }
 print <<"HTML";
           <div class="input-data" id="arts${num}">
             <dl class="name    "><dt>名称      </dt><dd>《@{[ input "schoolArts${num}Name",'' ]}》<br>@{[ checkbox "schoolArts${num}ActionTypeSetup",'戦闘準備' ]}</dd></dl>
@@ -363,6 +364,7 @@ print <<"HTML";
             <dl class="effect  "><dt>効果      </dt><dd><textarea name="schoolArts${num}Effect">$pc{"schoolArts${num}Effect"}</textarea></dd></dl>
           </div>
 HTML
+  if($num eq 'TMPL'){ print '</template>' }
 }
 print <<"HTML";
           </div>
@@ -374,7 +376,8 @@ print <<"HTML";
           <textarea name="schoolMagicNote" placeholder="流派秘伝魔法全体の注釈（あれば）">$pc{'schoolMagicNote'}</textarea>
           <div id="school-magic-list">
 HTML
-foreach my $num (1..$pc{'schoolMagicNum'}){
+foreach my $num ('TMPL',1..$pc{'schoolMagicNum'}){
+  if($num eq 'TMPL'){ print '<template id="school-magic-template">' }
 print <<"HTML";
           <div class="input-data" id="school-magic${num}">
             <dl class="name    "><dt>名称      </dt><dd>【@{[ input "schoolMagic${num}Name",'' ]}】<br>@{[ checkbox "schoolMagic${num}ActionTypeMinor",'補助動作' ]}@{[ checkbox "schoolMagic${num}ActionTypeSetup",'戦闘準備' ]}</dd></dl>
@@ -390,6 +393,7 @@ print <<"HTML";
             <dl class="effect  "><dt>効果      </dt><dd><textarea name="schoolMagic${num}Effect">$pc{"schoolMagic${num}Effect"}</textarea></dd></dl>
           </div>
 HTML
+  if($num eq 'TMPL'){ print '</template>' }
 }
 print <<"HTML";
           </div>

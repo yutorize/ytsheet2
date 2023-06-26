@@ -526,9 +526,10 @@ print <<"HTML";
             <div>所持名誉点：<span id="honor-value-MA"></span></div>
             <ul id="mystic-arts-list">
 HTML
-$pc{'mysticArtsNum'} ||= 0;
-foreach my $num (1 .. $pc{'mysticArtsNum'}){
+foreach my $num ('TMPL',1 .. $pc{'mysticArtsNum'}){
+  if($num eq 'TMPL'){ print '<template id="mystic-arts-template">' }
   print '<li id="mystic-arts'.$num.'"><span class="handle"></span>'.(input 'mysticArts'.$num).(input 'mysticArts'.$num.'Pt', 'number', 'calcHonor').'</li>';
+  if($num eq 'TMPL'){ print '</template>' }
 }
 print <<"HTML";
             </ul>
@@ -539,8 +540,10 @@ print <<"HTML";
             <ul id="mystic-magic-list">
 HTML
 $pc{'mysticMagicNum'} ||= 0;
-foreach my $num (1 .. $pc{'mysticMagicNum'}){
+foreach my $num ('TMPL',1 .. $pc{'mysticMagicNum'}){
+  if($num eq 'TMPL'){ print '<template id="mystic-magic-template">' }
   print '<li id="mystic-magic'.$num.'"><span class="handle"></span>'.(input 'mysticMagic'.$num).(input 'mysticMagic'.$num.'Pt', 'number', 'calcHonor').'</li>';
+  if($num eq 'TMPL'){ print '</template>' }
 }
 print <<"HTML";
             </ul>
@@ -702,11 +705,13 @@ foreach my $key (reverse keys %data::class) {
   }
 }
 
-foreach my $num (1 .. $pc{'languageNum'}){
+foreach my $num ('TMPL', 1 .. $pc{'languageNum'}){
+  if($num eq 'TMPL'){ print '<template id="language-template">' }
   print '<tr id="language-item'.$num.'"><td class="handle"></td><td>'.input('language'.$num, '','checkLanguage','list="list-language"').'</td>'.
   '<td><select name="language'.$num.'Talk" oninput="checkLanguage()">'.(option "language${num}Talk",@langoptionT).'</select><span class="lang-select-view"></span></td>'.
   '<td><select name="language'.$num.'Read" oninput="checkLanguage()">'.(option "language${num}Read",@langoptionR).'</select><span class="lang-select-view"></span></td>'.
   '</tr>'."\n";
+  if($num eq 'TMPL'){ print '</template>' }
 }
 print <<"HTML";
             </tbody>
@@ -903,7 +908,7 @@ print <<"HTML";
         </div>
         <div class="box" id="weapons">
           <table class="line-tbody" id="weapons-table">
-            <thead>
+            <thead id="weapon-head">
               <tr>
                 <th>武器</th>
                 <th>用法</th>
@@ -920,7 +925,8 @@ print <<"HTML";
             </thead>
 HTML
 
-foreach my $num (1 .. $pc{'weaponNum'}) {
+foreach my $num ('TMPL',1 .. $pc{'weaponNum'}) {
+  if($num eq 'TMPL'){ print '<template id="weapon-template">' }
 print <<"HTML";
             <tbody id="weapon-row$num">
               <tr>
@@ -939,6 +945,7 @@ print <<"HTML";
               <tr><td colspan="3">@{[input("weapon${num}Note",'','calcWeapon','placeholder="備考"')]}</td>
             </tbody>
 HTML
+  if($num eq 'TMPL'){ print '</template>' }
 }
 print <<"HTML";
             </tbody>
@@ -1212,8 +1219,10 @@ print <<"HTML";
               </tbody>
               <tbody id="honor-items-table">
 HTML
-foreach my $num (1 .. $pc{'honorItemsNum'}){
+foreach my $num ('TMPL',1 .. $pc{'honorItemsNum'}){
+  if($num eq 'TMPL'){ print '<template id="honor-item-template">' }
   print '<tr id="honor-item'.$num.'"><td class="handle"></td><td>'.(input "honorItem${num}", "text").'</td><td>'.(input "honorItem${num}Pt", "number", "calcHonor").'</td></tr>';
+  if($num eq 'TMPL'){ print '</template>' }
 }
 print <<"HTML";
               </tbody>
@@ -1235,8 +1244,10 @@ print <<"HTML";
               <thead><tr><th></th><th></th><th>点数</th></tr></thead>
               <tbody>
 HTML
-foreach my $num (1 .. $pc{'dishonorItemsNum'}){
+foreach my $num ('TMPL',1 .. $pc{'dishonorItemsNum'}){
+  if($num eq 'TMPL'){ print '<template id="dishonor-item-template">' }
   print '<tr id="dishonor-item'.$num.'"><td class="handle"></td><td>'.(input "dishonorItem${num}", "text").'</td><td>'.(input "dishonorItem${num}Pt", "number", "calcDishonor").'</td></tr>';
+  if($num eq 'TMPL'){ print '</template>' }
 }
 print <<"HTML";
             </tbody>
@@ -1278,7 +1289,7 @@ print <<"HTML";
         <h2>セッション履歴</h2>
         @{[input 'historyNum','hidden']}
         <table class="edit-table line-tbody no-border-cells" id="history-table">
-          <thead>
+          <thead id="history-head">
             <tr>
               <th></th>
               <th>日付</th>
@@ -1301,7 +1312,8 @@ print <<"HTML";
             </tr>
           </thead>
 HTML
-foreach my $num (1 .. $pc{'historyNum'}) {
+foreach my $num ('TMPL',1 .. $pc{'historyNum'}) {
+  if($num eq 'TMPL'){ print '<template id="history-template">' }
 print <<"HTML";
           <tbody id="history${num}">
             <tr>
@@ -1318,9 +1330,10 @@ print <<"HTML";
             <tr><td colspan="6" class="left">@{[input("history${num}Note",'','','placeholder="備考"')]}</td></tr>
           </tbody>
 HTML
+  if($num eq 'TMPL'){ print '</template>' }
 }
 print <<"HTML";
-          <tfoot>
+          <tfoot id="history-foot">
             <tr>
               <td></td>
               <td></td>

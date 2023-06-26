@@ -528,12 +528,13 @@ print <<"HTML";
         <h2>特技</h2>
         @{[input 'artsNum','hidden']}
         <table class="edit-table no-border-cells" id="arts-table">
-          <thead>
+          <thead id="arts-head">
             <tr><th></th><th>名称</th><th>タイミング</th><th>対象</th><th>代償</th><th>条件</th><th class="left">解説</th></tr>
           </thead>
           <tbody id="arts-list">
 HTML
-foreach my $num (1 .. $pc{'artsNum'}) {
+foreach my $num ('TMPL',1 .. $pc{'artsNum'}) {
+  if($num eq 'TMPL'){ print '<template id="arts-template">' }
 print <<"HTML";
             <tr id="arts${num}">
               <td class="handle"></td>
@@ -545,6 +546,7 @@ print <<"HTML";
               <td>@{[input "arts${num}Note"]}</td>
             </tr>
 HTML
+  if($num eq 'TMPL'){ print '</template>' }
 }
 print <<"HTML";
           </tbody>
@@ -584,7 +586,7 @@ print <<"HTML";
         <h2>セッション履歴</h2>
         @{[input 'historyNum','hidden']}
         <table class="edit-table line-tbody no-border-cells" id="history-table">
-          <thead>
+          <thead id="history-head">
           <tr>
             <th></th>
             <th>日付</th>
@@ -601,7 +603,8 @@ print <<"HTML";
           </tr>
           </thead>
 HTML
-foreach my $num (1 .. $pc{'historyNum'}) {
+foreach my $num ('TMPL',1 .. $pc{'historyNum'}) {
+  if($num eq 'TMPL'){ print '<template id="history-template">' }
 print <<"HTML";
           <tbody id="history${num}">
           <tr>
@@ -615,11 +618,12 @@ print <<"HTML";
           <tr><td colspan="5" class="left">@{[input("history${num}Note",'','','placeholder="備考"')]}</td></tr>
           </tbody>
 HTML
+  if($num eq 'TMPL'){ print '</template>' }
 }
 print <<"HTML";
-          <tfoot>
             <tr><th></th><th>日付</th><th>タイトル</th><th>経験点</th><th>GM</th><th>参加者</th></tr>
           </tfoot>
+          <tfoot id="history-foot">
         </table>
         <div class="add-del-button"><a onclick="addHistory()">▼</a><a onclick="delHistory()">▲</a></div>
         <h2>記入例</h2>
