@@ -40,7 +40,7 @@ function formCheck(){
 // レギュレーション ----------------------------------------
 function changeRegu(){
   console.log('changeRegu()');
-  document.getElementById("history0-exp").innerHTML = form.history0Exp.value;
+  document.getElementById("history0-exp").textContent = form.history0Exp.value;
   
   calcExp();
   calcCash();
@@ -267,7 +267,7 @@ function calcLv(){
     form['lv'+classes[originClass].id].classList.add('error');
   }
   
-  document.getElementById("level-value").innerHTML = level;
+  document.getElementById("level-value").textContent = level;
 }
 
 // 能力値計算 ----------------------------------------
@@ -497,7 +497,7 @@ function calcCash(){
       obj
     }
   }
-  document.getElementById("history-money-total").innerHTML = commify(cash);
+  document.getElementById("history-money-total").textContent = commify(cash);
   let s = form.cashbook.value;
   s.replace(
     /::([\+\-\*\/]?[0-9,]+)+/g,
@@ -518,9 +518,9 @@ function calcCash(){
     }
   );
   cash = cash - deposit + debt;
-  document.getElementById('cashbook-total-value').innerHTML = commify(cash);
-  document.getElementById('cashbook-deposit-value').innerHTML = commify(deposit);
-  document.getElementById('cashbook-debt-value').innerHTML = commify(debt);
+  document.getElementById('cashbook-total-value').textContent = commify(cash);
+  document.getElementById('cashbook-deposit-value').textContent = commify(deposit);
+  document.getElementById('cashbook-debt-value').textContent = commify(debt);
 
   if(form.moneyAuto.checked){
     form.money.value = commify(cash);

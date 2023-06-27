@@ -124,9 +124,9 @@ function formCheck(){
 
 // レギュレーション ----------------------------------------
 function changeRegu(){
-  document.getElementById("history0-exp").innerHTML = form.history0Exp.value;
-  document.getElementById("history0-honor").innerHTML = form.history0Honor.value;
-  document.getElementById("history0-money").innerHTML = form.history0Money.value;
+  document.getElementById("history0-exp").textContent = form.history0Exp.value;
+  document.getElementById("history0-honor").textContent = form.history0Honor.value;
+  document.getElementById("history0-money").textContent = form.history0Money.value;
   
   calcExp();
   calcLv();
@@ -174,11 +174,11 @@ function calcLv(){
     expUse += expTable['S'][ lvSeeker ];
   }
   
-  document.getElementById("exp-use").innerHTML = commify(expUse);
-  document.getElementById("exp-rest").innerHTML = commify(expTotal - expUse);
+  document.getElementById("exp-use").textContent = commify(expUse);
+  document.getElementById("exp-rest").textContent = commify(expTotal - expUse);
   
   level = Math.max.apply(null, Object.values(lv));
-  document.getElementById("level-value").innerHTML = level;
+  document.getElementById("level-value").textContent = level;
   
   lv['Wiz'] = (lv['Sor'] && lv['Con']) ? Math.max(lv['Sor'],lv['Con']) : 0;
   levelCasters.sort( function(a,b){ return (a < b ? 1 : -1); } );
@@ -229,7 +229,7 @@ function checkRace(){
   
   if(race === 'リルドラケン'){
     raceAbilityDef = 1;
-    document.getElementById("race-ability-def-name").innerHTML = '鱗の皮膚';
+    document.getElementById("race-ability-def-name").textContent = '鱗の皮膚';
   }
   else if(race === 'シャドウ'){
     raceAbilityMndResist = 4;
@@ -252,25 +252,25 @@ function checkRace(){
       raceAbilityDef += 2;
       raceAbilityMp += 30;
     }
-    document.getElementById("race-ability-def-name").innerHTML = '晶石の身体';
+    document.getElementById("race-ability-def-name").textContent = '晶石の身体';
   }
   else if(race === 'ハイマン'){
     raceAbilityMagicPower += (level >= 11) ? 2 : 1;
-    document.getElementById("magic-power-raceability-value" ).innerHTML = raceAbilityMagicPower || 0;
-    document.getElementById("magic-power-raceability-name").innerHTML = '魔法の申し子';
-    document.getElementById("magic-power-raceability-type").innerHTML = '魔法全般';
+    document.getElementById("magic-power-raceability-value" ).textContent = raceAbilityMagicPower || 0;
+    document.getElementById("magic-power-raceability-name").textContent = '魔法の申し子';
+    document.getElementById("magic-power-raceability-type").textContent = '魔法全般';
   }
   else if(race.match(/^センティアン/)){
-    document.getElementById("magic-power-raceability-value" ).innerHTML = (level >= 11) ? 2 : (level >= 6) ? 1 : 0;
-    document.getElementById("magic-power-raceability-name").innerHTML = race.match('ルミエル') ? '神の御名と共に' : race.match('イグニス') ? '神への礼賛' : race.match('カルディア') ? '神への祈り' : '';
-    document.getElementById("magic-power-raceability-type").innerHTML = '神聖魔法';
+    document.getElementById("magic-power-raceability-value" ).textContent = (level >= 11) ? 2 : (level >= 6) ? 1 : 0;
+    document.getElementById("magic-power-raceability-name").textContent = race.match('ルミエル') ? '神の御名と共に' : race.match('イグニス') ? '神への礼賛' : race.match('カルディア') ? '神への祈り' : '';
+    document.getElementById("magic-power-raceability-type").textContent = '神聖魔法';
   }
   else if(race === 'ダークトロール'){
     raceAbilityDef = 1;
     if(level >= 16){
       raceAbilityDef += 2;
     }
-    document.getElementById("race-ability-def-name").innerHTML = 'トロールの体躯';
+    document.getElementById("race-ability-def-name").textContent = 'トロールの体躯';
   }
   
   let ability = '';
@@ -366,16 +366,16 @@ function calcStt() {
   growInt = Number(form.sttPreGrowE.value) + sttHistGrowE + seekerGrow;
   growMnd = Number(form.sttPreGrowF.value) + sttHistGrowF + seekerGrow;
   
-  document.getElementById("stt-grow-A-value").innerHTML = growDex;
-  document.getElementById("stt-grow-B-value").innerHTML = growAgi;
-  document.getElementById("stt-grow-C-value").innerHTML = growStr;
-  document.getElementById("stt-grow-D-value").innerHTML = growVit;
-  document.getElementById("stt-grow-E-value").innerHTML = growInt;
-  document.getElementById("stt-grow-F-value").innerHTML = growMnd;
+  document.getElementById("stt-grow-A-value").textContent = growDex;
+  document.getElementById("stt-grow-B-value").textContent = growAgi;
+  document.getElementById("stt-grow-C-value").textContent = growStr;
+  document.getElementById("stt-grow-D-value").textContent = growVit;
+  document.getElementById("stt-grow-E-value").textContent = growInt;
+  document.getElementById("stt-grow-F-value").textContent = growMnd;
 
   const growTotal = growDex + growAgi + growStr + growVit + growInt + growMnd;
-  document.getElementById("stt-grow-total-value").innerHTML = growTotal;
-  document.getElementById("history-grow-total-value").innerHTML = growTotal;
+  document.getElementById("stt-grow-total-value").textContent = growTotal;
+  document.getElementById("history-grow-total-value").textContent = growTotal;
   
   sttDex = Number(form.sttBaseTec.value) + Number(form.sttBaseA.value) + growDex;
   sttAgi = Number(form.sttBaseTec.value) + Number(form.sttBaseB.value) + growAgi;
@@ -390,12 +390,12 @@ function calcStt() {
   else if (race === 'ウィークリング（バジリスク）')   sttInt += 3;
   else if (race === 'ウィークリング（マーマン）')     sttMnd += 3;
   
-  document.getElementById("stt-dex-value").innerHTML = sttDex;
-  document.getElementById("stt-agi-value").innerHTML = sttAgi;
-  document.getElementById("stt-str-value").innerHTML = sttStr;
-  document.getElementById("stt-vit-value").innerHTML = sttVit;
-  document.getElementById("stt-int-value").innerHTML = sttInt;
-  document.getElementById("stt-mnd-value").innerHTML = sttMnd;
+  document.getElementById("stt-dex-value").textContent = sttDex;
+  document.getElementById("stt-agi-value").textContent = sttAgi;
+  document.getElementById("stt-str-value").textContent = sttStr;
+  document.getElementById("stt-vit-value").textContent = sttVit;
+  document.getElementById("stt-int-value").textContent = sttInt;
+  document.getElementById("stt-mnd-value").textContent = sttMnd;
   
   sttAddA = Number(form.sttAddA.value);
   sttAddB = Number(form.sttAddB.value);
@@ -411,12 +411,12 @@ function calcStt() {
   bonusInt = parseInt((sttInt + sttAddE) / 6);
   bonusMnd = parseInt((sttMnd + sttAddF) / 6);
   
-  document.getElementById("stt-bonus-dex-value").innerHTML = bonusDex;
-  document.getElementById("stt-bonus-agi-value").innerHTML = bonusAgi;
-  document.getElementById("stt-bonus-str-value").innerHTML = bonusStr;
-  document.getElementById("stt-bonus-vit-value").innerHTML = bonusVit;
-  document.getElementById("stt-bonus-int-value").innerHTML = bonusInt;
-  document.getElementById("stt-bonus-mnd-value").innerHTML = bonusMnd;
+  document.getElementById("stt-bonus-dex-value").textContent = bonusDex;
+  document.getElementById("stt-bonus-agi-value").textContent = bonusAgi;
+  document.getElementById("stt-bonus-str-value").textContent = bonusStr;
+  document.getElementById("stt-bonus-vit-value").textContent = bonusVit;
+  document.getElementById("stt-bonus-int-value").textContent = bonusInt;
+  document.getElementById("stt-bonus-mnd-value").textContent = bonusMnd;
   
   reqdStr = sttStr + sttAddC;
   reqdStrHalf = Math.ceil(reqdStr / 2);
@@ -966,12 +966,12 @@ function calcSubStt() {
   const mndResistBase = level + bonusMnd;
   const vitResistAutoAdd = 0 + (feats['抵抗強化'] || 0) + seekerResistAdd;
   const mndResistAutoAdd = raceAbilityMndResist + (feats['抵抗強化'] || 0) + seekerResistAdd;
-  document.getElementById("vit-resist-base").innerHTML = vitResistBase;
-  document.getElementById("mnd-resist-base").innerHTML = mndResistBase;
-  document.getElementById("vit-resist-auto-add").innerHTML = vitResistAutoAdd;
-  document.getElementById("mnd-resist-auto-add").innerHTML = mndResistAutoAdd;
-  document.getElementById("vit-resist-total").innerHTML = vitResistBase + Number(form.vitResistAdd.value) + vitResistAutoAdd;
-  document.getElementById("mnd-resist-total").innerHTML = mndResistBase + Number(form.mndResistAdd.value) + mndResistAutoAdd;
+  document.getElementById("vit-resist-base").textContent = vitResistBase;
+  document.getElementById("mnd-resist-base").textContent = mndResistBase;
+  document.getElementById("vit-resist-auto-add").textContent = vitResistAutoAdd;
+  document.getElementById("mnd-resist-auto-add").textContent = mndResistAutoAdd;
+  document.getElementById("vit-resist-total").textContent = vitResistBase + Number(form.vitResistAdd.value) + vitResistAutoAdd;
+  document.getElementById("mnd-resist-total").textContent = mndResistBase + Number(form.mndResistAdd.value) + mndResistAutoAdd;
   
   let hpAccessory = 0;
   let mpAccessory = 0;
@@ -989,12 +989,12 @@ function calcSubStt() {
     : ( levelCasters.reduce((a,x) => a+x,0) * 3 + sttMnd + sttAddF );
   const hpAutoAdd = (feats['頑強'] || 0) + hpAccessory + (lv['Fig'] >= 7 ? 15 : 0) + seekerHpMpAdd;
   const mpAutoAdd = (feats['キャパシティ'] || 0) + raceAbilityMp + mpAccessory + seekerHpMpAdd;
-  document.getElementById("hp-base").innerHTML = hpBase;
-  document.getElementById("mp-base").innerHTML = (race === 'グラスランナー') ? '0' : mpBase;
-  document.getElementById("hp-auto-add").innerHTML = hpAutoAdd;
-  document.getElementById("mp-auto-add").innerHTML = mpAutoAdd;
-  document.getElementById("hp-total").innerHTML = hpBase + Number(form.hpAdd.value) + hpAutoAdd;
-  document.getElementById("mp-total").innerHTML = (race === 'グラスランナー') ? 'なし' : (mpBase + Number(form.mpAdd.value) + mpAutoAdd);
+  document.getElementById("hp-base").textContent = hpBase;
+  document.getElementById("mp-base").textContent = (race === 'グラスランナー') ? '0' : mpBase;
+  document.getElementById("hp-auto-add").textContent = hpAutoAdd;
+  document.getElementById("mp-auto-add").textContent = mpAutoAdd;
+  document.getElementById("hp-total").textContent = hpBase + Number(form.hpAdd.value) + hpAutoAdd;
+  document.getElementById("mp-total").textContent = (race === 'グラスランナー') ? 'なし' : (mpBase + Number(form.mpAdd.value) + mpAutoAdd);
 }
 
 // 移動力計算 ----------------------------------------
@@ -1002,10 +1002,10 @@ function calcMobility() {
   const agi = sttAgi + sttAddB;
   const mobilityBase = ((race === 'ケンタウロス') ? (agi * 2) : agi) + (form["armour1Own"].checked ? 2 : 0);
   const mobility = mobilityBase + Number(form.mobilityAdd.value);
-  document.getElementById("mobility-limited").innerHTML = feats['足さばき'] ? 10 : 3;
-  document.getElementById("mobility-base").innerHTML = mobilityBase;
-  document.getElementById("mobility-total").innerHTML = mobility;
-  document.getElementById("mobility-full").innerHTML = mobility * 3;
+  document.getElementById("mobility-limited").textContent = feats['足さばき'] ? 10 : 3;
+  document.getElementById("mobility-base").textContent = mobilityBase;
+  document.getElementById("mobility-total").textContent = mobility;
+  document.getElementById("mobility-full").textContent = mobility * 3;
 }
 
 // パッケージ計算 ----------------------------------------
@@ -1037,14 +1037,14 @@ function calcPackage() {
             if(form[`craftCommand${i}`].value.match(/軍師の知略$/)){ hit = 1; autoBonus += form[`craftCommand${i}`].value.match(/^陣率/) ? 1 : 0; break; }
           }
           if(!hit){
-            document.getElementById(`package-${eName}-${pId.toLowerCase()}`).innerHTML = '―';
+            document.getElementById(`package-${eName}-${pId.toLowerCase()}`).textContent = '―';
             break;
           }
         }
         
         let value = cLv + bonus[pData[pId].stt] + Number(form[`pack${cId}${pId}Add`].value) + autoBonus;
-        document.getElementById(`package-${eName}-${pId.toLowerCase()}-auto`).innerHTML = autoBonus ? '+'+autoBonus : '';
-        document.getElementById(`package-${eName}-${pId.toLowerCase()}`).innerHTML = value;
+        document.getElementById(`package-${eName}-${pId.toLowerCase()}-auto`).textContent = autoBonus ? '+'+autoBonus : '';
+        document.getElementById(`package-${eName}-${pId.toLowerCase()}`).textContent = value;
 
         if(pData[pId].monsterLore){ lore.push(cLv > 0 ? value : 0); }
         if(pData[pId].initiative ){ init.push(cLv > 0 ? value : 0); }
@@ -1053,15 +1053,15 @@ function calcPackage() {
   }
 
   
-  document.getElementById("monster-lore-value").innerHTML = (Math.max(...lore) || 0) + Number(form.monsterLoreAdd.value);
-  document.getElementById("initiative-value"  ).innerHTML = (Math.max(...init) || 0) + Number(form.initiativeAdd.value);
+  document.getElementById("monster-lore-value").textContent = (Math.max(...lore) || 0) + Number(form.monsterLoreAdd.value);
+  document.getElementById("initiative-value"  ).textContent = (Math.max(...init) || 0) + Number(form.initiativeAdd.value);
 }
 
 // 魔力計算 ----------------------------------------
 let magicPowers = {};
 function calcMagic() {
   const addPower = Number(form.magicPowerAdd.value) + (feats['魔力強化'] || 0);
-  document.getElementById("magic-power-magicenhance-value").innerHTML = feats['魔力強化'] || 0;
+  document.getElementById("magic-power-magicenhance-value").textContent = feats['魔力強化'] || 0;
   const addCast = Number(form.magicCastAdd.value);
   const addDamage = Number(form.magicDamageAdd.value);
   
@@ -1081,9 +1081,9 @@ function calcMagic() {
       if(id === 'Pri' && race.match(/^センティアン/)){
         power += (level >= 11) ? 2 : (level >= 6) ? 1 : 0;
       }
-      document.getElementById("magic-power-"+eName+"-value").innerHTML  = power;
-      document.getElementById("magic-cast-"+eName+"-value").innerHTML   = power + Number(form["magicCastAdd"+id].value) + addCast;
-      document.getElementById("magic-damage-"+eName+"-value").innerHTML = Number(form["magicDamageAdd"+id].value) + addDamage;
+      document.getElementById("magic-power-"+eName+"-value").textContent  = power;
+      document.getElementById("magic-cast-"+eName+"-value").textContent   = power + Number(form["magicCastAdd"+id].value) + addCast;
+      document.getElementById("magic-damage-"+eName+"-value").textContent = Number(form["magicDamageAdd"+id].value) + addDamage;
       magicPowers[id] = cLv ? power : 0;
     }
     // 呪歌など
@@ -1100,12 +1100,12 @@ function calcMagic() {
       }
       if(SET.class[key].craft.power){
         power += Number(form["magicPowerAdd"+id].value);
-        document.getElementById("magic-power-"+eName+"-value").innerHTML  = power;
-        document.getElementById("magic-damage-"+eName+"-value").innerHTML = Number(form["magicDamageAdd"+id].value);
+        document.getElementById("magic-power-"+eName+"-value").textContent  = power;
+        document.getElementById("magic-damage-"+eName+"-value").textContent = Number(form["magicDamageAdd"+id].value);
       }
       
       if(id === 'Alc'){ power += feats['賦術強化'] || 0 }
-      document.getElementById("magic-cast-"+eName+"-value").innerHTML   = power + Number(form["magicCastAdd"+id].value);
+      document.getElementById("magic-cast-"+eName+"-value").textContent = power + Number(form["magicCastAdd"+id].value);
     }
   }
   // 全体／その他の開閉
@@ -1131,7 +1131,7 @@ function calcFairy() {
   let result = '×';
   if(rank[i]){ result = rank[i][lv['Fai']] || '×'; }
   else { result = '×'; }
-  document.getElementById('fairy-rank').innerHTML = result;
+  document.getElementById('fairy-rank').textContent = result;
 }
 
 // 攻撃計算 ----------------------------------------
@@ -1141,29 +1141,29 @@ function calcAttack() {
     const id    = SET.class[name].id;
     const eName = SET.class[name].eName;
     document.getElementById(`attack-${eName}`).style.display = lv[id] > 0 ? "" :"none";
-    document.getElementById(`attack-${eName}-str`).innerHTML = id == 'Fen' ? reqdStrHalf : reqdStr;
-    document.getElementById(`attack-${eName}-acc`).innerHTML = lv[id] + bonusDex;
-    document.getElementById(`attack-${eName}-dmg`).innerHTML = lv[id] + bonusStr;
+    document.getElementById(`attack-${eName}-str`).textContent = id == 'Fen' ? reqdStrHalf : reqdStr;
+    document.getElementById(`attack-${eName}-acc`).textContent = lv[id] + bonusDex;
+    document.getElementById(`attack-${eName}-dmg`).textContent = lv[id] + bonusStr;
   }
   document.getElementById("attack-enhancer"  ).style.display = lv['Enh'] >= 10 ? "" :"none";
-  document.getElementById("attack-enhancer-str").innerHTML   = reqdStr;
-  document.getElementById("attack-enhancer-acc"  ).innerHTML = lv['Enh'] + bonusDex;
-  document.getElementById("attack-enhancer-dmg"  ).innerHTML = lv['Enh'] + bonusStr;
+  document.getElementById("attack-enhancer-str").textContent   = reqdStr;
+  document.getElementById("attack-enhancer-acc"  ).textContent = lv['Enh'] + bonusDex;
+  document.getElementById("attack-enhancer-dmg"  ).textContent = lv['Enh'] + bonusStr;
 
   document.getElementById("attack-demonruler").style.display = lv['Dem'] >= 10 ? "" : modeZero && lv['Dem'] > 0 ? "" :"none";
-  document.getElementById("attack-demonruler-str").innerHTML = reqdStr;
-  document.getElementById("attack-demonruler-acc").innerHTML = lv['Dem'] + bonusDex;
-  document.getElementById("attack-demonruler-dmg").innerHTML = modeZero ? lv['Dem'] + bonusStr : '―';
+  document.getElementById("attack-demonruler-str").textContent = reqdStr;
+  document.getElementById("attack-demonruler-acc").textContent = lv['Dem'] + bonusDex;
+  document.getElementById("attack-demonruler-dmg").textContent = modeZero ? lv['Dem'] + bonusStr : '―';
 
   for(let i = 0; i < SET.weapons.length; i++){
     document.getElementById(`attack-${SET.weapons[i][1]}-mastery`).style.display = feats['武器習熟／'+SET.weapons[i][0]] ? '' : 'none';
-    document.getElementById(`attack-${SET.weapons[i][1]}-mastery-dmg`).innerHTML = feats['武器習熟／'+SET.weapons[i][0]] || 0;
+    document.getElementById(`attack-${SET.weapons[i][1]}-mastery-dmg`).textContent = feats['武器習熟／'+SET.weapons[i][0]] || 0;
   }
   document.getElementById("attack-artisan-mastery").style.display  = feats['魔器習熟'] ? '' : 'none';
-  document.getElementById("attack-artisan-mastery-dmg").innerHTML  = feats['魔器習熟'] || 0 ;
+  document.getElementById("attack-artisan-mastery-dmg").textContent  = feats['魔器習熟'] || 0 ;
   document.getElementById("artisan-annotate").style.display        = feats['魔器習熟'] ? '' : 'none'; 
   document.getElementById("accuracy-enhance").style.display        = feats['命中強化'] ? '' : 'none';
-  document.getElementById("accuracy-enhance-acc").innerHTML        = feats['命中強化'] || 0;
+  document.getElementById("accuracy-enhance-acc").textContent        = feats['命中強化'] || 0;
   document.getElementById("throwing").style.display                = feats['スローイング'] ? '' : 'none';
 
   calcWeapon();
@@ -1209,12 +1209,12 @@ function calcWeapon() {
     if(note.match(/〈魔器〉/)){ dmgBase += feats['魔器習熟'] || 0; }
     // 命中追加D出力
     if(className === "自動計算しない"){
-      document.getElementById("weapon"+i+"-acc-total").innerHTML = Number(form["weapon"+i+"Acc"].value);
-      document.getElementById("weapon"+i+"-dmg-total").innerHTML = Number(form["weapon"+i+"Dmg"].value);
+      document.getElementById("weapon"+i+"-acc-total").textContent = Number(form["weapon"+i+"Acc"].value);
+      document.getElementById("weapon"+i+"-dmg-total").textContent = Number(form["weapon"+i+"Dmg"].value);
     }
     else {
-      document.getElementById("weapon"+i+"-acc-total").innerHTML = accBase + Number(form["weapon"+i+"Acc"].value);
-      document.getElementById("weapon"+i+"-dmg-total").innerHTML = dmgBase + Number(form["weapon"+i+"Dmg"].value);
+      document.getElementById("weapon"+i+"-acc-total").textContent = accBase + Number(form["weapon"+i+"Acc"].value);
+      document.getElementById("weapon"+i+"-dmg-total").textContent = dmgBase + Number(form["weapon"+i+"Dmg"].value);
     }
   }
 }
@@ -1234,8 +1234,8 @@ function calcDefense() {
   evaBase = evaClassLv || 0;
   
   const maxReqd = (className === "フェンサー") ? reqdStrHalf : reqdStr;
-  document.getElementById("evasion-str").innerHTML = maxReqd;
-  document.getElementById("evasion-eva").innerHTML = evaClassLv ? (evaClassLv + bonusAgi) : 0;
+  document.getElementById("evasion-str").textContent = maxReqd;
+  document.getElementById("evasion-eva").textContent = evaClassLv ? (evaClassLv + bonusAgi) : 0;
   
   // 技能選択のエラー表示
   let cL = document.getElementById("evasion-classes").classList;
@@ -1247,7 +1247,7 @@ function calcDefense() {
   // 種族特徴
   defBase += raceAbilityDef;
   document.getElementById("race-ability-def").style.display = raceAbilityDef > 0 ? "" :"none";
-  document.getElementById("race-ability-def-value").innerHTML  = raceAbilityDef;
+  document.getElementById("race-ability-def-value").textContent  = raceAbilityDef;
   // 求道者
   if(form.lvSeeker){
     const seekerDefense = lvSeeker >= 18 ? 10
@@ -1257,25 +1257,25 @@ function calcDefense() {
                         : lvSeeker >=  2 ?  2
                         : 0;
     defBase += seekerDefense;
-    document.getElementById('seeker-defense-value').innerHTML = seekerDefense;
+    document.getElementById('seeker-defense-value').textContent = seekerDefense;
   }
   // 習熟
   document.getElementById("mastery-metalarmour").style.display    = feats['防具習熟／金属鎧']   > 0 ? "" :"none";
   document.getElementById("mastery-nonmetalarmour").style.display = feats['防具習熟／非金属鎧'] > 0 ? "" :"none";
   document.getElementById("mastery-shield").style.display         = feats['防具習熟／盾']       > 0 ? "" :"none";
   document.getElementById("mastery-artisan-def").style.display    = feats['魔器習熟']           > 0 ? "" :"none";
-  document.getElementById("mastery-metalarmour-value").innerHTML    = feats['防具習熟／金属鎧']   || 0;
-  document.getElementById("mastery-nonmetalarmour-value").innerHTML = feats['防具習熟／非金属鎧'] || 0;
-  document.getElementById("mastery-shield-value").innerHTML         = feats['防具習熟／盾']       || 0;
-  document.getElementById("mastery-artisan-def-value").innerHTML    = feats['魔器習熟']           || 0;
+  document.getElementById("mastery-metalarmour-value").textContent    = feats['防具習熟／金属鎧']   || 0;
+  document.getElementById("mastery-nonmetalarmour-value").textContent = feats['防具習熟／非金属鎧'] || 0;
+  document.getElementById("mastery-shield-value").textContent         = feats['防具習熟／盾']       || 0;
+  document.getElementById("mastery-artisan-def-value").textContent    = feats['魔器習熟']           || 0;
   // 回避行動
   evaAdd += feats['回避行動'] || 0;
   document.getElementById("evasive-maneuver").style.display = feats['回避行動'] > 0 ? "" :"none";
-  document.getElementById("evasive-maneuver-value").innerHTML = feats['回避行動'] || 0;
+  document.getElementById("evasive-maneuver-value").textContent = feats['回避行動'] || 0;
   // 心眼
   evaAdd += feats['心眼'] || 0;
   document.getElementById("minds-eye").style.display = feats['心眼'] > 0 ? "" :"none";
-  document.getElementById("minds-eye-value").innerHTML = feats['心眼'] || 0;
+  document.getElementById("minds-eye-value").textContent = feats['心眼'] || 0;
   
   calcArmour(evaBase,evaAdd,defBase,maxReqd);
 }
@@ -1305,8 +1305,8 @@ function calcArmour(evaBase,evaAdd,defBase,maxReqd) {
       def += feats['魔器習熟'] || 0;
     }
     
-    document.getElementById(`defense-total${i}-eva`).innerHTML = eva;
-    document.getElementById(`defense-total${i}-def`).innerHTML = def;
+    document.getElementById(`defense-total${i}-eva`).textContent = eva;
+    document.getElementById(`defense-total${i}-def`).textContent = def;
   }
   
   form.armour1Reqd.classList.toggle(  'error', (safeEval(form.armour1Reqd.value)   || 0) > maxReqd);
@@ -1331,9 +1331,9 @@ function calcExp(){
       obj.classList.remove('error');
     }
   }
-  document.getElementById("exp-rest").innerHTML = commify(expTotal - expUse);
-  document.getElementById("exp-total").innerHTML = commify(expTotal);
-  document.getElementById("history-exp-total").innerHTML = commify(expTotal);
+  document.getElementById("exp-rest").textContent = commify(expTotal - expUse);
+  document.getElementById("exp-total").textContent = commify(expTotal);
+  document.getElementById("history-exp-total").textContent = commify(expTotal);
   
   // 最大成長回数
   let growMax = 0;
@@ -1351,8 +1351,8 @@ function calcExp(){
     growMax = Math.floor((expTotal - 3000) / 1000);
   }
   else { return; }
-  document.getElementById("stt-grow-max-value").innerHTML = ' / ' + growMax;
-  document.getElementById("history-grow-max-value").innerHTML = '/' + growMax;
+  document.getElementById("stt-grow-max-value").textContent = ' / ' + growMax;
+  document.getElementById("history-grow-max-value").textContent = '/' + growMax;
 }
 
 
@@ -1372,7 +1372,7 @@ function calcHonor(){
       obj.classList.remove('error');
     }
   }
-  document.getElementById("history-honor-total").innerHTML = commify(pointTotal);
+  document.getElementById("history-honor-total").textContent = commify(pointTotal);
   // ランク
   const rank = form["rank"].options[form["rank"].selectedIndex].value;
   const topRank = rank.match(/★$/) ? 1 : 0;
@@ -1405,10 +1405,10 @@ function calcHonor(){
   pointTotal -= mysticArtsPt;
   //
   pointTotal -= Number(form.honorOffset.value);
-  document.getElementById("honor-value"   ).innerHTML = pointTotal;
-  document.getElementById("honor-value-MA").innerHTML = pointTotal;
-  document.getElementById("rank-honor-value").innerHTML = rankNum;
-  document.getElementById("mystic-arts-honor-value").innerHTML = mysticArtsPt;
+  document.getElementById("honor-value"   ).textContent = pointTotal;
+  document.getElementById("honor-value-MA").textContent = pointTotal;
+  document.getElementById("rank-honor-value").textContent = rankNum;
+  document.getElementById("mystic-arts-honor-value").textContent = mysticArtsPt;
   document.getElementById('honor-items-mystic-arts').style.display = mysticArtsPt ? '' : 'none';
 }
 // 不名誉点計算
@@ -1421,9 +1421,9 @@ function calcDishonor(){
     pointTotal += point;
   }
   pointTotal -= Number(form.honorOffset.value);
-  document.getElementById("dishonor-value").innerHTML = pointTotal;
+  document.getElementById("dishonor-value").textContent = pointTotal;
   for(const key in SET.nRank){
-    if(pointTotal >= SET.nRank[key].num) { document.getElementById("notoriety").innerHTML = key; }
+    if(pointTotal >= SET.nRank[key].num) { document.getElementById("notoriety").textContent = key; }
   }
 }
 
@@ -1447,7 +1447,7 @@ function calcCash(){
       obj
     }
   }
-  document.getElementById("history-money-total").innerHTML = commify(cash);
+  document.getElementById("history-money-total").textContent = commify(cash);
   let s = form.cashbook.value;
   s.replace(
     /::([\+\-\*\/]?[0-9,]+)+/g,
@@ -1468,9 +1468,9 @@ function calcCash(){
     }
   );
   cash = cash - deposit + debt;
-  document.getElementById('cashbook-total-value').innerHTML = commify(cash);
-  document.getElementById('cashbook-deposit-value').innerHTML = commify(deposit);
-  document.getElementById('cashbook-debt-value').innerHTML = commify(debt);
+  document.getElementById('cashbook-total-value').textContent = commify(cash);
+  document.getElementById('cashbook-deposit-value').textContent = commify(deposit);
+  document.getElementById('cashbook-debt-value').textContent = commify(debt);
 }
 
 // 装飾品欄 ----------------------------------------
@@ -1498,9 +1498,9 @@ let accesorySortable = Sortable.create(document.getElementById('accessories-tabl
     evt.item.dataset.type     = afterType;
     evt.swapItem.dataset.type = beforeType;
     
-    const beforeTitle = document.querySelector(`#${beforeId} th`).innerHTML;
-    document.querySelector(`#${beforeId} th`).innerHTML = document.querySelector(`#${afterId} th`).innerHTML;
-    document.querySelector(`#${afterId} th`).innerHTML = beforeTitle;
+    const beforeTitle = document.querySelector(`#${beforeId} th`).textContent;
+    document.querySelector(`#${beforeId} th`).textContent = document.querySelector(`#${afterId} th`).textContent;
+    document.querySelector(`#${afterId} th`).textContent = beforeTitle;
     
     const beforeCheck = document.querySelector(`#${beforeId} [name$="Add"]`) ? document.querySelector(`#${beforeId} [name$="Add"]`).checked : false;
     const AfterCheck = document.querySelector(`#${afterId} [name$="Add"]`) ? document.querySelector(`#${afterId} [name$="Add"]`).checked : false;
@@ -1983,7 +1983,7 @@ function calcPointBuy() {
   else {
     errorFlag = 1;
   }
-  document.getElementById("stt-pointbuy-AtoF-value").innerHTML = errorFlag ? '×' : points;
+  document.getElementById("stt-pointbuy-AtoF-value").textContent = errorFlag ? '×' : points;
 
   if(form.birth.value === '冒険者'){
     points = 0;
@@ -1997,10 +1997,10 @@ function calcPointBuy() {
         errorFlag = 1;
       }
     });
-    document.getElementById("stt-pointbuy-TPS-value").innerHTML = errorFlag ? '×' : points;
+    document.getElementById("stt-pointbuy-TPS-value").textContent = errorFlag ? '×' : points;
   }
   else {
-    document.getElementById("stt-pointbuy-TPS-value").innerHTML = '―';
+    document.getElementById("stt-pointbuy-TPS-value").textContent = '―';
   }
 }
 const pointBuyList = {

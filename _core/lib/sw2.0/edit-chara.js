@@ -559,9 +559,9 @@ function calcHonor(){
   pointTotal['human']    -= mysticArtsPt['human'];
   pointTotal['barbaros'] -= mysticArtsPt['barbaros'];
   pointTotal['dragon']   -= mysticArtsPt['dragon'];
-  document.getElementById("honor-value"   ).innerHTML = pointTotal['human']+' / '+pointMax['human'];
-  document.getElementById("honor-value-MA").innerHTML = pointTotal['human'];
-  document.getElementById("honor-barbaros-value").innerHTML = pointTotal['barbaros']+' / '+pointMax['barbaros'];
-  document.getElementById("honor-dragon-value").innerHTML = pointTotal['dragon']+' / '+pointMax['dragon'];
-  document.getElementById("mystic-arts-honor-value").innerHTML = mysticArtsPt['human']+'／'+mysticArtsPt['barbaros']+'／'+mysticArtsPt['dragon'];
+  document.getElementById("honor-value"   ).textContent = pointTotal['human']+' / '+pointMax['human'];
+  document.getElementById("honor-value-MA").textContent = pointTotal['human'];
+  document.getElementById("honor-barbaros-value").textContent = pointTotal['barbaros']+' / '+pointMax['barbaros'];
+  document.getElementById("honor-dragon-value").textContent = pointTotal['dragon']+' / '+pointMax['dragon'];
+  document.getElementById("mystic-arts-honor-value").textContent = mysticArtsPt['human']+'／'+mysticArtsPt['barbaros']+'／'+mysticArtsPt['dragon'];
 }

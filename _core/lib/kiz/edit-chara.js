@@ -85,8 +85,8 @@ function calcGrow(){
     if     (form['history'+num+'Grow'].value === 'endurance'){ enduranceGrow += 2; level++; }
     else if(form['history'+num+'Grow'].value === 'operation'){ operationGrow += 1; level++; }
   }
-  document.getElementById("endurance-grow").innerHTML = enduranceGrow;
-  document.getElementById("operation-grow").innerHTML = operationGrow;
+  document.getElementById("endurance-grow").textContent = enduranceGrow;
+  document.getElementById("operation-grow").textContent = operationGrow;
   
   calcStt();
 }
@@ -104,8 +104,8 @@ function calcStt() {
                      + Number(form.operationAdd.value)
                      + operationGrow;
 
-  document.getElementById("endurance-total").innerHTML = enduranceTotal;
-  document.getElementById("operation-total").innerHTML = operationTotal;
+  document.getElementById("endurance-total").textContent = enduranceTotal;
+  document.getElementById("operation-total").textContent = operationTotal;
 }
 
 // パートナー ----------------------------------------

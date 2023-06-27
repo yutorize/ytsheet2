@@ -107,13 +107,13 @@ function calcGrow(){
   enduranceGrow  = Number(form.endurancePreGrow.value );
   initiativeGrow = Number(form.initiativePreGrow.value);
   level = 1 + (enduranceGrow / 5) + (initiativeGrow / 2);
-  document.getElementById("level-pre-grow").innerHTML = level;
+  document.getElementById("level-pre-grow").textContent = level;
   
   for (let num = 1; num <= Number(form.historyNum.value); num++){
     if     (form['history'+num+'Grow'].value === 'endurance' ){ enduranceGrow  += 5; level++; }
     else if(form['history'+num+'Grow'].value === 'initiative'){ initiativeGrow += 2; level++; }
   }
-  document.getElementById("level-value").innerHTML = level;
+  document.getElementById("level-value").textContent = level;
   
   calcStt();
 }
@@ -127,27 +127,27 @@ function calcStt() {
   if     (factor === '人間') {
     enduranceTotal  += main1 * 2 + main2;
     initiativeTotal += main2 + 10;
-    document.getElementById("endurance-base").innerHTML  = '【技】×2+【情】';
-    document.getElementById("initiative-base").innerHTML = '【情】+10';
-    document.getElementById("partner1-factor-term").innerHTML = '起源／流儀';
-    document.getElementById("partner1-missing-term").innerHTML = '欠落';
-    document.getElementById("partner1-age-term").innerHTML = '外見年齢／実年齢';
+    document.getElementById("endurance-base").textContent  = '【技】×2+【情】';
+    document.getElementById("initiative-base").textContent = '【情】+10';
+    document.getElementById("partner1-factor-term").textContent = '起源／流儀';
+    document.getElementById("partner1-missing-term").textContent = '欠落';
+    document.getElementById("partner1-age-term").textContent = '外見年齢／実年齢';
   }
   else if(factor === '吸血鬼'){
     enduranceTotal  += main1 + 20;
     initiativeTotal += main2 + 4;
-    document.getElementById("endurance-base").innerHTML  = '【血】+20';
-    document.getElementById("initiative-base").innerHTML = '【想】+4';
-    document.getElementById("partner1-factor-term").innerHTML = '信念／職能';
-    document.getElementById("partner1-missing-term").innerHTML = '喪失';
-    document.getElementById("partner1-age-term").innerHTML = '年齢';
+    document.getElementById("endurance-base").textContent  = '【血】+20';
+    document.getElementById("initiative-base").textContent = '【想】+4';
+    document.getElementById("partner1-factor-term").textContent = '信念／職能';
+    document.getElementById("partner1-missing-term").textContent = '喪失';
+    document.getElementById("partner1-age-term").textContent = '年齢';
   }
-  document.getElementById("main1-total").innerHTML = main1;
-  document.getElementById("main2-total").innerHTML = main2;
-  document.getElementById("endurance-grow").innerHTML  = enduranceGrow;
-  document.getElementById("initiative-grow").innerHTML = initiativeGrow;
-  document.getElementById("endurance-total").innerHTML  = enduranceTotal;
-  document.getElementById("initiative-total").innerHTML = initiativeTotal;
+  document.getElementById("main1-total").textContent = main1;
+  document.getElementById("main2-total").textContent = main2;
+  document.getElementById("endurance-grow").textContent  = enduranceGrow;
+  document.getElementById("initiative-grow").textContent = initiativeGrow;
+  document.getElementById("endurance-total").textContent  = enduranceTotal;
+  document.getElementById("initiative-total").textContent = initiativeTotal;
 }
 
 // パートナー ----------------------------------------

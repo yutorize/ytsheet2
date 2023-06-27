@@ -39,7 +39,7 @@ function formCheck(){
 
 // レギュレーション ----------------------------------------
 function changeRegu(){
-  document.getElementById("history0-exp").innerHTML = form.history0Exp.value;
+  document.getElementById("history0-exp").textContent = form.history0Exp.value;
   calcExp();
 }
 
@@ -83,10 +83,10 @@ function calcStt() {
     const add  = Number(form["sttAdd" +Stt].value);
     status[stt] = base + grow + add;
     
-    document.getElementById('stt-syn1-'+stt).innerHTML = syn1 ? synStats[syn1][stt] + (syn2 ? '' : '×2') : '';
-    document.getElementById('stt-syn2-'+stt).innerHTML = syn2 ? synStats[syn2][stt] : '';
-    document.getElementById('stt-total-'+stt).innerHTML = status[stt];
-    document.getElementById('skill-'+stt).innerHTML = status[stt];
+    document.getElementById('stt-syn1-'+stt).textContent = syn1 ? synStats[syn1][stt] + (syn2 ? '' : '×2') : '';
+    document.getElementById('stt-syn2-'+stt).textContent = syn2 ? synStats[syn2][stt] : '';
+    document.getElementById('stt-total-'+stt).textContent = status[stt];
+    document.getElementById('skill-'+stt).textContent = status[stt];
     
     // 経験点
     for(let i = base; i < base+grow; i++){
@@ -96,7 +96,7 @@ function calcStt() {
     // 能力値0の場合のエラー
     document.getElementById('stt-total-'+stt).classList.toggle('error', syn1 && !status[stt]);
   }
-  document.getElementById('exp-status').innerHTML = exps['status'];
+  document.getElementById('exp-status').textContent = exps['status'];
   calcSubStt();
   calcSkill();
 }
@@ -110,35 +110,35 @@ function calcSubStt() {
 let maxHp = 0;
 function calcMaxHp(){
   maxHp = status['body'] * 2 + status['mind'] + 20 + Number(form.maxHpAdd.value);
-  document.getElementById('max-hp-total').innerHTML = maxHp;
+  document.getElementById('max-hp-total').textContent = maxHp;
 }
 let initiative = 0;
 function calcInitiative(){
   initiative = status['sense'] * 2 + status['mind'] + Number(form.initiativeAdd.value);
-  document.getElementById('initiative-total').innerHTML = initiative;
+  document.getElementById('initiative-total').textContent = initiative;
   calcMove();
 }
 let move = 0;
 function calcMove(){
   move = initiative + 5 + Number(form.moveAdd.value);
-  document.getElementById('move-total').innerHTML = move;
-  document.getElementById('dash-total').innerHTML = move * 2;
+  document.getElementById('move-total').textContent = move;
+  document.getElementById('dash-total').textContent = move * 2;
 }
 let stock = 0;
 let stockUsed = 0;
 function calcStock(){
   stock = status['social'] * 2 + (Number(form.skillProcure.value)+Number(form.skillAddProcure.value)) * 2 + Number(form.stockAdd.value);
-  document.getElementById('stock-total').innerHTML = stock;
-  document.getElementById("item-max-stock").innerHTML = stock;
+  document.getElementById('stock-total').textContent = stock;
+  document.getElementById("item-max-stock").textContent = stock;
   calcSaving();
 }
 function calcSaving(){
-  document.getElementById('saving-total').innerHTML = stock - stockUsed + Number(form.savingAdd.value);
+  document.getElementById('saving-total').textContent = stock - stockUsed + Number(form.savingAdd.value);
 }
 let magicDice = 0;
 function calcMagicDice(){
   magicDice = Math.ceil(status['mind'] + Number(form.skillWill.value)+Number(form.skillAddWill.value) / 2) + Number(form.magicAdd.value);
-  document.getElementById('magic-total').innerHTML = magicDice;
+  document.getElementById('magic-total').textContent = magicDice;
 }
 // 技能
 const skillNameToId = {
@@ -165,7 +165,7 @@ function calcSkill() {
       skillNameToId[form['skill'+name+num+'Name'].value] = name+num;
     }
   }
-  document.getElementById('exp-skill').innerHTML = exps['skill'];
+  document.getElementById('exp-skill').textContent = exps['skill'];
   calcExp();
   calcComboAll();
 }
@@ -195,7 +195,7 @@ function calcEffect() {
     else if(type == 'enemy'){ bg.backgroundImage = 'linear-gradient(to right,hsla(270,100%, 50%,0.2),transparent)'; }
     else { bg.backgroundImage = ''; }
   }
-  document.getElementById('exp-effect').innerHTML = exps['effect'];
+  document.getElementById('exp-effect').textContent = exps['effect'];
   calcExp();
 }
 // 術式
@@ -205,7 +205,7 @@ function calcMagic(){
     for (let num = 1; num <= Number(form.magicNum.value); num++){
       exps['magic'] += Number(form['magic'+num+'Exp'].value);
     }
-    document.getElementById('exp-magic').innerHTML = exps['magic'];
+    document.getElementById('exp-magic').textContent = exps['magic'];
     calcExp();
   }
 }
@@ -229,9 +229,9 @@ function calcItem(){
     stockUsed    += Number(form['item'+num+'Stock'].value);
     exps['item'] += Number(form['item'+num+'Exp'  ].value);
   }
-  document.getElementById("item-total-stock").innerHTML = stockUsed;
-  document.getElementById("item-total-exp").innerHTML = exps['item'];
-  document.getElementById("exp-item").innerHTML = exps['item'];
+  document.getElementById("item-total-stock").textContent = stockUsed;
+  document.getElementById("item-total-exp").textContent = exps['item'];
+  document.getElementById("exp-item").textContent = exps['item'];
   calcSaving();
   calcExp();
 }
@@ -241,7 +241,7 @@ function calcMemory() {
   for (let num = 1; num <= 3; num++){
     if(form['memory'+num+'Gain'].checked){ exps['memory'] += 15; }
   }
-  document.getElementById('exp-memory').innerHTML = exps['memory'];
+  document.getElementById('exp-memory').textContent = exps['memory'];
   calcExp();
 }
 
@@ -266,14 +266,14 @@ function calcExp(){
   for (let key in exps){
     rest -= exps[key];
   }
-  document.getElementById("exp-total").innerHTML = total;
-  document.getElementById("exp-used-status").innerHTML = exps['status'] || 0;
-  document.getElementById("exp-used-skill" ).innerHTML = exps['skill']  || 0;
-  document.getElementById("exp-used-effect").innerHTML = exps['effect'] || 0;
-  document.getElementById("exp-used-magic" ).innerHTML = exps['magic'] || 0;
-  document.getElementById("exp-used-item"  ).innerHTML = exps['item']   || 0;
-  document.getElementById("exp-used-memory").innerHTML = exps['memory'] || 0;
-  document.getElementById("exp-rest").innerHTML = rest;
+  document.getElementById("exp-total").textContent = total;
+  document.getElementById("exp-used-status").textContent = exps['status'] || 0;
+  document.getElementById("exp-used-skill" ).textContent = exps['skill']  || 0;
+  document.getElementById("exp-used-effect").textContent = exps['effect'] || 0;
+  document.getElementById("exp-used-magic" ).textContent = exps['magic'] || 0;
+  document.getElementById("exp-used-item"  ).textContent = exps['item']   || 0;
+  document.getElementById("exp-used-memory").textContent = exps['memory'] || 0;
+  document.getElementById("exp-rest").textContent = rest;
 }
 
 // 「衝動」由来の更新
@@ -306,9 +306,9 @@ function calcEncroach(){
   const impulse = impulses[form.lifepathImpulse.value] || 0;
   const other   = Number(form.lifepathOtherEncroach.value);
   const total   = awaken + impulse + other;
-  document.getElementById('awaken-encroach' ).innerHTML = awaken;
-  document.getElementById('impulse-encroach').innerHTML = impulse;
-  document.getElementById('base-encroach').innerHTML = total;
+  document.getElementById('awaken-encroach' ).textContent = awaken;
+  document.getElementById('impulse-encroach').textContent = impulse;
+  document.getElementById('base-encroach').textContent = total;
   
   //form.currentEncroach.value = total;
   encroachBonusType();

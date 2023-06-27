@@ -39,8 +39,8 @@ function formCheck(){
 
 // レギュレーション ----------------------------------------
 function changeRegu(){
-  document.getElementById("history0-exp").innerHTML = form.history0Exp.value;
-  document.getElementById("history0-money").innerHTML = form.history0Money.value;
+  document.getElementById("history0-exp").textContent = form.history0Exp.value;
+  document.getElementById("history0-money").textContent = form.history0Money.value;
 }
 
 
@@ -112,7 +112,7 @@ function checkLv() {
   for(let lv = 2; lv <= level; lv++){
     expUse['level'] += (lv - 1) * 10;
   }
-  document.getElementById('exp-used-level').innerHTML = expUse['level'];
+  document.getElementById('exp-used-level').textContent = expUse['level'];
   calcExp();
 }
 
@@ -143,8 +143,8 @@ function checkRace(){
   //アーシアン専用ライフパス
   document.getElementById('lifepath-earthian').style.display = race === 'アーシアン' ? '' : 'none';
   const eLifepath = (race === 'アーシアン' && form.lifepathEarthian.checked) ? 1 : 0;
-  document.querySelector(`#lifepath-origin th`    ).innerHTML = eLifepath ? '特異' : '出自';
-  document.querySelector(`#lifepath-experience th`).innerHTML = eLifepath ? '転移' : '境遇';
+  document.querySelector(`#lifepath-origin th`    ).textContent = eLifepath ? '特異' : '出自';
+  document.querySelector(`#lifepath-experience th`).textContent = eLifepath ? '転移' : '境遇';
 }
 
 // クラス変更 ----------------------------------------
@@ -200,11 +200,11 @@ function checkClass(){
 
     form[`lvUp${lv}Class`].parentNode.classList.toggle('free', name.match(/^(free|title)$/));
   }
-  document.getElementById('class-main-value'   ).innerHTML = classMain;
-  document.getElementById('class-support-value').innerHTML = classSupport;
-  document.getElementById('class-title-value'  ).innerHTML = classTitle;
-  document.getElementById('hp-grow').innerHTML = hpGrow;
-  document.getElementById('mp-grow').innerHTML = mpGrow;
+  document.getElementById('class-main-value'   ).textContent = classMain;
+  document.getElementById('class-support-value').textContent = classSupport;
+  document.getElementById('class-title-value'  ).textContent = classTitle;
+  document.getElementById('hp-grow').textContent = hpGrow;
+  document.getElementById('mp-grow').textContent = mpGrow;
 
   document.getElementById('class-support-lv1').classList.toggle('free', form.classSupportLv1.value === 'free');
 
@@ -310,7 +310,7 @@ function checkClass(){
     select.value = selected;
   }
   //ライフパスの見出し
-  document.querySelector(`#lifepath-motive th`).innerHTML = (classes[classMain] && classes[classMain]['type'] === 'fate') ? '運命' : '目的';
+  document.querySelector(`#lifepath-motive th`).textContent = (classes[classMain] && classes[classMain]['type'] === 'fate') ? '運命' : '目的';
 }
 // 成長チェック ----------------------------------------
 function checkGrow(num) {
@@ -352,32 +352,32 @@ function calcStt() {
     
     makeBonusTotal += sttMake;
     form[`stt${s}Make`].classList.toggle('error', sttRace + sttMake > 13);
-    document.getElementById(`lvup1-${s.toLowerCase()}`).innerHTML = '+'+sttMake;
-    document.getElementById(`stt-${s.toLowerCase()}-base`).innerHTML = sttBase[s];
-    document.getElementById(`stt-${s.toLowerCase()}-grow`).innerHTML = sttGrow[s];
-    document.getElementById(`stt-${s.toLowerCase()}-bonus`).innerHTML = sttBonus;
-    document.getElementById(`stt-${s.toLowerCase()}-total`).innerHTML = sttTotal[s];
-    document.getElementById(`roll-${s.toLowerCase()}`).innerHTML = sttRoll[s];
+    document.getElementById(`lvup1-${s.toLowerCase()}`).textContent = '+'+sttMake;
+    document.getElementById(`stt-${s.toLowerCase()}-base`).textContent = sttBase[s];
+    document.getElementById(`stt-${s.toLowerCase()}-grow`).textContent = sttGrow[s];
+    document.getElementById(`stt-${s.toLowerCase()}-bonus`).textContent = sttBonus;
+    document.getElementById(`stt-${s.toLowerCase()}-total`).textContent = sttTotal[s];
+    document.getElementById(`roll-${s.toLowerCase()}`).textContent = sttRoll[s];
     // HP／MP／フェイト使用上限／携帯可能重量
     if(s === 'Str'){
       let hpAuto = autoCalcSkill['バイタリティ'] ? level : 0;
-      document.getElementById(`hp-base`).innerHTML = sttBase[s];
-      document.getElementById(`hp-auto`).innerHTML = hpAuto;
-      document.getElementById(`hp-total`).innerHTML = sttBase[s] + Number(form[`hpMain`].value) + Number(form[`hpSupport`].value) + Number(form[`hpAdd`].value) + hpAuto + hpGrow;
+      document.getElementById(`hp-base`).textContent = sttBase[s];
+      document.getElementById(`hp-auto`).textContent = hpAuto;
+      document.getElementById(`hp-total`).textContent = sttBase[s] + Number(form[`hpMain`].value) + Number(form[`hpSupport`].value) + Number(form[`hpAdd`].value) + hpAuto + hpGrow;
     }
     else if(s === 'Mnd'){
       let mpAuto = autoCalcSkill['インテンション'] ? level : 0;
-      document.getElementById(`mp-base`).innerHTML = sttBase[s];
-      document.getElementById(`mp-auto`).innerHTML = mpAuto;
-      document.getElementById(`mp-total`).innerHTML = sttBase[s] + Number(form[`mpMain`].value) + Number(form[`mpSupport`].value) + Number(form[`mpAdd`].value) + mpAuto + mpGrow;
+      document.getElementById(`mp-base`).textContent = sttBase[s];
+      document.getElementById(`mp-auto`).textContent = mpAuto;
+      document.getElementById(`mp-total`).textContent = sttBase[s] + Number(form[`mpMain`].value) + Number(form[`mpSupport`].value) + Number(form[`mpAdd`].value) + mpAuto + mpGrow;
     }
     else if(s === 'Luk'){
-      document.getElementById(`fate-limit-base`).innerHTML = sttTotal[s];
-      document.getElementById(`fate-limit-total`).innerHTML = sttTotal[s] + Number(form[`fateLimitAdd`].value);
+      document.getElementById(`fate-limit-base`).textContent = sttTotal[s];
+      document.getElementById(`fate-limit-total`).textContent = sttTotal[s] + Number(form[`fateLimitAdd`].value);
     }
   });
   if(makeBonusTotal > 5){ sttNames.forEach(s => { form[`stt${s}Make`].classList.add('error') }); }
-  document.getElementById(`make-bonus-total`).innerHTML = makeBonusTotal;
+  document.getElementById(`make-bonus-total`).textContent = makeBonusTotal;
   // フェイト／スキルレベル合計最大値
   const fateBase = (classMainLv1 === classSupportLv1) ? 6 : 5;
   let fateGrow = 0;
@@ -387,11 +387,11 @@ function calcStt() {
     else if(form[`lvUp${lv}Class`].value      ){ skillsLvLimit += 2 }
     else { skillsLvLimit += 3; }
   }
-  document.getElementById('fate-base').innerHTML = fateBase;
-  document.getElementById('fate-grow').innerHTML = fateGrow;
-  document.getElementById('fate-total').innerHTML = fateBase + Number(form.fateAdd.value) + fateGrow;
-  document.getElementById('skills-lv-limit').innerHTML = skillsLvLimit;
-  document.getElementById('gskills-lv-limit').innerHTML = level + 1;
+  document.getElementById('fate-base').textContent = fateBase;
+  document.getElementById('fate-grow').textContent = fateGrow;
+  document.getElementById('fate-total').textContent = fateBase + Number(form.fateAdd.value) + fateGrow;
+  document.getElementById('skills-lv-limit').textContent = skillsLvLimit;
+  document.getElementById('gskills-lv-limit').textContent = level + 1;
   //重量
   const weightBaseWeapon = sttBase[ autoCalcSkill['アストラルボディ'] || 'Str' ];
   const weightBaseArmour = autoCalcSkill['ファランクススタイル'] && autoCalcSkill['アストラルボディ'] ? Math.max(sttBase[ autoCalcSkill['ファランクススタイル'] ], sttBase['Mnd'])
@@ -403,15 +403,15 @@ function calcStt() {
   const weightWeapon = weightBaseWeapon + Number(form.weightLimitAddWeapon.value);
   const weightArmour = weightBaseArmour + Number(form.weightLimitAddArmour.value);
   const weightItems  = weightBaseItems  + Number(form.weightLimitAddItems.value);
-  document.getElementById(`weight-base-weapon`).innerHTML = weightBaseWeapon;
-  document.getElementById(`weight-base-armour`).innerHTML = weightBaseArmour;
-  document.getElementById(`weight-base-items`).innerHTML  = weightBaseItems;
-  document.getElementById(`weight-limit-weapon`).innerHTML = weightWeapon;
-  document.getElementById(`weight-limit-armour`).innerHTML = weightArmour;
-  document.getElementById(`weight-limit-items`).innerHTML  = weightItems;
-  document.getElementById(`armament-weight-limit-weapon`).innerHTML = weightWeapon;
-  document.getElementById(`armament-weight-limit-armour`).innerHTML = weightArmour;
-  document.getElementById(`items-weight-limit`).innerHTML  = weightItems;
+  document.getElementById(`weight-base-weapon`).textContent = weightBaseWeapon;
+  document.getElementById(`weight-base-armour`).textContent = weightBaseArmour;
+  document.getElementById(`weight-base-items`).textContent  = weightBaseItems;
+  document.getElementById(`weight-limit-weapon`).textContent = weightWeapon;
+  document.getElementById(`weight-limit-armour`).textContent = weightArmour;
+  document.getElementById(`weight-limit-items`).textContent  = weightItems;
+  document.getElementById(`armament-weight-limit-weapon`).textContent = weightWeapon;
+  document.getElementById(`armament-weight-limit-armour`).textContent = weightArmour;
+  document.getElementById(`items-weight-limit`).textContent  = weightItems;
 
   calcBattle();
   calcRolls();
@@ -563,8 +563,8 @@ function calcSkills(){
     else if(name.match(/(^|[\/／])レガシーサイン/)){ autoCalcSkill['レガシーサイン'] = 1; }
     form[`skill${num}Name`].parentNode.classList.toggle('calc', markFlag);
   }
-  document.getElementById('skills-lv-total').innerHTML = total;
-  document.getElementById('gskills-lv-total').innerHTML = general - (autoCalcSkill['レガシーサイン'] || 0);
+  document.getElementById('skills-lv-total').textContent = total;
+  document.getElementById('gskills-lv-total').textContent = general - (autoCalcSkill['レガシーサイン'] || 0);
   expUse['skills'] = (general - 2) *5;
 
   calcSkillLvLimit();
@@ -575,7 +575,7 @@ function calcSkills(){
 // 最大スキルレベル計算 ----------------------------------------
 function calcSkillLvLimit(){
   let num = skillsLvLimitAddType;
-  document.getElementById('skills-lv-limit-add').innerHTML = (!num) ? '' : (num > 0) ? '+'+num : num;
+  document.getElementById('skills-lv-limit-add').textContent = (!num) ? '' : (num > 0) ? '+'+num : num;
 }
 
 // 武器・戦闘判定計算 ----------------------------------------
@@ -604,17 +604,17 @@ function calcBattle(){
   let accL = Number(form[`armamentHandLAcc`].value);
   let atkR = Number(form[`armamentHandRAtk`].value);
   let atkL = Number(form[`armamentHandLAtk`].value);
-  document.getElementById('armament-total-weight-weapon').innerHTML = weightW;
-  document.getElementById('armament-total-weight-armour').innerHTML = weightA;
-  document.getElementById('armament-total-acc-right').innerHTML = acc - accL;
-  document.getElementById('armament-total-acc-left' ).innerHTML = acc - accR;
-  document.getElementById('armament-total-atk-right').innerHTML = atk - atkL;
-  document.getElementById('armament-total-atk-left' ).innerHTML = atk - atkR;
-  document.getElementById('armament-total-eva'   ).innerHTML = eva ;
-  document.getElementById('armament-total-def'   ).innerHTML = def ;
-  document.getElementById('armament-total-mdef'  ).innerHTML = mdef;
-  document.getElementById('armament-total-ini'   ).innerHTML = ini ;
-  document.getElementById('armament-total-move'  ).innerHTML = move;
+  document.getElementById('armament-total-weight-weapon').textContent = weightW;
+  document.getElementById('armament-total-weight-armour').textContent = weightA;
+  document.getElementById('armament-total-acc-right').textContent = acc - accL;
+  document.getElementById('armament-total-acc-left' ).textContent = acc - accR;
+  document.getElementById('armament-total-atk-right').textContent = atk - atkL;
+  document.getElementById('armament-total-atk-left' ).textContent = atk - atkR;
+  document.getElementById('armament-total-eva'   ).textContent = eva ;
+  document.getElementById('armament-total-def'   ).textContent = def ;
+  document.getElementById('armament-total-mdef'  ).textContent = mdef;
+  document.getElementById('armament-total-ini'   ).textContent = ini ;
+  document.getElementById('armament-total-move'  ).textContent = move;
 
   acc  += sttRoll['Dex'];
   atk  += 0;
@@ -648,41 +648,41 @@ function calcBattle(){
     const obj = form[`armament${id}Move`];
     obj.classList.toggle('error', Number(obj.value) < 0 && move <= 0);
   });
-  document.getElementById('battle-total-acc' ).innerHTML = acc ;
-  document.getElementById('battle-total-acc-right').innerHTML = acc - accL;
-  document.getElementById('battle-total-acc-left' ).innerHTML = acc - accR;
-  document.getElementById('battle-total-atk' ).innerHTML = atk ;
-  document.getElementById('battle-total-atk-right').innerHTML = atk - atkL;
-  document.getElementById('battle-total-atk-left' ).innerHTML = atk - atkR;
-  document.getElementById('battle-total-eva' ).innerHTML = eva ;
-  document.getElementById('battle-total-def' ).innerHTML = def ;
-  document.getElementById('battle-total-mdef').innerHTML = mdef;
-  document.getElementById('battle-total-ini' ).innerHTML = ini ;
-  document.getElementById('battle-total-move').innerHTML = move;
-  document.getElementById('battle-dice-acc').innerHTML = accDice;
-  document.getElementById('battle-dice-atk').innerHTML = atkDice;
-  document.getElementById('battle-dice-eva').innerHTML = evaDice;
+  document.getElementById('battle-total-acc' ).textContent = acc ;
+  document.getElementById('battle-total-acc-right').textContent = acc - accL;
+  document.getElementById('battle-total-acc-left' ).textContent = acc - accR;
+  document.getElementById('battle-total-atk' ).textContent = atk ;
+  document.getElementById('battle-total-atk-right').textContent = atk - atkL;
+  document.getElementById('battle-total-atk-left' ).textContent = atk - atkR;
+  document.getElementById('battle-total-eva' ).textContent = eva ;
+  document.getElementById('battle-total-def' ).textContent = def ;
+  document.getElementById('battle-total-mdef').textContent = mdef;
+  document.getElementById('battle-total-ini' ).textContent = ini ;
+  document.getElementById('battle-total-move').textContent = move;
+  document.getElementById('battle-dice-acc').textContent = accDice;
+  document.getElementById('battle-dice-atk').textContent = atkDice;
+  document.getElementById('battle-dice-eva').textContent = evaDice;
 }
 
 // 特殊な判定計算 ----------------------------------------
 function calcRolls(){
-  document.getElementById('roll-trapdetect-total'  ).innerHTML = sttRoll['Sen'] + Number(form.rollTrapDetectSkill.value   )+ Number(form.rollTrapDetectOther.value  );
-  document.getElementById('roll-traprelease-total' ).innerHTML = sttRoll['Dex'] + Number(form.rollTrapReleaseSkill.value  )+ Number(form.rollTrapReleaseOther.value );
-  document.getElementById('roll-dengerdetect-total').innerHTML = sttRoll['Sen'] + Number(form.rollDangerDetectSkill.value )+ Number(form.rollDangerDetectOther.value);
-  document.getElementById('roll-enemylore-total'   ).innerHTML = sttRoll['Int'] + Number(form.rollEnemyLoreSkill.value    )+ Number(form.rollEnemyLoreOther.value   );
-  document.getElementById('roll-appraisal-total'   ).innerHTML = sttRoll['Int'] + Number(form.rollAppraisalSkill.value    )+ Number(form.rollAppraisalOther.value   );
-  document.getElementById('roll-magic-total'       ).innerHTML = sttRoll['Int'] + Number(form.rollMagicSkill.value        )+ Number(form.rollMagicOther.value       );
-  document.getElementById('roll-song-total'        ).innerHTML = sttRoll['Mnd'] + Number(form.rollSongSkill.value         )+ Number(form.rollSongOther.value        );
-  document.getElementById('roll-alchemy-total'     ).innerHTML = sttRoll['Dex'] + Number(form.rollAlchemySkill.value      )+ Number(form.rollAlchemyOther.value     );
+  document.getElementById('roll-trapdetect-total'  ).textContent = sttRoll['Sen'] + Number(form.rollTrapDetectSkill.value   )+ Number(form.rollTrapDetectOther.value  );
+  document.getElementById('roll-traprelease-total' ).textContent = sttRoll['Dex'] + Number(form.rollTrapReleaseSkill.value  )+ Number(form.rollTrapReleaseOther.value );
+  document.getElementById('roll-dengerdetect-total').textContent = sttRoll['Sen'] + Number(form.rollDangerDetectSkill.value )+ Number(form.rollDangerDetectOther.value);
+  document.getElementById('roll-enemylore-total'   ).textContent = sttRoll['Int'] + Number(form.rollEnemyLoreSkill.value    )+ Number(form.rollEnemyLoreOther.value   );
+  document.getElementById('roll-appraisal-total'   ).textContent = sttRoll['Int'] + Number(form.rollAppraisalSkill.value    )+ Number(form.rollAppraisalOther.value   );
+  document.getElementById('roll-magic-total'       ).textContent = sttRoll['Int'] + Number(form.rollMagicSkill.value        )+ Number(form.rollMagicOther.value       );
+  document.getElementById('roll-song-total'        ).textContent = sttRoll['Mnd'] + Number(form.rollSongSkill.value         )+ Number(form.rollSongOther.value        );
+  document.getElementById('roll-alchemy-total'     ).textContent = sttRoll['Dex'] + Number(form.rollAlchemySkill.value      )+ Number(form.rollAlchemyOther.value     );
 
-  document.getElementById('roll-trapdetect-total-dice'  ).innerHTML = Number(form.rollSenDice.value)+ Number(form.rollTrapDetectDiceAdd.value  );
-  document.getElementById('roll-traprelease-total-dice' ).innerHTML = Number(form.rollDexDice.value)+ Number(form.rollTrapReleaseDiceAdd.value );
-  document.getElementById('roll-dengerdetect-total-dice').innerHTML = Number(form.rollSenDice.value)+ Number(form.rollDangerDetectDiceAdd.value);
-  document.getElementById('roll-enemylore-total-dice'   ).innerHTML = Number(form.rollIntDice.value)+ Number(form.rollEnemyLoreDiceAdd.value   );
-  document.getElementById('roll-appraisal-total-dice'   ).innerHTML = Number(form.rollIntDice.value)+ Number(form.rollAppraisalDiceAdd.value   );
-  document.getElementById('roll-magic-total-dice'       ).innerHTML = Number(form.rollIntDice.value)+ Number(form.rollMagicDiceAdd.value       );
-  document.getElementById('roll-song-total-dice'        ).innerHTML = Number(form.rollMndDice.value)+ Number(form.rollSongDiceAdd.value        );
-  document.getElementById('roll-alchemy-total-dice'     ).innerHTML = Number(form.rollDexDice.value)+ Number(form.rollAlchemyDiceAdd.value     );
+  document.getElementById('roll-trapdetect-total-dice'  ).textContent = Number(form.rollSenDice.value)+ Number(form.rollTrapDetectDiceAdd.value  );
+  document.getElementById('roll-traprelease-total-dice' ).textContent = Number(form.rollDexDice.value)+ Number(form.rollTrapReleaseDiceAdd.value );
+  document.getElementById('roll-dengerdetect-total-dice').textContent = Number(form.rollSenDice.value)+ Number(form.rollDangerDetectDiceAdd.value);
+  document.getElementById('roll-enemylore-total-dice'   ).textContent = Number(form.rollIntDice.value)+ Number(form.rollEnemyLoreDiceAdd.value   );
+  document.getElementById('roll-appraisal-total-dice'   ).textContent = Number(form.rollIntDice.value)+ Number(form.rollAppraisalDiceAdd.value   );
+  document.getElementById('roll-magic-total-dice'       ).textContent = Number(form.rollIntDice.value)+ Number(form.rollMagicDiceAdd.value       );
+  document.getElementById('roll-song-total-dice'        ).textContent = Number(form.rollMndDice.value)+ Number(form.rollSongDiceAdd.value        );
+  document.getElementById('roll-alchemy-total-dice'     ).textContent = Number(form.rollDexDice.value)+ Number(form.rollAlchemyDiceAdd.value     );
 }
 
 // 携行重量計算 ----------------------------------------
@@ -695,7 +695,7 @@ function calcWeight(){
       weight += safeEval(num.slice(2,-1)) || 0;
     }
   );
-  document.getElementById('items-weight-total').innerHTML = weight;
+  document.getElementById('items-weight-total').textContent = weight;
 }
 
 // 収支履歴計算 ----------------------------------------
@@ -718,7 +718,7 @@ function calcCash(){
       obj
     }
   }
-  document.getElementById("history-money-total").innerHTML = cash;
+  document.getElementById("history-money-total").textContent = cash;
   let s = form.cashbook.value;
   s.replace(
     /::([\+\-\*\/]?[0-9]+)+/g,
@@ -739,9 +739,9 @@ function calcCash(){
     }
   );
   cash = cash //- deposit + debt;
-  document.getElementById('cashbook-total-value').innerHTML = cash;
-  //document.getElementById('cashbook-deposit-value').innerHTML = deposit;
-  //document.getElementById('cashbook-debt-value').innerHTML = debt;
+  document.getElementById('cashbook-total-value').textContent = cash;
+  //document.getElementById('cashbook-deposit-value').textContent = deposit;
+  //document.getElementById('cashbook-debt-value').textContent = debt;
 }
 
 // コネクション計算 ----------------------------------------
@@ -785,14 +785,14 @@ function calcExp(){
   for (let key in expUse){
     rest -= expUse[key];
   }
-  document.getElementById("exp-total").innerHTML = total;
-  document.getElementById("exp-used-level" ).innerHTML = expUse['level' ] || 0;
-  document.getElementById("exp-used-skill" ).innerHTML = expUse['skills' ] || 0;
-  document.getElementById("exp-used-geises").innerHTML = expUse['geises'] || 0;
-  document.getElementById("exp-used-connections").innerHTML = expUse['connections'] || 0;
-  document.getElementById("exp-rest").innerHTML = rest;
-  document.getElementById("history-exp-total").innerHTML = total;
-  document.getElementById("history-payment-total").innerHTML = payment;
+  document.getElementById("exp-total").textContent = total;
+  document.getElementById("exp-used-level" ).textContent = expUse['level' ] || 0;
+  document.getElementById("exp-used-skill" ).textContent = expUse['skills' ] || 0;
+  document.getElementById("exp-used-geises").textContent = expUse['geises'] || 0;
+  document.getElementById("exp-used-connections").textContent = expUse['connections'] || 0;
+  document.getElementById("exp-rest").textContent = rest;
+  document.getElementById("history-exp-total").textContent = total;
+  document.getElementById("history-payment-total").textContent = payment;
 }
 
 // スキル欄 ----------------------------------------

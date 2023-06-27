@@ -34,8 +34,8 @@ function changeRegu(){
 // 能力値 ----------------------------------------
 function calcStatus(){
   const stamina = Number(form.vitality.value) + Number(form.staminaAdd.value);
-  document.getElementById('stamina-value').innerHTML = stamina;
-  document.getElementById('stamina-half' ).innerHTML = parseInt(stamina / 2);
+  document.getElementById('stamina-value').textContent = stamina;
+  document.getElementById('stamina-half' ).textContent = parseInt(stamina / 2);
 }
 
 // 戦闘値 ----------------------------------------
@@ -47,12 +47,12 @@ function calcBattle(){
       total += Number(form['battle'+type+stt].value);
     }
     total += Number(form.level.value);
-    document.getElementById('battle-level-value').innerHTML = Number(form.level.value);
-    document.getElementById('battle-subtotal-'+stt.toLowerCase()).innerHTML = subtotal;
-    document.getElementById('battle-total-'+stt.toLowerCase()).innerHTML = total;
+    document.getElementById('battle-level-value').textContent = Number(form.level.value);
+    document.getElementById('battle-subtotal-'+stt.toLowerCase()).textContent = subtotal;
+    document.getElementById('battle-total-'+stt.toLowerCase()).textContent = total;
 
     if(stt == 'Str'){
-      document.getElementById('hp-value').innerHTML = total + Number(form.hpAdd.value);
+      document.getElementById('hp-value').textContent = total + Number(form.hpAdd.value);
     }
   }
 }
@@ -73,15 +73,15 @@ function calcResultPoint(){
   }
   const cost = commify(goods + items);
   const rest = commify(total + history - cost);
-  document.getElementById('history0-exp'        ).innerHTML = form.history0Result.value;
-  document.getElementById('history-result-total').innerHTML = commify(history);
-  document.getElementById('resultpoint-history' ).innerHTML = commify(history);
-  document.getElementById('resultpoint-cost'    ).innerHTML = cost;
-  document.getElementById('resultpoint-total'   ).innerHTML = rest;
-  document.getElementById('result-total'     ).innerHTML = commify(total);
-  document.getElementById('result-used-goods').innerHTML = goods;
-  document.getElementById('result-used-items').innerHTML = items;
-  document.getElementById('result-rest'      ).innerHTML = rest;
+  document.getElementById('history0-exp'        ).textContent = form.history0Result.value;
+  document.getElementById('history-result-total').textContent = commify(history);
+  document.getElementById('resultpoint-history' ).textContent = commify(history);
+  document.getElementById('resultpoint-cost'    ).textContent = cost;
+  document.getElementById('resultpoint-total'   ).textContent = rest;
+  document.getElementById('result-total'     ).textContent = commify(total);
+  document.getElementById('result-used-goods').textContent = goods;
+  document.getElementById('result-used-items').textContent = items;
+  document.getElementById('result-rest'      ).textContent = rest;
 }
 
 // グッズ欄 ----------------------------------------

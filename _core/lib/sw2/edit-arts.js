@@ -126,9 +126,9 @@ function checkMagicClass(){
   form.magicActionTypePassive.parentNode.style.display = (magic == '騎芸') ? '' : 'none';
   form.magicActionTypeMajor.parentNode.style.display   = (magic == '騎芸') ? '' : 'none';
   document.querySelector('#data-magic dl.summary').style.display   = (magic == '呪印' || magic == '貴格') ? 'none' : '';
-  document.querySelector('#data-magic dl.type      dt').innerHTML = (magic == '鼓咆') ? '鼓咆の系統' : (magic == '占瞳') ? 'タイプなど' : (magic == '貴格') ? '形態' : '対応';
-  document.querySelector('#data-magic dl.premise   dt').innerHTML = (magic == '呪印') ? '前提ＡＣ'   : '前提';
-  document.querySelector('#data-magic dl.condition dt').innerHTML = (magic == '呪歌') ? '効果発生条件' : (magic == '陣率') ? '使用条件' : '条件';
+  document.querySelector('#data-magic dl.type      dt').textContent = (magic == '鼓咆') ? '鼓咆の系統' : (magic == '占瞳') ? 'タイプなど' : (magic == '貴格') ? '形態' : '対応';
+  document.querySelector('#data-magic dl.premise   dt').textContent = (magic == '呪印') ? '前提ＡＣ'   : '前提';
+  document.querySelector('#data-magic dl.condition dt').textContent = (magic == '呪歌') ? '効果発生条件' : (magic == '陣率') ? '使用条件' : '条件';
 }
 function viewMagicInputs(items){
   document.querySelectorAll(`#data-magic dl`).forEach(obj => {
