@@ -27,6 +27,7 @@ my %settings = (
   races => \%data::races,
   class      => \%data::class,
   classNames => \@data::class_names,
+  classCasters => \@data::class_caster,
   weapons => \@data::weapons,
   aRank => \%aRank,
   nRank => \%nRank,
