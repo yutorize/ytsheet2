@@ -112,6 +112,14 @@ dd.area-tags {
 #lifepath td:nth-child(2) {
   width: 6em;
 }
+#lifepath tr:last-child td {
+  border-bottom: hidden;
+}
+#lifepath-earthian {
+  border-top-width: 1px;
+  border-top-style: dotted;
+  padding: .2em .5em;
+}
 
 #classes {
   grid-template-columns: 1fr 1fr 1fr;
