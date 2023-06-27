@@ -1291,9 +1291,6 @@ function calcArmour(evaBase,evaAdd,defBase,maxReqd) {
   const other3Eva = Number(form.defOther3Eva.value);
   const other3Def = Number(form.defOther3Def.value);
   
-  //document.getElementById("defense-total-all-eva").innerHTML = evaBase + armourEva + shieldEva + other1Eva + other2Eva + parseInt((sttAgi + sttAddB + ownAgi) / 6);
-  //document.getElementById("defense-total-all-def").innerHTML = defBase + armourDef + shieldDef + other1Def + other2Def;
-  
   for (let i = 1; i <= 3; i++){
     const ownAgi = form[`defTotal${i}CheckShield1`].checked && form.shield1Own.checked ? 2 : 0;
     let eva = ( evaBase ? evaBase + evaAdd + parseInt((sttAgi + sttAddB + ownAgi) / 6) : 0 );
@@ -1500,19 +1497,6 @@ let accesorySortable = Sortable.create(document.getElementById('accessories-tabl
     let afterType  = evt.swapItem.dataset.type;
     evt.item.dataset.type     = afterType;
     evt.swapItem.dataset.type = beforeType;
-    //let beforeData = evt.item.innerHTML;
-    //let afterData  = evt.swapItem.innerHTML;
-    //evt.item.innerHTML     = afterData;
-    //evt.swapItem.innerHTML = beforeData;
-    //const name = form[`accessory${beforeId}Name`].value;
-    //const own  = form[`accessory${beforeId}Own` ].value;
-    //const note = form[`accessory${beforeId}Note`].value;
-    //form[`accessory${beforeId}Name`].value = form[`accessory${afterId}Name`].value;
-    //form[`accessory${beforeId}Own` ].value = form[`accessory${afterId}Own` ].value;
-    //form[`accessory${beforeId}Note`].value = form[`accessory${afterId}Note`].value;
-    //form[`accessory${afterId}Name`].value = name;
-    //form[`accessory${afterId}Own` ].value = own ;
-    //form[`accessory${afterId}Note`].value = note;
     
     const beforeTitle = document.querySelector(`#${beforeId} th`).innerHTML;
     document.querySelector(`#${beforeId} th`).innerHTML = document.querySelector(`#${afterId} th`).innerHTML;
