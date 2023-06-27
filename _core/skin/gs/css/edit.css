@@ -587,20 +587,20 @@
   height: 18em;
 }
 
-#history table thead thfirst-child { width: 1.4em; }
-#history table thead th.date       { width:   6em; } /* 日付 */
-#history table thead th.title      { width:  12em; } /* タイトル */
-#history table thead th.comp       { width:   4em; } /* 経験点 */
-#history table thead th.exp        { width: 5.5em; } /* 経験点 */
-#history table thead th.adp        { width: 3.5em; } /* 成長点 */
-#history table thead th.money      { width:   5em; } /* 銀貨 */
-#history table thead th.gm         { width:   6em; } /* ＧＭ */
-#history table thead th.member     { width:  auto; } /* 参加者 */
+#history table thead th:first-child{ width: 1.4em; }
+#history table thead th.date       { width:   6em; }
+#history table thead th.title      { width:  12em; }
+#history table thead th.comp       { width:   4em; }
+#history table thead th.exp        { width: 5.5em; }
+#history table thead th.adp        { width: 3.5em; }
+#history table thead th.money      { width:   5em; }
+#history table thead th.gm         { width:   6em; }
+#history table thead th.member     { width:  auto; }
 
 @media screen and (max-width:735px){
   #history table  { table-layout: fixed; }
-  #history table thead th.title  { width: 12em; } /* タイトル */
-  #history table thead th.member { width: 16em; } /* 参加者 */
+  #history table thead th.title  { width: 12em; }
+  #history table thead th.member { width: 16em; }
 }
 
 

@@ -471,12 +471,12 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
 #history {
   margin-top: var(--box-v-gap);
 }
-#history table thead th:nth-child(1) { width:   2em; } /* No. */
-#history table thead th:nth-child(2) { width: 5.2em; } /* 日付 */
-#history table thead th:nth-child(3) { width:  auto; } /* タイトル */
-#history table thead th:nth-child(4) { width: 4.6em; } /* 戦果点 */
-#history table thead th:nth-child(5) { width:  auto; } /* ＧＭ */
-#history table thead th:nth-child(6) { width:  auto; } /* 参加者 */
+#history table thead th.num    { width:   2em; } /* No. */
+#history table thead th.date   { width: 5.2em; } /* 日付 */
+#history table thead th.title  { width:  auto; } /* タイトル */
+#history table thead th.result { width: 4.6em; } /* 戦果点 */
+#history table thead th.gm     { width:  auto; } /* ＧＭ */
+#history table thead th.member { width:  auto; } /* 参加者 */
 
 #history table tr td:is(.gm, .member) {
   font-size: 1.1rem;

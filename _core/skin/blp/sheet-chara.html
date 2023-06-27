@@ -377,20 +377,20 @@
         <table class="data-table line-tbody">
           <thead>
             <tr>
-              <th>No.
-              <th>日付
-              <th>タイトル
-              <th>力の向上
-              <th>GM
-              <th>参加者
+              <th class="num   ">No.
+              <th class="date  ">日付
+              <th class="title ">タイトル
+              <th class="grow  ">力の向上
+              <th class="gm    ">GM
+              <th class="member">参加者
           </thead>
           <TMPL_LOOP History><tbody>
             <tr>
-              <td class="num" <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR NUM>
-              <td class="date" <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR DATE>
-              <td class="title" <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR TITLE>
-              <td class="grow"><span><TMPL_VAR GROW></span>
-              <td class="gm"><span><TMPL_VAR GM></span>
+              <td class="num   " <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR NUM>
+              <td class="date  " <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR DATE>
+              <td class="title " <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR TITLE>
+              <td class="grow  "><span><TMPL_VAR GROW></span>
+              <td class="gm    "><span><TMPL_VAR GM></span>
               <td class="member"><TMPL_VAR MEMBER>
             <TMPL_IF NOTE><tr><td colspan="3" class="note"><TMPL_VAR NOTE></TMPL_IF>
           </TMPL_LOOP>

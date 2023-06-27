@@ -727,36 +727,36 @@
         <table class="data-table line-tbody">
           <thead>
             <tr>
-              <th>No.
-              <th>日付
-              <th>タイトル
-              <th>成長点
-              <th>上納
-              <th>ゴールド
-              <th>GM
-              <th>参加者
+              <th class="num   ">No.
+              <th class="date  ">日付
+              <th class="title ">タイトル
+              <th class="exp   ">成長点
+              <th class="pay   ">上納
+              <th class="money ">ゴールド
+              <th class="gm    ">GM
+              <th class="member">参加者
             </tr>
           <TMPL_LOOP History><tbody>
             <tr>
-              <td class="num" <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR NUM></td>
-              <td class="date" <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR DATE></td>
-              <td class="title" <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR TITLE></td>
-              <td><TMPL_VAR EXP></td>
-              <td><TMPL_VAR PAYMENT></td>
-              <td><TMPL_VAR MONEY></td>
-              <td class="gm"><span><TMPL_VAR GM></span></td>
-              <td class="member"><TMPL_VAR MEMBER></td>
+              <td class="num   " <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR NUM>
+              <td class="date  " <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR DATE>
+              <td class="title " <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR TITLE>
+              <td class="exp   "><TMPL_VAR EXP></td>
+              <td class="pay   "><TMPL_VAR PAYMENT></td>
+              <td class="money "><TMPL_VAR MONEY></td>
+              <td class="gm    "><span><TMPL_VAR GM></span>
+              <td class="member"><TMPL_VAR MEMBER>
             <TMPL_IF NOTE><tr><td colspan="6" class="note"><TMPL_VAR NOTE></TMPL_IF>
           </TMPL_LOOP>
           <tfoot>
             <tr>
-              <td></td>
-              <td></td>
-              <td>取得総計</td>
-              <td><TMPL_VAR historyExpTotal></td>
-              <td><TMPL_VAR payment></td>
-              <td><TMPL_VAR historyMoneyTotal></td>
-              <td colspan="2"></td>
+              <td>
+              <td>
+              <td>取得総計
+              <td class="exp  "><TMPL_VAR historyExpTotal></td>
+              <td class="pay  "><TMPL_VAR payment></td>
+              <td class="money"><TMPL_VAR historyMoneyTotal></td>
+              <td colspan="2">
             </tr>
           </tfoot>
         </table>

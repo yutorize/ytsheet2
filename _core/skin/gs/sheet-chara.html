@@ -611,15 +611,15 @@
             </tr>
           <TMPL_LOOP History><tbody>
             <tr>
-              <td class="num   " <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR NUM></td>
-              <td class="date  " <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR DATE></td>
-              <td class="title " <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR TITLE></td>
-              <td class="comp  "><TMPL_VAR COMP></td>
-              <td class="exp   "><TMPL_VAR EXP></td>
-              <td class="adp   "><TMPL_VAR ADP></td>
+              <td class="num   " <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR NUM>
+              <td class="date  " <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR DATE>
+              <td class="title " <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR TITLE>
+              <td class="comp  "><TMPL_VAR COMP>
+              <td class="exp   "><TMPL_VAR EXP>
+              <td class="adp   "><TMPL_VAR ADP>
               <td class="money "><TMPL_VAR MONEY></td>
-              <td class="gm    "><span><TMPL_VAR GM></span></td>
-              <td class="member"><TMPL_VAR MEMBER></td>
+              <td class="gm    "><span><TMPL_VAR GM></span>
+              <td class="member"><TMPL_VAR MEMBER>
             </tr>
             <TMPL_IF NOTE><tr><td colspan="6" class="note"><TMPL_VAR NOTE></TMPL_IF>
           </TMPL_LOOP>

@@ -1098,32 +1098,32 @@ div#area-items-R {
 #history {
   margin-top: var(--box-v-gap);
 }
-#history table thead th:nth-child(1) { width:   2em; } /* No. */
-#history table thead th:nth-child(2) { width: 5.2em; } /* 日付 */
-#history table thead th:nth-child(3) { width:  auto; } /* タイトル */
-#history table thead th:nth-child(4) { width: 4.6em; } /* 経験点 */
-#history table thead th:nth-child(5) { width: 4.5em; } /* ガメル */
-#history table thead th:nth-child(6) { width:   3em; } /* 名誉点 */
-#history table thead th:nth-child(7) { width: 3.5em; } /* 成長 */
-#history table thead th:nth-child(8) { width:  auto; } /* ＧＭ */
-#history table thead th:nth-child(9) { width:  auto; } /* 参加者 */
+#history table thead th.num    { width:   2em; } /* No. */
+#history table thead th.date   { width: 5.2em; } /* 日付 */
+#history table thead th.title  { width:  auto; } /* タイトル */
+#history table thead th.exp    { width: 4.6em; } /* 経験点 */
+#history table thead th.money  { width: 4.5em; } /* ガメル */
+#history table thead th.honor  { width:   3em; } /* 名誉点 */
+#history table thead th.grow   { width: 3.5em; } /* 成長 */
+#history table thead th.gm     { width:  auto; } /* ＧＭ */
+#history table thead th.member { width:  auto; } /* 参加者 */
 
-#history table tr td:nth-child(5) {
+#history table tr td.money {
   text-align: right;
 }
-#history table tr td:nth-child(5)::after {
+#history table tr td.money::after {
   content: "G";
   margin-left: 2px;
   font-size: 1.1rem;
 }
-#history table tr td:nth-child(5):empty::after {
+#history table tr td.money:empty::after {
   content: "";
 }
 #history table tr td:is(.gm, .member) {
   font-size: 1.1rem;
 }
 
-#history table tfoot tr td:nth-child(7)::after {
+#history table tfoot tr td.grow::after {
   content: "回";
   margin-left: 2px;
   font-size: 1rem;

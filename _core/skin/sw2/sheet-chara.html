@@ -552,27 +552,27 @@
         <table class="data-table line-tbody">
           <thead>
             <tr>
-              <th>No.
-              <th>日付
-              <th>タイトル
-              <th>経験点
-              <th>ガメル
-              <th>名誉点
-              <th>成長
-              <th>GM
-              <th>参加者
+              <th class="num   ">No.
+              <th class="date  ">日付
+              <th class="title ">タイトル
+              <th class="exp   ">経験点
+              <th class="money ">ガメル
+              <th class="honor ">名誉点
+              <th class="grow  ">成長
+              <th class="gm    ">GM
+              <th class="member">参加者
             </tr>
           <TMPL_LOOP History><tbody>
             <tr>
-              <td class="num" <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR NUM></td>
-              <td class="date" <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR DATE></td>
-              <td class="title" <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR TITLE></td>
-              <td><TMPL_VAR EXP></td>
-              <td><TMPL_VAR MONEY></td>
-              <td><TMPL_VAR HONOR></td>
-              <td><TMPL_VAR GROW></td>
-              <td class="gm"><span><TMPL_VAR GM></span></td>
-              <td class="member"><TMPL_VAR MEMBER></td>
+              <td class="num   " <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR NUM>
+              <td class="date  " <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR DATE>
+              <td class="title " <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR TITLE>
+              <td class="exp   "><TMPL_VAR EXP>
+              <td class="money "><TMPL_VAR MONEY></td>
+              <td class="honor "><TMPL_VAR HONOR>
+              <td class="grow  "><TMPL_VAR GROW>
+              <td class="gm    "><span><TMPL_VAR GM></span>
+              <td class="member"><TMPL_VAR MEMBER>
             </tr>
             <TMPL_IF NOTE><tr><td colspan="6" class="note"><TMPL_VAR NOTE></TMPL_IF>
           </TMPL_LOOP>
@@ -581,10 +581,10 @@
               <td>
               <td>
               <td>取得総計
-              <td><TMPL_VAR historyExpTotal></td>
-              <td><TMPL_VAR historyMoneyTotal></td>
-              <td><TMPL_VAR historyHonorTotal></td>
-              <td><TMPL_VAR historyGrowTotal></td>
+              <td class="exp  "><TMPL_VAR historyExpTotal></td>
+              <td class="money"><TMPL_VAR historyMoneyTotal></td>
+              <td class="honor"><TMPL_VAR historyHonorTotal></td>
+              <td class="grow "><TMPL_VAR historyGrowTotal></td>
               <td colspan="2">
             </tr>
           </tfoot>

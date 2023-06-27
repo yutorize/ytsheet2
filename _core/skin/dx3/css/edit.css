@@ -766,63 +766,63 @@
   height: 18em;
 }
 
-#history table colgroup col:nth-child(1) { width: 1.4em; }
-#history table colgroup col:nth-child(2) { width:   6em; } /* 日付 */
-#history table colgroup col:nth-child(3) { width:  12em; } /* タイトル */
-#history table colgroup col:nth-child(4) { width:   6em; } /* 経験点 */
-#history table colgroup col:nth-child(5) { width:   3.5em; } /* 経験点✔ */
-#history table colgroup col:nth-child(6) { width:   6em; } /* ＧＭ */
-#history table colgroup col:nth-child(7) { width:  auto; } /* 参加者 */
+#history table colgroup col:first-child{ width: 1.4em; }
+#history table colgroup col.date       { width:   6em; }
+#history table colgroup col.title      { width:  12em; }
+#history table colgroup col.exp        { width:   6em; }
+#history table colgroup col.apply      { width: 3.5em; }
+#history table colgroup col.gm         { width:   6em; }
+#history table colgroup col.member     { width:  auto; }
 
 @media screen and (max-width:735px){
   #history table  { table-layout: fixed; }
-  #history table colgroup col:nth-child(3) { width: 12em; } /* タイトル */
-  #history table colgroup col:nth-child(7) { width: 16em; } /* 参加者 */
+  #history table colgroup col.title  { width: 12em; }
+  #history table colgroup col.member { width: 16em; }
 }
-#history table thead td:nth-child(5) {
+#history table thead td.apply {
   border-left: 0px hidden;
   font-size: 83%;
 }
-#history table thead td:nth-child(5) input {
+#history table thead td.apply input {
   transform: none;
   vertical-align: text-top;
 }
 
-#history table tbody td:nth-child(4) input {
+#history table tbody td.exp input {
   width: 100%;
   border-radius: 5px 0 0 5px;
 }
-#history table tbody td:nth-child(5) {
+#history table tbody td.apply {
   position: relative;
 }
-#history table tbody td:nth-child(5) label {
+#history table tbody td.apply label {
   position: absolute;
-  top: .4rem;
+  top: .5rem;
   left: 0;
   right: .2rem;
-  bottom: .1rem;
+  bottom: .2rem;
   display: block;
-  margin: .1rem 0 0 0;
+  margin: 0;
   border: 1px solid var(--box-input-border-color);
   border-radius: 0 5px 5px 0;
   border-left: 0;
 }
-#history table tbody td:nth-child(5) input[type="checkbox"] {
+#history table tbody td.apply input[type="checkbox"] {
   padding: 0;
   vertical-align: text-top;
   transform: none;
 }
-#history table tbody td:nth-child(5) label b {
+#history table tbody td.apply label b {
   font-size: 90%;
 }
-#history table tbody td:nth-child(5) label input:not(:checked) + b {
+#history table tbody td.apply label input:not(:checked) + b {
   opacity: 0.5;
   font-weight: normal;
 }
-#history table tbody td:nth-child(5) label:hover {
+#history table tbody td.apply label:hover {
   background-color: var(--bg-color);
 }
-#history table tbody td:nth-child(5) label:hover input:not(:checked) + b {
+#history table tbody td.apply label:hover input:not(:checked) + b {
   opacity: 1;
 }
 
