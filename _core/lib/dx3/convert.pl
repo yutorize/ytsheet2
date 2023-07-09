@@ -147,6 +147,8 @@ sub convertHokanjoToYtsheet {
     $pc{"lois${i}Name"} = $in{'roice_name'}[$i-1];
     $pc{"lois${i}EmoPosi"} = $in{'roice_pos'}[$i-1];
     $pc{"lois${i}EmoNega"} = $in{'roice_neg'}[$i-1];
+    $pc{"lois${i}EmoPosiCheck"} = exists $in{'roice_pos_input'} && $in{'roice_pos_input'}{$i-1} eq '1' ? 1 : 0;
+    $pc{"lois${i}EmoNegaCheck"} = exists $in{'roice_neg_input'} && $in{'roice_neg_input'}{$i-1} eq '1' ? 1 : 0;
     $pc{"lois${i}Note"} = $in{'roice_memo'}[$i-1];
   }
   
