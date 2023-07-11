@@ -329,7 +329,34 @@
               </TMPL_LOOP>
           </table>
         </section>
-        
+
+      </div><!-- / COLUMN -->
+      <div class="column" id="area-arts"><!-- COLUMN -->
+        <TMPL_IF SpellCasters><section class="box" id="spell-cast">
+          <h2>呪文行使基準値</h2>
+          <table class="data-table">
+            <colgroup>
+              <col class="base ">
+              <col class="value">
+              <col class="class">
+              <col class="level">
+              <col class="total">
+            </colgroup>
+            <tbody>
+              <TMPL_IF spellCastModValue><tr>
+                <td colspan="4"><TMPL_VAR spellCastModName>
+                <td><TMPL_VAR spellCastModValue>
+              </TMPL_IF>
+              <TMPL_LOOP SpellCasters><tr>
+                <td class="base "><TMPL_VAR BASE >
+                <td class="value"><TMPL_VAR VALUE>
+                <td class="class"><TMPL_VAR CLASS>
+                <td class="level"><TMPL_VAR LEVEL>
+                <td class="total bold"><TMPL_VAR TOTAL>
+              </TMPL_LOOP>
+          </table>
+        </section></TMPL_IF>
+
         <TMPL_IF Spells><section class="box" id="spells">
           <h2>呪文</h2>
           <table class="data-table">

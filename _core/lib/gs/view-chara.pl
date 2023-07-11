@@ -288,6 +288,23 @@ sub spellNameRubyCheck {
   return $name;
 }
 
+### 呪文 --------------------------------------------------
+if(!$pc{'forbiddenMode'}){
+  my @data;
+  foreach my $name (grep { $data::class{$_}{type} =~ /spell/ } @data::class_names){
+    my $id = $data::class{$name}{id};
+    next if !$pc{'lv'.$id};
+    push(@data, {
+      BASE  => abilityToName($data::class{$name}{cast}),
+      VALUE => $pc{'ability'.$data::class{$name}{cast}},
+      CLASS => $name,
+      LEVEL => $pc{'lv'.$id},
+      TOTAL => $pc{'spellCast'.$id},
+    } );
+  }
+  $SHEET->param(SpellCasters => \@data);
+}
+
 ### 命中 --------------------------------------------------
 if(!$pc{'forbiddenMode'}){
   my @attack;

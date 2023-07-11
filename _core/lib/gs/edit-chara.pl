@@ -123,6 +123,7 @@ Content-type: text/html\n
   <link rel="stylesheet" media="all" href="${main::core_dir}/skin/gs/css/edit.css?${main::ver}">
   <script src="${main::core_dir}/skin/_common/js/lib/Sortable.min.js"></script>
   <script src="${main::core_dir}/skin/_common/js/lib/compressor.min.js"></script>
+  <script src="./?mode=js-consts&ver=${main::ver}"></script>
   <script src="${main::core_dir}/lib/edit.js?${main::ver}" defer></script>
   <script src="${main::core_dir}/lib/gs/edit-chara.js?${main::ver}" defer></script>
   <style>
@@ -539,6 +540,35 @@ print <<"HTML";
         </div>
       </details>
 
+      <div class="box" id="spell-cast">
+        <h2>呪文行使基準値</h2>
+        <table class="edit-table">
+          <colgroup>
+            <col class="base ">
+            <col class="value">
+            <col class="class">
+            <col class="level">
+            <col class="total">
+          </colgroup>
+          <tbody>
+            <tr>
+              <td colspan="4"><span class="flex"><b class="small">技能などの修正</b>@{[ input 'spellCastModName', '', '', 'placeholder="技能名など"' ]}</span>
+              <td><span class="flex">+@{[ input 'spellCastModValue','number','calcSpellCast' ]}</span>
+HTML
+
+foreach my $name (grep { $data::class{$_}{type} =~ 'spell' } @data::class_names){
+  print <<"HTML";
+            <tr id="spell-cast-$data::class{$name}{eName}">
+              <th class="base ">@{[ abilityToName($data::class{$name}{cast}) ]}
+              <td class="value" id="spell-cast-$data::class{$name}{eName}-base">0
+              <th class="class">$name
+              <td class="level" id="spell-cast-$data::class{$name}{eName}-lv">0
+              <td class="total bold" id="spell-cast-$data::class{$name}{eName}-total">0
+HTML
+}
+print <<"HTML";
+        </table>
+      </div>
       <details class="box" id="spells" $open{'spell'}>
         <summary>呪文</summary>
         @{[input 'spellNum','hidden']}

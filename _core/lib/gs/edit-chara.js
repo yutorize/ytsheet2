@@ -336,6 +336,22 @@ function calcStatus() {
   document.getElementById('status-resist-total').textContent = statusScore.resist;
 }
 
+// 呪文基準値計算 ----------------------------------------
+function calcSpellCast() {
+  console.log('calcSpellCast()');
+  for(const name in SET.class){
+    if (!SET.class[name].type.match(/spell/)){ continue }
+    const level = lv[SET.class[name].id];
+    const eName = SET.class[name].eName;
+    const base = abilityScore[SET.class[name].cast];
+    const mod  = Number(form.spellCastModValue.value);
+    document.getElementById(`spell-cast-${eName}-base`).textContent  = base;
+    document.getElementById(`spell-cast-${eName}-lv`).textContent    = level;
+    document.getElementById(`spell-cast-${eName}-total`).textContent = base + level + mod;
+
+    document.getElementById(`spell-cast-${eName}`).style.display = level ? '' : 'none';
+  }
+}
 // 攻撃計算 ----------------------------------------
 function calcAttack() {
   console.log('calcAttack()');

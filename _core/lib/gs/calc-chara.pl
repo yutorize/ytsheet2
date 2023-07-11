@@ -158,6 +158,14 @@ sub data_calc {
     $pc{statusResist} = $pc{abilityPsyRef} + $pc{level};
   }
   
+  ### 呪文行使 --------------------------------------------------
+  foreach my $name (grep { $data::class{$_}{type} =~ /spell/ } @data::class_names){
+    my $id = $data::class{$name}{id};
+    if($pc{'lv'.$id}){
+      $pc{'spellCast'.$id} = $pc{'ability'.$data::class{$name}{cast}} + $pc{'lv'.$id} + $pc{spellCastModValue};
+    }
+  }
+  
   ### 攻撃 --------------------------------------------------
   ## 職業
   foreach my $class (grep { $data::class{$_}{type} =~ /warrior/ } @data::class_names){
