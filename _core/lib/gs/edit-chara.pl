@@ -1141,24 +1141,6 @@ print <<"HTML";
   <datalist id="list-faith">
     @{[ option '', @set::faith_name ]}
   </datalist>
-  <script>
-  const allClassOn = @{[ $set::all_class_on ? 1 : 0 ]};
-  const battleItemOn = @{[ $set::battleitem ? 1 : 0 ]};
-  const growType = '@{[ $set::growtype ? $set::growtype : 0 ]}';
-  const races = @{[ JSON::PP->new->encode(\%data::races) ]};
-HTML
-print 'const featsLv = ["'. join('","', '1bat',@set::feats_lv) . '"];'."\n";
-print 'let weapons = [';
-foreach (@set::weapons){
-  print "'".@$_[0]."',";
-}
-print '];'."\n";
-print 'let weaponType = '.JSON::PP->new->encode(\%set::weapon_type)."\n";
-## 技能
-print 'const classes = '.JSON::PP->new->encode(\%data::class)."\n";
-print <<"HTML";
-@{[ &commonJSVariable ]}
-  </script>
 </body>
 
 </html>

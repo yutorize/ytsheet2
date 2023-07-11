@@ -67,10 +67,10 @@ function checkRace(){
   race = race.replace(/:(.+?)$/, (all, variant) => { raceV = variant; return '' })
   
   // 元種族
-  if(races[race] && races[race].base){
+  if(SET.races[race] && SET.races[race].base){
     const selected = form.raceBase.value;
     form.raceBase.innerHTML = '<option value="">';
-    for(const name of races[race].base){
+    for(const name of SET.races[race].base){
       const newOpt = document.createElement('option');
       newOpt.value = name;
       newOpt.text = name;
@@ -143,8 +143,8 @@ function calcExp(){
   }
   // 消費：職業
   expUsed = originClass ? -1000 : 0;
-  for(let key in classes){
-    expUsed += classExpTable[ Number( lv[ classes[key].id ] ) ];
+  for(let key in SET.class){
+    expUsed += classExpTable[ Number( lv[ SET.class[key].id ] ) ];
   }
   // 消費：成長点
   expUsed += Number(form.adpFromExp.value) * 500;
@@ -235,6 +235,7 @@ function changeLv() {
   console.log('changeLv()');
   calcLv();
   calcExp();
+  calcSpellCast();
   calcAttack();
 }
 
@@ -244,10 +245,10 @@ function changeOriginClass() {
   console.log('changeOriginClass()');
   originClass = form.careerOriginClass.value;
   if(originClass && expUsed <= 1000){
-    for(let key in classes){
-      form['lv'+classes[key].id].value = '';
+    for(let key in SET.class){
+      form['lv'+SET.class[key].id].value = '';
     }
-    form['lv'+classes[originClass].id].value = 1
+    form['lv'+SET.class[originClass].id].value = 1
   }
   
   calcLv();
@@ -257,14 +258,14 @@ function changeOriginClass() {
 let lv = {};
 function calcLv(){
   console.log('calcLv()');
-  for(let key in classes){
-    const id = classes[key].id;
+  for(let key in SET.class){
+    const id = SET.class[key].id;
     lv[id] = Number(form['lv'+id].value || 0);
     form['lv'+id].classList.remove('error');
   }
   
-  if (originClass && !lv[classes[originClass].id]){
-    form['lv'+classes[originClass].id].classList.add('error');
+  if (originClass && !lv[SET.class[originClass].id]){
+    form['lv'+SET.class[originClass].id].classList.add('error');
   }
   
   document.getElementById("level-value").textContent = level;
@@ -292,6 +293,7 @@ function calcAbility() {
     }
   }
   calcStatus();
+  calcSpellCast();
   calcAttack();
   calcDodge();
 }
@@ -309,10 +311,10 @@ function calcStatus() {
 
   // 移動力
   let moveModRace
-    = (race && races[race].move == 'base' && raceB && races[raceB].move == 'variant') ? (raceBV ? races[raceB].variantData[raceBV].move : 0)
-    : (race && races[race].move == 'base'   ) ? (raceB ? races[raceB].move : 0)
-    : (race && races[race].move == 'variant') ? (raceV ? races[race].variantData[raceV].move : 0)
-    : (race) ? races[race].move 
+    = (race && SET.races[race].move == 'base' && raceB && SET.races[raceB].move == 'variant') ? (raceBV ? races[raceB].variantData[raceBV].move : 0)
+    : (race && SET.races[race].move == 'base'   ) ? (raceB ? SET.races[raceB].move : 0)
+    : (race && SET.races[race].move == 'variant') ? (raceV ? SET.races[race].variantData[raceV].move : 0)
+    : (race) ? SET.races[race].move 
     : 0;
   statusScore.move = Number(form.statusMoveDice.value) * moveModRace + Number(form.statusMoveMod.value);
   document.getElementById('status-move-race').textContent = moveModRace;
@@ -338,17 +340,17 @@ function calcStatus() {
 function calcAttack() {
   console.log('calcAttack()');
   let hasAttackClass = 0;
-  for(const name in classes){
-    if (!classes[name].type.match(/warrior/)){ continue }
-    const level = lv[classes[name].id];
+  for(const name in SET.class){
+    if (!SET.class[name].type.match(/warrior/)){ continue }
+    const level = lv[SET.class[name].id];
     if (level > 0) { hasAttackClass++; }
-    const eName = classes[name].eName;
+    const eName = SET.class[name].eName;
     document.getElementById(`attack-${eName}`).style.display = level > 0 ? "" :"none";
     document.getElementById(`attack-${eName}-level`).textContent = level
     
     for(const type of ['Melee','Throwing','Projectile']){
       document.getElementById(`attack-${eName}-${type.toLowerCase()}`).textContent
-        = (classes[name].proper.hitscore.includes(type)) ? level + abilityScore.TecFoc + Number(form['hitScoreMod'+type].value)
+        = (SET.class[name].proper.hitscore.includes(type)) ? level + abilityScore.TecFoc + Number(form['hitScoreMod'+type].value)
         : '―'
     }
   }
@@ -361,20 +363,20 @@ function calcWeapon() {
   for (let num = 1; num <= form.weaponNum.value; num++){
     const category = form[`weapon${num}Type`].value;
     const weight   = form[`weapon${num}Weight`].value;
-    const type     = weaponType[category];
+    const type     = SET.weaponType[category];
     const className = form[`weapon${num}Class`].value;
-    const classId = className ? classes[className].id : null;
+    const classId = className ? SET.class[className].id : null;
 
     form[`weapon${num}Type`  ].classList.remove('error');
     form[`weapon${num}Weight`].classList.remove('error');
     form[`weapon${num}Class` ].classList.remove('error');
 
     // 種別
-    if(classId && !classes[className].proper.weapon.includes(category)){
+    if(classId && !SET.class[className].proper.weapon.includes(category)){
       form[`weapon${num}Type` ].classList.add('error');
       form[`weapon${num}Class`].classList.add('error');
     }
-    if(classId && !classes[className].proper.weight.includes(weight)){
+    if(classId && !SET.class[className].proper.weight.includes(weight)){
       form[`weapon${num}Weight`].classList.add('error');
       form[`weapon${num}Class` ].classList.add('error');
     }
@@ -398,7 +400,7 @@ function calcDodge() {
   document.getElementById('dodge-move-base-value').textContent = statusScore.move;
 
   const className = form.dodgeClass.value;
-  const classId = className ? classes[className].id : null;
+  const classId = className ? SET.class[className].id : null;
   document.getElementById('dodge-class-value').textContent = lv[classId] ?? '―';
   
 
@@ -416,12 +418,12 @@ function calcDodge() {
     form[`armor${num}Type`  ].classList.remove('error');
     form[`armor${num}Weight`].classList.remove('error');
 
-    if(classId && classes[className].type.includes('dodge')){
-      if(classId && !classes[className].proper.armor.includes(category) && classes[className].proper.armor != 'すべて'){
+    if(classId && SET.class[className].type.includes('dodge')){
+      if(classId && !SET.class[className].proper.armor.includes(category) && SET.class[className].proper.armor != 'すべて'){
         form[`armor${num}Type`].classList.add('error');
         form.dodgeClass.classList.add('error');
       }
-      if(classId && !classes[className].proper.weight.includes(weight)){
+      if(classId && !SET.class[className].proper.weight.includes(weight)){
         form[`armor${num}Weight`].classList.add('error');
         form.dodgeClass.classList.add('error');
       }
@@ -439,7 +441,7 @@ function calcBlock() {
   document.getElementById('block-base-value').textContent = abilityScore.TecRef;
 
   const className = form.blockClass.value;
-  const classId = className ? classes[className].id : null;
+  const classId = className ? SET.class[className].id : null;
   document.getElementById('block-class-value').textContent = lv[classId] ?? '―';
   
   let blockScore = abilityScore.TecRef + Number(form.dodgeModValue.value);
@@ -455,12 +457,12 @@ function calcBlock() {
     form[`shield${num}Type`  ].classList.remove('error');
     form[`shield${num}Weight`].classList.remove('error');
 
-    if(classId && classes[className].type.includes('block')){
-      if(classId && !classes[className].proper.shield.includes(category) && classes[className].proper.shield != 'すべて'){
+    if(classId && SET.class[className].type.includes('block')){
+      if(classId && !SET.class[className].proper.shield.includes(category) && SET.class[className].proper.shield != 'すべて'){
         form[`shield${num}Type`].classList.add('error');
         form.blockClass.classList.add('error');
       }
-      if(classId && !classes[className].proper.weight.includes(weight)){
+      if(classId && !SET.class[className].proper.weight.includes(weight)){
         form[`shield${num}Weight`].classList.add('error');
         form.blockClass.classList.add('error');
       }
@@ -780,10 +782,10 @@ function addSpell(){
   row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
   document.querySelector("#spells-table tbody").append(row);
   
-  for(const name in classes){
-    if (!classes[name].magic){ continue }
+  for(const name in SET.class){
+    if (!SET.class[name].magic){ continue }
     let op = document.createElement("option");
-    op.text = classes[name].magic;
+    op.text = SET.class[name].magic;
     form["spell"+num+"System"].appendChild(op);
   }
   form.spellNum.value = num;
