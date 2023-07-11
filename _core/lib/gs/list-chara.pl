@@ -177,11 +177,11 @@ $INDEX->param(faith => $faith_query);
 my $rank_query = decode('utf8', $::in{'rank'});
 my %rank_sort;
 my @rank_list;
-foreach (@set::adventurer_rank){
-  $rank_sort{@$_[0]} = @$_[1];
+foreach (0 .. $#set::adventurer_rank){
+  $rank_sort{$set::adventurer_rank[$_][0]} = $_;
   push(@rank_list, {
-    "NAME" => @$_[0],
-    "SELECTED" => $rank_query eq @$_[0] ? 'selected' : '',
+    "NAME" => $set::adventurer_rank[$_][0],
+    "SELECTED" => $rank_query eq $set::adventurer_rank[$_][0] ? 'selected' : '',
   });
 }
 $rank_sort{''} = -1;
