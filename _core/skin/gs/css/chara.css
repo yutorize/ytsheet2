@@ -29,19 +29,31 @@ body {
     display: grid;
     grid-gap: 0 1.2rem;
     grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto auto;
     padding: 0 1.2rem;
     position: relative;
   }
   #area-name, #tags {
     grid-column: span 2;
   }
-  div.column-status {
-  }
-  #area-skills {
+  #column-status {
+    grid-column: 1;
+    grid-row: 3;
   }
   #area-equipment {
     grid-column: 2;
-    grid-row: 3 / span 2;
+    grid-row: 3;
+    align-self: start;
+  }
+  #area-skills {
+    grid-column: 1;
+    grid-row: 4;
+    align-self: start;
+  }
+  #area-arts {
+    grid-column: 2;
+    grid-row: 4;
+    align-self: start;
   }
   #free-note {
     grid-column: 1;
@@ -697,9 +709,6 @@ table.data-table tbody td:empty::before {
 #area-equipment tbody td.note.left { padding-left: .3em; font-size: .9em; }
 
 @media screen and (min-width:1400px){
-  #area-equipment > .box {
-    margin-top: calc( var(--box-v-gap) * 2);
-  }
   #area-equipment > .box:first-child {
     margin-top: 0;
   }
@@ -788,9 +797,6 @@ table.data-table tbody td:empty::before {
 }
 
 @media screen and (min-width:1400px){
-  #area-items {
-    margin-top: calc( var(--box-v-gap) * 2);
-  }
 }
 
 /* Money */
@@ -837,6 +843,62 @@ table.data-table tbody td:empty::before {
 
 /* // Spells
 ---------------------------------------------------------------------------------------------------- */
+
+#spell-cast {
+  width: max-content;
+  margin-top: var(--box-v-gap);
+}
+#spell-cast table {
+  border-top-width: 1px;
+  border-top-style: solid;
+}
+#spell-cast table col.base  { width: 6em; }
+#spell-cast table col.value { width: 3em; }
+#spell-cast table col.class { width: 6.5em; }
+#spell-cast table col.level { width: 5em; }
+#spell-cast table col.total { width: 4.5em; }
+
+#spell-cast .flex {
+  display: flex;
+  align-items: center;
+}
+#spell-cast .flex b {
+  flex-basis: 5em;
+  line-height: 1.1;
+}
+
+
+#spell-cast table tbody .base,
+#spell-cast table tbody .value,
+#spell-cast table tbody .value + td,
+#spell-cast table tbody .class {
+  border-right-style: hidden;
+}
+#spell-cast table tbody .base {
+  padding-left: 1em;
+}
+#spell-cast table tbody .class::before {
+  content: "+";
+  float: left;
+  font-weight: normal;
+}
+#spell-cast table tbody .level {
+  padding-right: .5em;
+  text-align: right;
+}
+#spell-cast table tbody .level::after {
+  content: 'レベル';
+  font-size: 85%;
+  margin-left: .2em;
+}
+#spell-cast table tbody .total {
+  font-size: 110%;
+  line-height: 1;
+}
+
+#spell-cast + #spells {
+  margin-top: .3rem;
+}
 #spells {
   margin-top: var(--box-v-gap);
 }
