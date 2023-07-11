@@ -214,14 +214,14 @@ function checkRace(){
   raceAbilityDef       = 0;
   raceAbilityMp        = 0;
   raceAbilityMagicPower= 0;
-  for(const name in SET.class){
-    const id = SET.class[name].id;
+  for(const className in SET.class){
+    const id = SET.class[className].id;
     if(document.getElementById("class"+id)){
       document.getElementById("class"+id).classList.remove('fail');
-      if(SET.races[race] && SET.races[race].restrictedClass && SET.races[race].restrictedClass.includes(SET.class[name].jName)){
+      if(SET.races[race] && SET.races[race].restrictedClass && SET.races[race].restrictedClass.includes(className)){
         document.getElementById("class"+id).classList.add('fail');
       }
-      else if(SET.class[name].onlyRace && !SET.class[name].onlyRace.includes(race)){
+      else if(SET.class[className].onlyRace && !SET.class[className].onlyRace.includes(race)){
         document.getElementById("class"+id).classList.add('fail');
       }
     }
