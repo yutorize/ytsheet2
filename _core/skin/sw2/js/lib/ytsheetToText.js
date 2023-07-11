@@ -172,7 +172,7 @@ io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2SwordWorld2PC
 
 			result.push('');
 			result.push(`●${SET.class[name].craft.jName}`);
-			for(let i = 1; i < lv; i++) {
+			for(let i = 1; i <= lv; i++) {
 				if(json[`${craftName}${i}`]) {
 					result.push(`${String(i).padStart(2, ' ')}： ${json[`${craftName}${i}`]}`);
 				}
@@ -185,7 +185,7 @@ io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2SwordWorld2PC
 
 			result.push('');
 			result.push(`●${SET.class[name].magic.jName}`);
-			for(let i = 1; i < lv; i++) {
+			for(let i = 1; i <= lv; i++) {
 				if(json[`${magicName}${i}`]) {
 					result.push(`${String(i).padStart(2, ' ')}： ${json[`${magicName}${i}`]}`);
 				}
