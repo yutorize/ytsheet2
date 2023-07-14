@@ -262,7 +262,7 @@ sub palettePreset {
           { lv =>  7, p => 10, c => '' },
           { lv =>  9, p => 30, c => -1 },
           { lv => 12, p => 40, c => '' },
-          { lv => 15, p => 90, c => '' },
+          { lv => 15, p => 70, c => '' },
         );
         foreach my $bullet (sort {$a->{p} <=> $b->{p}} @power){
           next if $::pc{'lvMag'} < $bullet->{lv};
