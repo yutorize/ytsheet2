@@ -920,15 +920,19 @@ dl#level dd {
   margin-top: .3rem;
 }
 
-#armours thead th:nth-child(1) { width: 2.5em; } /* 種別 */
-#armours thead th:nth-child(2) { width:   25%; } /* 名前 */
-#armours thead th:nth-child(3) { width: 3.5em; } /* 必筋 */
-#armours thead th:nth-child(4) { width: 3.5em; } /* 回避 */
-#armours thead th:nth-child(5) { width: 3.5em; } /* 防護 */
-#armours thead th:nth-child(6) { width:   1em; } /* 専用 */
-#armours thead th:nth-child(7) { width:  auto; } /* 備考 */
+#armours thead th.type { width: 2.5em; } /* 種別 */
+#armours thead th.name { width:   25%; } /* 名前 */
+#armours thead th.reqd { width: 3.5em; } /* 必筋 */
+#armours thead th.eva  { width: 3.5em; } /* 回避 */
+#armours thead th.def  { width: 3.5em; } /* 防護 */
+#armours thead th.own  { width:   1em; } /* 専用 */
+#armours thead th.note { width:  auto; } /* 備考 */
 
-#armours tbody td:last-child { padding-left: .3em; text-align: left; font-size: 90%; } /* 備考 */
+#armours td.note {
+  padding-left: .3em;
+  text-align: left;
+  font-size: 90%;
+}
 
 #armours .defense-total th {
   padding-right: 5px;
@@ -937,12 +941,9 @@ dl#level dd {
 #armours .defense-total td {
   border-width: 1px;
   border-style: solid dotted;
-  font-size: 1.15em;
 }
-#armours .defense-total td:last-child {
-  padding-left: .3em;
-  text-align: left;
-  font-size: 90%;
+#armours .defense-total td:is(.eva, .def) {
+  font-size: 1.15em;
 }
 
 

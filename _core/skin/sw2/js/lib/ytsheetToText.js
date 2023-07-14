@@ -196,7 +196,6 @@ io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2SwordWorld2PC
 
 	result.push('●魔力');
 	const magicColumnLength = 8;
-	console.log(SET.classCasters)
 	for(let name of SET.classCasters) {
 		const id = SET.class[name].id;
 		if(json['lv'+id]) {
@@ -236,45 +235,28 @@ io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2SwordWorld2PC
 		result.push(`　- 回避・防護点`);
 	}
 	const armors = [];
-	if(json.armour1Name) {
-		armors.push({
-			type: '鎧',
-			name: `${json.armour1Name}${json.armour1Own ? '(専)' : ''}`,
-			reqd: json.armour1Reqd || '0',
-			dodge: json.armour1Eva || '0',
-			defense: json.armour1Def || '0',
-			note: json.armour1Note || ''
-		});
-	}
-	if(json.shield1Name) {
-		armors.push({
-			type: '盾',
-			name: `${json.shield1Name}${json.shield1Own ? '(専)' : ''}`,
-			reqd: json.shield1Reqd || '0',
-			dodge: json.shield1Eva || '0',
-			defense: json.shield1Def || '0',
-			note: json.shield1Note || ''
-		});
-	}
-	for(let i = 0; i <= 3; i++) {
-		if(json[`defOther${i}Name`] || json[`defOther${i}Eva`] || json[`defOther${i}Def`]) {
+	const armorsTypeCount = { 鎧:0, 盾:0, 他:0 };
+	for(let i = 1; i <= json.armourNum; i++) {
+		if(json[`armour${i}Name`]) {
+			let type = json[`armour${i}Category`].match(/鎧|盾|他/) ? json[`armour${i}Category`].match(/鎧|盾|他/)[0] : '';
+			if(i == 1 && !type){ type = '鎧' }
+			if(type){ armorsTypeCount[type]++ }
+
 			armors.push({
-				type: '他'+i,
-				name: json[`defOther${i}Name`],
-				reqd: json[`defOther${i}Reqd`] || '0',
-				dodge: json[`defOther${i}Eva`] || '0',
-				defense: json[`defOther${i}Def`] || '0',
-				note: json[`defOther${i}Note`] || ''
+				type: type ? type+armorsTypeCount[type] : '',
+				name: `${json[`armour${i}Name`]}${json[`armour${i}Own`] ? '(専)' : ''}`,
+				reqd: json[`armour${i}Reqd`] || '0',
+				dodge: json[`armour${i}Eva`] || '0',
+				defense: json[`armour${i}Def`] || '0',
+				note: json[`armour${i}Note`] || ''
 			});
 		}
 	}
 	for(let i = 1; i <= 3; i++) {
 		let names = [];
-		if (json[`defTotal${i}CheckArmour1`]){ names.push('鎧'); }
-		if (json[`defTotal${i}CheckShield1`]){ names.push('盾'); }
-		if (json[`defTotal${i}CheckDefOther1`] && (json.defOther1Name || json.defOther1Eva || json.defOther1Def)){ names.push('他1'); }
-		if (json[`defTotal${i}CheckDefOther2`] && (json.defOther2Name || json.defOther2Eva || json.defOther2Def)){ names.push('他2'); }
-		if (json[`defTotal${i}CheckDefOther3`] && (json.defOther3Name || json.defOther3Eva || json.defOther3Def)){ names.push('他3'); }
+		for(let n = 1; n <= json.armourNum; n++) {
+			if (json[`defTotal${i}CheckArmour${n}`]){ names.push(armors[n-1].type); }
+		}
 		if(names.length){
 			armors.push({
 				type: '合計',

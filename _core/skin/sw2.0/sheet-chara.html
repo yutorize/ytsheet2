@@ -443,23 +443,23 @@
           <table class="data-table">
             <thead>
               <tr>
-                <th>
-                <th>防具
-                <th>必筋
-                <th>回避力
-                <th>防護点
-                <th>専用
-                <th>備考
+                <th class="type">
+                <th class="name">防具
+                <th class="reqd">必筋
+                <th class="eva ">回避力
+                <th class="def ">防護点
+                <th class="own ">専用
+                <th class="note">備考
             </thead>
             <tbody>
               <TMPL_LOOP Armours><tr>
-                <th><TMPL_VAR TH>
-                <td><TMPL_VAR NAME>
-                <td><TMPL_VAR REQD>
-                <td><TMPL_VAR EVA>
-                <td><TMPL_VAR DEF>
-                <td><TMPL_IF OWN>✔</TMPL_IF>
-                <td><TMPL_VAR NOTE>
+                <th class="type"><TMPL_VAR TYPE>
+                <td class="name"><TMPL_VAR NAME>
+                <td class="reqd"><TMPL_VAR REQD>
+                <td class="eva "><TMPL_VAR EVA>
+                <td class="def "><TMPL_VAR DEF>
+                <td class="own "><TMPL_IF OWN>✔</TMPL_IF>
+                <td class="note"><TMPL_VAR NOTE>
               </TMPL_LOOP>
             </tbody>
             <tfoot>

@@ -1000,10 +1000,17 @@ function calcSubStt() {
 // 移動力計算 ----------------------------------------
 function calcMobility() {
   const agi = sttAgi + sttAddB;
-  const mobilityBase = ((race === 'ケンタウロス') ? (agi * 2) : agi) + (form["armour1Own"].checked ? 2 : 0);
-  const mobility = mobilityBase + Number(form.mobilityAdd.value);
+  const mobilityBase = ((race === 'ケンタウロス') ? (agi * 2) : agi);
+  let mobilityOwn = 0;
+  for (let num = 1; num <= form.armourNum.value; num++){
+    if(form[`armour${num}Category`].value.match(/鎧/) && form[`armour${num}Own`].checked){
+      mobilityOwn = 2;
+      break;
+    }
+  }
+  const mobility = mobilityBase + Number(form.mobilityAdd.value) + mobilityOwn;
   document.getElementById("mobility-limited").textContent = feats['足さばき'] ? 10 : 3;
-  document.getElementById("mobility-base").textContent = mobilityBase;
+  document.getElementById("mobility-base").textContent = mobilityBase + mobilityOwn;
   document.getElementById("mobility-total").textContent = mobility;
   document.getElementById("mobility-full").textContent = mobility * 3;
 }
@@ -1280,40 +1287,75 @@ function calcDefense() {
   calcArmour(evaBase,evaAdd,defBase,maxReqd);
 }
 function calcArmour(evaBase,evaAdd,defBase,maxReqd) {
-  const armour1Eva = Number(form.armour1Eva.value);
-  const armour1Def = Number(form.armour1Def.value) + Math.max((feats['防具習熟／金属鎧'] || 0),(feats['防具習熟／非金属鎧'] || 0));
-  const shield1Eva = Number(form.shield1Eva.value);
-  const shield1Def = Number(form.shield1Def.value) + (feats['防具習熟／盾'] || 0);
-  const other1Eva = Number(form.defOther1Eva.value);
-  const other1Def = Number(form.defOther1Def.value);
-  const other2Eva = Number(form.defOther2Eva.value);
-  const other2Def = Number(form.defOther2Def.value);
-  const other3Eva = Number(form.defOther3Eva.value);
-  const other3Def = Number(form.defOther3Def.value);
+  let count = { 鎧:0, 盾:0, 他:0 };
+  let checkedCount = { 鎧:{}, 盾:{}, 他:{} };
+
+  for (let num = 1; num <= form.armourNum.value; num++){
+    const category = form[`armour${num}Category`].value;
+    let type = category.match(/鎧|盾|他/) ? category.match(/鎧|盾|他/)[0] : '';
+    if(num == 1 && !type){ type = '鎧' }
+    if(type){ count[type]++ }
+
+    form[`armour${num}Reqd`].classList.toggle('error', (safeEval(form[`armour${num}Reqd`].value) || 0) > maxReqd);
+    form[`armour${num}Own`].style.display = category.match(/鎧|盾/) ? '' : 'none';
+
+    
+    form[`armour${num}Name`].parentNode.parentNode.querySelector('.type').textContent
+      = type ? type+count[type] : '';
+    
+    for (let i = 1; i <= 3; i++){
+      document.querySelector(`input[name="defTotal${i}CheckArmour${num}"] + span`).textContent
+        = form[`armour${num}Name`].value ? form[`armour${num}Name`].value
+            .replace(/[|｜](.+?)《(.+?)》/g, "$1")
+            .replace(/\[([^\[\]]+?)#[0-9a-zA-z\-]+\]/g, "$1")
+        : type ? type+count[type]
+        : '―';
+      
+      document.querySelector(`input[name="defTotal${i}CheckArmour${num}"]`).parentNode.style.display
+        = (  !form[`armour${num}Name`].value
+          && !form[`armour${num}Category`].value
+          && !form[`armour${num}Eva`].value
+          && !form[`armour${num}Def`].value
+          && !form[`armour${num}Own`].checked
+          && !type
+        ) ? 'none' : '';
+
+      if (type && form[`defTotal${i}CheckArmour${num}`].checked){
+        checkedCount[type][i] ??= 0;
+        checkedCount[type][i]++;
+      }
+    }
+  }
   
   for (let i = 1; i <= 3; i++){
-    const ownAgi = form[`defTotal${i}CheckShield1`].checked && form.shield1Own.checked ? 2 : 0;
-    let eva = ( evaBase ? evaBase + evaAdd + parseInt((sttAgi + sttAddB + ownAgi) / 6) : 0 );
+    let eva = evaAdd;
     let def = defBase;
-    if(form[`defTotal${i}CheckArmour1`].checked)  { eva += armour1Eva; def += armour1Def; }
-    if(form[`defTotal${i}CheckShield1`].checked)  { eva += shield1Eva; def += shield1Def; }
-    if(form[`defTotal${i}CheckDefOther1`].checked){ eva +=  other1Eva; def +=  other1Def; }
-    if(form[`defTotal${i}CheckDefOther2`].checked){ eva +=  other2Eva; def +=  other2Def; }
-    if(form[`defTotal${i}CheckDefOther3`].checked){ eva +=  other3Eva; def +=  other3Def; }
-    if((form[`defTotal${i}CheckArmour1`].checked && form.armour1Note.value.match(/〈魔器〉/))
-    || (form[`defTotal${i}CheckShield1`].checked && form.shield1Note.value.match(/〈魔器〉/))){
-      def += feats['魔器習熟'] || 0;
+    let ownAgi = 0;
+    let artisanDef = 0;
+    for (let num = 1; num <= form.armourNum.value; num++){
+      const checkObj = form[`defTotal${i}CheckArmour${num}`];
+      checkObj.parentNode.classList.remove('error')
+
+      if(!checkObj.checked) continue;
+
+      const category = form[`armour${num}Category`].value;
+      eva += Number(form[`armour${num}Eva`].value);
+      def += Number(form[`armour${num}Def`].value) + (feats['防具習熟／'+category] || 0);
+      if(category == '盾' && form[`armour${num}Own`].checked){ ownAgi = 2 }
+      if(form[`armour${num}Note`].value.match(/〈魔器〉/)){ artisanDef = feats['魔器習熟']; }
+      
+      let matches = category.match(/(鎧|盾)/);
+      if (matches && checkedCount[matches[1]][i] > 1){
+        checkObj.parentNode.classList.add('error')
+      }
     }
-    
+    eva += ( evaBase ? evaBase + parseInt((sttAgi + sttAddB + ownAgi) / 6) : 0 );
+    def += artisanDef;
+ 
     document.getElementById(`defense-total${i}-eva`).textContent = eva;
     document.getElementById(`defense-total${i}-def`).textContent = def;
   }
   
-  form.armour1Reqd.classList.toggle(  'error', (safeEval(form.armour1Reqd.value)   || 0) > maxReqd);
-  form.shield1Reqd.classList.toggle(  'error', (safeEval(form.shield1Reqd.value)   || 0) > maxReqd);
-  form.defOther1Reqd.classList.toggle('error', (safeEval(form.defOther1Reqd.value) || 0) > maxReqd);
-  form.defOther2Reqd.classList.toggle('error', (safeEval(form.defOther2Reqd.value) || 0) > maxReqd);
-  form.defOther3Reqd.classList.toggle('error', (safeEval(form.defOther3Reqd.value) || 0) > maxReqd);
 }
 
 // 経験点計算 ----------------------------------------
@@ -1765,6 +1807,84 @@ let weaponsSortable = Sortable.create(document.getElementById('weapons-table'), 
         num++;
       }
     }
+  }
+});
+
+// 防具欄 ----------------------------------------
+// 追加
+function addArmour(){
+  let num = Number(form.armourNum.value) + 1;
+
+  const id = idNumSet('armour')
+  let row = document.querySelector('#armour-template').content.firstElementChild.cloneNode(true);
+  row.id = id;
+  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
+  document.querySelector("#armours tbody").append(row);
+
+  let i = 1;
+  document.querySelectorAll(".defense-total-checklist").forEach(obj => {
+    let checkbox = document.createElement('label')
+    checkbox.classList.add('check-button')
+    checkbox.innerHTML = `<input type="checkbox" name="defTotal${i}CheckArmour${num}" value="1" oninput="calcDefense()" data-id="${id}"><span></span>`;
+    obj.append(checkbox);
+    i++;
+  });
+
+  form.armourNum.value = num;
+}
+// 削除
+function delArmour(){
+  let num = Number(form.armourNum.value);
+  if(num > 1){
+    if ( form[`armour${num}Name`].value 
+      || form[`armour${num}Reqd`].value
+      || form[`armour${num}Eva`].value
+      || form[`armour${num}Def`].value
+      || form[`armour${num}Note`].value
+    ){
+      if (!confirm(delConfirmText)) return false;
+    }
+    document.querySelector("#armours tbody tr:last-of-type").remove();
+    
+    document.querySelectorAll(".defense-total-checklist label:last-of-type").forEach(obj => {
+      obj.remove();
+    });
+    num--;
+    form.armourNum.value = num;
+  }
+  calcHonor();
+}
+// ソート
+let armoursSortable = Sortable.create(document.querySelector('#armours table tbody'), {
+  group: "armours",
+  dataIdAttr: 'id',
+  animation: 150,
+  handle: '.handle',
+  filter: 'template',
+  ghostClass: 'sortable-ghost',
+  onUpdate: function (evt) {
+    const order = armoursSortable.toArray();
+    let num = 1;
+    for(let id of order) {
+      if(document.querySelector(`tr#${id}`)){
+        document.querySelector(`#${id} [name$="Name"]`    ).setAttribute('name',`armour${num}Name`);
+        document.querySelector(`#${id} [name$="Category"]`).setAttribute('name',`armour${num}Category`);
+        document.querySelector(`#${id} [name$="Reqd"]`    ).setAttribute('name',`armour${num}Reqd`);
+        document.querySelector(`#${id} [name$="Eva"]`     ).setAttribute('name',`armour${num}Eva`);
+        document.querySelector(`#${id} [name$="Def"]`     ).setAttribute('name',`armour${num}Def`);
+        document.querySelector(`#${id} [name$="Own"]`     ).setAttribute('name',`armour${num}Own`);
+        document.querySelector(`#${id} [name$="Note"]`    ).setAttribute('name',`armour${num}Note`);
+        
+        let i = 1;
+        document.querySelectorAll(".defense-total-checklist").forEach(row => {
+          row.querySelector(`[data-id=${id}]`).setAttribute('name',`defTotal${i}CheckArmour${num}`);
+          i++;
+        });
+
+        num++;
+      }
+    }
+    calcDefense()
   }
 });
 

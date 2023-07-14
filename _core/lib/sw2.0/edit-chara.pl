@@ -960,7 +960,13 @@ print <<"HTML";
               </tr>
             <tbody>
               <tr>
-                <td><select id="evasion-class" name="evasionClass" oninput="calcDefense()">@{[option('evasionClass','ファイター','グラップラー','フェンサー','シューター','デーモンルーラー')]}</select>
+                <td>
+                  <span class="flex">
+                    <span class="bold nowrap">使用技能:</span>
+                    <select id="evasion-class" name="evasionClass" oninput="calcDefense()">
+                      @{[ option 'evasionClass',@weapon_users,'デーモンルーラー' ]}
+                    </select>
+                  </span>
                 <td id="evasion-str">$pc{'EvasionStr'}
                 <td id="evasion-eva">$pc{'EvasionEva'}
                 <td>―
@@ -1012,72 +1018,54 @@ print <<"HTML";
           <table>
             <thead>
               <tr>
-                <th>
-                <th>防具
-                <th>必筋
-                <th>回避力
-                <th>防護点
-                <th>専用
-                <th>備考
-              
-            <tbody>
-              <tr>
-                <th>鎧
-                <td>@{[input('armour1Name')]}
-                <td>@{[input('armour1Reqd','','calcDefense')]}
-                <td>@{[input('armour1Eva','number','calcDefense')]}
-                <td>@{[input('armour1Def','number','calcDefense')]}
-                <td>@{[input('armour1Own','checkbox','calcDefense')]}
-                <td>@{[input('armour1Note')]}
-              <tr>
-                <th>盾
-                <td>@{[input('shield1Name')]}
-                <td>@{[input('shield1Reqd','','calcDefense')]}
-                <td>@{[input('shield1Eva','number','calcDefense')]}
-                <td>@{[input('shield1Def','number','calcDefense')]}
-                <td>@{[input('shield1Own','checkbox','calcDefense')]}
-                <td>@{[input('shield1Note')]}
-              <tr>
-                <th>他1
-                <td>@{[input('defOther1Name','','calcDefense')]}
-                <td>@{[input('defOther1Reqd','','calcDefense')]}
-                <td>@{[input('defOther1Eva','number','calcDefense')]}
-                <td>@{[input('defOther1Def','number','calcDefense')]}
-                <td> 
-                <td>@{[input('defOther1Note')]}
-              <tr>
-                <th>他2
-                <td>@{[input('defOther2Name','','calcDefense')]}
-                <td>@{[input('defOther2Reqd','','calcDefense')]}
-                <td>@{[input('defOther2Eva','number','calcDefense')]}
-                <td>@{[input('defOther2Def','number','calcDefense')]}
-                <td> 
-                <td>@{[input('defOther2Note')]}
-              <tr>
-                <th>他3
-                <td>@{[input('defOther3Name','','calcDefense')]}
-                <td>@{[input('defOther3Reqd','','calcDefense')]}
-                <td>@{[input('defOther3Eva','number','calcDefense')]}
-                <td>@{[input('defOther3Def','number','calcDefense')]}
-                <td> 
-                <td>@{[input('defOther3Note')]}
+                <th class="type">
+                <th class="cate">カテゴリ
+                <th class="name">防具
+                <th class="reqd">必筋
+                <th class="eva ">回避力
+                <th class="def ">防護点
+                <th class="own ">専用
+                <th class="note">備考
               </tr>
+            </thead>
+            <tbody>
+HTML
+foreach my $num ('TMPL',1 .. $pc{'armourNum'}) {
+  if($num eq 'TMPL'){ print '<template id="armour-template">' }
+  print <<"HTML";
+              <tr id="armour${num}" data-type="">
+                <th class="type handle">
+                <td><select name="armour${num}Category" oninput="calcDefense()">@{[ option "armour${num}Category",'金属鎧','非金属鎧','盾','その他' ]}</select>
+                <td>@{[ input "armour${num}Name",'','calcDefense' ]}
+                <td>@{[ input "armour${num}Reqd",'','calcDefense' ]}
+                <td>@{[ input "armour${num}Eva",'number','calcDefense' ]}
+                <td>@{[ input "armour${num}Def",'number','calcDefense' ]}
+                <td>@{[ input "armour${num}Own",'checkbox','calcDefense','style="display:none"' ]}
+                <td>@{[ input "armour${num}Note" ]}
+HTML
+  if($num eq 'TMPL'){ print '</template>' }
+}
+  print <<"HTML";
+            </tbody>
+            @{[ input 'armourNum','hidden' ]}
             <tfoot>
+              <tr><td colspan="8">
+                <div class="add-del-button"><a onclick="addArmour()">▼</a><a onclick="delArmour()">▲</a></div>
+              <tr><th colspan="8">合計
 HTML
 foreach my $i (1..3){
   print <<"HTML";
               <tr class="defense-total">
-                <th colspan="3">
-                  合計:
-                  <label>@{[input("defTotal${i}CheckArmour1"  ,'checkbox','calcDefense')]}<span>鎧</span></label>
-                  <label>@{[input("defTotal${i}CheckShield1"  ,'checkbox','calcDefense')]}<span>盾</span></label>
-                  <label>@{[input("defTotal${i}CheckDefOther1",'checkbox','calcDefense')]}<span>他1</span></label>
-                  <label>@{[input("defTotal${i}CheckDefOther2",'checkbox','calcDefense')]}<span>他2</span></label>
-                  <label>@{[input("defTotal${i}CheckDefOther3",'checkbox','calcDefense')]}<span>他3</span></label>
-                
+                <td colspan="4" class="defense-total-checklist">
+HTML
+  foreach my $num (1 .. $pc{'armourNum'}) {
+    print checkbox("defTotal${i}CheckArmour${num}",($pc{"armour${num}Name"}||'―'),'calcDefense',"data-id='armour${num}'");
+  }
+  print "</td>";
+  print <<"HTML";
                 <td id="defense-total${i}-eva">0
                 <td id="defense-total${i}-def">0
-                <td colspan="2">@{[input("defenseTotal${i}Note")]}
+                <td colspan="3">@{[input("defenseTotal${i}Note")]}
 HTML
 }
 print <<"HTML";

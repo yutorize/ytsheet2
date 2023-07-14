@@ -186,6 +186,36 @@ sub data_update_chara {
     $pc{'packWarIntAdd'} -= 1 if $pc{'packWarIntAdd'} > 0;
     $pc{'packWarIntAuto'} = 1;
   }
+  if($ver < 1.22010){
+    $pc{'updateMessage'}{'ver.1.22.010'} = '追加種族「スプリガン」を考慮し、防具欄の仕様を変更しました。<br>鎧や盾を複数記入できるようになった代わりに、金属鎧や非金属鎧などのカテゴリを選択する必要があります。<br>（既存のキャラクターシートについては、ある程度は自動で金属／非金属を振り分けました）';
+    $pc{armour1Category}
+      = $pc{masteryMetalArmour} ? '金属鎧'
+      : $pc{masteryNonMetalArmour} ? '非金属鎧'
+      : $pc{armour1Name} =~ /(スプリント|プレート|スーツ|ラメラー)アーマー|チェインメイル|堅忍鎧|魔壮鎧|スティールガード|コート・?オブ・?プレート|フォートレス/ ? '金属鎧'
+      : $pc{armour1Name} =~ /(クロース|ブレスト)アーマー|ポイントガード|(ソフト|ハード)レザー|(マナ|アラミド|ミラージュ|サー)コート|ミラージュパッド|布鎧|のローブ|コンバット.*スーツ|ボーンベスト/ ? '非金属鎧'
+      : '';
+    my $num = 1;
+    foreach('shield1','defOther1','defOther2','defOther3'){
+      if ( $pc{$_.'Name'}
+        || $pc{$_.'Reqd'}
+        || $pc{$_.'Eva'}
+        || $pc{$_.'Def'}
+        || $pc{$_.'Own'}
+        || $pc{$_.'Note'}
+      ){
+        $num++;
+        $pc{"armour${num}Name"} = $pc{$_.'Name'};
+        $pc{"armour${num}Category"} = $_ eq 'shield1' ? '盾' : 'その他';
+        $pc{"armour${num}Reqd"} = $pc{$_.'Reqd'};
+        $pc{"armour${num}Eva"}  = $pc{$_.'Eva'};
+        $pc{"armour${num}Def"}  = $pc{$_.'Def'};
+        $pc{"armour${num}Own"}  = $pc{$_.'Own'};
+        $pc{"armour${num}Note"} = $pc{$_.'Note'};
+        foreach my $i(1..3){ $pc{"defTotal${i}CheckArmour${num}"} = $pc{'defTotal'.$i.'Check'.ucfirst($_)}; }
+      }
+    }
+    $pc{armourNum} = $num;
+  }
   $pc{'ver'} = $main::ver;
   $pc{'lasttimever'} = $ver;
   return %pc;
