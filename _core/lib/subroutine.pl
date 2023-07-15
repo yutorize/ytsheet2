@@ -545,7 +545,7 @@ sub tagUnescapeLines {
 
 sub tableColCreate {
   my @out;
-  my @col = split(/\|/, $_[0]);
+  my @col = (split(/\|/, $_[0]));
   foreach(@col){
     push (@out, &tableStyleCreate($_));
   }
@@ -557,7 +557,7 @@ sub tableStyleCreate {
     if   ($type eq 'px' && $num > 300){ $num = 300 }
     elsif($type eq 'em' && $num >  20){ $num =  20 }
     elsif($type eq  '%' && $num > 100){ $num = 100 }
-    return "<col style=\"width:calc(${num}${type} + 1em)\">";
+    return "<col style=\"width:calc(${num}${type} + 1em + 1px)\">";
   }
   else { return '<col>' }
 }
@@ -566,9 +566,9 @@ sub tableCreate {
   my $output;
   my @data;
   foreach my $line (split("\n", $text)){
+    $line =~ s/^\|//;
     if   ($line =~ /c$/){ $output .= tableColCreate($line); next; }
     elsif($line =~ /h$/){ $output .= tableHeaderCreate($line); next; }
-    $line =~ s/^\|//;
     my @row = split('\|', $line);
     push(@data, [ @row ]);
   }
@@ -598,7 +598,6 @@ sub tableCreate {
 sub tableHeaderCreate {
   my $line = shift;
   my $output;
-  $line =~ s/^\|//;
   $line =~ s/h$//;
   $output .= "<thead><tr>";
   my $colspan = 1;
