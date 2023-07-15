@@ -296,7 +296,8 @@
               <th>名前
               <th colspan="3">感情<span class="small">(Posi／Nega)</span>
               <th>属性
-              <th colspan="2" class="right">状態
+              <th>
+              <th class="right">状態
             
           </thead>
           <tbody>
@@ -307,8 +308,8 @@
               <td>／
               <td class="emo <TMPL_IF N-CHECK>checked</TMPL_IF>"><TMPL_VAR NEGA>
               <td style="<TMPL_VAR COLOR-BG>"><TMPL_VAR COLOR>
-              <td class="left"><TMPL_VAR NOTE>
-              <td class="right"><span data-state="<TMPL_VAR STATE>"></span>
+              <td class="left"<TMPL_IF D> colspan="2"</TMPL_IF>><TMPL_VAR NOTE>
+              <TMPL_UNLESS D><td class="right <TMPL_IF S>sperior</TMPL_IF>"><span data-state="<TMPL_VAR STATE>"></span></TMPL_UNLESS>
             </TMPL_LOOP>
           </tbody>
         </table>

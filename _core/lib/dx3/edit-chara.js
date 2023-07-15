@@ -362,6 +362,13 @@ function encroachBonusSet(enc){
 // ロイス ----------------------------------------
 function emoP(num){ form["lois"+num+"EmoNegaCheck"].checked = false; }
 function emoN(num){ form["lois"+num+"EmoPosiCheck"].checked = false; }
+function sLois(num){
+  for(let i = 1; i <= 7; i++){
+    if(i == num) continue;
+    console.log(i)
+    form["lois"+i+"S"].checked = false;
+  }
+}
 function changeLoisColor(num){
   const obj = form["lois"+num+"Color"];
   const color = obj.value;

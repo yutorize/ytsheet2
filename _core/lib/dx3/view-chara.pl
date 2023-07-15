@@ -316,7 +316,9 @@ foreach (1 .. 7){
     "COLOR"    => $pc{'lois'.$_.'Color'},
     "COLOR-BG" => $color,
     "NOTE"     => $pc{'lois'.$_.'Note'},
+    "S"        => $pc{'lois'.$_.'S'},
     "STATE"    => $pc{'lois'.$_.'State'},
+    "D"        => $pc{'lois'.$_.'Relation'} =~ /[DＤEＥ]ロイス|^[DＤEＥ]$/ ? 1 : 0
   });
   if($pc{'lois'.$_.'Name'} =~ /起源種|オリジナルレネゲイド/){ $SHEET->param(encroachOrOn => 'checked'); }
 }

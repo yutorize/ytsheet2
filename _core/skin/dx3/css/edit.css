@@ -224,6 +224,12 @@
 
 #lois table {
 }
+#lois table thead th.right.small {
+  padding-right: 0;
+}
+#lois table tbody tr:nth-child(4){
+  border-top-width: 2px;
+}
 #lois table tbody tr td:first-child {
   white-space: nowrap;
 }
@@ -257,8 +263,16 @@
   cursor: pointer;
   user-select: none;
 }
+#lois .lois-reset-buttons {
+  position: absolute;
+  top: -1px;
+  right: -1px;
+}
+#lois .lois-reset-buttons button {
+  padding-bottom: 4px;
+}
 
-#memory table tbody td:nth-child(1) { width: 2.5em; border-right-width: 1px; } /* ✔ */
+#memory table tbody td:nth-child(1) { width: 1.5em; border-right-width: 1px; } /* ✔ */
 #memory table tbody td:nth-child(2) { width: 6.2em; border-right-width: 1px; } /* 関係 */
 #memory table tbody td:nth-child(3) { width: 14em; border-right-width: 1px; } /* 名前 */
 #memory table tbody td:nth-child(4) { width: 4em; border-right-width: 1px; } /* 感情 */

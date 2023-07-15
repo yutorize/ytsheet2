@@ -582,12 +582,14 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
   font-family: var(--font-proportional);
   font-feature-settings: "palt";
 }
-#lois table tbody td:nth-child(1) { width: 6.2em; border-right-width: 1px; } /* 関係 */
-#lois table tbody td:nth-child(2) { width: 14em; border-right-width: 1px; }  /* 名前 */
+#lois table tbody td:nth-child(1) { width: 6.2em; } /* 関係 */
+#lois table tbody td:nth-child(2) { width: 14em;  }  /* 名前 */
 #lois table tbody td:nth-child(3) { width: 4.8em; } /* 感情 */
 #lois table tbody td:nth-child(4) { width: 1.2em; }
-#lois table tbody td:nth-child(5) { width: 4.8em; border-right-width: 1px; }
-#lois table tbody td:nth-child(6) { width: 2.6em; border-right-width: 1px; } /* 属性 */
+#lois table tbody td:nth-child(5) { width: 4.8em; }
+#lois table tbody td:nth-child(6) { width: 2.6em; } /* 属性 */
+#lois table tbody td:nth-child(7) { width:  auto; } /* 備考 */
+#lois table tbody td:nth-child(8) { width: 1.5em; } /* S */
 #lois table tbody td:last-child { width: 3em; } /* 状態 */
 @media screen and (max-width:735px){
   #lois table tbody { font-size: 90%; }
@@ -631,29 +633,48 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
 #lois table tbody td.left {
   padding-left: .5em;
 }
-#lois table tbody td:last-child {
+#lois table tbody td:last-child:not(.left) {
   border-left: hidden;
 }
 #lois table tbody td span[data-state] {
   display: inline-block;
-  width: calc(100% - .2rem);
-  margin: .1rem;
-  padding: .2rem 0;
-  border-width: .1rem;
+  width: calc(100% - 2px);
+  margin: 1px;
+  padding: 2px 0;
+  border-width: 1px;
   border-style: solid;
   border-radius: .5rem;
   font-size: 73%;
-  text-align: center;
   white-space: nowrap;
+  text-align: center;
+  vertical-align: middle;
+  overflow: hidden;
+  position: relative;
 }
-#lois table tbody span[data-state]::before {
+#lois table tbody span[data-state]::after {
   content: attr(data-state);
   display: inline-block;
   transform: scaleY(1.2);
 }
-#lois table tbody span[data-state="ロイス"]  { background-color: hsla(120,100%,50%,0.05); }
-#lois table tbody span[data-state="タイタス"]{ background-color: hsla(200,100%,50%,0.3); font-weight: bold; }
-#lois table tbody span[data-state="昇華"]    { background-color: hsla( 50,100%,50%,0.3); font-weight: bold; }
+#lois table tbody td.sperior span[data-state] {
+  padding-left: calc(1em + 2px);
+}
+#lois table tbody td.sperior span[data-state]::before {
+  content: "S";
+  position: absolute;
+  inset: 0 auto 0 0;
+  display: grid;
+  place-items: center;
+  transform: scale(1.2);
+  width: 1em;
+  font-weight: bold;
+}
+#lois table tbody span[data-state="ロイス"]  { background: hsla(120,100%,50%,0.05); }
+#lois table tbody span[data-state="タイタス"]{ background: hsla(200,100%,50%,0.3); font-weight: bold; }
+#lois table tbody span[data-state="昇華"]    { background: hsla( 50,100%,50%,0.3); font-weight: bold; }
+#lois table tbody .sperior span[data-state="ロイス"]  { background: linear-gradient(to right,hsla(0,100%,50%,0.3) 1.1em, hsla(120,100%,50%,0.05) 1.1em); }
+#lois table tbody .sperior span[data-state="タイタス"]{ background: linear-gradient(to right,hsla(0,100%,50%,0.3) 1.1em, hsla(200,100%,50%,0.3 ) 1.1em); }
+#lois table tbody .sperior span[data-state="昇華"]    { background: linear-gradient(to right,hsla(0,100%,50%,0.3) 1.1em, hsla( 50,100%,50%,0.3 ) 1.1em); }
 
 #memory table tbody td:nth-child(1) { width: 6.2em; border-right-width: 1px; } /* 関係 */
 #memory table tbody td:nth-child(2) { width:  14em; border-right-width: 1px; } /* 名前 */

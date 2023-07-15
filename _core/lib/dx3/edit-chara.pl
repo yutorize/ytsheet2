@@ -549,7 +549,8 @@ print <<"HTML";
               <th>名前
               <th colspan="3">感情<span class="small">(Positive／Negative)</span>
               <th>属性
-              <th colspan="2" class="right">状態
+              <th colspan="2" class="right small">Sロイス
+              <th class="right">状態
             </tr>
           <tbody>
 HTML
@@ -564,15 +565,16 @@ print <<"HTML";
               <td class="emo">@{[input "lois${num}EmoNegaCheck",'checkbox',"emoN($num)"]}@{[input "lois${num}EmoNega",'','','list="list-emotionN"']}
               <td>@{[input "lois${num}Color",'',"changeLoisColor($num)",'list="list-lois-color"']}
               <td>@{[input "lois${num}Note"]}
+              <td>@{[input "lois${num}S",'checkbox',"sLois($num)"]}
               <td onclick="changeLoisState(this.parentNode.id)"><span id="lois${num}-state" data-state="$pc{"lois${num}State"}"></span>@{[input "lois${num}State",'hidden']}
 HTML
 }
 print <<"HTML";
           </tbody>
         </table>
-        <div class="right" style="position: absolute; top: 0; right: 0;">
-          <a class="button small" onclick="resetLoisAll()">全ロイスをリセット</a>
-          <a class="button small" onclick="resetLoisAdd()">4番目以降をリセット</a>
+        <div class="right lois-reset-buttons">
+          <button type="button" class="small" onclick="resetLoisAll()">全ロイスをリセット</button>
+          <button type="button" class="small" onclick="resetLoisAdd()">4番目以降をリセット</button>
         </div>
       </details>
       <details class="box" id="memory" $open{'memory'}>
