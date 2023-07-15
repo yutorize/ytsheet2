@@ -239,7 +239,7 @@ function calcItem(){
 function calcMemory() {
   exps['memory'] = 0;
   for (let num = 1; num <= 3; num++){
-    if(form['memory'+num+'Gain'].checked){ exps['memory'] += 15; }
+    if ( form['memory'+num+'Relation'].value || form['memory'+num+'Name'].value){ exps['memory'] += 15; }
   }
   document.getElementById('exp-memory').textContent = exps['memory'];
   calcExp();

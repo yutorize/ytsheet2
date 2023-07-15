@@ -295,7 +295,7 @@
 
   #memory { overflow-x: auto; }
   #memory table  { table-layout: fixed; white-space: nowrap; margin-top: .5em; }
-  #memory table thead th:nth-child(1) { width:   3em; } 
+  #memory table thead th:nth-child(1) { width: 1.5em; } 
   #memory table thead th:nth-child(2) { width:   7em; } 
   #memory table thead th:nth-child(3) { width:  12em; }
   #memory table thead th:nth-child(4) { width:   6em; }
