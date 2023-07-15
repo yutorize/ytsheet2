@@ -220,6 +220,40 @@ sub data_update_chara {
   $pc{'lasttimever'} = $ver;
   return %pc;
 }
+sub data_update_item {
+  my %pc = %{$_[0]};
+  my $ver = $pc{'ver'};
+  $ver =~ s/^([0-9]+)\.([0-9]+)\.([0-9]+)$/$1.$2$3/;
+  delete $pc{'updateMessage'};
+
+  if($ver < 1.22011){
+    $pc{weaponNum} = $pc{armourNum} = 0;
+    foreach (1 .. 3){
+      if ( $pc{'weapon'.$_.'Usage'}
+        || $pc{'weapon'.$_.'Reqd'}
+        || $pc{'weapon'.$_.'Acc'}
+        || $pc{'weapon'.$_.'Rate'}
+        || $pc{'weapon'.$_.'Crit'}
+        || $pc{'weapon'.$_.'Dmg'}
+        || $pc{'weapon'.$_.'Note'}
+      ){
+        $pc{weaponNum}++;
+      }
+      if ( $pc{'armour'.$_.'Usage'}
+        || $pc{'armour'.$_.'Reqd'}
+        || $pc{'armour'.$_.'Eva'}
+        || $pc{'armour'.$_.'Def'}
+        || $pc{'armour'.$_.'Note'}
+      ){
+        $pc{armourNum}++;
+      }
+    }
+  }
+
+  $pc{'ver'} = $main::ver;
+  $pc{'lasttimever'} = $ver;
+  return %pc;
+}
 sub data_update_arts {
   my %pc = %{$_[0]};
   my $ver = $pc{'ver'};

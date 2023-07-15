@@ -1292,16 +1292,16 @@ form#item div.input-data dl dd input[name="shape"] {
 form#item div.input-data dl dd input[name="summary"] {
   max-width: 100%;
 }
-form#item .input-weapon-data,
-form#item .input-armour-data {
+form#item .input-arms-data {
   width: 100%;
 }
-form#item .input-weapon-data td,
-form#item .input-armour-data td {
+form#item .input-arms-data td:first-child {
+  width: 1.5em;
+}
+form#item .input-arms-data td {
   width: 5em;
 }
-form#item .input-weapon-data td:last-child,
-form#item .input-armour-data td:last-child {
+form#item .input-arms-data td:last-child {
   width: auto;
 }
 

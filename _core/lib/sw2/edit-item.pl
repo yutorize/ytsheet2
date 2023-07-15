@@ -28,6 +28,13 @@ if($mode_make){
 ### 初期設定 --------------------------------------------------
 if($mode_make){ $pc{'protect'} = $LOGIN_ID ? 'account' : 'password'; }
 
+if($mode eq 'edit' || ($mode eq 'convert' && $pc{'ver'})){
+  %pc = data_update_item(\%pc);
+}
+
+$pc{weaponNum} ||= 1;
+$pc{armourNum} ||= 1;
+
 ## カラー
 setDefaultColors();
 
@@ -51,6 +58,7 @@ Content-type: text/html\n
   <link rel="stylesheet" media="all" href="${main::core_dir}/skin/sw2/css/item.css?${main::ver}">
   <link rel="stylesheet" media="all" href="${main::core_dir}/skin/_common/css/edit.css?${main::ver}">
   <link rel="stylesheet" media="all" href="${main::core_dir}/skin/sw2/css/edit.css?${main::ver}">
+  <script src="${main::core_dir}/skin/_common/js/lib/Sortable.min.js"></script>
   <script src="${main::core_dir}/lib/edit.js?${main::ver}" defer></script>
   <script src="${main::core_dir}/lib/sw2/edit-item.js?${main::ver}" defer></script>
 </head>
@@ -176,60 +184,54 @@ HTML
       <h2>効果</h2>
       <textarea name="effects">$pc{'effects'}</textarea>
       <h4>武器データ</h4>
-      <table class="input-weapon-data">
-        <tr><th>用法<th>必筋<th>命中<th>威力<th>C値<th>追加D<th>備考
-        <tr>
-          <td>@{[ input 'weapon1Usage','text','','list="list-usage"' ]}
-          <td>@{[ input 'weapon1Reqd' ]}
-          <td>@{[ input 'weapon1Acc' ]}
-          <td>@{[ input 'weapon1Rate' ]}
-          <td>@{[ input 'weapon1Crit' ]}
-          <td>@{[ input 'weapon1Dmg' ]}
-          <td>@{[ input 'weapon1Note' ]}
-        <tr>
-          <td>@{[ input 'weapon2Usage','text','','list="list-usage"' ]}
-          <td>@{[ input 'weapon2Reqd' ]}
-          <td>@{[ input 'weapon2Acc' ]}
-          <td>@{[ input 'weapon2Rate' ]}
-          <td>@{[ input 'weapon2Crit' ]}
-          <td>@{[ input 'weapon2Dmg' ]}
-          <td>@{[ input 'weapon2Note' ]}
-        <tr>
-          <td>@{[ input 'weapon3Usage','text','','list="list-usage"' ]}
-          <td>@{[ input 'weapon3Reqd' ]}
-          <td>@{[ input 'weapon3Acc' ]}
-          <td>@{[ input 'weapon3Rate' ]}
-          <td>@{[ input 'weapon3Crit' ]}
-          <td>@{[ input 'weapon3Dmg' ]}
-          <td>@{[ input 'weapon3Note' ]}
-        </tr>
+      <table class="input-arms-data" id="weapons-table">
+        <thead>
+          <tr><th><th>用法<th>必筋<th>命中<th>威力<th>C値<th>追加D<th>備考
+        <tbody>
+HTML
+foreach my $num ('TMPL', 1 .. $pc{weaponNum}){
+  print <<"HTML";
+          @{[ $num eq 'TMPL' ? '<template id="weapon-template">' : '' ]}<tr id="weapon$num">
+            <td class="handle">
+            <td>@{[ input "weapon${num}Usage",'text','','list="list-usage"' ]}
+            <td>@{[ input "weapon${num}Reqd" ]}
+            <td>@{[ input "weapon${num}Acc" ]}
+            <td>@{[ input "weapon${num}Rate" ]}
+            <td>@{[ input "weapon${num}Crit" ]}
+            <td>@{[ input "weapon${num}Dmg" ]}
+            <td>@{[ input "weapon${num}Note" ]}
+          @{[ $num eq 'TMPL' ? "</template>" : '' ]}
+HTML
+}
+  print <<"HTML";
       </table>
+      <div class="add-del-button"><a onclick="addWeapon()">▼</a><a onclick="delWeapon()">▲</a></div>
+      @{[ input 'weaponNum','hidden' ]}
       <p>
       <code>[刃]</code> <code>[打]</code> でそれぞれ<img class="i-icon" src="${set::icon_dir}wp_edge.png"><img class="i-icon" src="${set::icon_dir}wp_blow.png">に置き換え
       <p>
       <h4>防具データ</h4>
-      <table class="input-armour-data">
-        <tr><th>用法<th>必筋<th>回避<th>防護<th>備考
-        <tr>
-          <td>@{[ input 'armour1Usage','text','','list="list-usage"' ]}
-          <td>@{[ input 'armour1Reqd' ]}
-          <td>@{[ input 'armour1Eva' ]}
-          <td>@{[ input 'armour1Def' ]}
-          <td>@{[ input 'armour1Note' ]}
-        <tr>
-          <td>@{[ input 'armour2Usage','text','','list="list-usage"' ]}
-          <td>@{[ input 'armour2Reqd' ]}
-          <td>@{[ input 'armour2Eva' ]}
-          <td>@{[ input 'armour2Def' ]}
-          <td>@{[ input 'armour2Note' ]}
-        <tr>
-          <td>@{[ input 'armour3Usage','text','','list="list-usage"' ]}
-          <td>@{[ input 'armour3Reqd' ]}
-          <td>@{[ input 'armour3Eva' ]}
-          <td>@{[ input 'armour3Def' ]}
-          <td>@{[ input 'armour3Note' ]}
-        </tr>
+      <table class="input-arms-data" id="armours-table">
+        <thead>
+          <tr><th><th>用法<th>必筋<th>回避<th>防護<th>備考
+        <tbody>
+HTML
+foreach my $num ('TMPL', 1 .. $pc{armourNum}){
+  print <<"HTML";
+          @{[ $num eq 'TMPL' ? '<template id="armour-template">' : '' ]}<tr id="armour$num">
+            <td class="handle">
+            <td>@{[ input "armour${num}Usage",'text','','list="list-usage"' ]}
+            <td>@{[ input "armour${num}Reqd" ]}
+            <td>@{[ input "armour${num}Eva" ]}
+            <td>@{[ input "armour${num}Def" ]}
+            <td>@{[ input "armour${num}Note" ]}
+          @{[ $num eq 'TMPL' ? "</template>" : '' ]}
+HTML
+}
+  print <<"HTML";
       </table>
+      <div class="add-del-button"><a onclick="addArmour()">▼</a><a onclick="delArmour()">▲</a></div>
+      @{[ input 'armourNum','hidden' ]}
     </div>
     <div class="box">
       <h2>由来・逸話</h2>

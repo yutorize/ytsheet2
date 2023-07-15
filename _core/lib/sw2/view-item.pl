@@ -79,6 +79,11 @@ $pc{'effects'} =~ s/<p><\/p>//gi;
 $pc{'effects'} =~ s#<h2>(.+?)</h2>#</dd><dt>$1</dt><dd class="box">#gi;
 $pc{'effects'} =~ s/\n/<br>/gi;
 
+### アップデート --------------------------------------------------
+if($pc{'ver'}){
+  %pc = data_update_item(\%pc);
+}
+
 ### カラー設定 --------------------------------------------------
 setColors();
 
@@ -104,7 +109,7 @@ $SHEET->param(category => $pc{'category'});
 
 ### 武器 --------------------------------------------------
 my @weapons;
-foreach (1 .. 3){
+foreach (1 .. $pc{weaponNum}){
   next if $pc{'weapon'.$_.'Usage'}.$pc{'weapon'.$_.'Reqd'}.
           $pc{'weapon'.$_.'Acc'}.$pc{'weapon'.$_.'Rate'}.$pc{'weapon'.$_.'Crit'}.
           $pc{'weapon'.$_.'Dmg'}.$pc{'weapon'.$_.'Note'}
@@ -123,7 +128,7 @@ $SHEET->param(WeaponData => \@weapons) if !$pc{'forbiddenMode'};
 
 ### 防具 --------------------------------------------------
 my @armours;
-foreach (1 .. 3){
+foreach (1 .. $pc{armourNum}){
   next if $pc{'armour'.$_.'Usage'}.$pc{'armour'.$_.'Reqd'}.
           $pc{'armour'.$_.'Acc'}.$pc{'armour'.$_.'Def'}.$pc{'armour'.$_.'Note'}
           eq '';
