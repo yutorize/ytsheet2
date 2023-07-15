@@ -58,8 +58,8 @@ sub fairyRank {
 sub data_update_chara {
   my %pc = %{$_[0]};
   my $ver = $pc{'ver'};
-  delete $pc{'updateMessage'};
   $ver =~ s/^([0-9]+)\.([0-9]+)\.([0-9]+)$/$1.$2$3/;
+  delete $pc{'updateMessage'};
   if($pc{'colorHeadBgA'}) {
     ($pc{'colorHeadBgH'}, $pc{'colorHeadBgS'}, $pc{'colorHeadBgL'}) = rgb_to_hsl($pc{'colorHeadBgR'},$pc{'colorHeadBgG'},$pc{'colorHeadBgB'});
     ($pc{'colorBaseBgH'}, $pc{'colorBaseBgS'}, undef) = rgb_to_hsl($pc{'colorBaseBgR'},$pc{'colorBaseBgG'},$pc{'colorBaseBgB'});
@@ -257,6 +257,7 @@ sub data_update_item {
 sub data_update_arts {
   my %pc = %{$_[0]};
   my $ver = $pc{'ver'};
+  $ver =~ s/^([0-9]+)\.([0-9]+)\.([0-9]+)$/$1.$2$3/;
   delete $pc{'updateMessage'};
 
   if($ver < 1.20000){
