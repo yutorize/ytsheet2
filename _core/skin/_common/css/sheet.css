@@ -480,6 +480,9 @@ table.note-table th {
 table.note-table td {
   text-align: left;
 }
+table.note-table thead th {
+  white-space: nowrap;
+}
 dl.note-description {
   display: grid;
   grid-template-columns: auto 1fr;
