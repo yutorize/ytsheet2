@@ -371,6 +371,9 @@ else {
       $rowspan++;
       $pc{'weapon'.$num.'NameOff'} = 1;
     }
+    my $power = $pc{'weapon'.$_.'Power'}
+      . addNum($pc{'lv'.$data::class{$pc{'weapon'.$_.'Class'}}{'id'}})
+      . ($pc{'weapon'.$_.'PowerMod'}?"+$pc{'weapon'.$_.'PowerMod'}":'');
     push(@weapons, {
       NAME     => itemNameRubyCheck($pc{'weapon'.$_.'Name'}),
       ROWSPAN  => $rowspan,
@@ -380,7 +383,7 @@ else {
       USAGE    => $pc{'weapon'.$_.'Usage'}.'／'.$pc{'weapon'.$_.'Attr'},
       HITMOD   => addNum($pc{'weapon'.$_.'HitMod'}),
       HITTOTAL => $pc{'weapon'.$_.'HitTotal'},
-      POWER    => $pc{'weapon'.$_.'Power'}.($pc{'weapon'.$_.'PowerMod'}?"+$pc{'weapon'.$_.'PowerMod'}":''),
+      POWER    => $power,
       RANGE    => $pc{'weapon'.$_.'Range'},
       NOTE     => $pc{'weapon'.$_.'Note'},
       CLOSE    => ($pc{'weapon'.$_.'NameOff'} || $first ? 0 : 1),
