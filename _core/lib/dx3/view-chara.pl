@@ -327,7 +327,7 @@ $SHEET->param(Loises => \@loises);
 ### メモリー --------------------------------------------------
 my @memories;
 foreach (1 .. 3){
-  next if !$pc{'memory'.$_.'Gain'};
+  next if !$pc{'memory'.$_.'Relation'} && !$pc{'memory'.$_.'Name'};
   push(@memories, {
     "RELATION" => $pc{'memory'.$_.'Relation'},
     "NAME"     => $pc{'memory'.$_.'Name'},
