@@ -431,7 +431,7 @@ sub input {
   '>';
 }
 sub checkbox {
-  my ($name, $text, $oninput) = @_;
+  my ($name, $text, $oninput, $other) = @_;
   if($oninput && $oninput !~ /\(.*?\)$/){ $oninput .= '()'; }
   '<label class="check-button">'.
   '<input type="checkbox"'.
@@ -439,6 +439,7 @@ sub checkbox {
   ' value="1"'.
   ($::pc{$name}?" checked":"").
   ($oninput?' oninput="'.$oninput.'"':"").
+  ($other?" $other":"").
   '>'.
   ($text?'<span>'.$text.'</span>':'').
   '</label>';

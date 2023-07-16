@@ -9,9 +9,9 @@
     <h1><a href="./"><TMPL_VAR title></a></h1>
     <nav>
       <ul>
-        <TMPL_LOOP Menu><li class="<TMPL_VAR SIZE>"><a <TMPL_VAR TYPE>="<TMPL_VAR VALUE>"><TMPL_VAR TEXT></a></li>
+        <TMPL_LOOP Menu><li class="<TMPL_VAR SIZE>"><a <TMPL_VAR TYPE>="<TMPL_VAR VALUE>"><TMPL_VAR TEXT></a>
         </TMPL_LOOP>
-        <li><a onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード"></a></li>
+        <li><a onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード"></a>
       </ul>
     </nav>
   </header>
@@ -30,7 +30,7 @@
       <aside id="loglist" class="float-box">
         <h2>過去ログ（バックアップ）</h2>
         <ul>
-          <TMPL_LOOP LogList><li class="<TMPL_VAR SELECTED>"><a href="?id=<TMPL_VAR id><TMPL_VAR URL>"><TMPL_VAR DATE></a></li></TMPL_LOOP>
+          <TMPL_LOOP LogList><li class="<TMPL_VAR SELECTED>"><a href="?id=<TMPL_VAR id><TMPL_VAR URL>"><TMPL_VAR DATE></a></TMPL_LOOP>
         </ul>
         <TMPL_IF viewLogNaming><details id="log-naming">
           <summary>閲覧中のログ<TMPL_IF selectedLogName>の名前をつけなおす<TMPL_ELSE>に名前をつける</TMPL_IF></summary>
@@ -39,9 +39,9 @@
             <input type="hidden" name="id" value="<TMPL_VAR id>">
             <input type="hidden" name="date" value="<TMPL_VAR logId>">
             <dl>
-              <dt>名前</dt><dd><input type="text" name="log-name" value="<TMPL_VAR selectedLogName>"></dd>
-              <TMPL_IF reqdPassword><dt>パスワード</dt><dd><input type="password" name="pass"></dd></TMPL_IF>
-              <dd><input type="submit" value="命名"></dd>
+              <dt>名前<dd><input type="text" name="log-name" value="<TMPL_VAR selectedLogName>">
+              <TMPL_IF reqdPassword><dt>パスワード<dd><input type="password" name="pass"></TMPL_IF>
+              <dd><input type="submit" value="命名">
             </dl>
           </form>
         </details></TMPL_IF>
@@ -112,53 +112,53 @@
 
         <div class="box-union" id="classes">
           <dl class="box" id="class-main">
-            <dt>メインクラス</dt><dd><TMPL_VAR classMain></dd>
+            <dt>メインクラス<dd><TMPL_VAR classMain>
           </dl>
           <dl class="box" id="class-support">
-            <dt>サポートクラス</dt><dd><TMPL_VAR classSupport></dd>
+            <dt>サポートクラス<dd><TMPL_VAR classSupport>
           </dl>
           <dl class="box" id="class-title">
-            <dt>称号クラス</dt><dd><TMPL_VAR classTitle></dd>
+            <dt>称号クラス<dd><TMPL_VAR classTitle>
           </dl>
           <dl class="box" id=race">
-            <dt>種族</dt><dd><TMPL_VAR race></dd>
+            <dt>種族<dd><TMPL_VAR race>
           </dl>
           <dl class="box" id="class-main">
-            <dt>年齢</dt><dd><TMPL_VAR age></dd>
+            <dt>年齢<dd><TMPL_VAR age>
           </dl>
           <dl class="box" id="class-support">
-            <dt>性別</dt><dd><TMPL_VAR gender></dd>
+            <dt>性別<dd><TMPL_VAR gender>
           </dl>
         </div>
         
         <section class="box" id="exp">
           <h2>成長点</h2>
           <dl>
-            <dt>使用</dt><dd><TMPL_VAR expUsed></dd>
-            <dt>残り</dt><dd><TMPL_VAR expRest></dd>
-            <dt>総計</dt><dd><TMPL_VAR expTotal></dd>
+            <dt>使用<dd><TMPL_VAR expUsed>
+            <dt>残り<dd><TMPL_VAR expRest>
+            <dt>総計<dd><TMPL_VAR expTotal>
           </dl>
         </section>
 
         <dl class="box" id="level">
-          <dt>キャラクター<br>レベル</dt><dd><TMPL_VAR level></dd>
+          <dt>キャラクター<br>レベル<dd><TMPL_VAR level>
         </dl>
 
         <div class="box-union" id="sub-status">
           <dl class="box" id="hp">
-            <dt>ＨＰ</dt>
+            <dt>ＨＰ
             <!-- <TMPL_VAR sttStrBase> + <TMPL_VAR hpMain> + <TMPL_VAR hpSupport> + <TMPL_VAR hpAdd> + <TMPL_VAR hpGrow> -->
-            <dd><TMPL_IF hpAdd><span class="sp-del"><TMPL_VAR hpBase></span>+<TMPL_VAR hpAdd>=</TMPL_IF><b><TMPL_VAR hpTotal></b></dd>
+            <dd><TMPL_IF hpAdd><span class="sp-del"><TMPL_VAR hpBase></span>+<TMPL_VAR hpAdd>=</TMPL_IF><b><TMPL_VAR hpTotal></b>
           </dl>
           <dl class="box" id="mp">
-            <dt>ＭＰ</dt>
+            <dt>ＭＰ
             <!-- <TMPL_VAR sttMndBase> + <TMPL_VAR mpMain> + <TMPL_VAR mpSupport> + <TMPL_VAR mpAdd> + <TMPL_VAR mpGrow> -->
-            <dd><TMPL_IF mpAdd><span class="sp-del"><TMPL_VAR mpBase></span>+<TMPL_VAR mpAdd>=</TMPL_IF><b><TMPL_VAR mpTotal></b></dd>
+            <dd><TMPL_IF mpAdd><span class="sp-del"><TMPL_VAR mpBase></span>+<TMPL_VAR mpAdd>=</TMPL_IF><b><TMPL_VAR mpTotal></b>
           </dl>
           <dl class="box" id="fate">
-            <dt>フェイト</dt>
-            <dd><TMPL_IF fateAdd><span class="sp-del"><TMPL_VAR fateBase></span>+<TMPL_VAR fateAdd>=</TMPL_IF><b><TMPL_VAR fateTotal></b></dd>
-            <dd>／使用上限: <b><TMPL_VAR fateLimit></b> </dd>
+            <dt>フェイト
+            <dd><TMPL_IF fateAdd><span class="sp-del"><TMPL_VAR fateBase></span>+<TMPL_VAR fateAdd>=</TMPL_IF><b><TMPL_VAR fateTotal></b>
+            <dd>／使用上限: <b><TMPL_VAR fateLimit></b>
           </dl>
         </div>
 
@@ -166,93 +166,86 @@
           <table class="data-table">
             <thead>
               <tr>
-                <th></th>
-                <th class="small">能力<br>基本値</th>
-                <th class="small">能力<br><span>ボーナス</span></th>
-                <th colspan="2" class="small">クラス修正<br><span>メイン/サポート</span></th>
-                <th class="small"><span>スキル</span><br>他</th>
-                <th>能力値</th>
-                <th class="small"><span>スキル</span><br>他</th>
-                <th>判定<br><small>+ダイス数</small></th>
+                <th>
+                <th class="small">能力<br>基本値
+                <th class="small">能力<br><span>ボーナス</span>
+                <th colspan="2" class="small">クラス修正<br><span>メイン/サポート</span>
+                <th class="small"><span>スキル</span><br>他
+                <th>能力値
+                <th class="small"><span>スキル</span><br>他
+                <th>判定<br><small>+ダイス数</small>
               </tr>
-            </thead>
             <tbody>
               <tr>
-                <th>筋力</th>
-                <td><TMPL_VAR sttStrBase></td>
-                <td><TMPL_VAR sttStrBonus></td>
-                <td><TMPL_VAR sttStrMain></td>
-                <td><TMPL_VAR sttStrSupport></td>
-                <td><TMPL_VAR sttStrAdd></td>
-                <td><TMPL_VAR sttStrTotal></td>
-                <td><TMPL_VAR rollStrAdd></td>
-                <td><TMPL_VAR rollStr><span>+<b><TMPL_VAR rollStrDice></b>D</span></td>
-              </tr>
+                <th>筋力
+                <td><TMPL_VAR sttStrBase>
+                <td><TMPL_VAR sttStrBonus>
+                <td><TMPL_VAR sttStrMain>
+                <td><TMPL_VAR sttStrSupport>
+                <td><TMPL_VAR sttStrAdd>
+                <td><TMPL_VAR sttStrTotal>
+                <td><TMPL_VAR rollStrAdd>
+                <td><TMPL_VAR rollStr><span>+<b><TMPL_VAR rollStrDice></b>D</span>
               <tr>
-                <th>器用</th>
-                <td><TMPL_VAR sttDexBase></td>
-                <td><TMPL_VAR sttDexBonus></td>
-                <td><TMPL_VAR sttDexMain></td>
-                <td><TMPL_VAR sttDexSupport></td>
-                <td><TMPL_VAR sttDexAdd></td>
-                <td><TMPL_VAR sttDexTotal></td>
-                <td><TMPL_VAR rollDexAdd></td>
-                <td><TMPL_VAR rollDex><span>+<b><TMPL_VAR rollDexDice></b>D</span></td>
-              </tr>
+                <th>器用
+                <td><TMPL_VAR sttDexBase>
+                <td><TMPL_VAR sttDexBonus>
+                <td><TMPL_VAR sttDexMain>
+                <td><TMPL_VAR sttDexSupport>
+                <td><TMPL_VAR sttDexAdd>
+                <td><TMPL_VAR sttDexTotal>
+                <td><TMPL_VAR rollDexAdd>
+                <td><TMPL_VAR rollDex><span>+<b><TMPL_VAR rollDexDice></b>D</span>
               <tr>
-                <th>敏捷</th>
-                <td><TMPL_VAR sttAgiBase></td>
-                <td><TMPL_VAR sttAgiBonus></td>
-                <td><TMPL_VAR sttAgiMain></td>
-                <td><TMPL_VAR sttAgiSupport></td>
-                <td><TMPL_VAR sttAgiAdd></td>
-                <td><TMPL_VAR sttAgiTotal></td>
-                <td><TMPL_VAR rollAgiAdd></td>
-                <td><TMPL_VAR rollAgi><span>+<b><TMPL_VAR rollAgiDice></b>D</span></td>
-              </tr>
+                <th>敏捷
+                <td><TMPL_VAR sttAgiBase>
+                <td><TMPL_VAR sttAgiBonus>
+                <td><TMPL_VAR sttAgiMain>
+                <td><TMPL_VAR sttAgiSupport>
+                <td><TMPL_VAR sttAgiAdd>
+                <td><TMPL_VAR sttAgiTotal>
+                <td><TMPL_VAR rollAgiAdd>
+                <td><TMPL_VAR rollAgi><span>+<b><TMPL_VAR rollAgiDice></b>D</span>
               <tr>
-                <th>知力</th>
-                <td><TMPL_VAR sttIntBase></td>
-                <td><TMPL_VAR sttIntBonus></td>
-                <td><TMPL_VAR sttIntMain></td>
-                <td><TMPL_VAR sttIntSupport></td>
-                <td><TMPL_VAR sttIntAdd></td>
-                <td><TMPL_VAR sttIntTotal></td>
-                <td><TMPL_VAR rollIntAdd></td>
-                <td><TMPL_VAR rollInt><span>+<b><TMPL_VAR rollIntDice></b>D</span></td>
-              </tr>
+                <th>知力
+                <td><TMPL_VAR sttIntBase>
+                <td><TMPL_VAR sttIntBonus>
+                <td><TMPL_VAR sttIntMain>
+                <td><TMPL_VAR sttIntSupport>
+                <td><TMPL_VAR sttIntAdd>
+                <td><TMPL_VAR sttIntTotal>
+                <td><TMPL_VAR rollIntAdd>
+                <td><TMPL_VAR rollInt><span>+<b><TMPL_VAR rollIntDice></b>D</span>
               <tr>
-                <th>感知</th>
-                <td><TMPL_VAR sttSenBase></td>
-                <td><TMPL_VAR sttSenBonus></td>
-                <td><TMPL_VAR sttSenMain></td>
-                <td><TMPL_VAR sttSenSupport></td>
-                <td><TMPL_VAR sttSenAdd></td>
-                <td><TMPL_VAR sttSenTotal></td>
-                <td><TMPL_VAR rollSenAdd></td>
-                <td><TMPL_VAR rollSen><span>+<b><TMPL_VAR rollSenDice></b>D</span></td>
-              </tr>
+                <th>感知
+                <td><TMPL_VAR sttSenBase>
+                <td><TMPL_VAR sttSenBonus>
+                <td><TMPL_VAR sttSenMain>
+                <td><TMPL_VAR sttSenSupport>
+                <td><TMPL_VAR sttSenAdd>
+                <td><TMPL_VAR sttSenTotal>
+                <td><TMPL_VAR rollSenAdd>
+                <td><TMPL_VAR rollSen><span>+<b><TMPL_VAR rollSenDice></b>D</span>
               <tr>
-                <th>精神</th>
-                <td><TMPL_VAR sttMndBase></td>
-                <td><TMPL_VAR sttMndBonus></td>
-                <td><TMPL_VAR sttMndMain></td>
-                <td><TMPL_VAR sttMndSupport></td>
-                <td><TMPL_VAR sttMndAdd></td>
-                <td><TMPL_VAR sttMndTotal></td>
-                <td><TMPL_VAR rollMndAdd></td>
-                <td><TMPL_VAR rollMnd><span>+<b><TMPL_VAR rollMndDice></b>D</span></td>
-              </tr>
+                <th>精神
+                <td><TMPL_VAR sttMndBase>
+                <td><TMPL_VAR sttMndBonus>
+                <td><TMPL_VAR sttMndMain>
+                <td><TMPL_VAR sttMndSupport>
+                <td><TMPL_VAR sttMndAdd>
+                <td><TMPL_VAR sttMndTotal>
+                <td><TMPL_VAR rollMndAdd>
+                <td><TMPL_VAR rollMnd><span>+<b><TMPL_VAR rollMndDice></b>D</span>
               <tr>
-                <th>幸運</th>
-                <td><TMPL_VAR sttLukBase></td>
-                <td><TMPL_VAR sttLukBonus></td>
-                <td><TMPL_VAR sttLukMain></td>
-                <td><TMPL_VAR sttLukSupport></td>
-                <td><TMPL_VAR sttLukAdd></td>
-                <td><TMPL_VAR sttLukTotal></td>
-                <td><TMPL_VAR rollLukAdd></td>
-                <td><TMPL_VAR rollLuk><span>+<b><TMPL_VAR rollLukDice></b>D</span></td>
+                <th>幸運
+                <td><TMPL_VAR sttLukBase>
+                <td><TMPL_VAR sttLukBonus>
+                <td><TMPL_VAR sttLukMain>
+                <td><TMPL_VAR sttLukSupport>
+                <td><TMPL_VAR sttLukAdd>
+                <td><TMPL_VAR sttLukTotal>
+                <td><TMPL_VAR rollLukAdd>
+                <td><TMPL_VAR rollLuk><span>+<b><TMPL_VAR rollLukDice></b>D</span>
               </tr>
             </tbody>
           </table>
@@ -260,28 +253,25 @@
 
         <section class="box" id="lifepath">
           <h2>ライフパス</h2>
-          <TMPL_IF homeArea><dl id="home"><dt>出身地</dt><dd><TMPL_VAR homeArea></dd></dl></TMPL_IF>
+          <TMPL_IF homeArea><dl id="home"><dt>出身地<dd><TMPL_VAR homeArea></dl></TMPL_IF>
           <table class="data-table line-tbody">
             <tbody>
               <tr>
-                <th><TMPL_IF head_origin><TMPL_VAR head_origin><TMPL_ELSE>出自</TMPL_IF></th>
-                <td class="left" rowspan="2"><TMPL_VAR lifepathOriginNote></td>
-              </tr>
-              <tr><td><TMPL_VAR lifepathOrigin></td></tr>
+                <th><TMPL_IF head_origin><TMPL_VAR head_origin><TMPL_ELSE>出自</TMPL_IF>
+                <td class="left" rowspan="2"><TMPL_VAR lifepathOriginNote>
+              <tr><td><TMPL_VAR lifepathOrigin></td>
             </tbody>
             <tbody>
               <tr>
-                <th><TMPL_IF head_experience><TMPL_VAR head_experience><TMPL_ELSE>境遇</TMPL_IF></th>
-                <td class="left" rowspan="2"><TMPL_VAR lifepathExperienceNote></td>
-              </tr>
-              <tr><td><TMPL_VAR lifepathExperience></td></tr>
+                <th><TMPL_IF head_experience><TMPL_VAR head_experience><TMPL_ELSE>境遇</TMPL_IF>
+                <td class="left" rowspan="2"><TMPL_VAR lifepathExperienceNote>
+              <tr><td><TMPL_VAR lifepathExperience></td>
             </tbody>
             <tbody>
               <tr>
-                <th><TMPL_IF head_motive><TMPL_VAR head_motive><TMPL_ELSE>目的</TMPL_IF></th>
-                <td class="left" rowspan="2"><TMPL_VAR lifepathMotiveNote></td>
-              </tr>
-              <tr><td><TMPL_VAR lifepathMotive></td></tr>
+                <th><TMPL_IF head_motive><TMPL_VAR head_motive><TMPL_ELSE>目的</TMPL_IF>
+                <td class="left" rowspan="2"><TMPL_VAR lifepathMotiveNote>
+              <tr><td><TMPL_VAR lifepathMotive></td>
             </tbody>
           </table>
         </section>
@@ -307,23 +297,22 @@
               </colgroup>
               <thead>
                 <tr>
-                  <th colspan="2">装備品</th>
-                  <th>重量</th>
-                  <th>命中<br>修正</th>
-                  <th>攻撃力</th>
-                  <th>回避<br>修正</th>
-                  <th>物理<br>防御力</th>
-                  <th>魔法<br>防御力</th>
-                  <th>行動<br>修正</th>
-                  <th>移動<br>修正</th>
-                  <th>射程</th>
-                  <th class="left">備考</th>
+                  <th colspan="2">装備品
+                  <th>重量
+                  <th>命中<br>修正
+                  <th>攻撃力
+                  <th>回避<br>修正
+                  <th>物理<br>防御力
+                  <th>魔法<br>防御力
+                  <th>行動<br>修正
+                  <th>移動<br>修正
+                  <th>射程
+                  <th class="left">備考
                 </tr>
-              </thead>
               <tbody>
                 <TMPL_LOOP Weapons><tr>
-                  <th><TMPL_VAR HEAD></th>
-                  <td><span class="item-name"><TMPL_VAR NAME></td>
+                  <th><TMPL_VAR HEAD>
+                  <td><span class="item-name"><TMPL_VAR NAME></span></td>
                   <td><TMPL_VAR WEIGHT></td>
                   <td><TMPL_VAR ACC></td>
                   <td><TMPL_VAR ATK></td>
@@ -334,10 +323,10 @@
                   <td><TMPL_VAR MOVE></td>
                   <td><TMPL_VAR RANGE></td>
                   <td class="left"><div class="item-name"><TMPL_VAR NOTE></div></td>
-                </tr></TMPL_LOOP>
+                </TMPL_LOOP>
                 <TMPL_LOOP Armours><tr>
-                  <th><TMPL_VAR HEAD></th>
-                  <td><span class="item-name"><TMPL_VAR NAME></td>
+                  <th><TMPL_VAR HEAD>
+                  <td><span class="item-name"><TMPL_VAR NAME></span></td>
                   <td><TMPL_VAR WEIGHT></td>
                   <td><TMPL_VAR ACC></td>
                   <td><TMPL_VAR ATK></td>
@@ -347,32 +336,28 @@
                   <td><TMPL_VAR INI></td>
                   <td><TMPL_VAR MOVE></td>
                   <td colspan="2" class="left"><div class="item-name"><TMPL_VAR NOTE></div></td>
-                </tr></TMPL_LOOP>
+                </TMPL_LOOP>
               </tbody>
               <tbody class="total">
                 <tr>
-                  <th rowspan="2">合計</th>
-                  <td class="right small">武器</td>
+                  <th rowspan="2">合計
+                  <td class="right small">武器
                   <td class="weight">
                     <TMPL_VAR armamentTotalWeightWeapon>/<TMPL_VAR weightLimitWeapon>
-                  </td>
                   <td>
                     <span data-name="右"><TMPL_VAR armamentTotalAccR></span>
                     <span data-name="左"><TMPL_VAR armamentTotalAccL></span>
-                  </td>
                   <td>
                     <span data-name="右"><TMPL_VAR armamentTotalAtkR></span>
                     <span data-name="左"><TMPL_VAR armamentTotalAtkL></span>
-                  </td>
                   <td rowspan="2"><TMPL_VAR armamentTotalEva></td>
                   <td rowspan="2"><TMPL_VAR armamentTotalDef></td>
                   <td rowspan="2"><TMPL_VAR armamentTotalMDef></td>
                   <td rowspan="2"><TMPL_VAR armamentTotalIni></td>
                   <td rowspan="2"><TMPL_VAR armamentTotalMove></td>
                   <td rowspan="2" colspan="2" class="left"><TMPL_VAR armamentTotalNote></td>
-                </tr>
                 <tr class="armour-weight"">
-                  <td class="right small">防具</td>
+                  <td class="right small">防具
                   <td>
                     <TMPL_VAR armamentTotalWeightArmour>/<TMPL_VAR weightLimitArmour>
                   </td>
@@ -397,20 +382,19 @@
               </colgroup>
               <thead>
                 <tr>
-                  <th colspan="3">戦闘</th>
-                  <th>命中<br>判定<div>【器用】</div></th>
-                  <th>攻撃力</th>
-                  <th>回避<br>判定<div>【敏捷】</div></th>
-                  <th>物理<br>防御力</th>
-                  <th>魔法<br>防御力<div>【精神】</div></th>
-                  <th>行動値<div>【敏捷】<br>+【感知】</div></th>
-                  <th>移動力<div>【筋力】+5</div></th>
-                  <th class="left"></th>
+                  <th colspan="3">戦闘
+                  <th>命中<br>判定<div>【器用】</div>
+                  <th>攻撃力
+                  <th>回避<br>判定<div>【敏捷】</div>
+                  <th>物理<br>防御力
+                  <th>魔法<br>防御力<div>【精神】</div>
+                  <th>行動値<div>【敏捷】<br>+【感知】</div>
+                  <th>移動力<div>【筋力】+5</div>
+                  <th class="left">
                 </tr>
-              </thead>
               <tbody>
                 <tr>
-                  <th>スキル</th>
+                  <th>スキル
                   <td colspan="2"><div class="item-name"><TMPL_VAR battleSkillName></div></td>
                   <td><TMPL_VAR battleSkillAcc></td>
                   <td><TMPL_VAR battleSkillAtk></td>
@@ -420,19 +404,17 @@
                   <td><TMPL_VAR battleSkillIni></td>
                   <td><TMPL_VAR battleSkillMove></td>
                   <td colspan="2" class="left"><div class="item-name"><TMPL_VAR battleSkillNote></div></td>
-                </tr>
                 <tr>
                   <th></th>
-                  <td colspan="2" class="right small">ダイス数修正</td>
+                  <td colspan="2" class="right small">ダイス数修正
                   <td class="battle-dice"><TMPL_VAR battleSkillAccDice></td>
                   <td class="battle-dice"><TMPL_VAR battleSkillAtkDice></td>
                   <td class="battle-dice"><TMPL_VAR battleSkillEvaDice></td>
-                  <td colspan="5"></td>
+                  <td colspan="5">
                 </tr>
-              </tbody>
               <tbody>
                 <tr>
-                  <th>他</th>
+                  <th>他
                   <td colspan="2"><div class="item-name"><TMPL_VAR battleOtherName></div></div></td>
                   <td><TMPL_VAR battleOtherAcc></td>
                   <td><TMPL_VAR battleOtherAtk></td>
@@ -442,16 +424,14 @@
                   <td><TMPL_VAR battleOtherIni></td>
                   <td><TMPL_VAR battleOtherMove></td>
                   <td colspan="2" class="left"><div class="item-name"><TMPL_VAR battleOtherNote></div></td>
-                </tr>
                 <tr>
-                  <th></th>
+                  <th>
                   <td colspan="2" class="right small">ダイス数修正</td>
                   <td class="battle-dice"><TMPL_VAR battleOtherAccDice></td>
                   <td class="battle-dice"><TMPL_VAR battleOtherAtkDice></td>
                   <td class="battle-dice"><TMPL_VAR battleOtherEvaDice></td>
-                  <td colspan="5"></td>
+                  <td colspan="5">
                 </tr>
-              </tbody>
               <tfoot>
                 <tr>
                   <th colspan="3">合計＋ダイス数</th>
@@ -462,7 +442,7 @@
                   <td><TMPL_VAR battleTotalMDef></td>
                   <td><TMPL_VAR battleTotalIni></td>
                   <td><TMPL_VAR battleTotalMove></td>
-                  <td></td>
+                  <td>
                 </tr>
               </tfoot>
             </table>
@@ -475,47 +455,40 @@
               <col><col><col><col>
             </colgroup>
             <thead>
-              <th></th>
-              <th>スキル</th>
-              <th>その他</th>
-              <th>合計<small>＋ダイス数</small></th>
+              <th>
+              <th>スキル
+              <th>その他
+              <th>合計<small>＋ダイス数</small>
             </thead>
             <tbody>
               <tr>
-                <th>トラップ探知<small>(【感知】)</small></th>
-                <td><TMPL_VAR rollTrapDetectSkill></td>
-                <td><TMPL_VAR rollTrapDetectOther></td>
+                <th>トラップ探知<small>(【感知】)</small>
+                <td><TMPL_VAR rollTrapDetectSkill>
+                <td><TMPL_VAR rollTrapDetectOther>
                 <td class="roll">
                   <TMPL_VAR rollTrapDetect>
                   <span>+<b><TMPL_VAR rollTrapDetectDice></b>D</span>
-                </td>
-              </tr>
               <tr>
-                <th>トラップ解除<small>(【器用】)</small></th>
-                <td><TMPL_VAR rollTrapReleaseSkill></td>
-                <td><TMPL_VAR rollTrapReleaseOther></td>
+                <th>トラップ解除<small>(【器用】)</small>
+                <td><TMPL_VAR rollTrapReleaseSkill>
+                <td><TMPL_VAR rollTrapReleaseOther>
                 <td class="roll">
                   <TMPL_VAR rollTrapRelease>
                   <span>+<b><TMPL_VAR rollTrapReleaseDice></b>D</span>
-                </td>
-              </tr>
               <tr>
-                <th>危険感知<small>(【感知】)</small></th>
-                <td><TMPL_VAR rollDangerDetectSkill></td>
-                <td><TMPL_VAR rollDangerDetectOther></td>
+                <th>危険感知<small>(【感知】)</small>
+                <td><TMPL_VAR rollDangerDetectSkill>
+                <td><TMPL_VAR rollDangerDetectOther>
                 <td class="roll">
                   <TMPL_VAR rollDangerDetect>
                   <span>+<b><TMPL_VAR rollDangerDetectDice></b>D</span>
-                </td>
-              </tr>
               <tr>
-                <th>エネミー識別<small>(【知力】)</small></th>
-                <td><TMPL_VAR rollEnemyLoreSkill></td>
-                <td><TMPL_VAR rollEnemyLoreOther></td>
+                <th>エネミー識別<small>(【知力】)</small>
+                <td><TMPL_VAR rollEnemyLoreSkill>
+                <td><TMPL_VAR rollEnemyLoreOther>
                 <td class="roll">
                   <TMPL_VAR rollEnemyLore>
                   <span>+<b><TMPL_VAR rollEnemyLoreDice></b>D</span>
-                </td>
               </tr>
             </tbody>
           </table>
@@ -524,47 +497,39 @@
               <col><col><col><col>
             </colgroup>
             <thead>
-              <th></th>
-              <th>スキル</th>
-              <th>その他</th>
-              <th>合計<small>＋ダイス数</small></th>
-            </thead>
+              <th>
+              <th>スキル
+              <th>その他
+              <th>合計<small>＋ダイス数</small>
             <tbody>
               <tr>
-                <th>アイテム鑑定<small>(【知力】)</small></th>
-                <td><TMPL_VAR rollAppraisalSkill></td>
-                <td><TMPL_VAR rollAppraisalOther></td>
+                <th>アイテム鑑定<small>(【知力】)</small>
+                <td><TMPL_VAR rollAppraisalSkill>
+                <td><TMPL_VAR rollAppraisalOther>
                 <td class="roll">
                   <TMPL_VAR rollAppraisal>
                   <span>+<b><TMPL_VAR rollAppraisalDice></b>D</span>
-                </td>
-              </tr>
               <tr>
-                <th>魔術判定<small>(【知力】)</small></th>
-                <td><TMPL_VAR rollMagicSkill></td>
-                <td><TMPL_VAR rollMagicOther></td>
+                <th>魔術判定<small>(【知力】)</small>
+                <td><TMPL_VAR rollMagicSkill>
+                <td><TMPL_VAR rollMagicOther>
                 <td class="roll">
                   <TMPL_VAR rollMagic>
                   <span>+<b><TMPL_VAR rollMagicDice></b>D</span>
-                </td>
-              </tr>
               <tr>
-                <th>呪歌判定<small>(【精神】)</small></th>
-                <td><TMPL_VAR rollSongSkill></td>
-                <td><TMPL_VAR rollSongOther></td>
+                <th>呪歌判定<small>(【精神】)</small>
+                <td><TMPL_VAR rollSongSkill>
+                <td><TMPL_VAR rollSongOther>
                 <td class="roll">
                   <TMPL_VAR rollSong>
                   <span>+<b><TMPL_VAR rollSongDice></b>D</span>
-                </td>
-              </tr>
               <tr>
-                <th>錬金術判定<small>(【器用】)</small></th>
-                <td><TMPL_VAR rollAlchemySkill></td>
-                <td><TMPL_VAR rollAlchemyOther></td>
+                <th>錬金術判定<small>(【器用】)</small>
+                <td><TMPL_VAR rollAlchemySkill>
+                <td><TMPL_VAR rollAlchemyOther>
                 <td class="roll">
                   <TMPL_VAR rollAlchemy>
                   <span>+<b><TMPL_VAR rollAlchemyDice></b>D</span>
-                </td>
               </tr>
             </tbody>
           </table>
@@ -578,31 +543,30 @@
         <table class="data-table line-tbody">
           <thead>
             <tr>
-              <th><span class="small">取得元</span></th>
-              <th>分類</th>
-              <th>名称</th>
-              <th>Lv</th>
-              <th>タイミング</th>
-              <th>判定</th>
-              <th>対象</th>
-              <th>射程</th>
-              <th><div class="thin">コスト</div></th>
-              <th>使用条件</th></tr>
+              <th><span class="small">取得元</span>
+              <th>分類
+              <th>名称
+              <th>Lv
+              <th>タイミング
+              <th>判定
+              <th>対象
+              <th>射程
+              <th><div class="thin">コスト</div>
+              <th>使用条件
           </thead>
           <TMPL_LOOP Skills><tbody>
              <tr>
-              <td rowspan="2" class="type"><TMPL_VAR TYPE></td>
-              <td rowspan="2" class="category"><TMPL_VAR CATEGORY></td>
-              <td class="name"><TMPL_VAR NAME></td>
-              <td><TMPL_VAR LV></td>
-              <td><TMPL_VAR TIMING></td>
-              <td><TMPL_VAR ROLL></td>
-              <td><TMPL_VAR TARGET></td>
-              <td><TMPL_VAR RANGE></td>
-              <td><TMPL_VAR COST></td>
-              <td><TMPL_VAR REQD></td>
-            </tr>
-            <tr><td class="left" colspan="8"><TMPL_VAR NOTE></td></tr>
+              <td rowspan="2" class="type"><TMPL_VAR TYPE>
+              <td rowspan="2" class="category"><TMPL_VAR CATEGORY>
+              <td class="name"><TMPL_VAR NAME>
+              <td><TMPL_VAR LV>
+              <td><TMPL_VAR TIMING>
+              <td><TMPL_VAR ROLL>
+              <td><TMPL_VAR TARGET>
+              <td><TMPL_VAR RANGE>
+              <td><TMPL_VAR COST>
+              <td><TMPL_VAR REQD>
+            <tr><td class="left" colspan="8"><TMPL_VAR NOTE></td>
           </tbody></TMPL_LOOP>
         </table>
         <p class="right">
@@ -621,10 +585,10 @@
 
       <div id="items-and-money">
         <dl class="box" id="weight">
-          <dt>携帯重量／携帯可能重量</dt><dd><TMPL_VAR weightItems> ／ <TMPL_VAR weightLimitItems></dd>
+          <dt>携帯重量／携帯可能重量<dd><TMPL_VAR weightItems> ／ <TMPL_VAR weightLimitItems>
         </dl>
         <dl class="box" id="money">
-          <dt>所持金</dt><dd><TMPL_VAR money> G</dd>
+          <dt>所持金<dd><TMPL_VAR money> G
         </dl>
         <section class="box" id="items">
           <h2><TMPL_IF head_items><TMPL_VAR head_items><TMPL_ELSE>携行品・所持品</TMPL_IF></h2>
@@ -643,22 +607,22 @@
               <col class="num">
               <col>
             </colgroup>
-            <thead><tr><th></th><th>成長点</th><th class="left">恩恵・束縛など</th></tr></thead>
+            <thead><tr><th><th>成長点<th class="left">恩恵・束縛など</thead>
             <tbody>
-            <TMPL_LOOP Geises><tr>
-                <td><TMPL_VAR NAME></td>
-                <td><TMPL_VAR COST></td>
-                <td class="left"><TMPL_VAR NOTE></td>
-              </tr></TMPL_LOOP>
+              <TMPL_LOOP Geises><tr>
+                <td><TMPL_VAR NAME>
+                <td><TMPL_VAR COST>
+                <td class="left"><TMPL_VAR NOTE>
+              </TMPL_LOOP>
             </tbody>
           </table>
         </section></TMPL_IF>
         <div class="box-union" id="guild">
           <dl class="box">
-            <dt>所属ギルド</dt><dd><TMPL_VAR guildName DEFAULT="―――"></dd>
+            <dt>所属ギルド<dd><TMPL_VAR guildName DEFAULT="―――">
           </dl>
           <dl class="box">
-            <dt>ギルドマスター</dt><dd><TMPL_VAR guildMaster DEFAULT="―――"></dd>
+            <dt>ギルドマスター<dd><TMPL_VAR guildMaster DEFAULT="―――">
           </dl>
         </div>
         <section class="box" id="connections">
@@ -670,13 +634,13 @@
               <col class="relation">
               <col>
             </colgroup>
-            <thead><tr><th></th><th>関係</th><th></th></tr></thead>
+            <thead><tr><th><th>関係<th></thead>
             <tbody>
               <TMPL_LOOP Connections><tr>
-                <td><TMPL_VAR NAME></td>
-                <td><TMPL_VAR RELATION></td>
-                <td class="left"><TMPL_VAR NOTE></td>
-              </tr></TMPL_LOOP>
+                <td><TMPL_VAR NAME>
+                <td><TMPL_VAR RELATION>
+                <td class="left"><TMPL_VAR NOTE>
+              </TMPL_LOOP>
             </tbody>
           </table>
           <TMPL_ELSE><p>なし</p>
@@ -705,60 +669,56 @@
           </colgroup>
           <thead>
             <tr>
-              <th rowspan="2">CL</th>
-              <th colspan="7">能力値上昇</th>
-              <th rowspan="2">クラスチェンジ<br>or フェイト増加</th>
-              <th rowspan="2" colspan="3">習得スキル</th>
-            </tr>
+              <th rowspan="2">CL
+              <th colspan="7">能力値上昇
+              <th rowspan="2">クラスチェンジ<br>or フェイト増加
+              <th rowspan="2" colspan="3">習得スキル
             <tr>
-              <th>筋力</th>
-              <th>器用</th>
-              <th>敏捷</th>
-              <th>知力</th>
-              <th>感知</th>
-              <th>精神</th>
-              <th>幸運</th>
+              <th>筋力
+              <th>器用
+              <th>敏捷
+              <th>知力
+              <th>感知
+              <th>精神
+              <th>幸運
             </tr>
           </thead>
           <tbody>
             <tr id="lvup1">
-              <th rowspan="3">1</th>
-              <td rowspan="3"><TMPL_IF sttStrMake>+<TMPL_VAR sttStrMake></TMPL_IF></td>
-              <td rowspan="3"><TMPL_IF sttDexMake>+<TMPL_VAR sttDexMake></TMPL_IF></td>
-              <td rowspan="3"><TMPL_IF sttAgiMake>+<TMPL_VAR sttAgiMake></TMPL_IF></td>
-              <td rowspan="3"><TMPL_IF sttIntMake>+<TMPL_VAR sttIntMake></TMPL_IF></td>
-              <td rowspan="3"><TMPL_IF sttSenMake>+<TMPL_VAR sttSenMake></TMPL_IF></td>
-              <td rowspan="3"><TMPL_IF sttMndMake>+<TMPL_VAR sttMndMake></TMPL_IF></td>
-              <td rowspan="3"><TMPL_IF sttLukMake>+<TMPL_VAR sttLukMake></TMPL_IF></td>
+              <th rowspan="3">1
+              <td rowspan="3"><TMPL_IF sttStrMake>+<TMPL_VAR sttStrMake></TMPL_IF>
+              <td rowspan="3"><TMPL_IF sttDexMake>+<TMPL_VAR sttDexMake></TMPL_IF>
+              <td rowspan="3"><TMPL_IF sttAgiMake>+<TMPL_VAR sttAgiMake></TMPL_IF>
+              <td rowspan="3"><TMPL_IF sttIntMake>+<TMPL_VAR sttIntMake></TMPL_IF>
+              <td rowspan="3"><TMPL_IF sttSenMake>+<TMPL_VAR sttSenMake></TMPL_IF>
+              <td rowspan="3"><TMPL_IF sttMndMake>+<TMPL_VAR sttMndMake></TMPL_IF>
+              <td rowspan="3"><TMPL_IF sttLukMake>+<TMPL_VAR sttLukMake></TMPL_IF>
               <td><TMPL_VAR race></td>
-              <td class="skill" colspan="3"><TMPL_VAR lvUp1Skill1></td>
-            </tr>
+              <td class="skill" colspan="3"><TMPL_VAR lvUp1Skill1>
             <tr>
               <td><TMPL_VAR classMainLv1></td>
               <td class="skill"><TMPL_VAR lvUp1Skill2></td>
               <td class="skill"><TMPL_VAR lvUp1Skill3></td>
               <td class="skill"><TMPL_VAR lvUp1Skill4></td>
-            </tr>
             <tr>
               <td><TMPL_VAR classSupportLv1></td>
               <td class="skill"><TMPL_VAR lvUp1Skill5></td>
               <td class="skill"><TMPL_VAR lvUp1Skill6></td>
-                <td></td>
-            </tr>
+              <td>
             <TMPL_LOOP LvUpHistory><tr>
-              <th><TMPL_VAR LV></th>
-              <td <TMPL_IF STR>class="checked"</TMPL_IF>></td>
-              <td <TMPL_IF DEX>class="checked"</TMPL_IF>></td>
-              <td <TMPL_IF AGI>class="checked"</TMPL_IF>></td>
-              <td <TMPL_IF INT>class="checked"</TMPL_IF>></td>
-              <td <TMPL_IF SEN>class="checked"</TMPL_IF>></td>
-              <td <TMPL_IF MND>class="checked"</TMPL_IF>></td>
-              <td <TMPL_IF LUK>class="checked"</TMPL_IF>></td>
+              <th><TMPL_VAR LV>
+              <td <TMPL_IF STR>class="checked"</TMPL_IF>>
+              <td <TMPL_IF DEX>class="checked"</TMPL_IF>>
+              <td <TMPL_IF AGI>class="checked"</TMPL_IF>>
+              <td <TMPL_IF INT>class="checked"</TMPL_IF>>
+              <td <TMPL_IF SEN>class="checked"</TMPL_IF>>
+              <td <TMPL_IF MND>class="checked"</TMPL_IF>>
+              <td <TMPL_IF LUK>class="checked"</TMPL_IF>>
               <td><TMPL_VAR CLASS></td>
               <td class="skill"><TMPL_VAR SKILL1></td>
               <td class="skill"><TMPL_VAR SKILL2></td>
               <td class="skill"><TMPL_VAR SKILL3></td>
-            </tr></TMPL_LOOP>
+            </TMPL_LOOP>
           </tbody>
         </table>
       </section>
@@ -767,40 +727,36 @@
         <table class="data-table line-tbody">
           <thead>
             <tr>
-              <th>No.</th>
-              <th>日付</th>
-              <th>タイトル</th>
-              <th>成長点</th>
-              <th>上納</th>
-              <th>ゴールド</th>
-              <th>GM</th>
-              <th>参加者</th>
+              <th class="num   ">No.
+              <th class="date  ">日付
+              <th class="title ">タイトル
+              <th class="exp   ">成長点
+              <th class="pay   ">上納
+              <th class="money ">ゴールド
+              <th class="gm    ">GM
+              <th class="member">参加者
             </tr>
-          </thead>
           <TMPL_LOOP History><tbody>
             <tr>
-              <td class="num" <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR NUM></td>
-              <td class="date" <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR DATE></td>
-              <td class="title" <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR TITLE></td>
-              <td><TMPL_VAR EXP></td>
-              <td><TMPL_VAR PAYMENT></td>
-              <td><TMPL_VAR MONEY></td>
-              <td class="gm"><span><TMPL_VAR GM></span></td>
-              <td class="member"><TMPL_VAR MEMBER></td>
-            </tr>
-          <TMPL_IF NOTE><tr>
-            <td colspan="6" class="note"><TMPL_VAR NOTE></td>
-          </tr></TMPL_IF>
-          </tbody></TMPL_LOOP>
+              <td class="num   " <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR NUM>
+              <td class="date  " <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR DATE>
+              <td class="title " <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR TITLE>
+              <td class="exp   "><TMPL_VAR EXP></td>
+              <td class="pay   "><TMPL_VAR PAYMENT></td>
+              <td class="money "><TMPL_VAR MONEY></td>
+              <td class="gm    "><span><TMPL_VAR GM></span>
+              <td class="member"><TMPL_VAR MEMBER>
+            <TMPL_IF NOTE><tr><td colspan="6" class="note"><TMPL_VAR NOTE></TMPL_IF>
+          </TMPL_LOOP>
           <tfoot>
             <tr>
-              <td></td>
-              <td></td>
-              <td>取得総計</td>
-              <td><TMPL_VAR historyExpTotal></td>
-              <td><TMPL_VAR payment></td>
-              <td><TMPL_VAR historyMoneyTotal></td>
-              <td colspan="2"></td>
+              <td>
+              <td>
+              <td>取得総計
+              <td class="exp  "><TMPL_VAR historyExpTotal></td>
+              <td class="pay  "><TMPL_VAR payment></td>
+              <td class="money"><TMPL_VAR historyMoneyTotal></td>
+              <td colspan="2">
             </tr>
           </tfoot>
         </table>

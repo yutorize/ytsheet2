@@ -261,11 +261,12 @@ sub palettePreset {
           { lv =>  6, p => 30, c => '' },
           { lv =>  7, p => 10, c => '' },
           { lv =>  9, p => 30, c => -1 },
-          { lv => 12, p => 40, c => '' },
-          { lv => 15, p => 90, c => '' },
+          { lv => 12, p => 40, c => '', h => '2H' },
+          { lv => 15, p => 70, c => '', h => '2H' },
         );
         foreach my $bullet (sort {$a->{p} <=> $b->{p}} @power){
           next if $::pc{'lvMag'} < $bullet->{lv};
+          next if $bullet->{h} && $::pc{'weapon'.$_.'Usage'} !~ /$bullet->{h}/;
           $text .= "k$bullet->{p}\[";
           $text .= "(" if $bot{'BCD'};
           $text .= "$::pc{'weapon'.$_.'Crit'}$bullet->{c}";
@@ -277,10 +278,11 @@ sub palettePreset {
         my @heal = (
           { lv =>  2, p =>  0 },
           { lv => 10, p => 30 },
-          { lv => 13, p => 20 },
+          { lv => 13, p => 20, h => '2H' },
         );
         foreach my $bullet (sort {$a->{p} <=> $b->{p}} @heal){
           next if $::pc{'lvMag'} < $bullet->{lv};
+          next if $bullet->{h} && $::pc{'weapon'.$_.'Usage'} !~ /$bullet->{h}/;
           $text .= "k$bullet->{p}\[";
           $text .= "(" if $bot{'BCD'};
           $text .= "$::pc{'weapon'.$_.'Crit'}$bullet->{c}";

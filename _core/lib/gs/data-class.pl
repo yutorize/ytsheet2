@@ -86,6 +86,7 @@ our %class = (
       armor    => 'すべて',
     },
     magic => '真言呪文',
+    cast  => 'IntFoc',
   },
   '神官' => {
     type   => 'spell',
@@ -98,6 +99,7 @@ our %class = (
       armor    => 'すべて',
     },
     magic => '奇跡',
+    cast  => 'PsyFoc',
   },
   '竜司祭' => {
     type   => 'spell',
@@ -110,6 +112,7 @@ our %class = (
       armor    => 'すべて',
     },
     magic => '祖竜術',
+    cast  => 'PsyFoc',
   },
   '精霊使い' => {
     type   => 'spell',
@@ -122,6 +125,7 @@ our %class = (
       armor    => 'すべて',
     },
     magic => '精霊術',
+    cast  => 'PsyFoc',
   },
   '死人占い師' => {
     type   => 'spell',
@@ -134,6 +138,7 @@ our %class = (
       armor    => 'すべて',
     },
     magic => '死霊術',
+    cast  => 'IntFoc',
   },
 );
 

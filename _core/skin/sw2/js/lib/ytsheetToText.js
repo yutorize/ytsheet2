@@ -137,35 +137,70 @@ io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2SwordWorld2PC
 	result.push('●レベル・技能');
 	const skillNameColumnLength = 20;
 	result.push(`${'冒険者レベル'.padEnd(skillNameColumnLength - 6, ' ')}: ${(json.level || '').padStart(3, ' ')} Lv`);
-	for(let key in io.github.shunshun94.trpg.ytsheet.consts.skills) {
-		if(json[key]) {
-			const name = io.github.shunshun94.trpg.ytsheet.consts.skills[key];
-			result.push(`${name.padEnd(skillNameColumnLength - name.length, ' ')}: ${json[key].padStart(3, ' ')} Lv`);
+
+	result.push('------------------------------');
+
+	const lvSortedClassNames = SET.classNames.slice().sort((a,b) => {
+		return (Number(json['lv'+SET.class[a].id] || 0) < Number(json['lv'+SET.class[b].id]) || 0) ? 1 : -1;
+	});
+	for(const name of lvSortedClassNames) {
+		const lv = json['lv'+SET.class[name].id];
+		if(lv) {
+			result.push(`${name.padEnd(skillNameColumnLength - name.length, ' ')}: ${lv.padStart(3, ' ')} Lv`);
 		}
 	}
 	result.push('');
 
 	result.push('●戦闘特技 (自動習得は省略)');
-	for(let i = 0; i < io.github.shunshun94.trpg.ytsheet.consts.maxLevel; i++) {
-		if(json[`combatFeatsLv${i + 1}`]) {
-			result.push(`${String(i + 1).padStart(4, ' ')}： ${json[`combatFeatsLv${i + 1}`]}`);
+	for(let i of SET.featsLv) {
+		if(json[`combatFeatsLv${i}`]) {
+			result.push(`${String(i).replace(/[^0-9]/g, '').padStart(4, ' ')}： ${json[`combatFeatsLv${i}`]}`);
 		} 
 	}
 	const mysticArtsLength = json.mysticArtsNum ? Number(json.mysticArtsNum) : 0;
 	for(let i = 0; i < mysticArtsLength; i++) {
 		result.push(`秘伝：${json[`mysticArts${i+1}`]}`);
 	}
-	result.push('');
 
-	result.push('●習得特技');
-	for(var key in io.github.shunshun94.trpg.ytsheet.consts.levelSkills) {
-		if(json[`${key}1`]) {
-			result.push(`　- ${io.github.shunshun94.trpg.ytsheet.consts.levelSkills[key]}`);
-			for(let i = 0; i < io.github.shunshun94.trpg.ytsheet.consts.maxLevel; i++) {
-				if(json[`${key}${i + 1}`]) {
-					result.push(`${String(i + 1).padStart(2, ' ')}： ${json[`${key}${i + 1}`]}`);
+	for(let name of SET.classNames) {
+		const lv = Number(json['lv'+SET.class[name].id] || 0);
+		if(!lv || !SET.class[name]) continue;
+		if(SET.class[name].craft){
+			const craftName = 'craft'
+				+ SET.class[name].craft.eName.charAt(0).toUpperCase()
+				+ SET.class[name].craft.eName.slice(1);
+
+			result.push('');
+			result.push(`●${SET.class[name].craft.jName}`);
+			for(let i = 1; i <= lv; i++) {
+				if(json[`${craftName}${i}`]) {
+					result.push(`${String(i).padStart(2, ' ')}： ${json[`${craftName}${i}`]}`);
 				}
 			}
+		}
+		else if(SET.class[name].magic && SET.class[name].magic.data){
+			const magicName = 'magic'
+				+ SET.class[name].magic.eName.charAt(0).toUpperCase()
+				+ SET.class[name].magic.eName.slice(1);
+
+			result.push('');
+			result.push(`●${SET.class[name].magic.jName}`);
+			for(let i = 1; i <= lv; i++) {
+				if(json[`${magicName}${i}`]) {
+					result.push(`${String(i).padStart(2, ' ')}： ${json[`${magicName}${i}`]}`);
+				}
+			}
+		}
+	}
+	result.push('');
+
+	result.push('●魔力');
+	const magicColumnLength = 8;
+	for(let name of SET.classCasters) {
+		const id = SET.class[name].id;
+		if(json['lv'+id]) {
+			const magicName = SET.class[name].magic.jName;
+			result.push(`  ${magicName.padStart(magicColumnLength - magicName.length, ' ')}：${json['magicPower'+id].padStart(3, ' ')}`);
 		}
 	}
 	result.push('');
@@ -200,45 +235,28 @@ io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2SwordWorld2PC
 		result.push(`　- 回避・防護点`);
 	}
 	const armors = [];
-	if(json.armour1Name) {
-		armors.push({
-			type: '鎧',
-			name: `${json.armour1Name}${json.armour1Own ? '(専)' : ''}`,
-			reqd: json.armour1Reqd || '0',
-			dodge: json.armour1Eva || '0',
-			defense: json.armour1Def || '0',
-			note: json.armour1Note || ''
-		});
-	}
-	if(json.shield1Name) {
-		armors.push({
-			type: '盾',
-			name: `${json.shield1Name}${json.shield1Own ? '(専)' : ''}`,
-			reqd: json.shield1Reqd || '0',
-			dodge: json.shield1Eva || '0',
-			defense: json.shield1Def || '0',
-			note: json.shield1Note || ''
-		});
-	}
-	for(let i = 0; i <= 3; i++) {
-		if(json[`defOther${i}Name`] || json[`defOther${i}Eva`] || json[`defOther${i}Def`]) {
+	const armorsTypeCount = { 鎧:0, 盾:0, 他:0 };
+	for(let i = 1; i <= json.armourNum; i++) {
+		if(json[`armour${i}Name`]) {
+			let type = json[`armour${i}Category`].match(/鎧|盾|他/) ? json[`armour${i}Category`].match(/鎧|盾|他/)[0] : '';
+			if(i == 1 && !type){ type = '鎧' }
+			if(type){ armorsTypeCount[type]++ }
+
 			armors.push({
-				type: '他'+i,
-				name: json[`defOther${i}Name`],
-				reqd: json[`defOther${i}Reqd`] || '0',
-				dodge: json[`defOther${i}Eva`] || '0',
-				defense: json[`defOther${i}Def`] || '0',
-				note: json[`defOther${i}Note`] || ''
+				type: type ? type+armorsTypeCount[type] : '',
+				name: `${json[`armour${i}Name`]}${json[`armour${i}Own`] ? '(専)' : ''}`,
+				reqd: json[`armour${i}Reqd`] || '0',
+				dodge: json[`armour${i}Eva`] || '0',
+				defense: json[`armour${i}Def`] || '0',
+				note: json[`armour${i}Note`] || ''
 			});
 		}
 	}
 	for(let i = 1; i <= 3; i++) {
 		let names = [];
-		if (json[`defTotal${i}CheckArmour1`]){ names.push('鎧'); }
-		if (json[`defTotal${i}CheckShield1`]){ names.push('盾'); }
-		if (json[`defTotal${i}CheckDefOther1`] && (json.defOther1Name || json.defOther1Eva || json.defOther1Def)){ names.push('他1'); }
-		if (json[`defTotal${i}CheckDefOther2`] && (json.defOther2Name || json.defOther2Eva || json.defOther2Def)){ names.push('他2'); }
-		if (json[`defTotal${i}CheckDefOther3`] && (json.defOther3Name || json.defOther3Eva || json.defOther3Def)){ names.push('他3'); }
+		for(let n = 1; n <= json.armourNum; n++) {
+			if (json[`defTotal${i}CheckArmour${n}`]){ names.push(armors[n-1].type); }
+		}
 		if(names.length){
 			armors.push({
 				type: '合計',
@@ -302,16 +320,6 @@ io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2SwordWorld2PC
 	result.push('  所持金：' + (json.moneyTotal　|| json.money || 0));
 	result.push('  　預金：' + (json.depositTotal || 0));
 	result.push('  　借金：' + (json.debtTotal || 0));
-	result.push('');
-
-	result.push('●魔力');
-	const magicColumnLength = 8;
-	for(let key in io.github.shunshun94.trpg.ytsheet.consts.magic) {
-		if(json[key.replace('magicPower', 'lv')]) {
-			const name = io.github.shunshun94.trpg.ytsheet.consts.magic[key];
-			result.push(`  ${name.padStart(magicColumnLength - name.length, ' ')}：${json[key].padStart(3, ' ')}`);
-		}
-	}
 	result.push('');
 
 	result.push('●習得言語（初期習得の言語は除く）');

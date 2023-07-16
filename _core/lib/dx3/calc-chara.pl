@@ -163,7 +163,7 @@ sub data_calc {
   ### メモリー --------------------------------------------------
   $pc{'expUsedMemory'} = 0;
   foreach my $num (1..3){
-    if($pc{"memory${num}Gain"}){
+    if($pc{"memory${num}Relation"} || $pc{"memory${num}Name"}){
       $pc{'expUsedMemory'} += 15;
     }
   }

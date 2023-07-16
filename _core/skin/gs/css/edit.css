@@ -445,10 +445,7 @@
 
 @media screen and (max-width:735px){
   #area-items {
-    flex-direction: column;
-  }
-  div#area-items-R {
-    margin-left: 0;
+    display: block;
   }
 }
 
@@ -468,6 +465,7 @@
 }
 #money dd > dl {
   margin-right: .5em;
+  align-items: center;
 }
 #money dd > dl dt {
   font-size: 90%;
@@ -476,6 +474,7 @@
   display: grid;
   grid-template-columns: auto 1em;
   white-space: nowrap;
+  align-items: baseline;
 }
 #money dd > dl dd input {
   width: calc(100% - 3px) !important;
@@ -492,6 +491,19 @@
 #money > :is(dt,dd):first-of-type {
   border-right-width: 1px;
   border-right-style: dotted;
+}
+@media screen and (max-width:735px){
+  #money {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin-top: var(--box-v-gap);
+  }
+  #money > dt {
+    grid-row: 1;
+  }
+  #money > dd {
+    grid-row: 2;
+  }
 }
 
 #items textarea {
@@ -533,8 +545,10 @@
   :is(#skills, #general-skills, #spells, #arts) { overflow-x: auto; }
   :is(#skills, #general-skills, #spells, #arts) table  { table-layout: fixed; }
 
-  :is(#skills, #general-skills, #spells, #arts) table th.note { width: 12em; }
+  :is(#skills, #general-skills, #spells) table th.note { width: 12em; }
   :is(#skills, #general-skills, #spells, #arts) table tbody { font-size:90%; }
+  #arts table thead th.terms { width: 8em; }
+  #arts table thead th.page  { width: 5em; }
 }
 
 #physical-traits {
@@ -573,20 +587,20 @@
   height: 18em;
 }
 
-#history table thead thfirst-child { width: 1.4em; }
-#history table thead th.date       { width:   6em; } /* 日付 */
-#history table thead th.title      { width:  12em; } /* タイトル */
-#history table thead th.comp       { width:   4em; } /* 経験点 */
-#history table thead th.exp        { width: 5.5em; } /* 経験点 */
-#history table thead th.adp        { width: 3.5em; } /* 成長点 */
-#history table thead th.money      { width:   5em; } /* 銀貨 */
-#history table thead th.gm         { width:   6em; } /* ＧＭ */
-#history table thead th.member     { width:  auto; } /* 参加者 */
+#history table thead th:first-child{ width: 1.4em; }
+#history table thead th.date       { width:   6em; }
+#history table thead th.title      { width:  12em; }
+#history table thead th.comp       { width:   4em; }
+#history table thead th.exp        { width: 5.5em; }
+#history table thead th.adp        { width: 3.5em; }
+#history table thead th.money      { width:   5em; }
+#history table thead th.gm         { width:   6em; }
+#history table thead th.member     { width:  auto; }
 
 @media screen and (max-width:735px){
   #history table  { table-layout: fixed; }
-  #history table thead th.title  { width: 12em; } /* タイトル */
-  #history table thead th.member { width: 16em; } /* 参加者 */
+  #history table thead th.title  { width: 12em; }
+  #history table thead th.member { width: 16em; }
 }
 
 

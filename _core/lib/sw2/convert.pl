@@ -51,7 +51,7 @@ sub dataConvert {
     my $data = urlDataGet($set_url.'&mode=json') or error 'コンバート元のデータが取得できませんでした';
     if($data !~ /^{/){ error 'JSONデータが取得できませんでした' }
     $data = thanSignEscape($data);
-    my %pc = %{ decode_json(join '', $data) };
+    my %pc = utf8::is_utf8($data) ? %{ decode_json(encode('utf8', (join '', $data))) } : %{ decode_json(join '', $data) };
     if($pc{'result'} eq 'OK'){
       our $base_url = $set_url;
       $base_url =~ s|/[^/]+?$|/|;
@@ -98,12 +98,24 @@ sub convertHokanjoToYtsheet {
     'lvGri' => $in{'V_GLv21'} || '', 'lvArt' => $in{'V_GLv22'} || '', 'lvAri' => $in{'V_GLv23'} || '',
     'magicPowerAdd' => $in{'arms_maryoku_sum'},
     'evasionClass' => $in{'kaihi_ginou_name'},
-    'armour1Name' => $in{'armor_name'}, 'armour1Reqd' => $in{'armor_hitsukin'}, 'armour1Note' => $in{'armor_memo'},
-    'armour1Def' => $in{'armor_bougo'} || 0, 'armour1Eva' => $in{'armor_kaihi'} || 0,
-    'shield1Name' => $in{'shield_name'}, 'shield1Reqd' => $in{'shield_hitsukin'}, 'shield1Note' => $in{'shield_memo'},
-    'shield1Def' => $in{'shield_bougo'} || 0, 'shield1Eva' => $in{'shield_kaihi'} || 0,
-    'defOther1Name' => $in{'shield2_name'}, 'defOther1Reqd' => $in{'shield2_hitsukin'}, 'defOther1Note' => $in{'shield2_memo'},
-    'defOther1Def' =>$in{'shield2_bougo'} || 0, 'defOther1Eva' =>$in{'shield2_kaihi'} || 0,
+    'armourNum' => 3,
+    'armour1Name' => $in{'armor_name'},
+    'armour1Reqd' => $in{'armor_hitsukin'},
+    'armour1Note' => $in{'armor_memo'},
+    'armour1Def' => $in{'armor_bougo'} || 0,
+    'armour1Eva' => $in{'armor_kaihi'} || 0,
+    'armour2Name' => $in{'shield_name'},
+    'armour2Category' => '盾',
+    'armour2Reqd' => $in{'shield_hitsukin'},
+    'armour2Note' => $in{'shield_memo'},
+    'armour2Def' => $in{'shield_bougo'} || 0,
+    'armour2Eva' => $in{'shield_kaihi'} || 0,
+    'armour3Name' => $in{'shield2_name'},
+    'armour3Category' => 'その他',
+    'armour3Name' => $in{'shield2_name'},
+    'armour3Def' =>$in{'shield2_bougo'} || 0,
+    'armour3Eva' =>$in{'shield2_kaihi'} || 0,
+    'armour3Note' => $in{'shield2_memo'},
     
     'accessoryOtherName'    => $in{'acce10_name'}[0], 'accessoryOtherNote'    => $in{'acce10_memo'}[0],
     'accessoryOtherOwn'     => $in{'acce10_senyou'}[0] eq 1 ? 'HP' : $in{'acce10_senyou'}[0] eq 2 ? 'MP' : '',

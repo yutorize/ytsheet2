@@ -37,33 +37,32 @@
         <ul>
           <TMPL_LOOP Characters><li<TMPL_IF HIDE> class="hide"</TMPL_IF>>
             <a href="./?id=<TMPL_VAR ID>" data-lv="<TMPL_VAR LV>"><TMPL_VAR NAME><small><TMPL_VAR PLAYER></small></a>
-          </li></TMPL_LOOP>
+          </TMPL_LOOP>
         </ul>
         <TMPL_ELSE>
         <table>
           <thead>
-          <tr>
-            <th class="name"><a href="./?group=<TMPL_VAR ID><TMPL_VAR qLinks>&sort=name">名前</a></th>
-            <th class="player"><a href="./?group=<TMPL_VAR ID><TMPL_VAR qLinks>&sort=pl">プレイヤー</a></th>
-            <th class="race"><span>種族</span></th>
-            <th class="class"><span>クラス</span></th>
-            <th class="styles"><span>スタイル</span></th>
-            <th class="lv"><a href="./?group=<TMPL_VAR ID><TMPL_VAR qLinks>&sort=lv">レベル</a></th>
-            <th class="profile"><span>外見</span></th>
-            <th class="date"><a href="./?group=<TMPL_VAR ID><TMPL_VAR qLinks>&sort=date">更新<br>日時</a></th>
-          </tr>
+            <tr>
+              <th class="name"><a href="./?group=<TMPL_VAR ID><TMPL_VAR qLinks>&sort=name">名前</a>
+              <th class="player"><a href="./?group=<TMPL_VAR ID><TMPL_VAR qLinks>&sort=pl">プレイヤー</a>
+              <th class="race"><span>種族</span>
+              <th class="class"><span>クラス</span>
+              <th class="styles"><span>スタイル</span>
+              <th class="lv"><a href="./?group=<TMPL_VAR ID><TMPL_VAR qLinks>&sort=lv">レベル</a>
+              <th class="profile"><span>外見</span>
+              <th class="date"><a href="./?group=<TMPL_VAR ID><TMPL_VAR qLinks>&sort=date">更新<br>日時</a>
           </thead>
           <TMPL_LOOP Characters><tr<TMPL_IF HIDE> class="hide"</TMPL_IF>>
-            <td class="name"><a href="./?id=<TMPL_VAR ID>"><TMPL_VAR NAME><TMPL_IF FELLOW><small class="fellow">[F]</small></TMPL_IF></a></td>
-            <td class="player"><TMPL_VAR PLAYER></td>
-            <td class="race"><TMPL_VAR RACE></td>
-            <td class="class"><TMPL_VAR CLASS></td>
-            <td class="styles"><TMPL_VAR STYLES></td>
-            <td class="lv"><TMPL_VAR LV></td>
-            <td class="profile"><TMPL_VAR GENDER>／<TMPL_VAR AGE>／<TMPL_VAR HEIGHT></td>
+            <td class="name"><a href="./?id=<TMPL_VAR ID>"><TMPL_VAR NAME><TMPL_IF FELLOW><small class="fellow">[F]</small></TMPL_IF></a>
+            <td class="player"><TMPL_VAR PLAYER>
+            <td class="race"><TMPL_VAR RACE>
+            <td class="class"><TMPL_VAR CLASS>
+            <td class="styles"><TMPL_VAR STYLES>
+            <td class="lv"><TMPL_VAR LV>
+            <td class="profile"><TMPL_VAR GENDER>／<TMPL_VAR AGE>／<TMPL_VAR HEIGHT>
             <td class="tags"><TMPL_VAR TAGS></td>
-            <td class="date"><div><TMPL_VAR DATE></div></td>
-          </tr></TMPL_LOOP>
+            <td class="date"><div><TMPL_VAR DATE></div>
+          </TMPL_LOOP>
         </table>
         </TMPL_IF>
         <TMPL_VAR NAV>
@@ -72,10 +71,8 @@
       </TMPL_LOOP>
       <TMPL_IF simpleIndex><section class="list">
         <ul class="grouplist">
-        <TMPL_LOOP Groups><li>
-          <a href="./?group=<TMPL_VAR ID>"><TMPL_VAR NAME><small><TMPL_VAR TEXT></small></a>
-        </li></TMPL_LOOP>
-      </ul>
+        <TMPL_LOOP Groups><li><a href="./?group=<TMPL_VAR ID>"><TMPL_VAR NAME><small><TMPL_VAR TEXT></small></a></TMPL_LOOP>
+        </ul>
       </section></TMPL_IF>
     </article>
     <div id="page-top-button"><a href="#"></a></div>

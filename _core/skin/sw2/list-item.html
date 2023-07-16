@@ -28,23 +28,22 @@
         <TMPL_VAR NAV>
         <table>
           <thead>
-          <tr>
-            <th class="name"><span>名称</span></th>
-            <th class="author"><a href="./?type=i<TMPL_VAR qLinks>&sort=author">製作者</a></th>
-            <th class="category"><span>カテゴリ</span></th>
-            <th class="price"><span>価格</span></th>
-            <th class="summary"><span>概要</span></th>
-            <th class="date"><a href="./?type=i<TMPL_VAR qLinks>&sort=date">更新日時</a></th>
-          </tr>
+            <tr>
+              <th class="name"><span>名称</span>
+              <th class="author"><a href="./?type=i<TMPL_VAR qLinks>&sort=author">製作者</a>
+              <th class="category"><span>カテゴリ</span>
+              <th class="price"><span>価格</span>
+              <th class="summary"><span>概要</span>
+              <th class="date"><a href="./?type=i<TMPL_VAR qLinks>&sort=date">更新日時</a>
           </thead>
           <TMPL_LOOP Characters><tr<TMPL_IF HIDE> class="hide"</TMPL_IF>>
-            <td class="name"><a href="./?id=<TMPL_VAR ID>"><TMPL_VAR NAME></a></td>
-            <td class="author"><TMPL_VAR AUTHOR></td>
-            <td class="category"><TMPL_VAR CATEGORY></td>
-            <td class="price"><TMPL_VAR PRICE></td>
-            <td class="summary"><TMPL_VAR SUMMARY></td>
-            <td class="date"><div><TMPL_VAR DATE></div></td>
-          </tr></TMPL_LOOP>
+            <td class="name"><a href="./?id=<TMPL_VAR ID>"><TMPL_VAR NAME></a>
+            <td class="author"><TMPL_VAR AUTHOR>
+            <td class="category"><TMPL_VAR CATEGORY>
+            <td class="price"><TMPL_VAR PRICE>
+            <td class="summary"><TMPL_VAR SUMMARY>
+            <td class="date"><div><TMPL_VAR DATE></div>
+          </TMPL_LOOP>
         </table>
         <TMPL_VAR NAV>
         <TMPL_IF modeIndex><p class="more"><a href="./?type=i&category=all">>>MORE</a></p></TMPL_IF>
@@ -52,10 +51,8 @@
       </TMPL_LOOP>
       <TMPL_IF ListGroups><section class="list">
         <ul class="grouplist">
-        <TMPL_LOOP ListGroups><li>
-          <a href="./?type=i&category=<TMPL_VAR ID>"><TMPL_VAR NAME><small><TMPL_VAR TEXT></small></a>
-        </li></TMPL_LOOP>
-      </ul>
+        <TMPL_LOOP ListGroups><li><a href="./?type=i&category=<TMPL_VAR ID>"><TMPL_VAR NAME><small><TMPL_VAR TEXT></small></a></TMPL_LOOP>
+        </ul>
       </section></TMPL_IF>
     </article>
     <div id="page-top-button"><a href="#"></a></div>

@@ -41,9 +41,9 @@
     <h1><a href="./"><TMPL_VAR title></a></h1>
     <nav>
       <ul>
-        <TMPL_LOOP Menu><li class="<TMPL_VAR SIZE>"><a <TMPL_VAR TYPE>="<TMPL_VAR VALUE>"><TMPL_VAR TEXT></a></li>
+        <TMPL_LOOP Menu><li class="<TMPL_VAR SIZE>"><a <TMPL_VAR TYPE>="<TMPL_VAR VALUE>"><TMPL_VAR TEXT></a>
         </TMPL_LOOP>
-        <li><a onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード"></a></li>
+        <li><a onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード"></a>
       </ul>
     </nav>
   </header>
@@ -62,7 +62,7 @@
       <aside id="loglist" class="float-box">
         <h2>過去ログ（バックアップ）</h2>
         <ul>
-          <TMPL_LOOP LogList><li class="<TMPL_VAR SELECTED>"><a href="?id=<TMPL_VAR id><TMPL_VAR URL>"><TMPL_VAR DATE></a></li></TMPL_LOOP>
+          <TMPL_LOOP LogList><li class="<TMPL_VAR SELECTED>"><a href="?id=<TMPL_VAR id><TMPL_VAR URL>"><TMPL_VAR DATE></a></TMPL_LOOP>
         </ul>
         <TMPL_IF viewLogNaming><details id="log-naming">
           <summary>閲覧中のログ<TMPL_IF selectedLogName>の名前をつけなおす<TMPL_ELSE>に名前をつける</TMPL_IF></summary>
@@ -71,9 +71,9 @@
             <input type="hidden" name="id" value="<TMPL_VAR id>">
             <input type="hidden" name="date" value="<TMPL_VAR logId>">
             <dl>
-              <dt>名前</dt><dd><input type="text" name="log-name" value="<TMPL_VAR selectedLogName>"></dd>
-              <TMPL_IF reqdPassword><dt>パスワード</dt><dd><input type="password" name="pass"></dd></TMPL_IF>
-              <dd><input type="submit" value="命名"></dd>
+              <dt>名前<dd><input type="text" name="log-name" value="<TMPL_VAR selectedLogName>">
+              <TMPL_IF reqdPassword><dt>パスワード<dd><input type="password" name="pass"></TMPL_IF>
+              <dd><input type="submit" value="命名">
             </dl>
           </form>
         </details></TMPL_IF>
@@ -144,27 +144,26 @@
 
         <div id="classes" class="box-union">
           <dl class="box" id="class">
-            <dt>種別</dt><dd><TMPL_VAR class></dd>
+            <dt>種別<dd><TMPL_VAR class>
           </dl>
           <dl class="box" id="negai">
-            <dt>ネガイ</dt>
+            <dt>ネガイ
             <dd>
               <dl>
-                <dt>表:</dt><dd><TMPL_VAR negaiOutside></dd>
-                <dt>裏:</dt><dd><TMPL_VAR negaiInside></dd>
+                <dt>表:<dd><TMPL_VAR negaiOutside>
+                <dt>裏:<dd><TMPL_VAR negaiInside>
               </dl>
-              </dd>
           </dl>
         </div>
         
         <div id="status" class="box-union">
           <dl class="box" id="">
-            <dt>耐久値</dt>
-            <dd><b><TMPL_VAR endurance></b><small>=(<TMPL_VAR enduranceFormula>)</small></dd>
+            <dt>耐久値
+            <dd><b><TMPL_VAR endurance></b><small>=(<TMPL_VAR enduranceFormula>)</small>
           </dl>
           <dl class="box" id="">
-            <dt>作戦力</dt>
-            <dd><b><TMPL_VAR operation></b><small>=(<TMPL_VAR operationFormula>)</small></dd>
+            <dt>作戦力
+            <dd><b><TMPL_VAR operation></b><small>=(<TMPL_VAR operationFormula>)</small>
           </dl>
         </div>
 
@@ -178,72 +177,57 @@
               <col>
             </colgroup>
             <tr>
-              <th>年齢</th><td><TMPL_VAR age></td>
-              <th>性別</th><td><TMPL_VAR gender></td>
-            </tr>
+              <th>年齢<td><TMPL_VAR age>
+              <th>性別<td><TMPL_VAR gender>
             <tr>
-              <th>過去</th>
-              <td colspan="3" class="left"><TMPL_VAR past></td>
-            </tr>
+              <th>過去
+              <td colspan="3" class="left"><TMPL_VAR past>
             <tr>
               <th>
                 <TMPL_IF classH>遭遇</TMPL_IF>
                 <TMPL_IF classO>経緯</TMPL_IF>
-              </th>
-              <td colspan="3" class="left"><TMPL_VAR background></td>
-            </tr>
+              <td colspan="3" class="left"><TMPL_VAR background>
             <tr>
-              <th>外見の特徴</th>
-              <td colspan="3" class="left"><TMPL_VAR appearance></td>
-            </tr>
+              <th>外見の特徴
+              <td colspan="3" class="left"><TMPL_VAR appearance>
             <tr>
               <th>
                 <TMPL_IF classH>ケージ</TMPL_IF>
                 <TMPL_IF classO>住居</TMPL_IF>
-              </th>
-              <td colspan="3" class="left"><TMPL_VAR dwelling></td>
-            </tr>
+              
+              <td colspan="3" class="left"><TMPL_VAR dwelling>
             <tr>
-              <th>好きなもの</th>
-              <td colspan="3" class="left"><TMPL_VAR like></td>
-            </tr>
+              <th>好きなもの
+              <td colspan="3" class="left"><TMPL_VAR like>
             <tr>
-              <th>嫌いなもの</th>
-              <td colspan="3" class="left"><TMPL_VAR dislike></td>
-            </tr>
+              <th>嫌いなもの
+              <td colspan="3" class="left"><TMPL_VAR dislike>
             <tr>
-              <th>得意なこと</th>
-              <td colspan="3" class="left"><TMPL_VAR good></td>
-            </tr>
+              <th>得意なこと
+              <td colspan="3" class="left"><TMPL_VAR good>
             <tr>
-              <th>苦手なこと</th>
-              <td colspan="3" class="left"><TMPL_VAR notgood></td>
-            </tr>
+              <th>苦手なこと
+              <td colspan="3" class="left"><TMPL_VAR notgood>
             <tr>
-              <th>喪失</th>
-              <td colspan="3" class="left"><TMPL_VAR missing></td>
-            </tr>
+              <th>喪失
+              <td colspan="3" class="left"><TMPL_VAR missing>
             <tr>
               <th><span class="thin">
                 <TMPL_IF classH>リミッターの影響</TMPL_IF>
                 <TMPL_IF classO>ペアリングの副作用</TMPL_IF>
-              </span></th>
-              <td colspan="3" class="left"><TMPL_VAR sideeffect></td>
-            </tr>
+              </span>
+              <td colspan="3" class="left"><TMPL_VAR sideeffect>
             <tr>
               <th>
                 <TMPL_IF classH>決意</TMPL_IF>
                 <TMPL_IF classO>使命</TMPL_IF>
-              </th>
-              <td colspan="3" class="left"><TMPL_VAR resolution></td>
-            </tr>
+              <td colspan="3" class="left"><TMPL_VAR resolution>
             <tr>
-              <th>所属</th>
-              <td colspan="3" class="left"><TMPL_VAR belong></td>
-            </tr>
+              <th>所属
+              <td colspan="3" class="left"><TMPL_VAR belong>
             <tr>
-              <th>おもな武器</th>
-              <td colspan="3" class="left"><TMPL_VAR weapon></td>
+              <th>おもな武器
+              <td colspan="3" class="left"><TMPL_VAR weapon>
             </tr>
           </table>
         </section>
@@ -267,22 +251,22 @@
             <dl class="partner-playername"><dt>プレイヤー</dt><dd><TMPL_VAR p1_playerName></dd></dl>
           </div>
           <div class="box-union partner-personal">
-            <dl class="box"><dt>年齢</dt><dd><TMPL_VAR partner1Age></dd></dl>
-            <dl class="box"><dt>性別</dt><dd><TMPL_VAR partner1Gender></dd></dl>
-            <dl class="box"><dt>ネガイ（表）</dt><dd><TMPL_VAR partner1NegaiOutside></dd></dl>
-            <dl class="box"><dt>ネガイ（裏）</dt><dd><TMPL_VAR partner1NegaiInside></dd></dl>
-            <dl class="box"><dt>リリースの方法</dt><dd><TMPL_VAR partner1Release></dd></dl>
+            <dl class="box"><dt>年齢<dd><TMPL_VAR partner1Age></dl>
+            <dl class="box"><dt>性別<dd><TMPL_VAR partner1Gender></dl>
+            <dl class="box"><dt>ネガイ（表）<dd><TMPL_VAR partner1NegaiOutside></dl>
+            <dl class="box"><dt>ネガイ（裏）<dd><TMPL_VAR partner1NegaiInside></dl>
+            <dl class="box"><dt>リリースの方法<dd><TMPL_VAR partner1Release></dl>
           </div>
           <div class="box marker">
             <h2>マーカー</h2>
             <div class="marker-details">
-              <dl class="position"><dt>位置</dt><dd><TMPL_VAR fromPartner1MarkerPosition></dd></dl>
-              <dl class="color"   ><dt>色</dt><dd><TMPL_VAR fromPartner1MarkerColor></dd></dl>
-              <dl class="emotion1"><dt>相手からの感情1</dt><dd><TMPL_VAR fromPartner1Emotion1></dd></dl>
-              <dl class="emotion2"><dt>相手からの感情2</dt><dd><TMPL_VAR fromPartner1Emotion2></dd></dl>
+              <dl class="position"><dt>位置<dd><TMPL_VAR fromPartner1MarkerPosition></dl>
+              <dl class="color"   ><dt>色<dd><TMPL_VAR fromPartner1MarkerColor></dl>
+              <dl class="emotion1"><dt>相手からの感情1<dd><TMPL_VAR fromPartner1Emotion1></dl>
+              <dl class="emotion2"><dt>相手からの感情2<dd><TMPL_VAR fromPartner1Emotion2></dl>
             </div>
           </div>
-          <dl class="box memory"><dt>最初の思い出</dt><dd><TMPL_VAR partner1Memory></dd></dl>
+          <dl class="box memory"><dt>最初の思い出<dd><TMPL_VAR partner1Memory></dl>
         </div>
         
         <TMPL_IF partner2On><!-- パートナー２ -->
@@ -298,25 +282,25 @@
         
           <div class="partner-name">
             <h1><TMPL_VAR head_p2>:<TMPL_IF partner2Url><a href="<TMPL_VAR partner2Url>"><TMPL_VAR partner2Name></a><TMPL_ELSE><TMPL_VAR partner2Name></TMPL_IF></h1>
-            <dl class="partner-playername"><dt>プレイヤー</dt><dd><TMPL_VAR p2_playerName></dd></dl>
+            <dl class="partner-playername"><dt>プレイヤー<dd><TMPL_VAR p2_playerName></dl>
           </div>
           <div class="box-union partner-personal">
-            <dl class="box"><dt>年齢</dt><dd><TMPL_VAR partner2Age></dd></dl>
-            <dl class="box"><dt>性別</dt><dd><TMPL_VAR partner2Gender></dd></dl>
-            <dl class="box"><dt>ネガイ（表）</dt><dd><TMPL_VAR partner2NegaiOutside></dd></dl>
-            <dl class="box"><dt>ネガイ（裏）</dt><dd><TMPL_VAR partner2NegaiInside></dd></dl>
-            <TMPL_IF classO><dl class="box"><dt>リリースの方法</dt><dd><TMPL_VAR partner2Release></dd></dl></TMPL_IF>
+            <dl class="box"><dt>年齢<dd><TMPL_VAR partner2Age></dl>
+            <dl class="box"><dt>性別<dd><TMPL_VAR partner2Gender></dl>
+            <dl class="box"><dt>ネガイ（表）<dd><TMPL_VAR partner2NegaiOutside></dl>
+            <dl class="box"><dt>ネガイ（裏）<dd><TMPL_VAR partner2NegaiInside></dl>
+            <TMPL_IF classO><dl class="box"><dt>リリースの方法<dd><TMPL_VAR partner2Release></dl></TMPL_IF>
           </div>
           <div class="box marker">
             <h2>マーカー</h2>
             <div class="marker-details">
-              <dl class="position"><dt>位置</dt><dd><TMPL_VAR fromPartner2MarkerPosition></dd></dl>
-              <dl class="color"   ><dt>色</dt><dd><TMPL_VAR fromPartner2MarkerColor></dd></dl>
-              <dl class="emotion1"><dt>相手からの感情1</dt><dd><TMPL_VAR fromPartner2Emotion1></dd></dl>
-              <dl class="emotion2"><dt>相手からの感情2</dt><dd><TMPL_VAR fromPartner2Emotion2></dd></dl>
+              <dl class="position"><dt>位置<dd><TMPL_VAR fromPartner2MarkerPosition></dl>
+              <dl class="color"   ><dt>色<dd><TMPL_VAR fromPartner2MarkerColor></dl>
+              <dl class="emotion1"><dt>相手からの感情1<dd><TMPL_VAR fromPartner2Emotion1></dl>
+              <dl class="emotion2"><dt>相手からの感情2<dd><TMPL_VAR fromPartner2Emotion2></dl>
             </div>
           </div>
-          <dl class="box memory"><dt><TMPL_IF classO>最初の思い出</TMPL_IF><TMPL_IF classH>協定</TMPL_IF></dt><dd><TMPL_VAR partner2Memory></dd></dl>
+          <dl class="box memory"><dt><TMPL_IF classO>最初の思い出</TMPL_IF><TMPL_IF classH>協定</TMPL_IF><dd><TMPL_VAR partner2Memory></dl>
         </div>
         </TMPL_IF><!-- /パートナー２ -->
       </div>
@@ -326,21 +310,20 @@
         <table class="data-table">
           <thead>
             <tr>
-              <th></th>
-              <th>物・人・場所など</th>
-              <th>感情・思い出など</th>
-              <th>ヒビ</th>
-              <th>ワレ</th>
+              <th>
+              <th>物・人・場所など
+              <th>感情・思い出など
+              <th>ヒビ
+              <th>ワレ
             </tr>
-          </thead>
           <tbody>
             <TMPL_LOOP Kizuna><tr class="<TMPL_VAR HIBI><TMPL_VAR WARE>">
-              <td></td>
-              <td class="name"><div><TMPL_VAR NAME></div></td>
-              <td class="left"><div><TMPL_VAR NOTE></div></td>
-              <td><TMPL_IF HIBI>✔</TMPL_IF></td>
-              <td><TMPL_IF WARE>✔</TMPL_IF></td>
-            </tr></TMPL_LOOP>
+              <td>
+              <td class="name"><div><TMPL_VAR NAME></div>
+              <td class="left"><div><TMPL_VAR NOTE></div>
+              <td><TMPL_IF HIBI>✔</TMPL_IF>
+              <td><TMPL_IF WARE>✔</TMPL_IF>
+            </TMPL_LOOP>
           </tbody>
         </table>
       </section>
@@ -350,7 +333,7 @@
         <TMPL_IF Shougou><section class="box" id="shougou">
           <h2>傷号</h2>
           <dl>
-            <TMPL_LOOP Shougou><dt><TMPL_VAR NUM></dt><dd><TMPL_VAR NAME></dd></TMPL_LOOP>
+            <TMPL_LOOP Shougou><dt><TMPL_VAR NUM><dd><TMPL_VAR NAME></TMPL_LOOP>
           </dl>
         </section></TMPL_IF>
 
@@ -368,39 +351,35 @@
             </colgroup>
             <TMPL_LOOP Kizuato><tbody>
               <tr>
-                <td class="name" colspan="6">《<TMPL_VAR NAME>》</td>
-              </tr>
+                <td class="name" colspan="6">《<TMPL_VAR NAME>》
               <tr>
-                <th rowspan="2">ドラマ</th>
-                <th>ヒトガラ</th>
-                <th>タイミング</th>
-                <th>対象</th>
-                <th>制限</th>
-                <th>解説</th>
-              </tr>
+                <th rowspan="2">ドラマ
+                <th>ヒトガラ
+                <th>タイミング
+                <th>対象
+                <th>制限
+                <th>解説
               <tr>
-                <td class="hitogara"><TMPL_VAR D-HITOGARA></td>
-                <td><TMPL_VAR D-TIMING></td>
-                <td><TMPL_VAR D-TARGET></td>
-                <td><TMPL_VAR D-LIMITED></td>
-                <td class="left"><TMPL_VAR D-NOTE></td>
-            </tr>
-            <tr>
-              <th rowspan="2">決戦</th>
-              <th>タイミング</th>
-              <th>対象</th>
-              <th>代償</th>
-              <th>制限</th>
-              <th>解説</th>
-            </tr>
-            <tr>
-              <td><TMPL_VAR B-TIMING></td>
-              <td><TMPL_VAR B-TARGET></td>
-              <td><TMPL_VAR B-COST></td>
-              <td><TMPL_VAR B-LIMITED></td>
-              <td class="left"><TMPL_VAR B-NOTE></td>
-            </tr>
-          </tbody></TMPL_LOOP>
+                <td class="hitogara"><TMPL_VAR D-HITOGARA>
+                <td><TMPL_VAR D-TIMING>
+                <td><TMPL_VAR D-TARGET>
+                <td><TMPL_VAR D-LIMITED>
+                <td class="left"><TMPL_VAR D-NOTE>
+              <tr>
+                <th rowspan="2">決戦
+                <th>タイミング
+                <th>対象
+                <th>代償
+                <th>制限
+                <th>解説
+              <tr>
+                <td><TMPL_VAR B-TIMING>
+                <td><TMPL_VAR B-TARGET>
+                <td><TMPL_VAR B-COST>
+                <td><TMPL_VAR B-LIMITED>
+                <td class="left"><TMPL_VAR B-NOTE>
+              </tr>
+            </TMPL_LOOP>
           </table>
           <TMPL_ELSE>
             <p>なし</p>
@@ -424,14 +403,13 @@
         <table class="data-table line-tbody">
           <thead>
             <tr>
-              <th>No.</th>
-              <th>日付</th>
-              <th>タイトル</th>
-              <th>成長</th>
-              <th>GM</th>
-              <th>参加者</th>
+              <th>No.
+              <th>日付
+              <th>タイトル
+              <th>成長
+              <th>GM
+              <th>参加者
             </tr>
-          </thead>
           <TMPL_LOOP History><tbody>
             <tr>
               <td class="num" <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR NUM></td>
@@ -441,10 +419,8 @@
               <td class="gm"><span><TMPL_VAR GM></span></td>
               <td class="member"><TMPL_VAR MEMBER></td>
             </tr>
-            <TMPL_IF NOTE><tr>
-              <td colspan="3" class="note"><TMPL_VAR NOTE></td>
-            </tr></TMPL_IF>
-          </tbody></TMPL_LOOP>
+            <TMPL_IF NOTE><tr><td colspan="3" class="note"><TMPL_VAR NOTE></TMPL_IF>
+          </TMPL_LOOP>
         </table>
       </section>
       <section class="box chat-palette float-box">

@@ -9,9 +9,9 @@
     <h1><a href="./?type=m"><TMPL_VAR title></a></h1>
     <nav>
       <ul>
-        <TMPL_LOOP Menu><li class="<TMPL_VAR SIZE>"><a <TMPL_VAR TYPE>="<TMPL_VAR VALUE>"><TMPL_VAR TEXT></a></li>
+        <TMPL_LOOP Menu><li class="<TMPL_VAR SIZE>"><a <TMPL_VAR TYPE>="<TMPL_VAR VALUE>"><TMPL_VAR TEXT></a>
         </TMPL_LOOP>
-        <li><a onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード"></a></li>
+        <li><a onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード"></a>
       </ul>
     </nav>
   </header>
@@ -30,7 +30,7 @@
       <aside id="loglist" class="float-box">
         <h2>過去ログ（バックアップ）</h2>
         <ul>
-          <TMPL_LOOP LogList><li class="<TMPL_VAR SELECTED>"><a href="?id=<TMPL_VAR id><TMPL_VAR URL>"><TMPL_VAR DATE></a></li></TMPL_LOOP>
+          <TMPL_LOOP LogList><li class="<TMPL_VAR SELECTED>"><a href="?id=<TMPL_VAR id><TMPL_VAR URL>"><TMPL_VAR DATE></a></TMPL_LOOP>
         </ul>
         <TMPL_IF viewLogNaming><details id="log-naming">
           <summary>閲覧中のログ<TMPL_IF selectedLogName>の名前をつけなおす<TMPL_ELSE>に名前をつける</TMPL_IF></summary>
@@ -40,9 +40,9 @@
             <input type="hidden" name="id" value="<TMPL_VAR id>">
             <input type="hidden" name="date" value="<TMPL_VAR logId>">
             <dl>
-              <dt>名前</dt><dd><input type="text" name="log-name" value="<TMPL_VAR selectedLogName>"></dd>
-              <TMPL_IF reqdPassword><dt>パスワード</dt><dd><input type="password" name="pass"></dd></TMPL_IF>
-              <dd><input type="submit" value="命名"></dd>
+              <dt>名前<dd><input type="text" name="log-name" value="<TMPL_VAR selectedLogName>">
+              <TMPL_IF reqdPassword><dt>パスワード<dd><input type="password" name="pass"></TMPL_IF>
+              <dd><input type="submit" value="命名">
             </dl>
           </form>
         </details></TMPL_IF>
@@ -103,40 +103,40 @@
       <div class="status">
         <TMPL_IF mount>
           <div>
-            <dl><dt>価格</dt><dd><TMPL_VAR price></dd></dl>
-            <dl><dt>適正レベル</dt><dd><TMPL_VAR appLv></dd></dl>
+            <dl><dt>価格<dd><TMPL_VAR price></dl>
+            <dl><dt>適正レベル<dd><TMPL_VAR appLv></dl>
           </div>
           <div>
-            <dl><dt>知能</dt><dd><TMPL_VAR intellect></dd></dl>
-            <dl><dt>知覚</dt><dd><TMPL_VAR perception></dd></dl>
-            <TMPL_IF sin><dl><dt>穢れ</dt><dd><TMPL_VAR sin></dd></dl></TMPL_IF>
-            <dl><dt>言語</dt><dd><TMPL_VAR language></dd></dl>
+            <dl><dt>知能<dd><TMPL_VAR intellect></dl>
+            <dl><dt>知覚<dd><TMPL_VAR perception></dl>
+            <TMPL_IF sin><dl><dt>穢れ<dd><TMPL_VAR sin></dl></TMPL_IF>
+            <dl><dt>言語<dd><TMPL_VAR language></dl>
           </div>
           <div>
-            <dl><dt>弱点</dt><dd><TMPL_VAR weakness></dd></dl>
-            <dl><dt>移動速度</dt><dd><TMPL_VAR mobility></dd></dl>
+            <dl><dt>弱点<dd><TMPL_VAR weakness></dl>
+            <dl><dt>移動速度<dd><TMPL_VAR mobility></dl>
           </div>
         <TMPL_ELSE>
           <div>
-            <dl><dt>知能</dt><dd><TMPL_VAR intellect></dd></dl>
-            <dl><dt>知覚</dt><dd><TMPL_VAR perception></dd></dl>
-            <dl><dt>反応</dt><dd><TMPL_VAR disposition></dd></dl>
-            <TMPL_IF sin><dl><dt>穢れ</dt><dd><TMPL_VAR sin></dd></dl></TMPL_IF>
+            <dl><dt>知能<dd><TMPL_VAR intellect></dl>
+            <dl><dt>知覚<dd><TMPL_VAR perception></dl>
+            <dl><dt>反応<dd><TMPL_VAR disposition></dl>
+            <TMPL_IF sin><dl><dt>穢れ<dd><TMPL_VAR sin></dl></TMPL_IF>
           </div>
           <div>
-            <dl><dt>言語</dt><dd><TMPL_VAR language></dd></dl>
-            <dl><dt>生息地</dt><dd><TMPL_VAR habitat></dd></dl>
+            <dl><dt>言語<dd><TMPL_VAR language></dl>
+            <dl><dt>生息地<dd><TMPL_VAR habitat></dl>
           </div>
           <div>
-            <dl><dt>知名度／弱点値</dt><dd><TMPL_VAR reputation>／<TMPL_VAR reputation+></dd></dl>
-            <dl><dt>弱点</dt><dd><TMPL_VAR weakness></dd></dl>
+            <dl><dt>知名度／弱点値<dd><TMPL_VAR reputation>／<TMPL_VAR reputation+></dl>
+            <dl><dt>弱点<dd><TMPL_VAR weakness></dl>
           </div>
           <div>
-            <dl><dt>先制値</dt><dd><TMPL_VAR initiative></dd></dl>
-            <dl><dt>移動速度</dt><dd><TMPL_VAR mobility></dd></dl>
+            <dl><dt>先制値<dd><TMPL_VAR initiative></dl>
+            <dl><dt>移動速度<dd><TMPL_VAR mobility></dl>
             <div>
-              <TMPL_IF vitResist><dl><dt>生命抵抗力</dt><dd><TMPL_VAR vitResist></dd></dl></TMPL_IF>
-              <TMPL_IF mndResist><dl><dt>精神抵抗力</dt><dd><TMPL_VAR mndResist></dd></dl></TMPL_IF>
+              <TMPL_IF vitResist><dl><dt>生命抵抗力<dd><TMPL_VAR vitResist></dl></TMPL_IF>
+              <TMPL_IF mndResist><dl><dt>精神抵抗力<dd><TMPL_VAR mndResist></dl></TMPL_IF>
             </div>
           </div>
         </TMPL_IF>
@@ -144,37 +144,37 @@
       <table class="status">
         <thead>
           <tr>
-            <TMPL_IF mount><th class="lv">Lv</th></TMPL_IF>
-            <th class="name">攻撃方法（部位）</th>
-            <th class="acc">命中力</th>
-            <th class="atk">打撃点</th>
-            <th class="eva">回避力</th>
-            <th class="def">防護点</th>
-            <th class="hp">ＨＰ</th>
-            <th class="mp">ＭＰ</th>
-            <TMPL_IF mount><th class="vit">生命抵抗</th></TMPL_IF>
-            <TMPL_IF mount><th class="mnd">精神抵抗</th></TMPL_IF>
-          </tr>
+            <TMPL_IF mount><th class="lv">Lv</TMPL_IF>
+            <th class="name">攻撃方法（部位）
+            <th class="acc">命中力
+            <th class="atk">打撃点
+            <th class="eva">回避力
+            <th class="def">防護点
+            <th class="hp">ＨＰ
+            <th class="mp">ＭＰ
+            <TMPL_IF mount><th class="vit">生命抵抗</TMPL_IF>
+            <TMPL_IF mount><th class="mnd">精神抵抗</TMPL_IF>
+          
         </thead>
         <TMPL_LOOP Status><tbody>
           <TMPL_LOOP ROW><tr>
-            <TMPL_IF mount><td class="lv"><TMPL_VAR LV></td></TMPL_IF>
-            <td class="name"><TMPL_VAR STYLE></td>
-            <td class="acc"><TMPL_VAR ACCURACY></td>
-            <td class="atk"><TMPL_VAR DAMAGE></td>
-            <td class="eva"><TMPL_VAR EVASION></td>
-            <td class="def"><TMPL_VAR DEFENSE></td>
-            <td class="hp"><TMPL_VAR HP></td>
-            <td class="mp"><TMPL_VAR MP></td>
-            <TMPL_IF mount><td class="vit"><TMPL_VAR VIT></td></TMPL_IF>
-            <TMPL_IF mount><td class="mnd"><TMPL_VAR MND></td></TMPL_IF>
-          </tr></TMPL_LOOP>
+            <TMPL_IF mount><td class="lv"><TMPL_VAR LV></TMPL_IF>
+            <td class="name"><TMPL_VAR STYLE>
+            <td class="acc"><TMPL_VAR ACCURACY>
+            <td class="atk"><TMPL_VAR DAMAGE>
+            <td class="eva"><TMPL_VAR EVASION>
+            <td class="def"><TMPL_VAR DEFENSE>
+            <td class="hp"><TMPL_VAR HP>
+            <td class="mp"><TMPL_VAR MP>
+            <TMPL_IF mount><td class="vit"><TMPL_VAR VIT></TMPL_IF>
+            <TMPL_IF mount><td class="mnd"><TMPL_VAR MND></TMPL_IF>
+          </TMPL_LOOP>
         </tbody></TMPL_LOOP>
       </table>
       <TMPL_IF partsOn>
       <div class="parts">
-        <dl><dt>部位数</dt><dd><TMPL_VAR partsNum>（<TMPL_VAR parts>）</dd></dl>
-        <dl><dt>コア部位</dt><dd><TMPL_VAR coreParts></dd></dl>
+        <dl><dt>部位数<dd><TMPL_VAR partsNum>（<TMPL_VAR parts>）</dl>
+        <dl><dt>コア部位<dd><TMPL_VAR coreParts></dl>
       </div>
       </TMPL_IF>
       <section class="box skills">
@@ -185,7 +185,7 @@
       <section class="loots">
         <h2>戦利品</h2>
         <dl>
-          <TMPL_LOOP Loots><dt><TMPL_VAR NUM></dt><dd><TMPL_VAR ITEM></dd></TMPL_LOOP>
+          <TMPL_LOOP Loots><dt><TMPL_VAR NUM><dd><TMPL_VAR ITEM></TMPL_LOOP>
         </dl>
       </section>
       </TMPL_IF>

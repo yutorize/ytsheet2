@@ -97,7 +97,7 @@ elsif (
   && !($mode eq 'mylist')
   && !$::in{'tag'}
 ){
-  @list = grep { $_ !~ /^(?:[^<]*?<>){17}[^<0]/ } @list;
+  @list = grep { $_ !~ /^(?:[^<]*?<>){9}[^<0]/ } @list;
 }
 
 ## グループ検索
@@ -114,7 +114,7 @@ $INDEX->param(group => $groups{$group_query}{'name'});
 
 ## タグ検索
 my $tag_query = pcTagsEscape(decode('utf8', $::in{'tag'}));
-if($tag_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){16}[^<]*? \Q$tag_query\E / } @list; }
+if($tag_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){8}[^<]*? \Q$tag_query\E / } @list; }
 $INDEX->param(tag => $tag_query);
 
 ## 名前検索
@@ -177,11 +177,11 @@ $INDEX->param(faith => $faith_query);
 my $rank_query = decode('utf8', $::in{'rank'});
 my %rank_sort;
 my @rank_list;
-foreach (@set::adventurer_rank){
-  $rank_sort{@$_[0]} = @$_[1];
+foreach (0 .. $#set::adventurer_rank){
+  $rank_sort{$set::adventurer_rank[$_][0]} = $_;
   push(@rank_list, {
-    "NAME" => @$_[0],
-    "SELECTED" => $rank_query eq @$_[0] ? 'selected' : '',
+    "NAME" => $set::adventurer_rank[$_][0],
+    "SELECTED" => $rank_query eq $set::adventurer_rank[$_][0] ? 'selected' : '',
   });
 }
 $rank_sort{''} = -1;

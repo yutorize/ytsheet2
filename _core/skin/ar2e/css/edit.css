@@ -112,6 +112,14 @@ dd.area-tags {
 #lifepath td:nth-child(2) {
   width: 6em;
 }
+#lifepath tr:last-child td {
+  border-bottom: hidden;
+}
+#lifepath-earthian {
+  border-top-width: 1px;
+  border-top-style: dotted;
+  padding: .2em .5em;
+}
 
 #classes {
   grid-template-columns: 1fr 1fr 1fr;
@@ -745,27 +753,29 @@ dd.area-tags {
   padding-left: .5em;
 }
 
-#history table thead th:nth-child(1) { width: 1.4em; }
-#history table thead th:nth-child(2) { width:   6em; } /* 日付 */
-#history table thead th:nth-child(3) { width:  12em; } /* タイトル */
-#history table thead th:nth-child(4) { width:   5em; } /* 経験点 */
-#history table thead th:nth-child(5) { width:   5em; } /* 経験点 */
-#history table thead th:nth-child(6) { width:   5em; } /* ゴールド */
-#history table thead th:nth-child(7) { width:   6em; } /* ＧＭ */
-#history table thead th:nth-child(8) { width:  auto; } /* 参加者 */
+#history table thead th:first-child{ width: 1.4em; }
+#history table thead th.date       { width:   6em; }
+#history table thead th.title      { width:  12em; }
+#history table thead th.exp        { width:   5em; }
+#history table thead th.pay        { width:   5em; }
+#history table thead th.money      { width:   5em; }
+#history table thead th.gm         { width:   6em; }
+#history table thead th.member     { width:  auto; }
 
 @media screen and (max-width:735px){
   #history table  { table-layout: fixed; }
-  #history table thead th:nth-child(3) { width: 12em; } /* タイトル */
-  #history table thead th:nth-child(8) { width: 16em; } /* 参加者 */
+  #history table thead th.title  { width: 12em; }
+  #history table thead th.member { width: 16em; }
 }
 
-#history table tbody td:nth-child(5)::after {
-  margin: 0 2px 0 -1px;
+#history table tbody td.money {
+  white-space: nowrap;
+}
+#history table tbody td.money::after {
+  margin: 0 2px 0 -3px !important;
   font-size: 1.1rem;
 }
-#history table tbody td:nth-child(5) input,
-#history table tbody td:nth-child(6) input {
+#history table tbody td:is(.money,.pay) input {
   width: calc(100% - 0.9em);
 }
 

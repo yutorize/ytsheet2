@@ -9,9 +9,9 @@
     <h1><a href="./"><TMPL_VAR title></a></h1>
     <nav>
       <ul>
-        <TMPL_LOOP Menu><li class="<TMPL_VAR SIZE>"><a <TMPL_VAR TYPE>="<TMPL_VAR VALUE>"><TMPL_VAR TEXT></a></li>
+        <TMPL_LOOP Menu><li class="<TMPL_VAR SIZE>"><a <TMPL_VAR TYPE>="<TMPL_VAR VALUE>"><TMPL_VAR TEXT></a>
         </TMPL_LOOP>
-        <li><a onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード"></a></li>
+        <li><a onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード"></a>
       </ul>
     </nav>
   </header>
@@ -30,7 +30,7 @@
       <aside id="loglist" class="float-box">
         <h2>過去ログ（バックアップ）</h2>
         <ul>
-          <TMPL_LOOP LogList><li class="<TMPL_VAR SELECTED>"><a href="?id=<TMPL_VAR id><TMPL_VAR URL>"><TMPL_VAR DATE></a></li></TMPL_LOOP>
+          <TMPL_LOOP LogList><li class="<TMPL_VAR SELECTED>"><a href="?id=<TMPL_VAR id><TMPL_VAR URL>"><TMPL_VAR DATE></a></TMPL_LOOP>
         </ul>
         <TMPL_IF viewLogNaming><details id="log-naming">
           <summary>閲覧中のログ<TMPL_IF selectedLogName>の名前をつけなおす<TMPL_ELSE>に名前をつける</TMPL_IF></summary>
@@ -39,9 +39,9 @@
             <input type="hidden" name="id" value="<TMPL_VAR id>">
             <input type="hidden" name="date" value="<TMPL_VAR logId>">
             <dl>
-              <dt>名前</dt><dd><input type="text" name="log-name" value="<TMPL_VAR selectedLogName>"></dd>
-              <TMPL_IF reqdPassword><dt>パスワード</dt><dd><input type="password" name="pass"></dd></TMPL_IF>
-              <dd><input type="submit" value="命名"></dd>
+              <dt>名前<dd><input type="text" name="log-name" value="<TMPL_VAR selectedLogName>">
+              <TMPL_IF reqdPassword><dt>パスワード<dd><input type="password" name="pass"></TMPL_IF>
+              <dd><input type="submit" value="命名">
             </dl>
           </form>
         </details></TMPL_IF>
@@ -112,51 +112,50 @@
         
         <div id="levels">
           <dl class="box" id="result-points">
-            <dt>戦果点</dt>
-            <dd><TMPL_VAR resultPoint></dd>
+            <dt>戦果点
+            <dd><TMPL_VAR resultPoint>
           </dl>
           <dl class="box" id="level">
-            <dt>レベル</dt>
-            <dd><TMPL_VAR level></dd>
+            <dt>レベル
+            <dd><TMPL_VAR level>
           </dl>
         </div>
 
         <div id="personal">
           <div class="box-union">
             <dl class="box" id="race">
-              <dt>種族</dt>
-              <dd><TMPL_VAR race></dd>
+              <dt>種族
+              <dd><TMPL_VAR race DEFAULT="――">
             </dl>
             <dl class="box" id="class">
-              <dt>クラス</dt>
-              <dd><TMPL_VAR class></dd>
+              <dt>クラス
+              <dd><TMPL_VAR class DEFAULT="――">
             </dl>
           </div>
 
           <dl class="box" id="style">
-            <dt>スタイル</dt>
+            <dt>スタイル
             <dd>
               <span><TMPL_VAR style1></span>
               <span><TMPL_VAR style2></span>
-            </dd>
           </dl>
         </div>
         
         <section class="box" id="appearance">
           <h2>キャラクター外見</h2>
           <dl>
-            <dt>性別</dt>
-            <dd><TMPL_VAR gender></dd>
-            <dt>年齢</dt>
-            <dd><TMPL_VAR age></dd>
-            <dt>瞳の色</dt>
-            <dd><TMPL_VAR eye></dd>
-            <dt>肌の色</dt>
-            <dd><TMPL_VAR skin></dd>
-            <dt>髪の色</dt>
-            <dd><TMPL_VAR hair></dd>
-            <dt>身長</dt>
-            <dd><TMPL_VAR height></dd>
+            <dt>性別
+            <dd><TMPL_VAR gender>
+            <dt>年齢
+            <dd><TMPL_VAR age>
+            <dt>瞳の色
+            <dd><TMPL_VAR eye>
+            <dt>肌の色
+            <dd><TMPL_VAR skin>
+            <dt>髪の色
+            <dd><TMPL_VAR hair>
+            <dt>身長
+            <dd><TMPL_VAR height>
           </dl>
         </section>
 
@@ -164,26 +163,26 @@
           <section class="box" id="user-status">
             <h2>能力値</h2>
             <dl>
-              <dt>バイタリティ</dt>
-              <dd><TMPL_VAR vitality></dd>
-              <dt>テクニック</dt>
-              <dd><TMPL_VAR technic></dd>
-              <dt>クレバー</dt>
-              <dd><TMPL_VAR clever></dd>
-              <dt>カリスマ</dt>
-              <dd><TMPL_VAR carisma></dd>
+              <dt>バイタリティ
+              <dd><TMPL_VAR vitality>
+              <dt>テクニック
+              <dd><TMPL_VAR technic>
+              <dt>クレバー
+              <dd><TMPL_VAR clever>
+              <dt>カリスマ
+              <dd><TMPL_VAR carisma>
             </dl>
           </section>
           <div class="box-union" id="hp-and-stamina">
             <dl class="box" id="hp">
-              <dt>HP</dt>
+              <dt>HP
               <dd>
                 <TMPL_IF hpAdd>+<TMPL_VAR hpAdd>=</TMPL_IF>
                 <b id="hp-value"><TMPL_VAR hpMax></b>
               </dd>
             </dl>
             <dl class="box" id="stamina">
-              <dt>スタミナ<small>(半分)</small></dt>
+              <dt>スタミナ<small>(半分)</small>
               <dd>
                 <TMPL_IF staminaAdd>+<TMPL_VAR staminaAdd>=</TMPL_IF>
                 <b id="stamina-value"><TMPL_VAR staminaMax></b>
@@ -197,16 +196,15 @@
           <h2>特技</h2>
           <table class="data-table">
             <thead>
-              <tr><th>名称</th><th class="left">効果</th></tr>
+              <tr><th>名称<th class="left">効果
             </thead>
             <tbody>
               <tr id="skill1">
-                <td><TMPL_VAR speciality1Name></td>
-                <td><TMPL_VAR speciality1Note></td>
-              </tr>
+                <td><TMPL_VAR speciality1Name>
+                <td><TMPL_VAR speciality1Note>
               <tr id="skill2">
-                <td><TMPL_VAR speciality2Name></td>
-                <td><TMPL_VAR speciality2Note></td>
+                <td><TMPL_VAR speciality2Name>
+                <td><TMPL_VAR speciality2Note>
               </tr>
             </tbody>
           </table>
@@ -216,14 +214,14 @@
           <h2>グッズ</h2>
           <table class="data-table">
             <thead>
-              <tr><th>名称</th><th>種別</th><th class="left">効果</th></tr>
+              <tr><th>名称<th>種別<th class="left">効果
             </thead>
             <tbody>
               <TMPL_LOOP Goods><tr>
-                <td><TMPL_VAR NAME></td>
-                <td><TMPL_VAR TYPE></td>
-                <td><TMPL_VAR NOTE></td>
-              </tr></TMPL_LOOP>
+                <td><TMPL_VAR NAME>
+                <td><TMPL_VAR TYPE>
+                <td><TMPL_VAR NOTE>
+              </TMPL_LOOP>
             </tbody>
           </table>
         </section>
@@ -249,98 +247,92 @@
           </colgroup>
           <thead>
             <tr>
-              <th colspan="2"></th>
-              <th>命中値</th>
-              <th>詠唱値</th>
-              <th>回避値</th>
-              <th>攻撃値</th>
-              <th>意志値</th>
-              <th>物防値</th>
-              <th>魔防値</th>
-              <th>行動値</th>
-              <th>耐久値</th>
-              <th></th>
-              <th></th>
+              <th colspan="2">
+              <th>命中値
+              <th>詠唱値
+              <th>回避値
+              <th>攻撃値
+              <th>意志値
+              <th>物防値
+              <th>魔防値
+              <th>行動値
+              <th>耐久値
+              <th>
+              <th>
             </tr>
-          </thead>
           <tbody>
-              <tr>
-                <th colspan="2" class="right">基本戦闘値</th>
-                <td><TMPL_VAR battleBaseAcc></td>
-                <td><TMPL_VAR battleBaseSpl></td>
-                <td><TMPL_VAR battleBaseEva></td>
-                <td><TMPL_VAR battleBaseAtk></td>
-                <td><TMPL_VAR battleBaseDet></td>
-                <td><TMPL_VAR battleBaseDef></td>
-                <td><TMPL_VAR battleBaseMdf></td>
-                <td><TMPL_VAR battleBaseIni></td>
-                <td><TMPL_VAR battleBaseStr></td>
-              </tr>
-              <tr>
-                <th>種族特性</th>
-                <td><TMPL_VAR battleRaceName></td>
-                <td><TMPL_VAR battleRaceAcc></td>
-                <td><TMPL_VAR battleRaceSpl></td>
-                <td><TMPL_VAR battleRaceEva></td>
-                <td><TMPL_VAR battleRaceAtk></td>
-                <td><TMPL_VAR battleRaceDet></td>
-                <td><TMPL_VAR battleRaceDef></td>
-                <td><TMPL_VAR battleRaceMdf></td>
-                <td><TMPL_VAR battleRaceIni></td>
-                <td><TMPL_VAR battleRaceStr></td>
-              </tr>
+            <tr>
+              <th colspan="2" class="right">基本戦闘値
+              <td><TMPL_VAR battleBaseAcc>
+              <td><TMPL_VAR battleBaseSpl>
+              <td><TMPL_VAR battleBaseEva>
+              <td><TMPL_VAR battleBaseAtk>
+              <td><TMPL_VAR battleBaseDet>
+              <td><TMPL_VAR battleBaseDef>
+              <td><TMPL_VAR battleBaseMdf>
+              <td><TMPL_VAR battleBaseIni>
+              <td><TMPL_VAR battleBaseStr>
+            <tr>
+              <th>種族特性
+              <td><TMPL_VAR battleRaceName></td>
+              <td><TMPL_VAR battleRaceAcc>
+              <td><TMPL_VAR battleRaceSpl>
+              <td><TMPL_VAR battleRaceEva>
+              <td><TMPL_VAR battleRaceAtk>
+              <td><TMPL_VAR battleRaceDet>
+              <td><TMPL_VAR battleRaceDef>
+              <td><TMPL_VAR battleRaceMdf>
+              <td><TMPL_VAR battleRaceIni>
+              <td><TMPL_VAR battleRaceStr>
             <tr class="subtotal">
-              <th colspan="2" class="right">小計</th>
-              <td><TMPL_VAR battleSubtotalAcc></td>
-              <td><TMPL_VAR battleSubtotalSpl></td>
-              <td><TMPL_VAR battleSubtotalEva></td>
-              <td><TMPL_VAR battleSubtotalAtk></td>
-              <td><TMPL_VAR battleSubtotalDet></td>
-              <td><TMPL_VAR battleSubtotalDef></td>
-              <td><TMPL_VAR battleSubtotalMdf></td>
-              <td><TMPL_VAR battleSubtotalIni></td>
-              <td><TMPL_VAR battleSubtotalStr></td>
-            </tr>
+              <th colspan="2" class="right">小計
+              <td><TMPL_VAR battleSubtotalAcc>
+              <td><TMPL_VAR battleSubtotalSpl>
+              <td><TMPL_VAR battleSubtotalEva>
+              <td><TMPL_VAR battleSubtotalAtk>
+              <td><TMPL_VAR battleSubtotalDet>
+              <td><TMPL_VAR battleSubtotalDef>
+              <td><TMPL_VAR battleSubtotalMdf>
+              <td><TMPL_VAR battleSubtotalIni>
+              <td><TMPL_VAR battleSubtotalStr>
             <TMPL_LOOP Armaments><tr>
-              <th><TMPL_VAR HEAD></th>
+              <th><TMPL_VAR HEAD>
               <td><TMPL_VAR NAME></td>
-              <td><TMPL_VAR ACC></td>
-              <td><TMPL_VAR SPL></td>
-              <td><TMPL_VAR EVA></td>
-              <td><TMPL_VAR ATK></td>
-              <td><TMPL_VAR DET></td>
-              <td><TMPL_VAR DEF></td>
-              <td><TMPL_VAR MDF></td>
-              <td><TMPL_VAR INI></td>
-              <td><TMPL_VAR STR></td>
-            </tr></TMPL_LOOP>
+              <td><TMPL_VAR ACC>
+              <td><TMPL_VAR SPL>
+              <td><TMPL_VAR EVA>
+              <td><TMPL_VAR ATK>
+              <td><TMPL_VAR DET>
+              <td><TMPL_VAR DEF>
+              <td><TMPL_VAR MDF>
+              <td><TMPL_VAR INI>
+              <td><TMPL_VAR STR>
+            </TMPL_LOOP>
             <tr>
-              <th colspan="2" class="right">その他修正</th>
-              <td><TMPL_VAR battleOtherAcc></td>
-              <td><TMPL_VAR battleOtherSpl></td>
-              <td><TMPL_VAR battleOtherEva></td>
-              <td><TMPL_VAR battleOtherAtk></td>
-              <td><TMPL_VAR battleOtherDet></td>
-              <td><TMPL_VAR battleOtherDef></td>
-              <td><TMPL_VAR battleOtherMdf></td>
-              <td><TMPL_VAR battleOtherIni></td>
-              <td><TMPL_VAR battleOtherStr></td>
-            </tr>
+              <th colspan="2" class="right">その他修正
+              <td><TMPL_VAR battleOtherAcc>
+              <td><TMPL_VAR battleOtherSpl>
+              <td><TMPL_VAR battleOtherEva>
+              <td><TMPL_VAR battleOtherAtk>
+              <td><TMPL_VAR battleOtherDet>
+              <td><TMPL_VAR battleOtherDef>
+              <td><TMPL_VAR battleOtherMdf>
+              <td><TMPL_VAR battleOtherIni>
+              <td><TMPL_VAR battleOtherStr>
             <tr>
-              <th colspan="2" class="right">キャラクターレベル</th>
-              <td colspan="9" id="battle-level-value">+<TMPL_VAR level></td>
-            </tr>
+              <th colspan="2" class="right">キャラクターレベル
+              <td colspan="9" id="battle-level-value">+<TMPL_VAR level>
             <tr class="total">
-              <th colspan="2" class="right">合計</th>
-              <td id="battle-total-acc"><TMPL_VAR battleTotalAcc></td>
-              <td id="battle-total-spl"><TMPL_VAR battleTotalSpl></td>
-              <td id="battle-total-eva"><TMPL_VAR battleTotalEva></td>
-              <td id="battle-total-atk"><TMPL_VAR battleTotalAtk></td>
-              <td id="battle-total-det"><TMPL_VAR battleTotalDet></td>
-              <td id="battle-total-def"><TMPL_VAR battleTotalDef></td>
-              <td id="battle-total-mdf"><TMPL_VAR battleTotalMdf></td>
-              <td id="battle-total-ini"><TMPL_VAR battleTotalIni></td>
-              <td id="battle-total-str"><TMPL_VAR battleTotalStr></td>
+              <th colspan="2" class="right">合計
+              <td id="battle-total-acc"><TMPL_VAR battleTotalAcc>
+              <td id="battle-total-spl"><TMPL_VAR battleTotalSpl>
+              <td id="battle-total-eva"><TMPL_VAR battleTotalEva>
+              <td id="battle-total-atk"><TMPL_VAR battleTotalAtk>
+              <td id="battle-total-det"><TMPL_VAR battleTotalDet>
+              <td id="battle-total-def"><TMPL_VAR battleTotalDef>
+              <td id="battle-total-mdf"><TMPL_VAR battleTotalMdf>
+              <td id="battle-total-ini"><TMPL_VAR battleTotalIni>
+              <td id="battle-total-str"><TMPL_VAR battleTotalStr>
             </tr>
           </tbody>
         </table>
@@ -350,15 +342,15 @@
         <h2>アイテム</h2>
         <table class="data-table">
           <thead>
-            <tr><th>名称</th><th>種別</th><th>レベル</th><th class="left">効果</th></tr>
+            <tr><th>名称<th>種別<th>レベル<th class="left">効果
           </thead>
           <tbody>
             <TMPL_LOOP Items><tr>
-              <td><TMPL_VAR NAME></td>
-              <td><TMPL_VAR TYPE></td>
-              <td><TMPL_VAR LV></td>
-              <td><TMPL_VAR NOTE></td>
-            </tr></TMPL_LOOP>
+              <td><TMPL_VAR NAME>
+              <td><TMPL_VAR TYPE>
+              <td><TMPL_VAR LV>
+              <td><TMPL_VAR NOTE>
+            </TMPL_LOOP>
           </tbody>
         </table>
       </section>
@@ -379,34 +371,32 @@
         <table class="data-table line-tbody">
           <thead>
             <tr>
-              <th>No.</th>
-              <th>日付</th>
-              <th>タイトル</th>
-              <th>戦果点</th>
-              <th>GM</th>
-              <th>参加者</th>
+              <th class="num   ">No.
+              <th class="date  ">日付
+              <th class="title ">タイトル
+              <th class="result">戦果点
+              <th class="gm    ">GM
+              <th class="member">参加者
             </tr>
           </thead>
           <TMPL_LOOP History><tbody>
             <tr>
-              <td class="num" <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR NUM></td>
-              <td class="date" <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR DATE></td>
-              <td class="title" <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR TITLE></td>
-              <td><TMPL_VAR RESULT></td>
-              <td class="gm"><span><TMPL_VAR GM></span></td>
+              <td class="num   " <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR NUM></td>
+              <td class="date  " <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR DATE></td>
+              <td class="title " <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR TITLE></td>
+              <td class="result"><TMPL_VAR RESULT></td>
+              <td class="gm    "><span><TMPL_VAR GM></span></td>
               <td class="member"><TMPL_VAR MEMBER></td>
             </tr>
-          <TMPL_IF NOTE><tr>
-            <td colspan="6" class="note"><TMPL_VAR NOTE></td>
-          </tr></TMPL_IF>
-          </tbody></TMPL_LOOP>
+            <TMPL_IF NOTE><tr><td colspan="6" class="note"><TMPL_VAR NOTE></TMPL_IF>
+          </TMPL_LOOP>
           <tfoot>
             <tr>
-              <td></td>
-              <td></td>
-              <td>取得総計</td>
-              <td><TMPL_VAR historyResultTotal></td>
-              <td colspan="2"></td>
+              <td>
+              <td>
+              <td>取得総計
+              <td><TMPL_VAR historyResultTotal>
+              <td colspan="2">
             </tr>
           </tfoot>
         </table>

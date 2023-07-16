@@ -204,9 +204,10 @@ $SHEET->param(wordsY => ($pc{'wordsY'} eq '下' ? 'bottom:0;' : 'top:0;'));
 
 ### 種族名 --------------------------------------------------
 $pc{'race'} =~ s/［.*］//g;
-$pc{'race'} =~ s|（.+?）|<span class="variant">$&</span>|g;
-$SHEET->param(race => $pc{'race'});
-
+{
+  (my $race = $pc{'race'}) =~ s|（.+?）|<span class="variant">$&</span>|g;
+  $SHEET->param(race => $race);
+}
 ### 種族特徴 --------------------------------------------------
 $pc{'raceAbility'} =~ s/［(.*?)］/<span>［$1］<\/span>/g;
 $SHEET->param(raceAbility => $pc{'raceAbility'});
@@ -741,23 +742,27 @@ if($pc{'forbiddenMode'}){
 }
 else {
   my @armours;
-  my @list = (
-    ['鎧','armour1'],
-    ['盾','shield1'],
-    ['他1','defOther1'],
-    ['他2','defOther2'],
-    ['他3','defOther3'],
-  );
-  foreach (@list){
-    next if $pc{@$_[1].'Name'} eq '' && !$pc{@$_[1].'Eva'} && !$pc{@$_[1].'Def'};
+  my %count;
+  foreach (1 .. $pc{armourNum}){
+    my $cate = $pc{'armour'.$_.'Category'};
+    if($_ == 1 && !$cate){ $cate = '鎧' }
+    if   ($cate =~ /鎧/){ $count{'鎧'}++; $pc{'armour'.$_.'Type'} = "鎧$count{'鎧'}" }
+    elsif($cate =~ /盾/){ $count{'盾'}++; $pc{'armour'.$_.'Type'} = "盾$count{'盾'}" }
+    elsif($cate =~ /他/){ $count{'他'}++; $pc{'armour'.$_.'Type'} = "他$count{'他'}" }
+  }
+  foreach (1 .. $pc{armourNum}){
+    next if $pc{'armour'.$_.'Name'} eq '' && !$pc{'armour'.$_.'Eva'} && !$pc{'armour'.$_.'Def'} && !$pc{'armour'.$_.'Own'};
+
+    if($pc{'armour'.$_.'Type'} =~ /^(鎧|盾|他)[0-9]+/ && $count{$1} <= 1){ $pc{'armour'.$_.'Type'} = $1 }
+
     push(@armours, {
-      "TH"   => @$_[0],
-      "NAME" => $pc{@$_[1].'Name'},
-      "REQD" => $pc{@$_[1].'Reqd'},
-      "EVA"  => $pc{@$_[1].'Eva'},
-      "DEF"  => $pc{@$_[1].'Def'},
-      "OWN"  => $pc{@$_[1].'Own'},
-      "NOTE" => $pc{@$_[1].'Note'},
+      "TYPE" => $pc{'armour'.$_.'Type'},
+      "NAME" => $pc{'armour'.$_.'Name'},
+      "REQD" => $pc{'armour'.$_.'Reqd'},
+      "EVA"  => $pc{'armour'.$_.'Eva'},
+      "DEF"  => $pc{'armour'.$_.'Def'},
+      "OWN"  => $pc{'armour'.$_.'Own'},
+      "NOTE" => $pc{'armour'.$_.'Note'},
     } );
   }
   $SHEET->param(Armours => \@armours);
@@ -765,14 +770,20 @@ else {
   my @total;
   foreach my $i (1..3){
     my @ths;
-    foreach (@list){
-      if($pc{"defTotal${i}Check".ucfirst(@$_[1])} && ($pc{@$_[1].'Name'} || $pc{@$_[1].'Eva'} || $pc{@$_[1].'Def'})){
-        push(@ths, @$_[0]);
+    foreach (1 .. $pc{armourNum}){
+      my $cate = $pc{'armour'.$_.'Category'};
+      if ($pc{"defTotal${i}CheckArmour$_"} && (
+           $pc{'armour'.$_.'Name'}
+        || $pc{'armour'.$_.'Eva'}
+        || $pc{'armour'.$_.'Def'}
+        || $pc{'armour'.$_.'Own'}
+      )){
+        push(@ths, $pc{'armour'.$_.'Type'});
       }
     }
-    next if !@ths;
+    next if !@ths && !$pc{"defenseTotal${i}Note"};
     push(@total, {
-      "TH"   => (@ths == @armours ? 'すべて' : join('＋', @ths)),
+      "TH"   => (@ths == @armours ? 'すべて' : join('＋', @ths)) || 'なし',
       "EVA"  => $pc{"defenseTotal${i}Eva"},
       "DEF"  => $pc{"defenseTotal${i}Def"},
       "NOTE" => $pc{"defenseTotal${i}Note"},

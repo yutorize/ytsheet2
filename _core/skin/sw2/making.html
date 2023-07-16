@@ -6,21 +6,19 @@
     <input type="hidden" name="mode" value="making">
     <input type="hidden" name="make" value="1">
     <dl>
-    <dt>名前    </dt><dd><input type="text" name="name" value="<TMPL_VAR name>" required></dd>
-    <dt>コメント</dt><dd><input type="text" name="comment"></dd>
-    <dt>生まれ</dt><dd>
+    <dt>名前    <dd><input type="text" name="name" value="<TMPL_VAR name>" required>
+    <dt>コメント<dd><input type="text" name="comment">
+    <dt>生まれ<dd>
       技：<input type="number" name="tec">
       体：<input type="number" name="phy">
       心：<input type="number" name="spi"><br>
       <small>※「人間（冒険者）」の場合は無視されます。</small>
-    </dd>
-    <dt>種族</dt><dd>
+    <dt>種族<dd>
       <select name="race" required>
         <option disabled selected></option>
         <TMPL_LOOP MakeList><option value="<TMPL_VAR NAME>"><TMPL_VAR NAME></option></TMPL_LOOP>
       </select>
-    </dd>
-    <dt>振る回数</dt><dd><input type="number" name="repeat" min="1" max="10" value="3"></dd>
+    <dt>振る回数<dd><input type="number" name="repeat" min="1" max="10" value="3">
     </dl>
     <p>
       <input type="submit" value="作成">
@@ -41,30 +39,25 @@
           <a href="./?mode=making&num=<TMPL_VAR NUM>-<TMPL_VAR TRIAL>">[<TMPL_VAR TRIAL>]</a>
           <TMPL_VAR RACE>
           <a class="to-blanksheet" href="./?mode=blanksheet&race=<TMPL_VAR URLRACE>&stt=<TMPL_VAR URLSTT>&making_num=<TMPL_VAR NUM>-<TMPL_VAR TRIAL>">⇒この能力値で新規作成</a>
-        </th>
-      </tr>
       <tr>
-        <td colspan="2">技:<TMPL_VAR TEC></td>
-        <td colspan="2">体:<TMPL_VAR PHY></td>
-        <td colspan="2">心:<TMPL_VAR SPI></td>
-      </tr>
+        <td colspan="2">技:<TMPL_VAR TEC>
+        <td colspan="2">体:<TMPL_VAR PHY>
+        <td colspan="2">心:<TMPL_VAR SPI>
       <tr>
-        <td>A:<TMPL_VAR A></td>
-        <td>B:<TMPL_VAR B></td>
-        <td>C:<TMPL_VAR C></td>
-        <td>D:<TMPL_VAR D></td>
-        <td>E:<TMPL_VAR E></td>
-        <td>F:<TMPL_VAR F></td>
-      </tr>
+        <td>A:<TMPL_VAR A>
+        <td>B:<TMPL_VAR B>
+        <td>C:<TMPL_VAR C>
+        <td>D:<TMPL_VAR D>
+        <td>E:<TMPL_VAR E>
+        <td>F:<TMPL_VAR F>
       <tr>
-        <td>器用:<TMPL_VAR DEX></td>
-        <td>敏捷:<TMPL_VAR AGI></td>
-        <td>筋力:<TMPL_VAR STR></td>
-        <td>生命:<TMPL_VAR VIT></td>
-        <td>知力:<TMPL_VAR INT></td>
-        <td>精神:<TMPL_VAR MND></td>
-      </tr>
-      <tr><td colspan="6">ダイス平均:<TMPL_VAR AVERAGE> ／ 能力値合計:<TMPL_VAR TOTAL></td></tr>
+        <td>器用:<TMPL_VAR DEX>
+        <td>敏捷:<TMPL_VAR AGI>
+        <td>筋力:<TMPL_VAR STR>
+        <td>生命:<TMPL_VAR VIT>
+        <td>知力:<TMPL_VAR INT>
+        <td>精神:<TMPL_VAR MND>
+      <tr><td colspan="6">ダイス平均:<TMPL_VAR AVERAGE> ／ 能力値合計:<TMPL_VAR TOTAL>
     </table>
     </TMPL_LOOP>
     <time><TMPL_VAR DATE></time>

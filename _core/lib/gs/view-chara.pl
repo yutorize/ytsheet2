@@ -288,6 +288,23 @@ sub spellNameRubyCheck {
   return $name;
 }
 
+### 呪文 --------------------------------------------------
+if(!$pc{'forbiddenMode'}){
+  my @data;
+  foreach my $name (grep { $data::class{$_}{type} =~ /spell/ } @data::class_names){
+    my $id = $data::class{$name}{id};
+    next if !$pc{'lv'.$id};
+    push(@data, {
+      BASE  => abilityToName($data::class{$name}{cast}),
+      VALUE => $pc{'ability'.$data::class{$name}{cast}},
+      CLASS => $name,
+      LEVEL => $pc{'lv'.$id},
+      TOTAL => $pc{'spellCast'.$id},
+    } );
+  }
+  $SHEET->param(SpellCasters => \@data);
+}
+
 ### 命中 --------------------------------------------------
 if(!$pc{'forbiddenMode'}){
   my @attack;
@@ -354,6 +371,9 @@ else {
       $rowspan++;
       $pc{'weapon'.$num.'NameOff'} = 1;
     }
+    my $power = $pc{'weapon'.$_.'Power'}
+      . addNum($pc{'lv'.$data::class{$pc{'weapon'.$_.'Class'}}{'id'}})
+      . ($pc{'weapon'.$_.'PowerMod'}?"+$pc{'weapon'.$_.'PowerMod'}":'');
     push(@weapons, {
       NAME     => itemNameRubyCheck($pc{'weapon'.$_.'Name'}),
       ROWSPAN  => $rowspan,
@@ -363,7 +383,7 @@ else {
       USAGE    => $pc{'weapon'.$_.'Usage'}.'／'.$pc{'weapon'.$_.'Attr'},
       HITMOD   => addNum($pc{'weapon'.$_.'HitMod'}),
       HITTOTAL => $pc{'weapon'.$_.'HitTotal'},
-      POWER    => $pc{'weapon'.$_.'Power'}.($pc{'weapon'.$_.'PowerMod'}?"+$pc{'weapon'.$_.'PowerMod'}":''),
+      POWER    => $power,
       RANGE    => $pc{'weapon'.$_.'Range'},
       NOTE     => $pc{'weapon'.$_.'Note'},
       CLOSE    => ($pc{'weapon'.$_.'NameOff'} || $first ? 0 : 1),
@@ -560,7 +580,7 @@ my $h_num = 0;
 $pc{'history0Title'} = 'キャラクター作成';
 foreach (0 .. $pc{'historyNum'}){
   #next if !$pc{'history'.$_.'Title'};
-  $h_num++ if $pc{'history'.$_.'Gm'};
+  $h_num++ if $pc{'history'.$_.'Gm'} || $pc{'history'.$_.'Completed'};
   if ($set::log_dir && $pc{'history'.$_.'Date'} =~ s/([^0-9]*?_[0-9]+(?:#[0-9a-zA-Z]+?)?)$//){
     my $room = $1;
     (my $date = $pc{'history'.$_.'Date'}) =~ s/[\-\/]//g;
@@ -589,7 +609,7 @@ foreach (0 .. $pc{'historyNum'}){
     else { $completed = '―'; }
   }
   push(@history, {
-    NUM    => ($pc{'history'.$_.'Gm'} ? $h_num : ''),
+    NUM    => ($completed || $pc{'history'.$_.'Gm'} ? $h_num : ''),
     DATE   => $pc{'history'.$_.'Date'},
     TITLE  => $pc{'history'.$_.'Title'},
     COMP   => $completed,

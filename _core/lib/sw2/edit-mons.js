@@ -115,7 +115,7 @@ function checkMountLevel(){
 function rewriteMountLevel(level){
   level ||= form.lvMin.value;
   document.querySelectorAll("#status-table tbody tr:first-child th:first-child").forEach(obj => {
-    obj.innerHTML = level;
+    obj.textContent = level;
     obj.classList.toggle('current', level == form.lv.value);
     level++;
   });
@@ -123,7 +123,7 @@ function rewriteMountLevel(level){
 // 攻撃方法
 function checkStyle(num){
   document.querySelectorAll(`#status-table .name[data-style="${num}"]`).forEach(obj => {
-    obj.innerHTML = form[`status${num}Style`].value;
+    obj.textContent = form[`status${num}Style`].value;
   });
 }
 // 追加・複製

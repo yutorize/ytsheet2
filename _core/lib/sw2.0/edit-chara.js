@@ -68,7 +68,7 @@ function checkFeats(){
 
   Object.keys(feats).forEach(key => { feats[key] = 0; });
   
-  const array = featsLv;
+  const array = SET.featsLv.map(n=>String(n));
   let acquire = '';
   let featMax = level;
       featMax += checkSeekerBuildup('戦闘特技');
@@ -366,7 +366,7 @@ function checkFeats(){
       }
       feat = box.options[box.selectedIndex].value;
       
-      const weaponsRegex = new RegExp('武器習熟(Ａ|Ｓ)／(' + weapons.join('|') + ')');
+      const weaponsRegex = new RegExp('武器習熟(Ａ|Ｓ)／(' + SET.weapons.map(d => d[0]).join('|') + ')');
       if     (feat === "足さばき"){ feats['足さばき'] = 1; }
       else if(feat === "回避行動Ⅰ"){ feats['回避行動'] = 1; }
       else if(feat === "回避行動Ⅱ"){ feats['回避行動'] = 2; }
@@ -422,17 +422,18 @@ function checkFeats(){
 
 // 技芸 ----------------------------------------
 function checkCraft() {
-  Object.keys(classes).forEach(function(key) {
-    let cLv = lv[key];
-    if (classes[key]['craftData']){
-      const eName = classes[key]['craft'];
+  for(const key in SET.class){
+    const id  = SET.class[key].id;
+    const cLv = lv[id];
+    if (SET.class[key].craft?.data){
+      const eName = SET.class[key].craft.eName;
       document.getElementById("craft-"+eName).style.display = cLv ? "block" : "none";
       const cMax = 20;
-      cLv += checkSeekerBuildup(classes[key]['craftName']);
-      cLv += (key === 'Art' && lv.Art >= 17) ? 2 : (key === 'Art' && lv.Art >= 16) ? 1 : 0;
+      let rows = cLv + checkSeekerBuildup(SET.class[key].craft.jName);
+      rows += (key === 'Art' && lv.Art >= 17) ? 2 : (key === 'Art' && lv.Art >= 16) ? 1 : 0;
       for (let i = 1; i <= cMax; i++) {
         let cL = document.getElementById("craft-"+eName+i).classList;
-        if (i <= cLv){
+        if (i <= rows){
           cL.remove("fail","hidden");
         }
         else {
@@ -449,20 +450,20 @@ function checkCraft() {
         }
       }
     }
-    else if (classes[key]['magicData']){
-      cLv += checkSeekerBuildup(classes[key]['magicName']);
-      const eName = classes[key]['magic'];
-      if(classes[key]['trancend']){
-        document.getElementById("magic-"+eName).style.display = cLv > 15 ? "block" : "none";
+    else if (SET.class[key].magic?.data){
+      const rows = cLv + checkSeekerBuildup(SET.class[key].magic.jName);
+      const eName = SET.class[key].magic.eName;
+      if(SET.class[key].magic.trancendOnly){
+        document.getElementById("magic-"+eName).style.display = rows > 15 ? "block" : "none";
       }
       else {
-        document.getElementById("magic-"+eName).style.display = cLv ? "block" : "none";
+        document.getElementById("magic-"+eName).style.display = rows ? "block" : "none";
       }
-      const cMin = classes[key]['trancend'] ? 16 : 1;
+      const cMin = SET.class[key].magic.trancendOnly ? 16 : 1;
       const cMax = 20;
       for (let i = cMin; i <= cMax; i++) {
         let cL = document.getElementById("magic-"+eName+i).classList;
-        if(i <= cLv){ cL.remove("fail","hidden"); }
+        if(i <= rows){ cL.remove("fail","hidden"); }
         else {
           cL.add("fail");
           if(form.failView.checked && i <= 17){
@@ -477,7 +478,7 @@ function checkCraft() {
         }
       }
     }
-  });
+  }
   calcFairy();
 }
 
@@ -498,30 +499,6 @@ function calcFairy(){
     + a4.toString(18)
     + a5.toString(18)
     + a6.toString(18);
-}
-
-// 秘伝欄 ----------------------------------------
-// 追加
-function addMysticArts(){
-  let num = Number(form.mysticArtsNum.value) + 1;
-  let tbody = document.createElement('li');
-  tbody.setAttribute('id',idNumSet('mystic-arts'));
-  tbody.innerHTML = `
-    <span class="handle"></span>
-    <input type="text" name="mysticArts${num}">
-    <span class="honor-pt">
-      <select name="mysticArts${num}PtType" oninput="calcHonor()" data-type="human">
-      <option value="">人族名誉点
-      <option value="barbaros">蛮族名誉点
-      <option value="dragon">盟竜点
-      </select>
-      <span class="honor-select-view"></span>
-      <input type="number" name="mysticArts${num}Pt" oninput="calcHonor()">
-    </span>
-  `;
-  const target = document.querySelector("#mystic-arts-list");
-  target.appendChild(tbody, target);
-  form.mysticArtsNum.value = num;
 }
 
 // 名誉欄 ----------------------------------------
@@ -582,92 +559,9 @@ function calcHonor(){
   pointTotal['human']    -= mysticArtsPt['human'];
   pointTotal['barbaros'] -= mysticArtsPt['barbaros'];
   pointTotal['dragon']   -= mysticArtsPt['dragon'];
-  document.getElementById("honor-value"   ).innerHTML = pointTotal['human']+' / '+pointMax['human'];
-  document.getElementById("honor-value-MA").innerHTML = pointTotal['human'];
-  document.getElementById("honor-barbaros-value").innerHTML = pointTotal['barbaros']+' / '+pointMax['barbaros'];
-  document.getElementById("honor-dragon-value").innerHTML = pointTotal['dragon']+' / '+pointMax['dragon'];
-  document.getElementById("mystic-arts-honor-value").innerHTML = mysticArtsPt['human']+'／'+mysticArtsPt['barbaros']+'／'+mysticArtsPt['dragon'];
-}
-// 追加
-function addHonorItems(){
-  let num = Number(form.honorItemsNum.value) + 1;
-  let tbody = document.createElement('tr');
-  tbody.setAttribute('id',idNumSet('honor-item'));
-  tbody.innerHTML = `
-    <td class="handle"></td>
-    <td><input type="text" name="honorItem${num}"></td>
-    <td>
-      <span class="honor-pt">
-        <select name="honorItem'.$num.'PtType" oninput="calcHonor()" data-type="human">
-          <option value="">人族名誉点
-          <option value="barbaros">蛮族名誉点
-          <option value="dragon">盟竜点
-        </select>
-        <span class="honor-select-view"></span>
-        <input type="number" name="honorItem${num}Pt" oninput="calcHonor()">
-      </span>
-    </td>
-  `;
-  const target = document.querySelector("#honor-items-table");
-  target.appendChild(tbody, target);
-  form.honorItemsNum.value = num;
-}
-// 不名誉欄 ----------------------------------------
-function calcDishonor(){
-}
-function addDishonorItems(){
-  let num = Number(form.dishonorItemsNum.value) + 1;
-  let tbody = document.createElement('tr');
-  tbody.setAttribute('id',idNumSet('dishonor-item'));
-  tbody.innerHTML = `
-    <td class="handle"></td>
-    <td><input type="text" name="dishonorItem${num}"></td>
-    <td>
-      <span class="honor-pt">
-        <select name="dishonorItem${num}PtType" oninput="calcHonor()" data-type="human">
-          <option value="" selected>人族名誉点
-          <option value="barbaros">蛮族名誉点
-          <option value="dragon">盟竜点
-        </select>
-        <span class="honor-select-view"></span>
-        <input type="number" name="dishonorItem${num}Pt" oninput="calcHonor()">
-      </span>
-    </td>
-  `;
-  const target = document.querySelector("#dishonor-items-table tbody");
-  target.appendChild(tbody, target);
-  form.dishonorItemsNum.value = num;
-}
-// 履歴欄 ----------------------------------------
-// 追加
-function addHistory(){
-  let num = Number(form.historyNum.value) + 1;
-  let tbody = document.createElement('tbody');
-  tbody.setAttribute('id',idNumSet('history'));
-  tbody.innerHTML = `<tr>
-    <td rowspan="2" class="handle"></td>
-    <td rowspan="2"><input name="history${num}Date"   type="text"></td>
-    <td rowspan="2"><input name="history${num}Title"  type="text"></td>
-    <td><input name="history${num}Exp"    type="text" oninput="calcExp()"></td>
-    <td><input name="history${num}Money"  type="text" oninput="calcCash()"></td>
-    <td>
-      <span class="honor-pt">
-        <select name="history${num}HonorType" oninput="calcHonor()" data-type="human">
-          <option value="">人族名誉点
-          <option value="barbaros">蛮族名誉点
-          <option value="dragon">盟竜点
-        </select>
-        <span class="honor-select-view"></span>
-        <input name="history${num}Honor"  type="text" oninput="calcHonor()">
-      </span>
-    </td>
-    <td><input name="history${num}Grow"   type="text" oninput="calcStt()" list="list-grow"></td>
-    <td><input name="history${num}Gm"     type="text"></td>
-    <td><input name="history${num}Member" type="text"></td>
-  </tr>
-  <tr><td colspan="6" class="left"><input name="history${num}Note" type="text"></td></tr>`;
-  const target = document.querySelector("#history-table tfoot");
-  target.parentNode.insertBefore(tbody, target);
-  
-  form.historyNum.value = num;
+  document.getElementById("honor-value"   ).textContent = pointTotal['human']+' / '+pointMax['human'];
+  document.getElementById("honor-value-MA").textContent = pointTotal['human'];
+  document.getElementById("honor-barbaros-value").textContent = pointTotal['barbaros']+' / '+pointMax['barbaros'];
+  document.getElementById("honor-dragon-value").textContent = pointTotal['dragon']+' / '+pointMax['dragon'];
+  document.getElementById("mystic-arts-honor-value").textContent = mysticArtsPt['human']+'／'+mysticArtsPt['barbaros']+'／'+mysticArtsPt['dragon'];
 }

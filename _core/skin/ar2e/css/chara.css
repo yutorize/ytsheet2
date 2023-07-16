@@ -262,9 +262,6 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
   border-left-width: 1px;
   border-left-style: solid;
 }
-#classes dd:empty::before {
-  content: "　";
-}
 #classes dd span {
   display: inline-block;
 }
@@ -1159,26 +1156,26 @@ dl#level dd {
 #history {
   margin-top: var(--box-v-gap);
 }
-#history table thead th:nth-child(1) { width:   2em; } /* No. */
-#history table thead th:nth-child(2) { width: 5.2em; } /* 日付 */
-#history table thead th:nth-child(3) { width:  auto; } /* タイトル */
-#history table thead th:nth-child(4) { width: 4.6em; } /* 成長点 */
-#history table thead th:nth-child(5) { width: 4.6em; } /* 上納点 */
-#history table thead th:nth-child(6) { width: 4.5em; } /* ゴールド */
-#history table thead th:nth-child(7) { width:  auto; } /* ＧＭ */
-#history table thead th:nth-child(8) { width:  auto; } /* 参加者 */
+#history table thead th.num    { width:   2em; } /* No. */
+#history table thead th.date   { width: 5.2em; } /* 日付 */
+#history table thead th.title  { width:  auto; } /* タイトル */
+#history table thead th.exp    { width: 4.6em; } /* 成長点 */
+#history table thead th.pay    { width: 4.6em; } /* 上納点 */
+#history table thead th.money  { width: 4.5em; } /* ゴールド */
+#history table thead th.gm     { width:  auto; } /* ＧＭ */
+#history table thead th.member { width:  auto; } /* 参加者 */
 
-#history table tbody tr td:nth-child(5):not(:empty)::before {
+#history table tbody tr td.pay:not(:empty)::before {
   content: "-";
   float: left;
   margin-left: 2px;
   font-size: 1.1rem;
 }
-#history table tr td:nth-child(6) {
+#history table tr td.money {
   text-align: right;
   word-break: normal;
 }
-#history table tr td:nth-child(6):not(:empty)::after {
+#history table tr td.money:not(:empty)::after {
   content: "G";
   margin-left: 2px;
   font-size: 1.1rem;

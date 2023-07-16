@@ -107,13 +107,13 @@ function calcGrow(){
   enduranceGrow  = Number(form.endurancePreGrow.value );
   initiativeGrow = Number(form.initiativePreGrow.value);
   level = 1 + (enduranceGrow / 5) + (initiativeGrow / 2);
-  document.getElementById("level-pre-grow").innerHTML = level;
+  document.getElementById("level-pre-grow").textContent = level;
   
   for (let num = 1; num <= Number(form.historyNum.value); num++){
     if     (form['history'+num+'Grow'].value === 'endurance' ){ enduranceGrow  += 5; level++; }
     else if(form['history'+num+'Grow'].value === 'initiative'){ initiativeGrow += 2; level++; }
   }
-  document.getElementById("level-value").innerHTML = level;
+  document.getElementById("level-value").textContent = level;
   
   calcStt();
 }
@@ -127,27 +127,27 @@ function calcStt() {
   if     (factor === '人間') {
     enduranceTotal  += main1 * 2 + main2;
     initiativeTotal += main2 + 10;
-    document.getElementById("endurance-base").innerHTML  = '【技】×2+【情】';
-    document.getElementById("initiative-base").innerHTML = '【情】+10';
-    document.getElementById("partner1-factor-term").innerHTML = '起源／流儀';
-    document.getElementById("partner1-missing-term").innerHTML = '欠落';
-    document.getElementById("partner1-age-term").innerHTML = '外見年齢／実年齢';
+    document.getElementById("endurance-base").textContent  = '【技】×2+【情】';
+    document.getElementById("initiative-base").textContent = '【情】+10';
+    document.getElementById("partner1-factor-term").textContent = '起源／流儀';
+    document.getElementById("partner1-missing-term").textContent = '欠落';
+    document.getElementById("partner1-age-term").textContent = '外見年齢／実年齢';
   }
   else if(factor === '吸血鬼'){
     enduranceTotal  += main1 + 20;
     initiativeTotal += main2 + 4;
-    document.getElementById("endurance-base").innerHTML  = '【血】+20';
-    document.getElementById("initiative-base").innerHTML = '【想】+4';
-    document.getElementById("partner1-factor-term").innerHTML = '信念／職能';
-    document.getElementById("partner1-missing-term").innerHTML = '喪失';
-    document.getElementById("partner1-age-term").innerHTML = '年齢';
+    document.getElementById("endurance-base").textContent  = '【血】+20';
+    document.getElementById("initiative-base").textContent = '【想】+4';
+    document.getElementById("partner1-factor-term").textContent = '信念／職能';
+    document.getElementById("partner1-missing-term").textContent = '喪失';
+    document.getElementById("partner1-age-term").textContent = '年齢';
   }
-  document.getElementById("main1-total").innerHTML = main1;
-  document.getElementById("main2-total").innerHTML = main2;
-  document.getElementById("endurance-grow").innerHTML  = enduranceGrow;
-  document.getElementById("initiative-grow").innerHTML = initiativeGrow;
-  document.getElementById("endurance-total").innerHTML  = enduranceTotal;
-  document.getElementById("initiative-total").innerHTML = initiativeTotal;
+  document.getElementById("main1-total").textContent = main1;
+  document.getElementById("main2-total").textContent = main2;
+  document.getElementById("endurance-grow").textContent  = enduranceGrow;
+  document.getElementById("initiative-grow").textContent = initiativeGrow;
+  document.getElementById("endurance-total").textContent  = enduranceTotal;
+  document.getElementById("initiative-total").textContent = initiativeTotal;
 }
 
 // パートナー ----------------------------------------
@@ -234,19 +234,11 @@ function scarCheck(){
 // 追加
 function addArts(){
   let num = Number(form.artsNum.value) + 1;
-  let tr = document.createElement('tr');
-  tr.setAttribute('id',idNumSet('arts'));
-  tr.innerHTML = `
-    <td class="handle"></td>
-    <td><input name="arts${num}Name"    type="text"></td>
-    <td><input name="arts${num}Timing"  type="text" list="list-timing"></td>
-    <td><input name="arts${num}Target"  type="text" list="list-target"></td>
-    <td><input name="arts${num}Cost"    type="text" list="list-cost"></td>
-    <td><input name="arts${num}Limited" type="text" list="list-limited"></td>
-    <td><input name="arts${num}Note"    type="text"></td>
-  `;
-  const target = document.querySelector("#arts-list");
-  target.appendChild(tr, target);
+
+  let row = document.querySelector('#arts-template').content.firstElementChild.cloneNode(true);
+  row.id = idNumSet('arts');
+  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
+  document.querySelector("#arts-list").append(row);
   
   form.artsNum.value = num;
 }
@@ -257,8 +249,7 @@ function delArts(){
     if(form[`arts${num}Name`].value || form[`arts${num}Timing`].value || form[`arts${num}Target`].value || form[`arts${num}Cost`].value || form[`arts${num}Limited`].value || form[`arts${num}Note`].value){
       if (!confirm(delConfirmText)) return false;
     }
-    const target = document.querySelector("#arts-list tr:last-of-type");
-    target.parentNode.removeChild(target);
+    document.querySelector("#arts-list tr:last-of-type").remove();
     num--;
     form.artsNum.value = num;
   }
@@ -269,12 +260,13 @@ let artsSortable = Sortable.create(document.getElementById('arts-list'), {
   dataIdAttr: 'id',
   animation: 100,
   handle: '.handle',
+  filter: 'thead,tfoot,template',
   ghostClass: 'sortable-ghost',
   onUpdate: function(evt){
     const order = artsSortable.toArray();
     let num = 1;
     for(let id of order) {
-      if(document.getElementById(id)){
+      if(document.querySelector(`tr#${id}`)){
         document.querySelector(`#${id} [name$="Name"]`   ).setAttribute('name',`arts${num}Name`);
         document.querySelector(`#${id} [name$="Timing"]` ).setAttribute('name',`arts${num}Timing`);
         document.querySelector(`#${id} [name$="Target"]` ).setAttribute('name',`arts${num}Target`);
@@ -312,19 +304,11 @@ let bloodartsSortable = Sortable.create(document.getElementById('bloodarts-list'
 // 追加
 function addHistory(){
   let num = Number(form.historyNum.value) + 1;
-  let tbody = document.createElement('tbody');
-  tbody.setAttribute('id',idNumSet('history'));
-  tbody.innerHTML = `<tr>
-    <td rowspan="2" class="handle"></td>
-    <td rowspan="2"><input name="history${num}Date"   type="text"></td>
-    <td rowspan="2"><input name="history${num}Title"  type="text"></td>
-    <td><select name="history${num}Grow" oninput="calcGrow()"><option><option value="endurance">耐久値+5<option value="initiative">先制値+2</select></td>
-    <td><input name="history${num}Gm"     type="text"></td>
-    <td><input name="history${num}Member" type="text"></td>
-  </tr>
-  <tr><td colspan="5" class="left"><input name="history${num}Note" type="text"></td></tr>`;
-  const target = document.querySelector("#history-table tfoot");
-  target.parentNode.insertBefore(tbody, target);
+
+  let row = document.querySelector('#history-template').content.firstElementChild.cloneNode(true);
+  row.id = idNumSet('history');
+  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
+  document.querySelector("#history-table tbody:last-of-type").after(row);
   
   form.historyNum.value = num;
 }
@@ -335,8 +319,7 @@ function delHistory(){
     if(form[`history${num}Date`].value || form[`history${num}Title`].value || form[`history${num}Grow`].value || form[`history${num}Gm`].value || form[`history${num}Member`].value || form[`history${num}Note`].value){
       if (!confirm(delConfirmText)) return false;
     }
-    const target = document.querySelector("#history-table tbody:last-of-type");
-    target.parentNode.removeChild(target);
+    document.querySelector("#history-table tbody:last-of-type").remove();
     num--;
     form.historyNum.value = num;
   }
@@ -347,13 +330,13 @@ let historySortable = Sortable.create(document.getElementById('history-table'), 
   dataIdAttr: 'id',
   animation: 100,
   handle: '.handle',
-  filter: 'thead,tfoot',
+  filter: 'thead,tfoot,template',
   ghostClass: 'sortable-ghost',
   onUpdate: function (evt) {
     const order = historySortable.toArray();
     let num = 1;
     for(let id of order) {
-      if(document.getElementById(id)){
+      if(document.querySelector(`tbody#${id}`)){
         document.querySelector(`#${id} [name$="Date"]`  ).setAttribute('name',`history${num}Date`);
         document.querySelector(`#${id} [name$="Title"]` ).setAttribute('name',`history${num}Title`);
         document.querySelector(`#${id} [name$="Grow"]`  ).setAttribute('name',`history${num}Grow`);

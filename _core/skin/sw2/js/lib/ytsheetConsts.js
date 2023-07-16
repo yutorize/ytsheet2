@@ -26,48 +26,7 @@ io.github.shunshun94 = io.github.shunshun94 || {};
 io.github.shunshun94.trpg = io.github.shunshun94.trpg || {};
 io.github.shunshun94.trpg.ytsheet = io.github.shunshun94.trpg.ytsheet || {};
 io.github.shunshun94.trpg.ytsheet.consts = io.github.shunshun94.trpg.ytsheet.consts || {};
-io.github.shunshun94.trpg.ytsheet.consts.maxLevel = 17;
-io.github.shunshun94.trpg.ytsheet.consts.levelSkills = {
-	craftEnhance : '練技',
-	craftAlchemy : '賦術',
-	craftCommand : '鼓咆',
-	craftSong : '呪歌',
-	craftRiding : '騎芸',
-	craftGeomancy : '相域',
-	craftPotential : '魔装',
-	craftSeal : '呪印',
-	craftDignity : '貴格',
-	magicGramarye : '秘奥魔法',
-	craftDivination : '占瞳'
-};
-io.github.shunshun94.trpg.ytsheet.consts.skills = {
-	lvFig : 'ファイター',
-	lvGra : 'グラップラー',
-	lvFen : 'フェンサー',
-	lvSho : 'シューター',
-	lvBat : 'バトルダンサー',
-	lvSor : 'ソーサラー',
-	lvCon : 'コンジャラー',
-	lvPri : 'プリースト',
-	lvMag : 'マギテック',
-	lvFai : 'フェアリーテイマー',
-	lvDru : 'ドルイド',
-	lvDem : 'デーモンルーラー',
-	lvSco : 'スカウト',
-	lvRan : 'レンジャー',
-	lvSag : 'セージ',
-	lvEnh : 'エンハンサー',
-	lvBar : 'バード',
-	lvRid : 'ライダー',
-	lvAlc : 'アルケミスト',
-	lvGeo : 'ジオマンサー',
-	lvWar : 'ウォーリーダー',
-	lvMys : 'ミスティック',
-	lvPhy : 'フィジカルマスター',
-	lvGri : 'グリモワール',
-	lvAri : 'アリストクラシー',
-	lvArt : 'アーティザン'
-};
+
 io.github.shunshun94.trpg.ytsheet.consts.card = {};
 io.github.shunshun94.trpg.ytsheet.consts.card.color = {
 	'Red': '赤',
@@ -92,19 +51,6 @@ io.github.shunshun94.trpg.ytsheet.consts.accessory.part = {
 	Other2:' 他 ',
 	Other3:' 他 ',
 	Other4:' 他 ',
-};
-io.github.shunshun94.trpg.ytsheet.consts.magic = {
-	magicPowerSor:'真語魔法',
-	magicPowerCon:'操霊魔法',
-	magicPowerPri:'神聖魔法',
-	magicPowerMag:'魔動機術',
-	magicPowerFai:'妖精魔法',
-	magicPowerDem:'召異魔法',
-	magicPowerDru:'森羅魔法',
-	magicPowerGri:'秘奥魔法',
-	magicPowerBar:'呪歌',
-	magicPowerAlc:'賦術',
-	magicPowerMys:'占瞳'
 };
 
 io.github.shunshun94.trpg.ytsheet.consts.PC_ARMORS_COLUMNS = {

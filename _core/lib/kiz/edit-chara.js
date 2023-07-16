@@ -85,8 +85,8 @@ function calcGrow(){
     if     (form['history'+num+'Grow'].value === 'endurance'){ enduranceGrow += 2; level++; }
     else if(form['history'+num+'Grow'].value === 'operation'){ operationGrow += 1; level++; }
   }
-  document.getElementById("endurance-grow").innerHTML = enduranceGrow;
-  document.getElementById("operation-grow").innerHTML = operationGrow;
+  document.getElementById("endurance-grow").textContent = enduranceGrow;
+  document.getElementById("operation-grow").textContent = operationGrow;
   
   calcStt();
 }
@@ -104,8 +104,8 @@ function calcStt() {
                      + Number(form.operationAdd.value)
                      + operationGrow;
 
-  document.getElementById("endurance-total").innerHTML = enduranceTotal;
-  document.getElementById("operation-total").innerHTML = operationTotal;
+  document.getElementById("endurance-total").textContent = enduranceTotal;
+  document.getElementById("operation-total").textContent = operationTotal;
 }
 
 // パートナー ----------------------------------------
@@ -197,17 +197,11 @@ function checkHibiWare(num){
 function addKizuna(){
   let num = Number(form.kizunaNum.value) + 1;
   if(num > 13){ return; }
-  let tbody = document.createElement('tr');
-  tbody.setAttribute('id',idNumSet('kizuna'));
-  tbody.innerHTML = `
-    <td class="handle"></td>
-    <td><input name="kizuna${num}Name" type="text"></td>
-    <td><input name="kizuna${num}Note" type="text"</td>
-    <td><input name="kizuna${num}Hibi" type="checkbox" value="1" onchange="checkHibi(${num})"></td>
-    <td><input name="kizuna${num}Ware" type="checkbox" value="1" onchange="checkWare(${num})"></td>
-  `;
-  const target = document.querySelector("#kizuna-table tbody");
-  target.appendChild(tbody, target);
+
+  let row = document.querySelector('#kizuna-template').content.firstElementChild.cloneNode(true);
+  row.id = idNumSet('kizuna');
+  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
+  document.querySelector("#kizuna-table tbody").append(row);
   
   form.kizunaNum.value = num;
 }
@@ -219,8 +213,7 @@ function delKizuna(){
     ){
       if (!confirm(delConfirmText)) return false;
     }
-    const target = document.querySelector("#kizuna-table tbody tr:last-of-type");
-    target.parentNode.removeChild(target);
+    document.querySelector("#kizuna-table tbody tr:last-of-type").remove();
     num--;
     form.kizunaNum.value = num;
   }
@@ -237,7 +230,7 @@ let kizunaSortable = Sortable.create(document.querySelector('#kizuna-table tbody
     const order = kizunaSortable.toArray();
     let num = 1;
     for(let id of order) {
-      if(document.getElementById(id)){
+      if(document.querySelector(`tr#${id}`)){
         document.querySelector(`#${id} [name$="Name"]`).setAttribute('name',`kizuna${num}Name`);
         document.querySelector(`#${id} [name$="Note"]`).setAttribute('name',`kizuna${num}Note`);
         document.querySelector(`#${id} [name$="Hibi"]`).setAttribute('name',`kizuna${num}Hibi`);
@@ -253,43 +246,11 @@ let kizunaSortable = Sortable.create(document.querySelector('#kizuna-table tbody
 // 追加
 function addKizuato(){
   let num = Number(form.kizuatoNum.value) + 1;
-  let tbody = document.createElement('tbody');
-  tbody.setAttribute('id',idNumSet('kizuato'));
-  tbody.innerHTML = `<tr>
-      <td class="name" colspan="6">名称:《<input name="kizuato${num}Name" type="text">》</td>
-    </tr>
-    <tr>
-      <th rowspan="2">ドラマ</th>
-      <th>ヒトガラ</th>
-      <th>タイミング</th>
-      <th>対象</th>
-      <th>制限</th>
-      <th>解説</th>
-    </tr>
-    <tr>
-      <td><input name="kizuato${num}DramaHitogara" type="text"></td>
-      <td><input name="kizuato${num}DramaTiming" type="text" list="list-dtiming"></td>
-      <td><input name="kizuato${num}DramaTarget" type="text" list="list-dtarget"></td>
-      <td><input name="kizuato${num}DramaLimited" type="text" list="list-dlimited"></td>
-      <td class="left"><input name="kizuato${num}DramaNote" type="text"></td>
-    </tr>
-    <tr>
-      <th rowspan="2">決戦</th>
-      <th>タイミング</th>
-      <th>対象</th>
-      <th>代償</th>
-      <th>制限</th>
-      <th>解説</th>
-    </tr>
-    <tr>
-      <td><input name="kizuato${num}BattleTiming" type="text" list="list-btiming"></td>
-      <td><input name="kizuato${num}BattleTarget" type="text" list="list-btarget"></td>
-      <td><input name="kizuato${num}BattleCost" type="text" list="list-bcost"></td>
-      <td><input name="kizuato${num}BattleLimited" type="text" list="list-blimited"></td>
-      <td class="left"><input name="kizuato${num}BattleNote" type="text"></td>
-  </tr>`;
-  const target = document.querySelector("#kizuato-table");
-  target.appendChild(tbody, target);
+
+  let row = document.querySelector('#kizuato-template').content.firstElementChild.cloneNode(true);
+  row.id = idNumSet('kizuato');
+  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
+  document.querySelector("#kizuato-table").append(row);
   
   form.kizuatoNum.value = num;
 }
@@ -307,8 +268,7 @@ function delKizuato(){
     ){
       if (!confirm(delConfirmText)) return false;
     }
-    const target = document.querySelector("#kizuato-table tbody:last-of-type");
-    target.parentNode.removeChild(target);
+    document.querySelector("#kizuato-table tbody:last-of-type").remove();
     num--;
     form.kizuatoNum.value = num;
   }
@@ -319,13 +279,13 @@ let kizuatoSortable = Sortable.create(document.getElementById('kizuato-table'), 
   dataIdAttr: 'id',
   animation: 100,
   handle: '.handle',
-  filter: 'thead,tfoot',
+  filter: 'thead,tfoot,colgroup,template',
   ghostClass: 'sortable-ghost',
   onUpdate: function(evt){
     const order = kizuatoSortable.toArray();
     let num = 1;
     for(let id of order) {
-      if(document.getElementById(id)){
+      if(document.querySelector(`tbody#${id}`)){
         document.querySelector(`#${id} [name$="Name"]`    ).setAttribute('name',`kizuato${num}Name`);
         document.querySelector(`#${id} [name$="DramaHitogara"]`).setAttribute('name',`kizuato${num}DramaHitogara`);
         document.querySelector(`#${id} [name$="DramaTiming"]`  ).setAttribute('name',`kizuato${num}DramaTiming`);
@@ -347,19 +307,11 @@ let kizuatoSortable = Sortable.create(document.getElementById('kizuato-table'), 
 // 追加
 function addHistory(){
   let num = Number(form.historyNum.value) + 1;
-  let tbody = document.createElement('tbody');
-  tbody.setAttribute('id',idNumSet('history'));
-  tbody.innerHTML = `<tr>
-    <td rowspan="2" class="handle"></td>
-    <td rowspan="2"><input name="history${num}Date"   type="text"></td>
-    <td rowspan="2"><input name="history${num}Title"  type="text"></td>
-    <td><select name="history${num}Grow" oninput="calcGrow()"><option><option value="endurance">耐久値+5<option value="operation">先制値+2</select></td>
-    <td><input name="history${num}Gm"     type="text"></td>
-    <td><input name="history${num}Member" type="text"></td>
-  </tr>
-  <tr><td colspan="5" class="left"><input name="history${num}Note" type="text"></td></tr>`;
-  const target = document.querySelector("#history-table tfoot");
-  target.parentNode.insertBefore(tbody, target);
+
+  let row = document.querySelector('#history-template').content.firstElementChild.cloneNode(true);
+  row.id = idNumSet('history');
+  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
+  document.querySelector("#history-table tbody:last-of-type").after(row);
   
   form.historyNum.value = num;
 }
@@ -370,8 +322,7 @@ function delHistory(){
     if(form[`history${num}Date`].value || form[`history${num}Title`].value || form[`history${num}Grow`].value || form[`history${num}Gm`].value || form[`history${num}Member`].value || form[`history${num}Note`].value){
       if (!confirm(delConfirmText)) return false;
     }
-    const target = document.querySelector("#history-table tbody:last-of-type");
-    target.parentNode.removeChild(target);
+    document.querySelector("#history-table tbody:last-of-type").remove();
     num--;
     form.historyNum.value = num;
   }
@@ -382,13 +333,13 @@ let historySortable = Sortable.create(document.getElementById('history-table'), 
   dataIdAttr: 'id',
   animation: 100,
   handle: '.handle',
-  filter: 'thead,tfoot',
+  filter: 'thead,tfoot,template',
   ghostClass: 'sortable-ghost',
   onUpdate: function (evt) {
     const order = historySortable.toArray();
     let num = 1;
     for(let id of order) {
-      if(document.getElementById(id)){
+      if(document.querySelector(`tbody#${id}`)){
         document.querySelector(`#${id} [name$="Date"]`  ).setAttribute('name',`history${num}Date`);
         document.querySelector(`#${id} [name$="Title"]` ).setAttribute('name',`history${num}Title`);
         document.querySelector(`#${id} [name$="Grow"]`  ).setAttribute('name',`history${num}Grow`);

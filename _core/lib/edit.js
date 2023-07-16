@@ -283,8 +283,8 @@ function imagePosition(){
       el.style.backgroundSize = bgSize;
     });
   }
-  document.getElementById("image-positionX-view").innerHTML = form.imagePositionX.value + '%';
-  document.getElementById("image-positionY-view").innerHTML = form.imagePositionY.value + '%';
+  document.getElementById("image-positionX-view").textContent = form.imagePositionX.value + '%';
+  document.getElementById("image-positionY-view").textContent = form.imagePositionY.value + '%';
   document.getElementById("image").style.backgroundPositionX = form.imagePositionX.value + '%';
   document.getElementById("image").style.backgroundPositionY = form.imagePositionY.value + '%';
   document.querySelectorAll(".image-custom-view").forEach((el) => {
@@ -411,7 +411,7 @@ function wordsPreView(){
   wObj.style.top    = form.wordsY.value === '上' || !form.wordsY.value ? '0' : '';
   wObj.style.bottom = form.wordsY.value === '下' ? '0' : '';
   
-  document.getElementById('image-copyright-preview').innerHTML = form.imageCopyright.value;
+  document.getElementById('image-copyright-preview').textContent = form.imageCopyright.value;
 }
 
 // カラーカスタム ----------------------------------------
@@ -421,11 +421,11 @@ function changeColor(){
   let hL = Number(form.colorHeadBgL.value);
   let bH = Number(form.colorBaseBgH.value);
   let bS = Number(form.colorBaseBgS.value);
-  document.getElementById('colorHeadBgHValue').innerHTML = hH;
-  document.getElementById('colorHeadBgSValue').innerHTML = hS;
-  document.getElementById('colorHeadBgLValue').innerHTML = hL;
-  document.getElementById('colorBaseBgHValue').innerHTML = bH;
-  document.getElementById('colorBaseBgSValue').innerHTML = bS;
+  document.getElementById('colorHeadBgHValue').textContent = hH;
+  document.getElementById('colorHeadBgSValue').textContent = hS;
+  document.getElementById('colorHeadBgLValue').textContent = hL;
+  document.getElementById('colorBaseBgHValue').textContent = bH;
+  document.getElementById('colorBaseBgSValue').textContent = bS;
   
   document.documentElement.style.setProperty('--box-head-bg-color-h', hH            );
   document.documentElement.style.setProperty('--box-head-bg-color-s', hS+'%'        );

@@ -28,6 +28,13 @@ if($mode_make){
 ### 初期設定 --------------------------------------------------
 if($mode_make){ $pc{'protect'} = $LOGIN_ID ? 'account' : 'password'; }
 
+if($mode eq 'edit' || ($mode eq 'convert' && $pc{'ver'})){
+  %pc = data_update_item(\%pc);
+}
+
+$pc{weaponNum} ||= 1;
+$pc{armourNum} ||= 1;
+
 ## カラー
 setDefaultColors();
 
@@ -51,6 +58,7 @@ Content-type: text/html\n
   <link rel="stylesheet" media="all" href="${main::core_dir}/skin/sw2/css/item.css?${main::ver}">
   <link rel="stylesheet" media="all" href="${main::core_dir}/skin/_common/css/edit.css?${main::ver}">
   <link rel="stylesheet" media="all" href="${main::core_dir}/skin/sw2/css/edit.css?${main::ver}">
+  <script src="${main::core_dir}/skin/_common/js/lib/Sortable.min.js"></script>
   <script src="${main::core_dir}/lib/edit.js?${main::ver}" defer></script>
   <script src="${main::core_dir}/lib/sw2/edit-item.js?${main::ver}" defer></script>
 </head>
@@ -75,15 +83,15 @@ print <<"HTML";
       <div id="header-menu">
         <h2><span></span></h2>
         <ul>
-          <li onclick="sectionSelect('common');"><span>アイテム</span><span>データ</span></li>
-          <li onclick="sectionSelect('color');" class="color-icon" title="カラーカスタム"></span></li>
-          <li onclick="view('text-rule')" class="help-icon" title="テキスト整形ルール"></li>
-          <li onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード切替"></li>
+          <li onclick="sectionSelect('common');"><span>アイテム</span><span>データ</span>
+          <li onclick="sectionSelect('color');" class="color-icon" title="カラーカスタム"></span>
+          <li onclick="view('text-rule')" class="help-icon" title="テキスト整形ルール">
+          <li onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード切替">
           <li class="buttons">
             <ul>
-              <li @{[ display ($mode eq 'edit') ]} class="view-icon" title="閲覧画面"><a href="./?id=$::in{'id'}"></a></li>
-              <li @{[ display ($mode eq 'edit') ]} class="copy" onclick="window.open('./?mode=copy&id=$::in{'id'}@{[  $::in{'log'}?"&log=$::in{'log'}":'' ]}');">複製</li>
-              <li class="submit" onclick="formSubmit()" title="Ctrl+S">保存</li>
+              <li @{[ display ($mode eq 'edit') ]} class="view-icon" title="閲覧画面"><a href="./?id=$::in{'id'}"></a>
+              <li @{[ display ($mode eq 'edit') ]} class="copy" onclick="window.open('./?mode=copy&id=$::in{'id'}@{[  $::in{'log'}?"&log=$::in{'log'}":'' ]}');">複製
+              <li class="submit" onclick="formSubmit()" title="Ctrl+S">保存
             </ul>
           </li>
         </ul>
@@ -127,40 +135,36 @@ HTML
 }
   print <<"HTML";
       <dl class="box" id="hide-options">
-        <dt>閲覧可否設定</dt>
+        <dt>閲覧可否設定
         <dd id="forbidden-checkbox">
           <select name="forbidden">
             <option value="">内容を全て開示
             <option value="battle" @{[ $pc{'forbidden'} eq 'battle' ? 'selected' : '' ]}>データ・数値のみ秘匿
             <option value="all"    @{[ $pc{'forbidden'} eq 'all'    ? 'selected' : '' ]}>内容を全て秘匿
           </select>
-        </dd>
         <dd id="hide-checkbox">
           <select name="hide">
             <option value="">一覧に表示
             <option value="1" @{[ $pc{'hide'} ? 'selected' : '' ]}>一覧には非表示
           </select>
-        </dd>
-        <dd>
-          ※一覧に非表示でもタグ検索結果・マイリストには表示されます
-        </dd>
+        <dd>※「一覧に非表示」でもタグ検索結果・マイリストには表示されます
       </dl>
       <div class="box" id="group">
         <dl>
-          <dt>タグ</dt><dd>@{[ input 'tags' ]}</dd>
+          <dt>タグ<dd>@{[ input 'tags' ]}
         </dl>
       </div>
 
       <div class="box" id="name-form">
         <div>
           <dl id="character-name">
-            <dt>名称</dt>
-            <dd>@{[ input('itemName','text',"nameSet('itemName')") ]}</dd>
+            <dt>名称
+            <dd>@{[ input('itemName','text',"nameSet('itemName')") ]}
           </dl>
         </div>
         <dl id="player-name">
-          <dt>製作者</dt>
-          <dd>@{[input('author')]}</dd>
+          <dt>製作者
+          <dd>@{[input('author')]}
         </dl>
       </div>
       
@@ -168,76 +172,66 @@ HTML
       <label>@{[ input 'magic', 'checkbox' ]}<span>魔法のアイテム</span></label>
       <!-- <label>@{[ input 'school', 'checkbox' ]}　流派装備</label> -->
       <hr>
-      <dl><dt>基本取引価格</dt><dd>@{[ input 'price' ]}G</dd></dl>
-      <dl><dt>知名度  </dt><dd>@{[ input 'reputation', 'text','','pattern="^[0-9\/／]+$"' ]} 数字と／のみ入力可</dd></dl>
-      <dl><dt>形状    </dt><dd>@{[ input 'shape' ]}</dd></dl>
-      <dl><dt>カテゴリ</dt><dd>@{[ input 'category','text','','list="list-category"' ]}
-        複数カテゴリの場合、スペースで区切ってください。</dd></dl>
-      <dl><dt>製作時期</dt><dd>@{[ input 'age','text','','list="list-age"' ]}</dd></dl>
-      <dl><dt>概要    </dt><dd>@{[ input 'summary' ]}</dd></dl>
+      <dl><dt>基本取引価格<dd>@{[ input 'price' ]}G</dl>
+      <dl><dt>知名度  <dd>@{[ input 'reputation', 'text','','pattern="^[0-9\/／]+$"' ]} 数字と／のみ入力可</dl>
+      <dl><dt>形状    <dd>@{[ input 'shape' ]}</dl>
+      <dl><dt>カテゴリ<dd>@{[ input 'category','text','','list="list-category"' ]}
+        複数カテゴリの場合、スペースで区切ってください。</dl>
+      <dl><dt>製作時期<dd>@{[ input 'age','text','','list="list-age"' ]}</dl>
+      <dl><dt>概要    <dd>@{[ input 'summary' ]}</dl>
     </div>
     <div class="box">
       <h2>効果</h2>
       <textarea name="effects">$pc{'effects'}</textarea>
       <h4>武器データ</h4>
-      <table class="input-weapon-data">
-      <tr><th>用法</th><th>必筋</th><th>命中</th><th>威力</th><th>C値</th><th>追加D</th><th>備考</th></tr>
-      <tr>
-        <td>@{[ input 'weapon1Usage','text','','list="list-usage"' ]}</td>
-        <td>@{[ input 'weapon1Reqd' ]}</td>
-        <td>@{[ input 'weapon1Acc' ]}</td>
-        <td>@{[ input 'weapon1Rate' ]}</td>
-        <td>@{[ input 'weapon1Crit' ]}</td>
-        <td>@{[ input 'weapon1Dmg' ]}</td>
-        <td>@{[ input 'weapon1Note' ]}</td>
-      </tr>
-      <tr>
-        <td>@{[ input 'weapon2Usage','text','','list="list-usage"' ]}</td>
-        <td>@{[ input 'weapon2Reqd' ]}</td>
-        <td>@{[ input 'weapon2Acc' ]}</td>
-        <td>@{[ input 'weapon2Rate' ]}</td>
-        <td>@{[ input 'weapon2Crit' ]}</td>
-        <td>@{[ input 'weapon2Dmg' ]}</td>
-        <td>@{[ input 'weapon2Note' ]}</td>
-      </tr>
-      <tr>
-        <td>@{[ input 'weapon3Usage','text','','list="list-usage"' ]}</td>
-        <td>@{[ input 'weapon3Reqd' ]}</td>
-        <td>@{[ input 'weapon3Acc' ]}</td>
-        <td>@{[ input 'weapon3Rate' ]}</td>
-        <td>@{[ input 'weapon3Crit' ]}</td>
-        <td>@{[ input 'weapon3Dmg' ]}</td>
-        <td>@{[ input 'weapon3Note' ]}</td>
-      </tr>
+      <table class="input-arms-data" id="weapons-table">
+        <thead>
+          <tr><th><th>用法<th>必筋<th>命中<th>威力<th>C値<th>追加D<th>備考
+        <tbody>
+HTML
+foreach my $num ('TMPL', 1 .. $pc{weaponNum}){
+  print <<"HTML";
+          @{[ $num eq 'TMPL' ? '<template id="weapon-template">' : '' ]}<tr id="weapon$num">
+            <td class="handle">
+            <td>@{[ input "weapon${num}Usage",'text','','list="list-usage"' ]}
+            <td>@{[ input "weapon${num}Reqd" ]}
+            <td>@{[ input "weapon${num}Acc" ]}
+            <td>@{[ input "weapon${num}Rate" ]}
+            <td>@{[ input "weapon${num}Crit" ]}
+            <td>@{[ input "weapon${num}Dmg" ]}
+            <td>@{[ input "weapon${num}Note" ]}
+          @{[ $num eq 'TMPL' ? "</template>" : '' ]}
+HTML
+}
+  print <<"HTML";
       </table>
+      <div class="add-del-button"><a onclick="addWeapon()">▼</a><a onclick="delWeapon()">▲</a></div>
+      @{[ input 'weaponNum','hidden' ]}
       <p>
       <code>[刃]</code> <code>[打]</code> でそれぞれ<img class="i-icon" src="${set::icon_dir}wp_edge.png"><img class="i-icon" src="${set::icon_dir}wp_blow.png">に置き換え
       <p>
       <h4>防具データ</h4>
-      <table class="input-armour-data">
-      <tr><th>用法</th><th>必筋</th><th>回避</th><th>防護</th><th>備考</th></tr>
-      <tr>
-        <td>@{[ input 'armour1Usage','text','','list="list-usage"' ]}</td>
-        <td>@{[ input 'armour1Reqd' ]}</td>
-        <td>@{[ input 'armour1Eva' ]}</td>
-        <td>@{[ input 'armour1Def' ]}</td>
-        <td>@{[ input 'armour1Note' ]}</td>
-      </tr>
-      <tr>
-        <td>@{[ input 'armour2Usage','text','','list="list-usage"' ]}</td>
-        <td>@{[ input 'armour2Reqd' ]}</td>
-        <td>@{[ input 'armour2Eva' ]}</td>
-        <td>@{[ input 'armour2Def' ]}</td>
-        <td>@{[ input 'armour2Note' ]}</td>
-      </tr>
-      <tr>
-        <td>@{[ input 'armour3Usage','text','','list="list-usage"' ]}</td>
-        <td>@{[ input 'armour3Reqd' ]}</td>
-        <td>@{[ input 'armour3Eva' ]}</td>
-        <td>@{[ input 'armour3Def' ]}</td>
-        <td>@{[ input 'armour3Note' ]}</td>
-      </tr>
+      <table class="input-arms-data" id="armours-table">
+        <thead>
+          <tr><th><th>用法<th>必筋<th>回避<th>防護<th>備考
+        <tbody>
+HTML
+foreach my $num ('TMPL', 1 .. $pc{armourNum}){
+  print <<"HTML";
+          @{[ $num eq 'TMPL' ? '<template id="armour-template">' : '' ]}<tr id="armour$num">
+            <td class="handle">
+            <td>@{[ input "armour${num}Usage",'text','','list="list-usage"' ]}
+            <td>@{[ input "armour${num}Reqd" ]}
+            <td>@{[ input "armour${num}Eva" ]}
+            <td>@{[ input "armour${num}Def" ]}
+            <td>@{[ input "armour${num}Note" ]}
+          @{[ $num eq 'TMPL' ? "</template>" : '' ]}
+HTML
+}
+  print <<"HTML";
       </table>
+      <div class="add-del-button"><a onclick="addArmour()">▼</a><a onclick="delArmour()">▲</a></div>
+      @{[ input 'armourNum','hidden' ]}
     </div>
     <div class="box">
       <h2>由来・逸話</h2>

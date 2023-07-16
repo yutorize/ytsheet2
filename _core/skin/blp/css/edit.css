@@ -320,17 +320,17 @@ body:not(.type-human) .h-only {
   height: 18em;
 }
 
-#history table thead th:nth-child(1) { width: 1.4em; }
-#history table thead th:nth-child(2) { width:   6em; } /* 日付 */
-#history table thead th:nth-child(3) { width:  12em; } /* タイトル */
-#history table thead th:nth-child(4) { width:   6em; } /* 成長 */
-#history table thead th:nth-child(5) { width:   6em; } /* ＧＭ */
-#history table thead th:nth-child(6) { width:  auto; } /* 参加者 */
+#history table thead th.first-child{ width: 1.4em; }
+#history table thead th.date       { width:   6em; }
+#history table thead th.title      { width:  12em; }
+#history table thead th.grow       { width:   6em; }
+#history table thead th.gm         { width:   6em; }
+#history table thead th.member     { width:  auto; }
 
 @media screen and (max-width:735px){
   #history table  { table-layout: fixed; }
-  #history table thead th:nth-child(3) { width: 12em; } /* タイトル */
-  #history table thead th:nth-child(6) { width: 16em; } /* 参加者 */
+  #history table thead th.title  { width: 12em; }
+  #history table thead th.member { width: 16em; }
 }
 
 

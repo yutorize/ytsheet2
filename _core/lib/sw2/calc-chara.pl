@@ -451,7 +451,13 @@ sub data_calc {
   $pc{'mpTotal'}  = 0  if ($pc{'race'} eq 'グラスランナー');
 
   ## 移動力
-  my $own_mobility = $pc{'armour1Own'} ? 2 : 0;
+  my $own_mobility = 0;
+  foreach my $num (1 .. $pc{armourNum}){
+    if($pc{"armour${num}Category"} =~ /鎧/ && $pc{"armour${num}Own"}){
+      $own_mobility = 2;
+      last;
+    }
+  }
   $pc{'mobilityBase'} = $pc{'sttAgi'} + $pc{'sttAddB'} + $own_mobility;
   $pc{'mobilityBase'} = $pc{'mobilityBase'} * 2 + $own_mobility  if ($pc{'race'} eq 'ケンタウロス');
   $pc{'mobilityTotal'} = $pc{'mobilityBase'} + s_eval($pc{'mobilityAdd'});
@@ -552,6 +558,7 @@ sub data_calc {
     }
   }
 
+  
   {
   ## 基本回避力
     use POSIX 'ceil';
@@ -561,27 +568,30 @@ sub data_calc {
     my $id   = $data::class{$name}{'id'};
     my $lv = $pc{'lv'.$id} || 0;
     $pc{'evasionStr'} = ($pc{'evasionClass'} eq "フェンサー") ? $pc{'reqdStrF'} : $pc{'reqdStr'};
-
   ## 防具
     foreach my $i (1..3){
-      my $own_agi = $pc{"defTotal${i}CheckShield1"} && $pc{'shield1Own'} ? 2 : 0;
-      my $art_def = 0;
-      my $eva = ( $lv ? $lv + int(($pc{'sttAgi'}+$pc{'sttAddB'}+$own_agi)/6) : 0 ) + $pc{'evasiveManeuver'} + $pc{'mindsEye'};
+      my $eva = $pc{'evasiveManeuver'} + $pc{'mindsEye'};
       my $def = $pc{'raceAbilityDef'} + $pc{'defenseSeeker'};
-      my $flag = 0;
-      if($pc{"defTotal${i}CheckArmour1"}  ){ $flag++; $eva += $pc{'armour1Eva'};    $def += $pc{'armour1Def'} + max($pc{'masteryMetalArmour'},$pc{'masteryNonMetalArmour'}); }
-      if($pc{"defTotal${i}CheckShield1"}  ){ $flag++; $eva += $pc{'shield1Eva'};    $def += $pc{'shield1Def'} + $pc{'masteryShield'}; }
-      if($pc{"defTotal${i}CheckDefOther1"}){ $flag++; $eva += $pc{'defOther1Eva'}; $def += $pc{'defOther1Def'}; }
-      if($pc{"defTotal${i}CheckDefOther2"}){ $flag++; $eva += $pc{'defOther2Eva'}; $def += $pc{'defOther2Def'}; }
-      if($pc{"defTotal${i}CheckDefOther3"}){ $flag++; $eva += $pc{'defOther3Eva'}; $def += $pc{'defOther3Def'}; }
-      if(($pc{"defTotal${i}CheckArmour1"} && $pc{'armour1Note'} =~ /〈魔器〉/)
-      || ($pc{"defTotal${i}CheckShield1"} && $pc{'Shield1Note'} =~ /〈魔器〉/)){
-        $def += $pc{'masteryArtisan'};
+      my $own_agi = 0;
+      my $artisan = 0;
+      foreach my $num (1 .. $pc{armourNum}){
+        next if !$pc{"defTotal${i}CheckArmour${num}"};
+        
+        my $category = $pc{"armour${num}Category"};
+        $eva += $pc{"armour${num}Eva"};
+        $def += $pc{"armour${num}Def"};
+        if   ($category eq   '金属鎧'){ $def += $pc{masteryMetalArmour} }
+        elsif($category eq '非金属鎧'){ $def += $pc{masteryNonMetalArmour} }
+        elsif($category eq       '盾'){ $def += $pc{masteryShield} }
+        
+        if($category eq '盾' && $pc{"armour${num}Own"}){ $own_agi = 2 }
+        if($pc{"armour${num}Note"} =~ /〈魔器〉/){ $artisan = $pc{masteryArtisan}; }
       }
-      if($flag){
-        $pc{"defenseTotal${i}Eva"} = $eva;
-        $pc{"defenseTotal${i}Def"} = $def;
-      }
+      $eva += $lv ? $lv + int(($pc{'sttAgi'}+$pc{'sttAddB'}+$own_agi)/6) : 0;
+      $def += $artisan;
+      
+      $pc{"defenseTotal${i}Eva"} = $eva;
+      $pc{"defenseTotal${i}Def"} = $def;
     }
   }
 

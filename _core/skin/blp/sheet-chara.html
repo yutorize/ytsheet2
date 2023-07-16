@@ -41,9 +41,9 @@
     <h1><a href="./"><TMPL_VAR title></a></h1>
     <nav>
       <ul>
-        <TMPL_LOOP Menu><li class="<TMPL_VAR SIZE>"><a <TMPL_VAR TYPE>="<TMPL_VAR VALUE>"><TMPL_VAR TEXT></a></li>
+        <TMPL_LOOP Menu><li class="<TMPL_VAR SIZE>"><a <TMPL_VAR TYPE>="<TMPL_VAR VALUE>"><TMPL_VAR TEXT></a>
         </TMPL_LOOP>
-        <li><a onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード"></a></li>
+        <li><a onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード"></a>
       </ul>
     </nav>
   </header>
@@ -62,7 +62,7 @@
       <aside id="loglist" class="float-box">
         <h2>過去ログ（バックアップ）</h2>
         <ul>
-          <TMPL_LOOP LogList><li class="<TMPL_VAR SELECTED>"><a href="?id=<TMPL_VAR id><TMPL_VAR URL>"><TMPL_VAR DATE></a></li></TMPL_LOOP>
+          <TMPL_LOOP LogList><li class="<TMPL_VAR SELECTED>"><a href="?id=<TMPL_VAR id><TMPL_VAR URL>"><TMPL_VAR DATE></a></TMPL_LOOP>
         </ul>
         <TMPL_IF viewLogNaming><details id="log-naming">
           <summary>閲覧中のログ<TMPL_IF selectedLogName>の名前をつけなおす<TMPL_ELSE>に名前をつける</TMPL_IF></summary>
@@ -71,9 +71,9 @@
             <input type="hidden" name="id" value="<TMPL_VAR id>">
             <input type="hidden" name="date" value="<TMPL_VAR logId>">
             <dl>
-              <dt>名前</dt><dd><input type="text" name="log-name" value="<TMPL_VAR selectedLogName>"></dd>
-              <TMPL_IF reqdPassword><dt>パスワード</dt><dd><input type="password" name="pass"></dd></TMPL_IF>
-              <dd><input type="submit" value="命名"></dd>
+              <dt>名前<dd><input type="text" name="log-name" value="<TMPL_VAR selectedLogName>">
+              <TMPL_IF reqdPassword><dt>パスワード<dd><input type="password" name="pass"></TMPL_IF>
+              <dd><input type="submit" value="命名">
             </dl>
           </form>
         </details></TMPL_IF>
@@ -144,95 +144,93 @@
 
         <div id="factors" class="box-union">
           <dl class="box" id="factor">
-            <dt>ファクター</dt><dd><TMPL_VAR factor></dd>
+            <dt>ファクター<dd><TMPL_VAR factor>
           </dl>
           <dl class="box" id="factor-core">
-            <dt><TMPL_IF typeH>信念</TMPL_IF><TMPL_IF typeV>起源</TMPL_IF></dt>
-            <dd><TMPL_VAR factorCore></dd>
+            <dt><TMPL_IF typeH>信念</TMPL_IF><TMPL_IF typeV>起源</TMPL_IF>
+            <dd><TMPL_VAR factorCore>
           </dl>
           <dl class="box" id="factor-style">
-            <dt><TMPL_IF typeH>職能</TMPL_IF><TMPL_IF typeV>流儀</TMPL_IF></dt>
-            <dd><TMPL_VAR factorStyle></dd>
+            <dt><TMPL_IF typeH>職能</TMPL_IF><TMPL_IF typeV>流儀</TMPL_IF>
+            <dd><TMPL_VAR factorStyle>
           </dl>
         </div>
 
         <div id="status" class="box-union">
           <dl class="box" id="level">
-            <dt>練度</dt>
-            <dd><TMPL_VAR level></dd>
+            <dt>練度
+            <dd><TMPL_VAR level>
           </dl>
           <dl class="box" id="main-status">
-            <dt>能力値</dt>
+            <dt>能力値
             <dd>
               <dl>
-                <dt><TMPL_IF typeH><i class="spade">♠</i>技</TMPL_IF><TMPL_IF typeV><i class="heart">♥</i>血</TMPL_IF></dt>
-                <dd><b><TMPL_VAR statusMain1></b></dd>
-                <dt><TMPL_IF typeH><i class="club" >♣</i>情</TMPL_IF><TMPL_IF typeV><i class="dia"  >♦</i>想</TMPL_IF></dt>
-                <dd><b><TMPL_VAR statusMain2></b></dd>
+                <dt><TMPL_IF typeH><i class="spade">♠</i>技</TMPL_IF><TMPL_IF typeV><i class="heart">♥</i>血</TMPL_IF>
+                <dd><b><TMPL_VAR statusMain1></b>
+                <dt><TMPL_IF typeH><i class="club" >♣</i>情</TMPL_IF><TMPL_IF typeV><i class="dia"  >♦</i>想</TMPL_IF>
+                <dd><b><TMPL_VAR statusMain2></b>
               </dl>
-            </dd>
           </dl>
           <dl class="box" id="sub-status">
-            <dt>副能力値</dt>
+            <dt>副能力値
             <dd>
               <dl>
-                <dt>耐久値</dt><dd><b><TMPL_VAR endurance ></b><small>=<TMPL_VAR enduranceFormula ></small></dt>
-                <dt>先制値</dt><dd><b><TMPL_VAR initiative></b><small>=<TMPL_VAR initiativeFormula></small></dt>
+                <dt>耐久値<dd><b><TMPL_VAR endurance ></b><small>=<TMPL_VAR enduranceFormula ></small>
+                <dt>先制値<dd><b><TMPL_VAR initiative></b><small>=<TMPL_VAR initiativeFormula></small>
               </dl>
-            </dd>
           </dl>
         </div>
 
         <div id="personal" class="box-union">
           <dl class="box">
-            <dt><TMPL_IF typeV>外見年齢／実</TMPL_IF>年齢</dt>
-            <dd><TMPL_IF typeV><TMPL_VAR ageApp>／</TMPL_IF><TMPL_VAR age></dd>
+            <dt><TMPL_IF typeV>外見年齢／実</TMPL_IF>年齢
+            <dd><TMPL_IF typeV><TMPL_VAR ageApp>／</TMPL_IF><TMPL_VAR age>
           </dl>
           <dl class="box">
-            <dt>性別</dt>
-            <dd><TMPL_VAR gender></dd>
+            <dt>性別
+            <dd><TMPL_VAR gender>
           </dl>
           <dl class="box">
-            <dt>所属</dt>
-            <dd><TMPL_VAR belong></dd>
-            <dd><div><TMPL_VAR belongNote></div></dd>
+            <dt>所属
+            <dd><TMPL_VAR belong>
+            <dd><div><TMPL_VAR belongNote></div>
           </dl>
           <dl class="box">
-            <dt>過去</dt>
-            <dd><TMPL_VAR past></dd>
-            <dd><div><TMPL_VAR pastNote></div></dd>
+            <dt>過去
+            <dd><TMPL_VAR past>
+            <dd><div><TMPL_VAR pastNote></div>
           </dl>
           <dl class="box">
-            <dt>経緯</dt>
-            <dd><TMPL_VAR background></dd>
-            <dd><div><TMPL_VAR backgroundNote></div></dd>
+            <dt>経緯
+            <dd><TMPL_VAR background>
+            <dd><div><TMPL_VAR backgroundNote></div>
           </dl>
           <dl class="box">
-            <dt><TMPL_IF typeH>喪失</TMPL_IF><TMPL_IF typeV>欠落</TMPL_IF></dt>
-            <dd><TMPL_VAR missing></dd>
-            <dd><div><TMPL_VAR missingNote></div></dd>
+            <dt><TMPL_IF typeH>喪失</TMPL_IF><TMPL_IF typeV>欠落</TMPL_IF>
+            <dd><TMPL_VAR missing>
+            <dd><div><TMPL_VAR missingNote></div>
           </dl>
           <dl class="box">
-            <dt>外見的特徴</dt>
-            <dd><TMPL_VAR appearance></dd>
-            <dd><div><TMPL_VAR appearanceNote></div></dd>
+            <dt>外見的特徴
+            <dd><TMPL_VAR appearance>
+            <dd><div><TMPL_VAR appearanceNote></div>
           </dl>
           <dl class="box">
-            <dt>住まい</dt>
-            <dd><TMPL_VAR dwelling></dd>
-            <dd><div><TMPL_VAR dwellingNote></div></dd>
+            <dt>住まい
+            <dd><TMPL_VAR dwelling>
+            <dd><div><TMPL_VAR dwellingNote></div>
           </dl>
           <dl class="box">
-            <dt>使用武器</dt>
-            <dd><TMPL_VAR weapon></dd>
-            <dd><div><TMPL_VAR weaponNote></div></dd>
+            <dt>使用武器
+            <dd><TMPL_VAR weapon>
+            <dd><div><TMPL_VAR weaponNote></div>
           </dl>
         </div>
 
         <TMPL_IF scarName><dl id="scar" class="box">
-          <dt>傷号</dt>
-          <dd><TMPL_VAR scarName></dd>
-          <dd class="left"><TMPL_VAR scarNote></dd>
+          <dt>傷号
+          <dd><TMPL_VAR scarName>
+          <dd class="left"><TMPL_VAR scarNote>
         </dl></TMPL_IF>
       </div>
       
@@ -243,18 +241,18 @@
           <div>
             <h2>血僕</h2>
             <div id="servant-data">
-              <dl class="master"    ><dt>主      </dt><dd><TMPL_VAR servantMaster></dd></dl>
-              <dl class="class"     ><dt>区分    </dt><dd><TMPL_VAR servantClass></dd></dl>
-              <dl class="background"><dt>従属経緯</dt><dd><TMPL_VAR servantBackground></dd></dl>
+              <dl class="master"    ><dt>主      <dd><TMPL_VAR servantMaster></dl>
+              <dl class="class"     ><dt>区分    <dd><TMPL_VAR servantClass></dl>
+              <dl class="background"><dt>従属経緯<dd><TMPL_VAR servantBackground></dl>
             </div>
           </div>
           <div>
             <h2>隷印</h2>
             <div class="seal-details">
-              <dl class="position"><dt>位置</dt><dd><TMPL_VAR servantSealPosition></dd></dl>
-              <dl class="shape"   ><dt>形状</dt><dd><TMPL_VAR servantSealShape></dd></dl>
-              <dl class="emotion1"><dt>主からの感情1</dt><dd><TMPL_VAR servantEmotion1></dd></dl>
-              <dl class="emotion2"><dt>主からの感情2</dt><dd><TMPL_VAR servantEmotion2></dd></dl>
+              <dl class="position"><dt>位置<dd><TMPL_VAR servantSealPosition></dl>
+              <dl class="shape"   ><dt>形状<dd><TMPL_VAR servantSealShape></dl>
+              <dl class="emotion1"><dt>主からの感情1<dd><TMPL_VAR servantEmotion1></dl>
+              <dl class="emotion2"><dt>主からの感情2<dd><TMPL_VAR servantEmotion2></dl>
             </div>
           </div>
         </div></TMPL_IF>
@@ -271,22 +269,22 @@
         
           <div class="partner-name">
             <h1><TMPL_VAR head_p1>:<TMPL_IF partner1Url><a href="<TMPL_VAR partner1Url>"><TMPL_VAR partner1Name></a><TMPL_ELSE><TMPL_VAR partner1Name></TMPL_IF></h1>
-            <dl class="partner-playername"><dt>プレイヤー</dt><dd><TMPL_VAR p1_playerName></dd></dl>
+            <dl class="partner-playername"><dt>プレイヤー<dd><TMPL_VAR p1_playerName></dl>
           </div>
           <div class="box-union partner-personal">
-            <dl class="box"><dt><TMPL_IF typeH>起源／流儀</TMPL_IF><TMPL_IF typeV>信念／職能</TMPL_IF></dt><dd><TMPL_VAR partner1Factor></dd></dl>
-            <dl class="box"><dt><TMPL_IF typeH>外見年齢／実</TMPL_IF>年齢</dt><dd><TMPL_VAR partner1Age></dd></dl>
-            <dl class="box"><dt>性別</dt><dd><TMPL_VAR partner1Gender></dd></dl>
-            <dl class="box"><dt><TMPL_IF typeH>欠落</TMPL_IF><TMPL_IF typeV>喪失</TMPL_IF></dt><dd><TMPL_VAR partner1Missing></dd></dl>
+            <dl class="box"><dt><TMPL_IF typeH>起源／流儀</TMPL_IF><TMPL_IF typeV>信念／職能</TMPL_IF><dd><TMPL_VAR partner1Factor></dl>
+            <dl class="box"><dt><TMPL_IF typeH>外見年齢／実</TMPL_IF>年齢<dd><TMPL_VAR partner1Age></dl>
+            <dl class="box"><dt>性別<dd><TMPL_VAR partner1Gender></dl>
+            <dl class="box"><dt><TMPL_IF typeH>欠落</TMPL_IF><TMPL_IF typeV>喪失</TMPL_IF><dd><TMPL_VAR partner1Missing></dl>
           </div>
           <div class="box seal">
             <h2>痕印</h2>
             <div class="seal-details">
-              <dl class="position"><dt>位置</dt><dd><TMPL_VAR fromPartner1SealPosition></dd></dl>
-              <dl class="shape"   ><dt>形状</dt><dd><TMPL_VAR fromPartner1SealShape></dd></dl>
-              <dl class="emotion1"><dt>相手からの感情1</dt><dd><TMPL_VAR fromPartner1Emotion1></dd></dl>
-              <dl class="emotion2"><dt>相手からの感情2</dt><dd><TMPL_VAR fromPartner1Emotion2></dd></dl>
-              <dl class="promise" ><dt>約束</dt><dd><TMPL_VAR partner1Promise></dd></dl>
+              <dl class="position"><dt>位置<dd><TMPL_VAR fromPartner1SealPosition></dl>
+              <dl class="shape"   ><dt>形状<dd><TMPL_VAR fromPartner1SealShape></dl>
+              <dl class="emotion1"><dt>相手からの感情1<dd><TMPL_VAR fromPartner1Emotion1></dl>
+              <dl class="emotion2"><dt>相手からの感情2<dd><TMPL_VAR fromPartner1Emotion2></dl>
+              <dl class="promise" ><dt>約束<dd><TMPL_VAR partner1Promise></dl>
             </div>
           </div>
         </div>
@@ -304,22 +302,22 @@
         
           <div class="partner-name">
             <h1><TMPL_VAR head_p2>:<TMPL_IF partner2Url><a href="<TMPL_VAR partner2Url>"><TMPL_VAR partner2Name></a><TMPL_ELSE><TMPL_VAR partner2Name></TMPL_IF></h1>
-            <dl class="partner-playername"><dt>プレイヤー</dt><dd><TMPL_VAR p2_playerName></dd></dl>
+            <dl class="partner-playername"><dt>プレイヤー<dd><TMPL_VAR p2_playerName></dl>
           </div>
           <div class="box-union partner-personal">
-            <dl class="box"><dt>起源／流儀</dt><dd><TMPL_VAR partner2Factor></dd></dl>
-            <dl class="box"><dt>外見年齢／実年齢</dt><dd><TMPL_VAR partner2Age></dd></dl>
-            <dl class="box"><dt>性別</dt><dd><TMPL_VAR partner2Gender></dd></dl>
-            <dl class="box"><dt>欠落</dt><dd><TMPL_VAR partner2Missing></dd></dl>
+            <dl class="box"><dt>起源／流儀<dd><TMPL_VAR partner2Factor></dl>
+            <dl class="box"><dt>外見年齢／実年齢<dd><TMPL_VAR partner2Age></dl>
+            <dl class="box"><dt>性別<dd><TMPL_VAR partner2Gender></dl>
+            <dl class="box"><dt>欠落<dd><TMPL_VAR partner2Missing></dl>
           </div>
           <div class="box <TMPL_VAR class_p2>">
             <h2>痕印</h2>
             <div class="seal-details">
-              <dl class="position"><dt>位置</dt><dd><TMPL_VAR fromPartner2SealPosition></dd></dl>
-              <dl class="shape"   ><dt>形状</dt><dd><TMPL_VAR fromPartner2SealShape></dd></dl>
-              <dl class="emotion1"><dt>相手からの感情1</dt><dd><TMPL_VAR fromPartner2Emotion1></dd></dl>
-              <dl class="emotion2"><dt>相手からの感情2</dt><dd><TMPL_VAR fromPartner2Emotion2></dd></dl>
-              <dl class="promise" ><dt><TMPL_IF typeH>約束</TMPL_IF><TMPL_IF typeV>協定</TMPL_IF></dt><dd><TMPL_VAR partner2Promise></dd></dl>
+              <dl class="position"><dt>位置<dd><TMPL_VAR fromPartner2SealPosition></dl>
+              <dl class="shape"   ><dt>形状<dd><TMPL_VAR fromPartner2SealShape></dl>
+              <dl class="emotion1"><dt>相手からの感情1<dd><TMPL_VAR fromPartner2Emotion1></dl>
+              <dl class="emotion2"><dt>相手からの感情2<dd><TMPL_VAR fromPartner2Emotion2></dl>
+              <dl class="promise" ><dt><TMPL_IF typeH>約束</TMPL_IF><TMPL_IF typeV>協定</TMPL_IF><dd><TMPL_VAR partner2Promise></dl>
             </div>
           </div>
         </div>
@@ -331,15 +329,15 @@
           <h2>血威</h2>
           <table class="data-table">
             <thead>
-              <tr><th>名称</th><th>タイミング</th><th>対象</th><th class="left">解説</th></tr>
+              <tr><th>名称<th>タイミング<th>対象<th class="left">解説
             </thead>
             <tbody>
-            <TMPL_LOOP Bloodarts><tr>
-                <td class="name"><TMPL_VAR NAME></td>
-                <td><TMPL_VAR TIMING></td>
-                <td><TMPL_VAR TARGET></td>
-                <td class="left"><TMPL_VAR NOTE></td>
-              </tr></TMPL_LOOP>
+              <TMPL_LOOP Bloodarts><tr>
+                <td class="name"><TMPL_VAR NAME>
+                <td><TMPL_VAR TIMING>
+                <td><TMPL_VAR TARGET>
+                <td class="left"><TMPL_VAR NOTE>
+              </TMPL_LOOP>
             </tbody>
           </table>
         </section>
@@ -348,17 +346,17 @@
           <h2>特技</h2>
           <table class="data-table">
             <thead>
-              <tr><th>名称</th><th>タイミング</th><th>対象</th><th>代償</th><th>条件</th><th class="left">解説</th></tr>
+              <tr><th>名称<th>タイミング<th>対象<th>代償<th>条件<th class="left">解説
             </thead>
             <tbody>
-            <TMPL_LOOP Arts><tr>
-                <td class="name"><TMPL_VAR NAME></td>
-                <td><TMPL_VAR TIMING></td>
-                <td><TMPL_VAR TARGET></td>
-                <td><TMPL_VAR COST></td>
-                <td><TMPL_VAR LIMITED></td>
-                <td class="left"><TMPL_VAR NOTE></td>
-              </tr></TMPL_LOOP>
+              <TMPL_LOOP Arts><tr>
+                <td class="name"><TMPL_VAR NAME>
+                <td><TMPL_VAR TIMING>
+                <td><TMPL_VAR TARGET>
+                <td><TMPL_VAR COST>
+                <td><TMPL_VAR LIMITED>
+                <td class="left"><TMPL_VAR NOTE>
+              </TMPL_LOOP>
             </tbody>
           </table>
         </section>
@@ -379,27 +377,23 @@
         <table class="data-table line-tbody">
           <thead>
             <tr>
-              <th>No.</th>
-              <th>日付</th>
-              <th>タイトル</th>
-              <th>力の向上</th>
-              <th>GM</th>
-              <th>参加者</th>
-            </tr>
+              <th class="num   ">No.
+              <th class="date  ">日付
+              <th class="title ">タイトル
+              <th class="grow  ">力の向上
+              <th class="gm    ">GM
+              <th class="member">参加者
           </thead>
           <TMPL_LOOP History><tbody>
             <tr>
-              <td class="num" <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR NUM></td>
-              <td class="date" <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR DATE></td>
-              <td class="title" <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR TITLE></td>
-              <td class="grow"><span><TMPL_VAR GROW></span></td>
-              <td class="gm"><span><TMPL_VAR GM></span></td>
-              <td class="member"><TMPL_VAR MEMBER></td>
-            </tr>
-            <TMPL_IF NOTE><tr>
-              <td colspan="3" class="note"><TMPL_VAR NOTE></td>
-            </tr></TMPL_IF>
-          </tbody></TMPL_LOOP>
+              <td class="num   " <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR NUM>
+              <td class="date  " <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR DATE>
+              <td class="title " <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR TITLE>
+              <td class="grow  "><span><TMPL_VAR GROW></span>
+              <td class="gm    "><span><TMPL_VAR GM></span>
+              <td class="member"><TMPL_VAR MEMBER>
+            <TMPL_IF NOTE><tr><td colspan="3" class="note"><TMPL_VAR NOTE></TMPL_IF>
+          </TMPL_LOOP>
         </table>
       </section>
       <section class="box chat-palette float-box">

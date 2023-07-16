@@ -232,11 +232,6 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
   }
 }
 
-#area-status dd:empty::before,
-#area-status td:empty::before {
-  content: '　';
-}
-
 /* Image */
 .image-none::after {
   transform: scale(1, 1.5);
@@ -258,6 +253,7 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
   display: grid;
   align-items: center;
   white-space: nowrap;
+  min-height: 1.8em;
 }
 
 /* Personal */
@@ -736,10 +732,10 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
 #history {
   margin-top: var(--box-v-gap);
 }
-#history table thead th:nth-child(1) { width:   2em; } /* No. */
-#history table thead th:nth-child(2) { width: 5.2em; } /* 日付 */
-#history table thead th:nth-child(3) { width:  auto; } /* タイトル */
-#history table thead th:nth-child(4) { width: 4.6em; } /* 成長 */
-#history table thead th:nth-child(5) { width:  auto; } /* ＧＭ */
-#history table thead th:nth-child(6) { width:  auto; } /* 参加者 */
+#history table thead th.num    { width:   2em; } /* No. */
+#history table thead th.date   { width: 5.2em; } /* 日付 */
+#history table thead th.title  { width:  auto; } /* タイトル */
+#history table thead th.grow   { width: 4.6em; } /* 成長 */
+#history table thead th.gm     { width:  auto; } /* ＧＭ */
+#history table thead th.member { width:  auto; } /* 参加者 */
 

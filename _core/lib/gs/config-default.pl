@@ -200,6 +200,8 @@ foreach (@weapons){
   our $lib_palette_sub = $::core_dir . '/lib/gs/palette-sub.pl';
   # 一覧
   our $lib_list_char = $::core_dir . '/lib/gs/list-chara.pl';
+  # JS
+  our $lib_js_consts = $::core_dir . '/lib/gs/js-consts.pl';
   # JSON出力
   our $lib_json     = $::core_dir . '/lib/json.pl';
   our $lib_json_sub = $::core_dir . '/lib/gs/json-sub.pl';

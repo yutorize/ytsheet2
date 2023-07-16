@@ -126,9 +126,9 @@ function checkMagicClass(){
   form.magicActionTypePassive.parentNode.style.display = (magic == '騎芸') ? '' : 'none';
   form.magicActionTypeMajor.parentNode.style.display   = (magic == '騎芸') ? '' : 'none';
   document.querySelector('#data-magic dl.summary').style.display   = (magic == '呪印' || magic == '貴格') ? 'none' : '';
-  document.querySelector('#data-magic dl.type      dt').innerHTML = (magic == '鼓咆') ? '鼓咆の系統' : (magic == '占瞳') ? 'タイプなど' : (magic == '貴格') ? '形態' : '対応';
-  document.querySelector('#data-magic dl.premise   dt').innerHTML = (magic == '呪印') ? '前提ＡＣ'   : '前提';
-  document.querySelector('#data-magic dl.condition dt').innerHTML = (magic == '呪歌') ? '効果発生条件' : (magic == '陣率') ? '使用条件' : '条件';
+  document.querySelector('#data-magic dl.type      dt').textContent = (magic == '鼓咆') ? '鼓咆の系統' : (magic == '占瞳') ? 'タイプなど' : (magic == '貴格') ? '形態' : '対応';
+  document.querySelector('#data-magic dl.premise   dt').textContent = (magic == '呪印') ? '前提ＡＣ'   : '前提';
+  document.querySelector('#data-magic dl.condition dt').textContent = (magic == '呪歌') ? '効果発生条件' : (magic == '陣率') ? '使用条件' : '条件';
 }
 function viewMagicInputs(items){
   document.querySelectorAll(`#data-magic dl`).forEach(obj => {
@@ -201,22 +201,12 @@ function delSchoolItem(obj, url){
 // 追加
 function addSchoolArts(){
   let num = Number(form.schoolArtsNum.value) + 1;
-  let div = document.createElement('div');
-  div.setAttribute('id',idNumSet('arts'));
-  div.setAttribute('class','input-data');
-  div.innerHTML = `
-    <dl class="name    "><dt>名称      </dt><dd>《<input type="text" name="schoolArts${num}Name">》<br><label class="check-button"><input type="checkbox" name="schoolArts${num}ActionTypeSetup" value="1"><span>戦闘準備</span></label></dd></dl>
-    <dl class="cost    "><dt>必要名誉点</dt><dd><input type="text" name="schoolArts${num}Cost"></dd></dl>
-    <dl class="type    "><dt>タイプ    </dt><dd><input type="text" name="schoolArts${num}Type" list="list-arts-type"></dd></dl>
-    <dl class="premise "><dt>前提      </dt><dd><input type="text" name="schoolArts${num}Premise"></dd></dl>
-    <dl class="equip   "><dt>限定条件  </dt><dd><input type="text" name="schoolArts${num}Equip"></dd></dl>
-    <dl class="use     "><dt>使用      </dt><dd><input type="text" name="schoolArts${num}Use"></dd></dl>
-    <dl class="apply   "><dt>適用      </dt><dd><input type="text" name="schoolArts${num}Apply"></dd></dl>
-    <dl class="risk    "><dt>リスク    </dt><dd><input type="text" name="schoolArts${num}Risk"></dd></dl>
-    <dl class="summary "><dt>概要      </dt><dd><input type="text" name="schoolArts${num}Summary"></dd></dl>
-    <dl class="effect  "><dt>効果      </dt><dd><textarea name="schoolArts${num}Effect"></textarea></dd></dl>
-  `;
-  document.querySelector("#arts-list").appendChild(div);
+
+  let row = document.querySelector('#arts-template').content.firstElementChild.cloneNode(true);
+  row.id = idNumSet('arts');
+  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
+  document.querySelector("#arts-list").append(row);
+
   form.schoolArtsNum.value = num;
 }
 // 削除
@@ -235,23 +225,12 @@ function delSchoolArts(){
 // 追加
 function addSchoolMagic(){
   let num = Number(form.schoolMagicNum.value) + 1;
-  let div = document.createElement('div');
-  div.setAttribute('id',idNumSet('school-magic'));
-  div.setAttribute('class','input-data');
-  div.innerHTML = `
-  <dl class="name    "><dt>名称      </dt><dd>【<input type="text" name="schoolMagic${num}Name" value="">】<br><label class="check-button"><input type="checkbox" name="schoolMagic${num}ActionTypeMinor" value="1"><span>補助動作</span></label><label class="check-button"><input type="checkbox" name="schoolMagic${num}ActionTypeSetup" value="1"><span>戦闘準備</span></label></dd></dl>
-  <dl class="cost    "><dt>必要名誉点</dt><dd><input type="text" name="schoolMagic${num}AcquireCost" value=""></dd></dl>
-  <dl class="level    "><dt>習得レベル</dt><dd><input type="text" name="schoolMagic${num}Lv" value=""></dd></dl>
-  <dl class="cost    "><dt>消費      </dt><dd><input type="text" name="schoolMagic${num}Cost" value=""></dd></dl>
-  <dl class="target  "><dt>対象      </dt><dd><input type="text" name="schoolMagic${num}Target" value="" list="list-target"></dd></dl>
-  <dl class="range   "><dt>射程／形状</dt><dd><input type="text" name="schoolMagic${num}Range" value="" list="list-range">／<input type="text" name="schoolMagic${num}Form" value="" list="list-form"></dd></dl>
-  <dl class="duration"><dt>時間      </dt><dd><input type="text" name="schoolMagic${num}Duration" value="" list="list-duration"></dd></dl>
-  <dl class="resist  "><dt>抵抗      </dt><dd><input type="text" name="schoolMagic${num}Resist" value="" list="list-resist"></dd></dl>
-  <dl class="element "><dt>属性      </dt><dd><input type="text" name="schoolMagic${num}Element" value="" list="list-element"></dd></dl>
-  <dl class="summary "><dt>概要      </dt><dd><input type="text" name="schoolMagic${num}Summary" value=""></dd></dl>
-  <dl class="effect  "><dt>効果      </dt><dd><textarea name="schoolMagic${num}Effect"></textarea></dd></dl>
-  `;
-  document.querySelector("#school-magic-list").appendChild(div);
+
+  let row = document.querySelector('#school-magic-template').content.firstElementChild.cloneNode(true);
+  row.id = idNumSet('school-magic');
+  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
+  document.querySelector("#school-magic-list").append(row);
+
   form.schoolMagicNum.value = num;
 }
 // 削除

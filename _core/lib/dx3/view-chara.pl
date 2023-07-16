@@ -316,7 +316,9 @@ foreach (1 .. 7){
     "COLOR"    => $pc{'lois'.$_.'Color'},
     "COLOR-BG" => $color,
     "NOTE"     => $pc{'lois'.$_.'Note'},
+    "S"        => $pc{'lois'.$_.'S'},
     "STATE"    => $pc{'lois'.$_.'State'},
+    "D"        => $pc{'lois'.$_.'Relation'} =~ /[DＤEＥ]ロイス|^[DＤEＥ]$/ ? 1 : 0
   });
   if($pc{'lois'.$_.'Name'} =~ /起源種|オリジナルレネゲイド/){ $SHEET->param(encroachOrOn => 'checked'); }
 }
@@ -325,7 +327,7 @@ $SHEET->param(Loises => \@loises);
 ### メモリー --------------------------------------------------
 my @memories;
 foreach (1 .. 3){
-  next if !$pc{'memory'.$_.'Gain'};
+  next if !$pc{'memory'.$_.'Relation'} && !$pc{'memory'.$_.'Name'};
   push(@memories, {
     "RELATION" => $pc{'memory'.$_.'Relation'},
     "NAME"     => $pc{'memory'.$_.'Name'},

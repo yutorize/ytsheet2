@@ -144,15 +144,15 @@ print <<"HTML";
       <div id="header-menu">
         <h2><span></span></h2>
         <ul>
-          <li onclick="sectionSelect('common');"><span>魔法</span><span>データ</span></li>
-          <li onclick="sectionSelect('color');" class="color-icon" title="カラーカスタム"></span></li>
-          <li onclick="view('text-rule')" class="help-icon" title="テキスト整形ルール"></li>
-          <li onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード切替"></li>
+          <li onclick="sectionSelect('common');"><span>魔法</span><span>データ</span>
+          <li onclick="sectionSelect('color');" class="color-icon" title="カラーカスタム"></span>
+          <li onclick="view('text-rule')" class="help-icon" title="テキスト整形ルール">
+          <li onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード切替">
           <li class="buttons">
             <ul>
-              <li @{[ display ($mode eq 'edit') ]} class="view-icon" title="閲覧画面"><a href="./?id=$::in{'id'}"></a></li>
-              <li @{[ display ($mode eq 'edit') ]} class="copy" onclick="window.open('./?mode=copy&id=$::in{'id'}@{[  $::in{'log'}?"&log=$::in{'log'}":'' ]}');">複製</li>
-              <li class="submit" onclick="formSubmit()" title="Ctrl+S">保存</li>
+              <li @{[ display ($mode eq 'edit') ]} class="view-icon" title="閲覧画面"><a href="./?id=$::in{'id'}"></a>
+              <li @{[ display ($mode eq 'edit') ]} class="copy" onclick="window.open('./?mode=copy&id=$::in{'id'}@{[  $::in{'log'}?"&log=$::in{'log'}":'' ]}');">複製
+              <li class="submit" onclick="formSubmit()" title="Ctrl+S">保存
             </ul>
           </li>
         </ul>
@@ -196,40 +196,36 @@ HTML
 }
   print <<"HTML";
       <dl class="box" id="hide-options">
-        <dt>閲覧可否設定</dt>
+        <dt>閲覧可否設定
         <dd id="forbidden-checkbox">
           <select name="forbidden">
             <option value="">内容を全て開示
             <option value="battle" @{[ $pc{'forbidden'} eq 'battle' ? 'selected' : '' ]}>データ・数値のみ秘匿
             <option value="all"    @{[ $pc{'forbidden'} eq 'all'    ? 'selected' : '' ]}>内容を全て秘匿
           </select>
-        </dd>
         <dd id="hide-checkbox">
           <select name="hide">
             <option value="">一覧に表示
             <option value="1" @{[ $pc{'hide'} ? 'selected' : '' ]}>一覧には非表示
           </select>
-        </dd>
-        <dd>
-          ※一覧に非表示でもタグ検索結果・マイリストには表示されます
-        </dd>
+        <dd>※「一覧に非表示」でもタグ検索結果・マイリストには表示されます
       </dl>
       <div class="box" id="group">
         <dl>
-          <dt>タグ</dt><dd>@{[ input 'tags' ]}</dd>
+          <dt>タグ<dd>@{[ input 'tags' ]}
         </dl>
       </div>
 
       <div class="box" id="name-form">
         <div>
           <dl id="category">
-            <dt>カテゴリ</dt>
-            <dd><select name="category" oninput="checkCategory();">@{[ option 'category','magic|<魔法／練技・呪歌など>','god|<神格＋特殊神聖魔法>','school|<流派＋秘伝>' ]}</select></dd>
+            <dt>カテゴリ
+            <dd><select name="category" oninput="checkCategory();">@{[ option 'category','magic|<魔法／練技・呪歌など>','god|<神格＋特殊神聖魔法>','school|<流派＋秘伝>' ]}</select>
           </dl>
         </div>
         <dl id="player-name">
-          <dt>製作者</dt>
-          <dd>@{[input('author')]}</dd>
+          <dt>製作者
+          <dd>@{[input('author')]}
         </dl>
       </div>
       <div class="data-area box" id="data-none">
@@ -238,30 +234,30 @@ HTML
       <!-- 魔法 -->
       <div class="data-area" id="data-magic">
         <div class="box input-data">
-          <dl class="name     "><dt>名称        </dt><dd>【@{[ input 'magicName','',"nameSet" ]}】<br>
-                                                          @{[ checkbox 'magicActionTypePassive','常時' ]}@{[ checkbox 'magicActionTypeMajor','主動作' ]}@{[ checkbox 'magicActionTypeMinor','補助動作' ]}@{[ checkbox 'magicActionTypeSetup','戦闘準備' ]}</dd></dl>
-          <dl class="class    "><dt>系統        </dt><dd>@{[ selectInput "magicClass","checkMagicClass",@magic_classes ]} @{[ checkbox 'magicMinor','小魔法' ]}</dd></dl>
-          <dl class="sphere   "><dt>マギスフィア</dt><dd>@{[ input 'magicMagisphere','','','list="list-sphere"' ]}</dd></dl>
-          <dl class="level    "><dt>習得レベル  </dt><dd>@{[ input 'magicLevel' ]}</dd></dl>
-          <dl class="type     "><dt>対応        </dt><dd>@{[ input 'magicType','','','list="list-type"' ]}</dd></dl>
-          <dl class="premise  "><dt>前提        </dt><dd>@{[ input 'magicPremise' ]}</dd></dl>
-          <dl class="cost     "><dt>消費        </dt><dd>@{[ input 'magicCost','','','list="list-cost"' ]}</dd></dl>
-          <dl class="target   "><dt>対象        </dt><dd>@{[ input 'magicTarget','','','list="list-target"' ]}</dd></dl>
-          <dl class="range    "><dt>射程／形状  </dt><dd>@{[ input 'magicRange','','','list="list-range"' ]}／@{[ input 'magicForm','','','list="list-form"' ]}</dd></dl>
-          <dl class="duration "><dt>時間        </dt><dd>@{[ input 'magicDuration','','','list="list-duration"' ]}</dd></dl>
-          <dl class="song     "><dt>歌唱        </dt><dd>@{[ checkbox 'magicSongSing','必要' ]}</dd></dl>
-          <dl class="song     "><dt>ペット      </dt><dd>@{[ checkbox 'magicSongPetBird','小鳥' ]}@{[ checkbox 'magicSongPetFrog','蛙' ]}@{[ checkbox 'magicSongPetBug','虫' ]}</dd></dl>
-          <dl class="condition"><dt>条件        </dt><dd>@{[ input 'magicCondition','','','list="list-songpoint"' ]}</dd></dl>
-          <dl class="song     "><dt>楽素        </dt><dd>基礎@{[ input 'magicSongBasePoint','','','list="list-songpoint"' ]} 巧奏値@{[ input 'magicSongSetPoint' ]} 追加@{[ input 'magicSongAddPoint','','','list="list-songpoint"' ]}</dd></dl>
-          <dl class="rider    "><dt>対応        </dt><dd>@{[ checkbox 'magicMountTypeAnimal','動物' ]}@{[ checkbox 'magicMountTypeCryptid','幻獣' ]}@{[ checkbox 'magicMountTypeMachine','魔動機' ]}</dd></dl>
-          <dl class="part     "><dt>適用部位    </dt><dd>@{[ input 'magicApplyPart','','','list="list-part"' ]}</dd></dl>
-          <dl class="rank     "><dt>ランク      </dt><dd>@{[ input 'magicRank' ]}</dd></dl>
-          <dl class="commcost "><dt>陣気コスト  </dt><dd>@{[ input 'magicCommandCost','number' ]}消費</dd></dl>
-          <dl class="command  "><dt>陣気蓄積    </dt><dd>＋@{[ input 'magicCommandCharge','number' ]}</dd></dl>
-          <dl class="resist   "><dt>抵抗        </dt><dd>@{[ input 'magicResist','','','list="list-resist"' ]}</dd></dl>
-          <dl class="element  "><dt>属性        </dt><dd>@{[ input 'magicElement','','','list="list-element"' ]}</dd></dl>
-          <dl class="summary  "><dt>概要        </dt><dd>@{[ input 'magicSummary' ]}</dd></dl>
-          <dl class="effect   "><dt>効果        </dt><dd><textarea name="magicEffect">$pc{'magicEffect'}</textarea></dd></dl>
+          <dl class="name     "><dt>名称        <dd>【@{[ input 'magicName','',"nameSet" ]}】<br>
+                                                          @{[ checkbox 'magicActionTypePassive','常時' ]}@{[ checkbox 'magicActionTypeMajor','主動作' ]}@{[ checkbox 'magicActionTypeMinor','補助動作' ]}@{[ checkbox 'magicActionTypeSetup','戦闘準備' ]}</dl>
+          <dl class="class    "><dt>系統        <dd>@{[ selectInput "magicClass","checkMagicClass",@magic_classes ]} @{[ checkbox 'magicMinor','小魔法' ]}</dl>
+          <dl class="sphere   "><dt>マギスフィア<dd>@{[ input 'magicMagisphere','','','list="list-sphere"' ]}</dl>
+          <dl class="level    "><dt>習得レベル  <dd>@{[ input 'magicLevel' ]}</dl>
+          <dl class="type     "><dt>対応        <dd>@{[ input 'magicType','','','list="list-type"' ]}</dl>
+          <dl class="premise  "><dt>前提        <dd>@{[ input 'magicPremise' ]}</dl>
+          <dl class="cost     "><dt>消費        <dd>@{[ input 'magicCost','','','list="list-cost"' ]}</dl>
+          <dl class="target   "><dt>対象        <dd>@{[ input 'magicTarget','','','list="list-target"' ]}</dl>
+          <dl class="range    "><dt>射程／形状  <dd>@{[ input 'magicRange','','','list="list-range"' ]}／@{[ input 'magicForm','','','list="list-form"' ]}</dl>
+          <dl class="duration "><dt>時間        <dd>@{[ input 'magicDuration','','','list="list-duration"' ]}</dl>
+          <dl class="song     "><dt>歌唱        <dd>@{[ checkbox 'magicSongSing','必要' ]}</dl>
+          <dl class="song     "><dt>ペット      <dd>@{[ checkbox 'magicSongPetBird','小鳥' ]}@{[ checkbox 'magicSongPetFrog','蛙' ]}@{[ checkbox 'magicSongPetBug','虫' ]}</dl>
+          <dl class="condition"><dt>条件        <dd>@{[ input 'magicCondition','','','list="list-songpoint"' ]}</dl>
+          <dl class="song     "><dt>楽素        <dd>基礎@{[ input 'magicSongBasePoint','','','list="list-songpoint"' ]} 巧奏値@{[ input 'magicSongSetPoint' ]} 追加@{[ input 'magicSongAddPoint','','','list="list-songpoint"' ]}</dl>
+          <dl class="rider    "><dt>対応        <dd>@{[ checkbox 'magicMountTypeAnimal','動物' ]}@{[ checkbox 'magicMountTypeCryptid','幻獣' ]}@{[ checkbox 'magicMountTypeMachine','魔動機' ]}</dl>
+          <dl class="part     "><dt>適用部位    <dd>@{[ input 'magicApplyPart','','','list="list-part"' ]}</dl>
+          <dl class="rank     "><dt>ランク      <dd>@{[ input 'magicRank' ]}</dl>
+          <dl class="commcost "><dt>陣気コスト  <dd>@{[ input 'magicCommandCost','number' ]}消費</dl>
+          <dl class="command  "><dt>陣気蓄積    <dd>＋@{[ input 'magicCommandCharge','number' ]}</dl>
+          <dl class="resist   "><dt>抵抗        <dd>@{[ input 'magicResist','','','list="list-resist"' ]}</dl>
+          <dl class="element  "><dt>属性        <dd>@{[ input 'magicElement','','','list="list-element"' ]}</dl>
+          <dl class="summary  "><dt>概要        <dd>@{[ input 'magicSummary' ]}</dl>
+          <dl class="effect   "><dt>効果        <dd><textarea name="magicEffect">$pc{'magicEffect'}</textarea></dl>
           
         </div>
         <div class="box">
@@ -291,29 +287,29 @@ HTML
             let imgURL = "$pc{'imageURL'}";
           </script>
           </div>
-          <dl class="name  "><dt>名称      </dt><dd>@{[ input 'godName','',"nameSet" ]}</dd></dl>
-          <dl class="aka   "><dt>異名      </dt><dd>“@{[ input 'godAka','',"nameSet" ]}”</dd></dl>
-          <dl class="class "><dt>系統      </dt><dd><select name="godClass">@{[ option 'godClass','第一の剣','第二の剣','第三の剣','不明' ]}</select>／<select name="godRank">@{[ option 'godRank','古代神','大神','小神' ]}</select></dd></dl>
-          <dl class="area  "><dt>地域      </dt><dd>@{[ input 'godArea','','','placeholder="大陸・地方など"' ]}<small>※主に小神向けの項目です</small></dd></dl>
-          <dl class="symbol"><dt>聖印と神像</dt><dd><textarea name="godSymbol">$pc{'godSymbol'}</textarea></dd></dl>
-          <dl class="deity "><dt>神格と教義</dt><dd><textarea name="godDeity">$pc{'godDeity'}</textarea></dd></dl>
-          <dl class="maxim "><dt>格言      </dt><dd>「@{[ input "godMaxim1" ]}」<br>「@{[ input "godMaxim2" ]}」<br>「@{[ input "godMaxim3" ]}」</dd></dl>
-          <dl class="deity "><dt>備考      </dt><dd><textarea name="godNote" placeholder="他神との関係やその他逸話、データの諸注意などなんでも">$pc{'godNote'}</textarea></dd></dl>
+          <dl class="name  "><dt>名称      <dd>@{[ input 'godName','',"nameSet" ]}</dl>
+          <dl class="aka   "><dt>異名      <dd>“@{[ input 'godAka','',"nameSet" ]}”</dl>
+          <dl class="class "><dt>系統      <dd><select name="godClass">@{[ option 'godClass','第一の剣','第二の剣','第三の剣','不明' ]}</select>／<select name="godRank">@{[ option 'godRank','古代神','大神','小神' ]}</select></dl>
+          <dl class="area  "><dt>地域      <dd>@{[ input 'godArea','','','placeholder="大陸・地方など"' ]}<small>※主に小神向けの項目です</small></dl>
+          <dl class="symbol"><dt>聖印と神像<dd><textarea name="godSymbol">$pc{'godSymbol'}</textarea></dl>
+          <dl class="deity "><dt>神格と教義<dd><textarea name="godDeity">$pc{'godDeity'}</textarea></dl>
+          <dl class="maxim "><dt>格言      <dd>「@{[ input "godMaxim1" ]}」<br>「@{[ input "godMaxim2" ]}」<br>「@{[ input "godMaxim3" ]}」</dl>
+          <dl class="deity "><dt>備考      <dd><textarea name="godNote" placeholder="他神との関係やその他逸話、データの諸注意などなんでも">$pc{'godNote'}</textarea></dl>
         </div>
         <div class="box input-data">
 HTML
 foreach my $lv (2,4,7,10,13){
 print <<"HTML";
           <h2>特殊神聖魔法 ${lv}レベル</h2>
-          <dl class="name    "><dt>名称      </dt><dd>【@{[ input "godMagic${lv}Name",'' ]}】<br>@{[ checkbox "godMagic${lv}ActionTypeMinor",'補助動作' ]}@{[ checkbox "godMagic${lv}ActionTypeSetup",'戦闘準備' ]}</dd></dl>
-          <dl class="cost    "><dt>消費      </dt><dd>@{[ input "godMagic${lv}Cost" ]}</dd></dl>
-          <dl class="target  "><dt>対象      </dt><dd>@{[ input "godMagic${lv}Target",'','','list="list-target"' ]}</dd></dl>
-          <dl class="range   "><dt>射程／形状</dt><dd>@{[ input "godMagic${lv}Range",'','','list="list-range"' ]}／@{[ input "godMagic${lv}Form",'','','list="list-form"' ]}</dd></dl>
-          <dl class="duration"><dt>時間      </dt><dd>@{[ input "godMagic${lv}Duration",'','','list="list-duration"' ]}</dd></dl>
-          <dl class="resist  "><dt>抵抗      </dt><dd>@{[ input "godMagic${lv}Resist",'','','list="list-resist"' ]}</dd></dl>
-          <dl class="element "><dt>属性      </dt><dd>@{[ input "godMagic${lv}Element",'','','list="list-element"' ]}</dd></dl>
-          <dl class="summary "><dt>概要      </dt><dd>@{[ input "godMagic${lv}Summary" ]}</dd></dl>
-          <dl class="effect  "><dt>効果      </dt><dd><textarea name="godMagic${lv}Effect">$pc{"godMagic${lv}Effect"}</textarea></dd></dl>
+          <dl class="name    "><dt>名称      <dd>【@{[ input "godMagic${lv}Name",'' ]}】<br>@{[ checkbox "godMagic${lv}ActionTypeMinor",'補助動作' ]}@{[ checkbox "godMagic${lv}ActionTypeSetup",'戦闘準備' ]}</dl>
+          <dl class="cost    "><dt>消費      <dd>@{[ input "godMagic${lv}Cost" ]}</dl>
+          <dl class="target  "><dt>対象      <dd>@{[ input "godMagic${lv}Target",'','','list="list-target"' ]}</dl>
+          <dl class="range   "><dt>射程／形状<dd>@{[ input "godMagic${lv}Range",'','','list="list-range"' ]}／@{[ input "godMagic${lv}Form",'','','list="list-form"' ]}</dl>
+          <dl class="duration"><dt>時間      <dd>@{[ input "godMagic${lv}Duration",'','','list="list-duration"' ]}</dl>
+          <dl class="resist  "><dt>抵抗      <dd>@{[ input "godMagic${lv}Resist",'','','list="list-resist"' ]}</dl>
+          <dl class="element "><dt>属性      <dd>@{[ input "godMagic${lv}Element",'','','list="list-element"' ]}</dl>
+          <dl class="summary "><dt>概要      <dd>@{[ input "godMagic${lv}Summary" ]}</dl>
+          <dl class="effect  "><dt>効果      <dd><textarea name="godMagic${lv}Effect">$pc{"godMagic${lv}Effect"}</textarea></dl>
 HTML
 }
 print <<"HTML";
@@ -322,25 +318,25 @@ print <<"HTML";
       <!-- 流派 -->
       <div class="data-area" id="data-school">
         <div class="box input-data">
-          <dl class="name  "><dt>名称      </dt><dd>【@{[ input 'schoolName','',"nameSet" ]}】</dd></dl>
-          <dl class="area  "><dt>地域      </dt><dd>@{[ input 'schoolArea','','','placeholder="大陸・地方など"' ]}</dd></dl>
-          <dl class="req   "><dt>入門条件  </dt><dd>@{[ input 'schoolReq','','','list="list-school-req"' ]}</dd></dl>
-          <dl class="note  "><dt>詳細      </dt><dd><textarea name="schoolNote">$pc{'schoolNote'}</textarea></dd></dl>
-          <dl class="arms  "><dt>流派装備  </dt><dd><textarea name="schoolItemNote" placeholder="流派装備の概要">$pc{'schoolItemNote'}</textarea></dd></dl>
-          <dl class="arms  "><dt>流派装備一覧</dt>
+          <dl class="name  "><dt>名称      <dd>【@{[ input 'schoolName','',"nameSet" ]}】</dl>
+          <dl class="area  "><dt>地域      <dd>@{[ input 'schoolArea','','','placeholder="大陸・地方など"' ]}</dl>
+          <dl class="req   "><dt>入門条件  <dd>@{[ input 'schoolReq','','','list="list-school-req"' ]}</dl>
+          <dl class="note  "><dt>詳細      <dd><textarea name="schoolNote">$pc{'schoolNote'}</textarea></dl>
+          <dl class="arms  "><dt>流派装備  <dd><textarea name="schoolItemNote" placeholder="流派装備の概要">$pc{'schoolItemNote'}</textarea></dl>
+          <dl class="arms  "><dt>流派装備一覧
             <dd>
               <input type="text" id="schoolItemUrl" placeholder="アイテムシートのURL"><span class="button" onclick="addSchoolItem()">追加</span>
               @{[ input 'schoolItemList','hidden' ]}
               <table id="school-item-list" class="data-table">
-              <thead>
-                <th>名前</th>
-                <th>カテゴリ</th>
-                <th>概要</th>
-                <th></th>
-              </thead>
-              <tbody></tbody>
+                <thead>
+                  <th>名前
+                  <th>カテゴリ
+                  <th>概要
+                  <th>
+                </thead>
+                <tbody></tbody>
               </table>
-            </dd></dl>
+          </dl>
         </div>
         @{[ input 'schoolArtsNum','hidden' ]}
         <details class="box" $open{'schoolArts'}>
@@ -348,21 +344,23 @@ print <<"HTML";
           <textarea name="schoolArtsNote" placeholder="流派秘伝全体の注釈（あれば）">$pc{'schoolArtsNote'}</textarea>
           <div id="arts-list">
 HTML
-foreach my $num (1..$pc{'schoolArtsNum'}){
+foreach my $num ('TMPL',1..$pc{'schoolArtsNum'}){
+  if($num eq 'TMPL'){ print '<template id="arts-template">' }
 print <<"HTML";
           <div class="input-data" id="arts${num}">
-            <dl class="name    "><dt>名称      </dt><dd>《@{[ input "schoolArts${num}Name",'' ]}》<br>@{[ checkbox "schoolArts${num}ActionTypeSetup",'戦闘準備' ]}</dd></dl>
-            <dl class="cost    "><dt>必要名誉点</dt><dd>@{[ input "schoolArts${num}Cost" ]}</dd></dl>
-            <dl class="type    "><dt>タイプ    </dt><dd>@{[ input "schoolArts${num}Type",'','','list="list-arts-type"' ]}</dd></dl>
-            <dl class="premise "><dt>前提      </dt><dd>@{[ input "schoolArts${num}Premise",'','','list="list-arts-base"' ]}</dd></dl>
-            <dl class="equip   "><dt>限定条件  </dt><dd>@{[ input "schoolArts${num}Equip" ]}</dd></dl>
-            <dl class="use     "><dt>使用      </dt><dd>@{[ input "schoolArts${num}Use" ]}</dd></dl>
-            <dl class="apply   "><dt>適用      </dt><dd>@{[ input "schoolArts${num}Apply",'','','list="list-arts-apply"' ]}</dd></dl>
-            <dl class="risk    "><dt>リスク    </dt><dd>@{[ input "schoolArts${num}Risk" ]}</dd></dl>
-            <dl class="summary "><dt>概要      </dt><dd>@{[ input "schoolArts${num}Summary" ]}</dd></dl>
-            <dl class="effect  "><dt>効果      </dt><dd><textarea name="schoolArts${num}Effect">$pc{"schoolArts${num}Effect"}</textarea></dd></dl>
+            <dl class="name    "><dt>名称      <dd>《@{[ input "schoolArts${num}Name",'' ]}》<br>@{[ checkbox "schoolArts${num}ActionTypeSetup",'戦闘準備' ]}</dl>
+            <dl class="cost    "><dt>必要名誉点<dd>@{[ input "schoolArts${num}Cost" ]}</dl>
+            <dl class="type    "><dt>タイプ    <dd>@{[ input "schoolArts${num}Type",'','','list="list-arts-type"' ]}</dl>
+            <dl class="premise "><dt>前提      <dd>@{[ input "schoolArts${num}Premise",'','','list="list-arts-base"' ]}</dl>
+            <dl class="equip   "><dt>限定条件  <dd>@{[ input "schoolArts${num}Equip" ]}</dl>
+            <dl class="use     "><dt>使用      <dd>@{[ input "schoolArts${num}Use" ]}</dl>
+            <dl class="apply   "><dt>適用      <dd>@{[ input "schoolArts${num}Apply",'','','list="list-arts-apply"' ]}</dl>
+            <dl class="risk    "><dt>リスク    <dd>@{[ input "schoolArts${num}Risk" ]}</dl>
+            <dl class="summary "><dt>概要      <dd>@{[ input "schoolArts${num}Summary" ]}</dl>
+            <dl class="effect  "><dt>効果      <dd><textarea name="schoolArts${num}Effect">$pc{"schoolArts${num}Effect"}</textarea></dl>
           </div>
 HTML
+  if($num eq 'TMPL'){ print '</template>' }
 }
 print <<"HTML";
           </div>
@@ -374,22 +372,24 @@ print <<"HTML";
           <textarea name="schoolMagicNote" placeholder="流派秘伝魔法全体の注釈（あれば）">$pc{'schoolMagicNote'}</textarea>
           <div id="school-magic-list">
 HTML
-foreach my $num (1..$pc{'schoolMagicNum'}){
+foreach my $num ('TMPL',1..$pc{'schoolMagicNum'}){
+  if($num eq 'TMPL'){ print '<template id="school-magic-template">' }
 print <<"HTML";
           <div class="input-data" id="school-magic${num}">
-            <dl class="name    "><dt>名称      </dt><dd>【@{[ input "schoolMagic${num}Name",'' ]}】<br>@{[ checkbox "schoolMagic${num}ActionTypeMinor",'補助動作' ]}@{[ checkbox "schoolMagic${num}ActionTypeSetup",'戦闘準備' ]}</dd></dl>
-            <dl class="cost    "><dt>必要名誉点</dt><dd>@{[ input "schoolMagic${num}AcquireCost" ]}</dd></dl>
-            <dl class="level    "><dt>習得レベル</dt><dd>@{[ input "schoolMagic${num}Lv" ]}</dd></dl>
-            <dl class="cost    "><dt>消費      </dt><dd>@{[ input "schoolMagic${num}Cost" ]}</dd></dl>
-            <dl class="target  "><dt>対象      </dt><dd>@{[ input "schoolMagic${num}Target",'','','list="list-target"' ]}</dd></dl>
-            <dl class="range   "><dt>射程／形状</dt><dd>@{[ input "schoolMagic${num}Range",'','','list="list-range"' ]}／@{[ input "schoolMagic${num}Form",'','','list="list-form"' ]}</dd></dl>
-            <dl class="duration"><dt>時間      </dt><dd>@{[ input "schoolMagic${num}Duration",'','','list="list-duration"' ]}</dd></dl>
-            <dl class="resist  "><dt>抵抗      </dt><dd>@{[ input "schoolMagic${num}Resist",'','','list="list-resist"' ]}</dd></dl>
-            <dl class="element "><dt>属性      </dt><dd>@{[ input "schoolMagic${num}Element",'','','list="list-element"' ]}</dd></dl>
-            <dl class="summary "><dt>概要      </dt><dd>@{[ input "schoolMagic${num}Summary" ]}</dd></dl>
-            <dl class="effect  "><dt>効果      </dt><dd><textarea name="schoolMagic${num}Effect">$pc{"schoolMagic${num}Effect"}</textarea></dd></dl>
+            <dl class="name    "><dt>名称      <dd>【@{[ input "schoolMagic${num}Name",'' ]}】<br>@{[ checkbox "schoolMagic${num}ActionTypeMinor",'補助動作' ]}@{[ checkbox "schoolMagic${num}ActionTypeSetup",'戦闘準備' ]}</dl>
+            <dl class="cost    "><dt>必要名誉点<dd>@{[ input "schoolMagic${num}AcquireCost" ]}</dl>
+            <dl class="level    "><dt>習得レベル<dd>@{[ input "schoolMagic${num}Lv" ]}</dl>
+            <dl class="cost    "><dt>消費      <dd>@{[ input "schoolMagic${num}Cost" ]}</dl>
+            <dl class="target  "><dt>対象      <dd>@{[ input "schoolMagic${num}Target",'','','list="list-target"' ]}</dl>
+            <dl class="range   "><dt>射程／形状<dd>@{[ input "schoolMagic${num}Range",'','','list="list-range"' ]}／@{[ input "schoolMagic${num}Form",'','','list="list-form"' ]}</dl>
+            <dl class="duration"><dt>時間      <dd>@{[ input "schoolMagic${num}Duration",'','','list="list-duration"' ]}</dl>
+            <dl class="resist  "><dt>抵抗      <dd>@{[ input "schoolMagic${num}Resist",'','','list="list-resist"' ]}</dl>
+            <dl class="element "><dt>属性      <dd>@{[ input "schoolMagic${num}Element",'','','list="list-element"' ]}</dl>
+            <dl class="summary "><dt>概要      <dd>@{[ input "schoolMagic${num}Summary" ]}</dl>
+            <dl class="effect  "><dt>効果      <dd><textarea name="schoolMagic${num}Effect">$pc{"schoolMagic${num}Effect"}</textarea></dl>
           </div>
 HTML
+  if($num eq 'TMPL'){ print '</template>' }
 }
 print <<"HTML";
           </div>

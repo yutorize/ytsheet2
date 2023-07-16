@@ -1,5 +1,5 @@
 "use strict";
-const gameSystem = 'sw2';
+const gameSystem = SET.gameSystem;
 let modeZero;
 
 const expTable = {
@@ -91,6 +91,8 @@ let level = 0;
 let levelCasters = [];
 
 window.onload = function() {
+  console.log('=====START=====');
+
   nameSet();
   race = form.race.value;
   calcExp();
@@ -122,9 +124,9 @@ function formCheck(){
 
 // レギュレーション ----------------------------------------
 function changeRegu(){
-  document.getElementById("history0-exp").innerHTML = form.history0Exp.value;
-  document.getElementById("history0-honor").innerHTML = form.history0Honor.value;
-  document.getElementById("history0-money").innerHTML = form.history0Money.value;
+  document.getElementById("history0-exp").textContent = form.history0Exp.value;
+  document.getElementById("history0-honor").textContent = form.history0Honor.value;
+  document.getElementById("history0-money").textContent = form.history0Money.value;
   
   calcExp();
   calcLv();
@@ -155,31 +157,32 @@ function calcLv(){
   expUse = 0;
   let allClassLv = [];
   levelCasters = [];
-  Object.keys(classes).forEach(function(key) {
-    if(classes[key]['expTable']){
-      lv[key] = Number(form['lv'+key].value);
-      if(classes[key]['2.0'] && !allClassOn){ lv[key] = 0; }
+  for(const key in SET.class){
+    const id = SET.class[key].id;
+    if(SET.class[key].expTable){
+      lv[id] = Number(form['lv'+id].value);
+      if(SET.class[key]['2.0'] && !SET.allClassOn){ lv[id] = 0; }
       
-      expUse += expTable[ classes[key]['expTable'] ][ lv[key] ];
+      expUse += expTable[ SET.class[key].expTable ][ lv[id] ];
       
-      allClassLv.push(lv[key]);
-      if(classes[key]['magic']){ levelCasters.push(lv[key]); }
+      allClassLv.push(lv[id]);
+      if(SET.class[key].magic){ levelCasters.push(lv[id]); }
     }
-  });
+  }
   if(form.lvSeeker){
     lvSeeker = Number(form.lvSeeker.value);
     expUse += expTable['S'][ lvSeeker ];
   }
   
-  document.getElementById("exp-use").innerHTML = commify(expUse);
-  document.getElementById("exp-rest").innerHTML = commify(expTotal - expUse);
+  document.getElementById("exp-use").textContent = commify(expUse);
+  document.getElementById("exp-rest").textContent = commify(expTotal - expUse);
   
   level = Math.max.apply(null, Object.values(lv));
-  document.getElementById("level-value").innerHTML = level;
+  document.getElementById("level-value").textContent = level;
   
   lv['Wiz'] = (lv['Sor'] && lv['Con']) ? Math.max(lv['Sor'],lv['Con']) : 0;
   levelCasters.sort( function(a,b){ return (a < b ? 1 : -1); } );
-  if(battleItemOn){
+  if(SET.battleItemOn){
     const sLevel = Math.max.apply(null, [ lv['Sco'], lv['Ran'], lv['Sag'] ]);
     const maxBattleItems = 8 + Math.ceil(sLevel / 2);
     for (let i = 1; i <= 16; i++) {
@@ -211,21 +214,22 @@ function checkRace(){
   raceAbilityDef       = 0;
   raceAbilityMp        = 0;
   raceAbilityMagicPower= 0;
-  Object.keys(classes).forEach(id => {
+  for(const className in SET.class){
+    const id = SET.class[className].id;
     if(document.getElementById("class"+id)){
       document.getElementById("class"+id).classList.remove('fail');
-      if(races[race]['restrictedClass'] && races[race]['restrictedClass'].includes(classes[id]['jName'])){
+      if(SET.races[race]?.restrictedClass?.includes(className)){
         document.getElementById("class"+id).classList.add('fail');
       }
-      else if(classes[id]['onlyRace'] && !classes[id]['onlyRace'].includes(race)){
+      else if(SET.class[className].onlyRace && !SET.class[className].onlyRace.includes(race)){
         document.getElementById("class"+id).classList.add('fail');
       }
     }
-  });
+  }
   
   if(race === 'リルドラケン'){
     raceAbilityDef = 1;
-    document.getElementById("race-ability-def-name").innerHTML = '鱗の皮膚';
+    document.getElementById("race-ability-def-name").textContent = '鱗の皮膚';
   }
   else if(race === 'シャドウ'){
     raceAbilityMndResist = 4;
@@ -248,60 +252,60 @@ function checkRace(){
       raceAbilityDef += 2;
       raceAbilityMp += 30;
     }
-    document.getElementById("race-ability-def-name").innerHTML = '晶石の身体';
+    document.getElementById("race-ability-def-name").textContent = '晶石の身体';
   }
   else if(race === 'ハイマン'){
     raceAbilityMagicPower += (level >= 11) ? 2 : 1;
-    document.getElementById("magic-power-raceability-value" ).innerHTML = raceAbilityMagicPower || 0;
-    document.getElementById("magic-power-raceability-name").innerHTML = '魔法の申し子';
-    document.getElementById("magic-power-raceability-type").innerHTML = '魔法全般';
+    document.getElementById("magic-power-raceability-value" ).textContent = raceAbilityMagicPower || 0;
+    document.getElementById("magic-power-raceability-name").textContent = '魔法の申し子';
+    document.getElementById("magic-power-raceability-type").textContent = '魔法全般';
   }
   else if(race.match(/^センティアン/)){
-    document.getElementById("magic-power-raceability-value" ).innerHTML = (level >= 11) ? 2 : (level >= 6) ? 1 : 0;
-    document.getElementById("magic-power-raceability-name").innerHTML = race.match('ルミエル') ? '神の御名と共に' : race.match('イグニス') ? '神への礼賛' : race.match('カルディア') ? '神への祈り' : '';
-    document.getElementById("magic-power-raceability-type").innerHTML = '神聖魔法';
+    document.getElementById("magic-power-raceability-value" ).textContent = (level >= 11) ? 2 : (level >= 6) ? 1 : 0;
+    document.getElementById("magic-power-raceability-name").textContent = race.match('ルミエル') ? '神の御名と共に' : race.match('イグニス') ? '神への礼賛' : race.match('カルディア') ? '神への祈り' : '';
+    document.getElementById("magic-power-raceability-type").textContent = '神聖魔法';
   }
   else if(race === 'ダークトロール'){
     raceAbilityDef = 1;
     if(level >= 16){
       raceAbilityDef += 2;
     }
-    document.getElementById("race-ability-def-name").innerHTML = 'トロールの体躯';
+    document.getElementById("race-ability-def-name").textContent = 'トロールの体躯';
   }
   
   let ability = '';
-  if(races[race]['ability']){
-    ability = races[race]['ability'] || '';
-    if(level >= 6 && races[race]['abilityLv6']){
-      if(Array.isArray(races[race]['abilityLv6'])){
+  if(SET.races[race]?.ability){
+    ability = SET.races[race].ability || '';
+    if(level >= 6 && SET.races[race].abilityLv6){
+      if(Array.isArray(SET.races[race].abilityLv6)){
         form.raceAbilityLv6.classList.remove('hidden');
       }
       else{
-        ability += races[race]['abilityLv6'];
+        ability += SET.races[race].abilityLv6;
         form.raceAbilityLv6.classList.add('hidden');
       }
     }
     else {
       form.raceAbilityLv6.classList.add('hidden');
     }
-    if(level >= 11 && races[race]['abilityLv11']){
-      if(Array.isArray(races[race]['abilityLv11'])){
+    if(level >= 11 && SET.races[race].abilityLv11){
+      if(Array.isArray(SET.races[race].abilityLv11)){
         form.raceAbilityLv11.classList.remove('hidden');
       }
       else{
-        ability += races[race]['abilityLv11'];
+        ability += SET.races[race].abilityLv11;
         form.raceAbilityLv11.classList.add('hidden');
       }
     }
     else {
       form.raceAbilityLv11.classList.add('hidden');
     }
-    if(level >= 16 && races[race]['abilityLv16']){
-      if(Array.isArray(races[race]['abilityLv16'])){
+    if(level >= 16 && SET.races[race].abilityLv16){
+      if(Array.isArray(SET.races[race].abilityLv16)){
         form.raceAbilityLv16.classList.remove('hidden');
       }
       else{
-        ability += races[race]['abilityLv16'];
+        ability += SET.races[race].abilityLv16;
         form.raceAbilityLv16.classList.add('hidden');
       }
     }
@@ -316,8 +320,8 @@ function checkRace(){
 function setLanguageDefault(){
   if (!form.languageAutoOff.checked) {
     let text = '';
-    if(races[race]['language']){
-      for(let data of races[race]['language']){
+    if(SET.races[race]?.language){
+      for(let data of SET.races[race].language){
         text += `<dt>${data[0]}</dt><dd>${data[1]?'○':'―'}</dd><dd>${data[2]?'○':'―'}</dd>`;
       }
     }
@@ -362,16 +366,16 @@ function calcStt() {
   growInt = Number(form.sttPreGrowE.value) + sttHistGrowE + seekerGrow;
   growMnd = Number(form.sttPreGrowF.value) + sttHistGrowF + seekerGrow;
   
-  document.getElementById("stt-grow-A-value").innerHTML = growDex;
-  document.getElementById("stt-grow-B-value").innerHTML = growAgi;
-  document.getElementById("stt-grow-C-value").innerHTML = growStr;
-  document.getElementById("stt-grow-D-value").innerHTML = growVit;
-  document.getElementById("stt-grow-E-value").innerHTML = growInt;
-  document.getElementById("stt-grow-F-value").innerHTML = growMnd;
+  document.getElementById("stt-grow-A-value").textContent = growDex;
+  document.getElementById("stt-grow-B-value").textContent = growAgi;
+  document.getElementById("stt-grow-C-value").textContent = growStr;
+  document.getElementById("stt-grow-D-value").textContent = growVit;
+  document.getElementById("stt-grow-E-value").textContent = growInt;
+  document.getElementById("stt-grow-F-value").textContent = growMnd;
 
   const growTotal = growDex + growAgi + growStr + growVit + growInt + growMnd;
-  document.getElementById("stt-grow-total-value").innerHTML = growTotal;
-  document.getElementById("history-grow-total-value").innerHTML = growTotal;
+  document.getElementById("stt-grow-total-value").textContent = growTotal;
+  document.getElementById("history-grow-total-value").textContent = growTotal;
   
   sttDex = Number(form.sttBaseTec.value) + Number(form.sttBaseA.value) + growDex;
   sttAgi = Number(form.sttBaseTec.value) + Number(form.sttBaseB.value) + growAgi;
@@ -386,12 +390,12 @@ function calcStt() {
   else if (race === 'ウィークリング（バジリスク）')   sttInt += 3;
   else if (race === 'ウィークリング（マーマン）')     sttMnd += 3;
   
-  document.getElementById("stt-dex-value").innerHTML = sttDex;
-  document.getElementById("stt-agi-value").innerHTML = sttAgi;
-  document.getElementById("stt-str-value").innerHTML = sttStr;
-  document.getElementById("stt-vit-value").innerHTML = sttVit;
-  document.getElementById("stt-int-value").innerHTML = sttInt;
-  document.getElementById("stt-mnd-value").innerHTML = sttMnd;
+  document.getElementById("stt-dex-value").textContent = sttDex;
+  document.getElementById("stt-agi-value").textContent = sttAgi;
+  document.getElementById("stt-str-value").textContent = sttStr;
+  document.getElementById("stt-vit-value").textContent = sttVit;
+  document.getElementById("stt-int-value").textContent = sttInt;
+  document.getElementById("stt-mnd-value").textContent = sttMnd;
   
   sttAddA = Number(form.sttAddA.value);
   sttAddB = Number(form.sttAddB.value);
@@ -407,12 +411,12 @@ function calcStt() {
   bonusInt = parseInt((sttInt + sttAddE) / 6);
   bonusMnd = parseInt((sttMnd + sttAddF) / 6);
   
-  document.getElementById("stt-bonus-dex-value").innerHTML = bonusDex;
-  document.getElementById("stt-bonus-agi-value").innerHTML = bonusAgi;
-  document.getElementById("stt-bonus-str-value").innerHTML = bonusStr;
-  document.getElementById("stt-bonus-vit-value").innerHTML = bonusVit;
-  document.getElementById("stt-bonus-int-value").innerHTML = bonusInt;
-  document.getElementById("stt-bonus-mnd-value").innerHTML = bonusMnd;
+  document.getElementById("stt-bonus-dex-value").textContent = bonusDex;
+  document.getElementById("stt-bonus-agi-value").textContent = bonusAgi;
+  document.getElementById("stt-bonus-str-value").textContent = bonusStr;
+  document.getElementById("stt-bonus-vit-value").textContent = bonusVit;
+  document.getElementById("stt-bonus-int-value").textContent = bonusInt;
+  document.getElementById("stt-bonus-mnd-value").textContent = bonusMnd;
   
   reqdStr = sttStr + sttAddC;
   reqdStrHalf = Math.ceil(reqdStr / 2);
@@ -440,7 +444,7 @@ function checkFeats(){
   document.getElementById('combat-feat-vagrants-ran5').style.display = (featsVagrantsOn && lv['Ran'] >= 5) ? '' : 'none';
   document.getElementById('combat-feat-vagrants-sag5').style.display = (featsVagrantsOn && lv['Sag'] >= 5) ? '' : 'none';
   
-  const array = featsLv;
+  const array = SET.featsLv.map(n=>String(n));
   let acquire = '';
   for (let i = 0; i < array.length; i++) {
     let cL = document.getElementById("combat-feats-lv"+array[i]).classList;
@@ -854,7 +858,7 @@ function checkFeats(){
       }
       feat = box.options[box.selectedIndex].value;
       
-      const weaponsRegex = new RegExp('武器習熟(Ａ|Ｓ)／(' + weapons.join('|') + ')');
+      const weaponsRegex = new RegExp('武器習熟(Ａ|Ｓ)／(' + SET.weapons.map(d => d[0]).join('|') + ')');
       if     (feat === "足さばき"){ feats['足さばき'] = 1; }
       else if(feat === "回避行動Ⅰ"){ feats['回避行動'] = 1; }
       else if(feat === "回避行動Ⅱ"){ feats['回避行動'] = 2; }
@@ -910,38 +914,47 @@ function checkFeats(){
 
 // 技芸 ----------------------------------------
 function checkCraft() {
-  Object.keys(classes).forEach(function(key) {
-    let cLv = lv[key];
-    if (classes[key]['craftData']){
-      const eName = classes[key]['craft'];
+  for(const key in SET.class){
+    const cId  = SET.class[key].id;
+    const cLv = lv[cId];
+    if (SET.class[key].craft?.data){
+      const eName = SET.class[key].craft.eName;
       document.getElementById("craft-"+eName).style.display = cLv ? "block" : "none";
-      const cMax = (key.match(/Bar|War/)) ? 20 : (key === 'Art') ? 19 : 17;
-      cLv += (key === 'Bar') ? (feats['呪歌追加'] || 0) : (key === 'War') ? (feats['鼓咆陣率追加'] || 0) : (key === 'Art' && lv.Art === 16) ? 1 : (key === 'Art' && lv.Art === 17) ? 2 : 0;
+      const cMax = (cId.match(/Bar|War/)) ? 20 : (cId === 'Art') ? 19 : 17;
+      const rows = cLv + (
+            (cId === 'Bar') ? (feats['呪歌追加'] || 0)
+          : (cId === 'War') ? (feats['鼓咆陣率追加'] || 0)
+          : (cId === 'Art' && lv.Art === 16) ? 1
+          : (cId === 'Art' && lv.Art === 17) ? 2
+          : 0
+        );
       for (let i = 1; i <= cMax; i++) {
-        let cL = document.getElementById("craft-"+eName+i).classList;
-        if (i <= cLv){
-          cL.remove("fail","hidden");
+        let objCL = document.getElementById("craft-"+eName+i).classList;
+        if (i <= rows){
+          objCL.remove("fail","hidden");
         }
         else {
-          cL.add("fail");
-          if(form.failView.checked){ cL.remove("hidden") } else { cL.add("hidden"); };
+          objCL.add("fail");
+          objCL.toggle("hidden", !form.failView.checked);
         }
       }
     }
-    else if (classes[key]['magicData']){
-      const eName = classes[key]['magic'];
-      document.getElementById("magic-"+eName).style.display = lv[key] ? "block" : "none";
+    else if (SET.class[key].magic?.data){
+      const eName = SET.class[key].magic.eName;
+      document.getElementById("magic-"+eName).style.display = cLv ? "block" : "none";
       const cMax = 17;
       for (let i = 1; i <= cMax; i++) {
-        let cL = document.getElementById("magic-"+eName+i).classList;
-        if(i <= lv[key]){ cL.remove("fail","hidden"); }
+        let objCL = document.getElementById("magic-"+eName+i).classList;
+        if(i <= cLv){
+          objCL.remove("fail","hidden");
+        }
         else {
-          cL.add("fail");
-          if(form.failView.checked){ cL.remove("hidden") } else { cL.add("hidden"); };
+          objCL.add("fail");
+          objCL.toggle("hidden", !form.failView.checked);
         }
       }
     }
-  });
+  }
 }
 
 // ＨＰＭＰ抵抗力計算 ----------------------------------------
@@ -953,12 +966,12 @@ function calcSubStt() {
   const mndResistBase = level + bonusMnd;
   const vitResistAutoAdd = 0 + (feats['抵抗強化'] || 0) + seekerResistAdd;
   const mndResistAutoAdd = raceAbilityMndResist + (feats['抵抗強化'] || 0) + seekerResistAdd;
-  document.getElementById("vit-resist-base").innerHTML = vitResistBase;
-  document.getElementById("mnd-resist-base").innerHTML = mndResistBase;
-  document.getElementById("vit-resist-auto-add").innerHTML = vitResistAutoAdd;
-  document.getElementById("mnd-resist-auto-add").innerHTML = mndResistAutoAdd;
-  document.getElementById("vit-resist-total").innerHTML = vitResistBase + Number(form.vitResistAdd.value) + vitResistAutoAdd;
-  document.getElementById("mnd-resist-total").innerHTML = mndResistBase + Number(form.mndResistAdd.value) + mndResistAutoAdd;
+  document.getElementById("vit-resist-base").textContent = vitResistBase;
+  document.getElementById("mnd-resist-base").textContent = mndResistBase;
+  document.getElementById("vit-resist-auto-add").textContent = vitResistAutoAdd;
+  document.getElementById("mnd-resist-auto-add").textContent = mndResistAutoAdd;
+  document.getElementById("vit-resist-total").textContent = vitResistBase + Number(form.vitResistAdd.value) + vitResistAutoAdd;
+  document.getElementById("mnd-resist-total").textContent = mndResistBase + Number(form.mndResistAdd.value) + mndResistAutoAdd;
   
   let hpAccessory = 0;
   let mpAccessory = 0;
@@ -976,23 +989,30 @@ function calcSubStt() {
     : ( levelCasters.reduce((a,x) => a+x,0) * 3 + sttMnd + sttAddF );
   const hpAutoAdd = (feats['頑強'] || 0) + hpAccessory + (lv['Fig'] >= 7 ? 15 : 0) + seekerHpMpAdd;
   const mpAutoAdd = (feats['キャパシティ'] || 0) + raceAbilityMp + mpAccessory + seekerHpMpAdd;
-  document.getElementById("hp-base").innerHTML = hpBase;
-  document.getElementById("mp-base").innerHTML = (race === 'グラスランナー') ? '0' : mpBase;
-  document.getElementById("hp-auto-add").innerHTML = hpAutoAdd;
-  document.getElementById("mp-auto-add").innerHTML = mpAutoAdd;
-  document.getElementById("hp-total").innerHTML = hpBase + Number(form.hpAdd.value) + hpAutoAdd;
-  document.getElementById("mp-total").innerHTML = (race === 'グラスランナー') ? 'なし' : (mpBase + Number(form.mpAdd.value) + mpAutoAdd);
+  document.getElementById("hp-base").textContent = hpBase;
+  document.getElementById("mp-base").textContent = (race === 'グラスランナー') ? '0' : mpBase;
+  document.getElementById("hp-auto-add").textContent = hpAutoAdd;
+  document.getElementById("mp-auto-add").textContent = mpAutoAdd;
+  document.getElementById("hp-total").textContent = hpBase + Number(form.hpAdd.value) + hpAutoAdd;
+  document.getElementById("mp-total").textContent = (race === 'グラスランナー') ? 'なし' : (mpBase + Number(form.mpAdd.value) + mpAutoAdd);
 }
 
 // 移動力計算 ----------------------------------------
 function calcMobility() {
   const agi = sttAgi + sttAddB;
-  const mobilityBase = ((race === 'ケンタウロス') ? (agi * 2) : agi) + (form["armour1Own"].checked ? 2 : 0);
-  const mobility = mobilityBase + Number(form.mobilityAdd.value);
-  document.getElementById("mobility-limited").innerHTML = feats['足さばき'] ? 10 : 3;
-  document.getElementById("mobility-base").innerHTML = mobilityBase;
-  document.getElementById("mobility-total").innerHTML = mobility;
-  document.getElementById("mobility-full").innerHTML = mobility * 3;
+  const mobilityBase = ((race === 'ケンタウロス') ? (agi * 2) : agi);
+  let mobilityOwn = 0;
+  for (let num = 1; num <= form.armourNum.value; num++){
+    if(form[`armour${num}Category`].value.match(/鎧/) && form[`armour${num}Own`].checked){
+      mobilityOwn = 2;
+      break;
+    }
+  }
+  const mobility = mobilityBase + Number(form.mobilityAdd.value) + mobilityOwn;
+  document.getElementById("mobility-limited").textContent = feats['足さばき'] ? 10 : 3;
+  document.getElementById("mobility-base").textContent = mobilityBase + mobilityOwn;
+  document.getElementById("mobility-total").textContent = mobility;
+  document.getElementById("mobility-full").textContent = mobility * 3;
 }
 
 // パッケージ計算 ----------------------------------------
@@ -1007,91 +1027,94 @@ function calcPackage() {
   };
   let lore = [];
   let init = [];
-  Object.keys(classes).forEach(function(cId) {
-    if(classes[cId]['package']){
-      const className = classes[cId]['eName'];
-      const data = classes[cId]['package'];
+  for(const key in SET.class){
+    if(SET.class[key]['package']){
+      const eName = SET.class[key].eName;
+      const cId   = SET.class[key].id
+      const pData = SET.class[key].package;
+      const cLv = lv[cId];
 
-      document.getElementById(`package-${className}`).style.display = lv[cId] > 0 ? "" :"none";
-
-      Object.keys(data).forEach(function(pId) {
+      document.getElementById(`package-${eName}`).style.display = cLv > 0 ? "" :"none";
+      
+      for(const pId in pData){
         let autoBonus = 0;
         if(cId === 'War' && pId === 'Int'){
           let hit = 0;
-          for(let i = 1; i <= lv['War']+(feats['鼓咆陣率追加']||0); i++){
+          for(let i = 1; i <= lv.War+(feats['鼓咆陣率追加']||0); i++){
             if(form[`craftCommand${i}`].value.match(/軍師の知略$/)){ hit = 1; autoBonus += form[`craftCommand${i}`].value.match(/^陣率/) ? 1 : 0; break; }
           }
           if(!hit){
-            document.getElementById(`package-${className}-${pId.toLowerCase()}`).innerHTML = '―';
-            return;
+            document.getElementById(`package-${eName}-${pId.toLowerCase()}`).textContent = '―';
+            break;
           }
         }
         
-        let v = lv[cId] + bonus[data[pId]['stt']] + Number(form[`pack${cId}${pId}Add`].value) + autoBonus;
-        document.getElementById(`package-${className}-${pId.toLowerCase()}-auto`).innerHTML = autoBonus ? '+'+autoBonus : '';
-        document.getElementById(`package-${className}-${pId.toLowerCase()}`).innerHTML = v;
+        let value = cLv + bonus[pData[pId].stt] + Number(form[`pack${cId}${pId}Add`].value) + autoBonus;
+        document.getElementById(`package-${eName}-${pId.toLowerCase()}-auto`).textContent = autoBonus ? '+'+autoBonus : '';
+        document.getElementById(`package-${eName}-${pId.toLowerCase()}`).textContent = value;
 
-        if(data[pId]['monsterLore']){ lore.push(lv[cId] > 0 ? v : 0); }
-        if(data[pId]['initiative' ]){ init.push(lv[cId] > 0 ? v : 0); }
-      });
+        if(pData[pId].monsterLore){ lore.push(cLv > 0 ? value : 0); }
+        if(pData[pId].initiative ){ init.push(cLv > 0 ? value : 0); }
+      }
     }
-  });
+  }
 
   
-  document.getElementById("monster-lore-value").innerHTML = (Math.max(...lore) || 0) + Number(form.monsterLoreAdd.value);
-  document.getElementById("initiative-value"  ).innerHTML = (Math.max(...init) || 0) + Number(form.initiativeAdd.value);
+  document.getElementById("monster-lore-value").textContent = (Math.max(...lore) || 0) + Number(form.monsterLoreAdd.value);
+  document.getElementById("initiative-value"  ).textContent = (Math.max(...init) || 0) + Number(form.initiativeAdd.value);
 }
 
 // 魔力計算 ----------------------------------------
 let magicPowers = {};
 function calcMagic() {
   const addPower = Number(form.magicPowerAdd.value) + (feats['魔力強化'] || 0);
-  document.getElementById("magic-power-magicenhance-value").innerHTML = feats['魔力強化'] || 0;
+  document.getElementById("magic-power-magicenhance-value").textContent = feats['魔力強化'] || 0;
   const addCast = Number(form.magicCastAdd.value);
   const addDamage = Number(form.magicDamageAdd.value);
   
   let openMagic = 0;
   let openCraft = 0;
-  Object.keys(classes).forEach(function(key) {
+  for(const key in SET.class){
+    const id = SET.class[key].id
+    const cLv = lv[id];
+    const eName = SET.class[key].eName;
     // 魔法
-    if(classes[key]['magic']){
-      const eName = classes[key]['eName'];
-      document.getElementById("magic-power-"+eName).style.display = lv[key] ? '' : 'none';
-      if(lv[key]){ openMagic++; }
+    if(SET.class[key].magic){
+      document.getElementById("magic-power-"+eName).style.display = cLv ? '' : 'none';
+      if(cLv){ openMagic++; }
       
-      const seekerMagicAdd = (lvSeeker && checkSeekerAbility('魔力上昇') && lv[key] >= 15) ? 3 : 0;
-      let power = lv[key] + parseInt((sttInt + sttAddE + (form["magicPowerOwn"+key].checked ? 2 : 0)) / 6) + Number(form["magicPowerAdd"+key].value) + addPower + seekerMagicAdd + raceAbilityMagicPower;
-      if(key === 'Pri' && race.match(/^センティアン/)){
+      const seekerMagicAdd = (lvSeeker && checkSeekerAbility('魔力上昇') && cLv >= 15) ? 3 : 0;
+      let power = cLv + parseInt((sttInt + sttAddE + (form["magicPowerOwn"+id].checked ? 2 : 0)) / 6) + Number(form["magicPowerAdd"+id].value) + addPower + seekerMagicAdd + raceAbilityMagicPower;
+      if(id === 'Pri' && race.match(/^センティアン/)){
         power += (level >= 11) ? 2 : (level >= 6) ? 1 : 0;
       }
-      document.getElementById("magic-power-"+eName+"-value").innerHTML  = power;
-      document.getElementById("magic-cast-"+eName+"-value").innerHTML   = power + Number(form["magicCastAdd"+key].value) + addCast;
-      document.getElementById("magic-damage-"+eName+"-value").innerHTML = Number(form["magicDamageAdd"+key].value) + addDamage;
-      magicPowers[key] = lv[key] ? power : 0;
+      document.getElementById("magic-power-"+eName+"-value").textContent  = power;
+      document.getElementById("magic-cast-"+eName+"-value").textContent   = power + Number(form["magicCastAdd"+id].value) + addCast;
+      document.getElementById("magic-damage-"+eName+"-value").textContent = Number(form["magicDamageAdd"+id].value) + addDamage;
+      magicPowers[id] = cLv ? power : 0;
     }
     // 呪歌など
-    else if(classes[key]['craftStt']){
-      const eName = classes[key]['eName'];
-      document.getElementById("magic-power-"+eName).style.display = lv[key] ? '' : 'none';
-      if(lv[key]){ openCraft++; }
+    else if(SET.class[key].craft?.stt){
+      document.getElementById("magic-power-"+eName).style.display = cLv ? '' : 'none';
+      if(cLv){ openCraft++; }
       
-      let power = lv[key];
-      if     (classes[key]['craftStt'] === '知力')  {
-        power += parseInt((sttInt + sttAddE + (form["magicPowerOwn"+key].checked ? 2 : 0)) / 6);
+      let power = cLv;
+      if     (SET.class[key].craft.stt === '知力')  {
+        power += parseInt((sttInt + sttAddE + (form["magicPowerOwn"+id].checked ? 2 : 0)) / 6);
       }
-      else if(classes[key]['craftStt'] === '精神力'){
-        power += parseInt((sttMnd + sttAddF + (form["magicPowerOwn"+key].checked ? 2 : 0)) / 6);
+      else if(SET.class[key].craft.stt === '精神力'){
+        power += parseInt((sttMnd + sttAddF + (form["magicPowerOwn"+id].checked ? 2 : 0)) / 6);
       }
-      if(classes[key]['craftPower']){
-        power += Number(form["magicPowerAdd"+key].value);
-        document.getElementById("magic-power-"+eName+"-value").innerHTML  = power;
-        document.getElementById("magic-damage-"+eName+"-value").innerHTML = Number(form["magicDamageAdd"+key].value);
+      if(SET.class[key].craft.power){
+        power += Number(form["magicPowerAdd"+id].value);
+        document.getElementById("magic-power-"+eName+"-value").textContent  = power;
+        document.getElementById("magic-damage-"+eName+"-value").textContent = Number(form["magicDamageAdd"+id].value);
       }
       
-      if(key === 'Alc'){ power += feats['賦術強化'] || 0 }
-      document.getElementById("magic-cast-"+eName+"-value").innerHTML   = power + Number(form["magicCastAdd"+key].value);
+      if(id === 'Alc'){ power += feats['賦術強化'] || 0 }
+      document.getElementById("magic-cast-"+eName+"-value").textContent = power + Number(form["magicCastAdd"+id].value);
     }
-  });
+  }
   // 全体／その他の開閉
   document.getElementById("magic-power").style.display = (openMagic || openCraft) ? '' : 'none';
 
@@ -1115,35 +1138,46 @@ function calcFairy() {
   let result = '×';
   if(rank[i]){ result = rank[i][lv['Fai']] || '×'; }
   else { result = '×'; }
-  document.getElementById('fairy-rank').innerHTML = result;
+  document.getElementById('fairy-rank').textContent = result;
 }
 
 // 攻撃計算 ----------------------------------------
 function calcAttack() {
-  for(const name of weaponsUsers){
-    const id    = classNameToId[name];
-    const eName = classes[id].eName;
+  for(const name in SET.class){
+    if(SET.class[name].type !== 'weapon-user'){ continue; }
+    const id    = SET.class[name].id;
+    const eName = SET.class[name].eName;
     document.getElementById(`attack-${eName}`).style.display = lv[id] > 0 ? "" :"none";
-    document.getElementById(`attack-${eName}-str`).innerHTML = id == 'Fen' ? reqdStrHalf : reqdStr;
-    document.getElementById(`attack-${eName}-acc`).innerHTML = lv[id] + bonusDex;
-    document.getElementById(`attack-${eName}-dmg`).innerHTML = lv[id] + bonusStr;
+    document.getElementById(`attack-${eName}-str`).textContent = id == 'Fen' ? reqdStrHalf : reqdStr;
+    document.getElementById(`attack-${eName}-acc`).textContent = lv[id] + bonusDex;
+    document.getElementById(`attack-${eName}-dmg`).textContent = lv[id] + bonusStr;
   }
   document.getElementById("attack-enhancer"  ).style.display = lv['Enh'] >= 10 ? "" :"none";
-  document.getElementById("attack-enhancer-str").innerHTML   = reqdStr;
-  document.getElementById("attack-enhancer-acc"  ).innerHTML = lv['Enh'] + bonusDex;
-  document.getElementById("attack-enhancer-dmg"  ).innerHTML = lv['Enh'] + bonusStr;
+  document.getElementById("attack-enhancer-str").textContent   = reqdStr;
+  document.getElementById("attack-enhancer-acc"  ).textContent = lv['Enh'] + bonusDex;
+  document.getElementById("attack-enhancer-dmg"  ).textContent = lv['Enh'] + bonusStr;
 
   document.getElementById("attack-demonruler").style.display = lv['Dem'] >= 10 ? "" : modeZero && lv['Dem'] > 0 ? "" :"none";
-  document.getElementById("attack-demonruler-str").innerHTML = reqdStr;
-  document.getElementById("attack-demonruler-acc").innerHTML = lv['Dem'] + bonusDex;
-  document.getElementById("attack-demonruler-dmg").innerHTML = modeZero ? lv['Dem'] + bonusStr : '―';
+  document.getElementById("attack-demonruler-str").textContent = reqdStr;
+  document.getElementById("attack-demonruler-acc").textContent = lv['Dem'] + bonusDex;
+  document.getElementById("attack-demonruler-dmg").textContent = modeZero ? lv['Dem'] + bonusStr : '―';
+
+  for(let i = 0; i < SET.weapons.length; i++){
+    document.getElementById(`attack-${SET.weapons[i][1]}-mastery`).style.display = feats['武器習熟／'+SET.weapons[i][0]] ? '' : 'none';
+    document.getElementById(`attack-${SET.weapons[i][1]}-mastery-dmg`).textContent = feats['武器習熟／'+SET.weapons[i][0]] || 0;
+  }
+  document.getElementById("attack-artisan-mastery").style.display  = feats['魔器習熟'] ? '' : 'none';
+  document.getElementById("attack-artisan-mastery-dmg").textContent  = feats['魔器習熟'] || 0 ;
+  document.getElementById("artisan-annotate").style.display        = feats['魔器習熟'] ? '' : 'none'; 
+  document.getElementById("accuracy-enhance").style.display        = feats['命中強化'] ? '' : 'none';
+  document.getElementById("accuracy-enhance-acc").textContent        = feats['命中強化'] || 0;
+  document.getElementById("throwing").style.display                = feats['スローイング'] ? '' : 'none';
 
   calcWeapon();
 }
 function calcWeapon() {
   for (let i = 1; i <= form.weaponNum.value; i++){
     const className = form["weapon"+i+"Class"].value;
-    const classId   = classNameToId[className];
     const category = form["weapon"+i+"Category"].value;
     const ownDex = form["weapon"+i+"Own"].checked ? 2 : 0;
     const note = form["weapon"+i+"Note"].value;
@@ -1154,8 +1188,8 @@ function calcWeapon() {
     let maxReqd = reqdStr;
     accBase += feats['命中強化'] || 0; //命中強化
     // 使用技能
-    if(classId && classes[classId].type == 'weapon-user'){
-      attackClass = lv[classId];
+    if(SET.class[className]?.type == 'weapon-user'){
+      attackClass = lv[ SET.class[className].id ];
       if(className === "フェンサー"){ maxReqd = reqdStrHalf; }
     }
     else if(className === "エンハンサー")     { attackClass = lv['Enh']; }
@@ -1182,45 +1216,33 @@ function calcWeapon() {
     if(note.match(/〈魔器〉/)){ dmgBase += feats['魔器習熟'] || 0; }
     // 命中追加D出力
     if(className === "自動計算しない"){
-      document.getElementById("weapon"+i+"-acc-total").innerHTML = Number(form["weapon"+i+"Acc"].value);
-      document.getElementById("weapon"+i+"-dmg-total").innerHTML = Number(form["weapon"+i+"Dmg"].value);
+      document.getElementById("weapon"+i+"-acc-total").textContent = Number(form["weapon"+i+"Acc"].value);
+      document.getElementById("weapon"+i+"-dmg-total").textContent = Number(form["weapon"+i+"Dmg"].value);
     }
     else {
-      document.getElementById("weapon"+i+"-acc-total").innerHTML = accBase + Number(form["weapon"+i+"Acc"].value);
-      document.getElementById("weapon"+i+"-dmg-total").innerHTML = dmgBase + Number(form["weapon"+i+"Dmg"].value);
+      document.getElementById("weapon"+i+"-acc-total").textContent = accBase + Number(form["weapon"+i+"Acc"].value);
+      document.getElementById("weapon"+i+"-dmg-total").textContent = dmgBase + Number(form["weapon"+i+"Dmg"].value);
     }
   }
-  
-  for(let i = 0; i < weapons.length; i++){
-    document.getElementById(`attack-${weaponsId[i]}-mastery`).style.display = feats['武器習熟／'+weapons[i]] ? '' : 'none';
-    document.getElementById(`attack-${weaponsId[i]}-mastery-dmg`).innerHTML = feats['武器習熟／'+weapons[i]] || 0;
-  }
-  document.getElementById("attack-artisan-mastery").style.display  = feats['魔器習熟'] ? '' : 'none';
-  document.getElementById("attack-artisan-mastery-dmg").innerHTML  = feats['魔器習熟'] || 0 ;
-  document.getElementById("artisan-annotate").style.display        = feats['魔器習熟'] ? '' : 'none'; 
-  document.getElementById("accuracy-enhance").style.display        = feats['命中強化'] ? '' : 'none';
-  document.getElementById("accuracy-enhance-acc").innerHTML        = feats['命中強化'] || 0;
-  document.getElementById("throwing").style.display                = feats['スローイング'] ? '' : 'none';
 }
 
 // 防御計算 ----------------------------------------
 function calcDefense() {
   const className = form.evasionClass.options[form.evasionClass.selectedIndex].value;
-  const classId   = classNameToId[className];
   let evaClassLv = 0;
   let evaBase = 0;
   let evaAdd = 0;
   let defBase = 0;
-  if(classId && classes[classId].type == 'weapon-user'){
-    evaClassLv = lv[classId];
+  if(SET.class[className]?.type == 'weapon-user'){
+    evaClassLv = lv[ SET.class[className].id ];
   }
   else if(className === "デーモンルーラー"){ evaClassLv = lv['Dem']; }
   else { evaClassLv = 0; }
   evaBase = evaClassLv || 0;
   
   const maxReqd = (className === "フェンサー") ? reqdStrHalf : reqdStr;
-  document.getElementById("evasion-str").innerHTML = maxReqd;
-  document.getElementById("evasion-eva").innerHTML = evaClassLv ? (evaClassLv + bonusAgi) : 0;
+  document.getElementById("evasion-str").textContent = maxReqd;
+  document.getElementById("evasion-eva").textContent = evaClassLv ? (evaClassLv + bonusAgi) : 0;
   
   // 技能選択のエラー表示
   let cL = document.getElementById("evasion-classes").classList;
@@ -1232,7 +1254,7 @@ function calcDefense() {
   // 種族特徴
   defBase += raceAbilityDef;
   document.getElementById("race-ability-def").style.display = raceAbilityDef > 0 ? "" :"none";
-  document.getElementById("race-ability-def-value").innerHTML  = raceAbilityDef;
+  document.getElementById("race-ability-def-value").textContent  = raceAbilityDef;
   // 求道者
   if(form.lvSeeker){
     const seekerDefense = lvSeeker >= 18 ? 10
@@ -1242,66 +1264,98 @@ function calcDefense() {
                         : lvSeeker >=  2 ?  2
                         : 0;
     defBase += seekerDefense;
-    document.getElementById('seeker-defense-value').innerHTML = seekerDefense;
+    document.getElementById('seeker-defense-value').textContent = seekerDefense;
   }
   // 習熟
   document.getElementById("mastery-metalarmour").style.display    = feats['防具習熟／金属鎧']   > 0 ? "" :"none";
   document.getElementById("mastery-nonmetalarmour").style.display = feats['防具習熟／非金属鎧'] > 0 ? "" :"none";
   document.getElementById("mastery-shield").style.display         = feats['防具習熟／盾']       > 0 ? "" :"none";
   document.getElementById("mastery-artisan-def").style.display    = feats['魔器習熟']           > 0 ? "" :"none";
-  document.getElementById("mastery-metalarmour-value").innerHTML    = feats['防具習熟／金属鎧']   || 0;
-  document.getElementById("mastery-nonmetalarmour-value").innerHTML = feats['防具習熟／非金属鎧'] || 0;
-  document.getElementById("mastery-shield-value").innerHTML         = feats['防具習熟／盾']       || 0;
-  document.getElementById("mastery-artisan-def-value").innerHTML    = feats['魔器習熟']           || 0;
+  document.getElementById("mastery-metalarmour-value").textContent    = feats['防具習熟／金属鎧']   || 0;
+  document.getElementById("mastery-nonmetalarmour-value").textContent = feats['防具習熟／非金属鎧'] || 0;
+  document.getElementById("mastery-shield-value").textContent         = feats['防具習熟／盾']       || 0;
+  document.getElementById("mastery-artisan-def-value").textContent    = feats['魔器習熟']           || 0;
   // 回避行動
   evaAdd += feats['回避行動'] || 0;
   document.getElementById("evasive-maneuver").style.display = feats['回避行動'] > 0 ? "" :"none";
-  document.getElementById("evasive-maneuver-value").innerHTML = feats['回避行動'] || 0;
+  document.getElementById("evasive-maneuver-value").textContent = feats['回避行動'] || 0;
   // 心眼
   evaAdd += feats['心眼'] || 0;
   document.getElementById("minds-eye").style.display = feats['心眼'] > 0 ? "" :"none";
-  document.getElementById("minds-eye-value").innerHTML = feats['心眼'] || 0;
+  document.getElementById("minds-eye-value").textContent = feats['心眼'] || 0;
   
   calcArmour(evaBase,evaAdd,defBase,maxReqd);
 }
 function calcArmour(evaBase,evaAdd,defBase,maxReqd) {
-  const armour1Eva = Number(form.armour1Eva.value);
-  const armour1Def = Number(form.armour1Def.value) + Math.max((feats['防具習熟／金属鎧'] || 0),(feats['防具習熟／非金属鎧'] || 0));
-  const shield1Eva = Number(form.shield1Eva.value);
-  const shield1Def = Number(form.shield1Def.value) + (feats['防具習熟／盾'] || 0);
-  const other1Eva = Number(form.defOther1Eva.value);
-  const other1Def = Number(form.defOther1Def.value);
-  const other2Eva = Number(form.defOther2Eva.value);
-  const other2Def = Number(form.defOther2Def.value);
-  const other3Eva = Number(form.defOther3Eva.value);
-  const other3Def = Number(form.defOther3Def.value);
-  
-  //document.getElementById("defense-total-all-eva").innerHTML = evaBase + armourEva + shieldEva + other1Eva + other2Eva + parseInt((sttAgi + sttAddB + ownAgi) / 6);
-  //document.getElementById("defense-total-all-def").innerHTML = defBase + armourDef + shieldDef + other1Def + other2Def;
-  
-  for (let i = 1; i <= 3; i++){
-    const ownAgi = form[`defTotal${i}CheckShield1`].checked && form.shield1Own.checked ? 2 : 0;
-    let eva = ( evaBase ? evaBase + evaAdd + parseInt((sttAgi + sttAddB + ownAgi) / 6) : 0 );
-    let def = defBase;
-    if(form[`defTotal${i}CheckArmour1`].checked)  { eva += armour1Eva; def += armour1Def; }
-    if(form[`defTotal${i}CheckShield1`].checked)  { eva += shield1Eva; def += shield1Def; }
-    if(form[`defTotal${i}CheckDefOther1`].checked){ eva +=  other1Eva; def +=  other1Def; }
-    if(form[`defTotal${i}CheckDefOther2`].checked){ eva +=  other2Eva; def +=  other2Def; }
-    if(form[`defTotal${i}CheckDefOther3`].checked){ eva +=  other3Eva; def +=  other3Def; }
-    if((form[`defTotal${i}CheckArmour1`].checked && form.armour1Note.value.match(/〈魔器〉/))
-    || (form[`defTotal${i}CheckShield1`].checked && form.shield1Note.value.match(/〈魔器〉/))){
-      def += feats['魔器習熟'] || 0;
-    }
+  let count = { 鎧:0, 盾:0, 他:0 };
+  let checkedCount = { 鎧:{}, 盾:{}, 他:{} };
+
+  for (let num = 1; num <= form.armourNum.value; num++){
+    const category = form[`armour${num}Category`].value;
+    let type = category.match(/鎧|盾|他/) ? category.match(/鎧|盾|他/)[0] : '';
+    if(num == 1 && !type){ type = '鎧' }
+    if(type){ count[type]++ }
+
+    form[`armour${num}Reqd`].classList.toggle('error', (safeEval(form[`armour${num}Reqd`].value) || 0) > maxReqd);
+    form[`armour${num}Own`].style.display = category.match(/鎧|盾/) ? '' : 'none';
+
     
-    document.getElementById(`defense-total${i}-eva`).innerHTML = eva;
-    document.getElementById(`defense-total${i}-def`).innerHTML = def;
+    form[`armour${num}Name`].parentNode.parentNode.querySelector('.type').textContent
+      = type ? type+count[type] : '';
+    
+    for (let i = 1; i <= 3; i++){
+      document.querySelector(`input[name="defTotal${i}CheckArmour${num}"] + span`).textContent
+        = form[`armour${num}Name`].value ? form[`armour${num}Name`].value
+            .replace(/[|｜](.+?)《(.+?)》/g, "$1")
+            .replace(/\[([^\[\]]+?)#[0-9a-zA-z\-]+\]/g, "$1")
+        : type ? type+count[type]
+        : '―';
+      
+      document.querySelector(`input[name="defTotal${i}CheckArmour${num}"]`).parentNode.style.display
+        = (  !form[`armour${num}Name`].value
+          && !form[`armour${num}Category`].value
+          && !form[`armour${num}Eva`].value
+          && !form[`armour${num}Def`].value
+          && !form[`armour${num}Own`].checked
+          && !type
+        ) ? 'none' : '';
+
+      if (type && form[`defTotal${i}CheckArmour${num}`].checked){
+        checkedCount[type][i] ??= 0;
+        checkedCount[type][i]++;
+      }
+    }
   }
   
-  form.armour1Reqd.classList.toggle(  'error', (safeEval(form.armour1Reqd.value)   || 0) > maxReqd);
-  form.shield1Reqd.classList.toggle(  'error', (safeEval(form.shield1Reqd.value)   || 0) > maxReqd);
-  form.defOther1Reqd.classList.toggle('error', (safeEval(form.defOther1Reqd.value) || 0) > maxReqd);
-  form.defOther2Reqd.classList.toggle('error', (safeEval(form.defOther2Reqd.value) || 0) > maxReqd);
-  form.defOther3Reqd.classList.toggle('error', (safeEval(form.defOther3Reqd.value) || 0) > maxReqd);
+  for (let i = 1; i <= 3; i++){
+    let eva = evaAdd;
+    let def = defBase;
+    let ownAgi = 0;
+    let artisanDef = 0;
+    for (let num = 1; num <= form.armourNum.value; num++){
+      const checkObj = form[`defTotal${i}CheckArmour${num}`];
+      checkObj.parentNode.classList.remove('error')
+
+      if(!checkObj.checked) continue;
+
+      const category = form[`armour${num}Category`].value;
+      eva += Number(form[`armour${num}Eva`].value);
+      def += Number(form[`armour${num}Def`].value) + (feats['防具習熟／'+category] || 0);
+      if(category == '盾' && form[`armour${num}Own`].checked){ ownAgi = 2 }
+      if(form[`armour${num}Note`].value.match(/〈魔器〉/)){ artisanDef = feats['魔器習熟']; }
+      
+      let matches = category.match(/(鎧|盾)/);
+      if (matches && checkedCount[matches[1]][i] > 1){
+        checkObj.parentNode.classList.add('error')
+      }
+    }
+    eva += ( evaBase ? evaBase + parseInt((sttAgi + sttAddB + ownAgi) / 6) : 0 );
+    def += artisanDef;
+ 
+    document.getElementById(`defense-total${i}-eva`).textContent = eva;
+    document.getElementById(`defense-total${i}-def`).textContent = def;
+  }
+  
 }
 
 // 経験点計算 ----------------------------------------
@@ -1319,13 +1373,13 @@ function calcExp(){
       obj.classList.remove('error');
     }
   }
-  document.getElementById("exp-rest").innerHTML = commify(expTotal - expUse);
-  document.getElementById("exp-total").innerHTML = commify(expTotal);
-  document.getElementById("history-exp-total").innerHTML = commify(expTotal);
+  document.getElementById("exp-rest").textContent = commify(expTotal - expUse);
+  document.getElementById("exp-total").textContent = commify(expTotal);
+  document.getElementById("history-exp-total").textContent = commify(expTotal);
   
   // 最大成長回数
   let growMax = 0;
-  if(growType === 'A'){
+  if(SET.growType === 'A'){
     let count = 0;
     let exp = 3000;
     for(let i = 0; exp <= expTotal; i++){
@@ -1335,12 +1389,12 @@ function calcExp(){
     }
     growMax = count;
   }
-  else if(growType === 'O') {
+  else if(SET.growType === 'O') {
     growMax = Math.floor((expTotal - 3000) / 1000);
   }
   else { return; }
-  document.getElementById("stt-grow-max-value").innerHTML = ' / ' + growMax;
-  document.getElementById("history-grow-max-value").innerHTML = '/' + growMax;
+  document.getElementById("stt-grow-max-value").textContent = ' / ' + growMax;
+  document.getElementById("history-grow-max-value").textContent = '/' + growMax;
 }
 
 
@@ -1360,15 +1414,15 @@ function calcHonor(){
       obj.classList.remove('error');
     }
   }
-  document.getElementById("history-honor-total").innerHTML = commify(pointTotal);
+  document.getElementById("history-honor-total").textContent = commify(pointTotal);
   // ランク
   const rank = form["rank"].options[form["rank"].selectedIndex].value;
   const topRank = rank.match(/★$/) ? 1 : 0;
   const rankStar = topRank ? Number(form.rankStar.value||1)-1 : 0;
   form.rankStar.style.display = topRank ? '' : 'none';
-
-  const rankNum = (adventurerRank[rank]["num"] === undefined) ? 0 : adventurerRank[rank]["num"] + rankStar*500;
-  const free = (adventurerRank[rank]["free"] === undefined) ? 0 : adventurerRank[rank]["free"] + rankStar*50;
+  
+  const rankNum = (SET.aRank[rank]) ? SET.aRank[rank].num  + rankStar*500 : 0;
+  const free    = (SET.aRank[rank]) ? SET.aRank[rank].free + rankStar*50  : 0;
   pointTotal -= rankNum;
   // 名誉アイテム
   const honorItemsNum = form.honorItemsNum.value;
@@ -1393,14 +1447,15 @@ function calcHonor(){
   pointTotal -= mysticArtsPt;
   //
   pointTotal -= Number(form.honorOffset.value);
-  document.getElementById("honor-value"   ).innerHTML = pointTotal;
-  document.getElementById("honor-value-MA").innerHTML = pointTotal;
-  document.getElementById("rank-honor-value").innerHTML = rankNum;
-  document.getElementById("mystic-arts-honor-value").innerHTML = mysticArtsPt;
+  document.getElementById("honor-value"   ).textContent = pointTotal;
+  document.getElementById("honor-value-MA").textContent = pointTotal;
+  document.getElementById("rank-honor-value").textContent = rankNum;
+  document.getElementById("mystic-arts-honor-value").textContent = mysticArtsPt;
   document.getElementById('honor-items-mystic-arts').style.display = mysticArtsPt ? '' : 'none';
 }
 // 不名誉点計算
 function calcDishonor(){
+  if(modeZero){ return; }
   let pointTotal = 0;
   const dishonorItemsNum = form.dishonorItemsNum.value;
   for (let i = 1; i <= dishonorItemsNum; i++){
@@ -1408,9 +1463,9 @@ function calcDishonor(){
     pointTotal += point;
   }
   pointTotal -= Number(form.honorOffset.value);
-  document.getElementById("dishonor-value").innerHTML = pointTotal;
-  for(const key in notorietyRank){
-    if(pointTotal >= notorietyRank[key]['num']) { document.getElementById("notoriety").innerHTML = key; }
+  document.getElementById("dishonor-value").textContent = pointTotal;
+  for(const key in SET.nRank){
+    if(pointTotal >= SET.nRank[key].num) { document.getElementById("notoriety").textContent = key; }
   }
 }
 
@@ -1434,7 +1489,7 @@ function calcCash(){
       obj
     }
   }
-  document.getElementById("history-money-total").innerHTML = commify(cash);
+  document.getElementById("history-money-total").textContent = commify(cash);
   let s = form.cashbook.value;
   s.replace(
     /::([\+\-\*\/]?[0-9,]+)+/g,
@@ -1455,9 +1510,9 @@ function calcCash(){
     }
   );
   cash = cash - deposit + debt;
-  document.getElementById('cashbook-total-value').innerHTML = commify(cash);
-  document.getElementById('cashbook-deposit-value').innerHTML = commify(deposit);
-  document.getElementById('cashbook-debt-value').innerHTML = commify(debt);
+  document.getElementById('cashbook-total-value').textContent = commify(cash);
+  document.getElementById('cashbook-deposit-value').textContent = commify(deposit);
+  document.getElementById('cashbook-debt-value').textContent = commify(debt);
 }
 
 // 装飾品欄 ----------------------------------------
@@ -1484,23 +1539,10 @@ let accesorySortable = Sortable.create(document.getElementById('accessories-tabl
     let afterType  = evt.swapItem.dataset.type;
     evt.item.dataset.type     = afterType;
     evt.swapItem.dataset.type = beforeType;
-    //let beforeData = evt.item.innerHTML;
-    //let afterData  = evt.swapItem.innerHTML;
-    //evt.item.innerHTML     = afterData;
-    //evt.swapItem.innerHTML = beforeData;
-    //const name = form[`accessory${beforeId}Name`].value;
-    //const own  = form[`accessory${beforeId}Own` ].value;
-    //const note = form[`accessory${beforeId}Note`].value;
-    //form[`accessory${beforeId}Name`].value = form[`accessory${afterId}Name`].value;
-    //form[`accessory${beforeId}Own` ].value = form[`accessory${afterId}Own` ].value;
-    //form[`accessory${beforeId}Note`].value = form[`accessory${afterId}Note`].value;
-    //form[`accessory${afterId}Name`].value = name;
-    //form[`accessory${afterId}Own` ].value = own ;
-    //form[`accessory${afterId}Note`].value = note;
     
-    const beforeTitle = document.querySelector(`#${beforeId} th`).innerHTML;
-    document.querySelector(`#${beforeId} th`).innerHTML = document.querySelector(`#${afterId} th`).innerHTML;
-    document.querySelector(`#${afterId} th`).innerHTML = beforeTitle;
+    const beforeTitle = document.querySelector(`#${beforeId} th`).textContent;
+    document.querySelector(`#${beforeId} th`).textContent = document.querySelector(`#${afterId} th`).textContent;
+    document.querySelector(`#${afterId} th`).textContent = beforeTitle;
     
     const beforeCheck = document.querySelector(`#${beforeId} [name$="Add"]`) ? document.querySelector(`#${beforeId} [name$="Add"]`).checked : false;
     const AfterCheck = document.querySelector(`#${afterId} [name$="Add"]`) ? document.querySelector(`#${afterId} [name$="Add"]`).checked : false;
@@ -1523,15 +1565,12 @@ let accesorySortable = Sortable.create(document.getElementById('accessories-tabl
 // 追加
 function addMysticArts(){
   let num = Number(form.mysticArtsNum.value) + 1;
-  let tbody = document.createElement('li');
-  tbody.setAttribute('id',idNumSet('mystic-arts'));
-  tbody.innerHTML = `
-    <span class="handle"></span>
-    <input type="text" name="mysticArts${num}">
-    <input type="number" name="mysticArts${num}Pt" oninput="calcHonor()">
-  `;
-  const target = document.querySelector("#mystic-arts-list");
-  target.appendChild(tbody, target);
+
+  let row = document.querySelector('#mystic-arts-template').content.firstElementChild.cloneNode(true);
+  row.id = idNumSet('mystic-arts-item');
+  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
+  document.querySelector("#mystic-arts-list").append(row);
+
   form.mysticArtsNum.value = num;
 }
 // 削除
@@ -1541,8 +1580,7 @@ function delMysticArts(){
     if(form[`mysticArts${num}`].value || form[`mysticArts${num}Pt`].value){
       if (!confirm(delConfirmText)) return false;
     }
-    let target = document.getElementById("mystic-arts-list");
-    target.removeChild(target.lastElementChild);
+    document.querySelector("#mystic-arts-list li:last-of-type").remove();
     num--;
     form.mysticArtsNum.value = num;
   }
@@ -1554,14 +1592,16 @@ let mysticArtsSortable = Sortable.create(document.querySelector('#mystic-arts-li
   dataIdAttr: 'id',
   animation: 150,
   handle: '.handle',
+  filter: 'template',
   ghostClass: 'sortable-ghost',
   onUpdate: function (evt) {
     const order = mysticArtsSortable.toArray();
     let num = 1;
     for(let id of order) {
-      if(document.getElementById(id)){
+      if(document.querySelector(`li#${id}`)){
         document.querySelector(`#${id} input:first-of-type`).setAttribute('name',`mysticArts${num}`);
         document.querySelector(`#${id} [name$="Pt"]`).setAttribute('name',`mysticArts${num}Pt`);
+        if(modeZero){ document.querySelector(`#${id} [name$="PtType"]`).setAttribute('name',`mysticArts${num}PtType`); }
         num++;
       }
     }
@@ -1571,15 +1611,12 @@ let mysticArtsSortable = Sortable.create(document.querySelector('#mystic-arts-li
 // 追加
 function addMysticMagic(){
   let num = Number(form.mysticMagicNum.value) + 1;
-  let tbody = document.createElement('li');
-  tbody.setAttribute('id',idNumSet('mystic-magic'));
-  tbody.innerHTML = `
-    <span class="handle"></span>
-    <input type="text" name="mysticMagic${num}">
-    <input type="number" name="mysticMagic${num}Pt" oninput="calcHonor()">
-  `;
-  const target = document.querySelector("#mystic-magic-list");
-  target.appendChild(tbody, target);
+
+  let row = document.querySelector('#mystic-magic-template').content.firstElementChild.cloneNode(true);
+  row.id = idNumSet('mystic-magic-item');
+  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
+  document.querySelector("#mystic-magic-list").append(row);
+  
   form.mysticMagicNum.value = num;
 }
 // 削除
@@ -1589,8 +1626,7 @@ function delMysticMagic(){
     if(form[`mysticMagic${num}`].value || form[`mysticMagic${num}Pt`].value){
       if (!confirm(delConfirmText)) return false;
     }
-    let target = document.getElementById("mystic-magic-list");
-    target.removeChild(target.lastElementChild);
+    document.querySelector("#mystic-magic-list li:last-of-type").remove();
     num--;
     form.mysticMagicNum.value = num;
   }
@@ -1607,7 +1643,7 @@ let mysticMagicSortable = Sortable.create(document.querySelector('#mystic-magic-
     const order = mysticMagicSortable.toArray();
     let num = 1;
     for(let id of order) {
-      if(document.getElementById(id)){
+      if(document.querySelector(`li#${id}`)){
         document.querySelector(`#${id} input:first-of-type`).setAttribute('name',`mysticMagic${num}`);
         document.querySelector(`#${id} [name$="Pt"]`).setAttribute('name',`mysticMagic${num}Pt`);
         num++;
@@ -1619,7 +1655,9 @@ let mysticMagicSortable = Sortable.create(document.querySelector('#mystic-magic-
 // 言語欄 ----------------------------------------
 function checkLanguage(){
   let count = {}; let acqT = {}; let acqR = {};
-  if(races[race]['language']){ for(let data of races[race]['language']){ acqT[data[0]] = data[1]; acqR[data[0]] = data[2]; } }
+  if(SET.races[race]?.language){
+    for(let data of SET.races[race].language){ acqT[data[0]] = data[1]; acqR[data[0]] = data[2]; }
+  }
   for (let i = 1; i <= form.languageNum.value; i++){
     let name = form[`language${i}`];
     let talk = form[`language${i}Talk`];
@@ -1631,18 +1669,21 @@ function checkLanguage(){
     count[read.value] ||= 0; count[read.value]++;
   }
   let notice = '';
-  for (let key in classes){
-    if(!classes[key]['language']){ continue; }
-    for (let langName in classes[key]['language']){
-      const data = classes[key]['language'][langName];
+  for (let key in SET.class){
+    if(!SET.class[key].language){ continue; }
+    const className = key;
+    const classId = SET.class[key].id;
+    const classLv = lv[ classId ];
+    for (let langName in SET.class[key].language){
+      const data = SET.class[key].language[langName];
       const notT = (data.talk && !acqT[langName]) ? true : false;
       const notR = (data.read && !acqR[langName]) ? true : false;
       if(langName === 'any'){
-        const v = lv[key] - (count[key] || 0);
-        if     (v > 0){ notice += `${classes[key]['jName']}技能であと「${v}」習得できます<br>`; }
-        else if(v < 0){ notice += `${classes[key]['jName']}技能での習得が「${v*-1}」過剰です<br>`; }
+        const v = classLv - (count[classId] || 0);
+        if     (v > 0){ notice += `${className}技能であと「${v}」習得できます<br>`; }
+        else if(v < 0){ notice += `${className}技能での習得が「${v*-1}」過剰です<br>`; }
       }
-      else if(lv[key] && (notT || notR)) {
+      else if(classLv && (notT || notR)) {
         notice += `${langName}の`;
         if(notT){ acqT[langName] = true; notice += `会話`+(notR ? '/' : '');  }
         if(notR){ acqR[langName] = true; notice += `読文`;  }
@@ -1655,16 +1696,12 @@ function checkLanguage(){
 // 追加
 function addLanguage(){
   let num = Number(form.languageNum.value) + 1;
-  let tbody = document.createElement('tr');
-  tbody.setAttribute('id',idNumSet('language-item'));
-  tbody.innerHTML = `
-    <td class="handle"></td>
-    <td><input name="language${num}" type="text" oninput="checkLanguage()" list="list-language"></td>
-    <td><select name="language${num}Talk" oninput="checkLanguage()">${langOptionT}</select><span class="lang-select-view"></span></td>
-    <td><select name="language${num}Read" oninput="checkLanguage()">${langOptionR}</select><span class="lang-select-view"></span></td>
-  `;
-  const target = document.querySelector("#language-table tbody");
-  target.appendChild(tbody, target);
+
+  let row = document.querySelector('#language-template').content.firstElementChild.cloneNode(true);
+  row.id = idNumSet('language-item');
+  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
+  document.querySelector("#language-table tbody").append(row);
+
   form.languageNum.value = num;
 }
 // 削除
@@ -1674,8 +1711,7 @@ function delLanguage(){
     if(form[`language${num}`].value){
       if (!confirm(delConfirmText)) return false;
     }
-    const target = document.querySelector("#language-table tbody tr:last-of-type");
-    target.parentNode.removeChild(target);
+    document.querySelector("#language-table tbody tr:last-of-type").remove();
     num--;
     form.languageNum.value = num;
   }
@@ -1686,13 +1722,13 @@ let languageSortable = Sortable.create(document.querySelector('#language-table t
   dataIdAttr: 'id',
   animation: 150,
   handle: '.handle',
-  filter: 'thead,tfoot',
+  filter: 'template',
   ghostClass: 'sortable-ghost',
   onUpdate: function (evt) {
     const order = languageSortable.toArray();
     let num = 1;
     for(let id of order) {
-      if(document.getElementById(id)){
+      if(document.querySelector(`tr#${id}`)){
         document.querySelector(`#${id} input:first-child`).setAttribute('name',`language${num}`);
         document.querySelector(`#${id} [name$="Talk"]`).setAttribute('name',`language${num}Talk`);
         document.querySelector(`#${id} [name$="Read"]`).setAttribute('name',`language${num}Read`);
@@ -1706,52 +1742,25 @@ let languageSortable = Sortable.create(document.querySelector('#language-table t
 // 武器欄 ----------------------------------------
 // 追加
 function addWeapons(copy){
-  const ini = {
-    "name"    : copy ? form[`weapon${copy}Name`    ].value : '',
-    "usage"   : copy ? form[`weapon${copy}Usage`   ].value : '',
-    "reqd"    : copy ? form[`weapon${copy}Reqd`    ].value : '',
-    "acc"     : copy ? form[`weapon${copy}Acc`     ].value : '',
-    "rate"    : copy ? form[`weapon${copy}Rate`    ].value : '',
-    "crit"    : copy ? form[`weapon${copy}Crit`    ].value : '',
-    "dmg"     : copy ? form[`weapon${copy}Dmg`     ].value : '',
-    "own"     : copy ? form[`weapon${copy}Own`     ].checked : false,
-    "category": copy ? form[`weapon${copy}Category`].value : '',
-    "class"   : copy ? form[`weapon${copy}Class`   ].value : '',
-    "note"    : copy ? form[`weapon${copy}Note`    ].value : '',
-  };
   let num = Number(form.weaponNum.value) + 1;
-  let tbody = document.createElement('tbody');
-  tbody.setAttribute('id',idNumSet('weapon-row'));
-  tbody.innerHTML = `<tr>
-    <td rowspan="2"><input name="weapon${num}Name"  type="text" value="${ini.name}"><span class="handle"></span></td>
-    <td rowspan="2"><input name="weapon${num}Usage" type="text" value="${ini.usage}" list="list-usage"></td>
-    <td rowspan="2"><input name="weapon${num}Reqd"  type="text" value="${ini.reqd}"></td>
-    <td rowspan="2">+<input name="weapon${num}Acc" type="number" value="${ini.acc}" oninput="calcWeapon()"><b id="weapon${num}-acc-total">0</b></td>
-    <td rowspan="2"><input name="weapon${num}Rate" type="text" value="${ini.rate}"></td>
-    <td rowspan="2"><input name="weapon${num}Crit" type="text" value="${ini.crit}"></td>
-    <td rowspan="2">+<input name="weapon${num}Dmg" type="number" value="${ini.dmg}" oninput="calcWeapon()"><b id="weapon${num}-dmg-total">0</b></td>
-    <td><input name="weapon${num}Own" type="checkbox" value="1" ${ini.own?'checked':''} oninput="calcWeapon()"></td>
-    <td><select name="weapon${num}Category" oninput="calcWeapon()"><option></select></td>
-    <td><select name="weapon${num}Class" oninput="calcWeapon()"><option></select></td>
-    <td rowspan="2"><span class="button" onclick="addWeapons(${num});">複<br>製</span></td>
-  </tr>
-  <tr><td colspan="3"><input name="weapon${num}Note" type="text" value="${ini.note}" oninput="calcWeapon()"></td></tr>`;
-  const target = document.querySelector("#weapons-table");
-  target.appendChild(tbody, target);
-  
-  const categories = weapons.concat("ガン（物理）","盾");
-  for(let i = 0; i < categories.length; i++){
-    let op = document.createElement("option");
-    op.text = categories[i];
-    op.selected = categories[i] === ini.category ? true : false;
-    form["weapon"+num+"Category"].appendChild(op);
-  }
-  const classes = weaponsUsers.concat('エンハンサー','デーモンルーラー','自動計算しない');
-  for(let i = 0; i < classes.length; i++){
-    let op = document.createElement("option");
-    op.text = classes[i];
-    op.selected = classes[i] === ini.class ? true : false;
-    form["weapon"+num+"Class"].appendChild(op);
+
+  let row = document.querySelector('#weapon-template').content.firstElementChild.cloneNode(true);
+  row.id = idNumSet('weapons-row');
+  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
+  document.querySelector("#weapons-table").append(row);
+
+  if(copy){
+    form[`weapon${num}Name`    ].value   = form[`weapon${copy}Name`    ].value;
+    form[`weapon${num}Usage`   ].value   = form[`weapon${copy}Usage`   ].value;
+    form[`weapon${num}Reqd`    ].value   = form[`weapon${copy}Reqd`    ].value;
+    form[`weapon${num}Acc`     ].value   = form[`weapon${copy}Acc`     ].value;
+    form[`weapon${num}Rate`    ].value   = form[`weapon${copy}Rate`    ].value;
+    form[`weapon${num}Crit`    ].value   = form[`weapon${copy}Crit`    ].value;
+    form[`weapon${num}Dmg`     ].value   = form[`weapon${copy}Dmg`     ].value;
+    form[`weapon${num}Own`     ].checked = form[`weapon${copy}Own`     ].checked;
+    form[`weapon${num}Category`].value   = form[`weapon${copy}Category`].value;
+    form[`weapon${num}Class`   ].value   = form[`weapon${copy}Class`   ].value;
+    form[`weapon${num}Note`    ].value   = form[`weapon${copy}Note`    ].value;
   }
   
   form.weaponNum.value = num;
@@ -1763,8 +1772,7 @@ function delWeapons(){
     if(form[`weapon${num}Name`].value || form[`weapon${num}Usage`].value || form[`weapon${num}Reqd`].value || form[`weapon${num}Acc`].value || form[`weapon${num}Rate`].value || form[`weapon${num}Crit`].value || form[`weapon${num}Note`].value){
       if (!confirm(delConfirmText)) return false;
     }
-    const target = document.querySelector("#weapons-table tbody:last-of-type");
-    target.parentNode.removeChild(target);
+    document.querySelector("#weapons-table tbody:last-of-type").remove();
     num--;
     form.weaponNum.value = num;
   }
@@ -1775,13 +1783,13 @@ let weaponsSortable = Sortable.create(document.getElementById('weapons-table'), 
   dataIdAttr: 'id',
   animation: 150,
   handle: '.handle',
-  filter: 'thead,tfoot',
+  filter: 'thead,tfoot,template',
   ghostClass: 'sortable-ghost',
   onUpdate: function (evt) {
     const order = weaponsSortable.toArray();
     let num = 1;
     for(let id of order) {
-      if(document.getElementById(id)){
+      if(document.querySelector(`tbody#${id}`)){
         document.querySelector(`#${id} [name$="Name"]`    ).setAttribute('name',`weapon${num}Name`);
         document.querySelector(`#${id} [name$="Usage"]`   ).setAttribute('name',`weapon${num}Usage`);
         document.querySelector(`#${id} [name$="Reqd"]`    ).setAttribute('name',`weapon${num}Reqd`);
@@ -1802,19 +1810,94 @@ let weaponsSortable = Sortable.create(document.getElementById('weapons-table'), 
   }
 });
 
+// 防具欄 ----------------------------------------
+// 追加
+function addArmour(){
+  let num = Number(form.armourNum.value) + 1;
+
+  const id = idNumSet('armour')
+  let row = document.querySelector('#armour-template').content.firstElementChild.cloneNode(true);
+  row.id = id;
+  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
+  document.querySelector("#armours tbody").append(row);
+
+  let i = 1;
+  document.querySelectorAll(".defense-total-checklist").forEach(obj => {
+    let checkbox = document.createElement('label')
+    checkbox.classList.add('check-button')
+    checkbox.innerHTML = `<input type="checkbox" name="defTotal${i}CheckArmour${num}" value="1" oninput="calcDefense()" data-id="${id}"><span></span>`;
+    obj.append(checkbox);
+    i++;
+  });
+
+  form.armourNum.value = num;
+}
+// 削除
+function delArmour(){
+  let num = Number(form.armourNum.value);
+  if(num > 1){
+    if ( form[`armour${num}Name`].value 
+      || form[`armour${num}Reqd`].value
+      || form[`armour${num}Eva`].value
+      || form[`armour${num}Def`].value
+      || form[`armour${num}Note`].value
+    ){
+      if (!confirm(delConfirmText)) return false;
+    }
+    document.querySelector("#armours tbody tr:last-of-type").remove();
+    
+    document.querySelectorAll(".defense-total-checklist label:last-of-type").forEach(obj => {
+      obj.remove();
+    });
+    num--;
+    form.armourNum.value = num;
+  }
+  calcHonor();
+}
+// ソート
+let armoursSortable = Sortable.create(document.querySelector('#armours table tbody'), {
+  group: "armours",
+  dataIdAttr: 'id',
+  animation: 150,
+  handle: '.handle',
+  filter: 'template',
+  ghostClass: 'sortable-ghost',
+  onUpdate: function (evt) {
+    const order = armoursSortable.toArray();
+    let num = 1;
+    for(let id of order) {
+      if(document.querySelector(`tr#${id}`)){
+        document.querySelector(`#${id} [name$="Name"]`    ).setAttribute('name',`armour${num}Name`);
+        document.querySelector(`#${id} [name$="Category"]`).setAttribute('name',`armour${num}Category`);
+        document.querySelector(`#${id} [name$="Reqd"]`    ).setAttribute('name',`armour${num}Reqd`);
+        document.querySelector(`#${id} [name$="Eva"]`     ).setAttribute('name',`armour${num}Eva`);
+        document.querySelector(`#${id} [name$="Def"]`     ).setAttribute('name',`armour${num}Def`);
+        document.querySelector(`#${id} [name$="Own"]`     ).setAttribute('name',`armour${num}Own`);
+        document.querySelector(`#${id} [name$="Note"]`    ).setAttribute('name',`armour${num}Note`);
+        
+        let i = 1;
+        document.querySelectorAll(".defense-total-checklist").forEach(row => {
+          row.querySelector(`[data-id=${id}]`).setAttribute('name',`defTotal${i}CheckArmour${num}`);
+          i++;
+        });
+
+        num++;
+      }
+    }
+    calcDefense()
+  }
+});
+
 // 名誉アイテム欄 ----------------------------------------
 // 追加
 function addHonorItems(){
   let num = Number(form.honorItemsNum.value) + 1;
-  let tbody = document.createElement('tr');
-  tbody.setAttribute('id',idNumSet('honor-item'));
-  tbody.innerHTML = `
-    <td class="handle"></td>
-    <td><input type="text" name="honorItem${num}"></td>
-    <td><input type="number" name="honorItem${num}Pt" oninput="calcHonor()"></td>
-  `;
-  const target = document.querySelector("#honor-items-table");
-  target.appendChild(tbody, target);
+
+  let row = document.querySelector('#honor-item-template').content.firstElementChild.cloneNode(true);
+  row.id = idNumSet('honor-item');
+  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
+  document.querySelector("#honor-items-table").append(row);
+
   form.honorItemsNum.value = num;
 }
 // 削除
@@ -1824,8 +1907,7 @@ function delHonorItems(){
     if(form[`honorItem${num}`].value || form[`honorItem${num}Pt`].value){
       if (!confirm(delConfirmText)) return false;
     }
-    const target = document.querySelector("#honor-items-table tr:last-of-type");
-    target.parentNode.removeChild(target);
+    document.querySelector("#honor-items-table tr:last-of-type").remove();
     num--;
     form.honorItemsNum.value = num;
   }
@@ -1837,13 +1919,13 @@ let honorSortable = Sortable.create(document.querySelector('#honor-items-table')
   dataIdAttr: 'id',
   animation: 150,
   handle: '.handle',
-  //filter: 'thead,tfoot',
+  filter: 'template',
   ghostClass: 'sortable-ghost',
   onUpdate: function (evt) {
     const order = honorSortable.toArray();
     let num = 1;
     for(let id of order) {
-      if(document.getElementById(id)){
+      if(document.querySelector(`tr#${id}`)){
         document.querySelector(`#${id} [type="text"]`  ).setAttribute('name',`honorItem${num}`);
         document.querySelector(`#${id} [type="number"]`).setAttribute('name',`honorItem${num}Pt`);
         if(modeZero){ document.querySelector(`#${id} select`).setAttribute('name',`honorItem${num}PtType`); }
@@ -1856,15 +1938,12 @@ let honorSortable = Sortable.create(document.querySelector('#honor-items-table')
 // 追加
 function addDishonorItems(){
   let num = Number(form.dishonorItemsNum.value) + 1;
-  let tbody = document.createElement('tr');
-  tbody.setAttribute('id',idNumSet('dishonor-item'));
-  tbody.innerHTML = `
-    <td class="handle"></td>
-    <td><input type="text" name="dishonorItem${num}"></td>
-    <td><input type="number" name="dishonorItem${num}Pt" oninput="calcDishonor()"></td>
-  `;
-  const target = document.querySelector("#dishonor-items-table tbody");
-  target.appendChild(tbody, target);
+
+  let row = document.querySelector('#dishonor-item-template').content.firstElementChild.cloneNode(true);
+  row.id = idNumSet('dishonor-item');
+  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
+  document.querySelector("#dishonor-items-table").append(row);
+
   form.dishonorItemsNum.value = num;
 }
 // 削除
@@ -1874,26 +1953,25 @@ function delDishonorItems(){
     if(form[`dishonorItem${num}`].value || form[`dishonorItem${num}Pt`].value){
       if (!confirm(delConfirmText)) return false;
     }
-    const target = document.querySelector("#dishonor-items-table tbody tr:last-of-type");
-    target.parentNode.removeChild(target);
+    document.querySelector("#dishonor-items-table tr:last-of-type").remove();
     num--;
     form.dishonorItemsNum.value = num;
   }
   calcDishonor();
 }
 // ソート
-let dishonorSortable = Sortable.create(document.querySelector('#dishonor-items-table tbody'), {
+let dishonorSortable = Sortable.create(document.querySelector('#dishonor-items-table'), {
   group: "dishonor",
   dataIdAttr: 'id',
   animation: 150,
   handle: '.handle',
-  filter: 'thead,tfoot',
+  filter: 'template',
   ghostClass: 'sortable-ghost',
   onUpdate: function (evt) {
     const order = dishonorSortable.toArray();
     let num = 1;
     for(let id of order) {
-      if(document.getElementById(id)){
+      if(document.querySelector(`tr#${id}`)){
         document.querySelector(`#${id} [type="text"]`  ).setAttribute('name',`dishonorItem${num}`);
         document.querySelector(`#${id} [type="number"]`).setAttribute('name',`dishonorItem${num}Pt`);
         if(modeZero){ document.querySelector(`#${id} select`).setAttribute('name',`dishonorItem${num}PtType`); }
@@ -1929,22 +2007,11 @@ let commonClassSortable = Sortable.create(document.querySelector('#common-classe
 // 追加
 function addHistory(){
   let num = Number(form.historyNum.value) + 1;
-  let tbody = document.createElement('tbody');
-  tbody.setAttribute('id',idNumSet('history'));
-  tbody.innerHTML = `<tr>
-    <td rowspan="2" class="handle"></td>
-    <td rowspan="2"><input name="history${num}Date"   type="text"></td>
-    <td rowspan="2"><input name="history${num}Title"  type="text"></td>
-    <td><input name="history${num}Exp"    type="text" oninput="calcExp()"></td>
-    <td><input name="history${num}Money"  type="text" oninput="calcCash()"></td>
-    <td><input name="history${num}Honor"  type="text" oninput="calcHonor()"></td>
-    <td><input name="history${num}Grow"   type="text" oninput="calcStt()" list="list-grow"></td>
-    <td><input name="history${num}Gm"     type="text"></td>
-    <td><input name="history${num}Member" type="text"></td>
-  </tr>
-  <tr><td colspan="6" class="left"><input name="history${num}Note" type="text"></td></tr>`;
-  const target = document.querySelector("#history-table tfoot");
-  target.parentNode.insertBefore(tbody, target);
+
+  let row = document.querySelector('#history-template').content.firstElementChild.cloneNode(true);
+  row.id = idNumSet('history');
+  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
+  document.querySelector("#history-table tbody:last-of-type").after(row);
   
   form.historyNum.value = num;
 }
@@ -1955,8 +2022,7 @@ function delHistory(){
     if(form[`history${num}Date`].value || form[`history${num}Title`].value || form[`history${num}Exp`].value || form[`history${num}Honor`].value || form[`history${num}Money`].value || form[`history${num}Grow`].value || form[`history${num}Gm`].value || form[`history${num}Member`].value || form[`history${num}Note`].value){
       if (!confirm(delConfirmText)) return false;
     }
-    const target = document.querySelector("#history-table tbody:last-of-type");
-    target.parentNode.removeChild(target);
+    document.querySelector("#history-table tbody:last-of-type").remove();
     num--;
     form.historyNum.value = num;
     calcExp(); calcHonor(); calcCash(); calcStt();
@@ -1969,13 +2035,13 @@ let historySortable = Sortable.create(document.getElementById('history-table'), 
   animation: 150,
   handle: '.handle',
   scroll: true,
-  filter: 'thead,tfoot',
+  filter: 'thead,tfoot,template',
   ghostClass: 'sortable-ghost',
   onUpdate: function (evt) {
     const order = historySortable.toArray();
     let num = 1;
     for(let id of order) {
-      if(document.getElementById(id)){
+      if(document.querySelector(`tbody#${id}`)){
         document.querySelector(`#${id} [name$="Date"]`  ).setAttribute('name',`history${num}Date`);
         document.querySelector(`#${id} [name$="Title"]` ).setAttribute('name',`history${num}Title`);
         document.querySelector(`#${id} [name$="Exp"]`   ).setAttribute('name',`history${num}Exp`);
@@ -1985,6 +2051,8 @@ let historySortable = Sortable.create(document.getElementById('history-table'), 
         document.querySelector(`#${id} [name$="Gm"]`    ).setAttribute('name',`history${num}Gm`);
         document.querySelector(`#${id} [name$="Member"]`).setAttribute('name',`history${num}Member`);
         document.querySelector(`#${id} [name$="Note"]`  ).setAttribute('name',`history${num}Note`);
+        if(modeZero){ 
+          document.querySelector(`#${id} [name$="HonorType"]`).setAttribute('name',`history${num}HonorType`); }
         num++;
       }
     }
@@ -2018,11 +2086,11 @@ function calcPointBuy() {
   let points = 0;
   let errorFlag = 0;
   ['A','B','C','D','E','F'].forEach((i) => { form[`sttBase${i}`].classList.remove('error') });
-  if(races[race] && races[race]['dice']){
+  if(SET.races[race]?.dice){
     ['A','B','C','D','E','F'].forEach((i) => {
-      const dice = String(races[race]['dice'][i]);
+      const dice = String(SET.races[race].dice[i]);
       let num  = Number(form[`sttBase${i}`].value);
-      if(races[race]['dice'][`${i}+`]){ num -= races[race]['dice'][`${i}+`]; }
+      if(SET.races[race].dice[`${i}+`]){ num -= SET.races[race].dice[`${i}+`]; }
       if(pointBuyList[type] && pointBuyList[type][dice] && pointBuyList[type][dice][num] != null){
         points += pointBuyList[type][dice][num];
       }
@@ -2035,7 +2103,7 @@ function calcPointBuy() {
   else {
     errorFlag = 1;
   }
-  document.getElementById("stt-pointbuy-AtoF-value").innerHTML = errorFlag ? '×' : points;
+  document.getElementById("stt-pointbuy-AtoF-value").textContent = errorFlag ? '×' : points;
 
   if(form.birth.value === '冒険者'){
     points = 0;
@@ -2049,10 +2117,10 @@ function calcPointBuy() {
         errorFlag = 1;
       }
     });
-    document.getElementById("stt-pointbuy-TPS-value").innerHTML = errorFlag ? '×' : points;
+    document.getElementById("stt-pointbuy-TPS-value").textContent = errorFlag ? '×' : points;
   }
   else {
-    document.getElementById("stt-pointbuy-TPS-value").innerHTML = '―';
+    document.getElementById("stt-pointbuy-TPS-value").textContent = '―';
   }
 }
 const pointBuyList = {

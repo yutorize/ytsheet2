@@ -42,41 +42,40 @@
         <ul>
           <TMPL_LOOP Characters><li<TMPL_IF HIDE> class="hide"</TMPL_IF>>
             <a href="./?id=<TMPL_VAR ID>" data-lv="<TMPL_VAR LV>"><TMPL_VAR NAME><small><TMPL_VAR AUTHOR></small></a>
-          </li></TMPL_LOOP>
+          </TMPL_LOOP>
         </ul>
         <TMPL_ELSE>
         <table <TMPL_IF MOUNT>class="mount"</TMPL_IF>>
           <thead>
-          <tr>
-            <th class="name"><span>名称</span></th>
-            <th class="author"><a href="./?type=m&<TMPL_VAR URL><TMPL_VAR qLinks>&sort=author">製作者</a></th>
-            <th class="taxa"><span>分類</span></th>
-            <th class="level"><a href="./?type=m&<TMPL_VAR URL><TMPL_VAR qLinks>&sort=lv"><span class="small">レベル</span></a></th>
-            <th class="parts"><a href="./?type=m&<TMPL_VAR URL><TMPL_VAR qLinks>&sort=parts"><span class="small">部位数</span></a></th>
-            <TMPL_IF MOUNT>
-              <th class="price"><span><span>価格<span class="small">(購入／レンタル)</span></span></span></th>
-            <TMPL_ELSE>
-              <th class="disposition"><span>反応</span></th>
-              <th class="habitat"><span>生息地</span></th>
-            </TMPL_IF>
-            <th class="date"><a href="./?type=m&<TMPL_VAR URL><TMPL_VAR qLinks>&sort=date">更新日時</a></th>
-          </tr>
+            <tr>
+              <th class="name"><span>名称</span>
+              <th class="author"><a href="./?type=m&<TMPL_VAR URL><TMPL_VAR qLinks>&sort=author">製作者</a>
+              <th class="taxa"><span>分類</span>
+              <th class="level"><a href="./?type=m&<TMPL_VAR URL><TMPL_VAR qLinks>&sort=lv"><span class="small">レベル</span></a>
+              <th class="parts"><a href="./?type=m&<TMPL_VAR URL><TMPL_VAR qLinks>&sort=parts"><span class="small">部位数</span></a>
+              <TMPL_IF MOUNT>
+                <th class="price"><span><span>価格<span class="small">(購入／レンタル)</span></span></span>
+              <TMPL_ELSE>
+                <th class="disposition"><span>反応</span>
+                <th class="habitat"><span>生息地</span>
+              </TMPL_IF>
+              <th class="date"><a href="./?type=m&<TMPL_VAR URL><TMPL_VAR qLinks>&sort=date">更新日時</a>
           </thead>
           <TMPL_LOOP Characters><tr<TMPL_IF HIDE> class="hide"</TMPL_IF>>
-            <td class="name"><a href="./?id=<TMPL_VAR ID>"><TMPL_VAR NAME></a></td>
-            <td class="author"><TMPL_VAR AUTHOR></td>
-            <td class="taxa"><TMPL_VAR TAXA></td>
-            <td class="level"><TMPL_VAR LV></td>
-            <td class="parts"><TMPL_VAR PARTS></td>
+            <td class="name"><a href="./?id=<TMPL_VAR ID>"><TMPL_VAR NAME></a>
+            <td class="author"><TMPL_VAR AUTHOR>
+            <td class="taxa"><TMPL_VAR TAXA>
+            <td class="level"><TMPL_VAR LV>
+            <td class="parts"><TMPL_VAR PARTS>
             <TMPL_IF MOUNT>
-              <td class="price"><TMPL_VAR PRICE></td>
+              <td class="price"><TMPL_VAR PRICE>
             <TMPL_ELSE>
-              <td class="disposition"><TMPL_VAR DISPOSITION></td>
-              <td class="habitat"><TMPL_VAR HABITAT></td>
+              <td class="disposition"><TMPL_VAR DISPOSITION>
+              <td class="habitat"><TMPL_VAR HABITAT>
             </TMPL_IF>
             <td class="tags"><TMPL_VAR TAGS></td>
-            <td class="date"><div><TMPL_VAR DATE></div></td>
-          </tr></TMPL_LOOP>
+            <td class="date"><div><TMPL_VAR DATE></div>
+          </TMPL_LOOP>
         </table>
         </TMPL_IF>
         <TMPL_VAR NAV>
@@ -85,10 +84,8 @@
       </TMPL_LOOP>
       <TMPL_IF simpleIndex><section class="list">
         <ul class="grouplist">
-          <TMPL_LOOP Taxa><li>
-            <a href="./?type=m&taxa=<TMPL_VAR ID>"><TMPL_VAR NAME><small><TMPL_VAR TEXT></small></a>
-          </li></TMPL_LOOP>
-          <li><a href="./?type=m&taxa=all&mount=1">騎獣</a></li>
+          <TMPL_LOOP Taxa><li><a href="./?type=m&taxa=<TMPL_VAR ID>"><TMPL_VAR NAME><small><TMPL_VAR TEXT></small></a></TMPL_LOOP>
+          <li><a href="./?type=m&taxa=all&mount=1">騎獣</a>
         </ul>
       </section></TMPL_IF>
     </article>

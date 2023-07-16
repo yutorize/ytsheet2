@@ -29,19 +29,31 @@ body {
     display: grid;
     grid-gap: 0 1.2rem;
     grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto auto;
     padding: 0 1.2rem;
     position: relative;
   }
   #area-name, #tags {
     grid-column: span 2;
   }
-  div.column-status {
-  }
-  #area-skills {
+  #column-status {
+    grid-column: 1;
+    grid-row: 3;
   }
   #area-equipment {
     grid-column: 2;
-    grid-row: 3 / span 2;
+    grid-row: 3;
+    align-self: start;
+  }
+  #area-skills {
+    grid-column: 1;
+    grid-row: 4;
+    align-self: start;
+  }
+  #area-arts {
+    grid-column: 2;
+    grid-row: 4;
+    align-self: start;
   }
   #free-note {
     grid-column: 1;
@@ -671,8 +683,9 @@ table.data-table tbody td:empty::before {
 #area-equipment table.data-table tbody:first-of-type tr:first-of-type th {
   border-top: hidden;
 }
-#area-equipment table td b {
+#area-equipment table td:not(.name, .note) b {
   font-size: 1.15em;
+  word-break: normal;
 }
 
 #area-equipment thead th .small {
@@ -696,9 +709,6 @@ table.data-table tbody td:empty::before {
 #area-equipment tbody td.note.left { padding-left: .3em; font-size: .9em; }
 
 @media screen and (min-width:1400px){
-  #area-equipment > .box {
-    margin-top: calc( var(--box-v-gap) * 2);
-  }
   #area-equipment > .box:first-child {
     margin-top: 0;
   }
@@ -787,9 +797,6 @@ table.data-table tbody td:empty::before {
 }
 
 @media screen and (min-width:1400px){
-  #area-items {
-    margin-top: calc( var(--box-v-gap) * 2);
-  }
 }
 
 /* Money */
@@ -825,6 +832,7 @@ table.data-table tbody td:empty::before {
 :is(#skills, #general-skills) {
   margin-top: var(--box-v-gap);
 }
+:is(#skills, #general-skills) thead { white-space: nowrap; }
 :is(#skills, #general-skills) thead th.adp    { width:   3em; } /* 成長点 */
 :is(#skills, #general-skills) thead th.auto   { width: 2.5em; } /* 種別 */
 :is(#skills, #general-skills) thead th.name   { width:  12em; } /* 名前 */
@@ -835,9 +843,66 @@ table.data-table tbody td:empty::before {
 
 /* // Spells
 ---------------------------------------------------------------------------------------------------- */
+
+#spell-cast {
+  width: max-content;
+  margin-top: var(--box-v-gap);
+}
+#spell-cast table {
+  border-top-width: 1px;
+  border-top-style: solid;
+}
+#spell-cast table col.base  { width: 6em; }
+#spell-cast table col.value { width: 3em; }
+#spell-cast table col.class { width: 6.5em; }
+#spell-cast table col.level { width: 5em; }
+#spell-cast table col.total { width: 4.5em; }
+
+#spell-cast .flex {
+  display: flex;
+  align-items: center;
+}
+#spell-cast .flex b {
+  flex-basis: 5em;
+  line-height: 1.1;
+}
+
+
+#spell-cast table tbody .base,
+#spell-cast table tbody .value,
+#spell-cast table tbody .value + td,
+#spell-cast table tbody .class {
+  border-right-style: hidden;
+}
+#spell-cast table tbody .base {
+  padding-left: 1em;
+}
+#spell-cast table tbody .class::before {
+  content: "+";
+  float: left;
+  font-weight: normal;
+}
+#spell-cast table tbody .level {
+  padding-right: .5em;
+  text-align: right;
+}
+#spell-cast table tbody .level::after {
+  content: 'レベル';
+  font-size: 85%;
+  margin-left: .2em;
+}
+#spell-cast table tbody .total {
+  font-size: 110%;
+  line-height: 1;
+}
+
+#spell-cast + #spells {
+  margin-top: .3rem;
+}
 #spells {
   margin-top: var(--box-v-gap);
 }
+#spells thead { white-space: nowrap; }
 #spells thead th.name   { width:  12em; } /* 名前 */
 #spells thead th.system { width: 4.5em; } /* 系統 */
 #spells thead th.type   { width: 6.1em; } /* 種別 */
@@ -850,6 +915,7 @@ table.data-table tbody td:empty::before {
 #arts {
   margin-top: var(--box-v-gap);
 }
+#arts thead { white-space: nowrap; }
 #arts thead th.name   { width:  12em; } /* 名前 */
 #arts thead th.weapon { width:  10em; } /* 武器 */
 #arts thead th.skill  { width: 8.1em; } /* 技能 */
@@ -857,6 +923,17 @@ table.data-table tbody td:empty::before {
 #arts thead th.terms  { width:  auto; } /* 条件 */
 #arts thead th.page   { width:   5em; } /* 参照 */
 
+@media screen and (max-width:735px){
+  #arts thead th.name   { width:   9em; } /* 名前 */
+  #arts thead th.weapon { width:   5em; } /* 武器 */
+  #arts thead th.skill  { width:   6em; } /* 技能 */
+  #arts thead th.cost   { width: 7.5em; font-size: 85%; } /* 消費 */
+  #arts thead th.terms  { width:  auto; } /* 条件 */
+  #arts thead th.page   { width:   3em; } /* 参照 */
+
+  #arts tbody td:not(.name) { font-size: 85%; }
+  #arts tbody td.page   { font-size: 80%; } /* 参照 */
+}
 /* // Free-Memo
 ---------------------------------------------------------------------------------------------------- */
 #free-note,
@@ -884,6 +961,11 @@ table.data-table tbody td:empty::before {
   display: block;
   margin: -1em 0 -.5em;
 }
+#history table tr td.comp {
+  padding-left: 1px;
+  padding-right: 1px;
+  white-space: nowrap;
+}
 #history table tr td.comp span.failed {
   opacity: 0.5;
 }
@@ -893,7 +975,8 @@ table.data-table tbody td:empty::before {
 #history table tr td.money::after {
   content: "枚";
   font-size: 0.9em;
-  padding-left: 1px;
+  margin-left: 3px;
+  margin-right: 2px;
 }
 #history table tr td.money:empty::after {
   content: "";

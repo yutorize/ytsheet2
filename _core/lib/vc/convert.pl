@@ -30,7 +30,7 @@ sub dataConvert {
     my $data = urlDataGet($set_url.'&mode=json') or error 'コンバート元のデータが取得できませんでした';
     if($data !~ /^{/){ error 'JSONデータが取得できませんでした' }
     $data = thanSignEscape($data);
-    my %pc = %{ decode_json(join '', $data) };
+    my %pc = utf8::is_utf8($data) ? %{ decode_json(encode('utf8', (join '', $data))) } : %{ decode_json(join '', $data) };
     if($pc{'result'} eq 'OK'){
       our $base_url = $set_url;
       $base_url =~ s|/[^/]+?$|/|;

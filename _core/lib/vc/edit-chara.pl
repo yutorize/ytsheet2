@@ -142,16 +142,16 @@ print <<"HTML";
       <div id="header-menu">
         <h2><span></span></h2>
         <ul>
-          <li onclick="sectionSelect('common');"><span>キャラクター</span><span>データ</span></li>
-          <li onclick="sectionSelect('palette');"><span>チャット</span><span>パレット</span></li>
-          <li onclick="sectionSelect('color');" class="color-icon" title="カラーカスタム"></span></li>
-          <li onclick="view('text-rule')" class="help-icon" title="テキスト整形ルール"></li>
-          <li onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード切替"></li>
+          <li onclick="sectionSelect('common');"><span>キャラクター</span><span>データ</span>
+          <li onclick="sectionSelect('palette');"><span>チャット</span><span>パレット</span>
+          <li onclick="sectionSelect('color');" class="color-icon" title="カラーカスタム"></span>
+          <li onclick="view('text-rule')" class="help-icon" title="テキスト整形ルール">
+          <li onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード切替">
           <li class="buttons">
             <ul>
-              <li @{[ display ($mode eq 'edit') ]} class="view-icon" title="閲覧画面"><a href="./?id=$::in{'id'}"></a></li>
-              <li @{[ display ($mode eq 'edit') ]} class="copy" onclick="window.open('./?mode=copy&id=$::in{'id'}@{[  $::in{'log'}?"&log=$::in{'log'}":'' ]}');">複製</li>
-              <li class="submit" onclick="formSubmit()" title="Ctrl+S">保存</li>
+              <li @{[ display ($mode eq 'edit') ]} class="view-icon" title="閲覧画面"><a href="./?id=$::in{'id'}"></a>
+              <li @{[ display ($mode eq 'edit') ]} class="copy" onclick="window.open('./?mode=copy&id=$::in{'id'}@{[  $::in{'log'}?"&log=$::in{'log'}":'' ]}');">複製
+              <li class="submit" onclick="formSubmit()" title="Ctrl+S">保存
             </ul>
           </li>
         </ul>
@@ -202,20 +202,16 @@ HTML
             <option value="battle" @{[ $pc{'forbidden'} eq 'battle' ? 'selected' : '' ]}>データ・数値のみ秘匿
             <option value="all"    @{[ $pc{'forbidden'} eq 'all'    ? 'selected' : '' ]}>内容を全て秘匿
           </select>
-        </dd>
         <dd id="hide-checkbox">
           <select name="hide">
             <option value="">一覧に表示
             <option value="1" @{[ $pc{'hide'} ? 'selected' : '' ]}>一覧には非表示
           </select>
-        </dd>
-        <dd>
-          ※一覧に非表示でもタグ検索結果・マイリストには表示されます
-        </dd>
+        <dd>※「一覧に非表示」でもタグ検索結果・マイリストには表示されます
       </dl>
       <div class="box" id="group">
         <dl>
-          <dt>グループ</dt><dd><select name="group">
+          <dt>グループ<dd><select name="group">
 HTML
 foreach (@set::groups){
   my $id   = @$_[0];
@@ -225,21 +221,21 @@ foreach (@set::groups){
   print '<option value="'.$id.'"'.($pc{'group'} eq $id ? ' selected': '').'>'.$name.'</option>';
 }
 print <<"HTML";
-          </select></dd>
-          <dt>タグ</dt><dd>@{[ input 'tags','','','' ]}</dd>
+          </select>
+          <dt>タグ<dd>@{[ input 'tags','','','' ]}
         </dl>
       </div>
       
       <div class="box" id="name-form">
         <div>
           <dl id="character-name">
-            <dt>キャラクター名</dt>
-            <dd>@{[input('characterName','text',"nameSet")]}</dd>
+            <dt>キャラクター名
+            <dd>@{[input('characterName','text',"nameSet")]}
           </dl>
         </div>
         <dl id="player-name">
-          <dt>プレイヤー名</dt>
-          <dd>@{[input('playerName')]}</dd>
+          <dt>プレイヤー名
+          <dd>@{[input('playerName')]}
         </dl>
       </div>
       
@@ -257,28 +253,28 @@ print <<"HTML";
             </dd>
           </dl>
           <dl class="box">
-            <dt>レベル</dt>
-            <dd>@{[ input 'level', 'number', 'calcBattle' ]}</dd>
+            <dt>レベル
+            <dd>@{[ input 'level', 'number', 'calcBattle' ]}
           </dl>
         </div>
 
         <div id="personal">
           <div class="box-union">
             <dl class="box" id="">
-              <dt>種族</dt>
-              <dd>@{[ selectInput 'race','',@races ]}</dd>
+              <dt>種族
+              <dd>@{[ selectInput 'race','',@races ]}
             </dl>
             <dl class="box" id="">
-              <dt>クラス</dt>
-              <dd>@{[ selectInput 'class','',@classes ]}</dd>
+              <dt>クラス
+              <dd>@{[ selectInput 'class','',@classes ]}
             </dl>
           </div>
 
           <div class="box-union">
             <dl class="box" id="">
-              <dt>スタイル</dt>
-              <dd>@{[ selectInput 'style1','',@styles ]}</dd>
-              <dd>@{[ selectInput 'style2','',@styles ]}</dd>
+              <dt>スタイル
+              <dd>@{[ selectInput 'style1','',@styles ]}
+              <dd>@{[ selectInput 'style2','',@styles ]}
             </dl>
           </div>
         </div>
@@ -286,18 +282,18 @@ print <<"HTML";
         <div class="box" id="appearance">
           <h2>キャラクター外見</h2>
           <dl class="">
-            <dt>性別</dt>
-            <dd>@{[ input 'gender','','','list="list-gender"' ]}</dd>
-            <dt>年齢</dt>
-            <dd>@{[ input 'age' ]}</dd>
-            <dt>瞳の色</dt>
-            <dd>@{[ input 'eye' ]}</dd>
-            <dt>肌の色</dt>
-            <dd>@{[ input 'skin' ]}</dd>
-            <dt>髪の色</dt>
-            <dd>@{[ input 'hair' ]}</dd>
-            <dt>身長</dt>
-            <dd>@{[ input 'height' ]}</dd>
+            <dt>性別
+            <dd>@{[ input 'gender','','','list="list-gender"' ]}
+            <dt>年齢
+            <dd>@{[ input 'age' ]}
+            <dt>瞳の色
+            <dd>@{[ input 'eye' ]}
+            <dt>肌の色
+            <dd>@{[ input 'skin' ]}
+            <dt>髪の色
+            <dd>@{[ input 'hair' ]}
+            <dt>身長
+            <dd>@{[ input 'height' ]}
           </dl>
         </div>
 
@@ -305,26 +301,26 @@ print <<"HTML";
           <div class="box" id="user-status">
             <h2>能力値</h2>
             <dl class="">
-              <dt>バイタリティ</dt>
-              <dd>@{[ input 'vitality','number','calcStatus' ]}</dd>
-              <dt>テクニック</dt>
-              <dd>@{[ input 'technic','number' ]}</dd>
-              <dt>クレバー</dt>
-              <dd>@{[ input 'clever','number' ]}</dd>
-              <dt>カリスマ</dt>
-              <dd>@{[ input 'carisma','number' ]}</dd>
+              <dt>バイタリティ
+              <dd>@{[ input 'vitality','number','calcStatus' ]}
+              <dt>テクニック
+              <dd>@{[ input 'technic','number' ]}
+              <dt>クレバー
+              <dd>@{[ input 'clever','number' ]}
+              <dt>カリスマ
+              <dd>@{[ input 'carisma','number' ]}
             </dl>
           </div>
           <div class="box-union" id="hp-and-stamina">
             <dl class="box" id="hp">
-              <dt>HP</dt>
+              <dt>HP
               <dd>
                 +@{[ input 'hpAdd','number','calcBattle' ]}=
                 <b id="hp-value">0</b>
               </dd>
             </dl>
             <dl class="box" id="stamina">
-              <dt>スタミナ</dt>
+              <dt>スタミナ
               <dd>
                 +@{[ input 'staminaAdd','number','calcStatus' ]}=
                 <b id="stamina-value">0</b> <small>(半分:<span id="stamina-half">0</span>)</small>
@@ -339,16 +335,15 @@ print <<"HTML";
         <h2>特技</h2>
         <table class="edit-table no-border-cells" id="speciality-table">
           <thead>
-            <tr><th>名称</th><th class="left">効果</th></tr>
+            <tr><th>名称<th class="left">効果
           </thead>
           <tbody>
             <tr id="skill1">
-              <td>@{[input "speciality1Name" ]}</td>
-              <td>@{[input "speciality1Note" ]}</td>
-            </tr>
+              <td>@{[input "speciality1Name" ]}
+              <td>@{[input "speciality1Note" ]}
             <tr id="skill2">
-              <td>@{[input "speciality2Name" ]}</td>
-              <td>@{[input "speciality2Note" ]}</td>
+              <td>@{[input "speciality2Name" ]}
+              <td>@{[input "speciality2Note" ]}
             </tr>
           </tbody>
         </table>
@@ -359,23 +354,22 @@ print <<"HTML";
         @{[input 'goodsNum','hidden']}
         <table class="edit-table no-border-cells" id="goods-table">
           <thead>
-            <tr><th></th><th>名称</th><th>種別</th><th>戦果点</th><th>効果</th></tr>
-          </thead>
+            <tr><th><th>名称<th>種別<th>戦果点<th>効果
           <tbody>
 HTML
-foreach my $num (1 .. $pc{'goodsNum'}){
+foreach my $num ('TMPL',1 .. $pc{'goodsNum'}){
+  if($num eq 'TMPL'){ print '<template id="goods-template">' }
   print <<"HTML";
             <tr id="goods${num}">
-              <td class="handle"></td>
-              <td>@{[input "goods${num}Name" ]}</td>
-              <td>@{[input "goods${num}Type",'','','list="list-goods-type"' ]}</td>
-              <td>@{[input "goods${num}Cost",'number','calcResultPoint' ]}</td>
-              <td>@{[input "goods${num}Note" ]}</td>
-            </tr>
+              <td class="handle">
+              <td>@{[input "goods${num}Name" ]}
+              <td>@{[input "goods${num}Type",'','','list="list-goods-type"' ]}
+              <td>@{[input "goods${num}Cost",'number','calcResultPoint' ]}
+              <td>@{[input "goods${num}Note" ]}
 HTML
+  if($num eq 'TMPL'){ print '</template>' }
 }
   print <<"HTML";
-          </tbody>
         </table>
         <div class="add-del-button"><a onclick="addGoods()">▼</a><a onclick="delGoods()">▲</a></div>
       </div>
@@ -398,58 +392,54 @@ HTML
           </colgroup>
           <thead>
             <tr>
-              <th colspan="2"></th>
-              <th>命中値</th>
-              <th>詠唱値</th>
-              <th>回避値</th>
-              <th>攻撃値</th>
-              <th>意志値</th>
-              <th>物防値</th>
-              <th>魔防値</th>
-              <th>行動値</th>
-              <th>耐久値</th>
-              <th></th>
-              <th></th>
+              <th colspan="2">
+              <th>命中値
+              <th>詠唱値
+              <th>回避値
+              <th>攻撃値
+              <th>意志値
+              <th>物防値
+              <th>魔防値
+              <th>行動値
+              <th>耐久値
+              <th>
+              <th>
             </tr>
-          </thead>
           <tbody>
-              <tr>
-                <th colspan="2" class="right">基本戦闘値</th>
-                <td>@{[ input "battleBaseAcc", 'number','calcBattle' ]}</td>
-                <td>@{[ input "battleBaseSpl", 'number','calcBattle' ]}</td>
-                <td>@{[ input "battleBaseEva", 'number','calcBattle' ]}</td>
-                <td>@{[ input "battleBaseAtk", 'number','calcBattle' ]}</td>
-                <td>@{[ input "battleBaseDet", 'number','calcBattle' ]}</td>
-                <td>@{[ input "battleBaseDef", 'number','calcBattle' ]}</td>
-                <td>@{[ input "battleBaseMdf", 'number','calcBattle' ]}</td>
-                <td>@{[ input "battleBaseIni", 'number','calcBattle' ]}</td>
-                <td>@{[ input "battleBaseStr", 'number','calcBattle' ]}</td>
-              </tr>
-              <tr>
-                <th>種族特性</th>
-                <td>@{[ input "battleRaceName" ]}</td>
-                <td>@{[ input "battleRaceAcc", 'number','calcBattle' ]}</td>
-                <td>@{[ input "battleRaceSpl", 'number','calcBattle' ]}</td>
-                <td>@{[ input "battleRaceEva", 'number','calcBattle' ]}</td>
-                <td>@{[ input "battleRaceAtk", 'number','calcBattle' ]}</td>
-                <td>@{[ input "battleRaceDet", 'number','calcBattle' ]}</td>
-                <td>@{[ input "battleRaceDef", 'number','calcBattle' ]}</td>
-                <td>@{[ input "battleRaceMdf", 'number','calcBattle' ]}</td>
-                <td>@{[ input "battleRaceIni", 'number','calcBattle' ]}</td>
-                <td>@{[ input "battleRaceStr", 'number','calcBattle' ]}</td>
-              </tr>
+            <tr>
+              <th colspan="2" class="right">基本戦闘値
+              <td>@{[ input "battleBaseAcc", 'number','calcBattle' ]}
+              <td>@{[ input "battleBaseSpl", 'number','calcBattle' ]}
+              <td>@{[ input "battleBaseEva", 'number','calcBattle' ]}
+              <td>@{[ input "battleBaseAtk", 'number','calcBattle' ]}
+              <td>@{[ input "battleBaseDet", 'number','calcBattle' ]}
+              <td>@{[ input "battleBaseDef", 'number','calcBattle' ]}
+              <td>@{[ input "battleBaseMdf", 'number','calcBattle' ]}
+              <td>@{[ input "battleBaseIni", 'number','calcBattle' ]}
+              <td>@{[ input "battleBaseStr", 'number','calcBattle' ]}
+            <tr>
+              <th>種族特性
+              <td>@{[ input "battleRaceName" ]}
+              <td>@{[ input "battleRaceAcc", 'number','calcBattle' ]}
+              <td>@{[ input "battleRaceSpl", 'number','calcBattle' ]}
+              <td>@{[ input "battleRaceEva", 'number','calcBattle' ]}
+              <td>@{[ input "battleRaceAtk", 'number','calcBattle' ]}
+              <td>@{[ input "battleRaceDet", 'number','calcBattle' ]}
+              <td>@{[ input "battleRaceDef", 'number','calcBattle' ]}
+              <td>@{[ input "battleRaceMdf", 'number','calcBattle' ]}
+              <td>@{[ input "battleRaceIni", 'number','calcBattle' ]}
+              <td>@{[ input "battleRaceStr", 'number','calcBattle' ]}
             <tr class="subtotal">
-              <th colspan="2" class="right">小計</th>
-              <td id="battle-subtotal-acc"></td>
-              <td id="battle-subtotal-spl"></td>
-              <td id="battle-subtotal-eva"></td>
-              <td id="battle-subtotal-atk"></td>
-              <td id="battle-subtotal-det"></td>
-              <td id="battle-subtotal-def"></td>
-              <td id="battle-subtotal-mdf"></td>
-              <td id="battle-subtotal-ini"></td>
-              <td id="battle-subtotal-str"></td>
-            </tr>
+              <th colspan="2" class="right">小計
+              <td id="battle-subtotal-acc">
+              <td id="battle-subtotal-spl">
+              <td id="battle-subtotal-eva">
+              <td id="battle-subtotal-atk">
+              <td id="battle-subtotal-det">
+              <td id="battle-subtotal-def">
+              <td id="battle-subtotal-mdf">
+              <td id="battle-subtotal-ini">
+              <td id="battle-subtotal-str">
 HTML
 foreach (
   ['Weapon', '武器'   ],
@@ -462,48 +452,45 @@ foreach (
   my $id = @{$_}[0];
   print <<"HTML";
             <tr>
-              <th>@{[ length($th) > 3 ? "<span>$th</span>" : $th ]}</th>
-              <td>@{[ input "battle${id}Name" ]}</td>
-              <td>@{[ input "battle${id}Acc", 'number','calcBattle' ]}</td>
-              <td>@{[ input "battle${id}Spl", 'number','calcBattle' ]}</td>
-              <td>@{[ input "battle${id}Eva", 'number','calcBattle' ]}</td>
-              <td>@{[ input "battle${id}Atk", 'number','calcBattle' ]}</td>
-              <td>@{[ input "battle${id}Det", 'number','calcBattle' ]}</td>
-              <td>@{[ input "battle${id}Def", 'number','calcBattle' ]}</td>
-              <td>@{[ input "battle${id}Mdf", 'number','calcBattle' ]}</td>
-              <td>@{[ input "battle${id}Ini", 'number','calcBattle' ]}</td>
-              <td>@{[ input "battle${id}Str", 'number','calcBattle' ]}</td>
-            </tr>
+              <th>@{[ length($th) > 3 ? "<span>$th</span>" : $th ]}
+              <td>@{[ input "battle${id}Name" ]}
+              <td>@{[ input "battle${id}Acc", 'number','calcBattle' ]}
+              <td>@{[ input "battle${id}Spl", 'number','calcBattle' ]}
+              <td>@{[ input "battle${id}Eva", 'number','calcBattle' ]}
+              <td>@{[ input "battle${id}Atk", 'number','calcBattle' ]}
+              <td>@{[ input "battle${id}Det", 'number','calcBattle' ]}
+              <td>@{[ input "battle${id}Def", 'number','calcBattle' ]}
+              <td>@{[ input "battle${id}Mdf", 'number','calcBattle' ]}
+              <td>@{[ input "battle${id}Ini", 'number','calcBattle' ]}
+              <td>@{[ input "battle${id}Str", 'number','calcBattle' ]}
 HTML
 }
 print <<"HTML";
             <tr>
-              <th colspan="2" class="right">その他修正</th>
-              <td>@{[ input "battleOtherAcc", 'number','calcBattle' ]}</td>
-              <td>@{[ input "battleOtherSpl", 'number','calcBattle' ]}</td>
-              <td>@{[ input "battleOtherEva", 'number','calcBattle' ]}</td>
-              <td>@{[ input "battleOtherAtk", 'number','calcBattle' ]}</td>
-              <td>@{[ input "battleOtherDet", 'number','calcBattle' ]}</td>
-              <td>@{[ input "battleOtherDef", 'number','calcBattle' ]}</td>
-              <td>@{[ input "battleOtherMdf", 'number','calcBattle' ]}</td>
-              <td>@{[ input "battleOtherIni", 'number','calcBattle' ]}</td>
-              <td>@{[ input "battleOtherStr", 'number','calcBattle' ]}</td>
-            </tr>
+              <th colspan="2" class="right">その他修正
+              <td>@{[ input "battleOtherAcc", 'number','calcBattle' ]}
+              <td>@{[ input "battleOtherSpl", 'number','calcBattle' ]}
+              <td>@{[ input "battleOtherEva", 'number','calcBattle' ]}
+              <td>@{[ input "battleOtherAtk", 'number','calcBattle' ]}
+              <td>@{[ input "battleOtherDet", 'number','calcBattle' ]}
+              <td>@{[ input "battleOtherDef", 'number','calcBattle' ]}
+              <td>@{[ input "battleOtherMdf", 'number','calcBattle' ]}
+              <td>@{[ input "battleOtherIni", 'number','calcBattle' ]}
+              <td>@{[ input "battleOtherStr", 'number','calcBattle' ]}
             <tr>
-              <th colspan="2" class="right">キャラクターレベル</th>
-              <td colspan="9" id="battle-level-value"></td>
-            </tr>
+              <th colspan="2" class="right">キャラクターレベル
+              <td colspan="9" id="battle-level-value">
             <tr class="total">
-              <th colspan="2" class="right">合計</th>
-              <td id="battle-total-acc">0</td>
-              <td id="battle-total-spl">0</td>
-              <td id="battle-total-eva">0</td>
-              <td id="battle-total-atk">0</td>
-              <td id="battle-total-det">0</td>
-              <td id="battle-total-def">0</td>
-              <td id="battle-total-mdf">0</td>
-              <td id="battle-total-ini">0</td>
-              <td id="battle-total-str">0</td>
+              <th colspan="2" class="right">合計
+              <td id="battle-total-acc">0
+              <td id="battle-total-spl">0
+              <td id="battle-total-eva">0
+              <td id="battle-total-atk">0
+              <td id="battle-total-det">0
+              <td id="battle-total-def">0
+              <td id="battle-total-mdf">0
+              <td id="battle-total-ini">0
+              <td id="battle-total-str">0
             </tr>
           </tbody>
         </table>
@@ -514,24 +501,23 @@ print <<"HTML";
         @{[input 'itemsNum','hidden']}
         <table class="edit-table no-border-cells" id="items-table">
           <thead>
-            <tr><th></th><th>名称</th><th>種別</th><th>レベル</th><th>戦果点</th><th>効果</th></tr>
-          </thead>
+            <tr><th><th>名称<th>種別<th>レベル<th>戦果点<th>効果
           <tbody>
 HTML
-foreach my $num (1 .. $pc{'itemsNum'}){
+foreach my $num ('TMPL',1 .. $pc{'itemsNum'}){
+  if($num eq 'TMPL'){ print '<template id="item-template">' }
   print <<"HTML";
             <tr id="item${num}">
-              <td class="handle"></td>
-              <td>@{[input "item${num}Name" ]}</td>
-              <td>@{[input "item${num}Type",'','','list="list-item-type"' ]}</td>
-              <td>@{[input "item${num}Lv"  ,'number' ]}</td>
-              <td>@{[input "item${num}Cost",'number','calcResultPoint' ]}</td>
-              <td>@{[input "item${num}Note" ]}</td>
-            </tr>
+              <td class="handle">
+              <td>@{[input "item${num}Name" ]}
+              <td>@{[input "item${num}Type",'','','list="list-item-type"' ]}
+              <td>@{[input "item${num}Lv"  ,'number' ]}
+              <td>@{[input "item${num}Cost",'number','calcResultPoint' ]}
+              <td>@{[input "item${num}Note" ]}
 HTML
+  if($num eq 'TMPL'){ print '</template>' }
 }
   print <<"HTML";
-          </tbody>
         </table>
         <div class="add-del-button"><a onclick="addItem()">▼</a><a onclick="delItem()">▲</a></div>
       </div>
@@ -552,56 +538,54 @@ HTML
         <h2>セッション履歴</h2>
         @{[input 'historyNum','hidden']}
         <table class="edit-table line-tbody no-border-cells" id="history-table">
-          <thead>
+          <thead id="history-head">
             <tr>
-              <th></th>
-              <th>日付</th>
-              <th>タイトル</th>
-              <th>戦果点</th>
-              <th>GM</th>
-              <th>参加者</th>
-            </tr>
+              <th>
+              <th class="date  ">日付
+              <th class="title ">タイトル
+              <th class="result">戦果点
+              <th class="gm    ">GM
+              <th class="member">参加者
             <tr>
-              <td>-</td>
-              <td></td>
-              <td>キャラクター作成</td>
-              <td id="history0-exp">$pc{'history0Exp'}</td>
-              <td></td>
-              <td id="history0-money">$pc{'history0Money'}</td>
+              <td>-
+              <td>
+              <td>キャラクター作成
+              <td id="history0-exp">$pc{'history0Exp'}
+              <td>
+              <td id="history0-money">$pc{'history0Money'}
             </tr>
-          </thead>
 HTML
-foreach my $num (1 .. $pc{'historyNum'}) {
+foreach my $num ('TMPL',1 .. $pc{'historyNum'}) {
+  if($num eq 'TMPL'){ print '<template id="history-template">' }
 print <<"HTML";
           <tbody id="history${num}">
             <tr>
-              <td rowspan="2" class="handle"></td>
-              <td rowspan="2">@{[input("history${num}Date")]}</td>
-              <td rowspan="2">@{[input("history${num}Title")]}</td>
-              <td>@{[input("history${num}Result",'text','calcResultPoint')]}</td>
-              <td>@{[input("history${num}Gm")]}</td>
-              <td>@{[input("history${num}Member")]}</td>
-            </tr>
-            <tr><td colspan="6" class="left">@{[input("history${num}Note",'','','placeholder="備考"')]}</td></tr>
-          </tbody>
+              <td class="handle" rowspan="2">
+              <td class="date  " rowspan="2">@{[input("history${num}Date")]}
+              <td class="title " rowspan="2">@{[input("history${num}Title")]}
+              <td class="result">@{[input("history${num}Result",'text','calcResultPoint')]}
+              <td class="gm    ">@{[input("history${num}Gm")]}
+              <td class="member">@{[input("history${num}Member")]}
+            <tr>
+              <td colspan="6" class="left">@{[input("history${num}Note",'','','placeholder="備考"')]}
 HTML
+  if($num eq 'TMPL'){ print '</template>' }
 }
 print <<"HTML";
-          <tfoot>
+          <tfoot id="history-foot">
             <tr>
-              <td></td>
-              <td></td>
-              <td>取得総計</td>
-              <td id="history-result-total"></td>
-              <td colspan="2"></td>
-            </tr>
+              <td>
+              <td>
+              <td>取得総計
+              <td id="history-result-total">
+              <td colspan="2">
             <tr>
-              <th></th>
-              <th>日付</th>
-              <th>タイトル</th>
-              <th>戦果点</th>
-              <th>GM</th>
-              <th>参加者</th>
+              <th>
+              <th class="date  ">日付
+              <th class="title ">タイトル
+              <th class="result">戦果点
+              <th class="gm    ">GM
+              <th class="member">参加者
             </tr>
           </tfoot>
         </table>
@@ -609,24 +593,21 @@ print <<"HTML";
         <h2>記入例</h2>
         <table class="example edit-table line-tbody no-border-cells">
           <thead>
-          <tr>
-            <th></th>
-            <th>日付</th>
-            <th>タイトル</th>
-            <th>戦果点</th>
-            <th>GM</th>
-            <th>参加者</th>
-          </tr>
-          </thead>
+            <tr>
+              <th class="date  ">日付
+              <th class="title ">タイトル
+              <th class="result">戦果点
+              <th class="gm    ">GM
+              <th class="member">参加者
           <tbody>
-          <tr>
-            <td>-</td>
-            <td><input type="text" value="2019/07/02" disabled></td>
-            <td><input type="text" value="第十四話「記入例」" disabled></td>
-            <td><input type="text" value="5*14" disabled></td>
-            <td><input type="text" value="サンプルさん" disabled></td>
-            <td><input type="text" value="アルバート　ラミミ　ブランヘルツ　ジャ・ルマレ　ナイユベール" disabled></td>
-          </tr>
+            <tr>
+              <td>-
+              <td><input type="text" value="2019/07/02" disabled>
+              <td><input type="text" value="第十四話「記入例」" disabled>
+              <td><input type="text" value="5*14" disabled>
+              <td><input type="text" value="サンプルさん" disabled>
+              <td><input type="text" value="アルバート　ラミミ　ブランヘルツ　ジャ・ルマレ　ナイユベール" disabled>
+            </tr>
           </tbody>
         </table>
         <div class="annotate">
