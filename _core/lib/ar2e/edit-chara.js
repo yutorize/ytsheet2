@@ -128,7 +128,7 @@ function changeRace(){
 function checkRace(){
   document.getElementById('race').classList.toggle('free', form.race.value === 'free');
   sttNames.forEach(s => {
-    if(races[race] && races[race]['stt'][s]){
+    if(races[race]?.['stt'][s]){
       form[`stt${s}Race`].value = races[race]['stt'][s];
       form[`stt${s}Race`].readOnly = true;
     }
@@ -176,7 +176,7 @@ function checkClass(){
   let experienced = [classMain,classSupport];
   for(let lv = 2; lv <= level; lv++){
     const name = form[`lvUp${lv}Class`].value;
-    if     (classes[name] && classes[name]['base']){
+    if     (classes[name]?.base){
       classMain = name;
       experienced.push(classMain);
     }
@@ -277,8 +277,8 @@ function checkClass(){
   // レベルアップ履歴のクラスチェンジ欄から条件に合わない選択肢を削除
   document.querySelectorAll(`#levelup select[name$="Class"] option, select[name="classSupportLv1"] option`).forEach(opt => {
     const name = opt.value;
-    if(classes[name] && (classes[name]['base'] || classes[name]['limited'])){
-      opt.style.display = (classes[name]['base'] === classMainLv1 || classes[name]['limited'] === classMainLv1 ? '' : 'none');
+    if(classes[name]?.base || classes[name]?.limited){
+      opt.style.display = (classes[name].base === classMainLv1 || classes[name].limited === classMainLv1 ? '' : 'none');
     }
   });
   // スキルの種別選択肢のクラス部分を書き換え
@@ -288,7 +288,7 @@ function checkClass(){
     for(let i = select.options.length - 1; i > 0; i--) {
       if(!select.options[i].value.match(/^(race|add|general|style|geis)$/)){ select.options[i].remove(); }
     }
-    if(classes[classMain] && classes[classMain]['type'] === 'fate'){
+    if(classes[classMain]?.type === 'fate'){
       Array.from(new Set([
         {'value':'power'  ,'text' : 'パワー（共通）'},
         {'value':'another','text' : '異才'},
@@ -310,7 +310,7 @@ function checkClass(){
     select.value = selected;
   }
   //ライフパスの見出し
-  document.querySelector(`#lifepath-motive th`).textContent = (classes[classMain] && classes[classMain]['type'] === 'fate') ? '運命' : '目的';
+  document.querySelector(`#lifepath-motive th`).textContent = (classes[classMain]?.type === 'fate') ? '運命' : '目的';
 }
 // 成長チェック ----------------------------------------
 function checkGrow(num) {
@@ -530,7 +530,7 @@ function calcSkills(){
     const name = form[`skill${num}Name`].value;
     const lv   = Number(form[`skill${num}Lv`].value);
     let type = form[`skill${num}Type`].value;
-    if(classes[type] && classes[type]['type'] === 'fate'){ type = 'power'; }
+    if(classes[type]?.type === 'fate'){ type = 'power'; }
     if(lv){
       if     (type === 'general'){ general += lv; }
       else if(type === 'add'    ){ total += lv; skillsLvLimitAddType += 1 }

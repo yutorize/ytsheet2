@@ -67,7 +67,7 @@ function checkRace(){
   race = race.replace(/:(.+?)$/, (all, variant) => { raceV = variant; return '' })
   
   // 元種族
-  if(SET.races[race] && SET.races[race].base){
+  if(SET.races[race]?.base){
     const selected = form.raceBase.value;
     form.raceBase.innerHTML = '<option value="">';
     for(const name of SET.races[race].base){
@@ -311,11 +311,10 @@ function calcStatus() {
 
   // 移動力
   let moveModRace
-    = (race && SET.races[race].move == 'base' && raceB && SET.races[raceB].move == 'variant') ? (raceBV ? races[raceB].variantData[raceBV].move : 0)
-    : (race && SET.races[race].move == 'base'   ) ? (raceB ? SET.races[raceB].move : 0)
-    : (race && SET.races[race].move == 'variant') ? (raceV ? SET.races[race].variantData[raceV].move : 0)
-    : (race) ? SET.races[race].move 
-    : 0;
+    = (SET.races[race]?.move == 'base' && SET.races[raceB]?.move == 'variant') ? (SET.races[raceB]?.variantData[raceBV]?.move ?? 0)
+    : (SET.races[race]?.move == 'base'   ) ? (SET.races[raceB]?.move ?? 0)
+    : (SET.races[race]?.move == 'variant') ? (SET.races[race]?.variantData[raceV]?.move ?? 0)
+    : SET.races[race]?.move ?? 0;
   statusScore.move = Number(form.statusMoveDice.value) * moveModRace + Number(form.statusMoveMod.value);
   document.getElementById('status-move-race').textContent = moveModRace;
   document.getElementById('status-move-total').textContent = statusScore.move;
@@ -381,7 +380,7 @@ function calcWeapon() {
     const weight   = form[`weapon${num}Weight`].value;
     const type     = SET.weaponType[category];
     const className = form[`weapon${num}Class`].value;
-    const classId = className ? SET.class[className].id : null;
+    const classId = SET.class[className]?.id;
 
     form[`weapon${num}Type`  ].classList.remove('error');
     form[`weapon${num}Weight`].classList.remove('error');
@@ -435,11 +434,11 @@ function calcDodge() {
     form[`armor${num}Weight`].classList.remove('error');
 
     if(classId && SET.class[className].type.includes('dodge')){
-      if(classId && !SET.class[className].proper.armor.includes(category) && SET.class[className].proper.armor != 'すべて'){
+      if(!SET.class[className].proper.armor.includes(category) && SET.class[className].proper.armor != 'すべて'){
         form[`armor${num}Type`].classList.add('error');
         form.dodgeClass.classList.add('error');
       }
-      if(classId && !SET.class[className].proper.weight.includes(weight)){
+      if(!SET.class[className].proper.weight.includes(weight)){
         form[`armor${num}Weight`].classList.add('error');
         form.dodgeClass.classList.add('error');
       }
@@ -457,7 +456,7 @@ function calcBlock() {
   document.getElementById('block-base-value').textContent = abilityScore.TecRef;
 
   const className = form.blockClass.value;
-  const classId = className ? SET.class[className].id : null;
+  const classId = SET.class[className]?.id;
   document.getElementById('block-class-value').textContent = lv[classId] ?? '―';
   
   let blockScore = abilityScore.TecRef + Number(form.dodgeModValue.value);
@@ -474,11 +473,11 @@ function calcBlock() {
     form[`shield${num}Weight`].classList.remove('error');
 
     if(classId && SET.class[className].type.includes('block')){
-      if(classId && !SET.class[className].proper.shield.includes(category) && SET.class[className].proper.shield != 'すべて'){
+      if(!SET.class[className].proper.shield.includes(category) && SET.class[className].proper.shield != 'すべて'){
         form[`shield${num}Type`].classList.add('error');
         form.blockClass.classList.add('error');
       }
-      if(classId && !SET.class[className].proper.weight.includes(weight)){
+      if(!SET.class[className].proper.weight.includes(weight)){
         form[`shield${num}Weight`].classList.add('error');
         form.blockClass.classList.add('error');
       }

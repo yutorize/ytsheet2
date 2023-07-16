@@ -425,7 +425,7 @@ function checkCraft() {
   for(const key in SET.class){
     const id  = SET.class[key].id;
     const cLv = lv[id];
-    if (SET.class[key].craft && SET.class[key].craft.data){
+    if (SET.class[key].craft?.data){
       const eName = SET.class[key].craft.eName;
       document.getElementById("craft-"+eName).style.display = cLv ? "block" : "none";
       const cMax = 20;
@@ -450,7 +450,7 @@ function checkCraft() {
         }
       }
     }
-    else if (SET.class[key].magic && SET.class[key].magic.data){
+    else if (SET.class[key].magic?.data){
       const rows = cLv + checkSeekerBuildup(SET.class[key].magic.jName);
       const eName = SET.class[key].magic.eName;
       if(SET.class[key].magic.trancendOnly){
