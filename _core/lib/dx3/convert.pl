@@ -147,7 +147,9 @@ sub convertHokanjoToYtsheet {
     $pc{"lois${i}Name"} = $in{'roice_name'}[$i-1];
     $pc{"lois${i}EmoPosi"} = $in{'roice_pos'}[$i-1];
     $pc{"lois${i}EmoNega"} = $in{'roice_neg'}[$i-1];
+    $pc{"lois${i}S"} = $in{'roice_type'}[$i-1] == 2 ? 1:'';
     $pc{"lois${i}Note"} = $in{'roice_memo'}[$i-1];
+    $pc{"lois${i}State"} = 'ロイス';
   }
   
   ## エフェクト
