@@ -118,6 +118,12 @@ foreach (1..$pc{'armorNum'})   { if($pc{"armor${_}Name"})   { $open{'item'} = 'o
 foreach (1..$pc{'vehiclesNum'}){ if($pc{"vehicles${_}Name"}){ $open{'item'} = 'open'; last; } }
 foreach (1..$pc{'itemNum'})    { if($pc{"item${_}Name"})    { $open{'item'} = 'open'; last; } }
 
+if(exists $data::syndrome_status{$pc{syndrome1}}){
+  $pc{sttSyn1Body} = $pc{sttSyn1Sense}  = $pc{sttSyn1Mind} = $pc{sttSyn1Social} = '';
+}
+if(exists $data::syndrome_status{$pc{syndrome2}}){
+  $pc{sttSyn2Body} = $pc{sttSyn2Sense}  = $pc{sttSyn2Mind} = $pc{sttSyn2Social} = '';
+}
 
 ### 改行処理 --------------------------------------------------
 $pc{'words'}         =~ s/&lt;br&gt;/\n/g;
@@ -316,27 +322,28 @@ print <<"HTML";
           <h2>シンドローム／能力値 [<span id="exp-status">0</span>]</h2>
           <table>
             <thead>
-              <tr><th colspan="2">シンドローム<th>肉体<th>感覚<th>精神<th>社会
+              <tr><th><th>シンドローム<th>肉体<th>感覚<th>精神<th>社会
             </thead>
-            <tbody>
+            <tbody class="syndrome-rows">
               <tr>
                 <th>ピュア
-                <td><select name="syndrome1" oninput="changeSyndrome(1,this.value);">@{[ option 'syndrome1',@data::syndromes ]}</select>
-                <td id="stt-syn1-body"  >
-                <td id="stt-syn1-sense" >
-                <td id="stt-syn1-mind"  >
-                <td id="stt-syn1-social">
+                <td>@{[ selectInput 'syndrome1','changeSyndrome(1,this.value)',@data::syndromes ]}
+                <td><span id="stt-syn1-body"  ></span>@{[ input "sttSyn1Body"  ,'number','calcStt' ]}
+                <td><span id="stt-syn1-sense" ></span>@{[ input "sttSyn1Sense" ,'number','calcStt' ]}
+                <td><span id="stt-syn1-mind"  ></span>@{[ input "sttSyn1Mind"  ,'number','calcStt' ]}
+                <td><span id="stt-syn1-social"></span>@{[ input "sttSyn1Social",'number','calcStt' ]}
               <tr>
                 <th>クロス
-                <td><select name="syndrome2" oninput="changeSyndrome(2,this.value);">@{[ option 'syndrome2',@data::syndromes ]}</select>
-                <td id="stt-syn2-body"  >
-                <td id="stt-syn2-sense" >
-                <td id="stt-syn2-mind"  >
-                <td id="stt-syn2-social">
+                <td>@{[ selectInput 'syndrome2','changeSyndrome(2,this.value)',@data::syndromes ]}
+                <td><span id="stt-syn2-body"  ></span>@{[ input "sttSyn2Body"  ,'number','calcStt' ]}
+                <td><span id="stt-syn2-sense" ></span>@{[ input "sttSyn2Sense" ,'number','calcStt' ]}
+                <td><span id="stt-syn2-mind"  ></span>@{[ input "sttSyn2Mind"  ,'number','calcStt' ]}
+                <td><span id="stt-syn2-social"></span>@{[ input "sttSyn2Social",'number','calcStt' ]}
               <tr>
                 <th>トライ
-                <td><select name="syndrome3" oninput="changeSyndrome(3,this.value);">@{[ option 'syndrome3',@data::syndromes ]}</select>
+                <td>@{[ selectInput 'syndrome3','changeSyndrome(3,this.value)',@data::syndromes ]}
                 <td colspan="4">
+            <tbody>
               <tr>
                 <th colspan="2" class="right">ワークスによる修正
                 <td>@{[ radio 'sttWorks', 'calcStt', 'body'   ]}

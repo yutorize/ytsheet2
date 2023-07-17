@@ -41,6 +41,15 @@ sub data_update_chara {
     ($pc{'characterName'},$pc{'characterNameRuby'}) = split(':', $pc{'characterName'});
     ($pc{'aka'},$pc{'akaRuby'}) = split(':', $pc{'aka'});
   }
+  if($ver < 1.22014){
+    foreach ([0,'Body'], [1,'Sense'], [2,'Mind'], [3,'Social']){
+      my $base1 = exists $data::syndrome_status{$pc{'syndrome1'}} ? $data::syndrome_status{$pc{'syndrome1'}}[@$_[0]] : 0;
+      my $base2 = exists $data::syndrome_status{$pc{'syndrome2'}} ? $data::syndrome_status{$pc{'syndrome2'}}[@$_[0]] : 0;
+      $pc{'sttBase'.@$_[1]} = 0;
+      $pc{'sttBase'.@$_[1]} += $base1;
+      $pc{'sttBase'.@$_[1]} += $pc{'syndrome2'} ? $base2 : $base1;
+    }
+  }
   $pc{'ver'} = $main::ver;
   $pc{'lasttimever'} = $ver;
   return %pc;

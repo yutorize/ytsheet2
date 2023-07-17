@@ -24,8 +24,11 @@ sub data_calc {
     my $name = $status{$num};
     my $Name = ucfirst $name;
     my $base = 0;
-    $base += $data::syndrome_status{$pc{'syndrome1'}}[$num];
-    $base += $pc{'syndrome2'} ? $data::syndrome_status{$pc{'syndrome2'}}[$num] : $base;
+    if($data::syndrome_status{$pc{'syndrome1'}}){ $pc{'sttSyn1'.$Name} = $data::syndrome_status{$pc{'syndrome1'}}[$num] }
+    if($data::syndrome_status{$pc{'syndrome2'}}){ $pc{'sttSyn2'.$Name} = $data::syndrome_status{$pc{'syndrome2'}}[$num] }
+    $base += $pc{'sttSyn1'.$Name};
+    $base += $pc{'syndrome2'} ? $pc{'sttSyn2'.$Name} : $base;
+    $pc{'sttBase'.$Name} = $base;
     if($name eq $pc{'sttWorks'}){ $base++; }
     
     $pc{'sttTotal'.$Name} = $base + $pc{'sttGrow'.$Name} + $pc{'sttAdd'.$Name};
@@ -227,11 +230,19 @@ sub data_calc {
   $charactername =~ s/[|｜]([^|｜]+?)《.+?》/$1/g;
   $_ =~ s/[|｜]([^|｜]+?)《.+?》/$1/g foreach (@dloises);
   $_ =~ s/[:：].+?$//g foreach (@dloises);
+  sub synCheck {
+    my $syn = shift;
+    if($syn eq ''){ return '' }
+    if(grep { $_ eq $syn } @data::syndromes){ return $syn; }
+    return "その他:$syn";
+  }
   $::newline = "$pc{'id'}<>$::file<>".
                "$pc{'birthTime'}<>$::now<>$charactername<>$pc{'playerName'}<>$pc{'group'}<>".
                "$pc{'expTotal'}<>$pc{'gender'}<>$pc{'age'}<>$pc{'sign'}<>$pc{'blood'}<>$pc{'works'}<>".
                
-               "$pc{'syndrome1'}/$pc{'syndrome2'}/$pc{'syndrome3'}<>".
+               synCheck($pc{syndrome1}).'/'.
+               synCheck($pc{syndrome2}).'/'.
+               synCheck($pc{syndrome3}).'<>'.
                join('/',@dloises).'<>'.
                
                "$pc{'lastSession'}<>$pc{'image'}<> $pc{'tags'} <>$pc{'hide'}<>$pc{'stage'}<>";

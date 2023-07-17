@@ -256,6 +256,7 @@ foreach (@list) {
     
     #シンドローム
     my @syndromes;
+    $syndrome =~ s#(^|/)その他:#$1#g;
     push(@syndromes, "<span>$_</span>") foreach (split '/', $syndrome);
     my @dloises;
     push(@dloises, "<span>$_</span>") foreach (split '/', $dlois);

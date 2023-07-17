@@ -264,14 +264,6 @@ my $breedPrefix = ($pc{'breed'} ? $pc{'breed'} : $pc{'syndrome3'} ? 'トライ' 
 $SHEET->param(breed => $breedPrefix ? "$breedPrefix<span>ブリード</span>" : '');
 
 ### 能力値 --------------------------------------------------
-my %status = (0=>'body', 1=>'sense', 2=>'mind', 3=>'social');
-foreach my $num (keys %status){
-  my $name = $status{$num};
-  my $base = 0;
-  $base += $data::syndrome_status{$pc{'syndrome1'}}[$num];
-  $base += $pc{'syndrome2'} ? $data::syndrome_status{$pc{'syndrome2'}}[$num] : $base;
-  $SHEET->param('sttBase'.ucfirst($name) => $base);
-}
 $SHEET->param('sttWorks'.ucfirst($pc{'sttWorks'}) => 1);
 
 ### 技能 --------------------------------------------------
