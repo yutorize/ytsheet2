@@ -43,6 +43,10 @@
   }
 }
 
+body:not(.mode-crc) .crc-only {
+  display: none;
+}
+
 #syndrome-status table {
   width: 100%;
 }

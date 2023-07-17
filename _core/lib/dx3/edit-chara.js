@@ -6,6 +6,7 @@ let status = {};
 let syndromes = [];
 // ----------------------------------------
 window.onload = function() {
+  console.log('=====START=====');
   syndromes = [form.syndrome1.value, form.syndrome2.value, form.syndrome3.value];
   
   nameSet();
@@ -20,6 +21,7 @@ window.onload = function() {
   for(let i = 1; i <= 7; i++){ changeLoisColor(i); }
   imagePosition();
   changeColor();
+  console.log('=====LOADED=====');
 };
 
 // 送信前チェック ----------------------------------------
@@ -46,10 +48,7 @@ function changeRegu(){
 // ステージチェック ----------------------------------------
 let ccOn = 0;
 function checkStage(){
-  ccOn = (form.stage.value.match('クロウリングケイオス')) ? 1 : 0;
-  document.querySelectorAll('.cc-only').forEach(obj =>{
-    obj.style.display = ccOn ? '' : 'none';
-  });
+  document.body.classList.toggle('mode-crc', form.stage.value.match('クロウリングケイオス'));
   calcMagic();
 }
 // シンドローム変更 ----------------------------------------

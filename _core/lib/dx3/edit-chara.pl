@@ -391,7 +391,7 @@ print <<"HTML";
             <dt>全力移動
             <dd><b id="dash-total"></b>
           </dl>
-          <dl class="box cc-only" id="magic-dice">
+          <dl class="box crc-only" id="magic-dice">
             <dt>魔術ダイス
             <dd>+@{[input "magicAdd",'number','calcMagicDice']}=<b id="magic-total"></b>
           </dl>
@@ -605,7 +605,7 @@ print <<"HTML";
         </table>
         <div class="annotate">※「関係」か「名前」を入力すると経験点が計算されます。</div>
       </details>
-      <details class="box cc-only" id="insanity" $open{'insanity'}>
+      <details class="box crc-only" id="insanity" $open{'insanity'}>
         <summary>永続的狂気</summary>
         <dl class="edit-table " id="insanity-table">
           <dt>@{[input "insanity",'','','placeholder="名称"']}
@@ -660,7 +660,7 @@ print <<"HTML";
         <i class="material-symbols-outlined close-button" onclick="document.getElementById('effect-trash').style.display = 'none';">close</i>
       </div>
 
-      <details class="box cc-only" id="magic" $open{'magic'}>
+      <details class="box crc-only" id="magic" $open{'magic'}>
         <summary>術式 [<span id="exp-magic">0</span>]</summary>
         @{[input 'magicNum','hidden']}
         <table class="edit-table line-tbody no-border-cells" id="magic-table">
@@ -1010,7 +1010,7 @@ print <<"HTML";
         ( 能力値[<b id="exp-used-status"></b>]
         + 技能[<b id="exp-used-skill"></b>]
         + エフェクト[<b id="exp-used-effect"></b>]
-        <span class="cc-only">+ 術式[<b id="exp-used-magic"></b>]</span>
+        <span class="crc-only">+ 術式[<b id="exp-used-magic"></b>]</span>
         + アイテム[<b id="exp-used-item"></b>]
         + メモリー[<b id="exp-used-memory"></b>]
         ) = 残り[<b id="exp-rest"></b>]点
