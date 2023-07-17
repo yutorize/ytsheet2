@@ -123,6 +123,13 @@ div.data-magic * {
   margin-top: 1.5em;
 }
 
+div.data-magic > dl {
+  display: grid;
+  grid-template-columns: 3.5em 1fr;
+  border-width: 1px 0 0 1px;
+  border-style: solid;
+}
+
 div.data-magic   .name     { grid-area: NAME; }
 div.data-magic dl.cost     { grid-area: COST; }
 div.data-magic dl.target   { grid-area: TRGT; }
@@ -158,6 +165,13 @@ div.data-magic dl.risk      { grid-area: RISK; }
 
 div.data-magic dl.a-cost    { grid-area: ACST; }
 
+div.data-magic > dl {
+  display: grid;
+  grid-template-columns: 3.5em 1fr;
+  border-width: 1px 0 0 1px;
+  border-style: solid;
+}
+
 div.data-magic.enhance {
   grid-template-areas:
     "NAME NAME NAME DURA"
@@ -176,7 +190,7 @@ div.data-magic.song {
     "EFCT EFCT EFCT"
   ;
 }
-div.data-magic.song dl {
+div.data-magic.song > dl {
   grid-template-columns: 6.2em 1fr;
 }
 div.data-magic.song dl.condition dt::before {
@@ -200,7 +214,7 @@ div.data-magic.riding {
     "EFCT EFCT EFCT"
   ;
 }
-div.data-magic.riding dl {
+div.data-magic.riding > dl {
   grid-template-columns: 5em 1fr;
 }
 div.data-magic.riding dl.premise {
@@ -215,7 +229,7 @@ div.data-magic.geomancy {
     "EFCT EFCT"
   ;
 }
-div.data-magic.geomancy dl {
+div.data-magic.geomancy > dl {
   grid-template-columns: 6em 1fr;
 }
 div.data-magic.geomancy dl.duration dt::before {
@@ -231,7 +245,7 @@ div.data-magic.command {
     "EFCT EFCT"
   ;
 }
-div.data-magic.command dl {
+div.data-magic.command > dl {
   grid-template-columns: 6em 1fr;
 }
 div.data-magic.lead {
@@ -244,10 +258,10 @@ div.data-magic.lead {
     "EFCT EFCT"
   ;
 }
-div.data-magic.lead dl {
+div.data-magic.lead > dl {
   grid-template-columns: 6em 1fr;
 }
-div.data-magic.lead dl.condition dt::before {
+div.data-magic.lead > dl.condition dt::before {
   content: "使用"
 }
 div.data-magic.divination {
@@ -260,7 +274,7 @@ div.data-magic.divination {
     "EFCT EFCT EFCT"
   ;
 }
-div.data-magic.divination dl {
+div.data-magic.divination > dl {
   grid-template-columns: 6em 1fr;
 }
 div.data-magic.potential {
@@ -272,7 +286,7 @@ div.data-magic.potential {
     "EFCT EFCT"
   ;
 }
-div.data-magic.potential dl {
+div.data-magic.potential > dl {
   grid-template-columns: 5em 1fr;
 }
 div.data-magic.seal {
@@ -308,7 +322,7 @@ div.data-magic.data-arts {
     "EFCT EFCT EFCT EFCT"
   ;
 }
-div.data-magic.data-arts dl {
+div.data-magic.data-arts > dl {
   grid-template-columns: 3.2em 1fr;
 }
 div.data-magic.data-arts dl.premise,
@@ -339,13 +353,6 @@ div.data-magic dl.a-cost dt > span {
   ;
 }
 
-div.data-magic dl {
-  display: grid;
-  grid-template-columns: 3.5em 1fr;
-  border-width: 1px 0 0 1px;
-  border-style: solid;
-}
-
 @media screen and (max-width:735px){
   div.data-magic { display: block }
   div.data-magic dl {
@@ -357,7 +364,7 @@ div.data-magic dl {
 }
 
 div.data-magic > h3,
-div.data-magic dl dt {
+div.data-magic > dl > dt {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -368,7 +375,7 @@ div.data-magic dl dt {
 div.data-magic dl.name {
   grid-template-columns: 3.5em 1fr;
 }
-div.data-magic dl dd {
+div.data-magic > dl > dd {
   padding: .2em 0;
   text-align: center;
   display: flex;
@@ -387,7 +394,7 @@ div.data-magic h3.name,
 div.data-magic dl.name     dd,
 div.data-magic dl.part     dd,
 div.data-magic dl.summary  dd,
-div.data-magic dl.effect   dd,
+div.data-magic dl.effect > dd,
 div.data-magic.song     dl.pet      dd,
 div.data-magic.riding   dl.type     dd,
 div.data-magic.lead     dl.condition dd,
@@ -439,11 +446,11 @@ div.data-magic dl.effect dd.box {
   background: none;
   box-shadow: none;
 }
-div.data-magic dl.effect dd.box *:first-child,
+div.data-magic dl.effect dd.box > *:first-child,
 div.data-magic dl.effect dd.box p:empty + * {
   margin-top: .2em;
 }
-div.data-magic dl.effect :is(dt,dd):nth-of-type(n+2) {
+div.data-magic dl.effect > :is(dt,dd):nth-of-type(n+2) {
   border-top-width: 1px;
   border-top-style: solid;
 }
@@ -576,7 +583,8 @@ div.data dl.effects :is(dt,dd):nth-of-type(n+2) {
   background-color: var(--bg-color);
   text-shadow: 0px 0px .3em #fff;
 }
-.box.description h2 ~ h2 {
+.box.description h2 ~ h2,
+#mystic-arts.description h2 ~ h2 {
   margin-top: 1em;
 }
 .night .description h2 {

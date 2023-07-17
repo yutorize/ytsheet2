@@ -470,18 +470,18 @@ table.note-table td {
   padding: 0 .5em;
   border-width: 1px;
   border-style: solid;
+  line-height: 1.8;
 }
-table.note-table thead {
+table.note-table thead th {
+  background-color: var(--box-head-bg-color);
+  white-space: nowrap;
+}
+table.note-table tbody th {
   background-color: var(--box-head-bg-color-pale);
-}
-table.note-table th {
   text-align: center;
 }
 table.note-table td {
   text-align: left;
-}
-table.note-table thead th {
-  white-space: nowrap;
 }
 dl.note-description {
   display: grid;
@@ -503,6 +503,10 @@ dl.note-description dd {
   padding-left: 1em;
   border-width: 0 0 1px;
   border-style: dotted;
+}
+dl.note-description:last-child :is(dt,dd):last-of-type,
+dl.note-description:has(+ :last-child:empty) :is(dt,dd):last-of-type {
+  border-bottom: hidden;
 }
 /* アイテムアイコン */
 .i-icon {

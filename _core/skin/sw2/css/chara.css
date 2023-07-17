@@ -961,7 +961,6 @@ dl#level dd {
 #area-items {
   display: flex;
   justify-content: space-between;
-  line-height: 1.8;
 }
 #area-items > div > .box {
   margin-top: var(--box-v-gap);
