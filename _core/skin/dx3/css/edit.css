@@ -84,7 +84,9 @@ body:not(.mode-crc) .crc-only {
   background-color: rgba(255,0,0,0.1);
 }
 @media screen and (max-width:735px){
-#syndrome-status thead th:nth-last-child(-n+4) { width:   4em; }
+  #syndrome-status thead th:nth-child(1)   { width: 0em; }
+  #syndrome-status thead th:nth-last-child(-n+4) { width: 3.5em; }
+  #syndrome-status .syndrome-rows th { font-size: 0; line-height: 1; }
 }
 
 #sub-status input {
