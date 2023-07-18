@@ -69,9 +69,12 @@ sub isDiscordServerIncluded {
   $server_request->header("Authorization" => "Bearer $token");
   my $server_response = $browser->request($server_request);
   my $rawServerList = $server_response->content;
-  foreach my $serverId (@list) {
-    if ( index($rawServerList, "\"id\": \"$serverId\"") != -1 ) {
-      return 1;
+  my $parsedServerList = decode_json $rawServerList;
+  foreach my $serverInfo (@$parsedServerList) {
+    foreach my $serverId (@list) {
+      if( $serverInfo->{'id'} eq $serverId ) {
+        return 1;
+      }
     }
   }
   return 0;
