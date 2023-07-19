@@ -66,6 +66,7 @@ foreach (keys %pc) {
   $pc{$_} = tagUnescape($pc{$_});
 }
 $pc{'effects'} =~ s/<br>/\n/gi;
+$pc{'effects'} =~ s#(<p>|</p>|</details>)#$1\n#gi;
 $pc{'effects'} =~ s/^●(.*?)$/<\/p><h3>●$1<\/h3><p>/gim;
 if($::SW2_0){
   $pc{'effects'} =~ s/^((?:[○◯〇＞▶〆☆≫»□☐☑🗨▽▼]|&gt;&gt;)+.*?)(　|$)/"<\/p><h5>".&textToIcon($1)."<\/h5><p>".$2;/egim;
@@ -75,6 +76,7 @@ if($::SW2_0){
 $pc{'effects'} =~ s/\n+<\/p>/<\/p>/gi;
 $pc{'effects'} =~ s/(^|<p(?:.*?)>|<hr(?:.*?)>)\n/$1/gi;
 $pc{'effects'} = "<p>$pc{'effects'}</p>";
+$pc{'effects'} =~ s#(</p>|</details>)\n#$1#gi;
 $pc{'effects'} =~ s/<p><\/p>//gi;
 $pc{'effects'} =~ s#<h2>(.+?)</h2>#</dd><dt>$1</dt><dd class="box">#gi;
 $pc{'effects'} =~ s/\n/<br>/gi;
