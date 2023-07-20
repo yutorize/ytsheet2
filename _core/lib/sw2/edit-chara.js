@@ -200,7 +200,25 @@ function calcLv(){
 // 種族変更 ----------------------------------------
 function changeRace(){
   race = form.race.value;
-  
+
+  document.getElementById('race-ability-select').innerHTML = '';
+  let selectCount = 1;
+  for(let lv of ['','Lv6','Lv11','Lv16']){
+    for(let ability of SET.races[race]?.['ability'+lv] || []){
+      if(Array.isArray(ability)){
+        let select = document.createElement('select');
+        select.name = 'raceAbilitySelect'+selectCount;
+        select.innerHTML = '<option value="">';
+        for(let set of ability){
+          let opt = document.createElement('option');
+          opt.value = opt.text = set;
+          select.append(opt);
+        }
+        document.getElementById('race-ability-select').append(select);
+        selectCount++;
+      }
+    }
+  }
   checkRace();
   calcStt();
 }
@@ -272,48 +290,22 @@ function checkRace(){
     }
     document.getElementById("race-ability-def-name").textContent = 'トロールの体躯';
   }
-  
-  let ability = '';
+
+  document.getElementById('race-ability-value').innerHTML = '';
   if(SET.races[race]?.ability){
-    ability = SET.races[race].ability || '';
-    if(level >= 6 && SET.races[race].abilityLv6){
-      if(Array.isArray(SET.races[race].abilityLv6)){
-        form.raceAbilityLv6.classList.remove('hidden');
+    let selectCount = 1;
+    for(let lv of [0,6,11,16]){
+      for(let ability of SET.races[race]?.['ability'+(lv?'Lv'+lv:'')] || []){
+        if(Array.isArray(ability)){
+          form['raceAbilitySelect'+selectCount].classList.toggle('hidden', level < lv);
+          selectCount++;
+        }
+        else {
+          document.getElementById('race-ability-value').innerHTML += `［${ability}］`;
+        }
       }
-      else{
-        ability += SET.races[race].abilityLv6;
-        form.raceAbilityLv6.classList.add('hidden');
-      }
-    }
-    else {
-      form.raceAbilityLv6.classList.add('hidden');
-    }
-    if(level >= 11 && SET.races[race].abilityLv11){
-      if(Array.isArray(SET.races[race].abilityLv11)){
-        form.raceAbilityLv11.classList.remove('hidden');
-      }
-      else{
-        ability += SET.races[race].abilityLv11;
-        form.raceAbilityLv11.classList.add('hidden');
-      }
-    }
-    else {
-      form.raceAbilityLv11.classList.add('hidden');
-    }
-    if(level >= 16 && SET.races[race].abilityLv16){
-      if(Array.isArray(SET.races[race].abilityLv16)){
-        form.raceAbilityLv16.classList.remove('hidden');
-      }
-      else{
-        ability += SET.races[race].abilityLv16;
-        form.raceAbilityLv16.classList.add('hidden');
-      }
-    }
-    else {
-      form.raceAbilityLv16.classList.add('hidden');
     }
   }
-  document.getElementById("race-ability-value").innerHTML = ability;
   checkLanguage();
   setLanguageDefault();
 }

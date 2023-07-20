@@ -189,46 +189,31 @@ sub data_calc {
     }
   }
   ### 種族特徴 --------------------------------------------------
-  $pc{'raceAbility'} = $data::races{$pc{'race'}}{'ability'};
-  if($pc{'level'} >= 6){
-    if(ref($data::races{$pc{'race'}}{'abilityLv6'}) eq 'ARRAY'){
-      $pc{'raceAbility'} .= $pc{'raceAbilityLv6'};
-    }
-    else { $pc{'raceAbility'} .= $data::races{$pc{'race'}}{'abilityLv6'}; }
-  }
-  if($pc{'level'} >= 11){
-    if(ref($data::races{$pc{'race'}}{'abilityLv11'}) eq 'ARRAY'){
-      if($pc{'raceAbility'} =~ /$pc{'raceAbilityLv11'}/){
-        (my $text = $pc{'raceAbilityLv11'}) =~ s/］/＋］/;
-        $pc{'raceAbility'} =~ s/$pc{'raceAbilityLv11'}/$text/;
-      } else {
-        $pc{'raceAbility'} .= $pc{'raceAbilityLv11'};
+  {
+    my $i = 1;
+    sub abilitySet {
+      my $lv = shift;
+      my @output;
+      foreach (@{ $data::races{$pc{'race'}}{'ability'.$lv} }){
+        if(ref($_) eq 'ARRAY'){
+          push(@output, $pc{'raceAbilitySelect'.$i});
+          $i++;
+        }
+        else {
+          push(@output, $_);
+        }
       }
+      return @output;
     }
-    else { $pc{'raceAbility'} .= $data::races{$pc{'race'}}{'abilityLv11'}; }
-  }
-  if($pc{'level'} >= 16){
-    $pc{'raceAbility'} = '［剣の託宣／運命凌駕］' . $pc{'raceAbility'};
-    if(ref($data::races{$pc{'race'}}{'abilityLv16'}) eq 'ARRAY'){
-      if($pc{'raceAbility'} =~ /$pc{'raceAbilityLv16'}/){
-        (my $text = $pc{'raceAbilityLv16'}) =~ s/］/＋］/;
-        $pc{'raceAbility'} =~ s/$pc{'raceAbilityLv16'}/$text/;
-      } else {
-        $pc{'raceAbility'} .= $pc{'raceAbilityLv16'};
-      }
-    }
-    else {  $pc{'raceAbility'} .= $data::races{$pc{'race'}}{'abilityLv16'}; }
-  }
-  elsif($pc{'seekerAbilityRaceA'}){
-    if(ref($data::races{$pc{'race'}}{'abilityLv16'}) eq 'ARRAY'){
-      if($pc{'raceAbility'} =~ /$pc{'raceAbilityLv16'}/){
-        (my $text = $pc{'raceAbilityLv16'}) =~ s/］/＋］/;
-        $pc{'raceAbility'} =~ s/$pc{'raceAbilityLv16'}/$text/;
-      } else {
-        $pc{'raceAbility'} .= $pc{'raceAbilityLv16'};
-      }
-    }
-    else { $pc{'raceAbility'} .= $data::races{$pc{'race'}}{'abilityLv16'}; }
+    my @abilities = abilitySet('');
+    if($pc{level} >=  6){ push @abilities, abilitySet('Lv6'); }
+    if($pc{level} >= 11){ push @abilities, abilitySet('Lv11'); }
+    if($pc{level} >= 16){ push @abilities, abilitySet('Lv16'); unshift @abilities, '剣の託宣／運命凌駕' }
+    elsif($pc{seekerAbilityRaceA}){ push @abilities, abilitySet('Lv16'); }
+    my %unique;
+    @abilities = grep { ! $unique{$_}++ } @abilities;
+    $_ .= ($unique{$_} >= 2 ? '＋' : '') foreach(@abilities);
+    $pc{raceAbility} = '［'. join('］［', @abilities) . '］';
   }
   ### 種族チェック --------------------------------------------------
   if($pc{'race'} eq 'リルドラケン'){

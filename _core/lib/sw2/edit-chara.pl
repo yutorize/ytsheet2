@@ -302,16 +302,22 @@ print <<"HTML";
           <dl class="box" id="race-ability">
             <dt>種族特徴
             <dd>
-              <span id="race-ability-value">$data::races{$pc{'race'}}{'ability'}</span>
-              <select name="raceAbilityLv6" class="hidden">
-                @{[ option('raceAbilityLv6' , (ref($data::races{$pc{'race'}}{'abilityLv6'})  eq 'ARRAY' ? @{$data::races{$pc{'race'}}{'abilityLv6'}} : '')) ]}
-              </select>
-              <select name="raceAbilityLv11" class="hidden">
-                @{[ option('raceAbilityLv11', (ref($data::races{$pc{'race'}}{'abilityLv11'}) eq 'ARRAY' ? @{$data::races{$pc{'race'}}{'abilityLv11'}} : '')) ]}
-              </select>
-              <select name="raceAbilityLv16" class="hidden">
-                @{[ option('raceAbilityLv16', (ref($data::races{$pc{'race'}}{'abilityLv16'}) eq 'ARRAY' ? @{$data::races{$pc{'race'}}{'abilityLv16'}} : '')) ]}
-              </select>
+              <span id="race-ability-value"></span>
+              <span id="race-ability-select">
+HTML
+{
+  my $i = 1;
+  foreach (@{$data::races{$pc{'race'}}{'ability'}},@{$data::races{$pc{'race'}}{'abilityLv6'}},@{$data::races{$pc{'race'}}{'abilityLv11'}},@{$data::races{$pc{'race'}}{'abilityLv16'}}){
+    if(ref($_) eq 'ARRAY'){
+      print '<select name="raceAbilitySelect'.$i.'">';
+      print option('raceAbilitySelect'.$i, @{$_});
+      print '</select>';
+      $i++;
+    }
+  }
+}
+print <<"HTML";
+              </span>
           </dl>
           <dl class="box" id="sin">
             <dt>穢れ<dd>@{[input('sin','number','','min="0"')]}
