@@ -69,8 +69,14 @@
 #personal dl#birth        { flex-basis: 30%; order: 6; }
 #personal dl#faith        { flex-basis: 69%; order: 7; }
 #personal dl#sin          { flex-basis: 14%; order: 5; }
-#personal dl#race-ability select {
+#personal #race-ability-select:empty {
+  display: none;
+}
+#personal #race-ability-select select {
   width: auto;
+}
+#personal #race-ability-value:has(input) {
+  display: block !important;
 }
 
 #status dl[id^="stt-add"]::before {

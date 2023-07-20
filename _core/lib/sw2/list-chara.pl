@@ -293,7 +293,8 @@ foreach (@list) {
     $class = class_color($class);
     
     #種族
-    $race =~ s/（.*）|［.*］//;
+    $race =~ s/^その他://g;
+    $race =~ s/[（()].*[)）]|［.*］//;
     $race = "<span class=\"small\">$race</span>" if length($race) >= 6;
     
     #性別

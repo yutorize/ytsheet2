@@ -198,15 +198,16 @@ function calcLv(){
 }
 
 // 種族変更 ----------------------------------------
-function changeRace(){
-  race = form.race.value;
-
+function changeRace(value){
+  race = value;
+  
   document.getElementById('race-ability-select').innerHTML = '';
   let selectCount = 1;
   for(let lv of ['','Lv6','Lv11','Lv16']){
     for(let ability of SET.races[race]?.['ability'+lv] || []){
       if(Array.isArray(ability)){
         let select = document.createElement('select');
+        select.addEventListener('input', changeRaceAbility);
         select.name = 'raceAbilitySelect'+selectCount;
         select.innerHTML = '<option value="">';
         for(let set of ability){
@@ -219,6 +220,16 @@ function changeRace(){
       }
     }
   }
+  if(!race){
+    document.getElementById('race-ability-value').innerHTML = '';
+  }
+  else if(!SET.races[race]) {
+    document.getElementById('race-ability-value').innerHTML = `<input type="text" name="raceAbilityFree" oninput="changeRaceAbility()" value="${form.raceAbilityFree?.value ?? '［］'}">`;
+  }
+  checkRace();
+  calcStt();
+}
+function changeRaceAbility(){
   checkRace();
   calcStt();
 }
@@ -291,13 +302,19 @@ function checkRace(){
     document.getElementById("race-ability-def-name").textContent = 'トロールの体躯';
   }
 
-  document.getElementById('race-ability-value').innerHTML = '';
   if(SET.races[race]?.ability){
+    document.getElementById('race-ability-value').innerHTML = '';
     let selectCount = 1;
     for(let lv of [0,6,11,16]){
       for(let ability of SET.races[race]?.['ability'+(lv?'Lv'+lv:'')] || []){
         if(Array.isArray(ability)){
-          form['raceAbilitySelect'+selectCount].classList.toggle('hidden', level < lv);
+          let isView = level >= lv ? 1 : 0;
+          if(modeZero && lv >= 16){
+            document.querySelectorAll('#seeker-abilities ul li:not(.fail) select').forEach(obj=>{
+              if(obj.value === '種族特徴の獲得、強化'){ isView = 1 }
+            });
+          }
+          form['raceAbilitySelect'+selectCount].classList.toggle('hidden', !isView);
           selectCount++;
         }
         else {

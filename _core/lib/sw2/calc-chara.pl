@@ -189,7 +189,10 @@ sub data_calc {
     }
   }
   ### 種族特徴 --------------------------------------------------
-  {
+  if($pc{'race'} && !exists $data::races{$pc{'race'}}){
+    $pc{raceAbility} = $pc{raceAbilityFree};
+  }
+  else {
     my $i = 1;
     sub abilitySet {
       my $lv = shift;
@@ -640,10 +643,13 @@ sub data_calc {
   foreach my $class (@data::class_list){
     $classlv .= $pc{'lv'.$data::class{$class}{'id'}}.'/';
   }
+  my $race = (exists $data::races{$pc{race}}) ? $pc{race}
+           : $pc{race} ? "その他:$pc{race}"
+           : '';
   my $faith = $pc{'faith'} eq 'その他の信仰' ? ($pc{'faithOther'} || $pc{'faith'}) : $pc{'faith'}; 
   $::newline = "$pc{'id'}<>$::file<>".
                "$pc{'birthTime'}<>$::now<>$charactername<>$pc{'playerName'}<>$pc{'group'}<>".
-               "$pc{'expTotal'}<>$pc{'rank'}<>$pc{'race'}<>$pc{'gender'}<>$pc{'age'}<>$pc{'faith'}<>".
+               "$pc{'expTotal'}<>$pc{'rank'}<>$race<>$pc{'gender'}<>$pc{'age'}<>$pc{'faith'}<>".
                "$classlv<>".
                "$pc{'lastSession'}<>$pc{'image'}<> $pc{'tags'} <>$pc{'hide'}<>$pc{'fellowPublic'}<>";
 

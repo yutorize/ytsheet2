@@ -291,7 +291,7 @@ print <<"HTML";
 
         <div id="personal">
           <dl class="box" id="race">
-            <dt>種族<dd><select name="race" oninput="changeRace()">@{[ option 'race', @data::race_list ]}</select>
+            <dt>種族<dd>@{[ selectInput 'race', 'changeRace(this.value)', @data::race_list ]}
           </dl>
           <dl class="box" id="age">
             <dt>年齢<dd>@{[input('age')]}
@@ -302,22 +302,22 @@ print <<"HTML";
           <dl class="box" id="race-ability">
             <dt>種族特徴
             <dd>
-              <span id="race-ability-value"></span>
-              <span id="race-ability-select">
+              <span id="race-ability-value">@{[ !$pc{race} ? '' : exists $data::races{$pc{race}} ? $pc{raceAbility} : input("raceAbilityFree",'','changeRaceAbility') ]}</span>
 HTML
 {
+  print '<span id="race-ability-select">';
   my $i = 1;
   foreach (@{$data::races{$pc{'race'}}{'ability'}},@{$data::races{$pc{'race'}}{'abilityLv6'}},@{$data::races{$pc{'race'}}{'abilityLv11'}},@{$data::races{$pc{'race'}}{'abilityLv16'}}){
     if(ref($_) eq 'ARRAY'){
-      print '<select name="raceAbilitySelect'.$i.'">';
+      print '<select name="raceAbilitySelect'.$i.'" oninput="changeRaceAbility()" class="hidden">';
       print option('raceAbilitySelect'.$i, @{$_});
       print '</select>';
       $i++;
     }
   }
+  print '</span>';
 }
 print <<"HTML";
-              </span>
           </dl>
           <dl class="box" id="sin">
             <dt>穢れ<dd>@{[input('sin','number','','min="0"')]}
