@@ -205,7 +205,13 @@ $SHEET->param(wordsY => ($pc{'wordsY'} eq '下' ? 'bottom:0;' : 'top:0;'));
 ### 種族名 --------------------------------------------------
 $pc{'race'} =~ s/［.*］//g;
 {
-  (my $race = $pc{'race'}) =~ s|（.+?）|<span class="variant">$&</span>|g;
+  my $race = $pc{race};
+  if($race =~ /^(.+?)[（(](.+?)[)）]/){
+    my $base    = $1;
+    my $variant = $2;
+    if($variant =~ /$base/){ $race = $variant }
+    else { $race =~ s|[（(].+?[)）]|<span class="variant">$&</span>|g; }
+  }
   $SHEET->param(race => $race);
 }
 ### 種族特徴 --------------------------------------------------
