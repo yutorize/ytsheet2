@@ -488,7 +488,6 @@ sub option {
       $text = '<option value="">'.$view;
     }
     elsif($value =~ s/^label=//){
-      $text .= '</optgroup>' if $label;
       $text .= '<optgroup label="'.$value.'">';
       $label = 1;
     }
