@@ -159,15 +159,24 @@ HTML
       </dl>
       <div class="box" id="group">
         <dl>
-          <dt>分類</dt><dd><select name="taxa">
+          <dt>分類</dt>
+          <dd>
+            <div class="select-input">
+              <select name="taxa" oninput="selectInputCheck('taxa',this,'その他')">
 HTML
 foreach (@data::taxa){
-  print '<option '.($pc{'taxa'} eq @$_[0] ? ' selected': '').'>'.@$_[0].'</option>';
+  print '<option '.($pc{taxa} eq @$_[0] ? ' selected': '').'>'.@$_[0].'</option>';
+}
+if($pc{taxa} && !grep { @$_[0] eq $pc{taxa} } @data::taxa){
+  print '<option selected>'.$pc{taxa}.'</option>'."\n";
 }
 print <<"HTML";
-          </select>
+              </select>
+              <input type="text" name="taxaFree">
+            </div>
           <dd>@{[ checkbox 'mount','騎獣','checkMount' ]}
-          <dt>タグ<dd>@{[ input 'tags' ]}
+          <dt>タグ
+          <dd>@{[ input 'tags' ]}
         </dl>
       </div>
 

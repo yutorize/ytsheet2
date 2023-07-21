@@ -10,6 +10,7 @@ sub data_calc {
 
   ####  --------------------------------------------------
   $pc{'partsNum'} ||= 1;
+  if(!$pc{taxa} && $pc{taxaSelect} eq 'その他'){ $pc{taxa} = 'その他' }
 
   #### 改行を<br>に変換 --------------------------------------------------
   $pc{'skills'}      =~ s/\r\n?|\n/<br>/g;
@@ -27,7 +28,9 @@ sub data_calc {
   my $name = $pc{'characterName'} ? $pc{'characterName'} : $pc{'monsterName'};
   $name =~ s/[|｜]([^|｜]+?)《.+?》/$1/g;
   $pc{'hide'} = 'IN' if(!$pc{'hide'} && $pc{'description'} =~ /#login-only/i);
-  my $taxa = ($pc{'mount'} ? '騎獣／':'').$pc{'taxa'};
+  my $taxa = ($pc{'mount'} ? '騎獣／':'')
+           . (($pc{taxa} && !grep { @$_[0] eq $pc{taxa} } @data::taxa) ? 'その他:' : '')
+           . $pc{taxa};
   my $lv = ($pc{'mount'} && $pc{'lv'} eq '') ? "$pc{'lvMin'}-$pc{'lvMax'}" : $pc{'lv'};
   my $disposition = $pc{'mount'} ? '' : $pc{'disposition'};
   my $initiative  = $pc{'mount'} ? '' : $pc{'initiative'};

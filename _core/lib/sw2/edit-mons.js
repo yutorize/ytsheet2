@@ -4,6 +4,7 @@ const gameSystem = 'sw2';
 window.onload = function() {
   nameSet();
   rewriteMountLevel();
+  selectInputCheck('taxa',form.taxa,'その他')
   checkMount();
 
   changeColor();
@@ -46,7 +47,6 @@ function checkLevel(){
     checkMountLevel();
   }
 }
-// 騎獣 ----------------------------------------
 // 各ステータス計算 ----------------------------------------
 function calcVit(){
   const val = form.vitResist.value;

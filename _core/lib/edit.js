@@ -463,9 +463,9 @@ function sectionSelect(id){
 }
 
 // セレクトorインプット ----------------------------------------
-function selectInputCheck(name,obj){
-  obj.parentNode.classList.toggle('free', obj.value === 'free');
-  if(obj.value === 'free'){
+function selectInputCheck(name,obj,keyword = 'free'){
+  obj.parentNode.classList.toggle('free', obj.value === keyword);
+  if(obj.value === keyword){
     if(document.querySelector(`input[name="${name}Free"]`)) document.querySelector(`input[name="${name}Free"]`).setAttribute('name', name);
     if(document.querySelector(`select[name="${name}"]`   )) document.querySelector(`select[name="${name}"]`   ).setAttribute('name', name+'Select');
   }

@@ -107,6 +107,9 @@ if($::in{'mount'}) {
   if($taxa_query eq 'all'){ $taxa_query = '' }
   @list = grep { $_ =~ /^(?:[^<]*?<>){6}騎獣／\Q$taxa_query\E/ } @list;
 }
+elsif($taxa_query eq 'その他') {
+  @list = grep { $_ =~ /^(?:[^<]*?<>){6}その他/ } @list;
+}
 elsif($taxa_query && $taxa_query ne 'all') {
   @list = grep { $_ =~ /^(?:[^<]*?<>){6}\Q$taxa_query\E</ } @list;
 }
@@ -210,11 +213,13 @@ foreach (@list) {
   ) = (split /<>/, $_)[0..19];
   
   #グループ
-  my $taxa_full = $taxa;
+  my $taxa_full = $taxa =~ s/^その他://r;
   $taxa_full = "<span class=\"small\">$taxa_full</span>" if length($taxa_full) >= 6;
   if($taxa =~ /^騎獣／/){ $taxa = '騎獣'; }
   else {
-    $taxa = '未分類' if (!$taxa);
+    if (!$taxa){ $taxa = '未分類' }
+    elsif($taxa =~ /^その他/){ $taxa = 'その他' }
+
     if($taxa_query eq 'all'){
       $taxa = 'すべて';
     }
