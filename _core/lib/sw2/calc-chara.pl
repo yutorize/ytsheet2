@@ -242,6 +242,11 @@ sub data_calc {
       $pc{'raceAbilityMp'} += 30;
     }
   }
+  if($pc{raceAbility} =~ /［奈落の身体／アビストランク］/){
+    $pc{'raceAbilityDef'} = 1;
+    if($pc{'level'} >=  6){ $pc{'raceAbilityDef'} += 1; }
+    if($pc{'level'} >= 11){ $pc{'raceAbilityDef'} += 1; }
+  }
   if($pc{raceAbility} =~ /［トロールの体躯］/){
     $pc{'raceAbilityDef'} = 1;
     if($pc{'level'} >= 16){ $pc{'raceAbilityDef'} += 2; }

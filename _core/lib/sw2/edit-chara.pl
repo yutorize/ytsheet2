@@ -965,6 +965,7 @@ print <<"HTML";
                 <td id="race-ability-def-name">［@{[
                     ($pc{'raceAbility'} =~ /［鱗の皮膚］/) ? '鱗の皮膚'
                   : ($pc{'raceAbility'} =~ /［晶石の身体］/) ? '晶石の身体'
+                  : ($pc{'raceAbility'} =~ /［奈落の身体／アビストランク］/)?'奈落の身体／アビストランク'
                   : ($pc{'raceAbility'} =~ /［トロールの体躯］/)?'トロールの体躯'
                   : ''
                 ]}］

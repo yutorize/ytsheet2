@@ -220,6 +220,7 @@ sub data_update_chara {
     $pc{'raceAbilitySelect1'} = $pc{'raceAbilityLv6'}  =~ s/^［|］$//gr;
     $pc{'raceAbilitySelect2'} = $pc{'raceAbilityLv11'} =~ s/^［|］$//gr;
     $pc{'raceAbilitySelect2'} = $pc{'raceAbilityLv16'} =~ s/^［|］$//gr;
+    if($pc{'race'} eq 'ルーンフォーク（戦闘用ルーンフォーク）'){ $pc{'race'} = 'ルーンフォーク（戦闘型ルーンフォーク）' }
   }
   $pc{'ver'} = $main::ver;
   $pc{'lasttimever'} = $ver;

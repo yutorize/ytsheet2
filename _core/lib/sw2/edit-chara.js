@@ -289,6 +289,12 @@ function checkRace(){
     if(level >= 16){ raceAbilityDef += 2; raceAbilityMp += 30; }
     document.getElementById("race-ability-def-name").textContent = '晶石の身体';
   }
+  if(raceAbilities.includes('奈落の身体／アビストランク')){
+    raceAbilityDef += 1;
+    if(level >=  6){ raceAbilityDef += 1; }
+    if(level >= 11){ raceAbilityDef += 1; }
+    document.getElementById("race-ability-def-name").textContent = '奈落の身体／アビストランク';
+  }
   if(raceAbilities.includes('魔法の申し子')){
     raceAbilityMagicPower += (level >= 11) ? 2 : 1;
     document.getElementById("magic-power-raceability-value" ).textContent = raceAbilityMagicPower || 0;
