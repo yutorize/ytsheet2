@@ -275,63 +275,41 @@ sub data_calc {
     $pc{'sttHistGrowE'} += ($grow =~ s/知/知/g);
     $pc{'sttHistGrowF'} += ($grow =~ s/精/精/g);
   }
-  $pc{'historyGrowTotal'} = $pc{'sttPreGrowA'}  + $pc{'sttPreGrowB'}  + $pc{'sttPreGrowC'}  + $pc{'sttPreGrowD'}  + $pc{'sttPreGrowE'}  + $pc{'sttPreGrowF'}
-                          + $pc{'sttHistGrowA'} + $pc{'sttHistGrowB'} + $pc{'sttHistGrowC'} + $pc{'sttHistGrowD'} + $pc{'sttHistGrowE'} + $pc{'sttHistGrowF'};
-
-  $pc{'sttGrowA'} = $pc{'sttPreGrowA'} + $pc{'sttHistGrowA'} + $pc{'sttSeekerGrow'};
-  $pc{'sttGrowB'} = $pc{'sttPreGrowB'} + $pc{'sttHistGrowB'} + $pc{'sttSeekerGrow'};
-  $pc{'sttGrowC'} = $pc{'sttPreGrowC'} + $pc{'sttHistGrowC'} + $pc{'sttSeekerGrow'};
-  $pc{'sttGrowD'} = $pc{'sttPreGrowD'} + $pc{'sttHistGrowD'} + $pc{'sttSeekerGrow'};
-  $pc{'sttGrowE'} = $pc{'sttPreGrowE'} + $pc{'sttHistGrowE'} + $pc{'sttSeekerGrow'};
-  $pc{'sttGrowF'} = $pc{'sttPreGrowF'} + $pc{'sttHistGrowF'} + $pc{'sttSeekerGrow'};
-
-
+  
   ## 能力値算出
-  $pc{'sttDex'} = $pc{'sttBaseTec'} + $pc{'sttBaseA'} + $pc{'sttGrowA'};
-  $pc{'sttAgi'} = $pc{'sttBaseTec'} + $pc{'sttBaseB'} + $pc{'sttGrowB'};
-  $pc{'sttStr'} = $pc{'sttBasePhy'} + $pc{'sttBaseC'} + $pc{'sttGrowC'};
-  $pc{'sttVit'} = $pc{'sttBasePhy'} + $pc{'sttBaseD'} + $pc{'sttGrowD'};
-  $pc{'sttInt'} = $pc{'sttBaseSpi'} + $pc{'sttBaseE'} + $pc{'sttGrowE'};
-  $pc{'sttMnd'} = $pc{'sttBaseSpi'} + $pc{'sttBaseF'} + $pc{'sttGrowF'};
-    # ウィークリング補正
-    $pc{'sttAgi'} += 3 if $pc{'race'} eq 'ウィークリング（ガルーダ）';
-    $pc{'sttMnd'} += 3 if $pc{'race'} eq 'ウィークリング（タンノズ）';
-    $pc{'sttStr'} += 3 if $pc{'race'} eq 'ウィークリング（ミノタウロス）';
-    $pc{'sttInt'} += 3 if $pc{'race'} eq 'ウィークリング（バジリスク）';
-    $pc{'sttMnd'} += 3 if $pc{'race'} eq 'ウィークリング（マーマン）';
+  $pc{'historyGrowTotal'} = 0;
+  foreach (
+    ['A','Dex'],
+    ['B','Agi'],
+    ['C','Str'],
+    ['D','Vit'],
+    ['E','Int'],
+    ['F','Mnd']
+  ){
+    my $i = @$_[0];
+    my $name = @$_[1];
+    # 成長
+    $pc{'historyGrowTotal'} += $pc{'sttPreGrow'.$i} + $pc{'sttHistGrow'.$i};
+    $pc{'sttGrow'.$i} = $pc{'sttPreGrow'.$i} + $pc{'sttHistGrow'.$i} + $pc{'sttSeekerGrow'};
 
-  ## ボーナス算出
-  $pc{'bonusDex'} = int(($pc{'sttDex'} + $pc{'sttAddA'}) / 6);
-  $pc{'bonusAgi'} = int(($pc{'sttAgi'} + $pc{'sttAddB'}) / 6);
-  $pc{'bonusStr'} = int(($pc{'sttStr'} + $pc{'sttAddC'}) / 6);
-  $pc{'bonusVit'} = int(($pc{'sttVit'} + $pc{'sttAddD'}) / 6);
-  $pc{'bonusInt'} = int(($pc{'sttInt'} + $pc{'sttAddE'}) / 6);
-  $pc{'bonusMnd'} = int(($pc{'sttMnd'} + $pc{'sttAddF'}) / 6);
-  ## 冒険者レベル＋各ボーナス算出
-  $st{'LvA'} = $pc{'level'}+$pc{'bonusDex'};
-  $st{'LvB'} = $pc{'level'}+$pc{'bonusAgi'};
-  $st{'LvC'} = $pc{'level'}+$pc{'bonusStr'};
-  $st{'LvD'} = $pc{'level'}+$pc{'bonusVit'};
-  $st{'LvE'} = $pc{'level'}+$pc{'bonusInt'};
-  $st{'LvF'} = $pc{'level'}+$pc{'bonusMnd'};
-  ## 各技能レベル＋各ボーナス算出
-  foreach my $class (@data::class_names){
-    my $id = $data::class{$class}{'id'};
-    if($pc{'lv'.$id} > 0) {
-      $st{$id.'A'} = $pc{'lv'.$id}+$pc{'bonusDex'};
-      $st{$id.'B'} = $pc{'lv'.$id}+$pc{'bonusAgi'};
-      $st{$id.'C'} = $pc{'lv'.$id}+$pc{'bonusStr'};
-      $st{$id.'D'} = $pc{'lv'.$id}+$pc{'bonusVit'};
-      $st{$id.'E'} = $pc{'lv'.$id}+$pc{'bonusInt'};
-      $st{$id.'F'} = $pc{'lv'.$id}+$pc{'bonusMnd'};
-    }
-    else {
-      $st{$id.'A'} = 0;
-      $st{$id.'B'} = 0;
-      $st{$id.'C'} = 0;
-      $st{$id.'D'} = 0;
-      $st{$id.'E'} = 0;
-      $st{$id.'F'} = 0;
+    # 心技体
+    my $base
+      = ($i =~ /A|B/) ? $pc{sttBaseTec}
+      : ($i =~ /C|D/) ? $pc{sttBasePhy}
+      : ($i =~ /E|F/) ? $pc{sttBaseSpi}
+      : 0;
+    # 合計
+    $pc{'stt'.$name} = $base + $pc{'sttBase'.$i} + $pc{'sttGrow'.$i};
+    # 種族特徴補正
+    $pc{'stt'.$name} += exists $data::races{$pc{race}} ? $data::races{$pc{race}}{statusMod}{$name} : 0;
+    ## ボーナス算出
+    $pc{'bonus'.$name} = int(($pc{'stt'.$name} + $pc{'sttAdd'.$i}) / 6);
+    ## 冒険者レベル＋各ボーナス算出
+    $st{'Lv'.$i} = $pc{'level'}+$pc{'bonus'.$name};
+    ## 各技能レベル＋各ボーナス算出
+    foreach my $class (@data::class_names){
+      my $id = $data::class{$class}{'id'};
+      $st{$id.$i} = ($pc{'lv'.$id} > 0) ? $pc{'lv'.$id}+$pc{'bonus'.$name} : 0;
     }
   }
 

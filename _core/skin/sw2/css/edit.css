@@ -85,6 +85,12 @@
 #status dl#stt-pointbuy-type {
   grid-column: span 2;
 }
+#status dl:nth-child(n+16):nth-child(-n+21) dd {
+  font-size: 120%;
+}
+#status dl:nth-child(n+16):nth-child(-n+21) dd .small {
+  font-size: 80%;
+}
 @media screen and (max-width:735px){
   #status {
     grid-gap: 5px;
