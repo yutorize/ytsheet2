@@ -60,6 +60,10 @@
       <tr><td colspan="6">ダイス平均:<TMPL_VAR AVERAGE> ／ 能力値合計:<TMPL_VAR TOTAL>
     </table>
     </TMPL_LOOP>
+    <TMPL_IF CURSE><table class="curse">
+      <tr><th>アビスカース無作為決定
+      <tr><td><TMPL_VAR CURSE>
+    </table></TMPL_IF>
     <time><TMPL_VAR DATE></time>
     </section>
   </TMPL_LOOP>

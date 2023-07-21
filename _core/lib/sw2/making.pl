@@ -78,6 +78,11 @@ while ($i <= $in{"repeat"} || ($average_max <= $set::average_over)){
 
 $in{'race'} .= '（冒険者）' if $adventurer;
 
+my $curse;
+if($in{'race'} eq 'アビスボーン'){
+  $curse .= dice(1).'-'.dice(1).'/' foreach(1..3);
+}
+
 # 書き込み
 sysopen (my $FH, $set::makelist, O_RDWR | O_CREAT, 0666);
   flock($FH, 2);
@@ -85,7 +90,7 @@ sysopen (my $FH, $set::makelist, O_RDWR | O_CREAT, 0666);
   seek($FH, 0, 0);
   my $num = (split(/<>/, $lines[0]))[0] + 1;
   if ($set::making_max) { while ($set::making_max <= @lines) { pop(@lines); } }
-  unshift(@lines,"$num<>$now<>$LOGIN_ID<>$in{'name'}<>$in{'comment'}<>$in{'race'}<>$stt_data<><>\n");
+  unshift(@lines,"$num<>$now<>$LOGIN_ID<>$in{'name'}<>$in{'comment'}<>$in{'race'}<>$stt_data<>$curse<>\n");
   print $FH @lines;
   truncate($FH, tell($FH));
 close($FH);

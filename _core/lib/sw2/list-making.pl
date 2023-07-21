@@ -9,6 +9,15 @@ my $LOGIN_ID = check;
 
 require $set::data_races;
 
+my %curseList = (
+  '1-1' => '自傷の', '2-1' => '重い'  , '3-1' => 'たどたどしい'  , '4-1' => '鈍重な'    , '5-1' => '醜悪な'  , '6-1' => '正直者の',
+  '1-2' => '嘆きの', '2-2' => '難しい', '3-2' => '代弁する'      , '4-2' => '定まらない', '5-2' => '唸る'    , '6-2' => '乗り物酔いの',
+  '1-3' => '優しき', '2-3' => '軟弱な', '3-3' => '施しは受けない', '4-3' => '錯乱の'    , '5-3' => 'ふやけた', '6-3' => '碧を厭う',
+  '1-4' => '差別の', '2-4' => '病弱な', '3-4' => '死に近い'      , '4-4' => '足絡みの'  , '5-4' => '古傷の'  , '6-4' => '我慢できない',
+  '1-5' => '脆弱な', '2-5' => '過敏な', '3-5' => 'おしゃれな'    , '4-5' => '滑り落ちる', '5-5' => 'まばゆい', '6-5' => 'つきまとう',
+  '1-6' => '無謀な', '2-6' => '陽気な', '3-6' => 'マナを吸う'    , '4-6' => '悪臭放つ'  , '5-6' => '栄光なき', '6-6' => 'のろまな',
+);
+
 my $page_items = 10;
 my $page = $::in{"page"} * $page_items;
 
@@ -63,7 +72,7 @@ foreach my $data (@lines) {
   
   next if $in_num && $data !~ /^$in_num</;
   next if !$in_num && (($i <= $page) || ($i > $page+$page_items));
-  my ($num, $date, $id, $name, $comment, $race, $stt) = split(/<>/, $data);
+  my ($num, $date, $id, $name, $comment, $race, $stt, $curse) = split(/<>/, $data);
   
   my $adventurer = ($race =~ s/（冒険者）//) ? 1 : 0;
   my @datalist;
@@ -123,6 +132,10 @@ foreach my $data (@lines) {
       "SELECTED" => ($in_trial eq $trial ? 'selected' : ''),
     });
   }
+
+  my @curses = split('/', $curse);
+  $_ = $_.':'.$curseList{$_} foreach (@curses);
+
   my ($sec, $min, $hour, $day, $mon, $year) = localtime($date);
   push(@posts, {
     "NUM" => $num,
@@ -130,6 +143,7 @@ foreach my $data (@lines) {
     "NAME" => $name,
     "COMMENT" => $comment,
     "Data" => \@datalist,
+    "CURSE" => join('／', @curses),
   });
 }
 $INDEX->param(Posts => \@posts);
