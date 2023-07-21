@@ -962,7 +962,12 @@ print <<"HTML";
                 <td id="evasion-eva">$pc{'EvasionEva'}
                 <td>―
               <tr id="race-ability-def"@{[ display $pc{'raceAbilityDef'} ]}>
-                <td id="race-ability-def-name">［@{[ $pc{'race'} eq 'リルドラケン' ? '鱗の皮膚':$pc{'race'} eq 'フロウライト'?'晶石の身体':$pc{'race'} eq 'ダークトロール'?'トロールの体躯':'']}］
+                <td id="race-ability-def-name">［@{[
+                    ($pc{'raceAbility'} =~ /［鱗の皮膚］/) ? '鱗の皮膚'
+                  : ($pc{'raceAbility'} =~ /［晶石の身体］/) ? '晶石の身体'
+                  : ($pc{'raceAbility'} =~ /［トロールの体躯］/)?'トロールの体躯'
+                  : ''
+                ]}］
                 <td>―
                 <td>―
                 <td id="race-ability-def-value">$pc{'raceAbilityDef'}

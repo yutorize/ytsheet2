@@ -218,17 +218,15 @@ sub data_calc {
     $_ .= ($unique{$_} >= 2 ? '＋' : '') foreach(@abilities);
     $pc{raceAbility} = '［'. join('］［', @abilities) . '］';
   }
-  ### 種族チェック --------------------------------------------------
-  if($pc{'race'} eq 'リルドラケン'){
+  ### 種族特徴チェック --------------------------------------------------
+  if($pc{raceAbility} =~ /［鱗の皮膚］/){
     $pc{'raceAbilityDef'} = 1;
   }
-  elsif($pc{'race'} eq 'シャドウ'){
+  if($pc{raceAbility} =~ /［月光の守り］/){
     $pc{'raceAbilityMndResist'} = 4;
-    if($pc{'level'} >= 11){
-      $pc{'raceAbilityMndResist'} += 2;
-    }
+    if($pc{'level'} >= 11){ $pc{'raceAbilityMndResist'} += 2; }
   }
-  elsif($pc{'race'} eq 'フロウライト'){
+  if($pc{raceAbility} =~ /［晶石の身体］/){
     $pc{'raceAbilityDef'} = 2;
     $pc{'raceAbilityMp'} = 15;
     if($pc{'level'} >= 6){
@@ -244,18 +242,16 @@ sub data_calc {
       $pc{'raceAbilityMp'} += 30;
     }
   }
-  elsif($pc{'race'} eq 'ダークトロール'){
+  if($pc{raceAbility} =~ /［トロールの体躯］/){
     $pc{'raceAbilityDef'} = 1;
-    if($pc{'level'} >= 16){
-      $pc{'raceAbilityDef'} += 2;
-    }
+    if($pc{'level'} >= 16){ $pc{'raceAbilityDef'} += 2; }
   }
-  elsif($pc{'race'} eq 'ドレイク（ナイト）'){
+  if($pc{'race'} eq 'ドレイク（ナイト）'){
     if($pc{'level'} >= 16){
       $pc{'raceAbility'} =~ s/［竜化］/［剣の託宣／復活竜化］/;
     }
   }
-  elsif($pc{'race'} eq 'バジリスク'){
+  if($pc{'race'} eq 'バジリスク'){
     if($pc{'level'} >= 16){
       $pc{'raceAbility'} =~ s/［魔物化］/［剣の託宣／復活魔物化］/;
     }
@@ -433,10 +429,10 @@ sub data_calc {
   $pc{'hpTotal'}  = $pc{'hpBase'} + $pc{'hpAddTotal'};
   ## ＭＰ
   $pc{'mpBase'} = $lv_caster_total * 3 + $pc{'sttMnd'} + $pc{'sttAddF'};
-  $pc{'mpBase'} = $pc{'level'} * 3 + $pc{'sttMnd'} + $pc{'sttAddF'} if ($pc{'race'} eq 'マナフレア');
+  $pc{'mpBase'} = $pc{'level'} * 3 + $pc{'sttMnd'} + $pc{'sttAddF'} if ($pc{raceAbility} =~ /［溢れるマナ］/);
   $pc{'mpAddTotal'} = s_eval($pc{'mpAdd'}) + $pc{'capacity'} + $pc{'raceAbilityMp'} + $pc{'mpAccessory'} + $pc{'seekerAbilityHpMp'};
   $pc{'mpTotal'}  = $pc{'mpBase'} + $pc{'mpAddTotal'};
-  $pc{'mpTotal'}  = 0  if ($pc{'race'} eq 'グラスランナー');
+  $pc{'mpTotal'}  = 0  if ($pc{raceAbility} =~ /［マナ不干渉］/);
 
   ## 移動力
   my $own_mobility = 0;
@@ -447,7 +443,7 @@ sub data_calc {
     }
   }
   $pc{'mobilityBase'} = $pc{'sttAgi'} + $pc{'sttAddB'} + $own_mobility;
-  $pc{'mobilityBase'} = $pc{'mobilityBase'} * 2 + $own_mobility  if ($pc{'race'} eq 'ケンタウロス');
+  $pc{'mobilityBase'} = $pc{'mobilityBase'} * 2 + $own_mobility  if ($pc{raceAbility} =~ /［半馬半人］/);
   $pc{'mobilityTotal'} = $pc{'mobilityBase'} + s_eval($pc{'mobilityAdd'});
   $pc{'mobilityFull'} = $pc{'mobilityTotal'} * 3;
   $pc{'mobilityLimited'} = $pc{'footwork'} ? 10 : 3;
@@ -491,10 +487,10 @@ sub data_calc {
     my $id = $data::class{$name}{'id'};
     $pc{'magicPower'.$id} = $pc{'lv'.$id} ? ( $pc{'lv'.$id} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwn'.$id} ? 2 : 0)) / 6) + $pc{'magicPowerAdd'.$id} + $pc{'magicPowerAdd'} + $pc{'magicPowerEnhance'} ) : 0;
     
-    if($pc{'race'} eq 'ハイマン'){
+    if($pc{raceAbility} =~ /魔法の申し子/){
       $pc{'magicPower'.$id} += $pc{'level'} >= 11 ? 2 : 1;
     }
-    elsif($pc{'race'} =~ /^センティアン/ && $name eq 'プリースト'){
+    elsif($name eq 'プリースト' && $pc{raceAbility} =~ /［(神の御名と共に|神への礼賛|神への祈り)］/){
       $pc{'magicPower'.$id} += $pc{'level'} >= 11 ? 2 : $pc{'level'} >= 6 ? 1 : 0;
     }
     $pc{'magicPower'.$id} += $pc{'seekerAbilityMagic'} if $pc{'lv'.$id} >= 15; #求道者

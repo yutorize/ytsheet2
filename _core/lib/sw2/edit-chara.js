@@ -239,9 +239,11 @@ let raceAbilityDef       = 0;
 let raceAbilityMp        = 0;
 let raceAbilityMndResist = 0;
 let raceAbilityMagicPower= 0;
+let raceAbilities = [];
 function checkRace(){
   raceAbilityDef       = 0;
   raceAbilityMp        = 0;
+  raceAbilityMndResist = 0;
   raceAbilityMagicPower= 0;
   for(const className in SET.class){
     const id = SET.class[className].id;
@@ -255,54 +257,10 @@ function checkRace(){
       }
     }
   }
-  
-  if(race === 'リルドラケン'){
-    raceAbilityDef = 1;
-    document.getElementById("race-ability-def-name").textContent = '鱗の皮膚';
-  }
-  else if(race === 'シャドウ'){
-    raceAbilityMndResist = 4;
-    if(level >= 11){
-      raceAbilityMndResist += 2;
-    }
-  }
-  else if(race === 'フロウライト'){
-    raceAbilityDef = 2;
-    raceAbilityMp = 15;
-    if(level >= 6){
-      raceAbilityDef += 1;
-      raceAbilityMp += 15;
-    }
-    if(level >= 11){
-      raceAbilityDef += 1;
-      raceAbilityMp += 15;
-    }
-    if(level >= 16){
-      raceAbilityDef += 2;
-      raceAbilityMp += 30;
-    }
-    document.getElementById("race-ability-def-name").textContent = '晶石の身体';
-  }
-  else if(race === 'ハイマン'){
-    raceAbilityMagicPower += (level >= 11) ? 2 : 1;
-    document.getElementById("magic-power-raceability-value" ).textContent = raceAbilityMagicPower || 0;
-    document.getElementById("magic-power-raceability-name").textContent = '魔法の申し子';
-    document.getElementById("magic-power-raceability-type").textContent = '魔法全般';
-  }
-  else if(race.match(/^センティアン/)){
-    document.getElementById("magic-power-raceability-value" ).textContent = (level >= 11) ? 2 : (level >= 6) ? 1 : 0;
-    document.getElementById("magic-power-raceability-name").textContent = race.match('ルミエル') ? '神の御名と共に' : race.match('イグニス') ? '神への礼賛' : race.match('カルディア') ? '神への祈り' : '';
-    document.getElementById("magic-power-raceability-type").textContent = '神聖魔法';
-  }
-  else if(race === 'ダークトロール'){
-    raceAbilityDef = 1;
-    if(level >= 16){
-      raceAbilityDef += 2;
-    }
-    document.getElementById("race-ability-def-name").textContent = 'トロールの体躯';
-  }
 
+  raceAbilities = [];
   if(SET.races[race]?.ability){
+    raceAbilities = SET.races[race].ability.concat();
     document.getElementById('race-ability-value').innerHTML = '';
     let selectCount = 1;
     for(let lv of [0,6,11,16]){
@@ -315,13 +273,65 @@ function checkRace(){
             });
           }
           form['raceAbilitySelect'+selectCount].classList.toggle('hidden', !isView);
+          raceAbilities.push(form['raceAbilitySelect'+selectCount].value);
           selectCount++;
         }
         else {
           document.getElementById('race-ability-value').innerHTML += `［${ability}］`;
+          raceAbilities.push(ability);
         }
       }
     }
+  }
+  else if(form.raceAbilityFree) {
+    let ability = form.raceAbilityFree.value;
+    ability.replace(/［(.+?)］/g, (all, match) => {
+      raceAbilities.push(match);
+    });
+    console.log(raceAbilities)
+  }
+  
+  if(raceAbilities.includes('鱗の皮膚')){
+    raceAbilityDef += 1;
+    document.getElementById("race-ability-def-name").textContent = '鱗の皮膚';
+  }
+  if(raceAbilities.includes('月光の守り')){
+    raceAbilityMndResist += 4;
+    if(level >= 11){ raceAbilityMndResist += 2; }
+  }
+  if(raceAbilities.includes('晶石の身体')){
+    raceAbilityDef += 2;
+    raceAbilityMp += 15;
+    if(level >=  6){ raceAbilityDef += 1; raceAbilityMp += 15; }
+    if(level >= 11){ raceAbilityDef += 1; raceAbilityMp += 15; }
+    if(level >= 16){ raceAbilityDef += 2; raceAbilityMp += 30; }
+    document.getElementById("race-ability-def-name").textContent = '晶石の身体';
+  }
+  if(raceAbilities.includes('魔法の申し子')){
+    raceAbilityMagicPower += (level >= 11) ? 2 : 1;
+    document.getElementById("magic-power-raceability-value" ).textContent = raceAbilityMagicPower || 0;
+    document.getElementById("magic-power-raceability-name").textContent = '魔法の申し子';
+    document.getElementById("magic-power-raceability-type").textContent = '魔法全般';
+  }
+  if(raceAbilities.includes('神の御名と共に') && level >= 6){
+    document.getElementById("magic-power-raceability-value" ).textContent = (level >= 11) ? 2 : 1;
+    document.getElementById("magic-power-raceability-name").textContent = '神の御名と共に';
+    document.getElementById("magic-power-raceability-type").textContent = '神聖魔法';
+  }
+  if(raceAbilities.includes('神への礼賛') && level >= 6){
+    document.getElementById("magic-power-raceability-value" ).textContent = (level >= 11) ? 2 : 1;
+    document.getElementById("magic-power-raceability-name").textContent = '神への礼賛';
+    document.getElementById("magic-power-raceability-type").textContent = '神聖魔法';
+  }
+  if(raceAbilities.includes('神への祈り') && level >= 6){
+    document.getElementById("magic-power-raceability-value" ).textContent = (level >= 11) ? 2 : 1;
+    document.getElementById("magic-power-raceability-name").textContent = '神への祈り';
+    document.getElementById("magic-power-raceability-type").textContent = '神聖魔法';
+  }
+  if(raceAbilities.includes('トロールの体躯')){
+    raceAbilityDef = 1;
+    if(level >= 16){ raceAbilityDef += 2; }
+    document.getElementById("race-ability-def-name").textContent = 'トロールの体躯';
   }
   checkLanguage();
   setLanguageDefault();
@@ -994,22 +1004,22 @@ function calcSubStt() {
   
   const hpBase = level * 3 + sttVit + sttAddD;
   const mpBase = 
-    (race === 'マナフレア') ? (level * 3 + sttMnd + sttAddF)
+    (raceAbilities.includes('溢れるマナ')) ? (level * 3 + sttMnd + sttAddF)
     : ( levelCasters.reduce((a,x) => a+x,0) * 3 + sttMnd + sttAddF );
   const hpAutoAdd = (feats['頑強'] || 0) + hpAccessory + (lv['Fig'] >= 7 ? 15 : 0) + seekerHpMpAdd;
   const mpAutoAdd = (feats['キャパシティ'] || 0) + raceAbilityMp + mpAccessory + seekerHpMpAdd;
   document.getElementById("hp-base").textContent = hpBase;
-  document.getElementById("mp-base").textContent = (race === 'グラスランナー') ? '0' : mpBase;
+  document.getElementById("mp-base").textContent = raceAbilities.includes('マナ不干渉') ? '0' : mpBase;
   document.getElementById("hp-auto-add").textContent = hpAutoAdd;
   document.getElementById("mp-auto-add").textContent = mpAutoAdd;
   document.getElementById("hp-total").textContent = hpBase + Number(form.hpAdd.value) + hpAutoAdd;
-  document.getElementById("mp-total").textContent = (race === 'グラスランナー') ? 'なし' : (mpBase + Number(form.mpAdd.value) + mpAutoAdd);
+  document.getElementById("mp-total").textContent = raceAbilities.includes('マナ不干渉') ? 'なし' : (mpBase + Number(form.mpAdd.value) + mpAutoAdd);
 }
 
 // 移動力計算 ----------------------------------------
 function calcMobility() {
   const agi = sttAgi + sttAddB;
-  const mobilityBase = ((race === 'ケンタウロス') ? (agi * 2) : agi);
+  const mobilityBase = (raceAbilities.includes('半馬半人') ? (agi * 2) : agi);
   let mobilityOwn = 0;
   for (let num = 1; num <= form.armourNum.value; num++){
     if(form[`armour${num}Category`].value.match(/鎧/) && form[`armour${num}Own`].checked){
@@ -1094,7 +1104,11 @@ function calcMagic() {
       
       const seekerMagicAdd = (lvSeeker && checkSeekerAbility('魔力上昇') && cLv >= 15) ? 3 : 0;
       let power = cLv + parseInt((sttInt + sttAddE + (form["magicPowerOwn"+id].checked ? 2 : 0)) / 6) + Number(form["magicPowerAdd"+id].value) + addPower + seekerMagicAdd + raceAbilityMagicPower;
-      if(id === 'Pri' && race.match(/^センティアン/)){
+      if(id === 'Pri' && (
+           raceAbilities.includes('神の御名と共に')
+        || raceAbilities.includes('神への礼賛')
+        || raceAbilities.includes('神への祈り')
+      )){
         power += (level >= 11) ? 2 : (level >= 6) ? 1 : 0;
       }
       document.getElementById("magic-power-"+eName+"-value").textContent  = power;
@@ -1127,7 +1141,12 @@ function calcMagic() {
   // 全体／その他の開閉
   document.getElementById("magic-power").style.display = (openMagic || openCraft) ? '' : 'none';
 
-  document.getElementById("magic-power-raceability" ).style.display = race.match(/^ハイマン|^センティアン/)  ? '' : 'none';
+  document.getElementById("magic-power-raceability" ).style.display
+    = raceAbilities.includes('魔法の申し子') ? ''
+    : raceAbilities.includes('神の御名と共に') && level >= 6 ? ''
+    : raceAbilities.includes('神への礼賛') && level >= 6 ? ''
+    : raceAbilities.includes('神への祈り') && level >= 6 ? ''
+    : 'none';
   document.getElementById("magic-power-magicenhance").style.display = feats['魔力強化']      ? '' : 'none';
   document.getElementById("magic-power-common"      ).style.display = openMagic              ? '' : 'none';
   document.getElementById("magic-power-hr"          ).style.display = openMagic && openCraft ? '' : 'none';

@@ -674,21 +674,9 @@ if(!$pc{'forbiddenMode'}){
       "EVA"  => 0,
     } );
   }
-  if($pc{'race'} eq 'リルドラケン') {
+  if($pc{raceAbility} =~ /［(鱗の皮膚|晶石の身体|奈落の身体／アビストランク|トロールの体躯)］/) {
     push(@evasion, {
-      "NAME" => "［鱗の皮膚］",
-      "DEF"  => $pc{'raceAbilityDef'},
-    } );
-  }
-  elsif($pc{'race'} eq 'フロウライト') {
-    push(@evasion, {
-      "NAME" => "［晶石の身体］",
-      "DEF"  => $pc{'raceAbilityDef'},
-    } );
-  }
-  elsif($pc{'race'} eq 'ダークトロール') {
-    push(@evasion, {
-      "NAME" => "［トロールの体躯］",
+      "NAME" => $&,
       "DEF"  => $pc{'raceAbilityDef'},
     } );
   }
