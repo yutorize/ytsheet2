@@ -61,7 +61,19 @@ open (my $FH,"<", $set::makelist);
 my @lines = <$FH>;
 close($FH);
 
-@lines = grep { (split /<>/)[2]  eq $::in{'id'} } @lines if $::in{'id'};
+## 検索
+if($::in{"mylist"}){
+  @lines = grep { $_ =~ /^(?:[^<]*?<>){2}\Q$LOGIN_ID\E</ } @lines;
+  $INDEX->param(modeMylist => 1);
+}
+elsif($::in{'id'}){
+  @lines = grep { $_ =~ /^(?:[^<]*?<>){2}\Q$::in{'id'}\E</ } @lines;
+}
+if($::in{'tag'}){
+  my $tag_query = decode('utf8', $::in{'tag'}) =~ s/[#＃]//r;
+  @lines = grep { $_ =~ /^(?:[^<]*?<>){4}[^<]*?[#＃]\Q$tag_query\E(\s|[#＃]|<)/ } @lines if $::in{'tag'};
+  $INDEX->param(tag => $tag_query);
+}
 
 my ($in_num, $in_trial) = split('-', $::in{"num"});
 
@@ -135,6 +147,8 @@ foreach my $data (@lines) {
 
   my @curses = split('/', $curse);
   $_ = $_.':'.$curseList{$_} foreach (@curses);
+
+  $comment =~ s/([#＃])(.+?)(?=\s|[#＃]|$)/<a href=".\/?mode=making&tag=$2">$1$2<\/a>/g;
 
   my ($sec, $min, $hour, $day, $mon, $year) = localtime($date);
   push(@posts, {

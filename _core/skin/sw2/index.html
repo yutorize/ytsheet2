@@ -31,7 +31,7 @@
     <TMPL_INCLUDE NAME="skin-add/main-header.html">
     <nav>
       <ul>
-        <li class="<TMPL_IF modeMaking>current</TMPL_IF>"><a href="./?mode=making">能力値作成</a></li>
+        <li class="<TMPL_IF modeMaking>current</TMPL_IF>"><a href="./?mode=making<TMPL_IF modeMylist>&mylist=1</TMPL_IF><TMPL_IF tag>&tag=<TMPL_VAR tag></TMPL_IF>">能力値作成</a></li>
         <li class="<TMPL_IF modeList>current</TMPL_IF>"><a href="./?<TMPL_IF mode>mode=<TMPL_VAR mode>&</TMPL_IF><TMPL_IF tag>tag=<TMPL_VAR tag></TMPL_IF>">キャラクター</a></li>
         <li class="<TMPL_IF modeMonsList>current</TMPL_IF>"><a href="./?<TMPL_IF mode>mode=<TMPL_VAR mode>&</TMPL_IF><TMPL_IF tag>tag=<TMPL_VAR tag>&</TMPL_IF>type=m">魔物/騎獣</a></li>
         <li class="<TMPL_IF modeItemList>current</TMPL_IF>"><a href="./?<TMPL_IF mode>mode=<TMPL_VAR mode>&</TMPL_IF><TMPL_IF tag>tag=<TMPL_VAR tag>&</TMPL_IF>type=i">アイテム</a></li>

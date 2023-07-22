@@ -214,7 +214,7 @@ body {
 /* // List-Making
 ---------------------------------------------------------------------------------------------------- */
 #making {
-  max-width: 400px;
+  max-width: 430px;
   margin: 3em auto;
 }
 #making form dl {
@@ -238,9 +238,22 @@ body {
   width: 4.5em;
   text-align: center;
 }
+#making form dl .annotate {
+  padding: .3em 0 0 1em;
+  line-height: 1.2;
+  position: relative;
+}
+#making form dl .annotate::before {
+  content: "※";
+  position: absolute;
+  left: 0;
+}
 
 #making-posts h2 {
   text-align: center;
+}
+#making-posts h2 small {
+  font-size: 60%;
 }
 #making-posts .post {
   max-width: 500px;
