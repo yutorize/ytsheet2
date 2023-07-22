@@ -162,7 +162,11 @@ foreach my $data (@lines) {
 }
 $INDEX->param(Posts => \@posts);
 
-$INDEX->param(pageId => '&id='.$::in{'id'}) if $::in{'id'};
+my $paginationUrl;
+$paginationUrl .= '&id='.$::in{'id'} if $::in{'id'};
+$paginationUrl .= '&tag='.uri_escape_utf8(decode('utf8', $::in{'tag'})) if $::in{'tag'};
+$paginationUrl .= '&mylist=1' if $::in{'mylist'};
+$INDEX->param(paginationUrl => $paginationUrl);
 $INDEX->param(pagePrev => ($page - $page_items) / $page_items);
 $INDEX->param(pageNext => ($page + $page_items) / $page_items);
 if(!$in_num) {

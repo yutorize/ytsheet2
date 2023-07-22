@@ -83,8 +83,8 @@
     </section>
   </TMPL_LOOP>
   <div class="navigation">
-    <TMPL_IF pagePrevOn><a href="./?mode=making<TMPL_VAR pageId>&page=<TMPL_VAR pagePrev>">前の10件</a></TMPL_IF>
-    <TMPL_IF pageNextOn><a href="./?mode=making<TMPL_VAR pageId>&page=<TMPL_VAR pageNext>">次の10件</a></TMPL_IF>
+    <TMPL_IF pagePrevOn><a href="./?mode=making<TMPL_VAR paginationUrl>&page=<TMPL_VAR pagePrev>">前の10件</a></TMPL_IF>
+    <TMPL_IF pageNextOn><a href="./?mode=making<TMPL_VAR paginationUrl>&page=<TMPL_VAR pageNext>">次の10件</a></TMPL_IF>
   </div>
   </section>
 </article>
