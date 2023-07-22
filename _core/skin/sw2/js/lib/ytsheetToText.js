@@ -255,7 +255,8 @@ io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2SwordWorld2PC
 	for(let i = 1; i <= 3; i++) {
 		let names = [];
 		for(let n = 1; n <= json.armourNum; n++) {
-			if (json[`defTotal${i}CheckArmour${n}`]){ names.push(armors[n-1].type); }
+			console.log(n)
+			if (json[`defTotal${i}CheckArmour${n}`] && armors[n-1]){ names.push(armors[n-1].type); }
 		}
 		if(names.length){
 			armors.push({
