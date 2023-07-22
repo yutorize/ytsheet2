@@ -287,7 +287,7 @@ print <<"HTML";
 
         <div id="personal">
           <dl class="box" id="race">
-            <dt>種族<dd>@{[ selectInput 'race', 'changeRace(this.value)', @data::race_list ]}
+            <dt>種族<dd>@{[ selectInput 'race', 'changeRace(this.value)', @data::race_list,'label=その他' ]}
           </dl>
           <dl class="box" id="age">
             <dt>年齢<dd>@{[input('age')]}

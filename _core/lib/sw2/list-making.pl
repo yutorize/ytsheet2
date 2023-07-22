@@ -53,6 +53,10 @@ foreach my $name (@data::race_names){
   if($name eq '人間'){
     push(@race_makelist, {"NAME" => "人間（冒険者）"});
   }
+
+  if($name =~ /^label=(.+)$/){
+    push(@race_makelist, {"LABEL" => $1});
+  }
 }
 $INDEX->param(MakeList => \@race_makelist);
 
