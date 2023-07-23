@@ -165,6 +165,107 @@ sub commonJSVariable {
 HTML
 }
 
+## 簡略化系
+sub input {
+  my ($name, $type, $oninput, $other) = @_;
+  if($oninput && $oninput !~ /\(.*?\)$/){ $oninput .= '()'; }
+  '<input'.
+  ' type="'.($type?$type:'text').'"'.
+  ' name="'.$name.'"'.
+  ' value="'.($_[1] eq 'checkbox' ? 1 : $::pc{$name}).'"'.
+  ($other?" $other":"").
+  ($type eq 'checkbox' && $::pc{$name}?" checked":"").
+  ($oninput?' oninput="'.$oninput.'"':"").
+  '>';
+}
+sub checkbox {
+  my ($name, $text, $oninput, $other) = @_;
+  if($oninput && $oninput !~ /\(.*?\)$/){ $oninput .= '()'; }
+  '<label class="check-button">'.
+  '<input type="checkbox"'.
+  ' name="'.$name.'"'.
+  ' value="1"'.
+  ($::pc{$name}?" checked":"").
+  ($oninput?' oninput="'.$oninput.'"':"").
+  ($other?" $other":"").
+  '>'.
+  ($text?'<span>'.$text.'</span>':'').
+  '</label>';
+}
+sub radio {
+  my $name = shift;
+  my $oninput = shift;
+  my $value = shift;
+  my $text = shift;
+  if($oninput && $oninput !~ /\(.*?\)$/){ $oninput .= '()'; }
+  '<label class="radio-button">'.
+  '<input type="radio"'.
+  ' name="'.$name.'"'.
+  ' value="'.$value.'"'.
+  ($::pc{$name} eq $value?" checked":"").
+  ($oninput?' oninput="'.$oninput.'"':"").
+  '>'.
+  ($text?'<span>'.$text.'</span>':'').
+  '</label>';
+}
+sub radios {
+  my $name = shift;
+  my $oninput = shift;
+  if($oninput && $oninput !~ /\(.*?\)$/){ $oninput .= '()'; }
+  my $out;
+  foreach (@_) {
+    my $value = $_;
+    my $view;
+    if($value =~ s/=>(.*?)$//){ $view = $1 } else { $view = $value }
+    $out .= '<label class="radio-button">'.
+    '<input type="radio"'.
+    ' name="'.$name.'"'.
+    ' value="'.$value.'"'.
+    ($::pc{$name} eq $value?" checked":"").
+    ($oninput?' oninput="'.$oninput.'"':"").
+    '><span>'.$view.'</span></label>';
+  }
+  return $out;
+}
+sub option {
+  my $name = shift;
+  my $text = '<option value="">';
+  foreach my $i (@_) {
+    my $value = $i;
+    my $view;
+    my $label = 0;
+    if($value =~ s/^def=//){
+      if($value =~ s/\|\<(.*?)\>$//){ $view = $1 } else { $view = $value }
+      $text = '<option value="">'.$view;
+    }
+    elsif($value =~ s/^label=//){
+      $text .= '<optgroup label="'.$value.'">';
+      $label = 1;
+    }
+    else {
+      if($value =~ s/\|\<(.*?)\>$//){ $view = $1 } else { $view = $value }
+      $text .= '<option value="'.$value.'"'.($::pc{$name} eq $value ? ' selected':'').'>'.$view;
+    }
+  }
+  return $text;
+}
+sub selectInput {
+  my $name = shift;
+  my $func = shift;
+  if($func && $func !~ /\(.*?\)$/){ $func .= '()'; }
+  my $text = '<div class="select-input"><select name="'.$name.'" oninput="selectInputCheck(\''.$name.'\',this);'.$func.'">'.option($name, @_);
+  $text .= '<option value="free">その他（自由記入）'; 
+  my $hit = 0;
+  foreach my $value (@_) { if($::pc{$name} eq $value){ $hit = 1; last; } }
+  if($::pc{$name} && !$hit){ $text .= '<option value="'.$::pc{$name}.'" selected>'.$::pc{$name}; }
+  $text .= '</select>';
+  $text .= '<input type="text" name="'.$name.'Free" list="list-'.$name.'"></div>';
+  return $text;
+}
+sub display {
+  $_[0] ? ($_[1] ? " style=\"display:$_[1]\"" : '') : ' style="display:none"'
+}
+
 ## 画像欄
 sub imageForm {
   my $imgurl = shift;
@@ -287,6 +388,52 @@ sub imageForm {
         <a class="button" onclick="imagePositionClose()">画像とセリフの設定を閉じる</a>
       </div>
     </div>
+HTML
+}
+
+## チャットパレット
+sub chatPaletteForm {
+  my $palette;
+  $palette .= "$_\n" foreach(paletteProperties('',$::in{type}));
+  return <<"HTML";
+    <section id="section-palette" style="display:none;">
+      <div class="box">
+        <h2>チャットパレット</h2>
+        <p>
+          手動パレットの配置:<select name="paletteInsertType" style="width: auto;">
+            <option value="exchange" @{[ $::pc{paletteInsertType} eq 'exchange'?'selected':'' ]}>プリセットと入れ替える</option>
+            <option value="begin"    @{[ $::pc{paletteInsertType} eq 'begin'   ?'selected':'' ]}>プリセットの手前に挿入</option>
+            <option value="end"      @{[ $::pc{paletteInsertType} eq 'end'     ?'selected':'' ]}>プリセットの直後に挿入</option>
+          </select>
+        </p>
+        <textarea name="chatPalette" style="height:20em" placeholder="例）&#13;&#10;2d6+{冒険者}+{器用}&#13;&#10;&#13;&#10;※入力がない場合、プリセットが自動的に反映されます。">$::pc{'chatPalette'}</textarea>
+        
+        <div class="palette-column">
+        <h2>デフォルト変数 （自動的に末尾に出力されます）</h2>
+        <textarea id="paletteDefaultProperties" readonly style="height:20em">$palette</textarea>
+          <p>
+            @{[ checkbox 'chatPalettePropertiesAll','全てのデフォルト変数を出力する','setChatPalette' ]} <br>
+          （デフォルトだと、未使用の変数は出力されません）
+          </p>
+        </div>
+        <div class="palette-column">
+          <h2>プリセット （コピーペースト用）</h2>
+          <textarea id="palettePreset" readonly style="height:20em"></textarea>
+          <p>
+            @{[ checkbox 'paletteUseVar','デフォルト変数を使う','setChatPalette' ]}
+            @{[ checkbox 'paletteUseBuff','バフデバフ用変数を使う','setChatPalette' ]}<br>
+          </p>
+          <dl>
+            <dt>使用するオンセツール
+            <dd class="left">@{[ radios 'paletteTool','setChatPalette',
+              '=>ゆとチャadv.',
+              'tekey=>Tekey',
+              'bcdice=>その他(BCDice使用)'
+              ]}
+          </dl>
+        </div>
+      </div>
+    </section>
 HTML
 }
 
@@ -415,104 +562,6 @@ sub textRuleArea {
       </div>
     </aside>
 HTML
-}
-
-## 簡略化系
-sub input {
-  my ($name, $type, $oninput, $other) = @_;
-  if($oninput && $oninput !~ /\(.*?\)$/){ $oninput .= '()'; }
-  '<input'.
-  ' type="'.($type?$type:'text').'"'.
-  ' name="'.$name.'"'.
-  ' value="'.($_[1] eq 'checkbox' ? 1 : $::pc{$name}).'"'.
-  ($other?" $other":"").
-  ($type eq 'checkbox' && $::pc{$name}?" checked":"").
-  ($oninput?' oninput="'.$oninput.'"':"").
-  '>';
-}
-sub checkbox {
-  my ($name, $text, $oninput, $other) = @_;
-  if($oninput && $oninput !~ /\(.*?\)$/){ $oninput .= '()'; }
-  '<label class="check-button">'.
-  '<input type="checkbox"'.
-  ' name="'.$name.'"'.
-  ' value="1"'.
-  ($::pc{$name}?" checked":"").
-  ($oninput?' oninput="'.$oninput.'"':"").
-  ($other?" $other":"").
-  '>'.
-  ($text?'<span>'.$text.'</span>':'').
-  '</label>';
-}
-sub radio {
-  my $name = shift;
-  my $oninput = shift;
-  my $value = shift;
-  my $text = shift;
-  if($oninput && $oninput !~ /\(.*?\)$/){ $oninput .= '()'; }
-  '<label class="radio-button">'.
-  '<input type="radio"'.
-  ' name="'.$name.'"'.
-  ' value="'.$value.'"'.
-  ($::pc{$name} eq $value?" checked":"").
-  ($oninput?' oninput="'.$oninput.'"':"").
-  '>'.
-  ($text?'<span>'.$text.'</span>':'').
-  '</label>';
-}
-sub radios {
-  my $name = shift;
-  my $oninput = shift;
-  if($oninput && $oninput !~ /\(.*?\)$/){ $oninput .= '()'; }
-  my $out;
-  foreach my $value (@_) {
-    $out .= '<label class="radio-button">'.
-    '<input type="radio"'.
-    ' name="'.$name.'"'.
-    ' value="'.$value.'"'.
-    ($::pc{$name} eq $value?" checked":"").
-    ($oninput?' oninput="'.$oninput.'"':"").
-    '><span>'.$value.'</span></label>';
-  }
-  return $out;
-}
-sub option {
-  my $name = shift;
-  my $text = '<option value="">';
-  foreach my $i (@_) {
-    my $value = $i;
-    my $view;
-    my $label = 0;
-    if($value =~ s/^def=//){
-      if($value =~ s/\|\<(.*?)\>$//){ $view = $1 } else { $view = $value }
-      $text = '<option value="">'.$view;
-    }
-    elsif($value =~ s/^label=//){
-      $text .= '<optgroup label="'.$value.'">';
-      $label = 1;
-    }
-    else {
-      if($value =~ s/\|\<(.*?)\>$//){ $view = $1 } else { $view = $value }
-      $text .= '<option value="'.$value.'"'.($::pc{$name} eq $value ? ' selected':'').'>'.$view;
-    }
-  }
-  return $text;
-}
-sub selectInput {
-  my $name = shift;
-  my $func = shift;
-  if($func && $func !~ /\(.*?\)$/){ $func .= '()'; }
-  my $text = '<div class="select-input"><select name="'.$name.'" oninput="selectInputCheck(\''.$name.'\',this);'.$func.'">'.option($name, @_);
-  $text .= '<option value="free">その他（自由記入）'; 
-  my $hit = 0;
-  foreach my $value (@_) { if($::pc{$name} eq $value){ $hit = 1; last; } }
-  if($::pc{$name} && !$hit){ $text .= '<option value="'.$::pc{$name}.'" selected>'.$::pc{$name}; }
-  $text .= '</select>';
-  $text .= '<input type="text" name="'.$name.'Free" list="list-'.$name.'"></div>';
-  return $text;
-}
-sub display {
-  $_[0] ? ($_[1] ? " style=\"display:$_[1]\"" : '') : ' style="display:none"'
 }
 
 1;

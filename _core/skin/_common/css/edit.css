@@ -1192,6 +1192,13 @@ button.set-newest {
 #section-palette .box > .palette-column {
   grid-column: span 1;
 }
+#section-palette .box dl dt {
+  padding-top: 3px;
+  padding-left: 2px;
+}
+#section-palette .box dl dd {
+  padding-left: .5em;
+}
 
 
 /* // カラーカスタム
