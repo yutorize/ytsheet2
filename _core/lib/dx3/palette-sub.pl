@@ -50,7 +50,7 @@ sub palettePreset {
     foreach my $num (1 .. $::pc{'comboNum'}){
       next if !$::pc{'combo'.$num.'Name'};
       $text .= "###\n" if $bot{'TKY'};
-      $text .= "### ■コンボ: $::pc{'combo'.$num.'Name'}\n";
+      $text .= "### ■コンボ: ".(tagDelete tagUnescape $::pc{'combo'.$num.'Name'})."\n" if($bot{'YTC'} || $bot{'TKY'});
       $text .= "【$::pc{'combo'.$num.'Name'}】：$::pc{'combo'.$num.'Combo'}\n";
       $text .= textTiming($::pc{'combo'.$num.'Timing'})." / $::pc{'combo'.$num.'Skill'} / $::pc{'combo'.$num.'Dfclty'} / $::pc{'combo'.$num.'Target'} / $::pc{'combo'.$num.'Range'}\n";
       $text .= ($bot{'YTC'} ? '@侵蝕' : ':侵蝕率')  . "+$::pc{'combo'.$num.'Encroach'}\n";
