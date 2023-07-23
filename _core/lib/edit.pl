@@ -422,6 +422,7 @@ sub chatPaletteForm {
           <p>
             @{[ checkbox 'paletteUseVar','デフォルト変数を使う','setChatPalette' ]}
             @{[ checkbox 'paletteUseBuff','バフデバフ用変数を使う','setChatPalette' ]}<br>
+            @{[ checkbox 'paletteRemoveTags','ルビなどテキスト装飾の構文を取り除く','setChatPalette' ]} 
           </p>
           <dl>
             <dt>使用するオンセツール

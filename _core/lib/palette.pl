@@ -44,25 +44,22 @@ sub outputChatPalette {
   }
   close($IN);
 
-  if($tool){
+  if($pc{paletteRemoveTags}){
     foreach (@lines){
       chomp;
       my ($key, $value) = split(/<>/, $_, 2);
-      $pc{$key} = tagUnescape($value);
+      $pc{$key} = tagDelete tagUnescape($value);
     }
-    $pc{'chatPalette'} =~ s/<br>/\n/g;
-    $pc{'skills'} =~ s/<br>/\n/gi;
-    $_ = tagDelete($_) foreach values %pc;
   }
   else {
     foreach (@lines){
       chomp;
       my ($key, $value) = split(/<>/, $_, 2);
-      $pc{$key} = tagUnescapeYtc($value);
+      $pc{$key} = tagUnescapePalette($value);
     }
-    $pc{'chatPalette'} =~ s/<br>/\n/g;
-    $pc{'skills'} =~ s/<br>/\n/gi;
   }
+  $pc{chatPalette} =~ s/<br>/\n/gi;
+  $pc{skills} =~ s/<br>/\n/gi;
 
   $pc{'ver'} =~ s/^([0-9]+)\.([0-9]+)\.([0-9]+)$/$1.$2$3/;
   if($pc{'ver'} < 1.11001){ $pc{'paletteUseBuff'} = 1; }
@@ -114,6 +111,12 @@ sub outputChatPaletteTemplate {
   our %pc;
   for (param()){ $pc{$_} = decode('utf8', param($_)) }
   %pc = data_calc(\%pc);
+  if($pc{paletteRemoveTags}){
+    $_ = tagDelete tagUnescape($_) foreach values %pc;
+  }
+  else {
+    $_ = tagUnescapePalette($_) foreach values %pc;
+  }
   my %json;
   $json{'preset'} = $pc{'paletteUseVar'} ? palettePreset($tool,$type) :  palettePresetSimple($tool,$type);
   $json{'preset'} = palettePresetBuffDelete($json{'preset'}) if !$pc{'paletteUseBuff'};

@@ -467,7 +467,7 @@ sub tagUnescape {
   
   return $text;
 }
-sub tagUnescapeYtc {
+sub tagUnescapePalette {
   my $text = shift;
   $text =~ s/&amp;/&/g;
   $text =~ s/&quot;/"/g;
