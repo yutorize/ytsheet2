@@ -417,7 +417,7 @@ sub chatPaletteForm {
           </p>
         </div>
         <div class="palette-column">
-          <h2>プリセット （コピーペースト用）</h2>
+          <h2>プリセット （見本またはコピーペースト用）</h2>
           <textarea id="palettePreset" readonly style="height:20em"></textarea>
           <p>
             @{[ checkbox 'paletteUseVar','デフォルト変数を使う','setChatPalette' ]}
