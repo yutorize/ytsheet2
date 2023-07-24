@@ -538,6 +538,8 @@ sub paletteProperties {
       if($data::class{$name}{'magic'}{'jName'}){
         $add .= addNum $::pc{'magicPowerEnhance'};
         $add .= addNum $::pc{'magicPowerAdd'.$id};
+        $add .= addNum $::pc{'raceAbilityMagicPower'};
+        $add .= addNum $::pc{'raceAbilityMagicPower'.$id};
       }
       elsif($id eq 'Alc') {
         $add .= addNum($::pc{'alchemyEnhance'});

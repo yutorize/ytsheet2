@@ -219,47 +219,52 @@ sub data_calc {
     $pc{raceAbility} = '［'. join('］［', @abilities) . '］';
   }
   ### 種族特徴チェック --------------------------------------------------
+  $pc{raceAbilityDef} = 0;
+  $pc{raceAbilityMp} = 0;
+  $pc{raceAbilityMndResist} = 0;
+  $pc{raceAbilityMagicPower} = 0;
   if($pc{raceAbility} =~ /［鱗の皮膚］/){
-    $pc{'raceAbilityDef'} = 1;
+    $pc{raceAbilityDef} += 1;
   }
   if($pc{raceAbility} =~ /［月光の守り］/){
-    $pc{'raceAbilityMndResist'} = 4;
-    if($pc{'level'} >= 11){ $pc{'raceAbilityMndResist'} += 2; }
+    $pc{raceAbilityMndResist} += 4;
+    if($pc{level} >= 11){ $pc{'raceAbilityMndResist'} += 2; }
   }
   if($pc{raceAbility} =~ /［晶石の身体］/){
-    $pc{'raceAbilityDef'} = 2;
-    $pc{'raceAbilityMp'} = 15;
-    if($pc{'level'} >= 6){
-      $pc{'raceAbilityDef'} += 1;
-      $pc{'raceAbilityMp'} += 15;
+    $pc{raceAbilityDef} += 2;
+    $pc{raceAbilityMp} += 15;
+    if($pc{level} >= 6){
+      $pc{raceAbilityDef} += 1;
+      $pc{raceAbilityMp} += 15;
     }
-    if($pc{'level'} >= 11){
-      $pc{'raceAbilityDef'} += 1;
-      $pc{'raceAbilityMp'} += 15;
+    if($pc{level} >= 11){
+      $pc{raceAbilityDef} += 1;
+      $pc{raceAbilityMp} += 15;
     }
-    if($pc{'level'} >= 16){
-      $pc{'raceAbilityDef'} += 2;
-      $pc{'raceAbilityMp'} += 30;
+    if($pc{level} >= 16){
+      $pc{raceAbilityDef} += 2;
+      $pc{raceAbilityMp} += 30;
     }
   }
   if($pc{raceAbility} =~ /［奈落の身体／アビストランク］/){
-    $pc{'raceAbilityDef'} = 1;
-    if($pc{'level'} >=  6){ $pc{'raceAbilityDef'} += 1; }
-    if($pc{'level'} >= 11){ $pc{'raceAbilityDef'} += 1; }
+    $pc{raceAbilityDef} += 1;
+    if($pc{level} >=  6){ $pc{raceAbilityDef} += 1; }
+    if($pc{level} >= 11){ $pc{raceAbilityDef} += 1; }
   }
   if($pc{raceAbility} =~ /［トロールの体躯］/){
-    $pc{'raceAbilityDef'} = 1;
-    if($pc{'level'} >= 16){ $pc{'raceAbilityDef'} += 2; }
+    $pc{raceAbilityDef} += 1;
+    if($pc{level} >= 16){ $pc{raceAbilityDef} += 2; }
   }
-  if($pc{'race'} eq 'ドレイク（ナイト）'){
-    if($pc{'level'} >= 16){
-      $pc{'raceAbility'} =~ s/［竜化］/［剣の託宣／復活竜化］/;
-    }
+  if($pc{raceAbility} =~ /［魔法の申し子］/){
+    $pc{raceAbilityMagicPower} += 1;
+    if($pc{level} >= 11){ $pc{raceAbilityDef} += 2; }
   }
-  if($pc{'race'} eq 'バジリスク'){
-    if($pc{'level'} >= 16){
-      $pc{'raceAbility'} =~ s/［魔物化］/［剣の託宣／復活魔物化］/;
-    }
+  if($pc{raceAbility} =~ /［(神の御名と共に|神への礼賛|神への祈り)］/){
+    if($pc{level} >=  6){ $pc{raceAbilityMagicPowerPri} += 1; }
+    if($pc{level} >= 11){ $pc{raceAbilityMagicPowerPri} += 1; }
+  }
+  if($pc{level} >= 16){
+    $pc{raceAbility} =~ s/［(竜|魔物)化］/［剣の託宣／復活$1化］/;
   }
 
   ### 能力値計算  --------------------------------------------------
@@ -468,14 +473,18 @@ sub data_calc {
   foreach my $name (@data::class_caster){
     next if (!$data::class{$name}{'magic'}{'jName'});
     my $id = $data::class{$name}{'id'};
-    $pc{'magicPower'.$id} = $pc{'lv'.$id} ? ( $pc{'lv'.$id} + int(($pc{'sttInt'} + $pc{'sttAddE'} + ($pc{'magicPowerOwn'.$id} ? 2 : 0)) / 6) + $pc{'magicPowerAdd'.$id} + $pc{'magicPowerAdd'} + $pc{'magicPowerEnhance'} ) : 0;
+    $pc{'magicPower'.$id} = $pc{'lv'.$id} ? (
+        $pc{'lv'.$id}
+      + int(($pc{sttInt}
+      + $pc{sttAddE}
+      + ($pc{'magicPowerOwn'.$id} ? 2 : 0)) / 6)
+      + $pc{'magicPowerAdd'.$id}
+      + $pc{magicPowerAdd}
+      + $pc{magicPowerEnhance}
+      + $pc{raceAbilityMagicPower}
+      + $pc{'raceAbilityMagicPower'.$id}
+    ) : 0;
     
-    if($pc{raceAbility} =~ /魔法の申し子/){
-      $pc{'magicPower'.$id} += $pc{'level'} >= 11 ? 2 : 1;
-    }
-    elsif($name eq 'プリースト' && $pc{raceAbility} =~ /［(神の御名と共に|神への礼賛|神への祈り)］/){
-      $pc{'magicPower'.$id} += $pc{'level'} >= 11 ? 2 : $pc{'level'} >= 6 ? 1 : 0;
-    }
     $pc{'magicPower'.$id} += $pc{'seekerAbilityMagic'} if $pc{'lv'.$id} >= 15; #求道者
   }
   ## 奏力ほか
