@@ -6,29 +6,29 @@ use open ":utf8";
 
 our $LOGIN_ID = check;
 
-our $mode = $::in{'mode'};
-$::in{'log'} ||= $::in{'backup'};
+our $mode = $::in{mode};
+$::in{log} ||= $::in{backup};
 
 if($set::user_reqd && !$LOGIN_ID){ error('ログインしていません。'); }
 ### 個別処理 --------------------------------------------------
-my $type = $::in{'type'};
+my $type = $::in{type};
 my $file; my $author;
 our %conv_data = ();
 
 if($mode eq 'edit'){
-  (undef, undef, $file, $type, my $user) = getfile($::in{'id'},$::in{'pass'},$LOGIN_ID);
+  (undef, undef, $file, $type, my $user) = getfile($::in{id},$::in{pass},$LOGIN_ID);
   $file = ($user ? "_${user}/" : 'anonymous/') . $file;
 }
 elsif($mode eq 'copy'){
-  ($file, $type, $author) = (getfile_open($::in{'id'}))[0..2];
+  ($file, $type, $author) = (getfile_open($::in{id}))[0..2];
 }
 elsif($mode eq 'convert'){
-  if($::in{'url'}){
+  if($::in{url}){
     require $set::lib_convert;
-    %conv_data = dataConvert($::in{'url'});
-    $type = $conv_data{'type'};
+    %conv_data = dataConvert($::in{url});
+    $type = $conv_data{type};
   }
-  elsif($::in{'file'}){
+  elsif($::in{file}){
     use JSON::PP;
     my $data; my $buffer; my $i;
     while(my $bytesread = read(param('file'), $buffer, 2048)) {
@@ -37,7 +37,7 @@ elsif($mode eq 'convert'){
       $i++;
     }
     %conv_data =  %{ decode_json( $data) };
-    $type = $conv_data{'type'};
+    $type = $conv_data{type};
   }
   else {
     error('URLが入力されていない、または、ファイルが選択されていません。');
@@ -71,12 +71,12 @@ sub pcDataGet {
   my $datadir = ($type eq 'm') ? $set::mons_dir : ($type eq 'i') ? $set::item_dir : ($type eq 'a') ? $set::arts_dir : $set::char_dir;
   # 保存 / 編集 / 複製 / コンバート
   if($mode eq 'edit'){
-    my $datatype = ($::in{'log'}) ? 'logs' : 'data';
+    my $datatype = ($::in{log}) ? 'logs' : 'data';
     my $hit = 0;
     open my $IN, '<', "${datadir}${file}/${datatype}.cgi" or &loginError;
     while (<$IN>){
       if($datatype eq 'logs'){
-        if (index($_, "=$::in{'log'}=") == 0){ $hit = 1; next; }
+        if (index($_, "=$::in{log}=") == 0){ $hit = 1; next; }
         if (index($_, "=") == 0 && $hit){ last; }
         if (!$hit) { next; }
       }
@@ -85,21 +85,21 @@ sub pcDataGet {
       $pc{$key} = $value;
     }
     close($IN);
-    if($datatype eq 'logs' && !$hit){ error("過去ログ（$::in{'log'}）が見つかりません。"); }
+    if($datatype eq 'logs' && !$hit){ error("過去ログ（$::in{log}）が見つかりません。"); }
     
-    if($::in{'log'}){
-      ($pc{'protect'}, $pc{'forbidden'}) = protectTypeGet("${datadir}${file}/data.cgi");
-      $message = $pc{'updateTime'}.' 時点のバックアップデータから編集しています。';
+    if($::in{log}){
+      ($pc{protect}, $pc{forbidden}) = protectTypeGet("${datadir}${file}/data.cgi");
+      $message = $pc{updateTime}.' 時点のバックアップデータから編集しています。';
     }
-    $pc{'imageURL'} = $pc{'image'} ? "./?id=$::in{'id'}&mode=image&cache=$pc{'imageUpdate'}" : '';
+    $pc{imageURL} = $pc{image} ? "./?id=$::in{id}&mode=image&cache=$pc{imageUpdate}" : '';
   }
   elsif($mode eq 'copy'){
-    my $datatype = ($::in{'log'}) ? 'logs' : 'data';
+    my $datatype = ($::in{log}) ? 'logs' : 'data';
     my $hit = 0;
     open my $IN, '<', "${datadir}${file}/${datatype}.cgi" or error 'データがありません。';
     while (<$IN>){
       if($datatype eq 'logs'){
-        if (index($_, "=$::in{'log'}:") == 0){ $hit = 1; next; }
+        if (index($_, "=$::in{log}:") == 0){ $hit = 1; next; }
         if (index($_, "=") == 0 && $hit){ last; }
         if (!$hit) { next; }
       }
@@ -108,33 +108,33 @@ sub pcDataGet {
       $pc{$key} = $value;
     }
     close($IN);
-    if($datatype eq 'logs' && !$hit){ error("過去ログ（$::in{'log'}）が見つかりません。"); }
+    if($datatype eq 'logs' && !$hit){ error("過去ログ（$::in{log}）が見つかりません。"); }
     
-    if($pc{'forbidden'}){
-      if($::in{'log'}){
-        ($pc{'protect'}, $pc{'forbidden'}) = protectTypeGet("${datadir}${file}/data.cgi");
+    if($pc{forbidden}){
+      if($::in{log}){
+        ($pc{protect}, $pc{forbidden}) = protectTypeGet("${datadir}${file}/data.cgi");
       }
       unless(
-        ($pc{'protect'} eq 'none') || 
+        ($pc{protect} eq 'none') || 
         ($author && ($author eq $LOGIN_ID || $set::masterid eq $LOGIN_ID))
       ){
         error("閲覧・編集権限がありません。");
       }
     }
 
-    delete $pc{'image'};
-    delete $pc{'protect'};
+    delete $pc{image};
+    delete $pc{protect};
 
-    $message  = '「<a href="./?id='.$::in{'id'}.'" target="_blank"><!NAME></a>」';
-    $message .= 'の<br><a href="./?id='.$::in{'id'}.'&log='.$::in{'log'}.'" target="_blank">'.$pc{'updateTime'}.'</a> 時点のバックアップデータ' if $::in{'log'};
+    $message  = '「<a href="./?id='.$::in{id}.'" target="_blank"><!NAME></a>」';
+    $message .= 'の<br><a href="./?id='.$::in{id}.'&log='.$::in{log}.'" target="_blank">'.$pc{updateTime}.'</a> 時点のバックアップデータ' if $::in{log};
     $message .= 'を<br>コピーして新規作成します。<br>（まだ保存はされていません）';
   }
   elsif($mode eq 'convert'){
     %pc = %::conv_data;
-    delete $pc{'image'};
-    delete $pc{'imageURL'};
-    delete $pc{'protect'};
-    $message = '「<a href="'.$::in{'url'}.'" target="_blank"><!NAME></a>」をコンバートして新規作成します。<br>（まだ保存はされていません）';
+    delete $pc{image};
+    delete $pc{imageURL};
+    delete $pc{protect};
+    $message = '「<a href="'.$::in{url}.'" target="_blank"><!NAME></a>」をコンバートして新規作成します。<br>（まだ保存はされていません）';
   }
   ##
   return (\%pc, $mode, $file, $message)
@@ -352,11 +352,11 @@ sub imageForm {
         </p>
         <p>
           <b>表示（トリミング）方式</b>：<br><select name="imageFit" oninput="imageDragPointSet();imagePosition()">
-          <option value="cover"   @{[$::pc{'imageFit'} eq 'cover'  ?'selected':'']}>自動的に最低限のトリミング（表示域いっぱいに表示）
-          <option value="contain" @{[$::pc{'imageFit'} eq 'contain'?'selected':'']}>トリミングしない（必ず画像全体を収める）
-          <option value="percentX" @{[$::pc{'imageFit'} eq 'percentX'?'selected':'']}>任意のトリミング／横幅を基準
-          <option value="percentY" @{[$::pc{'imageFit'} eq 'percentY'?'selected':'']}>任意のトリミング／縦幅を基準
-          <option value="unset"   @{[$::pc{'imageFit'} eq 'unset'  ?'selected':'']}>拡大縮小せず表示（ドット絵など向き）
+          <option value="cover"   @{[$::pc{imageFit} eq 'cover'  ?'selected':'']}>自動的に最低限のトリミング（表示域いっぱいに表示）
+          <option value="contain" @{[$::pc{imageFit} eq 'contain'?'selected':'']}>トリミングしない（必ず画像全体を収める）
+          <option value="percentX" @{[$::pc{imageFit} eq 'percentX'?'selected':'']}>任意のトリミング／横幅を基準
+          <option value="percentY" @{[$::pc{imageFit} eq 'percentY'?'selected':'']}>任意のトリミング／縦幅を基準
+          <option value="unset"   @{[$::pc{imageFit} eq 'unset'  ?'selected':'']}>拡大縮小せず表示（ドット絵など向き）
           </select><br>
           <small>※いずれの設定でも、クリックすると画像全体が表示されます。</small>
         </p>
@@ -376,7 +376,7 @@ sub imageForm {
         </p>
         <h3>画像に重ねるセリフ</h3>
         <p>
-          <textarea name="words" style="width:100%;height:3.6em;" onchange="wordsPreView();" placeholder="「任意の台詞」">$::pc{'words'}</textarea>
+          <textarea name="words" style="width:100%;height:3.6em;" onchange="wordsPreView();" placeholder="「任意の台詞」">$::pc{words}</textarea>
         </p>
         <p>
           <b>セリフの配置</b>：
@@ -406,7 +406,7 @@ sub chatPaletteForm {
             <option value="end"      @{[ $::pc{paletteInsertType} eq 'end'     ?'selected':'' ]}>プリセットの直後に挿入</option>
           </select>
         </p>
-        <textarea name="chatPalette" style="height:20em" placeholder="例）&#13;&#10;2d6+{冒険者}+{器用}&#13;&#10;&#13;&#10;※入力がない場合、プリセットが自動的に反映されます。">$::pc{'chatPalette'}</textarea>
+        <textarea name="chatPalette" style="height:20em" placeholder="例）&#13;&#10;2d6+{冒険者}+{器用}&#13;&#10;&#13;&#10;※入力がない場合、プリセットが自動的に反映されます。">$::pc{chatPalette}</textarea>
         
         <div class="palette-column">
         <h2>デフォルト変数 （自動的に末尾に出力されます）</h2>
@@ -447,16 +447,16 @@ sub colorCostomForm {
         <div class="box color-custom">
           <h2>メインカラー</h2>
           <table>
-          <tr class="color-range-H"><th>色相</th><td><input type="range" name="colorHeadBgH" min="0" max="360" value="$::pc{'colorHeadBgH'}" oninput="changeColor();"></td><td id="colorHeadBgHValue">$::pc{'colorHeadBgH'}</td></tr>
-          <tr class="color-range-S"><th>彩度</th><td><input type="range" name="colorHeadBgS" min="0" max="100" value="$::pc{'colorHeadBgS'}" oninput="changeColor();"></td><td id="colorHeadBgSValue">$::pc{'colorHeadBgS'}</td></tr>
-          <tr class="color-range-L"><th>輝度</th><td><input type="range" name="colorHeadBgL" min="0" max="100" value="$::pc{'colorHeadBgL'}" oninput="changeColor();"></td><td id="colorHeadBgLValue">$::pc{'colorHeadBgL'}</td></tr>
+          <tr class="color-range-H"><th>色相</th><td><input type="range" name="colorHeadBgH" min="0" max="360" value="$::pc{colorHeadBgH}" oninput="changeColor();"></td><td id="colorHeadBgHValue">$::pc{colorHeadBgH}</td></tr>
+          <tr class="color-range-S"><th>彩度</th><td><input type="range" name="colorHeadBgS" min="0" max="100" value="$::pc{colorHeadBgS}" oninput="changeColor();"></td><td id="colorHeadBgSValue">$::pc{colorHeadBgS}</td></tr>
+          <tr class="color-range-L"><th>輝度</th><td><input type="range" name="colorHeadBgL" min="0" max="100" value="$::pc{colorHeadBgL}" oninput="changeColor();"></td><td id="colorHeadBgLValue">$::pc{colorHeadBgL}</td></tr>
           </table>
         </div>
         <div class="box color-custom">
           <h2>サブカラー</h2>
           <table>
-          <tr class="color-range-H"><th>色相</th><td><input type="range" name="colorBaseBgH"  min="0" max="360" value="$::pc{'colorBaseBgH'}" oninput="changeColor();"></td><td id="colorBaseBgHValue">$::pc{'colorBaseBgH'}</td></tr>
-          <tr class="color-range-S"><th>色の濃さ</th><td><input type="range" name="colorBaseBgS"  min="0" max="100" value="$::pc{'colorBaseBgS'}" oninput="changeColor();"></td><td id="colorBaseBgSValue">$::pc{'colorBaseBgS'}</td></tr>
+          <tr class="color-range-H"><th>色相</th><td><input type="range" name="colorBaseBgH"  min="0" max="360" value="$::pc{colorBaseBgH}" oninput="changeColor();"></td><td id="colorBaseBgHValue">$::pc{colorBaseBgH}</td></tr>
+          <tr class="color-range-S"><th>色の濃さ</th><td><input type="range" name="colorBaseBgS"  min="0" max="100" value="$::pc{colorBaseBgS}" oninput="changeColor();"></td><td id="colorBaseBgSValue">$::pc{colorBaseBgS}</td></tr>
           </table>
           <hr>
           <p class="right"><span class="button" onclick="setDefaultColor();">デフォルトに戻す</span></p>

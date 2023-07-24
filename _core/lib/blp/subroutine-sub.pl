@@ -11,14 +11,14 @@ use Fcntl;
 ### バージョンアップデート --------------------------------------------------
 sub data_update_chara {
   my %pc = %{$_[0]};
-  my $ver = $pc{'ver'};
+  my $ver = $pc{ver};
   $ver =~ s/^([0-9]+)\.([0-9]+)\.([0-9]+)$/$1.$2$3/;
   if($ver < 1.13002){
-    ($pc{'characterName'},$pc{'characterNameRuby'}) = split(':', $pc{'characterName'});
-    ($pc{'aka'},$pc{'akaRuby'}) = split(':', $pc{'aka'});
+    ($pc{characterName},$pc{characterNameRuby}) = split(':', $pc{characterName});
+    ($pc{aka},$pc{akaRuby}) = split(':', $pc{aka});
   }
-  $pc{'ver'} = $main::ver;
-  $pc{'lasttimever'} = $ver;
+  $pc{ver} = $main::ver;
+  $pc{lasttimever} = $ver;
   return %pc;
 }
 

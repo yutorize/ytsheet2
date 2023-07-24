@@ -177,7 +177,7 @@ sub key_get {
 ### ログアウト --------------------------------------------------
 sub log_out {
   my ($id, $key) = &cookie_get;
-  my $key  = $::in{'key'};
+  my $key  = $::in{key};
   open (my $FH, '+<', $set::login_users);
   flock($FH, 2);
   my @list = <$FH>;
@@ -430,7 +430,7 @@ sub tagUnescape {
   $text =~ s{[©]}{<i class="s-icon copyright">©</i>}gi;
 
   if($set::game eq 'sw2'){
-    if($::in{'mode'} ne 'download'){
+    if($::in{mode} ne 'download'){
       $text =~ s/\[魔\]/<img alt="&#91;魔&#93;" class="i-icon" src="${set::icon_dir}wp_magic.png">/gi;
       $text =~ s/\[刃\]/<img alt="&#91;刃&#93;" class="i-icon" src="${set::icon_dir}wp_edge.png">/gi;
       $text =~ s/\[打\]/<img alt="&#91;打&#93;" class="i-icon" src="${set::icon_dir}wp_blow.png">/gi;
@@ -851,7 +851,7 @@ sub logFileUpdate {
   close($BUL);
   rmdir("${dir}/backup");
   unlink("${dir}/buname.cgi");
-  if($mode eq 'view'){ print "Location:./?id=$::in{'id'}\n\n"; }
+  if($mode eq 'view'){ print "Location:./?id=$::in{id}\n\n"; }
 }
 
 

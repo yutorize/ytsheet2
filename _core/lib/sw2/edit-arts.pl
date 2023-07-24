@@ -16,58 +16,58 @@ foreach(@data::class_names){
     push(@magic_classes, '基本妖精魔法', '属性妖精魔法(土)', '属性妖精魔法(水・氷)', '属性妖精魔法(炎)', '属性妖精魔法(風)', '属性妖精魔法(光)', '属性妖精魔法(闇)', '特殊妖精魔法');
   }
   elsif($_ eq 'コンジャラー'){
-    push(@craft_classes, $data::class{$_}{'magic'}{'jName'}, '深智魔法');
+    push(@craft_classes, $data::class{$_}{magic}{jName}, '深智魔法');
   }
   elsif($_ eq 'バード'){
-    push(@craft_classes, $data::class{$_}{'craft'}{'jName'}, '終律');
+    push(@craft_classes, $data::class{$_}{craft}{jName}, '終律');
   }
   elsif($_ eq 'ウォーリーダー'){
     push(@craft_classes, '鼓咆','陣率');
   }
-  elsif($data::class{$_}{'magic'}) { push(@magic_classes, $data::class{$_}{'magic'}{'jName'}); }
-  elsif($data::class{$_}{'craft'}) { push(@craft_classes, $data::class{$_}{'craft'}{'jName'}); }
+  elsif($data::class{$_}{magic}) { push(@magic_classes, $data::class{$_}{magic}{jName}); }
+  elsif($data::class{$_}{craft}) { push(@craft_classes, $data::class{$_}{craft}{jName}); }
 }
 push(@magic_classes, @craft_classes);
 ### データ読み込み ###################################################################################
-my ($data, $mode, $file, $message) = pcDataGet($::in{'mode'});
+my ($data, $mode, $file, $message) = pcDataGet($::in{mode});
 our %pc = %{ $data };
 
 my $mode_make = ($mode =~ /^(blanksheet|copy|convert)$/) ? 1 : 0;
 
 ### 出力準備 #########################################################################################
 if($message){
-  my $name = tagUnescape($pc{'category'} eq 'magic' ? $pc{'magicName'} : $pc{'category'} eq 'god' ? $pc{'godAka'}.$pc{'godName'} : '無題');
+  my $name = tagUnescape($pc{category} eq 'magic' ? $pc{magicName} : $pc{category} eq 'god' ? $pc{godAka}.$pc{godName} : '無題');
   $message =~ s/<!NAME>/$name/;
 }
 ### 製作者名 --------------------------------------------------
 if($mode_make){
-  $pc{'author'} = (getplayername($LOGIN_ID))[0];
+  $pc{author} = (getplayername($LOGIN_ID))[0];
 }
 ### 初期設定 --------------------------------------------------
-if($mode_make){ $pc{'protect'} = $LOGIN_ID ? 'account' : 'password'; }
+if($mode_make){ $pc{protect} = $LOGIN_ID ? 'account' : 'password'; }
 
-if($mode eq 'edit' || ($mode eq 'convert' && $pc{'ver'})){
+if($mode eq 'edit' || ($mode eq 'convert' && $pc{ver})){
   %pc = data_update_arts(\%pc);
 }
 if($mode eq 'blanksheet'){
-  $pc{"magicCost"} = 'MP';
+  $pc{magicCost} = 'MP';
   foreach my $lv (2,4,7,10,13){ $pc{"godMagic${lv}Cost"} = 'MP' }
-  $pc{'schoolReq'} = '＿名誉点';
+  $pc{schoolReq} = '＿名誉点';
 }
 
 ## カラー
 setDefaultColors();
 
 ## その他
-$pc{"schoolArtsNum"} ||= 3;
-$pc{"schoolMagicNum"} ||= 1;
+$pc{schoolArtsNum} ||= 3;
+$pc{schoolMagicNum} ||= 1;
 
 ### 折り畳み判断 --------------------------------------------------
 my %open;
-foreach (1..$pc{'schoolArtsNum'} ){ if($pc{"schoolArts${_}Name"} ){ $open{'schoolArts'}  = 'open'; last; } }
-foreach (1..$pc{'schoolMagicNum'}){ if($pc{"schoolMagic${_}Name"}){ $open{'schoolMagic'} = 'open'; last; } }
-if($pc{'schoolArtsNote'} ){ $open{'schoolArts'}  = 'open'; }
-if($pc{'schoolMagicNote'}){ $open{'schoolMagic'} = 'open'; }
+foreach (1..$pc{schoolArtsNum} ){ if($pc{"schoolArts${_}Name"} ){ $open{schoolArts}  = 'open'; last; } }
+foreach (1..$pc{schoolMagicNum}){ if($pc{"schoolMagic${_}Name"}){ $open{schoolMagic} = 'open'; last; } }
+if($pc{schoolArtsNote} ){ $open{schoolArts}  = 'open'; }
+if($pc{schoolMagicNote}){ $open{schoolMagic} = 'open'; }
 
 ### 改行処理 --------------------------------------------------
 foreach (
@@ -88,10 +88,10 @@ foreach (
 ){
   $pc{$_} =~ s/&lt;br&gt;/\n/g;
 }
-foreach my $num (1..$pc{'schoolArtsNum'}){
+foreach my $num (1..$pc{schoolArtsNum}){
   $pc{"schoolArts${num}Effect"} =~ s/&lt;br&gt;/\n/g;
 }
-foreach my $num (1..$pc{'schoolMagicNum'}){
+foreach my $num (1..$pc{schoolMagicNum}){
   $pc{"schoolMagic${num}Effect"} =~ s/&lt;br&gt;/\n/g;
 }
 
@@ -107,7 +107,7 @@ Content-type: text/html\n
 
 <head>
   <meta charset="UTF-8">
-  <title>@{[$mode eq 'edit'?"編集：$pc{'itemName'}":'新規作成']} - $set::title</title>
+  <title>@{[$mode eq 'edit'?"編集：$pc{itemName}":'新規作成']} - $set::title</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" media="all" href="${main::core_dir}/skin/_common/css/base.css?${main::ver}">
   <link rel="stylesheet" media="all" href="${main::core_dir}/skin/_common/css/sheet.css?${main::ver}">
@@ -119,7 +119,7 @@ Content-type: text/html\n
   <script src="${main::core_dir}/lib/sw2/edit-arts.js?${main::ver}" defer></script>
   <style>
     #image {
-      background-image: url("$pc{'imageURL'}");
+      background-image: url("$pc{imageURL}");
     }
   </style>
 </head>
@@ -150,8 +150,8 @@ print <<"HTML";
           <li onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード切替">
           <li class="buttons">
             <ul>
-              <li @{[ display ($mode eq 'edit') ]} class="view-icon" title="閲覧画面"><a href="./?id=$::in{'id'}"></a>
-              <li @{[ display ($mode eq 'edit') ]} class="copy" onclick="window.open('./?mode=copy&id=$::in{'id'}@{[  $::in{'log'}?"&log=$::in{'log'}":'' ]}');">複製
+              <li @{[ display ($mode eq 'edit') ]} class="view-icon" title="閲覧画面"><a href="./?id=$::in{id}"></a>
+              <li @{[ display ($mode eq 'edit') ]} class="copy" onclick="window.open('./?mode=copy&id=$::in{id}@{[  $::in{log}?"&log=$::in{log}":'' ]}');">複製
               <li class="submit" onclick="formSubmit()" title="Ctrl+S">保存
             </ul>
           </li>
@@ -166,8 +166,8 @@ HTML
 if($set::user_reqd){
   print <<"HTML";
     <input type="hidden" name="protect" value="account">
-    <input type="hidden" name="protectOld" value="$pc{'protect'}">
-    <input type="hidden" name="pass" value="$::in{'pass'}">
+    <input type="hidden" name="protectOld" value="$pc{protect}">
+    <input type="hidden" name="pass" value="$::in{pass}">
 HTML
 }
 else {
@@ -177,19 +177,19 @@ else {
   print <<"HTML";
       <details class="box" id="edit-protect" @{[$mode eq 'edit' ? '':'open']}>
       <summary>編集保護設定</summary>
-      <p id="edit-protect-view"><input type="hidden" name="protectOld" value="$pc{'protect'}">
+      <p id="edit-protect-view"><input type="hidden" name="protectOld" value="$pc{protect}">
 HTML
   if($LOGIN_ID){
-    print '<input type="radio" name="protect" value="account"'.($pc{'protect'} eq 'account'?' checked':'').'> アカウントに紐付ける（ログイン中のみ編集可能になります）<br>';
+    print '<input type="radio" name="protect" value="account"'.($pc{protect} eq 'account'?' checked':'').'> アカウントに紐付ける（ログイン中のみ編集可能になります）<br>';
   }
-    print '<input type="radio" name="protect" value="password"'.($pc{'protect'} eq 'password'?' checked':'').'> パスワードで保護 ';
-  if ($mode eq 'edit' && $pc{'protect'} eq 'password') {
-    print '<input type="hidden" name="pass" value="'.$::in{'pass'}.'"><br>';
+    print '<input type="radio" name="protect" value="password"'.($pc{protect} eq 'password'?' checked':'').'> パスワードで保護 ';
+  if ($mode eq 'edit' && $pc{protect} eq 'password') {
+    print '<input type="hidden" name="pass" value="'.$::in{pass}.'"><br>';
   } else {
     print '<input type="password" name="pass"><br>';
   }
   print <<"HTML";
-<input type="radio" name="protect" value="none"@{[ $pc{'protect'} eq 'none'?' checked':'' ]}> 保護しない（誰でも編集できるようになります）
+<input type="radio" name="protect" value="none"@{[ $pc{protect} eq 'none'?' checked':'' ]}> 保護しない（誰でも編集できるようになります）
       </p>
       </details>
 HTML
@@ -200,13 +200,13 @@ HTML
         <dd id="forbidden-checkbox">
           <select name="forbidden">
             <option value="">内容を全て開示
-            <option value="battle" @{[ $pc{'forbidden'} eq 'battle' ? 'selected' : '' ]}>データ・数値のみ秘匿
-            <option value="all"    @{[ $pc{'forbidden'} eq 'all'    ? 'selected' : '' ]}>内容を全て秘匿
+            <option value="battle" @{[ $pc{forbidden} eq 'battle' ? 'selected' : '' ]}>データ・数値のみ秘匿
+            <option value="all"    @{[ $pc{forbidden} eq 'all'    ? 'selected' : '' ]}>内容を全て秘匿
           </select>
         <dd id="hide-checkbox">
           <select name="hide">
             <option value="">一覧に表示
-            <option value="1" @{[ $pc{'hide'} ? 'selected' : '' ]}>一覧には非表示
+            <option value="1" @{[ $pc{hide} ? 'selected' : '' ]}>一覧には非表示
           </select>
         <dd>※「一覧に非表示」でもタグ検索結果・マイリストには表示されます
       </dl>
@@ -257,12 +257,12 @@ HTML
           <dl class="resist   "><dt>抵抗        <dd>@{[ input 'magicResist','','','list="list-resist"' ]}</dl>
           <dl class="element  "><dt>属性        <dd>@{[ input 'magicElement','','','list="list-element"' ]}</dl>
           <dl class="summary  "><dt>概要        <dd>@{[ input 'magicSummary' ]}</dl>
-          <dl class="effect   "><dt>効果        <dd><textarea name="magicEffect">$pc{'magicEffect'}</textarea></dl>
+          <dl class="effect   "><dt>効果        <dd><textarea name="magicEffect">$pc{magicEffect}</textarea></dl>
           
         </div>
         <div class="box">
           <h2>由来・逸話など</h2>
-          <textarea name="magicDescription">$pc{'magicDescription'}</textarea>
+          <textarea name="magicDescription">$pc{magicDescription}</textarea>
         </div>
       </div>
       <!-- 神格 -->
@@ -284,17 +284,17 @@ HTML
             </p>
           <script>
             const imageType = 'symbol';
-            let imgURL = "$pc{'imageURL'}";
+            let imgURL = "$pc{imageURL}";
           </script>
           </div>
           <dl class="name  "><dt>名称      <dd>@{[ input 'godName','',"nameSet" ]}</dl>
           <dl class="aka   "><dt>異名      <dd>“@{[ input 'godAka','',"nameSet" ]}”</dl>
           <dl class="class "><dt>系統      <dd><select name="godClass">@{[ option 'godClass','第一の剣','第二の剣','第三の剣','不明' ]}</select>／<select name="godRank">@{[ option 'godRank','古代神','大神','小神' ]}</select></dl>
           <dl class="area  "><dt>地域      <dd>@{[ input 'godArea','','','placeholder="大陸・地方など"' ]}<small>※主に小神向けの項目です</small></dl>
-          <dl class="symbol"><dt>聖印と神像<dd><textarea name="godSymbol">$pc{'godSymbol'}</textarea></dl>
-          <dl class="deity "><dt>神格と教義<dd><textarea name="godDeity">$pc{'godDeity'}</textarea></dl>
+          <dl class="symbol"><dt>聖印と神像<dd><textarea name="godSymbol">$pc{godSymbol}</textarea></dl>
+          <dl class="deity "><dt>神格と教義<dd><textarea name="godDeity">$pc{godDeity}</textarea></dl>
           <dl class="maxim "><dt>格言      <dd>「@{[ input "godMaxim1" ]}」<br>「@{[ input "godMaxim2" ]}」<br>「@{[ input "godMaxim3" ]}」</dl>
-          <dl class="deity "><dt>備考      <dd><textarea name="godNote" placeholder="他神との関係やその他逸話、データの諸注意などなんでも">$pc{'godNote'}</textarea></dl>
+          <dl class="deity "><dt>備考      <dd><textarea name="godNote" placeholder="他神との関係やその他逸話、データの諸注意などなんでも">$pc{godNote}</textarea></dl>
         </div>
         <div class="box input-data">
 HTML
@@ -321,8 +321,8 @@ print <<"HTML";
           <dl class="name  "><dt>名称      <dd>【@{[ input 'schoolName','',"nameSet" ]}】</dl>
           <dl class="area  "><dt>地域      <dd>@{[ input 'schoolArea','','','placeholder="大陸・地方など"' ]}</dl>
           <dl class="req   "><dt>入門条件  <dd>@{[ input 'schoolReq','','','list="list-school-req"' ]}</dl>
-          <dl class="note  "><dt>詳細      <dd><textarea name="schoolNote">$pc{'schoolNote'}</textarea></dl>
-          <dl class="arms  "><dt>流派装備  <dd><textarea name="schoolItemNote" placeholder="流派装備の概要">$pc{'schoolItemNote'}</textarea></dl>
+          <dl class="note  "><dt>詳細      <dd><textarea name="schoolNote">$pc{schoolNote}</textarea></dl>
+          <dl class="arms  "><dt>流派装備  <dd><textarea name="schoolItemNote" placeholder="流派装備の概要">$pc{schoolItemNote}</textarea></dl>
           <dl class="arms  "><dt>流派装備一覧
             <dd>
               <input type="text" id="schoolItemUrl" placeholder="アイテムシートのURL"><span class="button" onclick="addSchoolItem()">追加</span>
@@ -339,12 +339,12 @@ print <<"HTML";
           </dl>
         </div>
         @{[ input 'schoolArtsNum','hidden' ]}
-        <details class="box" $open{'schoolArts'}>
+        <details class="box" $open{schoolArts}>
           <summary>流派秘伝</summary>
-          <textarea name="schoolArtsNote" placeholder="流派秘伝全体の注釈（あれば）">$pc{'schoolArtsNote'}</textarea>
+          <textarea name="schoolArtsNote" placeholder="流派秘伝全体の注釈（あれば）">$pc{schoolArtsNote}</textarea>
           <div id="arts-list">
 HTML
-foreach my $num ('TMPL',1..$pc{'schoolArtsNum'}){
+foreach my $num ('TMPL',1..$pc{schoolArtsNum}){
   if($num eq 'TMPL'){ print '<template id="arts-template">' }
 print <<"HTML";
           <div class="input-data" id="arts${num}">
@@ -367,12 +367,12 @@ print <<"HTML";
           <div class="add-del-button"><a onclick="addSchoolArts()">▼</a><a onclick="delSchoolArts()">▲</a></div>
         </details>
         @{[ input 'schoolMagicNum','hidden' ]}
-        <details class="box" $open{'schoolMagic'}>
+        <details class="box" $open{schoolMagic}>
           <summary>流派秘伝魔法</summary>
-          <textarea name="schoolMagicNote" placeholder="流派秘伝魔法全体の注釈（あれば）">$pc{'schoolMagicNote'}</textarea>
+          <textarea name="schoolMagicNote" placeholder="流派秘伝魔法全体の注釈（あれば）">$pc{schoolMagicNote}</textarea>
           <div id="school-magic-list">
 HTML
-foreach my $num ('TMPL',1..$pc{'schoolMagicNum'}){
+foreach my $num ('TMPL',1..$pc{schoolMagicNum}){
   if($num eq 'TMPL'){ print '<template id="school-magic-template">' }
 print <<"HTML";
           <div class="input-data" id="school-magic${num}">
@@ -400,7 +400,7 @@ print <<"HTML";
       @{[ colorCostomForm ]}
     
       @{[ input 'birthTime','hidden' ]}
-      <input type="hidden" name="id" value="$::in{'id'}">
+      <input type="hidden" name="id" value="$::in{id}">
     </form>
 HTML
 if($mode eq 'edit'){
@@ -409,8 +409,8 @@ print <<"HTML";
       <p style="font-size: 80%;">
       <input type="hidden" name="mode" value="delete">
       <input type="hidden" name="type" value="a">
-      <input type="hidden" name="id" value="$::in{'id'}">
-      <input type="hidden" name="pass" value="$::in{'pass'}">
+      <input type="hidden" name="id" value="$::in{id}">
+      <input type="hidden" name="pass" value="$::in{pass}">
       <input type="checkbox" name="check1" value="1" required>
       <input type="checkbox" name="check2" value="1" required>
       <input type="checkbox" name="check3" value="1" required>

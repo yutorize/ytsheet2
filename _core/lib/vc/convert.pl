@@ -31,14 +31,14 @@ sub dataConvert {
     if($data !~ /^{/){ error 'JSONデータが取得できませんでした' }
     $data = thanSignEscape($data);
     my %pc = utf8::is_utf8($data) ? %{ decode_json(encode('utf8', (join '', $data))) } : %{ decode_json(join '', $data) };
-    if($pc{'result'} eq 'OK'){
+    if($pc{result} eq 'OK'){
       our $base_url = $set_url;
       $base_url =~ s|/[^/]+?$|/|;
-      $pc{'convertSource'} = '別のゆとシートⅡ';
+      $pc{convertSource} = '別のゆとシートⅡ';
       return %pc;
     }
-    elsif($pc{'result'}) {
-      error 'コンバート元のゆとシートⅡでエラーがありました<br>>'.$pc{'result'};
+    elsif($pc{result}) {
+      error 'コンバート元のゆとシートⅡでエラーがありました<br>>'.$pc{result};
     }
     else {
       error '有効なデータが取得できませんでした';

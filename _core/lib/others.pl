@@ -6,15 +6,15 @@ use open ":utf8";
 
 our $LOGIN_ID = check;
 
-my $mode = $::in{'mode'};
+my $mode = $::in{mode};
 
 ### バックアップ命名 #################################################################################
 if($mode eq 'bu-naming'){
-  my $type = $::in{'type'};
-  my $id   = $::in{'id'};
-  my $date = $::in{'date'} || 'latest';
+  my $type = $::in{type};
+  my $id   = $::in{id};
+  my $date = $::in{date} || 'latest';
   my $name = pcEscape( decode('utf8',$::in{'log-name'}) );
-  my $pass = $::in{'pass'};
+  my $pass = $::in{pass};
   
 
   ## パスワードチェック

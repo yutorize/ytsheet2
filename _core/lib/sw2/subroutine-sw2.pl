@@ -57,137 +57,137 @@ sub fairyRank {
 ### バージョンアップデート --------------------------------------------------
 sub data_update_chara {
   my %pc = %{$_[0]};
-  my $ver = $pc{'ver'};
+  my $ver = $pc{ver};
   $ver =~ s/^([0-9]+)\.([0-9]+)\.([0-9]+)$/$1.$2$3/;
-  delete $pc{'updateMessage'};
-  if($pc{'colorHeadBgA'}) {
-    ($pc{'colorHeadBgH'}, $pc{'colorHeadBgS'}, $pc{'colorHeadBgL'}) = rgb_to_hsl($pc{'colorHeadBgR'},$pc{'colorHeadBgG'},$pc{'colorHeadBgB'});
-    ($pc{'colorBaseBgH'}, $pc{'colorBaseBgS'}, undef) = rgb_to_hsl($pc{'colorBaseBgR'},$pc{'colorBaseBgG'},$pc{'colorBaseBgB'});
-    $pc{'colorBaseBgS'} = $pc{'colorBaseBgS'} * $pc{'colorBaseBgA'} * 10;
+  delete $pc{updateMessage};
+  if($pc{colorHeadBgA}) {
+    ($pc{colorHeadBgH}, $pc{colorHeadBgS}, $pc{colorHeadBgL}) = rgb_to_hsl($pc{colorHeadBgR},$pc{colorHeadBgG},$pc{colorHeadBgB});
+    ($pc{colorBaseBgH}, $pc{colorBaseBgS}, undef) = rgb_to_hsl($pc{colorBaseBgR},$pc{colorBaseBgG},$pc{colorBaseBgB});
+    $pc{colorBaseBgS} = $pc{colorBaseBgS} * $pc{colorBaseBgA} * 10;
   }
   if($ver < 1.10){
-    $pc{'fairyContractEarth'} = 1 if $pc{'ftElemental'} =~ /土|地/;
-    $pc{'fairyContractWater'} = 1 if $pc{'ftElemental'} =~ /水|氷/;
-    $pc{'fairyContractFire' } = 1 if $pc{'ftElemental'} =~ /火|炎/;
-    $pc{'fairyContractWind' } = 1 if $pc{'ftElemental'} =~ /風|空/;
-    $pc{'fairyContractLight'} = 1 if $pc{'ftElemental'} =~ /光/;
-    $pc{'fairyContractDark' } = 1 if $pc{'ftElemental'} =~ /闇/;
+    $pc{fairyContractEarth} = 1 if $pc{ftElemental} =~ /土|地/;
+    $pc{fairyContractWater} = 1 if $pc{ftElemental} =~ /水|氷/;
+    $pc{fairyContractFire } = 1 if $pc{ftElemental} =~ /火|炎/;
+    $pc{fairyContractWind } = 1 if $pc{ftElemental} =~ /風|空/;
+    $pc{fairyContractLight} = 1 if $pc{ftElemental} =~ /光/;
+    $pc{fairyContractDark } = 1 if $pc{ftElemental} =~ /闇/;
   }
   if($ver < 1.11001){
-    $pc{'paletteUseBuff'} = 1;
+    $pc{paletteUseBuff} = 1;
   }
   if($ver < 1.11004){
-    $pc{'armour1Name'} = $pc{'armourName'};
-    $pc{'armour1Reqd'} = $pc{'armourReqd'};
-    $pc{'armour1Eva'}  = $pc{'armourEva'};
-    $pc{'armour1Def'}  = $pc{'armourDef'};
-    $pc{'armour1Own'}  = $pc{'armourOwn'};
-    $pc{'armour1Note'} = $pc{'armourNote'};
-    $pc{'shield1Name'} = $pc{'shieldName'};
-    $pc{'shield1Reqd'} = $pc{'shieldReqd'};
-    $pc{'shield1Eva'}  = $pc{'shieldEva'};
-    $pc{'shield1Def'}  = $pc{'shieldDef'};
-    $pc{'shield1Own'}  = $pc{'shieldOwn'};
-    $pc{'shield1Note'} = $pc{'shieldNote'};
-    $pc{'defOther1Name'} = $pc{'defOtherName'};
-    $pc{'defOther1Reqd'} = $pc{'defOtherReqd'};
-    $pc{'defOther1Eva'}  = $pc{'defOtherEva'};
-    $pc{'defOther1Def'}  = $pc{'defOtherDef'};
-    $pc{'defOther1Note'} = $pc{'defOtherNote'};
-    $pc{"defenseTotal1Eva"} = $pc{"defenseTotalAllEva"};
-    $pc{"defenseTotal1Def"} = $pc{"defenseTotalAllDef"};
-    $pc{"defTotal1CheckArmour1"} = $pc{"defTotal1CheckShield1"} = $pc{"defTotal1CheckDefOther1"} = $pc{"defTotal1CheckDefOther2"} = $pc{"defTotal1CheckDefOther3"} = 1;
+    $pc{armour1Name} = $pc{armourName};
+    $pc{armour1Reqd} = $pc{armourReqd};
+    $pc{armour1Eva}  = $pc{armourEva};
+    $pc{armour1Def}  = $pc{armourDef};
+    $pc{armour1Own}  = $pc{armourOwn};
+    $pc{armour1Note} = $pc{armourNote};
+    $pc{shield1Name} = $pc{shieldName};
+    $pc{shield1Reqd} = $pc{shieldReqd};
+    $pc{shield1Eva}  = $pc{shieldEva};
+    $pc{shield1Def}  = $pc{shieldDef};
+    $pc{shield1Own}  = $pc{shieldOwn};
+    $pc{shield1Note} = $pc{shieldNote};
+    $pc{defOther1Name} = $pc{defOtherName};
+    $pc{defOther1Reqd} = $pc{defOtherReqd};
+    $pc{defOther1Eva}  = $pc{defOtherEva};
+    $pc{defOther1Def}  = $pc{defOtherDef};
+    $pc{defOther1Note} = $pc{defOtherNote};
+    $pc{defenseTotal1Eva} = $pc{defenseTotalAllEva};
+    $pc{defenseTotal1Def} = $pc{defenseTotalAllDef};
+    $pc{defTotal1CheckArmour1} = $pc{defTotal1CheckShield1} = $pc{defTotal1CheckDefOther1} = $pc{defTotal1CheckDefOther2} = $pc{defTotal1CheckDefOther3} = 1;
   }
   if($ver < 1.12022){
-    $pc{'updateMessage'}{'ver.1.12.022'} = '「言語」欄が、セージ技能とバード技能による習得数をカウントする仕様になりました。<br>　このシートのデータは、自動的に、新仕様に合わせて項目を振り分けていますが、念の為、言語欄のチェックを推奨します。';
-    foreach my $n (1 .. $pc{'languageNum'}){
-      if($pc{'race'} =~ /人間/ && $pc{"language${n}"} =~ /地方語/){
+    $pc{updateMessage}{'ver.1.12.022'} = '「言語」欄が、セージ技能とバード技能による習得数をカウントする仕様になりました。<br>　このシートのデータは、自動的に、新仕様に合わせて項目を振り分けていますが、念の為、言語欄のチェックを推奨します。';
+    foreach my $n (1 .. $pc{languageNum}){
+      if($pc{race} =~ /人間/ && $pc{"language${n}"} =~ /地方語/){
         $pc{"language${n}Talk"} = $pc{"language${n}Talk"} ? 'auto' : '';
         $pc{"language${n}Read"} = $pc{"language${n}Read"} ? 'auto' : '';
         last;
       }
     }
-    foreach my $n (1 .. $pc{'languageNum'}){
-      if(($pc{'lvDem'} || $pc{'lvGri'}) && $pc{"language${n}"} =~ /魔法文明語/){
+    foreach my $n (1 .. $pc{languageNum}){
+      if(($pc{lvDem} || $pc{lvGri}) && $pc{"language${n}"} =~ /魔法文明語/){
         $pc{"language${n}Read"} = $pc{"language${n}Read"} ? 'auto' : '';
       }
-      if($pc{'lvDem'} && $pc{"language${n}"} =~ /魔神語/){
+      if($pc{lvDem} && $pc{"language${n}"} =~ /魔神語/){
         $pc{"language${n}Talk"} = $pc{"language${n}Talk"} ? 'auto' : '';
       }
-      if(($pc{'lvSor'} || $pc{'lvCon'}) && $pc{"language${n}"} =~ /魔法文明語/){
-        $pc{"language${n}Talk"} = $pc{"language${n}Talk"} ? 'auto' : '';
-        $pc{"language${n}Read"} = $pc{"language${n}Read"} ? 'auto' : '';
-      }
-      if(($pc{'lvMag'} || $pc{'lvAlc'}) && $pc{"language${n}"} =~ /魔動機文明語/){
+      if(($pc{lvSor} || $pc{lvCon}) && $pc{"language${n}"} =~ /魔法文明語/){
         $pc{"language${n}Talk"} = $pc{"language${n}Talk"} ? 'auto' : '';
         $pc{"language${n}Read"} = $pc{"language${n}Read"} ? 'auto' : '';
       }
-      if($pc{'lvFai'} && $pc{"language${n}"} =~ /妖精語/){
+      if(($pc{lvMag} || $pc{lvAlc}) && $pc{"language${n}"} =~ /魔動機文明語/){
+        $pc{"language${n}Talk"} = $pc{"language${n}Talk"} ? 'auto' : '';
+        $pc{"language${n}Read"} = $pc{"language${n}Read"} ? 'auto' : '';
+      }
+      if($pc{lvFai} && $pc{"language${n}"} =~ /妖精語/){
         $pc{"language${n}Talk"} = $pc{"language${n}Talk"} ? 'auto' : '';
         $pc{"language${n}Read"} = $pc{"language${n}Read"} ? 'auto' : '';
       }
     }
     my $bard = 0;
-    foreach my $n (reverse 1 .. $pc{'languageNum'}){
-      last if $bard >= $pc{'lvBar'};
+    foreach my $n (reverse 1 .. $pc{languageNum}){
+      last if $bard >= $pc{lvBar};
       if($pc{"language${n}Talk"} == 1){ $pc{"language${n}Talk"} = 'Bar'; $bard++; }
     }
     my $sage = 0;
-    foreach my $n (reverse 1 .. $pc{'languageNum'}){
-      last if $sage >= $pc{'lvSag'};
+    foreach my $n (reverse 1 .. $pc{languageNum}){
+      last if $sage >= $pc{lvSag};
       if($pc{"language${n}Talk"} == 1){ $pc{"language${n}Talk"} = 'Sag'; $sage++; }
-      last if $sage >= $pc{'lvSag'};
+      last if $sage >= $pc{lvSag};
       if($pc{"language${n}Read"} == 1){ $pc{"language${n}Read"} = 'Sag'; $sage++; }
     }
-    foreach my $n (1 .. $pc{'languageNum'}){
+    foreach my $n (1 .. $pc{languageNum}){
       if($pc{"language${n}Talk"} == 1){ $pc{"language${n}Talk"} = 'auto'; }
       if($pc{"language${n}Read"} == 1){ $pc{"language${n}Read"} = 'auto'; }
     }
   }
   if($ver < 1.13002){
-    ($pc{'characterName'},$pc{'characterNameRuby'}) = split(':', $pc{'characterName'});
-    ($pc{'aka'},$pc{'akaRuby'}) = split(':', $pc{'aka'});
+    ($pc{characterName},$pc{characterNameRuby}) = split(':', $pc{characterName});
+    ($pc{aka},$pc{akaRuby}) = split(':', $pc{aka});
   }
   if($ver < 1.15003){
-    foreach my $i (0 .. $pc{'historyNum'}){
-      $pc{'historyExpTotal'} += s_eval($pc{"history${i}Exp"});
-      $pc{'historyMoneyTotal'} += s_eval($pc{"history${i}Money"});
+    foreach my $i (0 .. $pc{historyNum}){
+      $pc{historyExpTotal} += s_eval($pc{"history${i}Exp"});
+      $pc{historyMoneyTotal} += s_eval($pc{"history${i}Money"});
       
-      if   ($pc{"history${i}HonorType"} eq 'barbaros'){ $pc{'historyHonorBarbarosTotal'} += s_eval($pc{"history${i}Honor"}); }
-      elsif($pc{"history${i}HonorType"} eq 'dragon'  ){ $pc{'historyHonorDragonTotal'}   += s_eval($pc{"history${i}Honor"}); }
+      if   ($pc{"history${i}HonorType"} eq 'barbaros'){ $pc{historyHonorBarbarosTotal} += s_eval($pc{"history${i}Honor"}); }
+      elsif($pc{"history${i}HonorType"} eq 'dragon'  ){ $pc{historyHonorDragonTotal}   += s_eval($pc{"history${i}Honor"}); }
       else {
-        $pc{'historyHonorTotal'} += s_eval($pc{"history${i}Honor"});
+        $pc{historyHonorTotal} += s_eval($pc{"history${i}Honor"});
       }
     }
-    $pc{'historyGrowTotal'} = $pc{'sttPreGrowA'}  + $pc{'sttPreGrowB'}  + $pc{'sttPreGrowC'}  + $pc{'sttPreGrowD'}  + $pc{'sttPreGrowE'}  + $pc{'sttPreGrowF'}
-                            + $pc{'sttHistGrowA'} + $pc{'sttHistGrowB'} + $pc{'sttHistGrowC'} + $pc{'sttHistGrowD'} + $pc{'sttHistGrowE'} + $pc{'sttHistGrowF'};
+    $pc{historyGrowTotal} = $pc{sttPreGrowA}  + $pc{sttPreGrowB}  + $pc{sttPreGrowC}  + $pc{sttPreGrowD}  + $pc{sttPreGrowE}  + $pc{sttPreGrowF}
+                            + $pc{sttHistGrowA} + $pc{sttHistGrowB} + $pc{sttHistGrowC} + $pc{sttHistGrowD} + $pc{sttHistGrowE} + $pc{sttHistGrowF};
   }
   if($ver < 1.15009){
-    foreach my $i (1 .. $pc{'lvWar'}){
+    foreach my $i (1 .. $pc{lvWar}){
       $pc{'craftCommand'.$i} =~ s/濤/涛/g;
       $pc{'craftCommand'.$i} =~ s/^軍師の知略$/陣率：軍師の知略/g;
-      $pc{'packWarAgi'} = $pc{'lvWar'} + $pc{'bonusAgi'};
-      $pc{'packWarInt'} = $pc{'lvWar'} + $pc{'bonusInt'};
+      $pc{packWarAgi} = $pc{lvWar} + $pc{bonusAgi};
+      $pc{packWarInt} = $pc{lvWar} + $pc{bonusInt};
     }
-    if($pc{'lvSor'} && $pc{'lvCon'}){
-      $pc{'lvWiz'} = max($pc{'lvSor'},$pc{'lvCon'});
-      $pc{'magicPowerWiz'} = max($pc{'magicPowerSor'},$pc{'magicPowerCon'});
-      $pc{'magicPowerOwnWiz'} = ($pc{'magicPowerOwnSor'} && $pc{'magicPowerOwnCon'}) ? 1 : 0;
+    if($pc{lvSor} && $pc{lvCon}){
+      $pc{lvWiz} = max($pc{lvSor},$pc{lvCon});
+      $pc{magicPowerWiz} = max($pc{magicPowerSor},$pc{magicPowerCon});
+      $pc{magicPowerOwnWiz} = ($pc{magicPowerOwnSor} && $pc{magicPowerOwnCon}) ? 1 : 0;
     }
-    else { $pc{'lvWiz'} = 0; }
+    else { $pc{lvWiz} = 0; }
   }
   if($ver < 1.16013){
-    $pc{'historyMoneyTotal'} = $pc{'hisotryMoneyTotal'};
+    $pc{historyMoneyTotal} = $pc{hisotryMoneyTotal};
   }
   if($ver < 1.17014){
-    $pc{'updateMessage'}{'ver.1.17.014'} = 'ルールブックに合わせ、<br>「性別」「年齢」の並びを「年齢」「性別」の順に変更、<br>「作成レギュレーション」「セッション履歴」における項目の並びを<br>「経験点・名誉点・所持金（ガメル）」から、<br>「経験点・所持金（ガメル）・名誉点」に変更しました。<br>記入の際はご注意ください。';
+    $pc{updateMessage}{'ver.1.17.014'} = 'ルールブックに合わせ、<br>「性別」「年齢」の並びを「年齢」「性別」の順に変更、<br>「作成レギュレーション」「セッション履歴」における項目の並びを<br>「経験点・名誉点・所持金（ガメル）」から、<br>「経験点・所持金（ガメル）・名誉点」に変更しました。<br>記入の際はご注意ください。';
   }
   if($ver < 1.20109){
-    $pc{'packWarIntAdd'} -= 1 if $pc{'packWarIntAdd'} > 0;
-    $pc{'packWarIntAuto'} = 1;
+    $pc{packWarIntAdd} -= 1 if $pc{packWarIntAdd} > 0;
+    $pc{packWarIntAuto} = 1;
   }
   if($ver < 1.22010){
-    $pc{'updateMessage'}{'ver.1.22.010'} = '追加種族「スプリガン」を考慮し、防具欄の仕様を変更しました。<br>鎧や盾を複数記入できるようになった代わりに、金属鎧や非金属鎧などのカテゴリを選択する必要があります。<br>（既存のキャラクターシートについては、ある程度は自動で金属／非金属を振り分けました）';
+    $pc{updateMessage}{'ver.1.22.010'} = '追加種族「スプリガン」を考慮し、防具欄の仕様を変更しました。<br>鎧や盾を複数記入できるようになった代わりに、金属鎧や非金属鎧などのカテゴリを選択する必要があります。<br>（既存のキャラクターシートについては、ある程度は自動で金属／非金属を振り分けました）';
     $pc{armour1Category}
       = $pc{masteryMetalArmour} ? '金属鎧'
       : $pc{masteryNonMetalArmour} ? '非金属鎧'
@@ -217,20 +217,20 @@ sub data_update_chara {
     $pc{armourNum} = $num;
   }
   if($ver < 1.23000){
-    $pc{'raceAbilitySelect1'} = $pc{'raceAbilityLv6'}  =~ s/^［|］$//gr;
-    $pc{'raceAbilitySelect2'} = $pc{'raceAbilityLv11'} =~ s/^［|］$//gr;
-    $pc{'raceAbilitySelect2'} = $pc{'raceAbilityLv16'} =~ s/^［|］$//gr;
-    if($pc{'race'} eq 'ルーンフォーク（戦闘用ルーンフォーク）'){ $pc{'race'} = 'ルーンフォーク（戦闘型ルーンフォーク）' }
+    $pc{raceAbilitySelect1} = $pc{raceAbilityLv6}  =~ s/^［|］$//gr;
+    $pc{raceAbilitySelect2} = $pc{raceAbilityLv11} =~ s/^［|］$//gr;
+    $pc{raceAbilitySelect2} = $pc{raceAbilityLv16} =~ s/^［|］$//gr;
+    if($pc{race} eq 'ルーンフォーク（戦闘用ルーンフォーク）'){ $pc{race} = 'ルーンフォーク（戦闘型ルーンフォーク）' }
   }
-  $pc{'ver'} = $main::ver;
-  $pc{'lasttimever'} = $ver;
+  $pc{ver} = $main::ver;
+  $pc{lasttimever} = $ver;
   return %pc;
 }
 sub data_update_item {
   my %pc = %{$_[0]};
-  my $ver = $pc{'ver'};
+  my $ver = $pc{ver};
   $ver =~ s/^([0-9]+)\.([0-9]+)\.([0-9]+)$/$1.$2$3/;
-  delete $pc{'updateMessage'};
+  delete $pc{updateMessage};
 
   if($ver < 1.22011){
     $pc{weaponNum} = $pc{armourNum} = 0;
@@ -256,24 +256,24 @@ sub data_update_item {
     }
   }
 
-  $pc{'ver'} = $main::ver;
-  $pc{'lasttimever'} = $ver;
+  $pc{ver} = $main::ver;
+  $pc{lasttimever} = $ver;
   return %pc;
 }
 sub data_update_arts {
   my %pc = %{$_[0]};
-  my $ver = $pc{'ver'};
+  my $ver = $pc{ver};
   $ver =~ s/^([0-9]+)\.([0-9]+)\.([0-9]+)$/$1.$2$3/;
-  delete $pc{'updateMessage'};
+  delete $pc{updateMessage};
 
   if($ver < 1.20000){
-    foreach my $num (1..$pc{'schoolArtsNum'}){
+    foreach my $num (1..$pc{schoolArtsNum}){
       $pc{"schoolArts${num}Type"} = $pc{"schoolArts${num}Base"};
     }
   }
 
-  $pc{'ver'} = $main::ver;
-  $pc{'lasttimever'} = $ver;
+  $pc{ver} = $main::ver;
+  $pc{lasttimever} = $ver;
   return %pc;
 }
 

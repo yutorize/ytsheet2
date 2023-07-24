@@ -6,7 +6,7 @@ use open ":utf8";
 
 our $LOGIN_ID = check;
 
-if($::in{'base64mode'}){
+if($::in{base64mode}){
   use MIME::Base64;
   foreach(keys %::in){
     next if $_ eq 'mode';
@@ -24,13 +24,13 @@ else {
 
 our $mode_save = 1;
 
-our $mode = $::in{'mode'};
-our $pass = $::in{'pass'};
+our $mode = $::in{mode};
+our $pass = $::in{pass};
 our $new_id;
-(our $edit_ver = $::in{'ver'}) =~ s/^([0-9]+)\.([0-9]+)\.([0-9]+)$/$1.$2$3/;
+(our $edit_ver = $::in{ver}) =~ s/^([0-9]+)\.([0-9]+)\.([0-9]+)$/$1.$2$3/;
 
 ## パスワードチェック
-if($::in{'protect'} eq 'password'){
+if($::in{protect} eq 'password'){
   if ($pass eq ''){ infoJson('error','パスワードが入力されていません。'); }
   else {
     if ($pass =~ /[^0-9A-Za-z\.\-\/]/) { infoJson('error','パスワードに使える文字は、半角の英数字とピリオド、ハイフン、スラッシュだけです。'); }
@@ -44,13 +44,13 @@ if ($mode eq 'make'){
   }
   
   ## 登録キーチェック
-  if(!$set::user_reqd && $set::registerkey && $set::registerkey ne $::in{'registerkey'}){
+  if(!$set::user_reqd && $set::registerkey && $set::registerkey ne $::in{registerkey}){
     infoJson('error','登録キーが一致しません。');
   }
   
   ## ID生成
   if($set::id_type && $LOGIN_ID){
-    my $type = ($::in{'type'} eq 'm') ? 'm' : ($::in{'type'} eq 'i') ? 'i' : ($::in{'type'} eq 'a') ? 'a' : '';
+    my $type = ($::in{type} eq 'm') ? 'm' : ($::in{type} eq 'i') ? 'i' : ($::in{type} eq 'a') ? 'a' : '';
     my $i = 1;
     $new_id = $LOGIN_ID.'-'.$type.sprintf("%03d",$i);
     # 重複チェック
@@ -82,31 +82,31 @@ sub overlapCheck {
 
 ### データ処理 #################################################################################
 my %pc = %::in;
-if($main::new_id){ $pc{'id'} = $main::new_id; }
+if($main::new_id){ $pc{id} = $main::new_id; }
 ## 現在時刻
 our $now = time;
 ## 最終更新
-$pc{'updateTime'} = epocToDate($now);
+$pc{updateTime} = epocToDate($now);
 
 ## ファイル名取得
 our $file;
 if($mode eq 'make'){
-  $pc{'birthTime'} = $file = $now;
+  $pc{birthTime} = $file = $now;
 }
 elsif($mode eq 'save'){
-  (undef, undef, $file, undef) = getfile($pc{'id'},$pc{'pass'},$LOGIN_ID);
+  (undef, undef, $file, undef) = getfile($pc{id},$pc{pass},$LOGIN_ID);
   if(!$file){ infoJson('error','編集権限がありません。'); }
 }
 
 my $data_dir; my $listfile; our $newline;
-if   ($::in{'type'} eq 'm'){ require $set::lib_calc_mons; $data_dir = $set::mons_dir; $listfile = $set::monslist; }
-elsif($::in{'type'} eq 'i'){ require $set::lib_calc_item; $data_dir = $set::item_dir; $listfile = $set::itemlist; }
-elsif($::in{'type'} eq 'a'){ require $set::lib_calc_arts; $data_dir = $set::arts_dir; $listfile = $set::artslist; }
-else                       { require $set::lib_calc_char; $data_dir = $set::char_dir; $listfile = $set::listfile; }
+if   ($::in{type} eq 'm'){ require $set::lib_calc_mons; $data_dir = $set::mons_dir; $listfile = $set::monslist; }
+elsif($::in{type} eq 'i'){ require $set::lib_calc_item; $data_dir = $set::item_dir; $listfile = $set::itemlist; }
+elsif($::in{type} eq 'a'){ require $set::lib_calc_arts; $data_dir = $set::arts_dir; $listfile = $set::artslist; }
+else                     { require $set::lib_calc_char; $data_dir = $set::char_dir; $listfile = $set::listfile; }
 
 ## 保存数チェック
 my $max_files = 32000;
-if($mode eq 'make' && $pc{'protect'} ne 'account'){
+if($mode eq 'make' && $pc{protect} ne 'account'){
   opendir my $dh, "${data_dir}anonymous/";
   my $num_files = () = readdir($dh);
   if($num_files-2 >= $max_files){
@@ -114,7 +114,7 @@ if($mode eq 'make' && $pc{'protect'} ne 'account'){
     require $set::lib_edit; exit;
   }
 }
-if($mode eq 'save' && $pc{'protect'} ne 'account' && $pc{'protectOld'} eq 'account'){
+if($mode eq 'save' && $pc{protect} ne 'account' && $pc{protectOld} eq 'account'){
   opendir my $dh, "${data_dir}anonymous/";
   my $num_files = () = readdir($dh);
   if($num_files-2 >= $max_files){
@@ -127,22 +127,22 @@ if($mode eq 'save' && $pc{'protect'} ne 'account' && $pc{'protectOld'} eq 'accou
 
 ### 画像アップロード --------------------------------------------------
 my $oldext;
-if($pc{'imageDelete'}){
-  $oldext = $pc{'image'};
-  $pc{'image'} = '';
+if($pc{imageDelete}){
+  $oldext = $pc{image};
+  $pc{image} = '';
 }
 use MIME::Base64;
 my $imagedata; my $imageflag;
-if($::in{'imageCompressed'} || $::in{'imageFile'}){
+if($::in{imageCompressed} || $::in{imageFile}){
   my $mime;
   # 縮小済み
-  if($::in{'imageCompressed'}){
-    $imagedata = decode_base64( (split ',', $::in{'imageCompressed'})[1] );
-    $mime = $::in{'imageCompressedType'};
+  if($::in{imageCompressed}){
+    $imagedata = decode_base64( (split ',', $::in{imageCompressed})[1] );
+    $mime = $::in{imageCompressedType};
   }
   # オリジナル
-  elsif($::in{'imageFile'}){
-    my $imagefile = $::in{'imageFile'}; # ファイル名の取得
+  elsif($::in{imageFile}){
+    my $imagefile = $::in{imageFile}; # ファイル名の取得
     $mime = uploadInfo($imagefile)->{'Content-Type'}; # MIMEタイプの取得
     
     # ファイルの受け取り
@@ -166,9 +166,9 @@ if($::in{'imageCompressed'} || $::in{'imageFile'}){
 
   # 通して良しなら
   if($imageflag && $ext){
-    $oldext = $pc{'image'} || $oldext;
-    $pc{'image'} = $ext;
-    $pc{'imageUpdate'} = time;
+    $oldext = $pc{image} || $oldext;
+    $pc{image} = $ext;
+    $pc{imageUpdate} = time;
   }
 }
 
@@ -178,48 +178,48 @@ my $mask = umask 0;
 
 ## 二重投稿チェック
 if ($mode eq 'make'){
-  my $_token = $::in{'_token'};
+  my $_token = $::in{_token};
   if(!token_check($_token)){
     infoJson('error','セッションの有効期限が切れたか、二重投稿です。一覧やマイリストを確認してください。');
   }
 }
 ### 個別データ保存 --------------------------------------------------
-delete $pc{'ver'};
-delete $pc{'pass'};
-delete $pc{'_token'};
-delete $pc{'registerkey'};
-$pc{'IP'} = $ENV{'REMOTE_ADDR'};
+delete $pc{ver};
+delete $pc{pass};
+delete $pc{_token};
+delete $pc{registerkey};
+$pc{IP} = $ENV{'REMOTE_ADDR'};
 ### passfile --------------------------------------------------
 if (!-d $set::data_dir){ mkdir $set::data_dir or infoJson('error',"データディレクトリ($set::data_dir)の作成に失敗しました。"); }
 if (!-d $data_dir){ mkdir $data_dir or infoJson('error',"データディレクトリ($data_dir)の作成に失敗しました。"); }
 my $user_dir;
 ## 新規
 if($mode eq 'make'){
-  $user_dir = passfileWriteMake($pc{'id'},$pass,$LOGIN_ID,$pc{'protect'},$now,$data_dir);
+  $user_dir = passfileWriteMake($pc{id},$pass,$LOGIN_ID,$pc{protect},$now,$data_dir);
 }
 ## 更新
 elsif($mode eq 'save'){
-  if($pc{'protect'} ne $pc{'protectOld'}
+  if($pc{protect} ne $pc{protectOld}
     || ($set::masterid && $LOGIN_ID eq $set::masterid)
     || ($set::masterkey && $pass eq $set::masterkey)
   ){
-    $user_dir = passfileWriteSave($pc{'id'},$pass,$LOGIN_ID,$pc{'protect'},$data_dir);
+    $user_dir = passfileWriteSave($pc{id},$pass,$LOGIN_ID,$pc{protect},$data_dir);
   }
   else {
-    $user_dir = ($pc{'protect'} eq 'account' && $LOGIN_ID) ? "_${LOGIN_ID}/" : 'anonymous/';
+    $user_dir = ($pc{protect} eq 'account' && $LOGIN_ID) ? "_${LOGIN_ID}/" : 'anonymous/';
   }
-  dataSave('save', $data_dir, $file, $pc{'protect'}, $user_dir);
+  dataSave('save', $data_dir, $file, $pc{protect}, $user_dir);
 }
 ### 一覧データ更新 --------------------------------------------------
 listSave($listfile, $newline);
 
 ### 画像アップ更新 --------------------------------------------------
-if($pc{'imageDelete'}){
-  unlink "${data_dir}${user_dir}${file}/image.$pc{'image'}"; # ファイルを削除
+if($pc{imageDelete}){
+  unlink "${data_dir}${user_dir}${file}/image.$pc{image}"; # ファイルを削除
 }
-if($imageflag && $pc{'image'}){
+if($imageflag && $pc{image}){
   unlink "${data_dir}${user_dir}${file}/image.$oldext"; # 前のファイルを削除
-  open(my $IMG, ">", "${data_dir}${user_dir}${file}/image.$pc{'image'}");
+  open(my $IMG, ">", "${data_dir}${user_dir}${file}/image.$pc{image}");
   binmode($IMG);
   print $IMG $imagedata;
   close($IMG);
@@ -230,7 +230,7 @@ if($imageflag && $pc{'image'}){
 ### 保存後処理 ######################################################################################
 ### キャラシートへ移動／編集画面に戻る --------------------------------------------------
 if($edit_ver < 1.18012){
-  print "Location: ./?id=".(${new_id} || $pc{'id'})."\n\n";
+  print "Location: ./?id=".(${new_id} || $pc{id})."\n\n";
   exit;
 }
 if($mode eq 'make'){
@@ -365,7 +365,7 @@ sub dataSave {
       sysopen (my $BUL, "${dir}${file}/log-list.cgi", O_WRONLY | O_TRUNC | O_CREAT, 0666);
       flock($BUL, 2);
       print $BUL "$_<>$log_save{$_}<>$log_name{$_}\n" foreach (sort keys %log_save);
-      print $BUL "${latest_date}<>${latest_epoc}<>$log_name{'latest'}\n";
+      print $BUL "${latest_date}<>${latest_epoc}<>$log_name{latest}\n";
       print $BUL "latest<>${now}<>\n";
       close($BUL);
     }
@@ -404,7 +404,7 @@ sub passfileWriteMake {
   elsif($protect eq 'password')            { $passwrite = e_crypt($pass); }
   $user_dir ||= 'anonymous/';
   dataSave('make', $data_dir, $file, $protect, $user_dir);
-  print $FH "$id<>$passwrite<>$now<>".$::in{'type'}."<>\n";
+  print $FH "$id<>$passwrite<>$now<>".$::in{type}."<>\n";
   close($FH);
   return $user_dir;
 }
@@ -469,7 +469,7 @@ sub listSave {
   seek($FH, 0, 0);
   print $FH "$newline\n";
   foreach (@list){
-    if(index($_, "$pc{'id'}<") != 0){
+    if(index($_, "$pc{id}<") != 0){
       print $FH $_;
     }
   }

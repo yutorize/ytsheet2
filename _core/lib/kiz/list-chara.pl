@@ -7,8 +7,8 @@ use HTML::Template;
 
 my $LOGIN_ID = check;
 
-my $mode = $::in{'mode'};
-my $sort = $::in{'sort'};
+my $mode = $::in{mode};
+my $sort = $::in{sort};
 
 ### テンプレート読み込み #############################################################################
 my $INDEX;
@@ -34,7 +34,7 @@ foreach (keys %::in) {
   $::in{$_} =~ s/</&lt;/g;
   $::in{$_} =~ s/>/&gt;/g;
 }
-if(!($mode eq 'mylist' || $::in{'tag'} || $::in{'group'} || $::in{'name'} || $::in{'player'} || $::in{'class'} || $::in{'negai'} || $::in{'belong'} || $::in{'grow'} || $::in{'image'})){
+if(!($mode eq 'mylist' || $::in{tag} || $::in{group} || $::in{name} || $::in{player} || $::in{class} || $::in{negai} || $::in{belong} || $::in{grow} || $::in{image})){
   $index_mode = 1;
   $INDEX->param(modeIndex => 1);
   $INDEX->param(simpleList => 1) if $set::simplelist;
@@ -88,59 +88,59 @@ if($mode eq 'mylist'){
 elsif (
      !($set::masterid && $set::masterid eq $LOGIN_ID)
   && !($mode eq 'mylist')
-  && !$::in{'tag'}
+  && !$::in{tag}
 ){
   @list = grep { !(split(/<>/))[9] } @list;
 }
 
 ## グループ検索
-my $group_query = $::in{'group'};
+my $group_query = $::in{group};
 my %groups = groupArrayToHash();
-$groups{'all'}{'name'} = 'すべて' if $::in{'group'} eq 'all';
+$groups{all}{name} = 'すべて' if $::in{group} eq 'all';
 $INDEX->param(Groups => groupArrayToList $group_query);
 
-if($group_query && $::in{'group'} ne 'all') {
+if($group_query && $::in{group} ne 'all') {
   if($group_query eq $set::group_default){ @list = grep { $_ =~ /^(?:[^<]*?<>){6}(\Q$group_query\E)?</ } @list; }
   else { @list = grep { $_ =~ /^(?:[^<]*?<>){6}\Q$group_query\E</ } @list; }
 }
-$INDEX->param(group => $groups{$group_query}{'name'});
+$INDEX->param(group => $groups{$group_query}{name});
 
 ## タグ検索
-my $tag_query = pcTagsEscape(decode('utf8', $::in{'tag'}));
+my $tag_query = pcTagsEscape(decode('utf8', $::in{tag}));
 if($tag_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){8}[^<]*? \Q$tag_query\E / } @list; }
 $INDEX->param(tag => $tag_query);
 
 ## 名前検索
-my $name_query = lc decode('utf8', $::in{'name'});
+my $name_query = lc decode('utf8', $::in{name});
 if($name_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){4}[^<]*?\Q$name_query\E/i } @list; }
 $INDEX->param(name => $name_query);
 
 ## PL名検索
-my $pl_query = decode('utf8', $::in{'player'});
+my $pl_query = decode('utf8', $::in{player});
 if($pl_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){5}[^<]*?\Q$pl_query\E/i } @list; }
 $INDEX->param(player => $pl_query);
 
 ## 種別検索
-my $class_query = decode('utf8', $::in{'class'});
+my $class_query = decode('utf8', $::in{class});
 if($class_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){10}[^<]*?\Q$class_query\E/i } @list; }
 $INDEX->param(class => $class_query);
 
 ## ネガイ検索
-my @negai_query = split('\s', decode('utf8', $::in{'negai'}));
+my @negai_query = split('\s', decode('utf8', $::in{negai}));
 foreach my $q (@negai_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){11,12}[^<]*?\Q$q\E/ } @list; }
 $INDEX->param(negai => "@negai_query");
 
 ## 所属検索
-my @belong_query = split('\s', decode('utf8', $::in{'belong'}));
+my @belong_query = split('\s', decode('utf8', $::in{belong}));
 foreach my $q (@belong_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){15}[^<]*?\Q$q\E/ } @list; }
 $INDEX->param(belong => "@belong_query");
 
 ## 画像フィルタ
-if($::in{'image'} == 1) {
+if($::in{image} == 1) {
   @list = grep { $_ =~ /^(?:[^<]*?<>){7}[^<0]/ } @list;
   $INDEX->param(image => 1);
 }
-elsif($::in{'image'} eq 'N') {
+elsif($::in{image} eq 'N') {
   @list = grep { $_ !~ /^(?:[^<]*?<>){7}[^<0]/ } @list;
   $INDEX->param(image => 1);
 }
@@ -157,7 +157,7 @@ sub sortName { $_[0] =~ s/^“.*”//; return $_[0]; }
 ### リストを回す --------------------------------------------------
 my %count; my %pl_flag;
 my %grouplist;
-my $page = $::in{'page'} ? $::in{'page'} : 1;
+my $page = $::in{page} ? $::in{page} : 1;
 my $pagestart = $page * $set::pagemax - $set::pagemax;
 my $pageend   = $page * $set::pagemax - 1;
 foreach (@list) {
@@ -171,17 +171,17 @@ foreach (@list) {
   
   #グループ
   $group = $set::group_default if (!$group || !$groups{$group});
-  $group = 'all' if $::in{'group'} eq 'all';
+  $group = 'all' if $::in{group} eq 'all';
   
   #カウント
-  $count{'PC'}{$group}++;
-  $count{'PL'}{$group}++ if !$pl_flag{$group}{$player};
+  $count{PC}{$group}++;
+  $count{PL}{$group}++ if !$pl_flag{$group}{$player};
   $pl_flag{$group}{$player} = 1;
 
   #表示域以外は弾く
   if (
-    ( $index_mode && $count{'PC'}{$group} > $set::list_maxline && $set::list_maxline) || #TOPページ
-    (!$index_mode && $set::pagemax && ($count{'PC'}{$group} < $pagestart || $count{'PC'}{$group} > $pageend)) #それ以外
+    ( $index_mode && $count{PC}{$group} > $set::list_maxline && $set::list_maxline) || #TOPページ
+    (!$index_mode && $set::pagemax && ($count{PC}{$group} < $pagestart || $count{PC}{$group} > $pageend)) #それ以外
   ){
     next;
   }
@@ -247,11 +247,11 @@ foreach (@list) {
 
 ### 出力用配列 --------------------------------------------------
 my @characterlists; 
-foreach (sort {$groups{$a}{'sort'} <=> $groups{$b}{'sort'}} keys %grouplist){
+foreach (sort {$groups{$a}{sort} <=> $groups{$b}{sort}} keys %grouplist){
   ## ページネーション
   my $navbar;
-  if($set::pagemax && !$index_mode && $::in{'group'}){
-    my $lastpage = ceil($count{'PC'}{$_} / $set::pagemax);
+  if($set::pagemax && !$index_mode && $::in{group}){
+    my $lastpage = ceil($count{PC}{$_} / $set::pagemax);
     foreach(1 .. $lastpage){
       if($_ == $page){
         $navbar .= '<b>'.$_.'</b> ';
@@ -261,7 +261,7 @@ foreach (sort {$groups{$a}{'sort'} <=> $groups{$b}{'sort'}} keys %grouplist){
         $_ == 1 ||
         $_ == $lastpage
       ){
-        $navbar .= '<a href="./?group='.$::in{'group'}.$q_links.'&page='.$_.'&sort='.$::in{'sort'}.'">'.$_.'</a> '
+        $navbar .= '<a href="./?group='.$::in{group}.$q_links.'&page='.$_.'&sort='.$::in{sort}.'">'.$_.'</a> '
       }
       else { $navbar .= '...' }
     }
@@ -272,10 +272,10 @@ foreach (sort {$groups{$a}{'sort'} <=> $groups{$b}{'sort'}} keys %grouplist){
   ##
   push(@characterlists, {
     "ID" => $_,
-    "NAME" => $groups{$_}{'name'},
-    "TEXT" => $groups{$_}{'text'},
-    "NUM-PC" => $count{'PC'}{$_},
-    "NUM-PL" => $count{'PL'}{$_},
+    "NAME" => $groups{$_}{name},
+    "TEXT" => $groups{$_}{text},
+    "NUM-PC" => $count{PC}{$_},
+    "NUM-PL" => $count{PL}{$_},
     "Characters" => [@{$grouplist{$_}}],
     "NAV" => $navbar,
   });

@@ -15,9 +15,9 @@ sub palettePreset {
   my $type = shift;
   my $text;
   my %bot;
-  if   (!$tool)           { $bot{'YTC'} = 1; }
-  elsif($tool eq 'tekey' ){ $bot{'TKY'} = $bot{'BCD'} = 1; }
-  elsif($tool eq 'bcdice'){ $bot{'BCD'} = 1; }
+  if   (!$tool)           { $bot{YTC} = 1; }
+  elsif($tool eq 'tekey' ){ $bot{TKY} = $bot{BCD} = 1; }
+  elsif($tool eq 'bcdice'){ $bot{BCD} = 1; }
   ## ＰＣ
   if(!$type){
     # 基本判定
@@ -39,7 +39,7 @@ sub palettePreset {
     foreach my $name (grep { $data::class{$_}{type} =~ /spell/ } @data::class_names){
       next if !$::pc{'lv' . $data::class{$name}{id} };
       $text .= "\n";
-      $text .= "###\n" if $bot{'TKY'};
+      $text .= "###\n" if $bot{TKY};
       $text .= "### ■呪文行使\n";
       $text .= "//行使修正=0\n";
       last;
@@ -50,18 +50,18 @@ sub palettePreset {
       $text .= "2d+{".abilityToName($data::class{$name}{cast})."}+{$name}".addNum($::pc{spellCastModValue})." $data::class{$name}{magic}呪文行使\n";
     }
     # 攻撃
-    foreach (1 .. $::pc{'weaponNum'}){
+    foreach (1 .. $::pc{weaponNum}){
       next if (
         $::pc{'weapon'.$_.'HitMod'}.$::pc{'weapon'.$_.'Power'}.$::pc{'weapon'.$_.'PowerMod'} eq ''
       );
       $text .= "\n";
-      $text .= "###\n" if $bot{'TKY'};
+      $text .= "###\n" if $bot{TKY};
       $text .= "### ■武器攻撃系\n";
       $text .= "//命中修正=0\n";
       $text .= "//ダメージ修正=0\n";
       last;
     }
-    foreach (1 .. $::pc{'weaponNum'}){
+    foreach (1 .. $::pc{weaponNum}){
       next if (
         $::pc{'weapon'.$_.'HitMod'}.$::pc{'weapon'.$_.'Power'}.$::pc{'weapon'.$_.'PowerMod'} eq ''
       );
@@ -90,7 +90,7 @@ sub palettePreset {
     }
 
     # 回避・抵抗
-    $text .= "###\n" if $bot{'TKY'};
+    $text .= "###\n" if $bot{TKY};
     $text .= "### ■回避・抵抗\n";
     $text .= "//回避修正=0\n";
     $text .= "//盾受け修正=0\n";
@@ -100,7 +100,7 @@ sub palettePreset {
     $text .= "2d+{魂魄反射}+{冒険者レベル}".addNum($::pc{statusResistMod})."+{抵抗修正} 呪文抵抗\n";
     
     #
-    $text .= "###\n" if $bot{'YTC'} || $bot{'TKY'};
+    $text .= "###\n" if $bot{YTC} || $bot{TKY};
   }
   ## 魔物
   elsif($type eq 'm') {

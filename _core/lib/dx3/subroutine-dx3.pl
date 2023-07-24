@@ -11,11 +11,11 @@ use Fcntl;
 ### バージョンアップデート --------------------------------------------------
 sub data_update_chara {
   my %pc = %{$_[0]};
-  my $ver = $pc{'ver'};
+  my $ver = $pc{ver};
   $ver =~ s/^([0-9]+)\.([0-9]+)\.([0-9]+)$/$1.$2$3/;
   if($ver && $ver < 1.10003){
-    $pc{'comboCalcOff'} = 1;
-    foreach my $num (1 .. $pc{'comboNum'}){
+    $pc{comboCalcOff} = 1;
+    foreach my $num (1 .. $pc{comboNum}){
       $pc{"combo${num}Skill"} =~ s/[〈〉<>]//g;
       foreach (1..5) {
         $pc{"combo${num}DiceAdd".$_}  = $pc{"combo${num}Dice".$_};
@@ -24,34 +24,34 @@ sub data_update_chara {
     }
   }
   if($ver < 1.11001){
-    $pc{'paletteUseBuff'} = 1;
+    $pc{paletteUseBuff} = 1;
   }
   if($ver < 1.12012){
-    foreach my $num (1 .. $pc{'historyNum'}){
+    foreach my $num (1 .. $pc{historyNum}){
       $pc{"history${num}ExpApply".$_} = 1 if $pc{"history${num}Exp".$_};
     }
   }
   if($ver < 1.12015){
-    $pc{'skillRideNum'} = $pc{'skillNum'};
-    $pc{'skillArtNum'}  = $pc{'skillNum'};
-    $pc{'skillKnowNum'} = $pc{'skillNum'};
-    $pc{'skillInfoNum'} = $pc{'skillNum'};
+    $pc{skillRideNum} = $pc{skillNum};
+    $pc{skillArtNum}  = $pc{skillNum};
+    $pc{skillKnowNum} = $pc{skillNum};
+    $pc{skillInfoNum} = $pc{skillNum};
   }
   if($ver < 1.13002){
-    ($pc{'characterName'},$pc{'characterNameRuby'}) = split(':', $pc{'characterName'});
-    ($pc{'aka'},$pc{'akaRuby'}) = split(':', $pc{'aka'});
+    ($pc{characterName},$pc{characterNameRuby}) = split(':', $pc{characterName});
+    ($pc{aka},$pc{akaRuby}) = split(':', $pc{aka});
   }
   if($ver < 1.22014){
     foreach ([0,'Body'], [1,'Sense'], [2,'Mind'], [3,'Social']){
-      my $base1 = exists $data::syndrome_status{$pc{'syndrome1'}} ? $data::syndrome_status{$pc{'syndrome1'}}[@$_[0]] : 0;
-      my $base2 = exists $data::syndrome_status{$pc{'syndrome2'}} ? $data::syndrome_status{$pc{'syndrome2'}}[@$_[0]] : 0;
+      my $base1 = exists $data::syndrome_status{$pc{syndrome1}} ? $data::syndrome_status{$pc{syndrome1}}[@$_[0]] : 0;
+      my $base2 = exists $data::syndrome_status{$pc{syndrome2}} ? $data::syndrome_status{$pc{syndrome2}}[@$_[0]] : 0;
       $pc{'sttBase'.@$_[1]} = 0;
       $pc{'sttBase'.@$_[1]} += $base1;
-      $pc{'sttBase'.@$_[1]} += $pc{'syndrome2'} ? $base2 : $base1;
+      $pc{'sttBase'.@$_[1]} += $pc{syndrome2} ? $base2 : $base1;
     }
   }
-  $pc{'ver'} = $main::ver;
-  $pc{'lasttimever'} = $ver;
+  $pc{ver} = $main::ver;
+  $pc{lasttimever} = $ver;
   return %pc;
 }
 

@@ -9,35 +9,35 @@ our $ver = "1.23.003";
 our %in;
 for (param()){ $in{$_} = param($_); }
 
-my $mode = $in{'mode'};
+my $mode = $in{mode};
 
 if($mode eq 'register'){
-  if($in{'id'})    { require $set::lib_register; }    #登録処理
-  else               { require $set::lib_form; }        #新規登録フォーム
+  if($in{id})    { require $set::lib_register; }    #登録処理
+  else           { require $set::lib_form; }        #新規登録フォーム
 }
 elsif($mode eq 'option'){
-  if($in{'name'})  { require $set::lib_register; }    #オプション変更処理
-  else               { require $set::lib_form; }        #オプションフォーム
+  if($in{name})  { require $set::lib_register; }    #オプション変更処理
+  else           { require $set::lib_form; }        #オプションフォーム
 }
 elsif($mode eq 'passchange'){
   require $set::lib_register;    #パスワード変更処理
 }
 elsif($mode eq 'login')   {
-  if($in{'id'}) { &log_in($in{'id'},$in{'password'}); }  #ログイン
-  else            { require $set::lib_form; }                  #ログインフォーム
+  if($in{id}) { &log_in($in{id},$in{password}); }  #ログイン
+  else        { require $set::lib_form; }                  #ログインフォーム
 }
 elsif($mode eq 'reminder')   {
-  if($in{'mail'}) { require $set::lib_reminder; }  #IDリマインダ
-  elsif($in{'id'}){ require $set::lib_reminder; }  #メール送信
-  else              { require $set::lib_form; }      #リマインダフォーム
+  if($in{mail}) { require $set::lib_reminder; }  #IDリマインダ
+  elsif($in{id}){ require $set::lib_reminder; }  #メール送信
+  else          { require $set::lib_form; }      #リマインダフォーム
 }
 elsif($mode eq 'reset')   {
-  if($in{'password'}) { require $set::lib_reminder; }  #パスリセット処理
-  else                  { require $set::lib_form; }  #パスリセットフォーム
+  if($in{password}) { require $set::lib_reminder; }  #パスリセット処理
+  else              { require $set::lib_form; }  #パスリセットフォーム
 }
 elsif($mode eq 'making')   {
-  if($in{'make'})     { require $set::lib_making; }  #キャラクター作成
-  else                  { require $set::lib_list_make; }  #キャラクター作成フォーム
+  if($in{make})     { require $set::lib_making; }  #キャラクター作成
+  else              { require $set::lib_list_make; }  #キャラクター作成フォーム
 }
 elsif($mode eq 'logout')     { &log_out; }   #ログアウト
 elsif($mode eq 'option')     { require $set::lib_form; }   #オプション
@@ -54,13 +54,13 @@ elsif($mode eq 'img-delete') { require $set::lib_delete; } #画像削除
 elsif($mode eq 'palette')    { require $set::lib_palette; }#チャットパレット表示
 elsif($mode eq 'json')       { require $set::lib_json; }   #外部アプリ連携
 elsif($mode eq 'js-consts')  { &printJS('consts') }   #編集
-elsif($mode eq 'image')      { &imageRedirect($in{'id'}); }   #外部アプリ連携
-elsif($in{'id'}) { require $set::lib_view; }   #シート表示
-elsif($in{'url'}) { require $set::lib_view; }   #シート表示（コンバート）
+elsif($mode eq 'image')      { &imageRedirect($in{id}); }   #外部アプリ連携
+elsif($in{id})  { require $set::lib_view; }   #シート表示
+elsif($in{url}) { require $set::lib_view; }   #シート表示（コンバート）
 else {
-  if   ($in{'type'} eq 'm' && $set::lib_list_mons){ require $set::lib_list_mons; }
-  elsif($in{'type'} eq 'i' && $set::lib_list_item){ require $set::lib_list_item; }
-  elsif($in{'type'} eq 'a' && $set::lib_list_arts){ require $set::lib_list_arts; }
+  if   ($in{type} eq 'm' && $set::lib_list_mons){ require $set::lib_list_mons; }
+  elsif($in{type} eq 'i' && $set::lib_list_item){ require $set::lib_list_item; }
+  elsif($in{type} eq 'a' && $set::lib_list_arts){ require $set::lib_list_arts; }
   else { require $set::lib_list_char; }
 }   #一覧表示
 

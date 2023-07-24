@@ -5,7 +5,7 @@ use utf8;
 use open ":utf8";
 use HTML::Template;
 
-my $mode = $::in{'mode'};
+my $mode = $::in{mode};
 my $LOGIN_ID = check;
 if($LOGIN_ID && $mode =~ /register|login/){ print "Location: ./\n\n"; }
 
@@ -18,7 +18,7 @@ if($mode eq 'register'){
   close($FH);
 }
 if($mode eq 'reset'){
-  $token = $::in{'code'};
+  $token = $::in{code};
 }
 
 ### テンプレート読み込み #############################################################################
@@ -42,7 +42,7 @@ if($mode eq 'option' || $mode eq 'passchange'){
 if($mode eq 'convertform'){
   my @urls;
   foreach (keys %set::convert_url){
-    push(@urls, { 'URL' => $_ });
+    push(@urls, { URL => $_ });
   }
   $INDEX->param(ConvertURLs => \@urls);
 }

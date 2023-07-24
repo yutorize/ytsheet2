@@ -9,8 +9,8 @@ sub palettePreset {
   my $type = shift;
   my $text;
   my %bot;
-  if   (!$tool)           { $bot{'YTC'} = 1; }
-  elsif($tool eq 'bcdice'){ $bot{'BCD'} = 1; }
+  if   (!$tool)           { $bot{YTC} = 1; }
+  elsif($tool eq 'bcdice'){ $bot{BCD} = 1; }
   
   return $text;
 }
@@ -21,8 +21,8 @@ sub palettePresetSimple {
   my $type = shift;
   my $text;
   my %bot;
-  if   (!$tool)           { $bot{'YTC'} = 1; }
-  elsif($tool eq 'bcdice'){ $bot{'BCD'} = 1; }
+  if   (!$tool)           { $bot{YTC} = 1; }
+  elsif($tool eq 'bcdice'){ $bot{BCD} = 1; }
   
   return $text;
 }

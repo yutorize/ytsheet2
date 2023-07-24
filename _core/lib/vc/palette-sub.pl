@@ -9,9 +9,9 @@ sub palettePreset {
   my $type = shift;
   my $text;
   my %bot;
-  if   (!$tool)           { $bot{'YTC'} = 1; }
-  elsif($tool eq 'tekey' ){ $bot{'TKY'} = $bot{'BCD'} = 1; }
-  elsif($tool eq 'bcdice'){ $bot{'BCD'} = 1; }
+  if   (!$tool)           { $bot{YTC} = 1; }
+  elsif($tool eq 'tekey' ){ $bot{TKY} = $bot{BCD} = 1; }
+  elsif($tool eq 'bcdice'){ $bot{BCD} = 1; }
   
   if(!$type){
     # 基本判定
@@ -30,7 +30,7 @@ sub palettePreset {
     $text .= "2d6+{行動値} 【行動値】判定\n";
     $text .= "2d6+{耐久値} 【耐久値】判定\n";
     
-    $text .= "###\n" if $bot{'YTC'} || $bot{'TKY'};
+    $text .= "###\n" if $bot{YTC} || $bot{TKY};
   }
   
   return $text;
@@ -68,20 +68,20 @@ sub paletteProperties {
   
   if  (!$type){
     push @propaties, "### ■能力値";
-    push @propaties, "//レベル=$::pc{'level'}";
-    push @propaties, "//バイタリティ=$::pc{'vitality'}";
-    push @propaties, "//テクニック=$::pc{'technic'}";
-    push @propaties, "//クレバー=$::pc{'clever'}";
-    push @propaties, "//カリスマ=$::pc{'carisma'}";
-    push @propaties, "//命中値=$::pc{'battleTotalAcc'}";
-    push @propaties, "//詠唱値=$::pc{'battleTotalSpl'}";
-    push @propaties, "//回避値=$::pc{'battleTotalEva'}";
-    push @propaties, "//攻撃値=$::pc{'battleTotalAtk'}";
-    push @propaties, "//意志値=$::pc{'battleTotalDet'}";
-    push @propaties, "//物防値=$::pc{'battleTotalDef'}";
-    push @propaties, "//魔防値=$::pc{'battleTotalMdf'}";
-    push @propaties, "//行動値=$::pc{'battleTotalIni'}";
-    push @propaties, "//耐久値=$::pc{'battleTotalStr'}";
+    push @propaties, "//レベル=$::pc{level}";
+    push @propaties, "//バイタリティ=$::pc{vitality}";
+    push @propaties, "//テクニック=$::pc{technic}";
+    push @propaties, "//クレバー=$::pc{clever}";
+    push @propaties, "//カリスマ=$::pc{carisma}";
+    push @propaties, "//命中値=$::pc{battleTotalAcc}";
+    push @propaties, "//詠唱値=$::pc{battleTotalSpl}";
+    push @propaties, "//回避値=$::pc{battleTotalEva}";
+    push @propaties, "//攻撃値=$::pc{battleTotalAtk}";
+    push @propaties, "//意志値=$::pc{battleTotalDet}";
+    push @propaties, "//物防値=$::pc{battleTotalDef}";
+    push @propaties, "//魔防値=$::pc{battleTotalMdf}";
+    push @propaties, "//行動値=$::pc{battleTotalIni}";
+    push @propaties, "//耐久値=$::pc{battleTotalStr}";
     #push @propaties, "### ■代入パラメータ";
   }
   

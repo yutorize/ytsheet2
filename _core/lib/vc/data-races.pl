@@ -6,18 +6,18 @@ package data;
 
 ### 種族データ --------------------------------------------------
 our @races = (
-  {'name' => 'ヒューマン' },
-  {'name' => 'エルフ'     },
-  {'name' => 'ドワーフ'   },
-  {'name' => 'ティターン' },
-  {'name' => 'センリ'     },
-  {'name' => 'ピクシー'   },
+  {name => 'ヒューマン' },
+  {name => 'エルフ'     },
+  {name => 'ドワーフ'   },
+  {name => 'ティターン' },
+  {name => 'センリ'     },
+  {name => 'ピクシー'   },
 );
 
 sub raceNameList {
   my @list;
   foreach my $data (@races){
-    push(@list, $data->{'name'});
+    push(@list, $data->{name});
   }
   return @list;
 }

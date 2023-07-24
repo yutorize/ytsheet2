@@ -5,20 +5,20 @@ use utf8;
 use open ":utf8";
 
 my $LOGIN_ID = check;
-my $mode = $::in{'mode'};
+my $mode = $::in{mode};
 my $message;
 
 my $data_dir; my $data_list;
-   if($::in{'type'} eq 'm'){ $data_dir = $set::mons_dir; $data_list = $set::monslist; }
-elsif($::in{'type'} eq 'i'){ $data_dir = $set::item_dir; $data_list = $set::itemlist; }
-elsif($::in{'type'} eq 'a'){ $data_dir = $set::arts_dir; $data_list = $set::artslist; }
+   if($::in{type} eq 'm'){ $data_dir = $set::mons_dir; $data_list = $set::monslist; }
+elsif($::in{type} eq 'i'){ $data_dir = $set::item_dir; $data_list = $set::itemlist; }
+elsif($::in{type} eq 'a'){ $data_dir = $set::arts_dir; $data_list = $set::artslist; }
 else                       { $data_dir = $set::char_dir; $data_list = $set::listfile; }
 
-if(!$::in{'id'}){ error('IDがありません。'); }
-if(!$::in{'check1'} || !$::in{'check2'} || !$::in{'check3'}){ error('確認のチェックが入っていません。'); }
+if(!$::in{id}){ error('IDがありません。'); }
+if(!$::in{check1} || !$::in{check2} || !$::in{check3}){ error('確認のチェックが入っていません。'); }
 
 my ($sheet_id, $sheet_user, $file, $user);
-($sheet_id, undef, $file, undef, $user) = getfile($::in{'id'},$::in{'pass'},$LOGIN_ID);
+($sheet_id, undef, $file, undef, $user) = getfile($::in{id},$::in{pass},$LOGIN_ID);
 if(!$file){ error('データが見つかりません。'); }
 my $file_dir = $user ? '_'.$user.'/'.$file : $file;
 
@@ -29,7 +29,7 @@ if($mode eq 'delete'){
   my @list = <$FH>;
   seek($FH, 0, 0);
   foreach (@list){
-    if(index($_, "$::in{'id'}<") == 0){
+    if(index($_, "$::in{id}<") == 0){
       $message .= 'リストから削除しました。<br>';
     }else{
       print $FH $_;
@@ -43,7 +43,7 @@ if($mode eq 'delete'){
   my @list = <$FH>;
   seek($FH, 0, 0);
   foreach (@list){
-    if(index($_, "$::in{'id'}<") == 0){
+    if(index($_, "$::in{id}<") == 0){
       $message .= 'IDを削除しました。<br>';
     } else {
       print $FH $_;
@@ -110,7 +110,7 @@ elsif($mode eq 'img-delete'){
     if (unlink "${data_dir}${file_dir}/image.gif") { $message .= 'キャラクター画像を削除しました。<br>'; }
     if (unlink "${data_dir}${file_dir}/image.webp") { $message .= 'キャラクター画像を削除しました。<br>'; }
   }
-  $message .= '<a href="./?id='.$::in{'id'}.'">キャラクターシートを確認</a>';
+  $message .= '<a href="./?id='.$::in{id}.'">キャラクターシートを確認</a>';
   
   
   sysopen (my $FH, $::core_dir.'/data/delete.cgi', O_WRONLY | O_APPEND | O_CREAT, 0666) or $message .= 'デリートリストが開けませんでした。';

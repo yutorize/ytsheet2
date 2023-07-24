@@ -24,12 +24,12 @@ sub abilityToName {
 ### バージョンアップデート --------------------------------------------------
 sub data_update_chara {
   my %pc = %{$_[0]};
-  my $ver = $pc{'ver'};
-  delete $pc{'updateMessage'};
+  my $ver = $pc{ver};
+  delete $pc{updateMessage};
   $ver =~ s/^([0-9]+)\.([0-9]+)\.([0-9]+)$/$1.$2$3/;
 
-  $pc{'ver'} = $main::ver;
-  $pc{'lasttimever'} = $ver;
+  $pc{ver} = $main::ver;
+  $pc{lasttimever} = $ver;
   return %pc;
 }
 

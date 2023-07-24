@@ -12,8 +12,8 @@ require $set::data_faith;
 
 ### 出力 #############################################################################################
 foreach (keys %data::class){
-  $data::class{$_}{'magic'}{'data'} &&= 1 if exists($data::class{$_}{'magic'});
-  $data::class{$_}{'craft'}{'data'} &&= 1 if exists($data::class{$_}{'craft'});
+  $data::class{$_}{magic}{data} &&= 1 if exists($data::class{$_}{magic});
+  $data::class{$_}{craft}{data} &&= 1 if exists($data::class{$_}{craft});
 }
 my %aRank; my %nRank;
 $aRank{@$_[0]} = { num => @$_[1], free => @$_[2] } foreach(@set::adventurer_rank);

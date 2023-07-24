@@ -21,47 +21,47 @@ our %pc = pcDataGet();
 
 ### タグ置換前処理 ###################################################################################
 ### 閲覧禁止データ --------------------------------------------------
-if($pc{'forbidden'} && !$pc{'yourAuthor'}){
-  my $author = $pc{'playerName'};
-  my $protect   = $pc{'protect'};
-  my $forbidden = $pc{'forbidden'};
+if($pc{forbidden} && !$pc{yourAuthor}){
+  my $author = $pc{playerName};
+  my $protect   = $pc{protect};
+  my $forbidden = $pc{forbidden};
   
   if($forbidden eq 'all'){
     %pc = ();
   }
   if($forbidden ne 'battle'){
-    $pc{'aka'} = '';
-    $pc{'characterName'} = noiseText(6,14);
-    $pc{'group'} = $pc{'areaTags'} = $pc{'tags'} = '';
+    $pc{aka} = '';
+    $pc{characterName} = noiseText(6,14);
+    $pc{group} = $pc{areaTags} = $pc{tags} = '';
     
-    $pc{'age'}    = noiseText(1,2);
-    $pc{'gender'} = noiseText(1,2);
-    $pc{'eye'}    = noiseText(1,6);
-    $pc{'skin'}   = noiseText(1,6);
-    $pc{'hair'}   = noiseText(1,6);
-    $pc{'height'} = noiseText(2,4);
+    $pc{age}    = noiseText(1,2);
+    $pc{gender} = noiseText(1,2);
+    $pc{eye}    = noiseText(1,6);
+    $pc{skin}   = noiseText(1,6);
+    $pc{hair}   = noiseText(1,6);
+    $pc{height} = noiseText(2,4);
 
-    $pc{'freeNote'} = '';
+    $pc{freeNote} = '';
     foreach(1..int(rand 5)+4){
-      $pc{'freeNote'} .= '　'.noiseText(18,40)."<br>";
+      $pc{freeNote} .= '　'.noiseText(18,40)."<br>";
     }
-    $pc{'freeHistory'} = '';
+    $pc{freeHistory} = '';
   }
 
-  $pc{'level'} = noiseText(1);
+  $pc{level} = noiseText(1);
   
-  $pc{'race'}  = noiseText(3,8);
-  $pc{'class'} = noiseText(3,8);
-  $pc{'style1'} = noiseText(3,8);
-  $pc{'style2'} = noiseText(3,8);
-  $pc{'vitality'} = noiseText(1);
-  $pc{'technic'}  = noiseText(1);
-  $pc{'clever'}   = noiseText(1);
-  $pc{'carisma'}  = noiseText(1);
-  $pc{'hpMax'}  = noiseText(1,2);
-  $pc{'staminaAdd'}  = 0;
-  $pc{'staminaMax'}  = noiseText(1);
-  $pc{'staminaHalf'}  = noiseText(1);
+  $pc{race}  = noiseText(3,8);
+  $pc{class} = noiseText(3,8);
+  $pc{style1} = noiseText(3,8);
+  $pc{style2} = noiseText(3,8);
+  $pc{vitality} = noiseText(1);
+  $pc{technic}  = noiseText(1);
+  $pc{clever}   = noiseText(1);
+  $pc{carisma}  = noiseText(1);
+  $pc{hpMax}  = noiseText(1,2);
+  $pc{staminaAdd}  = 0;
+  $pc{staminaMax}  = noiseText(1);
+  $pc{staminaHalf}  = noiseText(1);
 
   foreach my $type ('Base','Race','Subtotal','Weapon','Head','Body','Acc1','Acc2','Other','Total'){
     $pc{'battle'.$type.'Name'} = noiseText(3,10);
@@ -73,35 +73,35 @@ if($pc{'forbidden'} && !$pc{'yourAuthor'}){
     $pc{'speciality'.$num.'Name'} = noiseText(3,8);
     $pc{'speciality'.$num.'Note'} = noiseText(8,22);
   }
-  $pc{'goodsNum'} = int(rand 4)+2;
-  foreach my $num (1..$pc{'goodsNum'}){
+  $pc{goodsNum} = int(rand 4)+2;
+  foreach my $num (1..$pc{goodsNum}){
     $pc{'goods'.$num.'Name'} = noiseText(3,8);
     $pc{'goods'.$num.'Type'} = noiseText(2,5);
     $pc{'goods'.$num.'Note'} = noiseText(8,22);
   }
-  $pc{'itemsNum'} = int(rand 4)+1;
-  foreach my $num (1..$pc{'itemsNum'}){
+  $pc{itemsNum} = int(rand 4)+1;
+  foreach my $num (1..$pc{itemsNum}){
     $pc{'item'.$num.'Name'} = noiseText(3,8);
     $pc{'item'.$num.'Type'} = noiseText(2,5);
     $pc{'item'.$num.'Note'} = noiseText(8,22);
   }
 
-  $pc{'resultPoint'} = noiseText(1,3);
+  $pc{resultPoint} = noiseText(1,3);
 
-  $pc{'historyNum'} = 0;
-  $pc{'history0Result'}   = noiseText(1,3);
+  $pc{historyNum} = 0;
+  $pc{history0Result}   = noiseText(1,3);
   
-  $pc{'playerName'} = $author;
-  $pc{'protect'} = $protect;
-  $pc{'forbidden'} = $forbidden;
-  $pc{'forbiddenMode'} = 1;
+  $pc{playerName} = $author;
+  $pc{protect} = $protect;
+  $pc{forbidden} = $forbidden;
+  $pc{forbiddenMode} = 1;
 }
 
 ### その他 --------------------------------------------------
 $SHEET->param(rawName => $pc{characterName} || ($pc{aka} ? "“$pc{aka}”" : ''));
 
 ### タグ置換 #########################################################################################
-if($pc{'ver'}){
+if($pc{ver}){
   foreach (keys %pc) {
     next if($_ =~ /^image/);
     if($_ =~ /^(?:items|freeNote|freeHistory|cashbook)$/){
@@ -109,16 +109,16 @@ if($pc{'ver'}){
     }
     $pc{$_} = tagUnescape($pc{$_});
 
-    $pc{$_} = noiseTextTag $pc{$_} if $pc{'forbiddenMode'};
+    $pc{$_} = noiseTextTag $pc{$_} if $pc{forbiddenMode};
   }
 }
 else {
-  $pc{'items'} = $pc{'itemsView'} if $pc{'itemsView'};
-  $pc{'freeNote'} = $pc{'freeNoteView'} if $pc{'freeNoteView'};
+  $pc{items} = $pc{itemsView} if $pc{itemsView};
+  $pc{freeNote} = $pc{freeNoteView} if $pc{freeNoteView};
 }
 
 ### アップデート --------------------------------------------------
-if($pc{'ver'}){
+if($pc{ver}){
   %pc = data_update_chara(\%pc);
 }
 
@@ -126,7 +126,7 @@ if($pc{'ver'}){
 setColors();
 
 ### その他 --------------------------------------------------
-if(!$pc{'forbidden'}){
+if(!$pc{forbidden}){
   foreach my $stt ('Acc','Spl','Eva','Atk','Det','Def','Mdf','Ini','Str'){
     foreach my $type ('Race','Weapon','Head','Body','Acc1','Acc2','Other'){
       $pc{'battle'.$type.$stt} &&= addNum $pc{'battle'.$type.$stt};
@@ -139,35 +139,35 @@ while (my ($key, $value) = each(%pc)){
   $SHEET->param("$key" => $value);
 }
 ### ID / URL--------------------------------------------------
-$SHEET->param(id => $::in{'id'});
+$SHEET->param(id => $::in{id});
 
-if($::in{'url'}){
+if($::in{url}){
   $SHEET->param(convertMode => 1);
-  $SHEET->param(convertUrl => $::in{'url'});
+  $SHEET->param(convertUrl => $::in{url});
 }
 
 ### キャラクター名 --------------------------------------------------
-$SHEET->param(characterName => "<ruby>$pc{'characterName'}<rp>(</rp><rt>$pc{'characterNameRuby'}</rt><rp>)</rp></ruby>") if $pc{'characterNameRuby'};
+$SHEET->param(characterName => "<ruby>$pc{characterName}<rp>(</rp><rt>$pc{characterNameRuby}</rt><rp>)</rp></ruby>") if $pc{characterNameRuby};
 
 ### 二つ名 --------------------------------------------------
-$SHEET->param(aka => "<ruby>$pc{'aka'}<rp>(</rp><rt>$pc{'akaRuby'}</rt><rp>)</rp></ruby>") if $pc{'akaRuby'};
+$SHEET->param(aka => "<ruby>$pc{aka}<rp>(</rp><rt>$pc{akaRuby}</rt><rp>)</rp></ruby>") if $pc{akaRuby};
 
 ### プレイヤー名 --------------------------------------------------
 if($set::playerlist){
-  my $pl_id = (split(/-/, $::in{'id'}))[0];
-  $SHEET->param(playerName => '<a href="'.$set::playerlist.'?id='.$pl_id.'">'.$pc{'playerName'}.'</a>');
+  my $pl_id = (split(/-/, $::in{id}))[0];
+  $SHEET->param(playerName => '<a href="'.$set::playerlist.'?id='.$pl_id.'">'.$pc{playerName}.'</a>');
 }
 ### グループ --------------------------------------------------
-if($::in{'url'}){
+if($::in{url}){
   $SHEET->param(group => '');
 }
 else {
-  if(!$pc{'group'}) {
-    $pc{'group'} = $set::group_default;
+  if(!$pc{group}) {
+    $pc{group} = $set::group_default;
     $SHEET->param(group => $set::group_default);
   }
   foreach (@set::groups){
-    if($pc{'group'} eq @$_[0]){
+    if($pc{group} eq @$_[0]){
       $SHEET->param(groupName => @$_[2]);
       last;
     }
@@ -176,32 +176,32 @@ else {
 
 ### タグ --------------------------------------------------
 my @tags;
-foreach(split(/ /, $pc{'tags'})){
+foreach(split(/ /, $pc{tags})){
   push(@tags, {
-    "URL"  => uri_escape_utf8($_),
-    "TEXT" => $_,
+    URL  => uri_escape_utf8($_),
+    TEXT => $_,
   });
 }
 $SHEET->param(Tags => \@tags);
 
 ### セリフ --------------------------------------------------
-$pc{'words'} =~ s/<br>/\n/g;
-$pc{'words'} =~ s/^([「『（])/<span class="brackets">$1<\/span>/gm;
-$pc{'words'} =~ s/(.+?(?:[，、。？」』）]|$))/<span>$1<\/span>/g;
-$pc{'words'} =~ s/\n<span>　/\n<span>/g;
-$pc{'words'} =~ s/\n/<br>/g;
-$SHEET->param(words => $pc{'words'});
-$SHEET->param(wordsX => ($pc{'wordsX'} eq '左' ? 'left:0;' : 'right:0;'));
-$SHEET->param(wordsY => ($pc{'wordsY'} eq '下' ? 'bottom:0;' : 'top:0;'));
+$pc{words} =~ s/<br>/\n/g;
+$pc{words} =~ s/^([「『（])/<span class="brackets">$1<\/span>/gm;
+$pc{words} =~ s/(.+?(?:[，、。？」』）]|$))/<span>$1<\/span>/g;
+$pc{words} =~ s/\n<span>　/\n<span>/g;
+$pc{words} =~ s/\n/<br>/g;
+$SHEET->param(words => $pc{words});
+$SHEET->param(wordsX => ($pc{wordsX} eq '左' ? 'left:0;' : 'right:0;'));
+$SHEET->param(wordsY => ($pc{wordsY} eq '下' ? 'bottom:0;' : 'top:0;'));
 
 ### グッズ --------------------------------------------------
 my @goods;
-foreach my $num (1 .. $pc{'goodsNum'}){
+foreach my $num (1 .. $pc{goodsNum}){
   next if(!$pc{'goods'.$num.'Name'} && !$pc{'goods'.$num.'Type'} && !$pc{'goods'.$num.'Note'});
   push(@goods, {
-    "NAME" => textName($pc{'goods'.$num.'Name'}),
-    "TYPE" => textType($pc{'goods'.$num.'Type'}),
-    "NOTE" => $pc{'goods'.$num.'Note'},
+    NAME => textName($pc{'goods'.$num.'Name'}),
+    TYPE => textType($pc{'goods'.$num.'Type'}),
+    NOTE => $pc{'goods'.$num.'Note'},
   });
 }
 $SHEET->param(Goods => \@goods);
@@ -226,13 +226,13 @@ sub textType {
 
 ### アイテム --------------------------------------------------
 my @items;
-foreach my $num (1 .. $pc{'itemsNum'}){
+foreach my $num (1 .. $pc{itemsNum}){
   next if(!$pc{'item'.$num.'Name'} && !$pc{'item'.$num.'Type'} && !$pc{'item'.$num.'Note'});
   push(@items, {
-    "NAME" => $pc{'item'.$num.'Name'},
-    "TYPE" => textType($pc{'item'.$num.'Type'}),
-    "LV"   => $pc{'item'.$num.'Lv'},
-    "NOTE" => $pc{'item'.$num.'Note'},
+    NAME => $pc{'item'.$num.'Name'},
+    TYPE => textType($pc{'item'.$num.'Type'}),
+    LV   => $pc{'item'.$num.'Lv'},
+    NOTE => $pc{'item'.$num.'Note'},
   });
 }
 $SHEET->param(Items => \@items);
@@ -248,17 +248,17 @@ foreach (
   my $type = @{$_}[0];
   my $head = @{$_}[1];
   push(@armaments, {
-    "HEAD" => $head,
-    "NAME" => $pc{'battle'.$type.'Name'},
-    "ACC"  => $pc{'battle'.$type.'Acc'},
-    "SPL"  => $pc{'battle'.$type.'Spl'},
-    "EVA"  => $pc{'battle'.$type.'Eva'},
-    "ATK"  => $pc{'battle'.$type.'Atk'},
-    "DET"  => $pc{'battle'.$type.'Det'},
-    "DEF"  => $pc{'battle'.$type.'Def'},
-    "MDF"  => $pc{'battle'.$type.'Mdf'},
-    "INI"  => $pc{'battle'.$type.'Ini'},
-    "STR"  => $pc{'battle'.$type.'Str'},
+    HEAD => $head,
+    NAME => $pc{'battle'.$type.'Name'},
+    ACC  => $pc{'battle'.$type.'Acc'},
+    SPL  => $pc{'battle'.$type.'Spl'},
+    EVA  => $pc{'battle'.$type.'Eva'},
+    ATK  => $pc{'battle'.$type.'Atk'},
+    DET  => $pc{'battle'.$type.'Det'},
+    DEF  => $pc{'battle'.$type.'Def'},
+    MDF  => $pc{'battle'.$type.'Mdf'},
+    INI  => $pc{'battle'.$type.'Ini'},
+    STR  => $pc{'battle'.$type.'Str'},
   });
 }
 $SHEET->param(Armaments => \@armaments);
@@ -266,8 +266,8 @@ $SHEET->param(Armaments => \@armaments);
 ### 履歴 --------------------------------------------------
 my @history;
 my $h_num = 0;
-$pc{'history0Title'} = 'キャラクター作成';
-foreach (0 .. $pc{'historyNum'}){
+$pc{history0Title} = 'キャラクター作成';
+foreach (0 .. $pc{historyNum}){
   #next if !$pc{'history'.$_.'Title'};
   $h_num++ if $pc{'history'.$_.'Gm'};
   if ($set::log_dir && $pc{'history'.$_.'Date'} =~ s/([^0-9]*?_[0-9]+(?:#[0-9a-zA-Z]+?)?)$//){
@@ -286,33 +286,33 @@ foreach (0 .. $pc{'historyNum'}){
   $pc{'history'.$_.'Money'} =~ s/([0-9]+)/$1<wbr>/g;
   $pc{'history'.$_.'Money'} =~ s/([0-9]+)/commify($1);/ge;
   push(@history, {
-    "NUM"    => ($pc{'history'.$_.'Gm'} ? $h_num : ''),
-    "DATE"   => $pc{'history'.$_.'Date'},
-    "TITLE"  => $pc{'history'.$_.'Title'},
-    "RESULT" => $pc{'history'.$_.'Result'},
-    "GM"     => $pc{'history'.$_.'Gm'},
-    "MEMBER" => $members,
-    "NOTE"   => $pc{'history'.$_.'Note'},
+    NUM    => ($pc{'history'.$_.'Gm'} ? $h_num : ''),
+    DATE   => $pc{'history'.$_.'Date'},
+    TITLE  => $pc{'history'.$_.'Title'},
+    RESULT => $pc{'history'.$_.'Result'},
+    GM     => $pc{'history'.$_.'Gm'},
+    MEMBER => $members,
+    NOTE   => $pc{'history'.$_.'Note'},
   } );
 }
 $SHEET->param(History => \@history);
-$SHEET->param(historyExpTotal   => commify $pc{'historyExpTotal'}   );
-$SHEET->param(payment           => commify $pc{'payment'}           );
-$SHEET->param(historyMoneyTotal => commify $pc{'historyMoneyTotal'} );
+$SHEET->param(historyExpTotal   => commify $pc{historyExpTotal}   );
+$SHEET->param(payment           => commify $pc{payment}           );
+$SHEET->param(historyMoneyTotal => commify $pc{historyMoneyTotal} );
 
 ### 携帯品 --------------------------------------------------
-$pc{"items"} =~ s/[@＠]\[\s*?((?:[\+\-\*\/]?[0-9]+)+)\s*?\]/<i class="weight">$1<\/i>/g;
-$SHEET->param(items => $pc{'items'});
+$pc{items} =~ s/[@＠]\[\s*?((?:[\+\-\*\/]?[0-9]+)+)\s*?\]/<i class="weight">$1<\/i>/g;
+$SHEET->param(items => $pc{items});
 
 ### ゴールド --------------------------------------------------
-if($pc{"money"} =~ /^(?:自動|auto)$/i){
-  $SHEET->param(money => $pc{'moneyTotal'});
+if($pc{money} =~ /^(?:自動|auto)$/i){
+  $SHEET->param(money => $pc{moneyTotal});
 }
-#if($pc{"deposit"} =~ /^(?:自動|auto)$/i){
-#  $SHEET->param(deposit => $pc{'depositTotal'}.' G ／ '.$pc{'debtTotal'});
+#if($pc{deposit} =~ /^(?:自動|auto)$/i){
+#  $SHEET->param(deposit => $pc{depositTotal}.' G ／ '.$pc{debtTotal});
 #}
-$pc{"cashbook"} =~ s/(:(?:\:|&lt;|&gt;))((?:[\+\-\*\/]?[0-9]+)+)/$1.cashCheck($2)/eg;
-  $SHEET->param(cashbook => $pc{'cashbook'});
+$pc{cashbook} =~ s/(:(?:\:|&lt;|&gt;))((?:[\+\-\*\/]?[0-9]+)+)/$1.cashCheck($2)/eg;
+  $SHEET->param(cashbook => $pc{cashbook});
 sub cashCheck(){
   my $text = shift;
   my $num = s_eval($text);
@@ -322,31 +322,31 @@ sub cashCheck(){
 }
 
 ### バックアップ --------------------------------------------------
-if($::in{'id'}){
+if($::in{id}){
   my($selected, $list) = getLogList($set::char_dir, $main::file);
   $SHEET->param(LogList => $list);
   $SHEET->param(selectedLogName => $selected);
-  if($pc{'yourAuthor'} || $pc{'protect'} eq 'password'){
+  if($pc{yourAuthor} || $pc{protect} eq 'password'){
     $SHEET->param(viewLogNaming => 1);
   }
 }
 
 ### フェロー --------------------------------------------------
-$SHEET->param(FellowMode => $::in{'f'});
+$SHEET->param(FellowMode => $::in{f});
 
 ### タイトル --------------------------------------------------
 $SHEET->param(title => $set::title);
-if($pc{'forbidden'} eq 'all' && $pc{'forbiddenMode'}){
+if($pc{forbidden} eq 'all' && $pc{forbiddenMode}){
   $SHEET->param(titleName => '非公開データ');
 }
 else {
-  $SHEET->param(titleName => tagDelete nameToPlain($pc{'characterName'}||"“$pc{'aka'}”"));
+  $SHEET->param(titleName => tagDelete nameToPlain($pc{characterName}||"“$pc{aka}”"));
 }
 
 ### OGP --------------------------------------------------
-$SHEET->param(ogUrl => url().($::in{'url'} ? "?url=$::in{'url'}" : "?id=$::in{'id'}"));
-if($pc{'image'}) { $SHEET->param(ogImg => $pc{'imageURL'}); }
-$SHEET->param(ogDescript => tagDelete "種族:$pc{'race'}　クラス:$pc{'class'}　スタイル:$pc{'style1'}／$pc{'style2'}　レベル:$pc{'level'}　外見:$pc{'gender'}／$pc{'age'}／$pc{'height'}");
+$SHEET->param(ogUrl => url().($::in{url} ? "?url=$::in{url}" : "?id=$::in{id}"));
+if($pc{image}) { $SHEET->param(ogImg => $pc{imageURL}); }
+$SHEET->param(ogDescript => tagDelete "種族:$pc{race}　クラス:$pc{class}　スタイル:$pc{style1}／$pc{style2}　レベル:$pc{level}　外見:$pc{gender}／$pc{age}／$pc{height}");
 
 ### バージョン等 --------------------------------------------------
 $SHEET->param(ver => $::ver);
@@ -358,25 +358,25 @@ $SHEET->param(defaultImage => $::core_dir.'/skin/vc/img/default_pc.png');
 
 ### メニュー --------------------------------------------------
 my @menu = ();
-if(!$pc{'modeDownload'}){
+if(!$pc{modeDownload}){
   push(@menu, { TEXT => '⏎', TYPE => "href", VALUE => './', });
-  if($::in{'url'}){
-    push(@menu, { TEXT => 'コンバート', TYPE => "href", VALUE => "./?mode=convert&url=$::in{'url'}" });
+  if($::in{url}){
+    push(@menu, { TEXT => 'コンバート', TYPE => "href", VALUE => "./?mode=convert&url=$::in{url}" });
   }
   else {
-    if($pc{'logId'}){
+    if($pc{logId}){
       push(@menu, { TEXT => '過去ログ', TYPE => "onclick", VALUE => 'loglistOn()', });
-      if($pc{'reqdPassword'}){ push(@menu, { TEXT => '復元', TYPE => "onclick", VALUE => "editOn()", }); }
-      else                   { push(@menu, { TEXT => '復元', TYPE => "href"   , VALUE => "./?mode=edit&id=$::in{'id'}&log=$pc{'logId'}", }); }
+      if($pc{reqdPassword}){ push(@menu, { TEXT => '復元', TYPE => "onclick", VALUE => "editOn()", }); }
+      else                 { push(@menu, { TEXT => '復元', TYPE => "href"   , VALUE => "./?mode=edit&id=$::in{id}&log=$pc{logId}", }); }
     }
     else {
-      if(!$pc{'forbiddenMode'}){
+      if(!$pc{forbiddenMode}){
         push(@menu, { TEXT => 'パレット', TYPE => "onclick", VALUE => "chatPaletteOn()",   });
         push(@menu, { TEXT => '出力'    , TYPE => "onclick", VALUE => "downloadListOn()",  });
         push(@menu, { TEXT => '過去ログ', TYPE => "onclick", VALUE => "loglistOn()",      });
       }
-      if($pc{'reqdPassword'}){ push(@menu, { TEXT => '編集', TYPE => "onclick", VALUE => "editOn()", }); }
-      else                   { push(@menu, { TEXT => '編集', TYPE => "href"   , VALUE => "./?mode=edit&id=$::in{'id'}", }); }
+      if($pc{reqdPassword}){ push(@menu, { TEXT => '編集', TYPE => "onclick", VALUE => "editOn()", }); }
+      else                 { push(@menu, { TEXT => '編集', TYPE => "href"   , VALUE => "./?mode=edit&id=$::in{id}", }); }
     }
   }
 }
@@ -387,8 +387,8 @@ $SHEET->param(error => $main::login_error);
 
 ### 出力 #############################################################################################
 print "Content-Type: text/html\n\n";
-if($pc{'modeDownload'}){
-  if($pc{'forbidden'} && $pc{'yourAuthor'}){ $SHEET->param(forbidden => ''); }
+if($pc{modeDownload}){
+  if($pc{forbidden} && $pc{yourAuthor}){ $SHEET->param(forbidden => ''); }
   print downloadModeSheetConvert $SHEET->output;
 }
 else {

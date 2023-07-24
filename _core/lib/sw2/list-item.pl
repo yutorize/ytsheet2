@@ -7,8 +7,8 @@ use HTML::Template;
 
 my $LOGIN_ID = check;
 
-my $mode = $::in{'mode'};
-my $sort = $::in{'sort'};
+my $mode = $::in{mode};
+my $sort = $::in{sort};
 
 #require $set::data_item;
 
@@ -37,7 +37,7 @@ foreach (keys %::in) {
   $::in{$_} =~ s/</&lt;/g;
   $::in{$_} =~ s/>/&gt;/g;
 }
-if(!($mode eq 'mylist' || $::in{'tag'} || $::in{'category'} || $::in{'name'} || $::in{'author'} || $::in{'age'})){
+if(!($mode eq 'mylist' || $::in{tag} || $::in{category} || $::in{name} || $::in{author} || $::in{age})){
   $index_mode = 1;
   $INDEX->param(modeIndex => 1);
 }
@@ -91,14 +91,14 @@ if($mode eq 'mylist'){
 elsif (
      !($set::masterid && $set::masterid eq $LOGIN_ID)
   && !($mode eq 'mylist')
-  && !$::in{'tag'}
+  && !$::in{tag}
 ){
   @list = grep { $_ !~ /^(?:[^<]*?<>){13}[^<0]/ } @list;
 }
 
 ## カテゴリ検索
-my @category_query = split('\s', decode('utf8', $::in{'category'}));
-if($::in{'category'} ne 'all'){
+my @category_query = split('\s', decode('utf8', $::in{category}));
+if($::in{category} ne 'all'){
   foreach (@category_query) {
     my $q = $_;
     if($q =~ s/^-//){ @list = grep { $_ !~ /^(?:[^<]*?<>){6}[^<]*?\Q$q\E/ } @list; } #マイナス検索
@@ -108,17 +108,17 @@ if($::in{'category'} ne 'all'){
 }
 
 ## タグ検索
-my $tag_query = pcTagsEscape(decode('utf8', $::in{'tag'}));
+my $tag_query = pcTagsEscape(decode('utf8', $::in{tag}));
 if($tag_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){12}[^<]*? \Q$tag_query\E / } @list; }
 $INDEX->param(tag => $tag_query);
 
 ## 名前検索
-my $name_query = decode('utf8', $::in{'name'});
+my $name_query = decode('utf8', $::in{name});
 if($name_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){4}[^<]*?\Q$name_query\E/i } @list; }
 $INDEX->param(name => $name_query);
 
 ## 製作時期検索
-my $age_query = decode('utf8', $::in{'age'});
+my $age_query = decode('utf8', $::in{age});
 if($age_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){8}[^<]*?\Q$age_query\E/i } @list; }
 $INDEX->param(age => $age_query);
 
@@ -130,7 +130,7 @@ elsif($sort eq 'date')  { my @tmp = map { (split /<>/)[3] } @list; @list = @list
 ### リストを回す --------------------------------------------------
 my %count;
 my %grouplist;
-my $page = $::in{'page'} ? $::in{'page'} : 1;
+my $page = $::in{page} ? $::in{page} : 1;
 my $pagestart = $page * $set::pagemax - $set::pagemax;
 my $pageend   = $page * $set::pagemax - 1;
 foreach (@list) {
@@ -198,7 +198,7 @@ foreach (@categories){
         $_ == 1 ||
         $_ == $lastpage
       ){
-        $navbar .= '<a href="./?type=i'.$q_links.'&page='.$_.'&sort='.$::in{'sort'}.'">'.$_.'</a> '
+        $navbar .= '<a href="./?type=i'.$q_links.'&page='.$_.'&sort='.$::in{sort}.'">'.$_.'</a> '
       }
       else { $navbar .= '...' }
     }

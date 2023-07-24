@@ -7,8 +7,8 @@ use HTML::Template;
 
 my $LOGIN_ID = check;
 
-my $mode = $::in{'mode'};
-my $sort = $::in{'sort'};
+my $mode = $::in{mode};
+my $sort = $::in{sort};
 
 #require $set::data_item;
 
@@ -37,7 +37,7 @@ foreach (keys %::in) {
   $::in{$_} =~ s/</&lt;/g;
   $::in{$_} =~ s/>/&gt;/g;
 }
-if(!($mode eq 'mylist' || $::in{'tag'} || $::in{'name'} || $::in{'category'} || $::in{'sub'} || $::in{'author'})){
+if(!($mode eq 'mylist' || $::in{tag} || $::in{name} || $::in{category} || $::in{sub} || $::in{author})){
   $index_mode = 1;
   $INDEX->param(modeIndex => 1);
 }
@@ -91,15 +91,15 @@ if($mode eq 'mylist'){
 elsif (
      !($set::masterid && $set::masterid eq $LOGIN_ID)
   && !($mode eq 'mylist')
-  && !$::in{'tag'}
+  && !$::in{tag}
 ){
   @list = grep { $_ !~ /^(?:[^<]*?<>){11}[^<0]/ } @list;
 }
 
 ## カテゴリ検索
 my %category = ('magic'=>'魔法','god'=>'神格','school'=>'流派');
-my $category_query = $::in{'category'};
-if($category_query && $::in{'category'} ne 'all'){
+my $category_query = $::in{category};
+if($category_query && $::in{category} ne 'all'){
   @list = grep { $_ =~ /^(?:[^<]*?<>){6}(\Q$category_query\E)?</ } @list;
   $INDEX->param(category => $category{$category_query});
 }
@@ -116,17 +116,17 @@ if($category_query && $::in{'category'} ne 'all'){
 }
 
 ## 小分類検索
-my $sub_query = decode('utf8', $::in{'sub'});
+my $sub_query = decode('utf8', $::in{sub});
 if($sub_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){7}[^<]*?\Q$sub_query\E/i } @list; }
 $INDEX->param(sub => $sub_query);
 
 ## タグ検索
-my $tag_query = pcTagsEscape(decode('utf8', $::in{'tag'}));
+my $tag_query = pcTagsEscape(decode('utf8', $::in{tag}));
 if($tag_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){10}[^<]*? \Q$tag_query\E / } @list; }
 $INDEX->param(tag => $tag_query);
 
 ## 名前検索
-my $name_query = decode('utf8', $::in{'name'});
+my $name_query = decode('utf8', $::in{name});
 if($name_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){4}[^<]*?\Q$name_query\E/i } @list; }
 $INDEX->param(name => $name_query);
 
@@ -138,7 +138,7 @@ elsif($sort eq 'date')  { my @tmp = map { (split /<>/)[3] } @list; @list = @list
 ### リストを回す --------------------------------------------------
 my %count;
 my %grouplist;
-my $page = $::in{'page'} ? $::in{'page'} : 1;
+my $page = $::in{page} ? $::in{page} : 1;
 my $pagestart = $page * $set::pagemax - $set::pagemax;
 my $pageend   = $page * $set::pagemax - 1;
 foreach (@list) {
@@ -153,7 +153,7 @@ foreach (@list) {
   #表示域以外は弾く
   if (
     ( $index_mode && $count{$category} > $set::list_maxline && $set::list_maxline) || #TOPページ
-    ( !$::in{'category'} && !$::in{'tag'} && $mode ne 'mylist' && $count{$category} > $set::list_maxline && $set::list_maxline) || #検索結果（分類指定なし／マイリストでもなし）
+    ( !$::in{category} && !$::in{tag} && $mode ne 'mylist' && $count{$category} > $set::list_maxline && $set::list_maxline) || #検索結果（分類指定なし／マイリストでもなし）
     (!$index_mode && $set::pagemax && ($count{$category} < $pagestart || $count{$category} > $pageend)) #それ以外
   ){
     next;
@@ -201,7 +201,7 @@ foreach my $id ('magic','god','school'){
 
   ## ページネーション
   my $navbar;
-  if($set::pagemax && !$index_mode && $::in{'category'}){
+  if($set::pagemax && !$index_mode && $::in{category}){
     my $lastpage = ceil($count{$id} / $set::pagemax);
     foreach(1 .. $lastpage){
       if($_ == $page){
@@ -212,7 +212,7 @@ foreach my $id ('magic','god','school'){
         $_ == 1 ||
         $_ == $lastpage
       ){
-        $navbar .= '<a href="./?type=a&category='.$::in{'category'}.$q_links.'&page='.$_.'&sort='.$::in{'sort'}.'">'.$_.'</a> '
+        $navbar .= '<a href="./?type=a&category='.$::in{category}.$q_links.'&page='.$_.'&sort='.$::in{sort}.'">'.$_.'</a> '
       }
       else { $navbar .= '...' }
     }

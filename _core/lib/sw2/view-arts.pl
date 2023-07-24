@@ -20,55 +20,55 @@ our %pc = pcDataGet();
 
 ### タグ置換前処理 ###################################################################################
 ### 閲覧禁止データ --------------------------------------------------
-if($pc{'forbidden'} && !$pc{'yourAuthor'}){
-  my $author = $pc{'author'};
-  my $protect   = $pc{'protect'};
-  my $forbidden = $pc{'forbidden'};
-  my $category  = $pc{'category'};
+if($pc{forbidden} && !$pc{yourAuthor}){
+  my $author = $pc{author};
+  my $protect   = $pc{protect};
+  my $forbidden = $pc{forbidden};
+  my $category  = $pc{category};
   
   if($forbidden eq 'all'){
     %pc = ();
   }
   if($forbidden ne 'battle'){
-    $pc{'tags'} = '';
+    $pc{tags} = '';
 
-    $pc{'magicName'} = noiseText(6,14);
-    $pc{"magicDescription"} = '';
+    $pc{magicName} = noiseText(6,14);
+    $pc{magicDescription} = '';
     foreach(1..int(rand 3)+3){
-      $pc{"magicDescription"} .= noiseText(18,50)."\n";
+      $pc{magicDescription} .= noiseText(18,50)."\n";
     }
 
-    $pc{'godName'}   = noiseText(2,12);
-    $pc{'godAka'}    = noiseText(2,5);
-    $pc{'godClass'}  = noiseText(3);
-    $pc{'godRank'}   = noiseText(2,3);
-    $pc{'godArea'}   = noiseText(5,10);
+    $pc{godName}   = noiseText(2,12);
+    $pc{godAka}    = noiseText(2,5);
+    $pc{godClass}  = noiseText(3);
+    $pc{godRank}   = noiseText(2,3);
+    $pc{godArea}   = noiseText(5,10);
 
-    $pc{"godSymbol"} = '';
-    foreach(1..int(rand 3)+2){ $pc{"godSymbol"} .= noiseText(18,40)."\n"; }
-    $pc{"godDeity"} = '';
-    foreach(1..int(rand 5)+8){ $pc{"godDeity"} .= noiseText(18,40)."\n"; }
+    $pc{godSymbol} = '';
+    foreach(1..int(rand 3)+2){ $pc{godSymbol} .= noiseText(18,40)."\n"; }
+    $pc{godDeity} = '';
+    foreach(1..int(rand 5)+8){ $pc{godDeity} .= noiseText(18,40)."\n"; }
     foreach(1..3){ $pc{"godMaxim".$_} .= noiseText(8,30); }
   }
   
-  $pc{"magicClass"}    = noiseText(3,14);
+  $pc{magicClass}    = noiseText(3,14);
   
-  $pc{"magicLevel"}    = noiseText(2);
-  $pc{"magicCost"}     = noiseText(3,4);
-  $pc{"magicTarget"}   = noiseText(2,14);
-  $pc{"magicRange"}    = noiseText(2,4);
-  $pc{"magicForm"}     = noiseText(2,4);
-  $pc{"magicDuration"} = noiseText(2,9);
-  $pc{"magicResist"}   = noiseText(2);
-  $pc{"magicElement"}  = noiseText(1,6);
-  $pc{"magicSummary"}  = noiseText(8,25);
-  $pc{"magicActionTypeMinor"} = 0;
-  $pc{"magicActionTypeSetup"} = 0;
-  $pc{"magicEffect"} = '';
+  $pc{magicLevel}    = noiseText(2);
+  $pc{magicCost}     = noiseText(3,4);
+  $pc{magicTarget}   = noiseText(2,14);
+  $pc{magicRange}    = noiseText(2,4);
+  $pc{magicForm}     = noiseText(2,4);
+  $pc{magicDuration} = noiseText(2,9);
+  $pc{magicResist}   = noiseText(2);
+  $pc{magicElement}  = noiseText(1,6);
+  $pc{magicSummary}  = noiseText(8,25);
+  $pc{magicActionTypeMinor} = 0;
+  $pc{magicActionTypeSetup} = 0;
+  $pc{magicEffect} = '';
   foreach(1..int(rand 3)+2){
-    $pc{"magicEffect"} .= noiseText(18,40)."\n";
+    $pc{magicEffect} .= noiseText(18,40)."\n";
   }
-  $pc{"magicMagisphere"}  = noiseText(1,3);
+  $pc{magicMagisphere}  = noiseText(1,3);
 
   foreach my $lv (2,4,7,10,13){
     $pc{"godMagic${lv}Name"}     = noiseText(3,14);
@@ -88,41 +88,41 @@ if($pc{'forbidden'} && !$pc{'yourAuthor'}){
     }
   }
   
-  $pc{'effects'} = '';
+  $pc{effects} = '';
   foreach(1..int(rand 4)+1){
-    $pc{'effects'} .= noiseText(6,18)."\n";
-    $pc{'effects'} .= '　'.noiseText(18,40)."\n";
-    $pc{'effects'} .= '　'.noiseText(18,40)."\n" if(int rand 2);
-    $pc{'effects'} .= "\n";
+    $pc{effects} .= noiseText(6,18)."\n";
+    $pc{effects} .= '　'.noiseText(18,40)."\n";
+    $pc{effects} .= '　'.noiseText(18,40)."\n" if(int rand 2);
+    $pc{effects} .= "\n";
   }
   
-  $pc{'author'}    = $author;
-  $pc{'protect'}   = $protect;
-  $pc{'forbidden'} = $forbidden;
-  $pc{'category'}  = $category;
-  $pc{'forbiddenMode'} = 1;
+  $pc{author}    = $author;
+  $pc{protect}   = $protect;
+  $pc{forbidden} = $forbidden;
+  $pc{category}  = $category;
+  $pc{forbiddenMode} = 1;
 }
 
 ### その他 --------------------------------------------------
-if($pc{'category'} eq 'magic'){
-  if($pc{'magicMinor'}){ $pc{'magicClass'} .= ' (小魔法)' }
+if($pc{category} eq 'magic'){
+  if($pc{magicMinor}){ $pc{magicClass} .= ' (小魔法)' }
   $SHEET->param(categoryMagic => 1);
-  $pc{'artsName'} = '【'.$pc{'magicName'}.'】';
-  $SHEET->param(rawName => $pc{'magicName'});
+  $pc{artsName} = '【'.$pc{magicName}.'】';
+  $SHEET->param(rawName => $pc{magicName});
 }
-elsif($pc{'category'} eq 'god'){
+elsif($pc{category} eq 'god'){
   $SHEET->param(categoryGod => 1);
   $SHEET->param(wideMode => 1);
-  $pc{'artsName'} = ($pc{'godAka'} ? "“$pc{'godAka'}”" : "").$pc{'godName'};
-  $SHEET->param(rawName => $pc{'artsName'});
+  $pc{artsName} = ($pc{godAka} ? "“$pc{godAka}”" : "").$pc{godName};
+  $SHEET->param(rawName => $pc{artsName});
 }
-elsif($pc{'category'} eq 'school'){
+elsif($pc{category} eq 'school'){
   $SHEET->param(categorySchool => 1);
   $SHEET->param(wideMode => 1);
-  $pc{'artsName'} = '【'.$pc{'schoolName'}.'】';
-  $SHEET->param(rawName => $pc{'schoolName'});
+  $pc{artsName} = '【'.$pc{schoolName}.'】';
+  $SHEET->param(rawName => $pc{schoolName});
 }
-my $item_urls = $pc{'schoolItemList'};
+my $item_urls = $pc{schoolItemList};
 
 ### タグ置換 #########################################################################################
 foreach (keys %pc) {
@@ -132,10 +132,10 @@ foreach (keys %pc) {
   }
   $pc{$_} = tagUnescape($pc{$_});
 }
-$pc{'magicEffect'} =~ s#<h2>(.+?)</h2>#</dd><dt>$1</dt><dd class="box">#gi;
+$pc{magicEffect} =~ s#<h2>(.+?)</h2>#</dd><dt>$1</dt><dd class="box">#gi;
 
 ### アップデート --------------------------------------------------
-if($pc{'ver'}){
+if($pc{ver}){
   %pc = data_update_arts(\%pc);
 }
 
@@ -148,19 +148,19 @@ while (my ($key, $value) = each(%pc)){
   $SHEET->param("$key" => $value);
 }
 ### ID / URL--------------------------------------------------
-$SHEET->param(id => $::in{'id'});
+$SHEET->param(id => $::in{id});
 
-if($::in{'url'}){
+if($::in{url}){
   $SHEET->param(convertMode => 1);
-  $SHEET->param(convertUrl => $::in{'url'});
+  $SHEET->param(convertUrl => $::in{url});
 }
 
 ### 魔法の武器アイコン --------------------------------------------------
-$SHEET->param(magic => ($pc{'magic'} ? "<img class=\"i-icon\" src=\"${set::icon_dir}wp_magic.png\">" : ''));
+$SHEET->param(magic => ($pc{magic} ? "<img class=\"i-icon\" src=\"${set::icon_dir}wp_magic.png\">" : ''));
 
 ### タグ --------------------------------------------------
 my @tags;
-foreach(split(/ /, $pc{'tags'})){
+foreach(split(/ /, $pc{tags})){
     push(@tags, {
       "URL"  => uri_escape_utf8($_),
       "TEXT" => $_,
@@ -171,16 +171,16 @@ $SHEET->param(Tags => \@tags);
 ### 魔法 --------------------------------------------------
 {
   my $icon;
-  my $class = $pc{'magicClass'};
-  if($pc{'magicActionTypePassive'}){ $icon .= '<i class="s-icon passive">○</i>' }
-  if($pc{'magicActionTypeMajor'}  ){ $icon .= '<i class="s-icon major">▶</i>' }
-  if($pc{'magicActionTypeMinor'}  ){ $icon .= '<i class="s-icon minor">≫</i>' }
-  if($pc{'magicActionTypeSetup'}  ){ $icon .= '<i class="s-icon setup">△</i>' }
+  my $class = $pc{magicClass};
+  if($pc{magicActionTypePassive}){ $icon .= '<i class="s-icon passive">○</i>' }
+  if($pc{magicActionTypeMajor}  ){ $icon .= '<i class="s-icon major">▶</i>' }
+  if($pc{magicActionTypeMinor}  ){ $icon .= '<i class="s-icon minor">≫</i>' }
+  if($pc{magicActionTypeSetup}  ){ $icon .= '<i class="s-icon setup">△</i>' }
   $SHEET->param(magicIcon => $icon);
-  $SHEET->param(magicTarget   => textMagic($pc{'magicTarget'}));
-  $SHEET->param(magicDuration => textMagic($pc{'magicDuration'}));
+  $SHEET->param(magicTarget   => textMagic($pc{magicTarget}));
+  $SHEET->param(magicDuration => textMagic($pc{magicDuration}));
 
-  if($pc{'magicClass'} eq '魔動機術'){ $SHEET->param(magicNameNotes => 'マギスフィア:'.$pc{'magicMagisphere'}); }
+  if($pc{magicClass} eq '魔動機術'){ $SHEET->param(magicNameNotes => 'マギスフィア:'.$pc{magicMagisphere}); }
   
   if   ($class eq '練技'){
     $SHEET->param(magicClassEn => 'enhance');
@@ -188,20 +188,20 @@ $SHEET->param(Tags => \@tags);
   }
   elsif   ($class eq '呪歌'){
     $SHEET->param(magicClassEn => 'song');
-    $SHEET->param(magicSongSing => $pc{'magicSongSing'} ? '必要':'なし');
-    $SHEET->param(magicCondition => textSongPoint($pc{'magicCondition'}));
-    $SHEET->param(magicSongBasePoint => textSongPoint($pc{'magicSongBasePoint'}));
-    $SHEET->param(magicSongAddPoint => textSongPoint($pc{'magicSongAddPoint'}));
+    $SHEET->param(magicSongSing => $pc{magicSongSing} ? '必要':'なし');
+    $SHEET->param(magicCondition => textSongPoint($pc{magicCondition}));
+    $SHEET->param(magicSongBasePoint => textSongPoint($pc{magicSongBasePoint}));
+    $SHEET->param(magicSongAddPoint => textSongPoint($pc{magicSongAddPoint}));
     magicItemViewOn('Song','Condition','Resist','Element');
   }
   elsif   ($class eq '終律'){
     $SHEET->param(magicClassEn => 'finale');
-    $SHEET->param(magicCost => textSongPoint($pc{'magicCost'}));
+    $SHEET->param(magicCost => textSongPoint($pc{magicCost}));
     magicItemViewOn('Cost','Resist','Element');
   }
   elsif   ($class eq '騎芸'){
     $SHEET->param(magicClassEn => 'riding');
-    $SHEET->param(magicPremise => $pc{'magicPremise'} || 'なし');
+    $SHEET->param(magicPremise => $pc{magicPremise} || 'なし');
     magicItemViewOn('Premise','Type','Part');
   }
   elsif   ($class eq '相域'){
@@ -211,13 +211,13 @@ $SHEET->param(Tags => \@tags);
   elsif   ($class eq '鼓咆'){
     $SHEET->param(magicClassEn => 'command');
     $SHEET->param(magicTypeDt   => '系統');
-    $SHEET->param(magicCommandCost   => $pc{'magicCommandCost'}   ? "$pc{'magicCommandCost'}消費" : 'なし');
-    $SHEET->param(magicCommandCharge => $pc{'magicCommandCharge'} ? "＋$pc{'magicCommandCharge'}" : 'なし');
+    $SHEET->param(magicCommandCost   => $pc{magicCommandCost}   ? "$pc{magicCommandCost}消費" : 'なし');
+    $SHEET->param(magicCommandCharge => $pc{magicCommandCharge} ? "＋$pc{magicCommandCharge}" : 'なし');
     magicItemViewOn('Type','Rank','CommandCost','CommandCharge');
   }
   elsif   ($class eq '陣率'){
     $SHEET->param(magicClassEn => 'lead');
-    $SHEET->param(magicCommandCost   => $pc{'magicCommandCost'}   ? "$pc{'magicCommandCost'}消費" : 'なし');
+    $SHEET->param(magicCommandCost   => $pc{magicCommandCost}   ? "$pc{magicCommandCost}消費" : 'なし');
     magicItemViewOn('Premise','Condition','CommandCost');
   }
   elsif   ($class eq '占瞳'){
@@ -238,7 +238,7 @@ $SHEET->param(Tags => \@tags);
     magicItemViewOn('Premise','Type','Target');
   }
   else {
-    magicItemViewOn('Cost','Target','Range','Duration','Resist',($pc{'magicElement'}?'Element':undef));
+    magicItemViewOn('Cost','Target','Range','Duration','Resist',($pc{magicElement}?'Element':undef));
   }
 }
 sub textMagic {
@@ -299,21 +299,21 @@ foreach my $set_url (split ',',$item_urls){
   }
   else {
   }
-  $item{'price'} =~ s/[+＋]/<br>＋/;
+  $item{price} =~ s/[+＋]/<br>＋/;
   push(@items, {
-    "NAME"      => "<a href=\"$set_url\" target=\"_blank\">".$item{'itemName'}."</a>",
-    "PRICE"     => $item{'price'},
-    "CATEGORY"  => $item{'category'},
-    "REPUTATION"=> $item{'reputation'},
-    "AGE"       => $item{'age'},
-    "SUMMARY"   => $item{'summary'},
+    "NAME"      => "<a href=\"$set_url\" target=\"_blank\">".$item{itemName}."</a>",
+    "PRICE"     => $item{price},
+    "CATEGORY"  => $item{category},
+    "REPUTATION"=> $item{reputation},
+    "AGE"       => $item{age},
+    "SUMMARY"   => $item{summary},
   } );
 }
 $SHEET->param(SchoolItems => \@items);
 
 ### 秘伝 --------------------------------------------------
 my @arts;
-foreach my $num (1..$pc{'schoolArtsNum'}){
+foreach my $num (1..$pc{schoolArtsNum}){
   next if !($pc{'schoolArts'.$num.'Name'});
   my $icon;
   if($pc{'schoolArts'.$num.'ActionTypeSetup'}){ $icon .= '<i class="s-icon setup">△</i>' }
@@ -330,14 +330,14 @@ foreach my $num (1..$pc{'schoolArtsNum'}){
     "RISK"     => $pc{'schoolArts'.$num.'Risk'},
     "SUMMARY"  => $pc{'schoolArts'.$num.'Summary'},
     "EFFECT"   => $pc{'schoolArts'.$num.'Effect'},
-    "head_EFFECT"   => $pc{'head_schoolArts'.$num.'Effect'},
+    "head_EFFECT" => $pc{'head_schoolArts'.$num.'Effect'},
   } );
 }
 $SHEET->param(ArtsData => \@arts);
-if(@arts || $pc{'schoolArtsNote'}){ $SHEET->param(ArtsView => 1); }
+if(@arts || $pc{schoolArtsNote}){ $SHEET->param(ArtsView => 1); }
 
 my @schoolmagics;
-foreach my $num (1..$pc{'schoolMagicNum'}){
+foreach my $num (1..$pc{schoolMagicNum}){
   next if !($pc{'schoolMagic'.$num.'Name'});
   my $icon;
   if($pc{'schoolMagic'.$num.'ActionTypeMinor'}){ $icon .= '<i class="s-icon minor">≫</i>' }
@@ -357,57 +357,57 @@ foreach my $num (1..$pc{'schoolMagicNum'}){
     "ELEMENT"  => $pc{'schoolMagic'.$num.'Element'},
     "SUMMARY"  => $pc{'schoolMagic'.$num.'Summary'},
     "EFFECT"   => $pc{'schoolMagic'.$num.'Effect'},
-    "head_EFFECT"   => $pc{'head_schoolMagic'.$num.'Effect'},
+    "head_EFFECT" => $pc{'head_schoolMagic'.$num.'Effect'},
   } );
 }
 $SHEET->param(schoolMagicData => \@schoolmagics);
-if(@schoolmagics || $pc{'schoolMagicNote'}){ $SHEET->param(schoolMagicView => 1); }
+if(@schoolmagics || $pc{schoolMagicNote}){ $SHEET->param(schoolMagicView => 1); }
 
 ### バックアップ --------------------------------------------------
-if($::in{'id'}){
+if($::in{id}){
   my($selected, $list) = getLogList($set::arts_dir, $main::file);
   $SHEET->param(LogList => $list);
   $SHEET->param(selectedLogName => $selected);
-  if($pc{'yourAuthor'} || $pc{'protect'} eq 'password'){
+  if($pc{yourAuthor} || $pc{protect} eq 'password'){
     $SHEET->param(viewLogNaming => 1);
   }
 }
 
 ### タイトル --------------------------------------------------
 $SHEET->param(title => $set::title);
-if($pc{'forbidden'} eq 'all' && $pc{'forbiddenMode'}){
+if($pc{forbidden} eq 'all' && $pc{forbiddenMode}){
   $SHEET->param(titleName => '非公開データ');
 }
 else {
-  $SHEET->param(titleName => tagDelete nameToPlain $pc{'artsName'});
+  $SHEET->param(titleName => tagDelete nameToPlain $pc{artsName});
 }
 
 ### 画像 --------------------------------------------------
 my $imgsrc;
-if($pc{'image'}){
-  if($pc{'convertSource'} eq '別のゆとシートⅡ') {
-    $imgsrc = $pc{'imageURL'};
+if($pc{image}){
+  if($pc{convertSource} eq '別のゆとシートⅡ') {
+    $imgsrc = $pc{imageURL};
   }
   else {
-    $imgsrc = "./?id=$::in{'id'}&mode=image&cache=$pc{'imageUpdate'}";
+    $imgsrc = "./?id=$::in{id}&mode=image&cache=$pc{imageUpdate}";
   }
   $SHEET->param(imageSrc => $imgsrc);
-  $SHEET->param(images    => "'1': \"".($pc{'modeDownload'} ? urlToBase64("${set::arts_dir}${main::file}/image.$pc{'image'}") : $imgsrc)."\", ");
+  $SHEET->param(images    => "'1': \"".($pc{modeDownload} ? urlToBase64("${set::arts_dir}${main::file}/image.$pc{image}") : $imgsrc)."\", ");
 }
 
 ### OGP --------------------------------------------------
-$SHEET->param(ogUrl => url().($::in{'url'} ? "?url=$::in{'url'}" : "?id=$::in{'id'}"));
-if($pc{'image'}) { $SHEET->param(ogImg => url()."/".$imgsrc); }
+$SHEET->param(ogUrl => url().($::in{url} ? "?url=$::in{url}" : "?id=$::in{id}"));
+if($pc{image}) { $SHEET->param(ogImg => url()."/".$imgsrc); }
 {
   my $sub; my $category;
-  if($pc{'category'} eq 'magic'){
+  if($pc{category} eq 'magic'){
     $category = '魔法';
-    $sub = $pc{'magicClass'}.'／'.$pc{'magicLevel'};
-    if($pc{'magicMinor'}){ $sub .= '／小魔法'; }
+    $sub = $pc{magicClass}.'／'.$pc{magicLevel};
+    if($pc{magicMinor}){ $sub .= '／小魔法'; }
   }
-  if($pc{'category'} eq 'god'){
+  if($pc{category} eq 'god'){
     $category = '神格';
-    $sub = ($pc{'godClass'}||'―').'／'.($pc{'godRank'}||'―');
+    $sub = ($pc{godClass}||'―').'／'.($pc{godRank}||'―');
   }
   $SHEET->param(ogDescript => tagDelete "カテゴリ:${category}／${sub}");
 }
@@ -422,24 +422,24 @@ $SHEET->param(defaultImage => $::core_dir.'/skin/sw2/img/default_pc.png');
 
 ### メニュー --------------------------------------------------
 my @menu = ();
-if(!$pc{'modeDownload'}){
+if(!$pc{modeDownload}){
   push(@menu, { TEXT => '⏎', TYPE => "href", VALUE => './?type=i', });
-  if($::in{'url'}){
-    push(@menu, { TEXT => 'コンバート', TYPE => "href", VALUE => "./?mode=convert&url=$::in{'url'}" });
+  if($::in{url}){
+    push(@menu, { TEXT => 'コンバート', TYPE => "href", VALUE => "./?mode=convert&url=$::in{url}" });
   }
   else {
-    if($pc{'logId'}){
+    if($pc{logId}){
       push(@menu, { TEXT => '過去ログ', TYPE => "onclick", VALUE => 'loglistOn()', });
-      if($pc{'reqdPassword'}){ push(@menu, { TEXT => '復元', TYPE => "onclick", VALUE => "editOn()", }); }
-      else                   { push(@menu, { TEXT => '復元', TYPE => "href"   , VALUE => "./?mode=edit&id=$::in{'id'}&log=$pc{'logId'}", }); }
+      if($pc{reqdPassword}){ push(@menu, { TEXT => '復元', TYPE => "onclick", VALUE => "editOn()", }); }
+      else                 { push(@menu, { TEXT => '復元', TYPE => "href"   , VALUE => "./?mode=edit&id=$::in{id}&log=$pc{logId}", }); }
     }
     else {
-      if(!$pc{'forbiddenMode'}){
+      if(!$pc{forbiddenMode}){
         push(@menu, { TEXT => '出力'    , TYPE => "onclick", VALUE => "downloadListOn()",  });
         push(@menu, { TEXT => '過去ログ', TYPE => "onclick", VALUE => "loglistOn()",      });
       }
-      if($pc{'reqdPassword'}){ push(@menu, { TEXT => '編集', TYPE => "onclick", VALUE => "editOn()", }); }
-      else                   { push(@menu, { TEXT => '編集', TYPE => "href"   , VALUE => "./?mode=edit&id=$::in{'id'}", }); }
+      if($pc{reqdPassword}){ push(@menu, { TEXT => '編集', TYPE => "onclick", VALUE => "editOn()", }); }
+      else                 { push(@menu, { TEXT => '編集', TYPE => "href"   , VALUE => "./?mode=edit&id=$::in{id}", }); }
     }
   }
 }
@@ -450,8 +450,8 @@ $SHEET->param(error => $main::login_error);
 
 ### 出力 #############################################################################################
 print "Content-Type: text/html\n\n";
-if($pc{'modeDownload'}){
-  if($pc{'forbidden'} && $pc{'yourAuthor'}){ $SHEET->param(forbidden => ''); }
+if($pc{modeDownload}){
+  if($pc{forbidden} && $pc{yourAuthor}){ $SHEET->param(forbidden => ''); }
   print downloadModeSheetConvert $SHEET->output;
 }
 else {

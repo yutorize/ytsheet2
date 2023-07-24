@@ -15,15 +15,15 @@ require $set::data_races;
 require $set::data_class;
 my @main_class; my @adv_class; my @fate_class; my @legacy_class;
 my @support_class; my @area_names; my %area_class;
-foreach (sort{$data::class{$a}{'sort'} cmp $data::class{$b}{'sort'}} keys %data::class){
-  if($data::class{$_}{'type'} eq 'main'){ push(@main_class, $_); push(@support_class, $_); }
-  elsif($data::class{$_}{'type'} eq 'adv'   ){ push(@adv_class , $_); }
-  elsif($data::class{$_}{'type'} eq 'fate'  ){ push(@fate_class, $_); }
-  elsif($data::class{$_}{'type'} eq 'legacy'){ push(@legacy_class, $_); }
+foreach (sort{$data::class{$a}{sort} cmp $data::class{$b}{sort}} keys %data::class){
+  if($data::class{$_}{type} eq 'main'){ push(@main_class, $_); push(@support_class, $_); }
+  elsif($data::class{$_}{type} eq 'adv'   ){ push(@adv_class , $_); }
+  elsif($data::class{$_}{type} eq 'fate'  ){ push(@fate_class, $_); }
+  elsif($data::class{$_}{type} eq 'legacy'){ push(@legacy_class, $_); }
   else {
-    if($data::class{$_}{'area'}){
-      push(@area_names, $data::class{$_}{'area'}) if !$area_class{$data::class{$_}{'area'}};
-      push(@{ $area_class{$data::class{$_}{'area'}} }, $_);
+    if($data::class{$_}{area}){
+      push(@area_names, $data::class{$_}{area}) if !$area_class{$data::class{$_}{area}};
+      push(@{ $area_class{$data::class{$_}{area}} }, $_);
     }
     else {
       push(@support_class, $_);
@@ -43,81 +43,81 @@ push(@support_class, 'label=レガシークラス', @legacy_class);
 push(@support_class, 'label=その他', 'free|<その他（自由記入）>');
 
 ### データ読み込み ###################################################################################
-my ($data, $mode, $file, $message) = pcDataGet($::in{'mode'});
+my ($data, $mode, $file, $message) = pcDataGet($::in{mode});
 our %pc = %{ $data };
 
 my $mode_make = ($mode =~ /^(blanksheet|copy|convert)$/) ? 1 : 0;
 
 ### 出力準備 #########################################################################################
 if($message){
-  my $name = tagUnescape($pc{'characterName'} || $pc{'aka'} || '無題');
+  my $name = tagUnescape($pc{characterName} || $pc{aka} || '無題');
   $message =~ s/<!NAME>/$name/;
 }
 ### プレイヤー名 --------------------------------------------------
 if($mode_make){
-  $pc{'playerName'} = (getplayername($LOGIN_ID))[0];
+  $pc{playerName} = (getplayername($LOGIN_ID))[0];
 }
 ### 初期設定 --------------------------------------------------
-if($mode_make){ $pc{'protect'} ||= $LOGIN_ID ? 'account' : 'password'; }
+if($mode_make){ $pc{protect} ||= $LOGIN_ID ? 'account' : 'password'; }
 
-if($mode eq 'edit' || ($mode eq 'convert' && $pc{'ver'})){
+if($mode eq 'edit' || ($mode eq 'convert' && $pc{ver})){
   %pc = data_update_chara(\%pc);
-  if($pc{'updateMessage'}){
+  if($pc{updateMessage}){
     $message .= "<hr>" if $message;
     $message .= "<h2>アップデート通知</h2><dl>";
-    foreach (sort keys %{$pc{'updateMessage'}}){
-      $message .= '<dt>'.$_.'</dt><dd>'.$pc{'updateMessage'}{$_}.'</dd>';
+    foreach (sort keys %{$pc{updateMessage}}){
+      $message .= '<dt>'.$_.'</dt><dd>'.$pc{updateMessage}{$_}.'</dd>';
     }
-    (my $lasttimever = $pc{'lasttimever'}) =~ s/([0-9]{3})$/\.$1/;
+    (my $lasttimever = $pc{lasttimever}) =~ s/([0-9]{3})$/\.$1/;
     $message .= "</dl><small>前回保存時のバージョン:$lasttimever</small>";
   }
 }
 elsif($mode eq 'blanksheet'){
-  $pc{'group'} = $set::group_default;
+  $pc{group} = $set::group_default;
   
-  $pc{'history0Exp'}   = $set::make_exp;
-  $pc{'history0Money'} = $set::make_money;
-  $pc{'expTotal'} = $pc{'history0Exp'};
+  $pc{history0Exp}   = $set::make_exp;
+  $pc{history0Money} = $set::make_money;
+  $pc{expTotal} = $pc{history0Exp};
   
-  $pc{'level'} = 1;
+  $pc{level} = 1;
 
-  $pc{'money'} = '自動';
+  $pc{money} = '自動';
   
-  $pc{'rollStrDice'} = $pc{'rollDexDice'} = $pc{'rollAgiDice'} =
-  $pc{'rollIntDice'} = $pc{'rollSenDice'} = $pc{'rollMndDice'} = $pc{'rollLukDice'} =
-  $pc{'battleDiceAcc'} = $pc{'battleDiceAtk'} = $pc{'battleDiceEva'} =
-  $pc{'rollTrapDetectDice'} = $pc{'rollTrapReleaseDice'} = $pc{'rollDangerDetectDice'} = $pc{'rollEnemyLoreDice'} = 
-  $pc{'rollAppraisalDice'} = $pc{'rollMagicDice'} = $pc{'rollSongDice'} = $pc{'rollAlchemyDice'} = 2;
-  $pc{'fate'} = 5;
+  $pc{rollStrDice} = $pc{rollDexDice} = $pc{rollAgiDice} =
+  $pc{rollIntDice} = $pc{rollSenDice} = $pc{rollMndDice} = $pc{rollLukDice} =
+  $pc{battleDiceAcc} = $pc{battleDiceAtk} = $pc{battleDiceEva} =
+  $pc{rollTrapDetectDice} = $pc{rollTrapReleaseDice} = $pc{rollDangerDetectDice} = $pc{rollEnemyLoreDice} = 
+  $pc{rollAppraisalDice} = $pc{rollMagicDice} = $pc{rollSongDice} = $pc{rollAlchemyDice} = 2;
+  $pc{fate} = 5;
 
-  $pc{'skill1Type'} = 'race';
-  $pc{'skill3Type'} = 'general';
-  $pc{'skill4Type'} = 'general';
+  $pc{skill1Type} = 'race';
+  $pc{skill3Type} = 'general';
+  $pc{skill4Type} = 'general';
   
-  $pc{'paletteUseBuff'} = 1;
+  $pc{paletteUseBuff} = 1;
 }
 
 ## 画像
-$pc{'imageFit'} = $pc{'imageFit'} eq 'percent' ? 'percentX' : $pc{'imageFit'};
-$pc{'imagePercent'} = $pc{'imagePercent'} eq '' ? '200' : $pc{'imagePercent'};
-$pc{'imagePositionX'} = $pc{'imagePositionX'} eq '' ? '50' : $pc{'imagePositionX'};
-$pc{'imagePositionY'} = $pc{'imagePositionY'} eq '' ? '50' : $pc{'imagePositionY'};
-$pc{'wordsX'} ||= '右';
-$pc{'wordsY'} ||= '上';
+$pc{imageFit} = $pc{imageFit} eq 'percent' ? 'percentX' : $pc{imageFit};
+$pc{imagePercent} = $pc{imagePercent} eq '' ? '200' : $pc{imagePercent};
+$pc{imagePositionX} = $pc{imagePositionX} eq '' ? '50' : $pc{imagePositionX};
+$pc{imagePositionY} = $pc{imagePositionY} eq '' ? '50' : $pc{imagePositionY};
+$pc{wordsX} ||= '右';
+$pc{wordsY} ||= '上';
 
 ## カラー
 setDefaultColors();
 
 ## その他
-$pc{'skillsNum'}      ||=  3;
-$pc{'connectionsNum'} ||=  1;
-$pc{'geisesNum'}      ||=  1;
-$pc{'historyNum'}     ||=  3;
+$pc{skillsNum}      ||=  3;
+$pc{connectionsNum} ||=  1;
+$pc{geisesNum}      ||=  1;
+$pc{historyNum}     ||=  3;
 
 ### 折り畳み判断 --------------------------------------------------
 my %open;
-$open{'skills'} = 'open';
-#foreach (3..$pc{'skillsNum'}){ if($pc{"skill${_}Name"} || $pc{"skill${_}Lv"}){ $open{'skills'} = 'open'; last; } }
+$open{skills} = 'open';
+#foreach (3..$pc{skillsNum}){ if($pc{"skill${_}Name"} || $pc{"skill${_}Lv"}){ $open{skills} = 'open'; last; } }
 
 ### 改行処理 --------------------------------------------------
 foreach (
@@ -138,12 +138,12 @@ foreach (
 ){
   $pc{$_} =~ s/&lt;br&gt;/\n/g;
 }
-foreach my $i (1 .. $pc{'geisesNum'}){
+foreach my $i (1 .. $pc{geisesNum}){
   $pc{"geis${i}Note"} =~ s/&lt;br&gt;/\n/g;
 }
 
 ### フォーム表示 #####################################################################################
-my $titlebarname = tagDelete nameToPlain tagUnescape ($pc{'characterName'}||"“$pc{'aka'}”");
+my $titlebarname = tagDelete nameToPlain tagUnescape ($pc{characterName}||"“$pc{aka}”");
 print <<"HTML";
 Content-type: text/html\n
 <!DOCTYPE html>
@@ -168,7 +168,7 @@ Content-type: text/html\n
   <style>
     #image,
     .image-custom-view {
-      background-image: url("$pc{'imageURL'}");
+      background-image: url("$pc{imageURL}");
     }
   </style>
 </head>
@@ -199,8 +199,8 @@ print <<"HTML";
           <li onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード切替">
           <li class="buttons">
             <ul>
-              <li @{[ display ($mode eq 'edit') ]} class="view-icon" title="閲覧画面"><a href="./?id=$::in{'id'}"></a>
-              <li @{[ display ($mode eq 'edit') ]} class="copy" onclick="window.open('./?mode=copy&id=$::in{'id'}@{[  $::in{'log'}?"&log=$::in{'log'}":'' ]}');">複製
+              <li @{[ display ($mode eq 'edit') ]} class="view-icon" title="閲覧画面"><a href="./?id=$::in{id}"></a>
+              <li @{[ display ($mode eq 'edit') ]} class="copy" onclick="window.open('./?mode=copy&id=$::in{id}@{[  $::in{log}?"&log=$::in{log}":'' ]}');">複製
               <li class="submit" onclick="formSubmit()" title="Ctrl+S">保存
             </ul>
           </li>
@@ -215,8 +215,8 @@ HTML
 if($set::user_reqd){
   print <<"HTML";
     <input type="hidden" name="protect" value="account">
-    <input type="hidden" name="protectOld" value="$pc{'protect'}">
-    <input type="hidden" name="pass" value="$::in{'pass'}">
+    <input type="hidden" name="protectOld" value="$pc{protect}">
+    <input type="hidden" name="pass" value="$::in{pass}">
 HTML
 }
 else {
@@ -226,19 +226,19 @@ else {
   print <<"HTML";
       <details class="box" id="edit-protect" @{[$mode eq 'edit' ? '':'open']}>
       <summary>編集保護設定</summary>
-      <p id="edit-protect-view"><input type="hidden" name="protectOld" value="$pc{'protect'}">
+      <p id="edit-protect-view"><input type="hidden" name="protectOld" value="$pc{protect}">
 HTML
   if($LOGIN_ID){
-    print '<input type="radio" name="protect" value="account"'.($pc{'protect'} eq 'account'?' checked':'').'> アカウントに紐付ける（ログイン中のみ編集可能になります）<br>';
+    print '<input type="radio" name="protect" value="account"'.($pc{protect} eq 'account'?' checked':'').'> アカウントに紐付ける（ログイン中のみ編集可能になります）<br>';
   }
-    print '<input type="radio" name="protect" value="password"'.($pc{'protect'} eq 'password'?' checked':'').'> パスワードで保護 ';
-  if ($mode eq 'edit' && $pc{'protect'} eq 'password' && $::in{'pass'}) {
-    print '<input type="hidden" name="pass" value="'.$::in{'pass'}.'"><br>';
+    print '<input type="radio" name="protect" value="password"'.($pc{protect} eq 'password'?' checked':'').'> パスワードで保護 ';
+  if ($mode eq 'edit' && $pc{protect} eq 'password' && $::in{pass}) {
+    print '<input type="hidden" name="pass" value="'.$::in{pass}.'"><br>';
   } else {
     print '<input type="password" name="pass"><br>';
   }
   print <<"HTML";
-<input type="radio" name="protect" value="none"@{[ $pc{'protect'} eq 'none'?' checked':'' ]}> 保護しない（誰でも編集できるようになります）
+<input type="radio" name="protect" value="none"@{[ $pc{protect} eq 'none'?' checked':'' ]}> 保護しない（誰でも編集できるようになります）
       </p>
       </details>
 HTML
@@ -249,13 +249,13 @@ HTML
         <dd id="forbidden-checkbox">
           <select name="forbidden">
             <option value="">内容を全て開示
-            <option value="battle" @{[ $pc{'forbidden'} eq 'battle' ? 'selected' : '' ]}>データ・数値のみ秘匿
-            <option value="all"    @{[ $pc{'forbidden'} eq 'all'    ? 'selected' : '' ]}>内容を全て秘匿
+            <option value="battle" @{[ $pc{forbidden} eq 'battle' ? 'selected' : '' ]}>データ・数値のみ秘匿
+            <option value="all"    @{[ $pc{forbidden} eq 'all'    ? 'selected' : '' ]}>内容を全て秘匿
           </select>
         <dd id="hide-checkbox">
           <select name="hide">
             <option value="">一覧に表示
-            <option value="1" @{[ $pc{'hide'} ? 'selected' : '' ]}>一覧には非表示
+            <option value="1" @{[ $pc{hide} ? 'selected' : '' ]}>一覧には非表示
           </select>
         <dd>※「一覧に非表示」でもタグ検索結果・マイリストには表示されます
       </dl>
@@ -269,7 +269,7 @@ foreach (@set::groups){
   my $name = @$_[2];
   my $exclusive = @$_[4];
   next if($exclusive && (!$LOGIN_ID || $LOGIN_ID !~ /^($exclusive)$/));
-  print '<option value="'.$id.'"'.($pc{'group'} eq $id ? ' selected': '').'>'.$name.'</option>';
+  print '<option value="'.$id.'"'.($pc{group} eq $id ? ' selected': '').'>'.$name.'</option>';
 }
 print <<"HTML";
           </select>
@@ -308,7 +308,7 @@ print <<"HTML";
           <dd>@{[input("history0Money",'number','changeRegu', ($set::make_fix?' readonly':''))]}
           <dt>エリア／ローカル
           <dd class="area-tags">
-            <input name="areaTags" class="tagify-custom" value="$pc{'areaTags'}">
+            <input name="areaTags" class="tagify-custom" value="$pc{areaTags}">
             <script defer>
             var areaTags = document.querySelector('input[name="areaTags"]');
             let areaTagify = new Tagify(areaTags, {
@@ -352,12 +352,12 @@ print <<"HTML";
         <dl class="regulation-note"><dt>備考<dd>@{[ input "history0Note" ]}</dl>
       </details>
       <div id="area-status">
-        @{[ imageForm($pc{'imageURL'}) ]}
+        @{[ imageForm($pc{imageURL}) ]}
 
         <div id="personal">
           <dl class="box select-or-input" id="race">
             <dt>種族
-            <dd><select name="race" onchange="changeRace()">@{[ option 'race',(sort{$data::races{$a}{'sort'} cmp $data::races{$b}{'sort'} } keys %data::races),'free|<その他（自由記入）>' ]}</select>@{[ input 'raceFree' ]}
+            <dd><select name="race" onchange="changeRace()">@{[ option 'race',(sort{$data::races{$a}{sort} cmp $data::races{$b}{sort} } keys %data::races),'free|<その他（自由記入）>' ]}</select>@{[ input 'raceFree' ]}
           </dl>
           <div class="box-union">
             <dl class="box" id="age">
@@ -402,11 +402,11 @@ print <<"HTML";
         <div class="box-union" id="classes">
           <dl class="box" id="class-main">
             <dt>メインクラス
-            <dd id="class-main-value">$pc{'classMain'}
+            <dd id="class-main-value">$pc{classMain}
           </dl>
           <dl class="box" id="class-support">
             <dt>サポートクラス
-            <dd id="class-support-value">$pc{'classSupport'}
+            <dd id="class-support-value">$pc{classSupport}
           </dl>
           <dl class="box" id="class-main-lv1">
             <dt><small>レベル1の時</small>
@@ -418,7 +418,7 @@ print <<"HTML";
           </dl>
           <dl class="box" id="class-title">
             <dt>称号クラス
-            <dd id="class-title-value">$pc{'classTitle'}
+            <dd id="class-title-value">$pc{classTitle}
           </dl>
         </div>
         
@@ -617,7 +617,7 @@ print <<"HTML";
             </tr>
           <tbody id="levelup-lines">
 HTML
-foreach my $lv (reverse 2 .. $pc{'level'}){
+foreach my $lv (reverse 2 .. $pc{level}){
   my @classes = ('fate|<フェイト増加>',@support_class);
   if($lv >= 10){ push(@classes, 'label=上級クラス',@adv_class); }
   if($lv >= 20){ push(@classes, 'label=運命クラス',@fate_class); }
@@ -679,7 +679,7 @@ HTML
         </div>
       </details>
 
-      <details class="box" id="skills" $open{'skills'}>
+      <details class="box" id="skills" $open{skills}>
         <summary>
           スキル
         </summary>
@@ -690,20 +690,20 @@ HTML
           </thead>
 HTML
 my %experienced;
-$experienced{ $pc{'classMainLv1'} }    = 1.1;
-if($pc{'classSupportLv1'} eq 'free'){ $experienced{ $pc{'classSupportLv1Free'} } = 1.2 }
-else                                { $experienced{ $pc{'classSupportLv1'}     } = 1.2; }
-foreach my $lv (2 .. $pc{'level'}){
+$experienced{ $pc{classMainLv1} }    = 1.1;
+if($pc{classSupportLv1} eq 'free'){ $experienced{ $pc{classSupportLv1Free} } = 1.2 }
+else                                { $experienced{ $pc{classSupportLv1}     } = 1.2; }
+foreach my $lv (2 .. $pc{level}){
   if   ($pc{"lvUp${lv}Class"} eq 'fate' ){  } # フェイト+n
   elsif($pc{"lvUp${lv}Class"} eq 'free' ){ $experienced{ $pc{"lvUp${lv}ClassFree"} } = $lv; }
   elsif($pc{"lvUp${lv}Class"} eq 'title'){ $experienced{ $pc{"lvUp${lv}ClassFree"} } = $lv; }
   elsif($pc{"lvUp${lv}Class"}           ){ $experienced{ $pc{"lvUp${lv}Class"} } = $lv; }
 }
 my @experienced = sort { $experienced{$a} <=> $experienced{$b} } keys %experienced;
-if($data::class{$pc{"classMain"}} && $data::class{$pc{"classMain"}}{'type'} eq 'fate'){
+if($data::class{$pc{classMain}} && $data::class{$pc{classMain}}{type} eq 'fate'){
   unshift(@experienced, 'power|<パワー（共通）>', 'another|<異才>')
 }
-foreach my $num ('TMPL',1 .. $pc{'skillsNum'}) {
+foreach my $num ('TMPL',1 .. $pc{skillsNum}) {
   if($num eq 'TMPL'){ print '<template id="skill-template">' }
 print <<"HTML";
           <tbody id="skill${num}">
@@ -852,7 +852,7 @@ print <<"HTML";
                 <td rowspan="2" id="armament-total-mdef">
                 <td rowspan="2" id="armament-total-ini">
                 <td rowspan="2" id="armament-total-move">
-                <td rowspan="2" colspan="3"><textarea name="armamentTotalNote" rows="3" placeholder="備考">$pc{"armamentTotalNote"}</textarea>
+                <td rowspan="2" colspan="3"><textarea name="armamentTotalNote" rows="3" placeholder="備考">$pc{armamentTotalNote}</textarea>
               <tr>
                 <td class="right small">防具
                 <td>
@@ -900,7 +900,7 @@ print <<"HTML";
                 <td>@{[ input "battleSkillMDef", 'number','calcBattle' ]}
                 <td>@{[ input "battleSkillIni" , 'number','calcBattle' ]}
                 <td>@{[ input "battleSkillMove", 'number','calcBattle' ]}
-                <td rowspan="2" class="left"><textarea name="battleSkillNote" rows="3" placeholder="備考">$pc{"battleSkillNote"}</textarea>
+                <td rowspan="2" class="left"><textarea name="battleSkillNote" rows="3" placeholder="備考">$pc{battleSkillNote}</textarea>
               <tr>
                 <th></th>
                 <td colspan="2" class="right small">ダイス数修正:
@@ -924,7 +924,7 @@ print <<"HTML";
                 <td>@{[ input "battleOtherMDef", 'number','calcBattle' ]}
                 <td>@{[ input "battleOtherIni" , 'number','calcBattle' ]}
                 <td>@{[ input "battleOtherMove", 'number','calcBattle' ]}
-                <td rowspan="2" class="left"><textarea name="battleOtherNote" rows="3" placeholder="備考">$pc{"battleOtherNote"}</textarea>
+                <td rowspan="2" class="left"><textarea name="battleOtherNote" rows="3" placeholder="備考">$pc{battleOtherNote}</textarea>
               <tr>
                 <th>
                 <td colspan="2" class="right small">ダイス数修正:
@@ -1082,17 +1082,17 @@ print <<"HTML";
           </dl>
           <div class="box" id="items">
             <h2>携帯品・所持品</h2>
-            <textarea name="items" oninput="calcWeight();" placeholder="例）冒険者セット @[5]&#13;&#10;　　HPポーション @[1]&#13;&#10;　　MPポーションx2 @[2]">$pc{'items'}</textarea>
+            <textarea name="items" oninput="calcWeight();" placeholder="例）冒険者セット @[5]&#13;&#10;　　HPポーション @[1]&#13;&#10;　　MPポーションx2 @[2]">$pc{items}</textarea>
             <div class="annotate">
               ※<code>@[n]</code>の書式を入力すると形態重量として計算されます。<br>
               （<code>n</code>には数値を入れてください）<br>
             </div>
           </div>
-          <details class="box" id="cashbook" @{[ $pc{'cashbook'} || $pc{"money"} =~ /^(?:自動|auto)$/i ? 'open' : '' ]}>
+          <details class="box" id="cashbook" @{[ $pc{cashbook} || $pc{money} =~ /^(?:自動|auto)$/i ? 'open' : '' ]}>
             <summary>収支履歴</summary>
-            <textarea name="cashbook" oninput="calcCash();" placeholder="例）冒険者セット::-10&#13;&#10;　　HPポーション売却::+15">$pc{'cashbook'}</textarea>
+            <textarea name="cashbook" oninput="calcCash();" placeholder="例）冒険者セット::-10&#13;&#10;　　HPポーション売却::+15">$pc{cashbook}</textarea>
             <p>
-              所持金：<span id="cashbook-total-value">$pc{'moneyTotal'}</span> G
+              所持金：<span id="cashbook-total-value">$pc{moneyTotal}</span> G
             </p>
             <div class="annotate">
               ※<code>::+n</code> <code>::-n</code>の書式で入力すると加算・減算されます。（<code>n</code>には金額を入れてください）<br>
@@ -1117,7 +1117,7 @@ print <<"HTML";
                 <tr><th><th><th>成長点<th class="left">恩恵・束縛など
               <tbody>
 HTML
-foreach my $num ('TMPL',1 .. $pc{'geisesNum'}){
+foreach my $num ('TMPL',1 .. $pc{geisesNum}){
   if($num eq 'TMPL'){ print '<template id="geis-template">' }
 print <<"HTML";
                 <tr id="geis${num}">
@@ -1155,7 +1155,7 @@ print <<"HTML";
               <thead><tr><th><th><th>関係<th class="left">備考
               <tbody>
 HTML
-foreach my $num ('TMPL',1 .. $pc{'connectionsNum'}){
+foreach my $num ('TMPL',1 .. $pc{connectionsNum}){
   if($num eq 'TMPL'){ print '<template id="connection-template">' }
 print <<"HTML";
                 <tr id="connection${num}">
@@ -1174,16 +1174,16 @@ print <<"HTML";
         </div>
       </div>
       
-      <details class="box" id="free-note" @{[$pc{'freeNote'}?'open':'']}>
+      <details class="box" id="free-note" @{[$pc{freeNote}?'open':'']}>
         <summary>容姿・経歴・その他メモ</summary>
-        <textarea name="freeNote">$pc{'freeNote'}</textarea>
-        @{[ $::in{'log'} ? '<button type="button" class="set-newest" onclick="setNewestSingleData(\'freeNote\')">最新のメモを適用する</button>' : '' ]}
+        <textarea name="freeNote">$pc{freeNote}</textarea>
+        @{[ $::in{log} ? '<button type="button" class="set-newest" onclick="setNewestSingleData(\'freeNote\')">最新のメモを適用する</button>' : '' ]}
       </details>
       
-      <details class="box" id="free-history" @{[$pc{'freeHistory'}?'open':'']}>
+      <details class="box" id="free-history" @{[$pc{freeHistory}?'open':'']}>
         <summary>履歴（自由記入）</summary>
-        <textarea name="freeHistory">$pc{'freeHistory'}</textarea>
-        @{[ $::in{'log'} ? '<button type="button" class="set-newest" onclick="setNewestSingleData(\'freeHistory\')">最新の履歴（自由記入）を適用する</button>' : '' ]}
+        <textarea name="freeHistory">$pc{freeHistory}</textarea>
+        @{[ $::in{log} ? '<button type="button" class="set-newest" onclick="setNewestSingleData(\'freeHistory\')">最新の履歴（自由記入）を適用する</button>' : '' ]}
       </details>
       
       <div class="box" id="history">
@@ -1204,12 +1204,12 @@ print <<"HTML";
               <td>-
               <td>
               <td>キャラクター作成
-              <td id="history0-exp">$pc{'history0Exp'}
+              <td id="history0-exp">$pc{history0Exp}
               <td>
-              <td id="history0-money">$pc{'history0Money'}
+              <td id="history0-money">$pc{history0Money}
             </tr>
 HTML
-foreach my $num ('TMPL',1 .. $pc{'historyNum'}) {
+foreach my $num ('TMPL',1 .. $pc{historyNum}) {
   if($num eq 'TMPL'){ print '<template id="history-template">' }
 print <<"HTML";
           <tbody id="history${num}">
@@ -1280,7 +1280,7 @@ print <<"HTML";
         ※成長点欄は<code>10+2</code>など四則演算が有効です。<br>
         　「上納」欄に入力した数値ぶん、成長点の合計が引かれます。
         </div>
-        @{[ $::in{'log'} ? '<button type="button" class="set-newest" onclick="setNewestHistoryData()">最新のセッション履歴を適用する</button>' : '' ]}
+        @{[ $::in{log} ? '<button type="button" class="set-newest" onclick="setNewestHistoryData()">最新のセッション履歴を適用する</button>' : '' ]}
       </div>
       
       <div class="box" id="exp-footer">
@@ -1304,7 +1304,7 @@ print <<"HTML";
       @{[ colorCostomForm ]}
       
       @{[ input 'birthTime','hidden' ]}
-      <input type="hidden" name="id" value="$::in{'id'}">
+      <input type="hidden" name="id" value="$::in{id}">
     </form>
 HTML
 if($mode eq 'edit'){
@@ -1312,8 +1312,8 @@ print <<"HTML";
     <form name="del" method="post" action="./" class="deleteform">
       <p style="font-size: 80%;">
       <input type="hidden" name="mode" value="delete">
-      <input type="hidden" name="id" value="$::in{'id'}">
-      <input type="hidden" name="pass" value="$::in{'pass'}">
+      <input type="hidden" name="id" value="$::in{id}">
+      <input type="hidden" name="pass" value="$::in{pass}">
       <input type="checkbox" name="check1" value="1" required>
       <input type="checkbox" name="check2" value="1" required>
       <input type="checkbox" name="check3" value="1" required>
@@ -1328,15 +1328,15 @@ HTML
     <form name="imgdel" method="post" action="./" class="deleteform">
       <p style="font-size: 80%;">
       <input type="hidden" name="mode" value="img-delete">
-      <input type="hidden" name="id" value="$::in{'id'}">
-      <input type="hidden" name="pass" value="$::in{'pass'}">
+      <input type="hidden" name="id" value="$::in{id}">
+      <input type="hidden" name="pass" value="$::in{pass}">
       <input type="checkbox" name="check1" value="1" required>
       <input type="checkbox" name="check2" value="1" required>
       <input type="checkbox" name="check3" value="1" required>
       <input type="submit" value="画像削除"><br>
       </p>
     </form>
-    <p class="right">@{[ $::in{'log'}?$::in{'log'}:'最終' ]}更新時のIP:$pc{'IP'}</p>
+    <p class="right">@{[ $::in{log}?$::in{log}:'最終' ]}更新時のIP:$pc{IP}</p>
 HTML
   }
 }
@@ -1500,10 +1500,10 @@ print <<"HTML";
   const races = @{[ JSON::PP->new->encode(\%data::races) ]};
   const classes = @{[ JSON::PP->new->encode(\%data::class) ]};
   let expUse = {
-    'level'      : @{[ $pc{'expUsedLevel'        } || 0 ]},
-    'skills'     : @{[ $pc{'expUsedGeneralSkills'} || 0 ]},
-    'connections': @{[ $pc{'expUsedConnections'  } || 0 ]},
-    'geises'     : @{[ $pc{'expUsedGeises'} || 0 ]},
+    'level'      : @{[ $pc{expUsedLevel        } || 0 ]},
+    'skills'     : @{[ $pc{expUsedGeneralSkills} || 0 ]},
+    'connections': @{[ $pc{expUsedConnections  } || 0 ]},
+    'geises'     : @{[ $pc{expUsedGeises} || 0 ]},
   };
 HTML
 print <<"HTML";

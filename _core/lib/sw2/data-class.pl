@@ -82,147 +82,147 @@ our @class_caster = (
 ### 技能詳細データ --------------------------------------------------
 our %class = (
   'ファイター' => {
-    'type'     => 'weapon-user',
-    'expTable' => 'A',
-    'id'       => 'Fig',
-    'eName'    => 'fighter',
+    type     => 'weapon-user',
+    expTable => 'A',
+    id       => 'Fig',
+    eName    => 'fighter',
   },
   'グラップラー' => {
-    'type'     => 'weapon-user',
-    'expTable' => 'A',
-    'id'       => 'Gra',
-    'eName'    => 'grappler',
+    type     => 'weapon-user',
+    expTable => 'A',
+    id       => 'Gra',
+    eName    => 'grappler',
   },
   'バトルダンサー' => {
     '2.5' => 1,
-    'type'     => 'weapon-user',
-    'expTable' => 'A',
-    'id'       => 'Bat',
-    'eName'    => 'battledancer',
+    type     => 'weapon-user',
+    expTable => 'A',
+    id       => 'Bat',
+    eName    => 'battledancer',
   },
   'フェンサー' => {
-    'type'     => 'weapon-user',
-    'expTable' => 'B',
-    'id'       => 'Fen',
-    'eName'    => 'fencer',
+    type     => 'weapon-user',
+    expTable => 'B',
+    id       => 'Fen',
+    eName    => 'fencer',
   },
   'シューター' => {
-    'type'     => 'weapon-user',
-    'expTable' => 'B',
-    'id'       => 'Sho',
-    'eName'    => 'shooter',
+    type     => 'weapon-user',
+    expTable => 'B',
+    id       => 'Sho',
+    eName    => 'shooter',
   },
   'ソーサラー' => {
-    'type'     => 'magic-user',
-    'expTable' => 'A',
-    'id'       => 'Sor',
-    'eName'    => 'sorcerer',
-    'magic' => {
-      'jName' => '真語魔法',
-      'eName' => 'sorcery',
+    type     => 'magic-user',
+    expTable => 'A',
+    id       => 'Sor',
+    eName    => 'sorcerer',
+    magic => {
+      jName => '真語魔法',
+      eName => 'sorcery',
     },
-    'language' => {
-      '魔法文明語' => { 'talk' => 1, 'read' => 1 },
+    language => {
+      '魔法文明語' => { talk => 1, read => 1 },
     },
   },
   'コンジャラー' => {
-    'type'     => 'magic-user',
-    'expTable' => 'A',
-    'id'       => 'Con',
-    'eName'    => 'conjurer',
-    'magic' => {
-      'jName' => '操霊魔法',
-      'eName' => 'conjury',
+    type     => 'magic-user',
+    expTable => 'A',
+    id       => 'Con',
+    eName    => 'conjurer',
+    magic => {
+      jName => '操霊魔法',
+      eName => 'conjury',
     },
-    'language' => {
-      '魔法文明語' => { 'talk' => 1, 'read' => 1 },
+    language => {
+      '魔法文明語' => { talk => 1, read => 1 },
     },
   },
   'ウィザード' => {
-    'type'     => 'magic-user',
-    'expTable' => '',
-    'id'       => 'Wiz',
-    'eName'    => 'wizard',
-    'magic' => {
-      'jName' => '深智魔法',
-      'eName' => 'wizardry',
+    type     => 'magic-user',
+    expTable => '',
+    id       => 'Wiz',
+    eName    => 'wizard',
+    magic => {
+      jName => '深智魔法',
+      eName => 'wizardry',
     },
   },
   'プリースト' => {
-    'type'     => 'magic-user',
-    'expTable' => 'A',
-    'id'       => 'Pri',
-    'eName'    => 'priest',
-    'magic' => {
-      'jName' => '神聖魔法',
-      'eName' => 'holypray',
+    type     => 'magic-user',
+    expTable => 'A',
+    id       => 'Pri',
+    eName    => 'priest',
+    magic => {
+      jName => '神聖魔法',
+      eName => 'holypray',
     },
   },
   'フェアリーテイマー' => {
-    'type'     => 'magic-user',
-    'expTable' => 'A',
-    'id'       => 'Fai',
-    'eName'    => 'fairytamer',
-    'magic' => {
-      'jName' => '妖精魔法',
-      'eName' => 'fairyism',
+    type     => 'magic-user',
+    expTable => 'A',
+    id       => 'Fai',
+    eName    => 'fairytamer',
+    magic => {
+      jName => '妖精魔法',
+      eName => 'fairyism',
     },
-    'language' => {
-      '妖精語' => { 'talk' => 1 },
+    language => {
+      '妖精語' => { talk => 1 },
     },
   },
   'マギテック' => {
-    'type'     => 'magic-user',
-    'expTable' => 'A',
-    'id'       => 'Mag',
-    'eName'    => 'magitech',
-    'magic' => {
-      'jName' => '魔動機術',
-      'eName' => 'magitech',
+    type     => 'magic-user',
+    expTable => 'A',
+    id       => 'Mag',
+    eName    => 'magitech',
+    magic => {
+      jName => '魔動機術',
+      eName => 'magitech',
     },
-    'language' => {
-      '魔動機文明語' => { 'talk' => 1, 'read' => 1 },
+    language => {
+      '魔動機文明語' => { talk => 1, read => 1 },
     },
   },
   'スカウト' => {
-    'expTable' => 'B',
-    'id'       => 'Sco',
-    'eName'    => 'scout',
-    'package'  => {
-      'Tec' => { 'name' => '技巧', 'stt' => 'A' },
-      'Agi' => { 'name' => '運動', 'stt' => 'B', 'initiative' => 1 },
-      'Obs' => { 'name' => '観察', 'stt' => 'E' },
+    expTable => 'B',
+    id       => 'Sco',
+    eName    => 'scout',
+    package  => {
+      Tec => { name => '技巧', stt => 'A' },
+      Agi => { name => '運動', stt => 'B', initiative => 1 },
+      Obs => { name => '観察', stt => 'E' },
     },
   },
   'レンジャー' => {
-    'expTable' => 'B',
-    'id'       => 'Ran',
-    'eName'    => 'ranger',
-    'package'  => {
-      'Tec' => { 'name' => '技巧', 'stt' => 'A' },
-      'Agi' => { 'name' => '運動', 'stt' => 'B' },
-      'Obs' => { 'name' => '観察', 'stt' => 'E' },
+    expTable => 'B',
+    id       => 'Ran',
+    eName    => 'ranger',
+    package  => {
+      Tec => { name => '技巧', stt => 'A' },
+      Agi => { name => '運動', stt => 'B' },
+      Obs => { name => '観察', stt => 'E' },
     },
   },
   'セージ' => {
-    'expTable' => 'B',
-    'id'       => 'Sag',
-    'eName'    => 'sage',
-    'language' => {
-      'any' => { 'talk' => 1, 'read' => 1 },
+    expTable => 'B',
+    id       => 'Sag',
+    eName    => 'sage',
+    language => {
+      any => { talk => 1, read => 1 },
     },
-    'package'  => {
-      'Kno' => { 'name' => '知識', 'stt' => 'E', 'monsterLore' => 1 },
+    package  => {
+      Kno => { name => '知識', stt => 'E', monsterLore => 1 },
     },
   },
   'エンハンサー' => {
-    'expTable' => 'B',
-    'id'       => 'Enh',
-    'eName'    => 'enhancer',
-    'craft' => {
-      'jName' => '練技',
-      'eName' => 'enhance',
-      'data' => [
+    expTable => 'B',
+    id       => 'Enh',
+    eName    => 'enhancer',
+    craft => {
+      jName => '練技',
+      eName => 'enhance',
+      data => [
         [1,'アンチボディ',''],
         [1,'オウルビジョン',''],
         [1,'ガゼルフット',''],
@@ -260,21 +260,21 @@ our %class = (
     },
   },
   'バード' => {
-    'expTable' => 'B',
-    'id'       => 'Bar',
-    'eName'    => 'bard',
-    'language' => {
-      'any' => { 'talk' => 1 },
+    expTable => 'B',
+    id       => 'Bar',
+    eName    => 'bard',
+    language => {
+      any => { talk => 1 },
     },
-    'package'  => {
-      'Kno' => { 'name' => '見識', 'stt' => 'E' },
+    package  => {
+      Kno => { name => '見識', stt => 'E' },
     },
-    'craft' => {
-      'jName' => '呪歌',
-      'eName' => 'song',
-      'stt' => '精神力',
-      'power' => '奏力',
-      'data' => [
+    craft => {
+      jName => '呪歌',
+      eName => 'song',
+      stt => '精神力',
+      power => '奏力',
+      data => [
         [1,'アーリーバード',''],
         [1,'アンビエント',''],
         [1,'サモン・スモールアニマル',''],
@@ -318,18 +318,18 @@ our %class = (
     },
   },
   'ライダー' => {
-    'expTable' => 'B',
-    'id'       => 'Rid',
-    'eName'    => 'rider',
-    'package'  => {
-      'Agi' => { 'name' => '運動', 'stt' => 'B' },
-      'Obs' => { 'name' => '観察', 'stt' => 'E' },
-      'Kno' => { 'name' => '知識', 'stt' => 'E', 'monsterLore' => 1 },
+    expTable => 'B',
+    id       => 'Rid',
+    eName    => 'rider',
+    package  => {
+      Agi => { name => '運動', stt => 'B' },
+      Obs => { name => '観察', stt => 'E' },
+      Kno => { name => '知識', stt => 'E', monsterLore => 1 },
     },
-    'craft' => {
-      'jName' => '騎芸',
-      'eName' => 'riding',
-      'data' => [
+    craft => {
+      jName => '騎芸',
+      eName => 'riding',
+      data => [
         [1,'威嚇',''],
         [1,'以心伝心',''],
         [1,'遠隔指示',''],
@@ -371,20 +371,20 @@ our %class = (
     },
   },
   'アルケミスト' => {
-    'expTable' => 'B',
-    'id'       => 'Alc',
-    'eName'    => 'alchemist',
-    'language' => {
-      '魔動機文明語' => { 'talk' => 1, 'read' => 1 },
+    expTable => 'B',
+    id       => 'Alc',
+    eName    => 'alchemist',
+    language => {
+      '魔動機文明語' => { talk => 1, read => 1 },
     },
-    'package'  => {
-      'Kno' => { 'name' => '知識', 'stt' => 'E' },
+    package  => {
+      Kno => { name => '知識', stt => 'E' },
     },
-    'craft' => {
-      'jName' => '賦術',
-      'eName' => 'alchemy',
-      'stt' => '知力',
-      'data' => [
+    craft => {
+      jName => '賦術',
+      eName => 'alchemy',
+      stt => '知力',
+      data => [
         [1,'インスタントウェポン',''],
         [1,'ヴォーパルウェポン',''],
         [1,'クラッシュファング',''],
@@ -419,41 +419,41 @@ our %class = (
   },
   'ドルイド' => {
     '2.5' => 1,
-    'type'     => 'magic-user',
-    'expTable' => 'A',
-    'id'       => 'Dru',
-    'eName'    => 'druid',
-    'magic' => {
-      'jName' => '森羅魔法',
-      'eName' => 'druidry',
+    type     => 'magic-user',
+    expTable => 'A',
+    id       => 'Dru',
+    eName    => 'druid',
+    magic => {
+      jName => '森羅魔法',
+      eName => 'druidry',
     },
   },
   'デーモンルーラー' => {
-    'type'     => 'magic-user',
-    'expTable' => 'A',
-    'id'       => 'Dem',
-    'eName'    => 'demonruler',
-    'magic' => {
-      'jName' => '召異魔法',
-      'eName' => 'demonology',
+    type     => 'magic-user',
+    expTable => 'A',
+    id       => 'Dem',
+    eName    => 'demonruler',
+    magic => {
+      jName => '召異魔法',
+      eName => 'demonology',
     },
-    'language' => {
-      '魔神語' => { 'talk' => 1 },
-      '魔法文明語' => { 'read' => 1 },
+    language => {
+      '魔神語' => { talk => 1 },
+      '魔法文明語' => { read => 1 },
     },
   },
   'ジオマンサー' => {
     '2.5' => 1,
-    'expTable' => 'B',
-    'id'       => 'Geo',
-    'eName'    => 'geomancer',
-    'package'  => {
-      'Obs' => { 'name' => '観察', 'stt' => 'E' },
+    expTable => 'B',
+    id       => 'Geo',
+    eName    => 'geomancer',
+    package  => {
+      Obs => { name => '観察', stt => 'E' },
     },
-    'craft' => {
-      'jName' => '相域',
-      'eName' => 'geomancy',
-      'data' => [
+    craft => {
+      jName => '相域',
+      eName => 'geomancy',
+      data => [
         [ 1,'天相：降雷',''],
         [ 1,'天相：空を欺く',''],
         [ 1,'天相：見えない傘',''],
@@ -485,17 +485,17 @@ our %class = (
     },
   },
   'ウォーリーダー' => {
-    'expTable' => 'B',
-    'id'       => 'War',
-    'eName'    => 'warleader',
-    'package'  => {
-      'Agi' => { 'name' => '先制', 'stt' => 'B', 'initiative' => 1 },
-      'Int' => { 'name' => '先制(知)', 'stt' => 'E', 'initiative' => 1 },
+    expTable => 'B',
+    id       => 'War',
+    eName    => 'warleader',
+    package  => {
+      Agi => { name => '先制', stt => 'B', initiative => 1 },
+      Int => { name => '先制(知)', stt => 'E', initiative => 1 },
     },
-    'craft' => {
-      'jName' => '鼓咆／陣率',
-      'eName' => 'command',
-      'data' => [
+    craft => {
+      jName => '鼓咆／陣率',
+      eName => 'command',
+      data => [
         [ 1,'瑕疵への追撃',''],
         [ 1,'神展の構え',''],
         [ 5,'勇壮なる軍歌',''],
@@ -579,14 +579,14 @@ our %class = (
   },
   'ミスティック' => {
     '2.0' => 1,
-    'expTable' => 'B',
-    'id'       => 'Mys',
-    'eName'    => 'mystic',
-    'craft' => {
-      'jName' => '占瞳',
-      'eName' => 'divination',
-      'stt' => '知力',
-      'data' => [
+    expTable => 'B',
+    id       => 'Mys',
+    eName    => 'mystic',
+    craft => {
+      jName => '占瞳',
+      eName => 'divination',
+      stt => '知力',
+      data => [
         [1,'幸運の星の導きを知る',''],
         [1,'幸運は手指を助ける',''],
         [1,'幸運は動きを助ける',''],
@@ -619,14 +619,14 @@ our %class = (
   },
   'フィジカルマスター' => {
     '2.0' => 1,
-    'expTable' => 'B',
-    'id'       => 'Phy',
-    'eName'    => 'physicalmaster',
-    'onlyRace' => ['ドレイク（ナイト）','バジリスク'],
-    'craft' => {
-      'jName' => '魔装',
-      'eName' => 'potential',
-      'data' => [
+    expTable => 'B',
+    id       => 'Phy',
+    eName    => 'physicalmaster',
+    onlyRace => ['ドレイク（ナイト）','バジリスク'],
+    craft => {
+      jName => '魔装',
+      eName => 'potential',
+      data => [
         [1,'アイテム収納',''],
         [1,'生来武器強化A',''],
         [1,'属性付与',''],
@@ -707,18 +707,18 @@ our %class = (
   },
   'グリモワール' => {
     '2.0' => 1,
-    'type'     => 'magic-user',
-    'expTable' => 'A',
-    'id'       => 'Gri',
-    'eName'    => 'grimoir',
-    'language' => {
-      '魔法文明語' => { 'read' => 1 },
+    type     => 'magic-user',
+    expTable => 'A',
+    id       => 'Gri',
+    eName    => 'grimoir',
+    language => {
+      '魔法文明語' => { read => 1 },
     },
-    'magic' => {
-      'jName' => '秘奥魔法',
-      'eName' => 'gramarye',
-      'stt' => '知力',
-      'data' => [
+    magic => {
+      jName => '秘奥魔法',
+      eName => 'gramarye',
+      stt => '知力',
+      data => [
         [1,"悪意の針",'アクス＝マリスティアス'],
         [1,"拒絶の障壁",'ウェルム＝リイェクタス'],
         [1,"肉体修復",'コルプス＝レストラーレ'],
@@ -761,13 +761,13 @@ our %class = (
   },
   'アーティザン' => {
     '2.0' => 1,
-    'expTable' => 'B',
-    'id'       => 'Art',
-    'eName'    => 'artisan',
-    'craft' => {
-      'jName' => '呪印',
-      'eName' => 'seal',
-      'data' => [
+    expTable => 'B',
+    id       => 'Art',
+    eName    => 'artisan',
+    craft => {
+      jName => '呪印',
+      eName => 'seal',
+      data => [
         [1,'威力増強／+5',''],
         [1,'命中増強／+1',''],
         [1,'C値増強／-1',''],
@@ -864,13 +864,13 @@ our %class = (
   },
   'アリストクラシー' => {
     '2.0' => 1,
-    'expTable' => 'B',
-    'id'       => 'Ari',
-    'eName'    => 'aristocracy',
-    'craft' => {
-      'jName' => '貴格',
-      'eName' => 'dignity',
-      'data' => [
+    expTable => 'B',
+    id       => 'Ari',
+    eName    => 'aristocracy',
+    craft => {
+      jName => '貴格',
+      eName => 'dignity',
+      data => [
         [1,'威厳ある風格Ⅰ',''],
         [1,'麗しき歌声Ⅰ',''],
         [1,'華麗なる言の葉Ⅰ',''],

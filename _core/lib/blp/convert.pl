@@ -38,14 +38,14 @@ sub dataConvert {
     if($data !~ /^{/){ error 'JSONデータが取得できませんでした' }
     $data = thanSignEscape($data);
     my %pc = utf8::is_utf8($data) ? %{ decode_json(encode('utf8', (join '', $data))) } : %{ decode_json(join '', $data) };
-    if($pc{'result'} eq 'OK'){
+    if($pc{result} eq 'OK'){
       our $base_url = $set_url;
       $base_url =~ s|/[^/]+?$|/|;
-      $pc{'convertSource'} = '別のゆとシートⅡ';
+      $pc{convertSource} = '別のゆとシートⅡ';
       return %pc;
     }
-    elsif($pc{'result'}) {
-      error 'コンバート元のゆとシートⅡでエラーがありました<br>'.$pc{'result'};
+    elsif($pc{result}) {
+      error 'コンバート元のゆとシートⅡでエラーがありました<br>'.$pc{result};
     }
     else {
       error '有効なデータが取得できませんでした';
@@ -80,11 +80,11 @@ sub dataPartnerGet {
       $pc{$key} = $value;
     }
     close($IN);
-    if($pc{'image'}){
-      $pc{'imageURL'} = "./?id=$id&mode=image&cache=$pc{'imageUpdate'}";
-      $pc{'imagePath'} = "${set::char_dir}${file}/image.$pc{'image'}";
+    if($pc{image}){
+      $pc{imageURL} = "./?id=$id&mode=image&cache=$pc{imageUpdate}";
+      $pc{imagePath} = "${set::char_dir}${file}/image.$pc{image}";
     }
-    $pc{'convertSource'} = '同じゆとシートⅡ';
+    $pc{convertSource} = '同じゆとシートⅡ';
     return %pc;
   }
   ## 他のゆとシートⅡ
@@ -92,10 +92,10 @@ sub dataPartnerGet {
     my $data = urlDataGet($set_url.'&mode=json') or return;
     if($data !~ /^{/){ return }
     my %pc = utf8::is_utf8($data) ? %{ decode_json(encode('utf8', (join '', $data))) } : %{ decode_json(join '', $data) };
-    if($pc{'result'} eq 'OK'){
+    if($pc{result} eq 'OK'){
       our $base_url = $set_url;
       $base_url =~ s|/[^/]+?$|/|;
-      $pc{'convertSource'} = '別のゆとシートⅡ';
+      $pc{convertSource} = '別のゆとシートⅡ';
       return %pc;
     }
     else {
@@ -109,82 +109,82 @@ sub convertSoukoToYtsheet {
   my %in = %{$_[0]};
   ## 単純変換
   my %pc = (
-    'convertSource' => 'キャラクターシート倉庫',
+    convertSource => 'キャラクターシート倉庫',
     
-    'playerName' => $in{'base'}{'player'},
+    playerName => $in{'base'}{'player'},
     
-    'characterName' => $in{'base'}{'name'},
-    'characterNameRuby' => $in{'base'}{'nameKana'},
+    characterName => $in{'base'}{'name'},
+    characterNameRuby => $in{'base'}{'nameKana'},
     
-    'factor' => $in{'base'}{'factor'},
-    'belong' => $in{'base'}{'belongs'},    
-    'past' => $in{'base'}{'past'},
-    'background' => $in{'base'}{'background'},
-    'missing' => $in{'base'}{'missing'} || $in{'base'}{'loss'},
-    'appearance' => $in{'base'}{'appearance'},
-    'dwelling' => $in{'base'}{'dwelling'},   
-    'weapon' => $in{'base'}{'weapon'},
+    factor => $in{'base'}{'factor'},
+    belong => $in{'base'}{'belongs'},    
+    past => $in{'base'}{'past'},
+    background => $in{'base'}{'background'},
+    missing => $in{'base'}{'missing'} || $in{'base'}{'loss'},
+    appearance => $in{'base'}{'appearance'},
+    dwelling => $in{'base'}{'dwelling'},   
+    weapon => $in{'base'}{'weapon'},
     
-    'partner1Auto' => 1,
-    'partner2Auto' => 1,
+    partner1Auto => 1,
+    partner2Auto => 1,
     
-    'freeNote' => $in{'base'}{'memo'},
+    freeNote => $in{'base'}{'memo'},
   );
   
   my $prof_rep = '^(.{1,6}(?:[(（].+?[）)])?)(?:[\/／:：。]|\s)(.*?)$|^(.{1,6})[(（](.{5,})[）)]$';
-  if($pc{'belong'}     =~ s/$prof_rep//){ $pc{'belong'}     = $1 || $3; $pc{'belongNote'}     = $2 || $4; }
-  if($pc{'past'}       =~ s/$prof_rep//){ $pc{'past'}       = $1 || $3; $pc{'pastNote'}       = $2 || $4; }
-  if($pc{'background'} =~ s/$prof_rep//){ $pc{'background'} = $1 || $3; $pc{'backgroundNote'} = $2 || $4; }
-  if($pc{'missing'}    =~ s/$prof_rep//){ $pc{'missing'}    = $1 || $3; $pc{'missingNote'}    = $2 || $4; }
-  if($pc{'appearance'} =~ s/$prof_rep//){ $pc{'appearance'} = $1 || $3; $pc{'appearanceNote'} = $2 || $4; }
-  if($pc{'dwelling'}   =~ s/$prof_rep//){ $pc{'dwelling'}   = $1 || $3; $pc{'dwellingNote'}   = $2 || $4; }
-  if($pc{'weapon'}     =~ s/$prof_rep//){ $pc{'weapon'}     = $1 || $3; $pc{'weaponNote'}     = $2 || $4; }
+  if($pc{belong}     =~ s/$prof_rep//){ $pc{belong}     = $1 || $3; $pc{belongNote}     = $2 || $4; }
+  if($pc{past}       =~ s/$prof_rep//){ $pc{past}       = $1 || $3; $pc{pastNote}       = $2 || $4; }
+  if($pc{background} =~ s/$prof_rep//){ $pc{background} = $1 || $3; $pc{backgroundNote} = $2 || $4; }
+  if($pc{missing}    =~ s/$prof_rep//){ $pc{missing}    = $1 || $3; $pc{missingNote}    = $2 || $4; }
+  if($pc{appearance} =~ s/$prof_rep//){ $pc{appearance} = $1 || $3; $pc{appearanceNote} = $2 || $4; }
+  if($pc{dwelling}   =~ s/$prof_rep//){ $pc{dwelling}   = $1 || $3; $pc{dwellingNote}   = $2 || $4; }
+  if($pc{weapon}     =~ s/$prof_rep//){ $pc{weapon}     = $1 || $3; $pc{weaponNote}     = $2 || $4; }
   
   
-  if($pc{'factor'} eq '人間'){
-    $pc{'age'}    = $in{'base'}{'human'}{'age'}{'real'};
-    $pc{'gender'} = $in{'base'}{'human'}{'sex'},
-    $pc{'levelPreGrow'} = $in{'factor'}{'human'}{'level'};
-    $pc{'factorCore'}   = $in{'factor'}{'human'}{'faith'};
-    $pc{'factorStyle'}  = $in{'factor'}{'human'}{'job'};
-    $pc{'statusMain1'}  = $in{'factor'}{'human'}{'spade'};
-    $pc{'statusMain2'}  = $in{'factor'}{'human'}{'clover'};
-    $pc{'enduranceAdd'}  = $in{'factor'}{'human'}{'endurance'}  - ($pc{'statusMain1'}*2+$pc{'statusMain2'});
-    $pc{'initiativeAdd'} = $in{'factor'}{'human'}{'initiative'} - ($pc{'statusMain2'}  +10);
+  if($pc{factor} eq '人間'){
+    $pc{age}    = $in{'base'}{'human'}{'age'}{'real'};
+    $pc{gender} = $in{'base'}{'human'}{'sex'},
+    $pc{levelPreGrow} = $in{'factor'}{'human'}{'level'};
+    $pc{factorCore}   = $in{'factor'}{'human'}{'faith'};
+    $pc{factorStyle}  = $in{'factor'}{'human'}{'job'};
+    $pc{statusMain1}  = $in{'factor'}{'human'}{'spade'};
+    $pc{statusMain2}  = $in{'factor'}{'human'}{'clover'};
+    $pc{enduranceAdd}  = $in{'factor'}{'human'}{'endurance'}  - ($pc{statusMain1}*2+$pc{statusMain2});
+    $pc{initiativeAdd} = $in{'factor'}{'human'}{'initiative'} - ($pc{statusMain2}  +10);
   }
-  elsif($pc{'factor'} eq '吸血鬼'){
-    $pc{'age'}    = $in{'base'}{'vampire'}{'age'}{'real'};
-    $pc{'ageApp'} = $in{'base'}{'vampire'}{'age'}{'appearance'};
-    $pc{'gender'} = $in{'base'}{'vampire'}{'sex'},
-    $pc{'levelPreGrow'} = $in{'factor'}{'vampire'}{'level'};
-    $pc{'factorCore'}   = $in{'factor'}{'vampire'}{'origin'};
-    $pc{'factorStyle'}  = $in{'factor'}{'vampire'}{'style'};
-    $pc{'statusMain1'}  = $in{'factor'}{'vampire'}{'heart'};
-    $pc{'statusMain2'}  = $in{'factor'}{'vampire'}{'diamond'};
-    $pc{'enduranceAdd'}  = $in{'factor'}{'vampire'}{'endurance'}  - ($pc{'statusMain1'}+20);
-    $pc{'initiativeAdd'} = $in{'factor'}{'vampire'}{'initiative'} - ($pc{'statusMain2'}+ 4);
+  elsif($pc{factor} eq '吸血鬼'){
+    $pc{age}    = $in{'base'}{'vampire'}{'age'}{'real'};
+    $pc{ageApp} = $in{'base'}{'vampire'}{'age'}{'appearance'};
+    $pc{gender} = $in{'base'}{'vampire'}{'sex'},
+    $pc{levelPreGrow} = $in{'factor'}{'vampire'}{'level'};
+    $pc{factorCore}   = $in{'factor'}{'vampire'}{'origin'};
+    $pc{factorStyle}  = $in{'factor'}{'vampire'}{'style'};
+    $pc{statusMain1}  = $in{'factor'}{'vampire'}{'heart'};
+    $pc{statusMain2}  = $in{'factor'}{'vampire'}{'diamond'};
+    $pc{enduranceAdd}  = $in{'factor'}{'vampire'}{'endurance'}  - ($pc{statusMain1}+20);
+    $pc{initiativeAdd} = $in{'factor'}{'vampire'}{'initiative'} - ($pc{statusMain2}+ 4);
   }
-  $pc{'endurancePreGrow'} = 0;
-  while ($pc{'enduranceAdd'} - 5 >= 0) {
-    $pc{'endurancePreGrow'} += 5;
-    $pc{'enduranceAdd'}     -= 5;
+  $pc{endurancePreGrow} = 0;
+  while ($pc{enduranceAdd} - 5 >= 0) {
+    $pc{endurancePreGrow} += 5;
+    $pc{enduranceAdd}     -= 5;
   }
-  $pc{'initiativePreGrow'} = 0;
-  while ($pc{'initiativeAdd'} - 2 >= 0) {
-    $pc{'initiativePreGrow'} += 2;
-    $pc{'initiativeAdd'}     -= 2;
+  $pc{initiativePreGrow} = 0;
+  while ($pc{initiativeAdd} - 2 >= 0) {
+    $pc{initiativePreGrow} += 2;
+    $pc{initiativeAdd}     -= 2;
   }
   
-  $pc{'partner1Url'}     = $in{'partner1'}{'url'};
-  $pc{'partner1Name'}    = $in{'partner1'}{'name'},
-  $pc{'partner1Factor'}  = $in{'partner1'}{'factordetail'},
-  $pc{'partner1Age'}  = $in{'partner1'}{'age'},
-  $pc{'partner1Missing'} = $in{'partner1'}{'missingloss'},
-  $pc{'fromPartner1SealPosition'} = $in{'partner1'}{'mark'}{'position'};
-  $pc{'fromPartner1SealShape'}    = $in{'partner1'}{'mark'}{'shape'};
-  $pc{'fromPartner1Emotion1'}     = $in{'partner1'}{'mark'}{'emotion1'};
-  $pc{'fromPartner1Emotion2'}     = $in{'partner1'}{'mark'}{'emotion2'};
-  $pc{'partner1Promise'} = $in{'partner1'}{'promise'};
+  $pc{partner1Url}     = $in{'partner1'}{'url'};
+  $pc{partner1Name}    = $in{'partner1'}{'name'},
+  $pc{partner1Factor}  = $in{'partner1'}{'factordetail'},
+  $pc{partner1Age}  = $in{'partner1'}{'age'},
+  $pc{partner1Missing} = $in{'partner1'}{'missingloss'},
+  $pc{fromPartner1SealPosition} = $in{'partner1'}{'mark'}{'position'};
+  $pc{fromPartner1SealShape}    = $in{'partner1'}{'mark'}{'shape'};
+  $pc{fromPartner1Emotion1}     = $in{'partner1'}{'mark'}{'emotion1'};
+  $pc{fromPartner1Emotion2}     = $in{'partner1'}{'mark'}{'emotion2'};
+  $pc{partner1Promise} = $in{'partner1'}{'promise'};
   
   ## 血威
   my $i = 1;
@@ -216,17 +216,17 @@ sub convertSoukoToYtsheet {
     $pc{"arts${i}Note"}     = @$_{'explain'};
     $i++;
   }
-  $pc{'artsNum'} = $i-1;
+  $pc{artsNum} = $i-1;
   
   ## 履歴
-  $pc{'historyNum'} = 3;
+  $pc{historyNum} = 3;
 
   ## 画像
-  $pc{'imageURL'} = $in{'image_url'}; 
-  $pc{'image'} = LWP::UserAgent->new->simple_request(HTTP::Request->new(GET => $pc{'imageURL'}))->code == 200;
+  $pc{imageURL} = $in{'image_url'}; 
+  $pc{image} = LWP::UserAgent->new->simple_request(HTTP::Request->new(GET => $pc{imageURL}))->code == 200;
 
   ## 〆
-  $pc{'ver'} = 0;
+  $pc{ver} = 0;
   return %pc;
 }
 

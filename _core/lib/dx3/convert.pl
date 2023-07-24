@@ -56,14 +56,14 @@ sub dataConvert {
     if($data !~ /^{/){ error 'JSONデータが取得できませんでした' }
     $data = thanSignEscape($data);
     my %pc = utf8::is_utf8($data) ? %{ decode_json(encode('utf8', (join '', $data))) } : %{ decode_json(join '', $data) };
-    if($pc{'result'} eq 'OK'){
+    if($pc{result} eq 'OK'){
       our $base_url = $set_url;
       $base_url =~ s|/[^/]+?$|/|;
-      $pc{'convertSource'} = '別のゆとシートⅡ';
+      $pc{convertSource} = '別のゆとシートⅡ';
       return %pc;
     }
-    elsif($pc{'result'}) {
-      error 'コンバート元のゆとシートⅡでエラーがありました<br>>'.$pc{'result'};
+    elsif($pc{result}) {
+      error 'コンバート元のゆとシートⅡでエラーがありました<br>>'.$pc{result};
     }
     else {
       error '有効なデータが取得できませんでした';
@@ -76,52 +76,52 @@ sub convertHokanjoToYtsheet {
   my %in = %{$_[0]};
   ## 単純変換
   my %pc = (
-    'convertSource' => 'キャラクター保管所',
-    'tags' => convertTags($in{'pc_tags'}),
-    'age' => $in{'age'},
-    'gender' => $in{'sex'},
-    'height' => $in{'pc_height'},
-    'weight' => $in{'pc_weight'},
-    'works' => $in{'works_name'},
-    'cover' => $in{'cover_name'},
-    'syndrome1' => $in{'class1_name'},
-    'syndrome2' => $in{'class2_name'} eq $in{'class1_name'} ? '' : $in{'class2_name'},
-    'syndrome3' => $in{'class3_name'},
-    'sttWorks' => $in{'SW1'}?'body' : $in{'SW2'}?'sense' : $in{'SW3'}?'mind': $in{'SW1'}?'social' : '',
-    'sttGrowBody'   => $in{'SA1'}+$in{'BP1'},
-    'sttGrowSense'  => $in{'SA2'}+$in{'BP2'},
-    'sttGrowMind'   => $in{'SA3'}+$in{'BP3'},
-    'sttGrowSocial' => $in{'SA4'}+$in{'BP4'},
-    'sttAddBody'    => $in{'TM1'},
-    'sttAddSense'   => $in{'TM2'},
-    'sttAddMind'    => $in{'TM3'},
-    'sttAddSocial'  => $in{'TM4'},
-    'maxHpAdd' => $in{'TM5'},
-    'lifepathOtherEncroach' => $in{'TM6'},
-    'initiativeAdd' => $in{'TM7'},
-    'moveAdd' => $in{'TM8'},
-    'lifepathOrigin'     => $in{'shutuji_name'}, 'lifepathOriginNote'     => $in{'shutuji_sonota'},
-    'lifepathExperience' => $in{'keiken_name'},  'lifepathExperienceNote' => $in{'keiken_sonota'},
-    'lifepathEncounter'  => $in{'kaikou_name'},  'lifepathEncounterNote'  => $in{'kaikou_sonota'},
-    'lifepathAwaken'     => $in{'birth_name'},   'lifepathAwakenNote'     => $in{'birth_sonota'},
-    'lifepathImpulse'    => $in{'think_name'},   'lifepathImpulseNote'    => $in{'think_sonota'},
-    'skillMelee'     => $in{'skill_tokugi'}[ 0], 'skillAddMelee'     => $in{'skill_sonota'}[ 0],
-    'skillDodge'     => $in{'skill_tokugi'}[ 1], 'skillAddDodge'     => $in{'skill_sonota'}[ 1],
-    'skillRide1'     => $in{'skill_tokugi'}[ 2], 'skillAddRide1'     => $in{'skill_sonota'}[ 2], 'skillRide1Name' => '運転:'.$in{'skill_memo'}[ 2],
-    'skillRanged'    => $in{'skill_tokugi'}[ 3], 'skillAddRanged'    => $in{'skill_sonota'}[ 3],
-    'skillPercept'   => $in{'skill_tokugi'}[ 4], 'skillAddPercept'   => $in{'skill_sonota'}[ 4],
-    'skillArt1'      => $in{'skill_tokugi'}[ 5], 'skillAddArt1'      => $in{'skill_sonota'}[ 5], 'skillArt1Name'  => '芸術:'.$in{'skill_memo'}[ 5],
-    'skillRC'        => $in{'skill_tokugi'}[ 6], 'skillAddRC'        => $in{'skill_sonota'}[ 6],
-    'skillWill'      => $in{'skill_tokugi'}[ 7], 'skillAddWill'      => $in{'skill_sonota'}[ 7],
-    'skillKnow1'     => $in{'skill_tokugi'}[ 8], 'skillAddKnow1'     => $in{'skill_sonota'}[ 8], 'skillKnow1Name' => '知識:'.$in{'skill_memo'}[ 8],
-    'skillNegotiate' => $in{'skill_tokugi'}[ 9], 'skillAddNegotiate' => $in{'skill_sonota'}[ 9],
-    'skillProcure'   => $in{'skill_tokugi'}[10], 'skillAddProcure'   => $in{'skill_sonota'}[10],
-    'skillInfo1'     => $in{'skill_tokugi'}[11], 'skillAddInfo1'     => $in{'skill_sonota'}[11], 'skillInfo1Name' => '情報:'.$in{'skill_memo'}[11],
+    convertSource => 'キャラクター保管所',
+    tags => convertTags($in{'pc_tags'}),
+    age => $in{'age'},
+    gender => $in{'sex'},
+    height => $in{'pc_height'},
+    weight => $in{'pc_weight'},
+    works => $in{'works_name'},
+    cover => $in{'cover_name'},
+    syndrome1 => $in{'class1_name'},
+    syndrome2 => $in{'class2_name'} eq $in{'class1_name'} ? '' : $in{'class2_name'},
+    syndrome3 => $in{'class3_name'},
+    sttWorks => $in{'SW1'}?'body' : $in{'SW2'}?'sense' : $in{'SW3'}?'mind': $in{'SW1'}?'social' : '',
+    sttGrowBody   => $in{'SA1'}+$in{'BP1'},
+    sttGrowSense  => $in{'SA2'}+$in{'BP2'},
+    sttGrowMind   => $in{'SA3'}+$in{'BP3'},
+    sttGrowSocial => $in{'SA4'}+$in{'BP4'},
+    sttAddBody    => $in{'TM1'},
+    sttAddSense   => $in{'TM2'},
+    sttAddMind    => $in{'TM3'},
+    sttAddSocial  => $in{'TM4'},
+    maxHpAdd => $in{'TM5'},
+    lifepathOtherEncroach => $in{'TM6'},
+    initiativeAdd => $in{'TM7'},
+    moveAdd => $in{'TM8'},
+    lifepathOrigin     => $in{'shutuji_name'}, lifepathOriginNote     => $in{'shutuji_sonota'},
+    lifepathExperience => $in{'keiken_name'},  lifepathExperienceNote => $in{'keiken_sonota'},
+    lifepathEncounter  => $in{'kaikou_name'},  lifepathEncounterNote  => $in{'kaikou_sonota'},
+    lifepathAwaken     => $in{'birth_name'},   lifepathAwakenNote     => $in{'birth_sonota'},
+    lifepathImpulse    => $in{'think_name'},   lifepathImpulseNote    => $in{'think_sonota'},
+    skillMelee     => $in{'skill_tokugi'}[ 0], skillAddMelee     => $in{'skill_sonota'}[ 0],
+    skillDodge     => $in{'skill_tokugi'}[ 1], skillAddDodge     => $in{'skill_sonota'}[ 1],
+    skillRide1     => $in{'skill_tokugi'}[ 2], skillAddRide1     => $in{'skill_sonota'}[ 2], skillRide1Name => '運転:'.$in{'skill_memo'}[ 2],
+    skillRanged    => $in{'skill_tokugi'}[ 3], skillAddRanged    => $in{'skill_sonota'}[ 3],
+    skillPercept   => $in{'skill_tokugi'}[ 4], skillAddPercept   => $in{'skill_sonota'}[ 4],
+    skillArt1      => $in{'skill_tokugi'}[ 5], skillAddArt1      => $in{'skill_sonota'}[ 5], skillArt1Name  => '芸術:'.$in{'skill_memo'}[ 5],
+    skillRC        => $in{'skill_tokugi'}[ 6], skillAddRC        => $in{'skill_sonota'}[ 6],
+    skillWill      => $in{'skill_tokugi'}[ 7], skillAddWill      => $in{'skill_sonota'}[ 7],
+    skillKnow1     => $in{'skill_tokugi'}[ 8], skillAddKnow1     => $in{'skill_sonota'}[ 8], skillKnow1Name => '知識:'.$in{'skill_memo'}[ 8],
+    skillNegotiate => $in{'skill_tokugi'}[ 9], skillAddNegotiate => $in{'skill_sonota'}[ 9],
+    skillProcure   => $in{'skill_tokugi'}[10], skillAddProcure   => $in{'skill_sonota'}[10],
+    skillInfo1     => $in{'skill_tokugi'}[11], skillAddInfo1     => $in{'skill_sonota'}[11], skillInfo1Name => '情報:'.$in{'skill_memo'}[11],
     '' => $in{''},
   );
   ##名前
-  ($pc{'characterName'},$pc{'characterNameRuby'}) = convertNameRuby($in{'pc_name'} || $in{'data_title'});
-  ($pc{'aka'},$pc{'akaRuby'}) = convertNameRuby($in{'pc_codename'});
+  ($pc{characterName},$pc{characterNameRuby}) = convertNameRuby($in{'pc_name'} || $in{'data_title'});
+  ($pc{aka},$pc{akaRuby}) = convertNameRuby($in{'pc_codename'});
 
   ## 技能
   my %skills = (1=>'Ride', 2=>'Art', 3=>'Know', 4=>'Info');
@@ -153,9 +153,9 @@ sub convertHokanjoToYtsheet {
   }
   
   ## エフェクト
-  ($pc{'effect1Type'},$pc{'effect1Name'},$pc{'effect1Lv'},$pc{'effect1Timing'},$pc{'effect1Skill'},$pc{'effect1Dfclty'},$pc{'effect1Target'},$pc{'effect1Range'},$pc{'effect1Encroach'},$pc{'effect1Restrict'},$pc{'effect1Note'})
+  ($pc{effect1Type},$pc{effect1Name},$pc{effect1Lv},$pc{effect1Timing},$pc{effect1Skill},$pc{effect1Dfclty},$pc{effect1Target},$pc{effect1Range},$pc{effect1Encroach},$pc{effect1Restrict},$pc{effect1Note})
     = ('auto','リザレクト',$in{'ressurect_lv'}+1,'オート','―','自動成功','自身','至近','効果参照','―','(Lv)D点HP回復、侵蝕値上昇');
-  ($pc{'effect2Type'},$pc{'effect2Name'},$pc{'effect2Lv'},$pc{'effect2Timing'},$pc{'effect2Skill'},$pc{'effect2Dfclty'},$pc{'effect2Target'},$pc{'effect2Range'},$pc{'effect2Encroach'},$pc{'effect2Restrict'},$pc{'effect2Note'})
+  ($pc{effect2Type},$pc{effect2Name},$pc{effect2Lv},$pc{effect2Timing},$pc{effect2Skill},$pc{effect2Dfclty},$pc{effect2Target},$pc{effect2Range},$pc{effect2Encroach},$pc{effect2Restrict},$pc{effect2Note})
     = ('auto','ワーディング',1,'オート','―','自動成功','シーン','視界','0','―','非オーヴァードをエキストラ化');
   my $n = 3; my $i = 0;
   foreach my $name (@{$in{'effect_name'}}){
@@ -186,7 +186,7 @@ sub convertHokanjoToYtsheet {
     $pc{'effect'.($n).'Note'}     = $in{'easyeffect_memo'}[$i];
     $n++; $i++;
   }
-  $pc{'effectNum'} = $n-1;
+  $pc{effectNum} = $n-1;
   sub convertEffectLv {
     my $lv = shift;
     if   ($lv > 9) { return $lv - 10; }
@@ -235,28 +235,28 @@ sub convertHokanjoToYtsheet {
     $pc{'combo'.($i+1).'Condition2'} = '100%以上';
     $i++;
   }
-  $pc{'comboNum'} = $i;
-  $pc{'weaponNum'} = $w-1;
+  $pc{comboNum} = $i;
+  $pc{weaponNum} = $w-1;
   ## 防具
-  $pc{'armorNum'} = 1;
+  $pc{armorNum} = 1;
   if($in{'armer_name'}){
-    $pc{'armor1Name'} = $in{'armer_name'};
-    $pc{'armor1Type'} = '防具';
-    $pc{'armor1Stock'}      = $in{'armer_price'};
-    $pc{'armor1Initiative'} = $in{'armer_move'};
-    $pc{'armor1Dodge'}      = $in{'armer_dodge'};
-    $pc{'armor1Armor'}      = $in{'armer_def'};
-    $pc{'armor1Note'}       = $in{'armer_sonota'};
+    $pc{armor1Name} = $in{'armer_name'};
+    $pc{armor1Type} = '防具';
+    $pc{armor1Stock}      = $in{'armer_price'};
+    $pc{armor1Initiative} = $in{'armer_move'};
+    $pc{armor1Dodge}      = $in{'armer_dodge'};
+    $pc{armor1Armor}      = $in{'armer_def'};
+    $pc{armor1Note}       = $in{'armer_sonota'};
   }
   if($in{'armer2_name'}){
-    $pc{'armor2Name'} = $in{'armer2_name'};
-    $pc{'armor2Type'} = '防具';
-    $pc{'armor2Stock'}      = $in{'armer2_price'};
-    $pc{'armor2Initiative'} = $in{'armer2_move'};
-    $pc{'armor2Dodge'}      = $in{'armer2_dodge'};
-    $pc{'armor2Armor'}      = $in{'armer2_def'};
-    $pc{'armor2Note'}       = $in{'armer2_sonota'};
-    $pc{'armorNum'} = 2;
+    $pc{armor2Name} = $in{'armer2_name'};
+    $pc{armor2Type} = '防具';
+    $pc{armor2Stock}      = $in{'armer2_price'};
+    $pc{armor2Initiative} = $in{'armer2_move'};
+    $pc{armor2Dodge}      = $in{'armer2_dodge'};
+    $pc{armor2Armor}      = $in{'armer2_def'};
+    $pc{armor2Note}       = $in{'armer2_sonota'};
+    $pc{armorNum} = 2;
   }
   ## アイテム
   my $i = 0;
@@ -266,7 +266,7 @@ sub convertHokanjoToYtsheet {
     $pc{'item'.($i+1).'Note'}  = $in{'item_memo'}[$i];
     $i++;
   }
-  $pc{'itemNum'} = $i;
+  $pc{itemNum} = $i;
   ## 履歴
   my $i = 0;
   foreach my $exp (@{$in{'get_exp_his'}}){
@@ -275,8 +275,8 @@ sub convertHokanjoToYtsheet {
     $pc{'history'.($i+1).'Note'}  = $in{'seicho_memo_his'}[$i];
     $i++;
   }
-  $pc{'historyNum'} = $i;
-  $pc{'history0Exp'} = $in{'sum_seichoten_default'};
+  $pc{historyNum} = $i;
+  $pc{history0Exp} = $in{'sum_seichoten_default'};
   
   ## プロフィール追加
   my $profile;
@@ -284,15 +284,15 @@ sub convertHokanjoToYtsheet {
   $profile .= ": 瞳 |$in{'color_eye'}\n";
   $profile .= ": 肌 |$in{'color_skin'}\n";
   
-  $pc{'freeNote'} = $profile.$in{'pc_making_memo'};
-  $pc{'freeNoteView'} = (tagUnescape tagUnescapeLines $profile).$in{'pc_making_memo'};
-  $pc{'freeNoteView'} =~ s/\r\n?|\n/<br>/g;
+  $pc{freeNote} = $profile.$in{'pc_making_memo'};
+  $pc{freeNoteView} = (tagUnescape tagUnescapeLines $profile).$in{'pc_making_memo'};
+  $pc{freeNoteView} =~ s/\r\n?|\n/<br>/g;
   
   ## チャットパレット
-  $pc{'paletteUseBuff'} = 1;
+  $pc{paletteUseBuff} = 1;
 
   ## 〆
-  $pc{'ver'} = 0;
+  $pc{ver} = 0;
   return %pc;
 }
 sub convertTiming {
@@ -322,70 +322,70 @@ sub convertSoukoToYtsheet {
   ## 単純変換
   (my $aka = $in{'base'}{'nameKana'}) =~ s/^["“”](.*)["“”]$/$1/;
   my %pc = (
-    'convertSource' => 'キャラクターシート倉庫',
+    convertSource => 'キャラクターシート倉庫',
     
-    'playerName' => $in{'base'}{'player'},
+    playerName => $in{'base'}{'player'},
     
-    'age' => $in{'base'}{'age'},
-    'gender' => $in{'base'}{'sex'},
-    'height' => $in{'base'}{'Height'},
-    'weight' => $in{'base'}{'weight'},
-    'sign' => $in{'base'}{'zodiac'},
-    'blood' => $in{'base'}{'blood'},
-    'works' => $in{'base'}{'works'},
-    'cover' => $in{'base'}{'cover'},
-    'syndrome1' => $in{'base'}{'syndromes'}{'primary'}{'syndrome'},
-    'syndrome2' => $in{'base'}{'syndromes'}{'secondary'}{'syndrome'},
-    'syndrome3' => $in{'base'}{'syndromes'}{'tertiary'}{'syndrome'},
-    'sttWorks' => $in{'baseAbility'}{'body'   }{'selected'} ? 'body'
+    age => $in{'base'}{'age'},
+    gender => $in{'base'}{'sex'},
+    height => $in{'base'}{'Height'},
+    weight => $in{'base'}{'weight'},
+    sign => $in{'base'}{'zodiac'},
+    blood => $in{'base'}{'blood'},
+    works => $in{'base'}{'works'},
+    cover => $in{'base'}{'cover'},
+    syndrome1 => $in{'base'}{'syndromes'}{'primary'}{'syndrome'},
+    syndrome2 => $in{'base'}{'syndromes'}{'secondary'}{'syndrome'},
+    syndrome3 => $in{'base'}{'syndromes'}{'tertiary'}{'syndrome'},
+    sttWorks => $in{'baseAbility'}{'body'   }{'selected'} ? 'body'
                 : $in{'baseAbility'}{'sense'  }{'selected'} ? 'sense'
                 : $in{'baseAbility'}{'mind'   }{'selected'} ? 'mind'
                 : $in{'baseAbility'}{'society'}{'selected'} ? 'social'
                 : '',
-    'sttGrowBody'   => $in{'baseAbility'}{'body'   }{'growth'},
-    'sttGrowSense'  => $in{'baseAbility'}{'sense'  }{'growth'},
-    'sttGrowMind'   => $in{'baseAbility'}{'mind'   }{'growth'},
-    'sttGrowSocial' => $in{'baseAbility'}{'society'}{'growth'},
-    'sttAddBody'    => $in{'baseAbility'}{'body'   }{'descript'}+$in{'baseAbility'}{'body'   }{'free'}||'',
-    'sttAddSense'   => $in{'baseAbility'}{'sense'  }{'descript'}+$in{'baseAbility'}{'sense'  }{'free'}||'',
-    'sttAddMind'    => $in{'baseAbility'}{'mind'   }{'descript'}+$in{'baseAbility'}{'mind'   }{'free'}||'',
-    'sttAddSocial'  => $in{'baseAbility'}{'society'}{'descript'}+$in{'baseAbility'}{'society'}{'free'}||'',
-    'maxHpAdd'      => $in{'subAbility'}{'hp'      }{'correct'},
-    'stockAdd'      => $in{'subAbility'}{'standing'}{'correct'},
-    'savingAdd'     => $in{'subAbility'}{'property'}{'correct'},
-    'initiativeAdd' => $in{'subAbility'}{'action'  }{'correct'},
-    'moveAdd'       => $in{'subAbility'}{'moveSen' }{'correct'},
-    'dashAdd'       => $in{'subAbility'}{'moveZen' }{'correct'},
-    'lifepathOrigin'         => $in{'lifepath'}{'origins'}{'name'},
-    'lifepathOriginNote'     => $in{'lifepath'}{'origins'}{'rois'}.'／'.$in{'lifepath'}{'origins'}{'txt'},
-    'lifepathExperience'     => $in{'lifepath'}{'experience'}{'name'},
-    'lifepathExperienceNote' => $in{'lifepath'}{'experience'}{'rois'}.'／'.$in{'lifepath'}{'experience'}{'txt'},
-    'lifepathEncounter'      => $in{'lifepath'}{'encounter'}{'name'},
-    'lifepathEncounterNote'  => $in{'lifepath'}{'encounter'}{'rois'}.'／'.$in{'lifepath'}{'encounter'}{'txt'},
-    'lifepathAwaken'         => $in{'lifepath'}{'arousal'}{'name'},
-    'lifepathImpulse'        => $in{'lifepath'}{'impulse'}{'name'},
-    'lifepathOtherEncroach'  => $in{'subAbility'}{'erotion'}{'correct'},
-    'skillMelee'     => $in{'skills'}{'hak'}{'A'}{'lv'},
-    'skillDodge'     => $in{'skills'}{'kai'}{'A'}{'lv'},
-    'skillRanged'    => $in{'skills'}{'sha'}{'A'}{'lv'},
-    'skillPercept'   => $in{'skills'}{'tik'}{'A'}{'lv'},
-    'skillRC'        => $in{'skills'}{'rc' }{'A'}{'lv'},
-    'skillWill'      => $in{'skills'}{'isi'}{'A'}{'lv'},
-    'skillNegotiate' => $in{'skills'}{'kou'}{'A'}{'lv'},
-    'skillProcure'   => $in{'skills'}{'tyo'}{'A'}{'lv'},
-    'skillAddMelee'     => $in{'skills'}{'hak'}{'D'}{'dlv'} ne '' ? $in{'skills'}{'hak'}{'D'}{'dlv'} - $in{'skills'}{'hak'}{'A'}{'lv'} : '',
-    'skillAddDodge'     => $in{'skills'}{'kai'}{'D'}{'dlv'} ne '' ? $in{'skills'}{'kai'}{'D'}{'dlv'} - $in{'skills'}{'kai'}{'A'}{'lv'} : '',
-    'skillAddRanged'    => $in{'skills'}{'sha'}{'D'}{'dlv'} ne '' ? $in{'skills'}{'sha'}{'D'}{'dlv'} - $in{'skills'}{'sha'}{'A'}{'lv'} : '',
-    'skillAddPercept'   => $in{'skills'}{'tik'}{'D'}{'dlv'} ne '' ? $in{'skills'}{'tik'}{'D'}{'dlv'} - $in{'skills'}{'tik'}{'A'}{'lv'} : '',
-    'skillAddRC'        => $in{'skills'}{'rc' }{'D'}{'dlv'} ne '' ? $in{'skills'}{'rc' }{'D'}{'dlv'} - $in{'skills'}{'rc' }{'A'}{'lv'} : '',
-    'skillAddWill'      => $in{'skills'}{'isi'}{'D'}{'dlv'} ne '' ? $in{'skills'}{'isi'}{'D'}{'dlv'} - $in{'skills'}{'isi'}{'A'}{'lv'} : '',
-    'skillAddNegotiate' => $in{'skills'}{'kou'}{'D'}{'dlv'} ne '' ? $in{'skills'}{'kou'}{'D'}{'dlv'} - $in{'skills'}{'kou'}{'A'}{'lv'} : '',
-    'skillAddProcure'   => $in{'skills'}{'tyo'}{'D'}{'dlv'} ne '' ? $in{'skills'}{'tyo'}{'D'}{'dlv'} - $in{'skills'}{'tyo'}{'A'}{'lv'} : '',
-    'freeNote' => $in{'base'}{'memo'},
+    sttGrowBody   => $in{'baseAbility'}{'body'   }{'growth'},
+    sttGrowSense  => $in{'baseAbility'}{'sense'  }{'growth'},
+    sttGrowMind   => $in{'baseAbility'}{'mind'   }{'growth'},
+    sttGrowSocial => $in{'baseAbility'}{'society'}{'growth'},
+    sttAddBody    => $in{'baseAbility'}{'body'   }{'descript'}+$in{'baseAbility'}{'body'   }{'free'}||'',
+    sttAddSense   => $in{'baseAbility'}{'sense'  }{'descript'}+$in{'baseAbility'}{'sense'  }{'free'}||'',
+    sttAddMind    => $in{'baseAbility'}{'mind'   }{'descript'}+$in{'baseAbility'}{'mind'   }{'free'}||'',
+    sttAddSocial  => $in{'baseAbility'}{'society'}{'descript'}+$in{'baseAbility'}{'society'}{'free'}||'',
+    maxHpAdd      => $in{'subAbility'}{'hp'      }{'correct'},
+    stockAdd      => $in{'subAbility'}{'standing'}{'correct'},
+    savingAdd     => $in{'subAbility'}{'property'}{'correct'},
+    initiativeAdd => $in{'subAbility'}{'action'  }{'correct'},
+    moveAdd       => $in{'subAbility'}{'moveSen' }{'correct'},
+    dashAdd       => $in{'subAbility'}{'moveZen' }{'correct'},
+    lifepathOrigin         => $in{'lifepath'}{'origins'}{'name'},
+    lifepathOriginNote     => $in{'lifepath'}{'origins'}{'rois'}.'／'.$in{'lifepath'}{'origins'}{'txt'},
+    lifepathExperience     => $in{'lifepath'}{'experience'}{'name'},
+    lifepathExperienceNote => $in{'lifepath'}{'experience'}{'rois'}.'／'.$in{'lifepath'}{'experience'}{'txt'},
+    lifepathEncounter      => $in{'lifepath'}{'encounter'}{'name'},
+    lifepathEncounterNote  => $in{'lifepath'}{'encounter'}{'rois'}.'／'.$in{'lifepath'}{'encounter'}{'txt'},
+    lifepathAwaken         => $in{'lifepath'}{'arousal'}{'name'},
+    lifepathImpulse        => $in{'lifepath'}{'impulse'}{'name'},
+    lifepathOtherEncroach  => $in{'subAbility'}{'erotion'}{'correct'},
+    skillMelee     => $in{'skills'}{'hak'}{'A'}{'lv'},
+    skillDodge     => $in{'skills'}{'kai'}{'A'}{'lv'},
+    skillRanged    => $in{'skills'}{'sha'}{'A'}{'lv'},
+    skillPercept   => $in{'skills'}{'tik'}{'A'}{'lv'},
+    skillRC        => $in{'skills'}{'rc' }{'A'}{'lv'},
+    skillWill      => $in{'skills'}{'isi'}{'A'}{'lv'},
+    skillNegotiate => $in{'skills'}{'kou'}{'A'}{'lv'},
+    skillProcure   => $in{'skills'}{'tyo'}{'A'}{'lv'},
+    skillAddMelee     => $in{'skills'}{'hak'}{'D'}{'dlv'} ne '' ? $in{'skills'}{'hak'}{'D'}{'dlv'} - $in{'skills'}{'hak'}{'A'}{'lv'} : '',
+    skillAddDodge     => $in{'skills'}{'kai'}{'D'}{'dlv'} ne '' ? $in{'skills'}{'kai'}{'D'}{'dlv'} - $in{'skills'}{'kai'}{'A'}{'lv'} : '',
+    skillAddRanged    => $in{'skills'}{'sha'}{'D'}{'dlv'} ne '' ? $in{'skills'}{'sha'}{'D'}{'dlv'} - $in{'skills'}{'sha'}{'A'}{'lv'} : '',
+    skillAddPercept   => $in{'skills'}{'tik'}{'D'}{'dlv'} ne '' ? $in{'skills'}{'tik'}{'D'}{'dlv'} - $in{'skills'}{'tik'}{'A'}{'lv'} : '',
+    skillAddRC        => $in{'skills'}{'rc' }{'D'}{'dlv'} ne '' ? $in{'skills'}{'rc' }{'D'}{'dlv'} - $in{'skills'}{'rc' }{'A'}{'lv'} : '',
+    skillAddWill      => $in{'skills'}{'isi'}{'D'}{'dlv'} ne '' ? $in{'skills'}{'isi'}{'D'}{'dlv'} - $in{'skills'}{'isi'}{'A'}{'lv'} : '',
+    skillAddNegotiate => $in{'skills'}{'kou'}{'D'}{'dlv'} ne '' ? $in{'skills'}{'kou'}{'D'}{'dlv'} - $in{'skills'}{'kou'}{'A'}{'lv'} : '',
+    skillAddProcure   => $in{'skills'}{'tyo'}{'D'}{'dlv'} ne '' ? $in{'skills'}{'tyo'}{'D'}{'dlv'} - $in{'skills'}{'tyo'}{'A'}{'lv'} : '',
+    freeNote => $in{'base'}{'memo'},
   );
   ##名前
-  ($pc{'characterName'},$pc{'characterNameRuby'}) = convertNameRuby($in{'base'}{'name'});
-  ($pc{'aka'},$pc{'akaRuby'}) = convertNameRuby($aka);
+  ($pc{characterName},$pc{characterNameRuby}) = convertNameRuby($in{'base'}{'name'});
+  ($pc{aka},$pc{akaRuby}) = convertNameRuby($aka);
   ## シンドローム
   foreach my $i (1 .. 3){
     $pc{'syndrome'.$i} =~ s/ハ[イィ]ロ[ウゥ]/ハィロゥ/;
@@ -407,7 +407,7 @@ sub convertSoukoToYtsheet {
     $pc{'skillAddInfo'.$i} = @$_{'dlv4'} ne '' ? @$_{'dlv4'} - @$_{'lv4'} : '';
     $i++;
   }
-  $pc{'skillRideNum'} = $pc{'skillArtNum'} = $pc{'skillKnowNum'} = $pc{'skillInfoNum'} = $i-1;
+  $pc{skillRideNum} = $pc{skillArtNum} = $pc{skillKnowNum} = $pc{skillInfoNum} = $i-1;
   ## ロイス
   my $i = 1;
   foreach (@{$in{'lois'}}){
@@ -447,10 +447,10 @@ sub convertSoukoToYtsheet {
     $pc{"effect${i}Note"}     = @$_{'notes'};
     $i++;
   }
-  $pc{'effectNum'} = $i-1;
+  $pc{effectNum} = $i-1;
   ## コンボ
   my $i = 1;
-  $pc{'comboCalcOff'} = 1;
+  $pc{comboCalcOff} = 1;
   foreach (@{$in{'combo'}}){
     my %un = %{@$_{'under100'}};
     my %ov = %{@$_{'over100'}};
@@ -481,7 +481,7 @@ sub convertSoukoToYtsheet {
     $pc{"combo${i}Condition2"} = '100%以上';
     $i++;
   }
-  $pc{'comboNum'} = $i-1;
+  $pc{comboNum} = $i-1;
   ## 武器
   my $i = 1;
   foreach (@{$in{'weapons'}}){
@@ -497,7 +497,7 @@ sub convertSoukoToYtsheet {
     $pc{"weapon${i}Note"}     = @$_{'notes'};
     $i++;
   }
-  $pc{'weaponNum'} = $i-1;
+  $pc{weaponNum} = $i-1;
   ## 防具
   my $i = 1;
   foreach (@{$in{'armours'}}){
@@ -511,7 +511,7 @@ sub convertSoukoToYtsheet {
     $pc{"armor${i}Note"}       = @$_{'notes'};
     $i++;
   }
-  $pc{'armorNum'} = $i-1;
+  $pc{armorNum} = $i-1;
   ## アイテム
   my $i = 1;
   foreach (@{$in{'items'}}){
@@ -523,91 +523,91 @@ sub convertSoukoToYtsheet {
     $pc{"item${i}Note"}       = @$_{'notes'};
     $i++;
   }
-  $pc{'itemNum'} = $i-1;
+  $pc{itemNum} = $i-1;
   ## 履歴
-  $pc{'history0Exp'} = 130;
-  $pc{'history1Title'} = '追加経験点';
-  $pc{'history1Exp'} = $in{'exp'}{'acquire'};
-  $pc{'historyNum'} = 3;
+  $pc{history0Exp} = 130;
+  $pc{history1Title} = '追加経験点';
+  $pc{history1Exp} = $in{'exp'}{'acquire'};
+  $pc{historyNum} = 3;
   
   ## チャットパレット
-  $pc{'paletteUseBuff'} = 1;
+  $pc{paletteUseBuff} = 1;
 
   ## 画像
-  ($pc{'imageURL'} = $::in{'url'}) =~ s/edit\.html/image/; 
-  $pc{'image'} = LWP::UserAgent->new->simple_request(HTTP::Request->new(GET => $pc{'imageURL'}))->code == 200;
+  ($pc{imageURL} = $::in{'url'}) =~ s/edit\.html/image/; 
+  $pc{image} = LWP::UserAgent->new->simple_request(HTTP::Request->new(GET => $pc{imageURL}))->code == 200;
 
   ## 〆
-  $pc{'ver'} = 0;
+  $pc{ver} = 0;
   return %pc;
 }
 ### 旧ゆとシート => ゆとシートⅡ --------------------------------------------------
 sub convert1to2 {
   my %pc = %{$_[0]};
-  $pc{'convertSource'} = '旧ゆとシート';
+  $pc{convertSource} = '旧ゆとシート';
   
-  $pc{'playerName'} = $pc{'player'};
+  $pc{playerName} = $pc{player};
   
-  $pc{'characterName'} = $pc{'name'};
-  $pc{'aka'} = $pc{'codename'};
-  $pc{'words'} = $pc{'word'};
+  $pc{characterName} = $pc{name};
+  $pc{aka} = $pc{codename};
+  $pc{words} = $pc{word};
   
-  $pc{'tags'} = $pc{'tag'};
+  $pc{tags} = $pc{tag};
   
-  $pc{'age'}      = $pc{'prof_age'};
-  $pc{'gender'}   = $pc{'prof_sex'};
-  $pc{'height'}   = $pc{'prof_height'};
-  $pc{'weight'}   = $pc{'prof_weight'};
-  $pc{'sign'}     = $pc{'prof_sign'};
-  $pc{'blood'}    = $pc{'prof_blood'};
+  $pc{age}      = $pc{prof_age};
+  $pc{gender}   = $pc{prof_sex};
+  $pc{height}   = $pc{prof_height};
+  $pc{weight}   = $pc{prof_weight};
+  $pc{sign}     = $pc{prof_sign};
+  $pc{blood}    = $pc{prof_blood};
   
-  $pc{'sttWorks'}      = $pc{'stt_works'};
-  $pc{'sttWorks'} =~ s/spirit/mind/;
-  $pc{'sttGrowBody'}   = $pc{'stt_grow_body'};
-  $pc{'sttGrowSense'}  = $pc{'stt_grow_sense'};
-  $pc{'sttGrowMind'}   = $pc{'stt_grow_spirit'};
-  $pc{'sttGrowSocial'} = $pc{'stt_grow_social'};
-  $pc{'sttAddBody'}   = $pc{'stt_add_body'};
-  $pc{'sttAddSense'}  = $pc{'stt_add_sense'};
-  $pc{'sttAddMind'}   = $pc{'stt_add_spirit'};
-  $pc{'sttAddSocial'} = $pc{'stt_add_social'};
+  $pc{sttWorks}      = $pc{stt_works};
+  $pc{sttWorks} =~ s/spirit/mind/;
+  $pc{sttGrowBody}   = $pc{stt_grow_body};
+  $pc{sttGrowSense}  = $pc{stt_grow_sense};
+  $pc{sttGrowMind}   = $pc{stt_grow_spirit};
+  $pc{sttGrowSocial} = $pc{stt_grow_social};
+  $pc{sttAddBody}   = $pc{stt_add_body};
+  $pc{sttAddSense}  = $pc{stt_add_sense};
+  $pc{sttAddMind}   = $pc{stt_add_spirit};
+  $pc{sttAddSocial} = $pc{stt_add_social};
   
-  $pc{'maxHpAdd'} = $pc{'sub_hp_add'};
-  $pc{'stockAdd'} = $pc{'sub_provide_add'};
-  $pc{'initiativeAdd'} = $pc{'sub_speed_add'};
-  $pc{'moveAdd'} = $pc{'sub_move_add'};
+  $pc{maxHpAdd} = $pc{sub_hp_add};
+  $pc{stockAdd} = $pc{sub_provide_add};
+  $pc{initiativeAdd} = $pc{sub_speed_add};
+  $pc{moveAdd} = $pc{sub_move_add};
   
-  $pc{'skillMelee'}     = $pc{'skill_fight_lv'};
-  $pc{'skillRanged'}    = $pc{'skill_shoot_lv'};
-  $pc{'skillRC'}        = $pc{'skill_RC_lv'};
-  $pc{'skillNegotiate'} = $pc{'skill_nego_lv'};
-  $pc{'skillDodge'}     = $pc{'skill_dodge_lv'};
-  $pc{'skillPercept'}   = $pc{'skill_perce_lv'};
-  $pc{'skillWill'}      = $pc{'skill_will_lv'};
-  $pc{'skillProcure'}   = $pc{'skill_raise_lv'};
+  $pc{skillMelee}     = $pc{skill_fight_lv};
+  $pc{skillRanged}    = $pc{skill_shoot_lv};
+  $pc{skillRC}        = $pc{skill_RC_lv};
+  $pc{skillNegotiate} = $pc{skill_nego_lv};
+  $pc{skillDodge}     = $pc{skill_dodge_lv};
+  $pc{skillPercept}   = $pc{skill_perce_lv};
+  $pc{skillWill}      = $pc{skill_will_lv};
+  $pc{skillProcure}   = $pc{skill_raise_lv};
   
-  $pc{'skillRideNum'} = $pc{'skillArtNum'} = $pc{'skillKnowNum'} = $pc{'skillInfoNum'} = $pc{'count_skill'};
-  foreach my $num (1 .. $pc{'count_skill'}){
+  $pc{skillRideNum} = $pc{skillArtNum} = $pc{skillKnowNum} = $pc{skillInfoNum} = $pc{count_skill};
+  foreach my $num (1 .. $pc{count_skill}){
     $pc{"skillRide${num}Name"} = '運転:'.$pc{"skill_drive${num}_name"}; $pc{"skillRide${num}"} = $pc{"skill_drive${num}_lv"};
     $pc{"skillArt${num}Name" } = '芸術:'.$pc{"skill_art${num}_name"  }; $pc{"skillArt${num}" } = $pc{"skill_art${num}_lv"  };
     $pc{"skillKnow${num}Name"} = '知識:'.$pc{"skill_know${num}_name" }; $pc{"skillKnow${num}"} = $pc{"skill_know${num}_lv" };
     $pc{"skillInfo${num}Name"} = '情報:'.$pc{"skill_info${num}_name" }; $pc{"skillInfo${num}"} = $pc{"skill_info${num}_lv" };
   }
   
-  $pc{'lifepathOrigin'}     = $pc{'lifepath_birth'};
-  $pc{'lifepathOriginNote'} = $pc{'lifepath_birth_note'};
-  $pc{'lifepathExperience'} = $pc{'lifepath_exp'};
-  $pc{'lifepathExperienceNote'} = $pc{'lifepath_exp_note'};
-  $pc{'lifepathEncounter'}      = $pc{'lifepath_meet'};
-  $pc{'lifepathEncounterNote'}  = $pc{'lifepath_meet_note'};
-  $pc{'lifepathAwaken'}          = $pc{'lifepath_awaken'};
-  $pc{'lifepathAwakenEncroach'}  = $pc{'lifepath_awaken_invade'};
-  $pc{'lifepathAwakenNote'}      = $pc{'lifepath_awaken_note'};
-  $pc{'lifepathImpulse'}         = $pc{'lifepath_urge'};
-  $pc{'lifepathImpulseEncroach'} = $pc{'lifepath_urge_invade'};
-  $pc{'lifepathImpulseNote'}     = $pc{'lifepath_urge_note'};
-  $pc{'lifepathOtherEncroach'} = $pc{'lifepath_other_invade'};
-  $pc{'lifepathOtherNote'}     = $pc{'lifepath_other_note'};
+  $pc{lifepathOrigin}     = $pc{lifepath_birth};
+  $pc{lifepathOriginNote} = $pc{lifepath_birth_note};
+  $pc{lifepathExperience} = $pc{lifepath_exp};
+  $pc{lifepathExperienceNote} = $pc{lifepath_exp_note};
+  $pc{lifepathEncounter}      = $pc{lifepath_meet};
+  $pc{lifepathEncounterNote}  = $pc{lifepath_meet_note};
+  $pc{lifepathAwaken}          = $pc{lifepath_awaken};
+  $pc{lifepathAwakenEncroach}  = $pc{lifepath_awaken_invade};
+  $pc{lifepathAwakenNote}      = $pc{lifepath_awaken_note};
+  $pc{lifepathImpulse}         = $pc{lifepath_urge};
+  $pc{lifepathImpulseEncroach} = $pc{lifepath_urge_invade};
+  $pc{lifepathImpulseNote}     = $pc{lifepath_urge_note};
+  $pc{lifepathOtherEncroach} = $pc{lifepath_other_invade};
+  $pc{lifepathOtherNote}     = $pc{lifepath_other_note};
   
   foreach my $num (1 .. 7) {
     $pc{"lois${num}Relation"}     = $pc{"lois${num}_relation"};
@@ -627,9 +627,9 @@ sub convert1to2 {
     $pc{"memory${num}State"}    = $pc{"memory${num}_titus"} ? 'タイタス' : '';
   }
   
-  $pc{'effectNum'} = $pc{'count_effect'}+2;
+  $pc{effectNum} = $pc{count_effect}+2;
   my $i = 1;
-  foreach my $num (3 .. $pc{'effectNum'}) {
+  foreach my $num (3 .. $pc{effectNum}) {
     $pc{"effect${num}Name"}     = $pc{"effect${i}_name"};
     $pc{"effect${num}Lv"}       = $pc{"effect${i}_lv"};
     $pc{"effect${num}Timing"}   = $pc{"effect${i}_timing"};
@@ -643,7 +643,7 @@ sub convert1to2 {
     $i++;
   }
   my $i = 1;
-  foreach my $num ($pc{'effectNum'}+1 .. $pc{'effectNum'}+$pc{'count_effect_ez'}) {
+  foreach my $num ($pc{effectNum}+1 .. $pc{effectNum}+$pc{count_effect_ez}) {
     $pc{"effect${num}Type"}     = 'easy';
     $pc{"effect${num}Name"}     = $pc{"effect_ez${i}_name"};
     $pc{"effect${num}Lv"}       = $pc{"effect_ez${i}_lv"};
@@ -657,10 +657,10 @@ sub convert1to2 {
     $pc{"effect${num}Note"}     = $pc{"effect_ez${i}_note"};
     $i++;
   }
-  $pc{'effectNum'} += $pc{'count_effect_ez'};
+  $pc{effectNum} += $pc{count_effect_ez};
   
-  $pc{'comboNum'} = $pc{'count_combo'};
-  foreach my $num (1 .. $pc{'comboNum'}) {
+  $pc{comboNum} = $pc{count_combo};
+  foreach my $num (1 .. $pc{comboNum}) {
     $pc{"combo${num}Name"}     = $pc{"combo${num}_name"};
     $pc{"combo${num}Combo"}    = $pc{"combo${num}_set"};
     $pc{"combo${num}Timing"}   = $pc{"combo${num}_timing"};
@@ -681,8 +681,8 @@ sub convert1to2 {
     $pc{"combo${num}Atk2"}        = $pc{"combo${num}_over_power"};
   }
   
-  $pc{'weaponNum'} = $pc{'count_weapon'};
-  foreach my $num (1 .. $pc{'weaponNum'}) {
+  $pc{weaponNum} = $pc{count_weapon};
+  foreach my $num (1 .. $pc{weaponNum}) {
     $pc{"weapon${num}Name"}  = $pc{"weapon${num}_name"};
     $pc{"weapon${num}Stock"} = $pc{"weapon${num}_point"};
     $pc{"weapon${num}Exp"}   = $pc{"weapon${num}_exp"};
@@ -694,8 +694,8 @@ sub convert1to2 {
     $pc{"weapon${num}Range"} = $pc{"weapon${num}_range"};
     $pc{"weapon${num}Note"}  = $pc{"weapon${num}_note"};
   }
-  $pc{'armorNum'} = $pc{'count_armour'};
-  foreach my $num (1 .. $pc{'armorNum'}) {
+  $pc{armorNum} = $pc{count_armour};
+  foreach my $num (1 .. $pc{armorNum}) {
     $pc{"armor${num}Name"}       = $pc{"armor${num}_name"};
     $pc{"armor${num}Stock"}      = $pc{"armor${num}_point"};
     $pc{"armor${num}Exp"}        = $pc{"armor${num}_exp"};
@@ -705,8 +705,8 @@ sub convert1to2 {
     $pc{"armor${num}Armor"}      = $pc{"armor${num}_guard"};
     $pc{"armor${num}Note"}       = $pc{"armor${num}_note"};
   }
-  $pc{'armorNum'} = $pc{'count_item'};
-  foreach my $num (1 .. $pc{'armorNum'}) {
+  $pc{armorNum} = $pc{count_item};
+  foreach my $num (1 .. $pc{armorNum}) {
     $pc{"item${num}Name"}       = $pc{"item${num}_name"};
     $pc{"item${num}Stock"}      = $pc{"item${num}_point"};
     $pc{"item${num}Exp"}        = $pc{"item${num}_exp"};
@@ -715,22 +715,22 @@ sub convert1to2 {
     $pc{"item${num}Note"}       = $pc{"item${num}_note"};
   }
   
-  $pc{'freeNote'} = $pc{'text_free'};
-  $pc{'freeHistory'} = $pc{'text_history'};
+  $pc{freeNote} = $pc{text_free};
+  $pc{freeHistory} = $pc{text_history};
   
-  $pc{'historyNum'} = $pc{'count_history'};
-  foreach my $num (1 .. $pc{'historyNum'}) {
+  $pc{historyNum} = $pc{count_history};
+  foreach my $num (1 .. $pc{historyNum}) {
     $pc{"history${num}Date"}       = $pc{"hist_date$num"};
     $pc{"history${num}Title"}      = $pc{"hist_name$num"};
     $pc{"history${num}Exp"}        = $pc{"hist_exp$num"};
     $pc{"history${num}Gm"}         = $pc{"hist_gm$num"};
     $pc{"history${num}Member"}     = $pc{"hist_member$num"};
   }
-  $pc{"history0Exp"} = $pc{"make_exp"};
+  $pc{history0Exp} = $pc{make_exp};
   
-  $pc{'paletteUseBuff'} = 1;
+  $pc{paletteUseBuff} = 1;
 
-  $pc{'ver'} = 0;
+  $pc{ver} = 0;
   return %pc;
 }
 

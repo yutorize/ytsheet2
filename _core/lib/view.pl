@@ -11,15 +11,15 @@ my $type;
 my $author;
 our %conv_data = ();
 
-$::in{'log'} ||= $::in{'backup'};
+$::in{log} ||= $::in{backup};
 
-if($::in{'id'}){
-  ($file, $type, $author) = getfile_open($::in{'id'});
+if($::in{id}){
+  ($file, $type, $author) = getfile_open($::in{id});
 }
-elsif($::in{'url'}){
+elsif($::in{url}){
   require $set::lib_convert;
-  %conv_data = dataConvert($::in{'url'});
-  $type = $conv_data{'type'};
+  %conv_data = dataConvert($::in{url});
+  $type = $conv_data{type};
 }
 
 ### 各システム別処理 --------------------------------------------------
@@ -34,14 +34,14 @@ sub pcDataGet {
   my %pc;
   my $datadir = ($type eq 'm') ? $set::mons_dir : ($type eq 'i') ? $set::item_dir : ($type eq 'a') ? $set::arts_dir : $set::char_dir;
   ## データ読み込み
-  if($::in{'id'}){
-    my $datatype = ($::in{'log'}) ? 'logs' : 'data';
+  if($::in{id}){
+    my $datatype = ($::in{log}) ? 'logs' : 'data';
     my $hit = 0;
     open my $IN, '<', "${datadir}${file}/${datatype}.cgi" or viewNotFound($datadir);
     while (<$IN>){
       if($datatype eq 'logs'){
         if (index($_, "=") == 0){
-          if (index($_, "=$::in{'log'}=") == 0){ $hit = 1; next; }
+          if (index($_, "=$::in{log}=") == 0){ $hit = 1; next; }
           if ($hit){ last; }
         }
         if (!$hit) { next; }
@@ -51,63 +51,63 @@ sub pcDataGet {
       $pc{$key} = $value;
     }
     close($IN);
-    if($datatype eq 'logs' && !$hit){ error("過去ログ（$::in{'log'}）が見つかりません。"); }
+    if($datatype eq 'logs' && !$hit){ error("過去ログ（$::in{log}）が見つかりません。"); }
 
-    if($::in{'log'}){
-      ($pc{'protect'}, $pc{'forbidden'}) = protectTypeGet("${datadir}${file}/data.cgi");
-      $pc{'logId'} = $::in{'log'};
+    if($::in{log}){
+      ($pc{protect}, $pc{forbidden}) = protectTypeGet("${datadir}${file}/data.cgi");
+      $pc{logId} = $::in{log};
     }
   }
   ## データ読み込み：コンバート
-  elsif($::in{'url'}){
+  elsif($::in{url}){
     %pc = %conv_data;
-    if(!$conv_data{'ver'}){
+    if(!$conv_data{ver}){
       require (($type eq 'm') ? $set::lib_calc_mons : ($type eq 'i') ? $set::lib_calc_item : ($type eq 'a') ? $set::lib_calc_arts : $set::lib_calc_char);
       %pc = data_calc(\%pc);
     }
   }
 
   ##
-  if   ($type eq 'm'){ $pc{'sheetType'} = 'mons'; }
-  elsif($type eq 'i'){ $pc{'sheetType'} = 'item'; }
-  elsif($type eq 'a'){ $pc{'sheetType'} = 'arts'; }
-  else               { $pc{'sheetType'} = 'chara'; }
+  if   ($type eq 'm'){ $pc{sheetType} = 'mons'; }
+  elsif($type eq 'i'){ $pc{sheetType} = 'item'; }
+  elsif($type eq 'a'){ $pc{sheetType} = 'arts'; }
+  else               { $pc{sheetType} = 'chara'; }
 
-  if(!$::in{'checkView'} && (
-    ($pc{'protect'} eq 'none') || 
+  if(!$::in{checkView} && (
+    ($pc{protect} eq 'none') || 
     ($author && ($author eq $LOGIN_ID || $set::masterid eq $LOGIN_ID))
   )){
-    $pc{'yourAuthor'} = 1;
+    $pc{yourAuthor} = 1;
   }
-  if(!$pc{'protect'} || $pc{'protect'} eq 'password'){
-    $pc{'reqdPassword'} = 1;
+  if(!$pc{protect} || $pc{protect} eq 'password'){
+    $pc{reqdPassword} = 1;
   }
 
-  if($::in{'mode'} eq 'download'){
-    $pc{'modeDownload'} = 1;
+  if($::in{mode} eq 'download'){
+    $pc{modeDownload} = 1;
   }
   
   ## キャラクター画像
-  if($pc{'image'}){
-    if($pc{'convertSource'}) {
-      $pc{'imageSrc'} = $pc{'imageURL'};
+  if($pc{image}){
+    if($pc{convertSource}) {
+      $pc{imageSrc} = $pc{imageURL};
     }
     else {
-      $pc{'imageSrc'} =     "./?id=$::in{'id'}&mode=image&cache=$pc{'imageUpdate'}";
-      $pc{'imageURL'} = url()."?id=$::in{'id'}&mode=image&cache=$pc{'imageUpdate'}";
+      $pc{imageSrc} =     "./?id=$::in{id}&mode=image&cache=$pc{imageUpdate}";
+      $pc{imageURL} = url()."?id=$::in{id}&mode=image&cache=$pc{imageUpdate}";
     }
-    $pc{'images'} = "'1': \"".($pc{'modeDownload'} ? urlToBase64("${datadir}${file}/image.$pc{'image'}") : $pc{'imageSrc'})."\", ";
+    $pc{images} = "'1': \"".($pc{modeDownload} ? urlToBase64("${datadir}${file}/image.$pc{image}") : $pc{imageSrc})."\", ";
     
-    if($pc{'imageFit'} eq 'percentY'){
-      $pc{'imageFit'} = 'auto '.$pc{'imagePercent'}.'%';
+    if($pc{imageFit} eq 'percentY'){
+      $pc{imageFit} = 'auto '.$pc{imagePercent}.'%';
     }
-    elsif($pc{'imageFit'} =~ /^percentX?$/){
-      $pc{'imageFit'} = $pc{'imagePercent'}.'%';
+    elsif($pc{imageFit} =~ /^percentX?$/){
+      $pc{imageFit} = $pc{imagePercent}.'%';
     }
     
     ## 権利表記
-    if($pc{'imageCopyrightURL'}){
-      $pc{'imageCopyright'} = "<a href=\"$pc{'imageCopyrightURL'}\" target=\"_blank\">".($pc{'imageCopyright'}||$pc{'imageCopyrightURL'})."</a>";
+    if($pc{imageCopyrightURL}){
+      $pc{imageCopyright} = "<a href=\"$pc{imageCopyrightURL}\" target=\"_blank\">".($pc{imageCopyright}||$pc{imageCopyrightURL})."</a>";
     }
   }
 
@@ -118,13 +118,13 @@ sub pcDataGet {
 
 sub viewNotFound { #v1.14/v1.20のコンバート処理
   my $dir = shift;
-  if(!$::in{'log'} && $file =~ /^(.+)\/(.+?)$/){
+  if(!$::in{log} && $file =~ /^(.+)\/(.+?)$/){
     my $user = $1;
     my $file = $2;
     if(-d "${dir}${file}"){
       if(!-d "${dir}${user}"){ mkdir "${dir}${user}" or error("データディレクトリの作成に失敗しました。"); }
       rename("${dir}${file}", "${dir}${user}/${file}");
-      print "Location:./?id=$::in{'id'}\n\n";
+      print "Location:./?id=$::in{id}\n\n";
       exit;
     }
   }
@@ -146,12 +146,12 @@ sub getLogList {
     
     my ($selected, $query, $text);
     if($date eq 'latest'){
-      $selected = (!$::in{'log'} ? 1 : 0);
+      $selected = (!$::in{log} ? 1 : 0);
       $text     = ($name ? "<b>$name</b>":'') . '最新: ' .epocToDate($epoc);
     }
     else {
       (my $dateview = $date) =~ s/(\d{4}-\d{2}-\d{2})-(\d{2})-(\d{2})/$1 $2:$3/g;
-      $selected = ($date eq $::in{'log'} ? 1 : 0);
+      $selected = ($date eq $::in{log} ? 1 : 0);
       $query    = "&log=$date";
       $text     = ($name ? "<b>$name</b>":'') .epocToDate($epoc);
     }

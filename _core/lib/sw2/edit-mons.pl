@@ -13,41 +13,41 @@ require $set::lib_palette_sub;
 require $set::data_mons;
 
 ### データ読み込み ###################################################################################
-my ($data, $mode, $file, $message) = pcDataGet($::in{'mode'});
+my ($data, $mode, $file, $message) = pcDataGet($::in{mode});
 our %pc = %{ $data };
 
 my $mode_make = ($mode =~ /^(blanksheet|copy|convert)$/) ? 1 : 0;
 
 ### 出力準備 #########################################################################################
 if($message){
-  my $name = tagUnescape($pc{'characterName'} || $pc{'monsterName'} || '無題');
+  my $name = tagUnescape($pc{characterName} || $pc{monsterName} || '無題');
   $message =~ s/<!NAME>/$name/;
 }
 ### 製作者名 --------------------------------------------------
 if($mode_make){
-  $pc{'author'} = (getplayername($LOGIN_ID))[0];
+  $pc{author} = (getplayername($LOGIN_ID))[0];
 }
 ### 初期設定 --------------------------------------------------
-if($mode_make){ $pc{'protect'} = $LOGIN_ID ? 'account' : 'password'; }
+if($mode_make){ $pc{protect} = $LOGIN_ID ? 'account' : 'password'; }
 
 if($mode eq 'blanksheet'){
-  $pc{'paletteUseBuff'} = 1;
+  $pc{paletteUseBuff} = 1;
 }
 
 ## カラー
 setDefaultColors();
 
 ## その他
-$pc{'partsNum'}  ||= 1;
-$pc{'statusNum'} ||= 1;
-$pc{'lootsNum'}  ||= 2;
+$pc{partsNum}  ||= 1;
+$pc{statusNum} ||= 1;
+$pc{lootsNum}  ||= 2;
 
-my $status_text_input = $pc{'statusTextInput'} || $pc{'mount'} || 0;
+my $status_text_input = $pc{statusTextInput} || $pc{mount} || 0;
 
 ### 改行処理 --------------------------------------------------
-$pc{'skills'}      =~ s/&lt;br&gt;/\n/g;
-$pc{'description'} =~ s/&lt;br&gt;/\n/g;
-$pc{'chatPalette'} =~ s/&lt;br&gt;/\n/g;
+$pc{skills}      =~ s/&lt;br&gt;/\n/g;
+$pc{description} =~ s/&lt;br&gt;/\n/g;
+$pc{chatPalette} =~ s/&lt;br&gt;/\n/g;
 
 
 ### フォーム表示 #####################################################################################
@@ -58,7 +58,7 @@ Content-type: text/html\n
 
 <head>
   <meta charset="UTF-8">
-  <title>@{[$mode eq 'edit'?"編集：$pc{'monsterName'}":'新規作成']} - $set::title</title>
+  <title>@{[$mode eq 'edit'?"編集：$pc{monsterName}":'新規作成']} - $set::title</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" media="all" href="${main::core_dir}/skin/_common/css/base.css?${main::ver}">
   <link rel="stylesheet" media="all" href="${main::core_dir}/skin/_common/css/sheet.css?${main::ver}">
@@ -77,7 +77,7 @@ Content-type: text/html\n
 
   <main>
     <article>
-      <form id="monster" name="sheet" method="post" action="./" enctype="multipart/form-data" class="@{[ $pc{'statusTextInput'} ? 'not-calc' : '' ]}">
+      <form id="monster" name="sheet" method="post" action="./" enctype="multipart/form-data" class="@{[ $pc{statusTextInput} ? 'not-calc' : '' ]}">
       <input type="hidden" name="ver" value="${main::ver}">
       <input type="hidden" name="type" value="m">
 HTML
@@ -97,8 +97,8 @@ print <<"HTML";
           <li onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード切替">
           <li class="buttons">
             <ul>
-              <li @{[ display ($mode eq 'edit') ]} class="view-icon" title="閲覧画面"><a href="./?id=$::in{'id'}"></a>
-              <li @{[ display ($mode eq 'edit') ]} class="copy" onclick="window.open('./?mode=copy&id=$::in{'id'}@{[  $::in{'log'}?"&log=$::in{'log'}":'' ]}');">複製
+              <li @{[ display ($mode eq 'edit') ]} class="view-icon" title="閲覧画面"><a href="./?id=$::in{id}"></a>
+              <li @{[ display ($mode eq 'edit') ]} class="copy" onclick="window.open('./?mode=copy&id=$::in{id}@{[  $::in{log}?"&log=$::in{log}":'' ]}');">複製
               <li class="submit" onclick="formSubmit()" title="Ctrl+S">保存
             </ul>
           </li>
@@ -113,8 +113,8 @@ HTML
 if($set::user_reqd){
   print <<"HTML";
     <input type="hidden" name="protect" value="account">
-    <input type="hidden" name="protectOld" value="$pc{'protect'}">
-    <input type="hidden" name="pass" value="$::in{'pass'}">
+    <input type="hidden" name="protectOld" value="$pc{protect}">
+    <input type="hidden" name="pass" value="$::in{pass}">
 HTML
 }
 else {
@@ -124,19 +124,19 @@ else {
   print <<"HTML";
       <details class="box" id="edit-protect" @{[$mode eq 'edit' ? '':'open']}>
       <summary>編集保護設定</summary>
-      <p id="edit-protect-view"><input type="hidden" name="protectOld" value="$pc{'protect'}">
+      <p id="edit-protect-view"><input type="hidden" name="protectOld" value="$pc{protect}">
 HTML
   if($LOGIN_ID){
-    print '<input type="radio" name="protect" value="account"'.($pc{'protect'} eq 'account'?' checked':'').'> アカウントに紐付ける（ログイン中のみ編集可能になります）<br>';
+    print '<input type="radio" name="protect" value="account"'.($pc{protect} eq 'account'?' checked':'').'> アカウントに紐付ける（ログイン中のみ編集可能になります）<br>';
   }
-    print '<input type="radio" name="protect" value="password"'.($pc{'protect'} eq 'password'?' checked':'').'> パスワードで保護 ';
-  if ($mode eq 'edit' && $pc{'protect'} eq 'password') {
-    print '<input type="hidden" name="pass" value="'.$::in{'pass'}.'"><br>';
+    print '<input type="radio" name="protect" value="password"'.($pc{protect} eq 'password'?' checked':'').'> パスワードで保護 ';
+  if ($mode eq 'edit' && $pc{protect} eq 'password') {
+    print '<input type="hidden" name="pass" value="'.$::in{pass}.'"><br>';
   } else {
     print '<input type="password" name="pass"><br>';
   }
   print <<"HTML";
-<input type="radio" name="protect" value="none"@{[ $pc{'protect'} eq 'none'?' checked':'' ]}> 保護しない（誰でも編集できるようになります）
+<input type="radio" name="protect" value="none"@{[ $pc{protect} eq 'none'?' checked':'' ]}> 保護しない（誰でも編集できるようになります）
       </p>
       </details>
 HTML
@@ -147,13 +147,13 @@ HTML
         <dd id="forbidden-checkbox">
           <select name="forbidden">
             <option value="">内容を全て開示
-            <option value="battle" @{[ $pc{'forbidden'} eq 'battle' ? 'selected' : '' ]}>データ・数値のみ秘匿
-            <option value="all"    @{[ $pc{'forbidden'} eq 'all'    ? 'selected' : '' ]}>内容を全て秘匿
+            <option value="battle" @{[ $pc{forbidden} eq 'battle' ? 'selected' : '' ]}>データ・数値のみ秘匿
+            <option value="all"    @{[ $pc{forbidden} eq 'all'    ? 'selected' : '' ]}>内容を全て秘匿
           </select>
         <dd id="hide-checkbox">
           <select name="hide">
             <option value="">一覧に表示
-            <option value="1" @{[ $pc{'hide'} ? 'selected' : '' ]}>一覧には非表示
+            <option value="1" @{[ $pc{hide} ? 'selected' : '' ]}>一覧には非表示
           </select>
         <dd>※「一覧に非表示」でもタグ検索結果・マイリストには表示されます
       </dl>
@@ -281,7 +281,7 @@ print <<"HTML";
           </tr>
         <tbody id="status-tbody">
 HTML
-foreach my $num (1 .. $pc{'statusNum'}){
+foreach my $num (1 .. $pc{statusNum}){
   $pc{"status${num}Damage"} = '2d+' if $pc{"status${num}Damage"} eq '' && $mode eq 'blanksheet';
   print <<"HTML";
         <tr id="status-row${num}">
@@ -302,11 +302,11 @@ HTML
 print <<"HTML";
         </tbody>
 HTML
-foreach my $lv (2 .. ($pc{'lvMax'}-$pc{'lvMin'}+1)){
+foreach my $lv (2 .. ($pc{lvMax}-$pc{lvMin}+1)){
   print <<"HTML";
         <tbody class="mount-only" id="status-tbody${lv}" data-lv="${lv}">
 HTML
-  foreach my $num (1 .. $pc{'statusNum'}){
+  foreach my $num (1 .. $pc{statusNum}){
     $pc{"status${num}Damage"} = '2d6+' if $pc{"status${num}Damage"} eq '' && $mode eq 'blanksheet';
     print <<"HTML";
         <tr id="status-row${num}-${lv}">
@@ -339,7 +339,7 @@ print <<"HTML";
       </div>
       <div class="box">
         <h2>特殊能力</h2>
-        <textarea name="skills">$pc{'skills'}</textarea>
+        <textarea name="skills">$pc{skills}</textarea>
         <div class="annotate">
           ※<b>行頭に</b>特殊能力の分類マークなどを記述すると、そこから次の「改行」または「全角スペース」までを自動的に見出し化します。<br>
            2.0での分類マークでも構いません。また、入力簡易化の為に入力しやすい代替文字での入力も可能です。<br>
@@ -370,12 +370,12 @@ print <<"HTML";
         <div id="loots-list">
           <ul id="loots-num">
 HTML
-foreach my $num (1 .. $pc{'lootsNum'}){ print "<li id='loots-num${num}'><span class='handle'></span>".input("loots${num}Num"); }
+foreach my $num (1 .. $pc{lootsNum}){ print "<li id='loots-num${num}'><span class='handle'></span>".input("loots${num}Num"); }
 print <<"HTML";
           </ul>
           <ul id="loots-item">
 HTML
-foreach my $num (1 .. $pc{'lootsNum'}){ print "<li id='loots-item${num}'><span class='handle'></span>".input("loots${num}Item"); }
+foreach my $num (1 .. $pc{lootsNum}){ print "<li id='loots-item${num}'><span class='handle'></span>".input("loots${num}Item"); }
 print <<"HTML";
         </ul>
       </div>
@@ -384,7 +384,7 @@ print <<"HTML";
       </div>
       <div class="box">
         <h2>解説</h2>
-        <textarea name="description">$pc{'description'}</textarea>
+        <textarea name="description">$pc{description}</textarea>
       </div>
       </section>
       
@@ -402,8 +402,8 @@ print <<"HTML";
       <p style="font-size: 80%;">
       <input type="hidden" name="mode" value="delete">
       <input type="hidden" name="type" value="m">
-      <input type="hidden" name="id" value="$::in{'id'}">
-      <input type="hidden" name="pass" value="$::in{'pass'}">
+      <input type="hidden" name="id" value="$::in{id}">
+      <input type="hidden" name="pass" value="$::in{pass}">
       <input type="checkbox" name="check1" value="1" required>
       <input type="checkbox" name="check2" value="1" required>
       <input type="checkbox" name="check3" value="1" required>

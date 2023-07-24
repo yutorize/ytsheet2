@@ -10,19 +10,19 @@ sub data_calc {
   my %pc = %{$_[0]};
   my %st;
   ### アップデート --------------------------------------------------
-  if($pc{'ver'}){
+  if($pc{ver}){
     %pc = data_update_chara(\%pc);
   }
 
   ### 戦果点 --------------------------------------------------
-  foreach my $num (0 .. $pc{'historyNum'}){ $pc{'resultPoint'} += s_eval($pc{"history${num}Result"}); }
-  $pc{'historyResultTotal'} = $pc{'resultPoint'};
-  foreach my $num (0 .. $pc{'goodsNum'  }){ $pc{'resultPoint'} -= $pc{"goods${num}Cost"}; }
-  foreach my $num (0 .. $pc{'itemsNum'  }){ $pc{'resultPoint'} -= $pc{"item${num}Cost"}; }
+  foreach my $num (0 .. $pc{historyNum}){ $pc{resultPoint} += s_eval($pc{"history${num}Result"}); }
+  $pc{historyResultTotal} = $pc{resultPoint};
+  foreach my $num (0 .. $pc{goodsNum  }){ $pc{resultPoint} -= $pc{"goods${num}Cost"}; }
+  foreach my $num (0 .. $pc{itemsNum  }){ $pc{resultPoint} -= $pc{"item${num}Cost"}; }
 
   ### 能力値 --------------------------------------------------
-  $pc{'staminaMax'} = $pc{'vitality'} + $pc{'staminaAdd'};
-  $pc{'staminaHalf'} = int($pc{'staminaMax'} / 2);
+  $pc{staminaMax} = $pc{vitality} + $pc{staminaAdd};
+  $pc{staminaHalf} = int($pc{staminaMax} / 2);
 
   foreach my $stt ('Acc','Spl','Eva','Atk','Det','Def','Mdf','Ini','Str'){
     $pc{'battleSubtotal'.$stt} = $pc{'battleBase'.$stt} + $pc{'battleRace'.$stt};
@@ -30,9 +30,9 @@ sub data_calc {
     foreach my $type ('Weapon','Head','Body','Acc1','Acc2','Other'){
       $pc{'battleTotal'.$stt} += $pc{'battle'.$type.$stt};
     }
-    $pc{'battleTotal'.$stt} += $pc{'level'};
+    $pc{'battleTotal'.$stt} += $pc{level};
   }
-  $pc{'hpMax'} = $pc{'battleTotalStr'} + $pc{'hpAdd'};
+  $pc{hpMax} = $pc{battleTotalStr} + $pc{hpAdd};
 
   ### 0を消去 --------------------------------------------------
   foreach my $stt ('Acc','Spl','Eva','Atk','Det','Def','Mdf','Ini','Str'){
@@ -55,23 +55,23 @@ sub data_calc {
 
   #### エスケープ --------------------------------------------------
   $pc{$_} = pcEscape($pc{$_}) foreach (keys %pc);
-  $pc{'tags'} = pcTagsEscape($pc{'tags'});
+  $pc{tags} = pcTagsEscape($pc{tags});
   
   ### 最終参加卓 --------------------------------------------------
-  foreach my $i (reverse 1 .. $pc{'historyNum'}){
-    if($pc{"history${i}Gm"} && $pc{"history${i}Title"}){ $pc{"lastSession"} = tagDelete tagUnescape $pc{"history${i}Title"}; last; }
+  foreach my $i (reverse 1 .. $pc{historyNum}){
+    if($pc{"history${i}Gm"} && $pc{"history${i}Title"}){ $pc{lastSession} = tagDelete tagUnescape $pc{"history${i}Title"}; last; }
   }
 
   ### newline --------------------------------------------------
-  my $charactername = ($pc{'aka'} ? "“$pc{'aka'}”" : "").$pc{'characterName'};
+  my $charactername = ($pc{aka} ? "“$pc{aka}”" : "").$pc{characterName};
   $charactername =~ s/[|｜]([^|｜]+?)《.+?》/$1/g;
-  $::newline = "$pc{'id'}<>$::file<>".
-               "$pc{'birthTime'}<>$::now<>$charactername<>$pc{'playerName'}<>$pc{'group'}<>".
-               "$pc{'image'}<> $pc{'tags'} <>$pc{'hide'}<>".
+  $::newline = "$pc{id}<>$::file<>".
+               "$pc{birthTime}<>$::now<>$charactername<>$pc{playerName}<>$pc{group}<>".
+               "$pc{image}<> $pc{tags} <>$pc{hide}<>".
 
-               "$pc{'race'}<>$pc{'class'}<>$pc{'style1'}／$pc{'style2'}<>".
-               "$pc{'level'}<>$pc{'resultPointsTotal'}<>".
-               "$pc{'gender'}<>$pc{'age'}<>$pc{'height'}<>$pc{'lastSession'}<>";
+               "$pc{race}<>$pc{class}<>$pc{style1}／$pc{style2}<>".
+               "$pc{level}<>$pc{resultPointsTotal}<>".
+               "$pc{gender}<>$pc{age}<>$pc{height}<>$pc{lastSession}<>";
 
   return %pc;
 }

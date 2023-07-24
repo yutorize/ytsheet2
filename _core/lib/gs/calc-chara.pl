@@ -35,10 +35,10 @@ sub data_calc {
   $pc{historyAdpTotal} = $pc{adpTotal};
   $pc{historyMoneyTotal} = $pc{moneyTotal};
   ## 収支履歴計算
-  my $cashbook = $pc{"cashbook"};
-  $cashbook =~ s/::((?:[\+\-\*\/]?[0-9,]+)+)/$pc{'moneyTotal'} += s_eval($1)/eg;
-  $cashbook =~ s/:>((?:[\+\-\*\/]?[0-9,]+)+)/$pc{'depositTotal'} += s_eval($1)/eg;
-  $cashbook =~ s/:<((?:[\+\-\*\/]?[0-9,]+)+)/$pc{'debtTotal'} += s_eval($1)/eg;
+  my $cashbook = $pc{cashbook};
+  $cashbook =~ s/::((?:[\+\-\*\/]?[0-9,]+)+)/$pc{moneyTotal} += s_eval($1)/eg;
+  $cashbook =~ s/:>((?:[\+\-\*\/]?[0-9,]+)+)/$pc{depositTotal} += s_eval($1)/eg;
+  $cashbook =~ s/:<((?:[\+\-\*\/]?[0-9,]+)+)/$pc{debtTotal} += s_eval($1)/eg;
   $pc{moneyTotal} += $pc{debtTotal} - $pc{depositTotal};
 
   ## 貨幣
@@ -48,7 +48,7 @@ sub data_calc {
   my @exp = ( 0, 1000, 2000, 3500, 5500, 8000, 11500, 16500, 23500, 33000, 45500 );
   $pc{expUsed} = 0;
   foreach (@data::class_names){
-    my $id = $data::class{$_}{'id'};
+    my $id = $data::class{$_}{id};
     $pc{'expUsed'.$id} = $exp[$pc{'lv'.$id}] - ($_ eq $pc{careerOriginClass} ? 1000 : 0);
     $pc{expUsed}      += $pc{'expUsed'.$id};
   }
@@ -69,7 +69,7 @@ sub data_calc {
    91000 => { lv=>10, pt=> 35 },
   );
   foreach my $key (sort {$a <=> $b} keys %adventurerExpTable){
-    if($pc{'expTotal'} >= $key) {
+    if($pc{expTotal} >= $key) {
       $pc{level}     = $adventurerExpTable{$key}{lv};
       $pc{adpTotal} += $adventurerExpTable{$key}{pt};
     }
@@ -177,9 +177,9 @@ sub data_calc {
     }
   }
   ## 武器
-  foreach (1 .. $pc{'weaponNum'}){
+  foreach (1 .. $pc{weaponNum}){
     my $name  = $pc{'weapon'.$_.'Class'};
-    my $class = $data::class{$name}{'id'};
+    my $class = $data::class{$name}{id};
     my $type  = $set::weapon_type{$pc{'weapon'.$_.'Type'}};
     ## 命中
     $pc{'weapon'.$_.'HitTotal'} = $pc{abilityTecFoc} + $pc{'hitScoreMod'.$type} + $pc{'weapon'.$_.'HitMod'} + $pc{'lv'.$class};
@@ -187,7 +187,7 @@ sub data_calc {
 
   ### 回避 --------------------------------------------------
   ## 職業
-  $pc{dodgeClassLv} = $pc{'lv'. $data::class{$pc{dodgeClass}}{'id'} };
+  $pc{dodgeClassLv} = $pc{'lv'. $data::class{$pc{dodgeClass}}{id} };
   ## 防具
   foreach (1){
     $pc{'armor'.$_.'DodgeTotal'} = $pc{abilityTecRef} + $pc{dodgeModValue} + $pc{'armor'.$_.'DodgeMod'} + $pc{dodgeClassLv};
@@ -196,7 +196,7 @@ sub data_calc {
 
   ### 盾受け --------------------------------------------------
   ## 職業
-  $pc{blockClassLv} = $pc{'lv'. $data::class{$pc{blockClass}}{'id'} };
+  $pc{blockClassLv} = $pc{'lv'. $data::class{$pc{blockClass}}{id} };
   foreach (1){
     $pc{'shield'.$_.'BlockTotal'} = $pc{abilityTecRef} + $pc{blockModValue} + $pc{'shield'.$_.'BlockMod'} + $pc{blockClassLv};
     $pc{'shield'.$_.'ArmorTotal'} = $pc{armor1Armor} + $pc{'shield'.$_.'Armor'};
@@ -204,7 +204,7 @@ sub data_calc {
 
   ### 0を消去 --------------------------------------------------
   foreach (@data::class_names){
-    my $id = $data::class{$_}{'id'};
+    my $id = $data::class{$_}{id};
     delete $pc{'lv'.$id} if !$pc{'lv'.$id};
   }
   foreach (
@@ -217,31 +217,31 @@ sub data_calc {
   }
 
   #### 改行を<br>に変換 --------------------------------------------------
-  $pc{'words'}         =~ s/\r\n?|\n/<br>/g;
-  $pc{'items'}         =~ s/\r\n?|\n/<br>/g;
-  $pc{'freeNote'}      =~ s/\r\n?|\n/<br>/g;
-  $pc{'freeHistory'}   =~ s/\r\n?|\n/<br>/g;
-  $pc{'cashbook'}      =~ s/\r\n?|\n/<br>/g;
-  $pc{'chatPalette'}   =~ s/\r\n?|\n/<br>/g;
+  $pc{words}         =~ s/\r\n?|\n/<br>/g;
+  $pc{items}         =~ s/\r\n?|\n/<br>/g;
+  $pc{freeNote}      =~ s/\r\n?|\n/<br>/g;
+  $pc{freeHistory}   =~ s/\r\n?|\n/<br>/g;
+  $pc{cashbook}      =~ s/\r\n?|\n/<br>/g;
+  $pc{chatPalette}   =~ s/\r\n?|\n/<br>/g;
   
   #### 保存処理でなければここまで --------------------------------------------------
   if(!$::mode_save){ return %pc; }
   
   #### エスケープ --------------------------------------------------
   $pc{$_} = pcEscape($pc{$_}) foreach (keys %pc);
-  $pc{'tags'} = pcTagsEscape($pc{'tags'});
+  $pc{tags} = pcTagsEscape($pc{tags});
   
   ### 最終参加卓 --------------------------------------------------
-  foreach my $i (reverse 1 .. $pc{'historyNum'}){
-    if($pc{"history${i}Gm"} && $pc{"history${i}Title"}){ $pc{"lastSession"} = tagDelete tagUnescape $pc{"history${i}Title"}; last; }
+  foreach my $i (reverse 1 .. $pc{historyNum}){
+    if($pc{"history${i}Gm"} && $pc{"history${i}Title"}){ $pc{lastSession} = tagDelete tagUnescape $pc{"history${i}Title"}; last; }
   }
 
   ### newline --------------------------------------------------
-  my $charactername = ($pc{'aka'} ? "“$pc{'aka'}”" : "").$pc{'characterName'};
+  my $charactername = ($pc{aka} ? "“$pc{aka}”" : "").$pc{characterName};
   $charactername =~ s/[|｜]([^|｜]+?)《.+?》/$1/g;
   my $classlv;
   foreach my $class (@data::class_list){
-    $classlv .= $pc{'lv'.$data::class{$class}{'id'}}.'/';
+    $classlv .= $pc{'lv'.$data::class{$class}{id}}.'/';
   }
   my $race     = ($pc{race}     && $pc{raceFree}    ) ? "$pc{race}($pc{raceFree})"         : $pc{race}     || $pc{raceFree};
   my $raceBase = ($pc{raceBase} && $pc{raceBaseFree}) ? "$pc{raceBase}($pc{raceBaseFree})" : $pc{raceBase} || $pc{raceBaseFree};

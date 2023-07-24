@@ -13,38 +13,38 @@ $impulses{@$_[0]} = @$_[1] foreach(@data::impulses);
 sub data_calc {
   my %pc = %{$_[0]};
   ### アップデート --------------------------------------------------
-  if($pc{'ver'}){
+  if($pc{ver}){
     %pc = data_update_chara(\%pc);
   }
   
   ### 能力値 --------------------------------------------------
   my %status = (0=>'body', 1=>'sense', 2=>'mind', 3=>'social');
-  $pc{'expUsedStatus'} = 0;
+  $pc{expUsedStatus} = 0;
   foreach my $num (keys %status){
     my $name = $status{$num};
     my $Name = ucfirst $name;
     my $base = 0;
-    if($data::syndrome_status{$pc{'syndrome1'}}){ $pc{'sttSyn1'.$Name} = $data::syndrome_status{$pc{'syndrome1'}}[$num] }
-    if($data::syndrome_status{$pc{'syndrome2'}}){ $pc{'sttSyn2'.$Name} = $data::syndrome_status{$pc{'syndrome2'}}[$num] }
+    if($data::syndrome_status{$pc{syndrome1}}){ $pc{'sttSyn1'.$Name} = $data::syndrome_status{$pc{syndrome1}}[$num] }
+    if($data::syndrome_status{$pc{syndrome2}}){ $pc{'sttSyn2'.$Name} = $data::syndrome_status{$pc{syndrome2}}[$num] }
     $base += $pc{'sttSyn1'.$Name};
-    $base += $pc{'syndrome2'} ? $pc{'sttSyn2'.$Name} : $base;
+    $base += $pc{syndrome2} ? $pc{'sttSyn2'.$Name} : $base;
     $pc{'sttBase'.$Name} = $base;
-    if($name eq $pc{'sttWorks'}){ $base++; }
+    if($name eq $pc{sttWorks}){ $base++; }
     
     $pc{'sttTotal'.$Name} = $base + $pc{'sttGrow'.$Name} + $pc{'sttAdd'.$Name};
     # 経験点
     for (my $i = $base; $i < $base+$pc{'sttGrow'.$Name}; $i++){
-      $pc{'expUsedStatus'} += ($i > 20) ? 30 : ($i > 10) ? 20 : 10;
+      $pc{expUsedStatus} += ($i > 20) ? 30 : ($i > 10) ? 20 : 10;
     }
   }
   ### 副能力値 --------------------------------------------------
-  $pc{'maxHpTotal'}      = $pc{'sttTotalBody'}  * 2 + $pc{'sttTotalMind'} + 20 + $pc{'maxHpAdd'};
-  $pc{'initiativeTotal'} = $pc{'sttTotalSense'} * 2 + $pc{'sttTotalMind'} + $pc{'initiativeAdd'};
-  $pc{'moveTotal'} = $pc{'initiativeTotal'} + 5 + $pc{'moveAdd'};
-  $pc{'dashTotal'} = $pc{'moveTotal'} * 2 + $pc{'dashAdd'};
-  $pc{'stockTotal'} = $pc{'sttTotalSocial'} * 2 + $pc{'skillProcure'} * 2 + $pc{'stockAdd'};
-  $pc{'savingTotal'} = $pc{'stockTotal'} + $pc{'savingAdd'};
-  $pc{'magicTotal'}  = ceil(($pc{'sttTotalMind'} + $pc{'skillWill'} + $pc{'skillAddWill'}) / 2) + $pc{'magicAdd'};
+  $pc{maxHpTotal}      = $pc{sttTotalBody}  * 2 + $pc{sttTotalMind} + 20 + $pc{maxHpAdd};
+  $pc{initiativeTotal} = $pc{sttTotalSense} * 2 + $pc{sttTotalMind} + $pc{initiativeAdd};
+  $pc{moveTotal} = $pc{initiativeTotal} + 5 + $pc{moveAdd};
+  $pc{dashTotal} = $pc{moveTotal} * 2 + $pc{dashAdd};
+  $pc{stockTotal} = $pc{sttTotalSocial} * 2 + $pc{skillProcure} * 2 + $pc{stockAdd};
+  $pc{savingTotal} = $pc{stockTotal} + $pc{savingAdd};
+  $pc{magicTotal}  = ceil(($pc{sttTotalMind} + $pc{skillWill} + $pc{skillAddWill}) / 2) + $pc{magicAdd};
   
   ### 技能 --------------------------------------------------
   my %skill_name_to_id = (
@@ -58,69 +58,69 @@ sub data_calc {
     '調達' => 'Procure',
   );
   # 経験点
-  $pc{'expUsedSkill'} = -9; #ワークス取得ぶん
+  $pc{expUsedSkill} = -9; #ワークス取得ぶん
   foreach my $name ('Melee','Ranged','RC','Negotiate','Dodge','Percept','Will','Procure'){
     my $lv = $pc{'skill'.$name};
-    for(my $i = 0; $i < $lv; $i++){ $pc{'expUsedSkill'} += ($i > 20) ? 10 : ($i > 10) ? 5 : ($i > 5) ? 3 : 2; }
+    for(my $i = 0; $i < $lv; $i++){ $pc{expUsedSkill} += ($i > 20) ? 10 : ($i > 10) ? 5 : ($i > 5) ? 3 : 2; }
     if($pc{'skill'.$name} || $pc{'skillAdd'.$name}){ $pc{'skillTotal'.$name} = $pc{'skill'.$name} + $pc{'skillAdd'.$name}; }
     
   }
   foreach my $name ('Ride','Art','Know','Info'){
     foreach my $num (1 .. $pc{'skill'.$name.'Num'}){
       my $lv = $pc{'skill'.$name.$num};
-      for(my $i = 0; $i < $lv; $i++){ $pc{'expUsedSkill'} += ($i > 20) ? 10 : ($i > 10) ? 5 : ($i > 5) ? 3 : 1; }
+      for(my $i = 0; $i < $lv; $i++){ $pc{expUsedSkill} += ($i > 20) ? 10 : ($i > 10) ? 5 : ($i > 5) ? 3 : 1; }
       if($pc{'skill'.$name.$num} || $pc{'skillAdd'.$name.$num}){ $pc{'skillTotal'.$name.$num} = $pc{'skill'.$name.$num} + $pc{'skillAdd'.$name.$num}; }
       $skill_name_to_id{$pc{'skill'.$name.$num.'Name'}} = $name.$num if $pc{'skill'.$name.$num.'Name'};
     }
   }
   
   ### エフェクト --------------------------------------------------
-  $pc{'expUsedEffect'} = 0;
-  foreach my $num (1 .. $pc{'effectNum'}){
+  $pc{expUsedEffect} = 0;
+  foreach my $num (1 .. $pc{effectNum}){
     my $type = $pc{'effect'.$num.'Type'};
     my $lv = $pc{'effect'.$num.'Lv'};
     if($lv >= 1){
       # イージー
       if($type eq 'easy'){
-        $pc{'expUsedEffect'} += $lv * 2;
+        $pc{expUsedEffect} += $lv * 2;
       }
       # 通常
       else {
-        $pc{'expUsedEffect'} += $lv * 5 + 10; #lv×5 + 新規取得の差分10
-        if($type =~ /^(auto|dlois)$/i){ $pc{'expUsedEffect'} += -15; } #自動かDロイスは新規取得ぶん減らす
+        $pc{expUsedEffect} += $lv * 5 + 10; #lv×5 + 新規取得の差分10
+        if($type =~ /^(auto|dlois)$/i){ $pc{expUsedEffect} += -15; } #自動かDロイスは新規取得ぶん減らす
       }
     }
-    $pc{'expUsedEffect'} += $pc{'effect'.$num.'Exp'};
+    $pc{expUsedEffect} += $pc{'effect'.$num.'Exp'};
   }
 
   ### 術式 --------------------------------------------------
-  $pc{'expUsedMagic'} = 0;
-  foreach my $num (1 .. $pc{'magicNum'}){
-    $pc{'expUsedMagic'} += $pc{'magic'.$num.'Exp'};
+  $pc{expUsedMagic} = 0;
+  foreach my $num (1 .. $pc{magicNum}){
+    $pc{expUsedMagic} += $pc{'magic'.$num.'Exp'};
   }
   
   ### コンボ --------------------------------------------------
-  foreach my $num (1 .. $pc{'comboNum'}){
+  foreach my $num (1 .. $pc{comboNum}){
     my $name = $pc{"combo${num}Skill"};
     my $id = $skill_name_to_id{$name};
     my $lv = $pc{"skill${id}"} + $pc{"skillAdd${id}"};
     my $stt = do {
       my $stt;
       if($name && $id){
-        if   ($id =~ /Melee|Dodge|Ride/)      { $stt = $pc{"sttTotalBody"}; }
-        elsif($id =~ /Ranged|Percept|Art/)    { $stt = $pc{"sttTotalSense"}; }
-        elsif($id =~ /RC|Will|Know/)          { $stt = $pc{"sttTotalMind"}; }
-        elsif($id =~ /Negotiate|Procure|Info/){ $stt = $pc{"sttTotalSocial"}; }
+        if   ($id =~ /Melee|Dodge|Ride/)      { $stt = $pc{sttTotalBody}; }
+        elsif($id =~ /Ranged|Percept|Art/)    { $stt = $pc{sttTotalSense}; }
+        elsif($id =~ /RC|Will|Know/)          { $stt = $pc{sttTotalMind}; }
+        elsif($id =~ /Negotiate|Procure|Info/){ $stt = $pc{sttTotalSocial}; }
       }
       if($pc{"combo${num}Stt"}){
-        if   ($pc{"combo${num}Stt"} eq '肉体'){ $stt = $pc{"sttTotalBody"}; }
-        elsif($pc{"combo${num}Stt"} eq '感覚'){ $stt = $pc{"sttTotalSense"}; }
-        elsif($pc{"combo${num}Stt"} eq '精神'){ $stt = $pc{"sttTotalMind"}; }
-        elsif($pc{"combo${num}Stt"} eq '社会'){ $stt = $pc{"sttTotalSocial"}; }
+        if   ($pc{"combo${num}Stt"} eq '肉体'){ $stt = $pc{sttTotalBody}; }
+        elsif($pc{"combo${num}Stt"} eq '感覚'){ $stt = $pc{sttTotalSense}; }
+        elsif($pc{"combo${num}Stt"} eq '精神'){ $stt = $pc{sttTotalMind}; }
+        elsif($pc{"combo${num}Stt"} eq '社会'){ $stt = $pc{sttTotalSocial}; }
       }
       $stt;
     };
-    if($pc{'comboCalcOff'}){
+    if($pc{comboCalcOff}){
       $lv = 0; $stt = 0;
     }
     foreach (1..5) {
@@ -132,28 +132,28 @@ sub data_calc {
   }
   
   ### アイテム --------------------------------------------------
-  foreach my $num (1 .. $pc{'weaponNum'}){
-    $pc{'stockUsed'}   += $pc{"weapon${num}Stock"};
-    $pc{'expUsedItem'} += $pc{"weapon${num}Exp"};
+  foreach my $num (1 .. $pc{weaponNum}){
+    $pc{stockUsed}   += $pc{"weapon${num}Stock"};
+    $pc{expUsedItem} += $pc{"weapon${num}Exp"};
   }
-  foreach my $num (1 .. $pc{'armorNum'}){
-    $pc{'stockUsed'}   += $pc{"armor${num}Stock"};
-    $pc{'expUsedItem'} += $pc{"armor${num}Exp"};
+  foreach my $num (1 .. $pc{armorNum}){
+    $pc{stockUsed}   += $pc{"armor${num}Stock"};
+    $pc{expUsedItem} += $pc{"armor${num}Exp"};
   }
-  foreach my $num (1 .. $pc{'vehicleNum'}){
-    $pc{'stockUsed'}   += $pc{"vehicle${num}Stock"};
-    $pc{'expUsedItem'} += $pc{"vehicle${num}Exp"};
+  foreach my $num (1 .. $pc{vehicleNum}){
+    $pc{stockUsed}   += $pc{"vehicle${num}Stock"};
+    $pc{expUsedItem} += $pc{"vehicle${num}Exp"};
   }
-  foreach my $num (1 .. $pc{'itemNum'}){
-    $pc{'stockUsed'}   += $pc{"item${num}Stock"};
-    $pc{'expUsedItem'} += $pc{"item${num}Exp"};
+  foreach my $num (1 .. $pc{itemNum}){
+    $pc{stockUsed}   += $pc{"item${num}Stock"};
+    $pc{expUsedItem} += $pc{"item${num}Exp"};
   }
-  $pc{'savingTotal'} -= $pc{'stockUsed'}; 
+  $pc{savingTotal} -= $pc{stockUsed}; 
   
   ### 侵蝕率 --------------------------------------------------
-  $pc{'lifepathAwakenEncroach'}  = $awakens{$pc{'lifepathAwaken'}};
-  $pc{'lifepathImpulseEncroach'} = $impulses{$pc{'lifepathImpulse'}};
-  $pc{'baseEncroach'} = $pc{'lifepathAwakenEncroach'} + $pc{'lifepathImpulseEncroach'} + $pc{'lifepathOtherEncroach'};
+  $pc{lifepathAwakenEncroach}  = $awakens{$pc{lifepathAwaken}};
+  $pc{lifepathImpulseEncroach} = $impulses{$pc{lifepathImpulse}};
+  $pc{baseEncroach} = $pc{lifepathAwakenEncroach} + $pc{lifepathImpulseEncroach} + $pc{lifepathOtherEncroach};
   
   ### ロイス --------------------------------------------------
   my @dloises;
@@ -164,24 +164,24 @@ sub data_calc {
     }
   }
   ### メモリー --------------------------------------------------
-  $pc{'expUsedMemory'} = 0;
+  $pc{expUsedMemory} = 0;
   foreach my $num (1..3){
     if($pc{"memory${num}Relation"} || $pc{"memory${num}Name"}){
-      $pc{'expUsedMemory'} += 15;
+      $pc{expUsedMemory} += 15;
     }
   }
 
   ### 経験点 --------------------------------------------------
   ## 履歴から 
-  $pc{'expTotal'} = $pc{"history0Exp"};
-  foreach my $i (1 .. $pc{'historyNum'}){
-    $pc{'expTotal'} += s_eval($pc{"history${i}Exp"}) if $pc{"history${i}ExpApply"};
+  $pc{expTotal} = $pc{history0Exp};
+  foreach my $i (1 .. $pc{historyNum}){
+    $pc{expTotal} += s_eval($pc{"history${i}Exp"}) if $pc{"history${i}ExpApply"};
   }
 
   ## 経験点消費
-  $pc{'expRest'} = $pc{'expTotal'};
-  $pc{'expUsed'} = $pc{'expUsedStatus'} + $pc{'expUsedSkill'} + $pc{'expUsedEffect'} + $pc{'expUsedMagic'} + $pc{'expUsedItem'} + $pc{'expUsedMemory'};
-  $pc{'expRest'} -= $pc{'expUsed'};
+  $pc{expRest} = $pc{expTotal};
+  $pc{expUsed} = $pc{expUsedStatus} + $pc{expUsedSkill} + $pc{expUsedEffect} + $pc{expUsedMagic} + $pc{expUsedItem} + $pc{expUsedMemory};
+  $pc{expRest} -= $pc{expUsed};
 
   ### 0を消去 --------------------------------------------------
   foreach (
@@ -202,31 +202,31 @@ sub data_calc {
   }
 
   #### 改行を<br>に変換 --------------------------------------------------
-  $pc{'words'}         =~ s/\r\n?|\n/<br>/g;
-  $pc{'freeNote'}      =~ s/\r\n?|\n/<br>/g;
-  $pc{'freeHistory'}   =~ s/\r\n?|\n/<br>/g;
-  $pc{'chatPalette'}   =~ s/\r\n?|\n/<br>/g;
-  $pc{"combo${_}Note"}   =~ s/\r\n?|\n/<br>/g foreach (1 .. $pc{'comboNum'});
-  $pc{"weapon${_}Note"}  =~ s/\r\n?|\n/<br>/g foreach (1 .. $pc{'weaponNum'});
-  $pc{"armor${_}Note"}   =~ s/\r\n?|\n/<br>/g foreach (1 .. $pc{'armorNum'});
-  $pc{"vehicle${_}Note"} =~ s/\r\n?|\n/<br>/g foreach (1 .. $pc{'vehicleNum'});
-  $pc{"item${_}Note"}    =~ s/\r\n?|\n/<br>/g foreach (1 .. $pc{'itemNum'});
+  $pc{words}         =~ s/\r\n?|\n/<br>/g;
+  $pc{freeNote}      =~ s/\r\n?|\n/<br>/g;
+  $pc{freeHistory}   =~ s/\r\n?|\n/<br>/g;
+  $pc{chatPalette}   =~ s/\r\n?|\n/<br>/g;
+  $pc{"combo${_}Note"}   =~ s/\r\n?|\n/<br>/g foreach (1 .. $pc{comboNum});
+  $pc{"weapon${_}Note"}  =~ s/\r\n?|\n/<br>/g foreach (1 .. $pc{weaponNum});
+  $pc{"armor${_}Note"}   =~ s/\r\n?|\n/<br>/g foreach (1 .. $pc{armorNum});
+  $pc{"vehicle${_}Note"} =~ s/\r\n?|\n/<br>/g foreach (1 .. $pc{vehicleNum});
+  $pc{"item${_}Note"}    =~ s/\r\n?|\n/<br>/g foreach (1 .. $pc{itemNum});
   
   #### 保存処理でなければここまで --------------------------------------------------
   if(!$::mode_save){ return %pc; }
   
   #### エスケープ --------------------------------------------------
   $pc{$_} = pcEscape($pc{$_}) foreach (keys %pc);
-  $pc{'tags'} = pcTagsEscape($pc{'tags'});
+  $pc{tags} = pcTagsEscape($pc{tags});
   $_ = pcEscape($_) foreach (@dloises);
   
   ### 最終参加卓 --------------------------------------------------
-  foreach my $i (reverse 1 .. $pc{'historyNum'}){
-    if($pc{"history${i}Gm"} && $pc{"history${i}Title"}){ $pc{"lastSession"} = tagDelete tagUnescape $pc{"history${i}Title"}; last; }
+  foreach my $i (reverse 1 .. $pc{historyNum}){
+    if($pc{"history${i}Gm"} && $pc{"history${i}Title"}){ $pc{lastSession} = tagDelete tagUnescape $pc{"history${i}Title"}; last; }
   }
 
   ### newline --------------------------------------------------
-  my $charactername = ($pc{'aka'} ? "“$pc{'aka'}”" : "").$pc{'characterName'};
+  my $charactername = ($pc{aka} ? "“$pc{aka}”" : "").$pc{characterName};
   $charactername =~ s/[|｜]([^|｜]+?)《.+?》/$1/g;
   $_ =~ s/[|｜]([^|｜]+?)《.+?》/$1/g foreach (@dloises);
   $_ =~ s/[:：].+?$//g foreach (@dloises);
@@ -236,16 +236,16 @@ sub data_calc {
     if(grep { $_ eq $syn } @data::syndromes){ return $syn; }
     return "その他:$syn";
   }
-  $::newline = "$pc{'id'}<>$::file<>".
-               "$pc{'birthTime'}<>$::now<>$charactername<>$pc{'playerName'}<>$pc{'group'}<>".
-               "$pc{'expTotal'}<>$pc{'gender'}<>$pc{'age'}<>$pc{'sign'}<>$pc{'blood'}<>$pc{'works'}<>".
+  $::newline = "$pc{id}<>$::file<>".
+               "$pc{birthTime}<>$::now<>$charactername<>$pc{playerName}<>$pc{group}<>".
+               "$pc{expTotal}<>$pc{gender}<>$pc{age}<>$pc{sign}<>$pc{blood}<>$pc{works}<>".
                
                synCheck($pc{syndrome1}).'/'.
                synCheck($pc{syndrome2}).'/'.
                synCheck($pc{syndrome3}).'<>'.
                join('/',@dloises).'<>'.
                
-               "$pc{'lastSession'}<>$pc{'image'}<> $pc{'tags'} <>$pc{'hide'}<>$pc{'stage'}<>";
+               "$pc{lastSession}<>$pc{image}<> $pc{tags} <>$pc{hide}<>$pc{stage}<>";
 
   return %pc;
 }

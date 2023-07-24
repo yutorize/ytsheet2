@@ -17,74 +17,74 @@ push(@awakens , @$_[0]) foreach(@data::awakens);
 push(@impulses, @$_[0]) foreach(@data::impulses);
 
 ### データ読み込み ###################################################################################
-my ($data, $mode, $file, $message) = pcDataGet($::in{'mode'});
+my ($data, $mode, $file, $message) = pcDataGet($::in{mode});
 our %pc = %{ $data };
 
 my $mode_make = ($mode =~ /^(blanksheet|copy|convert)$/) ? 1 : 0;
 
 ### 出力準備 #########################################################################################
 if($message){
-  my $name = tagUnescape($pc{'characterName'} || $pc{'aka'} || '無題');
+  my $name = tagUnescape($pc{characterName} || $pc{aka} || '無題');
   $message =~ s/<!NAME>/$name/;
 }
 ### プレイヤー名 --------------------------------------------------
 if($mode_make){
-  $pc{'playerName'} = (getplayername($LOGIN_ID))[0];
+  $pc{playerName} = (getplayername($LOGIN_ID))[0];
 }
 ### 初期設定 --------------------------------------------------
-if($mode_make){ $pc{'protect'} ||= $LOGIN_ID ? 'account' : 'password'; }
+if($mode_make){ $pc{protect} ||= $LOGIN_ID ? 'account' : 'password'; }
 
-if($mode eq 'edit' || ($mode eq 'convert' && $pc{'ver'})){
+if($mode eq 'edit' || ($mode eq 'convert' && $pc{ver})){
   %pc = data_update_chara(\%pc);
-  if($pc{'updateMessage'}){
+  if($pc{updateMessage}){
     $message .= "<hr>" if $message;
     $message .= "<h2>アップデート通知</h2><dl>";
-    foreach (sort keys %{$pc{'updateMessage'}}){
-      $message .= '<dt>'.$_.'</dt><dd>'.$pc{'updateMessage'}{$_}.'</dd>';
+    foreach (sort keys %{$pc{updateMessage}}){
+      $message .= '<dt>'.$_.'</dt><dd>'.$pc{updateMessage}{$_}.'</dd>';
     }
-    (my $lasttimever = $pc{'lasttimever'}) =~ s/([0-9]{3})$/\.$1/;
+    (my $lasttimever = $pc{lasttimever}) =~ s/([0-9]{3})$/\.$1/;
     $message .= "</dl><small>前回保存時のバージョン:$lasttimever</small>";
   }
 }
 elsif($mode eq 'blanksheet'){
-  $pc{'group'} = $set::group_default;
+  $pc{group} = $set::group_default;
   
-  $pc{'history0Exp'}   = $set::make_exp;
+  $pc{history0Exp}   = $set::make_exp;
   
-  ($pc{'effect1Type'},$pc{'effect1Name'},$pc{'effect1Lv'},$pc{'effect1Timing'},$pc{'effect1Skill'},$pc{'effect1Dfclty'},$pc{'effect1Target'},$pc{'effect1Range'},$pc{'effect1Encroach'},$pc{'effect1Restrict'},$pc{'effect1Note'})
+  ($pc{effect1Type},$pc{effect1Name},$pc{effect1Lv},$pc{effect1Timing},$pc{effect1Skill},$pc{effect1Dfclty},$pc{effect1Target},$pc{effect1Range},$pc{effect1Encroach},$pc{effect1Restrict},$pc{effect1Note})
     = ('auto','リザレクト',1,'オート','―','自動成功','自身','至近','効果参照','―','(Lv)D点HP回復、侵蝕値上昇');
-  ($pc{'effect2Type'},$pc{'effect2Name'},$pc{'effect2Lv'},$pc{'effect2Timing'},$pc{'effect2Skill'},$pc{'effect2Dfclty'},$pc{'effect2Target'},$pc{'effect2Range'},$pc{'effect2Encroach'},$pc{'effect2Restrict'},$pc{'effect2Note'})
+  ($pc{effect2Type},$pc{effect2Name},$pc{effect2Lv},$pc{effect2Timing},$pc{effect2Skill},$pc{effect2Dfclty},$pc{effect2Target},$pc{effect2Range},$pc{effect2Encroach},$pc{effect2Restrict},$pc{effect2Note})
     = ('auto','ワーディング',1,'オート','―','自動成功','シーン','視界','0','―','非オーヴァードをエキストラ化');
   
-  $pc{'comboNum'} = 1;
-  $pc{'combo1Condition1'} = '100%未満';
-  $pc{'combo1Condition2'} = '100%以上';
+  $pc{comboNum} = 1;
+  $pc{combo1Condition1} = '100%未満';
+  $pc{combo1Condition2} = '100%以上';
   
-  $pc{'paletteUseBuff'} = 1;
+  $pc{paletteUseBuff} = 1;
 }
 
 ## 画像
-$pc{'imageFit'} = $pc{'imageFit'} eq 'percent' ? 'percentX' : $pc{'imageFit'};
-$pc{'imagePercent'} = $pc{'imagePercent'} eq '' ? '200' : $pc{'imagePercent'};
-$pc{'imagePositionX'} = $pc{'imagePositionX'} eq '' ? '50' : $pc{'imagePositionX'};
-$pc{'imagePositionY'} = $pc{'imagePositionY'} eq '' ? '50' : $pc{'imagePositionY'};
-$pc{'wordsX'} ||= '右';
-$pc{'wordsY'} ||= '上';
+$pc{imageFit} = $pc{imageFit} eq 'percent' ? 'percentX' : $pc{imageFit};
+$pc{imagePercent} = $pc{imagePercent} eq '' ? '200' : $pc{imagePercent};
+$pc{imagePositionX} = $pc{imagePositionX} eq '' ? '50' : $pc{imagePositionX};
+$pc{imagePositionY} = $pc{imagePositionY} eq '' ? '50' : $pc{imagePositionY};
+$pc{wordsX} ||= '右';
+$pc{wordsY} ||= '上';
 
 ## カラー
 setDefaultColors();
 
 ## その他
-$pc{'skillRideNum'} ||= 2;
-$pc{'skillArtNum'}  ||= 2;
-$pc{'skillKnowNum'} ||= 2;
-$pc{'skillInfoNum'} ||= 2;
-$pc{'effectNum'}  ||= 5;
-$pc{'magicNum'}   ||= 2;
-$pc{'weaponNum'}  ||= 1;
-$pc{'armorNum'}   ||= 1;
-$pc{'itemNum'}    ||= 2;
-$pc{'historyNum'} ||= 3;
+$pc{skillRideNum} ||= 2;
+$pc{skillArtNum}  ||= 2;
+$pc{skillKnowNum} ||= 2;
+$pc{skillInfoNum} ||= 2;
+$pc{effectNum}  ||= 5;
+$pc{magicNum}   ||= 2;
+$pc{weaponNum}  ||= 1;
+$pc{armorNum}   ||= 1;
+$pc{itemNum}    ||= 2;
+$pc{historyNum} ||= 3;
 
 ### 折り畳み判断 --------------------------------------------------
 my %open;
@@ -92,31 +92,31 @@ foreach (
   'skillMelee','skillRanged','skillRC','skillNegotiate',
   'skillDodge','skillPercept','skillWill','skillProcure',
 ){
-  if ($pc{$_}){ $open{'skill'} = 'open'; last; }
+  if ($pc{$_}){ $open{skill} = 'open'; last; }
 }
 foreach (
     'skillRide','skillArt','skillKnow','skillInfo',
 ){
   foreach my $num (1..$pc{$_.'Num'}){
-    if ($pc{$_.$num}){ $open{'skill'} = 'open'; last; }
+    if ($pc{$_.$num}){ $open{skill} = 'open'; last; }
   }
 }
-if  ($pc{"lifepathOrigin"}
-  || $pc{"lifepathExperience"}
-  || $pc{"lifepathEncounter"}
-  || $pc{"lifepathAwaken"}
-  || $pc{"lifepathImpulse"}  ){ $open{'lifepath'} = 'open'; }
-if  ($pc{"insanity"}
-  || $pc{"insanityNote"}){ $open{'insanity'} = 'open'; }
-foreach (1..7){ if($pc{"lois${_}Relation"} || $pc{"lois${_}Name"}  ){ $open{'lois'}   = 'open'; last; } }
-foreach (1..3){ if($pc{"memory${_}Gain"}   || $pc{"memory${_}Name"}){ $open{'memory'} = 'open'; last; } }
-foreach (1..$pc{'comboNum'}) { if($pc{"combo${_}Name"} || $pc{"combo${_}Combo"}){ $open{'combo'} = 'open'; last; } }
-foreach (3..$pc{'effectNum'}){ if($pc{"effect${_}Name"} || $pc{"effect${_}Lv"}){ $open{'effect'} = 'open'; last; } }
-foreach (1..$pc{'magicNum'}){ if($pc{"magic${_}Name"} || $pc{"magic${_}Exp"}){ $open{'magic'} = 'open'; last; } }
-foreach (1..$pc{'weaponNum'})  { if($pc{"weapon${_}Name"})  { $open{'item'} = 'open'; last; } }
-foreach (1..$pc{'armorNum'})   { if($pc{"armor${_}Name"})   { $open{'item'} = 'open'; last; } }
-foreach (1..$pc{'vehiclesNum'}){ if($pc{"vehicles${_}Name"}){ $open{'item'} = 'open'; last; } }
-foreach (1..$pc{'itemNum'})    { if($pc{"item${_}Name"})    { $open{'item'} = 'open'; last; } }
+if  ($pc{lifepathOrigin}
+  || $pc{lifepathExperience}
+  || $pc{lifepathEncounter}
+  || $pc{lifepathAwaken}
+  || $pc{lifepathImpulse}  ){ $open{lifepath} = 'open'; }
+if  ($pc{insanity}
+  || $pc{insanityNote}){ $open{insanity} = 'open'; }
+foreach (1..7){ if($pc{"lois${_}Relation"} || $pc{"lois${_}Name"}  ){ $open{lois}   = 'open'; last; } }
+foreach (1..3){ if($pc{"memory${_}Gain"}   || $pc{"memory${_}Name"}){ $open{memory} = 'open'; last; } }
+foreach (1..$pc{comboNum}) { if($pc{"combo${_}Name"} || $pc{"combo${_}Combo"}){ $open{combo} = 'open'; last; } }
+foreach (3..$pc{effectNum}){ if($pc{"effect${_}Name"} || $pc{"effect${_}Lv"}){ $open{effect} = 'open'; last; } }
+foreach (1..$pc{magicNum}){ if($pc{"magic${_}Name"} || $pc{"magic${_}Exp"}){ $open{magic} = 'open'; last; } }
+foreach (1..$pc{weaponNum})  { if($pc{"weapon${_}Name"})  { $open{item} = 'open'; last; } }
+foreach (1..$pc{armorNum})   { if($pc{"armor${_}Name"})   { $open{item} = 'open'; last; } }
+foreach (1..$pc{vehiclesNum}){ if($pc{"vehicles${_}Name"}){ $open{item} = 'open'; last; } }
+foreach (1..$pc{itemNum})    { if($pc{"item${_}Name"})    { $open{item} = 'open'; last; } }
 
 if(exists $data::syndrome_status{$pc{syndrome1}}){
   $pc{sttSyn1Body} = $pc{sttSyn1Sense}  = $pc{sttSyn1Mind} = $pc{sttSyn1Social} = '';
@@ -126,18 +126,18 @@ if(exists $data::syndrome_status{$pc{syndrome2}}){
 }
 
 ### 改行処理 --------------------------------------------------
-$pc{'words'}         =~ s/&lt;br&gt;/\n/g;
-$pc{'freeNote'}      =~ s/&lt;br&gt;/\n/g;
-$pc{'freeHistory'}   =~ s/&lt;br&gt;/\n/g;
-$pc{'chatPalette'}   =~ s/&lt;br&gt;/\n/g;
-$pc{"combo${_}Note"}   =~ s/&lt;br&gt;/\n/g foreach (1 .. $pc{'comboNum'});
-$pc{"weapon${_}Note"}  =~ s/&lt;br&gt;/\n/g foreach (1 .. $pc{'weaponNum'});
-$pc{"armor${_}Note"}   =~ s/&lt;br&gt;/\n/g foreach (1 .. $pc{'armorNum'});
-$pc{"vehicle${_}Note"} =~ s/&lt;br&gt;/\n/g foreach (1 .. $pc{'vehicleNum'});
-$pc{"item${_}Note"}    =~ s/&lt;br&gt;/\n/g foreach (1 .. $pc{'itemNum'});
+$pc{words}         =~ s/&lt;br&gt;/\n/g;
+$pc{freeNote}      =~ s/&lt;br&gt;/\n/g;
+$pc{freeHistory}   =~ s/&lt;br&gt;/\n/g;
+$pc{chatPalette}   =~ s/&lt;br&gt;/\n/g;
+$pc{"combo${_}Note"}   =~ s/&lt;br&gt;/\n/g foreach (1 .. $pc{comboNum});
+$pc{"weapon${_}Note"}  =~ s/&lt;br&gt;/\n/g foreach (1 .. $pc{weaponNum});
+$pc{"armor${_}Note"}   =~ s/&lt;br&gt;/\n/g foreach (1 .. $pc{armorNum});
+$pc{"vehicle${_}Note"} =~ s/&lt;br&gt;/\n/g foreach (1 .. $pc{vehicleNum});
+$pc{"item${_}Note"}    =~ s/&lt;br&gt;/\n/g foreach (1 .. $pc{itemNum});
 
 ### フォーム表示 #####################################################################################
-my $titlebarname = tagDelete nameToPlain tagUnescape ($pc{'characterName'}||"“$pc{'aka'}”");
+my $titlebarname = tagDelete nameToPlain tagUnescape ($pc{characterName}||"“$pc{aka}”");
 print <<"HTML";
 Content-type: text/html\n
 <!DOCTYPE html>
@@ -159,7 +159,7 @@ Content-type: text/html\n
   <style>
     #image,
     .image-custom-view {
-      background-image: url("$pc{'imageURL'}");
+      background-image: url("$pc{imageURL}");
     }
   </style>
 </head>
@@ -190,8 +190,8 @@ print <<"HTML";
           <li onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード切替">
           <li class="buttons">
             <ul>
-              <li @{[ display ($mode eq 'edit') ]} class="view-icon" title="閲覧画面"><a href="./?id=$::in{'id'}"></a>
-              <li @{[ display ($mode eq 'edit') ]} class="copy" onclick="window.open('./?mode=copy&id=$::in{'id'}@{[  $::in{'log'}?"&log=$::in{'log'}":'' ]}');">複製
+              <li @{[ display ($mode eq 'edit') ]} class="view-icon" title="閲覧画面"><a href="./?id=$::in{id}"></a>
+              <li @{[ display ($mode eq 'edit') ]} class="copy" onclick="window.open('./?mode=copy&id=$::in{id}@{[  $::in{log}?"&log=$::in{log}":'' ]}');">複製
               <li class="submit" onclick="formSubmit()" title="Ctrl+S">保存
             </ul>
           </li>
@@ -206,8 +206,8 @@ HTML
 if($set::user_reqd){
   print <<"HTML";
     <input type="hidden" name="protect" value="account">
-    <input type="hidden" name="protectOld" value="$pc{'protect'}">
-    <input type="hidden" name="pass" value="$::in{'pass'}">
+    <input type="hidden" name="protectOld" value="$pc{protect}">
+    <input type="hidden" name="pass" value="$::in{pass}">
 HTML
 }
 else {
@@ -217,19 +217,19 @@ else {
   print <<"HTML";
       <details class="box" id="edit-protect" @{[$mode eq 'edit' ? '':'open']}>
       <summary>編集保護設定</summary>
-      <p id="edit-protect-view"><input type="hidden" name="protectOld" value="$pc{'protect'}">
+      <p id="edit-protect-view"><input type="hidden" name="protectOld" value="$pc{protect}">
 HTML
   if($LOGIN_ID){
-    print '<input type="radio" name="protect" value="account"'.($pc{'protect'} eq 'account'?' checked':'').'> アカウントに紐付ける（ログイン中のみ編集可能になります）<br>';
+    print '<input type="radio" name="protect" value="account"'.($pc{protect} eq 'account'?' checked':'').'> アカウントに紐付ける（ログイン中のみ編集可能になります）<br>';
   }
-    print '<input type="radio" name="protect" value="password"'.($pc{'protect'} eq 'password'?' checked':'').'> パスワードで保護 ';
-  if ($mode eq 'edit' && $pc{'protect'} eq 'password' && $::in{'pass'}) {
-    print '<input type="hidden" name="pass" value="'.$::in{'pass'}.'"><br>';
+    print '<input type="radio" name="protect" value="password"'.($pc{protect} eq 'password'?' checked':'').'> パスワードで保護 ';
+  if ($mode eq 'edit' && $pc{protect} eq 'password' && $::in{pass}) {
+    print '<input type="hidden" name="pass" value="'.$::in{pass}.'"><br>';
   } else {
     print '<input type="password" name="pass"><br>';
   }
   print <<"HTML";
-<input type="radio" name="protect" value="none"@{[ $pc{'protect'} eq 'none'?' checked':'' ]}> 保護しない（誰でも編集できるようになります）
+<input type="radio" name="protect" value="none"@{[ $pc{protect} eq 'none'?' checked':'' ]}> 保護しない（誰でも編集できるようになります）
       </p>
       </details>
 HTML
@@ -240,13 +240,13 @@ HTML
         <dd id="forbidden-checkbox">
           <select name="forbidden">
             <option value="">内容を全て開示
-            <option value="battle" @{[ $pc{'forbidden'} eq 'battle' ? 'selected' : '' ]}>データ・数値のみ秘匿
-            <option value="all"    @{[ $pc{'forbidden'} eq 'all'    ? 'selected' : '' ]}>内容を全て秘匿
+            <option value="battle" @{[ $pc{forbidden} eq 'battle' ? 'selected' : '' ]}>データ・数値のみ秘匿
+            <option value="all"    @{[ $pc{forbidden} eq 'all'    ? 'selected' : '' ]}>内容を全て秘匿
           </select>
         <dd id="hide-checkbox">
           <select name="hide">
             <option value="">一覧に表示
-            <option value="1" @{[ $pc{'hide'} ? 'selected' : '' ]}>一覧には非表示
+            <option value="1" @{[ $pc{hide} ? 'selected' : '' ]}>一覧には非表示
           </select>
         <dd>※「一覧に非表示」でもタグ検索結果・マイリストには表示されます
       </dl>
@@ -260,7 +260,7 @@ foreach (@set::groups){
   my $name = @$_[2];
   my $exclusive = @$_[4];
   next if($exclusive && (!$LOGIN_ID || $LOGIN_ID !~ /^($exclusive)$/));
-  print '<option value="'.$id.'"'.($pc{'group'} eq $id ? ' selected': '').'>'.$name.'</option>';
+  print '<option value="'.$id.'"'.($pc{group} eq $id ? ' selected': '').'>'.$name.'</option>';
 }
 print <<"HTML";
           </select>
@@ -303,7 +303,7 @@ print <<"HTML";
       </details>
 
       <div id="area-status">
-        @{[ imageForm($pc{'imageURL'}) ]}
+        @{[ imageForm($pc{imageURL}) ]}
 
         <div class="box-union" id="personal">
           <dl class="box"><dt>年齢  <dd>@{[input "age"]}</dl>
@@ -405,7 +405,7 @@ print <<"HTML";
         </div>
       </div>
 
-      <details class="box" id="status" $open{'skill'}>
+      <details class="box" id="status" $open{skill}>
         <summary>技能 [<span id="exp-skill">0</span>]</summary>
         @{[input 'skillRideNum','hidden']}
         @{[input 'skillArtNum' ,'hidden']}
@@ -424,7 +424,7 @@ print <<"HTML";
               <dt class="left">白兵<dd>@{[input "skillMelee"  ,'number','calcSkill']}+@{[input "skillAddMelee"  ,'number','calcSkill']}
               <dt class="left">回避<dd>@{[input "skillDodge"  ,'number','calcSkill']}+@{[input "skillAddDodge"  ,'number','calcSkill']}
 HTML
-foreach my $num (1 .. $pc{'skillRideNum'}) {
+foreach my $num (1 .. $pc{skillRideNum}) {
 print <<"HTML";
               <dt>@{[input "skillRide${num}Name",'','comboSkillSetAll','list="list-ride"']}<dd>@{[input "skillRide$num",'number','calcSkill']}+@{[input "skillAddRide$num",'number','calcSkill']}
 HTML
@@ -439,7 +439,7 @@ print <<"HTML";
               <dt class="left">射撃<dd>@{[input "skillRanged" ,'number','calcSkill']}+@{[input "skillAddRanged"    ,'number','calcSkill']}
               <dt class="left">知覚<dd>@{[input "skillPercept",'number','calcSkill']}+@{[input "skillAddPercept",'number','calcSkill']}
 HTML
-foreach my $num (1 .. $pc{'skillArtNum'}) {
+foreach my $num (1 .. $pc{skillArtNum}) {
 print <<"HTML";
               <dt>@{[input "skillArt${num}Name" ,'','comboSkillSetAll','list="list-art"' ]}<dd>@{[input "skillArt$num" ,'number','calcSkill']}+@{[input "skillAddArt$num" ,'number','calcSkill']}
 HTML
@@ -454,7 +454,7 @@ print <<"HTML";
               <dt class="left">ＲＣ<dd>@{[input "skillRC"  ,'number','calcSkill']}+@{[input "skillAddRC"  ,'number','calcSkill']}
               <dt class="left">意志<dd>@{[input "skillWill",'number','calcSkill']}+@{[input "skillAddWill",'number','calcSkill']}
 HTML
-foreach my $num (1 .. $pc{'skillKnowNum'}) {
+foreach my $num (1 .. $pc{skillKnowNum}) {
 print <<"HTML";
               <dt>@{[input "skillKnow${num}Name",'','comboSkillSetAll','list="list-know"']}<dd>@{[input "skillKnow$num",'number','calcSkill']}+@{[input "skillAddKnow$num",'number','calcSkill']}
 HTML
@@ -469,7 +469,7 @@ print <<"HTML";
               <dt class="left">交渉<dd>@{[input "skillNegotiate",'number','calcSkill']}+@{[input "skillAddNegotiate",'number']}
               <dt class="left">調達<dd>@{[input "skillProcure"  ,'number','calcSkill();calcStock']}+@{[input "skillAddProcure",  'number','calcSkill();calcStock']}
 HTML
-foreach my $num (1 .. $pc{'skillInfoNum'}) {
+foreach my $num (1 .. $pc{skillInfoNum}) {
 print <<"HTML";
               <dt>@{[input "skillInfo${num}Name",'','comboSkillSetAll','list="list-info"']}<dd>@{[input "skillInfo$num",'number','calcSkill']}+@{[input "skillAddInfo$num",'number','calcSkill']}
 HTML
@@ -483,7 +483,7 @@ print <<"HTML";
         ※右側は、DロイスなどによるLv補正の欄です（経験点が計算されません）
         </div>
       </details>
-      <details class="box" id="lifepath" $open{'lifepath'}>
+      <details class="box" id="lifepath" $open{lifepath}>
         <summary>ライフパス</summary>
         <table class="edit-table line-tbody">
           <tbody>
@@ -546,7 +546,7 @@ print <<"HTML";
           </table>
         </div>
       </div>
-      <details class="box" id="lois" $open{'lois'} style="position:relative">
+      <details class="box" id="lois" $open{lois} style="position:relative">
         <summary>ロイス</summary>
         <table class="edit-table no-border-cells" id="lois-table">
           <colgroup><col><col><col><col><col><col><col><col></colgroup>
@@ -584,7 +584,7 @@ print <<"HTML";
           <button type="button" class="small" onclick="resetLoisAdd()">4番目以降をリセット</button>
         </div>
       </details>
-      <details class="box" id="memory" $open{'memory'}>
+      <details class="box" id="memory" $open{memory}>
         <summary>メモリー [<span id="exp-memory">0</span>]</summary>
         <table class="edit-table no-border-cells" id="memory-table">
           <thead>
@@ -612,7 +612,7 @@ print <<"HTML";
         </table>
         <div class="annotate">※「関係」か「名前」を入力すると経験点が計算されます。</div>
       </details>
-      <details class="box crc-only" id="insanity" $open{'insanity'}>
+      <details class="box crc-only" id="insanity" $open{insanity}>
         <summary>永続的狂気</summary>
         <dl class="edit-table " id="insanity-table">
           <dt>@{[input "insanity",'','','placeholder="名称"']}
@@ -620,14 +620,14 @@ print <<"HTML";
         </dl>
       </details>
 
-      <details class="box" id="effect" $open{'effect'}>
+      <details class="box" id="effect" $open{effect}>
         <summary>エフェクト [<span id="exp-effect">0</span>]</summary>
         @{[input 'effectNum','hidden']}
         <table class="edit-table line-tbody no-border-cells" id="effect-table">
           <thead id="effect-head">
             <tr><th><th>名称<th>Lv<th>タイミング<th>技能<th>難易度<th>対象<th>射程<th>侵蝕値<th>制限
 HTML
-foreach my $num ('TMPL',1 .. $pc{'effectNum'}) {
+foreach my $num ('TMPL',1 .. $pc{effectNum}) {
   if($num eq 'TMPL'){ print '<template id="effect-template">' }
 print <<"HTML";
           <tbody id="effect${num}">
@@ -667,14 +667,14 @@ print <<"HTML";
         <i class="material-symbols-outlined close-button" onclick="document.getElementById('effect-trash').style.display = 'none';">close</i>
       </div>
 
-      <details class="box crc-only" id="magic" $open{'magic'}>
+      <details class="box crc-only" id="magic" $open{magic}>
         <summary>術式 [<span id="exp-magic">0</span>]</summary>
         @{[input 'magicNum','hidden']}
         <table class="edit-table line-tbody no-border-cells" id="magic-table">
           <thead id="magic-head">
             <tr><th><th>名称<th>種別<th>経験点<th>発動値<th>侵蝕値<th>効果
 HTML
-foreach my $num ('TMPL',1 .. $pc{'magicNum'}) {
+foreach my $num ('TMPL',1 .. $pc{magicNum}) {
   if($num eq 'TMPL'){ print '<template id="magic-template">' }
 print <<"HTML";
           <tbody id="magic${num}">
@@ -699,7 +699,7 @@ print <<"HTML";
         <i class="material-symbols-outlined close-button" onclick="document.getElementById('magic-trash').style.display = 'none';">close</i>
       </div>
       
-      <details class="box" id="combo" $open{'combo'} style="position:relative">
+      <details class="box" id="combo" $open{combo} style="position:relative">
         <summary>コンボ</summary>
         @{[input 'comboNum','hidden']}
         <div id="combo-list">
@@ -735,7 +735,7 @@ sub comboStatusSet {
   $output .= '</optgroup>';
   return $output;
 }
-foreach my $num ('TMPL',1 .. $pc{'comboNum'}) {
+foreach my $num ('TMPL',1 .. $pc{comboNum}) {
   if($num eq 'TMPL'){ print '<template id="combo-template">' }
 print <<"HTML";
         <div class="combo-table" id="combo${num}">
@@ -784,7 +784,7 @@ print <<"HTML";
         </div>
       </details>
       
-      <details class="box box-union" id="items" $open{'item'}>
+      <details class="box box-union" id="items" $open{item}>
       <summary>アイテム [<span id="exp-item">0</span>]</summary>
       <div class="box">
         @{[input 'weaponNum','hidden']}
@@ -793,7 +793,7 @@ print <<"HTML";
             <tr><th>武器<th>常備化<th>経験点<th>種別<th>技能<th>命中<th>攻撃力<th><span class="small">ガード値</span><th>射程<th>解説
           <tbody>
 HTML
-foreach my $num ('TMPL',1 .. $pc{'weaponNum'}) {
+foreach my $num ('TMPL',1 .. $pc{weaponNum}) {
   if($num eq 'TMPL'){ print '<template id="weapon-template">' }
 print <<"HTML";
             <tr id="weapon${num}">
@@ -821,7 +821,7 @@ print <<"HTML";
             <tr><th>防具<th>常備化<th>経験点<th>種別<th><th>行動<th>ドッジ<th>装甲値<th>解説
           <tbody>
 HTML
-foreach my $num ('TMPL',1 .. $pc{'armorNum'}) {
+foreach my $num ('TMPL',1 .. $pc{armorNum}) {
   if($num eq 'TMPL'){ print '<template id="armor-template">' }
 print <<"HTML";
             <tr id="armor${num}">
@@ -849,7 +849,7 @@ print <<"HTML";
             <tr><th>ヴィークル<th>常備化<th>経験点<th>種別<th>技能<th>行動<th>攻撃力<th>装甲値<th><span class="small">全力移動</span><th>解説
           <tbody>
 HTML
-foreach my $num ('TMPL',1 .. $pc{'vehicleNum'}) {
+foreach my $num ('TMPL',1 .. $pc{vehicleNum}) {
   if($num eq 'TMPL'){ print '<template id="vehicle-template">' }
 print <<"HTML";
             <tr id="vehicle${num}">
@@ -877,7 +877,7 @@ print <<"HTML";
             <tr><th>一般アイテム<th>常備化<th>経験点<th>種別<th>技能<th>解説
           <tbody>
 HTML
-foreach my $num ('TMPL',1 .. $pc{'itemNum'}) {
+foreach my $num ('TMPL',1 .. $pc{itemNum}) {
   if($num eq 'TMPL'){ print '<template id="item-template">' }
 print <<"HTML";
             <tr id="item${num}">
@@ -910,16 +910,16 @@ print <<"HTML";
       </details>
       
       
-      <details class="box" id="free-note" @{[$pc{'freeNote'}?'open':'']}>
+      <details class="box" id="free-note" @{[$pc{freeNote}?'open':'']}>
         <summary>容姿・経歴・その他メモ</summary>
-        <textarea name="freeNote">$pc{'freeNote'}</textarea>
-        @{[ $::in{'log'} ? '<button type="button" class="set-newest" onclick="setNewestSingleData(\'freeNote\')">最新のメモを適用する</button>' : '' ]}
+        <textarea name="freeNote">$pc{freeNote}</textarea>
+        @{[ $::in{log} ? '<button type="button" class="set-newest" onclick="setNewestSingleData(\'freeNote\')">最新のメモを適用する</button>' : '' ]}
       </details>
       
-      <details class="box" id="free-history" @{[$pc{'freeHistory'}?'open':'']}>
+      <details class="box" id="free-history" @{[$pc{freeHistory}?'open':'']}>
         <summary>履歴（自由記入）</summary>
-        <textarea name="freeHistory">$pc{'freeHistory'}</textarea>
-        @{[ $::in{'log'} ? '<button type="button" class="set-newest" onclick="setNewestSingleData(\'freeHistory\')">最新の履歴（自由記入）を適用する</button>' : '' ]}
+        <textarea name="freeHistory">$pc{freeHistory}</textarea>
+        @{[ $::in{log} ? '<button type="button" class="set-newest" onclick="setNewestSingleData(\'freeHistory\')">最新の履歴（自由記入）を適用する</button>' : '' ]}
       </details>
       
       <div class="box" id="history">
@@ -947,10 +947,10 @@ print <<"HTML";
               <td>-
               <td>
               <td>キャラクター作成
-              <td id="history0-exp">$pc{'history0Exp'}
+              <td id="history0-exp">$pc{history0Exp}
               <td><input type="checkbox" checked disabled>適用
 HTML
-foreach my $num ('TMPL',1 .. $pc{'historyNum'}) {
+foreach my $num ('TMPL',1 .. $pc{historyNum}) {
   if($num eq 'TMPL'){ print '<template id="history-template">' }
 print <<"HTML";
           <tbody id="history${num}">
@@ -1008,7 +1008,7 @@ print <<"HTML";
         ※経験点欄は<code>10+5+1</code>など四則演算が有効です（獲得条件の違う経験点などを分けて書けます）。<br>
         　経験点欄の右の適用チェックを入れると、その経験点が適用されます。
         </div>
-        @{[ $::in{'log'} ? '<button type="button" class="set-newest" onclick="setNewestHistoryData()">最新のセッション履歴を適用する</button>' : '' ]}
+        @{[ $::in{log} ? '<button type="button" class="set-newest" onclick="setNewestHistoryData()">最新のセッション履歴を適用する</button>' : '' ]}
       </div>
       
       <div class="box" id="exp-footer">
@@ -1030,7 +1030,7 @@ print <<"HTML";
       @{[ colorCostomForm ]}
       
       @{[ input 'birthTime','hidden' ]}
-      <input type="hidden" name="id" value="$::in{'id'}">
+      <input type="hidden" name="id" value="$::in{id}">
     </form>
 HTML
 if($mode eq 'edit'){
@@ -1038,8 +1038,8 @@ print <<"HTML";
     <form name="del" method="post" action="./" class="deleteform">
       <p style="font-size: 80%;">
       <input type="hidden" name="mode" value="delete">
-      <input type="hidden" name="id" value="$::in{'id'}">
-      <input type="hidden" name="pass" value="$::in{'pass'}">
+      <input type="hidden" name="id" value="$::in{id}">
+      <input type="hidden" name="pass" value="$::in{pass}">
       <input type="checkbox" name="check1" value="1" required>
       <input type="checkbox" name="check2" value="1" required>
       <input type="checkbox" name="check3" value="1" required>
@@ -1054,15 +1054,15 @@ HTML
     <form name="imgdel" method="post" action="./" class="deleteform">
       <p style="font-size: 80%;">
       <input type="hidden" name="mode" value="img-delete">
-      <input type="hidden" name="id" value="$::in{'id'}">
-      <input type="hidden" name="pass" value="$::in{'pass'}">
+      <input type="hidden" name="id" value="$::in{id}">
+      <input type="hidden" name="pass" value="$::in{pass}">
       <input type="checkbox" name="check1" value="1" required>
       <input type="checkbox" name="check2" value="1" required>
       <input type="checkbox" name="check3" value="1" required>
       <input type="submit" value="画像削除"><br>
       </p>
     </form>
-    <p class="right">@{[ $::in{'log'}?$::in{'log'}:'最終' ]}更新時のIP:$pc{'IP'}</p>
+    <p class="right">@{[ $::in{log}?$::in{log}:'最終' ]}更新時のIP:$pc{IP}</p>
 HTML
   }
 }

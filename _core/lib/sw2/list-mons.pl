@@ -7,8 +7,8 @@ use HTML::Template;
 
 my $LOGIN_ID = check;
 
-my $mode = $::in{'mode'};
-my $sort = $::in{'sort'};
+my $mode = $::in{mode};
+my $sort = $::in{sort};
 
 require $set::data_mons;
 
@@ -37,12 +37,12 @@ foreach (keys %::in) {
   $::in{$_} =~ s/</&lt;/g;
   $::in{$_} =~ s/>/&gt;/g;
 }
-if(!($::in{'tag'} || $::in{'taxa'} || $::in{'mount'} || $::in{'name'} || $::in{'lv-max'} || $::in{'lv-min'} || $::in{'parts-max'} || $::in{'parts-min'} || $::in{'intellect'} || $::in{'perception'} || $::in{'disposition'} || $::in{'habitat'} || $::in{'weakness'})){
+if(!($::in{tag} || $::in{taxa} || $::in{mount} || $::in{name} || $::in{'lv-max'} || $::in{'lv-min'} || $::in{'parts-max'} || $::in{'parts-min'} || $::in{intellect} || $::in{perception} || $::in{disposition} || $::in{habitat} || $::in{weakness})){
   $index_mode = 1;
   $INDEX->param(modeIndex  => $mode eq 'mylist' ? 0 : 1);
   $INDEX->param(simpleList => $mode eq 'mylist' ? 0 : 1) if $set::simplelist;
 }
-if(!$::in{'taxa'} && $mode ne 'mylist'){ $INDEX->param(modeTaxaAll => 1); }
+if(!$::in{taxa} && $mode ne 'mylist'){ $INDEX->param(modeTaxaAll => 1); }
 my @q_links;
 foreach(
   'mode',
@@ -96,14 +96,14 @@ if($mode eq 'mylist'){
 elsif (
      !($set::masterid && $set::masterid eq $LOGIN_ID)
   && !($mode eq 'mylist')
-  && !$::in{'tag'}
+  && !$::in{tag}
 ){
   @list = grep { !(split(/<>/))[16] } @list;
 }
 
 ## 分類検索
-my $taxa_query = decode('utf8', $::in{'taxa'});
-if($::in{'mount'}) {
+my $taxa_query = decode('utf8', $::in{taxa});
+if($::in{mount}) {
   if($taxa_query eq 'all'){ $taxa_query = '' }
   @list = grep { $_ =~ /^(?:[^<]*?<>){6}騎獣／\Q$taxa_query\E/ } @list;
 }
@@ -113,9 +113,9 @@ elsif($taxa_query eq 'その他') {
 elsif($taxa_query && $taxa_query ne 'all') {
   @list = grep { $_ =~ /^(?:[^<]*?<>){6}\Q$taxa_query\E</ } @list;
 }
-if($::in{'mount'}){ $INDEX->param(group => '騎獣'.($taxa_query?"／$taxa_query":'')      ); }
+if($::in{mount}){ $INDEX->param(group => '騎獣'.($taxa_query?"／$taxa_query":'')      ); }
 else              { $INDEX->param(group => $taxa_query eq 'all' ? 'すべて' : $taxa_query); }
-$INDEX->param(mount => $::in{'mount'} ? 'checked' : '');
+$INDEX->param(mount => $::in{mount} ? 'checked' : '');
 my @taxalist;
 foreach (sort { $a->[1] cmp $b->[1] } @data::taxa){
   push(@taxalist, {
@@ -127,37 +127,37 @@ foreach (sort { $a->[1] cmp $b->[1] } @data::taxa){
 $INDEX->param(Taxa => \@taxalist);
 
 ## タグ検索
-my $tag_query = pcTagsEscape(decode('utf8', $::in{'tag'}));
+my $tag_query = pcTagsEscape(decode('utf8', $::in{tag}));
 if($tag_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){15}[^<]*? \Q$tag_query\E / } @list; }
 $INDEX->param(tag => $tag_query);
 
 ## 名前検索
-my $name_query = decode('utf8', $::in{'name'});
+my $name_query = decode('utf8', $::in{name});
 if($name_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){4}[^<]*?\Q$name_query\E/i } @list; }
 $INDEX->param(name => $name_query);
 
 ## 知能検索
-my $intellect_query = decode('utf8', $::in{'intellect'});
+my $intellect_query = decode('utf8', $::in{intellect});
 if($intellect_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){8}\Q$intellect_query\E/ } @list; }
 $INDEX->param(intellect => $intellect_query);
 
 ## 知覚検索
-my $perception_query = decode('utf8', $::in{'perception'});
+my $perception_query = decode('utf8', $::in{perception});
 if($perception_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){9}\Q$perception_query\E/ } @list; }
 $INDEX->param(perception => $perception_query);
 
 ## 反応検索
-my $disposition_query = decode('utf8', $::in{'disposition'});
+my $disposition_query = decode('utf8', $::in{disposition});
 if($disposition_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){10}\Q$disposition_query\E/ } @list; }
 $INDEX->param(disposition => $disposition_query);
 
 ## 生息地検索
-my $habitat_query = decode('utf8', $::in{'habitat'});
+my $habitat_query = decode('utf8', $::in{habitat});
 if($habitat_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){18}\Q$habitat_query\E/ } @list; }
 $INDEX->param(habitat => $habitat_query);
 
 ## 弱点検索
-my $weakness_query = decode('utf8', $::in{'weakness'});
+my $weakness_query = decode('utf8', $::in{weakness});
 if($weakness_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){13}\Q$weakness_query\E/ } @list; }
 $INDEX->param(weakness => $weakness_query);
 
@@ -202,7 +202,7 @@ elsif($sort eq 'parts') { my @tmp = map { (split /<>/)[17] } @list; @list = @lis
 ### リストを回す --------------------------------------------------
 my %count;
 my %grouplist;
-my $page = $::in{'page'} ? $::in{'page'} : 1;
+my $page = $::in{page} ? $::in{page} : 1;
 my $pagestart = $page * $set::pagemax - $set::pagemax;
 my $pageend   = $page * $set::pagemax - 1;
 foreach (@list) {
@@ -234,7 +234,7 @@ foreach (@list) {
   #表示域以外は弾く
   if (
     ( $index_mode && $count{$taxa} > $set::list_maxline && $set::list_maxline) || #TOPページ
-    ( !$::in{'taxa'} && !$::in{'tag'} && $mode ne 'mylist' && $count{$taxa} > $set::list_maxline && $set::list_maxline) || #検索結果（分類指定なし／マイリストでもなし）
+    ( !$::in{taxa} && !$::in{tag} && $mode ne 'mylist' && $count{$taxa} > $set::list_maxline && $set::list_maxline) || #検索結果（分類指定なし／マイリストでもなし）
     (!$index_mode && $set::pagemax && ($count{$taxa} < $pagestart || $count{$taxa} > $pageend)) #それ以外
   ){
     next;
@@ -279,7 +279,7 @@ foreach (@taxa,['騎獣', 'XX' , '']){
   
   ## ページネーション
   my $navbar;
-  if($set::pagemax && !$index_mode && $::in{'taxa'}){
+  if($set::pagemax && !$index_mode && $::in{taxa}){
     my $lastpage = ceil($count{$name} / $set::pagemax);
     foreach(1 .. $lastpage){
       if($_ == $page){
@@ -290,7 +290,7 @@ foreach (@taxa,['騎獣', 'XX' , '']){
         $_ == 1 ||
         $_ == $lastpage
       ){
-        $navbar .= '<a href="./?type=m&taxa='.uri_escape_utf8($taxa_query||'all').$q_links.'&page='.$_.'&sort='.$::in{'sort'}.'">'.$_.'</a> '
+        $navbar .= '<a href="./?type=m&taxa='.uri_escape_utf8($taxa_query||'all').$q_links.'&page='.$_.'&sort='.$::in{sort}.'">'.$_.'</a> '
       }
       else { $navbar .= '...' }
     }
@@ -307,7 +307,7 @@ foreach (@taxa,['騎獣', 'XX' , '']){
   else {
     $urltaxa = uri_escape_utf8($name);
   }
-  if($name eq '騎獣' && !$::in{'mount'}){ $urltaxa .= '&mount=1' }
+  if($name eq '騎獣' && !$::in{mount}){ $urltaxa .= '&mount=1' }
   push(@characterlists, {
     "URL" => 'taxa='.$urltaxa,
     "NAME" => $name,

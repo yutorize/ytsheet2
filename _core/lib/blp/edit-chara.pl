@@ -13,71 +13,71 @@ require $set::lib_palette_sub;
 require $set::data_factor;
 
 ### データ読み込み ###################################################################################
-my ($data, $mode, $file, $message) = pcDataGet($::in{'mode'});
+my ($data, $mode, $file, $message) = pcDataGet($::in{mode});
 our %pc = %{ $data };
 
 my $mode_make = ($mode =~ /^(blanksheet|copy|convert)$/) ? 1 : 0;
 
 ### 出力準備 #########################################################################################
 if($message){
-  my $name = tagUnescape($pc{'characterName'} || $pc{'aka'} || '無題');
+  my $name = tagUnescape($pc{characterName} || $pc{aka} || '無題');
   $message =~ s/<!NAME>/$name/;
 }
 ### プレイヤー名 --------------------------------------------------
 if($mode_make){
-  $pc{'playerName'} = (getplayername($LOGIN_ID))[0];
+  $pc{playerName} = (getplayername($LOGIN_ID))[0];
 }
 ### 初期設定 --------------------------------------------------
-if($mode_make){ $pc{'protect'} ||= $LOGIN_ID ? 'account' : 'password'; }
+if($mode_make){ $pc{protect} ||= $LOGIN_ID ? 'account' : 'password'; }
 
-if($mode eq 'edit' || ($mode eq 'convert' && $pc{'ver'})){
+if($mode eq 'edit' || ($mode eq 'convert' && $pc{ver})){
   %pc = data_update_chara(\%pc);
-  if($pc{'updateMessage'}){
+  if($pc{updateMessage}){
     $message .= "<hr>" if $message;
     $message .= "<h2>アップデート通知</h2><dl>";
-    foreach (sort keys %{$pc{'updateMessage'}}){
-      $message .= '<dt>'.$_.'</dt><dd>'.$pc{'updateMessage'}{$_}.'</dd>';
+    foreach (sort keys %{$pc{updateMessage}}){
+      $message .= '<dt>'.$_.'</dt><dd>'.$pc{updateMessage}{$_}.'</dd>';
     }
-    (my $lasttimever = $pc{'lasttimever'}) =~ s/([0-9]{3})$/\.$1/;
+    (my $lasttimever = $pc{lasttimever}) =~ s/([0-9]{3})$/\.$1/;
     $message .= "</dl><small>前回保存時のバージョン:$lasttimever</small>";
   }
 }
 elsif($mode eq 'blanksheet'){
-  $pc{'group'} = $set::group_default;
+  $pc{group} = $set::group_default;
   
-  $pc{'endurancePreGrow'}  = $set::make_endurance  || 0;
-  $pc{'initiativePreGrow'} = $set::make_initiative || 0;
+  $pc{endurancePreGrow}  = $set::make_endurance  || 0;
+  $pc{initiativePreGrow} = $set::make_initiative || 0;
   
-  $pc{'partner1Auto'} = 1;
-  $pc{'partner2Auto'} = 1;
+  $pc{partner1Auto} = 1;
+  $pc{partner2Auto} = 1;
   
-  $pc{'paletteUseBuff'} = 1;
+  $pc{paletteUseBuff} = 1;
 }
 
 ## 画像
-$pc{'imageFit'} = $pc{'imageFit'} eq 'percent' ? 'percentX' : $pc{'imageFit'};
-$pc{'imagePercent'} = $pc{'imagePercent'} eq '' ? '200' : $pc{'imagePercent'};
-$pc{'imagePositionX'} = $pc{'imagePositionX'} eq '' ? '50' : $pc{'imagePositionX'};
-$pc{'imagePositionY'} = $pc{'imagePositionY'} eq '' ? '50' : $pc{'imagePositionY'};
-$pc{'wordsX'} ||= '右';
-$pc{'wordsY'} ||= '上';
+$pc{imageFit} = $pc{imageFit} eq 'percent' ? 'percentX' : $pc{imageFit};
+$pc{imagePercent} = $pc{imagePercent} eq '' ? '200' : $pc{imagePercent};
+$pc{imagePositionX} = $pc{imagePositionX} eq '' ? '50' : $pc{imagePositionX};
+$pc{imagePositionY} = $pc{imagePositionY} eq '' ? '50' : $pc{imagePositionY};
+$pc{wordsX} ||= '右';
+$pc{wordsY} ||= '上';
 
 ## カラー
 setDefaultColors();
 
 ## その他
-$pc{'historyNum'} ||= 3;
-$pc{'artsNum'} ||= 3;
+$pc{historyNum} ||= 3;
+$pc{artsNum} ||= 3;
 
 ### 改行処理 --------------------------------------------------
-$pc{'words'}         =~ s/&lt;br&gt;/\n/g;
-$pc{'scarNote'}      =~ s/&lt;br&gt;/\n/g;
-$pc{'freeNote'}      =~ s/&lt;br&gt;/\n/g;
-$pc{'freeHistory'}   =~ s/&lt;br&gt;/\n/g;
-$pc{'chatPalette'}   =~ s/&lt;br&gt;/\n/g;
+$pc{words}       =~ s/&lt;br&gt;/\n/g;
+$pc{scarNote}    =~ s/&lt;br&gt;/\n/g;
+$pc{freeNote}    =~ s/&lt;br&gt;/\n/g;
+$pc{freeHistory} =~ s/&lt;br&gt;/\n/g;
+$pc{chatPalette} =~ s/&lt;br&gt;/\n/g;
 
 ### フォーム表示 #####################################################################################
-my $titlebarname = tagDelete nameToPlain tagUnescape ($pc{'characterName'}||"“$pc{'aka'}”");
+my $titlebarname = tagDelete nameToPlain tagUnescape ($pc{characterName}||"“$pc{aka}”");
 print <<"HTML";
 Content-type: text/html\n
 <!DOCTYPE html>
@@ -99,7 +99,7 @@ Content-type: text/html\n
   <style>
     #image,
     .image-custom-view {
-      background-image: url("$pc{'imageURL'}");
+      background-image: url("$pc{imageURL}");
     }
   </style>
 </head>
@@ -130,8 +130,8 @@ print <<"HTML";
           <li onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード切替">
           <li class="buttons">
             <ul>
-              <li @{[ display ($mode eq 'edit') ]} class="view-icon" title="閲覧画面"><a href="./?id=$::in{'id'}"></a>
-              <li @{[ display ($mode eq 'edit') ]} class="copy" onclick="window.open('./?mode=copy&id=$::in{'id'}@{[  $::in{'log'}?"&log=$::in{'log'}":'' ]}');">複製
+              <li @{[ display ($mode eq 'edit') ]} class="view-icon" title="閲覧画面"><a href="./?id=$::in{id}"></a>
+              <li @{[ display ($mode eq 'edit') ]} class="copy" onclick="window.open('./?mode=copy&id=$::in{id}@{[  $::in{log}?"&log=$::in{log}":'' ]}');">複製
               <li class="submit" onclick="formSubmit()" title="Ctrl+S">保存
             </ul>
           </li>
@@ -146,8 +146,8 @@ HTML
 if($set::user_reqd){
   print <<"HTML";
     <input type="hidden" name="protect" value="account">
-    <input type="hidden" name="protectOld" value="$pc{'protect'}">
-    <input type="hidden" name="pass" value="$::in{'pass'}">
+    <input type="hidden" name="protectOld" value="$pc{protect}">
+    <input type="hidden" name="pass" value="$::in{pass}">
 HTML
 }
 else {
@@ -157,19 +157,19 @@ else {
   print <<"HTML";
       <details class="box" id="edit-protect" @{[$mode eq 'edit' ? '':'open']}>
       <summary>編集保護設定</summary>
-      <p id="edit-protect-view"><input type="hidden" name="protectOld" value="$pc{'protect'}">
+      <p id="edit-protect-view"><input type="hidden" name="protectOld" value="$pc{protect}">
 HTML
   if($LOGIN_ID){
-    print '<input type="radio" name="protect" value="account"'.($pc{'protect'} eq 'account'?' checked':'').'> アカウントに紐付ける（ログイン中のみ編集可能になります）<br>';
+    print '<input type="radio" name="protect" value="account"'.($pc{protect} eq 'account'?' checked':'').'> アカウントに紐付ける（ログイン中のみ編集可能になります）<br>';
   }
-    print '<input type="radio" name="protect" value="password"'.($pc{'protect'} eq 'password'?' checked':'').'> パスワードで保護 ';
-  if ($mode eq 'edit' && $pc{'protect'} eq 'password' && $::in{'pass'}) {
-    print '<input type="hidden" name="pass" value="'.$::in{'pass'}.'"><br>';
+    print '<input type="radio" name="protect" value="password"'.($pc{protect} eq 'password'?' checked':'').'> パスワードで保護 ';
+  if ($mode eq 'edit' && $pc{protect} eq 'password' && $::in{pass}) {
+    print '<input type="hidden" name="pass" value="'.$::in{pass}.'"><br>';
   } else {
     print '<input type="password" name="pass"><br>';
   }
   print <<"HTML";
-<input type="radio" name="protect" value="none"@{[ $pc{'protect'} eq 'none'?' checked':'' ]}> 保護しない（誰でも編集できるようになります）
+<input type="radio" name="protect" value="none"@{[ $pc{protect} eq 'none'?' checked':'' ]}> 保護しない（誰でも編集できるようになります）
       </p>
       </details>
 HTML
@@ -180,13 +180,13 @@ HTML
         <dd id="forbidden-checkbox">
           <select name="forbidden">
             <option value="">内容を全て開示
-            <option value="battle" @{[ $pc{'forbidden'} eq 'battle' ? 'selected' : '' ]}>データ・数値のみ秘匿
-            <option value="all"    @{[ $pc{'forbidden'} eq 'all'    ? 'selected' : '' ]}>内容を全て秘匿
+            <option value="battle" @{[ $pc{forbidden} eq 'battle' ? 'selected' : '' ]}>データ・数値のみ秘匿
+            <option value="all"    @{[ $pc{forbidden} eq 'all'    ? 'selected' : '' ]}>内容を全て秘匿
           </select>
         <dd id="hide-checkbox">
           <select name="hide">
             <option value="">一覧に表示
-            <option value="1" @{[ $pc{'hide'} ? 'selected' : '' ]}>一覧には非表示
+            <option value="1" @{[ $pc{hide} ? 'selected' : '' ]}>一覧には非表示
           </select>
         <dd>※「一覧に非表示」でもタグ検索結果・マイリストには表示されます
       </dl>
@@ -200,7 +200,7 @@ foreach (@set::groups){
   my $name = @$_[2];
   my $exclusive = @$_[4];
   next if($exclusive && (!$LOGIN_ID || $LOGIN_ID !~ /^($exclusive)$/));
-  print '<option value="'.$id.'"'.($pc{'group'} eq $id ? ' selected': '').'>'.$name.'</option>';
+  print '<option value="'.$id.'"'.($pc{group} eq $id ? ' selected': '').'>'.$name.'</option>';
 }
 print <<"HTML";
           </select>
@@ -234,7 +234,7 @@ print <<"HTML";
           <dt>先制値+
           <dd>@{[input("initiativePreGrow",'number','changeRegu','step="2"'.($set::make_fix?' readonly':''))]}
         </dl>
-        <div class="annotate" @{[ $pc{'convertSource'} eq 'キャラクターシート倉庫' ? '' : 'style="display:none"' ]}>
+        <div class="annotate" @{[ $pc{convertSource} eq 'キャラクターシート倉庫' ? '' : 'style="display:none"' ]}>
           ※コンバート時、副能力値の基本値を超える値は、クローズ時の成長としてこの欄に振り分けられます。<br>
           　ただし、（耐久は5、先制は2で）割り切れない「あまり」の値は特技等による補正として、副能力値の補正欄に振り分けています。<br>
         </div>
@@ -242,7 +242,7 @@ print <<"HTML";
         <dl class="regulation-note"><dt>備考<dd>@{[ input "history0Note" ]}</dl>
       </details>
       <div id="area-status">
-        @{[ imageForm($pc{'imageURL'}) ]}
+        @{[ imageForm($pc{imageURL}) ]}
 
         <div id="factors" class="box">
           <h2>練度:<span id="level-value"></span> ／ 能力値</h2>
@@ -271,7 +271,7 @@ print <<"HTML";
                   <span class="h-only">信念</span>
                   <span class="v-only">起源</span>
                 </th>
-                <td>@{[ selectInput "factorCore","checkSubFactor('Core',this.value);calcStt()",@{$data::factor_list{$pc{'factor'}}{'core'}} ]}
+                <td>@{[ selectInput "factorCore","checkSubFactor('Core',this.value);calcStt()",@{$data::factor_list{$pc{factor}}{core}} ]}
                 <td>@{[ input 'statusMain1Core','number','calcStt' ]}
                 <td>@{[ input 'statusMain2Core','number','calcStt' ]}
               <tr>
@@ -279,7 +279,7 @@ print <<"HTML";
                   <span class="h-only">職能</span>
                   <span class="v-only">流儀</span>
                 </th>
-                <td>@{[ selectInput "factorStyle","checkSubFactor('Style',this.value);calcStt()",@{$data::factor_list{$pc{'factor'}}{'style'}} ]}
+                <td>@{[ selectInput "factorStyle","checkSubFactor('Style',this.value);calcStt()",@{$data::factor_list{$pc{factor}}{style}} ]}
                 <td>@{[ input 'statusMain1Style','number','calcStt' ]}
                 <td>@{[ input 'statusMain2Style','number','calcStt' ]}
               <tr class="total">
@@ -330,7 +330,7 @@ print <<"HTML";
         <dl id="scar" class="box">
           <dt>傷号
           <dd>@{[input "scarName",'','scarCheck']}
-          <dd><textarea name="scarNote" placeholder="設定" rows="3">$pc{'scarNote'}</textarea>
+          <dd><textarea name="scarNote" placeholder="設定" rows="3">$pc{scarNote}</textarea>
         </dl>
       </div>
       
@@ -507,7 +507,7 @@ print <<"HTML";
             <tr><th><th>名称<th>タイミング<th>対象<th>代償<th>条件<th class="left">解説
           <tbody id="arts-list">
 HTML
-foreach my $num ('TMPL',1 .. $pc{'artsNum'}) {
+foreach my $num ('TMPL',1 .. $pc{artsNum}) {
   if($num eq 'TMPL'){ print '<template id="arts-template">' }
 print <<"HTML";
             <tr id="arts${num}">
@@ -542,16 +542,16 @@ print <<"HTML";
         </table>
       </div>
       
-      <details class="box" id="free-note" @{[$pc{'freeNote'}?'open':'']}>
+      <details class="box" id="free-note" @{[$pc{freeNote}?'open':'']}>
         <summary>容姿・経歴・その他メモ</summary>
-        <textarea name="freeNote">$pc{'freeNote'}</textarea>
-        @{[ $::in{'log'} ? '<button type="button" class="set-newest" onclick="setNewestSingleData(\'freeNote\')">最新のメモを適用する</button>' : '' ]}
+        <textarea name="freeNote">$pc{freeNote}</textarea>
+        @{[ $::in{log} ? '<button type="button" class="set-newest" onclick="setNewestSingleData(\'freeNote\')">最新のメモを適用する</button>' : '' ]}
       </details>
       
-      <details class="box" id="free-history" @{[$pc{'freeHistory'}?'open':'']}>
+      <details class="box" id="free-history" @{[$pc{freeHistory}?'open':'']}>
         <summary>履歴（自由記入）</summary>
-        <textarea name="freeHistory">$pc{'freeHistory'}</textarea>
-        @{[ $::in{'log'} ? '<button type="button" class="set-newest" onclick="setNewestSingleData(\'freeHistory\')">最新の履歴（自由記入）を適用する</button>' : '' ]}
+        <textarea name="freeHistory">$pc{freeHistory}</textarea>
+        @{[ $::in{log} ? '<button type="button" class="set-newest" onclick="setNewestSingleData(\'freeHistory\')">最新の履歴（自由記入）を適用する</button>' : '' ]}
       </details>
       
       <div class="box" id="history">
@@ -570,9 +570,9 @@ print <<"HTML";
             <td>-
             <td>
             <td>キャラクター作成
-            <td id="history0-exp">$pc{'history0Exp'}
+            <td id="history0-exp">$pc{history0Exp}
 HTML
-foreach my $num ('TMPL',1 .. $pc{'historyNum'}) {
+foreach my $num ('TMPL',1 .. $pc{historyNum}) {
   if($num eq 'TMPL'){ print '<template id="history-template">' }
 print <<"HTML";
           <tbody id="history${num}">
@@ -622,7 +622,7 @@ print <<"HTML";
         <div class="annotate">
         ※「力の向上」の選択を行うと、自動的に練度が+1されます。
         </div>
-        @{[ $::in{'log'} ? '<button type="button" class="set-newest" onclick="setNewestHistoryData()">最新のセッション履歴を適用する</button>' : '' ]}
+        @{[ $::in{log} ? '<button type="button" class="set-newest" onclick="setNewestHistoryData()">最新のセッション履歴を適用する</button>' : '' ]}
       </div>
       </section>
       
@@ -631,7 +631,7 @@ print <<"HTML";
       @{[ colorCostomForm ]}
       
       @{[ input 'birthTime','hidden' ]}
-      <input type="hidden" name="id" value="$::in{'id'}">
+      <input type="hidden" name="id" value="$::in{id}">
     </form>
 HTML
 if($mode eq 'edit'){
@@ -639,8 +639,8 @@ print <<"HTML";
     <form name="del" method="post" action="./" class="deleteform">
       <p style="font-size: 80%;">
       <input type="hidden" name="mode" value="delete">
-      <input type="hidden" name="id" value="$::in{'id'}">
-      <input type="hidden" name="pass" value="$::in{'pass'}">
+      <input type="hidden" name="id" value="$::in{id}">
+      <input type="hidden" name="pass" value="$::in{pass}">
       <input type="checkbox" name="check1" value="1" required>
       <input type="checkbox" name="check2" value="1" required>
       <input type="checkbox" name="check3" value="1" required>
@@ -655,15 +655,15 @@ HTML
     <form name="imgdel" method="post" action="./" class="deleteform">
       <p style="font-size: 80%;">
       <input type="hidden" name="mode" value="img-delete">
-      <input type="hidden" name="id" value="$::in{'id'}">
-      <input type="hidden" name="pass" value="$::in{'pass'}">
+      <input type="hidden" name="id" value="$::in{id}">
+      <input type="hidden" name="pass" value="$::in{pass}">
       <input type="checkbox" name="check1" value="1" required>
       <input type="checkbox" name="check2" value="1" required>
       <input type="checkbox" name="check3" value="1" required>
       <input type="submit" value="画像削除"><br>
       </p>
     </form>
-    <p class="right">@{[ $::in{'log'}?$::in{'log'}:'最終' ]}更新時のIP:$pc{'IP'}</p>
+    <p class="right">@{[ $::in{log}?$::in{log}:'最終' ]}更新時のIP:$pc{IP}</p>
 HTML
   }
 }

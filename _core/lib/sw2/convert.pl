@@ -52,14 +52,14 @@ sub dataConvert {
     if($data !~ /^{/){ error 'JSONデータが取得できませんでした' }
     $data = thanSignEscape($data);
     my %pc = utf8::is_utf8($data) ? %{ decode_json(encode('utf8', (join '', $data))) } : %{ decode_json(join '', $data) };
-    if($pc{'result'} eq 'OK'){
+    if($pc{result} eq 'OK'){
       our $base_url = $set_url;
       $base_url =~ s|/[^/]+?$|/|;
-      $pc{'convertSource'} = '別のゆとシートⅡ';
+      $pc{convertSource} = '別のゆとシートⅡ';
       return %pc;
     }
-    elsif($pc{'result'}) {
-      error 'コンバート元のゆとシートⅡでエラーがありました。<br>>'.$pc{'result'};
+    elsif($pc{result}) {
+      error 'コンバート元のゆとシートⅡでエラーがありました。<br>>'.$pc{result};
     }
     else {
       error '有効なデータが取得できませんでした';
@@ -72,95 +72,95 @@ sub convertHokanjoToYtsheet {
   my %in = %{$_[0]};
 
   my %pc = (
-    'convertSource' => 'キャラクター保管所',
-    'characterName' => $in{'pc_name'} || $in{'data_title'},
-    'tags' => convertTags($in{'pc_tags'}),
-    'race' => $in{'shuzoku_name'},
-    'birth' => $in{'umare_name'},
-    'age' => $in{'age'},
-    'gender' => $in{'sex'},
-    'sin' => $in{'V_kegare'},
-    'money' => $in{'money'},
-    'deposit' => $in{'debt'},
-    'sttBaseTec' => $in{'N_waza'}, 'sttBasePhy' => $in{'N_karada'}, 'sttBaseSpi' => $in{'N_kokoro'},
-    'sttBaseA' => $in{'V_NC1'}, 'sttAddA' => ($in{'NP1'}-$in{'N_waza'  }-$in{'V_NC1'}-$in{'NS1'}) || '', 
-    'sttBaseB' => $in{'V_NC2'}, 'sttAddB' => ($in{'NP2'}-$in{'N_waza'  }-$in{'V_NC2'}-$in{'NS2'}) || '',
-    'sttBaseC' => $in{'V_NC3'}, 'sttAddC' => ($in{'NP3'}-$in{'N_karada'}-$in{'V_NC3'}-$in{'NS3'}) || '',
-    'sttBaseD' => $in{'V_NC4'}, 'sttAddD' => ($in{'NP4'}-$in{'N_karada'}-$in{'V_NC4'}-$in{'NS4'}) || '',
-    'sttBaseE' => $in{'V_NC5'}, 'sttAddE' => ($in{'NP5'}-$in{'N_kokoro'}-$in{'V_NC5'}-$in{'NS5'}) || '',
-    'sttBaseF' => $in{'V_NC6'}, 'sttAddF' => ($in{'NP6'}-$in{'N_kokoro'}-$in{'V_NC6'}-$in{'NS6'}) || '',
-    'lvFig' => $in{'V_GLv1'} || '', 'lvGra' => $in{'V_GLv2'} || '', 'lvFen' => $in{'V_GLv3'} || '', 'lvSho' => $in{'V_GLv4'} || '',
-    'lvSor' => $in{'V_GLv5'} || '', 'lvCon' => $in{'V_GLv6'} || '', 'lvPri' => $in{'V_GLv7'} || '',
-    'lvFai' => $in{'V_GLv8'} || '', 'lvMag' => $in{'V_GLv9'} || '', 'lvDem' => $in{'V_GLv17'} || '', 'lvDru' => $in{'V_GLv24'} || '',
-    'lvSco' => $in{'V_GLv10'} || '','lvRan' => $in{'V_GLv11'} || '','lvSag' => $in{'V_GLv12'} || '',
-    'lvEnh' => $in{'V_GLv13'} || '', 'lvBar' => $in{'V_GLv14'} || '', 'lvRid' => $in{'V_GLv16'} || '',
-    'lvAlc' => $in{'V_GLv15'} || '', 'lvWar' => $in{'V_GLv18'} || '', 'lvMys' => $in{'V_GLv19'} || '', 'lvPhy' => $in{'V_GLv20'} || '',
-    'lvGri' => $in{'V_GLv21'} || '', 'lvArt' => $in{'V_GLv22'} || '', 'lvAri' => $in{'V_GLv23'} || '',
-    'magicPowerAdd' => $in{'arms_maryoku_sum'},
-    'evasionClass' => $in{'kaihi_ginou_name'},
-    'armourNum' => 3,
-    'armour1Name' => $in{'armor_name'},
-    'armour1Reqd' => $in{'armor_hitsukin'},
-    'armour1Note' => $in{'armor_memo'},
-    'armour1Def' => $in{'armor_bougo'} || 0,
-    'armour1Eva' => $in{'armor_kaihi'} || 0,
-    'armour2Name' => $in{'shield_name'},
-    'armour2Category' => '盾',
-    'armour2Reqd' => $in{'shield_hitsukin'},
-    'armour2Note' => $in{'shield_memo'},
-    'armour2Def' => $in{'shield_bougo'} || 0,
-    'armour2Eva' => $in{'shield_kaihi'} || 0,
-    'armour3Name' => $in{'shield2_name'},
-    'armour3Category' => 'その他',
-    'armour3Name' => $in{'shield2_name'},
-    'armour3Def' =>$in{'shield2_bougo'} || 0,
-    'armour3Eva' =>$in{'shield2_kaihi'} || 0,
-    'armour3Note' => $in{'shield2_memo'},
+    convertSource => 'キャラクター保管所',
+    characterName => $in{'pc_name'} || $in{'data_title'},
+    tags => convertTags($in{'pc_tags'}),
+    race => $in{'shuzoku_name'},
+    birth => $in{'umare_name'},
+    age => $in{'age'},
+    gender => $in{'sex'},
+    sin => $in{'V_kegare'},
+    money => $in{'money'},
+    deposit => $in{'debt'},
+    sttBaseTec => $in{'N_waza'}, sttBasePhy => $in{'N_karada'}, sttBaseSpi => $in{'N_kokoro'},
+    sttBaseA => $in{'V_NC1'}, sttAddA => ($in{'NP1'}-$in{'N_waza'  }-$in{'V_NC1'}-$in{'NS1'}) || '', 
+    sttBaseB => $in{'V_NC2'}, sttAddB => ($in{'NP2'}-$in{'N_waza'  }-$in{'V_NC2'}-$in{'NS2'}) || '',
+    sttBaseC => $in{'V_NC3'}, sttAddC => ($in{'NP3'}-$in{'N_karada'}-$in{'V_NC3'}-$in{'NS3'}) || '',
+    sttBaseD => $in{'V_NC4'}, sttAddD => ($in{'NP4'}-$in{'N_karada'}-$in{'V_NC4'}-$in{'NS4'}) || '',
+    sttBaseE => $in{'V_NC5'}, sttAddE => ($in{'NP5'}-$in{'N_kokoro'}-$in{'V_NC5'}-$in{'NS5'}) || '',
+    sttBaseF => $in{'V_NC6'}, sttAddF => ($in{'NP6'}-$in{'N_kokoro'}-$in{'V_NC6'}-$in{'NS6'}) || '',
+    lvFig => $in{'V_GLv1'} || '', lvGra => $in{'V_GLv2'} || '', lvFen => $in{'V_GLv3'} || '', lvSho => $in{'V_GLv4'} || '',
+    lvSor => $in{'V_GLv5'} || '', lvCon => $in{'V_GLv6'} || '', lvPri => $in{'V_GLv7'} || '',
+    lvFai => $in{'V_GLv8'} || '', lvMag => $in{'V_GLv9'} || '', lvDem => $in{'V_GLv17'} || '', lvDru => $in{'V_GLv24'} || '',
+    lvSco => $in{'V_GLv10'} || '',lvRan => $in{'V_GLv11'} || '',lvSag => $in{'V_GLv12'} || '',
+    lvEnh => $in{'V_GLv13'} || '', lvBar => $in{'V_GLv14'} || '', lvRid => $in{'V_GLv16'} || '',
+    lvAlc => $in{'V_GLv15'} || '', lvWar => $in{'V_GLv18'} || '', lvMys => $in{'V_GLv19'} || '', lvPhy => $in{'V_GLv20'} || '',
+    lvGri => $in{'V_GLv21'} || '', lvArt => $in{'V_GLv22'} || '', lvAri => $in{'V_GLv23'} || '',
+    magicPowerAdd => $in{'arms_maryoku_sum'},
+    evasionClass => $in{'kaihi_ginou_name'},
+    armourNum => 3,
+    armour1Name => $in{'armor_name'},
+    armour1Reqd => $in{'armor_hitsukin'},
+    armour1Note => $in{'armor_memo'},
+    armour1Def => $in{'armor_bougo'} || 0,
+    armour1Eva => $in{'armor_kaihi'} || 0,
+    armour2Name => $in{'shield_name'},
+    armour2Category => '盾',
+    armour2Reqd => $in{'shield_hitsukin'},
+    armour2Note => $in{'shield_memo'},
+    armour2Def => $in{'shield_bougo'} || 0,
+    armour2Eva => $in{'shield_kaihi'} || 0,
+    armour3Name => $in{'shield2_name'},
+    armour3Category => 'その他',
+    armour3Name => $in{'shield2_name'},
+    armour3Def =>$in{'shield2_bougo'} || 0,
+    armour3Eva =>$in{'shield2_kaihi'} || 0,
+    armour3Note => $in{'shield2_memo'},
     
-    'accessoryOtherName'    => $in{'acce10_name'}[0], 'accessoryOtherNote'    => $in{'acce10_memo'}[0],
-    'accessoryOtherOwn'     => $in{'acce10_senyou'}[0] eq 1 ? 'HP' : $in{'acce10_senyou'}[0] eq 2 ? 'MP' : '',
-    'accessoryOtherAdd'     => $in{'acce10_name'}[1] ? 1 : 0,
-    'accessoryOther_Name'   => $in{'acce10_name'}[1], 'accessoryOther_Note'   => $in{'acce10_memo'}[1],
-    'accessoryOther_Own'    => $in{'acce10_senyou'}[1] eq 1 ? 'HP' : $in{'acce10_senyou'}[1] eq 2 ? 'MP' : '',
-    'accessoryOther_Add'    => $in{'acce10_name'}[2] ? 1 : 0,
-    'accessoryOther__Name'  => $in{'acce10_name'}[2], 'accessoryOther__Note'  => $in{'acce10_memo'}[2],
-    'accessoryOther__Own'    => $in{'acce10_senyou'}[2] eq 1 ? 'HP' : $in{'acce10_senyou'}[2] eq 2 ? 'MP' : '',
+    accessoryOtherName    => $in{'acce10_name'}[0], accessoryOtherNote    => $in{'acce10_memo'}[0],
+    accessoryOtherOwn     => $in{'acce10_senyou'}[0] eq 1 ? 'HP' : $in{'acce10_senyou'}[0] eq 2 ? 'MP' : '',
+    accessoryOtherAdd     => $in{'acce10_name'}[1] ? 1 : 0,
+    accessoryOther_Name   => $in{'acce10_name'}[1], accessoryOther_Note   => $in{'acce10_memo'}[1],
+    accessoryOther_Own    => $in{'acce10_senyou'}[1] eq 1 ? 'HP' : $in{'acce10_senyou'}[1] eq 2 ? 'MP' : '',
+    accessoryOther_Add    => $in{'acce10_name'}[2] ? 1 : 0,
+    accessoryOther__Name  => $in{'acce10_name'}[2], accessoryOther__Note  => $in{'acce10_memo'}[2],
+    accessoryOther__Own    => $in{'acce10_senyou'}[2] eq 1 ? 'HP' : $in{'acce10_senyou'}[2] eq 2 ? 'MP' : '',
     
-    'accessoryOther2Name'   => $in{'acce10_name'}[3], 'accessoryOther2Note'   => $in{'acce10_memo'}[3],
-    'accessoryOther2Own'    => $in{'acce10_senyou'}[3] eq 1 ? 'HP' : $in{'acce10_senyou'}[3] eq 2 ? 'MP' : '',
-    'accessoryOther2Add'    => $in{'acce10_name'}[4] ? 1 : 0,
-    'accessoryOther2_Name'  => $in{'acce10_name'}[4], 'accessoryOther2_Note'  => $in{'acce10_memo'}[4],
-    'accessoryOther2_Own'   => $in{'acce10_senyou'}[4] eq 1 ? 'HP' : $in{'acce10_senyou'}[4] eq 2 ? 'MP' : '',
-    'accessoryOther2_Add'   => $in{'acce10_name'}[5] ? 1 : 0,
-    'accessoryOther2__Name' => $in{'acce10_name'}[5], 'accessoryOther2__Note' => $in{'acce10_memo'}[5],
-    'accessoryOther2__Own'  => $in{'acce10_senyou'}[5] eq 1 ? 'HP' : $in{'acce10_senyou'}[5] eq 2 ? 'MP' : '',
+    accessoryOther2Name   => $in{'acce10_name'}[3], accessoryOther2Note   => $in{'acce10_memo'}[3],
+    accessoryOther2Own    => $in{'acce10_senyou'}[3] eq 1 ? 'HP' : $in{'acce10_senyou'}[3] eq 2 ? 'MP' : '',
+    accessoryOther2Add    => $in{'acce10_name'}[4] ? 1 : 0,
+    accessoryOther2_Name  => $in{'acce10_name'}[4], accessoryOther2_Note  => $in{'acce10_memo'}[4],
+    accessoryOther2_Own   => $in{'acce10_senyou'}[4] eq 1 ? 'HP' : $in{'acce10_senyou'}[4] eq 2 ? 'MP' : '',
+    accessoryOther2_Add   => $in{'acce10_name'}[5] ? 1 : 0,
+    accessoryOther2__Name => $in{'acce10_name'}[5], accessoryOther2__Note => $in{'acce10_memo'}[5],
+    accessoryOther2__Own  => $in{'acce10_senyou'}[5] eq 1 ? 'HP' : $in{'acce10_senyou'}[5] eq 2 ? 'MP' : '',
     
-    'accessoryOther3Name'   => $in{'acce10_name'}[6], 'accessoryOther3Note'   => $in{'acce10_memo'}[6],
-    'accessoryOther3Own'    => $in{'acce10_senyou'}[6] eq 1 ? 'HP' : $in{'acce10_senyou'}[6] eq 2 ? 'MP' : '',
-    'accessoryOther3Add'    => $in{'acce10_name'}[7] ? 1 : 0,
-    'accessoryOther3_Name'  => $in{'acce10_name'}[7], 'accessoryOther3_Note'  => $in{'acce10_memo'}[7],
-    'accessoryOther3_Own'   => $in{'acce10_senyou'}[7] eq 1 ? 'HP' : $in{'acce10_senyou'}[7] eq 2 ? 'MP' : '',
-    'accessoryOther3_Add'   => $in{'acce10_name'}[8] ? 1 : 0,
-    'accessoryOther3__Name' => $in{'acce10_name'}[8], 'accessoryOther3__Note' => $in{'acce10_memo'}[8],
-    'accessoryOther3__Own'  => $in{'acce10_senyou'}[8] eq 1 ? 'HP' : $in{'acce10_senyou'}[8] eq 2 ? 'MP' : '',
+    accessoryOther3Name   => $in{'acce10_name'}[6], accessoryOther3Note   => $in{'acce10_memo'}[6],
+    accessoryOther3Own    => $in{'acce10_senyou'}[6] eq 1 ? 'HP' : $in{'acce10_senyou'}[6] eq 2 ? 'MP' : '',
+    accessoryOther3Add    => $in{'acce10_name'}[7] ? 1 : 0,
+    accessoryOther3_Name  => $in{'acce10_name'}[7], accessoryOther3_Note  => $in{'acce10_memo'}[7],
+    accessoryOther3_Own   => $in{'acce10_senyou'}[7] eq 1 ? 'HP' : $in{'acce10_senyou'}[7] eq 2 ? 'MP' : '',
+    accessoryOther3_Add   => $in{'acce10_name'}[8] ? 1 : 0,
+    accessoryOther3__Name => $in{'acce10_name'}[8], accessoryOther3__Note => $in{'acce10_memo'}[8],
+    accessoryOther3__Own  => $in{'acce10_senyou'}[8] eq 1 ? 'HP' : $in{'acce10_senyou'}[8] eq 2 ? 'MP' : '',
     
-    'accessoryOther4Name'   => $in{'acce10_name'}[9], 'accessoryOther3Note'   => $in{'acce10_memo'}[9],
-    'accessoryOther4Own'    => $in{'acce10_senyou'}[9] eq 1 ? 'HP' : $in{'acce10_senyou'}[9] eq 2 ? 'MP' : '',
-    'accessoryOther4Add'    => $in{'acce10_name'}[10] ? 1 : 0,
-    'accessoryOther4_Name'  => $in{'acce10_name'}[10], 'accessoryOther3_Note'  => $in{'acce10_memo'}[10],
-    'accessoryOther4_Own'   => $in{'acce10_senyou'}[10] eq 1 ? 'HP' : $in{'acce10_senyou'}[10] eq 2 ? 'MP' : '',
-    'accessoryOther4_Add'   => $in{'acce10_name'}[11] ? 1 : 0,
-    'accessoryOther4__Name' => $in{'acce10_name'}[11], 'accessoryOther3__Note' => $in{'acce10_memo'}[11],
-    'accessoryOther4__Own'  => $in{'acce10_senyou'}[11] eq 1 ? 'HP' : $in{'acce10_senyou'}[11] eq 2 ? 'MP' : '',
+    accessoryOther4Name   => $in{'acce10_name'}[9], accessoryOther3Note   => $in{'acce10_memo'}[9],
+    accessoryOther4Own    => $in{'acce10_senyou'}[9] eq 1 ? 'HP' : $in{'acce10_senyou'}[9] eq 2 ? 'MP' : '',
+    accessoryOther4Add    => $in{'acce10_name'}[10] ? 1 : 0,
+    accessoryOther4_Name  => $in{'acce10_name'}[10], accessoryOther3_Note  => $in{'acce10_memo'}[10],
+    accessoryOther4_Own   => $in{'acce10_senyou'}[10] eq 1 ? 'HP' : $in{'acce10_senyou'}[10] eq 2 ? 'MP' : '',
+    accessoryOther4_Add   => $in{'acce10_name'}[11] ? 1 : 0,
+    accessoryOther4__Name => $in{'acce10_name'}[11], accessoryOther3__Note => $in{'acce10_memo'}[11],
+    accessoryOther4__Own  => $in{'acce10_senyou'}[11] eq 1 ? 'HP' : $in{'acce10_senyou'}[11] eq 2 ? 'MP' : '',
   );
   ## 種族
   if($in{'special_shuzoku_name'}){
     my $parent = $in{'special_shuzoku_name'};
-    if   ($parent =~ /第1/){ $pc{'race'} .= '（ルミエル）'; }
-    elsif($parent =~ /第2/){ $pc{'race'} .= '（イグニス）'; }
-    elsif($parent =~ /第3/){ $pc{'race'} .= '（カルディア）'; }
+    if   ($parent =~ /第1/){ $pc{race} .= '（ルミエル）'; }
+    elsif($parent =~ /第2/){ $pc{race} .= '（イグニス）'; }
+    elsif($parent =~ /第3/){ $pc{race} .= '（カルディア）'; }
     elsif($parent =~ s/生まれ$//){
-      $pc{'race'} .= '（'.$parent.'）';
+      $pc{race} .= '（'.$parent.'）';
     }
   }
   ## 信仰
@@ -175,13 +175,13 @@ sub convertHokanjoToYtsheet {
         ||($aka  && $in{'priest_sinkou'} =~ /(^|[“”"])${aka}([“”"]|$)/)
         ||($name && $in{'priest_sinkou'} eq $name)
       ){
-        $pc{'faith'} = $aka && $name ? "“${aka}”${name}" : $aka ? "“${aka}”" : $name;
+        $pc{faith} = $aka && $name ? "“${aka}”${name}" : $aka ? "“${aka}”" : $name;
         last;
       }
     }
-    if(!$pc{'faith'}){
-      $pc{'faithOther'} = $in{'priest_sinkou'};
-      $pc{'faith'} = 'その他の信仰';
+    if(!$pc{faith}){
+      $pc{faithOther} = $in{'priest_sinkou'};
+      $pc{faith} = 'その他の信仰';
     }
   }
   ## 言語
@@ -229,7 +229,7 @@ sub convertHokanjoToYtsheet {
   #require $set::data_races;
   #foreach my $lang (@language){
   #  my $next;
-  #  foreach my $default (@{$data::race_language{$pc{'race'}}}){
+  #  foreach my $default (@{$data::race_language{$pc{race}}}){
   #    if(@$lang[0] eq @$default[0]){ $next = 1; last; }
   #  }
   #  next if $next;
@@ -238,49 +238,49 @@ sub convertHokanjoToYtsheet {
   #  $pc{'language'.$i.'Read'} = @$lang[2];
   #  $i++;
   #}
-  $pc{'languageNum'} = $i;
-  $pc{'languageAutoOff'} = 1;
+  $pc{languageNum} = $i;
+  $pc{languageAutoOff} = 1;
   
-  foreach my $n (1 .. $pc{'languageNum'}){
-    if($pc{'race'} =~ /人間/ && $pc{"language${n}"} =~ /地方語/){
+  foreach my $n (1 .. $pc{languageNum}){
+    if($pc{race} =~ /人間/ && $pc{"language${n}"} =~ /地方語/){
       $pc{"language${n}Talk"} = $pc{"language${n}Talk"} ? 'auto' : '';
       $pc{"language${n}Read"} = $pc{"language${n}Read"} ? 'auto' : '';
       last;
     }
   }
-  foreach my $n (1 .. $pc{'languageNum'}){
-    if(($pc{'lvDem'} || $pc{'lvGri'}) && $pc{"language${n}"} =~ /魔法文明語/){
+  foreach my $n (1 .. $pc{languageNum}){
+    if(($pc{lvDem} || $pc{lvGri}) && $pc{"language${n}"} =~ /魔法文明語/){
       $pc{"language${n}Read"} = $pc{"language${n}Read"} ? 'auto' : '';
     }
-    if($pc{'lvDem'} && $pc{"language${n}"} =~ /魔神語/){
+    if($pc{lvDem} && $pc{"language${n}"} =~ /魔神語/){
       $pc{"language${n}Talk"} = $pc{"language${n}Talk"} ? 'auto' : '';
     }
-    if(($pc{'lvSor'} || $pc{'lvCon'}) && $pc{"language${n}"} =~ /魔法文明語/){
-      $pc{"language${n}Talk"} = $pc{"language${n}Talk"} ? 'auto' : '';
-      $pc{"language${n}Read"} = $pc{"language${n}Read"} ? 'auto' : '';
-    }
-    if(($pc{'lvMag'} || $pc{'lvAlc'}) && $pc{"language${n}"} =~ /魔動機文明語/){
+    if(($pc{lvSor} || $pc{lvCon}) && $pc{"language${n}"} =~ /魔法文明語/){
       $pc{"language${n}Talk"} = $pc{"language${n}Talk"} ? 'auto' : '';
       $pc{"language${n}Read"} = $pc{"language${n}Read"} ? 'auto' : '';
     }
-    if($pc{'lvFai'} && $pc{"language${n}"} =~ /妖精語/){
+    if(($pc{lvMag} || $pc{lvAlc}) && $pc{"language${n}"} =~ /魔動機文明語/){
+      $pc{"language${n}Talk"} = $pc{"language${n}Talk"} ? 'auto' : '';
+      $pc{"language${n}Read"} = $pc{"language${n}Read"} ? 'auto' : '';
+    }
+    if($pc{lvFai} && $pc{"language${n}"} =~ /妖精語/){
       $pc{"language${n}Talk"} = $pc{"language${n}Talk"} ? 'auto' : '';
       $pc{"language${n}Read"} = $pc{"language${n}Read"} ? 'auto' : '';
     }
   }
   my $bard = 0;
-  foreach my $n (reverse 1 .. $pc{'languageNum'}){
-    last if $bard >= $pc{'lvBar'};
+  foreach my $n (reverse 1 .. $pc{languageNum}){
+    last if $bard >= $pc{lvBar};
     if($pc{"language${n}Talk"} == 1){ $pc{"language${n}Talk"} = 'Bar'; $bard++; }
   }
   my $sage = 0;
-  foreach my $n (reverse 1 .. $pc{'languageNum'}){
-    last if $sage >= $pc{'lvSag'};
+  foreach my $n (reverse 1 .. $pc{languageNum}){
+    last if $sage >= $pc{lvSag};
     if($pc{"language${n}Talk"} == 1){ $pc{"language${n}Talk"} = 'Sag'; $sage++; }
-    last if $sage >= $pc{'lvSag'};
+    last if $sage >= $pc{lvSag};
     if($pc{"language${n}Read"} == 1){ $pc{"language${n}Read"} = 'Sag'; $sage++; }
   }
-  foreach my $n (1 .. $pc{'languageNum'}){
+  foreach my $n (1 .. $pc{languageNum}){
     if($pc{"language${n}Talk"} == 1){ $pc{"language${n}Talk"} = 'auto'; }
     if($pc{"language${n}Read"} == 1){ $pc{"language${n}Read"} = 'auto'; }
   }
@@ -346,9 +346,9 @@ sub convertHokanjoToYtsheet {
     $pc{'weapon'.($i+1).'Own'}     = $in{'arms_is_senyou'}[$i] ? 1: '';
     $i++;
   }
-  $pc{'weaponNum'} = $i;
+  $pc{weaponNum} = $i;
   ## 防具
-  $pc{"defTotal1CheckArmour1"} = $pc{"defTotal1CheckShield1"} = $pc{"defTotal1CheckDefOther1"} = $pc{"defTotal1CheckDefOther2"} = $pc{"defTotal1CheckDefOther3"} = 1;
+  $pc{defTotal1CheckArmour1} = $pc{defTotal1CheckShield1} = $pc{defTotal1CheckDefOther1} = $pc{defTotal1CheckDefOther2} = $pc{defTotal1CheckDefOther3} = 1;
   ## 装飾品(その他以外)
   my $i = 0;
   foreach ('','_','__') {
@@ -385,16 +385,16 @@ sub convertHokanjoToYtsheet {
   my $i = 0;
   foreach my $name (@{$in{'item_name'}}){
     if($name && $in{'item_tanka'}[$i] && $in{'item_num'}[$i]){
-      $pc{'items'} .= "${name} ($in{'item_tanka'}[$i]) × $in{'item_num'}[$i]".($in{'item_memo'}[$i] ? ' …… ': '').$in{'item_memo'}[$i]."\n";
-      $pc{'cashbook'} .= "${name} ::-$in{'item_tanka'}[$i]*$in{'item_num'}[$i]\n";
+      $pc{items} .= "${name} ($in{'item_tanka'}[$i]) × $in{'item_num'}[$i]".($in{'item_memo'}[$i] ? ' …… ': '').$in{'item_memo'}[$i]."\n";
+      $pc{cashbook} .= "${name} ::-$in{'item_tanka'}[$i]*$in{'item_num'}[$i]\n";
     }
     elsif($name){
-      $pc{'items'} .= "${name}".($in{'item_memo'}[$i] ? ' …… ': '').$in{'item_memo'}[$i]."\n";
-      $pc{'cashbook'} .= "${name}\n";
+      $pc{items} .= "${name}".($in{'item_memo'}[$i] ? ' …… ': '').$in{'item_memo'}[$i]."\n";
+      $pc{cashbook} .= "${name}\n";
     }
     else {
-      $pc{'items'} .= "\n";
-      $pc{'cashbook'} .= "\n";
+      $pc{items} .= "\n";
+      $pc{cashbook} .= "\n";
     }
     $i++;
   }
@@ -405,11 +405,11 @@ sub convertHokanjoToYtsheet {
     $pc{'honorItem'.($i+1).'Pt'} = $in{'honorout_item_point'}[$i];
     $i++;
   }
-  $pc{'honorItemsNum'} = $i;
+  $pc{honorItemsNum} = $i;
   ## 履歴
-  $pc{'history0Exp'}   = $in{'create_exp'}+$in{'create_ginou_exp'};
-  $pc{'history0Honor'} = 0;
-  $pc{'history0Money'} = 1200;
+  $pc{history0Exp}   = $in{'create_exp'}+$in{'create_ginou_exp'};
+  $pc{history0Honor} = 0;
+  $pc{history0Money} = 1200;
   my %bases = ( '1'=>'器用', '2'=>'敏捷', '3'=>'筋力', '4'=>'生命', '5'=>'知力', '6'=>'精神' );
   my $i = 0; my $growcount;
   foreach my $grow (@{$in{'V_SN_his'}}){
@@ -422,16 +422,16 @@ sub convertHokanjoToYtsheet {
   }
   $i++;
   if(!$growcount){
-    $pc{'sttPreGrowA'} = $in{'NS1'};
-    $pc{'sttPreGrowB'} = $in{'NS2'};
-    $pc{'sttPreGrowC'} = $in{'NS3'};
-    $pc{'sttPreGrowD'} = $in{'NS4'};
-    $pc{'sttPreGrowE'} = $in{'NS5'};
-    $pc{'sttPreGrowF'} = $in{'NS6'};
+    $pc{sttPreGrowA} = $in{'NS1'};
+    $pc{sttPreGrowB} = $in{'NS2'};
+    $pc{sttPreGrowC} = $in{'NS3'};
+    $pc{sttPreGrowD} = $in{'NS4'};
+    $pc{sttPreGrowE} = $in{'NS5'};
+    $pc{sttPreGrowF} = $in{'NS6'};
   }
   $pc{'history'.$i.'Honor'} = $in{'honor_point_sum'};
   $pc{'history'.$i.'Note'} = 'データ形式が異なる為、獲得名誉点はここに纏めて記します。';
-  $pc{'historyNum'} = $i;
+  $pc{historyNum} = $i;
   ## プロフィール追加
   my $profile;
   $profile .= ":身長|$in{'pc_height'}\n";
@@ -443,81 +443,81 @@ sub convertHokanjoToYtsheet {
   $profile .= ":    |$in{'keireki'}[1]\n";
   $profile .= ":    |$in{'keireki'}[2]\n";
   
-  $pc{'freeNote'} = $profile.$in{'pc_making_memo'},
-  $pc{'freeNoteView'} = (tagUnescape tagUnescapeLines $profile).$in{'pc_making_memo'};
-  $pc{'freeNoteView'} =~ s/\r\n?|\n/<br>/g;
+  $pc{freeNote} = $profile.$in{'pc_making_memo'},
+  $pc{freeNoteView} = (tagUnescape tagUnescapeLines $profile).$in{'pc_making_memo'};
+  $pc{freeNoteView} =~ s/\r\n?|\n/<br>/g;
   
   ## チャットパレット
-  $pc{'paletteUseBuff'} = 1;
+  $pc{paletteUseBuff} = 1;
   
   ## 〆
-  $pc{'ver'} = 0;
+  $pc{ver} = 0;
   return %pc;
 }
 ### 旧ゆとシート --------------------------------------------------
 sub convert1to2 {
   my %pc = %{$_[0]};
-  $pc{'convertSource'} = '旧ゆとシート';
+  $pc{convertSource} = '旧ゆとシート';
   
-  $pc{'playerName'} = $pc{'player'};
+  $pc{playerName} = $pc{player};
   
-  $pc{'characterName'} = $pc{'name'};
-  $pc{'aka'} = $pc{'title'};
-  $pc{'words'} = $pc{'word'};
+  $pc{characterName} = $pc{name};
+  $pc{aka} = $pc{title};
+  $pc{words} = $pc{word};
   
-  $pc{'tags'} = $pc{'tag'};
+  $pc{tags} = $pc{tag};
   
-  $pc{'history0Exp'}   = $pc{'make_exp'};
-  $pc{'history0Money'} = $pc{'make_money'};
-  $pc{'history0Honor'} = $pc{'make_honor'};
-  $pc{'sttPreGrowA'} = $pc{'make_grow_A'};
-  $pc{'sttPreGrowB'} = $pc{'make_grow_B'};
-  $pc{'sttPreGrowC'} = $pc{'make_grow_C'};
-  $pc{'sttPreGrowD'} = $pc{'make_grow_D'};
-  $pc{'sttPreGrowE'} = $pc{'make_grow_E'};
-  $pc{'sttPreGrowF'} = $pc{'make_grow_F'};
+  $pc{history0Exp}   = $pc{make_exp};
+  $pc{history0Money} = $pc{make_money};
+  $pc{history0Honor} = $pc{make_honor};
+  $pc{sttPreGrowA} = $pc{make_grow_A};
+  $pc{sttPreGrowB} = $pc{make_grow_B};
+  $pc{sttPreGrowC} = $pc{make_grow_C};
+  $pc{sttPreGrowD} = $pc{make_grow_D};
+  $pc{sttPreGrowE} = $pc{make_grow_E};
+  $pc{sttPreGrowF} = $pc{make_grow_F};
   
   foreach my $key (keys %data::class){
     my $id = $data::class{$key}{'id'};
     $pc{'lv'.$id} = $pc{'lv_'.lc($id)} || '';
   }
-  $pc{'lvSeeker'} = $pc{'lv_seeker'};
-  $pc{'level'} = $pc{'lv'};
+  $pc{lvSeeker} = $pc{lv_seeker};
+  $pc{level} = $pc{lv};
   
   foreach my $i (1..10){ $pc{'commonClass'.$i} = $pc{'common'.$i}; }
   
-  $pc{'race'}   = $pc{'prof_race'};
-  $pc{'gender'} = $pc{'prof_sex'};
-  $pc{'age'}    = $pc{'prof_age'};
-  $pc{'birth'}  = $pc{'prof_birth'};
-  $pc{'sttBaseTec'} = $pc{'stt_base_tec'};
-  $pc{'sttBasePhy'} = $pc{'stt_base_phy'};
-  $pc{'sttBaseSpi'} = $pc{'stt_base_spi'};
-  $pc{'sttBaseA'} = $pc{'stt_base_A'};
-  $pc{'sttBaseB'} = $pc{'stt_base_B'};
-  $pc{'sttBaseC'} = $pc{'stt_base_C'};
-  $pc{'sttBaseD'} = $pc{'stt_base_D'};
-  $pc{'sttBaseE'} = $pc{'stt_base_E'};
-  $pc{'sttBaseF'} = $pc{'stt_base_F'};
-  $pc{'sttGrowA'} = $pc{'stt_grow_A'};
-  $pc{'sttGrowB'} = $pc{'stt_grow_B'};
-  $pc{'sttGrowC'} = $pc{'stt_grow_C'};
-  $pc{'sttGrowD'} = $pc{'stt_grow_D'};
-  $pc{'sttGrowE'} = $pc{'stt_grow_E'};
-  $pc{'sttGrowF'} = $pc{'stt_grow_F'};
-  $pc{'sttAddA'} = s_eval($pc{'stt_rein_A'});
-  $pc{'sttAddB'} = s_eval($pc{'stt_rein_B'});
-  $pc{'sttAddC'} = s_eval($pc{'stt_rein_C'});
-  $pc{'sttAddD'} = s_eval($pc{'stt_rein_D'});
-  $pc{'sttAddE'} = s_eval($pc{'stt_rein_E'});
-  $pc{'sttAddF'} = s_eval($pc{'stt_rein_F'});
+  $pc{race}   = $pc{prof_race};
+  $pc{gender} = $pc{prof_sex};
+  $pc{age}    = $pc{prof_age};
+  $pc{birth}  = $pc{prof_birth};
+  $pc{sttBaseTec} = $pc{stt_base_tec};
+  $pc{sttBasePhy} = $pc{stt_base_phy};
+  $pc{sttBaseSpi} = $pc{stt_base_spi};
+  $pc{sttBaseA} = $pc{stt_base_A};
+  $pc{sttBaseB} = $pc{stt_base_B};
+  $pc{sttBaseC} = $pc{stt_base_C};
+  $pc{sttBaseD} = $pc{stt_base_D};
+  $pc{sttBaseE} = $pc{stt_base_E};
+  $pc{sttBaseF} = $pc{stt_base_F};
+  $pc{sttGrowA} = $pc{stt_grow_A};
+  $pc{sttGrowB} = $pc{stt_grow_B};
+  $pc{sttGrowC} = $pc{stt_grow_C};
+  $pc{sttGrowD} = $pc{stt_grow_D};
+  $pc{sttGrowE} = $pc{stt_grow_E};
+  $pc{sttGrowF} = $pc{stt_grow_F};
+  $pc{sttAddA} = s_eval($pc{stt_rein_A});
+  $pc{sttAddB} = s_eval($pc{stt_rein_B});
+  $pc{sttAddC} = s_eval($pc{stt_rein_C});
+  $pc{sttAddD} = s_eval($pc{stt_rein_D});
+  $pc{sttAddE} = s_eval($pc{stt_rein_E});
+  $pc{sttAddF} = s_eval($pc{stt_rein_F});
   
-  $pc{'pointbuyType'} = '2.0';
+  $pc{pointbuyType} = '2.0';
   
-  $pc{'hpAdd'} = $pc{'stt_rev_hp'};
-  $pc{'mpAdd'} = $pc{'stt_rev_mp'};
-  $pc{'vitResistAdd'} = $pc{'stt_rev_resistv'};
-  $pc{'mndResistAdd'} = $pc{'stt_rev_resistm'};
+  $pc{hpAdd} = $pc{stt_rev_hp};
+  $pc{mpAdd} = $pc{stt_rev_mp};
+  $pc{vitResistAdd} = $pc{stt_rev_resistv};
+  $pc{mndResistAdd} = $pc{stt_rev_resistm};
   
   foreach my $lv (1..20){
     $pc{'combatFeatsLv'.$lv} = $pc{'ability_lv'.$lv};
@@ -546,20 +546,20 @@ sub convert1to2 {
     $pc{'craftDignity'.$lv}    = $pc{'dignity'.$lv};
   }
   
-  $pc{'languageNum'} = $pc{'lgct'};
-  foreach my $i (1 .. $pc{'languageNum'}){
+  $pc{languageNum} = $pc{lgct};
+  foreach my $i (1 .. $pc{languageNum}){
     $pc{"language${i}"}   = $pc{"lang_name$i"};
     $pc{"language${i}Talk"} = $pc{"lang_speak$i"};
     $pc{"language${i}Read"} = $pc{"lang_read$i"};
   }
   
-  $pc{'honorItemsNum'} = $pc{'hnct'};
-  foreach my $i (1 .. $pc{'honorItemsNum'}){
+  $pc{honorItemsNum} = $pc{hnct};
+  foreach my $i (1 .. $pc{honorItemsNum}){
     $pc{"honorItem${i}"}   = $pc{"honor_name$i"};
     $pc{"honorItem${i}Pt"} = $pc{"honor_num$i"};
   }
-  $pc{'dishonorItemsNum'} = $pc{'dhnct'};
-  foreach my $i (1 .. $pc{'dishonorItemsNum'}){
+  $pc{dishonorItemsNum} = $pc{dhnct};
+  foreach my $i (1 .. $pc{dishonorItemsNum}){
     $pc{"dishonorItem${i}"}   = $pc{"dishonor_name$i"};
     $pc{"dishonorItem${i}Pt"} = $pc{"dishonor_num$i"};
   }
@@ -571,41 +571,41 @@ sub convert1to2 {
     elsif($pc{"school$i"} =~ /^ニルデス/){ $pt = -30 }
     else { $pt = 50; }
     if($pt > 0){
-      $pc{'honorItemsNum'}++;
-      $pc{"honorItem".$pc{'honorItemsNum'}} = '入門：【'.($pc{"school$_"."_name"}||$pc{"school$i"}).'】';
-      $pc{"honorItem".$pc{'honorItemsNum'}.'Pt'} = $pt;
+      $pc{honorItemsNum}++;
+      $pc{"honorItem".$pc{honorItemsNum}} = '入門：【'.($pc{"school$_"."_name"}||$pc{"school$i"}).'】';
+      $pc{"honorItem".$pc{honorItemsNum}.'Pt'} = $pt;
       
-      if($pc{'school1_expulsion'}){
-        $pc{'dishonorItemsNum'}++;
-        $pc{"dishonorItem".$pc{'dishonorItemsNum'}} = '破門：【'.($pc{"school$_"."_name"}||$pc{"school$i"}).'】';
-        $pc{"dishonorItem".$pc{'dishonorItemsNum'}.'Pt'} = $pt;
+      if($pc{school1_expulsion}){
+        $pc{dishonorItemsNum}++;
+        $pc{"dishonorItem".$pc{dishonorItemsNum}} = '破門：【'.($pc{"school$_"."_name"}||$pc{"school$i"}).'】';
+        $pc{"dishonorItem".$pc{dishonorItemsNum}.'Pt'} = $pt;
       }
     }
     elsif($pt < 0){
-      $pc{'dishonorItemsNum'}++;
-      $pc{"dishonorItem".$pc{'dishonorItemsNum'}} = '入門：【'.($pc{"school$_"."_name"}||$pc{"school$i"}).'】';
-      $pc{"dishonorItem".$pc{'dishonorItemsNum'}.'Pt'} = $pt;
+      $pc{dishonorItemsNum}++;
+      $pc{"dishonorItem".$pc{dishonorItemsNum}} = '入門：【'.($pc{"school$_"."_name"}||$pc{"school$i"}).'】';
+      $pc{"dishonorItem".$pc{dishonorItemsNum}.'Pt'} = $pt;
     }
     
     foreach(my $n = 1; $n <= $pc{'school'.$i.'_mystery_num'}; $n++){
       if($pc{'school'.$i.'_mystery'.$n}){
-        $pc{'mysticArtsNum'}++;
-        $pc{'mysticArts'.$pc{'mysticArtsNum'}} = $pc{'school'.$i.'_mystery'.$n};
-        $pc{'mysticArts'.$pc{'mysticArtsNum'}.'Pt'} = $pc{'school'.$i.'_mystery'.$n.'_honor'};
+        $pc{mysticArtsNum}++;
+        $pc{'mysticArts'.$pc{mysticArtsNum}} = $pc{'school'.$i.'_mystery'.$n};
+        $pc{'mysticArts'.$pc{mysticArtsNum}.'Pt'} = $pc{'school'.$i.'_mystery'.$n.'_honor'};
       }
     }
     foreach(my $n = 1; $n <= 3; $n++){
       if($pc{'school'.$i.'_weapon'.$n}){
-        $pc{'honorItemsNum'}++;
-        $pc{'honorItem'.$pc{'honorItemsNum'}} = $pc{'school'.$i.'_weapon'.$n};
-        $pc{'honorItem'.$pc{'honorItemsNum'}.'Pt'} = $pc{'school'.$i.'_weapon'.$n.'_honor'};
+        $pc{honorItemsNum}++;
+        $pc{'honorItem'.$pc{honorItemsNum}} = $pc{'school'.$i.'_weapon'.$n};
+        $pc{'honorItem'.$pc{honorItemsNum}.'Pt'} = $pc{'school'.$i.'_weapon'.$n.'_honor'};
       }
     }
   }
   
   
-  $pc{'weaponNum'} = $pc{'bkct'};
-  foreach my $i (1 .. $pc{'weaponNum'}){
+  $pc{weaponNum} = $pc{bkct};
+  foreach my $i (1 .. $pc{weaponNum}){
     $pc{"weapon${i}Name"}     = $pc{"wpn_name$i"};
     $pc{"weapon${i}Usage"}    = $pc{"wpn_usage$i"};
     $pc{"weapon${i}Reqd"}     = $pc{"wpn_weight$i"};
@@ -626,25 +626,25 @@ sub convert1to2 {
     if($pc{"weapon${i}Class"} =~ s/sho+mag/シューター/){ $pc{"weapon${i}Category"} = 'ガン'; }
   }
   
-  $pc{'evasionClass'} = $pc{'avoid_skill'};
-  $pc{'armour1Name'} = $pc{'amr_name'};
-  $pc{'armour1Reqd'} = $pc{'amr_weight'};
-  $pc{'armour1Eva'}  = s_eval($pc{'amr_avoid'});
-  $pc{'armour1Def'}  = s_eval($pc{'amr_defense'});
-  $pc{'armour1Own'}  = $pc{'amr_person'};
-  $pc{'armour1Note'} = $pc{'amr_note'};
-  $pc{'shield1Name'} = $pc{'sld_name'};
-  $pc{'shield1Reqd'} = $pc{'sld_weight'};
-  $pc{'shield1Eva'}  = s_eval($pc{'sld_avoid'});
-  $pc{'shield1Def'}  = s_eval($pc{'sld_defense'});
-  $pc{'shield1Own'}  = $pc{'sld_person'};
-  $pc{'shield1Note'} = $pc{'sld_note'};
-  $pc{'defOther1Name'} = $pc{'def_other_name'};
-  $pc{'defOther1Eva'} = s_eval($pc{'def_other_avoid'});
-  $pc{'defOther1Def'} = s_eval($pc{'def_other_defense'});
-  $pc{'defOther1Note'} = $pc{'def_other_note'};
+  $pc{evasionClass} = $pc{avoid_skill};
+  $pc{armour1Name} = $pc{amr_name};
+  $pc{armour1Reqd} = $pc{amr_weight};
+  $pc{armour1Eva}  = s_eval($pc{amr_avoid});
+  $pc{armour1Def}  = s_eval($pc{amr_defense});
+  $pc{armour1Own}  = $pc{amr_person};
+  $pc{armour1Note} = $pc{amr_note};
+  $pc{shield1Name} = $pc{sld_name};
+  $pc{shield1Reqd} = $pc{sld_weight};
+  $pc{shield1Eva}  = s_eval($pc{sld_avoid});
+  $pc{shield1Def}  = s_eval($pc{sld_defense});
+  $pc{shield1Own}  = $pc{sld_person};
+  $pc{shield1Note} = $pc{sld_note};
+  $pc{defOther1Name} = $pc{def_other_name};
+  $pc{defOther1Eva} = s_eval($pc{def_other_avoid});
+  $pc{defOther1Def} = s_eval($pc{def_other_defense});
+  $pc{defOther1Note} = $pc{def_other_note};
   
-  $pc{"defTotal1CheckArmour1"} = $pc{"defTotal1CheckShield1"} = $pc{"defTotal1CheckDefOther1"} = $pc{"defTotal1CheckDefOther2"} = $pc{"defTotal1CheckDefOther3"} = 1;
+  $pc{defTotal1CheckArmour1} = $pc{defTotal1CheckShield1} = $pc{defTotal1CheckDefOther1} = $pc{defTotal1CheckDefOther2} = $pc{defTotal1CheckDefOther3} = 1;
   
   foreach my $i ("Head","Face","Ear","Neck","Back","Waist","Leg","Other","Other2","Other3","Other4") {
     $pc{"accessory${i}Name"} = $pc{"acc_name_".lc($i)};
@@ -655,60 +655,60 @@ sub convert1to2 {
     $pc{"accessory${i}_Own"}  = $pc{"acc_person_".lc($i)."+"};
     $pc{"accessory${i}_Note"} = $pc{"acc_note_".lc($i)."+"};
   }
-  $pc{"accessoryHandRName"} = $pc{"acc_name_hand1"};
-  $pc{"accessoryHandRAdd"}  = $pc{"acc_add_hand1"};
-  $pc{"accessoryHandROwn"}  = $pc{"acc_person_hand1"};
-  $pc{"accessoryHandRNote"} = $pc{"acc_note_hand1"};
-  $pc{"accessoryHandR_Name"} = $pc{"acc_name_hand1+"};
-  $pc{"accessoryHandR_Own"}  = $pc{"acc_person_hand1+"};
-  $pc{"accessoryHandR_Note"} = $pc{"acc_note_hand1+"};
-  $pc{"accessoryHandLName"} = $pc{"acc_name_hand2"};
-  $pc{"accessoryHandLAdd"}  = $pc{"acc_add_hand2"};
-  $pc{"accessoryHandLOwn"}  = $pc{"acc_person_hand1"};
-  $pc{"accessoryHandLNote"} = $pc{"acc_note_hand2"};
-  $pc{"accessoryHandL_Name"} = $pc{"acc_name_hand2+"};
-  $pc{"accessoryHandL_Own"}  = $pc{"acc_person_hand2+"};
-  $pc{"accessoryHandL_Note"} = $pc{"acc_note_hand2+"};
+  $pc{accessoryHandRName} = $pc{acc_name_hand1};
+  $pc{accessoryHandRAdd}  = $pc{acc_add_hand1};
+  $pc{accessoryHandROwn}  = $pc{acc_person_hand1};
+  $pc{accessoryHandRNote} = $pc{acc_note_hand1};
+  $pc{accessoryHandR_Name} = $pc{"acc_name_hand1+"};
+  $pc{accessoryHandR_Own}  = $pc{"acc_person_hand1+"};
+  $pc{accessoryHandR_Note} = $pc{"acc_note_hand1+"};
+  $pc{accessoryHandLName} = $pc{acc_name_hand2};
+  $pc{accessoryHandLAdd}  = $pc{acc_add_hand2};
+  $pc{accessoryHandLOwn}  = $pc{acc_person_hand1};
+  $pc{accessoryHandLNote} = $pc{acc_note_hand2};
+  $pc{accessoryHandL_Name} = $pc{"acc_name_hand2+"};
+  $pc{accessoryHandL_Own}  = $pc{"acc_person_hand2+"};
+  $pc{accessoryHandL_Note} = $pc{"acc_note_hand2+"};
   
   
-  $pc{'fairyContractEarth'} = $pc{'fairy_class1'};
-  $pc{'fairyContractWater'} = $pc{'fairy_class2'};
-  $pc{'fairyContractFire'}  = $pc{'fairy_class3'};
-  $pc{'fairyContractWind'}  = $pc{'fairy_class4'};
-  $pc{'fairyContractLight'} = $pc{'fairy_class5'};
-  $pc{'fairyContractDark'}  = $pc{'fairy_class6'};
+  $pc{fairyContractEarth} = $pc{fairy_class1};
+  $pc{fairyContractWater} = $pc{fairy_class2};
+  $pc{fairyContractFire}  = $pc{fairy_class3};
+  $pc{fairyContractWind}  = $pc{fairy_class4};
+  $pc{fairyContractLight} = $pc{fairy_class5};
+  $pc{fairyContractDark}  = $pc{fairy_class6};
   
-  $pc{'historyNum'} = $pc{'hsct'};
-  foreach my $i (1 .. $pc{'historyNum'}){
+  $pc{historyNum} = $pc{hsct};
+  foreach my $i (1 .. $pc{historyNum}){
     $pc{"history${i}Exp"}   = $pc{"hist_exp$i"};
     $pc{"history${i}Money"} = $pc{"hist_money$i"};
     $pc{"history${i}Honor"} = $pc{"hist_honor$i"};
   }
   
-  $pc{'items'} = $pc{'text_items'};
-  $pc{'items'} .= "\n------------------------------------\n".$pc{'text_original'} if $pc{'text_original'};
-  $pc{'freeNote'} = $pc{'text_free'};
-  $pc{'freeHistory'} = $pc{'text_history'};
+  $pc{items} = $pc{text_items};
+  $pc{items} .= "\n------------------------------------\n".$pc{text_original} if $pc{text_original};
+  $pc{freeNote} = $pc{text_free};
+  $pc{freeHistory} = $pc{text_history};
   
-  $pc{'deposit'} = $pc{'money_save'};
+  $pc{deposit} = $pc{money_save};
   
-  $pc{'paletteUseBuff'} = 1;
+  $pc{paletteUseBuff} = 1;
 
-  $pc{'ver'} = 0;
+  $pc{ver} = 0;
   return %pc;
 }
 ### 旧ゆとシート --------------------------------------------------
 sub convertMto2 {
   my %pc = %{$_[0]};
-  $pc{'convertSource'} = '旧ゆとシートM';
+  $pc{convertSource} = '旧ゆとシートM';
   
-  $pc{'auther'} = $pc{'作成者'};
+  $pc{auther} = $pc{'作成者'};
   
-  $pc{'characterName'} = $pc{'名前'};
-  $pc{'monsterName'} = $pc{'名称'};
+  $pc{characterName} = $pc{'名前'};
+  $pc{monsterName} = $pc{'名称'};
   
-  $pc{'lv'} = $pc{'レベル'};
-  $pc{'taxa'} = $pc{'種別'} ==  1 ? '蛮族'
+  $pc{lv} = $pc{'レベル'};
+  $pc{taxa} = $pc{'種別'} ==  1 ? '蛮族'
               : $pc{'種別'} ==  2 ? '動物'
               : $pc{'種別'} ==  3 ? '植物'
               : $pc{'種別'} ==  4 ? 'アンデッド'
@@ -721,28 +721,28 @@ sub convertMto2 {
               : $pc{'種別'} == 11 ? 'その他'
               : '';
 
-  $pc{'intellect'}   = $pc{'知能'};
-  $pc{'perception'}  = $pc{'知覚'};
-  $pc{'disposition'} = $pc{'反応'};
-  $pc{'language'}    = $pc{'言語'};
-  $pc{'habitat'}     = $pc{'生息地'};
-  $pc{'reputation'}  = $pc{'知名度'};
+  $pc{intellect}   = $pc{'知能'};
+  $pc{perception}  = $pc{'知覚'};
+  $pc{disposition} = $pc{'反応'};
+  $pc{language}    = $pc{'言語'};
+  $pc{habitat}     = $pc{'生息地'};
+  $pc{reputation}  = $pc{'知名度'};
   $pc{'reputation+'} = $pc{'弱点値'};
-  $pc{'weakness'}    = $pc{'弱点'};
-  $pc{'initiative'}  = $pc{'先制値'};
-  $pc{'mobility'}    = $pc{'移動速度'};
-  $pc{'vitResist'}   = s_eval $pc{'生命抵抗力'};
-  $pc{'mndResist'}   = s_eval $pc{'精神抵抗力'};
-  $pc{'vitResistFix'}= $pc{'vitResist'}+7;
-  $pc{'mndResistFix'}= $pc{'mndResist'}+7;
-  if($pc{'taxa'} eq 'アンデッド'){ $pc{'sin'} = 5; }
+  $pc{weakness}    = $pc{'弱点'};
+  $pc{initiative}  = $pc{'先制値'};
+  $pc{mobility}    = $pc{'移動速度'};
+  $pc{vitResist}   = s_eval $pc{'生命抵抗力'};
+  $pc{mndResist}   = s_eval $pc{'精神抵抗力'};
+  $pc{vitResistFix}= $pc{vitResist}+7;
+  $pc{mndResistFix}= $pc{mndResist}+7;
+  if($pc{taxa} eq 'アンデッド'){ $pc{sin} = 5; }
   
-  $pc{'partsNum'} = $pc{'部位数'};
-  $pc{'parts'} = $pc{'部位内訳'};
-  $pc{'coreParts'} = $pc{'コア'};
+  $pc{partsNum} = $pc{'部位数'};
+  $pc{parts} = $pc{'部位内訳'};
+  $pc{coreParts} = $pc{'コア'};
   
-  $pc{'statusNum'} = $pc{'stct'};
-  foreach my $i (1 .. $pc{'statusNum'}){
+  $pc{statusNum} = $pc{stct};
+  foreach my $i (1 .. $pc{statusNum}){
     $pc{"status${i}Style"}    = $pc{'方法'.$i};
     $pc{"status${i}Accuracy"} = s_eval $pc{'命中'.$i};
     $pc{"status${i}AccuracyFix"} = $pc{"status${i}Accuracy"}+7;
@@ -754,25 +754,25 @@ sub convertMto2 {
     $pc{"status${i}Mp"}       = $pc{'ＭＰ'.$i};
   }
   
-  foreach my $i (1 .. $pc{'tkct'}){
-    $pc{'skills'} .= "●$pc{'特部'.$i}\n";
-    $pc{'skills'} .= "$pc{'能力'.$i}\n\n\n";
+  foreach my $i (1 .. $pc{tkct}){
+    $pc{skills} .= "●$pc{'特部'.$i}\n";
+    $pc{skills} .= "$pc{'能力'.$i}\n\n\n";
   }
   if(!$::SW2_0){
-    $pc{'skills'} =~ s/(^|&lt;br&gt;)([○◯〆☆]*)[▽▼]/$1$2○/gim;
+    $pc{skills} =~ s/(^|&lt;br&gt;)([○◯〆☆]*)[▽▼]/$1$2○/gim;
   }
-  $pc{'skills'} =~ s/\n\n$//;
+  $pc{skills} =~ s/\n\n$//;
   
-  $pc{'lootsNum'} = $pc{'srct'};
-  foreach my $i (1 .. $pc{'lootsNum'}){
+  $pc{lootsNum} = $pc{srct};
+  foreach my $i (1 .. $pc{lootsNum}){
     $pc{"loots${i}Num"} .= $pc{'剥出目'.$i};
     $pc{"loots${i}Item"} .= $pc{'戦利品'.$i};
   }
   
-  $pc{'description'} = $pc{'解説'};
+  $pc{description} = $pc{'解説'};
 
-  $pc{'type'} = 'm';
-  $pc{'ver'} = 0;
+  $pc{type} = 'm';
+  $pc{ver} = 0;
   return %pc;
 }
 ## タグ：全角スペース・英数を半角に変換 --------------------------------------------------

@@ -20,42 +20,42 @@ our @class_caster = (
 );
 
 ### 技能詳細データ --------------------------------------------------
-$data::class{'スカウト'}{'package'} = {
-  'Dex' => { 'name' => '器用', 'stt' => 'A' },
-  'Agi' => { 'name' => '敏捷', 'stt' => 'B', 'initiative' => 1 },
-  'Int' => { 'name' => '知力', 'stt' => 'E' },
+$data::class{'スカウト'}{package} = {
+  Dex => { name => '器用', stt => 'A' },
+  Agi => { name => '敏捷', stt => 'B', initiative => 1 },
+  Int => { name => '知力', stt => 'E' },
 };
-$data::class{'レンジャー'}{'package'} = {
-  'Dex' => { 'name' => '器用', 'stt' => 'A' },
-  'Agi' => { 'name' => '敏捷', 'stt' => 'B' },
-  'Int' => { 'name' => '知力', 'stt' => 'E' },
+$data::class{'レンジャー'}{package} = {
+  Dex => { name => '器用', stt => 'A' },
+  Agi => { name => '敏捷', stt => 'B' },
+  Int => { name => '知力', stt => 'E' },
 };
-$data::class{'セージ'}{'package'} = {
-  'Int' => { 'name' => '知力', 'stt' => 'E', 'monsterLore' => 1 },
+$data::class{'セージ'}{package} = {
+  Int => { name => '知力', stt => 'E', monsterLore => 1 },
 };
-$data::class{'バード'}{'package'} = {
-  'Int' => { 'name' => '見識', 'stt' => 'E' },
+$data::class{'バード'}{package} = {
+  Int => { name => '見識', stt => 'E' },
 };
-$data::class{'ライダー'}{'package'} = {
-  'Agi' => { 'name' => '敏捷', 'stt' => 'B' },
-  'Int' => { 'name' => '知力', 'stt' => 'E', 'monsterLore' => 1 },
+$data::class{'ライダー'}{package} = {
+  Agi => { name => '敏捷', stt => 'B' },
+  Int => { name => '知力', stt => 'E', monsterLore => 1 },
 };
-$data::class{'アルケミスト'}{'package'} = {
-  'Int' => { 'name' => '知力', 'stt' => 'E' },
+$data::class{'アルケミスト'}{package} = {
+  Int => { name => '知力', stt => 'E' },
 };
-$data::class{'ジオマンサー'}{'package'} = {
-  'Int' => { 'name' => '知力', 'stt' => 'E' },
+$data::class{'ジオマンサー'}{package} = {
+  Int => { name => '知力', stt => 'E' },
 };
 $data::class{'ウィザード'} = {
-  'expTable' => '',
-  'id'       => 'Wiz',
-  'eName'    => 'wizard',
-  'magic' => {
-    'jName' => '深智魔法',
-    'eName' => 'wizardry',
+  expTable => '',
+  id       => 'Wiz',
+  eName    => 'wizard',
+  magic => {
+    jName => '深智魔法',
+    eName => 'wizardry',
   },
 };
-$data::class{'バード'}{'craft'}{'data'} = [
+$data::class{'バード'}{craft}{data} = [
   [ 1,'アーリーバード'],
   [ 1,'アンビエント'],
   [ 1,'サモン・スモールアニマル'],
@@ -90,7 +90,7 @@ $data::class{'バード'}{'craft'}{'data'} = [
   [16,'ヒム'],
   [16,'リラックス'],
 ];
-$data::class{'ライダー'}{'craft'}{'data'} = [
+$data::class{'ライダー'}{craft}{data} = [
   [ 1,'威嚇'],
   [ 1,'遠隔指示'],
   [ 1,'騎獣強化'],
@@ -127,7 +127,7 @@ $data::class{'ライダー'}{'craft'}{'data'} = [
   [16,'零距離突撃','ケンタウロス専用'],
   [16,'スーパートランプル','ケンタウロス専用'],
 ];
-$data::class{'アルケミスト'}{'craft'}{'data'} = [
+$data::class{'アルケミスト'}{craft}{data} = [
   [ 1,'インスタントウェポン',''],
   [ 1,'ヴォーパルウェポン',''],
   [ 1,'クラッシュファング',''],
@@ -159,7 +159,7 @@ $data::class{'アルケミスト'}{'craft'}{'data'} = [
   [16,'ライフステイシス',''],
   [16,'マテリアルブレイク',''],
 ];
-$data::class{'ウォーリーダー'}{'craft'}{'data'} = [
+$data::class{'ウォーリーダー'}{craft}{data} = [
   [1,'神速の構え',''],
   [1,'堅陣の構え',''],
   [1,'怒濤の攻陣Ⅰ',''],
@@ -212,38 +212,38 @@ $data::class{'ウォーリーダー'}{'craft'}{'data'} = [
   [16,'鉄壁の防陣Ⅴ：要塞',''],
   [16,'強靭なる丈陣Ⅴ：不滅',''],
 ];
-$data::class{'ソーサラー'      }{'magic'}{'trancendOnly'} = 1;
-$data::class{'コンジャラー'    }{'magic'}{'trancendOnly'} = 1;
-$data::class{'ウィザード'      }{'magic'}{'trancendOnly'} = 1;
-$data::class{'プリースト'      }{'magic'}{'trancendOnly'} = 1;
-$data::class{'マギテック'      }{'magic'}{'trancendOnly'} = 1;
-$data::class{'デーモンルーラー'}{'magic'}{'trancendOnly'} = 1;
-$data::class{'ソーサラー'}{'magic'}{'data'} = [
+$data::class{'ソーサラー'      }{magic}{trancendOnly} = 1;
+$data::class{'コンジャラー'    }{magic}{trancendOnly} = 1;
+$data::class{'ウィザード'      }{magic}{trancendOnly} = 1;
+$data::class{'プリースト'      }{magic}{trancendOnly} = 1;
+$data::class{'マギテック'      }{magic}{trancendOnly} = 1;
+$data::class{'デーモンルーラー'}{magic}{trancendOnly} = 1;
+$data::class{'ソーサラー'}{magic}{data} = [
   [16,'デュアル・インパクト'],
   [16,'フィクス・エンチャントメント'],
   [16,'マナ・バースト'],
 ];
-$data::class{'コンジャラー'}{'magic'}{'data'} = [
+$data::class{'コンジャラー'}{magic}{data} = [
   [16,'アース・ヒールⅢ'],
   [16,'テンポラリィ・リザレクション'],
   [16,'プリセット・ドール'],
 ];
-$data::class{'ウィザード'}{'magic'}{'data'} = [
+$data::class{'ウィザード'}{magic}{data} = [
   [16,'スペル・エンハンスⅡ'],
   [16,'ユースレス・マテリアル'],
   [16,'ハイパー・レジスタンス'],
 ];
-$data::class{'プリースト'}{'magic'}{'data'} = [
+$data::class{'プリースト'}{magic}{data} = [
   [16,'ゴッド・ストンプ'],
   [16,'バトルソングⅡ'],
   [16,'ホーリー・ブレッシングⅡ'],
 ];
-$data::class{'マギテック'}{'magic'}{'data'} = [
+$data::class{'マギテック'}{magic}{data} = [
   [16,'アドバンスド・ボム'],
   [16,'リープレンジ・ショット'],
   [16,'リフレッシュ・バレット'],
 ];
-$data::class{'デーモンルーラー'}{'magic'}{'data'} = [
+$data::class{'デーモンルーラー'}{magic}{data} = [
   [16,'ガルムゲート'],
   [16,'デモンズグレイヴ'],
   [16,'ブラッドジェイル'],

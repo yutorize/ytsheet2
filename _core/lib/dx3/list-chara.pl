@@ -7,8 +7,8 @@ use HTML::Template;
 
 my $LOGIN_ID = check;
 
-my $mode = $::in{'mode'};
-my $sort = $::in{'sort'};
+my $mode = $::in{mode};
+my $sort = $::in{sort};
 
 ### テンプレート読み込み #############################################################################
 my $INDEX;
@@ -34,7 +34,7 @@ foreach (keys %::in) {
   $::in{$_} =~ s/</&lt;/g;
   $::in{$_} =~ s/>/&gt;/g;
 }
-if(!($mode eq 'mylist' || $::in{'tag'} || $::in{'group'} || $::in{'name'} || $::in{'player'} || $::in{'exp-min'} || $::in{'exp-max'} || $::in{'syndrome'} || $::in{'breed'} || $::in{'works'} || $::in{'dlois'} || $::in{'sign'} || $::in{'image'})){
+if(!($mode eq 'mylist' || $::in{tag} || $::in{group} || $::in{name} || $::in{player} || $::in{'exp-min'} || $::in{'exp-max'} || $::in{syndrome} || $::in{breed} || $::in{works} || $::in{dlois} || $::in{sign} || $::in{image})){
   $index_mode = 1;
   $INDEX->param(modeIndex => 1);
   $INDEX->param(simpleList => 1) if $set::simplelist;
@@ -92,35 +92,35 @@ if($mode eq 'mylist'){
 elsif (
      !($set::masterid && $set::masterid eq $LOGIN_ID)
   && !($mode eq 'mylist')
-  && !$::in{'tag'}
+  && !$::in{tag}
 ){
   @list = grep { !(split(/<>/))[18] } @list;
 }
 
 ## グループ検索
-my $group_query = $::in{'group'};
+my $group_query = $::in{group};
 my %groups = groupArrayToHash();
-$groups{'all'}{'name'} = 'すべて' if $::in{'group'} eq 'all';
+$groups{all}{name} = 'すべて' if $::in{group} eq 'all';
 $INDEX->param(Groups => groupArrayToList $group_query);
 
-if($group_query && $::in{'group'} ne 'all') {
+if($group_query && $::in{group} ne 'all') {
   if($group_query eq $set::group_default){ @list = grep { $_ =~ /^(?:[^<]*?<>){6}(\Q$group_query\E)?</ } @list; }
   else { @list = grep { $_ =~ /^(?:[^<]*?<>){6}\Q$group_query\E</ } @list; }
 }
-$INDEX->param(group => $groups{$group_query}{'name'});
+$INDEX->param(group => $groups{$group_query}{name});
 
 ## タグ検索
-my $tag_query = pcTagsEscape(decode('utf8', $::in{'tag'}));
+my $tag_query = pcTagsEscape(decode('utf8', $::in{tag}));
 if($tag_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){17}[^<]*? \Q$tag_query\E / } @list; }
 $INDEX->param(tag => $tag_query);
 
 ## 名前検索
-my $name_query = decode('utf8', $::in{'name'});
+my $name_query = decode('utf8', $::in{name});
 if($name_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){4}[^<]*?\Q$name_query\E/i } @list; }
 $INDEX->param(name => $name_query);
 
 ## PL名検索
-my $pl_query = decode('utf8', $::in{'player'});
+my $pl_query = decode('utf8', $::in{player});
 if($pl_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){5}[^<]*?\Q$pl_query\E/i } @list; }
 $INDEX->param(player => $pl_query);
 
@@ -137,31 +137,31 @@ elsif($exp_min_query || $exp_max_query){ $exp_query = $exp_min_query.'～'.$exp_
 $INDEX->param(exp => $exp_query);
 
 ## ワークス検索
-my $works_query = decode('utf8', $::in{'works'});
+my $works_query = decode('utf8', $::in{works});
 if($works_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){12}[^<]*?\Q$works_query\E/ } @list; }
 $INDEX->param(works => $works_query);
 
 ## ブリード検索
 my $breed_text;
-if($::in{'breed'}){
-  if   ($::in{'breed'} == 1){ @list = grep { $_ =~ "^(?:[^<]*?<>){13}[^/]+?//<"             } @list; $INDEX->param(breedSelected1 => 'selected'); $breed_text = 'ピュア'; }
-  elsif($::in{'breed'} == 2){ @list = grep { $_ =~ "^(?:[^<]*?<>){13}[^/]+?/[^/]+?/<"       } @list; $INDEX->param(breedSelected2 => 'selected'); $breed_text = 'クロス'; }
-  elsif($::in{'breed'} == 3){ @list = grep { $_ =~ "^(?:[^<]*?<>){13}[^/]+?/[^/]+?/[^<]+?<" } @list; $INDEX->param(breedSelected3 => 'selected'); $breed_text = 'トライ'; }
+if($::in{breed}){
+  if   ($::in{breed} == 1){ @list = grep { $_ =~ "^(?:[^<]*?<>){13}[^/]+?//<"             } @list; $INDEX->param(breedSelected1 => 'selected'); $breed_text = 'ピュア'; }
+  elsif($::in{breed} == 2){ @list = grep { $_ =~ "^(?:[^<]*?<>){13}[^/]+?/[^/]+?/<"       } @list; $INDEX->param(breedSelected2 => 'selected'); $breed_text = 'クロス'; }
+  elsif($::in{breed} == 3){ @list = grep { $_ =~ "^(?:[^<]*?<>){13}[^/]+?/[^/]+?/[^<]+?<" } @list; $INDEX->param(breedSelected3 => 'selected'); $breed_text = 'トライ'; }
 }
 $INDEX->param(breedText => $breed_text);
 
 ## シンドローム検索
-my @syndrome_query = split('\s', decode('utf8', $::in{'syndrome'}));
+my @syndrome_query = split('\s', decode('utf8', $::in{syndrome}));
 foreach my $q (@syndrome_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){13}[^<]*?\Q$q\E/ } @list; }
 $INDEX->param(syndrome => "@syndrome_query");
 
 ## Dロイス検索
-my @dlois_query = split('\s', decode('utf8', $::in{'dlois'}));
+my @dlois_query = split('\s', decode('utf8', $::in{dlois}));
 foreach my $q (@dlois_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){14}[^<]*?\Q$q\E/ } @list; }
 $INDEX->param(dlois => "@dlois_query");
 
 ## 星座検索
-my $sign_query = decode('utf8', $::in{'sign'});
+my $sign_query = decode('utf8', $::in{sign});
 if($sign_query) {
   if   ($sign_query =~ /山羊|磨羯|やぎ/       ){ $sign_query = "山羊|磨羯|やぎ";        $INDEX->param(sign => "山羊座（磨羯宮）"); }
   elsif($sign_query =~ /水瓶|宝瓶|みずがめ/   ){ $sign_query = "水瓶|宝瓶|みずがめ";    $INDEX->param(sign => "水瓶座（宝瓶宮）"); }
@@ -182,11 +182,11 @@ if($sign_query) {
 }
 
 ## 画像フィルタ
-if($::in{'image'} == 1) {
+if($::in{image} == 1) {
   @list = grep { $_ =~ /^(?:[^<]*?<>){16}[^<0]/ } @list;
   $INDEX->param(image => 1);
 }
-elsif($::in{'image'} eq 'N') {
+elsif($::in{image} eq 'N') {
   @list = grep { $_ !~ /^(?:[^<]*?<>){16}[^<0]/ } @list;
   $INDEX->param(image => 1);
 }
@@ -202,7 +202,7 @@ sub sortName { $_[0] =~ s/^“.*”//; return $_[0]; }
 ### リストを回す --------------------------------------------------
 my %count; my %pl_flag;
 my %grouplist;
-my $page = $::in{'page'} ? $::in{'page'} : 1;
+my $page = $::in{page} ? $::in{page} : 1;
 my $pagestart = $page * $set::pagemax - $set::pagemax;
 my $pageend   = $page * $set::pagemax - 1;
 foreach (@list) {
@@ -215,17 +215,17 @@ foreach (@list) {
   
   #グループ
   $group = $set::group_default if (!$group || !$groups{$group});
-  $group = 'all' if $::in{'group'} eq 'all';
+  $group = 'all' if $::in{group} eq 'all';
   
   #カウント
-  $count{'PC'}{$group}++;
-  $count{'PL'}{$group}++ if !$pl_flag{$group}{$player};
+  $count{PC}{$group}++;
+  $count{PL}{$group}++ if !$pl_flag{$group}{$player};
   $pl_flag{$group}{$player} = 1;
 
   #表示域以外は弾く
   if (
-    ( $index_mode && $count{'PC'}{$group} > $set::list_maxline && $set::list_maxline) || #TOPページ
-    (!$index_mode && $set::pagemax && ($count{'PC'}{$group} < $pagestart || $count{'PC'}{$group} > $pageend)) #それ以外
+    ( $index_mode && $count{PC}{$group} > $set::list_maxline && $set::list_maxline) || #TOPページ
+    (!$index_mode && $set::pagemax && ($count{PC}{$group} < $pagestart || $count{PC}{$group} > $pageend)) #それ以外
   ){
     next;
   }
@@ -298,11 +298,11 @@ foreach (@list) {
 
 ### 出力用配列 --------------------------------------------------
 my @characterlists;
-foreach (sort {$groups{$a}{'sort'} <=> $groups{$b}{'sort'}} keys %grouplist){
+foreach (sort {$groups{$a}{sort} <=> $groups{$b}{sort}} keys %grouplist){
   ## ページネーション
   my $navbar;
-  if($set::pagemax && !$index_mode && $::in{'group'}){
-    my $lastpage = ceil($count{'PC'}{$_} / $set::pagemax);
+  if($set::pagemax && !$index_mode && $::in{group}){
+    my $lastpage = ceil($count{PC}{$_} / $set::pagemax);
     foreach(1 .. $lastpage){
       if($_ == $page){
         $navbar .= '<b>'.$_.'</b> ';
@@ -312,7 +312,7 @@ foreach (sort {$groups{$a}{'sort'} <=> $groups{$b}{'sort'}} keys %grouplist){
         $_ == 1 ||
         $_ == $lastpage
       ){
-        $navbar .= '<a href="./?group='.$::in{'group'}.$q_links.'&page='.$_.'&sort='.$::in{'sort'}.'">'.$_.'</a> '
+        $navbar .= '<a href="./?group='.$::in{group}.$q_links.'&page='.$_.'&sort='.$::in{sort}.'">'.$_.'</a> '
       }
       else { $navbar .= '...' }
     }
@@ -323,10 +323,10 @@ foreach (sort {$groups{$a}{'sort'} <=> $groups{$b}{'sort'}} keys %grouplist){
   ##
   push(@characterlists, {
     "ID" => $_,
-    "NAME" => $groups{$_}{'name'},
-    "TEXT" => $groups{$_}{'text'},
-    "NUM-PC" => $count{'PC'}{$_},
-    "NUM-PL" => $count{'PL'}{$_},
+    "NAME" => $groups{$_}{name},
+    "TEXT" => $groups{$_}{text},
+    "NUM-PC" => $count{PC}{$_},
+    "NUM-PL" => $count{PL}{$_},
     "Characters" => [@{$grouplist{$_}}],
     "NAV" => $navbar,
   });
