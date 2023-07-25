@@ -258,7 +258,7 @@ sub data_calc {
   }
   if($pc{raceAbility} =~ /［魔法の申し子］/){
     $pc{raceAbilityMagicPower} += 1;
-    if($pc{level} >= 11){ $pc{raceAbilityDef} += 2; }
+    if($pc{level} >= 11){ $pc{raceAbilityMagicPower} += 1; }
   }
   if($pc{raceAbility} =~ /［(神の御名と共に|神への礼賛|神への祈り)］/){
     if($pc{level} >=  6){ $pc{raceAbilityMagicPowerPri} += 1; }
