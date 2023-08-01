@@ -21,7 +21,7 @@
           名前　：<input type="text" name="name" value="<TMPL_VAR name>"><br>
           ＰＬ名：<input type="text" name="player" value="<TMPL_VAR player>"><br>
           タグ　：<input type="text" name="tag" value="<TMPL_VAR tag>"><br>
-          種族　：<input type="text" name="race" value="<TMPL_VAR race>"><br>
+          種族　：<select name="race"><option value="">すべて<TMPL_LOOP RaceList><TMPL_IF LABEL><optgroup label="<TMPL_VAR LABEL>"><TMPL_ELSE><option value="<TMPL_VAR NAME>" <TMPL_VAR SELECTED>><TMPL_VAR NAME></TMPL_IF></TMPL_LOOP></select><br>
           経験点：<input type="number" name="exp-min" value="<TMPL_VAR expMin>" style="width:6em;"> ～ <input type="number" name="exp-max" value="<TMPL_VAR expMax>" style="width:6em;"><br>
           技能　：<input type="text" name="class" value="<TMPL_VAR class>"><br>
           信仰　：<input type="text" name="faith" value="<TMPL_VAR faith>"><br>

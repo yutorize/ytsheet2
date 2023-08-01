@@ -14,6 +14,7 @@ $ENV{HTML_TEMPLATE_ROOT} = $::core_dir;
 
 ### データ読み込み ###################################################################################
 require $set::data_class;
+require $set::data_races;
 
 ### テンプレート読み込み #############################################################################
 my $INDEX;
@@ -130,8 +131,48 @@ $INDEX->param(player => $pl_query);
 
 ## 種族検索
 my $race_query = decode('utf8', $::in{race});
-if($race_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){9}\Q$race_query\E/ } @list; }
+if($race_query) {
+  $race_query =~ s/（通常種）$/</;
+  @list = grep { $_ =~ /^(?:[^<]*?<>){9}\Q$race_query\E/ } @list;
+}
 $INDEX->param(race => $race_query);
+my @race_search_list;
+foreach (@data::race_names){
+  if($_ =~ s/^label=//){
+    push(@race_search_list, {
+      LABEL => $_,
+    });
+  }
+  else {
+    push(@race_search_list, {
+      NAME => $_,
+      SELECTED => ($_ eq $race_query) ? 'selected' : '',
+    });
+  }
+
+  if($data::races{$_}{variant}){
+    if($data::races{$_}{ability}){
+      push(@race_search_list, {
+        NAME => $_.'（通常種）',
+        SELECTED => ($_ eq $race_query.'（通常種）') ? 'selected' : '',
+      });
+    }
+    foreach my $varname (@{ $data::races{$_}{variantSort} }){ 
+      push(@race_search_list, {
+        NAME => $_."（$varname）",
+        SELECTED => ($_ eq $race_query."（$varname）") ? 'selected' : '',
+      });
+    }
+  }
+}
+push(@race_search_list, {
+  LABEL => 'その他',
+},
+{
+  NAME => 'その他',
+  SELECTED => ('その他' eq $race_query) ? 'selected' : '',
+});
+$INDEX->param(RaceList => \@race_search_list);
 
 ## 経験点検索
 my $exp_min_query = $::in{'exp-min'};
