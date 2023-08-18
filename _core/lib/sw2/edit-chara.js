@@ -321,6 +321,28 @@ function checkRace(){
     if(level >= 16){ raceAbilityDef += 2; }
     document.getElementById("race-ability-def-name").textContent = 'トロールの体躯';
   }
+  if(raceAbilities.includes('見えざる手')){
+    document.getElementById("accessory-rowOther2").style.display = '';
+    document.getElementById("accessory-rowOther3").style.display = (level >=  6) ? '' : 'none';
+    document.getElementById("accessory-rowOther4").style.display = (level >= 16) ? '' : 'none';
+    addAccessory('Other2');
+    addAccessory('Other2_');
+    addAccessory('Other3');
+    addAccessory('Other3_');
+    addAccessory('Other4');
+    addAccessory('Other4_');
+  }
+  else {
+    document.getElementById("accessory-rowOther2"  ).style.display = 
+    document.getElementById("accessory-rowOther2_" ).style.display = 
+    document.getElementById("accessory-rowOther2__").style.display = 
+    document.getElementById("accessory-rowOther3"  ).style.display = 
+    document.getElementById("accessory-rowOther3_" ).style.display = 
+    document.getElementById("accessory-rowOther3__").style.display = 
+    document.getElementById("accessory-rowOther4"  ).style.display = 
+    document.getElementById("accessory-rowOther4_" ).style.display = 
+    document.getElementById("accessory-rowOther4__").style.display = 'none';
+  }
   checkLanguage();
   setLanguageDefault();
 }
@@ -1534,8 +1556,8 @@ function calcCash(){
 }
 
 // 装飾品欄 ----------------------------------------
-function addAccessory(check,name){
-  if(check.checked) {
+function addAccessory(name){
+  if(form[`accessory${name}Add`].checked) {
     document.querySelector(`#accessories [data-type="${name}_"]`).style.display = '';
   }
   else {

@@ -1094,9 +1094,9 @@ foreach (
   my $show;
   my $addbase = @$_[1];
      $addbase =~ s/_//;
-  if   (@$_[0] eq '他2' &&  $pc{race} ne 'レプラカーン')                     { $show = 0; }
-  elsif(@$_[0] eq '他3' && ($pc{race} ne 'レプラカーン' || $pc{level} < 6)){ $show = 0; }
-  elsif(@$_[0] eq '他4' && ($pc{race} ne 'レプラカーン' || $pc{level} <16)){ $show = 0; }
+  if   (@$_[0] eq '他2' &&  $pc{raceAbility} !~ '［見えざる手］')                    { $show = 0; }
+  elsif(@$_[0] eq '他3' && ($pc{raceAbility} !~ '［見えざる手］' || $pc{level} <  6)){ $show = 0; }
+  elsif(@$_[0] eq '他4' && ($pc{raceAbility} !~ '［見えざる手］' || $pc{level} < 16)){ $show = 0; }
   elsif(@$_[0] =~ /┗/  && !$pc{'accessory'.$addbase.'Add'}){ $show = 0; }
   else { $show = 1; }
   print '  <tr id="accessory-row'.@$_[1].'" data-type="'.@$_[1].'" '.display($show).">\n";
@@ -1105,7 +1105,7 @@ foreach (
     print '  <input type="checkbox"' .
           " name=\"accessory@$_[1]Add\" value=\"1\"" .
           ($pc{"accessory@$_[1]Add"}?' checked' : '') .
-          " onChange=\"addAccessory(this,'@$_[1]')\">";
+          " onChange=\"addAccessory('@$_[1]')\">";
   }
   print "</td>\n";
   print <<"HTML";

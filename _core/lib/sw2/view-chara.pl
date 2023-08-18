@@ -814,6 +814,9 @@ else {
     ["他4","Other4"], ["┗","Other4_"], ["┗","Other4__"],
   ){
     next if !$pc{'accessory'.@$_[1].'Name'} && !$pc{'accessory'.@$_[1].'Note'};
+    next if (@$_[1] =~ /Other2/ &&  $pc{raceAbility} !~ /［見えざる手］/);
+    next if (@$_[1] =~ /Other3/ && ($pc{raceAbility} !~ '［見えざる手］' || $pc{level} <  6));
+    next if (@$_[1] =~ /Other4/ && ($pc{raceAbility} !~ '［見えざる手］' || $pc{level} < 16));
     push(@accessories, {
       TYPE => @$_[0],
       NAME => $pc{'accessory'.@$_[1].'Name'},
