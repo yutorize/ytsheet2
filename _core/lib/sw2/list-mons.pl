@@ -202,9 +202,9 @@ elsif($sort eq 'parts') { my @tmp = map { (split /<>/)[17] } @list; @list = @lis
 ### リストを回す --------------------------------------------------
 my %count;
 my %grouplist;
-my $page = $::in{page} ? $::in{page} : 1;
-my $pagestart = $page * $set::pagemax - $set::pagemax;
-my $pageend   = $page * $set::pagemax - 1;
+my $page = $::in{page} || 1;
+my $pagestart = $page * $set::pagemax - $set::pagemax + 1;
+my $pageend   = $page * $set::pagemax;
 foreach (@list) {
   my (
     $id, undef, undef, $updatetime, $name, $author, $taxa, $lv,

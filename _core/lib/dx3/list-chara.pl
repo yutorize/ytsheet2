@@ -202,9 +202,9 @@ sub sortName { $_[0] =~ s/^“.*”//; return $_[0]; }
 ### リストを回す --------------------------------------------------
 my %count; my %pl_flag;
 my %grouplist;
-my $page = $::in{page} ? $::in{page} : 1;
-my $pagestart = $page * $set::pagemax - $set::pagemax;
-my $pageend   = $page * $set::pagemax - 1;
+my $page = $::in{page} || 1;
+my $pagestart = $page * $set::pagemax - $set::pagemax + 1;
+my $pageend   = $page * $set::pagemax;
 foreach (@list) {
   my (
     $id, undef, undef, $updatetime, $name, $player, $group, #0-6

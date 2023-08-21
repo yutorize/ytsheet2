@@ -138,9 +138,9 @@ elsif($sort eq 'date')  { my @tmp = map { (split /<>/)[3] } @list; @list = @list
 ### リストを回す --------------------------------------------------
 my %count;
 my %grouplist;
-my $page = $::in{page} ? $::in{page} : 1;
-my $pagestart = $page * $set::pagemax - $set::pagemax;
-my $pageend   = $page * $set::pagemax - 1;
+my $page = $::in{page} || 1;
+my $pagestart = $page * $set::pagemax - $set::pagemax + 1;
+my $pageend   = $page * $set::pagemax;
 foreach (@list) {
   my (
     $id, undef, undef, $updatetime, $name, $author, $category, $sub, $summary,
