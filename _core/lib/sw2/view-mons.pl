@@ -247,7 +247,7 @@ else {
 ### OGP --------------------------------------------------
 $SHEET->param(ogUrl => url().($::in{url} ? "?url=$::in{url}" : "?id=$::in{id}"));
 #if($pc{image}) { $SHEET->param(ogImg => url()."/".$imgsrc); }
-$SHEET->param(ogDescript => "レベル:$pc{lv}　分類:$pc{taxa}".($pc{partsNum}>1?"　部位数:$pc{partsNum}":'')."　知名度:$pc{reputation}／$pc{'reputation+'}");
+$SHEET->param(ogDescript => tagDelete "レベル:$pc{lv}　分類:$pc{taxa}".($pc{partsNum}>1?"　部位数:$pc{partsNum}":'')."　知名度:$pc{reputation}／$pc{'reputation+'}");
 
 ### バージョン等 --------------------------------------------------
 $SHEET->param(ver => $::ver);

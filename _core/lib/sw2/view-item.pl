@@ -106,7 +106,7 @@ if($::in{url}){
 $SHEET->param(magic => ($pc{magic} ? "<img class=\"i-icon\" src=\"${set::icon_dir}wp_magic.png\">" : ''));
 
 ### カテゴリ --------------------------------------------------
-$pc{category} =~ s/[ 　]/<hr>/g;
+$pc{category} =~ s/((?:\G|>)[^<]*?)[ 　]/$1<hr>/g;
 $SHEET->param(category => $pc{category});
 
 ### 武器 --------------------------------------------------
