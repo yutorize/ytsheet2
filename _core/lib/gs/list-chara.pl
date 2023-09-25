@@ -332,7 +332,7 @@ my @characterlists;
 foreach (sort {$groups{$a}{sort} <=> $groups{$b}{sort}} keys %grouplist){
   ## ページネーション
   my $navbar;
-  if($set::pagemax && !$index_mode && $::in{group}){
+  if($set::pagemax && !$index_mode){
     my $lastpage = ceil($count{PC}{$_} / $set::pagemax);
     foreach(1 .. $lastpage){
       if($_ == $page){
@@ -343,7 +343,10 @@ foreach (sort {$groups{$a}{sort} <=> $groups{$b}{sort}} keys %grouplist){
         $_ == 1 ||
         $_ == $lastpage
       ){
-        $navbar .= '<a href="./?group='.$::in{group}.$q_links.'&page='.$_.'&sort='.$::in{sort}.'">'.$_.'</a> '
+        my $query = 'page='.$_.'&sort='.$::in{sort};
+        $query .= $q_links if $q_links;
+        $query .= '&group='.$::in{group} if $::in{group};
+        $navbar .= '<a href="./?'.$query.'">'.$_.'</a> ';
       }
       else { $navbar .= '...' }
     }
