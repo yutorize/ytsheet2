@@ -418,6 +418,24 @@ $SHEET->param(Magics => \@magics);
 
 ### コンボ --------------------------------------------------
 my @combos;
+sub optimizeOperand {
+  my $expression = shift;
+  while (1) {
+    if ($expression =~ /\+\+/) {
+      $expression =~ s/\+\+/\+/;
+    }
+    elsif ($expression =~ /\+-/) {
+      $expression =~ s/\+-/-/;
+    }
+    elsif ($expression =~ /-\+/) {
+      $expression =~ s/-\+/-/;
+    }
+    else {
+      last;
+    }
+  }
+  return $expression;
+}
 foreach (1 .. $pc{comboNum}){
   next if(
     !$pc{'combo'.$_.'Name'}  && !$pc{'combo'.$_.'Combo'}    && !$pc{'combo'.$_.'Timing'} &&
@@ -441,30 +459,30 @@ foreach (1 .. $pc{comboNum}){
     ENCROACH => textShrink(3,4,4,4,$pc{'combo'.$_.'Encroach'}),
     NOTE     => $pc{'combo'.$_.'Note'},
     CONDITION1 => $pc{'combo'.$_.'Condition1'},
-    DICE1      => $pc{'combo'.$_.'Dice1'},
+    DICE1      => optimizeOperand($pc{'combo'.$_.'Dice1'}),
     CRIT1      => $pc{'combo'.$_.'Crit1'},
     ATK1       => $pc{'combo'.$_.'Atk1'},
-    FIXED1     => $pc{'combo'.$_.'Fixed1'},
+    FIXED1     => optimizeOperand($pc{'combo'.$_.'Fixed1'}),
     CONDITION2 => $pc{'combo'.$_.'Condition2'},
-    DICE2      => $pc{'combo'.$_.'Dice2'},
+    DICE2      => optimizeOperand($pc{'combo'.$_.'Dice2'}),
     CRIT2      => $pc{'combo'.$_.'Crit2'},
     ATK2       => $pc{'combo'.$_.'Atk2'},
-    FIXED2     => $pc{'combo'.$_.'Fixed2'},
+    FIXED2     => optimizeOperand($pc{'combo'.$_.'Fixed2'}),
     CONDITION3 => $pc{'combo'.$_.'Condition3'},
-    DICE3      => $pc{'combo'.$_.'Dice3'},
+    DICE3      => optimizeOperand($pc{'combo'.$_.'Dice3'}),
     CRIT3      => $pc{'combo'.$_.'Crit3'},
     ATK3       => $pc{'combo'.$_.'Atk3'},
-    FIXED3     => $pc{'combo'.$_.'Fixed3'},
+    FIXED3     => optimizeOperand($pc{'combo'.$_.'Fixed3'}),
     CONDITION4 => $pc{'combo'.$_.'Condition4'},
-    DICE4      => $pc{'combo'.$_.'Dice4'},
+    DICE4      => optimizeOperand($pc{'combo'.$_.'Dice4'}),
     CRIT4      => $pc{'combo'.$_.'Crit4'},
     ATK4       => $pc{'combo'.$_.'Atk4'},
-    FIXED4     => $pc{'combo'.$_.'Fixed4'},
+    FIXED4     => optimizeOperand($pc{'combo'.$_.'Fixed4'}),
     CONDITION5 => $pc{'combo'.$_.'Condition5'},
-    DICE5      => $pc{'combo'.$_.'Dice5'},
+    DICE5      => optimizeOperand($pc{'combo'.$_.'Dice5'}),
     CRIT5      => $pc{'combo'.$_.'Crit5'},
     ATK5       => $pc{'combo'.$_.'Atk5'},
-    FIXED5     => $pc{'combo'.$_.'Fixed5'},
+    FIXED5     => optimizeOperand($pc{'combo'.$_.'Fixed5'}),
     BLANKROW   => $blankrow,
   });
 }
