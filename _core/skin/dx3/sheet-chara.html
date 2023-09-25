@@ -217,8 +217,10 @@
                 <th colspan="2" class="right">／変異暴走
                 <td colspan="2" class="left"><TMPL_VAR lifepathUrgeNote></td>
               </TMPL_IF>
+            <TMPL_IF hasEncroachOffset>
             <tbody>
               <tr><th class="right small">その他の修正<td class="center"><TMPL_VAR lifepathOtherEncroach><td class="left"><TMPL_VAR lifepathOtherNote>
+            </TMPL_IF>
             <tbody>
               <tr><th class="right">侵蝕率基本値<td class="center bold"><TMPL_VAR baseEncroach>
             </tbody>
