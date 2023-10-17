@@ -37,10 +37,9 @@ foreach (keys %::in) {
   $::in{$_} =~ s/</&lt;/g;
   $::in{$_} =~ s/>/&gt;/g;
 }
-if(!($::in{tag} || $::in{taxa} || $::in{mount} || $::in{name} || $::in{'lv-max'} || $::in{'lv-min'} || $::in{'parts-max'} || $::in{'parts-min'} || $::in{intellect} || $::in{perception} || $::in{disposition} || $::in{habitat} || $::in{weakness})){
+if(!($mode eq 'mylist' || $::in{tag} || $::in{taxa} || $::in{mount} || $::in{name} || $::in{'lv-max'} || $::in{'lv-min'} || $::in{'parts-max'} || $::in{'parts-min'} || $::in{intellect} || $::in{perception} || $::in{disposition} || $::in{habitat} || $::in{weakness})){
   $index_mode = 1;
-  $INDEX->param(modeIndex  => $mode eq 'mylist' ? 0 : 1);
-  $INDEX->param(simpleList => $mode eq 'mylist' ? 0 : 1) if $set::simplelist;
+  $INDEX->param(modeIndex => 1);
 }
 if(!$::in{taxa} && $mode ne 'mylist'){ $INDEX->param(modeTaxaAll => 1); }
 my @q_links;
@@ -107,14 +106,17 @@ if($::in{mount}) {
   if($taxa_query eq 'all'){ $taxa_query = '' }
   @list = grep { $_ =~ /^(?:[^<]*?<>){6}騎獣／\Q$taxa_query\E/ } @list;
 }
-elsif($taxa_query eq 'その他') {
-  @list = grep { $_ =~ /^(?:[^<]*?<>){6}その他/ } @list;
-}
-elsif($taxa_query && $taxa_query ne 'all') {
-  @list = grep { $_ =~ /^(?:[^<]*?<>){6}\Q$taxa_query\E</ } @list;
+elsif($taxa_query) {
+  @list = grep { $_ !~ /^(?:[^<]*?<>){6}騎獣／/ } @list;
+  if($taxa_query eq 'その他') {
+    @list = grep { $_ =~ /^(?:[^<]*?<>){6}その他/ } @list;
+  }
+  elsif($taxa_query ne 'all') {
+    @list = grep { $_ =~ /^(?:[^<]*?<>){6}\Q$taxa_query\E</ } @list;
+  }
 }
 if($::in{mount}){ $INDEX->param(group => '騎獣'.($taxa_query?"／$taxa_query":'')      ); }
-else              { $INDEX->param(group => $taxa_query eq 'all' ? 'すべて' : $taxa_query); }
+else            { $INDEX->param(group => $taxa_query eq 'all' ? 'すべて' : $taxa_query); }
 $INDEX->param(mount => $::in{mount} ? 'checked' : '');
 my @taxalist;
 foreach (sort { $a->[1] cmp $b->[1] } @data::taxa){
@@ -276,41 +278,54 @@ my @taxa = $index_mode || ($taxa_query && $taxa_query ne 'all') ? @data::taxa : 
 foreach (@taxa,['騎獣', 'XX' , '']){
   my $name = $_->[0];
   next if !$count{$name};
-  
-  ## ページネーション
-  my $navbar;
-  if($set::pagemax && !$index_mode && $::in{taxa}){
-    my $lastpage = ceil($count{$name} / $set::pagemax);
-    foreach(1 .. $lastpage){
-      if($_ == $page){
-        $navbar .= '<b>'.$_.'</b> ';
-      }
-      elsif(
-        ($_ <= $page + 4 && $_ >= $page - 4) ||
-        $_ == 1 ||
-        $_ == $lastpage
-      ){
-        $navbar .= '<a href="./?type=m&taxa='.uri_escape_utf8($taxa_query||'all').$q_links.'&page='.$_.'&sort='.$::in{sort}.'">'.$_.'</a> '
-      }
-      else { $navbar .= '...' }
-    }
-    $navbar =~ s/\.{3,}/... /g;
-  }
-  $navbar = '<div class="navbar">'.$navbar.'</div>' if $navbar;
 
-  ##
   my $urltaxa;
   if($name eq '騎獣'){
-    if($taxa_query){ $urltaxa = uri_escape_utf8($taxa_query); }
+    if($taxa_query && $taxa_query ne 'all'){ $urltaxa = uri_escape_utf8($name); }
     else { $urltaxa = 'all'; }
+    if(!$::in{mount}){ $urltaxa .= '&mount=1' }
+  }
+  elsif($name eq 'すべて'){
+    $urltaxa = 'all';
   }
   else {
     $urltaxa = uri_escape_utf8($name);
   }
-  if($name eq '騎獣' && !$::in{mount}){ $urltaxa .= '&mount=1' }
+  
+  ## ページネーション
+  my $navbar;
+  if($set::pagemax && (!$index_mode && $::in{taxa}) || $mode eq 'mylist'){
+    my $lastpage = ceil($count{$name} / $set::pagemax);
+    if($lastpage > 1){
+      foreach(1 .. $lastpage){
+        if($_ == $page){
+          $navbar .= '<b>'.$_.'</b> ';
+        }
+        elsif(
+          ($_ <= $page + 4 && $_ >= $page - 4) ||
+          $_ == 1 ||
+          $_ == $lastpage
+        ){
+          $navbar .= '<a href="./?type=m&taxa='.$urltaxa.$q_links.'&page='.$_.'&sort='.$::in{sort}.'">'.$_.'</a> '
+        }
+        else { $navbar .= '...' }
+      }
+      $navbar =~ s/\.{3,}/... /g;
+    }
+    $navbar = '<div class="navbar">'.$navbar.'</div>' if $navbar;
+  }
+
+  my $text;
+  if($name eq 'すべて'){ $text = '騎獣以外のすべての魔物' }
+  if($name eq '騎獣'){
+    if($taxa_query){ $text = "／$taxa_query" }
+    else { $text = 'すべての騎獣' }
+  }
+
+  ##
   push(@characterlists, {
     "URL" => 'taxa='.$urltaxa,
-    "NAME" => $name,
+    "NAME" => "$name <small>$text</small>",
     "NUM" => $count{$name},
     "MOUNT" => ($name eq '騎獣' ? 1 : 0),
     "Characters" => ($grouplist{$name} ? [@{$grouplist{$name}}] : []),

@@ -252,37 +252,39 @@ foreach (@list) {
 }
 
 ### 出力用配列 --------------------------------------------------
-my @characterlists; 
-foreach (sort {$groups{$a}{sort} <=> $groups{$b}{sort}} keys %grouplist){
+my @characterlists;
+foreach my $id (sort {$groups{$a}{sort} <=> $groups{$b}{sort}} keys %grouplist){
   ## ページネーション
   my $navbar;
-  if($set::pagemax && !$index_mode && $::in{group}){
-    my $lastpage = ceil($count{PC}{$_} / $set::pagemax);
-    foreach(1 .. $lastpage){
-      if($_ == $page){
-        $navbar .= '<b>'.$_.'</b> ';
+  if($set::pagemax && !$index_mode && ($::in{group} || $mode eq 'mylist')){
+    my $lastpage = ceil($count{PC}{$id} / $set::pagemax);
+    if($lastpage > 1){
+      foreach(1 .. $lastpage){
+        if($_ == $page){
+          $navbar .= '<b>'.$_.'</b> ';
+        }
+        elsif(
+          ($_ <= $page + 4 && $_ >= $page - 4) ||
+          $_ == 1 ||
+          $_ == $lastpage
+        ){
+          $navbar .= '<a href="./?group='.$id.$q_links.'&page='.$_.'&sort='.$::in{sort}.'">'.$_.'</a> '
+        }
+        else { $navbar .= '...' }
       }
-      elsif(
-        ($_ <= $page + 4 && $_ >= $page - 4) ||
-        $_ == 1 ||
-        $_ == $lastpage
-      ){
-        $navbar .= '<a href="./?group='.$::in{group}.$q_links.'&page='.$_.'&sort='.$::in{sort}.'">'.$_.'</a> '
-      }
-      else { $navbar .= '...' }
+      $navbar =~ s/\.{3,}/... /g;
     }
-    $navbar =~ s/\.{3,}/... /g;
+    $navbar = '<div class="navbar">'.$navbar.'</div>' if $navbar;
   }
-  $navbar = '<div class="navbar">'.$navbar.'</div>' if $navbar;
   
   ##
   push(@characterlists, {
-    "ID" => $_,
-    "NAME" => $groups{$_}{name},
-    "TEXT" => $groups{$_}{text},
-    "NUM-PC" => $count{PC}{$_},
-    "NUM-PL" => $count{PL}{$_},
-    "Characters" => [@{$grouplist{$_}}],
+    "ID" => $id,
+    "NAME" => $groups{$id}{name},
+    "TEXT" => $groups{$id}{text},
+    "NUM-PC" => $count{PC}{$id},
+    "NUM-PL" => $count{PL}{$id},
+    "Characters" => [@{$grouplist{$id}}],
     "NAV" => $navbar,
   });
 }

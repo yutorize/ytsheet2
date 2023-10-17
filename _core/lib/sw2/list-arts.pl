@@ -201,24 +201,26 @@ foreach my $id ('magic','god','school'){
 
   ## ページネーション
   my $navbar;
-  if($set::pagemax && !$index_mode && $::in{category}){
+  if($set::pagemax && !$index_mode && ($::in{category} || $mode eq 'mylist')){
     my $lastpage = ceil($count{$id} / $set::pagemax);
-    foreach(1 .. $lastpage){
-      if($_ == $page){
-        $navbar .= '<b>'.$_.'</b> ';
+    if($lastpage > 1){
+      foreach(1 .. $lastpage){
+        if($_ == $page){
+          $navbar .= '<b>'.$_.'</b> ';
+        }
+        elsif(
+          ($_ <= $page + 4 && $_ >= $page - 4) ||
+          $_ == 1 ||
+          $_ == $lastpage
+        ){
+          $navbar .= '<a href="./?type=a&category='.$id.$q_links.'&page='.$_.'&sort='.$::in{sort}.'">'.$_.'</a> '
+        }
+        else { $navbar .= '...' }
       }
-      elsif(
-        ($_ <= $page + 4 && $_ >= $page - 4) ||
-        $_ == 1 ||
-        $_ == $lastpage
-      ){
-        $navbar .= '<a href="./?type=a&category='.$::in{category}.$q_links.'&page='.$_.'&sort='.$::in{sort}.'">'.$_.'</a> '
-      }
-      else { $navbar .= '...' }
+      $navbar =~ s/\.{3,}/... /g;
     }
-    $navbar =~ s/\.{3,}/... /g;
+    $navbar = '<div class="navbar">'.$navbar.'</div>' if $navbar;
   }
-  $navbar = '<div class="navbar">'.$navbar.'</div>' if $navbar;
 
   ##
   push(@characterlists, {
