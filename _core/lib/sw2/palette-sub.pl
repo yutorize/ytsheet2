@@ -284,9 +284,7 @@ sub palettePreset {
           next if $::pc{lvMag} < $bullet->{lv};
           next if $bullet->{h} && $::pc{'weapon'.$_.'Usage'} !~ /$bullet->{h}/;
           $text .= "k$bullet->{p}\[";
-          $text .= "(" if $bot{BCD};
-          $text .= "$::pc{'weapon'.$_.'Crit'}$bullet->{c}";
-          $text .= ")" if $bot{BCD};
+          $text .= "13";
           $text .= "\]+{追加D$_}+{回復量修正}";
           $text .= " 回復量";
           $text .= "\n";
