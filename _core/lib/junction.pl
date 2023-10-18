@@ -4,7 +4,7 @@ use strict;
 use utf8;
 use Encode;
 
-our $ver = "1.23.004";
+our $ver = "1.24.003";
 
 our %in;
 for (param()){ $in{$_} = param($_); }
@@ -24,7 +24,7 @@ elsif($mode eq 'passchange'){
 }
 elsif($mode eq 'login')   {
   if($in{id}) { &log_in($in{id},$in{password}); }  #ログイン
-  else        { require $set::lib_form; }                  #ログインフォーム
+  else        { require $set::lib_form; }          #ログインフォーム
 }
 elsif($mode eq 'reminder')   {
   if($in{mail}) { require $set::lib_reminder; }  #IDリマインダ

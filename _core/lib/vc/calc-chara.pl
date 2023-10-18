@@ -21,7 +21,7 @@ sub data_calc {
   foreach my $num (0 .. $pc{itemsNum  }){ $pc{resultPoint} -= $pc{"item${num}Cost"}; }
 
   ### 能力値 --------------------------------------------------
-  $pc{staminaMax} = $pc{vitality} + $pc{staminaAdd};
+  $pc{staminaMax} = 5 + $pc{vitality} + $pc{staminaAdd};
   $pc{staminaHalf} = int($pc{staminaMax} / 2);
 
   foreach my $stt ('Acc','Spl','Eva','Atk','Det','Def','Mdf','Ini','Str'){

@@ -33,7 +33,7 @@ function changeRegu(){
 
 // 能力値 ----------------------------------------
 function calcStatus(){
-  const stamina = Number(form.vitality.value) + Number(form.staminaAdd.value);
+  const stamina = 5 + Number(form.vitality.value) + Number(form.staminaAdd.value);
   document.getElementById('stamina-value').textContent = stamina;
   document.getElementById('stamina-half' ).textContent = parseInt(stamina / 2);
 }
