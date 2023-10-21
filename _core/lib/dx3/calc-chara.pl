@@ -20,6 +20,7 @@ sub data_calc {
   ### 能力値 --------------------------------------------------
   my %status = (0=>'body', 1=>'sense', 2=>'mind', 3=>'social');
   $pc{expUsedStatus} = 0;
+  $pc{fpUsedStatus}  = 0;
   foreach my $num (keys %status){
     my $name = $status{$num};
     my $Name = ucfirst $name;
@@ -35,8 +36,10 @@ sub data_calc {
     # 経験点
     for (my $i = $base; $i < $base+$pc{'sttGrow'.$Name}; $i++){
       $pc{expUsedStatus} += ($i > 20) ? 30 : ($i > 10) ? 20 : 10;
+      $pc{fpUsedStatus}++;
     }
   }
+  if($pc{fpUsedStatus} > 3){ $pc{fpUsedStatus} = 3 }
   ### 副能力値 --------------------------------------------------
   $pc{maxHpTotal}      = $pc{sttTotalBody}  * 2 + $pc{sttTotalMind} + 20 + $pc{maxHpAdd};
   $pc{initiativeTotal} = $pc{sttTotalSense} * 2 + $pc{sttTotalMind} + $pc{initiativeAdd};
@@ -73,9 +76,12 @@ sub data_calc {
       $skill_name_to_id{$pc{'skill'.$name.$num.'Name'}} = $name.$num if $pc{'skill'.$name.$num.'Name'};
     }
   }
+  $pc{fpUsedSkill} = $pc{expUsedSkill} / 2;
+  if($pc{fpUsedSkill} > 5){ $pc{fpUsedSkill} = 5 }
   
   ### エフェクト --------------------------------------------------
   $pc{expUsedEffect} = 0;
+  $pc{fpUsedEffect}  = 0;
   foreach my $num (1 .. $pc{effectNum}){
     my $type = $pc{'effect'.$num.'Type'};
     my $lv = $pc{'effect'.$num.'Lv'};
@@ -87,11 +93,22 @@ sub data_calc {
       # 通常
       else {
         $pc{expUsedEffect} += $lv * 5 + 10; #lv×5 + 新規取得の差分10
-        if($type =~ /^(auto|dlois)$/i){ $pc{expUsedEffect} += -15; } #自動かDロイスは新規取得ぶん減らす
+        if($type =~ /^(auto|dlois)$/i){
+          $pc{expUsedEffect} += -15; #自動かDロイスは新規取得ぶん減らす
+          if($pc{createType} eq 'C' && $pc{'effect'.$num.'Name'} =~ /^コンセントレイト/ && $lv >= 2){
+            $pc{expUsedEffect} += -5;
+          }
+        }
+        else {
+          $pc{fpUsedEffect}++;
+        }
       }
     }
     $pc{expUsedEffect} += $pc{'effect'.$num.'Exp'};
   }
+  if($pc{fpUsedEffect} > 4){ $pc{fpUsedEffect} = 4 }
+  $pc{fpUsedEffectLv} = ($pc{expUsedEffect} - $pc{fpUsedEffect}*15) / 5;
+  if($pc{fpUsedEffectLv} > 2){ $pc{fpUsedEffectLv} = 2 }
 
   ### 術式 --------------------------------------------------
   $pc{expUsedMagic} = 0;
@@ -173,15 +190,25 @@ sub data_calc {
 
   ### 経験点 --------------------------------------------------
   ## 履歴から 
-  $pc{expTotal} = $pc{history0Exp};
+  $pc{expTotal} = $set::make_exp + $pc{history0Exp};
   foreach my $i (1 .. $pc{historyNum}){
     $pc{expTotal} += s_eval($pc{"history${i}Exp"}) if $pc{"history${i}ExpApply"};
   }
-
+  $pc{expSpent} = $pc{expTotal} - 130;
+  $pc{expBase} = 130;
+  ## コンストラクション
+  if($pc{createType} eq 'C'){
+    $pc{expTotal} = $pc{expSpent};
+    $pc{expBase} = '';
+    if($pc{expUsedStatus} <= 30) { $pc{expUsedStatus} = 0 } else { $pc{expUsedStatus} -= 30 }
+    if($pc{expUsedSkill}  <= 10) { $pc{expUsedSkill}  = 0 } else { $pc{expUsedSkill}  -= 10 }
+    if($pc{expUsedEffect} <= 70) { $pc{expUsedEffect} = 0 } else { $pc{expUsedEffect} -= 70 }
+  }
   ## 経験点消費
-  $pc{expRest} = $pc{expTotal};
   $pc{expUsed} = $pc{expUsedStatus} + $pc{expUsedSkill} + $pc{expUsedEffect} + $pc{expUsedMagic} + $pc{expUsedItem} + $pc{expUsedMemory};
-  $pc{expRest} -= $pc{expUsed};
+  $pc{expRest} = $pc{expTotal} - $pc{expUsed};
+
+  $pc{createTypeName} = ($pc{createType} eq 'C') ? 'コンストラクション' : 'フルスクラッチ';
 
   ### 0を消去 --------------------------------------------------
   foreach (
@@ -238,7 +265,8 @@ sub data_calc {
   }
   $::newline = "$pc{id}<>$::file<>".
                "$pc{birthTime}<>$::now<>$charactername<>$pc{playerName}<>$pc{group}<>".
-               "$pc{expTotal}<>$pc{gender}<>$pc{age}<>$pc{sign}<>$pc{blood}<>$pc{works}<>".
+               (130+$pc{expSpent}).
+               "<>$pc{gender}<>$pc{age}<>$pc{sign}<>$pc{blood}<>$pc{works}<>".
                
                synCheck($pc{syndrome1}).'/'.
                synCheck($pc{syndrome2}).'/'.

@@ -50,6 +50,11 @@ sub data_update_chara {
       $pc{'sttBase'.@$_[1]} += $pc{syndrome2} ? $base2 : $base1;
     }
   }
+  if($ver < 1.24004){
+    $pc{history0Exp} -= 130;
+    $pc{expSpent} = $pc{expTotal} - 130;
+    $pc{createTypeName} = 'フルスクラッチ';
+  }
   $pc{ver} = $main::ver;
   $pc{lasttimever} = $ver;
   return %pc;

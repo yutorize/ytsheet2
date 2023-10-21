@@ -2,17 +2,42 @@
 
 /* // キャラクター
 ---------------------------------------------------------------------------------------------------- */
+body:not([data-create-type="C"]) .construction-only {
+  display: none;
+}
+body:not([data-create-type="F"]) .fullscratch-only {
+  display: none;
+}
+
 #regulation dl {
-  grid-template-columns: max-content 14em max-content 6em 1fr;
+  grid-template-columns: max-content 1fr;
 }
 #regulation dl dt {
-  grid-row: 1;
+  grid-column: 1;
+  grid-row: auto;
   padding-left: .5em;
-  align-self: center;
+  padding-right: .2em;
+  line-height: 1.8;
+  align-self: start;
+  text-align: right;
 }
 #regulation dl dd {
-  grid-row: 1;
+  grid-column: 2;
+  grid-row: auto;
   font-size: 1.2rem;
+  align-self: start;
+  text-align: left;
+}
+#regulation dl dd label {
+  margin-left: 2px;
+  font-size: inherit;
+  line-height: inherit;
+}
+#regulation dl dd input[name=history0Exp] {
+  width: 5em;
+}
+#regulation dl dd input[name=stage] {
+  width: 16em;
 }
 
 #area-status {
@@ -643,6 +668,13 @@ body:not(.mode-crc) .crc-only {
 
 #combo .combo-table .combo-out dt.combo-dice   { grid-column: 2 / span 2; }
 #combo .combo-table .combo-out dt.combo-fixed  { grid-column: 5 / span 2; }
+
+#combo .combo-table .combo-out dt {
+  align-self: center;
+}
+#combo .combo-table .combo-out dt.combo-fixed {
+  line-height: 1;
+}
 
 #combo .combo-table .combo-out .combo-cond .combo-condition-utility {
   width: 1.5rem;

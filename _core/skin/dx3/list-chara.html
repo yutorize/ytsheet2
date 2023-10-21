@@ -5,7 +5,7 @@
         <TMPL_IF name>：名前「<TMPL_VAR name>」を含む</TMPL_IF>
         <TMPL_IF player>：ＰＬ名「<TMPL_VAR player>」を含む</TMPL_IF>
         <TMPL_IF tag>：タグ「<TMPL_VAR tag>」</TMPL_IF>
-        <TMPL_IF exp>：経験点「<TMPL_VAR exp>」</TMPL_IF>
+        <TMPL_IF exp>：消費経験点「+<TMPL_VAR exp>」</TMPL_IF>
         <TMPL_IF breedText>：ブリード「<TMPL_VAR breedText>」</TMPL_IF>
         <TMPL_IF syndrome>：シンドローム「<TMPL_VAR syndrome>」</TMPL_IF>
         <TMPL_IF dlois>：Dロイス「<TMPL_VAR dlois>」</TMPL_IF>
@@ -22,7 +22,7 @@
           名前　：<input type="text" name="name" value="<TMPL_VAR name>"><br>
           ＰＬ名：<input type="text" name="player" value="<TMPL_VAR player>"><br>
           タグ　：<input type="text" name="tag" value="<TMPL_VAR tag>"><br>
-          経験点：<input type="number" name="exp-min" value="<TMPL_VAR expMin>" style="width:6em;"> ～ <input type="number" name="exp-max" value="<TMPL_VAR expMax>" style="width:6em;"><br>
+          消費経験点：+<input type="number" name="exp-min" value="<TMPL_VAR expMin>" style="width:6em;"> ～ <input type="number" name="exp-max" value="<TMPL_VAR expMax>" style="width:6em;"><br>
           シンドローム：<input type="text" name="syndrome" value="<TMPL_VAR syndrome>"><br>
           ブリード：<select name="breed"><option value=""><option value="1" <TMPL_VAR breedSelected1>>ピュア<option value="2" <TMPL_VAR breedSelected2>>クロス<option value="3" <TMPL_VAR breedSelected3>>トライ</select><br>
           Ｄロイス：<input type="text" name="dlois" value="<TMPL_VAR dlois>"><br>
@@ -54,7 +54,7 @@
               <th class="sign"><span>星座</span>
               <th class="blood"><span>血液型</span>
               <th class="works"><span>ワークス</span>
-              <th class="exp"><a href="./?group=<TMPL_VAR ID><TMPL_VAR qLinks>&sort=exp">経験点</a>
+              <th class="exp"><a href="./?group=<TMPL_VAR ID><TMPL_VAR qLinks>&sort=exp">消費<br>経験点</a>
               <th class="syndrome"><span>シンドローム</span>
               <th class="dlois"><span>Ｄロイス</span>
               <th class="date"><a href="./?group=<TMPL_VAR ID><TMPL_VAR qLinks>&sort=date">更新<br>日時</a>
@@ -67,7 +67,7 @@
             <td class="sign"><TMPL_VAR SIGN>
             <td class="blood"><TMPL_VAR BLOOD>
             <td class="works"><TMPL_VAR WORKS>
-            <td class="exp"><TMPL_VAR EXP>
+            <td class="exp">+<TMPL_VAR EXP>
             <td class="syndrome"><div><TMPL_VAR SYNDROME></div>
             <td class="dlois"><div><TMPL_VAR DLOIS></div>
             <td class="tags"><TMPL_VAR TAGS></td>

@@ -573,13 +573,17 @@ foreach (1 .. $pc{itemNum}){
 }
 $SHEET->param(Items => \@items);
 
+### 作成方法 --------------------------------------------------
+$SHEET->param(isConstruction => ($pc{createType} eq 'C') ? 1 : 0);
+
+
 ### 侵蝕率 --------------------------------------------------
 $SHEET->param(currentEncroach => $pc{baseEncroach} =~ /^[0-9]+$/ ? $pc{baseEncroach} : 0);
 
 ### 履歴 --------------------------------------------------
 my @history;
 my $h_num = 0;
-$pc{history0Title} = 'キャラクター作成';
+$pc{history0Title} = ($pc{createType} eq 'C') ? 'コンストラクション作成' : 'フルスクラッチ作成';
 foreach (0 .. $pc{historyNum}){
   #next if !$pc{'history'.$_.'Title'};
   $h_num++ if $pc{'history'.$_.'Gm'};

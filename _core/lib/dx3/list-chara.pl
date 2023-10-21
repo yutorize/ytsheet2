@@ -127,8 +127,8 @@ $INDEX->param(player => $pl_query);
 ## 経験点検索
 my $exp_min_query = $::in{'exp-min'};
 my $exp_max_query = $::in{'exp-max'};
-if($exp_min_query) { @list = grep { (split(/<>/))[7] >= $exp_min_query } @list; }
-if($exp_max_query) { @list = grep { (split(/<>/))[7] <= $exp_max_query } @list; }
+if($exp_min_query) { @list = grep { (split(/<>/))[7] >= $exp_min_query+130 } @list; }
+if($exp_max_query) { @list = grep { (split(/<>/))[7] <= $exp_max_query+130 } @list; }
 $INDEX->param(expMin => $exp_min_query);
 $INDEX->param(expMax => $exp_max_query);
 my $exp_query;
@@ -280,7 +280,7 @@ foreach (@list) {
       "NAME" => $name,
       "PLAYER" => $player,
       "GROUP" => $group,
-      "EXP" => $exp,
+      "EXP" => $exp - 130,
       "AGE" => $age,
       "GENDER" => $gender,
       "SIGN" => $sign,

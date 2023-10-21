@@ -49,7 +49,7 @@ if($mode eq 'edit' || ($mode eq 'convert' && $pc{ver})){
 elsif($mode eq 'blanksheet'){
   $pc{group} = $set::group_default;
   
-  $pc{history0Exp}   = $set::make_exp;
+  $pc{history0Exp}   = 0;
   
   ($pc{effect1Type},$pc{effect1Name},$pc{effect1Lv},$pc{effect1Timing},$pc{effect1Skill},$pc{effect1Dfclty},$pc{effect1Target},$pc{effect1Range},$pc{effect1Encroach},$pc{effect1Restrict},$pc{effect1Note})
     = ('auto','リザレクト',1,'オート','―','自動成功','自身','至近','効果参照','―','(Lv)D点HP回復、侵蝕値上昇');
@@ -75,6 +75,8 @@ $pc{wordsY} ||= '上';
 setDefaultColors();
 
 ## その他
+$pc{createType} ||= 'F';
+
 $pc{skillRideNum} ||= 2;
 $pc{skillArtNum}  ||= 2;
 $pc{skillKnowNum} ||= 2;
@@ -293,13 +295,16 @@ print <<"HTML";
       <details class="box" id="regulation" @{[$mode eq 'edit' ? '':'open']}>
         <summary>作成レギュレーション</summary>
         <dl>
+          <dt>作成方法
+          <dd>@{[ radios 'createType', 'changeCreateType', 'C=>コンストラクション','F=>フルスクラッチ' ]}
+          <dt>消費経験点
+          <dd>@{[input("history0Exp",'number','changeRegu',($set::make_fix?' readonly':''))]} <span class="fullscratch-only">※フルスクラッチ作成時の130点は含みません。</span>
           <dt>ステージ
-          <dd>@{[input("stage",'','checkStage','list="list-stage"')]}
-          <dt>経験点
-          <dd>@{[input("history0Exp",'number','changeRegu',($set::make_fix?' readonly':''))]}
+          <dd>@{[input("stage",'','checkStage','list="list-stage"')]}<br>
+            ※ステージの入力値に「クロウリングケイオス」が“含まれる”場合、専用項目が表示されます。
+          <dt>備考
+          <dd>@{[ input "history0Note" ]}
         </dl>
-        <div class="annotate">※ステージの入力値に「クロウリングケイオス」が含まれる場合、専用項目が表示されます。</div>
-        <dl class="regulation-note"><dt>備考<dd>@{[ input "history0Note" ]}</dl>
       </details>
 
       <div id="area-status">
@@ -351,7 +356,7 @@ print <<"HTML";
                 <td>@{[ radio 'sttWorks', 'calcStt', 'mind'   ]}
                 <td>@{[ radio 'sttWorks', 'calcStt', 'social' ]}
               <tr>
-                <th colspan="2" class="right">成長
+                <th colspan="2" class="right"><span class="construction-only">フリーポイント＋</span>成長
                 <td>@{[input "sttGrowBody"  ,'number','calcStt']}
                 <td>@{[input "sttGrowSense" ,'number','calcStt']}
                 <td>@{[input "sttGrowMind"  ,'number','calcStt']}
@@ -371,7 +376,6 @@ print <<"HTML";
               </tr>
             </tbody>
           </table>
-          <div class="annotate" style="border-top-width:1px;border-top-style:dotted;">※コンストラクション作成のフリーポイント3点は「成長」欄に記入してください。</div>
         </div>
         <div class="box-union" id="sub-status">
           <dl class="box" id="max-hp">
@@ -480,7 +484,9 @@ print <<"HTML";
           </dd>
         </dl>
         <div class="annotate">
-        ※右側は、DロイスなどによるLv補正の欄です（経験点が計算されません）
+        ※右側は、DロイスなどによるLv補正の欄です（経験点が計算されません）<br>
+        ※ワークスによる技能取得ぶんとして、無入力時は<span class="fullscratch-only">消費経験点の表示が「-9」</span><span class="construction-only">技能フリーポイントの表示が「-4.5」</span>になっています。<br>
+        （ワークスぶんを正しく入力すると「0」点になります（一部書籍収録のワークスを除く））<br>
         </div>
       </details>
       <details class="box" id="lifepath" $open{lifepath}>
@@ -1012,6 +1018,13 @@ print <<"HTML";
       </div>
       
       <div class="box" id="exp-footer">
+        <p class="construction-only">
+          <b>コンストラクション作成</b>
+          :  能力値フリーポイント[<b id="freepoint-status"></b>/3]
+          ／ 技能フリーポイント[<b id="freepoint-skill"></b>/5]
+          ／ 任意エフェクト[<b id="freepoint-effect"></b>/4]個
+          ／ エフェクトLvフリーポイント[<b id="freepoint-effectlv"></b>/2]
+        </p>
         <p>
         経験点[<b id="exp-total"></b>] - 
         ( 能力値[<b id="exp-used-status"></b>]
@@ -1400,6 +1413,7 @@ print <<"HTML";
   </datalist>
   <script>
 HTML
+print 'const makeExp = '.$set::make_exp.';';
 print 'const synStats = {';
 foreach (keys %data::syndrome_status) {
   next if !$_;

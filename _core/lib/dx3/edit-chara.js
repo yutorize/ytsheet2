@@ -10,6 +10,7 @@ window.onload = function() {
   syndromes = [form.syndrome1.value, form.syndrome2.value, form.syndrome3.value];
   
   nameSet();
+  checkCreateType();
   checkStage();
   checkSyndrome();
   calcStt();
@@ -40,6 +41,39 @@ function formCheck(){
 }
 
 // レギュレーション ----------------------------------------
+let createType = 'F';
+function changeCreateType(){
+  checkCreateType();
+  if(createType === 'C'){
+    if(!form['effect3Name']){
+      addEffect();
+    }
+    if(!form['effect3Name'].value || form['effect3Name'].value.match(/^コンセントレイト/)){
+      form['effect3Name'].value ||= 'コンセントレイト：'
+      form['effect3Type'].value = 'auto';
+      form['effect3Lv'].value = 2;
+      form['effect3Timing'].value = 'メジャー';
+      form['effect3Skill'].value = 'シンドローム';
+      form['effect3Dfclty'].value = '―';
+      form['effect3Range'].value = '―';
+      form['effect3Target'].value = '―';
+      form['effect3Encroach'].value = 2;
+      form['effect3Restrict'].value = '―';
+      form['effect3Note'].value ||= 'クリティカル値を-LV（下限値7）';
+    }
+  }
+  else {
+    if(form['effect3Name'].value.match(/^コンセントレイト/)){
+      confirm('作成方法をフルスクラッチに切り替えます。\n入力済みの《コンセントレイト：～》が自動習得でなくなります。');
+      form['effect3Type'].value = '';
+    }
+  }
+  calcStt();
+  calcEffect();
+}
+function checkCreateType(){
+  document.body.dataset.createType = createType = form.createType.value;
+}
 function changeRegu(){
   document.getElementById("history0-exp").textContent = form.history0Exp.value;
   calcExp();
@@ -61,7 +95,7 @@ function checkSyndrome(){
   const syn1 = syndromes[0];
   const syn2 = syndromes[1];
   const syn3 = syndromes[2];
-  console.log(syndromes)
+  
   form.syndrome1.parentNode.classList.toggle('error', !syn1 && (syn2 || syn3));
   form.syndrome2.parentNode.classList.toggle('error', !syn2 && syn3);
   form.syndrome1.closest('tr').classList.toggle('pure', syn1 && !syn2);
@@ -79,6 +113,7 @@ function calcStt() {
   document.querySelector('.syndrome-rows tr:nth-child(1)').classList.toggle('auto', isAuto1);
   document.querySelector('.syndrome-rows tr:nth-child(2)').classList.toggle('auto', isAuto2);
   
+  let free = 0;
   for (let stt of ['body','sense','mind','social']){
     const Stt = stt.slice(0,1).toUpperCase()+stt.slice(1);
 
@@ -93,6 +128,7 @@ function calcStt() {
     const grow = Number(form["sttGrow"+Stt].value);
     const add  = Number(form["sttAdd" +Stt].value);
     status[stt] = base + grow + add;
+    free += grow;
     
     document.getElementById('stt-total-'+stt).textContent = status[stt];
     document.getElementById('skill-'+stt).textContent = status[stt];
@@ -105,7 +141,14 @@ function calcStt() {
     // 能力値0の場合のエラー
     document.getElementById('stt-total-'+stt).classList.toggle('error', syn1 && !status[stt]);
   }
-  document.getElementById('exp-status').textContent = exps['status'];
+
+  if(createType === 'C'){
+    if(exps['status'] <= 30) { exps['status'] = 0 }
+    else { exps['status'] -= 30 }
+  }
+  document.getElementById('freepoint-status').textContent = (free > 3) ? 3 : free;
+  document.getElementById('exp-status'      ).textContent = exps['status'];
+  document.getElementById('exp-used-status' ).textContent = exps['status'];
   calcSubStt();
   calcSkill();
 }
@@ -174,13 +217,22 @@ function calcSkill() {
       skillNameToId[form['skill'+name+num+'Name'].value] = name+num;
     }
   }
-  document.getElementById('exp-skill').textContent = exps['skill'];
+  const free = exps['skill'] / 2;
+  if(createType === 'C'){
+    if(exps['skill']  <= 10) { exps['skill']  = 0 }
+    else { exps['skill']  -= 10 }
+  }
+  document.getElementById('freepoint-skill').textContent = (free > 5) ? 5 : free;
+  document.getElementById('exp-skill'      ).textContent = exps['skill'];
+  document.getElementById('exp-used-skill' ).textContent = exps['skill'];
   calcExp();
   calcComboAll();
 }
 // エフェクト
 function calcEffect() {
   exps['effect'] = 0;
+  let free = 0;
+
   for (let num = 1; num <= Number(form.effectNum.value); num++){
     const type = form['effect'+num+'Type'].value;
     const lv = Number(form['effect'+num+'Lv'].value);
@@ -192,7 +244,18 @@ function calcEffect() {
       //通常
       else {
         exps['effect'] += lv * 5 + 10; //lv×5 + 新規取得の差分10
-        if(type.match(/^(auto|dlois)$/i)){ exps['effect'] += -15; } //自動かDロイスは新規取得ぶん減らす
+
+        //自動かDロイスは新規取得ぶん減らす
+        if(type.match(/^(auto|dlois)$/i)){
+          exps['effect'] += -15;
+          //コンストラクションのコンセントレイトは2Lvのぶんも減らす
+          if(createType === 'C' && form['effect'+num+'Name'].value.match(/^コンセントレイト/) && lv >= 2){
+            exps['effect'] += -5;
+          }
+        }
+        else{
+          free++; //任意習得エフェクトの数（コンストラクション用）
+        }
         form['effect'+num+'Type'].style.backgroundColor = '';
       }
     }
@@ -204,7 +267,16 @@ function calcEffect() {
     else if(type == 'enemy'){ bg.backgroundImage = 'linear-gradient(to right,hsla(270,100%, 50%,0.2),transparent)'; }
     else { bg.backgroundImage = ''; }
   }
+
+  const freelv = (exps['effect'] - free*15) / 5;
+  if(createType === 'C'){
+    if(exps['effect'] <= 60+10) { exps['effect'] = 0 } else { exps['effect'] -= 70 }
+    //任意エフェクト1Lv×4(60)、任意1Lvアップ×2(10)
+  }
+  document.getElementById('freepoint-effect').textContent = (free > 4) ? 4 : free;
+  document.getElementById('freepoint-effectlv').textContent = (freelv > 2) ? 2 : (freelv < 0) ? 0 : freelv;
   document.getElementById('exp-effect').textContent = exps['effect'];
+  document.getElementById("exp-used-effect").textContent = exps['effect'];
   calcExp();
 }
 // 術式
@@ -214,7 +286,8 @@ function calcMagic(){
     for (let num = 1; num <= Number(form.magicNum.value); num++){
       exps['magic'] += Number(form['magic'+num+'Exp'].value);
     }
-    document.getElementById('exp-magic').textContent = exps['magic'];
+    document.getElementById('exp-magic'     ).textContent = exps['magic'];
+    document.getElementById('exp-used-magic').textContent = exps['magic'];
     calcExp();
   }
 }
@@ -238,9 +311,10 @@ function calcItem(){
     stockUsed    += Number(form['item'+num+'Stock'].value);
     exps['item'] += Number(form['item'+num+'Exp'  ].value);
   }
-  document.getElementById("item-total-stock").textContent = stockUsed;
-  document.getElementById("item-total-exp").textContent = exps['item'];
-  document.getElementById("exp-item").textContent = exps['item'];
+  document.getElementById('item-total-stock').textContent = stockUsed;
+  document.getElementById('item-total-exp'  ).textContent = exps['item'];
+  document.getElementById('exp-item'        ).textContent = exps['item'];
+  document.getElementById('exp-used-item'   ).textContent = exps['item'];
   calcSaving();
   calcExp();
 }
@@ -250,13 +324,16 @@ function calcMemory() {
   for (let num = 1; num <= 3; num++){
     if ( form['memory'+num+'Relation'].value || form['memory'+num+'Name'].value){ exps['memory'] += 15; }
   }
-  document.getElementById('exp-memory').textContent = exps['memory'];
+  document.getElementById('exp-memory'     ).textContent = exps['memory'];
+  document.getElementById("exp-used-memory").textContent = exps['memory'];
   calcExp();
 }
 
 // 経験点
 function calcExp(){
-  let total = Number(form['history0Exp'].value);
+  let total = makeExp + Number(form['history0Exp'].value);
+  if(createType === 'C'){ total -= 130; }
+
   for (let num = 1; num <= Number(form.historyNum.value); num++){
     const obj = form['history'+num+'Exp'];
     if(form['history'+num+'ExpApply'].checked){
@@ -276,12 +353,6 @@ function calcExp(){
     rest -= exps[key];
   }
   document.getElementById("exp-total").textContent = total;
-  document.getElementById("exp-used-status").textContent = exps['status'] || 0;
-  document.getElementById("exp-used-skill" ).textContent = exps['skill']  || 0;
-  document.getElementById("exp-used-effect").textContent = exps['effect'] || 0;
-  document.getElementById("exp-used-magic" ).textContent = exps['magic'] || 0;
-  document.getElementById("exp-used-item"  ).textContent = exps['item']   || 0;
-  document.getElementById("exp-used-memory").textContent = exps['memory'] || 0;
   document.getElementById("exp-rest").textContent = rest;
 }
 

@@ -222,13 +222,13 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
 }
 @media screen and (max-width:735px){
   #area-status {
-    grid-template-columns: 0.5fr 0.9fr 1.5fr 2.1fr;
+    grid-template-columns: 0.6fr 2.4fr 2fr;
     grid-template-areas:
-      "PER PER PER IMG"
-      "WKS WKS WKS IMG"
-      "REN REN REN IMG"
-      "EXP STT STT IMG"
-      "LFP LFP LFP LFP"
+      "PER PER IMG"
+      "WKS WKS IMG"
+      "REN REN IMG"
+      "EXP STT IMG"
+      "LFP LFP LFP"
     ;
   }
 }
@@ -380,31 +380,43 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
 /* EXP */
 #exp {
   display: grid;
+  grid-template-rows: max-content max-content 1fr;
 }
 #exp dl {
   display: grid;
   grid-template-columns: max-content 1fr;
   align-items: end;;
-  margin: 0 .5rem;
+  margin: -5px 5px 0;
   line-height: 1;
   white-space: nowrap;
 }
-#exp dl > *:not(:last-of-type) {
+#exp dl > * {
   border-width: 0 0 .1rem;
   border-style: solid;
 }
 #exp dl dt {
   grid-column: 1;
   font-size: 80%;
-  padding: 0 0 .3rem;
+  padding: 0 0 3px;
 }
 #exp dl dd {
   grid-column: 2;
   text-align: right;
   font-size: 120%;
-  padding: .3rem 0 .1rem;
+  padding: 2px 0 1px;
+}
+#exp .create-type {
+  padding: 0 2px;
+  font-size: 80%;
+  line-height: 1;
+  font-family: var(--font-proportional);
+  text-align: center;
+  align-self: center;
 }
 @media screen and (max-width:735px){
+  #exp dl {
+    margin: -5px 2px 0;
+  }
   #exp span.shorten {
     display: none;
   }
@@ -1207,6 +1219,9 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
 /* Exps */
 #exps table {
   table-layout: fixed;
+}
+#exps h2:not(:first-child) {
+  margin-top: 0;
 }
 
 /* Encroach-Bonus
