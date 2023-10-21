@@ -110,7 +110,7 @@ foreach my $data (@lines) {
                  + $data::races{$race}{dice}{'E+'}
                  + $data::races{$race}{dice}{'F+'};
     
-    my $average = ($stt_A + $stt_B + $stt_C + $stt_D + $stt_E + $stt_F) / $dicetotal;
+    my $average = $dicetotal ? ($stt_A + $stt_B + $stt_C + $stt_D + $stt_E + $stt_F) / $dicetotal : 0;
        $average = ($stt_A + $stt_B + $stt_C + $stt_D + $stt_E + $stt_F + $tec + $phy + $spi) / 18 if $adventurer;
        
     my $url = "${tec}_${phy}_${spi}_"
