@@ -96,7 +96,7 @@ our %class = (
     proper => {
       weight   => '軽重',
       armor    => 'すべて',
-      armor    => 'すべて',
+      shield   => 'すべて',
     },
     magic => '奇跡',
     cast  => 'PsyFoc',
@@ -109,7 +109,7 @@ our %class = (
     proper => {
       weight   => '軽重',
       armor    => 'すべて',
-      armor    => 'すべて',
+      shield   => 'すべて',
     },
     magic => '祖竜術',
     cast  => 'PsyFoc',
@@ -122,7 +122,7 @@ our %class = (
     proper => {
       weight   => '軽',
       armor    => 'すべて',
-      armor    => 'すべて',
+      shield   => 'すべて',
     },
     magic => '精霊術',
     cast  => 'PsyFoc',
@@ -135,7 +135,7 @@ our %class = (
     proper => {
       weight   => '軽',
       armor    => 'すべて',
-      armor    => 'すべて',
+      shield   => 'すべて',
     },
     magic => '死霊術',
     cast  => 'IntFoc',
