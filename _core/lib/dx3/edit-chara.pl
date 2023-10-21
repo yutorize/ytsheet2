@@ -761,7 +761,7 @@ print <<"HTML";
             <dt class="combo-cond">条件<span class="combo-condition-utility"></span>
             <dt class="combo-dice">ダイス
             <dt class="combo-crit">Ｃ値
-            <dt class="combo-fixed">判定固定値
+            <dt class="combo-fixed">達成値修正<br><span class="small">(技能Lv+修正値)</span>
             <dt class="combo-atk">攻撃力
 HTML
   foreach my $i (1 .. 5) {
