@@ -1,0 +1,465 @@
+@charset "utf-8";
+
+/* // Body
+---------------------------------------------------------------------------------------------------- */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@800&display=swap');
+body {
+  background-image: url(../../_common/img/back-pattern.png), url(../img/back-scramble.png);
+  background-blend-mode: normal, normal;
+  background-position: center, bottom -100px right -20px;
+}
+@media screen and (max-width:735px){
+  body {
+    background-size: auto, 100%;
+    background-position: center, bottom 50px right 0px;
+  }
+}
+/* // Layout
+---------------------------------------------------------------------------------------------------- */
+@media screen and (min-width:1400px){
+  body {
+    grid-template-columns: minmax(0, 1fr) minmax(auto, 1800px) minmax(0, 1fr);
+  }
+  header nav {
+    max-width: 1800px;
+  }
+  article{
+    max-width: 1760px;
+    display: grid;
+    grid-gap: 0 1.2rem;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    padding: 0 1.2rem;
+    position: relative;
+  }
+  #area-name, #tags {
+    grid-column: span 2;
+  }
+  .column-status{
+    grid-row: span 3;
+  }
+  #area-partner {
+    grid-column: 2;
+    grid-row: 3;
+  }
+  #free-note {
+    grid-column: 2;
+    align-self: normal;
+  }
+  #history {
+    grid-column: 2;
+    grid-row: 5;
+    align-self: end;
+  }
+  aside#sidebar-left,
+  aside#sidebar-right {
+    display:none;
+  }
+  aside#sidebar-top,
+  aside#sidebar-bottom {
+    display: block;
+  }
+}
+/* // Font
+---------------------------------------------------------------------------------------------------- */
+#history {
+  font-family: "Kosugi","Arial",var(--base-font-family-jp);
+}
+#character-name,
+.words {
+  font-family: var(--base-font-family-min);
+}
+#character-name rt {
+  font-family: Arial,var(--base-font-family-min);
+}
+#status dl dd,
+#magi table {
+  font-family: var(--font-proportional);
+}
+
+/* // Name / Date
+---------------------------------------------------------------------------------------------------- */
+#area-name {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  
+  padding: 0px 5px;
+  border-width: 3px 0px;
+  border-style: solid;
+  
+  background-image: linear-gradient(to right, var(--box-head-bg-color), var(--box-base-bg-color));
+  background-color: var(--bg-color);
+  border-color: var(--box-outside-border-color, inherit);
+  
+  position: relative;
+}
+h1#character-name {
+  padding: 1.7rem 1rem .3rem;
+  font-size: 2.2rem;
+  font-weight: bold;
+  text-shadow: var(--bg-color) 0px 0px .5em,
+    var(--bg-color)  .1rem .1rem, var(--bg-color) -.1rem -.1rem,
+    var(--bg-color) -.1rem .1rem, var(--bg-color)  .1rem -.1rem,
+    var(--bg-color)  .0rem .1rem, var(--bg-color)  .0rem -.1rem,
+    var(--bg-color) -.1rem .0rem, var(--bg-color)  .1rem  .0rem;
+}
+h1#character-name:not(:has(ruby)) {
+  padding: 1rem;
+}
+#area-name::before {
+  content: "東京名";
+  position: absolute;
+  top: 0;
+  left: .3em;
+  line-height: 1;
+  font-size: 1.2rem;
+  font-weight: bold;
+  font-family: var(--base-font-family-jp);
+  text-shadow: none;
+}
+#aka {
+  margin-right: .5em;
+}
+#area-name > div { 
+  text-align: right;
+  font-size: 1.2rem;
+}
+#update-time {
+}
+#player-name {
+}
+@media screen and (min-width:1400px){
+  
+}
+
+/* // Common
+---------------------------------------------------------------------------------------------------- */
+.data-table {
+  width: 100%;
+  border-style: hidden hidden none;
+}
+.data-table:last-child {
+  border-bottom-style: hidden;
+}
+.data-table.side-margin,
+.data-tables.side-margin table,
+.data-tables.side-margin ul,
+.data-tables.side-margin dl {
+  width: calc(100% - 1rem);
+  margin: 0 .5rem;
+}
+table.data-table > tbody tr {
+  border-width: 1px 0;
+  border-style: solid;
+}
+table.data-table:not(.side-margin) thead th {
+  padding: .3rem 0 .2rem;
+  border-width: 0;
+  line-height: 1;
+}
+table.data-table tbody td,
+ul.data-table > li,  .data-tables ul > li,
+dl.data-table > *,   .data-tables dl > *  {
+  padding: .2em 0;
+  line-height: 1.4;
+}
+table.data-table:not(.side-margin) tbody th,
+table.data-table:not(.side-margin) tbody td {
+  border-left-width: 1px;
+  border-right-width: 1px;
+  border-left-style: dotted;
+  border-right-style: dotted;
+}
+table.data-table:not(.side-margin).line-tbody tbody:nth-of-type(even) tr > *,
+table.data-table:not(.side-margin):not(.line-tbody) tbody tr:nth-of-type(even) > * {
+  background-color: var(--box-even-rows-bg-color);
+}
+
+ul.data-table > li,  .data-tables ul  > li,
+dl.data-table > *,   .data-tables dl  > *  {
+  border-width: 0 0 1px;
+  border-style: solid;
+}
+ul.data-table:last-child > li:last-child,
+dl.data-table:last-child > dt:last-of-type,
+dl.data-table:last-child > dt:last-of-type ~ dd,
+.data-tables ul:last-child > li:last-child,
+.data-tables dl:last-child > dt:last-of-type,
+.data-tables dl:last-child > dt:last-of-type ~ dd {
+  border-bottom-style: hidden;
+}
+
+table.data-table tbody td:empty::before {
+  content: '　';
+}
+table.data-table tbody tr td span {
+  display: inline-block;
+}
+table.data-table tbody tr td span.thin {
+  transform: scaleY(calc(1/0.93));
+  font-size: 93%;
+}
+table.data-table tbody tr td span.thiner {
+  transform: scaleY(calc(1/0.86));
+  font-size: 86%;
+}
+table.data-table tbody tr td span.thinest {
+  transform: scaleY(calc(1/0.8));
+  font-size: 79%;
+}
+table.data-table tbody tr td span.thinest.small {
+  transform: scaleY(calc(1/0.8));
+  font-size: 73%;
+}
+table.data-table tbody tr td:nth-child(9) span.thinest.small {
+  transform: scaleY(calc(1/0.8)) translateY(-.1rem);
+  font-size: 70%;
+}
+/* // Tags(Clan)
+---------------------------------------------------------------------------------------------------- */
+#tags .clan {
+  position: relative;
+  padding-left: calc(3.5em * 0.8 + .2em);
+  padding-right: .2em;
+  border-width: 2px;
+  border-style: solid;
+  border-color: #ba95;
+  border-radius: 5px;
+  font-style: normal;
+  background-color: #ba95;
+  background-color: var(--bg-color);
+  color: inherit;
+}
+#tags .clan::before {
+  content: "クラン";
+  width: 3.5em;
+  position: absolute;
+  inset: 0 auto 0 0;
+  display: grid;
+  place-items: center;
+  background-color: #ba95;
+  font-size: 80%;
+  line-height: 1;
+}
+
+/* // Area-Status
+---------------------------------------------------------------------------------------------------- */
+#area-status {
+  min-height: 56.7rem;
+  display: grid;
+  grid-gap: var(--box-v-gap) var(--box-h-gap);
+  grid-template-columns: 1.66fr .3fr 1.4fr;
+  grid-template-rows: auto auto 1fr;
+  grid-template-areas:
+    "PRF LVL IMG"
+    "STT STT IMG"
+    "MAG MAG IMG"
+  ;
+}
+#image-none,
+#image      { grid-area: IMG; }
+#profile    { grid-area: PRF; }
+#level      { grid-area: LVL; }
+#status     { grid-area: STT; }
+#magi       { grid-area: MAG; }
+
+@media screen and (max-width:767px){
+  #area-status {
+    min-height: 0%;
+    grid-gap: .5rem;
+  }
+}
+@media screen and (max-width:735px){
+  #area-status {
+    grid-template-columns: 1.66fr .4fr 1.3fr;
+    grid-template-areas:
+    "PRF LVL IMG"
+    "STT STT STT"
+    "MAG MAG MAG"
+    ;
+  }
+}
+
+#area-status dd:empty::before,
+#area-status td:empty::before {
+  content: '　';
+}
+
+/* Image */
+.image, .image-none {
+  max-height: 56.7rem;
+  container-type: inline-size;
+}
+.image-none::after {
+  font-family: 'Montserrat','Impact';
+  font-size: 5.8rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -.2rem;
+  transform: scale(1, 1.1);
+}
+@container (max-width: 320px) {
+  .image, .image-none {
+    max-height: auto;
+  }
+  .image-none::after {
+    font-size: 4.8rem;
+  }
+}
+@media screen and (max-width:735px){
+  .image-none::after {
+    font-size: 3.5rem;
+  }
+}
+
+/*  */
+#profile {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+#profile #taxa { grid-column: 1; }
+#profile dl:nth-child(n+3) {
+  border-top-width: 1px;
+  border-top-style: solid;
+}
+#profile dl:nth-child(odd) {
+  border-right-width: 1px;
+  border-right-style: dotted;
+}
+@media screen and (max-width:735px){
+  #profile {
+    display: block;
+  }
+  #profile dl:nth-child(n+2) {
+    border-top-width: 1px;
+    border-top-style: solid;
+  }
+  #profile dl:nth-child(odd) {
+    border-right-width: 0;
+  }
+}
+
+#level {
+  align-self: end;
+}
+#level dl:first-of-type {
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+}
+#level dl dd {
+  line-height: 1;
+  font-size: 150%;
+}
+
+#status > dl {
+  display: grid;
+  grid-template-columns: 3.8em 1fr;
+}
+#status > dl > dt {
+  font-size: 110%;
+  padding-left: .2em;
+}
+#status > dl > :first-of-type {
+}
+#status > dl > dd {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+#status > dl > dd.status {
+  padding: 3px 3px 3px 0px;
+}
+#status > dl > dd.status > dl {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  border-width: 3px;
+  border-style: double;
+  margin-left: 3px;
+}
+#status > dl > dd.status > dl dt {
+  align-self: start;
+  padding: 0 .5em;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+}
+#status > dl > dd.status > dl dd {
+  font-size: 180%;
+}
+#status > dl > dd.attribute > ul {
+  padding: 0 .3em;
+  border-left-width: 1px;
+  border-left-style: solid;
+  line-height: 1.8;
+}
+#status > dl > dd.attribute > ul li:not(:last-child) {
+  border-bottom-width: 1px;
+  border-bottom-style: dotted;
+}
+#status > dl > dd.attribute > ul li:empty::before {
+  content: "　";
+}
+@media screen and (max-width: 735px){
+  #status > dl > dd.attribute > ul li:empty {
+    display:none
+  }
+  #status > dl > dd.attribute > ul {
+    margin-bottom: -1px;
+  }
+}
+
+#magi {
+  align-self: start;
+}
+#magi table {
+  margin-top: -1em;
+  table-layout: fixed;
+}
+#magi table colgroup col.name   { width: 9.2em; }
+#magi table colgroup col.timing { width: auto; }
+#magi table colgroup col.target { width: auto; }
+#magi table colgroup col.cond   { width: auto; }
+
+#magi table tbody td.name   { font-weight: bold; }
+#magi table tbody td.timing {  }
+#magi table tbody td.target { font-size: 90%; }
+#magi table tbody td.cond   { font-size: 90%; }
+#magi table tbody td.note.left {
+  padding-left: .3em;
+  font-size: 90%;
+}
+#magi td:empty::before {
+  content: "　";
+}
+@media screen and (max-width: 735px){
+  #magi tr:not(:has(*:not(:empty))) {
+    display:none
+  }
+  #magi td:empty {
+    display:none
+  }
+}
+/* // Free-Memo
+---------------------------------------------------------------------------------------------------- */
+#free-note,
+#free-history{
+  margin-top: var(--box-v-gap);
+}
+@media screen and (min-width:1400px){
+  #free-note {
+    margin-top: 0;
+  }
+}
+
+
+/* // History
+---------------------------------------------------------------------------------------------------- */
+#history {
+  margin-top: var(--box-v-gap);
+}
+#history table thead th:nth-child(1) { width:   2em; } /* No. */
+#history table thead th:nth-child(2) { width: 5.2em; } /* 日付 */
+#history table thead th:nth-child(3) { width:  auto; } /* タイトル */
+#history table thead th:nth-child(4) { width: 4.6em; } /* 成長 */
+#history table thead th:nth-child(5) { width:  auto; } /* ＧＭ */
+#history table thead th:nth-child(6) { width:  auto; } /* 参加者 */
+

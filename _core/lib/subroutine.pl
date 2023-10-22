@@ -53,9 +53,10 @@ sub imageRedirect {
   my $id   = shift;
   my $type = shift;
   my ($file,$type,$user) = getfile_open($id);
-  my $datadir = ($type eq 'm') ? $set::mons_dir
-              : ($type eq 'i') ? $set::item_dir
-              : ($type eq 'a') ? $set::arts_dir
+  my $datadir = ($set::game eq 'sw2' && $type eq 'm') ? $set::mons_dir
+              : ($set::game eq 'sw2' && $type eq 'i') ? $set::item_dir
+              : ($set::game eq 'sw2' && $type eq 'a') ? $set::arts_dir
+              : ($set::game eq 'ms'  && $type eq 'c') ? $set::clan_dir
               : $set::char_dir;
   my $ext;
 
@@ -337,8 +338,9 @@ sub s_eval {
 
 ### グループ設定の変換 --------------------------------------------------
 sub groupArrayToHash {
+  my @array = $_[0] ? @{$_[0]} : @set::groups;
   my %hash;
-  foreach (@set::groups){
+  foreach (@array){
     $hash{@$_[0]} = {
       "sort" => @$_[1],
       "name" => @$_[2],
@@ -348,9 +350,10 @@ sub groupArrayToHash {
   return %hash;
 }
 sub groupArrayToList {
-  my $selected = shift;
+  my $selected = $_[0];
+  my @array = $_[1] ? @{$_[1]} : @set::groups;
   my @list;
-  foreach (sort { $a->[1] cmp $b->[1] } @set::groups){
+  foreach (sort { $a->[1] cmp $b->[1] } @array){
     push(@list, {
       "ID" => @$_[0],
       "NAME" => @$_[2],

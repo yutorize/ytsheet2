@@ -12,7 +12,8 @@ my $data_dir; my $data_list;
    if($::in{type} eq 'm'){ $data_dir = $set::mons_dir; $data_list = $set::monslist; }
 elsif($::in{type} eq 'i'){ $data_dir = $set::item_dir; $data_list = $set::itemlist; }
 elsif($::in{type} eq 'a'){ $data_dir = $set::arts_dir; $data_list = $set::artslist; }
-else                       { $data_dir = $set::char_dir; $data_list = $set::listfile; }
+elsif($::in{type} eq 'c'){ $data_dir = $set::clan_dir; $data_list = $set::clanlist; }
+else                     { $data_dir = $set::char_dir; $data_list = $set::listfile; }
 
 if(!$::in{id}){ error('IDがありません。'); }
 if(!$::in{check1} || !$::in{check2} || !$::in{check3}){ error('確認のチェックが入っていません。'); }

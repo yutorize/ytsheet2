@@ -99,10 +99,11 @@ elsif($mode eq 'save'){
 }
 
 my $data_dir; my $listfile; our $newline;
-if   ($::in{type} eq 'm'){ require $set::lib_calc_mons; $data_dir = $set::mons_dir; $listfile = $set::monslist; }
-elsif($::in{type} eq 'i'){ require $set::lib_calc_item; $data_dir = $set::item_dir; $listfile = $set::itemlist; }
-elsif($::in{type} eq 'a'){ require $set::lib_calc_arts; $data_dir = $set::arts_dir; $listfile = $set::artslist; }
-else                     { require $set::lib_calc_char; $data_dir = $set::char_dir; $listfile = $set::listfile; }
+if   ($set::game eq 'sw2' && $::in{type} eq 'm'){ require $set::lib_calc_mons; $data_dir = $set::mons_dir; $listfile = $set::monslist; }
+elsif($set::game eq 'sw2' && $::in{type} eq 'i'){ require $set::lib_calc_item; $data_dir = $set::item_dir; $listfile = $set::itemlist; }
+elsif($set::game eq 'sw2' && $::in{type} eq 'a'){ require $set::lib_calc_arts; $data_dir = $set::arts_dir; $listfile = $set::artslist; }
+elsif($set::game eq 'ms'  && $::in{type} eq 'c'){ require $set::lib_calc_clan; $data_dir = $set::clan_dir; $listfile = $set::clanlist; }
+else { require $set::lib_calc_char; $data_dir = $set::char_dir; $listfile = $set::listfile; }
 
 ## 保存数チェック
 my $max_files = 32000;

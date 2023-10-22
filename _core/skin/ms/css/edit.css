@@ -1,0 +1,182 @@
+@charset "utf-8";
+
+/* // キャラクター
+---------------------------------------------------------------------------------------------------- */
+#area-status {
+  min-height: 0%;
+  margin: var(--box-v-gap) 0;
+  grid-template-columns: 1.36fr .6fr 1.4fr;
+  grid-template-areas:
+    "PRF LVL IMG"
+    "CLN CLN IMG"
+    "STT STT IMG"
+    "MAG MAG IMG"
+  ;
+}
+@media screen and (max-width:735px){
+  #area-status {
+    grid-template-columns: 1fr;
+    grid-gap: var(--box-v-gap) var(--box-h-gap);
+    grid-template-rows: auto auto auto;
+
+    grid-template-areas:
+      "IMG IMG"
+      "PRF LVL"
+      "CLN CLN"
+      "STT STT"
+      "MAG MAG"
+    ;
+  }
+}
+
+#profile input {
+  max-width: 10.5em;
+}
+#clan {
+  grid-area: CLN;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+}
+
+#level dl {
+  display: grid;
+  grid-template-rows: max-content 1fr;
+}
+#level dl dd {
+  line-height: 1.4;
+  font-size: 100%;
+}
+#level dl dd input {
+  width: 4em;
+}
+#level dl dd b {
+  font-size: 120%;
+}
+#status {
+  overflow-x: auto;
+}
+#status > dl > dd.status > dl dd {
+  font-size: 100%;
+}
+#status > dl > dd.status > dl dd select {
+  text-align: center;
+}
+#status > dl > dd.status > dl dd.grow {
+  grid-column: 2;
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  align-items: center;
+  font-size: 90%;
+}
+#status .attribute li input {
+  width: calc(100% - 2em);
+}
+#status .add-del-button,
+#status .annotate.error {
+  grid-column: span 3;
+}
+.annotate.error {
+  width: max-content;
+  margin: .2em;
+  padding: 3px .5em 2px 1.8em;
+  border: 1px dashed #f70;
+  border-radius: 5px;
+  background-color: #f702;
+  position: relative;
+}
+.annotate.error::before {
+  content: "\e002";
+  font-family: "Material Symbols Outlined";
+  font-variation-settings: 'FILL' 1;
+  font-size: 150%;
+  line-height: 1;
+  color: #e70;
+  
+  display: grid;
+  place-items: center;
+  width: 1em;
+  position: absolute;
+  inset: 0 auto 0 .2em;
+}
+.annotate.error:empty {
+  display: none;
+}
+
+#magi {
+  overflow-x: auto;
+}
+#magi table colgroup col.name   { width: 9.2em; }
+#magi table colgroup col.timing { width: 7.5em; }
+#magi table colgroup col.target { width: 7.5em; }
+#magi table colgroup col.cond   { width: 7.5em; }
+
+@media screen and (max-width:735px){
+  #magi table colgroup col.note   { width: 17.5em; }
+}
+#magi table td.name input {
+  width: calc(100% - 2em);
+}
+
+#free-note,
+#free-history {
+  margin-top: var(--box-v-gap);
+  padding-bottom: .3rem;
+}
+#free-note textarea,
+#free-history textarea {
+  height: 18em;
+}
+
+#history table thead th:first-child { width: 1.4em; }
+#history table thead th.date        { width:   6em; }
+#history table thead th.title       { width:  12em; }
+#history table thead th.level       { width:   4em; }
+#history table thead th.gm          { width:   6em; }
+#history table thead th.member      { width:  auto; }
+
+@media screen and (max-width:735px){
+  #history table  { table-layout: fixed; }
+  #history table thead th.title  { width: 12em; }
+  #history table thead th.member { width: 16em; }
+}
+
+form#mode-clan #area-status {
+  min-height: 0%;
+  margin: var(--box-v-gap) 0;
+  grid-template-columns: 1.56fr .4fr 1.4fr;
+  grid-template-areas:
+    "PRF LVL IMG"
+    "MEM MEM IMG"
+    "STT STT IMG"
+  ;
+}
+@media screen and (max-width:735px){
+  form#mode-clan #area-status {
+    grid-template-columns: 1.56fr .4fr;
+    grid-template-areas:
+      "IMG IMG"
+      "PRF LVL"
+      "MEM MEM"
+      "STT STT"
+    ;
+  }
+}
+form#mode-clan #profile #rule {
+  grid-column: span 2;
+}
+form#mode-clan #profile #rule input {
+  max-width: calc(100% - 2em);
+}
+
+form#mode-clan #member .name { width: 40% }
+form#mode-clan #member .url  { width: auto }
+form#mode-clan #member table:first-of-type {
+  margin-top: -1.2em;
+}
+form#mode-clan #member table:nth-of-type(2) {
+  margin-top: -2.2em;
+}
+form#mode-clan #attribute li {
+  grid-template-columns: max-content auto max-content;
+  align-items: center;
+}

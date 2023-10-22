@@ -23,7 +23,7 @@ if($mode eq 'reset'){
 
 ### テンプレート読み込み #############################################################################
 my $INDEX = HTML::Template->new( filename => $set::skin_tmpl, utf8 => 1,
-  path => ['./', $::core_dir],
+  path => ['./', $::core_dir."/skin/_common", $::core_dir],
   die_on_bad_params => 0, die_on_missing_include => 0, case_sensitive => 1);
 
 $INDEX->param(modeRegister => 1) if $mode eq 'register';

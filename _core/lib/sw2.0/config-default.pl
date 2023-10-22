@@ -4,6 +4,8 @@ use utf8;
 
 package set;
 
+our $game = 'sw2';
+
 # config.cgiのほうが優先されます
 # 変更する場合は同様の項目をconfig.cgiに追記してください
 # （CGIアップデート時に上書きされるため）

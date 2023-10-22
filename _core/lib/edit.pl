@@ -46,10 +46,11 @@ elsif($mode eq 'convert'){
 if(!$LOGIN_ID && $mode =~ /^(?:blanksheet|copy|convert)$/){
   my $max_files = 32000;
   my $data_dir;
-  if   ($type eq 'm'){ $data_dir = $set::mons_dir; }
-  elsif($type eq 'i'){ $data_dir = $set::item_dir; }
-  elsif($type eq 'a'){ $data_dir = $set::arts_dir; }
-  else               { $data_dir = $set::char_dir; }
+  if   ($set::game eq 'sw2' && $type eq 'm'){ $data_dir = $set::mons_dir; }
+  elsif($set::game eq 'sw2' && $type eq 'i'){ $data_dir = $set::item_dir; }
+  elsif($set::game eq 'sw2' && $type eq 'a'){ $data_dir = $set::arts_dir; }
+  elsif($set::game eq 'ms'  && $type eq 'c'){ $data_dir = $set::clan_dir; }
+  else { $data_dir = $set::char_dir; }
   opendir my $dh, "${data_dir}anonymous/";
   my $num_files = () = readdir($dh);
   if($num_files-2 >= $max_files){
@@ -57,9 +58,10 @@ if(!$LOGIN_ID && $mode =~ /^(?:blanksheet|copy|convert)$/){
   }
 }
 
-if   ($type eq 'm'){ require $set::lib_edit_mons; }
-elsif($type eq 'i'){ require $set::lib_edit_item; }
-elsif($type eq 'a'){ require $set::lib_edit_arts; }
+if   ($set::game eq 'sw2' && $type eq 'm'){ require $set::lib_edit_mons; }
+elsif($set::game eq 'sw2' && $type eq 'i'){ require $set::lib_edit_item; }
+elsif($set::game eq 'sw2' && $type eq 'a'){ require $set::lib_edit_arts; }
+elsif($set::game eq 'ms'  && $type eq 'c'){ require $set::lib_edit_clan; }
 else               { require $set::lib_edit_char; }
 
 ### 共通サブルーチン --------------------------------------------------
@@ -68,7 +70,12 @@ sub pcDataGet {
   my $mode = shift;
   my %pc;
   my $message;
-  my $datadir = ($type eq 'm') ? $set::mons_dir : ($type eq 'i') ? $set::item_dir : ($type eq 'a') ? $set::arts_dir : $set::char_dir;
+  my $datadir = 
+    ($set::game eq 'sw2' && $type eq 'm') ? $set::mons_dir : 
+    ($set::game eq 'sw2' && $type eq 'i') ? $set::item_dir : 
+    ($set::game eq 'sw2' && $type eq 'a') ? $set::arts_dir : 
+    ($set::game eq 'ms'  && $type eq 'c') ? $set::clan_dir : 
+    $set::char_dir;
   # 保存 / 編集 / 複製 / コンバート
   if($mode eq 'edit'){
     my $datatype = ($::in{log}) ? 'logs' : 'data';
@@ -394,6 +401,15 @@ HTML
 ## チャットパレット
 sub chatPaletteForm {
   my $palette;
+  my %opt = (
+    tool => [
+      '=>ゆとチャadv.',
+      'tekey=>Tekey',
+      'bcdice=>その他(BCDice使用)',
+    ],
+    buff => 1,
+    @_,
+  );
   $palette .= "$_\n" foreach(paletteProperties('',$::in{type}));
   return <<"HTML";
     <section id="section-palette" style="display:none;">
@@ -421,16 +437,12 @@ sub chatPaletteForm {
           <textarea id="palettePreset" readonly style="height:20em"></textarea>
           <p>
             @{[ checkbox 'paletteUseVar','デフォルト変数を使う','setChatPalette' ]}
-            @{[ checkbox 'paletteUseBuff','バフデバフ用変数を使う','setChatPalette' ]}<br>
+            @{[ $opt{buff} ? checkbox('paletteUseBuff','バフデバフ用変数を使う','setChatPalette') : '' ]}<br>
             @{[ checkbox 'paletteRemoveTags','ルビなどテキスト装飾の構文を取り除く','setChatPalette' ]} 
           </p>
           <dl>
             <dt>使用するオンセツール
-            <dd class="left">@{[ radios 'paletteTool','setChatPalette',
-              '=>ゆとチャadv.',
-              'tekey=>Tekey',
-              'bcdice=>その他(BCDice使用)'
-              ]}
+            <dd class="left">@{[ radios 'paletteTool','setChatPalette',@{$opt{tool}} ]}
           </dl>
         </div>
       </div>

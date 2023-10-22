@@ -4,7 +4,7 @@ use strict;
 use utf8;
 use Encode;
 
-our $ver = "1.23.100";
+our $ver = "1.24.004";
 
 our %in;
 for (param()){ $in{$_} = param($_); }
@@ -58,9 +58,10 @@ elsif($mode eq 'image')      { &imageRedirect($in{id}); }   #外部アプリ連�
 elsif($in{id})  { require $set::lib_view; }   #シート表示
 elsif($in{url}) { require $set::lib_view; }   #シート表示（コンバート）
 else {
-  if   ($in{type} eq 'm' && $set::lib_list_mons){ require $set::lib_list_mons; }
-  elsif($in{type} eq 'i' && $set::lib_list_item){ require $set::lib_list_item; }
-  elsif($in{type} eq 'a' && $set::lib_list_arts){ require $set::lib_list_arts; }
+  if   ($set::game eq 'sw2' && $in{type} eq 'm' && $set::lib_list_mons){ require $set::lib_list_mons; }
+  elsif($set::game eq 'sw2' && $in{type} eq 'i' && $set::lib_list_item){ require $set::lib_list_item; }
+  elsif($set::game eq 'sw2' && $in{type} eq 'a' && $set::lib_list_arts){ require $set::lib_list_arts; }
+  elsif($set::game eq 'ms'  && $in{type} eq 'c' && $set::lib_list_clan){ require $set::lib_list_clan; }
   else { require $set::lib_list_char; }
 }   #一覧表示
 

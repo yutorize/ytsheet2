@@ -22,10 +22,11 @@ if($id){
   ($file, $type, $author) = getfile_open($id);
 
   my $datadir;
-     if($type eq 'm'){ $datadir = $set::mons_dir; }
-  elsif($type eq 'i'){ $datadir = $set::item_dir; }
-  elsif($type eq 'a'){ $datadir = $set::arts_dir; }
-  else               { $datadir = $set::char_dir; }
+  if   ($set::game eq 'sw2' && $type eq 'm'){ $datadir = $set::mons_dir; }
+  elsif($set::game eq 'sw2' && $type eq 'i'){ $datadir = $set::item_dir; }
+  elsif($set::game eq 'sw2' && $type eq 'a'){ $datadir = $set::arts_dir; }
+  elsif($set::game eq 'ms'  && $type eq 'c'){ $datadir = $set::clan_dir; }
+  else { $datadir = $set::char_dir; }
 
   my $datatype = ($::in{log}) ? 'logs' : 'data';
   my $hit = 0;

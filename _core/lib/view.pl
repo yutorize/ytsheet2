@@ -23,16 +23,22 @@ elsif($::in{url}){
 }
 
 ### 各システム別処理 --------------------------------------------------
-if   ($type eq 'm'){ require $set::lib_view_mons; }
-elsif($type eq 'i'){ require $set::lib_view_item; }
-elsif($type eq 'a'){ require $set::lib_view_arts; }
-else               { require $set::lib_view_char; }
+if   ($set::game eq 'sw2' && $type eq 'm'){ require $set::lib_view_mons; }
+elsif($set::game eq 'sw2' && $type eq 'i'){ require $set::lib_view_item; }
+elsif($set::game eq 'sw2' && $type eq 'a'){ require $set::lib_view_arts; }
+elsif($set::game eq 'ms'  && $type eq 'c'){ require $set::lib_view_clan; }
+else { require $set::lib_view_char; }
 
 
 ### データ取得 --------------------------------------------------
 sub pcDataGet {
   my %pc;
-  my $datadir = ($type eq 'm') ? $set::mons_dir : ($type eq 'i') ? $set::item_dir : ($type eq 'a') ? $set::arts_dir : $set::char_dir;
+  my $datadir = 
+    ($set::game eq 'sw2' && $type eq 'm') ? $set::mons_dir : 
+    ($set::game eq 'sw2' && $type eq 'i') ? $set::item_dir : 
+    ($set::game eq 'sw2' && $type eq 'a') ? $set::arts_dir : 
+    ($set::game eq 'ms'  && $type eq 'c') ? $set::clan_dir : 
+    $set::char_dir;
   ## データ読み込み
   if($::in{id}){
     my $datatype = ($::in{log}) ? 'logs' : 'data';
@@ -62,16 +68,23 @@ sub pcDataGet {
   elsif($::in{url}){
     %pc = %conv_data;
     if(!$conv_data{ver}){
-      require (($type eq 'm') ? $set::lib_calc_mons : ($type eq 'i') ? $set::lib_calc_item : ($type eq 'a') ? $set::lib_calc_arts : $set::lib_calc_char);
+      require (
+        ($set::game eq 'sw2' && $type eq 'm') ? $set::lib_calc_mons : 
+        ($set::game eq 'sw2' && $type eq 'i') ? $set::lib_calc_item : 
+        ($set::game eq 'sw2' && $type eq 'a') ? $set::lib_calc_arts : 
+        ($set::game eq 'ms'  && $type eq 'c') ? $set::lib_calc_clan : 
+        $set::lib_calc_char
+      );
       %pc = data_calc(\%pc);
     }
   }
 
   ##
-  if   ($type eq 'm'){ $pc{sheetType} = 'mons'; }
-  elsif($type eq 'i'){ $pc{sheetType} = 'item'; }
-  elsif($type eq 'a'){ $pc{sheetType} = 'arts'; }
-  else               { $pc{sheetType} = 'chara'; }
+  if   ($set::game eq 'sw2' && $type eq 'm'){ $pc{sheetType} = 'mons'; }
+  elsif($set::game eq 'sw2' && $type eq 'i'){ $pc{sheetType} = 'item'; }
+  elsif($set::game eq 'sw2' && $type eq 'a'){ $pc{sheetType} = 'arts'; }
+  elsif($set::game eq 'ms'  && $type eq 'c'){ $pc{sheetType} = 'clan'; }
+  else { $pc{sheetType} = 'chara'; }
 
   if(!$::in{checkView} && (
     ($pc{protect} eq 'none') || 
