@@ -129,6 +129,7 @@ header nav {
   font-size: 1.2rem;
   font-weight: bold;
   font-family: var(--base-font-family-min);
+  white-space: nowrap;
   color: #fff;
   
   cursor: pointer;
@@ -644,6 +645,12 @@ aside.information.log p {
 
 /* // Nav
 ---------------------------------------------------------------------------------------------------- */
+header h1 {
+  z-index: 1;
+}
+header nav {
+  z-index: 2;
+}
 header nav ul  {
 }
 header nav ul li  {
@@ -675,7 +682,7 @@ header nav ul li a span {
 }
 @media screen and (max-width:735px){
   header nav {
-    margin-top: 1.7rem;
+    margin-top: 3rem;
     right: -1rem;
   }
   main {
@@ -757,7 +764,7 @@ textarea::placeholder {
   color: var(--bg-color);
   font-size: 80%;
 }
-#tags .tag:hover {
+#tags a:hover {
   background-color: rgba(120,220,220,0.4) !important;
 }
 #tags #group {
