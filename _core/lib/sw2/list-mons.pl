@@ -294,7 +294,7 @@ foreach (@taxa,['騎獣', 'XX' , '']){
   
   ## ページネーション
   my $navbar;
-  if($set::pagemax && (!$index_mode && $::in{taxa}) || $mode eq 'mylist'){
+  if($set::pagemax && !$index_mode && ($::in{taxa} || $mode eq 'mylist')){
     my $lastpage = ceil($count{$name} / $set::pagemax);
     if($lastpage > 1){
       foreach(1 .. $lastpage){
