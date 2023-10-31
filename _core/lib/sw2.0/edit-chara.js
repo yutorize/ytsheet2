@@ -89,7 +89,6 @@ function checkFeats(){
       const box = form["combatFeatsLv"+array[i]];
       const auto = form.featsAutoOn.checked;
       let feat = box.options[box.selectedIndex].value;
-      acquire += feat + ',';
       
       if (feat.match(/足さばき/)){
         if(level < 9){ cL.add("error"); }
@@ -106,11 +105,11 @@ function checkFeats(){
           if(!f2 || (lv['Fen'] < 9 && lv['Bat'] < 9)) { (auto) ? box.value = "回避行動Ⅰ" : cL.add("error") }
         }
       }
-      else if (feat.match(/^頑強/)){
-        if(lv['Fig'] < 5 && lv['Gra'] < 5 && lv['Fen'] < 5 && lv['Bat'] < 5){ cL.add("error"); }
-      }
       else if (feat.match(/超頑強/)){
         if((lv['Fig'] < 7 && lv['Gra'] < 7)|| !acquire.match('頑強')){ cL.add("error"); }
+      }
+      else if (feat.match(/^頑強/)){
+        if(lv['Fig'] < 5 && lv['Gra'] < 5 && lv['Fen'] < 5 && lv['Bat'] < 5){ cL.add("error"); }
       }
       else if (feat.match(/キャパシティ/)){
         if(level < 11){ cL.add("error"); }
@@ -365,6 +364,7 @@ function checkFeats(){
         if(!acquire.match('魔法誘導') || !acquire.match('魔法収束')){ cL.add("error"); }
       }
       feat = box.options[box.selectedIndex].value;
+      acquire += feat + ',';
       
       const weaponsRegex = new RegExp('武器習熟(Ａ|Ｓ)／(' + SET.weapons.map(d => d[0]).join('|') + ')');
       if     (feat === "足さばき"){ feats['足さばき'] = 1; }
