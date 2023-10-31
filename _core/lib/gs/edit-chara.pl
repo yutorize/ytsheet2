@@ -438,13 +438,13 @@ print <<"HTML";
           </dl>
         </div>
 
-        <div class="box edit-tables side-margin" id="classes">
+        <div class="box" id="classes">
           <h2>職業</h2>
 HTML
-print '<div class="classes-group" id="classes-weapon-user"><h3>戦士系</h3><dl>';
+print '<div class="classes-group" id="classes-weapon-user"><h3>戦士系</h3><dl class="edit-table side-margin">';
 foreach my $name (@data::class_names){ print classInputBox($name) if $data::class{$name}{type} =~ 'warrior'; }
 print '</dl></div>';
-print '<div class="classes-group" id="classes-magic-user"><h3>呪文使い系</h3><dl>';
+print '<div class="classes-group" id="classes-magic-user"><h3>呪文使い系</h3><dl class="edit-table side-margin">';
 foreach my $name (@data::class_names){ print classInputBox($name) if $data::class{$name}{type} =~ 'spell'; }
 print '</dl></div>';
 
@@ -646,10 +646,10 @@ print <<"HTML";
         <div class="add-del-button"><a onclick="addArts()">▼</a><a onclick="delArts()">▲</a></div>
       </details>
       
-      <div class="edit-tables" id="area-equipment">
+      <div id="area-equipment">
         <div class="box" id="attack-classes">
           <h2>命中基準値</h2>
-          <table class="line-tbody">
+          <table class="edit-table line-tbody">
             <colgroup>
               <col>
               <col class="name">
@@ -695,7 +695,7 @@ print <<"HTML";
           </table>
         </div>
         <div class="box" id="weapons">
-          <table class="line-tbody" id="weapons-table">
+          <table class="edit-table line-tbody" id="weapons-table">
             <thead id="weapon-head">
               <tr>
                 <th class="name ">武器
@@ -733,7 +733,7 @@ print <<"HTML";
         </div>
         <div class="box defense-classes" id="dodge-classes">
           <h2>回避基準値／移動力</h2>
-          <table>
+          <table class="edit-table">
             <thead>
               <tr>
                 <th>
@@ -769,7 +769,7 @@ print <<"HTML";
           </table>
         </div>
         <div class="box" id="armor">
-          <table>
+          <table class="edit-table">
             <thead>
               <tr>
                 <th class="name   ">鎧
@@ -795,7 +795,7 @@ print <<"HTML";
         </div>
         <div class="box defense-classes" id="block-classes">
           <h2>盾受け基準値</h2>
-          <table>
+          <table class="edit-table">
             <thead>
               <tr>
                 <th>
@@ -825,7 +825,7 @@ print <<"HTML";
           </table>
         </div>
         <div class="box" id="shield">
-          <table>
+          <table class="edit-table">
             <thead>
               <tr>
                 <th class="name   ">盾

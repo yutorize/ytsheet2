@@ -205,11 +205,11 @@
         </section>
       </div>
 
-      <div id="area-ability" class="data-tables side-margin">
+      <div id="area-ability">
         <div id="area-classes">
           <section class="box" id="classes">
             <h2>技能</h2>
-            <dl>
+            <dl class="data-table side-margin">
               <TMPL_LOOP Classes>
               <dt><TMPL_VAR NAME><dd><TMPL_VAR LV>
               </TMPL_LOOP>
@@ -218,7 +218,7 @@
           <TMPL_IF Seeker>
           <section class="box" id="common-classes">
             <h2>求道者</h2>
-            <dl>
+            <dl class="data-table side-margin">
               <TMPL_LOOP Seeker>
               <dt><TMPL_VAR NAME><dd><TMPL_VAR LV>
               </TMPL_LOOP>
@@ -228,7 +228,7 @@
           <TMPL_IF CommonClasses>
           <section class="box" id="common-classes">
             <h2>一般技能</h2>
-            <dl>
+            <dl class="data-table side-margin">
               <TMPL_LOOP CommonClasses>
               <dt><TMPL_VAR NAME><dd><TMPL_VAR LV>
               </TMPL_LOOP>
@@ -240,7 +240,7 @@
         <div>
           <section class="box" id="combat-feats">
             <h2>戦闘特技</h2>
-            <ul>
+            <ul class="data-table side-margin">
               <TMPL_LOOP CombatFeatsLv>
               <li id="combat-feats-lv<TMPL_VAR LV>" data-lv="<TMPL_VAR LV>">《<TMPL_VAR NAME>》
               </TMPL_LOOP>
@@ -252,7 +252,7 @@
           <TMPL_IF SeekerAbilities>
           <section class="box" id="seeker-abilities">
             <h2>特殊能力</h2>
-            <ul>
+            <ul class="data-table side-margin">
               <TMPL_LOOP SeekerAbilities>
               <li><TMPL_VAR NAME>
               </TMPL_LOOP>
@@ -262,7 +262,7 @@
           <TMPL_IF MysticArts>
           <section class="box" id="mystic-arts">
             <h2>秘伝</h2>
-            <ul>
+            <ul class="data-table side-margin">
               <TMPL_LOOP MysticArts>
               <li><TMPL_VAR NAME>
               </TMPL_LOOP>
@@ -273,7 +273,7 @@
         <div id="crafts">
           <TMPL_LOOP MagicLists><section class="box" id="magic-<TMPL_VAR eNAME>">
             <h2><TMPL_VAR jNAME></h2>
-            <ul>
+            <ul class="data-table side-margin">
               <TMPL_LOOP MAGICS>
               <li id="magic-<TMPL_VAR eNAME><TMPL_VAR __counter__>"><span <TMPL_VAR RUBY>>【<TMPL_VAR ITEM>】</span>
               </TMPL_LOOP>
@@ -281,7 +281,7 @@
           </section></TMPL_LOOP>
           <TMPL_LOOP CraftLists><section class="box" id="craft-<TMPL_VAR eNAME>">
             <h2><TMPL_VAR jNAME></h2>
-            <ul>
+            <ul class="data-table side-margin">
               <TMPL_LOOP CRAFTS>
               <li id="craft-<TMPL_VAR eNAME><TMPL_VAR __counter__>"><span <TMPL_VAR RUBY>>【<TMPL_VAR ITEM>】</span>
               </TMPL_LOOP>
@@ -289,7 +289,7 @@
           </section></TMPL_LOOP>
           <TMPL_IF craftNone><TMPL_UNLESS forbiddenMode><section class="box">
             <h2>練技／呪歌／騎芸／賦術</h2>
-            <ul><li>なし</ul>
+            <ul class="data-table side-margin"><li>なし</ul>
           </section></TMPL_UNLESS></TMPL_IF>
         </div>
       </div>

@@ -431,19 +431,19 @@ print <<"HTML";
         </dl>
       </div>
       
-      <div id="area-ability" class="edit-tables side-margin">
+      <div id="area-ability">
         <div id="area-classes">
           <div class="box" id="classes">
             <h2>技能</h2>
             <div>使用経験点：<span id="exp-use"></span></div>
 HTML
-print '<div class="classes-group" id="classes-weapon-user"><h3>戦士系技能</h3><dl>';
+print '<div class="classes-group" id="classes-weapon-user"><h3>戦士系技能</h3><dl class="edit-table side-margin">';
 foreach my $name (@data::class_names){ print classInputBox($name) if $data::class{$name}{type} eq 'weapon-user'; }
 print '</dl></div>';
-print '<div class="classes-group" id="classes-magic-user"><h3>魔法使い系技能</h3><dl>';
+print '<div class="classes-group" id="classes-magic-user"><h3>魔法使い系技能</h3><dl class="edit-table side-margin">';
 foreach my $name (@data::class_names){ print classInputBox($name) if $data::class{$name}{type} eq 'magic-user'; }
 print '</dl></div>';
-print '<div class="classes-group" id="classes-other-user"><h3>その他系技能</h3><dl>';
+print '<div class="classes-group" id="classes-other-user"><h3>その他系技能</h3><dl class="edit-table side-margin">';
 foreach my $name (@data::class_names){ print classInputBox($name) if !$data::class{$name}{type}; }
 print '</dl></div>';
 
@@ -466,7 +466,7 @@ print <<"HTML";
           </div>
           <div class="box" id="common-classes">
             <h2>一般技能</h2>
-            <table id="common-classes-table">
+            <table id="common-classes-table" class="edit-table side-margin">
             <tbody>
 HTML
 foreach my $i (1..10){
@@ -483,7 +483,7 @@ print <<"HTML";
         <div>
           <div class="box" id="combat-feats">
             <h2>戦闘特技</h2>
-            <ul>
+            <ul class="edit-table side-margin">
 HTML
 foreach my $lv ('1bat',@set::feats_lv) {
   (my $data_lv = $lv) =~ s/^([0-9]+)[^0-9].*?$/$1/;
@@ -529,7 +529,7 @@ print <<"HTML";
           <div class="box" id="mystic-arts">
             <h2>秘伝</h2>
             <div>所持名誉点：<span id="honor-value-MA"></span></div>
-            <ul id="mystic-arts-list">
+            <ul id="mystic-arts-list" class="edit-table side-margin">
 HTML
 foreach my $num ('TMPL',1 .. $pc{mysticArtsNum}){
   if($num eq 'TMPL'){ print '<template id="mystic-arts-template">' }
@@ -542,7 +542,7 @@ print <<"HTML";
             @{[input('mysticArtsNum','hidden')]}
 
             <h2>秘伝魔法</h2>
-            <ul id="mystic-magic-list">
+            <ul id="mystic-magic-list" class="edit-table side-margin">
 HTML
 $pc{mysticMagicNum} ||= 0;
 foreach my $num ('TMPL',1 .. $pc{mysticMagicNum}){
@@ -565,7 +565,7 @@ foreach my $class (@data::class_names){
   print <<"HTML";
             <div class="box" id="magic-${name}">
               <h2>$data::class{$class}{magic}{jName}</h2>
-              <ul>
+              <ul class="edit-table side-margin">
 HTML
   foreach my $lv (1..17){
     print '<li id="magic-'.$name.$lv.'"><div class="select-input"><select name="magic'.$Name.$lv.'" oninput="selectInputCheck(\'magic'.$Name.$lv.'\',this);">';
@@ -601,7 +601,7 @@ foreach my $class (@data::class_names){
   print <<"HTML";
             <div class="box" id="craft-${name}">
               <h2>$data::class{$class}{craft}{jName}</h2>
-              <ul>
+              <ul class="edit-table side-margin">
 HTML
   my $c_max = $class =~ /バード|ウォーリーダー/ ? 20 : $class eq 'アーティザン' ? 19 : 17;
   foreach my $lv (1..$c_max){
@@ -810,9 +810,9 @@ print <<"HTML";
         </div>
       </div>
       
-      <div class="edit-tables" id="area-equipment">
+      <div id="area-equipment">
         <div class="box" id="attack-classes">
-          <table class="line-tbody">
+          <table class="edit-table line-tbody">
             <thead>
               <tr>
                 <th>技能・特技
@@ -892,7 +892,7 @@ print <<"HTML";
           </table>
         </div>
         <div class="box" id="weapons">
-          <table class="line-tbody" id="weapons-table">
+          <table class="edit-table line-tbody" id="weapons-table">
             <thead id="weapon-head">
               <tr>
                 <th>武器
@@ -941,7 +941,7 @@ print <<"HTML";
           @{[input('weaponNum','hidden')]}
         </div>
         <div class="box" id="evasion-classes">
-          <table>
+          <table class="edit-table">
             <thead>
               <tr>
                 <th>技能・特技
@@ -1007,7 +1007,7 @@ print <<"HTML";
           </table>
         </div>
         <div class="box" id="armours">
-          <table>
+          <table class="edit-table">
             <thead>
               <tr>
                 <th class="type">
@@ -1065,7 +1065,7 @@ print <<"HTML";
           </table>
         </div>
         <div class="box" id="accessories">
-          <table>
+          <table class="edit-table">
             <thead>
               <tr>
                 <th>
