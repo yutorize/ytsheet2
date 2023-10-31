@@ -458,22 +458,22 @@ body:not(.mode-crc) .crc-only {
   left: 0;
   bottom: 0;
   width: calc((100vw - 940px) / 2 );
-}
-.trash-box::before {
-  content: "\e872";
-  display: block;
-  position: absolute;
-  top: 30vh;
-  left: 0;
-  right: 0;
-  bottom: auto;
-  margin:auto;
-  text-align: center;
-  font-family: "Material Symbols Outlined";
-  font-size: calc((100vw - 940px) / 2 * 0.5 );
-  opacity: 0.1;
-  pointer-events: none;
-  z-index: -1;
+  &::before {
+    content: "\e872";
+    display: block;
+    position: absolute;
+    top: 30vh;
+    left: 0;
+    right: 0;
+    bottom: auto;
+    margin:auto;
+    text-align: center;
+    font-family: "Material Symbols Outlined";
+    font-size: calc((100vw - 940px) / 2 * 0.5 );
+    opacity: 0.1;
+    pointer-events: none;
+    z-index: -1;
+  }
 }
 .trash-box table {
   display: block;
@@ -481,36 +481,36 @@ body:not(.mode-crc) .crc-only {
   height: calc(70vh - 1.5em);
   overflow: auto;
   z-index: 2;
-}
-.trash-box table:empty::before {
-  display: block;
-  content: 'ここにドロップで削除\A（ページ移動するまで保留）';
-  margin-top: 1em;
-  white-space: pre;
-  text-align: center;
-}
-.trash-box table tbody {
-  display: block;
-  border-width: 1px;
-  border-style: solid;
-  border-radius: 5px;
-  margin: .2em;
-  cursor: move;
-}
-.trash-box table tbody tr,
-.trash-box table tbody td {
-  display: none;
-}
-.trash-box table tbody tr:first-child,
-.trash-box table tbody tr:first-child td:nth-child(2) {
-  border: none;
-  display: block;
-}
-.trash-box table tbody input {
-  padding: 1em .5em;
-  border-color: transparent;
-  background-color: transparent;
-  pointer-events: none;
+  &:empty::before {
+    display: block;
+    content: 'ここにドロップで削除\A（ページ移動するまで保留）';
+    margin-top: 1em;
+    white-space: pre;
+    text-align: center;
+  }
+  & tbody {
+    display: block;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 5px;
+    margin: .2em;
+    cursor: move;
+  }
+  & tbody tr,
+  & tbody td {
+    display: none;
+  }
+  & tbody tr:first-child,
+  & tbody tr:first-child td:nth-child(2) {
+    border: none;
+    display: block;
+  }
+  & tbody input {
+    padding: 1em .5em;
+    border-color: transparent;
+    background-color: transparent;
+    pointer-events: none;
+  }
 }
 .trash-box .annotate {
   position: absolute;
@@ -522,9 +522,9 @@ body:not(.mode-crc) .crc-only {
   top: 2px;
   right: 2px;
   font-size: 1.2em;
-}
-.trash-box .close-button:hover {
-  opacity: 0.5;
+  &:hover {
+    opacity: 0.5;
+  }
 }
 @media screen and (max-width:1090px){
   .trash-box  {

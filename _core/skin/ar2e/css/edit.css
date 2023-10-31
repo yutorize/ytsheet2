@@ -60,10 +60,7 @@ dd.area-tags {
     "CLS  CLS IMG"
     "STT  STT STT"
   ;
-}
-
-@media screen and (max-width:735px){
-  #area-status {
+  @media screen and (max-width:735px){
     grid-template-columns: 2fr 1fr;
     grid-gap: var(--box-v-gap) var(--box-h-gap);
 
@@ -306,15 +303,17 @@ dd.area-tags {
 }
 #skills table {
 }
-#skills table thead th:nth-child(1) { width: 1.4em; }
-#skills table thead th:nth-child(2) { width:  auto; } /* 名称 */
-#skills table thead th:nth-child(3) { width:   2em; } /* Lv */
-#skills table thead th:nth-child(4) { width: 8.9em; } /* タイミング */
-#skills table thead th:nth-child(5) { width: 7.4em; } /* 判定 */
-#skills table thead th:nth-child(6) { width: 6.3em; } /* 対象 */
-#skills table thead th:nth-child(7) { width: 5.3em; } /* 射程 */
-#skills table thead th:nth-child(8) { width: 3.9em; } /* コスト */
-#skills table thead th:nth-child(9) { width: 9.4em; } /* 使用条件 */
+#skills table thead th {
+  &:nth-child(1) { width: 1.4em; }
+  &:nth-child(2) { width:  auto; } /* 名称 */
+  &:nth-child(3) { width:   2em; } /* Lv */
+  &:nth-child(4) { width: 8.9em; } /* タイミング */
+  &:nth-child(5) { width: 7.4em; } /* 判定 */
+  &:nth-child(6) { width: 6.3em; } /* 対象 */
+  &:nth-child(7) { width: 5.3em; } /* 射程 */
+  &:nth-child(8) { width: 3.9em; } /* コスト */
+  &:nth-child(9) { width: 9.4em; } /* 使用条件 */
+}
 #skills table tbody td {
   padding: 5px 0 0;
   vertical-align: bottom;
@@ -370,14 +369,16 @@ dd.area-tags {
 #skills td.calc input {
   padding-left: calc(1.1em + 4px);
 }
-#skills table tbody.race    { background-image: linear-gradient(to right,hsla(120, 70%, 50%,0.2) 1em,transparent 2em) }
-#skills table tbody.style   { background-image: linear-gradient(to right,hsla( 60, 70%, 50%,0.2) 1em,transparent 2em) }
-#skills table tbody.general { background-image: linear-gradient(to right,hsla(200,100%, 50%,0.2),transparent) }
-#skills table tbody.geis    { background-image: linear-gradient(to right,hsla(270,100%, 50%,0.2),transparent) }
-#skills table tbody.add     { background-image: linear-gradient(to right,hsla(  0, 20%, 50%,0.1),transparent) }
-#skills table tbody.another { background-image: linear-gradient(to right,hsla(  0,100%, 50%,0.2),transparent) }
-#skills table tbody.power   { background-image: linear-gradient(to right,hsla( 40,100%, 50%,0.2),transparent) }
-.night #skills table tbody.another { background-image: linear-gradient(to right,hsla(  0,100%, 85%,0.2),transparent) }
+#skills table tbody {
+  &.race    { background-image: linear-gradient(to right,hsla(120, 70%, 50%,0.2) 1em,transparent 2em) }
+  &.style   { background-image: linear-gradient(to right,hsla( 60, 70%, 50%,0.2) 1em,transparent 2em) }
+  &.general { background-image: linear-gradient(to right,hsla(200,100%, 50%,0.2),transparent) }
+  &.geis    { background-image: linear-gradient(to right,hsla(270,100%, 50%,0.2),transparent) }
+  &.add     { background-image: linear-gradient(to right,hsla(  0, 20%, 50%,0.1),transparent) }
+  &.another { background-image: linear-gradient(to right,hsla(  0,100%, 50%,0.2),transparent) }
+  &.power   { background-image: linear-gradient(to right,hsla( 40,100%, 50%,0.2),transparent) }
+  .night &.another { background-image: linear-gradient(to right,hsla(  0,100%, 85%,0.2),transparent) }
+}
 
 @media screen and (max-width:735px){
   #skills table {
@@ -424,22 +425,22 @@ dd.area-tags {
   left: 0;
   bottom: 0;
   width: calc((100vw - 940px) / 2 );
-}
-.trash-box::before {
-  content: "\e872";
-  display: block;
-  position: absolute;
-  top: 30vh;
-  left: 0;
-  right: 0;
-  bottom: auto;
-  margin:auto;
-  text-align: center;
-  font-family: "Material Symbols Outlined";
-  font-size: calc((100vw - 940px) / 2 * 0.5 );
-  opacity: 0.1;
-  pointer-events: none;
-  z-index: -1;
+  &::before {
+    content: "\e872";
+    display: block;
+    position: absolute;
+    top: 30vh;
+    left: 0;
+    right: 0;
+    bottom: auto;
+    margin:auto;
+    text-align: center;
+    font-family: "Material Symbols Outlined";
+    font-size: calc((100vw - 940px) / 2 * 0.5 );
+    opacity: 0.1;
+    pointer-events: none;
+    z-index: -1;
+  }
 }
 .trash-box table {
   display: block;
@@ -447,36 +448,36 @@ dd.area-tags {
   height: calc(70vh - 1.5em);
   overflow: auto;
   z-index: 2;
-}
-.trash-box table:empty::before {
-  display: block;
-  content: 'ここにドロップで削除\A（ページ移動するまで保留）';
-  margin-top: 1em;
-  white-space: pre;
-  text-align: center;
-}
-.trash-box table tbody {
-  display: block;
-  border-width: 1px;
-  border-style: solid;
-  border-radius: 5px;
-  margin: .2em;
-  cursor: move;
-}
-.trash-box table tbody tr,
-.trash-box table tbody td {
-  display: none;
-}
-.trash-box table tbody tr:first-child,
-.trash-box table tbody tr:first-child td:nth-child(2) {
-  border: none;
-  display: block;
-}
-.trash-box table tbody input {
-  padding: 1em .5em;
-  border-color: transparent;
-  background-color: transparent;
-  pointer-events: none;
+  &:empty::before {
+    display: block;
+    content: 'ここにドロップで削除\A（ページ移動するまで保留）';
+    margin-top: 1em;
+    white-space: pre;
+    text-align: center;
+  }
+  & tbody {
+    display: block;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 5px;
+    margin: .2em;
+    cursor: move;
+  }
+  & tbody tr,
+  & tbody td {
+    display: none;
+  }
+  & tbody tr:first-child,
+  & tbody tr:first-child td:nth-child(2) {
+    border: none;
+    display: block;
+  }
+  & tbody input {
+    padding: 1em .5em;
+    border-color: transparent;
+    background-color: transparent;
+    pointer-events: none;
+  }
 }
 .trash-box .annotate {
   position: absolute;
@@ -488,11 +489,10 @@ dd.area-tags {
   top: 2px;
   right: 2px;
   font-size: 1.2em;
+  &:hover {
+    opacity: 0.5;
+  }
 }
-.trash-box .close-button:hover {
-  opacity: 0.5;
-}
-
 @media screen and (max-width:1090px){
   .trash-box  {
     top: auto;
@@ -531,20 +531,22 @@ dd.area-tags {
   border-top: unset;
   border-bottom: unset;
 }
-#battle col.head  { width:   3em; } /* 見出し */
-#battle col.name  { width:  11em; } /* 名称 */
-#battle col.weight{ width: 3.2em; } /* 重量 */
-#battle col.acc   { width: 3.2em; } /* 命中 */
-#battle col.atk   { width: 3.2em; } /* 攻撃 */
-#battle col.eva   { width: 3.2em; } /* 回避 */
-#battle col.def   { width: 3.2em; } /* 物防 */
-#battle col.mdef  { width: 3.2em; } /* 魔防 */
-#battle col.ini   { width: 3.2em; } /* 行動 */
-#battle col.move  { width: 3.2em; } /* 移動 */
-#battle col.range { width: 4.7em; } /* 射程 */
-#battle col.type  { width: auto; } /* 種別 */
-#battle col.usage { width: auto; } /* 部位 */
-#battle col.lv    { width: 3.2em; } /* Lv */
+#battle col {
+  &.head  { width:   3em; } /* 見出し */
+  &.name  { width:  11em; } /* 名称 */
+  &.weight{ width: 3.2em; } /* 重量 */
+  &.acc   { width: 3.2em; } /* 命中 */
+  &.atk   { width: 3.2em; } /* 攻撃 */
+  &.eva   { width: 3.2em; } /* 回避 */
+  &.def   { width: 3.2em; } /* 物防 */
+  &.mdef  { width: 3.2em; } /* 魔防 */
+  &.ini   { width: 3.2em; } /* 行動 */
+  &.move  { width: 3.2em; } /* 移動 */
+  &.range { width: 4.7em; } /* 射程 */
+  &.type  { width: auto; } /* 種別 */
+  &.usage { width: auto; } /* 部位 */
+  &.lv    { width: 3.2em; } /* Lv */
+}
 #battle input[name$="Type"]{ min-width: 4em; }
 #battle input[name$="Usage"]{ min-width: 4em; }
 #battle #armaments tbody tr > td {
@@ -615,18 +617,20 @@ dd.area-tags {
 @media screen and (max-width:735px){
   #battle .box { overflow-x: auto; }
   #battle table { table-layout: fixed; }
-  #battle col:nth-child(1) { width: 3.2em !important; }
-  #battle col:nth-child(2) { width: 11em !important; }
-  #battle col:nth-child(3) { width: 3.2em !important; }
-  #battle col:nth-child(4) { width: 3.2em !important; }
-  #battle col:nth-child(5) { width: 3.2em !important; }
-  #battle col:nth-child(6) { width: 3.2em !important; }
-  #battle col:nth-child(7) { width: 3.2em !important; }
-  #battle col:nth-child(8) { width: 3.2em !important; }
-  #battle col:nth-child(9) { width: 3.2em !important; }
-  #battle col:nth-child(10){ width: 3.2em !important; }
-  #battle col:nth-child(11){ width: 3.2em !important; }
-  #battle col:last-child   { width: 12em !important; }
+  #battle col {
+    &:nth-child(1) { width: 3.2em !important; }
+    &:nth-child(2) { width: 11em !important; }
+    &:nth-child(3) { width: 3.2em !important; }
+    &:nth-child(4) { width: 3.2em !important; }
+    &:nth-child(5) { width: 3.2em !important; }
+    &:nth-child(6) { width: 3.2em !important; }
+    &:nth-child(7) { width: 3.2em !important; }
+    &:nth-child(8) { width: 3.2em !important; }
+    &:nth-child(9) { width: 3.2em !important; }
+    &:nth-child(10){ width: 3.2em !important; }
+    &:nth-child(11){ width: 3.2em !important; }
+    &:last-child   { width: 12em !important; }
+  }
   #battle table thead tr,
   #battle table tbody tr,
   #battle table tfoot tr {
@@ -642,8 +646,6 @@ dd.area-tags {
 #other-rolls table tbody td {
   padding-top: 4px;
   padding-bottom: 4px;
-}
-#other-rolls table tbody td.roll {
 }
 #other-rolls table tbody td.roll > span {
   position: absolute;
@@ -753,14 +755,16 @@ dd.area-tags {
   padding-left: .5em;
 }
 
-#history table thead th:first-child{ width: 1.4em; }
-#history table thead th.date       { width:   6em; }
-#history table thead th.title      { width:  12em; }
-#history table thead th.exp        { width:   5em; }
-#history table thead th.pay        { width:   5em; }
-#history table thead th.money      { width:   5em; }
-#history table thead th.gm         { width:   6em; }
-#history table thead th.member     { width:  auto; }
+#history table thead th {
+  &:first-child{ width: 1.4em; }
+  &.date       { width:   6em; }
+  &.title      { width:  12em; }
+  &.exp        { width:   5em; }
+  &.pay        { width:   5em; }
+  &.money      { width:   5em; }
+  &.gm         { width:   6em; }
+  &.member     { width:  auto; }
+}
 
 @media screen and (max-width:735px){
   #history table  { table-layout: fixed; }
