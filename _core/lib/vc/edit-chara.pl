@@ -594,6 +594,7 @@ print <<"HTML";
         <table class="example edit-table line-tbody no-border-cells">
           <thead>
             <tr>
+              <th>
               <th class="date  ">日付
               <th class="title ">タイトル
               <th class="result">戦果点
