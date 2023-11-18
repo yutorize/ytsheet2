@@ -276,7 +276,7 @@ sub convertHokanjoToYtsheet {
     $i++;
   }
   $pc{historyNum} = $i;
-  $pc{history0Exp} = $in{'sum_seichoten_default'};
+  $pc{history0Exp} = $in{'sum_seichoten_default'} - 130;
   
   ## プロフィール追加
   my $profile;
@@ -525,9 +525,7 @@ sub convertSoukoToYtsheet {
   }
   $pc{itemNum} = $i-1;
   ## 履歴
-  $pc{history0Exp} = 130;
-  $pc{history1Title} = '追加経験点';
-  $pc{history1Exp} = $in{'exp'}{'acquire'};
+  $pc{history0Exp} = $in{'exp'}{'acquire'} || 0;
   $pc{historyNum} = 3;
   
   ## チャットパレット
