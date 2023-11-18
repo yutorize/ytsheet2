@@ -589,7 +589,7 @@ sub tableCreate {
       elsif($col eq '~')   { next; }
       elsif($col =~ s/^~//){ $td = 'th' }
       $output .= "<$td";
-      if($colspan > 1){ $output .= ' colspan="'.$colspan.'"'; }
+      if($colspan > 1){ $output .= ' colspan="'.$colspan.'"'; $colspan = 1; }
       if($rowspan > 1){ $output .= ' rowspan="'.$rowspan.'"'; }
       $output .= ">$col</$td>";
     }
