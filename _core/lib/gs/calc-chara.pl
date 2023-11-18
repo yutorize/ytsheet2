@@ -155,7 +155,7 @@ sub data_calc {
     $pc{statusSpell} = $pc{statusSpellBase} + $pc{statusSpellMod};
 
     ## 呪文抵抗基準値
-    $pc{statusResist} = $pc{abilityPsyRef} + $pc{level};
+    $pc{statusResist} = $pc{abilityPsyRef} + $pc{level} + $pc{statusResistMod};
   }
   
   ### 呪文行使 --------------------------------------------------
@@ -191,7 +191,7 @@ sub data_calc {
   ## 防具
   foreach (1){
     $pc{'armor'.$_.'DodgeTotal'} = $pc{abilityTecRef} + $pc{dodgeModValue} + $pc{'armor'.$_.'DodgeMod'} + $pc{dodgeClassLv};
-    $pc{'armor'.$_.'MoveTotal'} = $pc{statusMove} + $pc{'armor'.$_.'MoveMod'};
+    $pc{'armor'.$_.'MoveTotal'} = $pc{statusMove} + $pc{MoveModValue} + $pc{'armor'.$_.'MoveMod'};
   }
 
   ### 盾受け --------------------------------------------------

@@ -28,6 +28,11 @@ sub data_update_chara {
   delete $pc{updateMessage};
   $ver =~ s/^([0-9]+)\.([0-9]+)\.([0-9]+)$/$1.$2$3/;
 
+  if($ver < 1.24005){
+    $pc{statusResist} = $pc{abilityPsyRef} + $pc{level} + $pc{statusResistMod};
+    $pc{armor1MoveTotal} = $pc{statusMove} + $pc{MoveModValue} + $pc{armor1MoveMod};
+  }
+
   $pc{ver} = $main::ver;
   $pc{lasttimever} = $ver;
   return %pc;
