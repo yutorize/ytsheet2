@@ -584,12 +584,18 @@ sub paletteProperties {
     
     foreach my $i (1..3){
       next if ($::pc{"defenseTotal${i}Eva"} eq '');
-      my $own_agi = $::pc{"defTotal${i}CheckShield1"} && $::pc{shield1Own} ? '+2' : '';
 
       my $armorTotal = 0;
+      my $own_agi;
+      my $hasChecked = 0;
       foreach my $j (1..$::pc{armourNum}){
-        $armorTotal += ($::pc{"defTotal${i}CheckArmour${j}"} ? $::pc{"armour${j}Eva"} : 0);
+        if($::pc{"defTotal${i}CheckArmour${j}"}){
+          $armorTotal += $::pc{"armour${j}Eva"};
+          $own_agi = $::pc{"armour${j}Category"} eq '盾' && $::pc{"armour${j}Own"} ? '+2' : '';
+          $hasChecked++;
+        }
       }
+      next if !$hasChecked;
 
       push @propaties, "//回避${i}=("
         .($::pc{evasionClass} ? "{$::pc{evasionClass}}+({敏捷}${own_agi})/6+" : '')
