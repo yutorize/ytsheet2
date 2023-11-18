@@ -20,20 +20,25 @@ sub addJsonData {
   foreach my $data (@classes){
     $class_text .= ($class_text ? '／' : '') . $data->{NAME} . $data->{LV} if $data->{LV} > 0;
   }
-  my $factor = "ファクター:$pc{factor}／$pc{factorCore}／$pc{factorStyle}";
-  my $base    = "性別:$pc{gender}　年齢:$pc{age}".($pc{ageApp}?"（外見年齢：$pc{ageApp}）":"");
-  my $missing = ($pc{factor} eq '吸血鬼' ? "欠落" : "喪失").":$pc{missing}";
-  my $belong  = "所属:$pc{belong}";
-  my $scar    = $pc{scarName} ? "傷号:$pc{scarName}" : '';
+  my $base = "分類名:$pc{taxa}　出身地:$pc{home}　根源:$pc{origin}　経緯:$pc{background}";
+  my $clan = "クラン:$pc{clanName}　クランへの感情:$pc{clanEmotion}";
+  my $address = "住所:$pc{address}";
+  my $level = "強度:$pc{level}";
+  my $physical = "【身体】$pc{statusPhysical} ";
+  my $special  = "【異質】$pc{statusSpecial} ";
+  my $social   = "【社会】$pc{statusSocial} ";
+  foreach my $num (1..$pc{attributeRow}){
+    $physical .= "《$pc{'attributePhysical'.$num}》" if $pc{'attributePhysical'.$num};
+    $special  .= "《$pc{'attributeSpecial'.$num}》" if $pc{'attributeSpecial'.$num};
+    $social   .= "《$pc{'attributeSocial'.$num}》" if $pc{'attributeSocial'.$num};
+  }
   
-  $pc{sheetDescriptionS} = $factor."\n".$base."\n".$missing."　".$scar;
-  $pc{sheetDescriptionM} = $factor."\n".$base."\n".$belong."\n".$missing.($scar?"\n$scar":'');
+  $pc{sheetDescriptionS} = $base."　".$address;
+  $pc{sheetDescriptionM} = $base."　".$address."\n".$clan."\n".$level."\n".$physical."\n".$special."\n".$social;
   
   ## ゆとチャユニット用ステータス
   $pc{unitStatus} = [
     { '耐久値' => $pc{endurance} },
-    { '作戦力' => $pc{operation} },
-    { '励起値' => 0 },
   ];
 
   return \%pc;
