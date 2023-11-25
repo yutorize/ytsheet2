@@ -80,7 +80,9 @@ $in{race} .= '（冒険者）' if $adventurer;
 
 my $curse;
 if($in{race} eq 'アビスボーン'){
-  $curse .= dice(1).'-'.dice(1).'/' foreach(1..3);
+  my @array = keys %set::curseList;
+  my $max = @array;
+  $curse .= $array[int(rand $max)].'/' foreach(1..3);
 }
 
 # 書き込み
