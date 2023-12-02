@@ -1302,7 +1302,7 @@ print <<"HTML";
     <option value="〈白兵〉">
     <option value="〈射撃〉">
     <option value="〈白兵〉〈射撃〉">
-    <option value="効果参照">
+    <option value="解説参照">
   </datalist>
   <datalist id="list-vehicle-skill">
     <option value="〈運転:〉">
@@ -1330,7 +1330,7 @@ print <<"HTML";
     <option value="〈情報:ウェブ〉">
     <option value="〈情報:メディア〉">
     <option value="〈情報:ビジネス〉">
-    <option value="効果参照">
+    <option value="解説参照">
   </datalist>
   <datalist id="list-weapon-type">
     <option value="白兵">
