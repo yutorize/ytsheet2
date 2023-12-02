@@ -1340,6 +1340,7 @@ print <<"HTML";
   <datalist id="list-armor-type">
     <option value="防具">
     <option value="防具※">
+    <option value="防具（補助）">
   </datalist>
   <datalist id="list-item-type">
     <option value="コネ">
