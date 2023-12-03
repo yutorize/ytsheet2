@@ -127,10 +127,12 @@ $INDEX->param(player => $pl_query);
 ## 経験点検索
 my $exp_min_query = $::in{'exp-min'};
 my $exp_max_query = $::in{'exp-max'};
-if($exp_min_query) { @list = grep { (split(/<>/))[7] >= $exp_min_query+130 } @list; }
-if($exp_max_query) { @list = grep { (split(/<>/))[7] <= $exp_max_query+130 } @list; }
+if($exp_min_query =~ /^[+-]?[0-9]+$/) { @list = grep { (split(/<>/))[7] >= $exp_min_query+130 } @list; }
+if($exp_max_query =~ /^[+-]?[0-9]+$/) { @list = grep { (split(/<>/))[7] <= $exp_max_query+130 } @list; }
 $INDEX->param(expMin => $exp_min_query);
 $INDEX->param(expMax => $exp_max_query);
+if($exp_min_query =~ /^[0-9]+$/) { $exp_min_query = '+'.$exp_min_query  }
+if($exp_max_query =~ /^[0-9]+$/) { $exp_max_query = '+'.$exp_max_query  }
 my $exp_query;
 if   ($exp_min_query eq $exp_max_query){ $exp_query = $exp_min_query; }
 elsif($exp_min_query || $exp_max_query){ $exp_query = $exp_min_query.'～'.$exp_max_query; }
