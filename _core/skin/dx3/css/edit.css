@@ -81,6 +81,9 @@ body:not(.mode-crc) .crc-only {
 }
 #syndrome-status thead th:nth-child(1)   { width: 3.5em; }
 #syndrome-status thead th:nth-last-child(-n+4) { width:   5em; }
+#syndrome-status label.radio-button {
+  border: none;
+}
 #syndrome-status input[type=radio] {
   cursor: pointer;
   transform: scale(1.5) translateY(.1em);
