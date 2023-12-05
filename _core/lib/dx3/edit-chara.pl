@@ -1267,6 +1267,10 @@ print <<"HTML";
     <option value="【感覚】">
     <option value="【精神】">
     <option value="【社会】">
+    <option value="〈運転:〉">
+    <option value="〈芸術:〉">
+    <option value="〈知識:〉">
+    <option value="〈情報:〉">
     <option value="効果参照">
   </datalist>
   <datalist id="list-combo-timing">
@@ -1295,6 +1299,10 @@ print <<"HTML";
     <option value="【感覚】">
     <option value="【精神】">
     <option value="【社会】">
+    <option value="〈運転:〉">
+    <option value="〈芸術:〉">
+    <option value="〈知識:〉">
+    <option value="〈情報:〉">
     <option value="効果参照">
   </datalist>
   <datalist id="list-weapon-skill">
