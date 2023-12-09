@@ -357,6 +357,18 @@ body {
     font-size: 87%;
   }
 }
+#lifepath.encroach-fixed table {
+  tbody.awaken .encroach,
+  tbody.impulse .encroach,
+  table tbody.encroach-offset,
+  tbody.neutral-encroach .suffix {
+    display: none;
+  }
+
+  tbody.neutral-encroach {
+    background-color: var(--box-even-rows-bg-color);
+  }
+}
 
 
 /* // Status / Skills
@@ -1212,6 +1224,9 @@ body {
   &[type="checkbox"] + label:hover {
     opacity: 0.8;
   }
+}
+#enc-bonus.encroach-fixed p .encroach-prefix {
+  display: none;
 }
 #enc-bonus table {
   border-top: 1px;

@@ -506,33 +506,36 @@ print <<"HTML";
               <th id="encounter-or-desire">邂逅/欲望
               <td colspan="2">@{[input "lifepathEncounter"]}
               <td colspan="2" class="left">@{[input "lifepathEncounterNote",'','','placeholder="備考"']}
-          <tbody>
+          <tbody class="awaken">
             <tr>
               <th>覚醒
               <td><select name="lifepathAwaken" oninput="calcEncroach()">@{[option "lifepathAwaken",@awakens]}</select>
-              <th class="small">侵蝕値
-              <td class="center" id="awaken-encroach">
+              <th class="small encroach">侵蝕値
+              <td class="center encroach" id="awaken-encroach">
               <td class="left">@{[input "lifepathAwakenNote",'','','placeholder="備考"']}
-          <tbody>
+          <tbody class="impulse">
             <tr>
               <th rowspan="2">衝動
               <td><select name="lifepathImpulse" oninput="refreshByImpulse()">@{[option "lifepathImpulse",@impulses]}</select>
-              <th class="small">侵蝕値
-              <td class="center" id="impulse-encroach">
+              <th class="small encroach">侵蝕値
+              <td class="center encroach" id="impulse-encroach">
               <td class="left">@{[input "lifepathImpulseNote",'','','placeholder="備考"']}
             <tr>
-              <th class="small">@{[input "lifepathUrgeCheck",'checkbox']}変異暴走
+              <th><span class="small">@{[input "lifepathUrgeCheck",'checkbox']}変異暴走</span>
               <th class="small">効果
               <td class="left" colspan="2">@{[input "lifepathUrgeNote",'','','placeholder="効果"']}
-          <tbody>
+          <tbody class="encroach-offset">
             <tr>
               <th colspan="3" class="right small">その他の修正
               <td class="center">@{[input "lifepathOtherEncroach",'number','calcEncroach']}
               <td class="left">@{[input "lifepathOtherNote",'','','placeholder="備考"']}
-          <tbody>
+          <tbody class="neutral-encroach">
             <tr>
-              <th colspan="3" class="right">侵蝕率基本値
-              <td class="center bold" id="base-encroach">
+              <th colspan="3" class="right">侵蝕率<span class="suffix">基本値</span>
+              <td class="center bold">
+                <span class="calculated-value" id="base-encroach"></span>
+                @{[input "encroachFixedValue", 'number', 'calcEncroach']}
+              <td>@{[ checkbox 'encroachFixed', '侵蝕率を固定にする（ＮＰＣ向け）', 'encroachModeChanged' ]}
           </tbody>
         </table>
       </details>
