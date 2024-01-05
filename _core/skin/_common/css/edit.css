@@ -456,7 +456,7 @@ section > h2 {
 #header-menu ul li[class$=icon] {
   width: 3em;
 }
-#header-menu ul li:is(.help-icon, .color-icon, .view-icon, .nightmode-icon)::before {
+#header-menu ul li:is(.help-icon, .color-icon, .view-icon, .nightmode-icon, .download-icon)::before {
   font-family: "Material Symbols Outlined";
   font-variation-settings: 'FILL' 1;
   transform: scale(1.3);
@@ -469,6 +469,9 @@ section > h2 {
 }
 .view-icon::before {
   content: '\e8f4';
+}
+.download-icon::before {
+  content: '\f090';
 }
 #header-menu ul li .view-icon {
   position: relative;

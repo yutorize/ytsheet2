@@ -453,6 +453,30 @@ function setDefaultColor(){
   changeColor();
 }
 
+// JSON出力 ----------------------------------------
+function exportAsJson() {
+  const formData = new FormData(form);
+  const o = Object.fromEntries(formData.entries());
+  delete o['_token'];
+  delete o['id'];
+  delete o['pass'];
+  const json = JSON.stringify(o);
+
+  const jsonUrl = window.URL.createObjectURL(new Blob([json], {type: 'text/json;charset=utf-8;'}));
+
+  function downloadFile(title, url) {
+    const a = document.createElement('a');
+    document.body.appendChild(a);
+    a.download = title;
+    a.href = url;
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  downloadFile('data.json', jsonUrl);
+}
+
 // セクション選択 ----------------------------------------
 function sectionSelect(id){
   document.querySelectorAll('article > form > section[id^="section"]').forEach( obj => {
