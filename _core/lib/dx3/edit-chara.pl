@@ -804,8 +804,8 @@ foreach my $num ('TMPL',1 .. $pc{weaponNum}) {
 print <<"HTML";
             <tr id="weapon${num}">
               <td>@{[input "weapon${num}Name"]}<span class="handle"></span>
-              <td>@{[input "weapon${num}Stock",'number','calcItem']}
-              <td>@{[input "weapon${num}Exp",'number','calcItem']}
+              <td>@{[input "weapon${num}Stock",'number','calcItem', 'min="0"']}
+              <td>@{[input "weapon${num}Exp",'number','calcItem', 'min="0"']}
               <td>@{[input "weapon${num}Type",'','','list="list-weapon-type"']}
               <td>@{[input "weapon${num}Skill",'','','list="list-weapon-skill"']}
               <td>@{[input "weapon${num}Acc"]}
@@ -832,8 +832,8 @@ foreach my $num ('TMPL',1 .. $pc{armorNum}) {
 print <<"HTML";
             <tr id="armor${num}">
               <td>@{[input "armor${num}Name"]}<span class="handle"></span>
-              <td>@{[input "armor${num}Stock",'number','calcItem']}
-              <td>@{[input "armor${num}Exp",'number','calcItem']}
+              <td>@{[input "armor${num}Stock",'number','calcItem', 'min="0"']}
+              <td>@{[input "armor${num}Exp",'number','calcItem', 'min="0"']}
               <td>@{[input "armor${num}Type",'','','list="list-armor-type"']}
               <td>
               <td>@{[input "armor${num}Initiative"]}
@@ -860,8 +860,8 @@ foreach my $num ('TMPL',1 .. $pc{vehicleNum}) {
 print <<"HTML";
             <tr id="vehicle${num}">
               <td>@{[input "vehicle${num}Name"]}<span class="handle"></span>
-              <td>@{[input "vehicle${num}Stock",'number','calcItem']}
-              <td>@{[input "vehicle${num}Exp",'number','calcItem']}
+              <td>@{[input "vehicle${num}Stock",'number','calcItem', 'min="0"']}
+              <td>@{[input "vehicle${num}Exp",'number','calcItem', 'min="0"']}
               <td>@{[input "vehicle${num}Type",'','','list="list-vehicle-type"']}
               <td>@{[input "vehicle${num}Skill",'','','list="list-vehicle-skill"']}
               <td>@{[input "vehicle${num}Initiative"]}
@@ -888,8 +888,8 @@ foreach my $num ('TMPL',1 .. $pc{itemNum}) {
 print <<"HTML";
             <tr id="item${num}">
               <td>@{[input "item${num}Name"]}<span class="handle"></span>
-              <td>@{[input "item${num}Stock",'number','calcItem']}
-              <td>@{[input "item${num}Exp",'number','calcItem']}
+              <td>@{[input "item${num}Stock",'number','calcItem', 'min="0"']}
+              <td>@{[input "item${num}Exp",'number','calcItem', 'min="0"']}
               <td>@{[input "item${num}Type",'','','list="list-item-type"']}
               <td>@{[input "item${num}Skill",'','','list="list-item-skill"']}
               <td><textarea name="item${num}Note" rows="2">$pc{"item${num}Note"}</textarea>
