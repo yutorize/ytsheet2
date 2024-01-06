@@ -556,7 +556,7 @@ function addSkill(type){
   let dt = document.createElement('dt');
   let dd = document.createElement('dd');
   dt.innerHTML = `<input name="skill${type}${num}Name" type="text" list="list-${type.toLowerCase()}">`;
-  dd.innerHTML = `<input name="skill${type}${num}" type="number" oninput="calcSkill()">+<input name="skillAdd${type}${num}" type="number" oninput="calcSkill()">`;
+  dd.innerHTML = `<input name="skill${type}${num}" type="number" oninput="calcSkill()" min="0">+<input name="skillAdd${type}${num}" type="number" oninput="calcSkill()">`;
   const status = (
     type === 'Ride' ? 'body'   :
     type === 'Art'  ? 'sense'  :

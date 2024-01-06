@@ -425,12 +425,12 @@ print <<"HTML";
           <dt>【肉体】を使用する技能
           <dd>
             <dl id="skill-body-table">
-              <dt class="left">白兵<dd>@{[input "skillMelee"  ,'number','calcSkill']}+@{[input "skillAddMelee"  ,'number','calcSkill']}
-              <dt class="left">回避<dd>@{[input "skillDodge"  ,'number','calcSkill']}+@{[input "skillAddDodge"  ,'number','calcSkill']}
+              <dt class="left">白兵<dd>@{[input "skillMelee"  ,'number','calcSkill', 'min="0"']}+@{[input "skillAddMelee"  ,'number','calcSkill']}
+              <dt class="left">回避<dd>@{[input "skillDodge"  ,'number','calcSkill', 'min="0"']}+@{[input "skillAddDodge"  ,'number','calcSkill']}
 HTML
 foreach my $num (1 .. $pc{skillRideNum}) {
 print <<"HTML";
-              <dt>@{[input "skillRide${num}Name",'','comboSkillSetAll','list="list-ride"']}<dd>@{[input "skillRide$num",'number','calcSkill']}+@{[input "skillAddRide$num",'number','calcSkill']}
+              <dt>@{[input "skillRide${num}Name",'','comboSkillSetAll','list="list-ride"']}<dd>@{[input "skillRide$num",'number','calcSkill', 'min="0"']}+@{[input "skillAddRide$num",'number','calcSkill']}
 HTML
 }
 print <<"HTML";
@@ -440,12 +440,12 @@ print <<"HTML";
           <dt>【感覚】を使用する技能
           <dd>
             <dl id="skill-sense-table">
-              <dt class="left">射撃<dd>@{[input "skillRanged" ,'number','calcSkill']}+@{[input "skillAddRanged"    ,'number','calcSkill']}
-              <dt class="left">知覚<dd>@{[input "skillPercept",'number','calcSkill']}+@{[input "skillAddPercept",'number','calcSkill']}
+              <dt class="left">射撃<dd>@{[input "skillRanged" ,'number','calcSkill', 'min="0"']}+@{[input "skillAddRanged"    ,'number','calcSkill']}
+              <dt class="left">知覚<dd>@{[input "skillPercept",'number','calcSkill', 'min="0"']}+@{[input "skillAddPercept",'number','calcSkill']}
 HTML
 foreach my $num (1 .. $pc{skillArtNum}) {
 print <<"HTML";
-              <dt>@{[input "skillArt${num}Name" ,'','comboSkillSetAll','list="list-art"' ]}<dd>@{[input "skillArt$num" ,'number','calcSkill']}+@{[input "skillAddArt$num" ,'number','calcSkill']}
+              <dt>@{[input "skillArt${num}Name" ,'','comboSkillSetAll','list="list-art"' ]}<dd>@{[input "skillArt$num" ,'number','calcSkill', 'min="0"']}+@{[input "skillAddArt$num" ,'number','calcSkill']}
 HTML
 }
 print <<"HTML";
@@ -455,12 +455,12 @@ print <<"HTML";
           <dt>【精神】を使用する技能
           <dd>
             <dl id="skill-mind-table">
-              <dt class="left">ＲＣ<dd>@{[input "skillRC"  ,'number','calcSkill']}+@{[input "skillAddRC"  ,'number','calcSkill']}
-              <dt class="left">意志<dd>@{[input "skillWill",'number','calcSkill']}+@{[input "skillAddWill",'number','calcSkill']}
+              <dt class="left">ＲＣ<dd>@{[input "skillRC"  ,'number','calcSkill', 'min="0"']}+@{[input "skillAddRC"  ,'number','calcSkill']}
+              <dt class="left">意志<dd>@{[input "skillWill",'number','calcSkill', 'min="0"']}+@{[input "skillAddWill",'number','calcSkill']}
 HTML
 foreach my $num (1 .. $pc{skillKnowNum}) {
 print <<"HTML";
-              <dt>@{[input "skillKnow${num}Name",'','comboSkillSetAll','list="list-know"']}<dd>@{[input "skillKnow$num",'number','calcSkill']}+@{[input "skillAddKnow$num",'number','calcSkill']}
+              <dt>@{[input "skillKnow${num}Name",'','comboSkillSetAll','list="list-know"']}<dd>@{[input "skillKnow$num",'number','calcSkill', 'min="0"']}+@{[input "skillAddKnow$num",'number','calcSkill']}
 HTML
 }
 print <<"HTML";
@@ -470,12 +470,12 @@ print <<"HTML";
           <dt>【社会】を使用する技能
           <dd>
             <dl id="skill-social-table">
-              <dt class="left">交渉<dd>@{[input "skillNegotiate",'number','calcSkill']}+@{[input "skillAddNegotiate",'number']}
-              <dt class="left">調達<dd>@{[input "skillProcure"  ,'number','calcSkill();calcStock']}+@{[input "skillAddProcure",  'number','calcSkill();calcStock']}
+              <dt class="left">交渉<dd>@{[input "skillNegotiate",'number','calcSkill', 'min="0"']}+@{[input "skillAddNegotiate",'number']}
+              <dt class="left">調達<dd>@{[input "skillProcure"  ,'number','calcSkill();calcStock', 'min="0"']}+@{[input "skillAddProcure",  'number','calcSkill();calcStock']}
 HTML
 foreach my $num (1 .. $pc{skillInfoNum}) {
 print <<"HTML";
-              <dt>@{[input "skillInfo${num}Name",'','comboSkillSetAll','list="list-info"']}<dd>@{[input "skillInfo$num",'number','calcSkill']}+@{[input "skillAddInfo$num",'number','calcSkill']}
+              <dt>@{[input "skillInfo${num}Name",'','comboSkillSetAll','list="list-info"']}<dd>@{[input "skillInfo$num",'number','calcSkill', 'min="0"']}+@{[input "skillAddInfo$num",'number','calcSkill']}
 HTML
 }
 print <<"HTML";
