@@ -640,7 +640,7 @@ print <<"HTML";
             <tr>
               <td rowspan="2" class="handle"> 
               <td>@{[input "effect${num}Name",'','','placeholder="名称"']}
-              <td>@{[input "effect${num}Lv",'number','calcEffect','placeholder="Lv"']}
+              <td>@{[input "effect${num}Lv",'number','calcEffect','placeholder="Lv" min="0"']}
               <td>@{[input "effect${num}Timing",'','','placeholder="タイミング" list="list-timing"']}
               <td>@{[input "effect${num}Skill",'','','placeholder="技能" list="list-effect-skill"']}
               <td>@{[input "effect${num}Dfclty",'','','placeholder="難易度" list="list-dfclty"']}
