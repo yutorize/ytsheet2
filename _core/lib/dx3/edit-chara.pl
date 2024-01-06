@@ -357,10 +357,10 @@ print <<"HTML";
                 <td>@{[ radio 'sttWorks', 'calcStt', 'social' ]}
               <tr>
                 <th colspan="2" class="right"><span class="construction-only">フリーポイント＋</span>成長
-                <td>@{[input "sttGrowBody"  ,'number','calcStt']}
-                <td>@{[input "sttGrowSense" ,'number','calcStt']}
-                <td>@{[input "sttGrowMind"  ,'number','calcStt']}
-                <td>@{[input "sttGrowSocial",'number','calcStt']}
+                <td>@{[input "sttGrowBody"  ,'number','calcStt', 'min="0"']}
+                <td>@{[input "sttGrowSense" ,'number','calcStt', 'min="0"']}
+                <td>@{[input "sttGrowMind"  ,'number','calcStt', 'min="0"']}
+                <td>@{[input "sttGrowSocial",'number','calcStt', 'min="0"']}
               <tr>
                 <th colspan="2" class="right">その他の修正
                 <td>@{[input "sttAddBody"  ,'number','calcStt']}
