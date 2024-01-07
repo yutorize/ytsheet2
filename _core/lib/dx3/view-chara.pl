@@ -261,7 +261,7 @@ if($pc{stage} =~ /クロウリングケイオス/){ $SHEET->param(ccOn => 1); }
 
 ### ブリード --------------------------------------------------
 my $breedPrefix = ($pc{breed} ? $pc{breed} : $pc{syndrome3} ? 'トライ' : $pc{syndrome2} ? 'クロス' : $pc{syndrome1} ? 'ピュア' : '');
-$SHEET->param(breed => $breedPrefix ? "$breedPrefix<span>ブリード</span>" : '');
+$SHEET->param(breed => isNoiseText($breedPrefix) ? $breedPrefix : $breedPrefix ? "$breedPrefix<span>ブリード</span>" : '');
 
 ### 能力値 --------------------------------------------------
 $SHEET->param('sttWorks'.ucfirst($pc{sttWorks}) => 1);
