@@ -293,7 +293,7 @@ print <<"HTML";
       </div>
 
       <details class="box" id="regulation" @{[$mode eq 'edit' ? '':'open']}>
-        <summary>作成レギュレーション</summary>
+        <summary class="in-toc">作成レギュレーション</summary>
         <dl>
           <dt>作成方法
           <dd>@{[ radios 'createType', 'changeCreateType', 'C=>コンストラクション','F=>フルスクラッチ' ]}
@@ -324,7 +324,7 @@ print <<"HTML";
         </div>
 
         <div class="box" id="syndrome-status">
-          <h2>シンドローム／能力値 [<span id="exp-status">0</span>]</h2>
+          <h2 class="in-toc" data-content-title="シンドローム／能力値">シンドローム／能力値 [<span id="exp-status">0</span>]</h2>
           <table>
             <thead>
               <tr><th><th>シンドローム<th>肉体<th>感覚<th>精神<th>社会
@@ -410,7 +410,7 @@ print <<"HTML";
       </div>
 
       <details class="box" id="status" $open{skill}>
-        <summary>技能 [<span id="exp-skill">0</span>]</summary>
+        <summary class="in-toc" data-content-title="技能">技能 [<span id="exp-skill">0</span>]</summary>
         @{[input 'skillRideNum','hidden']}
         @{[input 'skillArtNum' ,'hidden']}
         @{[input 'skillKnowNum','hidden']}
@@ -490,7 +490,7 @@ print <<"HTML";
         </div>
       </details>
       <details class="box" id="lifepath" $open{lifepath}>
-        <summary>ライフパス</summary>
+        <summary class="in-toc">ライフパス</summary>
         <table class="edit-table line-tbody">
           <tbody>
             <tr>
@@ -539,7 +539,7 @@ print <<"HTML";
       </details>
       <div id="enc-bonus" style="position: relative;">
         <div class="box">
-          <h2>侵蝕率効果表</h2>
+          <h2 class="in-toc">侵蝕率効果表</h2>
           <p>
             <!-- 現在侵蝕率:@{[ input 'currentEncroach','number','encroachBonusSet(this.value)','style="width: 4em;"' ]} -->
             @{[ checkbox 'encroachEaOn','エフェクトアーカイブ適用','encroachBonusType' ]}
@@ -553,7 +553,7 @@ print <<"HTML";
         </div>
       </div>
       <details class="box" id="lois" $open{lois} style="position:relative">
-        <summary>ロイス</summary>
+        <summary class="in-toc">ロイス</summary>
         <table class="edit-table no-border-cells" id="lois-table">
           <colgroup><col><col><col><col><col><col><col><col></colgroup>
           <thead>
@@ -591,7 +591,7 @@ print <<"HTML";
         </div>
       </details>
       <details class="box" id="memory" $open{memory}>
-        <summary>メモリー [<span id="exp-memory">0</span>]</summary>
+        <summary class="in-toc" data-content-title="メモリー">メモリー [<span id="exp-memory">0</span>]</summary>
         <table class="edit-table no-border-cells" id="memory-table">
           <thead>
             <tr>
@@ -619,7 +619,7 @@ print <<"HTML";
         <div class="annotate">※「関係」か「名前」を入力すると経験点が計算されます。</div>
       </details>
       <details class="box crc-only" id="insanity" $open{insanity}>
-        <summary>永続的狂気</summary>
+        <summary class="in-toc">永続的狂気</summary>
         <dl class="edit-table " id="insanity-table">
           <dt>@{[input "insanity",'','','placeholder="名称"']}
           <dd>@{[input "insanityNote",'','','placeholder="効果"']}
@@ -627,7 +627,7 @@ print <<"HTML";
       </details>
 
       <details class="box" id="effect" $open{effect}>
-        <summary>エフェクト [<span id="exp-effect">0</span>]</summary>
+        <summary class="in-toc" data-content-title="エフェクト">エフェクト [<span id="exp-effect">0</span>]</summary>
         @{[input 'effectNum','hidden']}
         <table class="edit-table line-tbody no-border-cells" id="effect-table">
           <thead id="effect-head">
@@ -674,7 +674,7 @@ print <<"HTML";
       </div>
 
       <details class="box crc-only" id="magic" $open{magic}>
-        <summary>術式 [<span id="exp-magic">0</span>]</summary>
+        <summary class="in-toc" data-content-title="術式">術式 [<span id="exp-magic">0</span>]</summary>
         @{[input 'magicNum','hidden']}
         <table class="edit-table line-tbody no-border-cells" id="magic-table">
           <thead id="magic-head">
@@ -706,7 +706,7 @@ print <<"HTML";
       </div>
       
       <details class="box" id="combo" $open{combo} style="position:relative">
-        <summary>コンボ</summary>
+        <summary class="in-toc">コンボ</summary>
         @{[input 'comboNum','hidden']}
         <div id="combo-list">
 HTML
@@ -791,7 +791,7 @@ print <<"HTML";
       </details>
       
       <details class="box box-union" id="items" $open{item}>
-      <summary>アイテム [<span id="exp-item">0</span>]</summary>
+      <summary class="in-toc" data-content-title="アイテム">アイテム [<span id="exp-item">0</span>]</summary>
       <div class="box">
         @{[input 'weaponNum','hidden']}
         <table class="edit-table no-border-cells" id="weapon-table">
@@ -917,19 +917,19 @@ print <<"HTML";
       
       
       <details class="box" id="free-note" @{[$pc{freeNote}?'open':'']}>
-        <summary>容姿・経歴・その他メモ</summary>
+        <summary class="in-toc">容姿・経歴・その他メモ</summary>
         <textarea name="freeNote">$pc{freeNote}</textarea>
         @{[ $::in{log} ? '<button type="button" class="set-newest" onclick="setNewestSingleData(\'freeNote\')">最新のメモを適用する</button>' : '' ]}
       </details>
       
       <details class="box" id="free-history" @{[$pc{freeHistory}?'open':'']}>
-        <summary>履歴（自由記入）</summary>
+        <summary class="in-toc">履歴（自由記入）</summary>
         <textarea name="freeHistory">$pc{freeHistory}</textarea>
         @{[ $::in{log} ? '<button type="button" class="set-newest" onclick="setNewestSingleData(\'freeHistory\')">最新の履歴（自由記入）を適用する</button>' : '' ]}
       </details>
       
       <div class="box" id="history">
-        <h2>セッション履歴</h2>
+        <h2 class="in-toc">セッション履歴</h2>
         @{[input 'historyNum','hidden']}
         <table class="edit-table line-tbody no-border-cells" id="history-table">
           <colgroup id="history-col">
