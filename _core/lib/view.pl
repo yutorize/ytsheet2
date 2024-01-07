@@ -200,6 +200,10 @@ sub noiseTextTag {
   $text =~ s/\n/<br>/g;
   return $text;
 }
+sub isNoiseText {
+  my $text = shift;
+  return $text =~ /^[█▇▆▅▄▃▂▚▞▙▛▜▟\n\s]+$/ ? 1 : undef;
+}
 ### メニュー --------------------------------------------------
 sub sheetMenuCreate {
   my @menu = @_;
