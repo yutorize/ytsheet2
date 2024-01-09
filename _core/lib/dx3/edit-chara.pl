@@ -663,7 +663,7 @@ print <<"HTML";
         </table>
         <div class="add-del-button"><a onclick="addEffect()">▼</a><a onclick="delEffect()">▲</a></div>
         <div class="annotate">
-        ※種別「自動」「Dロイス」を選択した場合、取得時（1Lv）の経験点を0として計算します。<br>
+        ※種別「自動」「Dロイス」を選択した場合、取得時（1レベル）の経験点を0として計算します。<br>
         　経験点修正の欄は、自動計算で対応しきれない例外的な取得・成長に使用してください（Dロイス転生者など）
         </div>
       </details>
