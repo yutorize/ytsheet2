@@ -631,7 +631,7 @@ print <<"HTML";
         @{[input 'effectNum','hidden']}
         <table class="edit-table line-tbody no-border-cells" id="effect-table">
           <thead id="effect-head">
-            <tr><th><th>名称<th>Lv<th>タイミング<th>技能<th>難易度<th>対象<th>射程<th>侵蝕値<th>制限
+            <tr><th><th>名称<th>LV<th>タイミング<th>技能<th>難易度<th>対象<th>射程<th>侵蝕値<th>制限
 HTML
 foreach my $num ('TMPL',1 .. $pc{effectNum}) {
   if($num eq 'TMPL'){ print '<template id="effect-template">' }
@@ -659,7 +659,7 @@ HTML
 }
 print <<"HTML";
           <tfoot id="effect-foot">
-            <tr><th><th>名称<th>Lv<th>タイミング<th>技能<th>難易度<th>対象<th>射程<th>侵蝕値<th>制限
+            <tr><th><th>名称<th>LV<th>タイミング<th>技能<th>難易度<th>対象<th>射程<th>侵蝕値<th>制限
         </table>
         <div class="add-del-button"><a onclick="addEffect()">▼</a><a onclick="delEffect()">▲</a></div>
         <div class="annotate">
