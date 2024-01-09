@@ -484,7 +484,7 @@ print <<"HTML";
           </dd>
         </dl>
         <div class="annotate">
-        ※右側は、DロイスなどによるLv補正の欄です（経験点が計算されません）<br>
+        ※右側は、Dロイスなどによるレベル補正の欄です（経験点が計算されません）<br>
         ※ワークスによる技能取得ぶんとして、無入力時は<span class="fullscratch-only">消費経験点の表示が「-9」</span><span class="construction-only">技能フリーポイントの表示が「-4.5」</span>になっています。<br>
         （ワークスぶんを正しく入力すると「0」点になります（一部書籍収録のワークスを除く））<br>
         </div>
@@ -761,7 +761,7 @@ print <<"HTML";
             <dt class="combo-cond">条件<span class="combo-condition-utility"></span>
             <dt class="combo-dice">ダイス
             <dt class="combo-crit">Ｃ値
-            <dt class="combo-fixed">達成値修正<br><span class="small">(技能Lv+修正値)</span>
+            <dt class="combo-fixed">達成値修正<br><span class="very-small">(技能レベル+修正値)</span>
             <dt class="combo-atk">攻撃力
 HTML
   foreach my $i (1 .. 5) {
@@ -786,7 +786,7 @@ print <<"HTML";
         </div>
         <div class="add-del-button"><a onclick="addCombo()">▼</a><a onclick="delCombo()">▲</a></div>
         <div class="annotate">
-          @{[ input 'comboCalcOff','checkbox','calcComboAll' ]} 能力値・技能Lvを自動挿入しない（自分で計算する）
+          @{[ input 'comboCalcOff','checkbox','calcComboAll' ]} 能力値・技能レベルを自動挿入しない（自分で計算する）
         </div>
       </details>
       

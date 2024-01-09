@@ -82,6 +82,9 @@ ruby rp {
 .small {
   font-size: 85%;
 }
+.very-small {
+  font-size: 75%;
+}
 .material-symbols-outlined {
   font-size: 1.2em;
   vertical-align: text-bottom;
