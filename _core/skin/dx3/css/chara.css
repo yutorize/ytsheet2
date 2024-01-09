@@ -751,7 +751,7 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
 }
 #effect table thead th:nth-child(1) { width: 2.1em; } /* No. */
 #effect table thead th:nth-child(2) { width:  auto; } /* 名称 */
-#effect table thead th:nth-child(3) { width:   2em; } /* Lv */
+#effect table thead th:nth-child(3) { width:   2em; } /* LV */
 #effect table thead th:nth-child(4) { width: 8.4em; } /* タイミング */
 #effect table thead th:nth-child(5) { width: 7.0em; } /* 技能 */
 #effect table thead th:nth-child(6) { width: 3.8em; } /* 難易度 */
@@ -766,7 +766,7 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
 }
 #effect table tbody td:nth-child(1) {  } /* No. */
 #effect table tbody td:nth-child(2) { font-weight: bold; } /* 名称 */
-#effect table tbody td:nth-child(3) {  } /* Lv */
+#effect table tbody td:nth-child(3) {  } /* LV */
 #effect table tbody td:nth-child(4) { font-size: 90%; } /* タイミング */
 #effect table tbody td:nth-child(5) { font-size: 90%; } /* 技能 */
 #effect table tbody td:nth-child(6) { font-size: 90%; } /* 難易度 */

@@ -248,7 +248,7 @@ function calcEffect() {
         //自動かDロイスは新規取得ぶん減らす
         if(type.match(/^(auto|dlois)$/i)){
           exps['effect'] += -15;
-          //コンストラクションのコンセントレイトは2Lvのぶんも減らす
+          //コンストラクションのコンセントレイトは2LVのぶんも減らす
           if(createType === 'C' && form['effect'+num+'Name'].value.match(/^コンセントレイト/) && lv >= 2){
             exps['effect'] += -5;
           }
@@ -271,7 +271,7 @@ function calcEffect() {
   const freelv = (exps['effect'] - free*15) / 5;
   if(createType === 'C'){
     if(exps['effect'] <= 60+10) { exps['effect'] = 0 } else { exps['effect'] -= 70 }
-    //任意エフェクト1Lv×4(60)、任意1Lvアップ×2(10)
+    //任意エフェクト1LV×4(60)、任意1Lvアップ×2(10)
   }
   document.getElementById('freepoint-effect').textContent = (free > 4) ? 4 : free;
   document.getElementById('freepoint-effectlv').textContent = (freelv > 2) ? 2 : (freelv < 0) ? 0 : freelv;

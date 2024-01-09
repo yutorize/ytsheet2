@@ -154,7 +154,7 @@ sub convertHokanjoToYtsheet {
   
   ## エフェクト
   ($pc{effect1Type},$pc{effect1Name},$pc{effect1Lv},$pc{effect1Timing},$pc{effect1Skill},$pc{effect1Dfclty},$pc{effect1Target},$pc{effect1Range},$pc{effect1Encroach},$pc{effect1Restrict},$pc{effect1Note})
-    = ('auto','リザレクト',$in{'ressurect_lv'}+1,'オート','―','自動成功','自身','至近','効果参照','―','(Lv)D点HP回復、侵蝕値上昇');
+    = ('auto','リザレクト',$in{'ressurect_lv'}+1,'オート','―','自動成功','自身','至近','効果参照','―','(LV)D点HP回復、侵蝕値上昇');
   ($pc{effect2Type},$pc{effect2Name},$pc{effect2Lv},$pc{effect2Timing},$pc{effect2Skill},$pc{effect2Dfclty},$pc{effect2Target},$pc{effect2Range},$pc{effect2Encroach},$pc{effect2Restrict},$pc{effect2Note})
     = ('auto','ワーディング',1,'オート','―','自動成功','シーン','視界','0','―','非オーヴァードをエキストラ化');
   my $n = 3; my $i = 0;

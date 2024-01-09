@@ -52,7 +52,7 @@ elsif($mode eq 'blanksheet'){
   $pc{history0Exp}   = 0;
   
   ($pc{effect1Type},$pc{effect1Name},$pc{effect1Lv},$pc{effect1Timing},$pc{effect1Skill},$pc{effect1Dfclty},$pc{effect1Target},$pc{effect1Range},$pc{effect1Encroach},$pc{effect1Restrict},$pc{effect1Note})
-    = ('auto','リザレクト',1,'オート','―','自動成功','自身','至近','効果参照','―','(Lv)D点HP回復、侵蝕値上昇');
+    = ('auto','リザレクト',1,'オート','―','自動成功','自身','至近','効果参照','―','(LV)D点HP回復、侵蝕値上昇');
   ($pc{effect2Type},$pc{effect2Name},$pc{effect2Lv},$pc{effect2Timing},$pc{effect2Skill},$pc{effect2Dfclty},$pc{effect2Target},$pc{effect2Range},$pc{effect2Encroach},$pc{effect2Restrict},$pc{effect2Note})
     = ('auto','ワーディング',1,'オート','―','自動成功','シーン','視界','0','―','非オーヴァードをエキストラ化');
   
@@ -484,7 +484,7 @@ print <<"HTML";
           </dd>
         </dl>
         <div class="annotate">
-        ※右側は、DロイスなどによるLv補正の欄です（経験点が計算されません）<br>
+        ※右側は、Dロイスなどによるレベル補正の欄です（経験点が計算されません）<br>
         ※ワークスによる技能取得ぶんとして、無入力時は<span class="fullscratch-only">消費経験点の表示が「-9」</span><span class="construction-only">技能フリーポイントの表示が「-4.5」</span>になっています。<br>
         （ワークスぶんを正しく入力すると「0」点になります（一部書籍収録のワークスを除く））<br>
         </div>
@@ -631,7 +631,7 @@ print <<"HTML";
         @{[input 'effectNum','hidden']}
         <table class="edit-table line-tbody no-border-cells" id="effect-table">
           <thead id="effect-head">
-            <tr><th><th>名称<th>Lv<th>タイミング<th>技能<th>難易度<th>対象<th>射程<th>侵蝕値<th>制限
+            <tr><th><th>名称<th>LV<th>タイミング<th>技能<th>難易度<th>対象<th>射程<th>侵蝕値<th>制限
 HTML
 foreach my $num ('TMPL',1 .. $pc{effectNum}) {
   if($num eq 'TMPL'){ print '<template id="effect-template">' }
@@ -640,7 +640,7 @@ print <<"HTML";
             <tr>
               <td rowspan="2" class="handle"> 
               <td>@{[input "effect${num}Name",'','','placeholder="名称"']}
-              <td>@{[input "effect${num}Lv",'number','calcEffect','placeholder="Lv"']}
+              <td>@{[input "effect${num}Lv",'number','calcEffect','placeholder="LV"']}
               <td>@{[input "effect${num}Timing",'','','placeholder="タイミング" list="list-timing"']}
               <td>@{[input "effect${num}Skill",'','','placeholder="技能" list="list-effect-skill"']}
               <td>@{[input "effect${num}Dfclty",'','','placeholder="難易度" list="list-dfclty"']}
@@ -659,11 +659,11 @@ HTML
 }
 print <<"HTML";
           <tfoot id="effect-foot">
-            <tr><th><th>名称<th>Lv<th>タイミング<th>技能<th>難易度<th>対象<th>射程<th>侵蝕値<th>制限
+            <tr><th><th>名称<th>LV<th>タイミング<th>技能<th>難易度<th>対象<th>射程<th>侵蝕値<th>制限
         </table>
         <div class="add-del-button"><a onclick="addEffect()">▼</a><a onclick="delEffect()">▲</a></div>
         <div class="annotate">
-        ※種別「自動」「Dロイス」を選択した場合、取得時（1Lv）の経験点を0として計算します。<br>
+        ※種別「自動」「Dロイス」を選択した場合、取得時（1レベル）の経験点を0として計算します。<br>
         　経験点修正の欄は、自動計算で対応しきれない例外的な取得・成長に使用してください（Dロイス転生者など）
         </div>
       </details>
@@ -761,7 +761,7 @@ print <<"HTML";
             <dt class="combo-cond">条件<span class="combo-condition-utility"></span>
             <dt class="combo-dice">ダイス
             <dt class="combo-crit">Ｃ値
-            <dt class="combo-fixed">達成値修正<br><span class="small">(技能Lv+修正値)</span>
+            <dt class="combo-fixed">達成値修正<br><span class="very-small">(技能レベル+修正値)</span>
             <dt class="combo-atk">攻撃力
 HTML
   foreach my $i (1 .. 5) {
@@ -786,7 +786,7 @@ print <<"HTML";
         </div>
         <div class="add-del-button"><a onclick="addCombo()">▼</a><a onclick="delCombo()">▲</a></div>
         <div class="annotate">
-          @{[ input 'comboCalcOff','checkbox','calcComboAll' ]} 能力値・技能Lvを自動挿入しない（自分で計算する）
+          @{[ input 'comboCalcOff','checkbox','calcComboAll' ]} 能力値・技能レベルを自動挿入しない（自分で計算する）
         </div>
       </details>
       
@@ -1023,7 +1023,7 @@ print <<"HTML";
           :  能力値フリーポイント[<b id="freepoint-status"></b>/3]
           ／ 技能フリーポイント[<b id="freepoint-skill"></b>/5]
           ／ 任意エフェクト[<b id="freepoint-effect"></b>/4]個
-          ／ エフェクトLvフリーポイント[<b id="freepoint-effectlv"></b>/2]
+          ／ エフェクトレベルフリーポイント[<b id="freepoint-effectlv"></b>/2]
         </p>
         <p>
         経験点[<b id="exp-total"></b>] - 
