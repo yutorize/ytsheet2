@@ -1023,7 +1023,7 @@ print <<"HTML";
           :  能力値フリーポイント[<b id="freepoint-status"></b>/3]
           ／ 技能フリーポイント[<b id="freepoint-skill"></b>/5]
           ／ 任意エフェクト[<b id="freepoint-effect"></b>/4]個
-          ／ エフェクトLvフリーポイント[<b id="freepoint-effectlv"></b>/2]
+          ／ エフェクトレベルフリーポイント[<b id="freepoint-effectlv"></b>/2]
         </p>
         <p>
         経験点[<b id="exp-total"></b>] - 
