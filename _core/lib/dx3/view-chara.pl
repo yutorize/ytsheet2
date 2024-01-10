@@ -58,6 +58,7 @@ if($pc{forbidden} && !$pc{yourAuthor}){
   $pc{expUsedItem}   = noiseText(2);
   $pc{expUsedMemory} = noiseText(2);
   $pc{expUsed}       = noiseText(2);
+  $pc{expSpent}      = noiseText(2);
   $pc{expRest}       = noiseText(2);
   $pc{expTotal}      = noiseText(2);
   

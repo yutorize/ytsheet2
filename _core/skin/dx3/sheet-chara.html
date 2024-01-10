@@ -170,7 +170,7 @@
         <section class="box" id="exp">
         <h2>経験点</h2>
         <dl>
-          <dt>消費<dd>+<TMPL_VAR expSpent>
+          <dt>消費<dd><TMPL_UNLESS forbiddenMode>+</TMPL_UNLESS><TMPL_VAR expSpent>
           <dt>未使用<dd><TMPL_VAR expRest>
         </dl>
         <div class="create-type"><TMPL_UNLESS forbiddenMode><TMPL_VAR createTypeName><span class="nowrap shorten">作成</span></TMPL_UNLESS></div>
