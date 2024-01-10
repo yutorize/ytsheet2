@@ -413,6 +413,11 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
   text-align: center;
   align-self: center;
 }
+article.forbidden {
+  & #exp .create-type {
+    display: none;
+  }
+}
 @media screen and (max-width:735px){
   #exp dl {
     margin: -5px 2px 0;

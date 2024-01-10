@@ -58,6 +58,7 @@ if($pc{forbidden} && !$pc{yourAuthor}){
   $pc{expUsedItem}   = noiseText(2);
   $pc{expUsedMemory} = noiseText(2);
   $pc{expUsed}       = noiseText(2);
+  $pc{expSpent}      = noiseText(2);
   $pc{expRest}       = noiseText(2);
   $pc{expTotal}      = noiseText(2);
   
@@ -583,7 +584,7 @@ $SHEET->param(currentEncroach => $pc{baseEncroach} =~ /^[0-9]+$/ ? $pc{baseEncro
 ### 履歴 --------------------------------------------------
 my @history;
 my $h_num = 0;
-$pc{history0Title} = ($pc{createType} eq 'C') ? 'コンストラクション作成' : 'フルスクラッチ作成';
+$pc{history0Title} = !$pc{forbiddenMode} ? ($pc{createType} eq 'C') ? 'コンストラクション作成' : 'フルスクラッチ作成' : '作成';
 foreach (0 .. $pc{historyNum}){
   #next if !$pc{'history'.$_.'Title'};
   $h_num++ if $pc{'history'.$_.'Gm'};
