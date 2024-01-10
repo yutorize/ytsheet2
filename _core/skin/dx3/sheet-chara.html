@@ -173,7 +173,7 @@
           <dt>消費<dd>+<TMPL_VAR expSpent>
           <dt>未使用<dd><TMPL_VAR expRest>
         </dl>
-        <div class="create-type"><TMPL_VAR createTypeName><span class="nowrap shorten">作成</span></div>
+        <div class="create-type"><TMPL_UNLESS forbiddenMode><TMPL_VAR createTypeName><span class="nowrap shorten">作成</span></TMPL_UNLESS></div>
         </section>
         
         <section class="box" id="lifepath">
