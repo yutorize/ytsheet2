@@ -665,8 +665,10 @@ body {
   padding-left: .5rem;
   display: none;
 }
-#effect table tbody:hover td.left {
-  display: table-cell;
+@media screen {
+  #effect table tbody:hover td.left {
+    display: table-cell;
+  }
 }
 #effect[data-full-open="true"] table tbody td.left {
   display: table-cell;
