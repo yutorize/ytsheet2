@@ -700,6 +700,25 @@ body {
   align-items: start;
   line-height: 1.8;
 }
+@media print {
+  #area-items {
+    grid-template-columns: auto;
+    grid-template-rows: auto auto;
+
+    #items, #money {
+      grid-column: 1 / -1;
+    }
+
+    #items {
+      grid-row: 2 / 3;
+    }
+
+    #money {
+      grid-row: 1 / 2;
+      width: fit-content;
+    }
+  }
+}
 #area-items > * {
 }
 
