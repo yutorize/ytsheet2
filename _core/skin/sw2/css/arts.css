@@ -665,8 +665,18 @@ div.data dl.effects :is(dt,dd):nth-of-type(n+2) {
   object-fit: contain;
   filter: drop-shadow(0 0 10px #0005);
 }
+@media print {
+  #symbol img {
+    filter: none;
+  }
+}
 .night #symbol img {
   filter: drop-shadow(0 0 10px #fff9);
+}
+@media print {
+  .night #symbol img {
+    filter: none;
+  }
 }
 
 @media screen and (max-width:735px){
