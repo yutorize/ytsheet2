@@ -452,6 +452,11 @@ body {
   grid-column: 1;
   grid-row: 1 / 4;
 }
+@media print {
+  .partner .image {
+    break-inside: avoid;
+  }
+}
 .partner .partner-name { grid-column: 2 / span 2; }
 .partner .partner-personal { grid-column: 2 / span 2; }
 
