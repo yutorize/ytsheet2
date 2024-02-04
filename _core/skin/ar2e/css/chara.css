@@ -510,7 +510,6 @@ dl#level {
   display: inline-block;
   margin-right: .5em;
   padding: .2em .5em;
-  border-bottom-left-radius: ;
   border-radius: .3em;
   background-color: hsla(var(--box-head-bg-color-h,230),100%,50%,0.2);
   font-style: normal;
