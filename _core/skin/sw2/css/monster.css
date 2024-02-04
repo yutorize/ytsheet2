@@ -67,6 +67,11 @@ article {
   border-color: var(--monster-level-bg-color);
   background-image: linear-gradient(to bottom, var(--bg-color), transparent);
 }
+@media print {
+  #area-name {
+    background-image: none;
+  }
+}
 #area-name .lv {
   order: -1;
   flex-shrink: 0;
