@@ -877,7 +877,7 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
   font-style: normal;
   font-weight: bold;
 }
-@media screen and (min-width:736px){
+@media all and (min-width:736px){
   #effect:not([data-full-open="true"]) table > tbody:last-child:not(:hover) > tr:last-child {
     border-top: none;
   }
