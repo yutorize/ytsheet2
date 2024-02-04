@@ -995,12 +995,14 @@ dl#level dd {
 #skills table tbody i.sk-geis    { color: hsl(270,50%,30%); background-color: hsla(270,100%, 90%,0.4); }
 #skills table tbody i.sk-add     { color: hsl(310,20%,30%); background-color: hsla(310, 20%, 80%,0.4); }
 #skills table tbody i.sk-another { color: hsl(  0,50%,30%); background-color: hsla(  0,100%, 85%,0.4); }
-.night #skills table tbody i.sk-race    { color: hsl(120,30%,70%); }
-.night #skills table tbody i.sk-style   { color: hsl( 60,30%,70%); }
-.night #skills table tbody i.sk-general { color: hsl(185,30%,80%); background-color: hsla(185,100%, 25%,0.4); }
-.night #skills table tbody i.sk-geis    { color: hsl(270,30%,80%); background-color: hsla(270,100%, 20%,0.4); }
-.night #skills table tbody i.sk-add     { color: hsl(310,20%,80%); background-color: hsla(310, 20%, 20%,0.4); }
-.night #skills table tbody i.sk-another { color: hsl(  0,20%,80%); background-color: hsla(  0, 20%, 20%,0.4); }
+@media screen {
+  .night #skills table tbody i.sk-race    { color: hsl(120,30%,70%); }
+  .night #skills table tbody i.sk-style   { color: hsl( 60,30%,70%); }
+  .night #skills table tbody i.sk-general { color: hsl(185,30%,80%); background-color: hsla(185,100%, 25%,0.4); }
+  .night #skills table tbody i.sk-geis    { color: hsl(270,30%,80%); background-color: hsla(270,100%, 20%,0.4); }
+  .night #skills table tbody i.sk-add     { color: hsl(310,20%,80%); background-color: hsla(310, 20%, 20%,0.4); }
+  .night #skills table tbody i.sk-another { color: hsl(  0,20%,80%); background-color: hsla(  0, 20%, 20%,0.4); }
+}
 
 #skills table tbody i.sk-class,
 #skills table tbody i.sk-power {
@@ -1011,7 +1013,9 @@ dl#level dd {
   transform: scale(calc(1/1.5), 0.7);
 }
 #skills table tbody i.sk-power       { color: hsl( 40,50%,30%); background-color: hsla( 40,100%, 85%,0.4); }
-.night #skills table tbody i.sk-power{ color: hsl( 40,30%,70%); background-color: hsla( 40,100%, 20%,0.4); }
+@media screen {
+  .night #skills table tbody i.sk-power{ color: hsl( 40,30%,70%); background-color: hsla( 40,100%, 20%,0.4); }
+}
 #skills table tbody i.ct-magic,
 #skills table tbody i.ct-alchemy,
 #skills table tbody i.ct-song,
@@ -1032,10 +1036,12 @@ dl#level dd {
 #skills table tbody i.ct-alchemy { color: hsl( 30,100%, 30%); }
 #skills table tbody i.ct-song    { color: hsl(350,100%, 30%); }
 #skills table tbody i.ct-role    { color: hsl(140,100%, 30%); }
-.night #skills table tbody i.ct-magic   { color: hsl(250,100%, 80%); }
-.night #skills table tbody i.ct-alchemy { color: hsl( 30,100%, 80%); }
-.night #skills table tbody i.ct-song    { color: hsl(350,100%, 80%); }
-.night #skills table tbody i.ct-role    { color: hsl(140,100%, 80%); }
+@media screen {
+  .night #skills table tbody i.ct-magic   { color: hsl(250,100%, 80%); }
+  .night #skills table tbody i.ct-alchemy { color: hsl( 30,100%, 80%); }
+  .night #skills table tbody i.ct-song    { color: hsl(350,100%, 80%); }
+  .night #skills table tbody i.ct-role    { color: hsl(140,100%, 80%); }
+}
 
 #skills p.right {
   margin: 0;

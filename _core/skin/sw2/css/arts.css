@@ -597,8 +597,10 @@ div.data dl.effects :is(dt,dd):nth-of-type(n+2) {
 #mystic-arts.description h2 ~ h2 {
   margin-top: 1em;
 }
-.night .description h2 {
-  text-shadow: 0px 0px .3em #000;
+@media screen {
+  .night .description h2 {
+    text-shadow: 0px 0px .3em #000;
+  }
 }
 .description#magics,
 .description#mystic-arts {
