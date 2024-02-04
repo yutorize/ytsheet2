@@ -378,6 +378,7 @@ foreach my $num ('TMPL',1..$pc{schoolMagicNum}){
   if($num eq 'TMPL'){ print '<template id="school-magic-template">' }
 print <<"HTML";
           <div class="input-data" id="school-magic${num}">
+            <div class="handle"></div>
             <dl class="name    "><dt>名称      <dd>【@{[ input "schoolMagic${num}Name",'' ]}】<br>@{[ checkbox "schoolMagic${num}ActionTypeMinor",'補助動作' ]}@{[ checkbox "schoolMagic${num}ActionTypeSetup",'戦闘準備' ]}</dl>
             <dl class="cost    "><dt>必要名誉点<dd>@{[ input "schoolMagic${num}AcquireCost" ]}</dl>
             <dl class="level    "><dt>習得レベル<dd>@{[ input "schoolMagic${num}Lv" ]}</dl>
