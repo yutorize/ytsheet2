@@ -633,16 +633,18 @@ body {
 #effect table thead th:nth-child(n+4) {
   font-size: 90%;
 }
-#effect table thead th:nth-child(1) { width: 2.1em; } /* No. */
-#effect table thead th:nth-child(2) { width:  auto; } /* 名称 */
-#effect table thead th:nth-child(3) { width:   2em; } /* Lv */
-#effect table thead th:nth-child(4) { width: 8.4em; } /* タイミング */
-#effect table thead th:nth-child(5) { width: 7.0em; } /* 技能 */
-#effect table thead th:nth-child(6) { width: 3.8em; } /* 難易度 */
-#effect table thead th:nth-child(7) { width: 5.8em; } /* 対象 */
-#effect table thead th:nth-child(8) { width: 4.8em; } /* 射程 */
-#effect table thead th:nth-child(9) { width: 3.4em; } /* 侵蝕値 */
-#effect table thead th:nth-child(10){ width: 4.9em; } /* 制限 */
+@media screen {
+  #effect table thead th:nth-child(1) { width: 2.1em; } /* No. */
+  #effect table thead th:nth-child(2) { width:  auto; } /* 名称 */
+  #effect table thead th:nth-child(3) { width:   2em; } /* Lv */
+  #effect table thead th:nth-child(4) { width: 8.4em; } /* タイミング */
+  #effect table thead th:nth-child(5) { width: 7.0em; } /* 技能 */
+  #effect table thead th:nth-child(6) { width: 3.8em; } /* 難易度 */
+  #effect table thead th:nth-child(7) { width: 5.8em; } /* 対象 */
+  #effect table thead th:nth-child(8) { width: 4.8em; } /* 射程 */
+  #effect table thead th:nth-child(9) { width: 3.4em; } /* 侵蝕値 */
+  #effect table thead th:nth-child(10){ width: 4.9em; } /* 制限 */
+}
 
 #effect table tbody td:nth-child(n+2) {
   font-family: var(--font-proportional);
