@@ -286,3 +286,44 @@ function delSchoolMagic(){
     form.schoolMagicNum.value = num;
   }
 }
+// 並べ替え
+(() => {
+  const sortable = Sortable.create(
+      document.getElementById('school-magic-list'),
+      {
+        group: 'school-magic',
+        dataIdAttr: 'id',
+        animation: 100,
+        handle: '.handle',
+        filter: 'template',
+        ghostClass: 'sortable-ghost',
+        onUpdate: () => {
+          const reorderedIds = sortable.toArray();
+
+          let index = 1;
+          for (const id of reorderedIds) {
+            const node = document.querySelector(`div#${id}`);
+            if (node == null) {
+              continue;
+            }
+
+            node.querySelectorAll('input[name], textarea[name]').forEach(
+                controlNode => {
+                  const name = controlNode.getAttribute('name');
+                  if (!/^schoolMagic\d+.+$/.test(name)) {
+                    return;
+                  }
+
+                  controlNode.setAttribute(
+                      'name',
+                      name.replace(/^(schoolMagic)\d+(.+)$/, `$1${index}$2`)
+                  );
+                }
+            );
+
+            index++;
+          }
+        }
+      }
+  );
+})();
