@@ -376,6 +376,11 @@ body {
   grid-column: 1;
   grid-row: 1 / 4;
 }
+@media print {
+  .partner .image {
+    break-inside: avoid;
+  }
+}
 .partner .image-none::after {
   font-size: 6rem;
 }
