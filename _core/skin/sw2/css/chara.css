@@ -153,6 +153,12 @@ dl.data-table > *,   .data-tables dl > *  {
   padding: .2em 0;
   line-height: 1.4;
 }
+@media print {
+  table.data-table tbody td {
+    padding-left: .2em;
+    padding-right: .2em;
+  }
+}
 table.data-table:not(.side-margin) tbody th,
 table.data-table:not(.side-margin) tbody td {
   border-left-width: 1px;
