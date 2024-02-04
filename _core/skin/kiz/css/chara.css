@@ -11,6 +11,11 @@ body {
     background-size: auto, 100%;
   }
 }
+@media print {
+  body {
+    background-image: none;
+  }
+}
 /* // Layout
 ---------------------------------------------------------------------------------------------------- */
 @media screen and (min-width:1400px){
@@ -384,8 +389,9 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
 }
 #kizuna table tr.hibi     { background-image: url(../img/hibi.png); }
 #kizuna table tr.hibiware { background-image: url(../img/hibiware.png); }
-.night #kizuna table tr.hibi     { background-image: url(../img/hibi-w.png); }
-.night #kizuna table tr.hibiware { background-image: url(../img/hibiware-w.png); }
+@media screen {
+  .night #kizuna table tr.hibi     { background-image: url(../img/hibi-w.png); }
+  .night #kizuna table tr.hibiware { background-image: url(../img/hibiware-w.png); }
 }
 
 #kizuna table tbody    { counter-reset: kizuna; }
@@ -547,21 +553,23 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
     calc( var(--box-base-bg-color-s,   0%) * 0.3 ), 65%
   );
 }
-.night .partner {
-  --box-base-bg-color: hsla(
-    var(--box-base-bg-color-h,   0),
-    var(--box-base-bg-color-s,  0%),
-    var(--box-base-bg-color-d, 15%),
-    var(--box-base-bg-color-a, 0.5)
-  );
-  --box-outside-border-color: hsl(
-    var(--box-head-bg-color-h, 0),
-    calc( var(--box-head-bg-color-s,   0%) * 0.15 ), 35%
-  );
-  --box-inside-border-color: hsl(
-    var(--box-base-bg-color-h, 0),
-    calc( var(--box-base-bg-color-s,   0%) * 0.3 ), 25%
-  );
+@media screen {
+  .night .partner {
+    --box-base-bg-color: hsla(
+      var(--box-base-bg-color-h,   0),
+      var(--box-base-bg-color-s,  0%),
+      var(--box-base-bg-color-d, 15%),
+      var(--box-base-bg-color-a, 0.5)
+    );
+    --box-outside-border-color: hsl(
+      var(--box-head-bg-color-h, 0),
+      calc( var(--box-head-bg-color-s,   0%) * 0.15 ), 35%
+    );
+    --box-inside-border-color: hsl(
+      var(--box-base-bg-color-h, 0),
+      calc( var(--box-base-bg-color-s,   0%) * 0.3 ), 25%
+    );
+  }
 }
 @media screen and (min-width:1400px){
   .partner:first-child {
@@ -572,6 +580,11 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
 .partner .image-none {
   grid-column: 1;
   grid-row: 1 / 4;
+}
+@media print {
+  .partner .image {
+    break-inside: avoid;
+  }
 }
 .partner .partner-name { grid-column: 2 / span 2; }
 .partner .partner-personal { grid-column: 2 / span 2; }

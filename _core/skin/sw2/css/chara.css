@@ -10,6 +10,11 @@ body {
     background-size: auto, 80%;
   }
 }
+@media print {
+  body {
+    background-image: none;
+  }
+}
 /* // Layout
 ---------------------------------------------------------------------------------------------------- */
 @media screen and (min-width:1400px){
@@ -147,6 +152,12 @@ ul.data-table > li,  .data-tables ul > li,
 dl.data-table > *,   .data-tables dl > *  {
   padding: .2em 0;
   line-height: 1.4;
+}
+@media print {
+  table.data-table tbody td {
+    padding-left: .2em;
+    padding-right: .2em;
+  }
 }
 table.data-table:not(.side-margin) tbody th,
 table.data-table:not(.side-margin) tbody td {
@@ -412,7 +423,8 @@ dl.data-table:last-child > dt:last-of-type ~ dd,
   transform: scale(0.75, 0.85);
 }
 #status dl[id^="stt-bonus"] dt span::after { content: "ボーナス"; }
-@media screen and (max-width:850px), screen and (min-width:1400px) and (max-width:1680px){
+@media screen and (max-width:850px), screen and (min-width:1400px) and (max-width:1680px),
+print and (max-width:850px) {
   #status dl[id^="stt-bonus"] dt span::after { content: "Ｂ"; }
 }
 #status dl[id^="stt-bonus"] dd {
@@ -962,6 +974,11 @@ dl#level dd {
   display: flex;
   justify-content: space-between;
 }
+@media print {
+  #area-items {
+    flex-flow: column;
+  }
+}
 #area-items > div > .box {
   margin-top: var(--box-v-gap);
 }
@@ -969,9 +986,20 @@ dl#level dd {
 div#area-items-L {
   flex-basis: 60%;
 }
+@media print {
+  div#area-items-L {
+    flex-basis: initial;
+  }
+}
 div#area-items-R {
   flex-basis: 40%;
   margin-left: var(--box-h-gap);
+}
+@media print {
+  div#area-items-R {
+    flex-basis: initial;
+    margin-left: 0;
+  }
 }
 /* Money */
 #money{
@@ -1139,6 +1167,11 @@ div#area-items-R {
 #cashbook > div {
   max-height: 16em;
   overflow: auto;
+}
+@media print {
+  #cashbook > div {
+    max-height: initial;
+  }
 }
 #cashbook p {
   line-height: 1.5;

@@ -97,10 +97,12 @@ ruby rp {
   --text-color: #000;
   --input-bg-color: rgba(255,255,255,0.7);
 }
-.night {
-  --text-color: #fff;
-  --bg-color: #000;
-  --input-bg-color: rgba(0,0,0,0.8);
+@media screen {
+  .night {
+    --text-color: #fff;
+    --bg-color: #000;
+    --input-bg-color: rgba(0,0,0,0.8);
+  }
 }
 *, *::before, *::after {
   margin: 0px;
@@ -156,14 +158,18 @@ a {
 a:link    { color: #78d; }
 a:visited { color: #678; }
 a:hover   { color: #000; }
-.night a:link    { color: #abf; }
-.night a:visited { color: #abc; }
-.night a:hover   { color: #fff; }
+@media screen {
+  .night a:link    { color: #abf; }
+  .night a:visited { color: #abc; }
+  .night a:hover   { color: #fff; }
+}
 main p a {
   background: linear-gradient(to top, #cef .3rem, transparent .3rem, transparent);
 }
-.night main p a {
-  background: linear-gradient(to top, #338 .3rem, transparent .3rem, transparent);
+@media screen {
+  .night main p a {
+    background: linear-gradient(to top, #338 .3rem, transparent .3rem, transparent);
+  }
 }
 a[onclick] {
   cursor: pointer;
@@ -221,8 +227,15 @@ body {
   background-attachment: scroll, fixed;
   color: var(--text-color);
 }
-.night body {
-  background-blend-mode: hard-light, hard-light;
+@media print {
+  body {
+    grid-template-columns: 1fr;
+  }
+}
+@media screen {
+  .night body {
+    background-blend-mode: hard-light, hard-light;
+  }
 }
 
 header {
@@ -263,10 +276,21 @@ main {
   border-style: double;
   border-color: #aaa;
 }
+@media print {
+  main {
+    grid-column: 1 / -1;
+    border-width: 0;
+  }
+}
 
 article{
   max-width: 860px;
   margin: 0 auto;
+}
+@media print {
+  article {
+    max-width: initial;
+  }
 }
 
 nav + article {
@@ -322,7 +346,9 @@ footer .copyright {
 }
 
 * { border-color: #999; }
-.night * { border-color: #556; }
+@media screen {
+  .night * { border-color: #556; }
+}
 
 @media print{
   header,

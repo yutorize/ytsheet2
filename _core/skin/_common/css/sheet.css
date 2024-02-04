@@ -49,26 +49,28 @@ article, .color-set {
     calc( var(--box-base-bg-color-s,   0%) * 0.3 ), 75%
   );
 }
-.night article,
-.night .color-set {
-  --box-base-bg-color: hsla(
-    var(--box-base-bg-color-h,   0),
-    var(--box-base-bg-color-s,  0%),
-    var(--box-base-bg-color-d, 15%),
-    var(--box-base-bg-color-a, 0.5)
-  );
-  --box-outside-border-color: hsl(
-    var(--box-head-bg-color-h, 0),
-    calc( var(--box-head-bg-color-s,   0%) * 0.15 ), 35%
-  );
-  --box-inside-border-color: hsl(
-    var(--box-base-bg-color-h, 0),
-    calc( var(--box-base-bg-color-s,   0%) * 0.3 ), 25%
-  );
-  --box-input-border-color: hsl(
-    var(--box-base-bg-color-h, 0),
-    calc( var(--box-base-bg-color-s,   0%) * 0.3 ), 15%
-  );
+@media screen {
+  .night article,
+  .night .color-set {
+    --box-base-bg-color: hsla(
+      var(--box-base-bg-color-h,   0),
+      var(--box-base-bg-color-s,  0%),
+      var(--box-base-bg-color-d, 15%),
+      var(--box-base-bg-color-a, 0.5)
+    );
+    --box-outside-border-color: hsl(
+      var(--box-head-bg-color-h, 0),
+      calc( var(--box-head-bg-color-s,   0%) * 0.15 ), 35%
+    );
+    --box-inside-border-color: hsl(
+      var(--box-base-bg-color-h, 0),
+      calc( var(--box-base-bg-color-s,   0%) * 0.3 ), 25%
+    );
+    --box-input-border-color: hsl(
+      var(--box-base-bg-color-h, 0),
+      calc( var(--box-base-bg-color-s,   0%) * 0.3 ), 15%
+    );
+  }
 }
 
 .colorless body {
@@ -94,10 +96,12 @@ main article a         { background: linear-gradient(to top, hsla(var(--box-head
 main article a:link    { color: hsl(var(--box-head-bg-color-h,230),90%,40%); }
 main article a:visited { color: hsl(var(--box-base-bg-color-h,270),40%,40%); }
 main article a:hover   { color: #000; background: hsla(var(--box-head-bg-color-h,230),100%,80%,0.7); }
-.night main article a         { background: linear-gradient(to top, hsla(var(--box-head-bg-color-h,230),100%,20%,0.7) .2rem, transparent .2rem, transparent); }
-.night main article a:link    { color: hsl(var(--box-head-bg-color-h,210),100%,80%); }
-.night main article a:visited { color: hsl(var(--box-base-bg-color-h,270), 40%,75%); }
-.night main article a:hover   { color: #fff; background: hsla(var(--box-head-bg-color-h,230),100%,20%,0.7); }
+@media screen {
+  .night main article a         { background: linear-gradient(to top, hsla(var(--box-head-bg-color-h,230),100%,20%,0.7) .2rem, transparent .2rem, transparent); }
+  .night main article a:link    { color: hsl(var(--box-head-bg-color-h,210),100%,80%); }
+  .night main article a:visited { color: hsl(var(--box-base-bg-color-h,270), 40%,75%); }
+  .night main article a:hover   { color: #fff; background: hsla(var(--box-head-bg-color-h,230),100%,20%,0.7); }
+}
 
 main article a[onclick] { background: none; }
 
@@ -158,9 +162,17 @@ summary {
   box-shadow: 1px 1px 2px 0px #ccc;
   background-color: var(--box-base-bg-color);
 }
-.night .box,
-.night .box-union {
-  box-shadow: 1px 1px 2px 0px #335;
+@media print {
+  .box,
+  .box-union {
+    box-shadow: none;
+  }
+}
+@media screen {
+  .night .box,
+  .night .box-union {
+    box-shadow: 1px 1px 2px 0px #335;
+  }
 }
 .box {
   background-image: linear-gradient(to bottom, var(--box-head-bg-color) 0, transparent 2.5rem);
@@ -192,10 +204,12 @@ dl.box > dt,
 .box > table:first-child > tbody > tr > th {
   text-shadow: 0px 0px .3em #fff;
 }
-.night .box > h2,
-.night dl.box > dt,
-.night .box > table:first-child > tbody > tr > th {
-  text-shadow: 0px 0px .3em #000;
+@media screen {
+  .night .box > h2,
+  .night dl.box > dt,
+  .night .box > table:first-child > tbody > tr > th {
+    text-shadow: 0px 0px .3em #000;
+  }
 }
 details:not([open]) > summary::after {
   content: "（クリックで展開）";
@@ -313,6 +327,13 @@ details:not([open]).box > summary:hover {
   line-height: 1.2;
   font-size: 100%;
 }
+@media print {
+  .box {
+    & h2, & h3, & h4 {
+      break-after: avoid;
+    }
+  }
+}
 
 .box h2 + h3,
 .box h2 + h4,
@@ -357,6 +378,11 @@ details:not([open]).box > summary:hover {
   cursor: pointer;
   user-select: none;
 }
+@media print {
+  .box .open-button {
+    display: none;
+  }
+}
 .night .box .open-button {
   background-color: var(--box-head-bg-color-dark);
   border-color: #000;
@@ -391,6 +417,11 @@ details:not([open]).box > summary:hover {
   background: #fff;
   transition: top 0.3s;
   z-index: 1;
+}
+@media print {
+  .box.chat-palette {
+    display: none;
+  }
 }
 .box.chat-palette.show {
   top: 60px;
@@ -1177,6 +1208,16 @@ aside#error {
   transition-duration: 3s;
   
   z-index: 101;
+}
+
+@media print {
+  aside, aside:is(#loglist,#downloadlist) {
+    display: none;
+  }
+
+  details:not([open]) {
+    display: none;
+  }
 }
 
 /* // Restrict

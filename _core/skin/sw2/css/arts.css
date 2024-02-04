@@ -11,6 +11,11 @@
 body {
   background-image: url(../../_common/img/back-pattern.png), url(../img/back-first.png);
 }
+@media print {
+  body {
+    background-image: none;
+  }
+}
 article,
 .color-set {
   --arts-name-bg-color: hsl(
@@ -121,6 +126,11 @@ div.data-magic * {
 }
 .wide div.data-magic + div.data-magic {
   margin-top: 1.5em;
+}
+@media print {
+  .wide .data-magic {
+    break-inside: avoid;
+  }
 }
 
 div.data-magic > dl {
@@ -587,8 +597,10 @@ div.data dl.effects :is(dt,dd):nth-of-type(n+2) {
 #mystic-arts.description h2 ~ h2 {
   margin-top: 1em;
 }
-.night .description h2 {
-  text-shadow: 0px 0px .3em #000;
+@media screen {
+  .night .description h2 {
+    text-shadow: 0px 0px .3em #000;
+  }
 }
 .description#magics,
 .description#mystic-arts {
@@ -660,8 +672,18 @@ div.data dl.effects :is(dt,dd):nth-of-type(n+2) {
   object-fit: contain;
   filter: drop-shadow(0 0 10px #0005);
 }
+@media print {
+  #symbol img {
+    filter: none;
+  }
+}
 .night #symbol img {
   filter: drop-shadow(0 0 10px #fff9);
+}
+@media print {
+  .night #symbol img {
+    filter: none;
+  }
 }
 
 @media screen and (max-width:735px){

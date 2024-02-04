@@ -5,6 +5,11 @@
 body {
   background-image: url(../../_common/img/back-pattern.png), url(../img/back-first.png);
 }
+@media print {
+  body {
+    background-image: none;
+  }
+}
 article, .color-set {
   --monster-level-bg-color: hsl(
     var(--box-head-bg-color-h, 0),
@@ -21,12 +26,14 @@ article, .color-set {
     calc( var(--box-head-bg-color-s,   0%) * 0.9 ), 40%
   );
 }
-.night article,
-.night .color-set {
-  --s-icon-color: hsl(
-    var(--box-head-bg-color-h, 0),
-    calc( var(--box-head-bg-color-s,   0%) * 0.9 ), 70%
-  );
+@media screen {
+  .night article,
+  .night .color-set {
+    --s-icon-color: hsl(
+      var(--box-head-bg-color-h, 0),
+      calc( var(--box-head-bg-color-s,   0%) * 0.9 ), 70%
+    );
+  }
 }
 
 
@@ -57,6 +64,11 @@ article {
   border-style: solid;
   border-color: var(--monster-level-bg-color);
   background-image: linear-gradient(to bottom, var(--bg-color), transparent);
+}
+@media print {
+  #area-name {
+    background-image: none;
+  }
 }
 #area-name .lv {
   order: -1;
