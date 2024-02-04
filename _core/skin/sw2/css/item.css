@@ -63,6 +63,11 @@ article {
   border-color: var(--box-outside-border-color);
   background-image: linear-gradient(to bottom, var(--bg-color), transparent);
 }
+@media print {
+  #area-name {
+    background-image: none;
+  }
+}
 #area-name h1 {
   flex-grow: 1;
   padding: .25em 1rem;
