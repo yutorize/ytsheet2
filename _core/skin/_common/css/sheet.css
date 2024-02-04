@@ -319,6 +319,13 @@ details:not([open]).box > summary:hover {
   line-height: 1.2;
   font-size: 100%;
 }
+@media print {
+  .box {
+    & h2, & h3, & h4 {
+      break-after: avoid;
+    }
+  }
+}
 
 .box h2 + h3,
 .box h2 + h4,
