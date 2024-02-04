@@ -221,6 +221,11 @@ body {
   background-attachment: scroll, fixed;
   color: var(--text-color);
 }
+@media print {
+  body {
+    grid-template-columns: 1fr;
+  }
+}
 .night body {
   background-blend-mode: hard-light, hard-light;
 }
@@ -265,6 +270,7 @@ main {
 }
 @media print {
   main {
+    grid-column: 1 / -1;
     border-width: 0;
   }
 }
@@ -272,6 +278,11 @@ main {
 article{
   max-width: 860px;
   margin: 0 auto;
+}
+@media print {
+  article {
+    max-width: initial;
+  }
 }
 
 nav + article {
