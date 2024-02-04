@@ -263,6 +263,11 @@ main {
   border-style: double;
   border-color: #aaa;
 }
+@media print {
+  main {
+    border-width: 0;
+  }
+}
 
 article{
   max-width: 860px;
