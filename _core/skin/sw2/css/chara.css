@@ -967,6 +967,11 @@ dl#level dd {
   display: flex;
   justify-content: space-between;
 }
+@media print {
+  #area-items {
+    flex-flow: column;
+  }
+}
 #area-items > div > .box {
   margin-top: var(--box-v-gap);
 }
@@ -974,9 +979,20 @@ dl#level dd {
 div#area-items-L {
   flex-basis: 60%;
 }
+@media print {
+  div#area-items-L {
+    flex-basis: initial;
+  }
+}
 div#area-items-R {
   flex-basis: 40%;
   margin-left: var(--box-h-gap);
+}
+@media print {
+  div#area-items-R {
+    flex-basis: initial;
+    margin-left: 0;
+  }
 }
 /* Money */
 #money{
