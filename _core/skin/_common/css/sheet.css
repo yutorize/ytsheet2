@@ -1269,6 +1269,12 @@ aside#error {
   z-index: 101;
 }
 
+@media print {
+  aside, aside:is(#loglist,#downloadlist) {
+    display: none;
+  }
+}
+
 /* // Restrict
 ---------------------------------------------------------------------------------------------------- */
 .censored {
