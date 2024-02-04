@@ -961,6 +961,11 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
   border-top-style: solid;
   text-align: center;
 }
+@media print {
+  #combo .combo-table {
+    break-inside: avoid;
+  }
+}
 #combo .combo-table:nth-of-type(even) {
   background: var(--box-even-rows-bg-color);
 }
