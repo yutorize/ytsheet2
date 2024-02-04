@@ -417,7 +417,8 @@ dl.data-table:last-child > dt:last-of-type ~ dd,
   transform: scale(0.75, 0.85);
 }
 #status dl[id^="stt-bonus"] dt span::after { content: "ボーナス"; }
-@media screen and (max-width:850px), screen and (min-width:1400px) and (max-width:1680px){
+@media screen and (max-width:850px), screen and (min-width:1400px) and (max-width:1680px),
+print and (max-width:850px) {
   #status dl[id^="stt-bonus"] dt span::after { content: "Ｂ"; }
 }
 #status dl[id^="stt-bonus"] dd {
