@@ -1145,6 +1145,11 @@ div#area-items-R {
   max-height: 16em;
   overflow: auto;
 }
+@media print {
+  #cashbook > div {
+    max-height: initial;
+  }
+}
 #cashbook p {
   line-height: 1.5;
   white-space: pre-wrap;
