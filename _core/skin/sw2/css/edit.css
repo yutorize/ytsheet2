@@ -1385,6 +1385,20 @@ form#arts #category dd {
 form#arts #category dd select {
   width: max-content;
 }
+form#arts div.input-data {
+  position: relative;
+}
+form#arts div.input-data > .handle {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  justify-content: center;
+  align-items: center;
+}
+form#arts div.input-data > .handle:hover {
+  background-color: rgba(128, 128, 128, 0.1);
+}
 form#arts div.input-data div {
   display: flex;
   flex-wrap: wrap;
