@@ -15,6 +15,11 @@ body {
     background-size: auto, 80%;
   }
 }
+@media print {
+  body {
+    background-image: none;
+  }
+}
 article,
 .color-set {
   --arts-name-bg-color: hsl(

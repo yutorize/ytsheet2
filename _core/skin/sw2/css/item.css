@@ -15,6 +15,11 @@ body {
     background-size: auto, 80%;
   }
 }
+@media print {
+  body {
+    background-image: none;
+  }
+}
 article, .color-set {
   --item-head-bg-color: hsla(
     var(--box-head-bg-color-h, 225),

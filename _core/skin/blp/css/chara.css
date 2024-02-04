@@ -15,6 +15,11 @@ body {
     background-position-y: 0, 110%;
   }
 }
+@media print {
+  body {
+    background-image: none;
+  }
+}
 /* // Layout
 ---------------------------------------------------------------------------------------------------- */
 @media screen and (min-width:1400px){

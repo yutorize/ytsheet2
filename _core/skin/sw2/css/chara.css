@@ -9,6 +9,11 @@ body {
     background-size: auto, 80%;
   }
 }
+@media print {
+  body {
+    background-image: none;
+  }
+}
 /* // Layout
 ---------------------------------------------------------------------------------------------------- */
 @media screen and (min-width:1400px){

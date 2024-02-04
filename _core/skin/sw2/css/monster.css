@@ -9,6 +9,11 @@ body {
     background-size: auto, 80%;
   }
 }
+@media print {
+  body {
+    background-image: none;
+  }
+}
 article, .color-set {
   --monster-level-bg-color: hsl(
     var(--box-head-bg-color-h, 0),
