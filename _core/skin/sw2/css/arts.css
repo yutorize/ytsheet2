@@ -127,6 +127,11 @@ div.data-magic * {
 .wide div.data-magic + div.data-magic {
   margin-top: 1.5em;
 }
+@media print {
+  .wide .data-magic {
+    break-inside: avoid;
+  }
+}
 
 div.data-magic > dl {
   display: grid;
