@@ -114,6 +114,7 @@ Content-type: text/html\n
   <link rel="stylesheet" media="all" href="${main::core_dir}/skin/sw2/css/arts.css?${main::ver}">
   <link rel="stylesheet" media="all" href="${main::core_dir}/skin/_common/css/edit.css?${main::ver}">
   <link rel="stylesheet" media="all" href="${main::core_dir}/skin/sw2/css/edit.css?${main::ver}">
+  <script src="${main::core_dir}/skin/_common/js/lib/Sortable.min.js"></script>
   <script src="${main::core_dir}/skin/_common/js/lib/compressor.min.js"></script>
   <script src="${main::core_dir}/lib/edit.js?${main::ver}" defer></script>
   <script src="${main::core_dir}/lib/sw2/edit-arts.js?${main::ver}" defer></script>
@@ -348,6 +349,7 @@ foreach my $num ('TMPL',1..$pc{schoolArtsNum}){
   if($num eq 'TMPL'){ print '<template id="arts-template">' }
 print <<"HTML";
           <div class="input-data" id="arts${num}">
+            <div class="handle"></div>
             <dl class="name    "><dt>名称      <dd>《@{[ input "schoolArts${num}Name",'' ]}》<br>@{[ checkbox "schoolArts${num}ActionTypeSetup",'戦闘準備' ]}</dl>
             <dl class="cost    "><dt>必要名誉点<dd>@{[ input "schoolArts${num}Cost" ]}</dl>
             <dl class="type    "><dt>タイプ    <dd>@{[ input "schoolArts${num}Type",'','','list="list-arts-type"' ]}</dl>
@@ -376,6 +378,7 @@ foreach my $num ('TMPL',1..$pc{schoolMagicNum}){
   if($num eq 'TMPL'){ print '<template id="school-magic-template">' }
 print <<"HTML";
           <div class="input-data" id="school-magic${num}">
+            <div class="handle"></div>
             <dl class="name    "><dt>名称      <dd>【@{[ input "schoolMagic${num}Name",'' ]}】<br>@{[ checkbox "schoolMagic${num}ActionTypeMinor",'補助動作' ]}@{[ checkbox "schoolMagic${num}ActionTypeSetup",'戦闘準備' ]}</dl>
             <dl class="cost    "><dt>必要名誉点<dd>@{[ input "schoolMagic${num}AcquireCost" ]}</dl>
             <dl class="level    "><dt>習得レベル<dd>@{[ input "schoolMagic${num}Lv" ]}</dl>
