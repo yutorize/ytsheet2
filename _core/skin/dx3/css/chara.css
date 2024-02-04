@@ -844,6 +844,11 @@ body {
   border-top-style: solid;
   text-align: center;
 }
+@media print {
+  #combo .combo-table {
+    break-inside: avoid;
+  }
+}
 #combo .combo-table:nth-of-type(even) {
   background: var(--box-even-rows-bg-color);
 }
