@@ -386,7 +386,6 @@ table.data-table tbody tr td:nth-child(9) span.thinest.small {
 #kizuna table tr.hibiware { background-image: url(../img/hibiware.png); }
 .night #kizuna table tr.hibi     { background-image: url(../img/hibi-w.png); }
 .night #kizuna table tr.hibiware { background-image: url(../img/hibiware-w.png); }
-}
 
 #kizuna table tbody    { counter-reset: kizuna; }
 #kizuna table tbody tr { counter-increment: kizuna; }
