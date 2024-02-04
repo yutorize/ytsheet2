@@ -1188,6 +1188,10 @@ aside#error {
   aside, aside:is(#loglist,#downloadlist) {
     display: none;
   }
+
+  details:not([open]) {
+    display: none;
+  }
 }
 
 /* // Restrict
