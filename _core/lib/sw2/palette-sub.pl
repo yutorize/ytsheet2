@@ -157,7 +157,7 @@ sub palettePreset {
       $text .= "//行使修正=".($::pc{magicCastAdd}||0)."\n";
       $text .= "//魔法C=10\n";
       $text .= "//魔法D修正=".($::pc{magicDamageAdd}||0)."\n";
-      $text .= "//物理魔法D修正=".($::pc{magicDamageAdd}||0)."\n" if $::pc{lvDru};
+      $text .= "//物理魔法D修正=".($::pc{magicDamageAdd}||0)."\n" if $::pc{lvDru} || ($::pc{lvFai} && $::pc{fairyContractEarth});
       $text .= "//回復量修正=0\n" if $::pc{lvCon} || $::pc{lvPri} || $::pc{lvGri} || $::pc{lvBar} || $::pc{lvMag} >= 2;
       last;
     }
@@ -179,6 +179,9 @@ sub palettePreset {
         next if($id eq 'Fai' && $pows{$id}{$pow} > fairyRank($::pc{lvFai},$::pc{fairyContractEarth},$::pc{fairyContractWater},$::pc{fairyContractFire },$::pc{fairyContractWind },$::pc{fairyContractLight},$::pc{fairyContractDark }));
         if($id eq 'Bar'){ $pow += $::pc{finaleEnhance} || 0; }
         $text .= "k${pow}[{魔法C}]+{$name}".($name =~ /魔/ ?'+{魔力修正}':'').addNum($::pc{'magicDamageAdd'.$id})."+{魔法D修正} ダメージ".($bot{BCD}?"／$name":"")."\n";
+        if ($id eq 'Fai' && $::pc{fairyContractEarth} && ($pow == 10 || $pow == 50)) {
+          $text .= "k${pow}[12]+{$name}" . ($name =~ /魔/ ?'+{魔力修正}':'') . addNum($::pc{'magicDamageAdd'.$id}) . "+{物理魔法D修正} ダメージ（物理）" . ($bot{BCD}?"／$name":"")."\n";
+        }
         if ($bot{YTC}) { $text .= "k${pow}[13]+{$name}" . ($name =~ /魔/ ?'+{魔力修正}':'') . "//" . addNum($::pc{'magicDamageAdd'.$id}) . "+{魔法D修正} 半減\n"; }
         if ($bot{BCD}) { $text .= "k${pow}[13]+{$name}" . ($name =~ /魔/ ?'+{魔力修正}':'') . "h+("  . ($::pc{'magicDamageAdd'.$id} || 0) . "+{魔法D修正}) 半減／${name}\n"; }
       }
