@@ -273,6 +273,7 @@ sub palettePreset {
           $text .= ")" if $bot{BCD};
           $text .= "\]+{追加D$_}+{ガン追加D修正}";
           $text .= " ダメージ";
+          $text .= extractWeaponMarks($::pc{'weapon'.$_.'Name'});
           $text .= "\n";
         }
         my @heal = (
@@ -301,6 +302,7 @@ sub palettePreset {
           $text .= $bot{YTC} ? '首切' : $bot{BCD} ? 'r5' : '';
         }
         $text .= " ダメージ";
+        $text .= extractWeaponMarks($::pc{'weapon'.$_.'Name'}) if !$bot{BCD};
         $text .= "／$::pc{'weapon'.$_.'Name'}$::pc{'weapon'.$_.'Usage'}" if $bot{BCD};
         $text .= "\n";
       }
@@ -416,6 +418,14 @@ sub palettePreset {
     
     return $text;
   }
+}
+sub extractWeaponMarks {
+  my $text = shift;
+  my $marks = '';
+  while ($text =~ s/(\[[刃打魔]\])//) {
+    $marks .= $1;
+  }
+  return $marks;
 }
 ### プリセット（シンプル） ###########################################################################
 sub palettePresetSimple {
