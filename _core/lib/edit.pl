@@ -384,6 +384,7 @@ sub imageForm {
         <h3>画像に重ねるセリフ</h3>
         <p>
           <textarea name="words" style="width:100%;height:3.6em;" onchange="wordsPreView();" placeholder="「任意の台詞」">$::pc{words}</textarea>
+          <span style="font-size: 80%;">※縦書きのため、二重引用符“”の代わりに爪括弧〝〟を推奨</span>
         </p>
         <p>
           <b>セリフの配置</b>：
