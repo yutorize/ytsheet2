@@ -38,8 +38,10 @@ sub addJsonData {
         push(@hp , {$partname.':HP' => $pc{"status${i}Hp"}.'/'.$pc{"status${i}Hp"}});
         push(@mp , {$partname.':MP' => $pc{"status${i}Mp"}.'/'.$pc{"status${i}Mp"}});
         push(@def, $partname.$pc{"status${i}Defense"});
-        $vitresist = $pc{mount} ? $pc{"status${i}Vit"} : $pc{vitResist} . '（' . $pc{vitResistFix} . '）';
-        $mndresist = $pc{mount} ? $pc{"status${i}Mnd"} : $pc{mndResist} . '（' . $pc{mndResistFix} . '）';
+        if (!$pc{mount} || $pc{"status${i}Vit"} =~ /\d/) {
+          $vitresist = $pc{mount} ? $pc{"status${i}Vit"} : $pc{vitResist} . '（' . $pc{vitResistFix} . '）';
+          $mndresist = $pc{mount} ? $pc{"status${i}Mnd"} : $pc{mndResist} . '（' . $pc{mndResistFix} . '）';
+        }
       }
       $pc{unitStatus} = [ @hp,'|', @mp,'|', {'メモ' => '防護:'.join('／',@def)}];
       $pc{unitExceptStatus} = { 'HP'=>1,'MP'=>1,'防護'=>1 }
