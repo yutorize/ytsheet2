@@ -57,8 +57,8 @@ sub addJsonData {
         { 'MP' => $pc{"status${i}Mp"}.'/'.$pc{"status${i}Mp"} },
         { '防護' => $pc{"status${i}Defense"} },
       ];
-      $vitresist = $pc{"status${i}Vit"};
-      $mndresist = $pc{"status${i}Mnd"};
+      $vitresist = $pc{mount} ? $pc{"status${i}Vit"} : $pc{vitResist} . '（' . $pc{vitResistFix} . '）';
+      $mndresist = $pc{mount} ? $pc{"status${i}Mnd"} : $pc{mndResist} . '（' . $pc{mndResistFix} . '）';
     }
     my $taxa = "分類:$pc{taxa}";
     my $data1 = "知能:$pc{intellect}　知覚:$pc{perception}".($pc{mount}?'':"　反応:$pc{disposition}");
