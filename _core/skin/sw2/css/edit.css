@@ -369,6 +369,15 @@
 #package table tr td:nth-last-child(2) input {
   width: calc(100% - 1em);
 }
+#package table tr.disabled {
+  & td:has(.value)::before {
+    content: "―";
+  }
+
+  & td > .value {
+    display: none;
+  }
+}
 
 
 #language dl {
