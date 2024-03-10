@@ -100,6 +100,10 @@ io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2SwordWorld2PC
 			speaking: true
 	};
 
+	if ((json.lvWar ?? '') !== '' && json.gameVersion === '2.5') {
+		character.status.push({label: '陣気', value: 0});
+	}
+
 	result.data = character;
 	return JSON.stringify(result);
 };

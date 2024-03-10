@@ -101,11 +101,15 @@ sub addJsonData {
                                 : 0;
     }
     ## ゆとチャユニット用ステータス
-    $pc{unitStatus} = [
+    my @unitStatus = (
       { 'HP' => $pc{hpTotal}.'/'.$pc{hpTotal} },
       { 'MP' => $pc{mpTotal}.'/'.$pc{mpTotal} },
       { '防護' => $pc{defenseTotalAllDef} },
-    ];
+    );
+
+    push(@unitStatus, { '陣気' => '0' }) if $class_text =~ /ウォーリーダー/ && $pc{gameVersion} eq '2.5';
+
+    $pc{unitStatus} = \@unitStatus;
   }
   
   return \%pc;

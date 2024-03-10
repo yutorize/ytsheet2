@@ -117,11 +117,12 @@ io.github.shunshun94.trpg.udonarium.generateCharacterXmlFromYtSheet2SwordWorld2P
 		`        <data type="numberResource" currentValue="${json.hpTotal}" name="HP">${json.hpTotal}</data>`,
 		`        <data type="numberResource" currentValue="${json.mpTotal}" name="MP">${json.mpTotal}</data>`,
         `        <data type="numberResource" currentValue="${json.defenseTotalAllDef || '0'}" name="防護点">${json.defenseTotalAllDef || 0}</data>`,
+        (json.lvWar ?? '') !== '' && json.gameVersion === '2.5' ? `        <data type="numberResource" currentValue="0" name="陣気">0</data>` : null,
         `        <data type="numberResource" currentValue="0" name="1ゾロ">10</data>`,
         `        <data type="numberResource" currentValue="${json.sin || 0}" name="穢れ度">5</data>`,
         `        <data name="所持金">${json.moneyTotal}</data>`,
         `        <data name="残名誉点">${json.honor}</data>`
-	];
+	].filter(x => x != null);
 	data_character_detail['情報'] = [
         `        <data name="PL">${json.playerName || '?'}</data>`,
         `        <data name="種族">${json.race || '?'}</data>`,
