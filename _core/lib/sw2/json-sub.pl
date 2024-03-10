@@ -107,7 +107,14 @@ sub addJsonData {
       { '防護' => $pc{defenseTotalAllDef} },
     );
 
-    push(@unitStatus, { '陣気' => '0' }) if $class_text =~ /ウォーリーダー/ && $pc{gameVersion} eq '2.5';
+    if ($pc{gameVersion} eq '2.5') {
+      if ($class_text =~ /ジオマンサー/) {
+        push(@unitStatus, { '天' => '0' });
+        push(@unitStatus, { '地' => '0' });
+        push(@unitStatus, { '人' => '0' });
+      }
+      push(@unitStatus, { '陣気' => '0' }) if $class_text =~ /ウォーリーダー/;
+    }
 
     $pc{unitStatus} = \@unitStatus;
   }
