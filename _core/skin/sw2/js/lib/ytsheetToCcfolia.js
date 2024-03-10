@@ -101,6 +101,14 @@ io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2SwordWorld2PC
 	};
 
 	if (json.gameVersion === '2.5') {
+		if ((json.lvBar ?? '') !== '') {
+			character.status.push(
+				{label: '⤴', value: 0},
+				{label: '⤵', value: 0},
+				{label: '♡', value: 0}
+			);
+		}
+
 		if ((json.lvGeo ?? '') !== '') {
 			character.status.push(
 				{label: '天', value: 0},
