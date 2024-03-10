@@ -277,13 +277,13 @@
         <div id="area-package">
           <section class="box" id="package">
             <h2>判定パッケージ</h2>
-            <table class="data-table side-margin line-tbody">
-              <TMPL_LOOP Packages><tbody>
+            <table class="data-table side-margin line-tbody <TMPL_UNLESS riderObsOn>hide-rider-obs</TMPL_UNLESS>">
+              <TMPL_LOOP Packages><tbody data-class-name="<TMPL_VAR class>">
                 <TMPL_LOOP Packs><tr>
                   <TMPL_IF NAME="__first__"><th rowspan="<TMPL_VAR colspan>"><TMPL_VAR class><span class="small">技能レベル</span><TMPL_VAR lv></TMPL_IF>
                   <th><TMPL_VAR name>
-                  <td><TMPL_IF add>+<TMPL_VAR add>=</TMPL_IF>
-                  <td><TMPL_VAR total>
+                  <td><span><TMPL_IF add>+<TMPL_VAR add>=</TMPL_IF></span>
+                  <td><span><TMPL_VAR total></span>
                 </TMPL_LOOP>
               </tbody></TMPL_LOOP>
             </table>

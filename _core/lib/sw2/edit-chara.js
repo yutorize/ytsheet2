@@ -1080,10 +1080,19 @@ function calcPackage() {
             break;
           }
         }
-        
+
+        let disabled = false;
+        if(cId === 'Rid' && pId === 'Obs'){
+          disabled = true;
+          for(let i = 1; i <= lv.Rid; i++){
+            if(form[`craftRiding${i}`].value.match(/^探索指令$/)){ disabled = false; break; }
+          }
+        }
+
         let value = cLv + bonus[alphabetToStt[pData[pId].stt]] + Number(form[`pack${cId}${pId}Add`].value) + autoBonus;
+        document.getElementById(`package-${eName}-${pId.toLowerCase()}-row`).classList.toggle('disabled', disabled);
         document.getElementById(`package-${eName}-${pId.toLowerCase()}-auto`).textContent = autoBonus ? '+'+autoBonus : '';
-        document.getElementById(`package-${eName}-${pId.toLowerCase()}`).textContent = value;
+        document.getElementById(`package-${eName}-${pId.toLowerCase()}`).querySelector('.value').textContent = value;
 
         if(pData[pId].monsterLore){ lore.push(cLv > 0 ? value : 0); }
         if(pData[pId].initiative ){ init.push(cLv > 0 ? value : 0); }
