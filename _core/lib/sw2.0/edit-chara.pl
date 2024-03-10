@@ -665,12 +665,12 @@ foreach my $class (@data::class_names){
   my $i;
   foreach my $p_id (sort{$data{$a}{stt} cmp $data{$b}{stt}} keys %data){
     (my $p_name = $data{$p_id}{name}) =~ s/(\(.+?\))/<small>$1<\/small>/;
-    print '<tr>';
+    print '<tr id="package-'.$c_en.'-'.lc($p_id).'-row">';
     print '<th rowspan="'.$rowspan.'">'.$class if !$i;
     print '<th>'. $p_name;
     print '<td id="package-'.$c_en.'-'.lc($p_id).'-auto" class="small">';
-    print '<td>+'. (input "pack${c_id}${p_id}Add", 'number','calcPackage' ) .'=';
-    print '<td id="package-'.$c_en.'-'.lc($p_id).'">'. $data{"pack${c_id}${p_id}"};
+    print '<td><span class="value">+'. (input "pack${c_id}${p_id}Add", 'number','calcPackage' ) .'=</span>';
+    print '<td id="package-'.$c_en.'-'.lc($p_id).'"><span class="value">'. $data{"pack${c_id}${p_id}"} . '</span>';
     print '';
     $i++;
   }
