@@ -23,8 +23,23 @@ sub addJsonData {
         $multiple{ $pc{"part${i}"} }++;
       }
       my %count;
+      my $lastPartName;
+      my $partNameContinuousCount;
       foreach my $i (1 .. $pc{statusNum}){
         my $partname = $pc{"part${i}"};
+        if ($partname eq $lastPartName) {
+          if ($partNameContinuousCount == 0) {
+            my @v = values(%{$hp[$#hp]});
+            $hp[$#hp] = { $partname . 'A' . ':HP' => $v[0] };
+            @v = values(%{$mp[$#mp]});
+            $mp[$#mp] = { $partname . 'A' . ':MP' => $v[0] };
+          }
+          $partNameContinuousCount++;
+          $partname .= substr(join('', 'A'..'Z'), $partNameContinuousCount, 1);
+        } else {
+          $lastPartName = $partname;
+          $partNameContinuousCount = 0;
+        }
         if($pc{mount}){
           if($pc{lv}){
             my $ii = ($pc{lv} - $pc{lvMin} +1);
