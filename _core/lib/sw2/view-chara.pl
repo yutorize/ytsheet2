@@ -358,6 +358,9 @@ $SHEET->param(MagicLists => \@magic_lists);
 my @craft_lists;
 my $enhance_attack_on;
 my $rider_obs_on;
+foreach (16..17) {
+  $pc{"craftEnhance$_"} =~ s/^ヴジャドーアイ$/ヴジャトーアイ/ if $pc{"craftEnhance$_"};
+}
 foreach my $class (@data::class_names){
   next if !$data::class{$class}{craft}{data};
   my $lv = $pc{'lv'.$data::class{$class}{id}};
