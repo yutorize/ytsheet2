@@ -601,6 +601,9 @@ HTML
           </div>
 HTML
 }
+foreach (16..17) {
+  $pc{"craftEnhance$_"} =~ s/^ヴジャドーアイ$/ヴジャトーアイ/ if $pc{"craftEnhance$_"};
+}
 foreach my $class (@data::class_names){
   next if !$data::class{$class}{craft}{data};
   my $name = $data::class{$class}{craft}{eName};
