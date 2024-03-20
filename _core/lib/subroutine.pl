@@ -487,6 +487,8 @@ sub tagUnescapePalette {
 sub tagLinkUrl {
   my $url = shift;
   my $txt = shift;
+  $txt =~ s/#/&#35;/g if $txt =~ /(?:making|能力値作成(?:履歴)?)#/;
+  $txt =~ s/:\/\//&#58;\/\//g if $txt =~ /https?:\/\//;
   #foreach my $safe (@set::safeurl){
   #  next if !$safe;
   #  if($url =~ /^$safe/) { return '<a href="'.$url.'" target="_blank">'.$txt.'</a>'; }
