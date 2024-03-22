@@ -209,6 +209,12 @@ HTML
       </details>
 HTML
 }
+my $maxLv = 0;
+for my $key (keys(%pc)) {
+  next if $key !~ /^lv[A-Z][a-z]{2}$/;
+  $maxLv = $pc{$key} if $pc{$key} && $pc{$key} > $maxLv;
+}
+$pc{'unlockAbove16'} = 1 if $maxLv >= 16;
   print <<"HTML";
       <dl class="box" id="hide-options">
         <dt>閲覧可否設定
@@ -285,6 +291,7 @@ print <<"HTML";
         </dl>
         <div class="annotate">※経験点は、初期所有技能のぶんを含みます。</div>
         <dl class="regulation-note"><dt>備考<dd>@{[ input "history0Note" ]}</dl>
+        @{[ checkbox 'unlockAbove16','16レベル以上を解禁する（2.0の超越者ルールの流用）','checkLvCap' ]}
       </details>
       <div id="area-status">
         @{[ imageForm($pc{imageURL}) ]}
