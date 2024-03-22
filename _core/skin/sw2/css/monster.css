@@ -243,14 +243,14 @@ table.status tbody:nth-of-type(even) tr td.lv {
 ---------------------------------------------------------------------------------------------------- */
 .skills {
   border: 0;
-  margin: 1rem 0 0;
+  margin: 1.8rem 0 0;
   padding-bottom: .5em;
   background: var(--box-base-bg-color);
   border-radius: 0;
   box-shadow: none !important;
 }
 .parts + .skills {
-  margin-top: .5rem;
+  margin-top: 1.8rem;
 }
 .skills :is(h2, h2:nth-child(n+2)) {
   padding: .3rem .5rem;
