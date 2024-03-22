@@ -77,6 +77,7 @@ window.onload = function() {
 
   nameSet();
   race = form.race.value;
+  checkLvCap();
   calcExp();
   calcLv();
   checkRace();
@@ -119,6 +120,25 @@ function changeRegu(){
 // 信仰チェック ----------------------------------------
 function changeFaith(obj) {
   obj.parentNode.classList.toggle('free', obj.value === 'その他の信仰');
+}
+
+// 16レベル以上の解禁 ----------------------------------------
+function checkLvCap() {
+  const checkbox = document.querySelector('[name="unlockAbove16"]');
+  const unlockedAbove16 = checkbox?.checked ?? true;
+
+  document.querySelectorAll('#classes input[type="number"][name^="lv"][max]').forEach(
+      input => {
+        input.setAttribute('max', unlockedAbove16 ? '17' : '15');
+
+        if (!unlockedAbove16 && input.value.match(/^1[67]$/)) {
+          input.value = '15';
+          input.dispatchEvent(new Event('input'));
+        }
+      }
+  );
+
+  changeLv();
 }
 
 // レベル変更 ----------------------------------------

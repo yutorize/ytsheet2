@@ -35,6 +35,10 @@
     grid-row: 4;
   }
 }
+#regulation > label:last-child {
+  margin-top: 0.5em;
+  border: none;
+}
 
 #area-status {
   grid-template-columns: 0.6fr 0.5fr 1.6fr 1.8fr;
