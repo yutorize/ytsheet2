@@ -204,6 +204,9 @@ div.data dl.effects table.weapon-table th {
 div.data dl.effects table.weapon-table td:not(.left) {
   white-space: nowrap;
 }
+div.data dl.effects table.weapon-table:has(tr:last-child > td:last-child:empty) tr > *:last-child {
+  display: none;
+}
 
 div.data dl.effects > :is(dt,dd):nth-of-type(n+2) {
   border-top-width: 1px;
