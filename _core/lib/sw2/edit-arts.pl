@@ -356,7 +356,7 @@ print <<"HTML";
             <dl class="equip   "><dt>限定条件  <dd>@{[ input "schoolArts${num}Equip" ]}</dl>
             <dl class="use     "><dt>使用      <dd>@{[ input "schoolArts${num}Use" ]}</dl>
             <dl class="apply   "><dt>適用      <dd>@{[ input "schoolArts${num}Apply",'','','list="list-arts-apply"' ]}</dl>
-            <dl class="risk    "><dt>リスク    <dd>@{[ input "schoolArts${num}Risk" ]}</dl>
+            <dl class="risk    "><dt>リスク    <dd>@{[ input "schoolArts${num}Risk",'','','list="list-arts-risk"' ]}</dl>
             <dl class="summary "><dt>概要      <dd>@{[ input "schoolArts${num}Summary" ]}</dl>
             <dl class="effect  "><dt>効果      <dd><textarea name="schoolArts${num}Effect">$pc{"schoolArts${num}Effect"}</textarea></dl>
           </div>
@@ -585,6 +585,14 @@ print <<"HTML";
     <option value="1回の射撃攻撃">
     <option value="1回の魔法行使">
     <option value="10秒（1ラウンド）持続">
+  </datalist>
+  <datalist id="list-arts-risk">
+    <option value="なし">
+    <option value="回避力判定－１">
+    <option value="回避力判定－２">
+    <option value="生命・精神抵抗力判定－２">
+    <option value="ほとんどの行為判定－４">
+    <option value="〈盾〉の防護点、回避力の有利な修正無効">
   </datalist>
   <script>
 @{[ &commonJSVariable ]}
