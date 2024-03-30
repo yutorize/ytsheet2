@@ -366,7 +366,7 @@ sub palettePreset {
       [\/／]
       (?:魔力)
       ([0-9]+)
-      [(（][0-9]+[）)]
+      (?:[(（][0-9]+[）)])?
       /$text .= "2d+{$+{name}} $+{name}\n\n";/megix;
     
     $skills =~ s/^
@@ -657,7 +657,7 @@ sub paletteProperties {
     $skills =~ tr/０-９（）/0-9\(\)/;
     $skills =~ s/\|/｜/g;
     $skills =~ s/<br>/\n/g;
-    $skills =~ s/^(?:$skill_mark)+(.+?)(?:[0-9]+(?:レベル|LV)|\(.+\))*[\/／](?:魔力)([0-9]+)[(（][0-9]+[）)]/push @propaties, "\/\/$1=$2";/megi;
+    $skills =~ s/^(?:$skill_mark)+(.+?)(?:[0-9]+(?:レベル|LV)|\(.+\))*[\/／](?:魔力)([0-9]+)(?:[(（][0-9]+[）)])?/push @propaties, "\/\/$1=$2";/megi;
 
     $skills =~ s/^
       (?<head>
