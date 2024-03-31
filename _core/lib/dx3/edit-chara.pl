@@ -1326,15 +1326,28 @@ print <<"HTML";
     <option value="白兵／射撃">
     <option value="エンブレム／白兵">
     <option value="エンブレム／射撃">
+    <option value="リレーション／白兵">
+    <option value="リレーション／射撃">
   </datalist>
   <datalist id="list-armor-type">
     <option value="防具">
     <option value="防具※">
+    <option value="防具（補助）">
+    <option value="エンブレム／防具">
+    <option value="エンブレム／防具（補助）">
+    <option value="リレーション／防具">
   </datalist>
   <datalist id="list-item-type">
+    <option value="一般">
     <option value="コネ">
     <option value="その他">
     <option value="使い捨て">
+    <option value="エンブレム／一般">
+    <option value="エンブレム／コネ">
+    <option value="エンブレム／使い捨て">
+    <option value="リレーション／一般">
+    <option value="リレーション／コネ">
+    <option value="リレーション／使い捨て">
   </datalist>
   <datalist id="list-dfclty">
     <option value="―">
