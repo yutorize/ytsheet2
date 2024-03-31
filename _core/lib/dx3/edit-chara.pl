@@ -1289,6 +1289,7 @@ print <<"HTML";
     <option value="〈白兵〉">
     <option value="〈射撃〉">
     <option value="〈白兵〉〈射撃〉">
+    <option value="〈交渉〉">
     <option value="効果参照">
   </datalist>
   <datalist id="list-vehicle-skill">
