@@ -1323,6 +1323,8 @@ print <<"HTML";
     <option value="白兵">
     <option value="射撃">
     <option value="白兵／射撃">
+    <option value="エンブレム／白兵">
+    <option value="エンブレム／射撃">
   </datalist>
   <datalist id="list-armor-type">
     <option value="防具">
