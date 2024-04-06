@@ -167,6 +167,9 @@ my @status_row;
 foreach (1 .. $pc{statusNum}){
   if ($pc{'status'.$_.'Accuracy'} ne ''){ $pc{'status'.$_.'Accuracy'} = $pc{'status'.$_.'Accuracy'}.(!$pc{statusTextInput} && !$pc{mount}?' ('.$pc{'status'.$_.'AccuracyFix'}.')':'') }
   if ($pc{'status'.$_.'Evasion'}  ne ''){ $pc{'status'.$_.'Evasion'}  = $pc{'status'.$_.'Evasion'} .(!$pc{statusTextInput} && !$pc{mount}?' ('.$pc{'status'.$_.'EvasionFix'}.')' :'') }
+
+  $pc{'status'.$_.'Damage'} = '―' if $pc{'status'.$_.'Damage'} eq '2d+' && ($pc{'status'.$_.'Accuracy'} eq '' || $pc{'status'.$_.'Accuracy'} eq '―');
+
   push(@status_row, {
     LV       => $pc{lvMin},
     STYLE    => $pc{'status'.$_.'Style'},
@@ -185,6 +188,9 @@ foreach my $lv (2 .. ($pc{lvMax}-$pc{lvMin}+1)){
   my @status_row;
   foreach (1 .. $pc{statusNum}){
     my $num = "$_-$lv";
+
+    $pc{'status'.$num.'Damage'} = '―' if $pc{'status'.$num.'Damage'} eq '2d+' && ($pc{'status'.$num.'Accuracy'} eq '' || $pc{'status'.$num.'Accuracy'} eq '―');
+
     push(@status_row, {
       LV       => $lv+$pc{lvMin}-1,
       STYLE    => $pc{'status'.$_.'Style'},
