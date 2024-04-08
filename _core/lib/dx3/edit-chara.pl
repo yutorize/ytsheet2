@@ -572,7 +572,7 @@ foreach my $num (1 .. 7) {
 if(!$pc{"lois${num}State"}){ $pc{"lois${num}State"} = 'ロイス' }
 print <<"HTML";
             <tr id="lois${num}">
-              <td><span class="handle"></span>@{[input "lois${num}Relation"]}
+              <td><span class="handle"></span>@{[input "lois${num}Relation",'','','list="list-lois-relation"']}
               <td>@{[input "lois${num}Name",'','encroachBonusType']}
               <td class="emo">@{[input "lois${num}EmoPosiCheck",'checkbox',"emoP($num)"]}@{[input "lois${num}EmoPosi",'','','list="list-emotionP"']}
               <td>／
@@ -1136,6 +1136,10 @@ print <<"HTML";
   </datalist>
   <datalist id="list-blood">
     <option value="A型"><option value="B型"><option value="AB型"><option value="O型"><option value="不明"><option value="不詳">
+  </datalist>
+  <datalist id="list-lois-relation">
+    <option value="Dロイス">
+    <option value="Eロイス">
   </datalist>
   <datalist id="list-emotionP">
     <option value="傾倒">
