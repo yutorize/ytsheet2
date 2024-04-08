@@ -128,6 +128,7 @@ print <<"HTML";
           <li onclick="sectionSelect('color');" class="color-icon" title="カラーカスタム">
           <li onclick="view('text-rule')" class="help-icon" title="テキスト整形ルール">
           <li onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード切替">
+          <li onclick="exportAsJson()" class="download-icon" title="JSON出力">
           <li class="buttons">
             <ul>
               <li @{[ display ($mode eq 'edit') ]} class="view-icon" title="閲覧画面"><a href="./?id=$::in{id}"></a>
@@ -393,8 +394,8 @@ print <<"HTML";
             <dt>自分の<br>痕印
             <dd>
               <select name="partnerOrder" oninput="autoInputPartner(1)" style="width:auto;">
-                <option value="1">血契１
-                <option value="2">血契２
+                <option value="1" @{[ $pc{partnerOrder} eq 1 ? 'selected' :'' ]}>血契１
+                <option value="2" @{[ $pc{partnerOrder} eq 2 ? 'selected' :'' ]}>血契２
               </select>※相手から見て
             </dd>
             <dd>

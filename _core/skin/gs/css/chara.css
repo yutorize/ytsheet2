@@ -1,17 +1,16 @@
 @charset "utf-8";
 
+@layer system {
 /* // Body
 ---------------------------------------------------------------------------------------------------- */
 @import url('https://fonts.googleapis.com/css2?family=Rubik+Dirt&display=swap&text=GOBLINSLAYER!');
 body {
   background-image: url(../../_common/img/back-pattern.png), url(../img/back-sword.png);
   background-blend-mode: normal, normal;
-}
-.night body {
-  background-blend-mode: hard-light, normal;
-}
-@media screen and (max-width:735px){
-  body {
+  .night & {
+    background-blend-mode: hard-light, normal;
+  }
+  @media screen and (max-width:735px){
     background-size: auto, 80%;
   }
 }
@@ -89,104 +88,6 @@ body {
 }
 #cashbook p {
   font-family: var(--base-font-family-mono);
-}
-
-/* // Name / Date
----------------------------------------------------------------------------------------------------- */
-#area-name {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  
-  padding: 0px 5px;
-  border-width: 3px 0px;
-  border-style: solid;
-  
-  background-image: linear-gradient(to right, var(--box-head-bg-color), var(--box-base-bg-color));
-  background-color: var(--bg-color);
-  border-color: var(--box-outside-border-color, inherit);
-}
-h1#character-name {
-  padding: 1rem;
-  font-size: 2.2rem;
-  font-weight: bold;
-  text-shadow: var(--bg-color) 0px 0px .5em,
-    var(--bg-color)  .1rem .1rem, var(--bg-color) -.1rem -.1rem,
-    var(--bg-color) -.1rem .1rem, var(--bg-color)  .1rem -.1rem,
-    var(--bg-color)  .0rem .1rem, var(--bg-color)  .0rem -.1rem,
-    var(--bg-color) -.1rem .0rem, var(--bg-color)  .1rem  .0rem;
-}
-#aka {
-  margin-right: .5em;
-}
-#area-name > div { 
-  text-align: right;
-  font-size: 1.2rem;
-}
-#update-time {
-}
-#player-name {
-}
-
-/* // Common
----------------------------------------------------------------------------------------------------- */
-.data-table {
-  width: 100%;
-  border-style: hidden hidden none;
-}
-.data-table:last-child {
-  border-bottom-style: hidden;
-}
-.data-table.side-margin,
-.data-tables.side-margin table,
-.data-tables.side-margin ul,
-.data-tables.side-margin dl {
-  width: calc(100% - 1rem);
-  margin: 0 .5rem;
-}
-table.data-table > tbody tr {
-  border-width: 1px 0;
-  border-style: solid;
-}
-table.data-table:not(.side-margin) thead th {
-  padding: .3rem 0 .2rem;
-  border-width: 0;
-  line-height: 1;
-}
-table.data-table tbody td,
-ul.data-table > li,  .data-tables ul > li,
-dl.data-table > *,   .data-tables dl > *  {
-  padding: .2em 0;
-  line-height: 1.4;
-}
-table.data-table:not(.side-margin) tbody th,
-table.data-table:not(.side-margin) tbody td {
-  border-left-width: 1px;
-  border-right-width: 1px;
-  border-left-style: dotted;
-  border-right-style: dotted;
-}
-table.data-table:not(.side-margin).line-tbody tbody:nth-of-type(even) td,
-table.data-table:not(.side-margin):not(.line-tbody) tbody tr:nth-of-type(even) td {
-  background-color: var(--box-even-rows-bg-color);
-}
-
-ul.data-table > li,  .data-tables ul  > li,
-dl.data-table > *,   .data-tables dl  > *  {
-  border-width: 0 0 1px;
-  border-style: solid;
-}
-ul.data-table:last-child > li:last-child,
-dl.data-table:last-child > dt:last-of-type,
-dl.data-table:last-child > dt:last-of-type ~ dd,
-.data-tables ul:last-child > li:last-child,
-.data-tables dl:last-child > dt:last-of-type,
-.data-tables dl:last-child > dt:last-of-type ~ dd {
-  border-bottom-style: hidden;
-}
-
-table.data-table tbody td:empty::before {
-  content: '　';
 }
 
 /* // Area-Status
@@ -679,6 +580,7 @@ table.data-table tbody td:empty::before {
 
 #area-equipment table.data-table tbody th {
   border-style: none solid hidden;
+  background-color: transparent;
 }
 #area-equipment table.data-table tbody:first-of-type tr:first-of-type th {
   border-top: hidden;
@@ -1010,4 +912,7 @@ table.data-table tbody td:empty::before {
 }
 #cashbook b.cash.minus {
   background: linear-gradient(to top, rgba(255,100,0,0.5) 0rem, rgba(255,100,0,0.3) .5rem, transparent .5rem);
+}
+
+/* ////////// LayerEnd ////////// */
 }
