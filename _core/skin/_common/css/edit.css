@@ -1205,6 +1205,79 @@ input[type="submit"]:hover {
   }
 }
 
+/* // 目次
+---------------------------------------------------------------------------------------------------- */
+.toc-root {
+  background-color: var(--box-base-bg-color);
+  color: var(--text-color);
+  --margin: 0.5rem;
+  display: block;
+  position: fixed;
+  top: var(--margin);
+  right: var(--margin);
+  left: calc(((100vw - 900px) / 2) + 900px + var(--margin));
+  height: auto;
+  border-radius: 1rem;
+  padding: 0.7rem;
+  font-size: 1.15rem;
+
+  & ul.content-list {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+
+    & li {
+      margin: 0;
+      padding: 0.25em 0;
+      cursor: pointer;
+      display: flex;
+      flex-flow: row;
+      justify-content: flex-start;
+      align-items: center;
+    }
+
+    & li.hidden {
+      display: none;
+    }
+
+    & li::before {
+      content: "○";
+      font-size: 90%;
+      margin: 0 0.25em;
+    }
+
+    & li:hover {
+      background-color: var(--box-head-bg-color);
+    }
+  }
+}
+.toc-root.hidden {
+  display: none;
+}
+@media all and (max-width: 1279px) {
+  .toc-root {
+    display: none;
+  }
+}
+.highlight-once {
+  animation-name: highlight-once;
+  animation-duration: 0.5s;
+  animation-iteration-count: 1;
+  animation-timing-function: ease-in-out;
+}
+@keyframes highlight-once {
+  0% {
+    filter: brightness(100%);
+  }
+
+  50% {
+    filter: brightness(125%);
+  }
+
+  100% {
+    filter: brightness(100%);
+  }
+}
 
 /* // カラーカスタム
 ---------------------------------------------------------------------------------------------------- */

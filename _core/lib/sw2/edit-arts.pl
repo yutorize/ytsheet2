@@ -217,7 +217,7 @@ HTML
         </dl>
       </div>
 
-      <div class="box" id="name-form">
+      <div class="box in-toc" id="name-form" data-content-title="カテゴリ・プレイヤー名">
         <div>
           <dl id="category">
             <dt>カテゴリ
@@ -233,7 +233,7 @@ HTML
         <p>カテゴリを選択してください。</p>
       </div>
       <!-- 魔法 -->
-      <div class="data-area" id="data-magic">
+      <div class="data-area in-toc" id="data-magic" data-content-title="データ">
         <div class="box input-data">
           <dl class="name     "><dt>名称        <dd>【@{[ input 'magicName','',"nameSet" ]}】<br>
                                                           @{[ checkbox 'magicActionTypePassive','常時' ]}@{[ checkbox 'magicActionTypeMajor','主動作' ]}@{[ checkbox 'magicActionTypeMinor','補助動作' ]}@{[ checkbox 'magicActionTypeSetup','戦闘準備' ]}</dl>
@@ -262,12 +262,12 @@ HTML
           
         </div>
         <div class="box">
-          <h2>由来・逸話など</h2>
+          <h2 class="in-toc">由来・逸話など</h2>
           <textarea name="magicDescription">$pc{magicDescription}</textarea>
         </div>
       </div>
       <!-- 神格 -->
-      <div class="data-area" id="data-god">
+      <div class="data-area in-toc" id="data-god" data-content-title="神格の詳細">
         <div class="box input-data">
           <div id="image" style="">
             <h2>聖印の画像</h2>
@@ -301,7 +301,7 @@ HTML
 HTML
 foreach my $lv (2,4,7,10,13){
 print <<"HTML";
-          <h2>特殊神聖魔法 ${lv}レベル</h2>
+          <h2 class="in-toc">特殊神聖魔法 ${lv}レベル</h2>
           <dl class="name    "><dt>名称      <dd>【@{[ input "godMagic${lv}Name",'' ]}】<br>@{[ checkbox "godMagic${lv}ActionTypeMinor",'補助動作' ]}@{[ checkbox "godMagic${lv}ActionTypeSetup",'戦闘準備' ]}</dl>
           <dl class="cost    "><dt>消費      <dd>@{[ input "godMagic${lv}Cost" ]}</dl>
           <dl class="target  "><dt>対象      <dd>@{[ input "godMagic${lv}Target",'','','list="list-target"' ]}</dl>
@@ -317,7 +317,7 @@ print <<"HTML";
         </div>
       </div>
       <!-- 流派 -->
-      <div class="data-area" id="data-school">
+      <div class="data-area in-toc" id="data-school" data-content-title="流派の詳細">
         <div class="box input-data">
           <dl class="name  "><dt>名称      <dd>【@{[ input 'schoolName','',"nameSet" ]}】</dl>
           <dl class="area  "><dt>地域      <dd>@{[ input 'schoolArea','','','placeholder="大陸・地方など"' ]}</dl>
@@ -341,7 +341,7 @@ print <<"HTML";
         </div>
         @{[ input 'schoolArtsNum','hidden' ]}
         <details class="box" $open{schoolArts}>
-          <summary>流派秘伝</summary>
+          <summary class="in-toc">流派秘伝</summary>
           <textarea name="schoolArtsNote" placeholder="流派秘伝全体の注釈（あれば）">$pc{schoolArtsNote}</textarea>
           <div id="arts-list">
 HTML
@@ -369,7 +369,7 @@ print <<"HTML";
         </details>
         @{[ input 'schoolMagicNum','hidden' ]}
         <details class="box" $open{schoolMagic}>
-          <summary>流派秘伝魔法</summary>
+          <summary class="in-toc">流派秘伝魔法</summary>
           <textarea name="schoolMagicNote" placeholder="流派秘伝魔法全体の注釈（あれば）">$pc{schoolMagicNote}</textarea>
           <div id="school-magic-list">
 HTML

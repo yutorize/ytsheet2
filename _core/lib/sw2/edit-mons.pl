@@ -158,7 +158,7 @@ HTML
           </select>
         <dd>※「一覧に非表示」でもタグ検索結果・マイリストには表示されます
       </dl>
-      <div class="box" id="group">
+      <div class="box in-toc" id="group" data-content-title="分類・タグ">
         <dl>
           <dt>分類</dt>
           <dd>
@@ -181,7 +181,7 @@ print <<"HTML";
         </dl>
       </div>
 
-      <div class="box" id="name-form">
+      <div class="box in-toc" id="name-form" data-content-title="名称・製作者">
         <div>
           <dl id="character-name">
             <dt>名称
@@ -198,7 +198,7 @@ print <<"HTML";
         </dl>
       </div>
 
-      <div class="box status">
+      <div class="box status in-toc" data-content-title="基本データ">
         <dl class="mount-only price">
           <dt>価格
           <dd>購入@{[ input 'price' ]}G
@@ -263,7 +263,7 @@ print <<"HTML";
         </dl>
       </div>
       <p class="monster-only">@{[ input "statusTextInput",'checkbox','statusTextInputToggle']}命中・回避・抵抗に数値以外を入力</p>
-      <div class="box">
+      <div class="box in-toc" data-content-title="攻撃方法・命中・打撃・回避・防護・ＨＰ・ＭＰ">
       <table id="status-table" class="status">
         <thead>
           <tr>
@@ -334,12 +334,12 @@ print <<"HTML";
       <div class="add-del-button"><a onclick="addStatus()">▼</a><a onclick="delStatus()">▲</a></div>
       @{[input('statusNum','hidden')]}
       </div>
-      <div class="box parts">
+      <div class="box parts in-toc" data-content-title="部位数・コア部位">
         <dl><dt>部位数<dd>@{[ input 'partsNum','number','','min="1"' ]} (@{[ input 'parts' ]}) </dl>
         <dl><dt>コア部位<dd>@{[ input 'coreParts' ]}</dl>
       </div>
       <div class="box">
-        <h2>特殊能力</h2>
+        <h2 class="in-toc">特殊能力</h2>
         <textarea name="skills">$pc{skills}</textarea>
         <div class="annotate">
           ※<b>行頭に</b>特殊能力の分類マークなどを記述すると、そこから次の「改行」または「全角スペース」までを自動的に見出し化します。<br>
@@ -367,7 +367,7 @@ print <<"HTML";
         </div>
       </div>
       <div class="box loots">
-        <h2>戦利品</h2>
+        <h2 class="in-toc">戦利品</h2>
         <div id="loots-list">
           <ul id="loots-num">
 HTML
@@ -384,7 +384,7 @@ print <<"HTML";
       @{[input('lootsNum','hidden')]}
       </div>
       <div class="box">
-        <h2>解説</h2>
+        <h2 class="in-toc">解説</h2>
         <textarea name="description">$pc{description}</textarea>
       </div>
       </section>

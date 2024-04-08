@@ -227,7 +227,7 @@ print <<"HTML";
         </dl>
       </div>
       
-      <div class="box" id="name-form">
+      <div class="box in-toc" id="name-form" data-content-title="キャラクター名・プレイヤー名">
         <div>
           <dl id="character-name">
             <dt>キャラクター名
@@ -245,7 +245,7 @@ print <<"HTML";
         
         <div id="levels">
           <dl class="box">
-            <dt>戦果点</dt>
+            <dt class="in-toc">戦果点</dt>
             <dd>
               @{[ input 'history0Result', 'number','calcResultPoint' ]}
               + <span id="resultpoint-history">0</span>
@@ -254,13 +254,13 @@ print <<"HTML";
             </dd>
           </dl>
           <dl class="box">
-            <dt>レベル
+            <dt class="in-toc">レベル
             <dd>@{[ input 'level', 'number', 'calcBattle' ]}
           </dl>
         </div>
 
         <div id="personal">
-          <div class="box-union">
+          <div class="box-union" class="in-toc" data-content-title="種族・クラス">
             <dl class="box" id="">
               <dt>種族
               <dd>@{[ selectInput 'race','',@races ]}
@@ -273,7 +273,7 @@ print <<"HTML";
 
           <div class="box-union">
             <dl class="box" id="">
-              <dt>スタイル
+              <dt class="in-toc">スタイル
               <dd>@{[ selectInput 'style1','',@styles ]}
               <dd>@{[ selectInput 'style2','',@styles ]}
             </dl>
@@ -281,7 +281,7 @@ print <<"HTML";
         </div>
 
         <div class="box" id="appearance">
-          <h2>キャラクター外見</h2>
+          <h2 class="in-toc">キャラクター外見</h2>
           <dl class="">
             <dt>性別
             <dd>@{[ input 'gender','','','list="list-gender"' ]}
@@ -300,7 +300,7 @@ print <<"HTML";
 
         <div id="status">
           <div class="box" id="user-status">
-            <h2>能力値</h2>
+            <h2 class="in-toc">能力値</h2>
             <dl class="">
               <dt>バイタリティ
               <dd>@{[ input 'vitality','number','calcStatus' ]}
@@ -312,9 +312,9 @@ print <<"HTML";
               <dd>@{[ input 'carisma','number' ]}
             </dl>
           </div>
-          <div class="box-union" id="hp-and-stamina">
+          <div class="box-union in-toc" id="hp-and-stamina" data-content-title="ＨＰ・スタミナ">
             <dl class="box" id="hp">
-              <dt>HP
+              <dt>ＨＰ
               <dd>
                 +@{[ input 'hpAdd','number','calcBattle' ]}=
                 <b id="hp-value">0</b>
@@ -333,7 +333,7 @@ print <<"HTML";
       
 
       <div class="box" id="specialities" $open{specialities}>
-        <h2>特技</h2>
+        <h2 class="in-toc">特技</h2>
         <table class="edit-table no-border-cells" id="speciality-table">
           <thead>
             <tr><th>名称<th class="left">効果
@@ -351,7 +351,7 @@ print <<"HTML";
       </div>
 
       <div class="box" id="goods" $open{goods}>
-        <h2>グッズ</h2>
+        <h2 class="in-toc">グッズ</h2>
         @{[input 'goodsNum','hidden']}
         <table class="edit-table no-border-cells" id="goods-table">
           <thead>
@@ -376,7 +376,7 @@ HTML
       </div>
 
       <div class="box" id="battle">
-        <h2>戦闘値表</h2>
+        <h2 class="in-toc">戦闘値表</h2>
         <table class="edit-table no-border-cells">
           <colgroup>
             <col class="head">
@@ -498,7 +498,7 @@ print <<"HTML";
       </div>
 
       <div class="box" id="items" $open{items}>
-        <h2>アイテム</h2>
+        <h2 class="in-toc">アイテム</h2>
         @{[input 'itemsNum','hidden']}
         <table class="edit-table no-border-cells" id="items-table">
           <thead>
@@ -524,19 +524,19 @@ HTML
       </div>
       
       <details class="box" id="free-note" @{[$pc{freeNote}?'open':'']}>
-        <summary>設定・メモ</summary>
+        <summary class="in-toc">設定・メモ</summary>
         <textarea name="freeNote">$pc{freeNote}</textarea>
         @{[ $::in{log} ? '<button type="button" class="set-newest" onclick="setNewestSingleData(\'freeNote\')">最新のメモを適用する</button>' : '' ]}
       </details>
       
       <details class="box" id="free-history" @{[$pc{freeHistory}?'open':'']}>
-        <summary>履歴（自由記入）</summary>
+        <summary class="in-toc">履歴（自由記入）</summary>
         <textarea name="freeHistory">$pc{freeHistory}</textarea>
         @{[ $::in{log} ? '<button type="button" class="set-newest" onclick="setNewestSingleData(\'freeHistory\')">最新の履歴（自由記入）を適用する</button>' : '' ]}
       </details>
       
       <div class="box" id="history">
-        <h2>セッション履歴</h2>
+        <h2 class="in-toc">セッション履歴</h2>
         @{[input 'historyNum','hidden']}
         <table class="edit-table line-tbody no-border-cells" id="history-table">
           <thead id="history-head">

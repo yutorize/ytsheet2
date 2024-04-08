@@ -240,7 +240,7 @@ print <<"HTML";
         </dl>
       </div>
       
-      <div class="box" id="name-form">
+      <div class="box in-toc" id="name-form" data-content-title="キャラクター名・プレイヤー名">
         <div>
           <dl id="character-name">
             <dt>キャラクター名
@@ -254,7 +254,7 @@ print <<"HTML";
       </div>
 
       <details class="box" id="regulation" @{[$mode eq 'edit' ? '':'open']}>
-        <summary>作成レギュレーション</summary>
+        <summary class="in-toc">作成レギュレーション</summary>
         <dl>
           <dt>経験点
           <dd>@{[ input "history0Exp",'number','changeRegu','step="500"'.($set::make_fix?' readonly':'') ]}
@@ -274,7 +274,7 @@ print <<"HTML";
       <div id="area-status">
         @{[ imageForm($pc{imageURL}) ]}
 
-        <div id="personal">
+        <div id="personal" class="in-toc" data-content-title="種族・年齢・性別">
           <dl class="box" id="race">
             <dt>種族<dd>
               <select name="race" oninput="changeRace()">@{[ option 'race', @data::race_list ]}</select>
@@ -290,10 +290,10 @@ print <<"HTML";
             <dt>性別<dd>@{[ input 'gender','','','list="list-gender"' ]}
           </dl>
           <dl class="box" id="rank">
-            <dt>等級<dd><select name="rank">@{[ option 'rank', @set::adventurer_rank_name ]}</select>
+            <dt class="in-toc">等級<dd><select name="rank">@{[ option 'rank', @set::adventurer_rank_name ]}</select>
           </dl>
           <dl class="box" id="career">
-            <dt>経歴（出自／来歴／邂逅）
+            <dt class="in-toc">経歴（出自／来歴／邂逅）
             <dd>
               @{[input 'careerOrigin' ]}/@{[input 'careerGenesis' ]}/@{[input 'careerEncounter' ]}
             <dd>
@@ -301,7 +301,7 @@ print <<"HTML";
           </dl>
         </div>
 
-        <div class="box" id="ability">
+        <div class="box in-toc" id="ability" data-content-title="能力値">
           <table class="edit-table">
             <colgroup>
               <col><col><col><col><col><col>
@@ -360,7 +360,7 @@ print <<"HTML";
         </div>
 
         <div class="box" id="status">
-          <h2>状態</h2>
+          <h2 class="in-toc">状態</h2>
           <table class="edit-table">
             <thead>
               <tr>
@@ -440,7 +440,7 @@ print <<"HTML";
         </div>
 
         <div class="box" id="classes">
-          <h2>職業</h2>
+          <h2 class="in-toc">職業</h2>
 HTML
 print '<div class="classes-group" id="classes-weapon-user"><h3>戦士系</h3><dl class="edit-table side-margin">';
 foreach my $name (@data::class_names){ print classInputBox($name) if $data::class{$name}{type} =~ 'warrior'; }
@@ -464,7 +464,7 @@ print <<"HTML";
       
 
       <details class="box" id="skills" $open{skill}>
-        <summary>冒険者技能 <span class="small">[残り成長点:<b class="adp-rest">0</b>]</span></summary>
+        <summary class="in-toc" data-content-title="冒険者技能">冒険者技能 <span class="small">[残り成長点:<b class="adp-rest">0</b>]</span></summary>
         @{[input 'skillNum','hidden']}
         <table class="edit-table no-border-cells" id="skills-table">
           <thead>
@@ -503,7 +503,7 @@ print <<"HTML";
       </details>
       
       <details class="box" id="general-skills" $open{generalSkill}>
-        <summary>一般技能 <span class="small">[残り成長点:<b class="adp-rest">0</b>]</span></summary>
+        <summary class="in-toc" data-content-title="一般技能">一般技能 <span class="small">[残り成長点:<b class="adp-rest">0</b>]</span></summary>
         @{[input 'generalSkillNum','hidden']}
         <table class="edit-table no-border-cells" id="general-skills-table">
           <thead>
@@ -542,7 +542,7 @@ print <<"HTML";
       </details>
 
       <div class="box" id="spell-cast">
-        <h2>呪文行使基準値</h2>
+        <h2 class="in-toc">呪文行使基準値</h2>
         <table class="edit-table">
           <colgroup>
             <col class="base ">
@@ -571,7 +571,7 @@ print <<"HTML";
         </table>
       </div>
       <details class="box" id="spells" $open{spell}>
-        <summary>呪文</summary>
+        <summary class="in-toc">呪文</summary>
         @{[input 'spellNum','hidden']}
         <table class="edit-table no-border-cells" id="spells-table">
           <thead>
@@ -610,7 +610,7 @@ print <<"HTML";
       </details>
 
       <details class="box" id="arts" $open{arts}>
-        <summary>武技</summary>
+        <summary class="in-toc">武技</summary>
         @{[input 'artsNum','hidden']}
         <table class="edit-table line-tbody no-border-cells" id="arts-table">
           <thead id="arts-head">
@@ -649,7 +649,7 @@ print <<"HTML";
       
       <div id="area-equipment">
         <div class="box" id="attack-classes">
-          <h2>命中基準値</h2>
+          <h2 class="in-toc">命中基準値</h2>
           <table class="edit-table line-tbody">
             <colgroup>
               <col>
@@ -695,7 +695,7 @@ HTML
 print <<"HTML";
           </table>
         </div>
-        <div class="box" id="weapons">
+        <div class="box in-toc" id="weapons" data-content-title="武器">
           <table class="edit-table line-tbody" id="weapons-table">
             <thead id="weapon-head">
               <tr>
@@ -733,7 +733,7 @@ print <<"HTML";
           @{[input('weaponNum','hidden')]}
         </div>
         <div class="box defense-classes" id="dodge-classes">
-          <h2>回避基準値／移動力</h2>
+          <h2 class="in-toc">回避基準値／移動力</h2>
           <table class="edit-table">
             <thead>
               <tr>
@@ -769,7 +769,7 @@ print <<"HTML";
                 <td>@{[ input 'MoveModValue','number','calcDodge' ]}
           </table>
         </div>
-        <div class="box" id="armor">
+        <div class="box in-toc" id="armor" data-content-title="鎧">
           <table class="edit-table">
             <thead>
               <tr>
@@ -795,7 +795,7 @@ print <<"HTML";
           </table>
         </div>
         <div class="box defense-classes" id="block-classes">
-          <h2>盾受け基準値</h2>
+          <h2 class="in-toc">盾受け基準値</h2>
           <table class="edit-table">
             <thead>
               <tr>
@@ -825,7 +825,7 @@ print <<"HTML";
             </tbody>
           </table>
         </div>
-        <div class="box" id="shield">
+        <div class="box in-toc" id="shield" data-content-title="盾">
           <table class="edit-table">
             <thead>
               <tr>
@@ -852,13 +852,13 @@ print <<"HTML";
       <div id="area-items">
         <div id="area-items-L">
           <div class="box" id="items">
-            <h2>所持品</h2>
+            <h2 class="in-toc">所持品</h2>
             <textarea name="items">$pc{items}</textarea>
           </div>
         </div>
         <div id="area-items-R">
           <dl class="box" id="money">
-            <dt>所持金 @{[ checkbox 'moneyAuto', '自動', 'calcCash' ]}
+            <dt class="in-toc">所持金 @{[ checkbox 'moneyAuto', '自動', 'calcCash' ]}
             <dd>
               <dl id="money-coins">
                 <dt id="money-coins-s">銀貨  <dd>@{[ input 'money','' ]}
@@ -872,7 +872,7 @@ print <<"HTML";
         </div>
       </div>
       <details class="box" id="cashbook" @{[ $pc{cashbook} || $pc{money} =~ /^(?:自動|auto)$/i ? 'open' : '' ]}>
-        <summary>収支履歴</summary>
+        <summary class="in-toc">収支履歴</summary>
         <textarea name="cashbook" oninput="calcCash();" placeholder="例）治癒の水薬  ::-10&#13;&#10;　　粗悪な剣売却::+2">$pc{cashbook}</textarea>
         <p>
           所持金：銀貨 <span id="cashbook-total-value">$pc{moneyTotal}</span> 枚
@@ -888,7 +888,7 @@ print <<"HTML";
       </details>
 
       <dl class="box" id="physical-traits">
-        <dt>身体的特徴
+        <dt class="in-toc">身体的特徴
         <dd>@{[ input "traits" ]}
         <dt>髪
         <dd>@{[ input "traitsHair" ]}
@@ -897,19 +897,19 @@ print <<"HTML";
       </dl>
       
       <details class="box" id="free-note" @{[$pc{freeNote}?'open':'']}>
-        <summary>容姿詳細・経歴詳細・その他メモ</summary>
+        <summary class="in-toc">容姿詳細・経歴詳細・その他メモ</summary>
         <textarea name="freeNote">$pc{freeNote}</textarea>
         @{[ $::in{log} ? '<button type="button" class="set-newest" onclick="setNewestSingleData(\'freeNote\')">最新のメモを適用する</button>' : '' ]}
       </details>
       
       <details class="box" id="free-history" @{[$pc{freeHistory}?'open':'']}>
-        <summary>履歴（自由記入）</summary>
+        <summary class="in-toc">履歴（自由記入）</summary>
         <textarea name="freeHistory">$pc{freeHistory}</textarea>
         @{[ $::in{log} ? '<button type="button" class="set-newest" onclick="setNewestSingleData(\'freeHistory\')">最新の履歴（自由記入）を適用する</button>' : '' ]}
       </details>
       
       <div class="box" id="history">
-        <h2>セッション履歴</h2>
+        <h2 class="in-toc">セッション履歴</h2>
         @{[input 'historyNum','hidden']}
         <table class="edit-table line-tbody no-border-cells" id="history-table">
           <thead id="history-head">

@@ -241,7 +241,7 @@ print <<"HTML";
         </dl>
       </div>
       
-      <div class="box" id="name-form">
+      <div class="box in-toc" id="name-form" data-content-title="キャラクター名・プレイヤー名">
         <div>
           <dl id="character-name">
             <dt>キャラクター名
@@ -261,7 +261,7 @@ print <<"HTML";
       </div>
 
       <details class="box" id="regulation" @{[$mode eq 'edit' ? '':'open']}>
-        <summary>作成レギュレーション</summary>
+        <summary class="in-toc">作成レギュレーション</summary>
         <dl>
           <dt>経験点
           <dd>@{[input("history0Exp",'number','changeRegu','step="500"'.($set::make_fix?' readonly':''))]}
@@ -290,7 +290,7 @@ print <<"HTML";
       <div id="area-status">
         @{[ imageForm($pc{imageURL}) ]}
 
-        <div id="personal">
+        <div id="personal" class="in-toc" data-content-title="種族・年齢・性別・穢れ・生まれ・信仰">
           <dl class="box" id="race">
             <dt>種族<dd>@{[ selectInput 'race', 'changeRace(this.value)', @data::race_list,'label=その他' ]}
           </dl>
@@ -344,7 +344,7 @@ print "</select>".input('faithOther','text','', ' placeholder="自由記入欄"'
 print <<"HTML";
         </div>
 
-        <div id="status">
+        <div id="status" class="in-toc" data-content-title="能力値">
           <dl class="box" id="stt-base-tec"><dt>技<dd>@{[input('sttBaseTec','number','calcStt')]}</dl>
           <dl class="box" id="stt-base-phy"><dt>体<dd>@{[input('sttBasePhy','number','calcStt')]}</dl>
           <dl class="box" id="stt-base-spi"><dt>心<dd>@{[input('sttBaseSpi','number','calcStt')]}</dl>
@@ -405,7 +405,7 @@ print <<"HTML";
           </dl>
         </div>
 
-        <div class="box-union" id="sub-status">
+        <div class="box-union in-toc" id="sub-status" data-content-title="ＨＰ・ＭＰ・抵抗力">
           <dl class="box">
             <dt id="vit-resist">生命抵抗力
             <dd><span id="vit-resist-base">$pc{vitResistBase}</span>+<span id="vit-resist-auto-add">$pc{vitResistAutoAdd}</span>+@{[input('vitResistAdd','number','calcSubStt')]}=<b id="vit-resist-total">$pc{vitResistTotal}</b>
@@ -433,7 +433,7 @@ print <<"HTML";
       </div>
       
       <div id="area-ability">
-        <div id="area-classes">
+        <div id="area-classes" class="in-toc" data-content-title="技能">
           <div class="box" id="classes">
             <h2>技能</h2>
             <div>使用経験点：<span id="exp-use"></span></div>
@@ -506,7 +506,7 @@ print <<"HTML";
         <p class="left">@{[ input "failView", "checkbox", "checkFeats()" ]} 習得レベルの足りない項目（特技／練技・呪歌など）も表示する</p>
         <div>
           <div class="box" id="combat-feats">
-            <h2>戦闘特技</h2>
+            <h2 class="in-toc">戦闘特技</h2>
             <ul class="edit-table side-margin">
 HTML
 foreach my $lv ('1bat',@set::feats_lv) {
@@ -546,7 +546,7 @@ foreach my $i (1..5) {
 print <<"HTML";
             </ul>
           </div>
-          <div class="box" id="mystic-arts">
+          <div class="box in-toc" id="mystic-arts" data-content-title="秘伝・秘伝魔法">
             <h2>秘伝</h2>
             <div>所持名誉点：<span id="honor-value-MA"></span></div>
             <ul id="mystic-arts-list" class="edit-table side-margin">
@@ -586,7 +586,7 @@ foreach my $class (@data::class_caster){
   my $Name = ucfirst($data::class{$class}{magic}{eName});
   print <<"HTML";
             <div class="box" id="magic-${name}">
-              <h2>$data::class{$class}{magic}{jName}</h2>
+              <h2 class="in-toc">$data::class{$class}{magic}{jName}</h2>
               <ul class="edit-table side-margin">
 HTML
   foreach my $lv (1..20){
@@ -623,7 +623,7 @@ foreach my $class (@data::class_names){
   my $Name = ucfirst($data::class{$class}{craft}{eName});
   print <<"HTML";
             <div class="box" id="craft-${name}">
-              <h2>$data::class{$class}{craft}{jName}</h2>
+              <h2 class="in-toc">$data::class{$class}{craft}{jName}</h2>
               <ul class="edit-table side-margin">
 HTML
   my $c_max = 20;
@@ -662,7 +662,7 @@ print <<"HTML";
       <div id="area-actions">
         <div id="area-package">
           <div class="box" id="package">
-            <h2>非戦闘判定</h2>
+            <h2 class="in-toc">非戦闘判定</h2>
             <table class="edit-table side-margin">
 HTML
 foreach my $class (@data::class_names){
@@ -699,14 +699,14 @@ print <<"HTML";
             <dt>先制力
             <dd>+@{[ input 'initiativeAdd', 'number','calcPackage' ]}=<span id="initiative-value">$pc{initiative}</span>
           </dl>
-          <dl class="box" id="mobility">
+          <dl class="box in-toc" id="mobility" data-content-title="移動力">
             <dt>制限移動<dd><b id="mobility-limited">$pc{mobilityLimited}</b> m
             <dt>移動力<dd><span id="mobility-base">$pc{mobilityBase}</span>+@{[input('mobilityAdd','number','calcMobility')]}=<b id="mobility-total">0</b> m
             <dt>全力移動<dd><b id="mobility-full">$pc{mobilityFull}</b> m
           </dl>
         </div>
         <div class="box" id="language">
-          <h2>言語</h2>
+          <h2 class="in-toc">言語</h2>
           <table class="edit-table side-margin">
             <tr><th><th>会話<th>読文
           </table>
@@ -749,7 +749,7 @@ print <<"HTML";
           @{[input('languageNum','hidden')]}
         </div>
         <div class="box" id="magic-power">
-          <h2>魔法／呪歌／賦術など</h2>
+          <h2 class="in-toc" data-content-title="魔法・呪歌・賦術などの基準値">魔法／呪歌／賦術など</h2>
           <table class="edit-table line-tbody">
             <thead>
             <tr>
@@ -915,7 +915,7 @@ print <<"HTML";
             </tbody>
           </table>
         </div>
-        <div class="box" id="weapons">
+        <div class="box in-toc" id="weapons" data-content-title="武器">
           <table class="edit-table line-tbody" id="weapons-table">
             <thead>
               <tr>
@@ -1036,7 +1036,7 @@ print <<"HTML";
             </tbody>
           </table>
         </div>
-        <div class="box" id="armours">
+        <div class="box in-toc" id="armours" data-content-title="防具">
           <table class="edit-table">
             <thead>
               <tr>
@@ -1094,7 +1094,7 @@ print <<"HTML";
             </tfoot>
           </table>
         </div>
-        <div class="box" id="accessories">
+        <div class="box in-toc" id="accessories" data-content-title="装飾品">
           <table class="edit-table">
             <thead>
               <tr>
@@ -1160,17 +1160,17 @@ print <<"HTML";
       <div id="area-items">
         <div id="area-items-L">
           <dl class="box" id="money">
-            <dt>所持金<dd>@{[ input 'money' ]} G
+            <dt class="in-toc">所持金<dd>@{[ input 'money' ]} G
             <dt>預金／借金<dd>@{[ input 'deposit' ]} G
           </dl>
           <div class="box" id="items">
-            <h2>所持品</h2>
+            <h2 class="in-toc">所持品</h2>
             <textarea name="items">$pc{items}</textarea>
           </div>
         </div>
         <div id="area-items-R">
           <div class="box" id="material-cards"@{[ display $pc{lvAlc} ]}>
-            <h2>マテリアルカード</h2>
+            <h2 class="in-toc">マテリアルカード</h2>
             <table class="edit-table no-border-cells" >
               <tr><th>  <th>B<th>A<th>S<th>SS
               <tr class="cards-red"><th>赤<td>@{[input 'cardRedB','number']}<td>@{[input 'cardRedA','number']}<td>@{[input 'cardRedS','number']}<td>@{[input 'cardRedSS','number']}
@@ -1181,7 +1181,7 @@ print <<"HTML";
             </table>
           </div>
           <div class="box" id="battle-items"@{[ display $set::battleitem ]}>
-          <h2>戦闘用アイテム</h2>
+          <h2 class="in-toc">戦闘用アイテム</h2>
           <ul id="battle-items-list">
 HTML
 foreach my $num (1 .. 16){
@@ -1190,7 +1190,7 @@ foreach my $num (1 .. 16){
 print <<"HTML";
           </ul>
           </div>
-          <dl class="box zero-data" id="honor">
+          <dl class="box in-toc" id="honor" data-content-title="名誉点・名誉アイテム">
             <dt>人族名誉点<dd id="honor-value">$pc{honor}
             <dt>蛮族名誉点<dd id="honor-barbaros-value">$pc{honorBarbaros}
             <dt>盟竜点<dd id="honor-dragon-value">$pc{honorDragon}
@@ -1238,7 +1238,7 @@ print <<"HTML";
         </div>
       </div>
       <details class="box" id="cashbook" @{[ $pc{cashbook} || $pc{money} =~ /^(?:自動|auto)$/i ? 'open' : '' ]}>
-        <summary>収支履歴</summary>
+        <summary class="in-toc">収支履歴</summary>
         <textarea name="cashbook" oninput="calcCash();" placeholder="例）冒険者セット  ::-100&#13;&#10;　　剣のかけら売却::+200">$pc{cashbook}</textarea>
         <p>
           所持金：<span id="cashbook-total-value">$pc{moneyTotal}</span> G
@@ -1254,19 +1254,19 @@ print <<"HTML";
       </details>
       
       <details class="box" id="free-note" @{[$pc{freeNote}?'open':'']}>
-        <summary>容姿・経歴・その他メモ</summary>
+        <summary class="in-toc">容姿・経歴・その他メモ</summary>
         <textarea name="freeNote">$pc{freeNote}</textarea>
         @{[ $::in{log} ? '<button type="button" class="set-newest" onclick="setNewestSingleData(\'freeNote\')">最新のメモを適用する</button>' : '' ]}
       </details>
       
       <details class="box" id="free-history" @{[$pc{freeHistory}?'open':'']}>
-        <summary>履歴（自由記入）</summary>
+        <summary class="in-toc">履歴（自由記入）</summary>
         <textarea name="freeHistory">$pc{freeHistory}</textarea>
         @{[ $::in{log} ? '<button type="button" class="set-newest" onclick="setNewestSingleData(\'freeHistory\')">最新の履歴（自由記入）を適用する</button>' : '' ]}
       </details>
       
       <div class="box" id="history">
-        <h2>セッション履歴</h2>
+        <h2 class="in-toc">セッション履歴</h2>
         @{[input 'historyNum','hidden']}
         <table class="edit-table line-tbody no-border-cells" id="history-table">
           <thead>

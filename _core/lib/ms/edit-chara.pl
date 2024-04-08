@@ -208,7 +208,7 @@ print <<"HTML";
         </dl>
       </div>
 
-      <div class="box" id="name-form">
+      <div class="box in-toc" id="name-form" data-content-title="東京名・プレイヤー名">
         <div>
           <dl id="character-name">
             <dt>東京名
@@ -238,7 +238,7 @@ print <<"HTML";
       <div id="area-status">
         @{[ imageForm($pc{imageURL}) ]}
 
-        <div id="profile" class="box-union">
+        <div id="profile" class="box-union in-toc" data-content-title="キャラクターの背景">
           <dl class="box" id="taxa"        ><dt>分類名<dd>@{[ input 'taxa' ]}</dl>
           <dl class="box" id="home"        ><dt>出身地<dd>@{[ input 'home' ]}</dl>
           <dl class="box" id="origin"      ><dt>根源<dd>@{[ input 'origin','','','list="list-origin"' ]}</dl>
@@ -247,17 +247,17 @@ print <<"HTML";
           <dl class="box" id="address"     ><dt>住所<dd>@{[ input 'address','','','list="list-address"' ]}</dl>
         </div>
 
-        <div id="clan" class="box-union">
+        <div id="clan" class="box-union in-toc" data-content-title="所属クラン">
           <dl class="box"><dt>所属クラン名<dd>@{[ input 'clan' ]}</dl>
           <dl class="box"><dt>クランシートURL<dd>@{[ input 'clanURL' ]}</dl>
         </div>
 
-        <div id="level" class="box-union">
+        <div id="level" class="box-union in-toc" data-content-title="強度・耐久値">
           <dl class="box"><dt>強度  <dd><b id="level-value">$pc{level}</b></dl>
           <dl class="box"><dt>耐久値<dd>+@{[ input 'enduranceMod','number','calcEndurance' ]}=<b id="endurance-total">$pc{endurance}</b></dl>
         </div>
 
-        <div class="box" id="status">
+        <div class="box in-toc" id="status" data-content-title="能力値・特性">
           <dl>
             <dt>能力値
             <dd class="status">
@@ -301,7 +301,7 @@ print <<"HTML";
       </div>
 
       <div class="box" id="magi">
-        <h2>マギ</h2>
+        <h2 class="in-toc">マギ</h2>
           <table class="edit-table line-tbody no-border-cells" id="magi-table">
             <colgroup id="magi-col">
               <col class="name  ">
@@ -335,19 +335,19 @@ print <<"HTML";
       </div>
       
       <details class="box" id="free-note" @{[$pc{freeNote}?'open':'']}>
-        <summary>その他<span class="small">（設定・メモなど）</summary>
+        <summary class="in-toc">その他<span class="small">（設定・メモなど）</summary>
         <textarea name="freeNote">$pc{freeNote}</textarea>
         @{[ $::in{log} ? '<button type="button" class="set-newest" onclick="setNewestSingleData(\'freeNote\')">最新のメモを適用する</button>' : '' ]}
       </details>
       
       <details class="box" id="free-history" @{[$pc{freeHistory}?'open':'']}>
-        <summary>履歴（自由記入）</summary>
+        <summary class="in-toc">履歴（自由記入）</summary>
         <textarea name="freeHistory">$pc{freeHistory}</textarea>
         @{[ $::in{log} ? '<button type="button" class="set-newest" onclick="setNewestSingleData(\'freeHistory\')">最新の履歴（自由記入）を適用する</button>' : '' ]}
       </details>
       
       <div class="box" id="history">
-        <h2>セッション履歴</h2>
+        <h2 class="in-toc">セッション履歴</h2>
         @{[input 'historyNum','hidden']}
         <table class="edit-table line-tbody no-border-cells" id="history-table">
           <thead id="history-head">

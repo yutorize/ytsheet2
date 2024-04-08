@@ -222,7 +222,7 @@ print <<"HTML";
         </dl>
       </div>
 
-      <div class="box" id="name-form">
+      <div class="box in-toc" id="name-form" data-content-title="クラン名・管理プレイヤー名">
         <div>
           <dl id="character-name">
             <dt>クラン名
