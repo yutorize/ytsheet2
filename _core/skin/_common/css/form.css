@@ -1,4 +1,6 @@
 @charset "utf-8";
+
+@layer form {
 /* // Form
 ---------------------------------------------------------------------------------------------------- */
 section.form {
@@ -7,82 +9,78 @@ section.form {
   border-width: 1px;
   border-style: solid;
   border-radius: 10px;
+
+  & h2 {
+    font-size: 2rem;
+  }
 }
-.night :is(section, aside).form {
+.night section.form {
   background-color: #fff1;
 }
-section.form h2 {
-  font-size: 2rem;
-}
-form input,
-form select {
-  padding: 5px;
-  border-width: 1px;
-  border-style: solid;
-  border-radius: 5px;
-}
+
 form p {
   position: relative;
   margin: 1em;
   text-align: center;
-}
-form p > label > span {
-  display: inline-block;
-  width: 11em;
-  text-align: right;
-}
-form p > label >  input + b {
-  display: inline-block;
-  position: absolute;
-  bottom: 2px;
-  margin-left: 5px;
-  white-space: nowrap;
-  overflow: visible;
-  font-size: 12px;
-}
-form p > input[type="submit"] {
-  width: 5em;
+
+  & > label > span {
+    display: inline-block;
+    width: 11em;
+    text-align: right;
+  }
+  & > label >  input + b {
+    display: inline-block;
+    position: absolute;
+    bottom: 2px;
+    margin-left: 5px;
+    white-space: nowrap;
+    overflow: visible;
+    font-size: 12px;
+  }
+  & > input[type="submit"] {
+    width: 5em;
+  }
 }
 
 #convertform section.form {
   margin: 5% 10%;
+
+  & section+section {
+    margin-top: 1em;
+    border-top-width: 1px;
+    border-top-style: solid;
+  }
+  & h4 {
+    font-size: 110%;
+    &:before { content: "●"; }
+  }
+  & p {
+    margin: .5em .5em 1em;
+  }
+  & section:last-child p:last-child {
+    margin-bottom: .5em;
+  }
+  & dl {
+    margin-left: .5em;
+    + dl { margin-top: .8em; }
+  }
+  & dl dd + dt {
+    margin-top: .2em;
+  }
+  & dl dt::before {
+    content: "◆";
+  }
+  & dl dd {
+    font-size: 95%;
+    &::before {
+      content: "・";
+    }
+    & i {
+      font-style: normal;
+      color: #5599aa;
+    }
+  }
 }
-#convertform .form section+section {
-  margin-top: 1em;
-  border-top-width: 1px;
-  border-top-style: solid;
-}
-#convertform .form h4 {
-  font-size: 110%;
-}
-#convertform .form h4::before {
-  content: "●";
-}
-#convertform .form p {
-  margin: .5em .5em 1em;
-}
-#convertform .form section:last-child p:last-child {
-  margin-bottom: .5em;
-}
-#convertform .form dl {
-  margin-left: .5em;
-}
-#convertform .form dl + dl {
-  margin-top: .8em;
-}
-#convertform .form dl dd + dt {
-  margin-top: .2em;
-}
-#convertform .form dl dt::before {
-  content: "◆";
-}
-#convertform .form dl dd {
-  font-size: 95%;
-}
-#convertform .form dl dd::before {
-  content: "・";
-}
-#convertform .form dl dd i {
-  font-style: normal;
-  color: #5599aa;
+
+/* ////////// LayerEnd ////////// */
 }

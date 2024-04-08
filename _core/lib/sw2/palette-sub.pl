@@ -316,10 +316,15 @@ sub palettePreset {
     $text .= "//回避修正=0\n";
     $text .= "2d+{生命抵抗}+{生命抵抗修正} 生命抵抗力\n";
     $text .= "2d+{精神抵抗}+{精神抵抗修正} 精神抵抗力\n";
-    $text .= "2d+{回避1}+{回避修正} 回避力".($::pc{defenseTotal1Note}?"／$::pc{defenseTotal1Note}":'')."\n";
-    $text .= "2d+{回避2}+{回避修正} 回避力".($::pc{defenseTotal2Note}?"／$::pc{defenseTotal2Note}":'')."\n" if $::pc{defenseTotal2Eva} ne '';
-    $text .= "2d+{回避3}+{回避修正} 回避力".($::pc{defenseTotal3Note}?"／$::pc{defenseTotal3Note}":'')."\n" if $::pc{defenseTotal3Eva} ne '';
-    $text .= "\n";
+    foreach my $i (1..3){
+      my $hasChecked = 0;
+      foreach my $j (1..$::pc{armourNum}){
+        $hasChecked++ if($::pc{"defTotal${i}CheckArmour${j}"});
+      }
+      next if !$hasChecked;
+
+      $text .= "2d+{回避${i}}+{回避修正} 回避力".($::pc{"defenseTotal${i}Note"}?"／$::pc{'defenseTotal'.$i.'Note'}":'')."\n";
+    }
     
     #
     $text .= "###\n" if $bot{YTC} || $bot{TKY};
@@ -474,6 +479,11 @@ sub paletteProperties {
       next if !$::pc{'lv'.$id};
       push @propaties, "//$name=$::pc{'lv'.$id}";
       push @classes_en, "//".uc($id)."={$name}";
+    }
+    foreach my $num (1..($::pc{commonClassNum}||10)){
+      my $name = tagDelete tagUnescape $::pc{'commonClass'.$num};
+      $name =~ s/[(（].+?[）)]$//;
+      push @propaties, "//$name=$::pc{'lvCommon'.$num}" if $name;
     }
     push @propaties, '';
     push @propaties, "###" if $tool eq 'tekey';

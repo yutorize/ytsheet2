@@ -7,28 +7,26 @@
   grid-template-columns: 1fr 1fr 4fr;
   grid-template-rows: auto;
   margin: 10px 0;
-}
-#regulation dl dt {
-  grid-row: 1 / 2;
-}
-#regulation dl dd {
-  grid-row: 2 / 3;
-  font-size: 1.2rem;
-}
-@media screen and (max-width:735px){
-  #regulation > dl {
+  & dt {
+    grid-row: 1 / 2;
+  }
+  & dd {
+    grid-row: 2 / 3;
+    font-size: 1.2rem;
+  }
+  @media screen and (max-width:735px){
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: auto;
     margin: 10px 0;
-  }
-  #regulation > dl > dt:last-of-type {
-    grid-column: 1 / span 3;
-    grid-row: 3;
-  }
-  #regulation > dl > dd:last-of-type {
-    grid-column: 1 / span 3;
-    grid-row: 4;
+    > dt:last-of-type {
+      grid-column: 1 / span 3;
+      grid-row: 3;
+    }
+    > dd:last-of-type {
+      grid-column: 1 / span 3;
+      grid-row: 4;
+    }
   }
 }
 
@@ -41,10 +39,7 @@
     "PER  APP IMG"
     "STT  STT IMG"
   ;
-}
-
-@media screen and (max-width:735px){
-  #area-status {
+  @media screen and (max-width:735px){
     grid-template-columns: 2fr 1fr;
     grid-gap: var(--box-v-gap) var(--box-h-gap);
     grid-template-rows: auto auto auto auto auto;
@@ -59,6 +54,7 @@
   }
 }
 
+
 #levels input[name="history0Result"] {
   width: 4.5em;
 }
@@ -69,27 +65,30 @@
 #personal dl {
   display: grid;
   grid-template-columns: 4.5em 1fr;
-}
-#personal dt {
-  text-align: center;
-}
-#personal dd {
-  grid-column: 2;
+  > dt {
+    text-align: center;
+  }
+  > dd {
+    grid-column: 2;
+  }
 }
 #hp-and-stamina {
   display: grid;
-}
-#hp-and-stamina dl {
-  grid-template-columns: 4.5em 1fr;
-}
-#hp-and-stamina dl dt {
-  grid-column: 1;
-}
-#hp-and-stamina dl dd {
-  grid-column: 2;
-  align-self: end;
-  text-align: left;
-  padding-left: .5em;
+  > dl {
+    grid-template-columns: 4.5em 1fr;
+  }
+  > dl dt {
+    grid-column: 1;
+  }
+  > dl dd {
+    grid-column: 2;
+    align-self: end;
+    text-align: left;
+    padding-left: .5em;
+  }
+  > dl dd input {
+    width: 3.5em;
+  }
 }
 
 @media screen and (max-width:735px){
@@ -115,24 +114,27 @@
   }
 }
 
-#goods table {}
-#goods table thead th:nth-child(1) { width:  1em; }
-#goods table thead th:nth-child(2) { width: 14em; }
-#goods table thead th:nth-child(3) { width:  6em; }
-#goods table thead th:nth-child(4) { width:  4em; }
-#goods table thead th:nth-child(5) { width: auto; }
-#items table {}
-#items table thead th:nth-child(1) { width:  1em; }
-#items table thead th:nth-child(2) { width: 14em; }
-#items table thead th:nth-child(3) { width:  6em; }
-#items table thead th:nth-child(4) { width:  4em; }
-#items table thead th:nth-child(5) { width:  4em; }
-#items table thead th:nth-child(6) { width: auto; }
+#goods table thead th {
+  &:nth-child(1) { width:  1em; }
+  &:nth-child(2) { width: 14em; }
+  &:nth-child(3) { width:  6em; }
+  &:nth-child(4) { width:  4em; }
+  &:nth-child(5) { width: auto; }
+}
+#items table thead th {
+  &:nth-child(1) { width:  1em; }
+  &:nth-child(2) { width: 14em; }
+  &:nth-child(3) { width:  6em; }
+  &:nth-child(4) { width:  4em; }
+  &:nth-child(5) { width:  4em; }
+  &:nth-child(6) { width: auto; }
+}
 
-#battle table {}
-#battle table colgroup col.head { width:4.5em; }
-#battle table colgroup col.name { width: auto; }
-#battle table colgroup col      { width:4.2em; }
+#battle table colgroup col {
+  &.head { width:4.5em; }
+  &.name { width: auto; }
+  &      { width:4.2em; }
+}
 @media screen and (max-width:735px){
   #goods,
   #items,
@@ -153,19 +155,19 @@
 #free-note,
 #free-history {
   padding-bottom: .3rem;
-}
-#free-note textarea,
-#free-history textarea {
-  height: 18em;
+  & textarea {
+    height: 18em;
+  }
 }
 
-#history table thead th:first-child{ width: 1.4em; }
-#history table thead th.date       { width:   6em; }
-#history table thead th.title      { width:  14em; }
-#history table thead th.result     { width:   5em; }
-#history table thead th.gm         { width:   6em; }
-#history table thead th.member     { width:  auto; }
-
+#history table thead th {
+  &:first-child{ width: 1.4em; }
+  &.date       { width:   6em; }
+  &.title      { width:  14em; }
+  &.result     { width:   5em; }
+  &.gm         { width:   6em; }
+  &.member     { width:  auto; }
+}
 @media screen and (max-width:735px){
   #history table  { table-layout: fixed; }
   #history table thead th.title  { width: 12em; }
@@ -185,15 +187,6 @@
   background: var(--bg-color);
   font-size: 85%;
   font-weight: bold;
-}
-#exp-footer input.auto {
-  width: 2.5em;
-  min-width: 0;
-  font-size: 110%;
-}
-#exp-footer input:first-child,
-#exp-footer input:last-child {
-  font-size: 120%;
 }
 
 

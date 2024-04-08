@@ -88,6 +88,7 @@ $pc{wordsY} ||= '上';
 setDefaultColors();
 
 ## その他
+$pc{commonClassNum}||= 10;
 $pc{weaponNum}     ||=  1;
 $pc{armourNum}     ||=  3;
 $pc{languageNum}   ||=  3;
@@ -163,6 +164,7 @@ print <<"HTML";
           <li onclick="sectionSelect('color');" class="color-icon" title="カラーカスタム">
           <li onclick="view('text-rule')" class="help-icon" title="テキスト整形ルール">
           <li onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード切替">
+          <li onclick="exportAsJson()" class="download-icon" title="JSON出力">
           <li class="buttons">
             <ul>
               <li @{[ display ($mode eq 'edit') ]} class="view-icon" title="閲覧画面"><a href="./?id=$::in{id}"></a>
@@ -466,17 +468,22 @@ print <<"HTML";
           </div>
           <div class="box" id="common-classes">
             <h2>一般技能</h2>
+            <div>合計レベル：<span id="cc-total-lv"></span></div>
+            @{[ input 'commonClassNum','hidden' ]}
             <table id="common-classes-table" class="edit-table side-margin">
             <tbody>
 HTML
-foreach my $i (1..10){
-print <<"HTML";
-              <tr id="common-class${i}"><td class="handle"><td>@{[input('commonClass'.$i)]}<td>@{[input('lvCommon'.$i, 'number','','min="0" max="17"')]}
+foreach my $num ('TMPL',1..$pc{commonClassNum}){
+  print '<template id="common-class-template">' if($num eq 'TMPL');
+  print <<"HTML";
+              <tr id="common-class${num}"><td class="handle"><td>@{[input('commonClass'.$num)]}<td>@{[input('lvCommon'.$num, 'number','calcCommonClass','min="0" max="17"')]}
 HTML
+  print '</template>' if($num eq 'TMPL');
 }
 print <<"HTML";
             </tbody>
             </table>
+            <div class="add-del-button"><a onclick="addCommonClass()">▼</a><a onclick="delCommonClass()">▲</a></div>
           </div>
         </div>
         <p class="left">@{[ input "failView", "checkbox", "checkFeats()" ]} 習得レベルの足りない項目（特技／練技・呪歌など）も表示する</p>

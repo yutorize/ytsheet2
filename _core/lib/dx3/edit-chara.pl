@@ -190,6 +190,7 @@ print <<"HTML";
           <li onclick="sectionSelect('color');" class="color-icon" title="カラーカスタム">
           <li onclick="view('text-rule')" class="help-icon" title="テキスト整形ルール">
           <li onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード切替">
+          <li onclick="exportAsJson()" class="download-icon" title="JSON出力">
           <li class="buttons">
             <ul>
               <li @{[ display ($mode eq 'edit') ]} class="view-icon" title="閲覧画面"><a href="./?id=$::in{id}"></a>
@@ -357,10 +358,10 @@ print <<"HTML";
                 <td>@{[ radio 'sttWorks', 'calcStt', 'social' ]}
               <tr>
                 <th colspan="2" class="right"><span class="construction-only">フリーポイント＋</span>成長
-                <td>@{[input "sttGrowBody"  ,'number','calcStt']}
-                <td>@{[input "sttGrowSense" ,'number','calcStt']}
-                <td>@{[input "sttGrowMind"  ,'number','calcStt']}
-                <td>@{[input "sttGrowSocial",'number','calcStt']}
+                <td>@{[input "sttGrowBody"  ,'number','calcStt', 'min="0"']}
+                <td>@{[input "sttGrowSense" ,'number','calcStt', 'min="0"']}
+                <td>@{[input "sttGrowMind"  ,'number','calcStt', 'min="0"']}
+                <td>@{[input "sttGrowSocial",'number','calcStt', 'min="0"']}
               <tr>
                 <th colspan="2" class="right">その他の修正
                 <td>@{[input "sttAddBody"  ,'number','calcStt']}
@@ -425,12 +426,12 @@ print <<"HTML";
           <dt>【肉体】を使用する技能
           <dd>
             <dl id="skill-body-table">
-              <dt class="left">白兵<dd>@{[input "skillMelee"  ,'number','calcSkill']}+@{[input "skillAddMelee"  ,'number','calcSkill']}
-              <dt class="left">回避<dd>@{[input "skillDodge"  ,'number','calcSkill']}+@{[input "skillAddDodge"  ,'number','calcSkill']}
+              <dt class="left">白兵<dd>@{[input "skillMelee"  ,'number','calcSkill', 'min="0"']}+@{[input "skillAddMelee"  ,'number','calcSkill']}
+              <dt class="left">回避<dd>@{[input "skillDodge"  ,'number','calcSkill', 'min="0"']}+@{[input "skillAddDodge"  ,'number','calcSkill']}
 HTML
 foreach my $num (1 .. $pc{skillRideNum}) {
 print <<"HTML";
-              <dt>@{[input "skillRide${num}Name",'','comboSkillSetAll','list="list-ride"']}<dd>@{[input "skillRide$num",'number','calcSkill']}+@{[input "skillAddRide$num",'number','calcSkill']}
+              <dt>@{[input "skillRide${num}Name",'','comboSkillSetAll','list="list-ride"']}<dd>@{[input "skillRide$num",'number','calcSkill', 'min="0"']}+@{[input "skillAddRide$num",'number','calcSkill']}
 HTML
 }
 print <<"HTML";
@@ -440,12 +441,12 @@ print <<"HTML";
           <dt>【感覚】を使用する技能
           <dd>
             <dl id="skill-sense-table">
-              <dt class="left">射撃<dd>@{[input "skillRanged" ,'number','calcSkill']}+@{[input "skillAddRanged"    ,'number','calcSkill']}
-              <dt class="left">知覚<dd>@{[input "skillPercept",'number','calcSkill']}+@{[input "skillAddPercept",'number','calcSkill']}
+              <dt class="left">射撃<dd>@{[input "skillRanged" ,'number','calcSkill', 'min="0"']}+@{[input "skillAddRanged"    ,'number','calcSkill']}
+              <dt class="left">知覚<dd>@{[input "skillPercept",'number','calcSkill', 'min="0"']}+@{[input "skillAddPercept",'number','calcSkill']}
 HTML
 foreach my $num (1 .. $pc{skillArtNum}) {
 print <<"HTML";
-              <dt>@{[input "skillArt${num}Name" ,'','comboSkillSetAll','list="list-art"' ]}<dd>@{[input "skillArt$num" ,'number','calcSkill']}+@{[input "skillAddArt$num" ,'number','calcSkill']}
+              <dt>@{[input "skillArt${num}Name" ,'','comboSkillSetAll','list="list-art"' ]}<dd>@{[input "skillArt$num" ,'number','calcSkill', 'min="0"']}+@{[input "skillAddArt$num" ,'number','calcSkill']}
 HTML
 }
 print <<"HTML";
@@ -455,12 +456,12 @@ print <<"HTML";
           <dt>【精神】を使用する技能
           <dd>
             <dl id="skill-mind-table">
-              <dt class="left">ＲＣ<dd>@{[input "skillRC"  ,'number','calcSkill']}+@{[input "skillAddRC"  ,'number','calcSkill']}
-              <dt class="left">意志<dd>@{[input "skillWill",'number','calcSkill']}+@{[input "skillAddWill",'number','calcSkill']}
+              <dt class="left">ＲＣ<dd>@{[input "skillRC"  ,'number','calcSkill', 'min="0"']}+@{[input "skillAddRC"  ,'number','calcSkill']}
+              <dt class="left">意志<dd>@{[input "skillWill",'number','calcSkill', 'min="0"']}+@{[input "skillAddWill",'number','calcSkill']}
 HTML
 foreach my $num (1 .. $pc{skillKnowNum}) {
 print <<"HTML";
-              <dt>@{[input "skillKnow${num}Name",'','comboSkillSetAll','list="list-know"']}<dd>@{[input "skillKnow$num",'number','calcSkill']}+@{[input "skillAddKnow$num",'number','calcSkill']}
+              <dt>@{[input "skillKnow${num}Name",'','comboSkillSetAll','list="list-know"']}<dd>@{[input "skillKnow$num",'number','calcSkill', 'min="0"']}+@{[input "skillAddKnow$num",'number','calcSkill']}
 HTML
 }
 print <<"HTML";
@@ -470,12 +471,12 @@ print <<"HTML";
           <dt>【社会】を使用する技能
           <dd>
             <dl id="skill-social-table">
-              <dt class="left">交渉<dd>@{[input "skillNegotiate",'number','calcSkill']}+@{[input "skillAddNegotiate",'number']}
-              <dt class="left">調達<dd>@{[input "skillProcure"  ,'number','calcSkill();calcStock']}+@{[input "skillAddProcure",  'number','calcSkill();calcStock']}
+              <dt class="left">交渉<dd>@{[input "skillNegotiate",'number','calcSkill', 'min="0"']}+@{[input "skillAddNegotiate",'number']}
+              <dt class="left">調達<dd>@{[input "skillProcure"  ,'number','calcSkill();calcStock', 'min="0"']}+@{[input "skillAddProcure",  'number','calcSkill();calcStock']}
 HTML
 foreach my $num (1 .. $pc{skillInfoNum}) {
 print <<"HTML";
-              <dt>@{[input "skillInfo${num}Name",'','comboSkillSetAll','list="list-info"']}<dd>@{[input "skillInfo$num",'number','calcSkill']}+@{[input "skillAddInfo$num",'number','calcSkill']}
+              <dt>@{[input "skillInfo${num}Name",'','comboSkillSetAll','list="list-info"']}<dd>@{[input "skillInfo$num",'number','calcSkill', 'min="0"']}+@{[input "skillAddInfo$num",'number','calcSkill']}
 HTML
 }
 print <<"HTML";
@@ -640,7 +641,7 @@ print <<"HTML";
             <tr>
               <td rowspan="2" class="handle"> 
               <td>@{[input "effect${num}Name",'','','placeholder="名称"']}
-              <td>@{[input "effect${num}Lv",'number','calcEffect','placeholder="Lv"']}
+              <td>@{[input "effect${num}Lv",'number','calcEffect','placeholder="Lv" min="0"']}
               <td>@{[input "effect${num}Timing",'','','placeholder="タイミング" list="list-timing"']}
               <td>@{[input "effect${num}Skill",'','','placeholder="技能" list="list-effect-skill"']}
               <td>@{[input "effect${num}Dfclty",'','','placeholder="難易度" list="list-dfclty"']}
@@ -804,8 +805,8 @@ foreach my $num ('TMPL',1 .. $pc{weaponNum}) {
 print <<"HTML";
             <tr id="weapon${num}">
               <td>@{[input "weapon${num}Name"]}<span class="handle"></span>
-              <td>@{[input "weapon${num}Stock",'number','calcItem']}
-              <td>@{[input "weapon${num}Exp",'number','calcItem']}
+              <td>@{[input "weapon${num}Stock",'number','calcItem', 'min="0"']}
+              <td>@{[input "weapon${num}Exp",'number','calcItem', 'min="0"']}
               <td>@{[input "weapon${num}Type",'','','list="list-weapon-type"']}
               <td>@{[input "weapon${num}Skill",'','','list="list-weapon-skill"']}
               <td>@{[input "weapon${num}Acc"]}
@@ -832,8 +833,8 @@ foreach my $num ('TMPL',1 .. $pc{armorNum}) {
 print <<"HTML";
             <tr id="armor${num}">
               <td>@{[input "armor${num}Name"]}<span class="handle"></span>
-              <td>@{[input "armor${num}Stock",'number','calcItem']}
-              <td>@{[input "armor${num}Exp",'number','calcItem']}
+              <td>@{[input "armor${num}Stock",'number','calcItem', 'min="0"']}
+              <td>@{[input "armor${num}Exp",'number','calcItem', 'min="0"']}
               <td>@{[input "armor${num}Type",'','','list="list-armor-type"']}
               <td>
               <td>@{[input "armor${num}Initiative"]}
@@ -860,8 +861,8 @@ foreach my $num ('TMPL',1 .. $pc{vehicleNum}) {
 print <<"HTML";
             <tr id="vehicle${num}">
               <td>@{[input "vehicle${num}Name"]}<span class="handle"></span>
-              <td>@{[input "vehicle${num}Stock",'number','calcItem']}
-              <td>@{[input "vehicle${num}Exp",'number','calcItem']}
+              <td>@{[input "vehicle${num}Stock",'number','calcItem', 'min="0"']}
+              <td>@{[input "vehicle${num}Exp",'number','calcItem', 'min="0"']}
               <td>@{[input "vehicle${num}Type",'','','list="list-vehicle-type"']}
               <td>@{[input "vehicle${num}Skill",'','','list="list-vehicle-skill"']}
               <td>@{[input "vehicle${num}Initiative"]}
@@ -888,8 +889,8 @@ foreach my $num ('TMPL',1 .. $pc{itemNum}) {
 print <<"HTML";
             <tr id="item${num}">
               <td>@{[input "item${num}Name"]}<span class="handle"></span>
-              <td>@{[input "item${num}Stock",'number','calcItem']}
-              <td>@{[input "item${num}Exp",'number','calcItem']}
+              <td>@{[input "item${num}Stock",'number','calcItem', 'min="0"']}
+              <td>@{[input "item${num}Exp",'number','calcItem', 'min="0"']}
               <td>@{[input "item${num}Type",'','','list="list-item-type"']}
               <td>@{[input "item${num}Skill",'','','list="list-item-skill"']}
               <td><textarea name="item${num}Note" rows="2">$pc{"item${num}Note"}</textarea>
@@ -1267,6 +1268,10 @@ print <<"HTML";
     <option value="【感覚】">
     <option value="【精神】">
     <option value="【社会】">
+    <option value="〈運転:〉">
+    <option value="〈芸術:〉">
+    <option value="〈知識:〉">
+    <option value="〈情報:〉">
     <option value="効果参照">
   </datalist>
   <datalist id="list-combo-timing">
@@ -1295,6 +1300,10 @@ print <<"HTML";
     <option value="【感覚】">
     <option value="【精神】">
     <option value="【社会】">
+    <option value="〈運転:〉">
+    <option value="〈芸術:〉">
+    <option value="〈知識:〉">
+    <option value="〈情報:〉">
     <option value="効果参照">
   </datalist>
   <datalist id="list-weapon-skill">
@@ -1302,7 +1311,7 @@ print <<"HTML";
     <option value="〈白兵〉">
     <option value="〈射撃〉">
     <option value="〈白兵〉〈射撃〉">
-    <option value="効果参照">
+    <option value="解説参照">
   </datalist>
   <datalist id="list-vehicle-skill">
     <option value="〈運転:〉">
@@ -1330,7 +1339,7 @@ print <<"HTML";
     <option value="〈情報:ウェブ〉">
     <option value="〈情報:メディア〉">
     <option value="〈情報:ビジネス〉">
-    <option value="効果参照">
+    <option value="解説参照">
   </datalist>
   <datalist id="list-weapon-type">
     <option value="白兵">
@@ -1340,9 +1349,11 @@ print <<"HTML";
   <datalist id="list-armor-type">
     <option value="防具">
     <option value="防具※">
+    <option value="防具（補助）">
   </datalist>
   <datalist id="list-item-type">
     <option value="コネ">
+    <option value="一般">
     <option value="その他">
     <option value="使い捨て">
   </datalist>
