@@ -488,6 +488,9 @@ dl#level {
     margin: 0 -10%;
     transform: scaleX(0.8);
   }
+  #common-classes .small {
+    display: inline-block;
+  }
 }
 
 /* Combat-feats */
@@ -558,10 +561,10 @@ dl#level {
 /* // Area-Actions & Language
 ---------------------------------------------------------------------------------------------------- */
 #area-actions {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: 1.05fr 1.05fr 0.9fr;
+  align-self: start;
+  gap: var(--box-v-gap) var(--box-h-gap);
   
   margin-top: var(--box-v-gap);
   line-height: 1.8;
@@ -569,16 +572,17 @@ dl#level {
   > * {
     flex-basis: 30%;
     flex-grow: 1;
-    margin-left: var(--box-h-gap);
   }
   > *:first-child {
     margin-left: 0px;
+  }
+  & .box#package td {
+    line-height: 1.2;
   }
   & .box#package td:last-child {
     width: 1.8em;
     padding-left: 0.2rem;
     font-size: 1.15em;
-    line-height: 1.6;
     white-space: nowrap;
   }
 
@@ -587,7 +591,7 @@ dl#level {
   }
   @media screen and (max-width:735px){
     display: grid;
-    grid-gap: var(--box-v-gap);
+    gap: var(--box-v-gap);
     grid-template-columns: 1fr 1fr;
     margin: 0;
     > * {
@@ -666,10 +670,8 @@ dl#level {
 
 /* Magic-Power */
 #magic-power{
-  flex-basis: auto;
-  flex-grow: 0;
-  margin-top: var(--box-v-gap);
-  margin-left: 0;
+  grid-column: span 2;
+  align-self: end;
 }
 #magic-power table {
   margin-top: -1.2em;
@@ -690,32 +692,21 @@ dl#level {
     }
   }
   & tbody td.num {
-    width: 4em;
+    width: 3.6em;
     font-size: 1.15em;
     line-height: 1.6;
     white-space: nowrap;
   }
 }
-
-#magic-power p#magic-power-add {
-  margin-top: -1.5em;
-  margin-bottom: 0;
-  text-align: right;
-}
-#magic-power p + table {
-  border-top-width: 1px;
-  border-top-style: solid;
-}
 #magic-power #fairycontact {
   margin: -.2em 0 -.1em;
-  font-size: 90%;
+  font-size: 80%;
   line-height: 1;
 
   > span {
     display: inline-block;
     border-radius: .5rem;
-    margin: .1em;
-    padding: .3rem;
+    padding: 3px 2px;
   }
   .ft-earth { background: hsla( 45,100%, 50%,0.3); }
   .ft-water { background: hsla(210,100%, 50%,0.3); }
@@ -727,6 +718,7 @@ dl#level {
 
 /* Language */
 #language {
+  grid-row: span 2;
   width: 100%;
   align-self :flex-start;
   

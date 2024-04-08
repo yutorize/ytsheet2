@@ -368,6 +368,10 @@
   margin-top: var(--box-v-gap);
 }
 
+#area-actions {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
 #area-package #package table {
   margin-top: 1px;
   margin-bottom: -1px;
@@ -480,6 +484,8 @@
 }
 
 #magic-power {
+  grid-column: span 3;
+  max-width: max-content;
   min-width: 10em;
 }
 #magic-power #magic-power-hr td {
@@ -523,6 +529,7 @@
 }
 #magic-power #fairycontact {
   display: flex;
+  justify-content: center;
   margin: 0 -.2em;
   border-width: .1rem 0 0;
   border-style: solid;
