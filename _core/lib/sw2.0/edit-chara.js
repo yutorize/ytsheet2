@@ -430,7 +430,7 @@ function checkCraft() {
       document.getElementById("craft-"+eName).style.display = cLv ? "block" : "none";
       const cMax = 20;
       let rows = cLv + checkSeekerBuildup(SET.class[key].craft.jName);
-      rows += (key === 'Art' && lv.Art >= 17) ? 2 : (key === 'Art' && lv.Art >= 16) ? 1 : 0;
+      rows += (id === 'Art' && lv.Art >= 17) ? 2 : (id === 'Art' && lv.Art >= 16) ? 1 : 0;
       for (let i = 1; i <= cMax; i++) {
         let cL = document.getElementById("craft-"+eName+i).classList;
         if (i <= rows){
