@@ -285,7 +285,7 @@ table.status {
   }
   & dl {
     display: grid;
-    grid-template-columns: 6em 1fr;
+    grid-template-columns: max-content 1fr;
     grid-template-rows: auto;
     border-width: 1px;
     border-style: solid;
@@ -297,6 +297,7 @@ table.status {
       border-width: 0px 1px 1px 0px;
       border-style: solid;
       text-align: center;
+      min-width: 6em;
     }
     > dd {
       grid-column: 2;
