@@ -271,6 +271,31 @@ header {
     color: #fff !important;
     z-index: 101;
   }
+  & .login-user {
+    position: absolute;
+    inset: 0;
+    display: block;
+    max-width: 900px;
+    margin: auto;
+    z-index: 102;
+    text-align: right;
+    font-family: var(--font-proportional);
+    font-weight: normal;
+    font-size: 80%;
+    text-shadow: none;
+    > span {
+      display: inline-block;
+      width: max-content;
+      margin: 2px 3px auto auto;
+      padding: 2px .5em;
+      line-height: 1;
+      border-radius: 5px;
+      background-color: #0007;
+      > b {
+        font-size: 110%;
+      }
+    }
+  }
 }
 header, .header-back-name {
   border-bottom: 1px solid #aaa;
@@ -452,7 +477,7 @@ aside#sidebar-bottom {
 header nav {
   max-width: 900px;
   position: absolute;
-  top: 0.5rem;
+  top: 2.2rem;
   left: 0;
   right: 0;
   margin: auto;
@@ -550,11 +575,11 @@ header nav ul li.head {
 }
 
 header nav ul li {
-  &:nth-last-child(even) { top: 2rem; }
+  &:nth-last-child(even) { top: 1.8rem; }
   &:nth-last-child(odd)  { top: 0rem; }
 }
 header nav ul li + li {
-  margin-left: 1.7rem;
+  margin-left: 1.4rem;
 }
 header nav ul li + li.small {
   margin-left: 1.4rem;
