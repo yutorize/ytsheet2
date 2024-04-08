@@ -250,8 +250,8 @@ print <<"HTML";
           <table class="edit-table">
             <thead>
               <tr>
-                <th>
-                <th>　
+                <th></th>
+                <th></th>
                 <th>
                   <span class="h-only"><i>♠</i>技</span>
                   <span class="v-only"><i>♥</i>血</span>

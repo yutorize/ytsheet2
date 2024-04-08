@@ -226,7 +226,7 @@ body {
   & tr {
     display: grid;
     grid-template-columns: 1.8em 14em auto 2.4em 2.4em;
-    border-bottom: 0;
+    border-bottom-width: 0;
   }
   & tr th:nth-child(2),
   & tr th:nth-child(3) {
@@ -235,7 +235,7 @@ body {
   }
   & tr td {
     border-right: 0;
-    border-bottom: 0;
+    border-bottom-width: 0;
     display: flex;
     align-items: center;
     justify-content: center;

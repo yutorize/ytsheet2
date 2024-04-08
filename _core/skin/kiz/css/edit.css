@@ -183,6 +183,13 @@ body:not(.class-owner) .o-only {
   .partner-table > dl.partner-data > dd dl dd:nth-of-type(7) { grid-column: 1 / span2 ; grid-row: 10; }
 }
 
+#kizuna {
+  > table {
+    & tr:not(:last-child) {
+      border-bottom: 0;
+    }
+  }
+}
 #kizuato {
   margin-top: var(--box-v-gap);
 }
