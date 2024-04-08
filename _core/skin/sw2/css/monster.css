@@ -239,6 +239,14 @@ table.status {
   & dl {
     display: flex;
     margin-right: 1.5em;
+    @media screen and (min-width: 736px) {
+      & dt {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        line-height: 100%;
+      }
+    }
     & dt::after {
       content: ':';
       display: inline-block;
