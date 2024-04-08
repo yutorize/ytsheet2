@@ -69,7 +69,9 @@ elsif($mode eq 'blanksheet'){
     }
   }
   
-  $pc{defTotal1CheckArmour1} = $pc{defTotal1CheckShield1} = $pc{defTotal1CheckDefOther1} = $pc{defTotal1CheckDefOther2} = $pc{defTotal1CheckDefOther3} = 1;
+  $pc{defTotal1CheckArmour1} = $pc{defTotal1CheckArmour2} = $pc{defTotal1CheckArmour3} = 1;
+  $pc{armour2Category} = '盾';
+  $pc{armour3Category} = 'その他';
   
   $pc{paletteUseBuff} = 1;
 }
@@ -86,7 +88,9 @@ $pc{wordsY} ||= '上';
 setDefaultColors();
 
 ## その他
+$pc{commonClassNum}||= 10;
 $pc{weaponNum}     ||=  1;
+$pc{armourNum}     ||=  3;
 $pc{languageNum}   ||=  3;
 $pc{honorItemsNum} ||=  3;
 $pc{historyNum}    ||=  3;
@@ -481,17 +485,22 @@ print <<"HTML";
           </div>
           <div class="box" id="common-classes">
             <h2>一般技能</h2>
+            <div>合計レベル：<span id="cc-total-lv"></span></div>
+            @{[ input 'commonClassNum','hidden' ]}
             <table id="common-classes-table" class="edit-table side-margin">
             <tbody>
 HTML
-foreach my $i (1..10){
-print <<"HTML";
-              <tr id="common-class${i}"><td class="handle"><td>@{[input('commonClass'.$i)]}<td>@{[input('lvCommon'.$i, 'number','','min="0" max="17"')]}
+foreach my $num ('TMPL',1..$pc{commonClassNum}){
+  print '<template id="common-class-template">' if($num eq 'TMPL');
+  print <<"HTML";
+              <tr id="common-class${num}"><td class="handle"><td>@{[input('commonClass'.$num)]}<td>@{[input('lvCommon'.$num, 'number','calcCommonClass','min="0" max="17"')]}
 HTML
+  print '</template>' if($num eq 'TMPL');
 }
 print <<"HTML";
             </tbody>
             </table>
+            <div class="add-del-button"><a onclick="addCommonClass()">▼</a><a onclick="delCommonClass()">▲</a></div>
           </div>
         </div>
         <p class="left">@{[ input "failView", "checkbox", "checkFeats()" ]} 習得レベルの足りない項目（特技／練技・呪歌など）も表示する</p>
@@ -826,7 +835,7 @@ print <<"HTML";
       
       <div id="area-equipment">
         <div class="box" id="attack-classes">
-          <table class="edit-tables line-tbody">
+          <table class="edit-table line-tbody">
             <thead>
               <tr>
                 <th>技能・特技
@@ -907,7 +916,7 @@ print <<"HTML";
           </table>
         </div>
         <div class="box" id="weapons">
-          <table class="edit-tables line-tbody" id="weapons-table">
+          <table class="edit-table line-tbody" id="weapons-table">
             <thead>
               <tr>
                 <th>武器
@@ -957,7 +966,7 @@ print <<"HTML";
           @{[input('weaponNum','hidden')]}
         </div>
         <div class="box" id="evasion-classes">
-          <table class="edit-tables">
+          <table class="edit-table">
             <thead>
               <tr>
                 <th>技能・特技
@@ -966,7 +975,7 @@ print <<"HTML";
                 <th>防護点
               </tr>
             <tbody>
-              <tr>
+              <tr id="evasion-class-row">
                 <td>
                   <span class="flex">
                     <span class="bold nowrap">使用技能:</span>
@@ -978,7 +987,13 @@ print <<"HTML";
                 <td id="evasion-eva">$pc{EvasionEva}
                 <td>―
               <tr id="race-ability-def"@{[ display $pc{raceAbilityDef} ]}>
-                <td id="race-ability-def-name">［@{[ $pc{race} eq 'リルドラケン' ? '鱗の皮膚':$pc{race} eq 'フロウライト'?'晶石の身体':$pc{race} eq 'ダークトロール'?'トロールの体躯':'']}］
+                <td id="race-ability-def-name">［@{[
+                    ($pc{raceAbility} =~ /［鱗の皮膚］/) ? '鱗の皮膚'
+                  : ($pc{raceAbility} =~ /［晶石の身体］/) ? '晶石の身体'
+                  : ($pc{raceAbility} =~ /［奈落の身体／アビストランク］/)?'奈落の身体／アビストランク'
+                  : ($pc{raceAbility} =~ /［トロールの体躯］/)?'トロールの体躯'
+                  : ''
+                ]}］
                 <td>―
                 <td>―
                 <td id="race-ability-def-value">$pc{raceAbilityDef}
@@ -1022,7 +1037,7 @@ print <<"HTML";
           </table>
         </div>
         <div class="box" id="armours">
-          <table class="edit-tables">
+          <table class="edit-table">
             <thead>
               <tr>
                 <th class="type">
@@ -1080,7 +1095,7 @@ print <<"HTML";
           </table>
         </div>
         <div class="box" id="accessories">
-          <table class="edit-tables">
+          <table class="edit-table">
             <thead>
               <tr>
                 <th>
@@ -1109,9 +1124,9 @@ foreach (
   my $show;
   my $addbase = @$_[1];
      $addbase =~ s/_//;
-  if   (@$_[0] eq '他2' &&  $pc{race} ne 'レプラカーン')                     { $show = 0; }
-  elsif(@$_[0] eq '他3' && ($pc{race} ne 'レプラカーン' || $pc{level} < 6)){ $show = 0; }
-  elsif(@$_[0] eq '他4' && ($pc{race} ne 'レプラカーン' || $pc{level} <16)){ $show = 0; }
+  if   (@$_[0] eq '他2' &&  $pc{raceAbility} !~ '［見えざる手］')                    { $show = 0; }
+  elsif(@$_[0] eq '他3' && ($pc{raceAbility} !~ '［見えざる手］' || $pc{level} <  6)){ $show = 0; }
+  elsif(@$_[0] eq '他4' && ($pc{raceAbility} !~ '［見えざる手］' || $pc{level} < 16)){ $show = 0; }
   elsif(@$_[0] =~ /┗/  && !$pc{'accessory'.$addbase.'Add'}){ $show = 0; }
   else { $show = 1; }
   print '  <tr id="accessory-row'.@$_[1].'" data-type="'.@$_[1].'" '.display($show).">\n";
@@ -1120,7 +1135,7 @@ foreach (
     print '  <input type="checkbox"' .
           " name=\"accessory@$_[1]Add\" value=\"1\"" .
           ($pc{"accessory@$_[1]Add"}?' checked' : '') .
-          " onChange=\"addAccessory(this,'@$_[1]')\">";
+          " onChange=\"addAccessory('@$_[1]')\">";
   }
   print <<"HTML";
     <th>@$_[0]
