@@ -2,7 +2,7 @@
 
 /* // キャラクター
 ---------------------------------------------------------------------------------------------------- */
-#regulation > dl {
+#regulation > dl:first-of-type {
   grid-template-columns: 1fr 1fr 4fr;
 }
 @media screen and (max-width:735px){

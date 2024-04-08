@@ -2,7 +2,7 @@
 
 /* // キャラクター
 ---------------------------------------------------------------------------------------------------- */
-#regulation dl {
+#regulation dl:first-of-type {
   display: grid;
   grid-template-columns: max-content 2em max-content 6em max-content 6em 1fr;
   grid-template-rows: auto;
