@@ -480,6 +480,11 @@ sub paletteProperties {
       push @propaties, "//$name=$::pc{'lv'.$id}";
       push @classes_en, "//".uc($id)."={$name}";
     }
+    foreach my $num (1..($::pc{commonClassNum}||10)){
+      my $name = tagDelete tagUnescape $::pc{'commonClass'.$num};
+      $name =~ s/[(（].+?[）)]$//;
+      push @propaties, "//$name=$::pc{'lvCommon'.$num}" if $name;
+    }
     push @propaties, '';
     push @propaties, "###" if $tool eq 'tekey';
     push @propaties, "### ■代入パラメータ";
