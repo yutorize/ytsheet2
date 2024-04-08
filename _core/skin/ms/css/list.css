@@ -1,72 +1,70 @@
 @charset "utf-8";
 
-/* ゆとシートⅡ for MS - リスト */
-
+@layer system {
 /* // Body
 ---------------------------------------------------------------------------------------------------- */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@800&display=swap');
 body {
   background-image: url(../../_common/img/back-pattern.png), url(../img/back-scramble.png);
   background-blend-mode: normal, normal;
   background-position: center, bottom -100px right -20px;
-}
-@media screen and (max-width:735px){
-  body {
+  .night & {
+    background-blend-mode: hard-light, hard-light;
+  }
+  @media screen and (max-width:735px){
     background-size: auto, 100%;
     background-position: center, bottom 50px right 0px;
   }
 }
-
 /* // List
 ---------------------------------------------------------------------------------------------------- */
 .list table tr {
   grid-template-columns: 26rem 0.6fr 4em minmax(6.5em, 1.1fr) 1.1fr 0.5fr;
+  @media screen and (max-width:735px){
+    grid-template-columns: 18rem 6em 4em 0.7fr 1fr 4em;
+  }
   grid-template-areas:
     "NAME   PL  LVL TAXA HOME DATE"
     "NAME   PL ORGN CLAN ADRS DATE"
     "NAME TAGS TAGS TAGS TAGS DATE"
   ;
+  .name    { grid-area: NAME; }
+  .player  { grid-area:   PL; }
+  .level   { grid-area:  LVL; }
+  .taxa    { grid-area: TAXA; }
+  .home    { grid-area: HOME; }
+  .origin  { grid-area: ORGN; }
+  .clan    { grid-area: CLAN; }
+  .address { grid-area: ADRS; }
+  .tags    { grid-area: TAGS; }
+  .date    { grid-area: DATE; }
 }
-.list table .name    { grid-area: NAME; }
-.list table .player  { grid-area:   PL; }
-.list table .level   { grid-area:  LVL; }
-.list table .taxa    { grid-area: TAXA; }
-.list table .home    { grid-area: HOME; }
-.list table .origin  { grid-area: ORGN; }
-.list table .clan    { grid-area: CLAN; }
-.list table .address { grid-area: ADRS; }
-.list table .tags    { grid-area: TAGS; }
-.list table .date    { grid-area: DATE; }
-
 .list.clan table tr {
   grid-template-areas:
     "NAME   PL  LVL BASE RULE DATE"
     "NAME   PL  LVL BLNG RULE DATE"
     "NAME TAGS TAGS TAGS TAGS DATE"
   ;
-}
-.list table .base    { grid-area: BASE; }
-.list table .belong  { grid-area: BLNG; }
-.list table .rule    { grid-area: RULE; }
-
-.list table td:is(.taxa, .home, .origin, .clan, .address, .base, .belong, .rule) > span {
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  line-height: 1.1;
-}
-.list table td.rule {
-  font-size: 90%;
-  text-align: left;
-}
-.list table td.rule span {
-  line-height: 1.2;
-  -webkit-line-clamp: 3;
+  .base    { grid-area: BASE; }
+  .belong  { grid-area: BLNG; }
+  .rule    { grid-area: RULE; }
 }
 
-@media screen and (max-width:735px){
-  .list table tr {
-    grid-template-columns: 18rem 6em 4em 0.7fr 1fr 4em;
+.list table td {
+  &:is(.taxa, .home, .origin, .clan, .address, .base, .belong, .rule) > span {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-height: 1.1;
+  }
+  &.rule {
+    font-size: 90%;
+    text-align: left;
+  }
+  &.rule span {
+    line-height: 1.2;
+    -webkit-line-clamp: 3;
   }
 }
 
@@ -74,4 +72,8 @@ body {
 ---------------------------------------------------------------------------------------------------- */
 .list ul li a::before {
   content: attr(data-type);
+}
+
+
+/* ////////// LayerEnd ////////// */
 }

@@ -1,14 +1,11 @@
 @charset "utf-8";
 
-/* ゆとシートⅡ for SW2.5 - リスト */
-
+@layer system {
 /* // Body
 ---------------------------------------------------------------------------------------------------- */
 body {
   background-image: url(../../_common/img/back-pattern.png), url(../img/back-first.png);
-}
-@media screen and (max-width:735px){
-  body {
+  @media screen and (max-width:735px){
     background-size: auto, 80%;
   }
 }
@@ -21,60 +18,7 @@ body {
     "NAME   PL  GEN  AGE  LVL  EXP  CLS DATE"
     "NAME TAGS TAGS TAGS TAGS TAGS TAGS DATE"
   ;
-}
-.list table .name   { grid-area: NAME; }
-.list table .player { grid-area:   PL; }
-.list table .race   { grid-area: RACE; }
-.list table .age    { grid-area:  AGE; }
-.list table .gender { grid-area:  GEN; }
-.list table .rank   { grid-area: RANK; }
-.list table .lv     { grid-area:  LVL; }
-.list table .exp    { grid-area:  EXP; }
-.list table .class  { grid-area:  CLS; }
-.list table .tags   { grid-area: TAGS; }
-.list table .date   { grid-area: DATE; }
-
-.list table .name {
-  position: relative;
-}
-.list table .name small.fellow {
-  position: absolute;
-  right: 0;
-  bottom: .1rem;
-  font-size: 80%;
-  line-height: 1;
-  font-weight: normal;
-}
-.list table th.gender span.small {
-  display: inline-block;
-  transform: scaleY(calc(1/0.8));
-  font-size: 0.8em;
-}
-.list table td.lv {
-  font-size: 1.15em;
-  line-height: 1;
-}
-.list table td:is(.race, .rank) span.small {
-  display: inline-block;
-  transform: scaleY(calc(1/0.85));
-}
-.list table td.class {
-  text-align: left;
-  font-size: 80%;
-  line-height: 1;
-}
-.list table td.class > div {
-  flex-grow: 1;
-  margin: 0 calc(-6% + -1em) 0 -6%;
-  transform: scaleX(0.88);
-}
-.list table td.class > div > span {
-  display: inline-block;
-  margin-right: 1em;
-  padding: .1em 0;
-}
-@media screen and (max-width:735px){
-  .list table tr {
+  @media screen and (max-width:735px){
     grid-template-columns: 18rem 6em 2em 1fr 5em 2fr 3.5em;
     grid-template-areas:
       "NAME   PL RACE RACE  EXP  CLS DATE"
@@ -82,8 +26,62 @@ body {
       "NAME TAGS TAGS TAGS TAGS TAGS DATE"
     ;
   }
-  .list table .rank,
-  .list table .lv { display: none; }
+  & .name   { grid-area: NAME; }
+  & .player { grid-area:   PL; }
+  & .race   { grid-area: RACE; }
+  & .age    { grid-area:  AGE; }
+  & .gender { grid-area:  GEN; }
+  & .rank   { grid-area: RANK; }
+  & .lv     { grid-area:  LVL; }
+  & .exp    { grid-area:  EXP; }
+  & .class  { grid-area:  CLS; }
+  & .tags   { grid-area: TAGS; }
+  & .date   { grid-area: DATE; }
+
+  & .name {
+    position: relative;
+  
+    & small.fellow {
+      position: absolute;
+      right: 0;
+      bottom: .1rem;
+      font-size: 80%;
+      line-height: 1;
+      font-weight: normal;
+    }
+  }
+  & th.gender span.small {
+    display: inline-block;
+    transform: scaleY(calc(1/0.8));
+    font-size: 0.8em;
+  }
+  & td.lv {
+    font-size: 1.15em;
+    line-height: 1;
+  }
+  & td:is(.race, .rank) span.small {
+    display: inline-block;
+    transform: scaleY(calc(1/0.85));
+  }
+  & td.class {
+    text-align: left;
+    font-size: 80%;
+    line-height: 1;
+    > div {
+      flex-grow: 1;
+      margin: 0 calc(-6% + -1em) 0 -6%;
+      transform: scaleX(0.88);
+    }
+    > div > span {
+      display: inline-block;
+      margin-right: 1em;
+      padding: .1em 0;
+    }
+  }
+  @media screen and (max-width:735px){
+    & .rank,
+    & .lv { display: none; }
+  }
 }
 
 /* // List-Simple
@@ -95,94 +93,96 @@ body {
 /* // List-Monster
 ---------------------------------------------------------------------------------------------------- */
 .list.monster table tr {
-    grid-template-columns: 24rem 0.6fr 6.8em 3.2em 3.2em 6.8em 1fr 0.5fr;
-    grid-template-areas:
-      "NAME AUTHOR TAXA   LV PARTS DISPO HABIT DATE"
-      "NAME   TAGS TAGS TAGS  TAGS  TAGS  TAGS DATE"
-    ;
-}
-.list.monster table tr:has(.tags:empty) {
+  grid-template-columns: 24rem 0.6fr 6.8em 3.2em 3.2em 6.8em 1fr 0.5fr;
   grid-template-areas:
     "NAME AUTHOR TAXA   LV PARTS DISPO HABIT DATE"
+    "NAME   TAGS TAGS TAGS  TAGS  TAGS  TAGS DATE"
   ;
-}
-.list.monster table .name        { grid-area: NAME; }
-.list.monster table .author      { grid-area: AUTHOR; }
-.list.monster table .taxa        { grid-area: TAXA; }
-.list.monster table .level       { grid-area: LV; }
-.list.monster table .parts       { grid-area: PARTS; }
-.list.monster table .disposition { grid-area: DISPO; }
-.list.monster table .habitat     { grid-area: HABIT; }
-.list.monster table .date        { grid-area: DATE; }
+  &:has(.tags:empty) {
+    grid-template-areas:
+      "NAME AUTHOR TAXA LV PARTS DISPO HABIT DATE"
+    ;
+  }
+  @media screen and (max-width:735px){
+    grid-template-columns: 18rem 6em 5em 3.2em 3.2em 5.8em 1fr 3.5em;
+  }
+  & .name        { grid-area: NAME; }
+  & .author      { grid-area: AUTHOR; }
+  & .taxa        { grid-area: TAXA; }
+  & .level       { grid-area: LV; }
+  & .parts       { grid-area: PARTS; }
+  & .disposition { grid-area: DISPO; }
+  & .habitat     { grid-area: HABIT; }
+  & .date        { grid-area: DATE; }
 
-.list.monster table th:is(.level, .parts) span.small {
-  display: inline-block;
-  transform: scaleY(calc(1/0.8));
-  font-size: 0.8em;
+  & th:is(.level, .parts) span.small {
+    display: inline-block;
+    transform: scaleY(calc(1/0.8));
+    font-size: 0.8em;
+  }
+  & td.name a {
+    font-size: 1.4rem;
+  }
+  & td.level {
+    font-size: 1.2em;
+  }
+  & td:is(.taxa) span.small {
+    display: inline-block;
+    transform: scaleY(calc(1/0.85));
+  }
+  @media screen and (max-width:735px){
+    & td:is(.taxa, .disposition, .habitat, .price){
+      font-size: 90%;
+    }
+  }
 }
-.list.monster table td.name a {
-  font-size: 1.4rem;
-}
-.list.monster table td.level {
-  font-size: 1.2em;
-}
-.list.monster table td:is(.taxa) span.small {
-  display: inline-block;
-  transform: scaleY(calc(1/0.85));
-}
+
 .list.monster table.mount tr {
   grid-template-columns: 24rem 1fr 7.2em 5.2em 3.2em 2fr 0.8fr;
   grid-template-areas:
     "NAME AUTHOR TAXA   LV PARTS PRICE DATE"
     "NAME   TAGS TAGS TAGS  TAGS  TAGS DATE"
   ;
-}
-.list.monster table.mount tr:has(.tags:empty) {
-  grid-template-areas:
-    "NAME AUTHOR TAXA   LV PARTS PRICE DATE"
-  ;
-}
-.list.monster table .price { grid-area: PRICE; }
-
-@media screen and (max-width:735px){
-  .list.monster table tr {
-    grid-template-columns: 18rem 6em 5em 3.2em 3.2em 5.8em 1fr 3.5em;
+  &:has(.tags:empty) {
+    grid-template-areas:
+      "NAME AUTHOR TAXA   LV PARTS PRICE DATE"
+    ;
   }
-  .list.monster table.mount tr {
+  @media screen and (max-width:735px){
     grid-template-columns: 18rem 6em 6.2em 4.2em 3.2em 1fr 3.5em;
   }
-  .list.monster table td:is(.taxa, .disposition, .habitat, .price){
-    font-size: 90%;
-  }
+  & .price { grid-area: PRICE; }
 }
 
 /* // List-Item
 ---------------------------------------------------------------------------------------------------- */
 .list.item table tr {
-    display: grid;
-    grid-template-columns: 24rem 0.5fr 0.6fr 6em 1fr 0.4fr;
-    grid-template-rows: auto;
-    grid-template-areas:
-      "NAME AUTHOR CATEGORY PRICE SUMMARY DATE"
-    ;
+  display: grid;
+  grid-template-columns: 24rem 0.5fr 0.6fr 6em 1fr 0.4fr;
+  grid-template-rows: auto;
+  grid-template-areas:
+    "NAME AUTHOR CATEGORY PRICE SUMMARY DATE"
+  ;
+  & .name    { grid-area: NAME; }
+  & .author  { grid-area: AUTHOR; }
+  & .category{ grid-area: CATEGORY; }
+  & .price   { grid-area: PRICE; }
+  & .summary { grid-area: SUMMARY; }
+  & .date    { grid-area: DATE; }
 }
-.list.item table .name    { grid-area: NAME; }
-.list.item table .author  { grid-area: AUTHOR; }
-.list.item table .category{ grid-area: CATEGORY; }
-.list.item table .price   { grid-area: PRICE; }
-.list.item table .summary { grid-area: SUMMARY; }
-.list.item table .date    { grid-area: DATE; }
-.list.item table td.name a {
-  font-size: 1.4rem;
-}
-.list.item table td.category,
-.list.item table td.summary {
-  font-size: 1.2rem;
-}
-/* アイテムアイコン */
-.i-icon {
-  width: 1em;
-  height: 1em;
+.list.item table {
+  & td.name a {
+    font-size: 1.4rem;
+  }
+  & td.category,
+  & td.summary {
+    font-size: 1.2rem;
+  }
+  /* アイテムアイコン */
+  .i-icon {
+    width: 1em;
+    height: 1em;
+  }
 }
 
 /* // List-Arts
@@ -194,21 +194,21 @@ body {
     grid-template-areas:
       "NAME AUTHOR CATEGORY SUB SUMMARY DATE"
     ;
-}
-.list.arts table .name    { grid-area: NAME; }
-.list.arts table .author  { grid-area: AUTHOR; }
-.list.arts table .category{ grid-area: CATEGORY; }
-.list.arts table .sub     { grid-area: SUB; }
-.list.arts table .summary { grid-area: SUMMARY; }
-.list.arts table .date    { grid-area: DATE; }
-.list.arts table td.name a {
-  font-size: 1.4rem;
-}
-.list.arts table td.sub span {
-  display: inline-block;
-}
-.list.arts table td.summary {
-  font-size: 1.2rem;
+  & .name    { grid-area: NAME; }
+  & .author  { grid-area: AUTHOR; }
+  & .category{ grid-area: CATEGORY; }
+  & .sub     { grid-area: SUB; }
+  & .summary { grid-area: SUMMARY; }
+  & .date    { grid-area: DATE; }
+  & td.name a {
+    font-size: 1.4rem;
+  }
+  & td.sub span {
+    display: inline-block;
+  }
+  & td.summary {
+    font-size: 1.2rem;
+  }
 }
 
 /* // List-Making
@@ -220,40 +220,40 @@ body {
 #making form dl {
   display: grid;
   grid-template-columns: 5em 1fr;
-}
-#making form dl dt {
-  text-align: justify;
-  text-align-last: justify;
-}
-#making form dl dt,
-#making form dl dd {
-  padding: 0.2em 0.5em;
-  border-width: 0 0 1px;
-  border-style: solid;
-}
-#making form dl dd:nth-of-type(2) input {
-  width: 100%;
-}
-#making form dl dd:nth-of-type(3) input {
-  width: 4.5em;
-  text-align: center;
-}
-#making form dl .annotate {
-  padding: .3em 0 0 1em;
-  line-height: 1.2;
-  position: relative;
-}
-#making form dl .annotate::before {
-  content: "※";
-  position: absolute;
-  left: 0;
+  & dt {
+    text-align: justify;
+    text-align-last: justify;
+  }
+  & dt,
+  & dd {
+    padding: 0.2em 0.5em;
+    border-width: 0 0 1px;
+    border-style: solid;
+  }
+  & dd:nth-of-type(2) input {
+    width: 100%;
+  }
+  & dd:nth-of-type(3) input {
+    width: 4.5em;
+    text-align: center;
+  }
+  & .annotate {
+    padding: .3em 0 0 1em;
+    line-height: 1.2;
+    position: relative;
+  }
+  & .annotate::before {
+    content: "※";
+    position: absolute;
+    left: 0;
+  }
 }
 
 #making-posts h2 {
   text-align: center;
-}
-#making-posts h2 small {
-  font-size: 60%;
+  & small {
+    font-size: 60%;
+  }
 }
 #making-posts .post {
   max-width: 500px;
@@ -272,11 +272,11 @@ body {
 }
 #making-posts .post dl {
   margin: .5em;
-}
-#making-posts .post dt {
-}
-#making-posts .post dd {
-  margin: 0 .5em .5em;
+  & dt {
+  }
+  & dd {
+    margin: 0 .5em .5em;
+  }
 }
 #making-posts .post table {
   min-width: 400px;
@@ -284,35 +284,35 @@ body {
   border-width: 1px;
   border-style: solid;
   text-align: center;
-}
-#making-posts .post table.selected {
-  outline: 1px solid #f70;
-}
-#making-posts .post table tr {
-  border-width: 1px;
-  border-style: solid;
-}
-#making-posts .post table th {
-  position: relative;
-  padding: 0.2em 0.5em;
-  background: rgba(100,120,190,0.15);
-  text-align: left;
-}
-#making-posts .post table th a.to-blanksheet {
-  display: inline-block;
-  position: absolute;
-  top: 0.4em;
-  right: .5em;
-  font-size: 85%;
-  font-weight: normal;
-}
-#making-posts .post table td {
-  padding: 0.2em 0.5em;
-  border-width: 1px;
-  border-style: dotted;
-}
-#making-posts .post table td > span {
-  font-size: 90%;
+  &.selected {
+    outline: 1px solid #f70;
+  }
+  & tr {
+    border-width: 1px;
+    border-style: solid;
+  }
+  & th {
+    position: relative;
+    padding: 0.2em 0.5em;
+    background: rgba(100,120,190,0.15);
+    text-align: left;
+    & a.to-blanksheet {
+      display: inline-block;
+      position: absolute;
+      top: 0.4em;
+      right: .5em;
+      font-size: 85%;
+      font-weight: normal;
+    }
+  }
+  & td {
+    padding: 0.2em 0.5em;
+    border-width: 1px;
+    border-style: dotted;
+    > span {
+      font-size: 90%;
+    }
+  }
 }
 #making-posts .post time {
   display: block;
@@ -322,10 +322,14 @@ body {
 }
 #making-posts .navigation {
   text-align: center;
+  & a {
+    display: inline-block;
+    + a {
+      margin-left: 3em;
+    }
+  }
 }
-#making-posts .navigation a {
-  display: inline-block;
-}
-#making-posts .navigation a + a {
-  margin-left: 3em;
+
+
+/* ////////// LayerEnd ////////// */
 }

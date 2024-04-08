@@ -84,6 +84,7 @@ window.onload = function() {
   calcCash();
   calcHonor();
   calcDishonor();
+  calcCommonClass();
   
   imagePosition();
   changeColor();
@@ -2023,9 +2024,39 @@ let dishonorSortable = Sortable.create(document.querySelector('#dishonor-items-t
 });
 
 // 一般技能 ----------------------------------------
+function calcCommonClass(){
+  let totalLv = 0;
+  for(let num = 1; num <= Number(form.commonClassNum.value); num++){
+    totalLv += Number(form['lvCommon'+num].value||0);
+  }
+  document.getElementById('cc-total-lv').textContent = totalLv;
+}
+// 追加
+function addCommonClass(){
+  let num = Number(form.commonClassNum.value) + 1;
+
+  let row = document.querySelector('#common-class-template').content.firstElementChild.cloneNode(true);
+  row.id = idNumSet('common-class');
+  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
+  document.querySelector("#common-classes-table tbody").append(row);
+
+  form.commonClassNum.value = num;
+}
+// 削除
+function delCommonClass(){
+  let num = Number(form.commonClassNum.value);
+  if(num > 1){
+    if(form[`commonClass${num}`].value || form[`lvClass${num}`].value){
+      if (!confirm(delConfirmText)) return false;
+    }
+    document.querySelector("#common-classes-table tbody tr:last-of-type").remove();
+    num--;
+    form.commonClassNum.value = num;
+  }
+}
 // ソート
 let commonClassSortable = Sortable.create(document.querySelector('#common-classes-table tbody'), {
-  group: "honor",
+  group: "common-class",
   dataIdAttr: 'id',
   animation: 150,
   handle: '.handle',
@@ -2035,7 +2066,7 @@ let commonClassSortable = Sortable.create(document.querySelector('#common-classe
     const order = commonClassSortable.toArray();
     let num = 1;
     for(let id of order) {
-      if(document.getElementById(id)){
+      if(document.querySelector(`tr#${id}`)){
         document.querySelector(`#${id} [type="text"]`  ).setAttribute('name',`commonClass${num}`);
         document.querySelector(`#${id} [type="number"]`).setAttribute('name',`lvCommon${num}`);
         num++;

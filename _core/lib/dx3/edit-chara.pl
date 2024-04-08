@@ -1268,6 +1268,10 @@ print <<"HTML";
     <option value="【感覚】">
     <option value="【精神】">
     <option value="【社会】">
+    <option value="〈運転:〉">
+    <option value="〈芸術:〉">
+    <option value="〈知識:〉">
+    <option value="〈情報:〉">
     <option value="効果参照">
   </datalist>
   <datalist id="list-combo-timing">
@@ -1296,6 +1300,10 @@ print <<"HTML";
     <option value="【感覚】">
     <option value="【精神】">
     <option value="【社会】">
+    <option value="〈運転:〉">
+    <option value="〈芸術:〉">
+    <option value="〈知識:〉">
+    <option value="〈情報:〉">
     <option value="効果参照">
   </datalist>
   <datalist id="list-weapon-skill">
@@ -1303,7 +1311,7 @@ print <<"HTML";
     <option value="〈白兵〉">
     <option value="〈射撃〉">
     <option value="〈白兵〉〈射撃〉">
-    <option value="効果参照">
+    <option value="解説参照">
   </datalist>
   <datalist id="list-vehicle-skill">
     <option value="〈運転:〉">
@@ -1331,7 +1339,7 @@ print <<"HTML";
     <option value="〈情報:ウェブ〉">
     <option value="〈情報:メディア〉">
     <option value="〈情報:ビジネス〉">
-    <option value="効果参照">
+    <option value="解説参照">
   </datalist>
   <datalist id="list-weapon-type">
     <option value="白兵">
@@ -1341,9 +1349,11 @@ print <<"HTML";
   <datalist id="list-armor-type">
     <option value="防具">
     <option value="防具※">
+    <option value="防具（補助）">
   </datalist>
   <datalist id="list-item-type">
     <option value="コネ">
+    <option value="一般">
     <option value="その他">
     <option value="使い捨て">
   </datalist>
