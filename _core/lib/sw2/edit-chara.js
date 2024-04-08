@@ -2046,7 +2046,7 @@ function addCommonClass(){
 function delCommonClass(){
   let num = Number(form.commonClassNum.value);
   if(num > 1){
-    if(form[`commonClass${num}`].value || form[`lvClass${num}`].value){
+    if(form[`commonClass${num}`].value || form[`lvCommon${num}`].value){
       if (!confirm(delConfirmText)) return false;
     }
     document.querySelector("#common-classes-table tbody tr:last-of-type").remove();
