@@ -393,8 +393,8 @@ print <<"HTML";
             <dt>自分の<br>痕印
             <dd>
               <select name="partnerOrder" oninput="autoInputPartner(1)" style="width:auto;">
-                <option value="1">血契１
-                <option value="2">血契２
+                <option value="1" @{[ $pc{partnerOrder} eq 1 ? 'selected' :'' ]}>血契１
+                <option value="2" @{[ $pc{partnerOrder} eq 2 ? 'selected' :'' ]}>血契２
               </select>※相手から見て
             </dd>
             <dd>
