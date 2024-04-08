@@ -487,7 +487,8 @@ function sectionSelect(id){
 }
 
 // セレクトorインプット ----------------------------------------
-function selectInputCheck(name,obj,keyword = 'free'){
+function selectInputCheck(obj,keyword = 'free'){
+  let name = obj.getAttribute('name').replace(/Select$/,'');
   obj.parentNode.classList.toggle('free', obj.value === keyword);
   if(obj.value === keyword){
     if(document.querySelector(`input[name="${name}Free"]`)) document.querySelector(`input[name="${name}Free"]`).setAttribute('name', name);
