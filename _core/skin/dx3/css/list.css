@@ -1,18 +1,14 @@
 @charset "utf-8";
 
-/* ゆとシートⅡ for DX3rd - リスト */
-
+@layer system {
 /* // Body
 ---------------------------------------------------------------------------------------------------- */
 body {
   background-image: url(../../_common/img/back-pattern.png), url(../img/back-xx.png);
-}
-@media screen and (max-width:735px){
-  body {
+  @media screen and (max-width:735px){
     background-size: auto, 70%;
   }
 }
-
 /* // List
 ---------------------------------------------------------------------------------------------------- */
 .list table tr {
@@ -59,4 +55,8 @@ body {
 ---------------------------------------------------------------------------------------------------- */
 .list ul li a::before {
   content: attr(data-lv);
+}
+
+
+/* ////////// LayerEnd ////////// */
 }

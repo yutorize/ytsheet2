@@ -53,8 +53,9 @@ if(!$LOGIN_ID && $mode =~ /^(?:blanksheet|copy|convert)$/){
   else { $data_dir = $set::char_dir; }
   opendir my $dh, "${data_dir}anonymous/";
   my $num_files = () = readdir($dh);
-  if($num_files-2 >= $max_files){
-    error("登録数上限です。($num_files/$max_files)<br>アカウントに紐づけないデータは、これ以上登録できないため、アカウント登録・ログインをしてから作成を行ってください。");
+  $num_files += -2;
+  if($num_files >= $max_files){
+    error("ユーザーアカウントに紐づけされていないシートが登録数上限以上です。($num_files/$max_files 件)<br>ユーザーアカウントに紐づけないデータは、これ以上登録できないため、アカウント登録・ログインをしてから作成を行ってください。");
   }
 }
 
@@ -256,11 +257,18 @@ sub option {
   }
   return $text;
 }
+sub selectBox {
+  my $name = shift;
+  my $func = shift;
+  if($func && $func !~ /\(.*?\)$/){ $func .= '()'; }
+  my $text = '<select name="'.$name.'" oninput="'.$func.'">'.option($name, @_).'</select>';
+  return $text;
+}
 sub selectInput {
   my $name = shift;
   my $func = shift;
   if($func && $func !~ /\(.*?\)$/){ $func .= '()'; }
-  my $text = '<div class="select-input"><select name="'.$name.'" oninput="selectInputCheck(\''.$name.'\',this);'.$func.'">'.option($name, @_);
+  my $text = '<div class="select-input"><select name="'.$name.'" oninput="selectInputCheck(this);'.$func.'">'.option($name, @_);
   $text .= '<option value="free">その他（自由記入）'; 
   my $hit = 0;
   foreach my $value (@_) { if($::pc{$name} eq $value){ $hit = 1; last; } }

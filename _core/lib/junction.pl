@@ -4,7 +4,7 @@ use strict;
 use utf8;
 use Encode;
 
-our $ver = "1.24.005";
+our $ver = "1.24.007";
 
 our %in;
 for (param()){ $in{$_} = param($_); }
@@ -52,9 +52,9 @@ elsif($mode eq 'bu-naming')  { require $set::lib_others; } #過去ログ命名
 elsif($mode eq 'delete')     { require $set::lib_delete; } #削除
 elsif($mode eq 'img-delete') { require $set::lib_delete; } #画像削除
 elsif($mode eq 'palette')    { require $set::lib_palette; }#チャットパレット表示
-elsif($mode eq 'json')       { require $set::lib_json; }   #外部アプリ連携
-elsif($mode eq 'js-consts')  { &printJS('consts') }   #編集
-elsif($mode eq 'image')      { &imageRedirect($in{id}); }   #外部アプリ連携
+elsif($mode eq 'js-consts')  { &printJS('consts') }   #JS用定数
+elsif($mode eq 'image')      { &imageRedirect($in{id}); }   #画像表示
+elsif(($in{id}||$in{url}) && $mode eq 'json') { require $set::lib_json; }#外部アプリ連携
 elsif($in{id})  { require $set::lib_view; }   #シート表示
 elsif($in{url}) { require $set::lib_view; }   #シート表示（コンバート）
 else {

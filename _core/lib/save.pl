@@ -111,7 +111,7 @@ if($mode eq 'make' && $pc{protect} ne 'account'){
   opendir my $dh, "${data_dir}anonymous/";
   my $num_files = () = readdir($dh);
   if($num_files-2 >= $max_files){
-    infoJson('error','登録数上限です。\nアカウントに紐づけないデータは、これ以上登録できません。');
+    infoJson('error','ユーザーアカウントに紐づけされていないシートが登録数上限以上です。\nアカウントに紐づけないデータは、これ以上登録できません。');
     require $set::lib_edit; exit;
   }
 }
@@ -119,7 +119,7 @@ if($mode eq 'save' && $pc{protect} ne 'account' && $pc{protectOld} eq 'account')
   opendir my $dh, "${data_dir}anonymous/";
   my $num_files = () = readdir($dh);
   if($num_files-2 >= $max_files){
-    infoJson('error','登録数上限です。\nアカウントに紐づけないデータは、これ以上登録できないため、保護設定を変更できません。');
+    infoJson('error','ユーザーアカウントに紐づけされていないシートが登録数上限以上です。\nアカウントに紐づけないデータは、これ以上登録できないため、保護設定を変更できません。');
   }
 }
 

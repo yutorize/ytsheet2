@@ -2,11 +2,12 @@
 
 /* // キャラクター
 ---------------------------------------------------------------------------------------------------- */
-#regulation > dl {
+#regulation > dl:first-of-type {
   grid-template-columns: 1fr 1fr 1fr 4fr;
-}
-#sw2\.0 #regulation > dl:first-of-type {
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 5fr;
+  
+  #sw2\.0 & {
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 5fr;
+  }
 }
 #regulation dl.regulation-grow {
   display: grid;
@@ -22,9 +23,9 @@
 @media screen and (max-width:735px){
   #regulation > dl {
     grid-template-columns: 1fr 1fr 1fr;
-  }
-  #sw2\.0 #regulation > dl {
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    #sw2\.0 & {
+      grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    }
   }
   #regulation > dl > dt:last-of-type {
     grid-column: 1 / span 3;
@@ -61,22 +62,23 @@
     display: none;
   }
 }
-
-#personal dl#race         { flex-basis: 58%; order: 1; }
-#personal dl#age          { flex-basis: 20%; order: 2; }
-#personal dl#gender       { flex-basis: 20%; order: 3; }
-#personal dl#race-ability { flex-basis: 85%; order: 4; }
-#personal dl#birth        { flex-basis: 30%; order: 6; }
-#personal dl#faith        { flex-basis: 69%; order: 7; }
-#personal dl#sin          { flex-basis: 14%; order: 5; }
-#personal #race-ability-select:empty {
-  display: none;
-}
-#personal #race-ability-select select {
-  width: auto;
-}
-#personal #race-ability-value:has(input) {
-  display: block !important;
+#personal {
+  & dl#race         { flex-basis: 58%; order: 1; }
+  & dl#age          { flex-basis: 20%; order: 2; }
+  & dl#gender       { flex-basis: 20%; order: 3; }
+  & dl#race-ability { flex-basis: 85%; order: 4; }
+  & dl#birth        { flex-basis: 30%; order: 6; }
+  & dl#faith        { flex-basis: 69%; order: 7; }
+  & dl#sin          { flex-basis: 14%; order: 5; }
+  & #race-ability-select:empty {
+    display: none;
+  }
+  & #race-ability-select select {
+    width: auto;
+  }
+  & #race-ability-value:has(input) {
+    display: block !important;
+  }
 }
 
 #status dl[id^="stt-add"]::before {
@@ -87,9 +89,10 @@
 }
 #status dl:nth-child(n+16):nth-child(-n+21) dd {
   font-size: 120%;
-}
-#status dl:nth-child(n+16):nth-child(-n+21) dd .small {
-  font-size: 80%;
+
+  & .small {
+    font-size: 80%;
+  }
 }
 @media screen and (max-width:735px){
   #status {
@@ -124,19 +127,30 @@
   justify-content: space-between;
   flex-wrap: wrap;
   align-items: flex-start;
-}
-#area-ability > * {
-  margin-bottom: var(--box-v-gap);
-  margin-left: 0;
-}
-#area-ability > p {
-  flex-basis: 100%;
+
+  > * {
+    margin-bottom: var(--box-v-gap);
+    margin-left: 0;
+  }
+  > p {
+    flex-basis: 100%;
+  }
 }
 
 #area-classes {
   flex-basis: 100%;
   display: flex;
+  position: relative;
   justify-content: space-between;
+}
+#area-classes h2 + div {
+  position: absolute;
+  top: .2rem;
+  right: .5em;
+  font-size: 80%;
+}
+#area-classes h2 + div span {
+  font-size: 120%;
 }
 #area-classes.common-classes-off {
   flex-basis: calc(66% - 1rem);
@@ -149,40 +163,36 @@
   display: grid;
   position: relative;
   grid-template-columns: 1fr 1fr;
-}
-#classes h2 {
-  grid-column: span 2;
-}
-#classes h3 {
-  margin-top: 0;
-  font-size: 90%;
+
+  & h2 { grid-column: span 2; }
+  #classes-weapon-user { grid-column: 1; }
+  #classes-magic-user  { grid-column: 1; align-self: end; }
+  #classes-other-user  { grid-column: 2; grid-row: 2 / span 2; }
+
+  & h3 {
+    margin-top: 0;
+    font-size: 90%;
+  }
+  & dl {
+    flex-grow: 1;
+    flex-basis: calc(50% - 10px);
+    grid-template-columns: 1fr 3.5em;
+
+    & dt {
+      font-size: inherit;
+    }
+    & select {
+      font-size: 80%;
+    }
+  }
 }
 #common-classes {
   flex-grow: 1;
   margin: 0 0 0 var(--box-h-gap) !important;
-}
-#classes #classes-weapon-user {
-  grid-column: 1;
-}
-#classes #classes-magic-user {
-  grid-column: 1;
-  align-self: end;
-}
-#classes #classes-other-user {
-  grid-column: 2;
-  grid-row: 2 / span 2;
-}
 
-#classes dl {
-  flex-grow: 1;
-  flex-basis: calc(50% - 10px);
-  grid-template-columns: 1fr 3.5em;
-}
-#classes dl dt {
-  font-size: inherit;
-}
-#common-classes td:last-child {
-  width: 3.5em;
+  & td:last-child {
+    width: 3.5em;
+  }
 }
 @media screen and (max-width:735px){
   #area-classes {
@@ -220,95 +230,95 @@
     width: 5em;
   }
 }
-#classes dl select {
-  font-size: 80%;
-}
 
 #combat-feats {
-  margin-left: 0 !important;
-}
-#combat-feats select {
-  margin-left: 1em;
-  width: calc(100% - 4px - 1em);
-}
-#combat-feats #combat-feat-vagrants-auto li {
-  display: grid;
-  grid-template-columns: 5em auto;
-}
-#combat-feats #combat-feat-vagrants-auto li::before {
-  content: attr(data-label);
-  align-self: end;
-  text-align: right;
-  white-space: nowrap;
-  font-size: 90%;
-}
-#combat-feats #combat-feat-vagrants-auto li select {
-  margin-left: 5px;
-  width: calc(100% - 4px - 5px);
-}
-#combat-feats .feats-options {
-  margin: .3rem .5em;
-  border-width: 0 0 1px;
-  border-style: solid;
-}
-#combat-feats .feats-options h6 {
-  font-size: 85%;
-}
-#combat-feats .feats-options li {
-  display: inline-block;
-  border: none;
-  font-size: 90%;
-  line-height: 1;
-}
-#combat-feats .feats-options li input {
-  margin-right: .5em;
-}
-#combat-feats > p:last-child {
-  font-size: 90%;
-}
-@media screen and (max-width:735px){
-  #combat-feats ul {
-    padding-left: 2em;
-    padding-right: 2em;
+  margin-left: 0;
+  & select {
+    margin-left: 1em;
+    width: calc(100% - 4px - 1em);
+  }
+  & ul {
+    &#combat-feat-vagrants-auto li {
+      display: grid;
+      grid-template-columns: 5em auto;
+    }
+    &#combat-feat-vagrants-auto li::before {
+      content: attr(data-label);
+      align-self: end;
+      text-align: right;
+      white-space: nowrap;
+      font-size: 90%;
+    }
+    &#combat-feat-vagrants-auto li select {
+      margin-left: 5px;
+      width: calc(100% - 4px - 5px);
+    }
+  }
+  & .feats-options {
+    margin: .3rem .5em;
+    border-width: 0 0 1px;
+    border-style: solid;
+    & h6 {
+      font-size: 85%;
+    }
+    & li {
+      display: inline-block;
+      border: none;
+      font-size: 90%;
+      line-height: 1;
+    }
+    & li input {
+      margin-right: .5em;
+    }
+  }
+  > p:last-child {
+    font-size: 90%;
+  }
+  @media screen and (max-width:735px){
+    & ul {
+      padding-left: 2em;
+      padding-right: 2em;
+    }
   }
 }
 #mystic-arts {
   position: relative;
-}
-#mystic-arts h2 + div {
-  position: absolute;
-  top: .2rem;
-  right: .5em;
-  font-size: 80%;
-}
-#mystic-arts h2 + div span {
-  font-size: 120%;
-}
-#mystic-arts h2:nth-child(n+2) {
-  margin-top: 0;
-}
-#mystic-arts ul li {
-  display: grid;
-  grid-template-columns: max-content 1fr 4em;
-  grid-template-rows: auto;
-}
-#sw2\.0 #mystic-arts ul li {
-  grid-template-columns: max-content 1fr 6em;
-}
-#sw2\.0 #mystic-arts ul li .honor-pt {
-  margin: 2px;
-}
-#sw2\.0 #mystic-arts ul li .honor-pt input {
-  margin-right: 0;
-}
-#mystic-arts ul li .handle {
-  width: 1.2em;
-  margin-left: -.5rem;
-}
-@media screen and (max-width:735px){
-  #mystic-arts ul {
-    padding-left: 1em;
-    padding-right: 1em;
+
+  & h2 + div {
+    position: absolute;
+    top: .2rem;
+    right: .5em;
+    font-size: 80%;
+    & span {
+      font-size: 120%;
+    }
+  }
+  & h2:nth-child(n+2) {
+    margin-top: 0;
+  }
+  & ul li {
+    display: grid;
+    grid-template-columns: max-content 1fr 4em;
+    grid-template-rows: auto;
+    .handle {
+      width: 1.2em;
+      margin-left: -.5rem;
+    }
+    #sw2\.0 & {
+      grid-template-columns: max-content 1fr 6em;
+      .honor-pt {
+        margin: 2px;
+      }
+      .honor-pt input {
+        margin-right: 0;
+      }
+    }
+  }
+  @media screen and (max-width:735px){
+    & ul {
+      padding-left: 1em;
+      padding-right: 1em;
+    }
   }
 }
 
@@ -323,23 +333,22 @@
 #crafts > .box {
   flex-basis: calc(50% - 1rem);
   margin: 0 0 var(--box-v-gap) var(--box-h-gap) !important;
-}
-#area-classes.common-classes-off + div + #crafts > .box {
-  flex-basis: calc(33% - 1rem);
-}
-#area-classes.common-classes-off + div + #crafts > .box:first-child {
-  margin-left: 0 !important;
-}
-@media screen and (max-width:735px){
-  #area-classes.common-classes-off + div + #crafts > .box {
-  flex-basis: calc(50% - 1rem);
+
+  #area-classes.common-classes-off + div + & {
+    flex-basis: calc(33% - 1rem);
+    &:first-child {
+      margin-left: 0 !important;
+    }
+    @media screen and (max-width:735px){
+      flex-basis: calc(50% - 1rem);
+    }
   }
-}
-#crafts > .box ul {
-  margin-bottom: -1px;
-}
-#crafts > .box ul li:last-child {
-  padding-bottom: 1px;
+  & ul {
+    margin-bottom: -1px;
+  }
+  & ul li:last-child {
+    padding-bottom: 1px;
+  }
 }
 @media screen and (max-width:735px){
   #crafts {
@@ -359,6 +368,10 @@
   margin-top: var(--box-v-gap);
 }
 
+#area-actions {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
 #area-package #package table {
   margin-top: 1px;
   margin-bottom: -1px;
@@ -369,6 +382,9 @@
 #package table tr td:nth-last-child(2) input {
   width: calc(100% - 1em);
 }
+#area-other-actions input {
+  width: 3.5em;
+}
 
 
 #language dl {
@@ -377,73 +393,81 @@
   grid-template-rows: auto;
   
   margin: 0 5px;
+
+  & dt {
+    font-weight: normal;
+  }
+  & dd {
+    text-align: center;
+  }
 }
-#language dl dt {
-  font-weight: normal;
+#language table {
+  & td {
+    vertical-align: bottom;
+  }
+  & td.handle::before {
+    display: block;
+    width: 1.2em;
+    margin-left: -.5rem;
+    text-align: center;
+  }
+  & tr > *:nth-last-child(-n+2) {
+    width: 3em;
+    position: relative;
+  }
+  
+  &#language-table {
+    & td select,
+    & td .lang-select-view {
+      position: absolute;
+      top: 1px;
+      left: 0;
+      right: 0;
+      bottom: 1px;
+      height: auto;
+      cursor: pointer;
+    }
+    & td select {
+      appearance: none;
+      opacity: 0;
+    }
+    & td .lang-select-view {
+      display: block;
+      margin: 1px 1px 0 0;
+      border-width: 1px;
+      border-style: solid;
+      border-color: var(--box-input-border-color);
+      border-radius: 5px;
+      font-size: 85%;
+      pointer-events: none;
+    }
+    & select {
+      & + .lang-select-view { background: var(--input-bg-color); }
+      .night & option { color: var(--text-color); }
+      & option[value="auto"],
+      &[data-type="auto"] + .lang-select-view { background: #00ccff22; }
+      &[data-type="auto"] + .lang-select-view::before { content: '自動'; }
+      & option[value="Sag"],
+      &[data-type="Sag"] + .lang-select-view { background: #55ff0033; }
+      &[data-type="Sag"] + .lang-select-view::before { content: 'セージ'; }
+      & option[value="Bar"],
+      &[data-type="Bar"] + .lang-select-view { background: #ffaa0033; }
+      &[data-type="Bar"] + .lang-select-view::before { content: 'バード'; }
+      & option[value="listen"],
+      &[data-type="listen"] + .lang-select-view { background: #77777722; }
+      &[data-type="listen"] + .lang-select-view::before { content: '△'; }
+    }
+  }
 }
-#language dl dd {
-  text-align: center;
-}
-#language table td {
-  vertical-align: bottom;
-}
-#language table td.handle::before {
-  display: block;
-  width: 1.2em;
-  margin-left: -.5rem;
-  text-align: center;
-}
-#language table tr > *:nth-last-child(-n+2) {
-  width: 3em;
-  position: relative;
-}
-#language table#language-table td select,
-#language table#language-table td .lang-select-view {
-  position: absolute;
-  top: 1px;
-  left: 0;
-  right: 0;
-  bottom: 1px;
-  height: auto;
-  cursor: pointer;
-}
-#language table#language-table td select {
-  appearance: none;
-  opacity: 0;
-}
-#language table#language-table td .lang-select-view {
-  display: block;
-  margin: 1px 1px 0 0;
-  border-width: 1px;
-  border-style: solid;
-  border-color: var(--box-input-border-color);
-  border-radius: 5px;
-  font-size: 85%;
-  pointer-events: none;
-}
-#language select + .lang-select-view { background: var(--input-bg-color); }
-.night #language select option { color: var(--text-color); }
-#language select option[value="auto"],
-#language select[data-type="auto"] + .lang-select-view { background: #00ccff22; }
-#language select[data-type="auto"] + .lang-select-view::before { content: '自動'; }
-#language select option[value="Sag"],
-#language select[data-type="Sag"] + .lang-select-view { background: #55ff0033; }
-#language select[data-type="Sag"] + .lang-select-view::before { content: 'セージ'; }
-#language select option[value="Bar"],
-#language select[data-type="Bar"] + .lang-select-view { background: #ffaa0033; }
-#language select[data-type="Bar"] + .lang-select-view::before { content: 'バード'; }
-#language select option[value="listen"],
-#language select[data-type="listen"] + .lang-select-view { background: #77777722; }
-#language select[data-type="listen"] + .lang-select-view::before { content: '△'; }
 #language #language-notice {
   background: #ff000033;
   padding: .3em .5em;
   border-radius: 5px;
   font-size: 88%;
   line-height: 1.3;
-}
-#language #language-notice:empty {
-  display: none;
+  &:empty {
+    display: none;
+  }
 }
 @media screen and (max-width:735px){
   #area-actions {
@@ -460,41 +484,12 @@
 }
 
 #magic-power {
+  grid-column: span 3;
+  max-width: max-content;
   min-width: 10em;
 }
-#magic-power table {
-}
-#magic-power table td input[type=number] {
-  width: 3.5em;
-}
-#magic-power a {
-  font-size: 90%;
-}
-#magic-power #fairycontact {
-  display: flex;
-  margin: 0 -.2em;
-  border-width: .1rem 0 0;
-  border-style: solid;
-}
-#magic-power #fairycontact label {
-  padding: .2em;
-}
-#magic-power #fairycontact label input[type="checkbox"] {
-  width: auto;
-  margin-right: .2em;
-  border: 0;
-  vertical-align: middle;
-  transform: scale(1.1);
-}
-#magic-power #fairycontact label span {
-  padding: .2em 0;
-  font-size: 85%;
-}
-#magic-power #fairycontact label input[type="number"] {
-  width: 2em;
-  border: 0;
-  vertical-align: middle;
-  transform: scale(1.1);
+#magic-power #magic-power-hr td {
+  height: .5em;
 }
 #magic-power table td:nth-child(3) {
   padding-left : .5em;
@@ -503,12 +498,12 @@
   border-style: none dotted;
   font-size: 85%;
   text-align: left;
-}
-#magic-power table td:nth-child(3) input {
-  vertical-align: text-bottom;
-}
-#magic-power table td:nth-child(3) label {
-  line-height: 1;
+  & input {
+    vertical-align: text-bottom;
+  }
+  & label {
+    line-height: 1;
+  }
 }
 #magic-power table td:nth-child(4),
 #magic-power table td:nth-child(5),
@@ -526,8 +521,38 @@
   text-align: center;
   white-space: nowrap;
 }
-#magic-power #magic-power-hr td {
-  height: .5em;
+#magic-power table td input[type=number] {
+  width: 3.5em;
+}
+#magic-power a {
+  font-size: 90%;
+}
+#magic-power #fairycontact {
+  display: flex;
+  justify-content: center;
+  margin: 0 -.2em;
+  border-width: .1rem 0 0;
+  border-style: solid;
+  & label {
+    padding: .2em;
+    & input[type="checkbox"] {
+      width: auto;
+      margin-right: .2em;
+      border: 0;
+      vertical-align: middle;
+      transform: scale(1.1);
+    }
+    & span {
+      padding: .2em 0;
+      font-size: 85%;
+    }
+    & input[type="number"] {
+      width: 2em;
+      border: 0;
+      vertical-align: middle;
+      transform: scale(1.1);
+    }
+  }
 }
 @media screen and (max-width:735px){
   #magic-power {
@@ -538,11 +563,13 @@
     margin-top: -.5em;
     table-layout: fixed;
   }
-  #magic-power thead th:nth-child(2) { width: 7.5em; } /* 魔法名 */
-  #magic-power thead th:nth-child(3) { width:   6em; } /* 専用 */
-  #magic-power thead th:nth-child(4) { width: 8.5em; } /*  */
-  #magic-power thead th:nth-child(5) { width: 8.5em; } /*  */
-  #magic-power thead th:nth-child(6) { width: 9.5em; } /*  */
+  #magic-power thead th {
+    &:nth-child(2) { width: 7.5em; } /* 魔法名 */
+    &:nth-child(3) { width:   6em; } /* 専用 */
+    &:nth-child(4) { width: 8.5em; } /*  */
+    &:nth-child(5) { width: 8.5em; } /*  */
+    &:nth-child(6) { width: 9.5em; } /*  */
+  }
 
   #magic-power table tr > *:nth-child(1) {
     display: none;
@@ -626,12 +653,14 @@ option.zero-data::before {
   #attack-classes table {
     table-layout: fixed;
   }
-  #attack-classes thead th:nth-child(1) { width:  17em; } /* 名前 */
-  #attack-classes thead th:nth-child(2) { width:   4em; } /* 必筋 */
-  #attack-classes thead th:nth-child(3) { width: 5.5em; } /* 命中 */
-  #attack-classes thead th:nth-child(4) { width:   4em; } /* 威力 */
-  #attack-classes thead th:nth-child(5) { width:   4em; } /* Ｃ値 */
-  #attack-classes thead th:nth-child(6) { width: 5.5em; } /* 追加Ｄ */
+  #attack-classes thead th {
+    &:nth-child(1) { width:  17em; } /* 名前 */
+    &:nth-child(2) { width:   4em; } /* 必筋 */
+    &:nth-child(3) { width: 5.5em; } /* 命中 */
+    &:nth-child(4) { width:   4em; } /* 威力 */
+    &:nth-child(5) { width:   4em; } /* Ｃ値 */
+    &:nth-child(6) { width: 5.5em; } /* 追加Ｄ */
+  }
   
   #weapons {
     overflow-x: auto;
@@ -639,16 +668,18 @@ option.zero-data::before {
   #weapons table {
     table-layout: fixed;
   }
-  #weapons thead th:nth-child(1) { width:  12em; } /* 名前 */
-  #weapons thead th:nth-child(2) { width:   5em; } /* 用法 */
-  #weapons thead th:nth-child(3) { width:   4em; } /* 必筋 */
-  #weapons thead th:nth-child(4) { width: 5.5em; } /* 命中 */
-  #weapons thead th:nth-child(5) { width:   4em; } /* 威力 */
-  #weapons thead th:nth-child(6) { width:   4em; } /* Ｃ値 */
-  #weapons thead th:nth-child(7) { width: 5.5em; } /* 追加Ｄ */
-  #weapons thead th:nth-child(8) { width: 1.4em; } /* 専用 */
-  #weapons thead th:nth-child(9) { width:  10em; } /* カテゴリ */
-  #weapons thead th:nth-child(10){ width:  10em; } /* 技能 */
+  #weapons thead th {
+    &:nth-child(1) { width:  12em; } /* 名前 */
+    &:nth-child(2) { width:   5em; } /* 用法 */
+    &:nth-child(3) { width:   4em; } /* 必筋 */
+    &:nth-child(4) { width: 5.5em; } /* 命中 */
+    &:nth-child(5) { width:   4em; } /* 威力 */
+    &:nth-child(6) { width:   4em; } /* Ｃ値 */
+    &:nth-child(7) { width: 5.5em; } /* 追加Ｄ */
+    &:nth-child(8) { width: 1.4em; } /* 専用 */
+    &:nth-child(9) { width:  10em; } /* カテゴリ */
+    &:nth-child(10){ width:  10em; } /* 技能 */
+  }
 }
 
 #evasion-classes {
@@ -659,15 +690,17 @@ option.zero-data::before {
   align-items: center;
   padding-left: .2em;
 }
-#armours thead th.type { width:   2em; }
-#armours thead th.cate { width:   6em; }
-#armours thead th.name { width:   25%; }
-#armours thead th.reqd { width: 3.5em; }
-#armours thead th.eva  { width: 3.5em; }
-#armours thead th.def  { width: 3.5em; }
-#armours thead th.own  { width: 1.5em; }
-#armours thead th.calc { width: 1.5em; }
-#armours thead th.note { width:  auto; }
+#armours thead th {
+  &.type { width:   2em; }
+  &.cate { width:   6em; }
+  &.name { width:   25%; }
+  &.reqd { width: 3.5em; }
+  &.eva  { width: 3.5em; }
+  &.def  { width: 3.5em; }
+  &.own  { width: 1.5em; }
+  &.calc { width: 1.5em; }
+  &.note { width:  auto; }
+}
 
 #armours tbody th.type::before {
   content: '';
@@ -690,10 +723,12 @@ option.zero-data::before {
   #evasion-classes {
     width: auto;
   }
-  #evasion-classes thead th:nth-child(1) { width:14.5em; } /* 名前 */
-  #evasion-classes thead th:nth-child(2) { width:   4em; } /* 必筋 */
-  #evasion-classes thead th:nth-child(3) { width:   4em; } /* 回避 */
-  #evasion-classes thead th:nth-child(4) { width:   4em; } /* 防護 */
+  #evasion-classes thead th {
+    &:nth-child(1) { width:14.5em; } /* 名前 */
+    &:nth-child(2) { width:   4em; } /* 必筋 */
+    &:nth-child(3) { width:   4em; } /* 回避 */
+    &:nth-child(4) { width:   4em; } /* 防護 */
+  }
   #armours {
     overflow-x: auto;
   }
@@ -701,34 +736,40 @@ option.zero-data::before {
     min-width: 0;
     table-layout: fixed;
   }
-  #armours thead th.type { width: 2.5em; } /* 種別 */
-  #armours thead th.cate { width:  6em; } /* 種別 */
-  #armours thead th.name { width:  12em; } /* 名前 */
-  #armours thead th.reqd { width:   4em; } /* 必筋 */
-  #armours thead th.eva  { width:   4em; } /* 回避 */
-  #armours thead th.def  { width:   4em; } /* 防護 */
-  #armours thead th.own  { width: 1.5em; } /* 専用 */
-  #armours thead th.calc { width: 1.5em; } /* 専用 */
-  #armours thead th.note { width:  16em; } /* 備考 */
+  #armours thead th {
+    &.type { width: 2.5em; } /* 種別 */
+    &.cate { width:  6em; } /* 種別 */
+    &.name { width:  12em; } /* 名前 */
+    &.reqd { width:   4em; } /* 必筋 */
+    &.eva  { width:   4em; } /* 回避 */
+    &.def  { width:   4em; } /* 防護 */
+    &.own  { width: 1.5em; } /* 専用 */
+    &.calc { width: 1.5em; } /* 専用 */
+    &.note { width:  16em; } /* 備考 */
+  }
 }
 
-#accessories thead th:nth-child(1) { width: 1.5em; } /*  */
-#accessories thead th:nth-child(2) { width: 2.5em; } /* 種別 */
-#accessories thead th:nth-child(3) { width:   25%; } /* 名前 */
-#accessories thead th:nth-child(4) { width: 4.5em; } /* 専用 */
-#accessories thead th:nth-child(5) { width:  auto; } /* 備考 */
+#accessories thead th {
+  &:nth-child(1) { width: 1.5em; } /*  */
+  &:nth-child(2) { width: 2.5em; } /* 種別 */
+  &:nth-child(3) { width:   25%; } /* 名前 */
+  &:nth-child(4) { width: 4.5em; } /* 専用 */
+  &:nth-child(5) { width:  auto; } /* 備考 */
+}
 #accessories tbody th {
   cursor: ns-resize;
 }
-#accessories tbody tr:nth-child(6n+1),
-#accessories tbody tr:nth-child(6n+2),
-#accessories tbody tr:nth-child(6n+3) {
-  background-color: transparent;
-}
-#accessories tbody tr:nth-child(6n+4),
-#accessories tbody tr:nth-child(6n+5),
-#accessories tbody tr:nth-child(6n+6) {
-  background-color: var(--box-even-rows-bg-color);
+#accessories tbody tr {
+  &:nth-child(6n+1),
+  &:nth-child(6n+2),
+  &:nth-child(6n+3) {
+    background-color: transparent;
+  }
+  &:nth-child(6n+4),
+  &:nth-child(6n+5),
+  &:nth-child(6n+6) {
+    background-color: var(--box-even-rows-bg-color);
+  }
 }
 @media screen and (max-width:735px){
   #accessories {
@@ -738,12 +779,13 @@ option.zero-data::before {
     min-width: 0;
     table-layout: fixed;
   }
-  #accessories thead th:nth-child(1) { width: 1.5em; } /* ✔ */
-  #accessories thead th:nth-child(2) { width: 2.5em; } /* 種別 */
-  #accessories thead th:nth-child(3) { width:  12em; } /* 名前 */
-  #accessories thead th:nth-child(4) { width: 4.5em; } /* 専用 */
-  #accessories thead th:nth-child(5) { width:  16em; } /* 備考 */
-  
+  #accessories thead th {
+    &:nth-child(1) { width: 1.5em; } /* ✔ */
+    &:nth-child(2) { width: 2.5em; } /* 種別 */
+    &:nth-child(3) { width:  12em; } /* 名前 */
+    &:nth-child(4) { width: 4.5em; } /* 専用 */
+    &:nth-child(5) { width:  16em; } /* 備考 */
+  }
   #accessories tbody td:nth-child(4) { padding-left: 0; } /* 専用 */
 }
 
@@ -781,20 +823,23 @@ option.zero-data::before {
 }
 
 
-#battle-items ul li {
-  display: grid;
-  grid-template-columns: max-content 1fr;
-  grid-template-rows: auto;
-}
-#battle-items ul li::before {
-  left: 0;
-  pointer-events: none;
-}
-#battle-items ul li .handle {
-  display: inline-block;
-  width: 1.8em;
-  margin-left: calc(-1em - .2rem);
-  text-align: right;
+#battle-items ul {
+  & li {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    grid-template-rows: auto;
+
+    &::before {
+      left: 0;
+      pointer-events: none;
+    }
+    .handle {
+      display: inline-block;
+      width: 1.8em;
+      margin-left: calc(-1em - .2rem);
+      text-align: right;
+    }
+  }
 }
 
 #honor {
@@ -817,6 +862,19 @@ option.zero-data::before {
   font-size: 90%;
   border-width: 1px 0 0;
   border-style: dotted;
+}
+.honor-items dl#honor-offset {
+  display: grid;
+  grid-template-columns: 1fr 4.2em;
+  margin-top: .5em;
+  border-width: .1rem 0 0;
+  border-style: solid;
+  & dt {
+    text-align: center;
+  }
+  & dd input {
+    margin: 0;
+  }
 }
 #sw2\.0 .honor-items td:last-child {
   position: relative;
@@ -885,40 +943,45 @@ option.zero-data::before {
 #free-note,
 #free-history {
   padding-bottom: .3rem;
-}
-#free-note textarea,
-#free-history textarea {
-  height: 18em;
-}
-
-#history table thead th:first-child{ width: 1.4em; }
-#history table thead th.date       { width:   6em; }
-#history table thead th.title      { width:  12em; }
-#history table thead th.exp        { width:   5em; }
-#history table thead th.money      { width: 4.5em; }
-#history table thead th.honor      { width: 3.5em; }
-#history table thead th.honor.zero-data { width: 5em; }
-#history table thead th.grow       { width: 4.5em; }
-#history table thead th.gm         { width:   6em; }
-#history table thead th.member     { width:  auto; }
-
-@media screen and (max-width:735px){
-  #history table  { table-layout: fixed; }
-  #history table thead th.title  { width: 12em; }
-  #history table thead th.member { width: 16em; }
+  
+  & textarea {
+    height: 18em;
+  }
 }
 
+#history table {
+  & thead th {
+    &:first-child{ width: 1.4em; }
+    &.date       { width:   6em; }
+    &.title      { width:  12em; }
+    &.exp        { width:   5em; }
+    &.money      { width: 4.5em; }
+    &.honor      { width: 3.5em; }
+    &.honor.zero-data { width: 5em; }
+    &.grow       { width: 4.5em; }
+    &.gm         { width:   6em; }
+    &.member     { width:  auto; }
+  }
+  @media screen and (max-width:735px){
+    & { table-layout: fixed; }
+    & thead th.title  { width: 12em; }
+    & thead th.member { width: 16em; }
+  }
 
-#history table tbody td.money {
-  white-space: nowrap;
+  & tbody td.money {
+    white-space: nowrap;
+
+    &::after {
+      margin: 0 2px 0 -3px !important;
+      font-size: 1.1rem;
+    }
+    & input {
+      width: calc(100% - 0.9em);
+    }
+  }
 }
-#history table tbody td.money::after {
-  margin: 0 2px 0 -3px !important;
-  font-size: 1.1rem;
-}
-#history table tbody td.money input {
-  width: calc(100% - 0.9em);
-}
+
+
 
 
 article > form > hr {
@@ -1031,28 +1094,22 @@ form#monster #monster-name input {
 form#monster div.status dl {
   margin: .5rem 0;
   place-items: center start;
+  & dd {
+    text-align: left;
+  }
+  &.price dd + dd::before {
+    content: "／";
+  }
 }
-form#monster div.status dl dd {
-  text-align: left;
-}
-form#monster div.status dl.price dd + dd::before {
-  content: "／";
-}
-form#monster div.status input[name^="lv"],
-form#monster div.status input[name="sin"],
-form#monster div.status input[name^="reputation"],
-form#monster div.status input[name="initiative"],
-form#monster div.status input[name*="Resist"] {
-  width: 5em;
-}
-form#monster div.status input[name^="price"] {
-  width: 6em;
-}
-form#monster div.status input[name="price"] {
-  width: 8em;
-}
-form#monster div.status input[name="language"] {
-  width: 25em;
+form#monster div.status input {
+  &[name^="lv"],
+  &[name="sin"],
+  &[name^="reputation"],
+  &[name="initiative"],
+  &[name*="Resist"]  { width: 5em; }
+  &[name^="price"]   { width: 6em; }
+  &[name="price"]    { width: 8em; }
+  &[name="language"] {width: 25em; }
 }
 @media screen and (max-width:735px){
   form#monster #group dl {
@@ -1073,27 +1130,31 @@ form#monster div.status input[name="language"] {
 form#monster table.status {
   border-width: 0;
 }
-form#monster table.status thead th.lv     { width: 0em; }
-form#monster table.status thead th.handle { width: 1.4em; cursor: unset; }
-form#monster table.status thead th.name   { width: auto; }
-form#monster table.status thead th.acc    { width: 12%; }
-form#monster table.status thead th.atk    { width: 12%; }
-form#monster table.status thead th.eva    { width: 12%; }
-form#monster table.status thead th.def    { width: 12%; }
-form#monster table.status thead th.hp     { width: 12%; }
-form#monster table.status thead th.mp     { width: 12%; }
+form#monster table.status thead th {
+  &.lv     { width: 0em; }
+  &.handle { width: 1.4em; cursor: unset; }
+  &.name   { width: auto; }
+  &.acc    { width: 12%; }
+  &.atk    { width: 12%; }
+  &.eva    { width: 12%; }
+  &.def    { width: 12%; }
+  &.hp     { width: 12%; }
+  &.mp     { width: 12%; }
+}
 
-form#monster.mount table.status thead th.lv     { width: 1.8em; }
-form#monster.mount table.status thead th.handle { width: 1.4em; }
-form#monster.mount table.status thead th.name   { width: auto; }
-form#monster.mount table.status thead th.acc    { width: 8.5%; }
-form#monster.mount table.status thead th.atk    { width: 8.5%; }
-form#monster.mount table.status thead th.eva    { width: 8.5%; }
-form#monster.mount table.status thead th.def    { width: 8.5%; }
-form#monster.mount table.status thead th.hp     { width: 8.5%; }
-form#monster.mount table.status thead th.mp     { width: 8.5%; }
-form#monster.mount table.status thead th.vit    { width: 8.5%; }
-form#monster.mount table.status thead th.mnd    { width: 8.5%; }
+form#monster.mount table.status thead th {
+  &.lv     { width: 1.8em; }
+  &.handle { width: 1.4em; }
+  &.name   { width: auto; }
+  &.acc    { width: 8.5%; }
+  &.atk    { width: 8.5%; }
+  &.eva    { width: 8.5%; }
+  &.def    { width: 8.5%; }
+  &.hp     { width: 8.5%; }
+  &.mp     { width: 8.5%; }
+  &.vit    { width: 8.5%; }
+  &.mnd    { width: 8.5%; }
+}
 
 form#monster table.status thead th.handle::before { content: ""; }
 form#monster table.status tbody + tbody {
@@ -1167,23 +1228,24 @@ form#monster div#loots-list {
   display: grid;
   grid-template-columns: 7em auto;
   white-space: nowrap;
-}
-form#monster div#loots-list ul li {
-  border-width: 1px 0;
-  border-style: solid;
-}
-form#monster div#loots-list ul li + li {
-  border-top-width: 0;
-}
-form#monster div#loots-list .handle {
-  display: inline-block;
-  widows: 1.4em;
-}
-form#monster div#loots-list input {
-  width: calc(100% - 1.4em - 2px);
-}
-form#monster ul#loots-num {
-  background-color: rgba(127,127,127,0.3);
+
+  & ul li {
+    border-width: 1px 0;
+    border-style: solid;
+  }
+  & ul li + li {
+    border-top-width: 0;
+  }
+  & .handle {
+    display: inline-block;
+    widows: 1.4em;
+  }
+  & input {
+    width: calc(100% - 1.4em - 2px);
+  }
+  & ul#loots-num {
+    background-color: rgba(127,127,127,0.3);
+  }
 }
 
 form#monster .color-sample .name {
@@ -1192,19 +1254,19 @@ form#monster .color-sample .name {
   background: transparent;
   position: relative;
   padding-left: 1.8em;
-}
-form#monster .color-sample .name::before {
-  content: "！";
-  display: block;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  width: 1.5em;
-  background-color: var(--monster-level-bg-color);
-  background-image: linear-gradient(to bottom, transparent, rgba(0,0,0,0.4));
-  color: #fff;
-  text-align: center;
+  &::before {
+    content: "！";
+    display: block;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 1.5em;
+    background-color: var(--monster-level-bg-color);
+    background-image: linear-gradient(to bottom, transparent, rgba(0,0,0,0.4));
+    color: #fff;
+    text-align: center;
+  }
 }
 form#monster .color-sample .box,
 form#item .color-sample .box,
@@ -1472,10 +1534,12 @@ form#arts #data-school dl dt {
 form#arts #school-item-list {
   width: 100%;
 }
-form#arts #school-item-list thead th:nth-child(1) { width: 14em; }
-form#arts #school-item-list thead th:nth-child(2) { width: 10em; }
-form#arts #school-item-list thead th:nth-child(3) { width: auto; }
-form#arts #school-item-list thead th:nth-child(4) { width: 1em; }
+form#arts #school-item-list thead th {
+  &:nth-child(1) { width: 14em; }
+  &:nth-child(2) { width: 10em; }
+  &:nth-child(3) { width: auto; }
+  &:nth-child(4) { width: 1em; }
+}
 
 form#arts #school-item-list tbody td:nth-child(3) { font-size: 82%; }
 
