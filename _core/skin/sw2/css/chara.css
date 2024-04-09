@@ -623,6 +623,15 @@ dl#level {
     vertical-align: middle;
   }
 }
+#package table.hide-rider-obs tbody[data-class-name="ライダー"] tr:nth-child(2) {
+  & td:last-child::before {
+    content: "―";
+  }
+
+  & td > span {
+    display: none;
+  }
+}
 
 /* Area-Other-Actions */
 #area-other-actions {

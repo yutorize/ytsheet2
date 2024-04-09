@@ -375,6 +375,16 @@
 #area-package #package table {
   margin-top: 1px;
   margin-bottom: -1px;
+
+  & tr.disabled {
+    & td:has(.value)::before {
+      content: "―";
+    }
+
+    & td > .value {
+      display: none;
+    }
+  }
 }
 #package table tr:first-child th:first-child {
   width: 10em;
