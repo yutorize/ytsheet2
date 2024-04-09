@@ -1,12 +1,11 @@
 @charset "utf-8";
 
+@layer system {
 /* // Body
 ---------------------------------------------------------------------------------------------------- */
 body {
   background-image: url(../../_common/img/back-pattern.png), url(../img/back-first.png);
-}
-@media screen and (max-width:735px){
-  body {
+  @media screen and (max-width:735px){
     background-size: auto, 80%;
   }
 }
@@ -80,100 +79,6 @@ body {
   font-family: var(--base-font-family-mono);
 }
 
-/* // Name / Date
----------------------------------------------------------------------------------------------------- */
-#area-name {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  
-  padding: 0px 5px;
-  border-width: 3px 0px;
-  border-style: solid;
-  
-  background-image: linear-gradient(to right, var(--box-head-bg-color), var(--box-base-bg-color));
-  background-color: var(--bg-color);
-  border-color: var(--box-outside-border-color, inherit);
-}
-h1#character-name {
-  padding: 1rem;
-  font-size: 2.2rem;
-  font-weight: bold;
-  text-shadow: var(--bg-color) 0px 0px .5em,
-    var(--bg-color)  .1rem .1rem, var(--bg-color) -.1rem -.1rem,
-    var(--bg-color) -.1rem .1rem, var(--bg-color)  .1rem -.1rem,
-    var(--bg-color)  .0rem .1rem, var(--bg-color)  .0rem -.1rem,
-    var(--bg-color) -.1rem .0rem, var(--bg-color)  .1rem  .0rem;
-}
-#aka {
-  margin-right: .5em;
-}
-#area-name > div { 
-  text-align: right;
-  font-size: 1.2rem;
-}
-#update-time {
-}
-#player-name {
-}
-
-/* // Common
----------------------------------------------------------------------------------------------------- */
-.data-table {
-  width: 100%;
-  border-style: hidden hidden none;
-}
-.data-table:last-child {
-  border-bottom-style: hidden;
-}
-.data-table.side-margin,
-.data-tables.side-margin table,
-.data-tables.side-margin ul,
-.data-tables.side-margin dl {
-  width: calc(100% - 1rem);
-  margin: 0 .5rem;
-}
-table.data-table > tbody tr {
-  border-width: 1px 0;
-  border-style: solid;
-}
-table.data-table:not(.side-margin) thead th {
-  padding: .3rem 0 .2rem;
-  border-width: 0;
-  line-height: 1;
-}
-table.data-table tbody td,
-ul.data-table > li,  .data-tables ul > li,
-dl.data-table > *,   .data-tables dl > *  {
-  padding: .2em 0;
-  line-height: 1.4;
-}
-table.data-table:not(.side-margin) tbody th,
-table.data-table:not(.side-margin) tbody td {
-  border-left-width: 1px;
-  border-right-width: 1px;
-  border-left-style: dotted;
-  border-right-style: dotted;
-}
-table.data-table:not(.side-margin).line-tbody tbody:nth-of-type(even) td,
-table.data-table:not(.side-margin):not(.line-tbody) tbody tr:nth-of-type(even) td {
-  background-color: var(--box-even-rows-bg-color);
-}
-
-ul.data-table > li,  .data-tables ul  > li,
-dl.data-table > *,   .data-tables dl  > *  {
-  border-width: 0 0 1px;
-  border-style: solid;
-}
-ul.data-table:last-child > li:last-child,
-dl.data-table:last-child > dt:last-of-type,
-dl.data-table:last-child > dt:last-of-type ~ dd,
-.data-tables ul:last-child > li:last-child,
-.data-tables dl:last-child > dt:last-of-type,
-.data-tables dl:last-child > dt:last-of-type ~ dd {
-  border-bottom-style: hidden;
-}
-
 /* // Area-Status
 ---------------------------------------------------------------------------------------------------- */
 #area-status {
@@ -238,33 +143,30 @@ dl.data-table:last-child > dt:last-of-type ~ dd,
   flex-basis: 33%;
   display: grid;
   grid-template-rows: max-content 1fr;
-}
-#personal dl dt {
-}
-#personal dl dd {
-  align-self: center;
-  line-height: 1;
-}
-@media screen and (max-width:767px){
-  #personal dl dd {
-    line-height: inherit;
+  & dt {}
+  & dd {
+    align-self: center;
+    line-height: 1;
+    @media screen and (max-width:767px){
+      line-height: inherit;
+    }
   }
-}
-#personal dl#race         { flex-basis: 58%; order: 1; }
-#personal dl#age          { flex-basis: 20%; order: 2; }
-#personal dl#gender       { flex-basis: 20%; order: 3; }
-#personal dl#race-ability { flex-basis: 85%; order: 4; }
-#personal dl#birth        { flex-basis: 28%; order: 6; }
-#personal dl#faith        { flex-basis: 46%; order: 7; }
-#personal dl#rank         { flex-basis: 24%; order: 8; }
-#personal dl#sin          { flex-basis: 14%; order: 5; }
+  &#race         { flex-basis: 58%; order: 1; }
+  &#age          { flex-basis: 20%; order: 2; }
+  &#gender       { flex-basis: 20%; order: 3; }
+  &#race-ability { flex-basis: 85%; order: 4; }
+  &#birth        { flex-basis: 28%; order: 6; }
+  &#faith        { flex-basis: 46%; order: 7; }
+  &#rank         { flex-basis: 24%; order: 8; }
+  &#sin          { flex-basis: 14%; order: 5; }
 
-#personal dl#race dd span.variant {
-  display: inline-block;
-  font-size: 90%;
-}
-#personal dl#race-ability dd span {
-  display: inline-block;
+  &#race dd span.variant {
+    display: inline-block;
+    font-size: 90%;
+  }
+  &#race-ability dd span {
+    display: inline-block;
+  }
 }
 
 /* Status */
@@ -273,9 +175,7 @@ dl.data-table:last-child > dt:last-of-type ~ dd,
   grid-gap: 7px 10px;
   grid-template-columns: 1fr 1fr 1fr 1.3fr 0.8fr 1.2fr;
   grid-template-rows: auto;
-}
-@media screen and (max-width:735px){
-  #status {
+  @media screen and (max-width:735px){
     grid-gap: 5px 8px;
     grid-template-columns: 1fr 1fr 1fr 1.4fr 0.7fr 1.4fr;
   }
@@ -410,10 +310,14 @@ dl.data-table:last-child > dt:last-of-type ~ dd,
   width: 3em;
   margin: 0 -.4em;
   transform: scale(0.75, 0.85);
-}
-#status dl[id^="stt-bonus"] dt span::after { content: "ボーナス"; }
-@media screen and (max-width:850px), screen and (min-width:1400px) and (max-width:1680px){
-  #status dl[id^="stt-bonus"] dt span::after { content: "Ｂ"; }
+  &::after {
+    content: "ボーナス";
+  }
+  @media screen and (max-width:850px), screen and (min-width:1400px) and (max-width:1680px), print and (max-width:850px) {
+    &::after {
+      content: "Ｂ";
+    }
+  }
 }
 #status dl[id^="stt-bonus"] dd {
   transform: scale(1.2,1.25);
@@ -425,33 +329,35 @@ dl.data-table:last-child > dt:last-of-type ~ dd,
   grid-template-columns: 1fr 1fr;
   grid-template-rows: auto;
   white-space:nowrap;
-}
-#sub-status dl:nth-child(1) { grid-row: 1; grid-column: 1; }
-#sub-status dl:nth-child(2) { grid-row: 2; grid-column: 1; }
-#sub-status dl:nth-child(3) { grid-row: 1; grid-column: 2; }
-#sub-status dl:nth-child(4) { grid-row: 2; grid-column: 2; }
-#sub-status dl:nth-child(2),
-#sub-status dl:nth-child(4) {
-  border-top-width: 1px;
-  border-top-style: solid;
-}
-#sub-status dl:nth-child(1),
-#sub-status dl:nth-child(2) {
-  border-right-width: 1px;
-  border-right-style: solid;
-}
-#sub-status dd b {
-  font-weight:normal;
-  font-size: 1.15em;
-  display: inline-block;
-  transform: scaleY(1.1);
-}
-@media screen and (max-width:735px){
-  #sub-status dt > span {
-    display: inline-block;
-    margin-left : -5%;
-    margin-right: -5%;
-    transform: scaleX(0.9);
+  & dl {
+    &:nth-child(1) { grid-row: 1; grid-column: 1; }
+    &:nth-child(2) { grid-row: 2; grid-column: 1; }
+    &:nth-child(3) { grid-row: 1; grid-column: 2; }
+    &:nth-child(4) { grid-row: 2; grid-column: 2; }
+    &:nth-child(2),
+    &:nth-child(4) {
+      border-top-width: 1px;
+      border-top-style: solid;
+    }
+    &:nth-child(1),
+    &:nth-child(2) {
+      border-right-width: 1px;
+      border-right-style: solid;
+    }
+    & dd b {
+      font-weight:normal;
+      font-size: 1.15em;
+      display: inline-block;
+      transform: scaleY(1.1);
+    }
+    @media screen and (max-width:735px){
+      & dt > span {
+        display: inline-block;
+        margin-left : -5%;
+        margin-right: -5%;
+        transform: scaleX(0.9);
+      }
+    }
   }
 }
 
@@ -460,67 +366,67 @@ dl#level {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-}
-dl#level dd {
-  flex-grow: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  
-  font-size: 200%;
-}
-@media screen and (min-width:1400px) and (max-width:1600px){
-  dl#level dt> span::after {
-    content:'Lv'
+
+  > dd {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    font-size: 200%;
   }
-  dl#level dt span.shorten {
-    display: none;
+  @media screen and (min-width:1400px) and (max-width:1600px){
+    > dt > span::after {
+      content:'Lv'
+    }
+    > dt span.shorten {
+      display: none;
+    }
   }
-}
-@media screen and (max-width:735px){
-  dl#level dt > span {
-    display: inline-block;
-    margin-left : -5%;
-    margin-right: -5%;
-    transform: scaleX(0.9);
-  }
-  dl#level dt > span::after {
-    content:'Lv'
-  }
-  dl#level dt span.shorten {
-    display: none;
+  @media screen and (max-width:735px){
+    & dt > span {
+      display: inline-block;
+      margin-left : -5%;
+      margin-right: -5%;
+      transform: scaleX(0.9);
+    }
+    & dt > span::after {
+      content:'Lv'
+    }
+    & dt span.shorten {
+      display: none;
+    }
   }
 }
 
 /* EXP */
 #exp {
   display: grid;
-}
-#exp dl {
-  display: grid;
-  grid-template-columns: max-content 1fr;
-  align-items: end;
-  margin: 0 .5rem;
-  line-height: 1;
-  white-space: nowrap;
-}
-#exp dl > * {
-}
-#exp dl > *:not(:last-of-type) {
-  border-width: 0 0 .1rem;
-  border-style: solid;
-}
-#exp dl dt {
-  grid-column: 1;
-  font-size: 80%;
-  padding: 0 0 .3rem;
-}
-#exp dl dd {
-  grid-column: 2;
-  text-align: right;
-  font-size: 120%;
-  padding: .3rem 0 .1rem;
-  font-family: var(--font-proportional);
+  > dl {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    align-items: end;
+    margin: 0 .5rem;
+    line-height: 1;
+    white-space: nowrap;
+
+    > *:not(:last-of-type) {
+      border-width: 0 0 .1rem;
+      border-style: solid;
+    }
+    > dt {
+      grid-column: 1;
+      font-size: 80%;
+      padding: 0 0 .3rem;
+    }
+    > dd {
+      grid-column: 2;
+      text-align: right;
+      font-size: 120%;
+      padding: .3rem 0 .1rem;
+      font-family: var(--font-proportional);
+    }
+  }
 }
 
 /* // Area-Ability
@@ -531,90 +437,80 @@ dl#level dd {
   
   margin-top: var(--box-v-gap);
   line-height: 1.8;
-}
-#area-ability > * {
-  flex-basis: 30%;
-  flex-grow: 1;
-  margin-left: var(--box-h-gap);
-}
-#area-ability > *:first-child {
-  margin-left: 0px;
-}
 
-#area-ability .box + .box {
-  margin-top: var(--box-v-gap);
-}
-@media screen and (max-width:735px){
-  #area-ability {
-    flex-wrap: wrap;
+  > * {
+    flex-basis: 30%;
+    flex-grow: 1;
+    margin-left: var(--box-h-gap);
+    &:first-child {
+      margin-left: 0px;
+    }
   }
-  #area-ability > * {
-    flex-basis: calc(50% - 1rem);
-  }
-  #area-ability > *:last-child {
+  & .box + .box {
     margin-top: var(--box-v-gap);
-    margin-left: 0px;
+  }
+  @media screen and (max-width:735px){
+    & {
+      flex-wrap: wrap;
+    }
+    > * {
+      flex-basis: calc(50% - 1rem);
+      &:last-child {
+        margin-top: var(--box-v-gap);
+        margin-left: 0px;
+      }
+    }
   }
 }
 
 /* Classes */
 #area-classes {
-  position: relative;
-}
-#area-classes h2 + div {
-  position: absolute;
-  top: .2rem;
-  right: .5em;
-  font-size: 80%;
-}
-#area-classes h2 + div span {
-  font-size: 120%;
-}
-#area-classes dl {
-  display: grid;
-  grid-template-columns: 1fr 2em;
-  grid-template-rows: auto;
-}
-#area-classes dl dt {
-  grid-column: 1;
-  font-weight: normal;
-}
-#area-classes dl dd {
-  grid-column: 2;
-  font-size: 1.15em;
-  line-height: 1.1;
-}
-#area-classes .priest-faith {
-  display: inline-block;
-  font-size: 90%;
-  line-height: 1;
-}
-#area-classes #priest-faith.narrow {
-  margin: 0 -10%;
-  transform: scaleX(0.8);
+  & dl {
+    display: grid;
+    grid-template-columns: 1fr 2em;
+    grid-template-rows: auto;
+    & dt {
+      grid-column: 1;
+      font-weight: normal;
+    }
+    & dd {
+      grid-column: 2;
+      font-size: 1.15em;
+      line-height: 1.1;
+    }
+  }
+  .priest-faith {
+    display: inline-block;
+    font-size: 90%;
+    line-height: 1;
+  }
+  .priest-faith.narrow {
+    margin: 0 -10%;
+    transform: scaleX(0.8);
+  }
+  #common-classes .small {
+    display: inline-block;
+  }
 }
 
 /* Combat-feats */
 #combat-feats {
-}
-#combat-feats ul li {
-}
-#combat-feats ul li[id^=combat-feats-lv] {
-  position: relative;
-}
-#combat-feats ul li[id^=combat-feats-lv]::before {
-  display: block;
-  position: absolute;
-  left: -4px;
-  bottom: 0;
-  width: 1.1em;
-  opacity: 0.5;
-  font-size: 80%;
-  white-space: nowrap;
-}
-#combat-feats ul li[id|="combat-feats"]::before { content: attr(data-lv); }
-#combat-feats ul li.fail {
-  color: #ee0000;
+  & ul {
+    & li[id^=combat-feats-lv] {
+      position: relative;
+    }
+    & li[id^=combat-feats-lv]::before {
+      display: block;
+      position: absolute;
+      left: -4px;
+      bottom: 0;
+      width: 1.1em;
+      opacity: 0.5;
+      font-size: 80%;
+      white-space: nowrap;
+    }
+    & li[id|="combat-feats"]::before { content: attr(data-lv); }
+  }
 }
 
 /* Crafts */
@@ -623,108 +519,109 @@ dl#level dd {
   flex-direction: column;
   flex-wrap: wrap;
   justify-content: flex-start;
-}
-#crafts > .box {
-  width: 100%;
-}
-@media screen and (max-width:735px){
-  #crafts {
-    flex-direction: row;
-    justify-content: space-between;
+
+  > .box {
+    width: 100%;
   }
-  #crafts > .box {
-    width: auto;
-    flex-basis: 49%;
-    margin-bottom: var(--box-v-gap);
-  }
-  #crafts > .box + .box {
-    margin-top: 0;
+  @media screen and (max-width:735px){
+    & {
+      flex-direction: row;
+      justify-content: space-between;
+    }
+    > .box {
+      width: auto;
+      flex-basis: 49%;
+      margin-bottom: var(--box-v-gap);
+    }
+    > .box + .box {
+      margin-top: 0;
+    }
   }
 }
 #crafts li {
   position: relative;
-}
-#crafts li span[data-ruby] {
-  display: block;
-  position: relative;
-  bottom: -.35em;
-}
-#crafts li span[data-ruby]::before {
-  content: attr(data-ruby);
-  display: block;
-  position: absolute;
-  left: -5em;
-  right: -5em;
-  text-align: center;
-  white-space: nowrap;
-  transform: scale(0.7) translateY(-1.2em);
+
+  & span[data-ruby] {
+    display: block;
+    position: relative;
+    bottom: -.35em;
+  }
+  & span[data-ruby]::before {
+    content: attr(data-ruby);
+    display: block;
+    position: absolute;
+    left: -5em;
+    right: -5em;
+    text-align: center;
+    white-space: nowrap;
+    transform: scale(0.7) translateY(-1.2em);
+  }
 }
 
 /* // Area-Actions & Language
 ---------------------------------------------------------------------------------------------------- */
 #area-actions {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: 1.05fr 1.05fr 0.9fr;
+  align-self: start;
+  gap: var(--box-v-gap) var(--box-h-gap);
   
   margin-top: var(--box-v-gap);
   line-height: 1.8;
-}
-@media screen and (min-width:1400px){
-  #area-actions {
+
+  > * {
+    flex-basis: 30%;
+    flex-grow: 1;
+  }
+  > *:first-child {
+    margin-left: 0px;
+  }
+  & .box#package td {
+    line-height: 1.2;
+  }
+  & .box#package td:last-child {
+    width: 1.8em;
+    padding-left: 0.2rem;
+    font-size: 1.15em;
+    white-space: nowrap;
+  }
+
+  @media screen and (min-width:1400px){
     margin-top: 0;
   }
-}
-#area-actions > * {
-  flex-basis: 30%;
-  flex-grow: 1;
-  margin-left: var(--box-h-gap);
-}
-#area-actions > *:first-child {
-  margin-left: 0px;
-}
-#area-actions .box#package td:last-child {
-  width: 1.8em;
-  padding-left: 0.2rem;
-  font-size: 1.15em;
-  line-height: 1.6;
-  white-space: nowrap;
-}
-@media screen and (max-width:735px){
-  #area-actions {
+  @media screen and (max-width:735px){
     display: grid;
-    grid-gap: var(--box-v-gap);
+    gap: var(--box-v-gap);
     grid-template-columns: 1fr 1fr;
     margin: 0;
+    > * {
+      margin: 0;
+    }
+    & #language { grid-row: 1 / 3; grid-column: 2 / 3; }
+    & #magic-power { grid-column: 1 / 3; }
   }
-  #area-actions > * {
-    margin: 0;
-  }
-  #language { grid-row: 1 / 3; grid-column: 2 / 3; }
-  #magic-power { grid-column: 1 / 3; }
 }
 
 /* Actions-Package */
-#package {}
 #package table {
   white-space: nowrap;
-}
-#package table tr:first-child th:first-child {
-  width: 12em;
-  white-space: nowrap;
-}
-#package table tr th:nth-last-child(3) {
-  width: 3em;
-  white-space: nowrap;
-}
-#package table tr td:nth-last-child(2) {
-  font-size: 90%;
-  white-space: nowrap;
-  vertical-align: middle;
-}
-#package table tr th {
-  font-weight: normal;
+
+  & tr:first-child th:first-child {
+    width: 12em;
+    white-space: nowrap;
+  }
+  & th {
+    font-weight: normal;
+  }
+  & th:nth-last-child(3) {
+    width: 3em;
+    white-space: nowrap;
+  }
+  & td:nth-last-child(2) {
+    font-size: 90%;
+    white-space: nowrap;
+    vertical-align: middle;
+  }
 }
 
 /* Area-Other-Actions */
@@ -733,23 +630,20 @@ dl#level dd {
   flex-wrap: wrap;
   justify-content: space-between;
 }
-#area-other-actions input {
-  width: 3.5em;
-}
 /* Monster-Lore  */
 #monster-lore {
   flex-basis: calc(50% - 5px);
-}
-#monster-lore dd {
-  font-size: 1.15em;
+  > dd {
+    font-size: 1.15em;
+  }
 }
 
 /* Initiative */
 #initiative {
   flex-basis: calc(50% - 5px);
-}
-#initiative dd {
-  font-size: 1.15em;
+  > dd {
+    font-size: 1.15em;
+  }
 }
 
 /* Mobility */
@@ -761,199 +655,211 @@ dl#level dd {
   grid-template-rows: auto auto;
   
   margin-top: var(--box-v-gap);
-}
-#mobility dt {
-  grid-row: 1;
-}
-#mobility dd {
-  grid-row: 2;
-}
-#mobility b {
-  font-weight: normal;
-  font-size: 1.15em;
+
+  > dt {
+    grid-row: 1;
+  }
+  > dd {
+    grid-row: 2;
+  }
+  & b {
+    font-weight: normal;
+    font-size: 1.15em;
+  }
 }
 
 /* Magic-Power */
 #magic-power{
-  flex-basis: auto;
-  flex-grow: 0;
-  margin-top: var(--box-v-gap);
-  margin-left: 0;
+  grid-column: span 2;
+  align-self: end;
 }
 #magic-power table {
   margin-top: -1.2em;
-}
-#magic-power table thead th {
-}
-#magic-power table tbody td:nth-child(1),
-#magic-power table tbody td:nth-child(2) {
-  padding-left : .2em;
-  padding-right: .2em;
-}
-#magic-power table tbody td:nth-child(2) {
-  white-space: nowrap;
-}
-#magic-power table tbody td:nth-child(2) > span {
-  display: block;
-  font-size: 0.85em;
-  line-height: 1;
-  margin-bottom: 0.3em;
-}
-#magic-power table tbody td.num {
-  width: 4em;
-  font-size: 1.15em;
-  line-height: 1.6;
-  white-space: nowrap;
-}
+  
+  & tbody td:nth-child(1),
+  & tbody td:nth-child(2) {
+    padding-left : .2em;
+    padding-right: .2em;
+  }
+  & tbody td:nth-child(2) {
+    white-space: nowrap;
 
-#magic-power p#magic-power-add {
-  margin-top: -1.5em;
-  margin-bottom: 0;
-  text-align: right;
-}
-#magic-power p + table {
-  border-top-width: 1px;
-  border-top-style: solid;
+    > span {
+      display: block;
+      font-size: 0.85em;
+      line-height: 1;
+      margin-bottom: 0.3em;
+    }
+  }
+  & tbody td.num {
+    width: 3.6em;
+    font-size: 1.15em;
+    line-height: 1.6;
+    white-space: nowrap;
+  }
 }
 #magic-power #fairycontact {
   margin: -.2em 0 -.1em;
-  font-size: 90%;
+  font-size: 80%;
   line-height: 1;
+
+  > span {
+    display: inline-block;
+    border-radius: .5rem;
+    padding: 3px 2px;
+  }
+  .ft-earth { background: hsla( 45,100%, 50%,0.3); }
+  .ft-water { background: hsla(210,100%, 50%,0.3); }
+  .ft-fire  { background: hsla(  0,100%, 50%,0.3); }
+  .ft-wind  { background: hsla(120,100%, 50%,0.3); }
+  .ft-light { background: hsla(  0,100%,100%,0.3); }
+  .ft-dark  { background: hsla(  0,100%,  0%,0.3); }
 }
-#magic-power #fairycontact > span {
-  display: inline-block;
-  border-radius: .5rem;
-  margin: .1em;
-  padding: .3rem;
-}
-#fairycontact .ft-earth { background: hsla( 45,100%, 50%,0.3); }
-#fairycontact .ft-water { background: hsla(210,100%, 50%,0.3); }
-#fairycontact .ft-fire  { background: hsla(  0,100%, 50%,0.3); }
-#fairycontact .ft-wind  { background: hsla(120,100%, 50%,0.3); }
-#fairycontact .ft-light { background: hsla(  0,100%,100%,0.3); }
-#fairycontact .ft-dark  { background: hsla(  0,100%,  0%,0.3); }
 
 /* Language */
 #language {
+  grid-row: span 2;
   width: 100%;
   align-self :flex-start;
-}
-#language table:first-of-type {
-  margin-top: -1.5em !important;
-}
-#language table tr > *:nth-last-child(-n+2) {
-  width: 2.4em;
-}
-#language table td:first-child {
-  text-align: left;
-}
-#language p#language-notice {
-  margin: 0;
-  padding-right: .5em;
-  line-height: 1.4;
-  text-align: right;
+  
+  & table {
+    &:first-of-type {
+      margin-top: -1.5em;
+    }
+    & tr > *:nth-last-child(-n+2) {
+      width: 2.4em;
+    }
+    & td:first-child {
+      text-align: left;
+    }
+  }
+  & p#language-notice {
+    margin: 0;
+    padding-right: .5em;
+    line-height: 1.4;
+    text-align: right;
+  }
 }
 
 /* // Area-Equipment
 ---------------------------------------------------------------------------------------------------- */
 #area-equipment {
-}
-#area-equipment > .box {
-  margin-top: var(--box-v-gap);
-}
-
-#area-equipment table.data-table tbody th {
-  border-style: none solid hidden;
-}
-#area-equipment table.data-table tbody:first-of-type tr:first-of-type th {
-  border-top: hidden;
-}
-#area-equipment table td b {
-  font-weight: normal;
-  font-size: 1.15em;
-}
-
-#area-equipment .item-name {
-  display: block;
-  margin: 0 -6%;
-  transform:scaleX(0.88);
+  > .box {
+    margin-top: var(--box-v-gap);
+  }
+  
+  & .data-table {
+    & tbody th {
+      border-style: none solid hidden;
+      background-color: transparent;
+    }
+    & tbody:first-of-type tr:first-of-type th {
+      border-top: hidden;
+    }
+    & table td b {
+      font-weight: normal;
+      font-size: 1.15em;
+    }
+  }
+  
+  & .item-name {
+    display: block;
+    margin: 0 -6%;
+    transform:scaleX(0.88);
+  }
 }
 
 /* Attack-Status */
 #attack-classes {
   width: calc(25% + 24em + 1px);
 }
-#attack-classes thead th:nth-child(1) { width:  auto; } /* 名前 */
-#attack-classes thead th:nth-child(2) { width: 3.5em; } /* 必筋 */
-#attack-classes thead th:nth-child(3) { width:   5em; } /* 命中 */
-#attack-classes thead th:nth-child(4) { width: 3.5em; } /* 威力 */
-#attack-classes thead th:nth-child(5) { width: 3.5em; } /* Ｃ値 */
-#attack-classes thead th:nth-child(6) { width:   5em; } /* 追加Ｄ */
+#attack-classes thead th {
+  &:nth-child(1) { width:  auto; } /* 名前 */
+  &:nth-child(2) { width: 3.5em; } /* 必筋 */
+  &:nth-child(3) { width:   5em; } /* 命中 */
+  &:nth-child(4) { width: 3.5em; } /* 威力 */
+  &:nth-child(5) { width: 3.5em; } /* Ｃ値 */
+  &:nth-child(6) { width:   5em; } /* 追加Ｄ */
+}
 
 #attack-classes + #weapons {
   margin-top: .3rem;
 }
 
-#weapons thead th:nth-child(1) { width:   25%; } /* 名前 */
-#weapons thead th:nth-child(2) { width: 3.5em; } /* 用法 */
-#weapons thead th:nth-child(3) { width: 3.5em; } /* 必筋 */
-#weapons thead th:nth-child(4) { width:   5em; } /* 命中 */
-#weapons thead th:nth-child(5) { width: 3.5em; } /* 威力 */
-#weapons thead th:nth-child(6) { width: 3.5em; } /* Ｃ値 */
-#weapons thead th:nth-child(7) { width:   5em; } /* 追加Ｄ */
-#weapons thead th:nth-child(8) { width:   1em; } /* 専用 */
-#weapons thead th:nth-child(9) { width: auto; } /* 備考 */
-
-#weapons tbody td:last-child { padding-left: .3em; text-align: left; font-size: 90%; } /* 備考 */
+#weapons thead th {
+  &:nth-child(1) { width:   25%; } /* 名前 */
+  &:nth-child(2) { width: 3.5em; } /* 用法 */
+  &:nth-child(3) { width: 3.5em; } /* 必筋 */
+  &:nth-child(4) { width:   5em; } /* 命中 */
+  &:nth-child(5) { width: 3.5em; } /* 威力 */
+  &:nth-child(6) { width: 3.5em; } /* Ｃ値 */
+  &:nth-child(7) { width:   5em; } /* 追加Ｄ */
+  &:nth-child(8) { width:   1em; } /* 専用 */
+  &:nth-child(9) { width: auto; } /* 備考 */
+}
+#weapons tbody td:last-child { /* 備考 */
+  padding-left: .3em;
+  text-align: left;
+  font-size: 90%;
+}
 
 
 /* Defense-Status */
 #evasion-classes {
   width: calc(25% + 13em + 1px);
 }
-#evasion-classes th:nth-child(1) { width:  auto; } /* 名前 */
-#evasion-classes th:nth-child(2) { width: 3.5em; } /* 必筋 */
-#evasion-classes th:nth-child(3) { width: 3.5em; } /* 回避 */
-#evasion-classes th:nth-child(4) { width: 3.5em; } /* 防護 */
+#evasion-classes th {
+  &:nth-child(1) { width:  auto; } /* 名前 */
+  &:nth-child(2) { width: 3.5em; } /* 必筋 */
+  &:nth-child(3) { width: 3.5em; } /* 回避 */
+  &:nth-child(4) { width: 3.5em; } /* 防護 */
+}
 
 #evasion-classes + #armours {
   margin-top: .3rem;
 }
 
-#armours thead th.type { width: 2.5em; } /* 種別 */
-#armours thead th.name { width:   25%; } /* 名前 */
-#armours thead th.reqd { width: 3.5em; } /* 必筋 */
-#armours thead th.eva  { width: 3.5em; } /* 回避 */
-#armours thead th.def  { width: 3.5em; } /* 防護 */
-#armours thead th.own  { width:   1em; } /* 専用 */
-#armours thead th.note { width:  auto; } /* 備考 */
-
+#armours thead th {
+  &.type { width: 2.5em; } /* 種別 */
+  &.name { width:   25%; } /* 名前 */
+  &.reqd { width: 3.5em; } /* 必筋 */
+  &.eva  { width: 3.5em; } /* 回避 */
+  &.def  { width: 3.5em; } /* 防護 */
+  &.own  { width:   1em; } /* 専用 */
+  &.note { width:  auto; } /* 備考 */
+}
 #armours td.note {
   padding-left: .3em;
   text-align: left;
   font-size: 90%;
 }
-
-#armours .defense-total th {
-  padding-right: 5px;
-  text-align: right;
-}
-#armours .defense-total td {
-  border-width: 1px;
-  border-style: solid dotted;
-}
-#armours .defense-total td:is(.eva, .def) {
-  font-size: 1.15em;
+#armours tr.defense-total {
+  & th {
+    padding-right: 5px;
+    text-align: right;
+  }
+  & td {
+    border-width: 1px;
+    border-style: solid dotted;
+  }
+  & td:is(.eva, .def) {
+    font-size: 1.15em;
+  }
 }
 
 
 /* Accessories */
-#accessories thead th:nth-child(1) { width: 2.5em; } /* 種別 */
-#accessories thead th:nth-child(2) { width:   25%; } /* 名前 */
-#accessories thead th:nth-child(3) { width: 3.5em; } /* 専用 */
-#accessories thead th:nth-child(4) { width:  auto; } /* 備考 */
-
-#accessories tbody td:nth-child(4) { padding-left: .3em; text-align: left; font-size: 90%; } /* 備考 */
+#accessories thead th {
+  &:nth-child(1) { width: 2.5em; } /* 種別 */
+  &:nth-child(2) { width:   25%; } /* 名前 */
+  &:nth-child(3) { width: 3.5em; } /* 専用 */
+  &:nth-child(4) { width:  auto; } /* 備考 */
+}
+#accessories tbody td:nth-child(4) { /* 備考 */
+  padding-left: .3em;
+  text-align: left;
+  font-size: 90%;
+}
 
 
 /* // Area-Items
@@ -961,81 +867,106 @@ dl#level dd {
 #area-items {
   display: flex;
   justify-content: space-between;
-}
-#area-items > div > .box {
-  margin-top: var(--box-v-gap);
+  gap: 0 var(--box-h-gap);
+
+  @media print {
+    flex-flow: column;
+  }
+  
+  > div > .box {
+    margin-top: var(--box-v-gap);
+  }
+  #area-items-L {
+    flex-basis: 60%;
+
+    @media print {
+      flex-basis: initial;
+    }
+  }
+  #area-items-R {
+    flex-basis: 40%;
+    
+    @media print {
+      flex-basis: initial;
+    }
+  }
 }
 
-div#area-items-L {
-  flex-basis: 60%;
-}
-div#area-items-R {
-  flex-basis: 40%;
-  margin-left: var(--box-h-gap);
-}
 /* Money */
-#money{
+#money {
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: auto;
-}
-  #money dt {
+  & dt {
     grid-row: 1;
   }
-  #money dd {
+  & dd {
     grid-row: 2;
   }
+}
 
 /* MaterialCard */
-#material-cards table tr > * {
-  width: 20%;
-}
-#material-cards table tr th:first-child {
-  width: auto;
-  text-align: center;
-}
-#material-cards table tbody tr th:first-child::before {
-  font-family: "Material Symbols Outlined";
-  font-variation-settings: 'FILL' 1;
-  margin-right: .3rem;
-  line-height: 1;
-  font-weight: bold;
-  display: inline-block;
-  transform: scale(1.15);
-  transform-origin: top;
-}
-#material-cards table tbody tr.cards-red { background-color: rgba(255,  0,  0,0.15); } #material-cards > h2 + table tr.cards-red th::before { content:'\e91d'; color: #a00; }
-#material-cards table tbody tr.cards-gre { background-color: rgba( 50,255,220,0.15); } #material-cards > h2 + table tr.cards-gre th::before { content:'\e123'; color: #0c3; }
-#material-cards table tbody tr.cards-bla { background-color: rgba(125,125,125,0.2); } #material-cards > h2 + table tr.cards-bla th::before { content:'\ead5'; color: #777; }
-#material-cards table tbody tr.cards-whi { background-color: rgba(255,255,255,0.2); } #material-cards > h2 + table tr.cards-whi th::before { content:'\e87d'; color: #bbb; }
-#material-cards table tbody tr.cards-gol { background-color: rgba(255,210, 50,0.15); } #material-cards > h2 + table tr.cards-gol th::before { content:'\e3e4'; color: #f90; }
-#material-cards table tbody tr td {
-  background-color: transparent;
+#material-cards table {
+  & tr > * {
+    width: 20%;
+  }
+  & tr th:first-child {
+    width: auto;
+    text-align: center;
+  }
+  & tbody tr {
+    &.cards-red { background-color: rgba(255,  0,  0,0.15); }
+    &.cards-gre { background-color: rgba( 50,255,220,0.15); }
+    &.cards-bla { background-color: rgba(125,125,125,0.2 ); }
+    &.cards-whi { background-color: rgba(255,255,255,0.2 ); }
+    &.cards-gol { background-color: rgba(255,210, 50,0.15); }
+  
+    & th {
+      background: transparent;
+    }
+    & th:first-child::before {
+      font-family: "Material Symbols Outlined";
+      font-variation-settings: 'FILL' 1;
+      margin-right: .3rem;
+      line-height: 1;
+      font-weight: bold;
+      display: inline-block;
+      transform: scale(1.15);
+      transform-origin: top;
+    }
+    &.cards-red th::before { content:'\e91d'; color: #a00; }
+    &.cards-gre th::before { content:'\e123'; color: #0c3; }
+    &.cards-bla th::before { content:'\ead5'; color: #777; }
+    &.cards-whi th::before { content:'\e87d'; color: #bbb; }
+    &.cards-gol th::before { content:'\e3e4'; color: #f90; }
+      
+    & td {
+      background-color: transparent;
+    }
+  }
 }
 /* BattleItems */
 #battle-items ul {
   counter-reset: battle-items;
-}
-#battle-items ul li {
-  position: relative;
-  counter-increment: battle-items 1;
-  padding-left: 1em;
-  text-align: left;
-}
-#battle-items ul li::before {
-  content: counter(battle-items);
-  display: block;
-  position: absolute;
-  left: -4px;
-  bottom: 0;
-  width: 1.1em;
-  opacity: 0.5;
-  font-size: 80%;
-  text-align: center;
-  white-space: nowrap;
-}
-#battle-items ul li.fail {
-  color: #ee0000;
+
+  & li {
+    position: relative;
+    counter-increment: battle-items 1;
+    padding-left: 1em;
+    text-align: left;
+    &::before {
+      content: counter(battle-items);
+      display: block;
+      position: absolute;
+      left: -4px;
+      bottom: 0;
+      width: 1.1em;
+      opacity: 0.5;
+      font-size: 80%;
+      text-align: center;
+      white-space: nowrap;
+    }
+  }
 }
 
 /* Honor */
@@ -1044,40 +975,28 @@ div#area-items-R {
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: auto;
-}
-#honor dt,
-#dishonor dt {
-  grid-row: 1;
-}
-#honor dd,
-#dishonor dd {
-  grid-row: 2;
+
+  & dt {
+    grid-row: 1;
+  }
+  & dd {
+    grid-row: 2;
+  }
 }
 #honor.zero-data {
   grid-template-columns: 1fr 1fr 1fr;
-}
-#honor.zero-data > *:not(:last-of-type){
-  border-right-width: 1px;
-  border-right-style: solid;
+
+  > *:not(:last-of-type){
+    border-right-width: 1px;
+    border-right-style: solid;
+  }
 }
 .honor-items table {
   margin-top: -1.5em !important;
-}
-.honor-items table thead th:last-child {
-  width: 4em;
-}
-.honor-items dl#honor-offset {
-  display: grid;
-  grid-template-columns: 1fr 4.2em;
-  margin-top: .5em;
-  border-width: .1rem 0 0;
-  border-style: solid;
-}
-.honor-items dl#honor-offset dt {
-  text-align: center;
-}
-.honor-items dl#honor-offset dd input {
-  margin: 0;
+  
+  & thead th:last-child {
+    width: 4em;
+  }
 }
 
 #honor    + #honor-items,
@@ -1088,7 +1007,7 @@ div#area-items-R {
 /* // Free-Memo
 ---------------------------------------------------------------------------------------------------- */
 #free-note,
-#free-history{
+#free-history {
   margin-top: var(--box-v-gap);
 }
 
@@ -1098,35 +1017,35 @@ div#area-items-R {
 #history {
   margin-top: var(--box-v-gap);
 }
-#history table thead th.num    { width:   2em; } /* No. */
-#history table thead th.date   { width: 5.2em; } /* 日付 */
-#history table thead th.title  { width:  auto; } /* タイトル */
-#history table thead th.exp    { width: 4.6em; } /* 経験点 */
-#history table thead th.money  { width: 4.5em; } /* ガメル */
-#history table thead th.honor  { width:   3em; } /* 名誉点 */
-#history table thead th.grow   { width: 3.5em; } /* 成長 */
-#history table thead th.gm     { width:  auto; } /* ＧＭ */
-#history table thead th.member { width:  auto; } /* 参加者 */
-
-#history table tr td.money {
-  text-align: right;
-}
-#history table tr td.money::after {
-  content: "G";
-  margin-left: 2px;
-  font-size: 1.1rem;
-}
-#history table tr td.money:empty::after {
-  content: "";
-}
-#history table tr td:is(.gm, .member) {
-  font-size: 1.1rem;
-}
-
-#history table tfoot tr td.grow::after {
-  content: "回";
-  margin-left: 2px;
-  font-size: 1rem;
+#history table {
+  & thead th {
+    &.num    { width:   2em; } /* No. */
+    &.date   { width: 5.2em; } /* 日付 */
+    &.title  { width:  auto; } /* タイトル */
+    &.exp    { width: 4.6em; } /* 経験点 */
+    &.money  { width: 4.5em; } /* ガメル */
+    &.honor  { width:   3em; } /* 名誉点 */
+    &.grow   { width: 3.5em; } /* 成長 */
+    &.gm     { width:  auto; } /* ＧＭ */
+    &.member { width:  auto; } /* 参加者 */
+  }
+  & tr td.money {
+    text-align: right;
+    &:not(:empty)::after {
+      content: "G";
+      margin-left: 2px;
+      font-size: 1.1rem;
+    }
+  }
+  & tr td:is(.gm, .member) {
+    font-size: 1.1rem;
+  }
+  
+  & tfoot tr td.grow::after {
+    content: "回";
+    margin-left: 2px;
+    font-size: 1rem;
+  }
 }
 
 /* // Cashbook
@@ -1139,6 +1058,10 @@ div#area-items-R {
 #cashbook > div {
   max-height: 16em;
   overflow: auto;
+
+  @media print {
+    max-height: initial;
+  }
 }
 #cashbook p {
   line-height: 1.5;
@@ -1148,12 +1071,12 @@ div#area-items-R {
   padding: 2px 0;
   font-weight: normal;
   background: linear-gradient(to top, rgba(0,100,255,0.5) 0rem, rgba(0,100,255,0.3) .5rem, transparent .5rem);
-}
-#cashbook b.cash.plus {
-  background: linear-gradient(to top, rgba(0,255,100,0.5) 0rem, rgba(0,255,100,0.3) .5rem, transparent .5rem);
-}
-#cashbook b.cash.minus {
-  background: linear-gradient(to top, rgba(255,100,0,0.5) 0rem, rgba(255,100,0,0.3) .5rem, transparent .5rem);
+  &.plus {
+    background: linear-gradient(to top, rgba(0,255,100,0.5) 0rem, rgba(0,255,100,0.3) .5rem, transparent .5rem);
+  }
+  &.minus {
+    background: linear-gradient(to top, rgba(255,100,0,0.5) 0rem, rgba(255,100,0,0.3) .5rem, transparent .5rem);
+  }
 }
 
 /* // Fellow
@@ -1405,4 +1328,7 @@ div#area-items-R {
   #f-note {
     min-height: 6rem
   }
+}
+
+/* ////////// LayerEnd ////////// */
 }

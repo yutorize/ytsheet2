@@ -246,8 +246,6 @@ body:not(.mode-crc) .crc-only {
   margin: 0 -.13em;
   transform: scale(0.9);
 }
-@media screen and (max-width:850px){
-}
 @media screen and (max-width:735px){
   #status dl#status-table > *:nth-of-type(even) {
     background: none;
@@ -315,10 +313,12 @@ body:not(.mode-crc) .crc-only {
   padding-bottom: 4px;
 }
 
-#memory table tbody td:nth-child(1) { width: 1.5em; border-right-width: 1px; } /* ✔ */
-#memory table tbody td:nth-child(2) { width: 6.2em; border-right-width: 1px; } /* 関係 */
-#memory table tbody td:nth-child(3) { width: 14em; border-right-width: 1px; } /* 名前 */
-#memory table tbody td:nth-child(4) { width: 4em; border-right-width: 1px; } /* 感情 */
+#memory table tbody td {
+  &:nth-child(1) { width: 1.5em; border-right-width: 1px; } /* ✔ */
+  &:nth-child(2) { width: 6.2em; border-right-width: 1px; } /* 関係 */
+  &:nth-child(3) { width: 14em; border-right-width: 1px; } /* 名前 */
+  &:nth-child(4) { width: 4em; border-right-width: 1px; } /* 感情 */
+}
 #memory table thead tr th:first-child {
   padding-left: 0;
   text-align: center;
@@ -339,24 +339,28 @@ body:not(.mode-crc) .crc-only {
 @media screen and (max-width:735px){
   #lois { overflow-x: auto; }
   #lois table  { table-layout: fixed; white-space: nowrap; margin-top: .5em; }
-  #lois table colgroup col:nth-child(1) { width:   7em; } 
-  #lois table colgroup col:nth-child(2) { width:  10em; }
-  #lois table colgroup col:nth-child(3) { width:   6em; }
-  #lois table colgroup col:nth-child(4) { width: 1.5em; }
-  #lois table colgroup col:nth-child(5) { width:   6em; }
-  #lois table colgroup col:nth-child(6) { width:   3em; }
-  #lois table colgroup col:nth-child(7) { width:  14em; }
-  #lois table colgroup col:nth-child(8) { width: 2.6em; }
+  #lois table colgroup col {
+    &:nth-child(1) { width:   7em; } 
+    &:nth-child(2) { width:  10em; }
+    &:nth-child(3) { width:   6em; }
+    &:nth-child(4) { width: 1.5em; }
+    &:nth-child(5) { width:   6em; }
+    &:nth-child(6) { width:   3em; }
+    &:nth-child(7) { width:  14em; }
+    &:nth-child(8) { width: 2.6em; }
+  }
 
   #lois table tbody td span[data-state] { padding: .5em 0; }
 
   #memory { overflow-x: auto; }
   #memory table  { table-layout: fixed; white-space: nowrap; margin-top: .5em; }
-  #memory table thead th:nth-child(1) { width: 1.5em; } 
-  #memory table thead th:nth-child(2) { width:   7em; } 
-  #memory table thead th:nth-child(3) { width:  12em; }
-  #memory table thead th:nth-child(4) { width:   6em; }
-  #memory table thead th:nth-child(5) { width:  14em; }
+  #memory table thead th {
+    &:nth-child(1) { width: 1.5em; }
+    &:nth-child(2) { width:   7em; }
+    &:nth-child(3) { width:  12em; }
+    &:nth-child(4) { width:   6em; }
+    &:nth-child(5) { width:  14em; }
+  }
 }
 
 #effect {
@@ -458,22 +462,22 @@ body:not(.mode-crc) .crc-only {
   left: 0;
   bottom: 0;
   width: calc((100vw - 940px) / 2 );
-}
-.trash-box::before {
-  content: "\e872";
-  display: block;
-  position: absolute;
-  top: 30vh;
-  left: 0;
-  right: 0;
-  bottom: auto;
-  margin:auto;
-  text-align: center;
-  font-family: "Material Symbols Outlined";
-  font-size: calc((100vw - 940px) / 2 * 0.5 );
-  opacity: 0.1;
-  pointer-events: none;
-  z-index: -1;
+  &::before {
+    content: "\e872";
+    display: block;
+    position: absolute;
+    top: 30vh;
+    left: 0;
+    right: 0;
+    bottom: auto;
+    margin:auto;
+    text-align: center;
+    font-family: "Material Symbols Outlined";
+    font-size: calc((100vw - 940px) / 2 * 0.5 );
+    opacity: 0.1;
+    pointer-events: none;
+    z-index: -1;
+  }
 }
 .trash-box table {
   display: block;
@@ -481,36 +485,36 @@ body:not(.mode-crc) .crc-only {
   height: calc(70vh - 1.5em);
   overflow: auto;
   z-index: 2;
-}
-.trash-box table:empty::before {
-  display: block;
-  content: 'ここにドロップで削除\A（ページ移動するまで保留）';
-  margin-top: 1em;
-  white-space: pre;
-  text-align: center;
-}
-.trash-box table tbody {
-  display: block;
-  border-width: 1px;
-  border-style: solid;
-  border-radius: 5px;
-  margin: .2em;
-  cursor: move;
-}
-.trash-box table tbody tr,
-.trash-box table tbody td {
-  display: none;
-}
-.trash-box table tbody tr:first-child,
-.trash-box table tbody tr:first-child td:nth-child(2) {
-  border: none;
-  display: block;
-}
-.trash-box table tbody input {
-  padding: 1em .5em;
-  border-color: transparent;
-  background-color: transparent;
-  pointer-events: none;
+  &:empty::before {
+    display: block;
+    content: 'ここにドロップで削除\A（ページ移動するまで保留）';
+    margin-top: 1em;
+    white-space: pre;
+    text-align: center;
+  }
+  & tbody {
+    display: block;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 5px;
+    margin: .2em;
+    cursor: move;
+  }
+  & tbody tr,
+  & tbody td {
+    display: none;
+  }
+  & tbody tr:first-child,
+  & tbody tr:first-child td:nth-child(2) {
+    border: none;
+    display: block;
+  }
+  & tbody input {
+    padding: 1em .5em;
+    border-color: transparent;
+    background-color: transparent;
+    pointer-events: none;
+  }
 }
 .trash-box .annotate {
   position: absolute;
@@ -522,9 +526,9 @@ body:not(.mode-crc) .crc-only {
   top: 2px;
   right: 2px;
   font-size: 1.2em;
-}
-.trash-box .close-button:hover {
-  opacity: 0.5;
+  &:hover {
+    opacity: 0.5;
+  }
 }
 @media screen and (max-width:1090px){
   .trash-box  {
@@ -649,8 +653,6 @@ body:not(.mode-crc) .crc-only {
 #combo .combo-table .combo-in dl:nth-child(5) { flex-basis: 30%; }
 #combo .combo-table .combo-in dl:nth-child(6) { flex-basis: 26%; }
 #combo .combo-table .combo-in dl:nth-child(7) { flex-basis: 16%; }
-#combo .combo-table .combo-in dl dd {
-}
 
 #combo .combo-table .combo-out {
   padding-left: .5rem;

@@ -2,6 +2,7 @@
 
 /* ゆとシートⅡ - リスト共通 */
 
+@layer list {
 /* // Body
 ---------------------------------------------------------------------------------------------------- */
 @media screen and (max-width:735px){
@@ -19,12 +20,15 @@ article {
   border-width: 1px 0 0;
   border-style: solid;
 }
+nav + article {
+  border-width: 0;
+}
 article h1 {
   margin-top: .5em;
-}
-article h1 small {
-  display: inline-block;
-  font-size: 50%;
+  & small {
+    display: inline-block;
+    font-size: 50%;
+  }
 }
 
 /* // Aside
@@ -36,19 +40,19 @@ main aside {
   border-style: solid;
   border-radius: 10px;
   font-size: 1.4rem;
-}
-main aside h2 {
-  margin: 0.5em;
-  font-size: 2rem;
-}
-main aside p {
-  margin: 1.5em 1em;
-}
-main aside h2 + p {
-  margin-top: 0.5em;
-}
-main aside hr {
-  margin: 1rem;
+  & h2 {
+    margin: 0.5em;
+    font-size: 2rem;
+  }
+  & p {
+    margin: 1.5em 1em;
+  }
+  & h2 + p {
+    margin-top: 0.5em;
+  }
+  & hr {
+    margin: 1rem;
+  }
 }
 /* // Sidebar
 ---------------------------------------------------------------------------------------------------- */
@@ -83,41 +87,41 @@ main aside hr {
 
 /* // Search-Form
 ---------------------------------------------------------------------------------------------------- */
-form#form-search{
+form#form-search {
   width: max-content;
   margin-left: auto;
   border-width: 1px;
   border-style: solid;
   border-radius: 1rem;
-}
-form#form-search h3 {
-  width: max-content;
-  margin-left: auto;
-  padding: 0 1em;
-  cursor: pointer;
-}
-form#form-search h3:hover {
-  background-color: rgba(100,200,255,0.2);
-}
-form#form-search p {
-  width: max-content;
-  margin: .5rem 1.5rem;
-  margin-left: auto;
-  padding: .5em 1em;
-  text-align: left;
-}
-form#form-search p input {
-  height: 3rem;
-  margin: 1px;
-  vertical-align:middle;
-}
-form#form-search p input::placeholder {
-  font-size: 80%;
-  opacity: 0.8;
-}
-form#form-search p input[type="submit"] {
-  display: block;
-  margin-left: auto;
+  & h3 {
+    width: max-content;
+    margin-left: auto;
+    padding: 0 1em;
+    cursor: pointer;
+  }
+  & h3:hover {
+    background-color: rgba(100,200,255,0.2);
+  }
+  & p {
+    width: max-content;
+    margin: .5rem 1.5rem;
+    margin-left: auto;
+    padding: .5em 1em;
+    text-align: left;
+  }
+  & p input {
+    height: 3rem;
+    margin: 1px;
+    vertical-align:middle;
+    &::placeholder {
+      font-size: 80%;
+      opacity: 0.8;
+    }
+    &[type="submit"] {
+      display: block;
+      margin-left: auto;
+    }
+  }
 }
 
 /* // List
@@ -129,28 +133,28 @@ form#form-search p input[type="submit"] {
 }
 .list h2 {
   font-size: 2rem;
-}
-.list h2 small {
-  font-size: 1.4rem;
-  font-weight: normal;
+  & small {
+    font-size: 1.4rem;
+    font-weight: normal;
+  }
 }
 .list .navbar {
   text-align: center;
   padding: .5em;
-}
-.list .navbar a {
-  display: inline-block;
-  margin: .1em 0;
-  padding: .3em .6em;
-  border-radius: .5em;
-  background: rgba(175,175,175,0.2);
-}
-.list .navbar b {
-  display: inline-block;
-  margin: .1em 0;
-  padding: .3em .6em;
-  border-radius: .5em;
-  border: 1px solid rgba(175,175,175,0.5);
+  & a {
+    display: inline-block;
+    margin: .1em 0;
+    padding: .3em .6em;
+    border-radius: .5em;
+    background: rgba(175,175,175,0.2);
+  }
+  & b {
+    display: inline-block;
+    margin: .1em 0;
+    padding: .3em .6em;
+    border-radius: .5em;
+    border: 1px solid rgba(175,175,175,0.5);
+  }
 }
 .list table {
   position: relative;
@@ -171,16 +175,17 @@ form#form-search p input[type="submit"] {
   display: grid;
   grid-template-rows: auto;
 }
-.list table tr > th {
+.list table tr th {
   display: grid;
 }
 .list table tr td {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-.list table tr td:not(.name) {
-  flex-wrap: wrap;
+  
+  &:not(.name) {
+    flex-wrap: wrap;
+  }
 }
 .list table th > a,
 .list table th > span {
@@ -229,21 +234,22 @@ form#form-search p input[type="submit"] {
   height: 100%;
   padding: 0;
   line-height: 1;
-}
-.list table td.name a {
-  flex-grow: 1;
-  
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  height: calc(100% + 5px);
-  
-  font-size: 1.1em;
-  font-weight: bold;
-}
-.list table td.name a:hover {
-  background: rgba(180,200,255,0.1);
+  & a {
+    flex-grow: 1;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    height: calc(100% + 5px);
+    
+    font-size: 1.1em;
+    font-weight: bold;
+    
+    &:hover {
+      background: rgba(180,200,255,0.1);
+    }
+  }
 }
 .list table td:is(.player, .author) {
   word-break: break-all;
@@ -258,75 +264,76 @@ form#form-search p input[type="submit"] {
   font-size: 90%;
   line-height: 1;
   color: transparent;
+
+  &::before {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    font-family: "Material Symbols Outlined";
+    color: var(--text-color);
+    font-size: 1.2em;
+  }
+  &[data-gender=male]   { background-color: #07f3; }
+  &[data-gender=female] { background-color: #f003; }
+  &[data-gender=cross]  { background-color: #70f3; }
+  &[data-gender=none]   { background-color: #7773; }
+  &[data-gender=unknown]{ background-color: #7773; }
+  &[data-gender=male]::before   { content:"\e58e"; }
+  &[data-gender=female]::before { content:"\e590"; }
+  &[data-gender=cross]::before  { content:"\e58d"; }
+  &[data-gender=none]::before   { content:"\f108"; }
+  &[data-gender=unknown]::before{ content:"\eb8b"; }
 }
-.list table td span[data-gender=male]   { background-color: #07f3; }
-.list table td span[data-gender=female] { background-color: #f003; }
-.list table td span[data-gender=cross]  { background-color: #70f3; }
-.list table td span[data-gender=none]   { background-color: #7773; }
-.list table td span[data-gender=unknown]{ background-color: #7773; }
-.list table td span[data-gender]::before {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  font-family: "Material Symbols Outlined";
-  color: var(--text-color);
-  font-size: 1.2em;
-}
-.list table td span[data-gender=male]::before   { content:"\e58e"; }
-.list table td span[data-gender=female]::before { content:"\e590"; }
-.list table td span[data-gender=cross]::before  { content:"\e58d"; }
-.list table td span[data-gender=none]::before   { content:"\f108"; }
-.list table td span[data-gender=unknown]::before{ content:"\eb8b"; }
 .list table th.date {
   font-size: 80%;
 }
 .list table td.date {
   font-family: Arial;
   font-size: 80%;
-}
-.list table td.date > div > span {
-  display: inline-block;
+  > div > span {
+    display: inline-block;
+  }
 }
 .list table td.tags {
   padding: 0 .2em 0;
   flex-wrap: wrap;
   justify-content: start;
   border-top: 1px solid #7775;
-}
-.list table td.tags:empty {
-  display: none;
-}
-.list table td.tags a {
-  margin: .2em 1em .2em 0;
-  padding: .3rem .5rem;
-  border-radius: 12px 5px 5px 12px;
-  background-color: rgba(140,170,200,0.2);
-  color: inherit;
-  font-size: 80%;
-  line-height: 1;
-}
-.list table td.tags a:first-child {
-  margin-left: 0;
-}
-.list table td.tags a::before {
-  content:"●";
-  display: inline-block;
-  margin-left: -.3rem;
-  color: var(--bg-color);
-  font-size: 80%;
-  transform: scale(0.8);
-}
-.list table td.tags a:hover {
-  background-color: rgba(120,220,220,0.4) !important;
-}
-.list table td.tags span.session {
-  margin-left: auto;
-  font-size: 80%;
-}
-.list table td.tags span.session::before {
-  content: "";
-  font-size: 90%;
+  &:empty {
+    display: none;
+  }
+  & a {
+    margin: .2em 1em .2em 0;
+    padding: .3rem .5rem;
+    border-radius: 12px 5px 5px 12px;
+    background-color: rgba(140,170,200,0.2);
+    color: inherit;
+    font-size: 80%;
+    line-height: 1;
+  }
+  & a:first-child {
+    margin-left: 0;
+  }
+  & a::before {
+    content:"●";
+    display: inline-block;
+    margin-left: -.3rem;
+    color: var(--bg-color);
+    font-size: 80%;
+    transform: scale(0.8);
+  }
+  & a:hover {
+    background-color: rgba(120,220,220,0.4) !important;
+  }
+  & span.session {
+    margin-left: auto;
+    font-size: 80%;
+  }
+  & span.session::before {
+    content: "";
+    font-size: 90%;
+  }
 }
 .list .more {
   padding: .5rem;
@@ -368,7 +375,7 @@ form#form-search p input[type="submit"] {
   }
 }
 
-/* // List-Monster/Simple
+/* // List-Simple
 ---------------------------------------------------------------------------------------------------- */
 .list ul {
   display: grid;
@@ -393,35 +400,38 @@ form#form-search p input[type="submit"] {
   font-size: 110%;
   font-weight: bold;
   text-align: center;
-}
-.list ul li a::before {
-  position: absolute;
-  top: .1em;
-  left: .5em;
-  font-weight: normal;
-}
-.list ul li a small {
-  display: block;
-  position: absolute;
-  right: .5em;
-  bottom: .1em;
-  font-weight: normal;
-}
-.list ul li a small::before {
-  content:"by "
-}
-.list ul li a:hover {
-  background: rgba(180,200,255,0.1);
+  
+  &::before {
+    position: absolute;
+    top: .1em;
+    left: .5em;
+    font-weight: normal;
+  }
+  & small {
+    display: block;
+    position: absolute;
+    right: .5em;
+    bottom: .1em;
+    font-weight: normal;
+    
+    &::before { content:"by "  }
+  }
+  &:hover {
+    background: rgba(180,200,255,0.1);
+  }
 }
 
 .list ul.grouplist a {
   text-align: left;
   font-size: 125%;
+
+  & small {
+    position: static;
+    font-size: 75%;
+
+    &::before { content:"" }
+  }
 }
-.list ul.grouplist a small {
-  position: static;
-  font-size: 75%;
-}
-.list ul.grouplist a small::before {
-  content:""
+
+/* ////////// LayerEnd ////////// */
 }

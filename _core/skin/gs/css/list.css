@@ -1,18 +1,15 @@
 @charset "utf-8";
 
-/* ゆとシートⅡ for GS - リスト */
-
+@layer system {
 /* // Body
 ---------------------------------------------------------------------------------------------------- */
 body {
   background-image: url(../../_common/img/back-pattern.png), url(../img/back-sword.png);
   background-blend-mode: normal, normal;
-}
-.night body {
-  background-blend-mode: hard-light, normal;
-}
-@media screen and (max-width:735px){
-  body {
+  .night & {
+    background-blend-mode: hard-light, normal;
+  }
+  @media screen and (max-width:735px){
     background-size: auto, 80%;
   }
 }
@@ -87,3 +84,6 @@ body {
   content: 'Lv'attr(data-lv);
 }
 
+
+/* ////////// LayerEnd ////////// */
+}

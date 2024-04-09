@@ -58,6 +58,7 @@ if($pc{forbidden} && !$pc{yourAuthor}){
   $pc{expUsedItem}   = noiseText(2);
   $pc{expUsedMemory} = noiseText(2);
   $pc{expUsed}       = noiseText(2);
+  $pc{expSpent}      = noiseText(2);
   $pc{expRest}       = noiseText(2);
   $pc{expTotal}      = noiseText(2);
   
@@ -261,10 +262,13 @@ if($pc{stage} =~ /クロウリングケイオス/){ $SHEET->param(ccOn => 1); }
 
 ### ブリード --------------------------------------------------
 my $breedPrefix = ($pc{breed} ? $pc{breed} : $pc{syndrome3} ? 'トライ' : $pc{syndrome2} ? 'クロス' : $pc{syndrome1} ? 'ピュア' : '');
-$SHEET->param(breed => $breedPrefix ? "$breedPrefix<span>ブリード</span>" : '');
+$SHEET->param(breed => isNoiseText(tagDelete $breedPrefix) ? $breedPrefix : $breedPrefix ? "$breedPrefix<span class=\"shorten\">ブリード</span>" : '');
 
 ### 能力値 --------------------------------------------------
 $SHEET->param('sttWorks'.ucfirst($pc{sttWorks}) => 1);
+foreach my $name ('Body','Sense','Mind','Social') {
+  $SHEET->param('sttBaseBreakdown'.$name => $pc{syndrome2} ? "$pc{'sttSyn1'.$name}＋$pc{'sttSyn2'.$name}" : "$pc{'sttSyn1'.$name}×2");
+}
 
 ### 技能 --------------------------------------------------
 foreach my $name ('Melee','Ranged','RC','Negotiate','Dodge','Percept','Will','Procure'){
@@ -583,7 +587,7 @@ $SHEET->param(currentEncroach => $pc{baseEncroach} =~ /^[0-9]+$/ ? $pc{baseEncro
 ### 履歴 --------------------------------------------------
 my @history;
 my $h_num = 0;
-$pc{history0Title} = ($pc{createType} eq 'C') ? 'コンストラクション作成' : 'フルスクラッチ作成';
+$pc{history0Title} = !$pc{forbiddenMode} ? ($pc{createType} eq 'C') ? 'コンストラクション作成' : 'フルスクラッチ作成' : '作成';
 foreach (0 .. $pc{historyNum}){
   #next if !$pc{'history'.$_.'Title'};
   $h_num++ if $pc{'history'.$_.'Gm'};

@@ -55,6 +55,12 @@ sub data_update_chara {
     $pc{expSpent} = $pc{expTotal} - 130;
     $pc{createTypeName} = 'フルスクラッチ';
   }
+  if($ver < 1.24009){
+    foreach my $stt ([0,'Body'], [1,'Sense'], [2,'Mind'], [3,'Social']){
+      if($data::syndrome_status{$pc{syndrome1}}){ $pc{'sttSyn1'.@$stt[1]} = $data::syndrome_status{$pc{syndrome1}}[@$stt[0]] }
+      if($data::syndrome_status{$pc{syndrome2}}){ $pc{'sttSyn2'.@$stt[1]} = $data::syndrome_status{$pc{syndrome2}}[@$stt[0]] }
+    }
+  }
   $pc{ver} = $main::ver;
   $pc{lasttimever} = $ver;
   return %pc;

@@ -6,10 +6,14 @@
   }
 }
 
+@layer system {
 /* // Body
 ---------------------------------------------------------------------------------------------------- */
 body {
   background-image: url(../../_common/img/back-pattern.png), url(../img/back-first.png);
+  @media screen and (max-width:735px){
+    background-size: auto, 80%;
+  }
 }
 article,
 .color-set {
@@ -23,9 +27,7 @@ article,
     var(--box-head-bg-color-l, 65%),
     var(--box-head-bg-color-a, 0.4)
   );
-}
-.night article,
-.night .color-set {
+  .night & {}
 }
 
 /* // Base
@@ -41,24 +43,26 @@ article {
 @media screen and (min-width:1400px){
   body.wide {
     grid-template-columns: minmax(0, 1fr) minmax(auto, 1800px) minmax(0, 1fr);
-  }
-  .wide header nav {
-    max-width: 1800px;
-  }
-  .wide article {
-    max-width: 1760px;
-  }
-  .wide #god,
-  .wide #school {
-    max-width: 1760px;
-    display: grid;
-    grid-gap: 0 1.2rem;
-    grid-template-columns: 1fr 1fr;
-    padding: 0 1.2rem;
-    position: relative;
-  }
-  .wide #area-name, .wide #tags {
-    grid-column: span 2;
+
+    & header nav {
+      max-width: 1800px;
+    }
+    & article {
+      max-width: 1760px;
+    }
+    & #god,
+    & #school {
+      max-width: 1760px;
+      display: grid;
+      grid-gap: 0 1.2rem;
+      grid-template-columns: 1fr 1fr;
+      padding: 0 1.2rem;
+      position: relative;
+    }
+    & #area-name,
+    & #tags {
+      grid-column: span 2;
+    }
   }
   #area-description {
     grid-column: 1;
@@ -91,13 +95,13 @@ article {
   padding: .4em .5em .3em;
   border-radius: 5px 5px 0 0;
   line-height: 1;
-  background: #888;
+  background: var(--box-outside-border-color);
   color: #fff;
   text-shadow: 0 0 1px #000, 0 0 1px #000, 0 0 1px #000;
   font-weight: bold;
   font-size: 100%;
 }
-div.data-magic {
+.data-magic {
   display: grid;
   grid-template-columns: 1.1fr 1.1fr 1fr 0.8fr;
   grid-template-areas:
@@ -112,74 +116,70 @@ div.data-magic {
   border-color: var(--box-outside-border-color);
   
   background-color: var(--box-base-bg-color);
-}
-div.data-magic * {
-  border-color: var(--box-outside-border-color);
-}
-.wide .data-magic {
-  margin-top: 1em;
-}
-.wide div.data-magic + div.data-magic {
-  margin-top: 1.5em;
+
+  & * {
+    border-color: var(--box-outside-border-color);
+  }
+  .wide & {
+    margin-top: 1em;
+    @media print {
+      break-inside: avoid;
+    }
+  }
+  .wide .data-magic + & {
+    margin-top: 1.5em;
+  }
+  &   .name     { grid-area: NAME; }
+  & dl.cost     { grid-area: COST; }
+  & dl.target   { grid-area: TRGT; }
+  & dl.range    { grid-area: RANG; }
+  & dl.duration { grid-area: DURA; }
+  & dl.resist   { grid-area: RESI; }
+  & dl.element  { grid-area: ELEM; }
+  & dl.summary  { grid-area: SMRY; }
+  & dl:not(.element)+dl.summary { grid-column: 1/5; }
+  & dl.effect   { grid-area: EFCT; }
+  
+  & dl.type      { grid-area: TYPE; }
+  & dl.rank      { grid-area: RANK; }
+  & dl.premise   { grid-area: PRMS; }
+  & dl.condition { grid-area: CDTN; }
+  
+  & dl.sing      { grid-area: SING; }
+  & dl.pet       { grid-area: PET ; }
+  & dl.basepoint { grid-area: BAPT; }
+  & dl.setpoint  { grid-area: STPT; }
+  & dl.addpoint  { grid-area: ADPT; }
+  
+  & dl.part      { grid-area: PART; }
+  
+  & dl.ccost     { grid-area: CCST; }
+  & dl.ccharge   { grid-area: CCHG; }
+  
+  & dl.type      { grid-area: TYPE; }
+  & dl.equip     { grid-area: EQIP; }
+  & dl.use       { grid-area: USE ; }
+  & dl.apply     { grid-area: APLY; }
+  & dl.risk      { grid-area: RISK; }
+  
+  & dl.a-cost    { grid-area: ACST; }
 }
 
-div.data-magic > dl {
+.data-magic > dl {
   display: grid;
   grid-template-columns: 3.5em 1fr;
   border-width: 1px 0 0 1px;
   border-style: solid;
 }
 
-div.data-magic   .name     { grid-area: NAME; }
-div.data-magic dl.cost     { grid-area: COST; }
-div.data-magic dl.target   { grid-area: TRGT; }
-div.data-magic dl.range    { grid-area: RANG; }
-div.data-magic dl.duration { grid-area: DURA; }
-div.data-magic dl.resist   { grid-area: RESI; }
-div.data-magic dl.element  { grid-area: ELEM; }
-div.data-magic dl.summary  { grid-area: SMRY; }
-div.data-magic dl:not(.element)+dl.summary { grid-column: 1/5; }
-div.data-magic dl.effect   { grid-area: EFCT; }
-
-div.data-magic dl.type      { grid-area: TYPE; }
-div.data-magic dl.rank      { grid-area: RANK; }
-div.data-magic dl.premise   { grid-area: PRMS; }
-div.data-magic dl.condition { grid-area: CDTN; }
-
-div.data-magic dl.sing      { grid-area: SING; }
-div.data-magic dl.pet       { grid-area: PET ; }
-div.data-magic dl.basepoint { grid-area: BAPT; }
-div.data-magic dl.setpoint  { grid-area: STPT; }
-div.data-magic dl.addpoint  { grid-area: ADPT; }
-
-div.data-magic dl.part      { grid-area: PART; }
-
-div.data-magic dl.ccost     { grid-area: CCST; }
-div.data-magic dl.ccharge   { grid-area: CCHG; }
-
-div.data-magic dl.type      { grid-area: TYPE; }
-div.data-magic dl.equip     { grid-area: EQIP; }
-div.data-magic dl.use       { grid-area: USE ; }
-div.data-magic dl.apply     { grid-area: APLY; }
-div.data-magic dl.risk      { grid-area: RISK; }
-
-div.data-magic dl.a-cost    { grid-area: ACST; }
-
-div.data-magic > dl {
-  display: grid;
-  grid-template-columns: 3.5em 1fr;
-  border-width: 1px 0 0 1px;
-  border-style: solid;
-}
-
-div.data-magic.enhance {
+.data-magic.enhance {
   grid-template-areas:
     "NAME NAME NAME DURA"
     "SMRY SMRY SMRY SMRY"
     "EFCT EFCT EFCT EFCT"
   ;
 }
-div.data-magic.song {
+.data-magic.song {
   grid-template-columns: 1fr 1fr 1fr;
   grid-template-areas:
     "NAME NAME NAME"
@@ -189,14 +189,14 @@ div.data-magic.song {
     "SMRY SMRY SMRY"
     "EFCT EFCT EFCT"
   ;
+  > dl {
+    grid-template-columns: 6.2em 1fr;
+  }
+  > dl.condition dt::before {
+    content: "効果発生"
+  }
 }
-div.data-magic.song > dl {
-  grid-template-columns: 6.2em 1fr;
-}
-div.data-magic.song dl.condition dt::before {
-  content: "効果発生"
-}
-div.data-magic.finale {
+.data-magic.finale {
   grid-template-columns: 1fr 1fr 1fr;
   grid-template-areas:
     "NAME NAME NAME"
@@ -205,7 +205,7 @@ div.data-magic.finale {
     "EFCT EFCT EFCT"
   ;
 }
-div.data-magic.riding {
+.data-magic.riding {
   grid-template-columns: 1.3fr .8fr .9fr;
   grid-template-areas:
     "NAME NAME PRMS"
@@ -213,14 +213,14 @@ div.data-magic.riding {
     "SMRY SMRY SMRY"
     "EFCT EFCT EFCT"
   ;
+  > dl {
+    grid-template-columns: 5em 1fr;
+  }
+  > dl.premise {
+    grid-template-columns: 3em 1fr;
+  }
 }
-div.data-magic.riding > dl {
-  grid-template-columns: 5em 1fr;
-}
-div.data-magic.riding dl.premise {
-  grid-template-columns: 3em 1fr;
-}
-div.data-magic.geomancy {
+.data-magic.geomancy {
   grid-template-columns: 2.1fr .9fr;
   grid-template-areas:
     "NAME COST"
@@ -228,14 +228,14 @@ div.data-magic.geomancy {
     "SMRY SMRY"
     "EFCT EFCT"
   ;
+  > dl {
+    grid-template-columns: 6em 1fr;
+  }
+  > dl.duration dt::before {
+    content: "効果の"
+  }
 }
-div.data-magic.geomancy > dl {
-  grid-template-columns: 6em 1fr;
-}
-div.data-magic.geomancy dl.duration dt::before {
-  content: "効果の"
-}
-div.data-magic.command {
+.data-magic.command {
   grid-template-columns: 1fr 1fr;
   grid-template-areas:
     "NAME NAME"
@@ -244,11 +244,11 @@ div.data-magic.command {
     "SMRY SMRY"
     "EFCT EFCT"
   ;
+  > dl {
+    grid-template-columns: 6em 1fr;
+  }
 }
-div.data-magic.command > dl {
-  grid-template-columns: 6em 1fr;
-}
-div.data-magic.lead {
+.data-magic.lead {
   grid-template-columns: 2fr 1fr;
   grid-template-areas:
     "NAME PRMS"
@@ -257,14 +257,14 @@ div.data-magic.lead {
     "SMRY SMRY"
     "EFCT EFCT"
   ;
+  > dl {
+    grid-template-columns: 6em 1fr;
+  }
+  > dl.condition dt::before {
+    content: "使用"
+  }
 }
-div.data-magic.lead > dl {
-  grid-template-columns: 6em 1fr;
-}
-div.data-magic.lead > dl.condition dt::before {
-  content: "使用"
-}
-div.data-magic.divination {
+.data-magic.divination {
   grid-template-columns: 1fr 1fr 1fr;
   grid-template-areas:
     "NAME NAME NAME"
@@ -273,11 +273,11 @@ div.data-magic.divination {
     "SMRY SMRY SMRY"
     "EFCT EFCT EFCT"
   ;
+  > dl {
+    grid-template-columns: 6em 1fr;
+  }
 }
-div.data-magic.divination > dl {
-  grid-template-columns: 6em 1fr;
-}
-div.data-magic.potential {
+.data-magic.potential {
   grid-template-columns: 1fr 1fr;
   grid-template-areas:
     "NAME NAME"
@@ -285,34 +285,34 @@ div.data-magic.potential {
     "SMRY SMRY"
     "EFCT EFCT"
   ;
+  > dl {
+    grid-template-columns: 5em 1fr;
+  }
 }
-div.data-magic.potential > dl {
-  grid-template-columns: 5em 1fr;
-}
-div.data-magic.seal {
+.data-magic.seal {
   grid-template-columns: 2fr 1fr;
   grid-template-areas:
     "NAME NAME"
     "PRMS TYPE"
     "EFCT EFCT"
   ;
+  .summary {
+    display: none;
+  }
 }
-div.data-magic.seal .summary {
-  display: none;
-}
-div.data-magic.dignity {
+.data-magic.dignity {
   grid-template-columns: 0.6fr 1.2fr 1.2fr;
   grid-template-areas:
     "NAME NAME NAME"
     "TYPE PRMS TRGT"
     "EFCT EFCT EFCT"
   ;
-}
-div.data-magic.dignity .summary {
-  display: none;
+  .summary {
+    display: none;
+  }
 }
 
-div.data-magic.data-arts {
+.data-magic.data-arts {
   grid-template-columns: 1fr 1fr .45fr .55fr;
   grid-template-areas:
     "NAME NAME NAME COST"
@@ -321,29 +321,28 @@ div.data-magic.data-arts {
     "SMRY SMRY SMRY SMRY"
     "EFCT EFCT EFCT EFCT"
   ;
+  > dl {
+    grid-template-columns: 3.2em 1fr;
+  }
+  & dl.premise,
+  & dl.apply {
+    grid-template-columns: 3em 1fr;
+  }
+  & dl.equip,
+  & dl.risk {
+    grid-template-columns: 4.2em 1fr;
+  }
+  & dl.cost {
+    grid-template-columns: 4.2em 1fr;
+  }
 }
-div.data-magic.data-arts > dl {
-  grid-template-columns: 3.2em 1fr;
-}
-div.data-magic.data-arts dl.premise,
-div.data-magic.data-arts dl.apply {
-  grid-template-columns: 3em 1fr;
-}
-div.data-magic.data-arts dl.equip,
-div.data-magic.data-arts dl.risk {
-  grid-template-columns: 4.2em 1fr;
-}
-div.data-magic.data-arts dl.cost,
-div.data-magic dl.a-cost {
-  grid-template-columns: 4.2em 1fr;
-}
-div.data-magic.data-arts dl.cost dt > span,
-div.data-magic dl.a-cost dt > span {
+#mystic-arts dl.cost dt > span,
+#mystic-arts dl.a-cost dt > span {
   display: inline-block;
   font-size: 75%;
   transform: scaleY(calc(1/0.75));
 }
-#mystic-arts div.data-magic:not(.data-arts) {
+#mystic-arts .data-magic:not(.data-arts) {
   grid-template-columns: 1.1fr 1.1fr 0.35fr 0.65fr 0.8fr;
   grid-template-areas:
     "NAME NAME NAME ACST COST"
@@ -351,20 +350,23 @@ div.data-magic dl.a-cost dt > span {
     "SMRY SMRY SMRY SMRY ELEM"
     "EFCT EFCT EFCT EFCT EFCT"
   ;
+  & dl.a-cost {
+    grid-template-columns: 4.2em 1fr;
+  }
 }
 
 @media screen and (max-width:735px){
-  div.data-magic { display: block }
-  div.data-magic dl {
+  .data-magic { display: block }
+  .data-magic dl {
     grid-template-columns: 5.5em 1fr !important;
   }
-  div.data-magic dl dd {
+  .data-magic dl dd {
     text-align: left !important;
   }
 }
 
-div.data-magic > h3,
-div.data-magic > dl > dt {
+.data-magic > h3,
+.data-magic > dl > dt {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -372,97 +374,101 @@ div.data-magic > dl > dt {
   border-width: 0 1px 0 0;
   border-style: solid;
 }
-div.data-magic dl.name {
+.data-magic dl.name {
   grid-template-columns: 3.5em 1fr;
 }
-div.data-magic > dl > dd {
+.data-magic > dl > dd {
   padding: .2em 0;
   text-align: center;
   display: flex;
   justify-content: center;
   align-items: center;
 }
-div.data-magic dl.cost     dd,
-div.data-magic dl.target   dd,
-div.data-magic dl.range    dd,
-div.data-magic dl.duration dd,
-div.data-magic dl.element  dd {
+.data-magic dl.cost     dd,
+.data-magic dl.target   dd,
+.data-magic dl.range    dd,
+.data-magic dl.duration dd,
+.data-magic dl.element  dd {
   font-family: var(--font-proportional);
   white-space: nowrap;
 }
-div.data-magic h3.name,
-div.data-magic dl.name     dd,
-div.data-magic dl.part     dd,
-div.data-magic dl.summary  dd,
-div.data-magic dl.effect > dd,
-div.data-magic.song     dl.pet      dd,
-div.data-magic.riding   dl.type     dd,
-div.data-magic.lead     dl.condition dd,
-div.data-magic.lead     dl.ccost dd,
-div.data-magic.geomancy dl.duration dd,
-div.data-magic.divination dl.type   dd,
-div.data-magic.potential  dl.premise dd {
+.data-magic h3.name,
+.data-magic dl.name     dd,
+.data-magic dl.part     dd,
+.data-magic dl.summary  dd,
+.data-magic dl.effect > dd,
+.data-magic.song     dl.pet      dd,
+.data-magic.riding   dl.type     dd,
+.data-magic.lead     dl.condition dd,
+.data-magic.lead     dl.ccost dd,
+.data-magic.geomancy dl.duration dd,
+.data-magic.divination dl.type   dd,
+.data-magic.potential  dl.premise dd {
   display: block;
   padding: .2em .5em;
   text-align: left;
 }
-div.data-magic > h3 {
+.data-magic > h3 {
   border-width: 1px 0 0 1px;
   background: var(--arts-name-bg-color);
   color: #fff;
   font-size: 130%;
 }
-div.data-magic dl.name dt {
-  background: var(--arts-name-bg-color);
-  color: #fff;
-  font-size: 150%;
+.data-magic dl.name {
+  & dt {
+    background: var(--arts-name-bg-color);
+    color: #fff;
+    font-size: 150%;
+  }
+  & dd {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    flex-wrap: wrap;
+    background: var(--arts-name-bg-color);
+    color: #fff;
+    font-size: 150%;
+    font-weight: bold;
+  }
+  & dd small {
+    display: block;
+    font-size: 55%;
+    margin-left: auto;
+    margin-right: -.2em;
+    transform: scaleY(1.3);
+  }
 }
-div.data-magic dl.name dd {
-  display: flex;
-  justify-content: space-between;
-  align-items: end;
-  flex-wrap: wrap;
-  background: var(--arts-name-bg-color);
-  color: #fff;
-  font-size: 150%;
-  font-weight: bold;
-}
-div.data-magic dl.name dd small {
-  display: block;
-  font-size: 55%;
-  margin-left: auto;
-  margin-right: -.2em;
-  transform: scaleY(1.3);
-}
-div.data-magic dl.name dd .s-icon::before,
-div.data-magic > h3 .s-icon::before {
+.data-magic dl.name dd .s-icon::before,
+.data-magic > h3 .s-icon::before {
   color: #fff;
 }
 
-div.data-magic dl.effect dd.box {
-  padding: 0;
-  border-width: 0;
-  border-radius: 0;
-  background: none;
-  box-shadow: none;
-}
-div.data-magic dl.effect dd.box > *:first-child,
-div.data-magic dl.effect dd.box p:empty + * {
-  margin-top: .2em;
-}
-div.data-magic dl.effect > :is(dt,dd):nth-of-type(n+2) {
-  border-top-width: 1px;
-  border-top-style: solid;
+.data-magic dl.effect {
+  & dd.box {
+    padding: 0;
+    border-width: 0;
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+  }
+  & dd.box > *:first-child,
+  & dd.box p:empty + * {
+    margin-top: .2em;
+  }
+  > :is(dt,dd):nth-of-type(n+2) {
+    border-top-width: 1px;
+    border-top-style: solid;
+  }
 }
 
 @media screen and (max-width:735px){
-  div.data-magic dl br {
+  .data-magic dl br {
     display: none;
   }
-  div.data-magic dl.effect br {
+  .data-magic dl.effect br {
     display:unset;
   }
-  div.data-magic dl dd {
+  .data-magic dl dd {
     display: block; 
     padding: .2em .5em;
   }
@@ -478,30 +484,31 @@ div.data-magic dl.effect > :is(dt,dd):nth-of-type(n+2) {
 div.data dl.effects dd.box *:first-child {
   margin-top: .2em;
 }
-div.data dl.effects table,
-div.data dl.effects table th,
-div.data dl.effects table td {
-  margin: .5em;
-  border-width: 1px;
-  border-style: solid;
-}
-div.data dl.effects table th,
-div.data dl.effects table td {
-  padding: .2em .5em;
-}
-div.data dl.effects table th {
-  background: rgba(127,127,127,0.2);
-}
-div.data dl.effects table.weapon-table th {
-  white-space: nowrap;
-}
-div.data dl.effects table.weapon-table td:not(.left) {
-  white-space: nowrap;
-}
-
 div.data dl.effects :is(dt,dd):nth-of-type(n+2) {
   border-top-width: 1px;
   border-top-style: solid;
+}
+div.data dl.effects table {
+  &,
+  & th,
+  & td {
+    margin: .5em;
+    border-width: 1px;
+    border-style: solid;
+  }
+  & th,
+  & td {
+    padding: .2em .5em;
+  }
+  & th {
+    background: rgba(127,127,127,0.2);
+  }
+  &.weapon-table th {
+    white-space: nowrap;
+  }
+  &.weapon-table td:not(.left) {
+    white-space: nowrap;
+  }
 }
 
 #arts-list .input-data {
@@ -520,45 +527,46 @@ div.data dl.effects :is(dt,dd):nth-of-type(n+2) {
   border-style: solid;
   border-bottom-left-radius:0;
   border-bottom-right-radius:0;
-}
-#school .box.req dt::after {
-  content: ":";
-}
-#school .box.req dd {
-  font-weight: bold;
-  text-align: left;
+
+  & dt::after {
+    content: ":";
+  }
+  & dd {
+    font-weight: bold;
+    text-align: left;
+  }
 }
 
 .item-table {
   margin-top: 1em;
-}
-.item-table,
-.item-table th,
-.item-table td {
-  border-width: 1px;
-  border-style: solid;
-  border-color: var(--box-outside-border-color);
-  text-align: center;
-}
-.item-table thead {
-  background-color: var(--arts-head-bg-color);
-}
-.item-table thead .name       { width: 14.5em; }
-.item-table thead .reputation { width: 4em; }
-.item-table thead .category   { width: 10.5em; }
-.item-table thead .price      { width: 7em; }
-.item-table tbody td {
-  padding: .2em;
-}
-.item-table tbody td.left {
-  font-size: 92%;
-}
 
-@media screen and (max-width:735px){
-  .item-table thead .name       { width: 10.5em; }
-  .item-table thead .reputation { width: 3.5em; }
-  .item-table thead .category   { width: 8.5em; }
-  .item-table thead .price      { width: 6em; }
+  &,
+  & th,
+  & td {
+    border-width: 1px;
+    border-style: solid;
+    border-color: var(--box-outside-border-color);
+    text-align: center;
+  }
+  & thead {
+    background-color: var(--arts-head-bg-color);
+  }
+  & thead .name       { width: 14.5em; }
+  & thead .reputation { width: 4em; }
+  & thead .category   { width: 10.5em; }
+  & thead .price      { width: 7em; }
+  & tbody td {
+    padding: .2em;
+  }
+  & tbody td.left {
+    font-size: 92%;
+  }
+  @media screen and (max-width:735px){
+    & thead .name       { width: 10.5em; }
+    & thead .reputation { width: 3.5em; }
+    & thead .category   { width: 8.5em; }
+    & thead .price      { width: 6em; }
+  }
 }
 
 /* // Description
@@ -587,8 +595,10 @@ div.data dl.effects :is(dt,dd):nth-of-type(n+2) {
 #mystic-arts.description h2 ~ h2 {
   margin-top: 1em;
 }
-.night .description h2 {
-  text-shadow: 0px 0px .3em #000;
+@media screen {
+  .night .description h2 {
+    text-shadow: 0px 0px .3em #000;
+  }
 }
 .description#magics,
 .description#mystic-arts {
@@ -598,34 +608,11 @@ div.data dl.effects :is(dt,dd):nth-of-type(n+2) {
   margin-top: 0;
 }
 
-
 /* // NameArea
 ---------------------------------------------------------------------------------------------------- */
 #area-name {
-  display: flex;
   align-items: flex-end;
   flex-wrap: wrap;
-  
-  padding: 0px 5px;
-  border-width: 3px 0px;
-  border-style: solid;
-  
-  background-image: linear-gradient(to right, var(--box-head-bg-color), var(--box-base-bg-color));
-  background-color: var(--bg-color);
-  border-color: var(--box-outside-border-color, inherit);
-}
-#area-name > h1 {
-  padding: 1rem;
-  font-size: 2.2rem;
-  font-weight: bold;
-  text-shadow: var(--bg-color) 0px 0px .5em,
-    var(--bg-color)  .1rem .1rem, var(--bg-color) -.1rem -.1rem,
-    var(--bg-color) -.1rem .1rem, var(--bg-color)  .1rem -.1rem,
-    var(--bg-color)  .0rem .1rem, var(--bg-color)  .0rem -.1rem,
-    var(--bg-color) -.1rem .0rem, var(--bg-color)  .1rem  .0rem;
-}
-#aka {
-  margin-right: .5em;
 }
 #area-name small {
   display: block;
@@ -653,28 +640,31 @@ div.data dl.effects :is(dt,dd):nth-of-type(n+2) {
   background: var(--bg-color);
   position: relative;
   z-index: 1;
+  @media screen and (max-width:735px){
+    width : 30vw;
+    height: 30vw;
+  }
 }
 #symbol img {
   width : 100%;
   height: 100%;
   object-fit: contain;
   filter: drop-shadow(0 0 10px #0005);
-}
-.night #symbol img {
-  filter: drop-shadow(0 0 10px #fff9);
-}
-
-@media screen and (max-width:735px){
-  #symbol {
-    width : 30vw;
-    height: 30vw;
+  .night & {
+    filter: drop-shadow(0 0 10px #fff9);
+  }
+  @media print {
+    &, .night & {
+      filter: none;
+    }
   }
 }
 
 /* // Author
 ---------------------------------------------------------------------------------------------------- */
 #author {
-  width: 50%;
+  width: max-content;
+  min-width: 50%;
   margin: 2em 0 0 auto;
   padding: .5em;
   text-align: right;
@@ -683,3 +673,5 @@ div.data dl.effects :is(dt,dd):nth-of-type(n+2) {
 }
 
 
+/* ////////// LayerEnd ////////// */
+}

@@ -1,17 +1,16 @@
 @charset "utf-8";
 
+@layer system {
 /* // Body
 ---------------------------------------------------------------------------------------------------- */
 @import url('https://fonts.googleapis.com/css2?family=Rubik+Dirt&display=swap&text=GOBLINSLAYER!');
 body {
   background-image: url(../../_common/img/back-pattern.png), url(../img/back-sword.png);
   background-blend-mode: normal, normal;
-}
-.night body {
-  background-blend-mode: hard-light, normal;
-}
-@media screen and (max-width:735px){
-  body {
+  .night & {
+    background-blend-mode: hard-light, normal;
+  }
+  @media screen and (max-width:735px){
     background-size: auto, 80%;
   }
 }
@@ -89,104 +88,6 @@ body {
 }
 #cashbook p {
   font-family: var(--base-font-family-mono);
-}
-
-/* // Name / Date
----------------------------------------------------------------------------------------------------- */
-#area-name {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  
-  padding: 0px 5px;
-  border-width: 3px 0px;
-  border-style: solid;
-  
-  background-image: linear-gradient(to right, var(--box-head-bg-color), var(--box-base-bg-color));
-  background-color: var(--bg-color);
-  border-color: var(--box-outside-border-color, inherit);
-}
-h1#character-name {
-  padding: 1rem;
-  font-size: 2.2rem;
-  font-weight: bold;
-  text-shadow: var(--bg-color) 0px 0px .5em,
-    var(--bg-color)  .1rem .1rem, var(--bg-color) -.1rem -.1rem,
-    var(--bg-color) -.1rem .1rem, var(--bg-color)  .1rem -.1rem,
-    var(--bg-color)  .0rem .1rem, var(--bg-color)  .0rem -.1rem,
-    var(--bg-color) -.1rem .0rem, var(--bg-color)  .1rem  .0rem;
-}
-#aka {
-  margin-right: .5em;
-}
-#area-name > div { 
-  text-align: right;
-  font-size: 1.2rem;
-}
-#update-time {
-}
-#player-name {
-}
-
-/* // Common
----------------------------------------------------------------------------------------------------- */
-.data-table {
-  width: 100%;
-  border-style: hidden hidden none;
-}
-.data-table:last-child {
-  border-bottom-style: hidden;
-}
-.data-table.side-margin,
-.data-tables.side-margin table,
-.data-tables.side-margin ul,
-.data-tables.side-margin dl {
-  width: calc(100% - 1rem);
-  margin: 0 .5rem;
-}
-table.data-table > tbody tr {
-  border-width: 1px 0;
-  border-style: solid;
-}
-table.data-table:not(.side-margin) thead th {
-  padding: .3rem 0 .2rem;
-  border-width: 0;
-  line-height: 1;
-}
-table.data-table tbody td,
-ul.data-table > li,  .data-tables ul > li,
-dl.data-table > *,   .data-tables dl > *  {
-  padding: .2em 0;
-  line-height: 1.4;
-}
-table.data-table:not(.side-margin) tbody th,
-table.data-table:not(.side-margin) tbody td {
-  border-left-width: 1px;
-  border-right-width: 1px;
-  border-left-style: dotted;
-  border-right-style: dotted;
-}
-table.data-table:not(.side-margin).line-tbody tbody:nth-of-type(even) td,
-table.data-table:not(.side-margin):not(.line-tbody) tbody tr:nth-of-type(even) td {
-  background-color: var(--box-even-rows-bg-color);
-}
-
-ul.data-table > li,  .data-tables ul  > li,
-dl.data-table > *,   .data-tables dl  > *  {
-  border-width: 0 0 1px;
-  border-style: solid;
-}
-ul.data-table:last-child > li:last-child,
-dl.data-table:last-child > dt:last-of-type,
-dl.data-table:last-child > dt:last-of-type ~ dd,
-.data-tables ul:last-child > li:last-child,
-.data-tables dl:last-child > dt:last-of-type,
-.data-tables dl:last-child > dt:last-of-type ~ dd {
-  border-bottom-style: hidden;
-}
-
-table.data-table tbody td:empty::before {
-  content: '　';
 }
 
 /* // Area-Status
@@ -329,8 +230,6 @@ table.data-table tbody td:empty::before {
 #personal dl#trait > dd {
   display: grid;
   grid-template-columns: auto max-content;
-}
-#personal dl#trait > dd > .note {
 }
 #personal dl#trait > dd > dl {
   align-self: end;
@@ -490,8 +389,6 @@ table.data-table tbody td:empty::before {
 @media screen and (min-width: 1400px) and (max-width: 1600px){
   #status .shorten { display: none; }
 }
-@media screen and (max-width:735px){
-}
 
 /* // Area-Ability
 ---------------------------------------------------------------------------------------------------- */
@@ -622,8 +519,6 @@ table.data-table tbody td:empty::before {
   font-size: 170%;
   line-height: 1;
 }
-@media screen and (min-width:1400px) and (max-width:1600px){
-}
 @media screen and (max-width:735px){
   #level dt > span {
     display: inline-block;
@@ -651,8 +546,6 @@ table.data-table tbody td:empty::before {
   line-height: 1;
   white-space: nowrap;
 }
-:is(#exp,#adp) dl > * {
-}
 :is(#exp,#adp) dl > *:not(:last-of-type) {
   border-width: 0 0 .1rem;
   border-style: solid;
@@ -679,6 +572,7 @@ table.data-table tbody td:empty::before {
 
 #area-equipment table.data-table tbody th {
   border-style: none solid hidden;
+  background-color: transparent;
 }
 #area-equipment table.data-table tbody:first-of-type tr:first-of-type th {
   border-top: hidden;
@@ -793,28 +687,55 @@ table.data-table tbody td:empty::before {
   align-items: start;
   line-height: 1.8;
 }
-#area-items > * {
-}
+@media print {
+  #area-items {
+    grid-template-columns: auto;
+    grid-template-rows: auto auto;
 
-@media screen and (min-width:1400px){
+    #items, #money {
+      grid-column: 1 / -1;
+    }
+
+    #items {
+      grid-row: 2 / 3;
+    }
+
+    #money {
+      grid-row: 1 / 2;
+      width: fit-content;
+    }
+  }
 }
 
 /* Money */
 #money {
+  @media print {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+
+    > dl:first-child {
+      border-right-width: 1px;
+      border-right-style: dotted;
+    }
+    > dl > dd {
+      padding: 0 1em;
+    }
+  }
 }
 
 #money dd > dl {
   display: grid;
   grid-template-columns: 4em 1fr;
-}
-#money dd > dl dt {
-  grid-column: 1;
-  grid-row: auto;
-  text-align: right;
-}
-#money dd > dl dd {
-  grid-column: 2;
-  grid-row: auto;
+
+  & dt {
+    grid-column: 1;
+    grid-row: auto;
+    text-align: right;
+  }
+  & dd {
+    grid-column: 2;
+    grid-row: auto;
+  }
 }
 
 /* // Area-Skills
@@ -947,42 +868,47 @@ table.data-table tbody td:empty::before {
 #history {
   margin-top: var(--box-v-gap);
 }
-#history table thead th.num    { width:   2em; } /* No. */
-#history table thead th.date   { width: 5.2em; } /* 日付 */
-#history table thead th.title  { width:  auto; } /* タイトル */
-#history table thead th.comp   { width: 2.6em; } /* 達成 */
-#history table thead th.exp    { width: 4.6em; } /* 経験点 */
-#history table thead th.money  { width: 4.5em; } /* 銀貨 */
-#history table thead th.adp    { width:   3em; } /* 成長点 */
-#history table thead th.gm     { width:  auto; } /* ＧＭ */
-#history table thead th.member { width:  auto; } /* 参加者 */
+#history table {
+  & thead th {
+    &.num    { width:   2em; } /* No. */
+    &.date   { width: 5.2em; } /* 日付 */
+    &.title  { width:  auto; } /* タイトル */
+    &.comp   { width: 2.6em; } /* 達成 */
+    &.exp    { width: 4.6em; } /* 経験点 */
+    &.money  { width: 4.5em; } /* 銀貨 */
+    &.adp    { width:   3em; } /* 成長点 */
+    &.gm     { width:  auto; } /* ＧＭ */
+    &.member { width:  auto; } /* 参加者 */
+  }
+  & tr th.comp span.small {
+    display: block;
+    margin: -1em 0 -.5em;
+  }
+  & tr td.comp {
+    padding-left: 1px;
+    padding-right: 1px;
+    white-space: nowrap;
 
-#history table tr th.comp span.small {
-  display: block;
-  margin: -1em 0 -.5em;
-}
-#history table tr td.comp {
-  padding-left: 1px;
-  padding-right: 1px;
-  white-space: nowrap;
-}
-#history table tr td.comp span.failed {
-  opacity: 0.5;
-}
-#history table tr td.money {
-  text-align: right;
-}
-#history table tr td.money::after {
-  content: "枚";
-  font-size: 0.9em;
-  margin-left: 3px;
-  margin-right: 2px;
-}
-#history table tr td.money:empty::after {
-  content: "";
-}
-#history table tr td:is(.gm, .member) {
-  font-size: 1.1rem;
+    & span.failed {
+      opacity: 0.5;
+    }
+  }
+  & tr td.money {
+    text-align: right;
+    
+    &::after {
+      content: "枚";
+      font-size: 0.9em;
+      margin-left: 3px;
+      margin-right: 2px;
+    }
+    &:empty::after {
+      content: "";
+    }
+  }
+  & tr td:is(.gm, .member) {
+    font-size: 1.1rem;
+  }
 }
 
 /* // Cashbook
@@ -995,6 +921,10 @@ table.data-table tbody td:empty::before {
 #cashbook > div {
   max-height: 16em;
   overflow: auto;
+
+  @media print {
+    max-height: initial;
+  }
 }
 #cashbook p {
   line-height: 1.5;
@@ -1010,4 +940,7 @@ table.data-table tbody td:empty::before {
 }
 #cashbook b.cash.minus {
   background: linear-gradient(to top, rgba(255,100,0,0.5) 0rem, rgba(255,100,0,0.3) .5rem, transparent .5rem);
+}
+
+/* ////////// LayerEnd ////////// */
 }
