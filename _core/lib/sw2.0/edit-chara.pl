@@ -591,7 +591,7 @@ foreach my $class (@data::class_caster){
 HTML
   foreach my $lv (1..20){
     next if $data::class{$class}{magic}{trancendOnly} && $lv <= 15;
-    print '<li id="magic-'.$name.$lv.'"><div class="select-input"><select name="magic'.$Name.$lv.'" oninput="selectInputCheck(\'magic'.$Name.$lv.'\',this);">';
+    print '<li id="magic-'.$name.$lv.'"><div class="select-input"><select name="magic'.$Name.$lv.'" oninput="selectInputCheck(this);">';
     print '<option></option>';
     my %only; my $hit; my $value = $pc{"magic${Name}${lv}"};
     foreach my $data (@{$data::class{$class}{magic}{data}}){
@@ -628,7 +628,7 @@ foreach my $class (@data::class_names){
 HTML
   my $c_max = 20;
   foreach my $lv (1..$c_max){
-    print '<li id="craft-'.$name.$lv.'"><div class="select-input"><select name="craft'.$Name.$lv.'" oninput="selectInputCheck(\'craft'.$Name.$lv.'\',this);">';
+    print '<li id="craft-'.$name.$lv.'"><div class="select-input"><select name="craft'.$Name.$lv.'" oninput="selectInputCheck(this);">';
     print '<option></option>';
     my %only; my $hit; my $value = $pc{"craft${Name}${lv}"};
     foreach my $data (@{$data::class{$class}{craft}{data}}){

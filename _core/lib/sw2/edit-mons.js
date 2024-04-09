@@ -4,7 +4,7 @@ const gameSystem = 'sw2';
 window.onload = function() {
   nameSet();
   rewriteMountLevel();
-  selectInputCheck('taxa',form.taxa,'その他')
+  selectInputCheck(form.taxa,'その他')
   checkMount();
 
   changeColor();

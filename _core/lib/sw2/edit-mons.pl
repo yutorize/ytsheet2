@@ -163,7 +163,7 @@ HTML
           <dt>分類</dt>
           <dd>
             <div class="select-input">
-              <select name="taxa" oninput="selectInputCheck('taxa',this,'その他')">
+              <select name="taxa" oninput="selectInputCheck(this,'その他')">
 HTML
 foreach (@data::taxa){
   print '<option '.($pc{taxa} eq @$_[0] ? ' selected': '').'>'.@$_[0].'</option>';

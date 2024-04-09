@@ -575,7 +575,7 @@ foreach my $class (@data::class_names){
               <ul class="edit-table side-margin">
 HTML
   foreach my $lv (1..17){
-    print '<li id="magic-'.$name.$lv.'"><div class="select-input"><select name="magic'.$Name.$lv.'" oninput="selectInputCheck(\'magic'.$Name.$lv.'\',this);">';
+    print '<li id="magic-'.$name.$lv.'"><div class="select-input"><select name="magic'.$Name.$lv.'" oninput="selectInputCheck(this);">';
     print '<option></option>';
     my %only; my $hit; my $value = $pc{"magic${Name}${lv}"};
     foreach my $data (@{$data::class{$class}{magic}{data}}){
@@ -612,7 +612,7 @@ foreach my $class (@data::class_names){
 HTML
   my $c_max = $class =~ /バード|ウォーリーダー/ ? 20 : $class eq 'アーティザン' ? 19 : 17;
   foreach my $lv (1..$c_max){
-    print '<li id="craft-'.$name.$lv.'"><div class="select-input"><select name="craft'.$Name.$lv.'" oninput="'.($class =~ /ウォーリーダー/ ? 'calcPackage();':'').'selectInputCheck(\'craft'.$Name.$lv.'\',this);">';
+    print '<li id="craft-'.$name.$lv.'"><div class="select-input"><select name="craft'.$Name.$lv.'" oninput="'.($class =~ /ウォーリーダー/ ? 'calcPackage();':'').'selectInputCheck(this);">';
     print '<option></option>';
     my %only; my $hit; my $value = $pc{"craft${Name}${lv}"};
     foreach my $data (@{$data::class{$class}{craft}{data}}){
