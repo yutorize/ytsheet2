@@ -107,7 +107,7 @@ Content-type: text/html\n
 
 <head>
   <meta charset="UTF-8">
-  <title>@{[$mode eq 'edit'?"編集：$pc{itemName}":'新規作成']} - $set::title</title>
+  <title>@{[$mode eq 'edit'?"編集：$pc{artsName}":'新規作成']} - $set::title</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" media="all" href="${main::core_dir}/skin/_common/css/base.css?${main::ver}">
   <link rel="stylesheet" media="all" href="${main::core_dir}/skin/_common/css/sheet.css?${main::ver}">
