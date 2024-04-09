@@ -212,7 +212,7 @@ print <<"HTML";
         <dl>
           <dt><span class="mount-only">騎獣</span>レベル
           <dd>@{[ input 'lv','number','checkLevel','min="0"' ]}
-          <dd class="mount-only small" style="display:inline-block">※入力すると、閲覧画面では現在の騎獣レベルのステータスのみ表示されます
+          <dd class="mount-only small">※入力すると、閲覧画面では現在の騎獣レベルのステータスのみ表示されます
         </dl>
         <dl>
           <dt>知能
