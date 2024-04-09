@@ -1,72 +1,75 @@
 @charset "utf-8";
 
-/* ゆとシートⅡ for AR2E - リスト */
-
+@layer system {
 /* // Body
 ---------------------------------------------------------------------------------------------------- */
 body {
   background-image: url(../../_common/img/back-pattern.png), url(../img/back-wheel.png);
   background-blend-mode: normal, normal;
-}
-@media screen and (max-width:735px){
-  body {
+  .night & {
+    background-blend-mode: hard-light, hard-light;
+  }
+  @media screen and (max-width:735px){
     background-size: auto, 100%;
     background-position-x: 0, 15vw;
   }
 }
-
 /* // List
 ---------------------------------------------------------------------------------------------------- */
 .list table tr {
-    grid-template-columns: 26rem 0.8fr 3em 0.7fr 4.5em 1.9fr 0.7fr;
-    grid-template-areas:
-      "NAME   PL RACE RACE  LVL  CLS DATE"
-      "NAME   PL  GEN  AGE  EXP  CLS DATE"
-      "NAME TAGS TAGS TAGS TAGS TAGS DATE"
-    ;
-}
-.list table .name   { grid-area: NAME; }
-.list table .player { grid-area:   PL; }
-.list table .race   { grid-area: RACE; }
-.list table .gender { grid-area:  GEN; }
-.list table .age    { grid-area:  AGE; }
-.list table .rank   { grid-area: RANK; }
-.list table .lv     { grid-area:  LVL; }
-.list table .exp    { grid-area:  EXP; }
-.list table .class  { grid-area:  CLS; }
-.list table .geis   { grid-area: GEIS; }
-.list table .tags   { grid-area: TAGS; }
-.list table .date   { grid-area: DATE; }
-
-.list table td.lv {
-  font-size: 1.15em;
-  line-height: 1;
-}
-.list table td.class {
-  flex-direction: column;
-  font-size: 92%;
-}
-.list table td.race > div {
-  flex-grow: 1;
-  margin: 0 -6%;
-  transform: scaleX(0.88);
-}
-.list table td.class > div:empty {
-  display: none;
-}
-@media screen and (max-width:735px){
-  .list table tr {
-    grid-template-columns: 18rem 6em 2.8em 0.6fr 0.6fr 10em 4em;
-    grid-template-areas:
-      "NAME PL RACE RACE LVL CLS DATE"
-      "NAME PL  GEN  AGE EXP CLS DATE"
-    ;
+  grid-template-columns: 26rem 0.8fr 3em 0.7fr 4.5em 1.9fr 0.7fr;
+  grid-template-areas:
+    "NAME   PL RACE RACE  LVL  CLS DATE"
+    "NAME   PL  GEN  AGE  EXP  CLS DATE"
+    "NAME TAGS TAGS TAGS TAGS TAGS DATE"
+  ;
+  & .name   { grid-area: NAME; }
+  & .player { grid-area:   PL; }
+  & .race   { grid-area: RACE; }
+  & .gender { grid-area:  GEN; }
+  & .age    { grid-area:  AGE; }
+  & .rank   { grid-area: RANK; }
+  & .lv     { grid-area:  LVL; }
+  & .exp    { grid-area:  EXP; }
+  & .class  { grid-area:  CLS; }
+  & .geis   { grid-area: GEIS; }
+  & .tags   { grid-area: TAGS; }
+  & .date   { grid-area: DATE; }
+  
+  & td.lv {
+    font-size: 1.15em;
+    line-height: 1;
   }
-  .list table .geis { display: none; }
+  & td.class {
+    flex-direction: column;
+    font-size: 92%;
+  }
+  & td.race > div {
+    flex-grow: 1;
+    margin: 0 -6%;
+    transform: scaleX(0.88);
+  }
+  & td.class > div:empty {
+    display: none;
+  }
+  @media screen and (max-width:735px){
+    & {
+      grid-template-columns: 18rem 6em 2.8em 0.6fr 0.6fr 10em 4em;
+      grid-template-areas:
+        "NAME PL RACE RACE LVL CLS DATE"
+        "NAME PL  GEN  AGE EXP CLS DATE"
+      ;
+    }
+    & .geis { display: none; }
+  }
 }
 
-/* // List-Simple/Monster
+/* // List-Simple
 ---------------------------------------------------------------------------------------------------- */
 .list ul li a::before {
   content: 'Lv'attr(data-lv);
+}
+
+
+/* ////////// LayerEnd ////////// */
 }
