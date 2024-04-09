@@ -146,6 +146,7 @@ print <<"HTML";
           <li onclick="sectionSelect('color');" class="color-icon" title="カラーカスタム">
           <li onclick="view('text-rule')" class="help-icon" title="テキスト整形ルール">
           <li onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード切替">
+          <li onclick="exportAsJson()" class="download-icon" title="JSON出力">
           <li class="buttons">
             <ul>
               <li @{[ display ($mode eq 'edit') ]} class="view-icon" title="閲覧画面"><a href="./?id=$::in{id}"></a>
@@ -227,7 +228,7 @@ print <<"HTML";
         </dl>
       </div>
 
-      <div class="box" id="name-form">
+      <div class="box in-toc" id="name-form" data-content-title="キャラクター名・プレイヤー名">
         <div>
           <dl id="character-name">
             <dt>キャラクター名
@@ -243,7 +244,7 @@ print <<"HTML";
       </div>
 
       <details class="box" id="regulation" @{[$mode eq 'edit' ? '':'open']} style="display:none">
-        <summary>作成レギュレーション</summary>
+        <summary class="in-toc">作成レギュレーション</summary>
         <dl>
           <dt>初期成長
           <dd id="level-pre-grow">
@@ -257,7 +258,7 @@ print <<"HTML";
         @{[ imageForm($pc{imageURL}) ]}
 
         <div id="classes" class="box">
-        <h2>種別／ネガイ／能力値</h2>
+        <h2 class="in-toc">種別／ネガイ／能力値</h2>
           <table class="edit-table">
             <thead>
               <tr>
@@ -300,7 +301,7 @@ print <<"HTML";
         </div>
 
         <div id="hitogara" class="box">
-          <h2>ヒトガラ</h2>
+          <h2 class="in-toc">ヒトガラ</h2>
           <table class="edit-table">
             <tr>
               <th>年齢<td>@{[input "age"]}
@@ -360,7 +361,7 @@ print <<"HTML";
       </div>
       
       <div class="box partner-edit">
-        <h2>パートナー</h2>
+        <h2 class="in-toc">パートナー</h2>
         <div class="partner-table" id="partner1area">
           <dl class="partner-data">
             <dt>相手
@@ -417,7 +418,7 @@ print <<"HTML";
       </div>
       
       <div class="box partner-edit">
-        <h2 id="head-partner2">@{[ input 'partner2On','checkbox','togglePartner2' ]}<span class="h-only">アナザー</span><span class="o-only">パートナー２</span></h2>
+        <h2 id="head-partner2" class="in-toc" data-content-title="アナザーまたはパートナー２">@{[ input 'partner2On','checkbox','togglePartner2' ]}<span class="h-only">アナザー</span><span class="o-only">パートナー２</span></h2>
         <div class="partner-table" id="partner2area">
           <dl class="partner-data">
             <dt>相手
@@ -473,7 +474,7 @@ print <<"HTML";
       </div>
       
       <div class="box" id="kizuna">
-        <h2>キズナ</h2>
+        <h2 class="in-toc">キズナ</h2>
         @{[input 'kizunaNum','hidden']}
         <table class="edit-table no-border-cells" id="kizuna-table">
           <thead>
@@ -504,7 +505,7 @@ print <<"HTML";
       </div>
 
       <div class="box" id="shougou">
-        <h2>傷号</h2>
+        <h2 class="in-toc">傷号</h2>
         <dl>
           <dt>1<dd>@{[ input "shougou1" ]}
           <dt>2<dd>@{[ input "shougou2" ]}
@@ -513,7 +514,7 @@ print <<"HTML";
       </div>
 
       <div class="box" id="kizuato">
-        <h2>キズアト</h2>
+        <h2 class="in-toc">キズアト</h2>
         @{[input 'kizuatoNum','hidden']}
           <table class="edit-table line-tbody no-border-cells" id="kizuato-table">
             <colgroup id="kizuato-col">
@@ -568,19 +569,19 @@ print <<"HTML";
       </div>
       
       <details class="box" id="free-note" @{[$pc{freeNote}?'open':'']}>
-        <summary>容姿・経歴・その他メモ</summary>
+        <summary class="in-toc">容姿・経歴・その他メモ</summary>
         <textarea name="freeNote">$pc{freeNote}</textarea>
         @{[ $::in{log} ? '<button type="button" class="set-newest" onclick="setNewestSingleData(\'freeNote\')">最新のメモを適用する</button>' : '' ]}
       </details>
       
       <details class="box" id="free-history" @{[$pc{freeHistory}?'open':'']}>
-        <summary>履歴（自由記入）</summary>
+        <summary class="in-toc">履歴（自由記入）</summary>
         <textarea name="freeHistory">$pc{freeHistory}</textarea>
         @{[ $::in{log} ? '<button type="button" class="set-newest" onclick="setNewestSingleData(\'freeHistory\')">最新の履歴（自由記入）を適用する</button>' : '' ]}
       </details>
       
       <div class="box" id="history">
-        <h2>セッション履歴</h2>
+        <h2 class="in-toc">セッション履歴</h2>
         @{[input 'historyNum','hidden']}
         <table class="edit-table line-tbody no-border-cells" id="history-table">
           <thead id="history-head">

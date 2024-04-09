@@ -197,6 +197,7 @@ print <<"HTML";
           <li onclick="sectionSelect('color');" class="color-icon" title="カラーカスタム">
           <li onclick="view('text-rule')" class="help-icon" title="テキスト整形ルール">
           <li onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード切替">
+          <li onclick="exportAsJson()" class="download-icon" title="JSON出力">
           <li class="buttons">
             <ul>
               <li @{[ display ($mode eq 'edit') ]} class="view-icon" title="閲覧画面"><a href="./?id=$::in{id}"></a>
@@ -278,7 +279,7 @@ print <<"HTML";
         </dl>
       </div>
       
-      <div class="box" id="name-form">
+      <div class="box in-toc" id="name-form" data-content-title="キャラクター名・プレイヤー名">
         <div>
           <dl id="character-name">
             <dt>キャラクター名
@@ -300,7 +301,7 @@ print <<"HTML";
       </div>
       
       <details class="box" id="regulation" @{[$mode eq 'edit' ? '':'open']}>
-        <summary>作成レギュレーション</summary>
+        <summary class="in-toc">作成レギュレーション</summary>
         <dl>
           <dt>成長点
           <dd>@{[input("history0Exp",'number','changeRegu','step="1"'.($set::make_fix?' readonly':''))]}
@@ -354,7 +355,7 @@ print <<"HTML";
       <div id="area-status">
         @{[ imageForm($pc{imageURL}) ]}
 
-        <div id="personal">
+        <div id="personal" class="in-toc" data-content-title="種族・年齢・性別">
           <dl class="box select-or-input" id="race">
             <dt>種族
             <dd><select name="race" onchange="changeRace()">@{[ option 'race',(sort{$data::races{$a}{sort} cmp $data::races{$b}{sort} } keys %data::races),'free|<その他（自由記入）>' ]}</select>@{[ input 'raceFree' ]}
@@ -372,7 +373,7 @@ print <<"HTML";
         </div>
 
         <div class="box" id="lifepath">
-          <h2>ライフパス</h2>
+          <h2 class="in-toc">ライフパス</h2>
           <dl id="home"><dt>出身地</dt><dd>@{[ input "homeArea",'','','list="list-area"' ]}</dd></dl>
           <table class="edit-table line-tbody no-border-cells">
             </thead>
@@ -399,7 +400,7 @@ print <<"HTML";
           <div id="lifepath-earthian">@{[ input 'lifepathEarthian','checkbox','checkRace' ]}アーシアン専用ライフパスを使う</div>
         </div>
 
-        <div class="box-union" id="classes">
+        <div class="box-union in-toc" id="classes" data-content-title="クラス">
           <dl class="box" id="class-main">
             <dt>メインクラス
             <dd id="class-main-value">$pc{classMain}
@@ -422,7 +423,7 @@ print <<"HTML";
           </dl>
         </div>
         
-        <div class="box" id="status">
+        <div class="box in-toc" id="status" data-content-title="能力値">
           <table class="edit-table" id="status-main">
             <colgroup>
               <col class="name">
@@ -593,7 +594,7 @@ print <<"HTML";
       
       
       <details class="box" id="levelup" open>
-        <summary>レベルアップ</summary>
+        <summary class="in-toc">レベルアップ</summary>
         <dl>
           <dt><ruby>ＣＬ<rp>(</rp><rt>キャラクターレベル</rt><rp>)</rp></ruby>:
           <dd>@{[ input 'level','number','changeLv','min="1"' ]}
@@ -680,7 +681,7 @@ HTML
       </details>
 
       <details class="box" id="skills" $open{skills}>
-        <summary>
+        <summary class="in-toc">
           スキル
         </summary>
         @{[input 'skillsNum','hidden']}
@@ -744,7 +745,7 @@ print <<"HTML";
         <i class="material-symbols-outlined close-button" onclick="document.getElementById('skills-trash').style.display = 'none';">close</i>
       </div>
 
-      <div class="box-union" id="battle">
+      <div class="box-union in-toc" id="battle" data-content-title="装備品">
         <div class="box" id="armaments">
           <table class="edit-table line-tbody no-border-cells">
             <colgroup>
@@ -966,7 +967,7 @@ print <<"HTML";
         </div>
       </div>
       <div class="box" id="other-rolls">
-        <h2>特殊な判定</h2>
+        <h2 class="in-toc">特殊な判定</h2>
         <table class="edit-table no-border-cells">
           <colgroup>
             <col><col><col><col><col>
@@ -1078,10 +1079,10 @@ print <<"HTML";
             <dd><span id="items-weight-total"></span>／<span id="items-weight-limit"></span>
           </dl>
           <dl class="box" id="money">
-            <dt>所持金<dd>@{[ input 'money' ]} G
+            <dt class="in-toc">所持金<dd>@{[ input 'money' ]} G
           </dl>
           <div class="box" id="items">
-            <h2>携帯品・所持品</h2>
+            <h2 class="in-toc">携帯品・所持品</h2>
             <textarea name="items" oninput="calcWeight();" placeholder="例）冒険者セット @[5]&#13;&#10;　　HPポーション @[1]&#13;&#10;　　MPポーションx2 @[2]">$pc{items}</textarea>
             <div class="annotate">
               ※<code>@[n]</code>の書式を入力すると形態重量として計算されます。<br>
@@ -1089,7 +1090,7 @@ print <<"HTML";
             </div>
           </div>
           <details class="box" id="cashbook" @{[ $pc{cashbook} || $pc{money} =~ /^(?:自動|auto)$/i ? 'open' : '' ]}>
-            <summary>収支履歴</summary>
+            <summary class="in-toc">収支履歴</summary>
             <textarea name="cashbook" oninput="calcCash();" placeholder="例）冒険者セット::-10&#13;&#10;　　HPポーション売却::+15">$pc{cashbook}</textarea>
             <p>
               所持金：<span id="cashbook-total-value">$pc{moneyTotal}</span> G
@@ -1104,7 +1105,7 @@ print <<"HTML";
 
         <div id="relations">
           <div class="box" id="geises">
-            <h2>誓約</h2>
+            <h2 class="in-toc">誓約</h2>
             @{[input 'geisesNum','hidden']}
             <table class="edit-table no-border-cells" id="geises-table">
               <colgroup>
@@ -1133,7 +1134,7 @@ print <<"HTML";
             </table>
             <div class="add-del-button"><a onclick="addGeis()">▼</a><a onclick="delGeis()">▲</a></div>
           </div>
-          <div class="box-union" id="guild">
+          <div class="box-union in-toc" id="guild" data-content-title="所属ギルド">
             <dl class="box">
               <dt>所属ギルド<dd>@{[ input 'guildName' ]}
             </dl>
@@ -1143,7 +1144,7 @@ print <<"HTML";
           </div>
 
           <div class="box" id="connections">
-            <h2>コネクション</h2>
+            <h2 class="in-toc">コネクション</h2>
             @{[input 'connectionsNum','hidden']}
             <table class="edit-table no-border-cells" id="connections-table">
               <colgroup>
@@ -1175,19 +1176,19 @@ print <<"HTML";
       </div>
       
       <details class="box" id="free-note" @{[$pc{freeNote}?'open':'']}>
-        <summary>容姿・経歴・その他メモ</summary>
+        <summary class="in-toc">容姿・経歴・その他メモ</summary>
         <textarea name="freeNote">$pc{freeNote}</textarea>
         @{[ $::in{log} ? '<button type="button" class="set-newest" onclick="setNewestSingleData(\'freeNote\')">最新のメモを適用する</button>' : '' ]}
       </details>
       
       <details class="box" id="free-history" @{[$pc{freeHistory}?'open':'']}>
-        <summary>履歴（自由記入）</summary>
+        <summary class="in-toc">履歴（自由記入）</summary>
         <textarea name="freeHistory">$pc{freeHistory}</textarea>
         @{[ $::in{log} ? '<button type="button" class="set-newest" onclick="setNewestSingleData(\'freeHistory\')">最新の履歴（自由記入）を適用する</button>' : '' ]}
       </details>
       
       <div class="box" id="history">
-        <h2>セッション履歴</h2>
+        <h2 class="in-toc">セッション履歴</h2>
         @{[input 'historyNum','hidden']}
         <table class="edit-table line-tbody no-border-cells" id="history-table">
           <thead id="history-head">

@@ -226,7 +226,7 @@
             <dd class="calc">
               <b>【<TMPL_VAR statusSpellDice>】</b>
               <div>
-                =<b><TMPL_VAR statusSpellBase></b>
+                ：<b><TMPL_VAR statusSpellBase></b>
                 <b><TMPL_VAR statusSpellMod></b>
                 </div>
           </dl>
@@ -236,7 +236,7 @@
             <dd class="calc">
               <b></b>
               <div>
-                魂魄反射<b><TMPL_VAR abilityStrRef></b>
+                魂魄反射<b><TMPL_VAR abilityPsyRef></b>
                 +冒険者レベル<b><TMPL_VAR level></b>
                 <b><TMPL_VAR statusResistMod></b>
               </div>
@@ -440,7 +440,7 @@
                 <td><TMPL_VAR hitScoreModProjectile>
               </TMPL_IF>
               <TMPL_IF AttackClasses><tr id="attack-class-head-row">
-                <th rowspan="5" class="attack-class-head">職業
+                <th rowspan="6" class="attack-class-head">職業
               <tr></TMPL_IF>
               <TMPL_LOOP AttackClasses><tr>
                 <td class="name"><TMPL_VAR NAME>

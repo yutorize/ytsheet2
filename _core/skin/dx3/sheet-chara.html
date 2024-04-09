@@ -85,7 +85,7 @@
       <a href="<TMPL_VAR convertUrl>" target="_blank"><TMPL_VAR convertSource></a> のデータを表示しています。
     </aside></TMPL_IF>
     
-    <article>
+    <article <TMPL_IF forbiddenMode>class="forbidden"</TMPL_IF>>
       <div id="area-name" class="color-set">
         <h1 id="character-name"><TMPL_IF aka><span id="aka">“<TMPL_VAR aka>”</span></TMPL_IF><TMPL_VAR characterName></h1>
         <div>
@@ -170,10 +170,10 @@
         <section class="box" id="exp">
         <h2>経験点</h2>
         <dl>
-          <dt>消費<dd>+<TMPL_VAR expSpent>
+          <dt>消費<dd><TMPL_UNLESS forbiddenMode>+</TMPL_UNLESS><TMPL_VAR expSpent>
           <dt>未使用<dd><TMPL_VAR expRest>
         </dl>
-        <div class="create-type"><TMPL_VAR createTypeName><span class="nowrap shorten">作成</span></div>
+        <div class="create-type"><TMPL_UNLESS forbiddenMode><TMPL_VAR createTypeName><span class="nowrap shorten">作成</span></TMPL_UNLESS></div>
         </section>
         
         <section class="box" id="lifepath">
@@ -238,10 +238,10 @@
             <th>社会<td data-edb><TMPL_VAR sttTotalSocial>
           <TMPL_UNLESS forbiddenMode>
             <tr class="breakdown">
-              <th>シンドローム<td><TMPL_VAR sttBaseBody>
-              <th>シンドローム<td><TMPL_VAR sttBaseSense>
-              <th>シンドローム<td><TMPL_VAR sttBaseMind>
-              <th>シンドローム<td><TMPL_VAR sttBaseSocial>
+              <th>シンドローム<td><TMPL_VAR sttBaseBreakdownBody>
+              <th>シンドローム<td><TMPL_VAR sttBaseBreakdownSense>
+              <th>シンドローム<td><TMPL_VAR sttBaseBreakdownMind>
+              <th>シンドローム<td><TMPL_VAR sttBaseBreakdownSocial>
             <tr class="breakdown">
               <th>ワークス<td><TMPL_VAR sttWorksBody>
               <th>ワークス<td><TMPL_VAR sttWorksSense>
