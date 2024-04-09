@@ -31,9 +31,9 @@ sub addJsonData {
             $i .= $ii > 1 ? "-$ii" : '';
           }
         }
-        if($multiple{ $pc{"part${i}"} } > 1){
-          $count{ $pc{"part${i}"} }++;
-          $pc{"part${i}"} .= $n2a[ $count{ $pc{"part${i}"} } ];
+        if($multiple{ $partname } > 1){
+          $count{ $partname }++;
+          $partname .= $n2a[ $count{ $partname } ];
         }
         push(@hp , {$partname.':HP' => $pc{"status${i}Hp"}.'/'.$pc{"status${i}Hp"}});
         push(@mp , {$partname.':MP' => $pc{"status${i}Mp"}.'/'.$pc{"status${i}Mp"}});
