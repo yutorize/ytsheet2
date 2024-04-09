@@ -90,6 +90,11 @@ article {
     font-size: inherit;
   }
 }
+@media print {
+  #area-name {
+    background-image: none;
+  }
+}
 
 
 /* // Item
