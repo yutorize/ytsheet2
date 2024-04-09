@@ -287,9 +287,8 @@ body {
   font-family: var(--font-proportional);
   text-align: center;
   align-self: center;
-}
-article.forbidden {
-  & #exp .create-type {
+  
+  article.forbidden & {
     display: none;
   }
 }
