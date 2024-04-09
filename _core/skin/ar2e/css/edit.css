@@ -549,8 +549,7 @@ dd.area-tags {
 }
 #battle input[name$="Type"]{ min-width: 4em; }
 #battle input[name$="Usage"]{ min-width: 4em; }
-#battle #armaments tbody tr > td {
-}
+
 #battle #battle-rolls tbody tr td.left {
   vertical-align: top;
 }

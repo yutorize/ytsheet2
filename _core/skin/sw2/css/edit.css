@@ -1174,8 +1174,6 @@ form#monster table.status tbody:has(.current) th {
 form#monster table.status th {
   background: transparent;
 }
-form#monster table.status tbody tr:not(:first-child) th {
-}
 form#monster table.status td {
   white-space: nowrap;
 }

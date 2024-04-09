@@ -204,8 +204,6 @@ body:not(.class-owner) .o-only {
 #kizuato table tbody td.left {
   padding-left: 0;
 }
-@media screen and (max-width:735px){
-}
 
 #free-note,
 #free-history {

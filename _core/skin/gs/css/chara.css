@@ -231,8 +231,6 @@ body {
   display: grid;
   grid-template-columns: auto max-content;
 }
-#personal dl#trait > dd > .note {
-}
 #personal dl#trait > dd > dl {
   align-self: end;
   display: grid;
@@ -391,8 +389,6 @@ body {
 @media screen and (min-width: 1400px) and (max-width: 1600px){
   #status .shorten { display: none; }
 }
-@media screen and (max-width:735px){
-}
 
 /* // Area-Ability
 ---------------------------------------------------------------------------------------------------- */
@@ -523,8 +519,6 @@ body {
   font-size: 170%;
   line-height: 1;
 }
-@media screen and (min-width:1400px) and (max-width:1600px){
-}
 @media screen and (max-width:735px){
   #level dt > span {
     display: inline-block;
@@ -551,8 +545,6 @@ body {
   margin: 0 5px;
   line-height: 1;
   white-space: nowrap;
-}
-:is(#exp,#adp) dl > * {
 }
 :is(#exp,#adp) dl > *:not(:last-of-type) {
   border-width: 0 0 .1rem;
@@ -694,8 +686,6 @@ body {
   margin-top: var(--box-v-gap);
   align-items: start;
   line-height: 1.8;
-}
-#area-items > * {
 }
 @media print {
   #area-items {

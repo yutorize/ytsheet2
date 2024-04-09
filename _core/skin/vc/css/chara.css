@@ -376,33 +376,5 @@ body {
 }
 
 
-/* // Cashbook
----------------------------------------------------------------------------------------------------- */
-#cashbook {
-  margin-top: var(--box-v-gap);
-  height: max-content;
-  overflow: hidden;
-}
-#cashbook > div {
-  max-height: 16em;
-  overflow: auto;
-}
-#cashbook p {
-  line-height: 1.5;
-  white-space: pre-wrap;
-}
-#cashbook b.cash {
-  padding: 2px 0;
-  font-weight: normal;
-  background: linear-gradient(to top, rgba(0,100,255,0.5) 0rem, rgba(0,100,255,0.3) .5rem, transparent .5rem);
-  &.plus {
-    background: linear-gradient(to top, rgba(0,255,100,0.5) 0rem, rgba(0,255,100,0.3) .5rem, transparent .5rem);
-  }
-  &.minus {
-    background: linear-gradient(to top, rgba(255,100,0,0.5) 0rem, rgba(255,100,0,0.3) .5rem, transparent .5rem);
-  }
-}
-
-
 /* ////////// LayerEnd ////////// */
 }

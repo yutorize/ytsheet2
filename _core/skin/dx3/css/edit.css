@@ -246,8 +246,6 @@ body:not(.mode-crc) .crc-only {
   margin: 0 -.13em;
   transform: scale(0.9);
 }
-@media screen and (max-width:850px){
-}
 @media screen and (max-width:735px){
   #status dl#status-table > *:nth-of-type(even) {
     background: none;
@@ -649,8 +647,6 @@ body:not(.mode-crc) .crc-only {
 #combo .combo-table .combo-in dl:nth-child(5) { flex-basis: 30%; }
 #combo .combo-table .combo-in dl:nth-child(6) { flex-basis: 26%; }
 #combo .combo-table .combo-in dl:nth-child(7) { flex-basis: 16%; }
-#combo .combo-table .combo-in dl dd {
-}
 
 #combo .combo-table .combo-out {
   padding-left: .5rem;

@@ -95,8 +95,6 @@
   display: grid;
   grid-template-columns: max-content auto;
 }
-#ability table th dl dt {
-}
 #ability table th dl dd {
   padding: 0;
 }
@@ -339,8 +337,6 @@
   padding: 0;
   border-right: 0;
   vertical-align: middle;
-}
-#weapons table td.hit {
 }
 
 #weapons .annotate {
