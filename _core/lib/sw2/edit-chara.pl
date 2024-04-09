@@ -100,6 +100,8 @@ $pc{evasiveManeuver} ||= 0;
 $pc{tenacity} ||= 0;
 $pc{capacity} ||= 0;
 
+$pc{unlockAbove16} = 1 if $pc{level} > 15;
+
 ### 改行処理 --------------------------------------------------
 $pc{words}         =~ s/&lt;br&gt;/\n/g;
 $pc{items}         =~ s/&lt;br&gt;/\n/g;
@@ -287,6 +289,7 @@ print <<"HTML";
         </dl>
         <div class="annotate">※経験点は、初期所有技能のぶんを含みます。</div>
         <dl class="regulation-note"><dt>備考<dd>@{[ input "history0Note" ]}</dl>
+        @{[ checkbox 'unlockAbove16','16レベル以上を解禁する（2.0の超越者ルールの流用）','checkLvCap' ]}
       </details>
       <div id="area-status">
         @{[ imageForm($pc{imageURL}) ]}
