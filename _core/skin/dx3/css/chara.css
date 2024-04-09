@@ -655,7 +655,7 @@ body {
 }
 #effect table tbody td:nth-child(1) {  } /* No. */
 #effect table tbody td:nth-child(2) { font-weight: bold; } /* 名称 */
-#effect table tbody td:nth-child(3) {  } /* Lv */
+#effect table tbody td:nth-child(3) {  } /* LV */
 #effect table tbody td:nth-child(4) { font-size: 90%; } /* タイミング */
 #effect table tbody td:nth-child(5) { font-size: 90%; } /* 技能 */
 #effect table tbody td:nth-child(6) { font-size: 90%; } /* 難易度 */

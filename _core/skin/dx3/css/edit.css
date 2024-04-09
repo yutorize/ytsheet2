@@ -371,7 +371,7 @@ body:not(.mode-crc) .crc-only {
 }
 #effect table thead th:nth-child(1) { width: 1.4em; }
 #effect table thead th:nth-child(2) { width:  auto; } /* 名称 */
-#effect table thead th:nth-child(3) { width:   2em; } /* Lv */
+#effect table thead th:nth-child(3) { width:   2em; } /* LV */
 #effect table thead th:nth-child(4) { width: 8.9em; } /* タイミング */
 #effect table thead th:nth-child(5) { width: 8.9em; } /* 技能 */
 #effect table thead th:nth-child(6) { width: 5.9em; } /* 難易度 */
@@ -436,7 +436,7 @@ body:not(.mode-crc) .crc-only {
   }
   #effect table thead th:nth-child(1) { width: 1.4em !important; }
   #effect table thead th:nth-child(2) { width:  14em !important; } /* 名称 */
-  #effect table thead th:nth-child(3) { width: 3.5em !important; } /* Lv */
+  #effect table thead th:nth-child(3) { width: 3.5em !important; } /* LV */
   #effect table thead th:nth-child(4) { width:   8em !important; } /* タイミング */
   #effect table thead th:nth-child(5) { width:   8em !important; } /* 技能 */
   #effect table thead th:nth-child(6) { width:   5em !important; } /* 難易度 */
@@ -447,7 +447,7 @@ body:not(.mode-crc) .crc-only {
   #effect table tbody td b {
     white-space: nowrap;
   }
-  #effect table tbody td:nth-child(3) input { min-width: 2em; } /* Lv */
+  #effect table tbody td:nth-child(3) input { min-width: 2em; } /* LV */
   #skills table tbody td {
     padding: .5em 0 0;
   }
