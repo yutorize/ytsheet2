@@ -366,7 +366,7 @@ HTML
 print <<"HTML";
         </div>
       </div>
-      <div class="box loots">
+      <div class="box loots monster-only">
         <h2 class="in-toc">戦利品</h2>
         <div id="loots-list">
           <ul id="loots-num">
