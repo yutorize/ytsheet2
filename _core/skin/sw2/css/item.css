@@ -254,7 +254,8 @@ div.data {
 /* // Author
 ---------------------------------------------------------------------------------------------------- */
 #author {
-  width: 50%;
+  width: max-content;
+  min-width: 50%;
   margin: 2em 0 0 auto;
   padding: .5em;
   text-align: right;
