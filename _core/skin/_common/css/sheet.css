@@ -161,6 +161,14 @@ summary {
     box-shadow: 1px 1px 2px 0px #335;
   }
 }
+@media print {
+  .box,
+  .box-union,
+  .night .box,
+  .night .box-union {
+    box-shadow: none;
+  }
+}
 .box {
   position: relative;
   background-image: linear-gradient(to bottom, var(--box-head-bg-color) 0, transparent 2.5rem);
