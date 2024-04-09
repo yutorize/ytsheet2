@@ -884,6 +884,20 @@ dl#level {
     margin-left: var(--box-h-gap);
   }
 }
+@media print {
+  #area-items {
+    flex-flow: column;
+  }
+
+  div#area-items-L {
+    flex-basis: initial;
+  }
+
+  div#area-items-R {
+    flex-basis: initial;
+    margin-left: 0;
+  }
+}
 
 /* Money */
 #money {
