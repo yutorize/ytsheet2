@@ -390,6 +390,11 @@ details:not([open]).box > summary:hover {
   &.show { top: 60px; }
   .night & { background: #000; }
 }
+@media print {
+  .box.chat-palette {
+    display: none;
+  }
+}
 .box.chat-palette .chat-palette-menu {
   display: flex;
   width: max-content;
