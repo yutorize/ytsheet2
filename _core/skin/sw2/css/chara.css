@@ -84,6 +84,13 @@ body {
   font-family: var(--base-font-family-mono);
 }
 
+@media print {
+  table.data-table tbody td {
+    padding-left: .2em;
+    padding-right: .2em;
+  }
+}
+
 /* // Area-Status
 ---------------------------------------------------------------------------------------------------- */
 #area-status {
