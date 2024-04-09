@@ -29,11 +29,13 @@ article, .color-set {
     var(--box-head-bg-color-h, 0),
     calc( var(--box-head-bg-color-s,   0%) * 0.9 ), 40%
   );
-  .night & {
-    --s-icon-color: hsl(
-      var(--box-head-bg-color-h, 0),
-      calc( var(--box-head-bg-color-s,   0%) * 0.9 ), 70%
-    );
+  @media screen {
+    .night & {
+      --s-icon-color: hsl(
+        var(--box-head-bg-color-h, 0),
+        calc( var(--box-head-bg-color-s,   0%) * 0.9 ), 70%
+      );
+    }
   }
 }
 

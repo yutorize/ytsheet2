@@ -6,8 +6,10 @@
 body {
   background-image: url(../../_common/img/back-pattern.png), url(../img/back-kiz.png);
   background-blend-mode: normal, normal;
-  .night & {
-    background-blend-mode: hard-light, hard-light;
+  @media screen {
+    .night & {
+      background-blend-mode: hard-light, hard-light;
+    }
   }
   @media screen and (max-width:735px){
     background-size: auto, 100%;
@@ -264,8 +266,10 @@ body {
   }
   & tr.hibi     { background-image: url(../img/hibi.png); }
   & tr.hibiware { background-image: url(../img/hibiware.png); }
-  .night & tr.hibi     { background-image: url(../img/hibi-w.png); }
-  .night & tr.hibiware { background-image: url(../img/hibiware-w.png); }
+  @media screen {
+    .night & tr.hibi     { background-image: url(../img/hibi-w.png); }
+    .night & tr.hibiware { background-image: url(../img/hibiware-w.png); }
+  }
   
   & tbody    { counter-reset: kizuna; }
   & tbody tr { counter-increment: kizuna; }
@@ -425,21 +429,23 @@ body {
     var(--box-base-bg-color-h, 0),
     calc( var(--box-base-bg-color-s,   0%) * 0.3 ), 65%
   );
-  .night & {
-    --box-base-bg-color: hsla(
-      var(--box-base-bg-color-h,   0),
-      var(--box-base-bg-color-s,  0%),
-      var(--box-base-bg-color-d, 15%),
-      var(--box-base-bg-color-a, 0.5)
-    );
-    --box-outside-border-color: hsl(
-      var(--box-head-bg-color-h, 0),
-      calc( var(--box-head-bg-color-s,   0%) * 0.15 ), 35%
-    );
-    --box-inside-border-color: hsl(
-      var(--box-base-bg-color-h, 0),
-      calc( var(--box-base-bg-color-s,   0%) * 0.3 ), 25%
-    );
+  @media screen {
+    .night & {
+      --box-base-bg-color: hsla(
+        var(--box-base-bg-color-h,   0),
+        var(--box-base-bg-color-s,  0%),
+        var(--box-base-bg-color-d, 15%),
+        var(--box-base-bg-color-a, 0.5)
+      );
+      --box-outside-border-color: hsl(
+        var(--box-head-bg-color-h, 0),
+        calc( var(--box-head-bg-color-s,   0%) * 0.15 ), 35%
+      );
+      --box-inside-border-color: hsl(
+        var(--box-base-bg-color-h, 0),
+        calc( var(--box-base-bg-color-s,   0%) * 0.3 ), 25%
+      );
+    }
   }
   @media screen and (min-width:1400px){
     &:first-child {

@@ -49,25 +49,27 @@ article, .color-set {
     var(--box-base-bg-color-h, 0),
     calc( var(--box-base-bg-color-s,   0%) * 0.3 ), 75%
   );
-  .night & {
-    --box-base-bg-color: hsla(
-      var(--box-base-bg-color-h,   0),
-      var(--box-base-bg-color-s,  0%),
-      var(--box-base-bg-color-d, 15%),
-      var(--box-base-bg-color-a, 0.5)
-    );
-    --box-outside-border-color: hsl(
-      var(--box-head-bg-color-h, 0),
-      calc( var(--box-head-bg-color-s,   0%) * 0.15 ), 35%
-    );
-    --box-inside-border-color: hsl(
-      var(--box-base-bg-color-h, 0),
-      calc( var(--box-base-bg-color-s,   0%) * 0.3 ), 25%
-    );
-    --box-input-border-color: hsl(
-      var(--box-base-bg-color-h, 0),
-      calc( var(--box-base-bg-color-s,   0%) * 0.3 ), 15%
-    );
+  @media screen {
+    .night & {
+      --box-base-bg-color: hsla(
+        var(--box-base-bg-color-h,   0),
+        var(--box-base-bg-color-s,  0%),
+        var(--box-base-bg-color-d, 15%),
+        var(--box-base-bg-color-a, 0.5)
+      );
+      --box-outside-border-color: hsl(
+        var(--box-head-bg-color-h, 0),
+        calc( var(--box-head-bg-color-s,   0%) * 0.15 ), 35%
+      );
+      --box-inside-border-color: hsl(
+        var(--box-base-bg-color-h, 0),
+        calc( var(--box-base-bg-color-s,   0%) * 0.3 ), 25%
+      );
+      --box-input-border-color: hsl(
+        var(--box-base-bg-color-h, 0),
+        calc( var(--box-base-bg-color-s,   0%) * 0.3 ), 15%
+      );
+    }
   }
 }
 
@@ -94,11 +96,13 @@ main article a {
   &:link    { color: hsl(var(--box-head-bg-color-h,230),90%,40%); }
   &:visited { color: hsl(var(--box-base-bg-color-h,270),40%,40%); }
   &:hover   { color: #000; background: hsla(var(--box-head-bg-color-h,230),100%,80%,0.7); }
-  .night & { background: linear-gradient(to top, hsla(var(--box-head-bg-color-h,230),100%,20%,0.7) .2rem, transparent .2rem, transparent); }
-  .night &:link    { color: hsl(var(--box-head-bg-color-h,210),100%,80%); }
-  .night &:visited { color: hsl(var(--box-base-bg-color-h,270), 40%,75%); }
-  .night &:hover   { color: #fff; background: hsla(var(--box-head-bg-color-h,230),100%,20%,0.7); }
-  
+  @media screen {
+    .night & { background: linear-gradient(to top, hsla(var(--box-head-bg-color-h,230),100%,20%,0.7) .2rem, transparent .2rem, transparent); }
+    .night &:link    { color: hsl(var(--box-head-bg-color-h,210),100%,80%); }
+    .night &:visited { color: hsl(var(--box-base-bg-color-h,270), 40%,75%); }
+    .night &:hover   { color: #fff; background: hsla(var(--box-head-bg-color-h,230),100%,20%,0.7); }
+  }
+
   &[onclick] { background: none; }
 }
 
@@ -157,8 +161,10 @@ summary {
   border-radius: 5px;
   box-shadow: 1px 1px 2px 0px #ccc;
   background-color: var(--box-base-bg-color);
-  .night & {
-    box-shadow: 1px 1px 2px 0px #335;
+  @media screen {
+    .night & {
+      box-shadow: 1px 1px 2px 0px #335;
+    }
   }
 }
 @media print {
@@ -199,8 +205,10 @@ details.box > summary {
 dl.box > dt,
 .box > table:first-child > tbody > tr > th {
   text-shadow: 0px 0px .3em #fff;
-  .night & {
-    text-shadow: 0px 0px .3em #000;
+  @media screen {
+    .night & {
+      text-shadow: 0px 0px .3em #000;
+    }
   }
 }
 details:not([open]) > summary::after {
@@ -389,9 +397,11 @@ details:not([open]).box > summary:hover {
     display: none;
   }
 }
-.night .box .open-button {
-  background-color: var(--box-head-bg-color-dark);
-  border-color: #000;
+@media screen {
+  .night .box .open-button {
+    background-color: var(--box-head-bg-color-dark);
+    border-color: #000;
+  }
 }
 
 /* チャットパレット */
@@ -408,7 +418,9 @@ details:not([open]).box > summary:hover {
   z-index: 1;
 
   &.show { top: 60px; }
-  .night & { background: #000; }
+  @media screen {
+    .night & { background: #000; }
+  }
 }
 @media print {
   .box.chat-palette {
@@ -797,8 +809,10 @@ header nav ul {
   &.show {
     top: 4rem;
   }
-  .night & {
-    background: #334455;
+  @media screen {
+    .night & {
+      background: #334455;
+    }
   }
 }
 
@@ -1053,8 +1067,10 @@ aside:is(#loglist,#downloadlist) {
     animation-duration: 0.2s;
     animation-fill-mode: forwards;
   }
-  .night & {
-    background: rgba(0,0,0,0.9);
+  @media screen {
+    .night & {
+      background: rgba(0,0,0,0.9);
+    }
   }
   @media screen and (max-width:735px){
     top: 10rem;
