@@ -711,11 +711,6 @@ input[type="submit"]:hover {
 
 /* // 共通設定欄
 ---------------------------------------------------------------------------------------------------- */
-/* 編集保護設定 */
-#edit-protect fieldset {
-  margin: 0.3rem 0.5em 0;
-  line-height: 1.8;
-}
 /* 名前 */
 #name-form {
   display: grid;
@@ -775,6 +770,11 @@ input[type="submit"]:hover {
 /* 編集保護 */
 #edit-protect {
   margin-top: var(--box-v-gap);
+  
+  > fieldset {
+    margin: 0.3rem 0.5em 0;
+    line-height: 1.8;
+  }
 }
 /* 閲覧可否 */
 #hide-options {
