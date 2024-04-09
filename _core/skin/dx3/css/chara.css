@@ -287,6 +287,10 @@ body {
   font-family: var(--font-proportional);
   text-align: center;
   align-self: center;
+  
+  article.forbidden & {
+    display: none;
+  }
 }
 @media screen and (max-width:735px){
   #exp dl {
