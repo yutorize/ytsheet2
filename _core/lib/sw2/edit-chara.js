@@ -1071,20 +1071,24 @@ function calcPackage() {
       
       for(const pId in pData){
         let autoBonus = 0;
+        let disabled = false;
         if(cId === 'War' && pId === 'Int'){
-          let hit = 0;
+          disabled = true;
           for(let i = 1; i <= lv.War+(feats['鼓咆陣率追加']||0); i++){
-            if(form[`craftCommand${i}`].value.match(/軍師の知略$/)){ hit = 1; autoBonus += form[`craftCommand${i}`].value.match(/^陣率/) ? 1 : 0; break; }
+            if(form[`craftCommand${i}`].value.match(/軍師の知略$/)){ disabled = false; autoBonus += form[`craftCommand${i}`].value.match(/^陣率/) ? 1 : 0; break; }
           }
-          if(!hit){
-            document.getElementById(`package-${eName}-${pId.toLowerCase()}`).textContent = '―';
-            break;
+        }
+        else if(cId === 'Rid' && pId === 'Obs'){
+          disabled = true;
+          for(let i = 1; i <= lv.Rid; i++){
+            if(form[`craftRiding${i}`].value.match(/探索指令$/)){ disabled = false; break; }
           }
         }
         
-        let value = cLv + bonus[alphabetToStt[pData[pId].stt]] + Number(form[`pack${cId}${pId}Add`].value) + autoBonus;
+        let value = disabled ? 0 : (cLv + bonus[alphabetToStt[pData[pId].stt]] + Number(form[`pack${cId}${pId}Add`].value) + autoBonus);
         document.getElementById(`package-${eName}-${pId.toLowerCase()}-auto`).textContent = autoBonus ? '+'+autoBonus : '';
         document.getElementById(`package-${eName}-${pId.toLowerCase()}`).textContent = value;
+        document.getElementById(`package-${eName}-${pId.toLowerCase()}-row`).style.display = disabled ? 'none' : '';
 
         if(pData[pId].monsterLore){ lore.push(cLv > 0 ? value : 0); }
         if(pData[pId].initiative ){ init.push(cLv > 0 ? value : 0); }

@@ -612,7 +612,7 @@ foreach my $class (@data::class_names){
 HTML
   my $c_max = $class =~ /バード|ウォーリーダー/ ? 20 : $class eq 'アーティザン' ? 19 : 17;
   foreach my $lv (1..$c_max){
-    print '<li id="craft-'.$name.$lv.'"><div class="select-input"><select name="craft'.$Name.$lv.'" oninput="'.($class =~ /ウォーリーダー/ ? 'calcPackage();':'').'selectInputCheck(this);">';
+    print '<li id="craft-'.$name.$lv.'"><div class="select-input"><select name="craft'.$Name.$lv.'" oninput="'.($class =~ /ウォーリーダー|ライダー/ ? 'calcPackage();':'').'selectInputCheck(this);">';
     print '<option></option>';
     my %only; my $hit; my $value = $pc{"craft${Name}${lv}"};
     foreach my $data (@{$data::class{$class}{craft}{data}}){
@@ -658,9 +658,9 @@ foreach my $class (@data::class_names){
   my $rowspan = keys %data;
   print '<tbody id="package-'. $c_en .'"'. display($pc{'lv'.$c_id}) .'>';
   my $i;
-  foreach my $p_id (sort{$data{$a}{stt} cmp $data{$b}{stt}} keys %data){
+  foreach my $p_id (sort{$data{$a}{stt} cmp $data{$b}{stt} || $data{$a} cmp $data{$b}} keys %data){
     (my $p_name = $data{$p_id}{name}) =~ s/(\(.+?\))/<small>$1<\/small>/;
-    print '<tr>';
+    print '<tr id="package-'.$c_en.'-'.lc($p_id).'-row">';
     print '<th rowspan="'.$rowspan.'">'.$class if !$i;
     print '<th>'. $p_name;
     print '<td id="package-'.$c_en.'-'.lc($p_id).'-auto" class="small">';

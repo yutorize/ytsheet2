@@ -426,12 +426,22 @@ else {
 $SHEET->param(Language => \@language);
 
 ### パッケージ --------------------------------------------------
-## ウォーリーダー：軍師の知略
-my $war_int_initiative;
-foreach(1 .. $pc{lvWar}+$pc{commandAddition}){
-  if($pc{'craftCommand'.$_} =~ /軍師の知略$/){ $war_int_initiative = 1; last; }
+## ウォーリーダー【軍師の知略】
+{
+  my $disabled = 1;
+  foreach(1 .. $pc{lvWar}+$pc{commandAddition}){
+    if($pc{'craftCommand'.$_} =~ /軍師の知略$/){ $disabled = 0; last; }
+  }
+  if($disabled){ delete $data::class{'ウォーリーダー'}{package}{Int} }
 }
-if(!$war_int_initiative){ delete $data::class{'ウォーリーダー'}{package}{Int} }
+## ライダー【探索指令】
+{
+  my $disabled = 1;
+  foreach(1 .. $pc{lvRid}){
+    if($pc{'craftRiding'.$_} =~ /探索指令$/){ $disabled = 0; last; }
+  }
+  if($disabled){ delete $data::class{'ライダー'}{package}{Obs} }
+}
 ## 共通処理
 my @packages;
 foreach my $class (@data::class_names){
