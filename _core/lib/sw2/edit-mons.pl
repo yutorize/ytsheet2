@@ -49,22 +49,21 @@ $pc{skills}      =~ s/&lt;br&gt;/\n/g;
 $pc{description} =~ s/&lt;br&gt;/\n/g;
 $pc{chatPalette} =~ s/&lt;br&gt;/\n/g;
 
-
+### フォーム表示 #####################################################################################
 my $title;
 if ($mode eq 'edit') {
-    $title = '編集：';
-    if ($pc{characterName}) {
-        $title .= $pc{characterName};
-        $title .= "（$pc{monsterName}）" if $pc{monsterName};
-    }
-    else {
-        $title .= $pc{monsterName};
-    }
+  $title = '編集：';
+  if ($pc{characterName}) {
+    $title .= $pc{characterName};
+    $title .= "（$pc{monsterName}）" if $pc{monsterName};
+  }
+  else {
+    $title .= $pc{monsterName};
+  }
 }
 else {
-    $title = '新規作成';
+  $title = '新規作成';
 }
-### フォーム表示 #####################################################################################
 print <<"HTML";
 Content-type: text/html\n
 <!DOCTYPE html>
