@@ -697,26 +697,55 @@ body {
 }
 #area-items > * {
 }
+@media print {
+  #area-items {
+    grid-template-columns: auto;
+    grid-template-rows: auto auto;
 
-@media screen and (min-width:1400px){
+    #items, #money {
+      grid-column: 1 / -1;
+    }
+
+    #items {
+      grid-row: 2 / 3;
+    }
+
+    #money {
+      grid-row: 1 / 2;
+      width: fit-content;
+    }
+  }
 }
 
 /* Money */
 #money {
+  @media print {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+
+    > dl:first-child {
+      border-right-width: 1px;
+      border-right-style: dotted;
+    }
+    > dl > dd {
+      padding: 0 1em;
+    }
+  }
 }
 
 #money dd > dl {
   display: grid;
   grid-template-columns: 4em 1fr;
-}
-#money dd > dl dt {
-  grid-column: 1;
-  grid-row: auto;
-  text-align: right;
-}
-#money dd > dl dd {
-  grid-column: 2;
-  grid-row: auto;
+
+  & dt {
+    grid-column: 1;
+    grid-row: auto;
+    text-align: right;
+  }
+  & dd {
+    grid-column: 2;
+    grid-row: auto;
+  }
 }
 
 /* // Area-Skills
@@ -897,6 +926,10 @@ body {
 #cashbook > div {
   max-height: 16em;
   overflow: auto;
+
+  @media print {
+    max-height: initial;
+  }
 }
 #cashbook p {
   line-height: 1.5;

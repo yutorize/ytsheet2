@@ -202,11 +202,13 @@ body {
     &.club  { color: #050; }
     &.heart { color: #d03; }
     &.dia   { color: #f30; }
-    .night & {
-      &.spade { color: #77a; }
-      &.club  { color: #686; }
-      &.heart { color: #f36; }
-      &.dia   { color: #f63; }
+    @media screen {
+      .night & {
+        &.spade { color: #77a; }
+        &.club  { color: #686; }
+        &.heart { color: #f36; }
+        &.dia   { color: #f63; }
+      }
     }
   }
   > dd b {
@@ -344,21 +346,23 @@ body {
     var(--box-base-bg-color-h, 0),
     calc( var(--box-base-bg-color-s,   0%) * 0.3 ), 65%
   );
-  .night & {
-    --box-base-bg-color: hsla(
-      var(--box-base-bg-color-h,   0),
-      var(--box-base-bg-color-s,  0%),
-      var(--box-base-bg-color-d, 15%),
-      var(--box-base-bg-color-a, 0.5)
-    );
-    --box-outside-border-color: hsl(
-      var(--box-head-bg-color-h, 0),
-      calc( var(--box-head-bg-color-s,   0%) * 0.15 ), 35%
-    );
-    --box-inside-border-color: hsl(
-      var(--box-base-bg-color-h, 0),
-      calc( var(--box-base-bg-color-s,   0%) * 0.3 ), 25%
-    );
+  @media screen {
+    .night & {
+      --box-base-bg-color: hsla(
+        var(--box-base-bg-color-h,   0),
+        var(--box-base-bg-color-s,  0%),
+        var(--box-base-bg-color-d, 15%),
+        var(--box-base-bg-color-a, 0.5)
+      );
+      --box-outside-border-color: hsl(
+        var(--box-head-bg-color-h, 0),
+        calc( var(--box-head-bg-color-s,   0%) * 0.15 ), 35%
+      );
+      --box-inside-border-color: hsl(
+        var(--box-base-bg-color-h, 0),
+        calc( var(--box-base-bg-color-s,   0%) * 0.3 ), 25%
+      );
+    }
   }
   @media screen and (min-width:1400px){
     &:first-child {
@@ -370,6 +374,9 @@ body {
 .partner .image-none {
   grid-column: 1;
   grid-row: 1 / 4;
+  @media print {
+    break-inside: avoid;
+  }
 }
 .partner .image-none::after {
   font-size: 6rem;

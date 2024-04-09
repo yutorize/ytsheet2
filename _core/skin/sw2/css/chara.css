@@ -313,7 +313,7 @@ body {
   &::after {
     content: "ボーナス";
   }
-  @media screen and (max-width:850px), screen and (min-width:1400px) and (max-width:1680px){
+  @media screen and (max-width:850px), screen and (min-width:1400px) and (max-width:1680px), print and (max-width:850px) {
     &::after {
       content: "Ｂ";
     }
@@ -867,16 +867,28 @@ dl#level {
 #area-items {
   display: flex;
   justify-content: space-between;
+  gap: 0 var(--box-h-gap);
+
+  @media print {
+    flex-flow: column;
+  }
   
   > div > .box {
     margin-top: var(--box-v-gap);
   }
   #area-items-L {
     flex-basis: 60%;
+
+    @media print {
+      flex-basis: initial;
+    }
   }
   #area-items-R {
     flex-basis: 40%;
-    margin-left: var(--box-h-gap);
+    
+    @media print {
+      flex-basis: initial;
+    }
   }
 }
 
@@ -1046,6 +1058,10 @@ dl#level {
 #cashbook > div {
   max-height: 16em;
   overflow: auto;
+
+  @media print {
+    max-height: initial;
+  }
 }
 #cashbook p {
   line-height: 1.5;

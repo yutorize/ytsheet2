@@ -116,10 +116,12 @@ ruby rp {
   --text-color: #000;
   --input-bg-color: rgba(255,255,255,0.7);
 }
-.night {
-  --text-color: #fff;
-  --bg-color: #000;
-  --input-bg-color: rgba(0,0,0,0.8);
+@media screen {
+  .night {
+    --text-color: #fff;
+    --bg-color: #000;
+    --input-bg-color: rgba(0,0,0,0.8);
+  }
 }
 *, *::before, *::after {
   margin: 0px;
@@ -172,17 +174,21 @@ a {
   &:visited { color: #678; }
   &:hover   { color: #000; }
 }
-.night a {
-  text-decoration: none;
-  &:link    { color: #abf; }
-  &:visited { color: #abc; }
-  &:hover   { color: #fff; }
+@media screen {
+  .night a {
+    text-decoration: none;
+    &:link    { color: #abf; }
+    &:visited { color: #abc; }
+    &:hover   { color: #fff; }
+  }
 }
 main p a {
   background: linear-gradient(to top, #cef .3rem, transparent .3rem, transparent);
 }
-.night main p a {
-  background: linear-gradient(to top, #338 .3rem, transparent .3rem, transparent);
+@media screen {
+  .night main p a {
+    background: linear-gradient(to top, #338 .3rem, transparent .3rem, transparent);
+  }
 }
 
 input,
@@ -234,6 +240,12 @@ details {
   }
 }
 
+@media print {
+  details:not([open]) {
+    display: none;
+  }
+}
+
 body {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(auto, 900px) minmax(0, 1fr);
@@ -247,6 +259,9 @@ body {
   color: var(--text-color);
   .night & {
     background-blend-mode: hard-light, hard-light;
+  }
+  @media print {
+    display: block;
   }
 }
 
@@ -343,6 +358,9 @@ footer {
     background-color: #456;
     background-blend-mode: color-burn;
   }
+  @media print {
+    display: none;
+  }
 }
 header,
 footer {
@@ -357,6 +375,10 @@ main {
   border-width: 0px 3px;
   border-style: double;
   border-color: #aaa;
+
+  @media print {
+    border-width: 0;
+  }
 }
 
 article{
@@ -369,17 +391,8 @@ article h1 {
 }
 
 * { border-color: #999; }
-.night * { border-color: #556; }
-
-@media print{
-  header,
-  .header-back-name,
-  footer,
-  #login-form,
-  .back-button,
-  .chat-palette {
-    display: none;
-  }
+@media screen {
+  .night * { border-color: #556; }
 }
 
 /* トグルボタン */
@@ -705,6 +718,10 @@ main nav ul li a:hover {
   overflow: hidden;
   font-size: 2em;
   font-weight: bold;
+
+  @media print {
+    display: none;
+  }
 
   & a {
     display: block;

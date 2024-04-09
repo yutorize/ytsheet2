@@ -2,6 +2,19 @@
 
 /* ゆとシートⅡ */
 
+@media print {
+  body {
+    background-image: none;
+  }
+
+  aside#sidebar-top,
+  aside#sidebar-left,
+  aside#sidebar-right,
+  aside#sidebar-bottom {
+    display: none;
+  }
+}
+
 @layer sheet {
 /* // Base
 ---------------------------------------------------------------------------------------------------- */
@@ -49,25 +62,27 @@ article, .color-set {
     var(--box-base-bg-color-h, 0),
     calc( var(--box-base-bg-color-s,   0%) * 0.3 ), 75%
   );
-  .night & {
-    --box-base-bg-color: hsla(
-      var(--box-base-bg-color-h,   0),
-      var(--box-base-bg-color-s,  0%),
-      var(--box-base-bg-color-d, 15%),
-      var(--box-base-bg-color-a, 0.5)
-    );
-    --box-outside-border-color: hsl(
-      var(--box-head-bg-color-h, 0),
-      calc( var(--box-head-bg-color-s,   0%) * 0.15 ), 35%
-    );
-    --box-inside-border-color: hsl(
-      var(--box-base-bg-color-h, 0),
-      calc( var(--box-base-bg-color-s,   0%) * 0.3 ), 25%
-    );
-    --box-input-border-color: hsl(
-      var(--box-base-bg-color-h, 0),
-      calc( var(--box-base-bg-color-s,   0%) * 0.3 ), 15%
-    );
+  @media screen {
+    .night & {
+      --box-base-bg-color: hsla(
+        var(--box-base-bg-color-h,   0),
+        var(--box-base-bg-color-s,  0%),
+        var(--box-base-bg-color-d, 15%),
+        var(--box-base-bg-color-a, 0.5)
+      );
+      --box-outside-border-color: hsl(
+        var(--box-head-bg-color-h, 0),
+        calc( var(--box-head-bg-color-s,   0%) * 0.15 ), 35%
+      );
+      --box-inside-border-color: hsl(
+        var(--box-base-bg-color-h, 0),
+        calc( var(--box-base-bg-color-s,   0%) * 0.3 ), 25%
+      );
+      --box-input-border-color: hsl(
+        var(--box-base-bg-color-h, 0),
+        calc( var(--box-base-bg-color-s,   0%) * 0.3 ), 15%
+      );
+    }
   }
 }
 
@@ -94,11 +109,12 @@ main article a {
   &:link    { color: hsl(var(--box-head-bg-color-h,230),90%,40%); }
   &:visited { color: hsl(var(--box-base-bg-color-h,270),40%,40%); }
   &:hover   { color: #000; background: hsla(var(--box-head-bg-color-h,230),100%,80%,0.7); }
-  .night & { background: linear-gradient(to top, hsla(var(--box-head-bg-color-h,230),100%,20%,0.7) .2rem, transparent .2rem, transparent); }
-  .night &:link    { color: hsl(var(--box-head-bg-color-h,210),100%,80%); }
-  .night &:visited { color: hsl(var(--box-base-bg-color-h,270), 40%,75%); }
-  .night &:hover   { color: #fff; background: hsla(var(--box-head-bg-color-h,230),100%,20%,0.7); }
-  
+  @media screen {
+    .night & { background: linear-gradient(to top, hsla(var(--box-head-bg-color-h,230),100%,20%,0.7) .2rem, transparent .2rem, transparent); }
+    .night &:link    { color: hsl(var(--box-head-bg-color-h,210),100%,80%); }
+    .night &:visited { color: hsl(var(--box-base-bg-color-h,270), 40%,75%); }
+    .night &:hover   { color: #fff; background: hsla(var(--box-head-bg-color-h,230),100%,20%,0.7); }
+  }
   &[onclick] { background: none; }
 }
 
@@ -155,10 +171,12 @@ summary {
   border-width: 1px;
   border-style: solid;
   border-radius: 5px;
-  box-shadow: 1px 1px 2px 0px #ccc;
   background-color: var(--box-base-bg-color);
-  .night & {
-    box-shadow: 1px 1px 2px 0px #335;
+  @media screen {
+    box-shadow: 1px 1px 2px 0px #ccc;
+    .night & {
+      box-shadow: 1px 1px 2px 0px #335;
+    }
   }
 }
 .box {
@@ -191,8 +209,10 @@ details.box > summary {
 dl.box > dt,
 .box > table:first-child > tbody > tr > th {
   text-shadow: 0px 0px .3em #fff;
-  .night & {
-    text-shadow: 0px 0px .3em #000;
+  @media screen {
+    .night & {
+      text-shadow: 0px 0px .3em #000;
+    }
   }
 }
 details:not([open]) > summary::after {
@@ -311,6 +331,13 @@ details:not([open]).box > summary:hover {
   line-height: 1.2;
   font-size: 100%;
 }
+@media print {
+  .box {
+    & h2, & h3, & h4 {
+      break-after: avoid;
+    }
+  }
+}
 
 .box h2 + h3,
 .box h2 + h4,
@@ -368,6 +395,10 @@ details:not([open]).box > summary:hover {
   &[data-open="true"]::after {
     transform: scale(1.4,-1.4);
   }
+  
+  @media print {
+    display: none;
+  }
 }
 .night .box .open-button {
   background-color: var(--box-head-bg-color-dark);
@@ -389,6 +420,10 @@ details:not([open]).box > summary:hover {
 
   &.show { top: 60px; }
   .night & { background: #000; }
+
+  @media print {
+    display: none;
+  }
 }
 .box.chat-palette .chat-palette-menu {
   display: flex;
@@ -474,6 +509,12 @@ ul.data-table > li,
 dl.data-table > * {
   padding: .2em 0;
   line-height: 1.4;
+}
+@media print {
+  table.data-table tbody td {
+    padding-left: .2em;
+    padding-right: .2em;
+  }
 }
 table.data-table {
   > tbody tr {
@@ -775,6 +816,9 @@ header nav ul {
   .night & {
     background: #334455;
   }
+  @media print {
+    display: none;
+  }
 }
 
 #login-form input {
@@ -1035,6 +1079,9 @@ aside:is(#loglist,#downloadlist) {
     top: 10rem;
     height: calc(100vh - 12rem);
   }
+  @media print {
+    display: none;
+  }
 }
 @keyframes bulist-in {
   0%   { right: -100vw; }
@@ -1275,7 +1322,6 @@ aside#error {
   opacity: 0.6;
   letter-spacing: -0.1rem;
 }
-
 
 /* ////////// LayerEnd ////////// */
 }
