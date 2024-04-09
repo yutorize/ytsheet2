@@ -652,6 +652,14 @@ div.data dl.effects table {
     filter: drop-shadow(0 0 10px #fff9);
   }
 }
+@media print {
+  #symbol img {
+    filter: none;
+    .night & {
+      filter: none;
+    }
+  }
+}
 
 /* // Author
 ---------------------------------------------------------------------------------------------------- */
