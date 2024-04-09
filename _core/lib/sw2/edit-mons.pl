@@ -49,8 +49,21 @@ $pc{skills}      =~ s/&lt;br&gt;/\n/g;
 $pc{description} =~ s/&lt;br&gt;/\n/g;
 $pc{chatPalette} =~ s/&lt;br&gt;/\n/g;
 
-
 ### フォーム表示 #####################################################################################
+my $title;
+if ($mode eq 'edit') {
+  $title = '編集：';
+  if ($pc{characterName}) {
+    $title .= $pc{characterName};
+    $title .= "（$pc{monsterName}）" if $pc{monsterName};
+  }
+  else {
+    $title .= $pc{monsterName};
+  }
+}
+else {
+  $title = '新規作成';
+}
 print <<"HTML";
 Content-type: text/html\n
 <!DOCTYPE html>
@@ -58,7 +71,7 @@ Content-type: text/html\n
 
 <head>
   <meta charset="UTF-8">
-  <title>@{[$mode eq 'edit'?"編集：$pc{monsterName}":'新規作成']} - $set::title</title>
+  <title>$title - $set::title</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" media="all" href="${main::core_dir}/skin/_common/css/base.css?${main::ver}">
   <link rel="stylesheet" media="all" href="${main::core_dir}/skin/_common/css/sheet.css?${main::ver}">
