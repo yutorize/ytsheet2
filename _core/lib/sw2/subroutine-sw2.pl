@@ -222,6 +222,9 @@ sub data_update_chara {
     $pc{raceAbilitySelect2} = $pc{raceAbilityLv16} =~ s/^［|］$//gr;
     if($pc{race} eq 'ルーンフォーク（戦闘用ルーンフォーク）'){ $pc{race} = 'ルーンフォーク（戦闘型ルーンフォーク）' }
   }
+  if($ver < 1.24011){
+    $pc{'craftEnhance'.$_} =~ s/^ヴジャドーアイ$/ヴジャトーアイ/ foreach (16..17);
+  }
   $pc{ver} = $main::ver;
   $pc{lasttimever} = $ver;
   return %pc;
