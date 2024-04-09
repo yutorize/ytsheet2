@@ -167,6 +167,12 @@ article {
   & dl.a-cost    { grid-area: ACST; }
 }
 
+@media print {
+  .wide .data-magic {
+    break-inside: avoid;
+  }
+}
+
 .data-magic > dl {
   display: grid;
   grid-template-columns: 3.5em 1fr;
