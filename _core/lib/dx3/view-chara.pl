@@ -266,6 +266,9 @@ $SHEET->param(breed => isNoiseText(tagDelete $breedPrefix) ? $breedPrefix : $bre
 
 ### 能力値 --------------------------------------------------
 $SHEET->param('sttWorks'.ucfirst($pc{sttWorks}) => 1);
+foreach my $name ('Body','Sense','Mind','Social') {
+  $SHEET->param('sttBaseBreakdown'.$name => $pc{syndrome2} ? "$pc{'sttSyn1'.$name}＋$pc{'sttSyn2'.$name}" : "$pc{'sttSyn1'.$name}×2");
+}
 
 ### 技能 --------------------------------------------------
 foreach my $name ('Melee','Ranged','RC','Negotiate','Dodge','Percept','Will','Procure'){
