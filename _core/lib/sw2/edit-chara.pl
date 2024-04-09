@@ -100,6 +100,8 @@ $pc{evasiveManeuver} ||= 0;
 $pc{tenacity} ||= 0;
 $pc{capacity} ||= 0;
 
+$pc{unlockAbove16} = 1 if $pc{level} > 15;
+
 ### 改行処理 --------------------------------------------------
 $pc{words}         =~ s/&lt;br&gt;/\n/g;
 $pc{items}         =~ s/&lt;br&gt;/\n/g;
@@ -211,12 +213,6 @@ HTML
       </details>
 HTML
 }
-my $maxLv = 0;
-for my $key (keys(%pc)) {
-  next if $key !~ /^lv[A-Z][a-z]{2}$/;
-  $maxLv = $pc{$key} if $pc{$key} && $pc{$key} > $maxLv;
-}
-$pc{'unlockAbove16'} = 1 if $maxLv >= 16;
   print <<"HTML";
       <dl class="box" id="hide-options">
         <dt>閲覧可否設定
