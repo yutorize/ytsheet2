@@ -153,15 +153,17 @@ dd.area-tags {
 }
 #status table{
   table-layout: fixed;
-}
-#status table col.name   { width: 3em; }
-#status table col.text   { width: 4em; }
-#status table col.input  { width: 4.5em; }
-#status table col.indent1{ width: 1em; }
-#status table col.indent2{ width: 2em; }
-#status table col.dice   { width: 6em; }
-#status table#status-sub td:nth-last-child(3) {
-  font-weight: normal;
+  
+  & col.name   { width: 3em; }
+  & col.text   { width: 4em; }
+  & col.input  { width: 4.5em; }
+  & col.indent1{ width: 1em; }
+  & col.indent2{ width: 2em; }
+  & col.dice   { width: 6em; }
+  
+  #status-sub td:nth-last-child(3) {
+    font-weight: normal;
+  }
 }
 
 @media screen and (max-width:735px){
@@ -397,15 +399,17 @@ dd.area-tags {
   #skills table tbody td[colspan] div {
     grid-template-columns: max-content 7.5em max-content 7.5em max-content 1fr;
   }
-  #skills table thead th:nth-child(1) { width: 1.4em !important; }
-  #skills table thead th:nth-child(2) { width:  14em !important; } /* 名称 */
-  #skills table thead th:nth-child(3) { width: 3.5em !important; } /* Lv */
-  #skills table thead th:nth-child(4) { width:   8em !important; } /* タイミング */
-  #skills table thead th:nth-child(5) { width:   8em !important; } /* 判定 */
-  #skills table thead th:nth-child(6) { width:   6em !important; } /* 対象 */
-  #skills table thead th:nth-child(7) { width:   5em !important; } /* 射程 */
-  #skills table thead th:nth-child(8) { width:   4em !important; } /* コスト */
-  #skills table thead th:nth-child(9) { width:   8em !important; } /* 制限 */
+  #skills table thead th {
+    &:nth-child(1) { width: 1.4em !important; }
+    &:nth-child(2) { width:  14em !important; } /* 名称 */
+    &:nth-child(3) { width: 3.5em !important; } /* Lv */
+    &:nth-child(4) { width:   8em !important; } /* タイミング */
+    &:nth-child(5) { width:   8em !important; } /* 判定 */
+    &:nth-child(6) { width:   6em !important; } /* 対象 */
+    &:nth-child(7) { width:   5em !important; } /* 射程 */
+    &:nth-child(8) { width:   4em !important; } /* コスト */
+    &:nth-child(9) { width:   8em !important; } /* 制限 */
+  }
   #skills table tbody td b {
     white-space: nowrap;
   }

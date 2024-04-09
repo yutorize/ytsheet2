@@ -313,10 +313,12 @@ body:not(.mode-crc) .crc-only {
   padding-bottom: 4px;
 }
 
-#memory table tbody td:nth-child(1) { width: 1.5em; border-right-width: 1px; } /* ✔ */
-#memory table tbody td:nth-child(2) { width: 6.2em; border-right-width: 1px; } /* 関係 */
-#memory table tbody td:nth-child(3) { width: 14em; border-right-width: 1px; } /* 名前 */
-#memory table tbody td:nth-child(4) { width: 4em; border-right-width: 1px; } /* 感情 */
+#memory table tbody td {
+  &:nth-child(1) { width: 1.5em; border-right-width: 1px; } /* ✔ */
+  &:nth-child(2) { width: 6.2em; border-right-width: 1px; } /* 関係 */
+  &:nth-child(3) { width: 14em; border-right-width: 1px; } /* 名前 */
+  &:nth-child(4) { width: 4em; border-right-width: 1px; } /* 感情 */
+}
 #memory table thead tr th:first-child {
   padding-left: 0;
   text-align: center;
@@ -337,24 +339,28 @@ body:not(.mode-crc) .crc-only {
 @media screen and (max-width:735px){
   #lois { overflow-x: auto; }
   #lois table  { table-layout: fixed; white-space: nowrap; margin-top: .5em; }
-  #lois table colgroup col:nth-child(1) { width:   7em; } 
-  #lois table colgroup col:nth-child(2) { width:  10em; }
-  #lois table colgroup col:nth-child(3) { width:   6em; }
-  #lois table colgroup col:nth-child(4) { width: 1.5em; }
-  #lois table colgroup col:nth-child(5) { width:   6em; }
-  #lois table colgroup col:nth-child(6) { width:   3em; }
-  #lois table colgroup col:nth-child(7) { width:  14em; }
-  #lois table colgroup col:nth-child(8) { width: 2.6em; }
+  #lois table colgroup col {
+    &:nth-child(1) { width:   7em; } 
+    &:nth-child(2) { width:  10em; }
+    &:nth-child(3) { width:   6em; }
+    &:nth-child(4) { width: 1.5em; }
+    &:nth-child(5) { width:   6em; }
+    &:nth-child(6) { width:   3em; }
+    &:nth-child(7) { width:  14em; }
+    &:nth-child(8) { width: 2.6em; }
+  }
 
   #lois table tbody td span[data-state] { padding: .5em 0; }
 
   #memory { overflow-x: auto; }
   #memory table  { table-layout: fixed; white-space: nowrap; margin-top: .5em; }
-  #memory table thead th:nth-child(1) { width: 1.5em; } 
-  #memory table thead th:nth-child(2) { width:   7em; } 
-  #memory table thead th:nth-child(3) { width:  12em; }
-  #memory table thead th:nth-child(4) { width:   6em; }
-  #memory table thead th:nth-child(5) { width:  14em; }
+  #memory table thead th {
+    &:nth-child(1) { width: 1.5em; }
+    &:nth-child(2) { width:   7em; }
+    &:nth-child(3) { width:  12em; }
+    &:nth-child(4) { width:   6em; }
+    &:nth-child(5) { width:  14em; }
+  }
 }
 
 #effect {

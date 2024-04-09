@@ -868,42 +868,47 @@ body {
 #history {
   margin-top: var(--box-v-gap);
 }
-#history table thead th.num    { width:   2em; } /* No. */
-#history table thead th.date   { width: 5.2em; } /* 日付 */
-#history table thead th.title  { width:  auto; } /* タイトル */
-#history table thead th.comp   { width: 2.6em; } /* 達成 */
-#history table thead th.exp    { width: 4.6em; } /* 経験点 */
-#history table thead th.money  { width: 4.5em; } /* 銀貨 */
-#history table thead th.adp    { width:   3em; } /* 成長点 */
-#history table thead th.gm     { width:  auto; } /* ＧＭ */
-#history table thead th.member { width:  auto; } /* 参加者 */
+#history table {
+  & thead th {
+    &.num    { width:   2em; } /* No. */
+    &.date   { width: 5.2em; } /* 日付 */
+    &.title  { width:  auto; } /* タイトル */
+    &.comp   { width: 2.6em; } /* 達成 */
+    &.exp    { width: 4.6em; } /* 経験点 */
+    &.money  { width: 4.5em; } /* 銀貨 */
+    &.adp    { width:   3em; } /* 成長点 */
+    &.gm     { width:  auto; } /* ＧＭ */
+    &.member { width:  auto; } /* 参加者 */
+  }
+  & tr th.comp span.small {
+    display: block;
+    margin: -1em 0 -.5em;
+  }
+  & tr td.comp {
+    padding-left: 1px;
+    padding-right: 1px;
+    white-space: nowrap;
 
-#history table tr th.comp span.small {
-  display: block;
-  margin: -1em 0 -.5em;
-}
-#history table tr td.comp {
-  padding-left: 1px;
-  padding-right: 1px;
-  white-space: nowrap;
-}
-#history table tr td.comp span.failed {
-  opacity: 0.5;
-}
-#history table tr td.money {
-  text-align: right;
-}
-#history table tr td.money::after {
-  content: "枚";
-  font-size: 0.9em;
-  margin-left: 3px;
-  margin-right: 2px;
-}
-#history table tr td.money:empty::after {
-  content: "";
-}
-#history table tr td:is(.gm, .member) {
-  font-size: 1.1rem;
+    & span.failed {
+      opacity: 0.5;
+    }
+  }
+  & tr td.money {
+    text-align: right;
+    
+    &::after {
+      content: "枚";
+      font-size: 0.9em;
+      margin-left: 3px;
+      margin-right: 2px;
+    }
+    &:empty::after {
+      content: "";
+    }
+  }
+  & tr td:is(.gm, .member) {
+    font-size: 1.1rem;
+  }
 }
 
 /* // Cashbook

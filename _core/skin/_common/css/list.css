@@ -375,7 +375,7 @@ form#form-search {
   }
 }
 
-/* // List-Monster/Simple
+/* // List-Simple
 ---------------------------------------------------------------------------------------------------- */
 .list ul {
   display: grid;
@@ -400,37 +400,37 @@ form#form-search {
   font-size: 110%;
   font-weight: bold;
   text-align: center;
-}
-.list ul li a::before {
-  position: absolute;
-  top: .1em;
-  left: .5em;
-  font-weight: normal;
-}
-.list ul li a small {
-  display: block;
-  position: absolute;
-  right: .5em;
-  bottom: .1em;
-  font-weight: normal;
-}
-.list ul li a small::before {
-  content:"by "
-}
-.list ul li a:hover {
-  background: rgba(180,200,255,0.1);
+  
+  &::before {
+    position: absolute;
+    top: .1em;
+    left: .5em;
+    font-weight: normal;
+  }
+  & small {
+    display: block;
+    position: absolute;
+    right: .5em;
+    bottom: .1em;
+    font-weight: normal;
+    
+    &::before { content:"by "  }
+  }
+  &:hover {
+    background: rgba(180,200,255,0.1);
+  }
 }
 
 .list ul.grouplist a {
   text-align: left;
   font-size: 125%;
-}
-.list ul.grouplist a small {
-  position: static;
-  font-size: 75%;
-}
-.list ul.grouplist a small::before {
-  content:""
+
+  & small {
+    position: static;
+    font-size: 75%;
+
+    &::before { content:"" }
+  }
 }
 
 /* ////////// LayerEnd ////////// */

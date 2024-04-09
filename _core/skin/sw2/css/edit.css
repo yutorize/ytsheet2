@@ -1358,27 +1358,15 @@ form#item div.input-data dl dd {
 }
 form#item div.input-data dl dd input {
   max-width: 14em;
-}
-form#item div.input-data dl dd input[name="reputation"] {
-  width: 6em;
-}
-form#item div.input-data dl dd input[name="shape"] {
-  max-width: 26em;
-}
-form#item div.input-data dl dd input[name="summary"] {
-  max-width: 100%;
+  &[name="reputation"] { width: 6em; }
+  &[name="shape"]      { max-width: 26em; }
+  &[name="summary"]    { max-width: 100%; }
 }
 form#item .input-arms-data {
   width: 100%;
-}
-form#item .input-arms-data td:first-child {
-  width: 1.5em;
-}
-form#item .input-arms-data td {
-  width: 5em;
-}
-form#item .input-arms-data td:last-child {
-  width: auto;
+  & td { width: 5em; }
+  & td:first-child { width: 1.5em; }
+  & td:last-child { width: auto; }
 }
 
 form#item .input-data label {
@@ -1389,9 +1377,9 @@ form#item .input-data label {
   cursor: pointer;
 }
 form#item .input-data label input {
-}
-form#item .input-data label input:checked + span {
-  font-weight: bold;
+  &:checked + span {
+    font-weight: bold;
+  }
 }
 
 form#item textarea[name="effects"] {

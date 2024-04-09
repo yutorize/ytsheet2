@@ -332,16 +332,15 @@ article {
   & dl.risk {
     grid-template-columns: 4.2em 1fr;
   }
-  & dl.cost,
-  .data-magic dl.a-cost {
+  & dl.cost {
     grid-template-columns: 4.2em 1fr;
   }
-  & dl.cost dt > span,
-  .data-magic dl.a-cost dt > span {
-    display: inline-block;
-    font-size: 75%;
-    transform: scaleY(calc(1/0.75));
-  }
+}
+#mystic-arts dl.cost dt > span,
+#mystic-arts dl.a-cost dt > span {
+  display: inline-block;
+  font-size: 75%;
+  transform: scaleY(calc(1/0.75));
 }
 #mystic-arts .data-magic:not(.data-arts) {
   grid-template-columns: 1.1fr 1.1fr 0.35fr 0.65fr 0.8fr;
@@ -351,6 +350,9 @@ article {
     "SMRY SMRY SMRY SMRY ELEM"
     "EFCT EFCT EFCT EFCT EFCT"
   ;
+  & dl.a-cost {
+    grid-template-columns: 4.2em 1fr;
+  }
 }
 
 @media screen and (max-width:735px){
