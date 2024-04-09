@@ -184,7 +184,7 @@ body {
   #renegade {
     grid-template-columns: 5em auto;
   }
-  #breed dd span {
+  #breed dd span.shorten {
     display: none;
   }
   #syndrome dd {
