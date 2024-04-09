@@ -476,7 +476,7 @@ HTML
 foreach my $num ('TMPL',1..$pc{commonClassNum}){
   print '<template id="common-class-template">' if($num eq 'TMPL');
   print <<"HTML";
-              <tr id="common-class${num}"><td class="handle"><td>@{[input('commonClass'.$num)]}<td>@{[input('lvCommon'.$num, 'number','calcCommonClass','min="0" max="17"')]}
+              <tr id="common-class${num}"><td class="handle"><td>@{[input('commonClass'.$num)]}<td>@{[input('lvCommon'.$num, 'number','calcCommonClass','min="0" max="15"')]}
 HTML
   print '</template>' if($num eq 'TMPL');
 }
