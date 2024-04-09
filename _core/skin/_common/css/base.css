@@ -249,6 +249,11 @@ body {
     background-blend-mode: hard-light, hard-light;
   }
 }
+@media print {
+  body {
+    grid-template-columns: 1fr;
+  }
+}
 
 header {
   grid-column: 1 / 4;
@@ -361,6 +366,7 @@ main {
 
 @media print {
   main {
+    grid-column: 1 / -1;
     border-width: 0;
   }
 }
@@ -368,6 +374,11 @@ main {
 article{
   max-width: 860px;
   margin: 0 auto;
+}
+@media print {
+  article {
+    max-width: initial;
+  }
 }
 
 article h1 {
