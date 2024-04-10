@@ -47,6 +47,15 @@ button,
   }
 }
 
+fieldset {
+  margin-block: 0;
+  margin-inline: 0;
+  padding-block: 0;
+  padding-inline: 0;
+  border-width: 0;
+  border-style: solid;
+}
+
 /* // フォーム設定
 ---------------------------------------------------------------------------------------------------- */
 html {
@@ -761,6 +770,11 @@ input[type="submit"]:hover {
 /* 編集保護 */
 #edit-protect {
   margin-top: var(--box-v-gap);
+  
+  > fieldset {
+    margin: 0.3rem 0.5em 0;
+    line-height: 1.8;
+  }
 }
 /* 閲覧可否 */
 #hide-options {
