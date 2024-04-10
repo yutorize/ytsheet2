@@ -137,7 +137,7 @@ article {
   & dl.resist   { grid-area: RESI; }
   & dl.element  { grid-area: ELEM; }
   & dl.summary  { grid-area: SMRY; }
-  & dl:not(.element)+dl.summary { grid-column: 1/5; }
+  & dl:not(.element)+dl.summary { grid-column: 1/-1; }
   & dl.effect   { grid-area: EFCT; }
   
   & dl.type      { grid-area: TYPE; }
@@ -509,11 +509,6 @@ div.data dl.effects table {
   &.weapon-table td:not(.left) {
     white-space: nowrap;
   }
-}
-
-#arts-list .input-data {
-  border-width: 0 0 1px;
-  border-style: solid;
 }
 
 /* // School

@@ -1440,6 +1440,13 @@ form#arts #category dd select {
 form#arts div.input-data {
   position: relative;
 }
+form#arts :is(#arts-list,#school-magic-list) .input-data {
+  border-width: 1px 0 0;
+  border-style: solid;
+  &:last-child {
+    border-bottom-width: 1px;
+  }
+}
 form#arts div.input-data > .handle {
   position: absolute;
   left: 0;

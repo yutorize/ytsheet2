@@ -244,11 +244,12 @@ body {
   #hp-and-stamina {
     display: grid;
     grid-template-columns: 1fr 1fr;
-  }
-  #stamina  {
-    border-top: 0;
-    border-left-width: 1px;
-    border-left-style: solid;
+    
+    > dl#stamina  {
+      border-top-style: hidden;
+      border-left-width: 1px;
+      border-left-style: solid;
+    }
   }
 }
 
