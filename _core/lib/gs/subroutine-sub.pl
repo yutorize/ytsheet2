@@ -32,6 +32,12 @@ sub data_update_chara {
     $pc{statusResist} = $pc{abilityPsyRef} + $pc{level} + $pc{statusResistMod};
     $pc{armor1MoveTotal} = $pc{statusMove} + $pc{MoveModValue} + $pc{armor1MoveMod};
   }
+  if($ver < 1.24013){
+    if($pc{race} eq '蜥蜴人' || ($pc{race} =~ /^昼歩く者/ && $pc{raceBase} eq '蜥蜴人')){
+      $pc{statusMoveRace} = 2;
+      $pc{statusMove} = $pc{statusMoveDice} * $pc{statusMoveRace} + $pc{statusMoveMod};
+    }
+  }
 
   $pc{ver} = $main::ver;
   $pc{lasttimever} = $ver;

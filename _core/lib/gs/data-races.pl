@@ -20,7 +20,7 @@ our @races_data = (
   },
   { name => '蜥蜴人',
     kana => 'リザードマン',
-    move => 3,
+    move => 2,
   },
   { name => '圃人',
     kana => 'レーア',
