@@ -21,7 +21,7 @@ if(!$::in{check1} || !$::in{check2} || !$::in{check3}){ error('確認のチェ�
 my ($sheet_id, $sheet_user, $file, $user);
 ($sheet_id, undef, $file, undef, $user) = getfile($::in{id},$::in{pass},$LOGIN_ID);
 if(!$file){ error('データが見つかりません。'); }
-my $file_dir = $user ? '_'.$user.'/'.$file : $file;
+my $file_dir = $user ? "_${user}/${file}" : "anonymous/${file}";
 
 ## キャラシ削除
 if($mode eq 'delete'){
