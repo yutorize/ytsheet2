@@ -147,8 +147,8 @@ function addStatusInsert(target, num, copy){
     "defense"    : copy        ? form[`status${copy}${lv}Defense`     ].value : '',
     "hp"         : copy        ? form[`status${copy}${lv}Hp`          ].value : '',
     "mp"         : copy        ? form[`status${copy}${lv}Mp`          ].value : '',
-    "vit"        : copy        ? form[`status${copy}${lv}Vit`         ].value : '',
-    "mnd"        : copy        ? form[`status${copy}${lv}Mnd`         ].value : '',
+    "vit"        : copy        ? form[`status${copy}${lv}Vit`         ].value : '―',
+    "mnd"        : copy        ? form[`status${copy}${lv}Mnd`         ].value : '―',
   };
   let tr = document.createElement('tr');
   tr.setAttribute('id',idNumSet('status-row',lv));
