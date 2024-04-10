@@ -264,12 +264,8 @@ if   ($pc{factor} eq '人間'){
   $SHEET->param(typeH  => 1);
   $SHEET->param(head_statusMain1 => '<i class="spade">♠</i>技');
   $SHEET->param(head_statusMain2 => '<i class="club" >♣</i>情');
-  $SHEET->param(enduranceFormula  => "($pc{statusMain1}×2+$pc{statusMain2})"
-                                  . ($pc{enduranceAdd}  ? "+$pc{enduranceAdd}" :'')
-                                  . ($pc{enduranceGrow} ? "+$pc{enduranceGrow}":''));
-  $SHEET->param(initiativeFormula => "($pc{statusMain2}+10)"
-                                  . ($pc{initiativeAdd}  ? "+$pc{initiativeAdd}" :'')
-                                  . ($pc{initiativeGrow} ? "+$pc{initiativeGrow}":''));
+  $SHEET->param(enduranceFormula  => "($pc{statusMain1}×2+$pc{statusMain2})" . addNum($pc{enduranceAdd}) . addNum($pc{enduranceGrow}));
+  $SHEET->param(initiativeFormula => "($pc{statusMain2}+10)" . addNum($pc{initiativeAdd}) . addNum($pc{initiativeGrow}));
   $SHEET->param(head_p1 => '血契'.($pc{partner2On}?'１':''));
   $SHEET->param(head_p2 => '血契２');
   $SHEET->param(class_p2 => 'seal');
@@ -278,12 +274,8 @@ elsif($pc{factor} eq '吸血鬼'){
   $SHEET->param(typeV  => 1);
   $SHEET->param(head_statusMain1 => '<i class="heart">♥</i>血');
   $SHEET->param(head_statusMain2 => '<i class="dia"  >♦</i>想');
-  $SHEET->param(enduranceFormula  => "($pc{statusMain1}+20)"
-                                  . ($pc{enduranceAdd}  ? "+$pc{enduranceAdd}" :'')
-                                  . ($pc{enduranceGrow} ? "+$pc{enduranceGrow}":''));
-  $SHEET->param(initiativeFormula => "($pc{statusMain2}+4)"
-                                  . ($pc{initiativeAdd}  ? "+$pc{initiativeAdd}" :'')
-                                  . ($pc{initiativeGrow} ? "+$pc{initiativeGrow}":''));
+  $SHEET->param(enduranceFormula  => "($pc{statusMain1}+20)" . addNum($pc{enduranceAdd}) . addNum($pc{enduranceGrow}));
+  $SHEET->param(initiativeFormula => "($pc{statusMain2}+4)" . addNum($pc{initiativeAdd}) . addNum($pc{initiativeGrow}));
   $SHEET->param(head_p1 => '血契');
   $SHEET->param(head_p2 => '連血鬼');
   $SHEET->param(class_p2 => 'union');

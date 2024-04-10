@@ -282,8 +282,9 @@ if($race_length > 10){ $pc{race} = '<span class="thin">'.$pc{race}.'</span>'; }
 $SHEET->param(race => $pc{race});
 
 ### ステータス --------------------------------------------------
-$SHEET->param(hpAdd => $pc{hpAdd} + $pc{hpAuto});
-$SHEET->param(mpAdd => $pc{mpAdd} + $pc{mpAuto});
+$SHEET->param(hpAdd => addNum($pc{hpAdd} + $pc{hpAuto}));
+$SHEET->param(mpAdd => addNum($pc{mpAdd} + $pc{mpAuto}));
+$SHEET->param(fateAdd => addNum($pc{fateAdd}));
 
 ### ライフパス --------------------------------------------------
 if($pc{race} eq 'アーシアン' && $pc{lifepathEarthian}){

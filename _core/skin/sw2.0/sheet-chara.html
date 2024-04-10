@@ -172,19 +172,19 @@
         <div class="box-union" id="sub-status">
           <dl class="box">
             <dt><span>生命抵抗<span class="sp-del">力</span></span>
-            <dd><TMPL_IF vitResistAddTotal><span class="sp-del"><TMPL_VAR vitResistBase></span>+<TMPL_VAR vitResistAddTotal>=</TMPL_IF><b><TMPL_VAR vitResistTotal></b>
+            <dd><TMPL_IF vitResistAddTotal><span class="sp-del"><TMPL_VAR vitResistBase></span><TMPL_VAR vitResistAddTotal>=</TMPL_IF><b><TMPL_VAR vitResistTotal></b>
           </dl>
           <dl class="box">
             <dt><span>精神抵抗<span class="sp-del">力</span></span>
-            <dd><TMPL_IF mndResistAddTotal><span class="sp-del"><TMPL_VAR mndResistBase></span>+<TMPL_VAR mndResistAddTotal>=</TMPL_IF><b><TMPL_VAR mndResistTotal></b>
+            <dd><TMPL_IF mndResistAddTotal><span class="sp-del"><TMPL_VAR mndResistBase></span><TMPL_VAR mndResistAddTotal>=</TMPL_IF><b><TMPL_VAR mndResistTotal></b>
           </dl>
           <dl class="box">
             <dt>ＨＰ
-            <dd><TMPL_IF hpAddTotal><span class="sp-del"><TMPL_VAR hpBase></span>+<TMPL_VAR hpAddTotal>=</TMPL_IF><b><TMPL_VAR hpTotal></b>
+            <dd><TMPL_IF hpAddTotal><span class="sp-del"><TMPL_VAR hpBase></span><TMPL_VAR hpAddTotal>=</TMPL_IF><b><TMPL_VAR hpTotal></b>
           </dl>
           <dl class="box">
             <dt>ＭＰ
-            <dd><TMPL_IF mpTotal><TMPL_IF mpAddTotal><span class="sp-del"><TMPL_VAR mpBase></span>+<TMPL_VAR mpAddTotal>=</TMPL_IF><b><TMPL_VAR mpTotal></b><TMPL_ELSE><b>なし</b></TMPL_IF>
+            <dd><TMPL_IF mpTotal><TMPL_IF mpAddTotal><span class="sp-del"><TMPL_VAR mpBase></span><TMPL_VAR mpAddTotal>=</TMPL_IF><b><TMPL_VAR mpTotal></b><TMPL_ELSE><b>なし</b></TMPL_IF>
           </dl>
         </div>
         
@@ -303,7 +303,7 @@
                 <TMPL_LOOP Packs><tr>
                   <TMPL_IF NAME="__first__"><th rowspan="<TMPL_VAR colspan>"><TMPL_VAR class><span class="small">技能レベル</span><TMPL_VAR lv></TMPL_IF>
                   <th><TMPL_VAR name>
-                  <td><TMPL_IF add>+<TMPL_VAR add>=</TMPL_IF>
+                  <td><TMPL_IF add><TMPL_VAR add>=</TMPL_IF>
                   <td><TMPL_VAR total>
                 </TMPL_LOOP>
               </tbody></TMPL_LOOP>
@@ -314,15 +314,15 @@
         <div id="area-other-actions">
           <dl class="box" id="monster-lore">
             <dt>魔物知識
-            <dd><TMPL_IF monsterLoreAdd><span class="small">+<TMPL_VAR monsterLoreAdd>=</span></TMPL_IF><TMPL_VAR monsterLore>
+            <dd><TMPL_IF monsterLoreAdd><span class="small"><TMPL_VAR monsterLoreAdd>=</span></TMPL_IF><TMPL_VAR monsterLore>
           </dl>
           <dl class="box" id="initiative">
             <dt>先制力
-            <dd><TMPL_IF initiativeAdd><span class="small">+<TMPL_VAR initiativeAdd>=</span></TMPL_IF><TMPL_VAR initiative>
+            <dd><TMPL_IF initiativeAdd><span class="small"><TMPL_VAR initiativeAdd>=</span></TMPL_IF><TMPL_VAR initiative>
           </dl>
           <dl class="box" id="mobility">
             <dt>制限移動<dd><b><TMPL_VAR mobilityLimited></b> m
-            <dt>移動力<dd><TMPL_IF mobilityAdd><TMPL_VAR mobilityBase>+<TMPL_VAR mobilityAdd>=</TMPL_IF><b><TMPL_VAR mobilityTotal></b> m
+            <dt>移動力<dd><TMPL_IF mobilityAdd><TMPL_VAR mobilityBase><TMPL_VAR mobilityAdd>=</TMPL_IF><b><TMPL_VAR mobilityTotal></b> m
             <dt>全力移動<dd><b><TMPL_VAR mobilityFull></b> m
           </dl>
         </div>
@@ -408,10 +408,10 @@
                 <TMPL_UNLESS NAMEOFF><td rowspan="<TMPL_VAR ROWSPAN>"><span class="item-name"><TMPL_VAR NAME></span></TMPL_UNLESS>
                 <td><TMPL_VAR USAGE>
                 <td><TMPL_VAR REQD>
-                <td><TMPL_IF ACC>+<TMPL_VAR ACC>=</TMPL_IF><b><TMPL_VAR ACCTOTAL></b>
+                <td><TMPL_IF ACC><TMPL_VAR ACC>=</TMPL_IF><b><TMPL_VAR ACCTOTAL></b>
                 <td><TMPL_VAR RATE>
                 <td><TMPL_VAR CRIT>
-                <td><TMPL_IF DMG>+<TMPL_VAR DMG>=</TMPL_IF><b><TMPL_VAR DMGTOTAL></b>
+                <td><TMPL_IF DMG><TMPL_VAR DMG>=</TMPL_IF><b><TMPL_VAR DMGTOTAL></b>
                 <td><TMPL_IF OWN>✔</TMPL_IF>
                 <td><span class="item-name"><TMPL_VAR NOTE></span>
               

@@ -373,7 +373,7 @@ else {
     }
     my $power = $pc{'weapon'.$_.'Power'}
       . addNum($pc{'lv'.$data::class{$pc{'weapon'.$_.'Class'}}{id}})
-      . ($pc{'weapon'.$_.'PowerMod'}?"+$pc{'weapon'.$_.'PowerMod'}":'');
+      . addNum($pc{'weapon'.$_.'PowerMod'});
     push(@weapons, {
       NAME     => itemNameRubyCheck($pc{'weapon'.$_.'Name'}),
       ROWSPAN  => $rowspan,

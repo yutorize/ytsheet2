@@ -143,8 +143,8 @@ sub data_calc {
     foreach (1..5) {
       my $dadd = $pc{"combo${num}DiceAdd".$_};
       my $fadd = $pc{"combo${num}FixedAdd".$_};
-      $pc{"combo${num}Dice" .$_} = ($stt && $dadd) ? "$stt+$dadd" : ($stt||$dadd) if !$pc{"combo${num}Dice" .$_};
-      $pc{"combo${num}Fixed".$_} = ($lv  && $fadd) ? "$lv+$fadd"  : ($lv ||$fadd) if !$pc{"combo${num}Fixed".$_};
+      $pc{"combo${num}Dice" .$_} = ($stt && $dadd) ? optimizeOperator("$stt+$dadd") : ($stt||$dadd) if !$pc{"combo${num}Dice" .$_};
+      $pc{"combo${num}Fixed".$_} = ($lv  && $fadd) ? optimizeOperator("$lv+$fadd" ) : ($lv ||$fadd) if !$pc{"combo${num}Fixed".$_};
     }
   }
   
