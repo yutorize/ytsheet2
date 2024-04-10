@@ -638,7 +638,7 @@ body {
   #effect table thead th {
     &:nth-child(1) { width: 2.1em; } /* No. */
     &:nth-child(2) { width:  auto; } /* 名称 */
-    &:nth-child(3) { width:   2em; } /* Lv */
+    &:nth-child(3) { width:   2em; } /* LV */
     &:nth-child(4) { width: 8.4em; } /* タイミング */
     &:nth-child(5) { width: 7.0em; } /* 技能 */
     &:nth-child(6) { width: 3.8em; } /* 難易度 */
@@ -653,16 +653,18 @@ body {
   font-family: var(--font-proportional);
   font-feature-settings: "palt";
 }
-#effect table tbody td:nth-child(1) {  } /* No. */
-#effect table tbody td:nth-child(2) { font-weight: bold; } /* 名称 */
-#effect table tbody td:nth-child(3) {  } /* LV */
-#effect table tbody td:nth-child(4) { font-size: 90%; } /* タイミング */
-#effect table tbody td:nth-child(5) { font-size: 90%; } /* 技能 */
-#effect table tbody td:nth-child(6) { font-size: 90%; } /* 難易度 */
-#effect table tbody td:nth-child(7) { font-size: 90%; } /* 対象 */
-#effect table tbody td:nth-child(8) { font-size: 90%; } /* 射程 */
-#effect table tbody td:nth-child(9) {  } /* 侵蝕値 */
-#effect table tbody td:nth-child(10){ font-size: 90%; } /* 制限 */
+#effect table tbody td {
+  &:nth-child(1) {  } /* No. */
+  &:nth-child(2) { font-weight: bold; } /* 名称 */
+  &:nth-child(3) {  } /* LV */
+  &:nth-child(4) { font-size: 90%; } /* タイミング */
+  &:nth-child(5) { font-size: 90%; } /* 技能 */
+  &:nth-child(6) { font-size: 90%; } /* 難易度 */
+  &:nth-child(7) { font-size: 90%; } /* 対象 */
+  &:nth-child(8) { font-size: 90%; } /* 射程 */
+  &:nth-child(9) {  } /* 侵蝕値 */
+  &:nth-child(10){ font-size: 90%; } /* 制限 */
+}
 
 #effect table tbody td.left {
   padding-left: .5rem;
@@ -776,8 +778,8 @@ body {
     border-width: 0 0 1px;
   }
   #effect table tbody tr:last-child { border: 0; }
-  #effect table thead th {
-    width: auto !important;
+  #effect table thead th:nth-child(n) {
+    width: auto;
   }
   #effect table thead th:nth-child(2) {
     display: none;

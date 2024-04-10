@@ -528,8 +528,8 @@ dl#level {
 }
 
 @media screen and (max-width:735px){
-  #battle table col {
-    width: unset !important;
+  #battle table col:nth-child(n) {
+    width: unset;
   }
   #battle table thead tr,
   #battle table tbody tr,
@@ -918,8 +918,8 @@ dl#level {
       border-width: 0 0 1px;
     }
     & tbody tr:last-child { border: 0; }
-    & thead th {
-      width: auto !important;
+    & thead th:nth-child(n) {
+      width: auto;
     }
     & thead th:nth-child(3) {
       display: none;

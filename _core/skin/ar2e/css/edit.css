@@ -303,8 +303,6 @@ dd.area-tags {
   overflow-x: auto;
   margin-top: var(--box-v-gap);
 }
-#skills table {
-}
 #skills table thead th {
   &:nth-child(1) { width: 1.4em; }
   &:nth-child(2) { width:  auto; } /* 名称 */
@@ -410,16 +408,17 @@ dd.area-tags {
     &:nth-child(8) { width:   4em !important; } /* コスト */
     &:nth-child(9) { width:   8em !important; } /* 制限 */
   }
+  #skills table tbody td {
+    border-left: hidden;
+    padding: .5em 0 0;
+    &[colspan] {
+      padding: 0 0 .5em;
+    }
+  }
   #skills table tbody td b {
     white-space: nowrap;
   }
   #skills table tbody td:nth-child(3) input { min-width: 2em; } /* Lv */
-  #skills table tbody td {
-    padding: .5em 0 0;
-  }
-  #skills table tbody td[colspan] {
-    padding: 0 0 .5em;
-  }
 }
 
 .trash-box {
@@ -621,23 +620,28 @@ dd.area-tags {
   #battle .box { overflow-x: auto; }
   #battle table { table-layout: fixed; }
   #battle col {
-    &:nth-child(1) { width: 3.2em !important; }
-    &:nth-child(2) { width: 11em !important; }
-    &:nth-child(3) { width: 3.2em !important; }
-    &:nth-child(4) { width: 3.2em !important; }
-    &:nth-child(5) { width: 3.2em !important; }
-    &:nth-child(6) { width: 3.2em !important; }
-    &:nth-child(7) { width: 3.2em !important; }
-    &:nth-child(8) { width: 3.2em !important; }
-    &:nth-child(9) { width: 3.2em !important; }
-    &:nth-child(10){ width: 3.2em !important; }
-    &:nth-child(11){ width: 3.2em !important; }
-    &:last-child   { width: 12em !important; }
+    &.head  { width: 3.2em; } /* 見出し */
+    &.name  { width:  11em; } /* 名称 */
+    &.weight{ width: 3.2em; } /* 重量 */
+    &.acc   { width: 3.2em; } /* 命中 */
+    &.atk   { width: 3.2em; } /* 攻撃 */
+    &.eva   { width: 3.2em; } /* 回避 */
+    &.def   { width: 3.2em; } /* 物防 */
+    &.mdef  { width: 3.2em; } /* 魔防 */
+    &.ini   { width: 3.2em; } /* 行動 */
+    &.move  { width: 3.2em; } /* 移動 */
+    &.range { width: 4.7em; } /* 射程 */
+    &.type  { width: 6.2em; }  /* 種別 */
+    &.usage { width: 6.2em; }  /* 部位 */
+    &.note  { width: 17.2em; }  /* 部位 */
   }
   #battle table thead tr,
   #battle table tbody tr,
   #battle table tfoot tr {
     display: table-row;
+  }
+  #battle table tbody td:last-child {
+    border-top: hidden;
   }
 }
 

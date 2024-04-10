@@ -425,35 +425,36 @@ body:not(.mode-crc) .crc-only {
   #effect table tbody tr {
     display: table-row;
   }
-  #effect table tbody td[rowspan] {
-    display: table-cell;
-  }
+  #effect table tbody td[rowspan],
   #effect table thead th:nth-child(2) {
     display: table-cell;
   }
   #effect table tbody td[colspan] div {
     grid-template-columns: max-content 6.5em max-content 3em max-content 1fr;
   }
-  #effect table thead th:nth-child(1) { width: 1.4em !important; }
-  #effect table thead th:nth-child(2) { width:  14em !important; } /* 名称 */
-  #effect table thead th:nth-child(3) { width: 3.5em !important; } /* LV */
-  #effect table thead th:nth-child(4) { width:   8em !important; } /* タイミング */
-  #effect table thead th:nth-child(5) { width:   8em !important; } /* 技能 */
-  #effect table thead th:nth-child(6) { width:   5em !important; } /* 難易度 */
-  #effect table thead th:nth-child(7) { width:   6em !important; } /* 対象 */
-  #effect table thead th:nth-child(8) { width:   5em !important; } /* 射程 */
-  #effect table thead th:nth-child(9) { width:   4em !important; } /* 侵蝕値 */
-  #effect table thead th:nth-child(10){ width:   5em !important; } /* 制限 */
+  #effect table thead th {
+    &:nth-child(1) { width: 1.4em; }
+    &:nth-child(2) { width:  14em; } /* 名称 */
+    &:nth-child(3) { width: 3.5em; } /* LV */
+    &:nth-child(4) { width:   8em; } /* タイミング */
+    &:nth-child(5) { width:   8em; } /* 技能 */
+    &:nth-child(6) { width:   5em; } /* 難易度 */
+    &:nth-child(7) { width:   6em; } /* 対象 */
+    &:nth-child(8) { width:   5em; } /* 射程 */
+    &:nth-child(9) { width:   4em; } /* 侵蝕値 */
+    &:nth-child(10){ width:   5em; } /* 制限 */
+  }
+  #effect table tbody td {
+    border-left: hidden;
+    padding: .5em 0 0;
+    &[colspan] {
+      padding: 0 0 .5em;
+    }
+  }
   #effect table tbody td b {
     white-space: nowrap;
   }
   #effect table tbody td:nth-child(3) input { min-width: 2em; } /* LV */
-  #skills table tbody td {
-    padding: .5em 0 0;
-  }
-  #skills table tbody td[colspan] {
-    padding: 0 0 .5em;
-  }
 }
 .trash-box {
   display: none;
@@ -564,12 +565,14 @@ body:not(.mode-crc) .crc-only {
   overflow-x: auto;
   margin-top: var(--box-v-gap);
 }
-#magic table thead th:nth-child(1) { width: 1.4em; }
-#magic table thead th:nth-child(2) { width:  15em; } /* 名称 */
-#magic table thead th:nth-child(3) { width:   7em; } /* 種別 */
-#magic table thead th:nth-child(4) { width: 3.8em; } /* 経験点 */
-#magic table thead th:nth-child(5) { width: 5.5em; } /* 発動値 */
-#magic table thead th:nth-child(6) { width: 3.9em; } /* 侵蝕値 */
+#magic table thead th {
+  &:nth-child(1) { width: 1.4em; }
+  &:nth-child(2) { width:  15em; } /* 名称 */
+  &:nth-child(3) { width:   7em; } /* 種別 */
+  &:nth-child(4) { width: 3.8em; } /* 経験点 */
+  &:nth-child(5) { width: 5.5em; } /* 発動値 */
+  &:nth-child(6) { width: 3.9em; } /* 侵蝕値 */
+}
 #magic table thead th,
 #magic table tfoot th {
   font-size: 90%;
@@ -594,14 +597,16 @@ body:not(.mode-crc) .crc-only {
   #magic table tbody td[colspan] div {
     grid-template-columns: max-content 6.5em max-content 3em max-content 1fr;
   }
-  #magic table thead th:nth-child(1) { width: 1.4em; }
-  #magic table thead th:nth-child(2) { width:  15em; } /* 名称 */
-  #magic table thead th:nth-child(3) { width:   7em; } /* 種別 */
-  #magic table thead th:nth-child(4) { width: 3.8em; } /* 経験点 */
-  #magic table thead th:nth-child(5) { width: 5.5em; } /* 発動値 */
-  #magic table thead th:nth-child(6) { width: 3.9em; } /* 侵蝕値 */
-  #magic table thead th:nth-child(7) { width: 3.9em; } /* 侵蝕値 */
-  #magic table thead th:last-child   { width:  16em; } /* 効果 */
+  #magic table thead th {
+    &:nth-child(1) { width: 1.4em; }
+    &:nth-child(2) { width:  15em; } /* 名称 */
+    &:nth-child(3) { width:   7em; } /* 種別 */
+    &:nth-child(4) { width: 3.8em; } /* 経験点 */
+    &:nth-child(5) { width: 5.5em; } /* 発動値 */
+    &:nth-child(6) { width: 3.9em; } /* 侵蝕値 */
+    &:nth-child(7) { width: 3.9em; } /* 侵蝕値 */
+    &:last-child   { width:  16em; } /* 効果 */
+  }
 }
 
 #combo {
