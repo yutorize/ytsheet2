@@ -588,10 +588,10 @@ print <<"HTML";
   </datalist>
   <datalist id="list-arts-risk">
     <option value="なし">
-    <option value="回避力判定－１">
-    <option value="回避力判定－２">
-    <option value="生命・精神抵抗力判定－２">
-    <option value="ほとんどの行為判定－４">
+    <option value="回避力判定-1">
+    <option value="回避力判定-2">
+    <option value="生命・精神抵抗力判定-2">
+    <option value="ほとんどの行為判定-4">
     <option value="〈盾〉の防護点、回避力の有利な修正無効">
   </datalist>
   <script>
