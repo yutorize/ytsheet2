@@ -373,7 +373,7 @@ foreach (0 .. $pc{historyNum}){
     "DATE"   => $pc{'history'.$_.'Date'},
     "TITLE"  => $pc{'history'.$_.'Title'},
     "GROW"   => ($pc{'history'.$_.'Grow'} eq 'endurance' ? '耐久値+2'
-               : $pc{'history'.$_.'Grow'} eq 'operation' ? '先制値+1'
+               : $pc{'history'.$_.'Grow'} eq 'operation' ? '作戦力+1'
                : ''),
     "GM"     => $pc{'history'.$_.'Gm'},
     "MEMBER" => $members,
