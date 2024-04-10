@@ -264,6 +264,9 @@ if($pc{stage} =~ /クロウリングケイオス/){ $SHEET->param(ccOn => 1); }
 my $breedPrefix = ($pc{breed} ? $pc{breed} : $pc{syndrome3} ? 'トライ' : $pc{syndrome2} ? 'クロス' : $pc{syndrome1} ? 'ピュア' : '');
 $SHEET->param(breed => isNoiseText(tagDelete $breedPrefix) ? $breedPrefix : $breedPrefix ? "$breedPrefix<span class=\"shorten\">ブリード</span>" : '');
 
+### 侵蝕率基本値 --------------------------------------------------
+$SHEET->param(hasEncroachOffset => $pc{'lifepathOtherEncroach'} || $pc{'lifepathOtherNote'} ? 1 : 0);
+
 ### 能力値 --------------------------------------------------
 $SHEET->param('sttWorks'.ucfirst($pc{sttWorks}) => 1);
 foreach my $name ('Body','Sense','Mind','Social') {
