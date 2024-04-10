@@ -325,6 +325,9 @@
     }
   }
 }
+#combat-feats-lv1bat select optgroup:empty {
+  display: none;
+}
 
 #crafts {
   flex-basis: 66%;
