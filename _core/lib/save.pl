@@ -397,7 +397,6 @@ sub passfileWriteMake {
     if ($_ =~ /^(?:[^<]*?<>){2}$now</){
       close($FH);
       infoJson('error','新規作成が衝突しました。再度保存してください。');
-      require $set::lib_edit; exit;
     }
   }
   my $passwrite; my $user_dir;
