@@ -572,6 +572,9 @@ body {
 #lois table tbody .sperior span[data-state="ロイス"]  { background: linear-gradient(to right,hsla(0,100%,50%,0.3) 1.1em, hsla(120,100%,50%,0.05) 1.1em); }
 #lois table tbody .sperior span[data-state="タイタス"]{ background: linear-gradient(to right,hsla(0,100%,50%,0.3) 1.1em, hsla(200,100%,50%,0.3 ) 1.1em); }
 #lois table tbody .sperior span[data-state="昇華"]    { background: linear-gradient(to right,hsla(0,100%,50%,0.3) 1.1em, hsla( 50,100%,50%,0.3 ) 1.1em); }
+#lois table:not(:has(td.color:not(:empty))) .color {
+  display: none;
+}
 
 #memory table tbody td:nth-child(1) { width: 6.2em; border-right-width: 1px; } /* 関係 */
 #memory table tbody td:nth-child(2) { width:  14em; border-right-width: 1px; } /* 名前 */
