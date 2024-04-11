@@ -948,7 +948,7 @@ print <<"HTML";
               <td class="gm    ">@{[ input "history${num}Gm" ]}
               <td class="member">@{[ input "history${num}Member" ]}
             <tr>
-              <td colspan="5" class="left">@{[input("history${num}Note",'','','placeholder="備考"')]}
+              <td colspan="6" class="left">@{[input("history${num}Note",'','','placeholder="備考"')]}
 HTML
   if($num eq 'TMPL'){ print '</template>' }
 }
