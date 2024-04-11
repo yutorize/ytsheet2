@@ -957,13 +957,15 @@ let historySortable = Sortable.create(document.getElementById('history-table'), 
     let num = 1;
     for(let id of order) {
       if(document.querySelector(`tbody#${id}`)){
-        document.querySelector(`#${id} [name$="Date"]`  ).setAttribute('name',`history${num}Date`);
-        document.querySelector(`#${id} [name$="Title"]` ).setAttribute('name',`history${num}Title`);
-        document.querySelector(`#${id} [name$="Exp"]`   ).setAttribute('name',`history${num}Exp`);
-        document.querySelector(`#${id} [name$="Money"]` ).setAttribute('name',`history${num}Money`);
-        document.querySelector(`#${id} [name$="Gm"]`    ).setAttribute('name',`history${num}Gm`);
-        document.querySelector(`#${id} [name$="Member"]`).setAttribute('name',`history${num}Member`);
-        document.querySelector(`#${id} [name$="Note"]`  ).setAttribute('name',`history${num}Note`);
+        document.querySelector(`#${id} [name$="Date"]`     ).setAttribute('name',`history${num}Date`);
+        document.querySelector(`#${id} [name$="Title"]`    ).setAttribute('name',`history${num}Title`);
+        document.querySelector(`#${id} [name$="Completed"]`).setAttribute('name',`history${num}Completed`);
+        document.querySelector(`#${id} [name$="Exp"]`      ).setAttribute('name',`history${num}Exp`);
+        document.querySelector(`#${id} [name$="Adp"]`      ).setAttribute('name',`history${num}Adp`);
+        document.querySelector(`#${id} [name$="Money"]`    ).setAttribute('name',`history${num}Money`);
+        document.querySelector(`#${id} [name$="Gm"]`       ).setAttribute('name',`history${num}Gm`);
+        document.querySelector(`#${id} [name$="Member"]`   ).setAttribute('name',`history${num}Member`);
+        document.querySelector(`#${id} [name$="Note"]`     ).setAttribute('name',`history${num}Note`);
         num++;
       }
     }
