@@ -77,10 +77,12 @@ function checkRace(){
       form.raceBase.append(newOpt);
     }
     form.raceBase.value = selected;
+    form.raceBaseFree.disabled = false;
     document.getElementById('race-base').classList.remove('hide');
   }
   else {
     form.raceBase.innerHTML = '<option value="">';
+    form.raceBaseFree.disabled = true;
     document.getElementById('race-base').classList.add('hide');
   }
   raceB = form.raceBase.value;

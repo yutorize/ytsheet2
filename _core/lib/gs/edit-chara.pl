@@ -279,7 +279,7 @@ print <<"HTML";
             <dt>種族<dd>
               <select name="race" oninput="changeRace()">@{[ option 'race', @data::race_list ]}</select>
               @{[ input 'raceFree','','','placeholder="自由記入（獣人等向け）"' ]}
-            <dt id="race-base">元種族<dd>
+            <dt id="race-base">本来の種族<dd>
               <select name="raceBase" oninput="changeRace()">@{[ option 'raceBase', @data::race_list,$pc{raceBase} ]}</select>
               @{[ input 'raceBaseFree','','','placeholder="自由記入（獣人等向け）"' ]}
           </dl>
