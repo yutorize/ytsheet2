@@ -308,9 +308,14 @@ foreach (1 .. 7){
   if (!($pc{'lois'.$_.'Relation'} || $pc{'lois'.$_.'Name'} || $pc{'lois'.$_.'Note'}) || $pc{'lois'.$_.'Relation'} =~ /[DＤEＥ]ロイス|^[DＤEＥ]$/) {
     $pc{'lois'.$_.'State'} = '';
   }
+
+  # 感情の内容もチェックもなく、状態ももたないなら、感情を無効にする.
+  my $noEmotion = !($pc{'lois'.$_.'EmoPosi'} || $pc{'lois'.$_.'EmoPosiCheck'} || $pc{'lois'.$_.'EmoNega'} || $pc{'lois'.$_.'EmoNegaCheck'} || $pc{'lois'.$_.'State'});
+
   push(@loises, {
     "RELATION" => $pc{'lois'.$_.'Relation'},
     "NAME"     => $pc{'lois'.$_.'Name'},
+    "NO_EMO"   => $noEmotion,
     "POSI"     => $pc{'lois'.$_.'EmoPosi'},
     "NEGA"     => $pc{'lois'.$_.'EmoNega'},
     "P-CHECK"  => $pc{'lois'.$_.'EmoPosiCheck'},

@@ -520,6 +520,9 @@ body {
     font-family: "Material Symbols Outlined";
     font-weight: bold;
   }
+  &.empty:not(.checked):empty::before {
+    content: none;
+  }
   &.checked::before {
     color: inherit;
   }
