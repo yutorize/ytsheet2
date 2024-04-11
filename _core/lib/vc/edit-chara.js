@@ -58,7 +58,6 @@ function calcBattle(){
 }
 // 戦闘値 ----------------------------------------
 function calcResultPoint(){
-  let total = Number(form.history0Result.value) || 0;
   let history = 0;
   let goods = 0;
   let items = 0;
@@ -71,8 +70,9 @@ function calcResultPoint(){
   for (let num = 1; num <= Number(form.itemsNum.value); num++) {
     items += Number(form[`item${num}Cost`].value);
   }
+  const total = Number(form.history0Result.value || 0) + history;
   const cost = commify(goods + items);
-  const rest = commify(total + history - cost);
+  const rest = commify(total - cost);
   document.getElementById('history0-exp'        ).textContent = form.history0Result.value;
   document.getElementById('history-result-total').textContent = commify(history);
   document.getElementById('resultpoint-history' ).textContent = commify(history);
