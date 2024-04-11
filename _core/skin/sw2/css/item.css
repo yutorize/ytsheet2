@@ -212,9 +212,9 @@ div.data {
       & td:not(.left) {
         white-space: nowrap;
       }
-    }
-    & table.weapon-table:has(tr:last-child > td:last-child:empty) tr > *:last-child {
-      display: none;
+      &:not(:has(tbody td.note:not(:empty))) tr > *.note {
+        display: none;
+      }
     }
     & > :is(dt,dd):nth-of-type(n+2) {
       border-top-width: 1px;
