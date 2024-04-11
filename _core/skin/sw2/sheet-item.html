@@ -104,7 +104,14 @@
         <TMPL_VAR effects>
         <TMPL_IF WeaponData>
           <table class="weapon-table">
-            <tr><th>用法<th>必筋<th>命中<th>威力<th>C値<th>追加D<th class="left">備考
+            <tr>
+              <th>用法
+              <th>必筋
+              <th>命中
+              <th>威力
+              <th>C値
+              <th>追加D
+              <th class="note left">備考
             <TMPL_LOOP WeaponData><tr>
               <td><TMPL_VAR USAGE>
               <td><TMPL_VAR REQD>
@@ -112,19 +119,24 @@
               <td><TMPL_VAR RATE>
               <td><TMPL_VAR CRIT>
               <td><TMPL_VAR DMG>
-              <td class="left"><TMPL_VAR NOTE></td>
+              <td class="note left"><TMPL_VAR NOTE></td>
             </TMPL_LOOP>
           </table>
         </TMPL_IF>
         <TMPL_IF ArmourData>
           <table class="weapon-table">
-          <tr><th>用法<th>必筋<th>回避<th>防護<th class="left">備考
+            <tr>
+              <th>用法
+              <th>必筋
+              <th>回避
+              <th>防護
+              <th class="note left">備考
             <TMPL_LOOP ArmourData><tr>
               <td><TMPL_VAR USAGE>
               <td><TMPL_VAR REQD>
               <td><TMPL_VAR EVA>
               <td><TMPL_VAR DEF>
-              <td class="left"><TMPL_VAR NOTE></td>
+              <td class="note left"><TMPL_VAR NOTE></td>
             </TMPL_LOOP>
           </table>
         </TMPL_IF>
