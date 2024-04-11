@@ -329,7 +329,7 @@ print <<"HTML";
           <table>
             <thead>
               <tr>
-                <th><span class="small">ブリード<span>
+                <th class="breed"><span class="small">ブリード<span>
                 <th>シンドローム
                 <th>肉体
                 <th>感覚
@@ -337,7 +337,7 @@ print <<"HTML";
                 <th>社会
             <tbody class="syndrome-rows">
               <tr>
-                <th rowspan="3" id="breed-value"><b></b><span class="small">ブリード</span>
+                <th class="breed" rowspan="3"><span id="breed-value"></span><span class="small">ブリード</span>
                 <td>@{[ selectInput 'syndrome1','changeSyndrome(1,this.value)',@data::syndromes ]}
                 <td><span id="stt-syn1-body"  ></span>@{[ input "sttSyn1Body"  ,'number','calcStt' ]}
                 <td><span id="stt-syn1-sense" ></span>@{[ input "sttSyn1Sense" ,'number','calcStt' ]}

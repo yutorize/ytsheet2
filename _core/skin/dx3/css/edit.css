@@ -97,13 +97,13 @@ body:not(.mode-crc) .crc-only {
 #syndrome-status tbody.syndrome-rows tr:not(.auto) td span {
   display: none;
 }
-#syndrome-status #breed-value {
+#syndrome-status tbody .breed {
   position: relative;
   border-right-width: 1px;
   border-right-style: solid;
   line-height: 1;
 
-  > b:empty + span {
+  > #breed-value:empty + span {
     display: none;
   }
 }
@@ -119,9 +119,12 @@ body:not(.mode-crc) .crc-only {
   background-color: rgba(255,0,0,0.1);
 }
 @media screen and (max-width:735px){
-  #syndrome-status thead th:nth-child(1)   { width: 0em; }
+  #syndrome-status thead th.breed {
+    width: 1.2em;
+    > span { display:none }
+  }
+  #breed-value + span { display:none; }
   #syndrome-status thead th:nth-last-child(-n+4) { width: 3.5em; }
-  #syndrome-status .syndrome-rows th { font-size: 0; line-height: 1; }
 }
 
 #sub-status input {
