@@ -725,6 +725,9 @@ option.zero-data::before {
 #armours .defense-total td label input + span {
   font-size: 85%;
 }
+#armours tbody input[type=checkbox]:disabled {
+  display: none;
+}
 
 @media screen and (max-width:735px){
   #evasion-classes {

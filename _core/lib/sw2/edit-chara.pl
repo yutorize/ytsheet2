@@ -1042,7 +1042,7 @@ foreach my $num ('TMPL',1 .. $pc{armourNum}) {
                 <td>@{[ input "armour${num}Reqd",'','calcDefense' ]}
                 <td>@{[ input "armour${num}Eva",'number','calcDefense' ]}
                 <td>@{[ input "armour${num}Def",'number','calcDefense' ]}
-                <td>@{[ input "armour${num}Own",'checkbox','calcDefense','style="display:none"' ]}
+                <td>@{[ input "armour${num}Own",'checkbox','calcDefense','disabled' ]}
                 <td>@{[ input "armour${num}Note" ]}
 HTML
   if($num eq 'TMPL'){ print '</template>' }
