@@ -328,25 +328,28 @@ print <<"HTML";
           <h2 class="in-toc" data-content-title="シンドローム／能力値">シンドローム／能力値 [<span id="exp-status">0</span>]</h2>
           <table>
             <thead>
-              <tr><th><th>シンドローム<th>肉体<th>感覚<th>精神<th>社会
-            </thead>
+              <tr>
+                <th><span class="small">ブリード<span>
+                <th>シンドローム
+                <th>肉体
+                <th>感覚
+                <th>精神
+                <th>社会
             <tbody class="syndrome-rows">
               <tr>
-                <th>ピュア
+                <th rowspan="3" id="breed-value"><b></b><span class="small">ブリード</span>
                 <td>@{[ selectInput 'syndrome1','changeSyndrome(1,this.value)',@data::syndromes ]}
                 <td><span id="stt-syn1-body"  ></span>@{[ input "sttSyn1Body"  ,'number','calcStt' ]}
                 <td><span id="stt-syn1-sense" ></span>@{[ input "sttSyn1Sense" ,'number','calcStt' ]}
                 <td><span id="stt-syn1-mind"  ></span>@{[ input "sttSyn1Mind"  ,'number','calcStt' ]}
                 <td><span id="stt-syn1-social"></span>@{[ input "sttSyn1Social",'number','calcStt' ]}
               <tr>
-                <th>クロス
                 <td>@{[ selectInput 'syndrome2','changeSyndrome(2,this.value)',@data::syndromes ]}
                 <td><span id="stt-syn2-body"  ></span>@{[ input "sttSyn2Body"  ,'number','calcStt' ]}
                 <td><span id="stt-syn2-sense" ></span>@{[ input "sttSyn2Sense" ,'number','calcStt' ]}
                 <td><span id="stt-syn2-mind"  ></span>@{[ input "sttSyn2Mind"  ,'number','calcStt' ]}
                 <td><span id="stt-syn2-social"></span>@{[ input "sttSyn2Social",'number','calcStt' ]}
               <tr>
-                <th>トライ
                 <td>@{[ selectInput 'syndrome3','changeSyndrome(3,this.value)',@data::syndromes ]}
                 <td colspan="4">
             <tbody>

@@ -94,8 +94,18 @@ body:not(.mode-crc) .crc-only {
 #syndrome-status tbody.syndrome-rows tr.auto input {
   display: none;
 }
-#syndrome-status tbody.syndrome-rows tr:not(.auto) span {
+#syndrome-status tbody.syndrome-rows tr:not(.auto) td span {
   display: none;
+}
+#syndrome-status #breed-value {
+  position: relative;
+  border-right-width: 1px;
+  border-right-style: solid;
+  line-height: 1;
+
+  > b:empty + span {
+    display: none;
+  }
 }
 #syndrome-status tr.pure + tr td:nth-child(n+3) input {
   display: none;

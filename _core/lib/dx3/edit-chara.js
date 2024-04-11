@@ -95,6 +95,8 @@ function checkSyndrome(){
   const syn1 = syndromes[0];
   const syn2 = syndromes[1];
   const syn3 = syndromes[2];
+
+  document.querySelector('#breed-value > b').textContent = syn3 ? 'トライ' : syn2 ? 'クロス' : syn1 ? 'ピュア' : '';
   
   form.syndrome1.parentNode.classList.toggle('error', !syn1 && (syn2 || syn3));
   form.syndrome2.parentNode.classList.toggle('error', !syn2 && syn3);
