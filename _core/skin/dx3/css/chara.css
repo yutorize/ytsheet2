@@ -575,6 +575,9 @@ body {
 #lois table:not(:has(td.color:not(:empty))) .color {
   display: none;
 }
+#lois table:not(:has(td.state:not(:empty))) thead th.state > .text {
+  display: none;
+}
 
 #memory table tbody td:nth-child(1) { width: 6.2em; border-right-width: 1px; } /* 関係 */
 #memory table tbody td:nth-child(2) { width:  14em; border-right-width: 1px; } /* 名前 */
