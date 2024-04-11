@@ -929,7 +929,9 @@ function delHistory(){
   if(num > 1){
     if ( form[`history${num}Date`].value
       || form[`history${num}Title`].value
+      || form[`history${num}Completed`].value
       || form[`history${num}Exp`].value
+      || form[`history${num}Adp`].value
       || form[`history${num}Money`].value
       || form[`history${num}Gm`].value
       || form[`history${num}Member`].value
