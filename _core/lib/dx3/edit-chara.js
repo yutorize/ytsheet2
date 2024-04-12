@@ -598,25 +598,11 @@ function delSkill(type){
 // エフェクト欄 ----------------------------------------
 // 追加
 function addEffect(){
-  let num = Number(form.effectNum.value) + 1;
-
-  let row = document.querySelector('#effect-template').content.firstElementChild.cloneNode(true);
-  row.id = idNumSet('effect');
-  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
-  document.querySelector("#effect-table").append(row);
-  
-  form.effectNum.value = num;
+  document.querySelector("#effect-table").append(createRow('effect','effectNum'));
 }
 // 削除
 function delEffect(){
-  let num = Number(form.effectNum.value);
-  if(num > 2){
-    if(form[`effect${num}Name`].value || form[`effect${num}Lv`].value || form[`effect${num}Timing`].value || form[`effect${num}Skill`].value || form[`effect${num}Dfclty`].value || form[`effect${num}Target`].value || form[`effect${num}Range`].value || form[`effect${num}Encroach`].value || form[`effect${num}Restrict`].value || form[`effect${num}Exp`].value || form[`effect${num}Note`].value){
-      if (!confirm(delConfirmText)) return false;
-    }
-    document.querySelector("#effect-table tbody:last-of-type").remove();
-    num--;
-    form.effectNum.value = num;
+  if(delRow('effectNum', '#effect-table tbody:last-of-type')){
     calcEffect();
   }
 }
@@ -693,25 +679,11 @@ function effectSortAfter(){
 // 術式欄 ----------------------------------------
 // 追加
 function addMagic(){
-  let num = Number(form.magicNum.value) + 1;
-
-  let row = document.querySelector('#magic-template').content.firstElementChild.cloneNode(true);
-  row.id = idNumSet('magic');
-  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
-  document.querySelector("#magic-table").append(row);
-  
-  form.magicNum.value = num;
+  document.querySelector("#magic-table").append(createRow('magic','magicNum'));
 }
 // 削除
 function delMagic(){
-  let num = Number(form.magicNum.value);
-  if(num > 2){
-    if(form[`magic${num}Name`].value || form[`magic${num}Type`].value || form[`magic${num}Exp`].value || form[`magic${num}Activate`].value || form[`magic${num}Encroach`].value || form[`magic${num}Note`].value){
-      if (!confirm(delConfirmText)) return false;
-    }
-    document.querySelector("#magic-table tbody:last-of-type").remove();
-    num--;
-    form.magicNum.value = num;
+  if(delRow('magicNum', '#magic-table tbody:last-of-type')){
     calcMagic();
   }
 }
@@ -845,29 +817,15 @@ function calcCombo(num){
 }
 // 追加
 function addCombo(){
-  let num = Number(form.comboNum.value) + 1;
-
-  let row = document.querySelector('#combo-template').content.firstElementChild.cloneNode(true);
-  row.id = idNumSet('combo');
-  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
+  const row = createRow('combo','comboNum');
   document.querySelector("#combo-list").append(row);
 
-  comboSkillSet(num);
+  comboSkillSet(form.comboNum.value);
   makeComboConditionUtility(row);
-  form.comboNum.value = num;
 }
 // 削除
 function delCombo(){
-  let num = Number(form.comboNum.value);
-  if(num > 1){
-    if(form[`combo${num}Name`].value || form[`combo${num}Combo`].value || form[`combo${num}Timing`].value || form[`combo${num}Skill`].value || form[`combo${num}Dfclty`].value || form[`combo${num}Target`].value || form[`combo${num}Range`].value || form[`combo${num}Encroach`].value || form[`combo${num}DiceAdd1`].value || form[`combo${num}Crit1`].value || form[`combo${num}Atk1`].value || form[`combo${num}FixedAdd1`].value || form[`combo${num}Note`].value){
-      if (!confirm(delConfirmText)) return false;
-    }
-    const target = document.querySelector("#combo-list .combo-table:last-child");
-    target.remove();
-    num--;
-    form.comboNum.value = num;
-  }
+  delRow('comboNum', '#combo-list .combo-table:last-child');
 }
 // ソート
 let comboSortable = Sortable.create(document.getElementById('combo-list'), {
@@ -1061,26 +1019,11 @@ document.querySelectorAll('#combo .combo-table').forEach(node => makeComboCondit
 // 武器欄 ----------------------------------------
 // 追加
 function addWeapon(){
-  let num = Number(form.weaponNum.value) + 1;
-
-  let row = document.querySelector('#weapon-template').content.firstElementChild.cloneNode(true);
-  row.id = idNumSet('weapon');
-  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
-  document.querySelector("#weapon-table tbody").append(row);
-  
-  form.weaponNum.value = num;
+  document.querySelector("#weapon-table tbody").append(createRow('weapon','weaponNum'));
 }
 // 削除
 function delWeapon(){
-  let num = Number(form.weaponNum.value);
-  if(num > 1){
-    if(form[`weapon${num}Name`].value || form[`weapon${num}Stock`].value || form[`weapon${num}Exp`].value || form[`weapon${num}Type`].value || form[`weapon${num}Skill`].value || form[`weapon${num}Acc`].value || form[`weapon${num}Atk`].value || form[`weapon${num}Guard`].value || form[`weapon${num}Range`].value || form[`weapon${num}Note`].value){
-      if (!confirm(delConfirmText)) return false;
-    }
-    const target = document.querySelector("#weapon-table tbody tr:last-of-type");
-    target.parentNode.removeChild(target);
-    num--;
-    form.weaponNum.value = num;
+  if(delRow('weaponNum', '#weapon-table tbody tr:last-of-type')){
     calcItem();
   }
 }
@@ -1115,26 +1058,11 @@ let weaponSortable = Sortable.create(document.querySelector('#weapon-table tbody
 // 防具欄 ----------------------------------------
 // 追加
 function addArmor(){
-  let num = Number(form.armorNum.value) + 1;
-
-  let row = document.querySelector('#armor-template').content.firstElementChild.cloneNode(true);
-  row.id = idNumSet('armor');
-  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
-  document.querySelector("#armor-table tbody").append(row);
-
-  form.armorNum.value = num;
+  document.querySelector("#armor-table tbody").append(createRow('armor','armorNum'));
 }
 // 削除
 function delArmor(){
-  let num = Number(form.armorNum.value);
-  if(num > 1){
-    if(form[`armor${num}Name`].value || form[`armor${num}Stock`].value || form[`armor${num}Exp`].value || form[`armor${num}Initiative`].value || form[`armor${num}Dodge`].value || form[`armor${num}Armor`].value || form[`armor${num}Note`].value){
-      if (!confirm(delConfirmText)) return false;
-    }
-    const target = document.querySelector("#armor-table tbody tr:last-of-type");
-    target.parentNode.removeChild(target);
-    num--;
-    form.armorNum.value = num;
+  if(delRow('armorNum', '#armor-table tbody tr:last-of-type')){
     calcItem();
   }
 }
@@ -1167,26 +1095,11 @@ let armorSortable = Sortable.create(document.querySelector('#armor-table tbody')
 // ヴィークル欄 ----------------------------------------
 // 追加
 function addVehicle(){
-  let num = Number(form.vehicleNum.value) + 1;
-
-  let row = document.querySelector('#vehicle-template').content.firstElementChild.cloneNode(true);
-  row.id = idNumSet('vehicle');
-  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
-  document.querySelector("#vehicle-table tbody").append(row);
-  
-  form.vehicleNum.value = num;
+  document.querySelector("#vehicle-table tbody").append(createRow('vehicle','vehicleNum'));
 }
 // 削除
 function delVehicle(){
-  let num = Number(form.vehicleNum.value);
-  if(num > 0){
-    if(form[`vehicle${num}Name`].value || form[`vehicle${num}Stock`].value || form[`vehicle${num}Exp`].value || form[`vehicle${num}Skill`].value || form[`vehicle${num}Initiative`].value || form[`vehicle${num}Atk`].value || form[`vehicle${num}Armor`].value || form[`vehicle${num}Dash`].value || form[`vehicle${num}Note`].value){
-      if (!confirm(delConfirmText)) return false;
-    }
-    const target = document.querySelector("#vehicle-table tbody tr:last-of-type");
-    target.parentNode.removeChild(target);
-    num--;
-    form.vehicleNum.value = num;
+  if(delRow('vehicleNum', '#vehicle-table tbody tr:last-of-type')){
     calcItem();
   }
 }
@@ -1222,25 +1135,11 @@ let vehicleSortable = Sortable.create(document.querySelector('#vehicle-table tbo
 // アイテム欄 ----------------------------------------
 // 追加
 function addItem(){
-  let num = Number(form.itemNum.value) + 1;
-
-  let row = document.querySelector('#item-template').content.firstElementChild.cloneNode(true);
-  row.id = idNumSet('item');
-  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
-  document.querySelector("#item-table tbody").append(row);
-  
-  form.itemNum.value = num;
+  document.querySelector("#item-table tbody").append(createRow('item','itemNum'));
 }
 // 削除
 function delItem(){
-  let num = Number(form.itemNum.value);
-  if(num > 1){
-    if(form[`item${num}Name`].value || form[`item${num}Stock`].value || form[`item${num}Exp`].value || form[`item${num}Type`].value || form[`item${num}Skill`].value || form[`item${num}Note`].value){
-      if (!confirm(delConfirmText)) return false;
-    }
-    document.querySelector("#item-table tbody tr:last-of-type").remove();
-    num--;
-    form.itemNum.value = num;
+  if(delRow('itemNum', '#item-table tbody tr:last-of-type')){
     calcItem();
   }
 }
@@ -1272,26 +1171,12 @@ let itemSortable = Sortable.create(document.querySelector('#item-table tbody'), 
 // 履歴欄 ----------------------------------------
 // 追加
 function addHistory(){
-  let num = Number(form.historyNum.value) + 1;
-
-  let row = document.querySelector('#history-template').content.firstElementChild.cloneNode(true);
-  row.id = idNumSet('history');
-  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
-  document.querySelector("#history-table tbody:last-of-type").after(row);
-  
-  form.historyNum.value = num;
+  document.querySelector("#history-table tfoot").before(createRow('history','historyNum'));
 }
 // 削除
 function delHistory(){
-  let num = Number(form.historyNum.value);
-  if(num > 1){
-    if(form[`history${num}Date`].value || form[`history${num}Title`].value || form[`history${num}Exp`].value || form[`history${num}Gm`].value || form[`history${num}Member`].value || form[`history${num}Note`].value){
-      if (!confirm(delConfirmText)) return false;
-    }
-    const target = document.querySelector("#history-table tbody:last-of-type");
-    target.parentNode.removeChild(target);
-    num--;
-    form.historyNum.value = num;
+  if(delRow('historyNum', '#history-table tbody:last-of-type')){
+    calcExp();
   }
 }
 // ソート

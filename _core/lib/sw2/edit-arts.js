@@ -200,26 +200,11 @@ function delSchoolItem(obj, url){
 // 秘伝欄 ----------------------------------------
 // 追加
 function addSchoolArts(){
-  let num = Number(form.schoolArtsNum.value) + 1;
-
-  let row = document.querySelector('#arts-template').content.firstElementChild.cloneNode(true);
-  row.id = idNumSet('arts');
-  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
-  document.querySelector("#arts-list").append(row);
-
-  form.schoolArtsNum.value = num;
+  document.querySelector("#arts-list").append(createRow('arts','schoolArtsNum'));
 }
 // 削除
 function delSchoolArts(){
-  let num = Number(form.schoolArtsNum.value);
-  if(num > 0){
-    if(form[`schoolArts${num}Name`].value || form[`schoolArts${num}Cost`].value || form[`schoolArts${num}Type`].value || form[`schoolArts${num}Premise`].value || form[`schoolArts${num}Equip`].value || form[`schoolArts${num}Use`].value || form[`schoolArts${num}Apply`].value || form[`schoolArts${num}Risk`].value || form[`schoolArts${num}Summary`].value || form[`schoolArts${num}Effect`].value){
-      if (!confirm(delConfirmText)) return false;
-    }
-    document.querySelector("#arts-list .input-data:last-child").remove();
-    num--;
-    form.schoolArtsNum.value = num;
-  }
+  delRow('schoolArtsNum', '#arts-list .input-data:last-child');
 }
 // 並べ替え
 (() => {
@@ -265,26 +250,11 @@ function delSchoolArts(){
 // 秘伝魔法欄 ----------------------------------------
 // 追加
 function addSchoolMagic(){
-  let num = Number(form.schoolMagicNum.value) + 1;
-
-  let row = document.querySelector('#school-magic-template').content.firstElementChild.cloneNode(true);
-  row.id = idNumSet('school-magic');
-  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
-  document.querySelector("#school-magic-list").append(row);
-
-  form.schoolMagicNum.value = num;
+  document.querySelector("#school-magic-list").append(createRow('school-magic','schoolMagicNum'));
 }
 // 削除
 function delSchoolMagic(){
-  let num = Number(form.schoolMagicNum.value);
-  if(num > 0){
-    if(form[`schoolMagic${num}Name`].value || form[`schoolMagic${num}Cost`].value || form[`schoolMagic${num}Target`].value || form[`schoolMagic${num}Range`].value || form[`schoolMagic${num}Form`].value || form[`schoolMagic${num}Duration`].value || form[`schoolMagic${num}Resist`].value || form[`schoolMagic${num}Element`].value || form[`schoolMagic${num}Summary`].value || form[`schoolMagic${num}Effect`].value){
-      if (!confirm(delConfirmText)) return false;
-    }
-    document.querySelector("#school-magic-list .input-data:last-child").remove();
-    num--;
-    form.schoolMagicNum.value = num;
-  }
+  delRow('schoolMagicNum', '#school-magic-list .input-data:last-child');
 }
 // 並べ替え
 (() => {

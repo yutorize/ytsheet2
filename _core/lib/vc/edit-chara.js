@@ -87,30 +87,11 @@ function calcResultPoint(){
 // グッズ欄 ----------------------------------------
 // 追加
 function addGoods(){
-  let num = Number(form.goodsNum.value) + 1;
-
-  let row = document.querySelector('#goods-template').content.firstElementChild.cloneNode(true);
-  row.id = idNumSet('goods');
-  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
-  document.querySelector("#goods-table tbody").append(row);
-  
-  form.goodsNum.value = num;
+  document.querySelector("#goods-table tbody").append(createRow('goods','goodsNum'));
 }
 // 削除
 function delGoods(){
-  let num = Number(form.goodsNum.value);
-  if(num > 1){
-    if ( form[`goods${num}Name`].value
-      || form[`goods${num}Type`].value
-      || form[`goods${num}Cost`].value
-      || form[`goods${num}Note`].value
-    ){
-      if (!confirm(delConfirmText)) return false;
-    }
-    document.querySelector("#goods-table tbody tr:last-of-type").remove();
-
-    form.goodsNum.value = num - 1;
-  }
+  delRow('goodsNum', '#goods-table tbody tr:last-of-type');
 }
 // ソート
 let goodsSortable = Sortable.create(document.querySelector("#goods-table tbody"), {
@@ -138,30 +119,11 @@ let goodsSortable = Sortable.create(document.querySelector("#goods-table tbody")
 //アイテム欄 ----------------------------------------
 // 追加
 function addItem(){
-  let num = Number(form.itemsNum.value) + 1;
-
-  let row = document.querySelector('#item-template').content.firstElementChild.cloneNode(true);
-  row.id = idNumSet('item');
-  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
-  document.querySelector("#items-table tbody").append(row);
-  
-  form.itemsNum.value = num;
+  document.querySelector("#items-table tbody").append(createRow('item','itemsNum'));
 }
 // 削除
 function delItem(){
-  let num = Number(form.itemsNum.value);
-  if(num > 1){
-    if ( form[`item${num}Name`].value
-      || form[`item${num}Type`].value
-      || form[`item${num}Cost`].value
-      || form[`item${num}Note`].value
-    ){
-      if (!confirm(delConfirmText)) return false;
-    }
-    document.querySelector("#items-table tbody tr:last-of-type").remove();
-
-    form.itemsNum.value = num - 1;
-  }
+  delRow('itemsNum', '#items-table tbody tr:last-of-type');
 }
 // ソート
 let itemsSortable = Sortable.create(document.querySelector("#items-table tbody"), {
@@ -191,32 +153,12 @@ let itemsSortable = Sortable.create(document.querySelector("#items-table tbody")
 // 履歴欄 ----------------------------------------
 // 追加
 function addHistory(){
-  let num = Number(form.historyNum.value) + 1;
-
-  let row = document.querySelector('#history-template').content.firstElementChild.cloneNode(true);
-  row.id = idNumSet('history');
-  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
-  document.querySelector("#history-table tbody:last-of-type").after(row);
-  
-  form.historyNum.value = num;
+  document.querySelector("#history-table tfoot").before(createRow('history','historyNum'));
 }
 // 削除
 function delHistory(){
-  let num = Number(form.historyNum.value);
-  if(num > 1){
-    if ( form[`history${num}Date`  ].value
-      || form[`history${num}Title` ].value
-      || form[`history${num}Result`].value
-      || form[`history${num}Gm`    ].value
-      || form[`history${num}Member`].value
-      || form[`history${num}Note`  ].value
-    ){
-      if (!confirm(delConfirmText)) return false;
-    }
-    document.querySelector("#history-table tbody:last-of-type").remove();
-
-    form.historyNum.value = num - 1;
-    calcExp(); calcCash();
+  if(delRow('historyNum', '#history-table tbody:last-of-type')){
+    calcResultPoint();
   }
 }
 // ソート

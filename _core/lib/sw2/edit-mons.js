@@ -178,11 +178,22 @@ function addStatusInsert(target, num, copy){
 function delStatus(){
   let num = Number(form.statusNum.value);
   if(num > 1){
-    if(form[`status${num}Style`].value || form[`status${num}Accuracy`].value || form[`status${num}AccuracyFix`].value || form[`status${num}Evasion`].value || form[`status${num}EvasionFix`].value || form[`status${num}Defense`].value || form[`status${num}Hp`].value || form[`status${num}Mp`].value){
-      if (!confirm(delConfirmText)) return false;
+    let hasValue = false;
+    for (const node of document.querySelectorAll(`#status-table tbody tr:last-child input`)){
+      if(
+        node.value !== '' &&
+        !(/Damage$/.test(node.getAttribute('name')) && node.value === '2d+') &&
+        !(/Vit$/.test(node.getAttribute('name')) && node.value === '―') &&
+        !(/Mnd$/.test(node.getAttribute('name')) && node.value === '―')
+      ){
+        hasValue = true; break;
+      }
     }
-    document.querySelectorAll("#status-table tbody").forEach(table => {
-      table.deleteRow(-1);
+    if(hasValue){
+      if (!confirm(delConfirmText)){ return false; }
+    }
+    document.querySelectorAll("#status-table tbody tr:last-child").forEach(target => {
+      target.remove();
     });
     num--;
     form.statusNum.value = num;
@@ -288,8 +299,8 @@ function delLoots(){
     }
     const listNum  = document.getElementById("loots-num");
     const listItem = document.getElementById("loots-item");
-    listNum.removeChild(listNum.lastElementChild);
-    listItem.removeChild(listItem.lastElementChild);
+    listNum.lastElementChild.remove();
+    listItem.lastElementChild.remove();
     num--;
     form.lootsNum.value = num;
   }

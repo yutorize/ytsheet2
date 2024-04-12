@@ -511,7 +511,7 @@ HTML
 foreach my $num ('TMPL',1 .. $pc{artsNum}) {
   if($num eq 'TMPL'){ print '<template id="arts-template">' }
 print <<"HTML";
-            <tr id="arts${num}">
+            <tr id="arts-row${num}">
               <td class="handle">
               <td>@{[input "arts${num}Name"]}
               <td>@{[input "arts${num}Timing" ,'','','list="list-timing"']}
@@ -576,7 +576,7 @@ HTML
 foreach my $num ('TMPL',1 .. $pc{historyNum}) {
   if($num eq 'TMPL'){ print '<template id="history-template">' }
 print <<"HTML";
-          <tbody id="history${num}">
+          <tbody id="history-row${num}">
           <tr>
             <td class="handle" rowspan="2">
             <td class="date  " rowspan="2">@{[ input"history${num}Date" ]}

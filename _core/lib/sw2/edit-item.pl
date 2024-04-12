@@ -192,7 +192,7 @@ HTML
 HTML
 foreach my $num ('TMPL', 1 .. $pc{weaponNum}){
   print <<"HTML";
-          @{[ $num eq 'TMPL' ? '<template id="weapon-template">' : '' ]}<tr id="weapon$num">
+          @{[ $num eq 'TMPL' ? '<template id="weapon-template">' : '' ]}<tr id="weapon-row$num">
             <td class="handle">
             <td>@{[ input "weapon${num}Usage",'text','','list="list-usage"' ]}
             <td>@{[ input "weapon${num}Reqd" ]}
@@ -219,7 +219,7 @@ HTML
 HTML
 foreach my $num ('TMPL', 1 .. $pc{armourNum}){
   print <<"HTML";
-          @{[ $num eq 'TMPL' ? '<template id="armour-template">' : '' ]}<tr id="armour$num">
+          @{[ $num eq 'TMPL' ? '<template id="armour-template">' : '' ]}<tr id="armour-row$num">
             <td class="handle">
             <td>@{[ input "armour${num}Usage",'text','','list="list-usage"' ]}
             <td>@{[ input "armour${num}Reqd" ]}

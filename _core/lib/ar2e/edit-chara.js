@@ -798,35 +798,12 @@ function calcExp(){
 // スキル欄 ----------------------------------------
 // 追加
 function addSkill(){
-  let num = Number(form.skillsNum.value) + 1;
-
-  let row = document.querySelector('#skill-template').content.firstElementChild.cloneNode(true);
-  row.id = idNumSet('skill');
-  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
-  document.querySelector("#skills-table tbody:last-of-type").after(row);
-  
-  form.skillsNum.value = num;
+  document.querySelector("#skills-table tfoot").before(createRow('skill','skillsNum'));
   checkClass();
 }
 // 削除
 function delSkill(){
-  let num = Number(form.skillsNum.value);
-  if(num > 2){
-    if(form[`skill${num}Name`  ].value || 
-       form[`skill${num}Lv`    ].value || 
-       form[`skill${num}Timing`].value || 
-       form[`skill${num}Roll`  ].value || 
-       form[`skill${num}Target`].value || 
-       form[`skill${num}Range` ].value || 
-       form[`skill${num}Cost`  ].value || 
-       form[`skill${num}Reqd`  ].value || 
-       form[`skill${num}Note`  ].value
-    ){
-      if (!confirm(delConfirmText)) return false;
-    }
-    document.querySelector("#skills-table tbody:last-of-type").remove();
-    
-    form.skillsNum.value = num - 1;
+  if(delRow('skillsNum', '#skills-table tbody:last-of-type')){
     calcSkills();
   }
 }
@@ -901,26 +878,11 @@ function skillsSortAfter(){
 // コネクション欄 ----------------------------------------
 // 追加
 function addConnection(){
-  let num = Number(form.connectionsNum.value) + 1;
-
-  let row = document.querySelector('#connection-template').content.firstElementChild.cloneNode(true);
-  row.id = idNumSet('connection');
-  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
-  document.querySelector("#connections-table tbody").append(row);
-  
-  form.connectionsNum.value = num;
+  document.querySelector("#connections-table tbody").append(createRow('connection','connectionsNum'));
 }
 // 削除
 function delConnection(){
-  let num = Number(form.connectionsNum.value);
-  if(num > 1){
-    if(form[`connection${num}Name`].value || form[`connection${num}Relation`].value || form[`connection${num}Note`].value){
-      if (!confirm(delConfirmText)) return false;
-    }
-    document.querySelector("#connections-table tbody tr:last-of-type").remove();
-
-    form.connectionsNum.value = num - 1;
-    
+  if(delRow('connectionsNum', '#connections-table tbody tr:last-of-type')){
     calcConnections();
   }
 }
@@ -949,27 +911,13 @@ let connectionsSortable = Sortable.create(document.querySelector('#connections-t
 // 誓約欄 ----------------------------------------
 // 追加
 function addGeis(){
-  let num = Number(form.geisesNum.value) + 1;
-
-  let row = document.querySelector('#geis-template').content.firstElementChild.cloneNode(true);
-  row.id = idNumSet('geis');
-  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
-  document.querySelector("#geises-table tbody").append(row);
-  
-  form.geisesNum.value = num;
+  document.querySelector("#geises-table tbody").append(createRow('geis','geisesNum'));
 }
 // 削除
 function delGeis(){
-  let num = Number(form.geisesNum.value);
-  if(num > 1){
-    if(form[`geis${num}Name`].value || form[`geis${num}Cost`].value || form[`geis${num}Note`].value){
-      if (!confirm(delConfirmText)) return false;
-    }
-    document.querySelector("#geises-table tbody tr:last-of-type").remove();
-
-    form.geisesNum.value = num - 1;
+  if(delRow('geisesNum', '#geises-table tbody tr:last-of-type')){
+    calcGeises();
   }
-  calcGeises();
 }
 // ソート
 let geisesSortable = Sortable.create(document.querySelector('#geises-table tbody'), {
@@ -996,32 +944,11 @@ let geisesSortable = Sortable.create(document.querySelector('#geises-table tbody
 // 履歴欄 ----------------------------------------
 // 追加
 function addHistory(){
-  let num = Number(form.historyNum.value) + 1;
-
-  let row = document.querySelector('#history-template').content.firstElementChild.cloneNode(true);
-  row.id = idNumSet('history');
-  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
-  document.querySelector("#history-table tbody:last-of-type").after(row);
-  
-  form.historyNum.value = num;
+  document.querySelector("#history-table tfoot").before(createRow('history','historyNum'));
 }
 // 削除
 function delHistory(){
-  let num = Number(form.historyNum.value);
-  if(num > 1){
-    if(form[`history${num}Date`  ].value || 
-       form[`history${num}Title` ].value || 
-       form[`history${num}Exp`   ].value || 
-       form[`history${num}Money` ].value || 
-       form[`history${num}Gm`    ].value || 
-       form[`history${num}Member`].value || 
-       form[`history${num}Note`  ].value
-    ){
-      if (!confirm(delConfirmText)) return false;
-    }
-    document.querySelector("#history-table tbody:last-of-type").remove();
-
-    form.historyNum.value = num - 1;
+  if(delRow('historyNum', '#history-table tbody:last-of-type')){
     calcExp(); calcCash();
   }
 }

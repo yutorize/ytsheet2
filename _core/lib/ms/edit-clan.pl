@@ -303,7 +303,7 @@ HTML
 print '';
 foreach my $num ('TMPL',1 .. $pc{memberNum}) {
   if($num eq 'TMPL'){ print '<template id="member-template">' }
-  print '<tr id="member'.$num.'">'
+  print '<tr id="member-row'.$num.'">'
     .'<th class="handle">'
     .'<td class="name">'
     .input('member'.$num.'Name','','','placeholder="名前"')
@@ -399,7 +399,7 @@ HTML
 foreach my $num ('TMPL',1 .. $pc{historyNum}) {
   if($num eq 'TMPL'){ print '<template id="history-template">' }
 print <<"HTML";
-          <tbody id="history${num}">
+          <tbody id="history-row${num}">
           <tr>
             <td class="handle" rowspan="2">
             <td class="date  " rowspan="2">@{[ input"history${num}Date" ]}

@@ -349,7 +349,7 @@ HTML
 foreach my $num ('TMPL',1..$pc{schoolArtsNum}){
   if($num eq 'TMPL'){ print '<template id="arts-template">' }
 print <<"HTML";
-          <div class="input-data" id="arts${num}">
+          <div class="input-data" id="arts-row${num}">
             <div class="handle"></div>
             <dl class="name    "><dt>名称      <dd>《@{[ input "schoolArts${num}Name",'' ]}》<br>@{[ checkbox "schoolArts${num}ActionTypeSetup",'戦闘準備' ]}</dl>
             <dl class="cost    "><dt>必要名誉点<dd>@{[ input "schoolArts${num}Cost" ]}</dl>
@@ -378,7 +378,7 @@ HTML
 foreach my $num ('TMPL',1..$pc{schoolMagicNum}){
   if($num eq 'TMPL'){ print '<template id="school-magic-template">' }
 print <<"HTML";
-          <div class="input-data" id="school-magic${num}">
+          <div class="input-data" id="school-magic-row${num}">
             <div class="handle"></div>
             <dl class="name    "><dt>名称      <dd>【@{[ input "schoolMagic${num}Name",'' ]}】<br>@{[ checkbox "schoolMagic${num}ActionTypeMinor",'補助動作' ]}@{[ checkbox "schoolMagic${num}ActionTypeSetup",'戦闘準備' ]}</dl>
             <dl class="cost    "><dt>必要名誉点<dd>@{[ input "schoolMagic${num}AcquireCost" ]}</dl>

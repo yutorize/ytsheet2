@@ -361,7 +361,7 @@ HTML
 foreach my $num ('TMPL',1 .. $pc{goodsNum}){
   if($num eq 'TMPL'){ print '<template id="goods-template">' }
   print <<"HTML";
-            <tr id="goods${num}">
+            <tr id="goods-row${num}">
               <td class="handle">
               <td>@{[input "goods${num}Name" ]}
               <td>@{[input "goods${num}Type",'','','list="list-goods-type"' ]}
@@ -508,7 +508,7 @@ HTML
 foreach my $num ('TMPL',1 .. $pc{itemsNum}){
   if($num eq 'TMPL'){ print '<template id="item-template">' }
   print <<"HTML";
-            <tr id="item${num}">
+            <tr id="item-row${num}">
               <td class="handle">
               <td>@{[input "item${num}Name" ]}
               <td>@{[input "item${num}Type",'','','list="list-item-type"' ]}
@@ -559,7 +559,7 @@ HTML
 foreach my $num ('TMPL',1 .. $pc{historyNum}) {
   if($num eq 'TMPL'){ print '<template id="history-template">' }
 print <<"HTML";
-          <tbody id="history${num}">
+          <tbody id="history-row${num}">
             <tr>
               <td class="handle" rowspan="2">
               <td class="date  " rowspan="2">@{[input("history${num}Date")]}

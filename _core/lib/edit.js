@@ -657,6 +657,46 @@ function clearRadioButton(radioButton) {
   },100)
 }
 
+// 行作成 ----------------------------------------
+function createRow(name, numNodeName, max = null){
+  let num = Number(form[numNodeName].value) + 1;
+  if(max && num > max){ return ''; }
+  let row = document.getElementById(name+'-template').content.firstElementChild.cloneNode(true);
+  row.id = idNumSet(name+'-row');
+  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
+  form[numNodeName].value = num;
+  return row;
+}
+
+// 行削除 ----------------------------------------
+function delRow(numNodeName, targetSelector, min = 0, initialText){
+  let num = Number(form[numNodeName].value);
+  if(num <= min){ return false; }
+  if(!delRowNode(targetSelector,initialText)){ return false; }
+  num--;
+  form[numNodeName].value = num;
+  return true;
+}
+function delRowNode(targetSelector, initialText){
+  const targetNode = document.querySelector(targetSelector);
+  let hasValue = false;
+  for (const node of targetNode.querySelectorAll(`input, select, textarea`)){
+    if(node.type === 'checkbox' || node.type === 'radio'){
+      if(node.checked) { hasValue = true; break; }
+    }
+    else {
+      if(node.value !== '' && !(initialText && node.value === initialText)){
+        hasValue = true; break;
+      }
+    }
+  }
+  if(hasValue){
+    if (!confirm(delConfirmText)){ return false; }
+  }
+  targetNode.remove();
+  return true;
+}
+
 // 連番ID生成 ----------------------------------------
 function idNumSet (id,after){
   let num = 1;

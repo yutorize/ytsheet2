@@ -211,7 +211,7 @@ function calcAdp(){
       if(form[`skill${i}Auto`].checked){ point -= 5 }
       adpUsed += point;
     }
-    document.querySelector(`#skill${i} .adp`).textContent = point;
+    document.querySelector(`#skill-row${i} .adp`).textContent = point;
   }
   for (let i = 1; i <= form.generalSkillNum.value; i++){
     const grade = form[`generalSkill${i}Grade`].value;
@@ -221,7 +221,7 @@ function calcAdp(){
       if(form[`generalSkill${i}Auto`].checked){ point -= 1 }
       adpUsed += point;
     }
-    document.querySelector(`#general-skill${i} .adp`).textContent = point;
+    document.querySelector(`#general-skill-row${i} .adp`).textContent = point;
   }
 
   const adpRest = adpTotal - adpUsed;
@@ -602,52 +602,21 @@ function calcAdvCompleted(){
 
 // 武器欄 ----------------------------------------
 // 追加
-function addWeapons(copy){
-  let num = Number(form.weaponNum.value) + 1;
-
-  let row = document.querySelector('#weapon-template').content.firstElementChild.cloneNode(true);
-  row.id = idNumSet('weapons-row');
-  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
+function addWeapons(copyBaseNum){
+  const row = createRow('weapon','weaponNum');
   document.querySelector("#weapons-table").append(row);
   
-  if(copy){
-    form[`weapon${num}Name`    ].value = form[`weapon${copy}Name`    ].value;
-    form[`weapon${num}Type`    ].value = form[`weapon${copy}Type`    ].value;
-    form[`weapon${num}Weight`  ].value = form[`weapon${copy}Weight`  ].value;
-    form[`weapon${num}Usage`   ].value = form[`weapon${copy}Usage`   ].value;
-    form[`weapon${num}Attr`    ].value = form[`weapon${copy}Attr`    ].value;
-    form[`weapon${num}HitMod`  ].value = form[`weapon${copy}HitMod`  ].value;
-    form[`weapon${num}Power`   ].value = form[`weapon${copy}Power`   ].value;
-    form[`weapon${num}PowerMod`].value = form[`weapon${copy}PowerMod`].value;
-    form[`weapon${num}Range`   ].value = form[`weapon${copy}Range`   ].value;
-    form[`weapon${num}Class`   ].value = form[`weapon${copy}Class`   ].value;
-    form[`weapon${num}Note`    ].value = form[`weapon${copy}Note`    ].value;
+  if(copyBaseNum){
+    row.querySelectorAll('[name]').forEach(node => {
+      const copyBaseName = node.getAttribute('name').replace(/^(weapon)\d+(.+)$/, `$1${copyBaseNum}$2`)
+      node.value = form[copyBaseName].value;
+    });
     calcWeapon();
   }
-  
-  form.weaponNum.value = num;
 }
 // 削除
 function delWeapons(){
-  let num = Number(form.weaponNum.value);
-  if(num > 1){
-    if ( form[`weapon${num}Name`    ].value
-      || form[`weapon${num}Type`    ].value
-      || form[`weapon${num}Weight`  ].value
-      || form[`weapon${num}Usage`   ].value
-      || form[`weapon${num}Attr`    ].value
-      || form[`weapon${num}HitMod`  ].value
-      || form[`weapon${num}Power`   ].value
-      || form[`weapon${num}PowerMod`].value
-      || form[`weapon${num}Range`   ].value
-      || form[`weapon${num}Note`    ].value
-    ){
-      if (!confirm(delConfirmText)) return false;
-    }
-    document.querySelector("#weapons-table tbody:last-of-type").remove();
-    num--;
-    form.weaponNum.value = num;
-  }
+  delRow('weaponNum', '#weapons-table tbody:last-of-type');
 }
 // ソート
 let weaponsSortable = Sortable.create(document.getElementById('weapons-table'), {
@@ -686,30 +655,12 @@ let weaponsSortable = Sortable.create(document.getElementById('weapons-table'), 
 // 冒険者技能欄 ----------------------------------------
 // 追加
 function addSkill(){
-  let num = Number(form.skillNum.value) + 1;
-
-  let row = document.querySelector('#skill-template').content.firstElementChild.cloneNode(true);
-  row.id = idNumSet('skill');
-  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
-  document.querySelector("#skills-table tbody").append(row);
-  
-  form.skillNum.value = num;
+  document.querySelector("#skills-table tbody").append(createRow('skill','skillNum'));
 }
 // 削除
 function delSkill(){
-  let num = Number(form.skillNum.value);
-  if(num > 1){
-    if ( form[`skill${num}Name`].value
-      || form[`skill${num}Auto`].checked
-      || form[`skill${num}Grade`].value
-      || form[`skill${num}Note`].value
-      || form[`skill${num}Page`].value
-    ){
-      if (!confirm(delConfirmText)) return false;
-    }
-    document.querySelector("#skills-table tbody tr:last-of-type").remove();
-    num--;
-    form.skillNum.value = num;
+  if(delRow('skillNum', '#skills-table tbody tr:last-of-type')){
+    calcAdp();
   }
 }
 // ソート
@@ -738,30 +689,12 @@ let skillsSortable = Sortable.create(document.querySelector("#skills-table tbody
 // 一般技能欄 ----------------------------------------
 // 追加
 function addGeneralSkill(){
-  let num = Number(form.generalSkillNum.value) + 1;
-
-  let row = document.querySelector('#general-skill-template').content.firstElementChild.cloneNode(true);
-  row.id = idNumSet('general-skill');
-  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
-  document.querySelector("#general-skills-table tbody").append(row);
-  
-  form.generalSkillNum.value = num;
+  document.querySelector("#general-skills-table tbody").append(createRow('general-skill','generalSkillNum'));
 }
 // 削除
 function delGeneralSkill(){
-  let num = Number(form.generalSkillNum.value);
-  if(num > 1){
-    if ( form[`generalSkill${num}Name`].value
-      || form[`generalSkill${num}Auto`].checked
-      || form[`generalSkill${num}Grade`].value
-      || form[`generalSkill${num}Note`].value
-      || form[`generalSkill${num}Page`].value
-    ){
-      if (!confirm(delConfirmText)) return false;
-    }
-    document.querySelector("#general-skills-table tbody tr:last-of-type").remove();
-    num--;
-    form.generalSkillNum.value = num;
+  if(delRow('generalSkillNum', '#general-skills-table tbody tr:last-of-type')){
+    calcAdp();
   }
 }
 // ソート
@@ -792,39 +725,11 @@ let generalSkillsSortable = Sortable.create(document.querySelector("#general-ski
 // 呪文 ----------------------------------------
 // 追加
 function addSpell(){
-  let num = Number(form.spellNum.value) + 1;
-
-  let row = document.querySelector('#spell-template').content.firstElementChild.cloneNode(true);
-  row.id = idNumSet('spell');
-  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
-  document.querySelector("#spells-table tbody").append(row);
-  
-  for(const name in SET.class){
-    if (!SET.class[name].magic){ continue }
-    let op = document.createElement("option");
-    op.text = SET.class[name].magic;
-    form["spell"+num+"System"].appendChild(op);
-  }
-  form.spellNum.value = num;
+  document.querySelector("#spells-table tbody").append(createRow('spell','spellNum'));
 }
 // 削除
 function delSpell(){
-  let num = Number(form.spellNum.value);
-  if(num > 1){
-    if ( form[`spell${num}Name`].value
-      || form[`spell${num}System`].value
-      || form[`spell${num}Type`].value
-      || form[`spell${num}Attr`].value
-      || form[`spell${num}Dfclt`].value
-      || form[`spell${num}Note`].value
-      || form[`spell${num}Ref`].value
-    ){
-      if (!confirm(delConfirmText)) return false;
-    }
-    document.querySelector("#spells-table tbody tr:last-of-type").remove();
-    num--;
-    form.spellNum.value = num;
-  }
+  delRow('spellNum', '#spells-table tbody tr:last-of-type');
 }
 // ソート
 let spellsSortable = Sortable.create(document.querySelector("#spells-table tbody"), {
@@ -856,33 +761,11 @@ let spellsSortable = Sortable.create(document.querySelector("#spells-table tbody
 // 武技 ----------------------------------------
 // 追加
 function addArts(){
-  let num = Number(form.artsNum.value) + 1;
-
-  let row = document.querySelector('#arts-template').content.firstElementChild.cloneNode(true);
-  row.id = idNumSet('arts');
-  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
-  document.querySelector("#arts-table").append(row);
-
-  form.artsNum.value = num;
+  document.querySelector("#arts-table").append(createRow('arts','artsNum'));
 }
 // 削除
 function delArts(){
-  let num = Number(form.artsNum.value);
-  if(num > 1){
-    if ( form[`arts${num}Name`].value
-      || form[`arts${num}Weapon`].value
-      || form[`arts${num}Skill`].value
-      || form[`arts${num}Cost`].value
-      || form[`arts${num}Terms`].value
-      || form[`arts${num}Ref`].value
-      || form[`arts${num}Note`].value
-    ){
-      if (!confirm(delConfirmText)) return false;
-    }
-    document.querySelector("#arts-table tbody:last-of-type").remove();
-    num--;
-    form.artsNum.value = num;
-  }
+  delRow('artsNum', '#arts-table tbody:last-of-type');
 }
 // ソート
 let artsSortable = Sortable.create(document.querySelector("#arts-table"), {
@@ -914,35 +797,12 @@ let artsSortable = Sortable.create(document.querySelector("#arts-table"), {
 // 履歴欄 ----------------------------------------
 // 追加
 function addHistory(){
-  let num = Number(form.historyNum.value) + 1;
-
-  let row = document.querySelector('#history-template').content.firstElementChild.cloneNode(true);
-  row.id = idNumSet('history');
-  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
-  document.querySelector("#history-table").append(row);
-
-  document.querySelector("#history-table tbody:last-of-type").after(row);
-  
-  form.historyNum.value = num;
+  document.querySelector("#history-table tfoot").before(createRow('history','historyNum'));
 }
 // 削除
 function delHistory(){
-  let num = Number(form.historyNum.value);
-  if(num > 1){
-    if ( form[`history${num}Date`].value
-      || form[`history${num}Title`].value
-      || form[`history${num}Exp`].value
-      || form[`history${num}Money`].value
-      || form[`history${num}Gm`].value
-      || form[`history${num}Member`].value
-      || form[`history${num}Note`].value
-    ){
-      if (!confirm(delConfirmText)) return false;
-    }
-    document.querySelector("#history-table tbody:last-of-type").remove();
-    num--;
-    form.historyNum.value = num;
-    calcExp(); calcHonor(); calcCash(); calcStt();
+  if(delRow('historyNum', '#history-table tbody:last-of-type')){
+    calcExp(); calcCash();
   }
 }
 // ソート

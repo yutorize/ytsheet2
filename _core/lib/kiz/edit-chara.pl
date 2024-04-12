@@ -490,7 +490,7 @@ HTML
 foreach my $num ('TMPL',1 .. $pc{kizunaNum}) {
   if($num eq 'TMPL'){ print '<template id="kizuna-template">' }
 print <<"HTML";
-            <tr id="kizuna${num}" class="@{[ $pc{"kizuna${num}Hibi"} ? 'hibi':'' ]}@{[ $pc{"kizuna${num}Ware"} ? 'ware':'' ]}">
+            <tr id="kizuna-row${num}" class="@{[ $pc{"kizuna${num}Hibi"} ? 'hibi':'' ]}@{[ $pc{"kizuna${num}Ware"} ? 'ware':'' ]}">
               <td class="handle">
               <td>@{[ input "kizuna${num}Name" ]}
               <td>@{[ input "kizuna${num}Note" ]}
@@ -529,7 +529,7 @@ HTML
 foreach my $num ('TMPL',1 .. $pc{kizuatoNum}) {
   if($num eq 'TMPL'){ print '<template id="kizuato-template">' }
 print <<"HTML";
-            <tbody id="kizuato${num}">
+            <tbody id="kizuato-row${num}">
               <tr>
                 <td class="name" colspan="6">
                 <span class="handle"></span>
@@ -603,7 +603,7 @@ HTML
 foreach my $num ('TMPL',1 .. $pc{historyNum}) {
   if($num eq 'TMPL'){ print '<template id="history-template">' }
 print <<"HTML";
-          <tbody id="history${num}">
+          <tbody id="history-row${num}">
           <tr>
             <td class="handle" rowspan="2">
             <td class="date  " rowspan="2">@{[ input"history${num}Date" ]}

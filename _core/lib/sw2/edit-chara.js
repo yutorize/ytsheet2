@@ -1628,27 +1628,13 @@ let accesorySortable = Sortable.create(document.getElementById('accessories-tabl
 // 秘伝欄 ----------------------------------------
 // 追加
 function addMysticArts(){
-  let num = Number(form.mysticArtsNum.value) + 1;
-
-  let row = document.querySelector('#mystic-arts-template').content.firstElementChild.cloneNode(true);
-  row.id = idNumSet('mystic-arts-item');
-  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
-  document.querySelector("#mystic-arts-list").append(row);
-
-  form.mysticArtsNum.value = num;
+  document.querySelector("#mystic-arts-list").append(createRow('mystic-arts','mysticArtsNum'));
 }
 // 削除
 function delMysticArts(){
-  let num = Number(form.mysticArtsNum.value);
-  if(num > 0){
-    if(form[`mysticArts${num}`].value || form[`mysticArts${num}Pt`].value){
-      if (!confirm(delConfirmText)) return false;
-    }
-    document.querySelector("#mystic-arts-list li:last-of-type").remove();
-    num--;
-    form.mysticArtsNum.value = num;
+  if(delRow('mysticArtsNum', '#mystic-arts-list li:last-of-type')){
+    calcHonor();
   }
-  calcHonor();
 }
 // ソート
 let mysticArtsSortable = Sortable.create(document.querySelector('#mystic-arts-list'), {
@@ -1674,27 +1660,13 @@ let mysticArtsSortable = Sortable.create(document.querySelector('#mystic-arts-li
 // 秘伝魔法欄 ----------------------------------------
 // 追加
 function addMysticMagic(){
-  let num = Number(form.mysticMagicNum.value) + 1;
-
-  let row = document.querySelector('#mystic-magic-template').content.firstElementChild.cloneNode(true);
-  row.id = idNumSet('mystic-magic-item');
-  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
-  document.querySelector("#mystic-magic-list").append(row);
-  
-  form.mysticMagicNum.value = num;
+  document.querySelector("#mystic-magic-list").append(createRow('mystic-magic','mysticMagicNum'));
 }
 // 削除
 function delMysticMagic(){
-  let num = Number(form.mysticMagicNum.value);
-  if(num > 0){
-    if(form[`mysticMagic${num}`].value || form[`mysticMagic${num}Pt`].value){
-      if (!confirm(delConfirmText)) return false;
-    }
-    document.querySelector("#mystic-magic-list li:last-of-type").remove();
-    num--;
-    form.mysticMagicNum.value = num;
+  if(delRow('mysticMagicNum', '#mystic-magic-list li:last-of-type')){
+    calcHonor();
   }
-  calcHonor();
 }
 // ソート
 let mysticMagicSortable = Sortable.create(document.querySelector('#mystic-magic-list'), {
@@ -1759,25 +1731,12 @@ function checkLanguage(){
 }
 // 追加
 function addLanguage(){
-  let num = Number(form.languageNum.value) + 1;
-
-  let row = document.querySelector('#language-template').content.firstElementChild.cloneNode(true);
-  row.id = idNumSet('language-item');
-  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
-  document.querySelector("#language-table tbody").append(row);
-
-  form.languageNum.value = num;
+  document.querySelector("#language-table tbody").append(createRow('language','languageNum'));
 }
 // 削除
 function delLanguage(){
-  let num = Number(form.languageNum.value);
-  if(num > 1){
-    if(form[`language${num}`].value){
-      if (!confirm(delConfirmText)) return false;
-    }
-    document.querySelector("#language-table tbody tr:last-of-type").remove();
-    num--;
-    form.languageNum.value = num;
+  if(delRow('languageNum', '#language-table tbody tr:last-of-type')){
+    checkLanguage();
   }
 }
 // ソート
@@ -1805,41 +1764,24 @@ let languageSortable = Sortable.create(document.querySelector('#language-table t
 
 // 武器欄 ----------------------------------------
 // 追加
-function addWeapons(copy){
-  let num = Number(form.weaponNum.value) + 1;
-
-  let row = document.querySelector('#weapon-template').content.firstElementChild.cloneNode(true);
-  row.id = idNumSet('weapons-row');
-  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
+function addWeapons(copyBaseNum){
+  const row = createRow('weapon','weaponNum');
   document.querySelector("#weapons-table").append(row);
-
-  if(copy){
-    form[`weapon${num}Name`    ].value   = form[`weapon${copy}Name`    ].value;
-    form[`weapon${num}Usage`   ].value   = form[`weapon${copy}Usage`   ].value;
-    form[`weapon${num}Reqd`    ].value   = form[`weapon${copy}Reqd`    ].value;
-    form[`weapon${num}Acc`     ].value   = form[`weapon${copy}Acc`     ].value;
-    form[`weapon${num}Rate`    ].value   = form[`weapon${copy}Rate`    ].value;
-    form[`weapon${num}Crit`    ].value   = form[`weapon${copy}Crit`    ].value;
-    form[`weapon${num}Dmg`     ].value   = form[`weapon${copy}Dmg`     ].value;
-    form[`weapon${num}Own`     ].checked = form[`weapon${copy}Own`     ].checked;
-    form[`weapon${num}Category`].value   = form[`weapon${copy}Category`].value;
-    form[`weapon${num}Class`   ].value   = form[`weapon${copy}Class`   ].value;
-    form[`weapon${num}Note`    ].value   = form[`weapon${copy}Note`    ].value;
-  }
   
-  form.weaponNum.value = num;
+  if(copyBaseNum){
+    row.querySelectorAll('[name]').forEach(node => {
+      const copyBaseName = node.getAttribute('name').replace(/^(weapon)\d+(.+)$/, `$1${copyBaseNum}$2`)
+      if(node.type === 'checkbox'){
+        node.checked = form[copyBaseName].checked;
+      }
+      else { node.value = form[copyBaseName].value; }
+    });
+    calcWeapon();
+  }
 }
 // 削除
 function delWeapons(){
-  let num = Number(form.weaponNum.value);
-  if(num > 1){
-    if(form[`weapon${num}Name`].value || form[`weapon${num}Usage`].value || form[`weapon${num}Reqd`].value || form[`weapon${num}Acc`].value || form[`weapon${num}Rate`].value || form[`weapon${num}Crit`].value || form[`weapon${num}Note`].value){
-      if (!confirm(delConfirmText)) return false;
-    }
-    document.querySelector("#weapons-table tbody:last-of-type").remove();
-    num--;
-    form.weaponNum.value = num;
-  }
+  delRow('weaponNum', '#weapons-table tbody:last-of-type');
 }
 // ソート
 let weaponsSortable = Sortable.create(document.getElementById('weapons-table'), {
@@ -1877,14 +1819,11 @@ let weaponsSortable = Sortable.create(document.getElementById('weapons-table'), 
 // 防具欄 ----------------------------------------
 // 追加
 function addArmour(){
-  let num = Number(form.armourNum.value) + 1;
-
-  const id = idNumSet('armour')
-  let row = document.querySelector('#armour-template').content.firstElementChild.cloneNode(true);
-  row.id = id;
-  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
+  const row = createRow('armour','armourNum');
   document.querySelector("#armours tbody").append(row);
 
+  const id = row.id;
+  const num = form.armourNum.value;
   let i = 1;
   document.querySelectorAll(".defense-total-checklist").forEach(obj => {
     let checkbox = document.createElement('label')
@@ -1893,30 +1832,17 @@ function addArmour(){
     obj.append(checkbox);
     i++;
   });
-
-  form.armourNum.value = num;
 }
 // 削除
 function delArmour(){
-  let num = Number(form.armourNum.value);
-  if(num > 1){
-    if ( form[`armour${num}Name`].value 
-      || form[`armour${num}Reqd`].value
-      || form[`armour${num}Eva`].value
-      || form[`armour${num}Def`].value
-      || form[`armour${num}Note`].value
-    ){
-      if (!confirm(delConfirmText)) return false;
-    }
-    document.querySelector("#armours tbody tr:last-of-type").remove();
-    
-    document.querySelectorAll(".defense-total-checklist label:last-of-type").forEach(obj => {
+  if(delRow('armourNum', '#armours tbody tr:last-of-type')){
+    const deletedNum = Number(form.armourNum.value) +1;
+    document.querySelectorAll(`.defense-total-checklist label:has([name$="Armour${deletedNum}"])`).forEach(obj => {
       obj.remove();
     });
-    num--;
-    form.armourNum.value = num;
+    calcDefense();
+    calcHonor();
   }
-  calcHonor();
 }
 // ソート
 let armoursSortable = Sortable.create(document.querySelector('#armours table tbody'), {
@@ -1955,27 +1881,13 @@ let armoursSortable = Sortable.create(document.querySelector('#armours table tbo
 // 名誉アイテム欄 ----------------------------------------
 // 追加
 function addHonorItems(){
-  let num = Number(form.honorItemsNum.value) + 1;
-
-  let row = document.querySelector('#honor-item-template').content.firstElementChild.cloneNode(true);
-  row.id = idNumSet('honor-item');
-  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
-  document.querySelector("#honor-items-table").append(row);
-
-  form.honorItemsNum.value = num;
+  document.querySelector("#honor-items-table").append(createRow('honor-item','honorItemsNum'));
 }
 // 削除
 function delHonorItems(){
-  let num = Number(form.honorItemsNum.value);
-  if(num > 1){
-    if(form[`honorItem${num}`].value || form[`honorItem${num}Pt`].value){
-      if (!confirm(delConfirmText)) return false;
-    }
-    document.querySelector("#honor-items-table tr:last-of-type").remove();
-    num--;
-    form.honorItemsNum.value = num;
+  if(delRow('honorItemsNum', '#honor-items-table tr:last-of-type')){
+    calcHonor();
   }
-  calcHonor();
 }
 // ソート
 let honorSortable = Sortable.create(document.querySelector('#honor-items-table'), {
@@ -2001,27 +1913,13 @@ let honorSortable = Sortable.create(document.querySelector('#honor-items-table')
 // 不名誉欄 ----------------------------------------
 // 追加
 function addDishonorItems(){
-  let num = Number(form.dishonorItemsNum.value) + 1;
-
-  let row = document.querySelector('#dishonor-item-template').content.firstElementChild.cloneNode(true);
-  row.id = idNumSet('dishonor-item');
-  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
-  document.querySelector("#dishonor-items-table").append(row);
-
-  form.dishonorItemsNum.value = num;
+  document.querySelector("#dishonor-items-table").append(createRow('dishonor-item','dishonorItemsNum'));
 }
 // 削除
 function delDishonorItems(){
-  let num = Number(form.dishonorItemsNum.value);
-  if(num > 1){
-    if(form[`dishonorItem${num}`].value || form[`dishonorItem${num}Pt`].value){
-      if (!confirm(delConfirmText)) return false;
-    }
-    document.querySelector("#dishonor-items-table tr:last-of-type").remove();
-    num--;
-    form.dishonorItemsNum.value = num;
+  if(delRow('dishonorItemsNum', '#dishonor-items-table tr:last-of-type')){
+    calcDishonor();
   }
-  calcDishonor();
 }
 // ソート
 let dishonorSortable = Sortable.create(document.querySelector('#dishonor-items-table'), {
@@ -2055,25 +1953,12 @@ function calcCommonClass(){
 }
 // 追加
 function addCommonClass(){
-  let num = Number(form.commonClassNum.value) + 1;
-
-  let row = document.querySelector('#common-class-template').content.firstElementChild.cloneNode(true);
-  row.id = idNumSet('common-class');
-  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
-  document.querySelector("#common-classes-table tbody").append(row);
-
-  form.commonClassNum.value = num;
+  document.querySelector("#common-classes-table tbody").append(createRow('common-class','commonClassNum'));
 }
 // 削除
 function delCommonClass(){
-  let num = Number(form.commonClassNum.value);
-  if(num > 1){
-    if(form[`commonClass${num}`].value || form[`lvCommon${num}`].value){
-      if (!confirm(delConfirmText)) return false;
-    }
-    document.querySelector("#common-classes-table tbody tr:last-of-type").remove();
-    num--;
-    form.commonClassNum.value = num;
+  if(delRow('commonClassNum', '#common-classes-table tbody tr:last-of-type')){
+    calcCommonClass();
   }
 }
 // ソート
@@ -2100,25 +1985,11 @@ let commonClassSortable = Sortable.create(document.querySelector('#common-classe
 // 履歴欄 ----------------------------------------
 // 追加
 function addHistory(){
-  let num = Number(form.historyNum.value) + 1;
-
-  let row = document.querySelector('#history-template').content.firstElementChild.cloneNode(true);
-  row.id = idNumSet('history');
-  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
-  document.querySelector("#history-table tbody:last-of-type").after(row);
-  
-  form.historyNum.value = num;
+  document.querySelector("#history-table tfoot").before(createRow('history','historyNum'));
 }
 // 削除
 function delHistory(){
-  let num = Number(form.historyNum.value);
-  if(num > 1){
-    if(form[`history${num}Date`].value || form[`history${num}Title`].value || form[`history${num}Exp`].value || form[`history${num}Honor`].value || form[`history${num}Money`].value || form[`history${num}Grow`].value || form[`history${num}Gm`].value || form[`history${num}Member`].value || form[`history${num}Note`].value){
-      if (!confirm(delConfirmText)) return false;
-    }
-    document.querySelector("#history-table tbody:last-of-type").remove();
-    num--;
-    form.historyNum.value = num;
+  if(delRow('historyNum', '#history-table tbody:last-of-type')){
     calcExp(); calcHonor(); calcCash(); calcStt();
   }
 }

@@ -188,35 +188,18 @@ function checkWare(num){
   checkHibiWare(num);
 }
 function checkHibiWare(num){
-  const obj = document.getElementById(`kizuna${num}`);
+  const obj = document.getElementById(`kizuna-row${num}`);
   obj.classList.remove('hibi', 'hibiware');
   if     (form[`kizuna${num}Ware`].checked){ obj.classList.add('hibiware') }
   else if(form[`kizuna${num}Hibi`].checked){ obj.classList.add('hibi') }
 }
 // 追加
 function addKizuna(){
-  let num = Number(form.kizunaNum.value) + 1;
-  if(num > 13){ return; }
-
-  let row = document.querySelector('#kizuna-template').content.firstElementChild.cloneNode(true);
-  row.id = idNumSet('kizuna');
-  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
-  document.querySelector("#kizuna-table tbody").append(row);
-  
-  form.kizunaNum.value = num;
+  document.querySelector("#kizuna-table tbody").append(createRow('kizuna','kizunaNum',13));
 }
 // 削除
 function delKizuna(){
-  let num = Number(form.kizunaNum.value);
-  if(num > 0){
-    if(form[`kizuna${num}Name`].value || form[`kizuna${num}Note`].value || form[`kizuna${num}Hibi`].checked || form[`kizuna${num}Ware`].checked
-    ){
-      if (!confirm(delConfirmText)) return false;
-    }
-    document.querySelector("#kizuna-table tbody tr:last-of-type").remove();
-    num--;
-    form.kizunaNum.value = num;
-  }
+  delRow('kizunaNum', '#kizuna-table tbody tr:last-of-type');
 }
 // ソート
 let kizunaSortable = Sortable.create(document.querySelector('#kizuna-table tbody'), {
@@ -245,33 +228,11 @@ let kizunaSortable = Sortable.create(document.querySelector('#kizuna-table tbody
 // キズアト欄 ----------------------------------------
 // 追加
 function addKizuato(){
-  let num = Number(form.kizuatoNum.value) + 1;
-
-  let row = document.querySelector('#kizuato-template').content.firstElementChild.cloneNode(true);
-  row.id = idNumSet('kizuato');
-  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
-  document.querySelector("#kizuato-table").append(row);
-  
-  form.kizuatoNum.value = num;
+  document.querySelector("#kizuato-table").append(createRow('kizuato','kizuatoNum'));
 }
 // 削除
 function delKizuato(){
-  let num = Number(form.kizuatoNum.value);
-  if(num > 0){
-    if(
-      form[`kizuato${num}Name`].value ||
-      form[`kizuato${num}DramaTiming`  ].value || form[`kizuato${num}BattleTiming` ].value || 
-      form[`kizuato${num}DramaTarget`  ].value || form[`kizuato${num}BattleTarget` ].value || 
-      form[`kizuato${num}DramaHitogara`].value || form[`kizuato${num}BattleCost`   ].value || 
-      form[`kizuato${num}DramaLimited` ].value || form[`kizuato${num}BattleLimited`].value ||
-      form[`kizuato${num}DramaNote`    ].value || form[`kizuato${num}BattleNote`   ].value
-    ){
-      if (!confirm(delConfirmText)) return false;
-    }
-    document.querySelector("#kizuato-table tbody:last-of-type").remove();
-    num--;
-    form.kizuatoNum.value = num;
-  }
+  delRow('kizuatoNum', '#kizuato-table tbody:last-of-type');
 }
 // ソート
 let kizuatoSortable = Sortable.create(document.getElementById('kizuato-table'), {
@@ -306,25 +267,12 @@ let kizuatoSortable = Sortable.create(document.getElementById('kizuato-table'), 
 // 履歴欄 ----------------------------------------
 // 追加
 function addHistory(){
-  let num = Number(form.historyNum.value) + 1;
-
-  let row = document.querySelector('#history-template').content.firstElementChild.cloneNode(true);
-  row.id = idNumSet('history');
-  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
-  document.querySelector("#history-table tbody:last-of-type").after(row);
-  
-  form.historyNum.value = num;
+  document.querySelector("#history-table tfoot").before(createRow('history','historyNum'));
 }
 // 削除
 function delHistory(){
-  let num = Number(form.historyNum.value);
-  if(num > 1){
-    if(form[`history${num}Date`].value || form[`history${num}Title`].value || form[`history${num}Grow`].value || form[`history${num}Gm`].value || form[`history${num}Member`].value || form[`history${num}Note`].value){
-      if (!confirm(delConfirmText)) return false;
-    }
-    document.querySelector("#history-table tbody:last-of-type").remove();
-    num--;
-    form.historyNum.value = num;
+  if(delRow('historyNum', '#history-table tbody:last-of-type')){
+    calcGrow();
   }
 }
 // ソート

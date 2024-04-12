@@ -369,7 +369,7 @@ HTML
 foreach my $num ('TMPL',1 .. $pc{historyNum}) {
   if($num eq 'TMPL'){ print '<template id="history-template">' }
 print <<"HTML";
-          <tbody id="history${num}">
+          <tbody id="history-row${num}">
           <tr>
             <td class="handle" rowspan="2">
             <td class="date  " rowspan="2">@{[ input"history${num}Date" ]}

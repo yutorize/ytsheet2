@@ -479,7 +479,7 @@ HTML
 foreach my $num ('TMPL',1..$pc{commonClassNum}){
   print '<template id="common-class-template">' if($num eq 'TMPL');
   print <<"HTML";
-              <tr id="common-class${num}"><td class="handle"><td>@{[input('commonClass'.$num)]}<td>@{[input('lvCommon'.$num, 'number','calcCommonClass','min="0" max="15"')]}
+              <tr id="common-class-row${num}"><td class="handle"><td>@{[input('commonClass'.$num)]}<td>@{[input('lvCommon'.$num, 'number','calcCommonClass','min="0" max="15"')]}
 HTML
   print '</template>' if($num eq 'TMPL');
 }
@@ -543,7 +543,7 @@ print <<"HTML";
 HTML
 foreach my $num ('TMPL',1 .. $pc{mysticArtsNum}){
   if($num eq 'TMPL'){ print '<template id="mystic-arts-template">' }
-  print '<li id="mystic-arts'.$num.'"><span class="handle"></span>'.(input 'mysticArts'.$num).(input 'mysticArts'.$num.'Pt', 'number', 'calcHonor');
+  print '<li id="mystic-arts-row'.$num.'"><span class="handle"></span>'.(input 'mysticArts'.$num).(input 'mysticArts'.$num.'Pt', 'number', 'calcHonor');
   if($num eq 'TMPL'){ print '</template>' }
 }
 print <<"HTML";
@@ -557,7 +557,7 @@ HTML
 $pc{mysticMagicNum} ||= 0;
 foreach my $num ('TMPL',1 .. $pc{mysticMagicNum}){
   if($num eq 'TMPL'){ print '<template id="mystic-magic-template">' }
-  print '<li id="mystic-magic'.$num.'"><span class="handle"></span>'.(input 'mysticMagic'.$num).(input 'mysticMagic'.$num.'Pt', 'number', 'calcHonor');
+  print '<li id="mystic-magic-row'.$num.'"><span class="handle"></span>'.(input 'mysticMagic'.$num).(input 'mysticMagic'.$num.'Pt', 'number', 'calcHonor');
   if($num eq 'TMPL'){ print '</template>' }
 }
 print <<"HTML";
@@ -721,7 +721,7 @@ foreach my $key (reverse keys %data::class) {
 
 foreach my $num ('TMPL', 1 .. $pc{languageNum}){
   if($num eq 'TMPL'){ print '<template id="language-template">' }
-  print '<tr id="language-item'.$num.'"><td class="handle"><td>'.input('language'.$num, '','checkLanguage','list="list-language"').
+  print '<tr id="language-row'.$num.'"><td class="handle"><td>'.input('language'.$num, '','checkLanguage','list="list-language"').
   '<td><select name="language'.$num.'Talk" oninput="checkLanguage()">'.(option "language${num}Talk",@langoptionT).'</select><span class="lang-select-view"></span>'.
   '<td><select name="language'.$num.'Read" oninput="checkLanguage()">'.(option "language${num}Read",@langoptionR).'</select><span class="lang-select-view"></span>'.
   "\n";
@@ -1035,7 +1035,7 @@ HTML
 foreach my $num ('TMPL',1 .. $pc{armourNum}) {
   if($num eq 'TMPL'){ print '<template id="armour-template">' }
   print <<"HTML";
-              <tr id="armour${num}" data-type="">
+              <tr id="armour-row${num}" data-type="">
                 <th class="type handle">
                 <td><select name="armour${num}Category" oninput="calcDefense()">@{[ option "armour${num}Category",'金属鎧','非金属鎧','盾','その他' ]}</select>
                 <td>@{[ input "armour${num}Name",'','calcDefense' ]}
@@ -1061,7 +1061,7 @@ foreach my $i (1..3){
                 <td colspan="4" class="defense-total-checklist">
 HTML
   foreach my $num (1 .. $pc{armourNum}) {
-    print checkbox("defTotal${i}CheckArmour${num}",($pc{"armour${num}Name"}||'―'),'calcDefense',"data-id='armour${num}'");
+    print checkbox("defTotal${i}CheckArmour${num}",($pc{"armour${num}Name"}||'―'),'calcDefense',"data-id='armour-row${num}'");
   }
   print "</td>";
   print <<"HTML";
@@ -1187,7 +1187,7 @@ print <<"HTML";
 HTML
 foreach my $num ('TMPL',1 .. $pc{honorItemsNum}){
   if($num eq 'TMPL'){ print '<template id="honor-item-template">' }
-  print '<tr id="honor-item'.$num.'"><td class="handle"><td>'.(input "honorItem${num}", "text").'<td>'.(input "honorItem${num}Pt", "number", "calcHonor");
+  print '<tr id="honor-item-row'.$num.'"><td class="handle"><td>'.(input "honorItem${num}", "text").'<td>'.(input "honorItem${num}Pt", "number", "calcHonor");
   if($num eq 'TMPL'){ print '</template>' }
 }
 print <<"HTML";
@@ -1211,7 +1211,7 @@ print <<"HTML";
 HTML
 foreach my $num ('TMPL',1 .. $pc{dishonorItemsNum}){
   if($num eq 'TMPL'){ print '<template id="dishonor-item-template">' }
-  print '<tr id="dishonor-item'.$num.'"><td class="handle"><td>'.(input "dishonorItem${num}", "text").'<td>'.(input "dishonorItem${num}Pt", "number", "calcDishonor");
+  print '<tr id="dishonor-item-row'.$num.'"><td class="handle"><td>'.(input "dishonorItem${num}", "text").'<td>'.(input "dishonorItem${num}Pt", "number", "calcDishonor");
   if($num eq 'TMPL'){ print '</template>' }
 }
 print <<"HTML";
@@ -1277,7 +1277,7 @@ HTML
 foreach my $num ('TMPL',1 .. $pc{historyNum}) {
   if($num eq 'TMPL'){ print '<template id="history-template">' }
 print <<"HTML";
-          <tbody id="history${num}">
+          <tbody id="history-row${num}">
             <tr>
               <td class="handle" rowspan="2">
               <td class="date  " rowspan="2">@{[input("history${num}Date")]}

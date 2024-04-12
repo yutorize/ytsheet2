@@ -58,26 +58,11 @@ function calcLevel(){
 // メンバー欄 ----------------------------------------
 // 追加
 function addMember(){
-  let num = Number(form.memberNum.value) + 1;
-
-  let row = document.querySelector('#member-template').content.firstElementChild.cloneNode(true);
-  row.id = idNumSet('member');
-  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
-  document.getElementById('member-tbody').append(row);
-  form.memberNum.value = num;
+  document.getElementById('member-tbody').append(createRow('member','memberNum'));
 }
 // 削除
 function delMember(){
-  let num = Number(form.memberNum.value);
-  if(num > 0){
-    if(form[`member${num}Name`].value || form[`member${num}URL`].value){
-      if (!confirm(delConfirmText)) return false;
-    }
-    document.querySelector("#member-tbody tr:last-of-type").remove();
-    num--;
-    form.memberNum.value = num;
-  }
-  calcHonor();
+  delRow('memberNum', '#member-tbody tr:last-of-type');
 }
 // ソート
 let memberSortable = Sortable.create(document.querySelector('#member-tbody'), {
@@ -108,28 +93,6 @@ function checkAttribute() {
   document.getElementById('attribute').querySelector('.error').textContent
     = (count < 3) ? '特性を3つ記入してください' : '';
 }
-// 追加
-function addAttribute(){
-  let num = Number(form.attributeNum.value) + 1;
-
-  let li = document.createElement('li');
-  li.id = idNumSet('attribute');
-  li.innerHTML = `《<input type="text" name="attribute${num}">》`;
-  document.querySelector("#attribute ul").append(li);
-  form.attributeNum.value = num;
-}
-// 削除
-function delAttribute(){
-  let num = Number(form.attributeNum.value);
-  if(num > 0){
-    if( form[`attribute${num}`].value ){
-      if (!confirm(delConfirmText)) return false;
-    }
-    document.querySelector("#attribute li:last-child").remove();
-    num--;
-    form.attributeNum.value = num;
-  }
-}
 
 // マギ欄 ----------------------------------------
 function checkMagi() {
@@ -144,25 +107,12 @@ function checkMagi() {
 // 履歴欄 ----------------------------------------
 // 追加
 function addHistory(){
-  let num = Number(form.historyNum.value) + 1;
-
-  let row = document.querySelector('#history-template').content.firstElementChild.cloneNode(true);
-  row.id = idNumSet('history');
-  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
-  document.querySelector("#history-table tbody:last-of-type").after(row);
-  
-  form.historyNum.value = num;
+  document.querySelector("#history-table tfoot").before(createRow('history','historyNum'));
 }
 // 削除
 function delHistory(){
-  let num = Number(form.historyNum.value);
-  if(num > 1){
-    if(form[`history${num}Date`].value || form[`history${num}Title`].value || form[`history${num}Grow`].value || form[`history${num}Gm`].value || form[`history${num}Member`].value || form[`history${num}Note`].value){
-      if (!confirm(delConfirmText)) return false;
-    }
-    document.querySelector("#history-table tbody:last-of-type").remove();
-    num--;
-    form.historyNum.value = num;
+  if(delRow('historyNum', '#history-table tbody:last-of-type')){
+    calcLevel();
   }
 }
 // ソート
