@@ -12,6 +12,7 @@ window.onload = function() {
   setName();
   checkCreateType();
   checkStage();
+  checkWorks();
   checkSyndrome();
   calcStt();
   calcEffect();
@@ -84,6 +85,16 @@ function checkStage(){
   document.body.classList.toggle('mode-crc', form.stage.value.match('クロウリングケイオス'));
   calcMagic();
 }
+
+// ワークスによる他の箇所の変化 ----------------------------------------
+function checkWorks() {
+  const worksInput = document.querySelector('input[name="works"]');
+  const works = worksInput.value.trim();
+
+  const isFH = /[FＦ][HＨ]/i.test(works);
+  document.querySelector('#lifepath > table').classList.toggle('is-fh', isFH);
+}
+
 // シンドローム変更 ----------------------------------------
 function changeSyndrome(num,syn){
   syndromes[num-1] = syn;

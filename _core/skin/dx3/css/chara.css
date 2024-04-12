@@ -310,6 +310,11 @@ body {
   /* min-height: calc(100% - 1.4rem * 1.5); */
   border-style: solid hidden hidden;
   empty-cells: hide;
+
+  &:not(.is-fh) tbody.encounter-or-desire th:first-child > .desire,
+  &.is-fh tbody.encounter-or-desire th:first-child > .encounter {
+    display: none;
+  }
 }
 #lifepath table th:first-child {
   width: 6.2em;
