@@ -163,7 +163,7 @@ $SHEET->param('Attribute' => \@attribute);
 
 ### マギ --------------------------------------------------
 my @magi;
-foreach (1 .. 4){
+foreach (1 .. 5){
   next if(
        !$pc{'magi'.$_.'Name'}
     && !$pc{'magi'.$_.'Timing'}
