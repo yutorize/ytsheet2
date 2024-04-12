@@ -77,7 +77,7 @@ window.onload = function() {
 
   nameSet();
   race = form.race.value;
-  checkLvCap()
+  checkLvCap();
   calcExp();
   calcLv();
   checkRace();
@@ -1361,7 +1361,7 @@ function calcArmour(evaBase,evaAdd,defBase,maxReqd) {
     if(type){ count[type]++ }
 
     form[`armour${num}Reqd`].classList.toggle('error', (safeEval(form[`armour${num}Reqd`].value) || 0) > maxReqd);
-    form[`armour${num}Own`].style.display = category.match(/鎧|盾/) ? '' : 'none';
+    form[`armour${num}Own`].disabled = category.match(/鎧|盾/) ? false : true;
 
     
     form[`armour${num}Name`].parentNode.parentNode.querySelector('.type').textContent
