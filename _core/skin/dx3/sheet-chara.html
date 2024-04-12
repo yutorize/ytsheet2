@@ -178,7 +178,7 @@
         
         <section class="box" id="lifepath">
           <h2>ライフパス</h2>
-          <table class="data-table line-tbody">
+          <table class="data-table line-tbody <TMPL_IF isFH>is-fh</TMPL_IF>">
             <tbody>
               <tr>
                 <th class="left" colspan="2">出自
@@ -191,9 +191,9 @@
                 <td rowspan="2" class="left"><TMPL_VAR lifepathExperienceNote>
               <tr>
                 <td colspan="2"><TMPL_VAR lifepathExperience></td>
-            <tbody>
+            <tbody class="encounter-or-desire">
               <tr>
-                <th class="left" colspan="2">邂逅／欲望
+                <th class="left" colspan="2"><span class="encounter">邂逅</span><span class="desire">欲望</span>
                 <td rowspan="2" class="left"><TMPL_VAR lifepathEncounterNote>
               <tr>
                 <td colspan="2"><TMPL_VAR lifepathEncounter></td>

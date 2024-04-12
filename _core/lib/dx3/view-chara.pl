@@ -260,6 +260,10 @@ $SHEET->param(wordsY => ($pc{wordsY} eq '下' ? 'bottom:0;' : 'top:0;'));
 ### ステージ --------------------------------------------------
 if($pc{stage} =~ /クロウリングケイオス/){ $SHEET->param(ccOn => 1); }
 
+### ワークス --------------------------------------------------
+my $isFH = $pc{works} =~ /[FＦ][HＨ]/i ? 1 : 0;
+$SHEET->param(isFH => $isFH);
+
 ### ブリード --------------------------------------------------
 my $breedPrefix = ($pc{breed} ? $pc{breed} : $pc{syndrome3} ? 'トライ' : $pc{syndrome2} ? 'クロス' : $pc{syndrome1} ? 'ピュア' : '');
 $SHEET->param(breed => isNoiseText(tagDelete $breedPrefix) ? $breedPrefix : $breedPrefix ? "$breedPrefix<span class=\"shorten\">ブリード</span>" : '');

@@ -320,7 +320,7 @@ print <<"HTML";
           <dl class="box"><dt>血液型<dd>@{[input "blood",'','','list="list-blood"']}</dl>
         </div>
         <div class="box-union" id="works-cover">
-          <dl class="box"><dt>ワークス<dd>@{[input "works"]}</dl>
+          <dl class="box"><dt>ワークス<dd>@{[input "works",'','checkWorks']}</dl>
           <dl class="box"><dt>カヴァー<dd>@{[input "cover"]}</dl>
         </div>
 
@@ -506,9 +506,9 @@ print <<"HTML";
               <th>経験
               <td colspan="2">@{[input "lifepathExperience"]}
               <td colspan="2" class="left">@{[input "lifepathExperienceNote",'','','placeholder="備考"']}
-          <tbody>
+          <tbody class="encounter-or-desire">
             <tr>
-              <th>邂逅/欲望
+              <th><span class="encounter">邂逅</span><span class="desire">欲望</span>
               <td colspan="2">@{[input "lifepathEncounter"]}
               <td colspan="2" class="left">@{[input "lifepathEncounterNote",'','','placeholder="備考"']}
           <tbody>
