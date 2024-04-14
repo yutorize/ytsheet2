@@ -81,10 +81,6 @@ body:not(.mode-crc) .crc-only {
 }
 #syndrome-status thead th:nth-child(1)   { width: 3.5em; }
 #syndrome-status thead th:nth-last-child(-n+4) { width:   5em; }
-#syndrome-status input[type=radio] {
-  cursor: pointer;
-  transform: scale(1.5) translateY(.1em);
-}
 #syndrome-status tbody td.error {
   color: #c00;
   outline: 1px dotted #f00;
@@ -106,6 +102,9 @@ body:not(.mode-crc) .crc-only {
   > #breed-value:empty + span {
     display: none;
   }
+}
+#syndrome-status tbody .works-row .radio-button > input:not(:checked) + span {
+  opacity: 0.3;
 }
 #syndrome-status tr.pure + tr td:nth-child(n+3) input {
   display: none;
