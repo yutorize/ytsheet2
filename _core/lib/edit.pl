@@ -43,6 +43,8 @@ elsif($mode eq 'convert'){
     error('URLが入力されていない、または、ファイルが選択されていません。');
   }
 }
+
+my $attentionOfCapacity;
 if(!$LOGIN_ID && $mode =~ /^(?:blanksheet|copy|convert)$/){
   my $max_files = 32000;
   my $data_dir;
@@ -56,6 +58,9 @@ if(!$LOGIN_ID && $mode =~ /^(?:blanksheet|copy|convert)$/){
   $num_files += -2;
   if($num_files >= $max_files){
     error("現在、サーバーの許容量の都合により、ユーザーアカウントに紐づけされていないシートを新規作成できません。<br>アカウント登録・ログインをしてから作成を行ってください。<br>（現在の非紐付けシート総数: $num_files/$max_files 件）");
+  }
+  elsif ($num_files >= $max_files - 100){
+    $attentionOfCapacity = "<div class='attention left'>　ユーザーアカウントに紐づけされていないシートの数が許容上限近くです。（この画面を開いた時点の件数／上限件数: $num_files／$max_files）<br>　アカウントを作成・ログインしてから新規作成を行うことを推奨します。<br><br>　この新規シートを作成（編集）しているあいだに、（別のユーザーの新規保存によって）シートの件数が増加し上限に達すると、このシートの新規保存ができなくなる（エラーになる）ため、注意してください。<br>（一度新規保存した後は、上限に達していても、同シートの再編集・再保存は可能です）<br></div>";
   }
 }
 
@@ -143,6 +148,10 @@ sub pcDataGet {
     delete $pc{imageURL};
     delete $pc{protect};
     $message = '「<a href="'.$::in{url}.'" target="_blank"><!NAME></a>」をコンバートして新規作成します。<br>（まだ保存はされていません）';
+  }
+
+  if($attentionOfCapacity){
+    $message = $attentionOfCapacity .($message?'<hr>':''). $message
   }
   ##
   return (\%pc, $mode, $file, $message)
