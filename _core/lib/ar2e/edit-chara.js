@@ -808,72 +808,52 @@ function delSkill(){
   }
 }
 // ソート
-let skillsSortable = Sortable.create(document.getElementById('skills-table'), {
-  group: "skills",
-  dataIdAttr: 'id',
-  animation: 100,
-  handle: '.handle',
-  filter: 'thead,tfoot,template',
-  ghostClass: 'sortable-ghost',
-  onSort: function(evt){ skillsSortAfter(); },
-  onStart: function(evt){
-    document.querySelectorAll('.trash-box').forEach((obj) => { obj.style.display = 'none' });
-    document.getElementById('skills-trash').style.display = 'block';
-  },
-  onEnd: function(evt){
-    if(!skillTrashNum) { document.getElementById('skills-trash').style.display = 'none' }
-  },
-});
-let skillsSortableTrash = Sortable.create(document.getElementById('skills-trash-table'), {
-  group: "skills",
-  dataIdAttr: 'id',
-  animation: 100,
-  filter: 'thead,tfoot,template',
-  ghostClass: 'sortable-ghost'
-});
-let skillTrashNum = 0;
-function skillsSortAfter(){
-  const order = skillsSortable.toArray();
-  let num = 1;
-  for(let id of order) {
-    if(document.querySelector(`tbody#${id}`)){
-      document.querySelector(`#${id} [name$="Type"]`    ).setAttribute('name',`skill${num}Type`);
-      document.querySelector(`#${id} [name$="Category"]`).setAttribute('name',`skill${num}Category`);
-      document.querySelector(`#${id} [name$="Name"]`    ).setAttribute('name',`skill${num}Name`);
-      document.querySelector(`#${id} [name$="Lv"]`      ).setAttribute('name',`skill${num}Lv`);
-      document.querySelector(`#${id} [name$="Timing"]`  ).setAttribute('name',`skill${num}Timing`);
-      document.querySelector(`#${id} [name$="Roll"]`    ).setAttribute('name',`skill${num}Roll`);
-      document.querySelector(`#${id} [name$="Target"]`  ).setAttribute('name',`skill${num}Target`);
-      document.querySelector(`#${id} [name$="Range"]`   ).setAttribute('name',`skill${num}Range`);
-      document.querySelector(`#${id} [name$="Cost"]`    ).setAttribute('name',`skill${num}Cost`);
-      document.querySelector(`#${id} [name$="Reqd"]`    ).setAttribute('name',`skill${num}Reqd`);
-      document.querySelector(`#${id} [name$="Note"]`    ).setAttribute('name',`skill${num}Note`);
+(() => {
+  let sortable = Sortable.create(document.getElementById('skills-table'), {
+    group: "skills",
+    dataIdAttr: 'id',
+    animation: 150,
+    handle: '.handle',
+    filter: 'thead,tfoot,template',
+    onSort: function(evt){ skillsSortAfter(); },
+    onStart: function(evt){
+      document.querySelectorAll('.trash-box').forEach((obj) => { obj.style.display = 'none' });
+      document.getElementById('skills-trash').style.display = 'block';
+    },
+    onEnd: function(evt){
+      if(!skillTrashNum) { document.getElementById('skills-trash').style.display = 'none' }
+    },
+  });
+
+  let trashtable = Sortable.create(document.getElementById('skills-trash-table'), {
+    group: "skills",
+    dataIdAttr: 'id',
+    animation: 150,
+    filter: 'thead,tfoot,template',
+  });
+
+  let skillTrashNum = 0;
+  function skillsSortAfter(){
+    let num = 1;
+    for(let id of sortable.toArray()) {
+      const row = document.querySelector(`tbody#${id}`);
+      if(!row) continue;
+      replaceSortedNames(row,num,/^(skill)(?:Trash)?[0-9]+(.+)$/);
       num++;
     }
-  }
-  form.skillsNum.value = num-1;
-  let del = 0;
-  const trashOrder = skillsSortableTrash.toArray();
-  for(let id of trashOrder) {
-    if(document.querySelector(`tbody#${id}`)){
+    form.skillsNum.value = num-1;
+    let del = 0;
+    for(let id of trashtable.toArray()) {
+      const row = document.querySelector(`tbody#${id}`);
+      if(!row) continue;
       del++;
-      document.querySelector(`#${id} [name$="Type"]`    ).setAttribute('name',`skillD${del}Type`);
-      document.querySelector(`#${id} [name$="Category"]`).setAttribute('name',`skillD${del}Category`);
-      document.querySelector(`#${id} [name$="Name"]`    ).setAttribute('name',`skillD${del}Name`);
-      document.querySelector(`#${id} [name$="Lv"]`      ).setAttribute('name',`skillD${del}Lv`);
-      document.querySelector(`#${id} [name$="Timing"]`  ).setAttribute('name',`skillD${del}Timing`);
-      document.querySelector(`#${id} [name$="Roll"]`    ).setAttribute('name',`skillD${del}Roll`);
-      document.querySelector(`#${id} [name$="Target"]`  ).setAttribute('name',`skillD${del}Target`);
-      document.querySelector(`#${id} [name$="Range"]`   ).setAttribute('name',`skillD${del}Range`);
-      document.querySelector(`#${id} [name$="Cost"]`    ).setAttribute('name',`skillD${del}Cost`);
-      document.querySelector(`#${id} [name$="Reqd"]`    ).setAttribute('name',`skillD${del}Reqd`);
-      document.querySelector(`#${id} [name$="Note"]`    ).setAttribute('name',`skillD${del}Note`);
+      replaceSortedNames(row,'Trash'+del,/^(skill)(?:Trash)?[0-9]+(.+)$/);
     }
+    skillTrashNum = del;
+    if(!del){ document.getElementById('skills-trash').style.display = 'none' }
+    calcSkills();
   }
-  skillTrashNum = del;
-  if(!del){ document.getElementById('skills-trash').style.display = 'none' }
-  calcSkills();
-}
+})();
 
 // コネクション欄 ----------------------------------------
 // 追加
@@ -887,26 +867,7 @@ function delConnection(){
   }
 }
 // ソート
-let connectionsSortable = Sortable.create(document.querySelector('#connections-table tbody'), {
-  group: "connections",
-  dataIdAttr: 'id',
-  animation: 100,
-  handle: '.handle',
-  filter: 'thead,tfoot,template',
-  ghostClass: 'sortable-ghost',
-  onUpdate: function (evt) {
-    const order = connectionsSortable.toArray();
-    let num = 1;
-    for(let id of order) {
-      if(document.querySelector(`tr#${id}`)){
-        document.querySelector(`#${id} [name$="Name"]`    ).setAttribute('name',`connection${num}Name`);
-        document.querySelector(`#${id} [name$="Relation"]`).setAttribute('name',`connection${num}Relation`);
-        document.querySelector(`#${id} [name$="Note"]`    ).setAttribute('name',`connection${num}Note`);
-        num++;
-      }
-    }
-  }
-});
+setSortable('connection','#connections-table tbody','tr');
 
 // 誓約欄 ----------------------------------------
 // 追加
@@ -920,26 +881,7 @@ function delGeis(){
   }
 }
 // ソート
-let geisesSortable = Sortable.create(document.querySelector('#geises-table tbody'), {
-  group: "geises",
-  dataIdAttr: 'id',
-  animation: 100,
-  handle: '.handle',
-  filter: 'thead,tfoot,template',
-  ghostClass: 'sortable-ghost',
-  onUpdate: function (evt) {
-    const order = geisesSortable.toArray();
-    let num = 1;
-    for(let id of order) {
-      if(document.querySelector(`tr#${id}`)){
-        document.querySelector(`#${id} [name$="Name"]`).setAttribute('name',`geis${num}Name`);
-        document.querySelector(`#${id} [name$="Cost"]`).setAttribute('name',`geis${num}Cost`);
-        document.querySelector(`#${id} [name$="Note"]`).setAttribute('name',`geis${num}Note`);
-        num++;
-      }
-    }
-  }
-});
+setSortable('geis','#geises-table tbody','tr');
 
 // 履歴欄 ----------------------------------------
 // 追加
@@ -953,29 +895,5 @@ function delHistory(){
   }
 }
 // ソート
-let historySortable = Sortable.create(document.getElementById('history-table'), {
-  group: "history",
-  dataIdAttr: 'id',
-  animation: 150,
-  handle: '.handle',
-  scroll: true,
-  filter: 'thead,tfoot,template',
-  ghostClass: 'sortable-ghost',
-  onUpdate: function (evt) {
-    const order = historySortable.toArray();
-    let num = 1;
-    for(let id of order) {
-      if(document.querySelector(`tbody#${id}`)){
-        document.querySelector(`#${id} [name$="Date"]`  ).setAttribute('name',`history${num}Date`);
-        document.querySelector(`#${id} [name$="Title"]` ).setAttribute('name',`history${num}Title`);
-        document.querySelector(`#${id} [name$="Exp"]`   ).setAttribute('name',`history${num}Exp`);
-        document.querySelector(`#${id} [name$="Money"]` ).setAttribute('name',`history${num}Money`);
-        document.querySelector(`#${id} [name$="Gm"]`    ).setAttribute('name',`history${num}Gm`);
-        document.querySelector(`#${id} [name$="Member"]`).setAttribute('name',`history${num}Member`);
-        document.querySelector(`#${id} [name$="Note"]`  ).setAttribute('name',`history${num}Note`);
-        num++;
-      }
-    }
-  }
-});
+setSortable('history','#history-table','tbody');
 

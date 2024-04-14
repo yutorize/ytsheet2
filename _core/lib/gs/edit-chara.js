@@ -619,38 +619,11 @@ function delWeapons(){
   delRow('weaponNum', '#weapons-table tbody:last-of-type');
 }
 // ソート
-let weaponsSortable = Sortable.create(document.getElementById('weapons-table'), {
-  group: "weapons",
-  dataIdAttr: 'id',
-  animation: 150,
-  handle: '.handle',
-  filter: 'thead,tfoot,template',
-  ghostClass: 'sortable-ghost',
-  onUpdate: function (evt) {
-    const order = weaponsSortable.toArray();
-    let num = 1;
-    for(let id of order) {
-      if(document.querySelector(`tbody#${id}`)){
-        document.querySelector(`#${id} [name$="Name"]`    ).setAttribute('name',`weapon${num}Name`);
-        document.querySelector(`#${id} [name$="Type"]`    ).setAttribute('name',`weapon${num}Type`);
-        document.querySelector(`#${id} [name$="Usage"]`   ).setAttribute('name',`weapon${num}Usage`);
-        document.querySelector(`#${id} [name$="Weight"]`  ).setAttribute('name',`weapon${num}Weight`);
-        document.querySelector(`#${id} [name$="Attr"]`    ).setAttribute('name',`weapon${num}Attr`);
-        document.querySelector(`#${id} [name$="HitMod"]`  ).setAttribute('name',`weapon${num}HitMod`);
-        document.querySelector(`#${id} [name$="Power"]`   ).setAttribute('name',`weapon${num}Power`);
-        document.querySelector(`#${id} [name$="PowerMod"]`).setAttribute('name',`weapon${num}PowerMod`);
-        document.querySelector(`#${id} [name$="Range"]`   ).setAttribute('name',`weapon${num}Range`);
-        document.querySelector(`#${id} [name$="Class"]`   ).setAttribute('name',`weapon${num}Class`);
-        document.querySelector(`#${id} [name$="Note"]`    ).setAttribute('name',`weapon${num}Note`);
-        document.querySelector(`#${id} span[onclick]`     ).setAttribute('onclick',`addWeapons(${num})`);
-        document.querySelector(`#${id} b[id$=hit-total]`).id = `weapon${num}-hit-total`;
-        document.querySelector(`#${id} b[id$=power-lv]` ).id = `weapon${num}-power-lv`;
-        num++;
-      }
-    }
-  }
-});
-
+setSortable('weapon', '#weapons-table', 'tbody', (row, num)=>{
+  row.querySelector(`span[onclick]`).setAttribute('onclick',`addWeapons(${num})`);
+  row.querySelector(`b[id$=hit-total]`).id = `weapon${num}-hit-total`;
+  row.querySelector(`b[id$=power-lv]` ).id = `weapon${num}-power-lv`;
+})
 
 // 冒険者技能欄 ----------------------------------------
 // 追加
@@ -664,28 +637,8 @@ function delSkill(){
   }
 }
 // ソート
-let skillsSortable = Sortable.create(document.querySelector("#skills-table tbody"), {
-  group: "skills",
-  dataIdAttr: 'id',
-  animation: 150,
-  handle: '.handle',
-  filter: 'thead,tfoot,template',
-  ghostClass: 'sortable-ghost',
-  onUpdate: function (evt) {
-    const order = skillsSortable.toArray();
-    let num = 1;
-    for(let id of order) {
-      if(document.querySelector(`tr#${id}`)){
-        document.querySelector(`#${id} [name$="Auto"]` ).setAttribute('name',`skill${num}Auto`);
-        document.querySelector(`#${id} [name$="Name"]` ).setAttribute('name',`skill${num}Name`);
-        document.querySelector(`#${id} [name$="Grade"]`).setAttribute('name',`skill${num}Grade`);
-        document.querySelector(`#${id} [name$="Note"]` ).setAttribute('name',`skill${num}Note`);
-        document.querySelector(`#${id} [name$="Page"]` ).setAttribute('name',`skill${num}Page`);
-        num++;
-      }
-    }
-  }
-});
+setSortable('skill','#skills-table tbody','tr');
+
 // 一般技能欄 ----------------------------------------
 // 追加
 function addGeneralSkill(){
@@ -698,29 +651,7 @@ function delGeneralSkill(){
   }
 }
 // ソート
-let generalSkillsSortable = Sortable.create(document.querySelector("#general-skills-table tbody"), {
-  group: "g-skills",
-  dataIdAttr: 'id',
-  animation: 150,
-  handle: '.handle',
-  filter: 'thead,tfoot,template',
-  ghostClass: 'sortable-ghost',
-  onUpdate: function (evt) {
-    const order = generalSkillsSortable.toArray();
-    let num = 1;
-    for(let id of order) {
-      if(document.querySelector(`tr#${id}`)){
-        document.querySelector(`#${id} [name$="Auto"]` ).setAttribute('name',`generalSkill${num}Auto`);
-        document.querySelector(`#${id} [name$="Name"]` ).setAttribute('name',`generalSkill${num}Name`);
-        document.querySelector(`#${id} [name$="Grade"]`).setAttribute('name',`generalSkill${num}Grade`);
-        document.querySelector(`#${id} [name$="Note"]` ).setAttribute('name',`generalSkill${num}Note`);
-        document.querySelector(`#${id} [name$="Page"]` ).setAttribute('name',`generalSkill${num}Page`);
-        num++;
-      }
-    }
-  }
-});
-
+setSortable('generalSkill','#general-skills-table tbody','tr');
 
 // 呪文 ----------------------------------------
 // 追加
@@ -732,31 +663,7 @@ function delSpell(){
   delRow('spellNum', '#spells-table tbody tr:last-of-type');
 }
 // ソート
-let spellsSortable = Sortable.create(document.querySelector("#spells-table tbody"), {
-  group: "spells",
-  dataIdAttr: 'id',
-  animation: 150,
-  handle: '.handle',
-  filter: 'thead,tfoot,template',
-  ghostClass: 'sortable-ghost',
-  onUpdate: function (evt) {
-    const order = spellsSortable.toArray();
-    let num = 1;
-    for(let id of order) {
-      if(document.querySelector(`tr#${id}`)){
-        document.querySelector(`#${id} [name$="Name"]`  ).setAttribute('name',`spell${num}Name`);
-        document.querySelector(`#${id} [name$="System"]`).setAttribute('name',`spell${num}System`);
-        document.querySelector(`#${id} [name$="Type"]`  ).setAttribute('name',`spell${num}Type`);
-        document.querySelector(`#${id} [name$="Attr"]`  ).setAttribute('name',`spell${num}Attr`);
-        document.querySelector(`#${id} [name$="Dfclt"]` ).setAttribute('name',`spell${num}Dfclt`);
-        document.querySelector(`#${id} [name$="Note"]`  ).setAttribute('name',`spell${num}Note`);
-        document.querySelector(`#${id} [name$="Page"]`  ).setAttribute('name',`spell${num}Page`);
-        num++;
-      }
-    }
-  }
-});
-
+setSortable('spell','#spells-table tbody','tr');
 
 // 武技 ----------------------------------------
 // 追加
@@ -768,31 +675,7 @@ function delArts(){
   delRow('artsNum', '#arts-table tbody:last-of-type');
 }
 // ソート
-let artsSortable = Sortable.create(document.querySelector("#arts-table"), {
-  group: "spells",
-  dataIdAttr: 'id',
-  animation: 150,
-  handle: '.handle',
-  filter: 'thead,tfoot,template',
-  ghostClass: 'sortable-ghost',
-  onUpdate: function (evt) {
-    const order = artsSortable.toArray();
-    let num = 1;
-    for(let id of order) {
-      if(document.querySelector(`tbody#${id}`)){
-        document.querySelector(`#${id} [name$="Name"]`  ).setAttribute('name',`arts${num}Name`);
-        document.querySelector(`#${id} [name$="Weapon"]`).setAttribute('name',`arts${num}Weapon`);
-        document.querySelector(`#${id} [name$="Skill"]` ).setAttribute('name',`arts${num}Skill`);
-        document.querySelector(`#${id} [name$="Cost"]`  ).setAttribute('name',`arts${num}Cost`);
-        document.querySelector(`#${id} [name$="Terms"]` ).setAttribute('name',`arts${num}Terms`);
-        document.querySelector(`#${id} [name$="Note"]`  ).setAttribute('name',`arts${num}Note`);
-        document.querySelector(`#${id} [name$="Page"]`  ).setAttribute('name',`arts${num}Page`);
-        num++;
-      }
-    }
-  }
-});
-
+setSortable('arts','#arts-table','tbody');
 
 // 履歴欄 ----------------------------------------
 // 追加
@@ -806,28 +689,4 @@ function delHistory(){
   }
 }
 // ソート
-let historySortable = Sortable.create(document.getElementById('history-table'), {
-  group: "history",
-  dataIdAttr: 'id',
-  animation: 150,
-  handle: '.handle',
-  scroll: true,
-  filter: 'thead,tfoot,template',
-  ghostClass: 'sortable-ghost',
-  onUpdate: function (evt) {
-    const order = historySortable.toArray();
-    let num = 1;
-    for(let id of order) {
-      if(document.querySelector(`tbody#${id}`)){
-        document.querySelector(`#${id} [name$="Date"]`  ).setAttribute('name',`history${num}Date`);
-        document.querySelector(`#${id} [name$="Title"]` ).setAttribute('name',`history${num}Title`);
-        document.querySelector(`#${id} [name$="Exp"]`   ).setAttribute('name',`history${num}Exp`);
-        document.querySelector(`#${id} [name$="Money"]` ).setAttribute('name',`history${num}Money`);
-        document.querySelector(`#${id} [name$="Gm"]`    ).setAttribute('name',`history${num}Gm`);
-        document.querySelector(`#${id} [name$="Member"]`).setAttribute('name',`history${num}Member`);
-        document.querySelector(`#${id} [name$="Note"]`  ).setAttribute('name',`history${num}Note`);
-        num++;
-      }
-    }
-  }
-});
+setSortable('history','#history-table','tbody');

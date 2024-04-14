@@ -94,28 +94,8 @@ function delGoods(){
   delRow('goodsNum', '#goods-table tbody tr:last-of-type');
 }
 // ソート
-let goodsSortable = Sortable.create(document.querySelector("#goods-table tbody"), {
-  group: "goods",
-  dataIdAttr: 'id',
-  animation: 150,
-  handle: '.handle',
-  scroll: true,
-  filter: 'template',
-  ghostClass: 'sortable-ghost',
-  onUpdate: function (evt) {
-    const order = goodsSortable.toArray();
-    let num = 1;
-    for(let id of order) {
-      if(document.querySelector(`tr#${id}`)){
-        document.querySelector(`#${id} [name$="Name"]`  ).setAttribute('name',`goods${num}Name`);
-        document.querySelector(`#${id} [name$="Type"]`  ).setAttribute('name',`goods${num}Type`);
-        document.querySelector(`#${id} [name$="Cost"]`  ).setAttribute('name',`goods${num}Cost`);
-        document.querySelector(`#${id} [name$="Note"]`  ).setAttribute('name',`goods${num}Note`);
-        num++;
-      }
-    }
-  }
-});
+setSortable('goods','#goods-table tbody','tr');
+
 //アイテム欄 ----------------------------------------
 // 追加
 function addItem(){
@@ -126,29 +106,7 @@ function delItem(){
   delRow('itemsNum', '#items-table tbody tr:last-of-type');
 }
 // ソート
-let itemsSortable = Sortable.create(document.querySelector("#items-table tbody"), {
-  group: "items",
-  dataIdAttr: 'id',
-  animation: 150,
-  handle: '.handle',
-  scroll: true,
-  filter: 'template',
-  ghostClass: 'sortable-ghost',
-  onUpdate: function (evt) {
-    const order = itemsSortable.toArray();
-    let num = 1;
-    for(let id of order) {
-      if(document.querySelector(`tr#${id}`)){
-        document.querySelector(`#${id} [name$="Name"]`).setAttribute('name',`item${num}Name`);
-        document.querySelector(`#${id} [name$="Type"]`).setAttribute('name',`item${num}Type`);
-        document.querySelector(`#${id} [name$="Lv"]`  ).setAttribute('name',`item${num}Lv`);
-        document.querySelector(`#${id} [name$="Cost"]`).setAttribute('name',`item${num}Cost`);
-        document.querySelector(`#${id} [name$="Note"]`).setAttribute('name',`item${num}Note`);
-        num++;
-      }
-    }
-  }
-});
+setSortable('item','#items-table tbody','tr');
 
 // 履歴欄 ----------------------------------------
 // 追加
@@ -162,28 +120,4 @@ function delHistory(){
   }
 }
 // ソート
-let historySortable = Sortable.create(document.getElementById('history-table'), {
-  group: "history",
-  dataIdAttr: 'id',
-  animation: 150,
-  handle: '.handle',
-  scroll: true,
-  filter: 'thead,tfoot,template',
-  ghostClass: 'sortable-ghost',
-  onUpdate: function (evt) {
-    const order = historySortable.toArray();
-    let num = 1;
-    for(let id of order) {
-      if(document.querySelector(`tbody#${id}`)){
-        document.querySelector(`#${id} [name$="Date"]`  ).setAttribute('name',`history${num}Date`);
-        document.querySelector(`#${id} [name$="Title"]` ).setAttribute('name',`history${num}Title`);
-        document.querySelector(`#${id} [name$="Result"]`).setAttribute('name',`history${num}Result`);
-        document.querySelector(`#${id} [name$="Gm"]`    ).setAttribute('name',`history${num}Gm`);
-        document.querySelector(`#${id} [name$="Member"]`).setAttribute('name',`history${num}Member`);
-        document.querySelector(`#${id} [name$="Note"]`  ).setAttribute('name',`history${num}Note`);
-        num++;
-      }
-    }
-  }
-});
-
+setSortable('history','#history-table','tbody');

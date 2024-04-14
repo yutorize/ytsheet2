@@ -446,7 +446,6 @@ function emoN(num){ form["lois"+num+"EmoPosiCheck"].checked = false; }
 function sLois(num){
   for(let i = 1; i <= 7; i++){
     if(i == num) continue;
-    console.log(i)
     form["lois"+i+"S"].checked = false;
   }
 }
@@ -471,33 +470,9 @@ function changeLoisState(id){
   document.getElementById(id+'-state').dataset.state = state;
 }
 // ソート
-let loisSortable = Sortable.create(document.querySelector('#lois-table tbody'), {
-  group: "lois",
-  dataIdAttr: 'id',
-  animation: 100,
-  handle: '.handle',
-  filter: 'thead,tfoot',
-  ghostClass: 'sortable-ghost',
-  onUpdate: function (evt) {
-    const order = loisSortable.toArray();
-    let num = 1;
-    for(let id of order) {
-      if(document.getElementById(id)){
-        document.querySelector(`#${id} [name$="Relation"]`    ).setAttribute('name',`lois${num}Relation`);
-        document.querySelector(`#${id} [name$="Name"]`        ).setAttribute('name',`lois${num}Name`);
-        document.querySelector(`#${id} [name$="EmoPosiCheck"]`).setAttribute('name',`lois${num}EmoPosiCheck`);
-        document.querySelector(`#${id} [name$="EmoNegaCheck"]`).setAttribute('name',`lois${num}EmoNegaCheck`);
-        document.querySelector(`#${id} [name$="EmoPosi"]`     ).setAttribute('name',`lois${num}EmoPosi`);
-        document.querySelector(`#${id} [name$="EmoNega"]`     ).setAttribute('name',`lois${num}EmoNega`);
-        document.querySelector(`#${id} [name$="Color"]`       ).setAttribute('name',`lois${num}Color`);
-        document.querySelector(`#${id} [name$="Note"]`        ).setAttribute('name',`lois${num}Note`);
-        document.querySelector(`#${id} [name$="State"]`       ).setAttribute('name',`lois${num}State`);
-        document.querySelector(`#${id} [name$="EmoPosiCheck"]`).setAttribute('oninput',`emoP(${num})`);
-        document.querySelector(`#${id} [name$="EmoNegaCheck"]`).setAttribute('oninput',`emoN(${num})`);
-        num++;
-      }
-    }
-  }
+setSortable('lois','#lois-table tbody','tr', (row,num) => {
+  row.querySelector(`[name$="EmoPosiCheck"]`).setAttribute('oninput',`emoP(${num})`);
+  row.querySelector(`[name$="EmoNegaCheck"]`).setAttribute('oninput',`emoN(${num})`);
 });
 // リセット
 function resetLois(num){
@@ -528,27 +503,7 @@ function resetLoisAdd(){
 
 // メモリー ----------------------------------------
 // ソート
-let memorySortable = Sortable.create(document.querySelector('#memory-table tbody'), {
-  group: "memory",
-  dataIdAttr: 'id',
-  animation: 100,
-  handle: '.handle',
-  filter: 'thead,tfoot',
-  ghostClass: 'sortable-ghost',
-  onUpdate: function (evt) {
-    const order = memorySortable.toArray();
-    let num = 1;
-    for(let id of order) {
-      if(document.getElementById(id)){
-        document.querySelector(`#${id} [name$="Relation"]`).setAttribute('name',`memory${num}Relation`);
-        document.querySelector(`#${id} [name$="Name"]`    ).setAttribute('name',`memory${num}Name`);
-        document.querySelector(`#${id} [name$="Emo"]`     ).setAttribute('name',`memory${num}Emo`);
-        document.querySelector(`#${id} [name$="Note"]`    ).setAttribute('name',`memory${num}Note`);
-        num++;
-      }
-    }
-  }
-});
+setSortable('memory','#memory-table tbody','tr');
 
 // 技能欄 ----------------------------------------
 // 追加
@@ -606,74 +561,52 @@ function delEffect(){
   }
 }
 // ソート
-let effectSortable = Sortable.create(document.getElementById('effect-table'), {
-  group: "effect",
-  dataIdAttr: 'id',
-  animation: 100,
-  handle: '.handle',
-  filter: 'thead,tfoot,template',
-  ghostClass: 'sortable-ghost',
-  onSort: function(evt){ effectSortAfter(); },
-  onStart: function(evt){
-    document.querySelectorAll('.trash-box').forEach((obj) => { obj.style.display = 'none' });
-    document.getElementById('effect-trash').style.display = 'block';
-  },
-  onEnd: function(evt){
-    if(!effectTrashNum) { document.getElementById('effect-trash').style.display = 'none' }
-  },
-});
-let effectSortableTrash = Sortable.create(document.getElementById('effect-trash-table'), {
-  group: "effect",
-  dataIdAttr: 'id',
-  animation: 100,
-  filter: 'thead,tfoot,template',
-  ghostClass: 'sortable-ghost'
-});
-let effectTrashNum = 0;
-function effectSortAfter(){
-  const order = effectSortable.toArray();
-  let num = 1;
-  for(let id of order) {
-    if(document.querySelector(`tbody#${id}`)){
-      document.querySelector(`#${id} [name$="Type"]`    ).setAttribute('name',`effect${num}Type`);
-      document.querySelector(`#${id} [name$="Name"]`    ).setAttribute('name',`effect${num}Name`);
-      document.querySelector(`#${id} [name$="Lv"]`      ).setAttribute('name',`effect${num}Lv`);
-      document.querySelector(`#${id} [name$="Timing"]`  ).setAttribute('name',`effect${num}Timing`);
-      document.querySelector(`#${id} [name$="Skill"]`   ).setAttribute('name',`effect${num}Skill`);
-      document.querySelector(`#${id} [name$="Dfclty"]`  ).setAttribute('name',`effect${num}Dfclty`);
-      document.querySelector(`#${id} [name$="Target"]`  ).setAttribute('name',`effect${num}Target`);
-      document.querySelector(`#${id} [name$="Range"]`   ).setAttribute('name',`effect${num}Range`);
-      document.querySelector(`#${id} [name$="Encroach"]`).setAttribute('name',`effect${num}Encroach`);
-      document.querySelector(`#${id} [name$="Restrict"]`).setAttribute('name',`effect${num}Restrict`);
-      document.querySelector(`#${id} [name$="Note"]`    ).setAttribute('name',`effect${num}Note`);
-      document.querySelector(`#${id} [name$="Exp"]`     ).setAttribute('name',`effect${num}Exp`);
+(() => {
+  let sortable = Sortable.create(document.getElementById('effect-table'), {
+    group: "effect",
+    dataIdAttr: 'id',
+    animation: 150,
+    handle: '.handle',
+    filter: 'thead,tfoot,template',
+    onSort: function(evt){ effectSortAfter(); },
+    onStart: function(evt){
+      document.querySelectorAll('.trash-box').forEach((obj) => { obj.style.display = 'none' });
+      document.getElementById('effect-trash').style.display = 'block';
+    },
+    onEnd: function(evt){
+      if(!effectTrashNum) { document.getElementById('effect-trash').style.display = 'none' }
+    },
+  });
+
+  let trashtable = Sortable.create(document.getElementById('effect-trash-table'), {
+    group: "effect",
+    dataIdAttr: 'id',
+    animation: 150,
+    filter: 'thead,tfoot,template',
+  });
+
+  let effectTrashNum = 0;
+  function effectSortAfter(){
+    let num = 1;
+    for(let id of sortable.toArray()) {
+      const row = document.querySelector(`tbody#${id}`);
+      if(!row) continue;
+      replaceSortedNames(row,num,/^(effect)(?:Trash)?[0-9]+(.+)$/);
       num++;
     }
-  }
-  form.effectNum.value = num-1;
-  let del = 0;
-  const trashOrder = effectSortableTrash.toArray();
-  for(let id of trashOrder) {
-    if(document.querySelector(`tbody#${id}`)){
+    form.effectNum.value = num-1;
+    let del = 0;
+    for(let id of trashtable.toArray()) {
+      const row = document.querySelector(`tbody#${id}`);
+      if(!row) continue;
       del++;
-      document.querySelector(`#${id} [name$="Type"]`    ).setAttribute('name',`effectD${del}Type`);
-      document.querySelector(`#${id} [name$="Name"]`    ).setAttribute('name',`effectD${del}Name`);
-      document.querySelector(`#${id} [name$="Lv"]`      ).setAttribute('name',`effectD${del}Lv`);
-      document.querySelector(`#${id} [name$="Timing"]`  ).setAttribute('name',`effectD${del}Timing`);
-      document.querySelector(`#${id} [name$="Skill"]`   ).setAttribute('name',`effectD${del}Skill`);
-      document.querySelector(`#${id} [name$="Dfclty"]`  ).setAttribute('name',`effectD${del}Dfclty`);
-      document.querySelector(`#${id} [name$="Target"]`  ).setAttribute('name',`effectD${del}Target`);
-      document.querySelector(`#${id} [name$="Range"]`   ).setAttribute('name',`effectD${del}Range`);
-      document.querySelector(`#${id} [name$="Encroach"]`).setAttribute('name',`effectD${del}Encroach`);
-      document.querySelector(`#${id} [name$="Restrict"]`).setAttribute('name',`effectD${del}Restrict`);
-      document.querySelector(`#${id} [name$="Note"]`    ).setAttribute('name',`effectD${del}Note`);
-      document.querySelector(`#${id} [name$="Exp"]`     ).setAttribute('name',`effectD${del}Exp`);
+      replaceSortedNames(row,'Trash'+del,/^(effect)(?:Trash)?[0-9]+(.+)$/);
     }
+    effectTrashNum = del;
+    if(!del){ document.getElementById('effect-trash').style.display = 'none' }
+    calcEffect();
   }
-  effectTrashNum = del;
-  if(!del){ document.getElementById('effect-trash').style.display = 'none' }
-  calcEffect();
-}
+})();
 
 // 術式欄 ----------------------------------------
 // 追加
@@ -687,62 +620,52 @@ function delMagic(){
   }
 }
 // ソート
-let magicSortable = Sortable.create(document.getElementById('magic-table'), {
-  group: "magic",
-  dataIdAttr: 'id',
-  animation: 100,
-  handle: '.handle',
-  filter: 'thead,tfoot,template',
-  ghostClass: 'sortable-ghost',
-  onSort: function(evt){ magicSortAfter(); },
-  onStart: function(evt){
-    document.querySelectorAll('.trash-box').forEach((obj) => { obj.style.display = 'none' });
-    document.getElementById('magic-trash').style.display = 'block';
-  },
-  onEnd: function(evt){
-    if(!magicTrashNum) { document.getElementById('magic-trash').style.display = 'none' }
-  },
-});
-let magicSortableTrash = Sortable.create(document.getElementById('magic-trash-table'), {
-  group: "magic",
-  dataIdAttr: 'id',
-  animation: 100,
-  filter: 'thead,tfoot',
-  ghostClass: 'sortable-ghost'
-});
-let magicTrashNum = 0;
-function magicSortAfter(){
-  const order = magicSortable.toArray();
-  let num = 1;
-  for(let id of order) {
-    if(document.querySelector(`tbody#${id}`)){
-      document.querySelector(`#${id} [name$="Name"]`    ).setAttribute('name',`magic${num}Name`);
-      document.querySelector(`#${id} [name$="Type"]`    ).setAttribute('name',`magic${num}Type`);
-      document.querySelector(`#${id} [name$="Exp"]`     ).setAttribute('name',`magic${num}Exp`);
-      document.querySelector(`#${id} [name$="Activate"]`).setAttribute('name',`magic${num}Activate`);
-      document.querySelector(`#${id} [name$="Encroach"]`).setAttribute('name',`magic${num}Encroach`);
-      document.querySelector(`#${id} [name$="Note"]`    ).setAttribute('name',`magic${num}Note`);
+(() => {
+  let sortable = Sortable.create(document.getElementById('magic-table'), {
+    group: "magic",
+    dataIdAttr: 'id',
+    animation: 150,
+    handle: '.handle',
+    filter: 'thead,tfoot,template',
+    onSort: function(evt){ magicSortAfter(); },
+    onStart: function(evt){
+      document.querySelectorAll('.trash-box').forEach((obj) => { obj.style.display = 'none' });
+      document.getElementById('magic-trash').style.display = 'block';
+    },
+    onEnd: function(evt){
+      if(!magicTrashNum) { document.getElementById('magic-trash').style.display = 'none' }
+    },
+  });
+
+  let trashtable = Sortable.create(document.getElementById('magic-trash-table'), {
+    group: "magic",
+    dataIdAttr: 'id',
+    animation: 150,
+    filter: 'thead,tfoot',
+  });
+
+  let magicTrashNum = 0;
+  function magicSortAfter(){
+    let num = 1;
+    for(let id of sortable.toArray()) {
+      const row = document.querySelector(`tbody#${id}`);
+      if(!row) continue;
+      replaceSortedNames(row,num,/^(magic)(?:Trash)?[0-9]+(.+)$/);
       num++;
     }
-  }
-  form.magicNum.value = num-1;
-  let del = 0;
-  const trashOrder = magicSortableTrash.toArray();
-  for(let id of trashOrder) {
-    if(document.querySelector(`tbody#${id}`)){
+    form.magicNum.value = num-1;
+    let del = 0;
+    for(let id of trashtable.toArray()) {
+      const row = document.querySelector(`tbody#${id}`);
+      if(!row) continue;
       del++;
-      document.querySelector(`#${id} [name$="Name"]`    ).setAttribute('name',`magic${del}Name`);
-      document.querySelector(`#${id} [name$="Type"]`    ).setAttribute('name',`magic${del}Type`);
-      document.querySelector(`#${id} [name$="Exp"]`     ).setAttribute('name',`magic${del}Exp`);
-      document.querySelector(`#${id} [name$="Activate"]`).setAttribute('name',`magic${del}Activate`);
-      document.querySelector(`#${id} [name$="Encroach"]`).setAttribute('name',`magic${del}Encroach`);
-      document.querySelector(`#${id} [name$="Note"]`    ).setAttribute('name',`magic${del}Note`);
+      replaceSortedNames(row,'Trash'+del,/^(magic)(?:Trash)?[0-9]+(.+)$/);
     }
+    magicTrashNum = del;
+    if(!del){ document.getElementById('magic-trash').style.display = 'none' }
+    calcMagic();
   }
-  magicTrashNum = del;
-  if(!del){ document.getElementById('magic-trash').style.display = 'none' }
-  calcMagic();
-}
+})();
 
 // コンボ欄 ----------------------------------------
 // 技能セット
@@ -827,70 +750,10 @@ function delCombo(){
   delRow('comboNum', '#combo-list .combo-table:last-child');
 }
 // ソート
-let comboSortable = Sortable.create(document.getElementById('combo-list'), {
-  group: "combo",
-  dataIdAttr: 'id',
-  animation: 100,
-  handle: '.handle',
-  filter: 'template',
-  ghostClass: 'sortable-ghost',
-  onUpdate: function (evt) {
-    const order = comboSortable.toArray();
-    let num = 1;
-    for(let id of order) {
-      if(document.querySelector(`div#${id}`)){
-        document.querySelector(`#${id} [name$="Name"]`    ).setAttribute('name',`combo${num}Name`);
-        document.querySelector(`#${id} [name$="Combo"]`   ).setAttribute('name',`combo${num}Combo`);
-        document.querySelector(`#${id} [name$="Timing"]`  ).setAttribute('name',`combo${num}Timing`);
-        document.querySelector(`#${id} [name$="Skill"]`   ).setAttribute('name',`combo${num}Skill`);
-        document.querySelector(`#${id} [name$="Stt"]`     ).setAttribute('name',`combo${num}Stt`);
-        document.querySelector(`#${id} [name$="Dfclty"]`  ).setAttribute('name',`combo${num}Dfclty`);
-        document.querySelector(`#${id} [name$="Target"]`  ).setAttribute('name',`combo${num}Target`);
-        document.querySelector(`#${id} [name$="Range"]`   ).setAttribute('name',`combo${num}Range`);
-        document.querySelector(`#${id} [name$="Encroach"]`).setAttribute('name',`combo${num}Encroach`);
-        document.querySelector(`#${id} [name$="Note"]`    ).setAttribute('name',`combo${num}Note`);
-        document.querySelector(`#${id} [name$="Condition1"]`).setAttribute('name',`combo${num}Condition1`);
-        document.querySelector(`#${id} [name$="Condition2"]`).setAttribute('name',`combo${num}Condition2`);
-        document.querySelector(`#${id} [name$="Condition3"]`).setAttribute('name',`combo${num}Condition3`);
-        document.querySelector(`#${id} [name$="Condition4"]`).setAttribute('name',`combo${num}Condition4`);
-        document.querySelector(`#${id} [name$="Condition5"]`).setAttribute('name',`combo${num}Condition5`);
-        document.querySelector(`#${id} [name$="DiceAdd1"]`  ).setAttribute('name',`combo${num}DiceAdd1`);
-        document.querySelector(`#${id} [name$="DiceAdd2"]`  ).setAttribute('name',`combo${num}DiceAdd2`);
-        document.querySelector(`#${id} [name$="DiceAdd3"]`  ).setAttribute('name',`combo${num}DiceAdd3`);
-        document.querySelector(`#${id} [name$="DiceAdd4"]`  ).setAttribute('name',`combo${num}DiceAdd4`);
-        document.querySelector(`#${id} [name$="DiceAdd5"]`  ).setAttribute('name',`combo${num}DiceAdd5`);
-        document.querySelector(`#${id} [name$="Crit1"]`     ).setAttribute('name',`combo${num}Crit1`);
-        document.querySelector(`#${id} [name$="Crit2"]`     ).setAttribute('name',`combo${num}Crit2`);
-        document.querySelector(`#${id} [name$="Crit3"]`     ).setAttribute('name',`combo${num}Crit3`);
-        document.querySelector(`#${id} [name$="Crit4"]`     ).setAttribute('name',`combo${num}Crit4`);
-        document.querySelector(`#${id} [name$="Crit5"]`     ).setAttribute('name',`combo${num}Crit5`);
-        document.querySelector(`#${id} [name$="Atk1"]`      ).setAttribute('name',`combo${num}Atk1`);
-        document.querySelector(`#${id} [name$="Atk2"]`      ).setAttribute('name',`combo${num}Atk2`);
-        document.querySelector(`#${id} [name$="Atk3"]`      ).setAttribute('name',`combo${num}Atk3`);
-        document.querySelector(`#${id} [name$="Atk4"]`      ).setAttribute('name',`combo${num}Atk4`);
-        document.querySelector(`#${id} [name$="Atk5"]`      ).setAttribute('name',`combo${num}Atk5`);
-        document.querySelector(`#${id} [name$="FixedAdd1"]` ).setAttribute('name',`combo${num}FixedAdd1`);
-        document.querySelector(`#${id} [name$="FixedAdd2"]` ).setAttribute('name',`combo${num}FixedAdd2`);
-        document.querySelector(`#${id} [name$="FixedAdd3"]` ).setAttribute('name',`combo${num}FixedAdd3`);
-        document.querySelector(`#${id} [name$="FixedAdd4"]` ).setAttribute('name',`combo${num}FixedAdd4`);
-        document.querySelector(`#${id} [name$="FixedAdd5"]` ).setAttribute('name',`combo${num}FixedAdd5`);
-        document.querySelector(`#${id} [name$="Skill"]`   ).setAttribute('oninput',`calcCombo(${num})`);
-        document.querySelector(`#${id} [name$="Stt"]`     ).setAttribute('oninput',`calcCombo(${num})`);
-        document.querySelector(`#${id} [id$="Stt1"]`    ).setAttribute('id',`combo${num}Stt1`);
-        document.querySelector(`#${id} [id$="Stt2"]`    ).setAttribute('id',`combo${num}Stt2`);
-        document.querySelector(`#${id} [id$="Stt3"]`    ).setAttribute('id',`combo${num}Stt3`);
-        document.querySelector(`#${id} [id$="Stt4"]`    ).setAttribute('id',`combo${num}Stt4`);
-        document.querySelector(`#${id} [id$="Stt5"]`    ).setAttribute('id',`combo${num}Stt5`);
-        document.querySelector(`#${id} [id$="SkillLv1"]`).setAttribute('id',`combo${num}SkillLv1`);
-        document.querySelector(`#${id} [id$="SkillLv2"]`).setAttribute('id',`combo${num}SkillLv2`);
-        document.querySelector(`#${id} [id$="SkillLv3"]`).setAttribute('id',`combo${num}SkillLv3`);
-        document.querySelector(`#${id} [id$="SkillLv4"]`).setAttribute('id',`combo${num}SkillLv4`);
-        document.querySelector(`#${id} [id$="SkillLv5"]`).setAttribute('id',`combo${num}SkillLv5`);
-        num++;
-      }
-    }
-  }
-});
+setSortable('combo', '#combo-list', 'div', (row, num) => {
+  replaceSortedNames(row,num,/^(combo)[0-9]+((?:Stt|SkillLv)[0-9])$/,'id');
+  replaceSortedNames(row,num,/^(calcCombo\()[0-9]+(\))$/,'oninput');
+})
 // 条件
 function makeComboConditionUtility(comboNode) {
   const utilityIcon = comboNode.querySelector('.combo-out .combo-cond .combo-condition-utility');
@@ -1027,33 +890,8 @@ function delWeapon(){
   }
 }
 // ソート
-let weaponSortable = Sortable.create(document.querySelector('#weapon-table tbody'), {
-  group: "weapon",
-  dataIdAttr: 'id',
-  animation: 100,
-  handle: '.handle',
-  filter: 'thead,tfoot,template',
-  ghostClass: 'sortable-ghost',
-  onUpdate: function (evt) {
-    const order = weaponSortable.toArray();
-    let num = 1;
-    for(let id of order) {
-      if(document.querySelector(`tr#${id}`)){
-        document.querySelector(`#${id} [name$="Name"]` ).setAttribute('name',`weapon${num}Name`);
-        document.querySelector(`#${id} [name$="Stock"]`).setAttribute('name',`weapon${num}Stock`);
-        document.querySelector(`#${id} [name$="Exp"]`  ).setAttribute('name',`weapon${num}Exp`);
-        document.querySelector(`#${id} [name$="Type"]` ).setAttribute('name',`weapon${num}Type`);
-        document.querySelector(`#${id} [name$="Skill"]`).setAttribute('name',`weapon${num}Skill`);
-        document.querySelector(`#${id} [name$="Acc"]`  ).setAttribute('name',`weapon${num}Acc`);
-        document.querySelector(`#${id} [name$="Atk"]`  ).setAttribute('name',`weapon${num}Atk`);
-        document.querySelector(`#${id} [name$="Guard"]`).setAttribute('name',`weapon${num}Guard`);
-        document.querySelector(`#${id} [name$="Range"]`).setAttribute('name',`weapon${num}Range`);
-        document.querySelector(`#${id} [name$="Note"]` ).setAttribute('name',`weapon${num}Note`);
-        num++;
-      }
-    }
-  }
-});
+setSortable('weapon','#weapon-table tbody','tr');
+
 // 防具欄 ----------------------------------------
 // 追加
 function addArmor(){
@@ -1066,31 +904,8 @@ function delArmor(){
   }
 }
 // ソート
-let armorSortable = Sortable.create(document.querySelector('#armor-table tbody'), {
-  group: "armor",
-  dataIdAttr: 'id',
-  animation: 100,
-  handle: '.handle',
-  filter: 'thead,tfoot,template',
-  ghostClass: 'sortable-ghost',
-  onUpdate: function (evt) {
-    const order = armorSortable.toArray();
-    let num = 1;
-    for(let id of order) {
-      if(document.querySelector(`tr#${id}`)){
-        document.querySelector(`#${id} [name$="Name"]`      ).setAttribute('name',`armor${num}Name`);
-        document.querySelector(`#${id} [name$="Stock"]`     ).setAttribute('name',`armor${num}Stock`);
-        document.querySelector(`#${id} [name$="Exp"]`       ).setAttribute('name',`armor${num}Exp`);
-        document.querySelector(`#${id} [name$="Type"]`      ).setAttribute('name',`armor${num}Type`);
-        document.querySelector(`#${id} [name$="Initiative"]`).setAttribute('name',`armor${num}Initiative`);
-        document.querySelector(`#${id} [name$="Dodge"]`     ).setAttribute('name',`armor${num}Dodge`);
-        document.querySelector(`#${id} [name$="Armor"]`     ).setAttribute('name',`armor${num}Armor`);
-        document.querySelector(`#${id} [name$="Note"]`      ).setAttribute('name',`armor${num}Note`);
-        num++;
-      }
-    }
-  }
-});
+setSortable('armor','#armor-table tbody','tr');
+
 // ヴィークル欄 ----------------------------------------
 // 追加
 function addVehicle(){
@@ -1103,33 +918,7 @@ function delVehicle(){
   }
 }
 // ソート
-let vehicleSortable = Sortable.create(document.querySelector('#vehicle-table tbody'), {
-  group: "vehicle",
-  dataIdAttr: 'id',
-  animation: 100,
-  handle: '.handle',
-  filter: 'thead,tfoot,template',
-  ghostClass: 'sortable-ghost',
-  onUpdate: function (evt) {
-    const order = vehicleSortable.toArray();
-    let num = 1;
-    for(let id of order) {
-      if(document.querySelector(`tr#${id}`)){
-        document.querySelector(`#${id} [name$="Name"]`      ).setAttribute('name',`vehicle${num}Name`);
-        document.querySelector(`#${id} [name$="Stock"]`     ).setAttribute('name',`vehicle${num}Stock`);
-        document.querySelector(`#${id} [name$="Exp"]`       ).setAttribute('name',`vehicle${num}Exp`);
-        document.querySelector(`#${id} [name$="Type"]`      ).setAttribute('name',`vehicle${num}Type`);
-        document.querySelector(`#${id} [name$="Skill"]`     ).setAttribute('name',`vehicle${num}Skill`);
-        document.querySelector(`#${id} [name$="Initiative"]`).setAttribute('name',`vehicle${num}Initiative`);
-        document.querySelector(`#${id} [name$="Atk"]`       ).setAttribute('name',`vehicle${num}Atk`);
-        document.querySelector(`#${id} [name$="Armor"]`     ).setAttribute('name',`vehicle${num}Armor`);
-        document.querySelector(`#${id} [name$="Dash"]`      ).setAttribute('name',`vehicle${num}Dash`);
-        document.querySelector(`#${id} [name$="Note"]`      ).setAttribute('name',`vehicle${num}Note`);
-        num++;
-      }
-    }
-  }
-});
+setSortable('vehicle','#vehicle-table tbody','tr');
 
 // アイテム欄 ----------------------------------------
 // 追加
@@ -1143,29 +932,7 @@ function delItem(){
   }
 }
 // ソート
-let itemSortable = Sortable.create(document.querySelector('#item-table tbody'), {
-  group: "item",
-  dataIdAttr: 'id',
-  animation: 100,
-  handle: '.handle',
-  filter: 'thead,tfoot,template',
-  ghostClass: 'sortable-ghost',
-  onUpdate: function (evt) {
-    const order = itemSortable.toArray();
-    let num = 1;
-    for(let id of order) {
-      if(document.querySelector(`tr#${id}`)){
-        document.querySelector(`#${id} [name$="Name"]`      ).setAttribute('name',`item${num}Name`);
-        document.querySelector(`#${id} [name$="Stock"]`     ).setAttribute('name',`item${num}Stock`);
-        document.querySelector(`#${id} [name$="Exp"]`       ).setAttribute('name',`item${num}Exp`);
-        document.querySelector(`#${id} [name$="Type"]`      ).setAttribute('name',`item${num}Type`);
-        document.querySelector(`#${id} [name$="Skill"]`     ).setAttribute('name',`item${num}Skill`);
-        document.querySelector(`#${id} [name$="Note"]`      ).setAttribute('name',`item${num}Note`);
-        num++;
-      }
-    }
-  }
-});
+setSortable('item','#item-table tbody','tr');
 
 // 履歴欄 ----------------------------------------
 // 追加
@@ -1179,26 +946,4 @@ function delHistory(){
   }
 }
 // ソート
-let historySortable = Sortable.create(document.getElementById('history-table'), {
-  group: "history",
-  dataIdAttr: 'id',
-  animation: 100,
-  handle: '.handle',
-  filter: 'thead,tfoot,template',
-  ghostClass: 'sortable-ghost',
-  onUpdate: function (evt) {
-    const order = historySortable.toArray();
-    let num = 1;
-    for(let id of order) {
-      if(document.querySelector(`tbody#${id}`)){
-        document.querySelector(`#${id} [name$="Date"]`  ).setAttribute('name',`history${num}Date`);
-        document.querySelector(`#${id} [name$="Title"]` ).setAttribute('name',`history${num}Title`);
-        document.querySelector(`#${id} [name$="Exp"]`   ).setAttribute('name',`history${num}Exp`);
-        document.querySelector(`#${id} [name$="Gm"]`    ).setAttribute('name',`history${num}Gm`);
-        document.querySelector(`#${id} [name$="Member"]`).setAttribute('name',`history${num}Member`);
-        document.querySelector(`#${id} [name$="Note"]`  ).setAttribute('name',`history${num}Note`);
-        num++;
-      }
-    }
-  }
-});
+setSortable('history','#history-table','tbody');

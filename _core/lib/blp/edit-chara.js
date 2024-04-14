@@ -240,50 +240,9 @@ function delArts(){
   delRow('artsNum', '#arts-list tr:last-of-type');
 }
 // ソート
-let artsSortable = Sortable.create(document.getElementById('arts-list'), {
-  group: "arts",
-  dataIdAttr: 'id',
-  animation: 100,
-  handle: '.handle',
-  filter: 'thead,tfoot,template',
-  ghostClass: 'sortable-ghost',
-  onUpdate: function(evt){
-    const order = artsSortable.toArray();
-    let num = 1;
-    for(let id of order) {
-      if(document.querySelector(`tr#${id}`)){
-        document.querySelector(`#${id} [name$="Name"]`   ).setAttribute('name',`arts${num}Name`);
-        document.querySelector(`#${id} [name$="Timing"]` ).setAttribute('name',`arts${num}Timing`);
-        document.querySelector(`#${id} [name$="Target"]` ).setAttribute('name',`arts${num}Target`);
-        document.querySelector(`#${id} [name$="Cost"]`   ).setAttribute('name',`arts${num}Cost`);
-        document.querySelector(`#${id} [name$="Limited"]`).setAttribute('name',`arts${num}Limited`);
-        document.querySelector(`#${id} [name$="Note"]`   ).setAttribute('name',`arts${num}Note`);
-        num++;
-      }
-    }
-  }
-});
+setSortable('arts','#arts-list','tr');
 // 血威ソート
-let bloodartsSortable = Sortable.create(document.getElementById('bloodarts-list'), {
-  group: "bloodarts",
-  dataIdAttr: 'id',
-  animation: 100,
-  handle: '.handle',
-  ghostClass: 'sortable-ghost',
-  onUpdate: function(evt){
-    const order = bloodartsSortable.toArray();
-    let num = 1;
-    for(let id of order) {
-      if(document.getElementById(id)){
-        document.querySelector(`#${id} [name$="Name"]`   ).setAttribute('name',`bloodarts${num}Name`);
-        document.querySelector(`#${id} [name$="Timing"]` ).setAttribute('name',`bloodarts${num}Timing`);
-        document.querySelector(`#${id} [name$="Target"]` ).setAttribute('name',`bloodarts${num}Target`);
-        document.querySelector(`#${id} [name$="Note"]`   ).setAttribute('name',`bloodarts${num}Note`);
-        num++;
-      }
-    }
-  }
-});
+setSortable('bloodarts','#bloodarts-list','tr');
 
 // 履歴欄 ----------------------------------------
 // 追加
@@ -297,26 +256,4 @@ function delHistory(){
   }
 }
 // ソート
-let historySortable = Sortable.create(document.getElementById('history-table'), {
-  group: "history",
-  dataIdAttr: 'id',
-  animation: 100,
-  handle: '.handle',
-  filter: 'thead,tfoot,template',
-  ghostClass: 'sortable-ghost',
-  onUpdate: function (evt) {
-    const order = historySortable.toArray();
-    let num = 1;
-    for(let id of order) {
-      if(document.querySelector(`tbody#${id}`)){
-        document.querySelector(`#${id} [name$="Date"]`  ).setAttribute('name',`history${num}Date`);
-        document.querySelector(`#${id} [name$="Title"]` ).setAttribute('name',`history${num}Title`);
-        document.querySelector(`#${id} [name$="Grow"]`  ).setAttribute('name',`history${num}Grow`);
-        document.querySelector(`#${id} [name$="Gm"]`    ).setAttribute('name',`history${num}Gm`);
-        document.querySelector(`#${id} [name$="Member"]`).setAttribute('name',`history${num}Member`);
-        document.querySelector(`#${id} [name$="Note"]`  ).setAttribute('name',`history${num}Note`);
-        num++;
-      }
-    }
-  }
-});
+setSortable('history','#history-table','tbody');

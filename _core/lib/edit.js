@@ -697,6 +697,36 @@ function delRowNode(targetSelector, initialText){
   return true;
 }
 
+// 行ソート ----------------------------------------
+function setSortable(namePrefix, targetSelector, rowElement = '', addReplace, nextFunction){
+  console.log(`setSortable('${namePrefix}','${targetSelector}','${rowElement}')`)
+  const regExp = new RegExp(`^(${namePrefix})[0-9]+(.*)$`);
+  let sortable = Sortable.create(document.querySelector(targetSelector), {
+    dataIdAttr: 'id',
+    animation: 150,
+    handle: '.handle',
+    filter: 'thead,tfoot,template,.ignore-sort',
+    onUpdate: () => {
+      let num = 1;
+      for(let id of sortable.toArray()) {
+        const row = document.querySelector(`${rowElement}#${id}`);
+        if(!row) continue;
+        replaceSortedNames(row,num,regExp);
+        if(addReplace){ addReplace(row,num,regExp); }
+        num++;
+      }
+      if(nextFunction){ nextFunction(); }
+    }
+  });
+}
+function replaceSortedNames(row, num, regExp, attr = 'name'){
+  row.querySelectorAll(`[${attr}]`).forEach(inputField => {
+    const beforeName = inputField.getAttribute(attr);
+    const afterName = beforeName.replace(regExp, `$1${num}$2`);
+    inputField.setAttribute(attr, afterName)
+  });
+}
+
 // 連番ID生成 ----------------------------------------
 function idNumSet (id,after){
   let num = 1;

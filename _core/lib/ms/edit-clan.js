@@ -65,25 +65,8 @@ function delMember(){
   delRow('memberNum', '#member-tbody tr:last-of-type');
 }
 // ソート
-let memberSortable = Sortable.create(document.querySelector('#member-tbody'), {
-  group: "member",
-  dataIdAttr: 'id',
-  animation: 150,
-  handle: '.handle',
-  filter: 'template',
-  ghostClass: 'sortable-ghost',
-  onUpdate: function (evt) {
-    const order = memberSortable.toArray();
-    let num = 1;
-    for(let id of order) {
-      if(document.querySelector(`tr#${id}`)){
-        document.querySelector(`#${id} [name$="Name"]`).setAttribute('name',`member${num}Name`);
-        document.querySelector(`#${id} [name$="URL"]`).setAttribute('name',`member${num}URL`);
-        num++;
-      }
-    }
-  }
-});
+setSortable('member','#member-tbody','tr');
+
 // 特性欄 ----------------------------------------
 function checkAttribute() {
   let count = 0;
@@ -116,26 +99,4 @@ function delHistory(){
   }
 }
 // ソート
-let historySortable = Sortable.create(document.getElementById('history-table'), {
-  group: "history",
-  dataIdAttr: 'id',
-  animation: 100,
-  handle: '.handle',
-  filter: 'thead,tfoot,template',
-  ghostClass: 'sortable-ghost',
-  onUpdate: function (evt) {
-    const order = historySortable.toArray();
-    let num = 1;
-    for(let id of order) {
-      if(document.querySelector(`tbody#${id}`)){
-        document.querySelector(`#${id} [name$="Date"]`  ).setAttribute('name',`history${num}Date`);
-        document.querySelector(`#${id} [name$="Title"]` ).setAttribute('name',`history${num}Title`);
-        document.querySelector(`#${id} [name$="Grow"]`  ).setAttribute('name',`history${num}Grow`);
-        document.querySelector(`#${id} [name$="Gm"]`    ).setAttribute('name',`history${num}Gm`);
-        document.querySelector(`#${id} [name$="Member"]`).setAttribute('name',`history${num}Member`);
-        document.querySelector(`#${id} [name$="Note"]`  ).setAttribute('name',`history${num}Note`);
-        num++;
-      }
-    }
-  }
-});
+setSortable('history','#history-table','tbody');
