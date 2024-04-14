@@ -80,7 +80,6 @@ function changeRegu(){
 }
 
 // ステージチェック ----------------------------------------
-let ccOn = 0;
 function checkStage(){
   document.body.classList.toggle('mode-crc', form.stage.value.match('クロウリングケイオス'));
   calcMagic();
@@ -284,7 +283,7 @@ function calcEffect() {
 // 術式
 function calcMagic(){
   exps['magic'] = 0;
-  if(ccOn){
+  if(document.body.classList.contains('mode-crc')){
     for (let num = 1; num <= Number(form.magicNum.value); num++){
       exps['magic'] += Number(form['magic'+num+'Exp'].value);
     }
