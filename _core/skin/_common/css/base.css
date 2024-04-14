@@ -311,6 +311,7 @@ header {
     font-weight: normal;
     font-size: 80%;
     text-shadow: none;
+    pointer-events: none;
     > span {
       display: inline-block;
       width: max-content;
@@ -319,6 +320,7 @@ header {
       line-height: 1;
       border-radius: 5px;
       background-color: #0007;
+      pointer-events: auto;
       > b {
         font-size: 110%;
       }
