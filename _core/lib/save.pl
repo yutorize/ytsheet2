@@ -111,7 +111,7 @@ if($mode eq 'make' && $pc{protect} ne 'account'){
   opendir my $dh, "${data_dir}anonymous/";
   my $num_files = () = readdir($dh);
   if($num_files-2 >= $max_files){
-    infoJson('error','ユーザーアカウントに紐づけされていないシートが登録数上限以上です。\nアカウントに紐づけないデータは、これ以上登録できません。');
+    infoJson('error','現在、サーバーの許容量の都合により、ユーザーアカウントに紐づけされていないシートを新規作成できません。\nアカウント登録・ログインをし、編集保護設定で「アカウントに紐付ける」を選択して保存してください。\nすでにログイン中であっても、「アカウントに紐づける」設定での保存しかできません。');
     require $set::lib_edit; exit;
   }
 }
@@ -119,7 +119,7 @@ if($mode eq 'save' && $pc{protect} ne 'account' && $pc{protectOld} eq 'account')
   opendir my $dh, "${data_dir}anonymous/";
   my $num_files = () = readdir($dh);
   if($num_files-2 >= $max_files){
-    infoJson('error','ユーザーアカウントに紐づけされていないシートが登録数上限以上です。\nアカウントに紐づけないデータは、これ以上登録できないため、保護設定を変更できません。');
+    infoJson('error','現在、サーバーの許容量の都合により、ユーザーアカウントに紐づけされていないシートを新規作成できません。\nアカウントに紐づけないデータをこれ以上増やせないため、紐づけ済みのシートの保護設定を変更できません。');
   }
 }
 

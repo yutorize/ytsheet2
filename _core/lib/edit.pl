@@ -55,7 +55,7 @@ if(!$LOGIN_ID && $mode =~ /^(?:blanksheet|copy|convert)$/){
   my $num_files = () = readdir($dh);
   $num_files += -2;
   if($num_files >= $max_files){
-    error("ユーザーアカウントに紐づけされていないシートが登録数上限以上です。($num_files/$max_files 件)<br>ユーザーアカウントに紐づけないデータは、これ以上登録できないため、アカウント登録・ログインをしてから作成を行ってください。");
+    error("現在、サーバーの許容量の都合により、ユーザーアカウントに紐づけされていないシートを新規作成できません。<br>アカウント登録・ログインをしてから作成を行ってください。<br>（現在の非紐付けシート総数: $num_files/$max_files 件）");
   }
 }
 
