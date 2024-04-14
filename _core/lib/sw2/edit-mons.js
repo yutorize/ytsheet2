@@ -114,6 +114,9 @@ function checkMountLevel(){
 }
 function rewriteMountLevel(level){
   level ||= form.lvMin.value;
+  document.querySelectorAll("#status-table tbody tr th:first-child").forEach(obj => {
+    obj.textContent = '';
+  });
   document.querySelectorAll("#status-table tbody tr:first-child th:first-child").forEach(obj => {
     obj.textContent = level;
     obj.classList.toggle('current', level == form.lv.value);
