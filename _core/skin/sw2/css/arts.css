@@ -563,6 +563,13 @@ div.data dl.effects table {
     & thead .price      { width: 6em; }
   }
 }
+a.failed::before {
+  content: "\e002";
+  font-family: "Material Symbols Outlined";
+  vertical-align: top;
+  line-height: 1;
+  font-size: 130%;
+}
 
 /* // Description
 ---------------------------------------------------------------------------------------------------- */

@@ -67,6 +67,43 @@ sub dataConvert {
   }
 }
 
+sub getItemData {
+  my $set_url = shift;
+  my $file;
+  ## 同じゆとシートⅡ
+  my $self = CGI->new()->url;
+  if($set_url =~ m"^$self\?id=(.+?)(?:$|&)"){
+    my $id = $1;
+    my ($file, $type, $author) = getfile_open($id);
+    my %pc;
+    open my $IN, '<', "${set::item_dir}${file}/data.cgi" or return;
+    while (<$IN>){
+      chomp;
+      my ($key, $value) = split(/<>/, $_, 2);
+      $pc{$key} = $value;
+    }
+    close($IN);
+    $pc{convertSource} = '同じゆとシートⅡ';
+    return %pc;
+  }
+  ## 他のゆとシートⅡ
+  {
+    my $data = urlDataGet($set_url.'&mode=json') or return;
+    if($data !~ /^{/){ return }
+    $data = thanSignEscape($data);
+    my %pc = utf8::is_utf8($data) ? %{ decode_json(encode('utf8', (join '', $data))) } : %{ decode_json(join '', $data) };
+    if($pc{result} eq 'OK'){
+      our $base_url = $set_url;
+      $base_url =~ s|/[^/]+?$|/|;
+      $pc{convertSource} = '別のゆとシートⅡ';
+      return %pc;
+    }
+    else {
+      return;
+    }
+  }
+}
+
 ### キャラクター保管所 --------------------------------------------------
 sub convertHokanjoToYtsheet {
   my %in = %{$_[0]};

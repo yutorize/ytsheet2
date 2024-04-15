@@ -1533,6 +1533,9 @@ form#arts div.input-data dl.command dd input[type="number"],
 form#arts div.input-data dl.commcost dd input[type="number"] {
   width: 4em;
 }
+form#arts div.input-data dl dd input#schoolItemUrl {
+  max-width: 24em;
+}
 form#arts textarea {
   height: 6em;
   padding: 2px;

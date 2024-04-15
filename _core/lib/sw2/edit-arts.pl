@@ -335,8 +335,25 @@ print <<"HTML";
                   <th>カテゴリ
                   <th>概要
                   <th>
-                </thead>
-                <tbody></tbody>
+                <tbody>
+HTML
+foreach my $set_url (split ',',$pc{schoolItemList}){
+  require $set::lib_convert;
+  my %item = getItemData($set_url);
+  $item{category} =~ s/\s/<hr>/;
+  print "<tr>";
+  if(exists $item{itemName}) {
+    print "<td><a href=\"${set_url}\" target='_blank'>".tagUnescape($item{itemName})."</a>";
+  }
+  else {
+    print "<td><a href=\"${set_url}\" target='_blank' class='failed'>データ取得失敗</a>";
+  }
+  print "<td>".tagUnescape($item{category});
+  print "<td>".tagUnescape($item{summary});
+  print "<td class='button' onclick=\"delSchoolItem(this,'${set_url}')\">×";
+}
+print <<"HTML";
+                </tbody>
               </table>
           </dl>
         </div>

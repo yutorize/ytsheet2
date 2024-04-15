@@ -754,4 +754,30 @@ function safeEval(text){
   catch (e) { return NaN; }
 }
 
-
+// JSON取得 ----------------------------------------
+function getYtsheetJSON(url){
+  return new Promise(resolve => {
+    fetch(url+'&mode=json')
+    .then(response => {
+      if (!response.ok) {
+        console.error('response.ok:', response.ok);
+        console.error('esponse.status:', response.status);
+        console.error('esponse.statusText:', response.statusText);
+        throw new Error(response.statusText);
+      }
+      return response.json();
+    })
+    .then(data => {
+      if(data[`result`] === 'OK'){
+        resolve(data);
+      }
+    })
+    .catch(error => {
+      alert(`データが正常に取得できませんでした。\nたとえば、以下の理由が考えられます。
+  ・URLが間違っている
+  ・対象のサーバーに不具合が発生している
+  ・アクセスが認められていない
+\n${error}`);
+    });
+  });
+}

@@ -144,11 +144,31 @@ function viewMagicInputs(items){
 // 流派装備欄 ----------------------------------------
 // 追加
 let schoolItems = [];
+let errorGetItem
+async function setSchoolItemList(){
+  if(form.schoolItemList.value){
+    schoolItems = Array.from(new Set(form.schoolItemList.value.split(',')));
+  }
+}
 async function addSchoolItem(){
   const urlForm = document.getElementById('schoolItemUrl');
-  if(urlForm.value && !schoolItems.includes(urlForm.value)){
-    const result = await setSchoolItem(urlForm.value);
-    if(result){
+  const url = urlForm.value;
+  if(!url){ return; }
+  if(!schoolItems.includes(url)){
+    const data = await getYtsheetJSON(url);
+    if(data){
+      if(data.itemName == null){ alert('アイテムデータではありません。'); return; }
+      let tr = document.createElement('tr');
+      tr.setAttribute('class','item-data');
+      tr.innerHTML = `
+        <td><a href="${url}">${ruby(data.itemName||'')}</a></td>
+        <td>${data.category||''}</td>
+        <td>${data.summary ||''}</td>
+        <td class="button" onclick="delSchoolItem(this,'${url}')">×</td>
+      `;
+      document.querySelector("#school-item-list tbody").appendChild(tr);
+      schoolItems.push(url);
+      form.schoolItemList.value = schoolItems.join(',');
       urlForm.value = "";
     }
   }
@@ -157,39 +177,7 @@ async function addSchoolItem(){
     urlForm.value = "";
   }
 }
-async function setSchoolItemList(){
-  if(form.schoolItemList.value){
-    let list = Array.from(new Set(form.schoolItemList.value.split(',')));
-    for(const url of list){
-      await setSchoolItem(url);
-    }
-  }
-}
-function setSchoolItem(url){
-  return new Promise(resolve => {
-    fetch(url+'&mode=json')
-    .then(response => { return response.json(); })
-    .then(data => {
-      if(data[`result`] === 'OK'){
-        let tr = document.createElement('tr');
-        tr.setAttribute('class','item-data');
-        tr.innerHTML = `
-          <td><a href="${url}">${ruby(data['itemName'])}</a></td>
-          <td>${data['category']}</td>
-          <td>${data['summary']}</td>
-          <td class="button" onclick="delSchoolItem(this,'${url}')">×</td>
-        `;
-        document.querySelector("#school-item-list tbody").appendChild(tr);
-        schoolItems.push(url);
-        form.schoolItemList.value = schoolItems.join(',');
-        resolve('resolved');
-      }
-      else {
 
-      }
-    });
-  });
-}
 // 削除
 function delSchoolItem(obj, url){
   obj.parentNode.remove();

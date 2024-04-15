@@ -282,35 +282,28 @@ $SHEET->param(MagicData => \@magics);
 ### 流派装備 --------------------------------------------------
 my @items;
 foreach my $set_url (split ',',$item_urls){
-  ## 同じゆとシートⅡ
-  my $self = CGI->new()->url;
-  my %item;
-  if($set_url =~ m"^$self\?id=(.+?)(?:$|&)"){
-    my $id = $1;
-    my ($file, $type, $author) = getfile_open($id);
-    
-    open my $IN, '<', "${set::item_dir}${file}/data.cgi";
-    while (<$IN>){
-      chomp;
-      my ($key, $value) = split(/<>/, $_, 2);
-      $item{$key} = tagUnescape($value);
-    }
-    close($IN);
+  require $set::lib_convert;
+  my %item = getItemData($set_url);
+  if(exists$item{itemName}){
+    $item{price} =~ s/[+＋]/<br>＋/;
+    $item{category} =~ s/\s/<hr>/;
+    push(@items, {
+      "NAME"      => "<a href=\"$set_url\" target=\"_blank\">".tagUnescape($item{itemName})."</a>",
+      "PRICE"     => tagUnescape($item{price}),
+      "CATEGORY"  => tagUnescape($item{category}),
+      "REPUTATION"=> tagUnescape($item{reputation}),
+      "AGE"       => tagUnescape($item{age}),
+      "SUMMARY"   => tagUnescape($item{summary}),
+    } );
   }
   else {
+    push(@items, {
+      "NAME"      => "<a href=\"$set_url\" target=\"_blank\" class=\"failed\">データ取得失敗</a>",
+    });
+    next;
   }
-  $item{price} =~ s/[+＋]/<br>＋/;
-  push(@items, {
-    "NAME"      => "<a href=\"$set_url\" target=\"_blank\">".$item{itemName}."</a>",
-    "PRICE"     => $item{price},
-    "CATEGORY"  => $item{category},
-    "REPUTATION"=> $item{reputation},
-    "AGE"       => $item{age},
-    "SUMMARY"   => $item{summary},
-  } );
 }
 $SHEET->param(SchoolItems => \@items);
-
 ### 秘伝 --------------------------------------------------
 my @arts;
 foreach my $num (1..$pc{schoolArtsNum}){
