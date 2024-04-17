@@ -9,6 +9,7 @@ require $set::data_class;
 sub addJsonData {
   my %pc = %{ $_[0] };
   my $type = $_[1];
+  $pc{'gameVersion'} = $::SW2_0 ? '2.0' : '2.5';
   ### 魔物 --------------------------------------------------
   if ($pc{type} eq 'm'){
     ## ゆとチャユニット用ステータス
@@ -102,11 +103,27 @@ sub addJsonData {
                                 : 0;
     }
     ## ゆとチャユニット用ステータス
-    $pc{unitStatus} = [
+    my @unitStatus = (
       { 'HP' => $pc{hpTotal}.'/'.$pc{hpTotal} },
       { 'MP' => $pc{mpTotal}.'/'.$pc{mpTotal} },
       { '防護' => $pc{defenseTotalAllDef} },
-    ];
+    );
+
+    if ($pc{gameVersion} eq '2.5') {
+      if ($class_text =~ /バード/) {
+        push(@unitStatus, { '⤴' => '0' });
+        push(@unitStatus, { '⤵' => '0' });
+        push(@unitStatus, { '♡' => '0' });
+      }
+      if ($class_text =~ /ジオマンサー/) {
+        push(@unitStatus, { '天' => '0' });
+        push(@unitStatus, { '地' => '0' });
+        push(@unitStatus, { '人' => '0' });
+      }
+      push(@unitStatus, { '陣気' => '0' }) if $class_text =~ /ウォーリーダー/;
+    }
+
+    $pc{unitStatus} = \@unitStatus;
   }
   
   return \%pc;

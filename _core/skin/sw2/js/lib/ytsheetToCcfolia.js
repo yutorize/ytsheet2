@@ -100,6 +100,28 @@ io.github.shunshun94.trpg.ccfolia.generateCharacterJsonFromYtSheet2SwordWorld2PC
 			speaking: true
 	};
 
+	if (json.gameVersion === '2.5') {
+		if ((json.lvBar ?? '') !== '') {
+			character.status.push(
+				{label: '⤴', value: 0},
+				{label: '⤵', value: 0},
+				{label: '♡', value: 0}
+			);
+		}
+
+		if ((json.lvGeo ?? '') !== '') {
+			character.status.push(
+				{label: '天', value: 0},
+				{label: '地', value: 0},
+				{label: '人', value: 0}
+			);
+		}
+
+		if ((json.lvWar ?? '') !== '') {
+			character.status.push({label: '陣気', value: 0});
+		}
+	}
+
 	result.data = character;
 	return JSON.stringify(result);
 };
