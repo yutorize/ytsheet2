@@ -206,6 +206,15 @@ sub input {
   ($oninput?' oninput="'.$oninput.'"':"").
   '>';
 }
+sub textarea {
+  my ($name, $oninput, $other) = @_;
+  if($oninput && $oninput !~ /\(.*?\)$/){ $oninput .= '()'; }
+  '<textarea'.
+      ' name="'.$name.'"'.
+      ($other?" $other":"").
+      ($oninput?' oninput="'.$oninput.'"':"").
+      '>' . $::pc{$name} . '</textarea>';
+}
 sub checkbox {
   my ($name, $text, $oninput, $other) = @_;
   if($oninput && $oninput !~ /\(.*?\)$/){ $oninput .= '()'; }
