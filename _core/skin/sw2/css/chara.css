@@ -1296,6 +1296,10 @@ dl#level {
 
 #fellowNote {
   margin-top: 1.5rem;
+
+  &:not(:has(dd:not(:empty))) {
+    display: none;
+  }
 }
 
 @media screen and (max-width:735px){
