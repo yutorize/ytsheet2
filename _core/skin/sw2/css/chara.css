@@ -1275,6 +1275,10 @@ dl#level {
   border-right: 1px dotted;
   border-color: var(--box-outside-border-color);
   padding: .2rem .5rem;
+
+  &.num > .number {
+    word-break: keep-all;
+  }
 }
 
 #fellow-actions td[rowspan]{

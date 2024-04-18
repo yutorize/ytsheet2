@@ -995,6 +995,11 @@ if($::in{id}){
 
 ### フェロー --------------------------------------------------
 $SHEET->param(FellowMode => $::in{f});
+foreach (keys %pc) {
+  next unless $_ =~ /^fellow[-0-9]+Num$/;
+  $pc{$_} =~ s#(\d+)#<span class="number">$1</span>#g;
+  $SHEET->param($_ => $pc{$_});
+}
 
 ### タイトル --------------------------------------------------
 $SHEET->param(title => $set::title);
