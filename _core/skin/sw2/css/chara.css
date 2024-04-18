@@ -1121,48 +1121,36 @@ dl#level {
 
 #fellow #f-level {
   margin: 0 auto;
-  width: 52px;
-  height: 86px;
+  width: 99px;
+  height: 99px;
   display: block;
   position: relative;
   border-bottom: 0px !important;
+  background-image: url(../img/hexagon_light.svg);
+  background-size: contain;
+  background-position: center center;
+  background-repeat: no-repeat;
+
+  .night & {
+    background-image: url(../img/hexagon_night.svg);
+  }
 }
 #fellow #f-level dd {
-  width: 100%;
-  height: 90px;
-  line-height: 80px;
   color: var(--text-color);
-  text-align: center;
+  justify-content: center;
+  align-items: center;
   font-size: 2.5rem;
-  display: block;
-  position: relative;
-  z-index: 1;
-  border-width: 2px 0px;
-  border-style: solid;
-  border-color: var(--box-outside-border-color);
-}
-#fellow #f-level::before,
-#fellow #f-level::after {
-  content: '';
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  display: flex;
   position: absolute;
-  z-index: 0;
-  border-width: 2px 0px;
-  border-style: solid;
-  border-color: var(--box-outside-border-color);
-}
-#fellow #f-level::before {
-  transform: rotate(60deg);
-}
-#fellow #f-level::after {
-  transform: rotate(-60deg);
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
 }
 #fellow #f-level dt {
   position: absolute;
-  bottom: 0;
+  bottom: 9%;
   width: 100%;
   line-height: 1;
   text-align: center;
@@ -1313,12 +1301,10 @@ dl#level {
   }
 
   #fellow #f-level {
-    width: 46px;
-    height: 76px;
+    width: 88px;
+    height: 88px;
 }
   #fellow #f-level dd {
-    height: 80px;
-    line-height: 70px;
     font-size: 2.5rem;
 }
   #f-image-none,
