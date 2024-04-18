@@ -1,5 +1,5 @@
 "use strict";
-const gameSystem = 'gb';
+const gameSystem = 'gs';
 
 window.onload = function() {
   nameSet();

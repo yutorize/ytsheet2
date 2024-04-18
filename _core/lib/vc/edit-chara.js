@@ -1,5 +1,5 @@
 "use strict";
-const gameSystem = 'ar2e';
+const gameSystem = 'vc';
 
 window.onload = function() {
   nameSet();

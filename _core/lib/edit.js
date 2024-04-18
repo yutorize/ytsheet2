@@ -1,5 +1,9 @@
 "use strict";
 const form = document.sheet;
+let sheetType;
+window.addEventListener('load', function(e) {
+  sheetType = gameSystem + (form.type ? form.type.value : '');
+});
 
 const delConfirmText = '項目に値が入っています。本当に削除しますか？';
 
@@ -13,6 +17,7 @@ form.addEventListener('change', () => {
 });
 window.addEventListener('beforeunload', function(e) {
   if(formChangeCount) {
+    if(form.mode.value == 'make'){ backupFormInputs(); }
     e.preventDefault();
     e.returnValue = '他のページに移動しますか？';
   }
@@ -50,8 +55,15 @@ function formSubmit() {
       throw Error(response.statusText);
     })
     .then(data => {
-      if     (data.result === 'make' ){ window.location.href = './?id='+data.message; }
-      else if(data.result === 'ok'   ){ saveInfo('saved'); console.log(data.message); form.protectOld.value = form.protect.value; }
+      if(data.result === 'make'){
+        localStorage.removeItem('formData-'+sheetType); //中途バックアップ削除
+        window.location.href = './?id='+data.message;
+      }
+      else if(data.result === 'ok'){
+        saveInfo('saved');
+        console.log(data.message);
+        form.protectOld.value = form.protect.value; 
+      }
       else{
         throw Error(data.result === 'error' ? data.message : "保存できませんでした。");
       }
@@ -107,6 +119,61 @@ document.addEventListener('keydown', e => {
     document.activeElement.blur();
     nowFocus.focus();
     formSubmit();
+  }
+});
+// 新規シートの入力内容のバックアップ ----------------------------------------
+function backupFormInputs() {
+  const formData = new FormData(form);
+  let obj = Object.fromEntries(formData.entries());
+  delete obj.mode;
+  delete obj._token;
+  delete obj.id;
+  delete obj.pass;
+  delete obj.image;
+  delete obj.imageFile;
+  delete obj.imageCompressed;
+  delete obj.imageCompressedType;
+  const formDataJSON = JSON.stringify(obj);
+  localStorage.setItem('formData-'+sheetType, formDataJSON);
+  console.log('backupFormInputs(): formData-'+sheetType)
+}
+window.addEventListener('load', () => {
+  if(form.mode.value == 'make'){
+    const savedFormData = localStorage.getItem('formData-'+sheetType);
+    if (savedFormData && !document.querySelector('.data-imported')) {
+      if(confirm("入力途中の新規シートが残っています。復元しますか？\nキャンセルすると、入力途中のシートを破棄して新規作成を始めます。")){
+        // 増減項目の対処の都合で画面遷移を挟む
+        let restoreForm = document.createElement("form");
+        restoreForm.style.display = 'none';
+        restoreForm.setAttribute("action", './');
+        restoreForm.setAttribute("method", "post");
+        for(const data of [
+          ['backupJSON', savedFormData],
+          ['mode', 'convert'],
+        ]){
+          const input = document.createElement('input');
+          input.setAttribute('name', data[0]);
+          input.setAttribute('value', data[1]);
+          restoreForm.appendChild(input);
+        }
+        document.body.appendChild(restoreForm);
+        restoreForm.submit();
+        //一旦没の処理
+        //const parsedData = JSON.parse(savedFormData);
+        //Object.entries(parsedData).forEach(([key, value]) => {
+        //  if (form[key] && value != "") {
+        //    if(form[key] === 'checkbox' && value){
+        //      form[key].checked = true;
+        //    }
+        //    else { form[key].value = value; }
+        //  }
+        //});
+      }
+      else {
+        localStorage.removeItem('formData-'+sheetType);
+      }
+    }
+    form.addEventListener('change', backupFormInputs);
   }
 });
 

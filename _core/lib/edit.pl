@@ -23,20 +23,24 @@ elsif($mode eq 'copy'){
   ($file, $type, $author) = (getfile_open($::in{id}))[0..2];
 }
 elsif($mode eq 'convert'){
+  use JSON::PP;
   if($::in{url}){
     require $set::lib_convert;
     %conv_data = dataConvert($::in{url});
     $type = $conv_data{type};
   }
   elsif($::in{file}){
-    use JSON::PP;
     my $data; my $buffer; my $i;
     while(my $bytesread = read(param('file'), $buffer, 2048)) {
       if(!$i && $buffer !~ /^{/){ error '有効なJSONデータではありません。' }
       $data .= $buffer;
       $i++;
     }
-    %conv_data =  %{ decode_json( $data) };
+    %conv_data =  %{ decode_json($data) };
+    $type = $conv_data{type};
+  }
+  elsif($::in{backupJSON}){
+    %conv_data =  %{ decode_json($::in{backupJSON} ) };
     $type = $conv_data{type};
   }
   else {
@@ -138,16 +142,23 @@ sub pcDataGet {
     delete $pc{image};
     delete $pc{protect};
 
-    $message  = '「<a href="./?id='.$::in{id}.'" target="_blank"><!NAME></a>」';
+    $message  = '<div class="data-imported">';
+    $message .= '「<a href="./?id='.$::in{id}.'" target="_blank"><!NAME></a>」';
     $message .= 'の<br><a href="./?id='.$::in{id}.'&log='.$::in{log}.'" target="_blank">'.$pc{updateTime}.'</a> 時点のバックアップデータ' if $::in{log};
     $message .= 'を<br>コピーして新規作成します。<br>（まだ保存はされていません）';
+    $message .= '</div>';
   }
   elsif($mode eq 'convert'){
     %pc = %::conv_data;
     delete $pc{image};
     delete $pc{imageURL};
     delete $pc{protect};
-    $message = '「<a href="'.$::in{url}.'" target="_blank"><!NAME></a>」をコンバートして新規作成します。<br>（まだ保存はされていません）';
+    if($::in{backupJSON}){
+      $message = '<span class="data-imported backup-loaded">入力途中の新規シートを復元しました</span>';
+    }
+    else {
+      $message = '<div class="data-imported">「<a href="'.$::in{url}.'" target="_blank"><!NAME></a>」をコンバートして新規作成します。<br>（まだ保存はされていません）</div>';
+    }
   }
 
   if($attentionOfCapacity){

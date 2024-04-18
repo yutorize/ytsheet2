@@ -88,6 +88,7 @@ else {
 
 ### 出力 #############################################################################################
 my $json = JSON::PP->new->canonical(1)->encode( \%pc );
+print "Access-Control-Allow-Origin: *\n";
 if($callback eq "") {
   print "Content-type: application/json\n\n";
   print $json;

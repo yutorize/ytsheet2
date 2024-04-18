@@ -1,5 +1,5 @@
 "use strict";
-const gameSystem = 'blp';
+const gameSystem = 'ms';
 
 // ----------------------------------------
 window.onload = function() {
