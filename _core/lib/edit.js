@@ -524,9 +524,14 @@ function setDefaultColor(){
 function exportAsJson() {
   const formData = new FormData(form);
   const o = Object.fromEntries(formData.entries());
-  delete o['_token'];
-  delete o['id'];
-  delete o['pass'];
+  delete o.mode;
+  delete o._token;
+  delete o.id;
+  delete o.pass;
+  delete o.image;
+  delete o.imageFile;
+  delete o.imageCompressed;
+  delete o.imageCompressedType;
   const json = JSON.stringify(o);
 
   const jsonUrl = window.URL.createObjectURL(new Blob([json], {type: 'text/json;charset=utf-8;'}));
