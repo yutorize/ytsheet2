@@ -1224,6 +1224,10 @@ dl#level {
   margin-left: 1em;
 }
 
+#f-language span {
+  display: block;
+}
+
 #f-classes,
 #f-language {
   min-height: 80px;
