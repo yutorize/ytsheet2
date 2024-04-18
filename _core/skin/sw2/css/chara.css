@@ -79,6 +79,23 @@ body {
   font-family: var(--base-font-family-mono);
 }
 
+/* // Menu
+---------------------------------------------------------------------------------------------------- */
+header nav ul li.character-format {
+  > a {
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    font-size: 85%;
+
+    &::after {
+      content: "データ";
+      font-size: 75%;
+      margin-top: 0.2em;
+    }
+  }
+}
+
 /* // Area-Status
 ---------------------------------------------------------------------------------------------------- */
 #area-status {
