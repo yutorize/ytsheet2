@@ -28,6 +28,12 @@ body {
     display: block;
   }
 }
+@media screen and (min-width:1400px){
+  article{
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
 
 button,
 .button[onclick] {
