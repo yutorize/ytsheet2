@@ -12,6 +12,20 @@ sub printCharaDataList {
       <option value="不明">
       <option value="不詳">
   </datalist>
+  <datalist id="list-weapon-name">
+    <option value="〈〉">
+    <option value="〈〉[刃]">
+    <option value="〈〉[打]">
+    <option value="〈〉[刃][打]">
+    <option value="[魔]〈〉">
+    <option value="[魔]〈〉[刃]">
+    <option value="[魔]〈〉[打]">
+    <option value="[魔]〈〉[刃][打]">
+  </datalist>
+  <datalist id="list-item-name">
+    <option value="〈〉">
+    <option value="[魔]〈〉">
+  </datalist>
   <datalist id="list-usage">
       <option value="1H">
       <option value="1H#">

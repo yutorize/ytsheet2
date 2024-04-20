@@ -925,7 +925,7 @@ foreach my $num ('TMPL',1 .. $pc{weaponNum}) {
 print <<"HTML";
             <tbody id="weapon-row$num">
               <tr>
-                <td rowspan="2">@{[input("weapon${num}Name",'','','placeholder="名称"')]}<span class="handle"></span>
+                <td rowspan="2">@{[input("weapon${num}Name",'','','placeholder="名称" list="list-weapon-name"')]}<span class="handle"></span>
                 <td rowspan="2">@{[input("weapon${num}Usage","text",'','list="list-usage"')]}
                 <td rowspan="2">@{[input("weapon${num}Reqd",'text','calcWeapon')]}
                 <td rowspan="2">+@{[input("weapon${num}Acc",'number','calcWeapon')]}<b id="weapon${num}-acc-total">0</b>
@@ -1038,7 +1038,7 @@ foreach my $num ('TMPL',1 .. $pc{armourNum}) {
               <tr id="armour-row${num}" data-type="">
                 <th class="type handle">
                 <td><select name="armour${num}Category" oninput="calcDefense()">@{[ option "armour${num}Category",'金属鎧','非金属鎧','盾','その他' ]}</select>
-                <td>@{[ input "armour${num}Name",'','calcDefense' ]}
+                <td>@{[ input "armour${num}Name",'','calcDefense','list="list-item-name"' ]}
                 <td>@{[ input "armour${num}Reqd",'','calcDefense' ]}
                 <td>@{[ input "armour${num}Eva",'number','calcDefense' ]}
                 <td>@{[ input "armour${num}Def",'number','calcDefense' ]}
@@ -1120,7 +1120,7 @@ foreach (
   print "</td>\n";
   print <<"HTML";
   <th>@$_[0]
-    <td>@{[input('accessory'.@$_[1].'Name')]}
+    <td>@{[input 'accessory'.@$_[1].'Name','','','list="list-item-name"']}
     <td>
       <select name="accessory@$_[1]Own" oninput="calcSubStt()">
         <option></option>

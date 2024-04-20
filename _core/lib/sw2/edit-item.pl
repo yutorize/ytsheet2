@@ -160,7 +160,7 @@ HTML
         <div>
           <dl id="character-name">
             <dt>名称
-            <dd>@{[ input('itemName','text',"nameSet('itemName')") ]}
+            <dd>@{[ input('itemName','text',"nameSet('itemName')",'list="list-item-name"') ]}
           </dl>
         </div>
         <dl id="player-name">
@@ -281,6 +281,9 @@ print <<"HTML";
     <p class="notes">(C)Group SNE「ソード・ワールド2.0／2.5」</p>
     <p class="copyright">©<a href="https://yutorize.2-d.jp">ゆとらいず工房</a>「ゆとシートⅡ」ver.${main::ver}</p>
   </footer>
+  <datalist id="list-item-name">
+    <option value="〈〉">
+  </datalist>
   <datalist id="list-usage">
     <option value="1H">
     <option value="1H#">
