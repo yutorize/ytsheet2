@@ -617,6 +617,7 @@ dl.note-description {
 .i-icon {
   width: 1em;
   height: 1em;
+  vertical-align: -1px;
 }
 
 /* 能力アイコン */
