@@ -31,11 +31,10 @@ sub addJsonData {
     my $classes = "職業:${class_text}";
     $pc{sheetDescriptionS} = $base."\n".$classes;
     $pc{sheetDescriptionM} = $base."\n".$sub."\n".$classes."\n";
-    
-    ## ゆとチャユニット用ステータス
-    $pc{unitStatus} = [
-    ];
   }
+  
+  ## ユニット（コマ）用ステータス
+  $pc{unitStatus} = createUnitStatus(\%pc);
   
   return \%pc;
 }
