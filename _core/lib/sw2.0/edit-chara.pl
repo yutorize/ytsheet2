@@ -156,8 +156,8 @@ print <<"HTML";
       <div id="header-menu">
         <h2><span></span></h2>
         <ul>
-          <li onclick="sectionSelect('common');"><span>キャラクター</span><span>データ</span>
-          <li onclick="sectionSelect('palette');"><span>チャット</span><span>パレット</span>
+          <li onclick="sectionSelect('common');"><span>キャラ<span class="shorten">クター</span></span><span>データ</span>
+          <li onclick="sectionSelect('palette');"><span><span class="shorten">ユニット(</span>コマ<span class="shorten">)</span></span><span>設定</span>
           <li onclick="sectionSelect('color');" class="color-icon" title="カラーカスタム">
           <li onclick="view('text-rule')" class="help-icon" title="テキスト整形ルール">
           <li onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード切替">
@@ -1440,6 +1440,7 @@ print <<"HTML";
     <p class="notes">(C)Group SNE「ソード・ワールド2.0」</p>
     <p class="copyright">©<a href="https://yutorize.2-d.jp">ゆとらいず工房</a>「ゆとシートⅡ」ver.${main::ver}</p>
   </footer>
+
 HTML
 
 require($::core_dir . '/lib/sw2/edit-chara-datalist.pl');

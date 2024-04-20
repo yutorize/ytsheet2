@@ -29,12 +29,9 @@ sub addJsonData {
   $pc{sheetDescriptionS} = $factor."\n".$base."\n".$missing."　".$scar;
   $pc{sheetDescriptionM} = $factor."\n".$base."\n".$belong."\n".$missing.($scar?"\n$scar":'');
   
-  ## ゆとチャユニット用ステータス
-  $pc{unitStatus} = [
-    { '耐久値' => $pc{endurance} },
-    { '先制値' => $pc{initiative} },
-  ];
-
+  ## ユニット（コマ）用ステータス
+  $pc{unitStatus} = createUnitStatus(\%pc);
+  
   return \%pc;
 }
 

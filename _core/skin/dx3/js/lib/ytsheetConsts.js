@@ -2,6 +2,8 @@
 
 Copyright 2020 @Shunshun94
 
+Customize & Refactoring by @yutorize
+
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
@@ -20,14 +22,14 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-var io = io || {};
-io.github = io.github || {};
-io.github.shunshun94 = io.github.shunshun94 || {};
-io.github.shunshun94.trpg = io.github.shunshun94.trpg || {};
-io.github.shunshun94.trpg.ytsheet = io.github.shunshun94.trpg.ytsheet || {};
-io.github.shunshun94.trpg.ytsheet.consts = io.github.shunshun94.trpg.ytsheet.consts || {};
+"use strict";
 
-io.github.shunshun94.trpg.ytsheet.consts.EFFECT_COLUMNS = {
+var output = output || {};
+output.consts = output.consts || {};
+
+output.consts.dicebot = 'DoubleCross';
+
+output.consts.EFFECT_COLUMNS = {
 	name: '《エフェクト名》',
 	level: 'Lv',
 	timing: 'タイミング',
@@ -39,7 +41,7 @@ io.github.shunshun94.trpg.ytsheet.consts.EFFECT_COLUMNS = {
 	note: '効果'
 };
 
-io.github.shunshun94.trpg.ytsheet.consts.COMBO_COLUMNS = {
+output.consts.COMBO_COLUMNS = {
 	name: 'コンボ名',
 	combination: '組み合わせ',
 	skill: '技能',
@@ -52,7 +54,7 @@ io.github.shunshun94.trpg.ytsheet.consts.COMBO_COLUMNS = {
 	note: '効果'
 };
 
-io.github.shunshun94.trpg.ytsheet.consts.LOISES_COLUMNS = {
+output.consts.LOISES_COLUMNS = {
 	name: '名前',
 	relation: '関係',
 	positive: 'ポジティブ',
@@ -62,7 +64,7 @@ io.github.shunshun94.trpg.ytsheet.consts.LOISES_COLUMNS = {
 	note: 'メモ'
 };
 
-io.github.shunshun94.trpg.ytsheet.consts.WEAPON_COLUMNS = {
+output.consts.WEAPON_COLUMNS = {
 	name: '名前',
 	cost: '常備化',
 	experience: '経験点',
@@ -75,7 +77,7 @@ io.github.shunshun94.trpg.ytsheet.consts.WEAPON_COLUMNS = {
 	note: '解説'
 };
 
-io.github.shunshun94.trpg.ytsheet.consts.ARMOR_COLUMNS = {
+output.consts.ARMOR_COLUMNS = {
 	name: '名前',
 	cost: '常備化',
 	experience: '経験点',
@@ -86,7 +88,7 @@ io.github.shunshun94.trpg.ytsheet.consts.ARMOR_COLUMNS = {
 	note: '解説'
 };
 
-io.github.shunshun94.trpg.ytsheet.consts.ITEM_COLUMNS = {
+output.consts.ITEM_COLUMNS = {
 	name: '名前',
 	cost: '常備化',
 	experience: '経験点',
@@ -95,14 +97,14 @@ io.github.shunshun94.trpg.ytsheet.consts.ITEM_COLUMNS = {
 	note: '解説'
 };
 
-io.github.shunshun94.trpg.ytsheet.consts.MEMORIES_COLUMNS = {
+output.consts.MEMORIES_COLUMNS = {
 	name: '名前',
 	relation: '関係',
 	emotion: '感情',
 	note: 'メモ'
 };
 
-io.github.shunshun94.trpg.ytsheet.consts.DX3_STATUS = [
+output.consts.DX3_STATUS = [
 	{
 		name: '肉体',
 		column: 'Body',

@@ -245,6 +245,8 @@ function setChatPalette(){
   formData.delete("password");
   formData.delete("imageFile");
   formData.delete("imageCompressed");
+  formData.delete("unitStatusNum");
+  formData.delete("unitStatusNotOutput");
   const action = form.getAttribute("action")
   const options = {
     method: 'POST',
@@ -255,8 +257,57 @@ function setChatPalette(){
     .then(data => {
       document.getElementById('paletteDefaultProperties').value = data['properties'] || '';
       document.getElementById('palettePreset').value = data['preset'] || '';
+
+      setDefaultStatus(data.unitStatus);
     })
 }
+
+// ユニット ----------------------------------------
+// 表示名・名前色
+function changeNamePlate(){
+  const name = form.namePlate.value || form.characterName?.value || form.aka?.value || form.monsterName?.value || '';
+  const colors = form.nameColor.value.split(/,/);
+  const color  = /^#[0-9a-zA-Z]{6}$/.test(colors[0]) ? colors[0] : ''
+  document.querySelectorAll('#name-plate-view > span').forEach( namePlate =>{
+    namePlate.textContent = name;
+    namePlate.style.color = color;
+  })
+}
+// ステータス
+function setDefaultStatus(statusArray){
+  if(statusArray){
+    const notset = form.unitStatusNotOutput.value.split(",")
+
+    const tbody = document.querySelector("#unit-status-default");
+    tbody.innerHTML = '';
+    for(let item of statusArray){
+      for (const key in item) {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>
+          <th>${key}
+          <td>${item[key]}
+          <td><label class="check-button"><input type="checkbox" value="${key}" oninput="setStatusNotOutput()" ${notset.includes(key)?'checked':''}><span>出力しない</span><label>`;
+        tbody.append(row);
+      }
+    }
+  }
+}
+function setStatusNotOutput(){
+  let value = '';
+  const tbody = document.querySelector("#unit-status-default");
+  tbody.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+    if(checkbox.checked){ value += checkbox.value+',' }
+  });
+  form.unitStatusNotOutput.value = value;
+}
+function addUnitStatus(){
+  document.querySelector("#unit-status-optional").append(createRow('unit-status','unitStatusNum'));
+}
+function delUnitStatus(){
+  delRow('unitStatusNum', '#unit-status-optional tr:last-of-type')
+}
+setSortable('unitStatus','#unit-status-optional','tr');
 
 // 画像配置 ----------------------------------------
 // ビューを開く
@@ -555,7 +606,7 @@ function sectionSelect(id){
     obj.style.display = 'none';
   });
   document.getElementById('section-'+id).style.display = 'block';
-  if(id === 'palette'){ setChatPalette() }
+  if(id === 'palette'){ changeNamePlate(); setChatPalette() }
 }
 
 // 目次 ----------------------------------------

@@ -12,40 +12,23 @@ sub addJsonData {
   $pc{'gameVersion'} = $::SW2_0 ? '2.0' : '2.5';
   ### 魔物 --------------------------------------------------
   if ($pc{type} eq 'm'){
-    ## ゆとチャユニット用ステータス
+    my @n2a = ('','A' .. 'Z');
+
     my $vitresist = "$pc{vitResist}\($pc{vitResistFix}\)";
     my $mndresist = "$pc{mndResist}\($pc{mndResistFix}\)";
-    my @n2a = ('','A' .. 'Z');
     if($pc{statusNum} > 1){ # 2部位以上
-      my @hp; my @mp; my @def;
-      my %multiple;
       foreach my $i (1 .. $pc{statusNum}){
-        ($pc{"part${i}"} = $pc{"status${i}Style"}) =~ s/^.+[(（)](.+?)[)）]$/$1/;
-        $multiple{ $pc{"part${i}"} }++;
-      }
-      my %count;
-      foreach my $i (1 .. $pc{statusNum}){
-        my $partname = $pc{"part${i}"};
         if($pc{mount}){
           if($pc{lv}){
             my $ii = ($pc{lv} - $pc{lvMin} +1);
             $i .= $ii > 1 ? "-$ii" : '';
           }
         }
-        if($multiple{ $partname } > 1){
-          $count{ $partname }++;
-          $partname .= $n2a[ $count{ $partname } ];
-        }
-        push(@hp , {$partname.':HP' => $pc{"status${i}Hp"}.'/'.$pc{"status${i}Hp"}});
-        push(@mp , {$partname.':MP' => $pc{"status${i}Mp"}.'/'.$pc{"status${i}Mp"}});
-        push(@def, $partname.$pc{"status${i}Defense"});
         if (!$pc{mount} || $pc{"status${i}Vit"} =~ /\d/) {
           $vitresist = $pc{mount} ? $pc{"status${i}Vit"} : $pc{vitResist} . '（' . $pc{vitResistFix} . '）';
           $mndresist = $pc{mount} ? $pc{"status${i}Mnd"} : $pc{mndResist} . '（' . $pc{mndResistFix} . '）';
         }
       }
-      $pc{unitStatus} = [ @hp,'|', @mp,'|', {'メモ' => '防護:'.join('／',@def)}];
-      $pc{unitExceptStatus} = { 'HP'=>1,'MP'=>1,'防護'=>1 }
     }
     else { # 1部位
       my $i = 1;
@@ -55,14 +38,10 @@ sub addJsonData {
           $i .= $ii > 1 ? "-$ii" : '';
         }
       }
-      $pc{unitStatus} = [
-        { 'HP' => $pc{"status${i}Hp"}.'/'.$pc{"status${i}Hp"} },
-        { 'MP' => $pc{"status${i}Mp"}.'/'.$pc{"status${i}Mp"} },
-        { '防護' => $pc{"status${i}Defense"} },
-      ];
       $vitresist = $pc{mount} ? $pc{"status${i}Vit"} : $pc{vitResist} . '（' . $pc{vitResistFix} . '）';
       $mndresist = $pc{mount} ? $pc{"status${i}Mnd"} : $pc{mndResist} . '（' . $pc{mndResistFix} . '）';
     }
+
     my $taxa = "分類:$pc{taxa}";
     my $data1 = "知能:$pc{intellect}　知覚:$pc{perception}".($pc{mount}?'':"　反応:$pc{disposition}");
        $data1 .= "　穢れ:$pc{sin}" if $pc{sin};
@@ -70,6 +49,8 @@ sub addJsonData {
     my $data3  = "弱点:$pc{weakness}\n".($pc{mount}?'':"先制値:$pc{initiative}　")."生命抵抗力:${vitresist}　精神抵抗力:${mndresist}";
     $pc{sheetDescriptionS} = $taxa."\n".$data3;
     $pc{sheetDescriptionM} = $taxa."　".$data1."\n".$data2."\n".$data3;
+    
+    if($pc{statusNum} > 1){ $pc{unitExceptStatus} = { 'HP'=>1,'MP'=>1,'防護'=>1 } }
   }
   ### キャラクター --------------------------------------------------
   else {
@@ -95,36 +76,10 @@ sub addJsonData {
                 .      "／精神$pc{sttMnd}".($pc{sttAddF}?"+$pc{sttAddF}":'')."\[$pc{bonusMnd}\]";
     $pc{sheetDescriptionS} = $base."\n".$classes;
     $pc{sheetDescriptionM} = $base."\n".$sub."\n".$classes."\n".$status;
-    ## 防護点
-    if($pc{defenseTotalAllDef} eq ''){
-      $pc{defenseTotalAllDef} = $pc{defenseTotal1Def} ne '' ? $pc{defenseTotal1Def}
-                                : $pc{defenseTotal2Def} ne '' ? $pc{defenseTotal2Def}
-                                : $pc{defenseTotal3Def} ne '' ? $pc{defenseTotal3Def}
-                                : 0;
-    }
-    ## ゆとチャユニット用ステータス
-    my @unitStatus = (
-      { 'HP' => $pc{hpTotal}.'/'.$pc{hpTotal} },
-      { 'MP' => $pc{mpTotal}.'/'.$pc{mpTotal} },
-      { '防護' => $pc{defenseTotalAllDef} },
-    );
-
-    if ($pc{gameVersion} eq '2.5') {
-      if ($class_text =~ /バード/) {
-        push(@unitStatus, { '⤴' => '0' });
-        push(@unitStatus, { '⤵' => '0' });
-        push(@unitStatus, { '♡' => '0' });
-      }
-      if ($class_text =~ /ジオマンサー/) {
-        push(@unitStatus, { '天' => '0' });
-        push(@unitStatus, { '地' => '0' });
-        push(@unitStatus, { '人' => '0' });
-      }
-      push(@unitStatus, { '陣気' => '0' }) if $class_text =~ /ウォーリーダー/;
-    }
-
-    $pc{unitStatus} = \@unitStatus;
   }
+
+  ## ユニット（コマ）用ステータス --------------------------------------------------
+  $pc{unitStatus} = createUnitStatus(\%pc);
   
   return \%pc;
 }

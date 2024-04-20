@@ -104,7 +104,7 @@ print <<"HTML";
         <h2><span></span></h2>
         <ul>
           <li onclick="sectionSelect('common');"><span>魔物</span><span>データ</span>
-          <li onclick="sectionSelect('palette');"><span>チャット</span><span>パレット</span>
+          <li onclick="sectionSelect('palette');"><span><span class="shorten">ユニット(</span>コマ<span class="shorten">)</span></span><span>設定</span>
           <li onclick="sectionSelect('color');" class="color-icon" title="カラーカスタム">
           <li onclick="view('text-rule')" class="help-icon" title="テキスト整形ルール">
           <li onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード切替">

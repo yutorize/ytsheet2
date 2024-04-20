@@ -51,14 +51,8 @@ sub addJsonData {
   $pc{sheetDescriptionS} = $base."\n".$works."\n".$syndrome;
   $pc{sheetDescriptionM} = $base."　".$sub."\n".$works."\n".$syndrome.($dlois?"\n$dlois":'');
   
-  ## ゆとチャユニット用ステータス
-  $pc{unitStatus} = [
-    { 'HP' => $pc{maxHpTotal}.'/'.$pc{maxHpTotal} },
-    { '侵蝕' => $pc{baseEncroach} },
-    { 'ロイス' => $pc{loisHave}.'/'.$pc{loisMax} },
-    { '財産' => $pc{savingTotal} },
-    { '行動' => $pc{initiativeTotal} },
-  ];
+  ## ユニット（コマ）用ステータス
+  $pc{unitStatus} = createUnitStatus(\%pc);
   
   return \%pc;
 }

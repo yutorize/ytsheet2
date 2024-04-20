@@ -2,6 +2,8 @@
 
 Copyright 2020 @Shunshun94
 
+Customize & Refactoring by @yutorize
+
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
@@ -20,13 +22,11 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-var io = io || {};
-io.github = io.github || {};
-io.github.shunshun94 = io.github.shunshun94 || {};
-io.github.shunshun94.trpg = io.github.shunshun94.trpg || {};
-io.github.shunshun94.trpg.ytsheet = io.github.shunshun94.trpg.ytsheet || {};
+"use strict";
 
-io.github.shunshun94.trpg.ytsheet.length = (str='') => {
+var output = output || {};
+
+output.length = (str='') => {
 	// https://zukucode.com/2017/04/javascript-string-length.html
 	let length = 0;
 	for (let i = 0; i < str.length; i++) {
@@ -40,19 +40,19 @@ io.github.shunshun94.trpg.ytsheet.length = (str='') => {
 	return length;
 };
 
-io.github.shunshun94.trpg.ytsheet._getColumnLength = (list, header) => {
+output._getColumnLength = (list, header) => {
 	return list.reduce((currentMax, targetEffect)=>{
 		const result = {};
 		for(var key in currentMax) {
-			result[key] = Math.max(io.github.shunshun94.trpg.ytsheet.length(targetEffect[key]), currentMax[key]);
+			result[key] = Math.max(output.length(targetEffect[key]), currentMax[key]);
 		}
 		return result;
 	}, header);
 };
 
-io.github.shunshun94.trpg.ytsheet._convertList = (list, columns, opt_separator = '/') => {
-	const headerLength = io.github.shunshun94.trpg.ytsheet._getLengthWithoutNote(columns || list[0]);
-	const length = io.github.shunshun94.trpg.ytsheet._getColumnLength(list, headerLength);
+output._convertList = (list, columns, opt_separator = '/') => {
+	const headerLength = output._getLengthWithoutNote(columns || list[0]);
+	const length = output._getColumnLength(list, headerLength);
 	const convertDataToString = (data) => {
 		const result = [];
 		for(var key in headerLength) {
@@ -60,7 +60,7 @@ io.github.shunshun94.trpg.ytsheet._convertList = (list, columns, opt_separator =
 				result.push(''.padEnd(length[key], '-'));
 			}
 			else {
-				result.push(`${data[key]}${''.padEnd(length[key] - io.github.shunshun94.trpg.ytsheet.length(data[key]), ' ')}`);
+				result.push(`${data[key]}${''.padEnd(length[key] - output.length(data[key]), ' ')}`);
 			}
 		}
 		result.push(data.note);
@@ -69,21 +69,21 @@ io.github.shunshun94.trpg.ytsheet._convertList = (list, columns, opt_separator =
 	return (columns ? [columns].concat(list) : list).map(convertDataToString).join('\n');
 };
 
-io.github.shunshun94.trpg.ytsheet._getLengthWithoutNote = (baseHeader) => {
+output._getLengthWithoutNote = (baseHeader) => {
 	const result = {};
 	for(let key in baseHeader) {
 		if(key !== 'note') {
-			result[key] = io.github.shunshun94.trpg.ytsheet.length(baseHeader[key]);
+			result[key] = output.length(baseHeader[key]);
 		}
 	}
 	return result;
 };
 
-io.github.shunshun94.trpg.ytsheet.isNumberValue = (value) => {
+output.isNumberValue = (value) => {
 	return Number(value) || (value === '0');
 };
 
-io.github.shunshun94.trpg.ytsheet.getPicture = (src, fileName) => {
+output.getPicture = (src, fileName) => {
 	return new Promise((resolve, reject) => {
 		let xhr = new XMLHttpRequest();
 		xhr.open('GET', src, true);
@@ -111,7 +111,7 @@ io.github.shunshun94.trpg.ytsheet.getPicture = (src, fileName) => {
 	});
 };
 
-io.github.shunshun94.trpg.ytsheet.separateParametersFromChatPalette = (chatPalette) => {
+output.separateParametersFromChatPalette = (chatPalette) => {
 	const result = {
 		palette: '',
 		parameters: []
@@ -133,18 +133,125 @@ io.github.shunshun94.trpg.ytsheet.separateParametersFromChatPalette = (chatPalet
 	return result;
 };
 
-io.github.shunshun94.trpg.ytsheet.getChatPalette = (sheetUrl) => {
+output.getChatPalette = (sheetUrl) => {
 	sheetUrl = sheetUrl.replace(/&?mode=([^&]+)/g, '');
 	return new Promise((resolve, reject)=>{
 		let xhr = new XMLHttpRequest();
 		xhr.open('GET', `${sheetUrl}&mode=palette&tool=bcdice`, true);
 		xhr.responseType = "text";
 		xhr.onload = (e) => {
-			resolve(io.github.shunshun94.trpg.ytsheet.separateParametersFromChatPalette(e.currentTarget.response));
+			resolve(output.separateParametersFromChatPalette(e.currentTarget.response));
 		};
 		xhr.onerror = () => resolve('');
 		xhr.onabort = () => resolve('');
 		xhr.ontimeout = () => resolve('');
 		xhr.send();
   });
+};
+
+
+output.generateUdonariumXml = async (generateType, json, opt_url='', opt_imageHash='') => {
+	const defaultPalette = await output.getChatPalette(opt_url);
+	const dataCharacter = {};
+
+	dataCharacter.image = `
+		<data name="image">
+  	  <data type="image" name="imageIdentifier">${opt_imageHash}</data>
+  	</data>`;
+
+	dataCharacter.common = `
+    <data name="common">
+      <data name="name">${json.namePlate || json.characterName || json.monsterName || json.aka}</data>
+      <data name="size">1</data>
+    </data>`;
+
+  const resources = [];
+  for(let unitData of json.unitStatus){
+    for (const label in unitData) {
+      if(/^[0-9/]+$/.test(unitData[label])){
+        const value = String(unitData[label]).split('/');
+        resources.push(`        <data type="numberResource" currentValue="${value[0]}" name="${label}">${value[1]||0}</data>`)
+      }
+      else {
+        resources.push(`        <data name="${label}">${unitData[label]||''}</data>`)
+      }
+    }
+  }
+
+  const dataCharacterDetail = output['generateUdonariumXmlDetailOf'+generateType](json,opt_url,defaultPalette,resources);
+  
+  dataCharacter.detail = `  <data name="detail">\n`;
+  for(const key in dataCharacterDetail) {
+    dataCharacter.detail += `      <data name="${key}">\n`;
+    dataCharacter.detail += dataCharacterDetail[key].join(('\n'));
+    dataCharacter.detail += `\n      </data>\n`;
+  }
+  dataCharacter.detail += `    </data>`;
+
+	
+  let chatColorFly = '';
+  let chatColorLily = '';
+  if(json.nameColor){
+    let num = 0;
+    json.nameColor.split(',').forEach(color => {
+      if(!num){	chatColorFly = color; }
+      chatColorLily += ` chatColorCode.${num}="${color}"`;
+      num++;
+    })
+  }
+
+  let palette = `<chat-palette dicebot="${output.consts.dicebot||'DiceBot'}" paletteColor="${chatColorFly}">\n`;
+  palette += defaultPalette.palette.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  palette += `  </chat-palette>`;
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<character location.name="table" location.x="0" location.y="0" posZ="0" rotate="0" roll="0"${chatColorLily}>
+  <data name="character">
+  ${dataCharacter.image}
+  ${dataCharacter.common}
+  ${dataCharacter.detail}
+  </data>
+  ${palette}
+</character>
+`;
+};
+
+
+output.generateCcfoliaJson = async (generateType, json, opt_sheetUrl = '') => {
+	const result = { kind: "character" };
+	const defaultPalette = await output.getChatPalette(opt_sheetUrl+'&propertiesall=1');
+
+  const resources = [];
+  for(let unitData of json.unitStatus){
+    for (const label in unitData) {
+			if(label == output.consts.initiativeLabel) continue;
+      if(/^[0-9/]+$/.test(unitData[label])){
+        const value = String(unitData[label]).split('/');
+        resources.push({label: label, value: value[0], max: value[1]})
+      }
+      else {
+        resources.push({label: label, value: unitData[label]})
+      }
+    }
+  }
+  
+	const character = {
+    playerName: json.playerName,
+    externalUrl: opt_sheetUrl,
+    status: resources,
+    params: [],
+    faces: [],
+    x: 0, y: 0, z: 0,
+    angle: 0, width: 4, height: 4,
+    active: true, secret: false,
+    invisible: false, hideStatus: false,
+    color: (json.nameColor || '').split(',')[0],
+    roomId: null,
+    commands: defaultPalette.palette || '',
+    speaking: true
+  };
+
+  result.data = output['generateCcfoliaJsonOf'+generateType](json, character, defaultPalette);
+  
+	return JSON.stringify(result);
 };

@@ -1,32 +1,8 @@
-/* MIT License
+"use strict";
 
-Copyright 2020 @Shunshun94
+var output = output || {};
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
- */
-var io = io || {};
-io.github = io.github || {};
-io.github.shunshun94 = io.github.shunshun94 || {};
-io.github.shunshun94.trpg = io.github.shunshun94.trpg || {};
-io.github.shunshun94.trpg.ytsheet = io.github.shunshun94.trpg.ytsheet || {};
-
-io.github.shunshun94.trpg.ytsheet._getKizunaBulletKizuna = (json) => {
+output._getKizunaBulletKizuna = (json) => {
   let number = 1;
   const kizunaData = [];
   for(let cursor = 1; cursor <= json.kizunaNum; cursor++) {
@@ -44,7 +20,7 @@ io.github.shunshun94.trpg.ytsheet._getKizunaBulletKizuna = (json) => {
   return kizunaData;
 };
 
-io.github.shunshun94.trpg.ytsheet._getKizunaBulletKizuato = (json) => {
+output._getKizunaBulletKizuato = (json) => {
 	let cursor = 1;
 	const kizuatoDate = [];
 	while(json[`kizuato${cursor}Name`]) {
@@ -64,7 +40,7 @@ io.github.shunshun94.trpg.ytsheet._getKizunaBulletKizuato = (json) => {
 	return kizuatoDate;
 };
 
-io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2KizunaBulletPC = (json) => {
+output.generateCharacterTextOfKizunaBulletPC = (json) => {
   const result = [];
   
   result.push(`キャラクター名：${json.characterName}
@@ -95,14 +71,14 @@ ${json.type === 'オーナー' ? '使命' : '決意'}　　　：${json.resoluti
   result.push('');
 
   result.push('■キズナ■\n');
-  const kizunaData = io.github.shunshun94.trpg.ytsheet._getKizunaBulletKizuna(json);
-  result.push(io.github.shunshun94.trpg.ytsheet._convertList(kizunaData, io.github.shunshun94.trpg.ytsheet.consts.KIZUNA_COLUMNS, ' / '));
+  const kizunaData = output._getKizunaBulletKizuna(json);
+  result.push(output._convertList(kizunaData, output.consts.KIZUNA_COLUMNS, ' / '));
   result.push('');
   result.push('');
 
   result.push('■キズアト■\n');
-  const kizuatoData = io.github.shunshun94.trpg.ytsheet._getKizunaBulletKizuato(json);
-  result.push(io.github.shunshun94.trpg.ytsheet._convertList(kizuatoData, io.github.shunshun94.trpg.ytsheet.consts.KIZUATO_COLUMNS, ' / '));
+  const kizuatoData = output._getKizunaBulletKizuato(json);
+  result.push(output._convertList(kizuatoData, output.consts.KIZUATO_COLUMNS, ' / '));
   result.push('');
   result.push('');
   

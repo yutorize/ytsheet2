@@ -1,33 +1,8 @@
-/* MIT License
+"use strict";
 
-Copyright 2020 @Shunshun94
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
- */
 var output = output || {};
-var io = io || {};
-io.github = io.github || {};
-io.github.shunshun94 = io.github.shunshun94 || {};
-io.github.shunshun94.trpg = io.github.shunshun94.trpg || {};
-io.github.shunshun94.trpg.ytsheet = io.github.shunshun94.trpg.ytsheet || {};
 
-io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2VisionConnectPC = (json) => {
+output.generateCharacterTextOfVisionConnectPC = (json) => {
 	const result = [];
   result.push(`キャラクター名：${json.characterName}
 
@@ -49,13 +24,13 @@ ${json.speciality1Name || ''} / ${json.speciality1Note || ''}
 ${json.speciality2Name || ''} / ${json.speciality2Note || ''}
 `);
 	result.push('■グッズ■');
-	result.push(io.github.shunshun94.trpg.ytsheet._convertList(output.GetGoods(json), output.consts.GOODS_COLUMNS, ' / '));
+	result.push(output._convertList(output.getGoods(json), output.consts.GOODS_COLUMNS, ' / '));
 	result.push('');
 	result.push('■アイテム■');
-	result.push(io.github.shunshun94.trpg.ytsheet._convertList(output.getItems(json), output.consts.GOODS_COLUMNS, ' / '));
+	result.push(output._convertList(output.getItems(json), output.consts.GOODS_COLUMNS, ' / '));
 	result.push('');
 	result.push('■戦闘値■');
-	result.push(io.github.shunshun94.trpg.ytsheet._convertList(output.getBattles(json), output.consts.BATTLE_COLUMNS, ' | '));
+	result.push(output._convertList(output.getBattles(json), output.consts.BATTLE_COLUMNS, ' | '));
 	result.push('\n');
 	result.push('■メモ■');
   result.push((json.freeNote || '').replace(/&lt;br&gt;/gm, '\n').replace(/&quot;/gm, '"'));
@@ -66,7 +41,7 @@ ${json.speciality2Name || ''} / ${json.speciality2Note || ''}
 	return result.join('\n');
 };
 
-output.GetGoods = (json) => {
+output.getGoods = (json) => {
   let number = 1;
   const data = [];
   for(let cursor = 1; cursor <= json.goodsNum; cursor++) {

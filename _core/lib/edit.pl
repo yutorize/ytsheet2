@@ -439,10 +439,50 @@ sub chatPaletteForm {
     @_,
   );
   $palette .= "$_\n" foreach(paletteProperties('',$::in{type}));
+  
+  $::pc{unitStatusNum} ||= 3;
+  my $status;
+  foreach ('TMPL',1..$::pc{unitStatusNum}) {
+    $status .= '<tr id="unit-status'.$_.'">';
+    $status .= '<td class="handle">';
+    $status .= '<td>'.input("unitStatus${_}Label",'','','placeholder="ラベル"');
+    $status .= '<td>'.input("unitStatus${_}Value",'','','placeholder="値"');
+    $status = '<template id="unit-status-template">'.$status.'</template>' if $_ eq 'TMPL';
+  }
+  
   return <<"HTML";
     <section id="section-palette" style="display:none;">
-      <div class="box">
-        <h2>チャットパレット</h2>
+      <div class="box" id="unit-setting">
+        <h2>ユニット・コマ の設定</h2>
+        <dl>
+          <dt>表示名
+          <dd>@{[ input 'namePlate','','changeNamePlate','placeholder="ニックネーム、ファーストネームなど"' ]} <small>※コマ出力時、こちらの入力が名前として優先されます。名前が長いキャラなどに</small>
+          <dt>発言者色
+          <dd>@{[ input 'nameColor','','changeNamePlate' ]} <small>※6桁のカラーコードで記入してください。</small>
+            <div id="name-plate-view">表示例：
+              <span class="ytcha"></span> ／
+              <span class="tekey"></span> ／
+              <span class="ccfol"></span> ／
+              <span class="udona"></span>
+            </div>
+          <dt>ステータス<br>
+          <dd>
+            @{[ input 'unitStatusNotOutput','hidden' ]}
+            @{[ input 'unitStatusNum','hidden' ]}
+            <table id="unit-status">
+              <tbody id="unit-status-default">
+              <tbody id="unit-status-optional">$status
+              <tfoot><tr><td colspan="3" class="add-del-button"><a onclick="addUnitStatus()">▼</a><a onclick="delUnitStatus()">▲</a></div>
+            </table>
+            <div class="annotate">
+              <small>※デフォルトのステータス出力の他に、任意で項目を追加できます。<br>　また、使わないステータスを出力しないことも選択できます。</small>
+              <small>※最大値が必要な場合は <code>100/100</code> のように記入してください。</small>
+              <small>※ツールによっては値に数値しか許容されないため、注意してください。</small>
+            </div>
+        </dl>
+      </div>
+      <div class="box" id="chatpalette">
+        <h2>チャットパレット <small>(ユニット(コマ)出力時、ここで設定したものが出力されます)</small></h2>
         <p>
           手動パレットの配置:<select name="paletteInsertType" style="width: auto;">
             <option value="exchange" @{[ $::pc{paletteInsertType} eq 'exchange'?'selected':'' ]}>プリセットと入れ替える</option>
@@ -457,7 +497,7 @@ sub chatPaletteForm {
         <textarea id="paletteDefaultProperties" readonly style="height:20em">$palette</textarea>
           <p>
             @{[ checkbox 'chatPalettePropertiesAll','全てのデフォルト変数を出力する','setChatPalette' ]} <br>
-          （デフォルトだと、未使用の変数は出力されません）
+            <small>※デフォルトだと、未使用の変数は出力されません</small>
           </p>
         </div>
         <div class="palette-column">
@@ -470,7 +510,9 @@ sub chatPaletteForm {
           </p>
           <dl>
             <dt>使用するオンセツール
-            <dd class="left">@{[ radios 'paletteTool','setChatPalette',@{$opt{tool}} ]}
+            <dd class="left">
+              @{[ radios 'paletteTool','setChatPalette',@{$opt{tool}} ]}<br>
+              <small>※プリセットの内容がツールに合わせたものに切り替わります。<br>　なお、コマ出力の際にはここでの変更に関わらず、自動的に出力先のツールに合わせたものになります。</small>
           </dl>
         </div>
       </div>

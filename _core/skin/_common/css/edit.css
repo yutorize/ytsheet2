@@ -412,8 +412,9 @@ input.auto {
   padding: 0 1rem;
   cursor: pointer;
   user-select: none;
+  font-family: var(--font-proportional);
 
-  & span {
+  > span {
     display: inline-block;
   }
 }
@@ -500,6 +501,9 @@ input.auto {
   }
   #header-menu ul li.buttons .submit {
     font-size: 130%;
+  }
+  #header-menu ul li span.shorten {
+    display: none;
   }
 }
 section {
@@ -1211,11 +1215,71 @@ input[type="submit"]:hover {
   }
 }
 
-/* // パレット
+/* // ユニット設定／チャットパレット
 ---------------------------------------------------------------------------------------------------- */
-#section-palette .box {
+#unit-setting {
+  > dl {
+    display: grid;
+    grid-template-columns: 5.2em 1fr;
+    margin-left: .5em;
+
+    > *:not(:first-of-type) {
+      border-top-width: 1px;
+      border-top-style: dotted;
+    }
+    > dt {
+      text-align: center;
+    }
+    > dd {
+      text-align: left;
+      > input[name="namePlate"] { max-width: 16em; }
+      > input[name="nameColor"] { max-width:  6em; }
+      > small { display: inline-block; }
+      #name-plate-view > span {
+        display: inline-block;
+        padding: 3px 5px;
+        border-radius: 5px;
+        font-weight: bold;
+        font-family: "Meiryo";
+        &.ytcha { color:#ffffff; background: #111111; font-family: "Yu Gothic", "YuGothic"; }
+        &.tekey { color:#000000; background: #ffffff; }
+        &.ccfol { color:#ffffff; background: #2a2a2a; }
+        &.udona { color:#444444; background: #fcf0e3; }
+      }
+
+      table {
+        float: left;
+        margin-right: 5px;
+        td:nth-child(1){ width: 1em; }
+        td:nth-child(2){ width: 8em; }
+        td:nth-child(3){ width: 8em; }
+        @media screen and (max-width:735px){
+          float:none;
+          td:nth-child(2){ width: 5.8em; }
+          td:nth-child(3){ width: 5.8em; }
+          .check-button > span { font-size: 75%; text-wrap: nowrap; }
+        }
+        #unit-status-default {
+          & th { text-align: center; }
+        }
+      }
+      .annotate {
+        margin: 3px;
+        padding: 3px;
+        max-width: max-content;
+        border-width: 1px;
+        border-style: dashed;
+        border-radius: 5px;
+        overflow: hidden;
+        > small { display: block; }
+      }
+    }
+  }
+}
+#chatpalette {
   display: grid;
   grid-template-columns: 1fr 1fr;
+  margin-top: var(--box-v-gap);
 
   > * {
     grid-column: span 2;

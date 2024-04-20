@@ -2,6 +2,8 @@
 
 Copyright 2020 @Shunshun94
 
+Customize & Refactoring by @yutorize
+
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
@@ -20,24 +22,24 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-var io = io || {};
-io.github = io.github || {};
-io.github.shunshun94 = io.github.shunshun94 || {};
-io.github.shunshun94.trpg = io.github.shunshun94.trpg || {};
-io.github.shunshun94.trpg.ytsheet = io.github.shunshun94.trpg.ytsheet || {};
-io.github.shunshun94.trpg.ytsheet.consts = io.github.shunshun94.trpg.ytsheet.consts || {};
+"use strict";
 
-io.github.shunshun94.trpg.ytsheet.consts.card = {};
-io.github.shunshun94.trpg.ytsheet.consts.card.color = {
+var output = output || {};
+output.consts = output.consts || {};
+
+output.consts.dicebot = 'SwordWorld2.5';
+
+output.consts.card = {};
+output.consts.card.color = {
 	'Red': '赤',
 	'Gre': '緑',
 	'Bla': '黒',
 	'Whi': '白',
 	'Gol': '金'
 };
-io.github.shunshun94.trpg.ytsheet.consts.card.rank = ['B', 'A', 'S', 'SS'];
-io.github.shunshun94.trpg.ytsheet.consts.accessory = {};
-io.github.shunshun94.trpg.ytsheet.consts.accessory.part = {
+output.consts.card.rank = ['B', 'A', 'S', 'SS'];
+output.consts.accessory = {};
+output.consts.accessory.part = {
 	Head:' 頭 ',
 	Face:' 顔 ',
 	Ear:' 耳 ',
@@ -53,7 +55,7 @@ io.github.shunshun94.trpg.ytsheet.consts.accessory.part = {
 	Other4:' 他 ',
 };
 
-io.github.shunshun94.trpg.ytsheet.consts.PC_ARMORS_COLUMNS = {
+output.consts.PC_ARMORS_COLUMNS = {
 		type: '',
 		name: '名前',
 		reqd: '必筋',
@@ -62,7 +64,7 @@ io.github.shunshun94.trpg.ytsheet.consts.PC_ARMORS_COLUMNS = {
 		note: 'メモ'
 };
 
-io.github.shunshun94.trpg.ytsheet.consts.PC_WEAPONS_COLUMNS = {
+output.consts.PC_WEAPONS_COLUMNS = {
 	name: '名前',
 	usage: '用法',
 	reqd: '必筋',
@@ -75,7 +77,7 @@ io.github.shunshun94.trpg.ytsheet.consts.PC_WEAPONS_COLUMNS = {
 	note: 'メモ'
 };
 
-io.github.shunshun94.trpg.ytsheet.consts.ENEMY_STATUS_COLUMNS = {
+output.consts.ENEMY_STATUS_COLUMNS = {
 	name: '攻撃方法',
 	hit: ' 命中力 ',
 	damage: ' 打撃点 ',

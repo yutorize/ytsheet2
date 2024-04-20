@@ -1,32 +1,8 @@
-/* MIT License
+"use strict";
 
-Copyright 2020 @Shunshun94
+var output = output || {};
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
- */
-var io = io || {};
-io.github = io.github || {};
-io.github.shunshun94 = io.github.shunshun94 || {};
-io.github.shunshun94.trpg = io.github.shunshun94.trpg || {};
-io.github.shunshun94.trpg.ytsheet = io.github.shunshun94.trpg.ytsheet || {};
-
-io.github.shunshun94.trpg.ytsheet._convertArianrhodStatus = (json, s) => {
+output._convertArianrhodStatus = (json, s) => {
   const result = [];
   result.push(
 		`【${s.name}】`
@@ -44,7 +20,7 @@ io.github.shunshun94.trpg.ytsheet._convertArianrhodStatus = (json, s) => {
   return result.join('\n');
 };
 
-io.github.shunshun94.trpg.ytsheet._getArianrhodSkills = (json) => {
+output._getArianrhodSkills = (json) => {
   let cursor = 1;
   const skillData = [];
   while(json[`skill${cursor}Name`]) {
@@ -63,7 +39,7 @@ io.github.shunshun94.trpg.ytsheet._getArianrhodSkills = (json) => {
   return skillData;
 };
 
-io.github.shunshun94.trpg.ytsheet._getArianrhodConnections = (json) => {
+output._getArianrhodConnections = (json) => {
   let cursor = 1;
   const data = [];
   while(json[`connection${cursor}Name`]) {
@@ -76,7 +52,7 @@ io.github.shunshun94.trpg.ytsheet._getArianrhodConnections = (json) => {
   return data;
 };
 
-io.github.shunshun94.trpg.ytsheet._getArianrhodGeises = (json) => {
+output._getArianrhodGeises = (json) => {
   let cursor = 1;
   const data = [];
   while(json[`geis${cursor}Name`]) {
@@ -90,7 +66,7 @@ io.github.shunshun94.trpg.ytsheet._getArianrhodGeises = (json) => {
   return data;
 };
 
-io.github.shunshun94.trpg.ytsheet._getArianrhodArmament = (json) => {
+output._getArianrhodArmament = (json) => {
   const data = [];
   [
 		['HandR','　　右手'],
@@ -118,7 +94,7 @@ io.github.shunshun94.trpg.ytsheet._getArianrhodArmament = (json) => {
   return data;
 };
 
-io.github.shunshun94.trpg.ytsheet._getArianrhodBattle = (json) => {
+output._getArianrhodBattle = (json) => {
   const data = [];
 	data.push({
 		type  : '　------',
@@ -170,7 +146,7 @@ io.github.shunshun94.trpg.ytsheet._getArianrhodBattle = (json) => {
   return data;
 };
 
-io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2Arianrhod2PC = (json) => {
+output.generateCharacterTextOfArianrhod2PC = (json) => {
   const result = [];
 
   result.push(`キャラクター名：${json.characterName || ''}
@@ -193,8 +169,8 @@ io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2Arianrhod2PC 
 
   result.push('■能力値■');
   result.push('　　　　基本値 　ﾎﾞｰﾅｽ　  ﾒｲﾝ　ｻﾎﾟｰﾄ　ｽｷﾙ他 　合計　ｽｷﾙ他　　　判定');
-  io.github.shunshun94.trpg.ytsheet.consts.AR2_STATUS.forEach((statusPattern)=>{
-    result.push(io.github.shunshun94.trpg.ytsheet._convertArianrhodStatus(json, statusPattern));
+  output.consts.AR2_STATUS.forEach((statusPattern)=>{
+    result.push(output._convertArianrhodStatus(json, statusPattern));
   });
   result.push('');
   result.push(`【ＨＰ】　　${String(json.hpTotal).padStart(3, ' ')}`);
@@ -203,9 +179,9 @@ io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2Arianrhod2PC 
   result.push('');
 
   result.push('■装備品■');
-  const armamentData = io.github.shunshun94.trpg.ytsheet._getArianrhodArmament(json);
-	const battleData = armamentData.concat(io.github.shunshun94.trpg.ytsheet._getArianrhodBattle(json));
-  result.push(io.github.shunshun94.trpg.ytsheet._convertList(battleData, io.github.shunshun94.trpg.ytsheet.consts.ARMAMENT_COLUMNS, ' / '));
+  const armamentData = output._getArianrhodArmament(json);
+	const battleData = armamentData.concat(output._getArianrhodBattle(json));
+  result.push(output._convertList(battleData, output.consts.ARMAMENT_COLUMNS, ' / '));
 
   result.push('');
   result.push('');
@@ -230,8 +206,8 @@ io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2Arianrhod2PC 
   result.push('');
 
   result.push('■スキル■');
-  const skillData = io.github.shunshun94.trpg.ytsheet._getArianrhodSkills(json);
-  result.push(io.github.shunshun94.trpg.ytsheet._convertList(skillData, io.github.shunshun94.trpg.ytsheet.consts.SKILL_COLUMNS, ' / '));
+  const skillData = output._getArianrhodSkills(json);
+  result.push(output._convertList(skillData, output.consts.SKILL_COLUMNS, ' / '));
   result.push('');
   result.push('');
 
@@ -242,14 +218,14 @@ io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2Arianrhod2PC 
   result.push('');
 
   result.push('■コネクション■');
-  const connectionData = io.github.shunshun94.trpg.ytsheet._getArianrhodConnections(json);
-  result.push(io.github.shunshun94.trpg.ytsheet._convertList(connectionData, io.github.shunshun94.trpg.ytsheet.consts.CONNECTION_COLUMNS, ' / '));
+  const connectionData = output._getArianrhodConnections(json);
+  result.push(output._convertList(connectionData, output.consts.CONNECTION_COLUMNS, ' / '));
   result.push('');
   result.push('');
 
   result.push('■誓約■');
-  const geisesData = io.github.shunshun94.trpg.ytsheet._getArianrhodGeises(json);
-  result.push(io.github.shunshun94.trpg.ytsheet._convertList(geisesData, io.github.shunshun94.trpg.ytsheet.consts.GEIS_COLUMNS, ' / '));
+  const geisesData = output._getArianrhodGeises(json);
+  result.push(output._convertList(geisesData, output.consts.GEIS_COLUMNS, ' / '));
   result.push('');
   result.push('');
 

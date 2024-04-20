@@ -44,19 +44,16 @@ sub outputChatPalette {
   }
   close($IN);
 
+  foreach (@lines){
+    chomp;
+    my ($key, $value) = split(/<>/, $_, 2);
+    $pc{$key} = $value;
+  }
   if($pc{paletteRemoveTags}){
-    foreach (@lines){
-      chomp;
-      my ($key, $value) = split(/<>/, $_, 2);
-      $pc{$key} = tagDelete tagUnescape($value);
-    }
+    $_ = tagDelete tagUnescape($_) foreach values %pc;
   }
   else {
-    foreach (@lines){
-      chomp;
-      my ($key, $value) = split(/<>/, $_, 2);
-      $pc{$key} = tagUnescapePalette($value);
-    }
+    $_ = tagUnescapePalette($_) foreach values %pc;
   }
   $pc{chatPalette} =~ s/<br>/\n/gi;
   $pc{skills} =~ s/<br>/\n/gi;
@@ -122,6 +119,8 @@ sub outputChatPaletteTemplate {
   $json{preset} = palettePresetBuffDelete($json{preset}) if !$pc{paletteUseBuff};
   if(!$pc{paletteTool}){ $json{preset} = palettePresetSwapWordAndCommand($json{preset}); }
   $json{properties} .= "$_\n" foreach( paletteProperties($tool,$type) );
+
+  $json{unitStatus} = createUnitStatus(\%pc);
   print "Content-type: text/javascript; charset=UTF-8\n\n";
   print JSON::PP->new->canonical(1)->encode( \%json );
 }

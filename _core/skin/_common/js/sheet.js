@@ -135,8 +135,8 @@ function copyToClipboard(text) {
 async function downloadAsUdonarium() {
   const characterDataJson = await getJsonData();
   const characterId = characterDataJson.characterName || characterDataJson.monsterName || characterDataJson.aka || '無題';
-  const image = await io.github.shunshun94.trpg.ytsheet.getPicture(characterDataJson.imageURL || defaultImage, "image."+characterDataJson.image);
-  const udonariumXml = io.github.shunshun94.trpg.udonarium[`generateCharacterXmlFromYtSheet2${generateType}`](characterDataJson, location.href, image.hash);
+  const image = await output.getPicture(characterDataJson.imageURL || defaultImage, "image."+characterDataJson.image);
+  const udonariumXml = output.generateUdonariumXml(generateType, characterDataJson, location.href, image.hash);
   const udonariumUrl = await generateUdonariumZipFile((characterDataJson.characterName||characterDataJson.aka), udonariumXml, image);
   downloadFile(`udonarium_data_${characterId}.zip`, udonariumUrl);
 }
@@ -144,7 +144,7 @@ async function downloadAsUdonarium() {
 function getCcfoliaJson() {
   return new Promise((resolve, reject)=>{
     getJsonData().then((characterDataJson)=>{
-      io.github.shunshun94.trpg.ccfolia[`generateCharacterJsonFromYtSheet2${generateType}`](characterDataJson, location.href).then(resolve, reject);
+      output.generateCcfoliaJson(generateType,characterDataJson, location.href).then(resolve, reject);
     }, reject);
   });
 }
@@ -206,7 +206,7 @@ async function downloadAsCcfolia() {
 async function downloadAsText() {
   const characterDataJson = await getJsonData();
   const characterId = characterDataJson.characterName || characterDataJson.monsterName || characterDataJson.aka || '無題';
-  const textData = io.github.shunshun94.trpg.ytsheet[`generateCharacterTextFromYtSheet2${generateType}`](characterDataJson);
+  const textData = output[`generateCharacterTextOf${generateType}`](characterDataJson);
   const textUrl = window.URL.createObjectURL(new Blob([ textData ], { "type" : 'text/plain;charset=utf-8;' }));
   downloadFile(`data_${characterId}.txt`, textUrl);
 }
@@ -235,8 +235,8 @@ async function downloadAsFullSet(){
   const characterDataJson = await getJsonData();
   // ユドナリウム
   if(document.getElementById('downloadlist-udonarium')){
-    const image = await io.github.shunshun94.trpg.ytsheet.getPicture(characterDataJson.imageURL || defaultImage, "image."+characterDataJson.image);
-    const udonariumXml = io.github.shunshun94.trpg.udonarium[`generateCharacterXmlFromYtSheet2${generateType}`](characterDataJson, location.href, image.hash);
+    const image = await output.getPicture(characterDataJson.imageURL || defaultImage, "image."+characterDataJson.image);
+    const udonariumXml = output[`generateUdonariumXml`](generateType,characterDataJson, location.href, image.hash);
     const udonariumUrl = await generateUdonariumZipFile((characterDataJson.characterName||characterDataJson.aka), udonariumXml, image);
     zip.file(name+'_udonarium.zip', await JSZipUtils.getBinaryContent(udonariumUrl));
   }

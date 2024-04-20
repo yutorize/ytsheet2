@@ -8,6 +8,29 @@ use Fcntl;
 
 ### サブルーチン-DX ##################################################################################
 
+### ユニットステータス出力 --------------------------------------------------
+sub createUnitStatus {
+  my %pc = %{$_[0]};
+  my @unitStatus = (
+    { 'HP' => $pc{maxHpTotal}.'/'.$pc{maxHpTotal} },
+    { '侵蝕' => $pc{baseEncroach} },
+    { 'ロイス' => $pc{loisHave}.'/'.$pc{loisMax} },
+    { '財産' => $pc{savingTotal} },
+    { '行動' => $pc{initiativeTotal} },
+  );
+  
+  foreach my $key (split ',', $pc{unitStatusNotOutput}){
+    @unitStatus = grep { !exists $_->{$key} } @unitStatus;
+  }
+
+  foreach my $num (1..$pc{unitStatusNum}){
+    next if !$pc{"unitStatus${num}Label"};
+    push(@unitStatus, { $pc{"unitStatus${num}Label"} => $pc{"unitStatus${num}Value"} });
+  }
+
+  return \@unitStatus;
+}
+
 ### バージョンアップデート --------------------------------------------------
 sub data_update_chara {
   my %pc = %{$_[0]};

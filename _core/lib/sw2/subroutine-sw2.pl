@@ -8,6 +8,87 @@ use Fcntl;
 
 ### サブルーチン-SW ##################################################################################
 
+### ユニットステータス出力 --------------------------------------------------
+sub createUnitStatus {
+  my %pc = %{$_[0]};
+  my @unitStatus;
+  if ($pc{type} eq 'm'){
+    my @n2a = ('','A' .. 'Z');
+    if($pc{statusNum} > 1){ # 2部位以上
+      my @hp; my @mp; my @def;
+      my %multiple;
+      foreach my $i (1 .. $pc{statusNum}){
+        ($pc{"part${i}"} = $pc{"status${i}Style"}) =~ s/^.+[(（)](.+?)[)）]$/$1/;
+        $multiple{ $pc{"part${i}"} }++;
+      }
+      my %count;
+      foreach my $i (1 .. $pc{statusNum}){
+        my $partname = $pc{"part${i}"};
+        if($pc{mount}){
+          if($pc{lv}){
+            my $ii = ($pc{lv} - $pc{lvMin} +1);
+            $i .= $ii > 1 ? "-$ii" : '';
+          }
+        }
+        if($multiple{ $partname } > 1){
+          $count{ $partname }++;
+          $partname .= $n2a[ $count{ $partname } ];
+        }
+        push(@hp , {$partname.':HP' => $pc{"status${i}Hp"}.'/'.$pc{"status${i}Hp"}});
+        push(@mp , {$partname.':MP' => $pc{"status${i}Mp"}.'/'.$pc{"status${i}Mp"}});
+        push(@def, $partname.$pc{"status${i}Defense"});
+      }
+      @unitStatus = ( @hp, @mp, {'メモ' => '防護:'.join('／',@def)} );
+    }
+    else { # 1部位
+      my $i = 1;
+      if($pc{mount}){
+        if($pc{lv}){
+          my $ii = ($pc{lv} - $pc{lvMin} +1);
+          $i .= $ii > 1 ? "-$ii" : '';
+        }
+      }
+      @unitStatus = (
+        { 'HP' => $pc{"status${i}Hp"}.'/'.$pc{"status${i}Hp"} },
+        { 'MP' => $pc{"status${i}Mp"}.'/'.$pc{"status${i}Mp"} },
+        { '防護' => $pc{"status${i}Defense"} },
+      );
+    }
+  }
+  else {
+    @unitStatus = (
+      { 'HP' => $pc{hpTotal}.'/'.$pc{hpTotal} },
+      { 'MP' => $pc{mpTotal}.'/'.$pc{mpTotal} },
+      { '防護' => $pc{defenseTotal1Def} },
+    );
+
+    if (!$::SW2_0) {
+      if ($pc{lvBar}) {
+        push(@unitStatus, { '⤴' => '0' });
+        push(@unitStatus, { '⤵' => '0' });
+        push(@unitStatus, { '♡' => '0' });
+      }
+      if ($pc{lvGeo}) {
+        push(@unitStatus, { '天' => '0' });
+        push(@unitStatus, { '地' => '0' });
+        push(@unitStatus, { '人' => '0' });
+      }
+      push(@unitStatus, { '陣気' => '0' }) if $pc{lvWar};
+    }
+  }
+
+  foreach my $key (split ',', $pc{unitStatusNotOutput}){
+    @unitStatus = grep { !exists $_->{$key} } @unitStatus;
+  }
+
+  foreach my $num (1..$pc{unitStatusNum}){
+    next if !$pc{"unitStatus${num}Label"};
+    push(@unitStatus, { $pc{"unitStatus${num}Label"} => $pc{"unitStatus${num}Value"} });
+  }
+
+  return \@unitStatus;
+}
+
 ### クラス色分け --------------------------------------------------
 sub class_color {
   my $text = shift;

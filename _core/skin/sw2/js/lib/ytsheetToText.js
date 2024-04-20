@@ -2,6 +2,8 @@
 
 Copyright 2020 @Shunshun94
 
+Customize & Refactoring by @yutorize
+
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
@@ -20,13 +22,11 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-var io = io || {};
-io.github = io.github || {};
-io.github.shunshun94 = io.github.shunshun94 || {};
-io.github.shunshun94.trpg = io.github.shunshun94.trpg || {};
-io.github.shunshun94.trpg.ytsheet = io.github.shunshun94.trpg.ytsheet || {};
+"use strict";
 
-io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2SwordWorld2Enemy = (json) => {
+var output = output || {};
+
+output.generateCharacterTextOfSwordWorld2Enemy = (json) => {
 	const result = [];
 
 	result.push(`種族名：${json.monsterName}`);
@@ -51,15 +51,15 @@ io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2SwordWorld2En
 	for(let i = 0; i < partsLength; i++) {
 		parts.push({
 			name: json[`status${i + 1}Style`] || '',
-			hit: io.github.shunshun94.trpg.ytsheet.isNumberValue(json[`status${i + 1}Accuracy`]) ? `${json[`status${i + 1}Accuracy`]} (${json[`status${i + 1}AccuracyFix`]})` : '―', 
+			hit: output.isNumberValue(json[`status${i + 1}Accuracy`]) ? `${json[`status${i + 1}Accuracy`]} (${json[`status${i + 1}AccuracyFix`]})` : '―', 
 			damage: json[`status${i + 1}Damage`] || '―',
-			dodge: io.github.shunshun94.trpg.ytsheet.isNumberValue(json[`status${i + 1}Evasion`]) ? `${json[`status${i + 1}Evasion`]} (${json[`status${i + 1}EvasionFix`]})` : '―',
+			dodge: output.isNumberValue(json[`status${i + 1}Evasion`]) ? `${json[`status${i + 1}Evasion`]} (${json[`status${i + 1}EvasionFix`]})` : '―',
 			defense: json[`status${i + 1}Defense`] || '0',
 			hp:json[`status${i + 1}Hp`] || '0',
 			mp: json[`status${i + 1}Mp`] || '―'
 		});
 	}
-	result.push(io.github.shunshun94.trpg.ytsheet._convertList(parts, io.github.shunshun94.trpg.ytsheet.consts.ENEMY_STATUS_COLUMNS, '|'));
+	result.push(output._convertList(parts, output.consts.ENEMY_STATUS_COLUMNS, '|'));
 	if(partsLength !== 1) {
 		result.push(`　部位数：${partsLength}（${json.parts || '?'}） コア部位：${json.coreParts || '?'}`);
 	}
@@ -82,7 +82,7 @@ io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2SwordWorld2En
 			});
 		}
 	}
-	result.push(io.github.shunshun94.trpg.ytsheet._convertList(lootsList, null, '|'));
+	result.push(output._convertList(lootsList, null, '|'));
 	result.push('');
 	result.push('');
 
@@ -91,7 +91,7 @@ io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2SwordWorld2En
 	return result.join('\n');
 };
 
-io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2SwordWorld2PC = (json) => {
+output.generateCharacterTextOfSwordWorld2PC = (json) => {
 	const result = [];
 	result.push(`キャラクター名：${json.aka ? `“${json.aka}”` : '' }${json.characterName||''}`);
 	result.push(`種族：${json.race || ''} ${json.raceAbility || ''}`);
@@ -165,7 +165,7 @@ io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2SwordWorld2PC
 	for(let name of SET.classNames) {
 		const lv = Number(json['lv'+SET.class[name].id] || 0);
 		if(!lv || !SET.class[name]) continue;
-		if(SET.class[name].craft){
+		if(SET.class[name].craft?.data){
 			const craftName = 'craft'
 				+ SET.class[name].craft.eName.charAt(0).toUpperCase()
 				+ SET.class[name].craft.eName.slice(1);
@@ -178,7 +178,7 @@ io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2SwordWorld2PC
 				}
 			}
 		}
-		else if(SET.class[name].magic && SET.class[name].magic.data){
+		else if(SET.class[name].magic?.data){
 			const magicName = 'magic'
 				+ SET.class[name].magic.eName.charAt(0).toUpperCase()
 				+ SET.class[name].magic.eName.slice(1);
@@ -227,7 +227,7 @@ io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2SwordWorld2PC
 			});
 		}
 	}
-	result.push(io.github.shunshun94.trpg.ytsheet._convertList(weapons, io.github.shunshun94.trpg.ytsheet.consts.PC_WEAPONS_COLUMNS, ' | '));
+	result.push(output._convertList(weapons, output.consts.PC_WEAPONS_COLUMNS, ' | '));
 	result.push('');
 	if(json.armourName || json.shield1Name || json.defOther1Name) {
 		result.push(`　- 防具`);
@@ -252,6 +252,7 @@ io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2SwordWorld2PC
 			});
 		}
 	}
+	console.log(armors)
 	for(let i = 1; i <= 3; i++) {
 		let names = [];
 		for(let n = 1; n <= json.armourNum; n++) {
@@ -269,16 +270,16 @@ io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2SwordWorld2PC
 			});
 		}
 	}
-	result.push(io.github.shunshun94.trpg.ytsheet._convertList(armors, io.github.shunshun94.trpg.ytsheet.consts.PC_ARMORS_COLUMNS, ' | '));
+	result.push(output._convertList(armors, output.consts.PC_ARMORS_COLUMNS, ' | '));
 	result.push('');
 	const accessoryPartList = [];
 	const accessoryList = [];
-	for(let key in io.github.shunshun94.trpg.ytsheet.consts.accessory.part) {
+	for(let key in output.consts.accessory.part) {
 		if(json[`accessory${key}Name`]) { accessoryPartList.push(key); }
 	}
 	if(accessoryPartList.length) {result.push(`　- 装飾品`);}
 	accessoryPartList.forEach((part)=>{
-		const rawPartName = io.github.shunshun94.trpg.ytsheet.consts.accessory.part[part];
+		const rawPartName = output.consts.accessory.part[part];
 		const partName = rawPartName;
 		let i = 0;
 		while(json[`accessory${part}${''.padStart(i, '_')}Name`]) {
@@ -292,7 +293,7 @@ io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2SwordWorld2PC
 			i++;
 		}
 	});
-	result.push(io.github.shunshun94.trpg.ytsheet._convertList(accessoryList, null, ' / '));
+	result.push(output._convertList(accessoryList, null, ' / '));
 	result.push('');
 
 	result.push('●所持品');
@@ -303,13 +304,13 @@ io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2SwordWorld2PC
 		const cardColumnLength = 5;
 		const cardTopColumnLength = 8;
 		let cardTableHader = '';
-		for(var key in io.github.shunshun94.trpg.ytsheet.consts.card.color) {
-			cardTableHader += `${io.github.shunshun94.trpg.ytsheet.consts.card.color[key].padStart(cardColumnLength - 1, ' ')}`;
+		for(var key in output.consts.card.color) {
+			cardTableHader += `${output.consts.card.color[key].padStart(cardColumnLength - 1, ' ')}`;
 		}
 		result.push(`${itemListPrefix}${'カード'.padStart(cardTopColumnLength - 3, ' ')}${cardTableHader}`);
-		io.github.shunshun94.trpg.ytsheet.consts.card.rank.forEach((rank)=>{
+		output.consts.card.rank.forEach((rank)=>{
 			let line = itemListPrefix + rank.padStart(cardTopColumnLength, ' ');
-			for(var key in io.github.shunshun94.trpg.ytsheet.consts.card.color) {
+			for(var key in output.consts.card.color) {
 				line += (json[`card${key}${rank}`] || '').padStart(cardColumnLength, ' ');
 			}
 			result.push(line);
