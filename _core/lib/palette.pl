@@ -50,7 +50,7 @@ sub outputChatPalette {
     $pc{$key} = $value;
   }
   if($pc{paletteRemoveTags}){
-    $_ = removeTags unescapeTags($_) foreach values %pc;
+    $_ = removeTags(unescapeTags($_) =~ s/<br>/\n/gr) foreach values %pc;
   }
   else {
     $_ = unescapeTagsPalette($_) foreach values %pc;
@@ -110,7 +110,7 @@ sub outputChatPaletteTemplate {
   for (param()){ $pc{$_} = decode('utf8', param($_)) }
   %pc = data_calc(\%pc);
   if($pc{paletteRemoveTags}){
-    $_ = removeTags unescapeTags($_) foreach values %pc;
+    $_ = removeTags(unescapeTags($_) =~ s/<br>/\n/gr) foreach values %pc;
   }
   else {
     $_ = unescapeTagsPalette($_) foreach values %pc;
