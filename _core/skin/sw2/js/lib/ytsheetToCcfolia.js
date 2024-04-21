@@ -36,6 +36,8 @@ output.generateCcfoliaJsonOfSwordWorld2Enemy = (json, character, defaultPalette)
 	character.memo += json.characterName?"("+json.monsterName+")\n":'';
 	character.memo += json.sheetDescriptionM || '';
 
+	character.params = defaultPalette.parameters;
+	
 	return character;
 };
 

@@ -151,7 +151,7 @@ output.getChatPalette = (sheetUrl) => {
 
 
 output.generateUdonariumXml = async (generateType, json, opt_url='', opt_imageHash='') => {
-	const defaultPalette = await output.getChatPalette(opt_url);
+	const defaultPalette = await output.getChatPalette(opt_url+'&propertiesall=1');
 	const dataCharacter = {};
 
 	dataCharacter.image = `
@@ -168,7 +168,7 @@ output.generateUdonariumXml = async (generateType, json, opt_url='', opt_imageHa
   const resources = [];
   for(let unitData of json.unitStatus){
     for (const label in unitData) {
-      if(/^[0-9/]+$/.test(unitData[label])){
+      if(/^[0-9/]+$/.test(unitData[label]) && /\//.test(unitData[label])){
         const value = String(unitData[label]).split('/');
         resources.push(`        <data type="numberResource" currentValue="${value[0]}" name="${label}">${value[1]||0}</data>`)
       }

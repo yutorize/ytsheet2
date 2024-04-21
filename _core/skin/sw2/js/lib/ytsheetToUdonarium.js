@@ -29,7 +29,7 @@ var output = output || {};
 output.generateUdonariumXmlDetailOfSwordWorld2Enemy = (json, opt_url, defaultPalette, resources)=>{
 	const dataDetails = {'リソース':resources};
 	
-	dataDetails['バフ・デバフ'] = defaultPalette.parameters.map((param)=>{
+	dataDetails['能力値'] = defaultPalette.parameters.map((param)=>{
 		return `        <data type="numberResource" currentValue="${param.value}" name="${param.label}">${param.value < 10 ? 10 : param.value}</data>`; 
 	});
 	
@@ -42,7 +42,6 @@ output.generateUdonariumXmlDetailOfSwordWorld2Enemy = (json, opt_url, defaultPal
 	dataDetails['戦利品'] = [];
 	for(let num = 1; num <= json.lootsNum; num++){
 		dataDetails['戦利品'].push(`        <data name="${json[`loots${num}Num`]}">${json[`loots${num}Item`]}</data>`,)
-
 	}
 
 	return dataDetails
@@ -83,20 +82,41 @@ output.generateUdonariumXmlDetailOfSwordWorld2PC = (json, opt_url, defaultPalett
 		`        <data name="知力">${json.sttInt}${addToStr(json.sttAddE)}</data>`,
 		`        <data name="精神力">${json.sttMnd}${addToStr(json.sttAddF)}</data>`
 	];
+	
+  let addedParam = {
+		'器用度':1,
+		'敏捷度':1,
+		'筋力':1,
+		'生命力':1,
+		'知力':1,
+		'精神力':1,
+		'冒険者レベル':1,
+	}
 	dataDetails['技能'] = [`        <data name="冒険者レベル">${json.level}</data>`];
 	for(const name of SET.classNames){
 		const level = json['lv'+SET.class[name].id];
 		if(!level) continue;
-		dataDetails['技能'].push(`        <data name="${name}">${level}</data>`)
+		dataDetails['技能'].push(`        <data name="${name}">${level}</data>`);
+		addedParam[name] = 1;
+	}
+	for(let num = 1; num <= json.commonClassNum; num++){
+		const name = (json['commonClass'+num]||'').replace(/[(（].+?[）)]$/,'');
+		const level = json['lvCommon'+num];
+		if(!name) continue;
+		dataDetails['技能'].push(`        <data name="${name}">${level}</data>`);
+		addedParam[name] = 1;
 	}
 	dataDetails['バフ・デバフ'] = defaultPalette.parameters.map((param)=>{
-		for (const name of SET.classNames){
-			if(name === param.label){ return `` }
-		}
-		if(param.label.match(/^(冒険者レベル|器用度|敏捷度|筋力|生命力|知力|精神力)$/)){ return `` }
+		if(addedParam[param.label]){ return ''; }
 
-		if(param.value.match(/[^0-9]/) || param.value === ''){ return `        <data name="${param.label}">${param.value}</data>`; }
-		else { return `        <data type="numberResource" currentValue="${param.value}" name="${param.label}">${param.value < 10 ? 10 : param.value}</data>`; }
+		if(/修正$/.test(param.label) || /^(必殺効果|クリレイ|魔法C)$/.test(param.label)){
+			addedParam[param.label] = 1;
+			return `        <data type="numberResource" currentValue="${param.value}" name="${param.label}">${param.value < 10 ? 10 : param.value}</data>`;
+		}
+	});
+	dataDetails['パラメータ'] = defaultPalette.parameters.map((param)=>{
+		if(addedParam[param.label]){ return ''; }
+		return `        <data name="${param.label}">${param.value}</data>`;
 	});
 	
 	return dataDetails
