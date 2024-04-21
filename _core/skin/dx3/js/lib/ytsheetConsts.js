@@ -29,6 +29,8 @@ output.consts = output.consts || {};
 
 output.consts.dicebot = 'DoubleCross';
 
+output.consts.initiative = { label:'行動', name: 'initiativeTotal' };
+
 output.consts.EFFECT_COLUMNS = {
 	name: '《エフェクト名》',
 	level: 'Lv',

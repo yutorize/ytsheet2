@@ -13,8 +13,6 @@ output.generateCcfoliaJsonOfArianrhod2PC = (json, character, defaultPalette) => 
 	character.memo += `${json.classMain || ''}${json.classSupport ? ' / '+json.classSupport : ''}${json.classTitle ? ' / '+json.classTitle : ''}\n`;
 	character.memo += `\n`;
 	character.memo += json.imageURL ? '立ち絵: ' + (json.imageCopyright || '権利情報なし') : '';
-
-	character.initiative = Number(json.battleTotalIni || 0)
 	
 	let addedParam = {};
 	output.consts.AR2_STATUS.forEach((s)=>{

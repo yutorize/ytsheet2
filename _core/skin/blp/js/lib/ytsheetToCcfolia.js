@@ -12,8 +12,6 @@ output.generateCcfoliaJsonOfBloodPathPC = (json, character, defaultPalette) => {
 	character.memo += `${json.factor || ''} / ${json.factorCore || ''} / ${json.factorStyle || ''}\n`;
 	character.memo += `\n`;
 	character.memo += `${json.imageURL ? '立ち絵: ' + (json.imageCopyright || '権利情報なし') : ''}`;
-
-  character.initiative = Number(json.initiative || 0);
   
   if(json.factor === '人間'){
     character.params.push({ label: '技', value: json.statusMain1 || 0 });

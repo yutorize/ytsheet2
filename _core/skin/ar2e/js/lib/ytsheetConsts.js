@@ -5,7 +5,7 @@ output.consts = output.consts || {};
 
 output.consts.dicebot = 'Arianrhod';
 
-output.consts.initiativeLabel = '行動値';
+output.consts.initiative = { label:'行動値', name: 'battleTotalIni' };
 
 output.consts.SKILL_COLUMNS = {
   name: '《エフェクト名》',

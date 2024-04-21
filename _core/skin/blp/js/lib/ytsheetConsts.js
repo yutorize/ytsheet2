@@ -5,7 +5,7 @@ output.consts = output.consts || {};
 
 output.consts.dicebot = 'DiceBot';
 
-output.consts.initiativeLabel = '先制値';
+output.consts.initiative = { label:'先制値', name: 'initiative' };
 
 output.consts.BLOODARTS_COLUMNS = {
 	name: '〈名称〉',

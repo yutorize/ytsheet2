@@ -218,13 +218,15 @@ output.generateUdonariumXml = async (generateType, json, opt_url='', opt_imageHa
 
 
 output.generateCcfoliaJson = async (generateType, json, opt_sheetUrl = '') => {
-	const result = { kind: "character" };
-	const defaultPalette = await output.getChatPalette(opt_sheetUrl+'&propertiesall=1');
+  const result = { kind: "character" };
+  const defaultPalette = await output.getChatPalette(opt_sheetUrl+'&propertiesall=1');
+
+  const initiative = output.consts?.initiative || {};
 
   const resources = [];
   for(let unitData of json.unitStatus){
     for (const label in unitData) {
-			if(label == output.consts.initiativeLabel) continue;
+      if(label === initiative?.label) continue;
       if(/^[0-9/]+$/.test(unitData[label])){
         const value = String(unitData[label]).split('/');
         resources.push({label: label, value: value[0], max: value[1]})
@@ -239,6 +241,7 @@ output.generateCcfoliaJson = async (generateType, json, opt_sheetUrl = '') => {
     playerName: json.playerName,
     externalUrl: opt_sheetUrl,
     status: resources,
+    initiative: (initiative ? Number(json[initiative?.name]||0) : null),
     params: [],
     faces: [],
     x: 0, y: 0, z: 0,
