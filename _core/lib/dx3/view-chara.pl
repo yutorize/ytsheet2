@@ -248,15 +248,12 @@ foreach(split(/ /, $pc{tags})){
 $SHEET->param(Tags => \@tags);
 
 ### セリフ --------------------------------------------------
-$pc{words} =~ s/<br>/\n/g;
-$pc{words} =~ s/^([「『（])/<span class="brackets">$1<\/span>/gm;
-$pc{words} =~ s/(.+?(?:[，、。？」』）]|$))/<span>$1<\/span>/g;
-$pc{words} =~ s/\n<span>　/\n<span>/g;
-$pc{words} =~ s/\n/<br>/g;
-$SHEET->param(words => $pc{words});
-$SHEET->param(wordsX => ($pc{wordsX} eq '左' ? 'left:0;' : 'right:0;'));
-$SHEET->param(wordsY => ($pc{wordsY} eq '下' ? 'bottom:0;' : 'top:0;'));
-
+{
+  my ($words, $x, $y) = stylizeWords($pc{words},$pc{wordsX},$pc{wordsY});
+  $SHEET->param(words => $words);
+  $SHEET->param(wordsX => $x);
+  $SHEET->param(wordsY => $y);
+}
 ### ステージ --------------------------------------------------
 if($pc{stage} =~ /クロウリングケイオス/){ $SHEET->param(ccOn => 1); }
 

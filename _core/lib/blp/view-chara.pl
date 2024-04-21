@@ -249,16 +249,11 @@ $SHEET->param(Tags => \@tags);
 
 ### セリフ --------------------------------------------------
 foreach ('','p1_','p2_'){
-  $pc{$_.'words'} =~ s/<br>/\n/g;
-  $pc{$_.'words'} =~ s/^([「『（])/<span class="brackets">$1<\/span>/gm;
-  $pc{$_.'words'} =~ s/(.+?(?:[，、。？」』）]|$))/<span>$1<\/span>/g;
-  $pc{$_.'words'} =~ s/\n<span>　/\n<span>/g;
-  $pc{$_.'words'} =~ s/\n/<br>/g;
-  $SHEET->param($_."words" => $pc{$_.'words'});
-  $SHEET->param($_."wordsX" => ($pc{$_.'wordsX'} eq '左' ? 'left:0;' : 'right:0;'));
-  $SHEET->param($_."wordsY" => ($pc{$_.'wordsY'} eq '下' ? 'bottom:0;' : 'top:0;'));
+  my ($words, $x, $y) = stylizeWords($pc{$_."words"},$pc{$_."wordsX"},$pc{$_."wordsY"});
+  $SHEET->param($_."words" => $words);
+  $SHEET->param($_."wordsX" => $x);
+  $SHEET->param($_."wordsY" => $y);
 }
-
 ### ファクター --------------------------------------------------
 if   ($pc{factor} eq '人間'){
   $SHEET->param(typeH  => 1);

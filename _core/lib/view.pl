@@ -204,6 +204,18 @@ sub isNoiseText {
   my $text = shift;
   return $text =~ /^[█▇▆▅▄▃▂▚▞▙▛▜▟\n\s]+$/ ? 1 : undef;
 }
+### セリフ --------------------------------------------------
+sub stylizeWords {
+  my ($words, $x, $y) = @_;
+  $words =~ s/<br>/\n/g;
+  $words =~ s/^([「『（])/<span class="brackets">$1<\/span>/gm;
+  $words =~ s/(.+?(?:[，、。？」』）]|$))/<span>$1<\/span>/g;
+  $words =~ s/\n<span>　/\n<span>/g;
+  $words =~ s/\n/<br>/g;
+  $x = $x eq '左' ? 'left:0;' : 'right:0;';
+  $y = $y eq '下' ? 'bottom:0;' : 'top:0;';
+  return $words, $x, $y;
+}
 ### メニュー --------------------------------------------------
 sub sheetMenuCreate {
   my @menu = @_;
