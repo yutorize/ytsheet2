@@ -245,25 +245,7 @@ HTML
       @{[ input 'birthTime','hidden' ]}
       <input type="hidden" name="id" value="$::in{id}">
     </form>
-HTML
-if($mode eq 'edit'){
-print <<"HTML";
-    <form name="del" method="post" action="./" id="deleteform">
-      <p style="font-size: 80%;">
-      <input type="hidden" name="mode" value="delete">
-      <input type="hidden" name="type" value="i">
-      <input type="hidden" name="id" value="$::in{id}">
-      <input type="hidden" name="pass" value="$::in{pass}">
-      <input type="checkbox" name="check1" value="1" required>
-      <input type="checkbox" name="check2" value="1" required>
-      <input type="checkbox" name="check3" value="1" required>
-      <input type="submit" value="シート削除"><br>
-      ※チェックを全て入れてください
-      </p>
-    </form>
-HTML
-}
-print <<"HTML";
+    @{[ deleteForm($mode) ]}
     </article>
 HTML
 # ヘルプ

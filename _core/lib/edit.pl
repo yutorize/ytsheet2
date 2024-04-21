@@ -647,4 +647,45 @@ sub textRuleArea {
 HTML
 }
 
+## 削除フォーム
+sub deleteForm {
+  my $mode = shift;
+  return if ($mode ne 'edit');
+
+  my $html = <<"HTML";
+    <form name="del" method="post" action="./" class="deleteform">
+      <fieldset style="font-size: 80%;">
+        <input type="hidden" name="mode" value="delete">
+        <input type="hidden" name="type" value="$::pc{type}">
+        <input type="hidden" name="id"   value="$::in{id}">
+        <input type="hidden" name="pass" value="$::in{pass}">
+        <input type="checkbox" name="check1" value="1" required>
+        <input type="checkbox" name="check2" value="1" required>
+        <input type="checkbox" name="check3" value="1" required>
+        <input type="submit" value="シート削除"><br>
+        ※チェックを全て入れてください
+      </fieldset>
+    </form>
+HTML
+  # 管理者用画像削除フォーム
+  if($LOGIN_ID eq $set::masterid){
+    $html .= <<"HTML";
+    <form name="imgdel" method="post" action="./" class="deleteform">
+      <fieldset style="font-size: 80%;">
+        <input type="hidden" name="mode" value="img-delete">
+        <input type="hidden" name="type" value="$::pc{type}">
+        <input type="hidden" name="id"   value="$::in{id}">
+        <input type="hidden" name="pass" value="$::in{pass}">
+        <input type="checkbox" name="check1" value="1" required>
+        <input type="checkbox" name="check2" value="1" required>
+        <input type="checkbox" name="check3" value="1" required>
+        <input type="submit" value="画像削除">
+      </fieldset>
+    </form>
+    <p class="right">@{[ $::in{log}?$::in{log}:'最終' ]}更新時のIP:$::pc{IP}</p>
+HTML
+  }
+  return $html;
+}
+
 1;
