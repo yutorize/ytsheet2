@@ -3,7 +3,7 @@
 var output = output || {};
 
 output.generateUdonariumXmlDetailOfGoblinSlayerPC = (json, opt_url, defaultPalette, resources)=>{
-	const dataDetails = {'リソース':resources};
+  const dataDetails = {'リソース':resources};
 
   dataDetails['情報'] = [
     `        <data name="PL">${json.playerName || '?'}</data>`,
@@ -15,7 +15,7 @@ output.generateUdonariumXmlDetailOfGoblinSlayerPC = (json, opt_url, defaultPalet
   ];
   if(opt_url) { dataDetails['情報'].push(`        <data name="URL">${opt_url}</data>`);}
 
-	dataDetails['能力値'] = [
+  dataDetails['能力値'] = [
     `<data name="体力点">${json.ability1Str}</data>`,
     `<data name="魂魄点">${json.ability1Psy}</data>`,
     `<data name="技量点">${json.ability1Tec}</data>`,
@@ -24,7 +24,7 @@ output.generateUdonariumXmlDetailOfGoblinSlayerPC = (json, opt_url, defaultPalet
     `<data name="持久度">${json.ability2Edu}</data>`,
     `<data name="反射度">${json.ability2Ref}</data>`,
   ];
-	dataDetails['職業'] = [];
+  dataDetails['職業'] = [];
   for(const name of SET.classNames){
     const level = json['lv'+SET.class[name].id];
     if(!level) continue;
@@ -40,5 +40,5 @@ output.generateUdonariumXmlDetailOfGoblinSlayerPC = (json, opt_url, defaultPalet
     else { return `        <data type="numberResource" currentValue="${param.value}" name="${param.label}">${param.value < 10 ? 10 : param.value}</data>`; }
   });
 
-	return dataDetails
+  return dataDetails
 };

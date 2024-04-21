@@ -427,10 +427,10 @@ function imageDragMove(e){
   const touches = e.changedTouches || 0;
   // スマホ拡大縮小
   if (touches.length > 1) {
-		const x1 = touches[0].pageX;
-		const y1 = touches[0].pageY;
-		const x2 = touches[1].pageX;
-		const y2 = touches[1].pageY;
+    const x1 = touches[0].pageX;
+    const y1 = touches[0].pageY;
+    const x2 = touches[1].pageX;
+    const y2 = touches[1].pageY;
     const distance = Math.sqrt( Math.pow( x2-x1, 2 ) + Math.pow( y2-y1, 2 ) );
     const obj = form.imagePercent;
     if(baseDistance){

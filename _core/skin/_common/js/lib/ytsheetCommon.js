@@ -27,139 +27,139 @@ SOFTWARE.
 var output = output || {};
 
 output.length = (str='') => {
-	// https://zukucode.com/2017/04/javascript-string-length.html
-	let length = 0;
-	for (let i = 0; i < str.length; i++) {
-			const c = str.charCodeAt(i);
-			if ((c >= 0x0 && c < 0x81) || (c === 0xf8f0) || (c >= 0xff61 && c < 0xffa0) || (c >= 0xf8f1 && c < 0xf8f4)) {
-				length += 1;
-			} else {
-				length += 2;
-			}
-	}
-	return length;
+  // https://zukucode.com/2017/04/javascript-string-length.html
+  let length = 0;
+  for (let i = 0; i < str.length; i++) {
+      const c = str.charCodeAt(i);
+      if ((c >= 0x0 && c < 0x81) || (c === 0xf8f0) || (c >= 0xff61 && c < 0xffa0) || (c >= 0xf8f1 && c < 0xf8f4)) {
+        length += 1;
+      } else {
+        length += 2;
+      }
+  }
+  return length;
 };
 
 output._getColumnLength = (list, header) => {
-	return list.reduce((currentMax, targetEffect)=>{
-		const result = {};
-		for(var key in currentMax) {
-			result[key] = Math.max(output.length(targetEffect[key]), currentMax[key]);
-		}
-		return result;
-	}, header);
+  return list.reduce((currentMax, targetEffect)=>{
+    const result = {};
+    for(var key in currentMax) {
+      result[key] = Math.max(output.length(targetEffect[key]), currentMax[key]);
+    }
+    return result;
+  }, header);
 };
 
 output._convertList = (list, columns, opt_separator = '/') => {
-	const headerLength = output._getLengthWithoutNote(columns || list[0]);
-	const length = output._getColumnLength(list, headerLength);
-	const convertDataToString = (data) => {
-		const result = [];
-		for(var key in headerLength) {
-			if(data === '-'){
-				result.push(''.padEnd(length[key], '-'));
-			}
-			else {
-				result.push(`${data[key]}${''.padEnd(length[key] - output.length(data[key]), ' ')}`);
-			}
-		}
-		result.push(data.note);
-		return result.join(opt_separator);
-	};
-	return (columns ? [columns].concat(list) : list).map(convertDataToString).join('\n');
+  const headerLength = output._getLengthWithoutNote(columns || list[0]);
+  const length = output._getColumnLength(list, headerLength);
+  const convertDataToString = (data) => {
+    const result = [];
+    for(var key in headerLength) {
+      if(data === '-'){
+        result.push(''.padEnd(length[key], '-'));
+      }
+      else {
+        result.push(`${data[key]}${''.padEnd(length[key] - output.length(data[key]), ' ')}`);
+      }
+    }
+    result.push(data.note);
+    return result.join(opt_separator);
+  };
+  return (columns ? [columns].concat(list) : list).map(convertDataToString).join('\n');
 };
 
 output._getLengthWithoutNote = (baseHeader) => {
-	const result = {};
-	for(let key in baseHeader) {
-		if(key !== 'note') {
-			result[key] = output.length(baseHeader[key]);
-		}
-	}
-	return result;
+  const result = {};
+  for(let key in baseHeader) {
+    if(key !== 'note') {
+      result[key] = output.length(baseHeader[key]);
+    }
+  }
+  return result;
 };
 
 output.isNumberValue = (value) => {
-	return Number(value) || (value === '0');
+  return Number(value) || (value === '0');
 };
 
 output.getPicture = (src, fileName) => {
-	return new Promise((resolve, reject) => {
-		let xhr = new XMLHttpRequest();
-		xhr.open('GET', src, true);
-		xhr.responseType = "blob";
-		xhr.onload = (e) => {
-			fileName ||= src.slice(src.lastIndexOf("/") + 1);
-			const currentTarget = e.currentTarget;
-			if(! Boolean(jsSHA)) {
-				console.warn('To calculate SHA256 value of the picture, jsSHA is required: https://github.com/Caligatio/jsSHA');
-				resolve({ event:e, data: e.currentTarget.response, fileName: fileName, hash: '' });
-				return;
-			}
-			e.currentTarget.response.arrayBuffer().then((arraybuffer)=>{
-				const sha = new jsSHA("SHA-256", 'ARRAYBUFFER');
-				sha.update(arraybuffer);
-				const hash = sha.getHash("HEX");
-				resolve({ event:e, data: currentTarget.response, fileName: fileName, hash: hash });
-				return;
-			});
-		};
-		xhr.onerror = () => resolve({ data: null });
-		xhr.onabort = () => resolve({ data: null });
-		xhr.ontimeout = () => resolve({ data: null });
-		xhr.send();
-	});
+  return new Promise((resolve, reject) => {
+    let xhr = new XMLHttpRequest();
+    xhr.open('GET', src, true);
+    xhr.responseType = "blob";
+    xhr.onload = (e) => {
+      fileName ||= src.slice(src.lastIndexOf("/") + 1);
+      const currentTarget = e.currentTarget;
+      if(! Boolean(jsSHA)) {
+        console.warn('To calculate SHA256 value of the picture, jsSHA is required: https://github.com/Caligatio/jsSHA');
+        resolve({ event:e, data: e.currentTarget.response, fileName: fileName, hash: '' });
+        return;
+      }
+      e.currentTarget.response.arrayBuffer().then((arraybuffer)=>{
+        const sha = new jsSHA("SHA-256", 'ARRAYBUFFER');
+        sha.update(arraybuffer);
+        const hash = sha.getHash("HEX");
+        resolve({ event:e, data: currentTarget.response, fileName: fileName, hash: hash });
+        return;
+      });
+    };
+    xhr.onerror = () => resolve({ data: null });
+    xhr.onabort = () => resolve({ data: null });
+    xhr.ontimeout = () => resolve({ data: null });
+    xhr.send();
+  });
 };
 
 output.separateParametersFromChatPalette = (chatPalette) => {
-	const result = {
-		palette: '',
-		parameters: []
-	};
-	const palette = [];
-	const parameterRegExp = /^\/\/(.+)=([0-9\+\-\/\*]+)?$/;
-	chatPalette.split('\n').forEach((line)=>{
-		const parameterExecResult = parameterRegExp.exec(line);
-		if(parameterExecResult) {
-			result.parameters.push({
-				label:parameterExecResult[1],
-				value:(parameterExecResult[2] !== undefined ? parameterExecResult[2] : '')
-			});
-		} else {
-			palette.push(line);
-		}
-	});
-	result.palette = palette.join('\n');
-	return result;
+  const result = {
+    palette: '',
+    parameters: []
+  };
+  const palette = [];
+  const parameterRegExp = /^\/\/(.+)=([0-9\+\-\/\*]+)?$/;
+  chatPalette.split('\n').forEach((line)=>{
+    const parameterExecResult = parameterRegExp.exec(line);
+    if(parameterExecResult) {
+      result.parameters.push({
+        label:parameterExecResult[1],
+        value:(parameterExecResult[2] !== undefined ? parameterExecResult[2] : '')
+      });
+    } else {
+      palette.push(line);
+    }
+  });
+  result.palette = palette.join('\n');
+  return result;
 };
 
 output.getChatPalette = (sheetUrl) => {
-	sheetUrl = sheetUrl.replace(/&?mode=([^&]+)/g, '');
-	return new Promise((resolve, reject)=>{
-		let xhr = new XMLHttpRequest();
-		xhr.open('GET', `${sheetUrl}&mode=palette&tool=bcdice`, true);
-		xhr.responseType = "text";
-		xhr.onload = (e) => {
-			resolve(output.separateParametersFromChatPalette(e.currentTarget.response));
-		};
-		xhr.onerror = () => resolve('');
-		xhr.onabort = () => resolve('');
-		xhr.ontimeout = () => resolve('');
-		xhr.send();
+  sheetUrl = sheetUrl.replace(/&?mode=([^&]+)/g, '');
+  return new Promise((resolve, reject)=>{
+    let xhr = new XMLHttpRequest();
+    xhr.open('GET', `${sheetUrl}&mode=palette&tool=bcdice`, true);
+    xhr.responseType = "text";
+    xhr.onload = (e) => {
+      resolve(output.separateParametersFromChatPalette(e.currentTarget.response));
+    };
+    xhr.onerror = () => resolve('');
+    xhr.onabort = () => resolve('');
+    xhr.ontimeout = () => resolve('');
+    xhr.send();
   });
 };
 
 
 output.generateUdonariumXml = async (generateType, json, opt_url='', opt_imageHash='') => {
-	const defaultPalette = await output.getChatPalette(opt_url+'&propertiesall=1');
-	const dataCharacter = {};
+  const defaultPalette = await output.getChatPalette(opt_url+'&propertiesall=1');
+  const dataCharacter = {};
 
-	dataCharacter.image = `
-		<data name="image">
-  	  <data type="image" name="imageIdentifier">${opt_imageHash}</data>
-  	</data>`;
+  dataCharacter.image = `
+    <data name="image">
+      <data type="image" name="imageIdentifier">${opt_imageHash}</data>
+    </data>`;
 
-	dataCharacter.common = `
+  dataCharacter.common = `
     <data name="common">
       <data name="name">${json.namePlate || json.characterName || json.monsterName || json.aka}</data>
       <data name="size">1</data>
@@ -188,13 +188,13 @@ output.generateUdonariumXml = async (generateType, json, opt_url='', opt_imageHa
   }
   dataCharacter.detail += `    </data>`;
 
-	
+  
   let chatColorFly = '';
   let chatColorLily = '';
   if(json.nameColor){
     let num = 0;
     json.nameColor.split(',').forEach(color => {
-      if(!num){	chatColorFly = color; }
+      if(!num){ chatColorFly = color; }
       chatColorLily += ` chatColorCode.${num}="${color}"`;
       num++;
     })
@@ -237,7 +237,7 @@ output.generateCcfoliaJson = async (generateType, json, opt_sheetUrl = '') => {
     }
   }
   
-	const character = {
+  const character = {
     playerName: json.playerName,
     externalUrl: opt_sheetUrl,
     status: resources,
@@ -256,5 +256,5 @@ output.generateCcfoliaJson = async (generateType, json, opt_sheetUrl = '') => {
 
   result.data = output['generateCcfoliaJsonOf'+generateType](json, character, defaultPalette);
   
-	return JSON.stringify(result);
+  return JSON.stringify(result);
 };

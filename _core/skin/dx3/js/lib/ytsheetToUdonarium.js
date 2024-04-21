@@ -27,39 +27,39 @@ SOFTWARE.
 var output = output || {};
 
 output.generateUdonariumXmlDetailOfDoubleCross3PC = (json, opt_url, defaultPalette, resources)=>{
-	const dataDetails = {'リソース':resources};
-	
-	dataDetails['情報'] = [
+  const dataDetails = {'リソース':resources};
+  
+  dataDetails['情報'] = [
     `        <data name="PL">${json.playerName || '?'}</data>`,
     `        <data type="note" name="説明">${(json.freeNote || '').replace(/&lt;br&gt;/g, '\n')}</data>`
-	];
-	if(opt_url) { dataDetails['情報'].push(`        <data name="URL">${opt_url}</data>`);}
+  ];
+  if(opt_url) { dataDetails['情報'].push(`        <data name="URL">${opt_url}</data>`);}
 
-	let addedParam = {};
-	dataDetails['能力値'] = output.consts.DX3_STATUS.map((s)=>{
-		addedParam[s.name] = 1;
-		return `        <data name="${s.name}">${json['sttTotal' + s.column]}</data>`
-	});
-	dataDetails['技能'] = output.consts.DX3_STATUS.map((s)=>{
-		const result = [];
-		result.push(s.skills.map((skill)=>{
-			addedParam[skill.name] = 1;
-			return `        <data name="${skill.name}">${json['skillTotal' + skill.column] || '0'}</data>`;
-		}).join('\n'));
-		let cursor = 1;
-		while(json[`skill${s.extendableSkill.column}${cursor}Name`]) {
-			addedParam[json[`skill${s.extendableSkill.column}${cursor}Name`]] = 1;
-			result.push(`        <data name="${json[`skill${s.extendableSkill.column}${cursor}Name`]}">${json[`skillTotal${s.extendableSkill.column}${cursor}`] || 0}</data>`);
-			cursor++;
-		}
-		return result.join('\n');
-	});
+  let addedParam = {};
+  dataDetails['能力値'] = output.consts.DX3_STATUS.map((s)=>{
+    addedParam[s.name] = 1;
+    return `        <data name="${s.name}">${json['sttTotal' + s.column]}</data>`
+  });
+  dataDetails['技能'] = output.consts.DX3_STATUS.map((s)=>{
+    const result = [];
+    result.push(s.skills.map((skill)=>{
+      addedParam[skill.name] = 1;
+      return `        <data name="${skill.name}">${json['skillTotal' + skill.column] || '0'}</data>`;
+    }).join('\n'));
+    let cursor = 1;
+    while(json[`skill${s.extendableSkill.column}${cursor}Name`]) {
+      addedParam[json[`skill${s.extendableSkill.column}${cursor}Name`]] = 1;
+      result.push(`        <data name="${json[`skill${s.extendableSkill.column}${cursor}Name`]}">${json[`skillTotal${s.extendableSkill.column}${cursor}`] || 0}</data>`);
+      cursor++;
+    }
+    return result.join('\n');
+  });
 
-	dataDetails['バフ・デバフ'] = defaultPalette.parameters.map((param)=>{
-		if(addedParam[param.label]){ return `` }
-		return `        <data type="numberResource" currentValue="${param.value}" name="${param.label}">${param.value < 10 ? 10 : param.value}</data>`; 
-	});
+  dataDetails['バフ・デバフ'] = defaultPalette.parameters.map((param)=>{
+    if(addedParam[param.label]){ return `` }
+    return `        <data type="numberResource" currentValue="${param.value}" name="${param.label}">${param.value < 10 ? 10 : param.value}</data>`; 
+  });
 
 
-	return dataDetails
+  return dataDetails
 };

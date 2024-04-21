@@ -3,7 +3,7 @@
 var output = output || {};
 
 output.generateUdonariumXmlDetailOfMamonoScramblePC = (json, opt_url, defaultPalette, resources)=>{
-	const dataDetails = {'リソース':resources};
+  const dataDetails = {'リソース':resources};
 
   dataDetails['能力値'] = [
     `        <data name="身体">${json.statusPhysical || ''}</data>`,
@@ -22,5 +22,5 @@ output.generateUdonariumXmlDetailOfMamonoScramblePC = (json, opt_url, defaultPal
   ];
   if(opt_url) { dataDetails['情報'].push(`        <data name="URL">${opt_url}</data>`);}
 
-	return dataDetails
+  return dataDetails
 };

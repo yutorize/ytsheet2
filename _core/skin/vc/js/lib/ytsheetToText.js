@@ -3,7 +3,7 @@
 var output = output || {};
 
 output.generateCharacterTextOfVisionConnectPC = (json) => {
-	const result = [];
+  const result = [];
   result.push(`キャラクター名：${json.characterName}
 
 種族　　：${json.race}
@@ -23,22 +23,22 @@ output.generateCharacterTextOfVisionConnectPC = (json) => {
 ${json.speciality1Name || ''} / ${json.speciality1Note || ''}
 ${json.speciality2Name || ''} / ${json.speciality2Note || ''}
 `);
-	result.push('■グッズ■');
-	result.push(output._convertList(output.getGoods(json), output.consts.GOODS_COLUMNS, ' / '));
-	result.push('');
-	result.push('■アイテム■');
-	result.push(output._convertList(output.getItems(json), output.consts.GOODS_COLUMNS, ' / '));
-	result.push('');
-	result.push('■戦闘値■');
-	result.push(output._convertList(output.getBattles(json), output.consts.BATTLE_COLUMNS, ' | '));
-	result.push('\n');
-	result.push('■メモ■');
+  result.push('■グッズ■');
+  result.push(output._convertList(output.getGoods(json), output.consts.GOODS_COLUMNS, ' / '));
+  result.push('');
+  result.push('■アイテム■');
+  result.push(output._convertList(output.getItems(json), output.consts.GOODS_COLUMNS, ' / '));
+  result.push('');
+  result.push('■戦闘値■');
+  result.push(output._convertList(output.getBattles(json), output.consts.BATTLE_COLUMNS, ' | '));
+  result.push('\n');
+  result.push('■メモ■');
   result.push((json.freeNote || '').replace(/&lt;br&gt;/gm, '\n').replace(/&quot;/gm, '"'));
-	result.push('\n');
-	result.push('■履歴■');
+  result.push('\n');
+  result.push('■履歴■');
   result.push((json.freeHistory || '').replace(/&lt;br&gt;/gm, '\n').replace(/&quot;/gm, '"'));
 
-	return result.join('\n');
+  return result.join('\n');
 };
 
 output.getGoods = (json) => {

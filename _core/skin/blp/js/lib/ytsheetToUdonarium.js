@@ -3,7 +3,7 @@
 var output = output || {};
 
 output.generateUdonariumXmlDetailOfBloodPathPC = (json, opt_url, defaultPalette, resources)=>{
-	const dataDetails = {'リソース':resources};
+  const dataDetails = {'リソース':resources};
 
   dataDetails['能力値'] = [
     `        <data name="練度">${json.level || 0}</data>`,
@@ -30,5 +30,5 @@ output.generateUdonariumXmlDetailOfBloodPathPC = (json, opt_url, defaultPalette,
   ];
   if(opt_url) { dataDetails['情報'].push(`        <data name="URL">${opt_url}</data>`);}
 
-	return dataDetails
+  return dataDetails
 };

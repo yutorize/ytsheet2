@@ -5,7 +5,7 @@ var output = output || {};
 output._convertArianrhodStatus = (json, s) => {
   const result = [];
   result.push(
-		`【${s.name}】`
+    `【${s.name}】`
     + ( String(json[`stt${s.column}Base`    ] || '').padStart(4, ' ') ) + '  /3='
     + ( String(json[`stt${s.column}Bonus`   ] || '').padStart(5, ' ') ) + ' +'
     + ( String(json[`stt${s.column}Main`    ] || '').padStart(5, ' ') ) + ' +'
@@ -15,7 +15,7 @@ output._convertArianrhodStatus = (json, s) => {
     + ( String(json[`roll${s.column}Add`    ] || '').padStart(5, ' ') ) + ' ='
     + ( String(json[`roll${s.column}`       ] || '').padStart(5, ' ') ) + '+'
     +   String(json[`roll${s.column}Dice`] || '')+'D'
-	);
+  );
 
   return result.join('\n');
 };
@@ -69,13 +69,13 @@ output._getArianrhodGeises = (json) => {
 output._getArianrhodArmament = (json) => {
   const data = [];
   [
-		['HandR','　　右手'],
-		['HandL','　　左手'],
-		['Head' ,'　　頭部'],
-		['Body' ,'　　胴部'],
-		['Sub'  ,'補助防具'],
-		['Other','　装身具']
-	].forEach(cursor => {
+    ['HandR','　　右手'],
+    ['HandL','　　左手'],
+    ['Head' ,'　　頭部'],
+    ['Body' ,'　　胴部'],
+    ['Sub'  ,'補助防具'],
+    ['Other','　装身具']
+  ].forEach(cursor => {
     data.push({
       type  : cursor[1],
       name  : json[`armament${cursor[0]}Name`] || '',
@@ -96,24 +96,24 @@ output._getArianrhodArmament = (json) => {
 
 output._getArianrhodBattle = (json) => {
   const data = [];
-	data.push({
-		type  : '　------',
-		name  : '----------',
-		weight: '-----',
-		acc   : '-----',
-		atk   : '-----',
-		eva   : '----',
-		def   : '----',
-		mdef  : '----',
-		ini   : '----',
-		move  : '----',
-		range : '----',
-		note  : '----'
-	});
+  data.push({
+    type  : '　------',
+    name  : '----------',
+    weight: '-----',
+    acc   : '-----',
+    atk   : '-----',
+    eva   : '----',
+    def   : '----',
+    mdef  : '----',
+    ini   : '----',
+    move  : '----',
+    range : '----',
+    note  : '----'
+  });
   [
-		['Skill','　スキル'],
-		['Other','　その他'],
-	].forEach(cursor => {
+    ['Skill','　スキル'],
+    ['Other','　その他'],
+  ].forEach(cursor => {
     data.push({
       type  : cursor[1],
       name  : json[`battle${cursor[0]}Name`]   || '',
@@ -129,20 +129,20 @@ output._getArianrhodBattle = (json) => {
       note  : json[`battle${cursor[0]}Note`]   || ''
     });
   });
-	data.push({
-		type  : '　　合計',
-		name  : '',
-		weight: json[`battleTotalWeight`] || '',
-		acc   : json[`battleTotalAcc`]+'+'+json[`battleDiceAcc`]+'D' || '',
-		atk   : json[`battleTotalAtk`]+'+'+json[`battleDiceAtk`]+'D'    || '',
-		eva   : json[`battleTotalEva`]+'+'+json[`battleDiceEva`]+'D'    || '',
-		def   : json[`battleTotalDef`]    || '',
-		mdef  : json[`battleTotalMDef`]   || '',
-		ini   : json[`battleTotalIni`]    || '',
-		move  : json[`battleTotalMove`]   || '',
-		range : json[`battleTotalRange`]  || '',
-		note  : json[`battleTotalNote`]   || ''
-	});
+  data.push({
+    type  : '　　合計',
+    name  : '',
+    weight: json[`battleTotalWeight`] || '',
+    acc   : json[`battleTotalAcc`]+'+'+json[`battleDiceAcc`]+'D' || '',
+    atk   : json[`battleTotalAtk`]+'+'+json[`battleDiceAtk`]+'D'    || '',
+    eva   : json[`battleTotalEva`]+'+'+json[`battleDiceEva`]+'D'    || '',
+    def   : json[`battleTotalDef`]    || '',
+    mdef  : json[`battleTotalMDef`]   || '',
+    ini   : json[`battleTotalIni`]    || '',
+    move  : json[`battleTotalMove`]   || '',
+    range : json[`battleTotalRange`]  || '',
+    note  : json[`battleTotalNote`]   || ''
+  });
   return data;
 };
 
@@ -180,7 +180,7 @@ output.generateCharacterTextOfArianrhod2PC = (json) => {
 
   result.push('■装備品■');
   const armamentData = output._getArianrhodArmament(json);
-	const battleData = armamentData.concat(output._getArianrhodBattle(json));
+  const battleData = armamentData.concat(output._getArianrhodBattle(json));
   result.push(output._convertList(battleData, output.consts.ARMAMENT_COLUMNS, ' / '));
 
   result.push('');

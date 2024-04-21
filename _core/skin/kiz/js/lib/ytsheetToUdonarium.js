@@ -3,7 +3,7 @@
 var output = output || {};
 
 output.generateUdonariumXmlDetailOfKizunaBulletPC = (json, opt_url, defaultPalette, resources)=>{
-	const dataDetails = {'リソース':resources};
+  const dataDetails = {'リソース':resources};
 
   const typeH = json.class === 'ハウンド' ? 1 : 0;
   
@@ -31,5 +31,5 @@ output.generateUdonariumXmlDetailOfKizunaBulletPC = (json, opt_url, defaultPalet
   ];
   if(opt_url) { dataDetails['情報'].push(`        <data name="URL">${opt_url}</data>`);}
 
-	return dataDetails
+  return dataDetails
 };

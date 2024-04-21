@@ -31,58 +31,58 @@ output.consts.dicebot = 'SwordWorld2.5';
 
 output.consts.card = {};
 output.consts.card.color = {
-	'Red': '赤',
-	'Gre': '緑',
-	'Bla': '黒',
-	'Whi': '白',
-	'Gol': '金'
+  'Red': '赤',
+  'Gre': '緑',
+  'Bla': '黒',
+  'Whi': '白',
+  'Gol': '金'
 };
 output.consts.card.rank = ['B', 'A', 'S', 'SS'];
 output.consts.accessory = {};
 output.consts.accessory.part = {
-	Head:' 頭 ',
-	Face:' 顔 ',
-	Ear:' 耳 ',
-	Neck:' 首 ',
-	Back:'背中',
-	HandR:'右手',
-	HandL:'左手',
-	Waist:' 腰 ',
-	Leg:' 足 ',
-	Other:' 他 ',
-	Other2:' 他 ',
-	Other3:' 他 ',
-	Other4:' 他 ',
+  Head:' 頭 ',
+  Face:' 顔 ',
+  Ear:' 耳 ',
+  Neck:' 首 ',
+  Back:'背中',
+  HandR:'右手',
+  HandL:'左手',
+  Waist:' 腰 ',
+  Leg:' 足 ',
+  Other:' 他 ',
+  Other2:' 他 ',
+  Other3:' 他 ',
+  Other4:' 他 ',
 };
 
 output.consts.PC_ARMORS_COLUMNS = {
-		type: '',
-		name: '名前',
-		reqd: '必筋',
-		dodge: '回避力',
-		defense: '防護点',
-		note: 'メモ'
+    type: '',
+    name: '名前',
+    reqd: '必筋',
+    dodge: '回避力',
+    defense: '防護点',
+    note: 'メモ'
 };
 
 output.consts.PC_WEAPONS_COLUMNS = {
-	name: '名前',
-	usage: '用法',
-	reqd: '必筋',
-	acc: '命中修正',
-	accTotal: '命中',
-	rate: '威力',
-	crit: 'C値',
-	dmg: 'ダメ修正',
-	dmgTotal: '追加ダメ',
-	note: 'メモ'
+  name: '名前',
+  usage: '用法',
+  reqd: '必筋',
+  acc: '命中修正',
+  accTotal: '命中',
+  rate: '威力',
+  crit: 'C値',
+  dmg: 'ダメ修正',
+  dmgTotal: '追加ダメ',
+  note: 'メモ'
 };
 
 output.consts.ENEMY_STATUS_COLUMNS = {
-	name: '攻撃方法',
-	hit: ' 命中力 ',
-	damage: ' 打撃点 ',
-	dodge: ' 回避力 ',
-	defense: ' 防護点 ',
-	hp: ' HP ',
-	mp: ' MP '
+  name: '攻撃方法',
+  hit: ' 命中力 ',
+  damage: ' 打撃点 ',
+  dodge: ' 回避力 ',
+  defense: ' 防護点 ',
+  hp: ' HP ',
+  mp: ' MP '
 };

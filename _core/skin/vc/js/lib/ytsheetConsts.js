@@ -6,29 +6,29 @@ output.consts = output.consts || {};
 output.consts.dicebot = 'VisionConnect';
 
 output.consts.GOODS_COLUMNS = {
-	name : '名称',
-	type : '種別',
-	note : '効果',
+  name : '名称',
+  type : '種別',
+  note : '効果',
 };
 
 output.consts.ITEMS_COLUMNS = {
-	name : '名称',
-	type : '種別',
-	lv   : 'レベル',
-	note : '効果',
+  name : '名称',
+  type : '種別',
+  lv   : 'レベル',
+  note : '効果',
 };
 
 output.consts.BATTLE_COLUMNS = {
-	name : '名称',
-	acc : '命中',
-	spl : '詠唱',
-	eva : '回避',
-	atk : '攻撃',
-	det : '意志',
-	def : '物防',
-	mdf : '魔防',
-	ini : '行動',
-	str : '耐久',
+  name : '名称',
+  acc : '命中',
+  spl : '詠唱',
+  eva : '回避',
+  atk : '攻撃',
+  det : '意志',
+  def : '物防',
+  mdf : '魔防',
+  ini : '行動',
+  str : '耐久',
 };
 
 output.consts.VC_PARAMS = [

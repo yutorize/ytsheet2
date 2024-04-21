@@ -21,23 +21,23 @@ output._getKizunaBulletKizuna = (json) => {
 };
 
 output._getKizunaBulletKizuato = (json) => {
-	let cursor = 1;
-	const kizuatoDate = [];
-	while(json[`kizuato${cursor}Name`]) {
-		['Drama','Battle'].forEach((type)=>{
-			kizuatoDate.push({
-				name: (type === 'Drama' ? '《'+(json[`kizuato${cursor}Name`]||'')+'》' : ''),
-				type: (type === 'Drama' ? 'ドラマ' : '　決戦')+'効果',
-				timing: (json[`kizuato${cursor+type}Timing`] || '').trim(),
-				target: (json[`kizuato${cursor+type}Target`] || '').trim(),
-				cost: ((type === 'Drama' ? json[`kizuato${cursor}DramaHitogara`] : json[`kizuato${cursor}BattleCost`]) || '').trim(),
-				limited: (json[`kizuato${cursor+type}Limited`] || '').trim(),
-				note: json[`kizuato${cursor+type}Note`] || ''
-			});
-		});
-		cursor++;
-	}
-	return kizuatoDate;
+  let cursor = 1;
+  const kizuatoDate = [];
+  while(json[`kizuato${cursor}Name`]) {
+    ['Drama','Battle'].forEach((type)=>{
+      kizuatoDate.push({
+        name: (type === 'Drama' ? '《'+(json[`kizuato${cursor}Name`]||'')+'》' : ''),
+        type: (type === 'Drama' ? 'ドラマ' : '　決戦')+'効果',
+        timing: (json[`kizuato${cursor+type}Timing`] || '').trim(),
+        target: (json[`kizuato${cursor+type}Target`] || '').trim(),
+        cost: ((type === 'Drama' ? json[`kizuato${cursor}DramaHitogara`] : json[`kizuato${cursor}BattleCost`]) || '').trim(),
+        limited: (json[`kizuato${cursor+type}Limited`] || '').trim(),
+        note: json[`kizuato${cursor+type}Note`] || ''
+      });
+    });
+    cursor++;
+  }
+  return kizuatoDate;
 };
 
 output.generateCharacterTextOfKizunaBulletPC = (json) => {
