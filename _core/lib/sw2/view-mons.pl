@@ -249,7 +249,7 @@ $SHEET->param(ogUrl => url().($::in{url} ? "?url=$::in{url}" : "?id=$::in{id}"))
 #if($pc{image}) { $SHEET->param(ogImg => url()."/".$imgsrc); }
 my @ogDescriptionItems = ("レベル:$pc{lv}", "分類:$pc{taxa}");
 push(@ogDescriptionItems, "部位数:$pc{partsNum}") if $pc{partsNum}>1;
-push(@ogDescriptionItems, "知名度:$pc{reputation}／$pc{'reputation+'}");
+push(@ogDescriptionItems, "知名度:$pc{reputation}／$pc{'reputation+'}") unless $pc{mount};
 $SHEET->param(ogDescript => removeTags(join('　', @ogDescriptionItems)));
 
 ### バージョン等 --------------------------------------------------
