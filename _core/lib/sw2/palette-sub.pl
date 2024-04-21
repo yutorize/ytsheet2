@@ -617,10 +617,8 @@ sub paletteProperties {
         .($::pc{evasionClass} ? "{$::pc{evasionClass}}+({敏捷}${own_agi})/6+" : '')
         .($::pc{evasiveManeuver} + $armorTotal)
         .")";
+      push @propaties, "//防護${i}=".($::pc{"defenseTotal${i}Def"} || 0);
     }
-    push @propaties, "//防護1=".($::pc{defenseTotal1Def} || $::pc{defenseTotalAllDef} || 0);
-    push @propaties, "//防護2=$::pc{defenseTotal2Def}" if $::pc{defenseTotal2Def} ne '';
-    push @propaties, "//防護3=$::pc{defenseTotal3Def}" if $::pc{defenseTotal3Def} ne '';
     
   }
   ## 魔物
