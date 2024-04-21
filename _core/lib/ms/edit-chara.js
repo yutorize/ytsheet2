@@ -4,7 +4,7 @@ const gameSystem = 'ms';
 // ----------------------------------------
 window.onload = function() {
   
-  nameSet();
+  setName();
   calcLevel();
   checkStatus();
   checkAttribute();

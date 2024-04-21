@@ -39,7 +39,7 @@ function formCheck(){
 }
 
 // 名前 ----------------------------------------
-function nameSet(){
+function setName(){
   const category = form.category.value;
   let name;
   if(category == 'magic'){
@@ -63,7 +63,7 @@ function checkCategory(){
   });
   if(category){
     document.getElementById('data-'+category).style.display = 'block';
-    nameSet();
+    setName();
   }
   else { document.getElementById('data-none').style.display = 'block'; }
 }

@@ -487,7 +487,7 @@ sub paletteProperties {
       push @classes_en, "//".uc($id)."={$name}";
     }
     foreach my $num (1..($::pc{commonClassNum}||10)){
-      my $name = tagDelete tagUnescape $::pc{'commonClass'.$num};
+      my $name = removeTags unescapeTags $::pc{'commonClass'.$num};
       $name =~ s/[(（].+?[）)]$//;
       push @propaties, "//$name=$::pc{'lvCommon'.$num}" if $name;
     }

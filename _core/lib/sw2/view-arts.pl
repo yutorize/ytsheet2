@@ -16,7 +16,7 @@ $SHEET = HTML::Template->new( filename => $set::skin_arts, utf8 => 1,
   die_on_bad_params => 0, die_on_missing_include => 0, case_sensitive => 1, global_vars => 1);
 
 ### 魔法データ読み込み ###############################################################################
-our %pc = pcDataGet();
+our %pc = getSheetData();
 
 ### タグ置換前処理 ###################################################################################
 ### 閲覧禁止データ --------------------------------------------------
@@ -128,9 +128,9 @@ my $item_urls = $pc{schoolItemList};
 foreach (keys %pc) {
   next if($_ =~ /^image/);
   if($_ =~ /(?:Effect|Description|Note)$/){
-    $pc{$_} = tagUnescapeLines($pc{$_});
+    $pc{$_} = unescapeTagsLines($pc{$_});
   }
-  $pc{$_} = tagUnescape($pc{$_});
+  $pc{$_} = unescapeTags($pc{$_});
 }
 $pc{magicEffect} =~ s#<h2>(.+?)</h2>#</dd><dt>$1</dt><dd class="box">#gi;
 
@@ -288,12 +288,12 @@ foreach my $set_url (split ',',$item_urls){
     $item{price} =~ s/[+＋]/<br>＋/;
     $item{category} =~ s/\s/<hr>/;
     push(@items, {
-      "NAME"      => "<a href=\"$set_url\" target=\"_blank\">".tagUnescape($item{itemName})."</a>",
-      "PRICE"     => tagUnescape($item{price}),
-      "CATEGORY"  => tagUnescape($item{category}),
-      "REPUTATION"=> tagUnescape($item{reputation}),
-      "AGE"       => tagUnescape($item{age}),
-      "SUMMARY"   => tagUnescape($item{summary}),
+      "NAME"      => "<a href=\"$set_url\" target=\"_blank\">".unescapeTags($item{itemName})."</a>",
+      "PRICE"     => unescapeTags($item{price}),
+      "CATEGORY"  => unescapeTags($item{category}),
+      "REPUTATION"=> unescapeTags($item{reputation}),
+      "AGE"       => unescapeTags($item{age}),
+      "SUMMARY"   => unescapeTags($item{summary}),
     } );
   }
   else {
@@ -372,7 +372,7 @@ if($pc{forbidden} eq 'all' && $pc{forbiddenMode}){
   $SHEET->param(titleName => '非公開データ');
 }
 else {
-  $SHEET->param(titleName => tagDelete nameToPlain $pc{artsName});
+  $SHEET->param(titleName => removeTags nameToPlain $pc{artsName});
 }
 
 ### 画像 --------------------------------------------------
@@ -402,7 +402,7 @@ if($pc{image}) { $SHEET->param(ogImg => url()."/".$imgsrc); }
     $category = '神格';
     $sub = ($pc{godClass}||'―').'／'.($pc{godRank}||'―');
   }
-  $SHEET->param(ogDescript => tagDelete "カテゴリ:${category}／${sub}");
+  $SHEET->param(ogDescript => removeTags "カテゴリ:${category}／${sub}");
 }
 
 ### バージョン等 --------------------------------------------------

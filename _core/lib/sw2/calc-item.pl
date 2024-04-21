@@ -21,7 +21,7 @@ sub data_calc {
   
   #### エスケープ --------------------------------------------------
   $pc{$_} = pcEscape($pc{$_}) foreach (keys %pc);
-  $pc{tags} = pcTagsEscape($pc{tags});
+  $pc{tags} = normalizeHashtags($pc{tags});
 
   ### newline --------------------------------------------------
   my $name = $pc{itemName};

@@ -76,7 +76,7 @@ else               { require $set::lib_edit_char; }
 
 ### 共通サブルーチン --------------------------------------------------
 ## データ読み込み
-sub pcDataGet {
+sub getSheetData {
   my $mode = shift;
   my %pc;
   my $message;
@@ -105,7 +105,7 @@ sub pcDataGet {
     if($datatype eq 'logs' && !$hit){ error("過去ログ（$::in{log}）が見つかりません。"); }
     
     if($::in{log}){
-      ($pc{protect}, $pc{forbidden}) = protectTypeGet("${datadir}${file}/data.cgi");
+      ($pc{protect}, $pc{forbidden}) = getProtectType("${datadir}${file}/data.cgi");
       $message = $pc{updateTime}.' 時点のバックアップデータから編集しています。';
     }
     $pc{imageURL} = $pc{image} ? "./?id=$::in{id}&mode=image&cache=$pc{imageUpdate}" : '';
@@ -129,7 +129,7 @@ sub pcDataGet {
     
     if($pc{forbidden}){
       if($::in{log}){
-        ($pc{protect}, $pc{forbidden}) = protectTypeGet("${datadir}${file}/data.cgi");
+        ($pc{protect}, $pc{forbidden}) = getProtectType("${datadir}${file}/data.cgi");
       }
       unless(
         ($pc{protect} eq 'none') || 

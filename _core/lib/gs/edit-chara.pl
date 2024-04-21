@@ -15,14 +15,14 @@ require $set::data_class;
 require $set::data_races;
 
 ### データ読み込み ###################################################################################
-my ($data, $mode, $file, $message) = pcDataGet($::in{mode});
+my ($data, $mode, $file, $message) = getSheetData($::in{mode});
 our %pc = %{ $data };
 
 my $mode_make = ($mode =~ /^(blanksheet|copy|convert)$/) ? 1 : 0;
 
 ### 出力準備 #########################################################################################
 if($message){
-  my $name = tagUnescape($pc{characterName} || $pc{aka} || '無題');
+  my $name = unescapeTags($pc{characterName} || $pc{aka} || '無題');
   $message =~ s/<!NAME>/$name/;
 }
 ### プレイヤー名 --------------------------------------------------
@@ -106,7 +106,7 @@ $pc{cashbook}      =~ s/&lt;br&gt;/\n/g;
 $pc{chatPalette}   =~ s/&lt;br&gt;/\n/g;
 
 ### フォーム表示 #####################################################################################
-my $titlebarname = tagDelete nameToPlain tagUnescape ($pc{characterName}||"“$pc{aka}”");
+my $titlebarname = removeTags nameToPlain unescapeTags ($pc{characterName}||"“$pc{aka}”");
 print <<"HTML";
 Content-type: text/html\n
 <!DOCTYPE html>
@@ -244,7 +244,7 @@ print <<"HTML";
         <div>
           <dl id="character-name">
             <dt>キャラクター名
-            <dd>@{[input('characterName','text',"nameSet")]}
+            <dd>@{[input('characterName','text',"setName")]}
           </dl>
         </div>
         <dl id="player-name">

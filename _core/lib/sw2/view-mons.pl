@@ -17,7 +17,7 @@ $SHEET = HTML::Template->new( filename => $set::skin_mons, utf8 => 1,
   die_on_bad_params => 0, die_on_missing_include => 0, case_sensitive => 1, global_vars => 1);
 
 ### モンスターデータ読み込み #########################################################################
-our %pc = pcDataGet();
+our %pc = getSheetData();
 
 if($pc{description} =~ s/#login-only//i){
   $pc{description} .= '<span class="login-only">［ログイン限定公開］</span>';
@@ -93,9 +93,9 @@ $SHEET->param(rawName => $pc{characterName}?"$pc{characterName}（$pc{monsterNam
 ### タグ置換 #########################################################################################
 foreach (keys %pc) {
   if($_ =~ /^(?:skills|description)$/){
-    $pc{$_} = tagUnescapeLines($pc{$_});
+    $pc{$_} = unescapeTagsLines($pc{$_});
   }
-  $pc{$_} = tagUnescape($pc{$_});
+  $pc{$_} = unescapeTags($pc{$_});
 }
 $pc{skills} =~ s/<br>/\n/gi;
 $pc{skills} =~ s#(<p>|</p>|</details>)#$1\n#gi;
@@ -238,8 +238,8 @@ if($pc{forbidden} eq 'all' && $pc{forbiddenMode}){
   $SHEET->param(titleName => "非公開データ - $set::title");
 }
 else {
-  my $name    = tagDelete nameToPlain($pc{characterName});
-  my $species = tagDelete nameToPlain($pc{monsterName});
+  my $name    = removeTags nameToPlain($pc{characterName});
+  my $species = removeTags nameToPlain($pc{monsterName});
   if($name && $species){ $SHEET->param(titleName => "${name}（${species}）"); }
   else { $SHEET->param(titleName => $name || $species); }
 }
@@ -247,7 +247,7 @@ else {
 ### OGP --------------------------------------------------
 $SHEET->param(ogUrl => url().($::in{url} ? "?url=$::in{url}" : "?id=$::in{id}"));
 #if($pc{image}) { $SHEET->param(ogImg => url()."/".$imgsrc); }
-$SHEET->param(ogDescript => tagDelete "レベル:$pc{lv}　分類:$pc{taxa}".($pc{partsNum}>1?"　部位数:$pc{partsNum}":'')."　知名度:$pc{reputation}／$pc{'reputation+'}");
+$SHEET->param(ogDescript => removeTags "レベル:$pc{lv}　分類:$pc{taxa}".($pc{partsNum}>1?"　部位数:$pc{partsNum}":'')."　知名度:$pc{reputation}／$pc{'reputation+'}");
 
 ### バージョン等 --------------------------------------------------
 $SHEET->param(ver => $::ver);

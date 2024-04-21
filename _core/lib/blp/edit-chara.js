@@ -9,7 +9,7 @@ window.onload = function() {
   checkSubFactor('Core' , form.factorCore.value);
   checkSubFactor('Style', form.factorStyle.value);
   
-  nameSet();
+  setName();
   calcGrow();
   checkFactor();
   scarCheck();

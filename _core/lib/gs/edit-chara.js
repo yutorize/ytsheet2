@@ -2,7 +2,7 @@
 const gameSystem = 'gs';
 
 window.onload = function() {
-  nameSet();
+  setName();
   race = form.race.value;
   originClass = form.careerOriginClass.value;
   coinsBefore = {

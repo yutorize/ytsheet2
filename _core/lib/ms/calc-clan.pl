@@ -33,18 +33,18 @@ sub data_calc {
   
   #### エスケープ --------------------------------------------------
   $pc{$_} = pcEscape($pc{$_}) foreach (keys %pc);
-  $pc{tags} = pcTagsEscape($pc{tags});
+  $pc{tags} = normalizeHashtags($pc{tags});
   
   ### 最終参加卓 --------------------------------------------------
   foreach my $i (reverse 1 .. $pc{historyNum}){
-    if($pc{"history${i}Gm"} && $pc{"history${i}Title"}){ $pc{lastSession} = tagDelete tagUnescape $pc{"history${i}Title"}; last; }
+    if($pc{"history${i}Gm"} && $pc{"history${i}Title"}){ $pc{lastSession} = removeTags unescapeTags $pc{"history${i}Title"}; last; }
   }
 
   ### newline --------------------------------------------------
   my %NL;
   foreach ('clanName','leaderName','base','belong'){
     $NL{$_} = $pc{$_} =~ s/[|｜]([^|｜]+?)《.+?》/$1/gr;
-    $NL{$_} = tagDelete tagUnescape $NL{$_};
+    $NL{$_} = removeTags unescapeTags $NL{$_};
   }
   $NL{rule} = length($pc{rule}) > 50 ? substr($pc{rule}, 0, 50).'...' : $pc{rule};
   $::newline = "$pc{id}<>$::file<>".

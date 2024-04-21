@@ -11,14 +11,14 @@ my $LOGIN_ID = $::LOGIN_ID;
 #require $set::data_item;
 
 ### データ読み込み ###################################################################################
-my ($data, $mode, $file, $message) = pcDataGet($::in{mode});
+my ($data, $mode, $file, $message) = getSheetData($::in{mode});
 our %pc = %{ $data };
 
 my $mode_make = ($mode =~ /^(blanksheet|copy|convert)$/) ? 1 : 0;
 
 ### 出力準備 #########################################################################################
 if($message){
-  my $name = tagUnescape($pc{itemName} || '無題');
+  my $name = unescapeTags($pc{itemName} || '無題');
   $message =~ s/<!NAME>/$name/;
 }
 ### 製作者名 --------------------------------------------------
@@ -160,7 +160,7 @@ HTML
         <div>
           <dl id="character-name">
             <dt>名称
-            <dd>@{[ input('itemName','text',"nameSet('itemName')",'list="list-item-name"') ]}
+            <dd>@{[ input('itemName','text',"setName('itemName')",'list="list-item-name"') ]}
           </dl>
         </div>
         <dl id="player-name">

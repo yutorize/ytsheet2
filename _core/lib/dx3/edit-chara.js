@@ -9,7 +9,7 @@ window.onload = function() {
   console.log('=====START=====');
   syndromes = [form.syndrome1.value, form.syndrome2.value, form.syndrome3.value];
   
-  nameSet();
+  setName();
   checkCreateType();
   checkStage();
   checkSyndrome();

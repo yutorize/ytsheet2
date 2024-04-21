@@ -49,7 +49,7 @@ sub getfile_open {
 }
 
 ### 画像リダイレクト --------------------------------------------------
-sub imageRedirect {
+sub redirectToImage {
   my $id   = shift;
   my $type = shift;
   my ($file,$type,$user) = getfile_open($id);
@@ -99,7 +99,7 @@ sub getplayername {
 
 
 ### 編集保護設定取得 --------------------------------------------------
-sub protectTypeGet {
+sub getProtectType {
   my $file = shift;
   my $protect   = '';
   my $forbidden = '';
@@ -131,7 +131,7 @@ sub c_crypt {
 ### ログイン --------------------------------------------------
 sub log_in {
   if($set::oauth_service){ error("$set::oauth_serviceでのログインのみ有効です"); }
-  my $key = key_get($_[0],$_[1]);
+  my $key = getKey($_[0],$_[1]);
   if($key){
     my $flag = 0;
     my $mask = umask 0;
@@ -157,7 +157,7 @@ sub log_in {
 }
 
 ### キー取得 --------------------------------------------------
-sub key_get {
+sub getKey {
   my $in_id  = $_[0];
   my $in_pass= $_[1];
   open (my $FH, '<', $set::userfile);
@@ -373,7 +373,7 @@ sub groupArrayToList {
 }
 
 ### 性別記号変換 --------------------------------------------------
-sub genderConvert {
+sub stylizeGender {
   my $gender = shift;
   my $m_flag; my $f_flag; my $n_flag;
   $gender =~ s/^(.+?)[\(（].*?[）\)]$/$1/;
@@ -393,7 +393,7 @@ sub genderConvert {
 }
 
 ### 年齢変換 --------------------------------------------------
-sub ageConvert {
+sub stylizeAge {
   my $age = shift;
   $age =~ s/^(.+?)[\(（].*?[）\)]$/$1/;
   $age =~ tr/０-９/0-9/;
@@ -412,7 +412,7 @@ sub pcEscape {
   $text =~ tr/\r\n//d;
   return $text;
 }
-sub pcTagsEscape {
+sub normalizeHashtags {
   my $text = shift;
   $text =~ s/\s/ /g; #空白統一
   $text =~ tr/ / /s; #空白詰める
@@ -420,7 +420,7 @@ sub pcTagsEscape {
   $text =~ tr/＋－＊／．，＿/\+\-\*\/\.,_/;
   return $text;
 }
-sub thanSignEscape {
+sub escapeThanSign {
   my $text = shift;
   $text =~ s/</&lt;/g;
   $text =~ s/>/&gt;/g;
@@ -428,7 +428,7 @@ sub thanSignEscape {
 }
 
 ### タグ変換 --------------------------------------------------
-sub tagUnescape {
+sub unescapeTags {
   my $text = shift;
   $text =~ s/&amp;/&/g;
   $text =~ s/&quot;/"/g;
@@ -461,7 +461,7 @@ sub tagUnescape {
   $text =~ s/[|｜]([^|｜\n]+?)《(.+?)》/<ruby>$1<rp>(<\/rp><rt>$2<\/rt><rp>)<\/rp><\/ruby>/gi; # なろう式ルビ
   $text =~ s/《《(.+?)》》/<span class="text-em">$1<\/span>/gi; # カクヨム式傍点
   
-  $text =~ s/\[\[(.+?)&gt;((?:(?!<br>)[^"])+?)\]\]/&tagLinkUrl($2,$1)/egi; # リンク
+  $text =~ s/\[\[(.+?)&gt;((?:(?!<br>)[^"])+?)\]\]/&generateLinkTag($2,$1)/egi; # リンク
   if($set::game eq 'sw2'){ $text =~ s/((?:making|能力値作成(?:履歴)?)#([0-9]+(?:-[0-9]+)?))/<a href="?&mode=making&num=$2">$1<\/a>/gi; } # メイキングリンク
   $text =~ s/\[(.+?)#([a-zA-Z0-9\-]+?)\]/<a href="?id=$2">$1<\/a>/gi; # シート内リンク
   $text =~ s/(?<!href=")(https?:\/\/[^\s\<]+)/<a href="$1" target="_blank">$1<\/a>/gi; # 自動リンク
@@ -478,7 +478,7 @@ sub tagUnescape {
   
   return $text;
 }
-sub tagUnescapePalette {
+sub unescapeTagsPalette {
   my $text = shift;
   $text =~ s/&amp;/&/g;
   $text =~ s/&quot;/"/g;
@@ -492,7 +492,7 @@ sub tagUnescapePalette {
   $text =~ s/\n/<br>/gi;
   return $text;
 }
-sub tagLinkUrl {
+sub generateLinkTag {
   my $url = shift;
   my $txt = shift;
   #foreach my $safe (@set::safeurl){
@@ -503,7 +503,7 @@ sub tagLinkUrl {
   return '<a href="'.$url.'" target="_blank">'.$txt.'</a>';
   #return '<a href="../'.$set::cgi.'?jump='.$url.'" target="_blank">'.$txt.'</a>';
 }
-sub tagUnescapeLines {
+sub unescapeTagsLines {
   my $text = shift;
   $text =~ s/&lt;br&gt;/\n/gi;
   
@@ -533,7 +533,7 @@ sub tagUnescapeLines {
   $text =~ s/\A\*(.*?)$/$main::pc{"head_$_"} = $1; ''/egim;
   $text =~ s/^\*(.*?)$/<\/p><h2>$1<\/h2><p>/gim;
   
-  $text =~ s/(?:^(?:\|(?:.*?))+\|[hc]?(?:\n|$))+/'<\/p><table class="note-table">'.&tableCreate($&).'<\/table><p>'/egim;
+  $text =~ s/(?:^(?:\|(?:.*?))+\|[hc]?(?:\n|$))+/'<\/p><table class="note-table">'.&generateTable($&).'<\/table><p>'/egim;
 
   $text =~ s/^\:(.*?)\|(.*?)$/<dt>$1<\/dt><dd>$2<\/dd>/gim;
   $text =~ s/(<\/dd>)\n/$1/gi;
@@ -554,15 +554,15 @@ sub tagUnescapeLines {
   return $text;
 }
 
-sub tableColCreate {
+sub generateTableCol {
   my @out;
   my @col = (split(/\|/, $_[0]));
   foreach(@col){
-    push (@out, &tableStyleCreate($_));
+    push (@out, &generateTableStyle($_));
   }
   return '<colgroup>'.(join '', @out).'</colgroup>';
 }
-sub tableStyleCreate {
+sub generateTableStyle {
   if($_[0] =~ /([0-9]+)(px|em|\%)/){
     my $num = $1; my $type = $2;
     if   ($type eq 'px' && $num > 300){ $num = 300 }
@@ -572,14 +572,14 @@ sub tableStyleCreate {
   }
   else { return '<col>' }
 }
-sub tableCreate {
+sub generateTable {
   my $text = shift;
   my $output;
   my @data;
   foreach my $line (split("\n", $text)){
     $line =~ s/^\|//;
-    if   ($line =~ /c$/){ $output .= tableColCreate($line); next; }
-    elsif($line =~ /h$/){ $output .= tableHeaderCreate($line); next; }
+    if   ($line =~ /c$/){ $output .= generateTableCol($line); next; }
+    elsif($line =~ /h$/){ $output .= generateTableHeader($line); next; }
     my @row = split('\|', $line);
     push(@data, [ @row ]);
   }
@@ -606,7 +606,7 @@ sub tableCreate {
   }
   return $output;
 }
-sub tableHeaderCreate {
+sub generateTableHeader {
   my $line = shift;
   my $output;
   $line =~ s/h$//;
@@ -624,7 +624,7 @@ sub tableHeaderCreate {
   return $output;
 }
 ### タグ削除 --------------------------------------------------
-sub tagDelete {
+sub removeTags {
   my $text = $_[0];
   $text =~ s/<img alt="&#91;(.)&#93;"/[$1]<img /g;
   $text =~ s/<.+?>//g;
@@ -695,59 +695,6 @@ sub convert10to36 {
     $number = int($number / 36);
   }
   return join('', @work);
-}
-
-### チャットパレット --------------------------------------------------
-sub palettePresetBuffDelete {
-  my $text = shift;
-  my %property;
-  $_ =~ s|^//(.+?)=(.*?)$|$property{$1} = $2;|egi foreach split("\n",$text);
-  my $hit;
-  foreach(0 .. 100){
-    $hit = 0;
-    foreach (keys %property){
-      if($text =~ s|\{$_\}|$property{$_}|g){ $hit = 1; }
-    }
-    last if !$hit
-  }
-  $text =~ s#^//.+?=.*?(\n|$)##gm;
-  $text =~ s/\$\+0//g;
-  $text =~ s/\#0//g;
-  $text =~ s/\+0//g;
-  $text =~ s/^### ■バフ・デバフ\n//g;
-  
-  return $text;
-}
-
-sub palettePropertiesUsedOnly {
-  my $palette = shift;
-  my $tool = shift;
-  my $type = shift;
-  my %used;
-  my @propaties_in = paletteProperties($tool,$type);
-  my @propaties_out;
-  my $hit = 1;
-  foreach (0 .. 100){
-    $hit = 0;
-    foreach my $line (@propaties_in){
-      if($line =~ "^//(.+?)="){
-        my $var = $1;
-        if   ($palette =~ "^//\Q$var\E="){ ; }
-        elsif($palette =~ /\{\Q$var\E\}/){ $palette .= $line."\n"; $hit = 1 }
-      }
-    }
-    last if !$hit;
-  }
-  foreach (@propaties_in){
-    if($_ =~ "^//(.+?)="){
-      my $var = $1;
-      if($palette =~ /\{\Q$var\E\}/){ push @propaties_out, $_; }
-    }
-    else {
-      push @propaties_out, $_;
-    }
-  }
-  return @propaties_out;
 }
 
 ### 案内画面 --------------------------------------------------

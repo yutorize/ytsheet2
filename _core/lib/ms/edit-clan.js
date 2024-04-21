@@ -2,7 +2,7 @@
 const gameSystem = 'ms';
 
 window.onload = function() {
-  nameSet();
+  setName();
   calcLevel();
   checkAttribute();
   checkMagi();
@@ -26,7 +26,7 @@ function formCheck(){
 }
 
 // 名前 ----------------------------------------
-function nameSet(){
+function setName(){
   let c = ruby(form.clanName.value);
   document.querySelector('#header-menu > h2 > span').innerHTML = c ?? '(名称未入力)';
 

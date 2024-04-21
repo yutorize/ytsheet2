@@ -17,7 +17,7 @@ $SHEET = HTML::Template->new( filename => $set::skin_item, utf8 => 1,
   die_on_bad_params => 0, die_on_missing_include => 0, case_sensitive => 1, global_vars => 1);
 
 ### アイテムデータ読み込み ###########################################################################
-our %pc = pcDataGet();
+our %pc = getSheetData();
 
 ### タグ置換前処理 ###################################################################################
 ### 閲覧禁止データ --------------------------------------------------
@@ -61,9 +61,9 @@ $SHEET->param(rawName => $pc{itemName});
 ### タグ置換 #########################################################################################
 foreach (keys %pc) {
   if($_ =~ /^(?:effects|description)$/){
-    $pc{$_} = tagUnescapeLines($pc{$_});
+    $pc{$_} = unescapeTagsLines($pc{$_});
   }
-  $pc{$_} = tagUnescape($pc{$_});
+  $pc{$_} = unescapeTags($pc{$_});
 }
 $pc{effects} =~ s/<br>/\n/gi;
 $pc{effects} =~ s#(<p>|</p>|</details>)#$1\n#gi;
@@ -171,13 +171,13 @@ if($pc{forbidden} eq 'all' && $pc{forbiddenMode}){
   $SHEET->param(titleName => '非公開データ');
 }
 else {
-  $SHEET->param(titleName => tagDelete nameToPlain $pc{itemName});
+  $SHEET->param(titleName => removeTags nameToPlain $pc{itemName});
 }
 
 ### OGP --------------------------------------------------
 $SHEET->param(ogUrl => url().($::in{url} ? "?url=$::in{url}" : "?id=$::in{id}"));
 #if($pc{image}) { $SHEET->param(ogImg => url()."/".$imgsrc); }
-$SHEET->param(ogDescript => tagDelete "カテゴリ:$pc{category}　形状:$pc{shape}　製作時期:$pc{age}　概要:$pc{summary}");
+$SHEET->param(ogDescript => removeTags "カテゴリ:$pc{category}　形状:$pc{shape}　製作時期:$pc{age}　概要:$pc{summary}");
 
 ### バージョン等 --------------------------------------------------
 $SHEET->param(ver => $::ver);

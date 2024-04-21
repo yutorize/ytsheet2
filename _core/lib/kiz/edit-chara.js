@@ -4,7 +4,7 @@ const gameSystem = 'kiz';
 // ----------------------------------------
 window.onload = function() {
   
-  nameSet();
+  setName();
   calcGrow();
   changeType();
   checkNegai('Out',form.negaiOutside.value);

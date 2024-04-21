@@ -31,7 +31,7 @@ else { require $set::lib_view_char; }
 
 
 ### データ取得 --------------------------------------------------
-sub pcDataGet {
+sub getSheetData {
   my %pc;
   my $datadir = 
     ($set::game eq 'sw2' && $type eq 'm') ? $set::mons_dir : 
@@ -60,7 +60,7 @@ sub pcDataGet {
     if($datatype eq 'logs' && !$hit){ error("過去ログ（$::in{log}）が見つかりません。"); }
 
     if($::in{log}){
-      ($pc{protect}, $pc{forbidden}) = protectTypeGet("${datadir}${file}/data.cgi");
+      ($pc{protect}, $pc{forbidden}) = getProtectType("${datadir}${file}/data.cgi");
       $pc{logId} = $::in{log};
     }
   }

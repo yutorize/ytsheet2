@@ -54,7 +54,7 @@ sub dataConvert {
   {
     my $data = urlDataGet($set_url.'&mode=json') or error 'コンバート元のデータが取得できませんでした';
     if($data !~ /^{/){ error 'JSONデータが取得できませんでした' }
-    $data = thanSignEscape($data);
+    $data = escapeThanSign($data);
     my %pc = utf8::is_utf8($data) ? %{ decode_json(encode('utf8', (join '', $data))) } : %{ decode_json(join '', $data) };
     if($pc{result} eq 'OK'){
       our $base_url = $set_url;
@@ -285,7 +285,7 @@ sub convertHokanjoToYtsheet {
   $profile .= ": 肌 |$in{'color_skin'}\n";
   
   $pc{freeNote} = $profile.$in{'pc_making_memo'};
-  $pc{freeNoteView} = (tagUnescape tagUnescapeLines $profile).$in{'pc_making_memo'};
+  $pc{freeNoteView} = (unescapeTags unescapeTagsLines $profile).$in{'pc_making_memo'};
   $pc{freeNoteView} =~ s/\r\n?|\n/<br>/g;
   
   ## チャットパレット

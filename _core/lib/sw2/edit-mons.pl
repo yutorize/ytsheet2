@@ -13,14 +13,14 @@ require $set::lib_palette_sub;
 require $set::data_mons;
 
 ### データ読み込み ###################################################################################
-my ($data, $mode, $file, $message) = pcDataGet($::in{mode});
+my ($data, $mode, $file, $message) = getSheetData($::in{mode});
 our %pc = %{ $data };
 
 my $mode_make = ($mode =~ /^(blanksheet|copy|convert)$/) ? 1 : 0;
 
 ### 出力準備 #########################################################################################
 if($message){
-  my $name = tagUnescape($pc{characterName} || $pc{monsterName} || '無題');
+  my $name = unescapeTags($pc{characterName} || $pc{monsterName} || '無題');
   $message =~ s/<!NAME>/$name/;
 }
 ### 製作者名 --------------------------------------------------
@@ -198,11 +198,11 @@ print <<"HTML";
         <div>
           <dl id="character-name">
             <dt>名称
-            <dd>@{[ input('monsterName','text',"nameSet") ]}
+            <dd>@{[ input('monsterName','text',"setName") ]}
           </dl>
           <dl id="aka">
             <dt>名前
-            <dd>@{[ input 'characterName','text','nameSet','placeholder="※名前を持つ魔物のみ"' ]}
+            <dd>@{[ input 'characterName','text','setName','placeholder="※名前を持つ魔物のみ"' ]}
           </dl>
         </div>
         <dl id="player-name">

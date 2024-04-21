@@ -29,14 +29,14 @@ foreach(@data::class_names){
 }
 push(@magic_classes, @craft_classes);
 ### データ読み込み ###################################################################################
-my ($data, $mode, $file, $message) = pcDataGet($::in{mode});
+my ($data, $mode, $file, $message) = getSheetData($::in{mode});
 our %pc = %{ $data };
 
 my $mode_make = ($mode =~ /^(blanksheet|copy|convert)$/) ? 1 : 0;
 
 ### 出力準備 #########################################################################################
 if($message){
-  my $name = tagUnescape($pc{category} eq 'magic' ? $pc{magicName} : $pc{category} eq 'god' ? $pc{godAka}.$pc{godName} : '無題');
+  my $name = unescapeTags($pc{category} eq 'magic' ? $pc{magicName} : $pc{category} eq 'god' ? $pc{godAka}.$pc{godName} : '無題');
   $message =~ s/<!NAME>/$name/;
 }
 ### 製作者名 --------------------------------------------------
@@ -236,7 +236,7 @@ HTML
       <!-- 魔法 -->
       <div class="data-area in-toc" id="data-magic" data-content-title="データ">
         <div class="box input-data">
-          <dl class="name     "><dt>名称        <dd>【@{[ input 'magicName','',"nameSet" ]}】<br>
+          <dl class="name     "><dt>名称        <dd>【@{[ input 'magicName','',"setName" ]}】<br>
                                                           @{[ checkbox 'magicActionTypePassive','常時' ]}@{[ checkbox 'magicActionTypeMajor','主動作' ]}@{[ checkbox 'magicActionTypeMinor','補助動作' ]}@{[ checkbox 'magicActionTypeSetup','戦闘準備' ]}</dl>
           <dl class="class    "><dt>系統        <dd>@{[ selectInput "magicClass","checkMagicClass",@magic_classes ]} @{[ checkbox 'magicMinor','小魔法' ]}</dl>
           <dl class="sphere   "><dt>マギスフィア<dd>@{[ input 'magicMagisphere','','','list="list-sphere"' ]}</dl>
@@ -289,8 +289,8 @@ HTML
             let imgURL = "$pc{imageURL}";
           </script>
           </div>
-          <dl class="name  "><dt>名称      <dd>@{[ input 'godName','',"nameSet" ]}</dl>
-          <dl class="aka   "><dt>異名      <dd>“@{[ input 'godAka','',"nameSet" ]}”</dl>
+          <dl class="name  "><dt>名称      <dd>@{[ input 'godName','',"setName" ]}</dl>
+          <dl class="aka   "><dt>異名      <dd>“@{[ input 'godAka','',"setName" ]}”</dl>
           <dl class="class "><dt>系統      <dd><select name="godClass">@{[ option 'godClass','第一の剣','第二の剣','第三の剣','不明' ]}</select>／<select name="godRank">@{[ option 'godRank','古代神','大神','小神' ]}</select></dl>
           <dl class="area  "><dt>地域      <dd>@{[ input 'godArea','','','placeholder="大陸・地方など"' ]}<small>※主に小神向けの項目です</small></dl>
           <dl class="symbol"><dt>聖印と神像<dd><textarea name="godSymbol">$pc{godSymbol}</textarea></dl>
@@ -320,7 +320,7 @@ print <<"HTML";
       <!-- 流派 -->
       <div class="data-area in-toc" id="data-school" data-content-title="流派の詳細">
         <div class="box input-data">
-          <dl class="name  "><dt>名称      <dd>【@{[ input 'schoolName','',"nameSet" ]}】</dl>
+          <dl class="name  "><dt>名称      <dd>【@{[ input 'schoolName','',"setName" ]}】</dl>
           <dl class="area  "><dt>地域      <dd>@{[ input 'schoolArea','','','placeholder="大陸・地方など"' ]}</dl>
           <dl class="req   "><dt>入門条件  <dd>@{[ input 'schoolReq','','','list="list-school-req"' ]}</dl>
           <dl class="note  "><dt>詳細      <dd><textarea name="schoolNote">$pc{schoolNote}</textarea></dl>
@@ -343,13 +343,13 @@ foreach my $set_url (split ',',$pc{schoolItemList}){
   $item{category} =~ s/\s/<hr>/;
   print "<tr>";
   if(exists $item{itemName}) {
-    print "<td><a href=\"${set_url}\" target='_blank'>".tagUnescape($item{itemName})."</a>";
+    print "<td><a href=\"${set_url}\" target='_blank'>".unescapeTags($item{itemName})."</a>";
   }
   else {
     print "<td><a href=\"${set_url}\" target='_blank' class='failed'>データ取得失敗</a>";
   }
-  print "<td>".tagUnescape($item{category});
-  print "<td>".tagUnescape($item{summary});
+  print "<td>".unescapeTags($item{category});
+  print "<td>".unescapeTags($item{summary});
   print "<td class='button' onclick=\"delSchoolItem(this,'${set_url}')\">×";
 }
 print <<"HTML";

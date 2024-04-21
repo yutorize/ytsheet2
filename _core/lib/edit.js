@@ -178,7 +178,7 @@ window.addEventListener('load', () => {
 });
 
 // 名前 ----------------------------------------
-function nameSet(id){
+function setName(id){
   id = id ? id : 'characterName';
   let name = vCheck(id+'Ruby') ? `<ruby>${form[id].value}<rp>(</rp><rt>${vCheck(id+'Ruby')}</rt><rp>)</rp></ruby>` : ruby(form[id].value);
   let aka = (form.aka && form.aka.value) ? '<span class="aka">“'+(vCheck('akaRuby') ? `<ruby>${form.aka.value}<rp>(</rp><rt>${vCheck('akaRuby')}</rt><rp>)</rp></ruby>` : `${ruby(form.aka.value)}`)+'”</span>' : '';

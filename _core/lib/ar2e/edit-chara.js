@@ -2,7 +2,7 @@
 const gameSystem = 'ar2e';
 
 window.onload = function() {
-  nameSet();
+  setName();
   level = Number(form.level.value);
   race = form.race.value;
   classMainLv1    = form.classMainLv1.value;

@@ -17,7 +17,7 @@ $SHEET = HTML::Template->new( filename => $set::skin_sheet, utf8 => 1,
   die_on_bad_params => 0, die_on_missing_include => 0, case_sensitive => 1, global_vars => 1);
 
 ### キャラクターデータ読み込み #######################################################################
-our %pc = pcDataGet();
+our %pc = getSheetData();
 
 ### タグ置換前処理 ###################################################################################
 ### 閲覧禁止データ --------------------------------------------------
@@ -181,9 +181,9 @@ if($pc{ver}){
   foreach (keys %pc) {
     next if($_ =~ /^(?:partner[12]Url|(?:p[12]_)?(?:image))/);
     if($_ =~ /^(?:freeNote|freeHistory)$/){
-      $pc{$_} = tagUnescapeLines($pc{$_});
+      $pc{$_} = unescapeTagsLines($pc{$_});
     }
-    $pc{$_} = tagUnescape($pc{$_});
+    $pc{$_} = unescapeTags($pc{$_});
 
     $pc{$_} = noiseTextTag $pc{$_} if $pc{forbiddenMode};
   }
@@ -393,13 +393,13 @@ if($pc{forbidden} eq 'all' && $pc{forbiddenMode}){
   $SHEET->param(titleName => '非公開データ');
 }
 else {
-  $SHEET->param(titleName => tagDelete nameToPlain($pc{characterName}||"“$pc{aka}”"));
+  $SHEET->param(titleName => removeTags nameToPlain($pc{characterName}||"“$pc{aka}”"));
 }
 
 ### OGP --------------------------------------------------
 $SHEET->param(ogUrl => url().($::in{url} ? "?url=$::in{url}" : "?id=$::in{id}"));
 if($pc{image}) { $SHEET->param(ogImg => $pc{imageURL}); }
-$SHEET->param(ogDescript => tagDelete "ファクター:$pc{factor}／$pc{factorCore}／$pc{factorStyle}　性別:$pc{gender}　年齢:$pc{age}　".($pc{factor} eq '吸血鬼' ? '欠落':'喪失').":$pc{missing}　所属:$pc{belong}");
+$SHEET->param(ogDescript => removeTags "ファクター:$pc{factor}／$pc{factorCore}／$pc{factorStyle}　性別:$pc{gender}　年齢:$pc{age}　".($pc{factor} eq '吸血鬼' ? '欠落':'喪失').":$pc{missing}　所属:$pc{belong}");
 
 ### バージョン等 --------------------------------------------------
 $SHEET->param(ver => $::ver);

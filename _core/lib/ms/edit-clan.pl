@@ -11,14 +11,14 @@ my $LOGIN_ID = $::LOGIN_ID;
 require $set::lib_palette_sub;
 
 ### データ読み込み ###################################################################################
-my ($data, $mode, $file, $message) = pcDataGet($::in{mode});
+my ($data, $mode, $file, $message) = getSheetData($::in{mode});
 our %pc = %{ $data };
 
 my $mode_make = ($mode =~ /^(blanksheet|copy|convert)$/) ? 1 : 0;
 
 ### 出力準備 #########################################################################################
 if($message){
-  my $name = tagUnescape($pc{characterName} || $pc{aka} || '無題');
+  my $name = unescapeTags($pc{characterName} || $pc{aka} || '無題');
   $message =~ s/<!NAME>/$name/;
 }
 ### プレイヤー名 --------------------------------------------------
@@ -83,7 +83,7 @@ my $image_maxsize = $set::image_maxsize / 2;
 my $image_maxsize_view = $image_maxsize >= 1048576 ? sprintf("%.3g",$image_maxsize/1048576).'MB' : sprintf("%.3g",$image_maxsize/1024).'KB';
 
 ### フォーム表示 #####################################################################################
-my $titlebarname = tagDelete nameToPlain tagUnescape ($pc{clanName});
+my $titlebarname = removeTags nameToPlain unescapeTags ($pc{clanName});
 print <<"HTML";
 Content-type: text/html\n
 <!DOCTYPE html>
@@ -226,9 +226,9 @@ print <<"HTML";
         <div>
           <dl id="character-name">
             <dt>クラン名
-            <dd>@{[input('clanName','text',"nameSet",'required')]}
+            <dd>@{[input('clanName','text',"setName",'required')]}
             <dt class="ruby">ふりがな
-            <dd>@{[input('clanNameRuby','text',"nameSet")]}
+            <dd>@{[input('clanNameRuby','text',"setName")]}
           </dl>
         </div>
         <dl id="player-name">

@@ -2,7 +2,7 @@
 const gameSystem = 'vc';
 
 window.onload = function() {
-  nameSet();
+  setName();
 
   calcStatus();
   calcBattle();

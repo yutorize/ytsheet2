@@ -129,7 +129,7 @@ foreach (sort { $a->[1] cmp $b->[1] } @data::taxa){
 $INDEX->param(Taxa => \@taxalist);
 
 ## タグ検索
-my $tag_query = pcTagsEscape(decode('utf8', $::in{tag}));
+my $tag_query = normalizeHashtags(decode('utf8', $::in{tag}));
 if($tag_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){15}[^<]*? \Q$tag_query\E / } @list; }
 $INDEX->param(tag => $tag_query);
 

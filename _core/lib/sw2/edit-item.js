@@ -2,7 +2,7 @@
 const gameSystem = 'sw2';
 
 window.onload = function() {
-  nameSet('itemName');
+  setName('itemName');
   changeColor();
 }
 

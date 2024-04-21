@@ -49,7 +49,7 @@ if($id){
   if($pc{forbidden}){
     my $LOGIN_ID = check;
     if($::in{log}){
-      ($pc{protect}, $pc{forbidden}) = protectTypeGet("${datadir}${file}/data.cgi");
+      ($pc{protect}, $pc{forbidden}) = getProtectType("${datadir}${file}/data.cgi");
     }
     unless(
       ($pc{protect} eq 'none') || 
