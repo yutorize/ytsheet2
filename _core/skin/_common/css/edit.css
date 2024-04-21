@@ -1251,6 +1251,13 @@ input[type="submit"]:hover {
         &.tekey { color:#000000; background: #ffffff; }
         &.ccfol { color:#ffffff; background: #2a2a2a; }
         &.udona { color:#444444; background: #fcf0e3; }
+
+        &:empty {
+          display: none;
+        }
+      }
+      #name-plate-view:not(:has(:is(.ytcha, .tekey, .ccfol, .udona):not(:empty))) {
+        display: none;
       }
 
       table {
