@@ -208,8 +208,10 @@ sub isNoiseText {
 sub stylizeWords {
   my ($words, $x, $y) = @_;
   $words =~ s/<br>/\n/g;
-  $words =~ s/^([「『（])/<span class="brackets">$1<\/span>/gm;
-  $words =~ s/(.+?(?:[，、。？」』）]|$))/<span>$1<\/span>/g;
+  $words =~ s/“/〝/g;
+  $words =~ s/”/〟/g;
+  $words =~ s/^([「『（〝])/<span class="brackets">$1<\/span>/gm;
+  $words =~ s/(.+?(?:[，、。？」』）〟]|$))/<span>$1<\/span>/g;
   $words =~ s/\n<span>　/\n<span>/g;
   $words =~ s/\n/<br>/g;
   $x = $x eq '左' ? 'left:0;' : 'right:0;';
