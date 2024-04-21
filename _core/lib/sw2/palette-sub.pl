@@ -149,6 +149,52 @@ sub palettePreset {
       }
     }
     $text .= "\n";
+
+    # 戦闘特技
+    my @combatFeats = ();
+    foreach (keys %::pc) {
+      next unless $_ =~ /^combatFeatsLv(.+)$/;
+      my $level = $1;
+      next if $level eq 'Lv1bat' && !($::pc{lvBat} >= 1);
+      next if $level > $::pc{level};
+      my $featName = $::pc{$_};
+      next unless $featName;
+
+      push(@combatFeats, $featName);
+    }
+    if ($::pc{combatFeatsAuto}) {
+      foreach (split ',', $::pc{combatFeatsAuto}) {
+        push(@combatFeats, $_);
+      }
+    }
+    my @declarationFeats = ();
+    my @mainActionFeats = ();
+    my @preparationFeats = ();
+    for my $featName (@combatFeats) {
+      my $featType = getCombatFeatType($featName);
+
+      push(@declarationFeats, $featName) if $featType =~ /宣/;
+      push(@mainActionFeats, $featName) if $featType =~ /主/;
+      push(@preparationFeats, $featName) if $featType =~ /準/;
+    }
+    if ($#declarationFeats >= 0 || $#mainActionFeats >= 0 || $#preparationFeats >= 0) {
+      $text .= "###\n" if $bot{TKY};
+      $text .= "### ■戦闘特技\n";
+
+      foreach (@preparationFeats) {
+        $text .= "[準]《$_》\n";
+      }
+
+      foreach (@declarationFeats) {
+        $text .= "[宣]《$_》\n";
+      }
+
+      foreach (@mainActionFeats) {
+        $text .= "[主]《$_》\n";
+      }
+
+      $text .= "\n";
+    }
     
     # 魔法
     foreach my $name (@class_names){

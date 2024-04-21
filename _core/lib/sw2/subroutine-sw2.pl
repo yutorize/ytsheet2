@@ -135,6 +135,29 @@ sub fairyRank {
   return $rank{$i}[$lv] || '×';
 }
 
+### 戦闘特技 --------------------------------------------------
+sub getCombatFeatType {
+  my $featName = shift;
+
+  require($set::data_feats);
+
+  foreach (@data::combat_feats) {
+    (my $type, my $level, my $name, ) = @{$_};
+    next if $name ne $featName;
+
+    return $type;
+  }
+
+  foreach (@data::auto_acquisition_combat_feats) {
+    (my $name, my $type) = @{$_};
+    next if $name ne $featName;
+
+    return $type;
+  }
+
+  return undef;
+}
+
 ### バージョンアップデート --------------------------------------------------
 sub data_update_chara {
   my %pc = %{$_[0]};
