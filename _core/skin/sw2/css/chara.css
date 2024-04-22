@@ -23,6 +23,7 @@ body {
     display: grid;
     grid-gap: 0 1.2rem;
     grid-template-columns: 1fr 1fr;
+    grid-auto-rows: max-content max-content max-content 1fr auto;
     padding: 0 1.2rem;
     position: relative;
   }
@@ -31,9 +32,6 @@ body {
   }
   div.column-status {
     grid-row: span 2;
-  }
-  #area-actions {
-    align-items: flex-start !important;
   }
   #area-items {
     grid-column: 2;
@@ -561,10 +559,11 @@ dl#level {
 /* // Area-Actions & Language
 ---------------------------------------------------------------------------------------------------- */
 #area-actions {
+  align-self: start;
   display: grid;
   grid-template-columns: 1.05fr 1.05fr 0.9fr;
-  align-self: start;
   gap: var(--box-v-gap) var(--box-h-gap);
+  align-items: start;
   
   margin-top: var(--box-v-gap);
   line-height: 1.8;
