@@ -38,6 +38,8 @@ if($mode eq 'blanksheet'){
 setDefaultColors();
 
 ## その他
+$pc{partsManualInput} = 0 if $mode eq 'blanksheet';
+$pc{partsManualInput} = 1 if !exists($pc{partsManualInput}) && $pc{ver} le '1.25.010';
 $pc{partsNum}  ||= 1;
 $pc{statusNum} ||= 1;
 $pc{lootsNum}  ||= 2;
@@ -301,7 +303,7 @@ foreach my $num (1 .. $pc{statusNum}){
         <tr id="status-row${num}">
           <th class="mount-only">
           <td class="handle">
-          <td>@{[ input "status${num}Style",'text',"checkStyle(${num})" ]}
+          <td>@{[ input "status${num}Style",'text',"checkStyle(${num}); updatePartsAutomatically()" ]}
           <td>@{[ input "status${num}Accuracy",($status_text_input ? 'text':'number'),"calcAcc($num)" ]}<span class="monster-only calc-only"><br>(@{[ input "status${num}AccuracyFix",'number',"calcAccF($num)" ]})</span>
           <td>@{[ input "status${num}Damage" ]}
           <td>@{[ input "status${num}Evasion",($status_text_input ? 'text':'number'),"calcEva($num)" ]}<span class="monster-only calc-only"><br>(@{[ input "status${num}EvasionFix",'number',"calcEvaF($num)" ]})</span>
@@ -348,6 +350,7 @@ print <<"HTML";
       @{[input('statusNum','hidden')]}
       </div>
       <div class="box parts in-toc" data-content-title="部位数・コア部位">
+        @{[ checkbox 'partsManualInput', '部位数と内訳を手動入力する', 'updatePartsAutomatically' ]}
         <dl><dt>部位数<dd>@{[ input 'partsNum','number','','min="1"' ]} (@{[ input 'parts' ]}) </dl>
         <dl><dt>コア部位<dd>@{[ input 'coreParts' ]}</dl>
       </div>
