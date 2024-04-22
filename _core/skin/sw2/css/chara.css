@@ -914,11 +914,11 @@ dl#level {
     text-align: center;
   }
   & tbody tr {
-    &.cards-red { background-color: rgba(255,  0,  0,0.15); }
-    &.cards-gre { background-color: rgba( 50,255,220,0.15); }
-    &.cards-bla { background-color: rgba(125,125,125,0.2 ); }
-    &.cards-whi { background-color: rgba(255,255,255,0.2 ); }
-    &.cards-gol { background-color: rgba(255,210, 50,0.15); }
+    &.cards-red { background-color: rgba(255,  0,  0,0.15) !important; }
+    &.cards-gre { background-color: rgba( 50,255,220,0.15) !important; }
+    &.cards-bla { background-color: rgba(125,125,125,0.2 ) !important; }
+    &.cards-whi { background-color: rgba(255,255,255,0.2 ) !important; }
+    &.cards-gol { background-color: rgba(255,210, 50,0.15) !important; }
   
     & th {
       background: transparent;
