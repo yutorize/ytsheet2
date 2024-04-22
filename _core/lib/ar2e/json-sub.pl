@@ -25,12 +25,8 @@ sub addJsonData {
   $pc{sheetDescriptionS} = $base."\n".$class."\n";
   $pc{sheetDescriptionM} = $base."\n".$class."\n".($geis?"\n$geis":'');
   
-  ## ゆとチャユニット用ステータス
-  $pc{unitStatus} = [
-    { 'HP' => $pc{hpTotal}.'/'.$pc{hpTotal} },
-    { 'MP' => $pc{mpTotal}.'/'.$pc{mpTotal} },
-    { 'フェイト' => $pc{fateTotal}.'/'.$pc{fateTotal} },
-  ];
+  ## ユニット（コマ）用ステータス
+  $pc{unitStatus} = createUnitStatus(\%pc);
   
   return \%pc;
 }
