@@ -458,7 +458,7 @@ sub chatPaletteForm {
           <dt>表示名
           <dd>@{[ input 'namePlate','','changeNamePlate','placeholder="ニックネーム、ファーストネームなど"' ]} <small>※コマ出力時、こちらの入力が名前として優先されます。名前が長いキャラなどに</small>
           <dt>発言者色
-          <dd>@{[ input 'nameColor','','changeNamePlate' ]} <small>※6桁のカラーコードで記入してください。</small>
+          <dd>@{[ input 'nameColor','','changeNamePlate' ]} <small>※#から始まる6桁のカラーコードで記入してください。</small>
             <div id="name-plate-view">表示例：
               <span class="ytcha"></span> ／
               <span class="tekey"></span> ／

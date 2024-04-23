@@ -267,7 +267,8 @@ function setChatPalette(){
 function changeNamePlate(){
   const name = form.namePlate.value || form.characterName?.value || form.aka?.value || form.monsterName?.value || '';
   const colors = form.nameColor.value.split(/,/);
-  const color  = /^#[0-9a-zA-Z]{6}$/.test(colors[0]) ? colors[0] : ''
+  const color  = /^#[0-9a-zA-Z]{6}$/.test(colors[0]) ? colors[0] : '';
+  form.nameColor.classList.toggle('error', colors[0] != '' && !color);
   document.querySelectorAll('#name-plate-view > span').forEach( namePlate =>{
     namePlate.textContent = name;
     namePlate.style.color = color;
