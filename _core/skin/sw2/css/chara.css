@@ -303,6 +303,9 @@ body {
   font-size: 1.2rem;
   text-align: right;
 }
+main#character #status dl[id^="stt-bonus"]::after {
+  opacity: 0.3;
+}
 #status dl[id^="stt-bonus"] dt span {
   display: block;
   width: 3em;
