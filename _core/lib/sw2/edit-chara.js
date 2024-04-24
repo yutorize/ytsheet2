@@ -1136,6 +1136,9 @@ function calcMagic() {
     // 魔法
     if(SET.class[key].magic){
       document.getElementById("magic-power-"+eName).style.display = cLv ? '' : 'none';
+      for(let num = 1; num <= form.paletteMagicNum.value; num++){
+        form[`paletteMagic${num}Check${id}`].disabled = cLv ? false : true;
+      }
       if(cLv){ openMagic++; }
       
       const seekerMagicAdd = (lvSeeker && checkSeekerAbility('魔力上昇') && cLv >= 15) ? 3 : 0;
@@ -1723,17 +1726,66 @@ function addWeapons(copyBaseNum){
     });
     calcWeapon();
   }
+  generatePaletteWeaponCheckbox();
 }
 // 削除
 function delWeapons(){
-  delRow('weaponNum', '#weapons-table tbody:last-of-type');
+  if(delRow('weaponNum', '#weapons-table tbody:last-of-type')){
+    generatePaletteWeaponCheckbox();
+  }
 }
 // ソート
-setSortable('weapon', '#weapons-table', 'tbody', (row, num) => {
-  row.querySelector(`span[onclick]`).setAttribute('onclick',`addWeapons(${num})`);
-  row.querySelector(`b[id$=acc-total]`).id = `weapon${num}-acc-total`;
-  row.querySelector(`b[id$=dmg-total]`).id = `weapon${num}-dmg-total`;
-})
+setSortable('weapon', '#weapons-table', 'tbody',
+  (row, num) => {
+    row.querySelector(`span[onclick]`).setAttribute('onclick',`addWeapons(${num})`);
+    row.querySelector(`b[id$=acc-total]`).id = `weapon${num}-acc-total`;
+    row.querySelector(`b[id$=dmg-total]`).id = `weapon${num}-dmg-total`;
+  },
+  () => {
+    generatePaletteWeaponCheckbox();
+  }
+);
+
+function changeWeaponName (){
+  let rowNum = 0;
+  document.querySelectorAll(`#palette-attack .palette-attack-checklist`).forEach(row => {
+    rowNum++;
+    for(let num = 1; num <= form.weaponNum.value; num++){
+      const name = (form[`weapon${num}Name`].value || form[`weapon${num-1}Name`]?.value || '')+form[`weapon${num}Usage`].value;
+      form[`paletteAttack${rowNum}CheckWeapon${num}`].nextElementSibling.textContent = name;
+    }
+  });
+}
+function generatePaletteWeaponCheckbox (){
+  let checkList = {};
+  let rowNum = 0;
+  const rows = document.querySelectorAll(`#palette-attack .palette-attack-checklist`);
+  rows.forEach(row => {
+    rowNum++;
+    checkList[rowNum] = {};
+    row.querySelectorAll(`label input`).forEach(checkbox => {
+      const name = checkbox.nextElementSibling.textContent || '';
+      checkList[rowNum][name] = checkbox.checked ? 'checked' : '';
+    })
+  });
+  rowNum = 1;
+  rows.forEach(row => {
+    row.innerHTML = '';
+    const added = {};
+    for(let num = 1; num <= form.weaponNum.value; num++){
+      const name = (form[`weapon${num}Name`].value || form[`weapon${num-1}Name`]?.value || '')+form[`weapon${num}Usage`].value;
+
+      let checkbox = document.createElement('label');
+      checkbox.classList.add('check-button');
+      if(added[name] || !name){ checkbox.disabled = true; }
+      checkbox.innerHTML = `<input type="checkbox" name="paletteAttack${rowNum}CheckWeapon${num}" value="1" oninput="setChatPalette()" ${checkList[rowNum][name]}><span>${name||'―'}</span>`;
+      row.append(checkbox);
+
+      added[name] = 1;
+    }
+    rowNum++;
+  });
+}
 
 // 防具欄 ----------------------------------------
 // 追加
@@ -1808,12 +1860,18 @@ function calcCommonClass(){
   let totalLv = 0;
   for(let num = 1; num <= Number(form.commonClassNum.value); num++){
     totalLv += Number(form['lvCommon'+num].value||0);
+    document.querySelector(`#palette-common-class-row${num} .name`).textContent = form['commonClass'+num].value.replace(/[(（].+?[）)]$/, '');
   }
   document.getElementById('cc-total-lv').textContent = totalLv;
 }
 // 追加
 function addCommonClass(){
   document.querySelector("#common-classes-table tbody").append(createRow('common-class','commonClassNum'));
+  
+  let row = document.getElementById('palette-common-class-template').content.firstElementChild.cloneNode(true);
+  row.id = idNumSet('palette-common-class-row');
+  row.innerHTML = row.innerHTML.replaceAll('TMPL', form.commonClassNum.value);
+  document.querySelector("#palette-common-classes table tbody").append(row);
 }
 // 削除
 function delCommonClass(){
@@ -1822,7 +1880,28 @@ function delCommonClass(){
   }
 }
 // ソート
-setSortable('commonClass|lvCommon','#common-classes-table tbody','tr');
+setSortable('commonClass|lvCommon','#common-classes-table tbody','tr','',()=>{
+  let idArray = [];
+  document.querySelectorAll(`#common-classes-table tbody tr`).forEach(row => {
+    idArray.push('palette-'+row.id);
+  });
+  
+  sortablePaletteCommonClass.sort(idArray);
+
+  let num = 1;
+  document.querySelectorAll(`#palette-common-classes tbody tr`).forEach(row => {
+    replaceSortedNames(row,num,/^(paletteCommonClass)[0-9]+(.*)$/);
+    num++;
+  });
+});
+
+let sortablePaletteCommonClass = Sortable.create(document.querySelector('#palette-common-classes tbody'), {
+  sort: false,
+  dataIdAttr: 'id',
+  animation: 150,
+  handle: '.none',
+  filter: 'template',
+});
 
 // 履歴欄 ----------------------------------------
 // 追加
@@ -1841,6 +1920,28 @@ setSortable('history','#history-table','tbody');
 // 戦闘用アイテム欄 ----------------------------------------
 // ソート
 setSortable('history','#battle-items-list');
+
+// チャットパレット ----------------------------------------
+// 武器攻撃
+function addPaletteAttack(){
+  document.querySelector("#palette-attack > table tbody").append(createRow('palette-attack','paletteAttackNum'));
+}
+function delPaletteAttack(){
+  if(delRow('paletteAttackNum', '#palette-attack > table tbody tr:last-of-type')){
+    setChatPalette();
+  }
+}
+setSortable('paletteAttack','#palette-attack > table tbody','tr');
+// 魔法
+function addPaletteMagic(){
+  document.querySelector("#palette-magic > table tbody").append(createRow('palette-magic','paletteMagicNum'));
+}
+function delPaletteMagic(){
+  if(delRow('paletteMagicNum', '#palette-magic > table tbody tr:last-of-type')){
+    setChatPalette();
+  }
+}
+setSortable('paletteMagic','#palette-magic > table tbody','tr');
 
 // 割り振り計算 ----------------------------------------
 function calcPointBuy() {

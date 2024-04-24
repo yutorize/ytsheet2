@@ -332,6 +332,13 @@ dl.edit-table:last-child > dt:last-of-type ~ dd {
   border-bottom-style: hidden;
 }
 
+.highlight-hovered-row {
+  > :is(tr,tbody):hover {
+    background-color: #ff02;
+    .night & { background-color: #fff2; }
+  }
+}
+
 input.auto {
   text-align: center;
   border: hidden;
@@ -1235,6 +1242,7 @@ input[type="submit"]:hover {
     }
     > dt {
       text-align: center;
+      line-height: 1.8;
     }
     > dd {
       text-align: left;
@@ -1266,6 +1274,10 @@ input[type="submit"]:hover {
           .check-button > span { font-size: 75%; text-wrap: nowrap; }
         }
         #unit-status-default {
+          & :is(th,td):nth-child(-n+3) {
+            border-bottom-width: 1px;
+            border-bottom-style: dotted;
+          }
           & th { text-align: center; }
         }
       }
@@ -1283,9 +1295,15 @@ input[type="submit"]:hover {
   }
 }
 #chatpalette {
+  .box-union:has(&){
+    margin-top: var(--box-v-gap);
+  }
+
   display: grid;
   grid-template-columns: 1fr 1fr;
-  margin-top: var(--box-v-gap);
+  @media screen and (max-width:735px){
+    display: block;
+  }
 
   > * {
     grid-column: span 2;
@@ -1301,6 +1319,7 @@ input[type="submit"]:hover {
     padding-left: .5em;
   }
 }
+#palette-setup textarea { height: 16em; }
 
 /* // 目次
 ---------------------------------------------------------------------------------------------------- */

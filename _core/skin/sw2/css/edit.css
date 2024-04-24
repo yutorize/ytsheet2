@@ -1053,6 +1053,82 @@ article > form > hr {
   height: 10em;
 }
 
+#palette-optional {
+  border-top-width: 1px;
+  border-top-style: solid;
+}
+#palette-common-classes {
+  > table {
+    border-top-width: 1px;
+    border-top-style: solid;
+    & tr:has(.name:empty){
+      display: none;
+    }
+    & td {
+      min-width: 5em;
+      padding: .2em;
+    }
+  }
+}
+#palette-insert {
+  > ul {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    @media screen and (max-width:735px){
+      display: block;
+    }
+    > li {
+      text-align: left;
+    }
+    & select {
+      width: max-content;
+    }
+    & textarea {
+      height: 16em;
+    }
+  }
+}
+#palette-attack {
+  > table {
+    thead th {
+      line-height: 1;
+      &:first-child { width: 1em; }
+      &.name { width: 14em; }
+      &.acc  { width: 6em; }
+      &.dmg  { width: 6em; }
+      &.crit { width: 6em; }
+      &.roll { width: 6em; }
+    }
+  }
+}
+#palette-magic {
+  > table {
+    thead th {
+      line-height: 1;
+      &:first-child { width: 1em; }
+      &.name { width: 14em; }
+      &.power { width: 6em; }
+      &.cast  { width: 6em; }
+      &.crit  { width: 6em; }
+      &.dmg   { width: 6em; }
+      &.roll  { width: 6em; }
+    }
+    & label:has(:disabled) {
+      display: none;
+    }
+  }
+}
+@media screen and (max-width:735px){
+  #chatpalette ~ * > details {
+    max-width: 100%;
+    overflow-x: auto;
+    > table {
+      table-layout: fixed;
+    }
+    > table .target { width:16em; }
+  }
+}
+
 #deleteform {
   margin-top: 5rem;
   padding-top: 5rem;

@@ -481,44 +481,49 @@ sub chatPaletteForm {
             </div>
         </dl>
       </div>
-      <div class="box" id="chatpalette">
-        <h2>チャットパレット <small>(ユニット(コマ)出力時、ここで設定したものが出力されます)</small></h2>
-        <p>
-          手動パレットの配置:<select name="paletteInsertType" style="width: auto;">
-            <option value="exchange" @{[ $::pc{paletteInsertType} eq 'exchange'?'selected':'' ]}>プリセットと入れ替える</option>
-            <option value="begin"    @{[ $::pc{paletteInsertType} eq 'begin'   ?'selected':'' ]}>プリセットの手前に挿入</option>
-            <option value="end"      @{[ $::pc{paletteInsertType} eq 'end'     ?'selected':'' ]}>プリセットの直後に挿入</option>
-          </select>
-        </p>
-        <textarea name="chatPalette" style="height:20em" placeholder="例）&#13;&#10;2d6+{冒険者}+{器用}&#13;&#10;&#13;&#10;※入力がない場合、プリセットが自動的に反映されます。">$::pc{chatPalette}</textarea>
-        
-        <div class="palette-column">
-        <h2>デフォルト変数 （自動的に末尾に出力されます）</h2>
-        <textarea id="paletteDefaultProperties" readonly style="height:20em">$palette</textarea>
+      <div class="box-union">
+        <div class="box" id="chatpalette">
+          <h2>チャットパレット <small>(ユニット(コマ)出力時、ここで設定したものが出力されます)</small></h2>
           <p>
-            @{[ checkbox 'chatPalettePropertiesAll','全てのデフォルト変数を出力する','setChatPalette' ]} <br>
-            <small>※デフォルトだと、未使用の変数は出力されません</small>
+            手動パレットの配置:<select name="paletteInsertType" style="width: auto;">
+              <option value="exchange" @{[ $::pc{paletteInsertType} eq 'exchange'?'selected':'' ]}>プリセットと入れ替える</option>
+              <option value="begin"    @{[ $::pc{paletteInsertType} eq 'begin'   ?'selected':'' ]}>プリセットの手前に挿入</option>
+              <option value="end"      @{[ $::pc{paletteInsertType} eq 'end'     ?'selected':'' ]}>プリセットの直後に挿入</option>
+            </select>
           </p>
+          <textarea name="chatPalette" style="height:20em" placeholder="例）&#13;&#10;2d6+{冒険者}+{器用}&#13;&#10;&#13;&#10;※入力がない場合、プリセットが自動的に反映されます。">$::pc{chatPalette}</textarea>
+          
+          <div class="palette-column">
+          <h2>デフォルト変数 （自動的に末尾に出力されます）</h2>
+          <textarea id="paletteDefaultProperties" readonly style="height:20em">$palette</textarea>
+            <p>
+              @{[ checkbox 'chatPalettePropertiesAll','全てのデフォルト変数を出力する','setChatPalette' ]} <br>
+              <small>※デフォルトだと、未使用の変数は出力されません</small>
+            </p>
+          </div>
+          <div class="palette-column">
+            <h2>プリセット （見本またはコピーペースト用）</h2>
+            <textarea id="palettePreset" readonly style="height:20em"></textarea>
+            <p>
+              @{[ checkbox 'paletteUseVar','デフォルト変数を使う','setChatPalette' ]}
+              @{[ $opt{buff} ? checkbox('paletteUseBuff','バフデバフ用変数を使う','setChatPalette') : '' ]}<br>
+              @{[ checkbox 'paletteRemoveTags','ルビなどテキスト装飾の構文を取り除く','setChatPalette' ]} 
+            </p>
+            <dl>
+              <dt>使用するオンセツール
+              <dd class="left">
+                @{[ radios 'paletteTool','setChatPalette',@{$opt{tool}} ]}<br>
+                <small>※プリセットの内容がツールに合わせたものに切り替わります。<br>　なお、コマ出力の際にはここでの変更に関わらず、自動的に出力先のツールに合わせたものになります。</small>
+            </dl>
+          </div>
         </div>
-        <div class="palette-column">
-          <h2>プリセット （見本またはコピーペースト用）</h2>
-          <textarea id="palettePreset" readonly style="height:20em"></textarea>
-          <p>
-            @{[ checkbox 'paletteUseVar','デフォルト変数を使う','setChatPalette' ]}
-            @{[ $opt{buff} ? checkbox('paletteUseBuff','バフデバフ用変数を使う','setChatPalette') : '' ]}<br>
-            @{[ checkbox 'paletteRemoveTags','ルビなどテキスト装飾の構文を取り除く','setChatPalette' ]} 
-          </p>
-          <dl>
-            <dt>使用するオンセツール
-            <dd class="left">
-              @{[ radios 'paletteTool','setChatPalette',@{$opt{tool}} ]}<br>
-              <small>※プリセットの内容がツールに合わせたものに切り替わります。<br>　なお、コマ出力の際にはここでの変更に関わらず、自動的に出力先のツールに合わせたものになります。</small>
-          </dl>
-        </div>
+        @{[ chatPaletteFormOptional() ]}
       </div>
     </section>
 HTML
+  sub chatPaletteFormOptional {}
 }
+
 
 ## カラーカスタム欄
 sub colorCostomForm {

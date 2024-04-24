@@ -619,6 +619,7 @@ sub data_calc {
   $pc{fellowProfile} =~ s/\r\n?|\n/<br>/g;
   $pc{fellowNote}    =~ s/\r\n?|\n/<br>/g;
   $pc{chatPalette}   =~ s/\r\n?|\n/<br>/g;
+  $pc{'chatPaletteInsert'.$_} =~ s/\r\n?|\n/<br>/g foreach(1..2);
   
   #### 保存処理でなければここまで --------------------------------------------------
   if(!$::mode_save){ return %pc; }

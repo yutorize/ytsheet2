@@ -142,6 +142,7 @@ sub deletePalettePresetBuff {
   $text =~ s/\$\+0//g;
   $text =~ s/\#0//g;
   $text =~ s/\+0//g;
+  $text =~ s/\+\(\)//g;
   $text =~ s/^### ■バフ・デバフ\n//g;
   
   return $text;
@@ -176,6 +177,25 @@ sub filterByUsedOnly {
     }
   }
   return @propaties_out;
+}
+
+sub unescapeTagsPalette {
+  my $text = shift;
+  $text =~ s/&amp;/&/g;
+  $text =~ s/&quot;/"/g;
+  $text =~ s/&lt;br&gt;/\n/gi;
+
+  if($set::game eq 'sw2'){
+    $text =~ s/\[(魔|刃|打)\]/&#91;$1&#93;/;
+  }
+  
+  $text =~ s/\[\[(.+?)&gt;((?:(?!<br>)[^"])+?)\]\]/$1/gi; # リンク削除
+  $text =~ s/\[(.+?)#([a-zA-Z0-9\-]+?)\]/$1/gi; # シート内リンク削除
+  
+  $text =~ s/&#91;(.)&#93;/[$1]/g;
+  
+  $text =~ s/\n/<br>/gi;
+  return $text;
 }
 
 1;

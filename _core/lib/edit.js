@@ -261,7 +261,15 @@ function setChatPalette(){
       setDefaultStatus(data.unitStatus);
     })
 }
-
+// 追加挿入
+function addChatPaletteInsert(){
+  document.querySelector("#palette-insert > ul").append(createRow('palette-insert','chatPaletteInsertNum'));
+}
+function delChatPaletteInsert(){
+  if(delRow('chatPaletteInsertNum', '#palette-insert > ul li:last-of-type')){
+    setChatPalette();
+  }
+}
 // ユニット ----------------------------------------
 // 表示名・名前色
 function changeNamePlate(){

@@ -317,6 +317,13 @@ sub optimizeOperator {
   $text =~ s/-\+/-/g;
   return $text;
 }
+sub optimizeOperatorFirst {
+  my $text = shift;
+  $text =~ s/^\+\++/\+/;
+  $text =~ s/^\+-/-/;
+  $text =~ s/^-\+/-/;
+  return $text;
+}
 ### 数値3桁区切り --------------------------------------------------
 sub commify {
   my $num = shift;
@@ -476,20 +483,6 @@ sub unescapeTags {
     }
   }
   
-  return $text;
-}
-sub unescapeTagsPalette {
-  my $text = shift;
-  $text =~ s/&amp;/&/g;
-  $text =~ s/&quot;/"/g;
-  $text =~ s/&lt;br&gt;/\n/gi;
-  
-  $text =~ s/\[\[(.+?)&gt;((?:(?!<br>)[^"])+?)\]\]/$1/gi; # リンク削除
-  $text =~ s/\[(.+?)#([a-zA-Z0-9\-]+?)\]/$1/gi; # シート内リンク削除
-  
-  $text =~ s/&#91;(.)&#93;/[$1]/g;
-  
-  $text =~ s/\n/<br>/gi;
   return $text;
 }
 sub generateLinkTag {
