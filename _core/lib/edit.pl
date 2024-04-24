@@ -270,6 +270,10 @@ sub option {
       $text .= '<optgroup label="'.$value.'">';
       $label = 1;
     }
+    elsif($value eq 'close_group') {
+      $text .= '</optgroup>';
+      $label = 0;
+    }
     else {
       if($value =~ s/\|\<(.*?)\>$//){ $view = $1 } else { $view = $value }
       $text .= '<option value="'.$value.'"'.($::pc{$name} eq $value ? ' selected':'').'>'.$view;
