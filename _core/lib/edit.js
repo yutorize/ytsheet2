@@ -619,6 +619,7 @@ function sectionSelect(id){
     obj.style.display = 'none';
   });
   document.getElementById('section-'+id).style.display = 'block';
+  window.scrollTo({ top:0 });
   if(id === 'palette'){ changeNamePlate(); setChatPalette() }
 }
 
