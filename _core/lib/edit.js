@@ -308,7 +308,9 @@ function addUnitStatus(){
 function delUnitStatus(){
   delRow('unitStatusNum', '#unit-status-optional tr:last-of-type')
 }
-setSortable('unitStatus','#unit-status-optional','tr');
+if (document.getElementById('unit-status-optional')) {
+  setSortable('unitStatus', '#unit-status-optional', 'tr');
+}
 
 // 画像配置 ----------------------------------------
 // ビューを開く
