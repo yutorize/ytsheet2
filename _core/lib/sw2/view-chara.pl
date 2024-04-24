@@ -827,6 +827,10 @@ else {
     next if (@$_[1] =~ /Other2/ &&  $pc{raceAbility} !~ /［見えざる手］/);
     next if (@$_[1] =~ /Other3/ && ($pc{raceAbility} !~ '［見えざる手］' || $pc{level} <  6));
     next if (@$_[1] =~ /Other4/ && ($pc{raceAbility} !~ '［見えざる手］' || $pc{level} < 16));
+    if (@$_[1] =~ /_$/) {
+      my $baseKey = substr(@$_[1], 0, length(@$_[1]) - 1);
+      next unless $pc{'accessory'.$baseKey.'Add'};
+    }
     push(@accessories, {
       TYPE => @$_[0],
       NAME => $pc{'accessory'.@$_[1].'Name'},
