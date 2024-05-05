@@ -849,6 +849,9 @@ dl#level {
   &.own  { width:   1em; } /* 専用 */
   &.note { width:  auto; } /* 備考 */
 }
+#armours td.eva:empty::before {
+  content: "―";
+}
 #armours td.note {
   padding-left: .3em;
   text-align: left;
