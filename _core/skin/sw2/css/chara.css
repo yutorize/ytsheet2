@@ -901,6 +901,10 @@ dl#level {
   }
   & dd {
     grid-row: 2;
+
+    &:last-child:empty::before {
+      content: "―";
+    }
   }
 }
 
