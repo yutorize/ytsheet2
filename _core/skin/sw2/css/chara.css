@@ -1189,6 +1189,22 @@ dl#level {
 }
 #f-character-name dd {
   font-size: 2rem;
+
+  .aka {
+    &::before {
+      content: "“";
+    }
+
+    &::after {
+      content: "”";
+    }
+  }
+
+  .aka,
+  .aka + .name {
+    word-break: keep-all;
+    white-space: nowrap;
+  }
 }
 
 #f-race,
