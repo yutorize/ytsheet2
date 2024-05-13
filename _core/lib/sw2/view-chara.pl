@@ -119,7 +119,7 @@ $SHEET->param(rawName => $pc{characterName} || ($pc{aka} ? "“$pc{aka}”" : ''
 if($pc{ver}){
   foreach (keys %pc) {
     next if($_ =~ /^image/);
-    if($_ =~ /^(?:items|freeNote|freeHistory|cashbook)$/){
+    if($_ =~ /^(?:items|freeNote|freeHistory|cashbook|fellowProfile)$/){
       $pc{$_} = unescapeTagsLines($pc{$_});
     }
     $pc{$_} = unescapeTags($pc{$_});
