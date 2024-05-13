@@ -1243,6 +1243,11 @@ dl#level {
     text-align: center;
   }
 }
+#f-player-name {
+  &:has(dd:empty) {
+    display: none;
+  }
+}
 
 #f-race,
 #f-personal {
