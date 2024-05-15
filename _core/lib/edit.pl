@@ -610,6 +610,8 @@ HTML
 sub textRuleArea {
   my $system_rule = shift;
   my $multiline = shift;
+  my $multilineSystemRule = shift;
+  $multilineSystemRule = '<br><br>' . $multilineSystemRule if $multilineSystemRule;
   return <<"HTML";
     <aside id="text-rule" class="sticky-footer" style="display:none">
       <h2>テキスト装飾・整形ルール</h2>
@@ -650,6 +652,7 @@ sub textRuleArea {
         折り畳み終了：行頭に<code>[---]</code>：（ハイフンは3つ以上任意）<br>
         　　　　　　　省略すると、以後のテキストが全て折りたたまれます。<br>
         コメントアウト：行頭に<code>//</code>：記述した行を非表示にします。
+        ${multilineSystemRule}
       </div>
     </aside>
 HTML
