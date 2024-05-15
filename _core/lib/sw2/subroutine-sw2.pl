@@ -103,6 +103,7 @@ sub class_color {
 ### タグ変換 --------------------------------------------------
 sub textToIcon {
   my $text = shift;
+  my $requireSquareBrackets = shift;
 
   my @patterns = ();
 
@@ -123,6 +124,7 @@ sub textToIcon {
   
   foreach (@patterns) {
     (my $re, my $replacement) = @{$_};
+    $re = "\\[(?:$re)]" if $requireSquareBrackets;
     $text =~ s{$re}{$replacement}gi;
   }
   
