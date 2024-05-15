@@ -326,6 +326,10 @@ table.status {
   background: var(--box-base-bg-color);
   border-radius: 0;
   box-shadow: none !important;
+
+  &:has(> p:first-of-type:last-of-type:empty) {
+    display: none;
+  }
 }
 .description :is(h2, h2:nth-child(n+2)) {
   margin: 0;
