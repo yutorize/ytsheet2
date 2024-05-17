@@ -10,7 +10,7 @@ use HTML::Template;
 
 ### テンプレート読み込み #############################################################################
 my $SHEET;
-$SHEET = HTML::Template->new( filename => $set::skin_clan, utf8 => 1,
+$SHEET = HTML::Template->new( filename => $set::skin_sheet, utf8 => 1,
   path => ['./', $::core_dir."/skin/ms", $::core_dir."/skin/_common", $::core_dir],
   search_path_on_include => 1,
   loop_context_vars => 1,

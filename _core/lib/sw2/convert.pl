@@ -76,7 +76,7 @@ sub getItemData {
     my $id = $1;
     my ($file, $type, $author) = getfile_open($id);
     my %pc;
-    open my $IN, '<', "${set::item_dir}${file}/data.cgi" or return;
+    open my $IN, '<', "$set::lib_type{i}{dataDir}${file}/data.cgi" or return;
     while (<$IN>){
       chomp;
       my ($key, $value) = split(/<>/, $_, 2);

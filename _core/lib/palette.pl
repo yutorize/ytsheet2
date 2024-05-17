@@ -17,9 +17,7 @@ if($editing){ outputChatPaletteTemplate(); } else { outputChatPalette(); }
 sub outputChatPalette {
   my ($file, $type, undef) = getfile_open($id);
 
-  my $datadir;
-    if($type eq 'm'){ $datadir = $set::mons_dir; }
-  else              { $datadir = $set::char_dir; }
+  changeFileByType($type);
 
   our %pc = ();
   if($::in{propertiesall}){ $pc{chatPalettePropertiesAll} = 1 }
@@ -27,7 +25,7 @@ sub outputChatPalette {
   my $datatype = ($::in{log}) ? 'logs' : 'data';
 
   my @lines;
-  open my $IN, '<', "${datadir}${file}/${datatype}.cgi" or &login_error;
+  open my $IN, '<', "${set::char_dir}${file}/${datatype}.cgi" or &login_error;
   if($datatype eq 'logs'){
     my $hit = 0;
     while (<$IN>){
@@ -104,8 +102,7 @@ sub swapWordAndCommand {
 sub outputChatPaletteTemplate {
   use JSON::PP;
   my $type = $::in{type};
-  if   ($type eq 'm'){ require $set::lib_calc_mons; }
-  else               { require $set::lib_calc_char; }
+  require $set::lib_calc_char;
   our %pc;
   for (param()){ $pc{$_} = decode('utf8', param($_)) }
   %pc = data_calc(\%pc);

@@ -47,17 +47,36 @@ sub getfile_open {
   close($FH);
   return 0;
 }
+### typeによって各ファイル・ディレクトリを変更 --------------------------------------------------
+sub changeFileByType {
+  my $type = shift;
+  if($type && exists $set::lib_type{$type}){
+    return if exists $set::lib_type{chara};
+    $set::lib_type{chara}{listFile} = $set::listfile;
+    $set::lib_type{chara}{dataDir}  = $set::char_dir;
+    $set::lib_type{chara}{edit}     = $set::lib_edit_char;
+    $set::lib_type{chara}{calc}     = $set::lib_calc_char;
+    $set::lib_type{chara}{view}     = $set::lib_view_char;
+    $set::lib_type{chara}{list}     = $set::lib_list_char;
+    $set::lib_type{chara}{skin}     = $set::skin_sheet;
+
+    $set::listfile      = $set::lib_type{$type}{listFile};
+    $set::char_dir      = $set::lib_type{$type}{dataDir};
+    $set::lib_edit_char = $set::lib_type{$type}{edit};
+    $set::lib_calc_char = $set::lib_type{$type}{calc};
+    $set::lib_view_char = $set::lib_type{$type}{view};
+    $set::lib_list_char = $set::lib_type{$type}{list};
+    $set::skin_sheet    = $set::lib_type{$type}{skin};
+  }
+}
 
 ### 画像リダイレクト --------------------------------------------------
 sub redirectToImage {
   my $id   = shift;
   my $type = shift;
   my ($file,$type,$user) = getfile_open($id);
-  my $datadir = ($set::game eq 'sw2' && $type eq 'm') ? $set::mons_dir
-              : ($set::game eq 'sw2' && $type eq 'i') ? $set::item_dir
-              : ($set::game eq 'sw2' && $type eq 'a') ? $set::arts_dir
-              : ($set::game eq 'ms'  && $type eq 'c') ? $set::clan_dir
-              : $set::char_dir;
+  changeFileByType($type);
+  my $datadir = $set::char_dir;
   my $ext;
 
   if(!$file){ error("ファイルがありません。") }
