@@ -1398,7 +1398,16 @@ my $text_rule = <<"HTML";
         　刃武器　　　　：<code>[刃]</code>：<img class="i-icon" src="${set::icon_dir}wp_edge.png"><br>
         　打撃武器　　　：<code>[打]</code>：<img class="i-icon" src="${set::icon_dir}wp_blow.png"><br>
 HTML
-print textRuleArea( $text_rule,'「容姿・経歴・その他メモ」「履歴（自由記入）」「所持品」「収支履歴」' );
+my $multilineRule = <<"HTML";
+        アイコン<br>
+        　常時　　　：<code>[○]</code><code>[◯]</code><code>[〇]</code>：<i class="s-icon passive">○</i><br>
+        　主動作　　：<code>[＞]</code><code>[▶]</code><code>[〆]</code>：<i class="s-icon major0">〆</i><br>
+        　補助動作　：<code>[☆]</code><code>[≫]</code><code>[»]</code><code>[&gt;&gt;]</code>：<i class="s-icon minor0">☆</i><br>
+        　宣言型　　：<code>[□]</code><code>[☐]</code><code>[☑]</code><code>[🗨]</code>：<i class="s-icon active0">☑</i><br>
+        　条件型　　：<code>[▽]</code>：<i class="s-icon condition">▽</i><br>
+        　条件選択型：<code>[▼]</code>：<i class="s-icon selection">▼</i>
+HTML
+print textRuleArea( $text_rule,'「容姿・経歴・その他メモ」「履歴（自由記入）」「所持品」「収支履歴」',$multilineRule );
 
 print <<"HTML";
   </main>
