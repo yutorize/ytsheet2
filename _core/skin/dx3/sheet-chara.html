@@ -306,9 +306,9 @@
             <TMPL_LOOP Loises><tr>
               <td><TMPL_VAR RELATION>
               <td><TMPL_VAR NAME>
-              <td class="emo <TMPL_IF P-CHECK>checked</TMPL_IF>"><TMPL_VAR POSI>
-              <td>／
-              <td class="emo <TMPL_IF N-CHECK>checked</TMPL_IF>"><TMPL_VAR NEGA>
+              <td class="emo <TMPL_VAR P-CHECK>"><TMPL_VAR POSI></td>
+              <td><TMPL_UNLESS NO-EMO>／<TMPL_ELSE>―</TMPL_UNLESS>
+              <td class="emo <TMPL_VAR N-CHECK>"><TMPL_VAR NEGA></td>
               <td class="color" style="<TMPL_VAR COLOR-BG>"><TMPL_VAR COLOR></td>
               <td class="left"<TMPL_UNLESS STATE> colspan="2"</TMPL_UNLESS>><TMPL_VAR NOTE>
               <TMPL_IF STATE><td class="state right <TMPL_IF S>sperior</TMPL_IF>"><span data-state="<TMPL_VAR STATE>"></span></td></TMPL_IF>
