@@ -1919,7 +1919,7 @@ setSortable('history','#history-table','tbody');
 
 // 戦闘用アイテム欄 ----------------------------------------
 // ソート
-setSortable('history','#battle-items-list');
+setSortable('battleItem','#battle-items-list');
 
 // チャットパレット ----------------------------------------
 // 武器攻撃
