@@ -674,7 +674,7 @@ sub paletteProperties {
         $add .= addNum $::pc{'magicPowerAdd'.$id};
         $add .= addNum $::pc{raceAbilityMagicPower};
         $add .= addNum $::pc{'raceAbilityMagicPower'.$id};
-        $add .= "+{魔力修正}" if $::pc{paletteUseBuff};
+        $add .= $::pc{paletteUseBuff} ? "+{魔力修正}" : addNum($::pc{magicPowerAdd});
       }
       elsif($id eq 'Alc') {
         $add .= addNum($::pc{alchemyEnhance});
