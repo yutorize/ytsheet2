@@ -36,7 +36,6 @@
           <summary>閲覧中のログ<TMPL_IF selectedLogName>の名前をつけなおす<TMPL_ELSE>に名前をつける</TMPL_IF></summary>
           <form id="log-naming-form" method="post" action="./">
             <input type="hidden" name="mode" value="bu-naming">
-            <input type="hidden" name="type" value="i">
             <input type="hidden" name="id" value="<TMPL_VAR id>">
             <input type="hidden" name="date" value="<TMPL_VAR logId>">
             <dl>
@@ -61,7 +60,6 @@
 
     <form id="login-form" class="float-box" method="post" action="./">
       <input type="hidden" name="mode" value="edit">
-      <input type="hidden" name="type" value="i">
       <input type="hidden" name="id" value="<TMPL_VAR id>">
       <input type="password" name="pass" placeholder="password">
       <input type="hidden" name="log" value="<TMPL_VAR logId>">
