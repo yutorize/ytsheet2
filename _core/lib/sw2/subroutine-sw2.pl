@@ -103,19 +103,27 @@ sub class_color {
 ### タグ変換 --------------------------------------------------
 sub textToIcon {
   my $text = shift;
+
+  my @patterns = ();
+
   if($::SW2_0){
-    $text =~ s{[○◯〇]}{<i class="s-icon passive">○</i>}gi;
-    $text =~ s{[＞▶〆]}{<i class="s-icon major0">〆</i>}gi;
-    $text =~ s{[☆≫»]|&gt;&gt;}{<i class="s-icon minor0">☆</i>}gi;
-    $text =~ s{[□☐☑🗨]}{<i class="s-icon active0">☑</i>}gi;
-    $text =~ s{[▽]}{<i class="s-icon condition">▽</i>}gi;
-    $text =~ s{[▼]}{<i class="s-icon selection">▼</i>}gi;
+    push(@patterns, ['[○◯〇]', '<i class="s-icon passive">○</i>']);
+    push(@patterns, ['[＞▶〆]', '<i class="s-icon major0">〆</i>']);
+    push(@patterns, ['[☆≫»]|&gt;&gt;', '<i class="s-icon minor0">☆</i>']);
+    push(@patterns, ['[□☐☑🗨]', '<i class="s-icon active0">☑</i>']);
+    push(@patterns, ['[▽]', '<i class="s-icon condition">▽</i>']);
+    push(@patterns, ['[▼]', '<i class="s-icon selection">▼</i>']);
   } else {
-    $text =~ s{[○◯〇]}{<i class="s-icon passive">○</i>}gi;
-    $text =~ s{[△]}{<i class="s-icon setup">△</i>}gi;
-    $text =~ s{[＞▶〆]}{<i class="s-icon major">▶</i>}gi;
-    $text =~ s{[☆≫»]|&gt;&gt;}{<i class="s-icon minor">≫</i>}gi;
-    $text =~ s{[□☐☑🗨]}{<i class="s-icon active">☑</i>}gi;
+    push(@patterns, ['[○◯〇]', '<i class="s-icon passive">○</i>']);
+    push(@patterns, ['[△]', '<i class="s-icon setup">△</i>']);
+    push(@patterns, ['[＞▶〆]', '<i class="s-icon major">▶</i>']);
+    push(@patterns, ['[☆≫»]|&gt;&gt;', '<i class="s-icon minor">≫</i>']);
+    push(@patterns, ['[□☐☑🗨]', '<i class="s-icon active">☑</i>']);
+  }
+
+  foreach (@patterns) {
+    (my $re, my $replacement) = @{$_};
+    $text =~ s{$re}{$replacement}gi;
   }
   
   return $text;
