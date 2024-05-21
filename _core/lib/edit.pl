@@ -460,7 +460,7 @@ sub chatPaletteForm {
             @{[ input 'unitStatusNotOutput','hidden' ]}
             @{[ input 'unitStatusNum','hidden' ]}
             <table id="unit-status">
-              <tbody id="unit-status-default">
+              <tbody id="unit-status-default" class="highlight-hovered-row">
               <tbody id="unit-status-optional">$status
               <tfoot><tr><td colspan="3" class="add-del-button"><a onclick="addUnitStatus()">▼</a><a onclick="delUnitStatus()">▲</a></div>
             </table>
