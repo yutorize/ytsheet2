@@ -192,6 +192,9 @@ table.status {
     &.vit    { width: 8.5%; }
     &.mnd    { width: 8.5%; }
   }
+  &:not(#status-table):has(tbody tr:first-child:last-child) thead th.name > .text-part {
+    display: none;
+  }
   & tbody {
     border-top-width: 1px;
     border-top-style: solid;

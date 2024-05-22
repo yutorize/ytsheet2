@@ -282,7 +282,7 @@ print <<"HTML";
           <tr>
             <th class="lv mount-only">Lv
             <th class="handle">
-            <th class="name">攻撃方法（部位）
+            <th class="name">攻撃方法<span class="text-part">（部位）</span>
             <th class="acc">命中力
             <th class="atk">打撃点
             <th class="eva">回避力
