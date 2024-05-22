@@ -1340,9 +1340,11 @@ print <<"HTML";
     <option value="使い捨て">
     <option value="エンブレム／コネ">
     <option value="エンブレム／一般">
+    <option value="エンブレム／その他">
     <option value="エンブレム／使い捨て">
     <option value="リレーション／コネ">
     <option value="リレーション／一般">
+    <option value="リレーション／その他">
     <option value="リレーション／使い捨て">
   </datalist>
   <datalist id="list-dfclty">
