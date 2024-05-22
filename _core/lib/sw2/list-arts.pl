@@ -77,7 +77,7 @@ my @list;
 #  $INDEX->param(ListGroups => \@grouplist);
 #}
 #else { #通常
-  open (my $FH, "<", $set::artslist);
+  open (my $FH, "<", $set::listfile);
   @list = <$FH>;
   close($FH);
 #}

@@ -81,7 +81,7 @@ if($set::simpleindex && $index_mode && $mode ne 'mylist') { #グループ見出�
   $INDEX->param(simpleIndex => 1);
 }
 else { #通常
-  open (my $FH, "<", $set::monslist);
+  open (my $FH, "<", $set::listfile);
   @list = <$FH>;
   close($FH);
 }

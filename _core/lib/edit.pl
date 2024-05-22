@@ -10,8 +10,9 @@ our $mode = $::in{mode};
 $::in{log} ||= $::in{backup};
 
 if($set::user_reqd && !$LOGIN_ID){ error('ログインしていません。'); }
-### 個別処理 --------------------------------------------------
+### type判別 --------------------------------------------------
 my $type = $::in{type};
+
 my $file; my $author;
 our %conv_data = ();
 
@@ -48,16 +49,13 @@ elsif($mode eq 'convert'){
   }
 }
 
+changeFileByType($type);
+
+### キャパシティチェック --------------------------------------------------
 my $attentionOfCapacity;
 if(!$LOGIN_ID && $mode =~ /^(?:blanksheet|copy|convert)$/){
   my $max_files = 32000;
-  my $data_dir;
-  if   ($set::game eq 'sw2' && $type eq 'm'){ $data_dir = $set::mons_dir; }
-  elsif($set::game eq 'sw2' && $type eq 'i'){ $data_dir = $set::item_dir; }
-  elsif($set::game eq 'sw2' && $type eq 'a'){ $data_dir = $set::arts_dir; }
-  elsif($set::game eq 'ms'  && $type eq 'c'){ $data_dir = $set::clan_dir; }
-  else { $data_dir = $set::char_dir; }
-  opendir my $dh, "${data_dir}anonymous/";
+  opendir my $dh, "${set::char_dir}anonymous/";
   my $num_files = () = readdir($dh);
   $num_files += -2;
   if($num_files >= $max_files){
@@ -68,11 +66,8 @@ if(!$LOGIN_ID && $mode =~ /^(?:blanksheet|copy|convert)$/){
   }
 }
 
-if   ($set::game eq 'sw2' && $type eq 'm'){ require $set::lib_edit_mons; }
-elsif($set::game eq 'sw2' && $type eq 'i'){ require $set::lib_edit_item; }
-elsif($set::game eq 'sw2' && $type eq 'a'){ require $set::lib_edit_arts; }
-elsif($set::game eq 'ms'  && $type eq 'c'){ require $set::lib_edit_clan; }
-else               { require $set::lib_edit_char; }
+### 各ゲームシステム処理 --------------------------------------------------
+require $set::lib_edit_char;
 
 ### 共通サブルーチン --------------------------------------------------
 ## データ読み込み
@@ -80,17 +75,12 @@ sub getSheetData {
   my $mode = shift;
   my %pc;
   my $message;
-  my $datadir = 
-    ($set::game eq 'sw2' && $type eq 'm') ? $set::mons_dir : 
-    ($set::game eq 'sw2' && $type eq 'i') ? $set::item_dir : 
-    ($set::game eq 'sw2' && $type eq 'a') ? $set::arts_dir : 
-    ($set::game eq 'ms'  && $type eq 'c') ? $set::clan_dir : 
-    $set::char_dir;
+  my $sheetDir =  $set::char_dir.$file;
   # 保存 / 編集 / 複製 / コンバート
   if($mode eq 'edit'){
     my $datatype = ($::in{log}) ? 'logs' : 'data';
     my $hit = 0;
-    open my $IN, '<', "${datadir}${file}/${datatype}.cgi" or &loginError;
+    open my $IN, '<', "${sheetDir}/${datatype}.cgi" or &loginError;
     while (<$IN>){
       if($datatype eq 'logs'){
         if (index($_, "=$::in{log}=") == 0){ $hit = 1; next; }
@@ -105,7 +95,7 @@ sub getSheetData {
     if($datatype eq 'logs' && !$hit){ error("過去ログ（$::in{log}）が見つかりません。"); }
     
     if($::in{log}){
-      ($pc{protect}, $pc{forbidden}) = getProtectType("${datadir}${file}/data.cgi");
+      ($pc{protect}, $pc{forbidden}) = getProtectType("${sheetDir}/data.cgi");
       $message = $pc{updateTime}.' 時点のバックアップデータから編集しています。';
     }
     $pc{imageURL} = $pc{image} ? "./?id=$::in{id}&mode=image&cache=$pc{imageUpdate}" : '';
@@ -113,7 +103,7 @@ sub getSheetData {
   elsif($mode eq 'copy'){
     my $datatype = ($::in{log}) ? 'logs' : 'data';
     my $hit = 0;
-    open my $IN, '<', "${datadir}${file}/${datatype}.cgi" or error 'データがありません。';
+    open my $IN, '<', "${sheetDir}/${datatype}.cgi" or error 'データがありません。';
     while (<$IN>){
       if($datatype eq 'logs'){
         if (index($_, "=$::in{log}:") == 0){ $hit = 1; next; }
@@ -129,7 +119,7 @@ sub getSheetData {
     
     if($pc{forbidden}){
       if($::in{log}){
-        ($pc{protect}, $pc{forbidden}) = getProtectType("${datadir}${file}/data.cgi");
+        ($pc{protect}, $pc{forbidden}) = getProtectType("${sheetDir}/data.cgi");
       }
       unless(
         ($pc{protect} eq 'none') || 
@@ -470,7 +460,7 @@ sub chatPaletteForm {
             @{[ input 'unitStatusNotOutput','hidden' ]}
             @{[ input 'unitStatusNum','hidden' ]}
             <table id="unit-status">
-              <tbody id="unit-status-default">
+              <tbody id="unit-status-default" class="highlight-hovered-row">
               <tbody id="unit-status-optional">$status
               <tfoot><tr><td colspan="3" class="add-del-button"><a onclick="addUnitStatus()">▼</a><a onclick="delUnitStatus()">▲</a></div>
             </table>

@@ -100,9 +100,7 @@ our $game = 'ms';
   our $data_dir = './data/'; # データ格納ディレクトリ
   our $passfile = $data_dir . 'charpass.cgi'; # パスワード記録ファイル
   our $listfile = $data_dir . 'charlist.cgi'; # キャラクター一覧ファイル
-  our $clanlist = $data_dir . 'clanlist.cgi'; # 魔物一覧ファイル
   our $char_dir = $data_dir . 'chara/'; # キャラクターデータ格納ディレクトリ
-  our $clan_dir = $data_dir . 'clan/'; # クランデータ格納ディレクトリ
   
   our $userfile    = $::core_dir . '/data/users.cgi';           # ユーザー一覧ファイル
   our $login_users = $::core_dir . '/data/login_users.cgi'; # ログイン情報保存ファイル
@@ -119,21 +117,17 @@ our $game = 'ms';
   # 編集画面
   our $lib_edit        = $::core_dir . '/lib/edit.pl';
   our $lib_edit_char   = $::core_dir . '/lib/ms/edit-chara.pl';
-  our $lib_edit_clan   = $::core_dir . '/lib/ms/edit-clan.pl';
   # 保存処理
   our $lib_save        = $::core_dir . '/lib/save.pl';
   our $lib_calc_char   = $::core_dir . '/lib/ms/calc-chara.pl';
-  our $lib_calc_clan   = $::core_dir . '/lib/ms/calc-clan.pl';
   # シート表示
   our $lib_view        = $::core_dir . '/lib/view.pl';
   our $lib_view_char   = $::core_dir . '/lib/ms/view-chara.pl';
-  our $lib_view_clan   = $::core_dir . '/lib/ms/view-clan.pl';
   # チャットパレット
   our $lib_palette     = $::core_dir . '/lib/palette.pl';
   our $lib_palette_sub = $::core_dir . '/lib/ms/palette-sub.pl';
   # 一覧
   our $lib_list_char   = $::core_dir . '/lib/ms/list-chara.pl';
-  our $lib_list_clan   = $::core_dir . '/lib/ms/list-clan.pl';
   # JSON出力
   our $lib_json     = $::core_dir . '/lib/json.pl';
   our $lib_json_sub = $::core_dir . '/lib/ms/json-sub.pl';
@@ -145,6 +139,19 @@ our $game = 'ms';
   # HTMLテンプレート
   our $skin_tmpl  = $::core_dir . '/skin/ms/index.html';      # 一覧／登録フォーム等の大枠
   our $skin_sheet = $::core_dir . '/skin/ms/sheet-chara.html';   # キャラクターシート
-  our $skin_clan  = $::core_dir . '/skin/ms/sheet-clan.html'; # クランシート
+  
+  # 魔物・アイテム・魔法/流派などの設定
+  our %lib_type = (
+    'c' => {
+      listFile => $data_dir . 'clanlist.cgi',
+      dataDir => $data_dir . 'clan/',
+      edit => $::core_dir . '/lib/ms/edit-clan.pl',
+      calc => $::core_dir . '/lib/ms/calc-clan.pl',
+      view => $::core_dir . '/lib/ms/view-clan.pl',
+      list => $::core_dir . '/lib/ms/list-clan.pl',
+      skin => $::core_dir . '/skin/ms/sheet-clan.html',
+      sheetType => 'clan',
+    },
+  );
 
 1;

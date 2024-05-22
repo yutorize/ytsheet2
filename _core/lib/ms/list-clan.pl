@@ -77,7 +77,7 @@ if($set::simpleindex && $index_mode) { #グループ見出しのみ
   $INDEX->param(simpleIndex => 1);
 }
 else { #通常
-  open (my $FH, "<", $set::clanlist);
+  open (my $FH, "<", $set::listfile);
   @list = <$FH>;
   close($FH);
 }

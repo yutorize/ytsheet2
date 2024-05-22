@@ -398,6 +398,7 @@ sub palettePreset {
             $text .= $bot{YTC} ? '首切' : $bot{BCD} ? 'r5' : '';
           }
           $text .= " ダメージ";
+          $text .= extractWeaponMarks($::pc{'weapon'.$_.'Name'}.$::pc{'weapon'.$_.'Note'}) unless $bot{BCD};
           $text .= "／$::pc{'weapon'.$_.'Name'}$::pc{'weapon'.$_.'Usage'}" if $bot{BCD};
           $text .= "\n";
         }
@@ -548,6 +549,14 @@ sub palettePreset {
     return $text;
   }
 }
+sub extractWeaponMarks {
+  my $text = shift;
+  my $marks = '';
+  while ($text =~ s/(\[[刃打魔]\])//) {
+    $marks .= $1;
+  }
+  return $marks;
+}
 ### プリセット（シンプル） ###########################################################################
 sub palettePresetSimple {
   my $tool = shift;
@@ -674,7 +683,7 @@ sub paletteProperties {
         $add .= addNum $::pc{'magicPowerAdd'.$id};
         $add .= addNum $::pc{raceAbilityMagicPower};
         $add .= addNum $::pc{'raceAbilityMagicPower'.$id};
-        $add .= "+{魔力修正}" if $::pc{paletteUseBuff};
+        $add .= $::pc{paletteUseBuff} ? "+{魔力修正}" : addNum($::pc{magicPowerAdd});
       }
       elsif($id eq 'Alc') {
         $add .= addNum($::pc{alchemyEnhance});

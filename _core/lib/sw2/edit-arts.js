@@ -195,7 +195,7 @@ function delSchoolArts(){
   delRow('schoolArtsNum', '#arts-list .input-data:last-child');
 }
 // 並べ替え
-setSortable('schoolArts','#arts-list','tbody');
+setSortable('schoolArts','#arts-list','.input-data');
 
 // 秘伝魔法欄 ----------------------------------------
 // 追加
@@ -207,4 +207,4 @@ function delSchoolMagic(){
   delRow('schoolMagicNum', '#school-magic-list .input-data:last-child');
 }
 // 並べ替え
-setSortable('schoolMagic','#school-magic-list','tbody');
+setSortable('schoolMagic','#school-magic-list','.input-data');
