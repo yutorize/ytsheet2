@@ -194,7 +194,7 @@ foreach my $num ('TMPL', 1 .. $pc{weaponNum}){
   print <<"HTML";
           @{[ $num eq 'TMPL' ? '<template id="weapon-template">' : '' ]}<tr id="weapon-row$num">
             <td class="handle">
-            <td>@{[ input "weapon${num}Usage",'text','','list="list-usage"' ]}
+            <td>@{[ input "weapon${num}Usage",'text','','list="list-weapon-usage"' ]}
             <td>@{[ input "weapon${num}Reqd" ]}
             <td>@{[ input "weapon${num}Acc" ]}
             <td>@{[ input "weapon${num}Rate" ]}
@@ -221,7 +221,7 @@ foreach my $num ('TMPL', 1 .. $pc{armourNum}){
   print <<"HTML";
           @{[ $num eq 'TMPL' ? '<template id="armour-template">' : '' ]}<tr id="armour-row$num">
             <td class="handle">
-            <td>@{[ input "armour${num}Usage",'text','','list="list-usage"' ]}
+            <td>@{[ input "armour${num}Usage",'text','','list="list-armour-usage"' ]}
             <td>@{[ input "armour${num}Reqd" ]}
             <td>@{[ input "armour${num}Eva" ]}
             <td>@{[ input "armour${num}Def" ]}
@@ -266,7 +266,7 @@ print <<"HTML";
   <datalist id="list-item-name">
     <option value="〈〉">
   </datalist>
-  <datalist id="list-usage">
+  <datalist id="list-weapon-usage">
     <option value="1H">
     <option value="1H#">
     <option value="1H投">
@@ -276,6 +276,10 @@ print <<"HTML";
     <option value="2H#">
     <option value="振2H">
     <option value="突2H">
+  </datalist>
+  <datalist id="list-armour-usage">
+    <option value="1H">
+    <option value="2H">
   </datalist>
   <datalist id="list-age">
     <option value="現在">
