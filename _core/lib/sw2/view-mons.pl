@@ -150,6 +150,7 @@ $SHEET->param(Tags => \@tags);
 {
   $SHEET->param(appLv => $pc{lvMin}.($pc{lvMax} != $pc{lvMin} ? " ～ $pc{lvMax}":''));
 }
+$SHEET->param(displaySin => $pc{sin} || $pc{sin} eq '0' ? 1 : 0);
 ### ステータス --------------------------------------------------
 $SHEET->param(vitResist => $pc{vitResist} eq '' ? '' : $pc{vitResist}.(!$pc{statusTextInput}?' ('.$pc{vitResistFix}.')':''));
 $SHEET->param(mndResist => $pc{mndResist} eq '' ? '' : $pc{mndResist}.(!$pc{statusTextInput}?' ('.$pc{mndResistFix}.')':''));
