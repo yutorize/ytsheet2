@@ -147,8 +147,9 @@ $SHEET->param(Tags => \@tags);
   $SHEET->param(price => "<dl class=\"price\">$price</dl>");
 }
 ### 適正レベル --------------------------------------------------
+my $appLv = $pc{lvMin}.($pc{lvMax} != $pc{lvMin} ? "～$pc{lvMax}":'');
 {
-  $SHEET->param(appLv => $pc{lvMin}.($pc{lvMax} != $pc{lvMin} ? " ～ $pc{lvMax}":''));
+  $SHEET->param(appLv => $appLv);
 }
 ### ステータス --------------------------------------------------
 $SHEET->param(vitResist => $pc{vitResist} eq '' ? '' : $pc{vitResist}.(!$pc{statusTextInput}?' ('.$pc{vitResistFix}.')':''));
@@ -247,7 +248,12 @@ else {
 ### OGP --------------------------------------------------
 $SHEET->param(ogUrl => url().($::in{url} ? "?url=$::in{url}" : "?id=$::in{id}"));
 #if($pc{image}) { $SHEET->param(ogImg => url()."/".$imgsrc); }
-$SHEET->param(ogDescript => removeTags "レベル:$pc{lv}　分類:$pc{taxa}".($pc{partsNum}>1?"　部位数:$pc{partsNum}":'')."　知名度:$pc{reputation}／$pc{'reputation+'}");
+$SHEET->param(ogDescript => removeTags(
+  ($pc{mount} && $pc{lv} eq '' ? "適正レベル:$appLv" : "レベル:$pc{lv}").
+  "　分類:$pc{taxa}".
+  ($pc{partsNum} > 1 ? "　部位数:$pc{partsNum}" : '').
+  (!$pc{mount} ? "　知名度:$pc{reputation}／$pc{'reputation+'}" : '')
+));
 
 ### バージョン等 --------------------------------------------------
 $SHEET->param(ver => $::ver);
