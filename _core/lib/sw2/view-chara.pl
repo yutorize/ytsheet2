@@ -1024,15 +1024,15 @@ if(!$pc{modeDownload}){
   }
   else {
     if($pc{logId}){
-      if   ($::in{f}         ){ push(@menu, { TEXT => '通常'    , TYPE => "href", VALUE => "./?id=$::in{id}&log=$pc{logId}" }); }
-      elsif($pc{fellowPublic}){ push(@menu, { TEXT => 'フェロー', TYPE => "href", VALUE => "./?id=$::in{id}&log=$pc{logId}&f=1" }); }
+      if   ($::in{f}         ){ push(@menu, { TEXT => 'ＰＣ',     TYPE => "href", VALUE => "./?id=$::in{id}&log=$pc{logId}",     CLASSES => 'character-format', }); }
+      elsif($pc{fellowPublic}){ push(@menu, { TEXT => 'フェロー', TYPE => "href", VALUE => "./?id=$::in{id}&log=$pc{logId}&f=1", CLASSES => 'character-format', }); }
       push(@menu, { TEXT => '過去ログ', TYPE => "onclick", VALUE => 'loglistOn()', });
       if($pc{reqdPassword}){ push(@menu, { TEXT => '復元', TYPE => "onclick", VALUE => "editOn()", }); }
       else                 { push(@menu, { TEXT => '復元', TYPE => "href"   , VALUE => "./?mode=edit&id=$::in{id}&log=$pc{logId}", }); }
     }
     else {
-      if   ($::in{f}         ){ push(@menu, { TEXT => '通常'    , TYPE => "href", VALUE => "./?id=$::in{id}" }); }
-      elsif($pc{fellowPublic}){ push(@menu, { TEXT => 'フェロー', TYPE => "href", VALUE => "./?id=$::in{id}&f=1" }); }
+      if   ($::in{f}         ){ push(@menu, { TEXT => 'ＰＣ',     TYPE => "href", VALUE => "./?id=$::in{id}",     CLASSES => 'character-format', }); }
+      elsif($pc{fellowPublic}){ push(@menu, { TEXT => 'フェロー', TYPE => "href", VALUE => "./?id=$::in{id}&f=1", CLASSES => 'character-format', }); }
       if(!$pc{forbiddenMode}){
         push(@menu, { TEXT => 'パレット', TYPE => "onclick", VALUE => "chatPaletteOn()",   });
         push(@menu, { TEXT => '出力'    , TYPE => "onclick", VALUE => "downloadListOn()",  });
