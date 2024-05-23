@@ -950,11 +950,11 @@ else {
 }
 
 ### ガメル --------------------------------------------------
-if($pc{money} =~ /^(?:自動|auto)$/i){
+if($pc{moneyAuto}){
   $SHEET->param(money => commify($pc{moneyTotal}));
 }
-if($pc{deposit} =~ /^(?:自動|auto)$/i){
-  $SHEET->param(deposit => commify($pc{depositTotal}).' G ／ '.commify($pc{debtTotal}));
+if($pc{depositAuto}){
+  $SHEET->param(deposit => $pc{depositTotal} || $pc{debtTotal} ? commify($pc{depositTotal}).' G ／ '.commify($pc{debtTotal}) : '');
 }
 $pc{cashbook} =~ s/(:(?:\:|&lt;|&gt;))((?:[\+\-\*\/]?[0-9,]+)+)/$1.cashCheck($2)/eg;
   $SHEET->param(cashbook => $pc{cashbook});

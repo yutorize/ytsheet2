@@ -35,7 +35,11 @@ sub data_update_chara {
   my %pc = %{$_[0]};
   my $ver = $pc{ver};
   $ver =~ s/^([0-9]+)\.([0-9]+)\.([0-9]+)$/$1.$2$3/;
+  delete $pc{updateMessage};
   
+  if($ver < 1.24024){
+    if($pc{money} =~ /^(?:自動|auto)$/i){ $pc{moneyAuto} = 1; $pc{money} = commify $pc{moneyTotal}; }
+  }
   $pc{ver} = $main::ver;
   $pc{lasttimever} = $ver;
   return %pc;

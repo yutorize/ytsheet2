@@ -55,8 +55,8 @@ elsif($mode eq 'blanksheet'){
   $pc{history0Money} = $set::make_money;
   $pc{expTotal} = $pc{history0Exp};
 
-  $pc{money}   = '自動';
-  $pc{deposit} = '自動';
+  $pc{moneyAuto}   = 1;
+  $pc{depositAuto} = 1;
   
   if($::in{stt}){
     ($pc{sttBaseTec}, $pc{sttBasePhy}, $pc{sttBaseSpi}, $pc{sttBaseA}, $pc{sttBaseB}, $pc{sttBaseC}, $pc{sttBaseD}, $pc{sttBaseE}, $pc{sttBaseF}) = split(/_/, $::in{stt});
@@ -1143,8 +1143,12 @@ print <<"HTML";
       <div id="area-items">
         <div id="area-items-L">
           <dl class="box" id="money">
-            <dt class="in-toc">所持金<dd>@{[ input 'money' ]} G
-            <dt>預金／借金<dd>@{[ input 'deposit' ]} G
+            <dt class="in-toc">所持金
+            <dd>@{[ checkbox 'moneyAuto', '自動計算', 'calcCash' ]}
+            <dd>@{[ input 'money' ]} G
+            <dt>預金／借金
+            <dd>@{[ checkbox 'depositAuto', '自動計算', 'calcCash' ]}
+            <dd>@{[ input 'deposit' ]} G
           </dl>
           <div class="box" id="items">
             <h2 class="in-toc">所持品</h2>

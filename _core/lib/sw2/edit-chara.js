@@ -1580,6 +1580,20 @@ function calcCash(){
   document.getElementById('cashbook-total-value').textContent = commify(cash);
   document.getElementById('cashbook-deposit-value').textContent = commify(deposit);
   document.getElementById('cashbook-debt-value').textContent = commify(debt);
+  
+  if(form.moneyAuto.checked){
+    form.money.value = commify(cash);
+    form.money.readOnly = true;
+  }
+  else {
+    form.money.readOnly = false;
+  }
+
+  if(form.depositAuto.checked){
+    form.deposit.value = commify(deposit)+'／'+commify(debt);
+    form.deposit.readOnly = true;
+  }
+  else { form.deposit.readOnly = false; }
 }
 
 // 装飾品欄 ----------------------------------------

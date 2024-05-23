@@ -742,6 +742,13 @@ function calcCash(){
   document.getElementById('cashbook-total-value').textContent = cash;
   //document.getElementById('cashbook-deposit-value').textContent = deposit;
   //document.getElementById('cashbook-debt-value').textContent = debt;
+  if(form.moneyAuto.checked){
+    form.money.value = commify(cash);
+    form.money.readOnly = true;
+  }
+  else {
+    form.money.readOnly = false;
+  }
 }
 
 // コネクション計算 ----------------------------------------

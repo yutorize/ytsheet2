@@ -81,7 +81,7 @@ elsif($mode eq 'blanksheet'){
   
   $pc{level} = 1;
 
-  $pc{money} = '自動';
+  $pc{moneyAuto} = 1;
   
   $pc{rollStrDice} = $pc{rollDexDice} = $pc{rollAgiDice} =
   $pc{rollIntDice} = $pc{rollSenDice} = $pc{rollMndDice} = $pc{rollLukDice} =
@@ -1079,7 +1079,9 @@ print <<"HTML";
             <dd><span id="items-weight-total"></span>／<span id="items-weight-limit"></span>
           </dl>
           <dl class="box" id="money">
-            <dt class="in-toc">所持金<dd>@{[ input 'money' ]} G
+            <dt class="in-toc">所持金
+            <dd>@{[ checkbox 'moneyAuto', '自動計算', 'calcCash' ]}
+            <dd>@{[ input 'money' ]} G
           </dl>
           <div class="box" id="items">
             <h2 class="in-toc">携帯品・所持品</h2>

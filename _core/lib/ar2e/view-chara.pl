@@ -561,8 +561,8 @@ $pc{items} =~ s/[@＠]\[\s*?((?:[\+\-\*\/]?[0-9]+)+)\s*?\]/<i class="weight">$1<
 $SHEET->param(items => $pc{items});
 
 ### ゴールド --------------------------------------------------
-if($pc{money} =~ /^(?:自動|auto)$/i){
-  $SHEET->param(money => $pc{moneyTotal});
+if($pc{moneyAuto}){
+  $SHEET->param(money => commify($pc{moneyTotal}));
 }
 #if($pc{deposit} =~ /^(?:自動|auto)$/i){
 #  $SHEET->param(deposit => $pc{depositTotal}.' G ／ '.$pc{debtTotal});

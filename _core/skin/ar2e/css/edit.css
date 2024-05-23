@@ -725,8 +725,33 @@ dd.area-tags {
 #weight input {
   width: 4em;
 }
-#money input {
-  width: calc(100% - 5em);
+#money {
+  display: grid;
+  grid-template-columns: 1fr max-content;
+  > dt {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  > dd:has(input[type="checkbox"]){
+    padding: 1px 0 0 .5em;
+    text-align: left;
+    grid-row: 1;
+  }
+  > dd:has(input[type="text"]){
+    grid-column: span 2;
+  }
+  & input[type="text"] {
+    width: calc(100% - 5em);
+  }
+  & input[readonly] {
+    border: hidden;
+    margin-bottom: 0;
+    padding: 0;
+    background: transparent;
+    text-align: center;
+    color: inherit;
+    font-family: inherit;
+  }
 }
 @media screen and (max-width:735px){
   #items-and-money {

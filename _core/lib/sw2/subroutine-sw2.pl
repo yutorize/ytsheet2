@@ -306,6 +306,10 @@ sub data_update_chara {
   if($ver < 1.24011){
     $pc{'craftEnhance'.$_} =~ s/^ヴジャドーアイ$/ヴジャトーアイ/ foreach (16..17);
   }
+  if($ver < 1.24024){
+    if($pc{money}   =~ /^(?:自動|auto)$/i){ $pc{moneyAuto  } = 1; $pc{money  } = commify $pc{moneyTotal}; }
+    if($pc{deposit} =~ /^(?:自動|auto)$/i){ $pc{depositAuto} = 1; $pc{deposit} = commify($pc{depositTotal}).'／'.commify($pc{debtTotal}); }
+  }
   $pc{ver} = $main::ver;
   $pc{lasttimever} = $ver;
   return %pc;

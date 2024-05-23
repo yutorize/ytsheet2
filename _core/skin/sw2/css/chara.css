@@ -913,11 +913,16 @@ dl#level {
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: auto;
-  & dt {
+  > dt {
     grid-row: 1;
   }
-  & dd {
+  > dd {
     grid-row: 2;
+  }
+  > *:last-of-type {
+    border-left-width: 1px;
+    border-left-style: solid;
+    border-left-color: var(--box-outside-border-color);
   }
 }
 
