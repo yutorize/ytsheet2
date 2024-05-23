@@ -591,10 +591,8 @@ foreach (0 .. $pc{historyNum}){
   foreach my $mem (split(/　/,$pc{'history'.$_.'Member'})){
     $members .= '<span>'.$mem.'</span>';
   }
-  $pc{'history'.$_.'Exp'}   =~ s/([0-9]+)/$1<wbr>/g;
-  $pc{'history'.$_.'Exp'}   =~ s/([0-9]+)/commify($1);/ge;
-  $pc{'history'.$_.'Money'} =~ s/([0-9]+)/$1<wbr>/g;
-  $pc{'history'.$_.'Money'} =~ s/([0-9]+)/commify($1);/ge;
+  $pc{'history'.$_.'Exp'}   = formatHistoryFigures($pc{'history'.$_.'Exp'});
+  $pc{'history'.$_.'Money'} = formatHistoryFigures($pc{'history'.$_.'Money'});
   
   my $completed = ($pc{'history'.$_.'Completed'} > 0) ? '<span class="completed">達成<span>'
                 : ($pc{'history'.$_.'Completed'} < 0) ? '<span class="failed">失敗<span>'

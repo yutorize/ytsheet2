@@ -203,6 +203,14 @@ sub stylizeWords {
   $y = $y eq '下' ? 'bottom:0;' : 'top:0;';
   return $words, $x, $y;
 }
+### セッション履歴 --------------------------------------------------
+# 数字列を成形する
+sub formatHistoryFigures {
+  my $text = shift;
+  $text =~ s/[0-9]+/$&<wbr>/g;
+  $text =~ s/[0-9]+/commify($&);/ge;
+  return $text;
+}
 ### メニュー --------------------------------------------------
 sub sheetMenuCreate {
   my @menu = @_;

@@ -874,10 +874,8 @@ foreach (0 .. $pc{historyNum}){
   }
   if   ($pc{"history${_}HonorType"} eq 'barbaros'){ $pc{"history${_}Honor"} = '蛮'.$pc{"history${_}Honor"}; }
   elsif($pc{"history${_}HonorType"} eq 'dragon'  ){ $pc{"history${_}Honor"} = '竜'.$pc{"history${_}Honor"}; }
-  $pc{'history'.$_.'Exp'}   =~ s/([0-9]+)/$1<wbr>/g;
-  $pc{'history'.$_.'Exp'}   =~ s/([0-9]+)/commify($1);/ge;
-  $pc{'history'.$_.'Money'} =~ s/([0-9]+)/$1<wbr>/g;
-  $pc{'history'.$_.'Money'} =~ s/([0-9]+)/commify($1);/ge;
+  $pc{'history'.$_.'Exp'}   = formatHistoryFigures($pc{'history'.$_.'Exp'});
+  $pc{'history'.$_.'Money'} = formatHistoryFigures($pc{'history'.$_.'Money'});
   push(@history, {
     NUM    => ($pc{'history'.$_.'Gm'} ? $h_num : ''),
     DATE   => $pc{'history'.$_.'Date'},
