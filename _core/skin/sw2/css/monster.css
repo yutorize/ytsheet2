@@ -242,6 +242,7 @@ table.status {
   & dl {
     display: flex;
     margin-right: 1.5em;
+    align-items: center;
     & dt::after {
       content: ':';
       display: inline-block;
