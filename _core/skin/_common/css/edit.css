@@ -1260,6 +1260,9 @@ input[type="submit"]:hover {
         &.ccfol { color:#ffffff; background: #2a2a2a; }
         &.udona { color:#444444; background: #fcf0e3; }
       }
+      #name-plate-view:not(:has(>span:not(:empty))) {
+        display: none;
+      }
 
       table {
         float: left;
