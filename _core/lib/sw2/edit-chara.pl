@@ -112,6 +112,10 @@ $pc{fellowProfile}   =~ s/&lt;br&gt;/\n/g;
 $pc{fellowNote}      =~ s/&lt;br&gt;/\n/g;
 $pc{chatPalette}     =~ s/&lt;br&gt;/\n/g;
 $pc{'chatPaletteInsert'.$_} =~ s/&lt;br&gt;/\n/g foreach(1..2);
+foreach (keys %pc) {
+  next unless $_ =~ /^fellow[-0-9]+(?:Action|Note)$/;
+  $pc{$_} =~ s/&lt;br&gt;/\n/g;
+}
 
 ### フォーム表示 #####################################################################################
 my $titlebarname = removeTags nameToPlain unescapeTags ($pc{characterName}||"“$pc{aka}”");
@@ -1391,55 +1395,55 @@ print <<"HTML";
         <tr class="border-top">
           <td rowspan="2">⚀<br>⚁
           <td class="number">7
-          <td>@{[ input 'fellow1Action' ]}
+          <td>@{[ textarea 'fellow1Action','','rows="3"' ]}
           <td>@{[ input 'fellow1Words' ]}
           <td>@{[ input 'fellow1Num' ]}
-          <td>@{[ input 'fellow1Note' ]}
+          <td>@{[ textarea 'fellow1Note','','rows="3"' ]}
         <tr>
           <td class="number">6
-          <td>@{[ input 'fellow1-2Action' ]}
+          <td>@{[ textarea 'fellow1-2Action','','rows="3"' ]}
           <td>@{[ input 'fellow1-2Words' ]}
           <td>@{[ input 'fellow1-2Num' ]}
-          <td>@{[ input 'fellow1-2Note' ]}
+          <td>@{[ textarea 'fellow1-2Note','','rows="3"' ]}
         <tr class="border-top">
           <td rowspan="2">⚂<br>⚃
           <td class="number">8
-          <td>@{[ input 'fellow3Action' ]}
+          <td>@{[ textarea 'fellow3Action','','rows="3"' ]}
           <td>@{[ input 'fellow3Words' ]}
           <td>@{[ input 'fellow3Num' ]}
-          <td>@{[ input 'fellow3Note' ]}
+          <td>@{[ textarea 'fellow3Note','','rows="3"' ]}
         <tr>
           <td class="number">5
-          <td>@{[ input 'fellow3-2Action' ]}
+          <td>@{[ textarea 'fellow3-2Action','','rows="3"' ]}
           <td>@{[ input 'fellow3-2Words' ]}
           <td>@{[ input 'fellow3-2Num' ]}
-          <td>@{[ input 'fellow3-2Note' ]}
+          <td>@{[ textarea 'fellow3-2Note','','rows="3"' ]}
         <tr class="border-top">
           <td rowspan="2">⚄
           <td class="number">9
-          <td>@{[ input 'fellow5Action' ]}
+          <td>@{[ textarea 'fellow5Action','','rows="3"' ]}
           <td>@{[ input 'fellow5Words' ]}
           <td>@{[ input 'fellow5Num' ]}
-          <td>@{[ input 'fellow5Note' ]}
+          <td>@{[ textarea 'fellow5Note','','rows="3"' ]}
         <tr>
           <td class="number">4
-          <td>@{[ input 'fellow5-2Action' ]}
+          <td>@{[ textarea 'fellow5-2Action','','rows="3"' ]}
           <td>@{[ input 'fellow5-2Words' ]}
           <td>@{[ input 'fellow5-2Num' ]}
-          <td>@{[ input 'fellow5-2Note' ]}
+          <td>@{[ textarea 'fellow5-2Note','','rows="3"' ]}
         <tr class="border-top">
           <td rowspan="2">⚅
           <td class="number">10
-          <td>@{[ input 'fellow6Action' ]}
+          <td>@{[ textarea 'fellow6Action','','rows="3"' ]}
           <td>@{[ input 'fellow6Words' ]}
           <td>@{[ input 'fellow6Num' ]}
-          <td>@{[ input 'fellow6Note' ]}
+          <td>@{[ textarea 'fellow6Note','','rows="3"' ]}
         <tr>
           <td class="number">3
-          <td>@{[ input 'fellow6-2Action' ]}
+          <td>@{[ textarea 'fellow6-2Action','','rows="3"' ]}
           <td>@{[ input 'fellow6-2Words' ]}
           <td>@{[ input 'fellow6-2Num' ]}
-          <td>@{[ input 'fellow6-2Note' ]}
+          <td>@{[ textarea 'fellow6-2Note','','rows="3"' ]}
         </tr>
       </table>
       </div>
