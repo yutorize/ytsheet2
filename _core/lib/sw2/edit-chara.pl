@@ -112,10 +112,7 @@ $pc{fellowProfile}   =~ s/&lt;br&gt;/\n/g;
 $pc{fellowNote}      =~ s/&lt;br&gt;/\n/g;
 $pc{chatPalette}     =~ s/&lt;br&gt;/\n/g;
 $pc{'chatPaletteInsert'.$_} =~ s/&lt;br&gt;/\n/g foreach(1..2);
-foreach (keys %pc) {
-  next unless $_ =~ /^fellow[-0-9]+(?:Action|Note)$/;
-  $pc{$_} =~ s/&lt;br&gt;/\n/g;
-}
+$pc{$_} =~ s/&lt;br&gt;/\n/g foreach (grep {/^fellow[-0-9]+(?:Action|Note)$/} keys %pc);
 
 ### フォーム表示 #####################################################################################
 my $titlebarname = removeTags nameToPlain unescapeTags ($pc{characterName}||"“$pc{aka}”");
@@ -1366,16 +1363,16 @@ print <<"HTML";
       <section id="section-fellow" style="display:none;">
       <h2 id="fellow">フェロー関連データ</h2>
       <div class="box" id="f-public">
-        @{[ input 'fellowPublic', 'checkbox']} フェローを公開する
+        @{[ checkbox 'fellowPublic', "フェローを公開する"]} 
       </div>
       <div class="box" id="f-checkboxes">
-        <dl><dt>経験点</dt>
-          <dd><input type="radio" name="fellowExpCheck" value="1" @{[ $pc{fellowExpCheck}?'checked':'' ]}>あり</dd>
-          <dd><input type="radio" name="fellowExpCheck" value="0" @{[ $pc{fellowExpCheck}?'':'checked' ]}>なし</dd>
+        <dl><dt>経験点
+          <dd>@{[ radio "fellowExpCheck","","1","あり" ]}
+          <dd>@{[ radio "fellowExpCheck","","0","なし" ]}
         </dl>
-        <dl><dt>報酬</dt>
-          <dd><input type="radio" name="fellowRewardCheck" value="1" @{[ $pc{fellowRewardCheck}?'checked':'' ]}>要望</dd>
-          <dd><input type="radio" name="fellowRewardCheck" value="0" @{[ $pc{fellowRewardCheck}?'':'checked' ]}>不要</dd>
+        <dl><dt>報酬
+          <dd>@{[ radio "fellowRewardCheck","","1","要望" ]}
+          <dd>@{[ radio "fellowRewardCheck","","0","不要" ]}
         </dl>
       </div>
       <div class="box" id="f-profile">
@@ -1385,13 +1382,15 @@ print <<"HTML";
       <div class="box" id="f-actions">
         <h2>行動表</h2>
       <table>
+        <thead>
         <tr>
           <th>1d
-          <th>想定<br>出目
+          <th><span class="small">想定出目</span>
           <th>行動
           <th>台詞
           <th>達成値
           <th>効果
+        <tbody>
         <tr class="border-top">
           <td rowspan="2">⚀<br>⚁
           <td class="number">7

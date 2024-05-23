@@ -1097,13 +1097,21 @@ dl#level {
 
 /* // Fellow
 ---------------------------------------------------------------------------------------------------- */
+@media screen and (min-width:1400px){
+  #fellow {
+    grid-auto-rows: 1fr max-content;
+  }
+}
 #fellow #personal-area {
+  grid-row: span 2;
+  align-self: start;
+
   width: 100%;
-  margin-top: 2rem;
+  margin-top: 1.5rem;
   display: grid;
-  grid-gap: var(--box-v-gap);
+  grid-gap: var(--box-v-gap) var(--box-h-gap);
   grid-template-columns: 100px 1.1fr 0.3fr 0.6fr;
-  grid-template-rows: auto;
+  grid-template-rows: auto auto auto auto auto auto 1fr auto;
   
   grid-template-areas:
     " LVL NAME  IMG  IMG"
@@ -1112,8 +1120,8 @@ dl#level {
     " PER  PER  IMG  IMG"
     " CLS  CLS  IMG  IMG"
     "LANG LANG  IMG  IMG"
-    "NOTE NOTE  IMG  IMG"
-    "NOTE NOTE   MP CHCK"
+    "PROF PROF  IMG  IMG"
+    "PROF PROF   MP CHCK"
   ;
 }
 #f-image-none,
@@ -1126,128 +1134,156 @@ dl#level {
 #f-classes        { grid-area: CLS ; }
 #f-language       { grid-area: LANG; }
 #f-mp             { grid-area: MP; }
-#f-note           { grid-area: NOTE; }
+#f-profile        { grid-area: PROF; }
 #f-checkboxes     { grid-area: CHCK; }
 
 
 #f-image-none,
 #f-image          {
-  max-height:546px;
+  aspect-ratio: 5 / 8;
+  & p.words {
+    font-size: 1.9rem;
+  }
 }
 
 #fellow #f-level {
+  display: block;
+  width: 100px;
+  height: 86.6px;
+  clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
   margin: 0 auto;
-  width: 52px;
-  height: 86px;
-  display: block;
+  padding: 0;
+  background-color: var(--box-outside-border-color);
   position: relative;
-  border-bottom: 0px !important;
-}
-#fellow #f-level dd {
-  width: 100%;
-  height: 90px;
-  line-height: 80px;
-  color: var(--text-color);
-  text-align: center;
-  font-size: 2.5rem;
-  display: block;
-  position: relative;
-  z-index: 1;
-  border-width: 2px 0px;
-  border-style: solid;
-  border-color: var(--box-outside-border-color);
-}
-#fellow #f-level::before,
-#fellow #f-level::after {
-  content: '';
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  z-index: 0;
-  border-width: 2px 0px;
-  border-style: solid;
-  border-color: var(--box-outside-border-color);
-}
-#fellow #f-level::before {
-  transform: rotate(60deg);
-}
-#fellow #f-level::after {
-  transform: rotate(-60deg);
-}
-#fellow #f-level dt {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  line-height: 1;
-  text-align: center;
-  white-space: nowrap;
-  z-index: 2;
+  border: 0px !important;
+  
+  &::before {
+    content: "";
+    display: block;
+    position: absolute;
+    inset: 0;
+    clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+    transform: scale(0.95);
+    background-color: var(--bg-color);
+    background-image: radial-gradient(var(--box-base-bg-color),var(--box-head-bg-color));
+  }
+  > dd {
+    color: var(--text-color);
+    justify-content: center;
+    align-items: center;
+    font-size: 3rem;
+    display: flex;
+    position: absolute;
+    inset: 0 0 .2em;
+    z-index: 1;
+  }
+  > dt {
+    position: absolute;
+    bottom: 9%;
+    width: 100%;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    background: none;
+    z-index: 2;
+  }
 }
 #fellow dl {
-  border-bottom: 1px solid var(--box-outside-border-color);
-  font-size: 1.15em;
-}
-#fellow dd {
-  line-height: 1.3;
-}
-#fellow dd {
-  font-size: 1.8rem;
+  padding: .2em .2em .1em;
+  border-width: 0 0 1px 1px;
+  border-style: solid;
+  border-color: var(--box-outside-border-color);
+  background-color: var(--box-base-bg-color);
+  > dt {
+    width: max-content;
+    padding: 0 .4em;
+    font-size: 1.4rem;
+    border-radius: 5px;
+    background-color: var(--box-head-bg-color-pale);
+    text-shadow: 0px 0px .3em #fff;
+    @media screen {
+      .night & {
+        text-shadow: 0px 0px .3em #000;
+      }
+    }
+  }
+  > dd {
+    padding: .1em;
+    line-height: 1.3;
+    font-size: 1.8rem;
+  }
 }
 
-#f-character-name,
+#f-character-name {
+  > dd {
+    padding-top: 0;
+    text-align: center;
+    font-size: 2rem;
+    > span {
+      display: inline-block;
+    }
+  }
+}
+
 #f-player-name {
-  margin-left: .5em;
-}
-#f-character-name dd,
-#f-player-name dd {
-  text-align: center;
-}
-#f-character-name dd {
-  font-size: 2rem;
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  align-items: center;
+  > dd {
+    text-align: center;
+  }
 }
 
 #f-race,
-#f-personal,
+#f-personal {
+  display: flex;
+  justify-content:space-between;
+  text-align: left;
+  align-items: center;
+  > dt {
+    width: 3.1em;
+    white-space: nowrap;
+  }
+  > dd {
+    padding-left: 1em !important;
+    flex-grow: 1;
+  }
+}
 #f-classes,
 #f-language {
   display: flex;
   justify-content:space-between;
   text-align: left;
-  align-items: flex-start;
+  align-items: start;
+  > dt {
+    width: 2.1em;
+    white-space: nowrap;
+  }
+  > dd {
+    flex-grow: 1;
+  }
 }
-#f-race dt,
-#f-personal dt {
-  width: 3.1em;
-  white-space: nowrap;
-}
-#f-classes dt,
-#f-language dt {
-  width: 2.1em;
-  white-space: nowrap;
-}
-#f-race dd,
-#f-personal dd,
-#f-classes dd,
-#f-language dd {
-  flex-grow: 1;
-}
-
-#f-classes span:not(.priest-faith),
-#f-language span {
+#f-classes span:not(.priest-faith) {
   display: inline-block;
   margin-left: 1em;
 }
-
-#f-classes,
-#f-language {
-  min-height: 80px;
+#f-classes span.priest-faith {
+  display: inline-block;
+  font-size: 85%;
+  font-family: var(--font-proportional);
+}
+#f-language span {
+  display: block;
+  margin-left: 1em;
 }
 
-#f-note {
-  min-height: 250px;
+#f-profile,
+#fellow-note {
+  > dd {
+    padding-left: .5em !important;
+  }
 }
+
 #f-mp dt {
   white-space: nowrap;
 }
@@ -1257,22 +1293,43 @@ dl#level {
   line-height: 1;
 }
 
-#f-checkboxes dl {
-  display: flex;
-  max-width: 14em;
-  margin-left: auto;
-}
-#f-checkboxes dt::after {
-  content:':';
-  position: absolute;
-  right: -.5em;
-}
-#f-checkboxes dt,
-#f-checkboxes dd {
-  position: relative;
-  width: 4em;
-  margin-right: 1em;
-  white-space: nowrap;
+
+#fellow #f-checkboxes {
+  align-self: end;
+  > dl {
+    display: grid;
+    grid-template-columns: 4em 1fr 1fr;
+    align-items: start;
+    margin-left: auto;
+    > dt,
+    > dd {
+      position: relative;
+      width: 100%;
+      white-space: nowrap;
+      text-align: center;
+    }
+    > dd::before {
+      display: inline-block;
+      width: 1em;
+      height: 1em;
+      line-height: 1;
+      border-width: 1px;
+      border-style: solid;
+      border-color: var(--box-inside-border-color);
+      vertical-align: baseline;
+    }
+    > dd.fellow-checked {
+      &::before {
+        content: "✔";
+      }
+    }
+    > dd:not(.fellow-checked) {
+      opacity: 0.3;
+      &::before {
+        content: "　";
+      }
+    }
+  }
 }
 
 #fellow-actions {
@@ -1280,42 +1337,79 @@ dl#level {
   margin-top: 1.5rem;
   border: 1px solid;
   border-color: var(--box-outside-border-color);
+  background-color: var(--box-base-bg-color);
 }
 #fellow-actions th {
   border-bottom: 1px solid;
   border-color: var(--box-outside-border-color);
+  background-color: var(--box-head-bg-color-pale);
   white-space: nowrap;
+  padding: .2em 0;
+  vertical-align: bottom;
+  > .small {
+    display: block;
+    margin-right: -.5em;
+    text-align: left;
+  }
+
+  text-shadow: 0px 0px .3em #fff;
+  @media screen {
+    .night & {
+      text-shadow: 0px 0px .3em #000;
+    }
+  }
 }
+
+#fellow-actions tr:nth-child(even) {
+  background-color: var(--box-even-rows-bg-color);
+}
+
 #fellow-actions td {
   border-bottom: 1px solid;
   border-right: 1px dotted;
   border-color: var(--box-outside-border-color);
   padding: .2rem .5rem;
 }
-
 #fellow-actions td[rowspan]{
-  width: 2em;
-  font-size: 2rem;
+  width: 1em;
+  font-size: 3rem;
   white-space: normal;
   text-align: center;
+  line-height: 1;
+  background-color: var(--box-head-bg-color-faint);
 }
 #fellow-actions td.number {
-  width: 2.5em;
+  width: 2em;
   font-size: 2rem;
   text-align: center;
 }
 #fellow-actions td:nth-last-child(2){
-  width: 3em;
+  width: 2em;
+  padding: 0;
   font-size: 2rem;
+  line-height: 1.2;
   text-align: center;
+  word-break: normal;
 }
 
-#fellowNote {
-  margin-top: 1.5rem;
+#fellow-note {
+  margin-top: var(--box-v-gap);
+  
+  &:has(dd:empty) {
+    display: none;
+  }
+}
+#fellow:has(#fellow-note dd:empty) #personal-area {
+  grid-row: span 1;
 }
 
 @media screen and (max-width:735px){
+  #fellow {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
   #fellow #personal-area {
+    grid-template-columns: 100px 1fr 4em auto;
     grid-template-areas:
       " LVL NAME NAME NAME"
       " LVL  PLN  PLN  PLN"
@@ -1323,26 +1417,27 @@ dl#level {
       " PER  PER  IMG  IMG"
       " CLS  CLS  IMG  IMG"
       "LANG LANG  IMG  IMG"
-      "NOTE NOTE  IMG  IMG"
-      "NOTE NOTE   MP CHCK"
+      "LANG LANG   MP CHCK"
+      "PROF PROF  PROF PROF"
     ;
   }
-
-  #fellow #f-level {
-    width: 46px;
-    height: 76px;
-}
-  #fellow #f-level dd {
-    height: 80px;
-    line-height: 70px;
-    font-size: 2.5rem;
-}
-  #f-image-none,
-  #f-image          {
-    max-height: 35rem;
+  #f-checkboxes dl {
+    max-width: none;
+    width: max-content;
+    align-items: end;
+    > dt {
+      width: 3.8em
+    }
+    > dd {
+      width: max-content;
+      font-size: 90%;
+    }
+    > dd::before,
+    > dd:not(.fellow-checked) {
+      display: none;
+    }
   }
-  #f-note {
-    min-height: 6rem
+  #fellow-actions td:nth-last-child(2){
   }
 }
 

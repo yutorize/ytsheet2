@@ -1002,9 +1002,32 @@ article > form > hr {
 
 #f-public,
 #f-checkboxes {
-  width: 16em;
+  width: 14em;
   margin-top: var(--box-v-gap);
   padding: .5em;
+  background-image: none;
+}
+
+#f-checkboxes {
+  > dl {
+    display: grid;
+    grid-template-columns: 4em 1fr 1fr;
+    align-items: start;
+    margin-left: auto;
+    &:first-of-type {
+      padding-bottom: 5px;
+      margin-bottom: 5px;
+      border-bottom-width: 1px;
+      border-bottom-style: solid;
+    }
+    > dt,
+    > dd {
+      position: relative;
+      width: 100%;
+      white-space: nowrap;
+      text-align: center;
+    }
+  }
 }
 
 #f-profile {
@@ -1018,9 +1041,6 @@ article > form > hr {
   margin-top: var(--box-v-gap);
 }
 #f-actions table {
-  margin-top: var(--box-v-gap);
-}
-#f-actions table {
   width: 100%;
 }
 #f-actions table tr.border-top {
@@ -1030,9 +1050,12 @@ article > form > hr {
 #f-actions table th {
   white-space: nowrap;
 }
+#f-actions td:has(input,textarea){
+  vertical-align: top;
+}
 #f-actions td[rowspan]{
-  width: 2em;
-  font-size: 2rem;
+  width: 1em;
+  font-size: 3rem;
   line-height: 1;
   text-align: center;
 }
@@ -1042,7 +1065,7 @@ article > form > hr {
   text-align: center;
 }
 #f-actions td:nth-last-child(2){
-  width: 3.5em;
+  width: 4.5em;
 }
 
 #f-note {

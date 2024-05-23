@@ -623,7 +623,7 @@
         <dt>レベル<dd><TMPL_VAR level>
       </dl>
       <dl id="f-character-name">
-        <dt>名前<dd><TMPL_VAR characterName>
+        <dt>名前<dd><TMPL_IF aka><span class="aka">“<TMPL_VAR aka>”</span></TMPL_IF><span><TMPL_VAR characterName></span>
       </dl>
       <dl id="f-player-name">
         <dt>プレイヤー名<dd><TMPL_VAR playerName>
@@ -645,7 +645,7 @@
           </TMPL_LOOP>
         </dd>
       </dl>
-      <dl id="f-note">
+      <dl id="f-profile">
         <dt>自己紹介<dd><TMPL_VAR fellowProfile>
       </dl>
       <dl id="f-mp">
@@ -653,79 +653,81 @@
       </dl>
       <div id="f-checkboxes">
         <dl><dt>経験点
-          <dd class="<TMPL_IF fellowExpCheck>fellow-checked</TMPL_IF>"><TMPL_IF fellowExpCheck>✔<TMPL_ELSE>　</TMPL_IF>あり
-          <dd class="<TMPL_UNLESS fellowExpCheck>fellow-checked</TMPL_UNLESS>"><TMPL_UNLESS fellowExpCheck>✔<TMPL_ELSE>　</TMPL_UNLESS>なし
+          <dd class="<TMPL_IF fellowExpCheck>fellow-checked</TMPL_IF>">あり
+          <dd class="<TMPL_UNLESS fellowExpCheck>fellow-checked</TMPL_UNLESS>">なし
         </dl>
         <dl><dt>報酬
-          <dd class="<TMPL_IF fellowRewardCheck>fellow-checked</TMPL_IF>"><TMPL_IF fellowRewardCheck>✔<TMPL_ELSE>　</TMPL_IF>要望
-          <dd class="<TMPL_UNLESS fellowRewardCheck>fellow-checked</TMPL_UNLESS>"><TMPL_UNLESS fellowRewardCheck>✔<TMPL_ELSE>　</TMPL_UNLESS>不要
+          <dd class="<TMPL_IF fellowRewardCheck>fellow-checked</TMPL_IF>">要望
+          <dd class="<TMPL_UNLESS fellowRewardCheck>fellow-checked</TMPL_UNLESS>">不要
         </dl>
       </div>
       </div>
       <table id="fellow-actions">
-        <tr>
-          <th>1d
-          <th>想定<br>出目
-          <th>行動
-          <th>台詞
-          <th>達成値
-          <th>効果
-        <tr>
-          <td rowspan="2">⚀<br>⚁
-          <td class="number">7
-          <td><TMPL_VAR fellow1Action>
-          <td><TMPL_VAR fellow1Words>
-          <td><TMPL_VAR fellow1Num>
-          <td><TMPL_VAR fellow1Note>
-        <tr>
-          <td class="number">6
-          <td><TMPL_VAR fellow1-2Action>
-          <td><TMPL_VAR fellow1-2Words>
-          <td><TMPL_VAR fellow1-2Num>
-          <td><TMPL_VAR fellow1-2Note>
-        <tr>
-          <td rowspan="2">⚂<br>⚃
-          <td class="number">8
-          <td><TMPL_VAR fellow3Action>
-          <td><TMPL_VAR fellow3Words>
-          <td><TMPL_VAR fellow3Num>
-          <td><TMPL_VAR fellow3Note>
-        <tr>
-          <td class="number">5
-          <td><TMPL_VAR fellow3-2Action>
-          <td><TMPL_VAR fellow3-2Words>
-          <td><TMPL_VAR fellow3-2Num>
-          <td><TMPL_VAR fellow3-2Note>
-        <tr>
-          <td rowspan="2">⚄
-          <td class="number">9
-          <td><TMPL_VAR fellow5Action>
-          <td><TMPL_VAR fellow5Words>
-          <td><TMPL_VAR fellow5Num>
-          <td><TMPL_VAR fellow5Note>
-        <tr>
-          <td class="number">4
-          <td><TMPL_VAR fellow5-2Action>
-          <td><TMPL_VAR fellow5-2Words>
-          <td><TMPL_VAR fellow5-2Num>
-          <td><TMPL_VAR fellow5-2Note>
-        <tr>
-          <td rowspan="2">⚅
-          <td class="number">10
-          <td><TMPL_VAR fellow6Action>
-          <td><TMPL_VAR fellow6Words>
-          <td><TMPL_VAR fellow6Num>
-          <td><TMPL_VAR fellow6Note>
-        <tr>
-          <td class="number">3
-          <td><TMPL_VAR fellow6-2Action>
-          <td><TMPL_VAR fellow6-2Words>
-          <td><TMPL_VAR fellow6-2Num>
-          <td><TMPL_VAR fellow6-2Note>
+        <thead>
+          <tr>
+            <th>1d
+            <th><span class="small">想定出目</span>
+            <th>行動
+            <th>台詞
+            <th>達成値
+            <th>効果
+        <tbody>
+          <tr>
+            <td rowspan="2">⚀<br>⚁
+            <td class="number">7
+            <td><TMPL_VAR fellow1Action>
+            <td><TMPL_VAR fellow1Words>
+            <td><TMPL_VAR fellow1Num>
+            <td><TMPL_VAR fellow1Note>
+          <tr>
+            <td class="number">6
+            <td><TMPL_VAR fellow1-2Action>
+            <td><TMPL_VAR fellow1-2Words>
+            <td><TMPL_VAR fellow1-2Num>
+            <td><TMPL_VAR fellow1-2Note>
+          <tr>
+            <td rowspan="2">⚂<br>⚃
+            <td class="number">8
+            <td><TMPL_VAR fellow3Action>
+            <td><TMPL_VAR fellow3Words>
+            <td><TMPL_VAR fellow3Num>
+            <td><TMPL_VAR fellow3Note>
+          <tr>
+            <td class="number">5
+            <td><TMPL_VAR fellow3-2Action>
+            <td><TMPL_VAR fellow3-2Words>
+            <td><TMPL_VAR fellow3-2Num>
+            <td><TMPL_VAR fellow3-2Note>
+          <tr>
+            <td rowspan="2">⚄
+            <td class="number">9
+            <td><TMPL_VAR fellow5Action>
+            <td><TMPL_VAR fellow5Words>
+            <td><TMPL_VAR fellow5Num>
+            <td><TMPL_VAR fellow5Note>
+          <tr>
+            <td class="number">4
+            <td><TMPL_VAR fellow5-2Action>
+            <td><TMPL_VAR fellow5-2Words>
+            <td><TMPL_VAR fellow5-2Num>
+            <td><TMPL_VAR fellow5-2Note>
+          <tr>
+            <td rowspan="2">⚅
+            <td class="number">10
+            <td><TMPL_VAR fellow6Action>
+            <td><TMPL_VAR fellow6Words>
+            <td><TMPL_VAR fellow6Num>
+            <td><TMPL_VAR fellow6Note>
+          <tr>
+            <td class="number">3
+            <td><TMPL_VAR fellow6-2Action>
+            <td><TMPL_VAR fellow6-2Words>
+            <td><TMPL_VAR fellow6-2Num>
+            <td><TMPL_VAR fellow6-2Note>
       </table>
-      <dl id="fellowNote">
+      <dl id="fellow-note">
         <dt>備考
-        <dd><TMPL_VAR fellowNote>
+        <dd><TMPL_VAR fellowNote></dd>
       </dl>
       <TMPL_ELSE>
         <p>このキャラクターのフェローは公開されていません。</p>

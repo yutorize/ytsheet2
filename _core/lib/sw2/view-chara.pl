@@ -991,7 +991,10 @@ if($::in{id}){
 }
 
 ### フェロー --------------------------------------------------
-$SHEET->param(FellowMode => $::in{f});
+if($::in{f}){
+  $SHEET->param(FellowMode => 1);
+  $SHEET->param($_ => $pc{$_} =~ s{[0-9]+|[^0-9]+}{$&<wbr>}gr) foreach (grep {/^fellow[-0-9]+Num$/} keys %pc);
+}
 
 ### タイトル --------------------------------------------------
 $SHEET->param(title => $set::title);

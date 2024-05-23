@@ -35,6 +35,12 @@ article, .color-set {
     var(--box-head-bg-color-l, 65%),
     var(--box-head-bg-color-a, 0.25)
   );
+  --box-head-bg-color-faint: hsla(
+    var(--box-head-bg-color-h, 225),
+    var(--box-head-bg-color-s,  9%),
+    var(--box-head-bg-color-l, 65%),
+    var(--box-head-bg-color-a, 0.13)
+  );
   --box-base-bg-color: hsla(
     var(--box-base-bg-color-h, 235),
     var(--box-base-bg-color-s,   0%),
