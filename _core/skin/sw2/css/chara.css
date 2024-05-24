@@ -300,42 +300,47 @@ header nav ul li.character-format {
 
 #status dl[id^="stt-bonus"] {
   margin-left: .8rem;
-}
-#status dl[id^="stt-bonus"]::before {
-  position: absolute;
-  content: "";
-  left: -1.9rem;
-  bottom: 8px;
-  width: 1.9rem;
-  border-width: 0.4rem 0 0;
-  border-style: solid;
-  border-color: inherit;
-}
-#status dl[id^="stt-bonus"]::after {
-  position: absolute;
-  content: "÷6";
-  width: 2rem;
-  left: -2.1rem;
-  bottom: 8px;
-  font-size: 1.2rem;
-  text-align: right;
-}
-#status dl[id^="stt-bonus"] dt span {
-  display: block;
-  width: 3em;
-  margin: 0 -.4em;
-  transform: scale(0.75, 0.85);
-  &::after {
-    content: "ボーナス";
+
+  &::before {
+    position: absolute;
+    content: "";
+    left: -1.9rem;
+    bottom: 8px;
+    width: 1.9rem;
+    border-width: 0.4rem 0 0;
+    border-style: solid;
+    border-color: inherit;
   }
-  @media screen and (max-width:850px), screen and (min-width:1400px) and (max-width:1680px), print and (max-width:850px) {
+  &::after {
+    position: absolute;
+    content: "÷6";
+    width: 2rem;
+    left: -2.1rem;
+    bottom: 8px;
+    font-size: 1.2rem;
+    text-align: right;
+  }
+  main#character &::after {
+    opacity: 0.5;
+  }
+  
+  > dt span {
+    display: block;
+    width: 3em;
+    margin: 0 -.4em;
+    transform: scale(0.75, 0.85);
     &::after {
-      content: "Ｂ";
+      content: "ボーナス";
+    }
+    @media screen and (max-width:850px), screen and (min-width:1400px) and (max-width:1680px), print and (max-width:850px) {
+      &::after {
+        content: "Ｂ";
+      }
     }
   }
-}
-#status dl[id^="stt-bonus"] dd {
-  transform: scale(1.2,1.25);
+  > dd {
+    transform: scale(1.2,1.25);
+  }
 }
 
 /* Sub-Status */
