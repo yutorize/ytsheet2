@@ -64,6 +64,7 @@ elsif($mode eq 'blanksheet'){
     if($data::races{$pc{race}}{variant} && !$data::races{$pc{race}}{ability}){
       $pc{race} .= "（$data::races{$pc{race}}{variantSort}[0]）";
     }
+    $pc{sin} = $data::races{$pc{race}}{sin} || 0;
     if($::in{making_num}){
       $pc{history0Note} = "能力値作成履歴#$::in{making_num}";
     }

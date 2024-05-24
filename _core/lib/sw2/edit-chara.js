@@ -227,6 +227,9 @@ function changeRace(value){
   else if(!SET.races[race]) {
     document.getElementById('race-ability-value').innerHTML = `<input type="text" name="raceAbilityFree" oninput="changeRaceAbility()" value="${form.raceAbilityFree?.value ?? '［］'}">`;
   }
+  if(form.mode.value === 'make'){
+    form.sin.value = SET.races[race]?.sin || 0;
+  }
   checkRace();
   calcStt();
 }
