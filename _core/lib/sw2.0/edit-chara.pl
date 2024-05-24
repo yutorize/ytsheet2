@@ -106,6 +106,7 @@ $pc{freeNote}      =~ s/&lt;br&gt;/\n/g;
 $pc{freeHistory}   =~ s/&lt;br&gt;/\n/g;
 $pc{cashbook}      =~ s/&lt;br&gt;/\n/g;
 $pc{chatPalette}   =~ s/&lt;br&gt;/\n/g;
+$pc{'chatPaletteInsert'.$_} =~ s/&lt;br&gt;/\n/g foreach(1..$pc{chatPaletteInsertNum});
 
 ### フォーム表示 #####################################################################################
 my $titlebarname = removeTags nameToPlain unescapeTags ($pc{characterName}||"“$pc{aka}”");

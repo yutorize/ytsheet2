@@ -112,7 +112,7 @@ $pc{cashbook}        =~ s/&lt;br&gt;/\n/g;
 $pc{fellowProfile}   =~ s/&lt;br&gt;/\n/g;
 $pc{fellowNote}      =~ s/&lt;br&gt;/\n/g;
 $pc{chatPalette}     =~ s/&lt;br&gt;/\n/g;
-$pc{'chatPaletteInsert'.$_} =~ s/&lt;br&gt;/\n/g foreach(1..2);
+$pc{'chatPaletteInsert'.$_} =~ s/&lt;br&gt;/\n/g foreach(1..$pc{chatPaletteInsertNum});
 $pc{$_} =~ s/&lt;br&gt;/\n/g foreach (grep {/^fellow[-0-9]+(?:Action|Note)$/} keys %pc);
 
 ### フォーム表示 #####################################################################################

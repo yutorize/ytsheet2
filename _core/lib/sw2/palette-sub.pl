@@ -149,7 +149,7 @@ sub normalizeCrit {
 sub appendPaletteInsert {
   my $position = shift;
   my $text;
-  foreach (1 .. 2) {
+  foreach (1 .. $::pc{chatPaletteInsertNum}) {
     if($::pc{"chatPaletteInsert${_}Position"} eq $position){
       $text .= $::pc{"chatPaletteInsert$_"} =~ s/<br>/\n/gr;;
       $text .= "\n" if $::pc{"chatPaletteInsert$_"};
