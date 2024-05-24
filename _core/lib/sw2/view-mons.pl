@@ -151,6 +151,13 @@ my $appLv = $pc{lvMin}.($pc{lvMax} != $pc{lvMin} ? "～$pc{lvMax}":'');
 {
   $SHEET->param(appLv => $appLv);
 }
+### 穢れ --------------------------------------------------
+unless(
+  ($pc{taxa} eq 'アンデッド' && ($pc{sin} == 5 || $pc{sin} eq '')) ||
+  ($pc{taxa} ne '蛮族'       && ($pc{sin} == 0 || $pc{sin} eq ''))
+){
+  $SHEET->param(displaySin => 1);
+}
 ### ステータス --------------------------------------------------
 $SHEET->param(vitResist => $pc{vitResist} eq '' ? '' : $pc{vitResist}.(!$pc{statusTextInput}?' ('.$pc{vitResistFix}.')':''));
 $SHEET->param(mndResist => $pc{mndResist} eq '' ? '' : $pc{mndResist}.(!$pc{statusTextInput}?' ('.$pc{mndResistFix}.')':''));
