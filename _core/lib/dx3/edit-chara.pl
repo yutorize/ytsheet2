@@ -1256,6 +1256,7 @@ print <<"HTML";
     <option value="イニシアチブ">
     <option value="クリンナップ">
     <option value="常時">
+    <option value="効果参照">
   </datalist>
   <datalist id="list-combo-skill">
     <option value="―">
