@@ -632,10 +632,17 @@ dl.note-description {
   position: relative;
   width: 1em;
   height: 1em;
-  color: transparent;
   text-align: center;
   font-style: normal;
   line-height: 1;
+
+  > .raw {
+    display: inline-block;
+    transform: scaleX(0.5) translateX(-1em);
+    text-wrap: nowrap;
+    color: transparent;
+    text-shadow: none;
+  }
 
   &::before,
   &::after {
@@ -646,9 +653,17 @@ dl.note-description {
     align-items: center;
     font-family: "Material Symbols Outlined";
     font-weight: bold;
-    color: var(--text-color);
     pointer-events: none;
   }
+
+  &:not(:has(.raw)) {
+    color: transparent;
+    &::before, &::after {
+      color: var(--text-color);
+    }
+  }
+
+
   &.passive::before {
     content: "\ef4a";
   }

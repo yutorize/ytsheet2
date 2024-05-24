@@ -464,7 +464,7 @@ sub unescapeTags {
   
   $text =~ s#(―+)#<span class="d-dash">$1</span>#g;
   
-  $text =~ s{[©]}{<i class="s-icon copyright">©</i>}gi;
+  $text =~ s{©}{<i class="s-icon copyright">©</i>}gi;
 
   if($set::game eq 'sw2'){
     if($::in{mode} ne 'download'){
@@ -500,8 +500,10 @@ sub unescapeTags {
 
   if($set::game eq 'sw2'){
     if($::SW2_0){
+      $text =~ s/(\[[常主補宣条選]\])+/&textToIcon($&);/egi;
       $text =~ s/「((?:[○◯〇＞▶〆☆≫»□☐☑🗨▽▼]|&gt;&gt;)+)/"「".&textToIcon($1);/egi;
     } else {
+      $text =~ s/(\[[常準主補宣]\])+/&textToIcon($&);/egi;
       $text =~ s/「((?:[○◯〇△＞▶〆☆≫»□☐☑🗨]|&gt;&gt;)+)/"「".&textToIcon($1);/egi;
     }
   }

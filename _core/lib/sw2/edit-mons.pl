@@ -357,26 +357,28 @@ print <<"HTML";
         <div class="annotate">
           ※<b>行頭に</b>特殊能力の分類マークなどを記述すると、そこから次の「改行」または「全角スペース」までを自動的に見出し化します。<br>
            2.0での分類マークでも構いません。また、入力簡易化の為に入力しやすい代替文字での入力も可能です。<br>
-           以下に見出しとして変換される記号を一覧にしています。<br>
+           以下に見出しとして変換される記号・文字列を一覧にしています。<br>
           ●：部位見出し：<code>●</code><br>
-          <i class="s-icon passive"></i>：常時型　　：<code>○</code> <code>◯</code> <code>〇</code><br>
+          <i class="s-icon passive"></i>：常時型　　：<code>[常]</code><code>○</code> <code>◯</code> <code>〇</code><br>
 HTML
 if($::SW2_0){
 print <<"HTML";
-          <i class="s-icon major0"   ></i>：主動作型　：<code>＞</code> <code>▶</code> <code>〆</code><br>
-          <i class="s-icon minor0"   ></i>：補助動作型：<code>≫</code> <code>&gt;&gt;</code> <code>☆</code><br>
-          <i class="s-icon condition"></i>：条件型　　：<code>▽</code><br>
-          <i class="s-icon selection"></i>：条件選択型：<code>▼</code><br>
+          <i class="s-icon major0"   ></i>：主動作型　：<code>[主]</code><code>＞</code> <code>▶</code> <code>〆</code><br>
+          <i class="s-icon minor0"   ></i>：補助動作型：<code>[補]</code><code>≫</code> <code>&gt;&gt;</code> <code>☆</code><br>
+          <i class="s-icon active0"  ></i>：宣言型　　：<code>[宣]</code><code>🗨</code> <code>□</code> <code>☑</code><br>
+          <i class="s-icon condition"></i>：条件型　　：<code>[条]</code><code>▽</code><br>
+          <i class="s-icon selection"></i>：条件選択型：<code>[選]</code><code>▼</code><br>
 HTML
 } else {
 print <<"HTML";
-          <i class="s-icon setup"  ></i>：戦闘準備型：<code>△</code><br>
-          <i class="s-icon major"  ></i>：主動作型　：<code>＞</code> <code>▶</code> <code>〆</code><br>
-          <i class="s-icon minor"  ></i>：補助動作型：<code>≫</code> <code>&gt;&gt;</code> <code>☆</code><br>
-          <i class="s-icon active" ></i>：宣言型　　：<code>🗨</code> <code>□</code> <code>☑</code><br>
+          <i class="s-icon setup"  ></i>：戦闘準備型：<code>[戦]</code><code>△</code><br>
+          <i class="s-icon major"  ></i>：主動作型　：<code>[主]</code><code>＞</code> <code>▶</code> <code>〆</code><br>
+          <i class="s-icon minor"  ></i>：補助動作型：<code>[補]</code><code>≫</code> <code>&gt;&gt;</code> <code>☆</code><br>
+          <i class="s-icon active" ></i>：宣言型　　：<code>[宣]</code><code>🗨</code> <code>□</code> <code>☑</code><br>
 HTML
 }
 print <<"HTML";
+          <code>[]</code>で漢字一文字を囲う記法は、行頭でなくても各マークに変換されます。
         </div>
       </div>
       <div class="box loots monster-only">
