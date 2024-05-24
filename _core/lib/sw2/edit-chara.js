@@ -1687,7 +1687,7 @@ function checkLanguage(){
     count[read.value] ||= 0; count[read.value]++;
   }
   let notice = '';
-  for (let key in SET.class){
+  for (let key of SET.classNames){
     if(!SET.class[key].language){ continue; }
     const className = key;
     const classId = SET.class[key].id;
