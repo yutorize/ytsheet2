@@ -763,8 +763,8 @@ else {
       TYPE => $pc{'armour'.$_.'Type'},
       NAME => $pc{'armour'.$_.'Name'},
       REQD => $pc{'armour'.$_.'Reqd'},
-      EVA  => $pc{'armour'.$_.'Eva'},
-      DEF  => $pc{'armour'.$_.'Def'},
+      EVA  => $pc{'armour'.$_.'Eva'} // ($pc{'armour'.$_.'Category'} =~ /[鎧盾]/ ? '―' : ''),
+      DEF  => $pc{'armour'.$_.'Def'} // ($pc{'armour'.$_.'Category'} =~ /[鎧盾]/ ? '0' : ''),
       OWN  => $pc{'armour'.$_.'Own'},
       NOTE => $pc{'armour'.$_.'Note'},
     } );
