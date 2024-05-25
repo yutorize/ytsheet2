@@ -696,11 +696,11 @@ sub rgb_to_hsl {
 ### デフォルトカラー --------------------------------------------------
 sub setDefaultColors {
   my $type = shift;
-  $::pc{$type.'colorHeadBgH'} = $::pc{$type.'colorHeadBgH'} eq '' ? 225 : $::pc{$type.'colorHeadBgH'};
-  $::pc{$type.'colorHeadBgS'} = $::pc{$type.'colorHeadBgS'} eq '' ?   9 : $::pc{$type.'colorHeadBgS'};
-  $::pc{$type.'colorHeadBgL'} = $::pc{$type.'colorHeadBgL'} eq '' ?  65 : $::pc{$type.'colorHeadBgL'};
-  $::pc{$type.'colorBaseBgH'} = $::pc{$type.'colorBaseBgH'} eq '' ? 235 : $::pc{$type.'colorBaseBgH'};
-  $::pc{$type.'colorBaseBgS'} = $::pc{$type.'colorBaseBgS'} eq '' ?   0 : $::pc{$type.'colorBaseBgS'};
+  $::pc{$type.'colorHeadBgH'} //= 225;
+  $::pc{$type.'colorHeadBgS'} //=   9;
+  $::pc{$type.'colorHeadBgL'} //=  65;
+  $::pc{$type.'colorBaseBgH'} //= 235;
+  $::pc{$type.'colorBaseBgS'} //=   0;
 }
 
 ### 進数変換 --------------------------------------------------

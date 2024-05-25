@@ -89,7 +89,7 @@ sub getSheetData {
       }
       chomp $_;
       my ($key, $value) = split(/<>/, $_, 2);
-      $pc{$key} = $value;
+      $pc{$key} = $value if $value ne '';
     }
     close($IN);
     if($datatype eq 'logs' && !$hit){ error("過去ログ（$::in{log}）が見つかりません。"); }
