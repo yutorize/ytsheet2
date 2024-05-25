@@ -70,7 +70,7 @@ if($pc{ver} ne '') {
   $pc{result} = "OK";
   if($set::lib_json_sub){
     require $set::lib_json_sub;
-    %pc = %{ addJsonData(\%pc , $type) };
+    %pc = %{ addJsonData(\%pc , $type , $::in{target} || '') };
   }
   delete $pc{IP};
 }

@@ -11,6 +11,7 @@ use Fcntl;
 ### ユニットステータス出力 --------------------------------------------------
 sub createUnitStatus {
   my %pc = %{$_[0]};
+  my $target = $_[1] || '';
   my @unitStatus;
   if ($pc{type} eq 'm'){
     my @n2a = ('','A' .. 'Z');
@@ -38,7 +39,12 @@ sub createUnitStatus {
         push(@mp , {$partname.':MP' => $pc{"status${i}Mp"}.'/'.$pc{"status${i}Mp"}});
         push(@def, $partname.$pc{"status${i}Defense"});
       }
-      @unitStatus = ( @hp, @mp, {'メモ' => '防護:'.join('／',@def)} );
+      @unitStatus = ( @hp, @mp, );
+      if ($target eq 'udonarium') {
+        push(@unitStatus, {'防護' => join('／',@def)});
+      } else {
+        push(@unitStatus, {'メモ' => '防護:'.join('／',@def)});
+      }
     }
     else { # 1部位
       my $i = 1;
