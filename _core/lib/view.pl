@@ -105,8 +105,9 @@ sub getSheetData {
     
     ## 権利表記
     if($pc{imageCopyrightURL}){
-      $pc{imageCopyright} = "<a href=\"$pc{imageCopyrightURL}\" target=\"_blank\">".($pc{imageCopyright}||$pc{imageCopyrightURL})."</a>";
+      $pc{imageCopyright} = "<a href=\"$pc{imageCopyrightURL}\" target=\"_blank\">".(unescapeTags($pc{imageCopyright})||$pc{imageCopyrightURL})."</a>";
     }
+    else { $pc{imageCopyright} = unescapeTags($pc{imageCopyright}) }
   }
 
   ## 
