@@ -137,7 +137,7 @@ sub data_calc {
       }
       $stt;
     };
-    if($pc{comboCalcOff}){
+    if($pc{"combo${num}Manual"}){
       $lv = 0; $stt = 0;
     }
     foreach (1..5) {

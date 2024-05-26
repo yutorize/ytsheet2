@@ -771,17 +771,18 @@ HTML
   foreach my $i (1 .. 5) {
   print <<"HTML";
             <dd>@{[input "combo${num}Condition${i}"]}
-            <dd id="combo${num}Stt${i}">
+            <dd id="combo${num}Stt${i}"></dd>
             <dd>@{[input "combo${num}DiceAdd${i}"]}
             <dd>@{[input "combo${num}Crit${i}"]}
-            <dd id="combo${num}SkillLv${i}">
+            <dd id="combo${num}SkillLv${i}"></dd>
             <dd>@{[input "combo${num}FixedAdd${i}"]}
             <dd>@{[input "combo${num}Atk${i}"]}
 HTML
   }
 print <<"HTML";
           </dl>
-          <p class="combo-note"><textarea name="combo${num}Note" rows="3" placeholder="解説">$pc{"combo${num}Note"}</textarea></p>
+          <div class="combo-note"><textarea name="combo${num}Note" rows="3" placeholder="解説">$pc{"combo${num}Note"}</textarea></div>
+          <div class="combo-calc">@{[ checkbox "combo${num}Manual",'技能レベル・能力値を自動挿入しない',"calcCombo(${num})" ]}</div>
         </div>
 HTML
   if($num eq 'TMPL'){ print '</template>' }

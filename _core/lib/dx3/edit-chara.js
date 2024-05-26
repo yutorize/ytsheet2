@@ -711,7 +711,7 @@ function calcCombo(num){
   const name = form[`combo${num}Skill`].value;
   
   const [lv, stt] = (() => {
-    if(form['comboCalcOff'].checked){ return ['',''] }
+    if(form[`combo${num}Manual`].checked){ return ['',''] }
     const id = skillNameToId[name];
     const sttname = form[`combo${num}Stt`].value
     let [lv, stt] = ['',''];

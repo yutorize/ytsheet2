@@ -84,6 +84,11 @@ sub data_update_chara {
       if($data::syndrome_status{$pc{syndrome2}}){ $pc{'sttSyn2'.@$stt[1]} = $data::syndrome_status{$pc{syndrome2}}[@$stt[0]] }
     }
   }
+  if($ver < 1.24026){
+    if($pc{comboCalcOff}){
+      $pc{"combo${_}Manual"} = 1 foreach (1 .. $pc{comboNum});
+    }
+  }
   $pc{ver} = $main::ver;
   $pc{lasttimever} = $ver;
   return %pc;

@@ -451,7 +451,6 @@ sub convertSoukoToYtsheet {
   $pc{effectNum} = $i-1;
   ## コンボ
   my $i = 1;
-  $pc{comboCalcOff} = 1;
   foreach (@{$in{'combo'}}){
     my %un = %{@$_{'under100'}};
     my %ov = %{@$_{'over100'}};
@@ -480,6 +479,7 @@ sub convertSoukoToYtsheet {
                              : $un{'notes'} ? $un{'notes'} : $ov{'notes'};
     $pc{"combo${i}Condition1"} = '100%未満';
     $pc{"combo${i}Condition2"} = '100%以上';
+    $pc{"combo${i}Manual"} = 1;
     $i++;
   }
   $pc{comboNum} = $i-1;

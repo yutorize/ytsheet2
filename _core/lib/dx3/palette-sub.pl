@@ -58,7 +58,7 @@ sub palettePreset {
       foreach my $i (1..5) {
         next if !$::pc{'combo'.$num.'Condition'.$i};
         $text .= "▼$::pc{'combo'.$num.'Condition'.$i} ----------\n" if $bot{YTC} || $bot{TKY};
-        if(!$::pc{comboCalcOff}){
+        if(!$::pc{"combo${num}Manual"}){
           if($::pc{"combo${num}Stt"}){
             if   ($::pc{"combo${num}Stt"} eq '肉体'){ $text .= '{肉体}+'; }
             elsif($::pc{"combo${num}Stt"} eq '感覚'){ $text .= '{感覚}+'; }

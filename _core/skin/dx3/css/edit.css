@@ -631,12 +631,17 @@ body:not(.mode-crc) .crc-only {
     "HNDL NAME COMB COMB"
     "HNDL   IN   IN  OUT"
     "HNDL NOTE NOTE  OUT"
+    "HNDL NOTE NOTE CALC"
   ;
 }
 #combo .combo-table .handle {
   grid-area: HNDL;
   display: grid;
   place-items: center;
+}
+#combo .combo-table .combo-calc {
+  grid-area: CALC;
+  justify-self: end;
 }
 #combo .combo-table .combo-combo,
 #combo .combo-table .combo-in,
