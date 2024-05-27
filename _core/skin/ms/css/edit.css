@@ -75,34 +75,8 @@
   }
 
   .add-del-button,
-  .annotate.error {
+  .annotate {
     grid-column: span 3;
-  }
-  .annotate.error {
-    width: max-content;
-    margin: .2em;
-    padding: 3px .5em 2px 1.8em;
-    border: 1px dashed #f70;
-    border-radius: 5px;
-    background-color: #f702;
-    position: relative;
-  }
-  .annotate.error::before {
-    content: "\e002";
-    font-family: "Material Symbols Outlined";
-    font-variation-settings: 'FILL' 1;
-    font-size: 150%;
-    line-height: 1;
-    color: #e70;
-    
-    display: grid;
-    place-items: center;
-    width: 1em;
-    position: absolute;
-    inset: 0 auto 0 .2em;
-  }
-  .annotate.error:empty {
-    display: none;
   }
 }
 

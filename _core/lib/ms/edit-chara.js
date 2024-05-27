@@ -46,7 +46,7 @@ function checkStatus() {
   const phy = Number(form.statusPhysicalBase.value);
   const spe = Number(form.statusSpecialBase.value);
   const soc = Number(form.statusSocialBase.value);
-  document.getElementById('status').querySelector('.status .error').textContent
+  document.getElementById('status').querySelector('.status .annotate').textContent
     = (phy + spe + soc != 12 || phy == spe || spe == soc || soc == phy) ? '各能力値に6／4／2を割り振ってください' : '';
 }
 function calcEndurance() {
@@ -62,7 +62,7 @@ function checkAttribute() {
       if(form['attribute'+type+num].value){ count++ }
     }
   }
-  document.getElementById('status').querySelector('.attribute .error').textContent
+  document.getElementById('status').querySelector('.attribute .annotate').textContent
     = (count < 4) ? '特性を4つ記入してください' : '';
 }
 // 追加
@@ -101,7 +101,7 @@ function checkMagi() {
   for (let num = 1; num <= 4; num++){
     if(form['magi'+num+'Name'].value){ count++ }
   }
-  document.getElementById('magi').querySelector('.error').textContent
+  document.getElementById('magi').querySelector('.annotate').textContent
     = (count < 1) ? 'マギを1つ記入してください' : '';
 }
 

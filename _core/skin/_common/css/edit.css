@@ -723,17 +723,68 @@ input[type="submit"]:hover {
 }
 
 .box .annotate {
+  position: relative;
+  margin: .3em;
+  padding: 4px .3em 3px .5em;
+  max-width: max-content;
+  border-width: 1px;
+  border-style: dashed;
+  border-radius: 5px;
   font-size: 90%;
-  padding: 0 1rem;
+  text-align: left;
+  background-color: rgba(170,170,170,0.1);
   
   @media screen and (max-width:735px){
     position: sticky;
     left: 0;
   }
-}
-.box .add-del-button + .annotate {
-  border-top-width: 1px;
-  border-top-style: solid;
+
+  &:empty{ display: none; }
+
+  > li {
+    list-style-type: "※";
+    margin-left: 1em;
+    text-align: inherit;
+  }
+
+  &.notice,
+  &.caution {
+    padding-left: 2em;
+    &::before {
+      position: absolute;
+      display: grid;
+      place-items: center;
+      width: 1em;
+      inset: 0 auto 0 .1em;
+
+      font-family: "Material Symbols Outlined";
+      font-size: 180%;
+      line-height: 1;
+    }
+    > li {
+      list-style-type: none;
+      margin-left: 0;
+      &.under { background: linear-gradient(transparent 80% , #0af4 80%); }
+      &.over  { background: linear-gradient(transparent 80% , #f504 80%); }
+    }
+  }
+  &.notice {
+    &::before {
+      content: "\e000";
+      color: #e70;
+      font-variation-settings: 'FILL' 0;
+    }
+  }
+  &.caution {
+    border-color: #f70;
+    background-color: #f702;
+
+    &::before {
+      content: "\e002";
+      color: #e70;
+      font-variation-settings: 'FILL' 1;
+    }
+  }
 }
 .example {
   background: rgba(170,170,170,0.2);
@@ -955,8 +1006,7 @@ input[type="submit"]:hover {
   }
 }
 #history .annotate {
-  width: 70%;
-  margin: auto 3px auto auto;
+  margin-left: auto;
 }
 
 
@@ -1285,12 +1335,6 @@ input[type="submit"]:hover {
         }
       }
       .annotate {
-        margin: 3px;
-        padding: 3px;
-        max-width: max-content;
-        border-width: 1px;
-        border-style: dashed;
-        border-radius: 5px;
         overflow: hidden;
         > small { display: block; }
       }

@@ -1701,14 +1701,14 @@ function checkLanguage(){
       const notR = (data.read && !acqR[langName]) ? true : false;
       if(langName === 'any'){
         const v = classLv - (count[classId] || 0);
-        if     (v > 0){ notice += `${className}技能であと「${v}」習得できます<br>`; }
-        else if(v < 0){ notice += `${className}技能での習得が「${v*-1}」過剰です<br>`; }
+        if     (v > 0){ notice += `<li class="under">${className}技能であと「${v}」習得できます`; }
+        else if(v < 0){ notice += `<li class="over">${className}技能での習得が「${v*-1}」過剰です`; }
       }
       else if(classLv && (notT || notR)) {
-        notice += `${langName}の`;
+        notice += `<li class="under">${langName}の`;
         if(notT){ acqT[langName] = true; notice += `会話`+(notR ? '/' : '');  }
         if(notR){ acqR[langName] = true; notice += `読文`;  }
-        notice += `が習得できます<br>`;
+        notice += `が習得できます`;
       }
     }
   }

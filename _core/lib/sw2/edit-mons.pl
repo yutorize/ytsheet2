@@ -355,26 +355,26 @@ print <<"HTML";
         <h2 class="in-toc">特殊能力</h2>
         <textarea name="skills">$pc{skills}</textarea>
         <div class="annotate">
-          ※<b>行頭に</b>特殊能力の分類マークなどを記述すると、そこから次の「改行」または「全角スペース」までを自動的に見出し化します。<br>
+          <b>行頭に</b>特殊能力の分類マークなどを記述すると、そこから次の「改行」または「全角スペース」までを自動的に見出し化します。<br>
            2.0での分類マークでも構いません。また、入力簡易化の為に入力しやすい代替文字での入力も可能です。<br>
            以下に見出しとして変換される記号・文字列を一覧にしています。<br>
-          ●：部位見出し：<code>●</code><br>
-          <i class="s-icon passive"></i>：常時型　　：<code>[常]</code><code>○</code> <code>◯</code> <code>〇</code><br>
+          部位見出し（●）：<code>●</code><br>
+          常時型　　（<i class="s-icon passive"></i>）：<code>[常]</code><code>○</code> <code>◯</code> <code>〇</code><br>
 HTML
 if($::SW2_0){
 print <<"HTML";
-          <i class="s-icon major0"   ></i>：主動作型　：<code>[主]</code><code>＞</code> <code>▶</code> <code>〆</code><br>
-          <i class="s-icon minor0"   ></i>：補助動作型：<code>[補]</code><code>≫</code> <code>&gt;&gt;</code> <code>☆</code><br>
-          <i class="s-icon active0"  ></i>：宣言型　　：<code>[宣]</code><code>🗨</code> <code>□</code> <code>☑</code><br>
-          <i class="s-icon condition"></i>：条件型　　：<code>[条]</code><code>▽</code><br>
-          <i class="s-icon selection"></i>：条件選択型：<code>[選]</code><code>▼</code><br>
+          主動作型　（<i class="s-icon major0"   ></i>）：<code>[主]</code><code>＞</code> <code>▶</code> <code>〆</code><br>
+          補助動作型（<i class="s-icon minor0"   ></i>）：<code>[補]</code><code>≫</code> <code>&gt;&gt;</code> <code>☆</code><br>
+          宣言型　　（<i class="s-icon active0"  ></i>）：<code>[宣]</code><code>🗨</code> <code>□</code> <code>☑</code><br>
+          条件型　　（<i class="s-icon condition"></i>）：<code>[条]</code><code>▽</code><br>
+          条件選択型（<i class="s-icon selection"></i>）：<code>[選]</code><code>▼</code><br>
 HTML
 } else {
 print <<"HTML";
-          <i class="s-icon setup"  ></i>：戦闘準備型：<code>[戦]</code><code>△</code><br>
-          <i class="s-icon major"  ></i>：主動作型　：<code>[主]</code><code>＞</code> <code>▶</code> <code>〆</code><br>
-          <i class="s-icon minor"  ></i>：補助動作型：<code>[補]</code><code>≫</code> <code>&gt;&gt;</code> <code>☆</code><br>
-          <i class="s-icon active" ></i>：宣言型　　：<code>[宣]</code><code>🗨</code> <code>□</code> <code>☑</code><br>
+          戦闘準備型（<i class="s-icon setup"  ></i>）：<code>[戦]</code><code>△</code><br>
+          主動作型　（<i class="s-icon major"  ></i>）：<code>[主]</code><code>＞</code> <code>▶</code> <code>〆</code><br>
+          補助動作型（<i class="s-icon minor"  ></i>）：<code>[補]</code><code>≫</code> <code>&gt;&gt;</code> <code>☆</code><br>
+          宣言型　　（<i class="s-icon active" ></i>）：<code>[宣]</code><code>🗨</code> <code>□</code> <code>☑</code><br>
 HTML
 }
 print <<"HTML";

@@ -276,7 +276,7 @@ print <<"HTML";
                 <dd><select name="statusSocialBase" oninput="checkStatus()">@{[ option 'statusSocialBase',6,4,2 ]}</select>
                 <dd class="grow">+成長@{[ input 'statusSocialGrow','number' ]}
               </dl>
-              <div class="annotate error"></div>
+              <div class="annotate caution"></div>
             </dd>
             <dt>特性
             <dd class="attribute">
@@ -293,7 +293,7 @@ print '<li>《'.input('attributeSocial'.$_,'','checkAttribute').'》' foreach (1
 print '</ul>';
 print <<"HTML";
               <div class="add-del-button"><a onclick="addAttribute()">▼</a><a onclick="delAttribute()">▲</a></div>
-              <div class="annotate error"></div>
+              <div class="annotate caution"></div>
             </dd>
           </dl>
         </div>
@@ -331,7 +331,7 @@ HTML
 }
 print <<"HTML";
         </table>
-        <div class="annotate error"></div>
+        <div class="annotate caution"></div>
       </div>
       
       <details class="box" id="free-note" @{[$pc{freeNote}?'open':'']}>

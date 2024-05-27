@@ -285,7 +285,7 @@ print <<"HTML";
               <dt>精神力<dd>@{[ input "sttPreGrowF",'number','calcStt' ]}
             </dl>
         </dl>
-        <div class="annotate">※経験点は、初期所有技能のぶんを含みます。</div>
+        <ul class="annotate"><li>経験点は、初期所有技能のぶんを含みます。</ul>
         <dl class="regulation-note"><dt>備考<dd>@{[ input "history0Note" ]}</dl>
       </details>
       <div id="area-status">
@@ -959,10 +959,10 @@ HTML
 print <<"HTML";
             </tbody>
           </table>
-          <div class="annotate">
-            ※Ｃ値は自動計算されません。<br>
-            <span id="artisan-annotate" @{[ display $pc{masteryArtisan} ]}>※備考欄に<code>〈魔器〉</code>と記入すると魔器習熟が反映されます。</span>
-          </div>
+          <ul class="annotate">
+            <li>Ｃ値は自動計算されません。
+            <li id="artisan-annotate" @{[ display $pc{masteryArtisan} ]}>※備考欄に<code>〈魔器〉</code>と記入すると魔器習熟が反映されます。
+          </ul>
           <div class="add-del-button"><a onclick="addWeapons()">▼</a><a onclick="delWeapons()">▲</a></div>
           @{[input('weaponNum','hidden')]}
         </div>
@@ -1153,9 +1153,9 @@ HTML
 print <<"HTML";
           </tbody>
           </table>
-        <div class="annotate">
-        ※左のボックスにチェックを入れると欄が一つ追加されます
-        </div>
+        <ul class="annotate">
+          <li>左のボックスにチェックを入れると欄が一つ追加されます
+        </ul>
         </div>
       </div>
       <div id="area-items">
@@ -1250,12 +1250,12 @@ print <<"HTML";
           　預金：<span id="cashbook-deposit-value">－</span> G
           　借金：<span id="cashbook-debt-value">－</span> G
         </p>
-        <div class="annotate">
-          ※<code>::+n</code> <code>::-n</code>の書式で入力すると加算・減算されます。（<code>n</code>には金額を入れてください）<br>
-          　預金は<code>:>+n</code>、借金は<code>:<+n</code>で増減できます。（それに応じて所持金も増減します）<br>
-          ※<span class="underline">セッション履歴に記入されたガメル報酬は自動的に加算されます。</span><br>
-          ※所持金欄、預金／借金欄に<code>自動</code>または<code>auto</code>と記入すると、収支の計算結果を反映します。
-        </div>
+        <ul class="annotate">
+          <li><code>::+n</code> <code>::-n</code>の書式で入力すると加算・減算されます。（<code>n</code>には金額を入れてください）<br>
+            預金は<code>:>+n</code>、借金は<code>:<+n</code>で増減できます。（それに応じて所持金も増減します）
+          <li><span class="underline">セッション履歴に記入されたガメル報酬は自動的に加算されます。</span>
+          <li>所持金欄、預金／借金欄に<code>自動</code>または<code>auto</code>と記入すると、収支の計算結果を反映します。
+        </ul>
       </details>
       
       <details class="box" id="free-note" @{[$pc{freeNote}?'open':'']}>
@@ -1376,12 +1376,12 @@ print <<"HTML";
             </tr>
           </tbody>
         </table>
-        <div class="annotate">
-        ※経験点欄は<code>1000+50*2</code>など四則演算が有効です（１ゾロの経験点などを分けて書けます）。<br>
-        ※成長は欄1つの欄に<code>敏捷生命知力</code>など複数書いても自動計算されます。<br>
-        　また、<code>敏捷×2</code><code>知力*3</code>など同じ成長が複数ある場合は纏めて記述できます（×や*は省略できます）。<br>
-        　<code>器敏2知3</code>と能力値の頭文字1つで記述することもできます。<br>
-        </div>
+        <ul class="annotate">
+          <li>経験点欄は<code>1000+50*2</code>など四則演算が有効です（１ゾロの経験点などを分けて書けます）。
+          <li>成長は欄1つの欄に<code>敏捷生命知力</code>など複数書いても自動計算されます。<br>
+            また、<code>敏捷×2</code><code>知力*3</code>など同じ成長が複数ある場合は纏めて記述できます（×や*は省略できます）。<br>
+            <code>器敏2知3</code>と能力値の頭文字1つで記述することもできます。<br>
+        </ul>
         @{[ $::in{log} ? '<button type="button" class="set-newest" onclick="setNewestHistoryData()">最新のセッション履歴を適用する</button>' : '' ]}
       </div>
       </section>

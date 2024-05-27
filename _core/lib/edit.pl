@@ -477,11 +477,12 @@ sub chatPaletteForm {
               <tbody id="unit-status-optional">$status
               <tfoot><tr><td colspan="3" class="add-del-button"><a onclick="addUnitStatus()">▼</a><a onclick="delUnitStatus()">▲</a></div>
             </table>
-            <div class="annotate">
-              <small>※デフォルトのステータス出力の他に、任意で項目を追加できます。<br>　また、使わないステータスを出力しないことも選択できます。</small>
-              <small>※最大値が必要な場合は <code>100/100</code> のように記入してください。</small>
-              <small>※ツールによっては値に数値しか許容されないため、注意してください。</small>
-            </div>
+            <ul class="annotate">
+              <li>デフォルトのステータス出力の他に、任意で項目を追加できます。<br>
+                また、使わないステータスを出力しないことも選択できます。
+              <li>最大値が必要な場合は <code>100/100</code> のように記入してください。
+              <li>ツールによっては値に数値しか許容されないため、注意してください。
+            </ul>
         </dl>
       </div>
       <div class="box-union">

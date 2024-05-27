@@ -326,7 +326,7 @@ print '<li id="'.$_.'">《'.input('attribute'.$_,'','checkAttribute').'》' fore
 print '</ul>';
 print <<"HTML";
           <!-- <div class="add-del-button"><a onclick="addAttribute()">▼</a><a onclick="delAttribute()">▲</a></div> -->
-          <div class="annotate error"></div>
+          <div class="annotate caution"></div>
         </div>
 
       </div>
@@ -361,7 +361,7 @@ HTML
 }
 print <<"HTML";
         </table>
-        <div class="annotate error"></div>
+        <div class="annotate caution"></div>
       </div>
       
       <details class="box" id="free-note" @{[$pc{freeNote}?'open':'']}>

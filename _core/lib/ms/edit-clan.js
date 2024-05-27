@@ -73,7 +73,7 @@ function checkAttribute() {
   for (let num = 1; num <= 6; num++){
     if(form['attribute'+num].value){ count++ }
   }
-  document.getElementById('attribute').querySelector('.error').textContent
+  document.getElementById('attribute').querySelector('.annotate').textContent
     = (count < 3) ? '特性を3つ記入してください' : '';
 }
 
@@ -83,7 +83,7 @@ function checkMagi() {
   for (let num = 1; num <= 4; num++){
     if(form['magi'+num+'Name'].value){ count++ }
   }
-  document.getElementById('magi').querySelector('.error').textContent
+  document.getElementById('magi').querySelector('.annotate').textContent
     = (count < 2) ? 'マギを《スクランブル！》と合わせて2つ取得してください' : '';
 }
 

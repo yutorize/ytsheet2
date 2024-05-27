@@ -268,7 +268,7 @@ print <<"HTML";
             ／
             @{[ input "history0Completed",'number','changeRegu', ($set::make_fix?' readonly':'') ]}
         </dl>
-        <div class="annotate">※成長点は、初期10点と累計経験点による追加を除きます。</div>
+        <ul class="annotate"><li>成長点は、初期10点と累計経験点による追加を除きます。</ul>
         <dl class="regulation-note"><dt>備考<dd>@{[ input "history0Note" ]}</dl>
       </details>
       <div id="area-status">
@@ -496,10 +496,10 @@ HTML
 print <<"HTML";
         </table>
         <div class="add-del-button"><a onclick="addSkill()">▼</a><a onclick="delSkill()">▲</a></div>
-        <div class="annotate">
-        ※「自動」にチェックを入れると、習得段階「初歩」で消費する成長点を0として計算します。<br>
-        （経歴や種族によって自動的に習得する技能で、チェックを入れてください）
-        </div>
+        <ul class="annotate">
+          <li>「自動」にチェックを入れると、習得段階「初歩」で消費する成長点を0として計算します。<br>
+            （経歴や種族によって自動的に習得する技能で、チェックを入れてください）
+        </ul>
       </details>
       
       <details class="box" id="general-skills" $open{generalSkill}>
@@ -535,10 +535,10 @@ HTML
 print <<"HTML";
         </table>
         <div class="add-del-button"><a onclick="addGeneralSkill()">▼</a><a onclick="delGeneralSkill()">▲</a></div>
-        <div class="annotate">
-        ※「自動」にチェックを入れると、習得段階「初歩」で消費する成長点を0として計算します。<br>
-        （経歴や種族によって自動的に習得する技能で、チェックを入れてください）
-        </div>
+        <ul class="annotate">
+          <li>「自動」にチェックを入れると、習得段階「初歩」で消費する成長点を0として計算します。<br>
+            （経歴や種族によって自動的に習得する技能で、チェックを入れてください）
+        </ul>
       </details>
 
       <div class="box" id="spell-cast">
@@ -879,12 +879,12 @@ print <<"HTML";
           　預金：銀貨 <span id="cashbook-deposit-value">－</span> 枚
           　借金：銀貨 <span id="cashbook-debt-value">－</span> 枚
         </p>
-        <div class="annotate">
-          ※<code>::+n</code> <code>::-n</code>の書式で入力すると加算・減算されます。（<code>n</code>には金額を入れてください）<br>
-          　預金は<code>:>+n</code>、借金は<code>:<+n</code>で増減できます。（それに応じて所持金も増減します）<br>
-          ※<span class="underline">セッション履歴に記入された銀貨報酬は自動的に加算されます。</span><br>
-          ※所持金欄、預金／借金欄の<code>自動</code>チェックを入れると、収支の計算結果を反映します。
-        </div>
+        <ul class="annotate">
+            <li><code>::+n</code> <code>::-n</code>の書式で入力すると加算・減算されます。（<code>n</code>には金額を入れてください）<br>
+              預金は<code>:>+n</code>、借金は<code>:<+n</code>で増減できます。（それに応じて所持金も増減します）
+            <li><span class="underline">セッション履歴に記入された銀貨報酬は自動的に加算されます。</span>
+            <li>所持金欄、預金／借金欄の<code>自動</code>チェックを入れると、収支の計算結果を反映します。
+        </ul>
       </details>
 
       <dl class="box" id="physical-traits">
@@ -1004,10 +1004,10 @@ print <<"HTML";
             </tr>
           </tbody>
         </table>
-        <div class="annotate">
-        ※達成欄の値が（達成でも失敗でも）選択されているぶんだけ「冒険回数」が増加します。<br>
-        ※経験点欄は<code>1000+100</code>など四則演算が有効です。<br>
-        </div>
+        <ul class="annotate">
+          <li>達成欄の値が（達成でも失敗でも）選択されているぶんだけ「冒険回数」が増加します。
+          <li>経験点欄は<code>1000+100</code>など四則演算が有効です。
+        </ul>
         @{[ $::in{log} ? '<button type="button" class="set-newest" onclick="setNewestHistoryData()">最新のセッション履歴を適用する</button>' : '' ]}
       </div>
       </section>

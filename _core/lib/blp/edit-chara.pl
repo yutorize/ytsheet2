@@ -235,11 +235,11 @@ print <<"HTML";
           <dt>先制値+
           <dd>@{[input("initiativePreGrow",'number','changeRegu','step="2"'.($set::make_fix?' readonly':''))]}
         </dl>
-        <div class="annotate" @{[ $pc{convertSource} eq 'キャラクターシート倉庫' ? '' : 'style="display:none"' ]}>
-          ※コンバート時、副能力値の基本値を超える値は、クローズ時の成長としてこの欄に振り分けられます。<br>
-          　ただし、（耐久は5、先制は2で）割り切れない「あまり」の値は特技等による補正として、副能力値の補正欄に振り分けています。<br>
-        </div>
-        <div class="annotate">※練度は自動的に計算されます。</div>
+        <ul class="annotate" @{[ $pc{convertSource} eq 'キャラクターシート倉庫' ? '' : 'style="display:none"' ]}>
+          <li>コンバート時、副能力値の基本値を超える値は、クローズ時の成長としてこの欄に振り分けられます。<br>
+            ただし、（耐久は5、先制は2で）割り切れない「あまり」の値は特技等による補正として、副能力値の補正欄に振り分けています。
+        </ul>
+        <ul class="annotate"><li>練度は自動的に計算されます。</ul>
         <dl class="regulation-note"><dt>備考<dd>@{[ input "history0Note" ]}</dl>
       </details>
       <div id="area-status">
@@ -620,9 +620,9 @@ print <<"HTML";
             </tr>
           </tbody>
         </table>
-        <div class="annotate">
-        ※「力の向上」の選択を行うと、自動的に練度が+1されます。
-        </div>
+        <ul class="annotate">
+          <li>「力の向上」の選択を行うと、自動的に練度が+1されます。
+        </ul>
         @{[ $::in{log} ? '<button type="button" class="set-newest" onclick="setNewestHistoryData()">最新のセッション履歴を適用する</button>' : '' ]}
       </div>
       </section>

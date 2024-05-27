@@ -673,11 +673,11 @@ HTML
             </tr>
           </tbody>
         </table>
-        <div class="annotate" style="margin-left: auto; width: 41em;">
-          ※一般スキルは下部のスキル詳細欄にのみ書き込んでください。<br>
-          ※スキル効果で別スキルを追加取得するケースは、<br>
+        <ul class="annotate" style="margin-left: auto; width: 41em;">
+          <li>一般スキルは下部のスキル詳細欄にのみ書き込んでください。
+          <li>スキル効果で別スキルを追加取得するケースは、<br>
           「ハーフブラッド／ニンブル」のように1つの欄に「／」区切りで入力してください。
-        </div>
+        </ul>
       </details>
 
       <details class="box" id="skills" $open{skills}>
@@ -734,10 +734,10 @@ print <<"HTML";
           </tfoot>
         </table>
         <div class="add-del-button"><a onclick="addSkill()">▼</a><a onclick="delSkill()">▲</a></div>
-        <div class="annotate">
-        ※コスト欄は1以上でなければ自動的に「―」になります。<br>
-        ※<span class="material-symbols-outlined" style="color:#5ad;font-variation-settings:'FILL' 1;vertical-align:text-bottom;font-size:1.5em;">calculate</span>マークがついているスキルは、ステータス類への修正が自動計算されています。
-        </div>
+        <ul class="annotate">
+          <li>コスト欄は1以上でなければ自動的に「―」になります。
+          <li><span class="material-symbols-outlined" style="color:#5ad;font-variation-settings:'FILL' 1;vertical-align:text-bottom;font-size:1.5em;">calculate</span>マークがついているスキルは、ステータス類への修正が自動計算されています。
+        </ul>
       </details>
       <div class="box trash-box" id="skills-trash">
         <h2><span class="material-symbols-outlined">delete</span><span class="shorten">削除スキル</span></h2>
@@ -1086,10 +1086,10 @@ print <<"HTML";
           <div class="box" id="items">
             <h2 class="in-toc">携帯品・所持品</h2>
             <textarea name="items" oninput="calcWeight();" placeholder="例）冒険者セット @[5]&#13;&#10;　　HPポーション @[1]&#13;&#10;　　MPポーションx2 @[2]">$pc{items}</textarea>
-            <div class="annotate">
-              ※<code>@[n]</code>の書式を入力すると形態重量として計算されます。<br>
+            <ul class="annotate">
+              <li><code>@[n]</code>の書式を入力すると形態重量として計算されます。<br>
               （<code>n</code>には数値を入れてください）<br>
-            </div>
+            </ul>
           </div>
           <details class="box" id="cashbook" @{[ $pc{cashbook} || $pc{money} =~ /^(?:自動|auto)$/i ? 'open' : '' ]}>
             <summary class="in-toc">収支履歴</summary>
@@ -1097,11 +1097,11 @@ print <<"HTML";
             <p>
               所持金：<span id="cashbook-total-value">$pc{moneyTotal}</span> G
             </p>
-            <div class="annotate">
-              ※<code>::+n</code> <code>::-n</code>の書式で入力すると加算・減算されます。（<code>n</code>には金額を入れてください）<br>
-              ※<span class="underline">セッション履歴に記入されたゴールド報酬は自動的に加算されます。</span><br>
-              ※所持金欄に<code>自動</code>または<code>auto</code>と記入すると、収支の計算結果を反映します。
-            </div>
+            <ul class="annotate">
+              <li><code>::+n</code> <code>::-n</code>の書式で入力すると加算・減算されます。（<code>n</code>には金額を入れてください）
+              <li><span class="underline">セッション履歴に記入されたゴールド報酬は自動的に加算されます。</span>
+              <li>所持金欄に<code>自動</code>または<code>auto</code>と記入すると、収支の計算結果を反映します。
+            </ul>
           </details>
         </div>
 
@@ -1172,7 +1172,7 @@ HTML
 print <<"HTML";
             </table>
             <div class="add-del-button"><a onclick="addConnection()">▼</a><a onclick="delConnection()">▲</a></div>
-            <div class="annotate">※名前を入れると成長点が計算されます。</div>
+            <ul class="annotate"><li>名前を入れると成長点が計算されます。</ul>
           </div>
         </div>
       </div>
@@ -1279,10 +1279,10 @@ print <<"HTML";
             </tr>
           </tbody>
         </table>
-        <div class="annotate">
-        ※成長点欄は<code>10+2</code>など四則演算が有効です。<br>
-        　「上納」欄に入力した数値ぶん、成長点の合計が引かれます。
-        </div>
+        <ul class="annotate">
+          <li>「成長点」欄は<code>10+2</code>など四則演算が有効です。
+          <li>「上納」欄に入力した数値ぶん、成長点の合計が引かれます。
+        </ul>
         @{[ $::in{log} ? '<button type="button" class="set-newest" onclick="setNewestHistoryData()">最新のセッション履歴を適用する</button>' : '' ]}
       </div>
       
