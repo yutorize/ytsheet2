@@ -782,7 +782,7 @@ HTML
 print <<"HTML";
           </dl>
           <div class="combo-note"><textarea name="combo${num}Note" rows="3" placeholder="解説">$pc{"combo${num}Note"}</textarea></div>
-          <div class="combo-calc">@{[ checkbox "combo${num}Manual",'技能レベル・能力値を自動挿入しない',"calcCombo(${num})" ]}</div>
+          <div class="combo-other">@{[ checkbox "combo${num}Manual",'技能レベル・能力値を自動挿入しない',"calcCombo(${num})" ]} <span class="button" onclick="addCombo($num)">コンボ複製</span></div>
         </div>
 HTML
   if($num eq 'TMPL'){ print '</template>' }
