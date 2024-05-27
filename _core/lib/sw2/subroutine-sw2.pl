@@ -301,7 +301,7 @@ sub data_update_chara {
   if($ver < 1.23000){
     $pc{raceAbilitySelect1} = $pc{raceAbilityLv6}  =~ s/^［|］$//gr;
     $pc{raceAbilitySelect2} = $pc{raceAbilityLv11} =~ s/^［|］$//gr;
-    $pc{raceAbilitySelect2} = $pc{raceAbilityLv16} =~ s/^［|］$//gr;
+    $pc{raceAbilitySelect3} = $pc{raceAbilityLv16} =~ s/^［|］$//gr;
     if($pc{race} eq 'ルーンフォーク（戦闘用ルーンフォーク）'){ $pc{race} = 'ルーンフォーク（戦闘型ルーンフォーク）' }
   }
   if($ver < 1.24011){
