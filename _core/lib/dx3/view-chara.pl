@@ -611,8 +611,8 @@ foreach (0 .. $pc{historyNum}){
   foreach my $mem (split(/　/,$pc{'history'.$_.'Member'})){
     $members .= '<span>'.$mem.'</span>';
   }
-  if($_ && !$pc{'history'.$_.'ExpApply'}) {
-    $pc{'history'.$_.'Exp'} = $pc{'history'.$_.'Exp'} ? '<s>'.$pc{'history'.$_.'Exp'}.'</s>' : '';
+  if($_ && !$pc{'history'.$_.'ExpApply'} && $pc{'history'.$_.'Exp'} ne '') {
+    $pc{'history'.$_.'Exp'} = '<s>'.$pc{'history'.$_.'Exp'}.'</s>';
   }
   push(@history, {
     NUM    => ($pc{'history'.$_.'Gm'} ? $h_num : ''),
