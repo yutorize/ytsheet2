@@ -743,10 +743,31 @@ function calcCombo(num){
   }
 }
 // 追加
-function addCombo(){
+function addCombo(copyBaseNum){
   const row = createRow('combo','comboNum');
-  document.querySelector("#combo-list").append(row);
+  const num = form.comboNum.value;
+  document.querySelector(`#combo-list > div:nth-of-type(${copyBaseNum||num-1})`).after(row);
 
+  if(copyBaseNum){
+    row.querySelectorAll('[name]').forEach(node => {
+      const copyBaseName = node.getAttribute('name').replace(/^(combo)\d+(.+)$/, `$1${copyBaseNum}$2`)
+      if(node.type === 'checkbox'){
+        node.checked = form[copyBaseName].checked;
+      }
+      else { node.value = form[copyBaseName].value; }
+    });
+    calcCombo(form.comboNum.value);
+    row.classList.add('slide-once');
+
+    let i = 1;
+    document.querySelectorAll(`#combo-list > div`).forEach(obj => {
+      replaceSortedNames(obj,i,/^(combo)[0-9]+(.*)$/);
+      replaceSortedNames(obj,i,/^(combo)[0-9]+((?:Stt|SkillLv)[0-9])$/,'id');
+      replaceSortedNames(obj,i,/^(calcCombo\()[0-9]+(\))$/,'oninput');
+      replaceSortedNames(obj,i,/^(addCombo\()[0-9]+(\))$/,'onclick');
+      i++;
+    })
+  }
   comboSkillSet(form.comboNum.value);
   makeComboConditionUtility(row);
 }
@@ -758,6 +779,7 @@ function delCombo(){
 setSortable('combo', '#combo-list', 'div', (row, num) => {
   replaceSortedNames(row,num,/^(combo)[0-9]+((?:Stt|SkillLv)[0-9])$/,'id');
   replaceSortedNames(row,num,/^(calcCombo\()[0-9]+(\))$/,'oninput');
+  replaceSortedNames(row,num,/^(addCombo\()[0-9]+(\))$/,'onclick');
 })
 // 条件
 function makeComboConditionUtility(comboNode) {
