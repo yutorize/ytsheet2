@@ -193,7 +193,7 @@
                 <td colspan="2"><TMPL_VAR lifepathExperience></td>
             <tbody>
               <tr>
-                <th class="left" colspan="2">邂逅／欲望
+                <th class="left" colspan="2"><TMPL_IF isFH>欲望<TMPL_ELSE>邂逅</TMPL_IF>
                 <td rowspan="2" class="left"><TMPL_VAR lifepathEncounterNote>
               <tr>
                 <td colspan="2"><TMPL_VAR lifepathEncounter></td>
@@ -300,7 +300,6 @@
               <th class="color">属性
               <th>
               <th class="state right"><span class="text">状態</span>
-            
           </thead>
           <tbody>
             <TMPL_LOOP Loises><tr>

@@ -12,6 +12,7 @@ window.onload = function() {
   setName();
   checkCreateType();
   checkStage();
+  checkWorks();
   checkSyndrome();
   calcStt();
   calcEffect();
@@ -83,6 +84,10 @@ function changeRegu(){
 function checkStage(){
   document.body.classList.toggle('mode-crc', form.stage.value.match('クロウリングケイオス'));
   calcMagic();
+}
+// ワークス ----------------------------------------
+function checkWorks() {
+  document.getElementById('encounter-or-desire').textContent = /[FＦ][HＨ]/i.test(form.works.value) ? '欲望' : '邂逅';
 }
 // シンドローム変更 ----------------------------------------
 function changeSyndrome(num,syn){

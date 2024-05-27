@@ -257,6 +257,9 @@ $SHEET->param(Tags => \@tags);
 ### ステージ --------------------------------------------------
 if($pc{stage} =~ /クロウリングケイオス/){ $SHEET->param(ccOn => 1); }
 
+### ワークス --------------------------------------------------
+$SHEET->param(isFH => $pc{works} =~ /[FＦ][HＨ]/i);
+
 ### ブリード --------------------------------------------------
 my $breedPrefix = ($pc{breed} ? $pc{breed} : $pc{syndrome3} ? 'トライ' : $pc{syndrome2} ? 'クロス' : $pc{syndrome1} ? 'ピュア' : '');
 $SHEET->param(breed => isNoiseText(removeTags $breedPrefix) ? $breedPrefix : $breedPrefix ? "$breedPrefix<span class=\"shorten\">ブリード</span>" : '');
