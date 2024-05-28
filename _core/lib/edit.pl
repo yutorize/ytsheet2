@@ -143,6 +143,7 @@ sub getSheetData {
     delete $pc{image};
     delete $pc{imageURL};
     delete $pc{protect};
+    $_ =~ s/"/&quot;/g foreach(values %pc);
     if($::in{backupJSON}){
       $message = '<span class="data-imported backup-loaded">入力途中の新規シートを復元しました</span>';
     }
