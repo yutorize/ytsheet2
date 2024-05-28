@@ -54,7 +54,7 @@ sub addJsonData {
   }
   ### キャラクター --------------------------------------------------
   else {
-    %pc = data_update_chara(\%pc);
+    %pc = data_update_chara(\%pc) if $pc{ver};
     ## 簡易プロフィール
     my @classes;
     foreach (@data::class_names){

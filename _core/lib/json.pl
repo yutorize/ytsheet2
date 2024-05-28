@@ -63,6 +63,14 @@ elsif($::in{url}){
   require $set::lib_convert;
   %pc = dataConvert($::in{url});
   $type = $pc{type};
+  if(!$pc{ver}){
+    require $set::lib_calc_char;
+    %pc = data_calc(\%pc);
+  }
+  foreach(keys %pc){
+    $pc{$_} = pcEscape($pc{$_});
+    delete $pc{$_} if($pc{$_} eq '');
+  }
 }
 
 

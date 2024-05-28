@@ -8,8 +8,8 @@ sub addJsonData {
   my %pc = %{ $_[0] };
   my $type = $_[1];
   
-  %pc = data_update_chara(\%pc);
-  
+  %pc = data_update_chara(\%pc) if $pc{ver};
+
   ### 簡易プロフィール --------------------------------------------------
   my @classes;
   foreach (@data::class_names){
