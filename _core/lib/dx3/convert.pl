@@ -117,7 +117,6 @@ sub convertHokanjoToYtsheet {
     skillNegotiate => $in{'skill_tokugi'}[ 9], skillAddNegotiate => $in{'skill_sonota'}[ 9],
     skillProcure   => $in{'skill_tokugi'}[10], skillAddProcure   => $in{'skill_sonota'}[10],
     skillInfo1     => $in{'skill_tokugi'}[11], skillAddInfo1     => $in{'skill_sonota'}[11], skillInfo1Name => '情報:'.$in{'skill_memo'}[11],
-    '' => $in{''},
   );
   ##名前
   ($pc{characterName},$pc{characterNameRuby}) = convertNameRuby($in{'pc_name'} || $in{'data_title'});
@@ -126,6 +125,7 @@ sub convertHokanjoToYtsheet {
   ## 技能
   my %skills = (1=>'Ride', 2=>'Art', 3=>'Know', 4=>'Info');
   my %skillsjp = (1=>'運転', 2=>'芸術', 3=>'知識', 4=>'情報');
+  $pc{skillRideNum} = $pc{skillArtNum} = $pc{skillKnowNum} = $pc{skillInfoNum} = 2;
   my $i = 12;
   foreach my $id (@{$in{'V_skill_id'}}){
     my $num = 2;
