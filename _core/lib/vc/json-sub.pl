@@ -8,7 +8,7 @@ sub addJsonData {
   my %pc = %{ $_[0] };
   my $type = $_[1];
   
-  %pc = data_update_chara(\%pc);
+  %pc = data_update_chara(\%pc) if $pc{ver};
   
   ### 簡易プロフィール --------------------------------------------------
   my $base  = "種族:$pc{race}クラス:$pc{class}\nスタイル:$pc{style1}／$pc{style2}";
