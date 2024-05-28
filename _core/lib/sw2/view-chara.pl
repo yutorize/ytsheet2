@@ -216,8 +216,9 @@ $pc{raceAbility} =~ s/［(.*?)］/<span>［$1］<\/span>/g;
 $SHEET->param(raceAbility => $pc{raceAbility});
 
 ### 穢れ --------------------------------------------------
-$SHEET->param(sin => '―') if !$pc{sin} && $pc{race} =~ /^(?:ルーンフォーク|フィー)$/;
-
+if (!$pc{sin}){ 
+  $SHEET->param(sin => ($pc{race} =~ /^(?:ルーンフォーク|フィー)$/) ? '―' : 0);
+}
 ### 信仰 --------------------------------------------------
 if($pc{faith} eq 'その他の信仰') { $SHEET->param(faith => $pc{faithOther}); }
 $pc{faith} =~ s/“(.*)”//;
