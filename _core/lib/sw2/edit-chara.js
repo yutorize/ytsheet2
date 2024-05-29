@@ -1227,7 +1227,7 @@ function calcAttack() {
   document.getElementById("attack-enhancer-acc"  ).textContent = lv['Enh'] + bonus.Dex;
   document.getElementById("attack-enhancer-dmg"  ).textContent = lv['Enh'] + bonus.Str;
 
-  document.getElementById("attack-demonruler").style.display = lv['Dem'] >= 10 ? "" : modeZero && lv['Dem'] > 0 ? "" :"none";
+  document.getElementById("attack-demonruler").style.display = lv['Dem'] >= 11 ? "" : modeZero && lv['Dem'] > 0 ? "" :"none";
   document.getElementById("attack-demonruler-str").textContent = reqdStr;
   document.getElementById("attack-demonruler-acc").textContent = lv['Dem'] + bonus.Dex;
   document.getElementById("attack-demonruler-dmg").textContent = modeZero ? lv['Dem'] + bonus.Str : '―';
