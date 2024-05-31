@@ -89,7 +89,7 @@ sub outputChatPalette {
 sub swapWordAndCommand {
   my @palette = split(/\n/, shift);
   foreach (@palette){
-    if($_ =~ /^[0-9a-z:+\-\{]/i){
+    if($_ =~ /^[0-9a-z:+\-\{]/i && $_ !~ /^[^\d].+?\@[^\d].+?[-+]/){
       my ($command, $word) = split(/ /, $_, 2);
       if($command && $word){
         $_ = "$word $command";
