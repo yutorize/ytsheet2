@@ -402,7 +402,10 @@ if($pc{image}) { $SHEET->param(ogImg => url()."/".$imgsrc); }
     $category = '神格';
     $sub = ($pc{godClass}||'―').'／'.($pc{godRank}||'―');
   }
-  $SHEET->param(ogDescript => removeTags "カテゴリ:${category}／${sub}");
+  if ($pc{category} eq 'school') {
+    $category = '流派';
+  }
+  $SHEET->param(ogDescript => removeTags("カテゴリ:${category}" . ($sub ? "／${sub}" : '')));
 }
 
 ### バージョン等 --------------------------------------------------
