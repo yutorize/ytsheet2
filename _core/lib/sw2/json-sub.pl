@@ -65,8 +65,10 @@ sub addJsonData {
     foreach my $data (@classes){
       $class_text .= ($class_text ? '／' : '') . $data->{NAME} . $data->{LV} if $data->{LV} > 0;
     }
+    my $rank = $pc{rank}||'－';
+    $rank .= $pc{rankStar} if $pc{rank} eq '〈始まりの剣〉★' && $pc{rankStar} > 1;
     my $base = "種族:$pc{race}　性別:$pc{gender}　年齢:$pc{age}";
-    my $sub  = "ランク:".($pc{rank}||'－')."　信仰:".($pc{faith}||'－')."　穢れ:".($pc{sin}||0);
+    my $sub  = "ランク:".$rank."　信仰:".($pc{faith}||'－')."　穢れ:".($pc{sin}||0);
     my $classes = "技能:${class_text}";
     my $status  = "能力値:器用$pc{sttDex}".($pc{sttAddA}?"+$pc{sttAddA}":'')."\[$pc{bonusDex}\]"
                 .      "／敏捷$pc{sttAgi}".($pc{sttAddB}?"+$pc{sttAddB}":'')."\[$pc{bonusAgi}\]"
