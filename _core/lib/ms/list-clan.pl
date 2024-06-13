@@ -20,6 +20,7 @@ $INDEX = HTML::Template->new( filename  => $set::skin_tmpl , utf8 => 1,
 
 $INDEX->param(modeClanList => 1);
 $INDEX->param(modeMylist => 1) if $mode eq 'mylist';
+$INDEX->param(typeName => 'クラン');
 
 $INDEX->param(LOGIN_ID => $LOGIN_ID);
 $INDEX->param(OAUTH_MODE => $set::oauth_service);
