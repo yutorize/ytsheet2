@@ -635,9 +635,11 @@ dl.note-description {
   text-align: center;
   font-style: normal;
   line-height: 1;
+  vertical-align: text-bottom;
 
   > .raw {
-    display: inline-block;
+    display: block;
+    position: absolute;
     transform: scaleX(0.5) translateX(-1em);
     text-wrap: nowrap;
     color: transparent;
@@ -646,9 +648,9 @@ dl.note-description {
 
   &::before,
   &::after {
-    display: inline-grid;
+    display: grid;
     position: absolute;
-    inset: -.1em 0 0;
+    inset: -0.2em 0 0;
     justify-items: center;
     align-items: center;
     font-family: "Material Symbols Outlined";
@@ -682,7 +684,7 @@ dl.note-description {
   }
   &.active::before {
     content: "\e625";
-    transform: scale(-0.95, 1) translateX(.05em);
+    transform: scale(-0.95, 1) translate(.05em, 0.08em);
   }
   &.uplift::before {
     content: "\eba6";

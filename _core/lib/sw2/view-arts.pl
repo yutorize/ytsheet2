@@ -172,10 +172,10 @@ $SHEET->param(Tags => \@tags);
 {
   my $icon;
   my $class = $pc{magicClass};
-  if($pc{magicActionTypePassive}){ $icon .= '<i class="s-icon passive">○</i>' }
-  if($pc{magicActionTypeMajor}  ){ $icon .= '<i class="s-icon major">▶</i>' }
-  if($pc{magicActionTypeMinor}  ){ $icon .= '<i class="s-icon minor">≫</i>' }
-  if($pc{magicActionTypeSetup}  ){ $icon .= '<i class="s-icon setup">△</i>' }
+  if($pc{magicActionTypePassive}){ $icon .= '<i class="s-icon passive"><span class="raw">[常]</span></i>' }
+  if($pc{magicActionTypeMajor}  ){ $icon .= '<i class="s-icon major"><span class="raw">[主]</span></i>' }
+  if($pc{magicActionTypeMinor}  ){ $icon .= '<i class="s-icon minor"><span class="raw">[補]</span></i>' }
+  if($pc{magicActionTypeSetup}  ){ $icon .= '<i class="s-icon setup"><span class="raw">[準]</span></i>' }
   $SHEET->param(magicIcon => $icon);
   $SHEET->param(magicTarget   => textMagic($pc{magicTarget}));
   $SHEET->param(magicDuration => textMagic($pc{magicDuration}));
