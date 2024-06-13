@@ -585,15 +585,6 @@
   }
 }
 
-#free-note,
-#free-history {
-  padding-bottom: .3rem;
-}
-#free-note textarea,
-#free-history textarea {
-  height: 18em;
-}
-
 #history table thead th {
   &:first-child{ width: 1.4em; }
   &.date       { width:   6em; }

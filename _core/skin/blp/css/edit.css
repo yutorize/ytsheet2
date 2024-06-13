@@ -302,14 +302,6 @@ body:not(.type-human  ) .h-only { display: none; }
   #arts table tbody td:nth-child(n+4):nth-child(-n+7) { font-size: unset; }
 }
 
-#free-note,
-#free-history {
-  padding-bottom: .3rem;
-  & textarea {
-    height: 18em;
-  }
-}
-
 #history table thead th {
   &.first-child{ width: 1.4em; }
   &.date       { width:   6em; }

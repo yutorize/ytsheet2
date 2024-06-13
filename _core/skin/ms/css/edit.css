@@ -96,15 +96,6 @@
   width: calc(100% - 2em);
 }
 
-#free-note,
-#free-history {
-  margin-top: var(--box-v-gap);
-  padding-bottom: .3rem;
-  & textarea {
-    height: 18em;
-  }
-}
-
 #history > table {
   & thead th {
     &:first-child { width: 1.4em; }

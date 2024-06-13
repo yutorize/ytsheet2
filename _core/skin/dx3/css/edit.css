@@ -468,110 +468,6 @@ body:not(.mode-crc) .crc-only {
   }
   #effect table tbody td:nth-child(3) input { min-width: 2em; } /* LV */
 }
-.trash-box {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  width: calc((100vw - 940px) / 2 );
-  &::before {
-    content: "\e872";
-    display: block;
-    position: absolute;
-    top: 30vh;
-    left: 0;
-    right: 0;
-    bottom: auto;
-    margin:auto;
-    text-align: center;
-    font-family: "Material Symbols Outlined";
-    font-size: calc((100vw - 940px) / 2 * 0.5 );
-    opacity: 0.1;
-    pointer-events: none;
-    z-index: -1;
-  }
-}
-.trash-box table {
-  display: block;
-  position: absolute;
-  height: calc(70vh - 1.5em);
-  overflow: auto;
-  z-index: 2;
-  &:empty::before {
-    display: block;
-    content: 'ここにドロップで削除\A（ページ移動するまで保留）';
-    margin-top: 1em;
-    white-space: pre;
-    text-align: center;
-  }
-  & tbody {
-    display: block;
-    border-width: 1px;
-    border-style: solid;
-    border-radius: 5px;
-    margin: .2em;
-    cursor: move;
-  }
-  & tbody tr,
-  & tbody td {
-    display: none;
-  }
-  & tbody tr:first-child,
-  & tbody tr:first-child td:nth-child(2) {
-    border: none;
-    display: block;
-  }
-  & tbody input {
-    padding: 1em .5em;
-    border-color: transparent;
-    background-color: transparent;
-    pointer-events: none;
-  }
-}
-.trash-box .annotate {
-  position: absolute;
-  bottom: 0;
-  font-size: 90%;
-}
-.trash-box .close-button {
-  position: absolute;
-  top: 2px;
-  right: 2px;
-  font-size: 1.2em;
-  &:hover {
-    opacity: 0.5;
-  }
-}
-@media screen and (max-width:1090px){
-  .trash-box  {
-    top: auto;
-    left: auto;
-    right: 0;
-    bottom: 2.3em;
-    width: 30vw;
-    height: 20vh;
-    z-index: 2;
-    background-color: var(--bg-color);
-  }
-  .trash-box  table {
-    height: calc(20vh - 1.5em);
-  }
-}
-@media screen and (max-width:735px){
-  .trash-box  {
-    width: 40vw;
-    height: 30vh;
-    bottom: 0;
-  }
-  .trash-box  table {
-    height: calc(30vh - 1.5em);
-  }
-  .trash-box table:empty::before {
-    display: block;
-    content: 'ここにドロップ\Aで削除\A（保存時まで保留）';
-  }
-}
 
 #magic {
   overflow-x: auto;
@@ -863,15 +759,6 @@ body:not(.mode-crc) .crc-only {
   #items table thead th:nth-child(9) { width: 4.5em !important; } /* 射程 */
   #items table thead th:last-child   { width:  16em !important; } /* 解説 */
   #items table tbody td { width: auto !important; }
-}
-
-#free-note,
-#free-history {
-  padding-bottom: .3rem;
-}
-#free-note textarea,
-#free-history textarea {
-  height: 18em;
 }
 
 #history table colgroup col:first-child{ width: 1.4em; }
