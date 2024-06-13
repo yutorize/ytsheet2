@@ -591,6 +591,7 @@ header nav ul li.head {
   background: #fff;
   outline-width: 1px;
   outline-style: solid;
+  cursor: inherit;
   & b {
     color: #000;
     text-shadow: none;
