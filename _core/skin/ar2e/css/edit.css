@@ -703,14 +703,5 @@ dd.area-tags {
   font-size: 85%;
   font-weight: bold;
 }
-#exp-footer input.auto {
-  width: 2.5em;
-  min-width: 0;
-  font-size: 110%;
-}
-#exp-footer input:first-child,
-#exp-footer input:last-child {
-  font-size: 120%;
-}
 
 

@@ -339,14 +339,6 @@ dl.edit-table:last-child > dt:last-of-type ~ dd {
   }
 }
 
-input.auto {
-  text-align: center;
-  border: hidden;
-  background-color: transparent;
-  font-size: 100%;
-  cursor: inherit;
-}
-
 /* Sortable */
 .sortable-drag {
 }

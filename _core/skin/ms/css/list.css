@@ -3,7 +3,6 @@
 @layer system {
 /* // Body
 ---------------------------------------------------------------------------------------------------- */
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@800&display=swap');
 body {
   background-image: url(../../_common/img/back-pattern.png), url(../img/back-scramble.png);
   background-blend-mode: normal, normal;
