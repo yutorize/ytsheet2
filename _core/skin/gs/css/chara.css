@@ -1,9 +1,10 @@
 @charset "utf-8";
 
+@import url('https://fonts.googleapis.com/css2?family=Rubik+Dirt&display=swap&text=GOBLINSLAYER!');
+
 @layer system {
 /* // Body
 ---------------------------------------------------------------------------------------------------- */
-@import url('https://fonts.googleapis.com/css2?family=Rubik+Dirt&display=swap&text=GOBLINSLAYER!');
 body {
   background-image: url(../../_common/img/back-pattern.png), url(../img/back-sword.png);
   background-blend-mode: normal, normal;
