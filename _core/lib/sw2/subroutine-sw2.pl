@@ -34,9 +34,12 @@ sub createUnitStatus {
           $count{ $partname }++;
           $partname .= $n2a[ $count{ $partname } ];
         }
-        push(@hp , {$partname.':HP' => $pc{"status${i}Hp"}.'/'.$pc{"status${i}Hp"}});
-        push(@mp , {$partname.':MP' => $pc{"status${i}Mp"}.'/'.$pc{"status${i}Mp"}});
-        push(@def, $partname.$pc{"status${i}Defense"});
+        my $hp  = s_eval($pc{"status${i}Hp"});
+        my $mp  = s_eval($pc{"status${i}Mp"});
+        my $def = s_eval($pc{"status${i}Defense"});
+        push(@hp , {$partname.':HP' => "$hp/$hp"});
+        push(@mp , {$partname.':MP' => "$mp/$mp"});
+        push(@def, $partname.$def);
       }
       @unitStatus = ( @hp, @mp, {'メモ' => '防護:'.join('／',@def)} );
     }
@@ -48,10 +51,13 @@ sub createUnitStatus {
           $i .= $ii > 1 ? "-$ii" : '';
         }
       }
+      my $hp = s_eval($pc{"status${i}Hp"});
+      my $mp = s_eval($pc{"status${i}Mp"});
+      my $def = s_eval($pc{"status${i}Defense"});
       @unitStatus = (
-        { 'HP' => $pc{"status${i}Hp"}.'/'.$pc{"status${i}Hp"} },
-        { 'MP' => $pc{"status${i}Mp"}.'/'.$pc{"status${i}Mp"} },
-        { '防護' => $pc{"status${i}Defense"} },
+        { 'HP' => "$hp/$hp" },
+        { 'MP' => "$mp/$mp" },
+        { '防護' => $def },
       );
     }
   }

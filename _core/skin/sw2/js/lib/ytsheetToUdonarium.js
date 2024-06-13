@@ -29,8 +29,15 @@ var output = output || {};
 output.generateUdonariumXmlDetailOfSwordWorld2Enemy = (json, opt_url, defaultPalette, resources)=>{
   const dataDetails = {'リソース':resources};
   
+  dataDetails['バフ・デバフ'] = defaultPalette.parameters.map((param)=>{
+    if(/修正$/.test(param.label)){
+      return `        <data type="numberResource" currentValue="${param.value}" name="${param.label}">${param.value < 10 ? 10 : param.value}</data>`; 
+    }
+  });
   dataDetails['能力値'] = defaultPalette.parameters.map((param)=>{
-    return `        <data type="numberResource" currentValue="${param.value}" name="${param.label}">${param.value < 10 ? 10 : param.value}</data>`; 
+    if(!/修正$/.test(param.label)){
+      return `        <data name="${param.label}">${param.value}</data>`; 
+    }
   });
   
   dataDetails['情報'] = [
