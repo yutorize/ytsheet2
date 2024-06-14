@@ -395,14 +395,18 @@ if($pc{image}) { $SHEET->param(ogImg => url()."/".$imgsrc); }
   my $sub; my $category;
   if($pc{category} eq 'magic'){
     $category = '魔法';
-    $sub = $pc{magicClass}.'／'.$pc{magicLevel};
-    if($pc{magicMinor}){ $sub .= '／小魔法'; }
+    $sub = "／$pc{magicClass}／$pc{magicLevel}";
+    $sub .= '／小魔法' if $pc{magicMinor};
   }
   if($pc{category} eq 'god'){
     $category = '神格';
-    $sub = ($pc{godClass}||'―').'／'.($pc{godRank}||'―');
+    $sub = '／'.($pc{godClass}||'―').'／'.($pc{godRank}||'―');
   }
-  $SHEET->param(ogDescript => removeTags "カテゴリ:${category}／${sub}");
+  if ($pc{category} eq 'school') {
+    $category = '流派';
+    $sub = "　地域:$pc{schoolArea}" if $pc{schoolArea};
+  }
+  $SHEET->param(ogDescript => removeTags "カテゴリ:${category}${sub}");
 }
 
 ### バージョン等 --------------------------------------------------
