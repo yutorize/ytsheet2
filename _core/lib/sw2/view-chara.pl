@@ -579,6 +579,7 @@ if(!$pc{forbiddenMode}){
     next if !$pc{'lv'.$id};
     next if !($data::class{$name}{type} eq 'weapon-user' || $id =~ /Enh|Dem/);
     next if $id eq 'Enh' && !$enhance_attack_on;
+    next if $id eq 'Dem' && $pc{'lv'.$id} < 11 && !$::SW2_0;
     push(@atacck, {
       NAME => $name."<span class=\"small\">技能レベル</span>".$pc{'lv'.$id},
       STR  => ($id eq 'Fen' ? $pc{reqdStrF} : $pc{reqdStr}),
