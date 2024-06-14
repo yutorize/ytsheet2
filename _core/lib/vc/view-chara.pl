@@ -194,7 +194,7 @@ $SHEET->param(Tags => \@tags);
 ### グッズ --------------------------------------------------
 my @goods;
 foreach my $num (1 .. $pc{goodsNum}){
-  next if(!$pc{'goods'.$num.'Name'} && !$pc{'goods'.$num.'Type'} && !$pc{'goods'.$num.'Note'});
+  next if !existsRow "goods$num",'Name','Type','Note';
   push(@goods, {
     NAME => textName($pc{'goods'.$num.'Name'}),
     TYPE => textType($pc{'goods'.$num.'Type'}),
@@ -224,7 +224,7 @@ sub textType {
 ### アイテム --------------------------------------------------
 my @items;
 foreach my $num (1 .. $pc{itemsNum}){
-  next if(!$pc{'item'.$num.'Name'} && !$pc{'item'.$num.'Type'} && !$pc{'item'.$num.'Note'});
+  next if !existsRow "item$num",'Name','Type','Lv','Note';
   push(@items, {
     NAME => $pc{'item'.$num.'Name'},
     TYPE => textType($pc{'item'.$num.'Type'}),

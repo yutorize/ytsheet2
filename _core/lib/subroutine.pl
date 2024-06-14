@@ -715,6 +715,30 @@ sub convert10to36 {
   return join('', @work);
 }
 
+### 行の有無チェック --------------------------------------------------
+## 数値の0も偽とする（NameとNoteは空のみ偽）
+sub existsRow {
+  my $prefix = shift;
+  foreach(@_){
+    if($_ eq 'Name' || $_ eq 'Note'){
+      if($::pc{$prefix.$_} ne ''){ return 1; }
+    }
+    else {
+      if($::pc{$prefix.$_}){ return 1; }
+    }
+  }
+  return 0;
+}
+## 厳密に空/未定義のみ偽
+sub existsRowStrict {
+  my $prefix = shift;
+  foreach(@_){
+    if($::pc{$prefix.$_} ne ''){ return 1; }
+  }
+  return 0;
+}
+## 0も偽としたい場合
+
 ### 案内画面 --------------------------------------------------
 sub info {
   our $header = shift;

@@ -112,10 +112,7 @@ $SHEET->param(category => $pc{category});
 ### 武器 --------------------------------------------------
 my @weapons;
 foreach (1 .. $pc{weaponNum}){
-  next if $pc{'weapon'.$_.'Usage'}.$pc{'weapon'.$_.'Reqd'}.
-          $pc{'weapon'.$_.'Acc'}.$pc{'weapon'.$_.'Rate'}.$pc{'weapon'.$_.'Crit'}.
-          $pc{'weapon'.$_.'Dmg'}.$pc{'weapon'.$_.'Note'}
-          eq '';
+  next if !existsRow "weapon$_",'Usage','Reqd','Acc','Rate','Crit','Dmg','Note';
   push(@weapons, {
     USAGE => $pc{'weapon'.$_.'Usage'},
     REQD  => $pc{'weapon'.$_.'Reqd'},
@@ -131,9 +128,7 @@ $SHEET->param(WeaponData => \@weapons) if !$pc{forbiddenMode};
 ### 防具 --------------------------------------------------
 my @armours;
 foreach (1 .. $pc{armourNum}){
-  next if $pc{'armour'.$_.'Usage'}.$pc{'armour'.$_.'Reqd'}.
-          $pc{'armour'.$_.'Acc'}.$pc{'armour'.$_.'Def'}.$pc{'armour'.$_.'Note'}
-          eq '';
+  next if !existsRow "armour$_",'Usage','Reqd','Eva','Def','Note';
   push(@armours, {
     USAGE => $pc{'armour'.$_.'Usage'},
     REQD  => $pc{'armour'.$_.'Reqd'},

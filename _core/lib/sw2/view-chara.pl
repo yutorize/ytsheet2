@@ -633,17 +633,12 @@ if($pc{forbiddenMode}){
 else {
   my $first = 1;
   foreach (1 .. $pc{weaponNum}){
-    next if $pc{'weapon'.$_.'Name'}.$pc{'weapon'.$_.'Usage'}.$pc{'weapon'.$_.'Reqd'}.
-            $pc{'weapon'.$_.'Acc'}.$pc{'weapon'.$_.'Rate'}.$pc{'weapon'.$_.'Crit'}.
-            $pc{'weapon'.$_.'Dmg'}.$pc{'weapon'.$_.'Own'}.$pc{'weapon'.$_.'Note'}
-            eq '';
+    next if !existsRow "weapon$_",'Name','Usage','Reqd','Acc','Rate','Crit','Dmg','Own','Note';
     my $rowspan = 1;
     for(my $num = $_+1; $num <= $pc{weaponNum}; $num++){
       last if $pc{'weapon'.$num.'NameOff'};
       last if $pc{'weapon'.$num.'Name'};
-      last if $pc{'weapon'.$num.'Name'}.$pc{'weapon'.$num.'Usage'}.$pc{'weapon'.$num.'Reqd'}.
-            $pc{'weapon'.$num.'Acc'}.$pc{'weapon'.$num.'Rate'}.$pc{'weapon'.$num.'Crit'}.
-            $pc{'weapon'.$num.'Dmg'}.$pc{'weapon'.$num.'Own'}.$pc{'weapon'.$num.'Note'} eq '';
+      last if !existsRow "weapon$_",'Name','Usage','Reqd','Acc','Rate','Crit','Dmg','Own','Note';
       $rowspan++;
       $pc{'weapon'.$num.'NameOff'} = 1;
     }
@@ -825,7 +820,7 @@ else {
     ["他3","Other3"], ["┗","Other3_"], ["┗","Other3__"],
     ["他4","Other4"], ["┗","Other4_"], ["┗","Other4__"],
   ){
-    next if !$pc{'accessory'.@$_[1].'Name'} && !$pc{'accessory'.@$_[1].'Note'};
+    next if !existsRow "accessory@$_[1]",'Name','Own','Note','Add';
     next if (@$_[1] =~ /Other2/ &&  $pc{raceAbility} !~ /［見えざる手］/);
     next if (@$_[1] =~ /Other3/ && ($pc{raceAbility} !~ '［見えざる手］' || $pc{level} <  6));
     next if (@$_[1] =~ /Other4/ && ($pc{raceAbility} !~ '［見えざる手］' || $pc{level} < 16));

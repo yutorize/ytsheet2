@@ -339,32 +339,12 @@ if($pc{forbiddenMode}){
 else {
   my $first = 1;
   foreach (1 .. $pc{weaponNum}){
-    next if ($pc{'weapon'.$_.'Name'}
-            .$pc{'weapon'.$_.'Type'}
-            .$pc{'weapon'.$_.'Weight'}
-            .$pc{'weapon'.$_.'Usage'}
-            .$pc{'weapon'.$_.'Attr'}
-            .$pc{'weapon'.$_.'HitMod'}
-            .$pc{'weapon'.$_.'Power'}
-            .$pc{'weapon'.$_.'PowerMod'}
-            .$pc{'weapon'.$_.'Range'}
-            .$pc{'weapon'.$_.'Note'}
-    ) eq '';
+    next if !existsRow "weapon$_",'Name','Type','Weight','Usage','Attr','HitMod','Power','PowerMod','Range','Note';
     my $rowspan = 1;
     for(my $num = $_+1; $num <= $pc{weaponNum}; $num++){
       last if $pc{'weapon'.$num.'NameOff'};
       last if $pc{'weapon'.$num.'Name'};
-      last if ($pc{'weapon'.$_.'Name'}
-              .$pc{'weapon'.$_.'Type'}
-              .$pc{'weapon'.$_.'Weight'}
-              .$pc{'weapon'.$_.'Usage'}
-              .$pc{'weapon'.$_.'Attr'}
-              .$pc{'weapon'.$_.'HitMod'}
-              .$pc{'weapon'.$_.'Power'}
-              .$pc{'weapon'.$_.'PowerMod'}
-              .$pc{'weapon'.$_.'Range'}
-              .$pc{'weapon'.$_.'Note'}
-      ) eq '';
+      last if !existsRow "weapon$_",'Name','Type','Weight','Usage','Attr','HitMod','Power','PowerMod','Range','Note';
       $rowspan++;
       $pc{'weapon'.$num.'NameOff'} = 1;
     }
@@ -414,7 +394,7 @@ else {
 
   my @armours;
   foreach (1){
-    next if $pc{'armor'.$_.'Name'} eq '' && !$pc{'armor'.$_.'Dodge'} && !$pc{'armor'.$_.'Armor'};
+    next if !existsRow "armor$_",'Name','Dodge','Armor';
     my $type = $pc{'armor'.$_.'Type'};
        $type .= "($pc{'armor'.$_.'Material'})" if $pc{'armor'.$_.'Material'};
        $type .= "／$pc{'armor'.$_.'Weight'}"   if $pc{'armor'.$_.'Weight'};
@@ -458,7 +438,7 @@ else {
 
   my @shields;
   foreach (1){
-    next if $pc{'shield'.$_.'Name'} eq '' && !$pc{'shield'.$_.'Block'} && !$pc{'shield'.$_.'Armor'};
+    next if !existsRow "shield$_",'Name','Block','Armor';
     push(@shields, {
       NAME       => itemNameRubyCheck($pc{'shield'.$_.'Name'}),
       TYPE       => $pc{'shield'.$_.'Type'}.($pc{'shield'.$_.'Material'}?"($pc{'shield'.$_.'Material'})":''),
@@ -491,7 +471,7 @@ if($pc{forbiddenMode}){
 else {
   my @skills;
   foreach (1..$pc{skillNum}){
-    next if !$pc{'skill'.$_.'Adp'} && !$pc{'skill'.$_.'Name'} && !$pc{'skill'.$_.'Note'};
+    next if !existsRow "skill$_",'Adp','Name','Note';
     push(@skills, {
       ADP   => $pc{'skill'.$_.'Adp'},
       NAME  => $pc{'skill'.$_.'Name'},
@@ -520,7 +500,7 @@ if($pc{forbiddenMode}){
 else {
   my @skills;
   foreach (1..$pc{generalSkillNum}){
-    next if !$pc{'generalSkill'.$_.'Adp'} && !$pc{'generalSkill'.$_.'Name'} && !$pc{'generalSkill'.$_.'Note'};
+    next if !existsRow "generalSkill$_",'Adp','Name','Note';
     push(@skills, {
       ADP   => $pc{'generalSkill'.$_.'Adp'},
       NAME  => $pc{'generalSkill'.$_.'Name'},
@@ -538,7 +518,7 @@ if($pc{forbiddenMode}){
 else {
   my @spells;
   foreach (1..$pc{spellNum}){
-    next if !$pc{'spell'.$_.'Name'} && !$pc{'spell'.$_.'Note'};
+    next if !existsRow "spell$_",'Name','Note';
     push(@spells, {
       NAME   => spellNameRubyCheck($pc{'spell'.$_.'Name'}),
       SYSTEM => $pc{'spell'.$_.'System'},
@@ -557,7 +537,7 @@ if($pc{forbiddenMode}){
 else {
   my @arts;
   foreach (1..$pc{artsNum}){
-    next if !$pc{'arts'.$_.'Name'} && !$pc{'arts'.$_.'Note'};
+    next if !existsRow "arts$_",'Name','Note';
     push(@arts, {
       NAME   => $pc{'arts'.$_.'Name'},
       WEAPON => $pc{'arts'.$_.'Weapon'},

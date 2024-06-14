@@ -167,13 +167,7 @@ foreach my $type ('Physical','Special','Social'){
 ### マギ --------------------------------------------------
 my @magi;
 foreach (1 .. 4){
-  #next if(
-  #     !$pc{'magi'.$_.'Name'}
-  #  && !$pc{'magi'.$_.'Timing'}
-  #  && !$pc{'magi'.$_.'Target'}
-  #  && !$pc{'magi'.$_.'Cond'}
-  #  && !$pc{'magi'.$_.'Note'}
-  #);
+  #next if !existsRow "magi$_",'Name','Timing','Target','Cond','Note';
   $pc{'magi'.$_.'Name'} &&= "《$pc{'magi'.$_.'Name'}》";
   push(@magi, {
     NAME   => $pc{'magi'.$_.'Name'},

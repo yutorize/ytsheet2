@@ -277,7 +277,7 @@ if(!$pc{forbiddenMode}){
 ### キズナ --------------------------------------------------
 my @kizuna;
 foreach (1 .. $pc{kizunaNum}){
-  next if(!$pc{'kizuna'.$_.'Name'} && !$pc{'kizuna'.$_.'Note'}   && !$pc{'kizuna'.$_.'Hibi'}  && !$pc{'kizuna'.$_.'Ware'});
+  next if !existsRow "kizuna$_",'Name','Note','Hibi','Ware';
   push(@kizuna, {
     "NAME" => $pc{'kizuna'.$_.'Name'},
     "NOTE" => $pc{'kizuna'.$_.'Note'},
@@ -308,14 +308,9 @@ $SHEET->param(Shougou => \@shougou) if ($pc{shougou1} || $pc{shougou2} || $pc{sh
 ### キズアト --------------------------------------------------
 my @kizuato;
 foreach (1 .. $pc{kizuatoNum}){
-  next if(
-    !$pc{'kizuato'.$_.'Name'} &&
-    !$pc{'kizuato'.$_.'DramaTiming'}   && !$pc{'kizuato'.$_.'BattleTiming'}  && 
-    !$pc{'kizuato'.$_.'DramaTarget'}   && !$pc{'kizuato'.$_.'BattleTarget'}  && 
-    !$pc{'kizuato'.$_.'DramaHitogara'} && !$pc{'kizuato'.$_.'BattleCost'}    && 
-    !$pc{'kizuato'.$_.'DramaLimited'}  && !$pc{'kizuato'.$_.'BattleLimited'} && 
-    !$pc{'kizuato'.$_.'DramaNote'}     && !$pc{'kizuato'.$_.'BattleNote'}    
-  );
+  next if !(existsRow "kizuato$_",'Name',
+    'DramaTiming','DramaTarget','DramaHitogara','DramaLimited','DramaNote',
+    'BattleTiming','BattleTarget','BattleCost','BattleLimited','BattleNote');
   push(@kizuato, {
     "NAME"     => $pc{'kizuato'.$_.'Name'},
     "D-TIMING"   => $pc{'kizuato'.$_.'DramaTiming'},

@@ -333,13 +333,12 @@ $SHEET->param(Loises => \@loises);
 ### メモリー --------------------------------------------------
 my @memories;
 foreach (1 .. 3){
-  next if !$pc{'memory'.$_.'Relation'} && !$pc{'memory'.$_.'Name'};
+  next if !existsRow "memory$_",'Name','Relation';
   push(@memories, {
     RELATION => $pc{'memory'.$_.'Relation'},
     NAME     => $pc{'memory'.$_.'Name'},
     EMOTION  => $pc{'memory'.$_.'Emo'},
     NOTE     => $pc{'memory'.$_.'Note'},
-    STATE    => $pc{'memory'.$_.'State'},
   });
 }
 $SHEET->param(Memories => \@memories);
@@ -347,12 +346,7 @@ $SHEET->param(Memories => \@memories);
 ### エフェクト --------------------------------------------------
 my @effects;
 foreach (1 .. $pc{effectNum}){
-  next if(
-    !$pc{'effect'.$_.'Name'}  && !$pc{'effect'.$_.'Lv'}       && !$pc{'effect'.$_.'Timing'} &&
-    !$pc{'effect'.$_.'Skill'} && !$pc{'effect'.$_.'Dfclty'}   && !$pc{'effect'.$_.'Target'} && 
-    !$pc{'effect'.$_.'Range'} && !$pc{'effect'.$_.'Encroach'} && !$pc{'effect'.$_.'Restrict'} &&
-    !$pc{'effect'.$_.'Note'}  && !$pc{'effect'.$_.'Exp'}
-  );
+  next if !existsRow "effect$_",'Name','Lv','Timing','Skill','Dfclty','Target','Range','Encroach','Restrict','Note','Exp';
   push(@effects, {
     TYPE     => $pc{'effect'.$_.'Type'},
     NAME     => textShrink(13,15,17,21,$pc{'effect'.$_.'Name'}),
@@ -411,10 +405,7 @@ sub textShrink {
 ### 術式 --------------------------------------------------
 my @magics;
 foreach (1 .. $pc{magicNum}){
-  next if(
-    !$pc{'magic'.$_.'Name'}     && !$pc{'magic'.$_.'Type'}     && !$pc{'magic'.$_.'Exp'} &&
-    !$pc{'magic'.$_.'Activate'} && !$pc{'magic'.$_.'Encroach'} && !$pc{'magic'.$_.'Note'} 
-  );
+  next if !existsRow "magic$_",'Name','Type','Exp','Activate','Encroach','Note';
   push(@magics, {
     NAME     => $pc{'magic'.$_.'Name'},
     TYPE     => textShrink(5,5,5,5,$pc{'magic'.$_.'Type'}),
@@ -429,12 +420,7 @@ $SHEET->param(Magics => \@magics);
 ### コンボ --------------------------------------------------
 my @combos;
 foreach (1 .. $pc{comboNum}){
-  next if(
-    !$pc{'combo'.$_.'Name'}  && !$pc{'combo'.$_.'Combo'}    && !$pc{'combo'.$_.'Timing'} &&
-    !$pc{'combo'.$_.'Skill'} && !$pc{'combo'.$_.'Dfclty'}   && !$pc{'combo'.$_.'Target'} && 
-    !$pc{'combo'.$_.'Range'} && !$pc{'combo'.$_.'Encroach'} && !$pc{'combo'.$_.'Note'} && 
-    !$pc{'combo'.$_.'Dice1'} && !$pc{'combo'.$_.'Crit1'} && !$pc{'combo'.$_.'Atk1'} && !$pc{'combo'.$_.'Fixed1'}
-  );
+  next if !existsRow "combo$_",'Name','Combo','Timing','Skill','Dfclty','Target','Range','Encroach','Note','Dice1','Crit1','Atk1','Fixed1';
   my $blankrow = 0;
   if(!$pc{'combo'.$_.'Condition2'}){ $blankrow++; }
   if(!$pc{'combo'.$_.'Condition3'}){ $blankrow++; }
@@ -500,11 +486,7 @@ sub textComboSkill {
 ### 武器 --------------------------------------------------
 my @weapons;
 foreach (1 .. $pc{weaponNum}){
-  next if(
-    !$pc{'weapon'.$_.'Name'}  && !$pc{'weapon'.$_.'Stock'} && !$pc{'weapon'.$_.'Exp'} &&
-    !$pc{'weapon'.$_.'Skill'} && !$pc{'weapon'.$_.'Acc'}   && !$pc{'weapon'.$_.'Atk'} &&
-    !$pc{'weapon'.$_.'Guard'} && !$pc{'weapon'.$_.'Range'} && !$pc{'weapon'.$_.'Note'} 
-  );
+  next if !existsRow "weapon$_",'Name','Stock','Exp','Skill','Acc','Atk','Guard','Range','Note';
   push(@weapons, {
     NAME  => textShrink(12,13,14,15,$pc{'weapon'.$_.'Name'}),
     STOCK => $pc{'weapon'.$_.'Stock'},
@@ -529,10 +511,7 @@ sub textType {
 ### 防具 --------------------------------------------------
 my @armors;
 foreach (1 .. $pc{armorNum}){
-  next if(
-    !$pc{'armor'.$_.'Name'}  && !$pc{'armor'.$_.'Stock'} && !$pc{'armor'.$_.'Exp'} && !$pc{'armor'.$_.'Initiative'} &&
-    !$pc{'armor'.$_.'Dodge'} && !$pc{'armor'.$_.'Armor'} && !$pc{'armor'.$_.'Note'} 
-  );
+  next if !existsRow "armor$_",'Name','Stock','Exp','Initiative','Dodge','Armor','Note';
   push(@armors, {
     NAME       => textShrink(12,13,14,15,$pc{'armor'.$_.'Name'}),
     STOCK      => $pc{'armor'.$_.'Stock'},
@@ -549,11 +528,7 @@ $SHEET->param(Armors => \@armors);
 ### ヴィークル --------------------------------------------------
 my @vehicles;
 foreach (1 .. $pc{vehicleNum}){
-  next if(
-    !$pc{'vehicle'.$_.'Name'}  && !$pc{'vehicle'.$_.'Stock'} && !$pc{'vehicle'.$_.'Exp'} &&
-    !$pc{'vehicle'.$_.'Skill'} && !$pc{'vehicle'.$_.'Atk'}   && !$pc{'vehicle'.$_.'Initiative'} &&
-    !$pc{'vehicle'.$_.'Armor'} && !$pc{'vehicle'.$_.'Dash'}  && !$pc{'vehicle'.$_.'Note'}
-  );
+  next if !existsRow "vehicle$_",'Name','Stock','Exp','Skill','Atk','Initiative','Armor','Dash','Note';
   push(@vehicles, {
     NAME       => textShrink(12,13,14,15,$pc{'vehicle'.$_.'Name'}),
     STOCK      => $pc{'vehicle'.$_.'Stock'},
@@ -572,10 +547,7 @@ $SHEET->param(Vehicles => \@vehicles);
 ### アイテム --------------------------------------------------
 my @items;
 foreach (1 .. $pc{itemNum}){
-  next if(
-    !$pc{'item'.$_.'Name'}  && !$pc{'item'.$_.'Stock'} && !$pc{'item'.$_.'Exp'} &&
-    !$pc{'item'.$_.'Skill'} && !$pc{'item'.$_.'Note'}
-  );
+  next if !existsRow "item$_",'Name','Stock','Exp','Skill','Note';
   push(@items, {
     NAME  => textShrink(12,13,14,15,$pc{'item'.$_.'Name'}),
     STOCK => $pc{'item'.$_.'Stock'},
