@@ -140,7 +140,7 @@ our $game = 'ms';
   our $skin_tmpl  = $::core_dir . '/skin/ms/index.html';      # 一覧／登録フォーム等の大枠
   our $skin_sheet = $::core_dir . '/skin/ms/sheet-chara.html';   # キャラクターシート
   
-  # 魔物・アイテム・魔法/流派などの設定
+  # クランシートの設定
   our %lib_type = (
     'c' => {
       listFile => $data_dir . 'clanlist.cgi',
