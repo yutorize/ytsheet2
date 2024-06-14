@@ -372,7 +372,7 @@
         <p><TMPL_VAR freeHistory></p>
       </section>
       </TMPL_IF>
-      <section class="box" id="history">
+      <TMPL_IF History><section class="box" id="history">
         <h2>セッション履歴</h2>
         <table class="data-table line-tbody">
           <thead>
@@ -386,16 +386,16 @@
           </thead>
           <TMPL_LOOP History><tbody>
             <tr>
-              <td class="num   " <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR NUM>
-              <td class="date  " <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR DATE>
-              <td class="title " <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR TITLE>
-              <td class="grow  "><span><TMPL_VAR GROW></span>
-              <td class="gm    "><span><TMPL_VAR GM></span>
-              <td class="member"><TMPL_VAR MEMBER>
+              <td class="num   " <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR NUM></td>
+              <td class="date  " <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR DATE></td>
+              <td class="title " <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR TITLE></td>
+              <td class="grow  "><span><TMPL_VAR GROW></span></td>
+              <td class="gm    "><span><TMPL_VAR GM></span></td>
+              <td class="member"><TMPL_VAR MEMBER></td>
             <TMPL_IF NOTE><tr><td colspan="3" class="note"><TMPL_VAR NOTE></TMPL_IF>
           </TMPL_LOOP>
         </table>
-      </section>
+      </section></TMPL_IF>
       <section class="box chat-palette float-box">
         <h2>チャットパレット</h2>
         <div class="chat-palette-menu">

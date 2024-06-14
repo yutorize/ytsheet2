@@ -849,6 +849,7 @@ my @history;
 my $h_num = 0;
 $pc{history0Title} = 'キャラクター作成';
 foreach (0 .. $pc{historyNum}){
+  next if(!existsRow "history${_}",'Date','Title','Exp','Honor','Money','Grow','Gm','Member','Note');
   $pc{'history'.$_.'Grow'} =~ s/[^器敏筋生知精0-9]//g;
   $pc{'history'.$_.'Grow'} =~ s/器([0-9]{0,3})/器用×$1<br>/g;
   $pc{'history'.$_.'Grow'} =~ s/敏([0-9]{0,3})/敏捷×$1<br>/g;
@@ -857,7 +858,6 @@ foreach (0 .. $pc{historyNum}){
   $pc{'history'.$_.'Grow'} =~ s/知([0-9]{0,3})/知力×$1<br>/g;
   $pc{'history'.$_.'Grow'} =~ s/精([0-9]{0,3})/精神×$1<br>/g;
   $pc{'history'.$_.'Grow'} =~ s/×([^0-9])/$1/g;
-  #next if !$pc{'history'.$_.'Title'};
   $h_num++ if $pc{'history'.$_.'Gm'};
   if ($set::log_dir && $pc{'history'.$_.'Date'} =~ s/([^0-9]*?_[0-9]+(?:#[0-9a-zA-Z]+?)?)$//){
     my $room = $1;

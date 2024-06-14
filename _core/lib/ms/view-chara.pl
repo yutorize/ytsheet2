@@ -184,7 +184,7 @@ my @history;
 my $h_num = 0;
 #$pc{history0Title} = 'キャラクター作成';
 foreach (1 .. $pc{historyNum}){
-  #next if !$pc{'history'.$_.'Title'};
+  next if(!existsRow "history${_}",'Date','Title','Level','Gm','Member','Note');
   $h_num++ if $pc{'history'.$_.'Gm'};
   if ($set::log_dir && $pc{'history'.$_.'Date'} =~ s/([^0-9]*?_[0-9]+(?:#[0-9a-zA-Z]+?)?)$//){
     my $room = $1;
