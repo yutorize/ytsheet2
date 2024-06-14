@@ -414,8 +414,6 @@ $SHEET->param(ver => $::ver);
 $SHEET->param(coreDir => $::core_dir);
 $SHEET->param(gameDir => 'sw2');
 $SHEET->param(sheetType => 'arts');
-$SHEET->param(generateType => 'SwordWorld2PC');
-$SHEET->param(defaultImage => $::core_dir.'/skin/sw2/img/default_pc.png');
 
 ### メニュー --------------------------------------------------
 my @menu = ();
