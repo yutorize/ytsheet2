@@ -770,17 +770,18 @@ function view(viewId){
 }
 
 // ラジオボタン解除 ----------------------------------------
-document.querySelectorAll('input[type="radio"]:not([name="protect"])').forEach(radioButton => {
-  let label = document.querySelector(`label[for="${radioButton.id}"]`)
-
-  radioButton.addEventListener("mouseup", ()=>{
-    if(radioButton.checked){
-      clearRadioButton(radioButton)
-    }
-  });
+document.querySelectorAll('input[type="radio"].deselectable').forEach(radioButton => {
+  let label = radioButton.closest(`label`);
 
   if(label){
     label.addEventListener("mouseup", ()=>{
+      if(radioButton.checked){
+        clearRadioButton(radioButton)
+      }
+    });
+  }
+  else {
+    radioButton.addEventListener("mouseup", ()=>{
       if(radioButton.checked){
         clearRadioButton(radioButton)
       }

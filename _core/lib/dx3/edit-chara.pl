@@ -350,10 +350,10 @@ print <<"HTML";
             <tbody>
               <tr class="works-row">
                 <th colspan="2" class="right">ワークスによる修正
-                <td>@{[ radio 'sttWorks', 'calcStt', 'body'  , '+1' ]}
-                <td>@{[ radio 'sttWorks', 'calcStt', 'sense' , '+1' ]}
-                <td>@{[ radio 'sttWorks', 'calcStt', 'mind'  , '+1' ]}
-                <td>@{[ radio 'sttWorks', 'calcStt', 'social', '+1' ]}
+                <td>@{[ radio 'sttWorks', 'deselectable,calcStt', 'body'  , '+1' ]}
+                <td>@{[ radio 'sttWorks', 'deselectable,calcStt', 'sense' , '+1' ]}
+                <td>@{[ radio 'sttWorks', 'deselectable,calcStt', 'mind'  , '+1' ]}
+                <td>@{[ radio 'sttWorks', 'deselectable,calcStt', 'social', '+1' ]}
               <tr>
                 <th colspan="2" class="right"><span class="construction-only">フリーポイント＋</span>成長
                 <td>@{[input "sttGrowBody"  ,'number','calcStt', 'min="0"']}

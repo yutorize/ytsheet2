@@ -328,28 +328,28 @@ print <<"HTML";
               <tr>
                 <th rowspan="5" class="status-first-head">第一能力値
                 <th><dl><dt>体力点<dd>@{[ input 'ability1StrBase', 'number', 'calcAbility' ]}</dl>
-                <td>@{[ radio 'ability1Bonus', 'calcAbility', 'Str' ]}
+                <td>@{[ radio 'ability1Bonus', 'deselectable,calcAbility', 'Str' ]}
                 <td>@{[ input 'ability1StrMod', 'number', 'calcAbility' ]}
                 <td><dl><dt>体力集中<dd id="ability-value-StrFoc"></dl>
                 <td><dl><dt>体力持久<dd id="ability-value-StrEdu"></dl>
                 <td><dl><dt>体力反射<dd id="ability-value-StrRef"></dl>
               <tr>
                 <th><dl><dt>魂魄点<dd>@{[ input 'ability1PsyBase', 'number', 'calcAbility' ]}</dl>
-                <td>@{[ radio 'ability1Bonus', 'calcAbility', 'Psy' ]}
+                <td>@{[ radio 'ability1Bonus', 'deselectable,calcAbility', 'Psy' ]}
                 <td>@{[ input 'ability1PsyMod', 'number', 'calcAbility' ]}
                 <td><dl><dt>魂魄集中<dd id="ability-value-PsyFoc"></dl>
                 <td><dl><dt>魂魄持久<dd id="ability-value-PsyEdu"></dl>
                 <td><dl><dt>魂魄反射<dd id="ability-value-PsyRef"></dl>
               <tr>
                 <th><dl><dt>技量点<dd>@{[ input 'ability1TecBase', 'number', 'calcAbility' ]}</dl>
-                <td>@{[ radio 'ability1Bonus', 'calcAbility', 'Tec' ]}
+                <td>@{[ radio 'ability1Bonus', 'deselectable,calcAbility', 'Tec' ]}
                 <td>@{[ input 'ability1TecMod', 'number', 'calcAbility' ]}
                 <td><dl><dt>技量集中<dd id="ability-value-TecFoc"></dl>
                 <td><dl><dt>技量持久<dd id="ability-value-TecEdu"></dl>
                 <td><dl><dt>技量反射<dd id="ability-value-TecRef"></dl>
               <tr>
                 <th><dl><dt>知力点<dd>@{[ input 'ability1IntBase', 'number', 'calcAbility' ]}</dl>
-                <td>@{[ radio 'ability1Bonus', 'calcAbility', 'Int' ]}
+                <td>@{[ radio 'ability1Bonus', 'deselectable,calcAbility', 'Int' ]}
                 <td>@{[ input 'ability1IntMod', 'number', 'calcAbility' ]}
                 <td><dl><dt>知力集中<dd id="ability-value-IntFoc"></dl>
                 <td><dl><dt>知力持久<dd id="ability-value-IntEdu"></dl>
