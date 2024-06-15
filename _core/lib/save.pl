@@ -5,7 +5,6 @@ use utf8;
 use open ":utf8";
 
 our $LOGIN_ID = check;
-changeFileByType($::in{type});
 
 if($::in{base64mode}){
   use MIME::Base64;
@@ -22,6 +21,8 @@ else {
     $::in{$_} = decode('utf8', param($_))
   }
 }
+
+changeFileByType($::in{type});
 
 our $mode_save = 1;
 
