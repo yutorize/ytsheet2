@@ -371,7 +371,7 @@ print <<"HTML";
 HTML
 } else {
 print <<"HTML";
-          戦闘準備型（<i class="s-icon setup"  ></i>）：<code>[戦]</code><code>△</code><br>
+          戦闘準備型（<i class="s-icon setup"  ></i>）：<code>[準]</code><code>△</code><br>
           主動作型　（<i class="s-icon major"  ></i>）：<code>[主]</code><code>＞</code> <code>▶</code> <code>〆</code><br>
           補助動作型（<i class="s-icon minor"  ></i>）：<code>[補]</code><code>≫</code> <code>&gt;&gt;</code> <code>☆</code><br>
           宣言型　　（<i class="s-icon active" ></i>）：<code>[宣]</code><code>🗨</code> <code>□</code> <code>☑</code><br>
