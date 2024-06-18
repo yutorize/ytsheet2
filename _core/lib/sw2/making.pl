@@ -41,7 +41,7 @@ if($set::making_interval){
 
 ## 能力値作成処理
 my $adventurer = ($in{race} =~ s/（冒険者）//) ? 1 : 0;
-my $magitecangel = ($in{race} == '魔動天使') ? 1 : 0;
+my $magitecangel = ($in{race} eq '魔動天使') ? 1 : 0;
 
 my $stt_data;
 my $average_max = 0;
