@@ -464,6 +464,11 @@
       &[data-type="listen"] + .lang-select-view { background: #77777722; }
       &[data-type="listen"] + .lang-select-view::before { content: '△'; }
     }
+
+    &:not(.sag-available) select option[value="Sag"],
+    &:not(.bar-available) select option[value="Bar"] {
+      display: none;
+    }
   }
 }
 #language #language-notice {
