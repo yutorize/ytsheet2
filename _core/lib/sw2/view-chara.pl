@@ -939,7 +939,7 @@ if($::SW2_0){
   }
 }
 else {
-  $SHEET->param(rank => $pc{rank}.$pc{rankStar});
+  $SHEET->param(rank => ($pc{rank} // '―').$pc{rankStar});
   foreach (@set::adventurer_rank){
     my ($name, $num, undef) = @$_;
     if($pc{rank}=~/★$/ && $pc{rankStar} >= 2){ $num += ($pc{rankStar}-1)*500 }
