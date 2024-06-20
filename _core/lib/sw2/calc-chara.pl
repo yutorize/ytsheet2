@@ -435,7 +435,7 @@ sub data_calc {
   $pc{mobilityBase} = $pc{mobilityBase} * 2 + $own_mobility  if ($pc{raceAbility} =~ /［半馬半人］/);
   $pc{mobilityTotal} = $pc{mobilityBase} + s_eval($pc{mobilityAdd});
   $pc{mobilityFull} = $pc{mobilityTotal} * 3;
-  $pc{mobilityLimited} = $pc{footwork} ? 10 : 3;
+  $pc{mobilityLimited} = min($pc{footwork} ? 10 : 3, $pc{mobilityTotal});
 
   ## 判定パッケージ
   my @pack_lore;

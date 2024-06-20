@@ -387,6 +387,9 @@ foreach my $class (@data::class_names){
 $SHEET->param(CraftLists => \@craft_lists);
 $SHEET->param(craftNone => $craft_none);
 
+### 移動力 --------------------------------------------------
+$SHEET->param(mobilityLimited => $pc{mobilityTotal}) if $pc{mobilityLimited} > $pc{mobilityTotal}; # 古いデータのための処理
+
 ### 言語 --------------------------------------------------
 my @language;
 if($pc{forbiddenMode}){
