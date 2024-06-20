@@ -1551,8 +1551,9 @@ function calcDishonor(){
   }
   pointTotal -= Number(form.honorOffset.value);
   document.getElementById("dishonor-value").textContent = pointTotal;
-  for(const key in SET.nRank){
-    if(pointTotal >= SET.nRank[key].num) { document.getElementById("notoriety").textContent = key; }
+  const orderedRanks = Object.entries(SET.nRank).map(x => {return {name: x[0], num: x[1].num};}).sort((x, y) => x.num - y.num);
+  for(const rank of orderedRanks){
+    if(pointTotal >= rank.num) { document.getElementById("notoriety").textContent = rank.name; }
   }
 }
 
