@@ -40,9 +40,9 @@ sub addJsonData {
     
     ## ユニット（コマ）用ステータス
     $pc{unitStatus} = createUnitStatus(\%pc);
-
-    return \%pc;
   }
+
+  return \%pc;
 }
 
 1;
