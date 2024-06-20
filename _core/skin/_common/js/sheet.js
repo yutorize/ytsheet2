@@ -205,27 +205,25 @@ async function downloadAsCcfolia() {
 
 async function downloadAsText() {
   const characterDataJson = await getJsonData();
-  const characterId = characterDataJson.characterName || characterDataJson.monsterName || characterDataJson.aka || '無題';
+  const name = document.title.replace(/ - .+?$/,'') || '無題';
   const textData = output[`generateCharacterTextOf${generateType}`](characterDataJson);
   const textUrl = window.URL.createObjectURL(new Blob([ textData ], { "type" : 'text/plain;charset=utf-8;' }));
-  downloadFile(`data_${characterId}.txt`, textUrl);
+  downloadFile(`${name}.txt`, textUrl);
 }
 
 async function downloadAsJson() {
   const characterDataJson = await getJsonData();
-  const characterId = characterDataJson.characterName || characterDataJson.monsterName || characterDataJson.aka || characterDataJson.itemName || characterDataJson.artsName || '無題';
+  const name = document.title.replace(/ - .+?$/,'') || '無題';
   const jsonUrl = window.URL.createObjectURL(new Blob([ JSON.stringify(characterDataJson) ], { "type" : 'text/json;charset=utf-8;' }));
-  downloadFile(`data_${characterId}.json`, jsonUrl);
+  downloadFile(`${name}.json`, jsonUrl);
 }
 async function downloadAsHtml(){
-  const title = document.querySelector('title').innerHTML;
-  const name = title.replace(/ - .+?$/,'');
+  const name = document.title.replace(/ - .+?$/,'') || '無題';
   const url = location.href.replace(/#(.+)$/,'').replace(/&mode=(.+?)(&|$)/,'')+'&mode=download';
-  downloadFile(title+'.html', url);
+  downloadFile(name+'.html', url);
 }
 async function downloadAsFullSet(){
-  const title = document.querySelector('title').innerHTML;
-  const name = title.replace(/ - .+?$/,'');
+  const name = document.title.replace(/ - .+?$/,'') || '無題';
   const url = location.href.replace(/#(.+)$/,'').replace(/&mode=(.+?)(&|$)/,'');
   let zip = new JSZip();
   zip.file(name+'.html', await JSZipUtils.getBinaryContent(url+'&mode=download'));
@@ -251,7 +249,7 @@ async function downloadAsFullSet(){
       const url = URL.createObjectURL(content);
       const a = document.createElement("a");
       document.body.appendChild(a);
-      a.download = title+'.zip';
+      a.download = name+'.zip';
       a.href = url;
       a.click();
       a.remove();
