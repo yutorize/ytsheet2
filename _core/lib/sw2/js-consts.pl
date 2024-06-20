@@ -30,7 +30,7 @@ my %settings = (
   classCasters => \@data::class_caster,
   weapons => \@data::weapons,
   aRank => \%aRank,
-  nRank => \%nRank,
+  nRank => \@set::notoriety_rank,
 );
 print "const SET = ". JSON::PP->new->encode(\%settings);
 print "\n";
