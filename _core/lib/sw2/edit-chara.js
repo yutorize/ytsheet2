@@ -292,7 +292,6 @@ function checkRace(){
     ability.replace(/［(.+?)］/g, (all, match) => {
       raceAbilities.push(match);
     });
-    console.log(raceAbilities)
   }
   
   if(raceAbilities.includes('鱗の皮膚')){
@@ -930,8 +929,7 @@ function checkFeats(){
       acquire += feat + ',';
       
       const weaponsRegex = new RegExp('武器習熟(Ａ|Ｓ)／(' + SET.weapons.map(d => d[0]).join('|') + ')');
-      if     (feat === "足さばき"){ feats['足さばき'] = 1; }
-      else if(feat === "回避行動Ⅰ"){ feats['回避行動'] = 1; }
+      if     (feat === "回避行動Ⅰ"){ feats['回避行動'] = 1; }
       else if(feat === "回避行動Ⅱ"){ feats['回避行動'] = 2; }
       else if(feat === "命中強化Ⅰ"){ feats['命中強化'] = 1; }
       else if(feat === "命中強化Ⅱ"){ feats['命中強化'] = 2; }
@@ -942,7 +940,6 @@ function checkFeats(){
       else if(feat === "頑強")  { feats['頑強'] = (feats['頑強']||0) +15; }
       else if(feat === "超頑強"){ feats['頑強'] = (feats['頑強']||0) +15; }
       else if(feat === "キャパシティ"){ feats['キャパシティ'] = 15; }
-      else if(feat === "射手の体術"){ feats['射手の体術'] = 1; }
       else if(feat.match(weaponsRegex)){
         feats['武器習熟／'+RegExp.$2] ||= 0;
         if     (RegExp.$1 === 'Ａ'){ feats['武器習熟／'+RegExp.$2] += 1; }
@@ -966,6 +963,7 @@ function checkFeats(){
       else if(feat === "鼓咆陣率追加Ⅲ"){ feats['鼓咆陣率追加'] = 3; }
       else if(feat === "抵抗強化Ⅰ"){ feats['抵抗強化'] = 1; }
       else if(feat === "抵抗強化Ⅱ"){ feats['抵抗強化'] = 2; }
+      else { feats[feat] = true; }
       
       cL.remove("fail","hidden");
     }
@@ -984,7 +982,9 @@ function checkFeats(){
 }
 
 // 技芸 ----------------------------------------
+let crafts = {};
 function checkCraft() {
+  crafts = {};
   for(const key in SET.class){
     const cId  = SET.class[key].id;
     const cLv = lv[cId];
@@ -1003,6 +1003,8 @@ function checkCraft() {
         let objCL = document.getElementById("craft-"+eName+i).classList;
         if (i <= rows){
           objCL.remove("fail","hidden");
+          const craftName = form["craft"+ucfirst(eName)+i].value;
+          if(craftName){ crafts[craftName] = true }
         }
         else {
           objCL.add("fail");
@@ -1104,24 +1106,18 @@ function calcPackage() {
       const cId   = SET.class[key].id
       const pData = SET.class[key].package;
       const cLv = lv[cId];
-
-      document.getElementById(`package-${eName}`).style.display = cLv > 0 ? "" :"none";
       
+      let rows = 0;
       for(const pId in pData){
         let autoBonus = 0;
         let disabled = false;
-        if(cId === 'War' && pId === 'Int'){
+        if(pData[pId].unlockCraft && !crafts[pData[pId].unlockCraft]){
           disabled = true;
-          for(let i = 1; i <= lv.War+(feats['鼓咆陣率追加']||0); i++){
-            if(form[`craftCommand${i}`].value.match(/軍師の知略$/)){ disabled = false; autoBonus += form[`craftCommand${i}`].value.match(/^陣率/) ? 1 : 0; break; }
-          }
         }
-        else if(cId === 'Rid' && pId === 'Obs'){
-          disabled = true;
-          for(let i = 1; i <= lv.Rid; i++){
-            if(form[`craftRiding${i}`].value.match(/探索指令$/)){ disabled = false; break; }
-          }
+        if(cId === 'War' && pId === 'Int' && crafts['陣率：軍師の知略']){
+          autoBonus += 1;
         }
+        if(!disabled){ rows++; }
         
         let value = disabled ? 0 : (cLv + bonus[alphabetToStt[pData[pId].stt]] + Number(form[`pack${cId}${pId}Add`].value) + autoBonus);
         document.getElementById(`package-${eName}-${pId.toLowerCase()}-auto`).textContent = autoBonus ? '+'+autoBonus : '';
@@ -1131,6 +1127,7 @@ function calcPackage() {
         if(pData[pId].monsterLore){ lore.push(cLv > 0 ? value : 0); }
         if(pData[pId].initiative ){ init.push(cLv > 0 ? value : 0); }
       }
+      document.getElementById(`package-${eName}`).style.display = cLv > 0 && rows ? '' : 'none';
     }
   }
 
@@ -1229,25 +1226,42 @@ function calcFairy() {
 }
 
 // 攻撃計算 ----------------------------------------
+let errorAccClass = {};
 function calcAttack() {
+  errorAccClass = {};
   for(const name in SET.class){
-    if(SET.class[name].type !== 'weapon-user'){ continue; }
+    if(SET.class[name].type !== 'weapon-user' && !SET.class[name].accUnlock){ continue; }
     const id    = SET.class[name].id;
     const eName = SET.class[name].eName;
-    document.getElementById(`attack-${eName}`).style.display = lv[id] > 0 ? "" :"none";
+    const unlockLv = SET.class[name]?.accUnlock?.lv || 1;
+    const unlockFeat = SET.class[name]?.accUnlock?.feat || '';
+    const unlockCraft = SET.class[name]?.accUnlock?.craft || '';
+    let display = '';
+    if (lv[id] < unlockLv){ display = 'none' }
+    if(unlockFeat){
+      let isUnlock = false;
+      for(const feat of unlockFeat.split('|')){
+        if(feats[feat]){ isUnlock = true; break; }
+      }
+      if(!isUnlock){ display = 'none' }
+    }
+    if(unlockCraft){
+      let isUnlock = false;
+      for(const craft of unlockCraft.split('|')){
+        if(crafts[craft]){ isUnlock = true; break; }
+      }
+      if(!isUnlock){ display = 'none' }
+    }
+    if(display == 'none'){ errorAccClass[name] = true; }
+    document.getElementById(`attack-${eName}`).style.display = display;
     document.getElementById(`attack-${eName}-str`).textContent = id == 'Fen' ? reqdStrHalf : reqdStr;
     document.getElementById(`attack-${eName}-acc`).textContent = lv[id] + bonus.Dex;
     document.getElementById(`attack-${eName}-dmg`).textContent = lv[id] + bonus.Str;
   }
-  document.getElementById("attack-enhancer"  ).style.display = lv['Enh'] >= 10 ? "" :"none";
-  document.getElementById("attack-enhancer-str").textContent   = reqdStr;
-  document.getElementById("attack-enhancer-acc"  ).textContent = lv['Enh'] + bonus.Dex;
-  document.getElementById("attack-enhancer-dmg"  ).textContent = lv['Enh'] + bonus.Str;
-
-  document.getElementById("attack-demonruler").style.display = lv['Dem'] >= 11 ? "" : modeZero && lv['Dem'] > 0 ? "" :"none";
-  document.getElementById("attack-demonruler-str").textContent = reqdStr;
-  document.getElementById("attack-demonruler-acc").textContent = lv['Dem'] + bonus.Dex;
-  document.getElementById("attack-demonruler-dmg").textContent = modeZero ? lv['Dem'] + bonus.Str : '―';
+  
+  if(!modeZero){
+    document.getElementById("attack-demonruler-dmg").textContent = '―';
+  }
 
   for(let i = 0; i < SET.weapons.length; i++){
     document.getElementById(`attack-${SET.weapons[i][1]}-mastery`).style.display = feats['武器習熟／'+SET.weapons[i][0]] ? '' : 'none';
@@ -1269,30 +1283,26 @@ function calcWeapon() {
     const ownDex = form["weapon"+i+"Own"].checked ? 2 : 0;
     const note = form["weapon"+i+"Note"].value;
     const weaponReqd = safeEval(form["weapon"+i+"Reqd"].value) || 0;
-    let attackClass = 0;
+    const classLv = lv[ SET.class[className]?.id ] || 0;
     let accBase = 0;
     let dmgBase = 0;
-    let maxReqd = reqdStr;
     accBase += feats['命中強化'] || 0; //命中強化
-    // 使用技能
-    if(SET.class[className]?.type == 'weapon-user'){
-      attackClass = lv[ SET.class[className].id ];
-      if(className === "フェンサー"){ maxReqd = reqdStrHalf; }
-    }
-    else if(className === "エンハンサー")     { attackClass = lv['Enh']; }
-    else if(className === "デーモンルーラー") { attackClass = lv['Dem']; }
+    // 技能選択のエラーチェック
+    form["weapon"+i+"Class"].classList.toggle('error', errorAccClass[className] == true); 
     // 必筋チェック
+    const maxReqd = (className === "フェンサー") ? reqdStrHalf : reqdStr;
     form["weapon"+i+"Reqd"].classList.toggle('error', weaponReqd > maxReqd);
     // 武器カテゴリ
-    if(attackClass) {
+    if(classLv) {
       // 基礎命中
-      accBase += attackClass + parseInt((stt.Dex + stt.addA + ownDex) / 6);
+      accBase += classLv + parseInt((stt.Dex + stt.addA + ownDex) / 6);
     }
     // 基礎ダメージ
-    if     (category === 'クロスボウ')                  { dmgBase = attackClass; }
-    else if(category === 'ガン')                        { dmgBase = magicPowers['Mag']; }
-    else if(!modeZero && className === "デーモンルーラー"){ dmgBase = magicPowers['Dem']; }
-    else if(attackClass)                                { dmgBase = attackClass + bonus.Str; }
+    if     (category === 'クロスボウ'){ dmgBase = classLv; }
+    else if(category === 'ガン')      { dmgBase = magicPowers['Mag']; }
+    else if(!modeZero && className === "デーモンルーラー")
+                                      { dmgBase = magicPowers['Dem']; }
+    else if(classLv)                  { dmgBase = classLv + bonus.Str; }
     form["weapon"+i+"Category"].classList.remove('fail');
 
     // 習熟
@@ -1314,15 +1324,37 @@ function calcWeapon() {
 }
 
 // 防御計算 ----------------------------------------
+let errorEvaClass = {};
 function calcDefense() {
   let defBase = 0;
   let evaAdd = 0;
+  errorEvaClass = {};
   // 技能
   for(const name in SET.class){
-    if(SET.class[name].type !== 'weapon-user'){ continue; }
+    if(SET.class[name].type !== 'weapon-user' && !SET.class[name].evaUnlock){ continue; }
     const id    = SET.class[name].id;
     const eName = SET.class[name].eName;
-    document.getElementById(`evasion-${eName}`).style.display = lv[id] > 0 ? "" :"none";
+    const unlockLv = SET.class[name]?.evaUnlock?.lv || 1;
+    const unlockFeat = SET.class[name]?.evaUnlock?.feat || '';
+    const unlockCraft = SET.class[name]?.evaUnlock?.craft || '';
+    let display = '';
+    if (lv[id] < unlockLv){ display = 'none' }
+    if(unlockFeat){
+      let hasUnlockFeat = false;
+      for(const feat of unlockFeat.split('|')){
+        if(feats[feat]){ hasUnlockFeat = true; break; }
+      }
+      if(!hasUnlockFeat){ display = 'none' }
+    }
+    if(unlockCraft){
+      let hasUnlockCraft = false;
+      for(const craft of unlockCraft.split('|')){
+        if(crafts[craft]){ hasUnlockCraft = true; break; }
+      }
+      if(!hasUnlockCraft){ display = 'none' }
+    }
+    if(display == 'none'){ errorEvaClass[name] = true; }
+    document.getElementById(`evasion-${eName}`).style.display = display;
     document.getElementById(`evasion-${eName}-str`).textContent = id == 'Fen' ? reqdStrHalf : reqdStr;
     document.getElementById(`evasion-${eName}-eva`).textContent = lv[id] + bonus.Agi;
   }
@@ -1406,23 +1438,16 @@ function calcArmour(evaAdd,defBase) {
   }
   
   for (let i = 1; i <= form.defenseNum.value; i++){
-    const classForm = form['evasionClass'+i];
-    const className = classForm.value;
-
-    // 技能選択のエラー表示
-    if(  (className === "シューター" && !feats['射手の体術'])
-      || (className === "デーモンルーラー" && lv['Dem'] < 2)
-    ){ 
-      classForm.classList.add('error');
-    }
-    else { classForm.classList.remove('error'); }
+    const className = form['evasionClass'+i].value;
+    
+    // 技能選択のエラーチェック
+    form['evasionClass'+i].classList.toggle('error', errorEvaClass[className] == true); 
 
     // 最大必筋
     const maxReqd = (className === "フェンサー") ? reqdStrHalf : reqdStr;
 
     // 計算
-    let evaClassLv = lv[ SET.class[className]?.id ] || 0;
-    let evaBase = evaClassLv || 0;
+    const classLv = lv[SET.class[className]?.id] || 0;
 
     let eva = evaAdd;
     if(feats['回避行動'] == 2 && className != 'フェンサー' && className != 'バトルダンサー'){ eva -= 1 }
@@ -1451,7 +1476,7 @@ function calcArmour(evaAdd,defBase) {
         checkObj.parentNode.classList.add('error')
       }
     }
-    eva += ( evaBase ? evaBase + parseInt((stt.Agi + stt.addB + ownAgi) / 6) : 0 );
+    eva += ( classLv ? classLv + parseInt((stt.Agi + stt.addB + ownAgi) / 6) : 0 );
     def += artisanDef;
  
     document.getElementById(`defense-total${i}-eva`).textContent = eva;

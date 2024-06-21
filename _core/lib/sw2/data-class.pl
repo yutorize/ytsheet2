@@ -111,6 +111,7 @@ our %class = (
     expTable => 'B',
     id       => 'Sho',
     eName    => 'shooter',
+    evaUnlock => { feat => '射手の体術' }
   },
   'ソーサラー' => {
     type     => 'magic-user',
@@ -219,6 +220,7 @@ our %class = (
     expTable => 'B',
     id       => 'Enh',
     eName    => 'enhancer',
+    accUnlock => { lv => 10, craft => 'バルーンシードショット|フェンリルバイト' },
     craft => {
       jName => '練技',
       eName => 'enhance',
@@ -323,7 +325,7 @@ our %class = (
     eName    => 'rider',
     package  => {
       Agi => { name => '運動', stt => 'B' },
-      Obs => { name => '観察', stt => 'E' },
+      Obs => { name => '観察', stt => 'E', unlockCraft => '探索指令' },
       Kno => { name => '知識', stt => 'E', monsterLore => 1 },
     },
     craft => {
@@ -433,6 +435,8 @@ our %class = (
     expTable => 'A',
     id       => 'Dem',
     eName    => 'demonruler',
+    accUnlock => { lv => 11 },
+    evaUnlock => { lv =>  2 },
     magic => {
       jName => '召異魔法',
       eName => 'demonology',
@@ -490,7 +494,7 @@ our %class = (
     eName    => 'warleader',
     package  => {
       Agi => { name => '先制', stt => 'B', initiative => 1 },
-      Int => { name => '先制(知)', stt => 'E', initiative => 1 },
+      Int => { name => '先制(知)', stt => 'E', initiative => 1, unlockCraft => '陣率：軍師の知略' },
     },
     craft => {
       jName => '鼓咆／陣率',

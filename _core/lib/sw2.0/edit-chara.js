@@ -367,8 +367,7 @@ function checkFeats(){
       acquire += feat + ',';
       
       const weaponsRegex = new RegExp('武器習熟(Ａ|Ｓ)／(' + SET.weapons.map(d => d[0]).join('|') + ')');
-      if     (feat === "足さばき"){ feats['足さばき'] = 1; }
-      else if(feat === "回避行動Ⅰ"){ feats['回避行動'] = 1; }
+      if     (feat === "回避行動Ⅰ"){ feats['回避行動'] = 1; }
       else if(feat === "回避行動Ⅱ"){ feats['回避行動'] = 2; }
       else if(feat === "心眼"){ feats['心眼'] = 4; }
       else if(feat === "命中強化Ⅰ"){ feats['命中強化'] = 1; }
@@ -379,7 +378,6 @@ function checkFeats(){
       else if(feat === "頑強")  { feats['頑強'] += 15; }
       else if(feat === "超頑強"){ feats['頑強'] += 15; }
       else if(feat === "キャパシティ"){ feats['キャパシティ'] += 15; }
-      else if(feat === "射手の体術"){ feats['射手の体術'] = 1; }
       else if(feat.match(weaponsRegex)){
         feats['武器習熟／'+RegExp.$2] ||= 0;
         if     (RegExp.$1 === 'Ａ'){ feats['武器習熟／'+RegExp.$2] += 1; }
@@ -395,6 +393,7 @@ function checkFeats(){
       else if(feat === "魔器の達人"){ feats['魔器習熟'] += 1; }
       else if(feat === "スローイングⅠ"){ feats['スローイング'] = 1; }
       else if(feat === "スローイングⅡ"){ feats['スローイング'] = 2; }
+      else { feats[feat] = true; }
       
       cL.remove("fail","hidden");
     }
@@ -422,6 +421,7 @@ function checkFeats(){
 
 // 技芸 ----------------------------------------
 function checkCraft() {
+  crafts = {};
   for(const key in SET.class){
     const id  = SET.class[key].id;
     const cLv = lv[id];
@@ -435,6 +435,8 @@ function checkCraft() {
         let cL = document.getElementById("craft-"+eName+i).classList;
         if (i <= rows){
           cL.remove("fail","hidden");
+          const craftName = form["craft"+ucfirst(eName)+i].value;
+          if(craftName){ crafts[craftName] = true }
         }
         else {
           cL.add("fail");

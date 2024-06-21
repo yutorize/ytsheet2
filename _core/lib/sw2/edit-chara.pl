@@ -614,6 +614,20 @@ foreach my $class (@data::class_names){
   next if !$data::class{$class}{craft}{data};
   my $name = $data::class{$class}{craft}{eName};
   my $Name = ucfirst($data::class{$class}{craft}{eName});
+  my $functions;
+  if(exists $data::class{$class}{package}){
+    foreach(keys %{$data::class{$class}{package}}){
+      if(exists $data::class{$class}{package}{$_}{unlockCraft}){
+        $functions .= 'calcPackage();'
+      }
+    }
+  }
+  if(exists $data::class{$class}{accUnlock} && exists $data::class{$class}{accUnlock}{craft}){
+    $functions .= 'calcAttack();'
+  }
+  if(exists $data::class{$class}{evaUnlock} && exists $data::class{$class}{evaUnlock}{craft}){
+    $functions .= 'calcDefense();'
+  }
   print <<"HTML";
             <div class="box" id="craft-${name}">
               <h2 class="in-toc">$data::class{$class}{craft}{jName}</h2>
@@ -621,7 +635,7 @@ foreach my $class (@data::class_names){
 HTML
   my $c_max = $class =~ /バード|ウォーリーダー/ ? 20 : $class eq 'アーティザン' ? 19 : 17;
   foreach my $lv (1..$c_max){
-    print '<li id="craft-'.$name.$lv.'"><div class="select-input"><select name="craft'.$Name.$lv.'" oninput="'.($class =~ /ウォーリーダー|ライダー/ ? 'calcPackage();':'').'selectInputCheck(this);">';
+    print '<li id="craft-'.$name.$lv.'"><div class="select-input"><select name="craft'.$Name.$lv.'" oninput="checkCraft();'.$functions.'selectInputCheck(this);">';
     print '<option></option>';
     my %only; my $hit; my $value = $pc{"craft${Name}${lv}"};
     foreach my $data (@{$data::class{$class}{craft}{data}}){
@@ -842,7 +856,7 @@ print <<"HTML";
 HTML
 my @weapon_users;
 foreach my $name (@data::class_names){
-  next if $data::class{$name}{type} ne 'weapon-user';
+  next if $data::class{$name}{type} ne 'weapon-user' && !$data::class{$name}{accUnlock};
   push(@weapon_users, $name);
   my $ename = $data::class{$name}{eName};
   print <<"HTML";
@@ -855,22 +869,6 @@ foreach my $name (@data::class_names){
                 <td id="attack-${ename}-dmg">―
 HTML
 }
-print <<"HTML";
-              <tr id="attack-enhancer"@{[ display ($pc{lvEnh} >= 10) ]}>
-                <td>エンハンサー技能
-                <td id="attack-enhancer-str">0
-                <td id="attack-enhancer-acc">0
-                <td>―
-                <td>―
-                <td id="attack-enhancer-dmg">0
-              <tr id="attack-demonruler"@{[ display $pc{lvDem} ]}>
-                <td>デーモンルーラー技能
-                <td id="attack-demonruler-str">0
-                <td id="attack-demonruler-acc">0
-                <td>―
-                <td>―
-                <td id="attack-demonruler-dmg">0
-HTML
 foreach my $weapon (@data::weapons){
 print <<"HTML";
               <tr id="attack-@$weapon[1]-mastery"@{[ display $pc{'mastery'.ucfirst(@$weapon[1])} ]}>
@@ -940,7 +938,7 @@ print <<"HTML";
                 <td rowspan="2">+@{[input("weapon${num}Dmg",'number','calcWeapon')]}<b id="weapon${num}-dmg-total">0</b>
                 <td>@{[input("weapon${num}Own",'checkbox','calcWeapon')]}
                 <td><select name="weapon${num}Category" oninput="calcWeapon()">@{[option("weapon${num}Category",@data::weapon_names,'ガン（物理）','盾')]}</select>
-                <td><select name="weapon${num}Class" oninput="calcWeapon()">@{[option("weapon${num}Class",@weapon_users,'エンハンサー','デーモンルーラー','自動計算しない')]}</select>
+                <td><select name="weapon${num}Class" oninput="calcWeapon()">@{[option("weapon${num}Class",@weapon_users,'自動計算しない')]}</select>
                 <td rowspan="2"><span class="button" onclick="addWeapons(${num});">複<br>製</span>
               <tr>
                 <td colspan="3">@{[input("weapon${num}Note",'','calcWeapon','placeholder="備考"')]}
@@ -967,13 +965,15 @@ print <<"HTML";
               </tr>
             <tbody>
 HTML
-foreach my $name (@weapon_users,'デーモンルーラー'){
+my @evasion_classes;
+foreach my $name (@data::class_names){
+  next if $data::class{$name}{type} ne 'weapon-user' && !$data::class{$name}{evaUnlock};
+  push(@evasion_classes, $name);
   my $ename = $data::class{$name}{eName};
-  my $str = $data::class{$name}{type} ne 'weapon-user' ? '―' : 0;
   print <<"HTML";
               <tr id="evasion-${ename}"@{[ display $pc{'lv'.$data::class{$name}{id}} ]}>
                 <td>${name}技能
-                <td id="evasion-${ename}-str">$str
+                <td id="evasion-${ename}-str">0
                 <td id="evasion-${ename}-eva">0
                 <td>―
 HTML
@@ -1071,7 +1071,7 @@ foreach my $i ('TMPL',1..$pc{defenseNum}){
   print <<"HTML";
               <tr class="defense-total" id="defense-total-row${i}">
                 <td colspan="2">
-                  @{[ selectBox "evasionClass$i","calcDefense", @weapon_users,'デーモンルーラー','フィジカルマスター' ]}
+                  @{[ selectBox "evasionClass$i","calcDefense", @evasion_classes ]}
                 <td colspan="2" class="defense-total-checklist">
 HTML
   foreach my $num (1 .. $pc{armourNum}) {

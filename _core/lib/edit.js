@@ -881,6 +881,11 @@ function commify(num) {
   return String(num).replace(/([0-9]{1,3})(?=(?:[0-9]{3})+(?![0-9]))/g, "$1,");;
 }
 
+// 先頭を大文字 ----------------------------------------
+function ucfirst(str){
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
 // 安全なeval ----------------------------------------
 function safeEval(text){
   if     (text === '') { return 0; }
