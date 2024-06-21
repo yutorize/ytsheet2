@@ -442,12 +442,12 @@ sub palettePreset {
     $text .= "//回避修正=0\n";
     $text .= "2d+{生命抵抗}+{生命抵抗修正} 生命抵抗力\n";
     $text .= "2d+{精神抵抗}+{精神抵抗修正} 精神抵抗力\n";
-    foreach my $i (1..3){
+    foreach my $i (1..$::pc{defenseNum}){
       my $hasChecked = 0;
       foreach my $j (1..$::pc{armourNum}){
         $hasChecked++ if($::pc{"defTotal${i}CheckArmour${j}"});
       }
-      next if !$hasChecked;
+      next if !$hasChecked && !$::pc{"evasionClass${i}"};
 
       $text .= "2d+{回避${i}}+{回避修正} 回避力".($::pc{"defenseTotal${i}Note"}?"／$::pc{'defenseTotal'.$i.'Note'}":'')."\n";
     }
@@ -734,9 +734,10 @@ sub paletteProperties {
       push @propaties, '';
     }
     
-    foreach my $i (1..3){
+    foreach my $i (1..$::pc{defenseNum}){
       next if ($::pc{"defenseTotal${i}Eva"} eq '');
 
+      my $class = $::pc{"evasionClass${i}"};
       my $armorTotal = 0;
       my $own_agi;
       my $hasChecked = 0;
@@ -747,10 +748,9 @@ sub paletteProperties {
           $hasChecked++;
         }
       }
-      next if !$hasChecked;
-
+      next if !$hasChecked && !$class;
       push @propaties, "//回避${i}=("
-        .($::pc{evasionClass} ? "{$::pc{evasionClass}}+({敏捷}${own_agi})/6+" : '')
+        .($class ? "{$class}+({敏捷}${own_agi})/6+" : '')
         .($::pc{evasiveManeuver} + $armorTotal)
         .")";
       push @propaties, "//防護${i}=".($::pc{"defenseTotal${i}Def"} || 0);

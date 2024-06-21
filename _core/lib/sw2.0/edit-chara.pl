@@ -91,6 +91,7 @@ setDefaultColors();
 $pc{commonClassNum}||= 10;
 $pc{weaponNum}     ||=  1;
 $pc{armourNum}     ||=  3;
+$pc{defenseNum}    ||=  2;
 $pc{languageNum}   ||=  3;
 $pc{honorItemsNum} ||=  3;
 $pc{historyNum}    ||=  3;
@@ -976,17 +977,19 @@ print <<"HTML";
                 <th>防護点
               </tr>
             <tbody>
-              <tr id="evasion-class-row">
-                <td>
-                  <span class="flex">
-                    <span class="bold nowrap">使用技能:</span>
-                    <select id="evasion-class" name="evasionClass" oninput="calcDefense()">
-                      @{[ option 'evasionClass',@weapon_users,'デーモンルーラー' ]}
-                    </select>
-                  </span>
-                <td id="evasion-str">$pc{EvasionStr}
-                <td id="evasion-eva">$pc{EvasionEva}
+HTML
+foreach my $name (@weapon_users,'デーモンルーラー'){
+  my $ename = $data::class{$name}{eName};
+  my $str = $data::class{$name}{type} ne 'weapon-user' ? '―' : 0;
+  print <<"HTML";
+              <tr id="evasion-${ename}"@{[ display $pc{'lv'.$data::class{$name}{id}} ]}>
+                <td>${name}技能
+                <td id="evasion-${ename}-str">$str
+                <td id="evasion-${ename}-eva">0
                 <td>―
+HTML
+}
+print <<"HTML";
               <tr id="race-ability-def"@{[ display $pc{raceAbilityDef} ]}>
                 <td id="race-ability-def-name">［@{[
                     ($pc{raceAbility} =~ /［鱗の皮膚］/) ? '鱗の皮膚'
@@ -1074,15 +1077,21 @@ HTML
             <tfoot>
               <tr><td colspan="8">
                 <div class="add-del-button"><a onclick="addArmour()">▼</a><a onclick="delArmour()">▲</a></div>
-              <tr><th colspan="8">合計
+              <tr>
+                <th colspan="2">使用技能
+                <th colspan="2" class="small" style="vertical-align:bottom">チェックを入れた防具の数値で合算▼
+                <th colspan="2">合計
 HTML
-foreach my $i (1..3){
+foreach my $i ('TMPL',1..$pc{defenseNum}){
+  print '<template id="defense-total-template">' if ($i eq 'TMPL');
   print <<"HTML";
-              <tr class="defense-total">
-                <td colspan="4" class="defense-total-checklist">
+              <tr class="defense-total" id="defense-total-row${i}">
+                <td colspan="2">
+                  @{[ selectBox "evasionClass$i","calcDefense", @weapon_users,'デーモンルーラー' ]}
+                <td colspan="2" class="defense-total-checklist">
 HTML
   foreach my $num (1 .. $pc{armourNum}) {
-    print checkbox("defTotal${i}CheckArmour${num}",($pc{"armour${num}Name"}||'―'),'calcDefense',"data-id='armour${num}'");
+    print checkbox("defTotal${i}CheckArmour${num}",($pc{"armour${num}Name"}||'―'),'calcDefense',"data-id='armour-row${num}'");
   }
   print "</td>";
   print <<"HTML";
@@ -1090,11 +1099,15 @@ HTML
                 <td id="defense-total${i}-def">0
                 <td colspan="3">@{[input("defenseTotal${i}Note")]}
 HTML
+  print '</template>' if ($i eq 'TMPL');
 }
 print <<"HTML";
             </tfoot>
+            @{[ input 'defenseNum','hidden' ]}
           </table>
+          <div class="add-del-button"><a onclick="addDefense()">▼</a><a onclick="delDefense()">▲</a></div>
         </div>
+
         <div class="box in-toc" id="accessories" data-content-title="装飾品">
           <table class="edit-table">
             <thead>

@@ -317,6 +317,21 @@ sub data_update_chara {
     if($pc{money}   =~ /^(?:自動|auto)$/i){ $pc{moneyAuto  } = 1; $pc{money  } = commify $pc{moneyTotal}; }
     if($pc{deposit} =~ /^(?:自動|auto)$/i){ $pc{depositAuto} = 1; $pc{deposit} = commify($pc{depositTotal}).'／'.commify($pc{debtTotal}); }
   }
+  if($ver < 1.25008){
+    foreach(1..3){
+      foreach my $num (1..$pc{armourNum}){
+        if($pc{"defTotal${_}CheckArmour${num}"}){
+          $pc{"evasionClass$_"} = $pc{evasionClass};
+          $pc{defenseNum} = $_;
+          last;
+        }
+      }
+    }
+    if($pc{evasionClass} && !$pc{evasionClass1}.$pc{evasionClass2}.$pc{evasionClass3}){
+      $pc{evasionClass1} = $pc{evasionClass};
+    }
+    if($pc{defenseNum} < 2){ $pc{defenseNum} = 2 }
+  }
   $pc{ver} = $main::ver;
   $pc{lasttimever} = $ver;
   return %pc;
