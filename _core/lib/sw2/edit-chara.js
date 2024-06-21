@@ -1315,29 +1315,20 @@ function calcWeapon() {
 
 // 防御計算 ----------------------------------------
 function calcDefense() {
-  const className = form.evasionClass.options[form.evasionClass.selectedIndex].value;
-  let evaClassLv = 0;
-  let evaBase = 0;
-  let evaAdd = 0;
   let defBase = 0;
-  if(SET.class[className]?.type == 'weapon-user'){
-    evaClassLv = lv[ SET.class[className].id ];
+  let evaAdd = 0;
+  // 技能
+  for(const name in SET.class){
+    if(SET.class[name].type !== 'weapon-user'){ continue; }
+    const id    = SET.class[name].id;
+    const eName = SET.class[name].eName;
+    document.getElementById(`evasion-${eName}`).style.display = lv[id] > 0 ? "" :"none";
+    document.getElementById(`evasion-${eName}-str`).textContent = id == 'Fen' ? reqdStrHalf : reqdStr;
+    document.getElementById(`evasion-${eName}-eva`).textContent = lv[id] + bonus.Agi;
   }
-  else if(className === "デーモンルーラー"){ evaClassLv = lv['Dem']; }
-  else { evaClassLv = 0; }
-  evaBase = evaClassLv || 0;
-  
-  const maxReqd = (className === "フェンサー") ? reqdStrHalf : reqdStr;
-  document.getElementById("evasion-str").textContent = maxReqd;
-  document.getElementById("evasion-eva").textContent = evaClassLv ? (evaClassLv + bonus.Agi) : 0;
-  
-  // 技能選択のエラー表示
-  let cL = document.getElementById("evasion-classes").classList;
-  if(className === "シューター" && !feats['射手の体術'] || className === "デーモンルーラー" && lv['Dem'] < 2){ 
-    cL.add('error');
-  }
-  else { cL.remove('error'); }
-  
+  document.getElementById("evasion-demonruler").style.display = !modeZero && lv['Dem'] >= 2 ? "" : modeZero && lv['Dem'] > 7 ? "" :"none";
+  document.getElementById("evasion-demonruler-str").textContent = reqdStr;
+  document.getElementById("evasion-demonruler-eva").textContent = lv['Dem'] + bonus.Agi;
   // 種族特徴
   defBase += raceAbilityDef;
   document.getElementById("race-ability-def").style.display = raceAbilityDef > 0 ? "" :"none";
@@ -1371,9 +1362,10 @@ function calcDefense() {
   document.getElementById("minds-eye").style.display = feats['心眼'] > 0 ? "" :"none";
   document.getElementById("minds-eye-value").textContent = feats['心眼'] || 0;
   
-  calcArmour(evaBase,evaAdd,defBase,maxReqd);
+  calcArmour(evaAdd,defBase);
 }
-function calcArmour(evaBase,evaAdd,defBase,maxReqd) {
+// 防具合計計算
+function calcArmour(evaAdd,defBase) {
   let count = { 鎧:0, 盾:0, 他:0 };
   let checkedCount = { 鎧:{}, 盾:{}, 他:{} };
 
@@ -1383,14 +1375,13 @@ function calcArmour(evaBase,evaAdd,defBase,maxReqd) {
     if(num == 1 && !type){ type = '鎧' }
     if(type){ count[type]++ }
 
-    form[`armour${num}Reqd`].classList.toggle('error', (safeEval(form[`armour${num}Reqd`].value) || 0) > maxReqd);
     form[`armour${num}Own`].disabled = category.match(/鎧|盾/) ? false : true;
 
-    
+    form[`armour${num}Reqd`].classList.remove('error');
     form[`armour${num}Name`].parentNode.parentNode.querySelector('.type').textContent
       = type ? type+count[type] : '';
     
-    for (let i = 1; i <= 3; i++){
+    for (let i = 1; i <= form.defenseNum.value; i++){
       document.querySelector(`input[name="defTotal${i}CheckArmour${num}"] + span`).textContent
         = form[`armour${num}Name`].value ? form[`armour${num}Name`].value
             .replace(/[|｜](.+?)《(.+?)》/g, "$1")
@@ -1414,7 +1405,25 @@ function calcArmour(evaBase,evaAdd,defBase,maxReqd) {
     }
   }
   
-  for (let i = 1; i <= 3; i++){
+  for (let i = 1; i <= form.defenseNum.value; i++){
+    const classForm = form['evasionClass'+i];
+    const className = classForm.value;
+
+    // 技能選択のエラー表示
+    if(  (className === "シューター" && !feats['射手の体術'])
+      || (className === "デーモンルーラー" && lv['Dem'] < 2)
+    ){ 
+      classForm.classList.add('error');
+    }
+    else { classForm.classList.remove('error'); }
+
+    // 最大必筋
+    const maxReqd = (className === "フェンサー") ? reqdStrHalf : reqdStr;
+
+    // 計算
+    let evaClassLv = lv[ SET.class[className]?.id ] || 0;
+    let evaBase = evaClassLv || 0;
+
     let eva = evaAdd;
     let def = defBase;
     let ownAgi = 0;
@@ -1424,6 +1433,10 @@ function calcArmour(evaBase,evaAdd,defBase,maxReqd) {
       checkObj.parentNode.classList.remove('error')
 
       if(!checkObj.checked) continue;
+      
+      if((safeEval(form[`armour${num}Reqd`].value) || 0) > maxReqd){
+        form[`armour${num}Reqd`].classList.add('error');
+      }
 
       const category = form[`armour${num}Category`].value;
       eva += Number(form[`armour${num}Eva`].value);
@@ -1862,6 +1875,16 @@ setSortable('armour', '#armours tbody', 'tr',
   () => { calcDefense(); }
 );
 
+// 回避・防護合計 ----------------------------------------
+// 追加
+function addDefense(){
+  document.querySelector("#armours tfoot").append(createRow('defense-total','defenseNum'));
+  calcDefense();
+}
+// 削除
+function delDefense(){
+  delRow('defenseNum', '#armours tfoot tr:last-of-type');
+}
 // 名誉アイテム欄 ----------------------------------------
 // 追加
 function addHonorItems(){

@@ -715,9 +715,7 @@ option.zero-data::before {
   border-bottom-width: 1px !important;
   border-bottom-style: solid !important;
 }
-#armours .defense-total td:first-child {
-  padding: .2em 0;
-  text-align: right;
+#armours .defense-total td.defense-total-checklist {
   text-wrap: balance;
 }
 #armours .defense-total td label input + span {

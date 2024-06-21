@@ -543,40 +543,33 @@ sub data_calc {
   }
 
   
-  {
-  ## 基本回避力
-    use POSIX 'ceil';
-    $pc{reqdStr}  = $pc{sttStr} + $pc{sttAddC};
-    $pc{reqdStrF} = ceil($pc{reqdStr} / 2);
-    my $name = $pc{evasionClass};
+  ## 回避力・防護点
+  foreach my $i (1..$pc{defenseNum}){
+    my $name = $pc{"evasionClass$i"};
     my $id   = $data::class{$name}{id};
     my $lv = $pc{'lv'.$id} || 0;
-    $pc{evasionStr} = ($pc{evasionClass} eq "フェンサー") ? $pc{reqdStrF} : $pc{reqdStr};
-  ## 防具
-    foreach my $i (1..3){
-      my $eva = $pc{evasiveManeuver} + $pc{mindsEye};
-      my $def = $pc{raceAbilityDef} + $pc{defenseSeeker};
-      my $own_agi = 0;
-      my $artisan = 0;
-      foreach my $num (1 .. $pc{armourNum}){
-        next if !$pc{"defTotal${i}CheckArmour${num}"};
-        
-        my $category = $pc{"armour${num}Category"};
-        $eva += $pc{"armour${num}Eva"};
-        $def += $pc{"armour${num}Def"};
-        if   ($category eq   '金属鎧'){ $def += $pc{masteryMetalArmour} }
-        elsif($category eq '非金属鎧'){ $def += $pc{masteryNonMetalArmour} }
-        elsif($category eq       '盾'){ $def += $pc{masteryShield} }
-        
-        if($category eq '盾' && $pc{"armour${num}Own"}){ $own_agi = 2 }
-        if($pc{"armour${num}Note"} =~ /〈魔器〉/){ $artisan = $pc{masteryArtisan}; }
-      }
-      $eva += $lv ? $lv + int(($pc{sttAgi}+$pc{sttAddB}+$own_agi)/6) : 0;
-      $def += $artisan;
+    my $eva = $pc{evasiveManeuver} + $pc{mindsEye};
+    my $def = $pc{raceAbilityDef} + $pc{defenseSeeker};
+    my $own_agi = 0;
+    my $artisan = 0;
+    foreach my $num (1 .. $pc{armourNum}){
+      next if !$pc{"defTotal${i}CheckArmour${num}"};
       
-      $pc{"defenseTotal${i}Eva"} = $eva;
-      $pc{"defenseTotal${i}Def"} = $def;
+      my $category = $pc{"armour${num}Category"};
+      $eva += $pc{"armour${num}Eva"};
+      $def += $pc{"armour${num}Def"};
+      if   ($category eq   '金属鎧'){ $def += $pc{masteryMetalArmour} }
+      elsif($category eq '非金属鎧'){ $def += $pc{masteryNonMetalArmour} }
+      elsif($category eq       '盾'){ $def += $pc{masteryShield} }
+      
+      if($category eq '盾' && $pc{"armour${num}Own"}){ $own_agi = 2 }
+      if($pc{"armour${num}Note"} =~ /〈魔器〉/){ $artisan = $pc{masteryArtisan}; }
     }
+    $eva += $lv ? $lv + int(($pc{sttAgi}+$pc{sttAddB}+$own_agi)/6) : 0;
+    $def += $artisan;
+    
+    $pc{"defenseTotal${i}Eva"} = $eva;
+    $pc{"defenseTotal${i}Def"} = $def;
   }
 
   ### グレード自動変更 --------------------------------------------------
