@@ -294,7 +294,7 @@ sub palettePreset {
         my $activeCast  = $::pc{'paletteMagic'.$paNum.'Cast' } ? optimizeOperatorFirst("+$::pc{'paletteMagic'.$paNum.'Cast' }") : '';
 
         $text .= "2d+{$name}";
-        if   ($name =~ /魔/){ $text .= "+{行使修正}$activeCast ${name}行使$activeName\n"; }
+        if   ($name =~ /魔/){ $text .= "$activePower+{行使修正}$activeCast ${name}行使$activeName\n"; }
         elsif($name =~ /歌/){ $text .= " 呪歌演奏\n"; }
         else                { $text .= " ${name}\n"; }
         
