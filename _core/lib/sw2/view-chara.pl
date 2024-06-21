@@ -270,16 +270,19 @@ foreach (1..10){
 $SHEET->param(CommonClasses => \@common_classes);
 
 ### 戦闘特技 --------------------------------------------------
+my %acquired;
 my @feats_lv;
 foreach ('1bat',@set::feats_lv){
   (my $lv = $_) =~ s/^([0-9]+)[^0-9].*?$/$1/;
   if($_ =~ /bat/ && !$pc{lvBat}){ next; }
   next if $pc{level} < $lv;
   push(@feats_lv, { NAME => $pc{'combatFeatsLv'.$_}, "LV" => $lv } );
+  $acquired{$pc{'combatFeatsLv'.$_}} = 1;
 }
 if($pc{buildupAddFeats}){
   foreach ($pc{level}+1 .. $pc{level}+$pc{buildupAddFeats}){
     push(@feats_lv, { NAME => $pc{'combatFeatsLv'.$_}, "LV" => '+' } );
+    $acquired{$pc{'combatFeatsLv'.$_}} = 1;
   }
 }
 $SHEET->param(CombatFeatsLv => \@feats_lv);
@@ -372,12 +375,7 @@ foreach my $class (@data::class_names){
   foreach (1 .. $lv + $add){
     my $craft = $pc{'craft'.ucfirst($data::class{$class}{craft}{eName}).$_};
     
-    if($class eq 'エンハンサー'){
-      $enhance_attack_on = 1 if $craft =~ /フェンリルバイト|バルーンシードショット/;
-    }
-    elsif($class eq 'ライダー'){
-      $SHEET->param(riderObsOn => 1)  if $craft eq '探索指令';
-    }
+    $acquired{$craft} = 1;
     push(@crafts, { "ITEM" => $craft } );
   }
   
@@ -427,22 +425,6 @@ else {
 $SHEET->param(Language => \@language);
 
 ### パッケージ --------------------------------------------------
-## ウォーリーダー【軍師の知略】
-{
-  my $disabled = 1;
-  foreach(1 .. $pc{lvWar}+$pc{commandAddition}){
-    if($pc{'craftCommand'.$_} =~ /軍師の知略$/){ $disabled = 0; last; }
-  }
-  if($disabled){ delete $data::class{'ウォーリーダー'}{package}{Int} }
-}
-## ライダー【探索指令】
-{
-  my $disabled = 1;
-  foreach(1 .. $pc{lvRid}){
-    if($pc{'craftRiding'.$_} =~ /探索指令$/){ $disabled = 0; last; }
-  }
-  if($disabled){ delete $data::class{'ライダー'}{package}{Obs} }
-}
 ## 共通処理
 my @packages;
 foreach my $class (@data::class_names){
@@ -453,6 +435,7 @@ foreach my $class (@data::class_names){
   my %data = %{$data::class{$class}{package}};
   my @pack;
   foreach my $p_id (sort{$data{$a}{stt} cmp $data{$b}{stt} || $data{$a} cmp $data{$b}} keys %data){
+    next if(exists $data{$p_id}{unlockCraft} && !$acquired{$data{$p_id}{unlockCraft}});
     (my $p_name = $data{$p_id}{name}) =~ s/(\(.+?\))/<small>$1<\/small>/;
     push(@pack, {
       name  => $p_name,
@@ -576,11 +559,26 @@ my $strTotal = $pc{sttStr}+$pc{sttAddC};
 my @atacck;
 if(!$pc{forbiddenMode}){
   foreach my $name (@data::class_names){
-    my $id    = $data::class{$name}{id};
+    my $id = $data::class{$name}{id};
     next if !$pc{'lv'.$id};
-    next if !($data::class{$name}{type} eq 'weapon-user' || $id =~ /Enh|Dem/);
-    next if $id eq 'Enh' && !$enhance_attack_on;
-    next if $id eq 'Dem' && $pc{'lv'.$id} < 11 && !$::SW2_0;
+    next if !($data::class{$name}{type} eq 'weapon-user' || exists $data::class{$name}{accUnlock});
+    if(exists $data::class{$name}{accUnlock}){
+      next if $pc{'lv'.$id} < $data::class{$name}{accUnlock}{lv};
+    }
+    if($data::class{$name}{accUnlock}{feat}){
+      my $isUnlock = 0;
+      foreach my $feat (split '|',$data::class{$name}{accUnlock}{feat}){
+        if($acquired{$feat}){ $isUnlock = 1; last; }
+      }
+      next if !$isUnlock;
+    }
+    if($data::class{$name}{accUnlock}{craft}){
+      my $isUnlock = 0;
+      foreach my $craft (split '|',$data::class{$name}{accUnlock}{feat}){
+        if($acquired{$craft}){ $isUnlock = 1; last; }
+      }
+      next if !$isUnlock;
+    }
     push(@atacck, {
       NAME => $name."<span class=\"small\">技能レベル</span>".$pc{'lv'.$id},
       STR  => ($id eq 'Fen' ? ceil($strTotal / 2) : $strTotal),
@@ -672,11 +670,26 @@ $SHEET->param(Weapons => \@weapons);
 if(!$pc{forbiddenMode}){
   my @evasion;
   foreach my $name (@data::class_names){
-    my $id    = $data::class{$name}{id};
+    my $id = $data::class{$name}{id};
     next if !$pc{'lv'.$id};
-    next if !($data::class{$name}{type} eq 'weapon-user' || $id =~ /Enh|Dem/);
-    next if $id eq 'Enh' && !$enhance_attack_on;
-    next if $id eq 'Dem' && (!$::SW2_0 && $pc{'lv'.$id} < 2) || ($::SW2_0 && $pc{'lv'.$id} < 7);
+    next if !($data::class{$name}{type} eq 'weapon-user' || exists $data::class{$name}{evaUnlock});
+    if(exists $data::class{$name}{evaUnlock}){
+      next if $pc{'lv'.$id} < $data::class{$name}{evaUnlock}{lv};
+    }
+    if($data::class{$name}{evaUnlock}{feat}){
+      my $isUnlock = 0;
+      foreach my $feat (split('|',$data::class{$name}{evaUnlock}{feat})){
+        if($acquired{$feat}){ $isUnlock = 1; last; }
+      }
+      next if !$isUnlock;
+    }
+    if($data::class{$name}{evaUnlock}{craft}){
+      my $isUnlock = 0;
+      foreach my $craft (split('|',$data::class{$name}{evaUnlock}{feat})){
+        if($acquired{$craft}){ $isUnlock = 1; last; }
+      }
+      next if !$isUnlock;
+    }
     push(@evasion, {
       NAME => $name."<span class=\"small\">技能レベル</span>".$pc{'lv'.$id},
       STR  => ($id eq 'Fen' ? ceil($strTotal / 2) : $strTotal),

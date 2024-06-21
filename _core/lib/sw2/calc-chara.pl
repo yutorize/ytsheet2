@@ -444,21 +444,24 @@ sub data_calc {
     next if !$data::class{$class}{package};
     my $c_id = $data::class{$class}{id};
     my $c_en = $data::class{$class}{eName};
+    my $craftName = ucfirst $data::class{$class}{craft}{eName};
     my %data = %{$data::class{$class}{package}};
     
     foreach my $p_id (keys %data){
       my $auto = 0;
       my $disabled = 0;
-      if($c_id eq 'War' && $p_id eq 'Int'){ # 軍師の知略
+      my $addAcuire = $pc{ $data::class{$class}{craft}{eName}.'Addition' }
+          + $pc{ 'buildupAdd'.ucfirst($data::class{$class}{craft}{eName}) };
+      if(exists $data{$p_id}{unlockCraft}){
         $disabled = 1;
-        foreach(1 .. $pc{lvWar}+$pc{commandAddition}){
-          if($pc{'craftCommand'.$_} =~ /軍師の知略$/){ $disabled = 0; $auto += $pc{'craftCommand'.$_} =~ /^陣率/ ? 1 : 0; last; }
+        foreach(1 .. $pc{'lv'.$c_id}+$addAcuire){
+          if($pc{'craft'.$craftName.$_} eq $data{$p_id}{unlockCraft}){ $disabled = 0; last; }
         }
       }
-      elsif($c_id eq 'Rid' && $p_id eq 'Obs'){ # 探索指令
-        $disabled = 1;
-        foreach(1 .. $pc{lvRid}){
-          if($pc{'craftRiding'.$_} =~ /探索指令$/){ $disabled = 0; last; }
+      # 陣率：軍師の知略
+      if($c_id eq 'War' && $p_id eq 'Int'){ 
+        foreach(1 .. $pc{'lv'.$c_id}+$addAcuire){
+          if($pc{'craftCommand'.$_} =~ /^陣率/){ $auto +=1; last; }
         }
       }
       next if $disabled;
