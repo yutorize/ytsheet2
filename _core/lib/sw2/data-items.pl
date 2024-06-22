@@ -19,6 +19,7 @@ our @weapons = (
   ['クロスボウ',    'crossbow'],
   ['ブロウガン',    'blowgun'],
   ['ガン',          'gun'],
+  ['魔導書'         'book'],
 );
 
 our @weapon_names;
