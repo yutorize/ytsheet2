@@ -606,20 +606,17 @@ sub data_calc {
 
   ### 0を消去 --------------------------------------------------
   foreach (
-  'lvFig','lvGra','lvFen','lvSho',
-  'lvSor','lvCon','lvPri','lvFai','lvMag',
-  'lvSco','lvRan','lvSag',
-  'lvEnh','lvBar','lvRid','lvAlc',
-  'lvDru','lvDem',
-  'lvWar','lvMys','lvPhy',
-  'lvGri','lvArt','lvAri',
   'cardRedB','cardRedA','cardRedS','cardRedSS',
   'cardGreB','cardGreA','cardGreS','cardGreSS',
   'cardBlaB','cardBlaA','cardBlaS','cardBlaSS',
   'cardWhiB','cardWhiA','cardWhiS','cardWhiSS',
   'cardGolB','cardGolA','cardGolS','cardGolSS',
+  'sttAddA','sttAddB','sttAddC','sttAddD','sttAddE','sttAddF',
   ){
     delete $pc{$_} if !$pc{$_};
+  }
+  foreach my $data (values %data::class){
+    delete $pc{'lv'.$data->{id}} if !$pc{'lv'.$data->{id}};
   }
 
   #### 改行を<br>に変換 --------------------------------------------------
