@@ -411,6 +411,8 @@
   }
 }
 #language table {
+  &:first-of-type { margin-top: -1.5em; }
+
   & td {
     vertical-align: bottom;
   }
