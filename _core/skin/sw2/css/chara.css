@@ -67,7 +67,9 @@ body {
 #evasion-classes table,
 #armours table,
 #accessories table,
-.honor-items table {
+.honor-items table,
+#honor dd,
+#dishonor dd {
   font-family: var(--font-proportional);
 }
 #history table {
@@ -998,15 +1000,20 @@ dl#level {
 /* Honor */
 #honor,
 #dishonor {
+  margin-top: var(--box-v-gap);
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: auto;
-
-  & dt {
-    grid-row: 1;
+  grid-template-columns: 1fr 1.5fr;
+  @media screen and (width <= 735px){
+    grid-template-columns: 4.5em auto;
   }
-  & dd {
-    grid-row: 2;
+  grid-template-rows: auto;
+  gap: 3px;
+  align-items: start;
+  #adventurer-rank { grid-column: 2; }
+  #barbaros-rank   { grid-column: 2; }
+  #barbaros-rank   {
+    border-top-width: 1px;
+    border-top-style: solid;
   }
 }
 #honor.zero-data {
@@ -1027,7 +1034,11 @@ dl#level {
 
 #honor    + #honor-items,
 #dishonor + #dishonor-items {
-  margin-top: .3rem;
+  margin-top: 3px;
+}
+
+#dishonor dd > span {
+  display: inline-block;
 }
 
 /* // Free-Memo

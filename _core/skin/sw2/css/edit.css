@@ -870,14 +870,15 @@ option.zero-data::before {
   }
 }
 
-#honor {
-  grid-template-columns: .95fr 1.05fr;
-}
-#honor-rank {
-  display: flex;
-}
-#honor-rank > input {
-  flex-basis: 3.5em;
+#adventurer-rank,
+#barbaros-rank {
+  > dd {
+    display: flex;
+    grid-column: 2;
+    > input {
+      flex-basis: 3.5em;
+    }
+  }
 }
 
 .honor-items table td.handle::before {
@@ -904,63 +905,65 @@ option.zero-data::before {
     margin: 0;
   }
 }
-#sw2\.0 .honor-items td:last-child {
+.honor-items td:last-child:has(.honor-pt) {
   position: relative;
   width: 6.5em;
 }
-#sw2\.0 .honor-pt {
+.honor-pt {
   display: grid;
   grid-template-columns: 1.5em 1fr;
   position: relative;
   white-space: nowrap;
-}
-#sw2\.0 .honor-pt select,
-#sw2\.0 .honor-pt .honor-select-view {
-  grid-column: 1;
-  grid-row: 1;
-  width: calc(1.5em + 1px);
-  min-width: calc(1.5em + 1px);
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  cursor: pointer;
-}
-#sw2\.0 .honor-pt select {
-  appearance: none;
-  opacity: 0;
-}
-#sw2\.0 .honor-pt .honor-select-view {
-  display: grid;
-  border-width: 1px;
-  border-style: solid;
-  border-color: var(--box-input-border-color);
-  border-radius: 5px;
-  pointer-events: none;
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
-  place-items: center;
-  line-height: 1;
-}
-#sw2\.0 .honor-pt .honor-select-view::before {
-  font-size: 85%;
-}
-#sw2\.0 select + .lang-select-view { background: var(--input-bg-color); }
-#sw2\.0 select option[value="human"],
-#sw2\.0 select[data-type="human"] + .honor-select-view { background: #00ccff22; }
-#sw2\.0 select[data-type="human"] + .honor-select-view::before { content: '人'; }
-#sw2\.0 select option[value="barbaros"],
-#sw2\.0 select[data-type="barbaros"] + .honor-select-view { background: #ffaa0033; }
-#sw2\.0 select[data-type="barbaros"] + .honor-select-view::before { content: '蛮'; }
-#sw2\.0 select option[value="dragon"],
-#sw2\.0 select[data-type="dragon"] + .honor-select-view { background: #55ff0033; }
-#sw2\.0 select[data-type="dragon"] + .honor-select-view::before { content: '竜'; }
-#sw2\.0 .honor-pt input {
-  grid-column: 2;
-  width: auto;
-  margin: 0;
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
+
+  > select,
+  > .honor-select-view {
+    grid-column: 1;
+    grid-row: 1;
+    width: calc(1.5em + 1px);
+    min-width: calc(1.5em + 1px);
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    cursor: pointer;
+  }
+  > select {
+    appearance: none;
+    opacity: 0;
+  }
+  > .honor-select-view {
+    display: grid;
+    border-width: 1px;
+    border-style: solid;
+    border-color: var(--box-input-border-color);
+    border-radius: 5px;
+    pointer-events: none;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    place-items: center;
+    line-height: 1;
+    &::before { font-size: 85%; }
+  }
+  select + .lang-select-view { background: var(--input-bg-color); }
+  select option[value="human"],
+  select[data-type="human"] + .honor-select-view { background: #00ccff22; }
+  select[data-type="human"] + .honor-select-view::before { content: '人'; }
+  select option[value="barbaros"],
+  select[data-type="barbaros"] + .honor-select-view { background: #ffaa0033; }
+  select[data-type="barbaros"] + .honor-select-view::before { content: '蛮'; }
+  select option[value="both"],
+  select[data-type="both"] + .honor-select-view { background: #ff00ff33; }
+  select[data-type="both"] + .honor-select-view::before { content: '両'; }
+  select option[value="dragon"],
+  select[data-type="dragon"] + .honor-select-view { background: #55ff0033; }
+  select[data-type="dragon"] + .honor-select-view::before { content: '竜'; }
+  input {
+    grid-column: 2;
+    width: auto;
+    margin: 0;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
 }
 
 .battle-items ul li.fail::before {

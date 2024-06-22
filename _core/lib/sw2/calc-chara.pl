@@ -98,8 +98,17 @@ sub data_calc {
     }
     foreach (@set::adventurer_rank){
       my ($name, $num, undef) = @$_;
-      $pc{honor} -= $num if ($pc{rank} eq $name);
+      if ($pc{rank} eq $name) {
+        $pc{honorRank} = $num;
+      }
     }
+    foreach (@set::barbaros_rank){
+      my ($name, $num, undef) = @$_;
+      if ($pc{rankBarbaros} eq $name) {
+        $pc{honorRankBarbaros} = $num;
+      }
+    }
+    $pc{honor} -= $pc{honorRank} + $pc{honorRankBarbaros};
     foreach (1 .. $pc{mysticArtsNum}){
       $pc{honor} -= $pc{'mysticArts'.$_.'Pt'};
     }
@@ -107,14 +116,19 @@ sub data_calc {
       $pc{honor} -= $pc{'mysticMagic'.$_.'Pt'};
     }
     foreach (1 .. $pc{dishonorItemsNum}){
-      $pc{dishonor} += $pc{'dishonorItem'.$_.'Pt'};
+      if($pc{'dishonorItem'.$_.'PtType'} eq 'barbaros'){
+        $pc{dishonorBarbaros} += $pc{'dishonorItem'.$_.'Pt'};
+      }
+      else { $pc{dishonor} += $pc{'dishonorItem'.$_.'Pt'}; }
     }
     $pc{honor}    -= $pc{honorOffset};
-    $pc{dishonor} -= $pc{honorOffset};
+    $pc{dishonor} -= $pc{honorOffsetBarbaros};
   }
   ## 冒険者ランク
-  if($pc{rank} !~ /★$/ || $pc{rankStar} <= 1){ $pc{rankStar} = '' }
-  if($pc{rank} =~ /★$/ && $pc{rankStar} >= 2){ $pc{honor} -= 500 * ($pc{rankStar}-1) }
+  if('','Barbaros'){
+    if($pc{"rank$_"} !~ /★$/ || $pc{"rankStar$_"} <= 1){ $pc{"rankStar$_"} = '' }
+    if($pc{"rank$_"} =~ /★$/ && $pc{"rankStar$_"} >= 2){ $pc{honor} -= 500 * ($pc{"rankStar$_"}-1) }
+  }
 
   ## 経験点消費
   my @expA = ( 0, 1000, 2000, 3500, 5000, 7000, 9500, 12500, 16500, 21500, 27500, 35000, 44000, 54500, 66500, 80000, 95000, 125000 );
@@ -639,13 +653,14 @@ sub data_calc {
   foreach my $class (@data::class_list){
     $classlv .= $pc{'lv'.$data::class{$class}{id}}.'/';
   }
+  my $rank = $pc{honorRank} >= $pc{honorRankBarbaros} ? $pc{rank} : $pc{rankBarbaros};
   my $race = (exists $data::races{$pc{race}}) ? $pc{race}
            : $pc{race} ? "その他:$pc{race}"
            : '';
   my $faith = $pc{faith} eq 'その他の信仰' ? ($pc{faithOther} || $pc{faith}) : $pc{faith}; 
   $::newline = "$pc{id}<>$::file<>".
                "$pc{birthTime}<>$::now<>$charactername<>$pc{playerName}<>$pc{group}<>".
-               "$pc{expTotal}<>$pc{rank}<>$race<>$pc{gender}<>$pc{age}<>$pc{faith}<>".
+               "$pc{expTotal}<>$rank<>$race<>$pc{gender}<>$pc{age}<>$pc{faith}<>".
                "$classlv<>".
                "$pc{lastSession}<>$pc{image}<> $pc{tags} <>$pc{hide}<>$pc{fellowPublic}<>";
 
