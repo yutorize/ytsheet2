@@ -382,6 +382,8 @@
 #area-package #package table {
   margin-top: 1px;
   margin-bottom: -1px;
+  border-top-width: 1px;
+  border-top-style: solid;
 }
 #package table tr:first-child th:first-child {
   width: 10em;
