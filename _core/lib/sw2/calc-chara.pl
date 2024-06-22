@@ -549,6 +549,8 @@ sub data_calc {
     my $id   = $data::class{$name}{id};
     my $lv = $pc{'lv'.$id} || 0;
     my $eva = $pc{evasiveManeuver} + $pc{mindsEye};
+    if($pc{evasiveManeuver} == 2 && $id ne 'Fen' && $id ne 'Bat'){ $eva -= 1 }
+    if($pc{mindsEye} && $id ne 'Fen'){ $eva -= $pc{mindsEye} }
     my $def = $pc{raceAbilityDef} + $pc{defenseSeeker};
     my $own_agi = 0;
     my $artisan = 0;

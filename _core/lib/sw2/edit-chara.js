@@ -1425,6 +1425,8 @@ function calcArmour(evaAdd,defBase) {
     let evaBase = evaClassLv || 0;
 
     let eva = evaAdd;
+    if(feats['回避行動'] == 2 && className != 'フェンサー' && className != 'バトルダンサー'){ eva -= 1 }
+    if(feats['心眼'] && className != 'フェンサー'){ eva -= feats['心眼'] }
     let def = defBase;
     let ownAgi = 0;
     let artisanDef = 0;
