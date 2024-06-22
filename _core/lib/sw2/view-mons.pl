@@ -11,13 +11,13 @@ require $set::data_items;
 
 ### テンプレート読み込み #############################################################################
 my $SHEET;
-$SHEET = HTML::Template->new( filename => $set::skin_mons, utf8 => 1,
+$SHEET = HTML::Template->new( filename => $set::skin_sheet, utf8 => 1,
   path => ['./', $::core_dir."/skin/sw2", $::core_dir."/skin/_common", $::core_dir],
   search_path_on_include => 1,
   die_on_bad_params => 0, die_on_missing_include => 0, case_sensitive => 1, global_vars => 1);
 
 ### モンスターデータ読み込み #########################################################################
-our %pc = pcDataGet();
+our %pc = getSheetData();
 
 if($pc{description} =~ s/#login-only//i){
   $pc{description} .= '<span class="login-only">［ログイン限定公開］</span>';
@@ -93,17 +93,17 @@ $SHEET->param(rawName => $pc{characterName}?"$pc{characterName}（$pc{monsterNam
 ### タグ置換 #########################################################################################
 foreach (keys %pc) {
   if($_ =~ /^(?:skills|description)$/){
-    $pc{$_} = tagUnescapeLines($pc{$_});
+    $pc{$_} = unescapeTagsLines($pc{$_});
   }
-  $pc{$_} = tagUnescape($pc{$_});
+  $pc{$_} = unescapeTags($pc{$_});
 }
 $pc{skills} =~ s/<br>/\n/gi;
 $pc{skills} =~ s#(<p>|</p>|</details>)#$1\n#gi;
 $pc{skills} =~ s/^●(.*?)$/<\/p><h3>●$1<\/h3><p>/gim;
 if($::SW2_0){
-  $pc{skills} =~ s/^((?:[○◯〇＞▶〆☆≫»□☐☑🗨▽▼]|&gt;&gt;)+.*?)(　|$)/"<\/p><h5>".&textToIcon($1)."<\/h5><p>".$2;/egim;
+  $pc{skills} =~ s/^((?:\[[常主補宣条選]\]|[○◯〇＞▶〆☆≫»□☐☑🗨▽▼]|&gt;&gt;)+.*?)(　|$)/"<\/p><h5>".&textToIcon($1)."<\/h5><p>".$2;/egim;
 } else {
-  $pc{skills} =~ s/^((?:[○◯〇△＞▶〆☆≫»□☐☑🗨]|&gt;&gt;)+.*?)(　|$)/"<\/p><h5>".&textToIcon($1)."<\/h5><p>".$2;/egim;
+  $pc{skills} =~ s/^((?:\[[常準主補宣]\]|[○◯〇△＞▶〆☆≫»□☐☑🗨]|&gt;&gt;)+.*?)(　|$)/"<\/p><h5>".&textToIcon($1)."<\/h5><p>".$2;/egim;
 }
 $pc{skills} =~ s/\n+<\/p>/<\/p>/gi;
 $pc{skills} =~ s/(^|<p(?:.*?)>|<hr(?:.*?)>)\n/$1/gi;
@@ -147,35 +147,37 @@ $SHEET->param(Tags => \@tags);
   $SHEET->param(price => "<dl class=\"price\">$price</dl>");
 }
 ### 適正レベル --------------------------------------------------
+my $appLv = $pc{lvMin}.($pc{lvMax} != $pc{lvMin} ? "～$pc{lvMax}":'');
 {
-  $SHEET->param(appLv => $pc{lvMin}.($pc{lvMax} != $pc{lvMin} ? " ～ $pc{lvMax}":''));
+  $SHEET->param(appLv => $appLv);
+}
+### 穢れ --------------------------------------------------
+unless(
+  ($pc{taxa} eq 'アンデッド' && ($pc{sin} == 5 || $pc{sin} eq '')) ||
+  ($pc{taxa} ne '蛮族'       && ($pc{sin} == 0 || $pc{sin} eq ''))
+){
+  $SHEET->param(displaySin => 1);
 }
 ### ステータス --------------------------------------------------
-$SHEET->param(vitResist => $pc{vitResist} eq '' ? '' : $pc{vitResist}.(!$pc{statusTextInput}?' ('.$pc{vitResistFix}.')':''));
-$SHEET->param(mndResist => $pc{mndResist} eq '' ? '' : $pc{mndResist}.(!$pc{statusTextInput}?' ('.$pc{mndResistFix}.')':''));
+if($pc{vitResist} ne ''){ $SHEET->param(vitResist => $pc{vitResist}.(!$pc{statusTextInput}?' ('.$pc{vitResistFix}.')':'')) }
+if($pc{mndResist} ne ''){ $SHEET->param(mndResist => $pc{mndResist}.(!$pc{statusTextInput}?' ('.$pc{mndResistFix}.')':'')) }
 
 my @status_tbody;
 my @status_row;
 foreach (1 .. $pc{statusNum}){
-  $pc{'status'.$_.'Accuracy'} = $pc{'status'.$_.'Accuracy'} eq '' ? '―' : $pc{'status'.$_.'Accuracy'}.(!$pc{statusTextInput} && !$pc{mount}?' ('.$pc{'status'.$_.'AccuracyFix'}.')':'');
-  $pc{'status'.$_.'Evasion'}  = $pc{'status'.$_.'Evasion'}  eq '' ? '―' : $pc{'status'.$_.'Evasion'} .(!$pc{statusTextInput} && !$pc{mount}?' ('.$pc{'status'.$_.'EvasionFix'}.')' :'');
-  $pc{'status'.$_.'Damage'}   = $pc{'status'.$_.'Damage'}   eq '' ? '―' : $pc{'status'.$_.'Damage'} ;
-  $pc{'status'.$_.'Defense'}  = $pc{'status'.$_.'Defense'}  eq '' ? '―' : $pc{'status'.$_.'Defense'};
-  $pc{'status'.$_.'Hp'}       = $pc{'status'.$_.'Hp'}       eq '' ? '―' : $pc{'status'.$_.'Hp'}     ;
-  $pc{'status'.$_.'Mp'}       = $pc{'status'.$_.'Mp'}       eq '' ? '―' : $pc{'status'.$_.'Mp'}     ;
-  $pc{'status'.$_.'Vit'}      = $pc{'status'.$_.'Vit'}      eq '' ? '―' : $pc{'status'.$_.'Vit'}    ;
-  $pc{'status'.$_.'Mnd'}      = $pc{'status'.$_.'Mnd'}      eq '' ? '―' : $pc{'status'.$_.'Mnd'}    ;
+  if ($pc{'status'.$_.'Accuracy'} ne ''){ $pc{'status'.$_.'Accuracy'} = $pc{'status'.$_.'Accuracy'}.(!$pc{statusTextInput} && !$pc{mount}?' ('.$pc{'status'.$_.'AccuracyFix'}.')':'') }
+  if ($pc{'status'.$_.'Evasion'}  ne ''){ $pc{'status'.$_.'Evasion'}  = $pc{'status'.$_.'Evasion'} .(!$pc{statusTextInput} && !$pc{mount}?' ('.$pc{'status'.$_.'EvasionFix'}.')' :'') }
   push(@status_row, {
     LV       => $pc{lvMin},
     STYLE    => $pc{'status'.$_.'Style'},
-    ACCURACY => $pc{'status'.$_.'Accuracy'},
-    DAMAGE   => $pc{'status'.$_.'Damage'},
-    EVASION  => $pc{'status'.$_.'Evasion'},
-    DEFENSE  => $pc{'status'.$_.'Defense'},
-    HP       => $pc{'status'.$_.'Hp'},
-    MP       => $pc{'status'.$_.'Mp'},
-    VIT      => $pc{'status'.$_.'Vit'},
-    MND      => $pc{'status'.$_.'Mnd'},
+    ACCURACY => $pc{'status'.$_.'Accuracy'} // '―',
+    DAMAGE   => $pc{'status'.$_.'Damage'  } // '―',
+    EVASION  => $pc{'status'.$_.'Evasion' } // '―',
+    DEFENSE  => $pc{'status'.$_.'Defense' } // '―',
+    HP       => $pc{'status'.$_.'Hp'      } // '―',
+    MP       => $pc{'status'.$_.'Mp'      } // '―',
+    VIT      => $pc{'status'.$_.'Vit'     } // '―',
+    MND      => $pc{'status'.$_.'Mnd'     } // '―',
   } );
 }
 push(@status_tbody, { "ROW" => \@status_row }) if !$pc{mount} || $pc{lv} eq '' || $pc{lvMin} == $pc{lv};
@@ -183,25 +185,17 @@ foreach my $lv (2 .. ($pc{lvMax}-$pc{lvMin}+1)){
   my @status_row;
   foreach (1 .. $pc{statusNum}){
     my $num = "$_-$lv";
-    $pc{'status'.$num.'Accuracy'} = $pc{'status'.$num.'Accuracy'} eq '' ? '―' : $pc{'status'.$num.'Accuracy'};
-    $pc{'status'.$num.'Evasion'}  = $pc{'status'.$num.'Evasion'}  eq '' ? '―' : $pc{'status'.$num.'Evasion'} ;
-    $pc{'status'.$num.'Damage'}   = $pc{'status'.$num.'Damage'}   eq '' ? '―' : $pc{'status'.$num.'Damage'}  ;
-    $pc{'status'.$num.'Defense'}  = $pc{'status'.$num.'Defense'}  eq '' ? '―' : $pc{'status'.$num.'Defense'} ;
-    $pc{'status'.$num.'Hp'}       = $pc{'status'.$num.'Hp'}       eq '' ? '―' : $pc{'status'.$num.'Hp'}      ;
-    $pc{'status'.$num.'Mp'}       = $pc{'status'.$num.'Mp'}       eq '' ? '―' : $pc{'status'.$num.'Mp'}      ;
-    $pc{'status'.$num.'Vit'}      = $pc{'status'.$num.'Vit'}      eq '' ? '―' : $pc{'status'.$num.'Vit'}     ;
-    $pc{'status'.$num.'Mnd'}      = $pc{'status'.$num.'Mnd'}      eq '' ? '―' : $pc{'status'.$num.'Mnd'}     ;
     push(@status_row, {
       LV       => $lv+$pc{lvMin}-1,
       STYLE    => $pc{'status'.$_.'Style'},
-      ACCURACY => $pc{'status'.$num.'Accuracy'},
-      DAMAGE   => $pc{'status'.$num.'Damage'},
-      EVASION  => $pc{'status'.$num.'Evasion'},
-      DEFENSE  => $pc{'status'.$num.'Defense'},
-      HP       => $pc{'status'.$num.'Hp'},
-      MP       => $pc{'status'.$num.'Mp'},
-      VIT      => $pc{'status'.$num.'Vit'},
-      MND      => $pc{'status'.$num.'Mnd'},
+      ACCURACY => $pc{'status'.$num.'Accuracy'} // '―',
+      DAMAGE   => $pc{'status'.$num.'Damage'  } // '―',
+      EVASION  => $pc{'status'.$num.'Evasion' } // '―',
+      DEFENSE  => $pc{'status'.$num.'Defense' } // '―',
+      HP       => $pc{'status'.$num.'Hp'      } // '―',
+      MP       => $pc{'status'.$num.'Mp'      } // '―',
+      VIT      => $pc{'status'.$num.'Vit'     } // '―',
+      MND      => $pc{'status'.$num.'Mnd'     } // '―',
     } );
   }
   push(@status_tbody, { ROW => \@status_row }) if !$pc{mount} || $pc{lv} eq '' || $lv+$pc{lvMin}-1 == $pc{lv};
@@ -224,7 +218,7 @@ $SHEET->param(Loots => \@loots);
 
 ### バックアップ --------------------------------------------------
 if($::in{id}){
-  my($selected, $list) = getLogList($set::mons_dir, $main::file);
+  my($selected, $list) = getLogList($set::char_dir, $main::file);
   $SHEET->param(LogList => $list);
   $SHEET->param(selectedLogName => $selected);
   if($pc{yourAuthor} || $pc{protect} eq 'password'){
@@ -238,8 +232,8 @@ if($pc{forbidden} eq 'all' && $pc{forbiddenMode}){
   $SHEET->param(titleName => "非公開データ - $set::title");
 }
 else {
-  my $name    = tagDelete nameToPlain($pc{characterName});
-  my $species = tagDelete nameToPlain($pc{monsterName});
+  my $name    = removeTags nameToPlain($pc{characterName});
+  my $species = removeTags nameToPlain($pc{monsterName});
   if($name && $species){ $SHEET->param(titleName => "${name}（${species}）"); }
   else { $SHEET->param(titleName => $name || $species); }
 }
@@ -247,7 +241,12 @@ else {
 ### OGP --------------------------------------------------
 $SHEET->param(ogUrl => url().($::in{url} ? "?url=$::in{url}" : "?id=$::in{id}"));
 #if($pc{image}) { $SHEET->param(ogImg => url()."/".$imgsrc); }
-$SHEET->param(ogDescript => tagDelete "レベル:$pc{lv}　分類:$pc{taxa}".($pc{partsNum}>1?"　部位数:$pc{partsNum}":'')."　知名度:$pc{reputation}／$pc{'reputation+'}");
+$SHEET->param(ogDescript => removeTags(
+  ($pc{mount} && $pc{lv} eq '' ? "適正レベル:$appLv" : "レベル:$pc{lv}").
+  "　分類:$pc{taxa}".
+  ($pc{partsNum} > 1 ? "　部位数:$pc{partsNum}" : '').
+  (!$pc{mount} ? "　知名度:$pc{reputation}／$pc{'reputation+'}" : '')
+));
 
 ### バージョン等 --------------------------------------------------
 $SHEET->param(ver => $::ver);

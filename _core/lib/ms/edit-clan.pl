@@ -11,14 +11,14 @@ my $LOGIN_ID = $::LOGIN_ID;
 require $set::lib_palette_sub;
 
 ### データ読み込み ###################################################################################
-my ($data, $mode, $file, $message) = pcDataGet($::in{mode});
+my ($data, $mode, $file, $message) = getSheetData($::in{mode});
 our %pc = %{ $data };
 
 my $mode_make = ($mode =~ /^(blanksheet|copy|convert)$/) ? 1 : 0;
 
 ### 出力準備 #########################################################################################
 if($message){
-  my $name = tagUnescape($pc{characterName} || $pc{aka} || '無題');
+  my $name = unescapeTags($pc{characterName} || $pc{aka} || '無題');
   $message =~ s/<!NAME>/$name/;
 }
 ### プレイヤー名 --------------------------------------------------
@@ -55,9 +55,9 @@ elsif($mode eq 'blanksheet'){
 
 ## 画像
 $pc{imageFit} = $pc{imageFit} eq 'percent' ? 'percentX' : $pc{imageFit};
-$pc{imagePercent} = $pc{imagePercent} eq '' ? '200' : $pc{imagePercent};
-$pc{imagePositionX} = $pc{imagePositionX} eq '' ? '50' : $pc{imagePositionX};
-$pc{imagePositionY} = $pc{imagePositionY} eq '' ? '50' : $pc{imagePositionY};
+$pc{imagePercent}   //= '200';
+$pc{imagePositionX} //= '50';
+$pc{imagePositionY} //= '50';
 $pc{wordsX} ||= '右';
 $pc{wordsY} ||= '上';
 
@@ -83,7 +83,7 @@ my $image_maxsize = $set::image_maxsize / 2;
 my $image_maxsize_view = $image_maxsize >= 1048576 ? sprintf("%.3g",$image_maxsize/1048576).'MB' : sprintf("%.3g",$image_maxsize/1024).'KB';
 
 ### フォーム表示 #####################################################################################
-my $titlebarname = tagDelete nameToPlain tagUnescape ($pc{clanName});
+my $titlebarname = removeTags nameToPlain unescapeTags ($pc{clanName});
 print <<"HTML";
 Content-type: text/html\n
 <!DOCTYPE html>
@@ -134,6 +134,7 @@ print <<"HTML";
           <li onclick="sectionSelect('color');" class="color-icon" title="カラーカスタム">
           <li onclick="view('text-rule')" class="help-icon" title="テキスト整形ルール">
           <li onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード切替">
+          <li onclick="exportAsJson()" class="download-icon" title="JSON出力">
           <li class="buttons">
             <ul>
               <li @{[ display ($mode eq 'edit') ]} class="view-icon" title="閲覧画面"><a href="./?id=$::in{id}"></a>
@@ -163,7 +164,7 @@ else {
   print <<"HTML";
       <details class="box" id="edit-protect" @{[$mode eq 'edit' ? '':'open']}>
       <summary>編集保護設定</summary>
-      <p id="edit-protect-view"><input type="hidden" name="protectOld" value="$pc{protect}">
+      <fieldset id="edit-protect-view"><input type="hidden" name="protectOld" value="$pc{protect}">
 HTML
   if($LOGIN_ID){
     print '<input type="radio" name="protect" value="account"'.($pc{protect} eq 'account'?' checked':'').'> アカウントに紐付ける（ログイン中のみ編集可能になります）<br>';
@@ -176,7 +177,7 @@ HTML
   }
   print <<"HTML";
 <input type="radio" name="protect" value="none"@{[ $pc{protect} eq 'none'?' checked':'' ]}> 保護しない（誰でも編集できるようになります）
-      </p>
+      </fieldset>
       </details>
 HTML
 }
@@ -221,13 +222,13 @@ print <<"HTML";
         </dl>
       </div>
 
-      <div class="box" id="name-form">
+      <div class="box in-toc" id="name-form" data-content-title="クラン名・管理プレイヤー名">
         <div>
           <dl id="character-name">
             <dt>クラン名
-            <dd>@{[input('clanName','text',"nameSet",'required')]}
+            <dd>@{[input('clanName','text',"setName",'required')]}
             <dt class="ruby">ふりがな
-            <dd>@{[input('clanNameRuby','text',"nameSet")]}
+            <dd>@{[input('clanNameRuby','text',"setName")]}
           </dl>
         </div>
         <dl id="player-name">
@@ -302,7 +303,7 @@ HTML
 print '';
 foreach my $num ('TMPL',1 .. $pc{memberNum}) {
   if($num eq 'TMPL'){ print '<template id="member-template">' }
-  print '<tr id="member'.$num.'">'
+  print '<tr id="member-row'.$num.'">'
     .'<th class="handle">'
     .'<td class="name">'
     .input('member'.$num.'Name','','','placeholder="名前"')
@@ -325,7 +326,7 @@ print '<li id="'.$_.'">《'.input('attribute'.$_,'','checkAttribute').'》' fore
 print '</ul>';
 print <<"HTML";
           <!-- <div class="add-del-button"><a onclick="addAttribute()">▼</a><a onclick="delAttribute()">▲</a></div> -->
-          <div class="annotate error"></div>
+          <div class="annotate caution"></div>
         </div>
 
       </div>
@@ -360,7 +361,7 @@ HTML
 }
 print <<"HTML";
         </table>
-        <div class="annotate error"></div>
+        <div class="annotate caution"></div>
       </div>
       
       <details class="box" id="free-note" @{[$pc{freeNote}?'open':'']}>
@@ -398,7 +399,7 @@ HTML
 foreach my $num ('TMPL',1 .. $pc{historyNum}) {
   if($num eq 'TMPL'){ print '<template id="history-template">' }
 print <<"HTML";
-          <tbody id="history${num}">
+          <tbody id="history-row${num}">
           <tr>
             <td class="handle" rowspan="2">
             <td class="date  " rowspan="2">@{[ input"history${num}Date" ]}
@@ -462,43 +463,7 @@ print <<"HTML";
       @{[ input 'birthTime','hidden' ]}
       <input type="hidden" name="id" value="$::in{id}">
     </form>
-HTML
-if($mode eq 'edit'){
-print <<"HTML";
-    <form name="del" method="post" action="./" class="deleteform">
-      <p style="font-size: 80%;">
-      <input type="hidden" name="mode" value="delete">
-      <input type="hidden" name="type" value="c">
-      <input type="hidden" name="id" value="$::in{id}">
-      <input type="hidden" name="pass" value="$::in{pass}">
-      <input type="checkbox" name="check1" value="1" required>
-      <input type="checkbox" name="check2" value="1" required>
-      <input type="checkbox" name="check3" value="1" required>
-      <input type="submit" value="シート削除"><br>
-      ※チェックを全て入れてください
-      </p>
-    </form>
-HTML
-  # 怒りの画像削除フォーム
-  if($LOGIN_ID eq $set::masterid){
-    print <<"HTML";
-    <form name="imgdel" method="post" action="./" class="deleteform">
-      <p style="font-size: 80%;">
-      <input type="hidden" name="mode" value="img-delete">
-      <input type="hidden" name="type" value="c">
-      <input type="hidden" name="id" value="$::in{id}">
-      <input type="hidden" name="pass" value="$::in{pass}">
-      <input type="checkbox" name="check1" value="1" required>
-      <input type="checkbox" name="check2" value="1" required>
-      <input type="checkbox" name="check3" value="1" required>
-      <input type="submit" value="画像削除"><br>
-      </p>
-    </form>
-    <p class="right">@{[ $::in{log}?$::in{log}:'最終' ]}更新時のIP:$pc{IP}</p>
-HTML
-  }
-}
-print <<"HTML";
+    @{[ deleteForm($mode) ]}
     </article>
 HTML
 # ヘルプ

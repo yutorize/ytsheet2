@@ -47,17 +47,36 @@ sub getfile_open {
   close($FH);
   return 0;
 }
+### typeによって各ファイル・ディレクトリを変更 --------------------------------------------------
+sub changeFileByType {
+  my $type = shift;
+  if($type && exists $set::lib_type{$type}){
+    return if exists $set::lib_type{chara};
+    $set::lib_type{chara}{listFile} = $set::listfile;
+    $set::lib_type{chara}{dataDir}  = $set::char_dir;
+    $set::lib_type{chara}{edit}     = $set::lib_edit_char;
+    $set::lib_type{chara}{calc}     = $set::lib_calc_char;
+    $set::lib_type{chara}{view}     = $set::lib_view_char;
+    $set::lib_type{chara}{list}     = $set::lib_list_char;
+    $set::lib_type{chara}{skin}     = $set::skin_sheet;
+
+    $set::listfile      = $set::lib_type{$type}{listFile};
+    $set::char_dir      = $set::lib_type{$type}{dataDir};
+    $set::lib_edit_char = $set::lib_type{$type}{edit};
+    $set::lib_calc_char = $set::lib_type{$type}{calc};
+    $set::lib_view_char = $set::lib_type{$type}{view};
+    $set::lib_list_char = $set::lib_type{$type}{list};
+    $set::skin_sheet    = $set::lib_type{$type}{skin};
+  }
+}
 
 ### 画像リダイレクト --------------------------------------------------
-sub imageRedirect {
+sub redirectToImage {
   my $id   = shift;
   my $type = shift;
   my ($file,$type,$user) = getfile_open($id);
-  my $datadir = ($set::game eq 'sw2' && $type eq 'm') ? $set::mons_dir
-              : ($set::game eq 'sw2' && $type eq 'i') ? $set::item_dir
-              : ($set::game eq 'sw2' && $type eq 'a') ? $set::arts_dir
-              : ($set::game eq 'ms'  && $type eq 'c') ? $set::clan_dir
-              : $set::char_dir;
+  changeFileByType($type);
+  my $datadir = $set::char_dir;
   my $ext;
 
   if(!$file){ error("ファイルがありません。") }
@@ -99,7 +118,7 @@ sub getplayername {
 
 
 ### 編集保護設定取得 --------------------------------------------------
-sub protectTypeGet {
+sub getProtectType {
   my $file = shift;
   my $protect   = '';
   my $forbidden = '';
@@ -131,7 +150,7 @@ sub c_crypt {
 ### ログイン --------------------------------------------------
 sub log_in {
   if($set::oauth_service){ error("$set::oauth_serviceでのログインのみ有効です"); }
-  my $key = key_get($_[0],$_[1]);
+  my $key = getKey($_[0],$_[1]);
   if($key){
     my $flag = 0;
     my $mask = umask 0;
@@ -157,7 +176,7 @@ sub log_in {
 }
 
 ### キー取得 --------------------------------------------------
-sub key_get {
+sub getKey {
   my $in_id  = $_[0];
   my $in_pass= $_[1];
   open (my $FH, '<', $set::userfile);
@@ -303,12 +322,27 @@ sub ceil {
   return int($num + $val);
 }
 
-### 正の数に+追加 --------------------------------------------------
+### 正の数に+追加/0なら空 --------------------------------------------------
 sub addNum {
   my $num = shift;
   return ($num > 0) ? "+$num" : ($num == 0) ? '' : $num;
 }
 
+### 算術演算子の連続を最適化 --------------------------------------------------
+sub optimizeOperator {
+  my $text = shift;
+  $text =~ s/\+\++/\+/g;
+  $text =~ s/\+-/-/g;
+  $text =~ s/-\+/-/g;
+  return $text;
+}
+sub optimizeOperatorFirst {
+  my $text = shift;
+  $text =~ s/^\+\++/\+/;
+  $text =~ s/^\+-/-/;
+  $text =~ s/^-\+/-/;
+  return $text;
+}
 ### 数値3桁区切り --------------------------------------------------
 sub commify {
   my $num = shift;
@@ -365,7 +399,7 @@ sub groupArrayToList {
 }
 
 ### 性別記号変換 --------------------------------------------------
-sub genderConvert {
+sub stylizeGender {
   my $gender = shift;
   my $m_flag; my $f_flag; my $n_flag;
   $gender =~ s/^(.+?)[\(（].*?[）\)]$/$1/;
@@ -385,7 +419,7 @@ sub genderConvert {
 }
 
 ### 年齢変換 --------------------------------------------------
-sub ageConvert {
+sub stylizeAge {
   my $age = shift;
   $age =~ s/^(.+?)[\(（].*?[）\)]$/$1/;
   $age =~ tr/０-９/0-9/;
@@ -404,7 +438,7 @@ sub pcEscape {
   $text =~ tr/\r\n//d;
   return $text;
 }
-sub pcTagsEscape {
+sub normalizeHashtags {
   my $text = shift;
   $text =~ s/\s/ /g; #空白統一
   $text =~ tr/ / /s; #空白詰める
@@ -412,7 +446,7 @@ sub pcTagsEscape {
   $text =~ tr/＋－＊／．，＿/\+\-\*\/\.,_/;
   return $text;
 }
-sub thanSignEscape {
+sub escapeThanSign {
   my $text = shift;
   $text =~ s/</&lt;/g;
   $text =~ s/>/&gt;/g;
@@ -420,7 +454,7 @@ sub thanSignEscape {
 }
 
 ### タグ変換 --------------------------------------------------
-sub tagUnescape {
+sub unescapeTags {
   my $text = shift;
   $text =~ s/&amp;/&/g;
   $text =~ s/&quot;/"/g;
@@ -430,7 +464,7 @@ sub tagUnescape {
   
   $text =~ s#(―+)#<span class="d-dash">$1</span>#g;
   
-  $text =~ s{[©]}{<i class="s-icon copyright">©</i>}gi;
+  $text =~ s{©}{<i class="s-icon copyright">©</i>}gi;
 
   if($set::game eq 'sw2'){
     if($::in{mode} ne 'download'){
@@ -445,6 +479,13 @@ sub tagUnescape {
     }
   }
   
+  
+  our @linkPlaceholders;
+  $text =~ s/((?:making|能力値作成(?:履歴)?)#([0-9]+(?:-[0-9]+)?))/ &generateLinkTag("?&mode=making&num=$2",$1) /egi if($set::game eq 'sw2'); # メイキングリンク
+  $text =~ s/\[(.+?)#([a-zA-Z0-9\-]+?)\]/ &generateLinkTag("?id=$2",$1) /egi; # シート内リンク
+  $text =~ s/\[\[(.+?)&gt;((?:(?!<br>)[^"])+?)\]\]/ &generateLinkTag($2,$1) /egi; # リンク
+  $text =~ s/(https?:\/\/[^\s\<]+)/ &generateLinkTag($1,$1) /egi; # 自動リンク
+  
   $text =~ s/'''(.+?)'''/<span class="oblique">$1<\/span>/gi; # 斜体
   $text =~ s/''(.+?)''/<b>$1<\/b>/gi;  # 太字
   $text =~ s/%%(.+?)%%/<span class="strike">$1<\/span>/gi;  # 打ち消し線
@@ -452,50 +493,35 @@ sub tagUnescape {
   $text =~ s/\{\{(.+?)\}\}/<span style="color:transparent">$1<\/span>/gi;  # 透明
   $text =~ s/[|｜]([^|｜\n]+?)《(.+?)》/<ruby>$1<rp>(<\/rp><rt>$2<\/rt><rp>)<\/rp><\/ruby>/gi; # なろう式ルビ
   $text =~ s/《《(.+?)》》/<span class="text-em">$1<\/span>/gi; # カクヨム式傍点
-  
-  $text =~ s/\[\[(.+?)&gt;((?:(?!<br>)[^"])+?)\]\]/&tagLinkUrl($2,$1)/egi; # リンク
-  if($set::game eq 'sw2'){ $text =~ s/((?:making|能力値作成(?:履歴)?)#([0-9]+(?:-[0-9]+)?))/<a href="?&mode=making&num=$2">$1<\/a>/gi; } # メイキングリンク
-  $text =~ s/\[(.+?)#([a-zA-Z0-9\-]+?)\]/<a href="?id=$2">$1<\/a>/gi; # シート内リンク
-  $text =~ s/(?<!href=")(https?:\/\/[^\s\<]+)/<a href="$1" target="_blank">$1<\/a>/gi; # 自動リンク
+
+  $text =~ s/\x{FFFC}(\d+)\x{FFFC}/$linkPlaceholders[$1-1]/g; # リンク後処理
   
   $text =~ s/\n/<br>/gi;
 
   if($set::game eq 'sw2'){
     if($::SW2_0){
+      $text =~ s/(\[[常主補宣条選]\])+/&textToIcon($&);/egi;
       $text =~ s/「((?:[○◯〇＞▶〆☆≫»□☐☑🗨▽▼]|&gt;&gt;)+)/"「".&textToIcon($1);/egi;
     } else {
+      $text =~ s/(\[[常準主補宣]\])+/&textToIcon($&);/egi;
       $text =~ s/「((?:[○◯〇△＞▶〆☆≫»□☐☑🗨]|&gt;&gt;)+)/"「".&textToIcon($1);/egi;
     }
   }
   
   return $text;
-}
-sub tagUnescapePalette {
-  my $text = shift;
-  $text =~ s/&amp;/&/g;
-  $text =~ s/&quot;/"/g;
-  $text =~ s/&lt;br&gt;/\n/gi;
   
-  $text =~ s/\[\[(.+?)&gt;((?:(?!<br>)[^"])+?)\]\]/$1/gi; # リンク削除
-  $text =~ s/\[(.+?)#([a-zA-Z0-9\-]+?)\]/$1/gi; # シート内リンク削除
-  
-  $text =~ s/&#91;(.)&#93;/[$1]/g;
-  
-  $text =~ s/\n/<br>/gi;
-  return $text;
+  sub generateLinkTag {
+    my $url = shift;
+    my $txt = shift;
+    $txt =~ s{<a .+?>|</a>}{}g; # 内側のリンクは削除（二重リンク防止）
+    push @linkPlaceholders, $url;
+    my $number = "\x{FFFC}" . scalar(@linkPlaceholders) . "\x{FFFC}";
+    if($txt =~ "^https?://"){ $txt = $number; } # $txtがURL形式なら$urlと同じに（二重リンクとURLの偽り防止）
+    if($url =~ /^[#\.\/\?]/){ return '<a href="'.$number.'">'.$txt.'</a>'; }
+    else { return '<a href="'.$number.'" target="_blank">'.$txt.'</a>'; }
+  }
 }
-sub tagLinkUrl {
-  my $url = shift;
-  my $txt = shift;
-  #foreach my $safe (@set::safeurl){
-  #  next if !$safe;
-  #  if($url =~ /^$safe/) { return '<a href="'.$url.'" target="_blank">'.$txt.'</a>'; }
-  #}
-  if($url =~ /^[#\.\/]/){ return '<a href="'.$url.'">'.$txt.'</a>'; }
-  return '<a href="'.$url.'" target="_blank">'.$txt.'</a>';
-  #return '<a href="../'.$set::cgi.'?jump='.$url.'" target="_blank">'.$txt.'</a>';
-}
-sub tagUnescapeLines {
+sub unescapeTagsLines {
   my $text = shift;
   $text =~ s/&lt;br&gt;/\n/gi;
   
@@ -525,7 +551,7 @@ sub tagUnescapeLines {
   $text =~ s/\A\*(.*?)$/$main::pc{"head_$_"} = $1; ''/egim;
   $text =~ s/^\*(.*?)$/<\/p><h2>$1<\/h2><p>/gim;
   
-  $text =~ s/(?:^(?:\|(?:.*?))+\|[hc]?(?:\n|$))+/'<\/p><table class="note-table">'.&tableCreate($&).'<\/table><p>'/egim;
+  $text =~ s/(?:^(?:\|(?:.*?))+\|[hc]?(?:\n|$))+/'<\/p><table class="note-table">'.&generateTable($&).'<\/table><p>'/egim;
 
   $text =~ s/^\:(.*?)\|(.*?)$/<dt>$1<\/dt><dd>$2<\/dd>/gim;
   $text =~ s/(<\/dd>)\n/$1/gi;
@@ -546,15 +572,15 @@ sub tagUnescapeLines {
   return $text;
 }
 
-sub tableColCreate {
+sub generateTableCol {
   my @out;
   my @col = (split(/\|/, $_[0]));
   foreach(@col){
-    push (@out, &tableStyleCreate($_));
+    push (@out, &generateTableStyle($_));
   }
   return '<colgroup>'.(join '', @out).'</colgroup>';
 }
-sub tableStyleCreate {
+sub generateTableStyle {
   if($_[0] =~ /([0-9]+)(px|em|\%)/){
     my $num = $1; my $type = $2;
     if   ($type eq 'px' && $num > 300){ $num = 300 }
@@ -564,14 +590,14 @@ sub tableStyleCreate {
   }
   else { return '<col>' }
 }
-sub tableCreate {
+sub generateTable {
   my $text = shift;
   my $output;
   my @data;
   foreach my $line (split("\n", $text)){
     $line =~ s/^\|//;
-    if   ($line =~ /c$/){ $output .= tableColCreate($line); next; }
-    elsif($line =~ /h$/){ $output .= tableHeaderCreate($line); next; }
+    if   ($line =~ /c$/){ $output .= generateTableCol($line); next; }
+    elsif($line =~ /h$/){ $output .= generateTableHeader($line); next; }
     my @row = split('\|', $line);
     push(@data, [ @row ]);
   }
@@ -598,7 +624,7 @@ sub tableCreate {
   }
   return $output;
 }
-sub tableHeaderCreate {
+sub generateTableHeader {
   my $line = shift;
   my $output;
   $line =~ s/h$//;
@@ -616,7 +642,7 @@ sub tableHeaderCreate {
   return $output;
 }
 ### タグ削除 --------------------------------------------------
-sub tagDelete {
+sub removeTags {
   my $text = $_[0];
   $text =~ s/<img alt="&#91;(.)&#93;"/[$1]<img /g;
   $text =~ s/<.+?>//g;
@@ -670,11 +696,11 @@ sub rgb_to_hsl {
 ### デフォルトカラー --------------------------------------------------
 sub setDefaultColors {
   my $type = shift;
-  $::pc{$type.'colorHeadBgH'} = $::pc{$type.'colorHeadBgH'} eq '' ? 225 : $::pc{$type.'colorHeadBgH'};
-  $::pc{$type.'colorHeadBgS'} = $::pc{$type.'colorHeadBgS'} eq '' ?   9 : $::pc{$type.'colorHeadBgS'};
-  $::pc{$type.'colorHeadBgL'} = $::pc{$type.'colorHeadBgL'} eq '' ?  65 : $::pc{$type.'colorHeadBgL'};
-  $::pc{$type.'colorBaseBgH'} = $::pc{$type.'colorBaseBgH'} eq '' ? 235 : $::pc{$type.'colorBaseBgH'};
-  $::pc{$type.'colorBaseBgS'} = $::pc{$type.'colorBaseBgS'} eq '' ?   0 : $::pc{$type.'colorBaseBgS'};
+  $::pc{$type.'colorHeadBgH'} //= 225;
+  $::pc{$type.'colorHeadBgS'} //=   9;
+  $::pc{$type.'colorHeadBgL'} //=  65;
+  $::pc{$type.'colorBaseBgH'} //= 235;
+  $::pc{$type.'colorBaseBgS'} //=   0;
 }
 
 ### 進数変換 --------------------------------------------------
@@ -689,58 +715,29 @@ sub convert10to36 {
   return join('', @work);
 }
 
-### チャットパレット --------------------------------------------------
-sub palettePresetBuffDelete {
-  my $text = shift;
-  my %property;
-  $_ =~ s|^//(.+?)=(.*?)$|$property{$1} = $2;|egi foreach split("\n",$text);
-  my $hit;
-  foreach(0 .. 100){
-    $hit = 0;
-    foreach (keys %property){
-      if($text =~ s|\{$_\}|$property{$_}|g){ $hit = 1; }
-    }
-    last if !$hit
-  }
-  $text =~ s#^//.+?=.*?(\n|$)##gm;
-  $text =~ s/\$\+0//g;
-  $text =~ s/\#0//g;
-  $text =~ s/\+0//g;
-  $text =~ s/^### ■バフ・デバフ\n//g;
-  
-  return $text;
-}
-
-sub palettePropertiesUsedOnly {
-  my $palette = shift;
-  my $tool = shift;
-  my $type = shift;
-  my %used;
-  my @propaties_in = paletteProperties($tool,$type);
-  my @propaties_out;
-  my $hit = 1;
-  foreach (0 .. 100){
-    $hit = 0;
-    foreach my $line (@propaties_in){
-      if($line =~ "^//(.+?)="){
-        my $var = $1;
-        if   ($palette =~ "^//\Q$var\E="){ ; }
-        elsif($palette =~ /\{\Q$var\E\}/){ $palette .= $line."\n"; $hit = 1 }
-      }
-    }
-    last if !$hit;
-  }
-  foreach (@propaties_in){
-    if($_ =~ "^//(.+?)="){
-      my $var = $1;
-      if($palette =~ /\{\Q$var\E\}/){ push @propaties_out, $_; }
+### 行の有無チェック --------------------------------------------------
+## 数値の0も偽とする（NameとNoteは空のみ偽）
+sub existsRow {
+  my $prefix = shift;
+  foreach(@_){
+    if($_ eq 'Name' || $_ eq 'Note'){
+      if($::pc{$prefix.$_} ne ''){ return 1; }
     }
     else {
-      push @propaties_out, $_;
+      if($::pc{$prefix.$_}){ return 1; }
     }
   }
-  return @propaties_out;
+  return 0;
 }
+## 厳密に空/未定義のみ偽
+sub existsRowStrict {
+  my $prefix = shift;
+  foreach(@_){
+    if($::pc{$prefix.$_} ne ''){ return 1; }
+  }
+  return 0;
+}
+## 0も偽としたい場合
 
 ### 案内画面 --------------------------------------------------
 sub info {

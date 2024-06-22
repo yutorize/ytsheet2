@@ -15,7 +15,7 @@
 </head>
 <body id="arts" <TMPL_IF wideMode>class="wide"</TMPL_IF>>
   <header>
-    <h1><a href="./"><TMPL_VAR title></a></h1>
+    <h1><a href="./?type=a"><TMPL_VAR title></a></h1>
     <nav>
       <ul>
         <TMPL_LOOP Menu><li class="<TMPL_VAR SIZE>"><a <TMPL_VAR TYPE>="<TMPL_VAR VALUE>"><TMPL_VAR TEXT></a>
@@ -45,7 +45,6 @@
           <summary>閲覧中のログ<TMPL_IF selectedLogName>の名前をつけなおす<TMPL_ELSE>に名前をつける</TMPL_IF></summary>
           <form id="log-naming-form" method="post" action="./">
             <input type="hidden" name="mode" value="bu-naming">
-            <input type="hidden" name="type" value="a">
             <input type="hidden" name="id" value="<TMPL_VAR id>">
             <input type="hidden" name="date" value="<TMPL_VAR logId>">
             <dl>
@@ -62,7 +61,7 @@
         <ul>
           <li id="downloadlist-json"><a onclick="downloadAsJson();">JSON 形式</a>
           <li id="downloadlist-html"><a onclick="downloadAsHtml();">HTML 形式</a>
-          <li id="downloadlist-html"><a onclick="downloadAsFullSet();">ZIP 形式（上記全部入り）</a>
+          <li id="downloadlist-zipped"><a onclick="downloadAsFullSet();">ZIP 形式（上記全部入り）</a>
           <li class="link-tag"><span>ゆとシート内リンク用タグ<br><input type="text" onclick="this.select()" value="[<TMPL_VAR rawName>#<TMPL_VAR id>]"></span>
         </ul>
       </aside>
@@ -70,7 +69,6 @@
 
     <form id="login-form" class="float-box" method="post" action="./">
       <input type="hidden" name="mode" value="edit">
-      <input type="hidden" name="type" value="a">
       <input type="hidden" name="id" value="<TMPL_VAR id>">
       <input type="password" name="pass" placeholder="password">
       <input type="hidden" name="log" value="<TMPL_VAR logId>">

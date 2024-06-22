@@ -113,7 +113,7 @@ if($group_query && $::in{group} ne 'all') {
 $INDEX->param(group => $groups{$group_query}{name});
 
 ## タグ検索
-my $tag_query = pcTagsEscape(decode('utf8', $::in{tag}));
+my $tag_query = normalizeHashtags(decode('utf8', $::in{tag}));
 if($tag_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){8}[^<]*? \Q$tag_query\E / } @list; }
 $INDEX->param(tag => $tag_query);
 
@@ -287,10 +287,10 @@ foreach (@list) {
     $race = "<span class=\"small\">$race</span>" if length($race) >= 8;
     
     #性別
-    $gender = genderConvert($gender);
+    $gender = stylizeGender($gender);
     
     #年齢
-    $age = ageConvert($age);
+    $age = stylizeAge($age);
 
     #タグ
     my $tags_links;

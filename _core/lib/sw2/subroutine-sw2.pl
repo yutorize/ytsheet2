@@ -8,6 +8,93 @@ use Fcntl;
 
 ### サブルーチン-SW ##################################################################################
 
+### ユニットステータス出力 --------------------------------------------------
+sub createUnitStatus {
+  my %pc = %{$_[0]};
+  my @unitStatus;
+  if ($pc{type} eq 'm'){
+    my @n2a = ('','A' .. 'Z');
+    if($pc{statusNum} > 1){ # 2部位以上
+      my @hp; my @mp; my @def;
+      my %multiple;
+      foreach my $i (1 .. $pc{statusNum}){
+        ($pc{"part${i}"} = $pc{"status${i}Style"}) =~ s/^.+[(（)](.+?)[)）]$/$1/;
+        $multiple{ $pc{"part${i}"} }++;
+      }
+      my %count;
+      foreach my $i (1 .. $pc{statusNum}){
+        my $partname = $pc{"part${i}"};
+        if($pc{mount}){
+          if($pc{lv}){
+            my $ii = ($pc{lv} - $pc{lvMin} +1);
+            $i .= $ii > 1 ? "-$ii" : '';
+          }
+        }
+        if($multiple{ $partname } > 1){
+          $count{ $partname }++;
+          $partname .= $n2a[ $count{ $partname } ];
+        }
+        my $hp  = s_eval($pc{"status${i}Hp"});
+        my $mp  = s_eval($pc{"status${i}Mp"});
+        my $def = s_eval($pc{"status${i}Defense"});
+        push(@hp , {$partname.':HP' => "$hp/$hp"});
+        push(@mp , {$partname.':MP' => "$mp/$mp"});
+        push(@def, $partname.$def);
+      }
+      @unitStatus = ( @hp, @mp, {'メモ' => '防護:'.join('／',@def)} );
+    }
+    else { # 1部位
+      my $i = 1;
+      if($pc{mount}){
+        if($pc{lv}){
+          my $ii = ($pc{lv} - $pc{lvMin} +1);
+          $i .= $ii > 1 ? "-$ii" : '';
+        }
+      }
+      my $hp = s_eval($pc{"status${i}Hp"});
+      my $mp = s_eval($pc{"status${i}Mp"});
+      my $def = s_eval($pc{"status${i}Defense"});
+      @unitStatus = (
+        { 'HP' => "$hp/$hp" },
+        { 'MP' => "$mp/$mp" },
+        { '防護' => $def },
+      );
+    }
+  }
+  else {
+    @unitStatus = (
+      { 'HP' => $pc{hpTotal}.'/'.$pc{hpTotal} },
+      { 'MP' => $pc{mpTotal}.'/'.$pc{mpTotal} },
+      { '防護' => $pc{defenseTotal1Def} },
+    );
+
+    if (!$::SW2_0) {
+      if ($pc{lvBar}) {
+        push(@unitStatus, { '⤴' => '0' });
+        push(@unitStatus, { '⤵' => '0' });
+        push(@unitStatus, { '♡' => '0' });
+      }
+      if ($pc{lvGeo}) {
+        push(@unitStatus, { '天' => '0' });
+        push(@unitStatus, { '地' => '0' });
+        push(@unitStatus, { '人' => '0' });
+      }
+      push(@unitStatus, { '陣気' => '0' }) if $pc{lvWar};
+    }
+  }
+
+  foreach my $key (split ',', $pc{unitStatusNotOutput}){
+    @unitStatus = grep { !exists $_->{$key} } @unitStatus;
+  }
+
+  foreach my $num (1..$pc{unitStatusNum}){
+    next if !$pc{"unitStatus${num}Label"};
+    push(@unitStatus, { $pc{"unitStatus${num}Label"} => $pc{"unitStatus${num}Value"} });
+  }
+
+  return \@unitStatus;
+}
+
 ### クラス色分け --------------------------------------------------
 sub class_color {
   my $text = shift;
@@ -22,19 +109,20 @@ sub class_color {
 ### タグ変換 --------------------------------------------------
 sub textToIcon {
   my $text = shift;
+  
   if($::SW2_0){
-    $text =~ s{[○◯〇]}{<i class="s-icon passive">○</i>}gi;
-    $text =~ s{[＞▶〆]}{<i class="s-icon major0">〆</i>}gi;
-    $text =~ s{[☆≫»]|&gt;&gt;}{<i class="s-icon minor0">☆</i>}gi;
-    $text =~ s{[□☐☑🗨]}{<i class="s-icon active0">☑</i>}gi;
-    $text =~ s{[▽]}{<i class="s-icon condition">▽</i>}gi;
-    $text =~ s{[▼]}{<i class="s-icon selection">▼</i>}gi;
+    $text =~ s{\[常\]|[○◯〇]}{<i class="s-icon passive"><span class="raw">[常]</span></i>}gi;
+    $text =~ s{\[主\]|[＞▶〆]}{<i class="s-icon major0"><span class="raw">[主]</span></i>}gi;
+    $text =~ s{\[補\]|[☆≫»]|&gt;&gt;}{<i class="s-icon minor0"><span class="raw">[補]</span></i>}gi;
+    $text =~ s{\[宣\]|[□☐☑🗨]}{<i class="s-icon active0"><span class="raw">[宣]</span></i>}gi;
+    $text =~ s{\[条\]|[▽]}{<i class="s-icon condition"><span class="raw">[条]</span></i>}gi;
+    $text =~ s{\[選\]|[▼]}{<i class="s-icon selection"><span class="raw">[選]</span></i>}gi;
   } else {
-    $text =~ s{[○◯〇]}{<i class="s-icon passive">○</i>}gi;
-    $text =~ s{[△]}{<i class="s-icon setup">△</i>}gi;
-    $text =~ s{[＞▶〆]}{<i class="s-icon major">▶</i>}gi;
-    $text =~ s{[☆≫»]|&gt;&gt;}{<i class="s-icon minor">≫</i>}gi;
-    $text =~ s{[□☐☑🗨]}{<i class="s-icon active">☑</i>}gi;
+    $text =~ s{\[常\]|[○◯〇]}{<i class="s-icon passive"><span class="raw">[常]</span></i>}gi;
+    $text =~ s{\[準\]|[△]}{<i class="s-icon setup"><span class="raw">[準]</span></i>}gi;
+    $text =~ s{\[主\]|[＞▶〆]}{<i class="s-icon major"><span class="raw">[主]</span></i>}gi;
+    $text =~ s{\[補\]|[☆≫»]|&gt;&gt;}{<i class="s-icon minor"><span class="raw">[補]</span></i>}gi;
+    $text =~ s{\[宣\]|[□☐☑🗨]}{<i class="s-icon active"><span class="raw">[宣]</span></i>}gi;
   }
   
   return $text;
@@ -219,8 +307,33 @@ sub data_update_chara {
   if($ver < 1.23000){
     $pc{raceAbilitySelect1} = $pc{raceAbilityLv6}  =~ s/^［|］$//gr;
     $pc{raceAbilitySelect2} = $pc{raceAbilityLv11} =~ s/^［|］$//gr;
-    $pc{raceAbilitySelect2} = $pc{raceAbilityLv16} =~ s/^［|］$//gr;
+    $pc{raceAbilitySelect3} = $pc{raceAbilityLv16} =~ s/^［|］$//gr;
     if($pc{race} eq 'ルーンフォーク（戦闘用ルーンフォーク）'){ $pc{race} = 'ルーンフォーク（戦闘型ルーンフォーク）' }
+  }
+  if($ver < 1.24011){
+    $pc{'craftEnhance'.$_} =~ s/^ヴジャドーアイ$/ヴジャトーアイ/ foreach (16..17);
+  }
+  if($ver < 1.24024){
+    if($pc{money}   =~ /^(?:自動|auto)$/i){ $pc{moneyAuto  } = 1; $pc{money  } = commify $pc{moneyTotal}; }
+    if($pc{deposit} =~ /^(?:自動|auto)$/i){ $pc{depositAuto} = 1; $pc{deposit} = commify($pc{depositTotal}).'／'.commify($pc{debtTotal}); }
+  }
+  if($ver < 1.25008){
+    foreach(1..3){
+      foreach my $num (1..$pc{armourNum}){
+        if($pc{"defTotal${_}CheckArmour${num}"}){
+          $pc{"evasionClass$_"} = $pc{evasionClass};
+          $pc{defenseNum} = $_;
+          last;
+        }
+      }
+    }
+    if($pc{evasionClass} && !$pc{evasionClass1}.$pc{evasionClass2}.$pc{evasionClass3}){
+      $pc{evasionClass1} = $pc{evasionClass};
+    }
+    if($pc{defenseNum} < 2){ $pc{defenseNum} = 2 }
+  }
+  if($ver < 1.25010){
+    $pc{mobilityLimited} = $pc{mobilityTotal} if $pc{mobilityLimited} > $pc{mobilityTotal};
   }
   $pc{ver} = $main::ver;
   $pc{lasttimever} = $ver;

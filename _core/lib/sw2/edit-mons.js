@@ -2,9 +2,9 @@
 const gameSystem = 'sw2';
 
 window.onload = function() {
-  nameSet();
+  setName();
   rewriteMountLevel();
-  selectInputCheck('taxa',form.taxa,'その他')
+  selectInputCheck(form.taxa,'その他')
   checkMount();
 
   changeColor();
@@ -26,7 +26,7 @@ function formCheck(){
 }
 
 // 名前 ----------------------------------------
-function nameSet(){
+function setName(){
   let m = ruby(form.monsterName.value);
   let c = ruby(form.characterName.value);
   document.querySelector('#header-menu > h2 > span').innerHTML = c && m ? `${c}<small>（${m}）</small>` : (c || m || '(名称未入力)');
@@ -114,6 +114,9 @@ function checkMountLevel(){
 }
 function rewriteMountLevel(level){
   level ||= form.lvMin.value;
+  document.querySelectorAll("#status-table tbody tr th:first-child").forEach(obj => {
+    obj.textContent = '';
+  });
   document.querySelectorAll("#status-table tbody tr:first-child th:first-child").forEach(obj => {
     obj.textContent = level;
     obj.classList.toggle('current', level == form.lv.value);
@@ -147,8 +150,8 @@ function addStatusInsert(target, num, copy){
     "defense"    : copy        ? form[`status${copy}${lv}Defense`     ].value : '',
     "hp"         : copy        ? form[`status${copy}${lv}Hp`          ].value : '',
     "mp"         : copy        ? form[`status${copy}${lv}Mp`          ].value : '',
-    "vit"        : copy        ? form[`status${copy}${lv}Vit`         ].value : '',
-    "mnd"        : copy        ? form[`status${copy}${lv}Mnd`         ].value : '',
+    "vit"        : copy        ? form[`status${copy}${lv}Vit`         ].value : (num == 1 ? '' : '―'),
+    "mnd"        : copy        ? form[`status${copy}${lv}Mnd`         ].value : (num == 1 ? '' : '―'),
   };
   let tr = document.createElement('tr');
   tr.setAttribute('id',idNumSet('status-row',lv));
@@ -157,20 +160,20 @@ function addStatusInsert(target, num, copy){
     <td ${ lv ? '' : `class="handle"`}></td>
     <td ${ lv ? 'class="name"' : ``} data-style="${num}">${ lv ? form[`status${num}Style`].value : `<input name="status${num}${lv}Style" type="text" value="${ini.style}" oninput="checkStyle(${num}${lv})">` }</td>
     <td>
-      <input name="status${num}${lv}Accuracy" type="text" oninput="calcAcc(${num}${lv})" value="${ini.accuracy}"><span class="monster-only calc-only"><br>
-      (<input name="status${num}${lv}AccuracyFix" type="text" oninput="calcAccF(${num}${lv})" value="${ini.accuracyFix}">)</span>
+      <input name="status${num}${lv}Accuracy" type="text" oninput="calcAcc('${num}${lv}')" value="${ini.accuracy}"><span class="monster-only calc-only"><br>
+      (<input name="status${num}${lv}AccuracyFix" type="text" oninput="calcAccF('${num}${lv}')" value="${ini.accuracyFix}">)</span>
     </td>
     <td><input name="status${num}${lv}Damage" type="text" value="${ini.damage}"></td>
     <td>
-      <input name="status${num}${lv}Evasion" type="text" oninput="calcEva(${num}${lv})" value="${ini.evasion}"><span class="monster-only calc-only"><br>
-      (<input name="status${num}${lv}EvasionFix" type="text" oninput="calcEvaF(${num}${lv})" value="${ini.evasionFix}">)</span>
+      <input name="status${num}${lv}Evasion" type="text" oninput="calcEva('${num}${lv}')" value="${ini.evasion}"><span class="monster-only calc-only"><br>
+      (<input name="status${num}${lv}EvasionFix" type="text" oninput="calcEvaF('${num}${lv}')" value="${ini.evasionFix}">)</span>
     </td>
     <td><input name="status${num}${lv}Defense" type="text" value="${ini.defense}"></td>
     <td><input name="status${num}${lv}Hp" type="text" value="${ini.hp}"></td>
     <td><input name="status${num}${lv}Mp" type="text" value="${ini.mp}"></td>
     <td class="mount-only"><input name="status${num}${lv}Vit" type="text" value="${ini.vit}"></td>
     <td class="mount-only"><input name="status${num}${lv}Mnd" type="text" value="${ini.mnd}"></td>
-    <td>${ lv ? '' : `<span class="button" onclick="addStatus(${num}${lv});">複<br>製</span>` }</td>
+    <td>${ lv ? '' : `<span class="button" onclick="addStatus('${num}${lv}');">複<br>製</span>` }</td>
   `;
   target.appendChild(tr, target);
 }
@@ -178,80 +181,82 @@ function addStatusInsert(target, num, copy){
 function delStatus(){
   let num = Number(form.statusNum.value);
   if(num > 1){
-    if(form[`status${num}Style`].value || form[`status${num}Accuracy`].value || form[`status${num}AccuracyFix`].value || form[`status${num}Evasion`].value || form[`status${num}EvasionFix`].value || form[`status${num}Defense`].value || form[`status${num}Hp`].value || form[`status${num}Mp`].value){
-      if (!confirm(delConfirmText)) return false;
+    let hasValue = false;
+    for (const node of document.querySelectorAll(`#status-table tbody tr:last-child input`)){
+      if(
+        node.value !== '' &&
+        !(/Damage$/.test(node.getAttribute('name')) && node.value === '2d+') &&
+        !(/Vit$/.test(node.getAttribute('name')) && node.value === '―') &&
+        !(/Mnd$/.test(node.getAttribute('name')) && node.value === '―')
+      ){
+        hasValue = true; break;
+      }
     }
-    document.querySelectorAll("#status-table tbody").forEach(table => {
-      table.deleteRow(-1);
+    if(hasValue){
+      if (!confirm(delConfirmText)){ return false; }
+    }
+    document.querySelectorAll("#status-table tbody tr:last-child").forEach(target => {
+      target.remove();
     });
     num--;
     form.statusNum.value = num;
   }
 }
 // ソート
-let statusSortable = Sortable.create(document.querySelector('#status-table tbody'), {
-  group: "status",
-  dataIdAttr: 'id',
-  animation: 150,
-  handle: '.handle',
-  filter: 'thead,tfoot',
-  ghostClass: 'sortable-ghost',
-  onUpdate: function (evt) {
-    const order = statusSortable.toArray();
-    let num = 1;
-    for(let id of order) {
-      if(document.getElementById(id)){
-        document.querySelector(`#${id} [name$="Style"]`      ).setAttribute('name',`status${num}Style`);
-        document.querySelector(`#${id} [name$="Accuracy"]`   ).setAttribute('name',`status${num}Accuracy`);
-        document.querySelector(`#${id} [name$="AccuracyFix"]`).setAttribute('name',`status${num}AccuracyFix`);
-        document.querySelector(`#${id} [name$="Damage"]`     ).setAttribute('name',`status${num}Damage`);
-        document.querySelector(`#${id} [name$="Evasion"]`    ).setAttribute('name',`status${num}Evasion`);
-        document.querySelector(`#${id} [name$="EvasionFix"]` ).setAttribute('name',`status${num}EvasionFix`);
-        document.querySelector(`#${id} [name$="Defense"]`    ).setAttribute('name',`status${num}Defense`);
-        document.querySelector(`#${id} [name$="Hp"]`         ).setAttribute('name',`status${num}Hp`);
-        document.querySelector(`#${id} [name$="Mp"]`         ).setAttribute('name',`status${num}Mp`);
-        document.querySelector(`#${id} [name$="Vit"]`         ).setAttribute('name',`status${num}Vit`);
-        document.querySelector(`#${id} [name$="Mnd"]`         ).setAttribute('name',`status${num}Mnd`);
-        document.querySelector(`#${id} [name$="Style"]`      ).setAttribute('oninput',`checkStyle(${num})`);
-        document.querySelector(`#${id} [name$="Accuracy"]`   ).setAttribute('oninput',`calcAcc(${num})`);
-        document.querySelector(`#${id} [name$="AccuracyFix"]`).setAttribute('oninput',`calcAccF(${num})`);
-        document.querySelector(`#${id} [name$="Evasion"]`    ).setAttribute('oninput',`calcEva(${num})`);
-        document.querySelector(`#${id} [name$="EvasionFix"]` ).setAttribute('oninput',`calcEvaF(${num})`);
-        document.querySelector(`#${id} span[onclick]`        ).setAttribute('onclick',`addStatus(${num})`);
+(() => {
+  let sortable = Sortable.create(document.querySelector('#status-table tbody'), {
+    dataIdAttr: 'id',
+    animation: 150,
+    handle: '.handle',
+    filter: 'thead,tfoot',
+    onUpdate: function (evt) {
+      const order = sortable.toArray();
+      let num = 1;
+      for(let id of order) {
+        const row = document.querySelector(`tr#${id}`);
+        if(!row) continue;
+        row.querySelectorAll('[name]').forEach(inputField => {
+          const beforeName = inputField.getAttribute('name');
+          const afterName = beforeName.replace(/^(status)\d+(.+)$/, `$1${num}$2`);
+          inputField.setAttribute('name', afterName)
+        });
+        row.querySelectorAll('[oninput]').forEach(inputField => {
+          const beforeName = inputField.getAttribute('oninput');
+          const afterName = beforeName.replace(/\(\d+\)/, `(${num})`);
+          inputField.setAttribute('oninput', afterName)
+        });
+        row.querySelector(`span[onclick]`).setAttribute('onclick',`addStatus(${num})`);
         num++;
       }
-    }
-    const moved  = evt.item.id;
-    const before = evt.item.previousElementSibling ? evt.item.previousElementSibling.id : '';
-    document.querySelectorAll("#status-table tbody").forEach(obj => {
-      const lv = obj.dataset.lv;
-      if(lv){
-        if(before){
-          document.getElementById(before+'-'+lv).after(document.getElementById(moved+'-'+lv));
-        }
-        else {
-          document.getElementById(`status-tbody${lv}`).prepend(document.getElementById(moved+'-'+lv))
-        }
-        let num = 1;
-        for(let id of order) {
-          if(document.getElementById(id)){
-            document.querySelector(`#${id}-${lv} [name$="Accuracy"]`   ).setAttribute('name',`status${num}-${lv}Accuracy`);
-            document.querySelector(`#${id}-${lv} [name$="Damage"]`     ).setAttribute('name',`status${num}-${lv}Damage`);
-            document.querySelector(`#${id}-${lv} [name$="Evasion"]`    ).setAttribute('name',`status${num}-${lv}Evasion`);
-            document.querySelector(`#${id}-${lv} [name$="Defense"]`    ).setAttribute('name',`status${num}-${lv}Defense`);
-            document.querySelector(`#${id}-${lv} [name$="Hp"]`         ).setAttribute('name',`status${num}-${lv}Hp`);
-            document.querySelector(`#${id}-${lv} [name$="Mp"]`         ).setAttribute('name',`status${num}-${lv}Mp`);
-            document.querySelector(`#${id}-${lv} [name$="Vit"]`         ).setAttribute('name',`status${num}-${lv}Vit`);
-            document.querySelector(`#${id}-${lv} [name$="Mnd"]`         ).setAttribute('name',`status${num}-${lv}Mnd`);
-            document.querySelector(`#${id}-${lv} .name`).dataset.style = num;
+      const moved  = evt.item.id;
+      const before = evt.item.previousElementSibling ? evt.item.previousElementSibling.id : '';
+      document.querySelectorAll("#status-table tbody").forEach(obj => {
+        const lv = obj.dataset.lv;
+        if(lv){
+          if(before){
+            document.getElementById(before+'-'+lv).after(document.getElementById(moved+'-'+lv));
+          }
+          else {
+            document.getElementById(`status-tbody${lv}`).prepend(document.getElementById(moved+'-'+lv))
+          }
+          let num = 1;
+          for(let id of order) {
+            const row = document.querySelector(`tr#${id}-${lv}`);
+            if(!row) continue;
+            row.querySelectorAll('[name]').forEach(inputField => {
+              const beforeName = inputField.getAttribute('name');
+              const afterName = beforeName.replace(/^(status)\d+-(.+)$/, `$1${num}-$2`);
+              inputField.setAttribute('name', afterName)
+            });
+            row.querySelector(`.name`).dataset.style = num;
             num++;
           }
         }
-      }
-    });
-    rewriteMountLevel();
-  }
-});
+      });
+      rewriteMountLevel();
+    }
+  });
+})();
 //
 function statusTextInputToggle(){
   const on = form.statusTextInput.checked ? 1 : form.mount.checked ? 1 : 0;
@@ -288,44 +293,12 @@ function delLoots(){
     }
     const listNum  = document.getElementById("loots-num");
     const listItem = document.getElementById("loots-item");
-    listNum.removeChild(listNum.lastElementChild);
-    listItem.removeChild(listItem.lastElementChild);
+    listNum.lastElementChild.remove();
+    listItem.lastElementChild.remove();
     num--;
     form.lootsNum.value = num;
   }
 }
 // ソート
-let lootsNumSortable = Sortable.create(document.querySelector('#loots-num'), {
-  group: "loots",
-  dataIdAttr: 'id',
-  animation: 150,
-  handle: '.handle',
-  ghostClass: 'sortable-ghost',
-  onUpdate: function (evt) {
-    const order = lootsNumSortable.toArray();
-    let num = 1;
-    for(let id of order) {
-      if(document.getElementById(id)){
-        document.querySelector(`#${id} input`).setAttribute('name',`loots${num}Num`);
-        num++;
-      }
-    }
-  }
-});
-let lootsItemSortable = Sortable.create(document.querySelector('#loots-item'), {
-  group: "loots",
-  dataIdAttr: 'id',
-  animation: 150,
-  handle: '.handle',
-  ghostClass: 'sortable-ghost',
-  onUpdate: function (evt) {
-    const order = lootsItemSortable.toArray();
-    let num = 1;
-    for(let id of order) {
-      if(document.getElementById(id)){
-        document.querySelector(`#${id} input`).setAttribute('name',`loots${num}Item`);
-        num++;
-      }
-    }
-  }
-});
+setSortable('loots','#loots-num');
+setSortable('loots','#loots-item');

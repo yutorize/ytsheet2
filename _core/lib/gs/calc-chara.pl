@@ -229,11 +229,11 @@ sub data_calc {
   
   #### エスケープ --------------------------------------------------
   $pc{$_} = pcEscape($pc{$_}) foreach (keys %pc);
-  $pc{tags} = pcTagsEscape($pc{tags});
+  $pc{tags} = normalizeHashtags($pc{tags});
   
   ### 最終参加卓 --------------------------------------------------
   foreach my $i (reverse 1 .. $pc{historyNum}){
-    if($pc{"history${i}Gm"} && $pc{"history${i}Title"}){ $pc{lastSession} = tagDelete tagUnescape $pc{"history${i}Title"}; last; }
+    if($pc{"history${i}Gm"} && $pc{"history${i}Title"}){ $pc{lastSession} = removeTags unescapeTags $pc{"history${i}Title"}; last; }
   }
 
   ### newline --------------------------------------------------
@@ -247,7 +247,7 @@ sub data_calc {
   my $raceBase = ($pc{raceBase} && $pc{raceBaseFree}) ? "$pc{raceBase}($pc{raceBaseFree})" : $pc{raceBase} || $pc{raceBaseFree};
   $race     =~ s/[|｜]([^|｜]+?)《.+?》/$1/g;
   $raceBase =~ s/[|｜]([^|｜]+?)《.+?》/$1/g;
-  my $faith = tagDelete tagUnescape $pc{faith};
+  my $faith = removeTags unescapeTags $pc{faith};
   $::newline = "$pc{id}<>$::file<>".
                "$pc{birthTime}<>$::now<>$charactername<>$pc{playerName}<>$pc{group}<>".
                "$pc{image}<> $pc{tags} <>$pc{hide}<>$pc{lastSession}<>".

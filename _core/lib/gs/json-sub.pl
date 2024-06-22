@@ -15,7 +15,7 @@ sub addJsonData {
   }
   ### キャラクター --------------------------------------------------
   else {
-    %pc = data_update_chara(\%pc);
+    %pc = data_update_chara(\%pc) if $pc{ver};
     ## 簡易プロフィール
     my @classes;
     foreach (@data::class_names){
@@ -31,11 +31,10 @@ sub addJsonData {
     my $classes = "職業:${class_text}";
     $pc{sheetDescriptionS} = $base."\n".$classes;
     $pc{sheetDescriptionM} = $base."\n".$sub."\n".$classes."\n";
-    
-    ## ゆとチャユニット用ステータス
-    $pc{unitStatus} = [
-    ];
   }
+  
+  ## ユニット（コマ）用ステータス
+  $pc{unitStatus} = createUnitStatus(\%pc);
   
   return \%pc;
 }

@@ -21,16 +21,12 @@ my %pc = ();
 if($id){
   ($file, $type, $author) = getfile_open($id);
 
-  my $datadir;
-  if   ($set::game eq 'sw2' && $type eq 'm'){ $datadir = $set::mons_dir; }
-  elsif($set::game eq 'sw2' && $type eq 'i'){ $datadir = $set::item_dir; }
-  elsif($set::game eq 'sw2' && $type eq 'a'){ $datadir = $set::arts_dir; }
-  elsif($set::game eq 'ms'  && $type eq 'c'){ $datadir = $set::clan_dir; }
-  else { $datadir = $set::char_dir; }
+  changeFileByType($type);
+  my $dir = $set::char_dir;
 
   my $datatype = ($::in{log}) ? 'logs' : 'data';
   my $hit = 0;
-  open my $IN, '<', "${datadir}${file}/${datatype}.cgi" or viewNotFound($datadir);
+  open my $IN, '<', "${dir}${file}/${datatype}.cgi" or viewNotFound($dir);
   while (<$IN>){
     if($datatype eq 'logs'){
       if (index($_, "=") == 0){
@@ -49,7 +45,7 @@ if($id){
   if($pc{forbidden}){
     my $LOGIN_ID = check;
     if($::in{log}){
-      ($pc{protect}, $pc{forbidden}) = protectTypeGet("${datadir}${file}/data.cgi");
+      ($pc{protect}, $pc{forbidden}) = getProtectType("${dir}${file}/data.cgi");
     }
     unless(
       ($pc{protect} eq 'none') || 
@@ -67,6 +63,14 @@ elsif($::in{url}){
   require $set::lib_convert;
   %pc = dataConvert($::in{url});
   $type = $pc{type};
+  if(!$pc{ver}){
+    require $set::lib_calc_char;
+    %pc = data_calc(\%pc);
+  }
+  foreach(keys %pc){
+    $pc{$_} = pcEscape($pc{$_});
+    delete $pc{$_} if($pc{$_} eq '');
+  }
 }
 
 
@@ -88,6 +92,7 @@ else {
 
 ### 出力 #############################################################################################
 my $json = JSON::PP->new->canonical(1)->encode( \%pc );
+print "Access-Control-Allow-Origin: *\n";
 if($callback eq "") {
   print "Content-type: application/json\n\n";
   print $json;

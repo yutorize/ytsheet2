@@ -115,7 +115,7 @@ if($group_query && $::in{group} ne 'all') {
 $INDEX->param(group => $groups{$group_query}{name});
 
 ## タグ検索
-my $tag_query = pcTagsEscape(decode('utf8', $::in{tag}));
+my $tag_query = normalizeHashtags(decode('utf8', $::in{tag}));
 if($tag_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){16}[^<]*? \Q$tag_query\E / } @list; }
 $INDEX->param(tag => $tag_query);
 
@@ -220,6 +220,13 @@ my $rank_query = decode('utf8', $::in{rank});
 my %rank_sort;
 my @rank_list;
 foreach (@set::adventurer_rank){
+  $rank_sort{@$_[0]} = @$_[1];
+  push(@rank_list, {
+    "NAME" => @$_[0],
+    "SELECTED" => $rank_query eq @$_[0] ? 'selected' : '',
+  });
+}
+foreach (@set::barbaros_rank){
   $rank_sort{@$_[0]} = @$_[1];
   push(@rank_list, {
     "NAME" => @$_[0],
@@ -339,10 +346,10 @@ foreach (@list) {
     $race = "<span class=\"small\">$race</span>" if length($race) >= 6;
     
     #性別
-    $gender = genderConvert($gender);
+    $gender = stylizeGender($gender);
     
     #年齢
-    $age = ageConvert($age);
+    $age = stylizeAge($age);
 
     #ランク
     $rank = "<span class=\"small\">$rank</span>" if length($rank) >= 6;

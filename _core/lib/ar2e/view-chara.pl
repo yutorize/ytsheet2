@@ -17,7 +17,7 @@ $SHEET = HTML::Template->new( filename => $set::skin_sheet, utf8 => 1,
   die_on_bad_params => 0, die_on_missing_include => 0, case_sensitive => 1, global_vars => 1);
 
 ### キャラクターデータ読み込み #######################################################################
-our %pc = pcDataGet();
+our %pc = getSheetData();
 
 ### タグ置換前処理 ###################################################################################
 ### 閲覧禁止データ --------------------------------------------------
@@ -186,9 +186,9 @@ if($pc{ver}){
   foreach (keys %pc) {
     next if($_ =~ /^image/);
     if($_ =~ /^(?:items|freeNote|freeHistory|cashbook)$/){
-      $pc{$_} = tagUnescapeLines($pc{$_});
+      $pc{$_} = unescapeTagsLines($pc{$_});
     }
-    $pc{$_} = tagUnescape($pc{$_});
+    $pc{$_} = unescapeTags($pc{$_});
 
     $pc{$_} = noiseTextTag $pc{$_} if $pc{forbiddenMode};
   }
@@ -265,15 +265,12 @@ foreach(split(/ /, $pc{areaTags})){
 $SHEET->param(AreaTags => \@areatags);
 
 ### セリフ --------------------------------------------------
-$pc{words} =~ s/<br>/\n/g;
-$pc{words} =~ s/^([「『（])/<span class="brackets">$1<\/span>/gm;
-$pc{words} =~ s/(.+?(?:[，、。？」』）]|$))/<span>$1<\/span>/g;
-$pc{words} =~ s/\n<span>　/\n<span>/g;
-$pc{words} =~ s/\n/<br>/g;
-$SHEET->param(words => $pc{words});
-$SHEET->param(wordsX => ($pc{wordsX} eq '左' ? 'left:0;' : 'right:0;'));
-$SHEET->param(wordsY => ($pc{wordsY} eq '下' ? 'bottom:0;' : 'top:0;'));
-
+{
+  my ($words, $x, $y) = stylizeWords($pc{words},$pc{wordsX},$pc{wordsY});
+  $SHEET->param(words => $words);
+  $SHEET->param(wordsX => $x);
+  $SHEET->param(wordsY => $y);
+}
 ### 種族名 --------------------------------------------------
 if($pc{race} eq 'free'){ $pc{race} = $pc{raceFree} }
 my $race_length = length($pc{race});
@@ -282,8 +279,9 @@ if($race_length > 10){ $pc{race} = '<span class="thin">'.$pc{race}.'</span>'; }
 $SHEET->param(race => $pc{race});
 
 ### ステータス --------------------------------------------------
-$SHEET->param(hpAdd => $pc{hpAdd} + $pc{hpAuto});
-$SHEET->param(mpAdd => $pc{mpAdd} + $pc{mpAuto});
+$SHEET->param(hpAdd => addNum($pc{hpAdd} + $pc{hpAuto}));
+$SHEET->param(mpAdd => addNum($pc{mpAdd} + $pc{mpAuto}));
+$SHEET->param(fateAdd => addNum($pc{fateAdd}));
 
 ### ライフパス --------------------------------------------------
 if($pc{race} eq 'アーシアン' && $pc{lifepathEarthian}){
@@ -297,7 +295,7 @@ if($data::class{$pc{classMain}}{type} eq 'fate'){
 ### コネクション --------------------------------------------------
 my @connections;
 foreach (1 .. $pc{connectionsNum}){
-  next if(!$pc{'connection'.$_.'Name'}  && !$pc{'connection'.$_.'Relation'});
+  next if !existsRow "connection$_",'Name','Relation','Note';
   push(@connections, {
     NAME     => $pc{'connection'.$_.'Name'},
     RELATION => $pc{'connection'.$_.'Relation'},
@@ -309,7 +307,7 @@ $SHEET->param(Connections => \@connections);
 ### 誓約 --------------------------------------------------
 my @geises;
 foreach (1 .. $pc{geisesNum}){
-  next if(!$pc{'geis'.$_.'Name'}  && !$pc{'geis'.$_.'Cost'}  && !$pc{'geis'.$_.'Note'});
+  next if !existsRow "geis$_",'Name','Cost','Note';
   push(@geises, {
     NAME => $pc{'geis'.$_.'Name'},
     COST => $pc{'geis'.$_.'Cost'},
@@ -400,11 +398,7 @@ $SHEET->param(Armours => \@armours);
 ### スキル --------------------------------------------------
 my @skills; my $skillCount = 0;
 foreach (1 .. $pc{skillsNum}){
-  next if(
-    !$pc{'skill'.$_.'Name'}  && !$pc{'skill'.$_.'Lv'}     && !$pc{'skill'.$_.'Timing'} &&
-    !$pc{'skill'.$_.'Skill'} && !$pc{'skill'.$_.'Target'} && !$pc{'skill'.$_.'Range'}  &&
-    !$pc{'skill'.$_.'Cost'}  && !$pc{'skill'.$_.'Reqd'}   && !$pc{'skill'.$_.'Note'}
-  );
+  next if !existsRow "skill$_",'Name','Lv','Timing','Skill','Target','Range','Cost','Reqd','Note';
   push(@skills, {
     TYPE     => checkType($pc{'skill'.$_.'Type'}),
     CATEGORY => checkCategory($pc{'skill'.$_.'Category'}),
@@ -523,7 +517,7 @@ my @history;
 my $h_num = 0;
 $pc{history0Title} = 'キャラクター作成';
 foreach (0 .. $pc{historyNum}){
-  #next if !$pc{'history'.$_.'Title'};
+  next if(!existsRow "history${_}",'Date','Title','Exp','Payment','Money','Gm','Member','Note');
   $h_num++ if $pc{'history'.$_.'Gm'};
   if ($set::log_dir && $pc{'history'.$_.'Date'} =~ s/([^0-9]*?_[0-9]+(?:#[0-9a-zA-Z]+?)?)$//){
     my $room = $1;
@@ -538,17 +532,14 @@ foreach (0 .. $pc{historyNum}){
   foreach my $mem (split(/　/,$pc{'history'.$_.'Member'})){
     $members .= '<span>'.$mem.'</span>';
   }
-  $pc{'history'.$_.'Money'} =~ s/([0-9]+)/$1<wbr>/g;
-  $pc{'history'.$_.'Money'} =~ s/([0-9]+)/commify($1);/ge;
+  $pc{'history'.$_.'Money'} = formatHistoryFigures($pc{'history'.$_.'Money'});
   push(@history, {
     NUM     => ($pc{'history'.$_.'Gm'} ? $h_num : ''),
     DATE    => $pc{'history'.$_.'Date'},
     TITLE   => $pc{'history'.$_.'Title'},
     EXP     => $pc{'history'.$_.'Exp'},
     PAYMENT => $pc{'history'.$_.'Payment'},
-    HONOR   => $pc{'history'.$_.'Honor'},
     MONEY   => $pc{'history'.$_.'Money'},
-    GROW    => $pc{'history'.$_.'Grow'},
     GM      => $pc{'history'.$_.'Gm'},
     MEMBER  => $members,
     NOTE    => $pc{'history'.$_.'Note'},
@@ -564,8 +555,8 @@ $pc{items} =~ s/[@＠]\[\s*?((?:[\+\-\*\/]?[0-9]+)+)\s*?\]/<i class="weight">$1<
 $SHEET->param(items => $pc{items});
 
 ### ゴールド --------------------------------------------------
-if($pc{money} =~ /^(?:自動|auto)$/i){
-  $SHEET->param(money => $pc{moneyTotal});
+if($pc{moneyAuto}){
+  $SHEET->param(money => commify($pc{moneyTotal}));
 }
 #if($pc{deposit} =~ /^(?:自動|auto)$/i){
 #  $SHEET->param(deposit => $pc{depositTotal}.' G ／ '.$pc{debtTotal});
@@ -599,13 +590,13 @@ if($pc{forbidden} eq 'all' && $pc{forbiddenMode}){
   $SHEET->param(titleName => '非公開データ');
 }
 else {
-  $SHEET->param(titleName => tagDelete nameToPlain($pc{characterName}||"“$pc{aka}”"));
+  $SHEET->param(titleName => removeTags nameToPlain($pc{characterName}||"“$pc{aka}”"));
 }
 
 ### OGP --------------------------------------------------
 $SHEET->param(ogUrl => url().($::in{url} ? "?url=$::in{url}" : "?id=$::in{id}"));
 if($pc{image}) { $SHEET->param(ogImg => $pc{imageURL}); }
-$SHEET->param(ogDescript => tagDelete "種族:$pc{race}　性別:$pc{gender}　年齢:$pc{age}　クラス:$pc{classMain}／$pc{classSupport}".($pc{classTitle}?"／$pc{classTitle}":''));
+$SHEET->param(ogDescript => removeTags "種族:$pc{race}　性別:$pc{gender}　年齢:$pc{age}　クラス:$pc{classMain}／$pc{classSupport}".($pc{classTitle}?"／$pc{classTitle}":''));
 
 ### バージョン等 --------------------------------------------------
 $SHEET->param(ver => $::ver);

@@ -1,32 +1,8 @@
-/* MIT License
+"use strict";
 
-Copyright 2020 @Shunshun94
+var output = output || {};
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
- */
-var io = io || {};
-io.github = io.github || {};
-io.github.shunshun94 = io.github.shunshun94 || {};
-io.github.shunshun94.trpg = io.github.shunshun94.trpg || {};
-io.github.shunshun94.trpg.ytsheet = io.github.shunshun94.trpg.ytsheet || {};
-
-io.github.shunshun94.trpg.ytsheet._getBloodPathBloodArts = (json) => {
+output._getBloodPathBloodArts = (json) => {
   let cursor = 1;
   const bloodartsData = [];
   while(json[`bloodarts${cursor}Name`]) {
@@ -40,7 +16,7 @@ io.github.shunshun94.trpg.ytsheet._getBloodPathBloodArts = (json) => {
   }
   return bloodartsData;
 };
-io.github.shunshun94.trpg.ytsheet._getBloodPathArts = (json) => {
+output._getBloodPathArts = (json) => {
   let cursor = 1;
   const artsData = [];
   while(json[`arts${cursor}Name`]) {
@@ -57,7 +33,7 @@ io.github.shunshun94.trpg.ytsheet._getBloodPathArts = (json) => {
   return artsData;
 };
 
-io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2BloodPathPC = (json) => {
+output.generateCharacterTextOfBloodPathPC = (json) => {
   const result = [];
 
   result.push(`キャラクター名：${json.characterName}`);
@@ -106,14 +82,14 @@ io.github.shunshun94.trpg.ytsheet.generateCharacterTextFromYtSheet2BloodPathPC =
   result.push('');
 
   result.push('■血威■\n');
-  const bloodartsData = io.github.shunshun94.trpg.ytsheet._getBloodPathBloodArts(json);
-  result.push(io.github.shunshun94.trpg.ytsheet._convertList(bloodartsData, io.github.shunshun94.trpg.ytsheet.consts.BLOODARTS_COLUMNS, ' / '));
+  const bloodartsData = output._getBloodPathBloodArts(json);
+  result.push(output._convertList(bloodartsData, output.consts.BLOODARTS_COLUMNS, ' / '));
   result.push('');
   result.push('');
 
   result.push('■特技■\n');
-  const artsData = io.github.shunshun94.trpg.ytsheet._getBloodPathArts(json);
-  result.push(io.github.shunshun94.trpg.ytsheet._convertList(artsData, io.github.shunshun94.trpg.ytsheet.consts.ARTS_COLUMNS, ' / '));
+  const artsData = output._getBloodPathArts(json);
+  result.push(output._convertList(artsData, output.consts.ARTS_COLUMNS, ' / '));
   result.push('');
   result.push('');
   

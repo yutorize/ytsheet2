@@ -2,7 +2,6 @@
 use strict;
 #use warnings;
 use utf8;
-use POSIX qw(ceil);
 
 require $set::data_syndrome;
 my %awakens;
@@ -137,14 +136,14 @@ sub data_calc {
       }
       $stt;
     };
-    if($pc{comboCalcOff}){
+    if($pc{"combo${num}Manual"}){
       $lv = 0; $stt = 0;
     }
     foreach (1..5) {
       my $dadd = $pc{"combo${num}DiceAdd".$_};
       my $fadd = $pc{"combo${num}FixedAdd".$_};
-      $pc{"combo${num}Dice" .$_} = ($stt && $dadd) ? "$stt+$dadd" : ($stt||$dadd) if !$pc{"combo${num}Dice" .$_};
-      $pc{"combo${num}Fixed".$_} = ($lv  && $fadd) ? "$lv+$fadd"  : ($lv ||$fadd) if !$pc{"combo${num}Fixed".$_};
+      $pc{"combo${num}Dice" .$_} = ($stt && $dadd) ? optimizeOperator("$stt+$dadd") : ($stt||$dadd) if !$pc{"combo${num}Dice" .$_};
+      $pc{"combo${num}Fixed".$_} = ($lv  && $fadd) ? optimizeOperator("$lv+$fadd" ) : ($lv ||$fadd) if !$pc{"combo${num}Fixed".$_};
     }
   }
   
@@ -244,12 +243,12 @@ sub data_calc {
   
   #### エスケープ --------------------------------------------------
   $pc{$_} = pcEscape($pc{$_}) foreach (keys %pc);
-  $pc{tags} = pcTagsEscape($pc{tags});
+  $pc{tags} = normalizeHashtags($pc{tags});
   $_ = pcEscape($_) foreach (@dloises);
   
   ### 最終参加卓 --------------------------------------------------
   foreach my $i (reverse 1 .. $pc{historyNum}){
-    if($pc{"history${i}Gm"} && $pc{"history${i}Title"}){ $pc{lastSession} = tagDelete tagUnescape $pc{"history${i}Title"}; last; }
+    if($pc{"history${i}Gm"} && $pc{"history${i}Title"}){ $pc{lastSession} = removeTags unescapeTags $pc{"history${i}Title"}; last; }
   }
 
   ### newline --------------------------------------------------

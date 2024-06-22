@@ -81,7 +81,7 @@ if($set::simpleindex && $index_mode && $mode ne 'mylist') { #グループ見出�
   $INDEX->param(simpleIndex => 1);
 }
 else { #通常
-  open (my $FH, "<", $set::monslist);
+  open (my $FH, "<", $set::listfile);
   @list = <$FH>;
   close($FH);
 }
@@ -129,7 +129,7 @@ foreach (sort { $a->[1] cmp $b->[1] } @data::taxa){
 $INDEX->param(Taxa => \@taxalist);
 
 ## タグ検索
-my $tag_query = pcTagsEscape(decode('utf8', $::in{tag}));
+my $tag_query = normalizeHashtags(decode('utf8', $::in{tag}));
 if($tag_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){15}[^<]*? \Q$tag_query\E / } @list; }
 $INDEX->param(tag => $tag_query);
 

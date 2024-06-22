@@ -81,10 +81,6 @@ body:not(.mode-crc) .crc-only {
 }
 #syndrome-status thead th:nth-child(1)   { width: 3.5em; }
 #syndrome-status thead th:nth-last-child(-n+4) { width:   5em; }
-#syndrome-status input[type=radio] {
-  cursor: pointer;
-  transform: scale(1.5) translateY(.1em);
-}
 #syndrome-status tbody td.error {
   color: #c00;
   outline: 1px dotted #f00;
@@ -94,8 +90,21 @@ body:not(.mode-crc) .crc-only {
 #syndrome-status tbody.syndrome-rows tr.auto input {
   display: none;
 }
-#syndrome-status tbody.syndrome-rows tr:not(.auto) span {
+#syndrome-status tbody.syndrome-rows tr:not(.auto) td span {
   display: none;
+}
+#syndrome-status tbody .breed {
+  position: relative;
+  border-right-width: 1px;
+  border-right-style: solid;
+  line-height: 1;
+
+  > #breed-value:empty + span {
+    display: none;
+  }
+}
+#syndrome-status tbody .works-row .radio-button > input:not(:checked) + span {
+  opacity: 0.3;
 }
 #syndrome-status tr.pure + tr td:nth-child(n+3) input {
   display: none;
@@ -109,9 +118,12 @@ body:not(.mode-crc) .crc-only {
   background-color: rgba(255,0,0,0.1);
 }
 @media screen and (max-width:735px){
-  #syndrome-status thead th:nth-child(1)   { width: 0em; }
+  #syndrome-status thead th.breed {
+    width: 1.2em;
+    > span { display:none }
+  }
+  #breed-value + span { display:none; }
   #syndrome-status thead th:nth-last-child(-n+4) { width: 3.5em; }
-  #syndrome-status .syndrome-rows th { font-size: 0; line-height: 1; }
 }
 
 #sub-status input {
@@ -246,8 +258,6 @@ body:not(.mode-crc) .crc-only {
   margin: 0 -.13em;
   transform: scale(0.9);
 }
-@media screen and (max-width:850px){
-}
 @media screen and (max-width:735px){
   #status dl#status-table > *:nth-of-type(even) {
     background: none;
@@ -315,10 +325,12 @@ body:not(.mode-crc) .crc-only {
   padding-bottom: 4px;
 }
 
-#memory table tbody td:nth-child(1) { width: 1.5em; border-right-width: 1px; } /* ✔ */
-#memory table tbody td:nth-child(2) { width: 6.2em; border-right-width: 1px; } /* 関係 */
-#memory table tbody td:nth-child(3) { width: 14em; border-right-width: 1px; } /* 名前 */
-#memory table tbody td:nth-child(4) { width: 4em; border-right-width: 1px; } /* 感情 */
+#memory table tbody td {
+  &:nth-child(1) { width: 1.5em; border-right-width: 1px; } /* ✔ */
+  &:nth-child(2) { width: 6.2em; border-right-width: 1px; } /* 関係 */
+  &:nth-child(3) { width: 14em; border-right-width: 1px; } /* 名前 */
+  &:nth-child(4) { width: 4em; border-right-width: 1px; } /* 感情 */
+}
 #memory table thead tr th:first-child {
   padding-left: 0;
   text-align: center;
@@ -339,24 +351,28 @@ body:not(.mode-crc) .crc-only {
 @media screen and (max-width:735px){
   #lois { overflow-x: auto; }
   #lois table  { table-layout: fixed; white-space: nowrap; margin-top: .5em; }
-  #lois table colgroup col:nth-child(1) { width:   7em; } 
-  #lois table colgroup col:nth-child(2) { width:  10em; }
-  #lois table colgroup col:nth-child(3) { width:   6em; }
-  #lois table colgroup col:nth-child(4) { width: 1.5em; }
-  #lois table colgroup col:nth-child(5) { width:   6em; }
-  #lois table colgroup col:nth-child(6) { width:   3em; }
-  #lois table colgroup col:nth-child(7) { width:  14em; }
-  #lois table colgroup col:nth-child(8) { width: 2.6em; }
+  #lois table colgroup col {
+    &:nth-child(1) { width:   7em; } 
+    &:nth-child(2) { width:  10em; }
+    &:nth-child(3) { width:   6em; }
+    &:nth-child(4) { width: 1.5em; }
+    &:nth-child(5) { width:   6em; }
+    &:nth-child(6) { width:   3em; }
+    &:nth-child(7) { width:  14em; }
+    &:nth-child(8) { width: 2.6em; }
+  }
 
   #lois table tbody td span[data-state] { padding: .5em 0; }
 
   #memory { overflow-x: auto; }
   #memory table  { table-layout: fixed; white-space: nowrap; margin-top: .5em; }
-  #memory table thead th:nth-child(1) { width: 1.5em; } 
-  #memory table thead th:nth-child(2) { width:   7em; } 
-  #memory table thead th:nth-child(3) { width:  12em; }
-  #memory table thead th:nth-child(4) { width:   6em; }
-  #memory table thead th:nth-child(5) { width:  14em; }
+  #memory table thead th {
+    &:nth-child(1) { width: 1.5em; }
+    &:nth-child(2) { width:   7em; }
+    &:nth-child(3) { width:  12em; }
+    &:nth-child(4) { width:   6em; }
+    &:nth-child(5) { width:  14em; }
+  }
 }
 
 #effect {
@@ -367,7 +383,7 @@ body:not(.mode-crc) .crc-only {
 }
 #effect table thead th:nth-child(1) { width: 1.4em; }
 #effect table thead th:nth-child(2) { width:  auto; } /* 名称 */
-#effect table thead th:nth-child(3) { width:   2em; } /* Lv */
+#effect table thead th:nth-child(3) { width:   2em; } /* LV */
 #effect table thead th:nth-child(4) { width: 8.9em; } /* タイミング */
 #effect table thead th:nth-child(5) { width: 8.9em; } /* 技能 */
 #effect table thead th:nth-child(6) { width: 5.9em; } /* 難易度 */
@@ -421,151 +437,50 @@ body:not(.mode-crc) .crc-only {
   #effect table tbody tr {
     display: table-row;
   }
-  #effect table tbody td[rowspan] {
-    display: table-cell;
-  }
+  #effect table tbody td[rowspan],
   #effect table thead th:nth-child(2) {
     display: table-cell;
   }
   #effect table tbody td[colspan] div {
     grid-template-columns: max-content 6.5em max-content 3em max-content 1fr;
   }
-  #effect table thead th:nth-child(1) { width: 1.4em !important; }
-  #effect table thead th:nth-child(2) { width:  14em !important; } /* 名称 */
-  #effect table thead th:nth-child(3) { width: 3.5em !important; } /* Lv */
-  #effect table thead th:nth-child(4) { width:   8em !important; } /* タイミング */
-  #effect table thead th:nth-child(5) { width:   8em !important; } /* 技能 */
-  #effect table thead th:nth-child(6) { width:   5em !important; } /* 難易度 */
-  #effect table thead th:nth-child(7) { width:   6em !important; } /* 対象 */
-  #effect table thead th:nth-child(8) { width:   5em !important; } /* 射程 */
-  #effect table thead th:nth-child(9) { width:   4em !important; } /* 侵蝕値 */
-  #effect table thead th:nth-child(10){ width:   5em !important; } /* 制限 */
+  #effect table thead th {
+    &:nth-child(1) { width: 1.4em; }
+    &:nth-child(2) { width:  14em; } /* 名称 */
+    &:nth-child(3) { width: 3.5em; } /* LV */
+    &:nth-child(4) { width:   8em; } /* タイミング */
+    &:nth-child(5) { width:   8em; } /* 技能 */
+    &:nth-child(6) { width:   5em; } /* 難易度 */
+    &:nth-child(7) { width:   6em; } /* 対象 */
+    &:nth-child(8) { width:   5em; } /* 射程 */
+    &:nth-child(9) { width:   4em; } /* 侵蝕値 */
+    &:nth-child(10){ width:   5em; } /* 制限 */
+  }
+  #effect table tbody td {
+    border-left: hidden;
+    padding: .5em 0 0;
+    &[colspan] {
+      padding: 0 0 .5em;
+    }
+  }
   #effect table tbody td b {
     white-space: nowrap;
   }
-  #effect table tbody td:nth-child(3) input { min-width: 2em; } /* Lv */
-  #skills table tbody td {
-    padding: .5em 0 0;
-  }
-  #skills table tbody td[colspan] {
-    padding: 0 0 .5em;
-  }
-}
-.trash-box {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  width: calc((100vw - 940px) / 2 );
-}
-.trash-box::before {
-  content: "\e872";
-  display: block;
-  position: absolute;
-  top: 30vh;
-  left: 0;
-  right: 0;
-  bottom: auto;
-  margin:auto;
-  text-align: center;
-  font-family: "Material Symbols Outlined";
-  font-size: calc((100vw - 940px) / 2 * 0.5 );
-  opacity: 0.1;
-  pointer-events: none;
-  z-index: -1;
-}
-.trash-box table {
-  display: block;
-  position: absolute;
-  height: calc(70vh - 1.5em);
-  overflow: auto;
-  z-index: 2;
-}
-.trash-box table:empty::before {
-  display: block;
-  content: 'ここにドロップで削除\A（ページ移動するまで保留）';
-  margin-top: 1em;
-  white-space: pre;
-  text-align: center;
-}
-.trash-box table tbody {
-  display: block;
-  border-width: 1px;
-  border-style: solid;
-  border-radius: 5px;
-  margin: .2em;
-  cursor: move;
-}
-.trash-box table tbody tr,
-.trash-box table tbody td {
-  display: none;
-}
-.trash-box table tbody tr:first-child,
-.trash-box table tbody tr:first-child td:nth-child(2) {
-  border: none;
-  display: block;
-}
-.trash-box table tbody input {
-  padding: 1em .5em;
-  border-color: transparent;
-  background-color: transparent;
-  pointer-events: none;
-}
-.trash-box .annotate {
-  position: absolute;
-  bottom: 0;
-  font-size: 90%;
-}
-.trash-box .close-button {
-  position: absolute;
-  top: 2px;
-  right: 2px;
-  font-size: 1.2em;
-}
-.trash-box .close-button:hover {
-  opacity: 0.5;
-}
-@media screen and (max-width:1090px){
-  .trash-box  {
-    top: auto;
-    left: auto;
-    right: 0;
-    bottom: 2.3em;
-    width: 30vw;
-    height: 20vh;
-    z-index: 2;
-    background-color: var(--bg-color);
-  }
-  .trash-box  table {
-    height: calc(20vh - 1.5em);
-  }
-}
-@media screen and (max-width:735px){
-  .trash-box  {
-    width: 40vw;
-    height: 30vh;
-    bottom: 0;
-  }
-  .trash-box  table {
-    height: calc(30vh - 1.5em);
-  }
-  .trash-box table:empty::before {
-    display: block;
-    content: 'ここにドロップ\Aで削除\A（保存時まで保留）';
-  }
+  #effect table tbody td:nth-child(3) input { min-width: 2em; } /* LV */
 }
 
 #magic {
   overflow-x: auto;
   margin-top: var(--box-v-gap);
 }
-#magic table thead th:nth-child(1) { width: 1.4em; }
-#magic table thead th:nth-child(2) { width:  15em; } /* 名称 */
-#magic table thead th:nth-child(3) { width:   7em; } /* 種別 */
-#magic table thead th:nth-child(4) { width: 3.8em; } /* 経験点 */
-#magic table thead th:nth-child(5) { width: 5.5em; } /* 発動値 */
-#magic table thead th:nth-child(6) { width: 3.9em; } /* 侵蝕値 */
+#magic table thead th {
+  &:nth-child(1) { width: 1.4em; }
+  &:nth-child(2) { width:  15em; } /* 名称 */
+  &:nth-child(3) { width:   7em; } /* 種別 */
+  &:nth-child(4) { width: 3.8em; } /* 経験点 */
+  &:nth-child(5) { width: 5.5em; } /* 発動値 */
+  &:nth-child(6) { width: 3.9em; } /* 侵蝕値 */
+}
 #magic table thead th,
 #magic table tfoot th {
   font-size: 90%;
@@ -590,14 +505,16 @@ body:not(.mode-crc) .crc-only {
   #magic table tbody td[colspan] div {
     grid-template-columns: max-content 6.5em max-content 3em max-content 1fr;
   }
-  #magic table thead th:nth-child(1) { width: 1.4em; }
-  #magic table thead th:nth-child(2) { width:  15em; } /* 名称 */
-  #magic table thead th:nth-child(3) { width:   7em; } /* 種別 */
-  #magic table thead th:nth-child(4) { width: 3.8em; } /* 経験点 */
-  #magic table thead th:nth-child(5) { width: 5.5em; } /* 発動値 */
-  #magic table thead th:nth-child(6) { width: 3.9em; } /* 侵蝕値 */
-  #magic table thead th:nth-child(7) { width: 3.9em; } /* 侵蝕値 */
-  #magic table thead th:last-child   { width:  16em; } /* 効果 */
+  #magic table thead th {
+    &:nth-child(1) { width: 1.4em; }
+    &:nth-child(2) { width:  15em; } /* 名称 */
+    &:nth-child(3) { width:   7em; } /* 種別 */
+    &:nth-child(4) { width: 3.8em; } /* 経験点 */
+    &:nth-child(5) { width: 5.5em; } /* 発動値 */
+    &:nth-child(6) { width: 3.9em; } /* 侵蝕値 */
+    &:nth-child(7) { width: 3.9em; } /* 侵蝕値 */
+    &:last-child   { width:  16em; } /* 効果 */
+  }
 }
 
 #combo {
@@ -610,12 +527,36 @@ body:not(.mode-crc) .crc-only {
     "HNDL NAME COMB COMB"
     "HNDL   IN   IN  OUT"
     "HNDL NOTE NOTE  OUT"
+    "HNDL NOTE NOTE OTHR"
   ;
+  
+  &.slide-once {
+    animation-name: slide-in;
+    animation-duration: 0.2s;
+    animation-iteration-count: 1;
+    animation-timing-function: ease-in-out;
+  }
+}
+@keyframes slide-in {
+  0%   { transform: translateY(-100%); }
+  100% { transform: translateY(0);  }
 }
 #combo .combo-table .handle {
   grid-area: HNDL;
   display: grid;
   place-items: center;
+}
+#combo .combo-table .combo-other {
+  grid-area: OTHR;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 1px 2px .4rem;
+  
+  > .button {
+    font-size: 88%;
+    padding: 3px 4px 1px;
+    font-family: var(--font-proportional);
+  }
 }
 #combo .combo-table .combo-combo,
 #combo .combo-table .combo-in,
@@ -649,8 +590,6 @@ body:not(.mode-crc) .crc-only {
 #combo .combo-table .combo-in dl:nth-child(5) { flex-basis: 30%; }
 #combo .combo-table .combo-in dl:nth-child(6) { flex-basis: 26%; }
 #combo .combo-table .combo-in dl:nth-child(7) { flex-basis: 16%; }
-#combo .combo-table .combo-in dl dd {
-}
 
 #combo .combo-table .combo-out {
   padding-left: .5rem;
@@ -738,6 +677,7 @@ body:not(.mode-crc) .crc-only {
       "  IN   IN"
       " OUT  OUT"
       "NOTE NOTE"
+      "OTHR OTHR"
     ;
   }
   #combo .combo-table .combo-name {
@@ -758,7 +698,7 @@ body:not(.mode-crc) .crc-only {
   position: absolute;
   width: auto;
   height: auto;
-  background-color: var(--input-bg-color);
+  background-color: var(--bg-color);
   border: 1px solid var(--text-color);
   font-size: 80%;
   padding: 1.0rem;
@@ -819,15 +759,6 @@ body:not(.mode-crc) .crc-only {
   #items table thead th:nth-child(9) { width: 4.5em !important; } /* 射程 */
   #items table thead th:last-child   { width:  16em !important; } /* 解説 */
   #items table tbody td { width: auto !important; }
-}
-
-#free-note,
-#free-history {
-  padding-bottom: .3rem;
-}
-#free-note textarea,
-#free-history textarea {
-  height: 18em;
 }
 
 #history table colgroup col:first-child{ width: 1.4em; }
@@ -902,13 +833,4 @@ body:not(.mode-crc) .crc-only {
   background: var(--bg-color);
   font-size: 85%;
   font-weight: bold;
-}
-#exp-footer input.auto {
-  width: 2.5em;
-  min-width: 0;
-  font-size: 110%;
-}
-#exp-footer input:first-child,
-#exp-footer input:last-child {
-  font-size: 120%;
 }

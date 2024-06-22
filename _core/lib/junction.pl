@@ -4,7 +4,7 @@ use strict;
 use utf8;
 use Encode;
 
-our $ver = "1.24.005";
+our $ver = "1.25.010";
 
 our %in;
 for (param()){ $in{$_} = param($_); }
@@ -52,17 +52,14 @@ elsif($mode eq 'bu-naming')  { require $set::lib_others; } #過去ログ命名
 elsif($mode eq 'delete')     { require $set::lib_delete; } #削除
 elsif($mode eq 'img-delete') { require $set::lib_delete; } #画像削除
 elsif($mode eq 'palette')    { require $set::lib_palette; }#チャットパレット表示
-elsif($mode eq 'json')       { require $set::lib_json; }   #外部アプリ連携
-elsif($mode eq 'js-consts')  { &printJS('consts') }   #編集
-elsif($mode eq 'image')      { &imageRedirect($in{id}); }   #外部アプリ連携
+elsif($mode eq 'js-consts')  { &printJS('consts') }        #JS用定数
+elsif($mode eq 'image')      { &redirectToImage($in{id}); }#画像表示
+elsif(($in{id}||$in{url}) && $mode eq 'json') { require $set::lib_json; }#外部アプリ連携
 elsif($in{id})  { require $set::lib_view; }   #シート表示
 elsif($in{url}) { require $set::lib_view; }   #シート表示（コンバート）
 else {
-  if   ($set::game eq 'sw2' && $in{type} eq 'm' && $set::lib_list_mons){ require $set::lib_list_mons; }
-  elsif($set::game eq 'sw2' && $in{type} eq 'i' && $set::lib_list_item){ require $set::lib_list_item; }
-  elsif($set::game eq 'sw2' && $in{type} eq 'a' && $set::lib_list_arts){ require $set::lib_list_arts; }
-  elsif($set::game eq 'ms'  && $in{type} eq 'c' && $set::lib_list_clan){ require $set::lib_list_clan; }
-  else { require $set::lib_list_char; }
+  changeFileByType($in{type});
+  require $set::lib_list_char;
 }   #一覧表示
 
 1;

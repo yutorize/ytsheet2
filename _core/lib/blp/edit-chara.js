@@ -9,7 +9,7 @@ window.onload = function() {
   checkSubFactor('Core' , form.factorCore.value);
   checkSubFactor('Style', form.factorStyle.value);
   
-  nameSet();
+  setName();
   calcGrow();
   checkFactor();
   scarCheck();
@@ -233,118 +233,27 @@ function scarCheck(){
 // 特技欄 ----------------------------------------
 // 追加
 function addArts(){
-  let num = Number(form.artsNum.value) + 1;
-
-  let row = document.querySelector('#arts-template').content.firstElementChild.cloneNode(true);
-  row.id = idNumSet('arts');
-  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
-  document.querySelector("#arts-list").append(row);
-  
-  form.artsNum.value = num;
+  document.querySelector("#arts-list").append(createRow('arts','artsNum'));
 }
 // 削除
 function delArts(){
-  let num = Number(form.artsNum.value);
-  if(num > 0){
-    if(form[`arts${num}Name`].value || form[`arts${num}Timing`].value || form[`arts${num}Target`].value || form[`arts${num}Cost`].value || form[`arts${num}Limited`].value || form[`arts${num}Note`].value){
-      if (!confirm(delConfirmText)) return false;
-    }
-    document.querySelector("#arts-list tr:last-of-type").remove();
-    num--;
-    form.artsNum.value = num;
-  }
+  delRow('artsNum', '#arts-list tr:last-of-type');
 }
 // ソート
-let artsSortable = Sortable.create(document.getElementById('arts-list'), {
-  group: "arts",
-  dataIdAttr: 'id',
-  animation: 100,
-  handle: '.handle',
-  filter: 'thead,tfoot,template',
-  ghostClass: 'sortable-ghost',
-  onUpdate: function(evt){
-    const order = artsSortable.toArray();
-    let num = 1;
-    for(let id of order) {
-      if(document.querySelector(`tr#${id}`)){
-        document.querySelector(`#${id} [name$="Name"]`   ).setAttribute('name',`arts${num}Name`);
-        document.querySelector(`#${id} [name$="Timing"]` ).setAttribute('name',`arts${num}Timing`);
-        document.querySelector(`#${id} [name$="Target"]` ).setAttribute('name',`arts${num}Target`);
-        document.querySelector(`#${id} [name$="Cost"]`   ).setAttribute('name',`arts${num}Cost`);
-        document.querySelector(`#${id} [name$="Limited"]`).setAttribute('name',`arts${num}Limited`);
-        document.querySelector(`#${id} [name$="Note"]`   ).setAttribute('name',`arts${num}Note`);
-        num++;
-      }
-    }
-  }
-});
+setSortable('arts','#arts-list','tr');
 // 血威ソート
-let bloodartsSortable = Sortable.create(document.getElementById('bloodarts-list'), {
-  group: "bloodarts",
-  dataIdAttr: 'id',
-  animation: 100,
-  handle: '.handle',
-  ghostClass: 'sortable-ghost',
-  onUpdate: function(evt){
-    const order = bloodartsSortable.toArray();
-    let num = 1;
-    for(let id of order) {
-      if(document.getElementById(id)){
-        document.querySelector(`#${id} [name$="Name"]`   ).setAttribute('name',`bloodarts${num}Name`);
-        document.querySelector(`#${id} [name$="Timing"]` ).setAttribute('name',`bloodarts${num}Timing`);
-        document.querySelector(`#${id} [name$="Target"]` ).setAttribute('name',`bloodarts${num}Target`);
-        document.querySelector(`#${id} [name$="Note"]`   ).setAttribute('name',`bloodarts${num}Note`);
-        num++;
-      }
-    }
-  }
-});
+setSortable('bloodarts','#bloodarts-list','tr');
 
 // 履歴欄 ----------------------------------------
 // 追加
 function addHistory(){
-  let num = Number(form.historyNum.value) + 1;
-
-  let row = document.querySelector('#history-template').content.firstElementChild.cloneNode(true);
-  row.id = idNumSet('history');
-  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
-  document.querySelector("#history-table tbody:last-of-type").after(row);
-  
-  form.historyNum.value = num;
+  document.querySelector("#history-table tfoot").before(createRow('history','historyNum'));
 }
 // 削除
 function delHistory(){
-  let num = Number(form.historyNum.value);
-  if(num > 1){
-    if(form[`history${num}Date`].value || form[`history${num}Title`].value || form[`history${num}Grow`].value || form[`history${num}Gm`].value || form[`history${num}Member`].value || form[`history${num}Note`].value){
-      if (!confirm(delConfirmText)) return false;
-    }
-    document.querySelector("#history-table tbody:last-of-type").remove();
-    num--;
-    form.historyNum.value = num;
+  if(delRow('historyNum', '#history-table tbody:last-of-type')){
+    calcGrow();
   }
 }
 // ソート
-let historySortable = Sortable.create(document.getElementById('history-table'), {
-  group: "history",
-  dataIdAttr: 'id',
-  animation: 100,
-  handle: '.handle',
-  filter: 'thead,tfoot,template',
-  ghostClass: 'sortable-ghost',
-  onUpdate: function (evt) {
-    const order = historySortable.toArray();
-    let num = 1;
-    for(let id of order) {
-      if(document.querySelector(`tbody#${id}`)){
-        document.querySelector(`#${id} [name$="Date"]`  ).setAttribute('name',`history${num}Date`);
-        document.querySelector(`#${id} [name$="Title"]` ).setAttribute('name',`history${num}Title`);
-        document.querySelector(`#${id} [name$="Grow"]`  ).setAttribute('name',`history${num}Grow`);
-        document.querySelector(`#${id} [name$="Gm"]`    ).setAttribute('name',`history${num}Gm`);
-        document.querySelector(`#${id} [name$="Member"]`).setAttribute('name',`history${num}Member`);
-        document.querySelector(`#${id} [name$="Note"]`  ).setAttribute('name',`history${num}Note`);
-        num++;
-      }
-    }
-  }
-});
+setSortable('history','#history-table','tbody');

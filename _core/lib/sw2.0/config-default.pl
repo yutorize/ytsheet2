@@ -160,14 +160,8 @@ our $game = 'sw2';
   our $data_dir = './data/'; # データ格納ディレクトリ
   our $passfile = $data_dir . 'charpass.cgi'; # パスワード記録ファイル
   our $listfile = $data_dir . 'charlist.cgi'; # キャラクター一覧ファイル
-  our $monslist = $data_dir . 'monslist.cgi'; # 魔物一覧ファイル
-  our $itemlist = $data_dir . 'itemlist.cgi'; # アイテム一覧ファイル
-  our $artslist = $data_dir . 'artslist.cgi'; # 魔法一覧ファイル
   our $makelist = $data_dir . 'makelist.cgi'; # 能力値作成データファイル
   our $char_dir = $data_dir . 'chara/'; # キャラクターデータ格納ディレクトリ
-  our $mons_dir = $data_dir . 'mons/';  # 魔物データ格納ディレクトリ
-  our $item_dir = $data_dir . 'item/';  # アイテムデータ格納ディレクトリ
-  our $arts_dir = $data_dir . 'arts/';  # 魔法データ格納ディレクトリ
   
   our $userfile    = $::core_dir . '/data/users.cgi';           # ユーザー一覧ファイル
   our $login_users = $::core_dir . '/data/login_users.cgi'; # ログイン情報保存ファイル
@@ -184,21 +178,12 @@ our $game = 'sw2';
   # 編集画面
   our $lib_edit = $::core_dir . '/lib/edit.pl';
   our $lib_edit_char = $::core_dir . '/lib/sw2.0/edit-chara.pl';
-  our $lib_edit_mons = $::core_dir . '/lib/sw2/edit-mons.pl';
-  our $lib_edit_item = $::core_dir . '/lib/sw2/edit-item.pl';
-  our $lib_edit_arts = $::core_dir . '/lib/sw2/edit-arts.pl';
   # 保存処理
   our $lib_save   = $::core_dir . '/lib/save.pl';
   our $lib_calc_char = $::core_dir . '/lib/sw2/calc-chara.pl';
-  our $lib_calc_mons = $::core_dir . '/lib/sw2/calc-mons.pl';
-  our $lib_calc_item = $::core_dir . '/lib/sw2/calc-item.pl';
-  our $lib_calc_arts = $::core_dir . '/lib/sw2/calc-arts.pl';
   # シート表示
   our $lib_view   = $::core_dir . '/lib/view.pl';
   our $lib_view_char = $::core_dir . '/lib/sw2/view-chara.pl';
-  our $lib_view_mons = $::core_dir . '/lib/sw2/view-mons.pl';
-  our $lib_view_item = $::core_dir . '/lib/sw2/view-item.pl';
-  our $lib_view_arts = $::core_dir . '/lib/sw2/view-arts.pl';
   # チャットパレット
   our $lib_palette     = $::core_dir . '/lib/palette.pl';
   our $lib_palette_sub = $::core_dir . '/lib/sw2/palette-sub.pl';
@@ -206,9 +191,6 @@ our $game = 'sw2';
   our $lib_making = $::core_dir . '/lib/sw2/making.pl';
   # 一覧
   our $lib_list_char = $::core_dir . '/lib/sw2/list-chara.pl';
-  our $lib_list_mons = $::core_dir . '/lib/sw2/list-mons.pl';
-  our $lib_list_item = $::core_dir . '/lib/sw2/list-item.pl';
-  our $lib_list_arts = $::core_dir . '/lib/sw2/list-arts.pl';
   our $lib_list_make = $::core_dir . '/lib/sw2/list-making.pl';
   # JS
   our $lib_js_consts = $::core_dir . '/lib/sw2/js-consts.pl';
@@ -231,8 +213,39 @@ our $game = 'sw2';
   our $icon_dir   = $::core_dir . '/skin/sw2/img/'; # 武器アイコンのあるディレクトリ
   our $skin_tmpl  = $::core_dir . '/skin/sw2/index.html';         # 一覧／登録フォーム等の大枠
   our $skin_sheet = $::core_dir . '/skin/sw2.0/sheet-chara.html';   # キャラクターシート
-  our $skin_mons  = $::core_dir . '/skin/sw2/sheet-monster.html'; # 魔物シート
-  our $skin_item  = $::core_dir . '/skin/sw2/sheet-item.html';    # アイテムシート
-  our $skin_arts  = $::core_dir . '/skin/sw2/sheet-arts.html';    # 技・魔法シート
+  
+  # 魔物・アイテム・魔法/流派などの設定
+  our %lib_type = (
+    'm' => {
+      listFile => $data_dir . 'monslist.cgi',
+      dataDir => $data_dir . 'mons/',
+      edit => $::core_dir . '/lib/sw2/edit-mons.pl',
+      calc => $::core_dir . '/lib/sw2/calc-mons.pl',
+      view => $::core_dir . '/lib/sw2/view-mons.pl',
+      list => $::core_dir . '/lib/sw2/list-mons.pl',
+      skin => $::core_dir . '/skin/sw2/sheet-monster.html',
+      sheetType => 'mons',
+    },
+    'i' => {
+      listFile => $data_dir . 'itemlist.cgi',
+      dataDir => $data_dir . 'item/',
+      edit => $::core_dir . '/lib/sw2/edit-item.pl',
+      calc => $::core_dir . '/lib/sw2/calc-item.pl',
+      view => $::core_dir . '/lib/sw2/view-item.pl',
+      list => $::core_dir . '/lib/sw2/list-item.pl',
+      skin => $::core_dir . '/skin/sw2/sheet-item.html',
+      sheetType => 'item',
+    },
+    'a' => {
+      listFile => $data_dir . 'artslist.cgi',
+      dataDir => $data_dir . 'arts/',
+      edit => $::core_dir . '/lib/sw2/edit-arts.pl',
+      calc => $::core_dir . '/lib/sw2/calc-arts.pl',
+      view => $::core_dir . '/lib/sw2/view-arts.pl',
+      list => $::core_dir . '/lib/sw2/list-arts.pl',
+      skin => $::core_dir . '/skin/sw2/sheet-arts.html',
+      sheetType => 'arts',
+    },
+  );
 
 1;

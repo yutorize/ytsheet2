@@ -54,7 +54,7 @@ sub dataConvert {
   {
     my $data = urlDataGet($set_url.'&mode=json') or error 'コンバート元のデータが取得できませんでした';
     if($data !~ /^{/){ error 'JSONデータが取得できませんでした' }
-    $data = thanSignEscape($data);
+    $data = escapeThanSign($data);
     my %pc = utf8::is_utf8($data) ? %{ decode_json(encode('utf8', (join '', $data))) } : %{ decode_json(join '', $data) };
     if($pc{result} eq 'OK'){
       our $base_url = $set_url;
@@ -117,7 +117,6 @@ sub convertHokanjoToYtsheet {
     skillNegotiate => $in{'skill_tokugi'}[ 9], skillAddNegotiate => $in{'skill_sonota'}[ 9],
     skillProcure   => $in{'skill_tokugi'}[10], skillAddProcure   => $in{'skill_sonota'}[10],
     skillInfo1     => $in{'skill_tokugi'}[11], skillAddInfo1     => $in{'skill_sonota'}[11], skillInfo1Name => '情報:'.$in{'skill_memo'}[11],
-    '' => $in{''},
   );
   ##名前
   ($pc{characterName},$pc{characterNameRuby}) = convertNameRuby($in{'pc_name'} || $in{'data_title'});
@@ -126,6 +125,7 @@ sub convertHokanjoToYtsheet {
   ## 技能
   my %skills = (1=>'Ride', 2=>'Art', 3=>'Know', 4=>'Info');
   my %skillsjp = (1=>'運転', 2=>'芸術', 3=>'知識', 4=>'情報');
+  $pc{skillRideNum} = $pc{skillArtNum} = $pc{skillKnowNum} = $pc{skillInfoNum} = 2;
   my $i = 12;
   foreach my $id (@{$in{'V_skill_id'}}){
     my $num = 2;
@@ -154,7 +154,7 @@ sub convertHokanjoToYtsheet {
   
   ## エフェクト
   ($pc{effect1Type},$pc{effect1Name},$pc{effect1Lv},$pc{effect1Timing},$pc{effect1Skill},$pc{effect1Dfclty},$pc{effect1Target},$pc{effect1Range},$pc{effect1Encroach},$pc{effect1Restrict},$pc{effect1Note})
-    = ('auto','リザレクト',$in{'ressurect_lv'}+1,'オート','―','自動成功','自身','至近','効果参照','―','(Lv)D点HP回復、侵蝕値上昇');
+    = ('auto','リザレクト',$in{'ressurect_lv'}+1,'オート','―','自動成功','自身','至近','効果参照','―','(LV)D点HP回復、侵蝕値上昇');
   ($pc{effect2Type},$pc{effect2Name},$pc{effect2Lv},$pc{effect2Timing},$pc{effect2Skill},$pc{effect2Dfclty},$pc{effect2Target},$pc{effect2Range},$pc{effect2Encroach},$pc{effect2Restrict},$pc{effect2Note})
     = ('auto','ワーディング',1,'オート','―','自動成功','シーン','視界','0','―','非オーヴァードをエキストラ化');
   my $n = 3; my $i = 0;
@@ -285,7 +285,7 @@ sub convertHokanjoToYtsheet {
   $profile .= ": 肌 |$in{'color_skin'}\n";
   
   $pc{freeNote} = $profile.$in{'pc_making_memo'};
-  $pc{freeNoteView} = (tagUnescape tagUnescapeLines $profile).$in{'pc_making_memo'};
+  $pc{freeNoteView} = (unescapeTags unescapeTagsLines $profile).$in{'pc_making_memo'};
   $pc{freeNoteView} =~ s/\r\n?|\n/<br>/g;
   
   ## チャットパレット
@@ -412,6 +412,7 @@ sub convertSoukoToYtsheet {
   my $i = 1;
   foreach (@{$in{'lois'}}){
     @$_{'type'} =~ s/^[DＤ]$/Dロイス/;
+    @$_{'type'} =~ s/^[EＥ]$/Eロイス/;
     $pc{"lois${i}Relation"} = @$_{'type'};
     $pc{"lois${i}Name"}     = @$_{'name'};
     $pc{"lois${i}EmoPosi"}  = @$_{'Pfeel'}; $pc{"lois${i}EmoPosiCheck"} = @$_{'Pemotion'};
@@ -450,7 +451,6 @@ sub convertSoukoToYtsheet {
   $pc{effectNum} = $i-1;
   ## コンボ
   my $i = 1;
-  $pc{comboCalcOff} = 1;
   foreach (@{$in{'combo'}}){
     my %un = %{@$_{'under100'}};
     my %ov = %{@$_{'over100'}};
@@ -479,6 +479,7 @@ sub convertSoukoToYtsheet {
                              : $un{'notes'} ? $un{'notes'} : $ov{'notes'};
     $pc{"combo${i}Condition1"} = '100%未満';
     $pc{"combo${i}Condition2"} = '100%以上';
+    $pc{"combo${i}Manual"} = 1;
     $i++;
   }
   $pc{comboNum} = $i-1;

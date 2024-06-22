@@ -8,8 +8,8 @@ sub addJsonData {
   my %pc = %{ $_[0] };
   my $type = $_[1];
   
-  %pc = data_update_chara(\%pc);
-  
+  %pc = data_update_chara(\%pc) if $pc{ver};
+
   ## 誓約
   my @geises;
   foreach my $num (1..$pc{geisesNum}){
@@ -25,12 +25,8 @@ sub addJsonData {
   $pc{sheetDescriptionS} = $base."\n".$class."\n";
   $pc{sheetDescriptionM} = $base."\n".$class."\n".($geis?"\n$geis":'');
   
-  ## ゆとチャユニット用ステータス
-  $pc{unitStatus} = [
-    { 'HP' => $pc{hpTotal}.'/'.$pc{hpTotal} },
-    { 'MP' => $pc{mpTotal}.'/'.$pc{mpTotal} },
-    { 'フェイト' => $pc{fateTotal}.'/'.$pc{fateTotal} },
-  ];
+  ## ユニット（コマ）用ステータス
+  $pc{unitStatus} = createUnitStatus(\%pc);
   
   return \%pc;
 }

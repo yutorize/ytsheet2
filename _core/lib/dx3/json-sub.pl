@@ -8,12 +8,12 @@ sub addJsonData {
   my %pc = %{ $_[0] };
   my $type = $_[1];
   
-  %pc = data_update_chara(\%pc);
-  
+  %pc = data_update_chara(\%pc) if $pc{ver};
+
   ## ロイス数
   my @dloises; $pc{loisHave} = 0; $pc{loisMax} = 0; $pc{titusHave} = 0; $pc{sublimated} = 0;
   foreach my $num (1..7){
-    if($pc{"lois${num}Relation"} =~ /[DＤ]ロイス|^[DＤ]$/){
+    if($pc{"lois${num}Relation"} =~ /[DＤEＥ]ロイス|^[DＤEＥ]$/){
       $pc{"lois${num}Name"} =~ s#/#／#g;
       push(@dloises, $pc{"lois${num}Name"});
     }
@@ -51,14 +51,8 @@ sub addJsonData {
   $pc{sheetDescriptionS} = $base."\n".$works."\n".$syndrome;
   $pc{sheetDescriptionM} = $base."　".$sub."\n".$works."\n".$syndrome.($dlois?"\n$dlois":'');
   
-  ## ゆとチャユニット用ステータス
-  $pc{unitStatus} = [
-    { 'HP' => $pc{maxHpTotal}.'/'.$pc{maxHpTotal} },
-    { '侵蝕' => $pc{baseEncroach} },
-    { 'ロイス' => $pc{loisHave}.'/'.$pc{loisMax} },
-    { '財産' => $pc{savingTotal} },
-    { '行動' => $pc{initiativeTotal} },
-  ];
+  ## ユニット（コマ）用ステータス
+  $pc{unitStatus} = createUnitStatus(\%pc);
   
   return \%pc;
 }

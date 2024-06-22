@@ -10,13 +10,13 @@ use HTML::Template;
 
 ### テンプレート読み込み #############################################################################
 my $SHEET;
-$SHEET = HTML::Template->new( filename => $set::skin_arts, utf8 => 1,
+$SHEET = HTML::Template->new( filename => $set::skin_sheet, utf8 => 1,
   path => ['./', $::core_dir."/skin/sw2", $::core_dir."/skin/_common", $::core_dir],
   search_path_on_include => 1,
   die_on_bad_params => 0, die_on_missing_include => 0, case_sensitive => 1, global_vars => 1);
 
 ### 魔法データ読み込み ###############################################################################
-our %pc = pcDataGet();
+our %pc = getSheetData();
 
 ### タグ置換前処理 ###################################################################################
 ### 閲覧禁止データ --------------------------------------------------
@@ -128,9 +128,9 @@ my $item_urls = $pc{schoolItemList};
 foreach (keys %pc) {
   next if($_ =~ /^image/);
   if($_ =~ /(?:Effect|Description|Note)$/){
-    $pc{$_} = tagUnescapeLines($pc{$_});
+    $pc{$_} = unescapeTagsLines($pc{$_});
   }
-  $pc{$_} = tagUnescape($pc{$_});
+  $pc{$_} = unescapeTags($pc{$_});
 }
 $pc{magicEffect} =~ s#<h2>(.+?)</h2>#</dd><dt>$1</dt><dd class="box">#gi;
 
@@ -172,10 +172,10 @@ $SHEET->param(Tags => \@tags);
 {
   my $icon;
   my $class = $pc{magicClass};
-  if($pc{magicActionTypePassive}){ $icon .= '<i class="s-icon passive">○</i>' }
-  if($pc{magicActionTypeMajor}  ){ $icon .= '<i class="s-icon major">▶</i>' }
-  if($pc{magicActionTypeMinor}  ){ $icon .= '<i class="s-icon minor">≫</i>' }
-  if($pc{magicActionTypeSetup}  ){ $icon .= '<i class="s-icon setup">△</i>' }
+  if($pc{magicActionTypePassive}){ $icon .= '<i class="s-icon passive"><span class="raw">[常]</span></i>' }
+  if($pc{magicActionTypeMajor}  ){ $icon .= '<i class="s-icon major"><span class="raw">[主]</span></i>' }
+  if($pc{magicActionTypeMinor}  ){ $icon .= '<i class="s-icon minor"><span class="raw">[補]</span></i>' }
+  if($pc{magicActionTypeSetup}  ){ $icon .= '<i class="s-icon setup"><span class="raw">[準]</span></i>' }
   $SHEET->param(magicIcon => $icon);
   $SHEET->param(magicTarget   => textMagic($pc{magicTarget}));
   $SHEET->param(magicDuration => textMagic($pc{magicDuration}));
@@ -282,35 +282,28 @@ $SHEET->param(MagicData => \@magics);
 ### 流派装備 --------------------------------------------------
 my @items;
 foreach my $set_url (split ',',$item_urls){
-  ## 同じゆとシートⅡ
-  my $self = CGI->new()->url;
-  my %item;
-  if($set_url =~ m"^$self\?id=(.+?)(?:$|&)"){
-    my $id = $1;
-    my ($file, $type, $author) = getfile_open($id);
-    
-    open my $IN, '<', "${set::item_dir}${file}/data.cgi";
-    while (<$IN>){
-      chomp;
-      my ($key, $value) = split(/<>/, $_, 2);
-      $item{$key} = tagUnescape($value);
-    }
-    close($IN);
+  require $set::lib_convert;
+  my %item = getItemData($set_url);
+  if(exists$item{itemName}){
+    $item{price} =~ s/[+＋]/<br>＋/;
+    $item{category} =~ s/\s/<hr>/;
+    push(@items, {
+      "NAME"      => "<a href=\"$set_url\" target=\"_blank\">".unescapeTags($item{itemName})."</a>",
+      "PRICE"     => unescapeTags($item{price}),
+      "CATEGORY"  => unescapeTags($item{category}),
+      "REPUTATION"=> unescapeTags($item{reputation}),
+      "AGE"       => unescapeTags($item{age}),
+      "SUMMARY"   => unescapeTags($item{summary}),
+    } );
   }
   else {
+    push(@items, {
+      "NAME"      => "<a href=\"$set_url\" target=\"_blank\" class=\"failed\">データ取得失敗</a>",
+    });
+    next;
   }
-  $item{price} =~ s/[+＋]/<br>＋/;
-  push(@items, {
-    "NAME"      => "<a href=\"$set_url\" target=\"_blank\">".$item{itemName}."</a>",
-    "PRICE"     => $item{price},
-    "CATEGORY"  => $item{category},
-    "REPUTATION"=> $item{reputation},
-    "AGE"       => $item{age},
-    "SUMMARY"   => $item{summary},
-  } );
 }
 $SHEET->param(SchoolItems => \@items);
-
 ### 秘伝 --------------------------------------------------
 my @arts;
 foreach my $num (1..$pc{schoolArtsNum}){
@@ -365,7 +358,7 @@ if(@schoolmagics || $pc{schoolMagicNote}){ $SHEET->param(schoolMagicView => 1); 
 
 ### バックアップ --------------------------------------------------
 if($::in{id}){
-  my($selected, $list) = getLogList($set::arts_dir, $main::file);
+  my($selected, $list) = getLogList($set::char_dir, $main::file);
   $SHEET->param(LogList => $list);
   $SHEET->param(selectedLogName => $selected);
   if($pc{yourAuthor} || $pc{protect} eq 'password'){
@@ -379,7 +372,7 @@ if($pc{forbidden} eq 'all' && $pc{forbiddenMode}){
   $SHEET->param(titleName => '非公開データ');
 }
 else {
-  $SHEET->param(titleName => tagDelete nameToPlain $pc{artsName});
+  $SHEET->param(titleName => removeTags nameToPlain $pc{artsName});
 }
 
 ### 画像 --------------------------------------------------
@@ -392,7 +385,7 @@ if($pc{image}){
     $imgsrc = "./?id=$::in{id}&mode=image&cache=$pc{imageUpdate}";
   }
   $SHEET->param(imageSrc => $imgsrc);
-  $SHEET->param(images    => "'1': \"".($pc{modeDownload} ? urlToBase64("${set::arts_dir}${main::file}/image.$pc{image}") : $imgsrc)."\", ");
+  $SHEET->param(images    => "'1': \"".($pc{modeDownload} ? urlToBase64("${set::char_dir}${main::file}/image.$pc{image}") : $imgsrc)."\", ");
 }
 
 ### OGP --------------------------------------------------
@@ -402,14 +395,18 @@ if($pc{image}) { $SHEET->param(ogImg => url()."/".$imgsrc); }
   my $sub; my $category;
   if($pc{category} eq 'magic'){
     $category = '魔法';
-    $sub = $pc{magicClass}.'／'.$pc{magicLevel};
-    if($pc{magicMinor}){ $sub .= '／小魔法'; }
+    $sub = "／$pc{magicClass}／$pc{magicLevel}";
+    $sub .= '／小魔法' if $pc{magicMinor};
   }
   if($pc{category} eq 'god'){
     $category = '神格';
-    $sub = ($pc{godClass}||'―').'／'.($pc{godRank}||'―');
+    $sub = '／'.($pc{godClass}||'―').'／'.($pc{godRank}||'―');
   }
-  $SHEET->param(ogDescript => tagDelete "カテゴリ:${category}／${sub}");
+  if ($pc{category} eq 'school') {
+    $category = '流派';
+    $sub = "　地域:$pc{schoolArea}" if $pc{schoolArea};
+  }
+  $SHEET->param(ogDescript => removeTags "カテゴリ:${category}${sub}");
 }
 
 ### バージョン等 --------------------------------------------------
@@ -417,8 +414,6 @@ $SHEET->param(ver => $::ver);
 $SHEET->param(coreDir => $::core_dir);
 $SHEET->param(gameDir => 'sw2');
 $SHEET->param(sheetType => 'arts');
-$SHEET->param(generateType => 'SwordWorld2PC');
-$SHEET->param(defaultImage => $::core_dir.'/skin/sw2/img/default_pc.png');
 
 ### メニュー --------------------------------------------------
 my @menu = ();

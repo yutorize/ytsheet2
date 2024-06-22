@@ -15,9 +15,9 @@ foreach (keys %data::class){
   $data::class{$_}{magic}{data} &&= 1 if exists($data::class{$_}{magic});
   $data::class{$_}{craft}{data} &&= 1 if exists($data::class{$_}{craft});
 }
-my %aRank; my %nRank;
+my %aRank; my %bRank;
 $aRank{@$_[0]} = { num => @$_[1], free => @$_[2] } foreach(@set::adventurer_rank);
-$nRank{@$_[0]} = { num => @$_[1] } foreach(@set::notoriety_rank);
+$bRank{@$_[0]} = { num => @$_[1], free => @$_[2] } foreach(@set::barbaros_rank);
 my %settings = (
   gameSystem => $set::game,
   allClassOn => $set::all_class_on,
@@ -30,7 +30,9 @@ my %settings = (
   classCasters => \@data::class_caster,
   weapons => \@data::weapons,
   aRank => \%aRank,
-  nRank => \%nRank,
+  bRank => \%bRank,
+  nRank => \@set::notoriety_rank,
+  nBRank => \@set::notoriety_barbaros_rank,
 );
 print "const SET = ". JSON::PP->new->encode(\%settings);
 print "\n";

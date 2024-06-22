@@ -1,9 +1,13 @@
 @charset "utf-8";
 
+@layer system {
 /* // Body
 ---------------------------------------------------------------------------------------------------- */
 body {
   background-image: url(../../_common/img/back-pattern.png), url(../img/back-first.png);
+  @media screen and (max-width:735px){
+    background-size: auto, 80%;
+  }
 }
 article, .color-set {
   --monster-level-bg-color: hsl(
@@ -20,13 +24,14 @@ article, .color-set {
     var(--box-head-bg-color-h, 0),
     calc( var(--box-head-bg-color-s,   0%) * 0.9 ), 40%
   );
-}
-.night article,
-.night .color-set {
-  --s-icon-color: hsl(
-    var(--box-head-bg-color-h, 0),
-    calc( var(--box-head-bg-color-s,   0%) * 0.9 ), 70%
-  );
+  @media screen {
+    .night & {
+      --s-icon-color: hsl(
+        var(--box-head-bg-color-h, 0),
+        calc( var(--box-head-bg-color-s,   0%) * 0.9 ), 70%
+      );
+    }
+  }
 }
 
 
@@ -53,10 +58,14 @@ article {
   position: relative;
   
   margin-top: 1.5em;
+  padding: 0px;
   border-width: 3px 0 0;
   border-style: solid;
   border-color: var(--monster-level-bg-color);
   background-image: linear-gradient(to bottom, var(--bg-color), transparent);
+  @media print {
+    background-image: none;
+  }
 }
 #area-name .lv {
   order: -1;
@@ -80,6 +89,7 @@ article {
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
+  font-size: inherit;
 }
 #area-name h1 {
   flex-grow: 1;
@@ -88,11 +98,11 @@ article {
   font-size: 200%;
   font-weight: bold;
   line-height: 1;
-}
-#area-name h1 small {
-  display: inline-block;
-  font-size: 70%;
-  line-height: 1;
+  & small {
+    display: inline-block;
+    font-size: 70%;
+    line-height: 1;
+  }
 }
 #area-name .taxa {
   position: absolute;
@@ -113,109 +123,113 @@ div.status {
   margin: .5rem 0;
   padding: .5rem 1rem;
   background: var(--box-base-bg-color);
-}
-#tags + div.status {
-  border-top: 1px dotted var(--box-outside-border-color);
+
+  #tags + & {
+    border-top: 1px dotted var(--box-outside-border-color);
+  }
 }
 div.status div {
   display: flex;
   flex-wrap: wrap;
 }
-
 div.status dl {
   display: flex;
   margin-right: 1.5em;
-}
-div.status dl dt {
-  white-space: nowrap;
-}
-div.status dl dt::after {
-  content: ':';
-  display: inline-block;
-  width: 1em;
-  text-align: center;
-  font-weight: normal;
-}
-div.status dl dl.price {
-  align-items: end;
-}
-div.status dl dl.price dt {
-  font-size: 85%;
-  margin-right: .2em;
-}
-div.status dl dl.price dd + dt::before {
-  content: '／';
-  margin: 0 .5em;
-}
-div.status dl dl.price dt::after {
-  display: none;
-}
-div.status dl dl.price dd small {
-  margin-left: .2em;
-}
 
-
+  & dt {
+    white-space: nowrap;
+    &::after {
+      content: ':';
+      display: inline-block;
+      width: 1em;
+      text-align: center;
+      font-weight: normal;
+    }
+  }
+  & dl.price {
+    align-items: end;
+  }
+  & dl.price dt {
+    font-size: 85%;
+    margin-right: .2em;
+  }
+  & dl.price dd + dt::before {
+    content: '／';
+    margin: 0 .5em;
+  }
+  & dl.price dt::after {
+    display: none;
+  }
+  & dl.price dd small {
+    margin-left: .2em;
+  }
+}
 table.status {
   width: 100%;
   border-width: 1px;
   border-style: double;
   border-color: var(--box-outside-border-color);
   background-color: var(--box-base-bg-color);
+  & thead th {
+    &.lv     { width: 0em; }
+    &.name   { width: auto; }
+    &.acc    { width: 12%; }
+    &.atk    { width: 12%; }
+    &.eva    { width: 12%; }
+    &.def    { width: 12%; }
+    &.hp     { width: 12%; }
+    &.mp     { width: 12%; }
+  }
+  .mount & thead th {
+    &.lv     { width: 1.8em; }
+    &.name   { width: auto; }
+    &.acc    { width: 8.5%; }
+    &.atk    { width: 8.5%; }
+    &.eva    { width: 8.5%; }
+    &.def    { width: 8.5%; }
+    &.hp     { width: 8.5%; }
+    &.mp     { width: 8.5%; }
+    &.vit    { width: 8.5%; }
+    &.mnd    { width: 8.5%; }
+  }
+  &:not(#status-table):has(tbody tr:first-child:last-child) thead th.name > .text-part {
+    display: none;
+  }
+  & tbody {
+    border-top-width: 1px;
+    border-top-style: solid;
+  }
+  & th {
+    background-color: var(--monster-head-bg-color);
+  }
+  & td {
+    padding: .2rem;
+    border-width: 0 1px;
+    border-style: solid;
+    border-color: var(--box-inside-border-color);
+    text-align: center;
+  }
+  & tbody tr:nth-child(even) td {
+    background-color: var(--box-even-rows-bg-color);
+  }
+  .mount & tbody {
+    & td.lv {
+      background-color: transparent;
+      border-width: 0;
+    }
+    & tr:first-child td.lv {
+      border-top-width: 1px;
+      font-weight: bold;
+    }
+    & tr:not(:first-child) td.lv {
+      font-size: 0px;
+      color: transparent;
+    }
+    &:nth-of-type(even) tr td.lv {
+      background-color: var(--box-even-rows-bg-color);
+    }
+  }
 }
-table.status thead th.lv     { width: 0em; }
-table.status thead th.name   { width: auto; }
-table.status thead th.acc    { width: 12%; }
-table.status thead th.atk    { width: 12%; }
-table.status thead th.eva    { width: 12%; }
-table.status thead th.def    { width: 12%; }
-table.status thead th.hp     { width: 12%; }
-table.status thead th.mp     { width: 12%; }
-
-.mount table.status thead th.lv     { width: 1.8em; }
-.mount table.status thead th.name   { width: auto; }
-.mount table.status thead th.acc    { width: 8.5%; }
-.mount table.status thead th.atk    { width: 8.5%; }
-.mount table.status thead th.eva    { width: 8.5%; }
-.mount table.status thead th.def    { width: 8.5%; }
-.mount table.status thead th.hp     { width: 8.5%; }
-.mount table.status thead th.mp     { width: 8.5%; }
-.mount table.status thead th.vit    { width: 8.5%; }
-.mount table.status thead th.mnd    { width: 8.5%; }
-
-table.status tbody {
-  border-top-width: 1px;
-  border-top-style: solid;
-}
-table.status th {
-  background-color: var(--monster-head-bg-color);
-}
-table.status td {
-  padding: .2rem;
-  border-width: 0 1px;
-  border-style: solid;
-  border-color: var(--box-inside-border-color);
-  text-align: center;
-}
-table.status tbody tr:nth-child(even) td {
-  background-color: var(--box-even-rows-bg-color);
-}
-
-.mount table.status tbody td.lv {
-  background-color: transparent;
-  border-width: 0;
-}
-.mount table.status tbody tr:first-child td.lv {
-  border-top-width: 1px;
-  font-weight: bold;
-}
-.mount table.status tbody tr:not(:first-child) td.lv {
-  font-size: 0px;
-  color: transparent;
-}
-table.status tbody:nth-of-type(even) tr td.lv {
-  background-color: var(--box-even-rows-bg-color);
-}
-
 
 /* // Parts
 ---------------------------------------------------------------------------------------------------- */
@@ -225,17 +239,18 @@ table.status tbody:nth-of-type(even) tr td.lv {
   margin: .5rem 0;
   padding: .3em 1rem;
   background: var(--box-base-bg-color);
-}
-.parts dl {
-  display: flex;
-  margin-right: 1.5em;
-}
-.parts dl dt::after {
-  content: ':';
-  display: inline-block;
-  width: 1em;
-  text-align: center;
-  font-weight: normal;
+  & dl {
+    display: flex;
+    margin-right: 1.5em;
+    align-items: center;
+    & dt::after {
+      content: ':';
+      display: inline-block;
+      width: 1em;
+      text-align: center;
+      font-weight: normal;
+    }
+  }
 }
 
 
@@ -243,65 +258,67 @@ table.status tbody:nth-of-type(even) tr td.lv {
 ---------------------------------------------------------------------------------------------------- */
 .skills {
   border: 0;
-  margin: 1rem 0 0;
+  margin: 1.8rem 0 0;
   padding-bottom: .5em;
   background: var(--box-base-bg-color);
   border-radius: 0;
   box-shadow: none !important;
-}
-.parts + .skills {
-  margin-top: .5rem;
-}
-.skills :is(h2, h2:nth-child(n+2)) {
-  padding: .3rem .5rem;
-  border-width: 0;
-  background-color: var(--monster-head-bg-color);
-  background-image: none;
-  font-size: 110%;
-}
-.skills h2:nth-child(n+2) {
-  margin: 1em 0 0;
-}
-.skills h3::first-letter {
-  color: var(--s-icon-color);
-}
-.skills .s-icon::before {
-  color: var(--s-icon-color);
+  .parts + & {
+    margin-top: .5rem;
+  }
+
+  & :is(h2, h2:nth-child(n+2)) {
+    padding: .3rem .5rem;
+    border-width: 0;
+    background-color: var(--monster-head-bg-color);
+    background-image: none;
+    font-size: 110%;
+  }
+  & h2:nth-child(n+2) {
+    margin: 1em 0 0;
+  }
+  & h3::first-letter {
+    color: var(--s-icon-color);
+  }
+  & .s-icon::before {
+    color: var(--s-icon-color);
+  }
 }
 
 /* // Loots
 ---------------------------------------------------------------------------------------------------- */
 .loots {
   margin-top: 1em;
-}
-.loots h2 {
-  font-size: 110%;
-}
-.loots dl {
-  display: grid;
-  grid-template-columns: 6em 1fr;
-  grid-template-rows: auto;
-  border-width: 1px;
-  border-style: solid;
-  background-color: var(--box-base-bg-color);
-}
-.loots dl > dt {
-  grid-column: 1;
-  padding: .2rem;
-  background-color: var(--monster-head-bg-color);
-  border-width: 0px 1px 1px 0px;
-  border-style: solid;
-  text-align: center;
-}
-.loots dl > dd {
-  grid-column: 2;
-  padding: .2rem .5rem;
-  border-width: 0px 0px 1px;
-  border-style: solid;
-}
-.loots dl > dt:last-of-type,
-.loots dl > dd:last-of-type {
-  border-bottom-width: 0px;
+  & h2 {
+    font-size: 110%;
+  }
+  & dl {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    grid-template-rows: auto;
+    border-width: 1px;
+    border-style: solid;
+    background-color: var(--box-base-bg-color);
+    > dt {
+      grid-column: 1;
+      padding: .2rem;
+      background-color: var(--monster-head-bg-color);
+      border-width: 0px 1px 1px 0px;
+      border-style: solid;
+      text-align: center;
+      min-width: 6em;
+    }
+    > dd {
+      grid-column: 2;
+      padding: .2rem .5rem;
+      border-width: 0px 0px 1px;
+      border-style: solid;
+    }
+    > dt:last-of-type,
+    > dd:last-of-type {
+      border-bottom-width: 0px;
+    }
+  }
 }
 
 /* // Description
@@ -330,7 +347,8 @@ table.status tbody:nth-of-type(even) tr td.lv {
 /* // Author
 ---------------------------------------------------------------------------------------------------- */
 #author {
-  width: 50%;
+  width: max-content;
+  min-width: 50%;
   margin: 2em 0 0 auto;
   padding: .5em;
   text-align: right;
@@ -338,3 +356,6 @@ table.status tbody:nth-of-type(even) tr td.lv {
   border-style: solid;
 }
 
+
+/* ////////// LayerEnd ////////// */
+}

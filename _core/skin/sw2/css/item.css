@@ -6,10 +6,14 @@
   }
 }
 
+@layer system {
 /* // Body
 ---------------------------------------------------------------------------------------------------- */
 body {
   background-image: url(../../_common/img/back-pattern.png), url(../img/back-first.png);
+  @media screen and (max-width:735px){
+    background-size: auto, 80%;
+  }
 }
 article, .color-set {
   --item-head-bg-color: hsla(
@@ -22,13 +26,14 @@ article, .color-set {
     var(--box-head-bg-color-h, 0),
     calc( var(--box-head-bg-color-s,   0%) * 0.9 ), 40%
   );
-}
-.night article,
-.night .color-set {
-  --s-icon-color: hsl(
-    var(--box-head-bg-color-h, 0),
-    calc( var(--box-head-bg-color-s,   0%) * 0.9 ), 70%
-  );
+  @media screen {
+    .night & {
+      --s-icon-color: hsl(
+        var(--box-head-bg-color-h, 0),
+        calc( var(--box-head-bg-color-s,   0%) * 0.9 ), 70%
+      );
+    }
+  }
 }
 
 /* // Base
@@ -53,32 +58,38 @@ article {
   flex-wrap: wrap;
   
   margin-top: 1.5em;
+  padding: 0px;
   border-width: 3px 0 0;
   border-style: solid;
   border-color: var(--box-outside-border-color);
   background-image: linear-gradient(to bottom, var(--bg-color), transparent);
-}
-#area-name h1 {
-  flex-grow: 1;
-  padding: .25em 1rem;
-  text-align: left;
-  font-size: 160%;
-  font-weight: bold;
-  line-height: 1;
-}
-#area-name h1 small {
-  display: inline-block;
-  font-size: 70%;
-  line-height: 1;
-}
-#area-name .price {
-  flex-grow: 1;
-  padding-right: .5em;
-  text-align: right;
-}
-#area-name h1 .i-icon {
-  width: .7em;
-  height: .7em;
+  @media print {
+    background-image: none;
+  }
+
+  > h1 {
+    flex-grow: 1;
+    padding: .25em 1rem;
+    text-align: left;
+    font-size: 160%;
+    font-weight: bold;
+    line-height: 1;
+    > small {
+      display: inline-block;
+      font-size: 70%;
+      line-height: 1;
+    }
+    & .i-icon {
+      width: .7em;
+      height: .7em;
+    }
+  }
+  & .price {
+    flex-grow: 1;
+    padding-right: .5em;
+    text-align: right;
+    font-size: inherit;
+  }
 }
 
 
@@ -87,128 +98,138 @@ article {
 div.data {
   display: grid;
   grid-template-columns: 10em 2fr 18em;
+  > dl.reputation {  }
+  > dl.shape      {  }
+  > dl.category   {  }
+  > dl.age        { grid-column: 3/4; grid-row: 2/3; }
+  > dl.summary    { grid-column: 1/3; grid-row: 2/3; }
+  > dl.effects    { grid-column: 1/4; }
+
   border-width: 0 1px 1px 0;
   border-style: solid;
-  border-color: var(--box-outside-border-color);
-}
-div.data * {
-  border-color: var(--box-outside-border-color);
-}
 
-div.data dl.reputation {  }
-div.data dl.shape      {  }
-div.data dl.category   {  }
-div.data dl.age        { grid-column: 3/4; grid-row: 2/3; }
-div.data dl.summary    { grid-column: 1/3; grid-row: 2/3; }
-div.data dl.effects    { grid-column: 1/4; }
-
-div.data > dl {
-  display: grid;
-  grid-template-columns: 4.5em 1fr;
-  background: var(--box-base-bg-color);
-  border-width: 1px 0 0 1px;
-  border-style: solid;
-}
-div.data dl.shape { grid-template-columns: 3.5em 1fr; }
-div.data dl.category,
-div.data dl.age   { grid-template-columns: 5.5em 1fr; }
-
-@media screen and (max-width:735px){
-  div.data { grid-template-columns: 1fr; }
-  div.data dl {
-    grid-column: 1/2 !important;
-    grid-row: auto !important;
-    grid-template-columns: 5.5em 1fr !important;
+  &,
+  & * {
+    border-color: var(--box-outside-border-color);
   }
-  div.data dl dd {
-    text-align: left !important;
+  @media screen and (max-width:735px){
+    grid-template-columns: 1fr;
+  }
+
+  > dl {
+    display: grid;
+    grid-template-columns: 4.5em 1fr;
+    &.shape { grid-template-columns: 3.5em 1fr; }
+    &.category,
+    &.age   { grid-template-columns: 5.5em 1fr; }
+
+    background: var(--box-base-bg-color);
+    border-width: 1px 0 0 1px;
+    border-style: solid;
+  }
+  
+  @media screen and (max-width:735px){
+    > dl {
+      grid-column: 1/2 !important;
+      grid-row: auto !important;
+      grid-template-columns: 5.5em 1fr !important;
+    }
+    > dl dd {
+      text-align: left !important;
+    }
+  }
+  
+  > dl > dt,
+  > dl > dd {
+    padding: .2em .5em;
+  }
+  > dl > dt {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: var(--item-head-bg-color);
+  }
+  > dl.reputation dd,
+  > dl.category   dd,
+  > dl.age        dd { text-align: center; }
+  > dl.reputation dd,
+  > dl.shape      dd,
+  > dl.category   dd,
+  > dl.age        dd {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  > dl.shape dd {
+    justify-content: flex-start;
+  }
+  > dl.category dd > div {
+    width: 100%;
+  }
+  > dl.category dd > div hr {
+    opacity: 0.5;
+  }
+  @media screen and (max-width:735px){
+    > dl.reputation dd,
+    > dl.shape      dd,
+    > dl.category   dd,
+    > dl.age        dd {
+      display: block; 
+    }
+    > dl.category dd hr {
+      display: inline;
+      border: 0;
+    }
+    > dl.category dd hr::before {
+      content: '／';
+      margin: 0 0.3em;
+    }
+  }
+  > dl.effects {
+    & dd.box {
+      padding: 0;
+      border-width: 0;
+      border-radius: 0;
+      background: none;
+      box-shadow: none;
+      > *:first-child {
+        margin-top: .2em;
+      }
+    }
+    & .s-icon::before {
+      color: var(--s-icon-color);
+    }
+    & table.weapon-table {
+      &,
+      & th,
+      & td {
+        margin: .5em;
+        border-width: 1px;
+        border-style: solid;
+      }
+      & th,
+      & td {
+        padding: .2em .5em;
+      }
+      & th {
+        background-color: var(--box-head-bg-color-pale);
+        white-space: nowrap;
+      }
+      & td:not(.left) {
+        white-space: nowrap;
+      }
+      &:not(:has(tbody td.note:not(:empty))) tr > *.note {
+        display: none;
+      }
+    }
+    & > :is(dt,dd):nth-of-type(n+2) {
+      border-top-width: 1px;
+      border-top-style: solid;
+    }
   }
 }
 
-div.data > dl > dt,
-div.data > dl > dd {
-  padding: .2em .5em;
-}
-div.data > dl > dt {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: var(--item-head-bg-color);
-}
-div.data dl.reputation dd,
-div.data dl.category   dd,
-div.data dl.age        dd { text-align: center; }
 
-div.data dl.reputation dd,
-div.data dl.shape      dd,
-div.data dl.category   dd,
-div.data dl.age        dd {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-div.data dl.shape dd{
-  justify-content: flex-start;
-}
-div.data dl.category dd > div {
-  width: 100%;
-}
-div.data dl.category dd > div hr {
-  opacity: 0.5;
-}
-@media screen and (max-width:735px){
-  div.data dl.reputation dd,
-  div.data dl.shape      dd,
-  div.data dl.category   dd,
-  div.data dl.age        dd {
-    display: block; 
-  }
-  div.data dl.category dd hr {
-    display: inline;
-    border: 0;
-  }
-  div.data dl.category dd hr::before {
-    content: '／';
-    margin: 0 0.3em;
-  }
-}
-
-div.data dl.effects dd.box {
-  padding: 0;
-  border-width: 0;
-  border-radius: 0;
-  background: none;
-  box-shadow: none;
-}
-div.data dl.effects dd.box > *:first-child {
-  margin-top: .2em;
-}
-div.data dl.effects .s-icon::before {
-  color: var(--s-icon-color);
-}
-div.data dl.effects table.weapon-table,
-div.data dl.effects table.weapon-table th,
-div.data dl.effects table.weapon-table td {
-  margin: .5em;
-  border-width: 1px;
-  border-style: solid;
-}
-div.data dl.effects table.weapon-table th,
-div.data dl.effects table.weapon-table td {
-  padding: .2em .5em;
-}
-div.data dl.effects table.weapon-table th {
-  background-color: var(--box-head-bg-color-pale);
-  white-space: nowrap;
-}
-div.data dl.effects table.weapon-table td:not(.left) {
-  white-space: nowrap;
-}
-
-div.data dl.effects > :is(dt,dd):nth-of-type(n+2) {
-  border-top-width: 1px;
-  border-top-style: solid;
-}
 
 /* // Description
 ---------------------------------------------------------------------------------------------------- */
@@ -228,15 +249,16 @@ div.data dl.effects > :is(dt,dd):nth-of-type(n+2) {
   border-color: var(--box-outside-border-color);
   background-image: none;
   font-size: 115%;
-}
-.box.description h2:nth-child(n+2) {
-  margin-top: 1em;
+  &:nth-child(n+2) {
+    margin-top: 1em;
+  }
 }
 
 /* // Author
 ---------------------------------------------------------------------------------------------------- */
 #author {
-  width: 50%;
+  width: max-content;
+  min-width: 50%;
   margin: 2em 0 0 auto;
   padding: .5em;
   text-align: right;
@@ -245,3 +267,5 @@ div.data dl.effects > :is(dt,dd):nth-of-type(n+2) {
 }
 
 
+/* ////////// LayerEnd ////////// */
+}

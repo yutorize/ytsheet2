@@ -10,14 +10,14 @@ use HTML::Template;
 
 ### テンプレート読み込み #############################################################################
 my $SHEET;
-$SHEET = HTML::Template->new( filename => $set::skin_clan, utf8 => 1,
+$SHEET = HTML::Template->new( filename => $set::skin_sheet, utf8 => 1,
   path => ['./', $::core_dir."/skin/ms", $::core_dir."/skin/_common", $::core_dir],
   search_path_on_include => 1,
   loop_context_vars => 1,
   die_on_bad_params => 0, die_on_missing_include => 0, case_sensitive => 1, global_vars => 1);
 
 ### キャラクターデータ読み込み #######################################################################
-our %pc = pcDataGet();
+our %pc = getSheetData();
 
 ### タグ置換前処理 ###################################################################################
 ### 閲覧禁止データ --------------------------------------------------
@@ -78,9 +78,9 @@ if($pc{ver}){
   foreach (keys %pc) {
     next if($_ =~ /^(?:(leader|member[0-9]+)URL$|(?:image))/);
     if($_ =~ /^(?:freeNote|freeHistory)$/){
-      $pc{$_} = tagUnescapeLines($pc{$_});
+      $pc{$_} = unescapeTagsLines($pc{$_});
     }
-    $pc{$_} = tagUnescape($pc{$_});
+    $pc{$_} = unescapeTags($pc{$_});
 
     $pc{$_} = noiseTextTag $pc{$_} if $pc{forbiddenMode};
   }
@@ -163,14 +163,8 @@ $SHEET->param('Attribute' => \@attribute);
 
 ### マギ --------------------------------------------------
 my @magi;
-foreach (1 .. 4){
-  next if(
-       !$pc{'magi'.$_.'Name'}
-    && !$pc{'magi'.$_.'Timing'}
-    && !$pc{'magi'.$_.'Target'}
-    && !$pc{'magi'.$_.'Cond'}
-    && !$pc{'magi'.$_.'Note'}
-  );
+foreach (1 .. 5){
+  next if !existsRow "magi$_",'Name','Timing','Target','Cond','Note';
   $pc{'magi'.$_.'Name'} &&= "《$pc{'magi'.$_.'Name'}》";
   push(@magi, {
     NAME   => $pc{'magi'.$_.'Name'},
@@ -187,7 +181,7 @@ my @history;
 my $h_num = 0;
 #$pc{history0Title} = 'キャラクター作成';
 foreach (1 .. $pc{historyNum}){
-  #next if !$pc{'history'.$_.'Title'};
+  next if(!existsRow "history${_}",'Date','Title','Level','Gm','Member','Note');
   $h_num++ if $pc{'history'.$_.'Gm'};
   if ($set::log_dir && $pc{'history'.$_.'Date'} =~ s/([^0-9]*?_[0-9]+(?:#[0-9a-zA-Z]+?)?)$//){
     my $room = $1;
@@ -230,13 +224,13 @@ if($pc{forbidden} eq 'all' && $pc{forbiddenMode}){
   $SHEET->param(titleName => '非公開データ');
 }
 else {
-  $SHEET->param(titleName => tagDelete nameToPlain($pc{clanName}||"“$pc{aka}”"));
+  $SHEET->param(titleName => removeTags nameToPlain($pc{clanName}||"“$pc{aka}”"));
 }
 
 ### OGP --------------------------------------------------
 $SHEET->param(ogUrl => url().($::in{url} ? "?url=$::in{url}" : "?id=$::in{id}"));
 if($pc{image}) { $SHEET->param(ogImg => $pc{imageURL}); }
-$SHEET->param(ogDescript => tagDelete "強度:$pc{level}ルール:$pc{rule}　拠点:$pc{base}　所属:$pc{belong}　リーダー:$pc{leaderName}");
+$SHEET->param(ogDescript => removeTags "強度:$pc{level}ルール:$pc{rule}　拠点:$pc{base}　所属:$pc{belong}　リーダー:$pc{leaderName}");
 
 ### バージョン等 --------------------------------------------------
 $SHEET->param(ver => $::ver);

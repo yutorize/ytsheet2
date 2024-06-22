@@ -43,14 +43,14 @@ push(@support_class, 'label=レガシークラス', @legacy_class);
 push(@support_class, 'label=その他', 'free|<その他（自由記入）>');
 
 ### データ読み込み ###################################################################################
-my ($data, $mode, $file, $message) = pcDataGet($::in{mode});
+my ($data, $mode, $file, $message) = getSheetData($::in{mode});
 our %pc = %{ $data };
 
 my $mode_make = ($mode =~ /^(blanksheet|copy|convert)$/) ? 1 : 0;
 
 ### 出力準備 #########################################################################################
 if($message){
-  my $name = tagUnescape($pc{characterName} || $pc{aka} || '無題');
+  my $name = unescapeTags($pc{characterName} || $pc{aka} || '無題');
   $message =~ s/<!NAME>/$name/;
 }
 ### プレイヤー名 --------------------------------------------------
@@ -81,7 +81,7 @@ elsif($mode eq 'blanksheet'){
   
   $pc{level} = 1;
 
-  $pc{money} = '自動';
+  $pc{moneyAuto} = 1;
   
   $pc{rollStrDice} = $pc{rollDexDice} = $pc{rollAgiDice} =
   $pc{rollIntDice} = $pc{rollSenDice} = $pc{rollMndDice} = $pc{rollLukDice} =
@@ -99,9 +99,9 @@ elsif($mode eq 'blanksheet'){
 
 ## 画像
 $pc{imageFit} = $pc{imageFit} eq 'percent' ? 'percentX' : $pc{imageFit};
-$pc{imagePercent} = $pc{imagePercent} eq '' ? '200' : $pc{imagePercent};
-$pc{imagePositionX} = $pc{imagePositionX} eq '' ? '50' : $pc{imagePositionX};
-$pc{imagePositionY} = $pc{imagePositionY} eq '' ? '50' : $pc{imagePositionY};
+$pc{imagePercent}   //= '200';
+$pc{imagePositionX} //= '50';
+$pc{imagePositionY} //= '50';
 $pc{wordsX} ||= '右';
 $pc{wordsY} ||= '上';
 
@@ -143,7 +143,7 @@ foreach my $i (1 .. $pc{geisesNum}){
 }
 
 ### フォーム表示 #####################################################################################
-my $titlebarname = tagDelete nameToPlain tagUnescape ($pc{characterName}||"“$pc{aka}”");
+my $titlebarname = removeTags nameToPlain unescapeTags ($pc{characterName}||"“$pc{aka}”");
 print <<"HTML";
 Content-type: text/html\n
 <!DOCTYPE html>
@@ -192,11 +192,12 @@ print <<"HTML";
       <div id="header-menu">
         <h2><span></span></h2>
         <ul>
-          <li onclick="sectionSelect('common');"><span>キャラクター</span><span>データ</span>
-          <li onclick="sectionSelect('palette');"><span>チャット</span><span>パレット</span>
+          <li onclick="sectionSelect('common');"><span>キャラ<span class="shorten">クター</span></span><span>データ</span>
+          <li onclick="sectionSelect('palette');"><span><span class="shorten">ユニット(</span>コマ<span class="shorten">)</span></span><span>設定</span>
           <li onclick="sectionSelect('color');" class="color-icon" title="カラーカスタム">
           <li onclick="view('text-rule')" class="help-icon" title="テキスト整形ルール">
           <li onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード切替">
+          <li onclick="exportAsJson()" class="download-icon" title="JSON出力">
           <li class="buttons">
             <ul>
               <li @{[ display ($mode eq 'edit') ]} class="view-icon" title="閲覧画面"><a href="./?id=$::in{id}"></a>
@@ -226,7 +227,7 @@ else {
   print <<"HTML";
       <details class="box" id="edit-protect" @{[$mode eq 'edit' ? '':'open']}>
       <summary>編集保護設定</summary>
-      <p id="edit-protect-view"><input type="hidden" name="protectOld" value="$pc{protect}">
+      <fieldset id="edit-protect-view"><input type="hidden" name="protectOld" value="$pc{protect}">
 HTML
   if($LOGIN_ID){
     print '<input type="radio" name="protect" value="account"'.($pc{protect} eq 'account'?' checked':'').'> アカウントに紐付ける（ログイン中のみ編集可能になります）<br>';
@@ -239,7 +240,7 @@ HTML
   }
   print <<"HTML";
 <input type="radio" name="protect" value="none"@{[ $pc{protect} eq 'none'?' checked':'' ]}> 保護しない（誰でも編集できるようになります）
-      </p>
+      </fieldset>
       </details>
 HTML
 }
@@ -278,19 +279,19 @@ print <<"HTML";
         </dl>
       </div>
       
-      <div class="box" id="name-form">
+      <div class="box in-toc" id="name-form" data-content-title="キャラクター名・プレイヤー名">
         <div>
           <dl id="character-name">
             <dt>キャラクター名
-            <dd>@{[input('characterName','text',"nameSet")]}
+            <dd>@{[input('characterName','text',"setName")]}
             <dt class="ruby">ふりがな（アーシアン向け）
-            <dd>@{[input('characterNameRuby','text',"nameSet")]}
+            <dd>@{[input('characterNameRuby','text',"setName")]}
           </dl>
           <dl id="aka">
             <dt>二つ名・異名など
-            <dd>@{[input('aka','text',"nameSet")]}
+            <dd>@{[input('aka','text',"setName")]}
             <dt class="ruby">フリガナ
-            <dd>@{[input('akaRuby','text',"nameSet")]}
+            <dd>@{[input('akaRuby','text',"setName")]}
           </dl>
         </div>
         <dl id="player-name">
@@ -300,7 +301,7 @@ print <<"HTML";
       </div>
       
       <details class="box" id="regulation" @{[$mode eq 'edit' ? '':'open']}>
-        <summary>作成レギュレーション</summary>
+        <summary class="in-toc">作成レギュレーション</summary>
         <dl>
           <dt>成長点
           <dd>@{[input("history0Exp",'number','changeRegu','step="1"'.($set::make_fix?' readonly':''))]}
@@ -354,7 +355,7 @@ print <<"HTML";
       <div id="area-status">
         @{[ imageForm($pc{imageURL}) ]}
 
-        <div id="personal">
+        <div id="personal" class="in-toc" data-content-title="種族・年齢・性別">
           <dl class="box select-or-input" id="race">
             <dt>種族
             <dd><select name="race" onchange="changeRace()">@{[ option 'race',(sort{$data::races{$a}{sort} cmp $data::races{$b}{sort} } keys %data::races),'free|<その他（自由記入）>' ]}</select>@{[ input 'raceFree' ]}
@@ -372,7 +373,7 @@ print <<"HTML";
         </div>
 
         <div class="box" id="lifepath">
-          <h2>ライフパス</h2>
+          <h2 class="in-toc">ライフパス</h2>
           <dl id="home"><dt>出身地</dt><dd>@{[ input "homeArea",'','','list="list-area"' ]}</dd></dl>
           <table class="edit-table line-tbody no-border-cells">
             </thead>
@@ -399,7 +400,7 @@ print <<"HTML";
           <div id="lifepath-earthian">@{[ input 'lifepathEarthian','checkbox','checkRace' ]}アーシアン専用ライフパスを使う</div>
         </div>
 
-        <div class="box-union" id="classes">
+        <div class="box-union in-toc" id="classes" data-content-title="クラス">
           <dl class="box" id="class-main">
             <dt>メインクラス
             <dd id="class-main-value">$pc{classMain}
@@ -422,7 +423,7 @@ print <<"HTML";
           </dl>
         </div>
         
-        <div class="box" id="status">
+        <div class="box in-toc" id="status" data-content-title="能力値">
           <table class="edit-table" id="status-main">
             <colgroup>
               <col class="name">
@@ -593,7 +594,7 @@ print <<"HTML";
       
       
       <details class="box" id="levelup" open>
-        <summary>レベルアップ</summary>
+        <summary class="in-toc">レベルアップ</summary>
         <dl>
           <dt><ruby>ＣＬ<rp>(</rp><rt>キャラクターレベル</rt><rp>)</rp></ruby>:
           <dd>@{[ input 'level','number','changeLv','min="1"' ]}
@@ -672,15 +673,15 @@ HTML
             </tr>
           </tbody>
         </table>
-        <div class="annotate" style="margin-left: auto; width: 41em;">
-          ※一般スキルは下部のスキル詳細欄にのみ書き込んでください。<br>
-          ※スキル効果で別スキルを追加取得するケースは、<br>
+        <ul class="annotate" style="margin-left: auto; width: 41em;">
+          <li>一般スキルは下部のスキル詳細欄にのみ書き込んでください。
+          <li>スキル効果で別スキルを追加取得するケースは、<br>
           「ハーフブラッド／ニンブル」のように1つの欄に「／」区切りで入力してください。
-        </div>
+        </ul>
       </details>
 
       <details class="box" id="skills" $open{skills}>
-        <summary>
+        <summary class="in-toc">
           スキル
         </summary>
         @{[input 'skillsNum','hidden']}
@@ -706,7 +707,7 @@ if($data::class{$pc{classMain}} && $data::class{$pc{classMain}}{type} eq 'fate')
 foreach my $num ('TMPL',1 .. $pc{skillsNum}) {
   if($num eq 'TMPL'){ print '<template id="skill-template">' }
 print <<"HTML";
-          <tbody id="skill${num}">
+          <tbody id="skill-row${num}">
             <tr>
               <td rowspan="2" class="handle"> 
               <td>@{[input "skill${num}Name",'','','onchange="calcSkills()" placeholder="名称"']}
@@ -733,10 +734,10 @@ print <<"HTML";
           </tfoot>
         </table>
         <div class="add-del-button"><a onclick="addSkill()">▼</a><a onclick="delSkill()">▲</a></div>
-        <div class="annotate">
-        ※コスト欄は1以上でなければ自動的に「―」になります。<br>
-        ※<span class="material-symbols-outlined" style="color:#5ad;font-variation-settings:'FILL' 1;vertical-align:text-bottom;font-size:1.5em;">calculate</span>マークがついているスキルは、ステータス類への修正が自動計算されています。
-        </div>
+        <ul class="annotate">
+          <li>コスト欄は1以上でなければ自動的に「―」になります。
+          <li><span class="material-symbols-outlined" style="color:#5ad;font-variation-settings:'FILL' 1;vertical-align:text-bottom;font-size:1.5em;">calculate</span>マークがついているスキルは、ステータス類への修正が自動計算されています。
+        </ul>
       </details>
       <div class="box trash-box" id="skills-trash">
         <h2><span class="material-symbols-outlined">delete</span><span class="shorten">削除スキル</span></h2>
@@ -744,7 +745,7 @@ print <<"HTML";
         <i class="material-symbols-outlined close-button" onclick="document.getElementById('skills-trash').style.display = 'none';">close</i>
       </div>
 
-      <div class="box-union" id="battle">
+      <div class="box-union in-toc" id="battle" data-content-title="装備品">
         <div class="box" id="armaments">
           <table class="edit-table line-tbody no-border-cells">
             <colgroup>
@@ -966,7 +967,7 @@ print <<"HTML";
         </div>
       </div>
       <div class="box" id="other-rolls">
-        <h2>特殊な判定</h2>
+        <h2 class="in-toc">特殊な判定</h2>
         <table class="edit-table no-border-cells">
           <colgroup>
             <col><col><col><col><col>
@@ -1078,33 +1079,35 @@ print <<"HTML";
             <dd><span id="items-weight-total"></span>／<span id="items-weight-limit"></span>
           </dl>
           <dl class="box" id="money">
-            <dt>所持金<dd>@{[ input 'money' ]} G
+            <dt class="in-toc">所持金
+            <dd>@{[ checkbox 'moneyAuto', '自動計算', 'calcCash' ]}
+            <dd>@{[ input 'money' ]} G
           </dl>
           <div class="box" id="items">
-            <h2>携帯品・所持品</h2>
+            <h2 class="in-toc">携帯品・所持品</h2>
             <textarea name="items" oninput="calcWeight();" placeholder="例）冒険者セット @[5]&#13;&#10;　　HPポーション @[1]&#13;&#10;　　MPポーションx2 @[2]">$pc{items}</textarea>
-            <div class="annotate">
-              ※<code>@[n]</code>の書式を入力すると形態重量として計算されます。<br>
+            <ul class="annotate">
+              <li><code>@[n]</code>の書式を入力すると形態重量として計算されます。<br>
               （<code>n</code>には数値を入れてください）<br>
-            </div>
+            </ul>
           </div>
           <details class="box" id="cashbook" @{[ $pc{cashbook} || $pc{money} =~ /^(?:自動|auto)$/i ? 'open' : '' ]}>
-            <summary>収支履歴</summary>
+            <summary class="in-toc">収支履歴</summary>
             <textarea name="cashbook" oninput="calcCash();" placeholder="例）冒険者セット::-10&#13;&#10;　　HPポーション売却::+15">$pc{cashbook}</textarea>
             <p>
               所持金：<span id="cashbook-total-value">$pc{moneyTotal}</span> G
             </p>
-            <div class="annotate">
-              ※<code>::+n</code> <code>::-n</code>の書式で入力すると加算・減算されます。（<code>n</code>には金額を入れてください）<br>
-              ※<span class="underline">セッション履歴に記入されたゴールド報酬は自動的に加算されます。</span><br>
-              ※所持金欄に<code>自動</code>または<code>auto</code>と記入すると、収支の計算結果を反映します。
-            </div>
+            <ul class="annotate">
+              <li><code>::+n</code> <code>::-n</code>の書式で入力すると加算・減算されます。（<code>n</code>には金額を入れてください）
+              <li><span class="underline">セッション履歴に記入されたゴールド報酬は自動的に加算されます。</span>
+              <li>所持金欄に<code>自動</code>または<code>auto</code>と記入すると、収支の計算結果を反映します。
+            </ul>
           </details>
         </div>
 
         <div id="relations">
           <div class="box" id="geises">
-            <h2>誓約</h2>
+            <h2 class="in-toc">誓約</h2>
             @{[input 'geisesNum','hidden']}
             <table class="edit-table no-border-cells" id="geises-table">
               <colgroup>
@@ -1120,7 +1123,7 @@ HTML
 foreach my $num ('TMPL',1 .. $pc{geisesNum}){
   if($num eq 'TMPL'){ print '<template id="geis-template">' }
 print <<"HTML";
-                <tr id="geis${num}">
+                <tr id="geis-row${num}">
                   <td class="handle">
                   <td>@{[ input "geis${num}Name" ]}
                   <td>@{[ input "geis${num}Cost", 'number', 'calcGeises' ]}
@@ -1133,7 +1136,7 @@ print <<"HTML";
             </table>
             <div class="add-del-button"><a onclick="addGeis()">▼</a><a onclick="delGeis()">▲</a></div>
           </div>
-          <div class="box-union" id="guild">
+          <div class="box-union in-toc" id="guild" data-content-title="所属ギルド">
             <dl class="box">
               <dt>所属ギルド<dd>@{[ input 'guildName' ]}
             </dl>
@@ -1143,7 +1146,7 @@ print <<"HTML";
           </div>
 
           <div class="box" id="connections">
-            <h2>コネクション</h2>
+            <h2 class="in-toc">コネクション</h2>
             @{[input 'connectionsNum','hidden']}
             <table class="edit-table no-border-cells" id="connections-table">
               <colgroup>
@@ -1158,7 +1161,7 @@ HTML
 foreach my $num ('TMPL',1 .. $pc{connectionsNum}){
   if($num eq 'TMPL'){ print '<template id="connection-template">' }
 print <<"HTML";
-                <tr id="connection${num}">
+                <tr id="connection-row${num}">
                   <td class="handle">
                   <td>@{[ input "connection${num}Name",'','calcConnections' ]}
                   <td>@{[ input "connection${num}Relation" ]}
@@ -1169,25 +1172,25 @@ HTML
 print <<"HTML";
             </table>
             <div class="add-del-button"><a onclick="addConnection()">▼</a><a onclick="delConnection()">▲</a></div>
-            <div class="annotate">※名前を入れると成長点が計算されます。</div>
+            <ul class="annotate"><li>名前を入れると成長点が計算されます。</ul>
           </div>
         </div>
       </div>
       
       <details class="box" id="free-note" @{[$pc{freeNote}?'open':'']}>
-        <summary>容姿・経歴・その他メモ</summary>
+        <summary class="in-toc">容姿・経歴・その他メモ</summary>
         <textarea name="freeNote">$pc{freeNote}</textarea>
         @{[ $::in{log} ? '<button type="button" class="set-newest" onclick="setNewestSingleData(\'freeNote\')">最新のメモを適用する</button>' : '' ]}
       </details>
       
       <details class="box" id="free-history" @{[$pc{freeHistory}?'open':'']}>
-        <summary>履歴（自由記入）</summary>
+        <summary class="in-toc">履歴（自由記入）</summary>
         <textarea name="freeHistory">$pc{freeHistory}</textarea>
         @{[ $::in{log} ? '<button type="button" class="set-newest" onclick="setNewestSingleData(\'freeHistory\')">最新の履歴（自由記入）を適用する</button>' : '' ]}
       </details>
       
       <div class="box" id="history">
-        <h2>セッション履歴</h2>
+        <h2 class="in-toc">セッション履歴</h2>
         @{[input 'historyNum','hidden']}
         <table class="edit-table line-tbody no-border-cells" id="history-table">
           <thead id="history-head">
@@ -1212,7 +1215,7 @@ HTML
 foreach my $num ('TMPL',1 .. $pc{historyNum}) {
   if($num eq 'TMPL'){ print '<template id="history-template">' }
 print <<"HTML";
-          <tbody id="history${num}">
+          <tbody id="history-row${num}">
             <tr>
               <td class="handle" rowspan="2" class="handle">
               <td class="date  " rowspan="2">@{[input("history${num}Date")]}
@@ -1276,10 +1279,10 @@ print <<"HTML";
             </tr>
           </tbody>
         </table>
-        <div class="annotate">
-        ※成長点欄は<code>10+2</code>など四則演算が有効です。<br>
-        　「上納」欄に入力した数値ぶん、成長点の合計が引かれます。
-        </div>
+        <ul class="annotate">
+          <li>「成長点」欄は<code>10+2</code>など四則演算が有効です。
+          <li>「上納」欄に入力した数値ぶん、成長点の合計が引かれます。
+        </ul>
         @{[ $::in{log} ? '<button type="button" class="set-newest" onclick="setNewestHistoryData()">最新のセッション履歴を適用する</button>' : '' ]}
       </div>
       
@@ -1306,41 +1309,7 @@ print <<"HTML";
       @{[ input 'birthTime','hidden' ]}
       <input type="hidden" name="id" value="$::in{id}">
     </form>
-HTML
-if($mode eq 'edit'){
-print <<"HTML";
-    <form name="del" method="post" action="./" class="deleteform">
-      <p style="font-size: 80%;">
-      <input type="hidden" name="mode" value="delete">
-      <input type="hidden" name="id" value="$::in{id}">
-      <input type="hidden" name="pass" value="$::in{pass}">
-      <input type="checkbox" name="check1" value="1" required>
-      <input type="checkbox" name="check2" value="1" required>
-      <input type="checkbox" name="check3" value="1" required>
-      <input type="submit" value="シート削除"><br>
-      ※チェックを全て入れてください
-      </p>
-    </form>
-HTML
-  # 怒りの画像削除フォーム
-  if($LOGIN_ID eq $set::masterid){
-    print <<"HTML";
-    <form name="imgdel" method="post" action="./" class="deleteform">
-      <p style="font-size: 80%;">
-      <input type="hidden" name="mode" value="img-delete">
-      <input type="hidden" name="id" value="$::in{id}">
-      <input type="hidden" name="pass" value="$::in{pass}">
-      <input type="checkbox" name="check1" value="1" required>
-      <input type="checkbox" name="check2" value="1" required>
-      <input type="checkbox" name="check3" value="1" required>
-      <input type="submit" value="画像削除"><br>
-      </p>
-    </form>
-    <p class="right">@{[ $::in{log}?$::in{log}:'最終' ]}更新時のIP:$pc{IP}</p>
-HTML
-  }
-}
-print <<"HTML";
+    @{[ deleteForm($mode) ]}
     </article>
 HTML
 # ヘルプ

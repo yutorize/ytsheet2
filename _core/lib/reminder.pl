@@ -44,7 +44,7 @@ elsif($::in{id}){
     }
   }
 
-  if(!$in_mail){ error('存在しないIDです。'); }
+  if(!$in_mail){ error('存在しないIDか、メールアドレスが設定されていないIDです。'); }
 
   &sendmail($in_mail, $set::title." : PasswordReset", "パスワードを再設定します。\n下記のURLにアクセスしてください。\n\n".url()."?mode=reset&code=".$::in{id}.'-'.$token."\n\nパスワードを再設定したくない場合、このメッセージは無視してください。");
 

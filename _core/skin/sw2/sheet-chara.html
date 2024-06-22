@@ -9,7 +9,7 @@
     <h1><a href="./"><TMPL_VAR title></a></h1>
     <nav>
       <ul>
-        <TMPL_LOOP Menu><li class="<TMPL_VAR SIZE>"><a <TMPL_VAR TYPE>="<TMPL_VAR VALUE>"><TMPL_VAR TEXT></a>
+        <TMPL_LOOP Menu><li class="<TMPL_VAR SIZE> <TMPL_VAR CLASSES>"><a <TMPL_VAR TYPE>="<TMPL_VAR VALUE>"><TMPL_VAR TEXT></a>
         </TMPL_LOOP>
         <li><a onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード"></a>
       </ul>
@@ -55,7 +55,7 @@
           <li id="downloadlist-text"><a onclick="downloadAsText();">テキスト形式</a>
           <li id="downloadlist-json"><a onclick="downloadAsJson();">JSON 形式</a>
           <li id="downloadlist-html"><a onclick="downloadAsHtml();">HTML 形式</a>
-          <li id="downloadlist-html"><a onclick="downloadAsFullSet();">ZIP 形式（上記全部入り）</a>
+          <li id="downloadlist-zipped"><a onclick="downloadAsFullSet();">ZIP 形式（上記全部入り）</a>
           <li class="link-tag"><span>ゆとシート内リンク用タグ<br><input type="text" onclick="this.select()" value="[<TMPL_VAR rawName>#<TMPL_VAR id>]"></span>
         </ul>
       </aside>
@@ -129,7 +129,7 @@
             <dt>信仰<dd><TMPL_VAR faith>
           </dl>
           <dl class="box" id="rank">
-            <dt>ランク<dd><TMPL_VAR rank>
+            <dt>ランク<dd><TMPL_VAR rankAll>
           </dl>
           <dl class="box" id="sin">
             <dt>穢れ<dd><TMPL_VAR sin>
@@ -175,19 +175,19 @@
         <div class="box-union" id="sub-status">
           <dl class="box">
             <dt><span>生命抵抗<span class="sp-del">力</span></span>
-            <dd><TMPL_IF vitResistAddTotal><span class="sp-del"><TMPL_VAR vitResistBase></span>+<TMPL_VAR vitResistAddTotal>=</TMPL_IF><b><TMPL_VAR vitResistTotal></b>
+            <dd><TMPL_IF vitResistAddTotal><span class="sp-del"><TMPL_VAR vitResistBase></span><TMPL_VAR vitResistAddTotal>=</TMPL_IF><b><TMPL_VAR vitResistTotal></b>
           </dl>
           <dl class="box">
             <dt><span>精神抵抗<span class="sp-del">力</span></span>
-            <dd><TMPL_IF mndResistAddTotal><span class="sp-del"><TMPL_VAR mndResistBase></span>+<TMPL_VAR mndResistAddTotal>=</TMPL_IF><b><TMPL_VAR mndResistTotal></b>
+            <dd><TMPL_IF mndResistAddTotal><span class="sp-del"><TMPL_VAR mndResistBase></span><TMPL_VAR mndResistAddTotal>=</TMPL_IF><b><TMPL_VAR mndResistTotal></b>
           </dl>
           <dl class="box">
             <dt>ＨＰ
-            <dd><TMPL_IF hpAddTotal><span class="sp-del"><TMPL_VAR hpBase></span>+<TMPL_VAR hpAddTotal>=</TMPL_IF><b><TMPL_VAR hpTotal></b>
+            <dd><TMPL_IF hpAddTotal><span class="sp-del"><TMPL_VAR hpBase></span><TMPL_VAR hpAddTotal>=</TMPL_IF><b><TMPL_VAR hpTotal></b>
           </dl>
           <dl class="box">
             <dt>ＭＰ
-            <dd><TMPL_IF mpTotal><TMPL_IF mpAddTotal><span class="sp-del"><TMPL_VAR mpBase></span>+<TMPL_VAR mpAddTotal>=</TMPL_IF><b><TMPL_VAR mpTotal></b><TMPL_ELSE><b>なし</b></TMPL_IF>
+            <dd><TMPL_IF mpTotal><TMPL_IF mpAddTotal><span class="sp-del"><TMPL_VAR mpBase></span><TMPL_VAR mpAddTotal>=</TMPL_IF><b><TMPL_VAR mpTotal></b><TMPL_ELSE><b>なし</b></TMPL_IF>
           </dl>
         </div>
         
@@ -282,7 +282,7 @@
                 <TMPL_LOOP Packs><tr>
                   <TMPL_IF NAME="__first__"><th rowspan="<TMPL_VAR colspan>"><TMPL_VAR class><span class="small">技能レベル</span><TMPL_VAR lv></TMPL_IF>
                   <th><TMPL_VAR name>
-                  <td><TMPL_IF add>+<TMPL_VAR add>=</TMPL_IF>
+                  <td><TMPL_IF add><TMPL_VAR add>=</TMPL_IF>
                   <td><TMPL_VAR total>
                 </TMPL_LOOP>
               </tbody></TMPL_LOOP>
@@ -293,15 +293,15 @@
         <div id="area-other-actions">
           <dl class="box" id="monster-lore">
             <dt>魔物知識
-            <dd><TMPL_IF monsterLoreAdd><span class="small">+<TMPL_VAR monsterLoreAdd>=</span></TMPL_IF><TMPL_VAR monsterLore>
+            <dd><TMPL_IF monsterLoreAdd><span class="small"><TMPL_VAR monsterLoreAdd>=</span></TMPL_IF><TMPL_VAR monsterLore>
           </dl>
           <dl class="box" id="initiative">
             <dt>先制力
-            <dd><TMPL_IF initiativeAdd><span class="small">+<TMPL_VAR initiativeAdd>=</span></TMPL_IF><TMPL_VAR initiative>
+            <dd><TMPL_IF initiativeAdd><span class="small"><TMPL_VAR initiativeAdd>=</span></TMPL_IF><TMPL_VAR initiative>
           </dl>
           <dl class="box" id="mobility">
             <dt>制限移動<dd><b><TMPL_VAR mobilityLimited></b> m
-            <dt>移動力<dd><TMPL_IF mobilityAdd><TMPL_VAR mobilityBase>+<TMPL_VAR mobilityAdd>=</TMPL_IF><b><TMPL_VAR mobilityTotal></b> m
+            <dt>移動力<dd><TMPL_IF mobilityAdd><TMPL_VAR mobilityBase><TMPL_VAR mobilityAdd>=</TMPL_IF><b><TMPL_VAR mobilityTotal></b> m
             <dt>全力移動<dd><b><TMPL_VAR mobilityFull></b> m
           </dl>
         </div>
@@ -385,10 +385,10 @@
                 <TMPL_UNLESS NAMEOFF><td rowspan="<TMPL_VAR ROWSPAN>"><span class="item-name"><TMPL_VAR NAME></span></TMPL_UNLESS>
                 <td><TMPL_VAR USAGE>
                 <td><TMPL_VAR REQD>
-                <td><TMPL_IF ACC>+<TMPL_VAR ACC>=</TMPL_IF><b><TMPL_VAR ACCTOTAL></b>
+                <td><TMPL_IF ACC><TMPL_VAR ACC>=</TMPL_IF><b><TMPL_VAR ACCTOTAL></b>
                 <td><TMPL_VAR RATE>
                 <td><TMPL_VAR CRIT>
-                <td><TMPL_IF DMG>+<TMPL_VAR DMG>=</TMPL_IF><b><TMPL_VAR DMGTOTAL></b>
+                <td><TMPL_IF DMG><TMPL_VAR DMG>=</TMPL_IF><b><TMPL_VAR DMGTOTAL></b>
                 <td><TMPL_IF OWN>✔</TMPL_IF>
                 <td><span class="item-name"><TMPL_VAR NOTE></span>
             </TMPL_LOOP></tbody>
@@ -430,7 +430,7 @@
             <tbody>
               <TMPL_LOOP Armours><tr>
                 <th class="type"><TMPL_VAR TYPE>
-                <td class="name"><TMPL_VAR NAME>
+                <td class="name"><span class="item-name"><TMPL_VAR NAME></span>
                 <td class="reqd"><TMPL_VAR REQD>
                 <td class="eva "><TMPL_VAR EVA>
                 <td class="def "><TMPL_VAR DEF>
@@ -440,7 +440,7 @@
             </tbody>
             <tfoot>
               <TMPL_LOOP ArmourTotals><tr class="defense-total">
-                <th colspan="3">合計: <TMPL_VAR TH>
+                <th colspan="3">合計:<span class="small"><TMPL_VAR TH></span>
                 <td class="eva "><TMPL_VAR EVA>
                 <td class="def "><TMPL_VAR DEF>
                 <td class="note" colspan="2"><TMPL_VAR NOTE>
@@ -473,7 +473,7 @@
         <div id="area-items-L">
           <dl class="box" id="money">
             <dt>所持金<dd><TMPL_VAR money> G
-            <dt>預金／借金<dd><TMPL_VAR deposit> G
+            <dt>預金／借金<dd><TMPL_IF deposit><TMPL_VAR deposit> G<TMPL_ELSE>―</TMPL_IF>
           </dl>
           <section class="box" id="items">
             <h2><TMPL_IF head_items><TMPL_VAR head_items><TMPL_ELSE>所持品</TMPL_IF></h2>
@@ -502,10 +502,14 @@
             <ul class="data-table side-margin"><TMPL_LOOP BattleItems><li><TMPL_VAR ITEM DEFAULT="&nbsp;"></TMPL_LOOP></ul>
           </section>
           </TMPL_IF>
-          <dl class="box" id="honor">
-            <dt>名誉点<dd><TMPL_VAR honor>
-            <dt>ランク<dd><TMPL_VAR rank>
-          </dl>
+          <div id="honor">
+            <dl class="box"><dt>名誉点<dd><TMPL_VAR honor></dl>
+            <div class="box-union">
+              <TMPL_IF rankHonorValue><dl class="box" id="adventurer-rank"><dt>冒険者ランク<dd><TMPL_VAR rank></dl></TMPL_IF>
+              <TMPL_IF rankBarbarosValue><dl class="box" id="barbaros-rank"><dt>バルバロス栄光ランク<dd><TMPL_VAR rankBarbaros></dl></TMPL_IF>
+              <TMPL_UNLESS rankHonorValue><TMPL_UNLESS rankBarbarosValue><dl class="box" id="adventurer-rank><dt">ランク<dd>―</dl></TMPL_UNLESS></TMPL_UNLESS>
+            </div>
+          </div>
           <section class="box honor-items" id="honor-items">
             <h2>名誉アイテム</h2>
             <table class="data-table side-margin">
@@ -513,18 +517,20 @@
                 <tr><th><th>点数
               </thead>
               <tbody>
-                <tr><td>冒険者ランク<td><TMPL_VAR rankHonorValue>
+                <TMPL_IF rankHonorValue><tr><td>冒険者ランク<td><TMPL_VAR rankHonorValue></TMPL_IF>
+                <TMPL_IF rankBarbarosValue><tr><td>バルバロス栄光ランク<td><TMPL_VAR rankBarbarosValue></TMPL_IF>
                 <TMPL_IF MysticArtsHonor><tr><td>秘伝<td><TMPL_VAR MysticArtsHonor></TMPL_IF>
                 <TMPL_LOOP HonorItems><tr><td class="left"><TMPL_VAR NAME><td><TMPL_VAR PT></TMPL_LOOP>
                 <TMPL_IF honorOffset><tr><td>不名誉点相殺<td><TMPL_VAR honorOffset></TMPL_IF>
+                <TMPL_IF honorOffsetBarbaros><tr><td>不名誉点相殺（蛮族）<td><TMPL_VAR honorOffsetBarbaros></TMPL_IF>
               </tbody>
             </table>
           </section>
           <TMPL_IF DishonorItems>
-          <dl class="box" id="dishonor">
-            <dt>不名誉点<dd><TMPL_VAR dishonor>
-            <dt>不名誉称号<dd><TMPL_VAR notoriety>
-          </dl>
+          <div id="dishonor">
+            <dl class="box"><dt>不名誉点<dd><TMPL_VAR dishonor></dl>
+            <dl class="box"><dt>不名誉称号<dd><TMPL_VAR notoriety></dl>
+          </div>
           <section class="box honor-items" id="dishonor-items">
             <h2>不名誉詳細</h2>
             <table class="data-table side-margin">
@@ -623,7 +629,7 @@
         <dt>レベル<dd><TMPL_VAR level>
       </dl>
       <dl id="f-character-name">
-        <dt>名前<dd><TMPL_VAR characterName>
+        <dt>名前<dd><TMPL_IF aka><span class="aka">“<TMPL_VAR aka>”</span></TMPL_IF><span><TMPL_VAR characterName></span>
       </dl>
       <dl id="f-player-name">
         <dt>プレイヤー名<dd><TMPL_VAR playerName>
@@ -645,7 +651,7 @@
           </TMPL_LOOP>
         </dd>
       </dl>
-      <dl id="f-note">
+      <dl id="f-profile">
         <dt>自己紹介<dd><TMPL_VAR fellowProfile>
       </dl>
       <dl id="f-mp">
@@ -653,79 +659,81 @@
       </dl>
       <div id="f-checkboxes">
         <dl><dt>経験点
-          <dd class="<TMPL_IF fellowExpCheck>fellow-checked</TMPL_IF>"><TMPL_IF fellowExpCheck>✔<TMPL_ELSE>　</TMPL_IF>あり
-          <dd class="<TMPL_UNLESS fellowExpCheck>fellow-checked</TMPL_UNLESS>"><TMPL_UNLESS fellowExpCheck>✔<TMPL_ELSE>　</TMPL_UNLESS>なし
+          <dd class="<TMPL_IF fellowExpCheck>fellow-checked</TMPL_IF>">あり
+          <dd class="<TMPL_UNLESS fellowExpCheck>fellow-checked</TMPL_UNLESS>">なし
         </dl>
         <dl><dt>報酬
-          <dd class="<TMPL_IF fellowRewardCheck>fellow-checked</TMPL_IF>"><TMPL_IF fellowRewardCheck>✔<TMPL_ELSE>　</TMPL_IF>要望
-          <dd class="<TMPL_UNLESS fellowRewardCheck>fellow-checked</TMPL_UNLESS>"><TMPL_UNLESS fellowRewardCheck>✔<TMPL_ELSE>　</TMPL_UNLESS>不要
+          <dd class="<TMPL_IF fellowRewardCheck>fellow-checked</TMPL_IF>">要望
+          <dd class="<TMPL_UNLESS fellowRewardCheck>fellow-checked</TMPL_UNLESS>">不要
         </dl>
       </div>
       </div>
       <table id="fellow-actions">
-        <tr>
-          <th>1d
-          <th>想定<br>出目
-          <th>行動
-          <th>台詞
-          <th>達成値
-          <th>効果
-        <tr>
-          <td rowspan="2">⚀<br>⚁
-          <td class="number">7
-          <td><TMPL_VAR fellow1Action>
-          <td><TMPL_VAR fellow1Words>
-          <td><TMPL_VAR fellow1Num>
-          <td><TMPL_VAR fellow1Note>
-        <tr>
-          <td class="number">6
-          <td><TMPL_VAR fellow1-2Action>
-          <td><TMPL_VAR fellow1-2Words>
-          <td><TMPL_VAR fellow1-2Num>
-          <td><TMPL_VAR fellow1-2Note>
-        <tr>
-          <td rowspan="2">⚂<br>⚃
-          <td class="number">8
-          <td><TMPL_VAR fellow3Action>
-          <td><TMPL_VAR fellow3Words>
-          <td><TMPL_VAR fellow3Num>
-          <td><TMPL_VAR fellow3Note>
-        <tr>
-          <td class="number">5
-          <td><TMPL_VAR fellow3-2Action>
-          <td><TMPL_VAR fellow3-2Words>
-          <td><TMPL_VAR fellow3-2Num>
-          <td><TMPL_VAR fellow3-2Note>
-        <tr>
-          <td rowspan="2">⚄
-          <td class="number">9
-          <td><TMPL_VAR fellow5Action>
-          <td><TMPL_VAR fellow5Words>
-          <td><TMPL_VAR fellow5Num>
-          <td><TMPL_VAR fellow5Note>
-        <tr>
-          <td class="number">4
-          <td><TMPL_VAR fellow5-2Action>
-          <td><TMPL_VAR fellow5-2Words>
-          <td><TMPL_VAR fellow5-2Num>
-          <td><TMPL_VAR fellow5-2Note>
-        <tr>
-          <td rowspan="2">⚅
-          <td class="number">10
-          <td><TMPL_VAR fellow6Action>
-          <td><TMPL_VAR fellow6Words>
-          <td><TMPL_VAR fellow6Num>
-          <td><TMPL_VAR fellow6Note>
-        <tr>
-          <td class="number">3
-          <td><TMPL_VAR fellow6-2Action>
-          <td><TMPL_VAR fellow6-2Words>
-          <td><TMPL_VAR fellow6-2Num>
-          <td><TMPL_VAR fellow6-2Note>
+        <thead>
+          <tr>
+            <th>1d
+            <th><span class="small">想定出目</span>
+            <th>行動
+            <th>台詞
+            <th>達成値
+            <th>効果
+        <tbody>
+          <tr>
+            <td rowspan="2">⚀<br>⚁
+            <td class="number">7
+            <td><TMPL_VAR fellow1Action>
+            <td><TMPL_VAR fellow1Words>
+            <td><TMPL_VAR fellow1Num>
+            <td><TMPL_VAR fellow1Note>
+          <tr>
+            <td class="number">6
+            <td><TMPL_VAR fellow1-2Action>
+            <td><TMPL_VAR fellow1-2Words>
+            <td><TMPL_VAR fellow1-2Num>
+            <td><TMPL_VAR fellow1-2Note>
+          <tr>
+            <td rowspan="2">⚂<br>⚃
+            <td class="number">8
+            <td><TMPL_VAR fellow3Action>
+            <td><TMPL_VAR fellow3Words>
+            <td><TMPL_VAR fellow3Num>
+            <td><TMPL_VAR fellow3Note>
+          <tr>
+            <td class="number">5
+            <td><TMPL_VAR fellow3-2Action>
+            <td><TMPL_VAR fellow3-2Words>
+            <td><TMPL_VAR fellow3-2Num>
+            <td><TMPL_VAR fellow3-2Note>
+          <tr>
+            <td rowspan="2">⚄
+            <td class="number">9
+            <td><TMPL_VAR fellow5Action>
+            <td><TMPL_VAR fellow5Words>
+            <td><TMPL_VAR fellow5Num>
+            <td><TMPL_VAR fellow5Note>
+          <tr>
+            <td class="number">4
+            <td><TMPL_VAR fellow5-2Action>
+            <td><TMPL_VAR fellow5-2Words>
+            <td><TMPL_VAR fellow5-2Num>
+            <td><TMPL_VAR fellow5-2Note>
+          <tr>
+            <td rowspan="2">⚅
+            <td class="number">10
+            <td><TMPL_VAR fellow6Action>
+            <td><TMPL_VAR fellow6Words>
+            <td><TMPL_VAR fellow6Num>
+            <td><TMPL_VAR fellow6Note>
+          <tr>
+            <td class="number">3
+            <td><TMPL_VAR fellow6-2Action>
+            <td><TMPL_VAR fellow6-2Words>
+            <td><TMPL_VAR fellow6-2Num>
+            <td><TMPL_VAR fellow6-2Note>
       </table>
-      <dl id="fellowNote">
+      <dl id="fellow-note">
         <dt>備考
-        <dd><TMPL_VAR fellowNote>
+        <dd><TMPL_VAR fellowNote></dd>
       </dl>
       <TMPL_ELSE>
         <p>このキャラクターのフェローは公開されていません。</p>

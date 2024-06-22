@@ -20,7 +20,7 @@ $SHEET = HTML::Template->new( filename => $set::skin_sheet, utf8 => 1,
   die_on_bad_params => 0, die_on_missing_include => 0, case_sensitive => 1, global_vars => 1);
 
 ### キャラクターデータ読み込み #######################################################################
-our %pc = pcDataGet();
+our %pc = getSheetData();
 
 ### タグ置換前処理 ###################################################################################
 ### 閲覧禁止データ --------------------------------------------------
@@ -120,9 +120,9 @@ if($pc{ver}){
   foreach (keys %pc) {
     next if($_ =~ /^image/);
     if($_ =~ /^(?:items|freeNote|freeHistory|cashbook)$/){
-      $pc{$_} = tagUnescapeLines($pc{$_});
+      $pc{$_} = unescapeTagsLines($pc{$_});
     }
-    $pc{$_} = tagUnescape($pc{$_});
+    $pc{$_} = unescapeTags($pc{$_});
 
     $pc{$_} = noiseTextTag $pc{$_} if $pc{forbiddenMode};
   }
@@ -193,15 +193,12 @@ foreach(split(/ /, $pc{tags})){
 $SHEET->param(Tags => \@tags);
 
 ### セリフ --------------------------------------------------
-$pc{words} =~ s/<br>/\n/g;
-$pc{words} =~ s/^([「『（])/<span class="brackets">$1<\/span>/gm;
-$pc{words} =~ s/(.+?(?:[，、。？」』）]|$))/<span>$1<\/span>/g;
-$pc{words} =~ s/\n<span>　/\n<span>/g;
-$pc{words} =~ s/\n/<br>/g;
-$SHEET->param(words => $pc{words});
-$SHEET->param(wordsX => ($pc{wordsX} eq '左' ? 'left:0;' : 'right:0;'));
-$SHEET->param(wordsY => ($pc{wordsY} eq '下' ? 'bottom:0;' : 'top:0;'));
-
+{
+  my ($words, $x, $y) = stylizeWords($pc{words},$pc{wordsX},$pc{wordsY});
+  $SHEET->param(words => $words);
+  $SHEET->param(wordsX => $x);
+  $SHEET->param(wordsY => $y);
+}
 ### 種族名 --------------------------------------------------
 $pc{race} =~ s/［.*］//g;
 {
@@ -219,8 +216,9 @@ $pc{raceAbility} =~ s/［(.*?)］/<span>［$1］<\/span>/g;
 $SHEET->param(raceAbility => $pc{raceAbility});
 
 ### 穢れ --------------------------------------------------
-$SHEET->param(sin => '―') if !$pc{sin} && $pc{race} =~ /^(?:ルーンフォーク|フィー)$/;
-
+if (!$pc{sin}){ 
+  $SHEET->param(sin => ($pc{race} =~ /^(?:ルーンフォーク|フィー)$/) ? '―' : 0);
+}
 ### 信仰 --------------------------------------------------
 if($pc{faith} eq 'その他の信仰') { $SHEET->param(faith => $pc{faithOther}); }
 $pc{faith} =~ s/“(.*)”//;
@@ -228,8 +226,11 @@ $pc{faith} =~ s/“(.*)”//;
 ### 経験点 --------------------------------------------------
 $pc{expUsed} = $pc{expTotal} - $pc{expRest};
 foreach('expUsed','expTotal','expRest'){
-  $pc{$_} = commify $pc{$_};
-  $SHEET->param($_ => $pc{$_});
+  $SHEET->param($_ => commify $pc{$_});
+}
+### HPなど --------------------------------------------------
+foreach('vitResistAddTotal','mndResistAddTotal','hpAddTotal','mpAddTotal','mobilityAdd','monsterLoreAdd','initiativeAdd'){
+  $SHEET->param($_ => addNum $pc{$_});
 }
 
 ### 技能 --------------------------------------------------
@@ -269,16 +270,19 @@ foreach (1..10){
 $SHEET->param(CommonClasses => \@common_classes);
 
 ### 戦闘特技 --------------------------------------------------
+my %acquired;
 my @feats_lv;
 foreach ('1bat',@set::feats_lv){
   (my $lv = $_) =~ s/^([0-9]+)[^0-9].*?$/$1/;
   if($_ =~ /bat/ && !$pc{lvBat}){ next; }
   next if $pc{level} < $lv;
   push(@feats_lv, { NAME => $pc{'combatFeatsLv'.$_}, "LV" => $lv } );
+  $acquired{$pc{'combatFeatsLv'.$_}} = 1;
 }
 if($pc{buildupAddFeats}){
   foreach ($pc{level}+1 .. $pc{level}+$pc{buildupAddFeats}){
     push(@feats_lv, { NAME => $pc{'combatFeatsLv'.$_}, "LV" => '+' } );
+    $acquired{$pc{'combatFeatsLv'.$_}} = 1;
   }
 }
 $SHEET->param(CombatFeatsLv => \@feats_lv);
@@ -371,12 +375,7 @@ foreach my $class (@data::class_names){
   foreach (1 .. $lv + $add){
     my $craft = $pc{'craft'.ucfirst($data::class{$class}{craft}{eName}).$_};
     
-    if($class eq 'エンハンサー'){
-      $enhance_attack_on = 1 if $craft =~ /フェンリルバイト|バルーンシードショット/;
-    }
-    elsif($class eq 'ライダー'){
-      $SHEET->param(riderObsOn => 1)  if $craft eq '探索指令';
-    }
+    $acquired{$craft} = 1;
     push(@crafts, { "ITEM" => $craft } );
   }
   
@@ -426,12 +425,6 @@ else {
 $SHEET->param(Language => \@language);
 
 ### パッケージ --------------------------------------------------
-## ウォーリーダー：軍師の知略
-my $war_int_initiative;
-foreach(1 .. $pc{lvWar}+$pc{commandAddition}){
-  if($pc{'craftCommand'.$_} =~ /軍師の知略$/){ $war_int_initiative = 1; last; }
-}
-if(!$war_int_initiative){ delete $data::class{'ウォーリーダー'}{package}{Int} }
 ## 共通処理
 my @packages;
 foreach my $class (@data::class_names){
@@ -442,10 +435,11 @@ foreach my $class (@data::class_names){
   my %data = %{$data::class{$class}{package}};
   my @pack;
   foreach my $p_id (sort{$data{$a}{stt} cmp $data{$b}{stt} || $data{$a} cmp $data{$b}} keys %data){
+    next if(exists $data{$p_id}{unlockCraft} && !$acquired{$data{$p_id}{unlockCraft}});
     (my $p_name = $data{$p_id}{name}) =~ s/(\(.+?\))/<small>$1<\/small>/;
     push(@pack, {
       name  => $p_name,
-      add   => $pc{'pack'.$c_id.$p_id.'Add'}+$pc{'pack'.$c_id.$p_id.'Auto'},
+      add   => addNum($pc{'pack'.$c_id.$p_id.'Add'}+$pc{'pack'.$c_id.$p_id.'Auto'}),
       total => $pc{'pack'.$c_id.$p_id},
     });
   }
@@ -513,9 +507,9 @@ foreach my $class (@data::class_caster){
     NAME => $title,
     OWN  => ($pc{'magicPowerOwn'.$id} ? '✔<span class="small">知力+2</span>' : ''),
     MAGIC  => $magicname,
-    POWER  => ($power ? '<span class="small">+'.$power.'=</span>' : '').$pc{'magicPower'.$id},
-    CAST   => ($cast ? '<span class="small">+'.$cast.'=</span>' : '').($pc{'magicPower'.$id}+$cast),
-    DAMAGE => "+$damage",
+    POWER  => ($power ? '<span class="small">'.addNum($power).'=</span>' : '').$pc{'magicPower'.$id},
+    CAST   => ($cast ? '<span class="small">'.addNum($cast).'=</span>' : '').($pc{'magicPower'.$id}+$cast),
+    DAMAGE => addNum($damage)||'+0',
   } );
 }
 
@@ -535,9 +529,9 @@ foreach my $class (@data::class_names){
     NAME => $class."<span class=\"small\">技能レベル</span>".$pc{'lv'.$id},
     OWN  => ($pc{'magicPowerOwn'.$id} ? '✔<span class="small">'.$stt.'+2</span>' : ''),
     MAGIC  => $name,
-    POWER  => ($pname) ? ($power ? '<span class="small">+'.$power.'=</span>' : '').$pc{'magicPower'.$id} : '―',
-    CAST   => ($cast ? '<span class="small">+'.$cast.'=</span>' : '').($pc{'magicPower'.$id}+$cast),
-    DAMAGE => ($pname) ? "+$damage" : '―',
+    POWER  => ($pname) ? ($power ? '<span class="small">'.addNum($power).'=</span>' : '').$pc{'magicPower'.$id} : '―',
+    CAST   => ($cast ? '<span class="small">'.addNum($cast).'=</span>' : '').($pc{'magicPower'.$id}+$cast),
+    DAMAGE => ($pname) ? addNum($damage)||'+0' : '―',
   } );
 }
 $SHEET->param(MagicPowers => \@magic);
@@ -561,16 +555,33 @@ $SHEET->param(MagicPowers => \@magic);
 }
 
 ### 攻撃技能／特技 --------------------------------------------------
+my $strTotal = $pc{sttStr}+$pc{sttAddC};
 my @atacck;
 if(!$pc{forbiddenMode}){
   foreach my $name (@data::class_names){
-    my $id    = $data::class{$name}{id};
+    my $id = $data::class{$name}{id};
     next if !$pc{'lv'.$id};
-    next if !($data::class{$name}{type} eq 'weapon-user' || $id =~ /Enh|Dem/);
-    next if $id eq 'Enh' && !$enhance_attack_on;
+    next if !($data::class{$name}{type} eq 'weapon-user' || exists $data::class{$name}{accUnlock});
+    if(exists $data::class{$name}{accUnlock}){
+      next if $pc{'lv'.$id} < $data::class{$name}{accUnlock}{lv};
+    }
+    if($data::class{$name}{accUnlock}{feat}){
+      my $isUnlock = 0;
+      foreach my $feat (split '|',$data::class{$name}{accUnlock}{feat}){
+        if($acquired{$feat}){ $isUnlock = 1; last; }
+      }
+      next if !$isUnlock;
+    }
+    if($data::class{$name}{accUnlock}{craft}){
+      my $isUnlock = 0;
+      foreach my $craft (split '|',$data::class{$name}{accUnlock}{feat}){
+        if($acquired{$craft}){ $isUnlock = 1; last; }
+      }
+      next if !$isUnlock;
+    }
     push(@atacck, {
       NAME => $name."<span class=\"small\">技能レベル</span>".$pc{'lv'.$id},
-      STR  => ($id eq 'Fen' ? $pc{reqdStrF} : $pc{reqdStr}),
+      STR  => ($id eq 'Fen' ? ceil($strTotal / 2) : $strTotal),
       ACC  => $pc{'lv'.$id}+$pc{bonusDex},
       ($id eq 'Fen' ? (CRIT => '-1') : ('' => '')),
       DMG  => $id eq 'Dem' ? '―' : $pc{'lv'.$id}+$pc{bonusStr},
@@ -621,17 +632,12 @@ if($pc{forbiddenMode}){
 else {
   my $first = 1;
   foreach (1 .. $pc{weaponNum}){
-    next if $pc{'weapon'.$_.'Name'}.$pc{'weapon'.$_.'Usage'}.$pc{'weapon'.$_.'Reqd'}.
-            $pc{'weapon'.$_.'Acc'}.$pc{'weapon'.$_.'Rate'}.$pc{'weapon'.$_.'Crit'}.
-            $pc{'weapon'.$_.'Dmg'}.$pc{'weapon'.$_.'Own'}.$pc{'weapon'.$_.'Note'}
-            eq '';
+    next if !existsRow "weapon$_",'Name','Usage','Reqd','Acc','Rate','Crit','Dmg','Own','Note';
     my $rowspan = 1;
     for(my $num = $_+1; $num <= $pc{weaponNum}; $num++){
       last if $pc{'weapon'.$num.'NameOff'};
       last if $pc{'weapon'.$num.'Name'};
-      last if $pc{'weapon'.$num.'Name'}.$pc{'weapon'.$num.'Usage'}.$pc{'weapon'.$num.'Reqd'}.
-            $pc{'weapon'.$num.'Acc'}.$pc{'weapon'.$num.'Rate'}.$pc{'weapon'.$num.'Crit'}.
-            $pc{'weapon'.$num.'Dmg'}.$pc{'weapon'.$num.'Own'}.$pc{'weapon'.$num.'Note'} eq '';
+      last if !existsRow "weapon$_",'Name','Usage','Reqd','Acc','Rate','Crit','Dmg','Own','Note';
       $rowspan++;
       $pc{'weapon'.$num.'NameOff'} = 1;
     }
@@ -645,11 +651,11 @@ else {
       NAMEOFF  => $pc{'weapon'.$_.'NameOff'},
       USAGE    => $pc{'weapon'.$_.'Usage'},
       REQD     => $pc{'weapon'.$_.'Reqd'},
-      ACC      => $pc{'weapon'.$_.'Acc'},
+      ACC      => addNum($pc{'weapon'.$_.'Acc'}),
       ACCTOTAL => $pc{'weapon'.$_.'AccTotal'},
       RATE     => $pc{'weapon'.$_.'Rate'},
       CRIT     => $pc{'weapon'.$_.'Crit'},
-      DMG      => $pc{'weapon'.$_.'Dmg'},
+      DMG      => addNum($pc{'weapon'.$_.'Dmg'}),
       DMGTOTAL => $pc{'weapon'.$_.'DmgTotal'},
       OWN      => $pc{'weapon'.$_.'Own'},
       NOTE     => $pc{'weapon'.$_.'Note'},
@@ -663,17 +669,34 @@ $SHEET->param(Weapons => \@weapons);
 ### 回避技能／特技 --------------------------------------------------
 if(!$pc{forbiddenMode}){
   my @evasion;
-  if($pc{evasionClass}){
-    my $id = $data::class{$pc{evasionClass}}{id};
-    if($pc{'lv'.$id}){
-      push(@evasion, {
-        NAME => $pc{evasionClass}."<span class=\"small\">技能レベル</span>".$pc{'lv'.$id},
-        STR  => ($id eq 'Fen' ? $pc{reqdStrF} : $pc{reqdStr}),
-        EVA  => $pc{'lv'.$id}+$pc{bonusAgi},
-      } );
+  foreach my $name (@data::class_names){
+    my $id = $data::class{$name}{id};
+    next if !$pc{'lv'.$id};
+    next if !($data::class{$name}{type} eq 'weapon-user' || exists $data::class{$name}{evaUnlock});
+    if(exists $data::class{$name}{evaUnlock}){
+      next if $pc{'lv'.$id} < $data::class{$name}{evaUnlock}{lv};
     }
+    if($data::class{$name}{evaUnlock}{feat}){
+      my $isUnlock = 0;
+      foreach my $feat (split('|',$data::class{$name}{evaUnlock}{feat})){
+        if($acquired{$feat}){ $isUnlock = 1; last; }
+      }
+      next if !$isUnlock;
+    }
+    if($data::class{$name}{evaUnlock}{craft}){
+      my $isUnlock = 0;
+      foreach my $craft (split('|',$data::class{$name}{evaUnlock}{feat})){
+        if($acquired{$craft}){ $isUnlock = 1; last; }
+      }
+      next if !$isUnlock;
+    }
+    push(@evasion, {
+      NAME => $name."<span class=\"small\">技能レベル</span>".$pc{'lv'.$id},
+      STR  => ($id eq 'Fen' ? ceil($strTotal / 2) : $strTotal),
+      EVA  => $pc{'lv'.$id}+$pc{bonusAgi},
+    } );
   }
-  else{
+  if(!@evasion){
     push(@evasion, {
       NAME => '技能なし',
       STR  => $pc{reqdStr},
@@ -753,8 +776,8 @@ else {
       TYPE => $pc{'armour'.$_.'Type'},
       NAME => $pc{'armour'.$_.'Name'},
       REQD => $pc{'armour'.$_.'Reqd'},
-      EVA  => $pc{'armour'.$_.'Eva'},
-      DEF  => $pc{'armour'.$_.'Def'},
+      EVA  => $pc{'armour'.$_.'Eva'} // ($pc{'armour'.$_.'Category'} =~ /[鎧盾]/ ? '―' : ''),
+      DEF  => $pc{'armour'.$_.'Def'} // ($pc{'armour'.$_.'Category'} =~ /[鎧盾]/ ? '0' : ''),
       OWN  => $pc{'armour'.$_.'Own'},
       NOTE => $pc{'armour'.$_.'Note'},
     } );
@@ -762,8 +785,9 @@ else {
   $SHEET->param(Armours => \@armours);
   
   my @total;
-  foreach my $i (1..3){
+  foreach my $i (1..$pc{defenseNum}){
     my @ths;
+    my $class = $pc{"evasionClass$i"};
     foreach (1 .. $pc{armourNum}){
       my $cate = $pc{'armour'.$_.'Category'};
       if ($pc{"defTotal${i}CheckArmour$_"} && (
@@ -775,9 +799,12 @@ else {
         push(@ths, $pc{'armour'.$_.'Type'});
       }
     }
-    next if !@ths && !$pc{"defenseTotal${i}Note"};
+    next if !$class && !@ths && !$pc{"defenseTotal${i}Note"};
+    my $th = 
+      ($class ? "${class}／" : '')
+      .(@ths == @armours ? 'すべての防具' : join('＋', @ths) || '防具なし');
     push(@total, {
-      TH   => (@ths == @armours ? 'すべて' : join('＋', @ths)) || 'なし',
+      TH   => $th,
       EVA  => $pc{"defenseTotal${i}Eva"},
       DEF  => $pc{"defenseTotal${i}Def"},
       NOTE => $pc{"defenseTotal${i}Note"},
@@ -813,10 +840,13 @@ else {
     ["他3","Other3"], ["┗","Other3_"], ["┗","Other3__"],
     ["他4","Other4"], ["┗","Other4_"], ["┗","Other4__"],
   ){
-    next if !$pc{'accessory'.@$_[1].'Name'} && !$pc{'accessory'.@$_[1].'Note'};
+    next if !existsRow "accessory@$_[1]",'Name','Own','Note','Add';
     next if (@$_[1] =~ /Other2/ &&  $pc{raceAbility} !~ /［見えざる手］/);
     next if (@$_[1] =~ /Other3/ && ($pc{raceAbility} !~ '［見えざる手］' || $pc{level} <  6));
     next if (@$_[1] =~ /Other4/ && ($pc{raceAbility} !~ '［見えざる手］' || $pc{level} < 16));
+    if (@$_[1] =~ /_$/) {
+      next unless $pc{'accessory'.substr(@$_[1],0,-1).'Add'};
+    }
     push(@accessories, {
       TYPE => @$_[0],
       NAME => $pc{'accessory'.@$_[1].'Name'},
@@ -839,6 +869,7 @@ my @history;
 my $h_num = 0;
 $pc{history0Title} = 'キャラクター作成';
 foreach (0 .. $pc{historyNum}){
+  next if(!existsRow "history${_}",'Date','Title','Exp','Honor','Money','Grow','Gm','Member','Note');
   $pc{'history'.$_.'Grow'} =~ s/[^器敏筋生知精0-9]//g;
   $pc{'history'.$_.'Grow'} =~ s/器([0-9]{0,3})/器用×$1<br>/g;
   $pc{'history'.$_.'Grow'} =~ s/敏([0-9]{0,3})/敏捷×$1<br>/g;
@@ -847,7 +878,6 @@ foreach (0 .. $pc{historyNum}){
   $pc{'history'.$_.'Grow'} =~ s/知([0-9]{0,3})/知力×$1<br>/g;
   $pc{'history'.$_.'Grow'} =~ s/精([0-9]{0,3})/精神×$1<br>/g;
   $pc{'history'.$_.'Grow'} =~ s/×([^0-9])/$1/g;
-  #next if !$pc{'history'.$_.'Title'};
   $h_num++ if $pc{'history'.$_.'Gm'};
   if ($set::log_dir && $pc{'history'.$_.'Date'} =~ s/([^0-9]*?_[0-9]+(?:#[0-9a-zA-Z]+?)?)$//){
     my $room = $1;
@@ -864,10 +894,8 @@ foreach (0 .. $pc{historyNum}){
   }
   if   ($pc{"history${_}HonorType"} eq 'barbaros'){ $pc{"history${_}Honor"} = '蛮'.$pc{"history${_}Honor"}; }
   elsif($pc{"history${_}HonorType"} eq 'dragon'  ){ $pc{"history${_}Honor"} = '竜'.$pc{"history${_}Honor"}; }
-  $pc{'history'.$_.'Exp'}   =~ s/([0-9]+)/$1<wbr>/g;
-  $pc{'history'.$_.'Exp'}   =~ s/([0-9]+)/commify($1);/ge;
-  $pc{'history'.$_.'Money'} =~ s/([0-9]+)/$1<wbr>/g;
-  $pc{'history'.$_.'Money'} =~ s/([0-9]+)/commify($1);/ge;
+  $pc{'history'.$_.'Exp'}   = formatHistoryFigures($pc{'history'.$_.'Exp'});
+  $pc{'history'.$_.'Money'} = formatHistoryFigures($pc{'history'.$_.'Money'});
   push(@history, {
     NUM    => ($pc{'history'.$_.'Gm'} ? $h_num : ''),
     DATE   => $pc{'history'.$_.'Date'},
@@ -906,6 +934,7 @@ foreach (1 .. $pc{dishonorItemsNum}) {
   next if !$pc{'dishonorItem'.$_} && !$pc{'dishonorItem'.$_.'Pt'};
   my $type;
   if   ($pc{"dishonorItem${_}PtType"} eq 'barbaros'){ $type = '<small>蛮</small>'; }
+  elsif($pc{"dishonorItem${_}PtType"} eq 'both'    ){ $type = '<small>両</small>'; }
   elsif($pc{"dishonorItem${_}PtType"} eq 'dragon'  ){ $type = '<small>竜</small>'; }
   push(@dishonoritems, {
     NAME => $pc{'dishonorItem'.$_},
@@ -918,32 +947,47 @@ if($::SW2_0){
   foreach (@set::adventurer_rank){
     my ($name, $num) = @$_;
     last if ($pc{honor} < $num);
-    $SHEET->param(rank => $name);
+    $SHEET->param(rank => $name || '―');
   }
   foreach (@set::notoriety_rank){
     my ($name, $num) = @$_;
-    $SHEET->param(notoriety => $name) if $pc{dishonor} >= $num;
+    $SHEET->param(notoriety => $name || '―') if $pc{dishonor} >= $num;
   }
 }
 else {
-  $SHEET->param(rank => $pc{rank}.$pc{rankStar});
+  $SHEET->param(rankAll => 
+    ($pc{rank} && $pc{rankBarbaros}) ? "<div class=\"small\">$pc{rank}$pc{rankStar}</div><div class=\"small\">$pc{rankBarbaros}$pc{rankStarBarbaros}</div>"
+    : $pc{rank}.$pc{rankStar} || $pc{rankBarbaros}.$pc{rankStarBarbaros} || "―"
+  );
   foreach (@set::adventurer_rank){
     my ($name, $num, undef) = @$_;
     if($pc{rank}=~/★$/ && $pc{rankStar} >= 2){ $num += ($pc{rankStar}-1)*500 }
     $SHEET->param(rankHonorValue => $num) if ($pc{rank} eq $name);
   }
+  foreach (@set::barbaros_rank){
+    my ($name, $num, undef) = @$_;
+    if($pc{rankBarbaros}=~/★$/ && $pc{rankStarBarbaros} >= 2){ $num += ($pc{rankStarBarbaros}-1)*500 }
+    $SHEET->param(rankBarbarosValue => $num) if ($pc{rankBarbaros} eq $name);
+  }
+  my $notoriety;
   foreach (@set::notoriety_rank){
     my ($name, $num) = @$_;
-    $SHEET->param(notoriety => $name) if $pc{dishonor} >= $num;
+    $notoriety = "<span>“${name}”</span>" if $pc{dishonor} >= $num;
   }
+  my $notorietyB;
+  foreach (@set::notoriety_barbaros_rank){
+    my ($name, $num) = @$_;
+    $notorietyB = "<span>“${name}”</span>" if $pc{dishonorBarbaros} >= $num;
+  }
+  $SHEET->param(notoriety => $notoriety.$notorietyB || '―');
 }
 
 ### ガメル --------------------------------------------------
-if($pc{money} =~ /^(?:自動|auto)$/i){
+if($pc{moneyAuto}){
   $SHEET->param(money => commify($pc{moneyTotal}));
 }
-if($pc{deposit} =~ /^(?:自動|auto)$/i){
-  $SHEET->param(deposit => commify($pc{depositTotal}).' G ／ '.commify($pc{debtTotal}));
+if($pc{depositAuto}){
+  $SHEET->param(deposit => $pc{depositTotal} || $pc{debtTotal} ? commify($pc{depositTotal}).' G ／ '.commify($pc{debtTotal}) : '');
 }
 $pc{cashbook} =~ s/(:(?:\:|&lt;|&gt;))((?:[\+\-\*\/]?[0-9,]+)+)/$1.cashCheck($2)/eg;
   $SHEET->param(cashbook => $pc{cashbook});
@@ -981,7 +1025,10 @@ if($::in{id}){
 }
 
 ### フェロー --------------------------------------------------
-$SHEET->param(FellowMode => $::in{f});
+if($::in{f}){
+  $SHEET->param(FellowMode => 1);
+  $SHEET->param($_ => $pc{$_} =~ s{[0-9]+|[^0-9]+}{$&<wbr>}gr) foreach (grep {/^fellow[-0-9]+Num$/} keys %pc);
+}
 
 ### タイトル --------------------------------------------------
 $SHEET->param(title => $set::title);
@@ -989,13 +1036,13 @@ if($pc{forbidden} eq 'all' && $pc{forbiddenMode}){
   $SHEET->param(titleName => '非公開データ');
 }
 else {
-  $SHEET->param(titleName => tagDelete nameToPlain($pc{characterName}||"“$pc{aka}”"));
+  $SHEET->param(titleName => removeTags nameToPlain($pc{characterName}||"“$pc{aka}”"));
 }
 
 ### OGP --------------------------------------------------
 $SHEET->param(ogUrl => url().($::in{url} ? "?url=$::in{url}" : "?id=$::in{id}"));
 if($pc{image}) { $SHEET->param(ogImg => $pc{imageURL}); }
-$SHEET->param(ogDescript => tagDelete "種族:$pc{race}　性別:$pc{gender}　年齢:$pc{age}　技能:${class_text}");
+$SHEET->param(ogDescript => removeTags "種族:$pc{race}　性別:$pc{gender}　年齢:$pc{age}　技能:${class_text}");
 
 ### バージョン等 --------------------------------------------------
 $SHEET->param(ver => $::ver);
@@ -1014,15 +1061,15 @@ if(!$pc{modeDownload}){
   }
   else {
     if($pc{logId}){
-      if   ($::in{f}         ){ push(@menu, { TEXT => '通常'    , TYPE => "href", VALUE => "./?id=$::in{id}&log=$pc{logId}" }); }
-      elsif($pc{fellowPublic}){ push(@menu, { TEXT => 'フェロー', TYPE => "href", VALUE => "./?id=$::in{id}&log=$pc{logId}&f=1" }); }
+      if   ($::in{f}         ){ push(@menu, { TEXT => 'ＰＣ',     TYPE => "href", VALUE => "./?id=$::in{id}&log=$pc{logId}",     CLASSES => 'character-format', }); }
+      elsif($pc{fellowPublic}){ push(@menu, { TEXT => 'フェロー', TYPE => "href", VALUE => "./?id=$::in{id}&log=$pc{logId}&f=1", CLASSES => 'character-format', }); }
       push(@menu, { TEXT => '過去ログ', TYPE => "onclick", VALUE => 'loglistOn()', });
       if($pc{reqdPassword}){ push(@menu, { TEXT => '復元', TYPE => "onclick", VALUE => "editOn()", }); }
       else                 { push(@menu, { TEXT => '復元', TYPE => "href"   , VALUE => "./?mode=edit&id=$::in{id}&log=$pc{logId}", }); }
     }
     else {
-      if   ($::in{f}         ){ push(@menu, { TEXT => '通常'    , TYPE => "href", VALUE => "./?id=$::in{id}" }); }
-      elsif($pc{fellowPublic}){ push(@menu, { TEXT => 'フェロー', TYPE => "href", VALUE => "./?id=$::in{id}&f=1" }); }
+      if   ($::in{f}         ){ push(@menu, { TEXT => 'ＰＣ',     TYPE => "href", VALUE => "./?id=$::in{id}",     CLASSES => 'character-format', }); }
+      elsif($pc{fellowPublic}){ push(@menu, { TEXT => 'フェロー', TYPE => "href", VALUE => "./?id=$::in{id}&f=1", CLASSES => 'character-format', }); }
       if(!$pc{forbiddenMode}){
         push(@menu, { TEXT => 'パレット', TYPE => "onclick", VALUE => "chatPaletteOn()",   });
         push(@menu, { TEXT => '出力'    , TYPE => "onclick", VALUE => "downloadListOn()",  });

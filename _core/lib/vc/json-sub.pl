@@ -8,7 +8,7 @@ sub addJsonData {
   my %pc = %{ $_[0] };
   my $type = $_[1];
   
-  %pc = data_update_chara(\%pc);
+  %pc = data_update_chara(\%pc) if $pc{ver};
   
   ### 簡易プロフィール --------------------------------------------------
   my $base  = "種族:$pc{race}クラス:$pc{class}\nスタイル:$pc{style1}／$pc{style2}";
@@ -17,14 +17,8 @@ sub addJsonData {
   $pc{sheetDescriptionS} = $base."\n".$class."\n";
   $pc{sheetDescriptionM} = $base."\n".$class."\n";
   
-  ## ゆとチャユニット用ステータス
-  $pc{unitStatus} = [
-    { 'HP' => $pc{hpMax}.'/'.$pc{hpMax} },
-    { 'スタミナ' => $pc{staminaMax}.'/'.$pc{staminaMax} },
-    { '回避値' => $pc{battleTotalEva} },
-    { '物防値' => $pc{battleTotalDef} },
-    { '魔防値' => $pc{battleTotalMdf} },
-  ];
+  ## ユニット（コマ）用ステータス
+  $pc{unitStatus} = createUnitStatus(\%pc);
   
   return \%pc;
 }

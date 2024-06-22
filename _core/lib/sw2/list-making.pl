@@ -101,7 +101,7 @@ foreach my $data (@lines) {
                  + $data::races{$race}{dice}{'E+'}
                  + $data::races{$race}{dice}{'F+'};
     
-    my $average = ($stt_A + $stt_B + $stt_C + $stt_D + $stt_E + $stt_F) / $dicetotal;
+    my $average = $dicetotal ? ($stt_A + $stt_B + $stt_C + $stt_D + $stt_E + $stt_F) / $dicetotal : 0;
        $average = ($stt_A + $stt_B + $stt_C + $stt_D + $stt_E + $stt_F + $tec + $phy + $spi) / 18 if $adventurer;
        
     my $url = "${tec}_${phy}_${spi}_"
@@ -167,6 +167,9 @@ $INDEX->param(pageNext => ($page + $page_items) / $page_items);
 if(!$in_num) {
   $INDEX->param(pagePrevOn => $page - $page_items >= 0);
   $INDEX->param(pageNextOn => $page + $page_items < @lines);
+}
+else {
+  $INDEX->param(isMakingResult => 1);
 }
 $INDEX->param(formOn => 1) if !$::in{num} && !$::in{id};
 

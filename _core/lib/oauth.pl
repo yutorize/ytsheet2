@@ -45,7 +45,7 @@ sub getUserInfo {
     my $name = @rawLog[0]->{'username'};
     my $mail = @rawLog[0]->{'email'};
     return ($id, $name, $mail);
-	}
+  }
   if ( $set::oauth_service eq 'Google' ) {
     my $id_request = HTTP::Request->new(GET => 'https://www.googleapis.com/oauth2/v1/userinfo');
     $id_request->content_type('application/x-www-form-urlencoded');
@@ -58,7 +58,7 @@ sub getUserInfo {
     my $name = @rawLog[0]->{'name'};
     my $mail = @rawLog[0]->{'email'};
     return ($id, $name, $mail);
-	}
+  }
 }
 
 sub isDiscordServerIncluded {
@@ -81,7 +81,7 @@ sub isDiscordServerIncluded {
 }
 
 sub isIdExist {
-	my $id = $_[0];
+  my $id = $_[0];
   open (my $FH, '<', $set::userfile);
   my $isUsed = 0;
   while (<$FH>){ 
@@ -135,7 +135,7 @@ sub registerToken {
     print $FH "$id<>$key<>".time."<>\n";
     truncate($FH, tell($FH));
   close ($FH);
-  return &cookie_set($set::cookie,$id,$key,'+365d');	
+  return &cookie_set($set::cookie,$id,$key,'+365d');
 }
 
 

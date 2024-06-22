@@ -36,7 +36,6 @@
           <summary>閲覧中のログ<TMPL_IF selectedLogName>の名前をつけなおす<TMPL_ELSE>に名前をつける</TMPL_IF></summary>
           <form id="log-naming-form" method="post" action="./">
             <input type="hidden" name="mode" value="bu-naming">
-            <input type="hidden" name="type" value="i">
             <input type="hidden" name="id" value="<TMPL_VAR id>">
             <input type="hidden" name="date" value="<TMPL_VAR logId>">
             <dl>
@@ -53,7 +52,7 @@
         <ul>
           <li id="downloadlist-json"><a onclick="downloadAsJson();">JSON 形式</a>
           <li id="downloadlist-html"><a onclick="downloadAsHtml();">HTML 形式</a>
-          <li id="downloadlist-html"><a onclick="downloadAsFullSet();">ZIP 形式（上記全部入り）</a>
+          <li id="downloadlist-zipped"><a onclick="downloadAsFullSet();">ZIP 形式（上記全部入り）</a>
           <li class="link-tag"><span>ゆとシート内リンク用タグ<br><input type="text" onclick="this.select()" value="[<TMPL_VAR rawName>#<TMPL_VAR id>]"></span>
         </ul>
       </aside>
@@ -61,7 +60,6 @@
 
     <form id="login-form" class="float-box" method="post" action="./">
       <input type="hidden" name="mode" value="edit">
-      <input type="hidden" name="type" value="i">
       <input type="hidden" name="id" value="<TMPL_VAR id>">
       <input type="password" name="pass" placeholder="password">
       <input type="hidden" name="log" value="<TMPL_VAR logId>">
@@ -104,7 +102,14 @@
         <TMPL_VAR effects>
         <TMPL_IF WeaponData>
           <table class="weapon-table">
-            <tr><th>用法<th>必筋<th>命中<th>威力<th>C値<th>追加D<th class="left">備考
+            <tr>
+              <th>用法
+              <th>必筋
+              <th>命中
+              <th>威力
+              <th>C値
+              <th>追加D
+              <th class="note left">備考
             <TMPL_LOOP WeaponData><tr>
               <td><TMPL_VAR USAGE>
               <td><TMPL_VAR REQD>
@@ -112,19 +117,24 @@
               <td><TMPL_VAR RATE>
               <td><TMPL_VAR CRIT>
               <td><TMPL_VAR DMG>
-              <td class="left"><TMPL_VAR NOTE>
+              <td class="note left"><TMPL_VAR NOTE></td>
             </TMPL_LOOP>
           </table>
         </TMPL_IF>
         <TMPL_IF ArmourData>
           <table class="weapon-table">
-          <tr><th>用法<th>必筋<th>回避<th>防護<th class="left">備考
+            <tr>
+              <th>用法
+              <th>必筋
+              <th>回避
+              <th>防護
+              <th class="note left">備考
             <TMPL_LOOP ArmourData><tr>
               <td><TMPL_VAR USAGE>
               <td><TMPL_VAR REQD>
               <td><TMPL_VAR EVA>
               <td><TMPL_VAR DEF>
-              <td class="left"><TMPL_VAR NOTE>
+              <td class="note left"><TMPL_VAR NOTE></td>
             </TMPL_LOOP>
           </table>
         </TMPL_IF>

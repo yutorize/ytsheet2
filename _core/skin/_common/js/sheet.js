@@ -135,8 +135,8 @@ function copyToClipboard(text) {
 async function downloadAsUdonarium() {
   const characterDataJson = await getJsonData();
   const characterId = characterDataJson.characterName || characterDataJson.monsterName || characterDataJson.aka || '無題';
-  const image = await io.github.shunshun94.trpg.ytsheet.getPicture(characterDataJson.imageURL || defaultImage, "image."+characterDataJson.image);
-  const udonariumXml = io.github.shunshun94.trpg.udonarium[`generateCharacterXmlFromYtSheet2${generateType}`](characterDataJson, location.href, image.hash);
+  const image = await output.getPicture(characterDataJson.imageURL || defaultImage, "image."+characterDataJson.image);
+  const udonariumXml = output.generateUdonariumXml(generateType, characterDataJson, location.href, image.hash);
   const udonariumUrl = await generateUdonariumZipFile((characterDataJson.characterName||characterDataJson.aka), udonariumXml, image);
   downloadFile(`udonarium_data_${characterId}.zip`, udonariumUrl);
 }
@@ -144,7 +144,7 @@ async function downloadAsUdonarium() {
 function getCcfoliaJson() {
   return new Promise((resolve, reject)=>{
     getJsonData().then((characterDataJson)=>{
-      io.github.shunshun94.trpg.ccfolia[`generateCharacterJsonFromYtSheet2${generateType}`](characterDataJson, location.href).then(resolve, reject);
+      output.generateCcfoliaJson(generateType,characterDataJson, location.href).then(resolve, reject);
     }, reject);
   });
 }
@@ -205,27 +205,25 @@ async function downloadAsCcfolia() {
 
 async function downloadAsText() {
   const characterDataJson = await getJsonData();
-  const characterId = characterDataJson.characterName || characterDataJson.monsterName || characterDataJson.aka || '無題';
-  const textData = io.github.shunshun94.trpg.ytsheet[`generateCharacterTextFromYtSheet2${generateType}`](characterDataJson);
+  const name = document.title.replace(/ - .+?$/,'') || '無題';
+  const textData = output[`generateCharacterTextOf${generateType}`](characterDataJson);
   const textUrl = window.URL.createObjectURL(new Blob([ textData ], { "type" : 'text/plain;charset=utf-8;' }));
-  downloadFile(`data_${characterId}.txt`, textUrl);
+  downloadFile(`${name}.txt`, textUrl);
 }
 
 async function downloadAsJson() {
   const characterDataJson = await getJsonData();
-  const characterId = characterDataJson.characterName || characterDataJson.monsterName || characterDataJson.aka || characterDataJson.itemName || characterDataJson.artsName || '無題';
+  const name = document.title.replace(/ - .+?$/,'') || '無題';
   const jsonUrl = window.URL.createObjectURL(new Blob([ JSON.stringify(characterDataJson) ], { "type" : 'text/json;charset=utf-8;' }));
-  downloadFile(`data_${characterId}.json`, jsonUrl);
+  downloadFile(`${name}.json`, jsonUrl);
 }
 async function downloadAsHtml(){
-  const title = document.querySelector('title').innerHTML;
-  const name = title.replace(/ - .+?$/,'');
+  const name = document.title.replace(/ - .+?$/,'') || '無題';
   const url = location.href.replace(/#(.+)$/,'').replace(/&mode=(.+?)(&|$)/,'')+'&mode=download';
-  downloadFile(title+'.html', url);
+  downloadFile(name+'.html', url);
 }
 async function downloadAsFullSet(){
-  const title = document.querySelector('title').innerHTML;
-  const name = title.replace(/ - .+?$/,'');
+  const name = document.title.replace(/ - .+?$/,'') || '無題';
   const url = location.href.replace(/#(.+)$/,'').replace(/&mode=(.+?)(&|$)/,'');
   let zip = new JSZip();
   zip.file(name+'.html', await JSZipUtils.getBinaryContent(url+'&mode=download'));
@@ -235,8 +233,8 @@ async function downloadAsFullSet(){
   const characterDataJson = await getJsonData();
   // ユドナリウム
   if(document.getElementById('downloadlist-udonarium')){
-    const image = await io.github.shunshun94.trpg.ytsheet.getPicture(characterDataJson.imageURL || defaultImage, "image."+characterDataJson.image);
-    const udonariumXml = io.github.shunshun94.trpg.udonarium[`generateCharacterXmlFromYtSheet2${generateType}`](characterDataJson, location.href, image.hash);
+    const image = await output.getPicture(characterDataJson.imageURL || defaultImage, "image."+characterDataJson.image);
+    const udonariumXml = output[`generateUdonariumXml`](generateType,characterDataJson, location.href, image.hash);
     const udonariumUrl = await generateUdonariumZipFile((characterDataJson.characterName||characterDataJson.aka), udonariumXml, image);
     zip.file(name+'_udonarium.zip', await JSZipUtils.getBinaryContent(udonariumUrl));
   }
@@ -251,7 +249,7 @@ async function downloadAsFullSet(){
       const url = URL.createObjectURL(content);
       const a = document.createElement("a");
       document.body.appendChild(a);
-      a.download = title+'.zip';
+      a.download = name+'.zip';
       a.href = url;
       a.click();
       a.remove();

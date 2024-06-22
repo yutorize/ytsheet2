@@ -2,7 +2,7 @@
 const gameSystem = 'ar2e';
 
 window.onload = function() {
-  nameSet();
+  setName();
   level = Number(form.level.value);
   race = form.race.value;
   classMainLv1    = form.classMainLv1.value;
@@ -742,6 +742,13 @@ function calcCash(){
   document.getElementById('cashbook-total-value').textContent = cash;
   //document.getElementById('cashbook-deposit-value').textContent = deposit;
   //document.getElementById('cashbook-debt-value').textContent = debt;
+  if(form.moneyAuto.checked){
+    form.money.value = commify(cash);
+    form.money.readOnly = true;
+  }
+  else {
+    form.money.readOnly = false;
+  }
 }
 
 // コネクション計算 ----------------------------------------
@@ -798,257 +805,102 @@ function calcExp(){
 // スキル欄 ----------------------------------------
 // 追加
 function addSkill(){
-  let num = Number(form.skillsNum.value) + 1;
-
-  let row = document.querySelector('#skill-template').content.firstElementChild.cloneNode(true);
-  row.id = idNumSet('skill');
-  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
-  document.querySelector("#skills-table tbody:last-of-type").after(row);
-  
-  form.skillsNum.value = num;
+  document.querySelector("#skills-table tfoot").before(createRow('skill','skillsNum'));
   checkClass();
 }
 // 削除
 function delSkill(){
-  let num = Number(form.skillsNum.value);
-  if(num > 2){
-    if(form[`skill${num}Name`  ].value || 
-       form[`skill${num}Lv`    ].value || 
-       form[`skill${num}Timing`].value || 
-       form[`skill${num}Roll`  ].value || 
-       form[`skill${num}Target`].value || 
-       form[`skill${num}Range` ].value || 
-       form[`skill${num}Cost`  ].value || 
-       form[`skill${num}Reqd`  ].value || 
-       form[`skill${num}Note`  ].value
-    ){
-      if (!confirm(delConfirmText)) return false;
-    }
-    document.querySelector("#skills-table tbody:last-of-type").remove();
-    
-    form.skillsNum.value = num - 1;
+  if(delRow('skillsNum', '#skills-table tbody:last-of-type')){
     calcSkills();
   }
 }
 // ソート
-let skillsSortable = Sortable.create(document.getElementById('skills-table'), {
-  group: "skills",
-  dataIdAttr: 'id',
-  animation: 100,
-  handle: '.handle',
-  filter: 'thead,tfoot,template',
-  ghostClass: 'sortable-ghost',
-  onSort: function(evt){ skillsSortAfter(); },
-  onStart: function(evt){
-    document.querySelectorAll('.trash-box').forEach((obj) => { obj.style.display = 'none' });
-    document.getElementById('skills-trash').style.display = 'block';
-  },
-  onEnd: function(evt){
-    if(!skillTrashNum) { document.getElementById('skills-trash').style.display = 'none' }
-  },
-});
-let skillsSortableTrash = Sortable.create(document.getElementById('skills-trash-table'), {
-  group: "skills",
-  dataIdAttr: 'id',
-  animation: 100,
-  filter: 'thead,tfoot,template',
-  ghostClass: 'sortable-ghost'
-});
-let skillTrashNum = 0;
-function skillsSortAfter(){
-  const order = skillsSortable.toArray();
-  let num = 1;
-  for(let id of order) {
-    if(document.querySelector(`tbody#${id}`)){
-      document.querySelector(`#${id} [name$="Type"]`    ).setAttribute('name',`skill${num}Type`);
-      document.querySelector(`#${id} [name$="Category"]`).setAttribute('name',`skill${num}Category`);
-      document.querySelector(`#${id} [name$="Name"]`    ).setAttribute('name',`skill${num}Name`);
-      document.querySelector(`#${id} [name$="Lv"]`      ).setAttribute('name',`skill${num}Lv`);
-      document.querySelector(`#${id} [name$="Timing"]`  ).setAttribute('name',`skill${num}Timing`);
-      document.querySelector(`#${id} [name$="Roll"]`    ).setAttribute('name',`skill${num}Roll`);
-      document.querySelector(`#${id} [name$="Target"]`  ).setAttribute('name',`skill${num}Target`);
-      document.querySelector(`#${id} [name$="Range"]`   ).setAttribute('name',`skill${num}Range`);
-      document.querySelector(`#${id} [name$="Cost"]`    ).setAttribute('name',`skill${num}Cost`);
-      document.querySelector(`#${id} [name$="Reqd"]`    ).setAttribute('name',`skill${num}Reqd`);
-      document.querySelector(`#${id} [name$="Note"]`    ).setAttribute('name',`skill${num}Note`);
+(() => {
+  let sortable = Sortable.create(document.getElementById('skills-table'), {
+    group: "skills",
+    dataIdAttr: 'id',
+    animation: 150,
+    handle: '.handle',
+    filter: 'thead,tfoot,template',
+    onSort: function(evt){ skillsSortAfter(); },
+    onStart: function(evt){
+      document.querySelectorAll('.trash-box').forEach((obj) => { obj.style.display = 'none' });
+      document.getElementById('skills-trash').style.display = 'block';
+    },
+    onEnd: function(evt){
+      if(!skillTrashNum) { document.getElementById('skills-trash').style.display = 'none' }
+    },
+  });
+
+  let trashtable = Sortable.create(document.getElementById('skills-trash-table'), {
+    group: "skills",
+    dataIdAttr: 'id',
+    animation: 150,
+    filter: 'thead,tfoot,template',
+  });
+
+  let skillTrashNum = 0;
+  function skillsSortAfter(){
+    let num = 1;
+    for(let id of sortable.toArray()) {
+      const row = document.querySelector(`tbody#${id}`);
+      if(!row) continue;
+      replaceSortedNames(row,num,/^(skill)(?:Trash)?[0-9]+(.+)$/);
       num++;
     }
-  }
-  form.skillsNum.value = num-1;
-  let del = 0;
-  const trashOrder = skillsSortableTrash.toArray();
-  for(let id of trashOrder) {
-    if(document.querySelector(`tbody#${id}`)){
+    form.skillsNum.value = num-1;
+    let del = 0;
+    for(let id of trashtable.toArray()) {
+      const row = document.querySelector(`tbody#${id}`);
+      if(!row) continue;
       del++;
-      document.querySelector(`#${id} [name$="Type"]`    ).setAttribute('name',`skillD${del}Type`);
-      document.querySelector(`#${id} [name$="Category"]`).setAttribute('name',`skillD${del}Category`);
-      document.querySelector(`#${id} [name$="Name"]`    ).setAttribute('name',`skillD${del}Name`);
-      document.querySelector(`#${id} [name$="Lv"]`      ).setAttribute('name',`skillD${del}Lv`);
-      document.querySelector(`#${id} [name$="Timing"]`  ).setAttribute('name',`skillD${del}Timing`);
-      document.querySelector(`#${id} [name$="Roll"]`    ).setAttribute('name',`skillD${del}Roll`);
-      document.querySelector(`#${id} [name$="Target"]`  ).setAttribute('name',`skillD${del}Target`);
-      document.querySelector(`#${id} [name$="Range"]`   ).setAttribute('name',`skillD${del}Range`);
-      document.querySelector(`#${id} [name$="Cost"]`    ).setAttribute('name',`skillD${del}Cost`);
-      document.querySelector(`#${id} [name$="Reqd"]`    ).setAttribute('name',`skillD${del}Reqd`);
-      document.querySelector(`#${id} [name$="Note"]`    ).setAttribute('name',`skillD${del}Note`);
+      replaceSortedNames(row,'Trash'+del,/^(skill)(?:Trash)?[0-9]+(.+)$/);
     }
+    skillTrashNum = del;
+    if(!del){ document.getElementById('skills-trash').style.display = 'none' }
+    calcSkills();
   }
-  skillTrashNum = del;
-  if(!del){ document.getElementById('skills-trash').style.display = 'none' }
-  calcSkills();
-}
+})();
 
 // コネクション欄 ----------------------------------------
 // 追加
 function addConnection(){
-  let num = Number(form.connectionsNum.value) + 1;
-
-  let row = document.querySelector('#connection-template').content.firstElementChild.cloneNode(true);
-  row.id = idNumSet('connection');
-  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
-  document.querySelector("#connections-table tbody").append(row);
-  
-  form.connectionsNum.value = num;
+  document.querySelector("#connections-table tbody").append(createRow('connection','connectionsNum'));
 }
 // 削除
 function delConnection(){
-  let num = Number(form.connectionsNum.value);
-  if(num > 1){
-    if(form[`connection${num}Name`].value || form[`connection${num}Relation`].value || form[`connection${num}Note`].value){
-      if (!confirm(delConfirmText)) return false;
-    }
-    document.querySelector("#connections-table tbody tr:last-of-type").remove();
-
-    form.connectionsNum.value = num - 1;
-    
+  if(delRow('connectionsNum', '#connections-table tbody tr:last-of-type')){
     calcConnections();
   }
 }
 // ソート
-let connectionsSortable = Sortable.create(document.querySelector('#connections-table tbody'), {
-  group: "connections",
-  dataIdAttr: 'id',
-  animation: 100,
-  handle: '.handle',
-  filter: 'thead,tfoot,template',
-  ghostClass: 'sortable-ghost',
-  onUpdate: function (evt) {
-    const order = connectionsSortable.toArray();
-    let num = 1;
-    for(let id of order) {
-      if(document.querySelector(`tr#${id}`)){
-        document.querySelector(`#${id} [name$="Name"]`    ).setAttribute('name',`connection${num}Name`);
-        document.querySelector(`#${id} [name$="Relation"]`).setAttribute('name',`connection${num}Relation`);
-        document.querySelector(`#${id} [name$="Note"]`    ).setAttribute('name',`connection${num}Note`);
-        num++;
-      }
-    }
-  }
-});
+setSortable('connection','#connections-table tbody','tr');
 
 // 誓約欄 ----------------------------------------
 // 追加
 function addGeis(){
-  let num = Number(form.geisesNum.value) + 1;
-
-  let row = document.querySelector('#geis-template').content.firstElementChild.cloneNode(true);
-  row.id = idNumSet('geis');
-  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
-  document.querySelector("#geises-table tbody").append(row);
-  
-  form.geisesNum.value = num;
+  document.querySelector("#geises-table tbody").append(createRow('geis','geisesNum'));
 }
 // 削除
 function delGeis(){
-  let num = Number(form.geisesNum.value);
-  if(num > 1){
-    if(form[`geis${num}Name`].value || form[`geis${num}Cost`].value || form[`geis${num}Note`].value){
-      if (!confirm(delConfirmText)) return false;
-    }
-    document.querySelector("#geises-table tbody tr:last-of-type").remove();
-
-    form.geisesNum.value = num - 1;
+  if(delRow('geisesNum', '#geises-table tbody tr:last-of-type')){
+    calcGeises();
   }
-  calcGeises();
 }
 // ソート
-let geisesSortable = Sortable.create(document.querySelector('#geises-table tbody'), {
-  group: "geises",
-  dataIdAttr: 'id',
-  animation: 100,
-  handle: '.handle',
-  filter: 'thead,tfoot,template',
-  ghostClass: 'sortable-ghost',
-  onUpdate: function (evt) {
-    const order = geisesSortable.toArray();
-    let num = 1;
-    for(let id of order) {
-      if(document.querySelector(`tr#${id}`)){
-        document.querySelector(`#${id} [name$="Name"]`).setAttribute('name',`geis${num}Name`);
-        document.querySelector(`#${id} [name$="Cost"]`).setAttribute('name',`geis${num}Cost`);
-        document.querySelector(`#${id} [name$="Note"]`).setAttribute('name',`geis${num}Note`);
-        num++;
-      }
-    }
-  }
-});
+setSortable('geis','#geises-table tbody','tr');
 
 // 履歴欄 ----------------------------------------
 // 追加
 function addHistory(){
-  let num = Number(form.historyNum.value) + 1;
-
-  let row = document.querySelector('#history-template').content.firstElementChild.cloneNode(true);
-  row.id = idNumSet('history');
-  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
-  document.querySelector("#history-table tbody:last-of-type").after(row);
-  
-  form.historyNum.value = num;
+  document.querySelector("#history-table tfoot").before(createRow('history','historyNum'));
 }
 // 削除
 function delHistory(){
-  let num = Number(form.historyNum.value);
-  if(num > 1){
-    if(form[`history${num}Date`  ].value || 
-       form[`history${num}Title` ].value || 
-       form[`history${num}Exp`   ].value || 
-       form[`history${num}Money` ].value || 
-       form[`history${num}Gm`    ].value || 
-       form[`history${num}Member`].value || 
-       form[`history${num}Note`  ].value
-    ){
-      if (!confirm(delConfirmText)) return false;
-    }
-    document.querySelector("#history-table tbody:last-of-type").remove();
-
-    form.historyNum.value = num - 1;
+  if(delRow('historyNum', '#history-table tbody:last-of-type')){
     calcExp(); calcCash();
   }
 }
 // ソート
-let historySortable = Sortable.create(document.getElementById('history-table'), {
-  group: "history",
-  dataIdAttr: 'id',
-  animation: 150,
-  handle: '.handle',
-  scroll: true,
-  filter: 'thead,tfoot,template',
-  ghostClass: 'sortable-ghost',
-  onUpdate: function (evt) {
-    const order = historySortable.toArray();
-    let num = 1;
-    for(let id of order) {
-      if(document.querySelector(`tbody#${id}`)){
-        document.querySelector(`#${id} [name$="Date"]`  ).setAttribute('name',`history${num}Date`);
-        document.querySelector(`#${id} [name$="Title"]` ).setAttribute('name',`history${num}Title`);
-        document.querySelector(`#${id} [name$="Exp"]`   ).setAttribute('name',`history${num}Exp`);
-        document.querySelector(`#${id} [name$="Money"]` ).setAttribute('name',`history${num}Money`);
-        document.querySelector(`#${id} [name$="Gm"]`    ).setAttribute('name',`history${num}Gm`);
-        document.querySelector(`#${id} [name$="Member"]`).setAttribute('name',`history${num}Member`);
-        document.querySelector(`#${id} [name$="Note"]`  ).setAttribute('name',`history${num}Note`);
-        num++;
-      }
-    }
-  }
-});
+setSortable('history','#history-table','tbody');
 

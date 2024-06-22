@@ -77,7 +77,7 @@ my @list;
 #  $INDEX->param(ListGroups => \@grouplist);
 #}
 #else { #通常
-  open (my $FH, "<", $set::artslist);
+  open (my $FH, "<", $set::listfile);
   @list = <$FH>;
   close($FH);
 #}
@@ -121,7 +121,7 @@ if($sub_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){7}[^<]*?\Q$sub_query\E/i } 
 $INDEX->param(sub => $sub_query);
 
 ## タグ検索
-my $tag_query = pcTagsEscape(decode('utf8', $::in{tag}));
+my $tag_query = normalizeHashtags(decode('utf8', $::in{tag}));
 if($tag_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){10}[^<]*? \Q$tag_query\E / } @list; }
 $INDEX->param(tag => $tag_query);
 

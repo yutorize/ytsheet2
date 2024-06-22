@@ -10,8 +10,9 @@ our $mode = $::in{mode};
 $::in{log} ||= $::in{backup};
 
 if($set::user_reqd && !$LOGIN_ID){ error('ログインしていません。'); }
-### 個別処理 --------------------------------------------------
+### type判別 --------------------------------------------------
 my $type = $::in{type};
+
 my $file; my $author;
 our %conv_data = ();
 
@@ -23,64 +24,63 @@ elsif($mode eq 'copy'){
   ($file, $type, $author) = (getfile_open($::in{id}))[0..2];
 }
 elsif($mode eq 'convert'){
+  use JSON::PP;
   if($::in{url}){
     require $set::lib_convert;
     %conv_data = dataConvert($::in{url});
     $type = $conv_data{type};
   }
   elsif($::in{file}){
-    use JSON::PP;
     my $data; my $buffer; my $i;
     while(my $bytesread = read(param('file'), $buffer, 2048)) {
       if(!$i && $buffer !~ /^{/){ error '有効なJSONデータではありません。' }
       $data .= $buffer;
       $i++;
     }
-    %conv_data =  %{ decode_json( $data) };
+    %conv_data =  %{ decode_json($data) };
+    $type = $conv_data{type};
+  }
+  elsif($::in{backupJSON}){
+    %conv_data =  %{ decode_json($::in{backupJSON} ) };
     $type = $conv_data{type};
   }
   else {
     error('URLが入力されていない、または、ファイルが選択されていません。');
   }
 }
+
+changeFileByType($type);
+
+### キャパシティチェック --------------------------------------------------
+my $attentionOfCapacity;
 if(!$LOGIN_ID && $mode =~ /^(?:blanksheet|copy|convert)$/){
   my $max_files = 32000;
-  my $data_dir;
-  if   ($set::game eq 'sw2' && $type eq 'm'){ $data_dir = $set::mons_dir; }
-  elsif($set::game eq 'sw2' && $type eq 'i'){ $data_dir = $set::item_dir; }
-  elsif($set::game eq 'sw2' && $type eq 'a'){ $data_dir = $set::arts_dir; }
-  elsif($set::game eq 'ms'  && $type eq 'c'){ $data_dir = $set::clan_dir; }
-  else { $data_dir = $set::char_dir; }
-  opendir my $dh, "${data_dir}anonymous/";
+  opendir my $dh, "${set::char_dir}anonymous/";
   my $num_files = () = readdir($dh);
-  if($num_files-2 >= $max_files){
-    error("登録数上限です。($num_files/$max_files)<br>アカウントに紐づけないデータは、これ以上登録できないため、アカウント登録・ログインをしてから作成を行ってください。");
+  $num_files += -2;
+  if($num_files >= $max_files){
+    error("現在、サーバーの許容量の都合により、ユーザーアカウントに紐づけされていないシートを新規作成できません。<br>アカウント登録・ログインをしてから作成を行ってください。<br>（現在の非紐付けシート総数: $num_files/$max_files 件）");
+  }
+  elsif ($num_files >= $max_files - 100){
+    $attentionOfCapacity = "<div class='attention left'>　ユーザーアカウントに紐づけされていないシートの数が許容上限近くです。（この画面を開いた時点の件数／上限件数: $num_files／$max_files）<br>　アカウントを作成・ログインしてから新規作成を行うことを推奨します。<br><br>　この新規シートを作成（編集）しているあいだに、（別のユーザーの新規保存によって）シートの件数が増加し上限に達すると、このシートの新規保存ができなくなる（エラーになる）ため、注意してください。<br>（一度新規保存した後は、上限に達していても、同シートの再編集・再保存は可能です）<br></div>";
   }
 }
 
-if   ($set::game eq 'sw2' && $type eq 'm'){ require $set::lib_edit_mons; }
-elsif($set::game eq 'sw2' && $type eq 'i'){ require $set::lib_edit_item; }
-elsif($set::game eq 'sw2' && $type eq 'a'){ require $set::lib_edit_arts; }
-elsif($set::game eq 'ms'  && $type eq 'c'){ require $set::lib_edit_clan; }
-else               { require $set::lib_edit_char; }
+### 各ゲームシステム処理 --------------------------------------------------
+require $set::lib_edit_char;
 
 ### 共通サブルーチン --------------------------------------------------
 ## データ読み込み
-sub pcDataGet {
+sub getSheetData {
   my $mode = shift;
   my %pc;
   my $message;
-  my $datadir = 
-    ($set::game eq 'sw2' && $type eq 'm') ? $set::mons_dir : 
-    ($set::game eq 'sw2' && $type eq 'i') ? $set::item_dir : 
-    ($set::game eq 'sw2' && $type eq 'a') ? $set::arts_dir : 
-    ($set::game eq 'ms'  && $type eq 'c') ? $set::clan_dir : 
-    $set::char_dir;
+  my $sheetDir =  $set::char_dir.$file;
   # 保存 / 編集 / 複製 / コンバート
   if($mode eq 'edit'){
     my $datatype = ($::in{log}) ? 'logs' : 'data';
     my $hit = 0;
-    open my $IN, '<', "${datadir}${file}/${datatype}.cgi" or &loginError;
+    open my $IN, '<', "${sheetDir}/${datatype}.cgi" or &loginError;
     while (<$IN>){
       if($datatype eq 'logs'){
         if (index($_, "=$::in{log}=") == 0){ $hit = 1; next; }
@@ -89,13 +89,13 @@ sub pcDataGet {
       }
       chomp $_;
       my ($key, $value) = split(/<>/, $_, 2);
-      $pc{$key} = $value;
+      $pc{$key} = $value if $value ne '';
     }
     close($IN);
     if($datatype eq 'logs' && !$hit){ error("過去ログ（$::in{log}）が見つかりません。"); }
     
     if($::in{log}){
-      ($pc{protect}, $pc{forbidden}) = protectTypeGet("${datadir}${file}/data.cgi");
+      ($pc{protect}, $pc{forbidden}) = getProtectType("${sheetDir}/data.cgi");
       $message = $pc{updateTime}.' 時点のバックアップデータから編集しています。';
     }
     $pc{imageURL} = $pc{image} ? "./?id=$::in{id}&mode=image&cache=$pc{imageUpdate}" : '';
@@ -103,7 +103,7 @@ sub pcDataGet {
   elsif($mode eq 'copy'){
     my $datatype = ($::in{log}) ? 'logs' : 'data';
     my $hit = 0;
-    open my $IN, '<', "${datadir}${file}/${datatype}.cgi" or error 'データがありません。';
+    open my $IN, '<', "${sheetDir}/${datatype}.cgi" or error 'データがありません。';
     while (<$IN>){
       if($datatype eq 'logs'){
         if (index($_, "=$::in{log}:") == 0){ $hit = 1; next; }
@@ -119,7 +119,7 @@ sub pcDataGet {
     
     if($pc{forbidden}){
       if($::in{log}){
-        ($pc{protect}, $pc{forbidden}) = protectTypeGet("${datadir}${file}/data.cgi");
+        ($pc{protect}, $pc{forbidden}) = getProtectType("${sheetDir}/data.cgi");
       }
       unless(
         ($pc{protect} eq 'none') || 
@@ -132,16 +132,28 @@ sub pcDataGet {
     delete $pc{image};
     delete $pc{protect};
 
-    $message  = '「<a href="./?id='.$::in{id}.'" target="_blank"><!NAME></a>」';
+    $message  = '<div class="data-imported">';
+    $message .= '「<a href="./?id='.$::in{id}.'" target="_blank"><!NAME></a>」';
     $message .= 'の<br><a href="./?id='.$::in{id}.'&log='.$::in{log}.'" target="_blank">'.$pc{updateTime}.'</a> 時点のバックアップデータ' if $::in{log};
     $message .= 'を<br>コピーして新規作成します。<br>（まだ保存はされていません）';
+    $message .= '</div>';
   }
   elsif($mode eq 'convert'){
     %pc = %::conv_data;
     delete $pc{image};
     delete $pc{imageURL};
     delete $pc{protect};
-    $message = '「<a href="'.$::in{url}.'" target="_blank"><!NAME></a>」をコンバートして新規作成します。<br>（まだ保存はされていません）';
+    $_ =~ s/"/&quot;/g foreach(values %pc);
+    if($::in{backupJSON}){
+      $message = '<span class="data-imported backup-loaded">入力途中の新規シートを復元しました</span>';
+    }
+    else {
+      $message = '<div class="data-imported">「<a href="'.$::in{url}.'" target="_blank"><!NAME></a>」をコンバートして新規作成します。<br>（まだ保存はされていません）</div>';
+    }
+  }
+
+  if($attentionOfCapacity){
+    $message = $attentionOfCapacity .($message?'<hr>':''). $message
   }
   ##
   return (\%pc, $mode, $file, $message)
@@ -185,6 +197,15 @@ sub input {
   ($oninput?' oninput="'.$oninput.'"':"").
   '>';
 }
+sub textarea {
+  my ($name, $oninput, $other) = @_;
+  if($oninput && $oninput !~ /\(.*?\)$/){ $oninput .= '()'; }
+  '<textarea'.
+      ' name="'.$name.'"'.
+      ($other?" $other":"").
+      ($oninput?' oninput="'.$oninput.'"':"").
+      '>' . $::pc{$name} . '</textarea>';
+}
 sub checkbox {
   my ($name, $text, $oninput, $other) = @_;
   if($oninput && $oninput !~ /\(.*?\)$/){ $oninput .= '()'; }
@@ -204,6 +225,8 @@ sub radio {
   my $oninput = shift;
   my $value = shift;
   my $text = shift;
+  my $deselectable;
+  if($oninput =~ s/^deselectable,?//){ $deselectable = 1; }
   if($oninput && $oninput !~ /\(.*?\)$/){ $oninput .= '()'; }
   '<label class="radio-button">'.
   '<input type="radio"'.
@@ -211,6 +234,7 @@ sub radio {
   ' value="'.$value.'"'.
   ($::pc{$name} eq $value?" checked":"").
   ($oninput?' oninput="'.$oninput.'"':"").
+  ($deselectable?' class="deselectable"':"").
   '>'.
   ($text?'<span>'.$text.'</span>':'').
   '</label>';
@@ -218,6 +242,8 @@ sub radio {
 sub radios {
   my $name = shift;
   my $oninput = shift;
+  my $deselectable;
+  if($oninput =~ s/^deselectable,?//){ $deselectable = 1; }
   if($oninput && $oninput !~ /\(.*?\)$/){ $oninput .= '()'; }
   my $out;
   foreach (@_) {
@@ -230,6 +256,7 @@ sub radios {
     ' value="'.$value.'"'.
     ($::pc{$name} eq $value?" checked":"").
     ($oninput?' oninput="'.$oninput.'"':"").
+    ($deselectable?' class="deselectable"':"").
     '><span>'.$view.'</span></label>';
   }
   return $out;
@@ -243,11 +270,15 @@ sub option {
     my $label = 0;
     if($value =~ s/^def=//){
       if($value =~ s/\|\<(.*?)\>$//){ $view = $1 } else { $view = $value }
-      $text = '<option value="">'.$view;
+      $text = '<option value="'.$value.'">'.$view;
     }
     elsif($value =~ s/^label=//){
       $text .= '<optgroup label="'.$value.'">';
       $label = 1;
+    }
+    elsif($value eq 'close_group') {
+      $text .= '</optgroup>';
+      $label = 0;
     }
     else {
       if($value =~ s/\|\<(.*?)\>$//){ $view = $1 } else { $view = $value }
@@ -256,11 +287,18 @@ sub option {
   }
   return $text;
 }
+sub selectBox {
+  my $name = shift;
+  my $func = shift;
+  if($func && $func !~ /\(.*?\)$/){ $func .= '()'; }
+  my $text = '<select name="'.$name.'" oninput="'.$func.'">'.option($name, @_).'</select>';
+  return $text;
+}
 sub selectInput {
   my $name = shift;
   my $func = shift;
   if($func && $func !~ /\(.*?\)$/){ $func .= '()'; }
-  my $text = '<div class="select-input"><select name="'.$name.'" oninput="selectInputCheck(\''.$name.'\',this);'.$func.'">'.option($name, @_);
+  my $text = '<div class="select-input"><select name="'.$name.'" oninput="selectInputCheck(this);'.$func.'">'.option($name, @_);
   $text .= '<option value="free">その他（自由記入）'; 
   my $hit = 0;
   foreach my $value (@_) { if($::pc{$name} eq $value){ $hit = 1; last; } }
@@ -411,44 +449,92 @@ sub chatPaletteForm {
     @_,
   );
   $palette .= "$_\n" foreach(paletteProperties('',$::in{type}));
+  
+  $::pc{unitStatusNum} ||= 3;
+  my $status;
+  foreach ('TMPL',1..$::pc{unitStatusNum}) {
+    $status .= '<tr id="unit-status'.$_.'">';
+    $status .= '<td class="handle">';
+    $status .= '<td>'.input("unitStatus${_}Label",'','','placeholder="ラベル"');
+    $status .= '<td>'.input("unitStatus${_}Value",'','','placeholder="値"');
+    $status = '<template id="unit-status-template">'.$status.'</template>' if $_ eq 'TMPL';
+  }
+  
   return <<"HTML";
     <section id="section-palette" style="display:none;">
-      <div class="box">
-        <h2>チャットパレット</h2>
-        <p>
-          手動パレットの配置:<select name="paletteInsertType" style="width: auto;">
-            <option value="exchange" @{[ $::pc{paletteInsertType} eq 'exchange'?'selected':'' ]}>プリセットと入れ替える</option>
-            <option value="begin"    @{[ $::pc{paletteInsertType} eq 'begin'   ?'selected':'' ]}>プリセットの手前に挿入</option>
-            <option value="end"      @{[ $::pc{paletteInsertType} eq 'end'     ?'selected':'' ]}>プリセットの直後に挿入</option>
-          </select>
-        </p>
-        <textarea name="chatPalette" style="height:20em" placeholder="例）&#13;&#10;2d6+{冒険者}+{器用}&#13;&#10;&#13;&#10;※入力がない場合、プリセットが自動的に反映されます。">$::pc{chatPalette}</textarea>
-        
-        <div class="palette-column">
-        <h2>デフォルト変数 （自動的に末尾に出力されます）</h2>
-        <textarea id="paletteDefaultProperties" readonly style="height:20em">$palette</textarea>
+      <div class="box" id="unit-setting">
+        <h2>ユニット・コマ の設定</h2>
+        <dl>
+          <dt>表示名
+          <dd>@{[ input 'namePlate','','changeNamePlate','placeholder="ニックネーム、ファーストネームなど"' ]} <small>※コマ出力時、こちらの入力が名前として優先されます。名前が長いキャラなどに</small>
+          <dt>発言者色
+          <dd>@{[ input 'nameColor','','changeNamePlate' ]} <small>※#から始まる6桁のカラーコードで記入してください。</small>
+            <div id="name-plate-view">表示例：
+              <span class="ytcha"></span> ／
+              <span class="tekey"></span> ／
+              <span class="ccfol"></span> ／
+              <span class="udona"></span>
+            </div>
+          <dt>ステータス<br>
+          <dd>
+            @{[ input 'unitStatusNotOutput','hidden' ]}
+            @{[ input 'unitStatusNum','hidden' ]}
+            <table id="unit-status">
+              <tbody id="unit-status-default" class="highlight-hovered-row">
+              <tbody id="unit-status-optional">$status
+              <tfoot><tr><td colspan="3" class="add-del-button"><a onclick="addUnitStatus()">▼</a><a onclick="delUnitStatus()">▲</a></div>
+            </table>
+            <ul class="annotate">
+              <li>デフォルトのステータス出力の他に、任意で項目を追加できます。<br>
+                また、使わないステータスを出力しないことも選択できます。
+              <li>最大値が必要な場合は <code>100/100</code> のように記入してください。
+              <li>ツールによっては値に数値しか許容されないため、注意してください。
+            </ul>
+        </dl>
+      </div>
+      <div class="box-union">
+        <div class="box" id="chatpalette">
+          <h2>チャットパレット <small>(ユニット(コマ)出力時、ここで設定したものが出力されます)</small></h2>
           <p>
-            @{[ checkbox 'chatPalettePropertiesAll','全てのデフォルト変数を出力する','setChatPalette' ]} <br>
-          （デフォルトだと、未使用の変数は出力されません）
+            手動パレットの配置:<select name="paletteInsertType" style="width: auto;">
+              <option value="exchange" @{[ $::pc{paletteInsertType} eq 'exchange'?'selected':'' ]}>プリセットと入れ替える</option>
+              <option value="begin"    @{[ $::pc{paletteInsertType} eq 'begin'   ?'selected':'' ]}>プリセットの手前に挿入</option>
+              <option value="end"      @{[ $::pc{paletteInsertType} eq 'end'     ?'selected':'' ]}>プリセットの直後に挿入</option>
+            </select>
           </p>
+          <textarea name="chatPalette" style="height:20em" placeholder="例）&#13;&#10;2d6+{冒険者}+{器用}&#13;&#10;&#13;&#10;※入力がない場合、プリセットが自動的に反映されます。">$::pc{chatPalette}</textarea>
+          
+          <div class="palette-column">
+          <h2>デフォルト変数 （自動的に末尾に出力されます）</h2>
+          <textarea id="paletteDefaultProperties" readonly style="height:20em">$palette</textarea>
+            <p>
+              @{[ checkbox 'chatPalettePropertiesAll','全てのデフォルト変数を出力する','setChatPalette' ]} <br>
+              <small>※デフォルトだと、未使用の変数は出力されません</small>
+            </p>
+          </div>
+          <div class="palette-column">
+            <h2>プリセット （見本またはコピーペースト用）</h2>
+            <textarea id="palettePreset" readonly style="height:20em"></textarea>
+            <p>
+              @{[ checkbox 'paletteUseVar','デフォルト変数を使う','setChatPalette' ]}
+              @{[ $opt{buff} ? checkbox('paletteUseBuff','バフデバフ用変数を使う','setChatPalette') : '' ]}<br>
+              @{[ checkbox 'paletteRemoveTags','ルビなどテキスト装飾の構文を取り除く','setChatPalette' ]} 
+            </p>
+            <dl>
+              <dt>使用するオンセツール
+              <dd class="left">
+                @{[ radios 'paletteTool','setChatPalette',@{$opt{tool}} ]}<br>
+                <small>※プリセットの内容がツールに合わせたものに切り替わります。<br>　なお、コマ出力の際にはここでの変更に関わらず、自動的に出力先のツールに合わせたものになります。</small>
+            </dl>
+          </div>
         </div>
-        <div class="palette-column">
-          <h2>プリセット （見本またはコピーペースト用）</h2>
-          <textarea id="palettePreset" readonly style="height:20em"></textarea>
-          <p>
-            @{[ checkbox 'paletteUseVar','デフォルト変数を使う','setChatPalette' ]}
-            @{[ $opt{buff} ? checkbox('paletteUseBuff','バフデバフ用変数を使う','setChatPalette') : '' ]}<br>
-            @{[ checkbox 'paletteRemoveTags','ルビなどテキスト装飾の構文を取り除く','setChatPalette' ]} 
-          </p>
-          <dl>
-            <dt>使用するオンセツール
-            <dd class="left">@{[ radios 'paletteTool','setChatPalette',@{$opt{tool}} ]}
-          </dl>
-        </div>
+        @{[ chatPaletteFormOptional() ]}
       </div>
     </section>
 HTML
+  sub chatPaletteFormOptional {}
 }
+
 
 ## カラーカスタム欄
 sub colorCostomForm {
@@ -575,6 +661,47 @@ sub textRuleArea {
       </div>
     </aside>
 HTML
+}
+
+## 削除フォーム
+sub deleteForm {
+  my $mode = shift;
+  return if ($mode ne 'edit');
+
+  my $html = <<"HTML";
+    <form name="del" method="post" action="./" class="deleteform">
+      <fieldset style="font-size: 80%;">
+        <input type="hidden" name="mode" value="delete">
+        <input type="hidden" name="type" value="$::pc{type}">
+        <input type="hidden" name="id"   value="$::in{id}">
+        <input type="hidden" name="pass" value="$::in{pass}">
+        <input type="checkbox" name="check1" value="1" required>
+        <input type="checkbox" name="check2" value="1" required>
+        <input type="checkbox" name="check3" value="1" required>
+        <input type="submit" value="シート削除"><br>
+        ※チェックを全て入れてください
+      </fieldset>
+    </form>
+HTML
+  # 管理者用画像削除フォーム
+  if($LOGIN_ID eq $set::masterid){
+    $html .= <<"HTML";
+    <form name="imgdel" method="post" action="./" class="deleteform">
+      <fieldset style="font-size: 80%;">
+        <input type="hidden" name="mode" value="img-delete">
+        <input type="hidden" name="type" value="$::pc{type}">
+        <input type="hidden" name="id"   value="$::in{id}">
+        <input type="hidden" name="pass" value="$::in{pass}">
+        <input type="checkbox" name="check1" value="1" required>
+        <input type="checkbox" name="check2" value="1" required>
+        <input type="checkbox" name="check3" value="1" required>
+        <input type="submit" value="画像削除">
+      </fieldset>
+    </form>
+    <p class="right">@{[ $::in{log}?$::in{log}:'最終' ]}更新時のIP:$::pc{IP}</p>
+HTML
+  }
+  return $html;
 }
 
 1;

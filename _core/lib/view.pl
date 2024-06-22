@@ -22,23 +22,17 @@ elsif($::in{url}){
   $type = $conv_data{type};
 }
 
+changeFileByType($type);
+
+
 ### 各システム別処理 --------------------------------------------------
-if   ($set::game eq 'sw2' && $type eq 'm'){ require $set::lib_view_mons; }
-elsif($set::game eq 'sw2' && $type eq 'i'){ require $set::lib_view_item; }
-elsif($set::game eq 'sw2' && $type eq 'a'){ require $set::lib_view_arts; }
-elsif($set::game eq 'ms'  && $type eq 'c'){ require $set::lib_view_clan; }
-else { require $set::lib_view_char; }
+require $set::lib_view_char;
 
 
 ### データ取得 --------------------------------------------------
-sub pcDataGet {
+sub getSheetData {
   my %pc;
-  my $datadir = 
-    ($set::game eq 'sw2' && $type eq 'm') ? $set::mons_dir : 
-    ($set::game eq 'sw2' && $type eq 'i') ? $set::item_dir : 
-    ($set::game eq 'sw2' && $type eq 'a') ? $set::arts_dir : 
-    ($set::game eq 'ms'  && $type eq 'c') ? $set::clan_dir : 
-    $set::char_dir;
+  my $datadir = $set::char_dir;
   ## データ読み込み
   if($::in{id}){
     my $datatype = ($::in{log}) ? 'logs' : 'data';
@@ -54,13 +48,13 @@ sub pcDataGet {
       }
       chomp $_;
       my ($key, $value) = split(/<>/, $_, 2);
-      $pc{$key} = $value;
+      $pc{$key} = $value if $value ne '';
     }
     close($IN);
     if($datatype eq 'logs' && !$hit){ error("過去ログ（$::in{log}）が見つかりません。"); }
 
     if($::in{log}){
-      ($pc{protect}, $pc{forbidden}) = protectTypeGet("${datadir}${file}/data.cgi");
+      ($pc{protect}, $pc{forbidden}) = getProtectType("${datadir}${file}/data.cgi");
       $pc{logId} = $::in{log};
     }
   }
@@ -68,22 +62,13 @@ sub pcDataGet {
   elsif($::in{url}){
     %pc = %conv_data;
     if(!$conv_data{ver}){
-      require (
-        ($set::game eq 'sw2' && $type eq 'm') ? $set::lib_calc_mons : 
-        ($set::game eq 'sw2' && $type eq 'i') ? $set::lib_calc_item : 
-        ($set::game eq 'sw2' && $type eq 'a') ? $set::lib_calc_arts : 
-        ($set::game eq 'ms'  && $type eq 'c') ? $set::lib_calc_clan : 
-        $set::lib_calc_char
-      );
+      require $set::lib_calc_char;
       %pc = data_calc(\%pc);
     }
   }
 
   ##
-  if   ($set::game eq 'sw2' && $type eq 'm'){ $pc{sheetType} = 'mons'; }
-  elsif($set::game eq 'sw2' && $type eq 'i'){ $pc{sheetType} = 'item'; }
-  elsif($set::game eq 'sw2' && $type eq 'a'){ $pc{sheetType} = 'arts'; }
-  elsif($set::game eq 'ms'  && $type eq 'c'){ $pc{sheetType} = 'clan'; }
+  elsif(exists $set::lib_type{$type}){ $pc{sheetType} = $set::lib_type{$type}{sheetType}; }
   else { $pc{sheetType} = 'chara'; }
 
   if(!$::in{checkView} && (
@@ -120,8 +105,9 @@ sub pcDataGet {
     
     ## 権利表記
     if($pc{imageCopyrightURL}){
-      $pc{imageCopyright} = "<a href=\"$pc{imageCopyrightURL}\" target=\"_blank\">".($pc{imageCopyright}||$pc{imageCopyrightURL})."</a>";
+      $pc{imageCopyright} = "<a href=\"$pc{imageCopyrightURL}\" target=\"_blank\">".(unescapeTags($pc{imageCopyright})||$pc{imageCopyrightURL})."</a>";
     }
+    else { $pc{imageCopyright} = unescapeTags($pc{imageCopyright}) }
   }
 
   ## 
@@ -198,6 +184,32 @@ sub noiseTextTag {
   $text =~ s/<br>/\n/g;
   $text =~ s/^[█▇▆▅▄▃▂▚▞▙▛▜▟\n\s]+$/<span class="censored">$&<\/span>/s;
   $text =~ s/\n/<br>/g;
+  return $text;
+}
+sub isNoiseText {
+  my $text = shift;
+  return $text =~ /^[█▇▆▅▄▃▂▚▞▙▛▜▟\n\s]+$/ ? 1 : undef;
+}
+### セリフ --------------------------------------------------
+sub stylizeWords {
+  my ($words, $x, $y) = @_;
+  $words =~ s/<br>/\n/g;
+  $words =~ s/“/〝/g;
+  $words =~ s/”/〟/g;
+  $words =~ s/^([「『（〝])/<span class="brackets">$1<\/span>/gm;
+  $words =~ s/(.+?(?:[，、。？」』）〟]|$))/<span>$1<\/span>/g;
+  $words =~ s/\n<span>　/\n<span>/g;
+  $words =~ s/\n/<br>/g;
+  $x = $x eq '左' ? 'left:0;' : 'right:0;';
+  $y = $y eq '下' ? 'bottom:0;' : 'top:0;';
+  return $words, $x, $y;
+}
+### セッション履歴 --------------------------------------------------
+# 数字列を成形する
+sub formatHistoryFigures {
+  my $text = shift;
+  $text =~ s/[0-9]+/$&<wbr>/g;
+  $text =~ s/[0-9]+/commify($&);/ge;
   return $text;
 }
 ### メニュー --------------------------------------------------

@@ -20,6 +20,7 @@ $INDEX = HTML::Template->new( filename  => $set::skin_tmpl , utf8 => 1,
 
 $INDEX->param(modeClanList => 1);
 $INDEX->param(modeMylist => 1) if $mode eq 'mylist';
+$INDEX->param(typeName => 'クラン');
 
 $INDEX->param(LOGIN_ID => $LOGIN_ID);
 $INDEX->param(OAUTH_MODE => $set::oauth_service);
@@ -77,7 +78,7 @@ if($set::simpleindex && $index_mode) { #グループ見出しのみ
   $INDEX->param(simpleIndex => 1);
 }
 else { #通常
-  open (my $FH, "<", $set::clanlist);
+  open (my $FH, "<", $set::listfile);
   @list = <$FH>;
   close($FH);
 }
@@ -109,7 +110,7 @@ if($group_query && $::in{group} ne 'all') {
 $INDEX->param(group => $groups{$group_query}{name});
 
 ## タグ検索
-my $tag_query = pcTagsEscape(decode('utf8', $::in{tag}));
+my $tag_query = normalizeHashtags(decode('utf8', $::in{tag}));
 if($tag_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){8}[^<]*? \Q$tag_query\E / } @list; }
 $INDEX->param(tag => $tag_query);
 

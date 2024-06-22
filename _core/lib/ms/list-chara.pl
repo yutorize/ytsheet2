@@ -20,6 +20,7 @@ $INDEX = HTML::Template->new( filename  => $set::skin_tmpl , utf8 => 1,
 
 $INDEX->param(modeList => 1);
 $INDEX->param(modeMylist => 1) if $mode eq 'mylist';
+$INDEX->param(typeName => '都民');
 
 $INDEX->param(LOGIN_ID => $LOGIN_ID);
 $INDEX->param(OAUTH_MODE => $set::oauth_service);
@@ -109,7 +110,7 @@ if($group_query && $::in{group} ne 'all') {
 $INDEX->param(group => $groups{$group_query}{name});
 
 ## タグ検索
-my $tag_query = pcTagsEscape(decode('utf8', $::in{tag}));
+my $tag_query = normalizeHashtags(decode('utf8', $::in{tag}));
 if($tag_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){8}[^<]*? \Q$tag_query\E / } @list; }
 $INDEX->param(tag => $tag_query);
 

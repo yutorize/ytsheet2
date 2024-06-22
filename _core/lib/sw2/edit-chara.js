@@ -75,8 +75,9 @@ let levelCasters = [];
 window.onload = function() {
   console.log('=====START=====');
 
-  nameSet();
+  setName();
   race = form.race.value;
+  checkLvCap();
   calcExp();
   calcLv();
   checkRace();
@@ -84,6 +85,7 @@ window.onload = function() {
   calcCash();
   calcHonor();
   calcDishonor();
+  calcCommonClass();
   
   imagePosition();
   changeColor();
@@ -119,6 +121,23 @@ function changeRegu(){
 // 信仰チェック ----------------------------------------
 function changeFaith(obj) {
   obj.parentNode.classList.toggle('free', obj.value === 'その他の信仰');
+}
+
+// 16レベル以上の解禁 ----------------------------------------
+function checkLvCap() {
+  const checkbox = form.unlockAbove16;
+  const unlockedAbove16 = checkbox?.checked ?? true;
+
+  document.querySelectorAll('#classes input[type="number"][name^="lv"][max]').forEach(
+      input => {
+        input.setAttribute('max', unlockedAbove16 ? '17' : '15');
+
+        if (!unlockedAbove16 && input.value.match(/^1[67]$/)) {
+          input.value = '15';
+          input.dispatchEvent(new Event('input'));
+        }
+      }
+  );
 }
 
 // レベル変更 ----------------------------------------
@@ -208,6 +227,9 @@ function changeRace(value){
   else if(!SET.races[race]) {
     document.getElementById('race-ability-value').innerHTML = `<input type="text" name="raceAbilityFree" oninput="changeRaceAbility()" value="${form.raceAbilityFree?.value ?? '［］'}">`;
   }
+  if(form.mode.value === 'make'){
+    form.sin.value = SET.races[race]?.sin || 0;
+  }
   checkRace();
   calcStt();
 }
@@ -240,6 +262,12 @@ function checkRace(){
     }
   }
 
+  const raceBase = race.replace(/（.+?）/, '');
+  document.querySelectorAll('[data-race-only]').forEach(node => {
+    if(node.dataset.raceOnly == raceBase){ node.style.display = '' }
+    else { node.style.display = 'none' }
+  });
+
   raceAbilities = [];
   if(SET.races[race]?.ability){
     raceAbilities = SET.races[race].ability.concat();
@@ -270,7 +298,6 @@ function checkRace(){
     ability.replace(/［(.+?)］/g, (all, match) => {
       raceAbilities.push(match);
     });
-    console.log(raceAbilities)
   }
   
   if(raceAbilities.includes('鱗の皮膚')){
@@ -512,7 +539,6 @@ function checkFeats(){
         }
       }
       else if (feat.match(/超頑強/)){
-        console.log(feat)
         if((lv['Fig'] < 7 && lv['Gra'] < 7)|| !acquire.match('頑強')){ cL.add("error"); }
       }
       else if (feat.match(/^頑強/)){
@@ -704,6 +730,14 @@ function checkFeats(){
       else if (feat.match(/楽素転換/)){
         if(lv['Bar'] < 3){ cL.add("error"); }
       }
+      else if (feat.match(/カニングキャスト/)){
+        if(feat.match(/Ⅰ$/)){
+          if (f2 && level >= 13) { (auto) ? box.value = "カニングキャストⅡ" : cL.add("mark") }
+        }
+        else if(feat.match(/Ⅱ$/)){
+          if(!f2 || level < 13) { (auto) ? box.value = "カニングキャストⅠ" : cL.add("error") }
+        }
+      }
       else if (feat.match(/かばう/)){
         if(feat.match(/Ⅰ$/)){
           if (f2 && level >= 7) { (auto) ? box.value = "かばうⅡ" : cL.add("mark") }
@@ -816,6 +850,15 @@ function checkFeats(){
           if(!f2 || (lv['Fen'] <  7 &&  lv['Bat'] < 7)) { (auto) ? box.value = "挑発攻撃Ⅰ" : cL.add("error") }
         }
       }
+      else if (feat.match(/抵抗強化/)){
+        if(level < 3){ cL.add("error"); }
+        if(feat.match(/Ⅰ$/)){
+          if (f2 && level >= 11) { (auto) ? box.value = "抵抗強化Ⅱ" : cL.add("mark") }
+        }
+        else if(feat.match(/Ⅱ$/)){
+          if(!f2 || level < 11) { (auto) ? box.value = "抵抗強化Ⅰ" : cL.add("error") }
+        }
+      }
       else if (feat.match(/テイルスイング/)){
         if(level < 3){ cL.add("error"); }
         if(feat.match(/Ⅰ$/)){
@@ -891,8 +934,7 @@ function checkFeats(){
       acquire += feat + ',';
       
       const weaponsRegex = new RegExp('武器習熟(Ａ|Ｓ)／(' + SET.weapons.map(d => d[0]).join('|') + ')');
-      if     (feat === "足さばき"){ feats['足さばき'] = 1; }
-      else if(feat === "回避行動Ⅰ"){ feats['回避行動'] = 1; }
+      if     (feat === "回避行動Ⅰ"){ feats['回避行動'] = 1; }
       else if(feat === "回避行動Ⅱ"){ feats['回避行動'] = 2; }
       else if(feat === "命中強化Ⅰ"){ feats['命中強化'] = 1; }
       else if(feat === "命中強化Ⅱ"){ feats['命中強化'] = 2; }
@@ -903,7 +945,6 @@ function checkFeats(){
       else if(feat === "頑強")  { feats['頑強'] = (feats['頑強']||0) +15; }
       else if(feat === "超頑強"){ feats['頑強'] = (feats['頑強']||0) +15; }
       else if(feat === "キャパシティ"){ feats['キャパシティ'] = 15; }
-      else if(feat === "射手の体術"){ feats['射手の体術'] = 1; }
       else if(feat.match(weaponsRegex)){
         feats['武器習熟／'+RegExp.$2] ||= 0;
         if     (RegExp.$1 === 'Ａ'){ feats['武器習熟／'+RegExp.$2] += 1; }
@@ -927,6 +968,7 @@ function checkFeats(){
       else if(feat === "鼓咆陣率追加Ⅲ"){ feats['鼓咆陣率追加'] = 3; }
       else if(feat === "抵抗強化Ⅰ"){ feats['抵抗強化'] = 1; }
       else if(feat === "抵抗強化Ⅱ"){ feats['抵抗強化'] = 2; }
+      else { feats[feat] = true; }
       
       cL.remove("fail","hidden");
     }
@@ -945,7 +987,9 @@ function checkFeats(){
 }
 
 // 技芸 ----------------------------------------
+let crafts = {};
 function checkCraft() {
+  crafts = {};
   for(const key in SET.class){
     const cId  = SET.class[key].id;
     const cLv = lv[cId];
@@ -964,6 +1008,8 @@ function checkCraft() {
         let objCL = document.getElementById("craft-"+eName+i).classList;
         if (i <= rows){
           objCL.remove("fail","hidden");
+          const craftName = form["craft"+ucfirst(eName)+i].value;
+          if(craftName){ crafts[craftName] = true }
         }
         else {
           objCL.add("fail");
@@ -1041,7 +1087,7 @@ function calcMobility() {
     }
   }
   const mobility = mobilityBase + Number(form.mobilityAdd.value) + mobilityOwn;
-  document.getElementById("mobility-limited").textContent = feats['足さばき'] ? 10 : 3;
+  document.getElementById("mobility-limited").textContent = Math.min(feats['足さばき'] ? 10 : 3, mobility);
   document.getElementById("mobility-base").textContent = mobilityBase + mobilityOwn;
   document.getElementById("mobility-total").textContent = mobility;
   document.getElementById("mobility-full").textContent = mobility * 3;
@@ -1065,29 +1111,28 @@ function calcPackage() {
       const cId   = SET.class[key].id
       const pData = SET.class[key].package;
       const cLv = lv[cId];
-
-      document.getElementById(`package-${eName}`).style.display = cLv > 0 ? "" :"none";
       
+      let rows = 0;
       for(const pId in pData){
         let autoBonus = 0;
-        if(cId === 'War' && pId === 'Int'){
-          let hit = 0;
-          for(let i = 1; i <= lv.War+(feats['鼓咆陣率追加']||0); i++){
-            if(form[`craftCommand${i}`].value.match(/軍師の知略$/)){ hit = 1; autoBonus += form[`craftCommand${i}`].value.match(/^陣率/) ? 1 : 0; break; }
-          }
-          if(!hit){
-            document.getElementById(`package-${eName}-${pId.toLowerCase()}`).textContent = '―';
-            break;
-          }
+        let disabled = false;
+        if(pData[pId].unlockCraft && !crafts[pData[pId].unlockCraft]){
+          disabled = true;
         }
+        if(cId === 'War' && pId === 'Int' && crafts['陣率：軍師の知略']){
+          autoBonus += 1;
+        }
+        if(!disabled){ rows++; }
         
-        let value = cLv + bonus[alphabetToStt[pData[pId].stt]] + Number(form[`pack${cId}${pId}Add`].value) + autoBonus;
+        let value = disabled ? 0 : (cLv + bonus[alphabetToStt[pData[pId].stt]] + Number(form[`pack${cId}${pId}Add`].value) + autoBonus);
         document.getElementById(`package-${eName}-${pId.toLowerCase()}-auto`).textContent = autoBonus ? '+'+autoBonus : '';
         document.getElementById(`package-${eName}-${pId.toLowerCase()}`).textContent = value;
+        document.getElementById(`package-${eName}-${pId.toLowerCase()}-row`).style.display = disabled ? 'none' : '';
 
         if(pData[pId].monsterLore){ lore.push(cLv > 0 ? value : 0); }
         if(pData[pId].initiative ){ init.push(cLv > 0 ? value : 0); }
       }
+      document.getElementById(`package-${eName}`).style.display = cLv > 0 && rows ? '' : 'none';
     }
   }
 
@@ -1113,6 +1158,9 @@ function calcMagic() {
     // 魔法
     if(SET.class[key].magic){
       document.getElementById("magic-power-"+eName).style.display = cLv ? '' : 'none';
+      for(let num = 1; num <= form.paletteMagicNum.value; num++){
+        form[`paletteMagic${num}Check${id}`].disabled = cLv ? false : true;
+      }
       if(cLv){ openMagic++; }
       
       const seekerMagicAdd = (lvSeeker && checkSeekerAbility('魔力上昇') && cLv >= 15) ? 3 : 0;
@@ -1183,25 +1231,42 @@ function calcFairy() {
 }
 
 // 攻撃計算 ----------------------------------------
+let errorAccClass = {};
 function calcAttack() {
+  errorAccClass = {};
   for(const name in SET.class){
-    if(SET.class[name].type !== 'weapon-user'){ continue; }
+    if(SET.class[name].type !== 'weapon-user' && !SET.class[name].accUnlock){ continue; }
     const id    = SET.class[name].id;
     const eName = SET.class[name].eName;
-    document.getElementById(`attack-${eName}`).style.display = lv[id] > 0 ? "" :"none";
+    const unlockLv = SET.class[name]?.accUnlock?.lv || 1;
+    const unlockFeat = SET.class[name]?.accUnlock?.feat || '';
+    const unlockCraft = SET.class[name]?.accUnlock?.craft || '';
+    let display = '';
+    if (lv[id] < unlockLv){ display = 'none' }
+    if(unlockFeat){
+      let isUnlock = false;
+      for(const feat of unlockFeat.split('|')){
+        if(feats[feat]){ isUnlock = true; break; }
+      }
+      if(!isUnlock){ display = 'none' }
+    }
+    if(unlockCraft){
+      let isUnlock = false;
+      for(const craft of unlockCraft.split('|')){
+        if(crafts[craft]){ isUnlock = true; break; }
+      }
+      if(!isUnlock){ display = 'none' }
+    }
+    if(display == 'none'){ errorAccClass[name] = true; }
+    document.getElementById(`attack-${eName}`).style.display = display;
     document.getElementById(`attack-${eName}-str`).textContent = id == 'Fen' ? reqdStrHalf : reqdStr;
     document.getElementById(`attack-${eName}-acc`).textContent = lv[id] + bonus.Dex;
     document.getElementById(`attack-${eName}-dmg`).textContent = lv[id] + bonus.Str;
   }
-  document.getElementById("attack-enhancer"  ).style.display = lv['Enh'] >= 10 ? "" :"none";
-  document.getElementById("attack-enhancer-str").textContent   = reqdStr;
-  document.getElementById("attack-enhancer-acc"  ).textContent = lv['Enh'] + bonus.Dex;
-  document.getElementById("attack-enhancer-dmg"  ).textContent = lv['Enh'] + bonus.Str;
-
-  document.getElementById("attack-demonruler").style.display = lv['Dem'] >= 10 ? "" : modeZero && lv['Dem'] > 0 ? "" :"none";
-  document.getElementById("attack-demonruler-str").textContent = reqdStr;
-  document.getElementById("attack-demonruler-acc").textContent = lv['Dem'] + bonus.Dex;
-  document.getElementById("attack-demonruler-dmg").textContent = modeZero ? lv['Dem'] + bonus.Str : '―';
+  
+  if(!modeZero){
+    document.getElementById("attack-demonruler-dmg").textContent = '―';
+  }
 
   for(let i = 0; i < SET.weapons.length; i++){
     document.getElementById(`attack-${SET.weapons[i][1]}-mastery`).style.display = feats['武器習熟／'+SET.weapons[i][0]] ? '' : 'none';
@@ -1223,30 +1288,26 @@ function calcWeapon() {
     const ownDex = form["weapon"+i+"Own"].checked ? 2 : 0;
     const note = form["weapon"+i+"Note"].value;
     const weaponReqd = safeEval(form["weapon"+i+"Reqd"].value) || 0;
-    let attackClass = 0;
+    const classLv = lv[ SET.class[className]?.id ] || 0;
     let accBase = 0;
     let dmgBase = 0;
-    let maxReqd = reqdStr;
     accBase += feats['命中強化'] || 0; //命中強化
-    // 使用技能
-    if(SET.class[className]?.type == 'weapon-user'){
-      attackClass = lv[ SET.class[className].id ];
-      if(className === "フェンサー"){ maxReqd = reqdStrHalf; }
-    }
-    else if(className === "エンハンサー")     { attackClass = lv['Enh']; }
-    else if(className === "デーモンルーラー") { attackClass = lv['Dem']; }
+    // 技能選択のエラーチェック
+    form["weapon"+i+"Class"].classList.toggle('error', errorAccClass[className] == true); 
     // 必筋チェック
+    const maxReqd = (className === "フェンサー") ? reqdStrHalf : reqdStr;
     form["weapon"+i+"Reqd"].classList.toggle('error', weaponReqd > maxReqd);
     // 武器カテゴリ
-    if(attackClass) {
+    if(classLv) {
       // 基礎命中
-      accBase += attackClass + parseInt((stt.Dex + stt.addA + ownDex) / 6);
+      accBase += classLv + parseInt((stt.Dex + stt.addA + ownDex) / 6);
     }
     // 基礎ダメージ
-    if     (category === 'クロスボウ')                  { dmgBase = attackClass; }
-    else if(category === 'ガン')                        { dmgBase = magicPowers['Mag']; }
-    else if(!modeZero && className === "デーモンルーラー"){ dmgBase = magicPowers['Dem']; }
-    else if(attackClass)                                { dmgBase = attackClass + bonus.Str; }
+    if     (category === 'クロスボウ'){ dmgBase = classLv; }
+    else if(category === 'ガン')      { dmgBase = magicPowers['Mag']; }
+    else if(!modeZero && className === "デーモンルーラー")
+                                      { dmgBase = magicPowers['Dem']; }
+    else if(classLv)                  { dmgBase = classLv + bonus.Str; }
     form["weapon"+i+"Category"].classList.remove('fail');
 
     // 習熟
@@ -1268,30 +1329,43 @@ function calcWeapon() {
 }
 
 // 防御計算 ----------------------------------------
+let errorEvaClass = {};
 function calcDefense() {
-  const className = form.evasionClass.options[form.evasionClass.selectedIndex].value;
-  let evaClassLv = 0;
-  let evaBase = 0;
-  let evaAdd = 0;
   let defBase = 0;
-  if(SET.class[className]?.type == 'weapon-user'){
-    evaClassLv = lv[ SET.class[className].id ];
+  let evaAdd = 0;
+  errorEvaClass = {};
+  // 技能
+  for(const name in SET.class){
+    if(SET.class[name].type !== 'weapon-user' && !SET.class[name].evaUnlock){ continue; }
+    const id    = SET.class[name].id;
+    const eName = SET.class[name].eName;
+    const unlockLv = SET.class[name]?.evaUnlock?.lv || 1;
+    const unlockFeat = SET.class[name]?.evaUnlock?.feat || '';
+    const unlockCraft = SET.class[name]?.evaUnlock?.craft || '';
+    let display = '';
+    if (lv[id] < unlockLv){ display = 'none' }
+    if(unlockFeat){
+      let hasUnlockFeat = false;
+      for(const feat of unlockFeat.split('|')){
+        if(feats[feat]){ hasUnlockFeat = true; break; }
+      }
+      if(!hasUnlockFeat){ display = 'none' }
+    }
+    if(unlockCraft){
+      let hasUnlockCraft = false;
+      for(const craft of unlockCraft.split('|')){
+        if(crafts[craft]){ hasUnlockCraft = true; break; }
+      }
+      if(!hasUnlockCraft){ display = 'none' }
+    }
+    if(display == 'none'){ errorEvaClass[name] = true; }
+    document.getElementById(`evasion-${eName}`).style.display = display;
+    document.getElementById(`evasion-${eName}-str`).textContent = id == 'Fen' ? reqdStrHalf : reqdStr;
+    document.getElementById(`evasion-${eName}-eva`).textContent = lv[id] + bonus.Agi;
   }
-  else if(className === "デーモンルーラー"){ evaClassLv = lv['Dem']; }
-  else { evaClassLv = 0; }
-  evaBase = evaClassLv || 0;
-  
-  const maxReqd = (className === "フェンサー") ? reqdStrHalf : reqdStr;
-  document.getElementById("evasion-str").textContent = maxReqd;
-  document.getElementById("evasion-eva").textContent = evaClassLv ? (evaClassLv + bonus.Agi) : 0;
-  
-  // 技能選択のエラー表示
-  let cL = document.getElementById("evasion-classes").classList;
-  if(className === "シューター" && !feats['射手の体術'] || className === "デーモンルーラー" && lv['Dem'] < 2){ 
-    cL.add('error');
-  }
-  else { cL.remove('error'); }
-  
+  document.getElementById("evasion-demonruler").style.display = !modeZero && lv['Dem'] >= 2 ? "" : modeZero && lv['Dem'] > 7 ? "" :"none";
+  document.getElementById("evasion-demonruler-str").textContent = reqdStr;
+  document.getElementById("evasion-demonruler-eva").textContent = lv['Dem'] + bonus.Agi;
   // 種族特徴
   defBase += raceAbilityDef;
   document.getElementById("race-ability-def").style.display = raceAbilityDef > 0 ? "" :"none";
@@ -1325,9 +1399,10 @@ function calcDefense() {
   document.getElementById("minds-eye").style.display = feats['心眼'] > 0 ? "" :"none";
   document.getElementById("minds-eye-value").textContent = feats['心眼'] || 0;
   
-  calcArmour(evaBase,evaAdd,defBase,maxReqd);
+  calcArmour(evaAdd,defBase);
 }
-function calcArmour(evaBase,evaAdd,defBase,maxReqd) {
+// 防具合計計算
+function calcArmour(evaAdd,defBase) {
   let count = { 鎧:0, 盾:0, 他:0 };
   let checkedCount = { 鎧:{}, 盾:{}, 他:{} };
 
@@ -1337,14 +1412,13 @@ function calcArmour(evaBase,evaAdd,defBase,maxReqd) {
     if(num == 1 && !type){ type = '鎧' }
     if(type){ count[type]++ }
 
-    form[`armour${num}Reqd`].classList.toggle('error', (safeEval(form[`armour${num}Reqd`].value) || 0) > maxReqd);
-    form[`armour${num}Own`].style.display = category.match(/鎧|盾/) ? '' : 'none';
+    form[`armour${num}Own`].disabled = category.match(/鎧|盾/) ? false : true;
 
-    
+    form[`armour${num}Reqd`].classList.remove('error');
     form[`armour${num}Name`].parentNode.parentNode.querySelector('.type').textContent
       = type ? type+count[type] : '';
     
-    for (let i = 1; i <= 3; i++){
+    for (let i = 1; i <= form.defenseNum.value; i++){
       document.querySelector(`input[name="defTotal${i}CheckArmour${num}"] + span`).textContent
         = form[`armour${num}Name`].value ? form[`armour${num}Name`].value
             .replace(/[|｜](.+?)《(.+?)》/g, "$1")
@@ -1368,8 +1442,21 @@ function calcArmour(evaBase,evaAdd,defBase,maxReqd) {
     }
   }
   
-  for (let i = 1; i <= 3; i++){
+  for (let i = 1; i <= form.defenseNum.value; i++){
+    const className = form['evasionClass'+i].value;
+    
+    // 技能選択のエラーチェック
+    form['evasionClass'+i].classList.toggle('error', errorEvaClass[className] == true); 
+
+    // 最大必筋
+    const maxReqd = (className === "フェンサー") ? reqdStrHalf : reqdStr;
+
+    // 計算
+    const classLv = lv[SET.class[className]?.id] || 0;
+
     let eva = evaAdd;
+    if(feats['回避行動'] == 2 && className != 'フェンサー' && className != 'バトルダンサー'){ eva -= 1 }
+    if(feats['心眼'] && className != 'フェンサー'){ eva -= feats['心眼'] }
     let def = defBase;
     let ownAgi = 0;
     let artisanDef = 0;
@@ -1378,6 +1465,10 @@ function calcArmour(evaBase,evaAdd,defBase,maxReqd) {
       checkObj.parentNode.classList.remove('error')
 
       if(!checkObj.checked) continue;
+      
+      if((safeEval(form[`armour${num}Reqd`].value) || 0) > maxReqd){
+        form[`armour${num}Reqd`].classList.add('error');
+      }
 
       const category = form[`armour${num}Category`].value;
       eva += Number(form[`armour${num}Eva`].value);
@@ -1390,7 +1481,7 @@ function calcArmour(evaBase,evaAdd,defBase,maxReqd) {
         checkObj.parentNode.classList.add('error')
       }
     }
-    eva += ( evaBase ? evaBase + parseInt((stt.Agi + stt.addB + ownAgi) / 6) : 0 );
+    eva += ( classLv ? classLv + parseInt((stt.Agi + stt.addB + ownAgi) / 6) : 0 );
     def += artisanDef;
  
     document.getElementById(`defense-total${i}-eva`).textContent = eva;
@@ -1457,14 +1548,20 @@ function calcHonor(){
   }
   document.getElementById("history-honor-total").textContent = commify(pointTotal);
   // ランク
-  const rank = form["rank"].options[form["rank"].selectedIndex].value;
-  const topRank = rank.match(/★$/) ? 1 : 0;
-  const rankStar = topRank ? Number(form.rankStar.value||1)-1 : 0;
-  form.rankStar.style.display = topRank ? '' : 'none';
+  let free = 0;
+  for(const type of ['','Barbaros']){
+    const rank = form["rank"+type].value;
+    const topRank = rank.match(/★$/) ? 1 : 0;
+    const rankStar = topRank ? Number(form["rankStar"+type].value||1)-1 : 0;
+    form["rankStar"+type].style.display = topRank ? '' : 'none';
+    const rankData = type == 'Barbaros' ? SET.bRank[rank] : SET.aRank[rank];
+    const rankNum  = (rankData) ? rankData.num  + rankStar*500 : 0;
+    const rankFree = (rankData) ? rankData.free + rankStar*50  : 0;
+    pointTotal -= rankNum;
+    if(rankFree > free){ free = rankFree }
+    document.getElementById(`rank${type}-honor-value`).textContent = rankNum;
+  }
   
-  const rankNum = (SET.aRank[rank]) ? SET.aRank[rank].num  + rankStar*500 : 0;
-  const free    = (SET.aRank[rank]) ? SET.aRank[rank].free + rankStar*50  : 0;
-  pointTotal -= rankNum;
   // 名誉アイテム
   const honorItemsNum = form.honorItemsNum.value;
   for (let i = 1; i <= honorItemsNum; i++){
@@ -1487,27 +1584,43 @@ function calcHonor(){
   }
   pointTotal -= mysticArtsPt;
   //
-  pointTotal -= Number(form.honorOffset.value);
+  pointTotal -= Number(form.honorOffset.value) + Number(form.honorOffsetBarbaros.value);
   document.getElementById("honor-value"   ).textContent = pointTotal;
   document.getElementById("honor-value-MA").textContent = pointTotal;
-  document.getElementById("rank-honor-value").textContent = rankNum;
   document.getElementById("mystic-arts-honor-value").textContent = mysticArtsPt;
   document.getElementById('honor-items-mystic-arts').style.display = mysticArtsPt ? '' : 'none';
 }
 // 不名誉点計算
 function calcDishonor(){
   if(modeZero){ return; }
-  let pointTotal = 0;
+  let pointTotal = { 'human':0, 'barbaros':0 };
   const dishonorItemsNum = form.dishonorItemsNum.value;
   for (let i = 1; i <= dishonorItemsNum; i++){
     let point = safeEval(form['dishonorItem'+i+'Pt'].value) || 0;
-    pointTotal += point;
+    let type  = form['dishonorItem'+i+'PtType'].value || 'human';
+    form['dishonorItem'+i+'PtType'].dataset.type = type;
+    if(type == 'both'){
+      for(let t in pointTotal){ pointTotal[t] += point }
+    }
+    else {
+      pointTotal[type] += point;
+    }
   }
-  pointTotal -= Number(form.honorOffset.value);
-  document.getElementById("dishonor-value").textContent = pointTotal;
-  for(const key in SET.nRank){
-    if(pointTotal >= SET.nRank[key].num) { document.getElementById("notoriety").textContent = key; }
+  pointTotal.human    -= Number(form.honorOffset.value);
+  pointTotal.barbaros -= Number(form.honorOffsetBarbaros.value);
+  let pointTotalText = pointTotal.human;
+  if(pointTotal.barbaros){ pointTotalText += `／<small>蛮</small>${pointTotal.barbaros}`; }
+  document.getElementById("dishonor-value").innerHTML = pointTotalText;
+
+  let notoriety = '';
+  for(const data of SET.nRank){
+    if(pointTotal.human >= data[1]) { notoriety = `<span>“${data[0]}”</span>` }
   }
+  let notorietyB = '';
+  for(const data of SET.nBRank){
+    if(pointTotal.barbaros >= data[1]) { notorietyB = `<span>“${data[0]}”</span>` }
+  }
+  document.getElementById("notoriety").innerHTML = notoriety+notorietyB || '―';
 }
 
 // 収支履歴計算 ----------------------------------------
@@ -1554,6 +1667,20 @@ function calcCash(){
   document.getElementById('cashbook-total-value').textContent = commify(cash);
   document.getElementById('cashbook-deposit-value').textContent = commify(deposit);
   document.getElementById('cashbook-debt-value').textContent = commify(debt);
+  
+  if(form.moneyAuto.checked){
+    form.money.value = commify(cash);
+    form.money.readOnly = true;
+  }
+  else {
+    form.money.readOnly = false;
+  }
+
+  if(form.depositAuto.checked){
+    form.deposit.value = commify(deposit)+'／'+commify(debt);
+    form.deposit.readOnly = true;
+  }
+  else { form.deposit.readOnly = false; }
 }
 
 // 装飾品欄 ----------------------------------------
@@ -1566,132 +1693,69 @@ function addAccessory(name){
   }
 }
 // ソート
-let accesorySortable = Sortable.create(document.getElementById('accessories-table'), {
-  group: "accessories",
-  animation: 200,
-  handle: 'th',
-  filter: 'thead,tfoot',
-  ghostClass: 'sortable-ghost',
-  swap: true,
-  onUpdate: function(evt){
-    let beforeId   = evt.item.id;
-    let afterId    = evt.swapItem.id;
-    let beforeType = evt.item.dataset.type;
-    let afterType  = evt.swapItem.dataset.type;
-    evt.item.dataset.type     = afterType;
-    evt.swapItem.dataset.type = beforeType;
-    
-    const beforeTitle = document.querySelector(`#${beforeId} th`).textContent;
-    document.querySelector(`#${beforeId} th`).textContent = document.querySelector(`#${afterId} th`).textContent;
-    document.querySelector(`#${afterId} th`).textContent = beforeTitle;
-    
-    const beforeCheck = document.querySelector(`#${beforeId} [name$="Add"]`) ? document.querySelector(`#${beforeId} [name$="Add"]`).checked : false;
-    const AfterCheck = document.querySelector(`#${afterId} [name$="Add"]`) ? document.querySelector(`#${afterId} [name$="Add"]`).checked : false;
-    const beforeCheckBox = document.querySelector(`#${beforeId} td:first-child`).innerHTML;
-    document.querySelector(`#${beforeId} td:first-child`).innerHTML = document.querySelector(`#${afterId} td:first-child`).innerHTML;
-    document.querySelector(`#${afterId} td:first-child`).innerHTML = beforeCheckBox;
-    if(document.querySelector(`#${beforeId} [name$="Add"]`)){ document.querySelector(`#${beforeId} [name$="Add"]`).checked = AfterCheck; }
-    if(document.querySelector(`#${afterId} [name$="Add"]`)){ document.querySelector(`#${afterId} [name$="Add"]`).checked = beforeCheck; }
-    
-    document.querySelector(`#${beforeId} [name$="Name"]`).setAttribute('name',`accessory${afterType}Name`);
-    document.querySelector(`#${beforeId} [name$="Own"]` ).setAttribute('name',`accessory${afterType}Own`);
-    document.querySelector(`#${beforeId} [name$="Note"]`).setAttribute('name',`accessory${afterType}Note`);
-    document.querySelector(`#${afterId} [name$="Name"]`).setAttribute('name',`accessory${beforeType}Name`);
-    document.querySelector(`#${afterId} [name$="Own"]` ).setAttribute('name',`accessory${beforeType}Own`);
-    document.querySelector(`#${afterId} [name$="Note"]`).setAttribute('name',`accessory${beforeType}Note`);
-  }
-});
+(() => {
+  let sortable = Sortable.create(document.getElementById('accessories-table'), {
+    animation: 200,
+    handle: 'th',
+    filter: 'thead,tfoot',
+    swap: true,
+    onUpdate: function(evt){
+      let beforeId   = evt.item.id;
+      let afterId    = evt.swapItem.id;
+      let beforeType = evt.item.dataset.type;
+      let afterType  = evt.swapItem.dataset.type;
+      evt.item.dataset.type     = afterType;
+      evt.swapItem.dataset.type = beforeType;
+      
+      const beforeTitle = document.querySelector(`#${beforeId} th`).textContent;
+      document.querySelector(`#${beforeId} th`).textContent = document.querySelector(`#${afterId} th`).textContent;
+      document.querySelector(`#${afterId} th`).textContent = beforeTitle;
+      
+      const beforeCheck = document.querySelector(`#${beforeId} [name$="Add"]`) ? document.querySelector(`#${beforeId} [name$="Add"]`).checked : false;
+      const AfterCheck = document.querySelector(`#${afterId} [name$="Add"]`) ? document.querySelector(`#${afterId} [name$="Add"]`).checked : false;
+      const beforeCheckBox = document.querySelector(`#${beforeId} td:first-child`).innerHTML;
+      document.querySelector(`#${beforeId} td:first-child`).innerHTML = document.querySelector(`#${afterId} td:first-child`).innerHTML;
+      document.querySelector(`#${afterId} td:first-child`).innerHTML = beforeCheckBox;
+      if(document.querySelector(`#${beforeId} [name$="Add"]`)){ document.querySelector(`#${beforeId} [name$="Add"]`).checked = AfterCheck; }
+      if(document.querySelector(`#${afterId} [name$="Add"]`)){ document.querySelector(`#${afterId} [name$="Add"]`).checked = beforeCheck; }
+      
+      document.querySelector(`#${beforeId} [name$="Name"]`).setAttribute('name',`accessory${afterType}Name`);
+      document.querySelector(`#${beforeId} [name$="Own"]` ).setAttribute('name',`accessory${afterType}Own`);
+      document.querySelector(`#${beforeId} [name$="Note"]`).setAttribute('name',`accessory${afterType}Note`);
+      document.querySelector(`#${afterId} [name$="Name"]`).setAttribute('name',`accessory${beforeType}Name`);
+      document.querySelector(`#${afterId} [name$="Own"]` ).setAttribute('name',`accessory${beforeType}Own`);
+      document.querySelector(`#${afterId} [name$="Note"]`).setAttribute('name',`accessory${beforeType}Note`);
+    }
+  });
+})();
 
 // 秘伝欄 ----------------------------------------
 // 追加
 function addMysticArts(){
-  let num = Number(form.mysticArtsNum.value) + 1;
-
-  let row = document.querySelector('#mystic-arts-template').content.firstElementChild.cloneNode(true);
-  row.id = idNumSet('mystic-arts-item');
-  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
-  document.querySelector("#mystic-arts-list").append(row);
-
-  form.mysticArtsNum.value = num;
+  document.querySelector("#mystic-arts-list").append(createRow('mystic-arts','mysticArtsNum'));
 }
 // 削除
 function delMysticArts(){
-  let num = Number(form.mysticArtsNum.value);
-  if(num > 0){
-    if(form[`mysticArts${num}`].value || form[`mysticArts${num}Pt`].value){
-      if (!confirm(delConfirmText)) return false;
-    }
-    document.querySelector("#mystic-arts-list li:last-of-type").remove();
-    num--;
-    form.mysticArtsNum.value = num;
+  if(delRow('mysticArtsNum', '#mystic-arts-list li:last-of-type')){
+    calcHonor();
   }
-  calcHonor();
 }
 // ソート
-let mysticArtsSortable = Sortable.create(document.querySelector('#mystic-arts-list'), {
-  group: "mysticarts",
-  dataIdAttr: 'id',
-  animation: 150,
-  handle: '.handle',
-  filter: 'template',
-  ghostClass: 'sortable-ghost',
-  onUpdate: function (evt) {
-    const order = mysticArtsSortable.toArray();
-    let num = 1;
-    for(let id of order) {
-      if(document.querySelector(`li#${id}`)){
-        document.querySelector(`#${id} input:first-of-type`).setAttribute('name',`mysticArts${num}`);
-        document.querySelector(`#${id} [name$="Pt"]`).setAttribute('name',`mysticArts${num}Pt`);
-        if(modeZero){ document.querySelector(`#${id} [name$="PtType"]`).setAttribute('name',`mysticArts${num}PtType`); }
-        num++;
-      }
-    }
-  }
-});
+setSortable('mysticArts','#mystic-arts-list','li');
+
 // 秘伝魔法欄 ----------------------------------------
 // 追加
 function addMysticMagic(){
-  let num = Number(form.mysticMagicNum.value) + 1;
-
-  let row = document.querySelector('#mystic-magic-template').content.firstElementChild.cloneNode(true);
-  row.id = idNumSet('mystic-magic-item');
-  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
-  document.querySelector("#mystic-magic-list").append(row);
-  
-  form.mysticMagicNum.value = num;
+  document.querySelector("#mystic-magic-list").append(createRow('mystic-magic','mysticMagicNum'));
 }
 // 削除
 function delMysticMagic(){
-  let num = Number(form.mysticMagicNum.value);
-  if(num > 0){
-    if(form[`mysticMagic${num}`].value || form[`mysticMagic${num}Pt`].value){
-      if (!confirm(delConfirmText)) return false;
-    }
-    document.querySelector("#mystic-magic-list li:last-of-type").remove();
-    num--;
-    form.mysticMagicNum.value = num;
+  if(delRow('mysticMagicNum', '#mystic-magic-list li:last-of-type')){
+    calcHonor();
   }
-  calcHonor();
 }
 // ソート
-let mysticMagicSortable = Sortable.create(document.querySelector('#mystic-magic-list'), {
-  group: "mysticmagic",
-  dataIdAttr: 'id',
-  animation: 150,
-  handle: '.handle',
-  ghostClass: 'sortable-ghost',
-  onUpdate: function (evt) {
-    const order = mysticMagicSortable.toArray();
-    let num = 1;
-    for(let id of order) {
-      if(document.querySelector(`li#${id}`)){
-        document.querySelector(`#${id} input:first-of-type`).setAttribute('name',`mysticMagic${num}`);
-        document.querySelector(`#${id} [name$="Pt"]`).setAttribute('name',`mysticMagic${num}Pt`);
-        num++;
-      }
-    }
-  }
-});
+setSortable('mysticMagic','#mystic-magic-list','li');
 
 // 言語欄 ----------------------------------------
 function checkLanguage(){
@@ -1710,7 +1774,7 @@ function checkLanguage(){
     count[read.value] ||= 0; count[read.value]++;
   }
   let notice = '';
-  for (let key in SET.class){
+  for (let key of SET.classNames){
     if(!SET.class[key].language){ continue; }
     const className = key;
     const classId = SET.class[key].id;
@@ -1721,14 +1785,14 @@ function checkLanguage(){
       const notR = (data.read && !acqR[langName]) ? true : false;
       if(langName === 'any'){
         const v = classLv - (count[classId] || 0);
-        if     (v > 0){ notice += `${className}技能であと「${v}」習得できます<br>`; }
-        else if(v < 0){ notice += `${className}技能での習得が「${v*-1}」過剰です<br>`; }
+        if     (v > 0){ notice += `<li class="under">${className}技能であと「${v}」習得できます`; }
+        else if(v < 0){ notice += `<li class="over">${className}技能での習得が「${v*-1}」過剰です`; }
       }
       else if(classLv && (notT || notR)) {
-        notice += `${langName}の`;
+        notice += `<li class="under">${langName}の`;
         if(notT){ acqT[langName] = true; notice += `会話`+(notR ? '/' : '');  }
         if(notR){ acqR[langName] = true; notice += `読文`;  }
-        notice += `が習得できます<br>`;
+        notice += `が習得できます`;
       }
     }
   }
@@ -1736,132 +1800,102 @@ function checkLanguage(){
 }
 // 追加
 function addLanguage(){
-  let num = Number(form.languageNum.value) + 1;
-
-  let row = document.querySelector('#language-template').content.firstElementChild.cloneNode(true);
-  row.id = idNumSet('language-item');
-  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
-  document.querySelector("#language-table tbody").append(row);
-
-  form.languageNum.value = num;
+  document.querySelector("#language-table tbody").append(createRow('language','languageNum'));
 }
 // 削除
 function delLanguage(){
-  let num = Number(form.languageNum.value);
-  if(num > 1){
-    if(form[`language${num}`].value){
-      if (!confirm(delConfirmText)) return false;
-    }
-    document.querySelector("#language-table tbody tr:last-of-type").remove();
-    num--;
-    form.languageNum.value = num;
+  if(delRow('languageNum', '#language-table tbody tr:last-of-type')){
+    checkLanguage();
   }
 }
 // ソート
-let languageSortable = Sortable.create(document.querySelector('#language-table tbody'), {
-  group: "language",
-  dataIdAttr: 'id',
-  animation: 150,
-  handle: '.handle',
-  filter: 'template',
-  ghostClass: 'sortable-ghost',
-  onUpdate: function (evt) {
-    const order = languageSortable.toArray();
-    let num = 1;
-    for(let id of order) {
-      if(document.querySelector(`tr#${id}`)){
-        document.querySelector(`#${id} input:first-child`).setAttribute('name',`language${num}`);
-        document.querySelector(`#${id} [name$="Talk"]`).setAttribute('name',`language${num}Talk`);
-        document.querySelector(`#${id} [name$="Read"]`).setAttribute('name',`language${num}Read`);
-        num++;
-      }
-    }
-  }
-});
-
+setSortable('language','#language-table tbody','tr');
 
 // 武器欄 ----------------------------------------
 // 追加
-function addWeapons(copy){
-  let num = Number(form.weaponNum.value) + 1;
-
-  let row = document.querySelector('#weapon-template').content.firstElementChild.cloneNode(true);
-  row.id = idNumSet('weapons-row');
-  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
+function addWeapons(copyBaseNum){
+  const row = createRow('weapon','weaponNum');
   document.querySelector("#weapons-table").append(row);
-
-  if(copy){
-    form[`weapon${num}Name`    ].value   = form[`weapon${copy}Name`    ].value;
-    form[`weapon${num}Usage`   ].value   = form[`weapon${copy}Usage`   ].value;
-    form[`weapon${num}Reqd`    ].value   = form[`weapon${copy}Reqd`    ].value;
-    form[`weapon${num}Acc`     ].value   = form[`weapon${copy}Acc`     ].value;
-    form[`weapon${num}Rate`    ].value   = form[`weapon${copy}Rate`    ].value;
-    form[`weapon${num}Crit`    ].value   = form[`weapon${copy}Crit`    ].value;
-    form[`weapon${num}Dmg`     ].value   = form[`weapon${copy}Dmg`     ].value;
-    form[`weapon${num}Own`     ].checked = form[`weapon${copy}Own`     ].checked;
-    form[`weapon${num}Category`].value   = form[`weapon${copy}Category`].value;
-    form[`weapon${num}Class`   ].value   = form[`weapon${copy}Class`   ].value;
-    form[`weapon${num}Note`    ].value   = form[`weapon${copy}Note`    ].value;
-  }
   
-  form.weaponNum.value = num;
+  if(copyBaseNum){
+    row.querySelectorAll('[name]').forEach(node => {
+      const copyBaseName = node.getAttribute('name').replace(/^(weapon)\d+(.+)$/, `$1${copyBaseNum}$2`)
+      if(node.type === 'checkbox'){
+        node.checked = form[copyBaseName].checked;
+      }
+      else { node.value = form[copyBaseName].value; }
+    });
+    calcWeapon();
+  }
+  generatePaletteWeaponCheckbox();
 }
 // 削除
 function delWeapons(){
-  let num = Number(form.weaponNum.value);
-  if(num > 1){
-    if(form[`weapon${num}Name`].value || form[`weapon${num}Usage`].value || form[`weapon${num}Reqd`].value || form[`weapon${num}Acc`].value || form[`weapon${num}Rate`].value || form[`weapon${num}Crit`].value || form[`weapon${num}Note`].value){
-      if (!confirm(delConfirmText)) return false;
-    }
-    document.querySelector("#weapons-table tbody:last-of-type").remove();
-    num--;
-    form.weaponNum.value = num;
+  if(delRow('weaponNum', '#weapons-table tbody:last-of-type')){
+    generatePaletteWeaponCheckbox();
   }
 }
 // ソート
-let weaponsSortable = Sortable.create(document.getElementById('weapons-table'), {
-  group: "weapons",
-  dataIdAttr: 'id',
-  animation: 150,
-  handle: '.handle',
-  filter: 'thead,tfoot,template',
-  ghostClass: 'sortable-ghost',
-  onUpdate: function (evt) {
-    const order = weaponsSortable.toArray();
-    let num = 1;
-    for(let id of order) {
-      if(document.querySelector(`tbody#${id}`)){
-        document.querySelector(`#${id} [name$="Name"]`    ).setAttribute('name',`weapon${num}Name`);
-        document.querySelector(`#${id} [name$="Usage"]`   ).setAttribute('name',`weapon${num}Usage`);
-        document.querySelector(`#${id} [name$="Reqd"]`    ).setAttribute('name',`weapon${num}Reqd`);
-        document.querySelector(`#${id} [name$="Acc"]`     ).setAttribute('name',`weapon${num}Acc`);
-        document.querySelector(`#${id} b[id$=acc-total]`).id = `weapon${num}-acc-total`;
-        document.querySelector(`#${id} [name$="Rate"]`    ).setAttribute('name',`weapon${num}Rate`);
-        document.querySelector(`#${id} [name$="Crit"]`    ).setAttribute('name',`weapon${num}Crit`);
-        document.querySelector(`#${id} [name$="Dmg"]`     ).setAttribute('name',`weapon${num}Dmg`);
-        document.querySelector(`#${id} b[id$=dmg-total]`).id = `weapon${num}-dmg-total`;
-        document.querySelector(`#${id} [name$="Own"]`     ).setAttribute('name',`weapon${num}Own`);
-        document.querySelector(`#${id} [name$="Category"]`).setAttribute('name',`weapon${num}Category`);
-        document.querySelector(`#${id} [name$="Class"]`   ).setAttribute('name',`weapon${num}Class`);
-        document.querySelector(`#${id} [name$="Note"]`    ).setAttribute('name',`weapon${num}Note`);
-        document.querySelector(`#${id} span[onclick]`     ).setAttribute('onclick',`addWeapons(${num})`);
-        num++;
-      }
-    }
+setSortable('weapon', '#weapons-table', 'tbody',
+  (row, num) => {
+    row.querySelector(`span[onclick]`).setAttribute('onclick',`addWeapons(${num})`);
+    row.querySelector(`b[id$=acc-total]`).id = `weapon${num}-acc-total`;
+    row.querySelector(`b[id$=dmg-total]`).id = `weapon${num}-dmg-total`;
+  },
+  () => {
+    generatePaletteWeaponCheckbox();
   }
-});
+);
+
+function changeWeaponName (){
+  let rowNum = 0;
+  document.querySelectorAll(`#palette-attack .palette-attack-checklist`).forEach(row => {
+    rowNum++;
+    for(let num = 1; num <= form.weaponNum.value; num++){
+      const name = (form[`weapon${num}Name`].value || form[`weapon${num-1}Name`]?.value || '')+form[`weapon${num}Usage`].value;
+      form[`paletteAttack${rowNum}CheckWeapon${num}`].nextElementSibling.textContent = name;
+    }
+  });
+}
+function generatePaletteWeaponCheckbox (){
+  let checkList = {};
+  let rowNum = 0;
+  const rows = document.querySelectorAll(`#palette-attack .palette-attack-checklist`);
+  rows.forEach(row => {
+    rowNum++;
+    checkList[rowNum] = {};
+    row.querySelectorAll(`label input`).forEach(checkbox => {
+      const name = checkbox.nextElementSibling.textContent || '';
+      checkList[rowNum][name] = checkbox.checked ? 'checked' : '';
+    })
+  });
+  rowNum = 1;
+  rows.forEach(row => {
+    row.innerHTML = '';
+    const added = {};
+    for(let num = 1; num <= form.weaponNum.value; num++){
+      const name = (form[`weapon${num}Name`].value || form[`weapon${num-1}Name`]?.value || '')+form[`weapon${num}Usage`].value;
+
+      let checkbox = document.createElement('label');
+      checkbox.classList.add('check-button');
+      if(added[name] || !name){ checkbox.disabled = true; }
+      checkbox.innerHTML = `<input type="checkbox" name="paletteAttack${rowNum}CheckWeapon${num}" value="1" oninput="setChatPalette()" ${checkList[rowNum][name]}><span>${name||'―'}</span>`;
+      row.append(checkbox);
+
+      added[name] = 1;
+    }
+    rowNum++;
+  });
+}
 
 // 防具欄 ----------------------------------------
 // 追加
 function addArmour(){
-  let num = Number(form.armourNum.value) + 1;
-
-  const id = idNumSet('armour')
-  let row = document.querySelector('#armour-template').content.firstElementChild.cloneNode(true);
-  row.id = id;
-  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
+  const row = createRow('armour','armourNum');
   document.querySelector("#armours tbody").append(row);
 
+  const id = row.id;
+  const num = form.armourNum.value;
   let i = 1;
   document.querySelectorAll(".defense-total-checklist").forEach(obj => {
     let checkbox = document.createElement('label')
@@ -1870,255 +1904,155 @@ function addArmour(){
     obj.append(checkbox);
     i++;
   });
-
-  form.armourNum.value = num;
 }
 // 削除
 function delArmour(){
-  let num = Number(form.armourNum.value);
-  if(num > 1){
-    if ( form[`armour${num}Name`].value 
-      || form[`armour${num}Reqd`].value
-      || form[`armour${num}Eva`].value
-      || form[`armour${num}Def`].value
-      || form[`armour${num}Note`].value
-    ){
-      if (!confirm(delConfirmText)) return false;
-    }
-    document.querySelector("#armours tbody tr:last-of-type").remove();
-    
-    document.querySelectorAll(".defense-total-checklist label:last-of-type").forEach(obj => {
+  if(delRow('armourNum', '#armours tbody tr:last-of-type')){
+    const deletedNum = Number(form.armourNum.value) +1;
+    document.querySelectorAll(`.defense-total-checklist label:has([name$="Armour${deletedNum}"])`).forEach(obj => {
       obj.remove();
     });
-    num--;
-    form.armourNum.value = num;
+    calcDefense();
+    calcHonor();
   }
-  calcHonor();
 }
 // ソート
-let armoursSortable = Sortable.create(document.querySelector('#armours table tbody'), {
-  group: "armours",
-  dataIdAttr: 'id',
-  animation: 150,
-  handle: '.handle',
-  filter: 'template',
-  ghostClass: 'sortable-ghost',
-  onUpdate: function (evt) {
-    const order = armoursSortable.toArray();
-    let num = 1;
-    for(let id of order) {
-      if(document.querySelector(`tr#${id}`)){
-        document.querySelector(`#${id} [name$="Name"]`    ).setAttribute('name',`armour${num}Name`);
-        document.querySelector(`#${id} [name$="Category"]`).setAttribute('name',`armour${num}Category`);
-        document.querySelector(`#${id} [name$="Reqd"]`    ).setAttribute('name',`armour${num}Reqd`);
-        document.querySelector(`#${id} [name$="Eva"]`     ).setAttribute('name',`armour${num}Eva`);
-        document.querySelector(`#${id} [name$="Def"]`     ).setAttribute('name',`armour${num}Def`);
-        document.querySelector(`#${id} [name$="Own"]`     ).setAttribute('name',`armour${num}Own`);
-        document.querySelector(`#${id} [name$="Note"]`    ).setAttribute('name',`armour${num}Note`);
-        
-        let i = 1;
-        document.querySelectorAll(".defense-total-checklist").forEach(row => {
-          row.querySelector(`[data-id=${id}]`).setAttribute('name',`defTotal${i}CheckArmour${num}`);
-          i++;
-        });
+setSortable('armour', '#armours tbody', 'tr',
+  (row, num)=>{
+    const id = row.id;
+    let i = 1;
+    document.querySelectorAll(".defense-total-checklist").forEach(node => {
+      node.querySelector(`[data-id=${id}]`).setAttribute('name',`defTotal${i}CheckArmour${num}`);
+      i++;
+    });
+  },
+  () => { calcDefense(); }
+);
 
-        num++;
-      }
-    }
-    calcDefense()
-  }
-});
-
+// 回避・防護合計 ----------------------------------------
+// 追加
+function addDefense(){
+  document.querySelector("#armours tfoot").append(createRow('defense-total','defenseNum'));
+  calcDefense();
+}
+// 削除
+function delDefense(){
+  delRow('defenseNum', '#armours tfoot tr:last-of-type');
+}
 // 名誉アイテム欄 ----------------------------------------
 // 追加
 function addHonorItems(){
-  let num = Number(form.honorItemsNum.value) + 1;
-
-  let row = document.querySelector('#honor-item-template').content.firstElementChild.cloneNode(true);
-  row.id = idNumSet('honor-item');
-  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
-  document.querySelector("#honor-items-table").append(row);
-
-  form.honorItemsNum.value = num;
+  document.querySelector("#honor-items-table").append(createRow('honor-item','honorItemsNum'));
 }
 // 削除
 function delHonorItems(){
-  let num = Number(form.honorItemsNum.value);
-  if(num > 1){
-    if(form[`honorItem${num}`].value || form[`honorItem${num}Pt`].value){
-      if (!confirm(delConfirmText)) return false;
-    }
-    document.querySelector("#honor-items-table tr:last-of-type").remove();
-    num--;
-    form.honorItemsNum.value = num;
+  if(delRow('honorItemsNum', '#honor-items-table tr:last-of-type')){
+    calcHonor();
   }
-  calcHonor();
 }
 // ソート
-let honorSortable = Sortable.create(document.querySelector('#honor-items-table'), {
-  group: "honor",
-  dataIdAttr: 'id',
-  animation: 150,
-  handle: '.handle',
-  filter: 'template',
-  ghostClass: 'sortable-ghost',
-  onUpdate: function (evt) {
-    const order = honorSortable.toArray();
-    let num = 1;
-    for(let id of order) {
-      if(document.querySelector(`tr#${id}`)){
-        document.querySelector(`#${id} [type="text"]`  ).setAttribute('name',`honorItem${num}`);
-        document.querySelector(`#${id} [type="number"]`).setAttribute('name',`honorItem${num}Pt`);
-        if(modeZero){ document.querySelector(`#${id} select`).setAttribute('name',`honorItem${num}PtType`); }
-        num++;
-      }
-    }
-  }
-});
+setSortable('honorItem','#honor-items-table','tr');
 // 不名誉欄 ----------------------------------------
 // 追加
 function addDishonorItems(){
-  let num = Number(form.dishonorItemsNum.value) + 1;
-
-  let row = document.querySelector('#dishonor-item-template').content.firstElementChild.cloneNode(true);
-  row.id = idNumSet('dishonor-item');
-  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
-  document.querySelector("#dishonor-items-table").append(row);
-
-  form.dishonorItemsNum.value = num;
+  document.querySelector("#dishonor-items-table").append(createRow('dishonor-item','dishonorItemsNum'));
 }
 // 削除
 function delDishonorItems(){
-  let num = Number(form.dishonorItemsNum.value);
-  if(num > 1){
-    if(form[`dishonorItem${num}`].value || form[`dishonorItem${num}Pt`].value){
-      if (!confirm(delConfirmText)) return false;
-    }
-    document.querySelector("#dishonor-items-table tr:last-of-type").remove();
-    num--;
-    form.dishonorItemsNum.value = num;
+  if(delRow('dishonorItemsNum', '#dishonor-items-table tr:last-of-type')){
+    calcDishonor();
   }
-  calcDishonor();
 }
 // ソート
-let dishonorSortable = Sortable.create(document.querySelector('#dishonor-items-table'), {
-  group: "dishonor",
-  dataIdAttr: 'id',
-  animation: 150,
-  handle: '.handle',
-  filter: 'template',
-  ghostClass: 'sortable-ghost',
-  onUpdate: function (evt) {
-    const order = dishonorSortable.toArray();
-    let num = 1;
-    for(let id of order) {
-      if(document.querySelector(`tr#${id}`)){
-        document.querySelector(`#${id} [type="text"]`  ).setAttribute('name',`dishonorItem${num}`);
-        document.querySelector(`#${id} [type="number"]`).setAttribute('name',`dishonorItem${num}Pt`);
-        if(modeZero){ document.querySelector(`#${id} select`).setAttribute('name',`dishonorItem${num}PtType`); }
-        num++;
-      }
-    }
-  }
-});
+setSortable('dishonorItem','#dishonor-items-table','tr');
 
 // 一般技能 ----------------------------------------
+function calcCommonClass(){
+  let totalLv = 0;
+  for(let num = 1; num <= Number(form.commonClassNum.value); num++){
+    totalLv += Number(form['lvCommon'+num].value||0);
+    document.querySelector(`#palette-common-class-row${num} .name`).textContent = form['commonClass'+num].value.replace(/[(（].+?[）)]$/, '');
+  }
+  document.getElementById('cc-total-lv').textContent = totalLv;
+}
+// 追加
+function addCommonClass(){
+  document.querySelector("#common-classes-table tbody").append(createRow('common-class','commonClassNum'));
+  
+  let row = document.getElementById('palette-common-class-template').content.firstElementChild.cloneNode(true);
+  row.id = idNumSet('palette-common-class-row');
+  row.innerHTML = row.innerHTML.replaceAll('TMPL', form.commonClassNum.value);
+  document.querySelector("#palette-common-classes table tbody").append(row);
+}
+// 削除
+function delCommonClass(){
+  if(delRow('commonClassNum', '#common-classes-table tbody tr:last-of-type')){
+    calcCommonClass();
+  }
+}
 // ソート
-let commonClassSortable = Sortable.create(document.querySelector('#common-classes-table tbody'), {
-  group: "honor",
+setSortable('commonClass|lvCommon','#common-classes-table tbody','tr','',()=>{
+  let idArray = [];
+  document.querySelectorAll(`#common-classes-table tbody tr`).forEach(row => {
+    idArray.push('palette-'+row.id);
+  });
+  
+  sortablePaletteCommonClass.sort(idArray);
+
+  let num = 1;
+  document.querySelectorAll(`#palette-common-classes tbody tr`).forEach(row => {
+    replaceSortedNames(row,num,/^(paletteCommonClass)[0-9]+(.*)$/);
+    num++;
+  });
+});
+
+let sortablePaletteCommonClass = Sortable.create(document.querySelector('#palette-common-classes tbody'), {
+  sort: false,
   dataIdAttr: 'id',
   animation: 150,
-  handle: '.handle',
-  filter: 'thead,tfoot',
-  ghostClass: 'sortable-ghost',
-  onUpdate: function (evt) {
-    const order = commonClassSortable.toArray();
-    let num = 1;
-    for(let id of order) {
-      if(document.getElementById(id)){
-        document.querySelector(`#${id} [type="text"]`  ).setAttribute('name',`commonClass${num}`);
-        document.querySelector(`#${id} [type="number"]`).setAttribute('name',`lvCommon${num}`);
-        num++;
-      }
-    }
-  }
+  handle: '.none',
+  filter: 'template',
 });
 
 // 履歴欄 ----------------------------------------
 // 追加
 function addHistory(){
-  let num = Number(form.historyNum.value) + 1;
-
-  let row = document.querySelector('#history-template').content.firstElementChild.cloneNode(true);
-  row.id = idNumSet('history');
-  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
-  document.querySelector("#history-table tbody:last-of-type").after(row);
-  
-  form.historyNum.value = num;
+  document.querySelector("#history-table tfoot").before(createRow('history','historyNum'));
 }
 // 削除
 function delHistory(){
-  let num = Number(form.historyNum.value);
-  if(num > 1){
-    if(form[`history${num}Date`].value || form[`history${num}Title`].value || form[`history${num}Exp`].value || form[`history${num}Honor`].value || form[`history${num}Money`].value || form[`history${num}Grow`].value || form[`history${num}Gm`].value || form[`history${num}Member`].value || form[`history${num}Note`].value){
-      if (!confirm(delConfirmText)) return false;
-    }
-    document.querySelector("#history-table tbody:last-of-type").remove();
-    num--;
-    form.historyNum.value = num;
+  if(delRow('historyNum', '#history-table tbody:last-of-type')){
     calcExp(); calcHonor(); calcCash(); calcStt();
   }
 }
 // ソート
-let historySortable = Sortable.create(document.getElementById('history-table'), {
-  group: "history",
-  dataIdAttr: 'id',
-  animation: 150,
-  handle: '.handle',
-  scroll: true,
-  filter: 'thead,tfoot,template',
-  ghostClass: 'sortable-ghost',
-  onUpdate: function (evt) {
-    const order = historySortable.toArray();
-    let num = 1;
-    for(let id of order) {
-      if(document.querySelector(`tbody#${id}`)){
-        document.querySelector(`#${id} [name$="Date"]`  ).setAttribute('name',`history${num}Date`);
-        document.querySelector(`#${id} [name$="Title"]` ).setAttribute('name',`history${num}Title`);
-        document.querySelector(`#${id} [name$="Exp"]`   ).setAttribute('name',`history${num}Exp`);
-        document.querySelector(`#${id} [name$="Honor"]` ).setAttribute('name',`history${num}Honor`);
-        document.querySelector(`#${id} [name$="Money"]` ).setAttribute('name',`history${num}Money`);
-        document.querySelector(`#${id} [name$="Grow"]`  ).setAttribute('name',`history${num}Grow`);
-        document.querySelector(`#${id} [name$="Gm"]`    ).setAttribute('name',`history${num}Gm`);
-        document.querySelector(`#${id} [name$="Member"]`).setAttribute('name',`history${num}Member`);
-        document.querySelector(`#${id} [name$="Note"]`  ).setAttribute('name',`history${num}Note`);
-        if(modeZero){ 
-          document.querySelector(`#${id} [name$="HonorType"]`).setAttribute('name',`history${num}HonorType`); }
-        num++;
-      }
-    }
-  }
-});
+setSortable('history','#history-table','tbody');
 
 // 戦闘用アイテム欄 ----------------------------------------
 // ソート
-let battleItemsSortable = Sortable.create(document.querySelector('#battle-items-list'), {
-  group: "battleitems",
-  dataIdAttr: 'id',
-  animation: 150,
-  handle: '.handle',
-  ghostClass: 'sortable-ghost',
-  onUpdate: function (evt) {
-    const order = battleItemsSortable.toArray();
-    let num = 1;
-    for(let id of order) {
-      if(document.getElementById(id)){
-        document.querySelector(`#${id} input:first-of-type`).setAttribute('name',`battleItem${num}`);
-        num++;
-      }
-    }
+setSortable('battleItem','#battle-items-list');
+
+// チャットパレット ----------------------------------------
+// 武器攻撃
+function addPaletteAttack(){
+  document.querySelector("#palette-attack > table tbody").append(createRow('palette-attack','paletteAttackNum'));
+}
+function delPaletteAttack(){
+  if(delRow('paletteAttackNum', '#palette-attack > table tbody tr:last-of-type')){
+    setChatPalette();
   }
-});
+}
+setSortable('paletteAttack','#palette-attack > table tbody','tr');
+// 魔法
+function addPaletteMagic(){
+  document.querySelector("#palette-magic > table tbody").append(createRow('palette-magic','paletteMagicNum'));
+}
+function delPaletteMagic(){
+  if(delRow('paletteMagicNum', '#palette-magic > table tbody tr:last-of-type')){
+    setChatPalette();
+  }
+}
+setSortable('paletteMagic','#palette-magic > table tbody','tr');
 
 // 割り振り計算 ----------------------------------------
 function calcPointBuy() {

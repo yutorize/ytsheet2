@@ -11,13 +11,13 @@ require $set::data_items;
 
 ### テンプレート読み込み #############################################################################
 my $SHEET;
-$SHEET = HTML::Template->new( filename => $set::skin_item, utf8 => 1,
+$SHEET = HTML::Template->new( filename => $set::skin_sheet, utf8 => 1,
   path => ['./', $::core_dir."/skin/sw2", $::core_dir."/skin/_common", $::core_dir],
   search_path_on_include => 1,
   die_on_bad_params => 0, die_on_missing_include => 0, case_sensitive => 1, global_vars => 1);
 
 ### アイテムデータ読み込み ###########################################################################
-our %pc = pcDataGet();
+our %pc = getSheetData();
 
 ### タグ置換前処理 ###################################################################################
 ### 閲覧禁止データ --------------------------------------------------
@@ -61,17 +61,17 @@ $SHEET->param(rawName => $pc{itemName});
 ### タグ置換 #########################################################################################
 foreach (keys %pc) {
   if($_ =~ /^(?:effects|description)$/){
-    $pc{$_} = tagUnescapeLines($pc{$_});
+    $pc{$_} = unescapeTagsLines($pc{$_});
   }
-  $pc{$_} = tagUnescape($pc{$_});
+  $pc{$_} = unescapeTags($pc{$_});
 }
 $pc{effects} =~ s/<br>/\n/gi;
 $pc{effects} =~ s#(<p>|</p>|</details>)#$1\n#gi;
 $pc{effects} =~ s/^●(.*?)$/<\/p><h3>●$1<\/h3><p>/gim;
 if($::SW2_0){
-  $pc{effects} =~ s/^((?:[○◯〇＞▶〆☆≫»□☐☑🗨▽▼]|&gt;&gt;)+.*?)(　|$)/"<\/p><h5>".&textToIcon($1)."<\/h5><p>".$2;/egim;
+  $pc{effects} =~ s/^((?:\[[常主補宣条選]\]|[○◯〇＞▶〆☆≫»□☐☑🗨▽▼]|&gt;&gt;)+.*?)(　|$)/"<\/p><h5>".&textToIcon($1)."<\/h5><p>".$2;/egim;
 } else {
-  $pc{effects} =~ s/^((?:[○◯〇△＞▶〆☆≫»□☐☑🗨]|&gt;&gt;)+.*?)(　|$)/"<\/p><h5>".&textToIcon($1)."<\/h5><p>".$2;/egim;
+  $pc{effects} =~ s/^((?:\[[常準主補宣]\]|[○◯〇△＞▶〆☆≫»□☐☑🗨]|&gt;&gt;)+.*?)(　|$)/"<\/p><h5>".&textToIcon($1)."<\/h5><p>".$2;/egim;
 }
 $pc{effects} =~ s/\n+<\/p>/<\/p>/gi;
 $pc{effects} =~ s/(^|<p(?:.*?)>|<hr(?:.*?)>)\n/$1/gi;
@@ -112,10 +112,7 @@ $SHEET->param(category => $pc{category});
 ### 武器 --------------------------------------------------
 my @weapons;
 foreach (1 .. $pc{weaponNum}){
-  next if $pc{'weapon'.$_.'Usage'}.$pc{'weapon'.$_.'Reqd'}.
-          $pc{'weapon'.$_.'Acc'}.$pc{'weapon'.$_.'Rate'}.$pc{'weapon'.$_.'Crit'}.
-          $pc{'weapon'.$_.'Dmg'}.$pc{'weapon'.$_.'Note'}
-          eq '';
+  next if !existsRow "weapon$_",'Usage','Reqd','Acc','Rate','Crit','Dmg','Note';
   push(@weapons, {
     USAGE => $pc{'weapon'.$_.'Usage'},
     REQD  => $pc{'weapon'.$_.'Reqd'},
@@ -131,9 +128,7 @@ $SHEET->param(WeaponData => \@weapons) if !$pc{forbiddenMode};
 ### 防具 --------------------------------------------------
 my @armours;
 foreach (1 .. $pc{armourNum}){
-  next if $pc{'armour'.$_.'Usage'}.$pc{'armour'.$_.'Reqd'}.
-          $pc{'armour'.$_.'Acc'}.$pc{'armour'.$_.'Def'}.$pc{'armour'.$_.'Note'}
-          eq '';
+  next if !existsRow "armour$_",'Usage','Reqd','Eva','Def','Note';
   push(@armours, {
     USAGE => $pc{'armour'.$_.'Usage'},
     REQD  => $pc{'armour'.$_.'Reqd'},
@@ -157,7 +152,7 @@ $SHEET->param(Tags => \@tags);
 
 ### バックアップ --------------------------------------------------
 if($::in{id}){
-  my($selected, $list) = getLogList($set::item_dir, $main::file);
+  my($selected, $list) = getLogList($set::char_dir, $main::file);
   $SHEET->param(LogList => $list);
   $SHEET->param(selectedLogName => $selected);
   if($pc{yourAuthor} || $pc{protect} eq 'password'){
@@ -171,13 +166,13 @@ if($pc{forbidden} eq 'all' && $pc{forbiddenMode}){
   $SHEET->param(titleName => '非公開データ');
 }
 else {
-  $SHEET->param(titleName => tagDelete nameToPlain $pc{itemName});
+  $SHEET->param(titleName => removeTags nameToPlain $pc{itemName});
 }
 
 ### OGP --------------------------------------------------
 $SHEET->param(ogUrl => url().($::in{url} ? "?url=$::in{url}" : "?id=$::in{id}"));
 #if($pc{image}) { $SHEET->param(ogImg => url()."/".$imgsrc); }
-$SHEET->param(ogDescript => tagDelete "カテゴリ:$pc{category}　形状:$pc{shape}　製作時期:$pc{age}　概要:$pc{summary}");
+$SHEET->param(ogDescript => removeTags "カテゴリ:$pc{category}　形状:$pc{shape}　製作時期:$pc{age}　概要:$pc{summary}");
 
 ### バージョン等 --------------------------------------------------
 $SHEET->param(ver => $::ver);

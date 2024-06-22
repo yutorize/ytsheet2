@@ -50,7 +50,7 @@ sub dataConvert {
   {
     my $data = urlDataGet($set_url.'&mode=json') or error 'コンバート元のデータが取得できませんでした';
     if($data !~ /^{/){ error 'JSONデータが取得できませんでした' }
-    $data = thanSignEscape($data);
+    $data = escapeThanSign($data);
     my %pc = utf8::is_utf8($data) ? %{ decode_json(encode('utf8', (join '', $data))) } : %{ decode_json(join '', $data) };
     if($pc{result} eq 'OK'){
       our $base_url = $set_url;
@@ -63,6 +63,43 @@ sub dataConvert {
     }
     else {
       error '有効なデータが取得できませんでした';
+    }
+  }
+}
+
+sub getItemData {
+  my $set_url = shift;
+  my $file;
+  ## 同じゆとシートⅡ
+  my $self = CGI->new()->url;
+  if($set_url =~ m"^$self\?id=(.+?)(?:$|&)"){
+    my $id = $1;
+    my ($file, $type, $author) = getfile_open($id);
+    my %pc;
+    open my $IN, '<', "$set::lib_type{i}{dataDir}${file}/data.cgi" or return;
+    while (<$IN>){
+      chomp;
+      my ($key, $value) = split(/<>/, $_, 2);
+      $pc{$key} = $value;
+    }
+    close($IN);
+    $pc{convertSource} = '同じゆとシートⅡ';
+    return %pc;
+  }
+  ## 他のゆとシートⅡ
+  {
+    my $data = urlDataGet($set_url.'&mode=json') or return;
+    if($data !~ /^{/){ return }
+    $data = escapeThanSign($data);
+    my %pc = utf8::is_utf8($data) ? %{ decode_json(encode('utf8', (join '', $data))) } : %{ decode_json(join '', $data) };
+    if($pc{result} eq 'OK'){
+      our $base_url = $set_url;
+      $base_url =~ s|/[^/]+?$|/|;
+      $pc{convertSource} = '別のゆとシートⅡ';
+      return %pc;
+    }
+    else {
+      return;
     }
   }
 }
@@ -444,7 +481,7 @@ sub convertHokanjoToYtsheet {
   $profile .= ":    |$in{'keireki'}[2]\n";
   
   $pc{freeNote} = $profile.$in{'pc_making_memo'},
-  $pc{freeNoteView} = (tagUnescape tagUnescapeLines $profile).$in{'pc_making_memo'};
+  $pc{freeNoteView} = (unescapeTags unescapeTagsLines $profile).$in{'pc_making_memo'};
   $pc{freeNoteView} =~ s/\r\n?|\n/<br>/g;
   
   ## チャットパレット

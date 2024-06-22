@@ -17,7 +17,7 @@ $SHEET = HTML::Template->new( filename => $set::skin_sheet, utf8 => 1,
   die_on_bad_params => 0, die_on_missing_include => 0, case_sensitive => 1, global_vars => 1);
 
 ### キャラクターデータ読み込み #######################################################################
-our %pc = pcDataGet();
+our %pc = getSheetData();
 
 ### タグ置換前処理 ###################################################################################
 ### 閲覧禁止データ --------------------------------------------------
@@ -58,6 +58,7 @@ if($pc{forbidden} && !$pc{yourAuthor}){
   $pc{expUsedItem}   = noiseText(2);
   $pc{expUsedMemory} = noiseText(2);
   $pc{expUsed}       = noiseText(2);
+  $pc{expSpent}      = noiseText(2);
   $pc{expRest}       = noiseText(2);
   $pc{expTotal}      = noiseText(2);
   
@@ -176,9 +177,9 @@ if($pc{ver}){
   foreach (keys %pc) {
     next if($_ =~ /^image/);
     if($_ =~ /^(?:freeNote|freeHistory)$/){
-      $pc{$_} = tagUnescapeLines($pc{$_});
+      $pc{$_} = unescapeTagsLines($pc{$_});
     }
-    $pc{$_} = tagUnescape($pc{$_});
+    $pc{$_} = unescapeTags($pc{$_});
 
     $pc{$_} = noiseTextTag $pc{$_} if $pc{forbiddenMode};
   }
@@ -247,24 +248,30 @@ foreach(split(/ /, $pc{tags})){
 $SHEET->param(Tags => \@tags);
 
 ### セリフ --------------------------------------------------
-$pc{words} =~ s/<br>/\n/g;
-$pc{words} =~ s/^([「『（])/<span class="brackets">$1<\/span>/gm;
-$pc{words} =~ s/(.+?(?:[，、。？」』）]|$))/<span>$1<\/span>/g;
-$pc{words} =~ s/\n<span>　/\n<span>/g;
-$pc{words} =~ s/\n/<br>/g;
-$SHEET->param(words => $pc{words});
-$SHEET->param(wordsX => ($pc{wordsX} eq '左' ? 'left:0;' : 'right:0;'));
-$SHEET->param(wordsY => ($pc{wordsY} eq '下' ? 'bottom:0;' : 'top:0;'));
-
+{
+  my ($words, $x, $y) = stylizeWords($pc{words},$pc{wordsX},$pc{wordsY});
+  $SHEET->param(words => $words);
+  $SHEET->param(wordsX => $x);
+  $SHEET->param(wordsY => $y);
+}
 ### ステージ --------------------------------------------------
 if($pc{stage} =~ /クロウリングケイオス/){ $SHEET->param(ccOn => 1); }
 
+### ワークス --------------------------------------------------
+$SHEET->param(isFH => $pc{works} =~ /[FＦ][HＨ]/i);
+
 ### ブリード --------------------------------------------------
 my $breedPrefix = ($pc{breed} ? $pc{breed} : $pc{syndrome3} ? 'トライ' : $pc{syndrome2} ? 'クロス' : $pc{syndrome1} ? 'ピュア' : '');
-$SHEET->param(breed => $breedPrefix ? "$breedPrefix<span>ブリード</span>" : '');
+$SHEET->param(breed => isNoiseText(removeTags $breedPrefix) ? $breedPrefix : $breedPrefix ? "$breedPrefix<span class=\"shorten\">ブリード</span>" : '');
+
+### 侵蝕率基本値 --------------------------------------------------
+$SHEET->param(hasEncroachOffset => $pc{'lifepathOtherEncroach'} || $pc{'lifepathOtherNote'} ? 1 : 0);
 
 ### 能力値 --------------------------------------------------
 $SHEET->param('sttWorks'.ucfirst($pc{sttWorks}) => 1);
+foreach my $name ('Body','Sense','Mind','Social') {
+  $SHEET->param('sttBaseBreakdown'.$name => $pc{syndrome2} ? "$pc{'sttSyn1'.$name}＋$pc{'sttSyn2'.$name}" : "$pc{'sttSyn1'.$name}×2");
+}
 
 ### 技能 --------------------------------------------------
 foreach my $name ('Melee','Ranged','RC','Negotiate','Dodge','Percept','Will','Procure'){
@@ -298,19 +305,26 @@ foreach (1 .. 7){
   elsif($pc{'lois'.$_.'Color'} =~ /^(WH|白)/i    ){ $color = 'hsla(  0,  0%,100%,0.2)'; }
   elsif($pc{'lois'.$_.'Color'} =~ /^(YE|黄)/i    ){ $color = 'hsla( 60,100%, 50%,0.2)'; }
   $color = $color ? "background-color:${color};" : '';
+  if (!($pc{'lois'.$_.'Relation'} || $pc{'lois'.$_.'Name'} || $pc{'lois'.$_.'Note'}) || $pc{'lois'.$_.'Relation'} =~ /[DＤEＥ]ロイス|^[DＤEＥ]$/) {
+    $pc{'lois'.$_.'State'} = '';
+  }
+
+  # 感情の内容もチェックもなく、状態ももたないなら、感情を無効にする.
+  my $noEmotion = !($pc{'lois'.$_.'EmoPosi'} || $pc{'lois'.$_.'EmoPosiCheck'} || $pc{'lois'.$_.'EmoNega'} || $pc{'lois'.$_.'EmoNegaCheck'} || $pc{'lois'.$_.'State'});
+
   push(@loises, {
     "RELATION" => $pc{'lois'.$_.'Relation'},
     "NAME"     => $pc{'lois'.$_.'Name'},
     "POSI"     => $pc{'lois'.$_.'EmoPosi'},
     "NEGA"     => $pc{'lois'.$_.'EmoNega'},
-    "P-CHECK"  => $pc{'lois'.$_.'EmoPosiCheck'},
-    "N-CHECK"  => $pc{'lois'.$_.'EmoNegaCheck'},
+    "P-CHECK"  => ($noEmotion ? 'empty' : $pc{'lois'.$_.'EmoPosiCheck'} ? 'checked' : ''),
+    "N-CHECK"  => ($noEmotion ? 'empty' : $pc{'lois'.$_.'EmoNegaCheck'} ? 'checked' : ''),
+    "NO-EMO"   => $noEmotion,
     "COLOR"    => $pc{'lois'.$_.'Color'},
     "COLOR-BG" => $color,
     "NOTE"     => $pc{'lois'.$_.'Note'},
     "S"        => $pc{'lois'.$_.'S'},
     "STATE"    => $pc{'lois'.$_.'State'},
-    "D"        => $pc{'lois'.$_.'Relation'} =~ /[DＤEＥ]ロイス|^[DＤEＥ]$/ ? 1 : 0
   });
   if($pc{'lois'.$_.'Name'} =~ /起源種|オリジナルレネゲイド/){ $SHEET->param(encroachOrOn => 'checked'); }
 }
@@ -319,13 +333,12 @@ $SHEET->param(Loises => \@loises);
 ### メモリー --------------------------------------------------
 my @memories;
 foreach (1 .. 3){
-  next if !$pc{'memory'.$_.'Relation'} && !$pc{'memory'.$_.'Name'};
+  next if !existsRow "memory$_",'Name','Relation';
   push(@memories, {
     RELATION => $pc{'memory'.$_.'Relation'},
     NAME     => $pc{'memory'.$_.'Name'},
     EMOTION  => $pc{'memory'.$_.'Emo'},
     NOTE     => $pc{'memory'.$_.'Note'},
-    STATE    => $pc{'memory'.$_.'State'},
   });
 }
 $SHEET->param(Memories => \@memories);
@@ -333,12 +346,7 @@ $SHEET->param(Memories => \@memories);
 ### エフェクト --------------------------------------------------
 my @effects;
 foreach (1 .. $pc{effectNum}){
-  next if(
-    !$pc{'effect'.$_.'Name'}  && !$pc{'effect'.$_.'Lv'}       && !$pc{'effect'.$_.'Timing'} &&
-    !$pc{'effect'.$_.'Skill'} && !$pc{'effect'.$_.'Dfclty'}   && !$pc{'effect'.$_.'Target'} && 
-    !$pc{'effect'.$_.'Range'} && !$pc{'effect'.$_.'Encroach'} && !$pc{'effect'.$_.'Restrict'} &&
-    !$pc{'effect'.$_.'Note'}  && !$pc{'effect'.$_.'Exp'}
-  );
+  next if !existsRow "effect$_",'Name','Lv','Timing','Skill','Dfclty','Target','Range','Encroach','Restrict','Note','Exp';
   push(@effects, {
     TYPE     => $pc{'effect'.$_.'Type'},
     NAME     => textShrink(13,15,17,21,$pc{'effect'.$_.'Name'}),
@@ -397,10 +405,7 @@ sub textShrink {
 ### 術式 --------------------------------------------------
 my @magics;
 foreach (1 .. $pc{magicNum}){
-  next if(
-    !$pc{'magic'.$_.'Name'}     && !$pc{'magic'.$_.'Type'}     && !$pc{'magic'.$_.'Exp'} &&
-    !$pc{'magic'.$_.'Activate'} && !$pc{'magic'.$_.'Encroach'} && !$pc{'magic'.$_.'Note'} 
-  );
+  next if !existsRow "magic$_",'Name','Type','Exp','Activate','Encroach','Note';
   push(@magics, {
     NAME     => $pc{'magic'.$_.'Name'},
     TYPE     => textShrink(5,5,5,5,$pc{'magic'.$_.'Type'}),
@@ -415,12 +420,7 @@ $SHEET->param(Magics => \@magics);
 ### コンボ --------------------------------------------------
 my @combos;
 foreach (1 .. $pc{comboNum}){
-  next if(
-    !$pc{'combo'.$_.'Name'}  && !$pc{'combo'.$_.'Combo'}    && !$pc{'combo'.$_.'Timing'} &&
-    !$pc{'combo'.$_.'Skill'} && !$pc{'combo'.$_.'Dfclty'}   && !$pc{'combo'.$_.'Target'} && 
-    !$pc{'combo'.$_.'Range'} && !$pc{'combo'.$_.'Encroach'} && !$pc{'combo'.$_.'Note'} && 
-    !$pc{'combo'.$_.'Dice1'} && !$pc{'combo'.$_.'Crit1'} && !$pc{'combo'.$_.'Atk1'} && !$pc{'combo'.$_.'Fixed1'}
-  );
+  next if !existsRow "combo$_",'Name','Combo','Timing','Skill','Dfclty','Target','Range','Encroach','Note','Dice1','Crit1','Atk1','Fixed1';
   my $blankrow = 0;
   if(!$pc{'combo'.$_.'Condition2'}){ $blankrow++; }
   if(!$pc{'combo'.$_.'Condition3'}){ $blankrow++; }
@@ -486,11 +486,7 @@ sub textComboSkill {
 ### 武器 --------------------------------------------------
 my @weapons;
 foreach (1 .. $pc{weaponNum}){
-  next if(
-    !$pc{'weapon'.$_.'Name'}  && !$pc{'weapon'.$_.'Stock'} && !$pc{'weapon'.$_.'Exp'} &&
-    !$pc{'weapon'.$_.'Skill'} && !$pc{'weapon'.$_.'Acc'}   && !$pc{'weapon'.$_.'Atk'} &&
-    !$pc{'weapon'.$_.'Guard'} && !$pc{'weapon'.$_.'Range'} && !$pc{'weapon'.$_.'Note'} 
-  );
+  next if !existsRow "weapon$_",'Name','Stock','Exp','Skill','Acc','Atk','Guard','Range','Note';
   push(@weapons, {
     NAME  => textShrink(12,13,14,15,$pc{'weapon'.$_.'Name'}),
     STOCK => $pc{'weapon'.$_.'Stock'},
@@ -515,10 +511,7 @@ sub textType {
 ### 防具 --------------------------------------------------
 my @armors;
 foreach (1 .. $pc{armorNum}){
-  next if(
-    !$pc{'armor'.$_.'Name'}  && !$pc{'armor'.$_.'Stock'} && !$pc{'armor'.$_.'Exp'} && !$pc{'armor'.$_.'Initiative'} &&
-    !$pc{'armor'.$_.'Dodge'} && !$pc{'armor'.$_.'Armor'} && !$pc{'armor'.$_.'Note'} 
-  );
+  next if !existsRow "armor$_",'Name','Stock','Exp','Initiative','Dodge','Armor','Note';
   push(@armors, {
     NAME       => textShrink(12,13,14,15,$pc{'armor'.$_.'Name'}),
     STOCK      => $pc{'armor'.$_.'Stock'},
@@ -535,11 +528,7 @@ $SHEET->param(Armors => \@armors);
 ### ヴィークル --------------------------------------------------
 my @vehicles;
 foreach (1 .. $pc{vehicleNum}){
-  next if(
-    !$pc{'vehicle'.$_.'Name'}  && !$pc{'vehicle'.$_.'Stock'} && !$pc{'vehicle'.$_.'Exp'} &&
-    !$pc{'vehicle'.$_.'Skill'} && !$pc{'vehicle'.$_.'Atk'}   && !$pc{'vehicle'.$_.'Initiative'} &&
-    !$pc{'vehicle'.$_.'Armor'} && !$pc{'vehicle'.$_.'Dash'}  && !$pc{'vehicle'.$_.'Note'}
-  );
+  next if !existsRow "vehicle$_",'Name','Stock','Exp','Skill','Atk','Initiative','Armor','Dash','Note';
   push(@vehicles, {
     NAME       => textShrink(12,13,14,15,$pc{'vehicle'.$_.'Name'}),
     STOCK      => $pc{'vehicle'.$_.'Stock'},
@@ -558,10 +547,7 @@ $SHEET->param(Vehicles => \@vehicles);
 ### アイテム --------------------------------------------------
 my @items;
 foreach (1 .. $pc{itemNum}){
-  next if(
-    !$pc{'item'.$_.'Name'}  && !$pc{'item'.$_.'Stock'} && !$pc{'item'.$_.'Exp'} &&
-    !$pc{'item'.$_.'Skill'} && !$pc{'item'.$_.'Note'}
-  );
+  next if !existsRow "item$_",'Name','Stock','Exp','Skill','Note';
   push(@items, {
     NAME  => textShrink(12,13,14,15,$pc{'item'.$_.'Name'}),
     STOCK => $pc{'item'.$_.'Stock'},
@@ -583,9 +569,9 @@ $SHEET->param(currentEncroach => $pc{baseEncroach} =~ /^[0-9]+$/ ? $pc{baseEncro
 ### 履歴 --------------------------------------------------
 my @history;
 my $h_num = 0;
-$pc{history0Title} = ($pc{createType} eq 'C') ? 'コンストラクション作成' : 'フルスクラッチ作成';
+$pc{history0Title} = !$pc{forbiddenMode} ? ($pc{createType} eq 'C') ? 'コンストラクション作成' : 'フルスクラッチ作成' : '作成';
 foreach (0 .. $pc{historyNum}){
-  #next if !$pc{'history'.$_.'Title'};
+  next if(!existsRow "history${_}",'Date','Title','Exp','Gm','Member','Note');
   $h_num++ if $pc{'history'.$_.'Gm'};
   if ($set::log_dir && $pc{'history'.$_.'Date'} =~ s/([^0-9]*?_[0-9]+(?:#[0-9a-zA-Z]+?)?)$//){
     my $room = $1;
@@ -600,7 +586,7 @@ foreach (0 .. $pc{historyNum}){
   foreach my $mem (split(/　/,$pc{'history'.$_.'Member'})){
     $members .= '<span>'.$mem.'</span>';
   }
-  if($_ && !$pc{'history'.$_.'ExpApply'}) {
+  if($_ && !$pc{'history'.$_.'ExpApply'} && $pc{'history'.$_.'Exp'} ne '') {
     $pc{'history'.$_.'Exp'} = '<s>'.$pc{'history'.$_.'Exp'}.'</s>';
   }
   push(@history, {
@@ -631,7 +617,7 @@ if($pc{forbidden} eq 'all' && $pc{forbiddenMode}){
   $SHEET->param(titleName => '非公開データ');
 }
 else {
-  $SHEET->param(titleName => tagDelete nameToPlain($pc{characterName}||"“$pc{aka}”"));
+  $SHEET->param(titleName => removeTags nameToPlain($pc{characterName}||"“$pc{aka}”"));
 }
 
 ### 種族名 --------------------------------------------------
@@ -641,7 +627,7 @@ $SHEET->param(race => $pc{race});
 ### OGP --------------------------------------------------
 $SHEET->param(ogUrl => url().($::in{url} ? "?url=$::in{url}" : "?id=$::in{id}"));
 if($pc{image}) { $SHEET->param(ogImg => $pc{imageURL}); }
-$SHEET->param(ogDescript => tagDelete "性別:$pc{gender}　年齢:$pc{age}　ワークス:$pc{works}　シンドローム:$pc{syndrome1} $pc{syndrome2} $pc{syndrome3}");
+$SHEET->param(ogDescript => removeTags "性別:$pc{gender}　年齢:$pc{age}　ワークス:$pc{works}　シンドローム:$pc{syndrome1} $pc{syndrome2} $pc{syndrome3}");
 
 ### バージョン等 --------------------------------------------------
 $SHEET->param(ver => $::ver);

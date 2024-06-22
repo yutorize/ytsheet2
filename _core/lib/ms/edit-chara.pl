@@ -11,14 +11,14 @@ my $LOGIN_ID = $::LOGIN_ID;
 require $set::lib_palette_sub;
 
 ### データ読み込み ###################################################################################
-my ($data, $mode, $file, $message) = pcDataGet($::in{mode});
+my ($data, $mode, $file, $message) = getSheetData($::in{mode});
 our %pc = %{ $data };
 
 my $mode_make = ($mode =~ /^(blanksheet|copy|convert)$/) ? 1 : 0;
 
 ### 出力準備 #########################################################################################
 if($message){
-  my $name = tagUnescape($pc{characterName} || $pc{aka} || '無題');
+  my $name = unescapeTags($pc{characterName} || $pc{aka} || '無題');
   $message =~ s/<!NAME>/$name/;
 }
 ### プレイヤー名 --------------------------------------------------
@@ -49,9 +49,9 @@ elsif($mode eq 'blanksheet'){
 
 ## 画像
 $pc{imageFit} = $pc{imageFit} eq 'percent' ? 'percentX' : $pc{imageFit};
-$pc{imagePercent} = $pc{imagePercent} eq '' ? '200' : $pc{imagePercent};
-$pc{imagePositionX} = $pc{imagePositionX} eq '' ? '50' : $pc{imagePositionX};
-$pc{imagePositionY} = $pc{imagePositionY} eq '' ? '50' : $pc{imagePositionY};
+$pc{imagePercent}   //= '200';
+$pc{imagePositionX} //= '50';
+$pc{imagePositionY} //= '50';
 $pc{wordsX} ||= '右';
 $pc{wordsY} ||= '上';
 
@@ -75,7 +75,7 @@ foreach (
 }
 
 ### フォーム表示 #####################################################################################
-my $titlebarname = tagDelete nameToPlain tagUnescape ($pc{characterName}||"“$pc{aka}”");
+my $titlebarname = removeTags nameToPlain unescapeTags ($pc{characterName}||"“$pc{aka}”");
 print <<"HTML";
 Content-type: text/html\n
 <!DOCTYPE html>
@@ -121,11 +121,12 @@ print <<"HTML";
       <div id="header-menu">
         <h2><span></span></h2>
         <ul>
-          <li onclick="sectionSelect('common');"><span>キャラクター</span><span>データ</span>
-          <li onclick="sectionSelect('palette');"><span>チャット</span><span>パレット</span>
+          <li onclick="sectionSelect('common');"><span>キャラ<span class="shorten">クター</span></span><span>データ</span>
+          <li onclick="sectionSelect('palette');"><span><span class="shorten">ユニット(</span>コマ<span class="shorten">)</span></span><span>設定</span>
           <li onclick="sectionSelect('color');" class="color-icon" title="カラーカスタム">
           <li onclick="view('text-rule')" class="help-icon" title="テキスト整形ルール">
           <li onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード切替">
+          <li onclick="exportAsJson()" class="download-icon" title="JSON出力">
           <li class="buttons">
             <ul>
               <li @{[ display ($mode eq 'edit') ]} class="view-icon" title="閲覧画面"><a href="./?id=$::in{id}"></a>
@@ -155,7 +156,7 @@ else {
   print <<"HTML";
       <details class="box" id="edit-protect" @{[$mode eq 'edit' ? '':'open']}>
       <summary>編集保護設定</summary>
-      <p id="edit-protect-view"><input type="hidden" name="protectOld" value="$pc{protect}">
+      <fieldset id="edit-protect-view"><input type="hidden" name="protectOld" value="$pc{protect}">
 HTML
   if($LOGIN_ID){
     print '<input type="radio" name="protect" value="account"'.($pc{protect} eq 'account'?' checked':'').'> アカウントに紐付ける（ログイン中のみ編集可能になります）<br>';
@@ -168,7 +169,7 @@ HTML
   }
   print <<"HTML";
 <input type="radio" name="protect" value="none"@{[ $pc{protect} eq 'none'?' checked':'' ]}> 保護しない（誰でも編集できるようになります）
-      </p>
+      </fieldset>
       </details>
 HTML
 }
@@ -207,13 +208,13 @@ print <<"HTML";
         </dl>
       </div>
 
-      <div class="box" id="name-form">
+      <div class="box in-toc" id="name-form" data-content-title="東京名・プレイヤー名">
         <div>
           <dl id="character-name">
             <dt>東京名
-            <dd>@{[input('characterName','text',"nameSet",'required')]}
+            <dd>@{[input('characterName','text',"setName",'required')]}
             <dt class="ruby">ふりがな
-            <dd>@{[input('characterNameRuby','text',"nameSet")]}
+            <dd>@{[input('characterNameRuby','text',"setName")]}
           </dl>
         </div>
         <dl id="player-name">
@@ -237,7 +238,7 @@ print <<"HTML";
       <div id="area-status">
         @{[ imageForm($pc{imageURL}) ]}
 
-        <div id="profile" class="box-union">
+        <div id="profile" class="box-union in-toc" data-content-title="キャラクターの背景">
           <dl class="box" id="taxa"        ><dt>分類名<dd>@{[ input 'taxa' ]}</dl>
           <dl class="box" id="home"        ><dt>出身地<dd>@{[ input 'home' ]}</dl>
           <dl class="box" id="origin"      ><dt>根源<dd>@{[ input 'origin','','','list="list-origin"' ]}</dl>
@@ -246,17 +247,17 @@ print <<"HTML";
           <dl class="box" id="address"     ><dt>住所<dd>@{[ input 'address','','','list="list-address"' ]}</dl>
         </div>
 
-        <div id="clan" class="box-union">
+        <div id="clan" class="box-union in-toc" data-content-title="所属クラン">
           <dl class="box"><dt>所属クラン名<dd>@{[ input 'clan' ]}</dl>
           <dl class="box"><dt>クランシートURL<dd>@{[ input 'clanURL' ]}</dl>
         </div>
 
-        <div id="level" class="box-union">
+        <div id="level" class="box-union in-toc" data-content-title="強度・耐久値">
           <dl class="box"><dt>強度  <dd><b id="level-value">$pc{level}</b></dl>
           <dl class="box"><dt>耐久値<dd>+@{[ input 'enduranceMod','number','calcEndurance' ]}=<b id="endurance-total">$pc{endurance}</b></dl>
         </div>
 
-        <div class="box" id="status">
+        <div class="box in-toc" id="status" data-content-title="能力値・特性">
           <dl>
             <dt>能力値
             <dd class="status">
@@ -275,7 +276,7 @@ print <<"HTML";
                 <dd><select name="statusSocialBase" oninput="checkStatus()">@{[ option 'statusSocialBase',6,4,2 ]}</select>
                 <dd class="grow">+成長@{[ input 'statusSocialGrow','number' ]}
               </dl>
-              <div class="annotate error"></div>
+              <div class="annotate caution"></div>
             </dd>
             <dt>特性
             <dd class="attribute">
@@ -292,7 +293,7 @@ print '<li>《'.input('attributeSocial'.$_,'','checkAttribute').'》' foreach (1
 print '</ul>';
 print <<"HTML";
               <div class="add-del-button"><a onclick="addAttribute()">▼</a><a onclick="delAttribute()">▲</a></div>
-              <div class="annotate error"></div>
+              <div class="annotate caution"></div>
             </dd>
           </dl>
         </div>
@@ -300,7 +301,7 @@ print <<"HTML";
       </div>
 
       <div class="box" id="magi">
-        <h2>マギ</h2>
+        <h2 class="in-toc">マギ</h2>
           <table class="edit-table line-tbody no-border-cells" id="magi-table">
             <colgroup id="magi-col">
               <col class="name  ">
@@ -330,23 +331,23 @@ HTML
 }
 print <<"HTML";
         </table>
-        <div class="annotate error"></div>
+        <div class="annotate caution"></div>
       </div>
       
       <details class="box" id="free-note" @{[$pc{freeNote}?'open':'']}>
-        <summary>その他<span class="small">（設定・メモなど）</summary>
+        <summary class="in-toc">その他<span class="small">（設定・メモなど）</summary>
         <textarea name="freeNote">$pc{freeNote}</textarea>
         @{[ $::in{log} ? '<button type="button" class="set-newest" onclick="setNewestSingleData(\'freeNote\')">最新のメモを適用する</button>' : '' ]}
       </details>
       
       <details class="box" id="free-history" @{[$pc{freeHistory}?'open':'']}>
-        <summary>履歴（自由記入）</summary>
+        <summary class="in-toc">履歴（自由記入）</summary>
         <textarea name="freeHistory">$pc{freeHistory}</textarea>
         @{[ $::in{log} ? '<button type="button" class="set-newest" onclick="setNewestSingleData(\'freeHistory\')">最新の履歴（自由記入）を適用する</button>' : '' ]}
       </details>
       
       <div class="box" id="history">
-        <h2>セッション履歴</h2>
+        <h2 class="in-toc">セッション履歴</h2>
         @{[input 'historyNum','hidden']}
         <table class="edit-table line-tbody no-border-cells" id="history-table">
           <thead id="history-head">
@@ -368,7 +369,7 @@ HTML
 foreach my $num ('TMPL',1 .. $pc{historyNum}) {
   if($num eq 'TMPL'){ print '<template id="history-template">' }
 print <<"HTML";
-          <tbody id="history${num}">
+          <tbody id="history-row${num}">
           <tr>
             <td class="handle" rowspan="2">
             <td class="date  " rowspan="2">@{[ input"history${num}Date" ]}
@@ -434,41 +435,7 @@ print <<"HTML";
       @{[ input 'birthTime','hidden' ]}
       <input type="hidden" name="id" value="$::in{id}">
     </form>
-HTML
-if($mode eq 'edit'){
-print <<"HTML";
-    <form name="del" method="post" action="./" class="deleteform">
-      <p style="font-size: 80%;">
-      <input type="hidden" name="mode" value="delete">
-      <input type="hidden" name="id" value="$::in{id}">
-      <input type="hidden" name="pass" value="$::in{pass}">
-      <input type="checkbox" name="check1" value="1" required>
-      <input type="checkbox" name="check2" value="1" required>
-      <input type="checkbox" name="check3" value="1" required>
-      <input type="submit" value="シート削除"><br>
-      ※チェックを全て入れてください
-      </p>
-    </form>
-HTML
-  # 怒りの画像削除フォーム
-  if($LOGIN_ID eq $set::masterid){
-    print <<"HTML";
-    <form name="imgdel" method="post" action="./" class="deleteform">
-      <p style="font-size: 80%;">
-      <input type="hidden" name="mode" value="img-delete">
-      <input type="hidden" name="id" value="$::in{id}">
-      <input type="hidden" name="pass" value="$::in{pass}">
-      <input type="checkbox" name="check1" value="1" required>
-      <input type="checkbox" name="check2" value="1" required>
-      <input type="checkbox" name="check3" value="1" required>
-      <input type="submit" value="画像削除"><br>
-      </p>
-    </form>
-    <p class="right">@{[ $::in{log}?$::in{log}:'最終' ]}更新時のIP:$pc{IP}</p>
-HTML
-  }
-}
-print <<"HTML";
+    @{[ deleteForm($mode) ]}
     </article>
 HTML
 # ヘルプ

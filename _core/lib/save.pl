@@ -22,6 +22,8 @@ else {
   }
 }
 
+changeFileByType($::in{type});
+
 our $mode_save = 1;
 
 our $mode = $::in{mode};
@@ -50,7 +52,7 @@ if ($mode eq 'make'){
   
   ## ID生成
   if($set::id_type && $LOGIN_ID){
-    my $type = ($::in{type} eq 'm') ? 'm' : ($::in{type} eq 'i') ? 'i' : ($::in{type} eq 'a') ? 'a' : '';
+    my $type = (exists $set::lib_type{$::in{type}}) ? $::in{type} : '';
     my $i = 1;
     $new_id = $LOGIN_ID.'-'.$type.sprintf("%03d",$i);
     # 重複チェック
@@ -82,6 +84,8 @@ sub overlapCheck {
 
 ### データ処理 #################################################################################
 my %pc = %::in;
+delete $pc{imageFile};
+delete $pc{imageCompressed};
 if($main::new_id){ $pc{id} = $main::new_id; }
 ## 現在時刻
 our $now = time;
@@ -98,12 +102,10 @@ elsif($mode eq 'save'){
   if(!$file){ infoJson('error','編集権限がありません。'); }
 }
 
-my $data_dir; my $listfile; our $newline;
-if   ($set::game eq 'sw2' && $::in{type} eq 'm'){ require $set::lib_calc_mons; $data_dir = $set::mons_dir; $listfile = $set::monslist; }
-elsif($set::game eq 'sw2' && $::in{type} eq 'i'){ require $set::lib_calc_item; $data_dir = $set::item_dir; $listfile = $set::itemlist; }
-elsif($set::game eq 'sw2' && $::in{type} eq 'a'){ require $set::lib_calc_arts; $data_dir = $set::arts_dir; $listfile = $set::artslist; }
-elsif($set::game eq 'ms'  && $::in{type} eq 'c'){ require $set::lib_calc_clan; $data_dir = $set::clan_dir; $listfile = $set::clanlist; }
-else { require $set::lib_calc_char; $data_dir = $set::char_dir; $listfile = $set::listfile; }
+our $newline;
+require $set::lib_calc_char;
+my $data_dir = $set::char_dir;
+my $listfile = $set::listfile;
 
 ## 保存数チェック
 my $max_files = 32000;
@@ -111,7 +113,7 @@ if($mode eq 'make' && $pc{protect} ne 'account'){
   opendir my $dh, "${data_dir}anonymous/";
   my $num_files = () = readdir($dh);
   if($num_files-2 >= $max_files){
-    infoJson('error','登録数上限です。\nアカウントに紐づけないデータは、これ以上登録できません。');
+    infoJson('error','現在、サーバーの許容量の都合により、ユーザーアカウントに紐づけされていないシートを新規作成できません。\nアカウント登録・ログインをし、編集保護設定で「アカウントに紐付ける」を選択して保存してください。\nすでにログイン中であっても、「アカウントに紐づける」設定での保存しかできません。');
     require $set::lib_edit; exit;
   }
 }
@@ -119,7 +121,7 @@ if($mode eq 'save' && $pc{protect} ne 'account' && $pc{protectOld} eq 'account')
   opendir my $dh, "${data_dir}anonymous/";
   my $num_files = () = readdir($dh);
   if($num_files-2 >= $max_files){
-    infoJson('error','登録数上限です。\nアカウントに紐づけないデータは、これ以上登録できないため、保護設定を変更できません。');
+    infoJson('error','現在、サーバーの許容量の都合により、ユーザーアカウントに紐づけされていないシートを新規作成できません。\nアカウントに紐づけないデータをこれ以上増やせないため、紐づけ済みのシートの保護設定を変更できません。');
   }
 }
 
@@ -397,7 +399,6 @@ sub passfileWriteMake {
     if ($_ =~ /^(?:[^<]*?<>){2}$now</){
       close($FH);
       infoJson('error','新規作成が衝突しました。再度保存してください。');
-      require $set::lib_edit; exit;
     }
   }
   my $passwrite; my $user_dir;

@@ -8,6 +8,29 @@ use Fcntl;
 
 ### サブルーチン-DX ##################################################################################
 
+### ユニットステータス出力 --------------------------------------------------
+sub createUnitStatus {
+  my %pc = %{$_[0]};
+  my @unitStatus = (
+    { 'HP' => $pc{maxHpTotal}.'/'.$pc{maxHpTotal} },
+    { '侵蝕' => $pc{baseEncroach} },
+    { 'ロイス' => $pc{loisHave}.'/'.$pc{loisMax} },
+    { '財産' => $pc{savingTotal} },
+    { '行動' => $pc{initiativeTotal} },
+  );
+  
+  foreach my $key (split ',', $pc{unitStatusNotOutput}){
+    @unitStatus = grep { !exists $_->{$key} } @unitStatus;
+  }
+
+  foreach my $num (1..$pc{unitStatusNum}){
+    next if !$pc{"unitStatus${num}Label"};
+    push(@unitStatus, { $pc{"unitStatus${num}Label"} => $pc{"unitStatus${num}Value"} });
+  }
+
+  return \@unitStatus;
+}
+
 ### バージョンアップデート --------------------------------------------------
 sub data_update_chara {
   my %pc = %{$_[0]};
@@ -54,6 +77,17 @@ sub data_update_chara {
     $pc{history0Exp} -= 130;
     $pc{expSpent} = $pc{expTotal} - 130;
     $pc{createTypeName} = 'フルスクラッチ';
+  }
+  if($ver < 1.24009){
+    foreach my $stt ([0,'Body'], [1,'Sense'], [2,'Mind'], [3,'Social']){
+      if($data::syndrome_status{$pc{syndrome1}}){ $pc{'sttSyn1'.@$stt[1]} = $data::syndrome_status{$pc{syndrome1}}[@$stt[0]] }
+      if($data::syndrome_status{$pc{syndrome2}}){ $pc{'sttSyn2'.@$stt[1]} = $data::syndrome_status{$pc{syndrome2}}[@$stt[0]] }
+    }
+  }
+  if($ver < 1.24026){
+    if($pc{comboCalcOff}){
+      $pc{"combo${_}Manual"} = 1 foreach (1 .. $pc{comboNum});
+    }
   }
   $pc{ver} = $main::ver;
   $pc{lasttimever} = $ver;

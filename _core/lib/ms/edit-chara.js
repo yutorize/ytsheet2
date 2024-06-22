@@ -1,10 +1,10 @@
 "use strict";
-const gameSystem = 'blp';
+const gameSystem = 'ms';
 
 // ----------------------------------------
 window.onload = function() {
   
-  nameSet();
+  setName();
   calcLevel();
   checkStatus();
   checkAttribute();
@@ -46,7 +46,7 @@ function checkStatus() {
   const phy = Number(form.statusPhysicalBase.value);
   const spe = Number(form.statusSpecialBase.value);
   const soc = Number(form.statusSocialBase.value);
-  document.getElementById('status').querySelector('.status .error').textContent
+  document.getElementById('status').querySelector('.status .annotate').textContent
     = (phy + spe + soc != 12 || phy == spe || spe == soc || soc == phy) ? '各能力値に6／4／2を割り振ってください' : '';
 }
 function calcEndurance() {
@@ -62,7 +62,7 @@ function checkAttribute() {
       if(form['attribute'+type+num].value){ count++ }
     }
   }
-  document.getElementById('status').querySelector('.attribute .error').textContent
+  document.getElementById('status').querySelector('.attribute .annotate').textContent
     = (count < 4) ? '特性を4つ記入してください' : '';
 }
 // 追加
@@ -101,55 +101,20 @@ function checkMagi() {
   for (let num = 1; num <= 4; num++){
     if(form['magi'+num+'Name'].value){ count++ }
   }
-  document.getElementById('magi').querySelector('.error').textContent
+  document.getElementById('magi').querySelector('.annotate').textContent
     = (count < 1) ? 'マギを1つ記入してください' : '';
 }
 
 // 履歴欄 ----------------------------------------
 // 追加
 function addHistory(){
-  let num = Number(form.historyNum.value) + 1;
-
-  let row = document.querySelector('#history-template').content.firstElementChild.cloneNode(true);
-  row.id = idNumSet('history');
-  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
-  document.querySelector("#history-table tbody:last-of-type").after(row);
-  
-  form.historyNum.value = num;
+  document.querySelector("#history-table tfoot").before(createRow('history','historyNum'));
 }
 // 削除
 function delHistory(){
-  let num = Number(form.historyNum.value);
-  if(num > 1){
-    if(form[`history${num}Date`].value || form[`history${num}Title`].value || form[`history${num}Grow`].value || form[`history${num}Gm`].value || form[`history${num}Member`].value || form[`history${num}Note`].value){
-      if (!confirm(delConfirmText)) return false;
-    }
-    document.querySelector("#history-table tbody:last-of-type").remove();
-    num--;
-    form.historyNum.value = num;
+  if(delRow('historyNum', '#history-table tbody:last-of-type')){
+    calcLevel();
   }
 }
 // ソート
-let historySortable = Sortable.create(document.getElementById('history-table'), {
-  group: "history",
-  dataIdAttr: 'id',
-  animation: 100,
-  handle: '.handle',
-  filter: 'thead,tfoot,template',
-  ghostClass: 'sortable-ghost',
-  onUpdate: function (evt) {
-    const order = historySortable.toArray();
-    let num = 1;
-    for(let id of order) {
-      if(document.querySelector(`tbody#${id}`)){
-        document.querySelector(`#${id} [name$="Date"]`  ).setAttribute('name',`history${num}Date`);
-        document.querySelector(`#${id} [name$="Title"]` ).setAttribute('name',`history${num}Title`);
-        document.querySelector(`#${id} [name$="Grow"]`  ).setAttribute('name',`history${num}Grow`);
-        document.querySelector(`#${id} [name$="Gm"]`    ).setAttribute('name',`history${num}Gm`);
-        document.querySelector(`#${id} [name$="Member"]`).setAttribute('name',`history${num}Member`);
-        document.querySelector(`#${id} [name$="Note"]`  ).setAttribute('name',`history${num}Note`);
-        num++;
-      }
-    }
-  }
-});
+setSortable('history','#history-table','tbody');
