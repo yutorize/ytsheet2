@@ -1087,7 +1087,7 @@ function calcMobility() {
     }
   }
   const mobility = mobilityBase + Number(form.mobilityAdd.value) + mobilityOwn;
-  document.getElementById("mobility-limited").textContent = feats['足さばき'] ? 10 : 3;
+  document.getElementById("mobility-limited").textContent = Math.min(feats['足さばき'] ? 10 : 3, mobility);
   document.getElementById("mobility-base").textContent = mobilityBase + mobilityOwn;
   document.getElementById("mobility-total").textContent = mobility;
   document.getElementById("mobility-full").textContent = mobility * 3;

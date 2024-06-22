@@ -332,6 +332,9 @@ sub data_update_chara {
     }
     if($pc{defenseNum} < 2){ $pc{defenseNum} = 2 }
   }
+  if($ver < 1.25010){
+    $pc{mobilityLimited} = $pc{mobilityTotal} if $pc{mobilityLimited} > $pc{mobilityTotal};
+  }
   $pc{ver} = $main::ver;
   $pc{lasttimever} = $ver;
   return %pc;
