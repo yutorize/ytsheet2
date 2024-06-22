@@ -84,6 +84,8 @@ sub overlapCheck {
 
 ### データ処理 #################################################################################
 my %pc = %::in;
+delete $pc{imageFile};
+delete $pc{imageCompressed};
 if($main::new_id){ $pc{id} = $main::new_id; }
 ## 現在時刻
 our $now = time;
