@@ -226,6 +226,13 @@ foreach (@set::adventurer_rank){
     "SELECTED" => $rank_query eq @$_[0] ? 'selected' : '',
   });
 }
+foreach (@set::barbaros_rank){
+  $rank_sort{@$_[0]} = @$_[1];
+  push(@rank_list, {
+    "NAME" => @$_[0],
+    "SELECTED" => $rank_query eq @$_[0] ? 'selected' : '',
+  });
+}
 $rank_sort{''} = -1;
 $INDEX->param(Ranks => \@rank_list);
 

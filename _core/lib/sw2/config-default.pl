@@ -101,7 +101,7 @@ our $game = 'sw2';
   our $all_class_on = 1;
 
 
-## ●名誉ランク
+## ●冒険者ランク
   our @adventurer_rank = (
     ['ダガー',            20,  0],
     ['レイピア',          50,  5],
@@ -115,6 +115,20 @@ our $game = 'sw2';
   );
   our @adventurer_rank_name;
   push (@adventurer_rank_name, @$_[0]) foreach (@adventurer_rank);
+## ●バルバロス栄光ランク
+  our @barbaros_rank = (
+    ['岩石',            20,  0],
+    ['黒鉛',            50,  5],
+    ['青銅',           100, 10],
+    ['鋼鉄',           200, 20],
+    ['白銀',           300, 30],
+    ['黄金',           500, 50],
+    ['白金',           700, 70],
+    ['〈イグニス〉'  ,1000,100],
+    ['〈イグニス〉★',1500,150],
+  );
+  our @barbaros_rank_name;
+  push (@barbaros_rank_name, @$_[0]) foreach (@barbaros_rank);
 ## ●不名誉称号
   our @notoriety_rank = (
     ['ゴブリン級迷惑',       1],
@@ -124,7 +138,14 @@ our $game = 'sw2';
     ['ドレイク級人族の敵', 201],
     ['蛮王級世界破壊者',   501],
   );
-
+  our @notoriety_barbaros_rank = (
+    ['小心者',         1],
+    ['ビビリ',        21],
+    ['腰抜け',        51],
+    ['敗者',         101],
+    ['臆病者',       201],
+    ['コボルド以下', 501],
+  );
 
 ## ●戦闘特技
  # 習得レベル

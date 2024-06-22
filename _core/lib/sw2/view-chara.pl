@@ -934,6 +934,7 @@ foreach (1 .. $pc{dishonorItemsNum}) {
   next if !$pc{'dishonorItem'.$_} && !$pc{'dishonorItem'.$_.'Pt'};
   my $type;
   if   ($pc{"dishonorItem${_}PtType"} eq 'barbaros'){ $type = '<small>蛮</small>'; }
+  elsif($pc{"dishonorItem${_}PtType"} eq 'both'    ){ $type = '<small>両</small>'; }
   elsif($pc{"dishonorItem${_}PtType"} eq 'dragon'  ){ $type = '<small>竜</small>'; }
   push(@dishonoritems, {
     NAME => $pc{'dishonorItem'.$_},
@@ -946,24 +947,39 @@ if($::SW2_0){
   foreach (@set::adventurer_rank){
     my ($name, $num) = @$_;
     last if ($pc{honor} < $num);
-    $SHEET->param(rank => $name);
+    $SHEET->param(rank => $name || '―');
   }
   foreach (@set::notoriety_rank){
     my ($name, $num) = @$_;
-    $SHEET->param(notoriety => $name) if $pc{dishonor} >= $num;
+    $SHEET->param(notoriety => $name || '―') if $pc{dishonor} >= $num;
   }
 }
 else {
-  $SHEET->param(rank => ($pc{rank} // '―').$pc{rankStar});
+  $SHEET->param(rankAll => 
+    ($pc{rank} && $pc{rankBarbaros}) ? "<div class=\"small\">$pc{rank}$pc{rankStar}</div><div class=\"small\">$pc{rankBarbaros}$pc{rankStarBarbaros}</div>"
+    : $pc{rank}.$pc{rankStar} || $pc{rankBarbaros}.$pc{rankStarBarbaros} || "―"
+  );
   foreach (@set::adventurer_rank){
     my ($name, $num, undef) = @$_;
     if($pc{rank}=~/★$/ && $pc{rankStar} >= 2){ $num += ($pc{rankStar}-1)*500 }
     $SHEET->param(rankHonorValue => $num) if ($pc{rank} eq $name);
   }
+  foreach (@set::barbaros_rank){
+    my ($name, $num, undef) = @$_;
+    if($pc{rankBarbaros}=~/★$/ && $pc{rankStarBarbaros} >= 2){ $num += ($pc{rankStarBarbaros}-1)*500 }
+    $SHEET->param(rankBarbarosValue => $num) if ($pc{rankBarbaros} eq $name);
+  }
+  my $notoriety;
   foreach (@set::notoriety_rank){
     my ($name, $num) = @$_;
-    $SHEET->param(notoriety => $name) if $pc{dishonor} >= $num;
+    $notoriety = "<span>“${name}”</span>" if $pc{dishonor} >= $num;
   }
+  my $notorietyB;
+  foreach (@set::notoriety_barbaros_rank){
+    my ($name, $num) = @$_;
+    $notorietyB = "<span>“${name}”</span>" if $pc{dishonorBarbaros} >= $num;
+  }
+  $SHEET->param(notoriety => $notoriety.$notorietyB || '―');
 }
 
 ### ガメル --------------------------------------------------

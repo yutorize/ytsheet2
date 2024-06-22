@@ -129,7 +129,7 @@
             <dt>信仰<dd><TMPL_VAR faith>
           </dl>
           <dl class="box" id="rank">
-            <dt>ランク<dd><TMPL_VAR rank>
+            <dt>ランク<dd><TMPL_VAR rankAll>
           </dl>
           <dl class="box" id="sin">
             <dt>穢れ<dd><TMPL_VAR sin>
@@ -502,10 +502,14 @@
             <ul class="data-table side-margin"><TMPL_LOOP BattleItems><li><TMPL_VAR ITEM DEFAULT="&nbsp;"></TMPL_LOOP></ul>
           </section>
           </TMPL_IF>
-          <dl class="box" id="honor">
-            <dt>名誉点<dd><TMPL_VAR honor>
-            <dt>ランク<dd><TMPL_VAR rank>
-          </dl>
+          <div id="honor">
+            <dl class="box"><dt>名誉点<dd><TMPL_VAR honor></dl>
+            <div class="box-union">
+              <TMPL_IF rankHonorValue><dl class="box" id="adventurer-rank"><dt>冒険者ランク<dd><TMPL_VAR rank></dl></TMPL_IF>
+              <TMPL_IF rankBarbarosValue><dl class="box" id="barbaros-rank"><dt>バルバロス栄光ランク<dd><TMPL_VAR rankBarbaros></dl></TMPL_IF>
+              <TMPL_UNLESS rankHonorValue><TMPL_UNLESS rankBarbarosValue><dl class="box" id="adventurer-rank><dt">ランク<dd>―</dl></TMPL_UNLESS></TMPL_UNLESS>
+            </div>
+          </div>
           <section class="box honor-items" id="honor-items">
             <h2>名誉アイテム</h2>
             <table class="data-table side-margin">
@@ -514,17 +518,19 @@
               </thead>
               <tbody>
                 <TMPL_IF rankHonorValue><tr><td>冒険者ランク<td><TMPL_VAR rankHonorValue></TMPL_IF>
+                <TMPL_IF rankBarbarosValue><tr><td>バルバロス栄光ランク<td><TMPL_VAR rankBarbarosValue></TMPL_IF>
                 <TMPL_IF MysticArtsHonor><tr><td>秘伝<td><TMPL_VAR MysticArtsHonor></TMPL_IF>
                 <TMPL_LOOP HonorItems><tr><td class="left"><TMPL_VAR NAME><td><TMPL_VAR PT></TMPL_LOOP>
                 <TMPL_IF honorOffset><tr><td>不名誉点相殺<td><TMPL_VAR honorOffset></TMPL_IF>
+                <TMPL_IF honorOffsetBarbaros><tr><td>不名誉点相殺（蛮族）<td><TMPL_VAR honorOffsetBarbaros></TMPL_IF>
               </tbody>
             </table>
           </section>
           <TMPL_IF DishonorItems>
-          <dl class="box" id="dishonor">
-            <dt>不名誉点<dd><TMPL_VAR dishonor>
-            <dt>不名誉称号<dd><TMPL_VAR notoriety>
-          </dl>
+          <div id="dishonor">
+            <dl class="box"><dt>不名誉点<dd><TMPL_VAR dishonor></dl>
+            <dl class="box"><dt>不名誉称号<dd><TMPL_VAR notoriety></dl>
+          </div>
           <section class="box honor-items" id="dishonor-items">
             <h2>不名誉詳細</h2>
             <table class="data-table side-margin">

@@ -1201,11 +1201,19 @@ foreach my $num (1 .. 16){
 print <<"HTML";
           </ul>
           </div>
-          <dl class="box in-toc" id="honor" data-content-title="名誉点・名誉アイテム">
-            <dt>名誉点<dd id="honor-value">$pc{honor}
-            <dt>ランク
-            <dd id="honor-rank"><select name="rank" oninput="calcHonor()">@{[ option "rank",@set::adventurer_rank_name ]}</select>@{[ input 'rankStar','number','calcHonor','min="1"' ]}
-          </dl>
+          <div class="in-toc" id="honor" data-content-title="名誉点・名誉アイテム">
+            <dl class="box"><dt>名誉点<dd id="honor-value">$pc{honor}</dl>
+            <div class="box-union">
+              <dl class="box" id="adventurer-rank">
+                <dt>冒険者ランク
+                <dd><select name="rank" oninput="calcHonor()">@{[ option "rank",@set::adventurer_rank_name ]}</select>@{[ input 'rankStar','number','calcHonor','min="1"' ]}
+              </dl>
+              <dl class="box" id="barbaros-rank">
+                <dt>バルバロス栄光ランク
+                <dd><select name="rankBarbaros" oninput="calcHonor()">@{[ option "rankBarbaros",@set::barbaros_rank_name ]}</select>@{[ input 'rankStarBarbaros','number','calcHonor','min="1"' ]}
+              </dl>
+            </div>
+          </div>
           <div class="box honor-items" id="honor-items">
             <h2>名誉アイテム</h2>
             <table class="edit-table side-margin">
@@ -1214,6 +1222,7 @@ print <<"HTML";
               </thead>
               <tbody>
                 <tr><td class="center" colspan="2">冒険者ランク<td id="rank-honor-value">0
+                <tr><td class="center" colspan="2">バルバロス栄光ランク<td id="rankBarbaros-honor-value">0
                 <tr id="honor-items-mystic-arts"><td class="center" class="center" colspan="2">秘伝／秘伝魔法<td id="mystic-arts-honor-value">0
               <tbody id="honor-items-table">
 HTML
@@ -1228,28 +1237,36 @@ print <<"HTML";
             @{[ input 'honorItemsNum','hidden' ]}
             <p>フリー条件適用可能な（名誉点消費を0点にして良い）場合、<span class="mark">この表示</span>になります。</p>
             <dl class="edit-table side-margin" id="honor-offset">
-              <dt>不名誉点相殺<dd>@{[ input "honorOffset", "number", "calcHonor();calcDishonor" ]}
+              <dt>不名誉点相殺    <dd>@{[ input "honorOffset"        , "number", "calcHonor();calcDishonor" ]}
+              <dt>不名誉点相殺(蛮族)<dd>@{[ input "honorOffsetBarbaros", "number", "calcHonor();calcDishonor" ]}
             </dl>
           </div>
-          <dl class="box" id="dishonor">
-            <dt>不名誉点<dd id="dishonor-value">$pc{dishonor}
-            <dt>不名誉称号<dd id="notoriety">
-          </dl>
+          <div id="dishonor">
+              <dl class="box"><dt>不名誉点<dd id="dishonor-value">$pc{dishonor}</dl>
+              <dl class="box"><dt>不名誉称号<dd id="notoriety"></dl>
+          </div>
           <div class="box honor-items" id="dishonor-items">
             <h2>不名誉詳細</h2>
             <table class="edit-table side-margin">
               <thead><tr><th><th><th>点数
               <tbody id="dishonor-items-table">
 HTML
+my @honortypes = ('def=human|<人族（通常）>','barbaros|<蛮族>','both|<両方（人・蛮 同時加算）>');
 foreach my $num ('TMPL',1 .. $pc{dishonorItemsNum}){
   if($num eq 'TMPL'){ print '<template id="dishonor-item-template">' }
-  print '<tr id="dishonor-item-row'.$num.'"><td class="handle"><td>'.(input "dishonorItem${num}", "text").'<td>'.(input "dishonorItem${num}Pt", "number", "calcDishonor");
+  print '<tr id="dishonor-item-row'.$num.'"><td class="handle">'
+    .'<td>'.(input "dishonorItem${num}", "text")
+    .'<td><span class="honor-pt">'
+      .'<select name="dishonorItem'.$num.'PtType" oninput="calcDishonor()" data-type="human">'.(option "dishonorItem${num}PtType",@honortypes).'</select>'
+      .'<span class="honor-select-view"></span>'
+      .(input "dishonorItem${num}Pt", "number", "calcDishonor")
+    .'</span>';
   if($num eq 'TMPL'){ print '</template>' }
 }
 print <<"HTML";
             </table>
-          <div class="add-del-button"><a onclick="addDishonorItems()">▼</a><a onclick="delDishonorItems()">▲</a></div>
-          @{[ input 'dishonorItemsNum','hidden' ]}
+            <div class="add-del-button"><a onclick="addDishonorItems()">▼</a><a onclick="delDishonorItems()">▲</a></div>
+            @{[ input 'dishonorItemsNum','hidden' ]}
           </div>
         </div>
       </div>

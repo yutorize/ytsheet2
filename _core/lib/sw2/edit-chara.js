@@ -1549,14 +1549,20 @@ function calcHonor(){
   }
   document.getElementById("history-honor-total").textContent = commify(pointTotal);
   // ランク
-  const rank = form["rank"].options[form["rank"].selectedIndex].value;
-  const topRank = rank.match(/★$/) ? 1 : 0;
-  const rankStar = topRank ? Number(form.rankStar.value||1)-1 : 0;
-  form.rankStar.style.display = topRank ? '' : 'none';
+  let free = 0;
+  for(const type of ['','Barbaros']){
+    const rank = form["rank"+type].value;
+    const topRank = rank.match(/★$/) ? 1 : 0;
+    const rankStar = topRank ? Number(form["rankStar"+type].value||1)-1 : 0;
+    form["rankStar"+type].style.display = topRank ? '' : 'none';
+    const rankData = type == 'Barbaros' ? SET.bRank[rank] : SET.aRank[rank];
+    const rankNum  = (rankData) ? rankData.num  + rankStar*500 : 0;
+    const rankFree = (rankData) ? rankData.free + rankStar*50  : 0;
+    pointTotal -= rankNum;
+    if(rankFree > free){ free = rankFree }
+    document.getElementById(`rank${type}-honor-value`).textContent = rankNum;
+  }
   
-  const rankNum = (SET.aRank[rank]) ? SET.aRank[rank].num  + rankStar*500 : 0;
-  const free    = (SET.aRank[rank]) ? SET.aRank[rank].free + rankStar*50  : 0;
-  pointTotal -= rankNum;
   // 名誉アイテム
   const honorItemsNum = form.honorItemsNum.value;
   for (let i = 1; i <= honorItemsNum; i++){
@@ -1579,27 +1585,43 @@ function calcHonor(){
   }
   pointTotal -= mysticArtsPt;
   //
-  pointTotal -= Number(form.honorOffset.value);
+  pointTotal -= Number(form.honorOffset.value) + Number(form.honorOffsetBarbaros.value);
   document.getElementById("honor-value"   ).textContent = pointTotal;
   document.getElementById("honor-value-MA").textContent = pointTotal;
-  document.getElementById("rank-honor-value").textContent = rankNum;
   document.getElementById("mystic-arts-honor-value").textContent = mysticArtsPt;
   document.getElementById('honor-items-mystic-arts').style.display = mysticArtsPt ? '' : 'none';
 }
 // 不名誉点計算
 function calcDishonor(){
   if(modeZero){ return; }
-  let pointTotal = 0;
+  let pointTotal = { 'human':0, 'barbaros':0 };
   const dishonorItemsNum = form.dishonorItemsNum.value;
   for (let i = 1; i <= dishonorItemsNum; i++){
     let point = safeEval(form['dishonorItem'+i+'Pt'].value) || 0;
-    pointTotal += point;
+    let type  = form['dishonorItem'+i+'PtType'].value || 'human';
+    form['dishonorItem'+i+'PtType'].dataset.type = type;
+    if(type == 'both'){
+      for(let t in pointTotal){ pointTotal[t] += point }
+    }
+    else {
+      pointTotal[type] += point;
+    }
   }
-  pointTotal -= Number(form.honorOffset.value);
-  document.getElementById("dishonor-value").textContent = pointTotal;
+  pointTotal.human    -= Number(form.honorOffset.value);
+  pointTotal.barbaros -= Number(form.honorOffsetBarbaros.value);
+  let pointTotalText = pointTotal.human;
+  if(pointTotal.barbaros){ pointTotalText += `／<small>蛮</small>${pointTotal.barbaros}`; }
+  document.getElementById("dishonor-value").innerHTML = pointTotalText;
+
+  let notoriety = '';
   for(const data of SET.nRank){
-    if(pointTotal >= data[1]) { document.getElementById("notoriety").textContent = data[0]; }
+    if(pointTotal.human >= data[1]) { notoriety = `<span>“${data[0]}”</span>` }
   }
+  let notorietyB = '';
+  for(const data of SET.nBRank){
+    if(pointTotal.barbaros >= data[1]) { notorietyB = `<span>“${data[0]}”</span>` }
+  }
+  document.getElementById("notoriety").innerHTML = notoriety+notorietyB || '―';
 }
 
 // 収支履歴計算 ----------------------------------------
