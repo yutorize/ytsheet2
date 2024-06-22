@@ -2,7 +2,6 @@
 use strict;
 #use warnings;
 use utf8;
-use POSIX qw(ceil);
 
 require $set::data_syndrome;
 my %awakens;

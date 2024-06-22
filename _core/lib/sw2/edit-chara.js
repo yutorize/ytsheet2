@@ -539,7 +539,6 @@ function checkFeats(){
         }
       }
       else if (feat.match(/超頑強/)){
-        console.log(feat)
         if((lv['Fig'] < 7 && lv['Gra'] < 7)|| !acquire.match('頑強')){ cL.add("error"); }
       }
       else if (feat.match(/^頑強/)){
