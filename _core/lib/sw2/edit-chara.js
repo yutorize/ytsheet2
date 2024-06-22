@@ -262,6 +262,12 @@ function checkRace(){
     }
   }
 
+  const raceBase = race.replace(/（.+?）/, '');
+  document.querySelectorAll('[data-race-only]').forEach(node => {
+    if(node.dataset.raceOnly == raceBase){ node.style.display = '' }
+    else { node.style.display = 'none' }
+  });
+
   raceAbilities = [];
   if(SET.races[race]?.ability){
     raceAbilities = SET.races[race].ability.concat();

@@ -660,7 +660,9 @@ HTML
       else { print $item; }
     }
     foreach my $key (sort keys %only) {
-      print "<optgroup label=\"${key}\">$only{$key}</optgroup>";
+      my $raceOnly;
+      if($key =~ /^(.+)専用/){ $raceOnly = " data-race-only=\"$1\""; }
+      print "<optgroup label=\"${key}\"$raceOnly>$only{$key}</optgroup>";
     }
     print '<option value="free">その他（自由記入）';
     if(!$hit && $value){ print '<option value="'.$value.'" selected>'.$value; }

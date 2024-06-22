@@ -647,12 +647,21 @@ HTML
       }
       $item .= ' value="'.@$data[1].'">'.@$data[1];
       
-      if(@$data[2] =~ /^(.*?)専用/){ $only{@$data[2]} .= $item; }
-      if(@$data[2] =~ /^2.0/)      { $only{'旧(2.0)データ'} .= $item; }
+      my $optgroupLabel;
+      if(@$data[2] =~ /(?:^|,)2.0/){
+        $optgroupLabel .= "旧(2.0)データ";
+      }
+      if(@$data[2] =~ /(?:^|,)([^,]+?専用)/){
+        $optgroupLabel .= "／" if $optgroupLabel;
+        $optgroupLabel .= $1;
+      }
+      if($optgroupLabel) { $only{$optgroupLabel} .= $item; }
       else { print $item; }
     }
     foreach my $key (sort keys %only) {
-      print "<optgroup label=\"${key}\">$only{$key}</optgroup>";
+      my $raceOnly;
+      if($key =~ /(?:^|／)([^／]+?)専用/){ $raceOnly = " data-race-only=\"$1\""; }
+      print "<optgroup label=\"${key}\"$raceOnly>$only{$key}</optgroup>";
     }
     print '<option value="free">その他（自由記入）';
     if(!$hit && $value){ print '<option value="'.$value.'" selected>'.$value; }
