@@ -287,6 +287,12 @@ function checkRace(){
           selectCount++;
         }
         else {
+          while(SET.races[race]?.abilityReplace?.[ability]
+            && level >= SET.races[race]?.abilityReplace[ability].lv
+          ){
+            if(SET.races[race]?.abilityReplace[ability].before == ability){ break; }
+            ability = SET.races[race]?.abilityReplace[ability].before;
+          }
           document.getElementById('race-ability-value').innerHTML += `［${ability}］`;
           raceAbilities.push(ability);
         }

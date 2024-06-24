@@ -209,7 +209,7 @@ sub data_calc {
   }
   else {
     my $i = 1;
-    sub abilitySet {
+    sub setAbility {
       my $lv = shift;
       my @output;
       foreach (@{ $data::races{$pc{race}}{'ability'.$lv} }){
@@ -218,16 +218,24 @@ sub data_calc {
           $i++;
         }
         else {
+          if(exists $data::races{$pc{race}}{abilityReplace}){
+            while(exists $data::races{$pc{race}}{abilityReplace}{$_}
+              && $pc{level} >= $data::races{$pc{race}}{abilityReplace}{$_}{lv}
+            ){
+              last if $data::races{$pc{race}}{abilityReplace}{$_}{before} eq $_; #ループ事故防止
+              $_ = $data::races{$pc{race}}{abilityReplace}{$_}{before};
+            }
+          }
           push(@output, $_);
         }
       }
       return @output;
     }
-    my @abilities = abilitySet('');
-    if($pc{level} >=  6){ push @abilities, abilitySet('Lv6'); }
-    if($pc{level} >= 11){ push @abilities, abilitySet('Lv11'); }
-    if($pc{level} >= 16){ push @abilities, abilitySet('Lv16'); unshift @abilities, '剣の託宣／運命凌駕' }
-    elsif($pc{seekerAbilityRaceA}){ push @abilities, abilitySet('Lv16'); }
+    my @abilities = setAbility('');
+    if($pc{level} >=  6){ push @abilities, setAbility('Lv6'); }
+    if($pc{level} >= 11){ push @abilities, setAbility('Lv11'); }
+    if($pc{level} >= 16){ push @abilities, setAbility('Lv16'); unshift @abilities, '剣の託宣／運命凌駕' }
+    elsif($pc{seekerAbilityRaceA}){ push @abilities, setAbility('Lv16'); }
     my %unique;
     @abilities = grep { ! $unique{$_}++ } @abilities;
     $_ .= ($unique{$_} >= 2 ? '＋' : '') foreach(@abilities);
