@@ -633,13 +633,17 @@ else {
   my $first = 1;
   foreach (1 .. $pc{weaponNum}){
     next if !existsRow "weapon$_",'Name','Usage','Reqd','Acc','Rate','Crit','Dmg','Own','Note';
-    my $rowspan = 1;
+    my $rowspan = 1; my $noteSpan = 1;
     for(my $num = $_+1; $num <= $pc{weaponNum}; $num++){
       last if $pc{'weapon'.$num.'NameOff'};
       last if $pc{'weapon'.$num.'Name'};
       last if !existsRow "weapon$_",'Name','Usage','Reqd','Acc','Rate','Crit','Dmg','Own','Note';
       $rowspan++;
       $pc{'weapon'.$num.'NameOff'} = 1;
+      if(!$pc{'weapon'.$num.'Note'}){
+        $noteSpan++;
+        $pc{'weapon'.$num.'NoteOff'} = 1;
+      }
     }
     if($pc{'weapon'.$_.'Class'} eq "自動計算しない"){
       $pc{'weapon'.$_.'Acc'} = 0;
@@ -659,6 +663,8 @@ else {
       DMGTOTAL => $pc{'weapon'.$_.'DmgTotal'},
       OWN      => $pc{'weapon'.$_.'Own'},
       NOTE     => $pc{'weapon'.$_.'Note'},
+      NOTESPAN => $noteSpan,
+      NOTEOFF  => $pc{'weapon'.$_.'NoteOff'},
       CLOSE    => ($pc{'weapon'.$_.'NameOff'} || $first ? 0 : 1),
     } );
     $first = 0;

@@ -390,7 +390,9 @@
                 <td><TMPL_VAR CRIT>
                 <td><TMPL_IF DMG><TMPL_VAR DMG>=</TMPL_IF><b><TMPL_VAR DMGTOTAL></b>
                 <td><TMPL_IF OWN>✔</TMPL_IF>
-                <td><span class="item-name"><TMPL_VAR NOTE></span>
+                <TMPL_UNLESS NOTEOFF><td rowspan="<TMPL_VAR NOTESPAN>">
+                  <span class="item-name"><TMPL_VAR NOTE></span>
+                </TMPL_UNLESS>
             </TMPL_LOOP></tbody>
           </table>
         </section>
