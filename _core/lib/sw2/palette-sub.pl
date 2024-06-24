@@ -214,7 +214,7 @@ sub palettePreset {
       $text .= "//行使修正=".($::pc{magicCastAdd}||0)."\n";
       $text .= "//魔法C=10\n";
       $text .= "//魔法D修正=".($::pc{magicDamageAdd}||0)."\n";
-      $text .= "//物理魔法D修正=".($::pc{magicDamageAdd}||0)."\n" if $::pc{lvDru} || ($::pc{lvFai} && $::pc{fairyContractEarth});
+      $text .= "//物理魔法D修正=".($::pc{magicDamageAdd}||0)."\n" if $::pc{lvDru} || $::pc{lvSor} >= 12 || ($::pc{lvFai} && $::pc{fairyContractEarth});
       $text .= "//回復量修正=0\n" if $::pc{lvCon} || $::pc{lvPri} || $::pc{lvGri} || $::pc{lvBar} || $::pc{lvMag} >= 2;
       last;
     }
@@ -247,6 +247,9 @@ sub palettePreset {
           if($id eq 'Bar'){ $pow += $::pc{finaleEnhance} || 0; }
 
           $text .= "k${pow}[{魔法C}$activeCrit]+$magicPower".addNum($::pc{'magicDamageAdd'.$id})."+{魔法D修正}$activeDmg ダメージ\n";
+          if ($id eq 'Sor' && $pow == 30 && $::pc{lvSor} >= 12) {
+            $text .= "k${pow}[10$activeCrit]+$magicPower".addNum($::pc{'magicDamageAdd'.$id})."+{物理魔法D修正}$activeDmg 物理ダメージ\n";
+          }
           if ($id eq 'Fai' && $::pc{fairyContractEarth} && ($pow == 10 || $pow == 50)) {
             $text .= "k${pow}[12$activeCrit]+$magicPower".addNum($::pc{'magicDamageAdd'.$id})."+{物理魔法D修正}$activeDmg 物理ダメージ\n";
           }
