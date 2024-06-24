@@ -681,20 +681,20 @@ if(!$pc{forbiddenMode}){
     next if !($data::class{$name}{type} eq 'weapon-user' || exists $data::class{$name}{evaUnlock});
     if(exists $data::class{$name}{evaUnlock}){
       next if $pc{'lv'.$id} < $data::class{$name}{evaUnlock}{lv};
-    }
-    if($data::class{$name}{evaUnlock}{feat}){
-      my $isUnlock = 0;
-      foreach my $feat (split('|',$data::class{$name}{evaUnlock}{feat})){
-        if($acquired{$feat}){ $isUnlock = 1; last; }
+      if($data::class{$name}{evaUnlock}{feat}){
+        my $isUnlock = 0;
+        foreach my $feat (split('\|',$data::class{$name}{evaUnlock}{feat})){
+          if($acquired{$feat}){ $isUnlock = 1; last; }
+        }
+        next if !$isUnlock;
       }
-      next if !$isUnlock;
-    }
-    if($data::class{$name}{evaUnlock}{craft}){
-      my $isUnlock = 0;
-      foreach my $craft (split('|',$data::class{$name}{evaUnlock}{feat})){
-        if($acquired{$craft}){ $isUnlock = 1; last; }
+      if($data::class{$name}{evaUnlock}{craft}){
+        my $isUnlock = 0;
+        foreach my $craft (split('\|',$data::class{$name}{evaUnlock}{craft})){
+          if($acquired{$craft}){ $isUnlock = 1; last; }
+        }
+        next if !$isUnlock;
       }
-      next if !$isUnlock;
     }
     push(@evasion, {
       NAME => $name."<span class=\"small\">技能レベル</span>".$pc{'lv'.$id},
