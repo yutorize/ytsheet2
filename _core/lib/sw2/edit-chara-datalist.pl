@@ -37,6 +37,11 @@ sub printCharaDataList {
       <option value="振2H">
       <option value="突2H">
   </datalist>
+  <datalist id="list-honor-item">
+      <option value="〈〉">
+      <option value="【】">
+      <option value="《》">
+  </datalist>
   <datalist id="list-grow">
       <option value="器用">
       <option value="敏捷">
