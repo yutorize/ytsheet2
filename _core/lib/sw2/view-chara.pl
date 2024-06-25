@@ -203,6 +203,7 @@ $SHEET->param(Tags => \@tags);
 $pc{race} =~ s/［.*］//g;
 {
   my $race = $pc{race};
+  if(!$::SW2_0 && $race eq 'ドレイク（ナイト）'){ $race = 'ドレイク' } # ドレイク例外処理
   if($race =~ /^(.+?)[（(](.+?)[)）]/){
     my $base    = $1;
     my $variant = $2;

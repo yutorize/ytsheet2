@@ -16,7 +16,7 @@
     <dt>種族<dd>
       <select name="race" required>
         <option disabled selected></option>
-        <TMPL_LOOP MakeList><TMPL_IF LABEL><optgroup label="<TMPL_VAR LABEL>"></TMPL_IF><TMPL_IF NAME><option value="<TMPL_VAR NAME>"><TMPL_VAR NAME></TMPL_IF></TMPL_LOOP>
+        <TMPL_LOOP MakeList><TMPL_IF LABEL><optgroup label="<TMPL_VAR LABEL>"></TMPL_IF><TMPL_IF VALUE><option value="<TMPL_VAR VALUE>"><TMPL_IF TEXT><TMPL_VAR TEXT><TMPL_ELSE><TMPL_VAR VALUE></TMPL_IF></TMPL_IF></TMPL_LOOP>
       </select>
     <dt>振る回数<dd><input type="number" name="repeat" min="1" max="10" value="3">
     </dl>

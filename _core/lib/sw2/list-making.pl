@@ -31,7 +31,8 @@ $INDEX->param(OAUTH_LOGIN_URL => $set::oauth_login_url);
 my @race_makelist;
 foreach my $name (@data::race_names){
   if($data::races{$name}{dice}){
-    push(@race_makelist, {"NAME" => ${name}});
+    if(!$::SW2_0 && $name eq 'ドレイク（ナイト）'){ push(@race_makelist, {VALUE => $name, TEXT => 'ドレイク'}) } # ドレイク例外処理
+    else { push(@race_makelist, {VALUE => $name}); }
   }
   if($data::races{$name}{variant}){
     foreach my $varname (@{ $data::races{$name}{variantSort} }){
@@ -42,7 +43,7 @@ foreach my $name (@data::race_names){
   }
 
   if($name eq '人間'){
-    push(@race_makelist, {"NAME" => "人間（冒険者）"});
+    push(@race_makelist, {VALUE => "人間（冒険者）"});
   }
 
   if($name =~ /^label=(.+)$/){
@@ -112,8 +113,9 @@ foreach my $data (@lines) {
             . ($stt_E + $data::races{$race}{dice}{'E+'}) . '_'
             . ($stt_F + $data::races{$race}{dice}{'F+'});
     
+    my $raceView = (!$::SW2_0 && $race eq 'ドレイク（ナイト）') ? 'ドレイク' : $race; # ドレイク例外処理
     push(@datalist, {
-      RACE => $race.($adventurer?'（冒険者）':''),
+      RACE => $raceView.($adventurer?'（冒険者）':''),
       
       TEC => $tec,
       PHY => $phy,
