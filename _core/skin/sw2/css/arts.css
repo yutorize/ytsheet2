@@ -391,6 +391,8 @@ article {
 .data-magic dl.element  dd {
   font-family: var(--font-proportional);
   white-space: nowrap;
+  padding-left: 0.25em;
+  padding-right: 0.25em;
 }
 .data-magic h3.name,
 .data-magic dl.name     dd,
