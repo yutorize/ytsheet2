@@ -633,12 +633,16 @@ if($pc{forbiddenMode}){
 else {
   my $first = 1;
   foreach (1 .. $pc{weaponNum}){
-    next if !existsRow "weapon$_",'Name','Usage','Reqd','Acc','Rate','Crit','Dmg','Own','Note';
+    next if !existsRow "weapon$_",'Name','Part','Usage','Reqd','Acc','Rate','Crit','Dmg','Own','Note';
     my $rowspan = 1; my $noteSpan = 1;
     for(my $num = $_+1; $num <= $pc{weaponNum}; $num++){
       last if $pc{'weapon'.$num.'NameOff'};
       last if $pc{'weapon'.$num.'Name'};
-      last if !existsRow "weapon$_",'Name','Usage','Reqd','Acc','Rate','Crit','Dmg','Own','Note';
+      last if !existsRow "weapon$_",'Name','Part','Usage','Reqd','Acc','Rate','Crit','Dmg','Own','Note';
+      if($pc{'weapon'.$num.'Part'} ne $pc{'weapon'.$_.'Part'}){
+        $pc{'weapon'.$num.'Name'} = $pc{'weapon'.$_.'Name'};
+        next;
+      }
       $rowspan++;
       $pc{'weapon'.$num.'NameOff'} = 1;
       if(!$pc{'weapon'.$num.'Note'}){
@@ -652,6 +656,7 @@ else {
     }
     push(@weapons, {
       NAME     => $pc{'weapon'.$_.'Name'},
+      PART     => $pc{'part'.$pc{'weapon'.$_.'Part'}.'Name'},
       ROWSPAN  => $rowspan,
       NAMEOFF  => $pc{'weapon'.$_.'NameOff'},
       USAGE    => $pc{'weapon'.$_.'Usage'},
@@ -747,6 +752,12 @@ if(!$pc{forbiddenMode}){
       EVA  => $pc{mindsEye},
     } );
   }
+  if($pc{partEnhance}) {
+    push(@evasion, {
+      NAME => '【部位'.($pc{partEnhance} >= 3 ? '極' : $pc{partEnhance} >= 2 ? '超' : '即応＆').'強化】',
+      EVA  => $pc{partEnhance},
+    } );
+  }
   $SHEET->param(EvasionClasses => \@evasion);
 }
 ### 防具 --------------------------------------------------
@@ -795,6 +806,7 @@ else {
   foreach my $i (1..$pc{defenseNum}){
     my @ths;
     my $class = $pc{"evasionClass$i"};
+    my $part  = $pc{'part'.$pc{"evasionPart$i"}.'Name'};
     foreach (1 .. $pc{armourNum}){
       my $cate = $pc{'armour'.$_.'Category'};
       if ($pc{"defTotal${i}CheckArmour$_"} && (
@@ -808,8 +820,10 @@ else {
     }
     next if !$class && !@ths && !$pc{"defenseTotal${i}Note"};
     my $th = 
-      ($class ? "${class}／" : '')
-      .(@ths == @armours ? 'すべての防具' : join('＋', @ths) || '防具なし');
+      ($part ? "${part}/" : '')
+      .($class ? "${class}/" : '')
+      .(@ths == @armours ? 'すべての防具・効果' : join('＋', @ths) || '');
+    $th =~ s|/$||;
     push(@total, {
       TH   => $th,
       EVA  => $pc{"defenseTotal${i}Eva"},
@@ -863,6 +877,26 @@ else {
   }
   $SHEET->param(Accessories => \@accessories);
 }
+
+### 部位 --------------------------------------------------
+{
+  my @row;
+  foreach (1 .. $pc{partNum}) {
+    my $type = ($pc{partCore} eq $_) ? 'core' : 'part';
+    push(@row, {
+      NAME   => $pc{"part${_}Name"}.($pc{partCore} eq $_ ? "<small>（コア部位）</small>" : ""),
+      DEF    => $pc{"part${_}DefTotal"},
+      HP     => $pc{"part${_}HpTotal"},
+      MP     => $pc{"part${_}MpTotal"},
+      DEFMOD => ($pc{"part${_}Def"} != $pc{"part${_}DefTotal"} ? $pc{"part${_}Def"}+$pc{$type.'DefAuto'} : 0),
+      HPMOD  => ($pc{"part${_}Hp" } != $pc{"part${_}HpTotal" } ? $pc{"part${_}Hp" }+$pc{$type.'HpAuto'}  : 0),
+      MPMOD  => ($pc{"part${_}Mp" } != $pc{"part${_}MpTotal" } ? $pc{"part${_}Mp" }+$pc{$type.'MpAuto'}  : 0),
+      NOTE   => $pc{"part${_}Note"},
+    } );
+  }
+  $SHEET->param(Parts => \@row);
+}
+
 ### 履歴 --------------------------------------------------
 
 $pc{history0Grow} .= '器用'.$pc{sttPreGrowA} if $pc{sttPreGrowA};
