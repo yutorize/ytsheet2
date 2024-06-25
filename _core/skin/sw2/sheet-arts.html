@@ -160,9 +160,9 @@
           </section>
           <section class="box description">
             <h2>格言</h2>
-            <p>「<TMPL_VAR godMaxim1>」</p>
-            <p>「<TMPL_VAR godMaxim2>」</p>
-            <p>「<TMPL_VAR godMaxim3>」</p>
+            <TMPL_IF godMaxim1><p>「<TMPL_VAR godMaxim1>」</p></TMPL_IF>
+            <TMPL_IF godMaxim2><p>「<TMPL_VAR godMaxim2>」</p></TMPL_IF>
+            <TMPL_IF godMaxim3><p>「<TMPL_VAR godMaxim3>」</p></TMPL_IF>
           </section>
           <TMPL_IF godNote><section class="box description">
             <h2><TMPL_IF head_godNote><TMPL_VAR head_godNote><TMPL_ELSE>備考</TMPL_IF></h2>
