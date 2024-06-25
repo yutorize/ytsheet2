@@ -613,12 +613,18 @@ sub paletteProperties {
   ## PC
   if  (!$type){
     push @propaties, "### ■能力値";
-    push @propaties, "//器用度=$::pc{sttDex}".addNum($::pc{sttAddA});
-    push @propaties, "//敏捷度=$::pc{sttAgi}".addNum($::pc{sttAddB});
-    push @propaties, "//筋力=$::pc{sttStr}"  .addNum($::pc{sttAddC});
-    push @propaties, "//生命力=$::pc{sttVit}".addNum($::pc{sttAddD});
-    push @propaties, "//知力=$::pc{sttInt}"  .addNum($::pc{sttAddE});
-    push @propaties, "//精神力=$::pc{sttMnd}".addNum($::pc{sttAddF});
+    push @propaties, "//器用度=$::pc{sttDex}";
+    push @propaties, "//敏捷度=$::pc{sttAgi}";
+    push @propaties, "//筋力=$::pc{sttStr}"  ;
+    push @propaties, "//生命力=$::pc{sttVit}";
+    push @propaties, "//知力=$::pc{sttInt}"  ;
+    push @propaties, "//精神力=$::pc{sttMnd}";
+    push @propaties, "//器用増強=".($::pc{sttAddA}||0);
+    push @propaties, "//敏捷増強=".($::pc{sttAddB}||0);
+    push @propaties, "//筋力増強=".($::pc{sttAddC}||0);
+    push @propaties, "//生命増強=".($::pc{sttAddD}||0);
+    push @propaties, "//知力増強=".($::pc{sttAddE}||0);
+    push @propaties, "//精神増強=".($::pc{sttAddF}||0);
     push @propaties, "###" if $tool eq 'tekey';
     push @propaties, "### ■技能レベル";
     push @propaties, "//冒険者レベル=$::pc{level}";
@@ -641,18 +647,18 @@ sub paletteProperties {
     push @propaties, "//敏捷={敏捷度}";
     push @propaties, "//生命={生命力}";
     push @propaties, "//精神={精神力}";
-    push @propaties, "//器用B=(({器用})/6)";
-    push @propaties, "//敏捷B=(({敏捷})/6)";
-    push @propaties, "//筋力B=(({筋力})/6)";
-    push @propaties, "//生命B=(({生命})/6)";
-    push @propaties, "//知力B=(({知力})/6)";
-    push @propaties, "//精神B=(({精神})/6)";
-    push @propaties, "//DEX={器用}";
-    push @propaties, "//AGI={敏捷}";
-    push @propaties, "//STR={筋力}";
-    push @propaties, "//VIT={生命}";
-    push @propaties, "//INT={知力}";
-    push @propaties, "//MND={精神}";
+    push @propaties, "//器用B=(({器用}+{器用増強})/6)";
+    push @propaties, "//敏捷B=(({敏捷}+{敏捷増強})/6)";
+    push @propaties, "//筋力B=(({筋力}+{筋力増強})/6)";
+    push @propaties, "//生命B=(({生命}+{生命増強})/6)";
+    push @propaties, "//知力B=(({知力}+{知力増強})/6)";
+    push @propaties, "//精神B=(({精神}+{精神増強})/6)";
+    push @propaties, "//DEX={器用}+{器用増強}";
+    push @propaties, "//AGI={敏捷}+{敏捷増強}";
+    push @propaties, "//STR={筋力}+{筋力増強}";
+    push @propaties, "//VIT={生命}+{生命増強}";
+    push @propaties, "//INT={知力}+{知力増強}";
+    push @propaties, "//MND={精神}+{精神増強}";
     push @propaties, "//dexB={器用B}";
     push @propaties, "//agiB={敏捷B}";
     push @propaties, "//strB={筋力B}";
@@ -702,7 +708,7 @@ sub paletteProperties {
       elsif($id eq 'Alc') {
         $add .= addNum($::pc{alchemyEnhance});
       }
-      push @propaties, "//".$magic."=({".$name."}+({".$stt."}".$own.")/6)".$add;
+      push @propaties, "//$magic=({$name}+({$stt}+{$stt\増強}$own)/6)$add";
     }
     push @propaties, '';
     
@@ -733,7 +739,7 @@ sub paletteProperties {
           $accMod += $::pc{partEnhance};
         }
         push @propaties,
-        "//命中$_=({$::pc{'weapon'.$_.'Class'}}+({器用}"
+        "//命中$_=({$::pc{'weapon'.$_.'Class'}}+({器用}+{器用増強}"
         .($::pc{'weapon'.$_.'Own'}?"+2":"")
         .")/6+"
         .( ($::pc{'weapon'.$_.'Acc'}||0) + $accMod )
@@ -760,7 +766,7 @@ sub paletteProperties {
         my $basetext;
         if   ($category eq 'クロスボウ'){ $basetext = "{$::pc{'weapon'.$_.'Class'}}"; }
         elsif($category eq 'ガン'      ){ $basetext = "{魔動機術}"; }
-        else { $basetext = "{$::pc{'weapon'.$_.'Class'}}+({筋力})/6"; }
+        else { $basetext = "{$::pc{'weapon'.$_.'Class'}}+({筋力}+{筋力増強})/6"; }
         $basetext .= addNum($dmgMod);
         push @propaties, "//追加D$_=(${basetext}+".($::pc{'weapon'.$_.'Dmg'}||0).")";
       }
@@ -799,7 +805,7 @@ sub paletteProperties {
         $evaMod += 2;
       }
       push @propaties, "//回避${i}=("
-        .($class ? "{$class}+({敏捷}${own_agi})/6+" : '')
+        .($class ? "{$class}+({敏捷}+{敏捷増強}${own_agi})/6+" : '')
         .$evaMod
         .")";
       push @propaties, "//防護${i}=".($::pc{"defenseTotal${i}Def"} || 0);
