@@ -33,6 +33,7 @@ my %settings = (
   bRank => \%bRank,
   nRank => \@set::notoriety_rank,
   nBRank => \@set::notoriety_barbaros_rank,
+  partsData => \%data::partsData,
 );
 print "const SET = ". JSON::PP->new->encode(\%settings);
 print "\n";

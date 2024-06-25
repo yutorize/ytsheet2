@@ -650,6 +650,14 @@ option.zero-data::before {
   width: 2em;
   line-height: 2.2;
   margin-right: auto;
+  float: left;
+}
+#weapons td span.handle + dl {
+  float: right;
+  margin-top: .1em;
+  display: inline-grid;
+  grid-template-columns: max-content auto;
+  align-items: end;
 }
 #weapons td:last-child span[onclick] {
   padding: 7px 5px;
@@ -714,19 +722,31 @@ option.zero-data::before {
 #armours tbody th.type::before {
   content: '';
 }
+#armours tbody input[type=checkbox]:disabled {
+  display: none;
+}
 
 #armours tfoot tr:first-child {
   border-bottom-width: 1px !important;
   border-bottom-style: solid !important;
 }
-#armours .defense-total td.defense-total-checklist {
-  text-wrap: balance;
-}
-#armours .defense-total td label input + span {
-  font-size: 85%;
-}
-#armours tbody input[type=checkbox]:disabled {
-  display: none;
+#armours .defense-total {
+  > td.defense-total-checklist {
+    text-wrap: balance;
+  }
+  > td label input + span {
+    font-size: 85%;
+  }
+  > td dl {
+    display: grid;
+    grid-template-columns: max-content auto;
+    align-items: end;
+    padding-left: 2px;
+    > dt {
+      font-size: 85%;
+      padding-bottom: .1em;
+    }
+  }
 }
 
 @media screen and (max-width:735px){
@@ -756,6 +776,57 @@ option.zero-data::before {
     &.own  { width: 1.5em; } /* 専用 */
     &.calc { width: 1.5em; } /* 専用 */
     &.note { width:  16em; } /* 備考 */
+  }
+}
+
+#parts {
+  margin-top: var(--box-v-gap);
+  position: relative;
+  z-index: 1;
+  
+  &:not([open]) {
+    background-image: linear-gradient(to bottom, var(--box-head-bg-color) 0, transparent 2.5rem);
+  }
+  &[open] summary {
+    width: max-content;
+    position: relative;
+    z-index: 2;
+  }
+  & table {
+    margin-top: -1.5em;
+    & th.name  { width: 6em; }
+    & th.core  { width: 1.5em; text-wrap: nowrap; }
+    & th.def   { width: 8em; }
+    & th.hp    { width: 8em; }
+    & th.mp    { width: 8em; }
+
+    & td:has(b) {
+      text-wrap: nowrap;
+      > input { width: 3em; }
+      > b { display: inline-block; min-width: 1.5em; }
+    }
+  }
+  
+  @media screen and (width <= 735px){
+    .box { overflow-x: auto; }
+    & table { 
+      table-layout: fixed;
+      & th.note  { width: 16em; }
+    }
+  }
+
+  #parts-stt-add {
+    border-top-width: 1px;
+    border-top-style: solid;
+    & dl {
+      width: max-content;
+      display: grid;
+      grid-template-columns: 4em 4em 4em 4em 4em 4em;
+      > dt { grid-row: 1; text-align: center; line-height: 1; font-size: 90%; }
+      > dd { grid-row: 2; }
+      padding-top: .2em;
+      padding-left: .5em;
+    }
   }
 }
 
@@ -798,7 +869,6 @@ option.zero-data::before {
   }
   #accessories tbody td:nth-child(4) { padding-left: 0; } /* 専用 */
 }
-
 
 @media screen and (max-width:735px){
   #area-items {
