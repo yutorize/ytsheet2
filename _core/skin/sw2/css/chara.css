@@ -66,6 +66,7 @@ body {
 #weapons table,
 #evasion-classes table,
 #armours table,
+#parts table,
 #accessories table,
 .honor-items table,
 #honor dd,
@@ -790,6 +791,11 @@ dl#level {
     margin: 0 -6%;
     transform:scaleX(0.88);
   }
+  & .part-name {
+    float: right;
+    margin-top: .15em;
+    font-size: 85%;
+  }
 }
 
 /* Attack-Status */
@@ -866,7 +872,11 @@ dl#level {
     border-style: solid dotted;
   }
   & td:is(.eva, .def) {
-    font-size: 1.15em;
+    padding: .2em 0;
+    font-weight: bold;
+  }
+  &:nth-child(even) td {
+    background-color: var(--box-even-rows-bg-color);
   }
 }
 
@@ -884,6 +894,13 @@ dl#level {
   font-size: 90%;
 }
 
+/* Parts */
+#parts thead th {
+  &.name  { width: 10em; }
+  &.def   { width: 5.2em; }
+  &.hp    { width: 5.2em; }
+  &.mp    { width: 5.2em; }
+}
 
 /* // Area-Items
 ---------------------------------------------------------------------------------------------------- */
@@ -1018,7 +1035,10 @@ dl#level {
 }
 #honor.zero-data {
   grid-template-columns: 1fr 1fr 1fr;
-
+  align-items: normal;
+  gap: 0px;
+  > dt { grid-row: 1; }
+  > dd { grid-row: 2; }
   > *:not(:last-of-type){
     border-right-width: 1px;
     border-right-style: solid;
