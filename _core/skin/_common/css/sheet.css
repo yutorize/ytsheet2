@@ -1272,6 +1272,9 @@ aside#loglist #log-naming form input {
   & td {
     font-size: .85em;
   }
+  & tbody td .number {
+    word-break: keep-all;
+  }
   & tbody td.date a,
   & tbody td a[data-num] {
     display: block;
