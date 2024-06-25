@@ -414,6 +414,7 @@ function checkFeats(){
   calcSubStt();
   calcMobility();
   calcMagic();
+  calcParts();
   calcAttack();
   calcDefense();
   checkCraft();

@@ -337,13 +337,16 @@ sub palettePreset {
               $::pc{'weapon'.$_.'Crit'}.$::pc{'weapon'.$_.'Dmg'} eq '';
       next if (
         $::pc{'weapon'.$_.'Name'}  eq $::pc{'weapon'.($_-1).'Name'}  &&
+        $::pc{'weapon'.$_.'Part'}  eq $::pc{'weapon'.($_-1).'Part'}  &&
         $::pc{'weapon'.$_.'Usage'} eq $::pc{'weapon'.($_-1).'Usage'} &&
         $::pc{'weapon'.$_.'Acc'}   eq $::pc{'weapon'.($_-1).'Acc'}   &&
         $::pc{'weapon'.$_.'Rate'}  eq $::pc{'weapon'.($_-1).'Rate'}  &&
         $::pc{'weapon'.$_.'Crit'}  eq $::pc{'weapon'.($_-1).'Crit'}  &&
         $::pc{'weapon'.$_.'Dmg'}   eq $::pc{'weapon'.($_-1).'Dmg'}
       );
+      $::pc{'weapon'.$_.'Name'} ||= $::pc{'weapon'.($_-1).'Name'};
       $::pc{'weapon'.$_.'Crit'} = normalizeCrit $::pc{'weapon'.$_.'Crit'};
+      my $partName = $::pc{'part'.$::pc{'weapon'.$_.'Part'}.'Name'};
       
       my %dmgTexts;
       foreach my $paNum (0 .. $::pc{paletteAttackNum}){
@@ -362,7 +365,9 @@ sub palettePreset {
             $text .= "$::pc{'weapon'.$_.'Crit'}$bullet->{c}";
             $text .= "$::pc{'paletteAttack'.$paNum.'Crit'}";
             $text .= ")" if $bot{BCD};
-            $text .= "\]+{追加D$_}+{ガン追加D修正}";
+            $text .= "\]";
+            $text .= $::pc{paletteUseVar} ? "{追加D$_}" : $::pc{"weapon${_}DmgTotal"};
+            $text .= "+{ガン追加D修正}";
             $text .= "$::pc{'paletteAttack'.$paNum.'Dmg'}";
             $text .= " ダメージ";
             $text .= "\n";
@@ -372,7 +377,9 @@ sub palettePreset {
             next if $bullet->{h} && $::pc{'weapon'.$_.'Usage'} !~ /$bullet->{h}/;
             $text .= "k$bullet->{p}\[";
             $text .= "13";
-            $text .= "\]+{追加D$_}+{回復量修正}";
+            $text .= "\]+";
+            $text .= $::pc{paletteUseVar} ? "{追加D$_}" : $::pc{"weapon${_}DmgTotal"};
+            $text .= "+{回復量修正}";
             $text .= " 回復量";
             $text .= "\n";
           }
@@ -382,7 +389,9 @@ sub palettePreset {
           $text .= "(" if $bot{BCD};
           $text .= "$::pc{'weapon'.$_.'Crit'}+{C修正}$activeCrit";
           $text .= ")" if $bot{BCD};
-          $text .= "\]+{追加D$_}$activeDmg";
+          $text .= "\]+";
+          $text .= $::pc{paletteUseVar} ? "{追加D$_}" : $::pc{"weapon${_}DmgTotal"};
+          $text .= $activeDmg;
           
           $text .= "+{追加D修正}";
           if($::pc{'paletteAttack'.$paNum.'Roll'}){
@@ -400,6 +409,7 @@ sub palettePreset {
           $text .= " ダメージ";
           $text .= extractWeaponMarks($::pc{'weapon'.$_.'Name'}.$::pc{'weapon'.$_.'Note'}) unless $bot{BCD};
           $text .= "／$::pc{'weapon'.$_.'Name'}$::pc{'weapon'.$_.'Usage'}" if $bot{BCD};
+          $text .= "（${partName}）" if $partName && $bot{BCD};
           $text .= "\n";
         }
         $dmgTexts{$paNum} = $text;
@@ -410,12 +420,14 @@ sub palettePreset {
         
         my $activeName = $::pc{'paletteAttack'.$paNum.'Name'} ? "＋$::pc{'paletteAttack'.$paNum.'Name'}" : '';
 
-        $::pc{'weapon'.$_.'Name'} ||= $::pc{'weapon'.($_-1).'Name'};
-        $text .= "2d+{命中$_}+{命中修正}";
+        $text .= "2d+";
+        $text .= $::pc{paletteUseVar} ? "{命中$_}" : $::pc{"weapon${_}AccTotal"};
+        $text .= "+{命中修正}";
         if($::pc{'paletteAttack'.$paNum.'Acc'}){
           $text .= optimizeOperatorFirst "+$::pc{'paletteAttack'.$paNum.'Acc'}";
         }
         $text .= " 命中力／$::pc{'weapon'.$_.'Name'}$::pc{'weapon'.$_.'Usage'}";
+        $text .= "（${partName}）" if $partName;
         if($::pc{'paletteAttack'.$paNum.'Name'}){
           $text .= "＋$::pc{'paletteAttack'.$paNum.'Name'}";
         }
@@ -449,7 +461,9 @@ sub palettePreset {
       }
       next if !$hasChecked && !$::pc{"evasionClass${i}"};
 
-      $text .= "2d+{回避${i}}+{回避修正} 回避力".($::pc{"defenseTotal${i}Note"}?"／$::pc{'defenseTotal'.$i.'Note'}":'')."\n";
+      $text .= "2d+";
+      $text .= $::pc{paletteUseVar} ? "{回避${i}}" : $::pc{"defenseTotal${i}Eva"};
+      $text .= "+{回避修正} 回避力".($::pc{"defenseTotal${i}Note"}?"／$::pc{'defenseTotal'.$i.'Note'}":'')."\n";
     }
     $text .= appendPaletteInsert('defense');
     
@@ -700,34 +714,54 @@ sub paletteProperties {
       $::pc{'weapon'.$_.'Name'} = $::pc{'weapon'.$_.'Name'} || $::pc{'weapon'.($_-1).'Name'};
       
       $::pc{'weapon'.$_.'Crit'} = normalizeCrit $::pc{'weapon'.$_.'Crit'};
+      
+      my $class = $::pc{"weapon${_}Class"};
+      my $category = $::pc{"weapon${_}Category"};
+      my $partNum = $::pc{"weapon${_}Part"};
 
       push @propaties, "//武器$_=$::pc{'weapon'.$_.'Name'}";
-
+      
+      # 命中
       if(!$::pc{'weapon'.$_.'Class'} || $::pc{'weapon'.$_.'Class'} eq '自動計算しない'){ push @propaties, "//命中$_=$::pc{'weapon'.$_.'Acc'}"; }
       else {
+        my $accMod = 0;
+        if(!$partNum || $partNum eq $::pc{partCore}) {
+          $accMod += $::pc{accuracyEnhance};
+          $accMod += 1 if $::pc{throwing} && $category eq '投擲';
+        }
+        else {
+          $accMod += $::pc{partEnhance};
+        }
         push @propaties,
         "//命中$_=({$::pc{'weapon'.$_.'Class'}}+({器用}"
         .($::pc{'weapon'.$_.'Own'}?"+2":"")
         .")/6+"
-        .(
-          ($::pc{'weapon'.$_.'Acc'}||0)
-          + $::pc{accuracyEnhance}
-          + ($::pc{throwing} && $::pc{'weapon'.$_.'Category'} eq '投擲' ? 1 : 0)
-        )
+        .( ($::pc{'weapon'.$_.'Acc'}||0) + $accMod )
         .")";
       }
-
+      # 威力・C値
       push @propaties, "//威力$_=$::pc{'weapon'.$_.'Rate'}";
       push @propaties, "//C値$_=$::pc{'weapon'.$_.'Crit'}";
-
+      # ダメージ
       if(!$::pc{'weapon'.$_.'Class'} || $::pc{'weapon'.$_.'Class'} eq '自動計算しない'){ push @propaties, "//追加D$_=$::pc{'weapon'.$_.'Dmg'}"; }
       else {
+        my $dmgMod = 0;
+        if(!$partNum || $partNum eq $::pc{partCore}) {
+          $dmgMod += $::pc{'mastery' . ucfirst($data::weapon_id{ $category }) };
+          if($category eq 'ガン（物理）'){ $dmgMod += $::pc{masteryGun}; }
+          if($::pc{"weapon${_}Note"} =~ /〈魔器〉/){ $dmgMod += $::pc{masteryArtisan}; }
+        }
+        else {
+          if($category eq '格闘'){ $dmgMod += $::pc{masteryGrapple}; }
+          elsif($category && $::pc{race} eq 'ディアボロ' && $::pc{level} >= 6){
+            $dmgMod += $::pc{'mastery' . ucfirst($data::weapon_id{$category}) };
+          }
+        }
         my $basetext;
-        if   ($::pc{'weapon'.$_.'Category'} eq 'クロスボウ'){ $basetext = "{$::pc{'weapon'.$_.'Class'}}"; }
-        elsif($::pc{'weapon'.$_.'Category'} eq 'ガン'      ){ $basetext = "{魔動機術}"; }
+        if   ($category eq 'クロスボウ'){ $basetext = "{$::pc{'weapon'.$_.'Class'}}"; }
+        elsif($category eq 'ガン'      ){ $basetext = "{魔動機術}"; }
         else { $basetext = "{$::pc{'weapon'.$_.'Class'}}+({筋力})/6"; }
-        my $mastery = $::pc{'mastery' . ucfirst($data::weapon_id{ $::pc{'weapon'.$_.'Category'} }) };
-           $basetext .= addNum($mastery);
+        $basetext .= addNum($dmgMod);
         push @propaties, "//追加D$_=(${basetext}+".($::pc{'weapon'.$_.'Dmg'}||0).")";
       }
 
@@ -738,20 +772,35 @@ sub paletteProperties {
       next if ($::pc{"defenseTotal${i}Eva"} eq '');
 
       my $class = $::pc{"evasionClass${i}"};
-      my $armorTotal = 0;
+      my $id = $data::class{$class}{id};
+      my $partNum = $::pc{"evasionPart$i"};
+      my $partName = $::pc{"evasionPart${i}Name"} = $::pc{"part${partNum}Name"};
+      my $evaMod = 0;
       my $own_agi;
       my $hasChecked = 0;
       foreach my $j (1..$::pc{armourNum}){
         if($::pc{"defTotal${i}CheckArmour${j}"}){
-          $armorTotal += $::pc{"armour${j}Eva"};
+          $evaMod += $::pc{"armour${j}Eva"};
           $own_agi = $::pc{"armour${j}Category"} eq '盾' && $::pc{"armour${j}Own"} ? '+2' : '';
           $hasChecked++;
         }
       }
       next if !$hasChecked && !$class;
+      
+      if(!$partNum || $partNum eq $::pc{partCore}) {
+        $evaMod += $::pc{evasiveManeuver} + $::pc{mindsEye};
+        if($::pc{evasiveManeuver} == 2 && $id ne 'Fen' && $id ne 'Bat'){ $evaMod -= 1 }
+        if($::pc{mindsEye} && $id ne 'Fen'){ $evaMod -= $::pc{mindsEye} }
+      }
+      else {
+        $evaMod += $::pc{partEnhance};
+      }
+      if($partName eq '邪眼'){
+        $evaMod += 2;
+      }
       push @propaties, "//回避${i}=("
         .($class ? "{$class}+({敏捷}${own_agi})/6+" : '')
-        .($::pc{evasiveManeuver} + $armorTotal)
+        .$evaMod
         .")";
       push @propaties, "//防護${i}=".($::pc{"defenseTotal${i}Def"} || 0);
     }
