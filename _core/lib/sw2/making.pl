@@ -41,6 +41,7 @@ if($set::making_interval){
 
 ## 能力値作成処理
 my $adventurer = ($in{race} =~ s/（冒険者）//) ? 1 : 0;
+my $magitecangel = ($in{race} eq '魔動天使') ? 1 : 0;
 
 my $stt_data;
 my $average_max = 0;
@@ -50,6 +51,12 @@ while ($i <= $in{repeat} || ($average_max <= $set::average_over)){
     $in{tec} = dice(2);
     $in{phy} = dice(2);
     $in{spi} = dice(2);
+  }
+
+  if($magitecangel){
+    $in{tec} = 9;
+    $in{phy} = 9;
+    $in{spi} = 9;
   }
   
   my $stt_A = dice($data::races{$in{race}}{dice}{A});
