@@ -186,6 +186,17 @@ header nav ul li.character-format {
     display: inline-block;
   }
 }
+#personal {
+  &:has(#sin > dd:empty) {
+    #race-ability {
+      flex-basis: 100%;
+    }
+
+    #sin {
+      display: none;
+    }
+  }
+}
 
 /* Status */
 #status {
