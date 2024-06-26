@@ -132,8 +132,8 @@ foreach (1 .. $pc{armourNum}){
   push(@armours, {
     USAGE => $pc{'armour'.$_.'Usage'},
     REQD  => $pc{'armour'.$_.'Reqd'},
-    EVA   => $pc{'armour'.$_.'Eva'},
-    DEF   => $pc{'armour'.$_.'Def'},
+    EVA   => $pc{'armour'.$_.'Eva'} // '―',
+    DEF   => $pc{'armour'.$_.'Def'} // 0,
     NOTE  => $pc{'armour'.$_.'Note'},
   } );
 }
