@@ -38,10 +38,13 @@ sub createUnitStatus {
         my $mp  = s_eval($pc{"status${i}Mp"});
         my $def = s_eval($pc{"status${i}Defense"});
         push(@hp , {$partname.':HP' => "$hp/$hp"});
-        push(@mp , {$partname.':MP' => "$mp/$mp"});
+        push(@mp , {$partname.':MP' => "$mp/$mp"}) unless isEmptyValue($mp);
         push(@def, $partname.$def);
       }
-      @unitStatus = ( @hp, @mp, {'メモ' => '防護:'.join('／',@def)} );
+      @unitStatus = ();
+      push(@unitStatus, @hp);
+      push(@unitStatus, @mp) if $#mp >= 0;
+      push(@unitStatus, {'メモ' => '防護:'.join('／',@def)});
     }
     else { # 1部位
       my $i = 1;
@@ -54,11 +57,9 @@ sub createUnitStatus {
       my $hp = s_eval($pc{"status${i}Hp"});
       my $mp = s_eval($pc{"status${i}Mp"});
       my $def = s_eval($pc{"status${i}Defense"});
-      @unitStatus = (
-        { 'HP' => "$hp/$hp" },
-        { 'MP' => "$mp/$mp" },
-        { '防護' => $def },
-      );
+      push(@unitStatus, { 'HP' => "$hp/$hp" });
+      push(@unitStatus, { 'MP' => "$mp/$mp" }) unless isEmptyValue($mp);
+      push(@unitStatus, { '防護' => $def });
     }
   }
   else {
@@ -388,6 +389,11 @@ sub data_update_arts {
   $pc{ver} = $main::ver;
   $pc{lasttimever} = $ver;
   return %pc;
+}
+
+sub isEmptyValue {
+  my $value = shift;
+  return defined($value) && $value ne '' && $value !~ /^[-ー－―]$/ ? 0 : 1;
 }
 
 1;
