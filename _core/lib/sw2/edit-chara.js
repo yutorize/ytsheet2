@@ -88,6 +88,7 @@ window.onload = function() {
   calcHonor();
   calcDishonor();
   calcCommonClass();
+  setupBracketInputCompletion();
   
   imagePosition();
   changeColor();
@@ -1286,6 +1287,39 @@ function calcFairy() {
   if(rank[i]){ result = rank[i][lv['Fai']] || '×'; }
   else { result = '×'; }
   document.getElementById('fairy-rank').textContent = result;
+}
+
+function setupBracketInputCompletion() {
+  document.querySelectorAll('input[type="text"]:is([list="list-item-name"], [list="list-weapon-name"]):not(.support-bracket-input-completion)').forEach(
+      input => {
+        let lastValue = input.value ?? '';
+
+        input.addEventListener(
+            'input',
+            e => {
+              const newValue = input.value ?? '';
+
+              if (
+                  newValue.includes('〈〉') &&
+                  (
+                      lastValue === '' ||
+                      newValue.includes(lastValue) // 部分的に入力されている状態から入力補完が選ばれたケース
+                  ) &&
+                  !lastValue.includes('〈〉') // 空の括弧がある状態から何かが入力されたときは動作させない（括弧内の前に `[魔]` などを入力するときを想定した措置）
+              ) {
+                if (input.selectionStart === input.selectionEnd) { // 範囲選択になっていないときのみ動作させる
+                  const indexOfEmptyBracket = newValue.indexOf('〈〉');
+                  input.selectionStart = input.selectionEnd = indexOfEmptyBracket + 1;
+                }
+              }
+
+              lastValue = newValue;
+            }
+        );
+
+        input.classList.add('support-bracket-input-completion');
+      }
+  );
 }
 
 // 部位データ計算 ----------------------------------------
