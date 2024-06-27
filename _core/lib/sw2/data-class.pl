@@ -582,6 +582,9 @@ our %class = (
     expTable => 'B',
     id       => 'Mys',
     eName    => 'mystic',
+    package  => {
+      Obs => { name => '探索・天候予測', stt => 'E' },
+    },
     craft => {
       jName => '占瞳',
       eName => 'divination',
