@@ -583,7 +583,7 @@ our %class = (
     id       => 'Mys',
     eName    => 'mystic',
     package  => {
-      Obs => { name => '観察', stt => 'E' },
+      Obs => { name => '探索・天候予測', stt => 'E' },
     },
     craft => {
       jName => '占瞳',
