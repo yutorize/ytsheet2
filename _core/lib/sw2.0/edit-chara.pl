@@ -1087,12 +1087,12 @@ foreach my $num ('TMPL',1 .. $pc{armourNum}) {
   print <<"HTML";
               <tr id="armour${num}" data-type="">
                 <th class="type handle">
-                <td><select name="armour${num}Category" oninput="calcDefense()">@{[ option "armour${num}Category",'金属鎧','非金属鎧','盾','その他' ]}</select>
+                <td><select name="armour${num}Category" oninput="calcDefense();calcMobility()">@{[ option "armour${num}Category",'金属鎧','非金属鎧','盾','その他' ]}</select>
                 <td>@{[ input "armour${num}Name",'','calcDefense','list="list-item-name"' ]}
                 <td>@{[ input "armour${num}Reqd",'','calcDefense' ]}
                 <td>@{[ input "armour${num}Eva",'number','calcDefense' ]}
                 <td>@{[ input "armour${num}Def",'number','calcDefense' ]}
-                <td>@{[ input "armour${num}Own",'checkbox','calcDefense','style="display:none"' ]}
+                <td>@{[ input "armour${num}Own",'checkbox','calcDefense();calcMobility','style="display:none"' ]}
                 <td>@{[ input "armour${num}Note" ]}
 HTML
   if($num eq 'TMPL'){ print '</template>' }
