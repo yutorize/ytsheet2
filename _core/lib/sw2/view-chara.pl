@@ -241,7 +241,13 @@ foreach my $class (@data::class_names){
   next if !$pc{'lv'.$id};
   my $name = $class;
   if($name eq 'プリースト' && $pc{faith}){
-    $name .= '<span class="priest-faith'.(length($pc{faith}) > 12 ? ' narrow' : "").'">（'.$pc{faith}.$pc{faithType}.'）</span>';
+    my $faith = $pc{faith};
+    if ($faith eq 'その他の信仰') {
+      $faith = $pc{faithOther};
+      $faith =~ s#<a [^>]*>([^<]+?)</a>#$1#s; # 未定義の神格の場合、ゆとシの神格シートなどへのハイパーリンクが想定されるので、それを除去する
+      $faith =~ s/^[“”"].*[“”"](.+$)/$1/;
+    }
+    $name .= '<span class="priest-faith'.(length($faith) > 12 ? ' narrow' : "").'">（'.$faith.$pc{faithType}.'）</span>';
   }
   push(@classes, { NAME => $name, LV => $pc{'lv'.$id} } );
   $classes{$class} = $pc{'lv'.$id};
