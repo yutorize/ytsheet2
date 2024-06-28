@@ -1029,8 +1029,10 @@ dl#level {
   #adventurer-rank { grid-column: 2; }
   #barbaros-rank   { grid-column: 2; }
   #barbaros-rank   {
-    border-top-width: 1px;
     border-top-style: solid;
+  }
+  #adventurer-rank + #barbaros-rank {
+    border-top-width: 1px;
   }
 }
 #honor.zero-data {
