@@ -272,6 +272,7 @@ print <<"HTML";
     <option value="1H投">
     <option value="1H拳">
     <option value="1H両">
+    <option value="1H騎">
     <option value="2H">
     <option value="2H#">
     <option value="振2H">
