@@ -3,6 +3,7 @@ const gameSystem = 'sw2';
 
 window.onload = function() {
   setName('itemName');
+  checkCategory();
   changeColor();
 }
 
@@ -19,6 +20,15 @@ function formCheck(){
     return false;
   }
   return true;
+}
+
+// 入力値による挙動の変化 ----------------------------------------
+function checkCategory() {
+  const category = document.querySelector('[name="category"]').value?.trim() ?? '';
+  document.getElementById('section-common').classList.toggle(
+      'is-ranged-weapon',
+      /投擲|ボウ|クロスボウ|ガン/.test(category)
+  );
 }
 
 // 武器データ欄 ----------------------------------------
