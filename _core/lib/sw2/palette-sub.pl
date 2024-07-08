@@ -365,7 +365,7 @@ sub palettePreset {
             $text .= "$::pc{'weapon'.$_.'Crit'}$bullet->{c}";
             $text .= "$::pc{'paletteAttack'.$paNum.'Crit'}";
             $text .= ")" if $bot{BCD};
-            $text .= "\]";
+            $text .= "\]+";
             $text .= $::pc{paletteUseVar} ? "{追加D$_}" : $::pc{"weapon${_}DmgTotal"};
             $text .= "+{ガン追加D修正}";
             $text .= "$::pc{'paletteAttack'.$paNum.'Dmg'}";
@@ -619,12 +619,12 @@ sub paletteProperties {
     push @propaties, "//生命力=$::pc{sttVit}";
     push @propaties, "//知力=$::pc{sttInt}"  ;
     push @propaties, "//精神力=$::pc{sttMnd}";
-    push @propaties, "//器用増強=".($::pc{sttAddA}||0);
-    push @propaties, "//敏捷増強=".($::pc{sttAddB}||0);
+    push @propaties, "//器用度増強=".($::pc{sttAddA}||0);
+    push @propaties, "//敏捷度増強=".($::pc{sttAddB}||0);
     push @propaties, "//筋力増強=".($::pc{sttAddC}||0);
-    push @propaties, "//生命増強=".($::pc{sttAddD}||0);
+    push @propaties, "//生命力増強=".($::pc{sttAddD}||0);
     push @propaties, "//知力増強=".($::pc{sttAddE}||0);
-    push @propaties, "//精神増強=".($::pc{sttAddF}||0);
+    push @propaties, "//精神力増強=".($::pc{sttAddF}||0);
     push @propaties, "###" if $tool eq 'tekey';
     push @propaties, "### ■技能レベル";
     push @propaties, "//冒険者レベル=$::pc{level}";
@@ -647,6 +647,10 @@ sub paletteProperties {
     push @propaties, "//敏捷={敏捷度}";
     push @propaties, "//生命={生命力}";
     push @propaties, "//精神={精神力}";
+    push @propaties, "//器用増強={器用度増強}";
+    push @propaties, "//敏捷増強={敏捷度増強}";
+    push @propaties, "//生命増強={生命力増強}";
+    push @propaties, "//精神増強={精神力増強}";
     push @propaties, "//器用B=(({器用}+{器用増強})/6)";
     push @propaties, "//敏捷B=(({敏捷}+{敏捷増強})/6)";
     push @propaties, "//筋力B=(({筋力}+{筋力増強})/6)";
