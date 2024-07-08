@@ -199,9 +199,35 @@ function calcLv(){
 }
 
 // 種族変更 ----------------------------------------
-function changeRace(value){
-  const before = race;
-  race = value;
+function changeRace(raceNew){
+  const raceBefore = race;
+  
+  let inputtedSin = false;
+  if((SET.races[raceBefore]?.sin||0) != form.sin.value){
+    inputtedSin = true;
+  }
+  let inputtedParts = false;
+  for(const node of document.querySelectorAll(`#parts table :is([type=text],[type=number])`)){
+    if(node.value){
+      inputtedParts = true;
+      break;
+    }
+  }
+  if((inputtedSin || inputtedParts) && SET.races[raceNew]) {
+    const confirmCheck = confirm(
+      '種族を変更すると、'
+      +(inputtedSin ? '“穢れ”の値の変更':'')
+      +(inputtedSin && inputtedParts ? 'と':'')
+      +(inputtedParts ? '「部位」欄の各入力値':'')
+      +'がリセットされます。本当に変更しますか？'
+    );
+    if (!confirmCheck) {
+      form.race.value = raceBefore;
+      return;
+    }
+  }
+
+  race = raceNew;
   
   document.getElementById('race-ability-select').innerHTML = '';
   let selectCount = 1;
@@ -228,33 +254,26 @@ function changeRace(value){
   else if(!SET.races[race]) {
     document.getElementById('race-ability-value').innerHTML = `<input type="text" name="raceAbilityFree" oninput="changeRaceAbility()" value="${form.raceAbilityFree?.value ?? '［］'}">`;
   }
-  if(form.mode.value === 'make'){
-    form.sin.value = SET.races[race]?.sin || 0;
-    
-    if(SET.races[race]?.parts){
-      let num = 1;
-      for(const name of SET.races[race].parts){
-        if(!form[`part${num}Name`]){ addPart(); }
-        form[`part${num}Name`].value = name;
-        num++;
-      }
-      for(let i = num; i <= form.partNum.value; i++){
-        if(form[`part${i}Name`]){
-          form[`part${i}Name`].closest('tr').remove();
-        }
-      }
-      form.partNum.value = num - 1;
-      form.partCore.value = 1;
-      document.getElementById('parts').open = true;
+  form.sin.value = SET.races[race]?.sin || 0;
+  
+  if(SET.races[race]?.parts){
+    let num = 1;
+    form.partNum.value = 0;
+    document.querySelectorAll(`#parts table tbody > tr`).forEach(tr => tr.remove() )
+    for(const name of SET.races[race].parts){
+      addPart();
+      form[`part${num}Name`].value = name;
+      num++;
     }
-    else {
-      for(let i = 1; i <= form.partNum.value; i++){
-        form[`part${i}Name`].value = '';
-      }
-      document.getElementById('parts').open = false;
-    }
-    calcParts();
+    form.partCore.value = 1;
+    document.getElementById('parts').open = true;
   }
+  else if(SET.races[race]){
+    form.partNum.value = 0;
+    document.querySelectorAll(`#parts table tbody > tr`).forEach(tr => tr.remove() )
+    document.getElementById('parts').open = false;
+  }
+  
   checkRace();
   calcStt();
 }
