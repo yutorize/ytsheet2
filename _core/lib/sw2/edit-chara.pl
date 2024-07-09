@@ -289,8 +289,8 @@ print <<"HTML";
           <dd>@{[input("history0Money",'number','changeRegu', ($set::make_fix?' readonly':''))]}
           <dt>名誉点
           <dd>@{[input("history0Honor",'number','changeRegu', ($set::make_fix?' readonly':''))]}
-          <dt>成長
-          <dd>
+          <dt class="grow">成長
+          <dd class="grow">
             <dl class="regulation-grow">
               <dt>器用度<dd>@{[ input "sttPreGrowA",'number','calcStt' ]}
               <dt>敏捷度<dd>@{[ input "sttPreGrowB",'number','calcStt' ]}

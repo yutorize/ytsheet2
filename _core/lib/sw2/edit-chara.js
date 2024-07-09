@@ -487,6 +487,7 @@ function calcStt() {
 
   // 計算
   let growTotal = 0;
+  let preGrowTotal = 0;
   for(let i of [
     ['A','Dex'],
     ['B','Agi'],
@@ -501,7 +502,9 @@ function calcStt() {
                : (i[0] === 'E' || i[0] === 'F') ? Number(form.sttBaseSpi.value)
                : 0;
     // 成長
-    stt['grow'+i[1]] += Number(form['sttPreGrow'+i[0]].value) + seekerGrow;
+    const preGrow = Number(form['sttPreGrow'+i[0]].value);
+    stt['grow'+i[1]] += preGrow + seekerGrow;
+    preGrowTotal += preGrow;
     document.getElementById(`stt-grow-${i[0]}-value`).textContent = stt['grow'+i[1]];
     growTotal += stt['grow'+i[1]]; //成長回数合計
 
@@ -522,6 +525,7 @@ function calcStt() {
 
   document.getElementById("stt-grow-total-value").textContent = growTotal;
   document.getElementById("history-grow-total-value").textContent = growTotal;
+  document.querySelector('#regulation > dl:first-of-type dt.grow').dataset.total = preGrowTotal.toString();
   
   function modStatus(value){
     if(value > 0){ return `<span class="small">+${value}=</span>` }
