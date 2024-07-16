@@ -1213,7 +1213,7 @@ print <<"HTML";
 HTML
 foreach my $num ('TMPL',1 .. $pc{honorItemsNum}){
   if($num eq 'TMPL'){ print '<template id="honor-item-template">' }
-  print '<tr id="honor-item'.$num.'"><td class="handle"><td>'.(input "honorItem${num}", "text").'<td><span class="honor-pt"><select name="honorItem'.$num.'PtType" oninput="calcHonor()" data-type="human">'.(option "honorItem${num}PtType",@honortypes).'</select><span class="honor-select-view"></span>'.(input "honorItem${num}Pt", "number", "calcHonor").'</span>';
+  print '<tr id="honor-item'.$num.'"><td class="handle"><td>'.(input "honorItem${num}", "text", '', 'list="list-honor-item"').'<td><span class="honor-pt"><select name="honorItem'.$num.'PtType" oninput="calcHonor()" data-type="human">'.(option "honorItem${num}PtType",@honortypes).'</select><span class="honor-select-view"></span>'.(input "honorItem${num}Pt", "number", "calcHonor").'</span>';
   if($num eq 'TMPL'){ print '</template>' }
 }
 print <<"HTML";
