@@ -1308,7 +1308,7 @@ print <<"HTML";
 HTML
 foreach my $num ('TMPL',1 .. $pc{honorItemsNum}){
   if($num eq 'TMPL'){ print '<template id="honor-item-template">' }
-  print '<tr id="honor-item-row'.$num.'"><td class="handle"><td>'.(input "honorItem${num}", "text").'<td>'.(input "honorItem${num}Pt", "number", "calcHonor");
+  print '<tr id="honor-item-row'.$num.'"><td class="handle"><td>'.(input "honorItem${num}", "text", '', 'list="list-honor-item"').'<td>'.(input "honorItem${num}Pt", "number", "calcHonor");
   if($num eq 'TMPL'){ print '</template>' }
 }
 print <<"HTML";
