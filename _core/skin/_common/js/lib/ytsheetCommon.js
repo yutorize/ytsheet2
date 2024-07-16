@@ -151,7 +151,7 @@ output.getChatPalette = (sheetUrl) => {
 
 
 output.generateUdonariumXml = async (generateType, json, opt_url='', opt_imageHash='') => {
-  const defaultPalette = await output.getChatPalette(opt_url+'&propertiesall=1');
+  const defaultPalette = await output.getChatPalette(opt_url);
   const dataCharacter = {};
 
   dataCharacter.image = `
