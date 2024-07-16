@@ -575,7 +575,7 @@ sub data_calc {
     elsif(!$::SW2_0 && $class eq "デーモンルーラー"){
       $dmg += $pc{magicPowerDem};
     }
-    else {
+    elsif($lv) {
       $dmg += $lv + int($str / 6);
     }
 
@@ -700,10 +700,13 @@ sub data_calc {
     }
     ## その他
     else {
-      $pc{"part${_}DefTotal"} = $data::partsData{$name}{def}[$lv] + $pc{"part${_}Def"} + $pc{partDefAuto};
-      $pc{"part${_}HpTotal" } = $data::partsData{$name}{hp }[$lv] + $pc{"part${_}Hp" } + $pc{partHpAuto};
-      $pc{"part${_}MpTotal" } = $data::partsData{$name}{mp }[$lv] + $pc{"part${_}Mp" };
+      $pc{"part${_}DefTotal"} = $data::partsData{$name}{def}[$lv] + $pc{partDefAuto};
+      $pc{"part${_}HpTotal" } = $data::partsData{$name}{hp }[$lv] + $pc{partHpAuto};
+      $pc{"part${_}MpTotal" } = $data::partsData{$name}{mp }[$lv];
     }
+    $pc{"part${_}DefTotal"} += $pc{"part${_}Def"};
+    $pc{"part${_}HpTotal" } += $pc{"part${_}Hp" };
+    $pc{"part${_}MpTotal" } += $pc{"part${_}Mp" };
   }
 
   ### グレード自動変更 --------------------------------------------------
