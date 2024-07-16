@@ -1087,8 +1087,8 @@ foreach my $num ('TMPL',1 .. $pc{armourNum}) {
   print <<"HTML";
               <tr id="armour-row${num}" data-type="">
                 <th class="type handle">
-                <td><select name="armour${num}Category" oninput="calcDefense()">@{[ option "armour${num}Category",'金属鎧','非金属鎧','盾','その他' ]}</select>
-                <td>@{[ input "armour${num}Name",'','calcDefense','list="list-item-name"' ]}
+                <td><select name="armour${num}Category" oninput="setArmourType();generateArmourCheckbox();calcDefense()">@{[ option "armour${num}Category",'金属鎧','非金属鎧','盾','その他' ]}</select>
+                <td>@{[ input "armour${num}Name",'','generateArmourCheckbox','list="list-item-name"' ]}
                 <td>@{[ input "armour${num}Reqd",'','calcDefense' ]}
                 <td>@{[ input "armour${num}Eva",'number','calcDefense' ]}
                 <td>@{[ input "armour${num}Def",'number','calcDefense' ]}

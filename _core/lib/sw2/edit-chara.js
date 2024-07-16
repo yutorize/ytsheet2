@@ -77,6 +77,8 @@ window.onload = function() {
 
   setName();
   race = form.race.value;
+  
+  setArmourType();
   checkLvCap();
   calcExp();
   calcLv();
@@ -1579,26 +1581,8 @@ function calcArmour(evaAdd,defBase) {
     form[`armour${num}Own`].disabled = category.match(/鎧|盾/) ? false : true;
 
     form[`armour${num}Reqd`].classList.remove('error');
-    form[`armour${num}Name`].parentNode.parentNode.querySelector('.type').textContent
-      = type ? type+count[type] : '';
     
     for (let i = 1; i <= form.defenseNum.value; i++){
-      document.querySelector(`input[name="defTotal${i}CheckArmour${num}"] + span`).textContent
-        = form[`armour${num}Name`].value ? form[`armour${num}Name`].value
-            .replace(/[|｜](.+?)《(.+?)》/g, "$1")
-            .replace(/\[([^\[\]]+?)#[0-9a-zA-z\-]+\]/g, "$1")
-        : type ? type+count[type]
-        : '―';
-      
-      document.querySelector(`input[name="defTotal${i}CheckArmour${num}"]`).parentNode.style.display
-        = (  !form[`armour${num}Name`].value
-          && !form[`armour${num}Category`].value
-          && !form[`armour${num}Eva`].value
-          && !form[`armour${num}Def`].value
-          && !form[`armour${num}Own`].checked
-          && !type
-        ) ? 'none' : '';
-
       if (type && form[`defTotal${i}CheckArmour${num}`].checked){
         checkedCount[type][i] ??= 0;
         checkedCount[type][i]++;
@@ -2090,6 +2074,7 @@ function addArmour(){
     obj.append(checkbox);
     i++;
   });
+  generateArmourCheckbox();
 }
 // 削除
 function delArmour(){
@@ -2098,27 +2083,75 @@ function delArmour(){
     document.querySelectorAll(`.defense-total-checklist label:has([name$="Armour${deletedNum}"])`).forEach(obj => {
       obj.remove();
     });
+    generateArmourCheckbox();
     calcDefense();
     calcHonor();
   }
 }
 // ソート
-setSortable('armour', '#armours tbody', 'tr',
-  (row, num)=>{
-    const id = row.id;
-    let i = 1;
-    document.querySelectorAll(".defense-total-checklist").forEach(node => {
-      node.querySelector(`[data-id=${id}]`).setAttribute('name',`defTotal${i}CheckArmour${num}`);
-      i++;
-    });
-  },
-  () => { calcDefense(); }
+setSortable('armour', '#armours tbody', 'tr', '',
+  () => { generateArmourCheckbox(); calcDefense(); }
 );
+// 見出し
+function setArmourType (){
+  let count = { 鎧:0, 盾:0, 他:0 };
+  for (let num = 1; num <= form.armourNum.value; num++){
+    const category = form[`armour${num}Category`].value;
+    let type = category.match(/鎧|盾|他/) ? category.match(/鎧|盾|他/)[0] : '';
+    if(num == 1 && !type){ type = '鎧' }
+    if(type){ count[type]++ }
+    form[`armour${num}Name`].parentNode.parentNode.querySelector('.type').textContent
+      = type ? type+count[type] : '';
+  }
+}
+// 合計欄チェックボックス
+function generateArmourCheckbox (){
+  let checkList = {};
+  let rowNum = 0;
+  const rows = document.querySelectorAll(`#armours tfoot .defense-total-checklist`);
+  rows.forEach(row => {
+    rowNum++;
+    checkList[rowNum] = {};
+    row.querySelectorAll(`label input`).forEach(checkbox => {
+      const name = checkbox.nextElementSibling.textContent || '';
+      checkList[rowNum][name] = checkbox.checked ? 'checked' : '';
+    })
+  });
+  rowNum = 1;
+  rows.forEach(row => {
+    row.innerHTML = '';
+    for(let num = 1; num <= form.armourNum.value; num++){
+      let type = form[`armour${num}Name`].parentNode.parentNode.querySelector('.type').textContent || '';
+
+      const name =
+        form[`armour${num}Name`].value ? form[`armour${num}Name`].value
+            .replace(/[|｜](.+?)《(.+?)》/g, "$1")
+            .replace(/\[([^\[\]]+?)#[0-9a-zA-z\-]+\]/g, "$1")
+        : type || '―';
+
+      let checkbox = document.createElement('label');
+      checkbox.classList.add('check-button');
+      checkbox.innerHTML = `<input type="checkbox" name="defTotal${rowNum}CheckArmour${num}" value="1" oninput="calcDefense()" ${checkList[rowNum][name]}><span>${name||'―'}</span>`;
+      row.append(checkbox);
+
+      document.querySelector(`input[name="defTotal${rowNum}CheckArmour${num}"]`).parentNode.style.display
+        = (  !form[`armour${num}Name`].value
+          && !form[`armour${num}Category`].value
+          && !form[`armour${num}Eva`].value
+          && !form[`armour${num}Def`].value
+          && !form[`armour${num}Own`].checked
+          && !type
+        ) ? 'none' : '';
+    }
+    rowNum++;
+  });
+}
 
 // 回避・防護合計 ----------------------------------------
 // 追加
 function addDefense(){
   document.querySelector("#armours tfoot").append(createRow('defense-total','defenseNum'));
+  generateArmourCheckbox();
   calcParts();
   calcDefense();
 }
