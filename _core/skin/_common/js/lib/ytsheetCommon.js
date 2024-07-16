@@ -182,6 +182,7 @@ output.generateUdonariumXml = async (generateType, json, opt_url='', opt_imageHa
   
   dataCharacter.detail = `  <data name="detail">\n`;
   for(const key in dataCharacterDetail) {
+    if(dataCharacterDetail[key].every(value => !value)){ continue; }
     dataCharacter.detail += `      <data name="${key}">\n`;
     dataCharacter.detail += dataCharacterDetail[key].join(('\n'));
     dataCharacter.detail += `\n      </data>\n`;
