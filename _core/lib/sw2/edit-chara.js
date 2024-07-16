@@ -2268,6 +2268,7 @@ setSortable('battleItem','#battle-items-list');
 // 武器攻撃
 function addPaletteAttack(){
   document.querySelector("#palette-attack > table tbody").append(createRow('palette-attack','paletteAttackNum'));
+  generatePaletteWeaponCheckbox();
 }
 function delPaletteAttack(){
   if(delRow('paletteAttackNum', '#palette-attack > table tbody tr:last-of-type')){
