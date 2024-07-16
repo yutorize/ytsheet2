@@ -782,7 +782,6 @@ option.zero-data::before {
 #parts {
   margin-top: var(--box-v-gap);
   position: relative;
-  z-index: 1;
   
   &:not([open]) {
     background-image: linear-gradient(to bottom, var(--box-head-bg-color) 0, transparent 2.5rem);
@@ -790,7 +789,7 @@ option.zero-data::before {
   &[open] summary {
     width: max-content;
     position: relative;
-    z-index: 2;
+    z-index: 1;
   }
   & table {
     margin-top: -1.5em;
