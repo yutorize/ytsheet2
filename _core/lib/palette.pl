@@ -47,6 +47,7 @@ sub outputChatPalette {
     my ($key, $value) = split(/<>/, $_, 2);
     $pc{$key} = $value;
   }
+  
   if($pc{paletteRemoveTags}){
     $_ = removeTags(unescapeTags($_) =~ s/<br>/\n/gr) foreach values %pc;
   }
@@ -60,6 +61,7 @@ sub outputChatPalette {
   if($pc{ver} < 1.11001){ $pc{paletteUseBuff} = 1; }
 
   my $preset = $pc{paletteUseVar} ? palettePreset($tool,$type) :  palettePresetSimple($tool,$type) ;
+
   $preset = deletePalettePresetBuff($preset) if !$pc{paletteUseBuff};
   if(!$tool){ $preset = swapWordAndCommand($preset); }
 
@@ -89,7 +91,7 @@ sub outputChatPalette {
 sub swapWordAndCommand {
   my @palette = split(/\n/, shift);
   foreach (@palette){
-    if($_ =~ /^[0-9a-z:+\-\{]/i){
+    if($_ =~ /^[0-9a-z:+\-\{\(]/i){
       my ($command, $word) = split(/ /, $_, 2);
       if($command && $word){
         $_ = "$word $command";
