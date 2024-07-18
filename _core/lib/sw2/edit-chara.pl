@@ -974,7 +974,7 @@ print <<"HTML";
                 <td rowspan="2">@{[input("weapon${num}Crit")]}
                 <td rowspan="2">+@{[input("weapon${num}Dmg",'number','calcWeapon')]}<b id="weapon${num}-dmg-total">0</b>
                 <td>@{[input("weapon${num}Own",'checkbox','calcWeapon')]}
-                <td><select name="weapon${num}Category" oninput="calcWeapon()">@{[option("weapon${num}Category",@data::weapon_names,'ガン（物理）','盾')]}</select>
+                <td><select name="weapon${num}Category" oninput="calcWeapon()">@{[option("weapon${num}Category",@data::weapon_names,'ガン（物理）','その他|<その他（盾など）>')]}</select>
                 <td><select name="weapon${num}Class" oninput="calcWeapon()">@{[option("weapon${num}Class",@weapon_users,'自動計算しない')]}</select>
                 <td rowspan="2"><span class="button" onclick="addWeapons(${num});">複<br>製</span>
               <tr>
