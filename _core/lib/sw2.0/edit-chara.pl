@@ -66,6 +66,7 @@ elsif($mode eq 'blanksheet'){
     }
     if($::in{making_num}){
       $pc{history0Note} = "能力値作成履歴#$::in{making_num}";
+      if($pc{race} eq '魔動天使'){ $pc{raceAbilitySelect1} = '新たな契約の絆' }
     }
     if($data::races{$pc{race}}{parts}){
       foreach my $name (@{$data::races{$pc{race}}{parts}}){

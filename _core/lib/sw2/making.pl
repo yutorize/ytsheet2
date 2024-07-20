@@ -51,6 +51,11 @@ while ($i <= $in{repeat} || ($average_max <= $set::average_over)){
     $in{phy} = dice(2);
     $in{spi} = dice(2);
   }
+  elsif(exists $data::races{$in{race}}{birth}){
+    $in{tec} = $data::races{$in{race}}{birth}{tec};
+    $in{phy} = $data::races{$in{race}}{birth}{phy};
+    $in{spi} = $data::races{$in{race}}{birth}{spi};
+  }
   
   my $stt_A = dice($data::races{$in{race}}{dice}{A});
   my $stt_B = dice($data::races{$in{race}}{dice}{B});
