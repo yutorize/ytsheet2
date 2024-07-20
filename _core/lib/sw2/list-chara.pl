@@ -132,8 +132,12 @@ $INDEX->param(player => $pl_query);
 ## 種族検索
 my $race_query = decode('utf8', $::in{race});
 if($race_query) {
-  $race_query =~ s/（通常種）$/</;
-  @list = grep { $_ =~ /^(?:[^<]*?<>){9}\Q$race_query\E/ } @list;
+  if   (!$::SW2_0 && $race_query eq 'ドレイク'          ){ @list = grep { $_ =~ /^(?:[^<]*?<>){9}(ドレイク|ドレイク（ナイト）)</ } @list; }
+  elsif(!$::SW2_0 && $race_query eq 'ドレイクブロークン'){ @list = grep { $_ =~ /^(?:[^<]*?<>){9}(ドレイクブロークン|ドレイク（ブロークン）)</ } @list; }
+  else {
+    $race_query =~ s/（通常種）$/</;
+    @list = grep { $_ =~ /^(?:[^<]*?<>){9}\Q$race_query\E/ } @list;
+  }
 }
 $INDEX->param(race => $race_query);
 my @race_search_list;

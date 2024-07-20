@@ -340,6 +340,12 @@ sub data_update_chara {
       $pc{"weapon${num}Category"} = 'その他' if $pc{"weapon${num}Category"} eq '盾';
     }
   }
+  if($ver < 1.25016){
+    if(!$::SW2_0) {
+      $pc{race} = 'ドレイク' if $pc{race} eq 'ドレイク（ナイト）';
+      $pc{race} = 'ドレイクブロークン' if $pc{race} eq 'ドレイク（ブロークン）';
+    }
+  }
   $pc{ver} = $main::ver;
   $pc{lasttimever} = $ver;
   return %pc;
