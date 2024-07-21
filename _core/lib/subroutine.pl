@@ -548,7 +548,7 @@ sub unescapeTagsLines {
   $text =~ s/^\*\*\*\*(.*?)$/<\/p><h5>$1<\/h5><p>/gim;
   $text =~ s/^\*\*\*(.*?)$/<\/p><h4>$1<\/h4><p>/gim;
   $text =~ s/^\*\*(.*?)$/<\/p><h3>$1<\/h3><p>/gim;
-  $text =~ s/\A\*(.*?)$/$main::pc{"head_$_"} = $1; ''/egim;
+  $text =~ s/\A\*(.*?)$/$main::pc{"head_$_"} = $1; ''/egim if $_;
   $text =~ s/^\*(.*?)$/<\/p><h2>$1<\/h2><p>/gim;
   
   $text =~ s/(?:^(?:\|(?:.*?))+\|[hc]?(?:\n|$))+/'<\/p><table class="note-table">'.&generateTable($&).'<\/table><p>'/egim;

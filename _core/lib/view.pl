@@ -208,8 +208,8 @@ sub stylizeWords {
 # 数字列を成形する
 sub formatHistoryFigures {
   my $text = shift;
-  $text =~ s/[0-9]+/$&<wbr>/g;
   $text =~ s/[0-9]+/commify($&);/ge;
+  $text =~ s#[0-9,]+#<span class="number">$&</span><wbr>#g;
   return $text;
 }
 ### メニュー --------------------------------------------------

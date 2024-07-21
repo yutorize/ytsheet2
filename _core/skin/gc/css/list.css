@@ -1,0 +1,95 @@
+@charset "utf-8";
+
+@layer system {
+/* // Body
+---------------------------------------------------------------------------------------------------- */
+body {
+  background-image: url(../../_common/img/back-pattern.png), url(../img/back-crest.png);
+  background-blend-mode: normal, normal;
+  background-position: center, bottom -80px right -100px;
+  background-size: auto, auto 110%;
+  .night & {
+    background-blend-mode: hard-light, normal;
+  }
+  @media screen and (width <= 735px){
+    background-size: auto, 100%;
+    background-position-x: 0, 30vw;
+  }
+}
+/* // List
+---------------------------------------------------------------------------------------------------- */
+.list table tr {
+  grid-template-columns: 26rem 0.8fr 1fr 1fr 4em 1.1fr 0.7fr;
+  grid-template-areas:
+    "NAME   PL  CLS STYL  LVL CNTR DATE"
+    "NAME   PL WRKS SSTL  LVL  PRF DATE"
+    "NAME TAGS TAGS TAGS TAGS TAGS DATE"
+  ;
+  @media screen and (width <= 735px){
+    grid-template-columns: 18rem 6em 1fr 1fr 5.5em 3.5em;
+    grid-template-areas:
+    "NAME   PL  CLS STYL  LVL DATE"
+    "NAME   PL WRKS SSTL  PRF DATE"
+    ;
+  }
+  .name   { grid-area: NAME; }
+  .player { grid-area:   PL; }
+  .race   { grid-area: RACE; }
+  .class  { grid-area:  CLS; }
+  .style  { grid-area: STYL; }
+  .s-style{ grid-area: SSTL; }
+  .works  { grid-area: WRKS; }
+  .lv     { grid-area:  LVL; }
+  .country{ grid-area: CNTR; }
+  .profile{ grid-area:  PRF; }
+  .tags   { grid-area: TAGS; }
+  .date   { grid-area: DATE; }
+  
+  & .name {
+    position: relative;
+  }
+  & td.lv {
+    font-size: 1.4em;
+    line-height: 1;
+  }
+  & td > .thin {
+    display: inline-block;
+    transform: scaleY(calc(1 / 0.85));
+    font-size: 85%;
+  }
+  @media screen and (width <= 735px){
+    .country { display: none; }
+  }
+}
+
+/* // List-Country
+---------------------------------------------------------------------------------------------------- */
+.list.country table tr {
+  grid-template-columns: 26rem 0.8fr 2.1fr 1fr 4em 0.7fr;
+  grid-template-areas:
+    "NAME   PL LORD PERG  LVL DATE"
+    "NAME TAGS TAGS TAGS TAGS DATE"
+  ;
+  &:not(:has(.tags:not(:empty))){
+    grid-template-areas:
+      "NAME   PL LORD PERG  LVL DATE"
+  }
+  @media screen and (width <= 735px){
+    grid-template-columns: 18rem 6em 1fr 1fr 5.5em 3.5em;
+    grid-template-areas:
+    "NAME   PL  LORD PERG LVL DATE"
+    ;
+  }
+  .lord   { grid-area: LORD; }
+  .peerage{ grid-area: PERG; }
+}
+
+/* // List-Simple
+---------------------------------------------------------------------------------------------------- */
+.list ul li a::before {
+  content: 'Lv'attr(data-lv);
+}
+
+
+/* ////////// LayerEnd ////////// */
+}

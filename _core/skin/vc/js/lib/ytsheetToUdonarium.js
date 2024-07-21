@@ -21,29 +21,17 @@ output.generateUdonariumXmlDetailOfVisionConnectPC = (json, opt_url, defaultPale
   ];
   if(opt_url) { dataDetails['情報'].push(`        <data name="URL">${opt_url}</data>`);}
 
-  let addedParam = output.consts.VC_PARAMS;
-  dataDetails['能力値'] = [
-    `        <data name="バイタリティ">${json.vitality || 0}</data>`,
-    `        <data name="テクニック">${json.technic || 0}</data>`,
-    `        <data name="クレバー">${json.clever || 0}</data>`,
-    `        <data name="カリスマ">${json.carisma || 0}</data>`,
-  ];
-  dataDetails['戦闘値'] = [
-    `        <data name="命中値">${json.battleTotalAcc || 0}</data>`,
-    `        <data name="詠唱値">${json.battleTotalSpl || 0}</data>`,
-    `        <data name="回避値">${json.battleTotalEva || 0}</data>`,
-    `        <data name="攻撃値">${json.battleTotalAtk || 0}</data>`,
-    `        <data name="意志値">${json.battleTotalDet || 0}</data>`,
-    `        <data name="物防値">${json.battleTotalDef || 0}</data>`,
-    `        <data name="魔防値">${json.battleTotalMdf || 0}</data>`,
-    `        <data name="行動値">${json.battleTotalIni || 0}</data>`,
-    `        <data name="耐久値">${json.battleTotalStr || 0}</data>`,
-  ];
+  let addedParam = {};
+  dataDetails['能力値・戦闘値'] = [];
+  for(let data of output.consts.VC_PARAMS){
+    dataDetails['能力値・戦闘値'].push(`        <data name="${data.name}">${json[data.value] || 0}</data>`);
+    addedParam[data.name] = 1;
+  }
 
-    dataDetails['バフ・デバフ'] = defaultPalette.parameters.map((param)=>{
-      if(addedParam[param.label]){ return `` }
-      return `        <data type="numberResource" currentValue="${param.value}" name="${param.label}">${param.value < 10 ? 10 : param.value}</data>`; 
-    });
+  dataDetails['その他のパラメータ'] = defaultPalette.parameters.map((param)=>{
+    if(addedParam[param.label]){ return `` }
+    return `        <data type="numberResource" currentValue="${param.value}" name="${param.label}">${param.value < 10 ? 10 : param.value}</data>`; 
+  });
 
 
   return dataDetails

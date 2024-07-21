@@ -240,7 +240,13 @@ foreach my $class (@data::class_names){
   next if !$pc{'lv'.$id};
   my $name = $class;
   if($name eq 'プリースト' && $pc{faith}){
-    $name .= '<span class="priest-faith'.(length($pc{faith}) > 12 ? ' narrow' : "").'">（'.$pc{faith}.$pc{faithType}.'）</span>';
+    my $faith = $pc{faith};
+    if ($faith eq 'その他の信仰') {
+      $faith = $pc{faithOther};
+      $faith =~ s#<a [^>]*>([^<]+?)</a>#$1#s; # 未定義の神格の場合、ゆとシの神格シートなどへのハイパーリンクが想定されるので、それを除去する
+      $faith =~ s/^[“”"].*[“”"](.+$)/$1/;
+    }
+    $name .= '<span class="priest-faith'.(length($faith) > 12 ? ' narrow' : "").'">（'.$faith.$pc{faithType}.'）</span>';
   }
   push(@classes, { NAME => $name, LV => $pc{'lv'.$id} } );
   $classes{$class} = $pc{'lv'.$id};
@@ -632,14 +638,26 @@ if($pc{forbiddenMode}){
 else {
   my $first = 1;
   foreach (1 .. $pc{weaponNum}){
-    next if !existsRow "weapon$_",'Name','Usage','Reqd','Acc','Rate','Crit','Dmg','Own','Note';
-    my $rowspan = 1;
+    next if !existsRow "weapon$_",'Name','Part','Usage','Reqd','Acc','Rate','Crit','Dmg','Own','Note';
+    my $rowspan = 1; my $notespan = 1;
     for(my $num = $_+1; $num <= $pc{weaponNum}; $num++){
       last if $pc{'weapon'.$num.'NameOff'};
       last if $pc{'weapon'.$num.'Name'};
-      last if !existsRow "weapon$_",'Name','Usage','Reqd','Acc','Rate','Crit','Dmg','Own','Note';
+      last if !existsRow "weapon$_",'Name','Part','Usage','Reqd','Acc','Rate','Crit','Dmg','Own','Note';
+      if($pc{'weapon'.$num.'Part'} ne $pc{'weapon'.$_.'Part'}){
+        $pc{'weapon'.$num.'Name'} = $pc{'weapon'.$_.'Name'};
+        next;
+      }
       $rowspan++;
       $pc{'weapon'.$num.'NameOff'} = 1;
+      if(!$pc{'weapon'.$num.'Note'}){
+        $notespan++;
+        $pc{'weapon'.$num.'NoteOff'} = 1;
+      }
+      else {
+        $pc{'weapon'.($num-$notespan).'NoteSpan'} = $notespan;
+        $notespan = 1
+      }
     }
     if($pc{'weapon'.$_.'Class'} eq "自動計算しない"){
       $pc{'weapon'.$_.'Acc'} = 0;
@@ -647,6 +665,7 @@ else {
     }
     push(@weapons, {
       NAME     => $pc{'weapon'.$_.'Name'},
+      PART     => $pc{'part'.$pc{'weapon'.$_.'Part'}.'Name'},
       ROWSPAN  => $rowspan,
       NAMEOFF  => $pc{'weapon'.$_.'NameOff'},
       USAGE    => $pc{'weapon'.$_.'Usage'},
@@ -659,6 +678,8 @@ else {
       DMGTOTAL => $pc{'weapon'.$_.'DmgTotal'},
       OWN      => $pc{'weapon'.$_.'Own'},
       NOTE     => $pc{'weapon'.$_.'Note'},
+      NOTESPAN => $pc{'weapon'.$_.'NoteSpan'},
+      NOTEOFF  => $pc{'weapon'.$_.'NoteOff'},
       CLOSE    => ($pc{'weapon'.$_.'NameOff'} || $first ? 0 : 1),
     } );
     $first = 0;
@@ -675,20 +696,20 @@ if(!$pc{forbiddenMode}){
     next if !($data::class{$name}{type} eq 'weapon-user' || exists $data::class{$name}{evaUnlock});
     if(exists $data::class{$name}{evaUnlock}){
       next if $pc{'lv'.$id} < $data::class{$name}{evaUnlock}{lv};
-    }
-    if($data::class{$name}{evaUnlock}{feat}){
-      my $isUnlock = 0;
-      foreach my $feat (split('|',$data::class{$name}{evaUnlock}{feat})){
-        if($acquired{$feat}){ $isUnlock = 1; last; }
+      if($data::class{$name}{evaUnlock}{feat}){
+        my $isUnlock = 0;
+        foreach my $feat (split('\|',$data::class{$name}{evaUnlock}{feat})){
+          if($acquired{$feat}){ $isUnlock = 1; last; }
+        }
+        next if !$isUnlock;
       }
-      next if !$isUnlock;
-    }
-    if($data::class{$name}{evaUnlock}{craft}){
-      my $isUnlock = 0;
-      foreach my $craft (split('|',$data::class{$name}{evaUnlock}{feat})){
-        if($acquired{$craft}){ $isUnlock = 1; last; }
+      if($data::class{$name}{evaUnlock}{craft}){
+        my $isUnlock = 0;
+        foreach my $craft (split('\|',$data::class{$name}{evaUnlock}{craft})){
+          if($acquired{$craft}){ $isUnlock = 1; last; }
+        }
+        next if !$isUnlock;
       }
-      next if !$isUnlock;
     }
     push(@evasion, {
       NAME => $name."<span class=\"small\">技能レベル</span>".$pc{'lv'.$id},
@@ -740,6 +761,12 @@ if(!$pc{forbiddenMode}){
       EVA  => $pc{mindsEye},
     } );
   }
+  if($pc{partEnhance}) {
+    push(@evasion, {
+      NAME => '【部位'.($pc{partEnhance} >= 3 ? '極' : $pc{partEnhance} >= 2 ? '超' : '即応＆').'強化】',
+      EVA  => $pc{partEnhance},
+    } );
+  }
   $SHEET->param(EvasionClasses => \@evasion);
 }
 ### 防具 --------------------------------------------------
@@ -788,6 +815,7 @@ else {
   foreach my $i (1..$pc{defenseNum}){
     my @ths;
     my $class = $pc{"evasionClass$i"};
+    my $part  = $pc{'part'.$pc{"evasionPart$i"}.'Name'};
     foreach (1 .. $pc{armourNum}){
       my $cate = $pc{'armour'.$_.'Category'};
       if ($pc{"defTotal${i}CheckArmour$_"} && (
@@ -801,8 +829,10 @@ else {
     }
     next if !$class && !@ths && !$pc{"defenseTotal${i}Note"};
     my $th = 
-      ($class ? "${class}／" : '')
-      .(@ths == @armours ? 'すべての防具' : join('＋', @ths) || '防具なし');
+      ($part ? "${part}/" : '')
+      .($class ? "${class}/" : '')
+      .(@ths == @armours ? 'すべての防具・効果' : join('＋', @ths) || '');
+    $th =~ s|/$||;
     push(@total, {
       TH   => $th,
       EVA  => $pc{"defenseTotal${i}Eva"},
@@ -856,6 +886,26 @@ else {
   }
   $SHEET->param(Accessories => \@accessories);
 }
+
+### 部位 --------------------------------------------------
+{
+  my @row;
+  foreach (1 .. $pc{partNum}) {
+    my $type = ($pc{partCore} eq $_) ? 'core' : 'part';
+    push(@row, {
+      NAME   => $pc{"part${_}Name"}.($pc{partCore} eq $_ ? "<small>（コア部位）</small>" : ""),
+      DEF    => $pc{"part${_}DefTotal"},
+      HP     => $pc{"part${_}HpTotal"},
+      MP     => $pc{"part${_}MpTotal"},
+      DEFMOD => ($pc{"part${_}Def"} != $pc{"part${_}DefTotal"} ? $pc{"part${_}Def"}+$pc{$type.'DefAuto'} : 0),
+      HPMOD  => ($pc{"part${_}Hp" } != $pc{"part${_}HpTotal" } ? $pc{"part${_}Hp" }+$pc{$type.'HpAuto'}  : 0),
+      MPMOD  => ($pc{"part${_}Mp" } != $pc{"part${_}MpTotal" } ? $pc{"part${_}Mp" }+$pc{$type.'MpAuto'}  : 0),
+      NOTE   => $pc{"part${_}Note"},
+    } );
+  }
+  $SHEET->param(Parts => \@row);
+}
+
 ### 履歴 --------------------------------------------------
 
 $pc{history0Grow} .= '器用'.$pc{sttPreGrowA} if $pc{sttPreGrowA};

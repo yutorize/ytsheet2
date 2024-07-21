@@ -31,7 +31,7 @@ $INDEX->param(OAUTH_LOGIN_URL => $set::oauth_login_url);
 my @race_makelist;
 foreach my $name (@data::race_names){
   if($data::races{$name}{dice}){
-    push(@race_makelist, {"NAME" => ${name}});
+    push(@race_makelist, {VALUE => $name});
   }
   if($data::races{$name}{variant}){
     foreach my $varname (@{ $data::races{$name}{variantSort} }){
@@ -42,7 +42,7 @@ foreach my $name (@data::race_names){
   }
 
   if($name eq '人間'){
-    push(@race_makelist, {"NAME" => "人間（冒険者）"});
+    push(@race_makelist, {VALUE => "人間（冒険者）"});
   }
 
   if($name =~ /^label=(.+)$/){
@@ -80,6 +80,11 @@ foreach my $data (@lines) {
   next if $in_num && $data !~ /^$in_num</;
   next if !$in_num && (($i <= $page) || ($i > $page+$page_items));
   my ($num, $date, $id, $name, $comment, $race, $stt, $curse) = split(/<>/, $data);
+
+  if(!$::SW2_0){
+    if   ($race eq 'ドレイク（ナイト）'    ){ $race = 'ドレイク' }
+    elsif($race eq 'ドレイク（ブロークン）'){ $race = 'ドレイクブロークン' }
+  }
   
   my $adventurer = ($race =~ s/（冒険者）//) ? 1 : 0;
   my @datalist;

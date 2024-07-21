@@ -58,7 +58,6 @@ output.generateUdonariumXmlDetailOfSwordWorld2PC = (json, opt_url, defaultPalett
   const dataDetails = {'リソース':resources};
 
   dataDetails['リソース'].push(
-    `        <data type="numberResource" currentValue="0" name="1ゾロ">10</data>`,
     `        <data type="numberResource" currentValue="${json.sin || 0}" name="穢れ度">5</data>`,
     `        <data name="所持金">${json.moneyTotal}</data>`,
     `        <data name="残名誉点">${json.honor}</data>`
@@ -70,24 +69,19 @@ output.generateUdonariumXmlDetailOfSwordWorld2PC = (json, opt_url, defaultPalett
   ];
   if(opt_url) { dataDetails['情報'].push(`        <data name="URL">${opt_url}</data>`) }
 
-  const addToStr = (val)=>{
-    if(val) {
-      if(Number(val) < 0) {
-        return `${val}`;
-      } else {
-        return `+${val}`;
-      }
-    } else {
-      return '';
-    }
-  };
   dataDetails['能力値'] = [
-    `        <data name="器用度">${json.sttDex}${addToStr(json.sttAddA)}</data>`,
-    `        <data name="敏捷度">${json.sttAgi}${addToStr(json.sttAddB)}</data>`,
-    `        <data name="筋力">${json.sttStr}${addToStr(json.sttAddC)}</data>`,
-    `        <data name="生命力">${json.sttVit}${addToStr(json.sttAddD)}</data>`,
-    `        <data name="知力">${json.sttInt}${addToStr(json.sttAddE)}</data>`,
-    `        <data name="精神力">${json.sttMnd}${addToStr(json.sttAddF)}</data>`
+    `        <data name="器用度">${json.sttDex}</data>`,
+    `        <data name="敏捷度">${json.sttAgi}</data>`,
+    `        <data name="筋力">${json.sttStr}</data>`,
+    `        <data name="生命力">${json.sttVit}</data>`,
+    `        <data name="知力">${json.sttInt}</data>`,
+    `        <data name="精神力">${json.sttMnd}</data>`,
+    `        <data name="器用度増強">${json.sttAddA || 0}</data>`,
+    `        <data name="敏捷度増強">${json.sttAddB || 0}</data>`,
+    `        <data name="筋力増強">${json.sttAddC || 0}</data>`,
+    `        <data name="生命力増強">${json.sttAddD || 0}</data>`,
+    `        <data name="知力増強">${json.sttAddE || 0}</data>`,
+    `        <data name="精神力増強">${json.sttAddF || 0}</data>`
   ];
   
   let addedParam = {
@@ -97,6 +91,12 @@ output.generateUdonariumXmlDetailOfSwordWorld2PC = (json, opt_url, defaultPalett
     '生命力':1,
     '知力':1,
     '精神力':1,
+    '器用度増強':1,
+    '敏捷度増強':1,
+    '筋力増強':1,
+    '生命力増強':1,
+    '知力増強':1,
+    '精神力増強':1,
     '冒険者レベル':1,
   }
   dataDetails['技能'] = [`        <data name="冒険者レベル">${json.level}</data>`];
@@ -121,7 +121,7 @@ output.generateUdonariumXmlDetailOfSwordWorld2PC = (json, opt_url, defaultPalett
       return `        <data type="numberResource" currentValue="${param.value}" name="${param.label}">${param.value < 10 ? 10 : param.value}</data>`;
     }
   });
-  dataDetails['パラメータ'] = defaultPalette.parameters.map((param)=>{
+  dataDetails['その他のパラメータ'] = defaultPalette.parameters.map((param)=>{
     if(addedParam[param.label]){ return ''; }
     return `        <data name="${param.label}">${param.value}</data>`;
   });

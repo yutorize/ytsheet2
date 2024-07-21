@@ -66,6 +66,14 @@ elsif($mode eq 'blanksheet'){
     }
     if($::in{making_num}){
       $pc{history0Note} = "能力値作成履歴#$::in{making_num}";
+      if($pc{race} eq '魔動天使'){ $pc{raceAbilitySelect1} = '新たな契約の絆' }
+    }
+    if($data::races{$pc{race}}{parts}){
+      foreach my $name (@{$data::races{$pc{race}}{parts}}){
+        $pc{partNum}++;
+        $pc{"part$pc{partNum}Name"} = $name;
+      }
+      $pc{partCore} = 1;
     }
   }
   
@@ -92,6 +100,7 @@ $pc{commonClassNum}||= 10;
 $pc{weaponNum}     ||=  1;
 $pc{armourNum}     ||=  3;
 $pc{defenseNum}    ||=  2;
+$pc{partNum}       ||=  0;
 $pc{languageNum}   ||=  3;
 $pc{honorItemsNum} ||=  3;
 $pc{historyNum}    ||=  3;
@@ -914,6 +923,13 @@ print <<"HTML";
                 <td>―
                 <td>―
                 <td>―
+              <tr id="parts-enhance"@{[ display $pc{partEnhance} ]}>
+                <td>【部位強化】
+                <td>―
+                <td id="parts-enhance-acc">1
+                <td>―
+                <td>―
+                <td>―
               </tr>
             </tbody>
           </table>
@@ -942,7 +958,10 @@ foreach my $num ('TMPL',1 .. $pc{weaponNum}) {
 print <<"HTML";
             <tbody id="weapon-row$num">
               <tr>
-                <td rowspan="2">@{[input("weapon${num}Name",'','','placeholder="名称" list="list-weapon-name"')]}<span class="handle"></span>
+                <td rowspan="2">
+                  @{[input("weapon${num}Name",'','changeWeaponName','placeholder="名称" list="list-weapon-name"')]}
+                  <span class="handle"></span>
+                  <dl><dt>部位<dd>@{[ selectBox "weapon${num}Part","calcWeapon",1..$pc{partNum} ]}</dl>
                 <td rowspan="2">@{[input("weapon${num}Usage","text",'','list="list-usage"')]}
                 <td rowspan="2">@{[input("weapon${num}Reqd",'text','calcWeapon')]}
                 <td rowspan="2">+@{[input("weapon${num}Acc",'number','calcWeapon')]}<b id="weapon${num}-acc-total">0</b>
@@ -1039,6 +1058,11 @@ print <<"HTML";
                 <td>―
                 <td id="minds-eye-value">$pc{mindsEye}
                 <td>―
+              <tr id="parts-enhance-def"@{[ display $pc{partEnhance} ]}>
+                <td>【部位強化】
+                <td>―
+                <td id="parts-enhance-eva">1
+                <td>―
               </tr>
             </tbody>
           </table>
@@ -1062,14 +1086,14 @@ HTML
 foreach my $num ('TMPL',1 .. $pc{armourNum}) {
   if($num eq 'TMPL'){ print '<template id="armour-template">' }
   print <<"HTML";
-              <tr id="armour${num}" data-type="">
+              <tr id="armour-row${num}" data-type="">
                 <th class="type handle">
-                <td><select name="armour${num}Category" oninput="calcDefense()">@{[ option "armour${num}Category",'金属鎧','非金属鎧','盾','その他' ]}</select>
-                <td>@{[ input "armour${num}Name",'','calcDefense','list="list-item-name"' ]}
+                <td><select name="armour${num}Category" oninput="setArmourType();generateArmourCheckbox();calcDefense();calcMobility()">@{[ option "armour${num}Category",'金属鎧','非金属鎧','盾','その他' ]}</select>
+                <td>@{[ input "armour${num}Name",'','generateArmourCheckbox','list="list-item-name"' ]}
                 <td>@{[ input "armour${num}Reqd",'','calcDefense' ]}
                 <td>@{[ input "armour${num}Eva",'number','calcDefense' ]}
                 <td>@{[ input "armour${num}Def",'number','calcDefense' ]}
-                <td>@{[ input "armour${num}Own",'checkbox','calcDefense','style="display:none"' ]}
+                <td>@{[ input "armour${num}Own",'checkbox','calcDefense();calcMobility','disabled' ]}
                 <td>@{[ input "armour${num}Note" ]}
 HTML
   if($num eq 'TMPL'){ print '</template>' }
@@ -1091,6 +1115,7 @@ foreach my $i ('TMPL',1..$pc{defenseNum}){
               <tr class="defense-total" id="defense-total-row${i}">
                 <td colspan="2">
                   @{[ selectBox "evasionClass$i","calcDefense", @evasion_classes ]}
+                  <dl><dt>部位<dd>@{[ selectBox "evasionPart$i","calcDefense",1..$pc{partNum} ]}</dl>
                 <td colspan="2" class="defense-total-checklist">
 HTML
   foreach my $num (1 .. $pc{armourNum}) {
@@ -1110,6 +1135,52 @@ print <<"HTML";
           </table>
           <div class="add-del-button"><a onclick="addDefense()">▼</a><a onclick="delDefense()">▲</a></div>
         </div>
+
+        <details class="box-union" id="parts" @{[ $data::races{$pc{race}}{parts} ? 'open':'' ]}>
+          <summary class="in-toc">部位</summary>
+          <div class="box">
+            <table class="edit-table line-tbody">
+              <thead>
+                <tr>
+                  <th class="name  ">
+                  <th class="core small">コア
+                  <th class="def   ">防護点
+                  <th class="hp    ">ＨＰ
+                  <th class="mp    ">ＭＰ
+                  <th class="note  ">備考
+              <tbody>
+HTML
+foreach my $num ('TMPL',1 .. $pc{partNum}) {
+  print '<template id="part-template">' if($num eq 'TMPL');
+  print <<"HTML";
+                <tr id="part-row${num}">
+                  <td class="name  ">@{[ selectInput "part${num}Name","changeParts",'頭部','胴体','上半身','翼','邪眼','蠍','鋏' ]}
+                  <td class="core  ">@{[ radio "partCore","deselectable,changeParts",$num ]}
+                  <td class="def   "><span class="auto-mod"></span>+@{[ input "part${num}Def","number","changeParts" ]}=<b>0</b>
+                  <td class="hp    "><span class="auto-mod"></span>+@{[ input "part${num}Hp" ,"number","changeParts" ]}=<b>0</b>
+                  <td class="mp    "><span class="auto-mod"></span>+@{[ input "part${num}Mp" ,"number","changeParts" ]}=<b>0</b>
+                  <td class="note  ">@{[ input "part${num}Note" ]}
+HTML
+  print '</template>' if($num eq 'TMPL');
+}
+print <<"HTML";
+            @{[ input 'partNum','hidden' ]}
+            </table>
+            <div class="add-del-button"><a onclick="addPart()">▼</a><a onclick="delPart()">▲</a></div>
+          </div>
+          <div class="box" id="parts-stt-add">
+            <h2>変身時に有効な増強</h2>
+            <dl>
+              <dt>器用度<dd>@{[ input "sttPartA","number","changeParts" ]}
+              <dt>敏捷度<dd>@{[ input "sttPartB","number","changeParts" ]}
+              <dt>筋力  <dd>@{[ input "sttPartC","number","changeParts" ]}
+              <dt>生命力<dd>@{[ input "sttPartD","number","changeParts" ]}
+              <dt>知力  <dd>@{[ input "sttPartE","number","changeParts" ]}
+              <dt>精神力<dd>@{[ input "sttPartF","number","changeParts" ]}
+            </dl>
+            <ul class="annotate"><li>その他部位の計算には通常の増強欄ではなく、こちらの値が適用されます</ul>
+          </div>
+        </details>
 
         <div class="box in-toc" id="accessories" data-content-title="装飾品">
           <table class="edit-table">
@@ -1229,7 +1300,7 @@ print <<"HTML";
 HTML
 foreach my $num ('TMPL',1 .. $pc{honorItemsNum}){
   if($num eq 'TMPL'){ print '<template id="honor-item-template">' }
-  print '<tr id="honor-item'.$num.'"><td class="handle"><td>'.(input "honorItem${num}", "text").'<td><span class="honor-pt"><select name="honorItem'.$num.'PtType" oninput="calcHonor()" data-type="human">'.(option "honorItem${num}PtType",@honortypes).'</select><span class="honor-select-view"></span>'.(input "honorItem${num}Pt", "number", "calcHonor").'</span>';
+  print '<tr id="honor-item'.$num.'"><td class="handle"><td>'.(input "honorItem${num}", "text", '', 'list="list-honor-item"').'<td><span class="honor-pt"><select name="honorItem'.$num.'PtType" oninput="calcHonor()" data-type="human">'.(option "honorItem${num}PtType",@honortypes).'</select><span class="honor-select-view"></span>'.(input "honorItem${num}Pt", "number", "calcHonor").'</span>';
   if($num eq 'TMPL'){ print '</template>' }
 }
 print <<"HTML";

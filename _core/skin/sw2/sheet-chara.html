@@ -382,7 +382,9 @@
             </thead>
             <tbody><TMPL_LOOP Weapons><TMPL_IF CLOSE></tbody><tbody></TMPL_IF>
               <tr>
-                <TMPL_UNLESS NAMEOFF><td rowspan="<TMPL_VAR ROWSPAN>"><span class="item-name"><TMPL_VAR NAME></span></TMPL_UNLESS>
+                <TMPL_UNLESS NAMEOFF><td rowspan="<TMPL_VAR ROWSPAN>">
+                  <span class="item-name"><TMPL_VAR NAME><TMPL_IF PART><span class="part-name">（<TMPL_VAR PART>）</span></TMPL_IF></span>
+                </TMPL_UNLESS>
                 <td><TMPL_VAR USAGE>
                 <td><TMPL_VAR REQD>
                 <td><TMPL_IF ACC><TMPL_VAR ACC>=</TMPL_IF><b><TMPL_VAR ACCTOTAL></b>
@@ -390,7 +392,9 @@
                 <td><TMPL_VAR CRIT>
                 <td><TMPL_IF DMG><TMPL_VAR DMG>=</TMPL_IF><b><TMPL_VAR DMGTOTAL></b>
                 <td><TMPL_IF OWN>✔</TMPL_IF>
-                <td><span class="item-name"><TMPL_VAR NOTE></span>
+                <TMPL_UNLESS NOTEOFF><td rowspan="<TMPL_VAR NOTESPAN>">
+                  <span class="item-name"><TMPL_VAR NOTE></span>
+                </TMPL_UNLESS>
             </TMPL_LOOP></tbody>
           </table>
         </section>
@@ -446,6 +450,27 @@
                 <td class="note" colspan="2"><TMPL_VAR NOTE>
               </TMPL_LOOP>
             </tfoot>
+          </table>
+        </section></TMPL_IF>
+        <TMPL_IF Parts><section class="box" id="parts">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th class="name">部位
+                <th class="def ">防護点
+                <th class="hp  ">ＨＰ
+                <th class="mp  ">ＭＰ
+                <th class="note">備考
+              </tr>
+            <tbody>
+              <TMPL_LOOP Parts><tr>
+                <td class="name"><TMPL_VAR NAME>
+                <td class="def "><TMPL_IF DEFMOD><span class="small">+<TMPL_VAR DEFMOD>=</span></TMPL_IF><TMPL_VAR DEF>
+                <td class="hp  "><TMPL_IF HPMOD ><span class="small">+<TMPL_VAR HPMOD >=</span></TMPL_IF><TMPL_VAR HP >
+                <td class="mp  "><TMPL_IF MPMOD ><span class="small">+<TMPL_VAR MPMOD >=</span></TMPL_IF><TMPL_VAR MP >
+                <td class="note left"><TMPL_VAR NOTE>
+              </TMPL_LOOP>
+            </tbody>
           </table>
         </section></TMPL_IF>
         <TMPL_IF Accessories><section class="box" id="accessories">

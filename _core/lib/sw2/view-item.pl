@@ -69,10 +69,11 @@ $pc{effects} =~ s/<br>/\n/gi;
 $pc{effects} =~ s#(<p>|</p>|</details>)#$1\n#gi;
 $pc{effects} =~ s/^●(.*?)$/<\/p><h3>●$1<\/h3><p>/gim;
 if($::SW2_0){
-  $pc{effects} =~ s/^((?:\[[常主補宣条選]\]|[○◯〇＞▶〆☆≫»□☐☑🗨▽▼]|&gt;&gt;)+.*?)(　|$)/"<\/p><h5>".&textToIcon($1)."<\/h5><p>".$2;/egim;
+  $pc{effects} =~ s/^((?:[○◯〇＞▶〆☆≫»□☐☑🗨▽▼]|&gt;&gt;)+.*?)(　|$)/&textToIcon($1).$2/egim;
 } else {
-  $pc{effects} =~ s/^((?:\[[常準主補宣]\]|[○◯〇△＞▶〆☆≫»□☐☑🗨]|&gt;&gt;)+.*?)(　|$)/"<\/p><h5>".&textToIcon($1)."<\/h5><p>".$2;/egim;
+  $pc{effects} =~ s/^((?:[○◯〇△＞▶〆☆≫»□☐☑🗨]|&gt;&gt;)+.*?)(　|$)/&textToIcon($1).$2/egim;
 }
+$pc{effects} =~ s/^((?:<i class="s-icon [a-z0]+?">.+?<\/i>)+.*?)(　|$)/<\/p><h5>$1<\/h5><p>$2/gim;
 $pc{effects} =~ s/\n+<\/p>/<\/p>/gi;
 $pc{effects} =~ s/(^|<p(?:.*?)>|<hr(?:.*?)>)\n/$1/gi;
 $pc{effects} = "<p>$pc{effects}</p>";
@@ -116,10 +117,10 @@ foreach (1 .. $pc{weaponNum}){
   push(@weapons, {
     USAGE => $pc{'weapon'.$_.'Usage'},
     REQD  => $pc{'weapon'.$_.'Reqd'},
-    ACC   => $pc{'weapon'.$_.'Acc'},
+    ACC   => $pc{'weapon'.$_.'Acc'} // '―',
     RATE  => $pc{'weapon'.$_.'Rate'},
     CRIT  => $pc{'weapon'.$_.'Crit'},
-    DMG   => $pc{'weapon'.$_.'Dmg'},
+    DMG   => $pc{'weapon'.$_.'Dmg'} // '―',
     NOTE  => $pc{'weapon'.$_.'Note'},
   } );
 }
@@ -132,8 +133,8 @@ foreach (1 .. $pc{armourNum}){
   push(@armours, {
     USAGE => $pc{'armour'.$_.'Usage'},
     REQD  => $pc{'armour'.$_.'Reqd'},
-    EVA   => $pc{'armour'.$_.'Eva'},
-    DEF   => $pc{'armour'.$_.'Def'},
+    EVA   => $pc{'armour'.$_.'Eva'} // '―',
+    DEF   => $pc{'armour'.$_.'Def'} // 0,
     NOTE  => $pc{'armour'.$_.'Note'},
   } );
 }
