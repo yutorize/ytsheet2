@@ -103,7 +103,7 @@ if($::in{url}){
 }
 
 ### 価格
-$SHEET->param(price => commify $pc{price}) if $pc{price} =~ /^\d{4,}/;
+$SHEET->param(price => commify $pc{price}) if $pc{price} =~ /\d{4,}/;
 
 ### 魔法の武器アイコン --------------------------------------------------
 $SHEET->param(magic => ($pc{magic} ? "<img class=\"i-icon\" src=\"${set::icon_dir}wp_magic.png\">" : ''));
