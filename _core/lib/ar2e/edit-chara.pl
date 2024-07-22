@@ -133,6 +133,7 @@ foreach (
   'armamentBodyNote',
   'armamentSubNote',
   'armamentOtherNote',
+  'armamentTotalNote',
   'battleSkillNote',
   'battleOtherNote',
 ){
