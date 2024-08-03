@@ -794,7 +794,7 @@ sub paletteProperties {
       foreach my $j (1..$::pc{armourNum}){
         if($::pc{"defTotal${i}CheckArmour${j}"}){
           $evaMod += $::pc{"armour${j}Eva"};
-          $own_agi = $::pc{"armour${j}Category"} eq '盾' && $::pc{"armour${j}Own"} ? '+2' : '';
+          $own_agi = '+2' if $::pc{"armour${j}Category"} eq '盾' && $::pc{"armour${j}Own"};
           $hasChecked++;
         }
       }
