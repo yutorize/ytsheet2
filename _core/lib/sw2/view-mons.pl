@@ -150,7 +150,13 @@ $SHEET->param(Tags => \@tags);
 
   foreach (@prices) {
     (my $term, my $value) = @{$_};
-    $price .= "<dt>$term</dt><dd>$value<small>G</small></dd>" if $value;
+    my $annotation = $value =~ s/([(（].+?[）)])$// ? $1 : '';
+    my $unit = $value =~ /\d$/ ? 'G' : '';
+
+    $unit = "<small>$unit</small>" if $unit ne '';
+    $annotation = "<small>$annotation</small>" if $annotation ne '';
+
+    $price .= "<dt>$term</dt><dd>$value$unit$annotation</dd>" if $value;
   }
 
   if(!$price){ $price = '―' }
