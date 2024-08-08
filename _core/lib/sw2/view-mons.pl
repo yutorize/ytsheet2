@@ -141,9 +141,18 @@ $SHEET->param(Tags => \@tags);
 ### 価格 --------------------------------------------------
 {
   my $price;
-  $price .= "<dt>購入</dt><dd>$pc{price}<small>G</small></dd>" if $pc{price};
-  $price .= "<dt>レンタル</dt><dd>$pc{priceRental}<small>G</small></dd>"     if $pc{priceRental};
-  $price .= "<dt>部位再生</dt><dd>$pc{priceRegenerate}<small>G</small></dd>" if $pc{priceRegenerate};
+
+  my @prices = (
+      ['購入', $pc{price}],
+      ['レンタル', $pc{priceRental}],
+      ['部位再生', $pc{priceRegenerate}],
+  );
+
+  foreach (@prices) {
+    (my $term, my $value) = @{$_};
+    $price .= "<dt>$term</dt><dd>$value<small>G</small></dd>" if $value;
+  }
+
   if(!$price){ $price = '―' }
   $SHEET->param(price => "<dl class=\"price\">$price</dl>");
 }
