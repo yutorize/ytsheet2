@@ -61,6 +61,8 @@ sub createUnitStatus {
       push(@unitStatus, { 'MP' => "$mp/$mp" }) unless isEmptyValue($mp);
       push(@unitStatus, { '防護' => "$def" });
     }
+
+    push(@unitStatus, {'弱点' => $pc{weakness}}) if $pc{weakness};
   }
   else {
     @unitStatus = (
