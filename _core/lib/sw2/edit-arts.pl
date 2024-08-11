@@ -594,6 +594,7 @@ print <<"HTML";
     <option value="10秒（1ラウンド）持続">
   </datalist>
   <datalist id="list-arts-risk">
+    <option value="—">
     <option value="なし">
     <option value="回避力判定-1">
     <option value="回避力判定-2">
