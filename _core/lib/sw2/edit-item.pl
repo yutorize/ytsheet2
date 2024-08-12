@@ -324,6 +324,7 @@ print <<"HTML";
     <option value="特殊楽器">
     <option value="冒険道具類">
     <option value="冒険道具類（消耗品）">
+    <option value="武器や防具の強化">
   </datalist>
   <script>
 @{[ &commonJSVariable ]}
