@@ -287,6 +287,7 @@ foreach my $set_url (split ',',$item_urls){
   if(exists$item{itemName}){
     $item{price} =~ s/[+＋]/<br>＋/;
     $item{category} =~ s/\s/<hr>/;
+    $item{itemName} = "〈$item{itemName}〉" if $item{itemName} !~ /〈.*〉/;
     push(@items, {
       "NAME"      => "<a href=\"$set_url\" target=\"_blank\">".unescapeTags($item{itemName})."</a>",
       "PRICE"     => unescapeTags($item{price}),
