@@ -57,7 +57,7 @@ sub createUnitStatus {
       @unitStatus = (
         { 'HP' => "$hp/$hp" },
         { 'MP' => "$mp/$mp" },
-        { '防護' => $def },
+        { '防護' => "$def" },
       );
     }
   }
