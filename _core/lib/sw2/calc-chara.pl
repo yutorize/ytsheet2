@@ -121,8 +121,9 @@ sub data_calc {
       }
       else { $pc{dishonor} += $pc{'dishonorItem'.$_.'Pt'}; }
     }
-    $pc{honor}    -= $pc{honorOffset};
-    $pc{dishonor} -= $pc{honorOffsetBarbaros};
+    $pc{honor}    -= $pc{honorOffset} + $pc{honorOffsetBarbaros};
+    $pc{dishonor} -= $pc{honorOffset};
+    $pc{dishonorBarbaros} -= $pc{honorOffsetBarbaros};
   }
   ## 冒険者ランク
   if('','Barbaros'){

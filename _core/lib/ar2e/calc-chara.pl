@@ -272,6 +272,7 @@ sub data_calc {
     'armamentBodyNote',
     'armamentSubNote',
     'armamentOtherNote',
+    'armamentTotalNote',
     'battleSkillNote',
     'battleOtherNote',
   ){

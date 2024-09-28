@@ -152,6 +152,9 @@ foreach (@list) {
   
   #グループ（分類）
   $category =~ s/[ 　]/<br>/g;
+
+  #価格
+  $price = commify $price if $price =~ /\d{4,}/;
   
   #更新日時
   my ($min,$hour,$day,$mon,$year) = (localtime($updatetime))[1..5];

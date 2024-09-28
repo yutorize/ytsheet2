@@ -133,6 +133,7 @@ foreach (
   'armamentBodyNote',
   'armamentSubNote',
   'armamentOtherNote',
+  'armamentTotalNote',
   'battleSkillNote',
   'battleOtherNote',
 ){
@@ -1087,7 +1088,7 @@ print <<"HTML";
             <h2 class="in-toc">携帯品・所持品</h2>
             <textarea name="items" oninput="calcWeight();" placeholder="例）冒険者セット @[5]&#13;&#10;　　HPポーション @[1]&#13;&#10;　　MPポーションx2 @[2]">$pc{items}</textarea>
             <ul class="annotate">
-              <li><code>@[n]</code>の書式を入力すると形態重量として計算されます。<br>
+              <li><code>@[n]</code>の書式を入力すると携帯重量として計算されます。<br>
               （<code>n</code>には数値を入れてください）<br>
             </ul>
           </div>
