@@ -122,15 +122,15 @@
           </table>
         </TMPL_IF>
         <TMPL_IF ArmourData>
-          <table class="weapon-table">
+          <table class="weapon-table armour-table">
             <tr>
-              <th>用法
+              <th class="usage">用法
               <th>必筋
               <th>回避
               <th>防護
               <th class="note left">備考
             <TMPL_LOOP ArmourData><tr>
-              <td><TMPL_VAR USAGE>
+              <td class="usage"><TMPL_VAR USAGE></td>
               <td><TMPL_VAR REQD>
               <td><TMPL_VAR EVA>
               <td><TMPL_VAR DEF>
