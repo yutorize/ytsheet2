@@ -59,7 +59,7 @@ sub createUnitStatus {
       my $def = s_eval($pc{"status${i}Defense"});
       push(@unitStatus, { 'HP' => "$hp/$hp" });
       push(@unitStatus, { 'MP' => "$mp/$mp" }) unless isEmptyValue($mp);
-      push(@unitStatus, { '防護' => $def });
+      push(@unitStatus, { '防護' => "$def" });
     }
   }
   else {
