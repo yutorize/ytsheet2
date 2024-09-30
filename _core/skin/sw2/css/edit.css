@@ -1564,6 +1564,12 @@ form#item .input-arms-data {
   & td { width: 5em; }
   & td:first-child { width: 1.5em; }
   & td:last-child { width: auto; }
+
+  #section-common:not(.is-ranged-weapon) & {
+    :is(th, td).range {
+      display: none;
+    }
+  }
 }
 
 form#item .input-data label {
