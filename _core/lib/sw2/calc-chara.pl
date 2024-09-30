@@ -568,7 +568,7 @@ sub data_calc {
     my $dmg = 0;
     $dmg = $pc{"weapon${_}Dmg"};
     if   ($category eq 'クロスボウ'){
-      $dmg += $pc{lvSho};
+      $dmg += $::SW2_0 ? 0 : $pc{lvSho};
     }
     elsif($category eq 'ガン'){
       $dmg += $pc{magicPowerMag};

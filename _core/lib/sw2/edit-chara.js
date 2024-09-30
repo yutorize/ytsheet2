@@ -1456,7 +1456,7 @@ function calcWeapon() {
       accBase += classLv + parseInt((dex + ownDex) / 6);
     }
     // 基礎ダメージ
-    if     (category === 'クロスボウ'){ dmgBase = classLv; }
+    if     (category === 'クロスボウ'){ dmgBase = modeZero ? 0 : classLv; }
     else if(category === 'ガン')      { dmgBase = magicPowers['Mag']; }
     else if(!modeZero && className === "デーモンルーラー")
                                       { dmgBase = magicPowers['Dem']; }
