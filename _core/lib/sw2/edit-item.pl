@@ -173,7 +173,7 @@ HTML
       <label>@{[ input 'magic', 'checkbox' ]}<span>魔法のアイテム</span></label>
       <!-- <label>@{[ input 'school', 'checkbox' ]}　流派装備</label> -->
       <hr>
-      <dl><dt>基本取引価格<dd>@{[ input 'price' ]}G</dl>
+      <dl><dt>基本取引価格<dd>@{[ input 'price','','','list="list-item-price"' ]}G</dl>
       <dl><dt>知名度  <dd>@{[ input 'reputation', 'text','','pattern="^[0-9\/／]+$"' ]} 数字と／のみ入力可</dl>
       <dl><dt>形状    <dd>@{[ input 'shape' ]}</dl>
       <dl><dt>カテゴリ<dd>@{[ input 'category','text','','list="list-category"' ]}
@@ -265,6 +265,10 @@ print <<"HTML";
   </footer>
   <datalist id="list-item-name">
     <option value="〈〉">
+  </datalist>
+  <datalist id="list-item-price">
+    <option value="（非売品）">
+    <option value="取引不能">
   </datalist>
   <datalist id="list-weapon-usage">
     <option value="1H">
