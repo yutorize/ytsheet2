@@ -1289,6 +1289,9 @@ dl#level {
   > dd {
     text-align: center;
   }
+  &:has(dd:empty) {
+    display: none;
+  }
 }
 
 #f-race,
