@@ -404,8 +404,8 @@ sub stylizeGender {
   my $m_flag; my $f_flag; my $n_flag;
   $gender =~ s/^(.+?)[\(（].*?[）\)]$/$1/;
   $gender =~ tr/Ａ-Ｚａ-ｚ/A-Za-z/;
-  if($gender =~ /男|おとこ|オトコ|♂|雄|オス|爺|漢|(?<!fe)male|(?<!wo)man/i) { $m_flag = 1 }
-  if($gender =~ /女|おんな|オンナ|♀|雌|メス|婆|娘|female|woman/i)           { $f_flag = 1 }
+  if($gender =~ /男|おとこ|オトコ|♂|雄|オス|爺|漢|(?<!fe)m(ale|$)|(?<!wo)man/i) { $m_flag = 1 }
+  if($gender =~ /女|おんな|オンナ|♀|雌|メス|婆|娘|f(em(ale)?|$)|woman/i)       { $f_flag = 1 }
   if($gender =~ /無|なし|^[\-ー‐‑–—―−ｰ]$|non/i)               { $n_flag = 1 }
   if($gender =~ /両|半|トランス|ノンバ|non|Ft[MX]|Mt[FX]|^[XA]/i) { $m_flag = 1; $f_flag = 1 }
 
@@ -477,13 +477,20 @@ sub unescapeTags {
       $text =~ s|\[刃\]|<img alt="&#91;刃&#93;" class="i-icon" src="data:image/webp;base64,UklGRmgAAABXRUJQVlA4TFwAAAAvD8ADECcgECD8r1ix5EMgQOhXpkaDgrQNmPq33J35D8B/Cs4KriLZDZv9EAIHgs2gAiCNzR+VyiGi/wGIWX8565unQe15VkDtBrkCr3ZDnhVQt41fgHwX6nojAA==">|gi;
       $text =~ s|\[打\]|<img alt="&#91;打&#93;" class="i-icon" src="data:image/webp;base64,UklGRnAAAABXRUJQVlA4TGMAAAAvD8ADEB+gkG0EODSdId0jEEgC2V9sEQVpG7C49roz/wF8ppPAprb2Ji8JxUO38jthZ84eCzQJHTURgQSmbiOi/4GE4Cs4f8Xxx4x/SfOVNJdDdkez1dghIZdQYvAKLJADIQAA">|gi;
     }
+    if($::SW2_0){
+      $text =~ s/(\[[常主補宣条選]\])+/&textToIcon($&);/egi;
+      $text =~ s/「((?:[○◯〇＞▶〆☆≫»□☐☑🗨▽▼]|&gt;&gt;)+)/"「".&textToIcon($1);/egi;
+    } else {
+      $text =~ s/(\[[常準主補宣]\])+/&textToIcon($&);/egi;
+      $text =~ s/「((?:[○◯〇△＞▶〆☆≫»□☐☑🗨]|&gt;&gt;)+)/"「".&textToIcon($1);/egi;
+    }
   }
   
   
   our @linkPlaceholders;
   $text =~ s/((?:making|能力値作成(?:履歴)?)#([0-9]+(?:-[0-9]+)?))/ &generateLinkTag("?&mode=making&num=$2",$1) /egi if($set::game eq 'sw2'); # メイキングリンク
-  $text =~ s/\[(.+?)#([a-zA-Z0-9\-]+?)\]/ &generateLinkTag("?id=$2",$1) /egi; # シート内リンク
   $text =~ s/\[\[(.+?)&gt;((?:(?!<br>)[^"])+?)\]\]/ &generateLinkTag($2,$1) /egi; # リンク
+  $text =~ s/\[(.+?)#([a-zA-Z0-9\-]+?)\]/ &generateLinkTag("?id=$2",$1) /egi; # シート内リンク
   $text =~ s/(https?:\/\/[^\s\<]+)/ &generateLinkTag($1,$1) /egi; # 自動リンク
   
   $text =~ s/'''(.+?)'''/<span class="oblique">$1<\/span>/gi; # 斜体
@@ -499,13 +506,6 @@ sub unescapeTags {
   $text =~ s/\n/<br>/gi;
 
   if($set::game eq 'sw2'){
-    if($::SW2_0){
-      $text =~ s/(\[[常主補宣条選]\])+/&textToIcon($&);/egi;
-      $text =~ s/「((?:[○◯〇＞▶〆☆≫»□☐☑🗨▽▼]|&gt;&gt;)+)/"「".&textToIcon($1);/egi;
-    } else {
-      $text =~ s/(\[[常準主補宣]\])+/&textToIcon($&);/egi;
-      $text =~ s/「((?:[○◯〇△＞▶〆☆≫»□☐☑🗨]|&gt;&gt;)+)/"「".&textToIcon($1);/egi;
-    }
   }
   
   return $text;

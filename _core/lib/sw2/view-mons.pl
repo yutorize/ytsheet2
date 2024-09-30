@@ -101,9 +101,9 @@ $pc{skills} =~ s/<br>/\n/gi;
 $pc{skills} =~ s#(<p>|</p>|</details>)#$1\n#gi;
 $pc{skills} =~ s/^●(.*?)$/<\/p><h3>●$1<\/h3><p>/gim;
 if($::SW2_0){
-  $pc{skills} =~ s/^((?:[○◯〇＞▶〆☆≫»□☐☑🗨▽▼]|&gt;&gt;)+.*?)(　|$)/&textToIcon($1).$2/egim;
+  $pc{skills} =~ s/^((?:[○◯〇＞▶〆☆≫»□☐☑🗨▽▼]|&gt;&gt;)+)(.*?(?:　|$))/&textToIcon($1).$2/egim;
 } else {
-  $pc{skills} =~ s/^((?:[○◯〇△＞▶〆☆≫»□☐☑🗨]|&gt;&gt;)+.*?)(　|$)/&textToIcon($1).$2/egim;
+  $pc{skills} =~ s/^((?:[○◯〇△＞▶〆☆≫»□☐☑🗨]|&gt;&gt;)+)(.*?(?:　|$))/&textToIcon($1).$2/egim;
 }
 $pc{skills} =~ s/^((?:<i class="s-icon [a-z0]+?">.+?<\/i>)+.*?)(　|$)/<\/p><h5>$1<\/h5><p>$2/gim;
 $pc{skills} =~ s/\n+<\/p>/<\/p>/gi;
@@ -141,9 +141,24 @@ $SHEET->param(Tags => \@tags);
 ### 価格 --------------------------------------------------
 {
   my $price;
-  $price .= "<dt>購入</dt><dd>$pc{price}<small>G</small></dd>" if $pc{price};
-  $price .= "<dt>レンタル</dt><dd>$pc{priceRental}<small>G</small></dd>"     if $pc{priceRental};
-  $price .= "<dt>部位再生</dt><dd>$pc{priceRegenerate}<small>G</small></dd>" if $pc{priceRegenerate};
+
+  my @prices = (
+      ['購入', $pc{price}],
+      ['レンタル', $pc{priceRental}],
+      ['部位再生', $pc{priceRegenerate}],
+  );
+
+  foreach (@prices) {
+    (my $term, my $value) = @{$_};
+    my $annotation = $value =~ s/([(（].+?[）)])$// ? $1 : '';
+    my $unit = $value =~ /\d$/ ? 'G' : '';
+
+    $unit = "<small>$unit</small>" if $unit ne '';
+    $annotation = "<small>$annotation</small>" if $annotation ne '';
+
+    $price .= "<dt>$term</dt><dd>$value$unit$annotation</dd>" if $value;
+  }
+
   if(!$price){ $price = '―' }
   $SHEET->param(price => "<dl class=\"price\">$price</dl>");
 }
@@ -168,6 +183,9 @@ my @status_row;
 foreach (1 .. $pc{statusNum}){
   if ($pc{'status'.$_.'Accuracy'} ne ''){ $pc{'status'.$_.'Accuracy'} = $pc{'status'.$_.'Accuracy'}.(!$pc{statusTextInput} && !$pc{mount}?' ('.$pc{'status'.$_.'AccuracyFix'}.')':'') }
   if ($pc{'status'.$_.'Evasion'}  ne ''){ $pc{'status'.$_.'Evasion'}  = $pc{'status'.$_.'Evasion'} .(!$pc{statusTextInput} && !$pc{mount}?' ('.$pc{'status'.$_.'EvasionFix'}.')' :'') }
+
+  $pc{'status'.$_.'Damage'} = '―' if $pc{'status'.$_.'Damage'} eq '2d+' && ($pc{'status'.$_.'Accuracy'} eq '' || $pc{'status'.$_.'Accuracy'} eq '―');
+
   push(@status_row, {
     LV       => $pc{lvMin},
     STYLE    => $pc{'status'.$_.'Style'},
@@ -186,6 +204,9 @@ foreach my $lv (2 .. ($pc{lvMax}-$pc{lvMin}+1)){
   my @status_row;
   foreach (1 .. $pc{statusNum}){
     my $num = "$_-$lv";
+
+    $pc{'status'.$num.'Damage'} = '―' if $pc{'status'.$num.'Damage'} eq '2d+' && ($pc{'status'.$num.'Accuracy'} eq '' || $pc{'status'.$num.'Accuracy'} eq '―');
+
     push(@status_row, {
       LV       => $lv+$pc{lvMin}-1,
       STYLE    => $pc{'status'.$_.'Style'},

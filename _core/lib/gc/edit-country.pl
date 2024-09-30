@@ -20,7 +20,7 @@ my $mode_make = ($mode =~ /^(blanksheet|copy|convert)$/) ? 1 : 0;
 
 ### 出力準備 #########################################################################################
 if($message){
-  my $name = unescapeTags($pc{characterName} || $pc{aka} || '無題');
+  my $name = unescapeTags($pc{countryName} || '無題');
   $message =~ s/<!NAME>/$name/;
 }
 ### プレイヤー名 --------------------------------------------------

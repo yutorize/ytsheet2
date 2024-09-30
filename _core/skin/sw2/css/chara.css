@@ -1166,6 +1166,19 @@ dl#level {
     "PROF PROF  IMG  IMG"
     "PROF PROF   MP CHCK"
   ;
+
+  &:has(#f-sin) {
+    grid-template-areas:
+      " LVL NAME NAME  IMG  IMG"
+      " LVL  PLN  PLN  IMG  IMG"
+      "RACE RACE  SIN  IMG  IMG"
+      " PER  PER  PER  IMG  IMG"
+      " CLS  CLS  CLS  IMG  IMG"
+      "LANG LANG LANG  IMG  IMG"
+      "PROF PROF PROF  IMG  IMG"
+      "PROF PROF PROF   MP CHCK"
+    ;
+  }
 }
 #f-image-none,
 #f-image          { grid-area: IMG; }
@@ -1173,6 +1186,7 @@ dl#level {
 #f-character-name { grid-area: NAME; }
 #f-player-name    { grid-area: PLN; }
 #f-race           { grid-area: RACE; }
+#f-sin            { grid-area: SIN; }
 #f-personal       { grid-area: PER; }
 #f-classes        { grid-area: CLS ; }
 #f-language       { grid-area: LANG; }
@@ -1275,9 +1289,13 @@ dl#level {
   > dd {
     text-align: center;
   }
+  &:has(dd:empty) {
+    display: none;
+  }
 }
 
 #f-race,
+#f-sin,
 #f-personal {
   display: flex;
   justify-content:space-between;

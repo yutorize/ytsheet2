@@ -1928,6 +1928,10 @@ setSortable('mysticMagic','#mystic-magic-list','li');
 
 // 言語欄 ----------------------------------------
 function checkLanguage(){
+  const languageTable = document.getElementById('language-table');
+  languageTable.classList.toggle('sag-available', parseInt(form['lvSag'].value) > 0);
+  languageTable.classList.toggle('bar-available', parseInt(form['lvBar'].value) > 0);
+
   let count = {}; let acqT = {}; let acqR = {};
   if(SET.races[race]?.language){
     for(let data of SET.races[race].language){ acqT[data[0]] = data[1]; acqR[data[0]] = data[2]; }
