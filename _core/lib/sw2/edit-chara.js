@@ -149,7 +149,6 @@ function changeLv() {
   checkRace();
   calcPackage();
   checkFeats();
-  checkLanguage();
 }
 
 // レベル計算 ----------------------------------------
