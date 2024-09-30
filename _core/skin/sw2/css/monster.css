@@ -148,6 +148,7 @@ div.status dl {
   }
   & dl.price {
     align-items: end;
+    margin-right: 0;
   }
   & dl.price dt {
     font-size: 85%;
