@@ -1242,8 +1242,6 @@ dl#level {
   > dd {
     text-align: center;
   }
-}
-#f-player-name {
   &:has(dd:empty) {
     display: none;
   }
