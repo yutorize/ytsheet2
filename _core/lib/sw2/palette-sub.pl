@@ -504,6 +504,7 @@ sub palettePreset {
     $skills =~ tr/０-９（）/0-9\(\)/;
     $skills =~ s/\|/｜/g;
     $skills =~ s/<br>/\n/gi;
+    $skills = convertFairyAttribute($skills) if $::pc{taxa} eq '妖精';
     $skills =~ s/^
       (?:$skill_mark)+
       (?<name>.+?)
@@ -860,6 +861,7 @@ sub paletteProperties {
     $skills =~ tr/０-９（）/0-9\(\)/;
     $skills =~ s/\|/｜/g;
     $skills =~ s/<br>/\n/g;
+    $skills = convertFairyAttribute($skills) if $::pc{taxa} eq '妖精';
     $skills =~ s/^(?:$skill_mark)+(.+?)(?:[0-9]+(?:レベル|LV)|\(.+\))*[\/／](?:魔力)([0-9]+)[(（][0-9]+[）)]/push @propaties, "\/\/$1=$2";/megi;
 
     $skills =~ s/^
@@ -889,6 +891,20 @@ sub paletteProperties {
     $note =~ s/「?(?<dice>[0-9]+[DＤ][0-9]*[+\-*\/()0-9]*)」?点の(?<elm>.+属性)?の?(?<dmg>物理|魔法|落下|確定)?ダメージ/$out .= "\/\/${name}ダメージ=$+{dice}\n";/egi;
     return $out;
   }
+}
+
+sub convertFairyAttribute {
+  my $skills = shift;
+  $skills =~ s/^
+      [○◯〇]
+      (?:古代種[\/／])?
+      属性[:：]
+      ([土水・氷炎風光闇&＆]+)
+      [\/／]
+      (魔力\d+[(（]\d+[）)])
+      (\n|$)
+      /▶妖精魔法($1)／$2$3/x;
+  return $skills;
 }
 
 1;
