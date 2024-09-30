@@ -162,7 +162,12 @@ body {
   grid-template-rows: auto;
   grid-template-areas:
     "NAME AUTHOR CATEGORY PRICE SUMMARY DATE"
+    "NAME TAGS   TAGS     TAGS  TAGS    DATE"
   ;
+  &:has(.tags:empty) {
+    grid-template-areas:
+      "NAME AUTHOR CATEGORY PRICE SUMMARY DATE";
+  }
   & .name    { grid-area: NAME; }
   & .author  { grid-area: AUTHOR; }
   & .category{ grid-area: CATEGORY; }
