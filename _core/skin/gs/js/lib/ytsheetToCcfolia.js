@@ -13,7 +13,7 @@ output.generateCcfoliaJsonOfGoblinSlayerPC = (json, character, defaultPalette) =
   character.memo += `等級: ${json.rank || '―'}\n`;
   character.memo += `${json.imageURL ? '立ち絵: ' + (json.imageCopyright || '権利情報なし') : ''}`;
 
-  character.params = defaultPalette.parameters || [];
+  character.params = character.params.concat(defaultPalette.parameters || []);
 
   return character;
 };
