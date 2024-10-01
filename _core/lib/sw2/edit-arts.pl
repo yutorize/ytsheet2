@@ -250,7 +250,7 @@ HTML
           <dl class="premise  "><dt>前提        <dd>@{[ input 'magicPremise' ]}</dl>
           <dl class="cost     "><dt>消費        <dd>@{[ input 'magicCost','','','list="list-cost"' ]}</dl>
           <dl class="target   "><dt>対象        <dd>@{[ input 'magicTarget','','','list="list-target"' ]}</dl>
-          <dl class="range    "><dt>射程／形状  <dd>@{[ input 'magicRange','','','list="list-range"' ]}／@{[ input 'magicForm','','','list="list-form"' ]}</dl>
+          <dl class="range    "><dt>射程／形状  <dd>@{[ input 'magicRange','','','list="list-range" data-form-name="magicForm"' ]}／@{[ input 'magicForm','','','list="list-form"' ]}</dl>
           <dl class="duration "><dt>時間        <dd>@{[ input 'magicDuration','','','list="list-duration"' ]}</dl>
           <dl class="song     "><dt>歌唱        <dd>@{[ checkbox 'magicSongSing','必要' ]}</dl>
           <dl class="song     "><dt>ペット      <dd>@{[ checkbox 'magicSongPetBird','小鳥' ]}@{[ checkbox 'magicSongPetFrog','蛙' ]}@{[ checkbox 'magicSongPetBug','虫' ]}</dl>
@@ -311,7 +311,7 @@ print <<"HTML";
           <dl class="name    "><dt>名称      <dd>【@{[ input "godMagic${lv}Name",'' ]}】<br>@{[ checkbox "godMagic${lv}ActionTypeMinor",'補助動作' ]}@{[ checkbox "godMagic${lv}ActionTypeSetup",'戦闘準備' ]}</dl>
           <dl class="cost    "><dt>消費      <dd>@{[ input "godMagic${lv}Cost",'','','list="list-cost"' ]}</dl>
           <dl class="target  "><dt>対象      <dd>@{[ input "godMagic${lv}Target",'','','list="list-target"' ]}</dl>
-          <dl class="range   "><dt>射程／形状<dd>@{[ input "godMagic${lv}Range",'','','list="list-range"' ]}／@{[ input "godMagic${lv}Form",'','','list="list-form"' ]}</dl>
+          <dl class="range   "><dt>射程／形状<dd>@{[ input "godMagic${lv}Range",'','',"list=\"list-range\" data-form-name=\"godMagic${lv}Form\"" ]}／@{[ input "godMagic${lv}Form",'','','list="list-form"' ]}</dl>
           <dl class="duration"><dt>時間      <dd>@{[ input "godMagic${lv}Duration",'','','list="list-duration"' ]}</dl>
           <dl class="resist  "><dt>抵抗      <dd>@{[ input "godMagic${lv}Resist",'','','list="list-resist"' ]}</dl>
           <dl class="element "><dt>属性      <dd>@{[ input "godMagic${lv}Element",'','','list="list-element"' ]}</dl>
@@ -407,7 +407,7 @@ print <<"HTML";
             <dl class="level    "><dt>習得レベル<dd>@{[ input "schoolMagic${num}Lv" ]}</dl>
             <dl class="cost    "><dt>消費      <dd>@{[ input "schoolMagic${num}Cost",'','','list="list-cost"' ]}</dl>
             <dl class="target  "><dt>対象      <dd>@{[ input "schoolMagic${num}Target",'','','list="list-target"' ]}</dl>
-            <dl class="range   "><dt>射程／形状<dd>@{[ input "schoolMagic${num}Range",'','','list="list-range"' ]}／@{[ input "schoolMagic${num}Form",'','','list="list-form"' ]}</dl>
+            <dl class="range   "><dt>射程／形状<dd>@{[ input "schoolMagic${num}Range",'','',"list=\"list-range\" data-form-name=\"schoolMagic${num}Form\"" ]}／@{[ input "schoolMagic${num}Form",'','','list="list-form"' ]}</dl>
             <dl class="duration"><dt>時間      <dd>@{[ input "schoolMagic${num}Duration",'','','list="list-duration"' ]}</dl>
             <dl class="resist  "><dt>抵抗      <dd>@{[ input "schoolMagic${num}Resist",'','','list="list-resist"' ]}</dl>
             <dl class="element "><dt>属性      <dd>@{[ input "schoolMagic${num}Element",'','','list="list-element"' ]}</dl>
