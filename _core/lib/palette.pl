@@ -55,6 +55,7 @@ sub outputChatPalette {
     $_ = unescapeTagsPalette($_) foreach values %pc;
   }
   $pc{chatPalette} =~ s/<br>/\n/gi;
+  $pc{chatPalette} =~ s/(?:^|\n);(?:[^\n]+)?//g;
   $pc{skills} =~ s/<br>/\n/gi;
 
   $pc{ver} =~ s/^([0-9]+)\.([0-9]+)\.([0-9]+)$/$1.$2$3/;
