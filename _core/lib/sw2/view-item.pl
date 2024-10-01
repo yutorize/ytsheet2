@@ -124,6 +124,7 @@ foreach (1 .. $pc{weaponNum}){
     RATE  => $pc{'weapon'.$_.'Rate'},
     CRIT  => $pc{'weapon'.$_.'Crit'},
     DMG   => $pc{'weapon'.$_.'Dmg'} // '―',
+    RANGE => $pc{category} =~ /投擲|ボウ|クロスボウ|ガン/ ? $pc{'weapon'.$_.'Range'} : undef,
     NOTE  => $pc{'weapon'.$_.'Note'},
   } );
 }

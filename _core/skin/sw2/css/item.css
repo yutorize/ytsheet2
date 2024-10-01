@@ -222,6 +222,15 @@ div.data {
         display: none;
       }
 
+      &:not(:has(td.range:not(:empty))) {
+        :is(th, td).range {
+          display: none;
+        }
+      }
+      td.range:empty::before {
+        content: "―";
+      }
+
       &.armour-table {
         &:not(:has(td.usage:not(:empty))) {
           .usage {
