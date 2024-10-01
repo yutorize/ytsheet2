@@ -279,8 +279,8 @@ function updatePartsAutomatically() {
   const partsNamesInput = document.querySelector('.parts input[name="parts"]');
 
   if (manualModeCheckbox.checked) {
-    partsNumInput.removeAttribute('readonly');
-    partsNamesInput.removeAttribute('readonly');
+    partsNumInput.readOnly = false;
+    partsNamesInput.readOnly = false;
     return;
   }
 
@@ -299,11 +299,11 @@ function updatePartsAutomatically() {
       }
   );
 
-  partsNumInput.setAttribute('readonly', '');
+  partsNumInput.readOnly = true;
   partsNumInput.value = partCount.toString();
   partsNumInput.dispatchEvent(new Event('input'));
 
-  partsNamesInput.setAttribute('readonly', '');
+  partsNamesInput.readOnly = true;
   partsNamesInput.value = partNames.length === 0 ? '' : partNames.reduce(
       (previous, currentPartName) => {
         const previousPartTexts = previous.split('／');
