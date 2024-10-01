@@ -498,7 +498,7 @@ sub palettePreset {
       $weapon = "／$weapon" if $weapon ne '';
       $text .= "2d+{命中$_}+{命中修正} 命中力$weapon\n" if $::pc{'status'.$_.'Accuracy'} ne '';
       $text .= "{ダメージ$_}+{打撃修正} ダメージ".$weapon."\n" if $::pc{'status'.$_.'Damage'} ne '';
-      $text .= "\n";
+      $text .= "\n" if $::pc{'status'.$_.'Accuracy'} ne '' || $::pc{'status'.$_.'Damage'} ne '';
     }
     my $skills = $::pc{skills};
     $skills =~ tr/０-９（）/0-9\(\)/;
