@@ -356,6 +356,20 @@ sub data_update_chara {
   $pc{lasttimever} = $ver;
   return %pc;
 }
+sub data_update_mons {
+  my %pc = %{$_[0]};
+  my $ver = $pc{ver};
+  $ver =~ s/^([0-9]+)\.([0-9]+)\.([0-9]+)$/$1.$2$3/;
+  delete $pc{updateMessage};
+  
+  if($ver < 1.26000){
+    $pc{partsManualInput} = 1;
+  }
+
+  $pc{ver} = $main::ver;
+  $pc{lasttimever} = $ver;
+  return %pc;
+}
 sub data_update_item {
   my %pc = %{$_[0]};
   my $ver = $pc{ver};

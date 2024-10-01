@@ -226,6 +226,8 @@ $SHEET->param(Status => \@status_tbody);
 
 ### 部位 --------------------------------------------------
 $SHEET->param(partsOn => 1) if ($pc{partsNum} > 1 || $pc{parts} || $pc{coreParts});
+$SHEET->param(parts => $pc{parts} =~ s#([^／]+)#<span>$1</span>#gr);
+
 
 ### 戦利品 --------------------------------------------------
 my @loots;
