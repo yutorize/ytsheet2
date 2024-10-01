@@ -8,6 +8,16 @@
   #sw2\.0 & {
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 5fr;
   }
+
+  > dt.grow[data-total] {
+    &:not([data-total="0"]) {
+      &::after {
+        content: "(小計: " attr(data-total) " 回)";
+        font-size: 80%;
+        font-weight: normal;
+      }
+    }
+  }
 }
 #regulation dl.regulation-grow {
   display: grid;
