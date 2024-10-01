@@ -609,14 +609,17 @@ sub generateTable {
     foreach my $col (@{$row}){
       my $rowspan = 1;
       my $td = 'td';
+      my @classes = ();
       while($data[$row_num+$rowspan][$col_num] eq '~'){ $rowspan++; }
       $col_num++;
       if   ($col eq '&gt;'){ $colspan++; next; }
       elsif($col eq '~')   { next; }
       elsif($col =~ s/^~//){ $td = 'th' }
+      elsif($col =~ s/^(LEFT|CENTER|RIGHT)://i){ push(@classes, 'align-' . lc($1)); }
       $output .= "<$td";
       if($colspan > 1){ $output .= ' colspan="'.$colspan.'"'; $colspan = 1; }
       if($rowspan > 1){ $output .= ' rowspan="'.$rowspan.'"'; }
+      $output .= ' class="' . join(' ', @classes) . '"' if $#classes >= 0;
       $output .= ">$col</$td>";
     }
     $output .= "</tr>";

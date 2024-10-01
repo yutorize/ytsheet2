@@ -654,6 +654,8 @@ sub textRuleArea {
         　　　　　　<code>|~テキスト|</code>のようにセル頭に~で見出しセルになります。<br>
         　　　　　　<code>|&gt;|テキスト|</code>のように&gt;単独で右のセルと結合します。<br>
         　　　　　　<code>|~|</code>のように~単独で上のセルと結合します。<br>
+        　　　　　　<code>|CENTER: セルの内容|</code>のようにセル頭に<code>CENTER:</code>で中央揃えになります。<br>
+        　　　　　　<code>|RIGHT: セルの内容|</code>のようにセル頭に<code>RIGHT:</code>で右揃えになります。<br>
         定義リスト：<code>:項目名|説明文</code><br>
         　　　　　　<code>:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|説明文2行目</code> 項目名を記入しないか、半角スペースで埋めると上と結合します。<br>
         折り畳み：行頭に<code>[>]項目名</code>：以降のテキストがすべて折り畳みになります。<br>
