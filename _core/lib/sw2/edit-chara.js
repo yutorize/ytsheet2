@@ -2301,10 +2301,16 @@ function calcPointBuy() {
   
   let points = 0;
   let errorFlag = 0;
-  ['A','B','C','D','E','F'].forEach((i) => { form[`sttBase${i}`].classList.remove('error') });
+  ['A','B','C','D','E','F'].forEach((i) => {
+    form[`sttBase${i}`].classList.remove('error');
+    delete document.querySelector(`#stt-base-${i} > dt:first-child`).dataset['range'];
+  });
   if(SET.races[race]?.dice){
     ['A','B','C','D','E','F'].forEach((i) => {
       const dice = String(SET.races[race].dice[i]);
+      const min = Number(dice) + (SET.races[race].dice[`${i}+`] ?? 0);
+      const max = min + Number(dice) * 5;
+      document.querySelector(`#stt-base-${i} > dt:first-child`).dataset.range = `${min}～${max}`;
       let num  = Number(form[`sttBase${i}`].value);
       if(SET.races[race].dice[`${i}+`]){ num -= SET.races[race].dice[`${i}+`]; }
       if(pointBuyList[type] && pointBuyList[type][dice] && pointBuyList[type][dice][num] != null){

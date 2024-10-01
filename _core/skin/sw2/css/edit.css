@@ -95,6 +95,20 @@
   }
 }
 
+#status dl[id^="stt-base-"] {
+  dt[data-range] {
+    display: flex;
+    flex-flow: row;
+    justify-content: space-between;
+    align-items: flex-end;
+
+    &::after {
+      content: "(" attr(data-range) ")";
+      font-size: 70%;
+      font-weight: normal;
+    }
+  }
+}
 #status dl[id^="stt-add"]::before {
   left: -.6rem;
 }
