@@ -113,6 +113,22 @@ sub class_color {
 }
 
 ### タグ変換 --------------------------------------------------
+sub checkSkillName {
+  my $text = shift;
+  my $markList = $::SW2_0 ? "[○◯〇＞▶〆☆≫»□☐☑🗨▽▼]|&gt;&gt;" : "[○◯〇△＞▶〆☆≫»□☐☑🗨]|&gt;&gt;";
+  
+  $text =~ s/^((?:$markList)+.+?)(　|$)/&replaceSkillName($1).$2/egim;
+  return $text;
+
+  sub replaceSkillName {
+    my @names;
+    foreach (split '、', $_[0]){
+      $_ =~ s/^(?:$markList)+/&textToIcon($&)/egim;
+      push(@names, $_);
+    }
+    return join('、', @names);
+  }
+}
 sub textToIcon {
   my $text = shift;
   
