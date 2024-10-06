@@ -776,8 +776,9 @@ sub paletteProperties {
           }
         }
         my $basetext;
-        if   ($category eq 'クロスボウ'){ $basetext = "{$::pc{'weapon'.$_.'Class'}}"; }
+        if   ($category eq 'クロスボウ'){ $basetext = $::SW2_0 ? '' : "{$::pc{'weapon'.$_.'Class'}}"; }
         elsif($category eq 'ガン'      ){ $basetext = "{魔動機術}"; }
+        elsif($class eq 'デーモンルーラー' && !$::SW2_0){ $basetext = "{召異魔法}"; }
         else { $basetext = "{$::pc{'weapon'.$_.'Class'}}+({筋力}+{筋力増強})/6"; }
         $basetext .= addNum($dmgMod);
         push @propaties, "//追加D$_=(${basetext}+".($::pc{'weapon'.$_.'Dmg'}||0).")";
