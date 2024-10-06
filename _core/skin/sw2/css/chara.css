@@ -765,6 +765,30 @@ dl#level {
   }
 }
 
+/* // modifications
+---------------------------------------------------------------------------------------------------- */
+#weapons,
+#accessories {
+  .data-table tbody td {
+    span.modification {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 90%;
+      height: 1.6em;
+      background-color: rgb(210, 210, 210);
+      border: 1px dotted rgb(190, 190, 190);
+      border-radius: 0.8em;
+      padding: 0 0.6em;
+
+      .night & {
+        background-color: rgb(46, 46, 46);
+        border-color: rgb(66, 66, 66);
+      }
+    }
+  }
+}
+
 /* // Area-Equipment
 ---------------------------------------------------------------------------------------------------- */
 #area-equipment {
