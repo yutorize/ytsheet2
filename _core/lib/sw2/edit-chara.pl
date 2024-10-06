@@ -1704,6 +1704,7 @@ HTML
           <div class="add-del-button"><a onclick="addPaletteMagic()">▼</a><a onclick="delPaletteMagic()">▲</a></div>
           @{[ input "paletteMagicNum","hidden" ]}
         </details>
+      </div>
 HTML
 }
 
