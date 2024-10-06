@@ -971,7 +971,7 @@ print <<"HTML";
                 <td>@{[input("weapon${num}Own",'checkbox','calcWeapon')]}
                 <td><select name="weapon${num}Category" oninput="calcWeapon()">@{[option("weapon${num}Category",@data::weapon_names,'ガン（物理）','盾')]}</select>
                 <td><select name="weapon${num}Class" oninput="calcWeapon()">@{[option("weapon${num}Class",@weapon_users,'自動計算しない')]}</select>
-                <td rowspan="2"><span class="button" onclick="addWeapons(${num});">複<br>製</span>
+                <td rowspan="2"><span class="button" onclick="addWeapons(${num});setupBracketInputCompletion()">複<br>製</span>
               <tr>
                 <td colspan="3">@{[input("weapon${num}Note",'','calcWeapon','placeholder="備考"')]}
 HTML
@@ -984,7 +984,7 @@ print <<"HTML";
             <li>Ｃ値は自動計算されません。
             <li id="artisan-annotate" @{[ display $pc{masteryArtisan} ]}>※備考欄に<code>〈魔器〉</code>と記入すると魔器習熟が反映されます。
           </ul>
-          <div class="add-del-button"><a onclick="addWeapons()">▼</a><a onclick="delWeapons()">▲</a></div>
+          <div class="add-del-button"><a onclick="addWeapons();setupBracketInputCompletion()">▼</a><a onclick="delWeapons()">▲</a></div>
           @{[input('weaponNum','hidden')]}
         </div>
         <div class="box" id="evasion-classes">
@@ -1103,7 +1103,7 @@ HTML
             @{[ input 'armourNum','hidden' ]}
             <tfoot>
               <tr><td colspan="8">
-                <div class="add-del-button"><a onclick="addArmour()">▼</a><a onclick="delArmour()">▲</a></div>
+                <div class="add-del-button"><a onclick="addArmour();setupBracketInputCompletion()">▼</a><a onclick="delArmour()">▲</a></div>
               <tr>
                 <th colspan="2">使用技能
                 <th colspan="2" class="small" style="vertical-align:bottom">チェックを入れた防具の数値で合算▼
