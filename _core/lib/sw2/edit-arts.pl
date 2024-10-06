@@ -348,6 +348,7 @@ foreach my $set_url (split ',',$pc{schoolItemList}){
   $item{category} =~ s/\s/<hr>/;
   print "<tr>";
   if(exists $item{itemName}) {
+    $item{itemName} = "〈$item{itemName}〉" if $item{itemName} !~ /〈.*〉/;
     print "<td><a href=\"${set_url}\" target='_blank'>".unescapeTags($item{itemName})."</a>";
   }
   else {
