@@ -466,7 +466,8 @@ sub chatPaletteForm {
   return <<"HTML";
     <section id="section-palette" style="display:none;">
       <div class="box" id="unit-setting">
-        <h2>ユニット・コマ の設定</h2>
+        <h2>ユニット(コマ)の設定</h2>
+        <div class="annotate">各オンラインセッションツールに出力するユニット(コマ)に反映されます。</div>
         <dl>
           <dt>表示名
           <dd>@{[ input 'namePlate','','changeNamePlate','placeholder="ニックネーム、ファーストネームなど"' ]} <small>※コマ出力時、こちらの入力が名前として優先されます。名前が長いキャラなどに</small>
@@ -497,7 +498,11 @@ sub chatPaletteForm {
       </div>
       <div class="box-union">
         <div class="box" id="chatpalette">
-          <h2>チャットパレット <small>(ユニット(コマ)出力時、ここで設定したものが出力されます)</small></h2>
+          <h2>チャットパレット</h2>
+          <div class="annotate">
+            ユニット(コマ)のチャットパレットに、ここで設定・入力した内容が自動的に反映されます。<br>
+            何も設定しない場合、デフォルト設定のプリセットの内容が反映されます。
+          </div>
           <p>
             手動パレットの配置:<select name="paletteInsertType" style="width: auto;">
               <option value="exchange" @{[ $::pc{paletteInsertType} eq 'exchange'?'selected':'' ]}>プリセットと入れ替える</option>
@@ -532,6 +537,16 @@ sub chatPaletteForm {
           </div>
         </div>
         @{[ chatPaletteFormOptional() ]}
+        <div class="box" id="chatpalette-description">
+          <h2>チャットパレットとは？</h2>
+          <p>
+            「チャットパレット」は、現行の多くのオンラインセッションツールに搭載されている、特定のメッセージやコマンドを簡単に入力できるようにするための機能です。<br>
+            　セッション中に頻繁に使用するテキストやダイスコマンド、スキルの使用やキャラクターの行動宣言などを事前に登録しておき、クリック／ダブルクリックで即座にチャット欄に呼び出す／送信することができます。<br>
+          </p>
+          <p>
+            　UIや細かな挙動はツールごとに異なりますが、行単位で区切られるのと、<code>//変数名=値</code><code>{変数名}</code>の記述を用いる変数機能があることは共通しています。<br>
+          </p>
+        </div>
       </div>
     </section>
 HTML
