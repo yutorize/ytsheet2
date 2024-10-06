@@ -997,7 +997,7 @@ foreach (0 .. $pc{historyNum}){
     DATE   => $pc{'history'.$_.'Date'},
     TITLE  => $pc{'history'.$_.'Title'},
     EXP    => $pc{'history'.$_.'Exp'},
-    HONOR  => $pc{'history'.$_.'Honor'},
+    HONOR  => commify($pc{'history'.$_.'Honor'}),
     MONEY  => $pc{'history'.$_.'Money'},
     GROW   => $pc{'history'.$_.'Grow'},
     GM     => $pc{'history'.$_.'Gm'},
