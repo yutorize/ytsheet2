@@ -66,6 +66,7 @@ elsif($mode eq 'blanksheet'){
     }
     if($::in{making_num}){
       $pc{history0Note} = "能力値作成履歴#$::in{making_num}";
+      if($pc{race} eq '魔動天使'){ $pc{raceAbilitySelect1} = '新たな契約の絆' }
     }
     if($data::races{$pc{race}}{parts}){
       foreach my $name (@{$data::races{$pc{race}}{parts}}){
@@ -283,8 +284,8 @@ print <<"HTML";
           <dd>@{[input("history0HonorB",'number','changeRegu', ($set::make_fix?' readonly':''))]}
           <dt>盟竜点
           <dd>@{[input("history0HonorD",'number','changeRegu', ($set::make_fix?' readonly':''))]}
-          <dt>初期成長
-          <dd>
+          <dt class="grow">初期成長
+          <dd class="grow">
             <dl class="regulation-grow">
               <dt>器用度<dd>@{[ input "sttPreGrowA",'number','calcStt' ]}
               <dt>敏捷度<dd>@{[ input "sttPreGrowB",'number','calcStt' ]}

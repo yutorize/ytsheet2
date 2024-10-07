@@ -482,7 +482,9 @@ sub palettePreset {
     $text .= "2d+{精神抵抗}+{精神抵抗修正} 精神抵抗力\n";
     foreach (1 .. $::pc{statusNum}){
       (my $part   = $::pc{'status'.$_.'Style'}) =~ s/^.+?[（(](.+?)[)）]$/$1/;
-      $text .= "2d+{回避$_}+{回避修正} 回避／".$part."\n" if $::pc{'status'.$_.'Evasion'} ne '';
+      $part = '' if $::pc{partsNum} == 1;
+      $part = "／$part" if $part ne '';
+      $text .= "2d+{回避$_}+{回避修正} 回避".$part."\n" if $::pc{'status'.$_.'Evasion'} ne '';
     }
     $text .= "\n";
 
@@ -492,14 +494,17 @@ sub palettePreset {
       (my $part   = $::pc{'status'.$_.'Style'}) =~ s/^.+?[（(](.+?)[)）]$/$1/;
       (my $weapon = $::pc{'status'.$_.'Style'}) =~ s/^(.+?)[（(].+?[)）]$/$1/;
       if($part ne $weapon){ $weapon = $::pc{'status'.$_.'Style'}; }
-      $text .= "2d+{命中$_}+{命中修正} 命中力／$weapon\n" if $::pc{'status'.$_.'Accuracy'} ne '';
-      $text .= "{ダメージ$_}+{打撃修正} ダメージ／".$weapon."\n" if $::pc{'status'.$_.'Damage'} ne '';
+      $weapon = '' if $::pc{partsNum} == 1;
+      $weapon = "／$weapon" if $weapon ne '';
+      $text .= "2d+{命中$_}+{命中修正} 命中力$weapon\n" if $::pc{'status'.$_.'Accuracy'} ne '';
+      $text .= "{ダメージ$_}+{打撃修正} ダメージ".$weapon."\n" if $::pc{'status'.$_.'Damage'} ne '';
       $text .= "\n";
     }
     my $skills = $::pc{skills};
     $skills =~ tr/０-９（）/0-9\(\)/;
     $skills =~ s/\|/｜/g;
     $skills =~ s/<br>/\n/gi;
+    $skills = convertFairyAttribute($skills) if $::pc{taxa} eq '妖精';
     $skills =~ s/^
       (?:$skill_mark)+
       (?<name>.+?)
@@ -771,8 +776,9 @@ sub paletteProperties {
           }
         }
         my $basetext;
-        if   ($category eq 'クロスボウ'){ $basetext = "{$::pc{'weapon'.$_.'Class'}}"; }
+        if   ($category eq 'クロスボウ'){ $basetext = $::SW2_0 ? '' : "{$::pc{'weapon'.$_.'Class'}}"; }
         elsif($category eq 'ガン'      ){ $basetext = "{魔動機術}"; }
+        elsif($class eq 'デーモンルーラー' && !$::SW2_0){ $basetext = "{召異魔法}"; }
         else { $basetext = "{$::pc{'weapon'.$_.'Class'}}+({筋力}+{筋力増強})/6"; }
         $basetext .= addNum($dmgMod);
         push @propaties, "//追加D$_=(${basetext}+".($::pc{'weapon'.$_.'Dmg'}||0).")";
@@ -794,7 +800,7 @@ sub paletteProperties {
       foreach my $j (1..$::pc{armourNum}){
         if($::pc{"defTotal${i}CheckArmour${j}"}){
           $evaMod += $::pc{"armour${j}Eva"};
-          $own_agi = $::pc{"armour${j}Category"} eq '盾' && $::pc{"armour${j}Own"} ? '+2' : '';
+          $own_agi = '+2' if $::pc{"armour${j}Category"} eq '盾' && $::pc{"armour${j}Own"};
           $hasChecked++;
         }
       }
@@ -856,6 +862,7 @@ sub paletteProperties {
     $skills =~ tr/０-９（）/0-9\(\)/;
     $skills =~ s/\|/｜/g;
     $skills =~ s/<br>/\n/g;
+    $skills = convertFairyAttribute($skills) if $::pc{taxa} eq '妖精';
     $skills =~ s/^(?:$skill_mark)+(.+?)(?:[0-9]+(?:レベル|LV)|\(.+\))*[\/／](?:魔力)([0-9]+)[(（][0-9]+[）)]/push @propaties, "\/\/$1=$2";/megi;
 
     $skills =~ s/^
@@ -885,6 +892,20 @@ sub paletteProperties {
     $note =~ s/「?(?<dice>[0-9]+[DＤ][0-9]*[+\-*\/()0-9]*)」?点の(?<elm>.+属性)?の?(?<dmg>物理|魔法|落下|確定)?ダメージ/$out .= "\/\/${name}ダメージ=$+{dice}\n";/egi;
     return $out;
   }
+}
+
+sub convertFairyAttribute {
+  my $skills = shift;
+  $skills =~ s/^
+      [○◯〇]
+      (?:古代種[\/／])?
+      属性[:：]
+      ([土水・氷炎風光闇&＆]+)
+      [\/／]
+      (魔力\d+[(（]\d+[）)])
+      (\n|$)
+      /▶妖精魔法($1)／$2$3/x;
+  return $skills;
 }
 
 1;

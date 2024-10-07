@@ -121,8 +121,9 @@ sub data_calc {
       }
       else { $pc{dishonor} += $pc{'dishonorItem'.$_.'Pt'}; }
     }
-    $pc{honor}    -= $pc{honorOffset};
-    $pc{dishonor} -= $pc{honorOffsetBarbaros};
+    $pc{honor}    -= $pc{honorOffset} + $pc{honorOffsetBarbaros};
+    $pc{dishonor} -= $pc{honorOffset};
+    $pc{dishonorBarbaros} -= $pc{honorOffsetBarbaros};
   }
   ## 冒険者ランク
   if('','Barbaros'){
@@ -567,7 +568,7 @@ sub data_calc {
     my $dmg = 0;
     $dmg = $pc{"weapon${_}Dmg"};
     if   ($category eq 'クロスボウ'){
-      $dmg += $pc{lvSho};
+      $dmg += $::SW2_0 ? 0 : $pc{lvSho};
     }
     elsif($category eq 'ガン'){
       $dmg += $pc{magicPowerMag};
@@ -772,10 +773,13 @@ sub data_calc {
   my $race = (exists $data::races{$pc{race}}) ? $pc{race}
            : $pc{race} ? "その他:$pc{race}"
            : '';
-  my $faith = $pc{faith} eq 'その他の信仰' ? ($pc{faithOther} || $pc{faith}) : $pc{faith}; 
+  my $faith = $pc{faith} eq 'その他の信仰' ? ("その他:$pc{faithOther}" || $pc{faith}) : $pc{faith};
+
+  $_ = removeTags unescapeTags $_ foreach($race,$faith);
+
   $::newline = "$pc{id}<>$::file<>".
                "$pc{birthTime}<>$::now<>$charactername<>$pc{playerName}<>$pc{group}<>".
-               "$pc{expTotal}<>$rank<>$race<>$pc{gender}<>$pc{age}<>$pc{faith}<>".
+               "$pc{expTotal}<>$rank<>$race<>$pc{gender}<>$pc{age}<>$faith<>".
                "$classlv<>".
                "$pc{lastSession}<>$pc{image}<> $pc{tags} <>$pc{hide}<>$pc{fellowPublic}<>";
 

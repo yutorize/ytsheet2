@@ -162,7 +162,12 @@ body {
   grid-template-rows: auto;
   grid-template-areas:
     "NAME AUTHOR CATEGORY PRICE SUMMARY DATE"
+    "NAME TAGS   TAGS     TAGS  TAGS    DATE"
   ;
+  &:has(.tags:empty) {
+    grid-template-areas:
+      "NAME AUTHOR CATEGORY PRICE SUMMARY DATE";
+  }
   & .name    { grid-area: NAME; }
   & .author  { grid-area: AUTHOR; }
   & .category{ grid-area: CATEGORY; }
@@ -192,8 +197,13 @@ body {
     grid-template-columns: 24rem 0.5fr 4em 0.6fr 1fr 0.4fr;
     grid-template-rows: auto;
     grid-template-areas:
-      "NAME AUTHOR CATEGORY SUB SUMMARY DATE"
+      "NAME AUTHOR CATEGORY SUB  SUMMARY DATE"
+      "NAME TAGS   TAGS     TAGS TAGS    DATE"
     ;
+  &:has(.tags:empty) {
+    grid-template-areas:
+      "NAME AUTHOR CATEGORY SUB SUMMARY DATE";
+  }
   & .name    { grid-area: NAME; }
   & .author  { grid-area: AUTHOR; }
   & .category{ grid-area: CATEGORY; }

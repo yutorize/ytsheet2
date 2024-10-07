@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+<TMPL_INCLUDE NAME="../_common/sheet-head.html">
+</head>
+<body>
+  <header>
+    <h1><a href="./?type=c"><TMPL_VAR title></a></h1>
+    <nav>
+      <ul>
+        <TMPL_LOOP Menu><li class="<TMPL_VAR SIZE>"><a <TMPL_VAR TYPE>="<TMPL_VAR VALUE>"><TMPL_VAR TEXT></a>
+        </TMPL_LOOP>
+        <li><a onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード"></a>
+      </ul>
+    </nav>
+  </header>
+  <div class="header-back-name"><TMPL_VAR titleName> - <TMPL_VAR title></div>
+  
+  <TMPL_IF error>
+  <aside id="error">
+    <p>
+      <TMPL_VAR error>
+    </p>
+  </aside>
+  </TMPL_IF>
+  
+  <TMPL_UNLESS modeDownload>
+    <TMPL_UNLESS forbiddenMode>
+      <aside id="loglist" class="float-box">
+        <h2>過去ログ（バックアップ）</h2>
+        <ul>
+          <TMPL_LOOP LogList><li class="<TMPL_VAR SELECTED>"><a href="?id=<TMPL_VAR id><TMPL_VAR URL>"><TMPL_VAR DATE></a></TMPL_LOOP>
+        </ul>
+        <TMPL_IF viewLogNaming><details id="log-naming">
+          <summary>閲覧中のログ<TMPL_IF selectedLogName>の名前をつけなおす<TMPL_ELSE>に名前をつける</TMPL_IF></summary>
+          <form id="log-naming-form" method="post" action="./">
+            <input type="hidden" name="mode" value="bu-naming">
+            <input type="hidden" name="id" value="<TMPL_VAR id>">
+            <input type="hidden" name="date" value="<TMPL_VAR logId>">
+            <dl>
+              <dt>名前<dd><input type="text" name="log-name" value="<TMPL_VAR selectedLogName>">
+              <TMPL_IF reqdPassword><dt>パスワード<dd><input type="password" name="pass"></TMPL_IF>
+              <dd><input type="submit" value="命名">
+            </dl>
+          </form>
+        </details></TMPL_IF>
+      </aside>
+
+      <aside id="downloadlist" class="float-box">
+        <h2>出力</h2>
+        <ul>
+          <!-- 
+          <li id="downloadlist-text"><a onclick="downloadAsText();">テキスト形式</a>
+           -->
+          <li id="downloadlist-json"><a onclick="downloadAsJson();">JSON 形式</a>
+          <li id="downloadlist-html"><a onclick="downloadAsHtml();">HTML 形式</a>
+          <li id="downloadlist-zipped"><a onclick="downloadAsFullSet();">ZIP 形式（上記全部入り）</a>
+          <li class="link-tag"><span>ゆとシート内リンク用タグ<br><input type="text" onclick="this.select()" value="[<TMPL_VAR rawName>#<TMPL_VAR id>]"></span>
+        </ul>
+      </aside>
+    </TMPL_UNLESS>
+
+    <form id="login-form" class="float-box" method="post" action="./">
+      <input type="hidden" name="mode" value="edit">
+      <input type="hidden" name="id" value="<TMPL_VAR id>">
+      <input type="password" name="pass" placeholder="password">
+      <input type="hidden" name="log" value="<TMPL_VAR logId>">
+      <input type="submit" value="編集">
+    </form>
+  </TMPL_UNLESS>
+
+  <main id="country">
+    <TMPL_IF forbidden><aside class="information attention">
+      閲覧が制限されているデータです。<br>
+      <TMPL_IF yourAuthor>あなた以外には一部または全てのデータが伏せられます。(<a href="./?id=<TMPL_VAR id>&checkView=1">⇒確認</a>)</TMPL_IF>
+    </aside></TMPL_IF>
+    
+    <TMPL_IF logId><aside class="information log">
+      <h2><TMPL_VAR selectedLogName></h2>
+      <p><TMPL_VAR updateTime> 時点の過去ログ(バックアップ)データです。</p>
+    </aside></TMPL_IF>
+    
+    <TMPL_IF convertMode><aside class="information">
+      <a href="<TMPL_VAR convertUrl>" target="_blank"><TMPL_VAR convertSource></a> のデータを表示しています。
+    </aside></TMPL_IF>
+    
+    <article>
+      <div id="area-name" class="color-set">
+        <h1 id="country-name"><TMPL_IF aka><span id="aka">“<TMPL_VAR aka>”</span></TMPL_IF><TMPL_VAR countryName></h1>
+        <div>
+        <p id="update-time"><time><TMPL_VAR updateTime></time></p>
+        <p id="player-name">プレイヤー：<TMPL_VAR playerName></p>
+        </div>
+      </div>
+      
+      <div id="tags">
+        <TMPL_IF group><a id="group" href="./?group=<TMPL_VAR group>"><TMPL_VAR groupName></a></TMPL_IF>
+        <TMPL_LOOP AreaTags><i class="stage"><TMPL_VAR TEXT></i></TMPL_LOOP>
+        <TMPL_LOOP Tags><a class="tag" href="./?tag=<TMPL_VAR URL>"><TMPL_VAR TEXT></a></TMPL_LOOP>
+      </div>
+      <div class="column column-status"><!-- COLUMN -->
+        <div id="area-profile">
+          <TMPL_IF image>
+          <div id="image" class="image" style="background-image: url(<TMPL_VAR imageSrc>);background-size:<TMPL_VAR imageFit>;background-position:<TMPL_VAR imagePositionX>% <TMPL_VAR imagePositionY>%;">
+          <div onclick="popImage()"><p class="words" style="<TMPL_VAR wordsX><TMPL_VAR wordsY>"><TMPL_VAR words></p></div>
+          <p class="image-copyright"><TMPL_VAR imageCopyright></p>
+          </div>
+          <TMPL_ELSE>
+          <div id="image-none" class="image-none" data-title="GRANCREST"><p class="words" style="<TMPL_VAR wordsX><TMPL_VAR wordsY>"><TMPL_VAR words></p></div>
+          </TMPL_IF>
+          
+          <div class="box-union" id="profile">
+            <dl class="box" id="lord">
+              <dt>ロード名
+              <dd><TMPL_VAR lordName>
+            </dl>
+            <dl class="box" id="level">
+              <dt>国レベル
+              <dd><TMPL_VAR level>
+            </dl>
+            <dl class="box" id="counts">
+              <dt>カウント
+              <dd><TMPL_VAR countsRest>/<TMPL_VAR countsTotal>
+            </dl>
+            <dl class="box" id="peerage">
+              <dt>爵位
+              <dd><TMPL_VAR peerage>
+            </dl>
+          </div>
+
+          <section class="box" id="members">
+            <h2>所属キャラクター</h2>
+            <table class="data-table line-tbody">
+              <thead>
+                <tr>
+                  <th class="name ">
+                  <th class="class">クラス
+                  <th class="style">スタイル
+                  <th class="note ">備考
+              <tbody>
+                <TMPL_LOOP Members><tr>
+                  <td><TMPL_VAR NAME>
+                  <td class="small"><TMPL_VAR CLASS>
+                  <td class="small"><TMPL_VAR STYLE>
+                  <td class="small left"><TMPL_VAR NOTE>
+                </TMPL_LOOP>
+            </table>
+          </section>
+
+          <section class="box" id="resources">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th colspan="2">食糧
+                  <th colspan="2">技術
+                  <th colspan="2">馬
+                  <th colspan="2">鉱石
+                  <th colspan="2">森林
+                  <th colspan="2">資金
+                <tr>
+                  <th class="small">資源<span class="shorten">量</span>
+                  <th class="small">使用<span class="shorten">量</span>
+                  <th class="small">資源<span class="shorten">量</span>
+                  <th class="small">使用<span class="shorten">量</span>
+                  <th class="small">資源<span class="shorten">量</span>
+                  <th class="small">使用<span class="shorten">量</span>
+                  <th class="small">資源<span class="shorten">量</span>
+                  <th class="small">使用<span class="shorten">量</span>
+                  <th class="small">資源<span class="shorten">量</span>
+                  <th class="small">使用<span class="shorten">量</span>
+                  <th class="small">資源<span class="shorten">量</span>
+                  <th class="small">使用<span class="shorten">量</span>
+              <tbody>
+                <tr>
+                  <td class="Food    total"><TMPL_VAR resourceFoodTotal>
+                  <td class="Food    used "><TMPL_VAR resourceFoodUsed>
+                  <td class="Tech    total"><TMPL_VAR resourceTechTotal>
+                  <td class="Tech    used "><TMPL_VAR resourceTechUsed>
+                  <td class="Horse   total"><TMPL_VAR resourceHorseTotal>
+                  <td class="Horse   used "><TMPL_VAR resourceHorseUsed>
+                  <td class="Mineral total"><TMPL_VAR resourceMineralTotal>
+                  <td class="Mineral used "><TMPL_VAR resourceMineralUsed>
+                  <td class="Forest  total"><TMPL_VAR resourceForestTotal>
+                  <td class="Forest  used "><TMPL_VAR resourceForestUsed>
+                  <td class="Funds   total"><TMPL_VAR resourceFundsTotal>
+                  <td class="Funds   used "><TMPL_VAR resourceFundsUsed>
+            </table>
+          </section>
+        </div>
+      </div><!-- / COLUMN -->
+
+      <div class="column column-items"><!-- COLUMN -->
+        <section class="box" id="academy-supports">
+          <h2>所持アカデミーサポート</h2>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th class="name ">
+                <th class="lv    "><span class="small">レベル</small>
+                <th class="timing">タイミング
+                <th class="target">対象
+                <th class="cost  ">カウント
+                <th class="note left">効果
+            </thead>
+            <tbody>
+              <TMPL_LOOP AcademySupports><tr>
+                <td class="name     "><TMPL_VAR NAME>
+                <td class="lv       "><TMPL_VAR LV>
+                <td class="timing   "><TMPL_VAR TIMING>
+                <td class="target   "><TMPL_VAR TARGET>
+                <td class="cost     "><TMPL_VAR COST>
+                <td class="note left"><TMPL_VAR NOTE>
+              </TMPL_LOOP>
+          </table>
+        </section>
+
+        <section class="box" id="artifacts">
+          <h2>所持アーティファクト</h2>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th class="name    ">
+                <th class="type    ">種別
+                <th class="weight  ">重量
+                <th class="lv      "><span class="small">レベル</small>
+                <th class="cost    ">カウント
+                <th class="quantity">個数
+                <th class="note left">効果
+            </thead>
+            <tbody>
+              <TMPL_LOOP Artifacts><tr>
+                <td class="name     "><TMPL_VAR NAME>
+                <td class="type     "><TMPL_VAR TYPE>
+                <td class="weight   "><TMPL_VAR WEIGHT>
+                <td class="lv       "><TMPL_VAR LV>
+                <td class="cost     "><TMPL_VAR COST>
+                <td class="quantity "><TMPL_VAR QUANTITY>
+                <td class="note left"><TMPL_VAR NOTE>
+              </TMPL_LOOP>
+          </table>
+        </section>
+
+        <section class="box" id="forces">
+          <h2>部隊</h2>
+          <table class="data-table">
+            <colgroup>
+              <col class="type">
+              <col class="lv  ">
+              <col class="cost">
+              <col class="cost">
+              <col class="cost">
+              <col class="cost">
+              <col class="cost">
+              <col class="cost">
+              <col class="note">
+            </colgroup>
+            <thead>
+              <tr>
+                <th rowspan="2">
+                <th rowspan="2" class="small">レベル
+                <th colspan="6"><div class="small">必要資源</div>
+                <th rowspan="2" class="left">解説
+              <tr>
+                <th class="small">食糧
+                <th class="small">技術
+                <th class="small">馬
+                <th class="small">鉱石
+                <th class="small">森林
+                <th class="small">資金
+            </thead>
+            <tbody>
+              <TMPL_LOOP Forces><tr>
+                <td class="type     "><TMPL_VAR TYPE>
+                <td class="lv       "><TMPL_VAR LV>
+                <td class="cost     "><TMPL_VAR FOOD>
+                <td class="cost     "><TMPL_VAR TECH>
+                <td class="cost     "><TMPL_VAR HORSE>
+                <td class="cost     "><TMPL_VAR MINERAL>
+                <td class="cost     "><TMPL_VAR FOREST>
+                <td class="cost     "><TMPL_VAR FUNDS>
+                <td class="note left"><TMPL_VAR NOTE>
+              </TMPL_LOOP>
+          </table>
+      </div><!-- / COLUMN -->
+
+      <section class="box" id="characteristics">
+        <h2>国特徴</h2>
+        <table class="data-table">
+          <colgroup>
+            <col class="name  ">
+            <col class="effect">
+            <col class="effect">
+            <col class="effect">
+            <col class="effect">
+            <col class="effect">
+            <col class="effect">
+            <col class="note">
+          </colgroup>
+          <thead>
+            <tr>
+              <th rowspan="2">
+              <th colspan="6"><div class="small">効果</div>
+              <th rowspan="2" class="left">解説
+            <tr>
+              <th class="small">食糧
+              <th class="small">技術
+              <th class="small">馬
+              <th class="small">鉱石
+              <th class="small">森林
+              <th class="small">資金
+          </thead>
+          <tbody>
+            <TMPL_LOOP Characteristics><tr>
+              <td class="name     "><TMPL_VAR NAME>
+              <td class="effect   "><TMPL_VAR FOOD>
+              <td class="effect   "><TMPL_VAR TECH>
+              <td class="effect   "><TMPL_VAR HORSE>
+              <td class="effect   "><TMPL_VAR MINERAL>
+              <td class="effect   "><TMPL_VAR FOREST>
+              <td class="effect   "><TMPL_VAR FUNDS>
+              <td class="note left"><TMPL_VAR NOTE>
+            </TMPL_LOOP><tr>
+              <th class="name     ">成長
+              <td class="effect   "><TMPL_VAR growFood>
+              <td class="effect   "><TMPL_VAR growTech>
+              <td class="effect   "><TMPL_VAR growHorse>
+              <td class="effect   "><TMPL_VAR growMineral>
+              <td class="effect   "><TMPL_VAR growForest>
+              <td class="effect   "><TMPL_VAR growFunds>
+              <td class="note left">
+        </table>
+      </section>
+
+      <section class="box" id="free-note">
+        <h2>設定</h2>
+        <p><TMPL_VAR freeNote></p>
+      </section>
+
+      <TMPL_IF freeHistory>
+      <section class="box" id="free-history">
+        <h2><TMPL_IF head_freeHistory><TMPL_VAR head_freeHistory><TMPL_ELSE>履歴</TMPL_IF></h2>
+        <p><TMPL_VAR freeHistory></p>
+      </section>
+      </TMPL_IF>
+      <section class="box" id="history">
+        <h2>セッション履歴</h2>
+        <table class="data-table line-tbody">
+          <thead>
+            <tr>
+              <th class="num   ">No.
+              <th class="date  ">日付
+              <th class="title ">タイトル
+              <th class="exp   ">カウント
+              <th class="gm    ">GM
+              <th class="member">参加者
+            </tr>
+          </thead>
+          <TMPL_LOOP History><tbody>
+            <tr>
+              <td class="num   " <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR NUM></td>
+              <td class="date  " <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR DATE></td>
+              <td class="title " <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR TITLE></td>
+              <td class="exp   "><TMPL_VAR COUNTS></td>
+              <td class="gm    "><span><TMPL_VAR GM></span></td>
+              <td class="member"><TMPL_VAR MEMBER></td>
+            </tr>
+            <TMPL_IF NOTE><tr><td colspan="6" class="note"><TMPL_VAR NOTE></TMPL_IF>
+          </TMPL_LOOP>
+          <tfoot>
+            <tr>
+              <td>
+              <td>
+              <td>取得総計
+              <td><TMPL_VAR historyCountsTotal>
+              <td colspan="2">
+            </tr>
+          </tfoot>
+        </table>
+      </section>
+      <TMPL_IF cashbook>
+      <section class="box" id="cashbook">
+        <h2><TMPL_IF head_cashbook><TMPL_VAR head_cashbook><TMPL_ELSE>収支履歴</TMPL_IF></h2>
+        <div><p><TMPL_VAR cashbook></p></div>
+      </section>
+      </TMPL_IF>
+      <section class="box chat-palette float-box">
+        <h2>チャットパレット</h2>
+        <div class="chat-palette-menu">
+          <b>使用ツール:</b>
+          <a onclick="chatPaletteSelect('')"       id="cp-switch-ytc">ゆとチャadv.</a>
+          <a onclick="chatPaletteSelect('tekey')"  id="cp-switch-tekey">Tekey</a>
+          <a onclick="chatPaletteSelect('bcdice')" id="cp-switch-bcdice">他BCDice系</a>
+        </div>
+        <textarea id="chatPaletteBox"></textarea>
+      </section>
+    </article>
+    <div class="back-button"><a href="./?type=c">⏎</a></div>
+    <TMPL_IF image><div id="image-box" onclick="closeImage()">
+      <img src="<TMPL_VAR imageSrc>" id="image-box-image">
+    </div></TMPL_IF> 
+  </main>
+  <TMPL_INCLUDE NAME="skin-add/sheet-sidebar.html">
+
+  <footer>
+    <p class="notes">©Shunsaku Yano/Team Barrelroll.「グランクレストRPG」</p>
+    <p class="copyright">©<a href="https://yutorize.2-d.jp">ゆとらいず工房</a>「ゆとシートⅡ」ver.<TMPL_VAR ver></p>
+  </footer>
+</body>
+
+</html>

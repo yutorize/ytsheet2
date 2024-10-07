@@ -152,6 +152,14 @@ foreach (@list) {
   
   #グループ（分類）
   $category =~ s/[ 　]/<br>/g;
+
+  #価格
+  $price = commify $price if $price =~ /\d{4,}/;
+  $price =~ s/[+＋\/／]/<wbr>$&<wbr>/g;
+  
+  #タグ
+  my $tags_links;
+  foreach(grep $_, split(/ /, $tag)){ $tags_links .= '<a href="./?type=i&tag='.uri_escape_utf8($_).'">'.$_.'</a>'; }
   
   #更新日時
   my ($min,$hour,$day,$mon,$year) = (localtime($updatetime))[1..5];
@@ -169,6 +177,7 @@ foreach (@list) {
     "AGE" => $age,
     "SUMMARY" => $summary,
     "MAGIC" => ($type =~ /\[ma\]/ ? "<img class=\"${set::icon_dir}wp_magic.png\">" : ''),
+    "TAGS" => $tags_links,
     "DATE" => $updatetime,
     "HIDE" => $hide,
   });

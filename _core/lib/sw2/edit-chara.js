@@ -487,6 +487,7 @@ function calcStt() {
 
   // 計算
   let growTotal = 0;
+  let preGrowTotal = 0;
   for(let i of [
     ['A','Dex'],
     ['B','Agi'],
@@ -501,7 +502,9 @@ function calcStt() {
                : (i[0] === 'E' || i[0] === 'F') ? Number(form.sttBaseSpi.value)
                : 0;
     // 成長
-    stt['grow'+i[1]] += Number(form['sttPreGrow'+i[0]].value) + seekerGrow;
+    const preGrow = Number(form['sttPreGrow'+i[0]].value);
+    stt['grow'+i[1]] += preGrow + seekerGrow;
+    preGrowTotal += preGrow;
     document.getElementById(`stt-grow-${i[0]}-value`).textContent = stt['grow'+i[1]];
     growTotal += stt['grow'+i[1]]; //成長回数合計
 
@@ -522,6 +525,7 @@ function calcStt() {
 
   document.getElementById("stt-grow-total-value").textContent = growTotal;
   document.getElementById("history-grow-total-value").textContent = growTotal;
+  document.querySelector('#regulation > dl:first-of-type dt.grow').dataset.total = preGrowTotal.toString();
   
   function modStatus(value){
     if(value > 0){ return `<span class="small">+${value}=</span>` }
@@ -1456,7 +1460,7 @@ function calcWeapon() {
       accBase += classLv + parseInt((dex + ownDex) / 6);
     }
     // 基礎ダメージ
-    if     (category === 'クロスボウ'){ dmgBase = classLv; }
+    if     (category === 'クロスボウ'){ dmgBase = modeZero ? 0 : classLv; }
     else if(category === 'ガン')      { dmgBase = magicPowers['Mag']; }
     else if(!modeZero && className === "デーモンルーラー")
                                       { dmgBase = magicPowers['Dem']; }
@@ -1928,6 +1932,10 @@ setSortable('mysticMagic','#mystic-magic-list','li');
 
 // 言語欄 ----------------------------------------
 function checkLanguage(){
+  const languageTable = document.getElementById('language-table');
+  languageTable.classList.toggle('sag-available', parseInt(form['lvSag'].value) > 0);
+  languageTable.classList.toggle('bar-available', parseInt(form['lvBar'].value) > 0);
+
   let count = {}; let acqT = {}; let acqR = {};
   if(SET.races[race]?.language){
     for(let data of SET.races[race].language){ acqT[data[0]] = data[1]; acqR[data[0]] = data[2]; }
@@ -2293,10 +2301,16 @@ function calcPointBuy() {
   
   let points = 0;
   let errorFlag = 0;
-  ['A','B','C','D','E','F'].forEach((i) => { form[`sttBase${i}`].classList.remove('error') });
+  ['A','B','C','D','E','F'].forEach((i) => {
+    form[`sttBase${i}`].classList.remove('error');
+    delete document.querySelector(`#stt-base-${i} > dt:first-child`).dataset['range'];
+  });
   if(SET.races[race]?.dice){
     ['A','B','C','D','E','F'].forEach((i) => {
       const dice = String(SET.races[race].dice[i]);
+      const min = Number(dice) + (SET.races[race].dice[`${i}+`] ?? 0);
+      const max = min + Number(dice) * 5;
+      document.querySelector(`#stt-base-${i} > dt:first-child`).dataset.range = `${min}～${max}`;
       let num  = Number(form[`sttBase${i}`].value);
       if(SET.races[race].dice[`${i}+`]){ num -= SET.races[race].dice[`${i}+`]; }
       if(pointBuyList[type] && pointBuyList[type][dice] && pointBuyList[type][dice][num] != null){

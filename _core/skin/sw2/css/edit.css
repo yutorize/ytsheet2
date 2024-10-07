@@ -8,6 +8,16 @@
   #sw2\.0 & {
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 5fr;
   }
+
+  > dt.grow[data-total] {
+    &:not([data-total="0"]) {
+      &::after {
+        content: "(小計: " attr(data-total) " 回)";
+        font-size: 80%;
+        font-weight: normal;
+      }
+    }
+  }
 }
 #regulation dl.regulation-grow {
   display: grid;
@@ -85,6 +95,20 @@
   }
 }
 
+#status dl[id^="stt-base-"] {
+  dt[data-range] {
+    display: flex;
+    flex-flow: row;
+    justify-content: space-between;
+    align-items: flex-end;
+
+    &::after {
+      content: "(" attr(data-range) ")";
+      font-size: 70%;
+      font-weight: normal;
+    }
+  }
+}
 #status dl[id^="stt-add"]::before {
   left: -.6rem;
 }
@@ -467,6 +491,11 @@
       & option[value="listen"],
       &[data-type="listen"] + .lang-select-view { background: #77777722; }
       &[data-type="listen"] + .lang-select-view::before { content: '△'; }
+    }
+
+    &:not(.sag-available) select option[value="Sag"],
+    &:not(.bar-available) select option[value="Bar"] {
+      display: none;
     }
   }
 }
@@ -1389,11 +1418,37 @@ form#monster.mount table.status .button {
   padding-top: 2px;
   padding-bottom: 2px;
 }
-form#monster div.parts input {
-  width: auto;
-}
-form#monster div.parts input[name="partsNum"] {
-  width: 5em;
+form#monster div.parts {
+  display: grid;
+  grid-template-columns: max-content max-content;
+  > label:has([name="partsManualInput"]) {
+    grid-column: span 2;
+    width: max-content;
+  }
+  > dl {
+    align-items: center;
+    & input {
+      width: auto;
+    }
+    & input[name="partsNum"] {
+      width: 5em;
+    }
+    & input[name="parts"] {
+      width: 17.5em;
+    }
+  }
+  @media screen and (max-width: 735px) {
+    display: block;
+    > dl {
+      margin-right: 0;
+      > dd {
+        text-align: left;
+      }
+      & input[name="partsNum"] {
+        width: 3.5em;
+      }
+    }
+  }
 }
 @media screen and (max-width:735px){
   form#monster table.status { width: 50em; }
@@ -1559,6 +1614,12 @@ form#item .input-arms-data {
   & td { width: 5em; }
   & td:first-child { width: 1.5em; }
   & td:last-child { width: auto; }
+
+  #section-common:not(.is-ranged-weapon) & {
+    :is(th, td).range {
+      display: none;
+    }
+  }
 }
 
 form#item .input-data label {

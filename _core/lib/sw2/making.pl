@@ -52,10 +52,10 @@ while ($i <= $in{repeat} || ($average_max <= $set::average_over)){
     $in{phy} = dice(2);
     $in{spi} = dice(2);
   }
-  if($magitecangel){
-    $in{tec} = 9;
-    $in{phy} = 9;
-    $in(spi) = 9;
+  elsif(exists $data::races{$in{race}}{birth}){
+    $in{tec} = $data::races{$in{race}}{birth}{tec};
+    $in{phy} = $data::races{$in{race}}{birth}{phy};
+    $in{spi} = $data::races{$in{race}}{birth}{spi};
   }
   
   my $stt_A = dice($data::races{$in{race}}{dice}{A});
@@ -103,7 +103,7 @@ sysopen (my $FH, $set::makelist, O_RDWR | O_CREAT, 0666);
   truncate($FH, tell($FH));
 close($FH);
 
-print "Location:./?mode=making\n\n";
+print "Location:./?mode=making&num=${num}\n\n";
 
 sub dice {
   my $loop = shift;

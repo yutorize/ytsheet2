@@ -168,6 +168,10 @@ foreach (@list) {
   else { $sub =~ s#(／[0-9]+)#$1レベル#; }
   $sub = subTextShape($sub);
 
+  #タグ
+  my $tags_links;
+  foreach(grep $_, split(/ /, $tag)){ $tags_links .= '<a href="./?type=a&tag='.uri_escape_utf8($_).'">'.$_.'</a>'; }
+
   #更新日時
   my ($min,$hour,$day,$mon,$year) = (localtime($updatetime))[1..5];
   $year += 1900; $mon++;
@@ -182,6 +186,7 @@ foreach (@list) {
     "CATEGORY" => $category_text,
     "SUB" => $sub,
     "SUMMARY" => $summary,
+    "TAGS" => $tags_links,
     "DATE" => $updatetime,
     "HIDE" => $hide,
   });

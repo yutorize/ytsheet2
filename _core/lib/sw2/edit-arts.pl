@@ -41,7 +41,7 @@ my $mode_make = ($mode =~ /^(blanksheet|copy|convert)$/) ? 1 : 0;
 
 ### 出力準備 #########################################################################################
 if($message){
-  my $name = unescapeTags($pc{category} eq 'magic' ? $pc{magicName} : $pc{category} eq 'god' ? $pc{godAka}.$pc{godName} : '無題');
+  my $name = unescapeTags($pc{category} eq 'magic' ? $pc{magicName} : $pc{category} eq 'god' ? $pc{godAka}.$pc{godName} : $pc{category} eq 'school' ? $pc{schoolName} : '無題');
   $message =~ s/<!NAME>/$name/;
 }
 ### 製作者名 --------------------------------------------------
@@ -594,6 +594,7 @@ print <<"HTML";
     <option value="10秒（1ラウンド）持続">
   </datalist>
   <datalist id="list-arts-risk">
+    <option value="—">
     <option value="なし">
     <option value="回避力判定-1">
     <option value="回避力判定-2">

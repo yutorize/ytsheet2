@@ -30,8 +30,12 @@ if($mode_make){
 ### 初期設定 --------------------------------------------------
 if($mode_make){ $pc{protect} = $LOGIN_ID ? 'account' : 'password'; }
 
-if($mode eq 'blanksheet'){
+if($mode eq 'edit' || ($mode eq 'convert' && $pc{ver})){
+  %pc = data_update_mons(\%pc);
+}
+elsif($mode eq 'blanksheet'){
   $pc{paletteUseBuff} = 1;
+  $pc{partsManualInput} = 0
 }
 
 ## カラー
@@ -301,7 +305,7 @@ foreach my $num (1 .. $pc{statusNum}){
         <tr id="status-row${num}">
           <th class="mount-only">
           <td class="handle">
-          <td>@{[ input "status${num}Style",'text',"checkStyle(${num})" ]}
+          <td>@{[ input "status${num}Style",'text',"checkStyle(${num}); updatePartsAutomatically()" ]}
           <td>@{[ input "status${num}Accuracy",($status_text_input ? 'text':'number'),"calcAcc($num)" ]}<span class="monster-only calc-only"><br>(@{[ input "status${num}AccuracyFix",'number',"calcAccF($num)" ]})</span>
           <td>@{[ input "status${num}Damage" ]}
           <td>@{[ input "status${num}Evasion",($status_text_input ? 'text':'number'),"calcEva($num)" ]}<span class="monster-only calc-only"><br>(@{[ input "status${num}EvasionFix",'number',"calcEvaF($num)" ]})</span>
@@ -348,6 +352,7 @@ print <<"HTML";
       @{[input('statusNum','hidden')]}
       </div>
       <div class="box parts in-toc" data-content-title="部位数・コア部位">
+        @{[ checkbox 'partsManualInput', '部位数と内訳を手動入力する', 'updatePartsAutomatically' ]}
         <dl><dt>部位数<dd>@{[ input 'partsNum','number','','min="1"' ]} (@{[ input 'parts' ]}) </dl>
         <dl><dt>コア部位<dd>@{[ input 'coreParts' ]}</dl>
       </div>

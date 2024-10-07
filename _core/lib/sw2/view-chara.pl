@@ -203,7 +203,6 @@ $SHEET->param(Tags => \@tags);
 $pc{race} =~ s/［.*］//g;
 {
   my $race = $pc{race};
-  if(!$::SW2_0 && $race eq 'ドレイク（ナイト）'){ $race = 'ドレイク' } # ドレイク例外処理
   if($race =~ /^(.+?)[（(](.+?)[)）]/){
     my $base    = $1;
     my $variant = $2;
@@ -804,7 +803,7 @@ else {
       TYPE => $pc{'armour'.$_.'Type'},
       NAME => $pc{'armour'.$_.'Name'},
       REQD => $pc{'armour'.$_.'Reqd'},
-      EVA  => $pc{'armour'.$_.'Eva'} // ($pc{'armour'.$_.'Category'} =~ /[鎧盾]/ ? '―' : ''),
+      EVA  => $pc{'armour'.$_.'Eva'} ? addNum($pc{'armour'.$_.'Eva'}) : ($pc{'armour'.$_.'Category'} =~ /[鎧盾]/ ? '―' : ''),
       DEF  => $pc{'armour'.$_.'Def'} // ($pc{'armour'.$_.'Category'} =~ /[鎧盾]/ ? '0' : ''),
       OWN  => $pc{'armour'.$_.'Own'},
       NOTE => $pc{'armour'.$_.'Note'},

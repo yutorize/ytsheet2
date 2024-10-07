@@ -221,6 +221,23 @@ div.data {
       &:not(:has(tbody td.note:not(:empty))) tr > *.note {
         display: none;
       }
+
+      &:not(:has(td.range:not(:empty))) {
+        :is(th, td).range {
+          display: none;
+        }
+      }
+      td.range:empty::before {
+        content: "―";
+      }
+
+      &.armour-table {
+        &:not(:has(td.usage:not(:empty))) {
+          .usage {
+            display: none;
+          }
+        }
+      }
     }
     & > :is(dt,dd):nth-of-type(n+2) {
       border-top-width: 1px;

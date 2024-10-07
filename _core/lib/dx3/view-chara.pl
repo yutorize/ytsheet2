@@ -99,6 +99,12 @@ if($pc{forbidden} && !$pc{yourAuthor}){
   $pc{dashTotal}       = noiseText(1,2);
   $pc{stockTotal}      = noiseText(1,2);
   $pc{savingTotal}     = noiseText(1,2);
+  $pc{maxHpAdd}      = '';
+  $pc{initiativeAdd} = '';
+  $pc{moveAdd}       = '';
+  $pc{dashAdd}       = '';
+  $pc{stockAdd}      = '';
+  $pc{savingAdd}     = '';
   
   foreach my $name ('Melee','Ranged','RC','Negotiate','Dodge','Percept','Will','Procure'){
     $pc{'skillTotal'.$name} = noiseText(1);
@@ -160,7 +166,7 @@ if($pc{forbidden} && !$pc{yourAuthor}){
       $pc{'combo'.$_.'Fixed'.$i} = '';
     }
   }
-  $pc{weaponNum} = $pc{armorNum} = $pc{itemNum} = $pc{magicNum} = $pc{historyNum} = 0;
+  $pc{weaponNum} = $pc{armorNum} = $pc{itemNum} = $pc{vehicleNum} = $pc{magicNum} = $pc{historyNum} = 0;
   $pc{history0Exp} = noiseText(1,3);
   
   $pc{playerName} = $author;
