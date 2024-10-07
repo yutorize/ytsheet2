@@ -99,6 +99,8 @@ our $game = 'sw2';
 ## ●2.5未実装要素の表示設定 (ON=1)
  # 全ての技能を表示
   our $all_class_on = 1;
+ # レベル16以上を常設解禁
+  our $force_unlockAbove16 = 0;
 
 
 ## ●冒険者ランク
