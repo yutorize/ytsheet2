@@ -58,6 +58,8 @@ if($id){
   if($pc{image}){
     $pc{imageURL} = url()."?id=$id&mode=image&cache=$pc{imageUpdate}";
   }
+
+  $pc{sheetURL} = url()."?id=${id}";
 }
 elsif($::in{url}){
   require $set::lib_convert;
