@@ -2112,17 +2112,23 @@ function setArmourType (){
       = type ? type+count[type] : '';
   }
 }
+// 名前変更
+function changeArmourName(){
+  generateArmourCheckbox('num')
+}
 // 合計欄チェックボックス
-function generateArmourCheckbox (){
+function generateArmourCheckbox(checkListType = 'name'){
   let checkList = {};
   let rowNum = 0;
   const rows = document.querySelectorAll(`#armours tfoot .defense-total-checklist`);
   rows.forEach(row => {
     rowNum++;
     checkList[rowNum] = {};
+    let num = 0;
     row.querySelectorAll(`label input`).forEach(checkbox => {
-      const name = checkbox.nextElementSibling.textContent || '';
-      checkList[rowNum][name] = checkbox.checked ? 'checked' : '';
+      num++;
+      const id = checkListType == 'num' ? num : (checkbox.nextElementSibling.textContent || '');
+      checkList[rowNum][id] = checkbox.checked ? 'checked' : '';
     })
   });
   rowNum = 1;
@@ -2136,10 +2142,10 @@ function generateArmourCheckbox (){
             .replace(/[|｜](.+?)《(.+?)》/g, "$1")
             .replace(/\[([^\[\]]+?)#[0-9a-zA-z\-]+\]/g, "$1")
         : type || '―';
-
+      const id = checkListType == 'num' ? num : name;
       let checkbox = document.createElement('label');
       checkbox.classList.add('check-button');
-      checkbox.innerHTML = `<input type="checkbox" name="defTotal${rowNum}CheckArmour${num}" value="1" oninput="calcDefense()" ${checkList[rowNum][name]}><span>${name||'―'}</span>`;
+      checkbox.innerHTML = `<input type="checkbox" name="defTotal${rowNum}CheckArmour${num}" value="1" oninput="calcDefense()" ${checkList[rowNum][id]}><span>${name||'―'}</span>`;
       row.append(checkbox);
 
       document.querySelector(`input[name="defTotal${rowNum}CheckArmour${num}"]`).parentNode.style.display
