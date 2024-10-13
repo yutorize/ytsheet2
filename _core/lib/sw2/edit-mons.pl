@@ -245,7 +245,7 @@ print <<"HTML";
         </dl>
         <dl>
           <dt>言語
-          <dd>@{[ input 'language' ]}
+          <dd>@{[ input 'language','','','list="data-language"' ]}
         </dl>
         <dl class="monster-only">
           <dt>生息地
@@ -444,6 +444,9 @@ print <<"HTML";
   <option value="敵対的">
   <option value="腹具合による">
   <option value="命令による">
+  </datalist>
+  <datalist id="data-language">
+  <option value="なし">
   </datalist>
   <datalist id="data-weakness">
   <option value="命中力+1">
