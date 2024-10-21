@@ -111,7 +111,7 @@ $pc{evasiveManeuver} ||= 0;
 $pc{tenacity} ||= 0;
 $pc{capacity} ||= 0;
 
-$pc{unlockAbove16} = 1 if $pc{level} > 15;
+$pc{unlockAbove16} = 1 if $pc{level} > 15 || $set::force_unlockAbove16 == 1;
 
 ### 改行処理 --------------------------------------------------
 $pc{words}           =~ s/&lt;br&gt;/\n/g;

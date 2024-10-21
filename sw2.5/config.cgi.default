@@ -57,6 +57,8 @@ package set;
   our $all_class_on = 1;
  # 秘伝
   our $mystic_arts_on = 1;
+ # レベル16以上を常設解禁
+  our $force_unlockAbove16 = 0;
 
 
 ## ●ログイン関係ファイル
