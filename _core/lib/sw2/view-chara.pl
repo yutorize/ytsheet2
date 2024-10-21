@@ -650,13 +650,14 @@ else {
       }
       $rowspan++;
       $pc{'weapon'.$num.'NameOff'} = 1;
-      if(!$pc{'weapon'.$num.'Note'}){
-        $notespan++;
-        $pc{'weapon'.$num.'NoteOff'} = 1;
+      if($pc{'weapon'.$num.'Note'}){
+      $pc{'weapon'.($num-$notespan).'NoteSpan'} = $notespan;
+        $notespan = 1
       }
       else {
-        $pc{'weapon'.($num-$notespan).'NoteSpan'} = $notespan;
-        $notespan = 1
+      $pc{'weapon'.($num-$notespan).'NoteSpan'} = $notespan+1;
+        $pc{'weapon'.$num.'NoteOff'} = 1;
+        $notespan++;
       }
     }
     if($pc{'weapon'.$_.'Class'} eq "自動計算しない"){
