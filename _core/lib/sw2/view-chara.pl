@@ -268,12 +268,15 @@ if($pc{lvSeeker}){
 
 ### 一般技能 --------------------------------------------------
 my @common_classes;
+my $commonClassTotalLevel = 0;
 foreach (1..10){
   next if !$pc{'commonClass'.$_};
   $pc{'commonClass'.$_} =~ s#([（\(].+?[\)）])#<span class="small">$1</span>#g;
   push(@common_classes, { "NAME" => $pc{'commonClass'.$_}, "LV" => $pc{'lvCommon'.$_} } );
+  $commonClassTotalLevel += $pc{'lvCommon'.$_};
 }
 $SHEET->param(CommonClasses => \@common_classes);
+$SHEET->param(CommonClassTotalLevel => $commonClassTotalLevel);
 
 ### 戦闘特技 --------------------------------------------------
 my %acquired;

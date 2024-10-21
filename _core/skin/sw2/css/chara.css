@@ -511,6 +511,20 @@ dl#level {
     margin: 0 -10%;
     transform: scaleX(0.8);
   }
+  #common-classes {
+    h2 {
+      display: flex;
+      flex-flow: row;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding-right: 0.25em;
+
+      .total-level {
+        font-size: 80%;
+        font-weight: normal;
+      }
+    }
+  }
   #common-classes .small {
     display: inline-block;
   }
