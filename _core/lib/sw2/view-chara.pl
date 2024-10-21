@@ -889,7 +889,7 @@ else {
 }
 
 ### 部位 --------------------------------------------------
-{
+if(exists $data::races{$pc{race}}{parts}){
   my @row;
   foreach (1 .. $pc{partNum}) {
     my $type = ($pc{partCore} eq $_) ? 'core' : 'part';
