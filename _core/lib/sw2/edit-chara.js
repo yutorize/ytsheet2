@@ -1259,6 +1259,10 @@ function calcMagic() {
       
       if(id === 'Alc'){ power += feats['賦術強化'] || 0 }
       document.getElementById("magic-cast-"+eName+"-value").textContent = power + Number(form["magicCastAdd"+id].value);
+      
+      if(SET.class[key].craft?.power){
+        magicPowers[id] = cLv ? power : 0;
+      }
     }
   }
   // 全体／その他の開閉
@@ -1413,13 +1417,19 @@ function calcAttack() {
     }
     if(display == 'none'){ errorAccClass[name] = true; }
     document.getElementById(`attack-${eName}`).style.display = display;
-    document.getElementById(`attack-${eName}-str`).textContent = id == 'Fen' ? reqdStrHalf : reqdStr;
-    document.getElementById(`attack-${eName}-acc`).textContent = lv[id] + bonus.Dex;
-    document.getElementById(`attack-${eName}-dmg`).textContent = lv[id] + bonus.Str;
-  }
-  
-  if(!modeZero){
-    document.getElementById("attack-demonruler-dmg").textContent = '―';
+
+    document.getElementById(`attack-${eName}-str`).textContent
+      = id == 'Fen' ? reqdStrHalf
+      : SET.class[name]?.accUnlock?.reqd ? stt[SET.class[name]?.accUnlock?.reqd]
+      : reqdStr;
+    
+    document.getElementById(`attack-${eName}-acc`).textContent
+      = SET.class[name]?.accUnlock?.acc === 'power' ? magicPowers[id]
+      : lv[id] + bonus.Dex;
+    
+    document.getElementById(`attack-${eName}-dmg`).textContent
+      = SET.class[name]?.accUnlock?.dmg === 'power' ? magicPowers[id]
+      : lv[id] + bonus.Str;
   }
 
   for(let i = 0; i < SET.weapons.length; i++){
@@ -1453,17 +1463,23 @@ function calcWeapon() {
     // 技能選択のエラーチェック
     form["weapon"+i+"Class"].classList.toggle('error', errorAccClass[className] == true); 
     // 必筋チェック
-    const maxReqd = (className === "フェンサー") ? reqdStrHalf : reqdStr;
+    const maxReqd
+      = (className === "フェンサー") ? reqdStrHalf
+      : SET.class[className]?.accUnlock?.reqd ? stt[SET.class[className]?.accUnlock?.reqd]
+      : reqdStr;
     form["weapon"+i+"Reqd"].classList.toggle('error', weaponReqd > maxReqd);
     // 基礎命中
-    if(classLv) {
+    if(SET.class[className]?.accUnlock?.acc === 'power'){
+      accBase = magicPowers[SET.class[className].id];
+    }
+    else if(classLv) {
       accBase += classLv + parseInt((dex + ownDex) / 6);
     }
     // 基礎ダメージ
     if     (category === 'クロスボウ'){ dmgBase = modeZero ? 0 : classLv; }
     else if(category === 'ガン')      { dmgBase = magicPowers['Mag']; }
-    else if(!modeZero && className === "デーモンルーラー")
-                                      { dmgBase = magicPowers['Dem']; }
+    else if(SET.class[className]?.accUnlock?.dmg === 'power')
+                                      { dmgBase = magicPowers[SET.class[className].id] }
     else if(classLv)                  { dmgBase = classLv + parseInt(str / 6); }
 
     // 戦闘特技
