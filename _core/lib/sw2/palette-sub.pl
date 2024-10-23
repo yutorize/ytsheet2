@@ -244,6 +244,7 @@ sub palettePreset {
           next if($pows{$id}{$pow} > $::pc{'lv'.$id} && $id ne 'Fai');
           next if($id eq 'Wiz' && $pows{$id}{$pow} > min($::pc{lvSor},$::pc{lvCon}));
           next if($id eq 'Fai' && $pows{$id}{$pow} > fairyRank($::pc{lvFai},$::pc{fairyContractEarth},$::pc{fairyContractWater},$::pc{fairyContractFire },$::pc{fairyContractWind },$::pc{fairyContractLight},$::pc{fairyContractDark }));
+          next if $id eq 'Fai' && $pow == 80 && $::pc{lvFai} < 15;
           if($id eq 'Bar'){ $pow += $::pc{finaleEnhance} || 0; }
 
           $text .= "k${pow}[{魔法C}$activeCrit]+$magicPower".addNum($::pc{'magicDamageAdd'.$id})."+{魔法D修正}$activeDmg ダメージ\n";
