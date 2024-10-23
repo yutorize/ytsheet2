@@ -199,4 +199,16 @@ our @combat_feats = (
   ['主', 0,'ワードブレイク',''],
 );
 
+sub getFeatCategoryByName {
+    my $featName = shift;
+
+    foreach (@combat_feats) {
+        my @feat = @{$_};
+        (my $category, my $requiredLevel, my $name) = @feat;
+        return $category if $name eq $featName;
+    }
+
+    return '';
+}
+
 1;
