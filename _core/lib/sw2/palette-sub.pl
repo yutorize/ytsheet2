@@ -240,6 +240,14 @@ sub palettePreset {
       $marks .= '[準]' if $category =~ /準/;
       push(@declarationFeats, [$marks, $featName]);
     }
+    foreach (1 .. $::pc{mysticArtsNum}) {
+      my $artsName = $::pc{"mysticArts${_}"};
+      my $marks = '';
+      $marks .= $& while $artsName =~ s/\[.]//;
+      next if $marks !~ /宣|準/;
+      next unless $artsName;
+      push(@declarationFeats, [$marks, $artsName]);
+    }
     if (@declarationFeats) {
       $text .= "\n### ■宣言特技\n";
       foreach (@declarationFeats) {
