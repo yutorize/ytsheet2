@@ -152,6 +152,7 @@ article {
   & dl.addpoint  { grid-area: ADPT; }
   
   & dl.part      { grid-area: PART; }
+  & dl.human-form{ grid-area: HUMF; }
   
   & dl.ccost     { grid-area: CCST; }
   & dl.ccharge   { grid-area: CCHG; }
@@ -278,15 +279,19 @@ article {
   }
 }
 .data-magic.potential {
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   grid-template-areas:
-    "NAME NAME"
-    "PRMS PART"
-    "SMRY SMRY"
-    "EFCT EFCT"
+    "NAME NAME NAME"
+    "PRMS PART HUMF"
+    "SMRY SMRY SMRY"
+    "EFCT EFCT EFCT"
   ;
   > dl {
     grid-template-columns: 5em 1fr;
+
+    &.human-form {
+      grid-template-columns: 6em 1fr;
+    }
   }
 }
 .data-magic.seal {
