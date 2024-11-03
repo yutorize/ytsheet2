@@ -129,6 +129,14 @@ function checkMagicClass(){
   document.querySelector('#data-magic dl.type      dt').textContent = (magic == '鼓咆') ? '鼓咆の系統' : (magic == '占瞳') ? 'タイプなど' : (magic == '貴格') ? '形態' : '対応';
   document.querySelector('#data-magic dl.premise   dt').textContent = (magic == '呪印') ? '前提ＡＣ'   : '前提';
   document.querySelector('#data-magic dl.condition dt').textContent = (magic == '呪歌') ? '効果発生条件' : (magic == '陣率') ? '使用条件' : '条件';
+
+  const levelInput = document.querySelector('#data-magic dl.level dd input');
+  if (magic.length === 2) {
+    // 練技、呪歌など
+    levelInput.setAttribute('list', 'list-craft-required-level');
+  } else {
+    levelInput.removeAttribute('list');
+  }
 }
 function viewMagicInputs(items){
   document.querySelectorAll(`#data-magic dl`).forEach(obj => {
