@@ -247,7 +247,7 @@ HTML
           <dl class="sphere   "><dt>マギスフィア<dd>@{[ input 'magicMagisphere','','','list="list-sphere"' ]}</dl>
           <dl class="level    "><dt>習得レベル  <dd>@{[ input 'magicLevel' ]}</dl>
           <dl class="type     "><dt>対応        <dd>@{[ input 'magicType','','','list="list-type"' ]}</dl>
-          <dl class="premise  "><dt>前提        <dd>@{[ input 'magicPremise' ]}</dl>
+          <dl class="premise  "><dt>前提        <dd>@{[ input 'magicPremise','','','list="list-premise"' ]}</dl>
           <dl class="cost     "><dt>消費        <dd>@{[ input 'magicCost','','','list="list-cost"' ]}</dl>
           <dl class="target   "><dt>対象        <dd>@{[ input 'magicTarget','','','list="list-target"' ]}</dl>
           <dl class="range    "><dt>射程／形状  <dd>@{[ input 'magicRange','','','list="list-range"' ]}／@{[ input 'magicForm','','','list="list-form"' ]}</dl>
@@ -446,6 +446,10 @@ print <<"HTML";
     <p class="notes">(C)Group SNE「ソード・ワールド2.0／2.5」</p>
     <p class="copyright">©<a href="https://yutorize.2-d.jp">ゆとらいず工房</a>「ゆとシートⅡ」ver.${main::ver}</p>
   </footer>
+  <datalist id="list-premise">
+    <option value="なし">
+    <option value="【】">
+  </datalist>
   <datalist id="list-cost">
     <option value="MP">
     <option value="MP＋魔晶石＿点">
