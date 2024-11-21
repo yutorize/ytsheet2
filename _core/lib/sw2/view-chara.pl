@@ -318,13 +318,15 @@ foreach (1..$pc{mysticArtsNum}){
   my $type = $pc{'mysticArts'.$_.'PtType'} || 'human';
   $mysticarts_honor{$type} += $pc{'mysticArts'.$_.'Pt'};
   next if !$pc{'mysticArts'.$_};
-  push(@mystic_arts, { "NAME" => '《'.$pc{'mysticArts'.$_}.'》' });
+  my ($name, $mark) = checkArtsName $pc{'mysticArts'.$_};
+  push(@mystic_arts, { "NAME" => "$mark《$name》" });
 }
 foreach (1..$pc{mysticMagicNum}){
   my $type = $pc{'mysticMagic'.$_.'PtType'} || 'human';
   $mysticarts_honor{$type} += $pc{'mysticMagic'.$_.'Pt'};
   next if !$pc{'mysticMagic'.$_};
-  push(@mystic_arts, { "NAME" => '【'.$pc{'mysticMagic'.$_}.'】' });
+  my ($name, $mark) = checkArtsName $pc{'mysticMagic'.$_};
+  push(@mystic_arts, { "NAME" => "$mark【$name】" });
 }
 my $mysticarts_honor = $mysticarts_honor{human}
                      .($mysticarts_honor{barbaros}?"<br><small>蛮</small>$mysticarts_honor{barbaros}":'')
@@ -354,9 +356,9 @@ foreach my $class (@data::class_caster){
     my $magic = $pc{'magic'.ucfirst($data::class{$class}{magic}{eName}).$_};
     
     if($class eq 'グリモワール'){
-      push(@magics, { "ITEM" => "－${magic}－", "RUBY" => "data-ruby=\"$gramarye_ruby{$magic}\"" } );
+      push(@magics, { NAME => "－${magic}－", "RUBY" => "data-ruby=\"$gramarye_ruby{$magic}\"" } );
     }
-    else { push(@magics, { "ITEM" => $magic } ); }
+    else { push(@magics, { NAME => $magic } ); }
   }
   
   push(@magic_lists, { "jNAME" => $data::class{$class}{magic}{jName}, "eNAME" => $data::class{$class}{magic}{eName}, "MAGICS" => \@magics } );
@@ -377,12 +379,24 @@ foreach my $class (@data::class_names){
   
   if($class eq 'アーティザン'){ $add += $pc{lvArt} >= 17 ? 2 : $pc{lvArt} >= 16 ? 1 : 0; }
 
+  my %craftType;
+  foreach (@{$data::class{$class}{craft}{data}}){
+    if($_->[2] =~ /(\[[常主補準宣]\])+/){ $craftType{$_->[1]} = textToIcon $&; }
+  }
+
   my @crafts;
   foreach (1 .. $lv + $add){
     my $craft = $pc{'craft'.ucfirst($data::class{$class}{craft}{eName}).$_};
     
     $acquired{$craft} = 1;
-    push(@crafts, { "ITEM" => $craft } );
+    
+    if($::SW2_0){
+      push(@crafts, { NAME => $craft, } );
+    }
+    else {
+      my ($name, $mark) = checkArtsName "$craftType{$craft}$craft";
+      push(@crafts, { NAME => $name, MARK => $mark } );
+    }
   }
   
   push(@craft_lists, { "jNAME" => $data::class{$class}{craft}{jName}, "eNAME" => $data::class{$class}{craft}{eName}, "CRAFTS" => \@crafts } );
