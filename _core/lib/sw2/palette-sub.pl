@@ -78,9 +78,9 @@ my %pows = (
     100 => 13,
   },
   Bar => {
-    10  =>  1,
-    20  =>  5,
-    30  => 10,
+    10  => '終律：春の強風|終律：冬の寒風',
+    20  => '終律：獣の咆哮|終律：蛇穴の苦鳴',
+    30  => '終律：火竜の舞|終律：水竜の轟',
   },
 );
 if($::SW2_0){
@@ -110,11 +110,11 @@ my %heals = (
     100 => 13,
   },
   Bar => {
-    0   =>  1,
-    10  =>  1,
-    20  =>  1,
-    30  =>  5,
-    40  => 10,
+    0   => '終律：秋の実り',
+    10  => '終律：華の宴',
+    20  => '終律：夏の生命|終律：蒼月の光',
+    30  => '終律：草原の息吹',
+    40  => '終律：白日の暖',
   },
 );
 
@@ -241,9 +241,19 @@ sub palettePreset {
         
         my $half;
         foreach my $pow (sort {$a <=> $b} keys %{$pows{$id}}) {
-          next if($pows{$id}{$pow} > $::pc{'lv'.$id} && $id ne 'Fai');
-          next if($id eq 'Wiz' && $pows{$id}{$pow} > min($::pc{lvSor},$::pc{lvCon}));
-          next if($id eq 'Fai' && $pows{$id}{$pow} > fairyRank($::pc{lvFai},$::pc{fairyContractEarth},$::pc{fairyContractWater},$::pc{fairyContractFire },$::pc{fairyContractWind },$::pc{fairyContractLight},$::pc{fairyContractDark }));
+          if($pows{$id}{$pow} =~ /^[0-9]+$/){
+            next if($pows{$id}{$pow} > $::pc{'lv'.$id} && $id ne 'Fai');
+            next if($id eq 'Wiz' && $pows{$id}{$pow} > min($::pc{lvSor},$::pc{lvCon}));
+            next if($id eq 'Fai' && $pows{$id}{$pow} > fairyRank($::pc{lvFai},$::pc{fairyContractEarth},$::pc{fairyContractWater},$::pc{fairyContractFire },$::pc{fairyContractWind },$::pc{fairyContractLight},$::pc{fairyContractDark }));
+          }
+          else {
+            my $eName = $data::class{$class}{craft}{eName};
+            my $exist;
+            foreach(1 .. $::pc{'lv'.$id}+$::pc{$eName.'Addition'}){
+              if($::pc{'craft'.ucfirst($eName).$_} =~ /^($pows{$id}{$pow})$/){ $exist = 1; last; }
+            }
+            next if !$exist;
+          }
           if($id eq 'Bar'){ $pow += $::pc{finaleEnhance} || 0; }
 
           $text .= "k${pow}[{魔法C}$activeCrit]+$magicPower".addNum($::pc{'magicDamageAdd'.$id})."+{魔法D修正}$activeDmg ダメージ\n";
@@ -281,7 +291,17 @@ sub palettePreset {
         }
       
         foreach my $pow (sort {$a <=> $b} keys %{$heals{$id}}) {
-          next if($::pc{'lv'.$id} < $heals{$id}{$pow});
+          if($heals{$id}{$pow} =~ /^[0-9]+$/){
+            next if($::pc{'lv'.$id} < $heals{$id}{$pow});
+          }
+          else {
+            my $eName = $data::class{$class}{craft}{eName};
+            my $exist;
+            foreach(1 .. $::pc{'lv'.$id}+$::pc{$eName.'Addition'}){
+              if($::pc{'craft'.ucfirst($eName).$_} =~ /^($heals{$id}{$pow})$/){ $exist = 1; last; }
+            }
+            next if !$exist;
+          }
           $text .= "k${pow}[13]+$magicPower+{回復量修正} 回復量\n"
         }
 
