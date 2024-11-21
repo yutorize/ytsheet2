@@ -149,6 +149,14 @@ sub textToIcon {
   
   return $text;
 }
+sub checkArtsName {
+  my $text = checkSkillName($_[0]);
+  my $mark;
+  while($text =~ s#^<i class="s-icon [a-z0-9]+">.+?</i>##){
+    $mark .= $&;
+  }
+  return $text, $mark;
+}
 
 ### 妖精魔法ランク --------------------------------------------------
 sub fairyRank {
