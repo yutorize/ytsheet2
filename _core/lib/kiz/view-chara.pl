@@ -251,6 +251,12 @@ foreach ('','p1_','p2_'){
   $SHEET->param($_."wordsY" => $y);
 }
 ### 種別 --------------------------------------------------
+if($pc{makeType} eq 'gospel'){
+  $SHEET->param(makeTypeGospel  => 1);
+}
+else {
+  $SHEET->param(makeTypeNormal  => 1);
+}
 if   ($pc{class} eq 'オーナー'){
   $SHEET->param(classO  => 1);
   $SHEET->param(head_p1 => 'パートナー'.($pc{partner2On}?'１':''));

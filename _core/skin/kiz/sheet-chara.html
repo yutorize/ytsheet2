@@ -222,12 +222,29 @@
                 <TMPL_IF classH>決意</TMPL_IF>
                 <TMPL_IF classO>使命</TMPL_IF>
               <td colspan="3" class="left"><TMPL_VAR resolution>
-            <tr>
+            <TMPL_IF makeTypeNormal><tr>
               <th>所属
               <td colspan="3" class="left"><TMPL_VAR belong>
+            </TMPL_IF>
             <tr>
               <th>おもな武器
               <td colspan="3" class="left"><TMPL_VAR weapon>
+            <TMPL_IF makeTypeGospel><tr>
+              <th>主人(テンシ)
+              <td colspan="3" class="left"><TMPL_VAR master>
+            <tr>
+              <th>テンシの恩恵
+              <td colspan="3" class="left"><TMPL_VAR benefit>
+            <tr>
+              <th>経緯<span class="small thiner">(ゴスペルバレット)</span>
+              <td colspan="3" class="left"><TMPL_VAR backgroundGB>
+            <tr>
+              <th><span class="thin">イルマーカー:位置</span><td><TMPL_VAR illMarkerPosition>
+              <th>主人の感情１<td><TMPL_VAR masterEmotion1>
+            <tr>
+              <th><span class="thin">イルマーカー:形状</span><td><TMPL_VAR illMarkerShape>
+              <th>主人の感情２<td><TMPL_VAR masterEmotion2>
+            </TMPL_IF>
             </tr>
           </table>
         </section>

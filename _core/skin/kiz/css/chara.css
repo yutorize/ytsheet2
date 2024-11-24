@@ -165,15 +165,22 @@ body {
   & th {
     line-height: 1;
   }
+  & td {
+    padding: .1em .2em;
+    &.left       { font-size: 93% }
+    &:not(.left) { line-height: 1.3 }
+  }
   & th > span.thin {
-    display: block;
+    display: inline-block;
     margin: 0 -10%;
     transform: scaleX(0.8);
     white-space: nowrap;
   }
-  & td.left {
-    padding: .1em .2em;
-    font-size: 93%;
+  & th > span.thiner {
+    display: inline-block;
+    margin: 0 -16%;
+    transform: scaleX(0.7);
+    white-space: nowrap;
   }
   @media screen and (max-width:735px){
     & col:nth-child(1),
