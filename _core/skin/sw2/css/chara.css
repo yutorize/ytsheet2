@@ -1,5 +1,7 @@
 @charset "utf-8";
 
+@import "icons.css" layer(system);
+
 @layer system {
 /* // Body
 ---------------------------------------------------------------------------------------------------- */
@@ -982,9 +984,11 @@ dl#level {
     &.cards-red th::before { content:'\e91d'; color: #a00; }
     &.cards-gre th::before { content:'\e123'; color: #0c3; }
     &.cards-bla th::before { content:'\ead5'; color: #777; }
-    &.cards-whi th::before { content:'\e87d'; color: #bbb; }
+    &.cards-whi th::before { content:'\e87d'; color: #aaa; font-variation-settings: 'FILL' 0; }
     &.cards-gol th::before { content:'\e3e4'; color: #f90; }
-      
+
+    .night &.cards-whi th::before { content:'\e87d'; color: #bbb; font-variation-settings: 'FILL' 1; }
+    
     & td {
       background-color: transparent;
     }

@@ -152,7 +152,7 @@ sub textToIcon {
 sub checkArtsName {
   my $text = checkSkillName($_[0]);
   my $mark;
-  while($text =~ s#^<i class="s-icon [a-z0-9]+">.+?</i>##){
+  while($text =~ s#^<i class="s-icon [^>]+?">.*?</i>##){
     $mark .= $&;
   }
   return $text, $mark;
