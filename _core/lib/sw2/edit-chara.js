@@ -1289,6 +1289,7 @@ function calcFairy() {
   document.getElementById('fairy-rank').textContent = result;
 }
 
+// アイテム名称欄の入力補完時 ----------------------------------------
 function setupBracketInputCompletion() {
   document.querySelectorAll('input[type="text"]:is([list="list-item-name"], [list="list-weapon-name"]):not(.support-bracket-input-completion)').forEach(
       input => {
