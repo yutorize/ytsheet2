@@ -1278,6 +1278,8 @@ function calcMagic() {
   document.getElementById("magic-power-magicenhance").style.display = feats['魔力強化']      ? '' : 'none';
   document.getElementById("magic-power-common"      ).style.display = openMagic              ? '' : 'none';
   document.getElementById("magic-power-hr"          ).style.display = openMagic && openCraft ? '' : 'none';
+
+  stylizeVisibleRows(document.querySelectorAll('#magic-power > .edit-table > tbody > tr'))
 }
 
 // 妖精魔法ランク計算 ----------------------------------------
@@ -1479,6 +1481,9 @@ function calcAttack() {
   document.getElementById("throwing").style.display = feats['スローイング'] ? '' : 'none';
   document.getElementById("parts-enhance").style.display = crafts['部位極強化'] || crafts['部位超強化'] || crafts['部位即応＆強化'] ? '' : 'none';
   document.getElementById("parts-enhance-acc").textContent = (crafts['部位極強化']?1:0)+(crafts['部位超強化']?1:0)+(crafts['部位即応＆強化']?1:0);
+  
+
+  stylizeVisibleRows(document.querySelectorAll('#attack-classes > .edit-table > tbody > tr'))
 
   calcWeapon();
 }
@@ -1660,6 +1665,8 @@ function calcDefense() {
   document.getElementById('equip-mod-def').textContent = defOtherEquipMod;
   evaAdd  += evaOtherEquipMod;
   defBase += defOtherEquipMod;
+
+  stylizeVisibleRows(document.querySelectorAll('#evasion-classes > .edit-table > tbody > tr'));
 
   calcArmour(evaAdd,defBase);
 }

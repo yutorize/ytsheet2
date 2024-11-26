@@ -864,7 +864,16 @@ function replaceSortedNames(row, num, regExp, attr = 'name'){
     inputField.setAttribute(attr, afterName)
   });
 }
-
+// 可視行の背景色をセット ----------------------------------------
+function stylizeVisibleRows(rows){
+  let num = 1;
+  rows.forEach(row => {
+    if(row.style.display !== 'none'){
+      row.style.backgroundColor = (num % 2 == 1) ? 'transparent' : 'var(--box-even-rows-bg-color)';
+      num++;
+    }
+  });
+}
 // 連番ID生成 ----------------------------------------
 function idNumSet (id,after){
   let num = 1;
