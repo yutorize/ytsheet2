@@ -18,6 +18,12 @@ body:not(.class-hound) .h-only {
 body:not(.class-owner) .o-only {
   display: none !important;
 }
+body:not(.normal-bullet) .normal-only {
+  display: none !important;
+}
+body:not(.gospel-bullet) .gospel-only {
+  display: none !important;
+}
 
 #area-status {
   min-height: 0%;
@@ -25,9 +31,11 @@ body:not(.class-owner) .o-only {
   grid-template-columns: 2fr 1.3fr;
   grid-template-rows: auto auto;
   grid-template-areas:
+    "MAK IMG"
     "CLS IMG"
     "PER IMG"
   ;
+  #make-type { grid-area: MAK; }
 }
 @media screen and (max-width:735px){
   #area-status {
@@ -37,11 +45,22 @@ body:not(.class-owner) .o-only {
 
     grid-template-areas:
       "IMG "
+      "MAK "
       "CLS "
       "PER "
     ;
   }
 }
+#make-type {
+  width: max-content;
+  padding: 1px;
+  > label {
+    &:has(:checked){
+      background-color:  var(--box-base-bg-color);
+    }
+  }
+}
+
 #classes {
   display: block;
 }

@@ -100,11 +100,7 @@ foreach (keys %pc) {
 $pc{skills} =~ s/<br>/\n/gi;
 $pc{skills} =~ s#(<p>|</p>|</details>)#$1\n#gi;
 $pc{skills} =~ s/^●(.*?)$/<\/p><h3>●$1<\/h3><p>/gim;
-if($::SW2_0){
-  $pc{skills} =~ s/^((?:[○◯〇＞▶〆☆≫»□☐☑🗨▽▼]|&gt;&gt;)+)(.*?(?:　|$))/&textToIcon($1).$2/egim;
-} else {
-  $pc{skills} =~ s/^((?:[○◯〇△＞▶〆☆≫»□☐☑🗨]|&gt;&gt;)+)(.*?(?:　|$))/&textToIcon($1).$2/egim;
-}
+$pc{skills} = checkSkillName($pc{skills});
 $pc{skills} =~ s/^((?:<i class="s-icon [a-z0]+?">.+?<\/i>)+.*?)(　|$)/<\/p><h5>$1<\/h5><p>$2/gim;
 $pc{skills} =~ s/\n+<\/p>/<\/p>/gi;
 $pc{skills} =~ s/(^|<p(?:.*?)>|<hr(?:.*?)>)\n/$1/gi;
@@ -185,7 +181,7 @@ foreach (1 .. $pc{statusNum}){
   if ($pc{'status'.$_.'Evasion'}  ne ''){ $pc{'status'.$_.'Evasion'}  = $pc{'status'.$_.'Evasion'} .(!$pc{statusTextInput} && !$pc{mount}?' ('.$pc{'status'.$_.'EvasionFix'}.')' :'') }
 
   $pc{'status'.$_.'Damage'} = '―' if $pc{'status'.$_.'Damage'} eq '2d+' && ($pc{'status'.$_.'Accuracy'} eq '' || $pc{'status'.$_.'Accuracy'} eq '―');
-
+  
   push(@status_row, {
     LV       => $pc{lvMin},
     STYLE    => $pc{'status'.$_.'Style'},
@@ -226,6 +222,8 @@ $SHEET->param(Status => \@status_tbody);
 
 ### 部位 --------------------------------------------------
 $SHEET->param(partsOn => 1) if ($pc{partsNum} > 1 || $pc{parts} || $pc{coreParts});
+$SHEET->param(parts => $pc{parts} =~ s#([^／]+)#<span>$1</span>#gr);
+
 
 ### 戦利品 --------------------------------------------------
 my @loots;

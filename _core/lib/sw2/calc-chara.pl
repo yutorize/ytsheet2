@@ -548,10 +548,15 @@ sub data_calc {
     my $category = $pc{"weapon${_}Category"};
     my $partNum = $pc{"weapon${_}Part"};
     ## 命中
-    my $dex = $pc{sttDex} + ($partNum ? $pc{sttPartA} : $pc{sttAddA});
-    my $own_dex = $pc{"weapon${_}Own"} ? 2 : 0; # 専用化補正
     my $acc = 0;
-    if($lv){ $acc = $lv + int(($dex+$own_dex) / 6) }
+    if($data::class{$class}{accUnlock}{acc} eq 'power'){
+      $acc = $pc{'magicPower'.$id};
+    }
+    else {
+      my $dex = $pc{sttDex} + ($partNum ? $pc{sttPartA} : $pc{sttAddA});
+      my $own_dex = $pc{"weapon${_}Own"} ? 2 : 0; # 専用化補正
+      if($lv){ $acc = $lv + int(($dex+$own_dex) / 6) }
+    }
     ## 人orコア部位
     if(!$partNum || $partNum eq $pc{partCore}) {
       $acc += $pc{accuracyEnhance}; # 命中強化
@@ -573,8 +578,8 @@ sub data_calc {
     elsif($category eq 'ガン'){
       $dmg += $pc{magicPowerMag};
     }
-    elsif(!$::SW2_0 && $class eq "デーモンルーラー"){
-      $dmg += $pc{magicPowerDem};
+    elsif($data::class{$class}{accUnlock}{dmg} eq 'power'){
+      $dmg += $pc{'magicPower'.$id};
     }
     elsif($lv) {
       $dmg += $lv + int($str / 6);

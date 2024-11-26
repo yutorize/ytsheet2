@@ -289,8 +289,8 @@ print <<"HTML";
           <dd>@{[input("history0Money",'number','changeRegu', ($set::make_fix?' readonly':''))]}
           <dt>名誉点
           <dd>@{[input("history0Honor",'number','changeRegu', ($set::make_fix?' readonly':''))]}
-          <dt>成長
-          <dd>
+          <dt class="grow">成長
+          <dd class="grow">
             <dl class="regulation-grow">
               <dt>器用度<dd>@{[ input "sttPreGrowA",'number','calcStt' ]}
               <dt>敏捷度<dd>@{[ input "sttPreGrowB",'number','calcStt' ]}
@@ -972,7 +972,7 @@ print <<"HTML";
                 <td>@{[input("weapon${num}Own",'checkbox','calcWeapon')]}
                 <td><select name="weapon${num}Category" oninput="calcWeapon()">@{[option("weapon${num}Category",@data::weapon_names,'ガン（物理）','その他|<その他（盾など）>')]}</select>
                 <td><select name="weapon${num}Class" oninput="calcWeapon()">@{[option("weapon${num}Class",@weapon_users,'自動計算しない')]}</select>
-                <td rowspan="2"><span class="button" onclick="addWeapons(${num});">複<br>製</span>
+                <td rowspan="2"><span class="button" onclick="addWeapons(${num});setupBracketInputCompletion()">複<br>製</span>
               <tr>
                 <td colspan="3">@{[input("weapon${num}Note",'','calcWeapon','placeholder="備考"')]}
 HTML
@@ -980,7 +980,7 @@ HTML
 }
 print <<"HTML";
           </table>
-          <div class="add-del-button"><a onclick="addWeapons()">▼</a><a onclick="delWeapons()">▲</a></div>
+          <div class="add-del-button"><a onclick="addWeapons();setupBracketInputCompletion()">▼</a><a onclick="delWeapons()">▲</a></div>
           <ul class="annotate">
             <li>Ｃ値は自動計算されません。
             <li id="artisan-annotate" @{[ display $pc{masteryArtisan} ]}>備考欄に<code>〈魔器〉</code>と記入すると魔器習熟が反映されます。
@@ -1083,8 +1083,8 @@ foreach my $num ('TMPL',1 .. $pc{armourNum}) {
   print <<"HTML";
               <tr id="armour-row${num}" data-type="">
                 <th class="type handle">
-                <td><select name="armour${num}Category" oninput="setArmourType();generateArmourCheckbox();calcDefense();calcMobility()">@{[ option "armour${num}Category",'金属鎧','非金属鎧','盾','その他' ]}</select>
-                <td>@{[ input "armour${num}Name",'','generateArmourCheckbox','list="list-item-name"' ]}
+                <td><select name="armour${num}Category" oninput="setArmourType();changeArmourName();calcDefense();calcMobility()">@{[ option "armour${num}Category",'金属鎧','非金属鎧','盾','その他' ]}</select>
+                <td>@{[ input "armour${num}Name",'','changeArmourName','list="list-item-name"' ]}
                 <td>@{[ input "armour${num}Reqd",'','calcDefense' ]}
                 <td>@{[ input "armour${num}Eva",'number','calcDefense' ]}
                 <td>@{[ input "armour${num}Def",'number','calcDefense' ]}
@@ -1098,7 +1098,7 @@ HTML
             @{[ input 'armourNum','hidden' ]}
             <tfoot>
               <tr><td colspan="8">
-                <div class="add-del-button"><a onclick="addArmour()">▼</a><a onclick="delArmour()">▲</a></div>
+                <div class="add-del-button"><a onclick="addArmour();setupBracketInputCompletion()">▼</a><a onclick="delArmour()">▲</a></div>
               <tr>
                 <th colspan="2">使用技能
                 <th colspan="2" class="small" style="vertical-align:bottom">チェックを入れた防具の数値で合算▼
@@ -1114,7 +1114,12 @@ foreach my $i ('TMPL',1..$pc{defenseNum}){
                 <td colspan="2" class="defense-total-checklist">
 HTML
   foreach my $num (1 .. $pc{armourNum}) {
-    print checkbox("defTotal${i}CheckArmour${num}",($pc{"armour${num}Name"}||'―'),'calcDefense',"data-id='armour-row${num}'");
+    print checkbox(
+      "defTotal${i}CheckArmour${num}",
+      ($pc{"armour${num}Name"} =~ s/[|｜](.+?)《(.+?)》/$1/gr =~ s/\[([^\[\]]+?)#[0-9a-zA-z\-]+\]/$1/gr || '―'),
+      'calcDefense',
+      "data-id='armour-row${num}'"
+    );
   }
   print "</td>";
   print <<"HTML";
@@ -1704,6 +1709,7 @@ HTML
           <div class="add-del-button"><a onclick="addPaletteMagic()">▼</a><a onclick="delPaletteMagic()">▲</a></div>
           @{[ input "paletteMagicNum","hidden" ]}
         </details>
+      </div>
 HTML
 }
 

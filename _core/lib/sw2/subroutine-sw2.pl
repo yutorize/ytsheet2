@@ -11,6 +11,7 @@ use Fcntl;
 ### ユニットステータス出力 --------------------------------------------------
 sub createUnitStatus {
   my %pc = %{$_[0]};
+  my $target = $_[1] || '';
   my @unitStatus;
   if ($pc{type} eq 'm'){
     my @n2a = ('','A' .. 'Z');
@@ -44,7 +45,11 @@ sub createUnitStatus {
       @unitStatus = ();
       push(@unitStatus, @hp);
       push(@unitStatus, @mp) if $#mp >= 0;
-      push(@unitStatus, {'メモ' => '防護:'.join('／',@def)});
+      if ($target eq 'udonarium') {
+        push(@unitStatus, {'防護' => join('／',@def)});
+      } else {
+        push(@unitStatus, {'メモ' => '防護:'.join('／',@def)});
+      }
     }
     else { # 1部位
       my $i = 1;
@@ -107,7 +112,23 @@ sub class_color {
   return $text;
 }
 
-### タグ変換 --------------------------------------------------
+### 分類マーク --------------------------------------------------
+sub checkSkillName {
+  my $text = shift;
+  my $markList = $::SW2_0 ? "[○◯〇＞▶〆☆≫»□☐☑🗨▽▼]|&gt;&gt;" : "[○◯〇△＞▶〆☆≫»□☐☑🗨]|&gt;&gt;";
+  
+  $text =~ s/^((?:$markList)+.+?)(　|$)/&replaceSkillName($1).$2/egim;
+  return $text;
+
+  sub replaceSkillName {
+    my @names;
+    foreach (split '、', $_[0]){
+      $_ =~ s/^(?:$markList)+/&textToIcon($&)/egim;
+      push(@names, $_);
+    }
+    return join('、', @names);
+  }
+}
 sub textToIcon {
   my $text = shift;
   
@@ -127,6 +148,14 @@ sub textToIcon {
   }
   
   return $text;
+}
+sub checkArtsName {
+  my $text = checkSkillName($_[0]);
+  my $mark;
+  while($text =~ s#^<i class="s-icon [^>]+?">.+?</i>##){
+    $mark .= $&;
+  }
+  return $text, $mark;
 }
 
 ### 妖精魔法ランク --------------------------------------------------
@@ -347,6 +376,20 @@ sub data_update_chara {
       $pc{race} = 'ドレイクブロークン' if $pc{race} eq 'ドレイク（ブロークン）';
     }
   }
+  $pc{ver} = $main::ver;
+  $pc{lasttimever} = $ver;
+  return %pc;
+}
+sub data_update_mons {
+  my %pc = %{$_[0]};
+  my $ver = $pc{ver};
+  $ver =~ s/^([0-9]+)\.([0-9]+)\.([0-9]+)$/$1.$2$3/;
+  delete $pc{updateMessage};
+  
+  if($ver < 1.26000){
+    $pc{partsManualInput} = 1;
+  }
+
   $pc{ver} = $main::ver;
   $pc{lasttimever} = $ver;
   return %pc;
