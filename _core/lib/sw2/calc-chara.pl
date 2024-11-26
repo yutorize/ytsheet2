@@ -609,6 +609,14 @@ sub data_calc {
 
   
   ## 回避力・防護点
+  my @modifications = @{extractModifications(\%pc)};
+  my $evasionModificationTotal = 0;
+  my $defenseModificationTotal = 0;
+  foreach (@modifications) {
+    my %mod = %{$_};
+    $evasionModificationTotal += $mod{evasion} // 0;
+    $defenseModificationTotal += $mod{defense} // 0;
+  }
   foreach my $i (1..$pc{defenseNum}){
     my $class = $pc{"evasionClass$i"};
     my $id = $data::class{$class}{id};
@@ -671,6 +679,9 @@ sub data_calc {
     }
     $eva += $lv ? $lv + int(($agi+$own_agi)/6) : 0;
     $def += $artisan;
+    
+    $eva += $evasionModificationTotal;
+    $def += $defenseModificationTotal;
     
     $pc{"defenseTotal${i}Eva"} = $eva;
     $pc{"defenseTotal${i}Def"} = $def;

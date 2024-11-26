@@ -1544,6 +1544,8 @@ function calcWeapon() {
       document.getElementById("weapon"+i+"-dmg-total").textContent = dmgBase + Number(form["weapon"+i+"Dmg"].value);
     }
   }
+
+  calcDefense(); // 武器由来の回避力・防護点の再計算
 }
 
 // 防御計算 ----------------------------------------
@@ -1619,6 +1621,38 @@ function calcDefense() {
   // 部位即応
   document.getElementById("parts-enhance-def").style.display = crafts['部位極強化'] || crafts['部位超強化'] || crafts['部位即応＆強化'] ? '' : 'none';
   document.getElementById("parts-enhance-eva").textContent = (crafts['部位極強化']?1:0)+(crafts['部位超強化']?1:0)+(crafts['部位即応＆強化']?1:0);
+  
+  // 武器と装飾品
+  document.querySelectorAll(':is(#weapons-table, #accessories-table) input[name$="Note"]').forEach(
+      input => {
+        const note = input.value ?? '';
+
+        if (input.getAttribute('name').includes('_')) {
+          // 拡張枠は有効化されていなければ無視する
+
+          const nameToAdd = input.getAttribute('name').replace('_Note', 'Add');
+          if (!document.getElementsByName(nameToAdd)[0].checked) {
+            return;
+          }
+        }
+
+        {
+          const m = note.match(/[@＠]防(?:護点?)?[+＋](\d+)/);
+
+          if (m != null) {
+            defBase += parseInt(m[1]);
+          }
+        }
+
+        {
+          const m = note.match(/[@＠]回避力?[+＋](\d+)/);
+
+          if (m != null) {
+            evaAdd += parseInt(m[1]);
+          }
+        }
+      }
+  );
   
   calcArmour(evaAdd,defBase);
 }
@@ -1915,6 +1949,8 @@ function addAccessory(name){
   else {
     document.querySelector(`#accessories [data-type="${name}_"]`).style.display = 'none';
   }
+
+  calcDefense(); // 装飾品由来の回避力・防護点の再計算
 }
 // ソート
 (() => {

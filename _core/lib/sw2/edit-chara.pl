@@ -983,6 +983,7 @@ print <<"HTML";
           <div class="add-del-button"><a onclick="addWeapons();setupBracketInputCompletion()">▼</a><a onclick="delWeapons()">▲</a></div>
           <ul class="annotate">
             <li>Ｃ値は自動計算されません。
+            <li><code>\@防護点+1</code>や<code>\@回避力+1</code>のように記述すると、<span class="text-em">常時</span>有効な上昇効果が自動計算されます。
             <li id="artisan-annotate" @{[ display $pc{masteryArtisan} ]}>備考欄に<code>〈魔器〉</code>と記入すると魔器習熟が反映されます。
           </ul>
           @{[input('weaponNum','hidden')]}
@@ -1236,13 +1237,16 @@ foreach (
         <option value="HP" @{[ $pc{"accessory@$_[1]Own"} eq 'HP' ? 'selected':'']}>HP</option>
         <option value="MP" @{[ $pc{"accessory@$_[1]Own"} eq 'MP' ? 'selected':'' ]}>MP</option>
       </select>
-    <td>@{[input('accessory'.@$_[1].'Note')]}
+    <td>@{[input('accessory'.@$_[1].'Note','','calcDefense')]}
 HTML
 }
 print <<"HTML";
           </tbody>
           </table>
-          <ul class="annotate"><li>左のボックスにチェックを入れると欄が一つ追加されます</ul>
+          <ul class="annotate">
+            <li>左のボックスにチェックを入れると欄が一つ追加されます
+            <li><code>\@防護点+1</code>のように記述すると、<span class="text-em">常時</span>有効な防護点の上昇が自動計算されます
+          </ul>
         </div>
       </div>
       <div id="area-items">

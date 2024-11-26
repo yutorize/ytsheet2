@@ -172,6 +172,83 @@ sub fairyRank {
   return $rank{$i}[$lv] || '×';
 }
 
+### 補正値記法の解釈 --------------------------------------------------
+sub extractModifications {
+  my %pc = %{shift;};
+
+  my @modifications = ();
+
+  sub extractModification {
+    my $name = shift;
+    my $note = shift;
+
+    my $evasion;
+    my $defense;
+
+    if ($note =~ s/[\@＠]回避力?[+＋](\d+)//) {
+      $evasion = $1;
+    }
+
+    if ($note =~ s/[\@＠]防(?:護点?)?[+＋](\d+)//) {
+      $defense = $1;
+    }
+
+    unless ($evasion || $defense) {
+      return {};
+    }
+
+    return {
+        name    => $name,
+        evasion => $evasion // 0,
+        defense => $defense // 0,
+    };
+  }
+
+  foreach (1 .. $pc{weaponNum}) {
+    my $nameKey = "weapon${_}Name";
+    my $noteKey = "weapon${_}Note";
+
+    my $name = $pc{$nameKey} // '';
+    my $note = $pc{$noteKey} // '';
+
+    $name = $name ne '' ? $name : '武器';
+
+    my %modification = %{extractModification($name, $note)};
+    next unless %modification;
+
+    push(@modifications, \%modification);
+  }
+
+  for my $slot ('Head', 'Face', 'Ear', 'Neck', 'Back', 'HandR', 'HandL', 'Waist', 'Leg', 'Other', 'Other2', 'Other3', 'Other4') {
+    for my $suffix ('', '_', '__') {
+      my $nameKey = "accessory${slot}${suffix}Name";
+      my $noteKey = "accessory${slot}${suffix}Note";
+
+      if ($suffix ne '') {
+        # 拡張枠は有効化されていなければ無視する
+
+        my $addingKey = "accessory${slot}${suffix}";
+        $addingKey =~ s/_$//;
+        $addingKey .= 'Add';
+
+        next unless $pc{$addingKey};
+      }
+
+      my $name = $pc{$nameKey} // '';
+      my $note = $pc{$noteKey} // '';
+
+      $name = $name ne '' ? $name : '装飾品';
+
+      my %modification = %{extractModification($name, $note)};
+      next unless %modification;
+
+      push(@modifications, \%modification);
+    }
+  }
+
+  return \@modifications;
+}
+
 ### バージョンアップデート --------------------------------------------------
 sub data_update_chara {
   my %pc = %{$_[0]};
