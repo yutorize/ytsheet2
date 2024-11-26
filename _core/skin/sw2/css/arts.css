@@ -1,5 +1,7 @@
 @charset "utf-8";
 
+@import "icons.css" layer(system);
+
 @media screen and (max-width:550px){
   html {
     font-size: 1.8vw;
