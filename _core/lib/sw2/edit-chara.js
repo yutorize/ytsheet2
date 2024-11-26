@@ -1623,6 +1623,8 @@ function calcDefense() {
   document.getElementById("parts-enhance-eva").textContent = (crafts['部位極強化']?1:0)+(crafts['部位超強化']?1:0)+(crafts['部位即応＆強化']?1:0);
   
   // 武器と装飾品
+  let evaOtherEquipMod = 0;
+  let defOtherEquipMod = 0;
   document.querySelectorAll(':is(#weapons-table, #accessories-table) input[name$="Note"]').forEach(
       input => {
         const note = input.value ?? '';
@@ -1640,7 +1642,7 @@ function calcDefense() {
           const m = note.match(/[@＠]防(?:護点?)?[+＋](\d+)/);
 
           if (m != null) {
-            defBase += parseInt(m[1]);
+            defOtherEquipMod += parseInt(m[1]);
           }
         }
 
@@ -1648,12 +1650,17 @@ function calcDefense() {
           const m = note.match(/[@＠]回避力?[+＋](\d+)/);
 
           if (m != null) {
-            evaAdd += parseInt(m[1]);
+            evaOtherEquipMod += parseInt(m[1]);
           }
         }
       }
   );
-  
+
+  document.getElementById('equip-mod-eva').textContent = evaOtherEquipMod;
+  document.getElementById('equip-mod-def').textContent = defOtherEquipMod;
+  evaAdd  += evaOtherEquipMod;
+  defBase += defOtherEquipMod;
+
   calcArmour(evaAdd,defBase);
 }
 // 防具合計計算

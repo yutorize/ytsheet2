@@ -1059,6 +1059,11 @@ print <<"HTML";
                 <td>―
                 <td id="parts-enhance-eva">1
                 <td>―
+              <tr>
+                <td>武器や装飾品による修正
+                <td>―
+                <td id="equip-mod-eva">0
+                <td id="equip-mod-def">0
               </tr>
             </tbody>
           </table>
