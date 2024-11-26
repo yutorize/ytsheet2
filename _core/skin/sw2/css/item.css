@@ -221,7 +221,7 @@ div.data {
       &:not(:has(tbody td.note:not(:empty))) tr > *.note {
         display: none;
       }
-
+      
       &:not(:has(td.range:not(:empty))) {
         :is(th, td).range {
           display: none;
@@ -230,7 +230,7 @@ div.data {
       td.range:empty::before {
         content: "―";
       }
-
+      
       &.armour-table {
         &:not(:has(td.usage:not(:empty))) {
           .usage {

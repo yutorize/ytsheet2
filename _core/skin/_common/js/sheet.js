@@ -233,7 +233,6 @@ async function downloadAsFullSet(){
   // ユドナリウム
   if(document.getElementById('downloadlist-udonarium')){
     const characterDataJson = await getJsonData('udonarium');
-    
     const image = await output.getPicture(characterDataJson.imageURL || defaultImage, "image."+characterDataJson.image);
     const udonariumXml = output[`generateUdonariumXml`](generateType,characterDataJson, location.href, image.hash);
     const udonariumUrl = await generateUdonariumZipFile((characterDataJson.characterName||characterDataJson.aka), udonariumXml, image);
