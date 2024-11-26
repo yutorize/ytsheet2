@@ -528,8 +528,8 @@ sub palettePreset {
         (?<other>.+?)
       )
       (?:
-      \s
-      (?<note>[\s\S]*?)
+        \s
+        (?<note>[\s\S]*?)
       )?
       (?=^$skill_mark|^●|\z)
       /
@@ -877,8 +877,10 @@ sub paletteProperties {
           [0-9]+
         )
       .+?)
-      \s
-      (?<note>[\s\S]*?)
+      (?:
+        \s
+        (?<note>[\s\S]*?)
+      )?
       (?=^$skill_mark|^●|\z)
       /push @propaties, "\/\/$+{name}=$+{value}";push @propaties, skillNoteP($+{name},$+{note});/megix;
   }
