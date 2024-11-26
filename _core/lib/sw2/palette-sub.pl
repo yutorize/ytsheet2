@@ -5,10 +5,10 @@ use utf8;
 
 require $set::data_class;
 require $set::data_items;
-my @class_names;
+my @classNames;
 foreach(@data::class_names){
-  push(@class_names, $_);
-  if($_ eq 'コンジャラー'){ push(@class_names, 'ウィザード'); }
+  push(@classNames, $_);
+  if($_ eq 'コンジャラー'){ push(@classNames, 'ウィザード'); }
 }
 
 ### 魔法威力 #########################################################################################
@@ -155,7 +155,7 @@ my @gunHeals = (
   { lv => 13, p => 20, h => '2H' },
 );
 
-my $skill_mark = "\\[[常準主補宣]\\]|[○◯〇△＞▶〆☆≫»□☑🗨]|&gt;&gt;";
+my $skillMarkRE = "\\[[常準主補宣]\\]|[○◯〇△＞▶〆☆≫»□☑🗨]|&gt;&gt;";
 
 sub normalizeCrit {
   my $crit = shift;
@@ -198,7 +198,7 @@ sub palettePreset {
     $text .= "2d+{冒険者}+{敏捷B} 冒険者＋敏捷\n";
     $text .= "2d+{冒険者}+{筋力B} 冒険者＋筋力\n";
     $text .= "2d+{冒険者}+{知力B} 冒険者＋知力\n";
-    foreach my $class (@class_names){
+    foreach my $class (@classNames){
       my $c_id = $data::class{$class}{id};
       next if !$data::class{$class}{package} || !$::pc{'lv'.$c_id};
       my %data = %{$data::class{$class}{package}};
@@ -227,7 +227,7 @@ sub palettePreset {
     $text .= appendPaletteInsert('common');
 
     # 魔法
-    foreach my $name (@class_names){
+    foreach my $name (@classNames){
       next if !($data::class{$name}{magic}{jName} || $data::class{$name}{craft}{stt});
       next if !$::pc{'lv' . $data::class{$name}{id} };
       $text .= "###\n" if $bot{TKY};
@@ -241,7 +241,7 @@ sub palettePreset {
       last;
     }
 
-    foreach my $class (@class_names){
+    foreach my $class (@classNames){
       next if !($data::class{$class}{magic}{jName} || $data::class{$class}{craft}{stt});
       my $id   = $data::class{$class}{id};
       my $name = $data::class{$class}{magic}{jName} || $data::class{$class}{craft}{jName};
@@ -554,7 +554,7 @@ sub palettePreset {
     $skills =~ s/<br>/\n/gi;
     $skills = convertFairyAttribute($skills) if $::pc{taxa} eq '妖精';
     $skills =~ s/^
-      (?:$skill_mark)+
+      (?:$skillMarkRE)+
       (?<name>.+?)
       (?: [0-9]+(?:レベル|LV)|\(.+\) )*
       [\/／]
@@ -565,7 +565,7 @@ sub palettePreset {
     
     $skills =~ s/^
       (?<head>
-        (?<mark>(?:$skill_mark)+)
+        (?<mark>(?:$skillMarkRE)+)
         (?<name>.+)
         [\/／]
         (
@@ -577,7 +577,7 @@ sub palettePreset {
       )
       \s
       (?<note>[\s\S]*?)
-      (?=^$skill_mark|^●|\z)
+      (?=^$skillMarkRE|^●|\z)
       /
       $text .= convertMark($+{mark})."$+{name}／$+{fix}$+{other}\n"
             .($+{base} ne '' ?"2d+{$+{name}} ".convertMark($+{mark})."$+{name}$+{other}\n":'')
@@ -685,7 +685,7 @@ sub paletteProperties {
     push @propaties, "### ■技能レベル";
     push @propaties, "//冒険者レベル=$::pc{level}";
     my @classes_en;
-    foreach my $name (@class_names){
+    foreach my $name (@classNames){
       my $id = $data::class{$name}{id};
       next if !$::pc{'lv'.$id};
       push @propaties, "//$name=$::pc{'lv'.$id}";
@@ -737,7 +737,7 @@ sub paletteProperties {
     push @propaties, '';
     #push @propaties, "//魔物知識=$::pc{monsterLore}" if $::pc{monsterLore};
     #push @propaties, "//先制力=$::pc{initiative}" if $::pc{initiative};
-    foreach my $class (@class_names){
+    foreach my $class (@classNames){
       my $c_id = $data::class{$class}{id};
       next if !$data::class{$class}{package} || !$::pc{'lv'.$c_id};
       my %data = %{$data::class{$class}{package}};
@@ -750,7 +750,7 @@ sub paletteProperties {
     }
     push @propaties, '';
     
-    foreach my $class (@class_names){
+    foreach my $class (@classNames){
       next if !($data::class{$class}{magic}{jName} || $data::class{$class}{craft}{stt});
       my $id = $data::class{$class}{id};
       next if !$::pc{'lv'.$id};
@@ -852,12 +852,12 @@ sub paletteProperties {
       my $partNum = $::pc{"evasionPart$i"};
       my $partName = $::pc{"evasionPart${i}Name"} = $::pc{"part${partNum}Name"};
       my $evaMod = 0;
-      my $own_agi;
+      my $ownAgi;
       my $hasChecked = 0;
       foreach my $j (1..$::pc{armourNum}){
         if($::pc{"defTotal${i}CheckArmour${j}"}){
           $evaMod += $::pc{"armour${j}Eva"};
-          $own_agi = '+2' if $::pc{"armour${j}Category"} eq '盾' && $::pc{"armour${j}Own"};
+          $ownAgi = '+2' if $::pc{"armour${j}Category"} eq '盾' && $::pc{"armour${j}Own"};
           $hasChecked++;
         }
       }
@@ -875,7 +875,7 @@ sub paletteProperties {
         $evaMod += 2;
       }
       push @propaties, "//回避${i}=("
-        .($class ? "{$class}+({敏捷}+{敏捷増強}${own_agi})/6+" : '')
+        .($class ? "{$class}+({敏捷}+{敏捷増強}${ownAgi})/6+" : '')
         .$evaMod
         .")";
       push @propaties, "//防護${i}=".($::pc{"defenseTotal${i}Def"} || 0);
@@ -920,11 +920,11 @@ sub paletteProperties {
     $skills =~ s/\|/｜/g;
     $skills =~ s/<br>/\n/g;
     $skills = convertFairyAttribute($skills) if $::pc{taxa} eq '妖精';
-    $skills =~ s/^(?:$skill_mark)+(.+?)(?:[0-9]+(?:レベル|LV)|\(.+\))*[\/／](?:魔力)([0-9]+)[(（][0-9]+[）)]/push @propaties, "\/\/$1=$2";/megi;
+    $skills =~ s/^(?:$skillMarkRE)+(.+?)(?:[0-9]+(?:レベル|LV)|\(.+\))*[\/／](?:魔力)([0-9]+)[(（][0-9]+[）)]/push @propaties, "\/\/$1=$2";/megi;
 
     $skills =~ s/^
       (?<head>
-        (?:$skill_mark)+
+        (?:$skillMarkRE)+
         (?<name>.+)
         [\/／]
         (
@@ -935,7 +935,7 @@ sub paletteProperties {
       .+?)
       \s
       (?<note>[\s\S]*?)
-      (?=^$skill_mark|^●|\z)
+      (?=^$skillMarkRE|^●|\z)
       /push @propaties, "\/\/$+{name}=$+{value}";push @propaties, skillNoteP($+{name},$+{note});/megix;
   }
   

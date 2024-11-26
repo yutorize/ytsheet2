@@ -8,7 +8,7 @@
   #sw2\.0 & {
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 5fr;
   }
-
+  
   > dt.grow[data-total] {
     &:not([data-total="0"]) {
       &::after {
@@ -1614,7 +1614,7 @@ form#item .input-arms-data {
   & td { width: 5em; }
   & td:first-child { width: 1.5em; }
   & td:last-child { width: auto; }
-
+  
   #section-common:not(.is-ranged-weapon) & {
     :is(th, td).range {
       display: none;

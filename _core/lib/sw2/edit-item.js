@@ -30,7 +30,6 @@ function checkCategory() {
       /投擲|ボウ|クロスボウ|ガン/.test(category)
   );
 }
-
 // 武器データ欄 ----------------------------------------
 // 追加
 function addWeapon(){

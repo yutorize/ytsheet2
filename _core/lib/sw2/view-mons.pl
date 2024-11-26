@@ -181,7 +181,7 @@ foreach (1 .. $pc{statusNum}){
   if ($pc{'status'.$_.'Evasion'}  ne ''){ $pc{'status'.$_.'Evasion'}  = $pc{'status'.$_.'Evasion'} .(!$pc{statusTextInput} && !$pc{mount}?' ('.$pc{'status'.$_.'EvasionFix'}.')' :'') }
 
   $pc{'status'.$_.'Damage'} = '―' if $pc{'status'.$_.'Damage'} eq '2d+' && ($pc{'status'.$_.'Accuracy'} eq '' || $pc{'status'.$_.'Accuracy'} eq '―');
-
+  
   push(@status_row, {
     LV       => $pc{lvMin},
     STYLE    => $pc{'status'.$_.'Style'},
