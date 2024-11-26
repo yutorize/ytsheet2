@@ -580,8 +580,10 @@ sub palettePreset {
          (?<fix>必中)
         )
       )
-      \s
-      (?<note>[\s\S]*?)
+      (?:
+        \s
+        (?<note>[\s\S]*?)
+      )?
       (?=^$skillMarkRE|^●|\z)
       /
       $text .= convertMark($+{mark})."$+{name}／$+{fix}$+{other}\n"
@@ -938,8 +940,10 @@ sub paletteProperties {
           [0-9]+
         )
       .+?)
-      \s
-      (?<note>[\s\S]*?)
+      (?:
+        \s
+        (?<note>[\s\S]*?)
+      )?
       (?=^$skillMarkRE|^●|\z)
       /push @propaties, "\/\/$+{name}=$+{value}";push @propaties, skillNoteP($+{name},$+{note});/megix;
   }
