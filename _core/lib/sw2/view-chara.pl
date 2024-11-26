@@ -899,13 +899,11 @@ else {
     if (@$_[1] =~ /_$/) {
       next unless $pc{'accessory'.substr(@$_[1],0,-1).'Add'};
     }
-    my $name = formatItemName($pc{'accessory'.@$_[1].'Name'});
-    my $note = $pc{'accessory'.@$_[1].'Note'};
     push(@accessories, {
       TYPE => @$_[0],
-      NAME => $name,
+      NAME => $pc{'accessory'.@$_[1].'Name'},
       OWN  => $pc{'accessory'.@$_[1].'Own'},
-      NOTE => replaceModificationNotation $note,
+      NOTE => replaceModificationNotation $pc{'accessory'.@$_[1].'Note'},
     } );
   }
   $SHEET->param(Accessories => \@accessories);
