@@ -9,6 +9,7 @@ require $set::data_class;
 sub addJsonData {
   my %pc = %{ $_[0] };
   my $type = $_[1];
+  my $target = $_[2];
   $pc{'gameVersion'} = $::SW2_0 ? '2.0' : '2.5';
   ### 魔物 --------------------------------------------------
   if ($pc{type} eq 'm'){
@@ -87,7 +88,7 @@ sub addJsonData {
   }
 
   ## ユニット（コマ）用ステータス --------------------------------------------------
-  $pc{unitStatus} = createUnitStatus(\%pc);
+  $pc{unitStatus} = createUnitStatus(\%pc, $target);
   
   return \%pc;
 }

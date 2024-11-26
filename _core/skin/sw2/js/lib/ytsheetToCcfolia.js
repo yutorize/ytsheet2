@@ -17,8 +17,7 @@ output.generateCcfoliaJsonOfSwordWorld2PC = (json, character, defaultPalette) =>
   character.memo += `\n`;
   character.memo += `${json.imageURL ? '立ち絵: ' + (json.imageCopyright || '権利情報なし') : ''}`;
 
-
-  const originalParams = defaultPalette.parameters;
+  const originalParams = character.params;
   character.params = defaultPalette.parameters;
   character.params = character.params.filter(data => !/^(威力|C値|防護)[0-9]$/.test(data.label));
   character.params = character.params.filter(data => !/^最大[MH]P$/.test(data.label));

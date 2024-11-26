@@ -88,6 +88,7 @@ window.onload = function() {
   calcHonor();
   calcDishonor();
   calcCommonClass();
+  setupBracketInputCompletion();
   
   imagePosition();
   changeColor();
@@ -487,6 +488,7 @@ function calcStt() {
 
   // 計算
   let growTotal = 0;
+  let preGrowTotal = 0;
   for(let i of [
     ['A','Dex'],
     ['B','Agi'],
@@ -501,7 +503,9 @@ function calcStt() {
                : (i[0] === 'E' || i[0] === 'F') ? Number(form.sttBaseSpi.value)
                : 0;
     // 成長
-    stt['grow'+i[1]] += Number(form['sttPreGrow'+i[0]].value) + seekerGrow;
+    const preGrow = Number(form['sttPreGrow'+i[0]].value);
+    stt['grow'+i[1]] += preGrow + seekerGrow;
+    preGrowTotal += preGrow;
     document.getElementById(`stt-grow-${i[0]}-value`).textContent = stt['grow'+i[1]];
     growTotal += stt['grow'+i[1]]; //成長回数合計
 
@@ -522,6 +526,7 @@ function calcStt() {
 
   document.getElementById("stt-grow-total-value").textContent = growTotal;
   document.getElementById("history-grow-total-value").textContent = growTotal;
+  document.querySelector('#regulation > dl:first-of-type dt.grow').dataset.total = preGrowTotal.toString();
   
   function modStatus(value){
     if(value > 0){ return `<span class="small">+${value}=</span>` }
@@ -1255,6 +1260,10 @@ function calcMagic() {
       
       if(id === 'Alc'){ power += feats['賦術強化'] || 0 }
       document.getElementById("magic-cast-"+eName+"-value").textContent = power + Number(form["magicCastAdd"+id].value);
+      
+      if(SET.class[key].craft?.power){
+        magicPowers[id] = cLv ? power : 0;
+      }
     }
   }
   // 全体／その他の開閉
@@ -1286,6 +1295,40 @@ function calcFairy() {
   if(rank[i]){ result = rank[i][lv['Fai']] || '×'; }
   else { result = '×'; }
   document.getElementById('fairy-rank').textContent = result;
+}
+
+// アイテム名称欄の入力補完時 ----------------------------------------
+function setupBracketInputCompletion() {
+  document.querySelectorAll('input[type="text"]:is([list="list-item-name"], [list="list-weapon-name"]):not(.support-bracket-input-completion)').forEach(
+      input => {
+        let lastValue = input.value ?? '';
+
+        input.addEventListener(
+            'input',
+            e => {
+              const newValue = input.value ?? '';
+
+              if (
+                  newValue.includes('〈〉') &&
+                  (
+                      lastValue === '' ||
+                      newValue.includes(lastValue) // 部分的に入力されている状態から入力補完が選ばれたケース
+                  ) &&
+                  !lastValue.includes('〈〉') // 空の括弧がある状態から何かが入力されたときは動作させない（括弧内の前に `[魔]` などを入力するときを想定した措置）
+              ) {
+                if (input.selectionStart === input.selectionEnd) { // 範囲選択になっていないときのみ動作させる
+                  const indexOfEmptyBracket = newValue.indexOf('〈〉');
+                  input.selectionStart = input.selectionEnd = indexOfEmptyBracket + 1;
+                }
+              }
+
+              lastValue = newValue;
+            }
+        );
+
+        input.classList.add('support-bracket-input-completion');
+      }
+  );
 }
 
 // 部位データ計算 ----------------------------------------
@@ -1409,13 +1452,19 @@ function calcAttack() {
     }
     if(display == 'none'){ errorAccClass[name] = true; }
     document.getElementById(`attack-${eName}`).style.display = display;
-    document.getElementById(`attack-${eName}-str`).textContent = id == 'Fen' ? reqdStrHalf : reqdStr;
-    document.getElementById(`attack-${eName}-acc`).textContent = lv[id] + bonus.Dex;
-    document.getElementById(`attack-${eName}-dmg`).textContent = lv[id] + bonus.Str;
-  }
-  
-  if(!modeZero){
-    document.getElementById("attack-demonruler-dmg").textContent = '―';
+
+    document.getElementById(`attack-${eName}-str`).textContent
+      = id == 'Fen' ? reqdStrHalf
+      : SET.class[name]?.accUnlock?.reqd ? stt[SET.class[name]?.accUnlock?.reqd]
+      : reqdStr;
+    
+    document.getElementById(`attack-${eName}-acc`).textContent
+      = SET.class[name]?.accUnlock?.acc === 'power' ? magicPowers[id]
+      : lv[id] + bonus.Dex;
+    
+    document.getElementById(`attack-${eName}-dmg`).textContent
+      = SET.class[name]?.accUnlock?.dmg === 'power' ? magicPowers[id]
+      : lv[id] + bonus.Str;
   }
 
   for(let i = 0; i < SET.weapons.length; i++){
@@ -1449,17 +1498,23 @@ function calcWeapon() {
     // 技能選択のエラーチェック
     form["weapon"+i+"Class"].classList.toggle('error', errorAccClass[className] == true); 
     // 必筋チェック
-    const maxReqd = (className === "フェンサー") ? reqdStrHalf : reqdStr;
+    const maxReqd
+      = (className === "フェンサー") ? reqdStrHalf
+      : SET.class[className]?.accUnlock?.reqd ? stt[SET.class[className]?.accUnlock?.reqd]
+      : reqdStr;
     form["weapon"+i+"Reqd"].classList.toggle('error', weaponReqd > maxReqd);
     // 基礎命中
-    if(classLv) {
+    if(SET.class[className]?.accUnlock?.acc === 'power'){
+      accBase = magicPowers[SET.class[className].id];
+    }
+    else if(classLv) {
       accBase += classLv + parseInt((dex + ownDex) / 6);
     }
     // 基礎ダメージ
     if     (category === 'クロスボウ'){ dmgBase = modeZero ? 0 : classLv; }
     else if(category === 'ガン')      { dmgBase = magicPowers['Mag']; }
-    else if(!modeZero && className === "デーモンルーラー")
-                                      { dmgBase = magicPowers['Dem']; }
+    else if(SET.class[className]?.accUnlock?.dmg === 'power')
+                                      { dmgBase = magicPowers[SET.class[className].id] }
     else if(classLv)                  { dmgBase = classLv + parseInt(str / 6); }
 
     // 戦闘特技
@@ -2108,17 +2163,23 @@ function setArmourType (){
       = type ? type+count[type] : '';
   }
 }
+// 名前変更
+function changeArmourName(){
+  generateArmourCheckbox('num')
+}
 // 合計欄チェックボックス
-function generateArmourCheckbox (){
+function generateArmourCheckbox(checkListType = 'name'){
   let checkList = {};
   let rowNum = 0;
   const rows = document.querySelectorAll(`#armours tfoot .defense-total-checklist`);
   rows.forEach(row => {
     rowNum++;
     checkList[rowNum] = {};
+    let num = 0;
     row.querySelectorAll(`label input`).forEach(checkbox => {
-      const name = checkbox.nextElementSibling.textContent || '';
-      checkList[rowNum][name] = checkbox.checked ? 'checked' : '';
+      num++;
+      const id = checkListType == 'num' ? num : (checkbox.nextElementSibling.textContent || '');
+      checkList[rowNum][id] = checkbox.checked ? 'checked' : '';
     })
   });
   rowNum = 1;
@@ -2132,10 +2193,10 @@ function generateArmourCheckbox (){
             .replace(/[|｜](.+?)《(.+?)》/g, "$1")
             .replace(/\[([^\[\]]+?)#[0-9a-zA-z\-]+\]/g, "$1")
         : type || '―';
-
+      const id = checkListType == 'num' ? num : name;
       let checkbox = document.createElement('label');
       checkbox.classList.add('check-button');
-      checkbox.innerHTML = `<input type="checkbox" name="defTotal${rowNum}CheckArmour${num}" value="1" oninput="calcDefense()" ${checkList[rowNum][name]}><span>${name||'―'}</span>`;
+      checkbox.innerHTML = `<input type="checkbox" name="defTotal${rowNum}CheckArmour${num}" value="1" oninput="calcDefense()" ${checkList[rowNum][id]}><span>${name||'―'}</span>`;
       row.append(checkbox);
 
       document.querySelector(`input[name="defTotal${rowNum}CheckArmour${num}"]`).parentNode.style.display
@@ -2297,10 +2358,16 @@ function calcPointBuy() {
   
   let points = 0;
   let errorFlag = 0;
-  ['A','B','C','D','E','F'].forEach((i) => { form[`sttBase${i}`].classList.remove('error') });
+  ['A','B','C','D','E','F'].forEach((i) => {
+    form[`sttBase${i}`].classList.remove('error');
+    delete document.querySelector(`#stt-base-${i} > dt:first-child`).dataset['range'];
+  });
   if(SET.races[race]?.dice){
     ['A','B','C','D','E','F'].forEach((i) => {
       const dice = String(SET.races[race].dice[i]);
+      const min = Number(dice) + (SET.races[race].dice[`${i}+`] ?? 0);
+      const max = min + Number(dice) * 5;
+      document.querySelector(`#stt-base-${i} > dt:first-child`).dataset.range = `${min}～${max}`;
       let num  = Number(form[`sttBase${i}`].value);
       if(SET.races[race].dice[`${i}+`]){ num -= SET.races[race].dice[`${i}+`]; }
       if(pointBuyList[type] && pointBuyList[type][dice] && pointBuyList[type][dice][num] != null){

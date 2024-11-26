@@ -6,6 +6,7 @@ window.onload = function() {
   
   setName();
   calcGrow();
+  changeMakeType();
   changeType();
   checkNegai('Out',form.negaiOutside.value);
   checkNegai('In',form.negaiInside.value);
@@ -20,6 +21,18 @@ window.onload = function() {
 
 function changeRegu(){
   calcGrow();
+}
+
+// 作成タイプ変更 ----------------------------------------
+function changeMakeType(){
+  if(form.makeType.value === 'gospel') {
+    document.body.classList.add('gospel-bullet');
+    document.body.classList.remove('normal-bullet');
+  }
+  else {
+    document.body.classList.add('normal-bullet');
+    document.body.classList.remove('gospel-bullet');
+  }
 }
 
 // 種別変更 ----------------------------------------

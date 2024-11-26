@@ -527,6 +527,7 @@ body {
     color: inherit;
   }
 }
+
 #lois table tbody td:nth-child(4) {
   border-style: solid hidden;
 }

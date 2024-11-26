@@ -1,5 +1,7 @@
 @charset "utf-8";
 
+@import "icons.css" layer(system);
+
 @layer system {
 /* // Body
 ---------------------------------------------------------------------------------------------------- */
@@ -243,13 +245,27 @@ table.status {
   & dl {
     display: flex;
     margin-right: 1.5em;
-    align-items: center;
+    align-items: start;
+    & dt {
+      text-wrap: nowrap;
+    }
     & dt::after {
       content: ':';
       display: inline-block;
       width: 1em;
       text-align: center;
       font-weight: normal;
+    }
+    & dd.parts-num-and-names {
+      display: grid;
+      grid-template-columns: max-content auto;
+      > span.name {
+        padding-left: 1em;
+        text-indent: -1em;
+        > span {
+          text-wrap: nowrap;
+        }
+      }
     }
   }
 }
