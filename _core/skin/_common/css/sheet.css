@@ -203,6 +203,24 @@ summary {
 .box h2,
 .box > summary {
   font-size: 1.4rem;
+
+  &:has(> small.notes){
+    display: flex;
+    flex-flow: row;
+    justify-content: space-between;
+    align-items: end;
+    padding-right: 0.25em;
+
+    > small.notes {
+      font-size: 80%;
+      font-weight: normal;
+
+      > b {
+        font-size: 120%;
+        font-weight: normal;
+      }
+    }
+  }
 }
 .box h2,
 dl.box > dt,

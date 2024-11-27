@@ -171,15 +171,6 @@
   position: relative;
   justify-content: space-between;
 }
-#area-classes h2 + div {
-  position: absolute;
-  top: .2rem;
-  right: .5em;
-  font-size: 80%;
-}
-#area-classes h2 + div span {
-  font-size: 120%;
-}
 #area-classes.common-classes-off {
   flex-basis: calc(66% - 1rem);
   margin-right: var(--box-h-gap);
@@ -312,15 +303,6 @@
 #mystic-arts {
   position: relative;
 
-  & h2 + div {
-    position: absolute;
-    top: .2rem;
-    right: .5em;
-    font-size: 80%;
-    & span {
-      font-size: 120%;
-    }
-  }
   & h2:nth-child(n+2) {
     margin-top: 0;
   }
