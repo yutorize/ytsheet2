@@ -227,7 +227,10 @@
           </TMPL_IF>
           <TMPL_IF CommonClasses>
           <section class="box" id="common-classes">
-            <h2>一般技能</h2>
+            <h2>
+              一般技能
+              <span class="total-level">合計レベル：<TMPL_VAR CommonClassTotalLevel></span>
+            </h2>
             <dl class="data-table side-margin">
               <TMPL_LOOP CommonClasses>
               <dt><TMPL_VAR NAME><dd><TMPL_VAR LV>
