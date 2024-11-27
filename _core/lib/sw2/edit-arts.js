@@ -109,6 +109,8 @@ function checkMagicClass(){
   }
   else if(magic == '操気'){
     viewMagicInputs(['cost','premise','target','range','duration','resist']);
+    if(form.magicCost.value == "MP"){ form.magicCost.value = '' }
+    form.magicCost.setAttribute('list', 'list-cost-psychokinesis');
   }
   else if(magic == '呪印'){
     viewMagicInputs(['type','premise']);
