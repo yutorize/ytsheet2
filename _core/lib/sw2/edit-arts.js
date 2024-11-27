@@ -107,6 +107,9 @@ function checkMagicClass(){
   else if(magic == '魔装'){
     viewMagicInputs(['premise','part']);
   }
+  else if(magic == '操気'){
+    viewMagicInputs(['cost','premise','target','range','duration','resist']);
+  }
   else if(magic == '呪印'){
     viewMagicInputs(['type','premise']);
   }
