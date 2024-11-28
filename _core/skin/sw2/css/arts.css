@@ -399,7 +399,6 @@ article {
 }
 .data-magic h3.name,
 .data-magic dl.name     dd,
-.data-magic dl.part     dd,
 .data-magic dl.summary  dd,
 .data-magic dl.effect > dd,
 .data-magic.song     dl.pet      dd,
@@ -407,8 +406,7 @@ article {
 .data-magic.lead     dl.condition dd,
 .data-magic.lead     dl.ccost dd,
 .data-magic.geomancy dl.duration dd,
-.data-magic.divination dl.type   dd,
-.data-magic.potential  dl.premise dd {
+.data-magic.divination dl.type   dd {
   display: block;
   padding: .2em .5em;
   text-align: left;
