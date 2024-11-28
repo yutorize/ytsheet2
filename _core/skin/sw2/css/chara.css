@@ -825,6 +825,9 @@ dl#level {
 /* Attack-Status */
 #attack-classes {
   width: calc(25% + 24em + 1px);
+  @media screen and (width <= 735px){
+    width: calc(25% + 20em + 1px);
+  }
 }
 #attack-classes thead th {
   &:nth-child(1) { width:  auto; } /* 名前 */
@@ -833,6 +836,14 @@ dl#level {
   &:nth-child(4) { width: 3.5em; } /* 威力 */
   &:nth-child(5) { width: 3.5em; } /* Ｃ値 */
   &:nth-child(6) { width:   5em; } /* 追加Ｄ */
+  
+  @media screen and (width <= 735px){
+    &:nth-child(2) { width: 3.5em; } /* 必筋 */
+    &:nth-child(3) { width: 3.5em; } /* 命中 */
+    &:nth-child(4) { width: 3.5em; } /* 威力 */
+    &:nth-child(5) { width: 2.5em; } /* Ｃ値 */
+    &:nth-child(6) { width: 3.5em; } /* 追加Ｄ */
+  }
 }
 
 #attack-classes + #weapons {
@@ -849,11 +860,26 @@ dl#level {
   &:nth-child(7) { width:   5em; } /* 追加Ｄ */
   &:nth-child(8) { width:   1em; } /* 専用 */
   &:nth-child(9) { width: auto; } /* 備考 */
+  
+  @media screen and (width <= 735px){
+    &:nth-child(1) { width:   25%; } /* 名前 */
+    &:nth-child(2) { width: 3.5em; } /* 用法 */
+    &:nth-child(3) { width: 3.5em; } /* 必筋 */
+    &:nth-child(4) { width: 3.5em; } /* 命中 */
+    &:nth-child(5) { width: 3.5em; } /* 威力 */
+    &:nth-child(6) { width: 2.5em; } /* Ｃ値 */
+    &:nth-child(7) { width: 3.5em; } /* 追加Ｄ */
+    &:nth-child(8) { width:   1em; } /* 専用 */
+    &:nth-child(9) { width: auto; } /* 備考 */
+  }
 }
-#weapons tbody td:last-child { /* 備考 */
+#weapons tbody td:last-child.left { /* 備考 */
   padding-left: .3em;
-  text-align: left;
   font-size: 90%;
+  @media screen and (width <= 735px){
+    padding-left: 1px;
+    font-size: 80%;
+  }
 }
 
 
