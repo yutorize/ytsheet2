@@ -105,7 +105,7 @@ function checkMagicClass(){
     viewMagicInputs(['type','target','range','duration']);
   }
   else if(magic == '魔装'){
-    viewMagicInputs(['premise','part']);
+    viewMagicInputs(['premise','part','human-form']);
   }
   else if(magic == '呪印'){
     viewMagicInputs(['type','premise']);

@@ -258,6 +258,7 @@ HTML
           <dl class="song     "><dt>楽素        <dd>基礎@{[ input 'magicSongBasePoint','','','list="list-songpoint"' ]} 巧奏値@{[ input 'magicSongSetPoint' ]} 追加@{[ input 'magicSongAddPoint','','','list="list-songpoint"' ]}</dl>
           <dl class="rider    "><dt>対応        <dd>@{[ checkbox 'magicMountTypeAnimal','動物' ]}@{[ checkbox 'magicMountTypeCryptid','幻獣' ]}@{[ checkbox 'magicMountTypeMachine','魔動機' ]}</dl>
           <dl class="part     "><dt>適用部位    <dd>@{[ input 'magicApplyPart','','','list="list-part"' ]}</dl>
+          <dl class="human-form"><dt>人間形態時 <dd>@{[ radios 'magicApplyHumanForm','','available=>有効','unavailable=>無効','=>指定なし（変身しない種族用）' ]}</dl>
           <dl class="rank     "><dt>ランク      <dd>@{[ input 'magicRank' ]}</dl>
           <dl class="commcost "><dt>陣気コスト  <dd>@{[ input 'magicCommandCost','number' ]}消費</dl>
           <dl class="command  "><dt>陣気蓄積    <dd>＋@{[ input 'magicCommandCharge','number' ]}</dl>

@@ -154,6 +154,7 @@ article {
   & dl.addpoint  { grid-area: ADPT; }
   
   & dl.part      { grid-area: PART; }
+  & dl.human-form{ grid-area: HUMF; }
   
   & dl.ccost     { grid-area: CCST; }
   & dl.ccharge   { grid-area: CCHG; }
@@ -280,15 +281,19 @@ article {
   }
 }
 .data-magic.potential {
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   grid-template-areas:
-    "NAME NAME"
-    "PRMS PART"
-    "SMRY SMRY"
-    "EFCT EFCT"
+    "NAME NAME NAME"
+    "PRMS PART HUMF"
+    "SMRY SMRY SMRY"
+    "EFCT EFCT EFCT"
   ;
   > dl {
     grid-template-columns: 5em 1fr;
+
+    &.human-form {
+      grid-template-columns: 6em 1fr;
+    }
   }
 }
 .data-magic.seal {
@@ -396,7 +401,6 @@ article {
 }
 .data-magic h3.name,
 .data-magic dl.name     dd,
-.data-magic dl.part     dd,
 .data-magic dl.summary  dd,
 .data-magic dl.effect > dd,
 .data-magic.song     dl.pet      dd,
@@ -404,8 +408,7 @@ article {
 .data-magic.lead     dl.condition dd,
 .data-magic.lead     dl.ccost dd,
 .data-magic.geomancy dl.duration dd,
-.data-magic.divination dl.type   dd,
-.data-magic.potential  dl.premise dd {
+.data-magic.divination dl.type   dd {
   display: block;
   padding: .2em .5em;
   text-align: left;
