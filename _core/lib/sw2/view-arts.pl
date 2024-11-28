@@ -227,16 +227,11 @@ $SHEET->param(Tags => \@tags);
   }
   elsif   ($class eq '魔装'){
     $SHEET->param(magicClassEn => 'potential');
-    if ($pc{magicApplyHumanForm} eq 'available') {
-      $pc{magicApplyHumanForm} = '有効';
-    }
-    elsif ($pc{magicApplyHumanForm} eq 'unavailable') {
-      $pc{magicApplyHumanForm} = '無効';
-    }
-    else {
-      $pc{magicApplyHumanForm} = '―';
-    }
-    $SHEET->param(magicApplyHumanForm => $pc{magicApplyHumanForm});
+    $SHEET->param(magicApplyHumanForm =>
+      ($pc{magicApplyHumanForm} eq 'available')   ? '有効' :
+      ($pc{magicApplyHumanForm} eq 'unavailable') ? '無効' :
+      '―'
+    );
     magicItemViewOn('Premise','Part','HumanForm');
   }
   elsif   ($class eq '呪印'){
