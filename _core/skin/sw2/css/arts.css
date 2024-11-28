@@ -390,6 +390,12 @@ article {
   border-width: 0 1px 0 0;
   border-style: solid;
 }
+.data-magic > dl > dt {
+  min-height: 1.9em;
+  line-height: 1;
+  padding: 2px 0px;
+  text-wrap: balance;
+}
 .data-magic dl.name {
   grid-template-columns: 3.5em 1fr;
 }
