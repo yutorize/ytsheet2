@@ -408,7 +408,9 @@
             </thead>
             <tbody><TMPL_LOOP Weapons><TMPL_IF CLOSE></tbody><tbody></TMPL_IF>
               <tr>
-                <TMPL_UNLESS NAMEOFF><td rowspan="<TMPL_VAR ROWSPAN>"><span class="item-name"><TMPL_VAR NAME></span></TMPL_UNLESS>
+                <TMPL_UNLESS NAMEOFF><td rowspan="<TMPL_VAR ROWSPAN>">
+                  <span class="item-name"><TMPL_VAR NAME><TMPL_IF PART><span class="part-name">（<TMPL_VAR PART>）</span></TMPL_IF></span>
+                </TMPL_UNLESS>
                 <td><TMPL_VAR USAGE>
                 <td><TMPL_VAR REQD>
                 <td><TMPL_IF ACC><TMPL_VAR ACC>=</TMPL_IF><b><TMPL_VAR ACCTOTAL></b>
@@ -416,8 +418,9 @@
                 <td><TMPL_VAR CRIT>
                 <td><TMPL_IF DMG><TMPL_VAR DMG>=</TMPL_IF><b><TMPL_VAR DMGTOTAL></b>
                 <td><TMPL_IF OWN>✔</TMPL_IF>
-                <td><span class="item-name"><TMPL_VAR NOTE></span>
-              
+                <TMPL_UNLESS NOTEOFF><td class="left" rowspan="<TMPL_VAR NOTESPAN>">
+                  <span class="item-name"><TMPL_VAR NOTE></span>
+                </TMPL_UNLESS>
             </TMPL_LOOP></tbody>
           </table>
         </section>
