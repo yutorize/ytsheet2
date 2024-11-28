@@ -429,7 +429,7 @@ $SHEET->param(sheetType => 'arts');
 ### メニュー --------------------------------------------------
 my @menu = ();
 if(!$pc{modeDownload}){
-  push(@menu, { TEXT => '⏎', TYPE => "href", VALUE => './?type=i', });
+  push(@menu, { TEXT => '⏎', TYPE => "href", VALUE => './?type=a', });
   if($::in{url}){
     push(@menu, { TEXT => 'コンバート', TYPE => "href", VALUE => "./?mode=convert&url=$::in{url}" });
   }
