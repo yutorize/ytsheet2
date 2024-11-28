@@ -234,6 +234,11 @@ $SHEET->param(Tags => \@tags);
     );
     magicItemViewOn('Premise','Part','HumanForm');
   }
+  elsif   ($class eq '操気'){
+    $SHEET->param(magicClassEn => 'psychokinesis');
+    if($pc{magicActionTypePassive}){ magicItemViewOn('Cost','Premise') }
+    else { magicItemViewOn('Cost','Premise','Target','Range','Duration','Resist') }
+  }
   elsif   ($class eq '呪印'){
     $SHEET->param(magicClassEn => 'seal');
     magicItemViewOn('Premise','Type');

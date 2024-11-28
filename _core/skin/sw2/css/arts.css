@@ -296,6 +296,15 @@ article {
     }
   }
 }
+.data-magic.psychokinesis {
+  grid-template-areas:
+  "NAME NAME NAME COST"
+  "PRMS PRMS PRMS PRMS"
+  "TRGT RANG DURA RESI"
+  "SMRY SMRY SMRY ELEM"
+  "EFCT EFCT EFCT EFCT"
+  ;
+}
 .data-magic.seal {
   grid-template-columns: 2fr 1fr;
   grid-template-areas:

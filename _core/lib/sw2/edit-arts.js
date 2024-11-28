@@ -107,6 +107,9 @@ function checkMagicClass(){
   else if(magic == '魔装'){
     viewMagicInputs(['premise','part','human-form']);
   }
+  else if(magic == '操気'){
+    viewMagicInputs(['cost','premise','target','range','duration','resist']);
+  }
   else if(magic == '呪印'){
     viewMagicInputs(['type','premise']);
   }
@@ -123,8 +126,8 @@ function checkMagicClass(){
     if(form.magicCost.value == ''){ form.magicCost.value = 'MP' }
     form.magicCost.setAttribute('list', 'list-cost');
   }
-  form.magicActionTypePassive.parentNode.style.display = (magic == '騎芸') ? '' : 'none';
-  form.magicActionTypeMajor.parentNode.style.display   = (magic == '騎芸') ? '' : 'none';
+  form.magicActionTypePassive.parentNode.style.display = (magic.match(/^(騎芸|操気)$/)) ? '' : 'none';
+  form.magicActionTypeMajor.parentNode.style.display   = (magic.match(/^(騎芸|操気)$/)) ? '' : 'none';
   document.querySelector('#data-magic dl.summary').style.display   = (magic == '呪印' || magic == '貴格') ? 'none' : '';
   document.querySelector('#data-magic dl.type      dt').textContent = (magic == '鼓咆') ? '鼓咆の系統' : (magic == '占瞳') ? 'タイプなど' : (magic == '貴格') ? '形態' : '対応';
   document.querySelector('#data-magic dl.premise   dt').textContent = (magic == '呪印') ? '前提ＡＣ'   : '前提';

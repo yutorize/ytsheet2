@@ -242,7 +242,7 @@ HTML
       <div class="data-area in-toc" id="data-magic" data-content-title="データ">
         <div class="box input-data">
           <dl class="name     "><dt>名称        <dd>【@{[ input 'magicName','',"setName" ]}】<br>
-                                                          @{[ checkbox 'magicActionTypePassive','常時' ]}@{[ checkbox 'magicActionTypeMajor','主動作' ]}@{[ checkbox 'magicActionTypeMinor','補助動作' ]}@{[ checkbox 'magicActionTypeSetup','戦闘準備' ]}</dl>
+                                                    @{[ checkbox 'magicActionTypePassive','常時' ]}@{[ checkbox 'magicActionTypeMajor','主動作' ]}@{[ checkbox 'magicActionTypeMinor','補助動作' ]}@{[ checkbox 'magicActionTypeSetup','戦闘準備' ]}</dl>
           <dl class="class    "><dt>系統        <dd>@{[ selectInput "magicClass","checkMagicClass",@magic_classes ]} @{[ checkbox 'magicMinor','小魔法' ]}</dl>
           <dl class="sphere   "><dt>マギスフィア<dd>@{[ input 'magicMagisphere','','','list="list-sphere"' ]}</dl>
           <dl class="level    "><dt>習得レベル  <dd>@{[ input 'magicLevel' ]}</dl>
@@ -448,9 +448,12 @@ print <<"HTML";
     <p class="copyright">©<a href="https://yutorize.2-d.jp">ゆとらいず工房</a>「ゆとシートⅡ」ver.${main::ver}</p>
   </footer>
   <datalist id="list-cost">
+    <option value="―">
     <option value="MP">
     <option value="MP＋魔晶石＿点">
     <option value="HP">
+    <option value="1dHP">
+    <option value="2dHP">
   </datalist>
   <datalist id="list-cost-song">
     <option value="⤴">
