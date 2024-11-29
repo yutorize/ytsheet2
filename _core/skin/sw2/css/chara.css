@@ -808,6 +808,30 @@ dl#level {
       font-weight: normal;
       font-size: 1.15em;
     }
+
+    td i.own {
+      background-color: grey;
+      color: var(--bg-color);
+      font-size: 90%;
+      line-height: 100%;
+      padding: 0.11em 0.25em;
+      border-radius: 0.3em;
+      font-style: normal;
+      font-weight: normal;
+      position: relative;
+      top: -1px;
+      margin-right: 0.25em;
+
+      &::before {
+        content: "✔";
+      }
+
+      &[data-kind] {
+        &::after {
+          content: "(" attr(data-kind) ")";
+        }
+      }
+    }
   }
   
   & .item-name {
@@ -851,15 +875,15 @@ dl#level {
 }
 
 #weapons thead th {
-  &:nth-child(1) { width:   25%; } /* 名前 */
-  &:nth-child(2) { width: 3.5em; } /* 用法 */
-  &:nth-child(3) { width: 3.5em; } /* 必筋 */
-  &:nth-child(4) { width:   5em; } /* 命中 */
-  &:nth-child(5) { width: 3.5em; } /* 威力 */
-  &:nth-child(6) { width: 3.5em; } /* Ｃ値 */
-  &:nth-child(7) { width:   5em; } /* 追加Ｄ */
-  &:nth-child(8) { width:   1em; } /* 専用 */
-  &:nth-child(9) { width: auto; } /* 備考 */
+  &:nth-child(1), &.name  { width:   25%; } /* 名前 */
+  &:nth-child(2), &.usage { width: 3.5em; } /* 用法 */
+  &:nth-child(3), &.reqd  { width: 3.5em; } /* 必筋 */
+  &:nth-child(4), &.acc   { width:   5em; } /* 命中 */
+  &:nth-child(5), &.rate  { width: 3.5em; } /* 威力 */
+  &:nth-child(6), &.crit  { width: 3.5em; } /* Ｃ値 */
+  &:nth-child(7), &.dmg   { width:   5em; } /* 追加Ｄ */
+  &:nth-child(8)          { width:   1em; } /* 専用 */
+  &:nth-child(9), &.note  { width: auto; } /* 備考 */
   
   @media screen and (width <= 735px){
     &:nth-child(1) { width:   25%; } /* 名前 */
@@ -933,12 +957,12 @@ dl#level {
 
 /* Accessories */
 #accessories thead th {
-  &:nth-child(1) { width: 2.5em; } /* 種別 */
-  &:nth-child(2) { width:   25%; } /* 名前 */
-  &:nth-child(3) { width: 3.5em; } /* 専用 */
-  &:nth-child(4) { width:  auto; } /* 備考 */
+  &:nth-child(1), &.type { width: 2.5em; } /* 種別 */
+  &:nth-child(2), &.name { width:   25%; } /* 名前 */
+  &:nth-child(3)         { width: 3.5em; } /* 専用 */
+  &:nth-child(4), &.note { width:  auto; } /* 備考 */
 }
-#accessories tbody td:nth-child(4) { /* 備考 */
+#accessories tbody td:is(:nth-child(4), .note) { /* 備考 */
   padding-left: .3em;
   text-align: left;
   font-size: 90%;

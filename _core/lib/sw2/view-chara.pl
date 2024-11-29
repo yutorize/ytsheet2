@@ -694,6 +694,7 @@ else {
       $pc{'weapon'.$_.'Acc'} = 0;
       $pc{'weapon'.$_.'Dmg'} = 0;
     }
+    $pc{'weapon'.$_.'Note'} = '<i class="own">専用</i>' . $pc{'weapon'.$_.'Note'} if $pc{'weapon'.$_.'Own'};
     push(@weapons, {
       NAME     => $pc{'weapon'.$_.'Name'},
       PART     => $pc{'part'.$pc{'weapon'.$_.'Part'}.'Name'},
@@ -707,7 +708,6 @@ else {
       CRIT     => $pc{'weapon'.$_.'Crit'},
       DMG      => addNum($pc{'weapon'.$_.'Dmg'}),
       DMGTOTAL => $pc{'weapon'.$_.'DmgTotal'},
-      OWN      => $pc{'weapon'.$_.'Own'},
       NOTE     => replaceModificationNotation($pc{'weapon'.$_.'Note'}),
       NOTESPAN => $pc{'weapon'.$_.'NoteSpan'},
       NOTEOFF  => $pc{'weapon'.$_.'NoteOff'},
@@ -844,13 +844,14 @@ else {
 
     if($pc{'armour'.$_.'Type'} =~ /^(鎧|盾|他)[0-9]+/ && $count{$1} <= 1){ $pc{'armour'.$_.'Type'} = $1 }
 
+    $pc{'armour'.$_.'Note'} = '<i class="own">専用</i>' . $pc{'armour'.$_.'Note'} if $pc{'armour'.$_.'Own'};
+
     push(@armours, {
       TYPE => $pc{'armour'.$_.'Type'},
       NAME => $pc{'armour'.$_.'Name'},
       REQD => $pc{'armour'.$_.'Reqd'},
       EVA  => $pc{'armour'.$_.'Eva'} ? addNum($pc{'armour'.$_.'Eva'}) : ($pc{'armour'.$_.'Category'} =~ /[鎧盾]/ ? '―' : ''),
       DEF  => $pc{'armour'.$_.'Def'} // ($pc{'armour'.$_.'Category'} =~ /[鎧盾]/ ? '0' : ''),
-      OWN  => $pc{'armour'.$_.'Own'},
       NOTE => $pc{'armour'.$_.'Note'},
     } );
   }
@@ -922,10 +923,12 @@ else {
     if (@$_[1] =~ /_$/) {
       next unless $pc{'accessory'.substr(@$_[1],0,-1).'Add'};
     }
+
+    my $own = $pc{'accessory'.@$_[1].'Own'};
+    $pc{'accessory'.@$_[1].'Note'} = "<i class=\"own\" data-kind=\"$own\">専用</i>" . $pc{'accessory'.@$_[1].'Note'} if $own;
     push(@accessories, {
       TYPE => @$_[0],
       NAME => $pc{'accessory'.@$_[1].'Name'},
-      OWN  => $pc{'accessory'.@$_[1].'Own'},
       NOTE => replaceModificationNotation($pc{'accessory'.@$_[1].'Note'}),
     } );
   }
