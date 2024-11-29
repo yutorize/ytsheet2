@@ -236,12 +236,15 @@ sub palettePreset {
       next unless $featName;
       my $category = data::getFeatCategoryByName($featName);
       next if $category !~ /宣/;
-      push(@declarationFeats, $featName);
+      my $marks = '[宣]';
+      $marks .= '[準]' if $category =~ /準/;
+      push(@declarationFeats, [$marks, $featName]);
     }
     if (@declarationFeats) {
       $text .= "\n### ■宣言特技\n";
       foreach (@declarationFeats) {
-        $text .= "[宣]《${_}》\n";
+        (my $marks, my $featName) = @{$_};
+        $text .= "${marks}《${featName}》\n";
       }
       $text .= "###\n";
     }
