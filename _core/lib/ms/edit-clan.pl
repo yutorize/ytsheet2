@@ -51,6 +51,8 @@ elsif($mode eq 'blanksheet'){
   $pc{magi1Target} = '単体';
   $pc{magi1Cond}   = '8～12';
   $pc{magi1Note}   = 'クラン全員で1Dをロールし、合計点のダメージを与える。(P139)';
+
+  %pc = applyCustomizedInitialValues(\%pc, 'c');
 }
 
 ## 画像

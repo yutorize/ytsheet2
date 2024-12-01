@@ -83,6 +83,8 @@ elsif($mode eq 'blanksheet'){
   $pc{armour3Category} = 'その他';
   
   $pc{paletteUseBuff} = 1;
+
+  %pc = applyCustomizedInitialValues(\%pc, '');
 }
 
 ## 画像

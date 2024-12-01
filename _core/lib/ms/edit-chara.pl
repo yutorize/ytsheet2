@@ -45,6 +45,8 @@ elsif($mode eq 'blanksheet'){
   
   $pc{level} = 0;
   $pc{endurance} = 20;
+
+  %pc = applyCustomizedInitialValues(\%pc, '');
 }
 
 ## 画像

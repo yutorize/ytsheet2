@@ -179,4 +179,19 @@ our $game = 'gc';
     },
   );
 
+# シート初期値の変更
+our %customizedInitialValues = (
+    # キャラクターデータ
+    '' => {
+        # 例：「キャラクター名」の初期値を「unnamed」にする
+        # 'characterName' => 'unnamed',
+    },
+
+    # 国データ
+    c => {
+        # 例：「作成時爵位」の初期値を「子爵」にする
+        # 'makePeerage' => '子爵',
+    },
+);
+
 1;
