@@ -735,7 +735,7 @@ input[type="submit"]:hover {
   }
 }
 
-.box .annotate {
+.annotate {
   position: relative;
   margin: .3em;
   padding: 4px .3em 3px .5em;

@@ -215,18 +215,17 @@
               </TMPL_LOOP>
             </dl>
           </section>
-          <TMPL_IF Seeker>
-          <section class="box" id="common-classes">
+
+          <TMPL_IF Seeker><section class="box" id="common-classes">
             <h2>求道者</h2>
             <dl class="data-table side-margin">
               <TMPL_LOOP Seeker>
               <dt><TMPL_VAR NAME><dd><TMPL_VAR LV>
               </TMPL_LOOP>
             </dl>
-          </section>
-          </TMPL_IF>
-          <TMPL_IF CommonClasses>
-          <section class="box" id="common-classes">
+          </section></TMPL_IF>
+
+          <TMPL_IF CommonClasses><section class="box" id="common-classes">
             <h2>
               一般技能
               <small class="notes">合計レベル：<TMPL_VAR CommonClassTotalLevel></small>
@@ -236,8 +235,28 @@
               <dt><TMPL_VAR NAME><dd><TMPL_VAR LV>
               </TMPL_LOOP>
             </dl>
-          </section>
-          </TMPL_IF>
+          </section></TMPL_IF>
+          
+          <TMPL_LOOP Effects><section class="box effects">
+            <h2>
+              <TMPL_VAR NAME>
+              <TMPL_IF PTNAME><small class="notes"><TMPL_VAR PTNAME>：<b><TMPL_VAR TOTAL></b></small></TMPL_IF>
+            </h2>
+            <table class="data-table side-margin">
+              <thead>
+                <tr>
+                  <th class="left"><TMPL_VAR HEAD0>
+                  <TMPL_IF COLUMN1><th class="num"><span><TMPL_VAR HEAD1></span></TMPL_IF>
+                  <TMPL_IF COLUMN2><th class="num"><span><TMPL_VAR HEAD2></span></TMPL_IF>
+                </tr>
+              <tbody>
+                <TMPL_LOOP Rows><tr>
+                  <td class="left"><TMPL_VAR TEXT></div>
+                  <TMPL_IF COLUMN1><td class="num"><TMPL_VAR POINT1></TMPL_IF>
+                  <TMPL_IF COLUMN2><td class="num"><TMPL_VAR POINT2></TMPL_IF>
+                </tr></TMPL_LOOP>
+            </table>
+          </section></TMPL_LOOP>
         </div>
 
         <div>

@@ -796,12 +796,12 @@ function clearRadioButton(radioButton) {
 }
 
 // 行作成 ----------------------------------------
-function createRow(name, numNodeName, max = null){
+function createRow(name, numNodeName, max = null, replaceText = 'TMPL'){
   let num = Number(form[numNodeName].value) + 1;
   if(max && num > max){ return ''; }
   let row = document.getElementById(name+'-template').content.firstElementChild.cloneNode(true);
   row.id = idNumSet(name+'-row');
-  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
+  row.innerHTML = row.innerHTML.replaceAll(replaceText, num);
   form[numNodeName].value = num;
   return row;
 }
@@ -818,7 +818,8 @@ function delRow(numNodeName, targetSelector, min = 0, initialText){
 function delRowNode(targetSelector, initialText){
   const targetNode = document.querySelector(targetSelector);
   let hasValue = false;
-  for (const node of targetNode.querySelectorAll(`input, select, textarea`)){
+  for (const node of targetNode.querySelectorAll(`input:not([type=hidden]), select, textarea`)){
+    if(node.readOnly){ continue; }
     if(node.type === 'checkbox' || node.type === 'radio'){
       if(node.checked) { hasValue = true; break; }
     }
@@ -843,7 +844,7 @@ function setSortable(namePrefix, targetSelector, rowElement = '', addReplace, ne
     dataIdAttr: 'id',
     animation: 150,
     handle: '.handle',
-    filter: 'thead,tfoot,template,.ignore-sort',
+    filter: '.ignore-sort,thead,tfoot,template',
     onUpdate: () => {
       let num = 1;
       for(let id of sortable.toArray()) {

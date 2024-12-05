@@ -335,6 +335,139 @@
   display: none;
 }
 
+#area-effects {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  @media screen and (width <= 735px){
+    grid-template-columns: 1fr;
+  }
+  gap: var(--box-v-gap) var(--box-h-gap);
+  position: relative;
+
+  h2 {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    text-wrap: wrap;
+
+    .handle { font-weight: bold; }
+    select:has(option:checked[value=""]),
+    select option[value=""] { color: #7777; }
+  }
+  & .box:has(select option:checked[value=""]) h2 ~ *{
+    display: none;
+  }
+  .effect-points {
+    display: flex;
+    width: max-content;
+    margin-left: auto;
+    margin-right: .5em;
+    padding: .1em .5em;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    line-height: 1;
+
+    &:has(dt:empty){ display: none; }
+
+    > dt { font-weight: normal; }
+    > dt::after { content: "：" }
+  }
+  .edit-table {
+    > thead tr th {
+      vertical-align: bottom;
+      line-height: 1.4;
+      text-align: left;
+      &.num1,
+      &.num2 {
+        width: 3em;
+        position: relative;
+        text-align: center;
+        > span {
+          min-width: 4em;
+          position: absolute;
+          right: 0;
+          bottom: 0;
+          font-size: 80%;
+          text-wrap: nowrap;
+        }
+      }
+    }
+    > tbody {
+      td.left > input { text-align: left; }
+    }
+    &:has(thead .num1.hidden) tbody .num1 { display: none; }
+    &:has(thead .num2.hidden) tbody .num2 { display: none; }
+  }
+  .box:has(.select-input.free){
+    .edit-table tbody tr:first-of-type {
+      font-weight: bold;
+      > .num1,.num2 {
+        input {
+          padding-top: calc(2px + .2em);
+          padding-bottom: calc(2px + .2em);
+          font-size: 80%;
+        }
+      }
+    }
+  }
+  .box:has(.select-input:not(.free)) .annotate { display: none; }
+
+  > .box:has(table input:read-only) {
+    table {
+      border-bottom: hidden;
+      .handle {
+        visibility: hidden;
+      }
+    }
+    .add-del-button { display: none; }
+  }
+  
+  > .add-del-button {
+    order: 999;
+  }
+  &:not(:has(> div:nth-of-type(3))) > .add-del-button {
+    visibility: hidden;
+    height: 0;
+  }
+  &:has(select option:checked:not([value=""])) > .add-del-button {
+    visibility: visible;
+    height: auto;
+  }
+  @media screen and (width > 915px){
+    > .add-del-button {
+      display: flex;
+      flex-direction: column;
+      gap: 2em;
+      justify-content: end;
+      
+      margin-left: calc(var(--box-h-gap) * -1 + .2em);
+      padding-bottom: 1em;
+
+      > a {
+        width: max-content;
+        height: max-content;
+        margin: 0;
+        flex-shrink: 0;
+        flex-grow: 0;
+        transform: scale(1, 3.5) rotate(-90deg);
+        &::before { transform: scale(0.3,1.5) rotate(90deg); }
+      }
+    }
+    &:has(> div:nth-of-type(3n+1):last-of-type) > .add-del-button {
+      position: absolute;
+      right: -1.2em;
+      bottom: 0;
+    }
+  }
+}
+#area-effects + .annotate {
+  margin: .3em auto 0;
+}
+#area-effects:not(:has(> div:nth-of-type(3))) + .annotate {
+  display: none;
+}
+#area-actions {
+  margin-top: var(--box-v-gap);
+}
 #crafts {
   flex-basis: 66%;
   display: flex;

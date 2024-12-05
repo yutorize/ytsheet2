@@ -301,8 +301,9 @@ sub selectInput {
   my $text = '<div class="select-input"><select name="'.$name.'" oninput="selectInputCheck(this);'.$func.'">'.option($name, @_);
   $text .= '<option value="free">その他（自由記入）'; 
   my $hit = 0;
-  foreach my $value (@_) {
-    if($value =~ /^(.+)\|\<.*\>$/){ $value = $1; }
+  foreach my $i (@_) {
+    my $value = $i;
+    if($value =~ /^(.*)\|\<.*\>$/){ $value = $1; }
     if($::pc{$name} eq $value){ $hit = 1; last; }
   }
   if($::pc{$name} && !$hit){ $text .= '<option value="'.$::pc{$name}.'" selected>'.$::pc{$name}; }

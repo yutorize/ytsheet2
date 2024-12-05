@@ -693,6 +693,68 @@ print <<"HTML";
         </div>
       </div>
 
+      <div id="area-effects">
+HTML
+$pc{effectBoxNum} ||= 1;
+my @effectNames = map {
+    $_->{name} .'|<'. $_->{name} . ($_->{notes}?"（$_->{notes}）":'') .'>'
+  } @set::effects;
+my %effects = map { $_->{name} => $_ } @set::effects;
+foreach my $box ('BOX',1 .. $pc{effectBoxNum}){
+  my $name = $pc{"effect${box}Name"};
+  print '<template id="effect-template">' if $box eq 'BOX';
+  print <<"HTML";
+        <div id="effect-row${box}" class="box">
+          <h2>
+            <span class="handle"></span>
+            <div class="select-input">
+              @{[ selectBox "effect${box}Name","changeEffect(this)",'def=|<各種影響表（穢れや侵蝕など）>',@effectNames ]}
+              @{[ input "effect${box}NameFree",'','','placeholder="例: 穢れ＠穢れ度"' ]}
+          </h2>
+          <dl class="effect-points"><dt>$effects{$name}{pointName}<dd>0</dl>
+          <table class="edit-table side-margin">
+            <thead>
+              <tr>
+                <th>
+                <th class="text">$effects{$name}{header}[0]
+                <th class="num1 @{[ !$effects{$name}{header}[1] && !$effects{$name}{type}[1] ? 'hidden' : '' ]}"><span>$effects{$name}{header}[1]</span>
+                <th class="num2 @{[ !$effects{$name}{header}[2] && !$effects{$name}{type}[2] ? 'hidden' : '' ]}"><span>$effects{$name}{header}[2]</span>
+            <tbody>
+HTML
+  $pc{"effect${box}Num"} ||= 0;
+  foreach my $num ('TMPL',1 .. $pc{"effect${box}Num"}){
+    $pc{"effect${box}-${num}"} = $effects{$name}{fix}[$num-1] if $effects{$name}{fix}[$num-1];
+    print '<template id="effect'.$box.'-template">' if $num eq 'TMPL';
+    print '<tr id="effect'.$box.'-row'.$num.'">'
+         .'<td class="handle">'
+         .'<td class="left">'.(input "effect${box}-${num}",'','',($effects{$name}{fix}[$num-1] ? 'readonly':''));
+    foreach my $i (1 .. 2){
+      print "<td class=\"num${i}\">"
+            .(input "effect${box}-${num}Pt${i}", $effects{$name}{type}[$i], 'calcEffect(this)');
+    }
+    print '</template>' if $num eq 'TMPL';
+  }
+  print <<"HTML";
+          </table>
+          <div class="add-del-button ignore-sort"><a onclick="addEffect(this)">▼</a><a onclick="delEffect(this)">▲</a></div>
+          <ul class="annotate">
+            <li>自由記入の場合、表の1行目が項目の見出しになります
+          </ul>
+          @{[ input "effect${box}Num",'hidden' ]}
+        </div>
+HTML
+  print '</template>' if $box eq 'BOX';
+}
+print <<"HTML";
+        <div class="add-del-button">
+          <a onclick="addEffectBox()">▼</a><a onclick="delEffectBox()">▲</a>
+          @{[ input 'effectBoxNum','hidden' ]}
+        </div>
+      </div>
+      <div class="annotate">
+        各種影響表は、閲覧時においては、自由記入以外の表示順は固定されます。
+      </div>
+
       <div id="area-actions">
         <div id="area-package">
           <div class="box" id="package">

@@ -1097,6 +1097,61 @@ sub cashCheck(){
 foreach my $color ('Red','Gre','Bla','Whi','Gol'){
   $SHEET->param("card${color}View" => $pc{'card'.$color.'B'}+$pc{'card'.$color.'A'}+$pc{'card'.$color.'S'}+$pc{'card'.$color.'SS'});
 }
+### 各種影響表（穢れ、侵蝕など） --------------------------------------------------
+{
+  my %effects = map { $_->{name} => $_ } @set::effects;
+  my @boxes;
+  foreach my $box (1 .. $pc{effectBoxNum}){
+    my @rows;
+    my $name = $pc{"effect${box}Name"};
+    my $freeMode = ($name =~ /^自由記入/) ? 1 : 0;
+    foreach my $num (1 .. $pc{"effect${box}Num"}){
+      next if ($num == 1 && $freeMode);
+      next if(!existsRow "effect${box}-${num}",'','Pt1','Pt2');
+      my %point = ();
+      foreach my $i (1 .. 2){
+        $point{$i} = $pc{"effect${box}-${num}Pt$i"};
+        if($effects{$name}{type}[$i] =~ /^(checkbox|radio)$/){
+          $point{$i} = $point{$i} ? '✔' : '';
+        }
+      }
+      push(@rows, {
+        TEXT => $pc{"effect${box}-${num}"},
+        POINT1 => $point{1},
+        POINT2 => $point{2},
+      });
+    }
+    my $effectName = $name;
+    my $pointName = $effects{$name}{pointName};
+    if($freeMode) {
+      ($effectName,$pointName) = split(/\s?[@＠]\s?/, $pc{"effect${box}NameFree"});
+    }
+    next if !@rows && !$effectName && !$pointName;
+    my $sort = 1000+$box;
+    if(!$freeMode){
+      foreach my $i (0 .. $#set::effects){
+        if($set::effects[$i]{name} eq $name){
+          $sort = $i;
+          last;
+        }
+      }
+    }
+    push(@boxes, {
+      SORT => $sort,
+      NAME => $effectName,
+      PTNAME => $pointName,
+      TOTAL => $pc{"effect${box}PtTotal"},
+      HEAD0 => $freeMode ? $pc{"effect${box}-1"   } : $effects{$name}{header}[0],
+      HEAD1 => $freeMode ? $pc{"effect${box}-1Pt1"} : $effects{$name}{header}[1],
+      HEAD2 => $freeMode ? $pc{"effect${box}-1Pt2"} : $effects{$name}{header}[2],
+      COLUMN1 => $effects{$name}{header}[1] || $effects{$name}{type}[1],
+      COLUMN2 => $effects{$name}{header}[2] || $effects{$name}{type}[2],
+      Rows => \@rows,
+    });
+  }
+  @boxes = sort { $a->{SORT} <=> $b->{SORT} } @boxes;
+  $SHEET->param(Effects => \@boxes);
+}
 
 ### 戦闘用アイテム --------------------------------------------------
 my $smax = max($pc{lvSco},$pc{lvRan},$pc{lvSag});

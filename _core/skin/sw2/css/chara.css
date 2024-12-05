@@ -518,6 +518,65 @@ dl#level {
   }
 }
 
+/* Effects */
+.effects {
+  > h2 > small.notes{
+    line-height: 1;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    > b {
+      font-size: 140%;
+    }
+  }
+  > .data-table {
+    margin-top: 3px;
+    > thead th {
+      line-height: 1;
+      font-size: 80%;
+      vertical-align: bottom;
+      &.num {
+        width: 3.1em;
+      }
+      &.num:nth-child(2):last-child {
+        position: relative;
+        > span {
+          min-width: 4em;
+          position: absolute;
+          right: 0;
+          bottom: 0;
+          text-wrap: nowrap;
+        }
+      }
+    }
+    > tbody {
+      .num {
+        padding: .1em 0 .1em .2em;
+        line-height: 1;
+        word-break: auto-phrase;
+      }
+      .num:has(~ .num){
+        padding-right: .2em;
+      }
+      .num + .num {
+        position: relative;
+      }
+      .num + .num::before {
+        content: "/";
+        position: absolute;
+        display: block;
+        text-align: center;
+        align-content: center;
+        width: 1em;
+        top: 0;
+        left: -.5em;
+        bottom: 0;
+        transform: scale(0.8,1.4);
+        opacity: 0.5;
+      }
+    }
+  }
+}
+
 /* Combat-feats */
 #combat-feats {
   & ul {

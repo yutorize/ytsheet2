@@ -15,9 +15,13 @@ foreach (keys %data::class){
   $data::class{$_}{magic}{data} &&= 1 if exists($data::class{$_}{magic});
   $data::class{$_}{craft}{data} &&= 1 if exists($data::class{$_}{craft});
 }
-my %aRank; my %bRank;
+my %aRank; my %bRank; my %effects;
 $aRank{@$_[0]} = { num => @$_[1], free => @$_[2] } foreach(@set::adventurer_rank);
 $bRank{@$_[0]} = { num => @$_[1], free => @$_[2] } foreach(@set::barbaros_rank);
+foreach (@set::effects){
+  $effects{$_->{name}} = $_;
+  delete $effects{$_->{name}}{name};
+}
 my %settings = (
   gameSystem => $set::game,
   allClassOn => $set::all_class_on,
@@ -34,6 +38,7 @@ my %settings = (
   nRank => \@set::notoriety_rank,
   nBRank => \@set::notoriety_barbaros_rank,
   partsData => \%data::partsData,
+  effects => \%effects,
 );
 print "const SET = ". JSON::PP->new->encode(\%settings);
 print "\n";

@@ -88,6 +88,7 @@ window.onload = function() {
   calcHonor();
   calcDishonor();
   calcCommonClass();
+  checkEffectAll();
   setupBracketInputCompletion();
   
   imagePosition();
@@ -206,7 +207,7 @@ function changeRace(raceNew){
   const raceBefore = race;
   
   let inputtedSin = false;
-  if((SET.races[raceBefore]?.sin||0) != form.sin.value){
+  if((SET.races[raceBefore]?.sin||0) != form.sin.value && !form.sin.readOnly){
     inputtedSin = true;
   }
   let inputtedParts = false;
@@ -258,6 +259,7 @@ function changeRace(raceNew){
     document.getElementById('race-ability-value').innerHTML = `<input type="text" name="raceAbilityFree" oninput="changeRaceAbility()" value="${form.raceAbilityFree?.value ?? '［］'}">`;
   }
   form.sin.value = SET.races[race]?.sin || 0;
+  if(form.sin.readOnly){ checkEffectAll(); }
   
   if(SET.races[race]?.parts){
     let num = 1;
@@ -1954,6 +1956,182 @@ function calcCash(){
   }
   else { form.deposit.readOnly = false; }
 }
+
+// 穢れ・侵蝕の影響など ----------------------------------------
+let beforeEffects = {};
+function getBoxNum(box){
+  return box.querySelector("input[type=hidden]").getAttribute("name").replace(/^effect([0-9]+)Num$/,'$1');
+}
+function checkEffectAll(){
+  document.querySelectorAll("#area-effects .box h2 select").forEach(obj => {
+    const box = obj.closest(".box");
+    checkEffect(obj,box);
+    calcEffect(obj);
+    checkSin();
+    beforeEffects[box.id] = obj.value;
+  });
+}
+function checkEffect(obj,box){
+  const name = box.querySelector('select').value;
+  const eData = SET.effects?.[name] || {};
+  box.querySelector("h2 .select-input").classList.toggle("free", name.match(/^自由記入/));
+  box.querySelector(".effect-points dt ").textContent = eData?.pointName || '';
+  box.querySelector("thead th.text     ").textContent = eData?.header?.[0] || '';
+  box.querySelector("thead th.num1 span").textContent = eData?.header?.[1] || '';
+  box.querySelector("thead th.num2 span").textContent = eData?.header?.[2] || '';
+  box.querySelector("thead th.num1").classList.toggle("hidden", !eData?.header?.[1] && !eData?.type?.[1]);
+  box.querySelector("thead th.num2").classList.toggle("hidden", !eData?.header?.[2] && !eData?.type?.[2]);
+  [1,2].forEach(num => {
+    box.querySelectorAll(`input[name$=Pt${num}]`).forEach(input => {
+      input.type = SET.effects?.[name]?.type?.[num] || 'text';
+      input.value = input.type == 'checkbox' || input.type == 'radio' ? 1 : input.value;
+    });
+  });
+}
+function changeEffect(obj){
+  const name = obj.value;
+  const box = obj.closest(".box");
+  const num = getBoxNum(box);
+  if(box.querySelector("input:read-only")){
+    let hasValue = false;
+    for (const node of box.querySelectorAll(`input:not([type=hidden])`)){
+      if(node.readOnly){ continue; }
+      if(node.name.match(/Free$/)){ continue; }
+      if(node.type === 'checkbox' || node.type === 'radio'){
+        if(node.checked) { hasValue = true; break; }
+      }
+      else {
+        if(node.value !== ''){
+          hasValue = true; break;
+        }
+      }
+    }
+    if(hasValue){
+      if (!confirm('項目に値が入っています。本当に変更しますか？')){
+        box.querySelector("select").value = beforeEffects[box.id];
+        return false;
+      }
+    }
+    if(name === "穢れ"){
+      console.log(SET.races[race]?.sin||0)
+      if(form.sin.value != (SET.races[form.race.value]?.sin||0)){
+        if (!confirm('穢れ度の入力が自動計算になります（今の入力値は初期化されます）。よろしいですか？')){
+          box.querySelector("select").value = beforeEffects[box.id];
+          return false;
+        }
+      }
+    }
+  }
+  beforeEffects[box.id] = name;
+
+  if(SET.effects?.[name]?.fix){
+    box.querySelectorAll("tbody tr").forEach(row => row.remove());
+    form[`effect${num}Num`].value = 0;
+    let i = 1;
+    SET.effects?.[name]?.fix.forEach(text => {
+      addEffect(obj);
+      const input = box.querySelector(`input[name$="${num}-${i}"]`);
+      input.value = text;
+      input.readOnly = true;
+      i++;
+    })
+  }
+  else {
+    if(box.querySelector("input:read-only")){
+      box.querySelectorAll("tbody tr").forEach(row => row.remove());
+      form[`effect${num}Num`].value = 0;
+      addEffect(obj);
+    }
+  }
+  checkEffect(obj,box);
+  calcEffect(obj);
+  setEffectNames();
+  checkSin();
+}
+function setEffectNames(){
+  let selecteds = []
+  for(let num = 1; num <= form.effectBoxNum.value; num++){
+    const name = form[`effect${num}Name`].value;
+    if(name){ selecteds.push(name); }
+  }
+  for(let num = 1; num <= form.effectBoxNum.value; num++){
+    const options = form[`effect${num}Name`].options || [];
+    for (const option of options) {
+      option.style.display = (
+          form[`effect${num}Name`].value !== option.value && 
+          !option.value.match(/^自由記入/) && 
+          selecteds.includes(option.value)
+        ) ? 'none' : '';
+    }
+  }
+}
+// 計算
+function calcEffect(obj){
+  const box = obj.closest(".box");
+  const name = box.querySelector('select').value;
+  let total = 0;
+  if(SET.effects?.[name]?.calc?.includes(1)){
+    box.querySelectorAll("input[name$=Pt1]").forEach(input => {
+      total += Number(input.value || 0);
+    });
+  }
+  if(SET.effects?.[name]?.calc?.includes(2)){
+    box.querySelectorAll("input[name$=Pt2]").forEach(input => {
+      total += Number(input.value || 0);
+    });
+  }
+  if(name === '穢れ'){
+    total += SET.races[race]?.sin || 0;
+    form.sin.value = total;
+  }
+  box.querySelector(".effect-points dd").textContent = total;
+}
+function checkSin(){
+  form.sin.readOnly = false;
+  document.querySelectorAll("#area-effects .box h2 select").forEach(obj => {
+    if(obj.value === "穢れ"){
+      form.sin.readOnly = true;
+      return;
+    }
+  });
+}
+// 追加
+function addEffect(obj){
+  const box = obj.closest(".box");
+  const num = getBoxNum(box);
+  box.querySelector(`table tbody`).append(createRow(`effect${num}`,`effect${num}Num`));
+  checkEffect(obj,box);
+}
+// 削除
+function delEffect(obj){
+  const box = obj.closest(".box");
+  const num = getBoxNum(box);
+  if(delRow(`effect${num}Num`, `#effect-row${num} table tbody tr:last-of-type`)){
+    //
+  }
+}
+// ソート
+(() => {
+  for(let num = 1; num <= form.effectBoxNum.value; num++){
+    setSortable(`effect${num}-`,`#effect-row${num} table tbody`,'tr');
+  }
+})();
+
+// 追加
+function addEffectBox(){
+  document.querySelector('#area-effects').append(createRow('effect','effectBoxNum',null,'BOX'));
+  const num = form.effectBoxNum.value;
+  setSortable(`effect${num}-`,`#effect-row${num} table tbody`);
+  setEffectNames();
+}
+// 削除
+function delEffectBox(){
+  if(delRow('effectBoxNum', '#area-effects > :is(div:last-child:not(.add-del-button),div:has(+ .add-del-button:last-child))',1)){
+    setEffectNames();
+  }
+}
+// ソート
+setSortable('effect','#area-effects','div');
 
 // 装飾品欄 ----------------------------------------
 function addAccessory(name){

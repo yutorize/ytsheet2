@@ -679,10 +679,10 @@ sub data_calc {
     }
     $eva += $lv ? $lv + int(($agi+$own_agi)/6) : 0;
     $def += $artisan;
-    
+
     $eva += $evasionModificationTotal;
     $def += $defenseModificationTotal;
-    
+
     $pc{"defenseTotal${i}Eva"} = $eva;
     $pc{"defenseTotal${i}Def"} = $def;
   }
@@ -725,7 +725,26 @@ sub data_calc {
     $pc{"part${_}HpTotal" } += $pc{"part${_}Hp" };
     $pc{"part${_}MpTotal" } += $pc{"part${_}Mp" };
   }
-
+  
+  ### 穢れ --------------------------------------------------
+  {
+    my %effects = map { $_->{name} => $_ } @set::effects;
+    foreach my $box (1 .. $pc{effectBoxNum}){
+      $pc{"effect${box}PtTotal"} = 0;
+      my $name = $pc{"effect${box}Name"};
+      my $freeMode = ($name =~ /^自由記入/) ? 1 : 0;
+      foreach my $num (1 .. $pc{"effect${box}Num"}){
+        next if ($num == 1 && $freeMode);
+        if($effects{$name}{calc}){
+          $pc{"effect${box}PtTotal"} += $pc{"effect${box}-${num}Pt$_"} foreach (@{$effects{$name}{calc}});
+        }
+      }
+      if($pc{"effect${box}Name"} eq '穢れ'){
+        $pc{"effect${box}PtTotal"} += $data::races{$pc{race}}{sin} || 0;
+        $pc{sin} = $pc{"effect${box}PtTotal"};
+      }
+    }
+  }
   ### グレード自動変更 --------------------------------------------------
   if (@set::grades){
     my $flag;
