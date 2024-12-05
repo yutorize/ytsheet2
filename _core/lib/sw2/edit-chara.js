@@ -520,6 +520,9 @@ function calcStt() {
     // 増強
     stt['add'+i[0]] = Number(form['sttAdd'+i[0]].value);
 
+    // 合計
+    stt['total'+i[1]] = stt[i[1]] + stt['add'+i[0]];
+
     // ボーナス
     document.getElementById(`stt-bonus-${i[1].toLowerCase()}-value`).textContent
       = bonus[i[1]]
@@ -1459,7 +1462,7 @@ function calcAttack() {
 
     document.getElementById(`attack-${eName}-str`).textContent
       = id == 'Fen' ? reqdStrHalf
-      : SET.class[name]?.accUnlock?.reqd ? stt[SET.class[name]?.accUnlock?.reqd]
+      : SET.class[name]?.accUnlock?.reqd ? stt['total'+SET.class[name]?.accUnlock?.reqd]
       : reqdStr;
     
     document.getElementById(`attack-${eName}-acc`).textContent
@@ -1507,7 +1510,7 @@ function calcWeapon() {
     // 必筋チェック
     const maxReqd
       = (className === "フェンサー") ? reqdStrHalf
-      : SET.class[className]?.accUnlock?.reqd ? stt[SET.class[className]?.accUnlock?.reqd]
+      : SET.class[className]?.accUnlock?.reqd ? stt['total'+SET.class[className]?.accUnlock?.reqd]
       : reqdStr;
     form["weapon"+i+"Reqd"].classList.toggle('error', weaponReqd > maxReqd);
     // 基礎命中
