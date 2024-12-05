@@ -422,6 +422,7 @@ sub checkType {
   if($text eq 'general'){ return '<i class="sk-general">一般</i>'; }
   if($text eq 'race'   ){ return '<i class="sk-race">種族</i>'; }
   if($text eq 'style'  ){ return '<i class="sk-style">流派</i>'; }
+  if($text eq 'faith'  ){ return '<i class="sk-faith">天恵</i>'; }
   if($text eq 'geis'   ){ return '<i class="sk-geis">誓約</i>'; }
   if($text eq 'add'    ){ return '<i class="sk-add">他スキル</i>'; }
   if($text eq 'power'  ){ return '<i class="sk-power">パワー<br>'.($pc{classMainLv1}).'</i>'; }

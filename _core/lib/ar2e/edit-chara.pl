@@ -722,7 +722,7 @@ print <<"HTML";
             </tr>
             <tr><td colspan="8">
               <div>
-                <b>取得元</b><select name="skill${num}Type" onchange="calcSkills();calcLvUpSkills();">@{[ option "skill${num}Type",'general|<一般>','race|<種族>','style|<流派>','geis|<誓約>','add|<他スキル>',@experienced ]}</select>
+                <b>取得元</b><select name="skill${num}Type" onchange="calcSkills();calcLvUpSkills();">@{[ option "skill${num}Type",'general|<一般>','race|<種族>','style|<流派>','faith|<天恵>','geis|<誓約>','add|<他スキル>',@experienced ]}</select>
                 <b>分類</b>@{[input "skill${num}Category",'','','list="list-category"']}
                 <b>効果</b>@{[input "skill${num}Note"]}
               </div>

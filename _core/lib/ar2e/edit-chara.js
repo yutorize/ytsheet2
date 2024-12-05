@@ -286,7 +286,7 @@ function checkClass(){
     const select = form[`skill${num}Type`];
     const selected = select.value;
     for(let i = select.options.length - 1; i > 0; i--) {
-      if(!select.options[i].value.match(/^(race|add|general|style|geis)$/)){ select.options[i].remove(); }
+      if(!select.options[i].value.match(/^(race|add|general|style|faith|geis)$/)){ select.options[i].remove(); }
     }
     if(classes[classMain]?.type === 'fate'){
       Array.from(new Set([
@@ -300,7 +300,7 @@ function checkClass(){
       });
     }
     let array = experienced.concat();
-    if(selected && !selected.match(/^(race|add|general|style|geis|power|another)$/)){ array.push(selected); }
+    if(selected && !selected.match(/^(race|add|general|style|faith|geis|power|another)$/)){ array.push(selected); }
     Array.from(new Set(array)).forEach(name => {
       const option = document.createElement('option');
       option.value = name;
@@ -479,6 +479,10 @@ function calcLvUpSkills(type){
               copyLvUpToSkill(lSkill, classMain);
               type = 'another';
             }
+            else if(lSkill.match(/^フェイス/)){ //天恵
+              copyLvUpToSkill(lSkill, classMain);
+              type = 'faith';
+            }
             else { //異才以外
               copyLvUpToSkill(lSkill, type);
               type = 'add';
@@ -544,6 +548,7 @@ function calcSkills(){
     bg.toggle('race',    type === 'race'   );
     bg.toggle('general', type === 'general');
     bg.toggle('style',   type === 'style'  );
+    bg.toggle('faith',   type === 'faith'  );
     bg.toggle('add',     type === 'add'    );
     bg.toggle('geis',    type === 'geis'   );
     bg.toggle('power',   type === 'power'  );
