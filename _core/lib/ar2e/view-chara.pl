@@ -220,10 +220,8 @@ if($::in{url}){
 }
 
 ### キャラクター名 --------------------------------------------------
-$SHEET->param(characterName => "<ruby>$pc{characterName}<rp>(</rp><rt>$pc{characterNameRuby}</rt><rp>)</rp></ruby>") if $pc{characterNameRuby};
-
-### 二つ名 --------------------------------------------------
-$SHEET->param(aka => "<ruby>$pc{aka}<rp>(</rp><rt>$pc{akaRuby}</rt><rp>)</rp></ruby>") if $pc{akaRuby};
+$SHEET->param(characterName => stylizeCharacterName $pc{characterName},$pc{characterNameRuby});
+$SHEET->param(aka => stylizeCharacterName $pc{aka},$pc{akaRuby});
 
 ### プレイヤー名 --------------------------------------------------
 if($set::playerlist){

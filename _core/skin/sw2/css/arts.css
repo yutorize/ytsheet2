@@ -428,11 +428,19 @@ article {
   padding: .2em .5em;
   text-align: left;
 }
-.data-magic > h3 {
+.data-magic > h3.name {
   border-width: 1px 0 0 1px;
   background: var(--arts-name-bg-color);
   color: #fff;
   font-size: 130%;
+  word-break: keep-all;
+  text-wrap: balance;
+  text-align-last: end;
+  overflow-wrap: break-word;
+  > div {
+    max-width: 100%;
+    width: max-content;
+  }
 }
 .data-magic dl.name {
   & dt {
@@ -443,14 +451,22 @@ article {
   & dd {
     display: flex;
     justify-content: space-between;
-    align-items: end;
+    align-items: center;
     flex-wrap: wrap;
     background: var(--arts-name-bg-color);
     color: #fff;
     font-size: 150%;
+    :is(#god,#school) & {
+      font-size: 130%;
+    }
     font-weight: bold;
+    word-break: keep-all;
+    text-wrap: balance;
+    text-align-last: end;
+    overflow-wrap: break-word;
   }
   & dd small {
+    align-self: end;
     display: block;
     font-size: 55%;
     margin-left: auto;

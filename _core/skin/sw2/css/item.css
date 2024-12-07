@@ -70,7 +70,6 @@ article {
   }
 
   > h1 {
-    flex-grow: 1;
     padding: .25em 1rem;
     text-align: left;
     font-size: 160%;
@@ -128,6 +127,11 @@ div.data {
     background: var(--box-base-bg-color);
     border-width: 1px 0 0 1px;
     border-style: solid;
+
+    > dd:not(:has(p)) {
+      word-break: auto-phrase;
+      overflow-wrap: break-word;
+    }
   }
   
   @media screen and (max-width:735px){

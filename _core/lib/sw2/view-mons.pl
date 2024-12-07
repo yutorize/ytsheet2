@@ -124,6 +124,11 @@ if($::in{url}){
   $SHEET->param(convertMode => 1);
   $SHEET->param(convertUrl => $::in{url});
 }
+
+### キャラクター名 --------------------------------------------------
+$SHEET->param(characterName => stylizeCharacterName $pc{characterName});
+$SHEET->param(monsterName => stylizeCharacterName $pc{monsterName});
+
 ### タグ --------------------------------------------------
 my @tags;
 foreach(split(/ /, $pc{tags})){
@@ -184,7 +189,7 @@ foreach (1 .. $pc{statusNum}){
   
   push(@status_row, {
     LV       => $pc{lvMin},
-    STYLE    => $pc{'status'.$_.'Style'},
+    STYLE    => ($pc{'status'.$_.'Style'} =~ s#[(（].+[）)]#<span class="part">$&</span>#r),
     ACCURACY => $pc{'status'.$_.'Accuracy'} // '―',
     DAMAGE   => $pc{'status'.$_.'Damage'  } // '―',
     EVASION  => $pc{'status'.$_.'Evasion' } // '―',
@@ -205,7 +210,7 @@ foreach my $lv (2 .. ($pc{lvMax}-$pc{lvMin}+1)){
 
     push(@status_row, {
       LV       => $lv+$pc{lvMin}-1,
-      STYLE    => $pc{'status'.$_.'Style'},
+      STYLE    => ($pc{'status'.$_.'Style'} =~ s#[(（].+[）)]#<span class="part">$&</span>#r),
       ACCURACY => $pc{'status'.$num.'Accuracy'} // '―',
       DAMAGE   => $pc{'status'.$num.'Damage'  } // '―',
       EVASION  => $pc{'status'.$num.'Evasion' } // '―',

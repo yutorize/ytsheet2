@@ -58,6 +58,7 @@ body {
   & td.lv {
     font-size: 1.15em;
     line-height: 1;
+    text-wrap: nowrap;
   }
   & td:is(.race, .rank) span.small {
     display: inline-block;
@@ -183,6 +184,9 @@ body {
   & td.summary {
     font-size: 1.2rem;
   }
+  & td.summary {
+    text-align: left;
+  }
   /* アイテムアイコン */
   .i-icon {
     width: 1em;
@@ -218,6 +222,7 @@ body {
   }
   & td.summary {
     font-size: 1.2rem;
+    text-align: left;
   }
 }
 

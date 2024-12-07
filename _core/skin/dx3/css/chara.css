@@ -119,8 +119,11 @@ body {
   grid-template-rows: max-content 1fr;
 }
 :is(#personal, #works-cover) dl dd {
+  min-width: 0;
   line-height: 1;
   align-self: center;
+  word-break: auto-phrase;
+  overflow-wrap: break-word;
 }
 
 /* Image */
@@ -307,12 +310,13 @@ body {
 }
 #lifepath table {
   width: 100%;
-  /* min-height: calc(100% - 1.4rem * 1.5); */
   border-style: solid hidden hidden;
   empty-cells: hide;
-}
-#lifepath table th:first-child {
-  width: 6.2em;
+  > colgroup {
+    col:nth-child(1) { width: 6.2em; }
+    col:nth-child(2) { width: 2.8em; }
+    col:nth-child(3) { width: auto; }
+  }
 }
 #lifepath table th.small,
 #lifepath table th.left {
@@ -347,7 +351,7 @@ body {
   font-size: 130%;
   font-weight: normal;
 }
-#lifepath table td.left {
+#lifepath table td.comment {
   padding: .1rem 0 .1rem .3rem;
   line-height: 1.4;
   font-size: 93%;
@@ -451,12 +455,24 @@ body {
 #lois table,
 #memory table {
   width: 100%;
+  > colgroup {
+    .relation{ width: 6.2em; } /* 関係 */
+    .name    { width:  14em; } /* 名前 */
+    .emo     { width: 4.8em; } /* 感情 */
+    .slash   { width: 1.2em; }
+    .color   { width:   2em; } /* 属性 */
+    .comment { width:  auto; } /* 備考 */
+    .state   { width:   3em; } /* 状態 */
+  }
 }
 #lois table thead th,
 #memory table thead th {
   padding-left: .5rem;
   text-align: left;
   vertical-align: bottom;
+}
+#lois table thead th.color {
+  padding-left: 0;
 }
 #lois table thead th.right {
   padding-right: .3rem;
@@ -471,33 +487,27 @@ body {
   font-family: var(--font-proportional);
   font-feature-settings: "palt";
 }
-#lois table tbody td {
-  &:nth-child(1) { width: 6.2em; } /* 関係 */
-  &:nth-child(2) { width: 14em;  }  /* 名前 */
-  &:nth-child(3) { width: 4.8em; } /* 感情 */
-  &:nth-child(4) { width: 1.2em; }
-  &:nth-child(5) { width: 4.8em; }
-  &:nth-child(6) { width: 2.6em; } /* 属性 */
-  &:nth-child(7) { width:  auto; } /* 備考 */
-  &:nth-child(8) { width: 1.5em; } /* S */
-  &:last-child { width: 3em; } /* 状態 */
-}
-@media screen and (max-width:735px){
-  #lois table tbody {
-    font-size: 90%;
-    
-    & td:nth-child(1) { width: 5.2em; } 
-    & td:nth-child(2) { width: 10em; }
-    & td:nth-child(3) { width: 4.8em; }
-    & td:nth-child(4) { width: 1.2em; }
-    & td:nth-child(5) { width: 4.8em; }
-    & td:nth-child(6) { width: 2.6em; }
+@media screen and (width <= 735px){
+  #lois table {
+    > colgroup {
+      font-size: 90%;
+      .relation{ width: 5.2em; } /* 関係 */
+      .name    { width:  10em; } /* 名前 */
+    }
+    > tbody {
+      font-size: 90%;
+      & td.comment { font-size: 90%; }
+    }
   }
 }
-@media screen and (min-width:1400px) and (max-width:1680px) {
-  #lois table tbody td {
-    &:nth-child(2) { width: 12em; }
-    &.left { font-size: 90%; }
+@media screen and (width >= 1400px) and (width <= 1680px) {
+  #lois table {
+    > colgroup {
+      .name    { width:  12em; } /* 名前 */
+    }
+    > tbody {
+      & td.comment { font-size: 90%; }
+    }
   }
 }
 #lois table tbody td.emo {
@@ -531,10 +541,7 @@ body {
 #lois table tbody td:nth-child(4) {
   border-style: solid hidden;
 }
-#lois table tbody td.left {
-  padding-left: .5em;
-}
-#lois table tbody td:last-child:not(.left) {
+#lois table tbody td.state {
   border-left: hidden;
 }
 #lois table tbody td span[data-state] {
@@ -583,12 +590,23 @@ body {
   display: none;
 }
 
+@media screen and (width <= 735px){
+  #memory table {
+    > colgroup {
+      font-size: 90%;
+      .relation{ width: 6.2em; } /* 関係 */
+      .name    { width:  14em; } /* 名前 */
+      .emo     { width: 4.5em; } /* 名前 */
+    }
+    > tbody {
+      font-size: 90%;
+      & td.comment { font-size: 90%; }
+    }
+  }
+}
 #memory table tbody td:nth-child(1) { width: 6.2em; border-right-width: 1px; } /* 関係 */
 #memory table tbody td:nth-child(2) { width:  14em; border-right-width: 1px; } /* 名前 */
 #memory table tbody td:nth-child(3) { width: 4.5em; border-right-width: 1px; } /* 感情 */
-#memory table tbody td.left {
-  padding-left: .5em;
-}
 
 #insanity dl {
   display: grid;
@@ -676,19 +694,19 @@ body {
   &:nth-child(10){ font-size: 90%; } /* 制限 */
 }
 
-#effect table tbody td.left {
+#effect table tbody td.note {
   padding-left: .5rem;
   display: none;
 }
 @media screen {
-  #effect table tbody:hover td.left {
+  #effect table tbody:hover td.note {
     display: table-cell;
   }
 }
-#effect[data-full-open="true"] table tbody td.left {
+#effect[data-full-open="true"] table tbody td.note {
   display: table-cell;
 }
-#effect table tbody td.left span.right {
+#effect table tbody td.note span.right {
   float: right;
   font-size: 90%;
 }
@@ -811,7 +829,7 @@ body {
     border-width: 0 0 1px;
     border-style: solid;
   }
-  #effect table tbody td.left {
+  #effect table tbody td.note {
     grid-row: 1; grid-column: 1 / span 9;
     border-width: 1px 0 0;
     border-style: solid;
@@ -832,17 +850,21 @@ body {
   }
 }
 
+#magic table {
+  > colgroup {
+    > col.name { width:  16em; } /* 名称 */
+    > col.type { width: 4.5em; } /* 種別 */
+    > col.exp  { width: 3.5em; } /* 経験点 */
+    > col.act  { width: 5.5em; } /* 発動値 */
+    > col.enc  { width: 3.4em; } /* 侵蝕値 */
+    > col.note { width:  auto; } /* 効果 */
+  }
+}
 #magic table thead th {
   font-size: 90%;
 }
-#magic table thead th:nth-child(1) { width:  16em; } /* 名称 */
-#magic table thead th:nth-child(2) { width: 4.5em; } /* 種別 */
-#magic table thead th:nth-child(3) { width: 3.5em; } /* 経験点 */
-#magic table thead th:nth-child(4) { width: 5.5em; } /* 発動値 */
-#magic table thead th:nth-child(5) { width: 3.4em; } /* 侵蝕値 */
-#magic table thead th:nth-child(6) { width: auto; } /* 効果 */
-
 #magic table tbody td:nth-child(1) { font-weight: bold; } /* 名称 */
+#magic table tbody td.note { padding-left: .5rem; }
 
 
 /* Combos */
@@ -879,6 +901,9 @@ body {
   border-width: 0 0 1px;
   border-style: solid;
   background: none;
+  font-family: var(--font-proportional);
+  word-break: auto-phrase;
+  overflow-wrap: break-word;
 }
 #combo .combo-table dl {
   > dt {
@@ -1122,8 +1147,7 @@ body {
   & span.handle::before {
     content: ':::';
   }
-  &.left {
-    padding-left: .3rem;
+  &.note {
     font-size: 90%;
   }
 }
@@ -1144,9 +1168,6 @@ body {
 }
 
 /* Exps */
-#exps table {
-  table-layout: fixed;
-}
 #exps h2:not(:first-child) {
   margin-top: 0;
 }
@@ -1196,7 +1217,6 @@ body {
 #enc-bonus table {
   border-top: 1px;
   border-bottom: hidden;
-  table-layout: fixed;
 
   & col.current {
     background-color: hsla(340,100%,50%,0.3);

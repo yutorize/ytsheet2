@@ -461,28 +461,26 @@ dl#level {
   justify-content: space-between;
   
   margin-top: var(--box-v-gap);
+  gap: var(--box-v-gap) var(--box-h-gap);
   line-height: 1.8;
 
   > * {
     flex-basis: 30%;
     flex-grow: 1;
-    margin-left: var(--box-h-gap);
-    &:first-child {
-      margin-left: 0px;
-    }
+    flex-shrink: 0;
+    min-width: 0;
+    overflow-wrap: break-word;
   }
   & .box + .box {
     margin-top: var(--box-v-gap);
   }
   @media screen and (max-width:735px){
-    & {
-      flex-wrap: wrap;
-    }
+    flex-wrap: wrap;
+    gap: 0 var(--box-h-gap);
     > * {
       flex-basis: calc(50% - 1rem);
       &:last-child {
         margin-top: var(--box-v-gap);
-        margin-left: 0px;
       }
     }
   }
@@ -759,12 +757,15 @@ dl#level {
   align-self: end;
 }
 #magic-power table {
+  table-layout: auto;
   margin-top: -1.2em;
   
   & tbody td:nth-child(1),
   & tbody td:nth-child(2) {
     padding-left : .2em;
     padding-right: .2em;
+    word-break: keep-all;
+    line-height: 1;
   }
   & tbody td:nth-child(2) {
     white-space: nowrap;
@@ -932,9 +933,9 @@ dl#level {
     &:nth-child(9) { width: auto; } /* 備考 */
   }
 }
-#weapons tbody td:last-child.left { /* 備考 */
-  padding-left: .3em;
+#weapons tbody td:last-child.note { /* 備考 */
   font-size: 90%;
+  padding-left: .1em;
   @media screen and (width <= 735px){
     padding-left: 1px;
     font-size: 80%;
@@ -967,8 +968,6 @@ dl#level {
   &.note { width:  auto; } /* 備考 */
 }
 #armours td.note {
-  padding-left: .3em;
-  text-align: left;
   font-size: 90%;
 }
 #armours tr.defense-total {

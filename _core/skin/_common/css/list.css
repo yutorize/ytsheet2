@@ -178,15 +178,6 @@ form#form-search {
 .list table tr th {
   display: grid;
 }
-.list table tr td {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  
-  &:not(.name) {
-    flex-wrap: wrap;
-  }
-}
 .list table th > a,
 .list table th > span {
   display: grid;
@@ -227,32 +218,35 @@ form#form-search {
   background-position: top left;
 }
 .list table td {
+  min-width: 0;
   padding: 2.5px 5px 2.5px;
   text-align: center;
+  align-content: center;
+  word-break: auto-phrase;
+  overflow-wrap: break-word;
 }
 .list table td.name {
   height: 100%;
   padding: 0;
   line-height: 1;
   & a {
-    flex-grow: 1;
-    
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    height: calc(100% + 5px);
-    
+    display: block;
+    height: 100%;
     font-size: 1.1em;
     font-weight: bold;
+    text-align: center;
+    align-content: center;
     
     &:hover {
       background: rgba(180,200,255,0.1);
     }
+
+    > span {
+      display: inline-block;
+    }
   }
 }
 .list table td:is(.player, .author) {
-  word-break: break-all;
   font-size: 90%;
 }
 .list table td span[data-gender] {
@@ -296,9 +290,11 @@ form#form-search {
   }
 }
 .list table td.tags {
-  padding: 0 .2em 0;
+  display: flex;
   flex-wrap: wrap;
+  padding: 0 .2em 0;
   justify-content: start;
+  align-items: center;
   border-top: 1px solid #7775;
   &:empty {
     display: none;

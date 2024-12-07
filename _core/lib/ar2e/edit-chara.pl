@@ -829,7 +829,6 @@ HTML
 HTML
   }
   print <<"HTML";
-                <td>
               <tr>
                 <td colspan="3"><textarea name="armament${id}Note" placeholder="備考">$pc{"armament${id}Note"}</textarea>
               </tr>

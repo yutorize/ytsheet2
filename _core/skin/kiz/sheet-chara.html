@@ -181,63 +181,63 @@
               <th>性別<td><TMPL_VAR gender>
             <tr>
               <th>過去
-              <td colspan="3" class="left"><TMPL_VAR past>
+              <td colspan="3" class="comment"><TMPL_VAR past>
             <tr>
               <th>
                 <TMPL_IF classH>遭遇</TMPL_IF>
                 <TMPL_IF classO>経緯</TMPL_IF>
-              <td colspan="3" class="left"><TMPL_VAR background>
+              <td colspan="3" class="comment"><TMPL_VAR background>
             <tr>
               <th>外見の特徴
-              <td colspan="3" class="left"><TMPL_VAR appearance>
+              <td colspan="3" class="comment"><TMPL_VAR appearance>
             <tr>
               <th>
                 <TMPL_IF classH>ケージ</TMPL_IF>
                 <TMPL_IF classO>住居</TMPL_IF>
               
-              <td colspan="3" class="left"><TMPL_VAR dwelling>
+              <td colspan="3" class="comment"><TMPL_VAR dwelling>
             <tr>
               <th>好きなもの
-              <td colspan="3" class="left"><TMPL_VAR like>
+              <td colspan="3" class="comment"><TMPL_VAR like>
             <tr>
               <th>嫌いなもの
-              <td colspan="3" class="left"><TMPL_VAR dislike>
+              <td colspan="3" class="comment"><TMPL_VAR dislike>
             <tr>
               <th>得意なこと
-              <td colspan="3" class="left"><TMPL_VAR good>
+              <td colspan="3" class="comment"><TMPL_VAR good>
             <tr>
               <th>苦手なこと
-              <td colspan="3" class="left"><TMPL_VAR notgood>
+              <td colspan="3" class="comment"><TMPL_VAR notgood>
             <tr>
               <th>喪失
-              <td colspan="3" class="left"><TMPL_VAR missing>
+              <td colspan="3" class="comment"><TMPL_VAR missing>
             <tr>
               <th><span class="thin">
                 <TMPL_IF classH>リミッターの影響</TMPL_IF>
                 <TMPL_IF classO>ペアリングの副作用</TMPL_IF>
               </span>
-              <td colspan="3" class="left"><TMPL_VAR sideeffect>
+              <td colspan="3" class="comment"><TMPL_VAR sideeffect>
             <tr>
               <th>
                 <TMPL_IF classH>決意</TMPL_IF>
                 <TMPL_IF classO>使命</TMPL_IF>
-              <td colspan="3" class="left"><TMPL_VAR resolution>
+              <td colspan="3" class="comment"><TMPL_VAR resolution>
             <TMPL_IF makeTypeNormal><tr>
               <th>所属
-              <td colspan="3" class="left"><TMPL_VAR belong>
+              <td colspan="3" class="comment"><TMPL_VAR belong>
             </TMPL_IF>
             <tr>
               <th>おもな武器
-              <td colspan="3" class="left"><TMPL_VAR weapon>
+              <td colspan="3" class="comment"><TMPL_VAR weapon>
             <TMPL_IF makeTypeGospel><tr>
               <th>主人(テンシ)
-              <td colspan="3" class="left"><TMPL_VAR master>
+              <td colspan="3" class="comment"><TMPL_VAR master>
             <tr>
               <th>テンシの恩恵
-              <td colspan="3" class="left"><TMPL_VAR benefit>
+              <td colspan="3" class="comment"><TMPL_VAR benefit>
             <tr>
               <th>経緯<span class="small thiner">(ゴスペルバレット)</span>
-              <td colspan="3" class="left"><TMPL_VAR backgroundGB>
+              <td colspan="3" class="comment"><TMPL_VAR backgroundGB>
             <tr>
               <th><span class="thin">イルマーカー:位置</span><td><TMPL_VAR illMarkerPosition>
               <th>主人の感情１<td><TMPL_VAR masterEmotion1>
@@ -328,8 +328,8 @@
           <thead>
             <tr>
               <th>
-              <th>物・人・場所など
-              <th>感情・思い出など
+              <th class="left">物・人・場所など
+              <th class="left">感情・思い出など
               <th>ヒビ
               <th>ワレ
             </tr>
@@ -337,7 +337,7 @@
             <TMPL_LOOP Kizuna><tr class="<TMPL_VAR HIBI><TMPL_VAR WARE>">
               <td>
               <td class="name"><div><TMPL_VAR NAME></div>
-              <td class="left"><div><TMPL_VAR NOTE></div>
+              <td class="comment"><div><TMPL_VAR NOTE></div>
               <td><TMPL_IF HIBI>✔</TMPL_IF>
               <td><TMPL_IF WARE>✔</TMPL_IF>
             </TMPL_LOOP>
@@ -381,7 +381,7 @@
                 <td><TMPL_VAR D-TIMING>
                 <td><TMPL_VAR D-TARGET>
                 <td><TMPL_VAR D-LIMITED>
-                <td class="left"><TMPL_VAR D-NOTE>
+                <td class="note"><TMPL_VAR D-NOTE>
               <tr>
                 <th rowspan="2">決戦
                 <th>タイミング
@@ -394,7 +394,7 @@
                 <td><TMPL_VAR B-TARGET>
                 <td><TMPL_VAR B-COST>
                 <td><TMPL_VAR B-LIMITED>
-                <td class="left"><TMPL_VAR B-NOTE>
+                <td class="note"><TMPL_VAR B-NOTE>
               </tr>
             </TMPL_LOOP>
           </table>

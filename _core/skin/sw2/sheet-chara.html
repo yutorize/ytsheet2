@@ -410,12 +410,12 @@
                 </TMPL_UNLESS>
                 <td><TMPL_VAR USAGE>
                 <td><TMPL_VAR REQD>
-                <td><TMPL_IF ACC><TMPL_VAR ACC>=</TMPL_IF><b><TMPL_VAR ACCTOTAL></b>
+                <td><TMPL_IF ACC><span class="small"><TMPL_VAR ACC>=</span></TMPL_IF><b><TMPL_VAR ACCTOTAL></b>
                 <td><TMPL_VAR RATE>
                 <td><TMPL_VAR CRIT>
-                <td><TMPL_IF DMG><TMPL_VAR DMG>=</TMPL_IF><b><TMPL_VAR DMGTOTAL></b>
+                <td><TMPL_IF DMG><span class="small"><TMPL_VAR DMG>=</span></TMPL_IF><b><TMPL_VAR DMGTOTAL></b>
                 <td><TMPL_IF OWN>✔</TMPL_IF>
-                <TMPL_UNLESS NOTEOFF><td class="left" rowspan="<TMPL_VAR NOTESPAN>">
+                <TMPL_UNLESS NOTEOFF><td class="note" rowspan="<TMPL_VAR NOTESPAN>">
                   <span class="item-name"><TMPL_VAR NOTE></span>
                 </TMPL_UNLESS>
             </TMPL_LOOP></tbody>
@@ -491,7 +491,7 @@
                 <td class="def "><TMPL_IF DEFMOD><span class="small">+<TMPL_VAR DEFMOD>=</span></TMPL_IF><TMPL_VAR DEF>
                 <td class="hp  "><TMPL_IF HPMOD ><span class="small">+<TMPL_VAR HPMOD >=</span></TMPL_IF><TMPL_VAR HP >
                 <td class="mp  "><TMPL_IF MPMOD ><span class="small">+<TMPL_VAR MPMOD >=</span></TMPL_IF><TMPL_VAR MP >
-                <td class="note left"><TMPL_VAR NOTE>
+                <td class="note"><TMPL_VAR NOTE>
               </TMPL_LOOP>
             </tbody>
           </table>

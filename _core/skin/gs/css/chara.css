@@ -601,7 +601,7 @@ body {
 #area-equipment tbody td:is(.type, .usage) > span {
   white-space: nowrap;
 }
-#area-equipment tbody td.note.left { padding-left: .3em; font-size: .9em; }
+#area-equipment tbody td.note { font-size: .9em; }
 
 @media screen and (min-width:1400px){
   #area-equipment > .box:first-child {
@@ -741,8 +741,7 @@ body {
 
 /* // Area-Skills
 ---------------------------------------------------------------------------------------------------- */
-#area-skills tbody td.note.left {
-  padding-left: .3em;
+#area-skills tbody td.note {
   font-size: 90%;
 }
 #area-skills tbody td.page {
@@ -771,6 +770,7 @@ body {
   margin-top: var(--box-v-gap);
 }
 #spell-cast table {
+  table-layout: auto;
   border-top-width: 1px;
   border-top-style: solid;
 }

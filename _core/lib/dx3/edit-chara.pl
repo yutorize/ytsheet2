@@ -554,7 +554,17 @@ print <<"HTML";
       <details class="box" id="lois" $open{lois} style="position:relative">
         <summary class="in-toc">ロイス</summary>
         <table class="edit-table no-border-cells" id="lois-table">
-          <colgroup><col><col><col><col><col><col><col><col></colgroup>
+          <colgroup>
+           <col class="relation">
+           <col class="name">
+           <col class="emo">
+           <col class="slash">
+           <col class="emo">
+           <col class="color">
+           <col class="note">
+           <col class="sperior">
+           <col class="state">
+          </colgroup>
           <thead>
             <tr>
               <th>関係
@@ -570,15 +580,15 @@ foreach my $num (1 .. 7) {
 if(!$pc{"lois${num}State"}){ $pc{"lois${num}State"} = 'ロイス' }
 print <<"HTML";
             <tr id="lois${num}">
-              <td><span class="handle"></span>@{[input "lois${num}Relation",'','','list="list-lois-relation"']}
-              <td>@{[input "lois${num}Name",'','encroachBonusType']}
-              <td class="emo">@{[input "lois${num}EmoPosiCheck",'checkbox',"emoP($num)"]}@{[input "lois${num}EmoPosi",'','','list="list-emotionP"']}
-              <td>／
-              <td class="emo">@{[input "lois${num}EmoNegaCheck",'checkbox',"emoN($num)"]}@{[input "lois${num}EmoNega",'','','list="list-emotionN"']}
-              <td>@{[input "lois${num}Color",'',"changeLoisColor($num)",'list="list-lois-color"']}
-              <td>@{[input "lois${num}Note"]}
-              <td>@{[input "lois${num}S",'checkbox',"sLois($num)"]}
-              <td onclick="changeLoisState(this.parentNode.id)"><span id="lois${num}-state" data-state="$pc{"lois${num}State"}"></span>@{[input "lois${num}State",'hidden']}
+              <td class="relation"><span class="handle"></span>@{[input "lois${num}Relation",'','','list="list-lois-relation"']}
+              <td class="name    ">@{[input "lois${num}Name",'','encroachBonusType']}
+              <td class="emo     ">@{[input "lois${num}EmoPosiCheck",'checkbox',"emoP($num)"]}@{[input "lois${num}EmoPosi",'','','list="list-emotionP"']}
+              <td class="slash   ">／
+              <td class="emo     ">@{[input "lois${num}EmoNegaCheck",'checkbox',"emoN($num)"]}@{[input "lois${num}EmoNega",'','','list="list-emotionN"']}
+              <td class="color   ">@{[input "lois${num}Color",'',"changeLoisColor($num)",'list="list-lois-color"']}
+              <td class="note    ">@{[input "lois${num}Note"]}
+              <td class="sperior ">@{[input "lois${num}S",'checkbox',"sLois($num)"]}
+              <td class="state   " onclick="changeLoisState(this.parentNode.id)"><span id="lois${num}-state" data-state="$pc{"lois${num}State"}"></span>@{[input "lois${num}State",'hidden']}
 HTML
 }
 print <<"HTML";

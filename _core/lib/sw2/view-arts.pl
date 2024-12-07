@@ -177,6 +177,7 @@ $SHEET->param(Tags => \@tags);
   if($pc{magicActionTypeMinor}  ){ $icon .= '<i class="s-icon minor"><span class="raw">[補]</span></i>' }
   if($pc{magicActionTypeSetup}  ){ $icon .= '<i class="s-icon setup"><span class="raw">[準]</span></i>' }
   $SHEET->param(magicIcon => $icon);
+  $SHEET->param(magicName => stylizeCharacterName $pc{magicName});
   $SHEET->param(magicTarget   => textMagic($pc{magicTarget}));
   $SHEET->param(magicDuration => textMagic($pc{magicDuration}));
 
@@ -252,7 +253,7 @@ $SHEET->param(Tags => \@tags);
   }
 }
 sub textMagic {
-  $_[0] =~ s#／#／<br>#;
+  $_[0] =~ s#／#／<wbr>#;
   return $_[0];
 }
 sub textSongPoint {
@@ -272,7 +273,7 @@ foreach my $lv (2,4,7,10,13){
   if($pc{'godMagic'.$lv.'ActionTypeSetup'}){ $icon .= '<i class="s-icon setup">△</i>' }
   $pc{'godMagic'.$lv.'Effect'} =~ s#<h2>(.+?)</h2>#</dd><dt><span class="center">$1</span></dt><dd class="box">#gi;
   push(@magics, {
-    "NAME"     => $pc{'godMagic'.$lv.'Name'},
+    "NAME"     => stylizeCharacterName($pc{'godMagic'.$lv.'Name'}),
     "LEVEL"    => $lv,
     "ICON"     => $icon,
     "COST"     => $pc{'godMagic'.$lv.'Cost'},
@@ -323,7 +324,7 @@ foreach my $num (1..$pc{schoolArtsNum}){
   if($pc{'schoolArts'.$num.'ActionTypeSetup'}){ $icon .= '<i class="s-icon setup">△</i>' }
   $pc{'schoolArts'.$num.'Effect'} =~ s#<h2>(.+?)</h2>#</dd><dt><span class="center">$1</span></dt><dd class="box">#gi;
   push(@arts, {
-    "NAME"     => $pc{'schoolArts'.$num.'Name'},
+    "NAME"     => stylizeCharacterName($pc{'schoolArts'.$num.'Name'}),
     "ICON"     => $icon,
     "COST"     => $pc{'schoolArts'.$num.'Cost'},
     "TYPE"     => $pc{'schoolArts'.$num.'Type'},
@@ -348,7 +349,7 @@ foreach my $num (1..$pc{schoolMagicNum}){
   if($pc{'schoolMagic'.$num.'ActionTypeSetup'}){ $icon .= '<i class="s-icon setup">△</i>' }
   $pc{'schoolMagic'.$num.'Effect'} =~ s#<h2>(.+?)</h2>#</dd><dt><span class="center">$1</span></dt><dd class="box">#gi;
   push(@schoolmagics, {
-    "NAME"     => $pc{'schoolMagic'.$num.'Name'},
+    "NAME"     => stylizeCharacterName($pc{'schoolMagic'.$num.'Name'}),
     "LEVEL"    => $pc{'schoolMagic'.$num.'Lv'},
     "ICON"     => $icon,
     "A-COST"   => $pc{'schoolMagic'.$num.'AcquireCost'},

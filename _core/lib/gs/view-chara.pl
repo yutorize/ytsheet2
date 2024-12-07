@@ -135,6 +135,10 @@ if($::in{url}){
   $SHEET->param(convertMode => 1);
   $SHEET->param(convertUrl => $::in{url});
 }
+
+### キャラクター名 --------------------------------------------------
+$SHEET->param(characterName => stylizeCharacterName $pc{characterName});
+
 ### プレイヤー名 --------------------------------------------------
 if($set::playerlist){
   my $pl_id = (split(/-/, $::in{id}))[0];

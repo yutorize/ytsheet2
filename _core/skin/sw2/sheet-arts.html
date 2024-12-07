@@ -104,7 +104,7 @@
           <dl class="name color-set"><dt><TMPL_VAR magicLevel><dd><div><TMPL_VAR magicIcon>【<TMPL_VAR magicName>】</div><small><TMPL_VAR magicNameNotes></small></dl>
           <TMPL_IF magicCostOn     ><dl class="cost     "><dt>消費         <dd><TMPL_VAR magicCost></dl></TMPL_IF>
           <TMPL_IF magicTargetOn   ><dl class="target   "><dt>対象         <dd><TMPL_VAR magicTarget></dl></TMPL_IF>
-          <TMPL_IF magicRangeOn    ><dl class="range    "><dt>射程/<br>形状<dd><TMPL_VAR magicRange>／<TMPL_VAR magicForm></dl></TMPL_IF>
+          <TMPL_IF magicRangeOn    ><dl class="range    "><dt>射程/<br>形状<dd><TMPL_VAR magicRange>／<wbr><TMPL_VAR magicForm></dl></TMPL_IF>
           <TMPL_IF magicDurationOn ><dl class="duration "><dt>時間         <dd><TMPL_VAR magicDuration></dl></TMPL_IF>
           <TMPL_IF magicResistOn   ><dl class="resist   "><dt>抵抗         <dd><TMPL_VAR magicResist></dl></TMPL_IF>
           <TMPL_IF magicElementOn  ><dl class="element  "><dt>属性         <dd><TMPL_VAR magicElement DEFAULT="―"></dl></TMPL_IF>
@@ -238,7 +238,7 @@
           <TMPL_IF schoolArtsNote><div class="box"><p><TMPL_VAR schoolArtsNote></p></div></TMPL_IF>
           <TMPL_LOOP ArtsData>
           <div class="data-magic data-arts">
-            <h3 class="name    "><TMPL_VAR ICON>《<TMPL_VAR NAME>》</h3>
+            <h3 class="name    "><div><TMPL_VAR ICON>《<TMPL_VAR NAME>》</div></h3>
             <dl class="cost    "><dt><span>必要名誉点</span><dd><TMPL_VAR COST></dl>
             <dl class="type    "><dt>タイプ    <dd><TMPL_VAR TYPE></dl>
             <dl class="premise "><dt>前提      <dd><TMPL_VAR PREMISE></dl>

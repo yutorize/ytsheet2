@@ -256,17 +256,17 @@
                 <tr>
                   <th>出自表／<TMPL_VAR lifepathBirthType>
                 <tr>
-                  <td><div><TMPL_VAR lifepathBirth></div>
+                  <td class="comment"><div><TMPL_VAR lifepathBirth></div>
               <tbody>
                 <tr>
                   <th>経験表1／<TMPL_VAR lifepathExp1Type>
                 <tr>
-                  <td><div><TMPL_VAR lifepathExp1></div>
+                  <td class="comment"><div><TMPL_VAR lifepathExp1></div>
               <tbody>
                 <tr>
                   <th>経験表2／<TMPL_VAR lifepathExp2Type>
                 <tr>
-                  <td><div><TMPL_VAR lifepathExp2></div>
+                  <td class="comment"><div><TMPL_VAR lifepathExp2></div>
             </table>
           </section>
 
@@ -276,13 +276,13 @@
               <tbody>
                 <tr>
                   <th>目的
-                  <td><div><TMPL_VAR beliefPurpose></div>
+                  <td class="comment"><div><TMPL_VAR beliefPurpose></div>
                 <tr>
                   <th>禁忌
-                  <td><div><TMPL_VAR beliefTaboo></div>
+                  <td class="comment"><div><TMPL_VAR beliefTaboo></div>
                 <tr>
                   <th><span class="thin">趣味嗜好</span>
-                  <td><div><TMPL_VAR beliefQuirk></div>
+                  <td class="comment"><div><TMPL_VAR beliefQuirk></div>
             </table>
           </section>
 
@@ -504,7 +504,7 @@
                 <td class="cost  "><TMPL_VAR COST>
                 <td class="mc    "><TMPL_VAR MC>
               <tr>
-                <td class="note left" colspan="9"><TMPL_VAR NOTE>
+                <td class="note" colspan="9"><div><TMPL_VAR NOTE></div>
             </TMPL_LOOP>
           </table>
         </section>
@@ -547,7 +547,7 @@
                 <td class="dfclty"><TMPL_VAR DFCLTY>
                 <td class="cost  "><TMPL_VAR COST>
               <tr>
-                <td class="note left" colspan="8"><TMPL_VAR NOTE>
+                <td class="note" colspan="8"><TMPL_VAR NOTE>
             </TMPL_LOOP>
           </table>
         </section>
@@ -596,7 +596,7 @@
                 <td class="cost    "><TMPL_VAR COST>
                 <td class="mc      "><TMPL_VAR MC>
               <tr>
-                <td class="note left" colspan="10"><TMPL_VAR NOTE>
+                <td class="note" colspan="10"><TMPL_VAR NOTE>
             </TMPL_LOOP>
           </table>
         </section></TMPL_IF>
@@ -638,33 +638,33 @@
             </colgroup>
             <thead>
               <tr>
-                <th class="category ">
-                <th class="name     ">
-                <th class="type     ">種別
-                <th class="weight   ">重量
-                <th class="skill    ">技能
-                <th class="acc      "><span class="small">命中<br>修正</span>
-                <th class="atk      ">攻撃力
-                <th class="init     "><span class="small">行動<br>修正</span>
-                <th class="move     "><span class="small">移動<br>修正</span>
-                <th class="range    ">射程
-                <th class="guard    "><span class="small">ガード<br>値</span>
+                <th class="category">
+                <th class="name    ">
+                <th class="type    ">種別
+                <th class="weight  ">重量
+                <th class="skill   ">技能
+                <th class="acc     "><span class="small">命中<br>修正</span>
+                <th class="atk     ">攻撃力
+                <th class="init    "><span class="small">行動<br>修正</span>
+                <th class="move    "><span class="small">移動<br>修正</span>
+                <th class="range   ">射程
+                <th class="guard   "><span class="small">ガード<br>値</span>
                 <th class="note left">効果
             </thead>
             <tbody>
               <TMPL_LOOP Weapons><tr id="weapon-row-<TMPL_VAR ID>">
                 <th class="category"><TMPL_VAR CATEGORY>
-                <td class="name     "><TMPL_VAR NAME>
-                <td class="type     "><TMPL_VAR TYPE>
-                <td class="weight   "><TMPL_VAR WEIGHT>
-                <td class="skill    "><TMPL_VAR SKILL>
-                <td class="acc      "><TMPL_VAR ACC>
-                <td class="atk      "><TMPL_VAR ATK></td>
-                <td class="init     "><TMPL_VAR INIT>
-                <td class="move     "><TMPL_VAR MOVE>
-                <td class="range    "><TMPL_VAR RANGE>
-                <td class="guard    "><TMPL_VAR GUARD>
-                <td class="note left"><TMPL_VAR NOTE>
+                <td class="name    "><TMPL_VAR NAME>
+                <td class="type    "><TMPL_VAR TYPE>
+                <td class="weight  "><TMPL_VAR WEIGHT>
+                <td class="skill   "><TMPL_VAR SKILL>
+                <td class="acc     "><TMPL_VAR ACC>
+                <td class="atk     "><TMPL_VAR ATK></td>
+                <td class="init    "><TMPL_VAR INIT>
+                <td class="move    "><TMPL_VAR MOVE>
+                <td class="range   "><TMPL_VAR RANGE>
+                <td class="guard   "><TMPL_VAR GUARD>
+                <td class="note    "><TMPL_VAR NOTE>
               </TMPL_LOOP>
           </table>
         </section>
@@ -698,14 +698,14 @@
             <tbody>
               <TMPL_LOOP Armors><tr id="armor-row-<TMPL_VAR ID>">
                 <th class="category"><TMPL_VAR CATEGORY>
-                <td class="name     "><TMPL_VAR NAME>
-                <td class="type     "><TMPL_VAR TYPE>
-                <td class="weight   "><TMPL_VAR WEIGHT>
-                <td class="eva      "><TMPL_VAR EVA>
-                <td class="def      "><TMPL_VAR DEF>
-                <td class="init     "><TMPL_VAR INIT>
-                <td class="move     "><TMPL_VAR MOVE>
-                <td class="note left"><TMPL_VAR NOTE>
+                <td class="name    "><TMPL_VAR NAME>
+                <td class="type    "><TMPL_VAR TYPE>
+                <td class="weight  "><TMPL_VAR WEIGHT>
+                <td class="eva     "><TMPL_VAR EVA>
+                <td class="def     "><TMPL_VAR DEF>
+                <td class="init    "><TMPL_VAR INIT>
+                <td class="move    "><TMPL_VAR MOVE>
+                <td class="note    "><TMPL_VAR NOTE>
               </TMPL_LOOP>
           </table>
         </section>
@@ -743,7 +743,7 @@
                 <td class="def      "><TMPL_VAR DEF>
                 <td class="init     "><TMPL_VAR INIT>
                 <td class="move     "><TMPL_VAR MOVE>
-                <td class="note left"><TMPL_VAR NOTE>
+                <td class="note     "><TMPL_VAR NOTE>
               </TMPL_LOOP>
           </table>
         </section></TMPL_IF>
@@ -769,7 +769,7 @@
                 <td class="name    "><TMPL_VAR NAME>
                 <td class="weight  "><TMPL_VAR WEIGHT>
                 <td class="quantity"><TMPL_VAR QUANTITY>
-                <td class="note left"><TMPL_VAR NOTE>
+                <td class="note    "><TMPL_VAR NOTE>
               </TMPL_LOOP>
               <tr>
                 <th class="small">その他アイテム重量合計
@@ -832,7 +832,7 @@
                 <td class="defs  "><TMPL_VAR DEFSHOCK>
                 <td class="defi  "><TMPL_VAR DEFINTERNAL>
               <TMPL_IF NOTE><tr>
-                <td colspan="15" class="left"><TMPL_VAR NOTE>
+                <td colspan="15" class="note"><TMPL_VAR NOTE>
               </TMPL_IF></TMPL_LOOP>
           </table>
         </section></TMPL_IF>

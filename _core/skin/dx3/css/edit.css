@@ -135,14 +135,17 @@ body:not(.mode-crc) .crc-only {
 #lifepath {
   margin-top: var(--box-v-gap);
 }
+#lifepath table {
+  table-layout: auto;
+  & th:nth-child(1) { width: 5em; }
+  & td:nth-child(2) { width: 6em; }
+  & th:nth-child(3) { width: 4em; }
+  & td.center { width: 4em; }
+  & td:last-child   { width: auto; }
+}
 #lifepath table tbody tr:before {
   display: none;
 }
-#lifepath table th:nth-child(1) { width: 5em; }
-#lifepath table td:nth-child(2) { width: 6em; }
-#lifepath table th:nth-child(3) { width: 4em; }
-#lifepath table td.center { width: 4em; }
-#lifepath table td:last-child   { width: auto; }
 #lifepath table th.small {
   border-bottom-style: solid;
 }
@@ -276,41 +279,46 @@ body:not(.mode-crc) .crc-only {
 }
 
 #lois table {
-}
-#lois table thead th.right.small {
-  padding-right: 0;
+  > colgroup {
+    .relation{ width: 6.2em; } /* 関係 */
+    .name    { width:  12em; } /* 名前 */
+    .emo     { width:   6em; } /* 感情 */
+    .slash   { width: 1.2em; }
+    .color   { width:   3em; } /* 属性 */
+    .note    { width:  auto; } /* 備考 */
+    .sperior { width: 1.4em; } /* 状態 */
+    .state   { width:   3em; } /* 状態 */
+  }
+  > thead th.right.small {
+    padding-right: 0;
+  }
 }
 #lois table tbody tr:nth-child(4){
   border-top-width: 2px;
 }
-#lois table tbody tr td:first-child {
+#lois table tbody td.relation {
   white-space: nowrap;
-}
-#lois table tbody tr td .handle {
-  display: inline-block;
-  width: 1.4em;
-  text-align: center;
-}
-#lois table tbody tr td .handle + input {
-  width: calc(100% - 1.4em - .2rem);
+  .handle {
+    display: inline-block;
+    width: 1.4em;
+    text-align: center;
+  }
+  .handle + input {
+    width: calc(100% - 1.4em - .2rem);
+  }
 }
 #lois table tbody td.emo {
-  width: 6em;
-  padding-left: .25em
-}
-#lois table tbody td.emo::before {
-  display: none;
-}
-#lois table input[type=checkbox] {
-  margin: 0;
-  transform: scale(1.5) translateY(.1em);
-}
-#lois table input[type=checkbox] + input {
-  width: calc(100% - 1.6em);
-  margin-left: .3em;
-}
-#lois table input[name$="Color"] {
-  width: 3.5em;
+  padding-left: .25em;
+  white-space: nowrap;
+  &::before { display: none; }
+  > input[type=checkbox] {
+    margin: 0;
+    transform: scale(1.5) translateY(.1em);
+  }
+  > input[type=checkbox] + input {
+    width: calc(100% - 1.4em);
+    margin-left: .3em;
+  }
 }
 #lois table tbody td span[data-state] {
   cursor: pointer;
@@ -324,7 +332,9 @@ body:not(.mode-crc) .crc-only {
 #lois .lois-reset-buttons button {
   padding-bottom: 4px;
 }
-
+#memory table {
+  table-layout: auto;
+}
 #memory table tbody td {
   &:nth-child(1) { width: 1.5em; border-right-width: 1px; } /* ✔ */
   &:nth-child(2) { width: 6.2em; border-right-width: 1px; } /* 関係 */
@@ -380,6 +390,7 @@ body:not(.mode-crc) .crc-only {
   margin-top: var(--box-v-gap);
 }
 #effect table {
+  table-layout: auto;
 }
 #effect table thead th:nth-child(1) { width: 1.4em; }
 #effect table thead th:nth-child(2) { width:  auto; } /* 名称 */

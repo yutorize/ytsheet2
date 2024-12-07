@@ -99,7 +99,10 @@ if($::in{url}){
   $SHEET->param(convertUrl => $::in{url});
 }
 
-### 価格
+### アイテム名 --------------------------------------------------
+$SHEET->param(itemName => stylizeCharacterName $pc{itemName});
+
+### 価格 --------------------------------------------------
 $SHEET->param(price => commify $pc{price}) if $pc{price} =~ /\d{4,}/;
 
 ### 魔法の武器アイコン --------------------------------------------------

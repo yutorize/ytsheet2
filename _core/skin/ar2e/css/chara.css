@@ -151,6 +151,9 @@ body {
 #status {
   display: grid;
 }
+#status table {
+  table-layout: auto;
+}
 #status table thead {
   white-space: nowrap;
 }
@@ -340,8 +343,7 @@ dl#level {
     border-bottom: hidden;
     text-align: left;
   }
-  & td.left {
-    padding-left: .3rem;
+  & td.comment {
     font-size: 93%;
   }
 }
@@ -410,9 +412,8 @@ dl#level {
 #connections table {
   margin-top: -1.2em;
   & col.name     { width: 16em; }
-  & col.relation { width:  5.2em; }
-  & .left { padding-left: .3em; }
-  & tbody td.left {
+  & col.relation { width: 5.2em; }
+  & tbody td.note {
     font-size: 93%;
   }
 }
@@ -422,9 +423,6 @@ dl#level {
     margin-top: -1.2em;
     & col.name  { width: 16em; }
     & col.num   { width:  5em; }
-    & tbody td.left {
-      padding-left: .3em;
-    }
   }
 }
 @media screen and (max-width:735px){
@@ -492,7 +490,7 @@ dl#level {
   margin: 0 -6%;
   transform: scaleX(0.88);
 }
-#battle td.left {
+#battle td.note {
   padding-left: .1em;
   font-size: 87%;
 }
@@ -573,7 +571,7 @@ dl#level {
     border-left-width: 0;
     grid-row: span 1;
   }
-  #battle table tbody.total tr > td.left {
+  #battle table tbody.total tr > td.note {
     grid-column: 4 / -1;
   }
   #battle table tbody tr.armour-weight {
@@ -967,7 +965,6 @@ dl#level {
 ---------------------------------------------------------------------------------------------------- */
 #levelup {
   margin-top: var(--box-v-gap);
-  table-layout: fixed;
 }
 #levelup col {
   &:nth-child(1) { width: 2.2em; }

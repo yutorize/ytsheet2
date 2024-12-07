@@ -188,6 +188,10 @@ h1#character-name:not(:has(ruby)) {
     border-left-width: 1px;
     border-left-style: solid;
   }
+  & dd {
+    word-break: auto-phrase;
+    overflow-wrap: break-word;
+  }
 }
 @media screen and (max-width:735px){
   #profile {
@@ -309,10 +313,7 @@ h1#character-name:not(:has(ruby)) {
     &.timing {  }
     &.target { font-size: 90%; }
     &.cond   { font-size: 90%; }
-    &.note.left {
-      padding-left: .3em;
-      font-size: 90%;
-    }
+    &.note   { font-size: 90%; }
     &:empty::before {
       content: "　";
     }

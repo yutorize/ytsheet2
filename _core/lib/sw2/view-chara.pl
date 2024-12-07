@@ -157,8 +157,9 @@ if($::in{url}){
   $SHEET->param(convertUrl => $::in{url});
 }
 
-### 二つ名 --------------------------------------------------
-$SHEET->param(aka => "<ruby>$pc{aka}<rp>(</rp><rt>$pc{akaRuby}</rt><rp>)</rp></ruby>") if $pc{akaRuby};
+### キャラクター名 --------------------------------------------------
+$SHEET->param(characterName => stylizeCharacterName $pc{characterName},$pc{characterNameRuby});
+$SHEET->param(aka => stylizeCharacterName $pc{aka},$pc{akaRuby});
 
 ### プレイヤー名 --------------------------------------------------
 if($set::playerlist){
@@ -520,7 +521,7 @@ foreach my $class (@data::class_caster){
   my $cast   = $pc{'magicCastAdd'  .$id} + $pc{magicCastAdd};
   my $damage = $pc{'magicDamageAdd'.$id} + $pc{magicDamageAdd};
   
-  my $title = $class.'<span class="small">技能レベル</span>'.$pc{'lv'.$id};
+  my $title = $class.'<wbr><span class="small">技能レベル</span>'.$pc{'lv'.$id};
   if($class eq 'ウィザード'){ $title = 'ウィザード<span class="small">最大魔法レベル</span>'.min($pc{lvSor},$pc{lvCon}); }
   
   my $magicname = $name;
@@ -528,7 +529,7 @@ foreach my $class (@data::class_caster){
     $magicname = ($fairy_sim_url ? "<a href=\"$fairy_sim_url\" target=\"_blank\">$name</a>" : $name)
                . ($fairy_contact ? "<div id=\"fairycontact\">$fairy_contact</div>" : '');
     if(!$::SW2_0){
-      $title .= '<br><span class="small">使用可能ランク</span>'.fairyRank($pc{lvFai},$pc{fairyContractEarth},$pc{fairyContractWater},$pc{fairyContractFire },$pc{fairyContractWind },$pc{fairyContractLight},$pc{fairyContractDark });
+      $title .= '<div><span class="small">使用可能ランク</span>'.fairyRank($pc{lvFai},$pc{fairyContractEarth},$pc{fairyContractWater},$pc{fairyContractFire },$pc{fairyContractWind },$pc{fairyContractLight},$pc{fairyContractDark }).'</div>';
     }
   }
   push(@magic, {

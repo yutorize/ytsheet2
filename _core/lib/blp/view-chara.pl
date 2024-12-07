@@ -213,7 +213,7 @@ if($::in{url}){
 }
 ### キャラクター名 --------------------------------------------------
 foreach ('characterName','partner1Name','partner2Name'){
-  $SHEET->param($_ => "<ruby>$pc{$_}<rp>(</rp><rt>$pc{$_.'Ruby'}</rt><rp>)</rp></ruby>") if $pc{$_.'Ruby'};
+  $SHEET->param($_ => stylizeCharacterName $pc{$_},$pc{$_.'Ruby'});
 }
 ### プレイヤー名 --------------------------------------------------
 if($set::playerlist){
