@@ -390,14 +390,13 @@
           <table class="data-table">
             <thead>
               <tr>
-                <th>技能・特技
-                <th>必筋<br>上限
-                <th>命中力
-                <th>
-                <th>Ｃ値
-                <th>追加Ｄ
-              
-            </thead>
+                <th class="name ">技能・特技
+                <th class="reqd ">必筋<br>上限
+                <th class="acc  ">命中力
+                <th class="rate ">
+                <th class="crit ">Ｃ値
+                <th class="dmg  ">追加Ｄ
+              </tr>
             <tbody>
               <TMPL_LOOP AttackClasses><tr>
                 <td><TMPL_VAR NAME DEFAULT=―>
@@ -414,31 +413,28 @@
           <table class="data-table line-tbody">
             <thead>
               <tr>
-                <th>武器
-                <th>用法
-                <th>必筋
-                <th>命中力
-                <th>威力
-                <th>Ｃ値
-                <th>追加Ｄ
-                <th>専用
-                <th>備考
-              
-            </thead>
+                <th class="name ">武器
+                <th class="usage">用法
+                <th class="reqd ">必筋
+                <th class="acc  ">命中力
+                <th class="rate ">威力
+                <th class="crit ">Ｃ値
+                <th class="dmg  ">追加Ｄ
+                <th class="note ">備考
+              </tr>
             <tbody><TMPL_LOOP Weapons><TMPL_IF CLOSE></tbody><tbody></TMPL_IF>
               <tr>
-                <TMPL_UNLESS NAMEOFF><td rowspan="<TMPL_VAR ROWSPAN>">
+                <TMPL_UNLESS NAMEOFF><td class="name" rowspan="<TMPL_VAR ROWSPAN>">
                   <span class="item-name"><TMPL_VAR NAME><TMPL_IF PART><span class="part-name">（<TMPL_VAR PART>）</span></TMPL_IF></span>
                 </TMPL_UNLESS>
-                <td><TMPL_VAR USAGE>
-                <td><TMPL_VAR REQD>
-                <td><TMPL_IF ACC><TMPL_VAR ACC>=</TMPL_IF><b><TMPL_VAR ACCTOTAL></b>
-                <td><TMPL_VAR RATE>
-                <td><TMPL_VAR CRIT>
-                <td><TMPL_IF DMG><TMPL_VAR DMG>=</TMPL_IF><b><TMPL_VAR DMGTOTAL></b>
-                <td><TMPL_IF OWN>✔</TMPL_IF>
-                <TMPL_UNLESS NOTEOFF><td class="left" rowspan="<TMPL_VAR NOTESPAN>">
-                  <span class="item-name"><TMPL_VAR NOTE></span>
+                <td class="usage"><TMPL_VAR USAGE>
+                <td class="reqd "><TMPL_VAR REQD>
+                <td class="acc  "><TMPL_IF ACC><span class="small"><TMPL_VAR ACC>=</span><wbr></TMPL_IF><b><TMPL_VAR ACCTOTAL></b>
+                <td class="rate "><TMPL_VAR RATE>
+                <td class="crit "><TMPL_VAR CRIT>
+                <td class="dmg  "><TMPL_IF DMG><span class="small"><TMPL_VAR DMG>=</span><wbr></TMPL_IF><b><TMPL_VAR DMGTOTAL></b>
+                <TMPL_UNLESS NOTEOFF><td class="note" rowspan="<TMPL_VAR NOTESPAN>">
+                  <span class="item-name"><TMPL_IF OWN><b class="term-em">専用</b></TMPL_IF><TMPL_VAR NOTE></span>
                 </TMPL_UNLESS>
             </TMPL_LOOP></tbody>
           </table>
@@ -449,11 +445,11 @@
           <table class="data-table">
             <thead>
               <tr>
-                <th>技能・特技
-                <th>必筋<br>上限
-                <th>回避力
-                <th>防護点
-            </thead>
+                <th class="name">技能・特技
+                <th class="reqd">必筋<br>上限
+                <th class="eva ">回避力
+                <th class="def ">防護点
+              </tr>
             <tbody>
               <TMPL_LOOP EvasionClasses><tr>
                 <td><TMPL_VAR NAME DEFAULT=―>
@@ -473,9 +469,8 @@
                 <th class="reqd">必筋
                 <th class="eva ">回避力
                 <th class="def ">防護点
-                <th class="own ">専用
                 <th class="note">備考
-            </thead>
+              </tr>
             <tbody>
               <TMPL_LOOP Armours><tr>
                 <th class="type"><TMPL_VAR TYPE>
@@ -483,8 +478,7 @@
                 <td class="reqd"><TMPL_VAR REQD>
                 <td class="eva "><TMPL_VAR EVA>
                 <td class="def "><TMPL_VAR DEF>
-                <td class="own "><TMPL_IF OWN>✔</TMPL_IF>
-                <td class="note"><TMPL_VAR NOTE>
+                  <td class="note"><TMPL_IF OWN><b class="term-em">専用</b></TMPL_IF><TMPL_VAR NOTE>
               </TMPL_LOOP>
             </tbody>
             <tfoot>
@@ -492,7 +486,7 @@
                 <th colspan="3">合計: <TMPL_VAR TH>
                 <td><TMPL_VAR EVA>
                 <td><TMPL_VAR DEF>
-                <td colspan="2"><TMPL_VAR NOTE>
+                <td class="note"><TMPL_VAR NOTE>
               </TMPL_LOOP>
             </tfoot>
           </table>
@@ -501,17 +495,16 @@
           <table class="data-table">
             <thead>
               <tr>
-                <th>
-                <th>装飾品
-                <th>専用
-                <th>効果
+                <th class="type">
+                <th class="name">装飾品
+                <th class="note">効果
+              </tr>
             </thead>
             <tbody>
               <TMPL_LOOP Accessories><tr>
                 <th><TMPL_VAR TYPE>
                 <td><span class="item-name"><TMPL_VAR NAME></span>
-                <td><TMPL_IF OWN>✔<TMPL_VAR OWN></TMPL_IF>
-                <td><TMPL_VAR NOTE>
+                <td class="note"><TMPL_IF OWN><b class="term-em">専用(<TMPL_VAR OWN>)</b></TMPL_IF><TMPL_VAR NOTE>
               </TMPL_LOOP>
             </tbody>
           </table>

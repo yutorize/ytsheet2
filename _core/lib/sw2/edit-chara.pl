@@ -936,12 +936,12 @@ print <<"HTML";
           <table class="edit-table line-tbody">
             <thead>
               <tr>
-                <th>技能・特技
-                <th>必筋<br>上限
-                <th>命中力
-                <th>
-                <th>Ｃ値
-                <th>追加Ｄ
+                <th class="name ">技能・特技
+                <th class="reqd ">必筋<br>上限
+                <th class="acc  ">命中力
+                <th class="rate ">
+                <th class="crit ">Ｃ値
+                <th class="dmg  ">追加Ｄ
               </tr>
             <tbody>
 HTML
@@ -1007,16 +1007,16 @@ print <<"HTML";
           <table class="edit-table line-tbody" id="weapons-table">
             <thead id="weapon-head">
               <tr>
-                <th>武器
-                <th>用法
-                <th>必筋
-                <th>命中力
-                <th>威力
-                <th>Ｃ値
-                <th>追加Ｄ
-                <th>専用
-                <th>カテゴリ
-                <th>使用技能
+                <th class="name ">武器
+                <th class="usage">用法
+                <th class="reqd ">必筋
+                <th class="acc  ">命中力
+                <th class="rate ">威力
+                <th class="crit ">Ｃ値
+                <th class="dmg  ">追加Ｄ
+                <th class="own  ">専用
+                <th class="cate ">カテゴリ
+                <th class="class">使用技能
                 <th>
               </tr>
             </thead>
@@ -1060,10 +1060,10 @@ print <<"HTML";
           <table class="edit-table">
             <thead>
               <tr>
-                <th>技能・特技
-                <th>必筋<br>上限
-                <th>回避力
-                <th>防護点
+                <th class="name">技能・特技
+                <th class="reqd">必筋<br>上限
+                <th class="eva ">回避力
+                <th class="def ">防護点
               </tr>
             <tbody>
 HTML
@@ -1261,11 +1261,11 @@ print <<"HTML";
           <table class="edit-table">
             <thead>
               <tr>
-                <th>
-                <th>
-                <th>装飾品
-                <th>専用
-                <th>効果
+                <th class="check">
+                <th class="type ">
+                <th class="name ">装飾品
+                <th class="own  ">専用
+                <th class="note ">効果
               </tr>
             <tbody id="accessories-table">
 HTML
@@ -1307,8 +1307,8 @@ foreach (
     <td>
       <select name="accessory@$_[1]Own" oninput="calcSubStt()">
         <option></option>
-        <option value="HP" @{[ $pc{"accessory@$_[1]Own"} eq 'HP' ? 'selected':'']}>HP</option>
-        <option value="MP" @{[ $pc{"accessory@$_[1]Own"} eq 'MP' ? 'selected':'' ]}>MP</option>
+        <option value="HP" @{[ $pc{"accessory@$_[1]Own"} eq 'HP' ? 'selected':'']}>HP+2</option>
+        <option value="MP" @{[ $pc{"accessory@$_[1]Own"} eq 'MP' ? 'selected':'' ]}>MP+2</option>
       </select>
     <td>@{[input('accessory'.@$_[1].'Note','','calcDefense')]}
 HTML

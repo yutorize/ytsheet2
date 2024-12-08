@@ -759,9 +759,9 @@ option.zero-data::before {
 #attack-classes {
   width: calc(25% + 23.7em + 1px);
   > table {
-    & thead th {
-      &:nth-child(3) { width: 4.5em; } /* 命中 */
-      &:nth-child(6) { width: 4.5em; } /* 追加Ｄ */
+    & thead {
+      .acc { width: 4.5em; } /* 命中 */
+      .dmg { width: 4.5em; } /* 追加Ｄ */
     }
   }
 }
@@ -772,10 +772,11 @@ option.zero-data::before {
   border-bottom-width: 1px;
   border-bottom-style: solid;
   table-layout: auto;
-  & thead th {
-    &:nth-child(2) { width: 4.2em; } /* 用法 */
-    &:nth-child(4) { width: 4.5em; } /* 命中 */
-    &:nth-child(7) { width: 4.5em; } /* 追加Ｄ */
+  & thead {
+    .usage { width: 4.2em; } /* 用法 */
+    .acc   { width: 4.5em; } /* 命中 */
+    .dmg   { width: 4.5em; } /* 追加Ｄ */
+    .own   { width:   1em; }
   }
 }
 #weapons table td {
@@ -912,11 +913,11 @@ option.zero-data::before {
   #evasion-classes {
     width: auto;
   }
-  #evasion-classes thead th {
-    &:nth-child(1) { width:14.5em; } /* 名前 */
-    &:nth-child(2) { width:   4em; } /* 必筋 */
-    &:nth-child(3) { width:   4em; } /* 回避 */
-    &:nth-child(4) { width:   4em; } /* 防護 */
+  #evasion-classes thead {
+    .name { width:14.5em; } /* 名前 */
+    .reqd { width:   4em; } /* 必筋 */
+    .eva  { width:   4em; } /* 回避 */
+    .def  { width:   4em; } /* 防護 */
   }
   #armours {
     overflow-x: auto;
@@ -988,12 +989,12 @@ option.zero-data::before {
   }
 }
 
-#accessories thead th {
-  &:nth-child(1) { width: 1.5em; } /*  */
-  &:nth-child(2) { width: 2.5em; } /* 種別 */
-  &:nth-child(3) { width:   25%; } /* 名前 */
-  &:nth-child(4) { width: 4.5em; } /* 専用 */
-  &:nth-child(5) { width:  auto; } /* 備考 */
+#accessories thead {
+  .check { width: 1.5em; } /* ✔ */
+  .type  { width: 2.5em; } /* 種別 */
+  .name  { width:   25%; } /* 名前 */
+  .own   { width: 4.5em; } /* 専用 */
+  .note  { width:  auto; } /* 備考 */
 }
 #accessories tbody th {
   cursor: ns-resize;
@@ -1010,6 +1011,9 @@ option.zero-data::before {
     background-color: var(--box-even-rows-bg-color);
   }
 }
+#accessories tbody select {
+  padding-left: 0;
+}
 @media screen and (width <= 735px){
   #accessories {
     overflow-x: auto;
@@ -1018,12 +1022,12 @@ option.zero-data::before {
     min-width: 0;
     table-layout: fixed;
   }
-  #accessories thead th {
-    &:nth-child(1) { width: 1.5em; } /* ✔ */
-    &:nth-child(2) { width: 2.5em; } /* 種別 */
-    &:nth-child(3) { width:  12em; } /* 名前 */
-    &:nth-child(4) { width: 4.5em; } /* 専用 */
-    &:nth-child(5) { width:  16em; } /* 備考 */
+  #accessories thead {
+    .check { width: 1.5em; } /* ✔ */
+    .type  { width: 2.5em; } /* 種別 */
+    .name  { width:  12em; } /* 名前 */
+    .own   { width: 4.5em; } /* 専用 */
+    .note  { width:  16em; } /* 備考 */
   }
   #accessories tbody td:nth-child(4) { padding-left: 0; } /* 専用 */
 }
