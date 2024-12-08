@@ -9,14 +9,14 @@ body {
   .night & {
     background-blend-mode: hard-light, hard-light;
   }
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     background-size: auto, 100%;
     background-position-x: 0, 15vw;
   }
 }
 /* // Layout
 ---------------------------------------------------------------------------------------------------- */
-@media screen and (min-width:1400px){
+@media screen and (width >= 1400px){
   body {
     grid-template-columns: minmax(0, 1fr) minmax(auto, 1800px) minmax(0, 1fr);
   }
@@ -90,7 +90,7 @@ body {
     "STT   STT  STT  IMG"
     "LPT   LPT  LPT  IMG"
   ;
-  @media screen and (max-width:767px){
+  @media screen and (width <= 767px){
     grid-gap: calc(var(--box-v-gap) / 2) calc(var(--box-h-gap) / 2);
     grid-template-columns: 1.9fr 0.5fr .5fr 2.1fr;
     grid-template-areas:
@@ -100,7 +100,7 @@ body {
       "LPT   LPT  LPT  IMG"
     ;
   }
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     display: grid;
     grid-template-columns: 1.5fr 0.8fr .6fr 2.1fr;
     grid-template-areas:
@@ -110,16 +110,16 @@ body {
       "STT   STT  STT  STT"
     ;
   }
+  #image-none,
+  #image     { grid-area: IMG; }
+  #personal  { grid-area: PER; }
+  #classes   { grid-area: CLS; }
+  #status    { grid-area: STT; }
+  #sub-status{ grid-area: sSTT; }
+  #level     { grid-area: LVL; }
+  #exp       { grid-area: EXP; }
+  #lifepath  { grid-area: LPT; }
 }
-#image-none,
-#image     { grid-area: IMG; }
-#personal  { grid-area: PER; }
-#classes   { grid-area: CLS; }
-#status    { grid-area: STT; }
-#sub-status{ grid-area: sSTT; }
-#level     { grid-area: LVL; }
-#exp       { grid-area: EXP; }
-#lifepath  { grid-area: LPT; }
 
 
 /* Classes */
@@ -222,7 +222,7 @@ body {
   grid-template-columns: 1fr 1fr 1.6fr;
   grid-template-rows: auto auto;
   white-space:nowrap;
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     grid-template-columns: 1fr 1fr;
   }
 }
@@ -234,7 +234,7 @@ body {
 #sub-status dl#fate {
   display: grid;
   grid-template-columns: 1fr 6.5em;
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     grid-column: span 2;
     border-top-width: 1px;
     border-top-style: solid;
@@ -270,7 +270,7 @@ dl#level {
     margin: -.3em .2em 0 0;
     white-space: nowrap;
   }
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     & {
       display: grid;
     }
@@ -374,24 +374,15 @@ dl#level {
   border-top-width: 1px;
   border-top-style: solid;
   border-top-left-radius: 0;
+  
   & i.weight {
-    display: inline-block;
-    position: relative;
-    min-width: calc(2.6em/0.9);
-    margin: 0 calc(.2em/0.9);
-    padding: .3em .2em .3em 1.2em;
-    border-radius: .3em;
-    background-color: hsla(var(--box-head-bg-color-h,230),100%,50%,0.2);
-    font-style: normal;
-    font-size: 90%;
-    line-height: 1;
-    text-align: center;
+    justify-content: space-between;
+    min-width: 3.4em;
+    margin: 0 1px;
+    padding-left: .4em;
     white-space: nowrap;
     &::before {
       content: "\e13d";
-      display: inline-block;
-      position: absolute;
-      left: .3em;
       font-family: "Material Symbols Outlined";
       font-variation-settings: 'FILL' 1;
       transform: scale(1.2) translateX(-.1em);
@@ -425,7 +416,7 @@ dl#level {
     & col.num   { width:  5em; }
   }
 }
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   #guild,
   #connections {
     margin-top: var(--box-v-gap);
@@ -441,21 +432,23 @@ dl#level {
   margin-top: var(--box-v-gap);
 }
 
-#battle col {
-  &.head  { width:   3em; }
-  &.name  { width:  10em; }
-  &.weight{ width: 3.2em; }
-  &.acc   { width: 2.8em; }
-  &.atk   { width: 2.8em; }
-  &.eva   { width: 2.8em; }
-  &.def   { width: 2.8em; }
-  &.mdef  { width: 2.8em; }
-  &.ini   { width: 2.8em; }
-  &.move  { width: 2.8em; }
-  &.range { width: 2.8em; }
-  &.usage { width: 2.8em; }
-  &.lv    { width: 1.8em; }
-  &.note  { width: auto; }
+#battle table {
+  > colgroup {
+    .head  { width:   3em; }
+    .name  { width:  10em; }
+    .weight{ width: 3.2em; }
+    .acc   { width: 2.8em; }
+    .atk   { width: 2.8em; }
+    .eva   { width: 2.8em; }
+    .def   { width: 2.8em; }
+    .mdef  { width: 2.8em; }
+    .ini   { width: 2.8em; }
+    .move  { width: 2.8em; }
+    .range { width: 2.8em; }
+    .usage { width: 2.8em; }
+    .lv    { width: 1.8em; }
+    .note  { width: auto; }
+  }
 }
 #battle thead {
   & th:not(:first-child) {
@@ -503,16 +496,11 @@ dl#level {
     font-weight: bold;
   }
 }
-#battle td i.type,
-#battle td i.lv {
-  display: inline-block;
+#battle td i.type {
   margin-right: .5em;
-  padding: .2em .5em;
-  border-radius: .3em;
-  background-color: hsla(var(--box-head-bg-color-h,230),100%,50%,0.2);
-  font-style: normal;
   font-weight: bold;
-  line-height: 1;
+  font-size: 100%;
+  height: 1.4em;
 }
 #armaments .total span[data-name] {
   display: grid;
@@ -525,7 +513,7 @@ dl#level {
   }
 }
 
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   #battle table col:nth-child(n) {
     width: unset;
   }
@@ -747,10 +735,10 @@ dl#level {
 #skills {
   position: relative;
   margin-top: var(--box-v-gap);
-  @media screen and (min-width:1400px){
+  @media screen and (width >= 1400px){
     margin-top: 0;
   }
-  @media screen and (min-width:1400px) and (max-width:1600px){
+  @media screen and (1400px <= width <= 1600px){
     .shorten { display: none; }
   }
 }
@@ -769,12 +757,12 @@ dl#level {
   &:nth-child(8) { width: 4.8em; } /* 射程 */
   &:nth-child(9) { width: 2.4em; } /* コスト */
   &:nth-child(10) { width:10.8em; } /* 使用条件 */
-  @media screen and (min-width:1400px) and (max-width:1680px){
+  @media screen and (1400px <= width <= 1680px){
     &:nth-child(6) { width: 5.2em; } /* 対象 */
     &:nth-child(8) { width: 4.2em; } /* 射程 */
     &:nth-child(9) { width: 3.1em; } /* コスト */
   }
-  @media screen and (min-width:1400px) and (max-width:1600px){
+  @media screen and (1400px <= width <= 1600px){
     &:nth-child(5) { width: 5.4em; } /* タイミング */
   }
 
@@ -803,7 +791,7 @@ dl#level {
 }
 
 
-#skills table tbody td.left {
+#skills table tbody td.note {
   padding-left: .5rem;
   display: none;
   &:empty::before {
@@ -814,8 +802,8 @@ dl#level {
     font-size: 90%;
   }
 }
-#skills table tbody:hover td.left,
-#skills[data-full-open="true"] table tbody td.left {
+#skills table tbody:hover td.note,
+#skills[data-full-open="true"] table tbody td.note {
   display: table-cell;
 }
 
@@ -906,55 +894,55 @@ dl#level {
   opacity: 0.9;
 }
 
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   #skills table {
-    & thead {
+    > thead {
       border-bottom-width: 1px;
       border-bottom-style: solid;
     }
-    & thead tr,
-    & tbody tr {
+    > thead tr,
+    > tbody tr {
       display: grid;
       grid-template-columns: 4em 3.4em 1.8em 5.2em 5.2em 5.5em 4.5em 2.1em auto;
       border-width: 0 0 1px;
     }
-    & tbody tr:last-child { border: 0; }
-    & thead th:nth-child(n) {
+    > tbody tr:last-child { border: 0; }
+    > thead th:nth-child(n) {
       width: auto;
     }
-    & thead th:nth-child(3) {
+    > thead th:nth-child(3) {
       display: none;
     }
-    & tbody td[rowspan] {
+    > tbody td[rowspan] {
       display: flex;
       justify-content: center;
       align-items: center;
     }
-    & tbody td {
+    > tbody td {
       font-size: 100% !important;
       border-width: 0 0 0 1px;
       border-style: dotted;
     }
-    & tbody td.name {
+    > tbody td.name {
       grid-row: 1; grid-column: 1 / span 9;
       text-align: left;
       padding-left: .5rem;
       border-width: 0 0 1px;
       border-style: solid;
     }
-    & tbody td.left {
+    > tbody td.note {
       grid-row: 1; grid-column: 1 / span 9;
       border-width: 0 0 1px;
       border-style: solid;
     }
-    & tbody td:first-child { border-left: 0; }
-    & tbody td:last-child  { border-right: 0; }
-    & tbody td span.shorten {
+    > tbody td:first-child { border-left: 0; }
+    > tbody td:last-child  { border-right: 0; }
+    > tbody td span.shorten {
       display: none !important;
     }
-    & tbody td span.thin,
-    & tbody td span.thiner,
-    & tbody td span.thinest {
+    > tbody td span.thin,
+    > tbody td span.thiner,
+    > tbody td span.thinest {
       transform: scaleY(calc(1/0.9)) !important;
       font-size: 90% !important;
     }
@@ -1024,17 +1012,12 @@ dl#level {
   margin-top: var(--box-v-gap);
 }
 #history table {
-  & thead th {
-    &.num    { width:   2em; } /* No. */
-    &.date   { width: 5.2em; } /* 日付 */
-    &.title  { width:  auto; } /* タイトル */
-    &.exp    { width: 4.6em; } /* 成長点 */
-    &.pay    { width: 4.6em; } /* 上納点 */
-    &.money  { width: 4.5em; } /* ゴールド */
-    &.gm     { width:  auto; } /* ＧＭ */
-    &.member { width:  auto; } /* 参加者 */
+  > thead {
+    .exp    { width: 4.6em; } /* 成長点 */
+    .pay    { width: 4.6em; } /* 上納点 */
+    .money  { width: 4.5em; } /* ゴールド */
   }
-  & tbody tr td.pay:not(:empty)::before {
+  > tbody tr td.pay:not(:empty)::before {
     content: "-";
     float: left;
     margin-left: 2px;
@@ -1048,9 +1031,6 @@ dl#level {
       margin-left: 2px;
       font-size: 1.1rem;
     }
-  }
-  & tr td:is(.gm, .member) {
-    font-size: 1.1rem;
   }
 }
 

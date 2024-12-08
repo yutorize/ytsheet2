@@ -555,7 +555,7 @@ foreach my $class (@data::class_names){
   my $damage = $pc{'magicDamageAdd'.$id} || 0;
   
   push(@magic, {
-    NAME => $class."<span class=\"small\">技能レベル</span>".$pc{'lv'.$id},
+    NAME => $class."<wbr><span class=\"small\">技能レベル</span>".$pc{'lv'.$id},
     OWN  => ($pc{'magicPowerOwn'.$id} ? '✔<span class="small">'.$stt.'+2</span>' : ''),
     MAGIC  => $name,
     POWER  => ($pname) ? ($power ? '<span class="small">'.addNum($power).'=</span>' : '').$pc{'magicPower'.$id} : '―',
@@ -609,8 +609,8 @@ if(!$pc{forbiddenMode}){
       next if !$isUnlock;
     }
     push(@atacck, {
-      NAME => $name."<span class=\"small\">技能レベル</span>".$pc{'lv'.$id},
       STR  => ($id eq 'Fen' ? ceil($strTotal / 2) : $strTotal),
+      NAME => $name."<wbr><span class=\"small\">技能レベル</span>".$pc{'lv'.$id},
       ACC  => $pc{'lv'.$id}+$pc{bonusDex},
       ($id eq 'Fen' ? (CRIT => '-1') : ('' => '')),
       DMG  => $id eq 'Dem' ? '―' : $pc{'lv'.$id}+$pc{bonusStr},
@@ -648,7 +648,7 @@ $SHEET->param(AttackClasses => \@atacck);
 sub replaceModificationNotation {
   my $sourceText = shift // '';
 
-  $sourceText =~ s#[\@＠](回避力?|防(?:護点?)?)[+＋](\d+)#<span class="modification">$1+$2</span>#g;
+  $sourceText =~ s#[\@＠](回避力?|防(?:護点?)?)[+＋](\d+)#<i class="term-em">$1+$2</i>#g;
 
   return $sourceText;
 }
@@ -744,7 +744,7 @@ if(!$pc{forbiddenMode}){
       }
     }
     push(@evasion, {
-      NAME => $name."<span class=\"small\">技能レベル</span>".$pc{'lv'.$id},
+      NAME => $name."<wbr><span class=\"small\">技能レベル</span>".$pc{'lv'.$id},
       STR  => ($id eq 'Fen' ? ceil($strTotal / 2) : $strTotal),
       EVA  => $pc{'lv'.$id}+$pc{bonusAgi},
     } );

@@ -9,7 +9,7 @@ body {
   .night & {
     background-blend-mode: hard-light, hard-light;
   }
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     background-size: auto, 100%;
   }
 }
@@ -22,7 +22,7 @@ body {
     "NAME   PL  AGE  NGI  KIZ DATE"
     "NAME TAGS TAGS TAGS TAGS DATE"
   ;
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     grid-template-columns: 18rem 6em 7em 0.7fr 1fr 4em;
   }
   .name    { grid-area: NAME; }

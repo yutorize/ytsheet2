@@ -2,7 +2,7 @@
 
 @import "icons.css" layer(system);
 
-@media screen and (max-width:550px){
+@media screen and (width <= 550px){
   html {
     font-size: 1.8vw;
   }
@@ -13,7 +13,7 @@
 ---------------------------------------------------------------------------------------------------- */
 body {
   background-image: url(../../_common/img/back-pattern.png), url(../img/back-first.png);
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     background-size: auto, 80%;
   }
 }
@@ -113,7 +113,7 @@ div.data {
   & * {
     border-color: var(--box-outside-border-color);
   }
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     grid-template-columns: 1fr;
   }
 
@@ -134,7 +134,7 @@ div.data {
     }
   }
   
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     > dl {
       grid-column: 1/2 !important;
       grid-row: auto !important;
@@ -175,7 +175,7 @@ div.data {
   > dl.category dd > div hr {
     opacity: 0.5;
   }
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     > dl.reputation dd,
     > dl.shape      dd,
     > dl.category   dd,

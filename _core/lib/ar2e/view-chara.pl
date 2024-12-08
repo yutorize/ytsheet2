@@ -334,7 +334,7 @@ foreach (
     $note .= $pc{'armament'.$id.'Type'};
     $note .= '／' if $pc{'armament'.$id.'Type'} && $pc{'armament'.$id.'Usage'};
     $note .= $pc{'armament'.$id.'Usage'};
-    $note = '<i class="type">'.$note.'</i>' if $note;
+    $note = '<b class="term-em type">'.$note.'</b>' if $note;
   }
   $note .= $pc{'armament'.$id.'Note'};
   if($id =~ /Hand/){
@@ -550,7 +550,7 @@ $SHEET->param(payment           => commify $pc{payment}           );
 $SHEET->param(historyMoneyTotal => commify $pc{historyMoneyTotal} );
 
 ### 携帯品 --------------------------------------------------
-$pc{items} =~ s/[@＠]\[\s*?((?:[\+\-\*\/]?[0-9]+)+)\s*?\]/<i class="weight">$1<\/i>/g;
+$pc{items} =~ s/[@＠]\[\s*?((?:[\+\-\*\/]?[0-9]+)+)\s*?\]/<i class="weight term-em">$1<\/i>/g;
 $SHEET->param(items => $pc{items});
 
 ### ゴールド --------------------------------------------------

@@ -5,7 +5,7 @@
 ---------------------------------------------------------------------------------------------------- */
 body {
   background-image: url(../../_common/img/back-pattern.png), url(../img/back-xx.png);
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     background-size: auto, 70%;
   }
 }
@@ -45,7 +45,7 @@ body {
 .list table td.syndrome span {
   display: block;
 }
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   .list table tr {
     grid-template-columns: 18rem 6em 3em 0.6fr 1fr 4em 4em;
   }

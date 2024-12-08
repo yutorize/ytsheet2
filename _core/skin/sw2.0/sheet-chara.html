@@ -251,7 +251,7 @@
                 </tr>
               <tbody>
                 <TMPL_LOOP Rows><tr>
-                  <td class="left"><TMPL_VAR TEXT></div>
+                  <td class="left"><TMPL_VAR TEXT>
                   <TMPL_IF COLUMN1><td class="num"><TMPL_VAR POINT1></TMPL_IF>
                   <TMPL_IF COLUMN2><td class="num"><TMPL_VAR POINT2></TMPL_IF>
                 </tr></TMPL_LOOP>
@@ -323,7 +323,7 @@
             <table class="data-table side-margin line-tbody">
               <TMPL_LOOP Packages><tbody>
                 <TMPL_LOOP Packs><tr>
-                  <TMPL_IF NAME="__first__"><th rowspan="<TMPL_VAR colspan>"><TMPL_VAR class><span class="small">技能レベル</span><TMPL_VAR lv></TMPL_IF>
+                  <TMPL_IF NAME="__first__"><th rowspan="<TMPL_VAR colspan>"><TMPL_VAR class><wbr><span class="small">技能レベル</span><TMPL_VAR lv></TMPL_IF>
                   <th><TMPL_VAR name>
                   <td><TMPL_IF add><TMPL_VAR add>=</TMPL_IF>
                   <td><TMPL_VAR total>
