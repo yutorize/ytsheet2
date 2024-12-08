@@ -9,7 +9,7 @@ body {
   .night & {
     background-blend-mode: hard-light, hard-light;
   }
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     background-size: auto, 120%;
     background-position-x: 0, 5vw;
     background-position-y: 0, 110%;
@@ -51,7 +51,7 @@ body {
   & td.missing {
     font-size: 90%;
   }
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     & tr {
       grid-template-columns: 18rem 6em 7em 0.7fr 1fr 2.5em 4em;
     }

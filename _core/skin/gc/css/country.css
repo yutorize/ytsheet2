@@ -186,7 +186,7 @@ body {
   margin-top: var(--box-v-gap);
   > table {
     margin-top: -1.5em;
-    col.name  { width: 6.5em; }
+    col.name   { width: 8.5em; }
     col.effect { width: 3em; }
     > thead {
       vertical-align: bottom;
@@ -294,16 +294,8 @@ body {
   margin-top: var(--box-v-gap);
 }
 #history table {
-  & thead th {
-    &.num    { width:   2em; }
-    &.date   { width: 5.2em; }
-    &.title  { width:  auto; }
-    &.counts { width: 4.6em; }
-    &.gm     { width:  auto; }
-    &.member { width:  auto; }
-  }
-  & tr td:is(.gm, .member) {
-    font-size: 1.1rem;
+  & thead {
+    .counts { width: 4.6em; }
   }
 }
 

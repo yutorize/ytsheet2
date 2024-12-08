@@ -7,7 +7,7 @@
 ---------------------------------------------------------------------------------------------------- */
 body {
   background-image: url(../../_common/img/back-pattern.png), url(../img/back-first.png);
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     background-size: auto, 80%;
   }
 }
@@ -200,52 +200,54 @@ table.status {
   border-style: double;
   border-color: var(--box-outside-border-color);
   background-color: var(--box-base-bg-color);
-  & thead th {
-    &.lv     { width: 0em; }
-    &.name   { width: auto; }
-    &.acc    { width: 12%; }
-    &.atk    { width: 12%; }
-    &.eva    { width: 12%; }
-    &.def    { width: 12%; }
-    &.hp     { width: 12%; }
-    &.mp     { width: 12%; }
+  > thead {
+    .lv     { width: 0em; }
+    .name   { width: auto; }
+    .acc    { width: 12%; }
+    .atk    { width: 12%; }
+    .eva    { width: 12%; }
+    .def    { width: 12%; }
+    .hp     { width: 12%; }
+    .mp     { width: 12%; }
   }
-  .mount & thead th {
-    &.lv     { width: 1.8em; }
-    &.name   { width: auto; }
-    &.acc    { width: 8.5%; }
-    &.atk    { width: 8.5%; }
-    &.eva    { width: 8.5%; }
-    &.def    { width: 8.5%; }
-    &.hp     { width: 8.5%; }
-    &.mp     { width: 8.5%; }
-    &.vit    { width: 8.5%; }
-    &.mnd    { width: 8.5%; }
+  .mount & > thead {
+    .lv     { width: 1.8em; }
+    .name   { width: auto; }
+    .acc    { width: 8.5%; }
+    .atk    { width: 8.5%; }
+    .eva    { width: 8.5%; }
+    .def    { width: 8.5%; }
+    .hp     { width: 8.5%; }
+    .mp     { width: 8.5%; }
+    .vit    { width: 8.5%; }
+    .mnd    { width: 8.5%; }
   }
   &:not(#status-table):has(tbody tr:first-child:last-child) thead th.name > .text-part {
     display: none;
   }
-  & tbody {
-    border-top-width: 1px;
-    border-top-style: solid;
-  }
-  & th {
-    background-color: var(--monster-head-bg-color);
-  }
-  & td {
-    padding: .2rem;
-    border-width: 0 1px;
-    border-style: solid;
-    border-color: var(--box-inside-border-color);
-    text-align: center;
-    &.name .part {
-      display: inline-block;
+  > thead {
+    & th {
+      background-color: var(--monster-head-bg-color);
     }
   }
-  & tbody tr:nth-child(even) td {
-    background-color: var(--box-even-rows-bg-color);
+  > tbody {
+    border-top-width: 1px;
+    border-top-style: solid;
+    & td {
+      padding: .2rem;
+      border-width: 0 1px;
+      border-style: solid;
+      border-color: var(--box-inside-border-color);
+      text-align: center;
+      &.name .part {
+        display: inline-block;
+      }
+    }
+    > tr:nth-child(even) td {
+      background-color: var(--box-even-rows-bg-color);
+    }
   }
-  .mount & tbody {
+  .mount & > tbody {
     & td.lv {
       background-color: transparent;
       border-width: 0;

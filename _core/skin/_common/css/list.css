@@ -5,7 +5,7 @@
 @layer list {
 /* // Body
 ---------------------------------------------------------------------------------------------------- */
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   html {
     font-size: 1.6vw;
   }
@@ -56,13 +56,13 @@ main aside {
 }
 /* // Sidebar
 ---------------------------------------------------------------------------------------------------- */
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   aside#sidebar-top {
     padding-top: 11rem;
     margin-bottom: -4rem;
   }
 }
-@media screen and (max-width:1200px){
+@media screen and (width <= 1200px){
   aside#sidebar-left,
   aside#sidebar-right {
     display:none;
@@ -338,7 +338,7 @@ form#form-search {
   font-weight: bold;
 }
 
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   .list table tr {
     font-size: 95%;
   }
@@ -377,8 +377,6 @@ form#form-search {
   display: grid;
   grid-gap: .5rem;
   grid-template-columns: 1fr 1fr;
-}
-.list ul li {
 }
 .list ul li.hide {
   background-image: linear-gradient(135deg, rgba(80,80,200,0.3) 20px, transparent 20px);

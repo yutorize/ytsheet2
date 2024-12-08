@@ -337,6 +337,7 @@ sub textCost {
 my @history;
 my $h_num = 0;
 if($pc{endurancePreGrow }){ $pc{history0Grow} .= "耐久値+$pc{endurancePreGrow }" }
+if($pc{history0Grow     }){ $pc{history0Grow} .= " " }
 if($pc{initiativePreGrow}){ $pc{history0Grow} .= "先制値+$pc{initiativePreGrow}" }
 if($pc{history0Grow}){
   $pc{history0Title} = 'キャラクター作成';

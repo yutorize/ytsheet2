@@ -2,7 +2,7 @@
 
 @import "icons.css" layer(system);
 
-@media screen and (max-width:550px){
+@media screen and (width <= 550px){
   html {
     font-size: 1.8vw;
   }
@@ -13,7 +13,7 @@
 ---------------------------------------------------------------------------------------------------- */
 body {
   background-image: url(../../_common/img/back-pattern.png), url(../img/back-first.png);
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     background-size: auto, 80%;
   }
 }
@@ -42,7 +42,7 @@ article {
 #area-description > section:first-of-type {
   margin-top: 0;
 }
-@media screen and (min-width:1400px){
+@media screen and (width >= 1400px){
   body.wide {
     grid-template-columns: minmax(0, 1fr) minmax(auto, 1800px) minmax(0, 1fr);
 
@@ -371,7 +371,7 @@ article {
   }
 }
 
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   .data-magic { display: block }
   .data-magic dl {
     grid-template-columns: 5.5em 1fr !important;
@@ -497,7 +497,7 @@ article {
   }
 }
 
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   .data-magic dl br {
     display: none;
   }
@@ -570,6 +570,7 @@ div.data dl.effects table {
 
 .item-table {
   margin-top: 1em;
+  
 
   &,
   & th,
@@ -579,24 +580,26 @@ div.data dl.effects table {
     border-color: var(--box-outside-border-color);
     text-align: center;
   }
-  & thead {
+  > thead {
     background-color: var(--arts-head-bg-color);
+    .name       { width: 14.5em; }
+    .reputation { width: 4em; }
+    .category   { width: 10.5em; }
+    .price      { width: 7em; }
   }
-  & thead .name       { width: 14.5em; }
-  & thead .reputation { width: 4em; }
-  & thead .category   { width: 10.5em; }
-  & thead .price      { width: 7em; }
   & tbody td {
     padding: .2em;
   }
   & tbody td.left {
     font-size: 92%;
   }
-  @media screen and (max-width:735px){
-    & thead .name       { width: 10.5em; }
-    & thead .reputation { width: 3.5em; }
-    & thead .category   { width: 8.5em; }
-    & thead .price      { width: 6em; }
+  @media screen and (width <= 735px){
+    > thead {
+      .name       { width: 10.5em; }
+      .reputation { width: 3.5em; }
+      .category   { width: 8.5em; }
+      .price      { width: 6em; }
+    }
   }
 }
 a.failed::before {
@@ -678,7 +681,7 @@ a.failed::before {
   background: var(--bg-color);
   position: relative;
   z-index: 1;
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     width : 30vw;
     height: 30vw;
   }
