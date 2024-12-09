@@ -700,7 +700,7 @@ else {
       PART     => $pc{'part'.$pc{'weapon'.$_.'Part'}.'Name'},
       ROWSPAN  => $rowspan,
       NAMEOFF  => $pc{'weapon'.$_.'NameOff'},
-      USAGE    => $pc{'weapon'.$_.'Usage'},
+      USAGE    => $pc{'weapon'.$_.'Usage'} . ($pc{'weapon'.$_.'Usage'} =~ /H投/i && $pc{'weapon'.$_.'Category'} ? "<span class=\"category\">〈$pc{'weapon'.$_.'Category'}〉</span>" : ''),
       REQD     => $pc{'weapon'.$_.'Reqd'},
       ACC      => addNum($pc{'weapon'.$_.'Acc'}),
       ACCTOTAL => $pc{'weapon'.$_.'AccTotal'},
