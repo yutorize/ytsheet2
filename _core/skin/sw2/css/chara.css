@@ -1160,7 +1160,7 @@ dl#level {
 #history table {
   > thead {
     .exp    { width: 4.6em; } /* 経験点 */
-    .money  { width: 4.5em; } /* ガメル */
+    .money  { width: 5.5em; } /* ガメル */
     .honor  { width:   3em; } /* 名誉点 */
     .grow   { width: 3.5em; } /* 成長 */
   }
