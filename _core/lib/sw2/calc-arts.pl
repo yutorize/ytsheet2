@@ -29,6 +29,10 @@ sub data_calc {
     $sub = ($pc{schoolArea}||'―');
     $summary = substr($pc{schoolNote}, 0, 35).'..';
   }
+  elsif($pc{category} eq 'skill'){
+    $name = $pc{skillName};
+    $summary = substr($pc{skillRankB_summary}, 0, 35).'..';
+  }
   $summary =~ s/\r|\n/ /g;
   $pc{artsName} = $name;
 
@@ -59,6 +63,10 @@ sub data_calc {
     'schoolItemNote',
     'schoolArtsNote',
     'schoolMagicNote',
+    'skillRankB_effect',
+    'skillRankA_effect',
+    'skillRankS_effect',
+    'skillRankSS_effect',
   ){
     $pc{$_} =~ s/\r\n?|\n/<br>/g;
   }
