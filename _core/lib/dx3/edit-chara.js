@@ -229,8 +229,15 @@ function calcSkill() {
     else { exps['skill']  -= 10 }
   }
   document.getElementById('freepoint-skill').textContent = (free > 5) ? 5 : free;
-  document.getElementById('exp-skill'      ).textContent = exps['skill'];
-  document.getElementById('exp-used-skill' ).textContent = exps['skill'];
+
+  const expSkillElement = document.getElementById('exp-skill');
+  expSkillElement.textContent = exps['skill'];
+  expSkillElement.classList.toggle('minus', exps['skill'] < 0);
+
+  const expUsedSkillElement = document.getElementById('exp-used-skill');
+  expUsedSkillElement.textContent = exps['skill'];
+  expUsedSkillElement.classList.toggle('minus', exps['skill'] < 0);
+
   calcExp();
   calcComboAll();
 }
