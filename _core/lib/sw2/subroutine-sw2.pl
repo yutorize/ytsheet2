@@ -182,26 +182,34 @@ sub extractModifications {
     my $name = shift;
     my $note = shift;
 
-    my $evasion;
-    my $defense;
-
-    if ($note =~ s/[\@＠]回避力?[+＋](\d+)//) {
-      $evasion = $1;
+    my %sttRegEx = (
+      'A' => '器(?:用度?)?',
+      'B' => '敏(?:捷度?)?',
+      'C' => '筋(?:力)?',
+      'D' => '生(?:命力)?',
+      'E' => '知力?',
+      'F' => '精(?:神力?)?',
+      'vResist' => '生命抵抗力?',
+      'mResist' => '精神抵抗力?',
+      'eva' => '回避力?',
+      'def' => '防(?:護点?)?',
+      'mobility' => '移動力',
+      'magicPower' => '魔力',
+      'magicCast' => '(?:魔法)?行使(?:判定)?',
+      'magicDamage' => '魔法のダメージ',
+      'reqdWeapon' => '武器(?:必要筋力|必筋)上限'
+    );
+    my %modData;
+    foreach my $key (keys %sttRegEx){
+      if ($note =~ s/[\@＠]${sttRegEx{$key}}([＋+－-][0-9]+)//) {
+        $modData{$key} = $1 =~ tr/＋－/+-/r;
+      }
     }
 
-    if ($note =~ s/[\@＠]防(?:護点?)?[+＋](\d+)//) {
-      $defense = $1;
-    }
+    return {} if !%modData;
 
-    unless ($evasion || $defense) {
-      return {};
-    }
-
-    return {
-        name    => $name,
-        evasion => $evasion // 0,
-        defense => $defense // 0,
-    };
+    $modData{name} = $name;
+    return \%modData;
   }
 
   foreach (1 .. $pc{weaponNum}) {

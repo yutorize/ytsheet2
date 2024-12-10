@@ -232,10 +232,10 @@ sub palettePreset {
       next if !$::pc{'lv' . $data::class{$name}{id} };
       $text .= "###\n" if $bot{TKY};
       $text .= "### ■魔法系\n";
-      $text .= "//魔力修正=".($::pc{magicPowerAdd}||0)."\n";
-      $text .= "//行使修正=".($::pc{magicCastAdd}||0)."\n";
+      $text .= "//魔力修正=".($::pc{magicPowerAdd}+$::pc{magicPowerEquip})."\n";
+      $text .= "//行使修正=".($::pc{magicCastAdd }+$::pc{magicCastEquip })."\n";
       $text .= "//魔法C=10\n";
-      $text .= "//魔法D修正=".($::pc{magicDamageAdd}||0)."\n";
+      $text .= "//魔法D修正=".($::pc{magicDamageAdd}+$::pc{magicDamageEquip})."\n";
       $text .= "//物理魔法D修正=".($::pc{magicDamageAdd}||0)."\n" if $::pc{lvDru} || $::pc{lvSor} >= 12 || ($::pc{lvFai} && $::pc{fairyContractEarth});
       $text .= "//回復量修正=0\n" if $::pc{lvCon} || $::pc{lvPri} || $::pc{lvGri} || $::pc{lvBar} || $::pc{lvMag} >= 2;
       last;
@@ -682,12 +682,12 @@ sub paletteProperties {
     push @propaties, "//生命力=$::pc{sttVit}";
     push @propaties, "//知力=$::pc{sttInt}"  ;
     push @propaties, "//精神力=$::pc{sttMnd}";
-    push @propaties, "//器用度増強=".($::pc{sttAddA}||0);
-    push @propaties, "//敏捷度増強=".($::pc{sttAddB}||0);
-    push @propaties, "//筋力増強=".($::pc{sttAddC}||0);
-    push @propaties, "//生命力増強=".($::pc{sttAddD}||0);
-    push @propaties, "//知力増強=".($::pc{sttAddE}||0);
-    push @propaties, "//精神力増強=".($::pc{sttAddF}||0);
+    push @propaties, "//器用度増強=".($::pc{sttAddA}+$::pc{sttEquipA});
+    push @propaties, "//敏捷度増強=".($::pc{sttAddB}+$::pc{sttEquipB});
+    push @propaties, "//筋力増強="  .($::pc{sttAddC}+$::pc{sttEquipC});
+    push @propaties, "//生命力増強=".($::pc{sttAddD}+$::pc{sttEquipD});
+    push @propaties, "//知力増強="  .($::pc{sttAddE}+$::pc{sttEquipE});
+    push @propaties, "//精神力増強=".($::pc{sttAddF}+$::pc{sttEquipF});
     push @propaties, "###" if $tool eq 'tekey';
     push @propaties, "### ■技能レベル";
     push @propaties, "//冒険者レベル=$::pc{level}";
@@ -770,7 +770,7 @@ sub paletteProperties {
         $add .= addNum $::pc{'magicPowerAdd'.$id};
         $add .= addNum $::pc{raceAbilityMagicPower};
         $add .= addNum $::pc{'raceAbilityMagicPower'.$id};
-        $add .= $::pc{paletteUseBuff} ? "+{魔力修正}" : addNum($::pc{magicPowerAdd});
+        $add .= $::pc{paletteUseBuff} ? "+{魔力修正}" : addNum($::pc{magicPowerAdd}+$::pc{magicPowerEquip});
       }
       elsif($id eq 'Alc') {
         $add .= addNum($::pc{alchemyEnhance});

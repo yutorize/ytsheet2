@@ -891,6 +891,12 @@ function commify(num) {
   return String(num).replace(/([0-9]{1,3})(?=(?:[0-9]{3})+(?![0-9]))/g, "$1,");;
 }
 
+// 数値の前に+を足す ----------------------------------------
+function formatNumber(num){
+  if (!num) return ""; // 0やnullは空文字
+  return Number(num) > 0 ? `+${num}` : `${num}`;
+}
+
 // 先頭を大文字 ----------------------------------------
 function ucfirst(str){
   return str.charAt(0).toUpperCase() + str.slice(1);

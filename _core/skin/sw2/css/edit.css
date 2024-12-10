@@ -109,8 +109,22 @@
     }
   }
 }
-#status dl[id^="stt-add"]::before {
-  left: -.6rem;
+#status dl[id^="stt-add"] {
+  &::before {
+    left: -.6rem;
+  }
+  dd {
+    align-items: end;
+  }
+}
+#status span[id^="stt-equip-"] {
+  text-wrap: nowrap;
+  padding-left: .3em;
+  &:not(:empty)::after {
+    content: "+";
+    font-size: 1.2rem;
+    padding-left: .2em;
+  }
 }
 #status dl#stt-pointbuy-type {
   grid-column: span 2;

@@ -229,8 +229,14 @@ $pc{expUsed} = $pc{expTotal} - $pc{expRest};
 foreach('expUsed','expTotal','expRest'){
   $SHEET->param($_ => commify $pc{$_});
 }
+### 能力値 --------------------------------------------------
+foreach ('A'..'F'){
+  my $value = $pc{'sttAdd'.$_} + $pc{'sttEquip'.$_};
+  $SHEET->param('sttAdd'.$_ => $value) if $value;
+}
+
 ### HPなど --------------------------------------------------
-foreach('vitResistAddTotal','mndResistAddTotal','hpAddTotal','mpAddTotal','mobilityAdd','monsterLoreAdd','initiativeAdd'){
+foreach('vitResistAddTotal','mndResistAddTotal','hpAddTotal','mpAddTotal','mobilityAddTotal','monsterLoreAdd','initiativeAdd'){
   $SHEET->param($_ => addNum $pc{$_});
 }
 
@@ -517,9 +523,9 @@ foreach my $class (@data::class_caster){
   next if !$name;
   next if !$pc{'lv'.$id};
   
-  my $power  = $pc{'magicPowerAdd' .$id} + $pc{magicPowerAdd} +$pc{magicPowerEnhance};
-  my $cast   = $pc{'magicCastAdd'  .$id} + $pc{magicCastAdd};
-  my $damage = $pc{'magicDamageAdd'.$id} + $pc{magicDamageAdd};
+  my $power  = $pc{'magicPowerAdd' .$id} + $pc{magicPowerAdd } + $pc{magicPowerEquip } +$pc{magicPowerEnhance};
+  my $cast   = $pc{'magicCastAdd'  .$id} + $pc{magicCastAdd  } + $pc{magicCastEquip  };
+  my $damage = $pc{'magicDamageAdd'.$id} + $pc{magicDamageAdd} + $pc{magicDamageEquip};
   
   my $title = $class.'<wbr><span class="small">技能レベル</span>'.$pc{'lv'.$id};
   if($class eq 'ウィザード'){ $title = 'ウィザード<span class="small">最大魔法レベル</span>'.min($pc{lvSor},$pc{lvCon}); }
@@ -584,7 +590,7 @@ $SHEET->param(MagicPowers => \@magic);
 }
 
 ### 攻撃技能／特技 --------------------------------------------------
-my $strTotal = $pc{sttStr}+$pc{sttAddC};
+my $strTotal = $pc{sttStr}+$pc{sttAddC}+$pc{sttEquipC};
 my @atacck;
 if(!$pc{forbiddenMode}){
   foreach my $name (@data::class_names){
@@ -608,9 +614,11 @@ if(!$pc{forbiddenMode}){
       }
       next if !$isUnlock;
     }
+    my $reqdStr = ($id eq 'Fen' ? ceil($strTotal / 2) : $strTotal)
+                . ($pc{reqdStrWeaponMod} ? "+$pc{reqdStrWeaponMod}" : '');
     push(@atacck, {
-      STR  => ($id eq 'Fen' ? ceil($strTotal / 2) : $strTotal),
       NAME => $name."<wbr><span class=\"small\">技能レベル</span>".$pc{'lv'.$id},
+      STR  => $reqdStr,
       ACC  => $pc{'lv'.$id}+$pc{bonusDex},
       ($id eq 'Fen' ? (CRIT => '-1') : ('' => '')),
       DMG  => $id eq 'Dem' ? '―' : $pc{'lv'.$id}+$pc{bonusStr},
@@ -648,7 +656,27 @@ $SHEET->param(AttackClasses => \@atacck);
 sub replaceModificationNotation {
   my $sourceText = shift // '';
 
-  $sourceText =~ s#[\@＠](回避力?|防(?:護点?)?)[+＋](\d+)#<i class="term-em">$1+$2</i>#g;
+  $sourceText =~ s#
+      [\@＠]
+      (
+        器(?:用度?)?  |
+        敏(?:捷度?)?  |
+        筋(?:力)?     |
+        生(?:命力)?   |
+        知力?         |
+        精(?:神力?)?  |
+        生命抵抗力?   |
+        精神抵抗力?   |
+        回避力?       |
+        防(?:護点?)?  |
+        移動力        |
+        魔力          |
+        (?:魔法)?行使(?:判定)?|
+        魔法のダメージ|
+        武器(?:必要筋力|必筋)上限
+      )
+      ([＋+－-][0-9]+)
+    #<i class="term-em">$1$2</i>#gx;
 
   return $sourceText;
 }
@@ -800,14 +828,13 @@ if(!$pc{forbiddenMode}){
     } );
   }
 
-  my @modifications = @{extractModifications(\%pc)};
-  foreach (@modifications) {
+  foreach (@{extractModifications(\%pc)}) {
     my %mod = %{$_;};
 
-    if ($mod{evasion} || $mod{defense}) {
+    if ($mod{eva} || $mod{def}) {
       my %item = (NAME => $mod{name});
-      $item{EVA} = $mod{evasion} if $mod{evasion};
-      $item{DEF} = $mod{defense} if $mod{defense};
+      $item{EVA} = $mod{eva} if $mod{eva};
+      $item{DEF} = $mod{def} if $mod{def};
 
       push(@evasion, \%item);
     }
