@@ -573,6 +573,9 @@ table.data-table {
       border-left-style: dotted;
       border-right-style: dotted;
     }
+    > tbody td.left  { padding: .3em; }
+    > tbody td.right { padding: .3em; }
+    
     &.line-tbody tbody:nth-of-type(even) :is(th,td),
     &:not(.line-tbody) tbody tr:nth-of-type(even) :is(th,td) {
       background-color: var(--box-even-rows-bg-color);
