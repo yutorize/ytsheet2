@@ -290,8 +290,23 @@ sub data_calc {
   if($pc{level} >= 16){
     $pc{raceAbility} =~ s/［(竜|魔物)化］/［剣の託宣／復活$1化］/;
   }
+  ### 装備品の備考 --------------------------------------------------
+  my %equipModTotal = {};
+  foreach (@{extractModifications(\%pc)}) {
+    my %mod = %{$_};
+    foreach ('A'..'F'){
+      $pc{'sttEquip'.$_} += $mod{$_} // 0;
+    }
+    foreach ('vResist','mResist','eva','def','mobility'){
+      $equipModTotal{$_} += $mod{$_} // 0;
+    }
+    foreach ('magicPower','magicCast','magicDamage'){
+      $pc{$_.'Equip'} += $mod{$_} // 0;
+    }
+    $pc{reqdStrWeaponMod} += $mod{reqdWeapon} // 0;
+  }
 
-  ### 能力値計算  --------------------------------------------------
+  ### 能力値計算 --------------------------------------------------
   ## 成長
   $pc{sttHistGrowA} = $pc{sttHistGrowB} = $pc{sttHistGrowC} = $pc{sttHistGrowD} = $pc{sttHistGrowE} = $pc{sttHistGrowF} = 0;
   for (my $i = 1; $i <= $pc{historyNum}; $i++) {
@@ -337,7 +352,7 @@ sub data_calc {
     # 種族特徴補正
     $pc{'stt'.$name} += exists $data::races{$pc{race}} ? $data::races{$pc{race}}{statusMod}{$name} : 0;
     ## ボーナス算出
-    $pc{'bonus'.$name} = int(($pc{'stt'.$name} + $pc{'sttAdd'.$i}) / 6);
+    $pc{'bonus'.$name} = int(($pc{'stt'.$name} + $pc{'sttAdd'.$i} + $pc{'sttEquip'.$i}) / 6);
     ## 冒険者レベル＋各ボーナス算出
     $st{'Lv'.$i} = $pc{level}+$pc{'bonus'.$name};
     ## 各技能レベル＋各ボーナス算出
@@ -429,11 +444,11 @@ sub data_calc {
   ### サブステータス --------------------------------------------------
   ## 生命抵抗力
   $pc{vitResistBase} = $st{LvD};
-  $pc{vitResistAddTotal} = s_eval($pc{vitResistAdd}) + $pc{resistEnhance} + $pc{seekerAbilityResist};
+  $pc{vitResistAddTotal} = $equipModTotal{vResist} + s_eval($pc{vitResistAdd}) + $pc{resistEnhance} + $pc{seekerAbilityResist};
   $pc{vitResistTotal}  = $pc{vitResistBase} + $pc{vitResistAddTotal};
   ## 精神抵抗力
   $pc{mndResistBase} = $st{LvF};
-  $pc{mndResistAddTotal} = s_eval($pc{mndResistAdd}) + $pc{raceAbilityMndResist} + $pc{resistEnhance} + $pc{seekerAbilityResist};
+  $pc{mndResistAddTotal} = $equipModTotal{mResist} + s_eval($pc{mndResistAdd}) + $pc{raceAbilityMndResist} + $pc{resistEnhance} + $pc{seekerAbilityResist};
   $pc{mndResistTotal}  = $pc{mndResistBase} + $pc{mndResistAddTotal};
   ## ＨＰＭＰ：装飾品
   foreach my $type ('Head', 'Ear', 'Face', 'Neck', 'Back', 'HandR', 'HandL', 'Waist', 'Leg', 'Other', 'Other2','Other3','Other4') {
@@ -443,13 +458,13 @@ sub data_calc {
     }
   }
   ## ＨＰ
-  $pc{hpBase} = $pc{level} * 3 + $pc{sttVit} + $pc{sttAddD};
+  $pc{hpBase} = $pc{level}*3 + $pc{sttVit} + $pc{sttAddD} + $pc{sttEquipD};
   $pc{hpAddTotal} = s_eval($pc{hpAdd}) + $pc{tenacity} + $pc{hpAccessory} + $pc{seekerAbilityHpMp};
   $pc{hpAddTotal} += 15 if $pc{lvFig} >= 7; #タフネス
   $pc{hpTotal}  = $pc{hpBase} + $pc{hpAddTotal};
   ## ＭＰ
-  $pc{mpBase} = $lv_caster_total * 3 + $pc{sttMnd} + $pc{sttAddF};
-  $pc{mpBase} = $pc{level} * 3 + $pc{sttMnd} + $pc{sttAddF} if ($pc{raceAbility} =~ /［溢れるマナ］/);
+  $pc{mpBase} = $lv_caster_total*3 + $pc{sttMnd} + $pc{sttAddF} + $pc{sttEquipF};
+  $pc{mpBase} = $pc{level}*3 + $pc{sttMnd} + $pc{sttAddF} + $pc{sttEquipF} if ($pc{raceAbility} =~ /［溢れるマナ］/);
   $pc{mpAddTotal} = s_eval($pc{mpAdd}) + $pc{capacity} + $pc{raceAbilityMp} + $pc{mpAccessory} + $pc{seekerAbilityHpMp};
   $pc{mpTotal} = $pc{mpBase} + $pc{mpAddTotal};
   $pc{mpTotal} = 0  if ($pc{raceAbility} =~ /［マナ不干渉］/);
@@ -462,9 +477,10 @@ sub data_calc {
       last;
     }
   }
-  $pc{mobilityBase} = $pc{sttAgi} + $pc{sttAddB} + $own_mobility;
-  $pc{mobilityBase} = $pc{mobilityBase} * 2 + $own_mobility  if ($pc{raceAbility} =~ /［半馬半人］/);
-  $pc{mobilityTotal} = $pc{mobilityBase} + s_eval($pc{mobilityAdd});
+  $pc{mobilityBase} = $pc{sttAgi} + $pc{sttAddB} + $pc{sttEquipB};
+  $pc{mobilityBase} = $pc{mobilityBase} * 2  if ($pc{raceAbility} =~ /［半馬半人］/);
+  $pc{mobilityAddTotal} = s_eval($pc{mobilityAdd}) + $equipModTotal{mobility} + $own_mobility;
+  $pc{mobilityTotal} = $pc{mobilityBase} + $pc{mobilityAddTotal};
   $pc{mobilityFull} = $pc{mobilityTotal} * 3;
   $pc{mobilityLimited} = min($pc{footwork} ? 10 : 3, $pc{mobilityTotal});
 
@@ -519,10 +535,12 @@ sub data_calc {
         $pc{'lv'.$id}
       + int(($pc{sttInt}
       + $pc{sttAddE}
+      + $pc{sttEquipE}
       + ($pc{'magicPowerOwn'.$id} ? 2 : 0)) / 6)
       + $pc{'magicPowerAdd'.$id}
       + $pc{magicPowerAdd}
       + $pc{magicPowerEnhance}
+      + $pc{magicPowerEquip}
       + $pc{raceAbilityMagicPower}
       + $pc{'raceAbilityMagicPower'.$id}
     ) : 0;
@@ -535,7 +553,7 @@ sub data_calc {
     next if (!$data::class{$name}{craft}{stt});
     my $id = $data::class{$name}{id};
     my $st = $data::class{$name}{craft}{stt};
-    $pc{'magicPower'.$id} = $pc{'lv'.$id} ? ( $pc{'lv'.$id} + int(($pc{'stt'.$stt{$st}[0]} + $pc{'sttAdd'.$stt{$st}[1]} + ($pc{'magicPowerOwn'.$id} ? 2 : 0)) / 6) + $pc{'magicPowerAdd'.$id} ) : 0;
+    $pc{'magicPower'.$id} = $pc{'lv'.$id} ? ( $pc{'lv'.$id} + int(($pc{'stt'.$stt{$st}[0]} + $pc{'sttAdd'.$stt{$st}[1]} + $pc{'sttEquip'.$stt{$st}[1]} + ($pc{'magicPowerOwn'.$id} ? 2 : 0)) / 6) + $pc{'magicPowerAdd'.$id} ) : 0;
   }
   $pc{magicPowerAlc} += $pc{alchemyEnhance};
   
@@ -553,7 +571,7 @@ sub data_calc {
       $acc = $pc{'magicPower'.$id};
     }
     else {
-      my $dex = $pc{sttDex} + ($partNum ? $pc{sttPartA} : $pc{sttAddA});
+      my $dex = $pc{sttDex} + ($partNum ? $pc{sttPartA} : $pc{sttAddA}+$pc{sttEquipA});
       my $own_dex = $pc{"weapon${_}Own"} ? 2 : 0; # 専用化補正
       if($lv){ $acc = $lv + int(($dex+$own_dex) / 6) }
     }
@@ -569,7 +587,7 @@ sub data_calc {
     }
     $acc += $pc{"weapon${_}Acc"}; # 武器の修正値
     ## ダメージ
-    my $str = $pc{sttStr} + ($partNum ? $pc{sttPartC} : $pc{sttAddC});
+    my $str = $pc{sttStr} + ($partNum ? $pc{sttPartC} : $pc{sttAddC}+$pc{sttEquipC});
     my $dmg = 0;
     $dmg = $pc{"weapon${_}Dmg"};
     if   ($category eq 'クロスボウ'){
@@ -609,14 +627,6 @@ sub data_calc {
 
   
   ## 回避力・防護点
-  my @modifications = @{extractModifications(\%pc)};
-  my $evasionModificationTotal = 0;
-  my $defenseModificationTotal = 0;
-  foreach (@modifications) {
-    my %mod = %{$_};
-    $evasionModificationTotal += $mod{evasion} // 0;
-    $defenseModificationTotal += $mod{defense} // 0;
-  }
   foreach my $i (1..$pc{defenseNum}){
     my $class = $pc{"evasionClass$i"};
     my $id = $data::class{$class}{id};
@@ -625,7 +635,7 @@ sub data_calc {
     my $partName = $pc{"evasionPart${i}Name"} = $pc{"part${partNum}Name"};
 
     ## 基礎値
-    my $agi = $pc{sttAgi} + ($partNum ? $pc{sttPartB} : $pc{sttAddB});
+    my $agi = $pc{sttAgi} + ($partNum ? $pc{sttPartB} : $pc{sttAddB}+$pc{sttEquipB});
     my $eva = 0;
     my $def = 0;
     ## 部位（コア含）
@@ -680,8 +690,8 @@ sub data_calc {
     $eva += $lv ? $lv + int(($agi+$own_agi)/6) : 0;
     $def += $artisan;
 
-    $eva += $evasionModificationTotal;
-    $def += $defenseModificationTotal;
+    $eva += $equipModTotal{eva};
+    $def += $equipModTotal{def};
 
     $pc{"defenseTotal${i}Eva"} = $eva;
     $pc{"defenseTotal${i}Def"} = $def;
@@ -703,8 +713,8 @@ sub data_calc {
         $pc{"part${_}MpTotal" } = $pc{mpTotal};
       }
       else {
-        $pc{"part${_}HpTotal" } = $pc{hpTotal}-$pc{sttAddD}-$pc{hpAdd}-$pc{hpAccessory} +$pc{sttPartD} + $pc{coreHpAuto};
-        $pc{"part${_}MpTotal" } = $pc{mpTotal}-$pc{sttAddF}-$pc{mpAdd}-$pc{mpAccessory} +$pc{sttPartF};
+        $pc{"part${_}HpTotal" } = $pc{hpTotal}-$pc{sttAddD}-$pc{sttEquipD}-$pc{hpAdd}-$pc{hpAccessory} +$pc{sttPartD} + $pc{coreHpAuto};
+        $pc{"part${_}MpTotal" } = $pc{mpTotal}-$pc{sttAddF}-$pc{sttEquipF}-$pc{mpAdd}-$pc{mpAccessory} +$pc{sttPartF};
         my $hpAccessory = 0;
         my $mpAccessory = 0;
         foreach my $add ('','_','__'){
