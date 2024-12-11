@@ -35,7 +35,9 @@ if($mode eq 'edit' || ($mode eq 'convert' && $pc{ver})){
 }
 elsif($mode eq 'blanksheet'){
   $pc{paletteUseBuff} = 1;
-  $pc{partsManualInput} = 0
+  $pc{partsManualInput} = 0;
+
+  %pc = applyCustomizedInitialValues(\%pc, 'm');
 }
 
 ## カラー

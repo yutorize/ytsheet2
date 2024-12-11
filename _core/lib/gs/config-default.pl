@@ -217,4 +217,12 @@ foreach (@weapons){
   our $skin_tmpl  = $::core_dir . '/skin/gs/index.html';         # 一覧／登録フォーム等の大枠
   our $skin_sheet = $::core_dir . '/skin/gs/sheet-chara.html';   # キャラクターシート
 
+# シート初期値の変更
+our %customizedInitialValues = (
+    '' => {
+        # 例：「キャラクター名」の初期値を「unnamed」にする
+        # 'characterName' => 'unnamed',
+    },
+);
+
 1;

@@ -154,4 +154,19 @@ our $game = 'ms';
     },
   );
 
+# シート初期値の変更
+our %customizedInitialValues = (
+    # キャラクターデータ
+    '' => {
+        # 例：「キャラクター名」の初期値を「unnamed」にする
+        # 'characterName' => 'unnamed',
+    },
+
+    # クランデータ
+    c => {
+        # 例：「クラン名」の初期値を「unnamed」にする
+        # 'clanName' => 'unnamed',
+    },
+);
+
 1;

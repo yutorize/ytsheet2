@@ -170,6 +170,24 @@ sub tokenMake {
   return $token;
 }
 
+## カスタマイズされた初期値の反映
+sub applyCustomizedInitialValues {
+  my %pc = %{shift;};
+  my $_type = shift;
+  $_type //= $pc{type};
+  $_type //= '';
+
+  if (%set::customizedInitialValues && $set::customizedInitialValues{$_type}) {
+    my %values = %{$set::customizedInitialValues{$_type}};
+
+    foreach (keys %values) {
+      $pc{$_} = $values{$_};
+    }
+  }
+
+  return %pc;
+}
+
 ## ログインエラー
 sub loginError {
   our $login_error = 'パスワードが間違っているか、<br>編集権限がありません。';

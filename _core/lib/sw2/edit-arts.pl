@@ -58,6 +58,8 @@ if($mode eq 'blanksheet'){
   $pc{magicCost} = 'MP';
   foreach my $lv (2,4,7,10,13){ $pc{"godMagic${lv}Cost"} = 'MP' }
   $pc{schoolReq} = '＿名誉点';
+
+  %pc = applyCustomizedInitialValues(\%pc, 'a');
 }
 
 ## カラー

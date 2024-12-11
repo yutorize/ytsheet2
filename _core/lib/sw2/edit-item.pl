@@ -32,6 +32,8 @@ if($mode eq 'edit' || ($mode eq 'convert' && $pc{ver})){
   %pc = data_update_item(\%pc);
 }
 
+%pc = applyCustomizedInitialValues(\%pc, 'i') if $mode eq 'blanksheet';
+
 $pc{weaponNum} ||= 1;
 $pc{armourNum} ||= 1;
 
