@@ -205,7 +205,6 @@ body:not(.mode-crc) .crc-only {
   }
 }
 
-
 #status > summary #exp-skill.minus {
   color: #e70;
 }
@@ -858,7 +857,7 @@ body:not(.mode-crc) .crc-only {
   background: var(--bg-color);
   font-size: 85%;
   font-weight: bold;
-
+  
   .minus {
     color: #e70;
   }

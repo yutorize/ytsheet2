@@ -430,26 +430,26 @@ print <<"HTML";
     <p class="copyright">©<a href="https://yutorize.2-d.jp">ゆとらいず工房</a>「ゆとシートⅡ」ver.${main::ver}</p>
   </footer>
   <datalist id="data-intellect">
-  <option value="なし">
-  <option value="動物並み">
-  <option value="低い">
-  <option value="人間並み">
-  <option value="高い">
-  <option value="命令を聞く">
+    <option value="なし">
+    <option value="動物並み">
+    <option value="低い">
+    <option value="人間並み">
+    <option value="高い">
+    <option value="命令を聞く">
   </datalist>
   <datalist id="data-perception">
-  <option value="五感">
-  <option value="五感（暗視）">
-  <option value="五感（）">
-  <option value="魔法">
-  <option value="機械">
+    <option value="五感">
+    <option value="五感（暗視）">
+    <option value="五感（）">
+    <option value="魔法">
+    <option value="機械">
   </datalist>
   <datalist id="data-disposition">
-  <option value="友好的">
-  <option value="中立">
-  <option value="敵対的">
-  <option value="腹具合による">
-  <option value="命令による">
+    <option value="友好的">
+    <option value="中立">
+    <option value="敵対的">
+    <option value="腹具合による">
+    <option value="命令による">
   </datalist>
   <datalist id="data-language">
     <option value="なし">
@@ -458,12 +458,12 @@ print <<"HTML";
     <option>―</option>
   </datalist>
   <datalist id="data-weakness">
-  <option value="命中力+1">
-  <option value="物理ダメージ+2点">
-  <option value="魔法ダメージ+2点">
-  <option value="属性ダメージ+3点">
-  <option value="回復効果ダメージ+3点">
-  <option value="なし">
+    <option value="命中力+1">
+    <option value="物理ダメージ+2点">
+    <option value="魔法ダメージ+2点">
+    <option value="属性ダメージ+3点">
+    <option value="回復効果ダメージ+3点">
+    <option value="なし">
   </datalist>
   <datalist id="data-roots-num">
     <option value="自動">

@@ -346,7 +346,6 @@ function updatePartList() {
       }
   );
 }
-
 // 戦利品欄 ----------------------------------------
 // 追加
 function addLoots(){
