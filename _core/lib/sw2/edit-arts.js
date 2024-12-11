@@ -66,6 +66,20 @@ function checkCategory(){
     setName();
   }
   else { document.getElementById('data-none').style.display = 'block'; }
+
+  let sheetKind;
+  switch (category) {
+    case 'magic':
+      sheetKind = "魔法";
+      break;
+    case 'god':
+      sheetKind = '神格';
+      break;
+    case 'school':
+      sheetKind = '流派';
+      break;
+  }
+  document.querySelector('#header-menu .menu-items > .sheet-main .sheet-kind').textContent = sheetKind ?? '';
 }
 
 // 魔法系統 ----------------------------------------
