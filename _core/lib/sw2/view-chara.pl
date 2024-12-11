@@ -292,7 +292,7 @@ foreach ('1bat',@set::feats_lv){
   (my $lv = $_) =~ s/^([0-9]+)[^0-9].*?$/$1/;
   if($_ =~ /bat/ && !$pc{lvBat}){ next; }
   next if $pc{level} < $lv;
-  push(@feats_lv, { NAME => $pc{'combatFeatsLv'.$_}, "LV" => $lv } );
+  push(@feats_lv, { NAME => $pc{'combatFeatsLv'.$_}, "LV" => $lv.($_ =~ /bat/ ? '+' : '') } );
   $acquired{$pc{'combatFeatsLv'.$_}} = 1;
 }
 if($pc{buildupAddFeats}){
