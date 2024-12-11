@@ -25,7 +25,7 @@ sub outputChatPalette {
   my $datatype = ($::in{log}) ? 'logs' : 'data';
 
   my @lines;
-  open my $IN, '<', "${set::char_dir}${file}/${datatype}.cgi" or &login_error;
+  open my $IN, '<', "${set::char_dir}${file}/${datatype}.cgi" or error('データがありません');
   if($datatype eq 'logs'){
     my $hit = 0;
     while (<$IN>){
