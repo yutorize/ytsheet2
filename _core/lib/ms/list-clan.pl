@@ -253,7 +253,7 @@ foreach my $id (sort {$groups{$a}{sort} <=> $groups{$b}{sort}} keys %grouplist){
           $_ == 1 ||
           $_ == $lastpage
         ){
-          $navbar .= '<a href="./?group='.$id.$q_links.'&page='.$_.'&sort='.$::in{sort}.'">'.$_.'</a> '
+          $navbar .= '<a href="./?type=c&group='.$id.$q_links.'&page='.$_.'&sort='.$::in{sort}.'">'.$_.'</a> '
         }
         else { $navbar .= '...' }
       }
