@@ -214,9 +214,6 @@ foreach (@list) {
     $image, $tags, $hide, $parts, $habitat, $price
   ) = (split /<>/, $_)[0..19];
   
-  $price =~ s#^／#―／#;
-  $price =~ s#／$#／―#;
-  
   #グループ
   my $taxa_full = $taxa =~ s/^その他://r;
   $taxa_full = "<span class=\"small\">$taxa_full</span>" if length($taxa_full) >= 6;
@@ -244,6 +241,10 @@ foreach (@list) {
   ){
     next;
   }
+
+  # 価格
+  $price =~ s#^／#―／#;
+  $price =~ s#／$#／―#;
 
   #タグ
   my $tags_links;
