@@ -83,11 +83,14 @@ window.onload = function() {
   calcExp();
   calcLv();
   checkRace();
+  checkEquipMod();
   calcStt();
   calcCash();
   calcHonor();
   calcDishonor();
   calcCommonClass();
+  checkEffectAll();
+  setupBracketInputCompletion();
   
   imagePosition();
   changeColor();
@@ -157,6 +160,7 @@ let expTotal = 0;
 let lv = {};
 let lvSeeker = 0;
 function calcLv(){
+  console.log('calcLv()');
   expUse = 0;
   let allClassLv = [];
   levelCasters = [];
@@ -205,7 +209,7 @@ function changeRace(raceNew){
   const raceBefore = race;
   
   let inputtedSin = false;
-  if((SET.races[raceBefore]?.sin||0) != form.sin.value){
+  if((SET.races[raceBefore]?.sin||0) != form.sin.value && !form.sin.readOnly){
     inputtedSin = true;
   }
   let inputtedParts = false;
@@ -257,6 +261,7 @@ function changeRace(raceNew){
     document.getElementById('race-ability-value').innerHTML = `<input type="text" name="raceAbilityFree" oninput="changeRaceAbility()" value="${form.raceAbilityFree?.value ?? '［］'}">`;
   }
   form.sin.value = SET.races[race]?.sin || 0;
+  if(form.sin.readOnly){ checkEffectAll(); }
   
   if(SET.races[race]?.parts){
     let num = 1;
@@ -291,6 +296,7 @@ let raceAbilityMndResist = 0;
 let raceAbilityMagicPower= 0;
 let raceAbilities = [];
 function checkRace(){
+  console.log('checkRace()');
   raceAbilityDef       = 0;
   raceAbilityMp        = 0;
   raceAbilityMndResist = 0;
@@ -444,30 +450,27 @@ function setLanguageDefault(){
 // ステータス計算 ----------------------------------------
 let reqdStr = 0;
 let reqdStrHalf = 0;
-let stt = {
-  Dex:0, addA:0, growDex:0,
-  Agi:0, addB:0, growAgi:0,
-  Str:0, addC:0, growStr:0,
-  Vit:0, addD:0, growVit:0,
-  Int:0, addE:0, growInt:0,
-  Mnd:0, addF:0, growMnd:0,
-};
-let bonus = {
-  Dex:0,
-  Agi:0,
-  Str:0,
-  Vit:0,
-  Int:0,
-  Mnd:0,
-}
+let stt = {};
+let bonus = {}
 function calcStt() {
+  console.log('calcStt()');
+  stt = {
+    Dex:0, addA:0, growDex:0,
+    Agi:0, addB:0, growAgi:0,
+    Str:0, addC:0, growStr:0,
+    Vit:0, addD:0, growVit:0,
+    Int:0, addE:0, growInt:0,
+    Mnd:0, addF:0, growMnd:0,
+  };
+  bonus = {
+    Dex:0,
+    Agi:0,
+    Str:0,
+    Vit:0,
+    Int:0,
+    Mnd:0,
+  }
   // 履歴から成長カウント
-  stt.growDex = 0;
-  stt.growAgi = 0;
-  stt.growStr = 0;
-  stt.growVit = 0;
-  stt.growInt = 0;
-  stt.growMnd = 0;
   for (let i = 1; i <= Number(form.historyNum.value); i++){
     const grow = form["history" + i + "Grow"].value;
     grow.replace(/器(?:用度?)?(?:×|\*)?([0-9]{1,3})?/g, (all,n) => { stt.growDex += Number(n) || 1; });
@@ -484,9 +487,9 @@ function calcStt() {
     : lvSeeker >=  5 ? 12
     : lvSeeker >=  1 ?  6
     : 0;
-
   // 計算
   let growTotal = 0;
+  let preGrowTotal = 0;
   for(let i of [
     ['A','Dex'],
     ['B','Agi'],
@@ -501,7 +504,9 @@ function calcStt() {
                : (i[0] === 'E' || i[0] === 'F') ? Number(form.sttBaseSpi.value)
                : 0;
     // 成長
-    stt['grow'+i[1]] += Number(form['sttPreGrow'+i[0]].value) + seekerGrow;
+    const preGrow = Number(form['sttPreGrow'+i[0]].value);
+    stt['grow'+i[1]] += preGrow + seekerGrow;
+    preGrowTotal += preGrow;
     document.getElementById(`stt-grow-${i[0]}-value`).textContent = stt['grow'+i[1]];
     growTotal += stt['grow'+i[1]]; //成長回数合計
 
@@ -514,14 +519,19 @@ function calcStt() {
     // 増強
     stt['add'+i[0]] = Number(form['sttAdd'+i[0]].value);
 
+    // 合計
+    stt['total'+i[1]] = stt[i[1]] + stt['add'+i[0]] + (equipMod[i[0]] || 0);
+    document.getElementById(`stt-equip-${i[0]}-value`).textContent = equipMod[i[0]];
+
     // ボーナス
     document.getElementById(`stt-bonus-${i[1].toLowerCase()}-value`).textContent
       = bonus[i[1]]
-      = parseInt((stt[i[1]] + stt['add'+i[0]]) / 6);
+      = parseInt((stt['total'+i[1]]) / 6);
   }
 
   document.getElementById("stt-grow-total-value").textContent = growTotal;
   document.getElementById("history-grow-total-value").textContent = growTotal;
+  document.querySelector('#regulation > dl:first-of-type dt.grow').dataset.total = preGrowTotal.toString();
   
   function modStatus(value){
     if(value > 0){ return `<span class="small">+${value}=</span>` }
@@ -529,7 +539,7 @@ function calcStt() {
     return ''
   }
   
-  reqdStr = stt.Str + stt.addC;
+  reqdStr = stt.totalStr;
   reqdStrHalf = Math.ceil(reqdStr / 2);
   
   checkFeats();
@@ -546,6 +556,7 @@ function calcStt() {
 // 戦闘特技チェック ----------------------------------------
 let feats = {};
 function checkFeats(){
+  console.log('checkFeats()');
   feats = {};
 
   const featsVagrantsOn = form.featsVagrantsOn.checked;
@@ -1099,8 +1110,8 @@ function calcSubStt() {
   
   const vitResistBase = level + bonus.Vit;
   const mndResistBase = level + bonus.Mnd;
-  const vitResistAutoAdd = 0 + (feats['抵抗強化'] || 0) + seekerResistAdd;
-  const mndResistAutoAdd = raceAbilityMndResist + (feats['抵抗強化'] || 0) + seekerResistAdd;
+  const vitResistAutoAdd = (equipMod.VResist||0) + 0 + (feats['抵抗強化'] || 0) + seekerResistAdd;
+  const mndResistAutoAdd = (equipMod.MResist||0) + raceAbilityMndResist + (feats['抵抗強化'] || 0) + seekerResistAdd;
   document.getElementById("vit-resist-base").textContent = vitResistBase;
   document.getElementById("mnd-resist-base").textContent = mndResistBase;
   document.getElementById("vit-resist-auto-add").textContent = vitResistAutoAdd;
@@ -1108,10 +1119,10 @@ function calcSubStt() {
   document.getElementById("vit-resist-total").textContent = vitResistBase + Number(form.vitResistAdd.value) + vitResistAutoAdd;
   document.getElementById("mnd-resist-total").textContent = mndResistBase + Number(form.mndResistAdd.value) + mndResistAutoAdd;
   
-  subStt.hpBase = level * 3 + stt.Vit + stt.addD;
+  subStt.hpBase = level * 3 + stt.totalVit;
   subStt.mpBase = 
-    (raceAbilities.includes('溢れるマナ')) ? (level * 3 + stt.Mnd + stt.addF)
-    : ( levelCasters.reduce((a,x) => a+x,0) * 3 + stt.Mnd + stt.addF );
+    (raceAbilities.includes('溢れるマナ')) ? (level * 3 + stt.totalMnd)
+    : ( levelCasters.reduce((a,x) => a+x,0) * 3 + stt.totalMnd );
   subStt.hpAutoAdd = (feats['頑強'] || 0) + (lv['Fig'] >= 7 ? 15 : 0) + seekerHpMpAdd;
   subStt.mpAutoAdd = (feats['キャパシティ'] || 0) + raceAbilityMp     + seekerHpMpAdd;
   subStt.hpAccessory = 0;
@@ -1135,7 +1146,7 @@ function calcSubStt() {
 
 // 移動力計算 ----------------------------------------
 function calcMobility() {
-  const agi = stt.Agi + stt.addB;
+  const agi = stt.totalAgi;
   const mobilityBase = (raceAbilities.includes('半馬半人') ? (agi * 2) : agi);
   let mobilityOwn = 0;
   for (let num = 1; num <= form.armourNum.value; num++){
@@ -1144,9 +1155,10 @@ function calcMobility() {
       break;
     }
   }
-  const mobility = mobilityBase + Number(form.mobilityAdd.value) + mobilityOwn;
+  const mobilityMod = Number(form.mobilityAdd.value) + (equipMod.Mobility||0) + mobilityOwn
+  const mobility = mobilityBase + mobilityMod;
   document.getElementById("mobility-limited").textContent = Math.min(feats['足さばき'] ? 10 : 3, mobility);
-  document.getElementById("mobility-base").textContent = mobilityBase + mobilityOwn;
+  document.getElementById("mobility-base").textContent = mobilityBase + (mobilityMod?`+${mobilityMod}`:'');
   document.getElementById("mobility-total").textContent = mobility;
   document.getElementById("mobility-full").textContent = mobility * 3;
 }
@@ -1202,10 +1214,13 @@ function calcPackage() {
 // 魔力計算 ----------------------------------------
 let magicPowers = {};
 function calcMagic() {
-  const addPower = Number(form.magicPowerAdd.value) + (feats['魔力強化'] || 0);
-  document.getElementById("magic-power-magicenhance-value").textContent = feats['魔力強化'] || 0;
-  const addCast = Number(form.magicCastAdd.value);
-  const addDamage = Number(form.magicDamageAdd.value);
+  const addPower = Number(form.magicPowerAdd.value) + (feats['魔力強化']||0)+(equipMod.MagicPower||0);
+  const addCast = Number(form.magicCastAdd.value)+(equipMod.MagicCast||0);
+  const addDamage = Number(form.magicDamageAdd.value)+(equipMod.MagicDamage||0);
+
+  document.getElementById("magic-power-equip-value" ).textContent = formatNumber(equipMod.MagicPower );
+  document.getElementById("magic-cast-equip-value"  ).textContent = formatNumber(equipMod.MagicCast  );
+  document.getElementById("magic-damage-equip-value").textContent = formatNumber(equipMod.MagicDamage);
   
   let openMagic = 0;
   let openCraft = 0;
@@ -1222,7 +1237,7 @@ function calcMagic() {
       if(cLv){ openMagic++; }
       
       const seekerMagicAdd = (lvSeeker && checkSeekerAbility('魔力上昇') && cLv >= 15) ? 3 : 0;
-      let power = cLv + parseInt((stt.Int + stt.addE + (form["magicPowerOwn"+id].checked ? 2 : 0)) / 6) + Number(form["magicPowerAdd"+id].value) + addPower + seekerMagicAdd + raceAbilityMagicPower;
+      let power = cLv + parseInt((stt.totalInt + (form["magicPowerOwn"+id].checked ? 2 : 0)) / 6) + Number(form["magicPowerAdd"+id].value) + addPower + seekerMagicAdd + raceAbilityMagicPower;
       if(id === 'Pri' && (
            raceAbilities.includes('神の御名と共に')
         || raceAbilities.includes('神への礼賛')
@@ -1242,10 +1257,10 @@ function calcMagic() {
       
       let power = cLv;
       if     (SET.class[key].craft.stt === '知力')  {
-        power += parseInt((stt.Int + stt.addE + (form["magicPowerOwn"+id].checked ? 2 : 0)) / 6);
+        power += parseInt((stt.totalInt + (form["magicPowerOwn"+id].checked ? 2 : 0)) / 6);
       }
       else if(SET.class[key].craft.stt === '精神力'){
-        power += parseInt((stt.Mnd + stt.addF + (form["magicPowerOwn"+id].checked ? 2 : 0)) / 6);
+        power += parseInt((stt.totalMnd + (form["magicPowerOwn"+id].checked ? 2 : 0)) / 6);
       }
       if(SET.class[key].craft.power){
         power += Number(form["magicPowerAdd"+id].value);
@@ -1255,6 +1270,10 @@ function calcMagic() {
       
       if(id === 'Alc'){ power += feats['賦術強化'] || 0 }
       document.getElementById("magic-cast-"+eName+"-value").textContent = power + Number(form["magicCastAdd"+id].value);
+      
+      if(SET.class[key].craft?.power){
+        magicPowers[id] = cLv ? power : 0;
+      }
     }
   }
   // 全体／その他の開閉
@@ -1269,6 +1288,8 @@ function calcMagic() {
   document.getElementById("magic-power-magicenhance").style.display = feats['魔力強化']      ? '' : 'none';
   document.getElementById("magic-power-common"      ).style.display = openMagic              ? '' : 'none';
   document.getElementById("magic-power-hr"          ).style.display = openMagic && openCraft ? '' : 'none';
+
+  stylizeVisibleRows(document.querySelectorAll('#magic-power > .edit-table > tbody > tr'))
 }
 
 // 妖精魔法ランク計算 ----------------------------------------
@@ -1288,14 +1309,50 @@ function calcFairy() {
   document.getElementById('fairy-rank').textContent = result;
 }
 
+// アイテム名称欄の入力補完時 ----------------------------------------
+function setupBracketInputCompletion() {
+  document.querySelectorAll('input[type="text"]:is([list="list-item-name"], [list="list-weapon-name"]):not(.support-bracket-input-completion)').forEach(
+      input => {
+        let lastValue = input.value ?? '';
+
+        input.addEventListener(
+            'input',
+            e => {
+              const newValue = input.value ?? '';
+
+              if (
+                  newValue.includes('〈〉') &&
+                  (
+                      lastValue === '' ||
+                      newValue.includes(lastValue) // 部分的に入力されている状態から入力補完が選ばれたケース
+                  ) &&
+                  !lastValue.includes('〈〉') // 空の括弧がある状態から何かが入力されたときは動作させない（括弧内の前に `[魔]` などを入力するときを想定した措置）
+              ) {
+                if (input.selectionStart === input.selectionEnd) { // 範囲選択になっていないときのみ動作させる
+                  const indexOfEmptyBracket = newValue.indexOf('〈〉');
+                  input.selectionStart = input.selectionEnd = indexOfEmptyBracket + 1;
+                }
+              }
+
+              lastValue = newValue;
+            }
+        );
+
+        input.classList.add('support-bracket-input-completion');
+      }
+  );
+}
+
 // 部位データ計算 ----------------------------------------
 let partStt = {};
 function changeParts(){
+  console.log('changeParts()');
   calcParts();
   calcAttack();
   calcDefense();
 }
 function calcParts(){
+  console.log('calcParts()');
   let options = '<option value="">';
   for (let num = 1; num <= form.partNum.value; num++){
     const partName = form[`part${num}Name`].value;
@@ -1312,12 +1369,12 @@ function calcParts(){
 
     if(raceAbilities.includes('蠍人の身体')){
       if(form.partCore.value == num){ def = 0; }
-      form.sttPartA.value = form.sttAddA.value;
-      form.sttPartB.value = form.sttAddB.value;
-      form.sttPartC.value = form.sttAddC.value;
-      form.sttPartD.value = form.sttAddD.value;
-      form.sttPartE.value = form.sttAddE.value;
-      form.sttPartF.value = form.sttAddF.value;
+      form.sttPartA.value = Number(form.sttAddA.value||0) + (equipMod.A || 0);
+      form.sttPartB.value = Number(form.sttAddB.value||0) + (equipMod.B || 0);
+      form.sttPartC.value = Number(form.sttAddC.value||0) + (equipMod.C || 0);
+      form.sttPartD.value = Number(form.sttAddD.value||0) + (equipMod.D || 0);
+      form.sttPartE.value = Number(form.sttAddE.value||0) + (equipMod.E || 0);
+      form.sttPartF.value = Number(form.sttAddF.value||0) + (equipMod.F || 0);
       document.getElementById('parts-stt-add').style.display = 'none';
     }
     else {
@@ -1325,8 +1382,8 @@ function calcParts(){
     }
     // コア
     if(form.partCore.value == num){
-      hp += subStt.hpBase + subStt.hpAutoAdd - stt.addD + Number(form.sttPartD.value||0);
-      mp += subStt.mpBase + subStt.mpAutoAdd - stt.addF + Number(form.sttPartF.value||0);
+      hp += subStt.hpBase + subStt.hpAutoAdd - stt.addD - equipMod.D + Number(form.sttPartD.value||0);
+      mp += subStt.mpBase + subStt.mpAutoAdd - stt.addF - equipMod.F + Number(form.sttPartF.value||0);
       if(raceAbilities.includes('蠍人の身体')){
         def = 0;
         hp += subStt.hpAccessory;
@@ -1383,6 +1440,7 @@ function calcParts(){
 // 攻撃計算 ----------------------------------------
 let errorAccClass = {};
 function calcAttack() {
+  console.log('calcAttack()');
   errorAccClass = {};
   for(const name in SET.class){
     if(SET.class[name].type !== 'weapon-user' && !SET.class[name].accUnlock){ continue; }
@@ -1409,13 +1467,20 @@ function calcAttack() {
     }
     if(display == 'none'){ errorAccClass[name] = true; }
     document.getElementById(`attack-${eName}`).style.display = display;
-    document.getElementById(`attack-${eName}-str`).textContent = id == 'Fen' ? reqdStrHalf : reqdStr;
-    document.getElementById(`attack-${eName}-acc`).textContent = lv[id] + bonus.Dex;
-    document.getElementById(`attack-${eName}-dmg`).textContent = lv[id] + bonus.Str;
-  }
-  
-  if(!modeZero){
-    document.getElementById("attack-demonruler-dmg").textContent = '―';
+
+    document.getElementById(`attack-${eName}-str`).textContent
+      = (id == 'Fen' ? reqdStrHalf
+      : SET.class[name]?.accUnlock?.reqd ? stt['total'+SET.class[name]?.accUnlock?.reqd]
+      : reqdStr)
+      + (equipMod.WeaponReqd ? `+${equipMod.WeaponReqd}` : '');
+    
+    document.getElementById(`attack-${eName}-acc`).textContent
+      = SET.class[name]?.accUnlock?.acc === 'power' ? magicPowers[id]
+      : lv[id] + bonus.Dex;
+    
+    document.getElementById(`attack-${eName}-dmg`).textContent
+      = SET.class[name]?.accUnlock?.dmg === 'power' ? magicPowers[id]
+      : lv[id] + bonus.Str;
   }
 
   for(let i = 0; i < SET.weapons.length; i++){
@@ -1430,10 +1495,14 @@ function calcAttack() {
   document.getElementById("throwing").style.display = feats['スローイング'] ? '' : 'none';
   document.getElementById("parts-enhance").style.display = crafts['部位極強化'] || crafts['部位超強化'] || crafts['部位即応＆強化'] ? '' : 'none';
   document.getElementById("parts-enhance-acc").textContent = (crafts['部位極強化']?1:0)+(crafts['部位超強化']?1:0)+(crafts['部位即応＆強化']?1:0);
+  
+
+  stylizeVisibleRows(document.querySelectorAll('#attack-classes > .edit-table > tbody > tr'))
 
   calcWeapon();
 }
 function calcWeapon() {
+  console.log('calcWeapon()');
   for (let i = 1; i <= form.weaponNum.value; i++){
     const className = form["weapon"+i+"Class"].value;
     const partNum = form["weapon"+i+"Part"].value;
@@ -1442,24 +1511,30 @@ function calcWeapon() {
     const note = form["weapon"+i+"Note"].value;
     const weaponReqd = safeEval(form["weapon"+i+"Reqd"].value) || 0;
     const classLv = lv[ SET.class[className]?.id ] || 0;
-    let dex = stt.Dex + (partNum ? Number(form.sttPartA.value || 0) : stt.addA);
-    let str = stt.Str + (partNum ? Number(form.sttPartC.value || 0) : stt.addC);
+    let dex = (partNum ? stt.Dex+Number(form.sttPartA.value || 0) : stt.totalDex);
+    let str = (partNum ? stt.Str+Number(form.sttPartC.value || 0) : stt.totalStr);
     let accBase = 0;
     let dmgBase = 0;
     // 技能選択のエラーチェック
     form["weapon"+i+"Class"].classList.toggle('error', errorAccClass[className] == true); 
     // 必筋チェック
-    const maxReqd = (className === "フェンサー") ? reqdStrHalf : reqdStr;
-    form["weapon"+i+"Reqd"].classList.toggle('error', weaponReqd > maxReqd);
+    const maxReqd
+      = (className === "フェンサー") ? reqdStrHalf
+      : SET.class[className]?.accUnlock?.reqd ? stt['total'+SET.class[className]?.accUnlock?.reqd]
+      : reqdStr;
+    form["weapon"+i+"Reqd"].classList.toggle('error', weaponReqd > maxReqd + (equipMod.WeaponReqd||0));
     // 基礎命中
-    if(classLv) {
+    if(SET.class[className]?.accUnlock?.acc === 'power'){
+      accBase = magicPowers[SET.class[className].id];
+    }
+    else if(classLv) {
       accBase += classLv + parseInt((dex + ownDex) / 6);
     }
     // 基礎ダメージ
     if     (category === 'クロスボウ'){ dmgBase = modeZero ? 0 : classLv; }
     else if(category === 'ガン')      { dmgBase = magicPowers['Mag']; }
-    else if(!modeZero && className === "デーモンルーラー")
-                                      { dmgBase = magicPowers['Dem']; }
+    else if(SET.class[className]?.accUnlock?.dmg === 'power')
+                                      { dmgBase = magicPowers[SET.class[className].id] }
     else if(classLv)                  { dmgBase = classLv + parseInt(str / 6); }
 
     // 戦闘特技
@@ -1494,6 +1569,7 @@ function calcWeapon() {
 // 防御計算 ----------------------------------------
 let errorEvaClass = {};
 function calcDefense() {
+  console.log('calcDefense()');
   let defBase = 0;
   let evaAdd = 0;
   errorEvaClass = {};
@@ -1565,10 +1641,19 @@ function calcDefense() {
   document.getElementById("parts-enhance-def").style.display = crafts['部位極強化'] || crafts['部位超強化'] || crafts['部位即応＆強化'] ? '' : 'none';
   document.getElementById("parts-enhance-eva").textContent = (crafts['部位極強化']?1:0)+(crafts['部位超強化']?1:0)+(crafts['部位即応＆強化']?1:0);
   
+  // 武器と装飾品
+  document.getElementById('equip-mod-eva').textContent = equipMod.Eva;
+  document.getElementById('equip-mod-def').textContent = equipMod.Def;
+  evaAdd  += (equipMod.Eva||0);
+  defBase += (equipMod.Def||0);
+
+  stylizeVisibleRows(document.querySelectorAll('#evasion-classes > .edit-table > tbody > tr'));
+
   calcArmour(evaAdd,defBase);
 }
 // 防具合計計算
 function calcArmour(evaAdd,defBase) {
+  console.log(`calcArmour(${evaAdd},${defBase})`);
   let count = { 鎧:0, 盾:0, 他:0 };
   let checkedCount = { 鎧:{}, 盾:{}, 他:{} };
 
@@ -1606,7 +1691,7 @@ function calcArmour(evaAdd,defBase) {
 
     let eva = 0;
     let def = 0;
-    let agi = stt.Agi + (partNum ? Number(form.sttPartB.value || 0) : stt.addB);
+    let agi = (partNum ? stt.Agi+Number(form.sttPartB.value || 0) : stt.totalAgi);
     if(!partNum || partNum == form.partCore.value) {
       def += defBase;
       eva += evaAdd;
@@ -1632,11 +1717,13 @@ function calcArmour(evaAdd,defBase) {
 
       if(!checkObj.checked) continue;
       
-      if((safeEval(form[`armour${num}Reqd`].value) || 0) > maxReqd){
+      const category = form[`armour${num}Category`].value;
+
+      let reqdMod = (category == '盾') ? (equipMod.WeaponReqd||0) : 0;
+      if((safeEval(form[`armour${num}Reqd`].value) || 0) > maxReqd + reqdMod){
         form[`armour${num}Reqd`].classList.add('error');
       }
 
-      const category = form[`armour${num}Category`].value;
       eva += Number(form[`armour${num}Eva`].value);
       def += Number(form[`armour${num}Def`].value);
       if(!partNum || partNum == form.partCore.value){
@@ -1656,7 +1743,6 @@ function calcArmour(evaAdd,defBase) {
     document.getElementById(`defense-total${i}-eva`).textContent = eva;
     document.getElementById(`defense-total${i}-def`).textContent = def;
   }
-  
 }
 
 // 経験点計算 ----------------------------------------
@@ -1852,6 +1938,182 @@ function calcCash(){
   else { form.deposit.readOnly = false; }
 }
 
+// 穢れ・侵蝕の影響など ----------------------------------------
+let beforeEffects = {};
+function getBoxNum(box){
+  return box.querySelector("input[type=hidden]").getAttribute("name").replace(/^effect([0-9]+)Num$/,'$1');
+}
+function checkEffectAll(){
+  document.querySelectorAll("#area-effects .box h2 select").forEach(obj => {
+    const box = obj.closest(".box");
+    checkEffect(obj,box);
+    calcEffect(obj);
+    checkSin();
+    beforeEffects[box.id] = obj.value;
+  });
+}
+function checkEffect(obj,box){
+  const name = box.querySelector('select').value;
+  const eData = SET.effects?.[name] || {};
+  box.querySelector("h2 .select-input").classList.toggle("free", name.match(/^自由記入/));
+  box.querySelector(".effect-points dt ").textContent = eData?.pointName || '';
+  box.querySelector("thead th.text     ").textContent = eData?.header?.[0] || '';
+  box.querySelector("thead th.num1 span").textContent = eData?.header?.[1] || '';
+  box.querySelector("thead th.num2 span").textContent = eData?.header?.[2] || '';
+  box.querySelector("thead th.num1").classList.toggle("hidden", !eData?.header?.[1] && !eData?.type?.[1]);
+  box.querySelector("thead th.num2").classList.toggle("hidden", !eData?.header?.[2] && !eData?.type?.[2]);
+  [1,2].forEach(num => {
+    box.querySelectorAll(`input[name$=Pt${num}]`).forEach(input => {
+      input.type = SET.effects?.[name]?.type?.[num] || 'text';
+      input.value = input.type == 'checkbox' || input.type == 'radio' ? 1 : input.value;
+    });
+  });
+}
+function changeEffect(obj){
+  const name = obj.value;
+  const box = obj.closest(".box");
+  const num = getBoxNum(box);
+  if(box.querySelector("input:read-only")){
+    let hasValue = false;
+    for (const node of box.querySelectorAll(`input:not([type=hidden])`)){
+      if(node.readOnly){ continue; }
+      if(node.name.match(/Free$/)){ continue; }
+      if(node.type === 'checkbox' || node.type === 'radio'){
+        if(node.checked) { hasValue = true; break; }
+      }
+      else {
+        if(node.value !== ''){
+          hasValue = true; break;
+        }
+      }
+    }
+    if(hasValue){
+      if (!confirm('項目に値が入っています。本当に変更しますか？')){
+        box.querySelector("select").value = beforeEffects[box.id];
+        return false;
+      }
+    }
+    if(name === "穢れ"){
+      console.log(SET.races[race]?.sin||0)
+      if(form.sin.value != (SET.races[form.race.value]?.sin||0)){
+        if (!confirm('穢れ度の入力が自動計算になります（今の入力値は初期化されます）。よろしいですか？')){
+          box.querySelector("select").value = beforeEffects[box.id];
+          return false;
+        }
+      }
+    }
+  }
+  beforeEffects[box.id] = name;
+
+  if(SET.effects?.[name]?.fix){
+    box.querySelectorAll("tbody tr").forEach(row => row.remove());
+    form[`effect${num}Num`].value = 0;
+    let i = 1;
+    SET.effects?.[name]?.fix.forEach(text => {
+      addEffect(obj);
+      const input = box.querySelector(`input[name$="${num}-${i}"]`);
+      input.value = text;
+      input.readOnly = true;
+      i++;
+    })
+  }
+  else {
+    if(box.querySelector("input:read-only")){
+      box.querySelectorAll("tbody tr").forEach(row => row.remove());
+      form[`effect${num}Num`].value = 0;
+      addEffect(obj);
+    }
+  }
+  checkEffect(obj,box);
+  calcEffect(obj);
+  setEffectNames();
+  checkSin();
+}
+function setEffectNames(){
+  let selecteds = []
+  for(let num = 1; num <= form.effectBoxNum.value; num++){
+    const name = form[`effect${num}Name`].value;
+    if(name){ selecteds.push(name); }
+  }
+  for(let num = 1; num <= form.effectBoxNum.value; num++){
+    const options = form[`effect${num}Name`].options || [];
+    for (const option of options) {
+      option.style.display = (
+          form[`effect${num}Name`].value !== option.value && 
+          !option.value.match(/^自由記入/) && 
+          selecteds.includes(option.value)
+        ) ? 'none' : '';
+    }
+  }
+}
+// 計算
+function calcEffect(obj){
+  const box = obj.closest(".box");
+  const name = box.querySelector('select').value;
+  let total = 0;
+  if(SET.effects?.[name]?.calc?.includes(1)){
+    box.querySelectorAll("input[name$=Pt1]").forEach(input => {
+      total += Number(input.value || 0);
+    });
+  }
+  if(SET.effects?.[name]?.calc?.includes(2)){
+    box.querySelectorAll("input[name$=Pt2]").forEach(input => {
+      total += Number(input.value || 0);
+    });
+  }
+  if(name === '穢れ'){
+    total += SET.races[race]?.sin || 0;
+    form.sin.value = total;
+  }
+  box.querySelector(".effect-points dd").textContent = total;
+}
+function checkSin(){
+  form.sin.readOnly = false;
+  document.querySelectorAll("#area-effects .box h2 select").forEach(obj => {
+    if(obj.value === "穢れ"){
+      form.sin.readOnly = true;
+      return;
+    }
+  });
+}
+// 追加
+function addEffect(obj){
+  const box = obj.closest(".box");
+  const num = getBoxNum(box);
+  box.querySelector(`table tbody`).append(createRow(`effect${num}`,`effect${num}Num`));
+  checkEffect(obj,box);
+}
+// 削除
+function delEffect(obj){
+  const box = obj.closest(".box");
+  const num = getBoxNum(box);
+  if(delRow(`effect${num}Num`, `#effect-row${num} table tbody tr:last-of-type`)){
+    //
+  }
+}
+// ソート
+(() => {
+  for(let num = 1; num <= form.effectBoxNum.value; num++){
+    setSortable(`effect${num}-`,`#effect-row${num} table tbody`,'tr');
+  }
+})();
+
+// 追加
+function addEffectBox(){
+  document.querySelector('#area-effects').append(createRow('effect','effectBoxNum',null,'BOX'));
+  const num = form.effectBoxNum.value;
+  setSortable(`effect${num}-`,`#effect-row${num} table tbody`);
+  setEffectNames();
+}
+// 削除
+function delEffectBox(){
+  if(delRow('effectBoxNum', '#area-effects > :is(div:last-child:not(.add-del-button),div:has(+ .add-del-button:last-child))',1)){
+    setEffectNames();
+  }
+}
+// ソート
+setSortable('effect','#area-effects','div');
+
 // 装飾品欄 ----------------------------------------
 function addAccessory(name){
   if(form[`accessory${name}Add`].checked) {
@@ -1860,6 +2122,8 @@ function addAccessory(name){
   else {
     document.querySelector(`#accessories [data-type="${name}_"]`).style.display = 'none';
   }
+
+  calcDefense(); // 装飾品由来の回避力・防護点の再計算
 }
 // ソート
 (() => {
@@ -2108,17 +2372,23 @@ function setArmourType (){
       = type ? type+count[type] : '';
   }
 }
+// 名前変更
+function changeArmourName(){
+  generateArmourCheckbox('num')
+}
 // 合計欄チェックボックス
-function generateArmourCheckbox (){
+function generateArmourCheckbox(checkListType = 'name'){
   let checkList = {};
   let rowNum = 0;
   const rows = document.querySelectorAll(`#armours tfoot .defense-total-checklist`);
   rows.forEach(row => {
     rowNum++;
     checkList[rowNum] = {};
+    let num = 0;
     row.querySelectorAll(`label input`).forEach(checkbox => {
-      const name = checkbox.nextElementSibling.textContent || '';
-      checkList[rowNum][name] = checkbox.checked ? 'checked' : '';
+      num++;
+      const id = checkListType == 'num' ? num : (checkbox.nextElementSibling.textContent || '');
+      checkList[rowNum][id] = checkbox.checked ? 'checked' : '';
     })
   });
   rowNum = 1;
@@ -2132,10 +2402,10 @@ function generateArmourCheckbox (){
             .replace(/[|｜](.+?)《(.+?)》/g, "$1")
             .replace(/\[([^\[\]]+?)#[0-9a-zA-z\-]+\]/g, "$1")
         : type || '―';
-
+      const id = checkListType == 'num' ? num : name;
       let checkbox = document.createElement('label');
       checkbox.classList.add('check-button');
-      checkbox.innerHTML = `<input type="checkbox" name="defTotal${rowNum}CheckArmour${num}" value="1" oninput="calcDefense()" ${checkList[rowNum][name]}><span>${name||'―'}</span>`;
+      checkbox.innerHTML = `<input type="checkbox" name="defTotal${rowNum}CheckArmour${num}" value="1" oninput="calcDefense()" ${checkList[rowNum][id]}><span>${name||'―'}</span>`;
       row.append(checkbox);
 
       document.querySelector(`input[name="defTotal${rowNum}CheckArmour${num}"]`).parentNode.style.display
@@ -2164,6 +2434,64 @@ function delDefense(){
   delRow('defenseNum', '#armours tfoot tr:last-of-type');
 }
 
+// 装備の備考欄の補正 ----------------------------------------
+let equipMod = {};
+function changeEquipMod (){
+  if(checkEquipMod()){
+    calcStt();
+  }
+}
+function checkEquipMod (){
+  console.log('checkEquipMod()');
+  // 装飾品欄の補正
+  const sttRegEx = [
+    ['A','器(?:用度?)?'],
+    ['B','敏(?:捷度?)?'],
+    ['C','筋(?:力)?'],
+    ['D','生(?:命力)?'],
+    ['E','知力?'],
+    ['F','精(?:神力?)?'],
+    ['VResist','生命抵抗力?'],
+    ['MResist','精神抵抗力?'],
+    ['Eva','回避力?'],
+    ['Def','防(?:護点?)?'],
+    ['Mobility','移動力'],
+    ['MagicPower', '魔力'],
+    ['MagicCast', '(?:魔法)?行使(?:判定)?'],
+    ['MagicDamage', '魔法のダメージ'],
+    ['WeaponReqd','武器(?:必要筋力|必筋)上限'],
+  ];
+  let newMod = {};
+  document.querySelectorAll(':is(#weapons-table, #accessories-table) input[name$="Note"]').forEach(
+    input => {
+      const note = input.value ?? '';
+      if (input.getAttribute('name').includes('_')) {
+        const nameToAdd = input.getAttribute('name').replace('_Note', 'Add');
+        if (!document.getElementsByName(nameToAdd)[0].checked) {
+          return;
+        }
+      }
+      for(let i of sttRegEx){
+        const m = note.match('[@＠]'+i[1]+'([＋+－-][0-9]+)');
+        if (m != null) {
+          console.log(m[0],m[1])
+          newMod[i[0]] ??= 0;
+          newMod[i[0]] += parseInt(m[1].replace(/[＋]/,"+").replace(/－/,"-") || 0);
+        }
+      }
+    }
+  );
+  let hasChange;
+  for(let i of sttRegEx){
+    if(parseInt(newMod[i[0]]||0) !== parseInt(equipMod[i[0]]||0)){
+      hasChange = true;
+      equipMod = { ...newMod };
+      break;
+    }
+  }
+  console.log(equipMod)
+  return hasChange;
+}
 // 部位 ----------------------------------------
 // 追加
 function addPart(){
@@ -2297,10 +2625,16 @@ function calcPointBuy() {
   
   let points = 0;
   let errorFlag = 0;
-  ['A','B','C','D','E','F'].forEach((i) => { form[`sttBase${i}`].classList.remove('error') });
+  ['A','B','C','D','E','F'].forEach((i) => {
+    form[`sttBase${i}`].classList.remove('error');
+    delete document.querySelector(`#stt-base-${i} > dt:first-child`).dataset['range'];
+  });
   if(SET.races[race]?.dice){
     ['A','B','C','D','E','F'].forEach((i) => {
       const dice = String(SET.races[race].dice[i]);
+      const min = Number(dice) + (SET.races[race].dice[`${i}+`] ?? 0);
+      const max = min + Number(dice) * 5;
+      document.querySelector(`#stt-base-${i} > dt:first-child`).dataset.range = `${min}～${max}`;
       let num  = Number(form[`sttBase${i}`].value);
       if(SET.races[race].dice[`${i}+`]){ num -= SET.races[race].dice[`${i}+`]; }
       if(pointBuyList[type] && pointBuyList[type][dice] && pointBuyList[type][dice][num] != null){

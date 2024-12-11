@@ -11,13 +11,13 @@ body {
   .night & {
     background-blend-mode: hard-light, normal;
   }
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     background-size: auto, 80%;
   }
 }
 /* // Layout
 ---------------------------------------------------------------------------------------------------- */
-@media screen and (min-width:1400px){
+@media screen and (width >= 1400px){
   body {
     grid-template-columns: minmax(0, 1fr) minmax(auto, 1800px) minmax(0, 1fr);
   }
@@ -105,39 +105,35 @@ body {
     "ABL ABL ABL IMG"
     "STT STT STT IMG"
   ;
-}
-#image-none,
-#image     { grid-area: IMG; }
-#personal  { grid-area: PER; }
-#ability   { grid-area: ABL; }
-#status    { grid-area: STT; }
-
-@media screen and (max-width:767px){
-  #area-status {
+  @media screen and (width <= 767px){
     grid-gap: calc(var(--box-v-gap) / 2) calc(var(--box-h-gap) / 2);
     grid-template-columns: 0.7fr 0.7fr 1.5fr 2.1fr;
     grid-template-rows: auto;
-
+  
     grid-template-areas:
       "PER PER PER IMG"
       "ABL ABL ABL IMG"
       "STT STT STT IMG"
     ;
   }
-}
-@media screen and (max-width:735px){
-  #area-status {
+  @media screen and (width <= 735px){
     display: grid;
     grid-template-columns: 0.7fr 0.6fr 1.6fr 2.1fr;
     grid-template-rows: auto;
-
+  
     grid-template-areas:
       "PER PER PER PER"
       "ABL ABL ABL IMG"
       "STT STT STT STT"
     ;
   }
+  #image-none,
+  #image     { grid-area: IMG; }
+  #personal  { grid-area: PER; }
+  #ability   { grid-area: ABL; }
+  #status    { grid-area: STT; }
 }
+
 
 /* Image */
 .image-none::after {
@@ -148,7 +144,7 @@ body {
   letter-spacing: 0;
   transform: scale(1, 2);
 }
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   .image-none::after {
     font-size: 4.8rem;
   }
@@ -163,14 +159,14 @@ body {
 }
 #personal dl {
   flex-basis: 33%;
+  #race   { flex-basis: 51%; order: 1; }
+  #age    { flex-basis: 23%; order: 2; }
+  #gender { flex-basis: 23%; order: 3; }
+  #rank   { flex-basis: 30%; order: 4; }
+  #career { flex-basis: 42%; order: 5; }
+  #faith  { flex-basis: 25%; order: 6; }
+  #trait  { flex-basis:100%; order: 6; }
 }
-#personal dl#race   { flex-basis: 51%; order: 1; }
-#personal dl#age    { flex-basis: 23%; order: 2; }
-#personal dl#gender { flex-basis: 23%; order: 3; }
-#personal dl#rank   { flex-basis: 30%; order: 4; }
-#personal dl#career { flex-basis: 42%; order: 5; }
-#personal dl#faith  { flex-basis: 25%; order: 6; }
-#personal dl#trait  { flex-basis:100%; order: 6; }
 
 #personal dl:is(#race,#age,#gender) {
   display: grid;
@@ -195,137 +191,138 @@ body {
   grid-template-columns: max-content 1fr;
   grid-template-rows: 1fr 1fr;
   align-items: stretch;
-}
-#personal dl#race.has-base-race dd {
-  display: grid;
-  align-items: end;
-}
-#personal dl#race.has-base-race .base-race {
-  border-top-width: 1px;
-  border-top-style: dotted;
-}
-#personal dl#race.has-base-race dt.base-race {
-  font-size: 80%;
-  line-height: 1;
-  padding-top: 2px;
+  > dd {
+    display: grid;
+    align-items: end;
+  }
+  > .base-race {
+    border-top-width: 1px;
+    border-top-style: dotted;
+  }
+  > dt.base-race {
+    font-size: 80%;
+    line-height: 1;
+    padding-top: 2px;
+  }
 }
 
 #personal dl#rank {
   display: grid;
   grid-template-columns: max-content 1fr;
   grid-template-rows: 1fr;
-}
-#personal dl#rank dd {
-  align-self: end;
-  margin-left: -1em;
-}
-#personal dl#rank dd > span {
-  display: block;
+  > dd {
+    align-self: end;
+    margin-left: -1em;
+  }
+  > dd > span {
+    display: block;
+  }
 }
 
 #personal dl#trait {
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: max-content 1fr;
-}
-#personal dl#trait > dd {
-  display: grid;
-  grid-template-columns: auto max-content;
-}
-#personal dl#trait > dd > dl {
-  align-self: end;
-  display: grid;
-  grid-template-columns: 1em max-content;
-  margin-top: -1em;
-}
-#personal dl#trait > dd > dl > dt { grid-column: 1; }
-#personal dl#trait > dd > dl > dd { grid-column: 2; }
-#personal dl#trait > dd > dl > dd {
-  display: grid;
-  grid-template-columns: 1em auto 1em;
-}
-#personal dl#trait > dd > dl > dd > span {
-  display: block;
-  min-width: 3em;
-  max-width: 10em;
+  > dd {
+    display: grid;
+    grid-template-columns: auto max-content;
+  }
+  > dd > dl {
+    align-self: end;
+    display: grid;
+    grid-template-columns: 1em max-content;
+    margin-top: -1em;
+  }
+  > dd > dl > dt { grid-column: 1; }
+  > dd > dl > dd { grid-column: 2; }
+  > dd > dl > dd {
+    display: grid;
+    grid-template-columns: 1em auto 1em;
+  }
+  > dd > dl > dd > span {
+    display: block;
+    min-width: 3em;
+    max-width: 10em;
+  }
 }
 
 /* Status */
 #ability {
   height: max-content;
 }
-
 #ability table {
   width: 100%;
   table-layout: fixed;
+  & col:nth-child(1) { width: 1.5em; }
+  & :is(th, td) {
+    border-style: solid;
+    padding: 0;
+  }
+  & th.status-head {
+    border-bottom: hidden;
+    > span {
+      display: block;
+      margin-bottom: -2em;
+      padding: 1em .2em;
+      font-size: 120%;
+      text-align: left;
+    }
+  }
+  & th.status-second-head {
+    padding: .2em;
+    border-left-width: 2px;
+    border-left-style: solid;
+  }
+  & th.status-first-head {
+    background: transparent !important;
+  }
+  > tbody {
+    & tr:first-child {
+      border-bottom-width: 2px;
+    }
+    & tr:nth-of-type(even) th {
+      background-color: var(--box-even-rows-bg-color);
+    }
+  }
+  & td:first-of-type,
+  & tbody tr:first-child th:nth-of-type(2) {
+    border-left-width: 2px;
+  }
 }
-#ability table col:nth-child(1) { width: 1.5em; }
-
-#ability table :is(th, td) {
-  border-style: solid;
-  padding: 0;
-}
-#ability table th.status-head {
-  border-bottom: hidden;
-}
-#ability table th.status-head > span {
-  display: block;
-  margin-bottom: -2em;
-  padding: 1em .2em;
-  font-size: 120%;
-  text-align: left;
-}
-#ability table tbody tr:first-child {
-  border-bottom-width: 2px;
-}
-#ability table tbody tr:nth-of-type(even) th {
-  background-color: var(--box-even-rows-bg-color);
-}
-#ability table th.status-second-head {
-  padding: .2em;
-  border-left-width: 2px;
-  border-left-style: solid;
-}
-#ability table th.status-first-head {
-  background: transparent !important;
-}
-#ability table td:first-of-type,
-#ability table tbody tr:first-child th:nth-of-type(2) {
-  border-left-width: 2px;
-}
-
 #ability table dl {
   display: grid;
   grid-template-columns: 4em 1fr;
   grid-template-rows: max-content 1fr;
+  > dd {
+    padding-top: .2em;
+    line-height: 1.8;
+    font-size: 140%;
+    font-weight: normal;
+  }
 }
-#ability table dl dd {
-  padding-top: .2em;
-  line-height: 1.8;
-  font-size: 140%;
-  font-weight: normal;
-}
-#ability table th dl dt {
-  align-self: start;
-  margin-left: .2em;
-  text-align: left;
-}
-#ability table th dl dd.mod {
-  grid-column: 1;
-  grid-row: 2;
-  line-height: 1;
-  font-size: 90%;
-  text-align: right;
-}
-#ability table th dl dd:not(.mod) {
-  grid-column: 2;
-  grid-row: span 2;
+#ability table th dl {
+  > dt {
+    align-self: start;
+    margin-left: .2em;
+    text-align: left;
+  }
+  > dd.mod {
+    grid-column: 1;
+    grid-row: 2;
+    line-height: 1;
+    font-size: 90%;
+    text-align: right;
+  }
+  > dd:not(.mod) {
+    grid-column: 2;
+    grid-row: span 2;
+  }
 }
 #ability table td dl dt {
   align-self: center;
   font-size: 85%;
 }
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   #ability table dl {
     display: flex;
     flex-wrap: wrap;
@@ -349,45 +346,45 @@ body {
   border-top-style: solid;
   display: grid;
   grid-template-columns: 10em 4em auto;
+  > dt {
+    padding-left: .5em;
+  }
+  > dd.total {
+    border-right-width: 1px;
+    border-right-style: dotted;
+  }
+  > dd.total b {
+    padding-top: .4em;
+    line-height: 1;
+    font-size: 1.4em;
+    font-weight: normal;
+    display: inline-block;
+  }
+  > dd.calc {
+    display: grid;
+    grid-template-columns: 3.5em 1fr;
+    align-items: end;
+    padding-bottom: .2em;
+    font-size: 85%;
+    line-height: 1;
+    text-align: left;
+    white-space: wrap;
+  }
+  > dd.calc > b {
+    display: block;
+    font-size: 1.3em;
+    font-weight: normal;
+    text-align: center;
+  }
+  > dd.calc > div > b {
+    font-size: 1.2em;
+    font-weight: normal;
+  }
+  &#lifeforce {
+    grid-template-columns: 4em 4em 2em 4em auto;
+  }
 }
-#status dl dt {
-  padding-left: .5em;
-}
-#status dl dd.total {
-  border-right-width: 1px;
-  border-right-style: dotted;
-}
-#status dl dd.total b {
-  padding-top: .4em;
-  line-height: 1;
-  font-size: 1.4em;
-  font-weight: normal;
-  display: inline-block;
-}
-#status dl dd.calc {
-  display: grid;
-  grid-template-columns: 3.5em 1fr;
-  align-items: end;
-  padding-bottom: .2em;
-  font-size: 85%;
-  line-height: 1;
-  text-align: left;
-  white-space: wrap;
-}
-#status dl dd.calc > b {
-  display: block;
-  font-size: 1.3em;
-  font-weight: normal;
-  text-align: center;
-}
-#status dl dd.calc > div > b {
-  font-size: 1.2em;
-  font-weight: normal;
-}
-#status dl#lifeforce {
-  grid-template-columns: 4em 4em 2em 4em auto;
-}
-@media screen and (min-width: 1400px) and (max-width: 1600px){
+@media screen and (1400px <= width <= 1600px){
   #status .shorten { display: none; }
 }
 
@@ -407,66 +404,66 @@ body {
 /* Classes */
 #classes {
   position: relative;
+  > h2::after {
+    content: 'レベル /　　経験点';
+    position: absolute;
+    top: .2em;
+    right: 2em;
+    font-size: 85%;
+  }
+  > dl {
+    display: grid;
+    grid-template-columns: 1fr 3em 5.5em;
+    grid-template-rows: auto;
+    align-items: end;
+  }
+  > dl dt {
+    grid-column: 1;
+    font-weight: normal;
+    padding-top: .7em;
+    > ruby {
+      display: inline-grid;
+      text-align: left;
+      vertical-align: bottom;
+      > rt {
+        display: inline-flex;
+        grid-row: 1;
+        height: 0px;
+        line-height: 1;
+        transform: translate(-2px,-1.2em);
+        user-select: none;
+      }
+    }
+  }
+  > dl dd.lv {
+    grid-column: 2;
+    padding-right: 1em;
+    font-size: 1.2em;
+    line-height: 1;
+    position: relative;
+  }
+  > dl dd.exp {
+    grid-column: 3;
+    font-size: 1em;
+    line-height: 1.1;
+    text-align: right;
+  }
+  > dl dd.lv::after {
+    content: "/";
+    position: absolute;
+    right: 0;
+  }
+  .priest-faith {
+    display: inline-block;
+    font-size: 85%;
+    line-height: 1;
+  }
+  #priest-faith.narrow {
+    margin: 0 -10%;
+    transform: scaleX(0.8);
+  }
 }
-#classes h2::after {
-  content: 'レベル /　　経験点';
-  position: absolute;
-  top: .2em;
-  right: 2em;
-  font-size: 85%;
-}
-#classes dl {
-  display: grid;
-  grid-template-columns: 1fr 3em 5.5em;
-  grid-template-rows: auto;
-  align-items: end;
-}
-#classes dl dt {
-  grid-column: 1;
-  font-weight: normal;
-  padding-top: .7em;
-}
-#classes dl dt ruby {
-  display: inline-grid;
-  text-align: left;
-  vertical-align: bottom;
-}
-#classes dl dt ruby rt {
-  display: inline-flex;
-  grid-row: 1;
-  height: 0px;
-  line-height: 1;
-  transform: translate(-2px,-1.2em);
-  user-select: none;
-}
-#classes dl dd.lv {
-  grid-column: 2;
-  padding-right: 1em;
-  font-size: 1.2em;
-  line-height: 1;
-  position: relative;
-}
-#classes dl dd.exp {
-  grid-column: 3;
-  font-size: 1em;
-  line-height: 1.1;
-  text-align: right;
-}
-#classes dl dd.lv::after {
-  content: "/";
-  position: absolute;
-  right: 0;
-}
-#classes .priest-faith {
-  display: inline-block;
-  font-size: 85%;
-  line-height: 1;
-}
-#classes #priest-faith.narrow {
-  margin: 0 -10%;
-  transform: scaleX(0.8);
-}
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   #area-classes {
     grid-template-columns: 1.1fr 1.9fr;
   }
@@ -479,9 +476,9 @@ body {
     grid-template-columns: 1fr 2em 3.5em;
     grid-template-rows: auto;
     align-items: end;
-  }
-  #classes dl dd.exp {
-    font-size: .85em;
+    > dd.exp {
+      font-size: .85em;
+    }
   }
 }
 /* Level and Points */
@@ -499,7 +496,7 @@ body {
 #exp       { grid-area: EXP; }
 #adp       { grid-area: ADP; }
 #session-total { grid-area: SSN; }
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   #level-and-points {
     display: grid;
     grid-template-columns: 1.1fr 1.1fr 0.8fr;
@@ -520,7 +517,7 @@ body {
   font-size: 170%;
   line-height: 1;
 }
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   #level dt > span {
     display: inline-block;
     margin-left : -5%;
@@ -601,9 +598,9 @@ body {
 #area-equipment tbody td:is(.type, .usage) > span {
   white-space: nowrap;
 }
-#area-equipment tbody td.note.left { padding-left: .3em; font-size: .9em; }
+#area-equipment tbody td.note { font-size: .9em; }
 
-@media screen and (min-width:1400px){
+@media screen and (width >= 1400px){
   #area-equipment > .box:first-child {
     margin-top: 0;
   }
@@ -616,24 +613,28 @@ body {
 #attack-classes table {
   margin-top: -1.2em;
   table-layout: fixed;
+  > colgroup {
+    > col:first-child { width: 3.8em; }
+    > col.name  { width:  auto; }
+    > col.level { width: 5.5em; }
+    > col.value { width: 3.5em; }
+  }
 }
-#attack-classes col:first-child { width: 3.8em; }
-#attack-classes col.name  { width:  auto; }
-#attack-classes col.level { width: 5.5em; }
-#attack-classes col.value { width: 3.5em; }
 
 #attack-classes + #weapons {
   margin-top: .3rem;
 }
 
-#weapons thead th.name  { width:   25%; } /* 名前 */
-#weapons thead th.type  { width:   4em; } /* 種別 */
-#weapons thead th.usage { width: 3.4em; } /* 用法 */
-#weapons thead th.attr  { width: 4.5em; } /* 属性 */
-#weapons thead th.hit   { width: 4.5em; } /* 命中 */
-#weapons thead th.power { width:   5em; } /* 威力 */
-#weapons thead th.range { width: 3.5em; } /* 射程 */
-#weapons thead th.note  { width: auto; }  /* 備考 */
+#weapons thead {
+  .name  { width:   25%; } /* 名前 */
+  .type  { width:   4em; } /* 種別 */
+  .usage { width: 3.4em; } /* 用法 */
+  .attr  { width: 4.5em; } /* 属性 */
+  .hit   { width: 4.5em; } /* 命中 */
+  .power { width:   5em; } /* 威力 */
+  .range { width: 3.5em; } /* 射程 */
+  .note  { width: auto; }  /* 備考 */
+}
 
 /* Dodge */
 #dodge-classes {
@@ -645,37 +646,40 @@ body {
 .defense-classes table {
   margin-top: -1.5em;
   table-layout: fixed;
+  > thead {
+    & th:nth-child(1) { width: 3.8em; } /* 見出し */
+    & th:nth-child(2) { width:  auto; } /* 名前 */
+    & th:nth-child(3) { width:   4em; } /* 回避 */
+    & th:nth-child(4) { width: 3.5em; } /* 装甲 */
+    & th:nth-child(5) { width: 3.5em; } /* 隠密 */
+    & th:nth-child(6) { width:   4em; } /* 移動 */
+  }
+  > tbody th.small {
+    padding-top: 1px;
+    line-height: 1.1;
+  }
 }
-.defense-classes th:nth-child(1) { width: 3.8em; } /* 見出し */
-.defense-classes th:nth-child(2) { width:  auto; } /* 名前 */
-.defense-classes th:nth-child(3) { width:   4em; } /* 回避 */
-.defense-classes th:nth-child(4) { width: 3.5em; } /* 装甲 */
-.defense-classes th:nth-child(5) { width: 3.5em; } /* 隠密 */
-.defense-classes th:nth-child(6) { width:   4em; } /* 移動 */
-
-.defense-classes tbody th.small {
-  padding-top: 1px;
-  line-height: 1.1;
-}
-
 .defense-classes + :is(#armor, #shield) {
   margin-top: .3rem;
 }
 
-#armor thead th.name   { width:   25%; } /* 名前 */
-#armor thead th.type   { width:   6em; } /* 種別 */
-#armor thead th.dodge  { width:   4em; } /* 回避 */
-#armor thead th.armor  { width: 3.5em; } /* 装甲 */
-#armor thead th.stealth{ width: 3.5em; } /* 隠密 */
-#armor thead th.move   { width:   4em; } /* 移動 */
-#armor thead th.note   { width:  auto; } /* 備考 */
-
-#shield thead th.name   { width:   25%; } /* 名前 */
-#shield thead th.type   { width:   6em; } /* 種別 */
-#shield thead th.block  { width:   4em; } /* 基準値 */
-#shield thead th.armor  { width:   4em; } /* 装甲 */
-#shield thead th.stealth{ width: 3.5em; } /* 隠密 */
-#shield thead th.note   { width:  auto; } /* 備考 */
+#armor thead {
+  .name   { width:   25%; } /* 名前 */
+  .type   { width:   6em; } /* 種別 */
+  .dodge  { width:   4em; } /* 回避 */
+  .armor  { width: 3.5em; } /* 装甲 */
+  .stealth{ width: 3.5em; } /* 隠密 */
+  .move   { width:   4em; } /* 移動 */
+  .note   { width:  auto; } /* 備考 */
+}
+#shield thead {
+  .name   { width:   25%; } /* 名前 */
+  .type   { width:   6em; } /* 種別 */
+  .block  { width:   4em; } /* 基準値 */
+  .armor  { width:   4em; } /* 装甲 */
+  .stealth{ width: 3.5em; } /* 隠密 */
+  .note   { width:  auto; } /* 備考 */
+}
 
 
 /* // Area-Items
@@ -741,8 +745,7 @@ body {
 
 /* // Area-Skills
 ---------------------------------------------------------------------------------------------------- */
-#area-skills tbody td.note.left {
-  padding-left: .3em;
+#area-skills tbody td.note {
   font-size: 90%;
 }
 #area-skills tbody td.page {
@@ -750,72 +753,66 @@ body {
 }
 /* // Skills
 ---------------------------------------------------------------------------------------------------- */
-
 :is(#skills, #general-skills) {
   margin-top: var(--box-v-gap);
+  & thead {
+    white-space: nowrap;
+    .adp    { width:   3em; } /* 成長点 */
+    .auto   { width: 2.5em; } /* 種別 */
+    .name   { width:  12em; } /* 名前 */
+    .grade  { width:   4em; } /* 段階 */
+    .note   { width:  auto; } /* 効果 */
+    .page   { width:   5em; } /* 参照 */
+  }
 }
-:is(#skills, #general-skills) thead { white-space: nowrap; }
-:is(#skills, #general-skills) thead th.adp    { width:   3em; } /* 成長点 */
-:is(#skills, #general-skills) thead th.auto   { width: 2.5em; } /* 種別 */
-:is(#skills, #general-skills) thead th.name   { width:  12em; } /* 名前 */
-:is(#skills, #general-skills) thead th.grade  { width:   4em; } /* 段階 */
-:is(#skills, #general-skills) thead th.note   { width:  auto; } /* 効果 */
-:is(#skills, #general-skills) thead th.page   { width:   5em; } /* 参照 */
 
 
 /* // Spells
 ---------------------------------------------------------------------------------------------------- */
-
 #spell-cast {
   width: max-content;
   margin-top: var(--box-v-gap);
 }
 #spell-cast table {
+  table-layout: auto;
   border-top-width: 1px;
   border-top-style: solid;
-}
-#spell-cast table col.base  { width: 6em; }
-#spell-cast table col.value { width: 3em; }
-#spell-cast table col.class { width: 6.5em; }
-#spell-cast table col.level { width: 5em; }
-#spell-cast table col.total { width: 4.5em; }
-
-#spell-cast .flex {
-  display: flex;
-  align-items: center;
-}
-#spell-cast .flex b {
-  flex-basis: 5em;
-  line-height: 1.1;
-}
-
-
-#spell-cast table tbody .base,
-#spell-cast table tbody .value,
-#spell-cast table tbody .value + td,
-#spell-cast table tbody .class {
-  border-right-style: hidden;
-}
-#spell-cast table tbody .base {
-  padding-left: 1em;
-}
-#spell-cast table tbody .class::before {
-  content: "+";
-  float: left;
-  font-weight: normal;
-}
-#spell-cast table tbody .level {
-  padding-right: .5em;
-  text-align: right;
-}
-#spell-cast table tbody .level::after {
-  content: 'レベル';
-  font-size: 85%;
-  margin-left: .2em;
-}
-#spell-cast table tbody .total {
-  font-size: 110%;
-  line-height: 1;
+  > colgroup {
+    .base  { width: 6em; }
+    .value { width: 3em; }
+    .class { width: 6.5em; }
+    .level { width: 5em; }
+    .total { width: 4.5em; }
+  }
+  > tbody {
+    & .base,
+    & .value,
+    & .value + td,
+    & .class {
+      border-right-style: hidden;
+    }
+    & .base {
+      padding-left: 1em;
+    }
+    & .class::before {
+      content: "+";
+      float: left;
+      font-weight: normal;
+    }
+    & .level {
+      padding-right: .5em;
+      text-align: right;
+    }
+    & .level::after {
+      content: 'レベル';
+      font-size: 85%;
+      margin-left: .2em;
+    }
+    & .total {
+      font-size: 110%;
+      line-height: 1;
+    }
+  }
 }
 
 #spell-cast + #spells {
@@ -824,37 +821,44 @@ body {
 #spells {
   margin-top: var(--box-v-gap);
 }
-#spells thead { white-space: nowrap; }
-#spells thead th.name   { width:  12em; } /* 名前 */
-#spells thead th.system { width: 4.5em; } /* 系統 */
-#spells thead th.type   { width: 6.1em; } /* 種別 */
-#spells thead th.dfclt  { width: 3.1em; } /* 難易度 */
-#spells thead th.note   { width:  auto; } /* 効果 */
-#spells thead th.page   { width:   5em; } /* 参照 */
+#spells thead {
+  white-space: nowrap;
+  .name   { width:  12em; } /* 名前 */
+  .system { width: 4.5em; } /* 系統 */
+  .type   { width: 6.1em; } /* 種別 */
+  .dfclt  { width: 3.1em; } /* 難易度 */
+  .note   { width:  auto; } /* 効果 */
+  .page   { width:   5em; } /* 参照 */
+}
 
 /* // Arts
 ---------------------------------------------------------------------------------------------------- */
 #arts {
   margin-top: var(--box-v-gap);
 }
-#arts thead { white-space: nowrap; }
-#arts thead th.name   { width:  12em; } /* 名前 */
-#arts thead th.weapon { width:  10em; } /* 武器 */
-#arts thead th.skill  { width: 8.1em; } /* 技能 */
-#arts thead th.cost   { width: 8.1em; } /* 消費 */
-#arts thead th.terms  { width:  auto; } /* 条件 */
-#arts thead th.page   { width:   5em; } /* 参照 */
+#arts thead {
+  white-space: nowrap;
+  .name   { width:  12em; } /* 名前 */
+  .weapon { width:  10em; } /* 武器 */
+  .skill  { width: 8.1em; } /* 技能 */
+  .cost   { width: 8.1em; } /* 消費 */
+  .terms  { width:  auto; } /* 条件 */
+  .page   { width:   5em; } /* 参照 */
+}
 
-@media screen and (max-width:735px){
-  #arts thead th.name   { width:   9em; } /* 名前 */
-  #arts thead th.weapon { width:   5em; } /* 武器 */
-  #arts thead th.skill  { width:   6em; } /* 技能 */
-  #arts thead th.cost   { width: 7.5em; font-size: 85%; } /* 消費 */
-  #arts thead th.terms  { width:  auto; } /* 条件 */
-  #arts thead th.page   { width:   3em; } /* 参照 */
-
-  #arts tbody td:not(.name) { font-size: 85%; }
-  #arts tbody td.page   { font-size: 80%; } /* 参照 */
+@media screen and (width <= 735px){
+  #arts thead {
+    .name   { width:   9em; } /* 名前 */
+    .weapon { width:   5em; } /* 武器 */
+    .skill  { width:   6em; } /* 技能 */
+    .cost   { width: 7.5em; font-size: 85%; } /* 消費 */
+    .terms  { width:  auto; } /* 条件 */
+    .page   { width:   3em; } /* 参照 */
+  }
+  #arts tbody {
+    &:not(.name) { font-size: 85%; }
+    &.page   { font-size: 80%; } /* 参照 */
+  }
 }
 /* // Free-Memo
 ---------------------------------------------------------------------------------------------------- */
@@ -870,16 +874,11 @@ body {
   margin-top: var(--box-v-gap);
 }
 #history table {
-  & thead th {
-    &.num    { width:   2em; } /* No. */
-    &.date   { width: 5.2em; } /* 日付 */
-    &.title  { width:  auto; } /* タイトル */
-    &.comp   { width: 2.6em; } /* 達成 */
-    &.exp    { width: 4.6em; } /* 経験点 */
-    &.money  { width: 4.5em; } /* 銀貨 */
-    &.adp    { width:   3em; } /* 成長点 */
-    &.gm     { width:  auto; } /* ＧＭ */
-    &.member { width:  auto; } /* 参加者 */
+  & thead {
+    .comp   { width: 2.6em; } /* 達成 */
+    .exp    { width: 4.6em; } /* 経験点 */
+    .money  { width: 4.5em; } /* 銀貨 */
+    .adp    { width:   3em; } /* 成長点 */
   }
   & tr th.comp span.small {
     display: block;
@@ -906,9 +905,6 @@ body {
     &:empty::after {
       content: "";
     }
-  }
-  & tr td:is(.gm, .member) {
-    font-size: 1.1rem;
   }
 }
 

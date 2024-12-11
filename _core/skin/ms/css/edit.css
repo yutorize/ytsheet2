@@ -13,7 +13,7 @@
     "MAG MAG IMG"
   ;
 }
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   #area-status {
     grid-template-columns: 1fr;
     grid-gap: var(--box-v-gap) var(--box-h-gap);
@@ -83,13 +83,13 @@
 #magi {
   overflow-x: auto;
 }
-#magi table colgroup col {
-  &.name   { width: 9.2em; }
-  &.timing { width: 7.5em; }
-  &.target { width: 7.5em; }
-  &.cond   { width: 7.5em; }
-  @media screen and (max-width:735px){
-    &.note   { width: 17.5em; }
+#magi table colgroup {
+  .name   { width: 9.2em; }
+  .timing { width: 7.5em; }
+  .target { width: 7.5em; }
+  .cond   { width: 7.5em; }
+  @media screen and (width <= 735px){
+    .note   { width: 17.5em; }
   }
 }
 #magi table td.name input {
@@ -97,18 +97,18 @@
 }
 
 #history > table {
-  & thead th {
-    &:first-child { width: 1.4em; }
-    &.date        { width:   6em; }
-    &.title       { width:  12em; }
-    &.level       { width:   4em; }
-    &.gm          { width:   6em; }
-    &.member      { width:  auto; }
+  & thead {
+    & th:first-child { width: 1.4em; }
+    .date        { width:   6em; }
+    .title       { width:  12em; }
+    .level       { width:   4em; }
+    .gm          { width:   6em; }
+    .member      { width:  auto; }
   }
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     & { table-layout: fixed; }
-    & thead th.title  { width: 12em; }
-    & thead th.member { width: 16em; }
+    & thead .title  { width: 12em; }
+    & thead .member { width: 16em; }
   }
   
 }
@@ -122,7 +122,7 @@ form#mode-clan #area-status {
     "MEM MEM IMG"
     "STT STT IMG"
   ;
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     grid-template-columns: 1.56fr .4fr;
     grid-template-areas:
       "IMG IMG"

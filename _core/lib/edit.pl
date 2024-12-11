@@ -301,8 +301,9 @@ sub selectInput {
   my $text = '<div class="select-input"><select name="'.$name.'" oninput="selectInputCheck(this);'.$func.'">'.option($name, @_);
   $text .= '<option value="free">その他（自由記入）'; 
   my $hit = 0;
-  foreach my $value (@_) {
-    if($value =~ /^(.+)\|\<.*\>$/){ $value = $1; }
+  foreach my $i (@_) {
+    my $value = $i;
+    if($value =~ /^(.*)\|\<.*\>$/){ $value = $1; }
     if($::pc{$name} eq $value){ $hit = 1; last; }
   }
   if($::pc{$name} && !$hit){ $text .= '<option value="'.$::pc{$name}.'" selected>'.$::pc{$name}; }
@@ -466,7 +467,8 @@ sub chatPaletteForm {
   return <<"HTML";
     <section id="section-palette" style="display:none;">
       <div class="box" id="unit-setting">
-        <h2>ユニット・コマ の設定</h2>
+        <h2>ユニット(コマ)の設定</h2>
+        <div class="annotate">各オンラインセッションツールに出力するユニット(コマ)に反映されます。</div>
         <dl>
           <dt>表示名
           <dd>@{[ input 'namePlate','','changeNamePlate','placeholder="ニックネーム、ファーストネームなど"' ]} <small>※コマ出力時、こちらの入力が名前として優先されます。名前が長いキャラなどに</small>
@@ -497,7 +499,11 @@ sub chatPaletteForm {
       </div>
       <div class="box-union">
         <div class="box" id="chatpalette">
-          <h2>チャットパレット <small>(ユニット(コマ)出力時、ここで設定したものが出力されます)</small></h2>
+          <h2>チャットパレット</h2>
+          <div class="annotate">
+            ユニット(コマ)のチャットパレットに、ここで設定・入力した内容が自動的に反映されます。<br>
+            何も設定しない場合、デフォルト設定のプリセットの内容が反映されます。
+          </div>
           <p>
             手動パレットの配置:<select name="paletteInsertType" style="width: auto;">
               <option value="exchange" @{[ $::pc{paletteInsertType} eq 'exchange'?'selected':'' ]}>プリセットと入れ替える</option>
@@ -532,6 +538,16 @@ sub chatPaletteForm {
           </div>
         </div>
         @{[ chatPaletteFormOptional() ]}
+        <div class="box" id="chatpalette-description">
+          <h2>チャットパレットとは？</h2>
+          <p>
+            「チャットパレット」は、現行の多くのオンラインセッションツールに搭載されている、特定のメッセージやコマンドを簡単に入力できるようにするための機能です。<br>
+            　セッション中に頻繁に使用するテキストやダイスコマンド、スキルの使用やキャラクターの行動宣言などを事前に登録しておき、クリック／ダブルクリックで即座にチャット欄に呼び出す／送信することができます。<br>
+          </p>
+          <p>
+            　UIや細かな挙動はツールごとに異なりますが、行単位で区切られるのと、<code>//変数名=値</code><code>{変数名}</code>の記述を用いる変数機能があることは共通しています。<br>
+          </p>
+        </div>
       </div>
     </section>
 HTML
@@ -650,10 +666,16 @@ sub textRuleArea {
         横罫線（直線）：<code>----</code>（4つ以上のハイフン）<br>
         横罫線（点線）：<code> * * * *</code>（4つ以上の「スペース＋アスタリスク」）<br>
         横罫線（破線）：<code> - - - -</code>（4つ以上の「スペース＋ハイフン」）<br>
-        表組み　　：<code>|テキスト|テキスト|</code>：表組み（テーブル）を作成します。<br>
-        　　　　　　<code>|~テキスト|</code>のようにセル頭に~で見出しセルになります。<br>
-        　　　　　　<code>|&gt;|テキスト|</code>のように&gt;単独で右のセルと結合します。<br>
-        　　　　　　<code>|~|</code>のように~単独で上のセルと結合します。<br>
+        表組み：<code>|テキスト|テキスト|</code>：表組み（テーブル）を作成します。<br>
+        　　　　<code>|~テキスト|</code>のようにセル頭に<code>~</code>で見出しセルになります。<br>
+        　　　　<code>|&gt;|テキスト|</code>のように<code>&gt;</code>単独で右のセルと結合します。<br>
+        　　　　<code>|CENTER: テキスト|</code>のようにセル頭に<code>CENTER:</code>で中央揃えになります。<br>
+        　　　　<code>|RIGHT: テキスト|</code>のようにセル頭に<code>RIGHT:</code>で右揃えになります。<br>
+        　　　　<code>|NOWRAP: テキスト|</code>のようにセル頭に<code>NOWRAP:</code>でそのセル内で改行しなくなります<br>
+        　　　　<code>|CENTER:5em|RIGHT:10em|c</code>のように行末に<code>c</code>をつけると書式指定行となり、その列の文字揃えや幅をまとめて指定できます。<br>
+        　　　　※書式指定行では、通常の文字列は無効になります。<br>
+        　　　　※指定できる幅の単位は、<code>em</code>（1em=全角1文字）および<code>%</code>が有効です。<br>
+        　　　　※指定できる幅の上限は、それぞれ<code>20em</code>と<code>100%</code>です。<br>
         定義リスト：<code>:項目名|説明文</code><br>
         　　　　　　<code>:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|説明文2行目</code> 項目名を記入しないか、半角スペースで埋めると上と結合します。<br>
         折り畳み：行頭に<code>[>]項目名</code>：以降のテキストがすべて折り畳みになります。<br>

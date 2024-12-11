@@ -1,17 +1,19 @@
 @charset "utf-8";
 
+@import "icons.css" layer(system);
+
 @layer system {
 /* // Body
 ---------------------------------------------------------------------------------------------------- */
 body {
   background-image: url(../../_common/img/back-pattern.png), url(../img/back-first.png);
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     background-size: auto, 80%;
   }
 }
 /* // Layout
 ---------------------------------------------------------------------------------------------------- */
-@media screen and (min-width:1400px){
+@media screen and (width >= 1400px){
   body {
     grid-template-columns: minmax(0, 1fr) minmax(auto, 1800px) minmax(0, 1fr);
   }
@@ -112,21 +114,11 @@ header nav ul li.character-format {
     "STT  STT  STT  IMG"
     "EXP  LVL sSTT IMG"
   ;
-}
-#image-none,
-#image     { grid-area: IMG; }
-#personal  { grid-area: PER; }
-#status    { grid-area: STT; }
-#sub-status{ grid-area: sSTT; }
-#level     { grid-area: LVL; }
-#exp       { grid-area: EXP; }
-
-@media screen and (max-width:767px){
-  #area-status {
+  @media screen and (width <= 767px){
     grid-gap: calc(var(--box-v-gap) / 2) calc(var(--box-h-gap) / 2);
     grid-template-columns: 0.7fr 0.7fr 1.5fr 2.1fr;
     grid-template-rows: auto;
-
+  
     grid-template-areas:
       "PER  PER  PER  PER"
       "STT  STT  STT  IMG"
@@ -134,13 +126,11 @@ header nav ul li.character-format {
       "EXP  LVL  sSTT IMG"
     ;
   }
-}
-@media screen and (max-width:735px){
-  #area-status {
+  @media screen and (width <= 735px){
     display: grid;
     grid-template-columns: 0.7fr 0.6fr 1.6fr 2.1fr;
     grid-template-rows: auto;
-
+  
     grid-template-areas:
       "PER  PER  PER  PER"
       "STT  STT  STT  IMG"
@@ -148,6 +138,13 @@ header nav ul li.character-format {
       "EXP  LVL  sSTT IMG"
     ;
   }
+  #image-none,
+  #image     { grid-area: IMG; }
+  #personal  { grid-area: PER; }
+  #status    { grid-area: STT; }
+  #sub-status{ grid-area: sSTT; }
+  #level     { grid-area: LVL; }
+  #exp       { grid-area: EXP; }
 }
 
 /* Personal */
@@ -165,7 +162,7 @@ header nav ul li.character-format {
   & dd {
     align-self: center;
     line-height: 1;
-    @media screen and (max-width:767px){
+    @media screen and (width <= 767px){
       line-height: inherit;
     }
   }
@@ -193,12 +190,11 @@ header nav ul li.character-format {
   grid-gap: 7px 10px;
   grid-template-columns: 1fr 1fr 1fr 1.3fr 0.8fr 1.2fr;
   grid-template-rows: auto;
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     grid-gap: 5px 8px;
     grid-template-columns: 1fr 1fr 1fr 1.4fr 0.7fr 1.4fr;
   }
 }
-
 #stt-base-tec { grid-row: 1 / span 2; grid-column: 1; }
 #stt-base-phy { grid-row: 3 / span 2; grid-column: 1; }
 #stt-base-spi { grid-row: 5 / span 2; grid-column: 1; }
@@ -335,7 +331,7 @@ header nav ul li.character-format {
     &::after {
       content: "ボーナス";
     }
-    @media screen and (max-width:850px), screen and (min-width:1400px) and (max-width:1680px), print and (max-width:850px) {
+    @media screen and (width <= 850px), screen and (1400px <= width <= 1680px), print and (width <= 850px) {
       &::after {
         content: "Ｂ";
       }
@@ -373,7 +369,7 @@ header nav ul li.character-format {
       display: inline-block;
       transform: scaleY(1.1);
     }
-    @media screen and (max-width:735px){
+    @media screen and (width <= 735px){
       & dt > span {
         display: inline-block;
         margin-left : -5%;
@@ -398,7 +394,7 @@ dl#level {
     
     font-size: 200%;
   }
-  @media screen and (min-width:1400px) and (max-width:1600px){
+  @media screen and (1400px <= width <= 1600px){
     > dt > span::after {
       content:'Lv'
     }
@@ -406,7 +402,7 @@ dl#level {
       display: none;
     }
   }
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     & dt > span {
       display: inline-block;
       margin-left : -5%;
@@ -459,28 +455,26 @@ dl#level {
   justify-content: space-between;
   
   margin-top: var(--box-v-gap);
+  gap: var(--box-v-gap) var(--box-h-gap);
   line-height: 1.8;
 
   > * {
     flex-basis: 30%;
     flex-grow: 1;
-    margin-left: var(--box-h-gap);
-    &:first-child {
-      margin-left: 0px;
-    }
+    flex-shrink: 0;
+    min-width: 0;
+    overflow-wrap: break-word;
   }
   & .box + .box {
     margin-top: var(--box-v-gap);
   }
-  @media screen and (max-width:735px){
-    & {
-      flex-wrap: wrap;
-    }
+  @media screen and (width <= 735px){
+    flex-wrap: wrap;
+    gap: 0 var(--box-h-gap);
     > * {
       flex-basis: calc(50% - 1rem);
       &:last-child {
         margin-top: var(--box-v-gap);
-        margin-left: 0px;
       }
     }
   }
@@ -516,6 +510,63 @@ dl#level {
   }
 }
 
+/* Effects */
+.effects > h2 > small.notes {
+  line-height: 1;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  > b {
+    font-size: 140%;
+  }
+}
+.effects > .data-table {
+  margin-top: 3px;
+  > thead th {
+    line-height: 1;
+    font-size: 80%;
+    vertical-align: bottom;
+    &.num {
+      width: 3.1em;
+    }
+    &.num:nth-child(2):last-child {
+      position: relative;
+      > span {
+        min-width: 4em;
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        text-wrap: nowrap;
+      }
+    }
+  }
+  > tbody {
+    .num {
+      padding: .1em 0 .1em .2em;
+      line-height: 1;
+      word-break: auto-phrase;
+    }
+    .num:has(~ .num){
+      padding-right: .2em;
+    }
+    .num + .num {
+      position: relative;
+    }
+    .num + .num::before {
+      content: "/";
+      position: absolute;
+      display: block;
+      text-align: center;
+      align-content: center;
+      width: 1em;
+      top: 0;
+      left: -.5em;
+      bottom: 0;
+      transform: scale(0.8,1.4);
+      opacity: 0.5;
+    }
+  }
+}
+
 /* Combat-feats */
 #combat-feats {
   & ul {
@@ -546,7 +597,7 @@ dl#level {
   > .box {
     width: 100%;
   }
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     & {
       flex-direction: row;
       justify-content: space-between;
@@ -610,10 +661,10 @@ dl#level {
     white-space: nowrap;
   }
 
-  @media screen and (min-width:1400px){
+  @media screen and (width >= 1400px){
     margin-top: 0;
   }
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     display: grid;
     gap: var(--box-v-gap);
     grid-template-columns: 1fr 1fr;
@@ -629,10 +680,12 @@ dl#level {
 /* Actions-Package */
 #package table {
   white-space: nowrap;
-
+  table-layout: auto;
   & tr:first-child th:first-child {
-    width: 12em;
-    white-space: nowrap;
+    width: auto;
+    padding: .2em 0;
+    line-height: 1;
+    word-break: keep-all;
   }
   & th {
     font-weight: normal;
@@ -642,6 +695,7 @@ dl#level {
     white-space: nowrap;
   }
   & td:nth-last-child(2) {
+    width: 2em;
     font-size: 90%;
     white-space: nowrap;
     vertical-align: middle;
@@ -698,12 +752,15 @@ dl#level {
   align-self: end;
 }
 #magic-power table {
+  table-layout: auto;
   margin-top: -1.2em;
   
   & tbody td:nth-child(1),
   & tbody td:nth-child(2) {
     padding-left : .2em;
     padding-right: .2em;
+    word-break: keep-all;
+    line-height: 1;
   }
   & tbody td:nth-child(2) {
     white-space: nowrap;
@@ -764,7 +821,6 @@ dl#level {
     text-align: right;
   }
 }
-
 /* // Area-Equipment
 ---------------------------------------------------------------------------------------------------- */
 #area-equipment {
@@ -800,36 +856,59 @@ dl#level {
 
 /* Attack-Status */
 #attack-classes {
-  width: calc(25% + 24em + 1px);
+  width: calc(25% + 21em + 1px);
+  @media screen and (width <= 735px){
+    width: calc(25% + 20em + 1px);
+  }
 }
-#attack-classes thead th {
-  &:nth-child(1) { width:  auto; } /* 名前 */
-  &:nth-child(2) { width: 3.5em; } /* 必筋 */
-  &:nth-child(3) { width:   5em; } /* 命中 */
-  &:nth-child(4) { width: 3.5em; } /* 威力 */
-  &:nth-child(5) { width: 3.5em; } /* Ｃ値 */
-  &:nth-child(6) { width:   5em; } /* 追加Ｄ */
+#attack-classes thead {
+  .name  { width:  auto; } /* 名前 */
+  .reqd  { width: 3.5em; } /* 必筋 */
+  .acc   { width: 3.5em; } /* 命中 */
+  .rate  { width: 3.5em; } /* 威力 */
+  .crit  { width: 3.5em; } /* Ｃ値 */
+  .dmg   { width: 3.5em; } /* 追加Ｄ */
+  
+  @media screen and (width <= 735px){
+    .reqd { width: 3.5em; } /* 必筋 */
+    .acc  { width: 3.5em; } /* 命中 */
+    .rate { width: 3.5em; } /* 威力 */
+    .crit { width: 2.5em; } /* Ｃ値 */
+    .dmg  { width: 3.5em; } /* 追加Ｄ */
+  }
 }
 
 #attack-classes + #weapons {
   margin-top: .3rem;
 }
-
-#weapons thead th {
-  &:nth-child(1) { width:   25%; } /* 名前 */
-  &:nth-child(2) { width: 3.5em; } /* 用法 */
-  &:nth-child(3) { width: 3.5em; } /* 必筋 */
-  &:nth-child(4) { width:   5em; } /* 命中 */
-  &:nth-child(5) { width: 3.5em; } /* 威力 */
-  &:nth-child(6) { width: 3.5em; } /* Ｃ値 */
-  &:nth-child(7) { width:   5em; } /* 追加Ｄ */
-  &:nth-child(8) { width:   1em; } /* 専用 */
-  &:nth-child(9) { width: auto; } /* 備考 */
+#weapons thead {
+  .name  { width:   25%; } /* 名前 */
+  .usage { width: 3.5em; } /* 用法 */
+  .reqd  { width: 3.5em; } /* 必筋 */
+  .acc   { width: 3.5em; } /* 命中 */
+  .rate  { width: 3.5em; } /* 威力 */
+  .crit  { width: 3.5em; } /* Ｃ値 */
+  .dmg   { width: 3.5em; } /* 追加Ｄ */
+  .note  { width: auto; } /* 備考 */
+  
+  @media screen and (width <= 735px){
+    .name  { width:   25%; } /* 名前 */
+    .usage { width: 3.5em; } /* 用法 */
+    .reqd  { width: 3.5em; } /* 必筋 */
+    .acc   { width: 3.5em; } /* 命中 */
+    .rate  { width: 3.5em; } /* 威力 */
+    .crit  { width: 2.5em; } /* Ｃ値 */
+    .dmg   { width: 3.5em; } /* 追加Ｄ */
+    .note  { width: auto; } /* 備考 */
+  }
 }
-#weapons tbody td:last-child { /* 備考 */
-  padding-left: .3em;
-  text-align: left;
+#weapons tbody td:last-child.note { /* 備考 */
   font-size: 90%;
+  padding-left: .1em;
+  @media screen and (width <= 735px){
+    padding-left: 1px;
+    font-size: 80%;
+  }
 }
 
 
@@ -837,29 +916,26 @@ dl#level {
 #evasion-classes {
   width: calc(25% + 13em + 1px);
 }
-#evasion-classes th {
-  &:nth-child(1) { width:  auto; } /* 名前 */
-  &:nth-child(2) { width: 3.5em; } /* 必筋 */
-  &:nth-child(3) { width: 3.5em; } /* 回避 */
-  &:nth-child(4) { width: 3.5em; } /* 防護 */
+#evasion-classes thead {
+  .name { width:  auto; } /* 名前 */
+  .reqd { width: 3.5em; } /* 必筋 */
+  .eva  { width: 3.5em; } /* 回避 */
+  .def  { width: 3.5em; } /* 防護 */
 }
 
 #evasion-classes + #armours {
   margin-top: .3rem;
 }
 
-#armours thead th {
-  &.type { width: 2.5em; } /* 種別 */
-  &.name { width:   25%; } /* 名前 */
-  &.reqd { width: 3.5em; } /* 必筋 */
-  &.eva  { width: 3.5em; } /* 回避 */
-  &.def  { width: 3.5em; } /* 防護 */
-  &.own  { width:   1em; } /* 専用 */
-  &.note { width:  auto; } /* 備考 */
+#armours thead {
+  .type { width: 2.5em; } /* 種別 */
+  .name { width:   25%; } /* 名前 */
+  .reqd { width: 3.5em; } /* 必筋 */
+  .eva  { width: 3.5em; } /* 回避 */
+  .def  { width: 3.5em; } /* 防護 */
+  .note { width:  auto; } /* 備考 */
 }
 #armours td.note {
-  padding-left: .3em;
-  text-align: left;
   font-size: 90%;
 }
 #armours tr.defense-total {
@@ -882,24 +958,21 @@ dl#level {
 
 
 /* Accessories */
-#accessories thead th {
-  &:nth-child(1) { width: 2.5em; } /* 種別 */
-  &:nth-child(2) { width:   25%; } /* 名前 */
-  &:nth-child(3) { width: 3.5em; } /* 専用 */
-  &:nth-child(4) { width:  auto; } /* 備考 */
+#accessories thead {
+  .type { width: 2.5em; } /* 種別 */
+  .name { width:   25%; } /* 名前 */
+  .note { width:  auto; } /* 備考 */
 }
-#accessories tbody td:nth-child(4) { /* 備考 */
-  padding-left: .3em;
-  text-align: left;
+#accessories tbody td.note { /* 備考 */
   font-size: 90%;
 }
 
 /* Parts */
-#parts thead th {
-  &.name  { width: 10em; }
-  &.def   { width: 5.2em; }
-  &.hp    { width: 5.2em; }
-  &.mp    { width: 5.2em; }
+#parts thead {
+  .name  { width: 10em; }
+  .def   { width: 5.2em; }
+  .hp    { width: 5.2em; }
+  .mp    { width: 5.2em; }
 }
 
 /* // Area-Items
@@ -982,9 +1055,11 @@ dl#level {
     &.cards-red th::before { content:'\e91d'; color: #a00; }
     &.cards-gre th::before { content:'\e123'; color: #0c3; }
     &.cards-bla th::before { content:'\ead5'; color: #777; }
-    &.cards-whi th::before { content:'\e87d'; color: #bbb; }
+    &.cards-whi th::before { content:'\e87d'; color: #aaa; font-variation-settings: 'FILL' 0; }
     &.cards-gol th::before { content:'\e3e4'; color: #f90; }
-      
+
+    .night &.cards-whi th::before { content:'\e87d'; color: #bbb; font-variation-settings: 'FILL' 1; }
+    
     & td {
       background-color: transparent;
     }
@@ -1077,16 +1152,11 @@ dl#level {
   margin-top: var(--box-v-gap);
 }
 #history table {
-  & thead th {
-    &.num    { width:   2em; } /* No. */
-    &.date   { width: 5.2em; } /* 日付 */
-    &.title  { width:  auto; } /* タイトル */
-    &.exp    { width: 4.6em; } /* 経験点 */
-    &.money  { width: 4.5em; } /* ガメル */
-    &.honor  { width:   3em; } /* 名誉点 */
-    &.grow   { width: 3.5em; } /* 成長 */
-    &.gm     { width:  auto; } /* ＧＭ */
-    &.member { width:  auto; } /* 参加者 */
+  > thead {
+    .exp    { width: 4.6em; } /* 経験点 */
+    .money  { width: 4.5em; } /* ガメル */
+    .honor  { width:   3em; } /* 名誉点 */
+    .grow   { width: 3.5em; } /* 成長 */
   }
   & tr td.money {
     text-align: right;
@@ -1096,14 +1166,15 @@ dl#level {
       font-size: 1.1rem;
     }
   }
-  & tr td:is(.gm, .member) {
-    font-size: 1.1rem;
-  }
-  
   & tfoot tr td.grow::after {
     content: "回";
     margin-left: 2px;
     font-size: 1rem;
+  }
+  @media screen and (width <= 735px){
+    > thead {
+      .grow { width: 3.3em; }
+    }
   }
 }
 
@@ -1140,7 +1211,7 @@ dl#level {
 
 /* // Fellow
 ---------------------------------------------------------------------------------------------------- */
-@media screen and (min-width:1400px){
+@media screen and (width >= 1400px){
   #fellow {
     grid-auto-rows: 1fr max-content;
   }
@@ -1179,20 +1250,20 @@ dl#level {
       "PROF PROF PROF   MP CHCK"
     ;
   }
+  #f-image-none,
+  #f-image          { grid-area: IMG; }
+  #f-level          { grid-area: LVL; }
+  #f-character-name { grid-area: NAME; }
+  #f-player-name    { grid-area: PLN; }
+  #f-race           { grid-area: RACE; }
+  #f-sin            { grid-area: SIN; }
+  #f-personal       { grid-area: PER; }
+  #f-classes        { grid-area: CLS ; }
+  #f-language       { grid-area: LANG; }
+  #f-mp             { grid-area: MP; }
+  #f-profile        { grid-area: PROF; }
+  #f-checkboxes     { grid-area: CHCK; }
 }
-#f-image-none,
-#f-image          { grid-area: IMG; }
-#f-level          { grid-area: LVL; }
-#f-character-name { grid-area: NAME; }
-#f-player-name    { grid-area: PLN; }
-#f-race           { grid-area: RACE; }
-#f-sin            { grid-area: SIN; }
-#f-personal       { grid-area: PER; }
-#f-classes        { grid-area: CLS ; }
-#f-language       { grid-area: LANG; }
-#f-mp             { grid-area: MP; }
-#f-profile        { grid-area: PROF; }
-#f-checkboxes     { grid-area: CHCK; }
 
 
 #f-image-none,
@@ -1464,7 +1535,7 @@ dl#level {
   grid-row: span 1;
 }
 
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   #fellow {
     padding-left: 5px;
     padding-right: 5px;
@@ -1497,8 +1568,6 @@ dl#level {
     > dd:not(.fellow-checked) {
       display: none;
     }
-  }
-  #fellow-actions td:nth-last-child(2){
   }
 }
 

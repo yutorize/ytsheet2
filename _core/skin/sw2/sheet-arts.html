@@ -104,7 +104,7 @@
           <dl class="name color-set"><dt><TMPL_VAR magicLevel><dd><div><TMPL_VAR magicIcon>【<TMPL_VAR magicName>】</div><small><TMPL_VAR magicNameNotes></small></dl>
           <TMPL_IF magicCostOn     ><dl class="cost     "><dt>消費         <dd><TMPL_VAR magicCost></dl></TMPL_IF>
           <TMPL_IF magicTargetOn   ><dl class="target   "><dt>対象         <dd><TMPL_VAR magicTarget></dl></TMPL_IF>
-          <TMPL_IF magicRangeOn    ><dl class="range    "><dt>射程/<br>形状<dd><TMPL_VAR magicRange>／<TMPL_VAR magicForm></dl></TMPL_IF>
+          <TMPL_IF magicRangeOn    ><dl class="range    "><dt>射程/<br>形状<dd><TMPL_VAR magicRange>／<wbr><TMPL_VAR magicForm></dl></TMPL_IF>
           <TMPL_IF magicDurationOn ><dl class="duration "><dt>時間         <dd><TMPL_VAR magicDuration></dl></TMPL_IF>
           <TMPL_IF magicResistOn   ><dl class="resist   "><dt>抵抗         <dd><TMPL_VAR magicResist></dl></TMPL_IF>
           <TMPL_IF magicElementOn  ><dl class="element  "><dt>属性         <dd><TMPL_VAR magicElement DEFAULT="―"></dl></TMPL_IF>
@@ -117,6 +117,7 @@
           <TMPL_IF magicTypeOn     ><dl class="type     "><dt><TMPL_VAR magicTypeDt DEFAULT="対応"><dd><TMPL_VAR magicType></dl></TMPL_IF>
           <TMPL_IF magicPremiseOn  ><dl class="premise  "><dt>前提         <dd><TMPL_VAR magicPremise></dl></TMPL_IF>
           <TMPL_IF magicPartOn     ><dl class="part     "><dt>適用部位     <dd><TMPL_VAR magicApplyPart></dl></TMPL_IF>
+          <TMPL_IF magicHumanFormOn><dl class="human-form"><dt>人間形態時  <dd><TMPL_VAR magicApplyHumanForm></dl></TMPL_IF>
           <TMPL_IF magicRankOn     ><dl class="rank     "><dt>ランク       <dd><TMPL_VAR magicRank></dl></TMPL_IF>
           <TMPL_IF magicCommandCostOn  ><dl class="ccost  "><dt>陣気コスト<dd><TMPL_VAR magicCommandCost></dl></TMPL_IF>
           <TMPL_IF magicCommandChargeOn><dl class="ccharge"><dt>陣気蓄積  <dd><TMPL_VAR magicCommandCharge></dl></TMPL_IF>
@@ -212,7 +213,7 @@
           <section class="box description">
             <h2><TMPL_IF head_schoolItemNote><TMPL_VAR head_schoolItemNote><TMPL_ELSE>流派装備</TMPL_IF></h2>
             <TMPL_IF schoolItemNote><p><TMPL_VAR schoolItemNote></p></TMPL_IF>
-            <TMPL_IF SchoolItems><table class="item-table">
+            <TMPL_IF SchoolItems><table class="item-table data-table">
               <thead>
                 <th class="name      ">名称
                 <th class="reputation">知名度
@@ -237,7 +238,7 @@
           <TMPL_IF schoolArtsNote><div class="box"><p><TMPL_VAR schoolArtsNote></p></div></TMPL_IF>
           <TMPL_LOOP ArtsData>
           <div class="data-magic data-arts">
-            <h3 class="name    "><TMPL_VAR ICON>《<TMPL_VAR NAME>》</h3>
+            <h3 class="name    "><div><TMPL_VAR ICON>《<TMPL_VAR NAME>》</div></h3>
             <dl class="cost    "><dt><span>必要名誉点</span><dd><TMPL_VAR COST></dl>
             <dl class="type    "><dt>タイプ    <dd><TMPL_VAR TYPE></dl>
             <dl class="premise "><dt>前提      <dd><TMPL_VAR PREMISE></dl>

@@ -284,8 +284,8 @@ print <<"HTML";
           <dd>@{[input("history0HonorB",'number','changeRegu', ($set::make_fix?' readonly':''))]}
           <dt>盟竜点
           <dd>@{[input("history0HonorD",'number','changeRegu', ($set::make_fix?' readonly':''))]}
-          <dt>初期成長
-          <dd>
+          <dt class="grow">初期成長
+          <dd class="grow">
             <dl class="regulation-grow">
               <dt>器用度<dd>@{[ input "sttPreGrowA",'number','calcStt' ]}
               <dt>敏捷度<dd>@{[ input "sttPreGrowB",'number','calcStt' ]}
@@ -381,12 +381,12 @@ print <<"HTML";
           <dl class="box" id="stt-int"><dt>知力  <dd id="stt-int-value">$pc{sttInt}</dl>
           <dl class="box" id="stt-mnd"><dt>精神力<dd id="stt-mnd-value">$pc{sttMnd}</dl>
           
-          <dl class="box" id="stt-add-A"><dt>増強<dd>@{[input('sttAddA','number','calcStt')]}</dl>
-          <dl class="box" id="stt-add-B"><dt>増強<dd>@{[input('sttAddB','number','calcStt')]}</dl>
-          <dl class="box" id="stt-add-C"><dt>増強<dd>@{[input('sttAddC','number','calcStt')]}</dl>
-          <dl class="box" id="stt-add-D"><dt>増強<dd>@{[input('sttAddD','number','calcStt')]}</dl>
-          <dl class="box" id="stt-add-E"><dt>増強<dd>@{[input('sttAddE','number','calcStt')]}</dl>
-          <dl class="box" id="stt-add-F"><dt>増強<dd>@{[input('sttAddF','number','calcStt')]}</dl>
+          <dl class="box" id="stt-add-A"><dt>増強<dd><span id="stt-equip-A-value"></span>@{[input('sttAddA','number','calcStt')]}</dl>
+          <dl class="box" id="stt-add-B"><dt>増強<dd><span id="stt-equip-B-value"></span>@{[input('sttAddB','number','calcStt')]}</dl>
+          <dl class="box" id="stt-add-C"><dt>増強<dd><span id="stt-equip-C-value"></span>@{[input('sttAddC','number','calcStt')]}</dl>
+          <dl class="box" id="stt-add-D"><dt>増強<dd><span id="stt-equip-D-value"></span>@{[input('sttAddD','number','calcStt')]}</dl>
+          <dl class="box" id="stt-add-E"><dt>増強<dd><span id="stt-equip-E-value"></span>@{[input('sttAddE','number','calcStt')]}</dl>
+          <dl class="box" id="stt-add-F"><dt>増強<dd><span id="stt-equip-F-value"></span>@{[input('sttAddF','number','calcStt')]}</dl>
           
           <dl class="box" id="stt-bonus-dex"><dt><span>器用度</span><dd id="stt-bonus-dex-value">$pc{bonusDex}</dl>
           <dl class="box" id="stt-bonus-agi"><dt><span>敏捷度</span><dd id="stt-bonus-agi-value">$pc{bonusAgi}</dl>
@@ -446,8 +446,10 @@ print <<"HTML";
       <div id="area-ability">
         <div id="area-classes" class="in-toc" data-content-title="技能">
           <div class="box" id="classes">
-            <h2>技能</h2>
-            <div>使用経験点：<span id="exp-use"></span></div>
+            <h2>
+              技能
+              <small class="notes">使用経験点：<b id="exp-use"></b></small>
+            </h2>
 HTML
 print '<div class="classes-group" id="classes-weapon-user"><h3>戦士系技能</h3><dl class="edit-table side-margin">';
 foreach my $name (@data::class_names){ print classInputBox($name) if $data::class{$name}{type} eq 'weapon-user'; }
@@ -495,8 +497,10 @@ print <<"HTML";
             </dl>
           </div>
           <div class="box" id="common-classes">
-            <h2>一般技能</h2>
-            <div>合計レベル：<span id="cc-total-lv"></span></div>
+            <h2>
+              一般技能
+              <small class="notes">合計レベル：<b id="cc-total-lv"></b></small>
+            </h2>
             @{[ input 'commonClassNum','hidden' ]}
             <table id="common-classes-table" class="edit-table side-margin">
             <tbody>
@@ -558,7 +562,10 @@ print <<"HTML";
             </ul>
           </div>
           <div class="box in-toc" id="mystic-arts" data-content-title="秘伝・秘伝魔法">
-            <h2>秘伝</h2>
+            <h2>
+              秘伝
+              <small class="notes">所持名誉点：<b id="honor-value-MA"></b></small>
+            </h2>
             <div>所持名誉点：<span id="honor-value-MA"></span></div>
             <ul id="mystic-arts-list" class="edit-table side-margin">
 HTML
@@ -686,6 +693,68 @@ print <<"HTML";
         </div>
       </div>
 
+      <div id="area-effects">
+HTML
+$pc{effectBoxNum} ||= 1;
+my @effectNames = map {
+    $_->{name} .'|<'. $_->{name} . ($_->{notes}?"（$_->{notes}）":'') .'>'
+  } @set::effects;
+my %effects = map { $_->{name} => $_ } @set::effects;
+foreach my $box ('BOX',1 .. $pc{effectBoxNum}){
+  my $name = $pc{"effect${box}Name"};
+  print '<template id="effect-template">' if $box eq 'BOX';
+  print <<"HTML";
+        <div id="effect-row${box}" class="box">
+          <h2>
+            <span class="handle"></span>
+            <div class="select-input">
+              @{[ selectBox "effect${box}Name","changeEffect(this)",'def=|<各種影響表（穢れや侵蝕など）>',@effectNames ]}
+              @{[ input "effect${box}NameFree",'','','placeholder="例: 穢れ＠穢れ度"' ]}
+          </h2>
+          <dl class="effect-points"><dt>$effects{$name}{pointName}<dd>0</dl>
+          <table class="edit-table side-margin">
+            <thead>
+              <tr>
+                <th>
+                <th class="text">$effects{$name}{header}[0]
+                <th class="num1 @{[ !$effects{$name}{header}[1] && !$effects{$name}{type}[1] ? 'hidden' : '' ]}"><span>$effects{$name}{header}[1]</span>
+                <th class="num2 @{[ !$effects{$name}{header}[2] && !$effects{$name}{type}[2] ? 'hidden' : '' ]}"><span>$effects{$name}{header}[2]</span>
+            <tbody>
+HTML
+  $pc{"effect${box}Num"} ||= 0;
+  foreach my $num ('TMPL',1 .. $pc{"effect${box}Num"}){
+    $pc{"effect${box}-${num}"} = $effects{$name}{fix}[$num-1] if $effects{$name}{fix}[$num-1];
+    print '<template id="effect'.$box.'-template">' if $num eq 'TMPL';
+    print '<tr id="effect'.$box.'-row'.$num.'">'
+         .'<td class="handle">'
+         .'<td class="left">'.(input "effect${box}-${num}",'','',($effects{$name}{fix}[$num-1] ? 'readonly':''));
+    foreach my $i (1 .. 2){
+      print "<td class=\"num${i}\">"
+            .(input "effect${box}-${num}Pt${i}", $effects{$name}{type}[$i], 'calcEffect(this)');
+    }
+    print '</template>' if $num eq 'TMPL';
+  }
+  print <<"HTML";
+          </table>
+          <div class="add-del-button ignore-sort"><a onclick="addEffect(this)">▼</a><a onclick="delEffect(this)">▲</a></div>
+          <ul class="annotate">
+            <li>自由記入の場合、表の1行目が項目の見出しになります
+          </ul>
+          @{[ input "effect${box}Num",'hidden' ]}
+        </div>
+HTML
+  print '</template>' if $box eq 'BOX';
+}
+print <<"HTML";
+        <div class="add-del-button">
+          <a onclick="addEffectBox()">▼</a><a onclick="delEffectBox()">▲</a>
+          @{[ input 'effectBoxNum','hidden' ]}
+        </div>
+      </div>
+      <div class="annotate">
+        各種影響表は、閲覧時においては、自由記入以外の表示順は固定されます。
+      </div>
+
       <div id="area-actions">
         <div id="area-package">
           <div class="box" id="package">
@@ -801,9 +870,9 @@ print <<"HTML";
               <td>装備補正など
               <td>魔法全般
               <td>
-              <td>+@{[ input 'magicPowerAdd','number','calcMagic' ]}
-              <td>+@{[ input 'magicCastAdd','number','calcMagic' ]}
-              <td>+@{[ input 'magicDamageAdd','number','calcMagic' ]}
+                <td>+@{[ input 'magicPowerAdd' ,'number','calcMagic' ]}<span id="magic-power-equip-value" ></span>
+                <td>+@{[ input 'magicCastAdd'  ,'number','calcMagic' ]}<span id="magic-cast-equip-value"  ></span>
+                <td>+@{[ input 'magicDamageAdd','number','calcMagic' ]}<span id="magic-damage-equip-value"></span>
 HTML
 my $fairyset = <<"HTML";
 <a id="fairy-sim-url" target="_blank">⇒シミュレータ</a>
@@ -866,12 +935,12 @@ print <<"HTML";
           <table class="edit-table line-tbody">
             <thead>
               <tr>
-                <th>技能・特技
-                <th>必筋<br>上限
-                <th>命中力
-                <th>
-                <th>Ｃ値
-                <th>追加Ｄ
+                <th class="name ">技能・特技
+                <th class="reqd ">必筋<br>上限
+                <th class="acc  ">命中力
+                <th class="rate ">
+                <th class="crit ">Ｃ値
+                <th class="dmg  ">追加Ｄ
               </tr>
             <tbody>
 HTML
@@ -938,16 +1007,16 @@ print <<"HTML";
           <table class="edit-table line-tbody" id="weapons-table">
             <thead>
               <tr>
-                <th>武器
-                <th>用法
-                <th>必筋
-                <th>命中力
-                <th>威力
-                <th>Ｃ値
-                <th>追加Ｄ
-                <th>専用
-                <th>カテゴリ
-                <th>使用技能
+                <th class="name ">武器
+                <th class="usage">用法
+                <th class="reqd ">必筋
+                <th class="acc  ">命中力
+                <th class="rate ">威力
+                <th class="crit ">Ｃ値
+                <th class="dmg  ">追加Ｄ
+                <th class="own  ">専用
+                <th class="cate ">カテゴリ
+                <th class="class">使用技能
                 <th>
               </tr>
             </thead>
@@ -971,9 +1040,9 @@ print <<"HTML";
                 <td>@{[input("weapon${num}Own",'checkbox','calcWeapon')]}
                 <td><select name="weapon${num}Category" oninput="calcWeapon()">@{[option("weapon${num}Category",@data::weapon_names,'ガン（物理）','盾')]}</select>
                 <td><select name="weapon${num}Class" oninput="calcWeapon()">@{[option("weapon${num}Class",@weapon_users,'自動計算しない')]}</select>
-                <td rowspan="2"><span class="button" onclick="addWeapons(${num});">複<br>製</span>
+                <td rowspan="2"><span class="button" onclick="addWeapons(${num});setupBracketInputCompletion()">複<br>製</span>
               <tr>
-                <td colspan="3">@{[input("weapon${num}Note",'','calcWeapon','placeholder="備考"')]}
+                <td colspan="3">@{[input("weapon${num}Note",'','calcWeapon','onchange="changeEquipMod()" placeholder="備考"')]}
 HTML
   if($num eq 'TMPL'){ print '</template>' }
 }
@@ -982,19 +1051,20 @@ print <<"HTML";
           </table>
           <ul class="annotate">
             <li>Ｃ値は自動計算されません。
+            <li><code>\@防護点+1</code>や<code>\@回避力+1</code>のように記述すると、<span class="text-em">常時</span>有効な上昇効果が自動計算されます。<br>有効な項目は、装飾品欄と同様です。
             <li id="artisan-annotate" @{[ display $pc{masteryArtisan} ]}>※備考欄に<code>〈魔器〉</code>と記入すると魔器習熟が反映されます。
           </ul>
-          <div class="add-del-button"><a onclick="addWeapons()">▼</a><a onclick="delWeapons()">▲</a></div>
+          <div class="add-del-button"><a onclick="addWeapons();setupBracketInputCompletion()">▼</a><a onclick="delWeapons()">▲</a></div>
           @{[input('weaponNum','hidden')]}
         </div>
         <div class="box" id="evasion-classes">
           <table class="edit-table">
             <thead>
               <tr>
-                <th>技能・特技
-                <th>必筋<br>上限
-                <th>回避力
-                <th>防護点
+                <th class="name">技能・特技
+                <th class="reqd">必筋<br>上限
+                <th class="eva ">回避力
+                <th class="def ">防護点
               </tr>
             <tbody>
 HTML
@@ -1063,6 +1133,11 @@ print <<"HTML";
                 <td>―
                 <td id="parts-enhance-eva">1
                 <td>―
+              <tr>
+                <td>武器や装飾品による修正
+                <td>―
+                <td id="equip-mod-eva">0
+                <td id="equip-mod-def">0
               </tr>
             </tbody>
           </table>
@@ -1103,7 +1178,7 @@ HTML
             @{[ input 'armourNum','hidden' ]}
             <tfoot>
               <tr><td colspan="8">
-                <div class="add-del-button"><a onclick="addArmour()">▼</a><a onclick="delArmour()">▲</a></div>
+                <div class="add-del-button"><a onclick="addArmour();setupBracketInputCompletion()">▼</a><a onclick="delArmour()">▲</a></div>
               <tr>
                 <th colspan="2">使用技能
                 <th colspan="2" class="small" style="vertical-align:bottom">チェックを入れた防具の数値で合算▼
@@ -1186,11 +1261,11 @@ print <<"HTML";
           <table class="edit-table">
             <thead>
               <tr>
-                <th>
-                <th>
-                <th>装飾品
-                <th>専用
-                <th>効果
+                <th class="check">
+                <th class="type ">
+                <th class="name ">装飾品
+                <th class="own  ">専用
+                <th class="note ">効果
               </tr>
             <tbody id="accessories-table">
 HTML
@@ -1231,10 +1306,10 @@ foreach (
     <td>
       <select name="accessory@$_[1]Own" oninput="calcSubStt()">
         <option></option>
-        <option value="HP" @{[ $pc{"accessory@$_[1]Own"} eq 'HP' ? 'selected':'']}>HP</option>
-        <option value="MP" @{[ $pc{"accessory@$_[1]Own"} eq 'MP' ? 'selected':'' ]}>MP</option>
+        <option value="HP" @{[ $pc{"accessory@$_[1]Own"} eq 'HP' ? 'selected':'']}>HP+2</option>
+        <option value="MP" @{[ $pc{"accessory@$_[1]Own"} eq 'MP' ? 'selected':'' ]}>MP+2</option>
       </select>
-    <td>@{[input('accessory'.@$_[1].'Note')]}
+    <td>@{[input('accessory'.@$_[1].'Note','','','onchange="changeEquipMod()"')]}
 HTML
 }
 print <<"HTML";
@@ -1242,6 +1317,10 @@ print <<"HTML";
           </table>
         <ul class="annotate">
           <li>左のボックスにチェックを入れると欄が一つ追加されます
+          <li>
+            <code>\@器用度+1</code>や<code>\@防護点+1</code>のように記述すると、<span class="text-em">常時</span>有効な上昇効果が自動計算されます。<br>
+            有効な項目は、<code>器用度</code>～<code>精神力</code> <code>生命抵抗力</code> <code>精神抵抗力</code> <code>回避力</code> <code>防護点</code> <code>移動力</code> <code>魔力</code> <code>行使判定</code> <code>武器必筋上限</code>です。<br>
+            同じ項目へは累積するため、同名や効果排他のアイテムには注意してください。
         </ul>
         </div>
       </div>

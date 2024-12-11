@@ -403,8 +403,6 @@ HTML
               <th>魔防値
               <th>行動値
               <th>耐久値
-              <th>
-              <th>
             </tr>
           <tbody>
             <tr>

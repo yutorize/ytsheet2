@@ -171,7 +171,7 @@
                 <td class="target"><TMPL_VAR TARGET></td>
                 <td class="cond  "><TMPL_VAR COND></td>
               <tr>
-                <td class="note left" colspan="4"><TMPL_VAR NOTE></td>
+                <td class="note" colspan="4"><TMPL_VAR NOTE></td>
             </TMPL_LOOP>
           </table>
         </section>
@@ -194,20 +194,20 @@
         <table class="data-table line-tbody">
           <thead>
             <tr>
-              <th>No.
-              <th>日付
-              <th>タイトル
-              <th>強度
-              <th>GM
-              <th>参加者
+              <th class="num   ">No.
+              <th class="date  ">日付
+              <th class="title ">タイトル
+              <th class="grow  ">強度
+              <th class="gm    ">GM
+              <th class="member">参加者
             </tr>
           <TMPL_LOOP History><tbody>
             <tr>
-              <td class="num" <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR NUM></td>
-              <td class="date" <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR DATE></td>
-              <td class="title" <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR TITLE></td>
-              <td class="grow"><span><TMPL_VAR LEVEL></span></td>
-              <td class="gm"><span><TMPL_VAR GM></span></td>
+              <td class="num   " <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR NUM></td>
+              <td class="date  " <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR DATE></td>
+              <td class="title " <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR TITLE></td>
+              <td class="grow  "><span><TMPL_VAR LEVEL></span></td>
+              <td class="gm    "><span><TMPL_VAR GM></span></td>
               <td class="member"><TMPL_VAR MEMBER></td>
             </tr>
             <TMPL_IF NOTE><tr><td colspan="3" class="note"><TMPL_VAR NOTE></TMPL_IF>

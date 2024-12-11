@@ -5,13 +5,13 @@
 ---------------------------------------------------------------------------------------------------- */
 body {
   background-image: url(../../_common/img/back-pattern.png), url(../img/back-xx.png);
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     background-size: auto, 70%;
   }
 }
 /* // Layout
 ---------------------------------------------------------------------------------------------------- */
-@media screen and (min-width:1400px){
+@media screen and (width >= 1400px){
   body {
     grid-template-columns: minmax(0, 1fr) minmax(auto, 1800px) minmax(0, 1fr);
   }
@@ -71,18 +71,7 @@ body {
     "EXP STT STT IMG"
     "LFP LFP LFP IMG"
   ;
-}
-#image-none,
-#image      { grid-area: IMG; }
-#personal   { grid-area: PER; }
-#sub-status { grid-area: STT; }
-#works-cover{ grid-area: WKS; }
-#renegade   { grid-area: REN; }
-#exp        { grid-area: EXP; }
-#lifepath   { grid-area: LFP; }
-
-@media screen and (max-width:767px){
-  #area-status {
+  @media screen and (width <= 767px){
     min-height: 0%;
     grid-gap: .5rem;
     grid-template-columns: 0.6fr 0.8fr 1.5fr 2.1fr;
@@ -94,9 +83,7 @@ body {
       "LFP LFP LFP IMG"
     ;
   }
-}
-@media screen and (max-width:735px){
-  #area-status {
+  @media screen and (width <= 735px){
     grid-template-columns: 0.6fr 2.4fr 2fr;
     grid-template-areas:
       "PER PER IMG"
@@ -106,8 +93,15 @@ body {
       "LFP LFP LFP"
     ;
   }
+  #image-none,
+  #image      { grid-area: IMG; }
+  #personal   { grid-area: PER; }
+  #sub-status { grid-area: STT; }
+  #works-cover{ grid-area: WKS; }
+  #renegade   { grid-area: REN; }
+  #exp        { grid-area: EXP; }
+  #lifepath   { grid-area: LFP; }
 }
-
 
 #area-status dd:empty::before,
 #area-status td:empty::before {
@@ -117,10 +111,13 @@ body {
 :is(#personal, #works-cover) dl {
   display: grid;
   grid-template-rows: max-content 1fr;
-}
-:is(#personal, #works-cover) dl dd {
-  line-height: 1;
-  align-self: center;
+  > dd {
+    min-width: 0;
+    line-height: 1;
+    align-self: center;
+    word-break: auto-phrase;
+    overflow-wrap: break-word;
+  }
 }
 
 /* Image */
@@ -129,22 +126,24 @@ body {
 #personal {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-}
-#personal dl:nth-child(n+4) {
-  border-top-width: 1px;
-}
-#personal dl:not(:nth-child(3n+1)) {
-  border-left-width: 1px;
-  border-left-style: dotted;
+  
+  > dl:nth-child(n+4) {
+    border-top-width: 1px;
+  }
+  > dl:not(:nth-child(3n+1)) {
+    border-left-width: 1px;
+    border-left-style: dotted;
+  }
 }
 
 /* Works */
 #works-cover {
   display: grid;
   grid-template-columns: 1fr;
-}
-#works-cover dl:last-child {
-  border-top-width: 1px;
+
+  > dl:last-child {
+    border-top-width: 1px;
+  }
 }
 
 
@@ -152,15 +151,16 @@ body {
 #renegade {
   display: grid;
   grid-template-columns: 0.8fr 3fr;
-}
-#renegade dd {
-  font-family: var(--font-proportional);
-  font-feature-settings: "palt";
-  min-height: 1.8em;
-}
-#renegade dl:last-child {
-  border-left-width: 1px;
-  border-left-style: dotted;
+
+  > dl:last-child {
+    border-left-width: 1px;
+    border-left-style: dotted;
+  }
+  > dl dd {
+    font-family: var(--font-proportional);
+    font-feature-settings: "palt";
+    min-height: 1.8em;
+  }
 }
 #breed {
   display: grid;
@@ -170,17 +170,17 @@ body {
   display: grid;
   grid-gap: 0 .8em;
   grid-template-columns: 1fr 1fr 1fr;
+  > dt:last-of-type {
+    grid-column: 3;
+    font-size: 85%;
+    line-height: calc(1.5 / .85);
+  }
+  > dd {
+    grid-row: 2;
+    white-space: nowrap;
+  }
 }
-#syndrome dt:last-of-type {
-  grid-column: 3;
-  font-size: 85%;
-  line-height: calc(1.5 / .85);
-}
-#syndrome dd {
-  grid-row: 2;
-  white-space: nowrap;
-}
-@media (max-width:860px), (min-width:1400px) and (max-width:1680px) {
+@media (width <= 860px), (1400px <= width <= 1680px) {
   #renegade {
     grid-template-columns: 5em auto;
   }
@@ -192,7 +192,7 @@ body {
     transform: scaleY(calc(1/0.9));
   }
 }
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   #renegade {
     grid-template-columns: 1fr;
   }
@@ -209,14 +209,14 @@ body {
   display: flex;
   flex-wrap: wrap;
   white-space:nowrap;
+  #max-hp     { flex-basis: 33.3%; }
+  #stock-pt   { flex-basis: 33.3%; }
+  #saving     { flex-basis: 33.3%; }
+  #initiative { flex-basis: 25%; }
+  #move       { flex-basis: 25%; }
+  #dash       { flex-basis: 25%; }
+  #magic-dice { flex-basis: 25%; }
 }
-#sub-status dl#max-hp     { flex-basis: 33.3%; }
-#sub-status dl#stock-pt   { flex-basis: 33.3%; }
-#sub-status dl#saving     { flex-basis: 33.3%; }
-#sub-status dl#initiative { flex-basis: 25%; }
-#sub-status dl#move       { flex-basis: 25%; }
-#sub-status dl#dash       { flex-basis: 25%; }
-#sub-status dl#magic-dice { flex-basis: 25%; }
 #sub-status dl {
   flex-grow: 1;
   margin: -1px 0 0 -1px;
@@ -224,29 +224,29 @@ body {
   border-top-style: solid;
   border-left-width: 1px;
   border-left-style: dotted;
+  > dd b {
+    display: inline-block;
+    font-weight: normal;
+    margin-left: .5rem;
+    transform: scale(1.3) translateY(-.1rem);
+  }
 }
-#sub-status dl dd b {
-  display: inline-block;
-  font-weight: normal;
-  margin-left: .5rem;
-  transform: scale(1.3) translateY(-.1rem);
-}
-@media screen and (min-width:1400px) and (max-width:1550px){
+@media screen and (1400px <= width <= 1550px){
   #sub-status dl span.shorten {
     font-size: 85%;
   }
 }
-@media screen and (min-width:1400px) and (max-width:1450px){
+@media screen and (1400px <= width <= 1450px){
   #sub-status dl span.shorten {
     display: none;
   }
 }
-@media screen and (max-width:767px){
+@media screen and (width <= 767px){
   #sub-status dl span.shorten {
     font-size: 85%;
   }
 }
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   #sub-status dl span.shorten {
     display: none;
   }
@@ -264,21 +264,21 @@ body {
   margin: -5px 5px 0;
   line-height: 1;
   white-space: nowrap;
-}
-#exp dl > * {
-  border-width: 0 0 .1rem;
-  border-style: solid;
-}
-#exp dl dt {
-  grid-column: 1;
-  font-size: 80%;
-  padding: 0 0 3px;
-}
-#exp dl dd {
-  grid-column: 2;
-  text-align: right;
-  font-size: 120%;
-  padding: 2px 0 1px;
+  > * {
+    border-width: 0 0 .1rem;
+    border-style: solid;
+  }
+  > dt {
+    grid-column: 1;
+    font-size: 80%;
+    padding: 0 0 3px;
+  }
+  > dd {
+    grid-column: 2;
+    text-align: right;
+    font-size: 120%;
+    padding: 2px 0 1px;
+  }
 }
 #exp .create-type {
   padding: 0 2px;
@@ -292,7 +292,7 @@ body {
     display: none;
   }
 }
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   #exp dl {
     margin: -5px 2px 0;
   }
@@ -307,54 +307,55 @@ body {
 }
 #lifepath table {
   width: 100%;
-  /* min-height: calc(100% - 1.4rem * 1.5); */
   border-style: solid hidden hidden;
   empty-cells: hide;
-}
-#lifepath table th:first-child {
-  width: 6.2em;
-}
-#lifepath table th.small,
-#lifepath table th.left {
-  border-width: 1px;
-  border-style: solid dotted hidden;
-}
-#lifepath table th.left {
-  padding: .3rem 0 0 .3rem;
-  line-height: 1;
-}
-#lifepath table th.right {
-  padding-right: .2rem;
-  font-size: 93%;
-}
-#lifepath table th.right.small {
-  font-size: 87%;
-}
-#lifepath table td {
-  border-width: 1px;
-  border-style: solid dotted;
-}
-#lifepath table td:first-child {
-  font-family: var(--font-proportional);
-  font-feature-settings: "palt";
-}
-#lifepath table td.center {
-  width: 2.2em;
-  font-size: 110%;
-  line-height: calc(1.4 / 1.1);
-}
-#lifepath table td.center.bold {
-  font-size: 130%;
-  font-weight: normal;
-}
-#lifepath table td.left {
-  padding: .1rem 0 .1rem .3rem;
-  line-height: 1.4;
-  font-size: 93%;
-}
-#lifepath table tr.urge th {
-  padding-top: .2rem;
-  font-size: 87%;
+  > colgroup {
+    col:nth-child(1) { width: 6.2em; }
+    col:nth-child(2) { width: 2.8em; }
+    col:nth-child(3) { width: auto; }
+  }
+  & th.small,
+  & th.left {
+    border-width: 1px;
+    border-style: solid dotted hidden;
+  }
+  & th.left {
+    padding: .3rem 0 0 .3rem;
+    line-height: 1;
+  }
+  & th.right {
+    padding-right: .2rem;
+    font-size: 93%;
+  }
+  & th.right.small {
+    font-size: 87%;
+  }
+  & td {
+    border-width: 1px;
+    border-style: solid dotted;
+  }
+  & td:first-child {
+    font-family: var(--font-proportional);
+    font-feature-settings: "palt";
+  }
+  & td.center {
+    width: 2.2em;
+    font-size: 110%;
+    line-height: calc(1.4 / 1.1);
+  }
+  & td.center.bold {
+    font-size: 130%;
+    font-weight: normal;
+  }
+  & td.comment {
+    padding: .1rem 0 .1rem .3rem;
+    line-height: 1.4;
+    font-size: 93%;
+  }
+  & tr.urge th {
+    padding-top: .2rem;
+    font-size: 87%;
+  }
 }
 
 
@@ -370,74 +371,75 @@ body {
 #status table thead {
   border-width: 0 0 1px;
   border-style: solid;
-}
-#status table thead td {
-  width: 2.8em;
-  border-width: 1px;
-  border-style: solid;
-  font-size: 130%;
-}
-#status table thead tr.breakdown {
-  display: none;
-}
-#status table thead tr.breakdown th {
-  border-top-width: 1px;
-  border-top-style: solid;
-  font-weight: normal;
-  font-size: 90%;
-}
-#status table thead tr.breakdown td {
-  font-weight: normal;
-  font-size: 100%;
+  border-right: hidden;
+  & td {
+    width: 2.8em;
+    border-width: 1px;
+    border-style: solid;
+    font-size: 130%;
+  }
+  > tr.breakdown {
+    display: none;
+    > th {
+      border-top-width: 1px;
+      border-top-style: solid;
+      font-weight: normal;
+      font-size: 90%;
+    }
+    > td {
+      font-weight: normal;
+      font-size: 100%;
+    }
+  }
 }
 #status table tbody {
   border-style: none hidden hidden;
   font-family: var(--font-proportional);
   font-feature-settings: "palt";
+  & td {
+    border-width: 1px 0px;
+    border-style: solid;
+  }
+  & td.left {
+    padding-left: .5em;
+  }
+  & td.right {
+    padding-right: .1rem;
+    border-right-width: 1px;
+    font-size: 120%;
+    white-space: nowrap;
+  }
+  & td.right span.small {
+    display: inline-block;
+    margin: 0 -.3em 0 -1em;
+    font-size: 70%;
+    transform: scaleX(0.8);
+  }
+  & td.right::after {
+    content: 'Lv';
+    margin-left: .1em;
+    font-size: 70%;
+  }
+  & td.left:empty + td.right:empty::after {
+    content: '';
+  }
 }
-#status table tbody td {
-  border-width: 1px 0px;
-  border-style: solid;
-}
-#status table tbody td.left {
-  padding-left: .5em;
-}
-#status table tbody td.right {
-  padding-right: .1rem;
-  border-right-width: 1px;
-  font-size: 120%;
-  white-space: nowrap;
-}
-#status table tbody td.right span.small {
-  display: inline-block;
-  margin: 0 -.3em 0 -1em;
-  font-size: 70%;
-  transform: scaleX(0.8);
-}
-#status table tbody td.right::after {
-  content: 'Lv';
-  margin-left: .1em;
-  font-size: 70%;
-}
-#status table tbody td.left:empty + td.right:empty::after {
-  content: '';
-}
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   #status table thead td {
     width: 2.2em;
   }
   #status table tbody {
     font-size: 90%;
-  }
-  #status table tbody td.left {
-    font-size: 90%;
-  }
-  #status table tbody td.right {
-    padding-right: .15em;
-    font-size: 1.3em;
-  }
-  #status table tbody td.right::after {
-    display: none;
+    & td.left {
+      font-size: 90%;
+    }
+    & td.right {
+      padding-right: .15em;
+      font-size: 1.3em;
+    }
+    & td.right::after {
+      display: none;
+    }
   }
 }
 
@@ -451,53 +453,54 @@ body {
 #lois table,
 #memory table {
   width: 100%;
-}
-#lois table thead th,
-#memory table thead th {
-  padding-left: .5rem;
-  text-align: left;
-  vertical-align: bottom;
-}
-#lois table thead th.right {
-  padding-right: .3rem;
-}
-#lois table tbody tr,
-#memory table tbody tr {
-  border-width: 1px 0 0;
-  border-style: solid;
-}
-#lois table tbody,
-#memory table tbody {
-  font-family: var(--font-proportional);
-  font-feature-settings: "palt";
-}
-#lois table tbody td {
-  &:nth-child(1) { width: 6.2em; } /* 関係 */
-  &:nth-child(2) { width: 14em;  }  /* 名前 */
-  &:nth-child(3) { width: 4.8em; } /* 感情 */
-  &:nth-child(4) { width: 1.2em; }
-  &:nth-child(5) { width: 4.8em; }
-  &:nth-child(6) { width: 2.6em; } /* 属性 */
-  &:nth-child(7) { width:  auto; } /* 備考 */
-  &:nth-child(8) { width: 1.5em; } /* S */
-  &:last-child { width: 3em; } /* 状態 */
-}
-@media screen and (max-width:735px){
-  #lois table tbody {
-    font-size: 90%;
-    
-    & td:nth-child(1) { width: 5.2em; } 
-    & td:nth-child(2) { width: 10em; }
-    & td:nth-child(3) { width: 4.8em; }
-    & td:nth-child(4) { width: 1.2em; }
-    & td:nth-child(5) { width: 4.8em; }
-    & td:nth-child(6) { width: 2.6em; }
+  > colgroup {
+    .relation{ width: 6.2em; } /* 関係 */
+    .name    { width:  14em; } /* 名前 */
+    .emo     { width: 4.8em; } /* 感情 */
+    .slash   { width: 1.2em; }
+    .color   { width:   2em; } /* 属性 */
+    .comment { width:  auto; } /* 備考 */
+    .state   { width:   3em; } /* 状態 */
+  }
+  > thead {
+    & th {
+      padding-left: .5rem;
+      text-align: left;
+      vertical-align: bottom;
+    }
+    & th.color { padding-left: 0; }
+    & th.right { padding-right: .3rem; }
+  }
+  > tbody {
+    font-family: var(--font-proportional);
+    font-feature-settings: "palt";
+    & tr {
+      border-width: 1px 0 0;
+      border-style: solid;
+    }
   }
 }
-@media screen and (min-width:1400px) and (max-width:1680px) {
-  #lois table tbody td {
-    &:nth-child(2) { width: 12em; }
-    &.left { font-size: 90%; }
+@media screen and (width <= 735px){
+  #lois table {
+    > colgroup {
+      font-size: 90%;
+      .relation{ width: 5.2em; } /* 関係 */
+      .name    { width:  10em; } /* 名前 */
+    }
+    > tbody {
+      font-size: 90%;
+      & td.comment { font-size: 90%; }
+    }
+  }
+}
+@media screen and (1400px <= width <= 1680px) {
+  #lois table {
+    > colgroup {
+      .name    { width:  12em; } /* 名前 */
+    }
+    > tbody {
+      & td.comment { font-size: 90%; }
+    }
   }
 }
 #lois table tbody td.emo {
@@ -526,14 +529,11 @@ body {
   &.checked::before {
     color: inherit;
   }
+  + td:has(+ td.emo) { /* "／" */
+    border-style: solid hidden;
+  }
 }
-#lois table tbody td:nth-child(4) {
-  border-style: solid hidden;
-}
-#lois table tbody td.left {
-  padding-left: .5em;
-}
-#lois table tbody td:last-child:not(.left) {
+#lois table tbody td.state {
   border-left: hidden;
 }
 #lois table tbody td span[data-state] {
@@ -550,31 +550,31 @@ body {
   vertical-align: middle;
   overflow: hidden;
   position: relative;
-}
-#lois table tbody span[data-state]::after {
-  content: attr(data-state);
-  display: inline-block;
-  transform: scaleY(1.2);
+  &::after {
+    content: attr(data-state);
+    display: inline-block;
+    transform: scaleY(1.2);
+  }
+  &[data-state="ロイス"]  { background: hsla(120,100%,50%,0.05); }
+  &[data-state="タイタス"]{ background: hsla(200,100%,50%,0.3); font-weight: bold; }
+  &[data-state="昇華"]    { background: hsla( 50,100%,50%,0.3); font-weight: bold; }
 }
 #lois table tbody td.sperior span[data-state] {
   padding-left: calc(1em + 2px);
+  &::before {
+    content: "S";
+    position: absolute;
+    inset: 0 auto 0 0;
+    display: grid;
+    place-items: center;
+    transform: scale(1.2);
+    width: 1em;
+    font-weight: bold;
+  }
+  &[data-state="ロイス"]  { background: linear-gradient(to right,hsla(0,100%,50%,0.3) 1.1em, hsla(120,100%,50%,0.05) 1.1em); }
+  &[data-state="タイタス"]{ background: linear-gradient(to right,hsla(0,100%,50%,0.3) 1.1em, hsla(200,100%,50%,0.3 ) 1.1em); }
+  &[data-state="昇華"]    { background: linear-gradient(to right,hsla(0,100%,50%,0.3) 1.1em, hsla( 50,100%,50%,0.3 ) 1.1em); }
 }
-#lois table tbody td.sperior span[data-state]::before {
-  content: "S";
-  position: absolute;
-  inset: 0 auto 0 0;
-  display: grid;
-  place-items: center;
-  transform: scale(1.2);
-  width: 1em;
-  font-weight: bold;
-}
-#lois table tbody span[data-state="ロイス"]  { background: hsla(120,100%,50%,0.05); }
-#lois table tbody span[data-state="タイタス"]{ background: hsla(200,100%,50%,0.3); font-weight: bold; }
-#lois table tbody span[data-state="昇華"]    { background: hsla( 50,100%,50%,0.3); font-weight: bold; }
-#lois table tbody .sperior span[data-state="ロイス"]  { background: linear-gradient(to right,hsla(0,100%,50%,0.3) 1.1em, hsla(120,100%,50%,0.05) 1.1em); }
-#lois table tbody .sperior span[data-state="タイタス"]{ background: linear-gradient(to right,hsla(0,100%,50%,0.3) 1.1em, hsla(200,100%,50%,0.3 ) 1.1em); }
-#lois table tbody .sperior span[data-state="昇華"]    { background: linear-gradient(to right,hsla(0,100%,50%,0.3) 1.1em, hsla( 50,100%,50%,0.3 ) 1.1em); }
 #lois table:not(:has(td.color:not(:empty))) .color {
   display: none;
 }
@@ -582,11 +582,19 @@ body {
   display: none;
 }
 
-#memory table tbody td:nth-child(1) { width: 6.2em; border-right-width: 1px; } /* 関係 */
-#memory table tbody td:nth-child(2) { width:  14em; border-right-width: 1px; } /* 名前 */
-#memory table tbody td:nth-child(3) { width: 4.5em; border-right-width: 1px; } /* 感情 */
-#memory table tbody td.left {
-  padding-left: .5em;
+@media screen and (width <= 735px){
+  #memory table {
+    > colgroup {
+      font-size: 90%;
+      .relation{ width: 6.2em; } /* 関係 */
+      .name    { width:  14em; } /* 名前 */
+      .emo     { width: 4.5em; } /* 名前 */
+    }
+    > tbody {
+      font-size: 90%;
+      & td.comment { font-size: 90%; }
+    }
+  }
 }
 
 #insanity dl {
@@ -594,16 +602,16 @@ body {
   grid-template-columns: 10em auto;
   border-width: 1px 0 0;
   border-style: solid;
-}
-#insanity dl dt {
-  padding: .2em 0;
-  border-width: 0 1px 0 0;
-  border-style: dotted;
-  text-align: center;
-}
-#insanity dl dd {
-  padding: .2em .5em;
-  text-align: left;
+  > dt {
+    padding: .2em 0;
+    border-width: 0 1px 0 0;
+    border-style: dotted;
+    text-align: center;
+  }
+  > dd {
+    padding: .2em .5em;
+    text-align: left;
+  }
 }
 
 
@@ -612,7 +620,7 @@ body {
 #area-battle {
   position: relative;
 }
-@media screen and (min-width:1400px){
+@media screen and (width >= 1400px){
   #area-battle {
     margin-top: calc(-1 * var(--box-v-gap));
   }
@@ -675,19 +683,19 @@ body {
   &:nth-child(10){ font-size: 90%; } /* 制限 */
 }
 
-#effect table tbody td.left {
+#effect table tbody td.note {
   padding-left: .5rem;
   display: none;
 }
 @media screen {
-  #effect table tbody:hover td.left {
+  #effect table tbody:hover td.note {
     display: table-cell;
   }
 }
-#effect[data-full-open="true"] table tbody td.left {
+#effect[data-full-open="true"] table tbody td.note {
   display: table-cell;
 }
-#effect table tbody td.left span.right {
+#effect table tbody td.note span.right {
   float: right;
   font-size: 90%;
 }
@@ -774,12 +782,12 @@ body {
   font-style: normal;
   font-weight: bold;
 }
-@media all and (min-width:736px){
+@media all and (width > 735px){
   #effect:not([data-full-open="true"]) table > tbody:last-child:not(:hover) > tr:last-child {
     border-top: none;
   }
 }
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   #effect table thead tr,
   #effect table tbody tr {
     display: grid;
@@ -810,7 +818,7 @@ body {
     border-width: 0 0 1px;
     border-style: solid;
   }
-  #effect table tbody td.left {
+  #effect table tbody td.note {
     grid-row: 1; grid-column: 1 / span 9;
     border-width: 1px 0 0;
     border-style: solid;
@@ -831,17 +839,21 @@ body {
   }
 }
 
-#magic table thead th {
-  font-size: 90%;
+#magic table {
+  > colgroup {
+    .name { width:  16em; } /* 名称 */
+    .type { width: 4.5em; } /* 種別 */
+    .exp  { width: 3.5em; } /* 経験点 */
+    .act  { width: 5.5em; } /* 発動値 */
+    .enc  { width: 3.4em; } /* 侵蝕値 */
+    .note { width:  auto; } /* 効果 */
+  }
+  > thead th {
+    font-size: 90%;
+  }
+  > tbody td:nth-child(1) { font-weight: bold; } /* 名称 */
+  > tbody td.note { padding-left: .5rem; }
 }
-#magic table thead th:nth-child(1) { width:  16em; } /* 名称 */
-#magic table thead th:nth-child(2) { width: 4.5em; } /* 種別 */
-#magic table thead th:nth-child(3) { width: 3.5em; } /* 経験点 */
-#magic table thead th:nth-child(4) { width: 5.5em; } /* 発動値 */
-#magic table thead th:nth-child(5) { width: 3.4em; } /* 侵蝕値 */
-#magic table thead th:nth-child(6) { width: auto; } /* 効果 */
-
-#magic table tbody td:nth-child(1) { font-weight: bold; } /* 名称 */
 
 
 /* Combos */
@@ -878,6 +890,9 @@ body {
   border-width: 0 0 1px;
   border-style: solid;
   background: none;
+  font-family: var(--font-proportional);
+  word-break: auto-phrase;
+  overflow-wrap: break-word;
 }
 #combo .combo-table dl {
   > dt {
@@ -993,7 +1008,7 @@ body {
   &.thinest.small { transform: scaleY(calc(1/0.8));  font-size: 73%; }
 }
 
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   #combo .combo-table {
     grid-template-columns: 11fr;
     grid-template-areas:
@@ -1021,15 +1036,15 @@ body {
     grid-template-columns: max-content 1fr;
     border-width: 1px 0;
     border-style: solid;
-  }
-  #combo .combo-table .combo-combo dt {
-    padding-left :.5em;
-    padding-right:.5em;
-  }
-  #combo .combo-table .combo-combo dd {
-    padding-left: .2em;
-    border-width: 0 0 0 1px;
-    border-style: dotted;
+    > dt {
+      padding-left :.5em;
+      padding-right:.5em;
+    }
+    > dd {
+      padding-left: .2em;
+      border-width: 0 0 0 1px;
+      border-style: dotted;
+    }
   }
   #combo .combo-table .combo-in {
     margin: .5rem 0;
@@ -1069,7 +1084,7 @@ body {
     display: none;
   }
 }
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   #combo[data-display-mode="simple"] .combo-table .combo-combo {
     display: block;
   }
@@ -1121,12 +1136,11 @@ body {
   & span.handle::before {
     content: ':::';
   }
-  &.left {
-    padding-left: .3rem;
+  &.note {
     font-size: 90%;
   }
 }
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   #items table { font-size: 90%; }
   #items table thead th {
     &:nth-child(1) { width:   8em; } /* 名称 */
@@ -1143,11 +1157,18 @@ body {
 }
 
 /* Exps */
-#exps table {
-  table-layout: fixed;
-}
 #exps h2:not(:first-child) {
   margin-top: 0;
+}
+#exps thead {
+  word-break: keep-all;
+  font-size: 83%;
+  vertical-align: bottom;
+}
+@media screen and (width <= 735px){
+  #exps table {
+    margin-top: -1em;
+  }
 }
 
 /* Encroach-Bonus
@@ -1195,7 +1216,6 @@ body {
 #enc-bonus table {
   border-top: 1px;
   border-bottom: hidden;
-  table-layout: fixed;
 
   & col.current {
     background-color: hsla(340,100%,50%,0.3);
@@ -1211,7 +1231,7 @@ body {
   }
 }
 
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   #enc-bonus p {
     margin: 0 0 0 1em;
   }
@@ -1250,15 +1270,10 @@ body {
   margin-top: var(--box-v-gap);
 }
 #history table {
-  & thead th {
-    &.num    { width:   2em; } /* No. */
-    &.date   { width: 5.2em; } /* 日付 */
-    &.title  { width:  auto; } /* タイトル */
-    &.exp    { width: 4.6em; } /* 経験点 */
-    &.gm     { width:  auto; } /* ＧＭ */
-    &.member { width:  auto; } /* 参加者 */
+  > thead {
+    .exp    { width: 4.6em; } /* 経験点 */
   }
-  & tbody td.exp s {
+  > tbody td.exp s {
     opacity: 0.3;
     text-decoration: none;
   }

@@ -796,12 +796,12 @@ function clearRadioButton(radioButton) {
 }
 
 // 行作成 ----------------------------------------
-function createRow(name, numNodeName, max = null){
+function createRow(name, numNodeName, max = null, replaceText = 'TMPL'){
   let num = Number(form[numNodeName].value) + 1;
   if(max && num > max){ return ''; }
   let row = document.getElementById(name+'-template').content.firstElementChild.cloneNode(true);
   row.id = idNumSet(name+'-row');
-  row.innerHTML = row.innerHTML.replaceAll('TMPL', num);
+  row.innerHTML = row.innerHTML.replaceAll(replaceText, num);
   form[numNodeName].value = num;
   return row;
 }
@@ -818,7 +818,8 @@ function delRow(numNodeName, targetSelector, min = 0, initialText){
 function delRowNode(targetSelector, initialText){
   const targetNode = document.querySelector(targetSelector);
   let hasValue = false;
-  for (const node of targetNode.querySelectorAll(`input, select, textarea`)){
+  for (const node of targetNode.querySelectorAll(`input:not([type=hidden]), select, textarea`)){
+    if(node.readOnly){ continue; }
     if(node.type === 'checkbox' || node.type === 'radio'){
       if(node.checked) { hasValue = true; break; }
     }
@@ -843,7 +844,7 @@ function setSortable(namePrefix, targetSelector, rowElement = '', addReplace, ne
     dataIdAttr: 'id',
     animation: 150,
     handle: '.handle',
-    filter: 'thead,tfoot,template,.ignore-sort',
+    filter: '.ignore-sort,thead,tfoot,template',
     onUpdate: () => {
       let num = 1;
       for(let id of sortable.toArray()) {
@@ -864,7 +865,16 @@ function replaceSortedNames(row, num, regExp, attr = 'name'){
     inputField.setAttribute(attr, afterName)
   });
 }
-
+// 可視行の背景色をセット ----------------------------------------
+function stylizeVisibleRows(rows){
+  let num = 1;
+  rows.forEach(row => {
+    if(row.style.display !== 'none'){
+      row.style.backgroundColor = (num % 2 == 1) ? 'transparent' : 'var(--box-even-rows-bg-color)';
+      num++;
+    }
+  });
+}
 // 連番ID生成 ----------------------------------------
 function idNumSet (id,after){
   let num = 1;
@@ -879,6 +889,12 @@ function idNumSet (id,after){
 // 数値3桁区切り ----------------------------------------
 function commify(num) {
   return String(num).replace(/([0-9]{1,3})(?=(?:[0-9]{3})+(?![0-9]))/g, "$1,");;
+}
+
+// 数値の前に+を足す ----------------------------------------
+function formatNumber(num){
+  if (!num) return ""; // 0やnullは空文字
+  return Number(num) > 0 ? `+${num}` : `${num}`;
 }
 
 // 先頭を大文字 ----------------------------------------
