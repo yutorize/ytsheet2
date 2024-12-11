@@ -379,7 +379,7 @@ print <<"HTML";
             <dl class="type    "><dt>タイプ    <dd>@{[ input "schoolArts${num}Type",'','','list="list-arts-type"' ]}</dl>
             <dl class="premise "><dt>前提      <dd>@{[ input "schoolArts${num}Premise",'','','list="list-arts-base"' ]}</dl>
             <dl class="equip   "><dt>限定条件  <dd>@{[ input "schoolArts${num}Equip" ]}</dl>
-            <dl class="use     "><dt>使用      <dd>@{[ input "schoolArts${num}Use" ]}</dl>
+            <dl class="use     "><dt>使用      <dd>@{[ input "schoolArts${num}Use",'','','list="list-arts-use"' ]}</dl>
             <dl class="apply   "><dt>適用      <dd>@{[ input "schoolArts${num}Apply",'','','list="list-arts-apply"' ]}</dl>
             <dl class="risk    "><dt>リスク    <dd>@{[ input "schoolArts${num}Risk",'','','list="list-arts-risk"' ]}</dl>
             <dl class="summary "><dt>概要      <dd>@{[ input "schoolArts${num}Summary" ]}</dl>
@@ -588,6 +588,20 @@ print <<"HTML";
     <option value="主動作型">
     <option value="《》変化型">
     <option value="独自宣言型">
+  </datalist>
+  <datalist id="list-arts-use">
+    <option value="ファイター技能">
+    <option value="グラップラー技能">
+    <option value="フェンサー技能">
+    <option value="バトルダンサー技能">
+    <option value="ファイター技能 or バトルダンサー技能">
+    <option value="ファイター技能 or フェンサー技能 or バトルダンサー技能">
+    <option value="フェンサー技能 or バトルダンサー技能">
+    <option value="シューター技能">
+    <option value="近接攻撃武器">
+    <option value="魔法使い系技能">
+    <option value="特殊">
+    <option value="―">
   </datalist>
   <datalist id="list-arts-apply">
     <option value="1回の武器攻撃">
