@@ -421,7 +421,8 @@ HTML
 print <<"HTML";
           </div>
           <div class="add-del-button"><a onclick="addSchoolMagic()">▼</a><a onclick="delSchoolMagic()">▲</a></div>
-      </details>
+        </details>
+      </div>
     </section>
       
       @{[ colorCostomForm ]}
