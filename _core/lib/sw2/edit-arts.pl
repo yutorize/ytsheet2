@@ -247,7 +247,7 @@ HTML
           <dl class="sphere   "><dt>マギスフィア<dd>@{[ input 'magicMagisphere','','','list="list-sphere"' ]}</dl>
           <dl class="level    "><dt>習得レベル  <dd>@{[ input 'magicLevel' ]}</dl>
           <dl class="type     "><dt>対応        <dd>@{[ input 'magicType','','','list="list-type"' ]}</dl>
-          <dl class="premise  "><dt>前提        <dd>@{[ input 'magicPremise' ]}</dl>
+          <dl class="premise  "><dt>前提        <dd>@{[ input 'magicPremise','','','list="list-premise"' ]}</dl>
           <dl class="cost     "><dt>消費        <dd>@{[ input 'magicCost','','','list="list-cost"' ]}</dl>
           <dl class="target   "><dt>対象        <dd>@{[ input 'magicTarget','','','list="list-target"' ]}</dl>
           <dl class="range    "><dt>射程／形状  <dd>@{[ input 'magicRange','','','list="list-range"' ]}／@{[ input 'magicForm','','','list="list-form"' ]}</dl>
@@ -452,6 +452,10 @@ print <<"HTML";
     <option value="5">
     <option value="10">
     <option value="超">
+  </datalist>
+  <datalist id="list-premise">
+    <option value="なし">
+    <option value="【】">
   </datalist>
   <datalist id="list-cost">
     <option value="―">
