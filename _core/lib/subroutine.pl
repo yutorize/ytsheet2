@@ -484,6 +484,8 @@ sub unescapeTags {
       $text =~ s/(\[[常準主補宣]\])+/&textToIcon($&);/egi;
       $text =~ s/「((?:[○◯〇△＞▶〆☆≫»□☐☑🗨]|&gt;&gt;)+)/"「".&textToIcon($1);/egi;
     }
+
+    $text =~ s|\[([特流アテ])\]|<i class="i-icon" data-kind="$1"><span class="raw">[$1]</span></i>|g;
   }
   
   

@@ -255,7 +255,19 @@ my $text_rule = <<"HTML";
         　魔法のアイテム：<code>[魔]</code>：<img class="i-icon" src="${set::icon_dir}wp_magic.png"><br>
         　刃武器　　　　：<code>[刃]</code>：<img class="i-icon" src="${set::icon_dir}wp_edge.png"><br>
         　打撃武器　　　：<code>[打]</code>：<img class="i-icon" src="${set::icon_dir}wp_blow.png"><br>
+        　地方特産品　　：<code>[特]</code>：<i class="i-icon" data-kind="特"><span class="raw">[特]</span></i><br>
 HTML
+if ($::SW2_0) {
+$text_rule .= <<"HTML";
+        　流派装備　　　：<code>[流]</code>：<i class="i-icon" data-kind="流"><span class="raw">[流]</span></i><br>
+HTML
+}
+else {
+$text_rule .= <<"HTML";
+        　アルフレイム大陸由来の流派装備：<code>[ア]</code>：<i class="i-icon" data-kind="ア"><span class="raw">[ア]</span></i><br>
+        　テラスティア大陸由来の流派装備：<code>[テ]</code>：<i class="i-icon" data-kind="テ"><span class="raw">[テ]</span></i><br>
+HTML
+}
 print textRuleArea( $text_rule,'「効果」「解説」' );
 
 print <<"HTML";

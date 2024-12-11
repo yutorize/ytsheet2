@@ -63,3 +63,101 @@
     .night &[data-color="白"]::before { color: #bbb; font-variation-settings: 'FILL' 1; }
   }
 }
+
+i.i-icon[data-kind] {
+  position: relative;
+  font-style: normal;
+  vertical-align: 0.25em;
+  margin: 0 0.15em;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  --main-color: var(--text-color);
+  --reversed-color: var(--bg-color);
+  --reversed-color-half: var(--input-bg-color);
+
+  > .raw {
+    transform: scaleX(0.5);
+  }
+
+  &::before {
+    font-size: 60%;
+    content: attr(data-kind);
+    line-height: 100%;
+    color: var(--main-color)
+  }
+
+  &[data-kind="特"],
+  &[data-kind="流"] {
+    .night & {
+      --main-color: var(--bg-color);
+      --reversed-color: var(--text-color);
+    }
+
+    background-color: var(--main-color);
+
+    &::before {
+      color: var(--reversed-color);
+    }
+  }
+
+  &[data-kind="特"] {
+    border-radius: 0.15em;
+
+    .night & {
+      border: 1px solid var(--main-color);
+    }
+
+    &::before {
+      font-weight: normal;
+      font-size: 65%;
+      margin-top: 1px;
+    }
+  }
+
+  &[data-kind="流"] {
+    vertical-align: 0.3em;
+    border-radius: 0.5em;
+    border-width: 3px;
+    border-style: double;
+
+    &::before {
+      font-size: 55%;
+    }
+  }
+
+  &[data-kind="ア"],
+  &[data-kind="テ"] {
+    border: 1px solid var(--main-color);
+    border-radius: 0.15em;
+
+    &[data-kind="ア"] {
+      border-width: 4px;
+      border-style: groove;
+
+      .night & {
+        border-style: ridge;
+      }
+
+      &::before {
+        text-shadow: 1px 1px 0 var(--reversed-color-half);
+      }
+    }
+
+    &[data-kind="テ"] {
+      &::before {
+        font-size: 65%;
+        margin-top: 1px;
+      }
+    }
+
+    &::before {
+      font-weight: bold;
+    }
+  }
+
+  #text-rule & {
+    font-size: 120%;
+    top: 0.2em;
+  }
+}

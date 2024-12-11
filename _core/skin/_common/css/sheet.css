@@ -687,6 +687,19 @@ i.term-em {
   background-color: hsla(var(--box-base-bg-color-h,230),40%,70%,0.3);
 }
 
+
+/* アイコン内の生テキスト */
+.i-icon, .s-icon {
+  > .raw {
+    display: block;
+    position: absolute;
+    transform: scaleX(0.5) translateX(-1em);
+    text-wrap: nowrap;
+    color: transparent;
+    text-shadow: none;
+  }
+}
+
 /* アイテムアイコン */
 .i-icon {
   width: 1em;
@@ -704,15 +717,6 @@ i.term-em {
   font-style: normal;
   line-height: 1;
   vertical-align: text-bottom;
-
-  > .raw {
-    display: block;
-    position: absolute;
-    transform: scaleX(0.5) translateX(-1em);
-    text-wrap: nowrap;
-    color: transparent;
-    text-shadow: none;
-  }
 
   &::before,
   &::after {
