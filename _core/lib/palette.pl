@@ -15,7 +15,7 @@ my $editing = $::in{editingMode};
 if($editing){ outputChatPaletteTemplate(); } else { outputChatPalette(); }
 ### チャットパレット出力 #############################################################################
 sub outputChatPalette {
-  my ($file, $type, undef) = getfile_open($id);
+  my ($file, $type, $author) = getfile_open($id);
 
   changeFileByType($type);
 
@@ -46,6 +46,21 @@ sub outputChatPalette {
     chomp;
     my ($key, $value) = split(/<>/, $_, 2);
     $pc{$key} = $value;
+  }
+  
+  if($pc{forbidden}){
+    my $LOGIN_ID = check;
+    if($::in{log}){
+      ($pc{protect}, $pc{forbidden}) = getProtectType("${set::char_dir}${file}/data.cgi");
+    }
+    unless(
+      ($pc{protect} eq 'none') || 
+      ($author && ($author eq $LOGIN_ID || $set::masterid eq $LOGIN_ID))
+    ){
+      print "Content-type: text/plain; charset=UTF-8\n\n";
+      say "エラー：閲覧権限がありません。\n";
+      exit;
+    }
   }
   
   if($pc{paletteRemoveTags}){
