@@ -223,7 +223,7 @@ HTML
         </dl>
       </div>
 
-      <div class="box in-toc" id="name-form" data-content-title="カテゴリ・プレイヤー名">
+      <div class="box in-toc" id="name-form" data-content-title="カテゴリ・製作者名">
         <div>
           <dl id="category">
             <dt>カテゴリ
