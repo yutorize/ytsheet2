@@ -229,7 +229,7 @@ sub palettePreset {
     # 宣言特技
     require $set::data_feats;
     my @declarationFeats = ();
-    foreach (('1+', 1, 3, 5, 7, 9, 11, 13, 15, 16, 17)) {
+    foreach ('1+', @set::feats_lv) {
       my $level = $_;
       last if $level ne '1+' && $level > $::pc{level};
       my $featName = $::pc{"combatFeatsLv${level}"};
@@ -249,12 +249,13 @@ sub palettePreset {
       push(@declarationFeats, [$marks, $artsName]);
     }
     if (@declarationFeats) {
+      $text .= "###\n" if $bot{TKY};
       $text .= "\n### ■宣言特技\n";
       foreach (@declarationFeats) {
         (my $marks, my $featName) = @{$_};
         $text .= "${marks}《${featName}》\n";
       }
-      $text .= "###\n";
+      $text .= "\n";
     }
 
     # 魔法
