@@ -242,6 +242,10 @@ foreach (@list) {
     next;
   }
 
+  # 価格
+  $price =~ s#^／#―／#;
+  $price =~ s#／$#／―#;
+
   #タグ
   my $tags_links;
   foreach(grep $_, split(/ /, $tags)){ $tags_links .= '<a href="./?type=m&tag='.uri_escape_utf8($_).'">'.$_.'</a>'; }
