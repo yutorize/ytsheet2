@@ -136,7 +136,7 @@ sub outputChatPaletteTemplate {
   $json{properties} .= "$_\n" foreach( paletteProperties($tool,$type) );
 
   $json{unitStatus} = createUnitStatus(\%pc);
-  print "Content-type: text/javascript; charset=UTF-8\n\n";
+  print "Content-type: application/json; charset=UTF-8\n\n";
   print JSON::PP->new->canonical(1)->encode( \%json );
 }
 
