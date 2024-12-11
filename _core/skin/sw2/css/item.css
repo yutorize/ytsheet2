@@ -1,6 +1,8 @@
 @charset "utf-8";
 
-@media screen and (max-width:550px){
+@import "icons.css" layer(system);
+
+@media screen and (width <= 550px){
   html {
     font-size: 1.8vw;
   }
@@ -11,7 +13,7 @@
 ---------------------------------------------------------------------------------------------------- */
 body {
   background-image: url(../../_common/img/back-pattern.png), url(../img/back-first.png);
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     background-size: auto, 80%;
   }
 }
@@ -68,7 +70,6 @@ article {
   }
 
   > h1 {
-    flex-grow: 1;
     padding: .25em 1rem;
     text-align: left;
     font-size: 160%;
@@ -112,7 +113,7 @@ div.data {
   & * {
     border-color: var(--box-outside-border-color);
   }
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     grid-template-columns: 1fr;
   }
 
@@ -126,9 +127,14 @@ div.data {
     background: var(--box-base-bg-color);
     border-width: 1px 0 0 1px;
     border-style: solid;
+
+    > dd:not(:has(p)) {
+      word-break: auto-phrase;
+      overflow-wrap: break-word;
+    }
   }
   
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     > dl {
       grid-column: 1/2 !important;
       grid-row: auto !important;
@@ -169,7 +175,7 @@ div.data {
   > dl.category dd > div hr {
     opacity: 0.5;
   }
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     > dl.reputation dd,
     > dl.shape      dd,
     > dl.category   dd,
@@ -221,7 +227,16 @@ div.data {
       &:not(:has(tbody td.note:not(:empty))) tr > *.note {
         display: none;
       }
-
+      
+      &:not(:has(td.range:not(:empty))) {
+        :is(th, td).range {
+          display: none;
+        }
+      }
+      td.range:empty::before {
+        content: "―";
+      }
+      
       &.armour-table {
         &:not(:has(td.usage:not(:empty))) {
           .usage {

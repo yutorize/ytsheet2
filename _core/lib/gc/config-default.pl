@@ -157,7 +157,6 @@ our $game = 'gc';
   our $lib_convert = $::core_dir . '/lib/gc/convert.pl';
 
   # 各種データ
-  our $data_races = $::core_dir . '/lib/gc/data-races.pl';  # 種族
   our $data_class = $::core_dir . '/lib/gc/data-class.pl';  # クラス
 
   # HTMLテンプレート

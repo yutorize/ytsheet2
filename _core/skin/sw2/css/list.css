@@ -5,7 +5,7 @@
 ---------------------------------------------------------------------------------------------------- */
 body {
   background-image: url(../../_common/img/back-pattern.png), url(../img/back-first.png);
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     background-size: auto, 80%;
   }
 }
@@ -18,7 +18,7 @@ body {
     "NAME   PL  GEN  AGE  LVL  EXP  CLS DATE"
     "NAME TAGS TAGS TAGS TAGS TAGS TAGS DATE"
   ;
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     grid-template-columns: 18rem 6em 2em 1fr 5em 2fr 3.5em;
     grid-template-areas:
       "NAME   PL RACE RACE  EXP  CLS DATE"
@@ -58,6 +58,7 @@ body {
   & td.lv {
     font-size: 1.15em;
     line-height: 1;
+    text-wrap: nowrap;
   }
   & td:is(.race, .rank) span.small {
     display: inline-block;
@@ -78,7 +79,7 @@ body {
       padding: .1em 0;
     }
   }
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     & .rank,
     & .lv { display: none; }
   }
@@ -103,7 +104,7 @@ body {
       "NAME AUTHOR TAXA LV PARTS DISPO HABIT DATE"
     ;
   }
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     grid-template-columns: 18rem 6em 5em 3.2em 3.2em 5.8em 1fr 3.5em;
   }
   & .name        { grid-area: NAME; }
@@ -130,7 +131,7 @@ body {
     display: inline-block;
     transform: scaleY(calc(1/0.85));
   }
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     & td:is(.taxa, .disposition, .habitat, .price){
       font-size: 90%;
     }
@@ -148,7 +149,7 @@ body {
       "NAME AUTHOR TAXA   LV PARTS PRICE DATE"
     ;
   }
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     grid-template-columns: 18rem 6em 6.2em 4.2em 3.2em 1fr 3.5em;
   }
   & .price { grid-area: PRICE; }
@@ -183,6 +184,9 @@ body {
   & td.summary {
     font-size: 1.2rem;
   }
+  & td.summary {
+    text-align: left;
+  }
   /* アイテムアイコン */
   .i-icon {
     width: 1em;
@@ -193,13 +197,13 @@ body {
 /* // List-Arts
 ---------------------------------------------------------------------------------------------------- */
 .list.arts table tr {
-    display: grid;
-    grid-template-columns: 24rem 0.5fr 4em 0.6fr 1fr 0.4fr;
-    grid-template-rows: auto;
-    grid-template-areas:
-      "NAME AUTHOR CATEGORY SUB  SUMMARY DATE"
-      "NAME TAGS   TAGS     TAGS TAGS    DATE"
-    ;
+  display: grid;
+  grid-template-columns: 24rem 0.5fr 4em 0.6fr 1fr 0.4fr;
+  grid-template-rows: auto;
+  grid-template-areas:
+    "NAME AUTHOR CATEGORY SUB  SUMMARY DATE"
+    "NAME TAGS   TAGS     TAGS TAGS    DATE"
+  ;
   &:has(.tags:empty) {
     grid-template-areas:
       "NAME AUTHOR CATEGORY SUB SUMMARY DATE";
@@ -218,6 +222,7 @@ body {
   }
   & td.summary {
     font-size: 1.2rem;
+    text-align: left;
   }
 }
 

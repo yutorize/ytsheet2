@@ -10,7 +10,7 @@ body {
   .night & {
     background-blend-mode: hard-light, normal;
   }
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     background-size: auto, 100%;
     background-position-x: 0, 15vw;
   }
@@ -24,7 +24,7 @@ body {
     "NAME   PL  CLS  LVL  PRF DATE"
     "NAME TAGS TAGS TAGS TAGS DATE"
   ;
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     grid-template-columns: 18rem 6em 1fr 3.2em 1.9fr 3.5em;
     grid-template-areas:
       "NAME PL RACE RACE STYL DATE"
@@ -48,7 +48,7 @@ body {
     font-size: 1.15em;
     line-height: 1;
   }
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     .geis { display: none; }
   }
 }

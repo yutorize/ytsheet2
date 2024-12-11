@@ -30,8 +30,12 @@ if($mode_make){
 ### 初期設定 --------------------------------------------------
 if($mode_make){ $pc{protect} = $LOGIN_ID ? 'account' : 'password'; }
 
-if($mode eq 'blanksheet'){
+if($mode eq 'edit' || ($mode eq 'convert' && $pc{ver})){
+  %pc = data_update_mons(\%pc);
+}
+elsif($mode eq 'blanksheet'){
   $pc{paletteUseBuff} = 1;
+  $pc{partsManualInput} = 0
 }
 
 ## カラー
@@ -245,7 +249,7 @@ print <<"HTML";
         </dl>
         <dl>
           <dt>言語
-          <dd>@{[ input 'language' ]}
+          <dd>@{[ input 'language','','','list="data-language"' ]}
         </dl>
         <dl class="monster-only">
           <dt>生息地
@@ -253,7 +257,7 @@ print <<"HTML";
         </dl>
         <dl class="monster-only">
           <dt>知名度／弱点値
-          <dd>@{[ input 'reputation' ]}／@{[ input 'reputation+' ]}
+          <dd>@{[ input 'reputation' ]}／@{[ input 'reputation+','','','list="list-of-reputation-plus"' ]}
         </dl>
         <dl>
           <dt>弱点
@@ -301,7 +305,7 @@ foreach my $num (1 .. $pc{statusNum}){
         <tr id="status-row${num}">
           <th class="mount-only">
           <td class="handle">
-          <td>@{[ input "status${num}Style",'text',"checkStyle(${num})" ]}
+          <td>@{[ input "status${num}Style",'text',"checkStyle(${num}); updatePartsAutomatically()" ]}
           <td>@{[ input "status${num}Accuracy",($status_text_input ? 'text':'number'),"calcAcc($num)" ]}<span class="monster-only calc-only"><br>(@{[ input "status${num}AccuracyFix",'number',"calcAccF($num)" ]})</span>
           <td>@{[ input "status${num}Damage" ]}
           <td>@{[ input "status${num}Evasion",($status_text_input ? 'text':'number'),"calcEva($num)" ]}<span class="monster-only calc-only"><br>(@{[ input "status${num}EvasionFix",'number',"calcEvaF($num)" ]})</span>
@@ -348,8 +352,10 @@ print <<"HTML";
       @{[input('statusNum','hidden')]}
       </div>
       <div class="box parts in-toc" data-content-title="部位数・コア部位">
-        <dl><dt>部位数<dd>@{[ input 'partsNum','number','','min="1"' ]} (@{[ input 'parts' ]}) </dl>
-        <dl><dt>コア部位<dd>@{[ input 'coreParts' ]}</dl>
+        @{[ checkbox 'partsManualInput', '部位数と内訳を手動入力する', 'updatePartsAutomatically' ]}
+        <dl><dt>部位数<dd>@{[ input 'partsNum','number','','min="1"' ]} (@{[ input 'parts','','updatePartList' ]}) </dl>
+        <dl><dt>コア部位<dd>@{[ input 'coreParts','','','list="list-of-core-part"' ]}</dl>
+        <datalist id="list-of-core-part"></datalist>
       </div>
       <div class="box">
         <h2 class="in-toc">特殊能力</h2>
@@ -386,7 +392,7 @@ print <<"HTML";
         <div id="loots-list">
           <ul id="loots-num">
 HTML
-foreach my $num (1 .. $pc{lootsNum}){ print "<li id='loots-num${num}'><span class='handle'></span>".input("loots${num}Num"); }
+foreach my $num (1 .. $pc{lootsNum}){ print "<li id='loots-num${num}'><span class='handle'></span>".input("loots${num}Num",'','','list="data-roots-num"'); }
 print <<"HTML";
           </ul>
           <ul id="loots-item">
@@ -445,6 +451,12 @@ print <<"HTML";
   <option value="腹具合による">
   <option value="命令による">
   </datalist>
+  <datalist id="data-language">
+    <option value="なし">
+  </datalist>
+  <datalist id="list-of-reputation-plus">
+    <option>―</option>
+  </datalist>
   <datalist id="data-weakness">
   <option value="命中力+1">
   <option value="物理ダメージ+2点">
@@ -452,6 +464,9 @@ print <<"HTML";
   <option value="属性ダメージ+3点">
   <option value="回復効果ダメージ+3点">
   <option value="なし">
+  </datalist>
+  <datalist id="data-roots-num">
+    <option value="自動">
   </datalist>
   <script>
 @{[ &commonJSVariable ]}

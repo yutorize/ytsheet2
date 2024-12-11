@@ -107,8 +107,10 @@ if($::in{url}){
   $SHEET->param(convertMode => 1);
   $SHEET->param(convertUrl => $::in{url});
 }
+
 ### キャラクター名 --------------------------------------------------
-$SHEET->param(characterName => "<ruby>$pc{characterName}<rp>(</rp><rt>$pc{'characterNameRuby'}</rt><rp>)</rp></ruby>") if $pc{'characterNameRuby'};
+$SHEET->param(characterName => stylizeCharacterName $pc{characterName},$pc{characterNameRuby});
+
 ### プレイヤー名 --------------------------------------------------
 if($set::playerlist){
   my $pl_id = (split(/-/, $::in{id}))[0];

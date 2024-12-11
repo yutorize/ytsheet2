@@ -11,14 +11,14 @@ body {
   .night & {
     background-blend-mode: hard-light, normal;
   }
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     background-size: auto, 100%;
     background-position-x: 0, 30vw;
   }
 }
 /* // Layout
 ---------------------------------------------------------------------------------------------------- */
-@media screen and (min-width:1400px){
+@media screen and (width >= 1400px){
   body {
     grid-template-columns: minmax(0, 1fr) minmax(auto, 1800px) minmax(0, 1fr);
   }
@@ -88,10 +88,10 @@ body {
     "LFP BLF BLF IMG"
     "BND BND BND IMG"
   ;
-  @media screen and (max-width:767px){
+  @media screen and (width <= 767px){
     grid-gap: .5rem;
   }
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     display: grid;
     grid-gap: .5rem;
     grid-template-areas:
@@ -103,13 +103,13 @@ body {
   }
 
   #image-none,
-  #image     { grid-area: IMG; max-height: 56.7rem; }
+  #image    { grid-area: IMG; max-height: 56.7rem; }
   #class-and-style
             { grid-area: CLS; }
-  #personal  { grid-area: PER; }
-  #lifepath  { grid-area: LFP; }
-  #belief    { grid-area: BLF; }
-  #bond      { grid-area: BND; }
+  #personal { grid-area: PER; }
+  #lifepath { grid-area: LFP; }
+  #belief   { grid-area: BLF; }
+  #bond     { grid-area: BND; }
 }
 /* Class / Style / Works / Level */
 #class-and-style {
@@ -202,6 +202,7 @@ body {
 /* Bond */
 #bond {
   > table {
+    table-layout: auto;
     margin-top: -1em;
     .name {
       min-width: 6em;
@@ -263,7 +264,7 @@ body {
 #exp {
   text-wrap: nowrap;
   > dt { padding-right: .1em; }
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     > dt > small { display: none; }
   }
 }
@@ -434,17 +435,17 @@ body {
 }
 .ability-table {
   > colgroup {
-    .name    { min-width: 10em; }
+    .name    { width: 12em; }
     .type    { min-width: 5em; }
     .lv      { width: 2em; }
     .duration{ min-width: 4em; }
     .timing  { min-width: 5em; }
     .check   { min-width: 5em; }
-    .target  { min-width: 5.8em; }
-    .range   { min-width: 3.5em; }
-    .dfclty  { min-width: 4.2em; }
-    .cost    { min-width: 3em; }
-    .mc      { min-width: 2em; }
+    .target  { width: 5.8em; }
+    .range   { width: 3.5em; }
+    .dfclty  { width: 4.2em; }
+    .cost    { width: 3.2em; }
+    .mc      { width: 2em; }
   }
   > thead {
     text-wrap: nowrap;
@@ -479,15 +480,19 @@ body {
       }
     }
     .note {
-      padding-left: .3em;
       display: none;
+      container-type: size;
+      > div {
+        word-break: normal;
+        overflow-wrap: break-word;
+      }
     }
     &:hover td.note,
     .box[data-full-open="true"] & td.note {
       display: table-cell;
     }
   }
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     > colgroup {
       .name   { min-width: 6em; }
       .type   { min-width: 5em; }
@@ -583,8 +588,7 @@ body {
         font-size: 80%;
       }
     }
-    .left {
-      padding-left: .3em;
+    .note {
       font-size: 90%;
     }
   }
@@ -648,8 +652,11 @@ body {
           min-height: 1lh;
           border-left-width: 1px;
           border-left-style: solid;
-          &:not(has(dl)){
+          &:not(:has(dl)){
             padding: .1em;
+            align-content: center;
+            word-break: auto-phrase;
+            overflow-wrap: break-word;
           }
         }
         dd:has(dl) {
@@ -715,16 +722,8 @@ body {
   margin-top: var(--box-v-gap);
 }
 #history table {
-  & thead th {
-    &.num    { width:   2em; } /* No. */
-    &.date   { width: 5.2em; } /* 日付 */
-    &.title  { width:  auto; } /* タイトル */
-    &.result { width: 4.6em; } /* 戦果点 */
-    &.gm     { width:  auto; } /* ＧＭ */
-    &.member { width:  auto; } /* 参加者 */
-  }
-  & tr td:is(.gm, .member) {
-    font-size: 1.1rem;
+  & thead {
+    .result { width: 4.6em; } /* 戦果点 */
   }
 }
 
