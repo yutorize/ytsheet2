@@ -447,6 +447,12 @@ print <<"HTML";
     <p class="notes">(C)Group SNE「ソード・ワールド2.0／2.5」</p>
     <p class="copyright">©<a href="https://yutorize.2-d.jp">ゆとらいず工房</a>「ゆとシートⅡ」ver.${main::ver}</p>
   </footer>
+  <datalist id="list-craft-required-level">
+    <option value="1">
+    <option value="5">
+    <option value="10">
+    <option value="超">
+  </datalist>
   <datalist id="list-cost">
     <option value="―">
     <option value="MP">
