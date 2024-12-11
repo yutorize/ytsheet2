@@ -26,7 +26,7 @@ if($id){
 
   my $datatype = ($::in{log}) ? 'logs' : 'data';
   my $hit = 0;
-  open my $IN, '<', "${dir}${file}/${datatype}.cgi" or viewNotFound($dir);
+  open my $IN, '<', "${dir}${file}/${datatype}.cgi" or error('データがありません');
   while (<$IN>){
     if($datatype eq 'logs'){
       if (index($_, "=") == 0){
