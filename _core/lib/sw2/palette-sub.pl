@@ -345,7 +345,13 @@ sub palettePreset {
             $text .= "Dru[24,27,30]+$druidBase／【ダブルストンプ】\n"     if($::pc{lvDru} >= 15);
           }
         }
-      
+
+        if ($id eq 'Aby' && $::pc{'lv'.$id} >= 7) {
+          foreach my $count (1 .. 2) {
+            $text .= makeChoiceCommand($count, ['雷', '純エネルギー', '衝撃', '断空', '毒', '呪い'], \%bot);
+          }
+        }
+
         foreach my $pow (sort {$a <=> $b} keys %{$heals{$id}}) {
           if($heals{$id}{$pow} =~ /^[0-9]+$/){
             next if($::pc{'lv'.$id} < $heals{$id}{$pow});

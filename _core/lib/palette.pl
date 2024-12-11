@@ -116,6 +116,51 @@ sub swapWordAndCommand {
   return join("\n", @palette);
 }
 
+# 抽選コマンドをつくる
+sub makeChoiceCommand {
+  my $count = shift;
+  my @sourceItems = @{shift;};
+  my %bot = %{shift;};
+
+  sub validateItems {
+    my @sources = @{shift;};
+    my %_bot = %{shift;};
+
+    my @validated = ();
+
+    foreach my $item (@sources) {
+      next if $item =~ /^[\s　]*$/;
+
+      if ($_bot{YTC}) {
+        $item =~ s/,/_/g;
+      }
+      elsif ($_bot{BCD}) {
+        $item =~ s/ /_/g;
+      }
+      else {
+        next;
+      }
+
+      push(@validated, $item);
+    }
+
+    return @validated;
+  }
+
+  my @validatedItems = validateItems(\@sourceItems, \%bot);
+  return '' unless @validatedItems;
+
+  if ($bot{YTC}) {
+    return "${count}\$" . join(',', @validatedItems) . "\n";
+  }
+
+  if ($bot{BCD}) {
+    return ($count > 1 ? "x${count} " : '') . 'choice ' . join(' ', @validatedItems) . "\n";
+  }
+
+  return '';
+}
+
 sub outputChatPaletteTemplate {
   use JSON::PP;
   my $type = $::in{type};
