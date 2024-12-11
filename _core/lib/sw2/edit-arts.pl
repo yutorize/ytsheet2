@@ -586,6 +586,20 @@ print <<"HTML";
     <option value="⤴♡">
     <option value="⤵♡">
   </datalist>
+  <datalist id="list-part">
+    <option value="―">
+    <option value="すべて">
+    <option value="コア部位">
+    <option value="その他部位">
+    <option value="その他部位すべて">
+    <option value="頭部">
+    <option value="胴体">
+    <option value="上半身">
+    <option value="翼">
+    <option value="邪眼">
+    <option value="蠍">
+    <option value="鋏">
+  </datalist>
   <datalist id="list-school-req">
     <option value="50名誉点">
   </datalist>
