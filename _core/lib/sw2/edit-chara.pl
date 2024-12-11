@@ -524,7 +524,7 @@ foreach my $lv ('1bat',@set::feats_lv) {
     print '<optgroup label="'.($type eq '常' ? '常時' : $type eq '宣' ? '宣言' : $type eq '宣' ? '宣言' : '主動作').'特技">';
     foreach my $feats (@data::combat_feats){
       next if $data_lv < @$feats[1];
-      next if $type ne @$feats[0];
+      next if @$feats[0] !~ /${type}/;
       next if @$feats[3] =~ /2.0/ && !$set::all_class_on;
       if($lv =~ /bat/ && @$feats[3] !~ /バトルダンサー/){ next; }
       if(@$feats[3] =~ /ヴァグランツ/){
