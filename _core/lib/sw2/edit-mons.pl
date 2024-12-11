@@ -257,7 +257,7 @@ print <<"HTML";
         </dl>
         <dl class="monster-only">
           <dt>知名度／弱点値
-          <dd>@{[ input 'reputation' ]}／@{[ input 'reputation+' ]}
+          <dd>@{[ input 'reputation' ]}／@{[ input 'reputation+','','','list="list-of-reputation-plus"' ]}
         </dl>
         <dl>
           <dt>弱点
@@ -450,6 +450,9 @@ print <<"HTML";
   <option value="敵対的">
   <option value="腹具合による">
   <option value="命令による">
+  </datalist>
+  <datalist id="list-of-reputation-plus">
+    <option>―</option>
   </datalist>
   <datalist id="data-weakness">
   <option value="命中力+1">
