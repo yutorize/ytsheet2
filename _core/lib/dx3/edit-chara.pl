@@ -1345,6 +1345,10 @@ print <<"HTML";
     <option value="エンブレム／防具（補助）">
     <option value="リレーション／防具">
   </datalist>
+  <datalist id="list-vehicle-type">
+    <option value="ヴィークル">
+    <option value="エンブレム／ヴィークル">
+  </datalist>
   <datalist id="list-item-type">
     <option value="コネ">
     <option value="一般">
