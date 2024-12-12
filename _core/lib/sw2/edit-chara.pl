@@ -1152,7 +1152,7 @@ print <<"HTML";
                 <th class="note">備考
               </tr>
             </thead>
-            <tbody>
+            <tbody id="armours-table">
 HTML
 foreach my $num ('TMPL',1 .. $pc{armourNum}) {
   if($num eq 'TMPL'){ print '<template id="armour-template">' }
@@ -1165,7 +1165,7 @@ foreach my $num ('TMPL',1 .. $pc{armourNum}) {
                 <td>@{[ input "armour${num}Eva",'number','calcDefense' ]}
                 <td>@{[ input "armour${num}Def",'number','calcDefense' ]}
                 <td>@{[ input "armour${num}Own",'checkbox','calcDefense();calcMobility','disabled' ]}
-                <td>@{[ input "armour${num}Note" ]}
+                <td>@{[ input "armour${num}Note",'','','onchange="changeEquipMod()"' ]}
 HTML
   if($num eq 'TMPL'){ print '</template>' }
 }

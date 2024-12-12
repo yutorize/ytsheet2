@@ -2462,7 +2462,7 @@ function checkEquipMod (){
     ['WeaponReqd','武器(?:必要筋力|必筋)上限'],
   ];
   let newMod = {};
-  document.querySelectorAll(':is(#weapons-table, #accessories-table) input[name$="Note"]').forEach(
+  document.querySelectorAll(':is(#weapons-table, #armours-table, #accessories-table) input[name$="Note"]').forEach(
     input => {
       const note = input.value ?? '';
       if (input.getAttribute('name').includes('_')) {
