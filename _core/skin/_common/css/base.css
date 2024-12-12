@@ -79,8 +79,7 @@ ruby rt {
   transform: translateY(0.2em);
 }
 ruby rp {
-  position: absolute;
-  display: inline;
+  display: inline flow-root;
   font-size: 0;
 }
 .bold {

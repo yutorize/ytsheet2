@@ -498,7 +498,7 @@ sub unescapeTags {
   $text =~ s/%%(.+?)%%/<span class="strike">$1<\/span>/gi;  # 打ち消し線
   $text =~ s/__(.+?)__/<span class="underline">$1<\/span>/gi;  # 下線
   $text =~ s/\{\{(.+?)\}\}/<span style="color:transparent">$1<\/span>/gi;  # 透明
-  $text =~ s/[|｜]([^|｜\n]+?)《(.+?)》/<ruby>$1<rp>(<\/rp><rt>$2<\/rt><rp>)<\/rp><\/ruby>/gi; # なろう式ルビ
+  $text =~ s/[|｜]([^|｜\n]+?)《(.+?)》/<ruby><rp>｜<\/rp>$1<rp>《<\/rp><rt>$2<\/rt><rp>》<\/rp><\/ruby>/gi; # なろう式ルビ
   $text =~ s/《《(.+?)》》/<span class="text-em">$1<\/span>/gi; # カクヨム式傍点
 
   $text =~ s/\x{FFFC}(\d+)\x{FFFC}/$linkPlaceholders[$1-1]/g; # リンク後処理
@@ -692,6 +692,9 @@ sub generateTable {
 ### タグ削除 --------------------------------------------------
 sub removeTags {
   my $text = $_[0];
+  $text =~ s#<rp>[\|｜]</rp>##g;
+  $text =~ s#<rp>[《]</rp>#(#g;
+  $text =~ s#<rp>[》]</rp>#)#g;
   $text =~ s/<img alt="&#91;(.)&#93;"/[$1]<img /g;
   $text =~ s/<.+?>//g;
   return $text;
