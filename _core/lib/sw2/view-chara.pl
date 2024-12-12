@@ -879,7 +879,7 @@ else {
       EVA  => $pc{'armour'.$_.'Eva'} ? addNum($pc{'armour'.$_.'Eva'}) : ($pc{'armour'.$_.'Category'} =~ /[鎧盾]/ ? '―' : ''),
       DEF  => $pc{'armour'.$_.'Def'} // ($pc{'armour'.$_.'Category'} =~ /[鎧盾]/ ? '0' : ''),
       OWN  => $pc{'armour'.$_.'Own'},
-      NOTE => $pc{'armour'.$_.'Note'},
+      NOTE => replaceModificationNotation($pc{'armour'.$_.'Note'}),
     } );
   }
   $SHEET->param(Armours => \@armours);

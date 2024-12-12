@@ -227,6 +227,21 @@ sub extractModifications {
     push(@modifications, \%modification);
   }
 
+  foreach (1 .. $pc{armourNum}) {
+    my $nameKey = "armour${_}Name";
+    my $noteKey = "armour${_}Note";
+
+    my $name = $pc{$nameKey} // '';
+    my $note = $pc{$noteKey} // '';
+
+    $name = $name ne '' ? $name : '防具';
+
+    my %modification = %{extractModification($name, $note)};
+    next unless %modification;
+
+    push(@modifications, \%modification);
+  }
+
   for my $slot ('Head', 'Face', 'Ear', 'Neck', 'Back', 'HandR', 'HandL', 'Waist', 'Leg', 'Other', 'Other2', 'Other3', 'Other4') {
     for my $suffix ('', '_', '__') {
       my $nameKey = "accessory${slot}${suffix}Name";
