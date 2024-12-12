@@ -699,10 +699,10 @@ sub removeTags {
   $text =~ s/<.+?>//g;
   return $text;
 }
-sub nameToPlain {
-  my $name = shift;
-  $name =~ s#<rt>.*?</rt>|<rp>.*?</rp>##g;
-  return $name;
+sub removeRuby {
+  my $text = shift;
+  $text =~ s#<rt>.*?</rt>|<rp>.*?</rp>##g;
+  return $text;
 }
 
 ### RGB>HSL --------------------------------------------------

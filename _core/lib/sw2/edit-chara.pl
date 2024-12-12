@@ -128,7 +128,7 @@ $pc{'chatPaletteInsert'.$_} =~ s/&lt;br&gt;/\n/g foreach(1..$pc{chatPaletteInser
 $pc{$_} =~ s/&lt;br&gt;/\n/g foreach (grep {/^fellow[-0-9]+(?:Action|Note)$/} keys %pc);
 
 ### フォーム表示 #####################################################################################
-my $titlebarname = removeTags nameToPlain unescapeTags ($pc{characterName}||"“$pc{aka}”");
+my $titlebarname = removeTags removeRuby unescapeTags ($pc{characterName}||"“$pc{aka}”");
 print <<"HTML";
 Content-type: text/html\n
 <!DOCTYPE html>

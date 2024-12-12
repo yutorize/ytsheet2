@@ -170,7 +170,7 @@ if($pc{forbidden} eq 'all' && $pc{forbiddenMode}){
   $SHEET->param(titleName => '非公開データ');
 }
 else {
-  $SHEET->param(titleName => removeTags nameToPlain $pc{itemName});
+  $SHEET->param(titleName => removeTags removeRuby $pc{itemName});
 }
 
 ### OGP --------------------------------------------------

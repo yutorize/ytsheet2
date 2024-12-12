@@ -257,8 +257,8 @@ if($pc{forbidden} eq 'all' && $pc{forbiddenMode}){
   $SHEET->param(titleName => "非公開データ - $set::title");
 }
 else {
-  my $name    = removeTags nameToPlain($pc{characterName});
-  my $species = removeTags nameToPlain($pc{monsterName});
+  my $name    = removeTags removeRuby($pc{characterName});
+  my $species = removeTags removeRuby($pc{monsterName});
   if($name && $species){ $SHEET->param(titleName => "${name}（${species}）"); }
   else { $SHEET->param(titleName => $name || $species); }
 }

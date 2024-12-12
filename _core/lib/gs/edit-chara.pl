@@ -108,7 +108,7 @@ $pc{cashbook}      =~ s/&lt;br&gt;/\n/g;
 $pc{chatPalette}   =~ s/&lt;br&gt;/\n/g;
 
 ### フォーム表示 #####################################################################################
-my $titlebarname = removeTags nameToPlain unescapeTags ($pc{characterName}||"“$pc{aka}”");
+my $titlebarname = removeTags removeRuby unescapeTags ($pc{characterName}||"“$pc{aka}”");
 print <<"HTML";
 Content-type: text/html\n
 <!DOCTYPE html>
