@@ -282,6 +282,7 @@ print <<"HTML";
     <option value="1H騎">
     <option value="2H">
     <option value="2H#">
+    <option value="2H投">
     <option value="振2H">
     <option value="突2H">
   </datalist>
