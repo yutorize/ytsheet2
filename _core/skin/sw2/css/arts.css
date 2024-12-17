@@ -81,7 +81,8 @@ article {
 #god-name,
 #school-name,
 .data-magic .name dd,
-.data-magic h3.name {
+.data-magic h3.name,
+#skill .data-skill > .name {
   font-family: var(--base-font-family-min);
 }
 #god-name small,
@@ -608,6 +609,174 @@ a.failed::before {
   vertical-align: top;
   line-height: 1;
   font-size: 130%;
+}
+
+/* // Skill
+---------------------------------------------------------------------------------------------------- */
+#skill .data-skill {
+  display: grid;
+  grid-template-rows: max-content max-content;
+  grid-template-columns: 4fr 1fr 2fr;
+
+  > .name,
+  > .resist,
+  &.has-ranks > .details {
+    border-top: 1px solid var(--box-outside-border-color);
+  }
+
+  > .name,
+  > .action-base-value,
+  > .details {
+    border-left: 1px solid var(--box-outside-border-color);
+  }
+
+  > .name,
+  > dl,
+  > .details .rank,
+  > .details .summary {
+    border-bottom: 1px solid var(--box-outside-border-color);
+  }
+
+  > .name,
+  > dl:not(.action-base-value),
+  > dl dt,
+  > .action-base-value > dd,
+  > .details dd.rank {
+    border-right: 1px solid var(--box-outside-border-color);
+  }
+
+  > .name {
+    grid-column: 1 / 3;
+    font-size: 150%;
+    font-weight: bold;
+    background-color: var(--arts-name-bg-color);
+    color: #fff;
+    padding: 0.2em 0.5em;
+  }
+
+  > dl {
+    > dt,
+    > dd {
+      display: flex;
+      flex-flow: row;
+      align-items: center;
+      justify-content: center;
+    }
+
+    > dt {
+      background-color: var(--arts-head-bg-color);
+    }
+
+    > dd {
+      padding-top: 0.5em;
+      padding-bottom: 0.5em;
+      min-width: 4em;
+    }
+  }
+
+  > .action-base-value > dt,
+  > .details dt.rank,
+  > .details dt.summary,
+  > .details dt.effect {
+    min-width: 5em;
+  }
+
+  > .resist,
+  > .action-base-value,
+  > .resist-base-value {
+    display: grid;
+    grid-template-rows: 100%;
+    grid-template-columns: auto 1fr;
+
+    > dt,
+    > dd {
+      grid-row: 1 / -1;
+    }
+
+    > dt {
+      grid-column: 1 / 2;
+    }
+
+    > dd {
+      grid-column: 2 / 3;
+    }
+  }
+
+  > .resist {
+    grid-column: 3 / -1;
+
+    > dt {
+      width: 4em;
+    }
+  }
+
+  > .action-base-value {
+    grid-column: 1 / 2;
+  }
+
+  > .resist-base-value {
+    grid-column: 2 / -1;
+
+    > dt {
+      width: 7em;
+    }
+  }
+
+  > .details {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: auto max-content max-content 1fr;
+
+    > dt.rank,
+    > dt.effect {
+      grid-column: 1 / 2;
+    }
+
+    > dd.rank {
+      grid-column: 2 / 3;
+    }
+
+    > dt.summary {
+      grid-column: 3 / 4;
+      width: 4em;
+    }
+
+    > dd.summary,
+    > dd.effect {
+      padding-left: 0.5em;
+      padding-right: 0.5em;
+    }
+
+    > dd.summary {
+      grid-column: 4 / 5;
+      justify-content: flex-start;
+    }
+
+    > dd.effect {
+      grid-column: 2 / -1;
+      display: block;
+    }
+
+    .no-rank & {
+      .rank {
+        display: none;
+      }
+
+      dt.summary {
+        grid-column: 1 / 2;
+      }
+
+      dd.summary {
+        grid-column: 2 / -1;
+      }
+    }
+  }
+
+  &.has-ranks {
+    > .details {
+      margin-top: 1.5em;
+    }
+  }
 }
 
 /* // Description
