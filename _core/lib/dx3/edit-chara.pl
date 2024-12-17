@@ -1076,6 +1076,7 @@ print <<"HTML";
   </footer>
   <datalist id="list-stage">
     <option value="基本ステージ">
+    <option value="基本ステージ(UA)">
     <option value="オーヴァードアカデミア">
     <option value="ナイトメアプリズン">
     <option value="デモンズシティ">
