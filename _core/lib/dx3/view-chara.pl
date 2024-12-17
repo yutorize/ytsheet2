@@ -269,6 +269,10 @@ my $breedPrefix = ($pc{breed} ? $pc{breed} : $pc{syndrome3} ? 'トライ' : $pc{
 $SHEET->param(breed => isNoiseText(removeTags $breedPrefix) ? $breedPrefix : $breedPrefix ? "$breedPrefix<span class=\"shorten\">ブリード</span>" : '');
 
 ### 侵蝕率基本値 --------------------------------------------------
+if ($pc{encroachFixed}) {
+  $pc{'lifepathOtherEncroach'} = undef;
+  $pc{'lifepathOtherNote'} = undef;
+}
 $SHEET->param(hasEncroachOffset => $pc{'lifepathOtherEncroach'} || $pc{'lifepathOtherNote'} ? 1 : 0);
 
 ### 能力値 --------------------------------------------------
