@@ -316,6 +316,19 @@ foreach (1 .. 7){
   # 感情の内容もチェックもなく、状態ももたないなら、感情を無効にする.
   my $noEmotion = !($pc{'lois'.$_.'EmoPosi'} || $pc{'lois'.$_.'EmoPosiCheck'} || $pc{'lois'.$_.'EmoNega'} || $pc{'lois'.$_.'EmoNegaCheck'} || $pc{'lois'.$_.'State'});
 
+  if ($_ > 3) {
+    if (
+        ($pc{'lois' . $_ . 'Relation'} // '') eq ''
+            && ($pc{'lois' . $_ . 'Name'} // '') eq ''
+            && $noEmotion
+            && ($pc{'lois' . $_ . 'Color'} // '') eq ''
+            && ($pc{'lois' . $_ . 'Note'} // '') eq ''
+            && ($pc{'lois' . $_ . 'State'} eq '' || $pc{'lois' . $_ . 'State'} eq 'ロイス')
+    ) {
+      next;
+    }
+  }
+
   push(@loises, {
     "RELATION" => $pc{'lois'.$_.'Relation'},
     "NAME"     => $pc{'lois'.$_.'Name'},
