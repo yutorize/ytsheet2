@@ -1279,8 +1279,8 @@ aside#loglist #log-naming form input {
       display: inline-block;
       overflow-wrap: break-word;
       margin-right: .5em;
-      > ruby rt { margin-top: -1em; }
     }
+    & ruby rt { margin-top: -1em; }
   }
   > div {
     flex-shrink: 0;

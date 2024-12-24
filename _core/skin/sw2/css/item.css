@@ -70,15 +70,17 @@ article {
   }
 
   > h1 {
-    padding: .25em 1rem;
+    padding: .25em 1rem 0;
     text-align: left;
     font-size: 160%;
     font-weight: bold;
-    line-height: 1;
     > small {
       display: inline-block;
       font-size: 70%;
       line-height: 1;
+    }
+    > ruby rt {
+      margin: 0;
     }
     & .i-icon {
       width: .7em;
