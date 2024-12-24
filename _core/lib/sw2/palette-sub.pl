@@ -881,7 +881,7 @@ sub paletteProperties {
         my $basetext;
         if   ($category eq 'クロスボウ'){ $basetext = $::SW2_0 ? '' : "{$::pc{'weapon'.$_.'Class'}}"; }
         elsif($category eq 'ガン'      ){ $basetext = "{魔動機術}"; }
-        elsif($data::class{$class}{accUnlock}{dmg} eq 'power'){ $basetext = '{'.($data::class{$class}{craft}{power} || $data::class{$class}{craft}{power}).'}' }
+        elsif($data::class{$class}{accUnlock}{dmg} eq 'power'){ $basetext = '{'.($data::class{$class}{magic}{jName} || $data::class{$class}{craft}{power} || $data::class{$class}{craft}{jName}).'}' }
         else { $basetext = "{$::pc{'weapon'.$_.'Class'}}+({筋力}+{筋力増強})/6"; }
         $basetext .= addNum($dmgMod);
         push @propaties, "//追加D$_=(${basetext}+".($::pc{'weapon'.$_.'Dmg'}||0).")";
