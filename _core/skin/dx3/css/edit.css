@@ -107,7 +107,7 @@ body:not(.mode-crc) .crc-only {
   > tbody.syndrome-rows tr:not(.auto) td span {
     display: none;
   }
-  & tr.pure + tr td:nth-child(n+3) {
+  & tr.pure + tr td:nth-child(n+2) {
     &::after { content: "×2"; }
     & input { display: none; }
   }
