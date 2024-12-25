@@ -257,6 +257,7 @@ sub palettePreset {
       }
       $text .= "\n";
     }
+    $text .= appendPaletteInsert('feats');
 
     # 魔法
     foreach my $name (@classNames){
