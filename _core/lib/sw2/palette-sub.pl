@@ -194,10 +194,9 @@ sub palettePreset {
     $text .= appendPaletteInsert('');
     # 基本判定
     $text .= "### ■非戦闘系\n";
-    $text .= "2d+{冒険者}+{器用B} 冒険者＋器用\n";
-    $text .= "2d+{冒険者}+{敏捷B} 冒険者＋敏捷\n";
-    $text .= "2d+{冒険者}+{筋力B} 冒険者＋筋力\n";
-    $text .= "2d+{冒険者}+{知力B} 冒険者＋知力\n";
+    foreach my $statusName ('器用', '敏捷', '筋力', '生命', '知力') {
+      $text .= "2d+{冒険者}+{${statusName}B} 冒険者＋${statusName}\n";
+    }
     foreach my $class (@classNames){
       my $c_id = $data::class{$class}{id};
       next if !$data::class{$class}{package} || !$::pc{'lv'.$c_id};
