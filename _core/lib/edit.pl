@@ -40,6 +40,10 @@ elsif($mode eq 'convert'){
     %conv_data =  %{ decode_json($data) };
     $type = $conv_data{type};
   }
+  elsif($::in{json}){
+    %conv_data =  %{ decode_json($::in{json}) };
+    $type = $conv_data{type};
+  }
   elsif($::in{backupJSON}){
     %conv_data =  %{ decode_json($::in{backupJSON} ) };
     $type = $conv_data{type};
