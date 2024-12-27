@@ -1045,6 +1045,7 @@ $SHEET->param(historyMoneyTotal => commify $pc{historyMoneyTotal} );
 $SHEET->param(honor => commify($pc{honor}));
 $SHEET->param(honorOffset => commify($pc{honorOffset})) if $pc{honorOffset};
 $SHEET->param(honorOffsetBarbaros => commify($pc{honorOffsetBarbaros})) if $pc{honorOffsetBarbaros};
+$SHEET->param(dishonor => commify($pc{dishonor})) if $pc{dishonor};
 
 my @honoritems;
 foreach (1 .. $pc{honorItemsNum}) {
