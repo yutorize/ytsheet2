@@ -1933,8 +1933,8 @@ function calcDishonor(){
   }
   pointTotal.human    -= Number(form.honorOffset.value);
   pointTotal.barbaros -= Number(form.honorOffsetBarbaros.value);
-  let pointTotalText = pointTotal.human;
-  if(pointTotal.barbaros){ pointTotalText += `／<small>蛮</small>${pointTotal.barbaros}`; }
+  let pointTotalText = commify(pointTotal.human);
+  if(pointTotal.barbaros){ pointTotalText += `／<small>蛮</small>${commify(pointTotal.barbaros)}`; }
   document.getElementById("dishonor-value").innerHTML = pointTotalText;
 
   let notoriety = '';
