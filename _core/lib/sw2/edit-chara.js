@@ -1910,8 +1910,8 @@ function calcHonor(){
   pointTotal -= mysticArtsPt ?? 0;
   //
   pointTotal -= Number(form.honorOffset.value) + Number(form.honorOffsetBarbaros.value);
-  document.getElementById("honor-value"   ).textContent = pointTotal;
-  document.getElementById("honor-value-MA").textContent = pointTotal;
+  document.getElementById("honor-value"   ).textContent = commify(pointTotal);
+  document.getElementById("honor-value-MA").textContent = commify(pointTotal);
   document.getElementById("mystic-arts-honor-value").textContent = mysticArtsPt;
   document.getElementById('honor-items-mystic-arts').style.display = mysticArtsPt != null ? '' : 'none';
 }
