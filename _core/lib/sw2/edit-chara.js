@@ -1880,7 +1880,7 @@ function calcHonor(){
     const rankFree = (rankData) ? rankData.free + rankStar*50  : 0;
     pointTotal -= rankNum;
     if(rankFree > free){ free = rankFree }
-    document.getElementById(`rank${type}-honor-value`).textContent = rankNum;
+    document.getElementById(`rank${type}-honor-value`).textContent = commify(rankNum);
   }
   
   // 名誉アイテム
