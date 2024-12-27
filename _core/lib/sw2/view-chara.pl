@@ -1095,7 +1095,7 @@ else {
   foreach (@set::barbaros_rank){
     my ($name, $num, undef) = @$_;
     if($pc{rankBarbaros}=~/★$/ && $pc{rankStarBarbaros} >= 2){ $num += ($pc{rankStarBarbaros}-1)*500 }
-    $SHEET->param(rankBarbarosValue => $num) if ($pc{rankBarbaros} eq $name);
+    $SHEET->param(rankBarbarosValue => commify($num)) if ($pc{rankBarbaros} eq $name);
   }
   my $notoriety;
   foreach (@set::notoriety_rank){
