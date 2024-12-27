@@ -1044,6 +1044,8 @@ $SHEET->param(historyMoneyTotal => commify $pc{historyMoneyTotal} );
 ### 名誉点・名誉アイテム --------------------------------------------------
 $SHEET->param(honor => commify($pc{honor}));
 $SHEET->param(honorMax => commify($pc{honorMax}));
+$SHEET->param(honorBarbaros => commify($pc{honorBarbaros})) if $pc{honorBarbaros};
+$SHEET->param(honorDragon => commify($pc{honorDragon})) if $pc{honorDragon};
 $SHEET->param(honorOffset => commify($pc{honorOffset})) if $pc{honorOffset};
 $SHEET->param(honorOffsetBarbaros => commify($pc{honorOffsetBarbaros})) if $pc{honorOffsetBarbaros};
 $SHEET->param(dishonor => commify($pc{dishonor})) if $pc{dishonor};
