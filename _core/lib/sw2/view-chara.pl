@@ -1041,7 +1041,9 @@ $SHEET->param(historyHonorTotal => commify $pc{historyHonorTotal} );
 $SHEET->param(historyMoneyTotal => commify $pc{historyMoneyTotal} );
 
 
-### 名誉アイテム --------------------------------------------------
+### 名誉点・名誉アイテム --------------------------------------------------
+$SHEET->param(honor => commify($pc{honor}));
+
 my @honoritems;
 foreach (1 .. $pc{honorItemsNum}) {
   next if !$pc{'honorItem'.$_} && !$pc{'honorItem'.$_.'Pt'};
