@@ -554,7 +554,9 @@ sub palettePreset {
 
       $text .= "2d+";
       $text .= $::pc{paletteUseVar} ? "{回避${i}}" : $::pc{"defenseTotal${i}Eva"};
-      $text .= "+{回避修正} 回避力".($::pc{"defenseTotal${i}Note"}?"／$::pc{'defenseTotal'.$i.'Note'}":'')."\n";
+      $text .= "+{回避修正} 回避力";
+      $text .= '（' . $::pc{"evasionClass${i}"} . '）' if (grep { $::pc{"evasionClass${_}"} } (1 .. $::pc{defenseNum})) > 1;
+      $text .= ($::pc{"defenseTotal${i}Note"}?"／$::pc{'defenseTotal'.$i.'Note'}":'')."\n";
     }
     $text .= appendPaletteInsert('defense');
     
