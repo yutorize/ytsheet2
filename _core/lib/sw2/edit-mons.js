@@ -4,6 +4,8 @@ const gameSystem = 'sw2';
 window.onload = function() {
   setName();
   rewriteMountLevel();
+  updatePartsAutomatically();
+  updatePartList();
   selectInputCheck(form.taxa,'その他')
   checkMount();
 
@@ -137,6 +139,7 @@ function addStatus(copy){
   });
   form.statusNum.value = num;
   statusTextInputToggle();
+  updatePartsAutomatically();
 }
 function addStatusInsert(target, num, copy){
   const lv = target.dataset.lv ? '-'+target.dataset.lv : '';
@@ -158,7 +161,7 @@ function addStatusInsert(target, num, copy){
   tr.innerHTML = `
     <th class="mount-only"></th>
     <td ${ lv ? '' : `class="handle"`}></td>
-    <td ${ lv ? 'class="name"' : ``} data-style="${num}">${ lv ? form[`status${num}Style`].value : `<input name="status${num}${lv}Style" type="text" value="${ini.style}" oninput="checkStyle(${num}${lv})">` }</td>
+    <td ${ lv ? 'class="name"' : ``} data-style="${num}">${ lv ? form[`status${num}Style`].value : `<input name="status${num}${lv}Style" type="text" value="${ini.style}" oninput="checkStyle(${num}${lv}); updatePartsAutomatically();">` }</td>
     <td>
       <input name="status${num}${lv}Accuracy" type="text" oninput="calcAcc('${num}${lv}')" value="${ini.accuracy}"><span class="monster-only calc-only"><br>
       (<input name="status${num}${lv}AccuracyFix" type="text" oninput="calcAccF('${num}${lv}')" value="${ini.accuracyFix}">)</span>
@@ -201,6 +204,7 @@ function delStatus(){
     num--;
     form.statusNum.value = num;
   }
+  updatePartsAutomatically();
 }
 // ソート
 (() => {
@@ -254,6 +258,7 @@ function delStatus(){
         }
       });
       rewriteMountLevel();
+      updatePartsAutomatically();
     }
   });
 })();
@@ -268,7 +273,79 @@ function statusTextInputToggle(){
   }
   form.classList.toggle('not-calc', on)
 }
+// 部位数・内訳の自動入力
+function updatePartsAutomatically() {
+  const manualModeCheckbox = document.querySelector('input[type="checkbox"][name="partsManualInput"]');
+  const partsNumInput = document.querySelector('.parts input[name="partsNum"]');
+  const partsNamesInput = document.querySelector('.parts input[name="parts"]');
 
+  if (manualModeCheckbox.checked) {
+    partsNumInput.readOnly = false;
+    partsNamesInput.readOnly = false;
+    return;
+  }
+
+  let partCount = 0;
+  const partNames = [];
+  document.querySelectorAll('#status-tbody input[name$="Style"]').forEach(
+      input => {
+        partCount++;
+
+        const style = input.value.trim();
+        const m = style.match(/.*[(（](.+?)[）)]$/);
+        if (m == null) {
+          return;
+        }
+        partNames.push(m[1].trim());
+      }
+  );
+
+  partsNumInput.readOnly = true;
+  partsNumInput.value = partCount.toString();
+  partsNumInput.dispatchEvent(new Event('input'));
+
+  partsNamesInput.readOnly = true;
+  partsNamesInput.value = partNames.length === 0 ? '' : partNames.reduce(
+      (previous, currentPartName) => {
+        const previousPartTexts = previous.split('／');
+        const lastPartText = previousPartTexts[previousPartTexts.length - 1];
+        const m = lastPartText.match(/^(.+?)(?:×(\d+))?$/);
+        const lastPartName = m[1];
+        const lastPartCount = m[2] ? parseInt(m[2]) : 1;
+        return currentPartName === lastPartName
+            ? `${previousPartTexts.length > 1 ? `${previousPartTexts.slice(0, -1).join('／')}／` : ''}${lastPartName}×${lastPartCount + 1}`
+            : `${previous}／${currentPartName}`;
+      }
+  );
+  partsNamesInput.dispatchEvent(new Event('input'));
+}
+function updatePartList() {
+  const partsText = document.querySelector('input[name="parts"]').value.trim();
+
+  const items =
+      partsText
+          .split(/[/／]/)
+          .map(x => x.trim())
+          .filter(x => x !== '')
+          .map(part => part.replace(/[*×][\d０１２３４５６７８９]+$/, '（すべて）'));
+
+  const datalist = document.getElementById('list-of-core-part');
+  datalist.innerHTML = '';
+
+  if (items.length === 0) {
+    return;
+  }
+
+  items.unshift("なし");
+
+  items.forEach(
+      item => {
+        const option = document.createElement('option');
+        option.textContent = item;
+        datalist.appendChild(option);
+      }
+  );
+}
 // 戦利品欄 ----------------------------------------
 // 追加
 function addLoots(){

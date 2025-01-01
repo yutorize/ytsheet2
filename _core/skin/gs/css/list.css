@@ -9,7 +9,7 @@ body {
   .night & {
     background-blend-mode: hard-light, normal;
   }
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     background-size: auto, 80%;
   }
 }
@@ -65,7 +65,7 @@ body {
   display: inline-block;
   padding: .1em 0;
 }
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   .list table tr {
     grid-template-columns: 18rem 6em 2em 8em 5em auto 3.5em;
     grid-template-areas:

@@ -190,6 +190,23 @@ sub isNoiseText {
   my $text = shift;
   return $text =~ /^[█▇▆▅▄▃▂▚▞▙▛▜▟\n\s]+$/ ? 1 : undef;
 }
+### キャラクター名 --------------------------------------------------
+sub stylizeCharacterName {
+  my $name = shift;
+  my $ruby = shift;
+  $name = insertWbr($name);
+  if($ruby) {
+    return "<ruby><rp>｜</rp>${name}<rp>《</rp><rt>${ruby}</rt><rp>》</rp></ruby>"
+  }
+  return $name;
+}
+### <wbr>挿入 --------------------------------------------------
+sub insertWbr { #固有名詞向け
+  my $name = shift;
+  $name =~ s#[･・＝／”＞]#$&<wbr>#g;
+  $name =~ s#[+＋*＊@＠“＜]#<wbr>$&#g;
+  return $name;
+}
 ### セリフ --------------------------------------------------
 sub stylizeWords {
   my ($words, $x, $y) = @_;

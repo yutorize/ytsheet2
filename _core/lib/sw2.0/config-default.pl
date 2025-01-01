@@ -136,6 +136,28 @@ our $game = 'sw2';
   our $adventurer_onlyonce = 0;
   our $making_interval = 0;
 
+## ●穢れ表など
+our @effects = (
+  { name => '穢れ',
+    pointName => '穢れ度',
+    calc => [1],
+    type => ['text','number'],
+    header => ['理由や影響','穢れの増加'],
+  },
+  { name => '自由記入：１列',
+    calc => [1],
+    type => ['text'],
+  },
+  { name => '自由記入：２列',
+    calc => [1],
+    type => ['text','text'],
+  },
+  { name => '自由記入：３列',
+    calc => [2],
+    type => ['text','text','text'],
+  },
+);
+
 
 ## ●保存時の送信モード
  # Base64にして送信するかどうか

@@ -5,7 +5,7 @@
 @layer list {
 /* // Body
 ---------------------------------------------------------------------------------------------------- */
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   html {
     font-size: 1.6vw;
   }
@@ -56,13 +56,13 @@ main aside {
 }
 /* // Sidebar
 ---------------------------------------------------------------------------------------------------- */
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   aside#sidebar-top {
     padding-top: 11rem;
     margin-bottom: -4rem;
   }
 }
-@media screen and (max-width:1200px){
+@media screen and (width <= 1200px){
   aside#sidebar-left,
   aside#sidebar-right {
     display:none;
@@ -178,15 +178,6 @@ form#form-search {
 .list table tr th {
   display: grid;
 }
-.list table tr td {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  
-  &:not(.name) {
-    flex-wrap: wrap;
-  }
-}
 .list table th > a,
 .list table th > span {
   display: grid;
@@ -227,32 +218,35 @@ form#form-search {
   background-position: top left;
 }
 .list table td {
+  min-width: 0;
   padding: 2.5px 5px 2.5px;
   text-align: center;
+  align-content: center;
+  word-break: auto-phrase;
+  overflow-wrap: break-word;
 }
 .list table td.name {
   height: 100%;
   padding: 0;
   line-height: 1;
   & a {
-    flex-grow: 1;
-    
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    height: calc(100% + 5px);
-    
+    display: block;
+    height: 100%;
     font-size: 1.1em;
     font-weight: bold;
+    text-align: center;
+    align-content: center;
     
     &:hover {
       background: rgba(180,200,255,0.1);
     }
+
+    > span {
+      display: inline-block;
+    }
   }
 }
 .list table td:is(.player, .author) {
-  word-break: break-all;
   font-size: 90%;
 }
 .list table td span[data-gender] {
@@ -296,9 +290,11 @@ form#form-search {
   }
 }
 .list table td.tags {
-  padding: 0 .2em 0;
+  display: flex;
   flex-wrap: wrap;
+  padding: 0 .2em 0;
   justify-content: start;
+  align-items: center;
   border-top: 1px solid #7775;
   &:empty {
     display: none;
@@ -342,7 +338,7 @@ form#form-search {
   font-weight: bold;
 }
 
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   .list table tr {
     font-size: 95%;
   }
@@ -381,8 +377,6 @@ form#form-search {
   display: grid;
   grid-gap: .5rem;
   grid-template-columns: 1fr 1fr;
-}
-.list ul li {
 }
 .list ul li.hide {
   background-image: linear-gradient(135deg, rgba(80,80,200,0.3) 20px, transparent 20px);

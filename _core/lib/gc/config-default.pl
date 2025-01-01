@@ -157,7 +157,6 @@ our $game = 'gc';
   our $lib_convert = $::core_dir . '/lib/gc/convert.pl';
 
   # 各種データ
-  our $data_races = $::core_dir . '/lib/gc/data-races.pl';  # 種族
   our $data_class = $::core_dir . '/lib/gc/data-class.pl';  # クラス
 
   # HTMLテンプレート
@@ -178,5 +177,20 @@ our $game = 'gc';
       sheetType => 'country',
     },
   );
+
+# シート初期値の変更
+our %customizedInitialValues = (
+    # キャラクターデータ
+    '' => {
+        # 例：「キャラクター名」の初期値を「unnamed」にする
+        # 'characterName' => 'unnamed',
+    },
+
+    # 国データ
+    c => {
+        # 例：「作成時爵位」の初期値を「子爵」にする
+        # 'makePeerage' => '子爵',
+    },
+);
 
 1;

@@ -10,14 +10,29 @@ function nightModeChange() {
 // カラーカスタムON/OFF
 let colorlessMode = localStorage.getItem("colorlessMode");
 if(colorlessMode == 1) { htmlClass.add('colorless'); }
-function colorlessModeChange(){
+function changeColorlessMode(){
   if(colorlessMode != 1) { htmlClass.add('colorless');    colorlessMode = 1; }
-  else                    { htmlClass.remove('colorless'); colorlessMode = 0; }
+  else                   { htmlClass.remove('colorless'); colorlessMode = 0; }
   localStorage.setItem("colorlessMode", colorlessMode);
 }
 window.addEventListener("DOMContentLoaded", () => {
-  const obj = document.querySelector('[onchange*=colorlessModeChange]') || ''
+  console.log('colorlessMode:'+colorlessMode);
+  const obj = document.querySelector('[onchange*=changeColorlessMode]') || '';
   if(obj && colorlessMode == 1){
+    obj.checked = true;
+  }
+})
+// ルビコピーON/OFF
+let rubyCopyMode = localStorage.getItem("rubyCopyMode") ?? 1;
+function changeRubyCopyMode(){
+  if(rubyCopyMode != 1) { rubyCopyMode = 1; }
+  else                  { rubyCopyMode = 0; }
+  localStorage.setItem("rubyCopyMode", rubyCopyMode);
+}
+window.addEventListener("DOMContentLoaded", () => {
+  console.log('rubyCopyMode:'+rubyCopyMode)
+  const obj = document.querySelector('[onchange*=changeRubyCopyMode]') || ''
+  if(obj && rubyCopyMode == 1){
     obj.checked = true;
   }
 })

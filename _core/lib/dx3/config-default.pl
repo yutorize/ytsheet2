@@ -136,4 +136,12 @@ package set;
   our $skin_tmpl  = $::core_dir . '/skin/dx3/index.html';      # 一覧／登録フォーム等の大枠
   our $skin_sheet = $::core_dir . '/skin/dx3/sheet-chara.html';   # キャラクターシート
 
+# シート初期値の変更
+our %customizedInitialValues = (
+    '' => {
+        # 例：「侵蝕率効果表」の「エフェクトアーカイブ適用」を初期状態で有効にする
+        # 'encroachEaOn' => '1',
+    },
+);
+
 1;

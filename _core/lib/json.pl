@@ -26,7 +26,7 @@ if($id){
 
   my $datatype = ($::in{log}) ? 'logs' : 'data';
   my $hit = 0;
-  open my $IN, '<', "${dir}${file}/${datatype}.cgi" or viewNotFound($dir);
+  open my $IN, '<', "${dir}${file}/${datatype}.cgi" or error('データがありません');
   while (<$IN>){
     if($datatype eq 'logs'){
       if (index($_, "=") == 0){
@@ -58,6 +58,8 @@ if($id){
   if($pc{image}){
     $pc{imageURL} = url()."?id=$id&mode=image&cache=$pc{imageUpdate}";
   }
+
+  $pc{sheetURL} = url()."?id=${id}";
 }
 elsif($::in{url}){
   require $set::lib_convert;
@@ -78,7 +80,7 @@ if($pc{ver} ne '') {
   $pc{result} = "OK";
   if($set::lib_json_sub){
     require $set::lib_json_sub;
-    %pc = %{ addJsonData(\%pc , $type) };
+    %pc = %{ addJsonData(\%pc , $type , $::in{target} || '') };
   }
   delete $pc{IP};
 }

@@ -173,7 +173,7 @@ if(!$in_num) {
   $INDEX->param(pagePrevOn => $page - $page_items >= 0);
   $INDEX->param(pageNextOn => $page + $page_items < @lines);
 }
-else {
+if($in_num || $::in{tag}) {
   $INDEX->param(isMakingResult => 1);
 }
 $INDEX->param(formOn => 1) if !$::in{num} && !$::in{id};

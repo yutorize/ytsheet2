@@ -102,7 +102,7 @@ sysopen (my $FH, $set::makelist, O_RDWR | O_CREAT, 0666);
   truncate($FH, tell($FH));
 close($FH);
 
-print "Location:./?mode=making\n\n";
+print "Location:./?mode=making&num=${num}\n\n";
 
 sub dice {
   my $loop = shift;

@@ -225,6 +225,7 @@ output.generateCcfoliaJson = async (generateType, json, opt_sheetUrl = '') => {
   const initiative = output.consts?.initiative || {};
 
   const resources = [];
+  const params = [];
   for(let unitData of json.unitStatus){
     for (const label in unitData) {
       if(label === initiative?.label) continue;
@@ -233,7 +234,7 @@ output.generateCcfoliaJson = async (generateType, json, opt_sheetUrl = '') => {
         resources.push({label: label, value: value[0], max: value[1]})
       }
       else {
-        resources.push({label: label, value: unitData[label]})
+        params.push({label: label, value: unitData[label]})
       }
     }
   }
@@ -243,7 +244,7 @@ output.generateCcfoliaJson = async (generateType, json, opt_sheetUrl = '') => {
     externalUrl: opt_sheetUrl,
     status: resources,
     initiative: (initiative ? Number(json[initiative?.name]||0) : null),
-    params: [],
+    params: params,
     faces: [],
     x: 0, y: 0, z: 0,
     angle: 0, width: 4, height: 4,

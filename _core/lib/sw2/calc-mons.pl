@@ -26,6 +26,7 @@ sub data_calc {
 
   ### newline --------------------------------------------------
   my $name = $pc{characterName} ? $pc{characterName} : $pc{monsterName};
+  $name = "【${name}】" if $name eq $pc{monsterName} && $pc{mount};
   $name =~ s/[|｜]([^|｜]+?)《.+?》/$1/g;
   $pc{hide} = 'IN' if(!$pc{hide} && $pc{description} =~ /#login-only/i);
   my $taxa = ($pc{mount} ? '騎獣／':'')

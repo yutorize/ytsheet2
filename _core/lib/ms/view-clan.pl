@@ -106,8 +106,10 @@ if($::in{url}){
   $SHEET->param(convertMode => 1);
   $SHEET->param(convertUrl => $::in{url});
 }
+
 ### キャラクター名 --------------------------------------------------
-$SHEET->param(clanName => "<ruby>$pc{clanName}<rp>(</rp><rt>$pc{'clanNameRuby'}</rt><rp>)</rp></ruby>") if $pc{'clanNameRuby'};
+$SHEET->param(clanName => stylizeCharacterName $pc{clanName},$pc{clanNameRuby});
+
 ### プレイヤー名 --------------------------------------------------
 if($set::playerlist){
   my $pl_id = (split(/-/, $::in{id}))[0];
@@ -224,7 +226,7 @@ if($pc{forbidden} eq 'all' && $pc{forbiddenMode}){
   $SHEET->param(titleName => '非公開データ');
 }
 else {
-  $SHEET->param(titleName => removeTags nameToPlain($pc{clanName}||"“$pc{aka}”"));
+  $SHEET->param(titleName => removeTags removeRuby($pc{clanName}||"“$pc{aka}”"));
 }
 
 ### OGP --------------------------------------------------

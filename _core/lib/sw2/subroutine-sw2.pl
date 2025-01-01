@@ -11,6 +11,7 @@ use Fcntl;
 ### ユニットステータス出力 --------------------------------------------------
 sub createUnitStatus {
   my %pc = %{$_[0]};
+  my $target = $_[1] || '';
   my @unitStatus;
   if ($pc{type} eq 'm'){
     my @n2a = ('','A' .. 'Z');
@@ -38,10 +39,17 @@ sub createUnitStatus {
         my $mp  = s_eval($pc{"status${i}Mp"});
         my $def = s_eval($pc{"status${i}Defense"});
         push(@hp , {$partname.':HP' => "$hp/$hp"});
-        push(@mp , {$partname.':MP' => "$mp/$mp"});
+        push(@mp , {$partname.':MP' => "$mp/$mp"}) unless isEmptyValue($mp);
         push(@def, $partname.$def);
       }
-      @unitStatus = ( @hp, @mp, {'メモ' => '防護:'.join('／',@def)} );
+      @unitStatus = ();
+      push(@unitStatus, @hp);
+      push(@unitStatus, @mp) if $#mp >= 0;
+      if ($target eq 'udonarium') {
+        push(@unitStatus, {'防護' => join('／',@def)});
+      } else {
+        push(@unitStatus, {'メモ' => '防護:'.join('／',@def)});
+      }
     }
     else { # 1部位
       my $i = 1;
@@ -54,11 +62,9 @@ sub createUnitStatus {
       my $hp = s_eval($pc{"status${i}Hp"});
       my $mp = s_eval($pc{"status${i}Mp"});
       my $def = s_eval($pc{"status${i}Defense"});
-      @unitStatus = (
-        { 'HP' => "$hp/$hp" },
-        { 'MP' => "$mp/$mp" },
-        { '防護' => $def },
-      );
+      push(@unitStatus, { 'HP' => "$hp/$hp" });
+      push(@unitStatus, { 'MP' => "$mp/$mp" }) unless isEmptyValue($mp);
+      push(@unitStatus, { '防護' => "$def" });
     }
   }
   else {
@@ -106,26 +112,50 @@ sub class_color {
   return $text;
 }
 
-### タグ変換 --------------------------------------------------
+### 分類マーク --------------------------------------------------
+sub checkSkillName {
+  my $text = shift;
+  my $markList = $::SW2_0 ? "[○◯〇＞▶〆☆≫»□☐☑🗨▽▼]|&gt;&gt;" : "[○◯〇△＞▶〆☆≫»□☐☑🗨]|&gt;&gt;";
+  
+  $text =~ s/^((?:$markList)+.+?)(　|$)/&replaceSkillName($1).$2/egim;
+  return $text;
+
+  sub replaceSkillName {
+    my @names;
+    foreach (split '、', $_[0]){
+      $_ =~ s/^(?:$markList)+/&textToIcon($&)/egim;
+      push(@names, $_);
+    }
+    return join('、', @names);
+  }
+}
 sub textToIcon {
   my $text = shift;
   
   if($::SW2_0){
-    $text =~ s{\[常\]|[○◯〇]}{<i class="s-icon passive"><span class="raw">[常]</span></i>}gi;
-    $text =~ s{\[主\]|[＞▶〆]}{<i class="s-icon major0"><span class="raw">[主]</span></i>}gi;
-    $text =~ s{\[補\]|[☆≫»]|&gt;&gt;}{<i class="s-icon minor0"><span class="raw">[補]</span></i>}gi;
-    $text =~ s{\[宣\]|[□☐☑🗨]}{<i class="s-icon active0"><span class="raw">[宣]</span></i>}gi;
-    $text =~ s{\[条\]|[▽]}{<i class="s-icon condition"><span class="raw">[条]</span></i>}gi;
-    $text =~ s{\[選\]|[▼]}{<i class="s-icon selection"><span class="raw">[選]</span></i>}gi;
+    $text =~ s{\[常\]|[○◯〇]}{<i class="s-icon passive"><span class="raw">&#91;常&#93;</span></i>}gi;
+    $text =~ s{\[主\]|[＞▶〆]}{<i class="s-icon major0"><span class="raw">&#91;主&#93;</span></i>}gi;
+    $text =~ s{\[補\]|[☆≫»]|&gt;&gt;}{<i class="s-icon minor0"><span class="raw">&#91;補&#93;</span></i>}gi;
+    $text =~ s{\[宣\]|[□☐☑🗨]}{<i class="s-icon active0"><span class="raw">&#91;宣&#93;</span></i>}gi;
+    $text =~ s{\[条\]|[▽]}{<i class="s-icon condition"><span class="raw">&#91;条&#93;</span></i>}gi;
+    $text =~ s{\[選\]|[▼]}{<i class="s-icon selection"><span class="raw">&#91;選&#93;</span></i>}gi;
   } else {
-    $text =~ s{\[常\]|[○◯〇]}{<i class="s-icon passive"><span class="raw">[常]</span></i>}gi;
-    $text =~ s{\[準\]|[△]}{<i class="s-icon setup"><span class="raw">[準]</span></i>}gi;
-    $text =~ s{\[主\]|[＞▶〆]}{<i class="s-icon major"><span class="raw">[主]</span></i>}gi;
-    $text =~ s{\[補\]|[☆≫»]|&gt;&gt;}{<i class="s-icon minor"><span class="raw">[補]</span></i>}gi;
-    $text =~ s{\[宣\]|[□☐☑🗨]}{<i class="s-icon active"><span class="raw">[宣]</span></i>}gi;
+    $text =~ s{\[常\]|[○◯〇]}{<i class="s-icon passive"><span class="raw">&#91;常&#93;</span></i>}gi;
+    $text =~ s{\[準\]|[△]}{<i class="s-icon setup"><span class="raw">&#91;準&#93;</span></i>}gi;
+    $text =~ s{\[主\]|[＞▶〆]}{<i class="s-icon major"><span class="raw">&#91;主&#93;</span></i>}gi;
+    $text =~ s{\[補\]|[☆≫»]|&gt;&gt;}{<i class="s-icon minor"><span class="raw">&#91;補&#93;</span></i>}gi;
+    $text =~ s{\[宣\]|[□☐☑🗨]}{<i class="s-icon active"><span class="raw">&#91;宣&#93;</span></i>}gi;
   }
   
   return $text;
+}
+sub checkArtsName {
+  my $text = checkSkillName($_[0]);
+  my $mark;
+  while($text =~ s#^<i class="s-icon [^>]+?">.*?</i>##){
+    $mark .= $&;
+  }
+  return $text, $mark;
 }
 
 ### 妖精魔法ランク --------------------------------------------------
@@ -140,6 +170,106 @@ sub fairyRank {
     '6' => ['×','×','×','2&1','3&1','4&1','4&2','5&2','6&2','6&3','7&3','8&3','8&4','9&4','10&4','10&5'],
   );
   return $rank{$i}[$lv] || '×';
+}
+
+### 補正値記法の解釈 --------------------------------------------------
+sub extractModifications {
+  my %pc = %{shift;};
+
+  my @modifications = ();
+
+  sub extractModification {
+    my $name = shift;
+    my $note = shift;
+
+    my %sttRegEx = (
+      'A' => '器(?:用度?)?',
+      'B' => '敏(?:捷度?)?',
+      'C' => '筋(?:力)?',
+      'D' => '生(?:命力)?',
+      'E' => '知力?',
+      'F' => '精(?:神力?)?',
+      'vResist' => '生命抵抗力?',
+      'mResist' => '精神抵抗力?',
+      'eva' => '回避力?',
+      'def' => '防(?:護点?)?',
+      'mobility' => '移動力',
+      'magicPower' => '魔力',
+      'magicCast' => '(?:魔法)?行使(?:判定)?',
+      'magicDamage' => '魔法のダメージ',
+      'reqdWeapon' => '武器(?:必要筋力|必筋)上限'
+    );
+    my %modData;
+    foreach my $key (keys %sttRegEx){
+      if ($note =~ s/[\@＠]${sttRegEx{$key}}([＋+－-][0-9]+)//) {
+        $modData{$key} = $1 =~ tr/＋－/+-/r;
+      }
+    }
+
+    return {} if !%modData;
+
+    $modData{name} = $name;
+    return \%modData;
+  }
+
+  foreach (1 .. $pc{weaponNum}) {
+    my $nameKey = "weapon${_}Name";
+    my $noteKey = "weapon${_}Note";
+
+    my $name = $pc{$nameKey} // '';
+    my $note = $pc{$noteKey} // '';
+
+    $name = $name ne '' ? $name : '武器';
+
+    my %modification = %{extractModification($name, $note)};
+    next unless %modification;
+
+    push(@modifications, \%modification);
+  }
+
+  foreach (1 .. $pc{armourNum}) {
+    my $nameKey = "armour${_}Name";
+    my $noteKey = "armour${_}Note";
+
+    my $name = $pc{$nameKey} // '';
+    my $note = $pc{$noteKey} // '';
+
+    $name = $name ne '' ? $name : '防具';
+
+    my %modification = %{extractModification($name, $note)};
+    next unless %modification;
+
+    push(@modifications, \%modification);
+  }
+
+  for my $slot ('Head', 'Face', 'Ear', 'Neck', 'Back', 'HandR', 'HandL', 'Waist', 'Leg', 'Other', 'Other2', 'Other3', 'Other4') {
+    for my $suffix ('', '_', '__') {
+      my $nameKey = "accessory${slot}${suffix}Name";
+      my $noteKey = "accessory${slot}${suffix}Note";
+
+      if ($suffix ne '') {
+        # 拡張枠は有効化されていなければ無視する
+
+        my $addingKey = "accessory${slot}${suffix}";
+        $addingKey =~ s/_$//;
+        $addingKey .= 'Add';
+
+        next unless $pc{$addingKey};
+      }
+
+      my $name = $pc{$nameKey} // '';
+      my $note = $pc{$noteKey} // '';
+
+      $name = $name ne '' ? $name : '装飾品';
+
+      my %modification = %{extractModification($name, $note)};
+      next unless %modification;
+
+      push(@modifications, \%modification);
+    }
+  }
+
+  return \@modifications;
 }
 
 ### バージョンアップデート --------------------------------------------------
@@ -350,6 +480,20 @@ sub data_update_chara {
   $pc{lasttimever} = $ver;
   return %pc;
 }
+sub data_update_mons {
+  my %pc = %{$_[0]};
+  my $ver = $pc{ver};
+  $ver =~ s/^([0-9]+)\.([0-9]+)\.([0-9]+)$/$1.$2$3/;
+  delete $pc{updateMessage};
+  
+  if($ver < 1.26000){
+    $pc{partsManualInput} = 1;
+  }
+
+  $pc{ver} = $main::ver;
+  $pc{lasttimever} = $ver;
+  return %pc;
+}
 sub data_update_item {
   my %pc = %{$_[0]};
   my $ver = $pc{ver};
@@ -399,6 +543,11 @@ sub data_update_arts {
   $pc{ver} = $main::ver;
   $pc{lasttimever} = $ver;
   return %pc;
+}
+
+sub isEmptyValue {
+  my $value = shift;
+  return defined($value) && $value ne '' && $value !~ /^[-ー－―]$/ ? 0 : 1;
 }
 
 1;

@@ -9,13 +9,13 @@ body {
   .night & {
     background-blend-mode: hard-light, hard-light;
   }
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     background-size: auto, 100%;
   }
 }
 /* // Layout
 ---------------------------------------------------------------------------------------------------- */
-@media screen and (min-width:1400px){
+@media screen and (width >= 1400px){
   body {
     grid-template-columns: minmax(0, 1fr) minmax(auto, 1800px) minmax(0, 1fr);
   }
@@ -91,23 +91,22 @@ body {
     "STT IMG"
     "PER IMG"
   ;
-  @media screen and (max-width:767px){
+  @media screen and (width <= 767px){
     min-height: 0%;
     grid-gap: .5rem;
   }
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     grid-template-areas:
       "CLS STT"
       "PER IMG"
     ;
   }
+  #image-none,
+  #image      { grid-area: IMG; }
+  #classes    { grid-area: CLS; }
+  #hitogara   { grid-area: PER; }
+  #status     { grid-area: STT; }
 }
-#image-none,
-#image      { grid-area: IMG; }
-#classes    { grid-area: CLS; }
-#hitogara   { grid-area: PER; }
-#status     { grid-area: STT; }
-
 
 #area-status dd:empty::before,
 #area-status td:empty::before {
@@ -115,6 +114,9 @@ body {
 }
 
 /* Image */
+.image, .image-none {
+  max-height: 56.7rem;
+}
 .image-none::after {
   transform: scale(1, 1.5);
 }
@@ -128,7 +130,7 @@ body {
     grid-template-rows: max-content 1fr;
     border-right-width: 1px;
   }
-  > dl dd {
+  > dl > dd {
     display: grid;
     align-items: center;
     white-space: nowrap;
@@ -137,13 +139,13 @@ body {
 #negai dl {
   display: grid;
   grid-template-columns: 1fr .75fr .75fr 1fr;
-  > dl dt {
+  > dt {
     align-self: end;
     padding-right: .5em;
     text-align: right;
     font-size: 90%;
   }
-  > dl dd {
+  > dd {
     text-align: left;
   }
 }
@@ -165,17 +167,24 @@ body {
   & th {
     line-height: 1;
   }
+  & td {
+    padding: .1em .2em;
+    &.comment       { font-size: 93% }
+    &:not(.comment) { line-height: 1.3 }
+  }
   & th > span.thin {
-    display: block;
+    display: inline-block;
     margin: 0 -10%;
     transform: scaleX(0.8);
     white-space: nowrap;
   }
-  & td.left {
-    padding: .1em .2em;
-    font-size: 93%;
+  & th > span.thiner {
+    display: inline-block;
+    margin: 0 -16%;
+    transform: scaleX(0.7);
+    white-space: nowrap;
   }
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     & col:nth-child(1),
     & col:nth-child(3) { width: 6em; }
     & th {
@@ -204,7 +213,7 @@ body {
   transform: scale(1.2);
   margin-right: .5em;
 }
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   #status dl dd small {
     display: inline-block;
     margin: 0 -5%;
@@ -228,9 +237,7 @@ body {
     grid-template-columns: 1.8em 14em auto 2.4em 2.4em;
     border-bottom-width: 0;
   }
-  & tr th:nth-child(2),
-  & tr th:nth-child(3) {
-    text-align: left;
+  & tr th.left {
     padding-left: .5em;
   }
   & tr td {
@@ -240,9 +247,8 @@ body {
     align-items: center;
     justify-content: center;
   }
-  & tr td.left {
+  & tr td.comment {
     justify-content: left;
-    padding-left: .2em;
   }
   & tr td:first-child {
     border-left: 0;
@@ -269,12 +275,12 @@ body {
   & tbody tr td:first-child::before {
     content: counter(kizuna);
   }
-  @media screen and (max-width:736px){
+  @media screen and (width <= 736px){
     & tr {
       display: grid;
       grid-template-columns: 1.8em 14em auto 1.8em 1.8em;
     }
-    & td.left {
+    & td.comment {
       font-size: 93%;
     }
     & thead th:nth-last-child(1),
@@ -321,7 +327,7 @@ body {
     }
   }
 
-  @media screen and (max-width:736px){
+  @media screen and (width <= 736px){
     & dl {
       display: grid;
       grid-template-columns: max-content 1fr;
@@ -354,7 +360,7 @@ body {
   & col:nth-child(3) { width: 6.5em; }
   & col:nth-child(4) { width: 6.5em; }
   & col:nth-child(5) { width: 6.5em; }
-  @media screen and (max-width:736px){
+  @media screen and (width <= 736px){
     & col:nth-child(1) { width: 3.5em; }
     & col:nth-child(2) { width: 6em; }
     & col:nth-child(3) { width: 6em; }
@@ -386,8 +392,7 @@ body {
   & tbody td.hitogara {
     font-size: 90%;
   }
-  & tbody td.left {
-    padding-left: .5rem;
+  & tbody td.note {
     font-size: 90%;
   }
 }
@@ -440,7 +445,7 @@ body {
       );
     }
   }
-  @media screen and (min-width:1400px){
+  @media screen and (width >= 1400px){
     &:first-child {
       margin-top: 0;
     }
@@ -516,7 +521,7 @@ body {
     border-left-width: 1px;
     border-left-style: solid;
   }
-  @media screen and (max-width:736px){
+  @media screen and (width <= 736px){
     & dl {
       font-family: var(--font-proportional);
     }
@@ -577,7 +582,7 @@ body {
     & dt {
       padding-left: .2em;
       white-space: nowrap;
-      @media screen and (max-width:736px){
+      @media screen and (width <= 736px){
         font-size: 82%;
       }
     }
@@ -613,13 +618,8 @@ body {
 #history {
   margin-top: var(--box-v-gap);
 }
-#history table thead th {
-  &:nth-child(1) { width:   2em; } /* No. */
-  &:nth-child(2) { width: 5.2em; } /* 日付 */
-  &:nth-child(3) { width:  auto; } /* タイトル */
-  &:nth-child(4) { width: 4.6em; } /* 成長 */
-  &:nth-child(5) { width:  auto; } /* ＧＭ */
-  &:nth-child(6) { width:  auto; } /* 参加者 */
+#history table thead {
+  .grow   { width: 4.6em; } /* 成長 */
 }
 
 

@@ -20,7 +20,7 @@ my $mode_make = ($mode =~ /^(blanksheet|copy|convert)$/) ? 1 : 0;
 
 ### 出力準備 #########################################################################################
 if($message){
-  my $name = unescapeTags($pc{characterName} || $pc{aka} || '無題');
+  my $name = unescapeTags($pc{countryName} || '無題');
   $message =~ s/<!NAME>/$name/;
 }
 ### プレイヤー名 --------------------------------------------------
@@ -51,6 +51,8 @@ elsif($mode eq 'blanksheet'){
   
   $pc{paletteUseVar} = 1;
   $pc{paletteUseBuff} = 1;
+
+  %pc = applyCustomizedInitialValues(\%pc, 'c');
 }
 
 ## カラー
@@ -90,7 +92,7 @@ my $image_maxsize = $set::image_maxsize / 2;
 my $image_maxsize_view = $image_maxsize >= 1048576 ? sprintf("%.3g",$image_maxsize/1048576).'MB' : sprintf("%.3g",$image_maxsize/1024).'KB';
 
 ### フォーム表示 #####################################################################################
-my $titlebarname = removeTags nameToPlain unescapeTags ($pc{countryName});
+my $titlebarname = removeTags removeRuby unescapeTags ($pc{countryName});
 print <<"HTML";
 Content-type: text/html\n
 <!DOCTYPE html>

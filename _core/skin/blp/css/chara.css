@@ -9,7 +9,7 @@ body {
   .night & {
     background-blend-mode: hard-light, hard-light;
   }
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     background-size: auto, 120%;
     background-position-x: 0, 5vw;
     background-position-y: 0, 110%;
@@ -17,7 +17,7 @@ body {
 }
 /* // Layout
 ---------------------------------------------------------------------------------------------------- */
-@media screen and (min-width:1400px){
+@media screen and (width >= 1400px){
   body {
     grid-template-columns: minmax(0, 1fr) minmax(auto, 1800px) minmax(0, 1fr);
   }
@@ -85,11 +85,11 @@ body {
     "PER IMG"
     "SCR IMG"
   ;
-  @media screen and (max-width:767px){
+  @media screen and (width <= 767px){
     min-height: 0%;
     grid-gap: .5rem;
   }
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     grid-template-areas:
       "FAC IMG"
       "PER IMG"
@@ -97,14 +97,13 @@ body {
       "SCR SCR"
     ;
   }
+  #image-none,
+  #image      { grid-area: IMG; }
+  #personal   { grid-area: PER; }
+  #factors    { grid-area: FAC; }
+  #status     { grid-area: STT; }
+  #scar       { grid-area: SCR; }
 }
-#image-none,
-#image      { grid-area: IMG; }
-#personal   { grid-area: PER; }
-#factors    { grid-area: FAC; }
-#status     { grid-area: STT; }
-#scar       { grid-area: SCR; }
-
 
 /* Image */
 .image-none::after {
@@ -364,7 +363,7 @@ body {
       );
     }
   }
-  @media screen and (min-width:1400px){
+  @media screen and (width >= 1400px){
     &:first-child {
       margin-top: 0;
     }
@@ -530,7 +529,7 @@ body {
   & .emotion2 { border-width: 0 1px;     background-color: var(--box-even-rows-bg-color); }
 }
 
-@media screen and (min-width:736px){
+@media screen and (width > 735px){
   .bigamy {
     display: grid;
     grid-gap: var(--box-v-gap) var(--box-h-gap);
@@ -595,7 +594,7 @@ body {
     & .promise  { border-width: 0; }
   }
 }
-@media screen and (min-width:1400px){
+@media screen and (width >= 1400px){
   .bigamy .partner {
     margin-top: 0;
   }
@@ -614,13 +613,8 @@ body {
 #history {
   margin-top: var(--box-v-gap);
 }
-#history table thead th {
-  &.num    { width:   2em; } /* No. */
-  &.date   { width: 5.2em; } /* 日付 */
-  &.title  { width:  auto; } /* タイトル */
-  &.grow   { width: 4.6em; } /* 成長 */
-  &.gm     { width:  auto; } /* ＧＭ */
-  &.member { width:  auto; } /* 参加者 */
+#history table thead {
+  .grow   { width: 4.6em; } /* 成長 */
 }
 
 

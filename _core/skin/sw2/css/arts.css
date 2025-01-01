@@ -1,6 +1,8 @@
 @charset "utf-8";
 
-@media screen and (max-width:550px){
+@import "icons.css" layer(system);
+
+@media screen and (width <= 550px){
   html {
     font-size: 1.8vw;
   }
@@ -11,7 +13,7 @@
 ---------------------------------------------------------------------------------------------------- */
 body {
   background-image: url(../../_common/img/back-pattern.png), url(../img/back-first.png);
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     background-size: auto, 80%;
   }
 }
@@ -40,7 +42,7 @@ article {
 #area-description > section:first-of-type {
   margin-top: 0;
 }
-@media screen and (min-width:1400px){
+@media screen and (width >= 1400px){
   body.wide {
     grid-template-columns: minmax(0, 1fr) minmax(auto, 1800px) minmax(0, 1fr);
 
@@ -152,6 +154,7 @@ article {
   & dl.addpoint  { grid-area: ADPT; }
   
   & dl.part      { grid-area: PART; }
+  & dl.human-form{ grid-area: HUMF; }
   
   & dl.ccost     { grid-area: CCST; }
   & dl.ccharge   { grid-area: CCHG; }
@@ -278,16 +281,29 @@ article {
   }
 }
 .data-magic.potential {
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   grid-template-areas:
-    "NAME NAME"
-    "PRMS PART"
-    "SMRY SMRY"
-    "EFCT EFCT"
+    "NAME NAME NAME"
+    "PRMS PART HUMF"
+    "SMRY SMRY SMRY"
+    "EFCT EFCT EFCT"
   ;
   > dl {
     grid-template-columns: 5em 1fr;
+
+    &.human-form {
+      grid-template-columns: 6em 1fr;
+    }
   }
+}
+.data-magic.psychokinesis {
+  grid-template-areas:
+  "NAME NAME NAME COST"
+  "PRMS PRMS PRMS PRMS"
+  "TRGT RANG DURA RESI"
+  "SMRY SMRY SMRY ELEM"
+  "EFCT EFCT EFCT EFCT"
+  ;
 }
 .data-magic.seal {
   grid-template-columns: 2fr 1fr;
@@ -355,7 +371,7 @@ article {
   }
 }
 
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   .data-magic { display: block }
   .data-magic dl {
     grid-template-columns: 5.5em 1fr !important;
@@ -373,6 +389,12 @@ article {
   background-color: var(--arts-head-bg-color);
   border-width: 0 1px 0 0;
   border-style: solid;
+}
+.data-magic > dl > dt {
+  min-height: 1.9em;
+  line-height: 1;
+  padding: 2px 0px;
+  text-wrap: balance;
 }
 .data-magic dl.name {
   grid-template-columns: 3.5em 1fr;
@@ -394,7 +416,6 @@ article {
 }
 .data-magic h3.name,
 .data-magic dl.name     dd,
-.data-magic dl.part     dd,
 .data-magic dl.summary  dd,
 .data-magic dl.effect > dd,
 .data-magic.song     dl.pet      dd,
@@ -402,17 +423,24 @@ article {
 .data-magic.lead     dl.condition dd,
 .data-magic.lead     dl.ccost dd,
 .data-magic.geomancy dl.duration dd,
-.data-magic.divination dl.type   dd,
-.data-magic.potential  dl.premise dd {
+.data-magic.divination dl.type   dd {
   display: block;
   padding: .2em .5em;
   text-align: left;
 }
-.data-magic > h3 {
+.data-magic > h3.name {
   border-width: 1px 0 0 1px;
   background: var(--arts-name-bg-color);
   color: #fff;
   font-size: 130%;
+  word-break: keep-all;
+  text-wrap: balance;
+  text-align-last: end;
+  overflow-wrap: break-word;
+  > div {
+    max-width: 100%;
+    width: max-content;
+  }
 }
 .data-magic dl.name {
   & dt {
@@ -423,14 +451,22 @@ article {
   & dd {
     display: flex;
     justify-content: space-between;
-    align-items: end;
+    align-items: center;
     flex-wrap: wrap;
     background: var(--arts-name-bg-color);
     color: #fff;
     font-size: 150%;
+    :is(#god,#school) & {
+      font-size: 130%;
+    }
     font-weight: bold;
+    word-break: keep-all;
+    text-wrap: balance;
+    text-align-last: end;
+    overflow-wrap: break-word;
   }
   & dd small {
+    align-self: end;
     display: block;
     font-size: 55%;
     margin-left: auto;
@@ -461,7 +497,7 @@ article {
   }
 }
 
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   .data-magic dl br {
     display: none;
   }
@@ -534,6 +570,7 @@ div.data dl.effects table {
 
 .item-table {
   margin-top: 1em;
+  
 
   &,
   & th,
@@ -543,24 +580,26 @@ div.data dl.effects table {
     border-color: var(--box-outside-border-color);
     text-align: center;
   }
-  & thead {
+  > thead {
     background-color: var(--arts-head-bg-color);
+    .name       { width: 14.5em; }
+    .reputation { width: 4em; }
+    .category   { width: 10.5em; }
+    .price      { width: 7em; }
   }
-  & thead .name       { width: 14.5em; }
-  & thead .reputation { width: 4em; }
-  & thead .category   { width: 10.5em; }
-  & thead .price      { width: 7em; }
   & tbody td {
     padding: .2em;
   }
   & tbody td.left {
     font-size: 92%;
   }
-  @media screen and (max-width:735px){
-    & thead .name       { width: 10.5em; }
-    & thead .reputation { width: 3.5em; }
-    & thead .category   { width: 8.5em; }
-    & thead .price      { width: 6em; }
+  @media screen and (width <= 735px){
+    > thead {
+      .name       { width: 10.5em; }
+      .reputation { width: 3.5em; }
+      .category   { width: 8.5em; }
+      .price      { width: 6em; }
+    }
   }
 }
 a.failed::before {
@@ -642,7 +681,7 @@ a.failed::before {
   background: var(--bg-color);
   position: relative;
   z-index: 1;
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     width : 30vw;
     height: 30vw;
   }

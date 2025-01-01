@@ -73,12 +73,24 @@ window.addEventListener('DOMContentLoaded', ()=>{
   })
 });
 
+// ルビ ----------------------------------------
+window.addEventListener('load', ()=>{
+  if (rubyCopyMode == 0){
+    document.querySelectorAll('ruby:has(rp:nth-of-type(3):last-child)').forEach(ruby => {
+      console.log(ruby)
+      ruby.querySelector('ruby rp:nth-of-type(1)').textContent = '';
+      ruby.querySelector('ruby rp:nth-of-type(2)').textContent = '(';
+      ruby.querySelector('ruby rp:nth-of-type(3)').textContent = ')';
+    });
+  }
+});
+
 // 保存系 ----------------------------------------
-function getJsonData() {
+function getJsonData(targetEnvironment = '') {
   const paramId = /id=[0-9a-zA-Z\-]+/.exec(location.href)[0];
   return new Promise((resolve, reject)=>{
     let xhr = new XMLHttpRequest();
-    xhr.open('GET', `./?${paramId}&mode=json`, true);
+    xhr.open('GET', `./?${paramId}&mode=json&target=${targetEnvironment}`, true);
     xhr.responseType = "json";
     xhr.onload = (e) => {
       resolve(e.currentTarget.response);
@@ -133,7 +145,7 @@ function copyToClipboard(text) {
 }
 
 async function downloadAsUdonarium() {
-  const characterDataJson = await getJsonData();
+  const characterDataJson = await getJsonData('udonarium');
   const characterId = characterDataJson.characterName || characterDataJson.monsterName || characterDataJson.aka || '無題';
   const image = await output.getPicture(characterDataJson.imageURL || defaultImage, "image."+characterDataJson.image);
   const udonariumXml = output.generateUdonariumXml(generateType, characterDataJson, location.href, image.hash);
@@ -143,7 +155,7 @@ async function downloadAsUdonarium() {
 
 function getCcfoliaJson() {
   return new Promise((resolve, reject)=>{
-    getJsonData().then((characterDataJson)=>{
+    getJsonData('ccfolia').then((characterDataJson)=>{
       output.generateCcfoliaJson(generateType,characterDataJson, location.href).then(resolve, reject);
     }, reject);
   });
@@ -230,9 +242,9 @@ async function downloadAsFullSet(){
   zip.file(name+'.json', await JSZipUtils.getBinaryContent(url+'&mode=json'));
   if(document.getElementById('chatPaletteBox')) zip.file(name+'_チャットパレット.txt', await JSZipUtils.getBinaryContent(url+'&mode=palette'));
   
-  const characterDataJson = await getJsonData();
   // ユドナリウム
   if(document.getElementById('downloadlist-udonarium')){
+    const characterDataJson = await getJsonData('udonarium');
     const image = await output.getPicture(characterDataJson.imageURL || defaultImage, "image."+characterDataJson.image);
     const udonariumXml = output[`generateUdonariumXml`](generateType,characterDataJson, location.href, image.hash);
     const udonariumUrl = await generateUdonariumZipFile((characterDataJson.characterName||characterDataJson.aka), udonariumXml, image);

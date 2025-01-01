@@ -14,7 +14,7 @@ sub createUnitStatus {
   my @unitStatus = (
     { '耐久値' => $pc{endurance} },
     { '作戦力' => $pc{operation} },
-    { '励起値' => 0 },
+    { '励起値' => '0' },
   );
   
   foreach my $key (split ',', $pc{unitStatusNotOutput}){

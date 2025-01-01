@@ -79,8 +79,7 @@ ruby rt {
   transform: translateY(0.2em);
 }
 ruby rp {
-  position: absolute;
-  display: inline;
+  display: inline flow-root;
   font-size: 0;
 }
 .bold {
@@ -517,7 +516,7 @@ header nav ul  {
   align-items: center;
   margin-right: 1rem;
 }
-header nav ul li  {
+header nav ul li {
   position: relative;
   margin: 0;
   width: 6rem;
@@ -555,71 +554,62 @@ header nav ul li  {
   }
 }
 
-header nav ul li.mylist a {
-  transform: rotate(-45deg) scaleX(0.95) translateY(.1rem);
-}
-header nav ul li.current {
-  background: linear-gradient(-45deg, #eff, #bcd);
-  & a {
-    color: #000 !important;
-    text-shadow: 0px 0px 2px #fff, 0px 0px 2px #fff, 0px 0px 2px #fff;
+header nav ul {
+  & li.mylist a {
+    transform: rotate(-45deg) scaleX(0.95) translateY(.1rem);
   }
-}
-header nav ul li:hover {
-  background: linear-gradient(-45deg, #478, #bef);
-  & a {
-    opacity: 1;
+  & li.current {
+    background: linear-gradient(-45deg, #eff, #bcd);
+    & a {
+      color: #000 !important;
+      text-shadow: 0px 0px 2px #fff, 0px 0px 2px #fff, 0px 0px 2px #fff;
+    }
   }
-}
+  & li:hover {
+    background: linear-gradient(-45deg, #478, #bef);
+    & a {
+      opacity: 1;
+    }
+  }
 
-header nav ul li.small  {
-  width: 5rem;
-  height: 5rem;
-  font-size: 1.1rem;
-}
-header nav ul li.very-small {
-  width: 3rem;
-  height: 3rem;
-  font-size: 1.1rem;
-}
-
-header nav ul li.head {
-  width: 5rem;
-  height: 5rem;
-  font-size: 1.4rem;
-  color: #fff;
-  background: #fff;
-  outline-width: 1px;
-  outline-style: solid;
-  cursor: inherit;
-  & b {
-    color: #000;
-    text-shadow: none;
+  & li.small  {
+    width: 5rem;
+    height: 5rem;
+    font-size: 1.1rem;
   }
-  .night & {
-    background: #235;
-    & b { color: #fff;  }
+  & li.very-small {
+    width: 3rem;
+    height: 3rem;
+    font-size: 1.1rem;
   }
-}
-
-header nav ul li {
-  &:nth-last-child(even) { top: 1.8rem; }
-  &:nth-last-child(odd)  { top: 0rem; }
-}
-header nav ul li + li {
-  margin-left: 1.4rem;
-}
-header nav ul li + li.small {
-  margin-left: 1.4rem;
-}
-header nav ul li.small + li.small {
-  margin-left: 1.2rem;
-}
-header nav ul li + li.very-small {
-  margin-left: 0.8rem;
-}
-header nav ul li.small + li.very-small {
-  margin-left: 0.8rem;
+  & li.head {
+    width: 5rem;
+    height: 5rem;
+    font-size: 1.4rem;
+    color: #fff;
+    background: #fff;
+    outline-width: 1px;
+    outline-style: solid;
+    cursor: inherit;
+    & b {
+      color: #000;
+      text-shadow: none;
+    }
+    .night & {
+      background: #235;
+      & b { color: #fff;  }
+    }
+  }
+  
+  & li {
+    &:nth-last-child(even) { top: 1.8rem; }
+    &:nth-last-child(odd)  { top: 0rem; }
+  }
+  & li       + li           { margin-left: 1.4rem; }
+  & li       + li.small     { margin-left: 1.4rem; }
+  & li.small + li.small     { margin-left: 1.2rem; }
+  & li       + li.very-small{ margin-left: 0.8rem; }
+  & li.small + li.very-small{ margin-left: 0.8rem; }
 }
 
 header nav .nightmode-icon::before {
@@ -701,7 +691,7 @@ main nav ul li.current a {
 main nav ul li a:hover {
   background-color: rgba(100,200,255,0.2);
 }
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   main nav  {
     margin-top: 4em;
 

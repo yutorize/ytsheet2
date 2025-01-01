@@ -147,10 +147,7 @@ if($::in{url}){
 }
 
 ### キャラクター名 --------------------------------------------------
-$SHEET->param(characterName => "<ruby>$pc{characterName}<rp>(</rp><rt>$pc{characterNameRuby}</rt><rp>)</rp></ruby>") if $pc{characterNameRuby};
-
-### 二つ名 --------------------------------------------------
-$SHEET->param(aka => "<ruby>$pc{aka}<rp>(</rp><rt>$pc{akaRuby}</rt><rp>)</rp></ruby>") if $pc{akaRuby};
+$SHEET->param(characterName => stylizeCharacterName $pc{characterName});
 
 ### プレイヤー名 --------------------------------------------------
 if($set::playerlist){
@@ -336,7 +333,7 @@ if($pc{forbidden} eq 'all' && $pc{forbiddenMode}){
   $SHEET->param(titleName => '非公開データ');
 }
 else {
-  $SHEET->param(titleName => removeTags nameToPlain($pc{characterName}||"“$pc{aka}”"));
+  $SHEET->param(titleName => removeTags removeRuby($pc{characterName}||"“$pc{aka}”"));
 }
 
 ### OGP --------------------------------------------------

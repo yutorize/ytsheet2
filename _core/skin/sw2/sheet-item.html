@@ -109,6 +109,7 @@
               <th>威力
               <th>C値
               <th>追加D
+              <th class="range">射程
               <th class="note left">備考
             <TMPL_LOOP WeaponData><tr>
               <td><TMPL_VAR USAGE>
@@ -117,20 +118,21 @@
               <td><TMPL_VAR RATE>
               <td><TMPL_VAR CRIT>
               <td><TMPL_VAR DMG>
+              <td class="range"><TMPL_VAR RANGE></td>
               <td class="note left"><TMPL_VAR NOTE></td>
             </TMPL_LOOP>
           </table>
         </TMPL_IF>
         <TMPL_IF ArmourData>
-          <table class="weapon-table">
+          <table class="weapon-table armour-table">
             <tr>
-              <th>用法
+              <th class="usage">用法
               <th>必筋
               <th>回避
               <th>防護
               <th class="note left">備考
             <TMPL_LOOP ArmourData><tr>
-              <td><TMPL_VAR USAGE>
+              <td class="usage"><TMPL_VAR USAGE></td>
               <td><TMPL_VAR REQD>
               <td><TMPL_VAR EVA>
               <td><TMPL_VAR DEF>

@@ -12,14 +12,14 @@ body {
   .night & {
     background-blend-mode: hard-light, hard-light;
   }
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     background-size: auto, 100%;
     background-position: center, bottom 50px right 0px;
   }
 }
 /* // Layout
 ---------------------------------------------------------------------------------------------------- */
-@media screen and (min-width:1400px){
+@media screen and (width >= 1400px){
   body {
     grid-template-columns: minmax(0, 1fr) minmax(auto, 1800px) minmax(0, 1fr);
   }
@@ -117,11 +117,11 @@ h1#character-name:not(:has(ruby)) {
     "MAG MAG MAG"
   ;
   align-items: start;
-  @media screen and (max-width:767px){
+  @media screen and (width <= 767px){
     min-height: 0%;
     grid-gap: .5rem;
   }
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     grid-template-columns: 1.66fr .4fr 1.3fr;
     grid-template-areas:
     "PRF LVL IMG"
@@ -130,15 +130,14 @@ h1#character-name:not(:has(ruby)) {
     "MAG MAG MAG"
     ;
   }
+  #image-none,
+  #image      { grid-area: IMG; }
+  #profile    { grid-area: PRF; }
+  #level      { grid-area: LVL; }
+  #member     { grid-area: MEM; }
+  #attribute  { grid-area: STT; }
+  #magi       { grid-area: MAG; }
 }
-#image-none,
-#image      { grid-area: IMG; }
-#profile    { grid-area: PRF; }
-#level      { grid-area: LVL; }
-#member     { grid-area: MEM; }
-#attribute  { grid-area: STT; }
-#magi       { grid-area: MAG; }
-
 
 #area-status dd:empty::before,
 #area-status td:empty::before {
@@ -158,7 +157,7 @@ h1#character-name:not(:has(ruby)) {
   letter-spacing: -.2rem;
   transform: scale(1, 1.1);
 }
-@container (max-width: 320px) {
+@container (width <= 320px) {
   .image, .image-none {
     max-height: auto;
   }
@@ -166,7 +165,7 @@ h1#character-name:not(:has(ruby)) {
     font-size: 4.8rem;
   }
 }
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   .image-none::after {
     font-size: 3.5rem;
   }
@@ -188,8 +187,12 @@ h1#character-name:not(:has(ruby)) {
     border-left-width: 1px;
     border-left-style: solid;
   }
+  & dd {
+    word-break: auto-phrase;
+    overflow-wrap: break-word;
+  }
 }
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   #profile {
     display: block;
   }
@@ -297,23 +300,20 @@ h1#character-name:not(:has(ruby)) {
 #magi > table {
   margin-top: -1em;
   table-layout: fixed;
-  & colgroup col {
-    &.name   { width: 9.2em; }
-    &.timing { width: 7.2em; }
-    &.target { width: 7.2em; }
-    &.cond   { width: 7.2em; }
+  & colgroup {
+    .name   { width: 9.2em; }
+    .timing { width: 7.2em; }
+    .target { width: 7.2em; }
+    .cond   { width: 7.2em; }
   }
   
-  & tbody td {
-    &.name   { font-weight: bold; }
-    &.timing {  }
-    &.target { font-size: 90%; }
-    &.cond   { font-size: 90%; }
-    &.note.left {
-      padding-left: .3em;
-      font-size: 90%;
-    }
-    &:empty::before {
+  & tbody {
+    .name   { font-weight: bold; }
+    .timing {  }
+    .target { font-size: 90%; }
+    .cond   { font-size: 90%; }
+    .note   { font-size: 90%; }
+    :empty::before {
       content: "　";
     }
   }
@@ -324,7 +324,7 @@ h1#character-name:not(:has(ruby)) {
 #free-history{
   margin-top: var(--box-v-gap);
 }
-@media screen and (min-width:1400px){
+@media screen and (width >= 1400px){
   #free-note {
     margin-top: 0;
   }
@@ -336,13 +336,8 @@ h1#character-name:not(:has(ruby)) {
 #history {
   margin-top: var(--box-v-gap);
 }
-#history table thead th {
-  &:nth-child(1) { width:   2em; } /* No. */
-  &:nth-child(2) { width: 5.2em; } /* 日付 */
-  &:nth-child(3) { width:  auto; } /* タイトル */
-  &:nth-child(4) { width: 4.6em; } /* 成長 */
-  &:nth-child(5) { width:  auto; } /* ＧＭ */
-  &:nth-child(6) { width:  auto; } /* 参加者 */
+#history table thead {
+  .grow   { width: 4.6em; } /* 成長 */
 }
 
 

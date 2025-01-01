@@ -200,11 +200,11 @@
             </thead>
             <tbody>
               <tr id="skill1">
-                <td><TMPL_VAR speciality1Name>
-                <td><TMPL_VAR speciality1Note>
+                <td class="name"><TMPL_VAR speciality1Name>
+                <td class="note"><TMPL_VAR speciality1Note>
               <tr id="skill2">
-                <td><TMPL_VAR speciality2Name>
-                <td><TMPL_VAR speciality2Note>
+                <td class="name"><TMPL_VAR speciality2Name>
+                <td class="note"><TMPL_VAR speciality2Note>
               </tr>
             </tbody>
           </table>
@@ -218,9 +218,9 @@
             </thead>
             <tbody>
               <TMPL_LOOP Goods><tr>
-                <td><TMPL_VAR NAME>
-                <td><TMPL_VAR TYPE>
-                <td><TMPL_VAR NOTE>
+                <td class="name"><TMPL_VAR NAME>
+                <td class="type"><TMPL_VAR TYPE>
+                <td class="note"><TMPL_VAR NOTE>
               </TMPL_LOOP>
             </tbody>
           </table>
@@ -257,8 +257,6 @@
               <th>魔防値
               <th>行動値
               <th>耐久値
-              <th>
-              <th>
             </tr>
           <tbody>
             <tr>
@@ -346,10 +344,10 @@
           </thead>
           <tbody>
             <TMPL_LOOP Items><tr>
-              <td><TMPL_VAR NAME>
-              <td><TMPL_VAR TYPE>
-              <td><TMPL_VAR LV>
-              <td><TMPL_VAR NOTE>
+              <td class="name"><TMPL_VAR NAME>
+              <td class="type"><TMPL_VAR TYPE>
+              <td class="lv  "><TMPL_VAR LV>
+              <td class="note"><TMPL_VAR NOTE>
             </TMPL_LOOP>
           </tbody>
         </table>

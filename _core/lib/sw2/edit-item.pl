@@ -32,6 +32,8 @@ if($mode eq 'edit' || ($mode eq 'convert' && $pc{ver})){
   %pc = data_update_item(\%pc);
 }
 
+%pc = applyCustomizedInitialValues(\%pc, 'i') if $mode eq 'blanksheet';
+
 $pc{weaponNum} ||= 1;
 $pc{armourNum} ||= 1;
 
@@ -173,10 +175,10 @@ HTML
       <label>@{[ input 'magic', 'checkbox' ]}<span>魔法のアイテム</span></label>
       <!-- <label>@{[ input 'school', 'checkbox' ]}　流派装備</label> -->
       <hr>
-      <dl><dt>基本取引価格<dd>@{[ input 'price' ]}G</dl>
+      <dl><dt>基本取引価格<dd>@{[ input 'price','','','list="list-item-price"' ]}G</dl>
       <dl><dt>知名度  <dd>@{[ input 'reputation', 'text','','pattern="^[0-9\/／]+$"' ]} 数字と／のみ入力可</dl>
       <dl><dt>形状    <dd>@{[ input 'shape' ]}</dl>
-      <dl><dt>カテゴリ<dd>@{[ input 'category','text','','list="list-category"' ]}
+      <dl><dt>カテゴリ<dd>@{[ input 'category','text','checkCategory','list="list-category"' ]}
         複数カテゴリの場合、スペースで区切ってください。</dl>
       <dl><dt>製作時期<dd>@{[ input 'age','text','','list="list-age"' ]}</dl>
       <dl><dt>概要    <dd>@{[ input 'summary' ]}</dl>
@@ -187,7 +189,7 @@ HTML
       <h4 class="in-toc">武器データ</h4>
       <table class="input-arms-data" id="weapons-table">
         <thead>
-          <tr><th><th>用法<th>必筋<th>命中<th>威力<th>C値<th>追加D<th>備考
+          <tr><th><th>用法<th>必筋<th>命中<th>威力<th>C値<th>追加D<th class="range">射程<th>備考
         <tbody>
 HTML
 foreach my $num ('TMPL', 1 .. $pc{weaponNum}){
@@ -200,6 +202,7 @@ foreach my $num ('TMPL', 1 .. $pc{weaponNum}){
             <td>@{[ input "weapon${num}Rate" ]}
             <td>@{[ input "weapon${num}Crit" ]}
             <td>@{[ input "weapon${num}Dmg" ]}
+            <td class="range">@{[ input "weapon${num}Range",'','','list="list-weapon-range"' ]}
             <td>@{[ input "weapon${num}Note" ]}
           @{[ $num eq 'TMPL' ? "</template>" : '' ]}
 HTML
@@ -266,6 +269,10 @@ print <<"HTML";
   <datalist id="list-item-name">
     <option value="〈〉">
   </datalist>
+  <datalist id="list-item-price">
+    <option value="（非売品）">
+    <option value="取引不能">
+  </datalist>
   <datalist id="list-weapon-usage">
     <option value="1H">
     <option value="1H#">
@@ -277,6 +284,14 @@ print <<"HTML";
     <option value="2H#">
     <option value="振2H">
     <option value="突2H">
+  </datalist>
+  <datalist id="list-weapon-range">
+    <option value="1(10m)">
+    <option value="2(20m)">
+    <option value="2(30m)">
+    <option value="2(40m)">
+    <option value="2(50m)">
+    <option value="2(60m)">
   </datalist>
   <datalist id="list-armour-usage">
     <option value="1H">
@@ -324,6 +339,7 @@ print <<"HTML";
     <option value="特殊楽器">
     <option value="冒険道具類">
     <option value="冒険道具類（消耗品）">
+    <option value="武器や防具の強化">
   </datalist>
   <script>
 @{[ &commonJSVariable ]}

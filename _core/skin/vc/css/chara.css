@@ -10,14 +10,14 @@ body {
   .night & {
     background-blend-mode: hard-light, normal;
   }
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     background-size: auto, 100%;
     background-position-x: 0, 15vw;
   }
 }
 /* // Layout
 ---------------------------------------------------------------------------------------------------- */
-@media screen and (min-width:1400px){
+@media screen and (width >= 1400px){
   body {
     grid-template-columns: minmax(0, 1fr) minmax(auto, 1800px) minmax(0, 1fr);
   }
@@ -92,10 +92,10 @@ body {
   "SPC  SPC IMG"
   "GDS  GDS IMG"
   ;
-  @media screen and (max-width:767px){
+  @media screen and (width <= 767px){
     grid-gap: .5rem;
   }
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     display: grid;
     grid-gap: .5rem;
     grid-template-areas:
@@ -146,7 +146,7 @@ body {
   > dl#style dd > span + span::before {
     content: "／";
   }
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     > dl#style dd > span {
       display: block;
     }
@@ -237,7 +237,7 @@ body {
     border-top-style: solid;
   }
 }
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   #status {
     grid-template-columns: 1fr;
   }
@@ -264,7 +264,7 @@ body {
     &:nth-child(1) { width: 8.5em; }
     &:nth-child(2) { width: auto; padding-left: .2em; }
   }
-  & tbody td:nth-child(2) { font-size: 92%; text-align: left; padding-left: .2em; }
+  & tbody td.note { font-size: 92%; }
 }
 
 /* // Area-Goods
@@ -280,8 +280,8 @@ body {
     &:nth-child(3) { width: auto; padding-left: .2em; }
   }
   & tbody td {
-    &:nth-child(2) { font-size: 87%; }
-    &:nth-child(3) { font-size: 92%; text-align: left; padding-left: .2em; }
+    &.type { font-size: 87%; }
+    &.note { font-size: 92%; }
   }
 }
 
@@ -300,8 +300,8 @@ body {
     &:nth-child(4) { width: auto; padding-left: .2em; }
   }
   & tbody td {
-    &:nth-child(2) { font-size: 87%; }
-    &:nth-child(4) { font-size: 92%; text-align: left; padding-left: .2em; }
+    &.type { font-size: 87%; }
+    &.note { font-size: 92%; }
   }
 }
 
@@ -312,10 +312,10 @@ body {
 }
 #battle table {
   margin-top: -1em;
-  & colgroup col {
-    &.head { width:4.5em; }
-    &.name { width: 14em; }
-    &      { width: auto; }
+  & colgroup {
+    &     { width: auto; }
+    .head { width:4.5em; }
+    .name { width: 14em; }
   }
   & th.right {
     padding-right: .2em;
@@ -342,10 +342,10 @@ body {
   border-color: var(--box-inside-border-color);
   pointer-events: none;
 }
-@media screen and (min-width:1400px){
+@media screen and (width >= 1400px){
   #battle { margin-top: 0; }
 }
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   #battle th { font-size: 92%; }
 }
 
@@ -363,16 +363,8 @@ body {
   margin-top: var(--box-v-gap);
 }
 #history table {
-  & thead th {
-    &.num    { width:   2em; } /* No. */
-    &.date   { width: 5.2em; } /* 日付 */
-    &.title  { width:  auto; } /* タイトル */
-    &.result { width: 4.6em; } /* 戦果点 */
-    &.gm     { width:  auto; } /* ＧＭ */
-    &.member { width:  auto; } /* 参加者 */
-  }
-  & tr td:is(.gm, .member) {
-    font-size: 1.1rem;
+  & thead {
+    .result { width: 4.6em; } /* 戦果点 */
   }
 }
 

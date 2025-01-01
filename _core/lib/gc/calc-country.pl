@@ -3,7 +3,6 @@ use strict;
 #use warnings;
 use utf8;
 
-require $set::data_races;
 require $set::data_class;
 
 sub data_calc {

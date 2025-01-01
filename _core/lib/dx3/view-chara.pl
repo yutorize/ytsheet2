@@ -99,6 +99,12 @@ if($pc{forbidden} && !$pc{yourAuthor}){
   $pc{dashTotal}       = noiseText(1,2);
   $pc{stockTotal}      = noiseText(1,2);
   $pc{savingTotal}     = noiseText(1,2);
+  $pc{maxHpAdd}      = '';
+  $pc{initiativeAdd} = '';
+  $pc{moveAdd}       = '';
+  $pc{dashAdd}       = '';
+  $pc{stockAdd}      = '';
+  $pc{savingAdd}     = '';
   
   foreach my $name ('Melee','Ranged','RC','Negotiate','Dodge','Percept','Will','Procure'){
     $pc{'skillTotal'.$name} = noiseText(1);
@@ -160,7 +166,7 @@ if($pc{forbidden} && !$pc{yourAuthor}){
       $pc{'combo'.$_.'Fixed'.$i} = '';
     }
   }
-  $pc{weaponNum} = $pc{armorNum} = $pc{itemNum} = $pc{magicNum} = $pc{historyNum} = 0;
+  $pc{weaponNum} = $pc{armorNum} = $pc{itemNum} = $pc{vehicleNum} = $pc{magicNum} = $pc{historyNum} = 0;
   $pc{history0Exp} = noiseText(1,3);
   
   $pc{playerName} = $author;
@@ -210,10 +216,8 @@ if($::in{url}){
 }
 
 ### キャラクター名 --------------------------------------------------
-$SHEET->param(characterName => "<ruby>$pc{characterName}<rp>(</rp><rt>$pc{characterNameRuby}</rt><rp>)</rp></ruby>") if $pc{characterNameRuby};
-
-### 二つ名 --------------------------------------------------
-$SHEET->param(aka => "<ruby>$pc{aka}<rp>(</rp><rt>$pc{akaRuby}</rt><rp>)</rp></ruby>") if $pc{akaRuby};
+$SHEET->param(characterName => stylizeCharacterName $pc{characterName},$pc{characterNameRuby});
+$SHEET->param(aka => stylizeCharacterName $pc{aka},$pc{akaRuby});
 
 ### プレイヤー名 --------------------------------------------------
 if($set::playerlist){
@@ -617,7 +621,7 @@ if($pc{forbidden} eq 'all' && $pc{forbiddenMode}){
   $SHEET->param(titleName => '非公開データ');
 }
 else {
-  $SHEET->param(titleName => removeTags nameToPlain($pc{characterName}||"“$pc{aka}”"));
+  $SHEET->param(titleName => removeTags removeRuby($pc{characterName}||"“$pc{aka}”"));
 }
 
 ### 種族名 --------------------------------------------------
