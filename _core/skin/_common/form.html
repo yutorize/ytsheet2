@@ -175,7 +175,7 @@
       <section class="form">
         <h2><span class="material-symbols-outlined bold">edit_note</span>コンバート作成</h2>
         <h3>URLから</h3>
-        <form method="get" action="./">
+        <form method="get" action="./" id="form-to-import-from-url">
           <input type="hidden" name="mode" value="convert">
           <p>
             入力したURLのデータを元にゆとシートⅡで新規作成します。<br>
@@ -191,6 +191,14 @@
             <input type="file" name="file" style="width:50%;" accept=".json,.txt" required><input type="submit" value="作成">
           </p>
         </form>
+        <hr>
+        <h3>クリップボードから</h3>
+        <div class="form">
+          <p>
+            クリップボードからURL/JSONを読み取り、ゆとシートⅡで新規作成します。<br>
+            <button class="submit" id="button-to-import-from-clipboard" disabled>作成</button>
+          </p>
+        </div>
       </section>
       <section class="form">
         <h2><span class="material-symbols-outlined bold">visibility</span>コンバートビュー</h2>
