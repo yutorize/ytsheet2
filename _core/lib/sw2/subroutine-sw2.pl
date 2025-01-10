@@ -158,6 +158,19 @@ sub checkArtsName {
   return $text, $mark;
 }
 
+### 特技カテゴリ取得 --------------------------------------------------
+sub getFeatCategoryByName {
+  my $featName = shift;
+
+  foreach (@data::combat_feats) {
+    my @feat = @{$_};
+    (my $category, my $requiredLevel, my $name) = @feat;
+    return $category if $name eq $featName;
+  }
+
+  return '';
+}
+
 ### 妖精魔法ランク --------------------------------------------------
 sub fairyRank {
   my $lv = shift;
