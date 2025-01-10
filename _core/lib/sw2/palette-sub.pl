@@ -229,7 +229,7 @@ sub palettePreset {
     # 宣言特技
     require $set::data_feats;
     my @declarationFeats = ();
-    foreach ('1+', @set::feats_lv) {
+    foreach ('1bat', @set::feats_lv) {
       my $level = $_;
       last if $level ne '1+' && $level > $::pc{level};
       my $featName = $::pc{"combatFeatsLv${level}"};
