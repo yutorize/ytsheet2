@@ -234,7 +234,7 @@ sub palettePreset {
       last if $level ne '1+' && $level > $::pc{level};
       my $featName = $::pc{"combatFeatsLv${level}"};
       next unless $featName;
-      my $category = data::getFeatCategoryByName($featName);
+      my $category = getFeatCategoryByName($featName);
       next if $category !~ /宣/;
       my $marks = '[宣]';
       $marks .= '[準]' if $category =~ /準/;
