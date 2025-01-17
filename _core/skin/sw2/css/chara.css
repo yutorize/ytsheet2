@@ -1023,6 +1023,90 @@ dl#level {
   }
 }
 
+/* 魔晶石 */
+#mana-gems {
+  table {
+    .point {
+      width: 3em;
+    }
+
+    td.total {
+      display: grid;
+      grid-template-columns: max-content 1fr max-content;
+      padding: 0 0.25em;
+      text-wrap: nowrap;
+      word-break: keep-all;
+      white-space: nowrap;
+
+      &:has(.value.zero) {
+        color: gray;
+        opacity: 0.8;
+      }
+
+      &:has(.value.minus) {
+        color: #e70;
+      }
+
+      .value {
+        display: inline-block;
+        text-wrap: nowrap;
+        word-break: keep-all;
+        white-space: nowrap;
+        text-align: right;
+      }
+
+      .unit {
+        display: flex;
+        flex-flow: row;
+        align-items: flex-end;
+        font-size: smaller;
+        font-style: normal;
+      }
+    }
+  }
+
+  #clearing-off-mana-gems-offset {
+    margin: 0.25em;
+
+    &[disabled] {
+      pointer-events: none;
+      opacity: 0.5;
+    }
+  }
+
+  dl {
+    display: grid;
+    grid-template-columns: repeat(2, max-content max-content 1fr);
+    padding: 0 0.5em;
+
+    .point {
+      text-align: right;
+    }
+
+    .total {
+      i {
+        font-style: normal;
+      }
+
+      text-align: right;
+      padding-left: 0.5em;
+
+      .mark {
+        float: left;
+      }
+
+      .value {
+        display: inline-block;
+        text-align: right;
+      }
+
+      .unit {
+        font-size: smaller;
+      }
+    }
+  }
+}
+
 /* MaterialCard */
 #material-cards table {
   & tr > * {

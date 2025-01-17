@@ -979,6 +979,45 @@ if(exists $data::races{$pc{race}}{parts}){
   $SHEET->param(Parts => \@row);
 }
 
+### 魔晶石 --------------------------------------------------
+my @manaGems = ();
+{
+  my $lastColumn = 0;
+  my $row;
+
+  foreach my $point (1 .. 20) {
+    my $key = $point < 10 ? ('0' . $point) : $point;
+
+    my $quantity = $pc{"manaGem${key}Quantity"} // 0;
+    my $offset = $pc{"manaGem${key}Offset"} // 0;
+
+    my $total = $quantity + $offset;
+    next if $total == 0;
+
+    my $startColumn = $point < 10 ? 1 : 4;
+
+    if ($startColumn > $lastColumn) {
+      $row = 1;
+      $lastColumn = $startColumn;
+    }
+    else {
+      $row++;
+    }
+
+    push(
+        @manaGems,
+        {
+            POINT        => $point,
+            TOTAL        => commify($total),
+            ROW          => $row,
+            POINT_COLUMN => $startColumn,
+            TOTAL_COLUMN => $startColumn + 1,
+        }
+    );
+  }
+}
+$SHEET->param(ManaGems => \@manaGems);
+
 ### 履歴 --------------------------------------------------
 
 $pc{history0Grow} .= '器用'.$pc{sttPreGrowA} if $pc{sttPreGrowA};
