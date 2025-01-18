@@ -89,6 +89,7 @@ window.onload = function() {
   calcHonor();
   calcDishonor();
   calcCommonClass();
+  calcManaGems();
   checkEffectAll();
   setupBracketInputCompletion();
   
@@ -2502,6 +2503,85 @@ function addPart(){
 function delPart(){
   delRow('partNum', '#parts tbody tr:last-of-type');
   calcParts();
+}
+// 魔晶石 ----------------------------------------
+function calcManaGems() {
+  for (let point = 1; point <= 20; point++) {
+    calcManaGem(point);
+  }
+}
+/**
+ * @param {int} point
+ */
+function calcManaGem(point) {
+  const tr = document.querySelector(`#mana-gems table tr[data-point="${point}"]`);
+
+  const quantity = parseInt(tr.querySelector('.quantity input').value);
+  const offset = parseInt(tr.querySelector('.offset input').value);
+
+  const total = (isNaN(quantity) ? 0 : quantity) + (isNaN(offset) ? 0 : offset);
+
+  const valueElement = tr.querySelector('.total .value');
+  valueElement.textContent = commify(total);
+  valueElement.classList.toggle('zero', total === 0);
+  valueElement.classList.toggle('minus', total < 0);
+
+  switchManaGemClearingOffButton();
+}
+function switchManaGemClearingOffButton() {
+  let hasOffset = false;
+
+  for (let point = 1; point <= 20; point++) {
+    const offset = parseInt(document.querySelector(`#mana-gems table tr[data-point="${point}"] .offset input`).value);
+
+    if (!isNaN(offset) && offset !== 0) {
+      hasOffset = true;
+      break;
+    }
+  }
+
+  document.getElementById('clearing-off-mana-gems-offset').disabled = !hasOffset;
+}
+function clearOffManaGemsOffset() {
+  /** @var {Array<Function>} */
+  const clearingFunctions = [];
+
+  for (let point = 1; point <= 20; point++) {
+    const tr = document.querySelector(`#mana-gems table tr[data-point="${point}"]`);
+
+    const quantityInput = tr.querySelector('.quantity input');
+    const offsetInput = tr.querySelector('.offset input');
+
+    const offset = parseInt(offsetInput.value);
+
+    if (isNaN(offset) || offset === 0) {
+      continue;
+    }
+
+    const quantity = quantityInput.value !== '' ? parseInt(quantityInput.value) : 0;
+    const clearedQuantity = quantity + offset;
+
+    if (clearedQuantity < 0) {
+      alert(`魔晶石（${point}点）の減少量が元の所持数より大きいため清算できません。`);
+      return;
+    }
+
+    clearingFunctions.push(((quantityInput, offsetInput, clearedQuantity) => {
+      return () => {
+        quantityInput.value = clearedQuantity.toString();
+        offsetInput.value = '';
+
+        for (const input of [quantityInput, quantityInput]) {
+          input.dispatchEvent(new Event('input'));
+          input.dispatchEvent(new Event('change'));
+        }
+      };
+    })(quantityInput, offsetInput, clearedQuantity));
+  }
+
+  clearingFunctions.forEach(x => x.call());
+
+  switchManaGemClearingOffButton();
 }
 // 名誉アイテム欄 ----------------------------------------
 // 追加
