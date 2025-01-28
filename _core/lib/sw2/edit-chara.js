@@ -1826,24 +1826,32 @@ function calcHonor(){
     form['honorItem'+i+'Pt'].classList.toggle('mark', (point && point <= free));
   }
   // 流派
-  let mysticArtsPt = 0;
+  let mysticArtsPt = null;
   for (let i = 1; i <= form.mysticArtsNum.value; i++){
+    if ((form[`mysticArts${i}`].value ?? '') === '') {
+      continue;
+    }
     let point = safeEval(form['mysticArts'+i+'Pt'].value) || 0;
+    mysticArtsPt ??= 0;
     mysticArtsPt += point;
     form['mysticArts'+i+'Pt'].classList.toggle('mark', (point && point <= free));
   }
   for (let i = 1; i <= form.mysticMagicNum.value; i++){
+    if ((form[`mysticMagic${i}`].value ?? '') === '') {
+      continue;
+    }
     let point = safeEval(form['mysticMagic'+i+'Pt'].value) || 0;
+    mysticArtsPt ??= 0;
     mysticArtsPt += point;
     form['mysticMagic'+i+'Pt'].classList.toggle('mark', (point && point <= free));
   }
-  pointTotal -= mysticArtsPt;
+  pointTotal -= mysticArtsPt ?? 0;
   //
   pointTotal -= Number(form.honorOffset.value) + Number(form.honorOffsetBarbaros.value);
   document.getElementById("honor-value"   ).textContent = pointTotal;
   document.getElementById("honor-value-MA").textContent = pointTotal;
   document.getElementById("mystic-arts-honor-value").textContent = mysticArtsPt;
-  document.getElementById('honor-items-mystic-arts').style.display = mysticArtsPt ? '' : 'none';
+  document.getElementById('honor-items-mystic-arts').style.display = mysticArtsPt != null ? '' : 'none';
 }
 // 不名誉点計算
 function calcDishonor(){
