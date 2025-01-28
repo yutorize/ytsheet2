@@ -343,6 +343,7 @@ my $mysticarts_honor = $mysticarts_honor{human}
                      .($mysticarts_honor{dragon}  ?"<br><small>竜</small>$mysticarts_honor{dragon}"  :'');
 $SHEET->param(MysticArts => \@mystic_arts);
 $SHEET->param(MysticArtsHonor => $mysticarts_honor);
+$SHEET->param(DisplayArtsHonor => @mystic_arts ? 1 : 0);
 
 ### 秘奥魔法 --------------------------------------------------
 my %gramarye_ruby;
