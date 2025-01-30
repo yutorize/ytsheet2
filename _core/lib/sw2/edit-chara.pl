@@ -1349,6 +1349,33 @@ print <<"HTML";
           </div>
         </div>
         <div id="area-items-R">
+          <details class="box" id="mana-gems" @{[ (grep { my $key = $_ < 10 ? ('0' . $_) : $_; $pc{"manaGem${key}Quantity"} || $pc{"manaGem${key}Offset"} } (1 .. 20)) ? 'open' : '' ]}>
+            <summary class="in-toc">魔晶石</summary>
+            <table class="edit-table no-border-cells">
+              <thead>
+                <th class="point">点数
+                <th class="quantity">所持数
+                <th class="offset">一時的増減
+                <th class="total">
+              </thead>
+              <tbody>
+HTML
+foreach my $point (1 .. 20) {
+  my $key = $point < 10 ? ('0' . $point) : $point;
+  print <<"HTML";
+                <tr data-point="${point}">
+                  <th class="point">${point}点
+                  <td class="quantity">@{[input "manaGem${key}Quantity",'number',"calcManaGem(${point})",'min="0"']}
+                  <td class="offset">@{[input "manaGem${key}Offset",'number',"calcManaGem(${point})"]}
+                  <td class="total">=<span class="value"></span><i class="unit">個</i>
+                </tr>
+HTML
+}
+print <<"HTML";
+              </tbody>
+            </table>
+            <button type="button" id="clearing-off-mana-gems-offset" onclick="clearOffManaGemsOffset();" disabled>一時的増減を清算する</button>
+          </details>
           <div class="box" id="material-cards"@{[ display $pc{lvAlc} ]}>
             <h2 class="in-toc">マテリアルカード</h2>
             <table class="edit-table no-border-cells" >
