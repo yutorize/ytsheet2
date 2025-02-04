@@ -203,6 +203,14 @@ sub palettePreset {
       next if !$data::class{$class}{package} || !$::pc{'lv'.$c_id};
       my %data = %{$data::class{$class}{package}};
       foreach my $p_id (sort{$data{$a}{stt} cmp $data{$b}{stt} || $data{$a} cmp $data{$b}} keys %data){
+        if ($data{$p_id}{unlockCraft}) {
+          my $craftEName = $data::class{$class}{craft}{eName};
+          my $craftNum = $::pc{"lv${c_id}"} + ($::pc{"${craftEName}Addition"} // 0);
+
+          # 条件となる技芸を習得していなければ出力しない.
+          next unless grep { $::pc{"craft@{[ucfirst($craftEName)]}${_}"} eq $data{$p_id}{unlockCraft} } (1 .. $craftNum);
+        }
+
         my $name = $class.$data{$p_id}{name};
         $text .= "2d+{$name} $name\n";
         if($data{$p_id}{monsterLore} && $::pc{monsterLoreAdd}){ $text .= "2d+{$name}+$::pc{monsterLoreAdd} 魔物知識\n"; }
