@@ -322,6 +322,8 @@ foreach my $num (1..$pc{schoolArtsNum}){
   next if !($pc{'schoolArts'.$num.'Name'});
   my $icon;
   if($pc{'schoolArts'.$num.'ActionTypeSetup'}){ $icon .= '<i class="s-icon setup">△</i>' }
+  $pc{'schoolArts'.$num.'Premise'} =~ s#(《.+?》)、?#<span>$1</span>#g;
+  $pc{'schoolArts'.$num.'Premise'} =~ s#(</span>)(<span>)#$1<wbr>$2#g;
   $pc{'schoolArts'.$num.'Effect'} =~ s#<h2>(.+?)</h2>#</dd><dt><span class="center">$1</span></dt><dd class="box">#gi;
   push(@arts, {
     "NAME"     => stylizeCharacterName($pc{'schoolArts'.$num.'Name'}),

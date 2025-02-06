@@ -352,6 +352,16 @@ article {
     grid-template-columns: 4.2em 1fr;
   }
 }
+.data-magic.data-arts dl.premise dd {
+  > .content {
+    width: 100%;
+    height: max-content;
+
+    > span {
+      word-break: keep-all;
+    }
+  }
+}
 #mystic-arts dl.cost dt > span,
 #mystic-arts dl.a-cost dt > span {
   display: inline-block;
