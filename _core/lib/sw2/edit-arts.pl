@@ -348,7 +348,7 @@ HTML
 foreach my $set_url (split ',',$pc{schoolItemList}){
   require $set::lib_convert;
   my %item = getItemData($set_url);
-  $item{category} =~ s/\s/<hr>/;
+  $item{category} =~ s/\s/<hr>/g;
   print "<tr>";
   if(exists $item{itemName}) {
     print "<td><a href=\"${set_url}\" target='_blank'>".unescapeTags($item{itemName})."</a>";
