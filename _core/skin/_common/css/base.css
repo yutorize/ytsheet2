@@ -205,7 +205,8 @@ main p a {
 
 input,
 textarea,
-select {
+select,
+button.submit {
   padding: 5px;
   border-width: 1px;
   border-style: solid;
@@ -216,7 +217,8 @@ select {
     border-color: #445;
   }
 }
-input[type="submit"] {
+input[type="submit"],
+button.submit {
   cursor: pointer;
   color: #000;
   background: linear-gradient(to bottom, #f0f7ff, #c0c7cf);
