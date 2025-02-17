@@ -292,10 +292,15 @@ sub data_calc {
   }
   ### 装備品の備考 --------------------------------------------------
   my %equipModTotal = {};
+  my %equipModStatusIncrement = {};
   foreach (@{extractModifications(\%pc)}) {
     my %mod = %{$_};
     foreach ('A'..'F'){
       $pc{'sttEquip'.$_} += $mod{$_} // 0;
+
+      # 増強
+      $equipModStatusIncrement{$_} //= 0;
+      $equipModStatusIncrement{$_} = max($equipModStatusIncrement{$_}, $mod{"${_}:increment"} // 0);
     }
     foreach ('vResist','mResist','eva','def','mobility'){
       $equipModTotal{$_} += $mod{$_} // 0;
@@ -304,6 +309,10 @@ sub data_calc {
       $pc{$_.'Equip'} += $mod{$_} // 0;
     }
     $pc{reqdStrWeaponMod} += $mod{reqdWeapon} // 0;
+  }
+
+  foreach ('A' .. 'F') {
+    $pc{"sttEquip${_}"} += $equipModStatusIncrement{$_};
   }
 
   ### 能力値計算 --------------------------------------------------
