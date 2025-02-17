@@ -1015,6 +1015,16 @@ dl#level {
   }
   > dd {
     grid-row: 2;
+
+    &:has(.value:empty) {
+      .unit {
+        display: none;
+      }
+
+      &::after {
+        content: "―";
+      }
+    }
   }
   > *:last-of-type {
     border-left-width: 1px;
