@@ -369,7 +369,7 @@
           <h2><TMPL_VAR MagicPowerHeader></h2>
           <table class="data-table">
             <thead>
-              <tr><th><th><th><TMPL_VAR MagicPowerThPow><th class="small"><TMPL_VAR MagicPowerThAct><br>基準値<th class="small">ダメージ<br>上昇効果<th>専用
+              <tr><th><th><th><TMPL_VAR MagicPowerThPow><th class="small"><TMPL_VAR MagicPowerThAct><br>基準値<th class="small">ダメージ<br>上昇効果<th class="own">専用
             </thead>
             <TMPL_LOOP MagicPowers><tr>
               <td><TMPL_VAR NAME>
@@ -377,7 +377,7 @@
               <td class="num"><TMPL_VAR POWER>
               <td class="num"><TMPL_VAR CAST>
               <td class="num"><TMPL_VAR DAMAGE>
-              <td><TMPL_VAR OWN>
+              <td class="own"><TMPL_VAR OWN></td>
             </TMPL_LOOP>
           </table>
         </section>
