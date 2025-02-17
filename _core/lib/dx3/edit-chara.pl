@@ -1325,7 +1325,7 @@ print <<"HTML";
     <option value="〈情報:裏社会〉">
     <option value="〈情報:警察〉">
     <option value="〈情報:軍事〉">
-    <option value="〈情報:学問">
+    <option value="〈情報:学問〉">
     <option value="〈情報:ウェブ〉">
     <option value="〈情報:メディア〉">
     <option value="〈情報:ビジネス〉">
