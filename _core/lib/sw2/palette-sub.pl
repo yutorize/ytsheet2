@@ -417,6 +417,54 @@ sub palettePreset {
         last;
       }
     }
+
+    # オプションの組み合わせの解決
+    {
+      my @fieldNames = ('Acc', 'Crit', 'Dmg', 'Roll');
+      my %options = ();
+
+      foreach my $paNum (1 .. $::pc{paletteAttackNum}) {
+        my $paName = $::pc{"paletteAttack${paNum}Name"};
+        next if $paName eq '';
+        next if $paName =~ /[|｜]/;
+        next unless grep { $::pc{"paletteAttack${paNum}${_}"} } @fieldNames;
+
+        my %option = ();
+        foreach my $fieldName (@fieldNames) {
+          next unless $::pc{"paletteAttack${paNum}${fieldName}"};
+          $option{$fieldName} = $::pc{"paletteAttack${paNum}${fieldName}"};
+        }
+
+        $options{$paName} = \%option;
+      }
+
+      foreach my $paNum (1 .. $::pc{paletteAttackNum}) {
+        my $paName = $::pc{"paletteAttack${paNum}Name"};
+        next if $paName eq '';
+        next unless $paName =~ /[|｜]/;
+        next if grep { $::pc{"paletteAttack${paNum}${_}"} } @fieldNames;
+
+        my %option = ();
+        $option{$_} = [] foreach @fieldNames;
+
+        foreach my $referenceName (split(/\s*[|｜]\s*/, $paName)) {
+          next unless $options{$referenceName};
+          my %referredOption = %{$options{$referenceName}};
+
+          foreach my $fieldName (keys %referredOption) {
+            my @list = @{$option{$fieldName}};
+            push(@list, $referredOption{$fieldName});
+            $option{$fieldName} = \@list;
+          }
+        }
+
+        foreach my $fieldName (@fieldNames) {
+          my @list = @{$option{$fieldName}};
+          next unless @list;
+          $::pc{"paletteAttack${paNum}${fieldName}"} = join('+', @list);
+        }
+      }
+    }
     
     foreach (1 .. $::pc{weaponNum}){
       next if $::pc{'weapon'.$_.'Acc'}.$::pc{'weapon'.$_.'Rate'}.
