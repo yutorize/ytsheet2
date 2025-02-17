@@ -22,7 +22,10 @@ output.generateCcfoliaJsonOfSwordWorld2PC = (json, character, defaultPalette) =>
   character.params = character.params.filter(data => !/^(威力|C値|防護)[0-9]$/.test(data.label));
   character.params = character.params.filter(data => !/^最大[MH]P$/.test(data.label));
   if(!json.lvCaster){
-    character.params = character.params.filter(data => !/^(魔力修正|行使修正|魔法C|魔法D修正)$/.test(data.label));
+    character.params = character.params.filter(data => !/^(魔力修正|行使修正)$/.test(data.label));
+    if(!json.lvBar){
+      character.params = character.params.filter(data => !/^(魔法C|魔法D修正)$/.test(data.label));
+    }
   }
   character.params = originalParams.concat(character.params);
 
