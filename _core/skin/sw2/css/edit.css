@@ -1382,6 +1382,10 @@ article > form > hr {
       &.crit { width: 6em; }
       &.roll { width: 6em; }
     }
+
+    tbody td label:is(.radio-button, .check-button) {
+      line-height: 1.4;
+    }
   }
 }
 #palette-magic {
