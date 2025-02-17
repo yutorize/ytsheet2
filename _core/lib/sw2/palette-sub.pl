@@ -193,7 +193,10 @@ sub palettePreset {
   if(!$type){
     $text .= appendPaletteInsert('');
     # 基本判定
-    $text .= "### ■非戦闘系\n";
+    $text .= "### ■非戦闘系";
+    $text .= "・魔物知識" if $::pc{monsterLore};
+    $text .= "・先制" if $::pc{initiative};
+    $text .= "\n";
     $text .= "2d+{冒険者}+{器用B} 冒険者＋器用\n";
     $text .= "2d+{冒険者}+{敏捷B} 冒険者＋敏捷\n";
     $text .= "2d+{冒険者}+{筋力B} 冒険者＋筋力\n";
