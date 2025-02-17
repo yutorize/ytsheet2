@@ -564,9 +564,9 @@ foreach my $class (@data::class_names){
     NAME => $class."<wbr><span class=\"small\">技能レベル</span>".$pc{'lv'.$id},
     OWN  => ($pc{'magicPowerOwn'.$id} ? '✔<span class="small">'.$stt.'+2</span>' : ''),
     MAGIC  => $name,
-    POWER  => ($pname) ? ($power ? '<span class="small">'.addNum($power).'=</span>' : '').$pc{'magicPower'.$id} : '―',
+    POWER  => ($pname) ? ($power ? '<span class="small">'.addNum($power).'=</span>' : '').$pc{'magicPower'.$id} : '<span class="nan">―</span>',
     CAST   => ($cast ? '<span class="small">'.addNum($cast).'=</span>' : '').($pc{'magicPower'.$id}+$cast),
-    DAMAGE => ($pname) ? addNum($damage)||'+0' : '―',
+    DAMAGE => ($pname) ? addNum($damage)||'+0' : '<span class="nan">―</span>',
   } );
 }
 $SHEET->param(MagicPowers => \@magic);
