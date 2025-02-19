@@ -102,6 +102,7 @@ HTML
                 <th class="name ">名称（宣言特技名など）
                 <th class="power">魔力修正
                 <th class="cast ">行使修正
+                <th class="rate ">威力修正
                 <th class="crit ">C値修正
                 <th class="dmg  "><span class="small">ダメージ<br>修正</span>
                 <th class="target">対象の魔法
@@ -114,6 +115,7 @@ HTML
         $html .= '<td>'.::input("paletteMagic${_}Name" ,'','','onchange="setChatPalette()"');
         $html .= '<td>'.::input("paletteMagic${_}Power",'','','onchange="setChatPalette()"');
         $html .= '<td>'.::input("paletteMagic${_}Cast" ,'','','onchange="setChatPalette()"');
+        $html .= '<td>'.::input("paletteMagic${_}Rate" ,'','','onchange="setChatPalette()"');
         $html .= '<td>'.::input("paletteMagic${_}Crit" ,'','','onchange="setChatPalette()"');
         $html .= '<td>'.::input("paletteMagic${_}Dmg"  ,'','','onchange="setChatPalette()"');
         $html .= '<td class="palette-magic-checklist left">';
