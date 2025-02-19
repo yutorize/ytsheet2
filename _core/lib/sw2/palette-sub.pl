@@ -898,7 +898,7 @@ sub paletteProperties {
       my $id = $data::class{$class}{id};
       my $partNum = $::pc{"evasionPart$i"};
       my $partName = $::pc{"evasionPart${i}Name"} = $::pc{"part${partNum}Name"};
-      my $evaMod = 0;
+      my $evaMod = $::pc{evaEquip};
       my $ownAgi;
       my $hasChecked = 0;
       foreach my $j (1..$::pc{armourNum}){
