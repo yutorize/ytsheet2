@@ -229,12 +229,12 @@ sub palettePreset {
     # 宣言特技
     require $set::data_feats;
     my @declarationFeats = ();
-    foreach ('1+', @set::feats_lv) {
+    foreach ('1bat', @set::feats_lv) {
       my $level = $_;
       last if $level ne '1+' && $level > $::pc{level};
       my $featName = $::pc{"combatFeatsLv${level}"};
       next unless $featName;
-      my $category = data::getFeatCategoryByName($featName);
+      my $category = getFeatCategoryByName($featName);
       next if $category !~ /宣/;
       my $marks = '[宣]';
       $marks .= '[準]' if $category =~ /準/;
@@ -898,7 +898,7 @@ sub paletteProperties {
       my $id = $data::class{$class}{id};
       my $partNum = $::pc{"evasionPart$i"};
       my $partName = $::pc{"evasionPart${i}Name"} = $::pc{"part${partNum}Name"};
-      my $evaMod = 0;
+      my $evaMod = $::pc{evaEquip};
       my $ownAgi;
       my $hasChecked = 0;
       foreach my $j (1..$::pc{armourNum}){

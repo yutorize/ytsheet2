@@ -115,7 +115,7 @@ sub paletteProperties {
     push @propaties, "//エネミー識別={知力判定}".addNum($::pc{rollEnemyLoreAdd});
     push @propaties, "//エネミー識別ダイス="    .$::pc{rollEnemyLoreDice};
     push @propaties, "//アイテム鑑定={知力判定}".addNum($::pc{rollAppraisalAdd});
-    push @propaties, "//アイテム鑑定ダイス="    .addNum($::pc{rollAppraisalDice});
+    push @propaties, "//アイテム鑑定ダイス="    .$::pc{rollAppraisalDice};
     push @propaties, "//魔術判定={知力判定}"    .addNum($::pc{rollMagicAdd});
     push @propaties, "//魔術判定ダイス="        .$::pc{rollMagicDice};
     push @propaties, "//呪歌判定={精神判定}"    .addNum($::pc{rollSongAdd});
