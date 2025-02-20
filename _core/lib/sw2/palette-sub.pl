@@ -417,6 +417,54 @@ sub palettePreset {
         last;
       }
     }
+
+    # オプションの組み合わせの解決
+    {
+      my @fieldNames = ('Acc', 'Crit', 'Dmg', 'Roll');
+      my %options = ();
+
+      foreach my $paNum (1 .. $::pc{paletteAttackNum}) {
+        my $paName = $::pc{"paletteAttack${paNum}Name"};
+        next if $paName eq '';
+        next if $paName =~ /[|｜]/;
+        next unless grep { $::pc{"paletteAttack${paNum}${_}"} } @fieldNames;
+
+        my %option = ();
+        foreach my $fieldName (@fieldNames) {
+          next unless $::pc{"paletteAttack${paNum}${fieldName}"};
+          $option{$fieldName} = $::pc{"paletteAttack${paNum}${fieldName}"};
+        }
+
+        $options{$paName} = \%option;
+      }
+
+      foreach my $paNum (1 .. $::pc{paletteAttackNum}) {
+        my $paName = $::pc{"paletteAttack${paNum}Name"};
+        next if $paName eq '';
+        next unless $paName =~ /[|｜]/;
+        next if grep { $::pc{"paletteAttack${paNum}${_}"} } @fieldNames;
+
+        my %option = ();
+        $option{$_} = [] foreach @fieldNames;
+
+        foreach my $referenceName (split(/\s*[|｜]\s*/, $paName)) {
+          next unless $options{$referenceName};
+          my %referredOption = %{$options{$referenceName}};
+
+          foreach my $fieldName (keys %referredOption) {
+            my @list = @{$option{$fieldName}};
+            push(@list, $referredOption{$fieldName});
+            $option{$fieldName} = \@list;
+          }
+        }
+
+        foreach my $fieldName (@fieldNames) {
+          my @list = @{$option{$fieldName}};
+          next unless @list;
+          $::pc{"paletteAttack${paNum}${fieldName}"} = join('+', @list);
+        }
+      }
+    }
     
     foreach (1 .. $::pc{weaponNum}){
       next if $::pc{'weapon'.$_.'Acc'}.$::pc{'weapon'.$_.'Rate'}.
@@ -498,8 +546,7 @@ sub palettePreset {
             $text .= $bot{YTC} ? '首切' : $bot{BCD} ? 'r5' : '';
           }
           $text .= " ダメージ";
-          $text .= extractWeaponMarks($::pc{'weapon'.$_.'Name'}.$::pc{'weapon'.$_.'Note'}) unless $bot{BCD};
-          $text .= "／$::pc{'weapon'.$_.'Name'}$::pc{'weapon'.$_.'Usage'}" if $bot{BCD};
+          $text .= "／$::pc{'weapon'.$_.'Name'}@{[extractWeaponMarks($::pc{'weapon'.$_.'Note'})]}$::pc{'weapon'.$_.'Usage'}";
           $text .= "（${partName}）" if $partName && $bot{BCD};
           $text .= "\n";
         }
@@ -530,7 +577,7 @@ sub palettePreset {
         if($dmgTexts{$paNum} eq $dmgTexts{$paNum - 1}){
           $activeName = $::pc{'paletteAttack'.($paNum - 1).'Name'} ? "＋$::pc{'paletteAttack'.($paNum - 1).'Name'}" : '';
         }
-        $text .= $bot{BCD} ? ($dmgTexts{$paNum} =~ s/(\n)/$activeName$1/gr) : $dmgTexts{$paNum};
+        $text .= ($dmgTexts{$paNum} =~ s/(\n)/$activeName$1/gr);
         $text .= "\n";
       }
     }
