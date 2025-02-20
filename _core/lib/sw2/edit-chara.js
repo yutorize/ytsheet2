@@ -449,7 +449,7 @@ function setLanguageDefault(){
 }
 // ステータス計算 ----------------------------------------
 let reqdStr = 0;
-let reqdWil = 0;
+let reqdMnd = 0;
 let reqdStrHalf = 0;
 let stt = {};
 let bonus = {}
@@ -541,7 +541,7 @@ function calcStt() {
   }
   
   reqdStr = stt.totalStr;
-  reqdWil = stt.totalMnd;
+  reqdMnd = stt.totalMnd;
   reqdStrHalf = Math.ceil(reqdStr / 2);
   
   checkFeats();
@@ -1523,7 +1523,7 @@ function calcWeapon() {
     // 必筋チェック
     const maxReqd
       = (className === "フェンサー") ? reqdStrHalf
-      : /^\d+w$/i.test(weaponReqdRaw) ? reqdWil
+      : /^\d+w$/i.test(weaponReqdRaw) ? reqdMnd
       : SET.class[className]?.accUnlock?.reqd ? stt['total'+SET.class[className]?.accUnlock?.reqd]
       : reqdStr;
     form["weapon"+i+"Reqd"].classList.toggle('error', weaponReqd > maxReqd + (equipMod.WeaponReqd||0));
