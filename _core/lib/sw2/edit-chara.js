@@ -449,6 +449,7 @@ function setLanguageDefault(){
 }
 // ステータス計算 ----------------------------------------
 let reqdStr = 0;
+let reqdMnd = 0;
 let reqdStrHalf = 0;
 let stt = {};
 let bonus = {}
@@ -540,6 +541,7 @@ function calcStt() {
   }
   
   reqdStr = stt.totalStr;
+  reqdMnd = stt.totalMnd;
   reqdStrHalf = Math.ceil(reqdStr / 2);
   
   checkFeats();
@@ -1509,7 +1511,8 @@ function calcWeapon() {
     const category = form["weapon"+i+"Category"].value;
     const ownDex = form["weapon"+i+"Own"].checked ? 2 : 0;
     const note = form["weapon"+i+"Note"].value;
-    const weaponReqd = safeEval(form["weapon"+i+"Reqd"].value) || 0;
+    const weaponReqdRaw = form["weapon"+i+"Reqd"]?.value?.toString();
+    const weaponReqd = (weaponReqdRaw.match(/^(\d+)w$/i) ? safeEval(RegExp.$1) : safeEval(weaponReqdRaw)) || 0;
     const classLv = lv[ SET.class[className]?.id ] || 0;
     let dex = (partNum ? stt.Dex+Number(form.sttPartA.value || 0) : stt.totalDex);
     let str = (partNum ? stt.Str+Number(form.sttPartC.value || 0) : stt.totalStr);
@@ -1520,6 +1523,7 @@ function calcWeapon() {
     // 必筋チェック
     const maxReqd
       = (className === "フェンサー") ? reqdStrHalf
+      : /^\d+w$/i.test(weaponReqdRaw) ? reqdMnd
       : SET.class[className]?.accUnlock?.reqd ? stt['total'+SET.class[className]?.accUnlock?.reqd]
       : reqdStr;
     form["weapon"+i+"Reqd"].classList.toggle('error', weaponReqd > maxReqd + (equipMod.WeaponReqd||0));
