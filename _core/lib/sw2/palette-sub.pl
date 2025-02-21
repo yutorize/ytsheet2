@@ -290,12 +290,37 @@ sub palettePreset {
         my $activeName  = $::pc{'paletteMagic'.$paNum.'Name'} ? "＋$::pc{'paletteMagic'.$paNum.'Name'}" : '';
         my $activePower = $::pc{'paletteMagic'.$paNum.'Power'} ? optimizeOperatorFirst("+$::pc{'paletteMagic'.$paNum.'Power'}") : '';
         my $activeCrit  = $::pc{'paletteMagic'.$paNum.'Crit' } ? optimizeOperatorFirst("+$::pc{'paletteMagic'.$paNum.'Crit' }") : '';
+        my $activeRate  = $::pc{'paletteMagic'.$paNum.'Rate' } ? optimizeOperatorFirst("+$::pc{'paletteMagic'.$paNum.'Rate' }") : '';
         my $activeDmg   = $::pc{'paletteMagic'.$paNum.'Dmg'  } ? optimizeOperatorFirst("+$::pc{'paletteMagic'.$paNum.'Dmg'  }") : '';
         my $activeRoll  = $::pc{'paletteMagic'.$paNum.'Roll' } ? '#'.optimizeOperatorFirst("+$::pc{'paletteMagic'.$paNum.'Roll' }") : '';
 
         my $magicPower = "{$power}" . ($name =~ /魔/ ? $activePower :"");
-        
+
+        sub modifyRate {
+          my $base = shift;
+          my $offset = shift;
+
+          if ($offset ne '') {
+            my $expression = "${base}+(${offset})";
+
+            if ($offset =~ /^[-+\d()]+$/) {
+              # 単純な数値なら計算してしまう（威力の上限・下限を考慮するため）.
+              my $modified = s_eval($expression);
+              $modified = 0 if $modified < 0;
+              $modified = 100 if $modified > 100;
+              return $modified;
+            }
+            else {
+              # 計算できない場合は式として表現しておく.
+              return "(${expression})";
+            }
+          }
+
+          return $base;
+        }
+
         my $half;
+        my $lastModifiedRate;
         foreach my $pow (sort {$a <=> $b} keys %{$pows{$id}}) {
           if($pows{$id}{$pow} =~ /^[0-9]+$/){
             next if($pows{$id}{$pow} > $::pc{'lv'.$id} && $id ne 'Fai');
@@ -313,16 +338,21 @@ sub palettePreset {
           }
           if($id eq 'Bar'){ $pow += $::pc{finaleEnhance} || 0; }
 
-          $text .= "k${pow}[{魔法C}$activeCrit]+$magicPower".addNum($::pc{'magicDamageAdd'.$id})."+{魔法D修正}$activeDmg ダメージ\n";
+          my $modifiedRate = modifyRate($pow, $activeRate);
+          next if $modifiedRate eq $lastModifiedRate;
+
+          $text .= "k${modifiedRate}\[{魔法C}$activeCrit]+$magicPower".addNum($::pc{'magicDamageAdd'.$id})."+{魔法D修正}$activeDmg ダメージ\n";
           if ($id eq 'Sor' && $pow == 30 && $::pc{lvSor} >= 12) {
-            $text .= "k${pow}[10$activeCrit]+$magicPower".addNum($::pc{'magicDamageAdd'.$id})."+{物理魔法D修正}$activeDmg 物理ダメージ\n";
+            $text .= "k${modifiedRate}\[10$activeCrit]+$magicPower".addNum($::pc{'magicDamageAdd'.$id})."+{物理魔法D修正}$activeDmg 物理ダメージ\n";
           }
           if ($id eq 'Fai' && $::pc{fairyContractEarth} && ($pow == 10 || $pow == 50)) {
-            $text .= "k${pow}[12$activeCrit]+$magicPower".addNum($::pc{'magicDamageAdd'.$id})."+{物理魔法D修正}$activeDmg 物理ダメージ\n";
+            $text .= "k${modifiedRate}\[12$activeCrit]+$magicPower".addNum($::pc{'magicDamageAdd'.$id})."+{物理魔法D修正}$activeDmg 物理ダメージ\n";
           }
           my $halfCrit = $activeName =~ /(?:クリティカル|テアリング)キャスト(?!(?:1|I(?:[^I]|$)|Ⅰ))/i ? "{魔法C}$activeCrit" : "13";
-          if ($bot{YTC}) { $half .= "k${pow}[$halfCrit]+$magicPower" . "//" . addNum($::pc{'magicDamageAdd'.$id}) . "+{魔法D修正}$activeDmg 半減\n"; }
-          if ($bot{BCD}) { $half .= "k${pow}[$halfCrit]+$magicPower" . "h+("  . ($::pc{'magicDamageAdd'.$id} || '') . "+{魔法D修正}$activeDmg) 半減\n"; }
+          if ($bot{YTC}) { $half .= "k${modifiedRate}\[$halfCrit]+$magicPower" . "//" . addNum($::pc{'magicDamageAdd'.$id}) . "+{魔法D修正}$activeDmg 半減\n"; }
+          if ($bot{BCD}) { $half .= "k${modifiedRate}\[$halfCrit]+$magicPower" . "h+("  . ($::pc{'magicDamageAdd'.$id} || '') . "+{魔法D修正}$activeDmg) 半減\n"; }
+
+          $lastModifiedRate = $modifiedRate;
         }
         $text .= $half;
         if($id eq 'Dru'){
@@ -353,6 +383,7 @@ sub palettePreset {
           }
         }
 
+        $lastModifiedRate = undef;
         foreach my $pow (sort {$a <=> $b} keys %{$heals{$id}}) {
           if($heals{$id}{$pow} =~ /^[0-9]+$/){
             next if($::pc{'lv'.$id} < $heals{$id}{$pow});
@@ -365,7 +396,13 @@ sub palettePreset {
             }
             next if !$exist;
           }
-          $text .= "k${pow}[13]+$magicPower+{回復量修正} 回復量\n"
+
+          my $modifiedRate = modifyRate($pow, $activeRate);
+          next if $modifiedRate eq $lastModifiedRate;
+
+          $text .= "k${modifiedRate}\[13]+$magicPower+{回復量修正} 回復量\n"
+
+          $lastModifiedRate = $modifiedRate;
         }
 
         $text =~ s/^(k[0-9]+)\[(.+?)\]/$1\[($2)\]/gm if $bot{BCD};
