@@ -229,12 +229,12 @@ sub palettePreset {
     # 宣言特技
     require $set::data_feats;
     my @declarationFeats = ();
-    foreach ('1+', @set::feats_lv) {
+    foreach ('1bat', @set::feats_lv) {
       my $level = $_;
       last if $level ne '1+' && $level > $::pc{level};
       my $featName = $::pc{"combatFeatsLv${level}"};
       next unless $featName;
-      my $category = data::getFeatCategoryByName($featName);
+      my $category = getFeatCategoryByName($featName);
       next if $category !~ /宣/;
       my $marks = '[宣]';
       $marks .= '[準]' if $category =~ /準/;
@@ -348,7 +348,7 @@ sub palettePreset {
           if ($id eq 'Fai' && $::pc{fairyContractEarth} && ($pow == 10 || $pow == 50)) {
             $text .= "k${modifiedRate}\[12$activeCrit]+$magicPower".addNum($::pc{'magicDamageAdd'.$id})."+{物理魔法D修正}$activeDmg${activeRoll} 物理ダメージ\n";
           }
-          my $halfCrit = $activeName =~ /クリティカルキャスト/ ? "{魔法C}$activeCrit" : "13";
+          my $halfCrit = $activeName =~ /(?:クリティカル|テアリング)キャスト(?!(?:1|I(?:[^I]|$)|Ⅰ))/i ? "{魔法C}$activeCrit" : "13";
           if ($bot{YTC}) { $half .= "k${modifiedRate}\[$halfCrit]+$magicPower" . "//" . addNum($::pc{'magicDamageAdd'.$id}) . "+{魔法D修正}$activeDmg${activeRoll} 半減\n"; }
           if ($bot{BCD}) { $half .= "k${modifiedRate}\[$halfCrit]+$magicPower" . "h+("  . ($::pc{'magicDamageAdd'.$id} || '') . "+{魔法D修正}$activeDmg)${activeRoll} 半減\n"; }
 
@@ -935,7 +935,7 @@ sub paletteProperties {
       my $id = $data::class{$class}{id};
       my $partNum = $::pc{"evasionPart$i"};
       my $partName = $::pc{"evasionPart${i}Name"} = $::pc{"part${partNum}Name"};
-      my $evaMod = 0;
+      my $evaMod = $::pc{evaEquip};
       my $ownAgi;
       my $hasChecked = 0;
       foreach my $j (1..$::pc{armourNum}){

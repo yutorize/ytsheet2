@@ -5,6 +5,7 @@
         <TMPL_IF name>：名前「<TMPL_VAR name>」を含む</TMPL_IF>
         <TMPL_IF player>：ＰＬ名「<TMPL_VAR player>」を含む</TMPL_IF>
         <TMPL_IF tag>：タグ「<TMPL_VAR tag>」</TMPL_IF>
+        <TMPL_IF stage>：ステージ「<TMPL_VAR stage>」</TMPL_IF>
         <TMPL_IF exp>：消費経験点「<TMPL_VAR exp>」</TMPL_IF>
         <TMPL_IF breedText>：ブリード「<TMPL_VAR breedText>」</TMPL_IF>
         <TMPL_IF syndrome>：シンドローム「<TMPL_VAR syndrome>」</TMPL_IF>
@@ -22,6 +23,7 @@
           名前　：<input type="text" name="name" value="<TMPL_VAR name>"><br>
           ＰＬ名：<input type="text" name="player" value="<TMPL_VAR player>"><br>
           タグ　：<input type="text" name="tag" value="<TMPL_VAR tag>"><br>
+          ステージ：<input type="text" name="stage" value="<TMPL_VAR stage>"><br>
           消費経験点：+<input type="number" name="exp-min" value="<TMPL_VAR expMin>" style="width:6em;"> ～ <input type="number" name="exp-max" value="<TMPL_VAR expMax>" style="width:6em;"><br>
           シンドローム：<input type="text" name="syndrome" value="<TMPL_VAR syndrome>"><br>
           ブリード：<select name="breed"><option value=""><option value="1" <TMPL_VAR breedSelected1>>ピュア<option value="2" <TMPL_VAR breedSelected2>>クロス<option value="3" <TMPL_VAR breedSelected3>>トライ</select><br>
