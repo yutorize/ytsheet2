@@ -105,6 +105,7 @@ HTML
                 <th class="rate ">威力修正
                 <th class="crit ">C値修正
                 <th class="dmg  "><span class="small">ダメージ<br>修正</span>
+                <th class="roll ">出目修正
                 <th class="target">対象の魔法
             <tbody class="highlight-hovered-row">
 HTML
@@ -118,6 +119,7 @@ HTML
         $html .= '<td>'.::input("paletteMagic${_}Rate" ,'','','onchange="setChatPalette()"');
         $html .= '<td>'.::input("paletteMagic${_}Crit" ,'','','onchange="setChatPalette()"');
         $html .= '<td>'.::input("paletteMagic${_}Dmg"  ,'','','onchange="setChatPalette()"');
+        $html .= '<td>'.::input("paletteMagic${_}Roll" ,'','','onchange="setChatPalette()"');
         $html .= '<td class="palette-magic-checklist left">';
         foreach my $name (@data::class_caster){
             next if (!$data::class{$name}{magic}{jName});
