@@ -449,6 +449,7 @@ function setLanguageDefault(){
 }
 // ステータス計算 ----------------------------------------
 let reqdStr = 0;
+let reqdMnd = 0;
 let reqdStrHalf = 0;
 let stt = {};
 let bonus = {}
@@ -540,6 +541,7 @@ function calcStt() {
   }
   
   reqdStr = stt.totalStr;
+  reqdMnd = stt.totalMnd;
   reqdStrHalf = Math.ceil(reqdStr / 2);
   
   checkFeats();
@@ -1509,7 +1511,8 @@ function calcWeapon() {
     const category = form["weapon"+i+"Category"].value;
     const ownDex = form["weapon"+i+"Own"].checked ? 2 : 0;
     const note = form["weapon"+i+"Note"].value;
-    const weaponReqd = safeEval(form["weapon"+i+"Reqd"].value) || 0;
+    const weaponReqdRaw = form["weapon"+i+"Reqd"]?.value?.toString();
+    const weaponReqd = (weaponReqdRaw.match(/^(\d+)w$/i) ? safeEval(RegExp.$1) : safeEval(weaponReqdRaw)) || 0;
     const classLv = lv[ SET.class[className]?.id ] || 0;
     let dex = (partNum ? stt.Dex+Number(form.sttPartA.value || 0) : stt.totalDex);
     let str = (partNum ? stt.Str+Number(form.sttPartC.value || 0) : stt.totalStr);
@@ -1520,6 +1523,7 @@ function calcWeapon() {
     // 必筋チェック
     const maxReqd
       = (className === "フェンサー") ? reqdStrHalf
+      : /^\d+w$/i.test(weaponReqdRaw) ? reqdMnd
       : SET.class[className]?.accUnlock?.reqd ? stt['total'+SET.class[className]?.accUnlock?.reqd]
       : reqdStr;
     form["weapon"+i+"Reqd"].classList.toggle('error', weaponReqd > maxReqd + (equipMod.WeaponReqd||0));
@@ -2445,6 +2449,12 @@ function checkEquipMod (){
   console.log('checkEquipMod()');
   // 装飾品欄の補正
   const sttRegEx = [
+    ['A:increment','器(?:用度?)?増強'],
+    ['B:increment','敏(?:捷度?)?増強'],
+    ['C:increment','筋(?:力)?増強'],
+    ['D:increment','生(?:命力)?増強'],
+    ['E:increment','知力?増強'],
+    ['F:increment','精(?:神力?)?増強'],
     ['A','器(?:用度?)?'],
     ['B','敏(?:捷度?)?'],
     ['C','筋(?:力)?'],
@@ -2462,6 +2472,7 @@ function checkEquipMod (){
     ['WeaponReqd','武器(?:必要筋力|必筋)上限'],
   ];
   let newMod = {};
+  const statusIncrement = {};
   document.querySelectorAll(':is(#weapons-table, #armours-table, #accessories-table) input[name$="Note"]').forEach(
     input => {
       const note = input.value ?? '';
@@ -2475,12 +2486,22 @@ function checkEquipMod (){
         const m = note.match('[@＠]'+i[1]+'([＋+－-][0-9]+)');
         if (m != null) {
           console.log(m[0],m[1])
+          const value = parseInt(m[1].replace(/[＋]/,"+").replace(/－/,"-") || 0);
           newMod[i[0]] ??= 0;
-          newMod[i[0]] += parseInt(m[1].replace(/[＋]/,"+").replace(/－/,"-") || 0);
+          newMod[i[0]] += value;
+
+          if (i[0].endsWith(':increment')) {
+            const key = i[0].replace(/:increment$/, '');
+            statusIncrement[key] = Math.max(statusIncrement[key] ?? 0, value);
+          }
         }
       }
     }
   );
+  for (const [key, value] of Object.entries(statusIncrement)) {
+    newMod[key] ??= 0;
+    newMod[key] += value;
+  }
   let hasChange;
   for(let i of sttRegEx){
     if(parseInt(newMod[i[0]]||0) !== parseInt(equipMod[i[0]]||0)){
