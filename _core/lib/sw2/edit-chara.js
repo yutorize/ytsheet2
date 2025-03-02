@@ -449,6 +449,7 @@ function setLanguageDefault(){
 }
 // ステータス計算 ----------------------------------------
 let reqdStr = 0;
+let reqdMnd = 0;
 let reqdStrHalf = 0;
 let stt = {};
 let bonus = {}
@@ -540,6 +541,7 @@ function calcStt() {
   }
   
   reqdStr = stt.totalStr;
+  reqdMnd = stt.totalMnd;
   reqdStrHalf = Math.ceil(reqdStr / 2);
   
   checkFeats();
@@ -1382,8 +1384,8 @@ function calcParts(){
     }
     // コア
     if(form.partCore.value == num){
-      hp += subStt.hpBase + subStt.hpAutoAdd - stt.addD - equipMod.D + Number(form.sttPartD.value||0);
-      mp += subStt.mpBase + subStt.mpAutoAdd - stt.addF - equipMod.F + Number(form.sttPartF.value||0);
+      hp += subStt.hpBase + subStt.hpAutoAdd - stt.addD - (equipMod.D ?? 0) + Number(form.sttPartD.value||0);
+      mp += subStt.mpBase + subStt.mpAutoAdd - stt.addF - (equipMod.F ?? 0) + Number(form.sttPartF.value||0);
       if(raceAbilities.includes('蠍人の身体')){
         def = 0;
         hp += subStt.hpAccessory;
@@ -1509,7 +1511,8 @@ function calcWeapon() {
     const category = form["weapon"+i+"Category"].value;
     const ownDex = form["weapon"+i+"Own"].checked ? 2 : 0;
     const note = form["weapon"+i+"Note"].value;
-    const weaponReqd = safeEval(form["weapon"+i+"Reqd"].value) || 0;
+    const weaponReqdRaw = form["weapon"+i+"Reqd"]?.value?.toString();
+    const weaponReqd = (weaponReqdRaw.match(/^(\d+)w$/i) ? safeEval(RegExp.$1) : safeEval(weaponReqdRaw)) || 0;
     const classLv = lv[ SET.class[className]?.id ] || 0;
     let dex = (partNum ? stt.Dex+Number(form.sttPartA.value || 0) : stt.totalDex);
     let str = (partNum ? stt.Str+Number(form.sttPartC.value || 0) : stt.totalStr);
@@ -1520,6 +1523,7 @@ function calcWeapon() {
     // 必筋チェック
     const maxReqd
       = (className === "フェンサー") ? reqdStrHalf
+      : /^\d+w$/i.test(weaponReqdRaw) ? reqdMnd
       : SET.class[className]?.accUnlock?.reqd ? stt['total'+SET.class[className]?.accUnlock?.reqd]
       : reqdStr;
     form["weapon"+i+"Reqd"].classList.toggle('error', weaponReqd > maxReqd + (equipMod.WeaponReqd||0));
