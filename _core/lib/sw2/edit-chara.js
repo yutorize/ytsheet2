@@ -1289,6 +1289,8 @@ function calcMagic() {
   document.getElementById("magic-power-common"      ).style.display = openMagic              ? '' : 'none';
   document.getElementById("magic-power-hr"          ).style.display = openMagic && openCraft ? '' : 'none';
 
+  document.getElementById('magic-power-magicenhance-value').textContent = feats['魔力強化']?.toString();
+
   stylizeVisibleRows(document.querySelectorAll('#magic-power > .edit-table > tbody > tr'))
 }
 
