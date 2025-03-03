@@ -913,7 +913,12 @@ foreach my $name (@data::class_list){
             <tr@{[ display $pc{'lv'.$id} ]} id="magic-power-${ename}">
               <td>${name}
               <td>$data::class{$name}{craft}{jName}
-              <td><label>@{[ input 'magicPowerOwn'.$id, 'checkbox','calcMagic' ]}$data::class{$name}{craft}{stt}+2</label>
+              <td>
+HTML
+  if ($data::class{$name}{craft}{personalization} // 1) {
+    print "<label>@{[ input 'magicPowerOwn'.$id, 'checkbox','calcMagic' ]}$data::class{$name}{craft}{stt}+2</label>";
+  }
+  print <<"HTML";
               <td>
 HTML
   if($data::class{$name}{craft}{power}){

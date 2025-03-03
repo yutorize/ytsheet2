@@ -536,7 +536,7 @@ sub data_calc {
       + int(($pc{sttInt}
       + $pc{sttAddE}
       + $pc{sttEquipE}
-      + ($pc{'magicPowerOwn'.$id} ? 2 : 0)) / 6)
+      + (($data::class{$name}{magic}{personalization} // 1) && $pc{'magicPowerOwn'.$id} ? 2 : 0)) / 6)
       + $pc{'magicPowerAdd'.$id}
       + $pc{magicPowerAdd}
       + $pc{magicPowerEnhance}
@@ -553,7 +553,7 @@ sub data_calc {
     next if (!$data::class{$name}{craft}{stt});
     my $id = $data::class{$name}{id};
     my $st = $data::class{$name}{craft}{stt};
-    $pc{'magicPower'.$id} = $pc{'lv'.$id} ? ( $pc{'lv'.$id} + int(($pc{'stt'.$stt{$st}[0]} + $pc{'sttAdd'.$stt{$st}[1]} + $pc{'sttEquip'.$stt{$st}[1]} + ($pc{'magicPowerOwn'.$id} ? 2 : 0)) / 6) + $pc{'magicPowerAdd'.$id} ) : 0;
+    $pc{'magicPower'.$id} = $pc{'lv'.$id} ? ( $pc{'lv'.$id} + int(($pc{'stt'.$stt{$st}[0]} + $pc{'sttAdd'.$stt{$st}[1]} + $pc{'sttEquip'.$stt{$st}[1]} + (($data::class{$name}{craft}{personalization} // 1) && $pc{'magicPowerOwn'.$id} ? 2 : 0)) / 6) + $pc{'magicPowerAdd'.$id} ) : 0;
   }
   $pc{magicPowerAlc} += $pc{alchemyEnhance};
   

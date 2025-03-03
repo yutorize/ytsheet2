@@ -612,6 +612,7 @@ our %class = (
       jName => '操気',
       eName => 'psychokinesis',
       stt => '精神力',
+      personalization => 0,
       power => '理力',
       data => [
         [1,'気集中','[補]'],
