@@ -234,7 +234,6 @@ foreach ('A'..'F'){
   my $value = $pc{'sttAdd'.$_} + $pc{'sttEquip'.$_};
   $SHEET->param('sttAdd'.$_ => $value) if $value;
 }
-
 ### HPなど --------------------------------------------------
 foreach('vitResistAddTotal','mndResistAddTotal','hpAddTotal','mpAddTotal','mobilityAddTotal','monsterLoreAdd','initiativeAdd'){
   $SHEET->param($_ => addNum $pc{$_});
@@ -393,10 +392,10 @@ foreach my $class (@data::class_names){
   foreach (@{$data::class{$class}{craft}{data}}){
     my $craft = $_->[1];
     my $notes = $_->[2];
-    if($class eq 'アルケミスト'){
+    if ($class eq 'アルケミスト'){
       while($notes =~ s/\[([赤緑黒白金])\]//){ $craftType{$craft} .= '<i class="s-icon m-card" data-color="'.$1.'"></i>' }
     }
-    if($notes =~ /(\[[常主補準宣]\])+/){ $craftType{$craft} .= textToIcon $&; }
+    if($notes =~ /(\[[常主補準宣]\])+/){ $craftType{$_->[1]} = textToIcon $&; }
   }
 
   my @crafts;
@@ -561,7 +560,7 @@ foreach my $class (@data::class_names){
   my $damage = $pc{'magicDamageAdd'.$id} || 0;
   
   push(@magic, {
-    NAME => $class."<wbr><span class=\"small\">技能レベル</span>".$pc{'lv'.$id},
+    NAME => $class."<span class=\"small\">技能レベル</span>".$pc{'lv'.$id},
     OWN  => ($pc{'magicPowerOwn'.$id} ? '✔<span class="small">'.$stt.'+2</span>' : ''),
     MAGIC  => $name,
     POWER  => ($pname) ? ($power ? '<span class="small">'.addNum($power).'=</span>' : '').$pc{'magicPower'.$id} : '―',

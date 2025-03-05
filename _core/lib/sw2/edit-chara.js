@@ -21,7 +21,10 @@ const expTable = {
      66500,
      80000,
      95000,
-    125000
+    125000,
+    170000,
+    230000,
+    300000
   ],
   'B' : [
          0,
@@ -41,7 +44,10 @@ const expTable = {
      55000,
      67000,
      80500,
-    105500
+    105500,
+    143000,
+    193000,
+    255500
   ],
   'S' : [
          0,
@@ -1041,7 +1047,12 @@ function checkFeats(){
     }
     else {
       cL.add("fail");
-      if(form.failView.checked){ cL.remove("hidden") } else { cL.add("hidden") };
+      if(form.failView.checked && featLv <= 20){
+        cL.remove("hidden");
+      }
+      else {
+        cL.add("hidden");
+      }
     }
   }
   
@@ -1384,8 +1395,8 @@ function calcParts(){
     }
     // コア
     if(form.partCore.value == num){
-      hp += subStt.hpBase + subStt.hpAutoAdd - stt.addD - (equipMod.D ?? 0) + Number(form.sttPartD.value||0);
-      mp += subStt.mpBase + subStt.mpAutoAdd - stt.addF - (equipMod.F ?? 0) + Number(form.sttPartF.value||0);
+      hp += subStt.hpBase + subStt.hpAutoAdd - stt.addD - equipMod.D + Number(form.sttPartD.value||0);
+      mp += subStt.mpBase + subStt.mpAutoAdd - stt.addF - equipMod.F + Number(form.sttPartF.value||0);
       if(raceAbilities.includes('蠍人の身体')){
         def = 0;
         hp += subStt.hpAccessory;
@@ -1512,7 +1523,7 @@ function calcWeapon() {
     const ownDex = form["weapon"+i+"Own"].checked ? 2 : 0;
     const note = form["weapon"+i+"Note"].value;
     const weaponReqdRaw = form["weapon"+i+"Reqd"]?.value?.toString();
-    const weaponReqd = (weaponReqdRaw.match(/^(\d+)w$/i) ? safeEval(RegExp.$1) : safeEval(weaponReqdRaw)) || 0;
+    const weaponReqd = (weaponReqdRaw.match(/^(\d+)w$/i) ? safeEval(RegExp.$1) : safeEval(weaponReqdRaw));
     const classLv = lv[ SET.class[className]?.id ] || 0;
     let dex = (partNum ? stt.Dex+Number(form.sttPartA.value || 0) : stt.totalDex);
     let str = (partNum ? stt.Str+Number(form.sttPartC.value || 0) : stt.totalStr);
@@ -1526,7 +1537,7 @@ function calcWeapon() {
       : /^\d+w$/i.test(weaponReqdRaw) ? reqdMnd
       : SET.class[className]?.accUnlock?.reqd ? stt['total'+SET.class[className]?.accUnlock?.reqd]
       : reqdStr;
-    form["weapon"+i+"Reqd"].classList.toggle('error', weaponReqd > maxReqd + (equipMod.WeaponReqd||0));
+      form["weapon"+i+"Reqd"].classList.toggle('error', weaponReqd > maxReqd + (equipMod.WeaponReqd||0));
     // 基礎命中
     if(SET.class[className]?.accUnlock?.acc === 'power'){
       accBase = magicPowers[SET.class[className].id];
@@ -2126,7 +2137,7 @@ function addAccessory(name){
   else {
     document.querySelector(`#accessories [data-type="${name}_"]`).style.display = 'none';
   }
-
+  
   calcDefense(); // 装飾品由来の回避力・防護点の再計算
 }
 // ソート
