@@ -113,7 +113,7 @@ $pc{evasiveManeuver} ||= 0;
 $pc{tenacity} ||= 0;
 $pc{capacity} ||= 0;
 
-$pc{unlockAbove16} = 1 if $pc{level} > 15 || $set::force_unlockAbove16 == 1;
+$pc{unlockAbove16} = 1 if $pc{level} > 15 || $pc{'unlockAbove16'} == 1;
 
 ### 改行処理 --------------------------------------------------
 $pc{words}           =~ s/&lt;br&gt;/\n/g;
@@ -1314,8 +1314,8 @@ foreach (
     <td>
       <select name="accessory@$_[1]Own" oninput="calcSubStt()">
         <option></option>
-        <option value="HP" @{[ $pc{"accessory@$_[1]Own"} eq 'HP' ? 'selected':'' ]}>HP+2</option>
-        <option value="MP" @{[ $pc{"accessory@$_[1]Own"} eq 'MP' ? 'selected':'' ]}>MP+2</option>
+        <option value="HP" @{[ $pc{"accessory@$_[1]Own"} eq 'HP' ? 'selected':'' ]}>HP</option>
+        <option value="MP" @{[ $pc{"accessory@$_[1]Own"} eq 'MP' ? 'selected':'' ]}>MP</option>
       </select>
     <td>@{[input('accessory'.@$_[1].'Note','','','onchange="changeEquipMod()"')]}
 HTML
@@ -1327,7 +1327,7 @@ print <<"HTML";
             <li>左のボックスにチェックを入れると欄が一つ追加されます
             <li>
               <code>\@器用度+1</code>や<code>\@防護点+1</code>のように記述すると、<span class="text-em">常時</span>有効な上昇効果が自動計算されます。<br>
-              有効な項目は、<code>器用度</code>～<code>精神力</code> <code>生命抵抗力</code> <code>精神抵抗力</code> <code>回避力</code> <code>防護点</code> <code>移動力</code> <code>魔力</code> <code>行使判定</code> <code>武器必筋上限</code>です。<br>
+              有効な項目は、<code>器用度</code>～<code>精神力</code> <code>HP</code> <code>MP</code> <code>生命抵抗力</code> <code>精神抵抗力</code> <code>回避力</code> <code>防護点</code> <code>移動力</code> <code>魔力</code> <code>行使判定</code> <code>武器必筋上限</code>です。<br>
               同じ項目へは累積するため、同名や効果排他のアイテムには注意してください。<br>
               能力値の増強にかぎり、<code>\@筋力増強+2</code>のように<code>増強</code>の文言を記述することで、能力値ごとに最大の値のみを採用できます。
           </ul>

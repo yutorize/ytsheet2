@@ -132,8 +132,8 @@ sub data_calc {
   }
 
   ## 経験点消費
-  my @expA = ( 0, 1000, 2000, 3500, 5000, 7000, 9500, 12500, 16500, 21500, 27500, 35000, 44000, 54500, 66500, 80000, 95000, 125000 );
-  my @expB = ( 0,  500, 1500, 2500, 4000, 5500, 7500, 10000, 13000, 17000, 22000, 28000, 35500, 44500, 55000, 67000, 80500, 105500 );
+  my @expA = ( 0, 1000, 2000, 3500, 5000, 7000, 9500, 12500, 16500, 21500, 27500, 35000, 44000, 54500, 66500, 80000, 95000, 125000, 170000, 230000, 300000 );
+  my @expB = ( 0,  500, 1500, 2500, 4000, 5500, 7500, 10000, 13000, 17000, 22000, 28000, 35500, 44500, 55000, 67000, 80500, 105500, 143000, 193000, 255500 );
   my @expS = ( 0, 3000, 6000, 9000, 12000, 16000, 20000, 24000, 28000, 33000, 38000, 43000, 48000, 54000, 60000, 66000, 72000, 79000, 86000, 93000, 100000 );
   $pc{expRest} = $pc{expTotal};
   foreach (@data::class_names){
@@ -296,12 +296,13 @@ sub data_calc {
     my %mod = %{$_};
     foreach ('A'..'F'){
       $pc{'sttEquip'.$_} += $mod{$_} // 0;
-
+      
       # 増強
       $equipModStatusIncrement{$_} //= 0;
       $equipModStatusIncrement{$_} = max($equipModStatusIncrement{$_}, $mod{"${_}:increment"} // 0);
     }
-    foreach ('vResist','mResist','eva','def','mobility','magicPower','magicCast','magicDamage'){
+    foreach ('hpAdd','mpAdd','vResist','mResist','eva','def','mobility','magicPower','magicCast','magicDamage'){
+      $mod{$_} = 0 if ($_ eq 'mpAdd' && $pc{raceAbility} =~ /［マナ不干渉］/);
       $pc{$_.'Equip'} += $mod{$_} // 0;
     }
     $pc{reqdStrWeaponMod} += $mod{reqdWeapon} // 0;
@@ -310,7 +311,7 @@ sub data_calc {
   foreach ('A' .. 'F') {
     $pc{"sttEquip${_}"} += $equipModStatusIncrement{$_};
   }
-
+  
   ### 能力値計算 --------------------------------------------------
   ## 成長
   $pc{sttHistGrowA} = $pc{sttHistGrowB} = $pc{sttHistGrowC} = $pc{sttHistGrowD} = $pc{sttHistGrowE} = $pc{sttHistGrowF} = 0;
@@ -464,13 +465,13 @@ sub data_calc {
   }
   ## ＨＰ
   $pc{hpBase} = $pc{level}*3 + $pc{sttVit} + $pc{sttAddD} + $pc{sttEquipD};
-  $pc{hpAddTotal} = s_eval($pc{hpAdd}) + $pc{tenacity} + $pc{hpAccessory} + $pc{seekerAbilityHpMp};
+  $pc{hpAddTotal} = s_eval($pc{hpAdd}) + $pc{tenacity} + $pc{hpAccessory} + $pc{seekerAbilityHpMp} + $pc{hpAddEquip};
   $pc{hpAddTotal} += 15 if $pc{lvFig} >= 7; #タフネス
   $pc{hpTotal}  = $pc{hpBase} + $pc{hpAddTotal};
   ## ＭＰ
   $pc{mpBase} = $lv_caster_total*3 + $pc{sttMnd} + $pc{sttAddF} + $pc{sttEquipF};
   $pc{mpBase} = $pc{level}*3 + $pc{sttMnd} + $pc{sttAddF} + $pc{sttEquipF} if ($pc{raceAbility} =~ /［溢れるマナ］/);
-  $pc{mpAddTotal} = s_eval($pc{mpAdd}) + $pc{capacity} + $pc{raceAbilityMp} + $pc{mpAccessory} + $pc{seekerAbilityHpMp};
+  $pc{mpAddTotal} = s_eval($pc{mpAdd}) + $pc{capacity} + $pc{raceAbilityMp} + $pc{mpAccessory} + $pc{seekerAbilityHpMp} + $pc{mpAddEquip};
   $pc{mpTotal} = $pc{mpBase} + $pc{mpAddTotal};
   $pc{mpTotal} = 0  if ($pc{raceAbility} =~ /［マナ不干渉］/);
 
@@ -545,7 +546,6 @@ sub data_calc {
       + $pc{'magicPowerAdd'.$id}
       + $pc{magicPowerAdd}
       + $pc{magicPowerEnhance}
-      + $pc{magicPowerEquip}
       + $pc{raceAbilityMagicPower}
       + $pc{'raceAbilityMagicPower'.$id}
     ) : 0;
@@ -694,10 +694,10 @@ sub data_calc {
     }
     $eva += $lv ? $lv + int(($agi+$own_agi)/6) : 0;
     $def += $artisan;
-
+    
     $eva += $pc{evaEquip};
     $def += $pc{defEquip};
-
+    
     $pc{"defenseTotal${i}Eva"} = $eva;
     $pc{"defenseTotal${i}Def"} = $def;
   }
@@ -760,6 +760,7 @@ sub data_calc {
       }
     }
   }
+  
   ### グレード自動変更 --------------------------------------------------
   if (@set::grades){
     my $flag;

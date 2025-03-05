@@ -21,7 +21,10 @@ const expTable = {
      66500,
      80000,
      95000,
-    125000
+    125000,
+    170000,
+    230000,
+    300000
   ],
   'B' : [
          0,
@@ -41,7 +44,10 @@ const expTable = {
      55000,
      67000,
      80500,
-    105500
+    105500,
+    143000,
+    193000,
+    255500
   ],
   'S' : [
          0,
@@ -452,7 +458,7 @@ let reqdStr = 0;
 let reqdMnd = 0;
 let reqdStrHalf = 0;
 let stt = {};
-let bonus = {}
+let bonus = {};
 function calcStt() {
   console.log('calcStt()');
   stt = {
@@ -470,7 +476,7 @@ function calcStt() {
     Vit:0,
     Int:0,
     Mnd:0,
-  }
+  };
   // 履歴から成長カウント
   for (let i = 1; i <= Number(form.historyNum.value); i++){
     const grow = form["history" + i + "Grow"].value;
@@ -1041,7 +1047,12 @@ function checkFeats(){
     }
     else {
       cL.add("fail");
-      if(form.failView.checked){ cL.remove("hidden") } else { cL.add("hidden") };
+      if(form.failView.checked && featLv <= 20){
+        cL.remove("hidden");
+      }
+      else {
+        cL.add("hidden");
+      }
     }
   }
   
@@ -1123,10 +1134,10 @@ function calcSubStt() {
   
   subStt.hpBase = level * 3 + stt.totalVit;
   subStt.mpBase = 
-    (raceAbilities.includes('溢れるマナ')) ? (level * 3 + stt.totalMnd)
-    : ( levelCasters.reduce((a,x) => a+x,0) * 3 + stt.totalMnd );
-  subStt.hpAutoAdd = (feats['頑強'] || 0) + (lv['Fig'] >= 7 ? 15 : 0) + seekerHpMpAdd;
-  subStt.mpAutoAdd = (feats['キャパシティ'] || 0) + raceAbilityMp     + seekerHpMpAdd;
+  (raceAbilities.includes('溢れるマナ')) ? (level * 3 + stt.totalMnd)
+  : ( levelCasters.reduce((a,x) => a+x,0) * 3 + stt.totalMnd );
+  subStt.hpAutoAdd = (feats['頑強'] || 0) + (lv['Fig'] >= 7 ? 15 : 0) + seekerHpMpAdd + (equipMod.HpAdd||0);
+  subStt.mpAutoAdd = (feats['キャパシティ'] || 0) + raceAbilityMp     + seekerHpMpAdd + (equipMod.MpAdd||0);
   subStt.hpAccessory = 0;
   subStt.mpAccessory = 0;
   for (let type of ["Head", "Face",  "Ear", "Neck", "Back", "HandR", "HandL", "Waist", "Leg", "Other", "Other2", "Other3", "Other4"]){
@@ -1291,7 +1302,7 @@ function calcMagic() {
   document.getElementById("magic-power-common"      ).style.display = openMagic              ? '' : 'none';
   document.getElementById("magic-power-hr"          ).style.display = openMagic && openCraft ? '' : 'none';
 
-  stylizeVisibleRows(document.querySelectorAll('#magic-power > .edit-table > tbody > tr'))
+  stylizeVisibleRows(document.querySelectorAll('#magic-power > .edit-table > tbody > tr'));
 }
 
 // 妖精魔法ランク計算 ----------------------------------------
@@ -1384,8 +1395,8 @@ function calcParts(){
     }
     // コア
     if(form.partCore.value == num){
-      hp += subStt.hpBase + subStt.hpAutoAdd - stt.addD - (equipMod.D ?? 0) + Number(form.sttPartD.value||0);
-      mp += subStt.mpBase + subStt.mpAutoAdd - stt.addF - (equipMod.F ?? 0) + Number(form.sttPartF.value||0);
+      hp += subStt.hpBase + subStt.hpAutoAdd - stt.addD - equipMod.D + Number(form.sttPartD.value||0);
+      mp += subStt.mpBase + subStt.mpAutoAdd - stt.addF - equipMod.F + Number(form.sttPartF.value||0);
       if(raceAbilities.includes('蠍人の身体')){
         def = 0;
         hp += subStt.hpAccessory;
@@ -1471,7 +1482,7 @@ function calcAttack() {
     document.getElementById(`attack-${eName}`).style.display = display;
 
     document.getElementById(`attack-${eName}-str`).textContent
-      = (id == 'Fen' ? reqdStrHalf
+    = (id == 'Fen' ? reqdStrHalf
       : SET.class[name]?.accUnlock?.reqd ? stt['total'+SET.class[name]?.accUnlock?.reqd]
       : reqdStr)
       + (equipMod.WeaponReqd ? `+${equipMod.WeaponReqd}` : '');
@@ -1497,9 +1508,9 @@ function calcAttack() {
   document.getElementById("throwing").style.display = feats['スローイング'] ? '' : 'none';
   document.getElementById("parts-enhance").style.display = crafts['部位極強化'] || crafts['部位超強化'] || crafts['部位即応＆強化'] ? '' : 'none';
   document.getElementById("parts-enhance-acc").textContent = (crafts['部位極強化']?1:0)+(crafts['部位超強化']?1:0)+(crafts['部位即応＆強化']?1:0);
-  
 
-  stylizeVisibleRows(document.querySelectorAll('#attack-classes > .edit-table > tbody > tr'))
+
+  stylizeVisibleRows(document.querySelectorAll('#attack-classes > .edit-table > tbody > tr'));
 
   calcWeapon();
 }
@@ -1512,7 +1523,7 @@ function calcWeapon() {
     const ownDex = form["weapon"+i+"Own"].checked ? 2 : 0;
     const note = form["weapon"+i+"Note"].value;
     const weaponReqdRaw = form["weapon"+i+"Reqd"]?.value?.toString();
-    const weaponReqd = (weaponReqdRaw.match(/^(\d+)w$/i) ? safeEval(RegExp.$1) : safeEval(weaponReqdRaw)) || 0;
+    const weaponReqd = (weaponReqdRaw.match(/^(\d+)w$/i) ? safeEval(RegExp.$1) : safeEval(weaponReqdRaw));
     const classLv = lv[ SET.class[className]?.id ] || 0;
     let dex = (partNum ? stt.Dex+Number(form.sttPartA.value || 0) : stt.totalDex);
     let str = (partNum ? stt.Str+Number(form.sttPartC.value || 0) : stt.totalStr);
@@ -1526,7 +1537,7 @@ function calcWeapon() {
       : /^\d+w$/i.test(weaponReqdRaw) ? reqdMnd
       : SET.class[className]?.accUnlock?.reqd ? stt['total'+SET.class[className]?.accUnlock?.reqd]
       : reqdStr;
-    form["weapon"+i+"Reqd"].classList.toggle('error', weaponReqd > maxReqd + (equipMod.WeaponReqd||0));
+      form["weapon"+i+"Reqd"].classList.toggle('error', weaponReqd > maxReqd + (equipMod.WeaponReqd||0));
     // 基礎命中
     if(SET.class[className]?.accUnlock?.acc === 'power'){
       accBase = magicPowers[SET.class[className].id];
@@ -2126,7 +2137,7 @@ function addAccessory(name){
   else {
     document.querySelector(`#accessories [data-type="${name}_"]`).style.display = 'none';
   }
-
+  
   calcDefense(); // 装飾品由来の回避力・防護点の再計算
 }
 // ソート
@@ -2443,6 +2454,7 @@ let equipMod = {};
 function changeEquipMod (){
   if(checkEquipMod()){
     calcStt();
+    calcSubStt();
   }
 }
 function checkEquipMod (){
@@ -2461,6 +2473,8 @@ function checkEquipMod (){
     ['D','生(?:命力)?'],
     ['E','知力?'],
     ['F','精(?:神力?)?'],
+    ['HpAdd','[HＨ][PＰ]'],
+    ['MpAdd','[MＭ][PＰ]'],
     ['VResist','生命抵抗力?'],
     ['MResist','精神抵抗力?'],
     ['Eva','回避力?'],
