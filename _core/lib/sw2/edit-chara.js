@@ -452,7 +452,7 @@ let reqdStr = 0;
 let reqdMnd = 0;
 let reqdStrHalf = 0;
 let stt = {};
-let bonus = {}
+let bonus = {};
 function calcStt() {
   console.log('calcStt()');
   stt = {
@@ -470,7 +470,7 @@ function calcStt() {
     Vit:0,
     Int:0,
     Mnd:0,
-  }
+  };
   // 履歴から成長カウント
   for (let i = 1; i <= Number(form.historyNum.value); i++){
     const grow = form["history" + i + "Grow"].value;
@@ -1123,10 +1123,10 @@ function calcSubStt() {
   
   subStt.hpBase = level * 3 + stt.totalVit;
   subStt.mpBase = 
-    (raceAbilities.includes('溢れるマナ')) ? (level * 3 + stt.totalMnd)
-    : ( levelCasters.reduce((a,x) => a+x,0) * 3 + stt.totalMnd );
-  subStt.hpAutoAdd = (feats['頑強'] || 0) + (lv['Fig'] >= 7 ? 15 : 0) + seekerHpMpAdd;
-  subStt.mpAutoAdd = (feats['キャパシティ'] || 0) + raceAbilityMp     + seekerHpMpAdd;
+  (raceAbilities.includes('溢れるマナ')) ? (level * 3 + stt.totalMnd)
+  : ( levelCasters.reduce((a,x) => a+x,0) * 3 + stt.totalMnd );
+  subStt.hpAutoAdd = (feats['頑強'] || 0) + (lv['Fig'] >= 7 ? 15 : 0) + seekerHpMpAdd + (equipMod.HpAdd||0);
+  subStt.mpAutoAdd = (feats['キャパシティ'] || 0) + raceAbilityMp     + seekerHpMpAdd + (equipMod.MpAdd||0);
   subStt.hpAccessory = 0;
   subStt.mpAccessory = 0;
   for (let type of ["Head", "Face",  "Ear", "Neck", "Back", "HandR", "HandL", "Waist", "Leg", "Other", "Other2", "Other3", "Other4"]){
@@ -1291,7 +1291,7 @@ function calcMagic() {
   document.getElementById("magic-power-common"      ).style.display = openMagic              ? '' : 'none';
   document.getElementById("magic-power-hr"          ).style.display = openMagic && openCraft ? '' : 'none';
 
-  stylizeVisibleRows(document.querySelectorAll('#magic-power > .edit-table > tbody > tr'))
+  stylizeVisibleRows(document.querySelectorAll('#magic-power > .edit-table > tbody > tr'));
 }
 
 // 妖精魔法ランク計算 ----------------------------------------
@@ -1471,7 +1471,7 @@ function calcAttack() {
     document.getElementById(`attack-${eName}`).style.display = display;
 
     document.getElementById(`attack-${eName}-str`).textContent
-      = (id == 'Fen' ? reqdStrHalf
+    = (id == 'Fen' ? reqdStrHalf
       : SET.class[name]?.accUnlock?.reqd ? stt['total'+SET.class[name]?.accUnlock?.reqd]
       : reqdStr)
       + (equipMod.WeaponReqd ? `+${equipMod.WeaponReqd}` : '');
@@ -1497,9 +1497,9 @@ function calcAttack() {
   document.getElementById("throwing").style.display = feats['スローイング'] ? '' : 'none';
   document.getElementById("parts-enhance").style.display = crafts['部位極強化'] || crafts['部位超強化'] || crafts['部位即応＆強化'] ? '' : 'none';
   document.getElementById("parts-enhance-acc").textContent = (crafts['部位極強化']?1:0)+(crafts['部位超強化']?1:0)+(crafts['部位即応＆強化']?1:0);
-  
 
-  stylizeVisibleRows(document.querySelectorAll('#attack-classes > .edit-table > tbody > tr'))
+
+  stylizeVisibleRows(document.querySelectorAll('#attack-classes > .edit-table > tbody > tr'));
 
   calcWeapon();
 }
@@ -2443,6 +2443,7 @@ let equipMod = {};
 function changeEquipMod (){
   if(checkEquipMod()){
     calcStt();
+    calcSubStt();
   }
 }
 function checkEquipMod (){
@@ -2461,6 +2462,8 @@ function checkEquipMod (){
     ['D','生(?:命力)?'],
     ['E','知力?'],
     ['F','精(?:神力?)?'],
+    ['HpAdd','[HＨ][PＰ]'],
+    ['MpAdd','[MＭ][PＰ]'],
     ['VResist','生命抵抗力?'],
     ['MResist','精神抵抗力?'],
     ['Eva','回避力?'],

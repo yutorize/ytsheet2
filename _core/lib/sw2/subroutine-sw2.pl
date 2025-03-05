@@ -208,6 +208,8 @@ sub extractModifications {
       'D' => '生(?:命力)?',
       'E' => '知力?',
       'F' => '精(?:神力?)?',
+      'hpAdd' => '[HＨ][PＰ]',
+      'mpAdd' => '[MＭ][PＰ]',
       'vResist' => '生命抵抗力?',
       'mResist' => '精神抵抗力?',
       'eva' => '回避力?',

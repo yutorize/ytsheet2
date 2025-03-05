@@ -617,7 +617,7 @@ if(!$pc{forbiddenMode}){
     my $reqdStr = ($id eq 'Fen' ? ceil($strTotal / 2) : $strTotal)
                 . ($pc{reqdStrWeaponMod} ? "+$pc{reqdStrWeaponMod}" : '');
     push(@atacck, {
-      NAME => $name."<wbr><span class=\"small\">技能レベル</span>".$pc{'lv'.$id},
+      NAME => $name."<span class=\"small\">技能レベル</span>".$pc{'lv'.$id},
       STR  => $reqdStr,
       ACC  => $pc{'lv'.$id}+$pc{bonusDex},
       ($id eq 'Fen' ? (CRIT => '-1') : ('' => '')),
@@ -655,7 +655,6 @@ $SHEET->param(AttackClasses => \@atacck);
 ### 武器 --------------------------------------------------
 sub replaceModificationNotation {
   my $sourceText = shift // '';
-
   $sourceText =~ s#
       [\@＠]
       (
@@ -665,6 +664,8 @@ sub replaceModificationNotation {
         生(?:命力)?(?:増強)?   |
         知力?(?:増強)?         |
         精(?:神力?)?(?:増強)?  |
+        [HＨ][PＰ]    |
+        [MＭ][PＰ]    |
         生命抵抗力?   |
         精神抵抗力?   |
         回避力?       |
@@ -677,7 +678,6 @@ sub replaceModificationNotation {
       )
       ([＋+－-][0-9]+)
     #<i class="term-em">$1$2</i>#gx;
-
   return $sourceText;
 }
 
@@ -772,7 +772,7 @@ if(!$pc{forbiddenMode}){
       }
     }
     push(@evasion, {
-      NAME => $name."<wbr><span class=\"small\">技能レベル</span>".$pc{'lv'.$id},
+      NAME => $name."<span class=\"small\">技能レベル</span>".$pc{'lv'.$id},
       STR  => ($id eq 'Fen' ? ceil($strTotal / 2) : $strTotal),
       EVA  => $pc{'lv'.$id}+$pc{bonusAgi},
     } );
@@ -827,15 +827,13 @@ if(!$pc{forbiddenMode}){
       EVA  => $pc{partEnhance},
     } );
   }
-
+  
   foreach (@{extractModifications(\%pc)}) {
     my %mod = %{$_;};
-
     if ($mod{eva} || $mod{def}) {
       my %item = (NAME => $mod{name});
       $item{EVA} = $mod{eva} if $mod{eva};
       $item{DEF} = $mod{def} if $mod{def};
-
       push(@evasion, \%item);
     }
   }
@@ -1125,6 +1123,7 @@ sub cashCheck(){
 foreach my $color ('Red','Gre','Bla','Whi','Gol'){
   $SHEET->param("card${color}View" => $pc{'card'.$color.'B'}+$pc{'card'.$color.'A'}+$pc{'card'.$color.'S'}+$pc{'card'.$color.'SS'});
 }
+
 ### 各種影響表（穢れ、侵蝕など） --------------------------------------------------
 {
   my %effects = map { $_->{name} => $_ } @set::effects;
