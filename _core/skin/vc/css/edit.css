@@ -14,7 +14,7 @@
     grid-row: 2 / 3;
     font-size: 1.2rem;
   }
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: auto;
@@ -39,7 +39,7 @@
     "PER  APP IMG"
     "STT  STT IMG"
   ;
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     grid-template-columns: 2fr 1fr;
     grid-gap: var(--box-v-gap) var(--box-h-gap);
     grid-template-rows: auto auto auto auto auto;
@@ -91,7 +91,7 @@
   }
 }
 
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   #levels {
     grid-template-columns: 1fr 6em;
   }
@@ -108,7 +108,7 @@
 #battle {
   margin-top: var(--box-v-gap);
 }
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   #specialities {
     margin-top: var(--box-v-gap);
   }
@@ -130,12 +130,12 @@
   &:nth-child(6) { width: auto; }
 }
 
-#battle table colgroup col {
-  &.head { width:4.5em; }
-  &.name { width: auto; }
-  &      { width:4.2em; }
+#battle table colgroup {
+  col   { width: 4.2em; }
+  .head { width: 4.5em; }
+  .name { width:  auto; }
 }
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   #goods,
   #items,
   #battle { overflow-x: auto; }
@@ -151,15 +151,15 @@
   #battle table colgroup col      { width:3.2em; }
 }
 
-#history table thead th {
-  &:first-child{ width: 1.4em; }
-  &.date       { width:   6em; }
-  &.title      { width:  14em; }
-  &.result     { width:   5em; }
-  &.gm         { width:   6em; }
-  &.member     { width:  auto; }
+#history table thead {
+  & th:first-child { width: 1.4em; }
+  .date       { width:   6em; }
+  .title      { width:  14em; }
+  .result     { width:   5em; }
+  .gm         { width:   6em; }
+  .member     { width:  auto; }
 }
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   #history table  { table-layout: fixed; }
   #history table thead th.title  { width: 12em; }
   #history table thead th.member { width: 16em; }

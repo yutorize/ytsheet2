@@ -64,6 +64,8 @@ elsif($mode eq 'blanksheet'){
   $pc{partner2Auto} = 1;
   
   $pc{paletteUseBuff} = 1;
+
+  %pc = applyCustomizedInitialValues(\%pc);
 }
 
 ## 画像
@@ -78,6 +80,7 @@ $pc{wordsY} ||= '上';
 setDefaultColors();
 
 ## その他
+$pc{makeType}   ||= 'normal';
 $pc{historyNum} ||= 3;
 $pc{kizunaNum}  ||= 3;
 $pc{kizuatoNum} ||= 2;
@@ -95,7 +98,7 @@ foreach (
 }
 
 ### フォーム表示 #####################################################################################
-my $titlebarname = removeTags nameToPlain unescapeTags ($pc{characterName}||"“$pc{aka}”");
+my $titlebarname = removeTags removeRuby unescapeTags ($pc{characterName}||"“$pc{aka}”");
 print <<"HTML";
 Content-type: text/html\n
 <!DOCTYPE html>
@@ -257,6 +260,10 @@ print <<"HTML";
       <div id="area-status">
         @{[ imageForm($pc{imageURL}) ]}
 
+        <div id="make-type" class="box">
+          @{[ radios 'makeType','changeMakeType','normal=>通常作成','gospel=>ゴスペルバレット作成' ]}
+        </div>
+
         <div id="classes" class="box">
         <h2 class="in-toc">種別／ネガイ／能力値</h2>
           <table class="edit-table">
@@ -349,12 +356,31 @@ print <<"HTML";
                 <span class="h-only">決意</span>
                 <span class="o-only">使命</span>
               <td colspan="3">@{[input "resolution"]}
-            <tr>
+            <tr class="normal-only">
               <th>所属
               <td colspan="3">@{[input "belong",'','','list="list-belong"']}
             <tr>
               <th>おもな武器
               <td colspan="3">@{[input "weapon"]}
+            <tr class="gospel-only">
+              <th>主人(テンシ)
+              <td colspan="3">@{[input "master"]}
+            <tr class="gospel-only">
+              <th>テンシの恩恵
+              <td colspan="3">@{[input "benefit"]}
+            <tr class="gospel-only">
+              <th>経緯 <span class="small thin">(ゴスペルバレット)</span>
+              <td colspan="3">@{[input "backgroundGB",'','','placeholder="転化時のみ記入"']}
+            <tr class="gospel-only">
+              <th><span class="thin">イルマーカー:位置</span>
+              <td>@{[input "illMarkerPosition",'','','list="list-illmarker-position"']}
+              <th>主人の感情１
+              <td>@{[input "masterEmotion1",'','','list="list-master-emotion1"']}
+            <tr class="gospel-only">
+              <th><span class="thin">イルマーカー:形状</span>
+              <td>@{[input "illMarkerShape",'','','list="list-illmarker-shape"']}
+              <th>主人の感情２
+              <td>@{[input "masterEmotion2",'','','list="list-master-emotion2"']}
             </tr>
           </table>
         </div>
@@ -769,6 +795,40 @@ print <<"HTML";
     <option value="劣等感">
     <option value="憎しみ">
     <option value="不安">
+  </datalist>
+  <datalist id="list-illmarker-position">
+    <option value="手首">
+    <option value="胸">
+    <option value="首">
+    <option value="足首">
+    <option value="腹">
+    <option value="舌">
+  </datalist>
+  <datalist id="list-illmarker-shape">
+    <option value="鎖">
+    <option value="縄">
+    <option value="剣">
+    <option value="茨">
+    <option value="蔓">
+    <option value="文字">
+    <option value="目">
+    <option value="咬み痕">
+  </datalist>
+  <datalist id="list-master-emotion1">
+    <option value="独占欲">
+    <option value="役に立つ">
+    <option value="優越感">
+    <option value="愉悦">
+    <option value="偏愛">
+    <option value="嗜虐心">
+  </datalist>
+  <datalist id="list-master-emotion2">
+    <option value="家畜">
+    <option value="消耗品">
+    <option value="美術品">
+    <option value="部下">
+    <option value="観察対象">
+    <option value="愛玩物">
   </datalist>
   <script>
 HTML

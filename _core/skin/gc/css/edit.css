@@ -14,7 +14,7 @@
     grid-row: 2 / 3;
     font-size: 1.2rem;
   }
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: auto;
@@ -38,7 +38,7 @@
     "CLS EXP ---"
     "STT STT STT"
   ;
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     display: block;
     > .box {
       margin-top: var(--box-v-gap);
@@ -58,7 +58,7 @@
     "BLF BLF IMG"
     "BND BND IMG"
   ;
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     grid-template-columns: 2fr 1fr;
 
     grid-template-areas:
@@ -72,13 +72,13 @@
 }
 
 #class-and-style {
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     grid-template-columns: 1fr 1fr 5em;
   }
 }
 
 #exp {
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     width: 6em;
     margin-left: auto;
   }
@@ -170,7 +170,7 @@
     display: none;
   }
   
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     display: block;
     > table {
       margin-top: 0 !important;
@@ -200,7 +200,7 @@
   .relation { width: 6em; }
   .emotion  { width: 11em; }
   .emotion input { width: 5em; }
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     .relation { width: 4em; }
     .emotion  { width: 8.5em; }
     .emotion input { width: 3.5em; }
@@ -243,7 +243,7 @@
       grid-template-columns: max-content auto;
       padding-bottom: 0;
       align-items: center;
-      @media screen and (max-width:735px){
+      @media screen and (width <= 735px){
         font-size: 80%;
         display: block;
       }
@@ -257,7 +257,7 @@
       text-align: right;
       text-wrap: nowrap;
       line-height: 1;
-      @media screen and (max-width:735px){
+      @media screen and (width <= 735px){
         > span { display: none; }
       }
     }
@@ -340,7 +340,7 @@
     #items & {
       .name { width: 20%; }
     }
-    @media screen and (max-width:735px){
+    @media screen and (width <= 735px){
       .name  { min-width: 8em !important; }
       .type  { min-width: 5em; }
       .skill { min-width: 5em; }
@@ -501,16 +501,16 @@
   overflow-x: auto;
   > table {
     table-layout: fixed;
-    > colgroup col {
-      &:first-child{ width: 1.4em; }
-      &.date       { width:   6em; }
-      &.title      { width:  12em; }
-      &.exp        { width:   6em; }
-      &.gm         { width:   6em; }
-      &.member     { width:  auto; }
-      @media screen and (max-width:735px){
-        &.title  { width: 12em; }
-        &.member { width: 16em; }
+    > colgroup {
+      :first-child{ width: 1.4em; }
+      .date       { width:   6em; }
+      .title      { width:  12em; }
+      .exp        { width:   6em; }
+      .gm         { width:   6em; }
+      .member     { width:  auto; }
+      @media screen and (width <= 735px){
+        .title  { width: 12em; }
+        .member { width: 16em; }
       }
     }
   }

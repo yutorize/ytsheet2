@@ -18,6 +18,12 @@ body:not(.class-hound) .h-only {
 body:not(.class-owner) .o-only {
   display: none !important;
 }
+body:not(.normal-bullet) .normal-only {
+  display: none !important;
+}
+body:not(.gospel-bullet) .gospel-only {
+  display: none !important;
+}
 
 #area-status {
   min-height: 0%;
@@ -25,11 +31,13 @@ body:not(.class-owner) .o-only {
   grid-template-columns: 2fr 1.3fr;
   grid-template-rows: auto auto;
   grid-template-areas:
+    "MAK IMG"
     "CLS IMG"
     "PER IMG"
   ;
+  #make-type { grid-area: MAK; }
 }
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   #area-status {
     grid-template-columns: 1fr;
     grid-gap: var(--box-v-gap) var(--box-h-gap);
@@ -37,11 +45,22 @@ body:not(.class-owner) .o-only {
 
     grid-template-areas:
       "IMG "
+      "MAK "
       "CLS "
       "PER "
     ;
   }
 }
+#make-type {
+  width: max-content;
+  padding: 1px;
+  > label {
+    &:has(:checked){
+      background-color:  var(--box-base-bg-color);
+    }
+  }
+}
+
 #classes {
   display: block;
 }
@@ -68,7 +87,7 @@ body:not(.class-owner) .o-only {
   background-color: transparent;
 }
 
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   #status {
     grid-template-columns: 1fr 2fr;
   }
@@ -165,7 +184,7 @@ body:not(.class-owner) .o-only {
 .partner-table input[readonly]:focus {
   outline: none;
 }
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   .partner-table {
     display: block;
   }
@@ -205,16 +224,16 @@ body:not(.class-owner) .o-only {
   padding-left: 0;
 }
 
-#history table thead th {
-  &:first-child { width: 1.4em; }
-  &.date        { width:   6em; }
-  &.title       { width:  12em; }
-  &.grow        { width:   6em; }
-  &.gm          { width:   6em; }
-  &.member      { width:  auto; }
+#history table thead {
+  & th:first-child { width: 1.4em; }
+  .date        { width:   6em; }
+  .title       { width:  12em; }
+  .grow        { width:   6em; }
+  .gm          { width:   6em; }
+  .member      { width:  auto; }
 }
 
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   #history table  { table-layout: fixed; }
   #history table thead th.title  { width: 12em; }
   #history table thead th.member { width: 16em; }

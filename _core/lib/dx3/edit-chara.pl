@@ -61,6 +61,8 @@ elsif($mode eq 'blanksheet'){
   $pc{combo1Condition2} = '100%以上';
   
   $pc{paletteUseBuff} = 1;
+
+  %pc = applyCustomizedInitialValues(\%pc);
 }
 
 ## 画像
@@ -134,7 +136,7 @@ $pc{"vehicle${_}Note"} =~ s/&lt;br&gt;/\n/g foreach (1 .. $pc{vehicleNum});
 $pc{"item${_}Note"}    =~ s/&lt;br&gt;/\n/g foreach (1 .. $pc{itemNum});
 
 ### フォーム表示 #####################################################################################
-my $titlebarname = removeTags nameToPlain unescapeTags ($pc{characterName}||"“$pc{aka}”");
+my $titlebarname = removeTags removeRuby unescapeTags ($pc{characterName}||"“$pc{aka}”");
 print <<"HTML";
 Content-type: text/html\n
 <!DOCTYPE html>
@@ -553,37 +555,49 @@ print <<"HTML";
       </div>
       <details class="box" id="lois" $open{lois} style="position:relative">
         <summary class="in-toc">ロイス</summary>
-        <table class="edit-table no-border-cells" id="lois-table">
-          <colgroup><col><col><col><col><col><col><col><col></colgroup>
-          <thead>
-            <tr>
-              <th>関係
-              <th>名前
-              <th colspan="3">感情<span class="small">(Positive／Negative)</span>
-              <th>属性
-              <th colspan="2" class="right small">Sロイス
-              <th class="right">状態
-            </tr>
-          <tbody>
+        <div>
+          <table class="edit-table no-border-cells" id="lois-table">
+            <colgroup>
+            <col class="relation">
+            <col class="name">
+            <col class="emo">
+            <col class="slash">
+            <col class="emo">
+            <col class="color">
+            <col class="note">
+            <col class="sperior">
+            <col class="state">
+            </colgroup>
+            <thead>
+              <tr>
+                <th>関係
+                <th>名前
+                <th colspan="3">感情<span class="small">(Positive／Negative)</span>
+                <th>属性
+                <th colspan="2" class="right small">Sロイス
+                <th class="right">状態
+              </tr>
+            <tbody>
 HTML
 foreach my $num (1 .. 7) {
 if(!$pc{"lois${num}State"}){ $pc{"lois${num}State"} = 'ロイス' }
 print <<"HTML";
-            <tr id="lois${num}">
-              <td><span class="handle"></span>@{[input "lois${num}Relation",'','','list="list-lois-relation"']}
-              <td>@{[input "lois${num}Name",'','encroachBonusType']}
-              <td class="emo">@{[input "lois${num}EmoPosiCheck",'checkbox',"emoP($num)"]}@{[input "lois${num}EmoPosi",'','','list="list-emotionP"']}
-              <td>／
-              <td class="emo">@{[input "lois${num}EmoNegaCheck",'checkbox',"emoN($num)"]}@{[input "lois${num}EmoNega",'','','list="list-emotionN"']}
-              <td>@{[input "lois${num}Color",'',"changeLoisColor($num)",'list="list-lois-color"']}
-              <td>@{[input "lois${num}Note"]}
-              <td>@{[input "lois${num}S",'checkbox',"sLois($num)"]}
-              <td onclick="changeLoisState(this.parentNode.id)"><span id="lois${num}-state" data-state="$pc{"lois${num}State"}"></span>@{[input "lois${num}State",'hidden']}
+              <tr id="lois${num}">
+                <td class="relation"><span class="handle"></span>@{[input "lois${num}Relation",'','','list="list-lois-relation"']}
+                <td class="name    ">@{[input "lois${num}Name",'','encroachBonusType']}
+                <td class="emo     ">@{[input "lois${num}EmoPosiCheck",'checkbox',"emoP($num)"]}@{[input "lois${num}EmoPosi",'','','list="list-emotionP"']}
+                <td class="slash   ">／
+                <td class="emo     ">@{[input "lois${num}EmoNegaCheck",'checkbox',"emoN($num)"]}@{[input "lois${num}EmoNega",'','','list="list-emotionN"']}
+                <td class="color   ">@{[input "lois${num}Color",'',"changeLoisColor($num)",'list="list-lois-color"']}
+                <td class="note    ">@{[input "lois${num}Note"]}
+                <td class="sperior ">@{[input "lois${num}S",'checkbox',"sLois($num)"]}
+                <td class="state   " onclick="changeLoisState(this.parentNode.id)"><span id="lois${num}-state" data-state="$pc{"lois${num}State"}"></span>@{[input "lois${num}State",'hidden']}
 HTML
 }
 print <<"HTML";
-          </tbody>
-        </table>
+            </tbody>
+          </table>
+        </div>
         <div class="right lois-reset-buttons">
           <button type="button" class="small" onclick="resetLoisAll()">全ロイスをリセット</button>
           <button type="button" class="small" onclick="resetLoisAdd()">4番目以降をリセット</button>
@@ -591,16 +605,17 @@ print <<"HTML";
       </details>
       <details class="box" id="memory" $open{memory}>
         <summary class="in-toc" data-content-title="メモリー">メモリー [<span id="exp-memory">0</span>]</summary>
-        <table class="edit-table no-border-cells" id="memory-table">
-          <thead>
-            <tr>
-              <th>
-              <th>関係
-              <th>名前
-              <th>感情
-              <th>
-            </tr>
-          <tbody>
+        <div>
+          <table class="edit-table no-border-cells" id="memory-table">
+            <thead>
+              <tr>
+                <th>
+                <th>関係
+                <th>名前
+                <th>感情
+                <th>
+              </tr>
+            <tbody>
 HTML
 foreach my $num (1 .. 3) {
 print <<"HTML";
@@ -613,8 +628,9 @@ print <<"HTML";
 HTML
 }
 print <<"HTML";
-          </tbody>
-        </table>
+            </tbody>
+          </table>
+        </div>
         <ul class="annotate"><li>「関係」か「名前」を入力すると経験点が計算されます。</ul>
       </details>
       <details class="box crc-only" id="insanity" $open{insanity}>
@@ -627,10 +643,10 @@ print <<"HTML";
 
       <details class="box" id="effect" $open{effect}>
         <summary class="in-toc" data-content-title="エフェクト">エフェクト [<span id="exp-effect">0</span>]</summary>
-        @{[input 'effectNum','hidden']}
-        <table class="edit-table line-tbody no-border-cells" id="effect-table">
-          <thead id="effect-head">
-            <tr><th><th>名称<th>LV<th>タイミング<th>技能<th>難易度<th>対象<th>射程<th>侵蝕値<th>制限
+        <div>
+          <table class="edit-table line-tbody no-border-cells" id="effect-table">
+            <thead id="effect-head">
+              <tr><th><th>名称<th>LV<th>タイミング<th>技能<th>難易度<th>対象<th>射程<th>侵蝕値<th>制限
 HTML
 foreach my $num ('TMPL',1 .. $pc{effectNum}) {
   if($num eq 'TMPL'){ print '<template id="effect-template">' }
@@ -657,10 +673,12 @@ HTML
   if($num eq 'TMPL'){ print '</template>' }
 }
 print <<"HTML";
-          <tfoot id="effect-foot">
-            <tr><th><th>名称<th>LV<th>タイミング<th>技能<th>難易度<th>対象<th>射程<th>侵蝕値<th>制限
-        </table>
+            <tfoot id="effect-foot">
+              <tr><th><th>名称<th>LV<th>タイミング<th>技能<th>難易度<th>対象<th>射程<th>侵蝕値<th>制限
+          </table>
+        </div>
         <div class="add-del-button"><a onclick="addEffect()">▼</a><a onclick="delEffect()">▲</a></div>
+        @{[input 'effectNum','hidden']}
         <ul class="annotate">
           <li>種別「自動」「Dロイス」を選択した場合、取得時（1レベル）の経験点を0として計算します。
           <li>経験点修正の欄は、自動計算で対応しきれない例外的な取得・成長に使用してください（Dロイス転生者など）
@@ -675,27 +693,29 @@ print <<"HTML";
       <details class="box crc-only" id="magic" $open{magic}>
         <summary class="in-toc" data-content-title="術式">術式 [<span id="exp-magic">0</span>]</summary>
         @{[input 'magicNum','hidden']}
-        <table class="edit-table line-tbody no-border-cells" id="magic-table">
-          <thead id="magic-head">
-            <tr><th><th>名称<th>種別<th>経験点<th>発動値<th>侵蝕値<th>効果
+        <div>
+          <table class="edit-table line-tbody no-border-cells" id="magic-table">
+            <thead id="magic-head">
+              <tr><th><th>名称<th>種別<th>経験点<th>発動値<th>侵蝕値<th>効果
 HTML
 foreach my $num ('TMPL',1 .. $pc{magicNum}) {
   if($num eq 'TMPL'){ print '<template id="magic-template">' }
-print <<"HTML";
-          <tbody id="magic-row${num}">
-            <tr>
-              <td class="handle"> 
-              <td>@{[input "magic${num}Name"    ,'','','placeholder="名称"']}
-              <td>@{[input "magic${num}Type"    ,'','','placeholder="種別" list="list-magic-type"']}
-              <td>@{[input "magic${num}Exp"     ,'number','calcMagic']}
-              <td>@{[input "magic${num}Activate",'','','placeholder="発動値"']}
-              <td>@{[input "magic${num}Encroach",'','','placeholder="侵蝕値"']}
-              <td>@{[input "magic${num}Note"    ,'','','placeholder="効果"']}
+  print <<"HTML";
+            <tbody id="magic-row${num}">
+              <tr>
+                <td class="handle"> 
+                <td>@{[input "magic${num}Name"    ,'','','placeholder="名称"']}
+                <td>@{[input "magic${num}Type"    ,'','','placeholder="種別" list="list-magic-type"']}
+                <td>@{[input "magic${num}Exp"     ,'number','calcMagic']}
+                <td>@{[input "magic${num}Activate",'','','placeholder="発動値"']}
+                <td>@{[input "magic${num}Encroach",'','','placeholder="侵蝕値"']}
+                <td>@{[input "magic${num}Note"    ,'','','placeholder="効果"']}
 HTML
   if($num eq 'TMPL'){ print '</template>' }
 }
 print <<"HTML";
-        </table>
+          </table>
+        </div>
         <div class="add-del-button"><a onclick="addMagic()">▼</a><a onclick="delMagic()">▲</a></div>
       </details>
       <div class="box trash-box" id="magic-trash">
@@ -903,7 +923,7 @@ print <<"HTML";
           <tbody>
             <tr>
               <th>合計
-              <td><b id="item-total-stock">0</b>/<b id="item-max-stock">0</b>
+              <td><b id="item-total-stock">0</b><wbr>/<b id="item-max-stock">0</b>
               <td class="bold" id="item-total-exp">0
               <td>
             </tr>
@@ -1056,6 +1076,7 @@ print <<"HTML";
   </footer>
   <datalist id="list-stage">
     <option value="基本ステージ">
+    <option value="基本ステージ(UA)">
     <option value="オーヴァードアカデミア">
     <option value="ナイトメアプリズン">
     <option value="デモンズシティ">
@@ -1304,7 +1325,7 @@ print <<"HTML";
     <option value="〈情報:裏社会〉">
     <option value="〈情報:警察〉">
     <option value="〈情報:軍事〉">
-    <option value="〈情報:学問">
+    <option value="〈情報:学問〉">
     <option value="〈情報:ウェブ〉">
     <option value="〈情報:メディア〉">
     <option value="〈情報:ビジネス〉">
@@ -1326,6 +1347,10 @@ print <<"HTML";
     <option value="エンブレム／防具">
     <option value="エンブレム／防具（補助）">
     <option value="リレーション／防具">
+  </datalist>
+  <datalist id="list-vehicle-type">
+    <option value="ヴィークル">
+    <option value="エンブレム／ヴィークル">
   </datalist>
   <datalist id="list-item-type">
     <option value="コネ">

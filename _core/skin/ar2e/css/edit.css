@@ -5,7 +5,7 @@
 #regulation > dl:first-of-type {
   grid-template-columns: 1fr 1fr 4fr;
 }
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   #regulation > dl {
     grid-template-columns: 1fr 1fr 1fr;
   }
@@ -60,7 +60,7 @@ dd.area-tags {
     "CLS  CLS IMG"
     "STT  STT STT"
   ;
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     grid-template-columns: 2fr 1fr;
     grid-gap: var(--box-v-gap) var(--box-h-gap);
 
@@ -141,22 +141,24 @@ dd.area-tags {
 #status-weight {
   grid-column: 3;
 }
-#status table{
+#status table {
   table-layout: fixed;
   
-  & col.name   { width: 3em; }
-  & col.text   { width: 4em; }
-  & col.input  { width: 4.5em; }
-  & col.indent1{ width: 1em; }
-  & col.indent2{ width: 2em; }
-  & col.dice   { width: 6em; }
+  > colgroup {
+    .name   { width: 3em; }
+    .text   { width: 4em; }
+    .input  { width: 4.5em; }
+    .indent1{ width: 1em; }
+    .indent2{ width: 2em; }
+    .dice   { width: 6em; }
+  }
   
   #status-sub td:nth-last-child(3) {
     font-weight: normal;
   }
 }
 
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   #status {
     grid-template-columns: min-content 1em min-content;
   }
@@ -214,7 +216,6 @@ dd.area-tags {
 }
 
 #levelup {
-  overflow-x: auto;
   margin-top: var(--box-v-gap);
 }
 #levelup dl {
@@ -226,142 +227,153 @@ dd.area-tags {
   border-bottom-style: solid;
 }
 #levelup table {
+  > thead {
+    > tr th {
+      vertical-align: bottom;
+    }
+    > tr:first-child th:first-child {
+      width: 2.5em;
+    }
+    > tr:last-child th {
+      width: 2.2em;
+    }
+    > tr:first-child th:nth-child(3) {
+      width: 9em;
+      font-size: 90%;
+    }
+  }
+  > tbody {
+    > tr {
+      background-color: transparent;
+    }
+    > tr:nth-last-of-type(even) {
+      background-color: var(--box-even-rows-bg-color);
+    }
+    & td.skill {
+      text-align: right;
+      position: relative;
+    }
+    & td.skill input {
+      width: calc(100% - 1.5em - 1px);
+      border-left: none;
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+      font-size: inherit;
+    }
+    & td.skill::before {
+      content: attr(data-lv);
+      display: grid;
+      align-items: center;
+      position: absolute;
+      left: 0;
+      width: 1.5em;
+      height: calc(1.2em + 3px * 2);
+      line-height: 1.2;
+      margin: 1px 0;
+      padding: 0;
+      border-radius: 5px 0 0 5px;
+      border-width: 1px;
+      border-style: solid dotted solid solid;
+      border-color: var(--box-input-border-color);
+      text-align: center;
+      background-color: var(--input-bg-color);
+    }
+    & td.skill[data-lv=""]::before,
+    & td.skill:not([data-lv])::before {
+      content: 'Lv';
+      color: var(--box-input-border-color);
+    }
+  }
 }
-#levelup table thead th {
-  vertical-align: bottom;
+@media screen and (width > 735px){
+  #levelup .annotate { margin-left: auto; }
 }
-#levelup table thead tr:first-child th:first-child {
-  width: 2.5em;
-}
-#levelup table thead tr:last-child th {
-  width: 2.2em;
-}
-#levelup table thead tr:first-child th:nth-child(3) {
-  width: 9em;
-  font-size: 90%;
-}
-#levelup table tbody tr {
-  background-color: transparent;
-}
-#levelup table tbody tr:nth-last-of-type(even) {
-  background-color: var(--box-even-rows-bg-color);
-}
-#levelup table tbody td.skill {
-  text-align: right;
-  position: relative;
-}
-#levelup table tbody td.skill input {
-  width: calc(100% - 1.5em - 1px);
-  border-left: none;
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-  font-size: inherit;
-}
-#levelup table tbody td.skill::before {
-  content: attr(data-lv);
-  display: grid;
-  align-items: center;
-  position: absolute;
-  left: 0;
-  width: 1.5em;
-  height: calc(1.2em + 3px * 2);
-  line-height: 1.2;
-  margin: 1px 0;
-  padding: 0;
-  border-radius: 5px 0 0 5px;
-  border-width: 1px;
-  border-style: solid dotted solid solid;
-  border-color: var(--box-input-border-color);
-  text-align: center;
-  background-color: var(--input-bg-color);
-}
-#levelup table tbody td.skill[data-lv=""]::before,
-#levelup table tbody td.skill:not([data-lv])::before {
-  content: 'Lv';
-  color: var(--box-input-border-color);
-}
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
+  #levelup summary + div { overflow-x: auto; }
   #levelup table {
     width: 60em;
-  }
-  #levelup table tbody td.skill::before {
-    height: calc(1.6em + 2px * 2);
+    > tbody td.skill::before {
+      height: calc(1.6em + 2px * 2);
+    }
   }
 }
 
 #skills {
-  overflow-x: auto;
   margin-top: var(--box-v-gap);
 }
-#skills table thead th {
-  &:nth-child(1) { width: 1.4em; }
-  &:nth-child(2) { width:  auto; } /* 名称 */
-  &:nth-child(3) { width:   2em; } /* Lv */
-  &:nth-child(4) { width: 8.9em; } /* タイミング */
-  &:nth-child(5) { width: 7.4em; } /* 判定 */
-  &:nth-child(6) { width: 6.3em; } /* 対象 */
-  &:nth-child(7) { width: 5.3em; } /* 射程 */
-  &:nth-child(8) { width: 3.9em; } /* コスト */
-  &:nth-child(9) { width: 9.4em; } /* 使用条件 */
+#skills table {
+  table-layout: auto;
+  > thead th { 
+    &:nth-child(1) { width: 1.4em; }
+    &:nth-child(2) { width:  auto; } /* 名称 */
+    &:nth-child(3) { width:   2em; } /* Lv */
+    &:nth-child(4) { width: 8.9em; } /* タイミング */
+    &:nth-child(5) { width: 7.4em; } /* 判定 */
+    &:nth-child(6) { width: 6.3em; } /* 対象 */
+    &:nth-child(7) { width: 5.3em; } /* 射程 */
+    &:nth-child(8) { width: 3.9em; } /* コスト */
+    &:nth-child(9) { width: 9.4em; } /* 使用条件 */
+  }
 }
 #skills table tbody td {
   padding: 5px 0 0;
   vertical-align: bottom;
 }
+#skills table tbody td[rowspan] {
+  vertical-align: middle;
+}
 #skills table tbody td[colspan] {
   padding: 0 0 5px;
   vertical-align: middle;
   text-align: right;
-}
-#skills table tbody td[colspan] div {
-  display: grid;
-  grid-gap: .1rem;
-  grid-template-columns: 3.3em 9.5em 2.3em 6.5em 2.3em 1fr;
-  align-items: end;
-}
-#skills table tbody td[rowspan] {
-  vertical-align: middle;
-}
-#skills table tbody td b {
-  display: block;
-  font-size: 85%;
-  text-align: right;
-}
-#skills table tbody td .small {
-  font-size: 80%;
-  transform: scale(0.8,1);
-  white-space: nowrap;
-}
-#skills table tbody td b::after {
-  content: ":";
-  font-size: 1rem;
+  & div {
+    display: grid;
+    grid-gap: .1rem;
+    grid-template-columns: 3.3em 9.5em 2.3em 6.5em 2.3em 1fr;
+    align-items: end;
+  }
+  & b {
+    display: block;
+    font-size: 85%;
+    text-align: right;
+  }
+  & .small {
+    font-size: 80%;
+    transform: scale(0.8,1);
+    white-space: nowrap;
+  }
+  & b::after {
+    content: ":";
+    font-size: 1rem;
+  }
 }
 #skills table tbody td input[name$='Name'] {
   font-weight: bold;
 }
 #skills td.calc {
   position: relative;
-}
-#skills td.calc::after {
-  content: "\ea5f";
-  display: inline-grid;
-  place-items: center;
-  position: absolute;
-  left: 0px;
-  top: 4px;
-  bottom: 0px;
-  font-family: "Material Symbols Outlined";
-  font-variation-settings: 'FILL' 1;
-  font-size: 150%;
-  line-height: 1;
-  color: #5ad;
-}
-#skills td.calc input {
-  padding-left: calc(1.1em + 4px);
+  &::after {
+    content: "\ea5f";
+    display: inline-grid;
+    place-items: center;
+    position: absolute;
+    left: 0px;
+    top: 4px;
+    bottom: 0px;
+    font-family: "Material Symbols Outlined";
+    font-variation-settings: 'FILL' 1;
+    font-size: 150%;
+    line-height: 1;
+    color: #5ad;
+  }
+  & input {
+    padding-left: calc(1.1em + 4px);
+  }
 }
 #skills table tbody {
   &.race    { background-image: linear-gradient(to right,hsla(120, 70%, 50%,0.2) 1em,transparent 2em) }
   &.style   { background-image: linear-gradient(to right,hsla( 60, 70%, 50%,0.2) 1em,transparent 2em) }
+  &.faith   { background-image: linear-gradient(to right,hsla( 80, 70%, 50%,0.2) 1em,transparent 2em) }
   &.general { background-image: linear-gradient(to right,hsla(200,100%, 50%,0.2),transparent) }
   &.geis    { background-image: linear-gradient(to right,hsla(270,100%, 50%,0.2),transparent) }
   &.add     { background-image: linear-gradient(to right,hsla(  0, 20%, 50%,0.1),transparent) }
@@ -370,7 +382,8 @@ dd.area-tags {
   .night &.another { background-image: linear-gradient(to right,hsla(  0,100%, 85%,0.2),transparent) }
 }
 
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
+  #skills summary + div { overflow-x: auto; overflow-y: hidden;}
   #skills table {
     table-layout: fixed;
   }
@@ -419,21 +432,21 @@ dd.area-tags {
   border-top: unset;
   border-bottom: unset;
 }
-#battle col {
-  &.head  { width:   3em; } /* 見出し */
-  &.name  { width:  11em; } /* 名称 */
-  &.weight{ width: 3.2em; } /* 重量 */
-  &.acc   { width: 3.2em; } /* 命中 */
-  &.atk   { width: 3.2em; } /* 攻撃 */
-  &.eva   { width: 3.2em; } /* 回避 */
-  &.def   { width: 3.2em; } /* 物防 */
-  &.mdef  { width: 3.2em; } /* 魔防 */
-  &.ini   { width: 3.2em; } /* 行動 */
-  &.move  { width: 3.2em; } /* 移動 */
-  &.range { width: 4.7em; } /* 射程 */
-  &.type  { width: auto; } /* 種別 */
-  &.usage { width: auto; } /* 部位 */
-  &.lv    { width: 3.2em; } /* Lv */
+#battle colgroup {
+  .head  { width:   3em; } /* 見出し */
+  .name  { width:  11em; } /* 名称 */
+  .weight{ width: 3.2em; } /* 重量 */
+  .acc   { width: 3.2em; } /* 命中 */
+  .atk   { width: 3.2em; } /* 攻撃 */
+  .eva   { width: 3.2em; } /* 回避 */
+  .def   { width: 3.2em; } /* 物防 */
+  .mdef  { width: 3.2em; } /* 魔防 */
+  .ini   { width: 3.2em; } /* 行動 */
+  .move  { width: 3.2em; } /* 移動 */
+  .range { width: 4.7em; } /* 射程 */
+  .type  { width: auto; } /* 種別 */
+  .usage { width: auto; } /* 部位 */
+  .lv    { width: 3.2em; } /* Lv */
 }
 #battle input[name$="Type"]{ min-width: 4em; }
 #battle input[name$="Usage"]{ min-width: 4em; }
@@ -478,47 +491,49 @@ dd.area-tags {
 }
 #battle-rolls tfoot td {
   padding-bottom: .1em;
-}
-#battle-rolls tfoot td > span {
-  position: static;
+  > span {
+    position: static;
+  }
 }
 #battle-rolls tfoot select[name="handedness"] {
   width: max-content;
 }
-#battle-rolls tfoot .battle-total-value td > b.hide {
-  display: none;
-}
-#battle-rolls tfoot .battle-total-value td > b.hide + b {
-  border-top-width: 0;
+#battle-rolls tfoot .battle-total-value td {
+  > b.hide {
+    display: none;
+  }
+  > b.hide + b {
+    border-top-width: 0;
+  }
 }
 #battle-rolls tfoot .battle-total-dice td {
   font-size: .9em;
+  > b {
+    display: inline;
+    font-size: calc(1em / 0.9 * 1.2);
+  }
+  > b::before {
+    display: none;
+  }
 }
-#battle-rolls tfoot .battle-total-dice td > b {
-  display: inline;
-  font-size: calc(1em / 0.9 * 1.2);
-}
-#battle-rolls tfoot .battle-total-dice td > b::before {
-  display: none;
-}
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   #battle .box { overflow-x: auto; }
   #battle table { table-layout: fixed; }
-  #battle col {
-    &.head  { width: 3.2em; } /* 見出し */
-    &.name  { width:  11em; } /* 名称 */
-    &.weight{ width: 3.2em; } /* 重量 */
-    &.acc   { width: 3.2em; } /* 命中 */
-    &.atk   { width: 3.2em; } /* 攻撃 */
-    &.eva   { width: 3.2em; } /* 回避 */
-    &.def   { width: 3.2em; } /* 物防 */
-    &.mdef  { width: 3.2em; } /* 魔防 */
-    &.ini   { width: 3.2em; } /* 行動 */
-    &.move  { width: 3.2em; } /* 移動 */
-    &.range { width: 4.7em; } /* 射程 */
-    &.type  { width: 6.2em; }  /* 種別 */
-    &.usage { width: 6.2em; }  /* 部位 */
-    &.note  { width: 17.2em; }  /* 部位 */
+  #battle colgroup {
+    .head  { width: 3.2em; } /* 見出し */
+    .name  { width:  11em; } /* 名称 */
+    .weight{ width: 3.2em; } /* 重量 */
+    .acc   { width: 3.2em; } /* 命中 */
+    .atk   { width: 3.2em; } /* 攻撃 */
+    .eva   { width: 3.2em; } /* 回避 */
+    .def   { width: 3.2em; } /* 物防 */
+    .mdef  { width: 3.2em; } /* 魔防 */
+    .ini   { width: 3.2em; } /* 行動 */
+    .move  { width: 3.2em; } /* 移動 */
+    .range { width: 4.7em; } /* 射程 */
+    .type  { width: 6.2em; }  /* 種別 */
+    .usage { width: 6.2em; }  /* 部位 */
+    .note  { width: 17.2em; }  /* 部位 */
   }
   #battle table thead tr,
   #battle table tbody tr,
@@ -533,41 +548,48 @@ dd.area-tags {
 #other-rolls {
   margin-top: var(--box-v-gap);
 }
-#other-rolls col:first-child { width: 44%; }
-#other-rolls col:last-child  { width: 5.5em; }
-#other-rolls table tbody td {
-  padding-top: 4px;
-  padding-bottom: 4px;
+#other-rolls table {
+  border-bottom: hidden;
+
+  & col:first-child { width: 44%; }
+  & col:last-child  { width: 5.5em; }
+
+  > tbody td {
+    padding-top: 4px;
+    padding-bottom: 4px;
+  }
+  > tbody td.roll > span {
+    position: absolute;
+    right: 5px;
+    bottom: 3px;
+    font-size: 80%;
+    margin-left :auto;
+  }
+  > tbody td.roll input {
+    width: 4em;
+  }
 }
-#other-rolls table tbody td.roll > span {
-  position: absolute;
-  right: 5px;
-  bottom: 3px;
-  font-size: 80%;
-  margin-left :auto;
-}
-#other-rolls table tbody td.roll input {
-  width: 4em;
-}
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   #other-rolls {
     display: block;
   }
-  #other-rolls table:first-of-type {
-    border-bottom-style: unset;
-  }
-  #other-rolls table:last-of-type {
-    margin-top: 0;
-  }
-  #other-rolls table:last-of-type thead {
-    display: none;
+  #other-rolls table {
+    &:first-of-type {
+      border-bottom-style: unset;
+    }
+    &:last-of-type {
+      margin-top: 0;
+      & thead {
+        display: none;
+      }
+    }
   }
 }
 
 #area-items {
   margin-top: var(--box-v-gap);
 }
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   #area-items {
     display: block;
   }
@@ -575,8 +597,9 @@ dd.area-tags {
     margin-top: var(--box-v-gap);
   }
 }
+
 #connections table col.handle,
-#geises table col.handle {
+#geises      table col.handle {
   width: 1.1em;
 }
 #geises td {
@@ -586,7 +609,7 @@ dd.area-tags {
   display: block;
 }
 
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   #relations {
     display: block;
   }
@@ -629,7 +652,7 @@ dd.area-tags {
     font-family: inherit;
   }
 }
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   #items-and-money {
     grid-template-columns: 1fr 1fr 2em;
   }
@@ -663,18 +686,18 @@ dd.area-tags {
   padding-left: .5em;
 }
 
-#history table thead th {
-  &:first-child{ width: 1.4em; }
-  &.date       { width:   6em; }
-  &.title      { width:  12em; }
-  &.exp        { width:   5em; }
-  &.pay        { width:   5em; }
-  &.money      { width:   5em; }
-  &.gm         { width:   6em; }
-  &.member     { width:  auto; }
+#history table thead {
+  & th:first-child { width: 1.4em; }
+  .date       { width:   6em; }
+  .title      { width:  12em; }
+  .exp        { width:   5em; }
+  .pay        { width:   5em; }
+  .money      { width:   5em; }
+  .gm         { width:   6em; }
+  .member     { width:  auto; }
 }
 
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   #history table  { table-layout: fixed; }
   #history table thead th.title  { width: 12em; }
   #history table thead th.member { width: 16em; }

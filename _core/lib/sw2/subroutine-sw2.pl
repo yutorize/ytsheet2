@@ -112,7 +112,7 @@ sub class_color {
   return $text;
 }
 
-### タグ変換 --------------------------------------------------
+### 分類マーク --------------------------------------------------
 sub checkSkillName {
   my $text = shift;
   my $markList = $::SW2_0 ? "[○◯〇＞▶〆☆≫»□☐☑🗨▽▼]|&gt;&gt;" : "[○◯〇△＞▶〆☆≫»□☐☑🗨]|&gt;&gt;";
@@ -149,6 +149,27 @@ sub textToIcon {
   
   return $text;
 }
+sub checkArtsName {
+  my $text = checkSkillName($_[0]);
+  my $mark;
+  while($text =~ s#^<i class="s-icon [^>]+?">.*?</i>##){
+    $mark .= $&;
+  }
+  return $text, $mark;
+}
+
+### 特技カテゴリ取得 --------------------------------------------------
+sub getFeatCategoryByName {
+  my $featName = shift;
+
+  foreach (@data::combat_feats) {
+    my @feat = @{$_};
+    (my $category, my $requiredLevel, my $name) = @feat;
+    return $category if $name eq $featName;
+  }
+
+  return '';
+}
 
 ### 妖精魔法ランク --------------------------------------------------
 sub fairyRank {
@@ -162,6 +183,112 @@ sub fairyRank {
     '6' => ['×','×','×','2&1','3&1','4&1','4&2','5&2','6&2','6&3','7&3','8&3','8&4','9&4','10&4','10&5'],
   );
   return $rank{$i}[$lv] || '×';
+}
+
+### 補正値記法の解釈 --------------------------------------------------
+sub extractModifications {
+  my %pc = %{shift;};
+
+  my @modifications = ();
+
+  sub extractModification {
+    my $name = shift;
+    my $note = shift;
+
+    my %sttRegEx = (
+      'A:increment' => '器(?:用度?)?増強',
+      'B:increment' => '敏(?:捷度?)?増強',
+      'C:increment' => '筋(?:力)?増強',
+      'D:increment' => '生(?:命力)?増強',
+      'E:increment' => '知力?増強',
+      'F:increment' => '精(?:神力?)?増強',
+      'A' => '器(?:用度?)?',
+      'B' => '敏(?:捷度?)?',
+      'C' => '筋(?:力)?',
+      'D' => '生(?:命力)?',
+      'E' => '知力?',
+      'F' => '精(?:神力?)?',
+      'vResist' => '生命抵抗力?',
+      'mResist' => '精神抵抗力?',
+      'eva' => '回避力?',
+      'def' => '防(?:護点?)?',
+      'mobility' => '移動力',
+      'magicPower' => '魔力',
+      'magicCast' => '(?:魔法)?行使(?:判定)?',
+      'magicDamage' => '魔法のダメージ',
+      'reqdWeapon' => '武器(?:必要筋力|必筋)上限'
+    );
+    my %modData;
+    foreach my $key (keys %sttRegEx){
+      if ($note =~ s/[\@＠]${sttRegEx{$key}}([＋+－-][0-9]+)//) {
+        $modData{$key} = $1 =~ tr/＋－/+-/r;
+      }
+    }
+
+    return {} if !%modData;
+
+    $modData{name} = $name;
+    return \%modData;
+  }
+
+  foreach (1 .. $pc{weaponNum}) {
+    my $nameKey = "weapon${_}Name";
+    my $noteKey = "weapon${_}Note";
+
+    my $name = $pc{$nameKey} // '';
+    my $note = $pc{$noteKey} // '';
+
+    $name = $name ne '' ? $name : '武器';
+
+    my %modification = %{extractModification($name, $note)};
+    next unless %modification;
+
+    push(@modifications, \%modification);
+  }
+
+  foreach (1 .. $pc{armourNum}) {
+    my $nameKey = "armour${_}Name";
+    my $noteKey = "armour${_}Note";
+
+    my $name = $pc{$nameKey} // '';
+    my $note = $pc{$noteKey} // '';
+
+    $name = $name ne '' ? $name : '防具';
+
+    my %modification = %{extractModification($name, $note)};
+    next unless %modification;
+
+    push(@modifications, \%modification);
+  }
+
+  for my $slot ('Head', 'Face', 'Ear', 'Neck', 'Back', 'HandR', 'HandL', 'Waist', 'Leg', 'Other', 'Other2', 'Other3', 'Other4') {
+    for my $suffix ('', '_', '__') {
+      my $nameKey = "accessory${slot}${suffix}Name";
+      my $noteKey = "accessory${slot}${suffix}Note";
+
+      if ($suffix ne '') {
+        # 拡張枠は有効化されていなければ無視する
+
+        my $addingKey = "accessory${slot}${suffix}";
+        $addingKey =~ s/_$//;
+        $addingKey .= 'Add';
+
+        next unless $pc{$addingKey};
+      }
+
+      my $name = $pc{$nameKey} // '';
+      my $note = $pc{$noteKey} // '';
+
+      $name = $name ne '' ? $name : '装飾品';
+
+      my %modification = %{extractModification($name, $note)};
+      next unless %modification;
+
+      push(@modifications, \%modification);
+    }
+  }
+
+  return \@modifications;
 }
 
 ### バージョンアップデート --------------------------------------------------

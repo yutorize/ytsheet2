@@ -98,6 +98,9 @@ if($::in{url}){
   $SHEET->param(convertUrl => $::in{url});
 }
 
+### 国名 --------------------------------------------------
+$SHEET->param(countryName => stylizeCharacterName $pc{countryName});
+
 ### プレイヤー名 --------------------------------------------------
 if($set::playerlist){
   my $pl_id = (split(/-/, $::in{id}))[0];
@@ -271,7 +274,7 @@ if($pc{forbidden} eq 'all' && $pc{forbiddenMode}){
   $SHEET->param(titleName => '非公開データ');
 }
 else {
-  $SHEET->param(titleName => removeTags nameToPlain($pc{countryName}));
+  $SHEET->param(titleName => removeTags removeRuby($pc{countryName}));
 }
 
 ### OGP --------------------------------------------------

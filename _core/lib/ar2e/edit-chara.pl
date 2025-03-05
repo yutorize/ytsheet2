@@ -95,6 +95,8 @@ elsif($mode eq 'blanksheet'){
   $pc{skill4Type} = 'general';
   
   $pc{paletteUseBuff} = 1;
+
+  %pc = applyCustomizedInitialValues(\%pc);
 }
 
 ## 画像
@@ -144,7 +146,7 @@ foreach my $i (1 .. $pc{geisesNum}){
 }
 
 ### フォーム表示 #####################################################################################
-my $titlebarname = removeTags nameToPlain unescapeTags ($pc{characterName}||"“$pc{aka}”");
+my $titlebarname = removeTags removeRuby unescapeTags ($pc{characterName}||"“$pc{aka}”");
 print <<"HTML";
 Content-type: text/html\n
 <!DOCTYPE html>
@@ -596,28 +598,29 @@ print <<"HTML";
       
       <details class="box" id="levelup" open>
         <summary class="in-toc">レベルアップ</summary>
-        <dl>
-          <dt><ruby>ＣＬ<rp>(</rp><rt>キャラクターレベル</rt><rp>)</rp></ruby>:
-          <dd>@{[ input 'level','number','changeLv','min="1"' ]}
-        </dl>
-        <table class="edit-table no-border-cells">
-          <thead>
-            <tr>
-              <th rowspan="2">CL
-              <th colspan="7">能力値上昇
-              <th rowspan="2">クラスチェンジ<br>or フェイト増加
-              <th rowspan="2" colspan="3">習得スキル　<a class="button" onclick="calcLvUpSkills('copy')">スキル欄に転記する</a>
-            </tr>
-            <tr>
-              <th>筋力
-              <th>器用
-              <th>敏捷
-              <th>知力
-              <th>感知
-              <th>精神
-              <th>幸運
-            </tr>
-          <tbody id="levelup-lines">
+        <div>
+          <dl>
+            <dt><ruby>ＣＬ<rp>(</rp><rt>キャラクターレベル</rt><rp>)</rp></ruby>:
+            <dd>@{[ input 'level','number','changeLv','min="1"' ]}
+          </dl>
+          <table class="edit-table no-border-cells">
+            <thead>
+              <tr>
+                <th rowspan="2">CL
+                <th colspan="7">能力値上昇
+                <th rowspan="2">クラスチェンジ<br>or フェイト増加
+                <th rowspan="2" colspan="3">習得スキル　<a class="button" onclick="calcLvUpSkills('copy')">スキル欄に転記する</a>
+              </tr>
+              <tr>
+                <th>筋力
+                <th>器用
+                <th>敏捷
+                <th>知力
+                <th>感知
+                <th>精神
+                <th>幸運
+              </tr>
+            <tbody id="levelup-lines">
 HTML
 foreach my $lv (reverse 2 .. $pc{level}){
   my @classes = ('fate|<フェイト増加>',@support_class);
@@ -626,55 +629,56 @@ foreach my $lv (reverse 2 .. $pc{level}){
   if($lv >= 15){ push(@classes, 'label=称号クラス','title|<称号クラス（自由記入）>'); }
 
 print <<"HTML";
-            <tr id="lvup${lv}">
-              <th>$lv
-              <td>@{[ input 'lvUp'.$lv.'SttStr', 'checkbox', "checkGrow(${lv})" ]}
-              <td>@{[ input 'lvUp'.$lv.'SttDex', 'checkbox', "checkGrow(${lv})" ]}
-              <td>@{[ input 'lvUp'.$lv.'SttAgi', 'checkbox', "checkGrow(${lv})" ]}
-              <td>@{[ input 'lvUp'.$lv.'SttInt', 'checkbox', "checkGrow(${lv})" ]}
-              <td>@{[ input 'lvUp'.$lv.'SttSen', 'checkbox', "checkGrow(${lv})" ]}
-              <td>@{[ input 'lvUp'.$lv.'SttMnd', 'checkbox', "checkGrow(${lv})" ]}
-              <td>@{[ input 'lvUp'.$lv.'SttLuk', 'checkbox', "checkGrow(${lv})" ]}
-              <td class="select-or-input">
-                <select name="lvUp${lv}Class" onchange="changeClass();calcLvUpSkills();">@{[ option "lvUp${lv}Class",@classes ]}</select>
-                @{[ input 'lvUp'.$lv.'ClassFree','','changeClass' ]}
-              </td>
-              <td class="skill">@{[ input 'lvUp'.$lv.'Skill1','','calcLvUpSkills' ]}
-              <td class="skill">@{[ input 'lvUp'.$lv.'Skill2','','calcLvUpSkills' ]}
-              <td class="skill">@{[ input 'lvUp'.$lv.'Skill3','','calcLvUpSkills' ]}
-            </tr>
+              <tr id="lvup${lv}">
+                <th>$lv
+                <td>@{[ input 'lvUp'.$lv.'SttStr', 'checkbox', "checkGrow(${lv})" ]}
+                <td>@{[ input 'lvUp'.$lv.'SttDex', 'checkbox', "checkGrow(${lv})" ]}
+                <td>@{[ input 'lvUp'.$lv.'SttAgi', 'checkbox', "checkGrow(${lv})" ]}
+                <td>@{[ input 'lvUp'.$lv.'SttInt', 'checkbox', "checkGrow(${lv})" ]}
+                <td>@{[ input 'lvUp'.$lv.'SttSen', 'checkbox', "checkGrow(${lv})" ]}
+                <td>@{[ input 'lvUp'.$lv.'SttMnd', 'checkbox', "checkGrow(${lv})" ]}
+                <td>@{[ input 'lvUp'.$lv.'SttLuk', 'checkbox', "checkGrow(${lv})" ]}
+                <td class="select-or-input">
+                  <select name="lvUp${lv}Class" onchange="changeClass();calcLvUpSkills();">@{[ option "lvUp${lv}Class",@classes ]}</select>
+                  @{[ input 'lvUp'.$lv.'ClassFree','','changeClass' ]}
+                </td>
+                <td class="skill">@{[ input 'lvUp'.$lv.'Skill1','','calcLvUpSkills' ]}
+                <td class="skill">@{[ input 'lvUp'.$lv.'Skill2','','calcLvUpSkills' ]}
+                <td class="skill">@{[ input 'lvUp'.$lv.'Skill3','','calcLvUpSkills' ]}
+              </tr>
 HTML
 }
   print <<"HTML";
-            <script>
-            const lvupClasses1  = `@{[ option '', 'fate|<フェイト増加>',@support_class ]}`;
-            const lvupClasses10 = `@{[ option '', 'fate|<フェイト増加>',@support_class,'label=上級クラス',@adv_class ]}`;
-            const lvupClasses15 = `@{[ option '', 'fate|<フェイト増加>',@support_class,'label=上級クラス',@adv_class,'label=称号クラス','title|<称号クラス（自由記入）>' ]}`;
-            const lvupClasses20 = `@{[ option '', 'fate|<フェイト増加>',@support_class,'label=上級クラス',@adv_class,'label=運命クラス',@fate_class,'label=称号クラス','title|<称号クラス（自由記入）>' ]}`;
-            </script>
-            <tr id="lvup1">
-              <th rowspan="3">1
-              <td rowspan="3" id="lvup1-str">+0
-              <td rowspan="3" id="lvup1-dex">+0
-              <td rowspan="3" id="lvup1-agi">+0
-              <td rowspan="3" id="lvup1-int">+0
-              <td rowspan="3" id="lvup1-sen">+0
-              <td rowspan="3" id="lvup1-mnd">+0
-              <td rowspan="3" id="lvup1-luk">+0
-              <td rowspan="3" id="lvup1-class">
-              <td class="skill" colspan="3">@{[ input 'lvUp1Skill1','','calcLvUpSkills','placeholder="種族スキル／メイキング"' ]}
-            <tr>
-              <td class="skill">@{[ input 'lvUp1Skill2','','calcLvUpSkills','placeholder="クラススキル／メイン"' ]}
-              <td class="skill">@{[ input 'lvUp1Skill3','','calcLvUpSkills','placeholder="クラススキル／メイン"' ]}
-              <td class="skill">@{[ input 'lvUp1Skill4','','calcLvUpSkills','placeholder="クラススキル／メイン"' ]}
-            <tr>
-              <td class="skill">@{[ input 'lvUp1Skill5','','calcLvUpSkills','placeholder="クラススキル／サポート"' ]}
-              <td class="skill">@{[ input 'lvUp1Skill6','','calcLvUpSkills','placeholder="クラススキル／サポート"' ]}
-              <td>
-            </tr>
-          </tbody>
-        </table>
-        <ul class="annotate" style="margin-left: auto; width: 41em;">
+              <script>
+              const lvupClasses1  = `@{[ option '', 'fate|<フェイト増加>',@support_class ]}`;
+              const lvupClasses10 = `@{[ option '', 'fate|<フェイト増加>',@support_class,'label=上級クラス',@adv_class ]}`;
+              const lvupClasses15 = `@{[ option '', 'fate|<フェイト増加>',@support_class,'label=上級クラス',@adv_class,'label=称号クラス','title|<称号クラス（自由記入）>' ]}`;
+              const lvupClasses20 = `@{[ option '', 'fate|<フェイト増加>',@support_class,'label=上級クラス',@adv_class,'label=運命クラス',@fate_class,'label=称号クラス','title|<称号クラス（自由記入）>' ]}`;
+              </script>
+              <tr id="lvup1">
+                <th rowspan="3">1
+                <td rowspan="3" id="lvup1-str">+0
+                <td rowspan="3" id="lvup1-dex">+0
+                <td rowspan="3" id="lvup1-agi">+0
+                <td rowspan="3" id="lvup1-int">+0
+                <td rowspan="3" id="lvup1-sen">+0
+                <td rowspan="3" id="lvup1-mnd">+0
+                <td rowspan="3" id="lvup1-luk">+0
+                <td rowspan="3" id="lvup1-class">
+                <td class="skill" colspan="3">@{[ input 'lvUp1Skill1','','calcLvUpSkills','placeholder="種族スキル／メイキング"' ]}
+              <tr>
+                <td class="skill">@{[ input 'lvUp1Skill2','','calcLvUpSkills','placeholder="クラススキル／メイン"' ]}
+                <td class="skill">@{[ input 'lvUp1Skill3','','calcLvUpSkills','placeholder="クラススキル／メイン"' ]}
+                <td class="skill">@{[ input 'lvUp1Skill4','','calcLvUpSkills','placeholder="クラススキル／メイン"' ]}
+              <tr>
+                <td class="skill">@{[ input 'lvUp1Skill5','','calcLvUpSkills','placeholder="クラススキル／サポート"' ]}
+                <td class="skill">@{[ input 'lvUp1Skill6','','calcLvUpSkills','placeholder="クラススキル／サポート"' ]}
+                <td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <ul class="annotate">
           <li>一般スキルは下部のスキル詳細欄にのみ書き込んでください。
           <li>スキル効果で別スキルを追加取得するケースは、<br>
           「ハーフブラッド／ニンブル」のように1つの欄に「／」区切りで入力してください。
@@ -685,11 +689,11 @@ HTML
         <summary class="in-toc">
           スキル
         </summary>
-        @{[input 'skillsNum','hidden']}
-        <table class="edit-table line-tbody no-border-cells" id="skills-table">
-          <thead id="skill-head">
-            <tr><th></th><th>名称</th><th>Lv</th><th>タイミング</th><th>判定</th><th>対象</th><th>射程</th><th>コスト</th><th>使用条件</th></tr>
-          </thead>
+        <div>
+          <table class="edit-table line-tbody no-border-cells" id="skills-table">
+            <thead id="skill-head">
+              <tr><th></th><th>名称</th><th>Lv</th><th>タイミング</th><th>判定</th><th>対象</th><th>射程</th><th>コスト</th><th>使用条件</th></tr>
+            </thead>
 HTML
 my %experienced;
 $experienced{ $pc{classMainLv1} }    = 1.1;
@@ -708,33 +712,35 @@ if($data::class{$pc{classMain}} && $data::class{$pc{classMain}}{type} eq 'fate')
 foreach my $num ('TMPL',1 .. $pc{skillsNum}) {
   if($num eq 'TMPL'){ print '<template id="skill-template">' }
 print <<"HTML";
-          <tbody id="skill-row${num}">
-            <tr>
-              <td rowspan="2" class="handle"> 
-              <td>@{[input "skill${num}Name",'','','onchange="calcSkills()" placeholder="名称"']}
-              <td>@{[input "skill${num}Lv",'number','calcSkills','placeholder="Lv"']}
-              <td>@{[input "skill${num}Timing",'','','placeholder="タイミング" list="list-timing"']}
-              <td>@{[input "skill${num}Roll",'','','placeholder="判定" list="list-roll"']}
-              <td>@{[input "skill${num}Target",'','','placeholder="対象" list="list-target"']}
-              <td>@{[input "skill${num}Range",'','','placeholder="射程" list="list-range"']}
-              <td>@{[input "skill${num}Cost",'number','','min="0" placeholder="ｺｽﾄ"']}
-              <td>@{[input "skill${num}Reqd",'','','placeholder="使用条件" list="list-reqd"']}
-            </tr>
-            <tr><td colspan="8">
-              <div>
-                <b>取得元</b><select name="skill${num}Type" onchange="calcSkills();calcLvUpSkills();">@{[ option "skill${num}Type",'general|<一般>','race|<種族>','style|<流派>','geis|<誓約>','add|<他スキル>',@experienced ]}</select>
-                <b>分類</b>@{[input "skill${num}Category",'','','list="list-category"']}
-                <b>効果</b>@{[input "skill${num}Note"]}
-              </div>
+            <tbody id="skill-row${num}">
+              <tr>
+                <td rowspan="2" class="handle"> 
+                <td>@{[input "skill${num}Name",'','','onchange="calcSkills()" placeholder="名称"']}
+                <td>@{[input "skill${num}Lv",'number','calcSkills','placeholder="Lv"']}
+                <td>@{[input "skill${num}Timing",'','','placeholder="タイミング" list="list-timing"']}
+                <td>@{[input "skill${num}Roll",'','','placeholder="判定" list="list-roll"']}
+                <td>@{[input "skill${num}Target",'','','placeholder="対象" list="list-target"']}
+                <td>@{[input "skill${num}Range",'','','placeholder="射程" list="list-range"']}
+                <td>@{[input "skill${num}Cost",'number','','min="0" placeholder="ｺｽﾄ"']}
+                <td>@{[input "skill${num}Reqd",'','','placeholder="使用条件" list="list-reqd"']}
+              </tr>
+              <tr><td colspan="8">
+                <div>
+                  <b>取得元</b><select name="skill${num}Type" onchange="calcSkills();calcLvUpSkills();">@{[ option "skill${num}Type",'general|<一般>','race|<種族>','style|<流派>','faith|<天恵>','geis|<誓約>','add|<他スキル>',@experienced ]}</select>
+                  <b>分類</b>@{[input "skill${num}Category",'','','list="list-category"']}
+                  <b>効果</b>@{[input "skill${num}Note"]}
+                </div>
 HTML
   if($num eq 'TMPL'){ print '</template>' }
 }
 print <<"HTML";
-          <tfoot id="skill-foot">
-            <tr><th><th>名称<th>Lv<th>タイミング<th>判定<th>対象<th>射程<th>コスト<th>使用条件
-          </tfoot>
-        </table>
+            <tfoot id="skill-foot">
+              <tr><th><th>名称<th>Lv<th>タイミング<th>判定<th>対象<th>射程<th>コスト<th>使用条件
+            </tfoot>
+          </table>
+        </div>
         <div class="add-del-button"><a onclick="addSkill()">▼</a><a onclick="delSkill()">▲</a></div>
+        @{[input 'skillsNum','hidden']}
         <ul class="annotate">
           <li>コスト欄は1以上でなければ自動的に「―」になります。
           <li><span class="material-symbols-outlined" style="color:#5ad;font-variation-settings:'FILL' 1;vertical-align:text-bottom;font-size:1.5em;">calculate</span>マークがついているスキルは、ステータス類への修正が自動計算されています。
@@ -829,7 +835,6 @@ HTML
 HTML
   }
   print <<"HTML";
-                <td>
               <tr>
                 <td colspan="3"><textarea name="armament${id}Note" placeholder="備考">$pc{"armament${id}Note"}</textarea>
               </tr>

@@ -58,6 +58,8 @@ if($mode eq 'blanksheet'){
   $pc{magicCost} = 'MP';
   foreach my $lv (2,4,7,10,13){ $pc{"godMagic${lv}Cost"} = 'MP' }
   $pc{schoolReq} = '＿名誉点';
+
+  %pc = applyCustomizedInitialValues(\%pc, 'a');
 }
 
 ## カラー
@@ -149,8 +151,8 @@ print <<"HTML";
             
       <div id="header-menu">
         <h2><span></span></h2>
-        <ul>
-          <li onclick="sectionSelect('common');"><span>魔法</span><span>データ</span>
+        <ul class="menu-items">
+          <li onclick="sectionSelect('common');" class="sheet-main"><span class="sheet-kind"></span><span>データ</span>
           <li onclick="sectionSelect('color');" class="color-icon" title="カラーカスタム">
           <li onclick="view('text-rule')" class="help-icon" title="テキスト整形ルール">
           <li onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード切替">
@@ -223,7 +225,7 @@ HTML
         </dl>
       </div>
 
-      <div class="box in-toc" id="name-form" data-content-title="カテゴリ・プレイヤー名">
+      <div class="box in-toc" id="name-form" data-content-title="カテゴリ・製作者名">
         <div>
           <dl id="category">
             <dt>カテゴリ
@@ -242,12 +244,12 @@ HTML
       <div class="data-area in-toc" id="data-magic" data-content-title="データ">
         <div class="box input-data">
           <dl class="name     "><dt>名称        <dd>【@{[ input 'magicName','',"setName" ]}】<br>
-                                                          @{[ checkbox 'magicActionTypePassive','常時' ]}@{[ checkbox 'magicActionTypeMajor','主動作' ]}@{[ checkbox 'magicActionTypeMinor','補助動作' ]}@{[ checkbox 'magicActionTypeSetup','戦闘準備' ]}</dl>
+                                                    @{[ checkbox 'magicActionTypePassive','常時' ]}@{[ checkbox 'magicActionTypeMajor','主動作' ]}@{[ checkbox 'magicActionTypeMinor','補助動作' ]}@{[ checkbox 'magicActionTypeSetup','戦闘準備' ]}</dl>
           <dl class="class    "><dt>系統        <dd>@{[ selectInput "magicClass","checkMagicClass",@magic_classes ]} @{[ checkbox 'magicMinor','小魔法' ]}</dl>
           <dl class="sphere   "><dt>マギスフィア<dd>@{[ input 'magicMagisphere','','','list="list-sphere"' ]}</dl>
           <dl class="level    "><dt>習得レベル  <dd>@{[ input 'magicLevel' ]}</dl>
           <dl class="type     "><dt>対応        <dd>@{[ input 'magicType','','','list="list-type"' ]}</dl>
-          <dl class="premise  "><dt>前提        <dd>@{[ input 'magicPremise' ]}</dl>
+          <dl class="premise  "><dt>前提        <dd>@{[ input 'magicPremise','','','list="list-premise"' ]}</dl>
           <dl class="cost     "><dt>消費        <dd>@{[ input 'magicCost','','','list="list-cost"' ]}</dl>
           <dl class="target   "><dt>対象        <dd>@{[ input 'magicTarget','','','list="list-target"' ]}</dl>
           <dl class="range    "><dt>射程／形状  <dd>@{[ input 'magicRange','','','list="list-range"' ]}／@{[ input 'magicForm','','','list="list-form"' ]}</dl>
@@ -258,6 +260,7 @@ HTML
           <dl class="song     "><dt>楽素        <dd>基礎@{[ input 'magicSongBasePoint','','','list="list-songpoint"' ]} 巧奏値@{[ input 'magicSongSetPoint' ]} 追加@{[ input 'magicSongAddPoint','','','list="list-songpoint"' ]}</dl>
           <dl class="rider    "><dt>対応        <dd>@{[ checkbox 'magicMountTypeAnimal','動物' ]}@{[ checkbox 'magicMountTypeCryptid','幻獣' ]}@{[ checkbox 'magicMountTypeMachine','魔動機' ]}</dl>
           <dl class="part     "><dt>適用部位    <dd>@{[ input 'magicApplyPart','','','list="list-part"' ]}</dl>
+          <dl class="human-form"><dt>人間形態時 <dd>@{[ radios 'magicApplyHumanForm','','available=>有効','unavailable=>無効','=>指定なし（変身しない種族用）' ]}</dl>
           <dl class="rank     "><dt>ランク      <dd>@{[ input 'magicRank' ]}</dl>
           <dl class="commcost "><dt>陣気コスト  <dd>@{[ input 'magicCommandCost','number' ]}消費</dl>
           <dl class="command  "><dt>陣気蓄積    <dd>＋@{[ input 'magicCommandCharge','number' ]}</dl>
@@ -378,7 +381,7 @@ print <<"HTML";
             <dl class="type    "><dt>タイプ    <dd>@{[ input "schoolArts${num}Type",'','','list="list-arts-type"' ]}</dl>
             <dl class="premise "><dt>前提      <dd>@{[ input "schoolArts${num}Premise",'','','list="list-arts-base"' ]}</dl>
             <dl class="equip   "><dt>限定条件  <dd>@{[ input "schoolArts${num}Equip" ]}</dl>
-            <dl class="use     "><dt>使用      <dd>@{[ input "schoolArts${num}Use" ]}</dl>
+            <dl class="use     "><dt>使用      <dd>@{[ input "schoolArts${num}Use",'','','list="list-arts-use"' ]}</dl>
             <dl class="apply   "><dt>適用      <dd>@{[ input "schoolArts${num}Apply",'','','list="list-arts-apply"' ]}</dl>
             <dl class="risk    "><dt>リスク    <dd>@{[ input "schoolArts${num}Risk",'','','list="list-arts-risk"' ]}</dl>
             <dl class="summary "><dt>概要      <dd>@{[ input "schoolArts${num}Summary" ]}</dl>
@@ -404,7 +407,7 @@ print <<"HTML";
             <div class="handle"></div>
             <dl class="name    "><dt>名称      <dd>【@{[ input "schoolMagic${num}Name",'' ]}】<br>@{[ checkbox "schoolMagic${num}ActionTypeMinor",'補助動作' ]}@{[ checkbox "schoolMagic${num}ActionTypeSetup",'戦闘準備' ]}</dl>
             <dl class="cost    "><dt>必要名誉点<dd>@{[ input "schoolMagic${num}AcquireCost" ]}</dl>
-            <dl class="level    "><dt>習得レベル<dd>@{[ input "schoolMagic${num}Lv" ]}</dl>
+            <dl class="level   "><dt>習得レベル<dd>@{[ input "schoolMagic${num}Lv" ]}</dl>
             <dl class="cost    "><dt>消費      <dd>@{[ input "schoolMagic${num}Cost",'','','list="list-cost"' ]}</dl>
             <dl class="target  "><dt>対象      <dd>@{[ input "schoolMagic${num}Target",'','','list="list-target"' ]}</dl>
             <dl class="range   "><dt>射程／形状<dd>@{[ input "schoolMagic${num}Range",'','','list="list-range"' ]}／@{[ input "schoolMagic${num}Form",'','','list="list-form"' ]}</dl>
@@ -420,7 +423,8 @@ HTML
 print <<"HTML";
           </div>
           <div class="add-del-button"><a onclick="addSchoolMagic()">▼</a><a onclick="delSchoolMagic()">▲</a></div>
-      </details>
+        </details>
+      </div>
     </section>
       
       @{[ colorCostomForm ]}
@@ -446,10 +450,23 @@ print <<"HTML";
     <p class="notes">(C)Group SNE「ソード・ワールド2.0／2.5」</p>
     <p class="copyright">©<a href="https://yutorize.2-d.jp">ゆとらいず工房</a>「ゆとシートⅡ」ver.${main::ver}</p>
   </footer>
+  <datalist id="list-craft-required-level">
+    <option value="1">
+    <option value="5">
+    <option value="10">
+    <option value="超">
+  </datalist>
+  <datalist id="list-premise">
+    <option value="なし">
+    <option value="【】">
+  </datalist>
   <datalist id="list-cost">
+    <option value="―">
     <option value="MP">
     <option value="MP＋魔晶石＿点">
     <option value="HP">
+    <option value="1dHP">
+    <option value="2dHP">
   </datalist>
   <datalist id="list-cost-song">
     <option value="⤴">
@@ -576,6 +593,20 @@ print <<"HTML";
     <option value="⤴♡">
     <option value="⤵♡">
   </datalist>
+  <datalist id="list-part">
+    <option value="―">
+    <option value="すべて">
+    <option value="コア部位">
+    <option value="その他部位">
+    <option value="その他部位すべて">
+    <option value="頭部">
+    <option value="胴体">
+    <option value="上半身">
+    <option value="翼">
+    <option value="邪眼">
+    <option value="蠍">
+    <option value="鋏">
+  </datalist>
   <datalist id="list-school-req">
     <option value="50名誉点">
   </datalist>
@@ -584,6 +615,20 @@ print <<"HTML";
     <option value="主動作型">
     <option value="《》変化型">
     <option value="独自宣言型">
+  </datalist>
+  <datalist id="list-arts-use">
+    <option value="ファイター技能">
+    <option value="グラップラー技能">
+    <option value="フェンサー技能">
+    <option value="バトルダンサー技能">
+    <option value="ファイター技能 or バトルダンサー技能">
+    <option value="ファイター技能 or フェンサー技能 or バトルダンサー技能">
+    <option value="フェンサー技能 or バトルダンサー技能">
+    <option value="シューター技能">
+    <option value="近接攻撃武器">
+    <option value="魔法使い系技能">
+    <option value="特殊">
+    <option value="―">
   </datalist>
   <datalist id="list-arts-apply">
     <option value="1回の武器攻撃">

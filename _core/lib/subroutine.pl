@@ -498,7 +498,7 @@ sub unescapeTags {
   $text =~ s/%%(.+?)%%/<span class="strike">$1<\/span>/gi;  # 打ち消し線
   $text =~ s/__(.+?)__/<span class="underline">$1<\/span>/gi;  # 下線
   $text =~ s/\{\{(.+?)\}\}/<span style="color:transparent">$1<\/span>/gi;  # 透明
-  $text =~ s/[|｜]([^|｜\n]+?)《(.+?)》/<ruby>$1<rp>(<\/rp><rt>$2<\/rt><rp>)<\/rp><\/ruby>/gi; # なろう式ルビ
+  $text =~ s/[|｜]([^|｜\n]+?)《(.+?)》/<ruby><rp>｜<\/rp>$1<rp>《<\/rp><rt>$2<\/rt><rp>》<\/rp><\/ruby>/gi; # なろう式ルビ
   $text =~ s/《《(.+?)》》/<span class="text-em">$1<\/span>/gi; # カクヨム式傍点
 
   $text =~ s/\x{FFFC}(\d+)\x{FFFC}/$linkPlaceholders[$1-1]/g; # リンク後処理
@@ -551,7 +551,7 @@ sub unescapeTagsLines {
   $text =~ s/\A\*(.*?)$/$main::pc{"head_$_"} = $1; ''/egim if $_;
   $text =~ s/^\*(.*?)$/<\/p><h2>$1<\/h2><p>/gim;
   
-  $text =~ s/(?:^(?:\|(?:.*?))+\|[hc]?(?:\n|$))+/'<\/p><table class="note-table">'.&generateTable($&).'<\/table><p>'/egim;
+  $text =~ s/(?:^(?:\|(?:.*?))+\|[hc]?(?:\n|$))+/'<\/p>'.&generateTable($&).'<p>'/egim;
 
   $text =~ s/^\:(.*?)\|(.*?)$/<dt>$1<\/dt><dd>$2<\/dd>/gim;
   $text =~ s/(<\/dd>)\n/$1/gi;
@@ -572,31 +572,16 @@ sub unescapeTagsLines {
   return $text;
 }
 
-sub generateTableCol {
-  my @out;
-  my @col = (split(/\|/, $_[0]));
-  foreach(@col){
-    push (@out, &generateTableStyle($_));
-  }
-  return '<colgroup>'.(join '', @out).'</colgroup>';
-}
-sub generateTableStyle {
-  if($_[0] =~ /([0-9]+)(px|em|\%)/){
-    my $num = $1; my $type = $2;
-    if   ($type eq 'px' && $num > 300){ $num = 300 }
-    elsif($type eq 'em' && $num >  20){ $num =  20 }
-    elsif($type eq  '%' && $num > 100){ $num = 100 }
-    return "<col style=\"width:calc(${num}${type} + 1em + 1px)\">";
-  }
-  else { return '<col>' }
-}
 sub generateTable {
   my $text = shift;
-  my $output;
+  my $output = '<table class="note-table">';
   my @data;
+  my @classes;
   foreach my $line (split("\n", $text)){
     $line =~ s/^\|//;
-    if   ($line =~ /c$/){ $output .= generateTableCol($line); next; }
+    if   (!@data && $line eq 'data-table|'){ $output = '<table class="data-table">'; next; }
+    elsif(!@data && $line eq 'max-table|' ){ $output = '<table class="note-table width-max">'; next; }
+    elsif($line =~ /c$/){ (my $row, @classes) = generateTableCol($line); $output .= $row; next; }
     elsif($line =~ /h$/){ $output .= generateTableHeader($line); next; }
     my @row = split('\|', $line);
     push(@data, [ @row ]);
@@ -611,47 +596,113 @@ sub generateTable {
       my $td = 'td';
       while($data[$row_num+$rowspan][$col_num] eq '~'){ $rowspan++; }
       $col_num++;
+      my @classesCell;
+      if($classes[$col_num-1]){ push(@classesCell, @{$classes[$col_num-1]}); }
       if   ($col eq '&gt;'){ $colspan++; next; }
       elsif($col eq '~')   { next; }
       elsif($col =~ s/^~//){ $td = 'th' }
+      else {
+        while($col =~ s/^(LEFT|CENTER|RIGHT|NOWRAP|SMALL)://){
+          push(@classesCell, lc($1));
+        }
+        foreach my $class (reverse @classesCell){
+          if($class =~ /^(left|center|right)$/){
+            @classesCell = grep { $_ eq $class || $_ !~ /^(left|center|right)$/ } @classesCell;
+            last;
+          }
+        }
+      }
       $output .= "<$td";
       if($colspan > 1){ $output .= ' colspan="'.$colspan.'"'; $colspan = 1; }
       if($rowspan > 1){ $output .= ' rowspan="'.$rowspan.'"'; }
+      if(@classesCell){ $output .= ' class="'.join(' ',@classesCell).'"' }
       $output .= ">$col</$td>";
     }
     $output .= "</tr>";
     $row_num++;
   }
+  $output .= "</table>";
+
   return $output;
-}
-sub generateTableHeader {
-  my $line = shift;
-  my $output;
-  $line =~ s/h$//;
-  $output .= "<thead><tr>";
-  my $colspan = 1;
-  foreach my $col (split('\|', $line)){
-    my $td = 'td';
-    if   ($col eq '&gt;'){ $colspan++; next; }
-    elsif($col =~ s/^~//){ $td = 'th' }
-    $output .= "<$td";
-    if($colspan > 1){ $output .= ' colspan="'.$colspan.'"'; }
-    $output .= ">$col</$td>";
+
+  sub generateTableCol {
+    my @out;
+    my @col = (split(/\|/, $_[0]));
+    pop @col;
+    my @classes;
+    foreach(@col){
+      if($_ eq '&gt;'){
+        push @out, '>';
+        push @classes, '>';
+      }
+      else {
+        my ($style, @class) = &generateTableStyle($_);
+        push @out, $style;
+        push @classes, \@class;
+      }
+    }
+    foreach (0 .. $#out){
+      my $n = 1;
+      while ($out[$_] eq '>'){
+        $out[$_] = $out[$_+$n];
+        $n++
+      }
+      my $n = 1;
+      while ($classes[$_] eq '>'){
+        $classes[$_] = $classes[$_+$n];
+        $n++
+      }
+    }
+    return '<colgroup>'.(join '', @out).'</colgroup>', @classes;
   }
-  $output .= "</tr></thead>";
-  return $output;
+  sub generateTableStyle {
+    my $text = shift;
+    my $style;
+    my @class;
+    while($text =~ s/^(LEFT|CENTER|RIGHT|NOWRAP|SMALL)://){
+      push @class, lc($1);
+    }
+    if($_ =~ /^([0-9]+)(px|em|\%)/){
+      my $num = $1; my $type = $2;
+      if   ($type eq 'px' && $num > 300){ $num = 300 }
+      elsif($type eq 'em' && $num >  20){ $num =  20 }
+      elsif($type eq  '%' && $num > 100){ $num = 100 }
+      $style .= "width:calc(${num}${type} + 1em + 1px);";
+    }
+    return "<col style=\"$style\">", @class,
+  }
+  sub generateTableHeader {
+    my $line = shift;
+    my $output;
+    $line =~ s/h$//;
+    $output .= "<thead><tr>";
+    my $colspan = 1;
+    foreach my $col (split('\|', $line)){
+      my $td = 'td';
+      if   ($col eq '&gt;'){ $colspan++; next; }
+      elsif($col =~ s/^~//){ $td = 'th' }
+      $output .= "<$td";
+      if($colspan > 1){ $output .= ' colspan="'.$colspan.'"'; }
+      $output .= ">$col</$td>";
+    }
+    $output .= "</tr></thead>";
+    return $output;
+  }
 }
 ### タグ削除 --------------------------------------------------
 sub removeTags {
   my $text = $_[0];
+  $text =~ s#<rp>[\|｜]</rp>##g;
+  $text =~ s#<rp>[《]</rp>#(#g;
+  $text =~ s#<rp>[》]</rp>#)#g;
   $text =~ s/<img alt="&#91;(.)&#93;"/[$1]<img /g;
   $text =~ s/<.+?>//g;
   return $text;
 }
-sub nameToPlain {
-  my $name = shift;
-  $name =~ s#<rt>.*?</rt>|<rp>.*?</rp>##g;
-  return $name;
+sub removeRuby {
+  my $text = shift;
+  $text =~ s#<rt>.*?</rt>|<rp>.*?</rp>##g;
+  return $text;
 }
 
 ### RGB>HSL --------------------------------------------------

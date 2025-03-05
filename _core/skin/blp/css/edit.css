@@ -29,7 +29,7 @@ body:not(.type-human  ) .h-only { display: none; }
     "PER IMG"
     "SCR IMG"
   ;
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     grid-template-columns: 1fr;
     grid-gap: var(--box-v-gap) var(--box-h-gap);
     grid-template-rows: auto auto 1fr auto;
@@ -109,7 +109,7 @@ body:not(.type-human  ) .h-only { display: none; }
   background-color: transparent;
 }
 
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   #status {
     grid-template-columns: 1fr 2fr;
   }
@@ -203,7 +203,7 @@ body:not(.type-human  ) .h-only { display: none; }
 .partner-table input[readonly]:focus {
   outline: none;
 }
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   .partner-table {
     display: block;
   }
@@ -229,7 +229,7 @@ body:not(.type-human  ) .h-only { display: none; }
     display: grid;
     grid-template-columns: 2.5fr 1fr;
   }
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     display: block;
   }
   #servant-master-term      + dd { grid-row: 2; }
@@ -288,7 +288,7 @@ body:not(.type-human  ) .h-only { display: none; }
 #arts #arts-scar b.arts-scar-head {
   margin-top: 0;
 }
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   #bloodarts,
   #arts {
     overflow-x: auto;
@@ -302,16 +302,16 @@ body:not(.type-human  ) .h-only { display: none; }
   #arts table tbody td:nth-child(n+4):nth-child(-n+7) { font-size: unset; }
 }
 
-#history table thead th {
-  &.first-child{ width: 1.4em; }
-  &.date       { width:   6em; }
-  &.title      { width:  12em; }
-  &.grow       { width:   6em; }
-  &.gm         { width:   6em; }
-  &.member     { width:  auto; }
+#history table thead {
+  & th.first-child { width: 1.4em; }
+  .date       { width:   6em; }
+  .title      { width:  12em; }
+  .grow       { width:   6em; }
+  .gm         { width:   6em; }
+  .member     { width:  auto; }
 }
 
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   #history table  { table-layout: fixed; }
   #history table thead th.title  { width: 12em; }
   #history table thead th.member { width: 16em; }

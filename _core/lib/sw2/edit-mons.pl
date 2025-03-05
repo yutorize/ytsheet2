@@ -35,7 +35,9 @@ if($mode eq 'edit' || ($mode eq 'convert' && $pc{ver})){
 }
 elsif($mode eq 'blanksheet'){
   $pc{paletteUseBuff} = 1;
-  $pc{partsManualInput} = 0
+  $pc{partsManualInput} = 0;
+
+  %pc = applyCustomizedInitialValues(\%pc, 'm');
 }
 
 ## カラー
@@ -249,7 +251,7 @@ print <<"HTML";
         </dl>
         <dl>
           <dt>言語
-          <dd>@{[ input 'language' ]}
+          <dd>@{[ input 'language','','','list="data-language"' ]}
         </dl>
         <dl class="monster-only">
           <dt>生息地
@@ -257,7 +259,7 @@ print <<"HTML";
         </dl>
         <dl class="monster-only">
           <dt>知名度／弱点値
-          <dd>@{[ input 'reputation' ]}／@{[ input 'reputation+' ]}
+          <dd>@{[ input 'reputation' ]}／@{[ input 'reputation+','','','list="list-of-reputation-plus"' ]}
         </dl>
         <dl>
           <dt>弱点
@@ -353,8 +355,9 @@ print <<"HTML";
       </div>
       <div class="box parts in-toc" data-content-title="部位数・コア部位">
         @{[ checkbox 'partsManualInput', '部位数と内訳を手動入力する', 'updatePartsAutomatically' ]}
-        <dl><dt>部位数<dd>@{[ input 'partsNum','number','','min="1"' ]} (@{[ input 'parts' ]}) </dl>
-        <dl><dt>コア部位<dd>@{[ input 'coreParts' ]}</dl>
+        <dl><dt>部位数<dd>@{[ input 'partsNum','number','','min="1"' ]} (@{[ input 'parts','','updatePartList' ]}) </dl>
+        <dl><dt>コア部位<dd>@{[ input 'coreParts','','','list="list-of-core-part"' ]}</dl>
+        <datalist id="list-of-core-part"></datalist>
       </div>
       <div class="box">
         <h2 class="in-toc">特殊能力</h2>
@@ -391,7 +394,7 @@ print <<"HTML";
         <div id="loots-list">
           <ul id="loots-num">
 HTML
-foreach my $num (1 .. $pc{lootsNum}){ print "<li id='loots-num${num}'><span class='handle'></span>".input("loots${num}Num"); }
+foreach my $num (1 .. $pc{lootsNum}){ print "<li id='loots-num${num}'><span class='handle'></span>".input("loots${num}Num",'','','list="data-roots-num"'); }
 print <<"HTML";
           </ul>
           <ul id="loots-item">
@@ -429,34 +432,43 @@ print <<"HTML";
     <p class="copyright">©<a href="https://yutorize.2-d.jp">ゆとらいず工房</a>「ゆとシートⅡ」ver.${main::ver}</p>
   </footer>
   <datalist id="data-intellect">
-  <option value="なし">
-  <option value="動物並み">
-  <option value="低い">
-  <option value="人間並み">
-  <option value="高い">
-  <option value="命令を聞く">
+    <option value="なし">
+    <option value="動物並み">
+    <option value="低い">
+    <option value="人間並み">
+    <option value="高い">
+    <option value="命令を聞く">
   </datalist>
   <datalist id="data-perception">
-  <option value="五感">
-  <option value="五感（暗視）">
-  <option value="五感（）">
-  <option value="魔法">
-  <option value="機械">
+    <option value="五感">
+    <option value="五感（暗視）">
+    <option value="五感（）">
+    <option value="魔法">
+    <option value="機械">
   </datalist>
   <datalist id="data-disposition">
-  <option value="友好的">
-  <option value="中立">
-  <option value="敵対的">
-  <option value="腹具合による">
-  <option value="命令による">
+    <option value="友好的">
+    <option value="中立">
+    <option value="敵対的">
+    <option value="腹具合による">
+    <option value="命令による">
+  </datalist>
+  <datalist id="data-language">
+    <option value="なし">
+  </datalist>
+  <datalist id="list-of-reputation-plus">
+    <option>―</option>
   </datalist>
   <datalist id="data-weakness">
-  <option value="命中力+1">
-  <option value="物理ダメージ+2点">
-  <option value="魔法ダメージ+2点">
-  <option value="属性ダメージ+3点">
-  <option value="回復効果ダメージ+3点">
-  <option value="なし">
+    <option value="命中力+1">
+    <option value="物理ダメージ+2点">
+    <option value="魔法ダメージ+2点">
+    <option value="属性ダメージ+3点">
+    <option value="回復効果ダメージ+3点">
+    <option value="なし">
+  </datalist>
+  <datalist id="data-roots-num">
+    <option value="自動">
   </datalist>
   <script>
 @{[ &commonJSVariable ]}

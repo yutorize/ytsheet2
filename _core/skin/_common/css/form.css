@@ -18,7 +18,7 @@ section.form {
   background-color: #fff1;
 }
 
-form p {
+.form p {
   position: relative;
   margin: 1em;
   text-align: center;
@@ -39,6 +39,13 @@ form p {
   }
   & > input[type="submit"] {
     width: 5em;
+  }
+}
+.form dl {
+  margin: 1em;
+  line-height: 2;
+  > dd {
+    padding-left: 1em;
   }
 }
 

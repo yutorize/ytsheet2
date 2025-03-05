@@ -45,6 +45,8 @@ elsif($mode eq 'blanksheet'){
   
   $pc{level} = 0;
   $pc{endurance} = 20;
+
+  %pc = applyCustomizedInitialValues(\%pc, '');
 }
 
 ## 画像
@@ -75,7 +77,7 @@ foreach (
 }
 
 ### フォーム表示 #####################################################################################
-my $titlebarname = removeTags nameToPlain unescapeTags ($pc{characterName}||"“$pc{aka}”");
+my $titlebarname = removeTags removeRuby unescapeTags ($pc{characterName}||"“$pc{aka}”");
 print <<"HTML";
 Content-type: text/html\n
 <!DOCTYPE html>

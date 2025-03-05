@@ -5,12 +5,12 @@
 #regulation > dl:first-of-type {
   grid-template-columns: 8em 8em 8em 10em
 }
-@media screen and (min-width:736px){
+@media screen and (width > 735px){
   #regulation .annotate {
     margin-bottom: 10px;
   }
 }
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   #regulation > dl {
     grid-template-columns: 1fr 1fr 1fr;
   }
@@ -36,7 +36,7 @@
   ;
 }
 
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   #area-status {
     grid-template-columns: 2fr 1fr;
     grid-gap: var(--box-v-gap) var(--box-h-gap);
@@ -76,7 +76,7 @@
   display: flex;
   align-items: center;
 }
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   #personal dl#career { flex-basis: 73%; }
 }
 
@@ -117,7 +117,7 @@
   max-width: 3.5em;
 }
 
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   #ability table :is(th,td) dl {
     display: block;
   }
@@ -142,7 +142,7 @@
 #status table tbody th.right { padding-right: .2em;; }
 #status table tbody td.bold { font-size: 1.2em; }
 
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   #status table thead th:first-child  { width: 4em; }
   #status table thead th:nth-child(2) { width: 3em; }
   #status table thead th:nth-child(4) { width: 3em; }
@@ -214,7 +214,7 @@
   width: 10em;
   margin-top: var(--box-v-gap);
 }
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   #area-classes {
     display: block;
   }
@@ -301,15 +301,15 @@
   border-bottom-width: 1px;
   border-bottom-style: solid;
 }
-#weapons thead th {
-  &.name  { width:   25%; } /* 名前 */
-  &.type  { width:   6em; } /* 種別 */
-  &.usage { width: 4.9em; } /* 用法 */
-  &.attr  { width: 4.5em; } /* 属性 */
-  &.hit   { width: 7.5em; } /* 命中 */
-  &.power { width:  11em; } /* 威力 */
-  &.range { width:   5em; } /* 射程 */
-  &:last-child   { width: 1.7em; } /* 複製ボタン */
+#weapons thead {
+  .name  { width:   25%; } /* 名前 */
+  .type  { width:   6em; } /* 種別 */
+  .usage { width: 4.9em; } /* 用法 */
+  .attr  { width: 4.5em; } /* 属性 */
+  .hit   { width: 7.5em; } /* 命中 */
+  .power { width:  11em; } /* 威力 */
+  .range { width:   5em; } /* 射程 */
+  & th:last-child { width: 1.7em; } /* 複製ボタン */
 }
 
 #weapons table td {
@@ -353,7 +353,7 @@
   padding: 7px 5px;
 }
 
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   #attack-classes {
     overflow-x: auto;
   }
@@ -369,16 +369,16 @@
   #weapons table {
     table-layout: fixed;
   }
-  #weapons thead th {
-    &.name  { width:  12em; } /* 名前 */
-    &.type  { width:   6em; } /* 種別 */
-    &.usage { width: 4.9em; } /* 用法 */
-    &.attr  { width: 4.5em; } /* 属性 */
-    &.hit   { width: 7.5em; } /* 命中 */
-    &.power { width:  11em; } /* 威力 */
-    &.range { width:   5em; } /* 射程 */
-    &.class { width: 5.5em; } /* 職業 */
-    &:last-child   { width: 1.7em; } /* 複製ボタン */
+  #weapons thead {
+    .name  { width:  12em; } /* 名前 */
+    .type  { width:   6em; } /* 種別 */
+    .usage { width: 4.9em; } /* 用法 */
+    .attr  { width: 4.5em; } /* 属性 */
+    .hit   { width: 7.5em; } /* 命中 */
+    .power { width:  11em; } /* 威力 */
+    .range { width:   5em; } /* 射程 */
+    .class { width: 5.5em; } /* 職業 */
+    & th:last-child   { width: 1.7em; } /* 複製ボタン */
   }
 }
 
@@ -393,14 +393,14 @@
   &:nth-child(5) { width:   4em; } /* 隠密 */
   &:nth-child(6) { width:   4em; } /* 移動 */
 }
-#armor thead th {
-  &.name   { width:   20%; } /* 名前 */
-  &.type   { width:   8em; } /* 種別 */
-  &.dodge  { width:   4em; } /* 回避 */
-  &.armor  { width: 3.5em; } /* 装甲 */
-  &.stealth{ width:   4em; } /* 隠密 */
-  &.move   { width:   4em; } /* 移動 */
-  &.note   { width:  auto; } /* 備考 */
+#armor thead {
+  .name   { width:   20%; } /* 名前 */
+  .type   { width:   8em; } /* 種別 */
+  .dodge  { width:   4em; } /* 回避 */
+  .armor  { width: 3.5em; } /* 装甲 */
+  .stealth{ width:   4em; } /* 隠密 */
+  .move   { width:   4em; } /* 移動 */
+  .note   { width:  auto; } /* 備考 */
 }
 
 #block-classes {
@@ -411,19 +411,19 @@
   &:nth-child(2) { width:  auto; } /*  */
   &:nth-child(3) { width:   4em; } /* 回避 */
 }
-#shield thead th {
-  &.name   { width:   20%; } /* 名前 */
-  &.type   { width:   8em; } /* 種別 */
-  &.block  { width:   4em; } /* 基準値 */
-  &.armor  { width:   4em; } /* 装甲 */
-  &.stealth{ width:   4em; } /* 隠密 */
-  &.note   { width:  auto; } /* 備考 */
+#shield thead {
+  .name   { width:   20%; } /* 名前 */
+  .type   { width:   8em; } /* 種別 */
+  .block  { width:   4em; } /* 基準値 */
+  .armor  { width:   4em; } /* 装甲 */
+  .stealth{ width:   4em; } /* 隠密 */
+  .note   { width:  auto; } /* 備考 */
 }
 
 :is(#armor, #shield) tbody {
   vertical-align: top;
 }
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   :is(#dodge-classes, #armor, #block-classes, #shield) {
     width: 100%;
     overflow-x: auto;
@@ -448,7 +448,7 @@
   margin-top: var(--box-v-gap);
 }
 
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   #area-items {
     display: block;
   }
@@ -497,7 +497,7 @@
   border-right-width: 1px;
   border-right-style: dotted;
 }
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   #money {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -535,20 +535,20 @@
 
 :is(#skills, #general-skills, #spells, #arts) thead th:first-child { width: 1em; }
 
-#spells thead th {
-  &.name   { width:  12em; } /* 名前 */
-  &.system { width: 5.9em; } /* 系統 */
-  &.type   { width: 3.9em; } /* 種別 */
-  &.attr   { width: 5.9em; } /* 属性 */
-  &.dfclt  { width: 3.9em; } /* 難易度 */
-  &.note   { width:  auto; } /* 効果 */
-  &.page   { width:   5em; } /* 参照 */
+#spells thead {
+  .name   { width:  12em; } /* 名前 */
+  .system { width: 5.9em; } /* 系統 */
+  .type   { width: 3.9em; } /* 種別 */
+  .attr   { width: 5.9em; } /* 属性 */
+  .dfclt  { width: 3.9em; } /* 難易度 */
+  .note   { width:  auto; } /* 効果 */
+  .page   { width:   5em; } /* 参照 */
 }
 
 #arts tbody td:is(.weapon,.skill,.cost,.terms) input { font-size: 90%; }
 
 
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   :is(#skills, #general-skills, #spells, #arts) { overflow-x: auto; }
   :is(#skills, #general-skills, #spells, #arts) table  { table-layout: fixed; }
 
@@ -566,7 +566,7 @@
 
   margin-top: var(--box-v-gap);
 }
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   #physical-traits {
     display: flex;
     flex-wrap: wrap;
@@ -585,19 +585,19 @@
   }
 }
 
-#history table thead th {
-  &:first-child{ width: 1.4em; }
-  &.date       { width:   6em; }
-  &.title      { width:  12em; }
-  &.comp       { width:   4em; }
-  &.exp        { width: 5.5em; }
-  &.adp        { width: 3.5em; }
-  &.money      { width:   5em; }
-  &.gm         { width:   6em; }
-  &.member     { width:  auto; }
+#history table thead {
+  & th:first-child { width: 1.4em; }
+  .date       { width:   6em; }
+  .title      { width:  12em; }
+  .comp       { width:   4em; }
+  .exp        { width: 5.5em; }
+  .adp        { width: 3.5em; }
+  .money      { width:   5em; }
+  .gm         { width:   6em; }
+  .member     { width:  auto; }
 }
 
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   #history table  { table-layout: fixed; }
   #history table thead th.title  { width: 12em; }
   #history table thead th.member { width: 16em; }

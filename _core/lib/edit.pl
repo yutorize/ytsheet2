@@ -170,6 +170,24 @@ sub tokenMake {
   return $token;
 }
 
+## カスタマイズされた初期値の反映
+sub applyCustomizedInitialValues {
+  my %pc = %{shift;};
+  my $_type = shift;
+  $_type //= $pc{type};
+  $_type //= '';
+
+  if (%set::customizedInitialValues && $set::customizedInitialValues{$_type}) {
+    my %values = %{$set::customizedInitialValues{$_type}};
+
+    foreach (keys %values) {
+      $pc{$_} = $values{$_};
+    }
+  }
+
+  return %pc;
+}
+
 ## ログインエラー
 sub loginError {
   our $login_error = 'パスワードが間違っているか、<br>編集権限がありません。';
@@ -301,8 +319,9 @@ sub selectInput {
   my $text = '<div class="select-input"><select name="'.$name.'" oninput="selectInputCheck(this);'.$func.'">'.option($name, @_);
   $text .= '<option value="free">その他（自由記入）'; 
   my $hit = 0;
-  foreach my $value (@_) {
-    if($value =~ /^(.+)\|\<.*\>$/){ $value = $1; }
+  foreach my $i (@_) {
+    my $value = $i;
+    if($value =~ /^(.*)\|\<.*\>$/){ $value = $1; }
     if($::pc{$name} eq $value){ $hit = 1; last; }
   }
   if($::pc{$name} && !$hit){ $text .= '<option value="'.$::pc{$name}.'" selected>'.$::pc{$name}; }
@@ -665,10 +684,16 @@ sub textRuleArea {
         横罫線（直線）：<code>----</code>（4つ以上のハイフン）<br>
         横罫線（点線）：<code> * * * *</code>（4つ以上の「スペース＋アスタリスク」）<br>
         横罫線（破線）：<code> - - - -</code>（4つ以上の「スペース＋ハイフン」）<br>
-        表組み　　：<code>|テキスト|テキスト|</code>：表組み（テーブル）を作成します。<br>
-        　　　　　　<code>|~テキスト|</code>のようにセル頭に~で見出しセルになります。<br>
-        　　　　　　<code>|&gt;|テキスト|</code>のように&gt;単独で右のセルと結合します。<br>
-        　　　　　　<code>|~|</code>のように~単独で上のセルと結合します。<br>
+        表組み：<code>|テキスト|テキスト|</code>：表組み（テーブル）を作成します。<br>
+        　　　　<code>|~テキスト|</code>のようにセル頭に<code>~</code>で見出しセルになります。<br>
+        　　　　<code>|&gt;|テキスト|</code>のように<code>&gt;</code>単独で右のセルと結合します。<br>
+        　　　　<code>|CENTER: テキスト|</code>のようにセル頭に<code>CENTER:</code>で中央揃えになります。<br>
+        　　　　<code>|RIGHT: テキスト|</code>のようにセル頭に<code>RIGHT:</code>で右揃えになります。<br>
+        　　　　<code>|NOWRAP: テキスト|</code>のようにセル頭に<code>NOWRAP:</code>でそのセル内で改行しなくなります<br>
+        　　　　<code>|CENTER:5em|RIGHT:10em|c</code>のように行末に<code>c</code>をつけると書式指定行となり、その列の文字揃えや幅をまとめて指定できます。<br>
+        　　　　※書式指定行では、通常の文字列は無効になります。<br>
+        　　　　※指定できる幅の単位は、<code>em</code>（1em=全角1文字）および<code>%</code>が有効です。<br>
+        　　　　※指定できる幅の上限は、それぞれ<code>20em</code>と<code>100%</code>です。<br>
         定義リスト：<code>:項目名|説明文</code><br>
         　　　　　　<code>:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|説明文2行目</code> 項目名を記入しないか、半角スペースで埋めると上と結合します。<br>
         折り畳み：行頭に<code>[>]項目名</code>：以降のテキストがすべて折り畳みになります。<br>

@@ -105,7 +105,7 @@ article, .color-set {
 html {
   overflow-x: hidden;
 
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     font-size: 1.8vw;
   }
 }
@@ -203,6 +203,24 @@ summary {
 .box h2,
 .box > summary {
   font-size: 1.4rem;
+
+  &:has(> small.notes){
+    display: flex;
+    flex-flow: row;
+    justify-content: space-between;
+    align-items: end;
+    padding-right: 0.25em;
+
+    > small.notes {
+      font-size: 80%;
+      font-weight: normal;
+
+      > b {
+        font-size: 120%;
+        font-weight: normal;
+      }
+    }
+  }
 }
 .box h2,
 dl.box > dt,
@@ -235,6 +253,10 @@ details:not([open]).box > summary:hover {
 .box li,
 .box td {
   text-align: center;
+}
+.box dd,
+.box li {
+  align-content: center;
 }
 .box,
 .box-union { border-color: var(--box-outside-border-color); }
@@ -485,7 +507,7 @@ details:not([open]).box > summary:hover {
   margin: 0 1em 1em;
   padding: .5em;
 }
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   .box.chat-palette.show {
     width: calc(100% - 2rem);
     top: 8rem;
@@ -501,6 +523,7 @@ details:not([open]).box > summary:hover {
 .data-table {
   width: 100%;
   border-style: hidden hidden none;
+
   &:last-child {
     border-bottom-style: hidden;
   }
@@ -510,11 +533,20 @@ details:not([open]).box > summary:hover {
     margin: 0 .5rem;
   }
 }
-table.data-table tbody td,
+table.data-table :is(tbody,tfoot) td,
 ul.data-table > li,
 dl.data-table > * {
   padding: .2em 0;
   line-height: 1.4;
+  word-break: auto-phrase;
+  overflow-wrap: break-word;
+  &.note, &.comment {
+    padding-left: .3em;
+    text-align: left;
+  }
+  &.comment {
+    word-break: normal;
+  }
 }
 @media print {
   table.data-table tbody td {
@@ -523,6 +555,7 @@ dl.data-table > * {
   }
 }
 table.data-table {
+  table-layout: fixed;
   > tbody tr {
     border-width: 1px 0;
     border-style: solid;
@@ -533,23 +566,27 @@ table.data-table {
       border-width: 0;
       line-height: 1;
     }
-    & tbody th,
-    & tbody td {
+    > tbody th,
+    > tbody td {
       border-left-width: 1px;
       border-right-width: 1px;
       border-left-style: dotted;
       border-right-style: dotted;
     }
+    > tbody td.left  { padding: .3em; }
+    > tbody td.right { padding: .3em; }
+    
     &.line-tbody tbody:nth-of-type(even) :is(th,td),
     &:not(.line-tbody) tbody tr:nth-of-type(even) :is(th,td) {
       background-color: var(--box-even-rows-bg-color);
     }
   }
-  & tbody td:empty::before { content: '　' }
-  & tbody tr td span {
+  > tbody td:empty::before { content: '　' }
+  > tbody tr td span {
     &.thin, &.thiner, &.thinest {
       display: inline-block;
       vertical-align: middle;
+      max-width: 100%;
     }
     &.thin          { transform: scaleY(calc(1/0.93)); font-size: 93%; }
     &.thiner        { transform: scaleY(calc(1/0.86)); font-size: 86%; }
@@ -576,6 +613,8 @@ table.note-table {
   & td {
     border-width: 1px;
     border-style: solid;
+    word-break: auto-phrase;
+    overflow-wrap: break-word;
   }
   & th,
   & td {
@@ -593,6 +632,12 @@ table.note-table {
   & td {
     text-align: left;
   }
+}
+.note-table.width-max {
+  width: 100%;
+  margin : 0;
+  border-left : hidden;
+  border-right: hidden;
 }
 dl.note-description {
   display: grid;
@@ -620,6 +665,31 @@ dl.note-description {
     border-bottom: hidden;
   }
 }
+/* 強調 */
+.term-em {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 90%;
+  height: 1.6em;
+  line-height: 1;
+  margin-right: 1px;
+  border-width: 1px;
+  border-style: dotted;
+}
+b.term-em {
+  padding: 1px .3em 0;
+  border-radius: .3em;
+  background-color: hsla(var(--box-head-bg-color-h,230),100%,70%,0.3);
+}
+i.term-em {
+  padding: 1px .6em 0;
+  border-radius: .8em;
+  background-color: hsla(var(--box-base-bg-color-h,230),40%,70%,0.3);
+}
+
 /* アイテムアイコン */
 .i-icon {
   width: 1em;
@@ -627,7 +697,7 @@ dl.note-description {
   vertical-align: -1px;
 }
 
-/* 能力アイコン */
+/* アイコン */
 .s-icon {
   display: inline-block;
   position: relative;
@@ -666,60 +736,6 @@ dl.note-description {
     }
   }
 
-
-  &.passive::before {
-    content: "\ef4a";
-  }
-  &.setup::before {
-    content: "\e86b";
-  }
-  &.major::before {
-    content: "\e037";
-    font-variation-settings: 'FILL' 1;
-    transform: scale(1.2) translateX(-.08em);
-  }
-  &.minor::before {
-    content:"\e01f";
-    font-variation-settings: 'FILL' 1;
-    transform: scaleY(1.3);
-  }
-  &.active::before {
-    content: "\e625";
-    transform: scale(-0.95, 1) translate(.05em, 0.08em);
-  }
-  &.uplift::before {
-    content: "\eba6";
-    transform: rotate(90deg) scaleX(1.2);
-    text-shadow: 0 0 0 var(--text-color), 0 0 0 var(--text-color);
-  }
-  &.calm::before {
-    content: "\ebab";
-    transform: rotate(90deg) scaleX(1.2);
-    text-shadow: 0 0 0 var(--text-color), 0 0 0 var(--text-color);
-  }
-  &.heart::before {
-    content: "\e87d";
-  }
-  &.major0::before {
-    content: "〆";
-    font-family: inherit;
-  }
-  &.minor0::before {
-    content: "\e838";
-  }
-  &.active0::before {
-    content: "\e834";
-  }
-  &.condition::before {
-    content: "▽";
-    font-family: inherit;
-    text-shadow: 0 0 0 var(--text-color);
-  }
-  &.selection::before {
-    content: "▼";
-    font-family: inherit;
-    text-shadow: 0 0 0 var(--text-color);
-  }
   /* コピーライト */
   &.copyright::before {
     content: "\e90c";
@@ -728,7 +744,7 @@ dl.note-description {
   }
 }
 /* 狭いときに消す */
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   .sp-del {
     display: none;
   }
@@ -806,7 +822,7 @@ header nav ul {
     transform-origin: bottom;
   }
 }
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   header nav {
     margin-top: 3rem;
     right: -1rem;
@@ -1002,7 +1018,7 @@ textarea::placeholder {
       var(--bg-color) .1rem -.2rem, var(--bg-color) -.1rem -.2rem,
       var(--bg-color) .2rem  .1rem, var(--bg-color) -.2rem  .1rem,
       var(--bg-color) .2rem -.1rem, var(--bg-color) -.2rem -.1rem;
-    @media screen and (max-width:735px){
+    @media screen and (width <= 735px){
       font-size: 1.6rem;
     }
     & .d-dash {
@@ -1100,7 +1116,7 @@ aside:is(#loglist,#downloadlist) {
   .night & {
     background: rgba(0,0,0,0.9);
   }
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     top: 10rem;
     height: calc(100vh - 12rem);
   }
@@ -1220,7 +1236,7 @@ aside#loglist #log-naming form input {
   &[type="text"]     { width: 12em; }
   &[type="password"] { width: 12em; }
 }
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   aside.information {
     margin-top: 2rem;
   }
@@ -1232,6 +1248,8 @@ aside#loglist #log-naming form input {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
+
+  position: relative;
   
   padding: 0px 5px;
   border-width: 3px 0px;
@@ -1240,7 +1258,11 @@ aside#loglist #log-naming form input {
   background-image: linear-gradient(to right, var(--box-head-bg-color), var(--box-base-bg-color));
   background-color: var(--bg-color);
   border-color: var(--box-outside-border-color, inherit);
+
+  container-type: inline-size;
   > h1 {
+    max-width: 100cqw;
+    overflow: hidden;
     padding: 1rem;
     font-size: 2.2rem;
     font-weight: bold;
@@ -1249,24 +1271,51 @@ aside#loglist #log-naming form input {
       var(--bg-color) -.1rem .1rem, var(--bg-color)  .1rem -.1rem,
       var(--bg-color)  .0rem .1rem, var(--bg-color)  .0rem -.1rem,
       var(--bg-color) -.1rem .0rem, var(--bg-color)  .1rem  .0rem;
+    word-break: keep-all;
+    text-wrap: balance;
+    text-align-last: end;
+    overflow-wrap: break-word;
     #aka {
+      display: inline-block;
+      overflow-wrap: break-word;
       margin-right: .5em;
     }
+    & ruby rt { margin-top: -1em; }
   }
-  > div { 
+  > div {
+    flex-shrink: 0;
     text-align: right;
     font-size: 1.2rem;
-  }
-  #update-time { white-space: nowrap; }
-  #player-name {}
-}
+    line-height: 1.2;
 
+    #update-time { white-space: nowrap; }
+    #player-name {
+      margin-left: -100vw;
+      white-space: nowrap;
+    }
+  }
+  
+  @media screen and (width <= 735px){
+    #update-time {
+      font-size: 1rem;
+      margin-bottom: .2rem;
+    }
+  }
+}
 /* // History
 ---------------------------------------------------------------------------------------------------- */
 #history {
   align-self: start;
 }
 #history table {
+  table-layout: auto;
+  > thead {
+    .num    { width:   2em; } /* No. */
+    .date   { width: 5.2em; } /* 日付 */
+    .title  { width:  auto; } /* タイトル */
+    .gm     { width:  auto; } /* ＧＭ */
+    .member { width:  auto; } /* 参加者 */
+  }
   & th {
     white-space: nowrap;
   }
@@ -1289,6 +1338,9 @@ aside#loglist #log-naming form input {
     transform: scale(0.8, 0.8);
     opacity: 0.8;
   }
+  & tbody tr td:is(.gm, .member) {
+    font-size: 1.1rem;
+  }
   & tbody td.gm span {
     display: block;
     min-width: 5em;
@@ -1303,7 +1355,6 @@ aside#loglist #log-naming form input {
   }
   & tbody td.note {
     padding-left: .5rem;
-    text-align: left;
   }
   & tfoot {
     border-top-width: 3px;
@@ -1319,6 +1370,27 @@ aside#loglist #log-naming form input {
     &:not(:empty) {
       border-right-width: 1px;
       border-right-style: dotted;
+    }
+  }
+  @media screen and (width <= 735px){
+    table-layout: fixed;
+    > thead {
+      .num  { width: 1.6em; }
+      .date { width: 4.8em; }
+      .gm   { width:   4em; }
+    }
+    & td {
+      font-size: .8em;
+    }
+    > tbody td.member {
+      font-size: .75em;
+    }
+    > tbody td a[data-num]:before {
+      @media screen and (width <= 735px){
+        display: block;
+        float: none;
+        text-align: left;
+      }
     }
   }
 }

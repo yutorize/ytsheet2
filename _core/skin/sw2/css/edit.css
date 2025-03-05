@@ -8,7 +8,7 @@
   #sw2\.0 & {
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 5fr;
   }
-
+  
   > dt.grow[data-total] {
     &:not([data-total="0"]) {
       &::after {
@@ -24,13 +24,13 @@
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
   grid-template-rows: auto;
 }
-@media screen and (min-width:736px){
+@media screen and (width > 735px){
   #regulation .annotate {
     margin-top: -1em;
     margin-bottom: 10px;
   }
 }
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   #regulation > dl {
     grid-template-columns: 1fr 1fr 1fr;
     #sw2\.0 & {
@@ -55,7 +55,7 @@
   grid-template-columns: 0.6fr 0.5fr 1.6fr 1.8fr;
 }
 
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   #area-status {
     grid-template-columns: 2fr 1fr;
     grid-gap: var(--box-v-gap) var(--box-h-gap);
@@ -109,8 +109,22 @@
     }
   }
 }
-#status dl[id^="stt-add"]::before {
-  left: -.6rem;
+#status dl[id^="stt-add"] {
+  &::before {
+    left: -.6rem;
+  }
+  dd {
+    align-items: end;
+  }
+}
+#status span[id^="stt-equip-"] {
+  text-wrap: nowrap;
+  padding-left: .3em;
+  &:not(:empty)::after {
+    content: "+";
+    font-size: 1.2rem;
+    padding-left: .2em;
+  }
 }
 #status dl#stt-pointbuy-type {
   grid-column: span 2;
@@ -122,7 +136,7 @@
     font-size: 80%;
   }
 }
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   #status {
     grid-gap: 5px;
     grid-template-columns: 1fr 1fr 1fr 1fr 0.8fr 1fr;
@@ -151,34 +165,30 @@
 }
 
 #area-ability {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
   align-items: flex-start;
+  gap: var(--box-v-gap) var(--box-h-gap);
 
-  > * {
-    margin-bottom: var(--box-v-gap);
-    margin-left: 0;
+  #area-classes {
+    grid-column: span 2;
   }
   > p {
-    flex-basis: 100%;
+    grid-column: span 2;
+  }
+  @media screen and (width <= 735px){
+    display: block;
+    > p {
+      margin-top: var(--box-v-gap);
+    }
   }
 }
 
 #area-classes {
-  flex-basis: 100%;
+  grid-column: span 2;
   display: flex;
   position: relative;
   justify-content: space-between;
-}
-#area-classes h2 + div {
-  position: absolute;
-  top: .2rem;
-  right: .5em;
-  font-size: 80%;
-}
-#area-classes h2 + div span {
-  font-size: 120%;
 }
 #area-classes.common-classes-off {
   flex-basis: calc(66% - 1rem);
@@ -222,7 +232,7 @@
     width: 3.5em;
   }
 }
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   #area-classes {
     display: block;
   }
@@ -233,18 +243,18 @@
   #classes {
     display: block;
     width: 100%;
-  }
-  #classes h3 {
-    margin-top: .5em;
-  }
-  #classes dl {
-    padding-left: 2em;
-    padding-right: 2em;
-    grid-template-columns: 1fr 5em;
-  }
-  #classes dl dt {
-    display: flex;
-    align-items: center;
+    & h3 {
+      margin-top: .5em;
+    }
+    & dl {
+      padding-left: 2em;
+      padding-right: 2em;
+      grid-template-columns: 1fr 5em;
+    }
+    & dl dt {
+      display: flex;
+      align-items: center;
+    }
   }
   #common-classes {
     margin: var(--box-v-gap) 0 0 !important;
@@ -302,7 +312,7 @@
   > p:last-child {
     font-size: 90%;
   }
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     & ul {
       padding-left: 2em;
       padding-right: 2em;
@@ -312,15 +322,6 @@
 #mystic-arts {
   position: relative;
 
-  & h2 + div {
-    position: absolute;
-    top: .2rem;
-    right: .5em;
-    font-size: 80%;
-    & span {
-      font-size: 120%;
-    }
-  }
   & h2:nth-child(n+2) {
     margin-top: 0;
   }
@@ -342,7 +343,7 @@
       }
     }
   }
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     & ul {
       padding-left: 1em;
       padding-right: 1em;
@@ -353,24 +354,156 @@
   display: none;
 }
 
+#area-effects {
+  margin-top: var(--box-v-gap);
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  @media screen and (width <= 735px){
+    grid-template-columns: 1fr;
+  }
+  gap: var(--box-v-gap) var(--box-h-gap);
+  position: relative;
+
+  & h2 {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    text-wrap: wrap;
+
+    .handle { font-weight: bold; }
+    select:has(option:checked[value=""]),
+    select option[value=""] { color: #7777; }
+  }
+  & .box:has(select option:checked[value=""]) h2 ~ *{
+    display: none;
+  }
+  .effect-points {
+    display: flex;
+    width: max-content;
+    margin-left: auto;
+    margin-right: .5em;
+    padding: .1em .5em;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    line-height: 1;
+
+    &:has(dt:empty){ display: none; }
+
+    > dt { font-weight: normal; }
+    > dt::after { content: "：" }
+  }
+  .edit-table {
+    > thead tr th {
+      vertical-align: bottom;
+      line-height: 1.4;
+      text-align: left;
+      &.num1,
+      &.num2 {
+        width: 3em;
+        position: relative;
+        text-align: center;
+        > span {
+          min-width: 4em;
+          position: absolute;
+          right: 0;
+          bottom: 0;
+          font-size: 80%;
+          text-wrap: nowrap;
+        }
+      }
+    }
+    > tbody {
+      td.left > input { text-align: left; }
+    }
+    &:has(thead .num1.hidden) tbody .num1 { display: none; }
+    &:has(thead .num2.hidden) tbody .num2 { display: none; }
+  }
+  .box:has(.select-input.free){
+    .edit-table tbody tr:first-of-type {
+      font-weight: bold;
+      > .num1,.num2 {
+        input {
+          padding-top: calc(2px + .2em);
+          padding-bottom: calc(2px + .2em);
+          font-size: 80%;
+        }
+      }
+    }
+  }
+  .box:has(.select-input:not(.free)) .annotate { display: none; }
+
+  > .box:has(table input:read-only) {
+    table {
+      border-bottom: hidden;
+      .handle {
+        visibility: hidden;
+      }
+    }
+    .add-del-button { display: none; }
+  }
+  
+  > .add-del-button {
+    order: 999;
+  }
+  &:not(:has(> div:nth-of-type(3))) > .add-del-button {
+    visibility: hidden;
+    height: 0;
+  }
+  &:has(select option:checked:not([value=""])) > .add-del-button {
+    visibility: visible;
+    height: auto;
+  }
+  @media screen and (width > 915px){
+    > .add-del-button {
+      display: flex;
+      flex-direction: column;
+      gap: 2em;
+      justify-content: end;
+      
+      margin-left: calc(var(--box-h-gap) * -1 + .2em);
+      padding-bottom: 1em;
+
+      > a {
+        width: max-content;
+        height: max-content;
+        margin: 0;
+        flex-shrink: 0;
+        flex-grow: 0;
+        transform: scale(1, 3.5) rotate(-90deg);
+        &::before { transform: scale(0.3,1.5) rotate(90deg); }
+      }
+    }
+    &:has(> div:nth-of-type(3n+1):last-of-type) > .add-del-button {
+      position: absolute;
+      right: -1.2em;
+      bottom: 0;
+    }
+  }
+}
+#area-effects + .annotate {
+  margin: .3em auto 0;
+}
+#area-effects:not(:has(> div:nth-of-type(3))) + .annotate {
+  display: none;
+}
+#area-actions {
+  margin-top: var(--box-v-gap);
+}
 #crafts {
   flex-basis: 66%;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: flex-start;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: start;
+  gap: var(--box-v-gap) var(--box-h-gap);
 }
 #crafts > .box {
-  flex-basis: calc(50% - 1rem);
-  margin: 0 0 var(--box-v-gap) var(--box-h-gap) !important;
+  margin: 0;
 
   #area-classes.common-classes-off + div + & {
     flex-basis: calc(33% - 1rem);
     &:first-child {
       margin-left: 0 !important;
     }
-    @media screen and (max-width:735px){
+    @media screen and (width <= 735px){
       flex-basis: calc(50% - 1rem);
     }
   }
@@ -381,7 +514,7 @@
     padding-bottom: 1px;
   }
 }
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   #crafts {
     display: block;
   }
@@ -506,7 +639,7 @@
     display: none;
   }
 }
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   #area-actions {
     display: block;
   }
@@ -591,7 +724,7 @@
     }
   }
 }
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   #magic-power {
     width: 100%;
     overflow-x: auto;
@@ -638,7 +771,13 @@ option.zero-data::before {
 }
 
 #attack-classes {
-  width: calc(25% + 24.7em + 1px);
+  width: calc(25% + 23.7em + 1px);
+  > table {
+    & thead {
+      .acc { width: 4.5em; } /* 命中 */
+      .dmg { width: 4.5em; } /* 追加Ｄ */
+    }
+  }
 }
 #weapons {
   width: 100%;
@@ -646,6 +785,13 @@ option.zero-data::before {
 #weapons table {
   border-bottom-width: 1px;
   border-bottom-style: solid;
+  table-layout: auto;
+  & thead {
+    .usage { width: 4.2em; } /* 用法 */
+    .acc   { width: 4.5em; } /* 命中 */
+    .dmg   { width: 4.5em; } /* 追加Ｄ */
+    .own   { width:   1em; }
+  }
 }
 #weapons table td {
   font-size: 90%;
@@ -691,8 +837,7 @@ option.zero-data::before {
 #weapons td:last-child span[onclick] {
   padding: 7px 5px;
 }
-#weapons thead th:nth-child(2) { width: 4.2em; } /* 用法 */
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   #attack-classes {
     overflow-x: auto;
   }
@@ -736,16 +881,16 @@ option.zero-data::before {
   align-items: center;
   padding-left: .2em;
 }
-#armours thead th {
-  &.type { width:   2em; }
-  &.cate { width:   6em; }
-  &.name { width:   25%; }
-  &.reqd { width: 3.5em; }
-  &.eva  { width: 3.5em; }
-  &.def  { width: 3.5em; }
-  &.own  { width: 1.5em; }
-  &.calc { width: 1.5em; }
-  &.note { width:  auto; }
+#armours thead {
+  .type { width:   2em; }
+  .cate { width:   6em; }
+  .name { width:   25%; }
+  .reqd { width: 3.5em; }
+  .eva  { width: 3.5em; }
+  .def  { width: 3.5em; }
+  .own  { width: 1.5em; }
+  .calc { width: 1.5em; }
+  .note { width:  auto; }
 }
 
 #armours tbody th.type::before {
@@ -778,15 +923,15 @@ option.zero-data::before {
   }
 }
 
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   #evasion-classes {
     width: auto;
   }
-  #evasion-classes thead th {
-    &:nth-child(1) { width:14.5em; } /* 名前 */
-    &:nth-child(2) { width:   4em; } /* 必筋 */
-    &:nth-child(3) { width:   4em; } /* 回避 */
-    &:nth-child(4) { width:   4em; } /* 防護 */
+  #evasion-classes thead {
+    .name { width:14.5em; } /* 名前 */
+    .reqd { width:   4em; } /* 必筋 */
+    .eva  { width:   4em; } /* 回避 */
+    .def  { width:   4em; } /* 防護 */
   }
   #armours {
     overflow-x: auto;
@@ -795,16 +940,16 @@ option.zero-data::before {
     min-width: 0;
     table-layout: fixed;
   }
-  #armours thead th {
-    &.type { width: 2.5em; } /* 種別 */
-    &.cate { width:  6em; } /* 種別 */
-    &.name { width:  12em; } /* 名前 */
-    &.reqd { width:   4em; } /* 必筋 */
-    &.eva  { width:   4em; } /* 回避 */
-    &.def  { width:   4em; } /* 防護 */
-    &.own  { width: 1.5em; } /* 専用 */
-    &.calc { width: 1.5em; } /* 専用 */
-    &.note { width:  16em; } /* 備考 */
+  #armours thead {
+    .type { width: 2.5em; } /* 種別 */
+    .cate { width:  6em; } /* 種別 */
+    .name { width:  12em; } /* 名前 */
+    .reqd { width:   4em; } /* 必筋 */
+    .eva  { width:   4em; } /* 回避 */
+    .def  { width:   4em; } /* 防護 */
+    .own  { width: 1.5em; } /* 専用 */
+    .calc { width: 1.5em; } /* 専用 */
+    .note { width:  16em; } /* 備考 */
   }
 }
 
@@ -858,12 +1003,12 @@ option.zero-data::before {
   }
 }
 
-#accessories thead th {
-  &:nth-child(1) { width: 1.5em; } /*  */
-  &:nth-child(2) { width: 2.5em; } /* 種別 */
-  &:nth-child(3) { width:   25%; } /* 名前 */
-  &:nth-child(4) { width: 4.5em; } /* 専用 */
-  &:nth-child(5) { width:  auto; } /* 備考 */
+#accessories thead {
+  .check { width: 1.5em; } /* ✔ */
+  .type  { width: 2.5em; } /* 種別 */
+  .name  { width:   25%; } /* 名前 */
+  .own   { width: 4.5em; } /* 専用 */
+  .note  { width:  auto; } /* 備考 */
 }
 #accessories tbody th {
   cursor: ns-resize;
@@ -880,7 +1025,10 @@ option.zero-data::before {
     background-color: var(--box-even-rows-bg-color);
   }
 }
-@media screen and (max-width:735px){
+#accessories tbody select {
+  padding-left: 0;
+}
+@media screen and (width <= 735px){
   #accessories {
     overflow-x: auto;
   }
@@ -888,17 +1036,17 @@ option.zero-data::before {
     min-width: 0;
     table-layout: fixed;
   }
-  #accessories thead th {
-    &:nth-child(1) { width: 1.5em; } /* ✔ */
-    &:nth-child(2) { width: 2.5em; } /* 種別 */
-    &:nth-child(3) { width:  12em; } /* 名前 */
-    &:nth-child(4) { width: 4.5em; } /* 専用 */
-    &:nth-child(5) { width:  16em; } /* 備考 */
+  #accessories thead {
+    .check { width: 1.5em; } /* ✔ */
+    .type  { width: 2.5em; } /* 種別 */
+    .name  { width:  12em; } /* 名前 */
+    .own   { width: 4.5em; } /* 専用 */
+    .note  { width:  16em; } /* 備考 */
   }
   #accessories tbody td:nth-child(4) { padding-left: 0; } /* 専用 */
 }
 
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   #area-items {
     flex-direction: column;
   }
@@ -1072,22 +1220,22 @@ option.zero-data::before {
 }
 
 #history table {
-  & thead th {
-    &:first-child{ width: 1.4em; }
-    &.date       { width:   6em; }
-    &.title      { width:  12em; }
-    &.exp        { width:   5em; }
-    &.money      { width: 4.5em; }
-    &.honor      { width: 3.5em; }
-    &.honor.zero-data { width: 5em; }
-    &.grow       { width: 4.5em; }
-    &.gm         { width:   6em; }
-    &.member     { width:  auto; }
+  > thead {
+    & th:first-child { width: 1.4em; }
+    .date       { width:   6em; }
+    .title      { width:  12em; }
+    .exp        { width:   5em; }
+    .money      { width: 4.5em; }
+    .honor      { width: 3.5em; }
+    .honor.zero-data { width: 5em; }
+    .grow       { width: 4.5em; }
+    .gm         { width:   6em; }
+    .member     { width:  auto; }
   }
-  @media screen and (max-width:735px){
+  @media screen and (width <= 735px){
     & { table-layout: fixed; }
-    & thead th.title  { width: 12em; }
-    & thead th.member { width: 16em; }
+    & thead .title  { width: 12em; }
+    & thead .member { width: 16em; }
   }
 
   & tbody td.money {
@@ -1209,7 +1357,7 @@ article > form > hr {
   > ul {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    @media screen and (max-width:735px){
+    @media screen and (width <= 735px){
       display: block;
     }
     > li {
@@ -1244,6 +1392,7 @@ article > form > hr {
       &.name { width: 14em; }
       &.power { width: 6em; }
       &.cast  { width: 6em; }
+      &.rate  { width: 6em; }
       &.crit  { width: 6em; }
       &.dmg   { width: 6em; }
       &.roll  { width: 6em; }
@@ -1253,7 +1402,7 @@ article > form > hr {
     }
   }
 }
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   #chatpalette ~ * > details {
     max-width: 100%;
     overflow-x: auto;
@@ -1332,7 +1481,7 @@ form#monster div.status input {
   &[name="price"]    { width: 8em; }
   &[name="language"] {width: 25em; }
 }
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   form#monster #group dl {
     grid-template-columns: 2em 1fr 4em;
     grid-template-rows: auto auto;
@@ -1351,30 +1500,30 @@ form#monster div.status input {
 form#monster table.status {
   border-width: 0;
 }
-form#monster table.status thead th {
-  &.lv     { width: 0em; }
-  &.handle { width: 1.4em; cursor: unset; }
-  &.name   { width: auto; }
-  &.acc    { width: 12%; }
-  &.atk    { width: 12%; }
-  &.eva    { width: 12%; }
-  &.def    { width: 12%; }
-  &.hp     { width: 12%; }
-  &.mp     { width: 12%; }
+form#monster table.status thead {
+  .lv     { width: 0em; }
+  .handle { width: 1.4em; cursor: unset; }
+  .name   { width: auto; }
+  .acc    { width: 12%; }
+  .atk    { width: 12%; }
+  .eva    { width: 12%; }
+  .def    { width: 12%; }
+  .hp     { width: 12%; }
+  .mp     { width: 12%; }
 }
 
-form#monster.mount table.status thead th {
-  &.lv     { width: 1.8em; }
-  &.handle { width: 1.4em; }
-  &.name   { width: auto; }
-  &.acc    { width: 8.5%; }
-  &.atk    { width: 8.5%; }
-  &.eva    { width: 8.5%; }
-  &.def    { width: 8.5%; }
-  &.hp     { width: 8.5%; }
-  &.mp     { width: 8.5%; }
-  &.vit    { width: 8.5%; }
-  &.mnd    { width: 8.5%; }
+form#monster.mount table.status thead {
+  .lv     { width: 1.8em; }
+  .handle { width: 1.4em; }
+  .name   { width: auto; }
+  .acc    { width: 8.5%; }
+  .atk    { width: 8.5%; }
+  .eva    { width: 8.5%; }
+  .def    { width: 8.5%; }
+  .hp     { width: 8.5%; }
+  .mp     { width: 8.5%; }
+  .vit    { width: 8.5%; }
+  .mnd    { width: 8.5%; }
 }
 
 form#monster table.status thead th.handle::before { content: ""; }
@@ -1437,7 +1586,7 @@ form#monster div.parts {
       width: 17.5em;
     }
   }
-  @media screen and (max-width: 735px) {
+  @media screen and (width <= 735px) {
     display: block;
     > dl {
       margin-right: 0;
@@ -1450,7 +1599,7 @@ form#monster div.parts {
     }
   }
 }
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   form#monster table.status { width: 50em; }
   form#monster div.parts dl { display: block; }
 }
@@ -1614,7 +1763,7 @@ form#item .input-arms-data {
   & td { width: 5em; }
   & td:first-child { width: 1.5em; }
   & td:last-child { width: auto; }
-
+  
   #section-common:not(.is-ranged-weapon) & {
     :is(th, td).range {
       display: none;
@@ -1644,7 +1793,7 @@ form#item textarea[name="description"] {
   padding: 2px;
 }
 
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   form#item div.input-data dl {
     display: block;
   }
@@ -1806,7 +1955,7 @@ form#arts #school-item-list thead th {
 
 form#arts #school-item-list tbody td:nth-child(3) { font-size: 82%; }
 
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   form#arts div.input-data dl dt {
     width: 6.5em;
   }
@@ -1843,7 +1992,7 @@ form#arts #image {
   background-repeat: no-repeat;
   background-position: center;
 }
-@media screen and (max-width:735px){
+@media screen and (width <= 735px){
   form#arts #image {
     float: none;
     width: auto;

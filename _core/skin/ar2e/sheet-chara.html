@@ -120,7 +120,7 @@
           <dl class="box" id="class-title">
             <dt>称号クラス<dd><TMPL_VAR classTitle>
           </dl>
-          <dl class="box" id=race">
+          <dl class="box" id="race">
             <dt>種族<dd><TMPL_VAR race>
           </dl>
           <dl class="box" id="class-main">
@@ -258,19 +258,19 @@
             <tbody>
               <tr>
                 <th><TMPL_IF head_origin><TMPL_VAR head_origin><TMPL_ELSE>出自</TMPL_IF>
-                <td class="left" rowspan="2"><TMPL_VAR lifepathOriginNote>
+                <td class="comment" rowspan="2"><TMPL_VAR lifepathOriginNote>
               <tr><td><TMPL_VAR lifepathOrigin></td>
             </tbody>
             <tbody>
               <tr>
                 <th><TMPL_IF head_experience><TMPL_VAR head_experience><TMPL_ELSE>境遇</TMPL_IF>
-                <td class="left" rowspan="2"><TMPL_VAR lifepathExperienceNote>
+                <td class="comment" rowspan="2"><TMPL_VAR lifepathExperienceNote>
               <tr><td><TMPL_VAR lifepathExperience></td>
             </tbody>
             <tbody>
               <tr>
                 <th><TMPL_IF head_motive><TMPL_VAR head_motive><TMPL_ELSE>目的</TMPL_IF>
-                <td class="left" rowspan="2"><TMPL_VAR lifepathMotiveNote>
+                <td class="comment" rowspan="2"><TMPL_VAR lifepathMotiveNote>
               <tr><td><TMPL_VAR lifepathMotive></td>
             </tbody>
           </table>
@@ -322,7 +322,7 @@
                   <td><TMPL_VAR INI></td>
                   <td><TMPL_VAR MOVE></td>
                   <td><TMPL_VAR RANGE></td>
-                  <td class="left"><div class="item-name"><TMPL_VAR NOTE></div></td>
+                  <td class="note"><div class="item-name"><TMPL_VAR NOTE></div></td>
                 </TMPL_LOOP>
                 <TMPL_LOOP Armours><tr>
                   <th><TMPL_VAR HEAD>
@@ -335,7 +335,7 @@
                   <td><TMPL_VAR MDEF></td>
                   <td><TMPL_VAR INI></td>
                   <td><TMPL_VAR MOVE></td>
-                  <td colspan="2" class="left"><div class="item-name"><TMPL_VAR NOTE></div></td>
+                  <td colspan="2" class="note"><div class="item-name"><TMPL_VAR NOTE></div></td>
                 </TMPL_LOOP>
               </tbody>
               <tbody class="total">
@@ -355,7 +355,7 @@
                   <td rowspan="2"><TMPL_VAR armamentTotalMDef></td>
                   <td rowspan="2"><TMPL_VAR armamentTotalIni></td>
                   <td rowspan="2"><TMPL_VAR armamentTotalMove></td>
-                  <td rowspan="2" colspan="2" class="left"><TMPL_VAR armamentTotalNote></td>
+                  <td rowspan="2" colspan="2" class="note"><TMPL_VAR armamentTotalNote></td>
                 <tr class="armour-weight"">
                   <td class="right small">防具
                   <td>
@@ -403,7 +403,7 @@
                   <td><TMPL_VAR battleSkillMDef></td>
                   <td><TMPL_VAR battleSkillIni></td>
                   <td><TMPL_VAR battleSkillMove></td>
-                  <td colspan="2" class="left"><div class="item-name"><TMPL_VAR battleSkillNote></div></td>
+                  <td class="note"><div class="item-name"><TMPL_VAR battleSkillNote></div></td>
                 <tr>
                   <th></th>
                   <td colspan="2" class="right small">ダイス数修正
@@ -423,7 +423,7 @@
                   <td><TMPL_VAR battleOtherMDef></td>
                   <td><TMPL_VAR battleOtherIni></td>
                   <td><TMPL_VAR battleOtherMove></td>
-                  <td colspan="2" class="left"><div class="item-name"><TMPL_VAR battleOtherNote></div></td>
+                  <td class="note"><div class="item-name"><TMPL_VAR battleOtherNote></div></td>
                 <tr>
                   <th>
                   <td colspan="2" class="right small">ダイス数修正</td>
@@ -566,7 +566,7 @@
               <td><TMPL_VAR RANGE>
               <td><TMPL_VAR COST>
               <td><TMPL_VAR REQD>
-            <tr><td class="left" colspan="8"><TMPL_VAR NOTE></td>
+            <tr><td class="note" colspan="8"><TMPL_VAR NOTE></td>
           </tbody></TMPL_LOOP>
         </table>
         <p class="right">
@@ -612,7 +612,7 @@
               <TMPL_LOOP Geises><tr>
                 <td><TMPL_VAR NAME>
                 <td><TMPL_VAR COST>
-                <td class="left"><TMPL_VAR NOTE>
+                <td class="note"><TMPL_VAR NOTE>
               </TMPL_LOOP>
             </tbody>
           </table>
@@ -639,7 +639,7 @@
               <TMPL_LOOP Connections><tr>
                 <td><TMPL_VAR NAME>
                 <td><TMPL_VAR RELATION>
-                <td class="left"><TMPL_VAR NOTE>
+                <td class="comment"><TMPL_VAR NOTE>
               </TMPL_LOOP>
             </tbody>
           </table>

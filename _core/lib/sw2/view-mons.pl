@@ -124,6 +124,11 @@ if($::in{url}){
   $SHEET->param(convertMode => 1);
   $SHEET->param(convertUrl => $::in{url});
 }
+
+### キャラクター名 --------------------------------------------------
+$SHEET->param(characterName => stylizeCharacterName $pc{characterName});
+$SHEET->param(monsterName => stylizeCharacterName $pc{monsterName});
+
 ### タグ --------------------------------------------------
 my @tags;
 foreach(split(/ /, $pc{tags})){
@@ -181,10 +186,10 @@ foreach (1 .. $pc{statusNum}){
   if ($pc{'status'.$_.'Evasion'}  ne ''){ $pc{'status'.$_.'Evasion'}  = $pc{'status'.$_.'Evasion'} .(!$pc{statusTextInput} && !$pc{mount}?' ('.$pc{'status'.$_.'EvasionFix'}.')' :'') }
 
   $pc{'status'.$_.'Damage'} = '―' if $pc{'status'.$_.'Damage'} eq '2d+' && ($pc{'status'.$_.'Accuracy'} eq '' || $pc{'status'.$_.'Accuracy'} eq '―');
-
+  
   push(@status_row, {
     LV       => $pc{lvMin},
-    STYLE    => $pc{'status'.$_.'Style'},
+    STYLE    => ($pc{'status'.$_.'Style'} =~ s#[(（].+[）)]#<span class="part">$&</span>#r),
     ACCURACY => $pc{'status'.$_.'Accuracy'} // '―',
     DAMAGE   => $pc{'status'.$_.'Damage'  } // '―',
     EVASION  => $pc{'status'.$_.'Evasion' } // '―',
@@ -205,7 +210,7 @@ foreach my $lv (2 .. ($pc{lvMax}-$pc{lvMin}+1)){
 
     push(@status_row, {
       LV       => $lv+$pc{lvMin}-1,
-      STYLE    => $pc{'status'.$_.'Style'},
+      STYLE    => ($pc{'status'.$_.'Style'} =~ s#[(（].+[）)]#<span class="part">$&</span>#r),
       ACCURACY => $pc{'status'.$num.'Accuracy'} // '―',
       DAMAGE   => $pc{'status'.$num.'Damage'  } // '―',
       EVASION  => $pc{'status'.$num.'Evasion' } // '―',
@@ -252,8 +257,8 @@ if($pc{forbidden} eq 'all' && $pc{forbiddenMode}){
   $SHEET->param(titleName => "非公開データ - $set::title");
 }
 else {
-  my $name    = removeTags nameToPlain($pc{characterName});
-  my $species = removeTags nameToPlain($pc{monsterName});
+  my $name    = removeTags removeRuby($pc{characterName});
+  my $species = removeTags removeRuby($pc{monsterName});
   if($name && $species){ $SHEET->param(titleName => "${name}（${species}）"); }
   else { $SHEET->param(titleName => $name || $species); }
 }

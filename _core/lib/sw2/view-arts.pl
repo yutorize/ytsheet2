@@ -132,7 +132,7 @@ foreach (keys %pc) {
   }
   $pc{$_} = unescapeTags($pc{$_});
 }
-$pc{magicEffect} =~ s#<h2>(.+?)</h2>#</dd><dt>$1</dt><dd class="box">#gi;
+$pc{magicEffect} =~ s#<h2>(.+?)</h2>#</dd><dt><span class="center">$1</span></dt><dd class="box">#gi;
 
 ### アップデート --------------------------------------------------
 if($pc{ver}){
@@ -177,6 +177,7 @@ $SHEET->param(Tags => \@tags);
   if($pc{magicActionTypeMinor}  ){ $icon .= '<i class="s-icon minor"><span class="raw">[補]</span></i>' }
   if($pc{magicActionTypeSetup}  ){ $icon .= '<i class="s-icon setup"><span class="raw">[準]</span></i>' }
   $SHEET->param(magicIcon => $icon);
+  $SHEET->param(magicName => stylizeCharacterName $pc{magicName});
   $SHEET->param(magicTarget   => textMagic($pc{magicTarget}));
   $SHEET->param(magicDuration => textMagic($pc{magicDuration}));
 
@@ -227,7 +228,17 @@ $SHEET->param(Tags => \@tags);
   }
   elsif   ($class eq '魔装'){
     $SHEET->param(magicClassEn => 'potential');
-    magicItemViewOn('Premise','Part');
+    $SHEET->param(magicApplyHumanForm =>
+      ($pc{magicApplyHumanForm} eq 'available')   ? '有効' :
+      ($pc{magicApplyHumanForm} eq 'unavailable') ? '無効' :
+      '―'
+    );
+    magicItemViewOn('Premise','Part','HumanForm');
+  }
+  elsif   ($class eq '操気'){
+    $SHEET->param(magicClassEn => 'psychokinesis');
+    if($pc{magicActionTypePassive}){ magicItemViewOn('Cost','Premise') }
+    else { magicItemViewOn('Cost','Premise','Target','Range','Duration','Resist') }
   }
   elsif   ($class eq '呪印'){
     $SHEET->param(magicClassEn => 'seal');
@@ -242,7 +253,7 @@ $SHEET->param(Tags => \@tags);
   }
 }
 sub textMagic {
-  $_[0] =~ s#／#／<br>#;
+  $_[0] =~ s#／#／<wbr>#;
   return $_[0];
 }
 sub textSongPoint {
@@ -260,9 +271,9 @@ foreach my $lv (2,4,7,10,13){
   my $icon;
   if($pc{'godMagic'.$lv.'ActionTypeMinor'}){ $icon .= '<i class="s-icon minor">≫</i>' }
   if($pc{'godMagic'.$lv.'ActionTypeSetup'}){ $icon .= '<i class="s-icon setup">△</i>' }
-  $pc{'godMagic'.$lv.'Effect'} =~ s#<h2>(.+?)</h2>#</dd><dt>$1</dt><dd class="box">#gi;
+  $pc{'godMagic'.$lv.'Effect'} =~ s#<h2>(.+?)</h2>#</dd><dt><span class="center">$1</span></dt><dd class="box">#gi;
   push(@magics, {
-    "NAME"     => $pc{'godMagic'.$lv.'Name'},
+    "NAME"     => stylizeCharacterName($pc{'godMagic'.$lv.'Name'}),
     "LEVEL"    => $lv,
     "ICON"     => $icon,
     "COST"     => $pc{'godMagic'.$lv.'Cost'},
@@ -311,9 +322,9 @@ foreach my $num (1..$pc{schoolArtsNum}){
   next if !($pc{'schoolArts'.$num.'Name'});
   my $icon;
   if($pc{'schoolArts'.$num.'ActionTypeSetup'}){ $icon .= '<i class="s-icon setup">△</i>' }
-  $pc{'schoolArts'.$num.'Effect'} =~ s#<h2>(.+?)</h2>#</dd><dt>$1</dt><dd class="box">#gi;
+  $pc{'schoolArts'.$num.'Effect'} =~ s#<h2>(.+?)</h2>#</dd><dt><span class="center">$1</span></dt><dd class="box">#gi;
   push(@arts, {
-    "NAME"     => $pc{'schoolArts'.$num.'Name'},
+    "NAME"     => stylizeCharacterName($pc{'schoolArts'.$num.'Name'}),
     "ICON"     => $icon,
     "COST"     => $pc{'schoolArts'.$num.'Cost'},
     "TYPE"     => $pc{'schoolArts'.$num.'Type'},
@@ -336,9 +347,9 @@ foreach my $num (1..$pc{schoolMagicNum}){
   my $icon;
   if($pc{'schoolMagic'.$num.'ActionTypeMinor'}){ $icon .= '<i class="s-icon minor">≫</i>' }
   if($pc{'schoolMagic'.$num.'ActionTypeSetup'}){ $icon .= '<i class="s-icon setup">△</i>' }
-  $pc{'schoolMagic'.$num.'Effect'} =~ s#<h2>(.+?)</h2>#</dd><dt>$1</dt><dd class="box">#gi;
+  $pc{'schoolMagic'.$num.'Effect'} =~ s#<h2>(.+?)</h2>#</dd><dt><span class="center">$1</span></dt><dd class="box">#gi;
   push(@schoolmagics, {
-    "NAME"     => $pc{'schoolMagic'.$num.'Name'},
+    "NAME"     => stylizeCharacterName($pc{'schoolMagic'.$num.'Name'}),
     "LEVEL"    => $pc{'schoolMagic'.$num.'Lv'},
     "ICON"     => $icon,
     "A-COST"   => $pc{'schoolMagic'.$num.'AcquireCost'},
@@ -373,7 +384,7 @@ if($pc{forbidden} eq 'all' && $pc{forbiddenMode}){
   $SHEET->param(titleName => '非公開データ');
 }
 else {
-  $SHEET->param(titleName => removeTags nameToPlain $pc{artsName});
+  $SHEET->param(titleName => removeTags removeRuby $pc{artsName});
 }
 
 ### 画像 --------------------------------------------------
@@ -419,7 +430,7 @@ $SHEET->param(sheetType => 'arts');
 ### メニュー --------------------------------------------------
 my @menu = ();
 if(!$pc{modeDownload}){
-  push(@menu, { TEXT => '⏎', TYPE => "href", VALUE => './?type=i', });
+  push(@menu, { TEXT => '⏎', TYPE => "href", VALUE => './?type=a', });
   if($::in{url}){
     push(@menu, { TEXT => 'コンバート', TYPE => "href", VALUE => "./?mode=convert&url=$::in{url}" });
   }

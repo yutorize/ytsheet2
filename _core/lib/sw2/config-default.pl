@@ -171,6 +171,55 @@ our %curseList = (
   # '2-1' => '重い', '6-5' => 'つきまとう',
 );
 
+## ●穢れ表、アビス侵蝕表など
+our @effects = (
+  { name => '穢れ',
+    pointName => '穢れ度',
+    calc => [1],
+    type => ['text','number'],
+    header => ['理由や影響','穢れの増加'],
+  },
+  { name => 'アビス侵蝕',
+    pointName => 'アビス汚染度',
+    calc => [1],
+    type => ['text','number'],
+    header => ['影響','汚染度の増加'],
+  },
+  { name => '魔神化',
+    notes => 'ヴァイスシティ',
+    pointName => '魔神化影響点',
+    calc => [1],
+    type => ['text','number'],
+    header => ['魔神化能力','影響点'],
+  },
+  { name => '疲労度',
+    notes => 'デモンズライン',
+    type => ['text','checkbox'],
+    fix => ['1:影響なし','2:行為判定-1','3:行為判定さらに-1','4:一時的に気絶','5以上:死亡'],
+  },
+  { name => '契約印／染蝕度',
+    notes => 'モノクロマティカ',
+    pointName => '契約深度',
+    calc => [2],
+    header => ['名称','消費','獲得数'],
+    type => ['text','number','number'],
+    fix => ['▼晨影印','▲飛輪印','●薄明印','◆黎旦印','染蝕度'],
+  },
+  { name => '自由記入：１列',
+    calc => [1],
+    type => ['text'],
+  },
+  { name => '自由記入：２列',
+    calc => [1],
+    type => ['text','text'],
+  },
+  { name => '自由記入：３列',
+    calc => [2],
+    type => ['text','text','text'],
+  },
+);
+
+
 ## ●特殊ハウスルール向け
  # 戦闘用アイテム欄
  # our $battleitem = 1;
@@ -281,5 +330,32 @@ our %curseList = (
       sheetType => 'arts',
     },
   );
+
+# シート初期値の変更
+our %customizedInitialValues = (
+    # キャラクターデータ
+    '' => {
+        # 例：「キャラクター名」の初期値を「unnamed」にする
+        # 'characterName' => 'unnamed',
+    },
+
+    # 魔物データ
+    m => {
+        # 例：「発言者色」の初期値を「#CCCCCC」にする
+        # 'nameColor' => '#CCCCCC',
+    },
+
+    # アイテムデータ
+    i => {
+        # 例：「価格」のデフォルト値を「取引不可」にする
+        # 'price' => '取引不可',
+    },
+
+    # 魔法・神格・流派データ
+    a => {
+        # 例：「カテゴリ」のデフォルト値を「魔法／練技・呪歌など」にする
+        # 'category' => 'magic',
+    },
+);
 
 1;

@@ -96,7 +96,7 @@
       
       <div id="tags">
         <TMPL_IF group><a id="group" href="./?group=<TMPL_VAR group>"><TMPL_VAR groupName></a></TMPL_IF>
-        <TMPL_IF stage><i class="stage" id="stage"><TMPL_VAR stage></i></TMPL_IF>
+        <TMPL_IF stage><a class="stage" id="stage" href="./?stage=<TMPL_VAR stage>"><TMPL_VAR stage></a></TMPL_IF>
         <TMPL_LOOP Tags><a class="tag" href="./?tag=<TMPL_VAR URL>"><TMPL_VAR TEXT></a></TMPL_LOOP>
       </div>
       <div class="column column-status"><!-- COLUMN -->
@@ -179,29 +179,30 @@
         <section class="box" id="lifepath">
           <h2>ライフパス</h2>
           <table class="data-table line-tbody">
+            <colgroup><col><col><col></colgroup>
             <tbody>
               <tr>
                 <th class="left" colspan="2">出自
-                <td rowspan="2" class="left"><TMPL_VAR lifepathOriginNote>
+                <td rowspan="2" class="comment"><TMPL_VAR lifepathOriginNote>
               <tr>
                 <td colspan="2"><TMPL_VAR lifepathOrigin></td>
             <tbody>
               <tr>
                 <th class="left" colspan="2">経験
-                <td rowspan="2" class="left"><TMPL_VAR lifepathExperienceNote>
+                <td rowspan="2" class="comment"><TMPL_VAR lifepathExperienceNote>
               <tr>
                 <td colspan="2"><TMPL_VAR lifepathExperience></td>
             <tbody>
               <tr>
                 <th class="left" colspan="2"><TMPL_IF isFH>欲望<TMPL_ELSE>邂逅</TMPL_IF>
-                <td rowspan="2" class="left"><TMPL_VAR lifepathEncounterNote>
+                <td rowspan="2" class="comment"><TMPL_VAR lifepathEncounterNote>
               <tr>
                 <td colspan="2"><TMPL_VAR lifepathEncounter></td>
             <tbody>
               <tr>
                 <th class="left">覚醒
                 <th class="small">侵蝕値
-                <td rowspan="2" class="left"><TMPL_VAR lifepathAwakenNote>
+                <td rowspan="2" class="comment"><TMPL_VAR lifepathAwakenNote>
               <tr>
                 <td><TMPL_VAR lifepathAwaken>
                 <td class="center"><TMPL_VAR lifepathAwakenEncroach></td>
@@ -209,17 +210,17 @@
               <tr>
                 <th class="left">衝動
                 <th class="small">侵蝕値
-                <td rowspan="2" class="left"><TMPL_VAR lifepathImpulseNote>
+                <td rowspan="2" class="comment"><TMPL_VAR lifepathImpulseNote>
               <tr>
                 <td <TMPL_IF lifepathUrgeCheck>style="border-bottom:hidden"</TMPL_IF>><TMPL_VAR lifepathImpulse></td>
                 <td class="center"><TMPL_VAR lifepathImpulseEncroach>
               <TMPL_IF lifepathUrgeCheck><tr class="urge">
                 <th colspan="2" class="right">／変異暴走
-                <td colspan="2" class="left"><TMPL_VAR lifepathUrgeNote></td>
+                <td class="comment"><TMPL_VAR lifepathUrgeNote></td>
               </TMPL_IF>
             <TMPL_IF hasEncroachOffset>
             <tbody>
-              <tr><th class="right small">その他の修正<td class="center"><TMPL_VAR lifepathOtherEncroach><td class="left"><TMPL_VAR lifepathOtherNote>
+              <tr><th class="right small">その他の修正<td class="center"><TMPL_VAR lifepathOtherEncroach><td class="comment"><TMPL_VAR lifepathOtherNote>
             </TMPL_IF>
             <tbody>
               <tr><th class="right">侵蝕率基本値<td class="center bold"><TMPL_VAR baseEncroach><td>
@@ -292,12 +293,22 @@
       <section class="box" id="lois">
         <h2>ロイス</h2>
         <table class="data-table">
+          <colgroup>
+           <col class="relation">
+           <col class="name">
+           <col class="emo">
+           <col class="slash">
+           <col class="emo">
+           <col class="color">
+           <col class="comment">
+           <col class="state">
+          </colgroup>
           <thead>
             <tr>
               <th>関係
               <th>名前
               <th colspan="3">感情<span class="small">(Posi／Nega)</span>
-              <th class="color">属性
+              <th class="color"><span class="nowrap">属性</span>
               <th>
               <th class="state right"><span class="text">状態</span>
           </thead>
@@ -309,7 +320,7 @@
               <td><TMPL_UNLESS NO-EMO>／<TMPL_ELSE>―</TMPL_UNLESS>
               <td class="emo <TMPL_VAR N-CHECK>"><TMPL_VAR NEGA></td>
               <td class="color" style="<TMPL_VAR COLOR-BG>"><TMPL_VAR COLOR></td>
-              <td class="left"<TMPL_UNLESS STATE> colspan="2"</TMPL_UNLESS>><TMPL_VAR NOTE>
+              <td class="comment"<TMPL_UNLESS STATE> colspan="2"</TMPL_UNLESS>><TMPL_VAR NOTE>
               <TMPL_IF STATE><td class="state right <TMPL_IF S>sperior</TMPL_IF>"><span data-state="<TMPL_VAR STATE>"></span></td></TMPL_IF>
             </TMPL_LOOP>
           </tbody>
@@ -319,6 +330,12 @@
       <TMPL_IF Memories><section class="box" id="memory">
         <h2>メモリー</h2>
         <table class="data-table">
+          <colgroup>
+           <col class="relation">
+           <col class="name">
+           <col class="emo">
+           <col class="comment">
+          </colgroup>
           <thead>
             <tr><th>関係<th>名前<th>感情<th>
           </thead>
@@ -327,7 +344,7 @@
               <td><TMPL_VAR RELATION>
               <td><TMPL_VAR NAME>
               <td><TMPL_VAR EMOTION>
-              <td class="left"><TMPL_VAR NOTE>
+              <td class="comment"><TMPL_VAR NOTE>
             </TMPL_LOOP>
           </tbody>
         </table>
@@ -364,7 +381,7 @@
                 <td><TMPL_VAR ENCROACH>
                 <td><TMPL_VAR RESTRICT>
               <tr>
-                <td class="left" colspan="9"><TMPL_VAR NOTE><TMPL_IF EXP><span class="right">［<b>経験点修正</b>:<TMPL_VAR EXP>点］</span></TMPL_IF></td>
+                <td class="note" colspan="9"><TMPL_VAR NOTE><TMPL_IF EXP><span class="right">［<b>経験点修正</b>:<TMPL_VAR EXP>点］</span></TMPL_IF></td>
             </TMPL_LOOP>
           </table>
         </section>
@@ -380,6 +397,14 @@
         <TMPL_IF Magics><section class="box effects" id="magic">
           <h2>術式</h2>
           <table class="data-table line-tbody">
+            <colgroup>
+              <col class="name">
+              <col class="type">
+              <col class="exp ">
+              <col class="act ">
+              <col class="enc ">
+              <col class="note">
+            </colgroup>
             <thead>
               <tr><th>名称<th>種別<th>経験点<th>発動値<th>侵蝕値<th>効果
             </thead>
@@ -390,7 +415,7 @@
                 <td><TMPL_VAR EXP>
                 <td><TMPL_VAR ACTIVATE>
                 <td><TMPL_VAR ENCROACH>
-                <td><TMPL_VAR NOTE>
+                <td class="note"><TMPL_VAR NOTE>
               </tr>
             </TMPL_LOOP>
           </table>
@@ -452,7 +477,7 @@
                   <td><TMPL_VAR ATK>
                   <td><TMPL_VAR GUARD>
                   <td class="range"><TMPL_VAR RANGE>
-                  <td class="left"><TMPL_VAR NOTE>
+                  <td class="note"><TMPL_VAR NOTE>
                 </TMPL_LOOP>
               </tbody>
             </table>
@@ -472,7 +497,7 @@
                   <td><TMPL_VAR INITIATIVE>
                   <td><TMPL_VAR DODGE>
                   <td><TMPL_VAR ARMOR>
-                  <td class="left"><TMPL_VAR NOTE>
+                  <td class="note"><TMPL_VAR NOTE>
                 </TMPL_LOOP>
               </tbody>
             </table>
@@ -493,7 +518,7 @@
                   <td><TMPL_VAR ATK>
                   <td><TMPL_VAR ARMOR>
                   <td class="range"><TMPL_VAR DASH>
-                  <td class="left"><TMPL_VAR NOTE>
+                  <td class="note"><TMPL_VAR NOTE>
                 </TMPL_LOOP>
               </tbody>
             </table>
@@ -510,7 +535,7 @@
                   <td><TMPL_VAR EXP>
                   <td><TMPL_VAR TYPE>
                   <td><TMPL_VAR SKILL>
-                  <td class="left"><TMPL_VAR NOTE>
+                  <td class="note"><TMPL_VAR NOTE>
                 </TMPL_LOOP>
               </tbody>
             </table>
@@ -520,13 +545,13 @@
         <section class="box" id="exps">
           <TMPL_IF isConstruction>
           <h2>コンストラクション作成</h2>
-          <table>
+          <table class="data-table">
             <thead>
               <tr>
-                <th>能力値フリーポイント
-                <th>技能フリーポイント
-                <th>作成時任意エフェクト
-                <th>エフェクトレベルフリーポイント
+                <th>能力値<wbr>フリーポイント
+                <th>技能<wbr>フリーポイント
+                <th>作成時<wbr>任意エフェクト
+                <th>エフェクトレベル<wbr>フリーポイント
             <tbody>
               <tr>
                 <td><TMPL_VAR fpUsedStatus>/3
@@ -537,7 +562,7 @@
           </table>
           </TMPL_IF>
           <h2>経験点計算</h2>
-          <table>
+          <table class="data-table">
             <thead>
               <tr>
                 <th>能力値
@@ -547,7 +572,7 @@
                 <th>アイテム
                 <th>メモリー
                 <th>使用総計
-                <th>未使用／合計
+                <th>未使用<wbr>／合計
             <tbody>
               <tr>
                 <td><TMPL_VAR expUsedStatus>

@@ -51,6 +51,8 @@ elsif($mode eq 'blanksheet'){
   $pc{magi1Target} = '単体';
   $pc{magi1Cond}   = '8～12';
   $pc{magi1Note}   = 'クラン全員で1Dをロールし、合計点のダメージを与える。(P139)';
+
+  %pc = applyCustomizedInitialValues(\%pc, 'c');
 }
 
 ## 画像
@@ -83,7 +85,7 @@ my $image_maxsize = $set::image_maxsize / 2;
 my $image_maxsize_view = $image_maxsize >= 1048576 ? sprintf("%.3g",$image_maxsize/1048576).'MB' : sprintf("%.3g",$image_maxsize/1024).'KB';
 
 ### フォーム表示 #####################################################################################
-my $titlebarname = removeTags nameToPlain unescapeTags ($pc{clanName});
+my $titlebarname = removeTags removeRuby unescapeTags ($pc{clanName});
 print <<"HTML";
 Content-type: text/html\n
 <!DOCTYPE html>

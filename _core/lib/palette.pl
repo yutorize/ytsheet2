@@ -15,7 +15,7 @@ my $editing = $::in{editingMode};
 if($editing){ outputChatPaletteTemplate(); } else { outputChatPalette(); }
 ### チャットパレット出力 #############################################################################
 sub outputChatPalette {
-  my ($file, $type, undef) = getfile_open($id);
+  my ($file, $type, $author) = getfile_open($id);
 
   changeFileByType($type);
 
@@ -25,7 +25,7 @@ sub outputChatPalette {
   my $datatype = ($::in{log}) ? 'logs' : 'data';
 
   my @lines;
-  open my $IN, '<', "${set::char_dir}${file}/${datatype}.cgi" or &login_error;
+  open my $IN, '<', "${set::char_dir}${file}/${datatype}.cgi" or error('データがありません');
   if($datatype eq 'logs'){
     my $hit = 0;
     while (<$IN>){
@@ -46,6 +46,21 @@ sub outputChatPalette {
     chomp;
     my ($key, $value) = split(/<>/, $_, 2);
     $pc{$key} = $value;
+  }
+  
+  if($pc{forbidden}){
+    my $LOGIN_ID = check;
+    if($::in{log}){
+      ($pc{protect}, $pc{forbidden}) = getProtectType("${set::char_dir}${file}/data.cgi");
+    }
+    unless(
+      ($pc{protect} eq 'none') || 
+      ($author && ($author eq $LOGIN_ID || $set::masterid eq $LOGIN_ID))
+    ){
+      print "Content-type: text/plain; charset=UTF-8\n\n";
+      say "エラー：閲覧権限がありません。\n";
+      exit;
+    }
   }
   
   if($pc{paletteRemoveTags}){
@@ -101,6 +116,51 @@ sub swapWordAndCommand {
   return join("\n", @palette);
 }
 
+# 抽選コマンドをつくる
+sub makeChoiceCommand {
+  my $count = shift;
+  my @sourceItems = @{shift;};
+  my %bot = %{shift;};
+
+  sub validateItems {
+    my @sources = @{shift;};
+    my %_bot = %{shift;};
+
+    my @validated = ();
+
+    foreach my $item (@sources) {
+      next if $item =~ /^[\s　]*$/;
+
+      if ($_bot{YTC}) {
+        $item =~ s/,/_/g;
+      }
+      elsif ($_bot{BCD}) {
+        $item =~ s/ /_/g;
+      }
+      else {
+        next;
+      }
+
+      push(@validated, $item);
+    }
+
+    return @validated;
+  }
+
+  my @validatedItems = validateItems(\@sourceItems, \%bot);
+  return '' unless @validatedItems;
+
+  if ($bot{YTC}) {
+    return "${count}\$" . join(',', @validatedItems) . "\n";
+  }
+
+  if ($bot{BCD}) {
+    return ($count > 1 ? "x${count} " : '') . 'choice ' . join(' ', @validatedItems) . "\n";
+  }
+
+  return '';
+}
+
 sub outputChatPaletteTemplate {
   use JSON::PP;
   my $type = $::in{type};
@@ -121,7 +181,7 @@ sub outputChatPaletteTemplate {
   $json{properties} .= "$_\n" foreach( paletteProperties($tool,$type) );
 
   $json{unitStatus} = createUnitStatus(\%pc);
-  print "Content-type: text/javascript; charset=UTF-8\n\n";
+  print "Content-type: application/json; charset=UTF-8\n\n";
   print JSON::PP->new->canonical(1)->encode( \%json );
 }
 

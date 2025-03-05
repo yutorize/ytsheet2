@@ -116,9 +116,16 @@
     <article>
       <section class="form">
         <h2>ユーザー設定</h2>
-        <p class="center">
-          カラーカスタムを無効にする（名前表示域以外）: <label class="toggle-button"><input type="checkbox" onchange="colorlessModeChange()"></label>
-        </p>
+        <dl>
+          <dt><label class="toggle-button"><input type="checkbox" onchange="changeColorlessMode()"></label> カラーカスタムを無効にする
+          <dd>ONにすると、各キャラクターシートのカラーカスタムが（名前欄を除き）無効化されます。
+        </dl>
+        <dl>
+          <dt><label class="toggle-button"><input type="checkbox" onchange="changeRubyCopyMode()"></label> ルビをコピーした時、ルビ記法でコピーする
+          <dd>キャラクターシートの閲覧画面で、ルビを含む文字列をコピーした際、ルビ記法ごとコピーします。<br>
+            たとえば「<ruby>漢字<rt>かんじ</ruby>」という文字列の場合、コピーされる文字列が以下のようになります。<br>
+            ON:「｜漢字《かんじ》」／OFF:「漢字(かんじ)」
+        </dl>
       </section>
       <section class="form">
         <h2>アカウント情報</h2>

@@ -302,7 +302,7 @@
                 <td class="adp  "><TMPL_VAR ADP>
                 <td class="name ">【<TMPL_VAR NAME>】
                 <td class="grade"><TMPL_VAR GRADE>
-                <td class="note left"><TMPL_VAR NOTE>
+                <td class="note "><TMPL_VAR NOTE>
                 <td class="page "><TMPL_VAR PAGE>
               </TMPL_LOOP>
           </table>
@@ -375,7 +375,7 @@
                 <td class="system"><TMPL_VAR SYSTEM>
                 <td class="type  "><TMPL_VAR TYPE>
                 <td class="dfclt "><TMPL_VAR DFCLT>
-                <td class="note left"><TMPL_VAR NOTE>
+                <td class="note  "><TMPL_VAR NOTE>
                 <td class="page  "><TMPL_VAR PAGE>
               </TMPL_LOOP>
           </table>
@@ -402,7 +402,7 @@
                   <td class="terms "><TMPL_VAR TERMS>
                   <td class="page  "><TMPL_VAR PAGE>
                 <tr>
-                  <td class="note left" colspan="5"><TMPL_VAR NOTE>
+                  <td class="note  " colspan="5"><TMPL_VAR NOTE>
               </TMPL_LOOP>
           </table>
         </section></TMPL_IF>
@@ -462,7 +462,6 @@
                 <th class="power">威力</span>
                 <th class="range">射程
                 <th class="note ">備考
-                <th>
               </tr>
             <tbody><TMPL_LOOP Weapons><TMPL_IF CLOSE><tbody></TMPL_IF>
               <tr>
@@ -472,7 +471,7 @@
                 <td class="hit  "><TMPL_IF HITMOD><TMPL_VAR HITMOD>=</TMPL_IF><b><TMPL_VAR HITTOTAL></b>
                 <td class="power"><b><TMPL_VAR POWER></b>
                 <td class="range"><TMPL_VAR RANGE>
-                <td class="note left"><TMPL_VAR NOTE>
+                <td class="note "><TMPL_VAR NOTE>
               </tr>
             </TMPL_LOOP></tbody>
           </table>
@@ -532,7 +531,7 @@
                 <td class="armor  "><TMPL_VAR ARMOR>
                 <td class="stealth"><TMPL_VAR STEALTH>
                 <td class="move   "><TMPL_VAR MOVEMOD>=<b><TMPL_VAR MOVETOTAL></b>
-                <td class="note left"><TMPL_VAR NOTE>
+                <td class="note   "><TMPL_VAR NOTE>
               </TMPL_LOOP>
             </tbody>
           </table>
@@ -581,7 +580,7 @@
                 <td class="block  "><TMPL_VAR BLOCKMOD>=<b><TMPL_VAR BLOCKTOTAL></b>
                 <td class="armor  "><TMPL_VAR ARMOR>=<b><TMPL_VAR ARMORTOTAL></b>
                 <td class="stealth"><TMPL_VAR STEALTH>
-                <td class="note left"><TMPL_VAR NOTE>
+                <td class="note   "><TMPL_VAR NOTE>
               </TMPL_LOOP>
             </tbody>
           </table>
@@ -626,7 +625,7 @@
         <table class="data-table line-tbody">
           <thead>
             <tr>
-              <th>No.
+              <th class="num   ">No.
               <th class="date  ">日付
               <th class="title ">タイトル
               <th class="comp  "><span class="small">目標<br>達成</span>

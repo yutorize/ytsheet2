@@ -73,6 +73,18 @@ window.addEventListener('DOMContentLoaded', ()=>{
   })
 });
 
+// ルビ ----------------------------------------
+window.addEventListener('load', ()=>{
+  if (rubyCopyMode == 0){
+    document.querySelectorAll('ruby:has(rp:nth-of-type(3):last-child)').forEach(ruby => {
+      console.log(ruby)
+      ruby.querySelector('ruby rp:nth-of-type(1)').textContent = '';
+      ruby.querySelector('ruby rp:nth-of-type(2)').textContent = '(';
+      ruby.querySelector('ruby rp:nth-of-type(3)').textContent = ')';
+    });
+  }
+});
+
 // 保存系 ----------------------------------------
 function getJsonData(targetEnvironment = '') {
   const paramId = /id=[0-9a-zA-Z\-]+/.exec(location.href)[0];
@@ -233,7 +245,6 @@ async function downloadAsFullSet(){
   // ユドナリウム
   if(document.getElementById('downloadlist-udonarium')){
     const characterDataJson = await getJsonData('udonarium');
-    
     const image = await output.getPicture(characterDataJson.imageURL || defaultImage, "image."+characterDataJson.image);
     const udonariumXml = output[`generateUdonariumXml`](generateType,characterDataJson, location.href, image.hash);
     const udonariumUrl = await generateUdonariumZipFile((characterDataJson.characterName||characterDataJson.aka), udonariumXml, image);
