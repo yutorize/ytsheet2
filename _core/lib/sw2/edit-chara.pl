@@ -1314,8 +1314,8 @@ foreach (
     <td>
       <select name="accessory@$_[1]Own" oninput="calcSubStt()">
         <option></option>
-        <option value="HP" @{[ $pc{"accessory@$_[1]Own"} eq 'HP' ? 'selected':'' ]}>HP</option>
-        <option value="MP" @{[ $pc{"accessory@$_[1]Own"} eq 'MP' ? 'selected':'' ]}>MP</option>
+        <option value="HP" @{[ $pc{"accessory@$_[1]Own"} eq 'HP' ? 'selected':'' ]}>HP+2</option>
+        <option value="MP" @{[ $pc{"accessory@$_[1]Own"} eq 'MP' ? 'selected':'' ]}>MP+2</option>
       </select>
     <td>@{[input('accessory'.@$_[1].'Note','','','onchange="changeEquipMod()"')]}
 HTML

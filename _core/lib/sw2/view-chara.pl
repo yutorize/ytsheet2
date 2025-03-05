@@ -616,7 +616,7 @@ if(!$pc{forbiddenMode}){
     my $reqdStr = ($id eq 'Fen' ? ceil($strTotal / 2) : $strTotal)
                 . ($pc{reqdStrWeaponMod} ? "+$pc{reqdStrWeaponMod}" : '');
     push(@atacck, {
-      NAME => $name."<span class=\"small\">技能レベル</span>".$pc{'lv'.$id},
+      NAME => $name."<wbr><span class=\"small\">技能レベル</span>".$pc{'lv'.$id},
       STR  => $reqdStr,
       ACC  => $pc{'lv'.$id}+$pc{bonusDex},
       ($id eq 'Fen' ? (CRIT => '-1') : ('' => '')),
@@ -771,7 +771,7 @@ if(!$pc{forbiddenMode}){
       }
     }
     push(@evasion, {
-      NAME => $name."<span class=\"small\">技能レベル</span>".$pc{'lv'.$id},
+      NAME => $name."<wbr><span class=\"small\">技能レベル</span>".$pc{'lv'.$id},
       STR  => ($id eq 'Fen' ? ceil($strTotal / 2) : $strTotal),
       EVA  => $pc{'lv'.$id}+$pc{bonusAgi},
     } );
