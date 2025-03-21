@@ -110,8 +110,6 @@ $pc{historyNum}    ||=  3;
 
 $pc{accuracyEnhance} ||= 0;
 $pc{evasiveManeuver} ||= 0;
-$pc{tenacity} ||= 0;
-$pc{capacity} ||= 0;
 
 $pc{unlockAbove16} = 1 if $pc{level} > 15;
 
