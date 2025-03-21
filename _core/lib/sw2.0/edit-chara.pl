@@ -109,8 +109,6 @@ $pc{historyNum}    ||=  3;
 
 $pc{accuracyEnhance} ||= 0;
 $pc{evasiveManeuver} ||= 0;
-$pc{tenacity} ||= 0;
-$pc{capacity} ||= 0;
 
 ### 改行処理 --------------------------------------------------
 $pc{items}         =~ s/&lt;br&gt;/\n/g;
