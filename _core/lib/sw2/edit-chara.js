@@ -561,6 +561,17 @@ function checkFeats(){
   console.log('checkFeats()');
   feats = {};
 
+  // 自動習得
+  for(const key of SET.classNames){
+    const cId  = SET.class[key].id;
+    for(const data of SET.class[key]?.feats || []){
+      if(lv[cId] >= data[1]){
+        feats[data[0]] = true;
+      }
+    }
+  }
+
+  // 選択習得
   const featsVagrantsOn = form.featsVagrantsOn.checked;
   const featsZeroOn     = form.featsZeroOn.checked;
   document.querySelectorAll(`#combat-feats option.vagrants` ).forEach(obj=>{ obj.style.display = featsVagrantsOn ? '' : 'none'; });
@@ -1125,7 +1136,7 @@ function calcSubStt() {
   subStt.mpBase = 
     (raceAbilities.includes('溢れるマナ')) ? (level * 3 + stt.totalMnd)
     : ( levelCasters.reduce((a,x) => a+x,0) * 3 + stt.totalMnd );
-  subStt.hpAutoAdd = (feats['頑強'] || 0) + (lv['Fig'] >= 7 ? 15 : 0) + seekerHpMpAdd;
+  subStt.hpAutoAdd = (feats['頑強'] || 0) + (feats['タフネス'] ? 15 : 0) + seekerHpMpAdd;
   subStt.mpAutoAdd = (feats['キャパシティ'] || 0) + raceAbilityMp     + seekerHpMpAdd;
   subStt.hpAccessory = 0;
   subStt.mpAccessory = 0;
