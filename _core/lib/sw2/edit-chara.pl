@@ -956,7 +956,7 @@ foreach my $name (@data::class_names){
                 <td id="attack-${ename}-str">0
                 <td id="attack-${ename}-acc">0
                 <td>―
-                <td>@{[ $name eq 'フェンサー' ? '-1' : '―' ]}
+                <td>@{[ $data::class{$name}{critMod} || '―' ]}
                 <td id="attack-${ename}-dmg">―
 HTML
 }

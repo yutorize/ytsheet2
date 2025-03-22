@@ -1482,10 +1482,10 @@ function calcAttack() {
     document.getElementById(`attack-${eName}`).style.display = display;
 
     document.getElementById(`attack-${eName}-str`).textContent
-      = (id == 'Fen' ? reqdStrHalf
-      : SET.class[name]?.accUnlock?.reqd ? stt['total'+SET.class[name]?.accUnlock?.reqd]
-      : reqdStr)
-      + (equipMod.WeaponReqd ? `+${equipMod.WeaponReqd}` : '');
+      = ( SET.class[name]?.reqdStrHalf ? reqdStrHalf
+        : SET.class[name]?.accUnlock?.reqd ? stt['total'+SET.class[name]?.accUnlock?.reqd]
+        : reqdStr
+      ) + (equipMod.WeaponReqd ? `+${equipMod.WeaponReqd}` : '');
     
     document.getElementById(`attack-${eName}-acc`).textContent
       = SET.class[name]?.accUnlock?.acc === 'power' ? magicPowers[id]
@@ -1533,10 +1533,11 @@ function calcWeapon() {
     form["weapon"+i+"Class"].classList.toggle('error', errorAccClass[className] == true); 
     // 必筋チェック
     const maxReqd
-      = (className === "フェンサー") ? reqdStrHalf
+      = SET.class[className]?.reqdHalf ? reqdStrHalf
       : /^\d+w$/i.test(weaponReqdRaw) ? reqdMnd
       : SET.class[className]?.accUnlock?.reqd ? stt['total'+SET.class[className]?.accUnlock?.reqd]
       : reqdStr;
+      console.log(maxReqd)
     form["weapon"+i+"Reqd"].classList.toggle('error', weaponReqd > maxReqd + (equipMod.WeaponReqd||0));
     // 基礎命中
     if(SET.class[className]?.accUnlock?.acc === 'power'){
@@ -1614,7 +1615,7 @@ function calcDefense() {
     }
     if(display == 'none'){ errorEvaClass[name] = true; }
     document.getElementById(`evasion-${eName}`).style.display = display;
-    document.getElementById(`evasion-${eName}-str`).textContent = id == 'Fen' ? reqdStrHalf : reqdStr;
+    document.getElementById(`evasion-${eName}-str`).textContent = SET.class[name]?.reqdHalf ? reqdStrHalf : reqdStr;
     document.getElementById(`evasion-${eName}-eva`).textContent = lv[id] + bonus.Agi;
   }
   document.getElementById("evasion-demonruler").style.display = !modeZero && lv['Dem'] >= 2 ? "" : modeZero && lv['Dem'] > 7 ? "" :"none";
@@ -1699,7 +1700,7 @@ function calcArmour(evaAdd,defBase) {
     form['evasionClass'+i].classList.toggle('error', errorEvaClass[className] == true); 
 
     // 最大必筋
-    const maxReqd = (className === "フェンサー") ? reqdStrHalf : reqdStr;
+    const maxReqd = (SET.class[className]?.reqdHalf) ? reqdStrHalf : reqdStr;
 
     // 計算
     const classLv = lv[SET.class[className]?.id] || 0;
