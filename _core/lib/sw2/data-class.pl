@@ -123,6 +123,8 @@ our %class = (
     expTable => 'B',
     id       => 'Fen',
     eName    => 'fencer',
+    reqdHalf => 1,
+    critMod => -1,
   },
   'シューター' => {
     type     => 'weapon-user',
