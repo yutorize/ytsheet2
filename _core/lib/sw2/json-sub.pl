@@ -26,8 +26,8 @@ sub addJsonData {
           }
         }
         if (!$pc{mount} || $pc{"status${i}Vit"} =~ /\d/) {
-          $vitresist = $pc{mount} ? $pc{"status${i}Vit"} : $pc{vitResist} . '（' . $pc{vitResistFix} . '）';
-          $mndresist = $pc{mount} ? $pc{"status${i}Mnd"} : $pc{mndResist} . '（' . $pc{mndResistFix} . '）';
+          $vitresist = $pc{mount} ? $pc{"status${i}Vit"} : $pc{vitResist} . ' (' . $pc{vitResistFix} . ')';
+          $mndresist = $pc{mount} ? $pc{"status${i}Mnd"} : $pc{mndResist} . ' (' . $pc{mndResistFix} . ')';
         }
       }
     }
@@ -39,15 +39,15 @@ sub addJsonData {
           $i .= $ii > 1 ? "-$ii" : '';
         }
       }
-      $vitresist = $pc{mount} ? $pc{"status${i}Vit"} : $pc{vitResist} . '（' . $pc{vitResistFix} . '）';
-      $mndresist = $pc{mount} ? $pc{"status${i}Mnd"} : $pc{mndResist} . '（' . $pc{mndResistFix} . '）';
+      $vitresist = $pc{mount} ? $pc{"status${i}Vit"} : $pc{vitResist} . ' (' . $pc{vitResistFix} . ')';
+      $mndresist = $pc{mount} ? $pc{"status${i}Mnd"} : $pc{mndResist} . ' (' . $pc{mndResistFix} . ')';
     }
 
     my $taxa = "分類:$pc{taxa}";
     my $data1 = "知能:$pc{intellect}　知覚:$pc{perception}".($pc{mount}?'':"　反応:$pc{disposition}");
        $data1 .= "　穢れ:$pc{sin}" if $pc{sin};
     my $data2  = "言語:$pc{language}".($pc{mount}?'':"　生息地:$pc{habitat}");
-    my $data3  = "弱点:$pc{weakness}\n".($pc{mount}?'':"先制値:$pc{initiative}　")."生命抵抗力:${vitresist}　精神抵抗力:${mndresist}";
+    my $data3  = ($pc{mount}?'':"先制値:$pc{initiative}　")."生命抵抗力:${vitresist}　精神抵抗力:${mndresist}";
     $pc{sheetDescriptionS} = $taxa."\n".$data3;
     $pc{sheetDescriptionM} = $taxa."　".$data1."\n".$data2."\n".$data3;
     
@@ -91,7 +91,17 @@ sub addJsonData {
   }
 
   ## ユニット（コマ）用ステータス --------------------------------------------------
-  $pc{unitStatus} = createUnitStatus(\%pc, $target);
+  if ($pc{type} eq 'm' && $target eq 'ccfolia') {
+    $pc{unitStatus} = createUnitStatus(\%pc, $target);
+    #$pc{sheetDescriptionM} .= "\n".$pc{unitStatus}->{'メモ'} if $pc{unitStatus}->{'メモ'};
+    my @memo = grep { exists $_->{'メモ'} } @{$pc{unitStatus}};
+    $pc{sheetDescriptionM} .= "\n$memo[0]->{'メモ'}" if @memo && @memo[0]->{'メモ'};
+    my @array = grep { !exists $_->{'メモ'} } @{$pc{unitStatus}};
+    $pc{unitStatus} = \@array;
+  }
+  else {
+    $pc{unitStatus} = createUnitStatus(\%pc, $target);
+  }
   
   return \%pc;
 }
