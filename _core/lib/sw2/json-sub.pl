@@ -77,12 +77,15 @@ sub addJsonData {
     my $base = "種族:$pc{race}　性別:$pc{gender}　年齢:$pc{age}";
     my $sub  = "ランク:".join('／', @ranks)."　信仰:".($pc{faith}||'－')."　穢れ:".($pc{sin}||0);
     my $classes = "技能:${class_text}";
-    my $status  = "能力値:器用$pc{sttDex}".($pc{sttAddA}?"+$pc{sttAddA}":'')."\[$pc{bonusDex}\]"
-                .      "／敏捷$pc{sttAgi}".($pc{sttAddB}?"+$pc{sttAddB}":'')."\[$pc{bonusAgi}\]"
-                .      "／筋力$pc{sttStr}".($pc{sttAddC}?"+$pc{sttAddC}":'')."\[$pc{bonusStr}\]"
-                .      "／生命$pc{sttVit}".($pc{sttAddD}?"+$pc{sttAddD}":'')."\[$pc{bonusVit}\]"
-                .      "／知力$pc{sttInt}".($pc{sttAddE}?"+$pc{sttAddE}":'')."\[$pc{bonusInt}\]"
-                .      "／精神$pc{sttMnd}".($pc{sttAddF}?"+$pc{sttAddF}":'')."\[$pc{bonusMnd}\]";
+    foreach ('A' .. 'F') {
+      $pc{"sttAddTotal${_}"} += $pc{"sttEquip${_}"};
+    }
+    my $status  = "能力値:器用$pc{sttDex}".($pc{sttAddTotalA}?"+$pc{sttAddTotalA}":'')."\[$pc{bonusDex}\]"
+                .      "／敏捷$pc{sttAgi}".($pc{sttAddTotalB}?"+$pc{sttAddTotalB}":'')."\[$pc{bonusAgi}\]"
+                .      "／筋力$pc{sttStr}".($pc{sttAddTotalC}?"+$pc{sttAddTotalC}":'')."\[$pc{bonusStr}\]"
+                .      "／生命$pc{sttVit}".($pc{sttAddTotalD}?"+$pc{sttAddTotalD}":'')."\[$pc{bonusVit}\]"
+                .      "／知力$pc{sttInt}".($pc{sttAddTotalE}?"+$pc{sttAddTotalE}":'')."\[$pc{bonusInt}\]"
+                .      "／精神$pc{sttMnd}".($pc{sttAddTotalF}?"+$pc{sttAddTotalF}":'')."\[$pc{bonusMnd}\]";
     $pc{sheetDescriptionS} = $base."\n".$classes;
     $pc{sheetDescriptionM} = $base."\n".$sub."\n".$classes."\n".$status;
   }
