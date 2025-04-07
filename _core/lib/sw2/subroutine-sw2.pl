@@ -13,6 +13,7 @@ sub createUnitStatus {
   my %pc = %{$_[0]};
   my $target = $_[1] || '';
   my @unitStatus;
+  my @unitMemo;
   if ($pc{type} eq 'm'){
     my @n2a = ('','A' .. 'Z');
     if($pc{statusNum} > 1){ # 2部位以上
@@ -48,7 +49,7 @@ sub createUnitStatus {
       if ($target eq 'udonarium') {
         push(@unitStatus, {'防護' => join('／',@def)});
       } else {
-        push(@unitStatus, {'メモ' => '防護:'.join('／',@def)});
+        push(@unitMemo, '防護:'.join('／',@def));
       }
     }
     else { # 1部位
@@ -65,6 +66,15 @@ sub createUnitStatus {
       push(@unitStatus, { 'HP' => "$hp/$hp" });
       push(@unitStatus, { 'MP' => "$mp/$mp" }) unless isEmptyValue($mp);
       push(@unitStatus, { '防護' => "$def" });
+    }
+    
+    if($pc{weakness} && $pc{weakness} ne 'なし'){
+      if ($target eq 'udonarium') {
+        push(@unitStatus, { '弱点' => $pc{weakness} });
+      }
+      else {
+        push(@unitMemo, '弱点:'.$pc{weakness});
+      }
     }
   }
   else {
@@ -86,6 +96,17 @@ sub createUnitStatus {
         push(@unitStatus, { '人' => '0' });
       }
       push(@unitStatus, { '陣気' => '0' }) if $pc{lvWar};
+    }
+  }
+  if(@unitMemo){
+    if ($target eq 'udonarium') {
+      push(@unitStatus, {'メモ' => join("　",@unitMemo)});
+    }
+    if ($target eq 'ccfolia') {
+      push(@unitStatus, {'メモ' => join("\n",@unitMemo)});
+    }
+    else {
+      push(@unitStatus, {'メモ' => join("<br>",@unitMemo)});
     }
   }
 
