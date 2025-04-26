@@ -614,13 +614,13 @@ if(!$pc{forbiddenMode}){
       }
       next if !$isUnlock;
     }
-    my $reqdStr = ($id eq 'Fen' ? ceil($strTotal / 2) : $strTotal)
+    my $reqdStr = ($data::class{$name}{reqdHalf} ? ceil($strTotal / 2) : $strTotal)
                 . ($pc{reqdStrWeaponMod} ? "+$pc{reqdStrWeaponMod}" : '');
     push(@atacck, {
       NAME => $name."<wbr><span class=\"small\">技能レベル</span>".$pc{'lv'.$id},
       STR  => $reqdStr,
       ACC  => $pc{'lv'.$id}+$pc{bonusDex},
-      ($id eq 'Fen' ? (CRIT => '-1') : ('' => '')),
+      CRIT => ($data::class{$name}{critMod} || '―'),
       DMG  => $id eq 'Dem' ? '―' : $pc{'lv'.$id}+$pc{bonusStr},
     } );
   }

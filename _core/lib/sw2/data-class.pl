@@ -91,12 +91,21 @@ our %class = (
     expTable => 'A',
     id       => 'Fig',
     eName    => 'fighter',
+    feats => [
+      ['タフネス',7],
+      ['バトルマスター',13],
+    ],
   },
   'グラップラー' => {
     type     => 'weapon-user',
     expTable => 'A',
     id       => 'Gra',
     eName    => 'grappler',
+    feats => [
+      ['追加攻撃',1],
+      ['カウンター',7],
+      ['バトルマスター',13],
+    ],
   },
   'バトルダンサー' => {
     '2.5' => 1,
@@ -104,12 +113,18 @@ our %class = (
     expTable => 'A',
     id       => 'Bat',
     eName    => 'battledancer',
+    feats => [
+      ['舞い流し',7],
+      ['バトルマスター',13],
+    ],
   },
   'フェンサー' => {
     type     => 'weapon-user',
     expTable => 'B',
     id       => 'Fen',
     eName    => 'fencer',
+    reqdHalf => 1,
+    critMod => -1,
   },
   'シューター' => {
     type     => 'weapon-user',
@@ -130,6 +145,9 @@ our %class = (
     language => {
       '魔法文明語' => { talk => 1, read => 1 },
     },
+    feats => [
+      ['ルーンマスター',11],
+    ],
   },
   'コンジャラー' => {
     type     => 'magic-user',
@@ -143,6 +161,9 @@ our %class = (
     language => {
       '魔法文明語' => { talk => 1, read => 1 },
     },
+    feats => [
+      ['ルーンマスター',11],
+    ],
   },
   'ウィザード' => {
     type     => 'magic-user',
@@ -163,6 +184,9 @@ our %class = (
       jName => '神聖魔法',
       eName => 'holypray',
     },
+    feats => [
+      ['ルーンマスター',11],
+    ],
   },
   'フェアリーテイマー' => {
     type     => 'magic-user',
@@ -176,6 +200,9 @@ our %class = (
     language => {
       '妖精語' => { talk => 1 },
     },
+    feats => [
+      ['ルーンマスター',11],
+    ],
   },
   'マギテック' => {
     type     => 'magic-user',
@@ -189,6 +216,9 @@ our %class = (
     language => {
       '魔動機文明語' => { talk => 1, read => 1 },
     },
+    feats => [
+      ['ルーンマスター',11],
+    ],
   },
   'スカウト' => {
     expTable => 'B',
@@ -199,6 +229,13 @@ our %class = (
       Agi => { name => '運動', stt => 'B', initiative => 1 },
       Obs => { name => '観察', stt => 'E' },
     },
+    feats => [
+      ['トレジャーハント',5],
+      ['ファストアクション',7],
+      ['影走り',9],
+      ['トレジャーマスター',12],
+      ['匠の技',15],
+    ],
   },
   'レンジャー' => {
     expTable => 'B',
@@ -209,6 +246,13 @@ our %class = (
       Agi => { name => '運動', stt => 'B' },
       Obs => { name => '観察', stt => 'E' },
     },
+    feats => [
+      ['サバイバビリティ',5],
+      ['不屈',7],
+      ['ポーションマスター',9],
+      ['縮地',12],
+      ['ランアンドガン',15],
+    ],
   },
   'セージ' => {
     expTable => 'B',
@@ -220,6 +264,13 @@ our %class = (
     package  => {
       Kno => { name => '知識', stt => 'E', monsterLore => 1 },
     },
+    feats => [
+      ['鋭い目',5],
+      ['弱点看破',7],
+      ['マナセーブ',9],
+      ['マナ耐性',12],
+      ['賢人の知恵',15],
+    ],
   },
   'エンハンサー' => {
     expTable => 'B',
@@ -434,6 +485,9 @@ our %class = (
       jName => '森羅魔法',
       eName => 'druidry',
     },
+    feats => [
+      ['ルーンマスター',11],
+    ],
   },
   'デーモンルーラー' => {
     type     => 'magic-user',
@@ -450,6 +504,9 @@ our %class = (
       '魔神語' => { talk => 1 },
       '魔法文明語' => { read => 1 },
     },
+    feats => [
+      ['ルーンマスター',11],
+    ],
   },
   'ジオマンサー' => {
     '2.5' => 1,
@@ -599,6 +656,9 @@ our %class = (
     language => {
       '魔神語' => { talk => 1 },
     },
+    feats => [
+      ['ルーンマスター',11],
+    ],
   },
   'ダークハンター' => {
     expTable => 'B',
@@ -889,6 +949,9 @@ our %class = (
         [13,"死者の奇跡",'モーリ＝モンストルム'],
       ],
     },
+    feats => [
+      ['ルーンマスター',11],
+    ],
   },
   'アーティザン' => {
     '2.0' => 1,

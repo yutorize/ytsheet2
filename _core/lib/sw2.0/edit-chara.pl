@@ -109,8 +109,6 @@ $pc{historyNum}    ||=  3;
 
 $pc{accuracyEnhance} ||= 0;
 $pc{evasiveManeuver} ||= 0;
-$pc{tenacity} ||= 0;
-$pc{capacity} ||= 0;
 
 ### 改行処理 --------------------------------------------------
 $pc{items}         =~ s/&lt;br&gt;/\n/g;
@@ -957,7 +955,7 @@ foreach my $name (@data::class_names){
                 <td id="attack-${ename}-str">0
                 <td id="attack-${ename}-acc">0
                 <td>―
-                <td>@{[ $name eq 'フェンサー' ? '-1' : '―' ]}
+                <td>@{[ $data::class{$name}{critMod} || '―' ]}
                 <td id="attack-${ename}-dmg">―
 HTML
 }

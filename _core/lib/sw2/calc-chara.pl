@@ -369,32 +369,19 @@ sub data_calc {
 
   ### 戦闘特技 --------------------------------------------------
   ## 自動習得
-  my @abilities;
-  if($pc{lvFig} >= 7) { push(@abilities, "タフネス"); }
-  if($pc{lvGra} >= 1) { push(@abilities, "追加攻撃"); }
-  if($pc{lvGra} >= 1 && $::SW2_0) { push(@abilities, "投げ攻撃"); }
-  if($pc{lvGra} >= 5 && $::SW2_0) { push(@abilities, "鎧貫き"); }
-  if($pc{lvGra} >= 7) { push(@abilities, "カウンター"); }
-  if($pc{lvBat} >= 7) { push(@abilities, "舞い流し"); }
-  if($pc{lvFig} >=13 || $pc{lvGra} >=13 || $pc{lvBat} >=13) { push(@abilities, "バトルマスター"); }
-  if($pc{lvCaster} >= 11){ push(@abilities, "ルーンマスター"); }
-  if($pc{lvSco} >= 5) { push(@abilities, $pc{combatFeatsExcSco5} || "トレジャーハント"); }
-  if($pc{lvSco} >= 7) { push(@abilities, "ファストアクション"); }
-  if($pc{lvSco} >=12) { push(@abilities, "トレジャーマスター"); }
-  if($pc{lvSco} >=15) { push(@abilities, "匠の技"); }
-  if($pc{lvSco} >= 9) { push(@abilities, "影走り"); }
-  if($pc{lvRan} >= 5) { push(@abilities, $pc{combatFeatsExcRan5} || ($::SW2_0?"治癒適性":"サバイバビリティ")); }
-  if($pc{lvRan} >= 7) { push(@abilities, "不屈"); }
-  if($pc{lvRan} >= 9) { push(@abilities, "ポーションマスター"); }
-  if($pc{lvRan} >=12) { push(@abilities, ($::SW2_0?"韋駄天":"縮地")); }
-  if($pc{lvRan} >=15) { push(@abilities, ($::SW2_0?"縮地":"ランアンドガン")); }
-  if($pc{lvSag} >= 5) { push(@abilities, $pc{combatFeatsExcSag5} || "鋭い目"); }
-  if($pc{lvSag} >= 7) { push(@abilities, "弱点看破"); }
-  if($pc{lvSag} >= 9) { push(@abilities, "マナセーブ"); }
-  if($pc{lvSag} >=12) { push(@abilities, "マナ耐性"); }
-  if($pc{lvSag} >=15) { push(@abilities, "賢人の知恵"); }
+  my @feats;
+  foreach my $class (@data::class_names){
+    my $id = $data::class{$class}{id};
+    foreach my $data (@{$data::class{$class}{feats}}){
+      if($pc{'lv'.$id} >= $data->[1]){
+        push(@feats, $pc{'combatFeatsExc'.$id.$data->[1]} || $data->[0]);
+      }
+    }
+  }
+  my %hasFeats;
+  @feats = grep { ! $hasFeats{ $_ }++ } @feats;
   $" = ',';
-  $pc{combatFeatsAuto} = "@abilities";
+  $pc{combatFeatsAuto} = "@feats";
   ## 選択特技による補正
   {
     foreach my $i (@set::feats_lv) {
@@ -465,7 +452,7 @@ sub data_calc {
   ## ＨＰ
   $pc{hpBase} = $pc{level}*3 + $pc{sttVit} + $pc{sttAddD} + $pc{sttEquipD};
   $pc{hpAddTotal} = s_eval($pc{hpAdd}) + $pc{tenacity} + $pc{hpAccessory} + $pc{seekerAbilityHpMp};
-  $pc{hpAddTotal} += 15 if $pc{lvFig} >= 7; #タフネス
+  $pc{hpAddTotal} += 15 if $hasFeats{'タフネス'}
   $pc{hpTotal}  = $pc{hpBase} + $pc{hpAddTotal};
   ## ＭＰ
   $pc{mpBase} = $lv_caster_total*3 + $pc{sttMnd} + $pc{sttAddF} + $pc{sttEquipF};
