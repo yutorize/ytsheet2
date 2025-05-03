@@ -452,7 +452,7 @@ sub data_calc {
   ## ＨＰ
   $pc{hpBase} = $pc{level}*3 + $pc{sttVit} + $pc{sttAddD} + $pc{sttEquipD};
   $pc{hpAddTotal} = s_eval($pc{hpAdd}) + $pc{tenacity} + $pc{hpAccessory} + $pc{seekerAbilityHpMp};
-  $pc{hpAddTotal} += 15 if $hasFeats{'タフネス'}
+  $pc{hpAddTotal} += 15 if $hasFeats{'タフネス'};
   $pc{hpTotal}  = $pc{hpBase} + $pc{hpAddTotal};
   ## ＭＰ
   $pc{mpBase} = $lv_caster_total*3 + $pc{sttMnd} + $pc{sttAddF} + $pc{sttEquipF};
