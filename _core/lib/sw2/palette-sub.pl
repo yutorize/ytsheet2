@@ -535,8 +535,7 @@ sub palettePreset {
             $text .= $bot{YTC} ? '首切' : $bot{BCD} ? 'r5' : '';
           }
           $text .= " ダメージ";
-          $text .= extractWeaponMarks($::pc{'weapon'.$_.'Name'}.$::pc{'weapon'.$_.'Note'}) unless $bot{BCD};
-          $text .= "／$::pc{'weapon'.$_.'Name'}$::pc{'weapon'.$_.'Usage'}" if $bot{BCD};
+          $text .= "／$::pc{'weapon'.$_.'Name'}@{[extractWeaponMarks($::pc{'weapon'.$_.'Note'})]}$::pc{'weapon'.$_.'Usage'}";
           $text .= "（${partName}）" if $partName && $bot{BCD};
           $text .= "\n";
         }
@@ -548,26 +547,30 @@ sub palettePreset {
         
         my $activeName = $::pc{'paletteAttack'.$paNum.'Name'} ? "＋$::pc{'paletteAttack'.$paNum.'Name'}" : '';
 
-        $text .= "2d+";
-        $text .= $::pc{paletteUseVar} ? "{命中$_}" : $::pc{"weapon${_}AccTotal"};
-        $text .= "+{命中修正}";
-        if($::pc{'paletteAttack'.$paNum.'Acc'}){
-          $text .= optimizeOperatorFirst "+$::pc{'paletteAttack'.$paNum.'Acc'}";
+        if ($paNum == 0 || $::pc{'paletteAttack'.$paNum.'Acc'}) {
+          $text .= "2d+";
+          $text .= $::pc{paletteUseVar} ? "{命中$_}" : $::pc{"weapon${_}AccTotal"};
+          $text .= "+{命中修正}";
+          if($::pc{'paletteAttack'.$paNum.'Acc'}){
+            $text .= optimizeOperatorFirst "+$::pc{'paletteAttack'.$paNum.'Acc'}";
+          }
+          $text .= " 命中力／$::pc{'weapon'.$_.'Name'}$::pc{'weapon'.$_.'Usage'}";
+          $text .= "（${partName}）" if $partName;
+          if($::pc{'paletteAttack'.$paNum.'Name'}){
+            $text .= "＋$::pc{'paletteAttack'.$paNum.'Name'}";
+          }
+          $text .= "\n";
         }
-        $text .= " 命中力／$::pc{'weapon'.$_.'Name'}$::pc{'weapon'.$_.'Usage'}";
-        $text .= "（${partName}）" if $partName;
-        if($::pc{'paletteAttack'.$paNum.'Name'}){
-          $text .= "＋$::pc{'paletteAttack'.$paNum.'Name'}";
-        }
-        $text .= "\n";
         
         if($dmgTexts{$paNum + 1} && $dmgTexts{$paNum} eq $dmgTexts{$paNum + 1}){
           next;
         }
-        if($dmgTexts{$paNum} eq $dmgTexts{$paNum - 1}){
-          $activeName = $::pc{'paletteAttack'.($paNum - 1).'Name'} ? "＋$::pc{'paletteAttack'.($paNum - 1).'Name'}" : '';
+        elsif ($paNum == 0 || $::pc{'paletteAttack'.$paNum.'Crit'} || $::pc{'paletteAttack'.$paNum.'Dmg'} || $::pc{'paletteAttack'.$paNum.'Roll'}) {
+          if($dmgTexts{$paNum} eq $dmgTexts{$paNum - 1}){
+            $activeName = $::pc{'paletteAttack'.($paNum - 1).'Name'} ? "＋$::pc{'paletteAttack'.($paNum - 1).'Name'}" : '';
+          }
+          $text .= ($dmgTexts{$paNum} =~ s/(\n)/$activeName$1/gr);
         }
-        $text .= $bot{BCD} ? ($dmgTexts{$paNum} =~ s/(\n)/$activeName$1/gr) : $dmgTexts{$paNum};
         $text .= "\n";
       }
     }
