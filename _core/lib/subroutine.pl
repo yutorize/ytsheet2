@@ -5,6 +5,7 @@ use open ":utf8";
 use CGI::Cookie;
 use List::Util qw/max min/;
 use Fcntl;
+use LWP::UserAgent;
 
 ### サブルーチン #####################################################################################
 
@@ -903,6 +904,19 @@ sub logFileUpdate {
   rmdir("${dir}/backup");
   unlink("${dir}/buname.cgi");
   if($mode eq 'view'){ print "Location:./?id=$::in{id}\n\n"; }
+}
+
+### 外部データ取得 --------------------------------------------------
+sub urlDataGet {
+  my $url = shift;
+  my $ua  = LWP::UserAgent->new;
+  my $res = $ua->get($url);
+  if ($res->is_success) {
+    return $res->decoded_content;
+  }
+  else {
+    return undef;
+  }
 }
 
 
