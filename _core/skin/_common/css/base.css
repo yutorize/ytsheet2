@@ -323,6 +323,16 @@ header {
       > b {
         font-size: 110%;
       }
+
+      &.email-registered {
+        &::before {
+          content: '\e86c';
+          font-family: "Material Symbols Outlined", sans-serif;
+          font-variation-settings: 'FILL' 0;
+          position: relative;
+          top: 0.1em;
+        }
+      }
     }
   }
 }
