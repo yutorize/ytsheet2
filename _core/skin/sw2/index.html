@@ -30,6 +30,7 @@
   
   <main>
     <TMPL_INCLUDE NAME="skin-add/main-header.html">
+    <TMPL_INCLUDE NAME="../_common/notice.html">
     <nav>
       <ul>
         <li class="<TMPL_IF modeMaking>current</TMPL_IF>"><a href="./?mode=making<TMPL_IF modeMylist>&mylist=1</TMPL_IF><TMPL_IF tag>&tag=<TMPL_VAR tag></TMPL_IF>">能力値作成</a></li>

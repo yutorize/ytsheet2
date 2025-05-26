@@ -393,6 +393,66 @@ main {
   @media print {
     border-width: 0;
   }
+
+  .notice-list {
+    grid-column: 2 / 3;
+    grid-row: 2 / 3;
+    margin: 5rem 0 0 0;
+    padding: 0 3em;
+
+    @media screen and (width <= 735px) {
+      margin-top: 10rem;
+    }
+
+    @media print {
+      display: none;
+    }
+
+    &:not(:has(li)) {
+      display: none;
+    }
+
+    > li {
+      margin: 2em auto;
+      padding: 1em;
+      border: 3px dashed #e70;
+      border-radius: 0.75em;
+      background-color: #f504;
+      width: max-content;
+
+      > p {
+        margin: 0;
+        padding: 0;
+      }
+
+      &[data-mode] {
+        display: grid;
+        grid-template-columns: max-content 1fr;
+
+        &::before {
+          font-family: "Material Symbols Outlined", sans-serif;
+          font-variation-settings: 'FILL' 0;
+          grid-column: 1 / 2;
+          grid-row: 1 / -1;
+          font-size: 200%;
+          margin-right: 0.25em;
+          color: #e70;
+        }
+
+        > p {
+          grid-column: 2 / -1;
+          grid-row: auto;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+
+        &[data-mode="important"]::before {
+          content: "\e000";
+        }
+      }
+    }
+  }
 }
 
 article{
