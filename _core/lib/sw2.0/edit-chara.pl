@@ -566,7 +566,6 @@ print <<"HTML";
               秘伝
               <small class="notes">所持名誉点：<b id="honor-value-MA"></b></small>
             </h2>
-            <div>所持名誉点：<span id="honor-value-MA"></span></div>
             <ul id="mystic-arts-list" class="edit-table side-margin">
 HTML
 my @honortypes = ('def=human|<人族名誉点（通常の名誉点）>','barbaros|<蛮族名誉点>','dragon|<盟竜点>');
