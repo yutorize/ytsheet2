@@ -300,7 +300,7 @@ print <<"HTML";
   <datalist id="list-age">
     <option value="現在">
     <option value="魔動機文明">
-    <option value="魔法文明">
+    <option value="古代魔法文明">
     <option value="神紀文明">
     <option value="不明">
   </datalist>
