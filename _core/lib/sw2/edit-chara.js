@@ -1231,6 +1231,7 @@ function calcMagic() {
   const addCast = Number(form.magicCastAdd.value)+(equipMod.MagicCast||0);
   const addDamage = Number(form.magicDamageAdd.value)+(equipMod.MagicDamage||0);
 
+  document.getElementById("magic-power-magicenhance-value").textContent = feats['魔力強化']||0;
   document.getElementById("magic-power-equip-value" ).textContent = formatNumber(equipMod.MagicPower );
   document.getElementById("magic-cast-equip-value"  ).textContent = formatNumber(equipMod.MagicCast  );
   document.getElementById("magic-damage-equip-value").textContent = formatNumber(equipMod.MagicDamage);
