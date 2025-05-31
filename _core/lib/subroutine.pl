@@ -697,6 +697,8 @@ sub removeTags {
   $text =~ s#<rp>[》]</rp>#)#g;
   $text =~ s/<img alt="&#91;(.)&#93;"/[$1]<img /g;
   $text =~ s/<.+?>//g;
+  $text =~ s/&#91;/[/g;
+  $text =~ s/&#93;/]/g;
   return $text;
 }
 sub removeRuby {
