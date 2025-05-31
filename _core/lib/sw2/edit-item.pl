@@ -322,6 +322,7 @@ print <<"HTML";
     <option value="〈非金属鎧〉">
     <option value="〈金属鎧〉">
     <option value="〈盾〉">
+    <option value="〈龍骸〉">
     <option value="装飾品：頭">
     <option value="装飾品：顔">
     <option value="装飾品：耳">
