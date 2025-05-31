@@ -447,6 +447,7 @@ article {
     background: var(--arts-name-bg-color);
     color: #fff;
     font-size: 150%;
+    word-break: auto-phrase;
   }
   & dd {
     display: flex;
