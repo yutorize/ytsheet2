@@ -204,6 +204,9 @@ $SHEET->param(Tags => \@tags);
 $pc{race} =~ s/［.*］//g;
 {
   my $race = $pc{race};
+  if($pc{unlockRyugai} && exists $data::ryugaiRace{$race}){
+    $race = $data::ryugaiRace{$race};
+  }
   if($race =~ /^(.+?)[（(](.+?)[)）]/){
     my $base    = $1;
     my $variant = $2;
@@ -619,7 +622,7 @@ if(!$pc{forbiddenMode}){
     push(@atacck, {
       NAME => $name."<wbr><span class=\"small\">技能レベル</span>".$pc{'lv'.$id},
       STR  => $reqdStr,
-      ACC  => $pc{'lv'.$id}+$pc{bonusDex},
+      ACC  => $pc{'lv'.$id}+$pc{bonusDex}+$data::class{$name}{accUnlock}{mod},
       CRIT => ($data::class{$name}{critMod} || '―'),
       DMG  => $id eq 'Dem' ? '―' : $pc{'lv'.$id}+$pc{bonusStr},
     } );
@@ -774,7 +777,7 @@ if(!$pc{forbiddenMode}){
     push(@evasion, {
       NAME => $name."<wbr><span class=\"small\">技能レベル</span>".$pc{'lv'.$id},
       STR  => ($id eq 'Fen' ? ceil($strTotal / 2) : $strTotal),
-      EVA  => $pc{'lv'.$id}+$pc{bonusAgi},
+      EVA  => $pc{'lv'.$id}+$pc{bonusAgi}+$data::class{$name}{evaUnlock}{mod},
     } );
   }
   if(!@evasion){
@@ -796,7 +799,7 @@ if(!$pc{forbiddenMode}){
       DEF  => $pc{defenseSeeker},
     } );
   }
-  foreach (['金属鎧','MetalArmour'],['非金属鎧','NonMetalArmour'],['盾','Shield']) {
+  foreach (['金属鎧','MetalArmour'],['非金属鎧','NonMetalArmour'],['盾','Shield'],['龍骸','Ryugai']) {
     next if !$pc{'mastery'.ucfirst(@$_[1])};
     push(@evasion, {
       NAME => "《防具習熟".($pc{'mastery'.ucfirst(@$_[1])} >= 2 ? 'Ｓ' : 'Ａ')."／".@$_[0]."》",
@@ -866,11 +869,12 @@ else {
     if   ($cate =~ /鎧/){ $count{'鎧'}++; $pc{'armour'.$_.'Type'} = "鎧$count{'鎧'}" }
     elsif($cate =~ /盾/){ $count{'盾'}++; $pc{'armour'.$_.'Type'} = "盾$count{'盾'}" }
     elsif($cate =~ /他/){ $count{'他'}++; $pc{'armour'.$_.'Type'} = "他$count{'他'}" }
+    elsif($cate =~ /龍/){ $count{'龍'}++; $pc{'armour'.$_.'Type'} = "龍骸$count{'龍'}" }
   }
   foreach (1 .. $pc{armourNum}){
     next if $pc{'armour'.$_.'Name'} eq '' && !$pc{'armour'.$_.'Eva'} && !$pc{'armour'.$_.'Def'} && !$pc{'armour'.$_.'Own'};
 
-    if($pc{'armour'.$_.'Type'} =~ /^(鎧|盾|他)[0-9]+/ && $count{$1} <= 1){ $pc{'armour'.$_.'Type'} = $1 }
+    if($pc{'armour'.$_.'Type'} =~ /^(鎧|盾|他|龍骸)[0-9]+/ && $count{$1} <= 1){ $pc{'armour'.$_.'Type'} = $1 }
 
     push(@armours, {
       TYPE => $pc{'armour'.$_.'Type'},
@@ -1179,6 +1183,13 @@ foreach my $color ('Red','Gre','Bla','Whi','Gol'){
   }
   @boxes = sort { $a->{SORT} <=> $b->{SORT} } @boxes;
   $SHEET->param(Effects => \@boxes);
+}
+### 名誉点等見出し変更 --------------------------------------------------
+if($pc{unlockRyugai}){
+  $SHEET->param(headTextHonor => '誉れ');
+  $SHEET->param(headTextHonorItems => '誉れ装備・誉れ称号');
+  $SHEET->param(headTextDishonor => '名折れ');
+  $SHEET->param(headTextDishonorItems => '名折れ詳細');
 }
 
 ### 戦闘用アイテム --------------------------------------------------

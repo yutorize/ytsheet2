@@ -113,6 +113,12 @@ $pc{evasiveManeuver} ||= 0;
 
 $pc{unlockAbove16} = 1 if $pc{level} > 15;
 
+foreach my $name (@data::class_names){
+  if ($data::class{$name}{type} eq 'extra' && $pc{'lv'.$data::class{$name}{id}}){
+    $pc{unlockRyugai} = 1;
+  }
+}
+
 ### 改行処理 --------------------------------------------------
 $pc{words}           =~ s/&lt;br&gt;/\n/g;
 $pc{items}           =~ s/&lt;br&gt;/\n/g;
@@ -302,7 +308,10 @@ print <<"HTML";
         </dl>
         <ul class="annotate"><li>経験点は、初期所有技能のぶんを含みます。</ul>
         <dl class="regulation-note"><dt>備考<dd>@{[ input "history0Note" ]}</dl>
-        @{[ checkbox 'unlockAbove16','16レベル以上を解禁する（2.0の超越者ルールの流用）','checkLvCap' ]}
+        <ul class="regulation-others">
+          <li class="left">@{[ checkbox 'unlockRyugai','『龍骸諸島』用項目の表示（および一部項目名の変更）','checkRyugai' ]}
+          <li class="left">@{[ checkbox 'unlockAbove16','16レベル以上の解禁（2.0の超越者ルールの流用）','checkLvCap' ]}
+        </ul>
       </details>
       <div id="area-status">
         @{[ imageForm($pc{imageURL}) ]}
@@ -463,8 +472,11 @@ print '</dl></div>';
 print '<div class="classes-group" id="classes-magic-user"><h3>魔法使い系技能</h3><dl class="edit-table side-margin">';
 foreach my $name (@data::class_names){ print classInputBox($name) if $data::class{$name}{type} eq 'magic-user'; }
 print '</dl></div>';
-print '<div class="classes-group" id="classes-other-user"><h3>その他系技能</h3><dl class="edit-table side-margin">';
+print '<div class="classes-group" id="classes-others"><h3>その他系技能</h3><dl class="edit-table side-margin">';
 foreach my $name (@data::class_names){ print classInputBox($name) if !$data::class{$name}{type}; }
+print '</dl></div>';
+print '<div class="classes-group hidden" id="classes-extra"><h3>龍骸技能</h3><dl class="edit-table side-margin">';
+foreach my $name (@data::class_names){ print classInputBox($name) if $data::class{$name}{type} eq 'extra'; }
 print '</dl></div>';
 
 sub classInputBox {
@@ -477,12 +489,11 @@ sub classInputBox {
   $out .= '>';
   $out .= '[2.0] ' if $data::class{$name}{'2.0'};
   $out .= $name;
-  $out .= '<select name="faithType" style="width:auto;">'.option('faithType','†|<†セイクリッド系>','‡|<‡ヴァイス系>','†‡|<†‡両系統使用可>').'</select>' if($name eq 'プリースト');
+  $out .= '<select name="faithType" style="width: calc(100% - 7em);">'.option('faithType','†|<†セイクリッド系>','‡|<‡ヴァイス系>','†‡|<†‡両系統使用可>').'</select>' if($name eq 'プリースト');
   $out .= '<dd>' . input("lv${id}", 'number','changeLv','min="0" max="17"');
   return $out;
 }
 print <<"HTML";
-            </dl>
           </div>
           <div class="box" id="common-classes">
             <h2>
@@ -1107,6 +1118,11 @@ print <<"HTML";
                 <td>―
                 <td>―
                 <td id="mastery-shield-value">$pc{masteryShield}
+              <tr id="mastery-ryugaiarmour"@{[ display $pc{masteryRyugai} ]}>
+                <td>《防具習熟／龍骸》
+                <td>―
+                <td>―
+                <td id="mastery-ryugaiarmour-value">$pc{masteryRyugai}
               <tr id="mastery-artisan-def"@{[ display $pc{masteryArtisan} ]}>
                 <td>《魔器習熟》
                 <td>―
@@ -1157,7 +1173,7 @@ foreach my $num ('TMPL',1 .. $pc{armourNum}) {
   print <<"HTML";
               <tr id="armour-row${num}" data-type="">
                 <th class="type handle">
-                <td><select name="armour${num}Category" oninput="setArmourType();changeArmourName();calcDefense();calcMobility()">@{[ option "armour${num}Category",'金属鎧','非金属鎧','盾','その他' ]}</select>
+                <td><select name="armour${num}Category" oninput="setArmourType();changeArmourName();calcDefense();calcMobility()">@{[ option "armour${num}Category",'金属鎧','非金属鎧','盾','龍骸','その他' ]}</select>
                 <td>@{[ input "armour${num}Name",'','changeArmourName','list="list-item-name"' ]}
                 <td>@{[ input "armour${num}Reqd",'','calcDefense' ]}
                 <td>@{[ input "armour${num}Eva",'number','calcDefense' ]}

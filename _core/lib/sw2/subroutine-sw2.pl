@@ -516,6 +516,11 @@ sub data_update_chara {
       $pc{race} = 'ドレイクブロークン' if $pc{race} eq 'ドレイク（ブロークン）';
     }
   }
+  if($ver < 1.27004){
+    if($pc{lvSam} || $pc{lvNin} || $pc{lvJuj} || $pc{lvFug}){
+      $pc{unlockRyugai} = 1;
+    }
+  }
   $pc{ver} = $main::ver;
   $pc{lasttimever} = $ver;
   return %pc;

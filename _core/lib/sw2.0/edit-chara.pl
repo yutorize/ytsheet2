@@ -457,7 +457,7 @@ print '</dl></div>';
 print '<div class="classes-group" id="classes-magic-user"><h3>魔法使い系技能</h3><dl class="edit-table side-margin">';
 foreach my $name (@data::class_names){ print classInputBox($name) if $data::class{$name}{type} eq 'magic-user'; }
 print '</dl></div>';
-print '<div class="classes-group" id="classes-other-user"><h3>その他系技能</h3><dl class="edit-table side-margin">';
+print '<div class="classes-group" id="classes-others"><h3>その他系技能</h3><dl class="edit-table side-margin">';
 foreach my $name (@data::class_names){ print classInputBox($name) if !$data::class{$name}{type}; }
 print '</dl></div>';
 
@@ -476,9 +476,9 @@ sub classInputBox {
   return $out;
 }
 print <<"HTML";
-            <dl class="edit-table side-margin" style="grid-column: 2;flex-grow:0;grid-template-columns:1fr auto;">
-              <dt style="border-width: 1px 0 1px;">求道者
-              <dd style="border-width: 1px 0 1px;"><select name="lvSeeker" onchange="calcLv();calcStt();">
+          <div class="classes-group" id="classes-seeker"><h3>求道者</h3>
+            <dl class="edit-table side-margin" style="flex-grow:0;grid-template-columns:auto 1fr;">
+              <dd style="grid-column:span 2"><select name="lvSeeker" onchange="calcLv();calcStt();">
 HTML
 my $i = 0;
 foreach (@data::seeker_lv){ print '<option value="'.$i.'"'.($pc{lvSeeker} eq $i?' selected':'').'>'.$_.'</option>'; $i++; }
@@ -487,14 +487,15 @@ print <<"HTML";
 HTML
 foreach my $i (1..5){
   print <<"HTML";
-              <dt id="seeker-buildup${i}" style="text-align:right;">成長枠追加:
+              <dt id="seeker-buildup${i}" style="text-align:right;font-size:85%;">成長枠追加
               <dd><select name="seekerBuildup${i}" onchange="changeLv()">
                 @{[ option("seekerBuildup${i}",'戦闘特技','真語魔法','操霊魔法','深智魔法','神聖魔法','妖精魔法','魔動機術','召異魔法','秘奥魔法','練技','呪歌','騎芸','賦術','鼓咆','占瞳','魔装','呪印','貴格') ]}
               </select>
 HTML
 }
 print <<"HTML";
-            </dl>
+              </dl>
+            </div>
           </div>
           <div class="box" id="common-classes">
             <h2>
@@ -1112,6 +1113,11 @@ print <<"HTML";
                 <td>―
                 <td>―
                 <td id="mastery-shield-value">$pc{masteryShield}
+              <tr id="mastery-ryugaiarmour"@{[ display $pc{masteryRyugai} ]}>
+                <td>《防具習熟／龍骸》
+                <td>―
+                <td>―
+                <td id="mastery-ryugaiarmour-value">$pc{masteryRyugai}
               <tr id="mastery-artisan-def"@{[ display $pc{masteryArtisan} ]}>
                 <td>《魔器習熟》
                 <td>―
