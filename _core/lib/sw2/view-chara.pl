@@ -1021,15 +1021,13 @@ foreach (0 .. $pc{historyNum}){
   }
   if   ($pc{"history${_}HonorType"} eq 'barbaros'){ $pc{"history${_}Honor"} = '蛮'.$pc{"history${_}Honor"}; }
   elsif($pc{"history${_}HonorType"} eq 'dragon'  ){ $pc{"history${_}Honor"} = '竜'.$pc{"history${_}Honor"}; }
-  $pc{'history'.$_.'Exp'}   = formatHistoryFigures($pc{'history'.$_.'Exp'});
-  $pc{'history'.$_.'Money'} = formatHistoryFigures($pc{'history'.$_.'Money'});
   push(@history, {
     NUM    => ($pc{'history'.$_.'Gm'} ? $h_num : ''),
     DATE   => $pc{'history'.$_.'Date'},
     TITLE  => $pc{'history'.$_.'Title'},
-    EXP    => $pc{'history'.$_.'Exp'},
-    HONOR  => $pc{'history'.$_.'Honor'},
-    MONEY  => $pc{'history'.$_.'Money'},
+    EXP    => formatHistoryFigures($pc{'history'.$_.'Exp'}),
+    HONOR  => formatHistoryFigures($pc{'history'.$_.'Honor'}),
+    MONEY  => formatHistoryFigures($pc{'history'.$_.'Money'}),
     GROW   => $pc{'history'.$_.'Grow'},
     GM     => $pc{'history'.$_.'Gm'},
     MEMBER => $members,
