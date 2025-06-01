@@ -212,6 +212,10 @@ print <<"HTML";
         </dl>
       </div>
 
+      <div class="box" style="margin:auto;width:max-content;background-image:none">
+        <div class="annotate"><a href="https://karasuba-sei.biz/officialsite/?p=80" target="_blank">⇒キャラクター作成の手順（サポートハブ）</a></div>
+      </div>
+
       <div class="box in-toc" id="name-form" data-content-title="東京名・プレイヤー名">
         <div>
           <dl id="character-name">
@@ -300,6 +304,7 @@ print <<"HTML";
               <div class="annotate caution"></div>
             </dd>
           </dl>
+          <div class="annotate"><a href="https://karasuba-sei.biz/officialsite/?p=142" target="_blank">⇒特性の例（サポートハブ）</a></div>
         </div>
 
       </div>
@@ -341,6 +346,7 @@ HTML
 print <<"HTML";
         </table>
         <div class="annotate caution"></div>
+        <div class="annotate"><a href="https://karasuba-sei.biz/officialsite/?p=149#index_id1" target="_blank">⇒PC用マギの一覧（サポートハブ）</a></div>
       </div>
       
       <details class="box" id="free-note" @{[$pc{freeNote}?'open':'']}>
