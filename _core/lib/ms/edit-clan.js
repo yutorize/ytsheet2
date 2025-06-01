@@ -80,10 +80,19 @@ function checkAttribute() {
 // マギ欄 ----------------------------------------
 function checkMagi() {
   let count = 0;
-  for (let num = 1; num <= 4; num++){
-    if(form['magi'+num+'Name'].value){ count++ }
+  for (let num = 1; num <= 5; num++){
+    const magi = form[`magi${num}`].value;
+    if(magi){
+      count++;
+    }
+    const hasData = SET.clanMagiData.hasOwnProperty(magi) || null;
+    for (let type of ['timing','target','cond','note']){
+      document.querySelector(`#magi${num} .text-${type}`).textContent = hasData ? SET.clanMagiData[magi][type] : '';
+      form[`magi${num}${ucfirst(type)}`].classList.toggle('hidden', hasData);
+    }
+    document.querySelector(`#magi${num} .changed-name`).classList.toggle('hidden', !form[`magi${num}NC`].checked);
   }
-  document.getElementById('magi').querySelector('.annotate').textContent
+  document.getElementById('magi').querySelector('.annotate.caution').textContent
     = (count < 2) ? 'マギを《スクランブル！》と合わせて2つ取得してください' : '';
 }
 
