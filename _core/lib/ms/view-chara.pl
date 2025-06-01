@@ -6,7 +6,7 @@ use open ":utf8";
 use HTML::Template;
 
 ### データ読み込み ###################################################################################
-# なし
+require $set::data_magi;
 
 ### テンプレート読み込み #############################################################################
 my $SHEET;
@@ -170,13 +170,18 @@ foreach my $type ('Physical','Special','Social'){
 my @magi;
 foreach (1 .. 4){
   #next if !existsRow "magi$_",'Name','Timing','Target','Cond','Note';
-  $pc{'magi'.$_.'Name'} &&= "《$pc{'magi'.$_.'Name'}》";
+  my $magi = $pc{"magi$_"};
+  my ($name, $baseName) = ($magi,'');
+  if($pc{"magi${_}NC"}){
+    $name = $pc{"magi${_}Name"};
+    $baseName = "<b class=\"base-name\">《${magi}》</b> " if $magi ne 'その他';
+  }
   push(@magi, {
-    NAME   => $pc{'magi'.$_.'Name'},
-    TIMING => $pc{'magi'.$_.'Timing'},
-    TARGET => $pc{'magi'.$_.'Target'},
-    COND   => $pc{'magi'.$_.'Cond'},
-    NOTE   => $pc{'magi'.$_.'Note'},
+    NAME   => ($name ? "《${name}》" : ''),
+    TIMING => ($data::pcMagiData{$magi}{timing} // $pc{"magi${_}Timing"}),
+    TARGET => ($data::pcMagiData{$magi}{target} // $pc{"magi${_}Target"}),
+    COND   => ($data::pcMagiData{$magi}{cond  } // $pc{"magi${_}Cond"}),
+    NOTE   => $baseName.($data::pcMagiData{$magi}{note} // $pc{"magi${_}Note"}),
   });
 }
 $SHEET->param(Magi => \@magi);

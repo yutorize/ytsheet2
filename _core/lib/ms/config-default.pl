@@ -128,6 +128,8 @@ our $game = 'ms';
   our $lib_palette_sub = $::core_dir . '/lib/ms/palette-sub.pl';
   # 一覧
   our $lib_list_char   = $::core_dir . '/lib/ms/list-chara.pl';
+  # JS固定値
+  our $lib_js_consts = $::core_dir . '/lib/ms/js-consts.pl';
   # JSON出力
   our $lib_json     = $::core_dir . '/lib/json.pl';
   our $lib_json_sub = $::core_dir . '/lib/ms/json-sub.pl';
@@ -135,6 +137,7 @@ our $game = 'ms';
   our $lib_convert = $::core_dir . '/lib/ms/convert.pl';
 
   # 各種データ
+  our $data_magi = $::core_dir . '/lib/ms/data-magi.pl';
 
   # HTMLテンプレート
   our $skin_tmpl  = $::core_dir . '/skin/ms/index.html';      # 一覧／登録フォーム等の大枠

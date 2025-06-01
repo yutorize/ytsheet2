@@ -33,6 +33,17 @@ sub data_update_chara {
   my $ver = $pc{ver};
   delete $pc{updateMessage};
   $ver =~ s/^([0-9]+)\.([0-9]+)\.([0-9]+)$/$1.$2$3/;
+  if($ver < 1.27007){
+    foreach (1 .. 4){
+      if(exists $data::pcMagiData{$pc{"magi${_}Name"}}){
+        $pc{"magi${_}"} = $pc{"magi${_}Name"};
+      }
+      elsif($pc{"magi${_}Name"}) {
+        $pc{"magi${_}"} = 'その他';
+        $pc{"magi${_}NC"} = 1;
+      }
+    }
+  }
   
   $pc{ver} = $main::ver;
   $pc{lasttimever} = $ver;
@@ -45,9 +56,15 @@ sub data_update_clan {
   my $ver = $pc{ver};
   delete $pc{updateMessage};
   $ver =~ s/^([0-9]+)\.([0-9]+)\.([0-9]+)$/$1.$2$3/;
-  if($ver < 1.24002){
-    if($pc{magi1Name} eq 'スクランブル！' && $pc{magi1Cond} eq '7～12'){
-      $pc{magi1Cond} = '8～12'
+  if($ver < 1.27007){
+    foreach (1 .. 5){
+      if(exists $data::clanMagiData{$pc{"magi${_}Name"}}){
+        $pc{"magi${_}"} = $pc{"magi${_}Name"};
+      }
+      elsif($pc{"magi${_}Name"}) {
+        $pc{"magi${_}"} = 'その他';
+        $pc{"magi${_}NC"} = 1;
+      }
     }
   }
   $pc{ver} = $main::ver;
