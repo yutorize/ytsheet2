@@ -582,6 +582,8 @@ sub palettePreset {
     $text .= "//回避修正=0\n";
     $text .= "2d+{生命抵抗}+{生命抵抗修正} 生命抵抗力\n";
     $text .= "2d+{精神抵抗}+{精神抵抗修正} 精神抵抗力\n";
+    my %hasClass;
+    my @hasClass = grep { ! $hasClass{ $::pc{"evasionClass$_"} }++ } (1 .. $::pc{defenseNum});
     foreach my $i (1..$::pc{defenseNum}){
       my $hasChecked = 0;
       foreach my $j (1..$::pc{armourNum}){
@@ -591,7 +593,9 @@ sub palettePreset {
 
       $text .= "2d+";
       $text .= $::pc{paletteUseVar} ? "{回避${i}}" : $::pc{"defenseTotal${i}Eva"};
-      $text .= "+{回避修正} 回避力".($::pc{"defenseTotal${i}Note"}?"／$::pc{'defenseTotal'.$i.'Note'}":'')."\n";
+      $text .= "+{回避修正} 回避力";
+      $text .= '（' . $::pc{"evasionClass${i}"} . '）' if @hasClass > 1;
+      $text .= ($::pc{"defenseTotal${i}Note"}?"／$::pc{'defenseTotal'.$i.'Note'}":'')."\n";
     }
     $text .= appendPaletteInsert('defense');
     
