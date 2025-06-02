@@ -220,7 +220,7 @@ button.submit {
 input[type="submit"],
 button.submit {
   cursor: pointer;
-  color: #000;
+  color: #000 !important;
   background: linear-gradient(to bottom, #f0f7ff, #c0c7cf);
   &:hover { background: #c0c7cf; }
 }
