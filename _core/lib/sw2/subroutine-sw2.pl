@@ -36,12 +36,11 @@ sub createUnitStatus {
           $count{ $partname }++;
           $partname .= $n2a[ $count{ $partname } ];
         }
-        my $hp  = s_eval($pc{"status${i}Hp"});
-        my $mp  = s_eval($pc{"status${i}Mp"});
-        my $def = s_eval($pc{"status${i}Defense"});
-        push(@hp , {$partname.':HP' => "$hp/$hp"});
-        push(@mp , {$partname.':MP' => "$mp/$mp"}) unless isEmptyValue($mp);
-        push(@def, $partname.$def);
+        my $hp  = convertStt($pc{"status${i}Hp"});
+        my $mp  = convertStt($pc{"status${i}Mp"});
+        push(@hp , {$partname.':HP' => $hp});
+        push(@mp , {$partname.':MP' => $mp}) unless isEmptyValue($mp);
+        push(@def, $partname.$pc{"status${i}Defense"});
       }
       @unitStatus = ();
       push(@unitStatus, @hp);
@@ -60,12 +59,11 @@ sub createUnitStatus {
           $i .= $ii > 1 ? "-$ii" : '';
         }
       }
-      my $hp = s_eval($pc{"status${i}Hp"});
-      my $mp = s_eval($pc{"status${i}Mp"});
-      my $def = s_eval($pc{"status${i}Defense"});
-      push(@unitStatus, { 'HP' => "$hp/$hp" });
-      push(@unitStatus, { 'MP' => "$mp/$mp" }) unless isEmptyValue($mp);
-      push(@unitStatus, { '防護' => "$def" });
+      my $hp = convertStt($pc{"status${i}Hp"});
+      my $mp = convertStt($pc{"status${i}Mp"});
+      push(@unitStatus, { 'HP' => $hp });
+      push(@unitStatus, { 'MP' => $mp }) unless isEmptyValue($mp);
+      push(@unitStatus, { '防護' => $pc{"status${i}Defense"} });
     }
     
     if($pc{weakness} && $pc{weakness} ne 'なし'){
@@ -591,6 +589,14 @@ sub data_update_arts {
   $pc{ver} = $main::ver;
   $pc{lasttimever} = $ver;
   return %pc;
+}
+
+sub convertStt {
+  my $value = shift;
+  if($value eq ''){ return '' }
+  if($value =~ /[^0-9,\+\-\*\/\%\(\) ]/){ return $value }
+  my $v = s_eval($value);
+  return "$v/$v";
 }
 
 sub isEmptyValue {
