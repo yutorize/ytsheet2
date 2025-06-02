@@ -194,7 +194,7 @@ sub palettePreset {
     $text .= appendPaletteInsert('');
     # 基本判定
     $text .= "### ■非戦闘系\n";
-    foreach my $statusName ('器用', '敏捷', '筋力', '生命', '知力') {
+    foreach my $statusName ('器用', '敏捷', '筋力', '生命', '知力','精神') {
       $text .= "2d+{冒険者}+{${statusName}B} 冒険者＋${statusName}\n";
     }
     foreach my $class (@classNames){
