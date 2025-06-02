@@ -832,6 +832,21 @@ sub infoJson {
   exit;
 }
 
+### 外部データ取得 --------------------------------------------------
+sub urlDataGet {
+  require LWP::UserAgent;
+
+  my $url = shift;
+  my $ua  = LWP::UserAgent->new;
+  my $res = $ua->get($url);
+  if ($res->is_success) {
+    return $res->decoded_content;
+  }
+  else {
+    error '入力されたURLへのアクセスに失敗しました。(STATUS CODE:'.$res->code.')';
+  }
+}
+
 ### アップデート・コンバート --------------------------------------------------
 ## バックアップ形式変更
 sub logFileCheck {
