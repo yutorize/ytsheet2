@@ -1466,9 +1466,9 @@ print <<"HTML";
               <td>-
               <td>
               <td>キャラクター作成
-              <td id="history0-exp">$pc{history0Exp}
-              <td id="history0-money">$pc{history0Money}
-              <td id="history0-honor">$pc{history0Honor}
+              <td id="history0-exp">@{[commify $pc{history0Exp}]}
+              <td id="history0-money">@{[commify $pc{history0Money}]}
+              <td id="history0-honor">@{[commify $pc{history0Honor}]}
               <td id="history0-grow">$pc{history0Grow}
             </tr>
 HTML

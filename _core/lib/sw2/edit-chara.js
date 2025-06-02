@@ -124,9 +124,9 @@ function formCheck(){
 
 // レギュレーション ----------------------------------------
 function changeRegu(){
-  document.getElementById("history0-exp").textContent = form.history0Exp.value;
-  document.getElementById("history0-honor").textContent = form.history0Honor.value;
-  document.getElementById("history0-money").textContent = form.history0Money.value;
+  document.getElementById("history0-exp").textContent = commify(form.history0Exp.value);
+  document.getElementById("history0-honor").textContent = commify(form.history0Honor.value);
+  document.getElementById("history0-money").textContent = commify(form.history0Money.value);
   
   calcExp();
   calcLv();
