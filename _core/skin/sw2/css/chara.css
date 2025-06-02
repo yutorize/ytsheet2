@@ -778,6 +778,12 @@ dl#level {
     line-height: 1.6;
     white-space: nowrap;
   }
+
+  &:not(:has(td.own:not(:empty))) {
+    :is(th, td).own {
+      display: none;
+    }
+  }
 }
 #magic-power #fairycontact {
   margin: -.2em 0 -.1em;
