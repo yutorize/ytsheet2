@@ -1828,18 +1828,14 @@ function calcHonor(){
   // 流派
   let mysticArtsPt = null;
   for (let i = 1; i <= form.mysticArtsNum.value; i++){
-    if ((form[`mysticArts${i}`].value ?? '') === '') {
-      continue;
-    }
+    if ((form[`mysticArts${i}`].value ?? '') === '') { continue }
     let point = safeEval(form['mysticArts'+i+'Pt'].value) || 0;
     mysticArtsPt ??= 0;
     mysticArtsPt += point;
     form['mysticArts'+i+'Pt'].classList.toggle('mark', (point && point <= free));
   }
   for (let i = 1; i <= form.mysticMagicNum.value; i++){
-    if ((form[`mysticMagic${i}`].value ?? '') === '') {
-      continue;
-    }
+    if ((form[`mysticMagic${i}`].value ?? '') === '') { continue }
     let point = safeEval(form['mysticMagic'+i+'Pt'].value) || 0;
     mysticArtsPt ??= 0;
     mysticArtsPt += point;
