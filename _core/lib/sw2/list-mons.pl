@@ -245,6 +245,7 @@ foreach (@list) {
   # 価格
   $price =~ s#^／#―／#;
   $price =~ s#／$#／―#;
+  $price = commify($price);
 
   #タグ
   my $tags_links;
