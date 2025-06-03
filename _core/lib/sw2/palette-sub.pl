@@ -728,6 +728,7 @@ sub paletteProperties {
     push @propaties, "//生命力増強=".($::pc{sttAddD}+$::pc{sttEquipD});
     push @propaties, "//知力増強="  .($::pc{sttAddE}+$::pc{sttEquipE});
     push @propaties, "//精神力増強=".($::pc{sttAddF}+$::pc{sttEquipF});
+    push @propaties, "//穢れ=".($::pc{sin}||0);
     push @propaties, "###" if $tool eq 'tekey';
     push @propaties, "### ■技能レベル";
     push @propaties, "//冒険者レベル=$::pc{level}";
@@ -781,7 +782,6 @@ sub paletteProperties {
     push @propaties, '';
     push @propaties, "//冒険者={冒険者レベル}";
     push @propaties, "//LV={冒険者}";
-    push @propaties, "//穢れ=$::pc{sin}" if $::pc{sin} > 0;
     push @propaties, '';
     #push @propaties, "//魔物知識=$::pc{monsterLore}" if $::pc{monsterLore};
     #push @propaties, "//先制力=$::pc{initiative}" if $::pc{initiative};
