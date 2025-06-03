@@ -534,12 +534,12 @@ sub unescapeTagsLines {
   $text =~ s/^RIGHT:/<\/p><p class="right">/gim;
   
   my $d_count = 0;
-  $d_count += ($text =~ s/^\[(&gt;|[↓∨⋁⌄⌵])\]\*\*\*\*(.*?)$/"<\/p><details @{[$1 eq '&gt;' ? '' : 'open']}><summary class=\"header4\">$2<\/summary><div class=\"detail-body\"><p>"/gime);
-  $d_count += ($text =~ s/^\[(&gt;|[↓∨⋁⌄⌵])\]\*\*\*(.*?)$/"<\/p><details @{[$1 eq '&gt;' ? '' : 'open']}><summary class=\"header3\">$2<\/summary><div class=\"detail-body\"><p>"/gime);
-  $d_count += ($text =~ s/^\[(&gt;|[↓∨⋁⌄⌵])\]\*\*(.*?)$/"<\/p><details @{[$1 eq '&gt;' ? '' : 'open']}><summary class=\"header2\">$2<\/summary><div class=\"detail-body\"><p>"/gime);
-  $d_count += ($text =~ s/^\[(&gt;|[↓∨⋁⌄⌵])\]\*(.*?)$/"<\/p><details @{[$1 eq '&gt;' ? '' : 'open']}><summary class=\"header1\">$2<\/summary><div class=\"detail-bod\"><p>"/gime);
-  $d_count += ($text =~ s/^\[(&gt;|[↓∨⋁⌄⌵])\](.+?)$/"<\/p><details @{[$1 eq '&gt;' ? '' : 'open']}><summary>$2<\/summary><div class=\"detail-body\"><p>"/gime);
-  $d_count += ($text =~ s/^\[(&gt;|[↓∨⋁⌄⌵])\]$/"<\/p><details @{[$1 eq '&gt;' ? '' : 'open']}><summary>詳細<\/summary><div class=\"detail-body\"><p>"/gime);
+  $d_count += ($text =~ s/^\[(&gt;|[↓vＶｖ])\]\*\*\*\*(.*?)$/"<\/p><details @{[$1 eq '&gt;' ? '' : 'open']}><summary class=\"header4\">$2<\/summary><div class=\"detail-body\"><p>"/gime);
+  $d_count += ($text =~ s/^\[(&gt;|[↓vＶｖ])\]\*\*\*(.*?)$/"<\/p><details @{[$1 eq '&gt;' ? '' : 'open']}><summary class=\"header3\">$2<\/summary><div class=\"detail-body\"><p>"/gime);
+  $d_count += ($text =~ s/^\[(&gt;|[↓vＶｖ])\]\*\*(.*?)$/"<\/p><details @{[$1 eq '&gt;' ? '' : 'open']}><summary class=\"header2\">$2<\/summary><div class=\"detail-body\"><p>"/gime);
+  $d_count += ($text =~ s/^\[(&gt;|[↓vＶｖ])\]\*(.*?)$/"<\/p><details @{[$1 eq '&gt;' ? '' : 'open']}><summary class=\"header1\">$2<\/summary><div class=\"detail-bod\"><p>"/gime);
+  $d_count += ($text =~ s/^\[(&gt;|[↓vＶｖ])\](.+?)$/"<\/p><details @{[$1 eq '&gt;' ? '' : 'open']}><summary>$2<\/summary><div class=\"detail-body\"><p>"/gime);
+  $d_count += ($text =~ s/^\[(&gt;|[↓vＶｖ])\]$/"<\/p><details @{[$1 eq '&gt;' ? '' : 'open']}><summary>詳細<\/summary><div class=\"detail-body\"><p>"/gime);
   $d_count -= ($text =~ s/^\[-{3,}\]\n?$/<\/p><\/div><\/details><p>/gim);
   
   $text =~ s/^-{4,}$/<\/p><hr><p>/gim;  
