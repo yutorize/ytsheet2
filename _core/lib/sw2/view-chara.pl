@@ -543,7 +543,7 @@ foreach my $class (@data::class_caster){
   }
   push(@magic, {
     NAME => $title,
-    OWN  => ($pc{'magicPowerOwn'.$id} ? '✔<span class="small">知力+2</span>' : ''),
+    OWN  => ($pc{'magicPowerOwn'.$id} ? '知力+2' : ''),
     MAGIC  => $magicname,
     POWER  => ($power ? '<span class="small">'.addNum($power).'=</span>' : '').$pc{'magicPower'.$id},
     CAST   => ($cast ? '<span class="small">'.addNum($cast).'=</span>' : '').($pc{'magicPower'.$id}+$cast),
@@ -565,7 +565,7 @@ foreach my $class (@data::class_names){
   
   push(@magic, {
     NAME => $class."<wbr><span class=\"small\">技能レベル</span>".$pc{'lv'.$id},
-    OWN  => ($pc{'magicPowerOwn'.$id} ? '✔<span class="small">'.$stt.'+2</span>' : ''),
+    OWN  => ($pc{'magicPowerOwn'.$id} ? $stt.'+2' : ''),
     MAGIC  => $name,
     POWER  => ($pname) ? ($power ? '<span class="small">'.addNum($power).'=</span>' : '').$pc{'magicPower'.$id} : '―',
     CAST   => ($cast ? '<span class="small">'.addNum($cast).'=</span>' : '').($pc{'magicPower'.$id}+$cast),
