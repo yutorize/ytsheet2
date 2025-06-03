@@ -2698,6 +2698,7 @@ setSortable('paletteAttack','#palette-attack > table tbody','tr');
 // 魔法
 function addPaletteMagic(){
   document.querySelector("#palette-magic > table tbody").append(createRow('palette-magic','paletteMagicNum'));
+  calcMagic();
 }
 function delPaletteMagic(){
   if(delRow('paletteMagicNum', '#palette-magic > table tbody tr:last-of-type')){
