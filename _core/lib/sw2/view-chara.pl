@@ -345,7 +345,7 @@ my $mysticarts_honor = $mysticarts_honor{human}
                      .($mysticarts_honor{barbaros}?"<br><small>蛮</small>$mysticarts_honor{barbaros}":'')
                      .($mysticarts_honor{dragon}  ?"<br><small>竜</small>$mysticarts_honor{dragon}"  :'');
 $SHEET->param(MysticArts => \@mystic_arts);
-$SHEET->param(MysticArtsHonor => $mysticarts_honor);
+$SHEET->param(MysticArtsHonor => commify($mysticarts_honor));
 $SHEET->param(displayArtsHonor => @mystic_arts ? 1 : 0);
 
 ### 秘奥魔法 --------------------------------------------------
