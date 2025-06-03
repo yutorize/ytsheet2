@@ -381,7 +381,7 @@ sub palettePreset {
 
         $text .= "2d+{$power}";
         if   ($name =~ /魔/){ $text .= "$activePower+{行使修正}$activeCast ${name}行使$activeName\n"; }
-        elsif($name =~ /歌/){ $text .= " @{[$::SW2_0 ? '呪歌演奏' : '演奏判定']}\n"; }
+        elsif($name =~ /歌/){ $text .= " @{[$::SW2_0 ? '呪歌' : '']}演奏\n"; }
         else                { $text .= " ${name}\n"; }
         
         if($dmgTexts{$paNum + 1} && $dmgTexts{$paNum} eq $dmgTexts{$paNum + 1}){
