@@ -932,6 +932,21 @@ dl#level {
     font-size: 80%;
   }
 }
+#weapons tbody {
+  tr {
+    td.usage {
+      &:has(.category){
+        line-height: 1;
+      }
+      .category {
+        display: block;
+        margin-top: 1px;
+        font-size: 60%;
+        word-break: keep-all;
+      }
+    }
+  }
+}
 
 
 /* Defense-Status */

@@ -554,6 +554,7 @@ sub palettePreset {
           $text .= optimizeOperatorFirst "+$::pc{'paletteAttack'.$paNum.'Acc'}";
         }
         $text .= " 命中力／$::pc{'weapon'.$_.'Name'}$::pc{'weapon'.$_.'Usage'}";
+        $text .= "〈$::pc{'weapon'.$_.'Category'}〉" if $::pc{'weapon'.$_.'Usage'} =~ /H投/i && $::pc{'weapon'.$_.'Category'};
         $text .= "（${partName}）" if $partName;
         if($::pc{'paletteAttack'.$paNum.'Name'}){
           $text .= "＋$::pc{'paletteAttack'.$paNum.'Name'}";
