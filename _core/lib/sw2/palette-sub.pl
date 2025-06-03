@@ -852,7 +852,6 @@ sub paletteProperties {
     push @propaties, '';
     push @propaties, "//冒険者={冒険者レベル}";
     push @propaties, "//LV={冒険者}";
-    push @propaties, "//穢れ=$::pc{sin}" if $::pc{sin} > 0;
     push @propaties, '';
     #push @propaties, "//魔物知識=$::pc{monsterLore}" if $::pc{monsterLore};
     #push @propaties, "//先制力=$::pc{initiative}" if $::pc{initiative};
