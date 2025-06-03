@@ -1895,14 +1895,14 @@ form#arts div.input-data dl dd {
   text-align: left;
 }
 form#arts div.input-data dl dd input {
-  max-width: 14em;
+  max-width: 36em;
 }
 form#arts div.input-data dl.maxim input {
   width: calc(100% - 3em);
   max-width: none;
 }
 form#arts div.input-data dl.name dd input {
-  max-width: 24em;
+  max-width: 36em;
 }
 form#arts div.input-data dl.aka dd input {
   max-width: 10em;
