@@ -76,12 +76,12 @@ output.generateUdonariumXmlDetailOfSwordWorld2PC = (json, opt_url, defaultPalett
     `        <data name="生命力">${json.sttVit}</data>`,
     `        <data name="知力">${json.sttInt}</data>`,
     `        <data name="精神力">${json.sttMnd}</data>`,
-    `        <data name="器用度増強">${json.sttAddA || 0}</data>`,
-    `        <data name="敏捷度増強">${json.sttAddB || 0}</data>`,
-    `        <data name="筋力増強">${json.sttAddC || 0}</data>`,
-    `        <data name="生命力増強">${json.sttAddD || 0}</data>`,
-    `        <data name="知力増強">${json.sttAddE || 0}</data>`,
-    `        <data name="精神力増強">${json.sttAddF || 0}</data>`
+    `        <data name="器用度増強">${Number(json.sttAddA || 0) + Number(json.sttEquipA || 0)}</data>`,
+    `        <data name="敏捷度増強">${Number(json.sttAddB || 0) + Number(json.sttEquipB || 0)}</data>`,
+    `        <data name="筋力増強">${Number(json.sttAddC || 0) + Number(json.sttEquipC || 0)}</data>`,
+    `        <data name="生命力増強">${Number(json.sttAddD || 0) + Number(json.sttEquipD || 0)}</data>`,
+    `        <data name="知力増強">${Number(json.sttAddE || 0) + Number(json.sttEquipE || 0)}</data>`,
+    `        <data name="精神力増強">${Number(json.sttAddF || 0) + Number(json.sttEquipF || 0)}</data>`
   ];
   
   let addedParam = {

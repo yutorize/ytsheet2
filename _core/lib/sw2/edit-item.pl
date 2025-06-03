@@ -282,6 +282,7 @@ print <<"HTML";
     <option value="1H騎">
     <option value="2H">
     <option value="2H#">
+    <option value="2H投">
     <option value="振2H">
     <option value="突2H">
   </datalist>
@@ -300,7 +301,7 @@ print <<"HTML";
   <datalist id="list-age">
     <option value="現在">
     <option value="魔動機文明">
-    <option value="魔法文明">
+    <option value="古代魔法文明">
     <option value="神紀文明">
     <option value="不明">
   </datalist>
@@ -322,6 +323,7 @@ print <<"HTML";
     <option value="〈非金属鎧〉">
     <option value="〈金属鎧〉">
     <option value="〈盾〉">
+    <option value="〈龍骸〉">
     <option value="装飾品：頭">
     <option value="装飾品：顔">
     <option value="装飾品：耳">

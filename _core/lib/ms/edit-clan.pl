@@ -8,6 +8,7 @@ use feature 'say';
 my $LOGIN_ID = $::LOGIN_ID;
 
 ### 読込前処理 #######################################################################################
+require $set::data_magi;
 require $set::lib_palette_sub;
 
 ### データ読み込み ###################################################################################
@@ -46,11 +47,7 @@ elsif($mode eq 'blanksheet'){
   $pc{level} = 0;
   $pc{endurance} = 20;
 
-  $pc{magi1Name}   = 'スクランブル！';
-  $pc{magi1Timing} = '終了';
-  $pc{magi1Target} = '単体';
-  $pc{magi1Cond}   = '8～12';
-  $pc{magi1Note}   = 'クラン全員で1Dをロールし、合計点のダメージを与える。(P139)';
+  $pc{magi1}   = 'スクランブル！';
 
   %pc = applyCustomizedInitialValues(\%pc, 'c');
 }
@@ -102,6 +99,7 @@ Content-type: text/html\n
   <link rel="stylesheet" media="all" href="${main::core_dir}/skin/ms/css/edit.css?${main::ver}">
   <script src="${main::core_dir}/skin/_common/js/lib/Sortable.min.js"></script>
   <script src="${main::core_dir}/skin/_common/js/lib/compressor.min.js"></script>
+  <script src="./?mode=js-consts&ver=${main::ver}"></script>
   <script src="${main::core_dir}/lib/edit.js?${main::ver}" defer></script>
   <script src="${main::core_dir}/lib/ms/edit-clan.js?${main::ver}" defer></script>
   <style>
@@ -224,6 +222,10 @@ print <<"HTML";
         </dl>
       </div>
 
+      <div class="box" style="margin:auto;width:max-content;background-image:none">
+        <div class="annotate"><a href="https://karasuba-sei.biz/officialsite/?p=88" target="_blank">⇒キャラクター作成の手順（サポートハブ）</a></div>
+      </div>
+
       <div class="box in-toc" id="name-form" data-content-title="クラン名・管理プレイヤー名">
         <div>
           <dl id="character-name">
@@ -329,6 +331,7 @@ print '</ul>';
 print <<"HTML";
           <!-- <div class="add-del-button"><a onclick="addAttribute()">▼</a><a onclick="delAttribute()">▲</a></div> -->
           <div class="annotate caution"></div>
+          <div class="annotate"><a href="https://karasuba-sei.biz/officialsite/?p=142" target="_blank">⇒特性の例（サポートハブ）</a></div>
         </div>
 
       </div>
@@ -338,13 +341,16 @@ print <<"HTML";
           <table class="edit-table line-tbody no-border-cells" id="magi-table">
             <colgroup id="magi-col">
               <col class="name  ">
+              <col class="check ">
               <col class="timing">
               <col class="target">
               <col class="cond  ">
+              <col class="note  ">
             </colgroup>
             <thead id="magi-thead">
               <tr>
                 <th class="name  ">名称
+                <th class="check small nowrap">名前<br>変更
                 <th class="timing">タイミング
                 <th class="target">対象
                 <th class="cond  ">条件
@@ -354,16 +360,20 @@ foreach my $num (1 .. 5) {
   print <<"HTML";
             <tbody id="magi${num}">
               <tr>
-                <td class="name  ">《@{[ input "magi${num}Name",'','checkMagi' ]}》
-                <td class="timing">@{[ input "magi${num}Timing" ,'','','list="list-timing"' ]}
-                <td class="target">@{[ input "magi${num}Target" ,'','','list="list-target"' ]}
-                <td class="cond  ">@{[ input "magi${num}Cond",'','','list="list-cond"' ]}
-                <td class="left">@{[ input "magi${num}Note" ]}
+                <td class="name  ">
+                  《@{[ selectBox "magi${num}",'checkMagi',@data::clanMagiNames,'その他' ]}》
+                  <div class="changed-name hidden">《@{[ input "magi${num}Name",'','','placeholder="任意の名前"' ]}》</div>
+                <td class="check ">@{[ checkbox "magi${num}NC",'','checkMagi' ]}
+                <td class="timing">@{[ input "magi${num}Timing" ,'','','list="list-timing"' ]}<div class="text-timing"></div>
+                <td class="target">@{[ input "magi${num}Target" ,'','','list="list-target"' ]}<div class="text-target"></div>
+                <td class="cond  ">@{[ input "magi${num}Cond"   ,'','','list="list-cond"'   ]}<div class="text-cond"></div>
+                <td class="left">@{[ input "magi${num}Note" ]}<div class="text-note"></div>
 HTML
 }
 print <<"HTML";
         </table>
         <div class="annotate caution"></div>
+        <div class="annotate"><a href="https://karasuba-sei.biz/officialsite/?p=149#index_id2" target="_blank">⇒クラン用マギの一覧（サポートハブ）</a></div>
       </div>
       
       <details class="box" id="free-note" @{[$pc{freeNote}?'open':'']}>
@@ -536,11 +546,6 @@ print <<"HTML";
   <datalist id="list-cond">
     <option value="なし">
   </datalist>
-  <script>
-HTML
-print <<"HTML";
-@{[ &commonJSVariable ]}
-  </script>
 </body>
 
 </html>

@@ -99,9 +99,18 @@ function delAttribute(){
 function checkMagi() {
   let count = 0;
   for (let num = 1; num <= 4; num++){
-    if(form['magi'+num+'Name'].value){ count++ }
+    const magi = form[`magi${num}`].value;
+    if(magi){
+      count++;
+    }
+    const hasData = SET.pcMagiData.hasOwnProperty(magi) || null;
+    for (let type of ['timing','target','cond','note']){
+      document.querySelector(`#magi${num} .text-${type}`).textContent = hasData ? SET.pcMagiData[magi][type] : '';
+      form[`magi${num}${ucfirst(type)}`].classList.toggle('hidden', hasData);
+    }
+    document.querySelector(`#magi${num} .changed-name`).classList.toggle('hidden', !form[`magi${num}NC`].checked);
   }
-  document.getElementById('magi').querySelector('.annotate').textContent
+  document.getElementById('magi').querySelector('.annotate.caution').textContent
     = (count < 1) ? 'マギを1つ記入してください' : '';
 }
 

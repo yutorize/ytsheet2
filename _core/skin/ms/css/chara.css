@@ -322,6 +322,10 @@ h1#character-name:not(:has(ruby)) {
     :empty::before {
       content: "　";
     }
+    .base-name {
+      font-size: 85%;
+      opacity: 50%;
+    }
   }
   @media screen and (width <= 735px){
     & tr:not(:has(*:not(:empty))) {

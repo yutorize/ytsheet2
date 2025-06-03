@@ -193,16 +193,26 @@ sub palettePreset {
   if(!$type){
     $text .= appendPaletteInsert('');
     # 基本判定
-    $text .= "### ■非戦闘系\n";
-    $text .= "2d+{冒険者}+{器用B} 冒険者＋器用\n";
-    $text .= "2d+{冒険者}+{敏捷B} 冒険者＋敏捷\n";
-    $text .= "2d+{冒険者}+{筋力B} 冒険者＋筋力\n";
-    $text .= "2d+{冒険者}+{知力B} 冒険者＋知力\n";
+    $text .= "### ■非戦闘系";
+    $text .= "・魔物知識" if $::pc{monsterLore};
+    $text .= "・先制" if $::pc{initiative};
+    $text .= "\n";
+    foreach my $statusName ('器用', '敏捷', '筋力', '生命', '知力','精神') {
+      $text .= "2d+{冒険者}+{${statusName}B} 冒険者＋${statusName}\n";
+    }
     foreach my $class (@classNames){
       my $c_id = $data::class{$class}{id};
       next if !$data::class{$class}{package} || !$::pc{'lv'.$c_id};
       my %data = %{$data::class{$class}{package}};
       foreach my $p_id (sort{$data{$a}{stt} cmp $data{$b}{stt} || $data{$a} cmp $data{$b}} keys %data){
+        if ($data{$p_id}{unlockCraft}) {
+          my $craftEName = $data::class{$class}{craft}{eName};
+          my $craftNum = $::pc{"lv${c_id}"} + ($::pc{"${craftEName}Addition"} // 0);
+
+          # 条件となる技芸を習得していなければ出力しない.
+          next unless grep { $::pc{"craft@{[ucfirst($craftEName)]}${_}"} eq $data{$p_id}{unlockCraft} } (1 .. $craftNum);
+        }
+
         my $name = $class.$data{$p_id}{name};
         $text .= "2d+{$name} $name\n";
         if($data{$p_id}{monsterLore} && $::pc{monsterLoreAdd}){ $text .= "2d+{$name}+$::pc{monsterLoreAdd} 魔物知識\n"; }
@@ -225,6 +235,78 @@ sub palettePreset {
     }
     $text .= "\n";
     $text .= appendPaletteInsert('common');
+
+    # 薬草・ポーション
+    {
+      my @drugsLines = ();
+      my $headline = '';
+      my $items = $::pc{items};
+      $items =~ tr/０-９＋/0-9+/;
+
+      foreach (reverse @data::drugs) { # 〈ヒーリングポーション+1〉を〈ヒーリングポーション〉より先に解決するために逆順
+        my %drug = %{$_};
+        my $drugName = $drug{name};
+        my $drugCategory = $drug{category};
+
+        next unless $items =~ s/\Q${drugName}\E//g;
+
+        my $rate = $drug{rate};
+        $rate = "k${rate}" if $rate ne '';
+
+        my $critical = $bot{BCD} && $rate ? '[13]' : '';
+
+        my $fixedValue = '';
+
+        if ($::pc{lvRan} > 0) {
+          $fixedValue .= '{レンジャー}';
+          $fixedValue .= '+{器用B}' if $drugCategory eq '薬草';
+          $fixedValue .= '+{知力B}' if $drugCategory eq 'ポーション';
+        }
+
+        if ($drug{add} ne '') {
+          if ($drug{add} =~ /^\d/) { # 追加値が単純な数値（〈ヒーリングポーション+1〉）
+            $fixedValue .= $fixedValue ne '' ? addNum($drug{add}) : $drug{add};
+          }
+          else { # 追加値が単純な数値でないケース（〈テインテッドポーション〉）
+            $fixedValue .= ($fixedValue ne '' ? '+' : '') . $drug{add};
+          }
+        }
+
+        my $line = "${rate}${critical}";
+
+        if ($fixedValue ne '') {
+          $line .= '+' if $line ne '';
+          $line .= $fixedValue;
+        }
+
+        if ($line && $line !~ /^k/) { # 威力がなければ計算コマンドにする（〈魔香水〉）
+          if ($bot{YTC}) {
+            $line .= '=';
+          }
+          elsif ($bot{BCD}) {
+            $line = "C(${line})";
+          }
+          else {
+            next;
+          }
+        }
+
+        if($line){
+          $line .= " 〈${drugName}〉";
+          push(@drugsLines, $line);
+        }
+
+        if ($headline !~ /\Q${drugCategory}\E/) {
+          $headline .= '・' if $headline ne '';
+          $headline .= $drugCategory;
+        }
+      }
+
+      if (@drugsLines) {
+        my $drugTexts = join("\n", reverse @drugsLines); # 手前のループを逆順で回した分を相殺するために reverse
+        $text .= "### ■${headline}\n${drugTexts}\n###\n";
+      }
+    }
 
     # 宣言特技
     require $set::data_feats;
@@ -418,7 +500,7 @@ sub palettePreset {
 
         $text .= "2d+{$power}";
         if   ($name =~ /魔/){ $text .= "$activePower+{行使修正}$activeCast ${name}行使$activeName\n"; }
-        elsif($name =~ /歌/){ $text .= " 呪歌演奏\n"; }
+        elsif($name =~ /歌/){ $text .= " @{[$::SW2_0 ? '呪歌' : '']}演奏\n"; }
         else                { $text .= " ${name}\n"; }
         
         if($dmgTexts{$paNum + 1} && $dmgTexts{$paNum} eq $dmgTexts{$paNum + 1}){
@@ -427,7 +509,9 @@ sub palettePreset {
         if($dmgTexts{$paNum} eq $dmgTexts{$paNum - 1}){
           $activeName = $::pc{'paletteMagic'.($paNum - 1).'Name'} ? "＋$::pc{'paletteMagic'.($paNum - 1).'Name'}" : '';
         }
-        $text .= $bot{BCD} ? ($dmgTexts{$paNum} =~ s/(ダメージ|半減)(\n|／)/$1／$name$activeName$2/gr) : $dmgTexts{$paNum};
+        my $actionName = $name;
+        $actionName = '終律' if !$::SW2_0 && $actionName eq '呪歌';
+        $text .= $bot{BCD} ? ($dmgTexts{$paNum} =~ s/(ダメージ|半減)(\n|／)/$1／$actionName$activeName$2/gr) : $dmgTexts{$paNum};
         $text .= "\n";
       }
     }
@@ -555,6 +639,7 @@ sub palettePreset {
           $text .= optimizeOperatorFirst "+$::pc{'paletteAttack'.$paNum.'Acc'}";
         }
         $text .= " 命中力／$::pc{'weapon'.$_.'Name'}$::pc{'weapon'.$_.'Usage'}";
+        $text .= "〈$::pc{'weapon'.$_.'Category'}〉" if $::pc{'weapon'.$_.'Usage'} =~ /H投/i && $::pc{'weapon'.$_.'Category'};
         $text .= "（${partName}）" if $partName;
         if($::pc{'paletteAttack'.$paNum.'Name'}){
           $text .= "＋$::pc{'paletteAttack'.$paNum.'Name'}";
@@ -582,6 +667,8 @@ sub palettePreset {
     $text .= "//回避修正=0\n";
     $text .= "2d+{生命抵抗}+{生命抵抗修正} 生命抵抗力\n";
     $text .= "2d+{精神抵抗}+{精神抵抗修正} 精神抵抗力\n";
+    my %hasClass;
+    my @hasClass = grep { ! $hasClass{ $::pc{"evasionClass$_"} }++ } (1 .. $::pc{defenseNum});
     foreach my $i (1..$::pc{defenseNum}){
       my $hasChecked = 0;
       foreach my $j (1..$::pc{armourNum}){
@@ -591,7 +678,9 @@ sub palettePreset {
 
       $text .= "2d+";
       $text .= $::pc{paletteUseVar} ? "{回避${i}}" : $::pc{"defenseTotal${i}Eva"};
-      $text .= "+{回避修正} 回避力".($::pc{"defenseTotal${i}Note"}?"／$::pc{'defenseTotal'.$i.'Note'}":'')."\n";
+      $text .= "+{回避修正} 回避力";
+      $text .= '（' . $::pc{"evasionClass${i}"} . '）' if @hasClass > 1;
+      $text .= ($::pc{"defenseTotal${i}Note"}?"／$::pc{'defenseTotal'.$i.'Note'}":'')."\n";
     }
     $text .= appendPaletteInsert('defense');
     
@@ -765,6 +854,7 @@ sub paletteProperties {
     push @propaties, "//生命力増強=".($::pc{sttAddD}+$::pc{sttEquipD});
     push @propaties, "//知力増強="  .($::pc{sttAddE}+$::pc{sttEquipE});
     push @propaties, "//精神力増強=".($::pc{sttAddF}+$::pc{sttEquipF});
+    push @propaties, "//穢れ=".($::pc{sin}||0);
     push @propaties, "###" if $tool eq 'tekey';
     push @propaties, "### ■技能レベル";
     push @propaties, "//冒険者レベル=$::pc{level}";
@@ -1012,11 +1102,16 @@ sub paletteProperties {
         (?<name>.+)
         [\/／]
         (
-          (?<dice> (?<value>[0-9]+)  [(（]  [0-9]+  [）)]  )
+          (
+            (?<dice> (?<value>[0-9]+)  [(（]  [0-9]+  [）)]  )
+            |
+            [0-9]+
+          )
+          .+?
           |
-          [0-9]+
+          必中
         )
-      .+?)
+      )
       (?:
         \s
         (?<note>[\s\S]*?)
