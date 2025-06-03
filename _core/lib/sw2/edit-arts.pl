@@ -379,7 +379,7 @@ print <<"HTML";
             <dl class="name    "><dt>名称      <dd>《@{[ input "schoolArts${num}Name",'' ]}》<br>@{[ checkbox "schoolArts${num}ActionTypeSetup",'戦闘準備' ]}</dl>
             <dl class="cost    "><dt>必要名誉点<dd>@{[ input "schoolArts${num}Cost" ]}</dl>
             <dl class="type    "><dt>タイプ    <dd>@{[ input "schoolArts${num}Type",'','','list="list-arts-type"' ]}</dl>
-            <dl class="premise "><dt>前提      <dd>@{[ input "schoolArts${num}Premise",'','','list="list-arts-base"' ]}</dl>
+            <dl class="premise "><dt>前提      <dd>@{[ input "schoolArts${num}Premise",'','','list="list-arts-premise"' ]}</dl>
             <dl class="equip   "><dt>限定条件  <dd>@{[ input "schoolArts${num}Equip" ]}</dl>
             <dl class="use     "><dt>使用      <dd>@{[ input "schoolArts${num}Use",'','','list="list-arts-use"' ]}</dl>
             <dl class="apply   "><dt>適用      <dd>@{[ input "schoolArts${num}Apply",'','','list="list-arts-apply"' ]}</dl>
@@ -622,6 +622,15 @@ print <<"HTML";
     <option value="主動作型">
     <option value="《》変化型">
     <option value="独自宣言型">
+  </datalist>
+  <datalist id="list-arts-premise">
+    <option value="なし">
+    <option value="《》">
+    <option value="《》《》">
+    <option value="《》《》《》">
+    <option value="《》《》《》《》">
+    <option value="【】">
+    <option value="【】【】">
   </datalist>
   <datalist id="list-arts-use">
     <option value="ファイター技能">
