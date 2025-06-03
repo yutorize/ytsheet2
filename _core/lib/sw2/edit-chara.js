@@ -1912,7 +1912,7 @@ function calcHonor(){
   pointTotal -= Number(form.honorOffset.value) + Number(form.honorOffsetBarbaros.value);
   document.getElementById("honor-value"   ).textContent = commify(pointTotal);
   document.getElementById("honor-value-MA").textContent = commify(pointTotal);
-  document.getElementById("mystic-arts-honor-value").textContent = mysticArtsPt;
+  document.getElementById("mystic-arts-honor-value").textContent = commify(mysticArtsPt);
   document.getElementById('honor-items-mystic-arts').style.display = mysticArtsPt != null ? '' : 'none';
 }
 // 不名誉点計算
