@@ -298,7 +298,7 @@ foreach my $set_url (split ',',$item_urls){
   if(exists$item{itemName}){
     $item{price} =~ s/[+＋]/<br>＋/;
     $item{price} = commify $item{price} if $item{price} =~ /\d{4,}/;
-    $item{category} =~ s/\s/<hr>/;
+    $item{category} =~ s/\s/<hr>/g;
     push(@items, {
       "NAME"      => "<a href=\"$set_url\" target=\"_blank\">".unescapeTags($item{itemName})."</a>",
       "PRICE"     => unescapeTags($item{price}),

@@ -187,7 +187,7 @@ async function addSchoolItem(){
       tr.setAttribute('class','item-data');
       tr.innerHTML = `
         <td><a href="${url}">${ruby(data.itemName||'')}</a></td>
-        <td>${data?.category.replace(/\s+/, '<hr>') ?? ''}</td>
+        <td>${data?.category.replace(/\s+/g, '<hr>') ?? ''}</td>
         <td>${data.summary ||''}</td>
         <td class="button" onclick="delSchoolItem(this,'${url}')">×</td>
       `;
