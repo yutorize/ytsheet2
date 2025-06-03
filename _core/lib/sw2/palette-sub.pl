@@ -192,13 +192,15 @@ sub palettePreset {
   ## ＰＣ
   if(!$type){
     $text .= appendPaletteInsert('');
+    $text .= "//行為判定修正=0\n";
+    $text .= "//行動判定修正=0\n";
     # 基本判定
     $text .= "### ■非戦闘系";
     $text .= "・魔物知識" if $::pc{monsterLore};
     $text .= "・先制" if $::pc{initiative};
     $text .= "\n";
     foreach my $statusName ('器用', '敏捷', '筋力', '生命', '知力','精神') {
-      $text .= "2d+{冒険者}+{${statusName}B} 冒険者＋${statusName}\n";
+      $text .= "2d+{冒険者}+{${statusName}B}+{行為判定修正}+{行動判定修正} 冒険者＋${statusName}\n";
     }
     foreach my $class (@classNames){
       my $c_id = $data::class{$class}{id};
@@ -214,9 +216,9 @@ sub palettePreset {
         }
 
         my $name = $class.$data{$p_id}{name};
-        $text .= "2d+{$name} $name\n";
-        if($data{$p_id}{monsterLore} && $::pc{monsterLoreAdd}){ $text .= "2d+{$name}+$::pc{monsterLoreAdd} 魔物知識\n"; }
-        if($data{$p_id}{initiative } && $::pc{initiativeAdd }){ $text .= "2d+{$name}+$::pc{initiativeAdd } 先制\n"; }
+        $text .= "2d+{$name}+{行為判定修正}+{行動判定修正} $name\n";
+        if($data{$p_id}{monsterLore} && $::pc{monsterLoreAdd}){ $text .= "2d+{$name}+$::pc{monsterLoreAdd}+{行為判定修正}+{行動判定修正} 魔物知識\n"; }
+        if($data{$p_id}{initiative } && $::pc{initiativeAdd }){ $text .= "2d+{$name}+$::pc{initiativeAdd }+{行為判定修正}+{行動判定修正} 先制\n"; }
       }
     }
     $text .= "\n";
@@ -226,12 +228,12 @@ sub palettePreset {
       next if !$::pc{"commonClass$_"};
       my $name = removeTags unescapeTags $::pc{'commonClass'.$_};
       $name =~ s/[(（].+?[）)]$//;
-      $text .= "2d+{$name}+{器用B} ${name}＋器用\n" if $::pc{"paletteCommonClass${_}Dex"};
-      $text .= "2d+{$name}+{敏捷B} ${name}＋敏捷\n" if $::pc{"paletteCommonClass${_}Agi"};
-      $text .= "2d+{$name}+{筋力B} ${name}＋筋力\n" if $::pc{"paletteCommonClass${_}Str"};
-      $text .= "2d+{$name}+{生命B} ${name}＋生命\n" if $::pc{"paletteCommonClass${_}Vit"};
-      $text .= "2d+{$name}+{知力B} ${name}＋知力\n" if $::pc{"paletteCommonClass${_}Int"};
-      $text .= "2d+{$name}+{精神B} ${name}＋精神\n" if $::pc{"paletteCommonClass${_}Mnd"};
+      $text .= "2d+{$name}+{器用B}+{行為判定修正}+{行動判定修正} ${name}＋器用\n" if $::pc{"paletteCommonClass${_}Dex"};
+      $text .= "2d+{$name}+{敏捷B}+{行為判定修正}+{行動判定修正} ${name}＋敏捷\n" if $::pc{"paletteCommonClass${_}Agi"};
+      $text .= "2d+{$name}+{筋力B}+{行為判定修正}+{行動判定修正} ${name}＋筋力\n" if $::pc{"paletteCommonClass${_}Str"};
+      $text .= "2d+{$name}+{生命B}+{行為判定修正}+{行動判定修正} ${name}＋生命\n" if $::pc{"paletteCommonClass${_}Vit"};
+      $text .= "2d+{$name}+{知力B}+{行為判定修正}+{行動判定修正} ${name}＋知力\n" if $::pc{"paletteCommonClass${_}Int"};
+      $text .= "2d+{$name}+{精神B}+{行為判定修正}+{行動判定修正} ${name}＋精神\n" if $::pc{"paletteCommonClass${_}Mnd"};
     }
     $text .= "\n";
     $text .= appendPaletteInsert('common');
@@ -427,9 +429,9 @@ sub palettePreset {
         my $activeCast  = $::pc{'paletteMagic'.$paNum.'Cast' } ? optimizeOperatorFirst("+$::pc{'paletteMagic'.$paNum.'Cast' }") : '';
 
         $text .= "2d+{$power}";
-        if   ($name =~ /魔/){ $text .= "$activePower+{行使修正}$activeCast ${name}行使$activeName\n"; }
-        elsif($name =~ /歌/){ $text .= " @{[$::SW2_0 ? '呪歌' : '']}演奏\n"; }
-        else                { $text .= " ${name}\n"; }
+        if   ($name =~ /魔/){ $text .= "$activePower+{行使修正}+{行為判定修正}+{行動判定修正}$activeCast ${name}行使$activeName\n"; }
+        elsif($name =~ /歌/){ $text .= "+{行為判定修正}+{行動判定修正} @{[$::SW2_0 ? '呪歌' : '']}演奏\n"; }
+        else                { $text .= "+{行為判定修正}+{行動判定修正} ${name}\n"; }
         
         if($dmgTexts{$paNum + 1} && $dmgTexts{$paNum} eq $dmgTexts{$paNum + 1}){
           next;
@@ -562,7 +564,7 @@ sub palettePreset {
 
         $text .= "2d+";
         $text .= $::pc{paletteUseVar} ? "{命中$_}" : $::pc{"weapon${_}AccTotal"};
-        $text .= "+{命中修正}";
+        $text .= "+{命中修正}+{行為判定修正}+{行動判定修正}";
         if($::pc{'paletteAttack'.$paNum.'Acc'}){
           $text .= optimizeOperatorFirst "+$::pc{'paletteAttack'.$paNum.'Acc'}";
         }
@@ -593,8 +595,8 @@ sub palettePreset {
     $text .= "//生命抵抗修正=0\n";
     $text .= "//精神抵抗修正=0\n";
     $text .= "//回避修正=0\n";
-    $text .= "2d+{生命抵抗}+{生命抵抗修正} 生命抵抗力\n";
-    $text .= "2d+{精神抵抗}+{精神抵抗修正} 精神抵抗力\n";
+    $text .= "2d+{生命抵抗}+{生命抵抗修正}+{行為判定修正} 生命抵抗力\n";
+    $text .= "2d+{精神抵抗}+{精神抵抗修正}+{行為判定修正} 精神抵抗力\n";
     my %hasClass;
     my @hasClass = grep { ! $hasClass{ $::pc{"evasionClass$_"} }++ } (1 .. $::pc{defenseNum});
     foreach my $i (1..$::pc{defenseNum}){
@@ -606,7 +608,7 @@ sub palettePreset {
 
       $text .= "2d+";
       $text .= $::pc{paletteUseVar} ? "{回避${i}}" : $::pc{"defenseTotal${i}Eva"};
-      $text .= "+{回避修正} 回避力";
+      $text .= "+{回避修正}+{行為判定修正}+{行動判定修正} 回避力";
       $text .= '（' . $::pc{"evasionClass${i}"} . '）' if @hasClass > 1;
       $text .= ($::pc{"defenseTotal${i}Note"}?"／$::pc{'defenseTotal'.$i.'Note'}":'')."\n";
     }
@@ -617,16 +619,18 @@ sub palettePreset {
   }
   ## 魔物
   elsif($type eq 'm') {
+    $text .= "//行為判定修正=0\n";
+    $text .= "//行動判定修正=0\n";
     $text .= "//生命抵抗修正=0\n";
     $text .= "//精神抵抗修正=0\n";
     $text .= "//回避修正=0\n";
-    $text .= "2d+{生命抵抗}+{生命抵抗修正} 生命抵抗力\n";
-    $text .= "2d+{精神抵抗}+{精神抵抗修正} 精神抵抗力\n";
+    $text .= "2d+{生命抵抗}+{生命抵抗修正}+{行為判定修正} 生命抵抗力\n";
+    $text .= "2d+{精神抵抗}+{精神抵抗修正}+{行為判定修正} 精神抵抗力\n";
     foreach (1 .. $::pc{statusNum}){
       (my $part   = $::pc{'status'.$_.'Style'}) =~ s/^.+?[（(](.+?)[)）]$/$1/;
       $part = '' if $::pc{partsNum} == 1;
       $part = "／$part" if $part ne '';
-      $text .= "2d+{回避$_}+{回避修正} 回避".$part."\n" if $::pc{'status'.$_.'Evasion'} ne '';
+      $text .= "2d+{回避$_}+{回避修正}+{行為判定修正}+{行動判定修正} 回避".$part."\n" if $::pc{'status'.$_.'Evasion'} ne '';
     }
     $text .= "\n";
 
@@ -638,7 +642,7 @@ sub palettePreset {
       if($part ne $weapon){ $weapon = $::pc{'status'.$_.'Style'}; }
       $weapon = '' if $::pc{partsNum} == 1;
       $weapon = "／$weapon" if $weapon ne '';
-      $text .= "2d+{命中$_}+{命中修正} 命中力$weapon\n" if $::pc{'status'.$_.'Accuracy'} ne '';
+      $text .= "2d+{命中$_}+{命中修正}+{行為判定修正}+{行動判定修正} 命中力$weapon\n" if $::pc{'status'.$_.'Accuracy'} ne '';
       $text .= "{ダメージ$_}+{打撃修正} ダメージ".$weapon."\n" if $::pc{'status'.$_.'Damage'} ne '';
       $text .= "\n";
     }
@@ -656,7 +660,7 @@ sub palettePreset {
       (?:魔力)
       ([0-9]+)
       [(（][0-9]+[）)]
-      /$text .= "2d+{$+{name}} $+{name}\n\n";/megix;
+      /$text .= "2d+{$+{name}}+{行為判定修正}+{行動判定修正} $+{name}\n\n";/megix;
     
     $skills =~ s/^
       (?<head>
@@ -681,7 +685,7 @@ sub palettePreset {
       (?=^$skillMarkRE|^●|\z)
       /
       $text .= convertMark($+{mark})."$+{name}／$+{fix}$+{other}\n"
-            .($+{base} ne '' ?"2d+{$+{name}} ".convertMark($+{mark})."$+{name}$+{other}\n":'')
+            .($+{base} ne '' ?"2d+{$+{name}}+{行為判定修正}+{行動判定修正} ".convertMark($+{mark})."$+{name}$+{other}\n":'')
             .skillNote($+{head},$+{name},$+{note})."\n";
       /megix;
   }
