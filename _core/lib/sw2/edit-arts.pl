@@ -490,6 +490,12 @@ print <<"HTML";
     <option value="地の命脈点">
     <option value="人の命脈点">
   </datalist>
+  <datalist id="list-cost-psychokinesis">
+    <option value="1dHP">
+    <option value="2dHP">
+    <option value="2d(6)HP">
+    <option value="2d(9)HP">
+  </datalist>
   <datalist id="list-target">
     <option value="術者">
     <option value="1体">
