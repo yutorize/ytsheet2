@@ -193,7 +193,10 @@ sub palettePreset {
   if(!$type){
     $text .= appendPaletteInsert('');
     # 基本判定
-    $text .= "### ■非戦闘系\n";
+    $text .= "### ■非戦闘系";
+    $text .= "・魔物知識" if $::pc{monsterLore};
+    $text .= "・先制" if $::pc{initiative};
+    $text .= "\n";
     foreach my $statusName ('器用', '敏捷', '筋力', '生命', '知力','精神') {
       $text .= "2d+{冒険者}+{${statusName}B} 冒険者＋${statusName}\n";
     }
