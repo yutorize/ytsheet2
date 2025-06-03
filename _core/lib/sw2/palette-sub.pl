@@ -437,7 +437,9 @@ sub palettePreset {
         if($dmgTexts{$paNum} eq $dmgTexts{$paNum - 1}){
           $activeName = $::pc{'paletteMagic'.($paNum - 1).'Name'} ? "＋$::pc{'paletteMagic'.($paNum - 1).'Name'}" : '';
         }
-        $text .= $bot{BCD} ? ($dmgTexts{$paNum} =~ s/(ダメージ|半減)(\n|／)/$1／$name$activeName$2/gr) : $dmgTexts{$paNum};
+        my $actionName = $name;
+        $actionName = '終律' if !$::SW2_0 && $actionName eq '呪歌';
+        $text .= $bot{BCD} ? ($dmgTexts{$paNum} =~ s/(ダメージ|半減)(\n|／)/$1／$actionName$activeName$2/gr) : $dmgTexts{$paNum};
         $text .= "\n";
       }
     }
