@@ -185,8 +185,12 @@ async function addSchoolItem(){
       if(data.itemName == null){ alert('アイテムデータではありません。'); return; }
       let tr = document.createElement('tr');
       tr.setAttribute('class','item-data');
+      let itemName = ruby(data.itemName||'');
+      if (!/〈.*〉/.test(itemName)) {
+        itemName = `〈${itemName}〉`;
+      }
       tr.innerHTML = `
-        <td><a href="${url}">${ruby(data.itemName||'')}</a></td>
+        <td><a href="${url}">${itemName}</a></td>
         <td>${data.category||''}</td>
         <td>${data.summary ||''}</td>
         <td class="button" onclick="delSchoolItem(this,'${url}')">×</td>
