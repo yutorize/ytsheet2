@@ -242,9 +242,13 @@ foreach (@list) {
     next;
   }
 
+  # 適正レベル
+  $lv =~ s/^(\d+)-(\d+)$/$1～$2/;
+
   # 価格
   $price =~ s#^／#―／#;
   $price =~ s#／$#／―#;
+  $price = commify($price);
 
   #タグ
   my $tags_links;

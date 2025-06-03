@@ -4,12 +4,20 @@ use strict;
 use utf8;
 use Encode;
 
-our $ver = "1.26.100";
+our $ver = "1.27.007";
 
 our %in;
 for (param()){ $in{$_} = param($_); }
 
 my $mode = $in{mode};
+
+#if ( $mode eq 'register'
+#  || $mode eq 'option'
+#  || $mode eq 'passchange'
+#  || $mode eq 'reset'
+#){
+#  error('ユーザーID関連機能メンテナンス中：2025// :～');
+#}
 
 if($mode eq 'register'){
   if($in{id})    { require $set::lib_register; }    #登録処理

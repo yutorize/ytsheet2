@@ -402,9 +402,7 @@ article {
 .data-magic > dl > dd {
   padding: .2em 0;
   text-align: center;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  align-content: center;
 }
 .data-magic dl.cost     dd,
 .data-magic dl.target   dd,
@@ -437,6 +435,7 @@ article {
   text-wrap: balance;
   text-align-last: end;
   overflow-wrap: break-word;
+  align-content: center;
   > div {
     max-width: 100%;
     width: max-content;
@@ -447,6 +446,7 @@ article {
     background: var(--arts-name-bg-color);
     color: #fff;
     font-size: 150%;
+    word-break: auto-phrase;
   }
   & dd {
     display: flex;
@@ -477,6 +477,17 @@ article {
 .data-magic dl.name dd .s-icon::before,
 .data-magic > h3 .s-icon::before {
   color: #fff;
+}
+.data-magic.data-arts dl:not(.summary,.effect) dd {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  > span {
+    word-break: auto-phrase;
+    > span.keep-all {
+    word-break: keep-all;
+    }
+  }
 }
 
 .data-magic dl.effect {

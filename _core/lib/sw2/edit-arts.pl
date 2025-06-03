@@ -348,7 +348,7 @@ HTML
 foreach my $set_url (split ',',$pc{schoolItemList}){
   require $set::lib_convert;
   my %item = getItemData($set_url);
-  $item{category} =~ s/\s/<hr>/;
+  $item{category} =~ s/\s/<hr>/g;
   print "<tr>";
   if(exists $item{itemName}) {
     print "<td><a href=\"${set_url}\" target='_blank'>".unescapeTags($item{itemName})."</a>";
@@ -393,6 +393,7 @@ HTML
 print <<"HTML";
           </div>
           <div class="add-del-button"><a onclick="addSchoolArts()">▼</a><a onclick="delSchoolArts()">▲</a></div>
+          <ul class="annotate"><li>下位秘伝と上位秘伝をまとめて記述する場合、<code> / </code>のように、「空白・スラッシュ・空白」で区切って入力してください。</ul>
         </details>
         @{[ input 'schoolMagicNum','hidden' ]}
         <details class="box" $open{schoolMagic}>

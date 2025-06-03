@@ -298,7 +298,7 @@ foreach my $set_url (split ',',$item_urls){
   if(exists$item{itemName}){
     $item{price} =~ s/[+＋]/<br>＋/;
     $item{price} = commify $item{price} if $item{price} =~ /\d{4,}/;
-    $item{category} =~ s/\s/<hr>/;
+    $item{category} =~ s/\s/<hr>/g;
     push(@items, {
       "NAME"      => "<a href=\"$set_url\" target=\"_blank\">".unescapeTags($item{itemName})."</a>",
       "PRICE"     => unescapeTags($item{price}),
@@ -322,10 +322,22 @@ foreach my $num (1..$pc{schoolArtsNum}){
   next if !($pc{'schoolArts'.$num.'Name'});
   my $icon;
   if($pc{'schoolArts'.$num.'ActionTypeSetup'}){ $icon .= '<i class="s-icon setup">△</i>' }
+  my @names;
+  foreach (split '(?<!<)\s[/／]\s', $pc{'schoolArts'.$num.'Name'}){
+    push(@names, "${icon}《".stylizeCharacterName($_)."》")
+  }
+  foreach my $type ('Cost','Type','Premise','Equip','Use','Apply','Risk'){
+    my @texts;
+    foreach (split '(?<!<)\s[/／]\s', $pc{'schoolArts'.$num.$type}){
+      push(@texts, "<span>$_</span>")
+    }
+    $pc{'schoolArts'.$num.$type} = join('<hr>', @texts)
+  }
+  $pc{'schoolArts'.$num.'Premise'} =~ s#(《.+?》)、?#<span class="keep-all">$1</span><wbr>#g;
+  $pc{'schoolArts'.$num.'Premise'} =~ s#<wbr>$##g;
   $pc{'schoolArts'.$num.'Effect'} =~ s#<h2>(.+?)</h2>#</dd><dt><span class="center">$1</span></dt><dd class="box">#gi;
   push(@arts, {
-    "NAME"     => stylizeCharacterName($pc{'schoolArts'.$num.'Name'}),
-    "ICON"     => $icon,
+    "NAME"     => join('</div><hr><div>', @names),
     "COST"     => $pc{'schoolArts'.$num.'Cost'},
     "TYPE"     => $pc{'schoolArts'.$num.'Type'},
     "PREMISE"  => $pc{'schoolArts'.$num.'Premise'},
@@ -369,10 +381,11 @@ $SHEET->param(schoolMagicData => \@schoolmagics);
 if(@schoolmagics || $pc{schoolMagicNote}){ $SHEET->param(schoolMagicView => 1); }
 
 ### バックアップ --------------------------------------------------
+my $selectedLogName;
 if($::in{id}){
-  my($selected, $list) = getLogList($set::char_dir, $main::file);
+  ($selectedLogName, my $list) = getLogList($set::char_dir, $main::file);
   $SHEET->param(LogList => $list);
-  $SHEET->param(selectedLogName => $selected);
+  $SHEET->param(selectedLogName => $selectedLogName);
   if($pc{yourAuthor} || $pc{protect} eq 'password'){
     $SHEET->param(viewLogNaming => 1);
   }
@@ -384,7 +397,10 @@ if($pc{forbidden} eq 'all' && $pc{forbiddenMode}){
   $SHEET->param(titleName => '非公開データ');
 }
 else {
-  $SHEET->param(titleName => removeTags removeRuby $pc{artsName});
+  $SHEET->param(titleName =>
+    (removeTags removeRuby $pc{artsName}) .
+    ($::in{log} ? " 【".($selectedLogName||$pc{updateTime})."】" : '')
+  );
 }
 
 ### 画像 --------------------------------------------------
@@ -436,6 +452,9 @@ if(!$pc{modeDownload}){
   }
   else {
     if($pc{logId}){
+      if(!$pc{forbiddenMode}){
+        push(@menu, { TEXT => '出力'    , TYPE => "onclick", VALUE => "downloadListOn()",  });
+      }
       push(@menu, { TEXT => '過去ログ', TYPE => "onclick", VALUE => 'loglistOn()', });
       if($pc{reqdPassword}){ push(@menu, { TEXT => '復元', TYPE => "onclick", VALUE => "editOn()", }); }
       else                 { push(@menu, { TEXT => '復元', TYPE => "href"   , VALUE => "./?mode=edit&id=$::in{id}&log=$pc{logId}", }); }

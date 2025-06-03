@@ -46,9 +46,9 @@
     grid-row: 4;
   }
 }
-#regulation > label:last-child {
-  margin-top: 0.5em;
-  border: none;
+#regulation dl.regulation-others {
+  gap: 2px;
+  margin-bottom: 2px;
 }
 
 #area-status {
@@ -191,21 +191,28 @@
   justify-content: space-between;
 }
 #area-classes.common-classes-off {
-  flex-basis: calc(66% - 1rem);
+  flex-basis: calc(75% - 1rem);
   margin-right: var(--box-h-gap);
 }
 
 #classes {
-  flex-basis: 66%;
+  flex-basis: 75%;
   flex-grow: 1;
   display: grid;
   position: relative;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr 0.8fr;
+  &:has(#classes-extra.hidden){
+    flex-basis: 66%;
+    grid-template-columns: 1fr 1fr;
+  }
 
-  & h2 { grid-column: span 2; }
+  & h2 { grid-column: span 3; }
+  .classes-group { align-self: start; }
   #classes-weapon-user { grid-column: 1; }
   #classes-magic-user  { grid-column: 1; align-self: end; }
-  #classes-other-user  { grid-column: 2; grid-row: 2 / span 2; }
+  #classes-others      { grid-column: 2; grid-row: 2 / span 2; }
+  #classes-extra       { grid-column: 3; grid-row: 2 / span 2; }
+  #classes-seeker      { grid-column: 3; grid-row: 2 / span 2; }
 
   & h3 {
     margin-top: 0;
@@ -214,7 +221,7 @@
   & dl {
     flex-grow: 1;
     flex-basis: calc(50% - 10px);
-    grid-template-columns: 1fr 3.5em;
+    grid-template-columns: 1fr 3em;
 
     & dt {
       font-size: inherit;
@@ -618,6 +625,9 @@
       & option[value="Sag"],
       &[data-type="Sag"] + .lang-select-view { background: #55ff0033; }
       &[data-type="Sag"] + .lang-select-view::before { content: 'セージ'; }
+      & option[value="Juj"],
+      &[data-type="Juj"] + .lang-select-view { background: #55ff0033; }
+      &[data-type="Juj"] + .lang-select-view::before { content: '呪術師'; }
       & option[value="Bar"],
       &[data-type="Bar"] + .lang-select-view { background: #ffaa0033; }
       &[data-type="Bar"] + .lang-select-view::before { content: 'バード'; }
@@ -1392,6 +1402,7 @@ article > form > hr {
       &.name { width: 14em; }
       &.power { width: 6em; }
       &.cast  { width: 6em; }
+      &.rate { width: 6em; }
       &.crit  { width: 6em; }
       &.dmg   { width: 6em; }
       &.roll  { width: 6em; }
@@ -1884,14 +1895,14 @@ form#arts div.input-data dl dd {
   text-align: left;
 }
 form#arts div.input-data dl dd input {
-  max-width: 14em;
+  max-width: 36em;
 }
 form#arts div.input-data dl.maxim input {
   width: calc(100% - 3em);
   max-width: none;
 }
 form#arts div.input-data dl.name dd input {
-  max-width: 24em;
+  max-width: 36em;
 }
 form#arts div.input-data dl.aka dd input {
   max-width: 10em;

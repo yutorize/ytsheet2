@@ -84,7 +84,8 @@
   overflow-x: auto;
 }
 #magi table colgroup {
-  .name   { width: 9.2em; }
+  .name   { width: 10.2em; }
+  .check  { width: 1.8em; }
   .timing { width: 7.5em; }
   .target { width: 7.5em; }
   .cond   { width: 7.5em; }
@@ -92,8 +93,15 @@
     .note   { width: 17.5em; }
   }
 }
-#magi table td.name input {
+#magi table td.name :is(select,input) {
   width: calc(100% - 2em);
+}
+#magi table td > div {
+  &.text-note {
+    font-size: 90%;
+    word-break: auto-phrase;
+  }
+  &:empty { display: none; }
 }
 
 #history > table {

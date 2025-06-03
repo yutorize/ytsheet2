@@ -6,7 +6,7 @@ use open ":utf8";
 use HTML::Template;
 
 ### データ読み込み ###################################################################################
-# なし
+require $set::data_magi;
 
 ### テンプレート読み込み #############################################################################
 my $SHEET;
@@ -167,13 +167,18 @@ $SHEET->param('Attribute' => \@attribute);
 my @magi;
 foreach (1 .. 5){
   next if !existsRow "magi$_",'Name','Timing','Target','Cond','Note';
-  $pc{'magi'.$_.'Name'} &&= "《$pc{'magi'.$_.'Name'}》";
+  my $magi = $pc{"magi$_"};
+  my ($name, $baseName) = ($magi,'');
+  if($pc{"magi${_}NC"}){
+    $name = $pc{"magi${_}Name"};
+    $baseName = "<b class=\"base-name\">《${magi}》</b> " if $magi ne 'その他';
+  }
   push(@magi, {
-    NAME   => $pc{'magi'.$_.'Name'},
-    TIMING => $pc{'magi'.$_.'Timing'},
-    TARGET => $pc{'magi'.$_.'Target'},
-    COND   => $pc{'magi'.$_.'Cond'},
-    NOTE   => $pc{'magi'.$_.'Note'},
+    NAME   => ($name ? "《${name}》" : ''),
+    TIMING => ($data::clanMagiData{$magi}{timing} // $pc{"magi${_}Timing"}),
+    TARGET => ($data::clanMagiData{$magi}{target} // $pc{"magi${_}Target"}),
+    COND   => ($data::clanMagiData{$magi}{cond  } // $pc{"magi${_}Cond"}),
+    NOTE   => $baseName.($data::clanMagiData{$magi}{note} // $pc{"magi${_}Note"}),
   });
 }
 $SHEET->param(Magi => \@magi);
@@ -211,10 +216,11 @@ foreach (1 .. $pc{historyNum}){
 $SHEET->param(History => \@history);
 
 ### バックアップ --------------------------------------------------
+my $selectedLogName;
 if($::in{id}){
-  my($selected, $list) = getLogList($set::char_dir, $main::file);
+  ($selectedLogName, my $list) = getLogList($set::char_dir, $main::file);
   $SHEET->param(LogList => $list);
-  $SHEET->param(selectedLogName => $selected);
+  $SHEET->param(selectedLogName => $selectedLogName);
   if($pc{yourAuthor} || $pc{protect} eq 'password'){
     $SHEET->param(viewLogNaming => 1);
   }
@@ -226,7 +232,10 @@ if($pc{forbidden} eq 'all' && $pc{forbiddenMode}){
   $SHEET->param(titleName => '非公開データ');
 }
 else {
-  $SHEET->param(titleName => removeTags removeRuby($pc{clanName}||"“$pc{aka}”"));
+  $SHEET->param(titleName =>
+    (removeTags removeRuby($pc{clanName}||"“$pc{aka}”")) .
+    ($::in{log} ? " 【".($selectedLogName||$pc{updateTime})."】" : '')
+  );
 }
 
 ### OGP --------------------------------------------------
@@ -251,6 +260,9 @@ if(!$pc{modeDownload}){
   }
   else {
     if($pc{logId}){
+      if(!$pc{forbiddenMode}){
+        push(@menu, { TEXT => '出力'    , TYPE => "onclick", VALUE => "downloadListOn()",  });
+      }
       push(@menu, { TEXT => '過去ログ', TYPE => "onclick", VALUE => 'loglistOn()', });
       if($pc{reqdPassword}){ push(@menu, { TEXT => '復元', TYPE => "onclick", VALUE => "editOn()", }); }
       else                   { push(@menu, { TEXT => '復元', TYPE => "href"   , VALUE => "./?mode=edit&id=$::in{id}&log=$pc{logId}", }); }

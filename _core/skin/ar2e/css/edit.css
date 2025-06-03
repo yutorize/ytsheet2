@@ -228,7 +228,7 @@ dd.area-tags {
 }
 #levelup table {
   > thead {
-    > th {
+    > tr th {
       vertical-align: bottom;
     }
     > tr:first-child th:first-child {
@@ -249,18 +249,18 @@ dd.area-tags {
     > tr:nth-last-of-type(even) {
       background-color: var(--box-even-rows-bg-color);
     }
-    > td.skill {
+    & td.skill {
       text-align: right;
       position: relative;
     }
-    > td.skill input {
+    & td.skill input {
       width: calc(100% - 1.5em - 1px);
       border-left: none;
       border-top-left-radius: 0;
       border-bottom-left-radius: 0;
       font-size: inherit;
     }
-    > td.skill::before {
+    & td.skill::before {
       content: attr(data-lv);
       display: grid;
       align-items: center;
@@ -278,8 +278,8 @@ dd.area-tags {
       text-align: center;
       background-color: var(--input-bg-color);
     }
-    > td.skill[data-lv=""]::before,
-    > td.skill:not([data-lv])::before {
+    & td.skill[data-lv=""]::before,
+    & td.skill:not([data-lv])::before {
       content: 'Lv';
       color: var(--box-input-border-color);
     }
