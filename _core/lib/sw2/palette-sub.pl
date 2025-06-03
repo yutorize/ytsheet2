@@ -269,7 +269,7 @@ sub palettePreset {
           $line .= $fixedValue;
         }
 
-        unless ($line =~ /^k/) { # 威力がなければ計算コマンドにする（〈魔香水〉）
+        if ($line && $line !~ /^k/) { # 威力がなければ計算コマンドにする（〈魔香水〉）
           if ($bot{YTC}) {
             $line .= '=';
           }
@@ -281,9 +281,10 @@ sub palettePreset {
           }
         }
 
-        $line .= " 〈${drugName}〉";
-
-        push(@drugsLines, $line);
+        if($line){
+          $line .= " 〈${drugName}〉";
+          push(@drugsLines, $line);
+        }
 
         if ($headline !~ /\Q${drugCategory}\E/) {
           $headline .= '・' if $headline ne '';
