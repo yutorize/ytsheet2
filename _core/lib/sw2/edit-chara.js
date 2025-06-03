@@ -1182,8 +1182,8 @@ function calcSubStt() {
   subStt.mpBase = 
     (raceAbilities.includes('溢れるマナ')) ? (level * 3 + stt.totalMnd)
     : ( levelCasters.reduce((a,x) => a+x,0) * 3 + stt.totalMnd );
-  subStt.hpAutoAdd = (feats['頑強'] || 0) + (feats['タフネス'] ? 15 : 0) + seekerHpMpAdd;
-  subStt.mpAutoAdd = (feats['キャパシティ'] || 0) + raceAbilityMp     + seekerHpMpAdd;
+  subStt.hpAutoAdd = (feats['頑強'] || 0) + (feats['タフネス'] ? 15 : 0) + seekerHpMpAdd + (equipMod.Hp||0);
+  subStt.mpAutoAdd = (feats['キャパシティ'] || 0) + raceAbilityMp        + seekerHpMpAdd + (equipMod.Mp||0);
   subStt.hpAccessory = 0;
   subStt.mpAccessory = 0;
   for (let type of ["Head", "Face",  "Ear", "Neck", "Back", "HandR", "HandL", "Waist", "Leg", "Other", "Other2", "Other3", "Other4"]){
@@ -2529,6 +2529,8 @@ function checkEquipMod (){
     ['F','精(?:神力?)?'],
     ['VResist','生命抵抗(?:力(?:判定)?)?'],
     ['MResist','精神抵抗(?:力(?:判定)?)?'],
+    ['Hp','[HＨ][PＰ]'],
+    ['Mp','[MＭ][PＰ]'],
     ['Eva','回避力?'],
     ['Def','防(?:護点?)?'],
     ['Mobility','移動力'],
