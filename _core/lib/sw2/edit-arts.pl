@@ -369,6 +369,8 @@ print <<"HTML";
         <details class="box" $open{schoolArts}>
           <summary class="in-toc">流派秘伝</summary>
           <textarea name="schoolArtsNote" placeholder="流派秘伝全体の注釈（あれば）">$pc{schoolArtsNote}</textarea>
+          <hr style="margin:0">
+          <ul class="annotate"><li>下位秘伝と上位秘伝をまとめて記述する場合、<code> / </code>のように、「空白・スラッシュ・空白」で区切って入力してください。</ul>
           <div id="arts-list">
 HTML
 foreach my $num ('TMPL',1..$pc{schoolArtsNum}){
