@@ -750,6 +750,18 @@ dl#level {
 #magic-power{
   grid-column: span 2;
   align-self: end;
+  
+  max-width: 100%;
+  width: calc((100% + (100% - var(--box-h-gap)) / 210 * 90) * 0.25 + 21.3em);
+  &:has(td.own > b.term-em) {
+    width: calc((100% + (100% - var(--box-h-gap)) / 210 * 90) * 0.25 + 25.6em);
+  }
+  @media screen and (width <= 735px){
+    min-width: calc(100% - 4.3em);
+    &:has(td.own > b.term-em) {
+    min-width: 100% !important;
+    }
+  }
 }
 #magic-power table {
   table-layout: auto;
@@ -777,6 +789,15 @@ dl#level {
     font-size: 1.15em;
     line-height: 1.6;
     white-space: nowrap;
+  }
+  & tbody td.own {
+    width: 4.8em;
+    font-size: 90%;
+  }
+  &:not(:has(td.own > b.term-em)) {
+    :is(th, td).own {
+      display: none;
+    }
   }
 }
 #magic-power #fairycontact {
@@ -832,6 +853,7 @@ dl#level {
     & tbody th {
       border-style: none solid hidden;
       background-color: transparent;
+      line-height:1;
     }
     & tbody:first-of-type tr:first-of-type th {
       border-top: hidden;
@@ -908,6 +930,21 @@ dl#level {
   @media screen and (width <= 735px){
     padding-left: 1px;
     font-size: 80%;
+  }
+}
+#weapons tbody {
+  tr {
+    td.usage {
+      &:has(.category){
+        line-height: 1;
+      }
+      .category {
+        display: block;
+        margin-top: 1px;
+        font-size: 60%;
+        word-break: keep-all;
+      }
+    }
   }
 }
 

@@ -13,6 +13,7 @@ sub createUnitStatus {
   my %pc = %{$_[0]};
   my $target = $_[1] || '';
   my @unitStatus;
+  my @unitMemo;
   if ($pc{type} eq 'm'){
     my @n2a = ('','A' .. 'Z');
     if($pc{statusNum} > 1){ # 2部位以上
@@ -35,12 +36,11 @@ sub createUnitStatus {
           $count{ $partname }++;
           $partname .= $n2a[ $count{ $partname } ];
         }
-        my $hp  = s_eval($pc{"status${i}Hp"});
-        my $mp  = s_eval($pc{"status${i}Mp"});
-        my $def = s_eval($pc{"status${i}Defense"});
-        push(@hp , {$partname.':HP' => "$hp/$hp"});
-        push(@mp , {$partname.':MP' => "$mp/$mp"}) unless isEmptyValue($mp);
-        push(@def, $partname.$def);
+        my $hp  = convertStt($pc{"status${i}Hp"});
+        my $mp  = convertStt($pc{"status${i}Mp"});
+        push(@hp , {$partname.':HP' => $hp});
+        push(@mp , {$partname.':MP' => $mp}) unless isEmptyValue($mp);
+        push(@def, $partname.$pc{"status${i}Defense"});
       }
       @unitStatus = ();
       push(@unitStatus, @hp);
@@ -48,7 +48,7 @@ sub createUnitStatus {
       if ($target eq 'udonarium') {
         push(@unitStatus, {'防護' => join('／',@def)});
       } else {
-        push(@unitStatus, {'メモ' => '防護:'.join('／',@def)});
+        push(@unitMemo, '防護:'.join('／',@def));
       }
     }
     else { # 1部位
@@ -59,12 +59,20 @@ sub createUnitStatus {
           $i .= $ii > 1 ? "-$ii" : '';
         }
       }
-      my $hp = s_eval($pc{"status${i}Hp"});
-      my $mp = s_eval($pc{"status${i}Mp"});
-      my $def = s_eval($pc{"status${i}Defense"});
-      push(@unitStatus, { 'HP' => "$hp/$hp" });
-      push(@unitStatus, { 'MP' => "$mp/$mp" }) unless isEmptyValue($mp);
-      push(@unitStatus, { '防護' => "$def" });
+      my $hp = convertStt($pc{"status${i}Hp"});
+      my $mp = convertStt($pc{"status${i}Mp"});
+      push(@unitStatus, { 'HP' => $hp });
+      push(@unitStatus, { 'MP' => $mp }) unless isEmptyValue($mp);
+      push(@unitStatus, { '防護' => $pc{"status${i}Defense"} });
+    }
+    
+    if($pc{weakness} && $pc{weakness} ne 'なし'){
+      if ($target eq 'udonarium') {
+        push(@unitStatus, { '弱点' => $pc{weakness} });
+      }
+      else {
+        push(@unitMemo, '弱点:'.$pc{weakness});
+      }
     }
   }
   else {
@@ -86,6 +94,17 @@ sub createUnitStatus {
         push(@unitStatus, { '人' => '0' });
       }
       push(@unitStatus, { '陣気' => '0' }) if $pc{lvWar};
+    }
+  }
+  if(@unitMemo){
+    if ($target eq 'udonarium') {
+      push(@unitStatus, {'メモ' => join("　",@unitMemo)});
+    }
+    if ($target eq 'ccfolia') {
+      push(@unitStatus, {'メモ' => join("\n",@unitMemo)});
+    }
+    else {
+      push(@unitStatus, {'メモ' => join("<br>",@unitMemo)});
     }
   }
 
@@ -158,6 +177,19 @@ sub checkArtsName {
   return $text, $mark;
 }
 
+### 特技カテゴリ取得 --------------------------------------------------
+sub getFeatCategoryByName {
+  my $featName = shift;
+
+  foreach (@data::combat_feats) {
+    my @feat = @{$_};
+    (my $category, my $requiredLevel, my $name) = @feat;
+    return $category if $name eq $featName;
+  }
+
+  return '';
+}
+
 ### 妖精魔法ランク --------------------------------------------------
 sub fairyRank {
   my $lv = shift;
@@ -183,6 +215,12 @@ sub extractModifications {
     my $note = shift;
 
     my %sttRegEx = (
+      'A:increment' => '器(?:用度?)?増強',
+      'B:increment' => '敏(?:捷度?)?増強',
+      'C:increment' => '筋(?:力)?増強',
+      'D:increment' => '生(?:命力)?増強',
+      'E:increment' => '知力?増強',
+      'F:increment' => '精(?:神力?)?増強',
       'A' => '器(?:用度?)?',
       'B' => '敏(?:捷度?)?',
       'C' => '筋(?:力)?',
@@ -476,6 +514,11 @@ sub data_update_chara {
       $pc{race} = 'ドレイクブロークン' if $pc{race} eq 'ドレイク（ブロークン）';
     }
   }
+  if($ver < 1.27004){
+    if($pc{lvSam} || $pc{lvNin} || $pc{lvJuj} || $pc{lvFug}){
+      $pc{unlockRyugai} = 1;
+    }
+  }
   $pc{ver} = $main::ver;
   $pc{lasttimever} = $ver;
   return %pc;
@@ -523,6 +566,9 @@ sub data_update_item {
       }
     }
   }
+  if($ver < 1.27003){
+    if($pc{age} eq '魔法文明'){ $pc{age} = '古代魔法文明' }
+  }
 
   $pc{ver} = $main::ver;
   $pc{lasttimever} = $ver;
@@ -543,6 +589,14 @@ sub data_update_arts {
   $pc{ver} = $main::ver;
   $pc{lasttimever} = $ver;
   return %pc;
+}
+
+sub convertStt {
+  my $value = shift;
+  if($value eq ''){ return '' }
+  if($value =~ /[^0-9,\+\-\*\/\%\(\) ]/){ return $value }
+  my $v = s_eval($value);
+  return "$v/$v";
 }
 
 sub isEmptyValue {

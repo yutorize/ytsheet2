@@ -534,12 +534,12 @@ sub unescapeTagsLines {
   $text =~ s/^RIGHT:/<\/p><p class="right">/gim;
   
   my $d_count = 0;
-  $d_count += ($text =~ s/^\[&gt;\]\*\*\*\*(.*?)$/<\/p><details><summary class="header4">$1<\/summary><div class="detail-body"><p>/gim);
-  $d_count += ($text =~ s/^\[&gt;\]\*\*\*(.*?)$/<\/p><details><summary class="header3">$1<\/summary><div class="detail-body"><p>/gim);
-  $d_count += ($text =~ s/^\[&gt;\]\*\*(.*?)$/<\/p><details><summary class="header2">$1<\/summary><div class="detail-body"><p>/gim);
-  $d_count += ($text =~ s/^\[&gt;\]\*(.*?)$/<\/p><details><summary class="header1">$1<\/summary><div class="detail-body"><p>/gim);
-  $d_count += ($text =~ s/^\[&gt;\](.+?)$/<\/p><details><summary>$1<\/summary><div class="detail-body"><p>/gim);
-  $d_count += ($text =~ s/^\[&gt;\]$/<\/p><details><summary>詳細<\/summary><div class="detail-body"><p>/gim);
+  $d_count += ($text =~ s/^\[(&gt;|[↓vＶｖ])\]\*\*\*\*(.*?)$/"<\/p><details @{[$1 eq '&gt;' ? '' : 'open']}><summary class=\"header4\">$2<\/summary><div class=\"detail-body\"><p>"/gime);
+  $d_count += ($text =~ s/^\[(&gt;|[↓vＶｖ])\]\*\*\*(.*?)$/"<\/p><details @{[$1 eq '&gt;' ? '' : 'open']}><summary class=\"header3\">$2<\/summary><div class=\"detail-body\"><p>"/gime);
+  $d_count += ($text =~ s/^\[(&gt;|[↓vＶｖ])\]\*\*(.*?)$/"<\/p><details @{[$1 eq '&gt;' ? '' : 'open']}><summary class=\"header2\">$2<\/summary><div class=\"detail-body\"><p>"/gime);
+  $d_count += ($text =~ s/^\[(&gt;|[↓vＶｖ])\]\*(.*?)$/"<\/p><details @{[$1 eq '&gt;' ? '' : 'open']}><summary class=\"header1\">$2<\/summary><div class=\"detail-bod\"><p>"/gime);
+  $d_count += ($text =~ s/^\[(&gt;|[↓vＶｖ])\](.+?)$/"<\/p><details @{[$1 eq '&gt;' ? '' : 'open']}><summary>$2<\/summary><div class=\"detail-body\"><p>"/gime);
+  $d_count += ($text =~ s/^\[(&gt;|[↓vＶｖ])\]$/"<\/p><details @{[$1 eq '&gt;' ? '' : 'open']}><summary>詳細<\/summary><div class=\"detail-body\"><p>"/gime);
   $d_count -= ($text =~ s/^\[-{3,}\]\n?$/<\/p><\/div><\/details><p>/gim);
   
   $text =~ s/^-{4,}$/<\/p><hr><p>/gim;  
@@ -697,6 +697,8 @@ sub removeTags {
   $text =~ s#<rp>[》]</rp>#)#g;
   $text =~ s/<img alt="&#91;(.)&#93;"/[$1]<img /g;
   $text =~ s/<.+?>//g;
+  $text =~ s/&#91;/[/g;
+  $text =~ s/&#93;/]/g;
   return $text;
 }
 sub removeRuby {
@@ -828,6 +830,21 @@ sub infoJson {
   print "Content-type: text/javascript; charset=utf-8\n\n";
   print '{"result":"'.$type.'","message":"'.$message.'"}';
   exit;
+}
+
+### 外部データ取得 --------------------------------------------------
+sub urlDataGet {
+  require LWP::UserAgent;
+
+  my $url = shift;
+  my $ua  = LWP::UserAgent->new;
+  my $res = $ua->get($url);
+  if ($res->is_success) {
+    return $res->decoded_content;
+  }
+  else {
+    error '入力されたURLへのアクセスに失敗しました。(STATUS CODE:'.$res->code.')';
+  }
 }
 
 ### アップデート・コンバート --------------------------------------------------

@@ -348,7 +348,7 @@
           <h2><TMPL_VAR MagicPowerHeader></h2>
           <table class="data-table">
             <thead>
-              <tr><th><th><th><TMPL_VAR MagicPowerThPow><th class="small"><TMPL_VAR MagicPowerThAct><br>基準値<th class="small">ダメージ<br>上昇効果<th>専用
+              <tr><th><th><th><TMPL_VAR MagicPowerThPow><th class="small"><TMPL_VAR MagicPowerThAct><br>基準値<th class="small">ダメージ<br>上昇効果<th class="own">専用
             <tbody>
             <TMPL_LOOP MagicPowers><tr>
               <td><TMPL_VAR NAME>
@@ -356,7 +356,7 @@
               <td class="num"><TMPL_VAR POWER>
               <td class="num"><TMPL_VAR CAST>
               <td class="num"><TMPL_VAR DAMAGE>
-              <td><TMPL_VAR OWN>
+              <td class="own"><TMPL_IF OWN><b class="term-em"><TMPL_VAR OWN></b></TMPL_IF>
             </TMPL_LOOP>
           </table>
         </section>
@@ -544,15 +544,15 @@
           </section>
           </TMPL_IF>
           <div id="honor">
-            <dl class="box"><dt>名誉点<dd><TMPL_VAR honor></dl>
-            <div class="box-union">
+            <dl class="box"><dt><TMPL_VAR headTextHonor DEFAULT=名誉点><dd><TMPL_VAR honor></dl>
+            <TMPL_UNLESS unlockRyugai><div class="box-union">
               <TMPL_IF rankHonorValue><dl class="box" id="adventurer-rank"><dt>冒険者ランク<dd><TMPL_VAR rank></dl></TMPL_IF>
               <TMPL_IF rankBarbarosValue><dl class="box" id="barbaros-rank"><dt>バルバロス栄光ランク<dd><TMPL_VAR rankBarbaros></dl></TMPL_IF>
               <TMPL_UNLESS rankHonorValue><TMPL_UNLESS rankBarbarosValue><dl class="box" id="adventurer-rank><dt">ランク<dd>―</dl></TMPL_UNLESS></TMPL_UNLESS>
-            </div>
+            </div></TMPL_UNLESS>
           </div>
           <section class="box honor-items" id="honor-items">
-            <h2>名誉アイテム</h2>
+            <h2><TMPL_VAR headTextHonorItems DEFAULT=名誉アイテム></h2>
             <table class="data-table side-margin">
               <thead>
                 <tr><th><th>点数
@@ -560,20 +560,20 @@
               <tbody>
                 <TMPL_IF rankHonorValue><tr><td>冒険者ランク<td><TMPL_VAR rankHonorValue></TMPL_IF>
                 <TMPL_IF rankBarbarosValue><tr><td>バルバロス栄光ランク<td><TMPL_VAR rankBarbarosValue></TMPL_IF>
-                <TMPL_IF MysticArtsHonor><tr><td>秘伝<td><TMPL_VAR MysticArtsHonor></TMPL_IF>
+                <TMPL_IF displayArtsHonor><tr><td>秘伝<td><TMPL_VAR MysticArtsHonor></TMPL_IF>
                 <TMPL_LOOP HonorItems><tr><td class="left"><TMPL_VAR NAME><td><TMPL_VAR PT></TMPL_LOOP>
-                <TMPL_IF honorOffset><tr><td>不名誉点相殺<td><TMPL_VAR honorOffset></TMPL_IF>
+                <TMPL_IF honorOffset><tr><td><TMPL_VAR headTextDishonor DEFAULT=不名誉点>相殺<td><TMPL_VAR honorOffset></TMPL_IF>
                 <TMPL_IF honorOffsetBarbaros><tr><td>不名誉点相殺（蛮族）<td><TMPL_VAR honorOffsetBarbaros></TMPL_IF>
               </tbody>
             </table>
           </section>
           <TMPL_IF DishonorItems>
           <div id="dishonor">
-            <dl class="box"><dt>不名誉点<dd><TMPL_VAR dishonor></dl>
-            <dl class="box"><dt>不名誉称号<dd><TMPL_VAR notoriety></dl>
+            <dl class="box"><dt><TMPL_VAR headTextDishonor DEFAULT=不名誉点><dd><TMPL_VAR dishonor></dl>
+            <TMPL_UNLESS unlockRyugai><dl class="box"><dt>不名誉称号<dd><TMPL_VAR notoriety></dl></TMPL_UNLESS>
           </div>
           <section class="box honor-items" id="dishonor-items">
-            <h2>不名誉詳細</h2>
+            <h2><TMPL_VAR headTextDishonorItems DEFAULT=不名誉詳細></h2>
             <table class="data-table side-margin">
               <thead><tr><th><th>点数</thead>
               <tbody>
@@ -604,7 +604,7 @@
               <th class="title ">タイトル
               <th class="exp   ">経験点
               <th class="money ">ガメル
-              <th class="honor ">名誉点
+              <th class="honor "><TMPL_VAR headTextHonor DEFAULT=名誉点>
               <th class="grow  ">成長
               <th class="gm    ">GM
               <th class="member">参加者

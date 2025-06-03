@@ -369,7 +369,7 @@
           <h2><TMPL_VAR MagicPowerHeader></h2>
           <table class="data-table">
             <thead>
-              <tr><th><th><th><TMPL_VAR MagicPowerThPow><th class="small"><TMPL_VAR MagicPowerThAct><br>基準値<th class="small">ダメージ<br>上昇効果<th>専用
+              <tr><th><th><th><TMPL_VAR MagicPowerThPow><th class="small"><TMPL_VAR MagicPowerThAct><br>基準値<th class="small">ダメージ<br>上昇効果<th class="own">専用
             </thead>
             <TMPL_LOOP MagicPowers><tr>
               <td><TMPL_VAR NAME>
@@ -377,7 +377,7 @@
               <td class="num"><TMPL_VAR POWER>
               <td class="num"><TMPL_VAR CAST>
               <td class="num"><TMPL_VAR DAMAGE>
-              <td><TMPL_VAR OWN>
+              <td class="own"><TMPL_IF OWN><b class="term-em"><TMPL_VAR OWN></b></TMPL_IF>
             </TMPL_LOOP>
           </table>
         </section>
@@ -556,7 +556,7 @@
                 <tr><th><th>点数
               </thead>
               <tbody>
-                <TMPL_IF MysticArtsHonor><tr><td>秘伝<td><TMPL_VAR MysticArtsHonor></TMPL_IF>
+                <TMPL_IF displayArtsHonor><tr><td>秘伝<td><TMPL_VAR MysticArtsHonor></TMPL_IF>
                 <TMPL_LOOP HonorItems><tr><td class="left"><TMPL_VAR NAME><td><TMPL_VAR PT></TMPL_LOOP>
               </tbody>
             </table>
