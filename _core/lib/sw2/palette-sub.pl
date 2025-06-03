@@ -236,6 +236,78 @@ sub palettePreset {
     $text .= "\n";
     $text .= appendPaletteInsert('common');
 
+    # 薬草・ポーション
+    {
+      my @drugsLines = ();
+      my $headline = '';
+      my $items = $::pc{items};
+      $items =~ tr/０-９＋/0-9+/;
+
+      foreach (reverse @data::drugs) { # 〈ヒーリングポーション+1〉を〈ヒーリングポーション〉より先に解決するために逆順
+        my %drug = %{$_};
+        my $drugName = $drug{name};
+        my $drugCategory = $drug{category};
+
+        next unless $items =~ s/\Q${drugName}\E//g;
+
+        my $rate = $drug{rate};
+        $rate = "k${rate}" if $rate ne '';
+
+        my $critical = $bot{BCD} && $rate ? '[13]' : '';
+
+        my $fixedValue = '';
+
+        if ($::pc{lvRan} > 0) {
+          $fixedValue .= '{レンジャー}';
+          $fixedValue .= '+{器用B}' if $drugCategory eq '薬草';
+          $fixedValue .= '+{知力B}' if $drugCategory eq 'ポーション';
+        }
+
+        if ($drug{add} ne '') {
+          if ($drug{add} =~ /^\d/) { # 追加値が単純な数値（〈ヒーリングポーション+1〉）
+            $fixedValue .= $fixedValue ne '' ? addNum($drug{add}) : $drug{add};
+          }
+          else { # 追加値が単純な数値でないケース（〈テインテッドポーション〉）
+            $fixedValue .= ($fixedValue ne '' ? '+' : '') . $drug{add};
+          }
+        }
+
+        my $line = "${rate}${critical}";
+
+        if ($fixedValue ne '') {
+          $line .= '+' if $line ne '';
+          $line .= $fixedValue;
+        }
+
+        if ($line && $line !~ /^k/) { # 威力がなければ計算コマンドにする（〈魔香水〉）
+          if ($bot{YTC}) {
+            $line .= '=';
+          }
+          elsif ($bot{BCD}) {
+            $line = "C(${line})";
+          }
+          else {
+            next;
+          }
+        }
+
+        if($line){
+          $line .= " 〈${drugName}〉";
+          push(@drugsLines, $line);
+        }
+
+        if ($headline !~ /\Q${drugCategory}\E/) {
+          $headline .= '・' if $headline ne '';
+          $headline .= $drugCategory;
+        }
+      }
+
+      if (@drugsLines) {
+        my $drugTexts = join("\n", reverse @drugsLines); # 手前のループを逆順で回した分を相殺するために reverse
+        $text .= "### ■${headline}\n${drugTexts}\n###\n";
+      }
+    }
+
     # 宣言特技
     require $set::data_feats;
     my @declarationFeats = ();
