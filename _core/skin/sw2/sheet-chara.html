@@ -560,7 +560,7 @@
               <tbody>
                 <TMPL_IF rankHonorValue><tr><td>冒険者ランク<td><TMPL_VAR rankHonorValue></TMPL_IF>
                 <TMPL_IF rankBarbarosValue><tr><td>バルバロス栄光ランク<td><TMPL_VAR rankBarbarosValue></TMPL_IF>
-                <TMPL_IF MysticArtsHonor><tr><td>秘伝<td><TMPL_VAR MysticArtsHonor></TMPL_IF>
+                <TMPL_IF displayArtsHonor><tr><td>秘伝<td><TMPL_VAR MysticArtsHonor></TMPL_IF>
                 <TMPL_LOOP HonorItems><tr><td class="left"><TMPL_VAR NAME><td><TMPL_VAR PT></TMPL_LOOP>
                 <TMPL_IF honorOffset><tr><td><TMPL_VAR headTextDishonor DEFAULT=不名誉点>相殺<td><TMPL_VAR honorOffset></TMPL_IF>
                 <TMPL_IF honorOffsetBarbaros><tr><td>不名誉点相殺（蛮族）<td><TMPL_VAR honorOffsetBarbaros></TMPL_IF>
