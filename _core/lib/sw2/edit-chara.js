@@ -1297,7 +1297,7 @@ function calcMagic() {
       if(cLv){ openMagic++; }
       
       const seekerMagicAdd = (lvSeeker && checkSeekerAbility('魔力上昇') && cLv >= 15) ? 3 : 0;
-      let power = cLv + parseInt((stt.totalInt + (form["magicPowerOwn"+id].checked ? 2 : 0)) / 6) + Number(form["magicPowerAdd"+id].value) + addPower + seekerMagicAdd + raceAbilityMagicPower;
+      let power = cLv + parseInt((stt.totalInt + ((form["magicPowerOwn"+id]?.checked ?? false) ? 2 : 0)) / 6) + Number(form["magicPowerAdd"+id].value) + addPower + seekerMagicAdd + raceAbilityMagicPower;
       if(id === 'Pri' && (
            raceAbilities.includes('神の御名と共に')
         || raceAbilities.includes('神への礼賛')
@@ -1317,10 +1317,10 @@ function calcMagic() {
       
       let power = cLv;
       if     (SET.class[key].craft.stt === '知力')  {
-        power += parseInt((stt.totalInt + (form["magicPowerOwn"+id].checked ? 2 : 0)) / 6);
+        power += parseInt((stt.totalInt + ((form["magicPowerOwn"+id]?.checked ?? false) ? 2 : 0)) / 6);
       }
       else if(SET.class[key].craft.stt === '精神力'){
-        power += parseInt((stt.totalMnd + (form["magicPowerOwn"+id].checked ? 2 : 0)) / 6);
+        power += parseInt((stt.totalMnd + ((form["magicPowerOwn"+id]?.checked ?? false) ? 2 : 0)) / 6);
       }
       if(SET.class[key].craft.power){
         power += Number(form["magicPowerAdd"+id].value);
