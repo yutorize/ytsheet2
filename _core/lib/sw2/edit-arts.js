@@ -202,10 +202,7 @@ setSortable('schoolArts','#arts-list','.input-data');
 // 追加
 function addSchoolMagic(){
   const row = createRow('school-magic','schoolMagicNum');
-  const rangeField = row.querySelector('input[name$="Range"]');
-  const formField = row.querySelector('input[name$="Form"]');
-  rangeField.dataset.formName = formField.getAttribute('name');
-  setupRangeField(rangeField);
+  setupRangeField(row.querySelector('input[name$="Range"]'));
   document.querySelector("#school-magic-list").append(row);
 }
 // 削除
@@ -215,27 +212,18 @@ function delSchoolMagic(){
 // 並べ替え
 setSortable('schoolMagic','#school-magic-list','.input-data');
 
-/**
- * @param {HTMLInputElement|null} rangeField
- */
 function setupRangeField(rangeField = null) {
   const rangeFields =
-      rangeField != null
-          ? [rangeField]
-          : [...document.querySelectorAll(':is([name="magicRange"], [name^="godMagic"][name$="Range"], [name^="schoolMagic"][name$="Range"])[data-form-name]')];
+    (rangeField != null)
+      ? [rangeField]
+      : [...document.querySelectorAll('[name="magicRange"], [name^="godMagic"][name$="Range"], [name^="schoolMagic"][name$="Range"]')];
 
-  rangeFields.forEach(
-      rangeField =>
-          rangeField.addEventListener(
-              'input',
-              () => {
-                const formField = rangeField.closest('dl.range').querySelector(`[name="${rangeField.dataset.formName}"]`);
-                const range = rangeField.value;
-
-                if ((range === '術者' || range === '接触') && (formField.value?.trim() ?? '') === '') {
-                  formField.value = '―';
-                }
-              }
-          )
+  rangeFields.forEach(rangeField =>
+    rangeField.addEventListener('input', () => {
+      const formField = rangeField.parentNode.querySelector(`[name$="Form"]`);
+      if ((rangeField.value === '術者' || rangeField.value === '接触') && (formField.value?.trim() ?? '') === '') {
+        formField.value = '―';
+      }
+    })
   );
 }
