@@ -176,7 +176,7 @@
         <div class="create-type"><TMPL_UNLESS forbiddenMode><TMPL_VAR createTypeName><span class="nowrap shorten">作成</span></TMPL_UNLESS></div>
         </section>
         
-        <section class="box" id="lifepath">
+        <section class="box <TMPL_IF encroachFixed>encroach-fixed</TMPL_IF>" id="lifepath">
           <h2>ライフパス</h2>
           <table class="data-table line-tbody">
             <colgroup><col><col><col></colgroup>
@@ -198,32 +198,34 @@
                 <td rowspan="2" class="comment"><TMPL_VAR lifepathEncounterNote>
               <tr>
                 <td colspan="2"><TMPL_VAR lifepathEncounter></td>
-            <tbody>
+            <tbody class="awaken">
               <tr>
-                <th class="left">覚醒
-                <th class="small">侵蝕値
+                <th class="left" <TMPL_IF encroachFixed>colspan="2"</TMPL_IF>>覚醒
+                <th class="small encroach">侵蝕値
                 <td rowspan="2" class="comment"><TMPL_VAR lifepathAwakenNote>
               <tr>
-                <td><TMPL_VAR lifepathAwaken>
-                <td class="center"><TMPL_VAR lifepathAwakenEncroach></td>
-            <tbody>
+                <td <TMPL_IF encroachFixed>colspan="2"</TMPL_IF>><TMPL_VAR lifepathAwaken>
+                <td class="center encroach"><TMPL_VAR lifepathAwakenEncroach>
+            <tbody class="impulse">
               <tr>
-                <th class="left">衝動
-                <th class="small">侵蝕値
+                <th class="left" <TMPL_IF encroachFixed>colspan="2"</TMPL_IF>>衝動
+                <th class="small encroach">侵蝕値
                 <td rowspan="2" class="comment"><TMPL_VAR lifepathImpulseNote>
               <tr>
-                <td <TMPL_IF lifepathUrgeCheck>style="border-bottom:hidden"</TMPL_IF>><TMPL_VAR lifepathImpulse></td>
-                <td class="center"><TMPL_VAR lifepathImpulseEncroach>
+                <td <TMPL_IF encroachFixed>colspan="2"</TMPL_IF> <TMPL_IF lifepathUrgeCheck>style="border-bottom:hidden"</TMPL_IF>><TMPL_VAR lifepathImpulse>
+                <td class="center encroach"><TMPL_VAR lifepathImpulseEncroach>
               <TMPL_IF lifepathUrgeCheck><tr class="urge">
                 <th colspan="2" class="right">／変異暴走
                 <td class="comment"><TMPL_VAR lifepathUrgeNote></td>
               </TMPL_IF>
             <TMPL_IF hasEncroachOffset>
-            <tbody>
+            <tbody class="encroach-offset">
               <tr><th class="right small">その他の修正<td class="center"><TMPL_VAR lifepathOtherEncroach><td class="comment"><TMPL_VAR lifepathOtherNote>
             </TMPL_IF>
-            <tbody>
-              <tr><th class="right">侵蝕率基本値<td class="center bold"><TMPL_VAR baseEncroach><td>
+            <tbody class="neutral-encroach">
+              <tr><th class="right">侵蝕率<span class="suffix">基本値</span>
+                <td class="center bold"><TMPL_IF encroachFixed><TMPL_VAR encroachFixedValue><TMPL_ELSE><TMPL_VAR baseEncroach></TMPL_IF>
+                <td>
             </tbody>
           </table>
         </section>
@@ -587,11 +589,11 @@
           </table>
         </section>
       </div>
-      <div id="enc-bonus">
+      <div id="enc-bonus" <TMPL_IF encroachFixed>class="encroach-fixed"</TMPL_IF>>
         <details class="box">
           <summary>侵蝕率効果表</summary>
           <p>
-            現在侵蝕率:<input type="number" id="current-encroach" value="<TMPL_VAR currentEncroach>" oninput="encroachBonusSet(this.value);">
+            <span class="encroach-prefix">現在</span>侵蝕率:<TMPL_IF encroachFixed><span class="encroach-fixed-value"><TMPL_VAR encroachFixedValue></span><TMPL_ELSE><input type="number" id="current-encroach" value="<TMPL_VAR currentEncroach>" oninput="encroachBonusSet(this.value);"></TMPL_IF>
             <input type="checkbox" id="encroach-ea-on" oninput="encroachBonusType();" <TMPL_IF encroachEaOn>checked</TMPL_IF>><label for="encroach-ea-on">エフェクトアーカイブ</label>
             <input type="checkbox" id="encroach-or-on" oninput="encroachBonusType();" <TMPL_IF encroachOrOn>checked</TMPL_IF>><label for="encroach-or-on">起源種</label>
           </p>
@@ -631,7 +633,16 @@
         let thBonus = document.createElement("th"); thBonus.textContent = 'ダイス' ; document.getElementById('enc-table-dices').prepend(thBonus);
         let thLevel = document.createElement("th"); thLevel.textContent = 'Efct.Lv'; document.getElementById('enc-table-level').prepend(thLevel);
         
-        encroachBonusSet(document.getElementById('current-encroach').value);
+        let encroachValue;
+        
+        if (document.getElementById('enc-bonus').classList.contains('encroach-fixed')) {
+          const valueText = document.querySelector('#enc-bonus .encroach-fixed-value').textContent;
+          encroachValue = /^\d+$/.test(valueText) ? parseInt(valueText) : -1;
+        } else {
+          encroachValue = document.getElementById('current-encroach').value;
+        }
+        
+        encroachBonusSet(encroachValue);
       }
       function encroachBonusSet(enc){
         for (let v of array){ document.getElementById('enc-col'+v).classList.remove('current'); }
