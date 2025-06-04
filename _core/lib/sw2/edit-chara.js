@@ -2297,9 +2297,9 @@ function checkLanguage(){
       }
       else if(classLv && (notT || notR)) {
         notice += `<li class="under">${langName}の`;
-        if(notT){ acqT[langName] = true; notice += `会話`+(notR ? '/' : '');  }
-        if(notR){ acqR[langName] = true; notice += `読文`;  }
-        notice += `が習得できます`;
+        if(notT){ acqT[langName] = true; notice += '会話'+(notR ? '/' : '');  }
+        if(notR){ acqR[langName] = true; notice += '読文';  }
+        notice += 'が習得できます';
       }
     }
   }
