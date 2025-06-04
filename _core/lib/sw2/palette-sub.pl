@@ -619,8 +619,7 @@ sub palettePreset {
             $text .= $bot{YTC} ? '首切' : $bot{BCD} ? 'r5' : '';
           }
           $text .= " ダメージ";
-          $text .= extractWeaponMarks($::pc{'weapon'.$_.'Name'}.$::pc{'weapon'.$_.'Note'}) unless $bot{BCD};
-          $text .= "／$::pc{'weapon'.$_.'Name'}$::pc{'weapon'.$_.'Usage'}" if $bot{BCD};
+          $text .= "／$::pc{'weapon'.$_.'Name'}@{[extractWeaponMarks($::pc{'weapon'.$_.'Note'})]}$::pc{'weapon'.$_.'Usage'}";
           $text .= "（${partName}）" if $partName && $bot{BCD};
           $text .= "\n";
         }
