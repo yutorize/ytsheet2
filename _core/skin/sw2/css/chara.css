@@ -789,6 +789,10 @@ dl#level {
     font-size: 1.15em;
     line-height: 1.6;
     white-space: nowrap;
+
+    > .nan {
+      font-size: 1.5rem;
+    }
   }
   & tbody td.own {
     width: 4.8em;
