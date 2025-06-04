@@ -1881,7 +1881,7 @@ function calcHonor(){
     const rankFree = (rankData) ? rankData.free + rankStar*50  : 0;
     pointTotal -= rankNum;
     if(rankFree > free){ free = rankFree }
-    document.getElementById(`rank${type}-honor-value`).textContent = rankNum;
+    document.getElementById(`rank${type}-honor-value`).textContent = commify(rankNum);
   }
   
   // 名誉アイテム
@@ -1911,9 +1911,9 @@ function calcHonor(){
   pointTotal -= mysticArtsPt ?? 0;
   //
   pointTotal -= Number(form.honorOffset.value) + Number(form.honorOffsetBarbaros.value);
-  document.getElementById("honor-value"   ).textContent = pointTotal;
-  document.getElementById("honor-value-MA").textContent = pointTotal;
-  document.getElementById("mystic-arts-honor-value").textContent = mysticArtsPt;
+  document.getElementById("honor-value"   ).textContent = commify(pointTotal);
+  document.getElementById("honor-value-MA").textContent = commify(pointTotal);
+  document.getElementById("mystic-arts-honor-value").textContent = commify(mysticArtsPt);
   document.getElementById('honor-items-mystic-arts').style.display = mysticArtsPt != null ? '' : 'none';
 }
 // 不名誉点計算
@@ -1934,8 +1934,8 @@ function calcDishonor(){
   }
   pointTotal.human    -= Number(form.honorOffset.value);
   pointTotal.barbaros -= Number(form.honorOffsetBarbaros.value);
-  let pointTotalText = pointTotal.human;
-  if(pointTotal.barbaros){ pointTotalText += `／<small>蛮</small>${pointTotal.barbaros}`; }
+  let pointTotalText = commify(pointTotal.human);
+  if(pointTotal.barbaros){ pointTotalText += `／<small>蛮</small>${commify(pointTotal.barbaros)}`; }
   document.getElementById("dishonor-value").innerHTML = pointTotalText;
 
   let notoriety = '';

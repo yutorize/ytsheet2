@@ -345,7 +345,7 @@ my $mysticarts_honor = $mysticarts_honor{human}
                      .($mysticarts_honor{barbaros}?"<br><small>蛮</small>$mysticarts_honor{barbaros}":'')
                      .($mysticarts_honor{dragon}  ?"<br><small>竜</small>$mysticarts_honor{dragon}"  :'');
 $SHEET->param(MysticArts => \@mystic_arts);
-$SHEET->param(MysticArtsHonor => $mysticarts_honor);
+$SHEET->param(MysticArtsHonor => commify($mysticarts_honor));
 $SHEET->param(displayArtsHonor => @mystic_arts ? 1 : 0);
 
 ### 秘奥魔法 --------------------------------------------------
@@ -1043,7 +1043,15 @@ $SHEET->param(historyHonorTotal => commify $pc{historyHonorTotal} );
 $SHEET->param(historyMoneyTotal => commify $pc{historyMoneyTotal} );
 
 
-### 名誉アイテム --------------------------------------------------
+### 名誉点・名誉アイテム --------------------------------------------------
+$SHEET->param(honor => commify($pc{honor}));
+$SHEET->param(honorMax => commify($pc{honorMax}));
+$SHEET->param(honorBarbaros => commify($pc{honorBarbaros})) if $pc{honorBarbaros};
+$SHEET->param(honorDragon => commify($pc{honorDragon})) if $pc{honorDragon};
+$SHEET->param(honorOffset => commify($pc{honorOffset})) if $pc{honorOffset};
+$SHEET->param(honorOffsetBarbaros => commify($pc{honorOffsetBarbaros})) if $pc{honorOffsetBarbaros};
+$SHEET->param(dishonor => commify($pc{dishonor})) if $pc{dishonor};
+
 my @honoritems;
 foreach (1 .. $pc{honorItemsNum}) {
   next if !$pc{'honorItem'.$_} && !$pc{'honorItem'.$_.'Pt'};
@@ -1052,7 +1060,7 @@ foreach (1 .. $pc{honorItemsNum}) {
   elsif($pc{"honorItem${_}PtType"} eq 'dragon'  ){ $type = '<small>竜</small>'; }
   push(@honoritems, {
     NAME => $pc{'honorItem'.$_},
-    PT   => $type.$pc{'honorItem'.$_.'Pt'},
+    PT   => commify($type.$pc{'honorItem'.$_.'Pt'}),
   } );
 }
 $SHEET->param(HonorItems => \@honoritems);
@@ -1066,7 +1074,7 @@ foreach (1 .. $pc{dishonorItemsNum}) {
   elsif($pc{"dishonorItem${_}PtType"} eq 'dragon'  ){ $type = '<small>竜</small>'; }
   push(@dishonoritems, {
     NAME => $pc{'dishonorItem'.$_},
-    PT   => $type.$pc{'dishonorItem'.$_.'Pt'},
+    PT   => commify($type.$pc{'dishonorItem'.$_.'Pt'}),
   } );
 }
 $SHEET->param(DishonorItems => \@dishonoritems);
@@ -1090,12 +1098,12 @@ else {
   foreach (@set::adventurer_rank){
     my ($name, $num, undef) = @$_;
     if($pc{rank}=~/★$/ && $pc{rankStar} >= 2){ $num += ($pc{rankStar}-1)*500 }
-    $SHEET->param(rankHonorValue => $num) if ($pc{rank} eq $name);
+    $SHEET->param(rankHonorValue => commify($num)) if ($pc{rank} eq $name);
   }
   foreach (@set::barbaros_rank){
     my ($name, $num, undef) = @$_;
     if($pc{rankBarbaros}=~/★$/ && $pc{rankStarBarbaros} >= 2){ $num += ($pc{rankStarBarbaros}-1)*500 }
-    $SHEET->param(rankBarbarosValue => $num) if ($pc{rankBarbaros} eq $name);
+    $SHEET->param(rankBarbarosValue => commify($num)) if ($pc{rankBarbaros} eq $name);
   }
   my $notoriety;
   foreach (@set::notoriety_rank){
