@@ -522,6 +522,19 @@
           </section>
         </div>
         <div id="area-items-R">
+          <TMPL_IF ManaGems>
+          <section class="box" id="mana-gems">
+            <h2>魔晶石</h2>
+            <dl>
+              <TMPL_LOOP ManaGems>
+                <dt class="point" style="grid-column-start: <TMPL_VAR POINT_COLUMN>; grid-row-start: <TMPL_VAR ROW>;">
+                  <TMPL_VAR POINT>点
+                <dd class="total" style="grid-column-start: <TMPL_VAR TOTAL_COLUMN>; grid-row-start: <TMPL_VAR ROW>;">
+                  <i class="mark">×</i><span class="value"><TMPL_VAR TOTAL></span><i class="unit">個</i>
+              </TMPL_LOOP>
+            </dl>
+          </section>
+          </TMPL_IF>
           <TMPL_IF lvAlc><section class="box" id="material-cards">
             <h2>マテリアルカード</h2>
             <table class="data-table">
