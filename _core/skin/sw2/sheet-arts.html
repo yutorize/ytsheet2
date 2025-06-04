@@ -271,6 +271,40 @@
       </section>
       </TMPL_IF>
 
+      <!-- 特殊能力 -->
+      <TMPL_IF categorySkill>
+        <section id="skill">
+          <div id="tags">
+            <TMPL_LOOP Tags><a class="tag" href="./?type=a&tag=<TMPL_VAR URL>"><TMPL_VAR TEXT></a></TMPL_LOOP>
+          </div>
+          <div class="data-skill <TMPL_IF skillRankMode>has-ranks<TMPL_ELSE>no-rank</TMPL_IF>">
+            <div class="name"><TMPL_VAR skillIcon>「<TMPL_VAR skillName>」</div>
+            <dl class="resist">
+              <dt>抵抗
+              <dd><TMPL_VAR skillResist>
+            </dl>
+            <dl class="action-base-value">
+              <dt>基準値
+              <dd><TMPL_VAR skillActionBaseValue>
+            </dl>
+            <dl class="resist-base-value">
+              <dt>抵抗基準値
+              <dd><TMPL_VAR skillResistBaseValue>
+            </dl>
+            <TMPL_LOOP rankList>
+              <dl class="details">
+                <dt class="rank">ランク</dt>
+                <dd class="rank"><TMPL_VAR rank></dd>
+                <dt class="summary">概要</dt>
+                <dd class="summary"><TMPL_VAR summary></dd>
+                <dt class="effect">効果</dt>
+                <dd class="effect"><TMPL_VAR effect></dd>
+              </dl>
+            </TMPL_LOOP>
+          </div>
+        </section>
+      </TMPL_IF>
+
 
       <div id="author">
         製作者：<TMPL_VAR author>

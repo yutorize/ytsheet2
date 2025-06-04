@@ -122,6 +122,11 @@ elsif($pc{category} eq 'school'){
   $pc{artsName} = '【'.$pc{schoolName}.'】';
   $SHEET->param(rawName => $pc{schoolName});
 }
+elsif($pc{category} eq 'skill'){
+  $SHEET->param(categorySkill => 1);
+  $pc{artsName} = "「$pc{skillName}」";
+  $SHEET->param(rawName => $pc{skillName});
+}
 my $item_urls = $pc{schoolItemList};
 
 ### タグ置換 #########################################################################################
@@ -380,6 +385,34 @@ foreach my $num (1..$pc{schoolMagicNum}){
 $SHEET->param(schoolMagicData => \@schoolmagics);
 if(@schoolmagics || $pc{schoolMagicNote}){ $SHEET->param(schoolMagicView => 1); }
 
+### 特殊能力 --------------------------------------------------
+if ($pc{category} eq 'skill') {
+  my $actionCode = '';
+  $actionCode .= '[常]' if $pc{skillActionPassive};
+  $actionCode .= '[補]' if $pc{skillActionMinor};
+  $actionCode .= '[準]' if $pc{skillActionSetup};
+  $actionCode .= '[主]' if $pc{skillActionMajor};
+  $SHEET->param(skillIcon => textToIcon($actionCode)) if $actionCode ne '';
+
+  my @ranks = ('B', 'A', 'S', 'SS');
+  @ranks = (@ranks[0]) unless $pc{skillRankMode};
+
+  my @rankList = ();
+  foreach my $rank (@ranks) {
+    my %data = (
+        rank    => $rank,
+        summary => $pc{"skillRank${rank}_summary"},
+        effect  => $pc{"skillRank${rank}_effect"},
+    );
+
+    $data{rank} = undef unless $pc{skillRankMode};
+
+    push(@rankList, \%data);
+  }
+
+  $SHEET->param(rankList => \@rankList);
+}
+
 ### バックアップ --------------------------------------------------
 my $selectedLogName;
 if($::in{id}){
@@ -433,6 +466,9 @@ if($pc{image}) { $SHEET->param(ogImg => url()."/".$imgsrc); }
   if ($pc{category} eq 'school') {
     $category = '流派';
     $sub = "　地域:$pc{schoolArea}" if $pc{schoolArea};
+  }
+  if ($pc{category} eq 'skill') {
+    $category = '特殊能力';
   }
   $SHEET->param(ogDescript => removeTags "カテゴリ:${category}${sub}");
 }

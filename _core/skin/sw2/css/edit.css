@@ -1965,6 +1965,89 @@ form#arts #school-item-list thead th {
 
 form#arts #school-item-list tbody td:nth-child(3) { font-size: 82%; }
 
+form#arts #data-skill {
+  input[name="skillActionBaseValue"] {
+    width: 30em;
+    max-width: initial;
+  }
+
+  .details {
+    &:not([data-mode]) {
+      display: none;
+    }
+
+    > h2 {
+      margin-top: 0;
+    }
+
+    > .ranks {
+      display: grid;
+      grid-template-columns: max-content 1fr;
+      padding: 0.5em 0.5em 0.25em 0.5em;
+
+      > dt:not(:first-of-type),
+      > dd:not(:first-of-type) {
+        margin-top: 0.75em;
+      }
+
+      > dt {
+        grid-column: 1 / 2;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 0.5em;
+        background-color: rgba(128, 128, 128, 0.35);
+        margin-right: 0.5em;
+      }
+
+      > dd {
+        grid-column: 2 / 3;
+
+        > .details {
+          display: grid;
+          grid-template-rows: repeat(2, max-content);
+          grid-template-columns: max-content 1fr;
+
+          > dt {
+            grid-column: 1 / 2;
+            font-weight: normal;
+          }
+
+          > dd {
+            grid-column: 2 / 3;
+            height: max-content;
+
+            input,
+            textarea {
+              margin: 0;
+            }
+          }
+
+          > .summary {
+            margin-bottom: 0.5em;
+          }
+        }
+      }
+    }
+
+    &[data-mode="no-rank"] {
+      .for-ranks {
+        display: none;
+      }
+
+      .ranks {
+        > [data-rank]:not([data-rank="B"]) {
+          display: none;
+        }
+
+        dt.rank {
+          display: none;
+        }
+      }
+    }
+  }
+}
+
 @media screen and (width <= 735px){
   form#arts div.input-data dl dt {
     width: 6.5em;
