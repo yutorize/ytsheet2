@@ -5,6 +5,7 @@ window.onload = function() {
   checkCategory();
   setSchoolItemList();
   checkMagicClass();
+  setupRangeField();
   changeColor();
 }
 
@@ -227,7 +228,9 @@ setSortable('schoolArts','#arts-list','.input-data');
 // 秘伝魔法欄 ----------------------------------------
 // 追加
 function addSchoolMagic(){
-  document.querySelector("#school-magic-list").append(createRow('school-magic','schoolMagicNum'));
+  const row = createRow('school-magic','schoolMagicNum');
+  setupRangeField(row.querySelector('input[name$="Range"]'));
+  document.querySelector("#school-magic-list").append(row);
 }
 // 削除
 function delSchoolMagic(){
@@ -235,3 +238,19 @@ function delSchoolMagic(){
 }
 // 並べ替え
 setSortable('schoolMagic','#school-magic-list','.input-data');
+
+function setupRangeField(rangeField = null) {
+  const rangeFields =
+    (rangeField != null)
+      ? [rangeField]
+      : [...document.querySelectorAll('[name="magicRange"], [name^="godMagic"][name$="Range"], [name^="schoolMagic"][name$="Range"]')];
+
+  rangeFields.forEach(rangeField =>
+    rangeField.addEventListener('input', () => {
+      const formField = rangeField.parentNode.querySelector(`[name$="Form"]`);
+      if ((rangeField.value === '術者' || rangeField.value === '接触') && (formField.value?.trim() ?? '') === '') {
+        formField.value = '―';
+      }
+    })
+  );
+}
