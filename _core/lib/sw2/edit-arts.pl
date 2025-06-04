@@ -348,7 +348,7 @@ HTML
 foreach my $set_url (split ',',$pc{schoolItemList}){
   require $set::lib_convert;
   my %item = getItemData($set_url);
-  $item{category} =~ s/\s/<hr>/;
+  $item{category} =~ s/\s/<hr>/g;
   print "<tr>";
   if(exists $item{itemName}) {
     print "<td><a href=\"${set_url}\" target='_blank'>".unescapeTags($item{itemName})."</a>";
@@ -369,6 +369,8 @@ print <<"HTML";
         <details class="box" $open{schoolArts}>
           <summary class="in-toc">流派秘伝</summary>
           <textarea name="schoolArtsNote" placeholder="流派秘伝全体の注釈（あれば）">$pc{schoolArtsNote}</textarea>
+          <hr style="margin:0">
+          <ul class="annotate"><li>下位秘伝と上位秘伝をまとめて記述する場合、<code> / </code>のように、「空白・スラッシュ・空白」で区切って入力してください。</ul>
           <div id="arts-list">
 HTML
 foreach my $num ('TMPL',1..$pc{schoolArtsNum}){
@@ -379,7 +381,7 @@ print <<"HTML";
             <dl class="name    "><dt>名称      <dd>《@{[ input "schoolArts${num}Name",'' ]}》<br>@{[ checkbox "schoolArts${num}ActionTypeSetup",'戦闘準備' ]}</dl>
             <dl class="cost    "><dt>必要名誉点<dd>@{[ input "schoolArts${num}Cost" ]}</dl>
             <dl class="type    "><dt>タイプ    <dd>@{[ input "schoolArts${num}Type",'','','list="list-arts-type"' ]}</dl>
-            <dl class="premise "><dt>前提      <dd>@{[ input "schoolArts${num}Premise",'','','list="list-arts-base"' ]}</dl>
+            <dl class="premise "><dt>前提      <dd>@{[ input "schoolArts${num}Premise",'','','list="list-arts-premise"' ]}</dl>
             <dl class="equip   "><dt>限定条件  <dd>@{[ input "schoolArts${num}Equip" ]}</dl>
             <dl class="use     "><dt>使用      <dd>@{[ input "schoolArts${num}Use",'','','list="list-arts-use"' ]}</dl>
             <dl class="apply   "><dt>適用      <dd>@{[ input "schoolArts${num}Apply",'','','list="list-arts-apply"' ]}</dl>
@@ -488,6 +490,12 @@ print <<"HTML";
     <option value="天の命脈点">
     <option value="地の命脈点">
     <option value="人の命脈点">
+  </datalist>
+  <datalist id="list-cost-psychokinesis">
+    <option value="1dHP">
+    <option value="2dHP">
+    <option value="2d(6)HP">
+    <option value="2d(9)HP">
   </datalist>
   <datalist id="list-target">
     <option value="術者">
@@ -615,6 +623,15 @@ print <<"HTML";
     <option value="主動作型">
     <option value="《》変化型">
     <option value="独自宣言型">
+  </datalist>
+  <datalist id="list-arts-premise">
+    <option value="なし">
+    <option value="《》">
+    <option value="《》《》">
+    <option value="《》《》《》">
+    <option value="《》《》《》《》">
+    <option value="【】">
+    <option value="【】【】">
   </datalist>
   <datalist id="list-arts-use">
     <option value="ファイター技能">

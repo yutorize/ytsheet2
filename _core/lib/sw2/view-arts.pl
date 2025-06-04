@@ -298,7 +298,7 @@ foreach my $set_url (split ',',$item_urls){
   if(exists$item{itemName}){
     $item{price} =~ s/[+＋]/<br>＋/;
     $item{price} = commify $item{price} if $item{price} =~ /\d{4,}/;
-    $item{category} =~ s/\s/<hr>/;
+    $item{category} =~ s/\s/<hr>/g;
     push(@items, {
       "NAME"      => "<a href=\"$set_url\" target=\"_blank\">".unescapeTags($item{itemName})."</a>",
       "PRICE"     => unescapeTags($item{price}),
@@ -322,10 +322,22 @@ foreach my $num (1..$pc{schoolArtsNum}){
   next if !($pc{'schoolArts'.$num.'Name'});
   my $icon;
   if($pc{'schoolArts'.$num.'ActionTypeSetup'}){ $icon .= '<i class="s-icon setup">△</i>' }
+  my @names;
+  foreach (split '(?<!<)\s[/／]\s', $pc{'schoolArts'.$num.'Name'}){
+    push(@names, "${icon}《".stylizeCharacterName($_)."》")
+  }
+  foreach my $type ('Cost','Type','Premise','Equip','Use','Apply','Risk'){
+    my @texts;
+    foreach (split '(?<!<)\s[/／]\s', $pc{'schoolArts'.$num.$type}){
+      push(@texts, "<span>$_</span>")
+    }
+    $pc{'schoolArts'.$num.$type} = join('<hr>', @texts)
+  }
+  $pc{'schoolArts'.$num.'Premise'} =~ s#(《.+?》)、?#<span class="keep-all">$1</span><wbr>#g;
+  $pc{'schoolArts'.$num.'Premise'} =~ s#<wbr>$##g;
   $pc{'schoolArts'.$num.'Effect'} =~ s#<h2>(.+?)</h2>#</dd><dt><span class="center">$1</span></dt><dd class="box">#gi;
   push(@arts, {
-    "NAME"     => stylizeCharacterName($pc{'schoolArts'.$num.'Name'}),
-    "ICON"     => $icon,
+    "NAME"     => join('</div><hr><div>', @names),
     "COST"     => $pc{'schoolArts'.$num.'Cost'},
     "TYPE"     => $pc{'schoolArts'.$num.'Type'},
     "PREMISE"  => $pc{'schoolArts'.$num.'Premise'},

@@ -1182,8 +1182,8 @@ function calcSubStt() {
   subStt.mpBase = 
     (raceAbilities.includes('溢れるマナ')) ? (level * 3 + stt.totalMnd)
     : ( levelCasters.reduce((a,x) => a+x,0) * 3 + stt.totalMnd );
-  subStt.hpAutoAdd = (feats['頑強'] || 0) + (feats['タフネス'] ? 15 : 0) + seekerHpMpAdd;
-  subStt.mpAutoAdd = (feats['キャパシティ'] || 0) + raceAbilityMp     + seekerHpMpAdd;
+  subStt.hpAutoAdd = (feats['頑強'] || 0) + (feats['タフネス'] ? 15 : 0) + seekerHpMpAdd + (equipMod.Hp||0);
+  subStt.mpAutoAdd = (feats['キャパシティ'] || 0) + raceAbilityMp        + seekerHpMpAdd + (equipMod.Mp||0);
   subStt.hpAccessory = 0;
   subStt.mpAccessory = 0;
   for (let type of ["Head", "Face",  "Ear", "Neck", "Back", "HandR", "HandL", "Waist", "Leg", "Other", "Other2", "Other3", "Other4"]){
@@ -1365,6 +1365,7 @@ function calcFairy() {
   });
   let result = '×';
   if(rank[i]){ result = rank[i][lv['Fai']] || '×'; }
+  else if (lv['Fai'] < 3) { result = lv['Fai']; }
   else { result = '×'; }
   document.getElementById('fairy-rank').textContent = result;
 }
@@ -1894,14 +1895,14 @@ function calcHonor(){
   // 流派
   let mysticArtsPt = null;
   for (let i = 1; i <= form.mysticArtsNum.value; i++){
-    if ((form[`mysticArts${i}`].value ?? '') === '') { continue }
+    if((form[`mysticArts${i}`].value ?? '') === ''){ continue }
     let point = safeEval(form['mysticArts'+i+'Pt'].value) || 0;
     mysticArtsPt ??= 0;
     mysticArtsPt += point;
     form['mysticArts'+i+'Pt'].classList.toggle('mark', (point && point <= free));
   }
   for (let i = 1; i <= form.mysticMagicNum.value; i++){
-    if ((form[`mysticMagic${i}`].value ?? '') === '') { continue }
+    if ((form[`mysticMagic${i}`].value ?? '') === ''){ continue }
     let point = safeEval(form['mysticMagic'+i+'Pt'].value) || 0;
     mysticArtsPt ??= 0;
     mysticArtsPt += point;
@@ -2527,8 +2528,10 @@ function checkEquipMod (){
     ['D','生(?:命力)?'],
     ['E','知力?'],
     ['F','精(?:神力?)?'],
-    ['VResist','生命抵抗力?'],
-    ['MResist','精神抵抗力?'],
+    ['VResist','生命抵抗(?:力(?:判定)?)?'],
+    ['MResist','精神抵抗(?:力(?:判定)?)?'],
+    ['Hp','[HＨ][PＰ]'],
+    ['Mp','[MＭ][PＰ]'],
     ['Eva','回避力?'],
     ['Def','防(?:護点?)?'],
     ['Mobility','移動力'],
