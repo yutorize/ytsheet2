@@ -1365,6 +1365,7 @@ function calcFairy() {
   });
   let result = '×';
   if(rank[i]){ result = rank[i][lv['Fai']] || '×'; }
+  else if (lv['Fai'] < 3) { result = lv['Fai']; }
   else { result = '×'; }
   document.getElementById('fairy-rank').textContent = result;
 }
