@@ -492,6 +492,10 @@ sub unescapeTags {
       $text =~ s/(\[[常準主補宣]\])+/&textToIcon($&);/egi;
       $text =~ s/「((?:[○◯〇△＞▶〆☆≫»□☐☑🗨]|&gt;&gt;)+)/"「".&textToIcon($1);/egi;
     }
+
+    $text =~ s|\[⤴\]|<i class="s-icon uplift">⤴</i>|g;
+    $text =~ s|\[⤵\]|<i class="s-icon calm">⤵</i>|g;
+    $text =~ s|\[♡\]|<i class="s-icon heart">♡</i>|g;
   }
   
   

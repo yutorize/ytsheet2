@@ -269,6 +269,9 @@ if (!$::SW2_0) {
   $text_rule .= <<"HTML";
         　アルフレイム大陸由来の流派装備：<code>[ア]</code>：<img class="i-icon" src="${set::icon_dir}wp_school_a.png"><br>
         　テラスティア大陸由来の流派装備：<code>[テ]</code>：<img class="i-icon" src="${set::icon_dir}wp_school_t.png"><br>
+        　高揚の楽素：<code>[⤴]</code>：<i class="s-icon uplift">⤴</i><br>
+        　鎮静の楽素：<code>[⤵]</code>：<i class="s-icon calm">⤵</i><br>
+        　魅惑の楽素：<code>[♡]</code>：<i class="s-icon heart">♡</i><br>
 HTML
 }
 print textRuleArea( $text_rule,'「効果」「解説」' );
