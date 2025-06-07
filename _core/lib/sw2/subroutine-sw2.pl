@@ -285,6 +285,18 @@ sub extractModifications {
   return \@modifications;
 }
 
+### 神聖魔法の短剣符の抽出 --------------------------------------------------
+# (記号, 魔法名) のかたちで返す.
+sub extractDivineMark {
+  my $magicName = shift;
+
+  if ($magicName =~ s/^([†‡])//) {
+    return ($1, $magicName);
+  }
+
+  return (undef, $magicName);
+}
+
 ### バージョンアップデート --------------------------------------------------
 sub data_update_chara {
   my %pc = %{$_[0]};
