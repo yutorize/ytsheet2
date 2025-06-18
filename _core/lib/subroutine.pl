@@ -471,11 +471,19 @@ sub unescapeTags {
       $text =~ s/\[魔\]/<img alt="&#91;魔&#93;" class="i-icon" src="${set::icon_dir}wp_magic.png">/gi;
       $text =~ s/\[刃\]/<img alt="&#91;刃&#93;" class="i-icon" src="${set::icon_dir}wp_edge.png">/gi;
       $text =~ s/\[打\]/<img alt="&#91;打&#93;" class="i-icon" src="${set::icon_dir}wp_blow.png">/gi;
+      $text =~ s/\[流\]/<img alt="&#91;流&#93;" class="i-icon" src="${set::icon_dir}wp_school.png">/gi;
+      $text =~ s/\[ア\]/<img alt="&#91;ア&#93;" class="i-icon" src="${set::icon_dir}wp_school_a.png">/gi;
+      $text =~ s/\[テ\]/<img alt="&#91;テ&#93;" class="i-icon" src="${set::icon_dir}wp_school_t.png">/gi;
+      $text =~ s/\[特\]/<img alt="&#91;特&#93;" class="i-icon" src="${set::icon_dir}item_local.png">/gi;
     }
     else {
-      $text =~ s|\[魔\]|<img alt="&#91;魔&#93;" class="i-icon" src="data:image/webp;base64,UklGRqwAAABXRUJQVlA4TJ8AAAAvD8ADED9AqIGhhP5FvFQxEa6LmgCEILtJBvnkvBhvESIBCHf8jwZ44QAfzH8IQD8sZ2K6bB8tgeNGktymAZLSmz6E/R5A9z5wI6BJQfzavcsfUBAR/U/AwRmBrkMMOtVnMZxWXvYvc5Vfi8Gc57JPOM2vxTRxVS5767suXovlPnGH7G2uCU+wPO/h+bW57+GIwWvCGbqoHZxfuo7/BAAA">|gi;
-      $text =~ s|\[刃\]|<img alt="&#91;刃&#93;" class="i-icon" src="data:image/webp;base64,UklGRmgAAABXRUJQVlA4TFwAAAAvD8ADECcgECD8r1ix5EMgQOhXpkaDgrQNmPq33J35D8B/Cs4KriLZDZv9EAIHgs2gAiCNzR+VyiGi/wGIWX8565unQe15VkDtBrkCr3ZDnhVQt41fgHwX6nojAA==">|gi;
-      $text =~ s|\[打\]|<img alt="&#91;打&#93;" class="i-icon" src="data:image/webp;base64,UklGRnAAAABXRUJQVlA4TGMAAAAvD8ADEB+gkG0EODSdId0jEEgC2V9sEQVpG7C49roz/wF8ppPAprb2Ji8JxUO38jthZ84eCzQJHTURgQSmbiOi/4GE4Cs4f8Xxx4x/SfOVNJdDdkez1dghIZdQYvAKLJADIQAA">|gi;
+      $text =~ s|\[魔\]|<img alt="&#91;魔&#93;" class="i-icon" src="data:image/webp;base64,UklGRngAAABXRUJQVlA4TGwAAAAvDUADEJUwqm2rSmh72cEmtnAOl7eMwJ+7zogw28hpOPMa4UHcl0zaNkgVlL67ppBtBAjj/MUO5DeYtE2KbLc8HtGup3ve0ssIJGMUH2QWX6zWQv8NUmOoKtlKw84kPYHu3EhQYAK96yf1aB0=">|gi;
+      $text =~ s|\[刃\]|<img alt="&#91;刃&#93;" class="i-icon" src="data:image/webp;base64,UklGRnQAAABXRUJQVlA4TGcAAAAvDUADEA5HbSMJEtB9L43lcuiOSHdjqKqoJMJsI6D9JjGQMz0yBW3bMPwB92+SggYEGKestBqxCXiAz6/MF3vqbz4X8f/vInwp2NqETVZh0yRFBVsZBdjKXDDNXIBmFkgb0ESL1FwBAA==">|gi;
+      $text =~ s|\[打\]|<img alt="&#91;打&#93;" class="i-icon" src="data:image/webp;base64,UklGRngAAABXRUJQVlA4TGsAAAAvDUADEA4HbSNJEqj78BymA3eA+sFQUpdSitq2gfgj7PktgQGYyKRtSq8qmsmZJpC0Ya1We/3OmYAHpP2ufrcRz/n/f3cZPkXKpUt3aQQNKQ6UoxGwCfVICXGA2FaI7US2BfEsDi045A3yFgA=">|gi;
+      $text =~ s|\[流\]|<img alt="&#91;流&#93;" class="i-icon" src="data:image/webp;base64,UklGRqAAAABXRUJQVlA4TJQAAAAvDUADENVACeBIkIQPnpc389pe3lvZVREN4UUahyRcQds2TNt9BMM0/nwmRW3bQD35kxyIvSqlbRswrPf2+aKpMGkDpjO3fL6w/d3nz52A88P3nRn4zf0F9ydcSaSQs+k/cGnb1vho0i1KONjStVsAomhS1wBp2nfJKk1r4NCeUHHO1GXdFvuKmqTq2T6AQM72Gx4E">|gi;
+      $text =~ s|\[ア\]|<img alt="&#91;ア&#93;" class="i-icon" src="data:image/webp;base64,UklGRmgAAABXRUJQVlA4TFwAAAAvDUADEFUwattI0O8ILKkDeviOxOwuhrRR07YBm6r6TzCdAIJsG6n5k23/BKzhfa+rn3z70xNUAziDwgM/Rw2QxDpMIrRxR9vChSEerMmJNqfQcgElXhI8rsHrAg==">|gi;
+      $text =~ s|\[テ\]|<img alt="&#91;テ&#93;" class="i-icon" src="data:image/webp;base64,UklGRmQAAABXRUJQVlA4TFcAAAAvDUADEFUwiCTJiZH/BwSiDG+YuGRhA5G2zfz7u5LSA7IBylRhpiBtA0ZU/RvbnYDHeHe1qc/+3zctkV7x1GTQoCsRzYFCBBgzD9ASADYAsTJp5tZjqE0A">|gi;
+      $text =~ s|\[特\]|<img alt="&#91;特&#93;" class="i-icon" src="data:image/webp;base64,UklGRogAAABXRUJQVlA4THwAAAAvDUADECdAJm3jX1Rl1EjZOSFk2Uj+BKd0Dufw669k2Uj+Aud0CAfx+49k0jZ1Vf9/LY1F21WA/XcVGESyU+elUwEJgwA4ogAFbab+TX08RPR/AhbvzUOS0EZ5UjZMniVNAe6SijkiHJrCnJKbObTr6Bf0ccZH2c3vIik2">|gi;
     }
     if($::SW2_0){
       $text =~ s/(\[[常主補宣条選]\])+/&textToIcon($&);/egi;

@@ -1583,6 +1583,8 @@ my $text_rule = <<"HTML";
         　魔法のアイテム：<code>[魔]</code>：<img class="i-icon" src="${set::icon_dir}wp_magic.png"><br>
         　刃武器　　　　：<code>[刃]</code>：<img class="i-icon" src="${set::icon_dir}wp_edge.png"><br>
         　打撃武器　　　：<code>[打]</code>：<img class="i-icon" src="${set::icon_dir}wp_blow.png"><br>
+        　地方特産品　　：<code>[特]</code>：<i class="i-icon" data-kind="特"><span class="raw">[特]</span></i><br>
+        　流派装備　　　：<code>[流]</code>：<i class="i-icon" data-kind="流"><span class="raw">[流]</span></i><br>
         　常時型　　：<code>[常]</code>：<i class="s-icon passive  "><span class="raw">[常]</span></i><br>
         　主動作型　：<code>[主]</code>：<i class="s-icon major0   "><span class="raw">[主]</span></i><br>
         　補助動作型：<code>[補]</code>：<i class="s-icon minor0   "><span class="raw">[補]</span></i><br>

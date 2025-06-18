@@ -106,7 +106,15 @@ $SHEET->param(itemName => stylizeCharacterName $pc{itemName});
 $SHEET->param(price => commify $pc{price}) if $pc{price} =~ /\d{4,}/;
 
 ### 魔法の武器アイコン --------------------------------------------------
-$SHEET->param(magic => ($pc{magic} ? "<img class=\"i-icon\" src=\"${set::icon_dir}wp_magic.png\">" : ''));
+{
+  my $icon;
+  if($pc{iconMagic  }){ $icon .= '[魔]' }
+  if($pc{iconLocal  }){ $icon .= '[特]' }
+  if($pc{iconSchool }){ $icon .= '[流]' }
+  if($pc{iconSchoolA}){ $icon .= '[ア]' }
+  if($pc{iconSchoolT}){ $icon .= '[テ]' }
+  $SHEET->param(icon => unescapeTags $icon);
+}
 
 ### カテゴリ --------------------------------------------------
 $pc{category} =~ s/((?:\G|>)[^<]*?)[ 　]/$1<hr>/g;

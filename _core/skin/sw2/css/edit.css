@@ -1768,6 +1768,18 @@ form#item div.input-data dl dd input {
   &[name="shape"]      { max-width: 26em; }
   &[name="summary"]    { max-width: 100%; }
 }
+
+form#item div.input-data dl.icon-checkboxes label {
+  & .i-icon {
+    width: 13px;
+    height: 13px;
+    margin-right: .1em;
+    vertical-align: text-top;
+  }
+  > input:not(:checked) + span > .i-icon { display:none }
+  > input:checked { display:none }
+}
+
 form#item .input-arms-data {
   width: 100%;
   & td { width: 5em; }

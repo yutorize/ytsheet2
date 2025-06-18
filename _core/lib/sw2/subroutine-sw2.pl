@@ -572,6 +572,9 @@ sub data_update_item {
   if($ver < 1.27003){
     if($pc{age} eq '魔法文明'){ $pc{age} = '古代魔法文明' }
   }
+  if($ver < 1.27009){
+    $pc{iconMagic} = $pc{magic};
+  }
 
   $pc{ver} = $main::ver;
   $pc{lasttimever} = $ver;
