@@ -181,7 +181,7 @@ $SHEET->param(Tags => \@tags);
   $SHEET->param(magicTarget   => textMagic($pc{magicTarget}));
   $SHEET->param(magicDuration => textMagic($pc{magicDuration}));
 
-  if($pc{magicClass} eq '魔動機術'){ $SHEET->param(magicNameNotes => 'マギスフィア:'.$pc{magicMagisphere}); }
+  if($pc{magicClass} =~ /魔動機術/){ $SHEET->param(magicNameNotes => 'マギスフィア:'.$pc{magicMagisphere}); }
   
   if   ($class eq '練技'){
     $SHEET->param(magicClassEn => 'enhance');
