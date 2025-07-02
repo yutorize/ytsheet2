@@ -326,7 +326,9 @@ foreach (1..5){
 $SHEET->param(SeekerAbilities => \@seeker_abilities);
 
 ### 秘伝 --------------------------------------------------
-my @mystic_arts; my %mysticarts_honor;
+my @mystic_arts;
+my @mystic_magics;
+my %mysticarts_honor;
 foreach (1..$pc{mysticArtsNum}){
   my $type = $pc{'mysticArts'.$_.'PtType'} || 'human';
   $mysticarts_honor{$type} += $pc{'mysticArts'.$_.'Pt'};
@@ -339,8 +341,13 @@ foreach (1..$pc{mysticMagicNum}){
   $mysticarts_honor{$type} += $pc{'mysticMagic'.$_.'Pt'};
   next if !$pc{'mysticMagic'.$_};
   my ($name, $mark) = checkArtsName $pc{'mysticMagic'.$_};
-  push(@mystic_arts, { "NAME" => "$mark【$name】" });
+  push(@mystic_magics, { "NAME" => "$mark【$name】" });
 }
+$SHEET->param(headMysticArts =>
+  (@mystic_arts && @mystic_magics) ? '秘伝／秘伝魔法／地域魔法' :
+  (@mystic_magics) ? '秘伝魔法／地域魔法' : '秘伝'
+);
+push(@mystic_arts,@mystic_magics);
 my $mysticarts_honor = $mysticarts_honor{human}
                      .($mysticarts_honor{barbaros}?"<br><small>蛮</small>$mysticarts_honor{barbaros}":'')
                      .($mysticarts_honor{dragon}  ?"<br><small>竜</small>$mysticarts_honor{dragon}"  :'');

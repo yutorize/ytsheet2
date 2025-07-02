@@ -583,7 +583,7 @@ print <<"HTML";
             <div class="add-del-button"><a onclick="addMysticArts()">▼</a><a onclick="delMysticArts()">▲</a></div>
             @{[input('mysticArtsNum','hidden')]}
 
-            <h2>秘伝魔法</h2>
+            <h2>秘伝魔法／地域魔法</h2>
             <ul id="mystic-magic-list" class="edit-table side-margin">
 HTML
 $pc{mysticMagicNum} ||= 0;
