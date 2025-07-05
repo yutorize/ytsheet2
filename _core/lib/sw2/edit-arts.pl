@@ -561,6 +561,8 @@ print <<"HTML";
     <option value="半減">
     <option value="短縮">
     <option value="必中">
+    <option value="生命／消滅">
+    <option value="生命／半減">
   </datalist>
   <datalist id="list-element">
     <option value="土">
