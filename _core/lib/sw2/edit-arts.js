@@ -148,11 +148,17 @@ function checkMagicClass(){
   document.querySelector('#data-magic dl.condition dt').textContent = (magic == '呪歌') ? '効果発生条件' : (magic == '陣率') ? '使用条件' : '条件';
 
   const levelInput = document.querySelector('#data-magic dl.level dd input');
+  const targetOptionSelf = document.querySelector('#list-target option.self');
+  const rangeOptionSelf = document.querySelector('#list-range option.self');
   if (magic.length === 2) {
     // 練技、呪歌など
     levelInput.setAttribute('list', 'list-craft-required-level');
+    targetOptionSelf.setAttribute('value', "自身");
+    rangeOptionSelf.setAttribute('value', "自身");
   } else {
     levelInput.removeAttribute('list');
+    targetOptionSelf.setAttribute('value', "術者");
+    rangeOptionSelf.setAttribute('value', "術者");
   }
 }
 function viewMagicInputs(items){
