@@ -1053,6 +1053,7 @@ print <<"HTML";
             <li>Ｃ値は自動計算されません。
             <li><code>\@防護点+1</code>や<code>\@回避力+1</code>のように記述すると、<span class="text-em">常時</span>有効な上昇効果が自動計算されます。<br>有効な項目は、装飾品欄と同様です。
             <li id="artisan-annotate" @{[ display $pc{masteryArtisan} ]}>※備考欄に<code>〈魔器〉</code>と記入すると魔器習熟が反映されます。
+            <li id="giantize-annotate-weapon">備考欄に<code>［巨人化］</code>と記述すると、［巨人化］後の筋力で計算されます。
           </ul>
           <div class="add-del-button"><a onclick="addWeapons();setupBracketInputCompletion()">▼</a><a onclick="delWeapons()">▲</a></div>
           @{[input('weaponNum','hidden')]}
@@ -1218,6 +1219,7 @@ print <<"HTML";
             <li><code>\@敏捷度-6</code>や<code>\@精神抵抗力+2</code>のように記述すると、<span class="text-em">常時</span>有効な上昇効果が自動計算されます。<br>
               有効な項目は、装飾品欄と同様です。<br>
               <code>\@</code>による修正は合算のチェックに関わらず計算されるため、予備装備や切り替えが想定されるものは注意してください。<br>
+            <li id="giantize-annotate-armour">合計行の備考欄に<code>［巨人化］</code>と記述すると、［巨人化］後の敏捷度で計算されます。
           </ul>
         </div>
 

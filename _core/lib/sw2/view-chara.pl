@@ -736,6 +736,7 @@ else {
       $pc{'weapon'.$_.'Acc'} = 0;
       $pc{'weapon'.$_.'Dmg'} = 0;
     }
+    $pc{"weapon${_}Note"} =~ s#〈(レッサー・?アームスフィア[ⅠⅡⅢ]|アームスフィア)〉|［巨人化］#<b class="term-em">$&</b>#;
     push(@weapons, {
       NAME     => $pc{'weapon'.$_.'Name'},
       PART     => $pc{'part'.$pc{'weapon'.$_.'Part'}.'Name'},
@@ -886,6 +887,7 @@ else {
 
     if($pc{'armour'.$_.'Type'} =~ /^(鎧|盾|他|龍骸)[0-9]+/ && $count{$1} <= 1){ $pc{'armour'.$_.'Type'} = $1 }
 
+    $pc{"armour${_}Note"} =~ s#〈(レッサー・?アームスフィア[ⅠⅡⅢ]|アームスフィア)〉#<b class="term-em">$&</b>#;
     push(@armours, {
       TYPE => $pc{'armour'.$_.'Type'},
       NAME => $pc{'armour'.$_.'Name'},
@@ -920,6 +922,7 @@ else {
       .($class ? "${class}/" : '')
       .(@ths == @armours ? 'すべての防具・効果' : join('＋', @ths) || '');
     $th =~ s|/$||;
+    $pc{"defenseTotal${i}Note"} =~ s#［巨人化］#<b class="term-em">$&</b>#;
     push(@total, {
       TH   => $th,
       EVA  => $pc{"defenseTotal${i}Eva"},

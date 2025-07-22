@@ -586,6 +586,11 @@ sub data_calc {
     $acc += $pc{"weapon${_}Acc"}; # 武器の修正値
     ## ダメージ
     my $str = $pc{sttStr} + ($partNum ? $pc{sttPartC} : $pc{sttAddC}+$pc{sttEquipC});
+    if($pc{"weapon${_}Note"} =~ /［巨人化］/){ $str += 12; }
+    if   ($pc{"weapon${_}Note"} =~ /〈レッサー・?アームスフィアⅠ〉/){ $str = 1; }
+    elsif($pc{"weapon${_}Note"} =~ /〈レッサー・?アームスフィアⅡ〉/){ $str = 5; }
+    elsif($pc{"weapon${_}Note"} =~ /〈レッサー・?アームスフィアⅢ〉/){ $str = 10; }
+    elsif($pc{"weapon${_}Note"} =~ /〈アームスフィア〉/){ $str = 20; }
     my $dmg = 0;
     $dmg = $pc{"weapon${_}Dmg"};
     if   ($category eq 'クロスボウ'){
@@ -634,6 +639,7 @@ sub data_calc {
 
     ## 基礎値
     my $agi = $pc{sttAgi} + ($partNum ? $pc{sttPartB} : $pc{sttAddB}+$pc{sttEquipB});
+    if($pc{"defenseTotal${i}Note"} =~ /［巨人化］/){ $agi -= 6; }
     my $eva = $data::class{$class}{evaUnlock}{mod};
     my $def = 0;
     ## 部位（コア含）
