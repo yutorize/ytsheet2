@@ -524,6 +524,7 @@ sub palettePreset {
               $::pc{'weapon'.$_.'Crit'}.$::pc{'weapon'.$_.'Dmg'} eq '';
       $text .= "###\n" if $bot{TKY};
       $text .= "### ■武器攻撃系\n";
+      $text .= appendPaletteInsert('attack_head');
       $text .= "//命中修正=0\n";
       $text .= "//C修正=0\n";
       $text .= "//追加D修正=0\n";
