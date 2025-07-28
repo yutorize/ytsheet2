@@ -483,6 +483,8 @@ function checkCraft() {
     }
   }
   calcFairy();
+
+  document.getElementById('herculean-missile').style.display = crafts['剛力弾'] ? '' : 'none';
 }
 
 // 妖精魔法 ----------------------------------------

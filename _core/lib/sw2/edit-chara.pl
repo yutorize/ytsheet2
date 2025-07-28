@@ -995,6 +995,13 @@ print <<"HTML";
                 <td>―
                 <td>―
                 <td>―
+              <tr id="herculean-missile"@{[ display $pc{herculeanMissile} ]}>
+                <td>【剛力弾】
+                <td>―
+                <td>―
+                <td>―
+                <td>―
+                <td id="herculean-missile-dmg">$pc{herculeanMissile}
               <tr id="parts-enhance"@{[ display $pc{partEnhance} ]}>
                 <td>【部位強化】
                 <td>―

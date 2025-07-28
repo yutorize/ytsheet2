@@ -432,6 +432,15 @@ sub data_calc {
       elsif($feat eq '抵抗強化Ⅱ')  { $pc{resistEnhance} = 2; }
     }
   }
+  ### 操気 --------------------------------------------------
+  $pc{herculeanMissile} = 0;
+  foreach my $num (1..$pc{lvDar}){
+    if ($pc{"craftPsychokinesis$num"} =~ /^剛力弾$/) {
+      $pc{herculeanMissile} = 1;
+      $pc{herculeanMissile} += 1 if $pc{lvDar} >= 5;
+      $pc{herculeanMissile} += 1 if $pc{lvDar} >= 10;
+    }
+  }
   ### 魔装 --------------------------------------------------
   foreach my $num (1..$pc{lvPhy}){
     if   ($pc{"craftPotential$num"} =~ /^部位.+強化$/     ){ $pc{partEnhance} += 1 }
@@ -607,6 +616,7 @@ sub data_calc {
       $dmg += $pc{'mastery' . ucfirst($data::weapon_id{ $category }) };
       if($category eq 'ガン（物理）'){ $dmg += $pc{masteryGun}; }
       if($pc{"weapon${_}Note"} =~ /〈魔器〉/){ $dmg += $pc{masteryArtisan}; }
+      $dmg += $pc{herculeanMissile} if $category eq '投擲'; # 【剛力弾】
     }
     else {
       if($category eq '格闘'){ $dmg += $pc{masteryGrapple}; }

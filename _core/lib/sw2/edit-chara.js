@@ -1054,6 +1054,7 @@ function checkFeats(){
 
 // 技芸 ----------------------------------------
 let crafts = {};
+let herculeanMissile = 0;
 function checkCraft() {
   crafts = {};
   for(const key in SET.class){
@@ -1099,6 +1100,27 @@ function checkCraft() {
       }
     }
   }
+
+  {
+    if (crafts['剛力弾']) {
+      herculeanMissile = 1;
+
+      const darkHunterLevel = lv[SET.class['ダークハンター']?.id] ?? 0;
+      if (darkHunterLevel >= 5) {
+        herculeanMissile += 1;
+      }
+      if (darkHunterLevel >= 10) {
+        herculeanMissile += 1;
+      }
+    }
+    else {
+      herculeanMissile = 0;
+    }
+  }
+  document.getElementById('herculean-missile-dmg').textContent = herculeanMissile.toString();
+  document.getElementById('herculean-missile').style.display = crafts['剛力弾'] ? '' : 'none';
+
+  calcWeapon();
 }
 
 // ＨＰＭＰ抵抗力計算 ----------------------------------------
@@ -1540,7 +1562,10 @@ function calcWeapon() {
     // 戦闘特技
     if(!partNum || partNum == form.partCore.value) {
       accBase += feats['命中強化'] || 0;
-      if(category === '投擲') { accBase += feats['スローイング'] ? 1 : 0; }
+      if(category === '投擲') {
+        accBase += feats['スローイング'] ? 1 : 0;
+        dmgBase += crafts['剛力弾'] ? herculeanMissile : 0;
+      }
 
       if(category === 'ガン（物理）') { dmgBase += feats['武器習熟／ガン'] || 0; }
       else if(category) { dmgBase += feats['武器習熟／'+category] || 0; }

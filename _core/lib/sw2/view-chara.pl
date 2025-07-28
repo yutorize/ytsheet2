@@ -589,7 +589,7 @@ $SHEET->param(MagicPowers => \@magic);
   $SHEET->param(MagicPowerThAct => scalar(@act) >= 3 ? "$act[0]など" : join('/',@act));
 }
 
-### 攻撃技能／特技 --------------------------------------------------
+### 攻撃技能／特技／技芸 --------------------------------------------------
 my $strTotal = $pc{sttStr}+$pc{sttAddC}+$pc{sttEquipC};
 my @atacck;
 if(!$pc{forbiddenMode}){
@@ -647,6 +647,12 @@ if(!$pc{forbiddenMode}){
     push(@atacck, {
       NAME => "《スローイング".($pc{throwing}  >= 2  ? 'Ⅱ' : 'Ⅰ')."》",
       ACC  => 1,
+    } );
+  }
+  if($pc{herculeanMissile}) {
+    push(@atacck, {
+        NAME => "【剛力弾】",
+        DMG  => $pc{herculeanMissile},
     } );
   }
 }
