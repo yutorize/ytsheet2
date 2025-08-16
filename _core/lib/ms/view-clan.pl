@@ -166,7 +166,7 @@ $SHEET->param('Attribute' => \@attribute);
 ### マギ --------------------------------------------------
 my @magi;
 foreach (1 .. 5){
-  next if !existsRow "magi$_",'Name','Timing','Target','Cond','Note';
+  next if !existsRow "magi$_",'','Timing','Target','Cond','Note';
   my $magi = $pc{"magi$_"};
   my ($name, $baseName) = ($magi,'');
   if($pc{"magi${_}NC"}){
