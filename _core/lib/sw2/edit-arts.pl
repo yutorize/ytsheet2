@@ -332,8 +332,8 @@ print <<"HTML";
           <dl class="area  "><dt>地域      <dd>@{[ input 'schoolArea','','','placeholder="大陸・地方など"' ]}</dl>
           <dl class="req   "><dt>入門条件  <dd>@{[ input 'schoolReq','','','list="list-school-req"' ]}</dl>
           <dl class="note  "><dt>詳細      <dd><textarea name="schoolNote">$pc{schoolNote}</textarea></dl>
-          <dl class="arms  "><dt>流派装備  <dd><textarea name="schoolItemNote" placeholder="流派装備の概要">$pc{schoolItemNote}</textarea></dl>
-          <dl class="arms  "><dt>流派装備一覧
+          <dl class="arms  "><dt>流派アイテム<dd><textarea name="schoolItemNote" placeholder="流派アイテムの概要">$pc{schoolItemNote}</textarea></dl>
+          <dl class="arms  "><dt>アイテム一覧
             <dd>
               <input type="text" id="schoolItemUrl" placeholder="アイテムシートのURL"><span class="button" onclick="addSchoolItem()">追加</span>
               @{[ input 'schoolItemList','hidden' ]}
@@ -444,12 +444,17 @@ my $text_rule = <<"HTML";
         　刃武器　　　　：<code>[刃]</code>：<img class="i-icon" src="${set::icon_dir}wp_edge.png"><br>
         　打撃武器　　　：<code>[打]</code>：<img class="i-icon" src="${set::icon_dir}wp_blow.png"><br>
         　地方特産品　　：<code>[特]</code>：<i class="i-icon" data-kind="特"><span class="raw">[特]</span></i><br>
-        　流派装備　　　：<code>[流]</code>：<i class="i-icon" data-kind="流"><span class="raw">[流]</span></i><br>
 HTML
 if (!$::SW2_0) {
   $text_rule .= <<"HTML";
-        　アルフレイム大陸由来の流派装備：<code>[ア]</code>：<i class="i-icon" data-kind="ア"><span class="raw">[ア]</span></i><br>
-        　テラスティア大陸由来の流派装備：<code>[テ]</code>：<i class="i-icon" data-kind="テ"><span class="raw">[テ]</span></i><br>
+        　流派アイテム　：<code>[流]</code>：<img class="i-icon" src="${set::icon_dir}wp_school.png"><br>
+        　アルフレイム大陸由来の流派アイテム：<code>[ア]</code>：<img class="i-icon" src="${set::icon_dir}wp_school_a.png"><br>
+        　テラスティア大陸由来の流派アイテム：<code>[テ]</code>：<img class="i-icon" src="${set::icon_dir}wp_school_t.png"><br>
+HTML
+}
+else {
+  $text_rule .= <<"HTML";
+        　流派装備　　　：<code>[流]</code>：<img class="i-icon" src="${set::icon_dir}wp_school.png"><br>
 HTML
 }
 print textRuleArea( $text_rule,'「効果」「備考」「由来・逸話など」' );

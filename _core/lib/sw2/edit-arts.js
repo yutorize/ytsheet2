@@ -169,7 +169,7 @@ function viewMagicInputs(items){
     });
   }
 }
-// 流派装備欄 ----------------------------------------
+// 流派アイテム欄 ----------------------------------------
 // 追加
 let schoolItems = [];
 let errorGetItem

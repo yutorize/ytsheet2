@@ -290,7 +290,7 @@ foreach my $lv (2,4,7,10,13){
 }
 $SHEET->param(MagicData => \@magics);
 
-### 流派装備 --------------------------------------------------
+### 流派アイテム --------------------------------------------------
 my @items;
 foreach my $set_url (split ',',$item_urls){
   require $set::lib_convert;
