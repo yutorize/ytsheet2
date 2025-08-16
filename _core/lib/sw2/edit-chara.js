@@ -1115,10 +1115,12 @@ function checkFeats(){
 let crafts = {};
 function checkCraft() {
   crafts = {};
-  for(const key in SET.class){
+  for(const key of SET.classNames){
     const cId  = SET.class[key].id;
-    const cLv = lv[cId];
-    if (SET.class[key].craft?.data){
+    const alias = SET.class[key].craft?.alias;
+    const aliasId = SET.class[alias]?.id;
+    const cLv = Math.max( lv[cId], (lv[aliasId]||0) );
+    if (SET.class[key].craft?.data || SET.class[alias]?.craft?.data){
       const eName = SET.class[key].craft.eName;
       document.getElementById("craft-"+eName).style.display = cLv ? "block" : "none";
       const cMax = (cId.match(/Bar|War/)) ? 20 : (cId === 'Art') ? 19 : 17;
@@ -1306,7 +1308,7 @@ function calcMagic() {
         power += (level >= 11) ? 2 : (level >= 6) ? 1 : 0;
       }
       document.getElementById("magic-power-"+eName+"-value").textContent  = power;
-      document.getElementById("magic-cast-"+eName+"-value").textContent   = power + Number(form["magicCastAdd"+id].value) + addCast;
+      document.getElementById("magic-cast-"+eName+"-value").textContent   = power + Number(form["magicCastAdd"+id].value) + addCast + (SET.class[key].magic?.mod || 0);
       document.getElementById("magic-damage-"+eName+"-value").textContent = Number(form["magicDamageAdd"+id].value) + addDamage;
       magicPowers[id] = cLv ? power : 0;
     }

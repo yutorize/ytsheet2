@@ -392,7 +392,14 @@ my @craft_lists;
 my $enhance_attack_on;
 my $rider_obs_on;
 foreach my $class (@data::class_names){
-  next if !$data::class{$class}{craft}{data};
+  my @craftData;
+  if($data::class{$class}{craft}{alias}){
+    @craftData = @{ $data::class{ $data::class{$class}{craft}{alias} }{craft}{data} };
+  }
+  elsif($data::class{$class}{craft}{data}) {
+    @craftData = @{ $data::class{$class}{craft}{data} };
+  }
+  else { next; }
   my $lv = $pc{'lv'.$data::class{$class}{id}};
   my $add = $pc{ $data::class{$class}{craft}{eName}.'Addition' }
           + $pc{ 'buildupAdd'.ucfirst($data::class{$class}{craft}{eName}) };
@@ -401,7 +408,7 @@ foreach my $class (@data::class_names){
   if($class eq 'アーティザン'){ $add += $pc{lvArt} >= 17 ? 2 : $pc{lvArt} >= 16 ? 1 : 0; }
 
   my %craftType;
-  foreach (@{$data::class{$class}{craft}{data}}){
+  foreach (@craftData){
     my $craft = $_->[1];
     my $notes = $_->[2];
     if($class eq 'アルケミスト'){
@@ -534,8 +541,8 @@ foreach my $class (@data::class_caster){
   next if !$name;
   next if !$pc{'lv'.$id};
   
-  my $power  = $pc{'magicPowerAdd' .$id} + $pc{magicPowerAdd } + $pc{magicPowerEquip } +$pc{magicPowerEnhance};
-  my $cast   = $pc{'magicCastAdd'  .$id} + $pc{magicCastAdd  } + $pc{magicCastEquip  };
+  my $power  = $pc{'magicPowerAdd' .$id} + $pc{magicPowerAdd } + $pc{magicPowerEquip } + $pc{magicPowerEnhance};
+  my $cast   = $pc{'magicCastAdd'  .$id} + $pc{magicCastAdd  } + $pc{magicCastEquip  } + $data::class{$class}{magic}{mod};
   my $damage = $pc{'magicDamageAdd'.$id} + $pc{magicDamageAdd} + $pc{magicDamageEquip};
   
   my $title = $class.'<wbr><span class="small">技能レベル</span>'.$pc{'lv'.$id};
