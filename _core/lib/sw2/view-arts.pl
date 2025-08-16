@@ -331,7 +331,7 @@ foreach my $num (1..$pc{schoolArtsNum}){
     foreach (split '(?<!<)\s[/／]\s', $pc{'schoolArts'.$num.$type}){
       push(@texts, "<span>$_</span>")
     }
-    $pc{'schoolArts'.$num.$type} = join('<hr>', @texts)
+    $pc{'schoolArts'.$num.$type} = join('<hr class="dotted">', @texts)
   }
   $pc{'schoolArts'.$num.'Premise'} =~ s#(《.+?》)、?#<span class="keep-all">$1</span><wbr>#g;
   $pc{'schoolArts'.$num.'Premise'} =~ s#<wbr>$##g;
