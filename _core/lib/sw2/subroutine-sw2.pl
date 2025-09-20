@@ -75,6 +75,15 @@ sub createUnitStatus {
     );
 
     if (!$::SW2_0) {
+      if ($pc{lvFai}) {
+        my @contractAttributes = ();
+        foreach ([Earth => '土'], [Water => '水'], [Fire => '炎'], [Wind => '風'], [Light => '光'], [Dark => '闇']) {
+          (my $attributeEn, my $attributeJa) = @{$_};
+          next unless $pc{"fairyContract${attributeEn}"};
+          push(@contractAttributes, $attributeJa);
+        }
+        push(@unitStatus, { 契約属性 => join('', @contractAttributes) });
+      }
       if ($pc{lvBar}) {
         push(@unitStatus, { '⤴' => '0' });
         push(@unitStatus, { '⤵' => '0' });
