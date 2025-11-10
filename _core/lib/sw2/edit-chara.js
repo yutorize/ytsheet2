@@ -1768,7 +1768,7 @@ function calcArmour(evaAdd,defBase) {
 
     // 最大必筋
     const maxReqd
-     = (giantize && SET.class[className]?.reqdHalf) ? math((reqdStr+12) / 2)
+     = (giantize && SET.class[className]?.reqdHalf) ? Math.ceil((reqdStr+12) / 2)
      : (giantize) ? (reqdStr+12)
      : (SET.class[className]?.reqdHalf) ? reqdStrHalf : reqdStr;
 
