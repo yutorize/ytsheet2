@@ -670,7 +670,7 @@ sub generateTable {
     while($text =~ s/^(LEFT|CENTER|RIGHT|NOWRAP|SMALL)://){
       push @class, lc($1);
     }
-    if($_ =~ /^([0-9]+)(px|em|\%)/){
+    if($text =~ /^([0-9]+)(px|em|\%)/){
       my $num = $1; my $type = $2;
       if   ($type eq 'px' && $num > 300){ $num = 300 }
       elsif($type eq 'em' && $num >  20){ $num =  20 }
