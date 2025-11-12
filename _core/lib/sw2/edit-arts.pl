@@ -443,7 +443,7 @@ my $text_rule = <<"HTML";
         　魔法のアイテム：<code>[魔]</code>：<img class="i-icon" src="${set::icon_dir}wp_magic.png"><br>
         　刃武器　　　　：<code>[刃]</code>：<img class="i-icon" src="${set::icon_dir}wp_edge.png"><br>
         　打撃武器　　　：<code>[打]</code>：<img class="i-icon" src="${set::icon_dir}wp_blow.png"><br>
-        　地方特産品　　：<code>[特]</code>：<i class="i-icon" data-kind="特"><span class="raw">[特]</span></i><br>
+        　地方特産品　　：<code>[特]</code>：<img class="i-icon" src="${set::icon_dir}item_local.png"><br>
 HTML
 if (!$::SW2_0) {
   $text_rule .= <<"HTML";
