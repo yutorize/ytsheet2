@@ -494,6 +494,8 @@ function checkCraft() {
     }
   }
   calcFairy();
+  
+  document.getElementById('mighty-shot').style.display = crafts['剛力弾'] ? '' : 'none';
 }
 
 // 妖精魔法 ----------------------------------------

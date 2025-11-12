@@ -1160,6 +1160,14 @@ function checkCraft() {
       }
     }
   }
+  
+  if (crafts['剛力弾']) {
+    crafts['剛力弾'] = 1;
+    if (lv.Dar >= 5 ) { crafts['剛力弾'] += 1 }
+    if (lv.Dar >= 10) { crafts['剛力弾'] += 1 }
+  }
+
+  calcAttack();
 }
 
 // ＨＰＭＰ抵抗力計算 ----------------------------------------
@@ -1558,6 +1566,8 @@ function calcAttack() {
   document.getElementById("accuracy-enhance").style.display   = feats['命中強化'] ? '' : 'none';
   document.getElementById("accuracy-enhance-acc").textContent = feats['命中強化'] || 0;
   document.getElementById("throwing").style.display = feats['スローイング'] ? '' : 'none';
+  document.getElementById('mighty-shot').style.display   = crafts['剛力弾'] ? '' : 'none';
+  document.getElementById('mighty-shot-dmg').textContent = crafts['剛力弾'] || 0;
   document.getElementById("parts-enhance").style.display = crafts['部位極強化'] || crafts['部位超強化'] || crafts['部位即応＆強化'] ? '' : 'none';
   document.getElementById("parts-enhance-acc").textContent = (crafts['部位極強化']?1:0)+(crafts['部位超強化']?1:0)+(crafts['部位即応＆強化']?1:0);
   
@@ -1620,7 +1630,10 @@ function calcWeapon() {
     // 戦闘特技
     if(!partNum || partNum == form.partCore.value) {
       accBase += feats['命中強化'] || 0;
-      if(category === '投擲') { accBase += feats['スローイング'] ? 1 : 0; }
+      if(category === '投擲') {
+        accBase += feats['スローイング'] ? 1 : 0;
+        dmgBase += crafts['剛力弾'] || 0;
+      }
 
       if(category === 'ガン（物理）') { dmgBase += feats['武器習熟／ガン'] || 0; }
       else if(category) { dmgBase += feats['武器習熟／'+category] || 0; }

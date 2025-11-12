@@ -992,6 +992,13 @@ print <<"HTML";
                 <td>―
                 <td>―
                 <td>―
+              <tr id="mighty-shot"@{[ display $pc{mightyShot} ]}>
+                <td>【剛力弾】
+                <td>―
+                <td>―
+                <td>―
+                <td>―
+                <td id="mighty-shot-dmg">$pc{mightyShot}
               <tr id="parts-enhance"@{[ display $pc{partEnhance} ]}>
                 <td>【部位強化】
                 <td>―

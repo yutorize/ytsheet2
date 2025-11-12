@@ -667,6 +667,12 @@ if(!$pc{forbiddenMode}){
       ACC  => 1,
     } );
   }
+  if($pc{mightyShot}) {
+    push(@atacck, {
+        NAME => "【剛力弾】",
+        DMG  => $pc{mightyShot},
+    } );
+  }
 }
 $SHEET->param(AttackClasses => \@atacck);
 
