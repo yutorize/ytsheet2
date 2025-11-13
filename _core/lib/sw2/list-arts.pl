@@ -160,7 +160,11 @@ foreach (@list) {
   }
   
   #名前
-  if($category =~ /magic|school/){ $name = '【'.$name.'】'; }
+  if($category =~ /magic|school/){
+    (my $divineMark, $name) = extractDivineMark $name if $category =~ /magic/ && $sub =~ /神聖魔法/;
+    $name = '【'.$name.'】';
+    $name = $divineMark.$name if defined $divineMark;
+  }
   
   #グループ（分類）
   my $category_text = $category{$category};

@@ -101,7 +101,7 @@
         </div>
         <h2><TMPL_VAR magicClass DEFAULT="未分類"></h2>
         <div class="data-magic <TMPL_VAR magicClassEn>">
-          <dl class="name color-set"><dt><TMPL_VAR magicLevel><dd><div><TMPL_VAR magicIcon>【<TMPL_VAR magicName>】</div><small><TMPL_VAR magicNameNotes></small></dl>
+          <dl class="name color-set"><dt><TMPL_VAR magicLevel><dd><div><TMPL_VAR magicIcon><TMPL_VAR magicDivineMark>【<TMPL_VAR magicName>】</div><small><TMPL_VAR magicNameNotes></small></dl>
           <TMPL_IF magicCostOn     ><dl class="cost     "><dt>消費         <dd><TMPL_VAR magicCost></dl></TMPL_IF>
           <TMPL_IF magicTargetOn   ><dl class="target   "><dt>対象         <dd><TMPL_VAR magicTarget></dl></TMPL_IF>
           <TMPL_IF magicRangeOn    ><dl class="range    "><dt>射程/<br>形状<dd><TMPL_VAR magicRange>／<wbr><TMPL_VAR magicForm></dl></TMPL_IF>
@@ -255,7 +255,7 @@
           <TMPL_IF schoolMagicNote><div class="box"><p><TMPL_VAR schoolMagicNote></p></div></TMPL_IF>
           <TMPL_LOOP schoolMagicData>
           <div class="data-magic">
-            <dl class="name    "><dt><TMPL_VAR LEVEL><dd><div><TMPL_VAR ICON>【<TMPL_VAR NAME>】</div></dl>
+            <dl class="name    "><dt><TMPL_VAR LEVEL><dd><div><TMPL_VAR ICON><TMPL_VAR DIVINE_MARK>【<TMPL_VAR NAME>】</div></dl>
             <dl class="a-cost  "><dt><span>必要名誉点</span><dd><TMPL_VAR A-COST></dl>
             <dl class="cost    "><dt>消費      <dd><TMPL_VAR COST></dl>
             <dl class="target  "><dt>対象      <dd><TMPL_VAR TARGET></dl>
