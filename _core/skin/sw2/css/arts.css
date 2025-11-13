@@ -478,7 +478,7 @@ article {
 .data-magic > h3 .s-icon::before {
   color: #fff;
 }
-.data-magic.data-arts dl:not(.summary,.effect) dd {
+.data-magic.data-arts > dl:not(.summary,.effect) dd {
   display: flex;
   flex-direction: column;
   justify-content: space-around;
