@@ -631,7 +631,7 @@ function calcBattle(){
   move += sttTotal['Str'] + 5;
   
   let accDice = Number(form.rollDexDice.value);
-  let atkDice = Number(form.rollStrDice.value);
+  let atkDice = 2;
   let evaDice = Number(form.rollAgiDice.value);
 
   ['Skill','Other'].forEach(id => {

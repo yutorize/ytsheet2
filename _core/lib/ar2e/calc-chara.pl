@@ -188,7 +188,7 @@ sub data_calc {
   $pc{battleTotalAtkL } = $pc{battleTotalAtk} - $pc{armamentHandRAtk};
   
   $pc{battleDiceAcc } = $pc{rollDexDice} + $pc{battleSkillAccDice} + $pc{battleOtherAccDice};
-  $pc{battleDiceAtk } = $pc{rollStrDice} + $pc{battleSkillAtkDice} + $pc{battleOtherAtkDice};
+  $pc{battleDiceAtk } = 2 + $pc{battleSkillAtkDice} + $pc{battleOtherAtkDice};
   $pc{battleDiceEva } = $pc{rollAgiDice} + $pc{battleSkillEvaDice} + $pc{battleOtherEvaDice};
   
   ### 特殊な判定 --------------------------------------------------
