@@ -647,6 +647,7 @@ print <<"HTML";
     <option value="【】【】">
   </datalist>
   <datalist id="list-arts-use">
+    <option value="―">
     <option value="ファイター技能">
     <option value="グラップラー技能">
     <option value="フェンサー技能">
@@ -658,9 +659,9 @@ print <<"HTML";
     <option value="近接攻撃武器">
     <option value="魔法使い系技能">
     <option value="特殊">
-    <option value="―">
   </datalist>
   <datalist id="list-arts-apply">
+    <option value="―">
     <option value="1回の武器攻撃">
     <option value="1回の近接攻撃">
     <option value="1回の遠隔攻撃">
@@ -669,7 +670,7 @@ print <<"HTML";
     <option value="10秒（1ラウンド）持続">
   </datalist>
   <datalist id="list-arts-risk">
-    <option value="—">
+    <option value="―">
     <option value="なし">
     <option value="回避力判定-1">
     <option value="回避力判定-2">
