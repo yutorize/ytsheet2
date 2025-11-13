@@ -107,7 +107,7 @@ if($pc{forbidden} && !$pc{yourAuthor}){
 if($pc{category} eq 'magic'){
   if($pc{magicMinor}){ $pc{magicClass} .= ' (小魔法)' }
   $SHEET->param(categoryMagic => 1);
-  $pc{artsName} = '【'.$pc{magicName}.'】';
+  $pc{artsName} = '【'.($pc{magicClass} eq '神聖魔法' ? (extractDivineMark $pc{magicName})[1] : $pc{magicName}).'】';
   $SHEET->param(rawName => $pc{magicName});
 }
 elsif($pc{category} eq 'god'){
