@@ -58,7 +58,7 @@ elsif($mode eq 'blanksheet'){
   $pc{paletteUseVar} = 1;
   $pc{paletteUseBuff} = 1;
 
-  %pc = applyCustomizedInitialValues(\%pc;
+  %pc = applyCustomizedInitialValues(\%pc, '');
 }
 
 ## 画像

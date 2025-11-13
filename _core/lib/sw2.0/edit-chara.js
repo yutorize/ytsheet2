@@ -64,10 +64,21 @@ function checkSeeker(){
 
 // 戦闘特技チェック ----------------------------------------
 function checkFeats(){
+  console.log('checkFeats() // 2.0');
+  feats = {};
   checkSeeker();
 
-  Object.keys(feats).forEach(key => { feats[key] = 0; });
-  
+  // 自動習得
+  for(const key of SET.classNames){
+    const cId  = SET.class[key].id;
+    for(const data of SET.class[key]?.feats || []){
+      if(lv[cId] >= data[1]){
+        feats[data[0]] = true;
+      }
+    }
+  }
+
+  // 選択習得
   const array = SET.featsLv.map(n=>String(n));
   let acquire = '';
   let featMax = level;
@@ -375,8 +386,8 @@ function checkFeats(){
       else if(feat === "魔力強化Ⅰ"){ feats['魔力強化'] = 1; }
       else if(feat === "魔力強化Ⅱ"){ feats['魔力強化'] = 2; }
       else if(feat === "賦術強化"){ feats['賦術強化'] = 1; }
-      else if(feat === "頑強")  { feats['頑強'] += 15; }
-      else if(feat === "超頑強"){ feats['頑強'] += 15; }
+      else if(feat === "頑強")  { feats['頑強'] = (feats['頑強']||0) +15; }
+      else if(feat === "超頑強"){ feats['頑強'] = (feats['頑強']||0) +15; }
       else if(feat === "キャパシティ"){ feats['キャパシティ'] += 15; }
       else if(feat.match(weaponsRegex)){
         feats['武器習熟／'+RegExp.$2] ||= 0;
@@ -483,6 +494,8 @@ function checkCraft() {
     }
   }
   calcFairy();
+  
+  document.getElementById('mighty-shot').style.display = crafts['剛力弾'] ? '' : 'none';
 }
 
 // 妖精魔法 ----------------------------------------
@@ -562,9 +575,9 @@ function calcHonor(){
   pointTotal['human']    -= mysticArtsPt['human'];
   pointTotal['barbaros'] -= mysticArtsPt['barbaros'];
   pointTotal['dragon']   -= mysticArtsPt['dragon'];
-  document.getElementById("honor-value"   ).textContent = pointTotal['human']+' / '+pointMax['human'];
-  document.getElementById("honor-value-MA").textContent = pointTotal['human'];
-  document.getElementById("honor-barbaros-value").textContent = pointTotal['barbaros']+' / '+pointMax['barbaros'];
-  document.getElementById("honor-dragon-value").textContent = pointTotal['dragon']+' / '+pointMax['dragon'];
-  document.getElementById("mystic-arts-honor-value").textContent = mysticArtsPt['human']+'／'+mysticArtsPt['barbaros']+'／'+mysticArtsPt['dragon'];
+  document.getElementById("honor-value"   ).textContent = commify(pointTotal['human'])+' / '+commify(pointMax['human']);
+  document.getElementById("honor-value-MA").textContent = commify(pointTotal['human']);
+  document.getElementById("honor-barbaros-value").textContent = commify(pointTotal['barbaros'])+' / '+commify(pointMax['barbaros']);
+  document.getElementById("honor-dragon-value").textContent = commify(pointTotal['dragon'])+' / '+commify(pointMax['dragon']);
+  document.getElementById("mystic-arts-honor-value").textContent = commify(mysticArtsPt['human'])+'／'+commify(mysticArtsPt['barbaros'])+'／'+commify(mysticArtsPt['dragon']);
 }

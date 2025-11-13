@@ -13,6 +13,7 @@ sub createUnitStatus {
   my %pc = %{$_[0]};
   my $target = $_[1] || '';
   my @unitStatus;
+  my @unitMemo;
   if ($pc{type} eq 'm'){
     my @n2a = ('','A' .. 'Z');
     if($pc{statusNum} > 1){ # 2部位以上
@@ -35,12 +36,11 @@ sub createUnitStatus {
           $count{ $partname }++;
           $partname .= $n2a[ $count{ $partname } ];
         }
-        my $hp  = s_eval($pc{"status${i}Hp"});
-        my $mp  = s_eval($pc{"status${i}Mp"});
-        my $def = s_eval($pc{"status${i}Defense"});
-        push(@hp , {$partname.':HP' => "$hp/$hp"});
-        push(@mp , {$partname.':MP' => "$mp/$mp"}) unless isEmptyValue($mp);
-        push(@def, $partname.$def);
+        my $hp  = convertStt($pc{"status${i}Hp"});
+        my $mp  = convertStt($pc{"status${i}Mp"});
+        push(@hp , {$partname.':HP' => $hp});
+        push(@mp , {$partname.':MP' => $mp}) unless isEmptyValue($mp);
+        push(@def, $partname.$pc{"status${i}Defense"});
       }
       @unitStatus = ();
       push(@unitStatus, @hp);
@@ -48,7 +48,7 @@ sub createUnitStatus {
       if ($target eq 'udonarium') {
         push(@unitStatus, {'防護' => join('／',@def)});
       } else {
-        push(@unitStatus, {'メモ' => '防護:'.join('／',@def)});
+        push(@unitMemo, '防護:'.join('／',@def));
       }
     }
     else { # 1部位
@@ -59,12 +59,20 @@ sub createUnitStatus {
           $i .= $ii > 1 ? "-$ii" : '';
         }
       }
-      my $hp = s_eval($pc{"status${i}Hp"});
-      my $mp = s_eval($pc{"status${i}Mp"});
-      my $def = s_eval($pc{"status${i}Defense"});
-      push(@unitStatus, { 'HP' => "$hp/$hp" });
-      push(@unitStatus, { 'MP' => "$mp/$mp" }) unless isEmptyValue($mp);
-      push(@unitStatus, { '防護' => "$def" });
+      my $hp = convertStt($pc{"status${i}Hp"});
+      my $mp = convertStt($pc{"status${i}Mp"});
+      push(@unitStatus, { 'HP' => $hp });
+      push(@unitStatus, { 'MP' => $mp }) unless isEmptyValue($mp);
+      push(@unitStatus, { '防護' => $pc{"status${i}Defense"} });
+    }
+    
+    if($pc{weakness} && $pc{weakness} ne 'なし'){
+      if ($target eq 'udonarium') {
+        push(@unitStatus, { '弱点' => $pc{weakness} });
+      }
+      else {
+        push(@unitMemo, '弱点:'.$pc{weakness});
+      }
     }
   }
   else {
@@ -75,6 +83,15 @@ sub createUnitStatus {
     );
 
     if (!$::SW2_0) {
+      if ($pc{lvFai}) {
+        my @contractAttributes = ();
+        foreach ([Earth => '土'], [Water => '水'], [Fire => '炎'], [Wind => '風'], [Light => '光'], [Dark => '闇']) {
+          (my $attributeEn, my $attributeJa) = @{$_};
+          next unless $pc{"fairyContract${attributeEn}"};
+          push(@contractAttributes, $attributeJa);
+        }
+        push(@unitStatus, { 契約属性 => join('', @contractAttributes) });
+      }
       if ($pc{lvBar}) {
         push(@unitStatus, { '⤴' => '0' });
         push(@unitStatus, { '⤵' => '0' });
@@ -86,6 +103,17 @@ sub createUnitStatus {
         push(@unitStatus, { '人' => '0' });
       }
       push(@unitStatus, { '陣気' => '0' }) if $pc{lvWar};
+    }
+  }
+  if(@unitMemo){
+    if ($target eq 'udonarium') {
+      push(@unitStatus, {'メモ' => join("　",@unitMemo)});
+    }
+    if ($target eq 'ccfolia') {
+      push(@unitStatus, {'メモ' => join("\n",@unitMemo)});
+    }
+    else {
+      push(@unitStatus, {'メモ' => join("<br>",@unitMemo)});
     }
   }
 
@@ -182,6 +210,7 @@ sub fairyRank {
     '3' => ['×','×','×','4','5','6','8','9','10','12','13','14','15','15','15','15'],
     '6' => ['×','×','×','2&1','3&1','4&1','4&2','5&2','6&2','6&3','7&3','8&3','8&4','9&4','10&4','10&5'],
   );
+  return $lv if !$rank{$i}[$lv] && $lv < 3;
   return $rank{$i}[$lv] || '×';
 }
 
@@ -196,14 +225,22 @@ sub extractModifications {
     my $note = shift;
 
     my %sttRegEx = (
+      'A:increment' => '器(?:用度?)?増強',
+      'B:increment' => '敏(?:捷度?)?増強',
+      'C:increment' => '筋(?:力)?増強',
+      'D:increment' => '生(?:命力)?増強',
+      'E:increment' => '知力?増強',
+      'F:increment' => '精(?:神力?)?増強',
       'A' => '器(?:用度?)?',
       'B' => '敏(?:捷度?)?',
       'C' => '筋(?:力)?',
       'D' => '生(?:命力)?',
       'E' => '知力?',
       'F' => '精(?:神力?)?',
-      'vResist' => '生命抵抗力?',
-      'mResist' => '精神抵抗力?',
+      'vResist' => '生命抵抗(?:力(?:判定)?)?',
+      'mResist' => '精神抵抗(?:力(?:判定)?)?',
+      'hp' => '[HＨ][PＰ]',
+      'mp' => '[MＭ][PＰ]',
       'eva' => '回避力?',
       'def' => '防(?:護点?)?',
       'mobility' => '移動力',
@@ -489,6 +526,16 @@ sub data_update_chara {
       $pc{race} = 'ドレイクブロークン' if $pc{race} eq 'ドレイク（ブロークン）';
     }
   }
+  if($ver < 1.27004){
+    if($pc{lvSam} || $pc{lvNin} || $pc{lvJuj} || $pc{lvFug}){
+      $pc{unlockRyugai} = 1;
+    }
+  }
+  if($ver < 1.27013){
+    if($pc{lvDar}){
+      $pc{updateMessage}{'ver.1.27.013'} = '操気【剛力弾】を自動計算するようにしました。<br>既に手動で加算している場合、二重加算になってしまうため、修正してください。';
+    }
+  }
   $pc{ver} = $main::ver;
   $pc{lasttimever} = $ver;
   return %pc;
@@ -536,6 +583,12 @@ sub data_update_item {
       }
     }
   }
+  if($ver < 1.27003){
+    if($pc{age} eq '魔法文明'){ $pc{age} = '古代魔法文明' }
+  }
+  if($ver < 1.27009){
+    $pc{iconMagic} = $pc{magic};
+  }
 
   $pc{ver} = $main::ver;
   $pc{lasttimever} = $ver;
@@ -556,6 +609,14 @@ sub data_update_arts {
   $pc{ver} = $main::ver;
   $pc{lasttimever} = $ver;
   return %pc;
+}
+
+sub convertStt {
+  my $value = shift;
+  if($value eq ''){ return '' }
+  if($value =~ /[^0-9,\+\-\*\/\%\(\) ]/){ return $value }
+  my $v = s_eval($value);
+  return "$v/$v";
 }
 
 sub isEmptyValue {

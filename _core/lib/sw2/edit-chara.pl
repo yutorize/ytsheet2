@@ -110,10 +110,14 @@ $pc{historyNum}    ||=  3;
 
 $pc{accuracyEnhance} ||= 0;
 $pc{evasiveManeuver} ||= 0;
-$pc{tenacity} ||= 0;
-$pc{capacity} ||= 0;
 
 $pc{unlockAbove16} = 1 if $pc{level} > 15;
+
+foreach my $name (@data::class_names){
+  if ($data::class{$name}{type} eq 'extra' && $pc{'lv'.$data::class{$name}{id}}){
+    $pc{unlockRyugai} = 1;
+  }
+}
 
 ### 改行処理 --------------------------------------------------
 $pc{words}           =~ s/&lt;br&gt;/\n/g;
@@ -304,7 +308,10 @@ print <<"HTML";
         </dl>
         <ul class="annotate"><li>経験点は、初期所有技能のぶんを含みます。</ul>
         <dl class="regulation-note"><dt>備考<dd>@{[ input "history0Note" ]}</dl>
-        @{[ checkbox 'unlockAbove16','16レベル以上を解禁する（2.0の超越者ルールの流用）','checkLvCap' ]}
+        <ul class="regulation-others">
+          <li class="left">@{[ checkbox 'unlockRyugai','『龍骸諸島』用項目の表示（および一部項目名の変更）','checkRyugai' ]}
+          <li class="left">@{[ checkbox 'unlockAbove16','16レベル以上の解禁（2.0の超越者ルールの流用）','checkLvCap' ]}
+        </ul>
       </details>
       <div id="area-status">
         @{[ imageForm($pc{imageURL}) ]}
@@ -465,8 +472,11 @@ print '</dl></div>';
 print '<div class="classes-group" id="classes-magic-user"><h3>魔法使い系技能</h3><dl class="edit-table side-margin">';
 foreach my $name (@data::class_names){ print classInputBox($name) if $data::class{$name}{type} eq 'magic-user'; }
 print '</dl></div>';
-print '<div class="classes-group" id="classes-other-user"><h3>その他系技能</h3><dl class="edit-table side-margin">';
+print '<div class="classes-group" id="classes-others"><h3>その他系技能</h3><dl class="edit-table side-margin">';
 foreach my $name (@data::class_names){ print classInputBox($name) if !$data::class{$name}{type}; }
+print '</dl></div>';
+print '<div class="classes-group hidden" id="classes-extra"><h3>龍骸技能</h3><dl class="edit-table side-margin">';
+foreach my $name (@data::class_names){ print classInputBox($name) if $data::class{$name}{type} eq 'extra'; }
 print '</dl></div>';
 
 sub classInputBox {
@@ -479,12 +489,11 @@ sub classInputBox {
   $out .= '>';
   $out .= '[2.0] ' if $data::class{$name}{'2.0'};
   $out .= $name;
-  $out .= '<select name="faithType" style="width:auto;">'.option('faithType','†|<†セイクリッド系>','‡|<‡ヴァイス系>','†‡|<†‡両系統使用可>').'</select>' if($name eq 'プリースト');
+  $out .= '<select name="faithType" style="width: calc(100% - 7em);">'.option('faithType','†|<†セイクリッド系>','‡|<‡ヴァイス系>','†‡|<†‡両系統使用可>').'</select>' if($name eq 'プリースト');
   $out .= '<dd>' . input("lv${id}", 'number','changeLv','min="0" max="17"');
   return $out;
 }
 print <<"HTML";
-            </dl>
           </div>
           <div class="box" id="common-classes">
             <h2>
@@ -574,7 +583,7 @@ print <<"HTML";
             <div class="add-del-button"><a onclick="addMysticArts()">▼</a><a onclick="delMysticArts()">▲</a></div>
             @{[input('mysticArtsNum','hidden')]}
 
-            <h2>秘伝魔法</h2>
+            <h2>秘伝魔法／地域魔法</h2>
             <ul id="mystic-magic-list" class="edit-table side-margin">
 HTML
 $pc{mysticMagicNum} ||= 0;
@@ -958,7 +967,7 @@ foreach my $name (@data::class_names){
                 <td id="attack-${ename}-str">0
                 <td id="attack-${ename}-acc">0
                 <td>―
-                <td>@{[ $name eq 'フェンサー' ? '-1' : '―' ]}
+                <td>@{[ $data::class{$name}{critMod} || '―' ]}
                 <td id="attack-${ename}-dmg">―
 HTML
 }
@@ -995,6 +1004,13 @@ print <<"HTML";
                 <td>―
                 <td>―
                 <td>―
+              <tr id="mighty-shot"@{[ display $pc{mightyShot} ]}>
+                <td>【剛力弾】
+                <td>―
+                <td>―
+                <td>―
+                <td>―
+                <td id="mighty-shot-dmg">$pc{mightyShot}
               <tr id="parts-enhance"@{[ display $pc{partEnhance} ]}>
                 <td>【部位強化】
                 <td>―
@@ -1053,8 +1069,10 @@ print <<"HTML";
           <div class="add-del-button"><a onclick="addWeapons();setupBracketInputCompletion()">▼</a><a onclick="delWeapons()">▲</a></div>
           <ul class="annotate">
             <li>Ｃ値は自動計算されません。
-            <li><code>\@防護点+1</code>や<code>\@回避力+1</code>のように記述すると、<span class="text-em">常時</span>有効な上昇効果が自動計算されます。<br>有効な項目は、装飾品欄と同様です。
+            <li>備考欄に<code>\@防護点+1</code>や<code>\@回避力+1</code>のように記述すると、<span class="text-em">常時</span>有効な上昇効果が自動計算されます。<br>有効な項目は、装飾品欄と同様です。
+            <li>備考欄に<code>〈レッサー・アームスフィアⅠ〉</code>のように記述すると、対応した筋力で計算されます。
             <li id="artisan-annotate" @{[ display $pc{masteryArtisan} ]}>備考欄に<code>〈魔器〉</code>と記入すると魔器習熟が反映されます。
+            <li id="giantize-annotate-weapon">備考欄に<code>［巨人化］</code>と記述すると、［巨人化］後の筋力で計算されます。
           </ul>
           @{[input('weaponNum','hidden')]}
         </div>
@@ -1109,6 +1127,11 @@ print <<"HTML";
                 <td>―
                 <td>―
                 <td id="mastery-shield-value">$pc{masteryShield}
+              <tr id="mastery-ryugaiarmour"@{[ display $pc{masteryRyugai} ]}>
+                <td>《防具習熟／龍骸》
+                <td>―
+                <td>―
+                <td id="mastery-ryugaiarmour-value">$pc{masteryRyugai}
               <tr id="mastery-artisan-def"@{[ display $pc{masteryArtisan} ]}>
                 <td>《魔器習熟》
                 <td>―
@@ -1159,13 +1182,13 @@ foreach my $num ('TMPL',1 .. $pc{armourNum}) {
   print <<"HTML";
               <tr id="armour-row${num}" data-type="">
                 <th class="type handle">
-                <td><select name="armour${num}Category" oninput="setArmourType();changeArmourName();calcDefense();calcMobility()">@{[ option "armour${num}Category",'金属鎧','非金属鎧','盾','その他' ]}</select>
+                <td><select name="armour${num}Category" oninput="setArmourType();changeArmourName();calcDefense();calcMobility()">@{[ option "armour${num}Category",'金属鎧','非金属鎧','盾','龍骸','その他' ]}</select>
                 <td>@{[ input "armour${num}Name",'','changeArmourName','list="list-item-name"' ]}
                 <td>@{[ input "armour${num}Reqd",'','calcDefense' ]}
                 <td>@{[ input "armour${num}Eva",'number','calcDefense' ]}
                 <td>@{[ input "armour${num}Def",'number','calcDefense' ]}
                 <td>@{[ input "armour${num}Own",'checkbox','calcDefense();calcMobility','disabled' ]}
-                <td>@{[ input "armour${num}Note",'','','onchange="changeEquipMod()"' ]}
+                <td>@{[ input "armour${num}Note",'','','onchange="changeEquipMod();calcDefense()"' ]}
 HTML
   if($num eq 'TMPL'){ print '</template>' }
 }
@@ -1201,7 +1224,7 @@ HTML
   print <<"HTML";
                 <td id="defense-total${i}-eva">0
                 <td id="defense-total${i}-def">0
-                <td colspan="3">@{[input("defenseTotal${i}Note")]}
+                <td colspan="3">@{[ input "defenseTotal${i}Note",'','','onchange="calcDefense()"' ]}
 HTML
   print '</template>' if ($i eq 'TMPL');
 }
@@ -1211,9 +1234,10 @@ print <<"HTML";
           </table>
           <div class="add-del-button"><a onclick="addDefense()">▼</a><a onclick="delDefense()">▲</a></div>
           <ul class="annotate">
-            <li><code>\@敏捷度-6</code>や<code>\@精神抵抗力+2</code>のように記述すると、<span class="text-em">常時</span>有効な上昇効果が自動計算されます。<br>
+            <li>防具の備考欄に<code>\@敏捷度-6</code>や<code>\@精神抵抗力+2</code>のように記述すると、<span class="text-em">常時</span>有効な上昇効果が自動計算されます。<br>
               有効な項目は、装飾品欄と同様です。<br>
               <code>\@</code>による修正は合算のチェックに関わらず計算されるため、予備装備や切り替えが想定されるものは注意してください。<br>
+            <li id="giantize-annotate-armour">合計行の備考欄に<code>［巨人化］</code>と記述すると、［巨人化］後の敏捷度で計算されます。
           </ul>
         </div>
 
@@ -1327,8 +1351,9 @@ print <<"HTML";
             <li>左のボックスにチェックを入れると欄が一つ追加されます
             <li>
               <code>\@器用度+1</code>や<code>\@防護点+1</code>のように記述すると、<span class="text-em">常時</span>有効な上昇効果が自動計算されます。<br>
-              有効な項目は、<code>器用度</code>～<code>精神力</code> <code>生命抵抗力</code> <code>精神抵抗力</code> <code>回避力</code> <code>防護点</code> <code>移動力</code> <code>魔力</code> <code>行使判定</code> <code>武器必筋上限</code>です。<br>
-              同じ項目へは累積するため、同名や効果排他のアイテムには注意してください。
+              有効な項目は、<code>器用度</code>～<code>精神力</code> <code>生命抵抗力</code> <code>精神抵抗力</code> <code>HP</code> <code>MP</code> <code>回避力</code> <code>防護点</code> <code>移動力</code> <code>魔力</code> <code>行使判定</code> <code>武器必筋上限</code>です。<br>
+              同じ項目へは累積するため、同名や効果排他のアイテムには注意してください。<br>
+              能力値の増強にかぎり、<code>\@筋力増強+2</code>のように<code>増強</code>の文言を記述することで、能力値ごとに最大の値のみを採用できます。
           </ul>
         </div>
       </div>
@@ -1485,9 +1510,9 @@ print <<"HTML";
               <td>-
               <td>
               <td>キャラクター作成
-              <td id="history0-exp">$pc{history0Exp}
-              <td id="history0-money">$pc{history0Money}
-              <td id="history0-honor">$pc{history0Honor}
+              <td id="history0-exp">@{[commify $pc{history0Exp}]}
+              <td id="history0-money">@{[commify $pc{history0Money}]}
+              <td id="history0-honor">@{[commify $pc{history0Honor}]}
               <td id="history0-grow">$pc{history0Grow}
             </tr>
 HTML
@@ -1676,128 +1701,8 @@ print <<"HTML";
     </article>
 HTML
 sub chatPaletteFormOptional {
-  $pc{chatPaletteInsertNum} ||= 2;
-  $pc{paletteAttackNum} ||= 3;
-  $pc{paletteMagicNum} ||= 3;
-  my $html = <<"HTML";
-      <div class="box" id="palette-optional">
-        <h2>プリセットの追加オプション</h2>
-        <div id="palette-common-classes">
-          <h3>一般技能の判定の出力設定</h3>
-          <p>その行の技能のレベルと、選択したボーナスの組み合わせが追加されます</p>
-          <table class="edit-table side-margin">
-            <tbody class="highlight-hovered-row">
-HTML
-  foreach ('TMPL',1 .. $pc{commonClassNum}){
-    $html .= '<template id="palette-common-class-template">' if $_ eq 'TMPL';
-    $html .= '<tr id="palette-common-class-row'.$_.'"><td class="name">'.($pc{"commonClass$_"} =~ s/[(（].+?[）)]$//r).'</td>';
-    $html .= '<td class="left">';
-    $html .= checkbox("paletteCommonClass${_}Dex", '器用度B', 'setChatPalette');
-    $html .= checkbox("paletteCommonClass${_}Agi", '敏捷度B', 'setChatPalette');
-    $html .= checkbox("paletteCommonClass${_}Str", '筋力B'  , 'setChatPalette');
-    $html .= checkbox("paletteCommonClass${_}Vit", '生命力B', 'setChatPalette');
-    $html .= checkbox("paletteCommonClass${_}Int", '知力B'  , 'setChatPalette');
-    $html .= checkbox("paletteCommonClass${_}Mnd", '精神力B', 'setChatPalette');
-    $html .= '</template>' if $_ eq 'TMPL';
-  }
-  $html .= <<"HTML";
-          </table>
-        </div>
-        <details id="palette-insert" @{[ $pc{chatPaletteInsert1} ? 'open' : '' ]}>
-          <summary class="header2">追加挿入</summary>
-          <ul>
-HTML
-  foreach ('TMPL',1 .. $pc{chatPaletteInsertNum}){
-    $html .= '<template id="palette-insert-template">' if $_ eq 'TMPL';
-    $html .= "<li>"
-      . selectBox("chatPaletteInsert${_}Position", 'setChatPalette', 'def=|<先頭>','general|<非戦闘系の直後>','common|<一般技能の直後>','feats|<宣言特技の直後>','magic|<魔法系の直後>','attack|<武器攻撃系の直後>','defense|<抵抗回避の直後>')
-      . "に挿入"
-      . "<textarea name=\"chatPaletteInsert${_}\" onchange=\"setChatPalette()\">$pc{'chatPaletteInsert'.$_}</textarea>";
-    $html .= '</template>' if $_ eq 'TMPL';
-  }
-  $html .= <<"HTML";
-          </ul>
-          <div class="add-del-button"><a onclick="addChatPaletteInsert()">▼</a><a onclick="delChatPaletteInsert()">▲</a></div>
-          @{[ input "chatPaletteInsertNum","hidden" ]}
-        </details>
-        <details id="palette-attack" @{[ $pc{"paletteAttack1Name"} ? 'open' : '' ]}>
-          <summary class="header2">武器攻撃の追加オプション</summary>
-          <p>宣言特技などの名称と修正を入力すると、それにもとづいた命中判定および威力算出の行が追加されます。</p>
-          <table class="edit-table side-margin">
-            <thead>
-              <tr>
-                <th>
-                <th class="name  ">名称（宣言特技名など）
-                <th class="acc   ">命中修正
-                <th class="crit  ">C値修正
-                <th class="dmg   "><span class="small">ダメージ<br>修正</span>
-                <th class="roll  ">出目修正
-                <th class="target">対象の武器
-            <tbody class="highlight-hovered-row">
-HTML
-  foreach ('TMPL',1 .. $pc{paletteAttackNum}){
-    $html .= '<template id="palette-attack-template">' if $_ eq 'TMPL';
-    $html .= '<tr id="palette-attack-row'.$_.'">';
-    $html .= '<td class="handle">';
-    $html .= '<td>'.input("paletteAttack${_}Name",'','','onchange="setChatPalette()"');
-    $html .= '<td>'.input("paletteAttack${_}Acc" ,'','','onchange="setChatPalette()"');
-    $html .= '<td>'.input("paletteAttack${_}Crit",'','','onchange="setChatPalette()"');
-    $html .= '<td>'.input("paletteAttack${_}Dmg" ,'','','onchange="setChatPalette()"');
-    $html .= '<td>'.input("paletteAttack${_}Roll",'','','onchange="setChatPalette()"');
-    $html .= '<td class="palette-attack-checklist left">';
-    my %added;
-    foreach my $num (1 .. $pc{weaponNum}) {
-      my $name = $pc{"weapon${num}Name"}.$pc{"weapon${num}Usage"} || '―';
-      next if $added{$name};
-      $html .= checkbox("paletteAttack${_}CheckWeapon${num}",$name,'setChatPalette');
-      $added{$name} = 1;
-    }
-    $html .= '</template>' if $_ eq 'TMPL';
-  }
-  $html .= <<"HTML";
-          </table>
-          <div class="add-del-button"><a onclick="addPaletteAttack()">▼</a><a onclick="delPaletteAttack()">▲</a></div>
-          @{[ input "paletteAttackNum","hidden" ]}
-        </details>
-        <details id="palette-magic" @{[ $pc{"paletteMagic1Name"} ? 'open' : '' ]}>
-          <summary class="header2">魔法の追加オプション</summary>
-          <p>宣言特技などの名称と修正を入力すると、それにもとづいた、行使判定および威力算出の行が追加されます。</p>
-          <table class="edit-table side-margin">
-            <thead>
-              <tr>
-                <th>
-                <th class="name ">名称（宣言特技名など）
-                <th class="power">魔力修正
-                <th class="cast ">行使修正
-                <th class="crit ">C値修正
-                <th class="dmg  "><span class="small">ダメージ<br>修正</span>
-                <th class="target">対象の魔法
-            <tbody class="highlight-hovered-row">
-HTML
-  foreach ('TMPL',1 .. $pc{paletteMagicNum}){
-    $html .= '<template id="palette-magic-template">' if $_ eq 'TMPL';
-    $html .= '<tr id="palette-magic-row'.$_.'">';
-    $html .= '<td class="handle">';
-    $html .= '<td>'.input("paletteMagic${_}Name" ,'','','onchange="setChatPalette()"');
-    $html .= '<td>'.input("paletteMagic${_}Power",'','','onchange="setChatPalette()"');
-    $html .= '<td>'.input("paletteMagic${_}Cast" ,'','','onchange="setChatPalette()"');
-    $html .= '<td>'.input("paletteMagic${_}Crit" ,'','','onchange="setChatPalette()"');
-    $html .= '<td>'.input("paletteMagic${_}Dmg"  ,'','','onchange="setChatPalette()"');
-    $html .= '<td class="palette-magic-checklist left">';
-    foreach my $name (@data::class_caster){
-      next if (!$data::class{$name}{magic}{jName});
-      my $id    = $data::class{$name}{id};
-      $html .= checkbox("paletteMagic${_}Check$id",$data::class{$name}{magic}{jName},'setChatPalette');
-    }
-    $html .= '</template>' if $_ eq 'TMPL';
-  }
-  $html .= <<"HTML";
-          </table>
-          <div class="add-del-button"><a onclick="addPaletteMagic()">▼</a><a onclick="delPaletteMagic()">▲</a></div>
-          @{[ input "paletteMagicNum","hidden" ]}
-        </details>
-      </div>
-HTML
+  require($::core_dir . '/lib/sw2/edit-chara-palette-option.pl');
+  return palette::chatPaletteFormOptional(\%pc);
 }
 
 # ヘルプ
@@ -1806,6 +1711,10 @@ my $text_rule = <<"HTML";
         　魔法のアイテム：<code>[魔]</code>：<img class="i-icon" src="${set::icon_dir}wp_magic.png"><br>
         　刃武器　　　　：<code>[刃]</code>：<img class="i-icon" src="${set::icon_dir}wp_edge.png"><br>
         　打撃武器　　　：<code>[打]</code>：<img class="i-icon" src="${set::icon_dir}wp_blow.png"><br>
+        　地方特産品　　：<code>[特]</code>：<img class="i-icon" src="${set::icon_dir}item_local.png"><br>
+        　流派アイテム　：<code>[流]</code>：<img class="i-icon" src="${set::icon_dir}wp_school.png"><br>
+        　アルフレイム大陸由来の流派アイテム：<code>[ア]</code>：<img class="i-icon" src="${set::icon_dir}wp_school_a.png"><br>
+        　テラスティア大陸由来の流派アイテム：<code>[テ]</code>：<img class="i-icon" src="${set::icon_dir}wp_school_t.png"><br>
         　常時型　　：<code>[常]</code>：<i class="s-icon passive"><span class="raw">[常]</span></i><br>
         　戦闘準備型：<code>[準]</code>：<i class="s-icon setup  "><span class="raw">[準]</span></i><br>
         　主動作型　：<code>[主]</code>：<i class="s-icon major  "><span class="raw">[主]</span></i><br>

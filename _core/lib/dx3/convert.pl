@@ -3,20 +3,7 @@ use strict;
 #use warnings;
 use utf8;
 use open ":utf8";
-use LWP::UserAgent;
 use JSON::PP;
-
-sub urlDataGet {
-  my $url = shift;
-  my $ua  = LWP::UserAgent->new;
-  my $res = $ua->get($url);
-  if ($res->is_success) {
-    return $res->decoded_content;
-  }
-  else {
-    return undef;
-  }
-}
 
 sub dataConvert {
   my $set_url = shift;

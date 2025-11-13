@@ -5,6 +5,7 @@ window.onload = function() {
   checkCategory();
   setSchoolItemList();
   checkMagicClass();
+  setupRangeField();
   changeColor();
 }
 
@@ -123,6 +124,8 @@ function checkMagicClass(){
   }
   else if(magic == '操気'){
     viewMagicInputs(['cost','premise','target','range','duration','resist']);
+    if(form.magicCost.value == "MP"){ form.magicCost.value = '' }
+    form.magicCost.setAttribute('list', 'list-cost-psychokinesis');
   }
   else if(magic == '呪印'){
     viewMagicInputs(['type','premise']);
@@ -148,11 +151,17 @@ function checkMagicClass(){
   document.querySelector('#data-magic dl.condition dt').textContent = (magic == '呪歌') ? '効果発生条件' : (magic == '陣率') ? '使用条件' : '条件';
 
   const levelInput = document.querySelector('#data-magic dl.level dd input');
+  const targetOptionSelf = document.querySelector('#list-target option.self');
+  const rangeOptionSelf = document.querySelector('#list-range option.self');
   if (magic.length === 2) {
     // 練技、呪歌など
     levelInput.setAttribute('list', 'list-craft-required-level');
+    targetOptionSelf.setAttribute('value', "自身");
+    rangeOptionSelf.setAttribute('value', "自身");
   } else {
     levelInput.removeAttribute('list');
+    targetOptionSelf.setAttribute('value', "術者");
+    rangeOptionSelf.setAttribute('value', "術者");
   }
 }
 function viewMagicInputs(items){
@@ -166,7 +175,7 @@ function viewMagicInputs(items){
     });
   }
 }
-// 流派装備欄 ----------------------------------------
+// 流派アイテム欄 ----------------------------------------
 // 追加
 let schoolItems = [];
 let errorGetItem
@@ -186,8 +195,8 @@ async function addSchoolItem(){
       let tr = document.createElement('tr');
       tr.setAttribute('class','item-data');
       tr.innerHTML = `
-        <td><a href="${url}">${ruby(data.itemName||'')}</a></td>
-        <td>${data.category||''}</td>
+        <td><a href="${url}" target="_blank">${ruby(data.itemName||'')}</a></td>
+        <td>${data?.category.replace(/\s+/g, '<hr>') ?? ''}</td>
         <td>${data.summary ||''}</td>
         <td class="button" onclick="delSchoolItem(this,'${url}')">×</td>
       `;
@@ -225,7 +234,9 @@ setSortable('schoolArts','#arts-list','.input-data');
 // 秘伝魔法欄 ----------------------------------------
 // 追加
 function addSchoolMagic(){
-  document.querySelector("#school-magic-list").append(createRow('school-magic','schoolMagicNum'));
+  const row = createRow('school-magic','schoolMagicNum');
+  setupRangeField(row.querySelector('input[name$="Range"]'));
+  document.querySelector("#school-magic-list").append(row);
 }
 // 削除
 function delSchoolMagic(){
@@ -233,3 +244,19 @@ function delSchoolMagic(){
 }
 // 並べ替え
 setSortable('schoolMagic','#school-magic-list','.input-data');
+
+function setupRangeField(rangeField = null) {
+  const rangeFields =
+    (rangeField != null)
+      ? [rangeField]
+      : [...document.querySelectorAll('[name="magicRange"], [name^="godMagic"][name$="Range"], [name^="schoolMagic"][name$="Range"]')];
+
+  rangeFields.forEach(rangeField =>
+    rangeField.addEventListener('input', () => {
+      const formField = rangeField.parentNode.querySelector(`[name$="Form"]`);
+      if ((rangeField.value === '術者' || rangeField.value === '接触') && (formField.value?.trim() ?? '') === '') {
+        formField.value = '―';
+      }
+    })
+  );
+}

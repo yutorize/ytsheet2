@@ -535,6 +535,7 @@ body {
 }
 #lois table tbody td.state {
   border-left: hidden;
+  padding: .3em 1px;
 }
 #lois table tbody td span[data-state] {
   display: inline-block;

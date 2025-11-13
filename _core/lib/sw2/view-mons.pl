@@ -154,6 +154,7 @@ $SHEET->param(Tags => \@tags);
     my $annotation = $value =~ s/([(（].+?[）)])$// ? $1 : '';
     my $unit = $value =~ /\d$/ ? 'G' : '';
 
+    $value = commify($value);
     $unit = "<small>$unit</small>" if $unit ne '';
     $annotation = "<small>$annotation</small>" if $annotation ne '';
 
@@ -242,10 +243,11 @@ foreach (1 .. $pc{lootsNum}){
 $SHEET->param(Loots => \@loots);
 
 ### バックアップ --------------------------------------------------
+my $selectedLogName;
 if($::in{id}){
-  my($selected, $list) = getLogList($set::char_dir, $main::file);
+  ($selectedLogName, my $list) = getLogList($set::char_dir, $main::file);
   $SHEET->param(LogList => $list);
-  $SHEET->param(selectedLogName => $selected);
+  $SHEET->param(selectedLogName => $selectedLogName);
   if($pc{yourAuthor} || $pc{protect} eq 'password'){
     $SHEET->param(viewLogNaming => 1);
   }
@@ -259,8 +261,9 @@ if($pc{forbidden} eq 'all' && $pc{forbiddenMode}){
 else {
   my $name    = removeTags removeRuby($pc{characterName});
   my $species = removeTags removeRuby($pc{monsterName});
-  if($name && $species){ $SHEET->param(titleName => "${name}（${species}）"); }
-  else { $SHEET->param(titleName => $name || $species); }
+  my $date    = ($::in{log} ? " 【".($selectedLogName||$pc{updateTime})."】" : '');
+  if($name && $species){ $SHEET->param(titleName => "${name}（${species}）$date"); }
+  else { $SHEET->param(titleName => ($name||$species).$date); }
 }
 
 ### OGP --------------------------------------------------
@@ -290,6 +293,9 @@ if(!$pc{modeDownload}){
   }
   else {
     if($pc{logId}){
+      if(!$pc{forbiddenMode}){
+        push(@menu, { TEXT => '出力'    , TYPE => "onclick", VALUE => "downloadListOn()",  });
+      }
       push(@menu, { TEXT => '過去ログ', TYPE => "onclick", VALUE => 'loglistOn()', });
       if($pc{reqdPassword}){ push(@menu, { TEXT => '復元', TYPE => "onclick", VALUE => "editOn()", }); }
       else                 { push(@menu, { TEXT => '復元', TYPE => "href"   , VALUE => "./?mode=edit&id=$::in{id}&log=$pc{logId}", }); }

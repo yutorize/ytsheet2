@@ -291,6 +291,7 @@ function setDefaultStatus(statusArray){
     tbody.innerHTML = '';
     for(let item of statusArray){
       for (const key in item) {
+        if(key === 'メモ'){ continue }
         const row = document.createElement('tr');
         row.innerHTML = `
           <td>
