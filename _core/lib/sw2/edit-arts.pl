@@ -511,7 +511,7 @@ print <<"HTML";
     <option value="2d(9)HP">
   </datalist>
   <datalist id="list-target">
-    <option value="術者">
+    <option value="術者" class="self">
     <option value="1体">
     <option value="1体全">
     <option value="1体X">
@@ -536,7 +536,7 @@ print <<"HTML";
     <option value="全エリア(半径30m)／空間">
   </datalist>
   <datalist id="list-range">
-    <option value="術者">
+    <option value="術者" class="self">
     <option value="接触">
     <option value="1(10m)">
     <option value="2(20m)">
