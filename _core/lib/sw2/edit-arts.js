@@ -189,7 +189,7 @@ async function addSchoolItem(){
       let tr = document.createElement('tr');
       tr.setAttribute('class','item-data');
       tr.innerHTML = `
-        <td><a href="${url}">${ruby(data.itemName||'')}</a></td>
+        <td><a href="${url}" target="_blank">${ruby(data.itemName||'')}</a></td>
         <td>${data?.category.replace(/\s+/g, '<hr>') ?? ''}</td>
         <td>${data.summary ||''}</td>
         <td class="button" onclick="delSchoolItem(this,'${url}')">×</td>
