@@ -1115,10 +1115,12 @@ function checkFeats(){
 let crafts = {};
 function checkCraft() {
   crafts = {};
-  for(const key in SET.class){
+  for(const key of SET.classNames){
     const cId  = SET.class[key].id;
-    const cLv = lv[cId];
-    if (SET.class[key].craft?.data){
+    const alias = SET.class[key].craft?.alias;
+    const aliasId = SET.class[alias]?.id;
+    const cLv = Math.max( lv[cId], (lv[aliasId]||0) );
+    if (SET.class[key].craft?.data || SET.class[alias]?.craft?.data){
       const eName = SET.class[key].craft.eName;
       document.getElementById("craft-"+eName).style.display = cLv ? "block" : "none";
       const cMax = (cId.match(/Bar|War/)) ? 20 : (cId === 'Art') ? 19 : 17;
@@ -1306,7 +1308,7 @@ function calcMagic() {
         power += (level >= 11) ? 2 : (level >= 6) ? 1 : 0;
       }
       document.getElementById("magic-power-"+eName+"-value").textContent  = power;
-      document.getElementById("magic-cast-"+eName+"-value").textContent   = power + Number(form["magicCastAdd"+id].value) + addCast;
+      document.getElementById("magic-cast-"+eName+"-value").textContent   = power + Number(form["magicCastAdd"+id].value) + addCast + (SET.class[key].magic?.mod || 0);
       document.getElementById("magic-damage-"+eName+"-value").textContent = Number(form["magicDamageAdd"+id].value) + addDamage;
       magicPowers[id] = cLv ? power : 0;
     }
@@ -1548,6 +1550,8 @@ function calcAttack() {
     document.getElementById(`attack-${SET.weapons[i][1]}-mastery`).style.display = feats['武器習熟／'+SET.weapons[i][0]] ? '' : 'none';
     document.getElementById(`attack-${SET.weapons[i][1]}-mastery-dmg`).textContent = feats['武器習熟／'+SET.weapons[i][0]] || 0;
   }
+  document.getElementById("giantize-annotate-weapon").style.display = raceAbilities.includes('巨人化') ? '' : 'none'; 
+  document.getElementById("giantize-annotate-armour").style.display = raceAbilities.includes('巨人化') ? '' : 'none'; 
   document.getElementById("attack-artisan-mastery").style.display   = feats['魔器習熟'] ? '' : 'none';
   document.getElementById("attack-artisan-mastery-dmg").textContent = feats['魔器習熟'] || 0 ;
   document.getElementById("artisan-annotate").style.display         = feats['魔器習熟'] ? '' : 'none'; 
@@ -1577,11 +1581,21 @@ function calcWeapon() {
     let str = (partNum ? stt.Str+Number(form.sttPartC.value || 0) : stt.totalStr);
     let accBase = 0;
     let dmgBase = 0;
+    const giantize = note.match(/［巨人化］/) ? 12 : 0;
+    const constStr
+      = note.match(/〈レッサー・?アームスフィアⅠ〉/) ? 1
+      : note.match(/〈レッサー・?アームスフィアⅡ〉/) ? 5
+      : note.match(/〈レッサー・?アームスフィアⅢ〉/) ? 10
+      : note.match(/〈アームスフィア〉/) ? 20
+      : 0;
     // 技能選択のエラーチェック
     form["weapon"+i+"Class"].classList.toggle('error', errorAccClass[className] == true); 
     // 必筋チェック
     const maxReqd
-      = SET.class[className]?.reqdHalf ? reqdStrHalf
+      = constStr ? constStr
+      : giantize && SET.class[className]?.reqdHalf ? Math.ceil((reqdStr+12) / 2)
+      : giantize ? (reqdStr+12)
+      : SET.class[className]?.reqdHalf ? reqdStrHalf
       : /^\d+w$/i.test(weaponReqdRaw) ? reqdMnd
       : SET.class[className]?.accUnlock?.reqd ? stt['total'+SET.class[className]?.accUnlock?.reqd]
       : reqdStr;
@@ -1600,7 +1614,8 @@ function calcWeapon() {
     else if(category === 'ガン')      { dmgBase = magicPowers['Mag']; }
     else if(SET.class[className]?.accUnlock?.dmg === 'power')
                                       { dmgBase = magicPowers[SET.class[className].id] }
-    else if(classLv)                  { dmgBase = classLv + parseInt(str / 6); }
+    else if(constStr)                 { dmgBase = classLv + parseInt(constStr / 6); }
+    else if(classLv)                  { dmgBase = classLv + parseInt((str + giantize) / 6); }
 
     // 戦闘特技
     if(!partNum || partNum == form.partCore.value) {
@@ -1746,19 +1761,23 @@ function calcArmour(evaAdd,defBase) {
     const className = form['evasionClass'+i].value;
     const partNum   = form['evasionPart'+i].value;
     const partName  = form[`part${partNum}Name`]?.value || '';
+    const giantize  = form[`defenseTotal${i}Note`].value.match(/［巨人化］/) ? -6 : 0;
     
     // 技能選択のエラーチェック
     form['evasionClass'+i].classList.toggle('error', errorEvaClass[className] == true); 
 
     // 最大必筋
-    const maxReqd = (SET.class[className]?.reqdHalf) ? reqdStrHalf : reqdStr;
+    const maxReqd
+     = (giantize && SET.class[className]?.reqdHalf) ? math((reqdStr+12) / 2)
+     : (giantize) ? (reqdStr+12)
+     : (SET.class[className]?.reqdHalf) ? reqdStrHalf : reqdStr;
 
     // 計算
     const classLv = lv[SET.class[className]?.id] || 0;
 
     let eva = (SET.class[className]?.evaUnlock?.mod || 0);
     let def = 0;
-    let agi = (partNum ? stt.Agi+Number(form.sttPartB.value || 0) : stt.totalAgi);
+    let agi = (partNum ? stt.Agi+Number(form.sttPartB.value || 0) : stt.totalAgi+giantize);
     if(!partNum || partNum == form.partCore.value) {
       def += defBase;
       eva += evaAdd;
@@ -1781,14 +1800,28 @@ function calcArmour(evaAdd,defBase) {
     for (let num = 1; num <= form.armourNum.value; num++){
       const checkObj = form[`defTotal${i}CheckArmour${num}`];
       checkObj.parentNode.classList.remove('error')
+      const note = form["armour"+num+"Note"].value;
+      const constStr
+        = note.match(/〈レッサー・?アームスフィアⅠ〉/) ? 1
+        : note.match(/〈レッサー・?アームスフィアⅡ〉/) ? 5
+        : note.match(/〈レッサー・?アームスフィアⅢ〉/) ? 10
+        : note.match(/〈アームスフィア〉/) ? 20
+        : 0;
 
       if(!checkObj.checked) continue;
       
       const category = form[`armour${num}Category`].value;
 
       let reqdMod = (category == '盾') ? (equipMod.WeaponReqd||0) : 0;
-      if((safeEval(form[`armour${num}Reqd`].value) || 0) > maxReqd + reqdMod){
-        form[`armour${num}Reqd`].classList.add('error');
+      if(constStr){
+        if((safeEval(form[`armour${num}Reqd`].value) || 0) > constStr){
+          form[`armour${num}Reqd`].classList.add('error');
+        }
+      }
+      else {
+        if((safeEval(form[`armour${num}Reqd`].value) || 0) > maxReqd + reqdMod){
+          form[`armour${num}Reqd`].classList.add('error');
+        }
       }
 
       eva += Number(form[`armour${num}Eva`].value);

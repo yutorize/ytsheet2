@@ -58,6 +58,7 @@ delete $data::class{'侍'};
 delete $data::class{'忍者'};
 delete $data::class{'呪術師'};
 delete $data::class{'巫覡'};
+delete $data::class{'力士'};
 $data::class{'グラップラー'}{feats} = [
   ['追加攻撃',1],
   ['投げ攻撃',1],

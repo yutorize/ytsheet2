@@ -181,7 +181,7 @@ $SHEET->param(Tags => \@tags);
   $SHEET->param(magicTarget   => textMagic($pc{magicTarget}));
   $SHEET->param(magicDuration => textMagic($pc{magicDuration}));
 
-  if($pc{magicClass} eq '魔動機術'){ $SHEET->param(magicNameNotes => 'マギスフィア:'.$pc{magicMagisphere}); }
+  if($pc{magicClass} =~ /魔動機術/){ $SHEET->param(magicNameNotes => 'マギスフィア:'.$pc{magicMagisphere}); }
   
   if   ($class eq '練技'){
     $SHEET->param(magicClassEn => 'enhance');
@@ -290,7 +290,7 @@ foreach my $lv (2,4,7,10,13){
 }
 $SHEET->param(MagicData => \@magics);
 
-### 流派装備 --------------------------------------------------
+### 流派アイテム --------------------------------------------------
 my @items;
 foreach my $set_url (split ',',$item_urls){
   require $set::lib_convert;

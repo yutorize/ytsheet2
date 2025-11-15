@@ -326,7 +326,9 @@ foreach (1..5){
 $SHEET->param(SeekerAbilities => \@seeker_abilities);
 
 ### 秘伝 --------------------------------------------------
-my @mystic_arts; my %mysticarts_honor;
+my @mystic_arts;
+my @mystic_magics;
+my %mysticarts_honor;
 foreach (1..$pc{mysticArtsNum}){
   my $type = $pc{'mysticArts'.$_.'PtType'} || 'human';
   $mysticarts_honor{$type} += $pc{'mysticArts'.$_.'Pt'};
@@ -339,8 +341,13 @@ foreach (1..$pc{mysticMagicNum}){
   $mysticarts_honor{$type} += $pc{'mysticMagic'.$_.'Pt'};
   next if !$pc{'mysticMagic'.$_};
   my ($name, $mark) = checkArtsName $pc{'mysticMagic'.$_};
-  push(@mystic_arts, { "NAME" => "$mark【$name】" });
+  push(@mystic_magics, { "NAME" => "$mark【$name】" });
 }
+$SHEET->param(headMysticArts =>
+  (@mystic_arts && @mystic_magics) ? '秘伝／秘伝魔法／地域魔法' :
+  (@mystic_magics) ? '秘伝魔法／地域魔法' : '秘伝'
+);
+push(@mystic_arts,@mystic_magics);
 my $mysticarts_honor = $mysticarts_honor{human}
                      .($mysticarts_honor{barbaros}?"<br><small>蛮</small>$mysticarts_honor{barbaros}":'')
                      .($mysticarts_honor{dragon}  ?"<br><small>竜</small>$mysticarts_honor{dragon}"  :'');
@@ -385,7 +392,14 @@ my @craft_lists;
 my $enhance_attack_on;
 my $rider_obs_on;
 foreach my $class (@data::class_names){
-  next if !$data::class{$class}{craft}{data};
+  my @craftData;
+  if($data::class{$class}{craft}{alias}){
+    @craftData = @{ $data::class{ $data::class{$class}{craft}{alias} }{craft}{data} };
+  }
+  elsif($data::class{$class}{craft}{data}) {
+    @craftData = @{ $data::class{$class}{craft}{data} };
+  }
+  else { next; }
   my $lv = $pc{'lv'.$data::class{$class}{id}};
   my $add = $pc{ $data::class{$class}{craft}{eName}.'Addition' }
           + $pc{ 'buildupAdd'.ucfirst($data::class{$class}{craft}{eName}) };
@@ -394,7 +408,7 @@ foreach my $class (@data::class_names){
   if($class eq 'アーティザン'){ $add += $pc{lvArt} >= 17 ? 2 : $pc{lvArt} >= 16 ? 1 : 0; }
 
   my %craftType;
-  foreach (@{$data::class{$class}{craft}{data}}){
+  foreach (@craftData){
     my $craft = $_->[1];
     my $notes = $_->[2];
     if($class eq 'アルケミスト'){
@@ -527,8 +541,8 @@ foreach my $class (@data::class_caster){
   next if !$name;
   next if !$pc{'lv'.$id};
   
-  my $power  = $pc{'magicPowerAdd' .$id} + $pc{magicPowerAdd } + $pc{magicPowerEquip } +$pc{magicPowerEnhance};
-  my $cast   = $pc{'magicCastAdd'  .$id} + $pc{magicCastAdd  } + $pc{magicCastEquip  };
+  my $power  = $pc{'magicPowerAdd' .$id} + $pc{magicPowerAdd } + $pc{magicPowerEquip } + $pc{magicPowerEnhance};
+  my $cast   = $pc{'magicCastAdd'  .$id} + $pc{magicCastAdd  } + $pc{magicCastEquip  } + $data::class{$class}{magic}{mod};
   my $damage = $pc{'magicDamageAdd'.$id} + $pc{magicDamageAdd} + $pc{magicDamageEquip};
   
   my $title = $class.'<wbr><span class="small">技能レベル</span>'.$pc{'lv'.$id};
@@ -729,6 +743,7 @@ else {
       $pc{'weapon'.$_.'Acc'} = 0;
       $pc{'weapon'.$_.'Dmg'} = 0;
     }
+    $pc{"weapon${_}Note"} =~ s#〈(レッサー・?アームスフィア[ⅠⅡⅢ]|アームスフィア)〉|［巨人化］#<b class="term-em">$&</b>#;
     push(@weapons, {
       NAME     => $pc{'weapon'.$_.'Name'},
       PART     => $pc{'part'.$pc{'weapon'.$_.'Part'}.'Name'},
@@ -879,6 +894,7 @@ else {
 
     if($pc{'armour'.$_.'Type'} =~ /^(鎧|盾|他|龍骸)[0-9]+/ && $count{$1} <= 1){ $pc{'armour'.$_.'Type'} = $1 }
 
+    $pc{"armour${_}Note"} =~ s#〈(レッサー・?アームスフィア[ⅠⅡⅢ]|アームスフィア)〉#<b class="term-em">$&</b>#;
     push(@armours, {
       TYPE => $pc{'armour'.$_.'Type'},
       NAME => $pc{'armour'.$_.'Name'},
@@ -913,6 +929,7 @@ else {
       .($class ? "${class}/" : '')
       .(@ths == @armours ? 'すべての防具・効果' : join('＋', @ths) || '');
     $th =~ s|/$||;
+    $pc{"defenseTotal${i}Note"} =~ s#［巨人化］#<b class="term-em">$&</b>#;
     push(@total, {
       TH   => $th,
       EVA  => $pc{"defenseTotal${i}Eva"},

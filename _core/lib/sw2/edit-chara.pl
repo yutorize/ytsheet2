@@ -583,7 +583,7 @@ print <<"HTML";
             <div class="add-del-button"><a onclick="addMysticArts()">▼</a><a onclick="delMysticArts()">▲</a></div>
             @{[input('mysticArtsNum','hidden')]}
 
-            <h2>秘伝魔法</h2>
+            <h2>秘伝魔法／地域魔法</h2>
             <ul id="mystic-magic-list" class="edit-table side-margin">
 HTML
 $pc{mysticMagicNum} ||= 0;
@@ -1062,8 +1062,10 @@ print <<"HTML";
           <div class="add-del-button"><a onclick="addWeapons();setupBracketInputCompletion()">▼</a><a onclick="delWeapons()">▲</a></div>
           <ul class="annotate">
             <li>Ｃ値は自動計算されません。
-            <li><code>\@防護点+1</code>や<code>\@回避力+1</code>のように記述すると、<span class="text-em">常時</span>有効な上昇効果が自動計算されます。<br>有効な項目は、装飾品欄と同様です。
+            <li>備考欄に<code>\@防護点+1</code>や<code>\@回避力+1</code>のように記述すると、<span class="text-em">常時</span>有効な上昇効果が自動計算されます。<br>有効な項目は、装飾品欄と同様です。
+            <li>備考欄に<code>〈レッサー・アームスフィアⅠ〉</code>のように記述すると、対応した筋力で計算されます。
             <li id="artisan-annotate" @{[ display $pc{masteryArtisan} ]}>備考欄に<code>〈魔器〉</code>と記入すると魔器習熟が反映されます。
+            <li id="giantize-annotate-weapon">備考欄に<code>［巨人化］</code>と記述すると、［巨人化］後の筋力で計算されます。
           </ul>
           @{[input('weaponNum','hidden')]}
         </div>
@@ -1179,7 +1181,7 @@ foreach my $num ('TMPL',1 .. $pc{armourNum}) {
                 <td>@{[ input "armour${num}Eva",'number','calcDefense' ]}
                 <td>@{[ input "armour${num}Def",'number','calcDefense' ]}
                 <td>@{[ input "armour${num}Own",'checkbox','calcDefense();calcMobility','disabled' ]}
-                <td>@{[ input "armour${num}Note",'','','onchange="changeEquipMod()"' ]}
+                <td>@{[ input "armour${num}Note",'','','onchange="changeEquipMod();calcDefense()"' ]}
 HTML
   if($num eq 'TMPL'){ print '</template>' }
 }
@@ -1215,7 +1217,7 @@ HTML
   print <<"HTML";
                 <td id="defense-total${i}-eva">0
                 <td id="defense-total${i}-def">0
-                <td colspan="3">@{[input("defenseTotal${i}Note")]}
+                <td colspan="3">@{[ input "defenseTotal${i}Note",'','','onchange="calcDefense()"' ]}
 HTML
   print '</template>' if ($i eq 'TMPL');
 }
@@ -1225,9 +1227,10 @@ print <<"HTML";
           </table>
           <div class="add-del-button"><a onclick="addDefense()">▼</a><a onclick="delDefense()">▲</a></div>
           <ul class="annotate">
-            <li><code>\@敏捷度-6</code>や<code>\@精神抵抗力+2</code>のように記述すると、<span class="text-em">常時</span>有効な上昇効果が自動計算されます。<br>
+            <li>防具の備考欄に<code>\@敏捷度-6</code>や<code>\@精神抵抗力+2</code>のように記述すると、<span class="text-em">常時</span>有効な上昇効果が自動計算されます。<br>
               有効な項目は、装飾品欄と同様です。<br>
               <code>\@</code>による修正は合算のチェックに関わらず計算されるため、予備装備や切り替えが想定されるものは注意してください。<br>
+            <li id="giantize-annotate-armour">合計行の備考欄に<code>［巨人化］</code>と記述すると、［巨人化］後の敏捷度で計算されます。
           </ul>
         </div>
 
@@ -1702,9 +1705,9 @@ my $text_rule = <<"HTML";
         　刃武器　　　　：<code>[刃]</code>：<img class="i-icon" src="${set::icon_dir}wp_edge.png"><br>
         　打撃武器　　　：<code>[打]</code>：<img class="i-icon" src="${set::icon_dir}wp_blow.png"><br>
         　地方特産品　　：<code>[特]</code>：<i class="i-icon" data-kind="特"><span class="raw">[特]</span></i><br>
-        　流派装備　　　：<code>[流]</code>：<i class="i-icon" data-kind="流"><span class="raw">[流]</span></i><br>
-        　アルフレイム大陸由来の流派装備：<code>[ア]</code>：<i class="i-icon" data-kind="ア"><span class="raw">[ア]</span></i><br>
-        　テラスティア大陸由来の流派装備：<code>[テ]</code>：<i class="i-icon" data-kind="テ"><span class="raw">[テ]</span></i><br>
+        　流派アイテム　：<code>[流]</code>：<i class="i-icon" data-kind="流"><span class="raw">[流]</span></i><br>
+        　アルフレイム大陸由来の流派アイテム：<code>[ア]</code>：<i class="i-icon" data-kind="ア"><span class="raw">[ア]</span></i><br>
+        　テラスティア大陸由来の流派アイテム：<code>[テ]</code>：<i class="i-icon" data-kind="テ"><span class="raw">[テ]</span></i><br>
         　常時型　　：<code>[常]</code>：<i class="s-icon passive"><span class="raw">[常]</span></i><br>
         　戦闘準備型：<code>[準]</code>：<i class="s-icon setup  "><span class="raw">[準]</span></i><br>
         　主動作型　：<code>[主]</code>：<i class="s-icon major  "><span class="raw">[主]</span></i><br>
