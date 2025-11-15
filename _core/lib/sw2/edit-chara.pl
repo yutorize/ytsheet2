@@ -1710,8 +1710,8 @@ my $text_rule = <<"HTML";
         　主動作型　：<code>[主]</code>：<i class="s-icon major  "><span class="raw">[主]</span></i><br>
         　補助動作型：<code>[補]</code>：<i class="s-icon minor  "><span class="raw">[補]</span></i><br>
         　宣言型　　：<code>[宣]</code>：<i class="s-icon active "><span class="raw">[宣]</span></i><br>
-        　高揚の楽素：<code>[⤴]</code>：<i class="s-icon uplift">⤴</i><br>
-        　鎮静の楽素：<code>[⤵]</code>：<i class="s-icon calm">⤵</i><br>
+        　高揚の楽素：<code>[⤴]</code><code>[↑]</code>：<i class="s-icon uplift">⤴</i><br>
+        　鎮静の楽素：<code>[⤵]</code><code>[↓]</code>：<i class="s-icon calm">⤵</i><br>
         　魅惑の楽素：<code>[♡]</code>：<i class="s-icon heart">♡</i><br>
 HTML
 print textRuleArea( $text_rule,'「容姿・経歴・その他メモ」「履歴（自由記入）」「所持品」「収支履歴」' );
