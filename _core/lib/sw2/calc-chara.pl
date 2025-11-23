@@ -291,19 +291,24 @@ sub data_calc {
     $pc{raceAbility} =~ s/［(竜|魔物)化］/［剣の託宣／復活$1化］/;
   }
   ### 装備品の備考 --------------------------------------------------
-  my %equipModTotal = {};
+  my %equipModStatusIncrement = {};
   foreach (@{extractModifications(\%pc)}) {
     my %mod = %{$_};
     foreach ('A'..'F'){
       $pc{'sttEquip'.$_} += $mod{$_} // 0;
+
+      # 増強
+      $equipModStatusIncrement{$_} //= 0;
+      $equipModStatusIncrement{$_} = max($equipModStatusIncrement{$_}, $mod{"${_}:increment"} // 0);
     }
-    foreach ('vResist','mResist','eva','def','mobility'){
-      $equipModTotal{$_} += $mod{$_} // 0;
-    }
-    foreach ('magicPower','magicCast','magicDamage'){
+    foreach ('vResist','mResist','eva','def','mobility','magicPower','magicCast','magicDamage'){
       $pc{$_.'Equip'} += $mod{$_} // 0;
     }
     $pc{reqdStrWeaponMod} += $mod{reqdWeapon} // 0;
+  }
+
+  foreach ('A' .. 'F') {
+    $pc{"sttEquip${_}"} += $equipModStatusIncrement{$_};
   }
 
   ### 能力値計算 --------------------------------------------------
@@ -444,11 +449,11 @@ sub data_calc {
   ### サブステータス --------------------------------------------------
   ## 生命抵抗力
   $pc{vitResistBase} = $st{LvD};
-  $pc{vitResistAddTotal} = $equipModTotal{vResist} + s_eval($pc{vitResistAdd}) + $pc{resistEnhance} + $pc{seekerAbilityResist};
+  $pc{vitResistAddTotal} = $pc{vResistEquip} + s_eval($pc{vitResistAdd}) + $pc{resistEnhance} + $pc{seekerAbilityResist};
   $pc{vitResistTotal}  = $pc{vitResistBase} + $pc{vitResistAddTotal};
   ## 精神抵抗力
   $pc{mndResistBase} = $st{LvF};
-  $pc{mndResistAddTotal} = $equipModTotal{mResist} + s_eval($pc{mndResistAdd}) + $pc{raceAbilityMndResist} + $pc{resistEnhance} + $pc{seekerAbilityResist};
+  $pc{mndResistAddTotal} = $pc{mResistEquip} + s_eval($pc{mndResistAdd}) + $pc{raceAbilityMndResist} + $pc{resistEnhance} + $pc{seekerAbilityResist};
   $pc{mndResistTotal}  = $pc{mndResistBase} + $pc{mndResistAddTotal};
   ## ＨＰＭＰ：装飾品
   foreach my $type ('Head', 'Ear', 'Face', 'Neck', 'Back', 'HandR', 'HandL', 'Waist', 'Leg', 'Other', 'Other2','Other3','Other4') {
@@ -479,7 +484,7 @@ sub data_calc {
   }
   $pc{mobilityBase} = $pc{sttAgi} + $pc{sttAddB} + $pc{sttEquipB};
   $pc{mobilityBase} = $pc{mobilityBase} * 2  if ($pc{raceAbility} =~ /［半馬半人］/);
-  $pc{mobilityAddTotal} = s_eval($pc{mobilityAdd}) + $equipModTotal{mobility} + $own_mobility;
+  $pc{mobilityAddTotal} = s_eval($pc{mobilityAdd}) + $pc{mobilityEquip} + $own_mobility;
   $pc{mobilityTotal} = $pc{mobilityBase} + $pc{mobilityAddTotal};
   $pc{mobilityFull} = $pc{mobilityTotal} * 3;
   $pc{mobilityLimited} = min($pc{footwork} ? 10 : 3, $pc{mobilityTotal});
@@ -690,8 +695,8 @@ sub data_calc {
     $eva += $lv ? $lv + int(($agi+$own_agi)/6) : 0;
     $def += $artisan;
 
-    $eva += $equipModTotal{eva};
-    $def += $equipModTotal{def};
+    $eva += $pc{evaEquip};
+    $def += $pc{defEquip};
 
     $pc{"defenseTotal${i}Eva"} = $eva;
     $pc{"defenseTotal${i}Def"} = $def;

@@ -34,7 +34,7 @@ foreach (keys %::in) {
   $::in{$_} =~ s/</&lt;/g;
   $::in{$_} =~ s/>/&gt;/g;
 }
-if(!($mode eq 'mylist' || $::in{tag} || $::in{group} || $::in{name} || $::in{player} || $::in{'exp-min'} || $::in{'exp-max'} || $::in{syndrome} || $::in{breed} || $::in{works} || $::in{dlois} || $::in{sign} || $::in{image})){
+if(!($mode eq 'mylist' || $::in{tag} || $::in{group} || $::in{name} || $::in{player} || $::in{'exp-min'} || $::in{'exp-max'} || $::in{syndrome} || $::in{breed} || $::in{works} || $::in{dlois} || $::in{sign} || $::in{stage} || $::in{image})){
   $index_mode = 1;
   $INDEX->param(modeIndex => 1);
   $INDEX->param(simpleList => 1) if $set::simplelist;
@@ -53,6 +53,7 @@ foreach(
   'works',
   'dlois',
   'sign',
+  'stage',
   'image',
   'fellow',
   ){
@@ -161,6 +162,11 @@ $INDEX->param(syndrome => "@syndrome_query");
 my @dlois_query = split('\s', decode('utf8', $::in{dlois}));
 foreach my $q (@dlois_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){14}[^<]*?\Q$q\E/ } @list; }
 $INDEX->param(dlois => "@dlois_query");
+
+## ステージ検索
+my $stage_query = decode('utf8', $::in{stage});
+if($stage_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){19}[^<]*?\Q$stage_query\E/ } @list; }
+$INDEX->param(stage => $stage_query);
 
 ## 星座検索
 my $sign_query = decode('utf8', $::in{sign});
@@ -346,11 +352,12 @@ $INDEX->param(ogDescript =>
   ($name_query ? "名前「${name_query}」を含む " : '') .
   ($pl_query   ? "ＰＬ名「${pl_query}」を含む " : '') .
   ($tag_query  ? "タグ「${tag_query}」 " : '') .
+  ($works_query    ? "ステージ「${stage_query}}」" : '') .
   ($exp_query      ? "経験点「${exp_query}」 " : '') .
-  ($breed_text     ? "ブリード「${breed_text}}」" : '') . 
-  (@syndrome_query ? "シンドローム「@{syndrome_query}}」" : '') . 
-  (@dlois_query    ? "Ｄロイス「@{dlois_query}}」" : '') . 
-  ($works_query    ? "ワークス「${works_query}}」" : '') 
+  ($breed_text     ? "ブリード「${breed_text}}」" : '') .
+  (@syndrome_query ? "シンドローム「@{syndrome_query}}」" : '') .
+  (@dlois_query    ? "Ｄロイス「@{dlois_query}}」" : '') .
+  ($works_query    ? "ワークス「${works_query}}」" : '')
 );
 
 $INDEX->param(title => $set::title);

@@ -1392,6 +1392,7 @@ article > form > hr {
       &.name { width: 14em; }
       &.power { width: 6em; }
       &.cast  { width: 6em; }
+      &.rate  { width: 6em; }
       &.crit  { width: 6em; }
       &.dmg   { width: 6em; }
       &.roll  { width: 6em; }
