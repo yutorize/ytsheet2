@@ -572,7 +572,9 @@ sub palettePreset {
           $text .= "+{追加D修正}";
           if($::pc{'paletteAttack'.$paNum.'Roll'}){
             $::pc{'paletteAttack'.$paNum.'Roll'} =~ s/^+//;
-            $text .= "$+{クリレイ}\#$::pc{'paletteAttack'.$paNum.'Roll'}";
+            $text .= "$+{クリレイ}";
+            $text .= '#' if $::pc{'paletteAttack'.$paNum.'Roll'} =~ /^\d/;
+            $text .= $::pc{'paletteAttack'.$paNum.'Roll'};
           }
           else {
             $text .= "{出目修正}";
