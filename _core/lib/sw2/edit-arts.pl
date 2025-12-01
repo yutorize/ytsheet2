@@ -75,6 +75,8 @@ foreach (1..$pc{schoolArtsNum} ){ if($pc{"schoolArts${_}Name"} ){ $open{schoolAr
 foreach (1..$pc{schoolMagicNum}){ if($pc{"schoolMagic${_}Name"}){ $open{schoolMagic} = 'open'; last; } }
 if($pc{schoolArtsNote} ){ $open{schoolArts}  = 'open'; }
 if($pc{schoolMagicNote}){ $open{schoolMagic} = 'open'; }
+if($pc{schoolQnA}      ){ $open{schoolQnA}   = 'open'; }
+if($pc{godQnA}         ){ $open{godQnA}      = 'open'; }
 
 ### 改行処理 --------------------------------------------------
 foreach (
@@ -88,10 +90,12 @@ foreach (
   'godMagic7Effect',
   'godMagic10Effect',
   'godMagic13Effect',
+  'godQnA',
   'schoolNote',
   'schoolItemNote',
   'schoolArtsNote',
   'schoolMagicNote',
+  'schoolQnA',
 ){
   $pc{$_} =~ s/&lt;br&gt;/\n/g;
 }
@@ -324,6 +328,10 @@ HTML
 }
 print <<"HTML";
         </div>
+        <details class="box" $open{godQnA}>
+          <summary class="in-toc">Ｑ＆Ａ</summary>
+          <textarea name="godQnA">$pc{godQnA}</textarea>
+        </details>
       </div>
       <!-- 流派 -->
       <div class="data-area in-toc" id="data-school" data-content-title="流派の詳細">
@@ -425,6 +433,10 @@ HTML
 print <<"HTML";
           </div>
           <div class="add-del-button"><a onclick="addSchoolMagic()">▼</a><a onclick="delSchoolMagic()">▲</a></div>
+        </details>
+        <details class="box" $open{schoolQnA}>
+          <summary class="in-toc">Ｑ＆Ａ</summary>
+          <textarea name="schoolQnA">$pc{schoolQnA}</textarea>
         </details>
       </div>
     </section>

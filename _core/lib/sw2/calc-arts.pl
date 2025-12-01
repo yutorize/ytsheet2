@@ -55,10 +55,12 @@ sub data_calc {
     'godMagic7Effect',
     'godMagic10Effect',
     'godMagic13Effect',
+    'godQnA',
     'schoolNote',
     'schoolItemNote',
     'schoolArtsNote',
     'schoolMagicNote',
+    'schoolQnA',
   ){
     $pc{$_} =~ s/\r\n?|\n/<br>/g;
   }

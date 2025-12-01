@@ -127,7 +127,7 @@ my $item_urls = $pc{schoolItemList};
 ### タグ置換 #########################################################################################
 foreach (keys %pc) {
   next if($_ =~ /^image/);
-  if($_ =~ /(?:Effect|Description|Note)$/){
+  if($_ =~ /(?:Effect|Description|Note|QnA)$/){
     $pc{$_} = unescapeTagsLines($pc{$_});
   }
   $pc{$_} = unescapeTags($pc{$_});
@@ -338,7 +338,7 @@ foreach my $num (1..$pc{schoolArtsNum}){
     }
     $pc{'schoolArts'.$num.$type} = join('<hr class="dotted">', @texts)
   }
-  $pc{'schoolArts'.$num.'Premise'} =~ s#(《.+?》)、?#<span class="keep-all">$1</span><wbr>#g;
+  $pc{'schoolArts'.$num.'Premise'} =~ s#(《.+?》、?)#<span class="keep-all">$1</span><wbr>#g;
   $pc{'schoolArts'.$num.'Premise'} =~ s#<wbr>$##g;
   $pc{'schoolArts'.$num.'Effect'} =~ s#<h2>(.+?)</h2>#</dd><dt><span class="center">$1</span></dt><dd class="box">#gi;
   push(@arts, {
