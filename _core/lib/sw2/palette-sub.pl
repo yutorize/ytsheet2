@@ -999,6 +999,7 @@ sub paletteProperties {
           $dmgMod += $::pc{'mastery' . ucfirst($data::weapon_id{ $category }) };
           if($category eq 'ガン（物理）'){ $dmgMod += $::pc{masteryGun}; }
           if($::pc{"weapon${_}Note"} =~ /〈魔器〉/){ $dmgMod += $::pc{masteryArtisan}; }
+          if($category eq '投擲'){ $dmgMod += $::pc{mightyShot}; } # 【剛力弾】
         }
         else {
           if($category eq '格闘'){ $dmgMod += $::pc{masteryGrapple}; }
