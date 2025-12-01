@@ -60,6 +60,7 @@ $SHEET->param(rawName => $pc{itemName});
 
 ### タグ置換 #########################################################################################
 foreach (keys %pc) {
+  next if($_ eq 'tags');
   if($_ =~ /^(?:effects|description)$/){
     $pc{$_} = unescapeTagsLines($pc{$_});
   }

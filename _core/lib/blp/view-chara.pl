@@ -180,6 +180,7 @@ $SHEET->param(rawName => $pc{characterName} || ($pc{aka} ? "“$pc{aka}”" : ''
 if($pc{ver}){
   foreach (keys %pc) {
     next if($_ =~ /^(?:partner[12]Url|(?:p[12]_)?(?:image))/);
+    next if($_ eq 'tags');
     if($_ =~ /^(?:freeNote|freeHistory)$/){
       $pc{$_} = unescapeTagsLines($pc{$_});
     }

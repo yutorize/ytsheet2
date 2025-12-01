@@ -127,6 +127,7 @@ my $item_urls = $pc{schoolItemList};
 ### タグ置換 #########################################################################################
 foreach (keys %pc) {
   next if($_ =~ /^image/);
+  next if($_ eq 'tags');
   if($_ =~ /(?:Effect|Description|Note|QnA)$/){
     $pc{$_} = unescapeTagsLines($pc{$_});
   }

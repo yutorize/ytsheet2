@@ -92,6 +92,7 @@ $SHEET->param(rawName => $pc{characterName}?"$pc{characterName}（$pc{monsterNam
 
 ### タグ置換 #########################################################################################
 foreach (keys %pc) {
+  next if($_ eq 'tags');
   if($_ =~ /^(?:skills|description)$/){
     $pc{$_} = unescapeTagsLines($pc{$_});
   }
