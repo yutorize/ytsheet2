@@ -62,6 +62,60 @@ function chatPaletteSelect(tool) {
   });
   document.getElementById('cp-switch-'+(tool||'ytc')).classList.add('check');
 }
+// セッション履歴開閉 ----------------------------------------
+let historyView = true;
+window.addEventListener('DOMContentLoaded', ()=>{
+  if(document.querySelector("#history tbody:nth-of-type(9)")){
+    historyView = false,
+    switchHistoryClose();
+  document.querySelector('#history .open-button').dataset.open = '';
+  }
+});
+function switchHistoryView(){
+  historyView = !historyView;
+  historyView ? switchHistoryOpen() : switchHistoryClose();
+  document.querySelector('#history .open-button').dataset.open = historyView ? 'true' : '';
+}
+function switchHistoryOpen(){
+  const table = document.querySelector('#history > table');
+  // 表示
+  table.querySelectorAll('tbody').forEach(row => {
+    row.style.display = "";
+  });
+  // 省略業を削除
+  document.getElementById('collapsed-history-row').remove();
+}
+function switchHistoryClose(){
+  const table = document.querySelector('#history > table');
+  rows = table.querySelectorAll('tbody:not(:nth-of-type(-n+1)):not(:nth-last-of-type(-n+5))');
+  console.log(rows)
+  // 最下部以外を非表示
+  rows.forEach(row => {
+    row.style.display = "none";
+  });
+  // 省略行を生成
+  const theadRow = table.querySelector("thead tr");
+  colLength = theadRow.children.length
+  const newTbody = document.createElement("tbody");
+  newTbody.id = "collapsed-history-row";
+  const newCell = document.createElement("td");
+  newCell.colSpan = colLength;
+  newCell.innerText = "︙\n省略されたセッション履歴\n︙";
+  newTbody.appendChild(newCell);
+  if (rows.length < 1) {
+    table.appendChild(newTbody);
+  } else {
+    table.insertBefore(newTbody, rows[0]);
+  }
+}
+
+// セッション履歴開閉 ----------------------------------------
+let cashbookView = false;
+function switchCashbookView(){
+  cashbookView = !cashbookView;
+  document.getElementById('cashbook').dataset.open = cashbookView ? 'true' : '';
+  document.querySelector('#cashbook .open-button').dataset.open = cashbookView ? 'true' : '';
+}
 
 // スクロール位置 ----------------------------------------
 window.addEventListener('DOMContentLoaded', ()=>{

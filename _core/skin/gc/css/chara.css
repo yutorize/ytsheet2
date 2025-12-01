@@ -65,9 +65,6 @@ body {
 #history table {
   font-family: "Arial",var(--base-font-family-pr);
 }
-#cashbook p {
-  font-family: var(--base-font-family-mono);
-}
 
 /* // AreaTag
 ---------------------------------------------------------------------------------------------------- */

@@ -596,6 +596,7 @@
       </TMPL_IF>
       <section class="box" id="history">
         <h2>セッション履歴</h2>
+        <button class="open-button" onclick="switchHistoryView();" data-open="true" data-text-open="履歴を展開" data-text-close="履歴を畳む"></button>
         <table class="data-table line-tbody">
           <thead>
             <tr>
@@ -640,6 +641,7 @@
       <TMPL_IF cashbook>
       <section class="box" id="cashbook">
         <h2><TMPL_IF head_cashbook><TMPL_VAR head_cashbook><TMPL_ELSE>収支履歴</TMPL_IF></h2>
+        <button class="open-button" onclick="switchCashbookView();" data-open="" data-text-open="収支履歴を展開" data-text-close="収支履歴を畳む"></button>
         <div><p><TMPL_VAR cashbook></p></div>
       </section>
       </TMPL_IF>
