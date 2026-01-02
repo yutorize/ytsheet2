@@ -604,9 +604,11 @@ foreach my $class (@data::class_names){
   next if !$data::class{$class}{magic}{data};
   my $name = $data::class{$class}{magic}{eName};
   my $Name = ucfirst($data::class{$class}{magic}{eName});
+  my $jName = $data::class{$class}{magic}{jName};
+  if($class eq 'ビブリオマンサー'){ $jName .= "／準備行使枠" }
   print <<"HTML";
             <div class="box" id="magic-${name}">
-              <h2 class="in-toc">$data::class{$class}{magic}{jName}</h2>
+              <h2 class="in-toc">$jName</h2>
               <ul class="edit-table side-margin">
 HTML
   foreach my $lv (1..17){
@@ -635,6 +637,27 @@ HTML
             </ul>
           </div>
 HTML
+  if($class eq 'ビブリオマンサー'){
+  print <<"HTML";
+            <div class="box" id="magic-bibliomancy-temporary">
+              <h2 class="in-toc">秘奥魔法／応急行使枠</h2>
+              <ul id="bibliomancy-temporary-list" class="edit-table side-margin">
+HTML
+  my @spells = map { $_->[1] } @{$data::class{$class}{magic}{data}};
+  $pc{bibliomancyTemporaryNum} ||= 0;
+  foreach my $num ('TMPL',1 .. $pc{bibliomancyTemporaryNum}){
+    if($num eq 'TMPL'){ print '<template id="bibliomancy-temporary-template">' }
+    print '<li id="bibliomancy-temporary-row'.$num.'"><span class="handle"></span>'
+      .(selectInput 'magicBibliomancyTemporary'.$num, 'checkBibliomancy', @spells,'その他の1ランクすべて','その他の2ランクすべて','その他の3ランクすべて','その他の4ランクすべて','その他の5ランクすべて','その他の2ランク以下すべて','その他の3ランク以下すべて','その他の4ランク以下すべて','その他の5ランク以下すべて' );
+    if($num eq 'TMPL'){ print '</template>' }
+  }
+  print <<"HTML";
+            </ul>
+            <div class="add-del-button"><a onclick="addBibliomancy()">▼</a><a onclick="delBibliomancy()">▲</a></div>
+            @{[input('bibliomancyTemporaryNum','hidden')]}
+          </div>
+HTML
+  }
 }
 foreach my $class (@data::class_names){
   next if !$data::class{$class}{craft}{data};
@@ -1039,7 +1062,7 @@ print <<"HTML";
               </tr>
             </thead>
 HTML
-
+my @weaponCategories = map { $_ eq 'ガン' ? ($_, 'ガン（物理）') : $_ } @data::weapon_names;
 foreach my $num ('TMPL',1 .. $pc{weaponNum}) {
   if($num eq 'TMPL'){ print '<template id="weapon-template">' }
 print <<"HTML";
@@ -1056,7 +1079,7 @@ print <<"HTML";
                 <td rowspan="2">@{[input("weapon${num}Crit")]}
                 <td rowspan="2">+@{[input("weapon${num}Dmg",'number','calcWeapon')]}<b id="weapon${num}-dmg-total">0</b>
                 <td>@{[input("weapon${num}Own",'checkbox','calcWeapon')]}
-                <td><select name="weapon${num}Category" oninput="calcWeapon()">@{[option("weapon${num}Category",@data::weapon_names,'ガン（物理）','その他|<その他（盾など）>')]}</select>
+                <td><select name="weapon${num}Category" oninput="calcWeapon()">@{[option("weapon${num}Category",@weaponCategories,'その他|<その他（盾、魔導書など）>')]}</select>
                 <td><select name="weapon${num}Class" oninput="calcWeapon()">@{[option("weapon${num}Class",@weapon_users,'自動計算しない')]}</select>
                 <td rowspan="2"><span class="button" onclick="addWeapons(${num});setupBracketInputCompletion()">複<br>製</span>
               <tr>

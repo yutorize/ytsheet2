@@ -365,25 +365,71 @@ foreach (@{$data::class{'グリモワール'}{magic}{data}}){
 my $craft_none = 1;
 my @magic_lists;
 foreach my $class (@data::class_caster){
-  next if !$data::class{$class}{magic}{data};
+  my @magicData;
+  if($data::class{$class}{magic}{alias}){
+    @magicData = @{ $data::class{ $data::class{$class}{magic}{alias} }{magic}{data} };
+  }
+  elsif($data::class{$class}{magic}{data}) {
+    @magicData = @{ $data::class{$class}{magic}{data} };
+  }
+  else { next; }
   my $lv = $pc{'lv'.$data::class{$class}{id}};
   my $add = $pc{ 'buildupAdd'.ucfirst($data::class{$class}{magic}{eName}) };
   if($class eq 'ウィザード'){ $lv = min($pc{lvSor},$pc{lvCon}); }
   next if !$lv;
   next if $data::class{$class}{magic}{trancendOnly} && $lv+$add <= 15;
   
+  my %magicType;
+  foreach (@magicData){
+    my $magic = $_->[1];
+    my $notes = $_->[2];
+    if($notes =~ /(\[[常主補準宣]\])+/){ $magicType{$magic} .= textToIcon $&; }
+  }
   my @magics;
   foreach (1 .. $lv + $pc{$data::class{$class}{magic}{eName}.'Addition'}){
     next if $data::class{$class}{magic}{trancendOnly} && $_ <= 15;
     my $magic = $pc{'magic'.ucfirst($data::class{$class}{magic}{eName}).$_};
     
     if($class eq 'グリモワール'){
-      push(@magics, { NAME => "－${magic}－", "RUBY" => "data-ruby=\"$gramarye_ruby{$magic}\"" } );
+      push(@magics, { NAME => "【－${magic}－】", "RUBY" => "data-ruby=\"$gramarye_ruby{$magic}\"" } );
     }
-    else { push(@magics, { NAME => $magic } ); }
+    elsif($class eq 'ビブリオマンサー'){
+      my ($name, $mark) = checkArtsName "$magicType{$magic}$magic";
+      my $alias;
+      if($name =~ s/\s?[－―‐–—─\-](.+?)[－―‐–—─\-]$//){ $alias = "－$1－" }
+      push(@magics, { NAME => "【${name}】", ALIAS => $alias, MARK => $mark } );
+    }
+    else { push(@magics, { NAME => "【${magic}】" } ); }
   }
   
-  push(@magic_lists, { "jNAME" => $data::class{$class}{magic}{jName}, "eNAME" => $data::class{$class}{magic}{eName}, "MAGICS" => \@magics } );
+  my $jName = $data::class{$class}{magic}{jName};
+  if($class eq 'ビブリオマンサー'){ $jName .= "／準備行使枠" }
+
+  push(@magic_lists, {
+    "jNAME" => $jName,
+    "eNAME" => $data::class{$class}{magic}{eName},
+    "MAGICS" => \@magics
+  } );
+
+  if($class eq 'ビブリオマンサー'){ 
+    my @bibliomancies;
+    foreach(0 .. $pc{bibliomancyTemporaryNum}){
+      next if !$pc{'magicBibliomancyTemporary'.$_};
+      my $magic = $pc{'magicBibliomancyTemporary'.$_};
+      my ($name, $mark) = checkArtsName "$magicType{$magic}$magic";
+      my $alias;
+      if($name =~ s/\s?[－―‐–—─\-](.+?)[－―‐–—─\-]$//){ $alias = "－$1－" }
+
+      if($name =~ /^その他の.+すべて$/){ push(@bibliomancies, { NAME => $name }) }
+      else { push(@bibliomancies, { NAME => "【${name}】", ALIAS => $alias, MARK => $mark } ); }
+    }
+    push(@magic_lists, {
+      "jNAME" => '秘奥魔法／応急行使枠（ランク'.ceil($pc{lvBib} / 3).')',
+      "eNAME" => 'bibliomancy-temporary',
+      "MAGICS" => \@bibliomancies
+    } );
+  }
+
   $craft_none = 0;
 }
 $SHEET->param(MagicLists => \@magic_lists);

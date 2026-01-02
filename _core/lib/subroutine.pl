@@ -462,7 +462,7 @@ sub unescapeTags {
   
   #$text =~ s/\{\{([0-9\+\-\*\/\%\(\) ]+?)\}\}/s_eval($1);/eg;
   
-  $text =~ s#(―+)#<span class="d-dash">$1</span>#g;
+  $text =~ s#(―{2,})#<span class="d-dash">$1</span>#g;
   
   $text =~ s{©}{<i class="s-icon copyright">©</i>}gi;
 
@@ -799,6 +799,13 @@ sub existsRowStrict {
   return 0;
 }
 ## 0も偽としたい場合
+
+### 配列の重複削除 --------------------------------------------------
+sub deduplicate {
+  my (@array) = @_;
+  my %seen;
+  return grep { !$seen{$_}++ } @array;
+}
 
 ### 案内画面 --------------------------------------------------
 sub info {

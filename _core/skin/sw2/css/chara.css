@@ -615,6 +615,12 @@ dl#level {
 #crafts li {
   position: relative;
 
+  &:has(.alias) > span {
+    display: inline-block;
+    font-size: 80%;
+    transform: scaleY(calc(1/0.8));
+  }
+
   & span[data-ruby] {
     display: block;
     position: relative;

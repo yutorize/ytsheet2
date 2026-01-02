@@ -12,6 +12,7 @@ require $set::data_faith;
 
 ### 出力 #############################################################################################
 foreach (keys %data::class){
+  next if ($_ eq 'ビブリオマンサー');
   $data::class{$_}{magic}{data} &&= 1 if exists($data::class{$_}{magic});
   $data::class{$_}{craft}{data} &&= 1 if exists($data::class{$_}{craft});
 }

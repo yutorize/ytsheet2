@@ -134,6 +134,11 @@ article {
   .wide .data-magic + & {
     margin-top: 1.5em;
   }
+
+  & .alias {
+    display: inline-block;
+  }
+
   &   .name     { grid-area: NAME; }
   & dl.cost     { grid-area: COST; }
   & dl.target   { grid-area: TRGT; }

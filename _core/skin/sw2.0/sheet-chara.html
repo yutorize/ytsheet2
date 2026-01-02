@@ -297,7 +297,7 @@
             <h2><TMPL_VAR jNAME></h2>
             <ul class="data-table side-margin">
               <TMPL_LOOP MAGICS>
-              <li id="magic-<TMPL_VAR eNAME><TMPL_VAR __counter__>"><span <TMPL_VAR RUBY>>【<TMPL_VAR NAME>】</span>
+              <li id="magic-<TMPL_VAR eNAME><TMPL_VAR __counter__>"><TMPL_VAR MARK><span <TMPL_VAR RUBY>><TMPL_VAR NAME></span><TMPL_IF ALIAS><span class="alias"><TMPL_VAR ALIAS></span></TMPL_IF>
               </TMPL_LOOP>
             </ul>
           </section></TMPL_LOOP>

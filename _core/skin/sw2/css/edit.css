@@ -520,6 +520,15 @@
   & ul li:last-child {
     padding-bottom: 1px;
   }
+  & ul li:has(.handle){
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    grid-template-rows: auto;
+    .handle {
+      width: 1.2em;
+      margin-left: -.5rem;
+    }
+  }
 }
 @media screen and (width <= 735px){
   #crafts {

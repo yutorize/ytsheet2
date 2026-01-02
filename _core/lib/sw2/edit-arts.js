@@ -146,6 +146,7 @@ function checkMagicClass(){
   form.magicActionTypePassive.parentNode.style.display = (magic.match(/^(騎芸|操気)$/)) ? '' : 'none';
   form.magicActionTypeMajor.parentNode.style.display   = (magic.match(/^(騎芸|操気)$/)) ? '' : 'none';
   document.querySelector('#data-magic dl.summary').style.display   = (magic == '呪印' || magic == '貴格') ? 'none' : '';
+  document.querySelector('#data-magic dl.level     dt').textContent = (magic.match(/(属性|特殊)妖精魔法|秘奥魔法/)) ? 'ランク' : '習得レベル';
   document.querySelector('#data-magic dl.type      dt').textContent = (magic == '鼓咆') ? '鼓咆の系統' : (magic == '占瞳') ? 'タイプなど' : (magic == '貴格') ? '形態' : '対応';
   document.querySelector('#data-magic dl.premise   dt').textContent = (magic == '呪印') ? '前提ＡＣ'   : '前提';
   document.querySelector('#data-magic dl.condition dt').textContent = (magic == '呪歌') ? '効果発生条件' : (magic == '陣率') ? '使用条件' : '条件';

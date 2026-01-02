@@ -180,9 +180,12 @@ $SHEET->param(Tags => \@tags);
 
   my $magicName = $pc{magicName};
   (my $divineMark, $magicName) = extractDivineMark $magicName if $pc{magicClass} eq '神聖魔法';
+  my $alias;
+  if($magicName =~ s/\s?[－―‐–—─\-](.+?)[－―‐–—─\-]$//){ $alias = "－$1－" }
 
   $SHEET->param(magicIcon => $icon);
   $SHEET->param(magicName => stylizeCharacterName $magicName);
+  $SHEET->param(magicAlias => $alias);
   $SHEET->param(magicDivineMark => $divineMark) if defined $divineMark;
   $SHEET->param(magicTarget   => textMagic($pc{magicTarget}));
   $SHEET->param(magicDuration => textMagic($pc{magicDuration}));
@@ -369,9 +372,12 @@ foreach my $num (1..$pc{schoolMagicNum}){
 
   my $schoolMagicName = $pc{'schoolMagic'.$num.'Name'};
   (my $divineMark, $schoolMagicName) = extractDivineMark $schoolMagicName;
+  my $alias;
+  if($schoolMagicName =~ s/\s?[－―‐–—─\-](.+?)[－―‐–—─\-]$//){ $alias = "－$1－" }
 
   push(@schoolmagics, {
     "NAME"     => stylizeCharacterName($schoolMagicName),
+    "ALIAS"    => $alias,
     "DIVINE_MARK" => $divineMark,
     "LEVEL"    => $pc{'schoolMagic'.$num.'Lv'},
     "ICON"     => $icon,

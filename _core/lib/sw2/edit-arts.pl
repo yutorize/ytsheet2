@@ -33,6 +33,7 @@ foreach(@data::class_names){
   elsif($data::class{$_}{craft}) { push(@craft_classes, $data::class{$_}{craft}{jName}); }
 }
 push(@magic_classes, @craft_classes);
+@magic_classes = deduplicate(@magic_classes); #重複削除
 ### データ読み込み ###################################################################################
 my ($data, $mode, $file, $message) = getSheetData($::in{mode});
 our %pc = %{ $data };

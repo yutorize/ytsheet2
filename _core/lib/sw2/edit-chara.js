@@ -246,6 +246,7 @@ function calcLv(){
   }
   
   document.getElementById('material-cards').style.display = lv['Alc'] > 0 ? '' : 'none';
+  document.getElementById('magic-bibliomancy-temporary').style.display = lv['Bib'] > 0 ? '' : 'none';
   
   calcFairy();
 }
@@ -798,6 +799,12 @@ function checkFeats(){
       else if (feat.match(/魔晶石の達人/)){
         if(level < 9){ cL.add("error"); }
       }
+      else if (feat.match(/魔導書習熟Ｓ/)){
+        if(lv.Bib < 5 || !acquire.match('魔導書習熟Ａ')){ cL.add("error"); }
+      }
+      else if (feat.match(/魔導書の達人/)){
+        if(lv.Bib < 11 || !acquire.match('魔導書習熟Ｓ')){ cL.add("error"); }
+      }
       else if (feat.match(/マリオネット/)){
         if(level < 5){ cL.add("error"); }
       }
@@ -1109,6 +1116,7 @@ function checkFeats(){
   calcAttack();
   calcDefense();
   checkCraft();
+  checkBibliomancy();
 }
 
 // 技芸 ----------------------------------------
@@ -1168,6 +1176,19 @@ function checkCraft() {
   }
 
   calcAttack();
+}
+// 秘奥魔法／応急行使枠 ----------------------------------------
+function checkBibliomancy(){
+  for (let num = 1; num <= form.bibliomancyTemporaryNum.value||0; num++){
+    const obj = form['magicBibliomancyTemporary'+num];
+    obj.classList.remove('error');
+    SET.class['ビブリオマンサー'].magic.data.forEach(data => {
+      if(obj.value === data[1] && lv.Bib < data[0]){
+        obj.classList.add('error');
+        return;
+      }
+    });
+  }
 }
 
 // ＨＰＭＰ抵抗力計算 ----------------------------------------
@@ -2306,6 +2327,18 @@ function delMysticMagic(){
 }
 // ソート
 setSortable('mysticMagic','#mystic-magic-list','li');
+
+// 秘奥魔法／応急行使枠 ----------------------------------------
+// 追加
+function addBibliomancy(){
+  document.querySelector("#bibliomancy-temporary-list").append(createRow('bibliomancy-temporary','bibliomancyTemporaryNum'));
+}
+// 削除
+function delBibliomancy(){
+  delRow('bibliomancyTemporaryNum', '#bibliomancy-temporary-list li:last-of-type')
+}
+// ソート
+setSortable('magicBibliomancyTemporary','#bibliomancy-temporary-list','li');
 
 // 言語欄 ----------------------------------------
 function checkLanguage(){

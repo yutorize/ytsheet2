@@ -163,13 +163,14 @@ foreach (@list) {
   if($category =~ /magic|school/){
     (my $divineMark, $name) = extractDivineMark $name if $category =~ /magic/ && $sub =~ /神聖魔法/;
     $name = '【'.$name.'】';
+    $name =~ s/\s?[－―‐–—─\-](.+?)[－―‐–—─\-]】$/】<span>－$1－<\/span>/;
     $name = $divineMark.$name if defined $divineMark;
   }
   
   #グループ（分類）
   my $category_text = $category{$category};
-  if($sub =~ /妖精/){ $sub =~ s#(／[0-9]+)#$1ランク#; }
-  else { $sub =~ s#(／[0-9]+)#$1レベル#; }
+  if($sub =~ /(?:属性|特殊)妖精魔法|秘奥魔法/){ $sub =~ s#／([0-9]+)#／ランク$1#; }
+  else { $sub =~ s#(／[0-9-～]+)#$1レベル#; }
   $sub = subTextShape($sub);
 
   #タグ
