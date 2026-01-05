@@ -252,20 +252,44 @@ sub data_calc {
   }
 
   ### newline --------------------------------------------------
-  my $charactername = ($pc{aka} ? "“$pc{aka}”" : "").$pc{characterName};
-  $charactername =~ s/[|｜]([^|｜]+?)《.+?》/$1/g;
-  $_ =~ s/[|｜]([^|｜]+?)《.+?》/$1/g foreach (@dloises);
-  $_ =~ s/[:：].+?$//g foreach (@dloises);
+  my %NL;
+  $NL{name}  = ($pc{aka} ? "“$pc{aka}”" : "").$pc{characterName};
+  $NL{$_} = $pc{$_} foreach ('playerName','gender','age','sign','blood','works');
+  foreach (keys %NL){
+    $NL{$_} =~ s/[|｜]([^|｜]+?)《.+?》/$1/g;
+    $NL{$_} = removeTags unescapeTags $NL{$_} =~ s/^\s|\s$//gr;
+  }
+  if(length($NL{name}) > 108){
+    if($NL{name} =~ s/“.+”//r){ $NL{name} =~ s/“.+”// }
+    if(length($NL{name}) > 108){
+      $NL{name} = substr($NL{name}, 0, 108).'..' if length($NL{name}) > 108;
+    }
+  }
+  $NL{playerName} = substr($NL{playerName}, 0, 25).'..' if length($NL{playerName}) > 25;
+  $NL{gender} = substr($NL{gender}, 0, 20).'..' if length($NL{gender}) > 20;
+  $NL{age}    = substr($NL{age}   , 0, 20).'..' if length($NL{age}   ) > 20;
+  $NL{sign}   = substr($NL{sign}  , 0, 20).'..' if length($NL{sign}  ) > 20;
+  $NL{blood}  = substr($NL{blood} , 0, 20).'..' if length($NL{blood} ) > 20;
+  $NL{works}  = substr($NL{works} , 0, 20).'..' if length($NL{works} ) > 20;
+  foreach (@dloises){
+    $_ =~ s/[|｜]([^|｜]+?)《.+?》/$1/g;
+    $_ =~ s/[:：].+?$//g;
+    $_ = removeTags unescapeTags $_ =~ s/^\s|\s$//gr;
+    $_ = substr($_ , 0, 30).'..' if length($_) > 30;
+  }
   sub synCheck {
     my $syn = shift;
     if($syn eq ''){ return '' }
     if(grep { $_ eq $syn } @data::syndromes){ return $syn; }
+    $syn =~ s/[|｜]([^|｜]+?)《.+?》/$1/g;
+    $syn = removeTags unescapeTags $syn =~ s/^\s|\s$//gr;
+    $syn = substr($syn, 0, 20).'..' if length($syn) > 20;
     return "その他:$syn";
   }
   $::newline = "$pc{id}<>$::file<>".
-               "$pc{birthTime}<>$::now<>$charactername<>$pc{playerName}<>$pc{group}<>".
+               "$pc{birthTime}<>$::now<>$NL{name}<>$NL{playerName}<>$pc{group}<>".
                (130+$pc{expSpent}).
-               "<>$pc{gender}<>$pc{age}<>$pc{sign}<>$pc{blood}<>$pc{works}<>".
+               "<>$NL{gender}<>$NL{age}<>$NL{sign}<>$NL{blood}<>$NL{works}<>".
                
                synCheck($pc{syndrome1}).'/'.
                synCheck($pc{syndrome2}).'/'.

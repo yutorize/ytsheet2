@@ -58,12 +58,21 @@ sub data_calc {
 
   ### newline --------------------------------------------------
   my %NL;
-  foreach ('characterName','taxa','home','origin','background','clan','clanEmotion','address'){
+  foreach ('characterName','playerName','taxa','home','origin','background','clan','clanEmotion','address'){
     $NL{$_} = $pc{$_} =~ s/[|｜]([^|｜]+?)《.+?》/$1/gr;
-    $NL{$_} = removeTags unescapeTags $NL{$_};
+    $NL{$_} = removeTags unescapeTags $NL{$_} =~ s/^\s|\s$//gr;
   }
+  $NL{characterName} = substr($NL{characterName}, 0, 108).'..' if length($NL{characterName}) > 108;
+  $NL{playerName}    = substr($NL{playerName}   , 0,  25).'..' if length($NL{playerName}   ) >  25;
+  $NL{taxa}        = substr($NL{taxa}       , 0, 20).'..' if length($NL{taxa}       ) >  20;
+  $NL{home}        = substr($NL{home}       , 0, 30).'..' if length($NL{home}       ) >  30;
+  $NL{origin}      = substr($NL{origin}     , 0, 20).'..' if length($NL{origin}     ) >  20;
+  $NL{background}  = substr($NL{background} , 0, 30).'..' if length($NL{background} ) >  30;
+  $NL{clan}        = substr($NL{clan}       , 0,108).'..' if length($NL{clan}       ) > 108;
+  $NL{clanEmotion} = substr($NL{clanEmotion}, 0, 30).'..' if length($NL{clanEmotion}) >  30;
+  $NL{address}     = substr($NL{address}    , 0, 30).'..' if length($NL{address}    ) >  30;
   $::newline = "$pc{id}<>$::file<>".
-               "$pc{birthTime}<>$::now<>$NL{characterName}<>$pc{playerName}<>$pc{group}<>".
+               "$pc{birthTime}<>$::now<>$NL{characterName}<>$NL{playerName}<>$pc{group}<>".
                "$pc{image}<> $pc{tags} <>$pc{hide}<>$pc{lastSession}<>".
 
                "$pc{level}<>$pc{endurance}<>".

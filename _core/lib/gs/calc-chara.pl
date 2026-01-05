@@ -237,23 +237,32 @@ sub data_calc {
   }
 
   ### newline --------------------------------------------------
-  my $charactername = ($pc{aka} ? "“$pc{aka}”" : "").$pc{characterName};
-  $charactername =~ s/[|｜]([^|｜]+?)《.+?》/$1/g;
+  my %NL;
+  $NL{$_} = $pc{$_} foreach ('characterName','playerName','gender','age','rank','faith');
+  $NL{race}     = ($pc{race}     && $pc{raceFree}    ) ? "$pc{race}($pc{raceFree})"         : $pc{race}     || $pc{raceFree};
+  $NL{raceBase} = ($pc{raceBase} && $pc{raceBaseFree}) ? "$pc{raceBase}($pc{raceBaseFree})" : $pc{raceBase} || $pc{raceBaseFree};
+  foreach (keys %NL){
+    $NL{$_} =~ s/[|｜]([^|｜]+?)《.+?》/$1/g;
+    $NL{$_} = removeTags unescapeTags $NL{$_} =~ s/^\s|\s$//gr;
+  }
+  $NL{characterName} = substr($NL{characterName}, 0, 108).'..' if length($NL{characterName}) > 108;
+  $NL{playerName}    = substr($NL{playerName}   , 0,  25).'..' if length($NL{playerName}   ) >  25;
+  $NL{race}     = substr($NL{race}    , 0, 20).'..' if length($NL{race}    ) > 20;
+  $NL{raceBase} = substr($NL{raceBase}, 0, 20).'..' if length($NL{raceBase}) > 20;
+  $NL{gender}   = substr($NL{gender}  , 0, 20).'..' if length($NL{gender}  ) > 20;
+  $NL{age}      = substr($NL{age}     , 0, 20).'..' if length($NL{age}     ) > 20;
+  $NL{rank}     = substr($NL{rank}    , 0, 20).'..' if length($NL{rank}    ) > 20;
+  $NL{faith}    = substr($NL{faith}   , 0, 20).'..' if length($NL{faith}   ) > 20;
   my $classlv;
   foreach my $class (@data::class_list){
     $classlv .= $pc{'lv'.$data::class{$class}{id}}.'/';
   }
-  my $race     = ($pc{race}     && $pc{raceFree}    ) ? "$pc{race}($pc{raceFree})"         : $pc{race}     || $pc{raceFree};
-  my $raceBase = ($pc{raceBase} && $pc{raceBaseFree}) ? "$pc{raceBase}($pc{raceBaseFree})" : $pc{raceBase} || $pc{raceBaseFree};
-  $race     =~ s/[|｜]([^|｜]+?)《.+?》/$1/g;
-  $raceBase =~ s/[|｜]([^|｜]+?)《.+?》/$1/g;
-  my $faith = removeTags unescapeTags $pc{faith};
   $::newline = "$pc{id}<>$::file<>".
-               "$pc{birthTime}<>$::now<>$charactername<>$pc{playerName}<>$pc{group}<>".
+               "$pc{birthTime}<>$::now<>$NL{characterName}<>$NL{playerName}<>$pc{group}<>".
                "$pc{image}<> $pc{tags} <>$pc{hide}<>$pc{lastSession}<>".
 
                "$pc{expTotal}<>$pc{level}<>$classlv<>".
-               "$race<>$raceBase<>$pc{gender}<>$pc{age}<>$pc{rank}<>$pc{faith}<>";
+               "$NL{race}<>$NL{raceBase}<>$NL{gender}<>$NL{age}<>$NL{rank}<>$NL{faith}<>";
 
   return %pc;
 }

@@ -822,23 +822,36 @@ sub data_calc {
   }
 
   ### newline --------------------------------------------------
-  my $charactername = ($pc{aka} ? "“$pc{aka}”" : "").$pc{characterName};
-  $charactername =~ s/[|｜]([^|｜]+?)《.+?》/$1/g;
+  my %NL;
+  $NL{name}  = ($pc{aka} ? "“$pc{aka}”" : "").$pc{characterName};
+  $NL{rank}  = $pc{honorRank} >= $pc{honorRankBarbaros} ? $pc{rank} : $pc{rankBarbaros};
+  $NL{race}  = (exists $data::races{$pc{race}}) ? $pc{race} : $pc{race} ? "その他:$pc{race}" : '';
+  $NL{faith} = $pc{faith} eq 'その他の信仰' ? ("その他:$pc{faithOther}" || $pc{faith}) : $pc{faith};
+  $NL{$_} = $pc{$_} foreach ('playerName','gender','age');
+  foreach (keys %NL){
+    $NL{$_} =~ s/[|｜]([^|｜]+?)《.+?》/$1/g;
+    $NL{$_} = removeTags unescapeTags $NL{$_} =~ s/^\s+|\s+$//gr;
+  }
+  if(length($NL{name}) > 108){
+    if($NL{name} =~ s/“.+”//r){ $NL{name} =~ s/“.+”// }
+    if(length($NL{name}) > 108){
+      $NL{name} = substr($NL{name}, 0, 108).'..' if length($NL{name}) > 108;
+    }
+  }
+  $NL{playerName} = substr($NL{playerName}, 0, 25).'..' if length($NL{playerName}) > 25;
+  $NL{rank}   = substr($NL{rank}  , 0, 20).'..' if length($NL{rank}  ) > 20;
+  $NL{race}   = substr($NL{race}  , 0, 30).'..' if length($NL{race}  ) > 30;
+  $NL{gender} = substr($NL{gender}, 0, 20).'..' if length($NL{gender}) > 20;
+  $NL{age}    = substr($NL{age}   , 0, 20).'..' if length($NL{age}   ) > 20;
+  $NL{faith}  = substr($NL{faith} , 0, 50).'..' if length($NL{faith} ) > 50;
   my $classlv;
   foreach my $class (@data::class_list){
     $classlv .= $pc{'lv'.$data::class{$class}{id}}.'/';
   }
-  my $rank = $pc{honorRank} >= $pc{honorRankBarbaros} ? $pc{rank} : $pc{rankBarbaros};
-  my $race = (exists $data::races{$pc{race}}) ? $pc{race}
-           : $pc{race} ? "その他:$pc{race}"
-           : '';
-  my $faith = $pc{faith} eq 'その他の信仰' ? ("その他:$pc{faithOther}" || $pc{faith}) : $pc{faith};
-
-  $_ = removeTags unescapeTags $_ foreach($race,$faith);
 
   $::newline = "$pc{id}<>$::file<>".
-               "$pc{birthTime}<>$::now<>$charactername<>$pc{playerName}<>$pc{group}<>".
-               "$pc{expTotal}<>$rank<>$race<>$pc{gender}<>$pc{age}<>$faith<>".
+               "$pc{birthTime}<>$::now<>$NL{name}<>$NL{playerName}<>$pc{group}<>".
+               "$pc{expTotal}<>$NL{rank}<>$NL{race}<>$NL{gender}<>$NL{age}<>$NL{faith}<>".
                "$classlv<>".
                "$pc{lastSession}<>$pc{image}<> $pc{tags} <>$pc{hide}<>$pc{fellowPublic}<>";
 

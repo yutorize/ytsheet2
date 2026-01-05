@@ -63,15 +63,27 @@ sub data_calc {
   }
 
   ### newline --------------------------------------------------
-  my $charactername = ($pc{aka} ? "“$pc{aka}”" : "").$pc{characterName};
-  $charactername =~ s/[|｜]([^|｜]+?)《.+?》/$1/g;
+  my %NL;
+  foreach ('characterName','playerName','gender','race','class','style1','style2','gender','age','height'){
+    $NL{$_} = $pc{$_} =~ s/[|｜]([^|｜]+?)《.+?》/$1/gr;
+    $NL{$_} = removeTags unescapeTags $NL{$_} =~ s/^\s|\s$//gr;
+  }
+  $NL{characterName} = substr($NL{characterName}, 0, 108).'..' if length($NL{characterName}) > 108;
+  $NL{playerName}    = substr($NL{playerName}   , 0,  25).'..' if length($NL{playerName}   ) >  25;
+  $NL{race}   = substr($NL{race}  , 0, 20).'..' if length($NL{race}  ) > 20;
+  $NL{class}  = substr($NL{class} , 0, 20).'..' if length($NL{class} ) > 20;
+  $NL{style1} = substr($NL{style1}, 0, 20).'..' if length($NL{style1}) > 20;
+  $NL{style2} = substr($NL{style2}, 0, 20).'..' if length($NL{style2}) > 20;
+  $NL{gender} = substr($NL{gender}, 0, 20).'..' if length($NL{gender}) > 20;
+  $NL{age}    = substr($NL{age}   , 0, 20).'..' if length($NL{age}   ) > 20;
+  $NL{height} = substr($NL{height}, 0, 20).'..' if length($NL{height}) > 20;
   $::newline = "$pc{id}<>$::file<>".
-               "$pc{birthTime}<>$::now<>$charactername<>$pc{playerName}<>$pc{group}<>".
+               "$pc{birthTime}<>$::now<>$NL{characterName}<>$NL{playerName}<>$pc{group}<>".
                "$pc{image}<> $pc{tags} <>$pc{hide}<>".
 
-               "$pc{race}<>$pc{class}<>$pc{style1}／$pc{style2}<>".
+               "$NL{race}<>$NL{class}<>$NL{style1}／$NL{style2}<>".
                "$pc{level}<>$pc{resultPointsTotal}<>".
-               "$pc{gender}<>$pc{age}<>$pc{height}<>$pc{lastSession}<>";
+               "$NL{gender}<>$NL{age}<>$NL{height}<>$pc{lastSession}<>";
 
   return %pc;
 }

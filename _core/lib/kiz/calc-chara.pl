@@ -67,15 +67,26 @@ sub data_calc {
   }
 
   ### newline --------------------------------------------------
-  my $charactername = ($pc{aka} ? "“$pc{aka}”" : "").$pc{characterName};
-  $charactername =~ s/[|｜]([^|｜]+?)《.+?》/$1/g;
+  my %NL;
+  foreach ('characterName','playerName','class','negaiOutside','negaiInside','gender','age','belong'){
+    $NL{$_} = $pc{$_} =~ s/[|｜]([^|｜]+?)《.+?》/$1/gr;
+    $NL{$_} = removeTags unescapeTags $NL{$_} =~ s/^\s|\s$//gr;
+  }
+  $NL{characterName} = substr($NL{characterName}, 0, 108).'..' if length($NL{characterName}) > 108;
+  $NL{playerName}    = substr($NL{playerName}   , 0,  25).'..' if length($NL{playerName}   ) >  25;
+  $NL{class}        = substr($NL{class}       , 0,  10).'..' if length($NL{class}       ) >  10;
+  $NL{negaiOutside} = substr($NL{negaiOutside}, 0,  10).'..' if length($NL{negaiOutside}) >  10;
+  $NL{negaiInside}  = substr($NL{negaiInside} , 0,  10).'..' if length($NL{negaiInside} ) >  10;
+  $NL{gender} = substr($NL{gender}, 0, 20).'..' if length($NL{gender}) > 20;
+  $NL{age}    = substr($NL{age}   , 0, 20).'..' if length($NL{age}   ) > 20;
+  $NL{belong} = substr($pc{belong}, 0, 30).'..' if length($pc{belong}) > 30;
   $::newline = "$pc{id}<>$::file<>".
-               "$pc{birthTime}<>$::now<>$charactername<>$pc{playerName}<>$pc{group}<>".
+               "$pc{birthTime}<>$::now<>$NL{characterName}<>$NL{playerName}<>$pc{group}<>".
                "$pc{image}<> $pc{tags} <>$pc{hide}<>".
 
-               "$pc{class}<>$pc{negaiOutside}<>$pc{negaiInside}<>".
-               "$pc{gender}<>$pc{age}<>".
-               "$pc{belong}<>$pc{partner2On}<>".
+               "$NL{class}<>$NL{negaiOutside}<>$NL{negaiInside}<>".
+               "$NL{gender}<>$NL{age}<>".
+               "$NL{belong}<>$pc{partner2On}<>".
                "$kizuna_count<>$hibiware_count<>$pc{lastSession}<>";
 
   return %pc;

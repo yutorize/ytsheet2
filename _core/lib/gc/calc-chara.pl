@@ -126,15 +126,29 @@ sub data_calc {
   }
 
   ### newline --------------------------------------------------
-  my $charactername = ($pc{aka} ? "“$pc{aka}”" : "").$pc{characterName};
-  $charactername =~ s/[|｜]([^|｜]+?)《.+?》/$1/g;
+  my %NL;
+  foreach ('characterName','playerName','class','style','styleSub','works','country','clanEgendermotion','age','height','weight'){
+    $NL{$_} = $pc{$_} =~ s/[|｜]([^|｜]+?)《.+?》/$1/gr;
+    $NL{$_} = removeTags unescapeTags $NL{$_} =~ s/^\s|\s$//gr;
+  }
+  $NL{characterName} = substr($NL{characterName}, 0, 108).'..' if length($NL{characterName}) > 108;
+  $NL{playerName}    = substr($NL{playerName}   , 0,  25).'..' if length($NL{playerName}   ) >  25;
+  $NL{class}    = substr($NL{class}   , 0, 20).'..' if length($NL{class}   ) >  20;
+  $NL{style}    = substr($NL{style}   , 0, 20).'..' if length($NL{style}   ) >  20;
+  $NL{styleSub} = substr($NL{styleSub}, 0, 20).'..' if length($NL{styleSub}) >  20;
+  $NL{works}    = substr($NL{works}   , 0, 20).'..' if length($NL{works}   ) >  20;
+  $NL{country}  = substr($NL{country} , 0,108).'..' if length($NL{country} ) > 108;
+  $NL{gender} = substr($NL{gender}, 0, 20).'..' if length($NL{gender}) > 20;
+  $NL{age}    = substr($NL{age}   , 0, 20).'..' if length($NL{age}   ) > 20;
+  $NL{height} = substr($NL{height}, 0, 20).'..' if length($NL{height}) > 20;
+  $NL{weight} = substr($NL{weight}, 0, 20).'..' if length($NL{weight}) > 20;
   $::newline = "$pc{id}<>$::file<>".
-               "$pc{birthTime}<>$::now<>$charactername<>$pc{playerName}<>$pc{group}<>".
+               "$pc{birthTime}<>$::now<>$NL{characterName}<>$NL{playerName}<>$pc{group}<>".
                "$pc{image}<> $pc{tags} <>$pc{hide}<>".
 
-               "$pc{class}<>$pc{style}<>$pc{styleSub}<>$pc{works}<>".
+               "$NL{class}<>$NL{style}<>$NL{styleSub}<>$NL{works}<>".
                "$pc{level}<>$pc{expTotal}<>".
-               "$pc{country}<>$pc{gender}<>$pc{age}<>$pc{height}<>$pc{weight}<>".
+               "$NL{country}<>$NL{gender}<>$NL{age}<>$NL{height}<>$NL{weight}<>".
                "$pc{lastSession}<>";
 
   return %pc;

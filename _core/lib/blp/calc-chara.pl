@@ -64,13 +64,26 @@ sub data_calc {
   }
 
   ### newline --------------------------------------------------
-  my $charactername = ($pc{aka} ? "“$pc{aka}”" : "").$pc{characterName};
-  $charactername =~ s/[|｜]([^|｜]+?)《.+?》/$1/g;
+  my %NL;
+  foreach ('characterName','playerName','factor','factorCore','factorStyle','gender','age','ageApp','belong','missing'){
+    $NL{$_} = $pc{$_} =~ s/[|｜]([^|｜]+?)《.+?》/$1/gr;
+    $NL{$_} = removeTags unescapeTags $NL{$_} =~ s/^\s|\s$//gr;
+  }
+  $NL{characterName} = substr($NL{characterName}, 0, 108).'..' if length($NL{characterName}) > 108;
+  $NL{playerName}    = substr($NL{playerName}   , 0,  25).'..' if length($NL{playerName}   ) >  25;
+  $NL{factor}      = substr($NL{factor}     , 0,  10).'..' if length($NL{factor}     ) >  10;
+  $NL{factorCore}  = substr($NL{factorCore} , 0,  10).'..' if length($NL{factorCore} ) >  10;
+  $NL{factorStyle} = substr($NL{factorStyle}, 0,  10).'..' if length($NL{factorStyle}) >  10;
+  $NL{gender}  = substr($NL{gender} , 0, 20).'..' if length($NL{gender} ) > 20;
+  $NL{age}     = substr($NL{age}    , 0, 20).'..' if length($NL{age}    ) > 20;
+  $NL{ageApp}  = substr($NL{ageApp} , 0, 20).'..' if length($NL{ageApp} ) > 20;
+  $NL{belong}  = substr($pc{belong} , 0, 30).'..' if length($pc{belong} ) > 30;
+  $NL{missing} = substr($pc{missing}, 0, 30).'..' if length($pc{missing}) > 30;
   $::newline = "$pc{id}<>$::file<>".
-               "$pc{birthTime}<>$::now<>$charactername<>$pc{playerName}<>$pc{group}<>".
-               "$pc{factor}<>$pc{factorCore}<>$pc{factorStyle}<>".
-               "$pc{gender}<>$pc{age}<>$pc{ageApp}<>".
-               "$pc{belong}<>$pc{missing}<>".
+               "$pc{birthTime}<>$::now<>$NL{characterName}<>$NL{playerName}<>$pc{group}<>".
+               "$NL{factor}<>$NL{factorCore}<>$NL{factorStyle}<>".
+               "$NL{gender}<>$NL{age}<>$NL{ageApp}<>".
+               "$NL{belong}<>$NL{missing}<>".
                "$pc{level}<>".
                
                "$pc{lastSession}<>$pc{image}<> $pc{tags} <>$pc{hide}<><>";
