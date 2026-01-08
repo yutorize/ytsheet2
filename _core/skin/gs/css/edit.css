@@ -187,6 +187,7 @@
 #classes dl {
   flex-grow: 1;
   flex-basis: calc(50% - 10px);
+  display: grid;
   grid-template-columns: 1fr 3.5em;
 }
 #classes dl dt {
@@ -531,9 +532,11 @@
 }
 
 
-:is(#skills, #general-skills, #spells) .flex { display: flex; align-items: end; }
+:is(#skills, #general-skills, #spells, #spell-cast) .flex { display: flex; align-items: end; }
 
 :is(#skills, #general-skills, #spells, #arts) thead th:first-child { width: 1em; }
+
+#spell-cast .flex b { text-wrap: nowrap; }
 
 #spells thead {
   .name   { width:  12em; } /* 名前 */
