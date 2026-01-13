@@ -80,6 +80,7 @@ const expTable = {
 let race = '';
 let level = 0;
 let levelCasters = [];
+let equipMod = {};
 
 window.onload = function() {
   console.log('=====START=====');
@@ -2586,7 +2587,6 @@ function delDefense(){
 }
 
 // 装備の備考欄の補正 ----------------------------------------
-let equipMod = {};
 function changeEquipMod (){
   if(checkEquipMod()){
     calcStt();
