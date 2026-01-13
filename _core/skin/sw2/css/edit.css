@@ -646,7 +646,8 @@
     }
 
     &:not(.sag-available) select option[value="Sag"],
-    &:not(.bar-available) select option[value="Bar"] {
+    &:not(.bar-available) select option[value="Bar"],
+    &:not(.juj-available) select option[value="Juj"] {
       display: none;
     }
   }

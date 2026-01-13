@@ -2345,6 +2345,7 @@ function checkLanguage(){
   const languageTable = document.getElementById('language-table');
   languageTable.classList.toggle('sag-available', parseInt(form['lvSag'].value) > 0);
   languageTable.classList.toggle('bar-available', parseInt(form['lvBar'].value) > 0);
+  languageTable.classList.toggle('juj-available', parseInt(form['lvJuj'].value) > 0);
 
   let count = {}; let acqT = {}; let acqR = {};
   if(SET.races[race]?.language){
