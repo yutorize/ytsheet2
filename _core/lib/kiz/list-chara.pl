@@ -22,6 +22,7 @@ $INDEX->param(modeList => 1);
 $INDEX->param(modeMylist => 1) if $mode eq 'mylist';
 
 $INDEX->param(LOGIN_ID => $LOGIN_ID);
+$INDEX->param(EMAIL_NOT_REGISTERED => !emailRegistered($LOGIN_ID));
 $INDEX->param(OAUTH_MODE => $set::oauth_service);
 $INDEX->param(OAUTH_LOGIN_URL => $set::oauth_login_url);
 

@@ -1,0 +1,11 @@
+<ul class="notice-list">
+    <TMPL_IF LOGIN_ID>
+    <TMPL_IF EMAIL_NOT_REGISTERED>
+    <li data-mode="important">
+        <p>
+            メールアドレスが設定されていません。（<a href="./?mode=option#account" target="_blank">設定する</a>）
+        </p>
+    </li>
+    </TMPL_IF>
+    </TMPL_IF>
+</ul>

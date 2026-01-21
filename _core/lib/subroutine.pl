@@ -117,6 +117,14 @@ sub getplayername {
 }
 
 
+### メールアドレス設定の有無を判定 --------------------------------------------------
+sub emailRegistered {
+  my $login_id = shift;
+  my $email = (getplayername($login_id))[1];
+  return $email ne '' ? 1 : 0;
+}
+
+
 ### 編集保護設定取得 --------------------------------------------------
 sub getProtectType {
   my $file = shift;
