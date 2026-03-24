@@ -507,7 +507,7 @@ function calcFairy(){
   const a4 = Number(form.fairyContractWind.value );
   const a5 = Number(form.fairyContractLight.value);
   const a6 = Number(form.fairyContractDark.value );  
-  document.getElementById('fairy-sim-url').href = "http://yutorize.2-d.jp/ft_sim/?ft="
+  document.getElementById('fairy-sim-url').href = "http://yutorize.work/ft_sim/?ft="
     + flv.toString(18)
     + a1.toString(18)
     + a2.toString(18)

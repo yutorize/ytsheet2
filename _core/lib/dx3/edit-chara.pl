@@ -1072,7 +1072,7 @@ print <<"HTML";
   </main>
   <footer>
     <p class="notes">©FarEast Amusement Research Co.,Ltd.「ダブルクロスThe 3rd Edition」</p>
-    <p class="copyright">©<a href="https://yutorize.2-d.jp">ゆとらいず工房</a>「ゆとシートⅡ」ver.${main::ver}</p>
+    <p class="copyright">©<a href="https://yutorize.work">ゆとらいず工房</a>「ゆとシートⅡ」ver.${main::ver}</p>
   </footer>
   <datalist id="list-stage">
     <option value="基本ステージ">

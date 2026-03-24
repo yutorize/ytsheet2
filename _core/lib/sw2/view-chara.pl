@@ -556,7 +556,7 @@ $SHEET->param(Packages => \@packages);
 my $fairy_contact;
 my $fairy_sim_url;
 if($::SW2_0){
-  $fairy_sim_url = 'https://yutorize.2-d.jp/ft_sim/?ft='
+  $fairy_sim_url = 'https://yutorize.work/ft_sim/?ft='
     . convert10to36($pc{lvFai})
     . convert10to36($pc{fairyContractEarth})
     . convert10to36($pc{fairyContractWater})

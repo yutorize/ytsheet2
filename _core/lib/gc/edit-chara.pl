@@ -1385,7 +1385,7 @@ print <<"HTML";
   </main>
   <footer>
     <p class="notes">©Shunsaku Yano/Team Barrelroll.「グランクレストRPG」</p>
-    <p class="copyright">©<a href="https://yutorize.2-d.jp">ゆとらいず工房</a>「ゆとシートⅡ」ver.${main::ver}</p>
+    <p class="copyright">©<a href="https://yutorize.work">ゆとらいず工房</a>「ゆとシートⅡ」ver.${main::ver}</p>
   </footer>
   <datalist id="list-gender">
     <option value="男">

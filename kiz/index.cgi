@@ -2,7 +2,7 @@
 ####################################
 ##       ゆとシートⅡ for KIZ     ##
 ##          by ゆとらいず工房     ##
-##    https://yutorize.2-d.jp     ##
+##      https://yutorize.work     ##
 ####################################
 use strict;
 #use warnings;
