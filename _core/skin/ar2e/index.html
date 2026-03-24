@@ -25,7 +25,7 @@
   <header>
     <h1><a href="./"><TMPL_VAR title></a></h1>
     <nav><TMPL_INCLUDE NAME="../_common/index-menu.html"></nav>
-    <TMPL_IF LOGIN_ID><div class="login-user"><span>ログイン中: <b><TMPL_VAR LOGIN_ID></b></span></div></TMPL_IF>
+    <div class="login-user"><span><TMPL_IF LOGIN_ID>ログイン中: <b><TMPL_VAR LOGIN_ID></b><TMPL_ELSE>ゲストさん（非ログイン）</TMPL_IF></span></div>
   </header>
   
   <main>
