@@ -751,7 +751,7 @@ function calcCombo(num){
 function addCombo(copyBaseNum){
   const row = createRow('combo','comboNum');
   const num = form.comboNum.value;
-  document.querySelector(`#combo-list > div:nth-of-type(${copyBaseNum||num-1})`).after(row);
+  document.querySelector(`#combo-list`).appendChild(row);
 
   if(copyBaseNum){
     row.querySelectorAll('[name]').forEach(node => {
