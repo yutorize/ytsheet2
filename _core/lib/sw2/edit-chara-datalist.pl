@@ -84,6 +84,13 @@ sub printCharaDataList {
     <option value="翼人語">
     <option value="魔神語">
   </datalist>
+  <datalist id="list-currency-name">
+    <option value="闘技場ポイント">
+  </datalist>
+  <datalist id="list-currency-unit">
+    <option value="P">
+    <option value="点">
+  </datalist>
 HTML
 }
 

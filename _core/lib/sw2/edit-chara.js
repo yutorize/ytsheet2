@@ -96,6 +96,7 @@ window.onload = function() {
   checkEquipMod();
   calcStt();
   calcCash();
+  calcCashOthers();
   calcHonor();
   calcDishonor();
   calcCommonClass();
@@ -2075,6 +2076,48 @@ function calcCash(){
     form.deposit.readOnly = true;
   }
   else { form.deposit.readOnly = false; }
+}
+function calcCashOthers(){
+  for (let num = 1; num <= form.cashbookOtherNum.value; num++){
+    calcCashOther(num);
+  }
+}
+function calcCashOther(num){
+  let cash = 0;
+  let deposit = 0;
+  let debt = 0;
+  let s = form['cashbookOther'+num].value;
+  s.replace(
+    /::([\+\-\*\/]?[0-9,]+)+/g,
+    function (n, idx, old) {
+      cash += safeEval(n.slice(2)) || 0;
+    }
+  );
+  s.replace(
+    /:>([\+\-\*\/]?[0-9,]+)+/g,
+    function (n, idx, old) {
+      deposit += safeEval(n.slice(2)) || 0;
+    }
+  );
+  s.replace(
+    /:<([\+\-\*\/]?[0-9,]+)+/g,
+    function (n, idx, old) {
+      debt += safeEval(n.slice(2)) || 0;
+    }
+  );
+  cash = cash - deposit + debt;
+  document.getElementById(`cashbook-other${num}-total-value`).textContent = commify(cash);
+  document.getElementById(`cashbook-other${num}-deposit-value`).textContent = commify(deposit);
+  document.getElementById(`cashbook-other${num}-debt-value`).textContent = commify(debt);
+  document.querySelectorAll(`.cashbook-other${num}-unit`).forEach(obj => { obj.textContent = form[`cashbookOther${num}Unit`].value });
+}
+// 追加
+function addCashbook(){
+  document.querySelector("#cashbook-others-list").append(createRow('cashbook-other','cashbookOtherNum'));
+}
+// 削除
+function delCashbook(){
+  delRow('cashbookOtherNum', '#cashbook-others-list > :last-child');
 }
 
 // 穢れ・侵蝕の影響など ----------------------------------------

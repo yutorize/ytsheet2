@@ -58,11 +58,22 @@ sub data_calc {
   $pc{historyMoneyTotal} = $pc{moneyTotal};
   $pc{historyHonorTotal} = $pc{honor};
   ## 収支履歴計算
-  my $cashbook = $pc{cashbook};
-  $cashbook =~ s/::((?:[\+\-\*\/]?[0-9,]+)+)/$pc{moneyTotal} += s_eval($1)/eg;
-  $cashbook =~ s/:>((?:[\+\-\*\/]?[0-9,]+)+)/$pc{depositTotal} += s_eval($1)/eg;
-  $cashbook =~ s/:<((?:[\+\-\*\/]?[0-9,]+)+)/$pc{debtTotal} += s_eval($1)/eg;
+  {
+    my $cashbook = $pc{cashbook};
+    $cashbook =~ s/::((?:[\+\-\*\/]?[0-9,]+)+)/$pc{moneyTotal} += s_eval($1)/eg;
+    $cashbook =~ s/:>((?:[\+\-\*\/]?[0-9,]+)+)/$pc{depositTotal} += s_eval($1)/eg;
+    $cashbook =~ s/:<((?:[\+\-\*\/]?[0-9,]+)+)/$pc{debtTotal} += s_eval($1)/eg;
+  }
   $pc{moneyTotal} += $pc{debtTotal} - $pc{depositTotal};
+  foreach my $num (1..$pc{cashbookOtherNum}) {
+    $pc{"cashbookOther${num}Total"}   = 0;
+    $pc{"cashbookOther${num}Deposit"} = 0;
+    $pc{"cashbookOther${num}Debt"}    = 0;
+    my $cashbook = $pc{'cashbookOther'.$num};
+    $cashbook =~ s/::((?:[\+\-\*\/]?[0-9,]+)+)/$pc{"cashbookOther${num}Total"} += s_eval($1)/eg;
+    $cashbook =~ s/:>((?:[\+\-\*\/]?[0-9,]+)+)/$pc{"cashbookOther${num}Deposit"} += s_eval($1)/eg;
+    $cashbook =~ s/:<((?:[\+\-\*\/]?[0-9,]+)+)/$pc{"cashbookOther${num}Debt"} += s_eval($1)/eg;
+  }
 
   ## 名誉点2.0
   if($::SW2_0){
@@ -806,6 +817,7 @@ sub data_calc {
   $pc{fellowProfile} =~ s/\r\n?|\n/<br>/g;
   $pc{fellowNote}    =~ s/\r\n?|\n/<br>/g;
   $pc{chatPalette}   =~ s/\r\n?|\n/<br>/g;
+  $pc{'cashbookOther'.$_} =~ s/\r\n?|\n/<br>/g foreach(1..$pc{cashbookOtherNum});
   $pc{'chatPaletteInsert'.$_} =~ s/\r\n?|\n/<br>/g foreach(1..$pc{chatPaletteInsertNum});
   $pc{$_} =~ s/\r\n?|\n/<br>/g foreach (grep {/^fellow[-0-9]+(?:Action|Note)$/} keys %pc);
   

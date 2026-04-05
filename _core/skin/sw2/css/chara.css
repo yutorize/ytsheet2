@@ -1074,6 +1074,14 @@ dl#level {
     border-left-color: var(--box-outside-border-color);
   }
 }
+/* Other Currency */
+#other-currency {
+  margin-top: var(--box-v-gap);
+
+  display: grid;
+  gap: var(--box-v-gap);
+  grid-template-columns: 1fr 1fr;
+}
 
 /* MaterialCard */
 #material-cards table {

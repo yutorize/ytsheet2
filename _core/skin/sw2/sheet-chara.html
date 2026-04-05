@@ -516,6 +516,11 @@
             <dt>所持金<dd><span class="value"><TMPL_VAR money></span> <span class="unit">G</span>
             <dt>預金／借金<dd><span class="value"><TMPL_VAR deposit></span> <span class="unit">G</span>
           </dl>
+          <div id="other-currency">
+            <TMPL_LOOP CashbookOthers><dl class="box">
+              <dt><TMPL_VAR NAME><dd><span class="value"><TMPL_VAR TOTAL></span> <span class="unit"><TMPL_VAR UNIT></span>
+            </dl></TMPL_LOOP>
+          </div>
           <section class="box" id="items">
             <h2><TMPL_IF head_items><TMPL_VAR head_items><TMPL_ELSE>所持品</TMPL_IF></h2>
             <p><TMPL_VAR items></p>
@@ -645,6 +650,13 @@
         <div><p><TMPL_VAR cashbook></p></div>
       </section>
       </TMPL_IF>
+      <TMPL_LOOP CashbookOthers>
+      <section class="box cashbook" id="cashbook<TMPL_VAR __counter__>">
+        <h2><TMPL_IF head_cashbook><TMPL_VAR head_cashbook><TMPL_ELSE>収支履歴（<TMPL_VAR NAME>）</TMPL_IF></h2>
+        <button class="open-button" onclick="switchCashbookView('<TMPL_VAR __counter__>');" data-open="" data-text-open="収支履歴を展開" data-text-close="収支履歴を畳む"></button>
+        <div><p><TMPL_VAR DATA></p></div>
+      </section>
+      </TMPL_LOOP>
     </article>
     <section class="box chat-palette float-box">
       <h2>チャットパレット</h2>

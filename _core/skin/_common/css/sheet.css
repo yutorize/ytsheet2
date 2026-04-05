@@ -1407,7 +1407,8 @@ aside#loglist #log-naming form input {
 
 /* // Cashbook
 ---------------------------------------------------------------------------------------------------- */
-#cashbook {
+#cashbook,
+[id^="cashbook"] {
   margin-top: var(--box-v-gap);
   height: max-content;
   overflow: hidden;

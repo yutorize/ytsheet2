@@ -1103,14 +1103,33 @@ option.zero-data::before {
   height: 20em;
 }
 
-#cashbook textarea {
+#cashbook-others {
+  margin-top: var(--box-v-gap);
+}
+#cashbook textarea,
+#cashbook-others textarea {
   height: 16em;
 }
-#cashbook-total-value {
+#cashbook-others div {
+  margin-top: 0;
+  max-height: max-content;
+}
+#cashbook-others .cashbook-row {
+  margin-top: 0;
+  padding-bottom: 0.5em;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+}
+#cashbook-others input {
+  width: 8em;
+}
+#cashbook-total-value,
+#cashbook-others [id$="total-value"] {
   font-size: 120%;
   font-weight: bold;
 }
-#cashbook p {
+#cashbook p,
+#cashbook-others p {
   font-size: 90%;
   font-family: inherit;
   white-space: normal;

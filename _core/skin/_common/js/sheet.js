@@ -109,12 +109,12 @@ function switchHistoryClose(){
   }
 }
 
-// セッション履歴開閉 ----------------------------------------
+// 収支履歴開閉 ----------------------------------------
 let cashbookView = false;
-function switchCashbookView(){
+function switchCashbookView(num = ""){
   cashbookView = !cashbookView;
-  document.getElementById('cashbook').dataset.open = cashbookView ? 'true' : '';
-  document.querySelector('#cashbook .open-button').dataset.open = cashbookView ? 'true' : '';
+  document.getElementById('cashbook'+num).dataset.open = cashbookView ? 'true' : '';
+  document.querySelector(`#cashbook${num} .open-button`).dataset.open = cashbookView ? 'true' : '';
 }
 
 // スクロール位置 ----------------------------------------
