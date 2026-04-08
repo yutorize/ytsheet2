@@ -543,8 +543,9 @@ print <<"HTML";
 HTML
 foreach my $lv ('1bat',@set::feats_lv) {
   (my $data_lv = $lv) =~ s/^([0-9]+)[^0-9].*?$/$1/;
-  print '<li id="combat-feats-lv'.$lv.'" data-lv="'.$data_lv.($data_lv eq $lv ? '':'+').'"><select name="combatFeatsLv'.$lv.'" oninput="checkFeats()">';
+  print '<li id="combat-feats-lv'.$lv.'" data-lv="'.$data_lv.($data_lv eq $lv ? '':'+').'" class="select-input '.($pc{"combatFeatsLv$lv"} eq 'その他' ? 'free' : '').'"><select name="combatFeatsLv'.$lv.'" oninput="checkFeats();selectInputCheck(this);">';
   print '<option></option>';
+  my $hit; my $value = $pc{"combatFeatsLv$lv"};
   foreach my $type ('常','宣','主') {
     print '<optgroup label="'.($type eq '常' ? '常時' : $type eq '宣' ? '宣言' : $type eq '宣' ? '宣言' : '主動作').'特技">';
     foreach my $feats (@data::combat_feats){
@@ -552,23 +553,29 @@ foreach my $lv ('1bat',@set::feats_lv) {
       next if @$feats[0] !~ /${type}/;
       next if @$feats[3] =~ /2.0/ && !$set::all_class_on;
       if($lv =~ /bat/ && @$feats[3] !~ /バトルダンサー/){ next; }
+      my $item = '<option ';
+      if($pc{"combatFeatsLv$lv"} eq @$feats[2]){
+        $item .= 'selected ';
+        $hit = 1;
+      }
       if(@$feats[3] =~ /ヴァグランツ/){
-        print '<option class="vagrants"'.(($pc{"combatFeatsLv$lv"} eq @$feats[2])?' selected':'').' value="'.@$feats[2].'">'.@$feats[2];
         $pc{featsVagrantsOn} = 1 if $pc{"combatFeatsLv$lv"} eq @$feats[2];
+        $item .= 'class="vagrants" value="'.@$feats[2].'"';
       }
       elsif(@$feats[3] =~ /2.0/){
-        print '<option class="zero-data"'.(($pc{"combatFeatsLv$lv"} eq @$feats[2])?' selected':'').' value="'.@$feats[2].'">[2.0]'.@$feats[2];
         $pc{featsZeroOn} = 1 if $pc{"combatFeatsLv$lv"} eq @$feats[2];
+        $item .= 'class="zero-data" value="'.@$feats[2].'"';
       }
       elsif(@$feats[3] =~ /(龍骸諸島|魔王宮殿)/){
-        print '<option data-stage="'.$1.'"'.(($pc{"combatFeatsLv$lv"} eq @$feats[2])?' selected':'').' value="'.@$feats[2].'">'.@$feats[2];
-        $pc{featsZeroOn} = 1 if $pc{"combatFeatsLv$lv"} eq @$feats[2];
+        $item .= 'data-stage="'.$1.'" value="'.@$feats[2].'"';
       }
-      else { print '<option'.(($pc{"combatFeatsLv$lv"} eq @$feats[2])?' selected':'').'>'.@$feats[2]; }
+      print $item.'>'.@$feats[2];
     }
     print '</optgroup>';
   }
-  print "</select>\n";
+  print '<option value="free">その他（自由記入）';
+  if(!$hit && $value){ print '<option value="'.$value.'" selected>'.$value; }
+  print "</select>".input("combatFeatsLv${lv}Free",'text','', ' placeholder="自由記入欄"')."\n";
 }
 print <<"HTML";
             </ul>
