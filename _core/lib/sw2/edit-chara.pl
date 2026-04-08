@@ -310,7 +310,8 @@ print <<"HTML";
         <ul class="annotate"><li>経験点は、初期所有技能のぶんを含みます。</ul>
         <dl class="regulation-note"><dt>備考<dd>@{[ input "history0Note" ]}</dl>
         <ul class="regulation-others">
-          <li class="left">@{[ checkbox 'unlockRyugai','『龍骸諸島』用項目の表示（および一部項目名の変更）','checkRyugai' ]}
+          <li class="left">@{[ checkbox 'unlockRyugai','『龍骸諸島』用項目の表示（および一部項目名の変更）',"checkStage('龍骸諸島',this.checked)" ]}
+          <li class="left">@{[ checkbox 'unlockDemonoPalace','『魔王宮殿』用項目の表示',"checkStage('魔王宮殿',this.checked)" ]}
           <li class="left">@{[ checkbox 'unlockAbove16','16レベル以上の解禁（2.0の超越者ルールの流用）','checkLvCap' ]}
         </ul>
       </details>
@@ -319,7 +320,7 @@ print <<"HTML";
 
         <div id="personal" class="in-toc" data-content-title="種族・年齢・性別・穢れ・生まれ・信仰">
           <dl class="box" id="race">
-            <dt>種族<dd>@{[ selectInput 'race', 'changeRace(this.value)', @data::race_list,'label=その他' ]}
+            <dt>種族<dd>@{[ selectInput 'race', 'changeRace(this.value)', @data::race_list ]}
           </dl>
           <dl class="box" id="age">
             <dt>年齢<dd>@{[input('age')]}
@@ -467,18 +468,32 @@ print <<"HTML";
               <small class="notes">使用経験点：<b id="exp-use"></b></small>
             </h2>
 HTML
+my %classNames;
+my %classNamesStage;
+foreach my $name (@data::class_names){
+  if($data::class{$name}{stage}){
+    push(@{$classNamesStage{ $data::class{$name}{stage} }}, $name);
+  }
+  else {
+    push(@{$classNames{ $data::class{$name}{type} || 'other' }}, $name);
+  }
+}
 print '<div class="classes-group" id="classes-weapon-user"><h3>戦士系技能</h3><dl class="edit-table side-margin">';
-foreach my $name (@data::class_names){ print classInputBox($name) if $data::class{$name}{type} eq 'weapon-user'; }
+foreach my $name (@{$classNames{'weapon-user'}}){ print classInputBox($name) }
 print '</dl></div>';
 print '<div class="classes-group" id="classes-magic-user"><h3>魔法使い系技能</h3><dl class="edit-table side-margin">';
-foreach my $name (@data::class_names){ print classInputBox($name) if $data::class{$name}{type} eq 'magic-user'; }
+foreach my $name (@{$classNames{'magic-user'}}){ print classInputBox($name) }
 print '</dl></div>';
 print '<div class="classes-group" id="classes-others"><h3>その他系技能</h3><dl class="edit-table side-margin">';
-foreach my $name (@data::class_names){ print classInputBox($name) if !$data::class{$name}{type}; }
+foreach my $name (@{$classNames{'other'}}){ print classInputBox($name) }
 print '</dl></div>';
-print '<div class="classes-group hidden" id="classes-extra"><h3>龍骸技能</h3><dl class="edit-table side-margin">';
-foreach my $name (@data::class_names){ print classInputBox($name) if $data::class{$name}{type} eq 'extra'; }
-print '</dl></div>';
+print '<div class="classes-group" id="classes-stages">';
+foreach my $key (sort keys %classNamesStage){
+  print '<div data-stage="'.$key.'"><h3>'.$key.'用技能</h3><dl class="edit-table side-margin">';
+  foreach my $name (@{$classNamesStage{$key}}){ print classInputBox($name) }
+  print '</dl></div>';
+}
+print '</div>';
 
 sub classInputBox {
   my $name = shift;
@@ -543,6 +558,10 @@ foreach my $lv ('1bat',@set::feats_lv) {
       }
       elsif(@$feats[3] =~ /2.0/){
         print '<option class="zero-data"'.(($pc{"combatFeatsLv$lv"} eq @$feats[2])?' selected':'').' value="'.@$feats[2].'">[2.0]'.@$feats[2];
+        $pc{featsZeroOn} = 1 if $pc{"combatFeatsLv$lv"} eq @$feats[2];
+      }
+      elsif(@$feats[3] =~ /(龍骸諸島|魔王宮殿)/){
+        print '<option data-stage="'.$1.'"'.(($pc{"combatFeatsLv$lv"} eq @$feats[2])?' selected':'').' value="'.@$feats[2].'">'.@$feats[2];
         $pc{featsZeroOn} = 1 if $pc{"combatFeatsLv$lv"} eq @$feats[2];
       }
       else { print '<option'.(($pc{"combatFeatsLv$lv"} eq @$feats[2])?' selected':'').'>'.@$feats[2]; }
@@ -1014,6 +1033,13 @@ print <<"HTML";
                 <td>―
                 <td>―
                 <td id="attack-artisan-mastery-dmg">$pc{masteryArtisan}
+              <tr id="attack-weapon-damage-up"@{[ display $pc{weaponDamageUp} ]}>
+                <td>《武器ダメージ増加》
+                <td>―
+                <td>―
+                <td>―
+                <td>―
+                <td id="attack-weapon-damage-up-dmg">$pc{weaponDamageUp}
               <tr id="accuracy-enhance"@{[ display $pc{accuracyEnhance} ]}>
                 <td>《命中強化》
                 <td>―
@@ -1161,6 +1187,11 @@ print <<"HTML";
                 <td>―
                 <td>―
                 <td id="mastery-artisan-def-value">$pc{masteryArtisan}
+              <tr id="armour-defense-up"@{[ display $pc{armourDefenseUp} ]}>
+                <td>《鎧防護点上昇》
+                <td>―
+                <td>―
+                <td id="armour-defense-up-value">$pc{armourDefenseUp}
               <tr id="evasive-maneuver"@{[ display $pc{evasiveManeuver} ]}>
                 <td>《回避行動》
                 <td>―

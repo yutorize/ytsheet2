@@ -438,6 +438,10 @@ sub data_calc {
       elsif($feat eq '鼓咆陣率追加Ⅲ')  { $pc{commandAddition} = 3; }
       elsif($feat eq '抵抗強化Ⅰ')  { $pc{resistEnhance} = 1; }
       elsif($feat eq '抵抗強化Ⅱ')  { $pc{resistEnhance} = 2; }
+      elsif($feat eq '武器ダメージ増加')  { $pc{weaponDamageUp} = 2; }
+      elsif($feat eq '武器ダメージ超増加'){ $pc{weaponDamageUp} = 4; }
+      elsif($feat eq '鎧防護点増加')  { $pc{armourDefenseUp} = 2; }
+      elsif($feat eq '鎧防護点超増加'){ $pc{armourDefenseUp} = 4; }
     }
   }
   ### 操気 --------------------------------------------------
@@ -637,6 +641,7 @@ sub data_calc {
          $dmg += $pc{'mastery' . ucfirst($data::weapon_id{$category}) };
       }
     }
+    $dmg += $pc{'weaponDamageUp'};
     ##
     if($class eq "自動計算しない"){
       $pc{"weapon${_}AccTotal"} = $pc{"weapon${_}Acc"};
@@ -665,7 +670,10 @@ sub data_calc {
     ## 部位（コア含）
     if($partNum){
       unless($pc{raceAbility} =~ /［蠍人の身体］/ && $partNum eq $pc{partCore}){
-        $def += $data::partsData{$partName}{def}[$pc{lvPhy}||0]; # 部位基礎値
+        if(isVariantParts($partName)){
+          $def += $data::partsData{$partName}{variantPar}{def}[$pc{lvPar}||0];
+        }
+        else { $def += $data::partsData{$partName}{def}[$pc{lvPhy}||0]; } # 部位基礎値
       }
       $def += $pc{"part${partNum}Def"}; # 手動補正
     }
@@ -707,6 +715,7 @@ sub data_calc {
         elsif($category eq '非金属鎧'){ $def += $pc{masteryNonMetalArmour} }
         elsif($category eq       '盾'){ $def += $pc{masteryShield} }
         elsif($category eq     '龍骸'){ $def += $pc{masteryRyugai} }
+        if($category =~ /鎧/){ $def += $pc{armourDefenseUp}; }
         if($pc{"armour${num}Note"} =~ /〈魔器〉/){ $artisan = $pc{masteryArtisan}; }
       }
       
@@ -727,11 +736,16 @@ sub data_calc {
   $pc{partDefAuto} = $pc{partEnduranceEnhance};
   $pc{partHpAuto}  = $pc{partEnduranceEnhance} * 5;
   foreach (1 .. $pc{partNum}) {
-    my $name = $pc{"part${_}Name"};
+    my $partName = $pc{"part${_}Name"};
     my $lv = $pc{lvPhy} || 0;
+    my %partsData = %{ $data::partsData{$partName} || {} };
+    if(isVariantParts($partName)){
+      $lv = $pc{lvPar} || 0;
+      %partsData = %{ $data::partsData{$partName}{variantPar} };
+    }
     ## コア
     if($pc{partCore} eq $_){
-      $pc{"part${_}DefTotal"} = $data::partsData{$name}{def}[$lv] + $pc{"part${_}Def"} + $pc{coreDefAuto};
+      $pc{"part${_}DefTotal"} = $partsData{def}[$lv] + $pc{"part${_}Def"} + $pc{coreDefAuto};
       if($pc{raceAbility} =~ /蠍人の身体/){
         $pc{"part${_}DefTotal"} = 0;
         $pc{"part${_}HpTotal" } = $pc{hpTotal} + $pc{coreHpAuto};
@@ -749,16 +763,27 @@ sub data_calc {
         $pc{"part${_}HpTotal" } += $hpAccessory;
         $pc{"part${_}MpTotal" } += $mpAccessory;
       }
+      if($pc{lvPar} >= 4){ $pc{"part${_}HpTotal"} += 5; }
     }
     ## その他
     else {
-      $pc{"part${_}DefTotal"} = $data::partsData{$name}{def}[$lv] + $pc{partDefAuto};
-      $pc{"part${_}HpTotal" } = $data::partsData{$name}{hp }[$lv] + $pc{partHpAuto};
-      $pc{"part${_}MpTotal" } = $data::partsData{$name}{mp }[$lv];
+      $pc{"part${_}DefTotal"} = $partsData{def}[$lv] + $pc{partDefAuto};
+      $pc{"part${_}HpTotal" } = $partsData{hp }[$lv] + $pc{partHpAuto};
+      $pc{"part${_}MpTotal" } = $partsData{mp }[$lv];
     }
     $pc{"part${_}DefTotal"} += $pc{"part${_}Def"};
     $pc{"part${_}HpTotal" } += $pc{"part${_}Hp" };
     $pc{"part${_}MpTotal" } += $pc{"part${_}Mp" };
+  }
+
+  ## パーツマスター用部位データにするかどうか
+  #（デモノパレス✓ かつ パーツマスター1以上 かつ パーツマスター用部位データがあれば）
+  sub isVariantParts {
+    my ($partName) = @_;
+    if($pc{unlockDemonoPalace} && $pc{lvPar} && exists $data::partsData{$partName}{variantPar}){
+      return 1;
+    }
+    return 0;
   }
   
   ### 穢れ --------------------------------------------------
