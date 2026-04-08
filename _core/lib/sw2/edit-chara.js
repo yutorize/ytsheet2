@@ -143,10 +143,12 @@ function changeFaith(obj) {
 
 // 特殊ステージ用項目の解禁 ----------------------------------------
 function checkStageAll(){
+  console.log('checkStageAll()');
   checkStage('龍骸諸島',form.unlockRyugai.checked);
   checkStage('魔王宮殿',form.unlockDemonoPalace.checked);
 }
 function checkStage(stage, unlocked){
+  console.log(`checkStage("${stage}",${unlocked})`);
   document.querySelectorAll(`[data-stage="${stage}"]`).forEach(obj => {
     obj.classList.toggle('hidden', !unlocked);
   });
@@ -154,6 +156,7 @@ function checkStage(stage, unlocked){
 }
 // 『龍骸諸島』用項目の解禁 ----------------------------------------
 function checkRyugai(){
+  console.log('checkRyugai()');
   const checkbox = form.unlockRyugai;
   const unlockedRyugai = checkbox?.checked ?? true;
   document.querySelector('#honor > dl.box dt').textContent = unlockedRyugai ? '誉れ' :'名誉点';
@@ -1217,6 +1220,7 @@ function checkBibliomancy(){
 // ＨＰＭＰ抵抗力計算 ----------------------------------------
 let subStt = {};
 function calcSubStt() {
+  console.log('calcSubStt()');
   subStt = {};
   const seekerHpMpAdd = (lvSeeker && checkSeekerAbility('ＨＰ、ＭＰ上昇')) ? 10 : 0;
   const seekerResistAdd = (lvSeeker && checkSeekerAbility('抵抗力上昇')) ? 3 : 0;
@@ -1662,7 +1666,6 @@ function calcWeapon() {
       : /^\d+w$/i.test(weaponReqdRaw) ? reqdMnd
       : SET.class[className]?.accUnlock?.reqd ? stt['total'+SET.class[className]?.accUnlock?.reqd]
       : reqdStr;
-      console.log(maxReqd)
     form["weapon"+i+"Reqd"].classList.toggle('error', weaponReqd > maxReqd + (equipMod.WeaponReqd||0));
     // 基礎命中
     if(SET.class[className]?.accUnlock?.acc === 'power'){
@@ -2212,7 +2215,6 @@ function changeEffect(obj){
       }
     }
     if(name === "穢れ"){
-      console.log(SET.races[race]?.sin||0)
       if(form.sin.value != (SET.races[form.race.value]?.sin||0)){
         if (!confirm('穢れ度の入力が自動計算になります（今の入力値は初期化されます）。よろしいですか？')){
           box.querySelector("select").value = beforeEffects[box.id];
@@ -2713,7 +2715,6 @@ function checkEquipMod (){
       for(let i of sttRegEx){
         const m = note.match('[@＠]'+i[1]+'([＋+－-][0-9]+)');
         if (m != null) {
-          console.log(m[0],m[1])
           const value = parseInt(m[1].replace(/[＋]/,"+").replace(/－/,"-") || 0);
           newMod[i[0]] ??= 0;
           newMod[i[0]] += value;
@@ -2738,7 +2739,6 @@ function checkEquipMod (){
       break;
     }
   }
-  console.log(equipMod)
   return hasChange;
 }
 // 部位 ----------------------------------------
