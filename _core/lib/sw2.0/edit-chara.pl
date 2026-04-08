@@ -528,22 +528,28 @@ print <<"HTML";
 HTML
 foreach my $lv ('1bat',@set::feats_lv) {
   (my $data_lv = $lv) =~ s/^([0-9]+)[^0-9].*?$/$1/;
-  print '<li id="combat-feats-lv'.$lv.'" data-lv="'.$data_lv.($data_lv eq $lv ? '':'+').'"><select name="combatFeatsLv'.$lv.'" oninput="checkFeats()">';
+  print '<li id="combat-feats-lv'.$lv.'" data-lv="'.$data_lv.($data_lv eq $lv ? '':'+').'" class="select-input '.($pc{"combatFeatsLv$lv"} eq 'その他' ? 'free' : '').'"><select name="combatFeatsLv'.$lv.'" oninput="checkFeats();selectInputCheck(this);">';
   print '<option></option>';
-  foreach my $type ('常','宣','主') {
-    print '<optgroup label="'.($type eq '常' ? '常時' : $type eq '宣' ? '宣言' : $type eq '宣' ? '宣言' : '主動作').'特技">';
+  my $hit; my $value = $pc{"combatFeatsLv$lv"};
+  foreach my $type ('常','宣') {
+    print '<optgroup label="'.($type eq '常' ? '常時' : $type eq '宣' ? '宣言' : $type eq '宣' ? '宣言' : '').'特技">';
     foreach my $feats (@data::combat_feats){
       next if $data_lv < @$feats[1];
       next if $type ne @$feats[0];
       next if @$feats[3] =~ /2.0/ && !$set::all_class_on;
       if($lv =~ /bat/ && @$feats[3] !~ /バトルダンサー/){ next; }
-      if(@$feats[3] =~ /2.0/){
-        print '<option class="zero-data"'.(($pc{"combatFeatsLv$lv"} eq @$feats[2])?' selected':'').' value="'.@$feats[2].'">[2.0]'.@$feats[2];
+      my $item = '<option ';
+      if($pc{"combatFeatsLv$lv"} eq @$feats[2]){
+        $item .= 'selected ';
+        $hit = 1;
       }
-      else { print '<option'.(($pc{"combatFeatsLv$lv"} eq @$feats[2])?' selected':'').'>'.@$feats[2]; }
+      print $item.'>'.@$feats[2];
     }
     print '</optgroup>';
   }
+  print '<option value="free">その他（自由記入）';
+  if(!$hit && $value){ print '<option value="'.$value.'" selected>'.$value; }
+  print "</select>".input("combatFeatsLv${lv}Free",'text','', ' placeholder="自由記入欄"')."\n";
   print "</select>\n";
 }
 print <<"HTML";

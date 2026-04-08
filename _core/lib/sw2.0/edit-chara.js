@@ -99,7 +99,7 @@ function checkFeats(){
       const f3 = (array[i+2] && featMax >= Number( array[i+2].replace(/[^0-9]/g, '') )) ? 1 : 0; //次々枠の開放状況
       const box = form["combatFeatsLv"+array[i]];
       const auto = form.featsAutoOn.checked;
-      let feat = box.options[box.selectedIndex].value;
+      let feat = box.value;
       
       if (feat.match(/足さばき/)){
         if(level < 9){ cL.add("error"); }
@@ -374,7 +374,7 @@ function checkFeats(){
       else if (feat.match(/魔法制御/)){
         if(!acquire.match('魔法誘導') || !acquire.match('魔法収束')){ cL.add("error"); }
       }
-      feat = box.options[box.selectedIndex].value;
+      feat = box.value;
       acquire += feat + ',';
       
       const weaponsRegex = new RegExp('武器習熟(Ａ|Ｓ)／(' + SET.weapons.map(d => d[0]).join('|') + ')');

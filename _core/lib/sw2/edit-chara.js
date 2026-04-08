@@ -656,7 +656,7 @@ function checkFeats(){
       const f3 = (array[i+2] && level >= Number( array[i+2].replace(/[^0-9]/g, '') )) ? 1 : 0; //次々枠の開放状況
       const box = form["combatFeatsLv"+array[i]];
       const auto = form.featsAutoOn.checked;
-      let feat = box.options[box.selectedIndex].value;
+      let feat = box.value;
       
       if (feat.match(/追い打ち/)){
         if(!acquire.match('シールドバッシュ')){ cL.add("error"); }
@@ -1083,7 +1083,7 @@ function checkFeats(){
       else if (feat.match(/鎧防護点超増加/)){
         if((level < 5)|| !acquire.match('鎧防護点増加')){ cL.add("error"); }
       }
-      feat = box.options[box.selectedIndex].value;
+      feat = box.value;
       acquire += feat + ',';
       
       const weaponsRegex = new RegExp('武器習熟(Ａ|Ｓ)／(' + SET.weapons.map(d => d[0]).join('|') + ')');
