@@ -196,14 +196,14 @@
 }
 
 #classes {
-  flex-basis: 75%;
+  flex-basis: 66%;
+  grid-template-columns: 1fr 1fr;
   flex-grow: 1;
   display: grid;
   position: relative;
-  grid-template-columns: 1fr 1fr 0.8fr;
-  &:has(#classes-extra.hidden){
-    flex-basis: 66%;
-    grid-template-columns: 1fr 1fr;
+  &:has([data-stage]:not(.hidden)){
+    flex-basis: 75%;
+    grid-template-columns: 1fr 1fr 0.8fr;
   }
 
   & h2 { grid-column: span 3; }
@@ -211,7 +211,7 @@
   #classes-weapon-user { grid-column: 1; }
   #classes-magic-user  { grid-column: 1; align-self: end; }
   #classes-others      { grid-column: 2; grid-row: 2 / span 2; }
-  #classes-extra       { grid-column: 3; grid-row: 2 / span 2; }
+  #classes-stages      { grid-column: 3; grid-row: 2 / span 2; }
   #classes-seeker      { grid-column: 3; grid-row: 2 / span 2; }
 
   & h3 {
@@ -1431,7 +1431,7 @@ article > form > hr {
       &.name { width: 14em; }
       &.power { width: 6em; }
       &.cast  { width: 6em; }
-      &.rate { width: 6em; }
+      &.rate  { width: 6em; }
       &.crit  { width: 6em; }
       &.dmg   { width: 6em; }
       &.roll  { width: 6em; }

@@ -103,7 +103,7 @@ window.onload = function() {
   checkEffectAll();
   setupBracketInputCompletion();
 
-  if(form.unlockRyugai?.checked){ checkRyugai() }
+  if(!modeZero){ checkStageAll(); }
   
   imagePosition();
   changeColor();
@@ -141,11 +141,21 @@ function changeFaith(obj) {
   obj.parentNode.classList.toggle('free', obj.value === 'その他の信仰');
 }
 
+// 特殊ステージ用項目の解禁 ----------------------------------------
+function checkStageAll(){
+  checkStage('龍骸諸島',form.unlockRyugai.checked);
+  checkStage('魔王宮殿',form.unlockDemonoPalace.checked);
+}
+function checkStage(stage, unlocked){
+  document.querySelectorAll(`[data-stage="${stage}"]`).forEach(obj => {
+    obj.classList.toggle('hidden', !unlocked);
+  });
+  if(stage === '龍骸諸島'){ checkRyugai(); }
+}
 // 『龍骸諸島』用項目の解禁 ----------------------------------------
 function checkRyugai(){
   const checkbox = form.unlockRyugai;
   const unlockedRyugai = checkbox?.checked ?? true;
-  document.getElementById('classes-extra').classList.toggle('hidden', !unlockedRyugai);
   document.querySelector('#honor > dl.box dt').textContent = unlockedRyugai ? '誉れ' :'名誉点';
   document.querySelector('#honor > div').classList.toggle('hidden', unlockedRyugai);
   document.querySelector('#honor-items h2').textContent = unlockedRyugai ? '誉れ装備・誉れ称号' :'名誉アイテム';
@@ -248,7 +258,7 @@ function calcLv(){
   }
   
   document.getElementById('material-cards').style.display = lv['Alc'] > 0 ? '' : 'none';
-  document.getElementById('magic-bibliomancy-temporary').style.display = lv['Bib'] > 0 ? '' : 'none';
+  if(!modeZero){ document.getElementById('magic-bibliomancy-temporary').style.display = lv['Bib'] > 0 ? '' : 'none'; }
   
   calcFairy();
 }
@@ -802,10 +812,11 @@ function checkFeats(){
         if(level < 9){ cL.add("error"); }
       }
       else if (feat.match(/魔導書習熟Ｓ/)){
-        if(lv.Bib < 5 || !acquire.match('魔導書習熟Ａ')){ cL.add("error"); }
+        if((lv.Bib < 5 && lv.Gri < 1) || !acquire.match('魔導書習熟Ａ')){ cL.add("error"); }
+        if(lv.Gri < 1 && array[i] < 5){ cL.add("error"); }
       }
       else if (feat.match(/魔導書の達人/)){
-        if(lv.Bib < 11 || !acquire.match('魔導書習熟Ｓ')){ cL.add("error"); }
+        if((lv.Bib < 11 && lv.Gri < 11) || !acquire.match('魔導書習熟Ｓ')){ cL.add("error"); }
       }
       else if (feat.match(/マリオネット/)){
         if(level < 5){ cL.add("error"); }
@@ -1063,6 +1074,12 @@ function checkFeats(){
           if(!f2 || level < 7) { (auto) ? box.value = "乱撃Ⅰ" : cL.add("error") }
         }
       }
+      else if (feat.match(/武器ダメージ超増加/)){
+        if((level < 5)|| !acquire.match('武器ダメージ増加')){ cL.add("error"); }
+      }
+      else if (feat.match(/鎧防護点超増加/)){
+        if((level < 5)|| !acquire.match('鎧防護点増加')){ cL.add("error"); }
+      }
       feat = box.options[box.selectedIndex].value;
       acquire += feat + ',';
       
@@ -1101,6 +1118,10 @@ function checkFeats(){
       else if(feat === "鼓咆陣率追加Ⅲ"){ feats['鼓咆陣率追加'] = 3; }
       else if(feat === "抵抗強化Ⅰ"){ feats['抵抗強化'] = 1; }
       else if(feat === "抵抗強化Ⅱ"){ feats['抵抗強化'] = 2; }
+      else if(feat === "武器ダメージ増加")  { feats['武器ダメージ増加'] = 2; }
+      else if(feat === "武器ダメージ超増加"){ feats['武器ダメージ増加'] = 4; }
+      else if(feat === "鎧防護点増加")  { feats['鎧防護点増加'] = 2; }
+      else if(feat === "鎧防護点超増加"){ feats['鎧防護点増加'] = 4; }
       else { feats[feat] = true; }
       
       cL.remove("fail","hidden");
@@ -1594,6 +1615,10 @@ function calcAttack() {
   document.getElementById("parts-enhance").style.display = crafts['部位極強化'] || crafts['部位超強化'] || crafts['部位即応＆強化'] ? '' : 'none';
   document.getElementById("parts-enhance-acc").textContent = (crafts['部位極強化']?1:0)+(crafts['部位超強化']?1:0)+(crafts['部位即応＆強化']?1:0);
   
+  if(!modeZero){
+    document.getElementById(`attack-weapon-damage-up`).style.display   = feats['武器ダメージ増加'] ? '' : 'none';
+    document.getElementById(`attack-weapon-damage-up-dmg`).textContent = feats['武器ダメージ増加'] || 0;
+  }
 
   stylizeVisibleRows(document.querySelectorAll('#attack-classes > .edit-table > tbody > tr'))
 
@@ -1670,6 +1695,7 @@ function calcWeapon() {
       if(category == '格闘') { dmgBase += feats['武器習熟／格闘'] || 0; }
       else if(category && race == 'ディアボロ' && level >= 6) { dmgBase += feats['武器習熟／'+category] || 0; }
     }
+    dmgBase += feats['武器ダメージ増加'] || 0;
     // 命中追加D出力
     if(className === "自動計算しない"){
       document.getElementById("weapon"+i+"-acc-total").textContent = Number(form["weapon"+i+"Acc"].value);
@@ -1747,6 +1773,10 @@ function calcDefense() {
   document.getElementById("mastery-shield-value").textContent         = feats['防具習熟／盾']       || 0;
   document.getElementById("mastery-ryugaiarmour-value").textContent   = feats['防具習熟／龍骸']     || 0;
   document.getElementById("mastery-artisan-def-value").textContent    = feats['魔器習熟']           || 0;
+  if(!modeZero){
+    document.getElementById("armour-defense-up").style.display      = feats['鎧防護点増加']       > 0 ? "" :"none";
+    document.getElementById("armour-defense-up-value").textContent      = feats['鎧防護点増加']       || 0;
+  }
   // 回避行動
   evaAdd += feats['回避行動'] || 0;
   document.getElementById("evasive-maneuver").style.display = feats['回避行動'] > 0 ? "" :"none";
@@ -1864,6 +1894,7 @@ function calcArmour(evaAdd,defBase) {
       def += Number(form[`armour${num}Def`].value);
       if(!partNum || partNum == form.partCore.value){
         def += (feats['防具習熟／'+category] || 0);
+        if(category.match(/鎧/)){ def += (feats['鎧防護点増加'] || 0); }
         if(form[`armour${num}Note`].value.match(/〈魔器〉/)){ artisanDef = feats['魔器習熟']; }
       }
       if(category == '盾' && form[`armour${num}Own`].checked){ ownAgi = 2 }
@@ -2387,9 +2418,9 @@ setSortable('magicBibliomancyTemporary','#bibliomancy-temporary-list','li');
 // 言語欄 ----------------------------------------
 function checkLanguage(){
   const languageTable = document.getElementById('language-table');
-  languageTable.classList.toggle('sag-available', parseInt(form['lvSag'].value) > 0);
-  languageTable.classList.toggle('bar-available', parseInt(form['lvBar'].value) > 0);
-  languageTable.classList.toggle('juj-available', parseInt(form['lvJuj'].value) > 0);
+  languageTable.classList.toggle('sag-available', parseInt(form['lvSag']?.value) > 0);
+  languageTable.classList.toggle('bar-available', parseInt(form['lvBar']?.value) > 0);
+  languageTable.classList.toggle('juj-available', parseInt(form['lvJuj']?.value) > 0);
 
   let count = {}; let acqT = {}; let acqR = {};
   if(SET.races[race]?.language){
