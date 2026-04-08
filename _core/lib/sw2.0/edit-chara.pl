@@ -304,7 +304,7 @@ print <<"HTML";
 
         <div id="personal" class="in-toc" data-content-title="種族・年齢・性別・穢れ・生まれ・信仰">
           <dl class="box" id="race">
-            <dt>種族<dd>@{[ selectInput 'race', 'changeRace(this.value)', @data::race_list,'label=その他' ]}
+            <dt>種族<dd>@{[ selectInput 'race', 'changeRace(this.value)', @data::race_list ]}
           </dl>
           <dl class="box" id="age">
             <dt>年齢<dd>@{[input('age')]}

@@ -170,9 +170,6 @@ foreach (@data::race_names){
   }
 }
 push(@race_search_list, {
-  LABEL => 'その他',
-},
-{
   NAME => 'その他',
   SELECTED => ('その他' eq $race_query) ? 'selected' : '',
 });

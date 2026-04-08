@@ -696,6 +696,12 @@ if(!$pc{forbiddenMode}){
       DMG  => $pc{'mastery'.ucfirst(@$_[1])},
     } );
   }
+  if($pc{weaponDamageUp}) {
+    push(@atacck, {
+      NAME => "《".($pc{weaponDamageUp} >= 4 ? '武器ダメージ超増加' : '武器ダメージ増加')."》",
+      DMG  => $pc{weaponDamageUp},
+    } );
+  }
   if($pc{masteryArtisan}) {
     push(@atacck, {
       NAME => "《".($pc{masteryArtisan} >= 3 ? '魔器の達人' : $pc{masteryArtisan} >= 2 ? '魔器習熟Ｓ' : '魔器習熟Ａ')."》",
@@ -875,6 +881,12 @@ if(!$pc{forbiddenMode}){
     push(@evasion, {
       NAME => "《防具習熟".($pc{'mastery'.ucfirst(@$_[1])} >= 2 ? 'Ｓ' : 'Ａ')."／".@$_[0]."》",
       DEF  => $pc{'mastery'.ucfirst(@$_[1])},
+    } );
+  }
+  if($pc{armourDefenseUp}) {
+    push(@evasion, {
+      NAME => "《".($pc{armourDefenseUp} >= 4 ? '鎧防護点超増加' : '鎧防護点増加')."》",
+      DEF  => $pc{armourDefenseUp},
     } );
   }
   if($pc{masteryArtisan}) {

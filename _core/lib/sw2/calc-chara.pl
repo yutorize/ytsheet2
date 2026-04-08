@@ -438,6 +438,10 @@ sub data_calc {
       elsif($feat eq '鼓咆陣率追加Ⅲ')  { $pc{commandAddition} = 3; }
       elsif($feat eq '抵抗強化Ⅰ')  { $pc{resistEnhance} = 1; }
       elsif($feat eq '抵抗強化Ⅱ')  { $pc{resistEnhance} = 2; }
+      elsif($feat eq '武器ダメージ増加')  { $pc{weaponDamageUp} = 2; }
+      elsif($feat eq '武器ダメージ超増加'){ $pc{weaponDamageUp} = 4; }
+      elsif($feat eq '鎧防護点増加')  { $pc{armourDefenseUp} = 2; }
+      elsif($feat eq '鎧防護点超増加'){ $pc{armourDefenseUp} = 4; }
     }
   }
   ### 操気 --------------------------------------------------
@@ -637,6 +641,7 @@ sub data_calc {
          $dmg += $pc{'mastery' . ucfirst($data::weapon_id{$category}) };
       }
     }
+    $dmg += $pc{'weaponDamageUp'};
     ##
     if($class eq "自動計算しない"){
       $pc{"weapon${_}AccTotal"} = $pc{"weapon${_}Acc"};
@@ -707,6 +712,7 @@ sub data_calc {
         elsif($category eq '非金属鎧'){ $def += $pc{masteryNonMetalArmour} }
         elsif($category eq       '盾'){ $def += $pc{masteryShield} }
         elsif($category eq     '龍骸'){ $def += $pc{masteryRyugai} }
+        if($category =~ /鎧/){ $def += $pc{armourDefenseUp}; }
         if($pc{"armour${num}Note"} =~ /〈魔器〉/){ $artisan = $pc{masteryArtisan}; }
       }
       
