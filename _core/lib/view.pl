@@ -56,11 +56,16 @@ sub getSheetData {
     if($::in{log}){
       ($pc{protect}, $pc{forbidden}) = getProtectType("${datadir}${file}/data.cgi");
       $pc{logId} = $::in{log};
+      $pc{hide} = 1;
+    }
+    if($main::login_error){
+      $pc{hide} = 1;
     }
   }
   ## データ読み込み：コンバート
   elsif($::in{url}){
     %pc = %conv_data;
+    $pc{hide} = 1;
     if(!$conv_data{ver}){
       require $set::lib_calc_char;
       %pc = data_calc(\%pc);
