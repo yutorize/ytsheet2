@@ -116,6 +116,19 @@ sub createUnitStatus {
     else {
       push(@unitStatus, {'メモ' => join("<br>",@unitMemo)});
     }
+
+    foreach my $point (1 .. 20) {
+      my $key = $point < 10 ? ('0' . $point) : $point;
+      my $quantity = $pc{"manaGem${key}Quantity"} // 0;
+      next if $quantity == 0;
+
+      sub encloseNumeric {
+        my $num = shift;
+        return ('①', '②', '③', '④', '⑤', '⑥', '⑦', '⑧', '⑨', '⑩', '⑪', '⑫', '⑬', '⑭', '⑮', '⑯', '⑰', '⑱', '⑲', '⑳')[$num - 1];
+      }
+
+      push(@unitStatus, { '魔晶石' . encloseNumeric($point) => $quantity });
+    }
   }
 
   foreach my $key (split ',', $pc{unitStatusNotOutput}){
