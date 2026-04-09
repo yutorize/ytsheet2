@@ -131,7 +131,6 @@ our %class = (
     ],
   },
   'バトルダンサー' => {
-    '2.5' => 1,
     type     => 'weapon-user',
     expTable => 'A',
     id       => 'Bat',
@@ -499,7 +498,6 @@ our %class = (
     },
   },
   'ドルイド' => {
-    '2.5' => 1,
     type     => 'magic-user',
     expTable => 'A',
     id       => 'Dru',
@@ -532,7 +530,6 @@ our %class = (
     ],
   },
   'ジオマンサー' => {
-    '2.5' => 1,
     expTable => 'B',
     id       => 'Geo',
     eName    => 'geomancer',
@@ -667,7 +664,6 @@ our %class = (
     },
   },
   'アビスゲイザー' => {
-    '2.5' => 1,
     type     => 'magic-user',
     expTable => 'A',
     id       => 'Aby',

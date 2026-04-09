@@ -26,7 +26,7 @@
 }
 @media screen and (width > 735px){
   #regulation .annotate {
-    margin-top: -1em;
+    margin-top: -.5em;
     margin-bottom: 10px;
   }
 }
@@ -779,15 +779,9 @@
   }
 }
 
-#classes dl dt.zero-data,
-option.zero-data {
+#classes dl dt:is([data-stage="2.0"],[data-stage="2.5"]),
+option:is([data-stage="2.0"],[data-stage="2.5"]) {
   background-color: rgba(0,200,255,0.2);
-}
-#classes dl dt.zero-data {
-  font-family: 'Arial';
-}
-option.zero-data::before {
-  content: '★';
 }
 
 #attack-classes {

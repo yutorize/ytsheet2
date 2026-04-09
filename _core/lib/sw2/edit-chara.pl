@@ -111,7 +111,7 @@ $pc{historyNum}    ||=  3;
 $pc{accuracyEnhance} ||= 0;
 $pc{evasiveManeuver} ||= 0;
 
-$pc{unlockAbove16} = 1 if $pc{level} > 15;
+$pc{unlockZeroData} = 1 if $pc{level} > 15;
 
 foreach my $name (@data::class_names){
   if ($data::class{$name}{type} eq 'extra' && $pc{'lv'.$data::class{$name}{id}}){
@@ -312,7 +312,7 @@ print <<"HTML";
         <ul class="regulation-others">
           <li class="left">@{[ checkbox 'unlockRyugai','『龍骸諸島』用項目の表示（および一部項目名の変更）',"checkStage('龍骸諸島',this.checked)" ]}
           <li class="left">@{[ checkbox 'unlockDemonoPalace','『魔王宮殿』用項目の表示',"checkStage('魔王宮殿',this.checked)" ]}
-          <li class="left">@{[ checkbox 'unlockAbove16','16レベル以上の解禁（2.0の超越者ルールの流用）','checkLvCap' ]}
+          <li class="left">@{[ checkbox 'unlockZeroData','『SW2.0』のデータを解禁（LV16以上、一部技能・特技）',"checkStage('2.0',this.checked)" ]}
         </ul>
       </details>
       <div id="area-status">
@@ -501,12 +501,13 @@ sub classInputBox {
   my $id = $data::class{$name}{id};
   my $out;
   $out .= '<dt id="class'.$id.'"';
-  $out .= ' class="zero-data"' if $data::class{$name}{'2.0'};
+  $out .= ' data-stage="2.0"' if $data::class{$name}{'2.0'};
   $out .= '>';
-  $out .= '[2.0] ' if $data::class{$name}{'2.0'};
   $out .= $name;
   $out .= '<select name="faithType" style="width: calc(100% - 7em);">'.option('faithType','†|<†セイクリッド系>','‡|<‡ヴァイス系>','†‡|<†‡両系統使用可>').'</select>' if($name eq 'プリースト');
-  $out .= '<dd>' . input("lv${id}", 'number','changeLv','min="0" max="17"');
+  $out .= '<dd';
+  $out .= ' data-stage="2.0"' if $data::class{$name}{'2.0'};
+  $out .= '>' . input("lv${id}", 'number','changeLv','min="0" max="17"');
   return $out;
 }
 print <<"HTML";
@@ -553,21 +554,17 @@ foreach my $lv ('1bat',@set::feats_lv) {
       next if @$feats[0] !~ /${type}/;
       next if @$feats[3] =~ /2.0/ && !$set::all_class_on;
       if($lv =~ /bat/ && @$feats[3] !~ /バトルダンサー/){ next; }
-      my $item = '<option ';
+      my $item = '<option';
       if($pc{"combatFeatsLv$lv"} eq @$feats[2]){
-        $item .= 'selected ';
+        $item .= ' selected';
         $hit = 1;
       }
       if(@$feats[3] =~ /ヴァグランツ/){
         $pc{featsVagrantsOn} = 1 if $pc{"combatFeatsLv$lv"} eq @$feats[2];
-        $item .= 'class="vagrants" value="'.@$feats[2].'"';
+        $item .= ' class="vagrants" value="'.@$feats[2].'"';
       }
-      elsif(@$feats[3] =~ /2.0/){
-        $pc{featsZeroOn} = 1 if $pc{"combatFeatsLv$lv"} eq @$feats[2];
-        $item .= 'class="zero-data" value="'.@$feats[2].'"';
-      }
-      elsif(@$feats[3] =~ /(龍骸諸島|魔王宮殿)/){
-        $item .= 'data-stage="'.$1.'" value="'.@$feats[2].'"';
+      elsif(@$feats[3] =~ /(龍骸諸島|魔王宮殿|2.0)/){
+        $item .= ' data-stage="'.$1.'" value="'.@$feats[2].'"';
       }
       print $item.'>'.@$feats[2];
     }
@@ -587,7 +584,6 @@ print <<"HTML";
             <div class="feats-options">
               <ul>
                 <li>@{[ input 'featsVagrantsOn','checkbox','checkFeats' ]}<span>ヴァグランツ戦闘特技を追加</span>
-                <li>@{[ input 'featsZeroOn','checkbox','checkFeats' ]}<span>2.0戦闘特技を追加</span>
                 <li>@{[ input 'featsAutoOn','checkbox','checkFeats' ]}<span>特技自動置き換え（非推奨）</span>
               </ul>
             </div>
@@ -649,7 +645,7 @@ HTML
         $item .= ' selected';
         $hit = 1;
       }
-      $item .= ' value="'.@$data[1].'">'.@$data[1];
+      $item .= '>'.@$data[1];
       print $item;
       if ($class eq 'グリモワール'){ print "（@$data[2]）"; }
     }
@@ -720,17 +716,17 @@ HTML
     my %only; my $hit; my $value = $pc{"craft${Name}${lv}"};
     foreach my $data (@{$data::class{$class}{craft}{data}}){
       next if $lv < @$data[0];
-      my $item = '<option';
+      my $item = '<option ';
       if($value eq @$data[1]){
-        $item .= ' selected';
+        $item .= 'selected ';
         $hit = 1;
       }
-      $item .= ' value="'.@$data[1].'">'.@$data[1];
+      if(@$data[2] =~ /(?:^|,)2.0/){
+        $item .= 'data-stage="2.0"';
+      }
+      $item .= '>'.@$data[1];
       
       my $optgroupLabel;
-      if(@$data[2] =~ /(?:^|,)2.0/){
-        $optgroupLabel .= "旧(2.0)データ";
-      }
       if(@$data[2] =~ /(?:^|,)([^,]+?専用)/){
         $optgroupLabel .= "／" if $optgroupLabel;
         $optgroupLabel .= $1;
