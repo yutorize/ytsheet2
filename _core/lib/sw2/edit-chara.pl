@@ -504,7 +504,7 @@ sub classInputBox {
   $out .= ' data-stage="2.0"' if $data::class{$name}{'2.0'};
   $out .= '>';
   $out .= $name;
-  $out .= '<select name="faithType" style="width: calc(100% - 7em);">'.option('faithType','†|<†セイクリッド系>','‡|<‡ヴァイス系>','†‡|<†‡両系統使用可>').'</select>' if($name eq 'プリースト');
+  $out .= '<select name="faithType">'.option('faithType','†|<†セイクリッド系>','‡|<‡ヴァイス系>','†‡|<†‡両系統使用可>').'</select>' if($name eq 'プリースト');
   $out .= '<dd';
   $out .= ' data-stage="2.0"' if $data::class{$name}{'2.0'};
   $out .= '>' . input("lv${id}", 'number','changeLv','min="0" max="17"');

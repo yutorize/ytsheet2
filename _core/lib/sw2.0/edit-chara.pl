@@ -473,7 +473,7 @@ sub classInputBox {
   $out .= ' data-stage="2.5"' if $data::class{$name}{'2.5'};
   $out .= '>';
   $out .= $name;
-  $out .= '<select name="faithType" style="width:auto;">'.option('faithType','†|<†セイクリッド系>','‡|<‡ヴァイス系>','†‡|<†‡両系統使用可>').'</select>' if($name eq 'プリースト');
+  $out .= '<select name="faithType">'.option('faithType','†|<†セイクリッド系>','‡|<‡ヴァイス系>','†‡|<†‡両系統使用可>').'</select>' if($name eq 'プリースト');
   $out .= '<dd';
   $out .= ' data-stage="2.5"' if $data::class{$name}{'2.5'};
   $out .= '>' . input("lv${id}", 'number','changeLv','min="0" max="17"');
