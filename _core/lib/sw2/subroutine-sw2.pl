@@ -549,6 +549,14 @@ sub data_update_chara {
       $pc{updateMessage}{'ver.1.27.013'} = '操気【剛力弾】を自動計算するようにしました。<br>既に手動で加算している場合、二重加算になってしまうため、修正してください。';
     }
   }
+  if($ver < 1.28002){
+    if($pc{unlockAbove16} || $pc{lvGri} || $pc{lvMys} || $pc{lvArt} || $pc{lvAri}){
+      $pc{unlockZeroData} = 1;
+    }
+    if($pc{lvBat} || $pc{lvDru} || $pc{lvAby} || $pc{lvGeo}){
+      $pc{unlockFiveData} = 1;
+    }
+  }
   $pc{ver} = $main::ver;
   $pc{lasttimever} = $ver;
   return %pc;

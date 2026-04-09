@@ -103,7 +103,7 @@ window.onload = function() {
   checkEffectAll();
   setupBracketInputCompletion();
 
-  if(!modeZero){ checkStageAll(); }
+  checkStageAll();
   
   imagePosition();
   changeColor();
@@ -144,15 +144,20 @@ function changeFaith(obj) {
 // 特殊ステージ用項目の解禁 ----------------------------------------
 function checkStageAll(){
   console.log('checkStageAll()');
-  checkStage('龍骸諸島',form.unlockRyugai.checked);
-  checkStage('魔王宮殿',form.unlockDemonoPalace.checked);
+  if(modeZero){ checkStage('2.5', form.unlockFiveData.checked); }
+  else {
+    checkStage('龍骸諸島',form.unlockRyugai.checked);
+    checkStage('魔王宮殿',form.unlockDemonoPalace.checked);
+    checkStage('2.0',     form.unlockZeroData.checked);
+  }
 }
 function checkStage(stage, unlocked){
   console.log(`checkStage("${stage}",${unlocked})`);
   document.querySelectorAll(`[data-stage="${stage}"]`).forEach(obj => {
     obj.classList.toggle('hidden', !unlocked);
   });
-  if(stage === '龍骸諸島'){ checkRyugai(); }
+  if     (stage === '龍骸諸島'){ checkRyugai(); }
+  else if(stage === '2.0'     ){ checkLvCap(); }
 }
 // 『龍骸諸島』用項目の解禁 ----------------------------------------
 function checkRyugai(){
@@ -191,14 +196,13 @@ function checkRyugai(){
 
 // 16レベル以上の解禁 ----------------------------------------
 function checkLvCap() {
-  const checkbox = form.unlockAbove16;
-  const unlockedAbove16 = checkbox?.checked ?? true;
+  const unlockZeroData = form.unlockZeroData?.checked ?? true;
 
   document.querySelectorAll('#classes input[type="number"][name^="lv"][max]').forEach(
       input => {
-        input.setAttribute('max', unlockedAbove16 ? '17' : '15');
+        input.setAttribute('max', unlockZeroData ? '17' : '15');
 
-        if (!unlockedAbove16 && input.value.match(/^1[67]$/)) {
+        if (!unlockZeroData && input.value.match(/^1[67]$/)) {
           input.value = '15';
           input.dispatchEvent(new Event('input'));
         }
@@ -635,9 +639,7 @@ function checkFeats(){
 
   // 選択習得
   const featsVagrantsOn = form.featsVagrantsOn.checked;
-  const featsZeroOn     = form.featsZeroOn.checked;
   document.querySelectorAll(`#combat-feats option.vagrants` ).forEach(obj=>{ obj.style.display = featsVagrantsOn ? '' : 'none'; });
-  document.querySelectorAll(`#combat-feats option.zero-data`).forEach(obj=>{ obj.style.display = featsZeroOn     ? '' : 'none'; });
   document.getElementById('combat-feat-vagrants-sco5').style.display = (featsVagrantsOn && lv['Sco'] >= 5) ? '' : 'none';
   document.getElementById('combat-feat-vagrants-ran5').style.display = (featsVagrantsOn && lv['Ran'] >= 5) ? '' : 'none';
   document.getElementById('combat-feat-vagrants-sag5').style.display = (featsVagrantsOn && lv['Sag'] >= 5) ? '' : 'none';

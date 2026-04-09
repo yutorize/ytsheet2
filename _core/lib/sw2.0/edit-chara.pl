@@ -298,6 +298,8 @@ print <<"HTML";
         </dl>
         <ul class="annotate"><li>経験点は、初期所有技能のぶんを含みます。</ul>
         <dl class="regulation-note"><dt>備考<dd>@{[ input "history0Note" ]}</dl>
+        <ul class="regulation-others">
+          <li class="left">@{[ checkbox 'unlockFiveData','『SW2.5』のデータを解禁（一部技能・特技）',"checkStage('2.5',this.checked)" ]}
       </details>
       <div id="area-status">
         @{[ imageForm($pc{imageURL}) ]}
@@ -468,12 +470,13 @@ sub classInputBox {
   my $id = $data::class{$name}{id};
   my $out;
   $out .= '<dt id="class'.$id.'"';
-  $out .= ' class="zero-data"' if $data::class{$name}{'2.5'};
+  $out .= ' data-stage="2.5"' if $data::class{$name}{'2.5'};
   $out .= '>';
-  $out .= '[2.5] ' if $data::class{$name}{'2.5'};
   $out .= $name;
   $out .= '<select name="faithType" style="width:auto;">'.option('faithType','†|<†セイクリッド系>','‡|<‡ヴァイス系>','†‡|<†‡両系統使用可>').'</select>' if($name eq 'プリースト');
-  $out .= '<dd>' . input("lv${id}", 'number','changeLv','min="0" max="17"');
+  $out .= '<dd';
+  $out .= ' data-stage="2.5"' if $data::class{$name}{'2.5'};
+  $out .= '>' . input("lv${id}", 'number','changeLv','min="0" max="17"');
   return $out;
 }
 print <<"HTML";
@@ -538,10 +541,13 @@ foreach my $lv ('1bat',@set::feats_lv) {
       next if $type ne @$feats[0];
       next if @$feats[3] =~ /2.0/ && !$set::all_class_on;
       if($lv =~ /bat/ && @$feats[3] !~ /バトルダンサー/){ next; }
-      my $item = '<option ';
+      my $item = '<option';
       if($pc{"combatFeatsLv$lv"} eq @$feats[2]){
-        $item .= 'selected ';
+        $item .= ' selected';
         $hit = 1;
+      }
+      elsif(@$feats[3] =~ /(2.5)/){
+        $item .= ' data-stage="'.$1.'"';
       }
       print $item.'>'.@$feats[2];
     }
@@ -554,7 +560,7 @@ foreach my $lv ('1bat',@set::feats_lv) {
 }
 print <<"HTML";
             </ul>
-            <p>置き換え可能な場合<span class="mark">この表示</span>になります。</p>
+            <p>置き換え可能な場合<span class="mark">強調</span>されます。</p>
             <p>@{[ input 'featsAutoOn','checkbox','checkFeats' ]}自動置き換え（非推奨）</p>
           </div>
           <div class="box" id="seeker-abilities" @{[ display $pc{lvSeeker} ]}>
@@ -674,10 +680,10 @@ HTML
       next if $lv < @$data[0];
       my $item = '<option';
       if($value eq @$data[1]){
-        $item .= ' selected';
+        $item .= ' selected ';
         $hit = 1;
       }
-      $item .= ' value="'.@$data[1].'">'.@$data[1];
+      $item .= '>'.@$data[1];
       
       if(@$data[2] =~ /^(.*?)専用/){ $only{@$data[2]} .= $item; }
       else { print $item; }
