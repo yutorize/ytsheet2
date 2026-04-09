@@ -840,6 +840,10 @@ function delRowNode(targetSelector, initialText){
 // 行ソート ----------------------------------------
 function setSortable(namePrefix, targetSelector, rowElement = '', addReplace, nextFunction){
   console.log(`setSortable('${namePrefix}','${targetSelector}','${rowElement}')`)
+  if(!document.querySelector(targetSelector)){
+    console.error(`'${targetSelector}'がありません。`);
+    return;
+  }
   const regExp = new RegExp(`^(${namePrefix})[0-9]+(.*)$`);
   let sortable = Sortable.create(document.querySelector(targetSelector), {
     dataIdAttr: 'id',
