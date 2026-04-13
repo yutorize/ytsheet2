@@ -16,16 +16,19 @@ sub data_calc {
   }
   
   ### 技能 --------------------------------------------------
-  my @class_a; my @class_b; my $lv_caster_total;
-  foreach my $class (@data::class_names){
-    my $id = $data::class{$class}{id};
+  my %classData; my @classNames; my @classCasterNames;
+  addFreeClassData(\%pc, \%classData, \@classNames, \@classCasterNames);
+
+  my $lvCastersTotal;
+  foreach my $class (@classNames){
+    my $id = $classData{$class}{id};
     
     ## 冒険者レベル算出
     $pc{level} = $pc{'lv'.$id} if ($pc{level} < $pc{'lv'.$id});
     
     ## 魔法使い最大/合計レベル算出
-    $pc{lvCaster} = $pc{'lv'.$id} if ($pc{lvCaster} < $pc{'lv'.$id} && $data::class{$class}{magic}{jName});
-    $lv_caster_total += $pc{'lv'.$id} if $data::class{$class}{magic}{jName};
+    $pc{lvCaster} = $pc{'lv'.$id} if ($pc{lvCaster} < $pc{'lv'.$id} && $classData{$class}{magic}{jName});
+    $lvCastersTotal += $pc{'lv'.$id} if $classData{$class}{magic}{jName};
   }
 
   ### スカレンセジ最大レベル算出 --------------------------------------------------
@@ -150,8 +153,8 @@ sub data_calc {
     S => [ 0, 3000, 6000, 9000, 12000, 16000, 20000, 24000, 28000, 33000, 38000, 43000, 48000, 54000, 60000, 66000, 72000, 79000, 86000, 93000, 100000 ], #求道
   );
   $pc{expRest} = $pc{expTotal};
-  foreach (@data::class_names){
-    $pc{expRest} -= $expTable{$data::class{$_}{expTable}}[$pc{'lv'.$data::class{$_}{id}}];
+  foreach (@classNames){
+    $pc{expRest} -= $expTable{$classData{$_}{expTable}}[$pc{'lv'.$classData{$_}{id}}];
   }
   
   ### 求道者 --------------------------------------------------
@@ -374,8 +377,8 @@ sub data_calc {
     ## 冒険者レベル＋各ボーナス算出
     $st{'Lv'.$i} = $pc{level}+$pc{'bonus'.$name};
     ## 各技能レベル＋各ボーナス算出
-    foreach my $class (@data::class_names){
-      my $id = $data::class{$class}{id};
+    foreach my $class (@classNames){
+      my $id = $classData{$class}{id};
       $st{$id.$i} = ($pc{'lv'.$id} > 0) ? $pc{'lv'.$id}+$pc{'bonus'.$name} : 0;
     }
   }
@@ -383,10 +386,10 @@ sub data_calc {
   ### 戦闘特技 --------------------------------------------------
   ## 自動習得
   my @feats;
-  foreach my $class (@data::class_names){
-    my $id = $data::class{$class}{id};
-    next if !$data::class{$class}{feats};
-    foreach my $data (@{$data::class{$class}{feats}}){
+  foreach my $class (@classNames){
+    my $id = $classData{$class}{id};
+    next if !$classData{$class}{feats};
+    foreach my $data (@{$classData{$class}{feats}}){
       if($pc{'lv'.$id} >= $data->[1]){
         push(@feats, $pc{'combatFeatsExc'.$id.$data->[1]} || $data->[0]);
       }
@@ -483,7 +486,7 @@ sub data_calc {
   $pc{hpAddTotal} += 15 if $hasFeats{'タフネス'};
   $pc{hpTotal}  = $pc{hpBase} + $pc{hpAddTotal};
   ## ＭＰ
-  $pc{mpBase} = $lv_caster_total*3 + $pc{sttMnd} + $pc{sttAddF} + $pc{sttEquipF};
+  $pc{mpBase} = $lvCastersTotal*3 + $pc{sttMnd} + $pc{sttAddF} + $pc{sttEquipF};
   $pc{mpBase} = $pc{level}*3 + $pc{sttMnd} + $pc{sttAddF} + $pc{sttEquipF} if ($pc{raceAbility} =~ /［溢れるマナ］/);
   $pc{mpAddTotal} = s_eval($pc{mpAdd}) + $pc{capacity} + $pc{raceAbilityMp} + $pc{mpAccessory} + $pc{seekerAbilityHpMp} + $pc{mpEquip};
   $pc{mpTotal} = $pc{mpBase} + $pc{mpAddTotal};
@@ -507,18 +510,18 @@ sub data_calc {
   ## 判定パッケージ
   my @pack_lore;
   my @pack_init;
-  foreach my $class (@data::class_names){
-    next if !$data::class{$class}{package};
-    my $c_id = $data::class{$class}{id};
-    my $c_en = $data::class{$class}{eName};
-    my $craftName = ucfirst $data::class{$class}{craft}{eName};
-    my %pData = %{$data::class{$class}{package}};
+  foreach my $class (@classNames){
+    next if !$classData{$class}{package};
+    my $c_id = $classData{$class}{id};
+    my $c_en = $classData{$class}{eName};
+    my $craftName = ucfirst $classData{$class}{craft}{eName};
+    my %pData = %{$classData{$class}{package}};
     
     foreach my $p_id (keys %pData){
       my $auto = $pData{$p_id}{mod};
       my $disabled = 0;
-      my $addAcuire = $pc{ $data::class{$class}{craft}{eName}.'Addition' }
-          + $pc{ 'buildupAdd'.ucfirst($data::class{$class}{craft}{eName}) };
+      my $addAcuire = $pc{ $classData{$class}{craft}{eName}.'Addition' }
+          + $pc{ 'buildupAdd'.ucfirst($classData{$class}{craft}{eName}) };
       if(exists $pData{$p_id}{unlockCraft}){
         $disabled = 1;
         foreach(1 .. $pc{'lv'.$c_id}+$addAcuire){
@@ -548,9 +551,9 @@ sub data_calc {
   $pc{initiative}  = max(@pack_init) + $pc{initiativeAdd};
 
   ## 魔力
-  foreach my $name (@data::class_caster){
-    next if (!$data::class{$name}{magic}{jName});
-    my $id = $data::class{$name}{id};
+  foreach my $name (@classCasterNames){
+    next if (!$classData{$name}{magic}{jName});
+    my $id = $classData{$name}{id};
     $pc{'magicPower'.$id} = $pc{'lv'.$id} ? (
         $pc{'lv'.$id}
       + int(($pc{sttInt}
@@ -569,10 +572,10 @@ sub data_calc {
   }
   ## 奏力ほか
   my %stt = ('知力'=>['Int','E'], '精神力'=>['Mnd','F']);
-  foreach my $name (@data::class_names){
-    next if (!$data::class{$name}{craft}{stt});
-    my $id = $data::class{$name}{id};
-    my $st = $data::class{$name}{craft}{stt};
+  foreach my $name (@classNames){
+    next if (!$classData{$name}{craft}{stt});
+    my $id = $classData{$name}{id};
+    my $st = $classData{$name}{craft}{stt};
     $pc{'magicPower'.$id} = $pc{'lv'.$id} ? ( $pc{'lv'.$id} + int(($pc{'stt'.$stt{$st}[0]} + $pc{'sttAdd'.$stt{$st}[1]} + $pc{'sttEquip'.$stt{$st}[1]} + ($pc{'magicPowerOwn'.$id} ? 2 : 0)) / 6) + $pc{'magicPowerAdd'.$id} ) : 0;
   }
   $pc{magicPowerAlc} += $pc{alchemyEnhance};
@@ -581,13 +584,13 @@ sub data_calc {
   ## 武器
   foreach (1 .. $pc{weaponNum}){
     my $class = $pc{"weapon${_}Class"};
-    my $id = $data::class{$class}{id};
+    my $id = $classData{$class}{id};
     my $lv = $pc{'lv'.$id} || 0;
     my $category = $pc{"weapon${_}Category"};
     my $partNum = $pc{"weapon${_}Part"};
     ## 命中
     my $acc = 0;
-    if($data::class{$class}{accUnlock}{acc} eq 'power'){
+    if($classData{$class}{accUnlock}{acc} eq 'power'){
       $acc = $pc{'magicPower'.$id};
     }
     else {
@@ -595,7 +598,7 @@ sub data_calc {
       my $own_dex = $pc{"weapon${_}Own"} ? 2 : 0; # 専用化補正
       if($lv){ $acc = $lv + int(($dex+$own_dex) / 6) }
     }
-    $acc += $data::class{$class}{accUnlock}{mod};
+    $acc += $classData{$class}{accUnlock}{mod};
     ## 人orコア部位
     if(!$partNum || $partNum eq $pc{partCore}) {
       $acc += $pc{accuracyEnhance}; # 命中強化
@@ -622,7 +625,7 @@ sub data_calc {
     elsif($category eq 'ガン'){
       $dmg += $pc{magicPowerMag};
     }
-    elsif($data::class{$class}{accUnlock}{dmg} eq 'power'){
+    elsif($classData{$class}{accUnlock}{dmg} eq 'power'){
       $dmg += $pc{'magicPower'.$id};
     }
     elsif($lv) {
@@ -657,7 +660,7 @@ sub data_calc {
   ## 回避力・防護点
   foreach my $i (1..$pc{defenseNum}){
     my $class = $pc{"evasionClass$i"};
-    my $id = $data::class{$class}{id};
+    my $id = $classData{$class}{id};
     my $lv = $pc{'lv'.$id} || 0;
     my $partNum = $pc{"evasionPart$i"};
     my $partName = $pc{"evasionPart${i}Name"} = $pc{"part${partNum}Name"};
@@ -665,7 +668,7 @@ sub data_calc {
     ## 基礎値
     my $agi = $pc{sttAgi} + ($partNum ? $pc{sttPartB} : $pc{sttAddB}+$pc{sttEquipB});
     if($pc{"defenseTotal${i}Note"} =~ /［巨人化］/){ $agi -= 6; }
-    my $eva = $data::class{$class}{evaUnlock}{mod};
+    my $eva = $classData{$class}{evaUnlock}{mod};
     my $def = 0;
     ## 部位（コア含）
     if($partNum){
@@ -864,14 +867,23 @@ sub data_calc {
   $NL{faith}  = substr($NL{faith} , 0, 50).'..' if length($NL{faith} ) > 50;
   my $classlv;
   foreach my $class (@data::class_list){
-    $classlv .= $pc{'lv'.$data::class{$class}{id}}.'/';
+    $classlv .= $pc{'lv'.$classData{$class}{id}}.'/';
   }
+  my $freeclass;
+  foreach my $num (1 .. $pc{freeClassNum}) {
+    next unless $pc{"freeClass${num}Name"} && $pc{"freeClass${num}Lv"};
+    my $className = $pc{"freeClass${num}Name"};
+    $className =~ s/[|｜]([^|｜]+?)《.+?》/$1/g;
+    $className = removeTags unescapeTags $className =~ s/^\s+|\s+$//gr =~ y/|/｜/dr;
+    $freeclass .= $className.$pc{"freeClass${num}Lv"}.'/';
+  }
+  $classlv .= '|'.$freeclass if $freeclass;
 
-  $::newline = "$pc{id}<>$::file<>".
-               "$pc{birthTime}<>$::now<>$NL{name}<>$NL{playerName}<>$pc{group}<>".
-               "$pc{expTotal}<>$NL{rank}<>$NL{race}<>$NL{gender}<>$NL{age}<>$NL{faith}<>".
-               "$classlv<>".
-               "$pc{lastSession}<>$pc{image}<> $pc{tags} <>$pc{hide}<>$pc{fellowPublic}<>";
+  $::newline = "$pc{id}<>$::file<>"
+             . "$pc{birthTime}<>$::now<>$NL{name}<>$NL{playerName}<>$pc{group}<>"
+             . "$pc{expTotal}<>$NL{rank}<>$NL{race}<>$NL{gender}<>$NL{age}<>$NL{faith}<>"
+             . "$classlv<>"
+             . "$pc{lastSession}<>$pc{image}<> $pc{tags} <>$pc{hide}<>$pc{fellowPublic}<>";
 
   return %pc;
 }

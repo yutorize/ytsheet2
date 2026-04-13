@@ -10,7 +10,10 @@ foreach(@data::class_names){
   push(@classNames, $_);
   if($_ eq 'コンジャラー'){ push(@classNames, 'ウィザード'); }
 }
-
+my %classData; my @classCasterNames;
+sub setupPaletteData {
+  addFreeClassData(\%::pc, \%classData, \@classNames, \@classCasterNames);
+}
 ### 魔法威力 #########################################################################################
 my %pows = (
   Sor => {
@@ -213,6 +216,15 @@ sub palettePreset {
   if   (!$tool)           { $bot{YTC} = 1; }
   elsif($tool eq 'tekey' ){ $bot{TKY} = $bot{BCD} = 1; }
   elsif($tool eq 'bcdice'){ $bot{BCD} = 1; }
+  my %sym;
+  $sym{'@'}  = $bot{YTC} ? '@'  : ':';
+  $sym{'//'} = $bot{YTC} ? '//' : 'H';
+  sub setChoice {
+    my $num = shift;
+    my $data = shift;
+    if($bot{YTC}){ return $num.'@'.$data }
+    else { return "choice($data)" }
+  }
   ## ＰＣ
   if(!$type){
     $text .= appendPaletteInsert('');
@@ -225,12 +237,12 @@ sub palettePreset {
       $text .= "2d+{冒険者}+{${statusName}B} 冒険者＋${statusName}\n";
     }
     foreach my $class (@classNames){
-      my $c_id = $data::class{$class}{id};
-      next if !$data::class{$class}{package} || !$::pc{'lv'.$c_id};
-      my %data = %{$data::class{$class}{package}};
+      my $c_id = $classData{$class}{id};
+      next if !$classData{$class}{package} || !$::pc{'lv'.$c_id};
+      my %data = %{$classData{$class}{package}};
       foreach my $p_id (sort{$data{$a}{stt} cmp $data{$b}{stt} || $data{$a} cmp $data{$b}} keys %data){
         if ($data{$p_id}{unlockCraft}) {
-          my $craftEName = $data::class{$class}{craft}{eName};
+          my $craftEName = $classData{$class}{craft}{eName};
           my $craftNum = $::pc{"lv${c_id}"} + ($::pc{"${craftEName}Addition"} // 0);
 
           # 条件となる技芸を習得していなければ出力しない.
@@ -367,8 +379,8 @@ sub palettePreset {
 
     # 魔法
     foreach my $name (@classNames){
-      next if !($data::class{$name}{magic}{jName} || $data::class{$name}{craft}{stt});
-      next if !$::pc{'lv' . $data::class{$name}{id} };
+      next if !($classData{$name}{magic}{jName} || $classData{$name}{craft}{stt});
+      next if !$::pc{'lv' . $classData{$name}{id} };
       $text .= "###\n" if $bot{TKY};
       $text .= "### ■魔法系\n";
       $text .= "//魔力修正=".($::pc{magicPowerAdd}+$::pc{magicPowerEquip})."\n";
@@ -381,10 +393,10 @@ sub palettePreset {
     }
 
     foreach my $class (@classNames){
-      next if !($data::class{$class}{magic}{jName} || $data::class{$class}{craft}{stt});
-      my $id   = $data::class{$class}{id};
-      my $name = $data::class{$class}{magic}{jName} || $data::class{$class}{craft}{jName};
-      my $power = $data::class{$class}{craft}{power} || $name;
+      next if !($classData{$class}{magic}{jName} || $classData{$class}{craft}{stt});
+      my $id   = $classData{$class}{id};
+      my $name = $classData{$class}{magic}{jName} || $classData{$class}{craft}{jName};
+      my $power = $classData{$class}{craft}{power} || $name;
       next if !$::pc{'lv'.$id};
       
       my %dmgTexts;
@@ -435,7 +447,7 @@ sub palettePreset {
             next if($id eq 'Fai' && $pow == 80 && $::pc{lvFai} < 15);
           }
           else {
-            my $eName = $data::class{$class}{magic}{eName} || $data::class{$class}{craft}{eName};
+            my $eName = $classData{$class}{magic}{eName} || $classData{$class}{craft}{eName};
             my $exist;
             foreach(1 .. $::pc{'lv'.$id}+$::pc{$eName.'Addition'}){
               if($::pc{'magic'.ucfirst($eName).$_} =~ /^($pows{$id}{$pow})$/){ $exist = 1; last; }
@@ -501,7 +513,7 @@ sub palettePreset {
             next if($::pc{'lv'.$id} < $heals{$id}{$pow});
           }
           else {
-            my $eName = $data::class{$class}{magic}{eName} || $data::class{$class}{craft}{eName};
+            my $eName = $classData{$class}{magic}{eName} || $classData{$class}{craft}{eName};
             my $exist;
             foreach(1 .. $::pc{'lv'.$id}+$::pc{$eName.'Addition'}){
               if($::pc{'magic'.ucfirst($eName).$_} =~ /^($heals{$id}{$pow})$/){ $exist = 1; last; }
@@ -896,7 +908,7 @@ sub paletteProperties {
     push @propaties, "//冒険者レベル=$::pc{level}";
     my @classes_en;
     foreach my $name (@classNames){
-      my $id = $data::class{$name}{id};
+      my $id = $classData{$name}{id};
       next if !$::pc{'lv'.$id};
       push @propaties, "//$name=$::pc{'lv'.$id}";
       push @classes_en, "//".uc($id)."={$name}";
@@ -948,9 +960,9 @@ sub paletteProperties {
     #push @propaties, "//魔物知識=$::pc{monsterLore}" if $::pc{monsterLore};
     #push @propaties, "//先制力=$::pc{initiative}" if $::pc{initiative};
     foreach my $class (@classNames){
-      my $c_id = $data::class{$class}{id};
-      next if !$data::class{$class}{package} || !$::pc{'lv'.$c_id};
-      my %data = %{$data::class{$class}{package}};
+      my $c_id = $classData{$class}{id};
+      next if !$classData{$class}{package} || !$::pc{'lv'.$c_id};
+      my %data = %{$classData{$class}{package}};
       foreach my $p_id (sort{$data{$a}{stt} cmp $data{$b}{stt} || $data{$a} cmp $data{$b}} keys %data){
         my $name = $class.$data{$p_id}{name};
         my $stt  = $stt_id_to_name{$data{$p_id}{stt}};
@@ -961,14 +973,14 @@ sub paletteProperties {
     push @propaties, '';
     
     foreach my $class (@classNames){
-      next if !($data::class{$class}{magic}{jName} || $data::class{$class}{craft}{stt});
-      my $id = $data::class{$class}{id};
+      next if !($classData{$class}{magic}{jName} || $classData{$class}{craft}{stt});
+      my $id = $classData{$class}{id};
       next if !$::pc{'lv'.$id};
-      my $name = $data::class{$class}{craft}{power} || $data::class{$class}{magic}{jName} || $data::class{$class}{craft}{jName};
-      my $stt = $data::class{$class}{craft}{stt} || '知力';
+      my $name = $classData{$class}{craft}{power} || $classData{$class}{magic}{jName} || $classData{$class}{craft}{jName};
+      my $stt = $classData{$class}{craft}{stt} || '知力';
       my $own = $::pc{'magicPowerOwn'.$id} ? "+2" : "";
       my $add;
-      if($data::class{$class}{magic}{jName}){
+      if($classData{$class}{magic}{jName}){
         $add .= addNum $::pc{magicPowerEnhance};
         $add .= addNum $::pc{'magicPowerAdd'.$id};
         $add .= addNum $::pc{raceAbilityMagicPower};
@@ -1008,9 +1020,9 @@ sub paletteProperties {
         else {
           $accMod += $::pc{partEnhance};
         }
-        if($data::class{$class}{accUnlock}{acc} eq 'power'){
+        if($classData{$class}{accUnlock}{acc} eq 'power'){
           push @propaties,
-            "//命中$_=({".($data::class{$class}{craft}{power} || $data::class{$class}{craft}{power}).'}'
+            "//命中$_=({".($classData{$class}{craft}{power} || $classData{$class}{craft}{power}).'}'
             ."+"
             .( ($::pc{'weapon'.$_.'Acc'}||0) + $accMod )
             .")";
@@ -1046,7 +1058,7 @@ sub paletteProperties {
         my $basetext;
         if   ($category eq 'クロスボウ'){ $basetext = $::SW2_0 ? '' : "{$::pc{'weapon'.$_.'Class'}}"; }
         elsif($category eq 'ガン'      ){ $basetext = "{魔動機術}"; }
-        elsif($data::class{$class}{accUnlock}{dmg} eq 'power'){ $basetext = '{'.($data::class{$class}{magic}{jName} || $data::class{$class}{craft}{power} || $data::class{$class}{craft}{jName}).'}' }
+        elsif($classData{$class}{accUnlock}{dmg} eq 'power'){ $basetext = '{'.($classData{$class}{magic}{jName} || $classData{$class}{craft}{power} || $classData{$class}{craft}{jName}).'}' }
         else { $basetext = "{$::pc{'weapon'.$_.'Class'}}+({筋力}+{筋力増強})/6"; }
         $basetext .= addNum($dmgMod);
         push @propaties, "//追加D$_=(${basetext}+".($::pc{'weapon'.$_.'Dmg'}||0).")";
@@ -1059,7 +1071,7 @@ sub paletteProperties {
       next if ($::pc{"defenseTotal${i}Eva"} eq '');
 
       my $class = $::pc{"evasionClass${i}"};
-      my $id = $data::class{$class}{id};
+      my $id = $classData{$class}{id};
       my $partNum = $::pc{"evasionPart$i"};
       my $partName = $::pc{"evasionPart${i}Name"} = $::pc{"part${partNum}Name"};
       my $evaMod = $::pc{evaEquip};

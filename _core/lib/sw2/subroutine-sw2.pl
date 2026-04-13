@@ -130,7 +130,42 @@ sub createUnitStatus {
   return \@unitStatus;
 }
 
-### クラス色分け --------------------------------------------------
+### 自由記入技能 --------------------------------------------------
+sub addFreeClassData {
+  my ($pc, $classData, $classNames, $classCasterNames) = @_;
+  %$classData = %data::class if !%$classData;
+  @$classNames = @data::class_names if !@$classNames;
+  @$classCasterNames = @data::class_caster if !@$classCasterNames;
+
+  foreach my $num (1 .. $pc->{freeClassNum}) {
+    my $name = $pc->{"freeClass${num}Name"};
+    next unless $name && $pc->{"freeClass${num}Lv"};
+
+    $classData->{$name} = {
+      expTable => $pc->{"freeClass${num}ExpTable"},
+      id       => "FC${num}",
+      eName    => "freeclass${num}",
+    };
+    $pc->{"lvFC${num}"} = $pc->{"freeClass${num}Lv"};
+    push @$classNames, $name;
+
+    if ($pc->{"freeClass${num}Acc"}) { $classData->{$name}{accUnlock} = { lv => 1 }; }
+    if ($pc->{"freeClass${num}Eva"}) { $classData->{$name}{evaUnlock} = { lv => 1 }; }
+    if ($pc->{"freeClass${num}Magic"}) {
+      $classData->{$name}{magic} = { jName => $pc->{"magicPowerNameFC${num}"} || '―' };
+      push @$classCasterNames, $name if $classCasterNames;
+    }
+    if($pc->{"freeClass${num}Tec"} || $pc->{"freeClass${num}Agi"} || $pc->{"freeClass${num}Obs"} || $pc->{"freeClass${num}Kno"}){
+      $classData->{$name}{package} = {};
+      if ($pc->{"freeClass${num}Tec"}) { $classData->{$name}{package}{Tec} = { name => '技巧', stt => 'A' }; }
+      if ($pc->{"freeClass${num}Agi"}) { $classData->{$name}{package}{Agi} = { name => '運動', stt => 'B' }; }
+      if ($pc->{"freeClass${num}Obs"}) { $classData->{$name}{package}{Obs} = { name => '観察', stt => 'E' }; }
+      if ($pc->{"freeClass${num}Kno"}) { $classData->{$name}{package}{Kno} = { name => '知識', stt => 'E' }; }
+    }
+  }
+}
+
+### 技能色分け --------------------------------------------------
 sub class_color {
   my $text = shift;
   $text =~ s/((?:.*?)(?:[0-9]+))/<span>$1<\/span>/g;

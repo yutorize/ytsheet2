@@ -798,7 +798,14 @@ sub existsRowStrict {
   }
   return 0;
 }
-## 0も偽としたい場合
+## 全てが真の場合のみ
+sub existsRowFull {
+  my $prefix = shift;
+  foreach(@_){
+    if(!$::pc{$prefix.$_}){ return 0; }
+  }
+  return 1;
+}
 
 ### 配列の重複削除 --------------------------------------------------
 sub deduplicate {

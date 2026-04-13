@@ -186,9 +186,21 @@
 
 #area-classes {
   grid-column: span 2;
-  display: flex;
+  display: grid;
+  gap: 3px var(--box-h-gap);
+  grid-template-columns: 2fr 1fr;
+  &:has(#classes-stages [data-stage]:not(.hidden)){
+    grid-template-columns: 5fr 2fr;
+  }
   position: relative;
   justify-content: space-between;
+  align-items: start;
+  
+  @media screen and (width > 735px){
+    > .box {
+      margin-top: 0;
+    }
+  }
 }
 #area-classes.common-classes-off {
   flex-basis: calc(75% - 1rem);
@@ -196,13 +208,13 @@
 }
 
 #classes {
-  flex-basis: 66%;
-  grid-template-columns: 1fr 1fr;
-  flex-grow: 1;
+  grid-row: 1;
+  grid-column: 1;
   display: grid;
+  grid-template-columns: 1fr 1fr;
   position: relative;
+
   &:has(#classes-stages [data-stage]:not(.hidden)){
-    flex-basis: 75%;
     grid-template-columns: 1fr 1fr 0.8fr;
   }
 
@@ -226,6 +238,14 @@
     & dt {
       font-size: inherit;
     }
+    & dt:has(+ dd + .hidden),
+    & dd:has(+ .hidden){
+      border-bottom-style: hidden;
+    }
+    & dt:has(+ dd + .hidden ~ :not(.hidden)),
+    & dd:has(+ .hidden ~ :not(.hidden)){
+      border-bottom-style: solid;
+    }
   }
   & select[name="faithType"] {
     font-size: 80%;
@@ -236,11 +256,22 @@
   }
 }
 #common-classes {
-  flex-grow: 1;
-  margin: 0 0 0 var(--box-h-gap) !important;
-
+  grid-row: 1;
+  grid-column: 2;
   & td:last-child {
     width: 3.5em;
+  }
+}
+#free-classes {
+  grid-row: 2;
+  &:not([open]){
+    max-width: max-content;
+  }
+  grid-column: span 2;
+  > table {
+    & th.small { line-height: 1; }
+    & th.lv  { width: 3em; }
+    & th.exp { width: 4em; }
   }
 }
 @media screen and (width <= 735px){
@@ -263,12 +294,8 @@
       grid-template-columns: 1fr 5em;
     }
     & dl dt {
-      display: flex;
-      align-items: center;
+      align-content: center;
     }
-  }
-  #common-classes {
-    margin: var(--box-v-gap) 0 0 !important;
   }
   #common-classes table {
     width: calc(100% - 1rem - 3.6em);
@@ -681,70 +708,82 @@
   grid-column: span 3;
   max-width: max-content;
   min-width: 10em;
-}
-#magic-power #magic-power-hr td {
-  height: .5em;
-}
-#magic-power table td:nth-child(3) {
-  padding-left : .5em;
-  padding-right: .5em;
-  border-width: 0 1px;
-  border-style: none dotted;
-  font-size: 85%;
-  text-align: left;
-  & input {
-    vertical-align: text-bottom;
-  }
-  & label {
-    line-height: 1;
-  }
-}
-#magic-power table td:nth-child(4),
-#magic-power table td:nth-child(5),
-#magic-power table td:nth-child(6) {
-  width: max-content !important;
-  padding-right: .2em;
-  text-align: left;
-}
-#magic-power table td b {
-  display: inline-block;
-  min-width: 2.5em;
-  padding-right : .2em;
-  line-height: 1.6;
-  font-weight: normal;
-  text-align: center;
-  white-space: nowrap;
-}
-#magic-power table td input[type=number] {
-  width: 3.5em;
-}
-#magic-power a {
-  font-size: 90%;
-}
-#magic-power #fairycontact {
-  display: flex;
-  justify-content: center;
-  margin: 0 -.2em;
-  border-width: .1rem 0 0;
-  border-style: solid;
-  & label {
-    padding: .2em;
-    & input[type="checkbox"] {
-      width: auto;
-      margin-right: .2em;
-      border: 0;
-      vertical-align: middle;
-      transform: scale(1.1);
+  width: auto;
+
+  > table {
+    > #magic-power-hr td {
+      height: .5em;
     }
-    & span {
-      padding: .2em 0;
+    & td:nth-child(3) {
+      padding-left : .5em;
+      padding-right: .5em;
+      border-width: 0 1px;
+      border-style: none dotted;
       font-size: 85%;
+      text-align: left;
+      & input {
+        vertical-align: text-bottom;
+      }
+      & label {
+        line-height: 1;
+      }
     }
-    & input[type="number"] {
-      width: 2em;
-      border: 0;
-      vertical-align: middle;
-      transform: scale(1.1);
+    & td:nth-child(4),
+    & td:nth-child(5),
+    & td:nth-child(6) {
+      width: max-content !important;
+      padding-right: .2em;
+      text-align: left;
+    }
+    & td:not(:has(input)){
+      text-align: center !important;
+    }
+    & td b {
+      display: inline-block;
+      min-width: 2.5em;
+      padding-right : .2em;
+      line-height: 1.6;
+      font-weight: normal;
+      text-align: center;
+      white-space: nowrap;
+    }
+    & td input {
+      &[type=number] {
+        width: 3.5em;
+      }
+      &[type="text"]{
+        width: 6em;
+      }
+    }
+  }
+  & a {
+    font-size: 90%;
+  }
+  & #fairycontact {
+    display: flex;
+    justify-content: center;
+    margin: 0 -.2em;
+    border-width: .1rem 0 0;
+    border-style: solid;
+    & label {
+      padding: .2em;
+      & input[type="checkbox"] {
+        width: auto;
+        margin-right: .2em;
+        border: 0;
+        vertical-align: middle;
+        transform: scale(1.1);
+      }
+      & span {
+        padding: .2em 0;
+        font-size: 85%;
+      }
+      & input[type="number"] {
+        width: 2em;
+        border: 0;
+        vertical-align: middle;
+        transform: scale(1.1);
+      }
     }
   }
 }
