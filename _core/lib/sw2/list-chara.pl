@@ -199,14 +199,26 @@ if(@class_query){
     $class =~ s/&lt;/</g;
     $class =~ s/&gt;/>/g;
     (my $name = $class) =~ s/(?<op>\>=?|\<=?)?(?<lv>[0-9]+)$/$op = $+{op};$lv = $+{lv};''/e;
-    if($lv ne ''){
-      if   ($op eq '>='){ @list = grep { (split '/' ,(split /<>/)[13])[$num{$name}] >= $lv } @list; }
-      elsif($op eq '<='){ @list = grep { (split '/' ,(split /<>/)[13])[$num{$name}] <= $lv } @list; }
-      elsif($op eq '>' ){ @list = grep { (split '/' ,(split /<>/)[13])[$num{$name}] >  $lv } @list; }
-      elsif($op eq '<' ){ @list = grep { (split '/' ,(split /<>/)[13])[$num{$name}] <  $lv } @list; }
-      else              { @list = grep { (split '/' ,(split /<>/)[13])[$num{$name}] == $lv } @list; }
+    if(exists $num{$name}){
+      if($lv ne ''){
+        if   ($op eq '>='){ @list = grep { (split '/',(m/^(?:[^<]*<>){13}([^<|]*)/)[0])[$num{$name}] >= $lv } @list; }
+        elsif($op eq '<='){ @list = grep { (split '/',(m/^(?:[^<]*<>){13}([^<|]*)/)[0])[$num{$name}] <= $lv } @list; }
+        elsif($op eq '>' ){ @list = grep { (split '/',(m/^(?:[^<]*<>){13}([^<|]*)/)[0])[$num{$name}] >  $lv } @list; }
+        elsif($op eq '<' ){ @list = grep { (split '/',(m/^(?:[^<]*<>){13}([^<|]*)/)[0])[$num{$name}] <  $lv } @list; }
+        else              { @list = grep { (split '/',(m/^(?:[^<]*<>){13}([^<|]*)/)[0])[$num{$name}] == $lv } @list; }
+      }
+      else { @list = grep { (split '/',(m/^(?:[^<]*<>){13}([^<|]*)/)[0])[$num{$name}] >= 1 } @list; }
     }
-    else { @list = grep { (split '/' ,(split /<>/)[13])[$num{$name}] >= 1 } @list; }
+    else {
+      if($lv ne ''){
+        if   ($op eq '>='){ @list = grep { (split '/', m/^(?:[^<]*<>){13}[^<|]*\|[^<]*?$name([0-9]+)/)[0] >= $lv } @list; }
+        elsif($op eq '<='){ @list = grep { (split '/', m/^(?:[^<]*<>){13}[^<|]*\|[^<]*?$name([0-9]+)/)[0] <= $lv } @list; }
+        elsif($op eq '>' ){ @list = grep { (split '/', m/^(?:[^<]*<>){13}[^<|]*\|[^<]*?$name([0-9]+)/)[0] >  $lv } @list; }
+        elsif($op eq '<' ){ @list = grep { (split '/', m/^(?:[^<]*<>){13}[^<|]*\|[^<]*?$name([0-9]+)/)[0] <  $lv } @list; }
+        else              { @list = grep { (split '/', m/^(?:[^<]*<>){13}[^<|]*\|[^<]*?$name([0-9]+)/)[0] == $lv } @list; }
+      }
+      else { @list = grep { (split '/', m/^(?:[^<]*<>){13}[^<|]*\|[^<]*?$name([0-9]+)/)[0] >= 1 } @list; }
+    }
   }
 }
 $INDEX->param(class => "@class_query");
@@ -309,6 +321,23 @@ foreach (@list) {
     next;
   }
 
+  #技能レベル
+  ($classes, my $freeclasses) = split '\|', $classes;
+  my @levels = split '/', $classes;
+  my $level = max(@levels);
+  my %lv;
+  @lv{@data::class_list} = @levels;
+  foreach (split '/',$freeclasses) {
+    if(m/^(.+?)([0-9]+)$/){
+      $lv{$1} = $2;
+      $level = $2 if $2 > $level;
+    }
+  }
+  my $renderClass;
+  foreach (sort {$lv{$b} <=> $lv{$a}} keys %lv){
+    $renderClass .= $_.$lv{$_} if $lv{$_};
+  }
+
   #名前
   $name =~ s/^“(.*)”(.*)$/<span>“$1”<\/span><span>$2<\/span>/;
   
@@ -322,7 +351,7 @@ foreach (@list) {
       "PLAYER" => $player,
       "GROUP" => $group,
       "EXP" => $exp,
-      "LV" => max((split /\//, $classes)),
+      "LV" => $level,
       "RANK" => $rank,
       "HIDE" => $hide,
     });
@@ -330,16 +359,6 @@ foreach (@list) {
   }
   ## 通常リスト
   else {
-    #技能レベル
-    my @levels = (split /\//, $classes);
-    my $level = max(@levels);
-    my %lv;
-    @lv{@class_name} = @levels;
-    my $class;
-    foreach (sort {$lv{$b} <=> $lv{$a}} keys %lv){
-      $class .= $_.$lv{$_} if $lv{$_};
-    }
-    $class = class_color($class);
     
     #種族
     $race =~ s/^その他://g;
@@ -379,7 +398,7 @@ foreach (@list) {
       "GROUP" => $group,
       "EXP" => commify($exp),
       "LV" => $level,
-      "CLASS" => $class,
+      "CLASS" => class_color($renderClass),
       "RACE" => $race,
       "GENDER" => $gender,
       "AGE" => $age,
