@@ -122,9 +122,14 @@ HTML
         $html .= '<td>'.::input("paletteMagic${_}Roll" ,'','','onchange="setChatPalette()"');
         $html .= '<td class="palette-magic-checklist left">';
         foreach my $name (@data::class_caster){
-            next if (!$data::class{$name}{magic}{jName});
-            my $id    = $data::class{$name}{id};
-            $html .= ::checkbox("paletteMagic${_}Check$id",$data::class{$name}{magic}{jName},'setChatPalette');
+            next if (!$data::class{$name}{magic}{jName}) || !$pc{"lv".$data::class{$name}{id}};
+            my $id = $data::class{$name}{id};
+            $html .= ::checkbox("paletteMagic${_}Check$id",$data::class{$name}{magic}{jName},'setChatPalette', 'data-magic-name="'.$data::class{$name}{magic}{jName}.'"');
+        }
+        foreach my $num (1 .. $pc{freeClassNum}){
+            next if !$pc{"freeClass${num}Magic"} || !$pc{"magicPowerNameFC${num}"} || !$pc{"freeClass${num}Lv"};
+            my $id = "FC${num}";
+            $html .= ::checkbox("paletteMagic${_}Check$id",$pc{"magicPowerName$id"},'setChatPalette', 'data-magic-name="'.$pc{"magicPowerName$id"}.'"');
         }
         $html .= '</template>' if $_ eq 'TMPL';
     }
