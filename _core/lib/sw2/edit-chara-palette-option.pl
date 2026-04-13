@@ -91,6 +91,12 @@ HTML
           </table>
           <div class="add-del-button"><a onclick="addPaletteAttack()">▼</a><a onclick="delPaletteAttack()">▲</a></div>
           @{[ ::input "paletteAttackNum","hidden" ]}
+          <ul class="annotate">
+            <li>
+              オプション名を<code>｜</code>で区切って列記すると、すでに定義されている他のオプションを参照して組み合わせられます。<br>
+              その場合、組み合わせたオプションの修正値は、すべて空欄にしてください。<br>
+              （例： 名称に<code>魔力撃 ｜ 全力攻撃Ⅱ</code>と記述すると、<code>魔力撃</code>という名称のオプションと<code>全力攻撃Ⅱ</code>という名称のオプションを組み合わせた効果になります）
+          </ul>
         </details>
         <details id="palette-magic" @{[ $pc{"paletteMagic1Name"} ? 'open' : '' ]}>
           <summary class="header2">魔法の追加オプション</summary>
