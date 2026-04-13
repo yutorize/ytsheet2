@@ -512,6 +512,52 @@ sub classInputBox {
 }
 print <<"HTML";
           </div>
+HTML
+my $freeClassOpen;
+$pc{freeClassNum} ||= 1;
+foreach my $num (1 .. $pc{freeClassNum}){
+  if($pc{"freeClass${num}Name"}){ $freeClassOpen = 1; last; }
+}
+print <<"HTML";
+          <details class="box" id="free-classes" @{[ $freeClassOpen ? 'open':'' ]}>
+            <summary>技能（自由記入）</summary>
+            @{[ input 'freeClassNum','hidden' ]}
+            <table class="edit-table side-margin">
+              <thead>
+                <tr>
+                  <th>
+                  <th class="name">技能名
+                  <th class="lv small">レベル
+                  <th class="exp small">経験点テーブル
+                  <th class="battle">戦闘系判定
+                  <th class="package">判定パッケージ
+              <tbody>
+HTML
+foreach my $num ('TMPL',1 .. $pc{freeClassNum}){
+  print '<template id="free-class-template">' if $num eq 'TMPL';
+  print '<tr id="free-class-row'.$num.'"><td class="handle">';
+  print '<td class="name">'.input("freeClass${num}Name",'','changeClassName');
+  print '<td class="lv">'.input("freeClass${num}Lv",'number','changeLv','min="0" max="17"');
+  print '<td class="exp">'.selectBox("freeClass${num}ExpTable",'changeLv','A','B');
+  print '<td class="battle">'
+    .checkbox("freeClass${num}Acc",'命中力','changeLv')
+    .checkbox("freeClass${num}Eva",'回避力','changeLv')
+    .checkbox("freeClass${num}Magic",'魔力','changeLv');
+  print '<td class="package">'
+    .checkbox("freeClass${num}Tec",'技巧','changeLv')
+    .checkbox("freeClass${num}Agi",'運動','changeLv')
+    .checkbox("freeClass${num}Obs",'観察','changeLv')
+    .checkbox("freeClass${num}Kno",'知識','changeLv');
+  print '</template>' if $num eq 'TMPL';
+}
+my %classData; my @classNames; my @casterClassNames;
+addFreeClassData(\%pc, \%classData, \@classNames, \@casterClassNames);
+
+print <<"HTML";
+              </tbody>
+            </table>
+            <div class="add-del-button"><a onclick="addClassFree()">▼</a><a onclick="delClassFree()">▲</a></div>
+          </details>
           <div class="box" id="common-classes">
             <h2>
               一般技能
@@ -623,7 +669,7 @@ print <<"HTML";
         </div>
         <div id="crafts">
 HTML
-foreach my $class (@data::class_names){
+foreach my $class (@data::class_caster){
   next if !$data::class{$class}{magic}{data};
   my $name = $data::class{$class}{magic}{eName};
   my $Name = ucfirst($data::class{$class}{magic}{eName});
@@ -820,26 +866,23 @@ print <<"HTML";
             <h2 class="in-toc">判定パッケージ</h2>
             <table class="edit-table side-margin">
 HTML
-foreach my $class (@data::class_names){
+foreach my $class (@classNames){
   next if !$data::class{$class}{package};
   my $c_id = $data::class{$class}{id};
   my $c_en = $data::class{$class}{eName};
   my %data = %{$data::class{$class}{package}};
   my $rowspan = keys %data;
-  print '<tbody id="package-'. $c_en .'"'. display($pc{'lv'.$c_id}) .'>';
-  print '<tr>';
-  print '<th rowspan="'.($rowspan+1).'">'.$class;
-  my $i;
+  print '<tbody id="package-'. $c_en .'" '.($c_id =~ /FC[0-9]+/ ? "data-free-class=\"$1\"":''). display($pc{'lv'.$c_id}) .'>';
+  print '<tr><th rowspan="'.($rowspan+1).'">'.$class;
   foreach my $p_id (sort{$data{$a}{stt} cmp $data{$b}{stt} || $data{$a} cmp $data{$b}} keys %data){
     (my $p_name = $data{$p_id}{name}) =~ s/(\(.+?\))/<small>$1<\/small>/;
-    print '<tr id="package-'.$c_en.'-'.lc($p_id).'-row">';
+    print '<tr class="'.lc($p_id).'">';
     print '<th>'. $p_name;
-    print '<td id="package-'.$c_en.'-'.lc($p_id).'-auto" class="small">';
+    print '<td class="auto small">';
     print '<td>+'. (input "pack${c_id}${p_id}Add", 'number','calcPackage' ) .'=';
-    print '<td id="package-'.$c_en.'-'.lc($p_id).'">'. $data{"pack${c_id}${p_id}"};
-    $i++;
+    print '<td class="total">'. $pc{"pack${c_id}${p_id}"};
   }
-  print "</tbody>\n";
+  print "\n";
 }
 print <<"HTML";
             </table>
@@ -904,32 +947,20 @@ print <<"HTML";
         </div>
         <div class="box" id="magic-power">
           <h2 class="in-toc" data-content-title="魔法・呪歌・賦術などの基準値">魔法／呪歌／賦術など</h2>
-          <table class="edit-table line-tbody">
+          <table class="edit-table">
             <thead>
             <tr>
               <th><th><th>専用化<th>魔力／奏力<th>行使<small>／演奏など</small><th class="small">ダメージ<br>上昇効果
+            <tbody id="magic-consts">
             <tbody>
-              <tr id="magic-power-raceability">
-                <td>［<span id="magic-power-raceability-name"></span>］
-                <td id="magic-power-raceability-type">
-                <td>
-                <td class="center">+<span id="magic-power-raceability-value">0</span>
-                <td>
-                <td>
-              <tr id="magic-power-magicenhance">
-                <td>《魔力強化》
-                <td>魔法全般
-                <td>
-                <td class="center">+<span id="magic-power-magicenhance-value">0</span>
-                <td>
-                <td>
               <tr id="magic-power-common">
                 <td>装備補正など
-                <td>魔法全般
+                <td>全ての魔法
                 <td>
                 <td>+@{[ input 'magicPowerAdd' ,'number','calcMagic' ]}<span id="magic-power-equip-value" ></span>
                 <td>+@{[ input 'magicCastAdd'  ,'number','calcMagic' ]}<span id="magic-cast-equip-value"  ></span>
                 <td>+@{[ input 'magicDamageAdd','number','calcMagic' ]}<span id="magic-damage-equip-value"></span>
+            <tbody id="magic-power-casterclass">
 HTML
 my $fairyset = <<"HTML";
 <small>ランク</small><b id="fairy-rank"></b>
@@ -957,8 +988,24 @@ foreach my $name (@data::class_caster){
 HTML
 }
 print <<"HTML";
-            <tr id="magic-power-hr">
-              <td colspan="8">
+            <tbody id="magic-power-freeclass">
+HTML
+foreach my $num (1 .. $pc{freeClassNum}){
+  my $id = "FC${num}";
+  next if !$pc{'lv'.$id};
+  print <<"HTML";
+            <tr id="magic-power-freeclass${num}" data-class-id="$id" data-class-name="$pc{"freeClass${num}Name"}">
+              <td>$pc{"freeClass${num}Name"}
+              <td>@{[ input 'magicPowerName'.$id,'','calcMagic','placeholder="例: ＊＊魔法"' ]}
+              <td><label>@{[ input 'magicPowerOwn'.$id, 'checkbox','calcMagic' ]}知力+2</label>
+              <td>+@{[ input 'magicPowerAdd'.$id,  'number','calcMagic' ]}=<b id="magic-power-freeclass${num}-value">0</b>
+              <td>+@{[ input 'magicCastAdd'.$id,   'number','calcMagic' ]}=<b id="magic-cast-freeclass${num}-value" >0</b>
+              <td>+@{[ input 'magicDamageAdd'.$id, 'number','calcMagic' ]}=<b id="magic-damage-freeclass${num}-value" >0</b>
+HTML
+}
+print <<"HTML";
+            <tbody id="magic-power-hr"><tr><td colspan="8">
+            <tbody id="magic-power-otherclass">
 HTML
 foreach my $name (@data::class_names){
   next if (!$data::class{$name}{craft}{stt});
@@ -969,19 +1016,10 @@ foreach my $name (@data::class_names){
               <td>${name}
               <td>$data::class{$name}{craft}{jName}
               <td><label>@{[ input 'magicPowerOwn'.$id, 'checkbox','calcMagic' ]}$data::class{$name}{craft}{stt}+2</label>
-              <td>
-HTML
-  if($data::class{$name}{craft}{power}){
-    print '+'.input('magicPowerAdd'.$id, 'number','calcMagic')."=<b id=\"magic-power-${ename}-value\">0</b>";
-  }
-  print <<"HTML";
-              </td>
+              <td>@{[ $data::class{$name}{craft}{power} ? '+'.input('magicPowerAdd'.$id, 'number','calcMagic')."=<b id=\"magic-power-${ename}-value\">0</b>" : '―' ]}
               <td>+@{[ input 'magicCastAdd'.$id, 'number','calcMagic' ]}=<b id="magic-cast-${ename}-value" >0</b>
-              <td>
+              <td>@{[ $data::class{$name}{craft}{power} ? '+'.input('magicDamageAdd'.$id, 'number','calcMagic')."=<b id=\"magic-damage-${ename}-value\">0</b>" : '―' ]}
 HTML
-  if($data::class{$name}{craft}{power}){
-    print '+'.input('magicDamageAdd'.$id, 'number','calcMagic')."=<b id=\"magic-damage-${ename}-value\">0</b>";
-  }
 }
 print <<"HTML";
           </table>
@@ -990,7 +1028,7 @@ print <<"HTML";
       
       <div id="area-equipment">
         <div class="box" id="attack-classes">
-          <table class="edit-table line-tbody">
+          <table class="edit-table">
             <thead>
               <tr>
                 <th class="name ">技能・特技
@@ -1001,77 +1039,6 @@ print <<"HTML";
                 <th class="dmg  ">追加Ｄ
               </tr>
             <tbody>
-HTML
-my @weapon_users;
-foreach my $name (@data::class_names){
-  next if $data::class{$name}{type} ne 'weapon-user' && !$data::class{$name}{accUnlock};
-  push(@weapon_users, $name);
-  my $ename = $data::class{$name}{eName};
-  print <<"HTML";
-              <tr id="attack-${ename}"@{[ display $pc{'lv'.$data::class{$name}{id}} ]}>
-                <td>${name}技能
-                <td id="attack-${ename}-str">0
-                <td id="attack-${ename}-acc">0
-                <td>―
-                <td>@{[ $data::class{$name}{critMod} || '―' ]}
-                <td id="attack-${ename}-dmg">―
-HTML
-}
-foreach my $weapon (@data::weapons){
-print <<"HTML";
-              <tr id="attack-@$weapon[1]-mastery"@{[ display $pc{'mastery'.ucfirst(@$weapon[1])} ]}>
-                <td>《武器習熟／@$weapon[0]》
-                <td>―
-                <td>―
-                <td>―
-                <td>―
-                <td id="attack-@$weapon[1]-mastery-dmg">$pc{'mastery'.ucfirst(@$weapon[1])}
-HTML
-}
-print <<"HTML";
-              <tr id="attack-artisan-mastery"@{[ display $pc{masteryArtisan} ]}>
-                <td>《魔器習熟》
-                <td>―
-                <td>―
-                <td>―
-                <td>―
-                <td id="attack-artisan-mastery-dmg">$pc{masteryArtisan}
-              <tr id="attack-weapon-damage-up"@{[ display $pc{weaponDamageUp} ]}>
-                <td>《武器ダメージ増加》
-                <td>―
-                <td>―
-                <td>―
-                <td>―
-                <td id="attack-weapon-damage-up-dmg">$pc{weaponDamageUp}
-              <tr id="accuracy-enhance"@{[ display $pc{accuracyEnhance} ]}>
-                <td>《命中強化》
-                <td>―
-                <td id="accuracy-enhance-acc">$pc{accuracyEnhance}
-                <td>―
-                <td>―
-                <td>―
-              <tr id="throwing"@{[ display $pc{throwing} ]}>
-                <td>《スローイング》
-                <td>―
-                <td id="throwing-acc">1
-                <td>―
-                <td>―
-                <td>―
-              <tr id="mighty-shot"@{[ display $pc{mightyShot} ]}>
-                <td>【剛力弾】
-                <td>―
-                <td>―
-                <td>―
-                <td>―
-                <td id="mighty-shot-dmg">$pc{mightyShot}
-              <tr id="parts-enhance"@{[ display $pc{partEnhance} ]}>
-                <td>【部位強化】
-                <td>―
-                <td id="parts-enhance-acc">1
-                <td>―
-                <td>―
-                <td>―
-            </tbody>
           </table>
         </div>
         <div class="box in-toc" id="weapons" data-content-title="武器">
@@ -1092,6 +1059,11 @@ print <<"HTML";
               </tr>
             </thead>
 HTML
+my @weapon_users;
+foreach my $name (@classNames){
+  next if $data::class{$name}{type} ne 'weapon-user' && !$data::class{$name}{accUnlock};
+  push(@weapon_users, $name);
+}
 my @weaponCategories = map { $_ eq 'ガン' ? ($_, 'ガン（物理）') : $_ } @data::weapon_names;
 foreach my $num ('TMPL',1 .. $pc{weaponNum}) {
   if($num eq 'TMPL'){ print '<template id="weapon-template">' }
@@ -1125,7 +1097,7 @@ print <<"HTML";
             <li>備考欄に<code>\@防護点+1</code>や<code>\@回避力+1</code>のように記述すると、<span class="text-em">常時</span>有効な上昇効果が自動計算されます。<br>有効な項目は、装飾品欄と同様です。
             <li>備考欄に<code>〈レッサー・アームスフィアⅠ〉</code>のように記述すると、対応した筋力で計算されます。
             <li id="artisan-annotate" @{[ display $pc{masteryArtisan} ]}>備考欄に<code>〈魔器〉</code>と記入すると魔器習熟が反映されます。
-            <li id="giantize-annotate-weapon">備考欄に<code>［巨人化］</code>と記述すると、［巨人化］後の筋力で計算されます。
+            <li data-race-ability-only="巨人化">備考欄に<code>［巨人化］</code>と記述すると、［巨人化］後の筋力で計算されます。
           </ul>
           @{[input('weaponNum','hidden')]}
         </div>
@@ -1139,84 +1111,6 @@ print <<"HTML";
                 <th class="def ">防護点
               </tr>
             <tbody>
-HTML
-my @evasion_classes;
-foreach my $name (@data::class_names){
-  next if $data::class{$name}{type} ne 'weapon-user' && !$data::class{$name}{evaUnlock};
-  push(@evasion_classes, $name);
-  my $ename = $data::class{$name}{eName};
-  print <<"HTML";
-              <tr id="evasion-${ename}"@{[ display $pc{'lv'.$data::class{$name}{id}} ]}>
-                <td>${name}技能
-                <td id="evasion-${ename}-str">0
-                <td id="evasion-${ename}-eva">0
-                <td>―
-HTML
-}
-print <<"HTML";
-              <tr id="race-ability-def"@{[ display $pc{raceAbilityDef} ]}>
-                <td id="race-ability-def-name">［@{[
-                    ($pc{raceAbility} =~ /［鱗の皮膚］/) ? '鱗の皮膚'
-                  : ($pc{raceAbility} =~ /［晶石の身体］/) ? '晶石の身体'
-                  : ($pc{raceAbility} =~ /［奈落の身体／アビストランク］/)?'奈落の身体／アビストランク'
-                  : ($pc{raceAbility} =~ /［トロールの体躯］/)?'トロールの体躯'
-                  : ''
-                ]}］
-                <td>―
-                <td>―
-                <td id="race-ability-def-value">$pc{raceAbilityDef}
-              <tr id="mastery-metalarmour"@{[ display $pc{masteryMetalArmour} ]}>
-                <td>《防具習熟／金属鎧》
-                <td>―
-                <td>―
-                <td id="mastery-metalarmour-value">$pc{masteryMetalArmour}
-              <tr id="mastery-nonmetalarmour"@{[ display $pc{masteryNonMetalArmour} ]}>
-                <td>《防具習熟／非金属鎧》
-                <td>―
-                <td>―
-                <td id="mastery-nonmetalarmour-value">$pc{masteryNonMetalArmour}
-              <tr id="mastery-shield"@{[ display $pc{masteryShield} ]}>
-                <td>《防具習熟／盾》
-                <td>―
-                <td>―
-                <td id="mastery-shield-value">$pc{masteryShield}
-              <tr id="mastery-ryugaiarmour"@{[ display $pc{masteryRyugai} ]}>
-                <td>《防具習熟／龍骸》
-                <td>―
-                <td>―
-                <td id="mastery-ryugaiarmour-value">$pc{masteryRyugai}
-              <tr id="mastery-artisan-def"@{[ display $pc{masteryArtisan} ]}>
-                <td>《魔器習熟》
-                <td>―
-                <td>―
-                <td id="mastery-artisan-def-value">$pc{masteryArtisan}
-              <tr id="armour-defense-up"@{[ display $pc{armourDefenseUp} ]}>
-                <td>《鎧防護点上昇》
-                <td>―
-                <td>―
-                <td id="armour-defense-up-value">$pc{armourDefenseUp}
-              <tr id="evasive-maneuver"@{[ display $pc{evasiveManeuver} ]}>
-                <td>《回避行動》
-                <td>―
-                <td id="evasive-maneuver-value">$pc{evasiveManeuver}
-                <td>―
-              <tr id="minds-eye"@{[ display $pc{mindsEye} ]}>
-                <td>《心眼》
-                <td>―
-                <td id="minds-eye-value">$pc{mindsEye}
-                <td>―
-              <tr id="parts-enhance-def"@{[ display $pc{partEnhance} ]}>
-                <td>【部位強化】
-                <td>―
-                <td id="parts-enhance-eva">1
-                <td>―
-              <tr>
-                <td>武器や装飾品による修正
-                <td>―
-                <td id="equip-mod-eva">0
-                <td id="equip-mod-def">0
-              </tr>
-            </tbody>
           </table>
         </div>
         <div class="box in-toc" id="armours" data-content-title="防具">
@@ -1235,6 +1129,11 @@ print <<"HTML";
             </thead>
             <tbody id="armours-table">
 HTML
+my @evasion_classes;
+foreach my $name (@classNames){
+  next if $data::class{$name}{type} ne 'weapon-user' && !$data::class{$name}{evaUnlock};
+  push(@evasion_classes, $name);
+}
 foreach my $num ('TMPL',1 .. $pc{armourNum}) {
   if($num eq 'TMPL'){ print '<template id="armour-template">' }
   print <<"HTML";
@@ -1295,7 +1194,7 @@ print <<"HTML";
             <li>防具の備考欄に<code>\@敏捷度-6</code>や<code>\@精神抵抗力+2</code>のように記述すると、<span class="text-em">常時</span>有効な上昇効果が自動計算されます。<br>
               有効な項目は、装飾品欄と同様です。<br>
               <code>\@</code>による修正は合算のチェックに関わらず計算されるため、予備装備や切り替えが想定されるものは注意してください。<br>
-            <li id="giantize-annotate-armour">合計行の備考欄に<code>［巨人化］</code>と記述すると、［巨人化］後の敏捷度で計算されます。
+            <li data-race-ability-only="巨人化">合計行の備考欄に<code>［巨人化］</code>と記述すると、［巨人化］後の敏捷度で計算されます。
           </ul>
         </div>
 
