@@ -906,7 +906,12 @@ function formatNumber(num){
 function ucfirst(str){
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
-
+// ケース変換 ----------------------------------------
+function camelToKebab(str) {
+  return str
+    .replace(/([a-z0-9])([A-Z])/g, "$1-$2")
+    .toLowerCase();
+}
 // 安全なeval ----------------------------------------
 function safeEval(text){
   if     (text === '') { return 0; }
