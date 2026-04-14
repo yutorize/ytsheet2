@@ -254,6 +254,15 @@
   & .fail select[name="faithType"] {
     width: calc(100% - 8.5em);
   }
+  & #classes-seeker {
+    > dl {
+      grid-template-columns: 5em 1fr;
+      & dt {
+        font-size: 85%;
+        align-content: end;
+      }
+    }
+  }
 }
 #common-classes {
   grid-row: 1;
@@ -822,8 +831,8 @@
   }
 }
 
-#classes dl dt:is([data-stage="2.0"],[data-stage="2.5"]),
-option:is([data-stage="2.0"],[data-stage="2.5"]) {
+body:not(#sw2\.0) [data-stage="2.0"],
+body#sw2\.0 [data-stage="2.5"] {
   background-color: rgba(0,200,255,0.2);
 }
 
@@ -835,6 +844,7 @@ option:is([data-stage="2.0"],[data-stage="2.5"]) {
       .dmg { width: 4.5em; } /* 追加Ｄ */
     }
   }
+  &:has(tbody:empty){ display: none; }
 }
 #weapons {
   width: 100%;
@@ -932,6 +942,10 @@ option:is([data-stage="2.0"],[data-stage="2.5"]) {
 
 #evasion-classes {
   width: calc(25% + 18.5em + 1px);
+  &:has(tbody:empty){
+    display: none;
+    + #armours{  margin-top: var(--box-v-gap); }
+  }
 }
 #evasion-class-row .flex {
   display: flex;
@@ -1302,8 +1316,7 @@ option:is([data-stage="2.0"],[data-stage="2.5"]) {
     .title      { width:  12em; }
     .exp        { width:   5em; }
     .money      { width: 4.5em; }
-    .honor      { width: 3.5em; }
-    .honor.zero-data { width: 5em; }
+    .honor      { width: 3.5em; #sw2\.0 & { width: 5em; } }
     .grow       { width: 4.5em; }
     .gm         { width:   6em; }
     .member     { width:  auto; }

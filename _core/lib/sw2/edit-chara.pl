@@ -111,7 +111,7 @@ $pc{historyNum}    ||=  3;
 $pc{accuracyEnhance} ||= 0;
 $pc{evasiveManeuver} ||= 0;
 
-$pc{unlockZeroData} = 1 if $pc{level} > 15;
+$pc{unlockZeroData} = 1 if $pc{level} > 15 && !$::SW2_0;
 
 foreach my $name (@data::class_names){
   if ($data::class{$name}{type} eq 'extra' && $pc{'lv'.$data::class{$name}{id}}){
@@ -153,6 +153,7 @@ Content-type: text/html\n
   <script src="./?mode=js-consts&ver=${main::ver}"></script>
   <script src="${main::core_dir}/lib/edit.js?${main::ver}" defer></script>
   <script src="${main::core_dir}/lib/sw2/edit-chara.js?${main::ver}" defer></script>
+  @{[ $::SW2_0 ? "<script src=\"${main::core_dir}/lib/sw2.0/edit-chara.js?${main::ver}\" defer></script>" : '' ]}
   <style>
     #image,
     .image-custom-view {
@@ -160,7 +161,7 @@ Content-type: text/html\n
     }
   </style>
 </head>
-<body>
+<body @{[ $::SW2_0 ? 'id="sw2.0"' : '' ]}>
   <script src="${main::core_dir}/skin/_common/js/common.js?${main::ver}"></script>
   <header>
     <h1>$set::title</h1>
@@ -296,6 +297,16 @@ print <<"HTML";
           <dd>@{[input("history0Money",'number','changeRegu', ($set::make_fix?' readonly':''))]}
           <dt>名誉点
           <dd>@{[input("history0Honor",'number','changeRegu', ($set::make_fix?' readonly':''))]}
+HTML
+if($::SW2_0){
+  print <<~"HTML";
+          <dt>蛮族名誉点
+          <dd>@{[input("history0HonorB",'number','changeRegu', ($set::make_fix?' readonly':''))]}
+          <dt>盟竜点
+          <dd>@{[input("history0HonorD",'number','changeRegu', ($set::make_fix?' readonly':''))]}
+  HTML
+}
+print <<"HTML";
           <dt class="grow">成長
           <dd class="grow">
             <dl class="regulation-grow">
@@ -310,9 +321,20 @@ print <<"HTML";
         <ul class="annotate"><li>経験点は、初期所有技能のぶんを含みます。</ul>
         <dl class="regulation-note"><dt>備考<dd>@{[ input "history0Note" ]}</dl>
         <ul class="regulation-others">
+HTML
+if($::SW2_0){
+  print <<~"HTML";
+          <li class="left">@{[ checkbox 'unlockFiveData','『SW2.5』のデータを解禁（一部技能・特技）',"checkStage('2.5',this.checked)" ]}
+  HTML
+}
+else {
+  print <<~"HTML";
           <li class="left">@{[ checkbox 'unlockRyugai','『龍骸諸島』用項目の表示（および一部項目名の変更）',"checkStage('龍骸諸島',this.checked)" ]}
           <li class="left">@{[ checkbox 'unlockDemonoPalace','『魔王宮殿』用項目の表示',"checkStage('魔王宮殿',this.checked)" ]}
-          <li class="left">@{[ checkbox 'unlockZeroData','『SW2.0』のデータを解禁（LV16以上、一部技能・特技）',"checkStage('2.0',this.checked)" ]}
+          <li class="left">@{[ checkbox 'unlockZeroData','『SW2.0』のデータを解禁（LV16以上、一部技能・特技など）',"checkStage('2.0',this.checked)" ]}
+  HTML
+}
+print <<"HTML";
         </ul>
       </details>
       <div id="area-status">
@@ -493,6 +515,17 @@ foreach my $key (sort keys %classNamesStage){
   foreach my $name (@{$classNamesStage{$key}}){ print classInputBox($name) }
   print '</dl></div>';
 }
+print '<div data-stage="2.0" id="classes-seeker"><h3>求道者</h3><dl class="edit-table side-margin">';
+print '<dd style="grid-column:span 2"><select name="lvSeeker" onchange="calcLv();calcStt();">';
+my $i = 0;
+foreach (@data::seeker_lv){ print '<option value="'.$i.'"'.($pc{lvSeeker} eq $i?' selected':'').'>'.$_.'</option>'; $i++; }
+print '</select>';
+foreach my $i (1..5){
+  print "<dt id=\"seeker-buildup${i}\" class=\"right\">成長枠追加<dd>";
+  print selectBox "seekerBuildup${i}",'changeLv','戦闘特技','真語魔法','操霊魔法','深智魔法','神聖魔法','妖精魔法','魔動機術','召異魔法','秘奥魔法','練技','呪歌','騎芸','賦術','鼓咆','占瞳','魔装','呪印','貴格';
+  print '</select>';
+}
+print '</dl></div>';
 print '</div>';
 
 sub classInputBox {
@@ -502,11 +535,13 @@ sub classInputBox {
   my $out;
   $out .= '<dt id="class'.$id.'"';
   $out .= ' data-stage="2.0"' if $data::class{$name}{'2.0'};
+  $out .= ' data-stage="2.5"' if $data::class{$name}{'2.5'};
   $out .= '>';
   $out .= $name;
   $out .= '<select name="faithType">'.option('faithType','†|<†セイクリッド系>','‡|<‡ヴァイス系>','†‡|<†‡両系統使用可>').'</select>' if($name eq 'プリースト');
   $out .= '<dd';
   $out .= ' data-stage="2.0"' if $data::class{$name}{'2.0'};
+  $out .= ' data-stage="2.5"' if $data::class{$name}{'2.5'};
   $out .= '>' . input("lv${id}", 'number','changeLv','min="0" max="17"');
   return $out;
 }
@@ -588,25 +623,29 @@ print <<"HTML";
             <h2 class="in-toc">戦闘特技</h2>
             <ul class="edit-table side-margin">
 HTML
-foreach my $lv ('1bat',@set::feats_lv) {
-  (my $data_lv = $lv) =~ s/^([0-9]+)[^0-9].*?$/$1/;
-  print '<li id="combat-feats-lv'.$lv.'" data-lv="'.$data_lv.($data_lv eq $lv ? '':'+').'" class="select-input '.($pc{"combatFeatsLv$lv"} eq 'その他' ? 'free' : '').'"><select name="combatFeatsLv'.$lv.'" oninput="checkFeats();selectInputCheck(this);">';
+foreach my $id (setFeatsLvs()) {
+  my $lv; my $dataset;
+  if   ($id =~ /^([0-9]+)[^0-9].*?$/){ $lv = $1; $dataset = $lv.'+' }
+  elsif($id =~ /^S/){ $lv = 16; $dataset = '+' }
+  else { $lv = $dataset = $id; }
+
+  print '<li id="combat-feats-lv'.$id.'" data-lv="'.$dataset.'" class="select-input '.($pc{"combatFeatsLv$id"} eq 'その他' ? 'free' : '').'"><select name="combatFeatsLv'.$id.'" oninput="checkFeats();selectInputCheck(this);">';
   print '<option></option>';
-  my $hit; my $value = $pc{"combatFeatsLv$lv"};
+  my $hit; my $value = $pc{"combatFeatsLv$id"};
   foreach my $type ('常','宣','主') {
     print '<optgroup label="'.($type eq '常' ? '常時' : $type eq '宣' ? '宣言' : $type eq '宣' ? '宣言' : '主動作').'特技">';
     foreach my $feats (@data::combat_feats){
-      next if $data_lv < @$feats[1];
+      next if $lv < @$feats[1];
       next if @$feats[0] !~ /${type}/;
       next if @$feats[3] =~ /2.0/ && !$set::all_class_on;
-      if($lv =~ /bat/ && @$feats[3] !~ /バトルダンサー/){ next; }
+      if($id =~ /bat/ && @$feats[3] !~ /バトルダンサー/){ next; }
       my $item = '<option';
-      if($pc{"combatFeatsLv$lv"} eq @$feats[2]){
+      if($pc{"combatFeatsLv$id"} eq @$feats[2]){
         $item .= ' selected';
         $hit = 1;
       }
       if(@$feats[3] =~ /ヴァグランツ/){
-        $pc{featsVagrantsOn} = 1 if $pc{"combatFeatsLv$lv"} eq @$feats[2];
+        $pc{featsVagrantsOn} = 1 if $pc{"combatFeatsLv$id"} eq @$feats[2];
         $item .= ' class="vagrants" value="'.@$feats[2].'"';
       }
       elsif(@$feats[3] =~ /(龍骸諸島|魔王宮殿|2.0)/){
@@ -622,18 +661,30 @@ foreach my $lv ('1bat',@set::feats_lv) {
 }
 print <<"HTML";
             </ul>
-            <ul id="combat-feat-vagrants-auto">
+            <ul id="combat-feat-vagrants-auto" data-stage="2.5">
               <li id="combat-feat-vagrants-sco5" data-label="スカウト5"  ><select name="combatFeatsExcSco5">@{[ option 'combatFeatsExcSco5', 'def=トレジャーハント','掠め取り','クルードテイク' ]}</select>
               <li id="combat-feat-vagrants-ran5" data-label="レンジャー5"><select name="combatFeatsExcRan5">@{[ option 'combatFeatsExcRan5', 'def=サバイバビリティ','掠め取り','クルードテイク' ]}</select>
               <li id="combat-feat-vagrants-sag5" data-label="セージ5"    ><select name="combatFeatsExcSag5">@{[ option 'combatFeatsExcSag5', 'def=鋭い目','掠め取り','クルードテイク' ]}</select>
             </ul>
             <div class="feats-options">
               <ul>
-                <li>@{[ input 'featsVagrantsOn','checkbox','checkFeats' ]}<span>ヴァグランツ戦闘特技を追加</span>
+                <li data-stage="2.5">@{[ input 'featsVagrantsOn','checkbox','checkFeats' ]}<span>ヴァグランツ戦闘特技を追加</span>
                 <li>@{[ input 'featsAutoOn','checkbox','checkFeats' ]}<span>特技自動置き換え（非推奨）</span>
               </ul>
             </div>
             <p>置き換え可能な場合<span class="mark">強調</span>されます。</p>
+          </div>
+          <div class="box" id="seeker-abilities" @{[ display $pc{lvSeeker} ]}>
+            <h2>特殊能力（求道者）</h2>
+            <ul class="edit-table side-margin">
+HTML
+foreach my $i (1..5) {
+  print '<li id="seeker-ability'.$i.'"><select name="seekerSkill'.$i.'" oninput="checkRace();calcStt();">';
+  print option('seekerSkill'.$i, @data::seeker_abilities);
+  print "</select>\n";
+}
+print <<"HTML";
+            </ul>
           </div>
           <div class="box in-toc" id="mystic-arts" data-content-title="秘伝・秘伝魔法">
             <h2>
@@ -644,7 +695,7 @@ print <<"HTML";
 HTML
 foreach my $num ('TMPL',1 .. $pc{mysticArtsNum}){
   if($num eq 'TMPL'){ print '<template id="mystic-arts-template">' }
-  print '<li id="mystic-arts-row'.$num.'"><span class="handle"></span>'.(input 'mysticArts'.$num).(input 'mysticArts'.$num.'Pt', 'number', 'calcHonor');
+  print '<li id="mystic-arts-row'.$num.'"><span class="handle"></span>'.input('mysticArts'.$num).inputHonor('mysticArts'.$num.'Pt');
   if($num eq 'TMPL'){ print '</template>' }
 }
 print <<"HTML";
@@ -658,7 +709,7 @@ HTML
 $pc{mysticMagicNum} ||= 0;
 foreach my $num ('TMPL',1 .. $pc{mysticMagicNum}){
   if($num eq 'TMPL'){ print '<template id="mystic-magic-template">' }
-  print '<li id="mystic-magic-row'.$num.'"><span class="handle"></span>'.(input 'mysticMagic'.$num).(input 'mysticMagic'.$num.'Pt', 'number', 'calcHonor');
+  print '<li id="mystic-magic-row'.$num.'"><span class="handle"></span>'.input('mysticMagic'.$num).inputHonor('mysticMagic'.$num.'Pt');
   if($num eq 'TMPL'){ print '</template>' }
 }
 print <<"HTML";
@@ -680,7 +731,8 @@ foreach my $class (@data::class_caster){
               <h2 class="in-toc">$jName</h2>
               <ul class="edit-table side-margin">
 HTML
-  foreach my $lv (1..17){
+  my $min = $data::class{$class}{magic}{trancendOnly} ? 16 : 1;
+  foreach my $lv ($min .. 20){
     print '<li id="magic-'.$name.$lv.'"><div class="select-input"><select name="magic'.$Name.$lv.'" oninput="selectInputCheck(this);">';
     print '<option></option>';
     my %only; my $hit; my $value = $pc{"magic${Name}${lv}"};
@@ -755,20 +807,20 @@ foreach my $class (@data::class_names){
               <h2 class="in-toc">$data::class{$class}{craft}{jName}</h2>
               <ul class="edit-table side-margin">
 HTML
-  my $c_max = $class =~ /バード|ウォーリーダー/ ? 20 : $class eq 'アーティザン' ? 19 : 17;
-  foreach my $lv (1..$c_max){
+  my $max = 20 + ($class =~ /バード|ウォーリーダー/ ? 3 : $class eq 'アーティザン' ? 2 : 0);
+  foreach my $lv (1 .. $max){
     print '<li id="craft-'.$name.$lv.'"><div class="select-input"><select name="craft'.$Name.$lv.'" oninput="checkCraft();'.$functions.'selectInputCheck(this);">';
     print '<option></option>';
     my %only; my $hit; my $value = $pc{"craft${Name}${lv}"};
     foreach my $data (@{$data::class{$class}{craft}{data}}){
       next if $lv < @$data[0];
-      my $item = '<option ';
+      my $item = '<option';
       if($value eq @$data[1]){
-        $item .= 'selected ';
+        $item .= ' selected';
         $hit = 1;
       }
-      if(@$data[2] =~ /(?:^|,)2.0/){
-        $item .= 'data-stage="2.0"';
+      if(@$data[2] =~ /(?:^|,)(2.0|2.5)/){
+        $item .= " data-stage=\"$1\"";
       }
       $item .= '>'.@$data[1];
       
@@ -863,7 +915,7 @@ print <<"HTML";
       <div id="area-actions">
         <div id="area-package">
           <div class="box" id="package">
-            <h2 class="in-toc">判定パッケージ</h2>
+            <h2 class="in-toc">@{[ $::SW2_0 ? '非戦闘判定' : '判定パッケージ' ]}</h2>
             <table class="edit-table side-margin">
 HTML
 foreach my $class (@classNames){
@@ -962,17 +1014,33 @@ print <<"HTML";
                 <td>+@{[ input 'magicDamageAdd','number','calcMagic' ]}<span id="magic-damage-equip-value"></span>
             <tbody id="magic-power-casterclass">
 HTML
-my $fairyset = <<"HTML";
-<small>ランク</small><b id="fairy-rank"></b>
-<div id="fairycontact">
-  <label class="ft-earth">@{[ input 'fairyContractEarth', 'checkbox','calcFairy' ]}<span>土</span></label>
-  <label class="ft-water">@{[ input 'fairyContractWater', 'checkbox','calcFairy' ]}<span>水</span></label>
-  <label class="ft-fire" >@{[ input 'fairyContractFire' , 'checkbox','calcFairy' ]}<span>炎</span></label>
-  <label class="ft-wind" >@{[ input 'fairyContractWind' , 'checkbox','calcFairy' ]}<span>風</span></label>
-  <label class="ft-light">@{[ input 'fairyContractLight', 'checkbox','calcFairy' ]}<span>光</span></label>
-  <label class="ft-dark" >@{[ input 'fairyContractDark' , 'checkbox','calcFairy' ]}<span>闇</span></label>
-</div>
-HTML
+my $fairyset;
+if($::SW2_0){
+  $fairyset = <<~"HTML";
+  <a id="fairy-sim-url" target="_blank">⇒シミュレータ</a>
+  <div id="fairycontact">
+    <label class="ft-earth"><span>土</span><br>@{[ input 'fairyContractEarth','number','calcFairy','min="0" max="17"' ]}</label>
+    <label class="ft-water"><span>水</span><br>@{[ input 'fairyContractWater','number','calcFairy','min="0" max="17"' ]}</label>
+    <label class="ft-fire" ><span>炎</span><br>@{[ input 'fairyContractFire' ,'number','calcFairy','min="0" max="17"' ]}</label>
+    <label class="ft-wind" ><span>風</span><br>@{[ input 'fairyContractWind' ,'number','calcFairy','min="0" max="17"' ]}</label>
+    <label class="ft-light"><span>光</span><br>@{[ input 'fairyContractLight','number','calcFairy','min="0" max="17"' ]}</label>
+    <label class="ft-dark" ><span>闇</span><br>@{[ input 'fairyContractDark' ,'number','calcFairy','min="0" max="17"' ]}</label>
+  </div>
+  HTML
+}
+else {
+  $fairyset = <<~"HTML";
+    <small>ランク</small><b id="fairy-rank"></b>
+    <div id="fairycontact">
+      <label class="ft-earth">@{[ input 'fairyContractEarth', 'checkbox','calcFairy' ]}<span>土</span></label>
+      <label class="ft-water">@{[ input 'fairyContractWater', 'checkbox','calcFairy' ]}<span>水</span></label>
+      <label class="ft-fire" >@{[ input 'fairyContractFire' , 'checkbox','calcFairy' ]}<span>炎</span></label>
+      <label class="ft-wind" >@{[ input 'fairyContractWind' , 'checkbox','calcFairy' ]}<span>風</span></label>
+      <label class="ft-light">@{[ input 'fairyContractLight', 'checkbox','calcFairy' ]}<span>光</span></label>
+      <label class="ft-dark" >@{[ input 'fairyContractDark' , 'checkbox','calcFairy' ]}<span>闇</span></label>
+    </div>
+  HTML
+}
 foreach my $name (@data::class_caster){
   next if (!$data::class{$name}{magic}{jName});
   my $id    = $data::class{$name}{id};
@@ -1342,15 +1410,67 @@ print <<"HTML";
             </table>
           </div>
           <div class="box" id="battle-items"@{[ display $set::battleitem ]}>
-          <h2 class="in-toc">戦闘用アイテム</h2>
-          <ul id="battle-items-list">
+            <h2 class="in-toc">戦闘用アイテム</h2>
+            <ul id="battle-items-list">
 HTML
 foreach my $num (1 .. 16){
   print '<li id="battle-item'.$num.'"><span class="handle"></span><input type="text" name="battleItem'.$num.'" value="'.$pc{'battleItem'.$num}.'">';
 }
 print <<"HTML";
-          </ul>
+            </ul>
           </div>
+HTML
+if($::SW2_0){
+  print <<~"HTML";
+          <dl class="box in-toc" id="honor" data-content-title="名誉点・名誉アイテム">
+            <dt>人族名誉点<dd id="honor-value">$pc{honor}
+            <dt>蛮族名誉点<dd id="honor-barbaros-value">$pc{honorBarbaros}
+            <dt>盟竜点<dd id="honor-dragon-value">$pc{honorDragon}
+          </dl>
+          <div class="box honor-items" id="honor-items">
+            <h2>名誉アイテム</h2>
+            <table class="edit-table side-margin">
+              <thead>
+                <tr><th><th><th>種別｜点数
+              </thead>
+              <tbody>
+                <tr id="honor-items-mystic-arts"><td class="center" class="center" colspan="2">秘伝／秘伝魔法<td id="mystic-arts-honor-value">0
+              </tbody>
+              <tbody id="honor-items-table">
+  HTML
+  foreach my $num ('TMPL',1 .. $pc{honorItemsNum}){
+    if($num eq 'TMPL'){ print '<template id="honor-item-template">' }
+    print '<tr id="honor-item'.$num.'"><td class="handle"><td>'.(input "honorItem${num}", "text", '', 'list="list-honor-item"').'<td>'.inputHonor("honorItem${num}Pt");
+    if($num eq 'TMPL'){ print '</template>' }
+  }
+  print <<~"HTML";
+              </tbody>
+            </table>
+          <div class="add-del-button"><a onclick="addHonorItems()">▼</a><a onclick="delHonorItems()">▲</a></div>
+          @{[ input 'honorItemsNum','hidden' ]}
+          <p>フリー条件適用可能な（名誉点消費を0点にして良い）場合、<span class="mark">この表示</span>になります。</p>
+          </div>
+          <div class="box honor-items" id="dishonor-items">
+            <h2>消失名誉アイテム</h2>
+            <table class="edit-table side-margin">
+              <thead><tr><th><th><th>点数</thead>
+              <tbody id="dishonor-items-table">
+  HTML
+  foreach my $num ('TMPL',1 .. $pc{dishonorItemsNum}){
+    if($num eq 'TMPL'){ print '<template id="dishonor-item-template">' }
+    print '<tr id="dishonor-item'.$num.'"><td class="handle"><td>'.(input "dishonorItem${num}", "text").'<td>'.inputHonor("dishonorItem${num}Pt");
+    if($num eq 'TMPL'){ print '</template>' }
+  }
+  print <<~"HTML";
+            </tbody>
+            </table>
+            <div class="add-del-button"><a onclick="addDishonorItems()">▼</a><a onclick="delDishonorItems()">▲</a></div>
+            @{[ input 'dishonorItemsNum','hidden' ]}
+          </div>
+  HTML
+}
+else {
+  print <<~"HTML";
           <div class="in-toc" id="honor" data-content-title="名誉点・名誉アイテム">
             <dl class="box"><dt>名誉点<dd id="honor-value">$pc{honor}</dl>
             <div class="box-union">
@@ -1375,13 +1495,13 @@ print <<"HTML";
                 <tr><td class="center" colspan="2">バルバロス栄光ランク<td id="rankBarbaros-honor-value">0
                 <tr id="honor-items-mystic-arts"><td class="center" class="center" colspan="2">秘伝／秘伝魔法<td id="mystic-arts-honor-value">0
               <tbody id="honor-items-table">
-HTML
-foreach my $num ('TMPL',1 .. $pc{honorItemsNum}){
-  if($num eq 'TMPL'){ print '<template id="honor-item-template">' }
-  print '<tr id="honor-item-row'.$num.'"><td class="handle"><td>'.(input "honorItem${num}", "text", '', 'list="list-honor-item"').'<td>'.(input "honorItem${num}Pt", "number", "calcHonor");
-  if($num eq 'TMPL'){ print '</template>' }
-}
-print <<"HTML";
+  HTML
+  foreach my $num ('TMPL',1 .. $pc{honorItemsNum}){
+    if($num eq 'TMPL'){ print '<template id="honor-item-template">' }
+    print '<tr id="honor-item-row'.$num.'"><td class="handle"><td>'.(input "honorItem${num}", "text", '', 'list="list-honor-item"').'<td>'.(input "honorItem${num}Pt", "number", "calcHonor");
+    if($num eq 'TMPL'){ print '</template>' }
+  }
+  print <<~"HTML";
             </table>
             <div class="add-del-button"><a onclick="addHonorItems()">▼</a><a onclick="delHonorItems()">▲</a></div>
             @{[ input 'honorItemsNum','hidden' ]}
@@ -1400,24 +1520,27 @@ print <<"HTML";
             <table class="edit-table side-margin">
               <thead><tr><th><th><th>点数
               <tbody id="dishonor-items-table">
-HTML
-my @honortypes = ('def=human|<人族（通常）>','barbaros|<蛮族>','both|<両方（人・蛮 同時加算）>');
-foreach my $num ('TMPL',1 .. $pc{dishonorItemsNum}){
-  if($num eq 'TMPL'){ print '<template id="dishonor-item-template">' }
-  print '<tr id="dishonor-item-row'.$num.'"><td class="handle">'
-    .'<td>'.(input "dishonorItem${num}", "text")
-    .'<td><span class="honor-pt">'
-      .'<select name="dishonorItem'.$num.'PtType" oninput="calcDishonor()" data-type="human">'.(option "dishonorItem${num}PtType",@honortypes).'</select>'
-      .'<span class="honor-select-view"></span>'
-      .(input "dishonorItem${num}Pt", "number", "calcDishonor")
-    .'</span>';
-  if($num eq 'TMPL'){ print '</template>' }
-}
-print <<"HTML";
+  HTML
+  my @honortypes = ('def=human|<人族（通常）>','barbaros|<蛮族>','both|<両方（人・蛮 同時加算）>');
+  foreach my $num ('TMPL',1 .. $pc{dishonorItemsNum}){
+    if($num eq 'TMPL'){ print '<template id="dishonor-item-template">' }
+    print '<tr id="dishonor-item-row'.$num.'"><td class="handle">'
+      .'<td>'.(input "dishonorItem${num}", "text")
+      .'<td><span class="honor-pt">'
+        .'<select name="dishonorItem'.$num.'PtType" oninput="calcDishonor()" data-type="human">'.(option "dishonorItem${num}PtType",@honortypes).'</select>'
+        .'<span class="honor-select-view"></span>'
+        .(input "dishonorItem${num}Pt", "number", "calcDishonor")
+      .'</span>';
+    if($num eq 'TMPL'){ print '</template>' }
+  }
+  print <<~"HTML";
             </table>
             <div class="add-del-button"><a onclick="addDishonorItems()">▼</a><a onclick="delDishonorItems()">▲</a></div>
             @{[ input 'dishonorItemsNum','hidden' ]}
           </div>
+  HTML
+}
+print <<"HTML";
         </div>
       </div>
       <details class="box" id="cashbook" @{[ $pc{cashbook} || $pc{money} =~ /^(?:自動|auto)$/i ? 'open' : '' ]}>
@@ -1512,7 +1635,7 @@ print <<"HTML";
               <td class="title " rowspan="2">@{[input("history${num}Title")]}
               <td class="exp   ">@{[input("history${num}Exp",'text','calcExp')]}
               <td class="money ">@{[input("history${num}Money",'text','calcCash')]}
-              <td class="honor ">@{[input("history${num}Honor",'text','calcHonor')]}
+              <td class="honor ">@{[inputHonor("history${num}Honor")]}
               <td class="grow  ">@{[input("history${num}Grow",'text','calcStt','list="list-grow"')]}
               <td class="gm    ">@{[input("history${num}Gm")]}
               <td class="member">@{[input("history${num}Member")]}
@@ -1692,27 +1815,42 @@ sub chatPaletteFormOptional {
 }
 
 # ヘルプ
-my $text_rule = <<"HTML";
-        アイコン<br>
-        　魔法のアイテム：<code>[魔]</code>：<img class="i-icon" src="${set::icon_dir}wp_magic.png"><br>
-        　刃武器　　　　：<code>[刃]</code>：<img class="i-icon" src="${set::icon_dir}wp_edge.png"><br>
-        　打撃武器　　　：<code>[打]</code>：<img class="i-icon" src="${set::icon_dir}wp_blow.png"><br>
-        　地方特産品　　：<code>[特]</code>：<img class="i-icon" src="${set::icon_dir}item_local.png"><br>
-        　流派アイテム　：<code>[流]</code>：<img class="i-icon" src="${set::icon_dir}wp_school.png"><br>
-        　アルフレイム大陸由来の流派アイテム：<code>[ア]</code>：<img class="i-icon" src="${set::icon_dir}wp_school_a.png"><br>
-        　テラスティア大陸由来の流派アイテム：<code>[テ]</code>：<img class="i-icon" src="${set::icon_dir}wp_school_t.png"><br>
-        　常時型　　：<code>[常]</code>：<i class="s-icon passive"><span class="raw">[常]</span></i><br>
-        　戦闘準備型：<code>[準]</code>：<i class="s-icon setup  "><span class="raw">[準]</span></i><br>
-        　主動作型　：<code>[主]</code>：<i class="s-icon major  "><span class="raw">[主]</span></i><br>
-        　補助動作型：<code>[補]</code>：<i class="s-icon minor  "><span class="raw">[補]</span></i><br>
-        　宣言型　　：<code>[宣]</code>：<i class="s-icon active "><span class="raw">[宣]</span></i><br>
+my $text_rule= <<"HTML";
+  アイコン<br>
+  　魔法のアイテム：<code>[魔]</code>：<img class="i-icon" src="${set::icon_dir}wp_magic.png"><br>
+  　刃武器　　　　：<code>[刃]</code>：<img class="i-icon" src="${set::icon_dir}wp_edge.png"><br>
+  　打撃武器　　　：<code>[打]</code>：<img class="i-icon" src="${set::icon_dir}wp_blow.png"><br>
+  　地方特産品　　：<code>[特]</code>：<img class="i-icon" src="${set::icon_dir}item_local.png"><br>
 HTML
+if($::SW2_0){
+  $text_rule .= <<~"HTML";
+    　流派装備　　　：<code>[流]</code>：<i class="i-icon" data-kind="流"><span class="raw">[流]</span></i><br>
+    　常時型　　：<code>[常]</code>：<i class="s-icon passive  "><span class="raw">[常]</span></i><br>
+    　主動作型　：<code>[主]</code>：<i class="s-icon major0   "><span class="raw">[主]</span></i><br>
+    　補助動作型：<code>[補]</code>：<i class="s-icon minor0   "><span class="raw">[補]</span></i><br>
+    　宣言型　　：<code>[宣]</code>：<i class="s-icon active0  "><span class="raw">[宣]</span></i><br>
+    　条件型　　：<code>[条]</code>：<i class="s-icon condition"><span class="raw">[条]</span></i><br>
+    　条件選択型：<code>[選]</code>：<i class="s-icon selection"><span class="raw">[選]</span></i><br>
+  HTML
+}
+else {
+  $text_rule .= <<~"HTML";
+    　流派アイテム　：<code>[流]</code>：<img class="i-icon" src="${set::icon_dir}wp_school.png"><br>
+    　アルフレイム大陸由来の流派アイテム：<code>[ア]</code>：<img class="i-icon" src="${set::icon_dir}wp_school_a.png"><br>
+    　テラスティア大陸由来の流派アイテム：<code>[テ]</code>：<img class="i-icon" src="${set::icon_dir}wp_school_t.png"><br>
+    　常時型　　：<code>[常]</code>：<i class="s-icon passive"><span class="raw">[常]</span></i><br>
+    　戦闘準備型：<code>[準]</code>：<i class="s-icon setup  "><span class="raw">[準]</span></i><br>
+    　主動作型　：<code>[主]</code>：<i class="s-icon major  "><span class="raw">[主]</span></i><br>
+    　補助動作型：<code>[補]</code>：<i class="s-icon minor  "><span class="raw">[補]</span></i><br>
+    　宣言型　　：<code>[宣]</code>：<i class="s-icon active "><span class="raw">[宣]</span></i><br>
+  HTML
+}
 print textRuleArea( $text_rule,'「容姿・経歴・その他メモ」「履歴（自由記入）」「所持品」「収支履歴」' );
 
 print <<"HTML";
   </main>
   <footer>
-    <p class="notes">(C)Group SNE「ソード・ワールド2.5」</p>
+    <p class="notes">(C)Group SNE「ソード・ワールド@{[ $::SW2_0 ? '2.0' : '2.5' ]}」</p>
     <p class="copyright">©<a href="https://yutorize.work">ゆとらいず工房</a>「ゆとシートⅡ」ver.${main::ver}</p>
   </footer>
 HTML
@@ -1725,5 +1863,23 @@ print <<"HTML";
 
 </html>
 HTML
+
+### サブルーチン #####################################################################################
+sub inputHonor {
+  my $name = shift;
+  my @honortypes = ('def=human|<人族名誉点（通常の名誉点）>','barbaros|<蛮族名誉点>','dragon|<盟竜点>');
+  if($::SW2_0){
+    return '<span class="honor-pt">'
+      .'<select name="'.$name.'Type" oninput="calcHonor()" data-type="human">'
+      .(option $name.'Type',@honortypes).'</select>'
+      .'<span class="honor-select-view"></span>'
+      .(input $name, 'number', 'calcHonor')
+      .'</span>';
+  }
+  else {
+    return input($name, 'number', 'calcHonor');
+  }
+}
+
 
 1;
