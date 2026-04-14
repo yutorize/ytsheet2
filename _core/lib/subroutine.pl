@@ -809,9 +809,8 @@ sub existsRowFull {
 
 ### 配列の重複削除 --------------------------------------------------
 sub deduplicate {
-  my (@array) = @_;
   my %seen;
-  return grep { !$seen{$_}++ } @array;
+  return grep { !$seen{$_}++ } @_;
 }
 
 ### 案内画面 --------------------------------------------------

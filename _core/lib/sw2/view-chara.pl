@@ -295,41 +295,36 @@ $SHEET->param(CommonClassTotalLevel => $commonClassTotalLevel);
 
 ### 戦闘特技 --------------------------------------------------
 my %acquired;
-my @feats_lv;
-foreach ('1bat',@set::feats_lv){
-  (my $lv = $_) =~ s/^([0-9]+)[^0-9].*?$/$1/;
-  if($_ =~ /bat/ && !$pc{lvBat}){ next; }
-  next if $pc{level} < $lv;
-  push(@feats_lv, { NAME => $pc{'combatFeatsLv'.$_}, "LV" => $lv.($_ =~ /bat/ ? '+' : '') } );
-  $acquired{$pc{'combatFeatsLv'.$_}} = 1;
-}
-if($pc{buildupAddFeats}){
-  foreach ($pc{level}+1 .. $pc{level}+$pc{buildupAddFeats}){
-    push(@feats_lv, { NAME => $pc{'combatFeatsLv'.$_}, "LV" => '+' } );
+{
+  my @lines;
+  foreach (setAcquiredFeatsLvs(\%pc)){
+    my $lv = $_ =~ s/bat$/\+/r =~ s/^S[1-5]/\+/r;
+    push(@lines, { NAME => $pc{'combatFeatsLv'.$_}, "LV" => $lv } );
     $acquired{$pc{'combatFeatsLv'.$_}} = 1;
   }
+  $SHEET->param(CombatFeatsLv => \@lines);
 }
-$SHEET->param(CombatFeatsLv => \@feats_lv);
-
-## 自動習得
-my @feats_auto;
-foreach (split /,/, $pc{combatFeatsAuto}) {
-  push(@feats_auto, { NAME => $_ } );
+{
+  ## 自動習得
+  my @lines;
+  foreach (split /,/, $pc{combatFeatsAuto}) {
+    push(@lines, { NAME => $_ } );
+  }
+  $SHEET->param(CombatFeatsAuto => \@lines);
 }
-$SHEET->param(CombatFeatsAuto => \@feats_auto);
-
 ### 特殊能力 --------------------------------------------------
-my @seeker_abilities;
-foreach (1..5){
-  last if ($_ == 1 && $pc{lvSeeker} < 4);
-  last if ($_ == 2 && $pc{lvSeeker} < 8);
-  last if ($_ == 3 && $pc{lvSeeker} < 12);
-  last if ($_ == 4 && $pc{lvSeeker} < 16);
-  last if ($_ == 5 && $pc{lvSeeker} < 20);
-  push(@seeker_abilities, { "NAME" => $pc{'seekerAbility'.$_} });
+{
+  my @data;
+  foreach (1..5){
+    last if ($_ == 1 && $pc{lvSeeker} < 4);
+    last if ($_ == 2 && $pc{lvSeeker} < 8);
+    last if ($_ == 3 && $pc{lvSeeker} < 12);
+    last if ($_ == 4 && $pc{lvSeeker} < 16);
+    last if ($_ == 5 && $pc{lvSeeker} < 20);
+    push(@data, { "NAME" => $pc{'seekerSkill'.$_} });
+  }
+  $SHEET->param(SeekerSkills => \@data);
 }
-$SHEET->param(SeekerAbilities => \@seeker_abilities);
-
 ### 秘伝 --------------------------------------------------
 my @mystic_arts;
 my @mystic_magics;
@@ -378,7 +373,7 @@ foreach my $class (@classCasterNames){
   }
   else { next; }
   my $lv = $pc{'lv'.$classData{$class}{id}};
-  my $add = $pc{ 'buildupAdd'.ucfirst($classData{$class}{magic}{eName}) };
+  my $add = $pc{$classData{$class}{magic}{eName}.'Addition'} + $pc{ 'buildupAdd'.ucfirst($classData{$class}{magic}{eName}) };
   if($class eq 'ウィザード'){ $lv = min($pc{lvSor},$pc{lvCon}); }
   next if !$lv;
   next if $classData{$class}{magic}{trancendOnly} && $lv+$add <= 15;
@@ -390,7 +385,7 @@ foreach my $class (@classCasterNames){
     if($notes =~ /(\[[常主補準宣]\])+/){ $magicType{$magic} .= textToIcon $&; }
   }
   my @magics;
-  foreach (1 .. $lv + $pc{$classData{$class}{magic}{eName}.'Addition'}){
+  foreach (1 .. $lv + $add){
     next if $classData{$class}{magic}{trancendOnly} && $_ <= 15;
     my $magic = $pc{'magic'.ucfirst($classData{$class}{magic}{eName}).$_};
     
@@ -452,8 +447,7 @@ foreach my $class (@classNames){
   }
   else { next; }
   my $lv = $pc{'lv'.$classData{$class}{id}};
-  my $add = $pc{ $classData{$class}{craft}{eName}.'Addition' }
-          + $pc{ 'buildupAdd'.ucfirst($classData{$class}{craft}{eName}) };
+  my $add = $pc{ $classData{$class}{craft}{eName}.'Addition' } + $pc{ 'buildupAdd'.ucfirst($classData{$class}{craft}{eName}) };
   next if !$lv;
   
   if($class eq 'アーティザン'){ $add += $pc{lvArt} >= 17 ? 2 : $pc{lvArt} >= 16 ? 1 : 0; }
@@ -595,6 +589,7 @@ foreach my $class (@classCasterNames){
   my $power  = $pc{'magicPowerAdd' .$id} + $pc{magicPowerAdd } + $pc{magicPowerEquip } + $pc{magicPowerEnhance};
   my $cast   = $pc{'magicCastAdd'  .$id} + $pc{magicCastAdd  } + $pc{magicCastEquip  } + $classData{$class}{magic}{mod};
   my $damage = $pc{'magicDamageAdd'.$id} + $pc{magicDamageAdd} + $pc{magicDamageEquip};
+  if($pc{'lv'.$id} >= 15){ $power += $pc{seekerSkillMagic}; }
   
   my $title = $class.'<wbr><span class="small">技能レベル</span>'.$pc{'lv'.$id};
   if($class eq 'ウィザード'){ $title = 'ウィザード<span class="small">最大魔法レベル</span>'.min($pc{lvSor},$pc{lvCon}); }
@@ -1351,6 +1346,7 @@ $SHEET->param(gameDir => 'sw2');
 $SHEET->param(sheetType => 'chara');
 $SHEET->param(generateType => 'SwordWorld2PC');
 $SHEET->param(defaultImage => $::core_dir.'/skin/sw2/img/default_pc.png');
+$SHEET->param(modeZero => $::SW2_0 ? 1 : 0);
 
 ### メニュー --------------------------------------------------
 my @menu = ();

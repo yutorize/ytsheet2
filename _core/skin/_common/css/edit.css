@@ -236,7 +236,7 @@ label:is(.radio-button, .check-button) {
 
 /* 非表示 */
 .hidden {
-  display: none;
+  display: none !important;
 }
 /* テーブル */
 .edit-table {

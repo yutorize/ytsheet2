@@ -199,7 +199,7 @@ our @effects = (
 
   # 編集画面
   our $lib_edit = $::core_dir . '/lib/edit.pl';
-  our $lib_edit_char = $::core_dir . '/lib/sw2.0/edit-chara.pl';
+  our $lib_edit_char = $::core_dir . '/lib/sw2/edit-chara.pl';
   # 保存処理
   our $lib_save   = $::core_dir . '/lib/save.pl';
   our $lib_calc_char = $::core_dir . '/lib/sw2/calc-chara.pl';
@@ -234,7 +234,7 @@ our @effects = (
   # HTMLテンプレート
   our $icon_dir   = $::core_dir . '/skin/sw2/img/'; # 武器アイコンのあるディレクトリ
   our $skin_tmpl  = $::core_dir . '/skin/sw2/index.html';         # 一覧／登録フォーム等の大枠
-  our $skin_sheet = $::core_dir . '/skin/sw2.0/sheet-chara.html';   # キャラクターシート
+  our $skin_sheet = $::core_dir . '/skin/sw2/sheet-chara.html';   # キャラクターシート
   
   # 魔物・アイテム・魔法/流派などの設定
   our %lib_type = (
