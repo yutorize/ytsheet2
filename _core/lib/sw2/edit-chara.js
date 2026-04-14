@@ -172,7 +172,7 @@ function checkRyugai(){
   document.querySelector('#honor-offset dd:last-of-type ').classList.toggle('hidden', unlockedRyugai);
   document.querySelector('#dishonor > dl.box dt').textContent = unlockedRyugai ? '名折れ' :'不名誉点';
   document.querySelector('#dishonor > dl:has(#notoriety)').classList.toggle('hidden', unlockedRyugai);
-  document.querySelector('#dishonor-items h2').textContent = unlockedRyugai ? '名折れ詳細' :'名誉アイテム';
+  document.querySelector('#dishonor-items h2').textContent = unlockedRyugai ? '名折れ詳細' :'不名誉詳細';
   document.querySelector('#history-head .honor').textContent = unlockedRyugai ? '誉れ' :'名誉点';
   document.querySelector('#history-foot .honor').textContent = unlockedRyugai ? '誉れ' :'名誉点';
 
@@ -197,16 +197,22 @@ function checkLvCap() {
   console.log('checkLvCap()');
   const unlockZeroData = form.unlockZeroData?.checked ?? true;
 
-  document.querySelectorAll(':is(#classes,#free-classes) input[type="number"][max]').forEach(
-      input => {
-        input.setAttribute('max', unlockZeroData ? '17' : '15');
-
-        if (!unlockZeroData && input.value.match(/^1[67]$/)) {
-          input.value = '15';
-          input.dispatchEvent(new Event('input'));
-        }
+  document.querySelectorAll(':is(#classes,#free-classes) input[type="number"][max]').forEach(input => {
+      input.setAttribute('max', unlockZeroData ? '17' : '15');
+      if (!unlockZeroData && input.value.match(/^1[67]$/)) {
+        input.value = '15';
+        input.dispatchEvent(new Event('input'));
       }
-  );
+  });
+  document.querySelectorAll('#combat-feats li[data-lv]').forEach(li => {
+    const featLv = li.dataset.lv;
+    if(Number(featLv) >= 16 || featLv === '+'){
+      li.style.display = unlockZeroData ? '' : 'none';
+    }
+  });
+  document.querySelectorAll('#crafts .box:not(:has(.add-del-button)) li:nth-last-of-type(-n+5)').forEach(li => {
+    li.style.display = unlockZeroData ? '' : 'none';
+  });
 }
 
 // レベル変更 ----------------------------------------
@@ -302,7 +308,7 @@ function calcLv(){
   }
   
   document.getElementById('material-cards').style.display = lv['Alc'] > 0 ? '' : 'none';
-  if(!modeZero){ document.getElementById('magic-bibliomancy-temporary').style.display = lv['Bib'] > 0 ? '' : 'none'; }
+  document.getElementById('magic-bibliomancy-temporary').style.display = lv['Bib'] > 0 ? '' : 'none';
   
   calcFairy();
   updateWeaponClassOptions();
@@ -660,6 +666,7 @@ let feats = {};
 function checkFeats(){
   console.log('checkFeats()');
   feats = {};
+  checkSeeker();
 
   // 自動習得
   for(const key of classNames){
@@ -671,25 +678,42 @@ function checkFeats(){
     }
   }
 
-  // 選択習得
+  // ヴァグランツ
   const featsVagrantsOn = form.featsVagrantsOn.checked;
   document.querySelectorAll(`#combat-feats option.vagrants` ).forEach(obj=>{ obj.style.display = featsVagrantsOn ? '' : 'none'; });
   document.getElementById('combat-feat-vagrants-sco5').style.display = (featsVagrantsOn && lv['Sco'] >= 5) ? '' : 'none';
   document.getElementById('combat-feat-vagrants-ran5').style.display = (featsVagrantsOn && lv['Ran'] >= 5) ? '' : 'none';
   document.getElementById('combat-feat-vagrants-sag5').style.display = (featsVagrantsOn && lv['Sag'] >= 5) ? '' : 'none';
   
-  const array = SET.featsLv.map(n=>String(n));
+  // 選択習得
+  const array = structuredClone(SET.featsLv);
   let acquire = '';
+  const seekerMax = checkSeekerBuildup('戦闘特技');
+  let unlockedFeats = {};
+  for (let i = 0; i < array.length; i++) {
+    let id = String(array[i]);
+    if(id.match(/bat$/)){
+      if(lv['Bat'] > 0){ unlockedFeats[id] = true; }
+      continue
+    }
+    if(id.match(/^S[1-5]$/)){
+      if(seekerMax >= Number(id.replace(/^S/g,''))){ unlockedFeats[id] = true; }
+      continue;
+    }
+    if(level >= Number(id.replace(/[^0-9]/g,''))){ unlockedFeats[id] = true; }
+  }
+
   for (let i = 0; i < array.length; i++) {
     let cL = document.getElementById("combat-feats-lv"+array[i]).classList;
     cL.remove("mark","error");
-    if(array[i].match(/bat/) && lv['Bat'] <= 0){
-      cL.add('hidden');
-      continue;
+    if(!unlockedFeats[array[i]]){
+      cL.add("fail");
+      cL.toggle("hidden", !form.failView.checked);
     }
-    if(level >= Number( array[i].replace(/[^0-9]/g, '') )){
-      const f2 = (array[i+1] && level >= Number( array[i+1].replace(/[^0-9]/g, '') )) ? 1 : 0; //次枠の開放状況
-      const f3 = (array[i+2] && level >= Number( array[i+2].replace(/[^0-9]/g, '') )) ? 1 : 0; //次々枠の開放状況
+    else {
+      cL.remove("fail","hidden");
+      const f2 = (unlockedFeats[array[i+1]]) ? true : false; //次枠の開放状況
+      const f3 = (unlockedFeats[array[i+2]]) ? true : false; //次々枠の開放状況
       const box = form["combatFeatsLv"+array[i]];
       const auto = form.featsAutoOn.checked;
       let feat = box.value;
@@ -1161,13 +1185,10 @@ function checkFeats(){
       else if(feat === "武器ダメージ超増加"){ feats['武器ダメージ増加'] = 4; }
       else if(feat === "鎧防護点増加")  { feats['鎧防護点増加'] = 2; }
       else if(feat === "鎧防護点超増加"){ feats['鎧防護点増加'] = 4; }
+      else if(feat === "心眼"){ feats['心眼'] = 4; }
       else { feats[feat] = true; }
       
       cL.remove("fail","hidden");
-    }
-    else {
-      cL.add("fail");
-      if(form.failView.checked){ cL.remove("hidden") } else { cL.add("hidden") };
     }
   }
   
@@ -1193,17 +1214,17 @@ function checkCraft() {
     if (classData[key].craft?.data || classData[alias]?.craft?.data){
       const eName = classData[key].craft.eName;
       document.getElementById("craft-"+eName).style.display = cLv ? "block" : "none";
-      const cMax = (cId.match(/Bar|War/)) ? 20 : (cId === 'Art') ? 19 : 17;
-      const rows = cLv + (
+      const cMax = 20 + ( (cId.match(/Bar|War/)) ? 3 : (cId === 'Art') ? 2 : 0 );
+      const visibleRows = cLv + (
             (cId === 'Bar') ? (feats['呪歌追加'] || 0)
           : (cId === 'War') ? (feats['鼓咆陣率追加'] || 0)
           : (cId === 'Art' && lv.Art === 16) ? 1
           : (cId === 'Art' && lv.Art === 17) ? 2
           : 0
-        );
+        ) + checkSeekerBuildup(SET.class[key].craft.jName);
       for (let i = 1; i <= cMax; i++) {
         let objCL = document.getElementById("craft-"+eName+i).classList;
-        if (i <= rows){
+        if (i <= visibleRows){
           objCL.remove("fail","hidden");
           const craftName = form["craft"+ucfirst(eName)+i].value;
           if(craftName){ crafts[craftName] = true }
@@ -1222,11 +1243,18 @@ function checkCraft() {
     const cLv = Math.max( lv[cId], (lv[aliasId]||0) );
     if (classData[key].magic?.data){
       const eName = classData[key].magic.eName;
-      document.getElementById("magic-"+eName).style.display = cLv ? "block" : "none";
-      const cMax = 17;
-      for (let i = 1; i <= cMax; i++) {
+      const visibleRows = cLv + checkSeekerBuildup(SET.class[key].magic.jName);
+      if(SET.class[key].magic.trancendOnly){
+        document.getElementById("magic-"+eName).style.display = visibleRows > 15 ? "block" : "none";
+      }
+      else {
+        document.getElementById("magic-"+eName).style.display = visibleRows ? "block" : "none";
+      }
+      const cMin = SET.class[key].magic.trancendOnly ? 16 : 1;
+      const cMax = 20;
+      for (let i = cMin; i <= cMax; i++) {
         let objCL = document.getElementById("magic-"+eName+i).classList;
-        if(i <= cLv){
+        if(i <= visibleRows){
           objCL.remove("fail","hidden");
         }
         else {
@@ -1236,6 +1264,7 @@ function checkCraft() {
       }
     }
   }
+  if(typeof calcFairy === 'function'){ calcFairy() }
   
   if (crafts['剛力弾']) {
     crafts['剛力弾'] = 1;
@@ -1416,6 +1445,12 @@ function calcMagic() {
       rows.push({
         name: '《魔力強化》',
         power: feats['魔力強化'],
+      });
+    }
+    if(checkSeekerAbility('魔力上昇')){
+      rows.push({
+        name: '魔力上昇',
+        power: 3,
       });
     }
     let tbody = '';
@@ -1924,7 +1959,7 @@ function calcDefense() {
     }
   }
   // 求道者
-  if(form.lvSeeker){
+  if(lvSeeker){
     const seekerDefense
       = lvSeeker >= 18 ? 10
       : lvSeeker >= 14 ?  8
@@ -3296,5 +3331,66 @@ const pointBuyList = {
       11 :  110,
       12 :  160,
     },
+  }
+}
+
+// 求道者 ----------------------------------------
+function checkSeekerBuildup(name){
+  let add = 0;
+  for (let i = 1; i <= 5; i++){
+    if (i === 1 && lvSeeker <  3) break;
+    if (i === 2 && lvSeeker <  7) break;
+    if (i === 3 && lvSeeker < 11) break;
+    if (i === 4 && lvSeeker < 15) break;
+    if (i === 5 && lvSeeker < 19) break;
+    if(form['seekerBuildup'+i].value === name){ add++ }
+  }
+  return add;
+}
+function checkSeekerAbility(name){
+  for (let i = 1; i <= 5; i++){
+    if (i === 1 && lvSeeker <  4) break;
+    if (i === 2 && lvSeeker <  8) break;
+    if (i === 3 && lvSeeker < 12) break;
+    if (i === 4 && lvSeeker < 16) break;
+    if (i === 5 && lvSeeker < 20) break;
+    if(form['seekerSkill'+i].value === name){ return 1 }
+  }
+  return 0;
+}
+function checkSeeker(){
+  if(lvSeeker){
+    document.getElementById('seeker-buildup1').classList.toggle('hidden', !form.failView.checked && lvSeeker <  3);
+    document.getElementById('seeker-buildup2').classList.toggle('hidden', !form.failView.checked && lvSeeker <  7);
+    document.getElementById('seeker-buildup3').classList.toggle('hidden', !form.failView.checked && lvSeeker < 11);
+    document.getElementById('seeker-buildup4').classList.toggle('hidden', !form.failView.checked && lvSeeker < 15);
+    document.getElementById('seeker-buildup5').classList.toggle('hidden', !form.failView.checked && lvSeeker < 19);
+    document.querySelector('#seeker-buildup1 + dd').classList.toggle('hidden', !form.failView.checked && lvSeeker <  3);
+    document.querySelector('#seeker-buildup2 + dd').classList.toggle('hidden', !form.failView.checked && lvSeeker <  7);
+    document.querySelector('#seeker-buildup3 + dd').classList.toggle('hidden', !form.failView.checked && lvSeeker < 11);
+    document.querySelector('#seeker-buildup4 + dd').classList.toggle('hidden', !form.failView.checked && lvSeeker < 15);
+    document.querySelector('#seeker-buildup5 + dd').classList.toggle('hidden', !form.failView.checked && lvSeeker < 19);
+    document.querySelector('#seeker-buildup1 + dd').classList.toggle('fail', lvSeeker <  3);
+    document.querySelector('#seeker-buildup2 + dd').classList.toggle('fail', lvSeeker <  7);
+    document.querySelector('#seeker-buildup3 + dd').classList.toggle('fail', lvSeeker < 11);
+    document.querySelector('#seeker-buildup4 + dd').classList.toggle('fail', lvSeeker < 15);
+    document.querySelector('#seeker-buildup5 + dd').classList.toggle('fail', lvSeeker < 19);
+    
+    document.querySelector('#seeker-ability1').classList.toggle('hidden', !form.failView.checked && lvSeeker <  4);
+    document.querySelector('#seeker-ability2').classList.toggle('hidden', !form.failView.checked && lvSeeker <  8);
+    document.querySelector('#seeker-ability3').classList.toggle('hidden', !form.failView.checked && lvSeeker < 12);
+    document.querySelector('#seeker-ability4').classList.toggle('hidden', !form.failView.checked && lvSeeker < 16);
+    document.querySelector('#seeker-ability5').classList.toggle('hidden', !form.failView.checked && lvSeeker < 20);
+    document.querySelector('#seeker-ability1').classList.toggle('fail', lvSeeker <  4);
+    document.querySelector('#seeker-ability2').classList.toggle('fail', lvSeeker <  8);
+    document.querySelector('#seeker-ability3').classList.toggle('fail', lvSeeker < 12);
+    document.querySelector('#seeker-ability4').classList.toggle('fail', lvSeeker < 16);
+    document.querySelector('#seeker-ability5').classList.toggle('fail', lvSeeker < 20);
+  }
+  else {
+    document.querySelectorAll('dt[id^="seeker-buildup"], dt[id^="seeker-buildup"]+dd').forEach(obj => {
+      obj.classList.add('hidden');
+    });
+    document.getElementById('seeker-abilities').classList.add('hidden');
   }
 }

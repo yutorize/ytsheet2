@@ -214,10 +214,10 @@ sub data_calc {
       last if ($_ == 3 && $pc{lvSeeker} < 12);
       last if ($_ == 4 && $pc{lvSeeker} < 16);
       last if ($_ == 5 && $pc{lvSeeker} < 20);
-         if($pc{'seekerAbility'.$_} eq 'ＨＰ、ＭＰ上昇'){ $pc{seekerAbilityHpMp}   = 10; }
-      elsif($pc{'seekerAbility'.$_} eq '抵抗力上昇'    ){ $pc{seekerAbilityResist} =  3; }
-      elsif($pc{'seekerAbility'.$_} eq '魔力上昇'      ){ $pc{seekerAbilityMagic}  =  3; }
-      elsif($pc{'seekerAbility'.$_} eq '種族特徴の獲得、強化'){ $pc{seekerAbilityRaceA} = 1; }
+         if($pc{'seekerSkill'.$_} eq 'ＨＰ、ＭＰ上昇'){ $pc{seekerSkillHpMp}   = 10; }
+      elsif($pc{'seekerSkill'.$_} eq '抵抗力上昇'    ){ $pc{seekerSkillResist} =  3; }
+      elsif($pc{'seekerSkill'.$_} eq '魔力上昇'      ){ $pc{seekerSkillMagic}  =  3; }
+      elsif($pc{'seekerSkill'.$_} eq '種族特徴の獲得、強化'){ $pc{seekerSkillRaceA} = 1; }
     }
   }
   ### 種族特徴 --------------------------------------------------
@@ -252,7 +252,7 @@ sub data_calc {
     if($pc{level} >=  6){ push @abilities, setAbility('Lv6'); }
     if($pc{level} >= 11){ push @abilities, setAbility('Lv11'); }
     if($pc{level} >= 16){ push @abilities, setAbility('Lv16'); unshift @abilities, '剣の託宣／運命凌駕' }
-    elsif($pc{seekerAbilityRaceA}){ push @abilities, setAbility('Lv16'); }
+    elsif($pc{seekerSkillRaceA}){ push @abilities, setAbility('Lv16'); }
     my %unique;
     @abilities = grep { ! $unique{$_}++ } @abilities;
     $_ .= ($unique{$_} >= 2 ? '＋' : '') foreach(@abilities);
@@ -401,8 +401,7 @@ sub data_calc {
   $pc{combatFeatsAuto} = "@feats";
   ## 選択特技による補正
   {
-    foreach my $i (@set::feats_lv) {
-      if($i > $pc{level}){ next; } # $iがLvを超えたら処理しない
+    foreach my $i (setAcquiredFeatsLvs(\%pc)) {
       my $feat = $pc{'combatFeatsLv'.$i};
       if   ($feat eq '足さばき')  { $pc{footwork} = 1; }
       elsif($feat eq '命中強化Ⅰ')  { $pc{accuracyEnhance} = 1; }
@@ -467,11 +466,11 @@ sub data_calc {
   ### サブステータス --------------------------------------------------
   ## 生命抵抗力
   $pc{vitResistBase} = $st{LvD};
-  $pc{vitResistAddTotal} = $pc{vResistEquip} + s_eval($pc{vitResistAdd}) + $pc{resistEnhance} + $pc{seekerAbilityResist};
+  $pc{vitResistAddTotal} = $pc{vResistEquip} + s_eval($pc{vitResistAdd}) + $pc{resistEnhance} + $pc{seekerSkillResist};
   $pc{vitResistTotal}  = $pc{vitResistBase} + $pc{vitResistAddTotal};
   ## 精神抵抗力
   $pc{mndResistBase} = $st{LvF};
-  $pc{mndResistAddTotal} = $pc{mResistEquip} + s_eval($pc{mndResistAdd}) + $pc{raceAbilityMndResist} + $pc{resistEnhance} + $pc{seekerAbilityResist};
+  $pc{mndResistAddTotal} = $pc{mResistEquip} + s_eval($pc{mndResistAdd}) + $pc{raceAbilityMndResist} + $pc{resistEnhance} + $pc{seekerSkillResist};
   $pc{mndResistTotal}  = $pc{mndResistBase} + $pc{mndResistAddTotal};
   ## ＨＰＭＰ：装飾品
   foreach my $type ('Head', 'Ear', 'Face', 'Neck', 'Back', 'HandR', 'HandL', 'Waist', 'Leg', 'Other', 'Other2','Other3','Other4') {
@@ -482,13 +481,13 @@ sub data_calc {
   }
   ## ＨＰ
   $pc{hpBase} = $pc{level}*3 + $pc{sttVit} + $pc{sttAddD} + $pc{sttEquipD};
-  $pc{hpAddTotal} = s_eval($pc{hpAdd}) + $pc{tenacity} + $pc{hpAccessory} + $pc{seekerAbilityHpMp}+ $pc{hpEquip};
+  $pc{hpAddTotal} = s_eval($pc{hpAdd}) + $pc{tenacity} + $pc{hpAccessory} + $pc{seekerSkillHpMp}+ $pc{hpEquip};
   $pc{hpAddTotal} += 15 if $hasFeats{'タフネス'};
   $pc{hpTotal}  = $pc{hpBase} + $pc{hpAddTotal};
   ## ＭＰ
   $pc{mpBase} = $lvCastersTotal*3 + $pc{sttMnd} + $pc{sttAddF} + $pc{sttEquipF};
   $pc{mpBase} = $pc{level}*3 + $pc{sttMnd} + $pc{sttAddF} + $pc{sttEquipF} if ($pc{raceAbility} =~ /［溢れるマナ］/);
-  $pc{mpAddTotal} = s_eval($pc{mpAdd}) + $pc{capacity} + $pc{raceAbilityMp} + $pc{mpAccessory} + $pc{seekerAbilityHpMp} + $pc{mpEquip};
+  $pc{mpAddTotal} = s_eval($pc{mpAdd}) + $pc{capacity} + $pc{raceAbilityMp} + $pc{mpAccessory} + $pc{seekerSkillHpMp} + $pc{mpEquip};
   $pc{mpTotal} = $pc{mpBase} + $pc{mpAddTotal};
   $pc{mpTotal} = 0  if ($pc{raceAbility} =~ /［マナ不干渉］/);
 
@@ -568,7 +567,7 @@ sub data_calc {
       + $pc{'raceAbilityMagicPower'.$id}
     ) : 0;
     
-    $pc{'magicPower'.$id} += $pc{seekerAbilityMagic} if $pc{'lv'.$id} >= 15; #求道者
+    $pc{'magicPower'.$id} += $pc{seekerSkillMagic} if $pc{'lv'.$id} >= 15; #求道者
   }
   ## 奏力ほか
   my %stt = ('知力'=>['Int','E'], '精神力'=>['Mnd','F']);
