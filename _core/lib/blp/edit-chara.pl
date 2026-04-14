@@ -147,21 +147,21 @@ print <<"HTML";
       <section id="section-common">
 HTML
 if($set::user_reqd){
-  print <<"HTML";
+  print <<~"HTML";
     <input type="hidden" name="protect" value="account">
     <input type="hidden" name="protectOld" value="$pc{protect}">
     <input type="hidden" name="pass" value="$::in{pass}">
-HTML
+  HTML
 }
 else {
   if($set::registerkey && $mode_make){
     print '登録キー：<input type="text" name="registerkey" required>'."\n";
   }
-  print <<"HTML";
+  print <<~"HTML";
       <details class="box" id="edit-protect" @{[$mode eq 'edit' ? '':'open']}>
       <summary>編集保護設定</summary>
       <fieldset id="edit-protect-view"><input type="hidden" name="protectOld" value="$pc{protect}">
-HTML
+  HTML
   if($LOGIN_ID){
     print '<input type="radio" name="protect" value="account"'.($pc{protect} eq 'account'?' checked':'').'> アカウントに紐付ける（ログイン中のみ編集可能になります）<br>';
   }
@@ -171,13 +171,13 @@ HTML
   } else {
     print '<input type="password" name="pass"><br>';
   }
-  print <<"HTML";
-<input type="radio" name="protect" value="none"@{[ $pc{protect} eq 'none'?' checked':'' ]}> 保護しない（誰でも編集できるようになります）
+  print <<~"HTML";
+        <input type="radio" name="protect" value="none"@{[ $pc{protect} eq 'none'?' checked':'' ]}> 保護しない（誰でも編集できるようになります）
       </fieldset>
       </details>
-HTML
+  HTML
 }
-  print <<"HTML";
+print <<"HTML";
       <dl class="box" id="hide-options">
         <dt>閲覧可否設定
         <dd id="forbidden-checkbox">
@@ -488,14 +488,14 @@ print <<"HTML";
           <tbody id="bloodarts-list">
 HTML
 foreach my $num (1 .. 3) {
-print <<"HTML";
+  print <<~"HTML";
             <tr id="bloodarts${num}">
               <td class="handle">
               <td>@{[input "bloodarts${num}Name"]}
               <td>@{[input "bloodarts${num}Timing",'','','list="list-timing"']}
               <td>@{[input "bloodarts${num}Target",'','','list="list-target"']}
               <td>@{[input "bloodarts${num}Note"]}
-HTML
+  HTML
 }
 print <<"HTML";
           </tbody>
@@ -511,8 +511,8 @@ print <<"HTML";
           <tbody id="arts-list">
 HTML
 foreach my $num ('TMPL',1 .. $pc{artsNum}) {
-  if($num eq 'TMPL'){ print '<template id="arts-template">' }
-print <<"HTML";
+  print '<template id="arts-template">' if($num eq 'TMPL');
+  print <<~"HTML";
             <tr id="arts-row${num}">
               <td class="handle">
               <td>@{[input "arts${num}Name"]}
@@ -521,8 +521,8 @@ print <<"HTML";
               <td>@{[input "arts${num}Cost"   ,'','','list="list-cost"']}
               <td>@{[input "arts${num}Limited",'','','list="list-limited"']}
               <td>@{[input "arts${num}Note"]}
-HTML
-  if($num eq 'TMPL'){ print '</template>' }
+  HTML
+  print '</template>' if($num eq 'TMPL');
 }
 print <<"HTML";
         </table>
@@ -576,8 +576,8 @@ print <<"HTML";
             <td id="history0-exp">$pc{history0Exp}
 HTML
 foreach my $num ('TMPL',1 .. $pc{historyNum}) {
-  if($num eq 'TMPL'){ print '<template id="history-template">' }
-print <<"HTML";
+  print '<template id="history-template">' if($num eq 'TMPL');
+  print <<~"HTML";
           <tbody id="history-row${num}">
           <tr>
             <td class="handle" rowspan="2">
@@ -588,8 +588,8 @@ print <<"HTML";
             <td class="member">@{[ input "history${num}Member" ]}
           <tr>
             <td colspan="5" class="left">@{[input("history${num}Note",'','','placeholder="備考"')]}
-HTML
-  if($num eq 'TMPL'){ print '</template>' }
+  HTML
+  print '</template>' if($num eq 'TMPL');
 }
 print <<"HTML";
           <tfoot id="history-foot">
