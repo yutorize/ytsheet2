@@ -200,7 +200,10 @@ foreach (@list) {
 }
 sub subTextShape {
   my @texts = split('／', shift);
-  foreach(@texts){ $_ = "<span>$_</span>"; }
+  foreach(@texts){
+    $_ =~ s/(\p{Han}+)/<wbr>$1<wbr>/g;
+    $_ = "<span>$_</span>";
+  }
   return '<div>'.join('／', @texts).'</div>';
 }
 
