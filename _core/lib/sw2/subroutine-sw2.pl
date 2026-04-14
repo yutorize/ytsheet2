@@ -222,6 +222,29 @@ sub checkArtsName {
   return $text, $mark;
 }
 
+### 戦闘特技の習得レベルセット --------------------------------------------------
+sub setFeatsLvs {
+  return deduplicate '1bat',@set::feats_lv,'S1','S2','S3','S4','S5';
+}
+sub setAcquiredFeatsLvs {
+  my ($pc) = @_;
+  my @output;
+  if($pc->{lvBat}){
+    push(@output, '1bat');
+  }
+  foreach (@set::feats_lv){
+    (my $lv = $_) =~ s/^([0-9]+)[^0-9].*?$/$1/;
+    next if $pc->{level} < $lv;
+    push(@output, $_);
+  }
+  if($pc->{buildupAddFeats}){
+    foreach (1 .. $pc->{buildupAddFeats}){
+      push(@output, 'S'.$_);
+    }
+  }
+  return deduplicate @output;
+}
+
 ### 特技カテゴリ取得 --------------------------------------------------
 sub getFeatCategoryByName {
   my $featName = shift;
@@ -584,12 +607,20 @@ sub data_update_chara {
       $pc{updateMessage}{'ver.1.27.013'} = '操気【剛力弾】を自動計算するようにしました。<br>既に手動で加算している場合、二重加算になってしまうため、修正してください。';
     }
   }
-  if($ver < 1.28002){
+  if($ver < 1.28003){
     if($pc{unlockAbove16} || $pc{lvGri} || $pc{lvMys} || $pc{lvArt} || $pc{lvAri}){
       $pc{unlockZeroData} = 1;
     }
     if($pc{lvBat} || $pc{lvDru} || $pc{lvAby} || $pc{lvGeo}){
       $pc{unlockFiveData} = 1;
+    }
+    foreach(keys %pc){
+      if($_ =~ /^seekerAbility(.+?)$/){
+        $pc{"seekerSkill".$1} = $pc{$_};
+      }
+    }
+    if($pc{lvSeeker}){
+      foreach(1..5){ $pc{"combatFeatsLvS${_}"} = $pc{"combatFeatsLv".($_ + 15)} }
     }
   }
   $pc{ver} = $main::ver;
