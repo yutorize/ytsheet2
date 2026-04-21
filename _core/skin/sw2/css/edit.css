@@ -1736,9 +1736,10 @@ form#monster .color-sample .name {
   border-color: var(--monster-level-bg-color);
   background: transparent;
   position: relative;
-  padding-left: 1.8em;
+  padding-left: 2.2em;
+  line-height: 1;
   &::before {
-    content: "！";
+    content: "00";
     display: block;
     position: absolute;
     top: 0;
@@ -1748,8 +1749,21 @@ form#monster .color-sample .name {
     background-color: var(--monster-level-bg-color);
     background-image: linear-gradient(to bottom, transparent, rgba(0,0,0,0.4));
     color: #fff;
+    font-size: 120%;
+    font-weight: bold;
+    font-family: "Varela Round", "Raleway", var(--base-font-family-jp);
     text-align: center;
+    align-content: center;
   }
+  &::after {
+    content: "表示見本：ライトモード";
+    display: block;
+    text-align: right;
+    font-size: 1.2rem;
+    font-family: "Varela Round", "Raleway", var(--base-font-family-jp);
+    font-weight: normal;
+  }
+  .night &::after { content: "表示見本：ナイトモード" }
 }
 form#monster .color-sample .box,
 form#item .color-sample .box,

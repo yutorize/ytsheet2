@@ -184,7 +184,7 @@ print <<"HTML";
           <li onclick="sectionSelect('common');"><span>キャラ<span class="shorten">クター</span></span><span>データ</span>
           <li onclick="sectionSelect('fellow');"><span>フェロー</span><span>データ</span>
           <li onclick="sectionSelect('palette');"><span><span class="shorten">ユニット(</span>コマ<span class="shorten">)</span></span><span>設定</span>
-          <li onclick="sectionSelect('color');" class="color-icon" title="カラーカスタム">
+          <li onclick="sectionSelect('color');" class="color-icon" title="シートデザインカスタム">
           <li onclick="view('text-rule')" class="help-icon" title="テキスト整形ルール">
           <li onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード切替">
           <li onclick="exportAsJson()" class="download-icon" title="JSON出力">
@@ -273,18 +273,18 @@ print <<"HTML";
         <div>
           <dl id="character-name">
             <dt>キャラクター名
-            <dd>@{[input('characterName','text',"setName")]}
+            <dd>@{[ input 'characterName','text',"setName",'id="main-name"' ]}
           </dl>
           <dl id="aka">
             <dt>二つ名
-            <dd>@{[input('aka','text',"setName")]}
+            <dd>@{[ input 'aka','text',"setName" ]}
             <dt class="ruby">フリガナ
-            <dd>@{[input('akaRuby','text',"setName")]}
+            <dd>@{[ input 'akaRuby','text',"setName" ]}
           </dl>
         </div>
         <dl id="player-name">
           <dt>プレイヤー名
-          <dd>@{[input('playerName')]}
+          <dd>@{[ input 'playerName' ]}
         </dl>
       </div>
 
