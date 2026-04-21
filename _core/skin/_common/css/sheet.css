@@ -1006,6 +1006,7 @@ textarea::placeholder {
     position: absolute;
     padding-top: 1em;
     writing-mode: vertical-rl;
+    font-family: var(--base-font-family-min);
     font-weight: bold;
     font-size: 2rem;
     color: var(--text-color);
@@ -1266,6 +1267,7 @@ aside#loglist #log-naming form input {
     padding: 1rem;
     font-size: 2.2rem;
     font-weight: bold;
+    font-family: var(--base-font-family-min);
     text-shadow: var(--bg-color) 0px 0px .5em,
       var(--bg-color)  .1rem .1rem, var(--bg-color) -.1rem -.1rem,
       var(--bg-color) -.1rem .1rem, var(--bg-color)  .1rem -.1rem,
@@ -1280,7 +1282,11 @@ aside#loglist #log-naming form input {
       overflow-wrap: break-word;
       margin-right: .5em;
     }
-    & ruby rt { margin-top: -1em; }
+    & ruby rt {
+      margin-top: -1em;
+      font-family: inherit;
+      font-weight: inherit;
+    }
   }
   > div {
     flex-shrink: 0;

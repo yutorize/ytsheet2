@@ -131,7 +131,7 @@ print <<"HTML";
         <h2><span></span></h2>
         <ul>
           <li onclick="sectionSelect('common');"><span>クラン</span><span>データ</span>
-          <li onclick="sectionSelect('color');" class="color-icon" title="カラーカスタム">
+          <li onclick="sectionSelect('color');" class="color-icon" title="シートデザインカスタム">
           <li onclick="view('text-rule')" class="help-icon" title="テキスト整形ルール">
           <li onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード切替">
           <li onclick="exportAsJson()" class="download-icon" title="JSON出力">
@@ -230,14 +230,14 @@ print <<"HTML";
         <div>
           <dl id="character-name">
             <dt>クラン名
-            <dd>@{[input('clanName','text',"setName",'required')]}
+            <dd>@{[ input 'clanName','text',"setName",'id="main-name" required' ]}
             <dt class="ruby">ふりがな
-            <dd>@{[input('clanNameRuby','text',"setName")]}
+            <dd>@{[ input 'clanNameRuby','text',"setName" ]}
           </dl>
         </div>
         <dl id="player-name">
           <dt>管理プレイヤー名
-          <dd>@{[input('playerName')]}
+          <dd>@{[ input 'playerName' ]}
         </dl>
       </div>
 

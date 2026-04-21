@@ -52,7 +52,11 @@ function setName(){
   else if(category == 'school'){
     name = '【'+ruby(form.schoolName.value)+'】';
   }
-  document.querySelector('#header-menu > h2 > span').innerHTML = name || '(名称未入力)';
+  let output = name || '(名称未入力)';
+  document.querySelector('#header-menu > h2 > span').innerHTML = output;
+  document.querySelectorAll('.color-sample .name').forEach(div => {
+    div.innerHTML = output;
+  })
 
 }
 

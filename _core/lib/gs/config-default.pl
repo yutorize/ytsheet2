@@ -4,6 +4,8 @@ use utf8;
 
 package set;
 
+require $::core_dir . '/lib/config-default.pl';
+
 our $game = 'gs';
 
 # config.cgiのほうが優先されます

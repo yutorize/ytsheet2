@@ -265,6 +265,7 @@ else {
   my $date    = ($::in{log} ? " 【".($selectedLogName||$pc{updateTime})."】" : '');
   if($name && $species){ $SHEET->param(titleName => "${name}（${species}）$date"); }
   else { $SHEET->param(titleName => ($name||$species).$date); }
+  $SHEET->param(encodedNameLetter => uri_escape_utf8 removeTags $pc{characterName}.$pc{monsterName}.'【】');
 }
 
 ### OGP --------------------------------------------------

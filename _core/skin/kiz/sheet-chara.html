@@ -4,6 +4,17 @@
 <head>
 <TMPL_INCLUDE NAME="../_common/sheet-head.html">
   <style>
+    <TMPL_IF p1_nameFont>@import url('https://fonts.googleapis.com/css2?family=<TMPL_VAR p1_nameFontUrl>&text=<TMPL_VAR p1_encodedNameLetter>');</TMPL_IF>
+    <TMPL_IF p2_nameFont>@import url('https://fonts.googleapis.com/css2?family=<TMPL_VAR p2_nameFontUrl>&text=<TMPL_VAR p2_encodedNameLetter>');</TMPL_IF>
+
+    <TMPL_IF p1_nameFont>#partner1 h1 > a {
+      font-family: "<TMPL_VAR p1_nameFont>", var(--base-font-family-min);
+      font-weight: <TMPL_VAR p1_nameFontWeight>;
+    }</TMPL_IF>
+    <TMPL_IF p2_nameFont>#partner2 h1 > a {
+      font-family: "<TMPL_VAR p2_nameFont>", var(--base-font-family-min);
+      font-weight: <TMPL_VAR p2_nameFontWeight>;
+    }</TMPL_IF>
     #partner1 {
       --box-head-bg-color-h: <TMPL_VAR p1_colorHeadBgH>;
       --box-head-bg-color-s: <TMPL_VAR p1_colorHeadBgS>%;

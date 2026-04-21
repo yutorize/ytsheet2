@@ -581,7 +581,7 @@ sub chatPaletteForm {
 sub colorCostomForm {
   return <<~"HTML";
       <section id="section-color" style="display:none;">
-      <h2>シートのカラー設定</h2>
+      <h2>シートの装飾設定</h2>
       <div class="box-union">
         <div class="box color-custom">
           <h2>メインカラー</h2>
@@ -599,6 +599,14 @@ sub colorCostomForm {
           </table>
           <hr>
           <p class="right"><span class="button" onclick="setDefaultColor();">デフォルトに戻す</span></p>
+        </div>
+        <div class="box font-custom">
+          <h2>名称欄のフォント</h2>
+          <fieldset>
+            <label class="check-button"><input type="radio" name="nameFont" value=""@{[ $::pc{nameFont} eq '' ? ' checked':''] } oninput="changeNameFont()"><span>フォント：<small>デフォルト</small></span></label>
+            @{[ fontCustomForm() ]}
+          </fieldset>
+          $set::test
         </div>
       </div>
       <div class="color-sample">
@@ -653,6 +661,16 @@ sub colorCostomForm {
       </div>
       </section>
   HTML
+}
+## フォントカスタム欄
+sub fontCustomForm {
+  my $html;
+  my $i = 1;
+  foreach (@set::googlefonts) {
+    $html .= '<label class="check-button"><input type="radio" name="nameFont" value="'.$_->[0].'"'.($::pc{nameFont} eq $_->[0] ? ' checked':'').' oninput="changeNameFont()"><span style="font-family:'."'$_->[0]'".';font-weight:'.$_->[1].';">フォント：<small>'.$_->[0].'</small></span></label>';
+    $i++;
+  }
+  return $html.'<script>const fontList = '.JSON::PP->new->encode(\@set::googlefonts).';</script>';
 }
 
 ## テキスト整形ルール
