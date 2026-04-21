@@ -86,7 +86,7 @@ print <<"HTML";
         <h2><span></span></h2>
         <ul>
           <li onclick="sectionSelect('common');"><span>アイテム</span><span>データ</span>
-          <li onclick="sectionSelect('color');" class="color-icon" title="カラーカスタム">
+          <li onclick="sectionSelect('color');" class="color-icon" title="シートデザインカスタム">
           <li onclick="view('text-rule')" class="help-icon" title="テキスト整形ルール">
           <li onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード切替">
           <li onclick="exportAsJson()" class="download-icon" title="JSON出力">
@@ -162,12 +162,12 @@ print <<"HTML";
         <div>
           <dl id="character-name">
             <dt>名称
-            <dd>@{[ input('itemName','text',"setName('itemName')",'list="list-item-name"') ]}
+            <dd>@{[ input 'itemName','text',"setName",'id="main-name" list="list-item-name"' ]}
           </dl>
         </div>
         <dl id="player-name">
           <dt>製作者
-          <dd>@{[input('author')]}
+          <dd>@{[ input 'author' ]}
         </dl>
       </div>
       

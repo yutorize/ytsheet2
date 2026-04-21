@@ -49,13 +49,6 @@ body {
 #history {
   font-family: "Kosugi","Arial",var(--base-font-family-jp);
 }
-#character-name,
-.words {
-  font-family: var(--base-font-family-min);
-}
-#character-name rt {
-  font-family: Arial,var(--base-font-family-min);
-}
 
 /* // Area-Status
 ---------------------------------------------------------------------------------------------------- */

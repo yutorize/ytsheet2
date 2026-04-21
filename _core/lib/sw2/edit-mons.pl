@@ -111,7 +111,7 @@ print <<"HTML";
         <ul>
           <li onclick="sectionSelect('common');"><span>魔物</span><span>データ</span>
           <li onclick="sectionSelect('palette');"><span><span class="shorten">ユニット(</span>コマ<span class="shorten">)</span></span><span>設定</span>
-          <li onclick="sectionSelect('color');" class="color-icon" title="カラーカスタム">
+          <li onclick="sectionSelect('color');" class="color-icon" title="シートデザインカスタム">
           <li onclick="view('text-rule')" class="help-icon" title="テキスト整形ルール">
           <li onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード切替">
           <li onclick="exportAsJson()" class="download-icon" title="JSON出力">
@@ -204,16 +204,16 @@ print <<"HTML";
         <div>
           <dl id="character-name">
             <dt>名称
-            <dd>@{[ input('monsterName','text',"setName") ]}
+            <dd>@{[ input 'monsterName','text',"setName",'id="sub-name"' ]}
           </dl>
           <dl id="aka">
             <dt>名前
-            <dd>@{[ input 'characterName','text','setName','placeholder="※名前を持つ魔物のみ"' ]}
+            <dd>@{[ input 'characterName','text','setName','id="main-name" placeholder="※名前を持つ魔物のみ"' ]}
           </dl>
         </div>
         <dl id="player-name">
           <dt>製作者
-          <dd>@{[input('author')]}
+          <dd>@{[ input 'author' ]}
         </dl>
       </div>
 

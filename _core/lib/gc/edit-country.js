@@ -25,17 +25,6 @@ function formCheck(){
   return true;
 }
 
-// 名前 ----------------------------------------
-function setName(){
-  let c = ruby(form.countryName.value);
-  document.querySelector('#header-menu > h2 > span').innerHTML = c ?? '(名称未入力)';
-
-  function vCheck(id){
-    if(form[id]){ return form[id].value; }
-    else { return '' }
-  }
-}
-
 // 爵位 ----------------------------------------
 function changePeerage(){
   calcCounts();
