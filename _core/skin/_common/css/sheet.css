@@ -1280,7 +1280,7 @@ aside#loglist #log-naming form input {
       overflow-wrap: break-word;
       margin-right: .5em;
     }
-    & ruby rt { margin-top: -1em; }
+    & ruby rt { margin-top: -1em; font-weight: bold; }
   }
   > div {
     flex-shrink: 0;

@@ -200,6 +200,10 @@ setColors();
 setColors('p1_');
 setColors('p2_');
 
+### フォント設定 --------------------------------------------------
+setFont(\%pc,'p1_');
+setFont(\%pc,'p2_');
+
 ### 出力準備 #########################################################################################
 ### データ全体 --------------------------------------------------
 while (my ($key, $value) = each(%pc)){
@@ -394,6 +398,7 @@ else {
     (removeTags removeRuby($pc{characterName}||"“$pc{aka}”")) .
     ($::in{log} ? " 【".($selectedLogName||$pc{updateTime})."】" : '')
   );
+  $SHEET->param(encodedNameLetter => uri_escape_utf8 removeTags removeRuby($pc{characterName}).($pc{aka}?"“$pc{aka}”":""));
 }
 
 ### OGP --------------------------------------------------

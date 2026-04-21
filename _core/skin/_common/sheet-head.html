@@ -22,30 +22,37 @@
   <link rel="stylesheet" data-dl href="<TMPL_VAR coreDir>/skin/_common/css/sheet.css?<TMPL_VAR ver>">
   <link rel="stylesheet" data-dl href="<TMPL_VAR coreDir>/skin/<TMPL_VAR gameDir>/css/<TMPL_VAR sheetType>.css?<TMPL_VAR ver>">
   <script>
-const sheetId = '<TMPL_VAR id>';
-const paletteTool = '<TMPL_VAR paletteTool>';
-const generateType = '<TMPL_VAR generateType>';
-const defaultImage = '<TMPL_VAR defaultImage>';
-const images = { <TMPL_VAR images /> };
+  const sheetId = '<TMPL_VAR id>';
+  const paletteTool = '<TMPL_VAR paletteTool>';
+  const generateType = '<TMPL_VAR generateType>';
+  const defaultImage = '<TMPL_VAR defaultImage>';
+  const images = { <TMPL_VAR images /> };
 
-<TMPL_IF error>
-window.onload = function() {
-  editOn();
-  setTimeout(function(){
-    document.getElementById("error").style.opacity = 0;
-    document.getElementById("error").style.top = '-5rem';
-  },2000);
-}
-</TMPL_IF>
-<TMPL_IF modeDownload>
-document.addEventListener('DOMContentLoaded', () => {
-  if(document.getElementById('image')){
-    document.getElementById('image').style.backgroundImage = `url(${images['1']})`;
+  <!-- TMPL_IF error -->
+  window.onload = function() {
+    editOn();
+    setTimeout(function(){
+      document.getElementById("error").style.opacity = 0;
+      document.getElementById("error").style.top = '-5rem';
+    },2000);
   }
-});
-</TMPL_IF>
+  <!-- /TMPL_IF -->
+  <!-- TMPL_IF modeDownload -->
+  document.addEventListener('DOMContentLoaded', () => {
+    if(document.getElementById('image')){
+      document.getElementById('image').style.backgroundImage = `url(${images['1']})`;
+    }
+  });
+  <!-- /TMPL_IF -->
   </script>
   <style>
+    <TMPL_IF nameFont>
+    @import url('https://fonts.googleapis.com/css2?family=<TMPL_VAR nameFontUrl>&text=<TMPL_VAR encodedNameLetter>');
+    #area-name h1 {
+      font-family: "<TMPL_VAR nameFont>", var(--base-font-family-min);
+      font-weight: <TMPL_VAR nameFontWeight>;
+    }
+    </TMPL_IF>
     :root, .color-set {
       --box-head-bg-color-h: <TMPL_VAR colorHeadBgH>;
       --box-head-bg-color-s: <TMPL_VAR colorHeadBgS>%;

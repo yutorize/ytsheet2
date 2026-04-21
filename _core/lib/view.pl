@@ -114,6 +114,8 @@ sub getSheetData {
     }
     else { $pc{imageCopyright} = unescapeTags($pc{imageCopyright}) }
   }
+  ## フォント
+  &setFont(\%pc,'');
 
   ## 
 
@@ -171,6 +173,20 @@ sub setColors {
   $::pc{$type.'colorBaseBgS'} = $::pc{$type.'colorBaseBgS'} * 0.7;
   $::pc{$type.'colorBaseBgL'} = 100 - $::pc{$type.'colorBaseBgS'} / 6;
   $::pc{$type.'colorBaseBgD'} = 15;
+}
+### フォント出力 --------------------------------------------------
+sub setFont {
+  my ($pc, $type) = @_;
+  if($pc->{$type.'nameFont'}){
+    foreach (@set::googlefonts){
+      if($_->[0] eq $pc->{$type.'nameFont'}){
+        $pc->{$type.'nameFontUrl'} = $pc->{$type.'nameFont'} =~ s/ /+/gr;
+        if($_->[1] =~ /^[0-9]+$/){ $pc->{$type.'nameFontUrl'} .= ":wght@".$_->[1] }
+        $pc->{$type.'nameFontWeight'} = $_->[1];
+        last;
+      }
+    }
+  }
 }
 ### 伏せ文字 --------------------------------------------------
 sub noiseText {
