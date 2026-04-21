@@ -63,13 +63,6 @@ body {
 
 /* // Font
 ---------------------------------------------------------------------------------------------------- */
-#character-name,
-.words {
-  font-family: var(--base-font-family-min);
-}
-#character-name rt {
-  font-family: Arial,var(--base-font-family-min);
-}
 #level dd {
   font-family: 'Verdana';
 }

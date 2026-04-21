@@ -46,13 +46,6 @@ body {
 
 /* // Font
 ---------------------------------------------------------------------------------------------------- */
-#country-name,
-.words {
-  font-family: var(--base-font-family-min);
-}
-#country-name rt {
-  font-family: Arial,var(--base-font-family-min);
-}
 #level dd {
   font-family: 'Verdana';
 }
