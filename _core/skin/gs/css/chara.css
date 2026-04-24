@@ -150,8 +150,7 @@ body {
   flex-wrap: wrap;
   justify-content: space-between;
 }
-#personal dl {
-  flex-basis: 33%;
+#personal {
   #race   { flex-basis: 51%; order: 1; }
   #age    { flex-basis: 23%; order: 2; }
   #gender { flex-basis: 23%; order: 3; }
