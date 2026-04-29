@@ -216,7 +216,7 @@ sub stylizeCharacterName {
   my $name = shift;
   my $ruby = shift;
   $name = insertWbr($name);
-  if($ruby) {
+  if($name ne '' && $ruby ne '') {
     return "<ruby><rp>｜</rp>${name}<rp>《</rp><rt>${ruby}</rt><rp>》</rp></ruby>"
   }
   return $name;
