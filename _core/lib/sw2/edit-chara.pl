@@ -278,7 +278,7 @@ print <<"HTML";
           <dl id="aka">
             <dt>二つ名
             <dd>@{[ input 'aka','text',"setName" ]}
-            <dt class="ruby">フリガナ
+            <dt class="ruby">二つ名のフリガナ
             <dd>@{[ input 'akaRuby','text',"setName" ]}
           </dl>
         </div>
