@@ -1,17 +1,28 @@
 // 開閉系 ----------------------------------------
-function popImage(id) {
+async function popImage(id) {
+  let imageBox = document.getElementById("image-box") || null;
+  if(!imageBox){
+    imageBox = document.createElement('div');
+    imageBox.id = 'image-box';
+    imageBox.addEventListener('click', () => { closeImage() });
+    let imageSrc = document.createElement('img');
+    imageSrc.id = "image-box-image";
+    imageBox.append(imageSrc);
+    document.body.append(imageBox);
+    await new Promise((r) => setTimeout(r, 1));
+  }
   if(typeof images !== 'undefined'){
     id ||= 1;
     document.getElementById('image-box-image').src = images[id];
   }
-  document.getElementById("image-box").style.bottom = 0;
-  document.getElementById("image-box").style.opacity = 1;
-
+  imageBox.style.bottom = 0;
+  imageBox.style.opacity = 1;
 }
 function closeImage() {
-  document.getElementById("image-box").style.opacity = 0;
+  let imageBox = document.getElementById("image-box");
+  imageBox.style.opacity = 0;
   setTimeout(function(){
-    document.getElementById("image-box").style.bottom = '-100vh';
+    imageBox.style.bottom = '-100vh';
   },200);
 }
 function closeTextareaForCopy() {
@@ -88,7 +99,6 @@ function switchHistoryOpen(){
 function switchHistoryClose(){
   const table = document.querySelector('#history > table');
   rows = table.querySelectorAll('tbody:not(:nth-of-type(-n+1)):not(:nth-last-of-type(-n+5))');
-  console.log(rows)
   // 最下部以外を非表示
   rows.forEach(row => {
     row.style.display = "none";
@@ -131,7 +141,6 @@ window.addEventListener('DOMContentLoaded', ()=>{
 window.addEventListener('load', ()=>{
   if (rubyCopyMode == 0){
     document.querySelectorAll('ruby:has(rp:nth-of-type(3):last-child)').forEach(ruby => {
-      console.log(ruby)
       ruby.querySelector('ruby rp:nth-of-type(1)').textContent = '';
       ruby.querySelector('ruby rp:nth-of-type(2)').textContent = '(';
       ruby.querySelector('ruby rp:nth-of-type(3)').textContent = ')';
