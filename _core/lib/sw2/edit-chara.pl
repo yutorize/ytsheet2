@@ -695,7 +695,7 @@ print <<"HTML";
 HTML
 foreach my $num ('TMPL',1 .. $pc{mysticArtsNum}){
   print '<template id="mystic-arts-template">' if($num eq 'TMPL');
-  print '<li id="mystic-arts-row'.$num.'"><span class="handle"></span>'.input('mysticArts'.$num).inputHonor('mysticArts'.$num.'Pt');
+  print '<li id="mystic-arts-row'.$num.'"><span class="handle"></span>《'.input('mysticArts'.$num)."》".inputHonor('mysticArts'.$num.'Pt');
   print '</template>' if($num eq 'TMPL');
 }
 print <<"HTML";
@@ -709,7 +709,7 @@ HTML
 $pc{mysticMagicNum} ||= 0;
 foreach my $num ('TMPL',1 .. $pc{mysticMagicNum}){
   print '<template id="mystic-magic-template">' if($num eq 'TMPL');
-  print '<li id="mystic-magic-row'.$num.'"><span class="handle"></span>'.input('mysticMagic'.$num).inputHonor('mysticMagic'.$num.'Pt');
+  print '<li id="mystic-magic-row'.$num.'"><span class="handle"></span>【'.input('mysticMagic'.$num).'】'.inputHonor('mysticMagic'.$num.'Pt');
   print '</template>' if($num eq 'TMPL');
 }
 print <<"HTML";
