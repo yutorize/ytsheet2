@@ -374,14 +374,14 @@
   }
   & ul li {
     display: grid;
-    grid-template-columns: max-content 1fr 4em;
+    grid-template-columns: max-content max-content 1fr max-content 4em;
     grid-template-rows: auto;
     .handle {
       width: 1.2em;
       margin-left: -.5rem;
     }
     #sw2\.0 & {
-      grid-template-columns: max-content 1fr 6em;
+      grid-template-columns: max-content max-content 1fr max-content 6em;
       .honor-pt {
         margin: 2px;
       }
