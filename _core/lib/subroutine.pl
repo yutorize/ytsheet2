@@ -871,7 +871,18 @@ sub urlDataGet {
     error '入力されたURLへのアクセスに失敗しました。(STATUS CODE:'.$res->code.')';
   }
 }
-
+### HTMLテンプレート出力 --------------------------------------------------
+sub outputTemplate {
+    my ($tmpl) = @_;
+    my $out = $tmpl->output;
+    if (
+      eval { $tmpl->isa('HTML::Template::Pro') }
+      && !Encode::is_utf8($out)
+    ) {
+      $out = Encode::decode('UTF-8', $out);
+    }
+    return $out;
+}
 ### アップデート・コンバート --------------------------------------------------
 ## バックアップ形式変更
 sub logFileCheck {
