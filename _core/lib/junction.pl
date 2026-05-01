@@ -10,6 +10,7 @@ our %in;
 for (param()){ $in{$_} = param($_); }
 
 my $mode = $in{mode};
+$ENV{HTML_TEMPLATE_ROOT} = $::core_dir;
 
 #if ( $mode eq 'register'
 #  || $mode eq 'option'

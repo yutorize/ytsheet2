@@ -10,8 +10,6 @@ my $LOGIN_ID = check;
 my $mode = $::in{mode};
 my $sort = $::in{sort};
 
-$ENV{HTML_TEMPLATE_ROOT} = $::core_dir;
-
 ### データ読み込み ###################################################################################
 require $set::data_class;
 require $set::data_races;
@@ -474,6 +472,6 @@ $INDEX->param(gameDir => $set::game);
 
 ### 出力 #############################################################################################
 print "Content-Type: text/html\n\n";
-print $INDEX->output;
+print outputTemplate($INDEX);
 
 1;
