@@ -29,6 +29,6 @@ $INDEX->param(hide => 1);
 
 ### 出力 #############################################################################################
 print "Content-Type: text/html\n\n";
-print $INDEX->output;
+print outputTemplate($INDEX);
 
 1;

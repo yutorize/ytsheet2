@@ -690,10 +690,10 @@ $SHEET->param(error => $main::login_error);
 print "Content-Type: text/html\n\n";
 if($pc{modeDownload}){
   if($pc{forbidden} && $pc{yourAuthor}){ $SHEET->param(forbidden => ''); }
-  print downloadModeSheetConvert $SHEET->output;
+  print downloadModeSheetConvert outputTemplate($SHEET);
 }
 else {
-  print $SHEET->output;
+  print outputTemplate($SHEET);
 }
 
 1;
