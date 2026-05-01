@@ -185,6 +185,8 @@ $SHEET->param(rawName => $pc{characterName} || ($pc{aka} ? "“$pc{aka}”" : ''
 if($pc{ver}){
   foreach (keys %pc) {
     next if($_ =~ /^image/);
+    next if($_ eq 'tags');
+    next if($_ eq 'areaTags');
     if($_ =~ /^(?:items|freeNote|freeHistory|cashbook)$/){
       $pc{$_} = unescapeTagsLines($pc{$_});
     }
@@ -571,10 +573,11 @@ sub cashCheck(){
 }
 
 ### バックアップ --------------------------------------------------
+my $selectedLogName;
 if($::in{id}){
-  my($selected, $list) = getLogList($set::char_dir, $main::file);
+  ($selectedLogName, my $list) = getLogList($set::char_dir, $main::file);
   $SHEET->param(LogList => $list);
-  $SHEET->param(selectedLogName => $selected);
+  $SHEET->param(selectedLogName => $selectedLogName);
   if($pc{yourAuthor} || $pc{protect} eq 'password'){
     $SHEET->param(viewLogNaming => 1);
   }
@@ -589,7 +592,11 @@ if($pc{forbidden} eq 'all' && $pc{forbiddenMode}){
   $SHEET->param(titleName => '非公開データ');
 }
 else {
-  $SHEET->param(titleName => removeTags nameToPlain($pc{characterName}||"“$pc{aka}”"));
+  $SHEET->param(titleName =>
+    (removeTags removeRuby($pc{characterName}||"“$pc{aka}”")) .
+    ($::in{log} ? " 【".($selectedLogName||$pc{updateTime})."】" : '')
+  );
+  $SHEET->param(encodedNameLetter => uri_escape_utf8 removeTags "$pc{characterName}$pc{characterNameRuby}$pc{aka}$pc{akaRuby}“”");
 }
 
 ### OGP --------------------------------------------------
@@ -614,6 +621,9 @@ if(!$pc{modeDownload}){
   }
   else {
     if($pc{logId}){
+      if(!$pc{forbiddenMode}){
+        push(@menu, { TEXT => '出力'    , TYPE => "onclick", VALUE => "downloadListOn()",  });
+      }
       push(@menu, { TEXT => '過去ログ', TYPE => "onclick", VALUE => 'loglistOn()', });
       if($pc{reqdPassword}){ push(@menu, { TEXT => '復元', TYPE => "onclick", VALUE => "editOn()", }); }
       else                 { push(@menu, { TEXT => '復元', TYPE => "href"   , VALUE => "./?mode=edit&id=$::in{id}&log=$pc{logId}", }); }

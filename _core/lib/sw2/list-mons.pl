@@ -242,9 +242,13 @@ foreach (@list) {
     next;
   }
 
+  # 適正レベル
+  $lv =~ s/^(\d+)-(\d+)$/$1～$2/;
+
   # 価格
   $price =~ s#^／#―／#;
   $price =~ s#／$#／―#;
+  $price = commify($price);
 
   #タグ
   my $tags_links;
@@ -359,6 +363,7 @@ $INDEX->param(ogDescript =>
 $INDEX->param(title => $set::title);
 $INDEX->param(ver => $::ver);
 $INDEX->param(coreDir => $::core_dir);
+$INDEX->param(gameDir => $set::game);
 
 ### 出力 #############################################################################################
 print "Content-Type: text/html\n\n";

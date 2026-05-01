@@ -56,6 +56,7 @@ $SHEET->param(rawName => $pc{countryName});
 if($pc{ver}){
   foreach (keys %pc) {
     next if($_ =~ /^image|URL$/);
+    next if($_ eq 'tags');
     if($_ =~ /^(?:items|freeNote|freeHistory|cashbook)$/){
       $pc{$_} = unescapeTagsLines($pc{$_});
     }
@@ -256,10 +257,11 @@ $SHEET->param(History => \@history);
 $SHEET->param(historyCountsTotal   => commify $pc{countsTotal}   );
 
 ### バックアップ --------------------------------------------------
+my $selectedLogName;
 if($::in{id}){
-  my($selected, $list) = getLogList($set::char_dir, $main::file);
+  ($selectedLogName, my $list) = getLogList($set::char_dir, $main::file);
   $SHEET->param(LogList => $list);
-  $SHEET->param(selectedLogName => $selected);
+  $SHEET->param(selectedLogName => $selectedLogName);
   if($pc{yourAuthor} || $pc{protect} eq 'password'){
     $SHEET->param(viewLogNaming => 1);
   }
@@ -274,7 +276,11 @@ if($pc{forbidden} eq 'all' && $pc{forbiddenMode}){
   $SHEET->param(titleName => '非公開データ');
 }
 else {
-  $SHEET->param(titleName => removeTags nameToPlain($pc{countryName}));
+  $SHEET->param(titleName =>
+    (removeTags removeRuby $pc{countryName}) .
+    ($::in{log} ? " 【".($selectedLogName||$pc{updateTime})."】" : '')
+  );
+  $SHEET->param(encodedNameLetter => uri_escape_utf8 removeTags $pc{countryName});
 }
 
 ### OGP --------------------------------------------------
@@ -297,6 +303,9 @@ if(!$pc{modeDownload}){
   }
   else {
     if($pc{logId}){
+      if(!$pc{forbiddenMode}){
+        push(@menu, { TEXT => '出力'    , TYPE => "onclick", VALUE => "downloadListOn()",  });
+      }
       push(@menu, { TEXT => '過去ログ', TYPE => "onclick", VALUE => 'loglistOn()', });
       if($pc{reqdPassword}){ push(@menu, { TEXT => '復元', TYPE => "onclick", VALUE => "editOn()", }); }
       else                 { push(@menu, { TEXT => '復元', TYPE => "href"   , VALUE => "./?mode=edit&id=$::in{id}&log=$pc{logId}", }); }

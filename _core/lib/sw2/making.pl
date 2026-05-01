@@ -23,22 +23,6 @@ foreach(param()){
 
 my $now = time;
 
-## 重複チェック
-if($set::making_interval){
-  open (my $FH, '<', $set::makelist);
-  my $file = <$FH>;
-  close($FH);
-  my ($num, $date, $id, $name, $comment, $race, $stt) = split(/<>/, $file);
-  if(
-    $now - $date <= $set::making_interval &&
-    $LOGIN_ID eq $id &&
-    $in{name} eq $name &&
-    $in{race} eq $race
-  ){
-    error($set::making_interval.'秒以内の連続投稿は禁止されています。');
-  }
-}
-
 ## 能力値作成処理
 my $adventurer = ($in{race} =~ s/（冒険者）//) ? 1 : 0;
 
@@ -90,10 +74,26 @@ if($in{race} eq 'アビスボーン'){
   $curse .= $array[int(rand $max)].'/' foreach(1..3);
 }
 
-# 書き込み
+## 書き込み
 sysopen (my $FH, $set::makelist, O_RDWR | O_CREAT, 0666);
   flock($FH, 2);
   my @lines = <$FH>;
+  # 連投制限
+  if($set::making_interval){
+    foreach(@lines){
+      my ($num, $date, $id, $name, $comment, $race, $stt) = split(/<>/, $_);
+      last if $now - $date > $set::making_interval;
+      if(
+        $LOGIN_ID eq $id &&
+        $in{name} eq $name &&
+        $in{race} eq $race
+      ){
+        close($FH);
+        error($set::making_interval.'秒以内の連続投稿は禁止されています。');
+      }
+    }
+  }
+  # ---
   seek($FH, 0, 0);
   my $num = (split(/<>/, $lines[0]))[0] + 1;
   if ($set::making_max) { while ($set::making_max <= @lines) { pop(@lines); } }

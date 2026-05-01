@@ -64,6 +64,8 @@ elsif($mode eq 'blanksheet'){
   $pc{partner2Auto} = 1;
   
   $pc{paletteUseBuff} = 1;
+
+  %pc = applyCustomizedInitialValues(\%pc);
 }
 
 ## 画像
@@ -96,7 +98,7 @@ foreach (
 }
 
 ### フォーム表示 #####################################################################################
-my $titlebarname = removeTags nameToPlain unescapeTags ($pc{characterName}||"“$pc{aka}”");
+my $titlebarname = removeTags removeRuby unescapeTags ($pc{characterName}||"“$pc{aka}”");
 print <<"HTML";
 Content-type: text/html\n
 <!DOCTYPE html>
@@ -144,7 +146,7 @@ print <<"HTML";
         <ul>
           <li onclick="sectionSelect('common');"><span>キャラ<span class="shorten">クター</span></span><span>データ</span>
           <li onclick="sectionSelect('palette');"><span><span class="shorten">ユニット(</span>コマ<span class="shorten">)</span></span><span>設定</span>
-          <li onclick="sectionSelect('color');" class="color-icon" title="カラーカスタム">
+          <li onclick="sectionSelect('color');" class="color-icon" title="シートデザインカスタム">
           <li onclick="view('text-rule')" class="help-icon" title="テキスト整形ルール">
           <li onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード切替">
           <li onclick="exportAsJson()" class="download-icon" title="JSON出力">
@@ -164,21 +166,21 @@ print <<"HTML";
       <section id="section-common">
 HTML
 if($set::user_reqd){
-  print <<"HTML";
+  print <<~"HTML";
     <input type="hidden" name="protect" value="account">
     <input type="hidden" name="protectOld" value="$pc{protect}">
     <input type="hidden" name="pass" value="$::in{pass}">
-HTML
+  HTML
 }
 else {
   if($set::registerkey && $mode_make){
     print '登録キー：<input type="text" name="registerkey" required>'."\n";
   }
-  print <<"HTML";
+  print <<~"HTML";
       <details class="box" id="edit-protect" @{[$mode eq 'edit' ? '':'open']}>
       <summary>編集保護設定</summary>
       <fieldset id="edit-protect-view"><input type="hidden" name="protectOld" value="$pc{protect}">
-HTML
+  HTML
   if($LOGIN_ID){
     print '<input type="radio" name="protect" value="account"'.($pc{protect} eq 'account'?' checked':'').'> アカウントに紐付ける（ログイン中のみ編集可能になります）<br>';
   }
@@ -188,13 +190,13 @@ HTML
   } else {
     print '<input type="password" name="pass"><br>';
   }
-  print <<"HTML";
-<input type="radio" name="protect" value="none"@{[ $pc{protect} eq 'none'?' checked':'' ]}> 保護しない（誰でも編集できるようになります）
+  print <<~"HTML";
+        <input type="radio" name="protect" value="none"@{[ $pc{protect} eq 'none'?' checked':'' ]}> 保護しない（誰でも編集できるようになります）
       </fieldset>
       </details>
-HTML
+  HTML
 }
-  print <<"HTML";
+print <<"HTML";
       <dl class="box" id="hide-options">
         <dt>閲覧可否設定
         <dd id="forbidden-checkbox">
@@ -233,14 +235,14 @@ print <<"HTML";
         <div>
           <dl id="character-name">
             <dt>キャラクター名
-            <dd>@{[input('characterName','text',"setName",'required')]}
+            <dd>@{[ input 'characterName','text',"setName",'id="main-name" required' ]}
             <dt class="ruby">ふりがな
-            <dd>@{[input('characterNameRuby','text',"setName")]}
+            <dd>@{[ input 'characterNameRuby','text',"setName" ]}
           </dl>
         </div>
         <dl id="player-name">
           <dt>プレイヤー名
-          <dd>@{[input('playerName')]}
+          <dd>@{[ input 'playerName' ]}
         </dl>
       </div>
 
@@ -512,16 +514,16 @@ print <<"HTML";
           <tbody>
 HTML
 foreach my $num ('TMPL',1 .. $pc{kizunaNum}) {
-  if($num eq 'TMPL'){ print '<template id="kizuna-template">' }
-print <<"HTML";
+  print '<template id="kizuna-template">' if($num eq 'TMPL');
+  print <<~"HTML";
             <tr id="kizuna-row${num}" class="@{[ $pc{"kizuna${num}Hibi"} ? 'hibi':'' ]}@{[ $pc{"kizuna${num}Ware"} ? 'ware':'' ]}">
               <td class="handle">
               <td>@{[ input "kizuna${num}Name" ]}
               <td>@{[ input "kizuna${num}Note" ]}
               <td>@{[ input "kizuna${num}Hibi", 'checkbox', "checkHibi(${num})" ]}
               <td>@{[ input "kizuna${num}Ware", 'checkbox', "checkWare(${num})" ]}
-HTML
-  if($num eq 'TMPL'){ print '</template>' }
+  HTML
+  print '</template>' if($num eq 'TMPL');
 }
 print <<"HTML";
         </table>
@@ -551,8 +553,8 @@ print <<"HTML";
             </colgroup>
 HTML
 foreach my $num ('TMPL',1 .. $pc{kizuatoNum}) {
-  if($num eq 'TMPL'){ print '<template id="kizuato-template">' }
-print <<"HTML";
+  print '<template id="kizuato-template">' if($num eq 'TMPL');
+  print <<~"HTML";
             <tbody id="kizuato-row${num}">
               <tr>
                 <td class="name" colspan="6">
@@ -584,8 +586,8 @@ print <<"HTML";
                 <td>@{[input "kizuato${num}BattleCost"   ,'','','list="list-bcost"']}
                 <td>@{[input "kizuato${num}BattleLimited",'','','list="list-blimited"']}
                 <td class="left">@{[input "kizuato${num}BattleNote"]}
-HTML
-  if($num eq 'TMPL'){ print '</template>' }
+  HTML
+  print '</template>' if($num eq 'TMPL');
 }
 print <<"HTML";
         </table>
@@ -625,8 +627,8 @@ print <<"HTML";
             -->
 HTML
 foreach my $num ('TMPL',1 .. $pc{historyNum}) {
-  if($num eq 'TMPL'){ print '<template id="history-template">' }
-print <<"HTML";
+  print '<template id="history-template">' if($num eq 'TMPL');
+  print <<~"HTML";
           <tbody id="history-row${num}">
           <tr>
             <td class="handle" rowspan="2">
@@ -637,8 +639,8 @@ print <<"HTML";
             <td class="member">@{[ input "history${num}Member" ]}
           <tr>
             <td colspan="5" class="left">@{[input("history${num}Note",'','','placeholder="備考"')]}
-HTML
-  if($num eq 'TMPL'){ print '</template>' }
+  HTML
+  print '</template>' if($num eq 'TMPL');
 }
 print <<"HTML";
           <tfoot id="history-foot">
@@ -697,7 +699,7 @@ print <<"HTML";
   </main>
   <footer>
     <p class="notes">©からすば晴／N.G.P.／アークライト／新紀元社「キズナバレット」</p>
-    <p class="copyright">©<a href="https://yutorize.2-d.jp">ゆとらいず工房</a>「ゆとシートⅡ」ver.${main::ver}</p>
+    <p class="copyright">©<a href="https://yutorize.work">ゆとらいず工房</a>「ゆとシートⅡ」ver.${main::ver}</p>
   </footer>
   <datalist id="list-gender">
     <option value="男">

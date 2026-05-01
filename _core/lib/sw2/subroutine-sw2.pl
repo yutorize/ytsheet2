@@ -13,6 +13,7 @@ sub createUnitStatus {
   my %pc = %{$_[0]};
   my $target = $_[1] || '';
   my @unitStatus;
+  my @unitMemo;
   if ($pc{type} eq 'm'){
     my @n2a = ('','A' .. 'Z');
     if($pc{statusNum} > 1){ # 2部位以上
@@ -35,12 +36,11 @@ sub createUnitStatus {
           $count{ $partname }++;
           $partname .= $n2a[ $count{ $partname } ];
         }
-        my $hp  = s_eval($pc{"status${i}Hp"});
-        my $mp  = s_eval($pc{"status${i}Mp"});
-        my $def = s_eval($pc{"status${i}Defense"});
-        push(@hp , {$partname.':HP' => "$hp/$hp"});
-        push(@mp , {$partname.':MP' => "$mp/$mp"}) unless isEmptyValue($mp);
-        push(@def, $partname.$def);
+        my $hp  = convertStt($pc{"status${i}Hp"});
+        my $mp  = convertStt($pc{"status${i}Mp"});
+        push(@hp , {$partname.':HP' => $hp});
+        push(@mp , {$partname.':MP' => $mp}) unless isEmptyValue($mp);
+        push(@def, $partname.$pc{"status${i}Defense"});
       }
       @unitStatus = ();
       push(@unitStatus, @hp);
@@ -48,7 +48,7 @@ sub createUnitStatus {
       if ($target eq 'udonarium') {
         push(@unitStatus, {'防護' => join('／',@def)});
       } else {
-        push(@unitStatus, {'メモ' => '防護:'.join('／',@def)});
+        push(@unitMemo, '防護:'.join('／',@def));
       }
     }
     else { # 1部位
@@ -59,12 +59,20 @@ sub createUnitStatus {
           $i .= $ii > 1 ? "-$ii" : '';
         }
       }
-      my $hp = s_eval($pc{"status${i}Hp"});
-      my $mp = s_eval($pc{"status${i}Mp"});
-      my $def = s_eval($pc{"status${i}Defense"});
-      push(@unitStatus, { 'HP' => "$hp/$hp" });
-      push(@unitStatus, { 'MP' => "$mp/$mp" }) unless isEmptyValue($mp);
-      push(@unitStatus, { '防護' => "$def" });
+      my $hp = convertStt($pc{"status${i}Hp"});
+      my $mp = convertStt($pc{"status${i}Mp"});
+      push(@unitStatus, { 'HP' => $hp });
+      push(@unitStatus, { 'MP' => $mp }) unless isEmptyValue($mp);
+      push(@unitStatus, { '防護' => $pc{"status${i}Defense"} });
+    }
+    
+    if($pc{weakness} && $pc{weakness} ne 'なし'){
+      if ($target eq 'udonarium') {
+        push(@unitStatus, { '弱点' => $pc{weakness} });
+      }
+      else {
+        push(@unitMemo, '弱点:'.$pc{weakness});
+      }
     }
   }
   else {
@@ -86,6 +94,27 @@ sub createUnitStatus {
         push(@unitStatus, { '人' => '0' });
       }
       push(@unitStatus, { '陣気' => '0' }) if $pc{lvWar};
+      push(@unitStatus, { '特殊失敗値' => '0' }) if ($pc{lvBib});
+      if ($pc{lvFai}) {
+        my @contractAttributes = ();
+        foreach ([Earth => '土'], [Water => '水'], [Fire => '炎'], [Wind => '風'], [Light => '光'], [Dark => '闇']) {
+          (my $attributeEn, my $attributeJa) = @{$_};
+          next unless $pc{"fairyContract${attributeEn}"};
+          push(@contractAttributes, $attributeJa);
+        }
+        push(@unitStatus, { 契約属性 => join('', @contractAttributes) });
+      }
+    }
+  }
+  if(@unitMemo){
+    if ($target eq 'udonarium') {
+      push(@unitStatus, {'メモ' => join("　",@unitMemo)});
+    }
+    if ($target eq 'ccfolia') {
+      push(@unitStatus, {'メモ' => join("\n",@unitMemo)});
+    }
+    else {
+      push(@unitStatus, {'メモ' => join("<br>",@unitMemo)});
     }
   }
 
@@ -101,7 +130,42 @@ sub createUnitStatus {
   return \@unitStatus;
 }
 
-### クラス色分け --------------------------------------------------
+### 自由記入技能 --------------------------------------------------
+sub addFreeClassData {
+  my ($pc, $classData, $classNames, $classCasterNames) = @_;
+  %$classData = %data::class if !%$classData;
+  @$classNames = @data::class_names if !@$classNames;
+  @$classCasterNames = @data::class_caster if !@$classCasterNames;
+
+  foreach my $num (1 .. $pc->{freeClassNum}) {
+    my $name = $pc->{"freeClass${num}Name"};
+    next unless $name && $pc->{"freeClass${num}Lv"};
+
+    $classData->{$name} = {
+      expTable => $pc->{"freeClass${num}ExpTable"},
+      id       => "FC${num}",
+      eName    => "freeclass${num}",
+    };
+    $pc->{"lvFC${num}"} = $pc->{"freeClass${num}Lv"};
+    push @$classNames, $name;
+
+    if ($pc->{"freeClass${num}Acc"}) { $classData->{$name}{accUnlock} = { lv => 1 }; }
+    if ($pc->{"freeClass${num}Eva"}) { $classData->{$name}{evaUnlock} = { lv => 1 }; }
+    if ($pc->{"freeClass${num}Magic"}) {
+      $classData->{$name}{magic} = { jName => $pc->{"magicPowerNameFC${num}"} || '―' };
+      push @$classCasterNames, $name if $classCasterNames;
+    }
+    if($pc->{"freeClass${num}Tec"} || $pc->{"freeClass${num}Agi"} || $pc->{"freeClass${num}Obs"} || $pc->{"freeClass${num}Kno"}){
+      $classData->{$name}{package} = {};
+      if ($pc->{"freeClass${num}Tec"}) { $classData->{$name}{package}{Tec} = { name => '技巧', stt => 'A' }; }
+      if ($pc->{"freeClass${num}Agi"}) { $classData->{$name}{package}{Agi} = { name => '運動', stt => 'B' }; }
+      if ($pc->{"freeClass${num}Obs"}) { $classData->{$name}{package}{Obs} = { name => '観察', stt => 'E' }; }
+      if ($pc->{"freeClass${num}Kno"}) { $classData->{$name}{package}{Kno} = { name => '知識', stt => 'E' }; }
+    }
+  }
+}
+
+### 技能色分け --------------------------------------------------
 sub class_color {
   my $text = shift;
   $text =~ s/((?:.*?)(?:[0-9]+))/<span>$1<\/span>/g;
@@ -158,6 +222,42 @@ sub checkArtsName {
   return $text, $mark;
 }
 
+### 戦闘特技の習得レベルセット --------------------------------------------------
+sub setFeatsLvs {
+  return deduplicate '1bat',@set::feats_lv,'S1','S2','S3','S4','S5';
+}
+sub setAcquiredFeatsLvs {
+  my ($pc) = @_;
+  my @output;
+  if($pc->{lvBat}){
+    push(@output, '1bat');
+  }
+  foreach (@set::feats_lv){
+    (my $lv = $_) =~ s/^([0-9]+)[^0-9].*?$/$1/;
+    next if $pc->{level} < $lv;
+    push(@output, $_);
+  }
+  if($pc->{buildupAddFeats}){
+    foreach (1 .. $pc->{buildupAddFeats}){
+      push(@output, 'S'.$_);
+    }
+  }
+  return deduplicate @output;
+}
+
+### 特技カテゴリ取得 --------------------------------------------------
+sub getFeatCategoryByName {
+  my $featName = shift;
+
+  foreach (@data::combat_feats) {
+    my @feat = @{$_};
+    (my $category, my $requiredLevel, my $name) = @feat;
+    return $category if $name eq $featName;
+  }
+
+  return '';
+}
+
 ### 妖精魔法ランク --------------------------------------------------
 sub fairyRank {
   my $lv = shift;
@@ -169,6 +269,7 @@ sub fairyRank {
     '3' => ['×','×','×','4','5','6','8','9','10','12','13','14','15','15','15','15'],
     '6' => ['×','×','×','2&1','3&1','4&1','4&2','5&2','6&2','6&3','7&3','8&3','8&4','9&4','10&4','10&5'],
   );
+  return $lv if !$rank{$i}[$lv] && $lv < 3;
   return $rank{$i}[$lv] || '×';
 }
 
@@ -183,14 +284,22 @@ sub extractModifications {
     my $note = shift;
 
     my %sttRegEx = (
+      'A:increment' => '器(?:用度?)?増強',
+      'B:increment' => '敏(?:捷度?)?増強',
+      'C:increment' => '筋(?:力)?増強',
+      'D:increment' => '生(?:命力)?増強',
+      'E:increment' => '知力?増強',
+      'F:increment' => '精(?:神力?)?増強',
       'A' => '器(?:用度?)?',
       'B' => '敏(?:捷度?)?',
       'C' => '筋(?:力)?',
       'D' => '生(?:命力)?',
       'E' => '知力?',
       'F' => '精(?:神力?)?',
-      'vResist' => '生命抵抗力?',
-      'mResist' => '精神抵抗力?',
+      'vResist' => '生命抵抗(?:力(?:判定)?)?',
+      'mResist' => '精神抵抗(?:力(?:判定)?)?',
+      'hp' => '[HＨ][PＰ]',
+      'mp' => '[MＭ][PＰ]',
       'eva' => '回避力?',
       'def' => '防(?:護点?)?',
       'mobility' => '移動力',
@@ -227,6 +336,21 @@ sub extractModifications {
     push(@modifications, \%modification);
   }
 
+  foreach (1 .. $pc{armourNum}) {
+    my $nameKey = "armour${_}Name";
+    my $noteKey = "armour${_}Note";
+
+    my $name = $pc{$nameKey} // '';
+    my $note = $pc{$noteKey} // '';
+
+    $name = $name ne '' ? $name : '防具';
+
+    my %modification = %{extractModification($name, $note)};
+    next unless %modification;
+
+    push(@modifications, \%modification);
+  }
+
   for my $slot ('Head', 'Face', 'Ear', 'Neck', 'Back', 'HandR', 'HandL', 'Waist', 'Leg', 'Other', 'Other2', 'Other3', 'Other4') {
     for my $suffix ('', '_', '__') {
       my $nameKey = "accessory${slot}${suffix}Name";
@@ -255,6 +379,18 @@ sub extractModifications {
   }
 
   return \@modifications;
+}
+
+### 神聖魔法の短剣符の抽出 --------------------------------------------------
+# (記号, 魔法名) のかたちで返す.
+sub extractDivineMark {
+  my $magicName = shift;
+
+  if ($magicName =~ s/^([†‡])//) {
+    return ($1, $magicName);
+  }
+
+  return (undef, $magicName);
 }
 
 ### バージョンアップデート --------------------------------------------------
@@ -461,6 +597,32 @@ sub data_update_chara {
       $pc{race} = 'ドレイクブロークン' if $pc{race} eq 'ドレイク（ブロークン）';
     }
   }
+  if($ver < 1.27004){
+    if($pc{lvSam} || $pc{lvNin} || $pc{lvJuj} || $pc{lvFug}){
+      $pc{unlockRyugai} = 1;
+    }
+  }
+  if($ver < 1.27013){
+    if($pc{lvDar}){
+      $pc{updateMessage}{'ver.1.27.013'} = '操気【剛力弾】を自動計算するようにしました。<br>既に手動で加算している場合、二重加算になってしまうため、修正してください。';
+    }
+  }
+  if($ver < 1.28003){
+    if($pc{unlockAbove16} || $pc{lvGri} || $pc{lvMys} || $pc{lvArt} || $pc{lvAri}){
+      $pc{unlockZeroData} = 1;
+    }
+    if($pc{lvBat} || $pc{lvDru} || $pc{lvAby} || $pc{lvGeo}){
+      $pc{unlockFiveData} = 1;
+    }
+    foreach(keys %pc){
+      if($_ =~ /^seekerAbility(.+?)$/){
+        $pc{"seekerSkill".$1} = $pc{$_};
+      }
+    }
+    if($pc{lvSeeker}){
+      foreach(1..5){ $pc{"combatFeatsLvS${_}"} = $pc{"combatFeatsLv".($_ + 15)} }
+    }
+  }
   $pc{ver} = $main::ver;
   $pc{lasttimever} = $ver;
   return %pc;
@@ -508,6 +670,12 @@ sub data_update_item {
       }
     }
   }
+  if($ver < 1.27003){
+    if($pc{age} eq '魔法文明'){ $pc{age} = '古代魔法文明' }
+  }
+  if($ver < 1.27009){
+    $pc{iconMagic} = $pc{magic};
+  }
 
   $pc{ver} = $main::ver;
   $pc{lasttimever} = $ver;
@@ -528,6 +696,14 @@ sub data_update_arts {
   $pc{ver} = $main::ver;
   $pc{lasttimever} = $ver;
   return %pc;
+}
+
+sub convertStt {
+  my $value = shift;
+  if($value eq ''){ return '' }
+  if($value =~ /[^0-9,\+\-\*\/\%\(\) ]/){ return $value }
+  my $v = s_eval($value);
+  return "$v/$v";
 }
 
 sub isEmptyValue {

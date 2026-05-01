@@ -160,12 +160,17 @@ foreach (@list) {
   }
   
   #名前
-  if($category =~ /magic|school/){ $name = '【'.$name.'】'; }
+  if($category =~ /magic|school/){
+    (my $divineMark, $name) = extractDivineMark $name if $category =~ /magic/ && $sub =~ /神聖魔法/;
+    $name = '【'.$name.'】';
+    $name =~ s/\s?[－―‐–—─\-](.+?)[－―‐–—─\-]】$/】<span>－$1－<\/span>/;
+    $name = $divineMark.$name if defined $divineMark;
+  }
   
   #グループ（分類）
   my $category_text = $category{$category};
-  if($sub =~ /妖精/){ $sub =~ s#(／[0-9]+)#$1ランク#; }
-  else { $sub =~ s#(／[0-9]+)#$1レベル#; }
+  if($sub =~ /(?:属性|特殊)妖精魔法|秘奥魔法/){ $sub =~ s#／([0-9]+)#／ランク$1#; }
+  else { $sub =~ s#(／[0-9-～]+)#$1レベル#; }
   $sub = subTextShape($sub);
   $sub = '―' if $category eq 'skill';
 
@@ -196,7 +201,10 @@ foreach (@list) {
 }
 sub subTextShape {
   my @texts = split('／', shift);
-  foreach(@texts){ $_ = "<span>$_</span>"; }
+  foreach(@texts){
+    $_ =~ s/(\p{Han}+)/<wbr>$1<wbr>/g;
+    $_ = "<span>$_</span>";
+  }
   return '<div>'.join('／', @texts).'</div>';
 }
 
@@ -254,6 +262,7 @@ $INDEX->param(ogDescript =>
 $INDEX->param(title => $set::title);
 $INDEX->param(ver => $::ver);
 $INDEX->param(coreDir => $::core_dir);
+$INDEX->param(gameDir => $set::game);
 
 ### 出力 #############################################################################################
 print "Content-Type: text/html\n\n";

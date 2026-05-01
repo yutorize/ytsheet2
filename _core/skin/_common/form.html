@@ -116,9 +116,16 @@
     <article>
       <section class="form">
         <h2>ユーザー設定</h2>
-        <p class="center">
-          カラーカスタムを無効にする（名前表示域以外）: <label class="toggle-button"><input type="checkbox" onchange="colorlessModeChange()"></label>
-        </p>
+        <dl>
+          <dt><label class="toggle-button"><input type="checkbox" onchange="changeColorlessMode()"></label> カラーカスタムを無効にする
+          <dd>ONにすると、各キャラクターシートのカラーカスタムが（名前欄を除き）無効化されます。
+        </dl>
+        <dl>
+          <dt><label class="toggle-button"><input type="checkbox" onchange="changeRubyCopyMode()"></label> ルビをコピーした時、ルビ記法でコピーする
+          <dd>キャラクターシートの閲覧画面で、ルビを含む文字列をコピーした際、ルビ記法ごとコピーします。<br>
+            たとえば「<ruby>漢字<rt>かんじ</ruby>」という文字列の場合、コピーされる文字列が以下のようになります。<br>
+            ON:「｜漢字《かんじ》」／OFF:「漢字(かんじ)」
+        </dl>
       </section>
       <section class="form">
         <h2>アカウント情報</h2>
@@ -168,7 +175,7 @@
       <section class="form">
         <h2><span class="material-symbols-outlined bold">edit_note</span>コンバート作成</h2>
         <h3>URLから</h3>
-        <form method="get" action="./">
+        <form method="get" action="./" id="form-to-import-from-url">
           <input type="hidden" name="mode" value="convert">
           <p>
             入力したURLのデータを元にゆとシートⅡで新規作成します。<br>
@@ -184,6 +191,14 @@
             <input type="file" name="file" style="width:50%;" accept=".json,.txt" required><input type="submit" value="作成">
           </p>
         </form>
+        <hr>
+        <h3>クリップボードから</h3>
+        <div class="form">
+          <p>
+            クリップボードからURL/JSONを読み取り、ゆとシートⅡで新規作成します。<br>
+            <button class="submit" id="button-to-import-from-clipboard" disabled>作成</button>
+          </p>
+        </div>
       </section>
       <section class="form">
         <h2><span class="material-symbols-outlined bold">visibility</span>コンバートビュー</h2>

@@ -18,7 +18,7 @@ section.form {
   background-color: #fff1;
 }
 
-form p {
+.form p {
   position: relative;
   margin: 1em;
   text-align: center;
@@ -37,8 +37,26 @@ form p {
     overflow: visible;
     font-size: 12px;
   }
-  & > input[type="submit"] {
+  & > input[type="submit"],
+  & button {
     width: 5em;
+  }
+
+  button {
+    font-weight: normal;
+
+    &[disabled] {
+      cursor: not-allowed;
+      pointer-events: none;
+      opacity: 0.5;
+    }
+  }
+}
+.form dl {
+  margin: 1em;
+  line-height: 2;
+  > dd {
+    padding-left: 1em;
   }
 }
 

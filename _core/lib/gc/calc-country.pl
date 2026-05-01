@@ -67,15 +67,16 @@ sub data_calc {
   }
 
   ### newline --------------------------------------------------
-  my $countryName = ($pc{aka} ? "“$pc{aka}”" : "").$pc{countryName};
-  $countryName =~ s/[|｜]([^|｜]+?)《.+?》/$1/g;
-  my $lordName = ($pc{aka} ? "“$pc{aka}”" : "").$pc{lordName};
-  $lordName =~ s/[|｜]([^|｜]+?)《.+?》/$1/g;
+  my %NL;
+  foreach ('countryName','playerName','lordName'){
+    $NL{$_} = $pc{$_} =~ s/[|｜]([^|｜]+?)《.+?》/$1/gr;
+    $NL{$_} = removeTags unescapeTags $NL{$_} =~ s/^\s|\s$//gr;
+  }
   $::newline = "$pc{id}<>$::file<>".
-               "$pc{birthTime}<>$::now<>$countryName<>$pc{playerName}<>$pc{group}<>".
+               "$pc{birthTime}<>$::now<>$NL{countryName}<>$NL{playerName}<>$pc{group}<>".
                "$pc{image}<> $pc{tags} <>$pc{hide}<>".
 
-               "$lordName<>".
+               "$NL{lordName}<>".
                "$pc{level}<>$pc{countsTotal}<>$pc{peerage}<>".
                "$pc{lastSession}<>";
 

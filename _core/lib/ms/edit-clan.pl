@@ -8,6 +8,7 @@ use feature 'say';
 my $LOGIN_ID = $::LOGIN_ID;
 
 ### 読込前処理 #######################################################################################
+require $set::data_magi;
 require $set::lib_palette_sub;
 
 ### データ読み込み ###################################################################################
@@ -46,11 +47,9 @@ elsif($mode eq 'blanksheet'){
   $pc{level} = 0;
   $pc{endurance} = 20;
 
-  $pc{magi1Name}   = 'スクランブル！';
-  $pc{magi1Timing} = '終了';
-  $pc{magi1Target} = '単体';
-  $pc{magi1Cond}   = '8～12';
-  $pc{magi1Note}   = 'クラン全員で1Dをロールし、合計点のダメージを与える。(P139)';
+  $pc{magi1}   = 'スクランブル！';
+
+  %pc = applyCustomizedInitialValues(\%pc, 'c');
 }
 
 ## 画像
@@ -83,7 +82,7 @@ my $image_maxsize = $set::image_maxsize / 2;
 my $image_maxsize_view = $image_maxsize >= 1048576 ? sprintf("%.3g",$image_maxsize/1048576).'MB' : sprintf("%.3g",$image_maxsize/1024).'KB';
 
 ### フォーム表示 #####################################################################################
-my $titlebarname = removeTags nameToPlain unescapeTags ($pc{clanName});
+my $titlebarname = removeTags removeRuby unescapeTags ($pc{clanName});
 print <<"HTML";
 Content-type: text/html\n
 <!DOCTYPE html>
@@ -100,6 +99,7 @@ Content-type: text/html\n
   <link rel="stylesheet" media="all" href="${main::core_dir}/skin/ms/css/edit.css?${main::ver}">
   <script src="${main::core_dir}/skin/_common/js/lib/Sortable.min.js"></script>
   <script src="${main::core_dir}/skin/_common/js/lib/compressor.min.js"></script>
+  <script src="./?mode=js-consts&ver=${main::ver}"></script>
   <script src="${main::core_dir}/lib/edit.js?${main::ver}" defer></script>
   <script src="${main::core_dir}/lib/ms/edit-clan.js?${main::ver}" defer></script>
   <style>
@@ -131,7 +131,7 @@ print <<"HTML";
         <h2><span></span></h2>
         <ul>
           <li onclick="sectionSelect('common');"><span>クラン</span><span>データ</span>
-          <li onclick="sectionSelect('color');" class="color-icon" title="カラーカスタム">
+          <li onclick="sectionSelect('color');" class="color-icon" title="シートデザインカスタム">
           <li onclick="view('text-rule')" class="help-icon" title="テキスト整形ルール">
           <li onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード切替">
           <li onclick="exportAsJson()" class="download-icon" title="JSON出力">
@@ -151,21 +151,21 @@ print <<"HTML";
       <section id="section-common">
 HTML
 if($set::user_reqd){
-  print <<"HTML";
+  print <<~"HTML";
     <input type="hidden" name="protect" value="account">
     <input type="hidden" name="protectOld" value="$pc{protect}">
     <input type="hidden" name="pass" value="$::in{pass}">
-HTML
+  HTML
 }
 else {
   if($set::registerkey && $mode_make){
     print '登録キー：<input type="text" name="registerkey" required>'."\n";
   }
-  print <<"HTML";
+  print <<~"HTML";
       <details class="box" id="edit-protect" @{[$mode eq 'edit' ? '':'open']}>
       <summary>編集保護設定</summary>
       <fieldset id="edit-protect-view"><input type="hidden" name="protectOld" value="$pc{protect}">
-HTML
+  HTML
   if($LOGIN_ID){
     print '<input type="radio" name="protect" value="account"'.($pc{protect} eq 'account'?' checked':'').'> アカウントに紐付ける（ログイン中のみ編集可能になります）<br>';
   }
@@ -175,13 +175,13 @@ HTML
   } else {
     print '<input type="password" name="pass"><br>';
   }
-  print <<"HTML";
-<input type="radio" name="protect" value="none"@{[ $pc{protect} eq 'none'?' checked':'' ]}> 保護しない（誰でも編集できるようになります）
+  print <<~"HTML";
+        <input type="radio" name="protect" value="none"@{[ $pc{protect} eq 'none'?' checked':'' ]}> 保護しない（誰でも編集できるようになります）
       </fieldset>
       </details>
-HTML
+  HTML
 }
-  print <<"HTML";
+print <<"HTML";
       <dl class="box" id="hide-options">
         <dt>閲覧可否設定
         <dd id="forbidden-checkbox">
@@ -201,10 +201,10 @@ HTML
         <dl>
 HTML
 if(@set::groups_clan){
-  print <<"HTML";
+  print <<~"HTML";
           <dt>グループ
           <dd><select name="group">
-HTML
+  HTML
   foreach (@set::groups){
     my $id   = @$_[0];
     my $name = @$_[2];
@@ -212,9 +212,9 @@ HTML
     next if($exclusive && (!$LOGIN_ID || $LOGIN_ID !~ /^($exclusive)$/));
     print '<option value="'.$id.'"'.($pc{group} eq $id ? ' selected': '').'>'.$name.'</option>';
   }
-  print <<"HTML";
+  print <<~"HTML";
           </select>
-HTML
+  HTML
 }
 print <<"HTML";
           <dt>タグ
@@ -222,18 +222,22 @@ print <<"HTML";
         </dl>
       </div>
 
+      <div class="box" style="margin:auto;width:max-content;background-image:none">
+        <div class="annotate"><a href="https://karasuba-sei.biz/officialsite/?p=88" target="_blank">⇒キャラクター作成の手順（サポートハブ）</a></div>
+      </div>
+
       <div class="box in-toc" id="name-form" data-content-title="クラン名・管理プレイヤー名">
         <div>
           <dl id="character-name">
             <dt>クラン名
-            <dd>@{[input('clanName','text',"setName",'required')]}
+            <dd>@{[ input 'clanName','text',"setName",'id="main-name" required' ]}
             <dt class="ruby">ふりがな
-            <dd>@{[input('clanNameRuby','text',"setName")]}
+            <dd>@{[ input 'clanNameRuby','text',"setName" ]}
           </dl>
         </div>
         <dl id="player-name">
           <dt>管理プレイヤー名
-          <dd>@{[input('playerName')]}
+          <dd>@{[ input 'playerName' ]}
         </dl>
       </div>
 
@@ -302,7 +306,7 @@ print <<"HTML";
 HTML
 print '';
 foreach my $num ('TMPL',1 .. $pc{memberNum}) {
-  if($num eq 'TMPL'){ print '<template id="member-template">' }
+  print '<template id="member-template">' if($num eq 'TMPL');
   print '<tr id="member-row'.$num.'">'
     .'<th class="handle">'
     .'<td class="name">'
@@ -310,7 +314,7 @@ foreach my $num ('TMPL',1 .. $pc{memberNum}) {
     .'<td class="url">'
     .input('member'.$num.'URL','','','placeholder="シートURL"')
     ;
-  if($num eq 'TMPL'){ print '</template>' }
+  print '</template>' if($num eq 'TMPL');
 }
 print <<"HTML";
           </table>
@@ -327,6 +331,7 @@ print '</ul>';
 print <<"HTML";
           <!-- <div class="add-del-button"><a onclick="addAttribute()">▼</a><a onclick="delAttribute()">▲</a></div> -->
           <div class="annotate caution"></div>
+          <div class="annotate"><a href="https://karasuba-sei.biz/officialsite/?p=142" target="_blank">⇒特性の例（サポートハブ）</a></div>
         </div>
 
       </div>
@@ -336,32 +341,39 @@ print <<"HTML";
           <table class="edit-table line-tbody no-border-cells" id="magi-table">
             <colgroup id="magi-col">
               <col class="name  ">
+              <col class="check ">
               <col class="timing">
               <col class="target">
               <col class="cond  ">
+              <col class="note  ">
             </colgroup>
             <thead id="magi-thead">
               <tr>
                 <th class="name  ">名称
+                <th class="check small nowrap">名前<br>変更
                 <th class="timing">タイミング
                 <th class="target">対象
                 <th class="cond  ">条件
                 <th class="note  ">効果
 HTML
 foreach my $num (1 .. 5) {
-  print <<"HTML";
+  print <<~"HTML";
             <tbody id="magi${num}">
               <tr>
-                <td class="name  ">《@{[ input "magi${num}Name",'','checkMagi' ]}》
-                <td class="timing">@{[ input "magi${num}Timing" ,'','','list="list-timing"' ]}
-                <td class="target">@{[ input "magi${num}Target" ,'','','list="list-target"' ]}
-                <td class="cond  ">@{[ input "magi${num}Cond",'','','list="list-cond"' ]}
-                <td class="left">@{[ input "magi${num}Note" ]}
-HTML
+                <td class="name  ">
+                  《@{[ selectBox "magi${num}",'checkMagi',@data::clanMagiNames,'その他' ]}》
+                  <div class="changed-name hidden">《@{[ input "magi${num}Name",'','','placeholder="任意の名前"' ]}》</div>
+                <td class="check ">@{[ checkbox "magi${num}NC",'','checkMagi' ]}
+                <td class="timing">@{[ input "magi${num}Timing" ,'','','list="list-timing"' ]}<div class="text-timing"></div>
+                <td class="target">@{[ input "magi${num}Target" ,'','','list="list-target"' ]}<div class="text-target"></div>
+                <td class="cond  ">@{[ input "magi${num}Cond"   ,'','','list="list-cond"'   ]}<div class="text-cond"></div>
+                <td class="left">@{[ input "magi${num}Note" ]}<div class="text-note"></div>
+  HTML
 }
 print <<"HTML";
         </table>
         <div class="annotate caution"></div>
+        <div class="annotate"><a href="https://karasuba-sei.biz/officialsite/?p=149#index_id2" target="_blank">⇒クラン用マギの一覧（サポートハブ）</a></div>
       </div>
       
       <details class="box" id="free-note" @{[$pc{freeNote}?'open':'']}>
@@ -397,8 +409,8 @@ print <<"HTML";
             -->
 HTML
 foreach my $num ('TMPL',1 .. $pc{historyNum}) {
-  if($num eq 'TMPL'){ print '<template id="history-template">' }
-print <<"HTML";
+  print '<template id="history-template">' if($num eq 'TMPL');
+  print <<~"HTML";
           <tbody id="history-row${num}">
           <tr>
             <td class="handle" rowspan="2">
@@ -409,8 +421,8 @@ print <<"HTML";
             <td class="member">@{[ input "history${num}Member" ]}
           <tr>
             <td colspan="5" class="left">@{[input("history${num}Note",'','','placeholder="備考"')]}
-HTML
-  if($num eq 'TMPL'){ print '</template>' }
+  HTML
+  print '</template>' if($num eq 'TMPL');
 }
 print <<"HTML";
           <tfoot id="history-foot">
@@ -473,7 +485,7 @@ print <<"HTML";
   </main>
   <footer>
     <p class="notes">©からすば晴「マモノスクランブル」</p>
-    <p class="copyright">©<a href="https://yutorize.2-d.jp">ゆとらいず工房</a>「ゆとシートⅡ」ver.${main::ver}</p>
+    <p class="copyright">©<a href="https://yutorize.work">ゆとらいず工房</a>「ゆとシートⅡ」ver.${main::ver}</p>
   </footer>
   <datalist id="list-clan-rule">
     <option value="我慢しない">
@@ -534,11 +546,6 @@ print <<"HTML";
   <datalist id="list-cond">
     <option value="なし">
   </datalist>
-  <script>
-HTML
-print <<"HTML";
-@{[ &commonJSVariable ]}
-  </script>
 </body>
 
 </html>

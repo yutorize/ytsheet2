@@ -68,13 +68,6 @@ body {
 #history {
   font-family: "Kosugi","Arial",var(--base-font-family-jp);
 }
-#character-name,
-.words {
-  font-family: var(--base-font-family-min);
-}
-#character-name rt {
-  font-family: Arial,var(--base-font-family-min);
-}
 #status dl dd,
 #magi table {
   font-family: var(--font-proportional);
@@ -321,6 +314,10 @@ h1#character-name:not(:has(ruby)) {
     .note   { font-size: 90%; }
     :empty::before {
       content: "　";
+    }
+    .base-name {
+      font-size: 85%;
+      opacity: 50%;
     }
   }
   @media screen and (width <= 735px){

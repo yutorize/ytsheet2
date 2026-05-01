@@ -101,7 +101,7 @@
         </div>
         <h2><TMPL_VAR magicClass DEFAULT="未分類"></h2>
         <div class="data-magic <TMPL_VAR magicClassEn>">
-          <dl class="name color-set"><dt><TMPL_VAR magicLevel><dd><div><TMPL_VAR magicIcon>【<TMPL_VAR magicName>】</div><small><TMPL_VAR magicNameNotes></small></dl>
+          <dl class="name color-set"><dt><TMPL_VAR magicLevel><dd><div><TMPL_VAR magicIcon><TMPL_VAR magicDivineMark>【<TMPL_VAR magicName>】</div><TMPL_IF magicAlias><span class="alias"><TMPL_VAR magicAlias></span></TMPL_IF><small><TMPL_VAR magicNameNotes></small></dl>
           <TMPL_IF magicCostOn     ><dl class="cost     "><dt>消費         <dd><TMPL_VAR magicCost></dl></TMPL_IF>
           <TMPL_IF magicTargetOn   ><dl class="target   "><dt>対象         <dd><TMPL_VAR magicTarget></dl></TMPL_IF>
           <TMPL_IF magicRangeOn    ><dl class="range    "><dt>射程/<br>形状<dd><TMPL_VAR magicRange>／<wbr><TMPL_VAR magicForm></dl></TMPL_IF>
@@ -177,7 +177,7 @@
             <dl class="name    "><dt><TMPL_VAR LEVEL><dd><div><TMPL_VAR ICON>【<TMPL_VAR NAME>】</div></dl>
             <dl class="cost    "><dt>消費      <dd><TMPL_VAR COST></dl>
             <dl class="target  "><dt>対象      <dd><TMPL_VAR TARGET></dl>
-            <dl class="range   "><dt>射程/<br>形状<dd><TMPL_VAR RANGE>／<br><TMPL_VAR FORM></dl>
+            <dl class="range   "><dt>射程/<br>形状<dd><TMPL_VAR RANGE>／<wbr><TMPL_VAR FORM></dl>
             <dl class="duration"><dt>時間      <dd><TMPL_VAR DURATION></dl>
             <dl class="resist  "><dt>抵抗      <dd><TMPL_VAR RESIST></dl>
             <TMPL_IF ELEMENT><dl class="element" ><dt>属性<dd><TMPL_VAR ELEMENT></dl></TMPL_IF>
@@ -186,6 +186,10 @@
           </div>
           </TMPL_LOOP>
         </section>
+        <TMPL_IF godQnA><section id="q-and-a" class="box description">
+          <h2><TMPL_IF head_godQnA><TMPL_VAR head_godQnA><TMPL_ELSE>Ｑ＆Ａ</TMPL_IF></h2>
+          <p><TMPL_VAR godQnA></p>
+        </section></TMPL_IF>
       </section>
       </TMPL_IF>
 
@@ -211,7 +215,7 @@
             <TMPL_IF schoolNote><p><TMPL_VAR schoolNote></p></TMPL_IF>
           </section>
           <section class="box description">
-            <h2><TMPL_IF head_schoolItemNote><TMPL_VAR head_schoolItemNote><TMPL_ELSE>流派装備</TMPL_IF></h2>
+            <h2><TMPL_IF head_schoolItemNote><TMPL_VAR head_schoolItemNote><TMPL_ELSE>流派アイテム</TMPL_IF></h2>
             <TMPL_IF schoolItemNote><p><TMPL_VAR schoolItemNote></p></TMPL_IF>
             <TMPL_IF SchoolItems><table class="item-table data-table">
               <thead>
@@ -238,7 +242,7 @@
           <TMPL_IF schoolArtsNote><div class="box"><p><TMPL_VAR schoolArtsNote></p></div></TMPL_IF>
           <TMPL_LOOP ArtsData>
           <div class="data-magic data-arts">
-            <h3 class="name    "><div><TMPL_VAR ICON>《<TMPL_VAR NAME>》</div></h3>
+            <h3 class="name    "><div><TMPL_VAR NAME></div></h3>
             <dl class="cost    "><dt><span>必要名誉点</span><dd><TMPL_VAR COST></dl>
             <dl class="type    "><dt>タイプ    <dd><TMPL_VAR TYPE></dl>
             <dl class="premise "><dt>前提      <dd><TMPL_VAR PREMISE></dl>
@@ -255,11 +259,11 @@
           <TMPL_IF schoolMagicNote><div class="box"><p><TMPL_VAR schoolMagicNote></p></div></TMPL_IF>
           <TMPL_LOOP schoolMagicData>
           <div class="data-magic">
-            <dl class="name    "><dt><TMPL_VAR LEVEL><dd><div><TMPL_VAR ICON>【<TMPL_VAR NAME>】</div></dl>
+            <dl class="name    "><dt><TMPL_VAR LEVEL><dd><div><TMPL_VAR ICON><TMPL_VAR DIVINE_MARK>【<TMPL_VAR NAME>】<TMPL_VAR ALIAS></div></dl>
             <dl class="a-cost  "><dt><span>必要名誉点</span><dd><TMPL_VAR A-COST></dl>
             <dl class="cost    "><dt>消費      <dd><TMPL_VAR COST></dl>
             <dl class="target  "><dt>対象      <dd><TMPL_VAR TARGET></dl>
-            <dl class="range   "><dt>射程/<br>形状<dd><TMPL_VAR RANGE>／<br><TMPL_VAR FORM></dl>
+            <dl class="range   "><dt>射程/<br>形状<dd><TMPL_VAR RANGE>／<wbr><TMPL_VAR FORM></dl>
             <dl class="duration"><dt>時間      <dd><TMPL_VAR DURATION></dl>
             <dl class="resist  "><dt>抵抗      <dd><TMPL_VAR RESIST></dl>
             <TMPL_IF ELEMENT><dl class="element" ><dt>属性<dd><TMPL_VAR ELEMENT></dl></TMPL_IF>
@@ -268,6 +272,10 @@
           </div>
           </TMPL_LOOP></TMPL_IF>
         </section>
+        <TMPL_IF schoolQnA><section id="q-and-a" class="box description">
+          <h2><TMPL_IF head_schoolQnA><TMPL_VAR head_schoolQnA><TMPL_ELSE>Ｑ＆Ａ</TMPL_IF></h2>
+          <p><TMPL_VAR schoolQnA></p>
+        </section></TMPL_IF>
       </section>
       </TMPL_IF>
 
@@ -311,15 +319,12 @@
       </div>
     </article>
     <div class="back-button"><a href="./?type=a">⏎</a></div>
-    <TMPL_IF image><div id="image-box" onclick="closeImage()">
-      <img src="<TMPL_VAR imageSrc>" id="image-box-image">
-    </div></TMPL_IF> 
   </main>
   <TMPL_INCLUDE NAME="skin-add/sheet-sidebar.html">
 
   <footer>
     <p class="notes">(C)Group SNE「ソード・ワールド2.0／2.5」</p>
-    <p class="copyright">©<a href="https://yutorize.2-d.jp">ゆとらいず工房</a>「ゆとシートⅡ」ver.<TMPL_VAR ver></p>
+    <p class="copyright">©<a href="https://yutorize.work">ゆとらいず工房</a>「ゆとシートⅡ」ver.<TMPL_VAR ver></p>
   </footer>
 </body>
 

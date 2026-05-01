@@ -355,6 +355,7 @@ table.status {
       border-width: 0px 1px 1px 0px;
       border-style: solid;
       text-align: center;
+      align-content: center;
       min-width: 6em;
     }
     > dd {
@@ -362,6 +363,7 @@ table.status {
       padding: .2rem .5rem;
       border-width: 0px 0px 1px;
       border-style: solid;
+      word-break: auto-phrase;
     }
     > dt:last-of-type,
     > dd:last-of-type {

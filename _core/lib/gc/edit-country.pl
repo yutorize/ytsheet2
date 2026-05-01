@@ -51,6 +51,8 @@ elsif($mode eq 'blanksheet'){
   
   $pc{paletteUseVar} = 1;
   $pc{paletteUseBuff} = 1;
+
+  %pc = applyCustomizedInitialValues(\%pc, 'c');
 }
 
 ## カラー
@@ -90,7 +92,7 @@ my $image_maxsize = $set::image_maxsize / 2;
 my $image_maxsize_view = $image_maxsize >= 1048576 ? sprintf("%.3g",$image_maxsize/1048576).'MB' : sprintf("%.3g",$image_maxsize/1024).'KB';
 
 ### フォーム表示 #####################################################################################
-my $titlebarname = removeTags nameToPlain unescapeTags ($pc{countryName});
+my $titlebarname = removeTags removeRuby unescapeTags ($pc{countryName});
 print <<"HTML";
 Content-type: text/html\n
 <!DOCTYPE html>
@@ -139,7 +141,7 @@ print <<"HTML";
         <ul>
           <li onclick="sectionSelect('common');"><span>キャラ<span class="shorten">クター</span></span><span>データ</span>
           <li onclick="sectionSelect('palette');"><span><span class="shorten">ユニット(</span>コマ<span class="shorten">)</span></span><span>設定</span>
-          <li onclick="sectionSelect('color');" class="color-icon" title="カラーカスタム">
+          <li onclick="sectionSelect('color');" class="color-icon" title="シートデザインカスタム">
           <li onclick="view('text-rule')" class="help-icon" title="テキスト整形ルール">
           <li onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード切替">
           <li onclick="exportAsJson()" class="download-icon" title="JSON出力">
@@ -159,21 +161,21 @@ print <<"HTML";
       <section id="section-common">
 HTML
 if($set::user_reqd){
-  print <<"HTML";
+  print <<~"HTML";
     <input type="hidden" name="protect" value="account">
     <input type="hidden" name="protectOld" value="$pc{protect}">
     <input type="hidden" name="pass" value="$::in{pass}">
-HTML
+  HTML
 }
 else {
   if($set::registerkey && $mode_make){
     print '登録キー：<input type="text" name="registerkey" required>'."\n";
   }
-  print <<"HTML";
+  print <<~"HTML";
       <details class="box" id="edit-protect" @{[$mode eq 'edit' ? '':'open']}>
       <summary>編集保護設定</summary>
       <fieldset id="edit-protect-view"><input type="hidden" name="protectOld" value="$pc{protect}">
-HTML
+  HTML
   if($LOGIN_ID){
     print '<input type="radio" name="protect" value="account"'.($pc{protect} eq 'account'?' checked':'').'> アカウントに紐付ける（ログイン中のみ編集可能になります）<br>';
   }
@@ -183,13 +185,13 @@ HTML
   } else {
     print '<input type="password" name="pass"><br>';
   }
-  print <<"HTML";
-<input type="radio" name="protect" value="none"@{[ $pc{protect} eq 'none'?' checked':'' ]}> 保護しない（誰でも編集できるようになります）
+  print <<~"HTML";
+        <input type="radio" name="protect" value="none"@{[ $pc{protect} eq 'none'?' checked':'' ]}> 保護しない（誰でも編集できるようになります）
       </fieldset>
       </details>
-HTML
+  HTML
 }
-  print <<"HTML";
+print <<"HTML";
       <dl class="box" id="hide-options">
         <dt>閲覧可否設定</dt>
         <dd id="forbidden-checkbox">
@@ -226,14 +228,14 @@ print <<"HTML";
         <div>
           <dl id="character-name">
             <dt>国名
-            <dd>@{[input('countryName','text',"setName")]}
+            <dd>@{[ input 'countryName','text',"setName",'id="main-name" required' ]}
             <dt>ロード名
-            <dd>@{[input('lordName','text',"setName")]}
+            <dd>@{[ input 'lordName']}
           </dl>
         </div>
         <dl id="player-name">
           <dt>プレイヤー名
-          <dd>@{[input('playerName')]}
+          <dd>@{[ input 'playerName' ]}
         </dl>
       </div>
 
@@ -285,8 +287,8 @@ print <<"HTML";
           <tbody>
 HTML
 foreach my $num ('TMPL',1 .. $pc{memberNum}){
-  if($num eq 'TMPL'){ print '<template id="member-template">' }
-  print <<"HTML";
+  print '<template id="member-template">' if($num eq 'TMPL');
+  print <<~"HTML";
             <tr id="member-row${num}">
               <td class="handle">
               <td class="name  ">@{[ input "member${num}Name" ]}
@@ -294,10 +296,10 @@ foreach my $num ('TMPL',1 .. $pc{memberNum}){
               <td class="class ">@{[ input "member${num}Class" ]}
               <td class="style ">@{[ input "member${num}Style" ]}
               <td class="note  ">@{[ input "member${num}Note" ]}
-HTML
-  if($num eq 'TMPL'){ print '</template>' }
+  HTML
+  print '</template>' if($num eq 'TMPL');
 }
-  print <<"HTML";
+print <<"HTML";
         </table>
         <div class="add-del-button"><a onclick="addMember()">▼</a><a onclick="delMember()">▲</a></div>
       </details>
@@ -327,8 +329,8 @@ HTML
           <tbody>
 HTML
 foreach my $num ('TMPL',1 .. $pc{academySupportNum}){
-  if($num eq 'TMPL'){ print '<template id="academy-support-template">' }
-  print <<"HTML";
+  print '<template id="academy-support-template">' if($num eq 'TMPL');
+  print <<~"HTML";
             <tr id="academy-support-row${num}">
               <td class="handle">
               <td class="name  ">@{[ input "academySupport${num}Name" ]}
@@ -337,10 +339,10 @@ foreach my $num ('TMPL',1 .. $pc{academySupportNum}){
               <td class="target">@{[ input "academySupport${num}Target",'','','list="list-target"' ]}
               <td class="cost  ">@{[ input "academySupport${num}Cost",'number','calcCounts' ]}
               <td class="note  ">@{[ input "academySupport${num}Note" ]}
-HTML
-  if($num eq 'TMPL'){ print '</template>' }
+  HTML
+  print '</template>' if($num eq 'TMPL');
 }
-  print <<"HTML";
+print <<"HTML";
         </table>
         <div class="add-del-button"><a onclick="addAcademySupport()">▼</a><a onclick="delAcademySupport()">▲</a></div>
       </details>
@@ -372,8 +374,8 @@ HTML
           <tbody>
 HTML
 foreach my $num ('TMPL',1 .. $pc{artifactNum}){
-  if($num eq 'TMPL'){ print '<template id="artifact-template">' }
-  print <<"HTML";
+  print '<template id="artifact-template">' if($num eq 'TMPL');
+  print <<~"HTML";
             <tr id="artifact-row${num}">
               <td class="handle  ">
               <td class="name    ">@{[ input "artifact${num}Name" ]}
@@ -383,10 +385,10 @@ foreach my $num ('TMPL',1 .. $pc{artifactNum}){
               <td class="cost    ">@{[ input "artifact${num}Cost",'number','calcCounts' ]}
               <td class="quantity">@{[ input "artifact${num}Quantity",'number','calcCounts' ]}
               <td class="note    ">@{[ input "artifact${num}Note" ]}
-HTML
-  if($num eq 'TMPL'){ print '</template>' }
+  HTML
+  print '</template>' if($num eq 'TMPL');
 }
-  print <<"HTML";
+print <<"HTML";
         </table>
         <div class="add-del-button"><a onclick="addArtifact()">▼</a><a onclick="delArtifact()">▲</a></div>
       </details>
@@ -422,8 +424,8 @@ HTML
           <tbody>
 HTML
 foreach my $num ('TMPL',1 .. $pc{characteristicNum}){
-  if($num eq 'TMPL'){ print '<template id="characteristic-template">' }
-  print <<"HTML";
+  print '<template id="characteristic-template">' if($num eq 'TMPL');
+  print <<~"HTML";
             <tr id="characteristic-row${num}">
               <td class="handle">
               <td class="name  ">@{[ input "characteristic${num}Name" ]}
@@ -434,10 +436,10 @@ foreach my $num ('TMPL',1 .. $pc{characteristicNum}){
               <td class="effect">@{[ input "characteristic${num}Forest",'number','calcResources' ]}
               <td class="effect">@{[ input "characteristic${num}Funds",'number','calcResources' ]}
               <td class="note  ">@{[ input "characteristic${num}Note" ]}
-HTML
-  if($num eq 'TMPL'){ print '</template>' }
+  HTML
+  print '</template>' if($num eq 'TMPL');
 }
-  print <<"HTML";
+print <<"HTML";
         </table>
         <div class="add-del-button"><a onclick="addCharacteristic()">▼</a><a onclick="delCharacteristic()">▲</a></div>
         <table class="edit-table no-border-cells" id="grow">
@@ -540,8 +542,8 @@ HTML
           <tbody>
 HTML
 foreach my $num ('TMPL',1 .. $pc{forceNum}){
-  if($num eq 'TMPL'){ print '<template id="force-template">' }
-  print <<"HTML";
+  print '<template id="force-template">' if($num eq 'TMPL');
+  print <<~"HTML";
             <tr id="force-row${num}">
               <td class="handle">
               <td class="type  ">@{[ input "force${num}Type" ]}
@@ -554,10 +556,10 @@ foreach my $num ('TMPL',1 .. $pc{forceNum}){
               <td class="cost  ">@{[ input "force${num}CostFunds",'number','calcResources' ]}
               <td class="note  ">@{[ input "force${num}Note" ]}
               <td class="copy  "><span class="button" onclick="addForce(${num})">複製</span>
-HTML
-  if($num eq 'TMPL'){ print '</template>' }
+  HTML
+  print '</template>' if($num eq 'TMPL');
 }
-  print <<"HTML";
+print <<"HTML";
         </table>
         <div class="add-del-button"><a onclick="addForce()">▼</a><a onclick="delForce()">▲</a></div>
       </details>
@@ -634,8 +636,8 @@ HTML
             </tr>
 HTML
 foreach my $num ('TMPL',1 .. $pc{historyNum}) {
-  if($num eq 'TMPL'){ print '<template id="history-template">' }
-print <<"HTML";
+  print '<template id="history-template">' if($num eq 'TMPL');
+  print <<~"HTML";
           <tbody id="history-row${num}">
             <tr>
               <td class="handle" rowspan="2">
@@ -646,8 +648,8 @@ print <<"HTML";
               <td class="member">@{[input("history${num}Member")]}
             <tr>
               <td colspan="3" class="left">@{[input("history${num}Note",'','','placeholder="備考"')]}
-HTML
-  if($num eq 'TMPL'){ print '</template>' }
+  HTML
+  print '</template>' if($num eq 'TMPL');
 }
 print <<"HTML";
           <tfoot id="history-foot">
@@ -719,7 +721,7 @@ print <<"HTML";
   </main>
   <footer>
     <p class="notes">©Shunsaku Yano/Team Barrelroll.「グランクレストRPG」</p>
-    <p class="copyright">©<a href="https://yutorize.2-d.jp">ゆとらいず工房</a>「ゆとシートⅡ」ver.${main::ver}</p>
+    <p class="copyright">©<a href="https://yutorize.work">ゆとらいず工房</a>「ゆとシートⅡ」ver.${main::ver}</p>
   </footer>
   <datalist id="list-timing">
     <option value="常時">

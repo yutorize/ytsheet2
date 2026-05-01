@@ -236,7 +236,7 @@ label:is(.radio-button, .check-button) {
 
 /* 非表示 */
 .hidden {
-  display: none;
+  display: none !important;
 }
 /* テーブル */
 .edit-table {
@@ -1592,14 +1592,35 @@ input[type="submit"]:hover {
   + .box.color-custom {
     border-top-width: 1px;
   }
-}
-.box.color-custom table {
-  margin-left: 1em;
-  & td {
-    padding: .5em;
+  & table {
+    margin-left: 1em;
+    & td {
+      padding: .5em;
+    }
+    & td:last-child {
+      width: 4em;
+    }
   }
-  & td:last-child {
-    width: 4em;
+}
+.box.font-custom {
+  & fieldset {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    
+    margin: .5em 1em;
+    > label {
+      align-content: center;
+      > span {
+        font-size: 150%;
+        font-weight: bold;
+        font-family: var(--base-font-family-min);
+        > small {
+          font-size: 80%;
+          font-weight: normal;
+          font-family: var(--font-proportional);
+        }
+      }
+    }
   }
 }
 @media screen and (width <= 735px){
@@ -1617,6 +1638,9 @@ input[type="submit"]:hover {
   .box.color-custom table td:last-child {
     grid-column: 2;
     grid-row: 1;
+  }
+  .box.color-custom fieldset {
+    grid-template-columns: 1fr 1fr;
   }
 }
 .box.color-custom input[type="range"] {
@@ -1672,6 +1696,10 @@ input[type="submit"]:hover {
   grid-template-columns: 1fr 1fr;
   grid-gap: 30px;
   margin-top: 25px;
+  
+  @media screen and (width <= 735px){
+    grid-template-columns: 1fr;
+  }
 
   & .night {
     background-color: #000;
@@ -1686,14 +1714,25 @@ input[type="submit"]:hover {
     border-color: var(--box-outside-border-color, inherit);
     font-family: var(--base-font-family-min);
     font-weight: bold;
+    font-size: 150%;
+    & rt {
+      font-family: inherit;
+      font-weight: inherit;
+    }
   }
-  & .light .name::after,
-  .night & .night .name::after {
-    content: "：ライトモード";
+  & .name::before {
+    display: block;
+    font-family: var(--base-font-family-jp);
+    font-weight: normal;
+    font-size: 1.2rem;
   }
-  .night & .light .name::after,
-  & .night .name::after {
-    content: "：ナイトモード";
+  & .light .name::before,
+  .night & .night .name::before {
+    content: "色見本：ライトモード";
+  }
+  .night & .light .name::before,
+  & .night .name::before {
+    content: "色見本：ナイトモード";
   }
   & .box {
     margin-top: var(--box-v-gap);

@@ -58,6 +58,8 @@ article {
       display: grid;
       grid-gap: 0 1.2rem;
       grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto auto auto 1fr;
+      align-items: start;
       padding: 0 1.2rem;
       position: relative;
     }
@@ -72,6 +74,7 @@ article {
   #magics,
   #mystic-arts {
     grid-column: 2;
+    grid-row: span 2;
     margin-top: 0;
   }
 }
@@ -132,6 +135,11 @@ article {
   .wide .data-magic + & {
     margin-top: 1.5em;
   }
+
+  & .alias {
+    display: inline-block;
+  }
+
   &   .name     { grid-area: NAME; }
   & dl.cost     { grid-area: COST; }
   & dl.target   { grid-area: TRGT; }
@@ -403,9 +411,7 @@ article {
 .data-magic > dl > dd {
   padding: .2em 0;
   text-align: center;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  align-content: center;
 }
 .data-magic dl.cost     dd,
 .data-magic dl.target   dd,
@@ -438,6 +444,7 @@ article {
   text-wrap: balance;
   text-align-last: end;
   overflow-wrap: break-word;
+  align-content: center;
   > div {
     max-width: 100%;
     width: max-content;
@@ -448,6 +455,7 @@ article {
     background: var(--arts-name-bg-color);
     color: #fff;
     font-size: 150%;
+    word-break: auto-phrase;
   }
   & dd {
     display: flex;
@@ -478,6 +486,17 @@ article {
 .data-magic dl.name dd .s-icon::before,
 .data-magic > h3 .s-icon::before {
   color: #fff;
+}
+.data-magic.data-arts > dl:not(.summary,.effect) dd {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  > span {
+    word-break: auto-phrase;
+    > span.keep-all {
+    word-break: keep-all;
+    }
+  }
 }
 
 .data-magic dl.effect {

@@ -33,6 +33,7 @@ foreach(@data::class_names){
   elsif($data::class{$_}{craft}) { push(@craft_classes, $data::class{$_}{craft}{jName}); }
 }
 push(@magic_classes, @craft_classes);
+@magic_classes = deduplicate(@magic_classes); #重複削除
 ### データ読み込み ###################################################################################
 my ($data, $mode, $file, $message) = getSheetData($::in{mode});
 our %pc = %{ $data };
@@ -58,6 +59,8 @@ if($mode eq 'blanksheet'){
   $pc{magicCost} = 'MP';
   foreach my $lv (2,4,7,10,13){ $pc{"godMagic${lv}Cost"} = 'MP' }
   $pc{schoolReq} = '＿名誉点';
+
+  %pc = applyCustomizedInitialValues(\%pc, 'a');
 }
 
 ## カラー
@@ -73,6 +76,8 @@ foreach (1..$pc{schoolArtsNum} ){ if($pc{"schoolArts${_}Name"} ){ $open{schoolAr
 foreach (1..$pc{schoolMagicNum}){ if($pc{"schoolMagic${_}Name"}){ $open{schoolMagic} = 'open'; last; } }
 if($pc{schoolArtsNote} ){ $open{schoolArts}  = 'open'; }
 if($pc{schoolMagicNote}){ $open{schoolMagic} = 'open'; }
+if($pc{schoolQnA}      ){ $open{schoolQnA}   = 'open'; }
+if($pc{godQnA}         ){ $open{godQnA}      = 'open'; }
 
 ### 改行処理 --------------------------------------------------
 foreach (
@@ -86,10 +91,12 @@ foreach (
   'godMagic7Effect',
   'godMagic10Effect',
   'godMagic13Effect',
+  'godQnA',
   'schoolNote',
   'schoolItemNote',
   'schoolArtsNote',
   'schoolMagicNote',
+  'schoolQnA',
   'skillRankB_effect',
   'skillRankA_effect',
   'skillRankS_effect',
@@ -155,7 +162,7 @@ print <<"HTML";
         <h2><span></span></h2>
         <ul class="menu-items">
           <li onclick="sectionSelect('common');" class="sheet-main"><span class="sheet-kind"></span><span>データ</span>
-          <li onclick="sectionSelect('color');" class="color-icon" title="カラーカスタム">
+          <li onclick="sectionSelect('color');" class="color-icon" title="シートデザインカスタム">
           <li onclick="view('text-rule')" class="help-icon" title="テキスト整形ルール">
           <li onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード切替">
           <li onclick="exportAsJson()" class="download-icon" title="JSON出力">
@@ -175,21 +182,21 @@ print <<"HTML";
       <section id="section-common">
 HTML
 if($set::user_reqd){
-  print <<"HTML";
+  print <<~"HTML";
     <input type="hidden" name="protect" value="account">
     <input type="hidden" name="protectOld" value="$pc{protect}">
     <input type="hidden" name="pass" value="$::in{pass}">
-HTML
+  HTML
 }
 else {
   if($set::registerkey && $mode_make){
     print '登録キー：<input type="text" name="registerkey" required>'."\n";
   }
-  print <<"HTML";
+  print <<~"HTML";
       <details class="box" id="edit-protect" @{[$mode eq 'edit' ? '':'open']}>
       <summary>編集保護設定</summary>
       <fieldset id="edit-protect-view"><input type="hidden" name="protectOld" value="$pc{protect}">
-HTML
+  HTML
   if($LOGIN_ID){
     print '<input type="radio" name="protect" value="account"'.($pc{protect} eq 'account'?' checked':'').'> アカウントに紐付ける（ログイン中のみ編集可能になります）<br>';
   }
@@ -199,13 +206,13 @@ HTML
   } else {
     print '<input type="password" name="pass"><br>';
   }
-  print <<"HTML";
-<input type="radio" name="protect" value="none"@{[ $pc{protect} eq 'none'?' checked':'' ]}> 保護しない（誰でも編集できるようになります）
+  print <<~"HTML";
+        <input type="radio" name="protect" value="none"@{[ $pc{protect} eq 'none'?' checked':'' ]}> 保護しない（誰でも編集できるようになります）
       </fieldset>
       </details>
-HTML
+  HTML
 }
-  print <<"HTML";
+print <<"HTML";
       <dl class="box" id="hide-options">
         <dt>閲覧可否設定
         <dd id="forbidden-checkbox">
@@ -258,8 +265,8 @@ HTML
           <dl class="duration "><dt>時間        <dd>@{[ input 'magicDuration','','','list="list-duration"' ]}</dl>
           <dl class="song     "><dt>歌唱        <dd>@{[ checkbox 'magicSongSing','必要' ]}</dl>
           <dl class="song     "><dt>ペット      <dd>@{[ checkbox 'magicSongPetBird','小鳥' ]}@{[ checkbox 'magicSongPetFrog','蛙' ]}@{[ checkbox 'magicSongPetBug','虫' ]}</dl>
-          <dl class="condition"><dt>条件        <dd>@{[ input 'magicCondition','','','list="list-songpoint"' ]}</dl>
-          <dl class="song     "><dt>楽素        <dd>基礎@{[ input 'magicSongBasePoint','','','list="list-songpoint"' ]} 巧奏値@{[ input 'magicSongSetPoint' ]} 追加@{[ input 'magicSongAddPoint','','','list="list-songpoint"' ]}</dl>
+          <dl class="condition"><dt>条件        <dd>@{[ input 'magicCondition','','','list="list-song-condition"' ]}</dl>
+          <dl class="song     "><dt>楽素        <dd>基礎@{[ input 'magicSongBasePoint','','','list="list-songpoint"' ]} 巧奏値@{[ input 'magicSongSetPoint','','','list="list-song-set-point"' ]} 追加@{[ input 'magicSongAddPoint','','','list="list-songpoint"' ]}</dl>
           <dl class="rider    "><dt>対応        <dd>@{[ checkbox 'magicMountTypeAnimal','動物' ]}@{[ checkbox 'magicMountTypeCryptid','幻獣' ]}@{[ checkbox 'magicMountTypeMachine','魔動機' ]}</dl>
           <dl class="part     "><dt>適用部位    <dd>@{[ input 'magicApplyPart','','','list="list-part"' ]}</dl>
           <dl class="human-form"><dt>人間形態時 <dd>@{[ radios 'magicApplyHumanForm','','available=>有効','unavailable=>無効','=>指定なし（変身しない種族用）' ]}</dl>
@@ -311,7 +318,7 @@ HTML
         <div class="box input-data">
 HTML
 foreach my $lv (2,4,7,10,13){
-print <<"HTML";
+  print <<~"HTML";
           <h2 class="in-toc">特殊神聖魔法 ${lv}レベル</h2>
           <dl class="name    "><dt>名称      <dd>【@{[ input "godMagic${lv}Name",'' ]}】<br>@{[ checkbox "godMagic${lv}ActionTypeMinor",'補助動作' ]}@{[ checkbox "godMagic${lv}ActionTypeSetup",'戦闘準備' ]}</dl>
           <dl class="cost    "><dt>消費      <dd>@{[ input "godMagic${lv}Cost",'','','list="list-cost"' ]}</dl>
@@ -322,10 +329,14 @@ print <<"HTML";
           <dl class="element "><dt>属性      <dd>@{[ input "godMagic${lv}Element",'','','list="list-element"' ]}</dl>
           <dl class="summary "><dt>概要      <dd>@{[ input "godMagic${lv}Summary" ]}</dl>
           <dl class="effect  "><dt>効果      <dd><textarea name="godMagic${lv}Effect">$pc{"godMagic${lv}Effect"}</textarea></dl>
-HTML
+  HTML
 }
 print <<"HTML";
         </div>
+        <details class="box" $open{godQnA}>
+          <summary class="in-toc">Ｑ＆Ａ</summary>
+          <textarea name="godQnA">$pc{godQnA}</textarea>
+        </details>
       </div>
       <!-- 流派 -->
       <div class="data-area in-toc" id="data-school" data-content-title="流派の詳細">
@@ -334,8 +345,8 @@ print <<"HTML";
           <dl class="area  "><dt>地域      <dd>@{[ input 'schoolArea','','','placeholder="大陸・地方など"' ]}</dl>
           <dl class="req   "><dt>入門条件  <dd>@{[ input 'schoolReq','','','list="list-school-req"' ]}</dl>
           <dl class="note  "><dt>詳細      <dd><textarea name="schoolNote">$pc{schoolNote}</textarea></dl>
-          <dl class="arms  "><dt>流派装備  <dd><textarea name="schoolItemNote" placeholder="流派装備の概要">$pc{schoolItemNote}</textarea></dl>
-          <dl class="arms  "><dt>流派装備一覧
+          <dl class="arms  "><dt>流派アイテム<dd><textarea name="schoolItemNote" placeholder="流派アイテムの概要">$pc{schoolItemNote}</textarea></dl>
+          <dl class="arms  "><dt>アイテム一覧
             <dd>
               <input type="text" id="schoolItemUrl" placeholder="アイテムシートのURL"><span class="button" onclick="addSchoolItem()">追加</span>
               @{[ input 'schoolItemList','hidden' ]}
@@ -350,7 +361,7 @@ HTML
 foreach my $set_url (split ',',$pc{schoolItemList}){
   require $set::lib_convert;
   my %item = getItemData($set_url);
-  $item{category} =~ s/\s/<hr>/;
+  $item{category} =~ s/\s/<hr>/g;
   print "<tr>";
   if(exists $item{itemName}) {
     print "<td><a href=\"${set_url}\" target='_blank'>".unescapeTags($item{itemName})."</a>";
@@ -371,17 +382,19 @@ print <<"HTML";
         <details class="box" $open{schoolArts}>
           <summary class="in-toc">流派秘伝</summary>
           <textarea name="schoolArtsNote" placeholder="流派秘伝全体の注釈（あれば）">$pc{schoolArtsNote}</textarea>
+          <hr style="margin:0">
+          <ul class="annotate"><li>下位秘伝と上位秘伝をまとめて記述する場合、<code> / </code>のように、「空白・スラッシュ・空白」で区切って入力してください。</ul>
           <div id="arts-list">
 HTML
 foreach my $num ('TMPL',1..$pc{schoolArtsNum}){
-  if($num eq 'TMPL'){ print '<template id="arts-template">' }
-print <<"HTML";
+  print '<template id="arts-template">' if($num eq 'TMPL');
+  print <<~"HTML";
           <div class="input-data" id="arts-row${num}">
             <div class="handle"></div>
             <dl class="name    "><dt>名称      <dd>《@{[ input "schoolArts${num}Name",'' ]}》<br>@{[ checkbox "schoolArts${num}ActionTypeSetup",'戦闘準備' ]}</dl>
             <dl class="cost    "><dt>必要名誉点<dd>@{[ input "schoolArts${num}Cost" ]}</dl>
             <dl class="type    "><dt>タイプ    <dd>@{[ input "schoolArts${num}Type",'','','list="list-arts-type"' ]}</dl>
-            <dl class="premise "><dt>前提      <dd>@{[ input "schoolArts${num}Premise",'','','list="list-arts-base"' ]}</dl>
+            <dl class="premise "><dt>前提      <dd>@{[ input "schoolArts${num}Premise",'','','list="list-arts-premise"' ]}</dl>
             <dl class="equip   "><dt>限定条件  <dd>@{[ input "schoolArts${num}Equip" ]}</dl>
             <dl class="use     "><dt>使用      <dd>@{[ input "schoolArts${num}Use",'','','list="list-arts-use"' ]}</dl>
             <dl class="apply   "><dt>適用      <dd>@{[ input "schoolArts${num}Apply",'','','list="list-arts-apply"' ]}</dl>
@@ -389,8 +402,8 @@ print <<"HTML";
             <dl class="summary "><dt>概要      <dd>@{[ input "schoolArts${num}Summary" ]}</dl>
             <dl class="effect  "><dt>効果      <dd><textarea name="schoolArts${num}Effect">$pc{"schoolArts${num}Effect"}</textarea></dl>
           </div>
-HTML
-  if($num eq 'TMPL'){ print '</template>' }
+  HTML
+  print '</template>' if($num eq 'TMPL');
 }
 print <<"HTML";
           </div>
@@ -403,8 +416,8 @@ print <<"HTML";
           <div id="school-magic-list">
 HTML
 foreach my $num ('TMPL',1..$pc{schoolMagicNum}){
-  if($num eq 'TMPL'){ print '<template id="school-magic-template">' }
-print <<"HTML";
+  print '<template id="school-magic-template">' if($num eq 'TMPL');
+  print <<~"HTML";
           <div class="input-data" id="school-magic-row${num}">
             <div class="handle"></div>
             <dl class="name    "><dt>名称      <dd>【@{[ input "schoolMagic${num}Name",'' ]}】<br>@{[ checkbox "schoolMagic${num}ActionTypeMinor",'補助動作' ]}@{[ checkbox "schoolMagic${num}ActionTypeSetup",'戦闘準備' ]}</dl>
@@ -419,12 +432,16 @@ print <<"HTML";
             <dl class="summary "><dt>概要      <dd>@{[ input "schoolMagic${num}Summary" ]}</dl>
             <dl class="effect  "><dt>効果      <dd><textarea name="schoolMagic${num}Effect">$pc{"schoolMagic${num}Effect"}</textarea></dl>
           </div>
-HTML
-  if($num eq 'TMPL'){ print '</template>' }
+  HTML
+  print '</template>' if($num eq 'TMPL');
 }
 print <<"HTML";
           </div>
           <div class="add-del-button"><a onclick="addSchoolMagic()">▼</a><a onclick="delSchoolMagic()">▲</a></div>
+        </details>
+        <details class="box" $open{schoolQnA}>
+          <summary class="in-toc">Ｑ＆Ａ</summary>
+          <textarea name="schoolQnA">$pc{schoolQnA}</textarea>
         </details>
       </div>
       <!-- 特殊能力 -->
@@ -500,14 +517,27 @@ my $text_rule = <<"HTML";
         　魔法のアイテム：<code>[魔]</code>：<img class="i-icon" src="${set::icon_dir}wp_magic.png"><br>
         　刃武器　　　　：<code>[刃]</code>：<img class="i-icon" src="${set::icon_dir}wp_edge.png"><br>
         　打撃武器　　　：<code>[打]</code>：<img class="i-icon" src="${set::icon_dir}wp_blow.png"><br>
+        　地方特産品　　：<code>[特]</code>：<img class="i-icon" src="${set::icon_dir}item_local.png"><br>
 HTML
+if (!$::SW2_0) {
+  $text_rule .= <<~"HTML";
+        　流派アイテム　：<code>[流]</code>：<img class="i-icon" src="${set::icon_dir}wp_school.png"><br>
+        　アルフレイム大陸由来の流派アイテム：<code>[ア]</code>：<img class="i-icon" src="${set::icon_dir}wp_school_a.png"><br>
+        　テラスティア大陸由来の流派アイテム：<code>[テ]</code>：<img class="i-icon" src="${set::icon_dir}wp_school_t.png"><br>
+  HTML
+}
+else {
+  $text_rule .= <<~"HTML";
+        　流派装備　　　：<code>[流]</code>：<img class="i-icon" src="${set::icon_dir}wp_school.png"><br>
+  HTML
+}
 print textRuleArea( $text_rule,'「効果」「備考」「由来・逸話など」' );
 
 print <<"HTML";
   </main>
   <footer>
     <p class="notes">(C)Group SNE「ソード・ワールド2.0／2.5」</p>
-    <p class="copyright">©<a href="https://yutorize.2-d.jp">ゆとらいず工房</a>「ゆとシートⅡ」ver.${main::ver}</p>
+    <p class="copyright">©<a href="https://yutorize.work">ゆとらいず工房</a>「ゆとシートⅡ」ver.${main::ver}</p>
   </footer>
   <datalist id="list-craft-required-level">
     <option value="1">
@@ -548,8 +578,14 @@ print <<"HTML";
     <option value="地の命脈点">
     <option value="人の命脈点">
   </datalist>
+  <datalist id="list-cost-psychokinesis">
+    <option value="1dHP">
+    <option value="2dHP">
+    <option value="2d(6)HP">
+    <option value="2d(9)HP">
+  </datalist>
   <datalist id="list-target">
-    <option value="術者">
+    <option value="術者" class="self">
     <option value="1体">
     <option value="1体全">
     <option value="1体X">
@@ -574,7 +610,7 @@ print <<"HTML";
     <option value="全エリア(半径30m)／空間">
   </datalist>
   <datalist id="list-range">
-    <option value="術者">
+    <option value="術者" class="self">
     <option value="接触">
     <option value="1(10m)">
     <option value="2(20m)">
@@ -620,6 +656,8 @@ print <<"HTML";
     <option value="半減">
     <option value="短縮">
     <option value="必中">
+    <option value="生命／消滅">
+    <option value="生命／半減">
   </datalist>
   <datalist id="list-element">
     <option value="土">
@@ -644,6 +682,15 @@ print <<"HTML";
     <option value="大中小">
     <option value="大（＿個）">
   </datalist>
+  <datalist id="list-song-condition">
+    <option value="なし">
+    <option value="⤴">
+    <option value="⤵">
+    <option value="♡">
+    <option value="⤴⤵">
+    <option value="⤴♡">
+    <option value="⤵♡">
+  </datalist>
   <datalist id="list-songpoint">
     <option value="⤴">
     <option value="⤵">
@@ -651,6 +698,11 @@ print <<"HTML";
     <option value="⤴⤵">
     <option value="⤴♡">
     <option value="⤵♡">
+  </datalist>
+  <datalist id="list-song-set-point">
+    <option value="13">
+    <option value="18">
+    <option value="24">
   </datalist>
   <datalist id="list-part">
     <option value="―">
@@ -675,7 +727,17 @@ print <<"HTML";
     <option value="《》変化型">
     <option value="独自宣言型">
   </datalist>
+  <datalist id="list-arts-premise">
+    <option value="なし">
+    <option value="《》">
+    <option value="《》《》">
+    <option value="《》《》《》">
+    <option value="《》《》《》《》">
+    <option value="【】">
+    <option value="【】【】">
+  </datalist>
   <datalist id="list-arts-use">
+    <option value="―">
     <option value="ファイター技能">
     <option value="グラップラー技能">
     <option value="フェンサー技能">
@@ -687,9 +749,9 @@ print <<"HTML";
     <option value="近接攻撃武器">
     <option value="魔法使い系技能">
     <option value="特殊">
-    <option value="―">
   </datalist>
   <datalist id="list-arts-apply">
+    <option value="―">
     <option value="1回の武器攻撃">
     <option value="1回の近接攻撃">
     <option value="1回の遠隔攻撃">
@@ -698,7 +760,7 @@ print <<"HTML";
     <option value="10秒（1ラウンド）持続">
   </datalist>
   <datalist id="list-arts-risk">
-    <option value="—">
+    <option value="―">
     <option value="なし">
     <option value="回避力判定-1">
     <option value="回避力判定-2">

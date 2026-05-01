@@ -103,6 +103,7 @@ $SHEET->param(rawName => $pc{characterName} || ($pc{aka} ? "“$pc{aka}”" : ''
 if($pc{ver}){
   foreach (keys %pc) {
     next if($_ =~ /^image/);
+    next if($_ eq 'tags');
     if($_ =~ /^(?:items|freeNote|freeHistory|cashbook)$/){
       $pc{$_} = unescapeTagsLines($pc{$_});
     }
@@ -184,11 +185,11 @@ $SHEET->param(Tags => \@tags);
   foreach('race','raceBase'){
     my @name = (split ':', $pc{$_});
     if($data::races{$name[0]}{kana}){
-      $name[0] = "<ruby>$name[0]<rp>(<rt>$data::races{$name[0]}{kana}<rp>)</ruby>";
+      $name[0] = "<ruby><rp>｜<\/rp>$name[0]<rp>《<rt>$data::races{$name[0]}{kana}<rp>》</ruby>";
     }
     if($pc{$_.'Free'}){
       foreach my $kanji (keys %kana){
-        $pc{$_.'Free'} =~ s|$kanji|<ruby>$kanji<rp>(<rt>$kana{$kanji}{kana}<rp>)</ruby>|;
+        $pc{$_.'Free'} =~ s|$kanji|<ruby><rp>｜<\/rp>$kanji<rp>《<rt>$kana{$kanji}{kana}<rp>》</ruby>|;
       }
       if($pc{$_}){ $SHEET->param($_ => $pc{$_.'Free'}.'<span class="small">（'.join(':',@name).'）</span>') }
       else       { $SHEET->param($_ => $pc{$_.'Free'}) }
@@ -280,12 +281,12 @@ $SHEET->param(Classes => \@classes);
 ### ルビチェック --------------------------------------------------
 sub itemNameRubyCheck {
   my $name = shift;
-  $name =~ s/^(魔法の)?(.+?)[（(]([ぁ-ゟァ-ヿ\-‐―－～=＝]+?)[)）](\[+＋][0-9]+)?$/$1<ruby>$2<rp>(<rt>$3<rp>)<\/ruby>$4/;
+  $name =~ s/^(魔法の)?(.+?)[（(]([ぁ-ゟァ-ヿ\-‐―－～=＝]+?)[)）](\[+＋][0-9]+)?$/$1<ruby><rp>｜<\/rp>$2<rp>《<rt>$3<rp>》<\/ruby>$4/;
   return $name;
 }
 sub spellNameRubyCheck {
   my $name = shift;
-  $name =~ s/^(.+?)[（(]([ぁ-ゟァ-ヿ\-‐―－～=＝]+?)[)）]$/<ruby>$1<rp>(<rt>$2<rp>)<\/ruby>$3/;
+  $name =~ s/^(.+?)[（(]([ぁ-ゟァ-ヿ\-‐―－～=＝]+?)[)）]$/<ruby><rp>｜<\/rp>$1<rp>《<rt>$2<rp>》<\/ruby>$3/;
   return $name;
 }
 
@@ -617,10 +618,11 @@ sub cashCheck(){
 }
 
 ### バックアップ --------------------------------------------------
+my $selectedLogName;
 if($::in{id}){
-  my($selected, $list) = getLogList($set::char_dir, $main::file);
+  ($selectedLogName, my $list) = getLogList($set::char_dir, $main::file);
   $SHEET->param(LogList => $list);
-  $SHEET->param(selectedLogName => $selected);
+  $SHEET->param(selectedLogName => $selectedLogName);
   if($pc{yourAuthor} || $pc{protect} eq 'password'){
     $SHEET->param(viewLogNaming => 1);
   }
@@ -632,7 +634,11 @@ if($pc{forbidden} eq 'all' && $pc{forbiddenMode}){
   $SHEET->param(titleName => '非公開データ');
 }
 else {
-  $SHEET->param(titleName => removeTags nameToPlain($pc{characterName}||"“$pc{aka}”"));
+  $SHEET->param(titleName =>
+    (removeTags removeRuby($pc{characterName}||"“$pc{aka}”")) .
+    ($::in{log} ? " 【".($selectedLogName||$pc{updateTime})."】" : '')
+  );
+  $SHEET->param(encodedNameLetter => uri_escape_utf8 removeTags $pc{characterName});
 }
 
 ### OGP --------------------------------------------------
@@ -657,6 +663,9 @@ if(!$pc{modeDownload}){
   }
   else {
     if($pc{logId}){
+      if(!$pc{forbiddenMode}){
+        push(@menu, { TEXT => '出力'    , TYPE => "onclick", VALUE => "downloadListOn()",  });
+      }
       push(@menu, { TEXT => '過去ログ', TYPE => "onclick", VALUE => 'loglistOn()', });
       if($pc{reqdPassword}){ push(@menu, { TEXT => '復元', TYPE => "onclick", VALUE => "editOn()", }); }
       else                   { push(@menu, { TEXT => '復元', TYPE => "href"   , VALUE => "./?mode=edit&id=$::in{id}&log=$pc{logId}", }); }

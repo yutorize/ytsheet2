@@ -1,94 +1,53 @@
 "use strict";
 modeZero = 1;
 
-// 求道者 ----------------------------------------
-function checkSeekerBuildup(name){
-  let add = 0;
-  for (let i = 1; i <= 5; i++){
-    if (i === 1 && lvSeeker <  3) break;
-    if (i === 2 && lvSeeker <  7) break;
-    if (i === 3 && lvSeeker < 11) break;
-    if (i === 4 && lvSeeker < 15) break;
-    if (i === 5 && lvSeeker < 19) break;
-    if(form['seekerBuildup'+i].value === name){ add++ }
-  }
-  return add;
-}
-function checkSeekerAbility(name){
-  for (let i = 1; i <= 5; i++){
-    if (i === 1 && lvSeeker <  4) break;
-    if (i === 2 && lvSeeker <  8) break;
-    if (i === 3 && lvSeeker < 12) break;
-    if (i === 4 && lvSeeker < 16) break;
-    if (i === 5 && lvSeeker < 20) break;
-    if(form['seekerAbility'+i].value === name){ return 1 }
-  }
-  return 0;
-}
-function checkSeeker(){
-  if(lvSeeker){
-    document.getElementById('seeker-buildup1').classList.toggle('hidden', !form.failView.checked && lvSeeker <  3);
-    document.getElementById('seeker-buildup2').classList.toggle('hidden', !form.failView.checked && lvSeeker <  7);
-    document.getElementById('seeker-buildup3').classList.toggle('hidden', !form.failView.checked && lvSeeker < 11);
-    document.getElementById('seeker-buildup4').classList.toggle('hidden', !form.failView.checked && lvSeeker < 15);
-    document.getElementById('seeker-buildup5').classList.toggle('hidden', !form.failView.checked && lvSeeker < 19);
-    document.querySelector('#seeker-buildup1 + dd').classList.toggle('hidden', !form.failView.checked && lvSeeker <  3);
-    document.querySelector('#seeker-buildup2 + dd').classList.toggle('hidden', !form.failView.checked && lvSeeker <  7);
-    document.querySelector('#seeker-buildup3 + dd').classList.toggle('hidden', !form.failView.checked && lvSeeker < 11);
-    document.querySelector('#seeker-buildup4 + dd').classList.toggle('hidden', !form.failView.checked && lvSeeker < 15);
-    document.querySelector('#seeker-buildup5 + dd').classList.toggle('hidden', !form.failView.checked && lvSeeker < 19);
-    document.querySelector('#seeker-buildup1 + dd').classList.toggle('fail', lvSeeker <  3);
-    document.querySelector('#seeker-buildup2 + dd').classList.toggle('fail', lvSeeker <  7);
-    document.querySelector('#seeker-buildup3 + dd').classList.toggle('fail', lvSeeker < 11);
-    document.querySelector('#seeker-buildup4 + dd').classList.toggle('fail', lvSeeker < 15);
-    document.querySelector('#seeker-buildup5 + dd').classList.toggle('fail', lvSeeker < 19);
-    
-    document.querySelector('#seeker-ability1').classList.toggle('hidden', !form.failView.checked && lvSeeker <  4);
-    document.querySelector('#seeker-ability2').classList.toggle('hidden', !form.failView.checked && lvSeeker <  8);
-    document.querySelector('#seeker-ability3').classList.toggle('hidden', !form.failView.checked && lvSeeker < 12);
-    document.querySelector('#seeker-ability4').classList.toggle('hidden', !form.failView.checked && lvSeeker < 16);
-    document.querySelector('#seeker-ability5').classList.toggle('hidden', !form.failView.checked && lvSeeker < 20);
-    document.querySelector('#seeker-ability1').classList.toggle('fail', lvSeeker <  4);
-    document.querySelector('#seeker-ability2').classList.toggle('fail', lvSeeker <  8);
-    document.querySelector('#seeker-ability3').classList.toggle('fail', lvSeeker < 12);
-    document.querySelector('#seeker-ability4').classList.toggle('fail', lvSeeker < 16);
-    document.querySelector('#seeker-ability5').classList.toggle('fail', lvSeeker < 20);
-  }
-  else {
-    document.querySelectorAll('dt[id^="seeker-buildup"], dt[id^="seeker-buildup"]+dd').forEach(obj => {
-      obj.classList.add('hidden');
-    });
-    document.getElementById('seeker-abilities').classList.add('hidden');
-  }
-}
-
 // 戦闘特技チェック ----------------------------------------
 function checkFeats(){
+  console.log('checkFeats() // 2.0');
+  feats = {};
   checkSeeker();
 
-  Object.keys(feats).forEach(key => { feats[key] = 0; });
-  
-  const array = SET.featsLv.map(n=>String(n));
+  // 自動習得
+  for(const key of SET.classNames){
+    const cId  = SET.class[key].id;
+    for(const data of SET.class[key]?.feats || []){
+      if(lv[cId] >= data[1]){
+        feats[data[0]] = true;
+      }
+    }
+  }
+
+  // 選択習得
+  const array = structuredClone(SET.featsLv);
   let acquire = '';
-  let featMax = level;
-      featMax += checkSeekerBuildup('戦闘特技');
+  const seekerMax = checkSeekerBuildup('戦闘特技');
+  let unlockedFeats = {};
+  for (let i = 0; i < array.length; i++) {
+    let id = String(array[i]);
+    if(id.match(/bat/)){
+      if(lv['Bat'] > 0){ unlockedFeats[id] = true; }
+      continue
+    }
+    if(id.match(/^S[1-5]$/)){
+      if(seekerMax >= Number(id.replace(/^S/g,''))){ unlockedFeats[id] = true; }
+      continue;
+    }
+    if(level >= Number(id.replace(/[^0-9]/g,''))){ unlockedFeats[id] = true; }
+  }
   for (let i = 0; i < array.length; i++) {
     let cL = document.getElementById("combat-feats-lv"+array[i]).classList;
     cL.remove("mark","error");
-    if(array[i].match(/bat/) && lv['Bat'] <= 0){
-      cL.add('hidden');
-      continue;
+    if(!unlockedFeats[array[i]]){
+      cL.add("fail");
+      cL.toggle("hidden", !form.failView.checked);
     }
-    const featLv = Number( array[i].replace(/[^0-9]/g, '') );
-    if(featLv > 15){
-      document.getElementById("combat-feats-lv"+array[i]).dataset.lv = (featLv > level) ? '+' : array[i];
-    }
-    if(featMax >= featLv){
-      const f2 = (array[i+1] && featMax >= Number( array[i+1].replace(/[^0-9]/g, '') )) ? 1 : 0; //次枠の開放状況
-      const f3 = (array[i+2] && featMax >= Number( array[i+2].replace(/[^0-9]/g, '') )) ? 1 : 0; //次々枠の開放状況
+    else {
+      cL.remove("fail","hidden");
+      const f2 = (unlockedFeats[array[i+1]]) ? true : false; //次枠の開放状況
+      const f3 = (unlockedFeats[array[i+2]]) ? true : false; //次々枠の開放状況
       const box = form["combatFeatsLv"+array[i]];
       const auto = form.featsAutoOn.checked;
-      let feat = box.options[box.selectedIndex].value;
+      let feat = box.value;
       
       if (feat.match(/足さばき/)){
         if(level < 9){ cL.add("error"); }
@@ -363,7 +322,7 @@ function checkFeats(){
       else if (feat.match(/魔法制御/)){
         if(!acquire.match('魔法誘導') || !acquire.match('魔法収束')){ cL.add("error"); }
       }
-      feat = box.options[box.selectedIndex].value;
+      feat = box.value;
       acquire += feat + ',';
       
       const weaponsRegex = new RegExp('武器習熟(Ａ|Ｓ)／(' + SET.weapons.map(d => d[0]).join('|') + ')');
@@ -375,8 +334,8 @@ function checkFeats(){
       else if(feat === "魔力強化Ⅰ"){ feats['魔力強化'] = 1; }
       else if(feat === "魔力強化Ⅱ"){ feats['魔力強化'] = 2; }
       else if(feat === "賦術強化"){ feats['賦術強化'] = 1; }
-      else if(feat === "頑強")  { feats['頑強'] += 15; }
-      else if(feat === "超頑強"){ feats['頑強'] += 15; }
+      else if(feat === "頑強")  { feats['頑強'] = (feats['頑強']||0) +15; }
+      else if(feat === "超頑強"){ feats['頑強'] = (feats['頑強']||0) +15; }
       else if(feat === "キャパシティ"){ feats['キャパシティ'] += 15; }
       else if(feat.match(weaponsRegex)){
         feats['武器習熟／'+RegExp.$2] ||= 0;
@@ -394,20 +353,6 @@ function checkFeats(){
       else if(feat === "スローイングⅠ"){ feats['スローイング'] = 1; }
       else if(feat === "スローイングⅡ"){ feats['スローイング'] = 2; }
       else { feats[feat] = true; }
-      
-      cL.remove("fail","hidden");
-    }
-    else {
-      cL.add("fail");
-      if(form.failView.checked && featLv <= 17){
-        cL.remove("hidden")
-      }
-      else if(form.failView.checked && (lvSeeker)) {
-        cL.remove("hidden")
-      }
-      else {
-        cL.add("hidden")
-      }
     }
   }
   
@@ -420,71 +365,6 @@ function checkFeats(){
   checkCraft();
 }
 
-// 技芸 ----------------------------------------
-function checkCraft() {
-  crafts = {};
-  for(const key in SET.class){
-    const id  = SET.class[key].id;
-    const cLv = lv[id];
-    if (SET.class[key].craft?.data){
-      const eName = SET.class[key].craft.eName;
-      document.getElementById("craft-"+eName).style.display = cLv ? "block" : "none";
-      const cMax = 20;
-      let rows = cLv + checkSeekerBuildup(SET.class[key].craft.jName);
-      rows += (id === 'Art' && lv.Art >= 17) ? 2 : (id === 'Art' && lv.Art >= 16) ? 1 : 0;
-      for (let i = 1; i <= cMax; i++) {
-        let cL = document.getElementById("craft-"+eName+i).classList;
-        if (i <= rows){
-          cL.remove("fail","hidden");
-          const craftName = form["craft"+ucfirst(eName)+i].value;
-          if(craftName){ crafts[craftName] = true }
-        }
-        else {
-          cL.add("fail");
-          if(form.failView.checked && i <= 17){
-            cL.remove("hidden")
-          }
-          else if(form.failView.checked && (lvSeeker)) {
-            cL.remove("hidden")
-          }
-          else {
-            cL.add("hidden")
-          }
-        }
-      }
-    }
-    else if (SET.class[key].magic?.data){
-      const rows = cLv + checkSeekerBuildup(SET.class[key].magic.jName);
-      const eName = SET.class[key].magic.eName;
-      if(SET.class[key].magic.trancendOnly){
-        document.getElementById("magic-"+eName).style.display = rows > 15 ? "block" : "none";
-      }
-      else {
-        document.getElementById("magic-"+eName).style.display = rows ? "block" : "none";
-      }
-      const cMin = SET.class[key].magic.trancendOnly ? 16 : 1;
-      const cMax = 20;
-      for (let i = cMin; i <= cMax; i++) {
-        let cL = document.getElementById("magic-"+eName+i).classList;
-        if(i <= rows){ cL.remove("fail","hidden"); }
-        else {
-          cL.add("fail");
-          if(form.failView.checked && i <= 17){
-            cL.remove("hidden")
-          }
-          else if(form.failView.checked && (lvSeeker)) {
-            cL.remove("hidden")
-          }
-          else {
-            cL.add("hidden")
-          }
-        }
-      }
-    }
-  }
-  calcFairy();
-}
-
 // 妖精魔法 ----------------------------------------
 function calcFairy(){
   const flv = lv['Fai'];  
@@ -494,7 +374,7 @@ function calcFairy(){
   const a4 = Number(form.fairyContractWind.value );
   const a5 = Number(form.fairyContractLight.value);
   const a6 = Number(form.fairyContractDark.value );  
-  document.getElementById('fairy-sim-url').href = "http://yutorize.2-d.jp/ft_sim/?ft="
+  document.getElementById('fairy-sim-url').href = "http://yutorize.work/ft_sim/?ft="
     + flv.toString(18)
     + a1.toString(18)
     + a2.toString(18)
@@ -562,9 +442,9 @@ function calcHonor(){
   pointTotal['human']    -= mysticArtsPt['human'];
   pointTotal['barbaros'] -= mysticArtsPt['barbaros'];
   pointTotal['dragon']   -= mysticArtsPt['dragon'];
-  document.getElementById("honor-value"   ).textContent = pointTotal['human']+' / '+pointMax['human'];
-  document.getElementById("honor-value-MA").textContent = pointTotal['human'];
-  document.getElementById("honor-barbaros-value").textContent = pointTotal['barbaros']+' / '+pointMax['barbaros'];
-  document.getElementById("honor-dragon-value").textContent = pointTotal['dragon']+' / '+pointMax['dragon'];
-  document.getElementById("mystic-arts-honor-value").textContent = mysticArtsPt['human']+'／'+mysticArtsPt['barbaros']+'／'+mysticArtsPt['dragon'];
+  document.getElementById("honor-value"   ).textContent = commify(pointTotal['human'])+' / '+commify(pointMax['human']);
+  document.getElementById("honor-value-MA").textContent = commify(pointTotal['human']);
+  document.getElementById("honor-barbaros-value").textContent = commify(pointTotal['barbaros'])+' / '+commify(pointMax['barbaros']);
+  document.getElementById("honor-dragon-value").textContent = commify(pointTotal['dragon'])+' / '+commify(pointMax['dragon']);
+  document.getElementById("mystic-arts-honor-value").textContent = commify(mysticArtsPt['human'])+'／'+commify(mysticArtsPt['barbaros'])+'／'+commify(mysticArtsPt['dragon']);
 }

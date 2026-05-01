@@ -60,6 +60,7 @@ $SHEET->param(rawName => $pc{itemName});
 
 ### タグ置換 #########################################################################################
 foreach (keys %pc) {
+  next if($_ eq 'tags');
   if($_ =~ /^(?:effects|description)$/){
     $pc{$_} = unescapeTagsLines($pc{$_});
   }
@@ -106,7 +107,15 @@ $SHEET->param(itemName => stylizeCharacterName $pc{itemName});
 $SHEET->param(price => commify $pc{price}) if $pc{price} =~ /\d{4,}/;
 
 ### 魔法の武器アイコン --------------------------------------------------
-$SHEET->param(magic => ($pc{magic} ? "<img class=\"i-icon\" src=\"${set::icon_dir}wp_magic.png\">" : ''));
+{
+  my $icon;
+  if($pc{iconMagic  }){ $icon .= '[魔]' }
+  if($pc{iconLocal  }){ $icon .= '[特]' }
+  if($pc{iconSchool }){ $icon .= '[流]' }
+  if($pc{iconSchoolA}){ $icon .= '[ア]' }
+  if($pc{iconSchoolT}){ $icon .= '[テ]' }
+  $SHEET->param(icon => unescapeTags $icon);
+}
 
 ### カテゴリ --------------------------------------------------
 $pc{category} =~ s/((?:\G|>)[^<]*?)[ 　]/$1<hr>/g;
@@ -155,10 +164,11 @@ $SHEET->param(Tags => \@tags);
 
 
 ### バックアップ --------------------------------------------------
+my $selectedLogName;
 if($::in{id}){
-  my($selected, $list) = getLogList($set::char_dir, $main::file);
+  ($selectedLogName, my $list) = getLogList($set::char_dir, $main::file);
   $SHEET->param(LogList => $list);
-  $SHEET->param(selectedLogName => $selected);
+  $SHEET->param(selectedLogName => $selectedLogName);
   if($pc{yourAuthor} || $pc{protect} eq 'password'){
     $SHEET->param(viewLogNaming => 1);
   }
@@ -170,7 +180,11 @@ if($pc{forbidden} eq 'all' && $pc{forbiddenMode}){
   $SHEET->param(titleName => '非公開データ');
 }
 else {
-  $SHEET->param(titleName => removeTags nameToPlain $pc{itemName});
+  $SHEET->param(titleName =>
+    (removeTags removeRuby $pc{itemName}) .
+    ($::in{log} ? " 【".($selectedLogName||$pc{updateTime})."】" : '')
+  );
+  $SHEET->param(encodedNameLetter => uri_escape_utf8 removeTags $pc{itemName});
 }
 
 ### OGP --------------------------------------------------
@@ -193,6 +207,9 @@ if(!$pc{modeDownload}){
   }
   else {
     if($pc{logId}){
+      if(!$pc{forbiddenMode}){
+        push(@menu, { TEXT => '出力'    , TYPE => "onclick", VALUE => "downloadListOn()",  });
+      }
       push(@menu, { TEXT => '過去ログ', TYPE => "onclick", VALUE => 'loglistOn()', });
       if($pc{reqdPassword}){ push(@menu, { TEXT => '復元', TYPE => "onclick", VALUE => "editOn()", }); }
       else                   { push(@menu, { TEXT => '復元', TYPE => "href"   , VALUE => "./?mode=edit&id=$::in{id}&log=$pc{logId}", }); }

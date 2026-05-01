@@ -170,9 +170,6 @@ foreach (@data::race_names){
   }
 }
 push(@race_search_list, {
-  LABEL => 'その他',
-},
-{
   NAME => 'その他',
   SELECTED => ('その他' eq $race_query) ? 'selected' : '',
 });
@@ -454,6 +451,7 @@ $INDEX->param(ogDescript =>
 $INDEX->param(title => $set::title);
 $INDEX->param(ver => $::ver);
 $INDEX->param(coreDir => $::core_dir);
+$INDEX->param(gameDir => $set::game);
 
 ### 出力 #############################################################################################
 print "Content-Type: text/html\n\n";

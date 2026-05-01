@@ -95,6 +95,8 @@ elsif($mode eq 'blanksheet'){
   $pc{skill4Type} = 'general';
   
   $pc{paletteUseBuff} = 1;
+
+  %pc = applyCustomizedInitialValues(\%pc);
 }
 
 ## 画像
@@ -144,7 +146,7 @@ foreach my $i (1 .. $pc{geisesNum}){
 }
 
 ### フォーム表示 #####################################################################################
-my $titlebarname = removeTags nameToPlain unescapeTags ($pc{characterName}||"“$pc{aka}”");
+my $titlebarname = removeTags removeRuby unescapeTags ($pc{characterName}||"“$pc{aka}”");
 print <<"HTML";
 Content-type: text/html\n
 <!DOCTYPE html>
@@ -195,7 +197,7 @@ print <<"HTML";
         <ul>
           <li onclick="sectionSelect('common');"><span>キャラ<span class="shorten">クター</span></span><span>データ</span>
           <li onclick="sectionSelect('palette');"><span><span class="shorten">ユニット(</span>コマ<span class="shorten">)</span></span><span>設定</span>
-          <li onclick="sectionSelect('color');" class="color-icon" title="カラーカスタム">
+          <li onclick="sectionSelect('color');" class="color-icon" title="シートデザインカスタム">
           <li onclick="view('text-rule')" class="help-icon" title="テキスト整形ルール">
           <li onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード切替">
           <li onclick="exportAsJson()" class="download-icon" title="JSON出力">
@@ -215,21 +217,21 @@ print <<"HTML";
       <section id="section-common">
 HTML
 if($set::user_reqd){
-  print <<"HTML";
+  print <<~"HTML";
     <input type="hidden" name="protect" value="account">
     <input type="hidden" name="protectOld" value="$pc{protect}">
     <input type="hidden" name="pass" value="$::in{pass}">
-HTML
+  HTML
 }
 else {
   if($set::registerkey && $mode_make){
     print '登録キー：<input type="text" name="registerkey" required>'."\n";
   }
-  print <<"HTML";
+  print <<~"HTML";
       <details class="box" id="edit-protect" @{[$mode eq 'edit' ? '':'open']}>
       <summary>編集保護設定</summary>
       <fieldset id="edit-protect-view"><input type="hidden" name="protectOld" value="$pc{protect}">
-HTML
+  HTML
   if($LOGIN_ID){
     print '<input type="radio" name="protect" value="account"'.($pc{protect} eq 'account'?' checked':'').'> アカウントに紐付ける（ログイン中のみ編集可能になります）<br>';
   }
@@ -239,13 +241,13 @@ HTML
   } else {
     print '<input type="password" name="pass"><br>';
   }
-  print <<"HTML";
-<input type="radio" name="protect" value="none"@{[ $pc{protect} eq 'none'?' checked':'' ]}> 保護しない（誰でも編集できるようになります）
+  print <<~"HTML";
+        <input type="radio" name="protect" value="none"@{[ $pc{protect} eq 'none'?' checked':'' ]}> 保護しない（誰でも編集できるようになります）
       </fieldset>
       </details>
-HTML
+  HTML
 }
-  print <<"HTML";
+print <<"HTML";
       <dl class="box" id="hide-options">
         <dt>閲覧可否設定
         <dd id="forbidden-checkbox">
@@ -284,20 +286,20 @@ print <<"HTML";
         <div>
           <dl id="character-name">
             <dt>キャラクター名
-            <dd>@{[input('characterName','text',"setName")]}
+            <dd>@{[ input 'characterName','text',"setName",'id="main-name"' ]}
             <dt class="ruby">ふりがな（アーシアン向け）
-            <dd>@{[input('characterNameRuby','text',"setName")]}
+            <dd>@{[ input 'characterNameRuby','text',"setName" ]}
           </dl>
           <dl id="aka">
             <dt>二つ名・異名など
-            <dd>@{[input('aka','text',"setName")]}
+            <dd>@{[ input 'aka','text',"setName" ]}
             <dt class="ruby">フリガナ
-            <dd>@{[input('akaRuby','text',"setName")]}
+            <dd>@{[ input 'akaRuby','text',"setName" ]}
           </dl>
         </div>
         <dl id="player-name">
           <dt>プレイヤー名
-          <dd>@{[input('playerName')]}
+          <dd>@{[ input 'playerName' ]}
         </dl>
       </div>
       
@@ -471,7 +473,7 @@ foreach (
 ) {
   my $name = @{$_}[0];
   my $id   = @{$_}[1];
-print <<"HTML";
+  print <<~"HTML";
               <tr>
                 <th>$name
                 <td>@{[ input 'stt'.$id.'Race','number','calcStt','readonly' ]}
@@ -488,7 +490,7 @@ print <<"HTML";
                 <td data-before="="><b id="roll-@{[ lc $id  ]}"></b>
                 <td class="dice" data-before="+" data-after="D">@{[ input 'roll'.$id.'Dice','number','calcStt' ]}
               </tr>
-HTML
+  HTML
 }
 print <<"HTML";
               <tr><td colspan="13">
@@ -625,8 +627,7 @@ foreach my $lv (reverse 2 .. $pc{level}){
   if($lv >= 10){ push(@classes, 'label=上級クラス',@adv_class); }
   if($lv >= 20){ push(@classes, 'label=運命クラス',@fate_class); }
   if($lv >= 15){ push(@classes, 'label=称号クラス','title|<称号クラス（自由記入）>'); }
-
-print <<"HTML";
+  print <<~"HTML";
               <tr id="lvup${lv}">
                 <th>$lv
                 <td>@{[ input 'lvUp'.$lv.'SttStr', 'checkbox', "checkGrow(${lv})" ]}
@@ -644,9 +645,9 @@ print <<"HTML";
                 <td class="skill">@{[ input 'lvUp'.$lv.'Skill2','','calcLvUpSkills' ]}
                 <td class="skill">@{[ input 'lvUp'.$lv.'Skill3','','calcLvUpSkills' ]}
               </tr>
-HTML
+  HTML
 }
-  print <<"HTML";
+print <<"HTML";
               <script>
               const lvupClasses1  = `@{[ option '', 'fate|<フェイト増加>',@support_class ]}`;
               const lvupClasses10 = `@{[ option '', 'fate|<フェイト増加>',@support_class,'label=上級クラス',@adv_class ]}`;
@@ -708,8 +709,8 @@ if($data::class{$pc{classMain}} && $data::class{$pc{classMain}}{type} eq 'fate')
   unshift(@experienced, 'power|<パワー（共通）>', 'another|<異才>')
 }
 foreach my $num ('TMPL',1 .. $pc{skillsNum}) {
-  if($num eq 'TMPL'){ print '<template id="skill-template">' }
-print <<"HTML";
+  print '<template id="skill-template">' if($num eq 'TMPL');
+  print <<~"HTML";
             <tbody id="skill-row${num}">
               <tr>
                 <td rowspan="2" class="handle"> 
@@ -728,8 +729,8 @@ print <<"HTML";
                   <b>分類</b>@{[input "skill${num}Category",'','','list="list-category"']}
                   <b>効果</b>@{[input "skill${num}Note"]}
                 </div>
-HTML
-  if($num eq 'TMPL'){ print '</template>' }
+  HTML
+  print '</template>' if($num eq 'TMPL');
 }
 print <<"HTML";
             <tfoot id="skill-foot">
@@ -795,7 +796,7 @@ foreach (
 ){
   my $th = @{$_}[1];
   my $id = @{$_}[0];
-  print <<"HTML";
+  print <<~"HTML";
             <tbody>
               <tr>
                 <th rowspan="2">@{[ length($th) > 3 ? "<span>$th</span>" : $th ]}
@@ -808,36 +809,36 @@ foreach (
                 <td rowspan="2">@{[ input "armament${id}MDef"  , 'number','calcBattle' ]}
                 <td rowspan="2">@{[ input "armament${id}Ini"   , 'number','calcBattle' ]}
                 <td rowspan="2">@{[ input "armament${id}Move"  , 'number','calcBattle' ]}
-HTML
+  HTML
   if($id =~ /^Hand/){
-    print <<"HTML";
+    print <<~"HTML";
                 <td>@{[ input "armament${id}Range" , '','' ,'list="list-weapon-range"' ]}
                 <td>@{[ input "armament${id}Type" , '','changeHandedness','list="list-weapon-type"' ]}
                 <td>@{[ input "armament${id}Usage", '','',"list='list-weapon-usage'" ]}
-HTML
+    HTML
   }
   elsif($id =~ /^(Head|Body|Sub)$/){
     $pc{"armament${id}Type"} ||= '防具';
-    print <<"HTML";
+    print <<~"HTML";
                 <td>――
                 <td>@{[ input "armament${id}Type" , '','', 'list="list-armour-type"' ]}
                 <td class="small">@{[ $id eq 'Body' ? (input "armament${id}Usage", '','', "list='list-armour-usage'") : $th ]}
-HTML
+    HTML
   }
   else {
     $pc{"armament${id}Type"} ||= $th;
-    print <<"HTML";
+    print <<~"HTML";
                 <td>――
                 <td>@{[ input "armament${id}Type", '', '', '' ]}
                 <td class="small">$th
-HTML
+    HTML
   }
-  print <<"HTML";
+  print <<~"HTML";
               <tr>
                 <td colspan="3"><textarea name="armament${id}Note" placeholder="備考">$pc{"armament${id}Note"}</textarea>
               </tr>
             </tbody>
-HTML
+  HTML
 }
 print <<"HTML";
             <tbody class="total">
@@ -1125,16 +1126,16 @@ print <<"HTML";
               <tbody>
 HTML
 foreach my $num ('TMPL',1 .. $pc{geisesNum}){
-  if($num eq 'TMPL'){ print '<template id="geis-template">' }
-print <<"HTML";
+  print '<template id="geis-template">' if($num eq 'TMPL');
+  print <<~"HTML";
                 <tr id="geis-row${num}">
                   <td class="handle">
                   <td>@{[ input "geis${num}Name" ]}
                   <td>@{[ input "geis${num}Cost", 'number', 'calcGeises' ]}
                   <td><textarea name="geis${num}Note">$pc{"geis${num}Note"}</textarea>
                 </tr>
-HTML
-  if($num eq 'TMPL'){ print '</template>' }
+  HTML
+  print '</template>' if($num eq 'TMPL');
 }
 print <<"HTML";
             </table>
@@ -1163,15 +1164,15 @@ print <<"HTML";
               <tbody>
 HTML
 foreach my $num ('TMPL',1 .. $pc{connectionsNum}){
-  if($num eq 'TMPL'){ print '<template id="connection-template">' }
-print <<"HTML";
+  print '<template id="connection-template">' if($num eq 'TMPL');
+  print <<~"HTML";
                 <tr id="connection-row${num}">
                   <td class="handle">
                   <td>@{[ input "connection${num}Name",'','calcConnections' ]}
                   <td>@{[ input "connection${num}Relation" ]}
                   <td>@{[ input "connection${num}Note" ]}
-HTML
-  if($num eq 'TMPL'){ print '</template>' }
+  HTML
+  print '</template>' if($num eq 'TMPL');
 }
 print <<"HTML";
             </table>
@@ -1217,8 +1218,8 @@ print <<"HTML";
             </tr>
 HTML
 foreach my $num ('TMPL',1 .. $pc{historyNum}) {
-  if($num eq 'TMPL'){ print '<template id="history-template">' }
-print <<"HTML";
+  print '<template id="history-template">' if($num eq 'TMPL');
+  print <<~"HTML";
           <tbody id="history-row${num}">
             <tr>
               <td class="handle" rowspan="2" class="handle">
@@ -1231,8 +1232,8 @@ print <<"HTML";
               <td class="member">@{[input("history${num}Member")]}
             <tr>
               <td colspan="6" class="left">@{[input("history${num}Note",'','','placeholder="備考"')]}
-HTML
-  if($num eq 'TMPL'){ print '</template>' }
+  HTML
+  print '</template>' if($num eq 'TMPL');
 }
 print <<"HTML";
           <tfoot id="history-foot">
@@ -1323,7 +1324,7 @@ print <<"HTML";
   </main>
   <footer>
     <p class="notes">©FarEast Amusement Research Co.,Ltd.「アリアンロッドRPG 2E」</p>
-    <p class="copyright">©<a href="https://yutorize.2-d.jp">ゆとらいず工房</a>「ゆとシートⅡ」ver.${main::ver}</p>
+    <p class="copyright">©<a href="https://yutorize.work">ゆとらいず工房</a>「ゆとシートⅡ」ver.${main::ver}</p>
   </footer>
   <datalist id="list-gender">
     <option value="男">

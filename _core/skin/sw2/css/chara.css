@@ -47,13 +47,6 @@ body {
 
 /* // Font
 ---------------------------------------------------------------------------------------------------- */
-#character-name,
-.words {
-  font-family: var(--base-font-family-min);
-}
-#character-name rt {
-  font-family: Arial,var(--base-font-family-min);
-}
 #level dd {
   font-family: 'Verdana';
 }
@@ -615,6 +608,12 @@ dl#level {
 #crafts li {
   position: relative;
 
+  &:has(.alias) > span {
+    display: inline-block;
+    font-size: 80%;
+    transform: scaleY(calc(1/0.8));
+  }
+
   & span[data-ruby] {
     display: block;
     position: relative;
@@ -750,6 +749,18 @@ dl#level {
 #magic-power{
   grid-column: span 2;
   align-self: end;
+  
+  max-width: 100%;
+  width: calc((100% + (100% - var(--box-h-gap)) / 210 * 90) * 0.25 + 21.3em);
+  &:has(td.own > b.term-em) {
+    width: calc((100% + (100% - var(--box-h-gap)) / 210 * 90) * 0.25 + 25.6em);
+  }
+  @media screen and (width <= 735px){
+    min-width: calc(100% - 4.3em);
+    &:has(td.own > b.term-em) {
+    min-width: 100% !important;
+    }
+  }
 }
 #magic-power table {
   table-layout: auto;
@@ -777,6 +788,15 @@ dl#level {
     font-size: 1.15em;
     line-height: 1.6;
     white-space: nowrap;
+  }
+  & tbody td.own {
+    width: 4.8em;
+    font-size: 90%;
+  }
+  &:not(:has(td.own > b.term-em)) {
+    :is(th, td).own {
+      display: none;
+    }
   }
 }
 #magic-power #fairycontact {
@@ -832,6 +852,7 @@ dl#level {
     & tbody th {
       border-style: none solid hidden;
       background-color: transparent;
+      line-height:1;
     }
     & tbody:first-of-type tr:first-of-type th {
       border-top: hidden;
@@ -910,7 +931,21 @@ dl#level {
     font-size: 80%;
   }
 }
-
+#weapons tbody {
+  tr {
+    td.usage {
+      &:has(.category){
+        line-height: 1;
+      }
+      .category {
+        display: block;
+        margin-top: 1px;
+        font-size: 60%;
+        word-break: keep-all;
+      }
+    }
+  }
+}
 
 /* Defense-Status */
 #evasion-classes {
@@ -1015,12 +1050,30 @@ dl#level {
   }
   > dd {
     grid-row: 2;
+
+    &:has(.value:empty) {
+      .unit {
+        display: none;
+      }
+
+      &::after {
+        content: "―";
+      }
+    }
   }
   > *:last-of-type {
     border-left-width: 1px;
     border-left-style: solid;
     border-left-color: var(--box-outside-border-color);
   }
+}
+/* Other Currency */
+#other-currency {
+  margin-top: var(--box-v-gap);
+
+  display: grid;
+  gap: var(--box-v-gap);
+  grid-template-columns: 1fr 1fr;
 }
 
 /* MaterialCard */
@@ -1110,7 +1163,7 @@ dl#level {
     border-top-width: 1px;
   }
 }
-#honor.zero-data {
+#sw2\.0 #honor {
   grid-template-columns: 1fr 1fr 1fr;
   align-items: normal;
   gap: 0px;
@@ -1143,6 +1196,7 @@ dl#level {
 #free-note,
 #free-history {
   margin-top: var(--box-v-gap);
+  align-self: start;
 }
 
 
@@ -1175,37 +1229,6 @@ dl#level {
     > thead {
       .grow { width: 3.3em; }
     }
-  }
-}
-
-/* // Cashbook
----------------------------------------------------------------------------------------------------- */
-#cashbook {
-  margin-top: var(--box-v-gap);
-  height: max-content;
-  overflow: hidden;
-}
-#cashbook > div {
-  max-height: 16em;
-  overflow: auto;
-
-  @media print {
-    max-height: initial;
-  }
-}
-#cashbook p {
-  line-height: 1.5;
-  white-space: pre-wrap;
-}
-#cashbook b.cash {
-  padding: 2px 0;
-  font-weight: normal;
-  background: linear-gradient(to top, rgba(0,100,255,0.5) 0rem, rgba(0,100,255,0.3) .5rem, transparent .5rem);
-  &.plus {
-    background: linear-gradient(to top, rgba(0,255,100,0.5) 0rem, rgba(0,255,100,0.3) .5rem, transparent .5rem);
-  }
-  &.minus {
-    background: linear-gradient(to top, rgba(255,100,0,0.5) 0rem, rgba(255,100,0,0.3) .5rem, transparent .5rem);
   }
 }
 

@@ -12,6 +12,7 @@ require $set::data_faith;
 
 ### 出力 #############################################################################################
 foreach (keys %data::class){
+  next if ($_ eq 'ビブリオマンサー');
   $data::class{$_}{magic}{data} &&= 1 if exists($data::class{$_}{magic});
   $data::class{$_}{craft}{data} &&= 1 if exists($data::class{$_}{craft});
 }
@@ -27,7 +28,7 @@ my %settings = (
   allClassOn => $set::all_class_on,
   battleItemOn => $set::battleitem,
   growType => $set::growtype,
-  featsLv => ['1bat',@set::feats_lv],
+  featsLv => [setFeatsLvs()],
   races => \%data::races,
   class      => \%data::class,
   classNames => \@data::class_names,
@@ -39,6 +40,7 @@ my %settings = (
   nBRank => \@set::notoriety_barbaros_rank,
   partsData => \%data::partsData,
   effects => \%effects,
+  ryugaiRace => \%data::ryugaiRace,
 );
 print "const SET = ". JSON::PP->new->encode(\%settings);
 print "\n";

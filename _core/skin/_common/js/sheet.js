@@ -1,17 +1,28 @@
 // 開閉系 ----------------------------------------
-function popImage(id) {
+async function popImage(id) {
+  let imageBox = document.getElementById("image-box") || null;
+  if(!imageBox){
+    imageBox = document.createElement('div');
+    imageBox.id = 'image-box';
+    imageBox.addEventListener('click', () => { closeImage() });
+    let imageSrc = document.createElement('img');
+    imageSrc.id = "image-box-image";
+    imageBox.append(imageSrc);
+    document.body.append(imageBox);
+    await new Promise((r) => setTimeout(r, 1));
+  }
   if(typeof images !== 'undefined'){
     id ||= 1;
     document.getElementById('image-box-image').src = images[id];
   }
-  document.getElementById("image-box").style.bottom = 0;
-  document.getElementById("image-box").style.opacity = 1;
-
+  imageBox.style.bottom = 0;
+  imageBox.style.opacity = 1;
 }
 function closeImage() {
-  document.getElementById("image-box").style.opacity = 0;
+  let imageBox = document.getElementById("image-box");
+  imageBox.style.opacity = 0;
   setTimeout(function(){
-    document.getElementById("image-box").style.bottom = '-100vh';
+    imageBox.style.bottom = '-100vh';
   },200);
 }
 function closeTextareaForCopy() {
@@ -62,6 +73,59 @@ function chatPaletteSelect(tool) {
   });
   document.getElementById('cp-switch-'+(tool||'ytc')).classList.add('check');
 }
+// セッション履歴開閉 ----------------------------------------
+let historyView = true;
+window.addEventListener('DOMContentLoaded', ()=>{
+  if(document.querySelector("#history tbody:nth-of-type(9)")){
+    historyView = false,
+    switchHistoryClose();
+  document.querySelector('#history .open-button').dataset.open = '';
+  }
+});
+function switchHistoryView(){
+  historyView = !historyView;
+  historyView ? switchHistoryOpen() : switchHistoryClose();
+  document.querySelector('#history .open-button').dataset.open = historyView ? 'true' : '';
+}
+function switchHistoryOpen(){
+  const table = document.querySelector('#history > table');
+  // 表示
+  table.querySelectorAll('tbody').forEach(row => {
+    row.style.display = "";
+  });
+  // 省略業を削除
+  document.getElementById('collapsed-history-row').remove();
+}
+function switchHistoryClose(){
+  const table = document.querySelector('#history > table');
+  rows = table.querySelectorAll('tbody:not(:nth-of-type(-n+1)):not(:nth-last-of-type(-n+5))');
+  // 最下部以外を非表示
+  rows.forEach(row => {
+    row.style.display = "none";
+  });
+  // 省略行を生成
+  const theadRow = table.querySelector("thead tr");
+  colLength = theadRow.children.length
+  const newTbody = document.createElement("tbody");
+  newTbody.id = "collapsed-history-row";
+  const newCell = document.createElement("td");
+  newCell.colSpan = colLength;
+  newCell.innerText = "︙\n省略されたセッション履歴\n︙";
+  newTbody.appendChild(newCell);
+  if (rows.length < 1) {
+    table.appendChild(newTbody);
+  } else {
+    table.insertBefore(newTbody, rows[0]);
+  }
+}
+
+// 収支履歴開閉 ----------------------------------------
+let cashbookView = false;
+function switchCashbookView(num = ""){
+  cashbookView = !cashbookView;
+  document.getElementById('cashbook'+num).dataset.open = cashbookView ? 'true' : '';
+  document.querySelector(`#cashbook${num} .open-button`).dataset.open = cashbookView ? 'true' : '';
+}
 
 // スクロール位置 ----------------------------------------
 window.addEventListener('DOMContentLoaded', ()=>{
@@ -73,12 +137,24 @@ window.addEventListener('DOMContentLoaded', ()=>{
   })
 });
 
+// ルビ ----------------------------------------
+window.addEventListener('load', ()=>{
+  if (rubyCopyMode == 0){
+    document.querySelectorAll('ruby:has(rp:nth-of-type(3):last-child)').forEach(ruby => {
+      ruby.querySelector('ruby rp:nth-of-type(1)').textContent = '';
+      ruby.querySelector('ruby rp:nth-of-type(2)').textContent = '(';
+      ruby.querySelector('ruby rp:nth-of-type(3)').textContent = ')';
+    });
+  }
+});
+
 // 保存系 ----------------------------------------
 function getJsonData(targetEnvironment = '') {
   const paramId = /id=[0-9a-zA-Z\-]+/.exec(location.href)[0];
+  const paramDate = /log=[0-9\-]+/.exec(location.href)?.[0] ?? null;
   return new Promise((resolve, reject)=>{
     let xhr = new XMLHttpRequest();
-    xhr.open('GET', `./?${paramId}&mode=json&target=${targetEnvironment}`, true);
+    xhr.open('GET', `./?${paramId}&mode=json&target=${targetEnvironment}${paramDate?'&'+paramDate:''}`, true);
     xhr.responseType = "json";
     xhr.onload = (e) => {
       resolve(e.currentTarget.response);

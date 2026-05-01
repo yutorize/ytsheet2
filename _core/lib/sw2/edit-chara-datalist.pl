@@ -3,7 +3,7 @@ use utf8;
 use open ":utf8";
 
 sub printCharaDataList {
-  print <<"HTML";
+  print <<~"HTML";
   <datalist id="list-gender">
     <option value="男">
     <option value="女">
@@ -35,6 +35,7 @@ sub printCharaDataList {
     <option value="1H騎">
     <option value="2H">
     <option value="2H#">
+    <option value="2H投">
     <option value="振2H">
     <option value="突2H">
   </datalist>
@@ -83,7 +84,14 @@ sub printCharaDataList {
     <option value="翼人語">
     <option value="魔神語">
   </datalist>
-HTML
+  <datalist id="list-currency-name">
+    <option value="闘技場ポイント">
+  </datalist>
+  <datalist id="list-currency-unit">
+    <option value="P">
+    <option value="点">
+  </datalist>
+  HTML
 }
 
 1;
