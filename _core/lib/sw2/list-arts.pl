@@ -97,7 +97,7 @@ elsif (
 }
 
 ## カテゴリ検索
-my %category = ('magic'=>'魔法','god'=>'神格','school'=>'流派');
+my %category = ('magic'=>'魔法','god'=>'神格','school'=>'流派','skill'=>'特殊能力');
 my $category_query = $::in{category};
 if($category_query && $::in{category} ne 'all'){
   @list = grep { $_ =~ /^(?:[^<]*?<>){6}(\Q$category_query\E)?</ } @list;
@@ -105,7 +105,7 @@ if($category_query && $::in{category} ne 'all'){
 }
 {
   my @categories;
-  foreach ('magic','god','school'){
+  foreach ('magic','god','school','skill'){
     push(@categories, {
       "ID" => $_,
       "NAME" => $category{$_},
@@ -172,6 +172,7 @@ foreach (@list) {
   if($sub =~ /(?:属性|特殊)妖精魔法|秘奥魔法/){ $sub =~ s#／([0-9]+)#／ランク$1#; }
   else { $sub =~ s#(／[0-9-～]+)#$1レベル#; }
   $sub = subTextShape($sub);
+  $sub = '―' if $category eq 'skill';
 
   #タグ
   my $tags_links;
@@ -209,7 +210,7 @@ sub subTextShape {
 
 ### 出力用配列 --------------------------------------------------
 my @characterlists;
-foreach my $id ('magic','god','school'){
+foreach my $id ('magic','god','school','skill'){
   next if !$count{$id};
 
   ## ページネーション
