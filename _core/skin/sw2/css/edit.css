@@ -2115,7 +2115,11 @@ form#arts #data-skill {
 
           > dt {
             grid-column: 1 / 2;
-            font-weight: normal;
+
+            &::after {
+              content: ':';
+              font-weight: normal;
+            }
           }
 
           > dd {
