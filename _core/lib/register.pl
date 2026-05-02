@@ -25,7 +25,7 @@ if($mode eq 'register'){
   close ($FH);
 
   sysopen (my $FH, $set::userfile, O_WRONLY | O_APPEND | O_CREAT, 0666);
-    print $FH $::in{id}."<>".&e_crypt($::in{password})."<>".decode('utf8', $::in{name})."<>".$::in{mail}."<>".time."<>\n";
+    print $FH $::in{id}."<>".&encrypt($::in{password})."<>".decode('utf8', $::in{name})."<>".$::in{mail}."<>".time."<>\n";
   close ($FH);
   
   if($set::player_dir){
@@ -76,8 +76,8 @@ elsif($mode eq 'passchange'){
   seek($FH, 0, 0);
   foreach (@list){
     my @data= split /<>/;
-    if ($data[0] eq $LOGIN_ID && c_crypt($::in{password},$data[1])){
-      print $FH "$data[0]<>".e_crypt($::in{new_password})."<>$data[2]<>$data[3]<>\n";
+    if ($data[0] eq $LOGIN_ID && verifyCrypt($::in{password},$data[1])){
+      print $FH "$data[0]<>".encrypt($::in{new_password})."<>$data[2]<>$data[3]<>\n";
       $flag = 1;
     }else{
       print $FH $_;

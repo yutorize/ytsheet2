@@ -69,7 +69,7 @@ elsif($::in{password}){
   foreach (@list){
     my @data= split /<>/;
     if ($data[0] eq $id){
-      print $FH "$data[0]<>".e_crypt($::in{password})."<>$data[2]<>$data[3]<>\n";
+      print $FH "$data[0]<>".encrypt($::in{password})."<>$data[2]<>$data[3]<>\n";
       $flag = 1;
     }else{
       print $FH $_;
