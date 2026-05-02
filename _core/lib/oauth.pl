@@ -99,8 +99,8 @@ sub registerUser {
   my @salt = ('0'..'9','A'..'Z','a'..'z','.','/');
   1 while (length($password .= $salt[rand(@salt)] ) < 12);
   sysopen (my $FH, $set::userfile, O_WRONLY | O_APPEND | O_CREAT, 0666);
-    # print $FH "$id<>".&e_crypt($password)."<>".Encode::decode('utf8', $name)."<>$mail<>".time."<>\n";
-    print $FH "$id<>".&e_crypt($password)."<>$name<>$mail<>".time."<>\n";
+    # print $FH "$id<>".&encrypt($password)."<>".Encode::decode('utf8', $name)."<>$mail<>".time."<>\n";
+    print $FH "$id<>".&encrypt($password)."<>$name<>$mail<>".time."<>\n";
   close ($FH);
 
   if($set::player_dir){
