@@ -191,6 +191,7 @@
       </TMPL_IF>
       <TMPL_IF History><section class="box" id="history">
         <h2>セッション履歴</h2>
+        <button class="open-button" onclick="switchHistoryView();" data-open="true" data-text-open="履歴を展開" data-text-close="履歴を畳む"></button>
         <table class="data-table line-tbody">
           <thead>
             <tr>
@@ -228,15 +229,12 @@
       </section>
     </article>
     <div class="back-button"><a href="./">⏎</a></div>
-    <div id="image-box" onclick="closeImage()">
-      <img <TMPL_IF image>src="<TMPL_VAR imageSrc>"</TMPL_IF> id="image-box-image">
-    </div>
   </main>
   <TMPL_INCLUDE NAME="skin-add/sheet-sidebar.html">
 
   <footer>
     <p class="notes">©からすば晴「マモノスクランブル」</p>
-    <p class="copyright">©<a href="https://yutorize.2-d.jp">ゆとらいず工房</a>「ゆとシートⅡ」ver.<TMPL_VAR ver></p>
+    <p class="copyright">©<a href="https://yutorize.work">ゆとらいず工房</a>「ゆとシートⅡ」ver.<TMPL_VAR ver></p>
   </footer>
 </body>
 

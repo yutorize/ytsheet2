@@ -184,7 +184,7 @@ print <<"HTML";
         <ul>
           <li onclick="sectionSelect('common');"><span>キャラ<span class="shorten">クター</span></span><span>データ</span>
           <li onclick="sectionSelect('palette');"><span><span class="shorten">ユニット(</span>コマ<span class="shorten">)</span></span><span>設定</span>
-          <li onclick="sectionSelect('color');" class="color-icon" title="カラーカスタム">
+          <li onclick="sectionSelect('color');" class="color-icon" title="シートデザインカスタム">
           <li onclick="view('text-rule')" class="help-icon" title="テキスト整形ルール">
           <li onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード切替">
           <li onclick="exportAsJson()" class="download-icon" title="JSON出力">
@@ -204,21 +204,21 @@ print <<"HTML";
       <section id="section-common">
 HTML
 if($set::user_reqd){
-  print <<"HTML";
+  print <<~"HTML";
     <input type="hidden" name="protect" value="account">
     <input type="hidden" name="protectOld" value="$pc{protect}">
     <input type="hidden" name="pass" value="$::in{pass}">
-HTML
+  HTML
 }
 else {
   if($set::registerkey && $mode_make){
     print '登録キー：<input type="text" name="registerkey" required>'."\n";
   }
-  print <<"HTML";
+  print <<~"HTML";
       <details class="box" id="edit-protect" @{[$mode eq 'edit' ? '':'open']}>
       <summary>編集保護設定</summary>
       <fieldset id="edit-protect-view"><input type="hidden" name="protectOld" value="$pc{protect}">
-HTML
+  HTML
   if($LOGIN_ID){
     print '<input type="radio" name="protect" value="account"'.($pc{protect} eq 'account'?' checked':'').'> アカウントに紐付ける（ログイン中のみ編集可能になります）<br>';
   }
@@ -228,13 +228,13 @@ HTML
   } else {
     print '<input type="password" name="pass"><br>';
   }
-  print <<"HTML";
-<input type="radio" name="protect" value="none"@{[ $pc{protect} eq 'none'?' checked':'' ]}> 保護しない（誰でも編集できるようになります）
+  print <<~"HTML";
+        <input type="radio" name="protect" value="none"@{[ $pc{protect} eq 'none'?' checked':'' ]}> 保護しない（誰でも編集できるようになります）
       </fieldset>
       </details>
-HTML
+  HTML
 }
-  print <<"HTML";
+print <<"HTML";
       <dl class="box" id="hide-options">
         <dt>閲覧可否設定
         <dd id="forbidden-checkbox">
@@ -273,20 +273,20 @@ print <<"HTML";
         <div>
           <dl id="character-name">
             <dt>キャラクター名
-            <dd>@{[input('characterName','text',"setName")]}
+            <dd>@{[ input 'characterName','text',"setName",'id="main-name"' ]}
             <dt class="ruby">ふりがな
-            <dd>@{[input('characterNameRuby','text',"setName")]}
+            <dd>@{[ input 'characterNameRuby','text',"setName" ]}
           </dl>
           <dl id="aka">
             <dt>コードネーム
-            <dd>@{[input('aka','text',"setName")]}
+            <dd>@{[ input 'aka','text',"setName" ]}
             <dt class="ruby">フリガナ
-            <dd>@{[input('akaRuby','text',"setName")]}
+            <dd>@{[ input 'akaRuby','text',"setName" ]}
           </dl>
         </div>
         <dl id="player-name">
           <dt>プレイヤー名
-          <dd>@{[input('playerName')]}
+          <dd>@{[ input 'playerName' ]}
         </dl>
       </div>
 
@@ -430,9 +430,9 @@ print <<"HTML";
               <dt class="left">回避<dd>@{[input "skillDodge"  ,'number','calcSkill', 'min="0"']}+@{[input "skillAddDodge"  ,'number','calcSkill']}
 HTML
 foreach my $num (1 .. $pc{skillRideNum}) {
-print <<"HTML";
+  print <<~"HTML";
               <dt>@{[input "skillRide${num}Name",'','comboSkillSetAll','list="list-ride"']}<dd>@{[input "skillRide$num",'number','calcSkill', 'min="0"']}+@{[input "skillAddRide$num",'number','calcSkill']}
-HTML
+  HTML
 }
 print <<"HTML";
             </dl>
@@ -445,9 +445,9 @@ print <<"HTML";
               <dt class="left">知覚<dd>@{[input "skillPercept",'number','calcSkill', 'min="0"']}+@{[input "skillAddPercept",'number','calcSkill']}
 HTML
 foreach my $num (1 .. $pc{skillArtNum}) {
-print <<"HTML";
+  print <<~"HTML";
               <dt>@{[input "skillArt${num}Name" ,'','comboSkillSetAll','list="list-art"' ]}<dd>@{[input "skillArt$num" ,'number','calcSkill', 'min="0"']}+@{[input "skillAddArt$num" ,'number','calcSkill']}
-HTML
+  HTML
 }
 print <<"HTML";
             </dl>
@@ -460,9 +460,9 @@ print <<"HTML";
               <dt class="left">意志<dd>@{[input "skillWill",'number','calcSkill', 'min="0"']}+@{[input "skillAddWill",'number','calcSkill']}
 HTML
 foreach my $num (1 .. $pc{skillKnowNum}) {
-print <<"HTML";
+  print <<~"HTML";
               <dt>@{[input "skillKnow${num}Name",'','comboSkillSetAll','list="list-know"']}<dd>@{[input "skillKnow$num",'number','calcSkill', 'min="0"']}+@{[input "skillAddKnow$num",'number','calcSkill']}
-HTML
+  HTML
 }
 print <<"HTML";
             </dl>
@@ -475,9 +475,9 @@ print <<"HTML";
               <dt class="left">調達<dd>@{[input "skillProcure"  ,'number','calcSkill();calcStock', 'min="0"']}+@{[input "skillAddProcure",  'number','calcSkill();calcStock']}
 HTML
 foreach my $num (1 .. $pc{skillInfoNum}) {
-print <<"HTML";
+  print <<~"HTML";
               <dt>@{[input "skillInfo${num}Name",'','comboSkillSetAll','list="list-info"']}<dd>@{[input "skillInfo$num",'number','calcSkill', 'min="0"']}+@{[input "skillAddInfo$num",'number','calcSkill']}
-HTML
+  HTML
 }
 print <<"HTML";
             </dl>
@@ -508,33 +508,36 @@ print <<"HTML";
               <th id="encounter-or-desire">邂逅/欲望
               <td colspan="2">@{[input "lifepathEncounter"]}
               <td colspan="2" class="left">@{[input "lifepathEncounterNote",'','','placeholder="備考"']}
-          <tbody>
+          <tbody class="awaken">
             <tr>
               <th>覚醒
               <td><select name="lifepathAwaken" oninput="calcEncroach()">@{[option "lifepathAwaken",@awakens]}</select>
-              <th class="small">侵蝕値
-              <td class="center" id="awaken-encroach">
+              <th class="small encroach">侵蝕値
+              <td class="center encroach" id="awaken-encroach">
               <td class="left">@{[input "lifepathAwakenNote",'','','placeholder="備考"']}
-          <tbody>
+          <tbody class="impulse">
             <tr>
               <th rowspan="2">衝動
               <td><select name="lifepathImpulse" oninput="refreshByImpulse()">@{[option "lifepathImpulse",@impulses]}</select>
-              <th class="small">侵蝕値
-              <td class="center" id="impulse-encroach">
+              <th class="small encroach">侵蝕値
+              <td class="center encroach" id="impulse-encroach">
               <td class="left">@{[input "lifepathImpulseNote",'','','placeholder="備考"']}
             <tr>
-              <th class="small">@{[input "lifepathUrgeCheck",'checkbox']}変異暴走
+              <th><span class="small">@{[input "lifepathUrgeCheck",'checkbox']}変異暴走</span>
               <th class="small">効果
               <td class="left" colspan="2">@{[input "lifepathUrgeNote",'','','placeholder="効果"']}
-          <tbody>
+          <tbody class="encroach-offset">
             <tr>
               <th colspan="3" class="right small">その他の修正
               <td class="center">@{[input "lifepathOtherEncroach",'number','calcEncroach']}
               <td class="left">@{[input "lifepathOtherNote",'','','placeholder="備考"']}
-          <tbody>
+          <tbody class="neutral-encroach">
             <tr>
-              <th colspan="3" class="right">侵蝕率基本値
-              <td class="center bold" id="base-encroach">
+              <th colspan="3" class="right">侵蝕率<span class="suffix">基本値</span>
+              <td class="center bold">
+                <span class="calculated-value" id="base-encroach"></span>
+                @{[input "encroachFixedValue", 'number', 'calcEncroach']}
+              <td>@{[ checkbox 'encroachFixed', '侵蝕率を固定にする（ＮＰＣ向け）', 'encroachModeChanged' ]}
           </tbody>
         </table>
       </details>
@@ -580,8 +583,8 @@ print <<"HTML";
             <tbody>
 HTML
 foreach my $num (1 .. 7) {
-if(!$pc{"lois${num}State"}){ $pc{"lois${num}State"} = 'ロイス' }
-print <<"HTML";
+  if(!$pc{"lois${num}State"}){ $pc{"lois${num}State"} = 'ロイス' }
+  print <<~"HTML";
               <tr id="lois${num}">
                 <td class="relation"><span class="handle"></span>@{[input "lois${num}Relation",'','','list="list-lois-relation"']}
                 <td class="name    ">@{[input "lois${num}Name",'','encroachBonusType']}
@@ -592,7 +595,7 @@ print <<"HTML";
                 <td class="note    ">@{[input "lois${num}Note"]}
                 <td class="sperior ">@{[input "lois${num}S",'checkbox',"sLois($num)"]}
                 <td class="state   " onclick="changeLoisState(this.parentNode.id)"><span id="lois${num}-state" data-state="$pc{"lois${num}State"}"></span>@{[input "lois${num}State",'hidden']}
-HTML
+  HTML
 }
 print <<"HTML";
             </tbody>
@@ -618,14 +621,14 @@ print <<"HTML";
             <tbody>
 HTML
 foreach my $num (1 .. 3) {
-print <<"HTML";
+  print <<~"HTML";
             <tr id="memory${num}">
               <td><span class="handle"></span>
               <td>@{[input "memory${num}Relation",'','calcMemory']}
               <td>@{[input "memory${num}Name",'','calcMemory']}
               <td>@{[input "memory${num}Emo"]}
               <td>@{[input "memory${num}Note"]}
-HTML
+  HTML
 }
 print <<"HTML";
             </tbody>
@@ -649,8 +652,8 @@ print <<"HTML";
               <tr><th><th>名称<th>LV<th>タイミング<th>技能<th>難易度<th>対象<th>射程<th>侵蝕値<th>制限
 HTML
 foreach my $num ('TMPL',1 .. $pc{effectNum}) {
-  if($num eq 'TMPL'){ print '<template id="effect-template">' }
-print <<"HTML";
+  print '<template id="effect-template">' if($num eq 'TMPL');
+  print <<~"HTML";
           <tbody id="effect-row${num}">
             <tr>
               <td rowspan="2" class="handle"> 
@@ -669,8 +672,8 @@ print <<"HTML";
                 <b class="small">経験点修正</b>@{[input "effect${num}Exp",'number','calcEffect']}
                 <b>効果</b>@{[input "effect${num}Note"]}
               </div>
-HTML
-  if($num eq 'TMPL'){ print '</template>' }
+  HTML
+  print '</template>' if($num eq 'TMPL');
 }
 print <<"HTML";
             <tfoot id="effect-foot">
@@ -699,8 +702,8 @@ print <<"HTML";
               <tr><th><th>名称<th>種別<th>経験点<th>発動値<th>侵蝕値<th>効果
 HTML
 foreach my $num ('TMPL',1 .. $pc{magicNum}) {
-  if($num eq 'TMPL'){ print '<template id="magic-template">' }
-  print <<"HTML";
+  print '<template id="magic-template">' if($num eq 'TMPL');
+  print <<~"HTML";
             <tbody id="magic-row${num}">
               <tr>
                 <td class="handle"> 
@@ -710,8 +713,8 @@ foreach my $num ('TMPL',1 .. $pc{magicNum}) {
                 <td>@{[input "magic${num}Activate",'','','placeholder="発動値"']}
                 <td>@{[input "magic${num}Encroach",'','','placeholder="侵蝕値"']}
                 <td>@{[input "magic${num}Note"    ,'','','placeholder="効果"']}
-HTML
-  if($num eq 'TMPL'){ print '</template>' }
+  HTML
+  print '</template>' if($num eq 'TMPL');
 }
 print <<"HTML";
           </table>
@@ -761,8 +764,8 @@ sub comboStatusSet {
   return $output;
 }
 foreach my $num ('TMPL',1 .. $pc{comboNum}) {
-  if($num eq 'TMPL'){ print '<template id="combo-template">' }
-print <<"HTML";
+  print '<template id="combo-template">' if($num eq 'TMPL');
+  print <<~"HTML";
         <div class="combo-table" id="combo-row${num}">
           <div class="handle"></div>
           <dl class="combo-name"><dt>名称</dt><dd>@{[input "combo${num}Name"]}</dd></dl>
@@ -782,9 +785,9 @@ print <<"HTML";
             <dt class="combo-crit">Ｃ値
             <dt class="combo-fixed">達成値修正<br><span class="very-small">(技能レベル+修正値)</span>
             <dt class="combo-atk">攻撃力
-HTML
+  HTML
   foreach my $i (1 .. 5) {
-  print <<"HTML";
+    print <<~"HTML";
             <dd>@{[input "combo${num}Condition${i}"]}
             <dd id="combo${num}Stt${i}"></dd>
             <dd>@{[input "combo${num}DiceAdd${i}"]}
@@ -792,15 +795,15 @@ HTML
             <dd id="combo${num}SkillLv${i}"></dd>
             <dd>@{[input "combo${num}FixedAdd${i}"]}
             <dd>@{[input "combo${num}Atk${i}"]}
-HTML
+    HTML
   }
-print <<"HTML";
+  print <<~"HTML";
           </dl>
           <div class="combo-note"><textarea name="combo${num}Note" rows="3" placeholder="解説">$pc{"combo${num}Note"}</textarea></div>
           <div class="combo-other">@{[ checkbox "combo${num}Manual",'技能レベル・能力値を自動挿入しない',"calcCombo(${num})" ]} <span class="button" onclick="addCombo($num)">コンボ複製</span></div>
         </div>
-HTML
-  if($num eq 'TMPL'){ print '</template>' }
+  HTML
+  print '</template>' if($num eq 'TMPL');
 }
 print <<"HTML";
         </div>
@@ -817,8 +820,8 @@ print <<"HTML";
           <tbody>
 HTML
 foreach my $num ('TMPL',1 .. $pc{weaponNum}) {
-  if($num eq 'TMPL'){ print '<template id="weapon-template">' }
-print <<"HTML";
+  print '<template id="weapon-template">' if($num eq 'TMPL');
+  print <<~"HTML";
             <tr id="weapon-row${num}">
               <td>@{[input "weapon${num}Name"]}<span class="handle"></span>
               <td>@{[input "weapon${num}Stock",'number','calcItem', 'min="0"']}
@@ -830,8 +833,8 @@ print <<"HTML";
               <td>@{[input "weapon${num}Guard"]}
               <td>@{[input "weapon${num}Range"]}
               <td><textarea name="weapon${num}Note" rows="2">$pc{"weapon${num}Note"}</textarea>
-HTML
-  if($num eq 'TMPL'){ print '</template>' }
+  HTML
+  print '</template>' if($num eq 'TMPL');
 }
 print <<"HTML";
         </table>
@@ -845,8 +848,8 @@ print <<"HTML";
           <tbody>
 HTML
 foreach my $num ('TMPL',1 .. $pc{armorNum}) {
-  if($num eq 'TMPL'){ print '<template id="armor-template">' }
-print <<"HTML";
+  print '<template id="armor-template">' if($num eq 'TMPL');
+  print <<~"HTML";
             <tr id="armor-row${num}">
               <td>@{[input "armor${num}Name"]}<span class="handle"></span>
               <td>@{[input "armor${num}Stock",'number','calcItem', 'min="0"']}
@@ -857,8 +860,8 @@ print <<"HTML";
               <td>@{[input "armor${num}Dodge"]}
               <td>@{[input "armor${num}Armor"]}
               <td><textarea name="armor${num}Note" rows="2">$pc{"armor${num}Note"}</textarea>
-HTML
-  if($num eq 'TMPL'){ print '</template>' }
+  HTML
+  print '</template>' if($num eq 'TMPL');
 }
 print <<"HTML";
           </tbody>
@@ -873,8 +876,8 @@ print <<"HTML";
           <tbody>
 HTML
 foreach my $num ('TMPL',1 .. $pc{vehicleNum}) {
-  if($num eq 'TMPL'){ print '<template id="vehicle-template">' }
-print <<"HTML";
+  print '<template id="vehicle-template">' if($num eq 'TMPL');
+  print <<~"HTML";
             <tr id="vehicle-row${num}">
               <td>@{[input "vehicle${num}Name"]}<span class="handle"></span>
               <td>@{[input "vehicle${num}Stock",'number','calcItem', 'min="0"']}
@@ -886,8 +889,8 @@ print <<"HTML";
               <td>@{[input "vehicle${num}Armor"]}
               <td>@{[input "vehicle${num}Dash"]}
               <td><textarea name="vehicle${num}Note" rows="2">$pc{"vehicle${num}Note"}</textarea>
-HTML
-  if($num eq 'TMPL'){ print '</template>' }
+  HTML
+  print '</template>' if($num eq 'TMPL');
 }
 print <<"HTML";
         </table>
@@ -901,8 +904,8 @@ print <<"HTML";
           <tbody>
 HTML
 foreach my $num ('TMPL',1 .. $pc{itemNum}) {
-  if($num eq 'TMPL'){ print '<template id="item-template">' }
-print <<"HTML";
+  print '<template id="item-template">' if($num eq 'TMPL');
+  print <<~"HTML";
             <tr id="item-row${num}">
               <td>@{[input "item${num}Name"]}<span class="handle"></span>
               <td>@{[input "item${num}Stock",'number','calcItem', 'min="0"']}
@@ -910,8 +913,8 @@ print <<"HTML";
               <td>@{[input "item${num}Type",'','','list="list-item-type"']}
               <td>@{[input "item${num}Skill",'','','list="list-item-skill"']}
               <td><textarea name="item${num}Note" rows="2">$pc{"item${num}Note"}</textarea>
-HTML
-  if($num eq 'TMPL'){ print '</template>' }
+  HTML
+  print '</template>' if($num eq 'TMPL');
 }
 print <<"HTML";
         </table>
@@ -974,8 +977,8 @@ print <<"HTML";
               <td><input type="checkbox" checked disabled>適用
 HTML
 foreach my $num ('TMPL',1 .. $pc{historyNum}) {
-  if($num eq 'TMPL'){ print '<template id="history-template">' }
-print <<"HTML";
+  print '<template id="history-template">' if($num eq 'TMPL');
+  print <<~"HTML";
           <tbody id="history-row${num}">
             <tr>
               <td class="handle" rowspan="2">
@@ -987,8 +990,8 @@ print <<"HTML";
               <td class="member">@{[ input "history${num}Member" ]}
             <tr>
               <td colspan="4" class="left">@{[input("history${num}Note",'','','placeholder="備考"')]}
-HTML
-  if($num eq 'TMPL'){ print '</template>' }
+  HTML
+  print '</template>' if($num eq 'TMPL');
 }
 print <<"HTML";
           <tfoot id="history-foot">
@@ -1072,7 +1075,7 @@ print <<"HTML";
   </main>
   <footer>
     <p class="notes">©FarEast Amusement Research Co.,Ltd.「ダブルクロスThe 3rd Edition」</p>
-    <p class="copyright">©<a href="https://yutorize.2-d.jp">ゆとらいず工房</a>「ゆとシートⅡ」ver.${main::ver}</p>
+    <p class="copyright">©<a href="https://yutorize.work">ゆとらいず工房</a>「ゆとシートⅡ」ver.${main::ver}</p>
   </footer>
   <datalist id="list-stage">
     <option value="基本ステージ">

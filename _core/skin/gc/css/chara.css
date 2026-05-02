@@ -45,13 +45,6 @@ body {
 
 /* // Font
 ---------------------------------------------------------------------------------------------------- */
-#character-name,
-.words {
-  font-family: var(--base-font-family-min);
-}
-#character-name rt {
-  font-family: Arial,var(--base-font-family-min);
-}
 #level dd {
   font-family: 'Verdana';
 }
@@ -64,9 +57,6 @@ body {
 }
 #history table {
   font-family: "Arial",var(--base-font-family-pr);
-}
-#cashbook p {
-  font-family: var(--base-font-family-mono);
 }
 
 /* // AreaTag

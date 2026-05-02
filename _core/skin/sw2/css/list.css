@@ -186,6 +186,7 @@ body {
   }
   & td.summary {
     text-align: left;
+    word-break: normal;
   }
   /* アイテムアイコン */
   .i-icon {
@@ -219,10 +220,12 @@ body {
   }
   & td.sub span {
     display: inline-block;
+    font-size: 1.2rem;
   }
   & td.summary {
     font-size: 1.2rem;
     text-align: left;
+    word-break: normal;
   }
 }
 

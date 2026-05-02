@@ -185,6 +185,8 @@ $SHEET->param(rawName => $pc{characterName} || ($pc{aka} ? "“$pc{aka}”" : ''
 if($pc{ver}){
   foreach (keys %pc) {
     next if($_ =~ /^image/);
+    next if($_ eq 'tags');
+    next if($_ eq 'areaTags');
     if($_ =~ /^(?:items|freeNote|freeHistory|cashbook)$/){
       $pc{$_} = unescapeTagsLines($pc{$_});
     }
@@ -594,6 +596,7 @@ else {
     (removeTags removeRuby($pc{characterName}||"“$pc{aka}”")) .
     ($::in{log} ? " 【".($selectedLogName||$pc{updateTime})."】" : '')
   );
+  $SHEET->param(encodedNameLetter => uri_escape_utf8 removeTags "$pc{characterName}$pc{characterNameRuby}$pc{aka}$pc{akaRuby}“”");
 }
 
 ### OGP --------------------------------------------------

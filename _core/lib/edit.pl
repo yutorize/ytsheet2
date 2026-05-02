@@ -201,9 +201,9 @@ sub loginError {
 
 ## Javascript用共通変数
 sub commonJSVariable {
-  return <<"HTML";
+  return <<~"HTML";
   const base64Mode = @{[ $set::base64mode || 0 ]};
-HTML
+  HTML
 }
 
 ## 簡略化系
@@ -341,7 +341,7 @@ sub display {
 sub imageForm {
   my $imgurl = shift;
   my $image_maxsize_view = $set::image_maxsize >= 1048576 ? sprintf("%.3g",$set::image_maxsize/1048576).'MB' : sprintf("%.3g",$set::image_maxsize/1024).'KB';
-  return <<"HTML";
+  return <<~"HTML";
     <div class="box" id="image" style="max-height:550px;">
       <h2>キャラクター画像</h2>
       <p>
@@ -459,7 +459,7 @@ sub imageForm {
         <a class="button" onclick="imagePositionClose()">画像とセリフの設定を閉じる</a>
       </div>
     </div>
-HTML
+  HTML
 }
 
 ## チャットパレット
@@ -486,7 +486,7 @@ sub chatPaletteForm {
     $status = '<template id="unit-status-template">'.$status.'</template>' if $_ eq 'TMPL';
   }
   
-  return <<"HTML";
+  return <<~"HTML";
     <section id="section-palette" style="display:none;">
       <div class="box" id="unit-setting">
         <h2>ユニット(コマ)の設定</h2>
@@ -572,16 +572,16 @@ sub chatPaletteForm {
         </div>
       </div>
     </section>
-HTML
+  HTML
   sub chatPaletteFormOptional {}
 }
 
 
 ## カラーカスタム欄
 sub colorCostomForm {
-  return <<"HTML";
+  return <<~"HTML";
       <section id="section-color" style="display:none;">
-      <h2>シートのカラー設定</h2>
+      <h2>シートの装飾設定</h2>
       <div class="box-union">
         <div class="box color-custom">
           <h2>メインカラー</h2>
@@ -599,6 +599,14 @@ sub colorCostomForm {
           </table>
           <hr>
           <p class="right"><span class="button" onclick="setDefaultColor();">デフォルトに戻す</span></p>
+        </div>
+        <div class="box font-custom">
+          <h2>名称欄のフォント</h2>
+          <fieldset>
+            <label class="check-button"><input type="radio" name="nameFont" value=""@{[ $::pc{nameFont} eq '' ? ' checked':''] } oninput="changeNameFont()"><span>フォント：<small>デフォルト</small></span></label>
+            @{[ fontCustomForm() ]}
+          </fieldset>
+          $set::test
         </div>
       </div>
       <div class="color-sample">
@@ -652,14 +660,24 @@ sub colorCostomForm {
         </div>
       </div>
       </section>
-HTML
+  HTML
+}
+## フォントカスタム欄
+sub fontCustomForm {
+  my $html;
+  my $i = 1;
+  foreach (@set::googlefonts) {
+    $html .= '<label class="check-button"><input type="radio" name="nameFont" value="'.$_->[0].'"'.($::pc{nameFont} eq $_->[0] ? ' checked':'').' oninput="changeNameFont()"><span style="font-family:'."'$_->[0]'".';font-weight:'.$_->[1].';">フォント：<small>'.$_->[0].'</small></span></label>';
+    $i++;
+  }
+  return $html.'<script>const fontList = '.JSON::PP->new->encode(\@set::googlefonts).';</script>';
 }
 
 ## テキスト整形ルール
 sub textRuleArea {
   my $system_rule = shift;
   my $multiline = shift;
-  return <<"HTML";
+  return <<~"HTML";
     <aside id="text-rule" class="sticky-footer" style="display:none">
       <h2>テキスト装飾・整形ルール</h2>
       <i class="close-button" onclick="view('text-rule')"></i>
@@ -708,7 +726,7 @@ sub textRuleArea {
         コメントアウト：行頭に<code>//</code>：記述した行を非表示にします。
       </div>
     </aside>
-HTML
+  HTML
 }
 
 ## 削除フォーム
@@ -716,7 +734,7 @@ sub deleteForm {
   my $mode = shift;
   return if ($mode ne 'edit');
 
-  my $html = <<"HTML";
+  my $html = <<~"HTML";
     <form name="del" method="post" action="./" class="deleteform">
       <fieldset style="font-size: 80%;">
         <input type="hidden" name="mode" value="delete">
@@ -730,10 +748,10 @@ sub deleteForm {
         ※チェックを全て入れてください
       </fieldset>
     </form>
-HTML
+  HTML
   # 管理者用画像削除フォーム
   if($LOGIN_ID eq $set::masterid){
-    $html .= <<"HTML";
+    $html .= <<~"HTML";
     <form name="imgdel" method="post" action="./" class="deleteform">
       <fieldset style="font-size: 80%;">
         <input type="hidden" name="mode" value="img-delete">
@@ -747,7 +765,7 @@ HTML
       </fieldset>
     </form>
     <p class="right">@{[ $::in{log}?$::in{log}:'最終' ]}更新時のIP:$::pc{IP}</p>
-HTML
+    HTML
   }
   return $html;
 }

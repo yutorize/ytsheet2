@@ -44,9 +44,14 @@ sub data_calc {
   my %NL;
   foreach ('clanName','leaderName','base','belong'){
     $NL{$_} = $pc{$_} =~ s/[|｜]([^|｜]+?)《.+?》/$1/gr;
-    $NL{$_} = removeTags unescapeTags $NL{$_};
+    $NL{$_} = removeTags unescapeTags $NL{$_} =~ s/^\s|\s$//gr;
   }
-  $NL{rule} = length($pc{rule}) > 50 ? substr($pc{rule}, 0, 50).'...' : $pc{rule};
+  $NL{clanName}   = substr($NL{clanName}  , 0, 108).'..' if length($NL{clanName}  ) > 108;
+  $NL{playerName} = substr($NL{playerName}, 0,  25).'..' if length($NL{playerName}) >  25;
+  $NL{base}   = substr($pc{base}  , 0, 30).'..' if length($pc{base}  ) > 30;
+  $NL{belong} = substr($pc{belong}, 0, 30).'..' if length($pc{belong}) > 30;
+  $NL{rule}   = substr($pc{rule}  , 0, 50).'..' if length($pc{rule}  ) > 50;
+  $NL{leaderName} = substr($NL{leaderName}, 0, 108).'..' if length($NL{leaderName}) > 108;
   $::newline = "$pc{id}<>$::file<>".
                "$pc{birthTime}<>$::now<>$NL{clanName}<>$pc{playerName}<>$pc{group}<>".
                "$pc{image}<> $pc{tags} <>$pc{hide}<>$pc{lastSession}<>".

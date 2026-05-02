@@ -31,6 +31,11 @@ function formCheck(){
     form.schoolName.focus();
     return false;
   }
+  else if(form.category.value === 'skill' && form.skillName.value === ''){
+    alert('名称を入力してください。');
+    form.skillName.focus();
+    return false;
+  }
   if(form.protect.value === 'password' && form.pass.value === ''){
     alert('パスワードが入力されていません。');
     form.pass.focus();
@@ -52,7 +57,14 @@ function setName(){
   else if(category == 'school'){
     name = '【'+ruby(form.schoolName.value)+'】';
   }
-  document.querySelector('#header-menu > h2 > span').innerHTML = name || '(名称未入力)';
+  else if(category == 'skill'){
+    name = '【'+ruby(form.skillName.value)+'】';
+  }
+  let output = name || '(名称未入力)';
+  document.querySelector('#header-menu > h2 > span').innerHTML = output;
+  document.querySelectorAll('.color-sample .name').forEach(div => {
+    div.innerHTML = output;
+  })
 
 }
 
@@ -79,8 +91,14 @@ function checkCategory(){
     case 'school':
       sheetKind = '流派';
       break;
+    case 'skill':
+      sheetKind = '特殊能力';
   }
   document.querySelector('#header-menu .menu-items > .sheet-main .sheet-kind').textContent = sheetKind ?? '';
+
+  if (category === 'skill') {
+    checkRankMode();
+  }
 }
 
 // 魔法系統 ----------------------------------------
@@ -146,16 +164,23 @@ function checkMagicClass(){
   form.magicActionTypePassive.parentNode.style.display = (magic.match(/^(騎芸|操気)$/)) ? '' : 'none';
   form.magicActionTypeMajor.parentNode.style.display   = (magic.match(/^(騎芸|操気)$/)) ? '' : 'none';
   document.querySelector('#data-magic dl.summary').style.display   = (magic == '呪印' || magic == '貴格') ? 'none' : '';
+  document.querySelector('#data-magic dl.level     dt').textContent = (magic.match(/(属性|特殊)妖精魔法|秘奥魔法/)) ? 'ランク' : '習得レベル';
   document.querySelector('#data-magic dl.type      dt').textContent = (magic == '鼓咆') ? '鼓咆の系統' : (magic == '占瞳') ? 'タイプなど' : (magic == '貴格') ? '形態' : '対応';
   document.querySelector('#data-magic dl.premise   dt').textContent = (magic == '呪印') ? '前提ＡＣ'   : '前提';
   document.querySelector('#data-magic dl.condition dt').textContent = (magic == '呪歌') ? '効果発生条件' : (magic == '陣率') ? '使用条件' : '条件';
 
   const levelInput = document.querySelector('#data-magic dl.level dd input');
+  const targetOptionSelf = document.querySelector('#list-target option.self');
+  const rangeOptionSelf = document.querySelector('#list-range option.self');
   if (magic.length === 2) {
     // 練技、呪歌など
     levelInput.setAttribute('list', 'list-craft-required-level');
+    targetOptionSelf.setAttribute('value', "自身");
+    rangeOptionSelf.setAttribute('value', "自身");
   } else {
     levelInput.removeAttribute('list');
+    targetOptionSelf.setAttribute('value', "術者");
+    rangeOptionSelf.setAttribute('value', "術者");
   }
 }
 function viewMagicInputs(items){
@@ -189,7 +214,7 @@ async function addSchoolItem(){
       let tr = document.createElement('tr');
       tr.setAttribute('class','item-data');
       tr.innerHTML = `
-        <td><a href="${url}">${ruby(data.itemName||'')}</a></td>
+        <td><a href="${url}" target="_blank">${ruby(data.itemName||'')}</a></td>
         <td>${data?.category.replace(/\s+/g, '<hr>') ?? ''}</td>
         <td>${data.summary ||''}</td>
         <td class="button" onclick="delSchoolItem(this,'${url}')">×</td>
@@ -238,6 +263,26 @@ function delSchoolMagic(){
 }
 // 並べ替え
 setSortable('schoolMagic','#school-magic-list','.input-data');
+
+// 特殊能力 ----------------------------------------
+function checkRankMode() {
+  const details = document.querySelector('#data-skill > .details');
+  let mode;
+  switch (form['skillRankMode'].value ?? '') {
+    case '0':
+      mode = 'no-rank';
+      break;
+    case '1':
+      mode = 'ranks';
+      break;
+  }
+
+  if (mode != null) {
+    details.dataset.mode = mode;
+  } else {
+    delete details.dataset.mode;
+  }
+}
 
 function setupRangeField(rangeField = null) {
   const rangeFields =

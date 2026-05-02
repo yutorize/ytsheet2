@@ -62,21 +62,20 @@ sub outputChatPalette {
       exit;
     }
   }
+  if (defined &setupPaletteData) { setupPaletteData(); }
   
   if($pc{paletteRemoveTags}){
-    $_ = removeTags(unescapeTags($_) =~ s/<br>/\n/gr) foreach values %pc;
+    $_ = removeTags(unescapeTags($_ =~ s/&lt;br&gt;/{BREAKTAG}/gr)) =~ s/{BREAKTAG}/<br>/gr foreach values %pc;
   }
   else {
     $_ = unescapeTagsPalette($_) foreach values %pc;
   }
   $pc{chatPalette} =~ s/<br>/\n/gi;
-  $pc{skills} =~ s/<br>/\n/gi;
 
   $pc{ver} =~ s/^([0-9]+)\.([0-9]+)\.([0-9]+)$/$1.$2$3/;
   if($pc{ver} < 1.11001){ $pc{paletteUseBuff} = 1; }
 
-  my $preset = $pc{paletteUseVar} ? palettePreset($tool,$type) :  palettePresetSimple($tool,$type) ;
-
+  my $preset = $pc{paletteUseVar} ? palettePreset($tool,$type) : palettePresetSimple($tool,$type);
   $preset = deletePalettePresetBuff($preset) if !$pc{paletteUseBuff};
   if(!$tool){ $preset = swapWordAndCommand($preset); }
 
@@ -85,6 +84,8 @@ sub outputChatPalette {
   else {
     $pc{chatPalette} = $preset if !$pc{chatPalette};
   }
+  if($tool){ $pc{chatPalette} =~ s/<br>/\\n/gi; }
+  else { $pc{chatPalette} =~ s/\\n/<br>/gi; }
 
   my $properties;
   $properties .= $_."\n" foreach( $pc{chatPalettePropertiesAll} ? paletteProperties($tool,$type) : filterByUsedOnly($pc{chatPalette},$tool,$type) );
@@ -168,14 +169,16 @@ sub outputChatPaletteTemplate {
   our %pc;
   for (param()){ $pc{$_} = decode('utf8', param($_)) }
   %pc = data_calc(\%pc);
+  if (defined &setupPaletteData) { setupPaletteData(); }
   if($pc{paletteRemoveTags}){
-    $_ = removeTags(unescapeTags($_) =~ s/<br>/\n/gr) foreach values %pc;
+    $_ = removeTags(unescapeTags($_ =~ s/<br>/{BREAKTAG}/gr)) =~ s/{BREAKTAG}/<br>/gr foreach values %pc;
   }
   else {
     $_ = unescapeTagsPalette($_) foreach values %pc;
   }
   my %json;
   $json{preset} = $pc{paletteUseVar} ? palettePreset($tool,$type) :  palettePresetSimple($tool,$type);
+  $json{preset} =~ s/<br>/\\n/gi if $pc{paletteTool};
   $json{preset} = deletePalettePresetBuff($json{preset}) if !$pc{paletteUseBuff};
   if(!$pc{paletteTool}){ $json{preset} = swapWordAndCommand($json{preset}); }
   $json{properties} .= "$_\n" foreach( paletteProperties($tool,$type) );
@@ -245,7 +248,7 @@ sub unescapeTagsPalette {
   $text =~ s/&lt;br&gt;/\n/gi;
 
   if($set::game eq 'sw2'){
-    $text =~ s/\[(魔|刃|打)\]/&#91;$1&#93;/;
+    $text =~ s/\[(魔|刃|打|流|ア|テ|特|常|準|宣|主|常)\]/&#91;$1&#93;/;
   }
   
   $text =~ s/\[\[(.+?)&gt;((?:(?!<br>)[^"])+?)\]\]/$1/gi; # リンク削除

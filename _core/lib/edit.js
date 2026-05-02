@@ -178,17 +178,80 @@ window.addEventListener('load', () => {
 });
 
 // 名前 ----------------------------------------
-function setName(id){
-  id = id ? id : 'characterName';
-  let name = vCheck(id+'Ruby') ? `<ruby>${form[id].value}<rp>(</rp><rt>${vCheck(id+'Ruby')}</rt><rp>)</rp></ruby>` : ruby(form[id].value);
-  let aka = (form.aka && form.aka.value) ? '<span class="aka">“'+(vCheck('akaRuby') ? `<ruby>${form.aka.value}<rp>(</rp><rt>${vCheck('akaRuby')}</rt><rp>)</rp></ruby>` : `${ruby(form.aka.value)}`)+'”</span>' : '';
-  document.querySelector('#header-menu > h2 > span').innerHTML = (aka + name) || '(名称未入力)';
+function setName(){
+  const main = document.getElementById('main-name')?.name;
+  const sub = document.getElementById('sub-name')?.name;
 
+  console.log(`setName():`, main, sub);
+  
+  let output = '';
+  if(vCheck('aka')){ output += '<span class="aka">“'+(setRuby('aka'))+'”</span>' }
+  if(vCheck(main)){ output += setRuby(main);}
+  if(vCheck(sub)){ output += output ? `<small>（${setRuby(sub)}）</small>` : setRuby(sub);}
+  output ||= '（名称未入力）';
+
+  document.querySelector('#header-menu > h2 > span').innerHTML = output;
+  document.querySelectorAll('.color-sample .name').forEach(div => {
+    div.innerHTML = output;
+  })
+
+  function setRuby(name) {
+    if(vCheck(name+'Ruby')){ return `<ruby>${form[name].value}<rp>(</rp><rt>${form[name+'Ruby'].value}</rt><rp>)</rp></ruby>` }
+    else { return ruby(form[name].value) }
+  }
   function vCheck(id){
     if(form[id]){ return form[id].value; }
     else { return '' }
   }
 }
+const fontWeight = {};
+function setFonts(){
+  console.log(`setFonts()`);
+  fontList.forEach(data => {
+    fontWeight[data[0]] = data[1];
+    setGoogleFont(data[0], "フォント");
+  });
+}
+function changeNameFont(){
+  if(!form.nameFont){ return; }
+  console.log(`changeNameFont()`);
+  const fontName = form.nameFont.value;
+  const h2 = document.querySelector('h2');
+  const targets = [...document.querySelectorAll('.color-sample .name')];
+
+  if(fontName){
+    setGoogleFont(fontName, h2.innerText);
+    targets.forEach(target => {
+      target.style.fontFamily = `"${fontName}"`
+      target.style.fontWeight = fontWeight[fontName] || 'bold';
+    });
+  }
+  else {
+    targets.forEach(target => {
+      target.style.fontFamily = null;
+      target.style.fontWeight = null;
+    });
+  }
+}
+async function setGoogleFont(fontName, charaName){
+  let urlFamilyName = fontName.replace(/ /g, "+");
+  if(Number(fontWeight[fontName])){ urlFamilyName += `:wght@${fontWeight[fontName]}` }
+  const googleApiUrl = `https://fonts.googleapis.com/css2?family=${urlFamilyName}&text=${encodeURIComponent(charaName)}`;
+
+  const response = await fetch(googleApiUrl);
+  if (response.ok) {
+    const cssFontFace = await response.text();
+    const matchUrls = cssFontFace.match(/url\(.+?\)/g);
+    if (!matchUrls) throw new Error("フォントが見つかりませんでした");
+    
+    for (const url of matchUrls) {
+      const font = new FontFace(fontName, url);
+      await font.load();
+      document.fonts.add(font);
+    }
+  }
+}
+
 // ルビ置換 ----------------------------------------
 function ruby(text){
   return text.replace(/[|｜](.+?)《(.+?)》/g, "<ruby>$1<rp>(</rp><rt>$2</rt><rp>)</rp></ruby>");
@@ -615,6 +678,7 @@ function exportAsJson() {
 }
 
 // セクション選択 ----------------------------------------
+let opendSection = {};
 function sectionSelect(id){
   document.querySelectorAll('article > form > section[id^="section"]').forEach( obj => {
     obj.style.display = 'none';
@@ -622,6 +686,11 @@ function sectionSelect(id){
   document.getElementById('section-'+id).style.display = 'block';
   window.scrollTo({ top:0 });
   if(id === 'palette'){ changeNamePlate(); setChatPalette() }
+  if(id === 'color'){
+    if(!opendSection.color){ setFonts(); }
+    changeNameFont();
+  }
+  opendSection[id] = true;
 }
 
 // 目次 ----------------------------------------
@@ -840,6 +909,10 @@ function delRowNode(targetSelector, initialText){
 // 行ソート ----------------------------------------
 function setSortable(namePrefix, targetSelector, rowElement = '', addReplace, nextFunction){
   console.log(`setSortable('${namePrefix}','${targetSelector}','${rowElement}')`)
+  if(!document.querySelector(targetSelector)){
+    console.error(`'${targetSelector}'がありません。`);
+    return;
+  }
   const regExp = new RegExp(`^(${namePrefix})[0-9]+(.*)$`);
   let sortable = Sortable.create(document.querySelector(targetSelector), {
     dataIdAttr: 'id',
@@ -902,7 +975,12 @@ function formatNumber(num){
 function ucfirst(str){
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
-
+// ケース変換 ----------------------------------------
+function camelToKebab(str) {
+  return str
+    .replace(/([a-z0-9])([A-Z])/g, "$1-$2")
+    .toLowerCase();
+}
 // 安全なeval ----------------------------------------
 function safeEval(text){
   if     (text === '') { return 0; }

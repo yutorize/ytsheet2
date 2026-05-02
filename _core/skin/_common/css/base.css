@@ -2,11 +2,13 @@
 
 /* ゆとシートⅡ */
 
-@import url('https://fonts.googleapis.com/css?family=Varela+Round&text=0123456789%25%23%40-%2B%3D');
-@import url('https://fonts.googleapis.com/css?family=Raleway:500,700&text=ABCČĆDĐEFGHIJKLMNOPQRSŠTUVWXYZŽabcčćdđefghijklmnopqrsštuvwxyzž%26%20');
-@import url('https://fonts.googleapis.com/css?family=Kosugi&text=%E2%80%9C%E2%80%9D');
-@import url('https://fonts.googleapis.com/css?family=Noto+Serif+JP:400,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Varela+Round&text=0123456789%25%23%40-%2B%3D');
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@500;700&text=ABCČĆDĐEFGHIJKLMNOPQRSŠTUVWXYZŽabcčćdđefghijklmnopqrsštuvwxyzž%26%20');
+@import url('https://fonts.googleapis.com/css2?family=Kosugi&text=%E2%80%9C%E2%80%9D');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,300..700,0..1,-25');
+
 @font-face { font-family: "Arial"; src: local("Arial"); unicode-range: U+0020-0039,U+003F-007F; }
 
 main::before {
@@ -153,6 +155,7 @@ body {
   text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
   -webkit-print-color-adjust: exact;
+  text-spacing-trim: space-all;
 }
 
 hr {
@@ -476,6 +479,7 @@ aside#sidebar-right {
   }
 }
 aside#sidebar-left {
+  grid-column: 1;
   text-align: right;
 }
 aside#sidebar-top,

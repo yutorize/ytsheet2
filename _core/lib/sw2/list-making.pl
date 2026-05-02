@@ -181,6 +181,7 @@ $INDEX->param(formOn => 1) if !$::in{num} && !$::in{id};
 $INDEX->param(title => $set::title);
 $INDEX->param(ver => $::ver);
 $INDEX->param(coreDir => $::core_dir);
+$INDEX->param(gameDir => $set::game);
 
 ### 出力 #############################################################################################
 print "Content-Type: text/html\n\n";

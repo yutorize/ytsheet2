@@ -14,6 +14,7 @@ window.onload = function() {
   checkStage();
   checkWorks();
   checkSyndrome();
+  encroachModeChanged();
   calcStt();
   calcEffect();
   calcMagic();
@@ -450,6 +451,33 @@ function encroachBonusSet(enc){
   }
 }
 
+function encroachModeChanged() {
+  const checkbox = document.querySelector('input[name="encroachFixed"]');
+  const fixed = checkbox != null && checkbox.checked;
+
+  const lifePathNode = document.getElementById('lifepath');
+  lifePathNode.classList.toggle('encroach-fixed', fixed);
+
+  const awakenInputCell = lifePathNode.querySelector('tbody.awaken tr > td:nth-child(2)');
+  const awakenNoteCell = lifePathNode.querySelector('tbody.awaken tr > td:last-child');
+  const impulseInputCell = lifePathNode.querySelector('tbody.impulse tr:first-child > td:nth-child(2)');
+  const impulseNoteCell = lifePathNode.querySelector('tbody.impulse tr:first-child > td:last-child');
+
+  if (fixed) {
+    awakenInputCell.setAttribute('colspan', '2');
+    awakenNoteCell.setAttribute('colspan', '2');
+    impulseInputCell.setAttribute('colspan', '2');
+    impulseNoteCell.setAttribute('colspan', '2');
+  } else {
+    awakenInputCell.removeAttribute('colspan');
+    awakenNoteCell.removeAttribute('colspan');
+    impulseInputCell.removeAttribute('colspan');
+    impulseNoteCell.removeAttribute('colspan');
+  }
+
+  calcEncroach();
+}
+
 // ロイス ----------------------------------------
 function emoP(num){ form["lois"+num+"EmoNegaCheck"].checked = false; }
 function emoN(num){ form["lois"+num+"EmoPosiCheck"].checked = false; }
@@ -751,7 +779,7 @@ function calcCombo(num){
 function addCombo(copyBaseNum){
   const row = createRow('combo','comboNum');
   const num = form.comboNum.value;
-  document.querySelector(`#combo-list > div:nth-of-type(${copyBaseNum||num-1})`).after(row);
+  document.querySelector(`#combo-list`).appendChild(row);
 
   if(copyBaseNum){
     row.querySelectorAll('[name]').forEach(node => {

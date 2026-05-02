@@ -26,7 +26,7 @@
 }
 @media screen and (width > 735px){
   #regulation .annotate {
-    margin-top: -1em;
+    margin-top: -.5em;
     margin-bottom: 10px;
   }
 }
@@ -186,9 +186,21 @@
 
 #area-classes {
   grid-column: span 2;
-  display: flex;
+  display: grid;
+  gap: 3px var(--box-h-gap);
+  grid-template-columns: 2fr 1fr;
+  &:has(#classes-stages [data-stage]:not(.hidden)){
+    grid-template-columns: 5fr 2fr;
+  }
   position: relative;
   justify-content: space-between;
+  align-items: start;
+  
+  @media screen and (width > 735px){
+    > .box {
+      margin-top: 0;
+    }
+  }
 }
 #area-classes.common-classes-off {
   flex-basis: calc(75% - 1rem);
@@ -196,14 +208,14 @@
 }
 
 #classes {
-  flex-basis: 75%;
-  flex-grow: 1;
+  grid-row: 1;
+  grid-column: 1;
   display: grid;
+  grid-template-columns: 1fr 1fr;
   position: relative;
-  grid-template-columns: 1fr 1fr 0.8fr;
-  &:has(#classes-extra.hidden){
-    flex-basis: 66%;
-    grid-template-columns: 1fr 1fr;
+
+  &:has(#classes-stages [data-stage]:not(.hidden)){
+    grid-template-columns: 1fr 1fr 0.8fr;
   }
 
   & h2 { grid-column: span 3; }
@@ -211,7 +223,7 @@
   #classes-weapon-user { grid-column: 1; }
   #classes-magic-user  { grid-column: 1; align-self: end; }
   #classes-others      { grid-column: 2; grid-row: 2 / span 2; }
-  #classes-extra       { grid-column: 3; grid-row: 2 / span 2; }
+  #classes-stages      { grid-column: 3; grid-row: 2 / span 2; }
   #classes-seeker      { grid-column: 3; grid-row: 2 / span 2; }
 
   & h3 {
@@ -226,17 +238,49 @@
     & dt {
       font-size: inherit;
     }
-    & select {
-      font-size: 80%;
+    & dt:has(+ dd + .hidden),
+    & dd:has(+ .hidden){
+      border-bottom-style: hidden;
+    }
+    & dt:has(+ dd + .hidden ~ :not(.hidden)),
+    & dd:has(+ .hidden ~ :not(.hidden)){
+      border-bottom-style: solid;
+    }
+  }
+  & select[name="faithType"] {
+    font-size: 80%;
+    width: calc(100% - 7em);
+  }
+  & .fail select[name="faithType"] {
+    width: calc(100% - 8.5em);
+  }
+  & #classes-seeker {
+    > dl {
+      grid-template-columns: 5em 1fr;
+      & dt {
+        font-size: 85%;
+        align-content: end;
+      }
     }
   }
 }
 #common-classes {
-  flex-grow: 1;
-  margin: 0 0 0 var(--box-h-gap) !important;
-
+  grid-row: 1;
+  grid-column: 2;
   & td:last-child {
     width: 3.5em;
+  }
+}
+#free-classes {
+  grid-row: 2;
+  &:not([open]){
+    max-width: max-content;
+  }
+  grid-column: span 2;
+  > table {
+    & th.small { line-height: 1; }
+    & th.lv  { width: 3em; }
+    & th.exp { width: 4em; }
   }
 }
 @media screen and (width <= 735px){
@@ -259,12 +303,8 @@
       grid-template-columns: 1fr 5em;
     }
     & dl dt {
-      display: flex;
-      align-items: center;
+      align-content: center;
     }
-  }
-  #common-classes {
-    margin: var(--box-v-gap) 0 0 !important;
   }
   #common-classes table {
     width: calc(100% - 1rem - 3.6em);
@@ -278,7 +318,7 @@
 
 #combat-feats {
   margin-left: 0;
-  & select {
+  & :is(select, input[type="text"]) {
     margin-left: 1em;
     width: calc(100% - 4px - 1em);
   }
@@ -334,14 +374,14 @@
   }
   & ul li {
     display: grid;
-    grid-template-columns: max-content 1fr 4em;
+    grid-template-columns: max-content max-content 1fr max-content 4em;
     grid-template-rows: auto;
     .handle {
       width: 1.2em;
       margin-left: -.5rem;
     }
     #sw2\.0 & {
-      grid-template-columns: max-content 1fr 6em;
+      grid-template-columns: max-content max-content 1fr max-content 6em;
       .honor-pt {
         margin: 2px;
       }
@@ -520,6 +560,15 @@
   & ul li:last-child {
     padding-bottom: 1px;
   }
+  & ul li:has(.handle){
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    grid-template-rows: auto;
+    .handle {
+      width: 1.2em;
+      margin-left: -.5rem;
+    }
+  }
 }
 @media screen and (width <= 735px){
   #crafts {
@@ -637,7 +686,8 @@
     }
 
     &:not(.sag-available) select option[value="Sag"],
-    &:not(.bar-available) select option[value="Bar"] {
+    &:not(.bar-available) select option[value="Bar"],
+    &:not(.juj-available) select option[value="Juj"] {
       display: none;
     }
   }
@@ -667,70 +717,82 @@
   grid-column: span 3;
   max-width: max-content;
   min-width: 10em;
-}
-#magic-power #magic-power-hr td {
-  height: .5em;
-}
-#magic-power table td:nth-child(3) {
-  padding-left : .5em;
-  padding-right: .5em;
-  border-width: 0 1px;
-  border-style: none dotted;
-  font-size: 85%;
-  text-align: left;
-  & input {
-    vertical-align: text-bottom;
-  }
-  & label {
-    line-height: 1;
-  }
-}
-#magic-power table td:nth-child(4),
-#magic-power table td:nth-child(5),
-#magic-power table td:nth-child(6) {
-  width: max-content !important;
-  padding-right: .2em;
-  text-align: left;
-}
-#magic-power table td b {
-  display: inline-block;
-  min-width: 2.5em;
-  padding-right : .2em;
-  line-height: 1.6;
-  font-weight: normal;
-  text-align: center;
-  white-space: nowrap;
-}
-#magic-power table td input[type=number] {
-  width: 3.5em;
-}
-#magic-power a {
-  font-size: 90%;
-}
-#magic-power #fairycontact {
-  display: flex;
-  justify-content: center;
-  margin: 0 -.2em;
-  border-width: .1rem 0 0;
-  border-style: solid;
-  & label {
-    padding: .2em;
-    & input[type="checkbox"] {
-      width: auto;
-      margin-right: .2em;
-      border: 0;
-      vertical-align: middle;
-      transform: scale(1.1);
+  width: auto;
+
+  > table {
+    > #magic-power-hr td {
+      height: .5em;
     }
-    & span {
-      padding: .2em 0;
+    & td:nth-child(3) {
+      padding-left : .5em;
+      padding-right: .5em;
+      border-width: 0 1px;
+      border-style: none dotted;
       font-size: 85%;
+      text-align: left;
+      & input {
+        vertical-align: text-bottom;
+      }
+      & label {
+        line-height: 1;
+      }
     }
-    & input[type="number"] {
-      width: 2em;
-      border: 0;
-      vertical-align: middle;
-      transform: scale(1.1);
+    & td:nth-child(4),
+    & td:nth-child(5),
+    & td:nth-child(6) {
+      width: max-content !important;
+      padding-right: .2em;
+      text-align: left;
+    }
+    & td:not(:has(input)){
+      text-align: center !important;
+    }
+    & td b {
+      display: inline-block;
+      min-width: 2.5em;
+      padding-right : .2em;
+      line-height: 1.6;
+      font-weight: normal;
+      text-align: center;
+      white-space: nowrap;
+    }
+    & td input {
+      &[type=number] {
+        width: 3.5em;
+      }
+      &[type="text"]{
+        width: 6em;
+      }
+    }
+  }
+  & a {
+    font-size: 90%;
+  }
+  & #fairycontact {
+    display: flex;
+    justify-content: center;
+    margin: 0 -.2em;
+    border-width: .1rem 0 0;
+    border-style: solid;
+    & label {
+      padding: .2em;
+      & input[type="checkbox"] {
+        width: auto;
+        margin-right: .2em;
+        border: 0;
+        vertical-align: middle;
+        transform: scale(1.1);
+      }
+      & span {
+        padding: .2em 0;
+        font-size: 85%;
+      }
+      & input[type="number"] {
+        width: 2em;
+        border: 0;
+        vertical-align: middle;
+        transform: scale(1.1);
+      }
     }
   }
 }
@@ -769,15 +831,9 @@
   }
 }
 
-#classes dl dt.zero-data,
-option.zero-data {
+body:not(#sw2\.0) [data-stage="2.0"],
+body#sw2\.0 [data-stage="2.5"] {
   background-color: rgba(0,200,255,0.2);
-}
-#classes dl dt.zero-data {
-  font-family: 'Arial';
-}
-option.zero-data::before {
-  content: '★';
 }
 
 #attack-classes {
@@ -788,6 +844,7 @@ option.zero-data::before {
       .dmg { width: 4.5em; } /* 追加Ｄ */
     }
   }
+  &:has(tbody:empty){ display: none; }
 }
 #weapons {
   width: 100%;
@@ -885,6 +942,10 @@ option.zero-data::before {
 
 #evasion-classes {
   width: calc(25% + 18.5em + 1px);
+  &:has(tbody:empty){
+    display: none;
+    + #armours{  margin-top: var(--box-v-gap); }
+  }
 }
 #evasion-class-row .flex {
   display: flex;
@@ -1093,14 +1154,33 @@ option.zero-data::before {
   height: 20em;
 }
 
-#cashbook textarea {
+#cashbook-others {
+  margin-top: var(--box-v-gap);
+}
+#cashbook textarea,
+#cashbook-others textarea {
   height: 16em;
 }
-#cashbook-total-value {
+#cashbook-others div {
+  margin-top: 0;
+  max-height: max-content;
+}
+#cashbook-others .cashbook-row {
+  margin-top: 0;
+  padding-bottom: 0.5em;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+}
+#cashbook-others input {
+  width: 8em;
+}
+#cashbook-total-value,
+#cashbook-others [id$="total-value"] {
   font-size: 120%;
   font-weight: bold;
 }
-#cashbook p {
+#cashbook p,
+#cashbook-others p {
   font-size: 90%;
   font-family: inherit;
   white-space: normal;
@@ -1236,8 +1316,7 @@ option.zero-data::before {
     .title      { width:  12em; }
     .exp        { width:   5em; }
     .money      { width: 4.5em; }
-    .honor      { width: 3.5em; }
-    .honor.zero-data { width: 5em; }
+    .honor      { width: 3.5em; #sw2\.0 & { width: 5em; } }
     .grow       { width: 4.5em; }
     .gm         { width:   6em; }
     .member     { width:  auto; }
@@ -1402,7 +1481,7 @@ article > form > hr {
       &.name { width: 14em; }
       &.power { width: 6em; }
       &.cast  { width: 6em; }
-      &.rate { width: 6em; }
+      &.rate  { width: 6em; }
       &.crit  { width: 6em; }
       &.dmg   { width: 6em; }
       &.roll  { width: 6em; }
@@ -1657,9 +1736,10 @@ form#monster .color-sample .name {
   border-color: var(--monster-level-bg-color);
   background: transparent;
   position: relative;
-  padding-left: 1.8em;
+  padding-left: 2.2em;
+  line-height: 1;
   &::before {
-    content: "！";
+    content: "00";
     display: block;
     position: absolute;
     top: 0;
@@ -1669,8 +1749,21 @@ form#monster .color-sample .name {
     background-color: var(--monster-level-bg-color);
     background-image: linear-gradient(to bottom, transparent, rgba(0,0,0,0.4));
     color: #fff;
+    font-size: 120%;
+    font-weight: bold;
+    font-family: "Varela Round", "Raleway", var(--base-font-family-jp);
     text-align: center;
+    align-content: center;
   }
+  &::after {
+    content: "表示見本：ライトモード";
+    display: block;
+    text-align: right;
+    font-size: 1.2rem;
+    font-family: "Varela Round", "Raleway", var(--base-font-family-jp);
+    font-weight: normal;
+  }
+  .night &::after { content: "表示見本：ナイトモード" }
 }
 form#monster .color-sample .box,
 form#item .color-sample .box,
@@ -1976,6 +2069,93 @@ form#arts #school-item-list thead th {
 }
 
 form#arts #school-item-list tbody td:nth-child(3) { font-size: 82%; }
+
+form#arts #data-skill {
+  input[name="skillActionBaseValue"] {
+    width: 30em;
+    max-width: initial;
+  }
+
+  .details {
+    &:not([data-mode]) {
+      display: none;
+    }
+
+    > h2 {
+      margin-top: 0;
+    }
+
+    > .ranks {
+      display: grid;
+      grid-template-columns: max-content 1fr;
+      padding: 0.5em 0.5em 0.25em 0.5em;
+
+      > dt:not(:first-of-type),
+      > dd:not(:first-of-type) {
+        margin-top: 0.75em;
+      }
+
+      > dt {
+        grid-column: 1 / 2;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 0.5em;
+        background-color: rgba(128, 128, 128, 0.35);
+        margin-right: 0.5em;
+      }
+
+      > dd {
+        grid-column: 2 / 3;
+
+        > .details {
+          display: grid;
+          grid-template-rows: repeat(2, max-content);
+          grid-template-columns: max-content 1fr;
+
+          > dt {
+            grid-column: 1 / 2;
+
+            &::after {
+              content: ':';
+              font-weight: normal;
+            }
+          }
+
+          > dd {
+            grid-column: 2 / 3;
+            height: max-content;
+
+            input,
+            textarea {
+              margin: 0;
+            }
+          }
+
+          > .summary {
+            margin-bottom: 0.5em;
+          }
+        }
+      }
+    }
+
+    &[data-mode="no-rank"] {
+      .for-ranks {
+        display: none;
+      }
+
+      .ranks {
+        > [data-rank]:not([data-rank="B"]) {
+          display: none;
+        }
+
+        dt.rank {
+          display: none;
+        }
+      }
+    }
+  }
+}
 
 @media screen and (width <= 735px){
   form#arts div.input-data dl dt {

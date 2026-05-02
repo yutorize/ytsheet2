@@ -4,6 +4,8 @@ use utf8;
 
 package set;
 
+require $::core_dir . '/lib/config-default.pl';
+
 our $game = 'sw2';
 
 # config.cgiのほうが優先されます
@@ -13,49 +15,6 @@ our $game = 'sw2';
 ## ●タイトル
   our $title = 'ゆとシートⅡ for SW2.0';
 
-## ●管理パスワード
-  our $masterkey = '';
-  
-## ●管理人ユーザーID (指定したIDは非表示のシートの閲覧や全シートの編集ができます)
-  our $masterid = '';
-
-## ●登録関係
- # 登録キー
-  our $registerkey = '';
- # データ作成・編集にユーザー登録（ログイン状態）を必須にする
-  our $user_reqd = 0;
- # キャラクター・魔物のIDをランダムではなくユーザーID＋番号(001,002..)にする(魔物はm001..)
-  our $id_type = 0;
-
-## ●OAuth2 でのログイン関係
- # OAuth2 を提供するサービスの名称。現在 Discord と Google のみ対応
-  our $oauth_service = '';
- # OAuth2 で利用するサービスにユーザがログインするための URL
-  our $oauth_login_url = '';
- # OAuth2 で利用するサービスから払い出される client_id
-  our $oauth_client_id = '';
- # OAuth2 で利用するサービスから払い出される client_secret
-  our $oauth_secret_id = '';
- # ゆとシート2 の URL のうち index.cgi を oauth.cgi に置換したもの
-  our $oauth_redirect_url = '';
- # OAuth2 のスコープ
-  our $oauth_scope = '';
-
- # OAuth で Discord を利用する場合のみ利用可能 ログインを許可する Discord のサーバ一覧。空リストの場合は制限しない
-  our @oauth_discord_login_servers = (); 
-
-## ●画像関係
- # キャラクター画像のファイルサイズ上限(単位byte)
-  our $image_maxsize = 1024 * 1024 * 1;
-
-
-## ●削除関係
- # データを削除するとき、バックアップも削除 する=1 しない=0
-  our $del_back = 0;
-
-## ●一覧表示関係
- # キャラクター一覧を簡易表示にする
-  our $simplelist = 0; 
 
 ## ●グループ設定
  # ["ID", "ソート順(空欄で非表示)", "分類名", "分類の説明文"],
@@ -68,12 +27,6 @@ our $game = 'sw2';
 
  # デフォルトのグループID
   our $group_default = 'pc';
-
- # トップページのキャラクター最大表示数（1グループあたり／無制限=0）
-  our $list_maxline = 0;
-
- # グループ個別表示時や検索結果表示時の1ページあたりの最大表示数（0で全部表示）
-  our $pagemax = 0;
 
  # グループ自動移動（レベルと経験点で自動で分ける設定）
  # ['自動にしたいグループのID', 上限Lv, 上限経験点],
@@ -159,15 +112,6 @@ our @effects = (
 );
 
 
-## ●保存時の送信モード
- # Base64にして送信するかどうか
- #（ロリポップなどでファイアウォールに引っ掛かる場合、「1」（=ON）にする）
-  our $base64mode = 0;
-
-## ●Cookie
- # Cookieの名前
-  our $cookie = 'ytsheet2';
-
 ## ●特殊ハウスルール向け
  # 戦闘用アイテム欄
  # our $battleitem = 1;
@@ -176,9 +120,6 @@ our @effects = (
  # our $growtype = '';
 
 ## ●各種ファイルへのパス
-  our $sendmail = '/usr/sbin/sendmail'; # sendmailのパス
-  our $admimail = 'noreply@yutorize.2-d.jp'; # 管理者メールアドレス
-  
   our $data_dir = './data/'; # データ格納ディレクトリ
   our $passfile = $data_dir . 'charpass.cgi'; # パスワード記録ファイル
   our $listfile = $data_dir . 'charlist.cgi'; # キャラクター一覧ファイル
@@ -199,7 +140,7 @@ our @effects = (
 
   # 編集画面
   our $lib_edit = $::core_dir . '/lib/edit.pl';
-  our $lib_edit_char = $::core_dir . '/lib/sw2.0/edit-chara.pl';
+  our $lib_edit_char = $::core_dir . '/lib/sw2/edit-chara.pl';
   # 保存処理
   our $lib_save   = $::core_dir . '/lib/save.pl';
   our $lib_calc_char = $::core_dir . '/lib/sw2/calc-chara.pl';
@@ -234,7 +175,7 @@ our @effects = (
   # HTMLテンプレート
   our $icon_dir   = $::core_dir . '/skin/sw2/img/'; # 武器アイコンのあるディレクトリ
   our $skin_tmpl  = $::core_dir . '/skin/sw2/index.html';         # 一覧／登録フォーム等の大枠
-  our $skin_sheet = $::core_dir . '/skin/sw2.0/sheet-chara.html';   # キャラクターシート
+  our $skin_sheet = $::core_dir . '/skin/sw2/sheet-chara.html';   # キャラクターシート
   
   # 魔物・アイテム・魔法/流派などの設定
   our %lib_type = (

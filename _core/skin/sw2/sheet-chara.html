@@ -4,7 +4,7 @@
 <head>
 <TMPL_INCLUDE NAME="../_common/sheet-head.html">
 </head>
-<body>
+<body <!-- TMPL_IF modeZero -->id="sw2.0"<!-- /TMPL_IF -->>
   <header>
     <h1><a href="./"><TMPL_VAR title></a></h1>
     <nav>
@@ -106,7 +106,7 @@
         <p class="image-copyright"><TMPL_VAR imageCopyright></p>
         </div>
         <TMPL_ELSE>
-        <div id="image-none" class="image-none" data-title="SW&#13;&#10;2.5"><p class="words" style="<TMPL_VAR wordsX><TMPL_VAR wordsY>"><TMPL_VAR words></p></div>
+        <div id="image-none" class="image-none" data-title="SW&#13;&#10;<TMPL_IF modeZero>2.0<TMPL_ELSE>2.5</TMPL_IF>"><p class="words" style="<TMPL_VAR wordsX><TMPL_VAR wordsY>"><TMPL_VAR words></p></div>
         </TMPL_IF>
 
         <div id="personal">
@@ -128,9 +128,9 @@
           <dl class="box" id="faith">
             <dt>信仰<dd><TMPL_VAR faith>
           </dl>
-          <dl class="box" id="rank">
+          <TMPL_UNLESS modeZero><dl class="box" id="rank">
             <dt>ランク<dd><TMPL_VAR rankAll>
-          </dl>
+          </dl></TMPL_UNLESS>
           <dl class="box" id="sin">
             <dt>穢れ<dd><TMPL_VAR sin>
           </dl>
@@ -192,7 +192,11 @@
         </div>
         
         <dl class="box" id="level">
-          <dt><span>冒険者<span class="shorten">レベル</span></span><dd><TMPL_VAR level>
+          <TMPL_IF lvMonster>
+            <dt><span>魔物<span class="shorten">レベル</span></span><dd><TMPL_VAR lvMonster>
+          <TMPL_ELSE>
+            <dt><span>冒険者<span class="shorten">レベル</span></span><dd><TMPL_VAR level>
+          </TMPL_IF>
         </dl>
         <section class="box" id="exp">
           <h2>経験点</h2>
@@ -226,6 +230,25 @@
               </TMPL_LOOP>
             </dl>
           </section></TMPL_IF>
+
+          <TMPL_IF Seeker><section class="box" id="seeker">
+            <h2>求道者</h2>
+            <dl class="data-table side-margin">
+              <TMPL_LOOP Seeker>
+              <dt><TMPL_VAR NAME><dd><TMPL_VAR LV>
+              </TMPL_LOOP>
+            </dl>
+          </section></TMPL_IF>
+          <TMPL_IF SeekerSkills>
+          <section class="box" id="seeker-abilities">
+            <h2>特殊能力</h2>
+            <ul class="data-table side-margin">
+              <TMPL_LOOP SeekerSkills>
+              <li><TMPL_VAR NAME>
+              </TMPL_LOOP>
+            </ul>
+          </section>
+          </TMPL_IF>
 
           <TMPL_LOOP Effects><section class="box effects">
             <h2>
@@ -277,7 +300,7 @@
             <h2><TMPL_VAR jNAME></h2>
             <ul class="data-table side-margin">
               <TMPL_LOOP MAGICS>
-              <li id="magic-<TMPL_VAR eNAME><TMPL_VAR __counter__>"><TMPL_VAR MARK><span <TMPL_VAR RUBY>>【<TMPL_VAR NAME>】</span>
+              <li id="magic-<TMPL_VAR eNAME><TMPL_VAR __counter__>"><TMPL_VAR MARK><span <TMPL_VAR RUBY>><TMPL_VAR NAME></span><TMPL_IF ALIAS><span class="alias"><TMPL_VAR ALIAS></span></TMPL_IF>
               </TMPL_LOOP>
             </ul>
           </section></TMPL_LOOP>
@@ -299,7 +322,7 @@
       <div id="area-actions">
         <div id="area-package">
           <section class="box" id="package">
-            <h2>判定パッケージ</h2>
+            <h2><TMPL_UNLESS modeZero>判定パッケージ<TMPL_ELSE>非戦闘判定</TMPL_UNLESS></h2>
             <table class="data-table side-margin line-tbody">
               <TMPL_LOOP Packages><tbody>
                 <TMPL_LOOP Packs><tr>
@@ -343,6 +366,14 @@
           </table>
           <TMPL_IF languageListenOnlyExist><p id="language-notice"><small>△＝聞き取り限定</small></p></TMPL_IF>
         </section>
+        <script>
+          addEventListener("DOMContentLoaded", (event) => {
+            if(document.getElementById('attack-classes') && window.matchMedia('(width > 735px)').matches){
+            console.log(document.getElementById('attack-classes').offsetHeight)
+              document.getElementById('language').style.marginBottom = `-${document.getElementById('attack-classes').offsetHeight}px`;
+            }
+          });
+        </script>
         <TMPL_IF MagicPowers>
         <section class="box" id="magic-power">
           <h2><TMPL_VAR MagicPowerHeader></h2>
@@ -516,6 +547,11 @@
             <dt>所持金<dd><span class="value"><TMPL_VAR money></span> <span class="unit">G</span>
             <dt>預金／借金<dd><span class="value"><TMPL_VAR deposit></span> <span class="unit">G</span>
           </dl>
+          <TMPL_IF CashbookOthers><div id="other-currency">
+            <TMPL_LOOP CashbookOthers><dl class="box">
+              <dt><TMPL_VAR NAME><dd><span class="value"><TMPL_VAR TOTAL></span> <span class="unit"><TMPL_VAR UNIT></span>
+            </dl></TMPL_LOOP>
+          </div></TMPL_IF>
           <section class="box" id="items">
             <h2><TMPL_IF head_items><TMPL_VAR head_items><TMPL_ELSE>所持品</TMPL_IF></h2>
             <p><TMPL_VAR items></p>
@@ -543,45 +579,76 @@
             <ul class="data-table side-margin"><TMPL_LOOP BattleItems><li><TMPL_VAR ITEM DEFAULT="&nbsp;"></TMPL_LOOP></ul>
           </section>
           </TMPL_IF>
-          <div id="honor">
-            <dl class="box"><dt><TMPL_VAR headTextHonor DEFAULT=名誉点><dd><TMPL_VAR honor></dl>
-            <TMPL_UNLESS unlockRyugai><div class="box-union">
-              <TMPL_IF rankHonorValue><dl class="box" id="adventurer-rank"><dt>冒険者ランク<dd><TMPL_VAR rank></dl></TMPL_IF>
-              <TMPL_IF rankBarbarosValue><dl class="box" id="barbaros-rank"><dt>バルバロス栄光ランク<dd><TMPL_VAR rankBarbaros></dl></TMPL_IF>
-              <TMPL_UNLESS rankHonorValue><TMPL_UNLESS rankBarbarosValue><dl class="box" id="adventurer-rank><dt">ランク<dd>―</dl></TMPL_UNLESS></TMPL_UNLESS>
-            </div></TMPL_UNLESS>
-          </div>
-          <section class="box honor-items" id="honor-items">
-            <h2><TMPL_VAR headTextHonorItems DEFAULT=名誉アイテム></h2>
-            <table class="data-table side-margin">
-              <thead>
-                <tr><th><th>点数
-              </thead>
-              <tbody>
-                <TMPL_IF rankHonorValue><tr><td>冒険者ランク<td><TMPL_VAR rankHonorValue></TMPL_IF>
-                <TMPL_IF rankBarbarosValue><tr><td>バルバロス栄光ランク<td><TMPL_VAR rankBarbarosValue></TMPL_IF>
-                <TMPL_IF displayArtsHonor><tr><td><TMPL_VAR headMysticArts DEFAULT=秘伝><td><TMPL_VAR MysticArtsHonor></TMPL_IF>
-                <TMPL_LOOP HonorItems><tr><td class="left"><TMPL_VAR NAME><td><TMPL_VAR PT></TMPL_LOOP>
-                <TMPL_IF honorOffset><tr><td><TMPL_VAR headTextDishonor DEFAULT=不名誉点>相殺<td><TMPL_VAR honorOffset></TMPL_IF>
-                <TMPL_IF honorOffsetBarbaros><tr><td>不名誉点相殺（蛮族）<td><TMPL_VAR honorOffsetBarbaros></TMPL_IF>
-              </tbody>
-            </table>
-          </section>
-          <TMPL_IF DishonorItems>
-          <div id="dishonor">
-            <dl class="box"><dt><TMPL_VAR headTextDishonor DEFAULT=不名誉点><dd><TMPL_VAR dishonor></dl>
-            <TMPL_UNLESS unlockRyugai><dl class="box"><dt>不名誉称号<dd><TMPL_VAR notoriety></dl></TMPL_UNLESS>
-          </div>
-          <section class="box honor-items" id="dishonor-items">
-            <h2><TMPL_VAR headTextDishonorItems DEFAULT=不名誉詳細></h2>
-            <table class="data-table side-margin">
-              <thead><tr><th><th>点数</thead>
-              <tbody>
-                <TMPL_LOOP DishonorItems><tr><td class="left"><TMPL_VAR NAME><td><TMPL_VAR PT></TMPL_LOOP>
-              </tbody>
-            </table>
-          </section>
-          </TMPL_IF>
+          <TMPL_UNLESS modeZero>
+            <div id="honor">
+              <dl class="box"><dt><TMPL_VAR headTextHonor DEFAULT=名誉点><dd><TMPL_VAR honor></dl>
+              <TMPL_UNLESS unlockRyugai><div class="box-union">
+                <TMPL_IF rankHonorValue><dl class="box" id="adventurer-rank"><dt>冒険者ランク<dd><TMPL_VAR rank></dl></TMPL_IF>
+                <TMPL_IF rankBarbarosValue><dl class="box" id="barbaros-rank"><dt>バルバロス栄光ランク<dd><TMPL_VAR rankBarbaros></dl></TMPL_IF>
+                <TMPL_UNLESS rankHonorValue><TMPL_UNLESS rankBarbarosValue><dl class="box" id="adventurer-rank><dt">ランク<dd>―</dl></TMPL_UNLESS></TMPL_UNLESS>
+              </div></TMPL_UNLESS>
+            </div>
+            <section class="box honor-items" id="honor-items">
+              <h2><TMPL_VAR headTextHonorItems DEFAULT=名誉アイテム></h2>
+              <table class="data-table side-margin">
+                <thead>
+                  <tr><th><th>点数
+                </thead>
+                <tbody>
+                  <TMPL_IF rankHonorValue><tr><td>冒険者ランク<td><TMPL_VAR rankHonorValue></TMPL_IF>
+                  <TMPL_IF rankBarbarosValue><tr><td>バルバロス栄光ランク<td><TMPL_VAR rankBarbarosValue></TMPL_IF>
+                  <TMPL_IF displayArtsHonor><tr><td><TMPL_VAR headMysticArts DEFAULT=秘伝><td><TMPL_VAR MysticArtsHonor></TMPL_IF>
+                  <TMPL_LOOP HonorItems><tr><td class="left"><TMPL_VAR NAME><td><TMPL_VAR PT></TMPL_LOOP>
+                  <TMPL_IF honorOffset><tr><td><TMPL_VAR headTextDishonor DEFAULT=不名誉点>相殺<td><TMPL_VAR honorOffset></TMPL_IF>
+                  <TMPL_IF honorOffsetBarbaros><tr><td>不名誉点相殺（蛮族）<td><TMPL_VAR honorOffsetBarbaros></TMPL_IF>
+                </tbody>
+              </table>
+            </section>
+            <TMPL_IF DishonorItems>
+            <div id="dishonor">
+              <dl class="box"><dt><TMPL_VAR headTextDishonor DEFAULT=不名誉点><dd><TMPL_VAR dishonor></dl>
+              <TMPL_UNLESS unlockRyugai><dl class="box"><dt>不名誉称号<dd><TMPL_VAR notoriety></dl></TMPL_UNLESS>
+            </div>
+            <section class="box honor-items" id="dishonor-items">
+              <h2><TMPL_VAR headTextDishonorItems DEFAULT=不名誉詳細></h2>
+              <table class="data-table side-margin">
+                <thead><tr><th><th>点数</thead>
+                <tbody>
+                  <TMPL_LOOP DishonorItems><tr><td class="left"><TMPL_VAR NAME><td><TMPL_VAR PT></TMPL_LOOP>
+                </tbody>
+              </table>
+            </section>
+            </TMPL_IF>
+          <TMPL_ELSE>
+            <dl class="box" id="honor">
+              <dt>名誉点<dd><TMPL_VAR honor> / <TMPL_VAR honorMax>
+              <dt>蛮族名誉点<dd><TMPL_VAR honorBarbaros>
+              <dt>盟竜点<dd><TMPL_VAR honorDragon>
+            </dl>
+            <section class="box honor-items" id="honor-items">
+              <h2>名誉アイテム</h2>
+              <table class="data-table side-margin">
+                <thead>
+                  <tr><th><th>点数
+                </thead>
+                <tbody>
+                  <TMPL_IF displayArtsHonor><tr><td>秘伝<td><TMPL_VAR MysticArtsHonor></TMPL_IF>
+                  <TMPL_LOOP HonorItems><tr><td class="left"><TMPL_VAR NAME><td><TMPL_VAR PT></TMPL_LOOP>
+                </tbody>
+              </table>
+            </section>
+            <TMPL_IF DishonorItems>
+            <section class="box honor-items" id="dishonor-items">
+              <h2>消失名誉アイテム</h2>
+              <table class="data-table side-margin">
+                <thead><tr><th><th>点数</thead>
+                <tbody>
+                  <TMPL_LOOP DishonorItems><tr><td class="left"><TMPL_VAR NAME><td><TMPL_VAR PT></TMPL_LOOP>
+                </tbody>
+              </table>
+            </section>
+            </TMPL_IF>
+          </TMPL_UNLESS>
         </div>
       </div></TMPL_UNLESS>
       <section class="box" id="free-note">
@@ -596,6 +663,7 @@
       </TMPL_IF>
       <section class="box" id="history">
         <h2>セッション履歴</h2>
+        <button class="open-button" onclick="switchHistoryView();" data-open="true" data-text-open="履歴を展開" data-text-close="履歴を畳む"></button>
         <table class="data-table line-tbody">
           <thead>
             <tr>
@@ -640,9 +708,17 @@
       <TMPL_IF cashbook>
       <section class="box" id="cashbook">
         <h2><TMPL_IF head_cashbook><TMPL_VAR head_cashbook><TMPL_ELSE>収支履歴</TMPL_IF></h2>
+        <button class="open-button" onclick="switchCashbookView();" data-open="" data-text-open="収支履歴を展開" data-text-close="収支履歴を畳む"></button>
         <div><p><TMPL_VAR cashbook></p></div>
       </section>
       </TMPL_IF>
+      <TMPL_LOOP CashbookOthers>
+      <section class="box cashbook" id="cashbook<TMPL_VAR __counter__>">
+        <h2><TMPL_IF head_cashbook><TMPL_VAR head_cashbook><TMPL_ELSE>収支履歴（<TMPL_VAR NAME>）</TMPL_IF></h2>
+        <button class="open-button" onclick="switchCashbookView('<TMPL_VAR __counter__>');" data-open="" data-text-open="収支履歴を展開" data-text-close="収支履歴を畳む"></button>
+        <div><p><TMPL_VAR DATA></p></div>
+      </section>
+      </TMPL_LOOP>
     </article>
     <section class="box chat-palette float-box">
       <h2>チャットパレット</h2>
@@ -786,15 +862,12 @@
       </TMPL_IF>
     </article>
     <div class="back-button"><a href="./">⏎</a></div>
-    <TMPL_IF image><div id="image-box" onclick="closeImage()">
-      <img src="<TMPL_VAR imageSrc>" id="image-box-image">
-    </div></TMPL_IF> 
   </main>
   <TMPL_INCLUDE NAME="skin-add/sheet-sidebar.html">
 
   <footer>
-    <p class="notes">(C)Group SNE「ソード・ワールド2.5」</p>
-    <p class="copyright">©<a href="https://yutorize.2-d.jp">ゆとらいず工房</a>「ゆとシートⅡ」ver.<TMPL_VAR ver></p>
+    <p class="notes">(C)Group SNE「ソード・ワールド<TMPL_IF modeZero>2.0<TMPL_ELSE>2.5</TMPL_IF>」</p>
+    <p class="copyright">©<a href="https://yutorize.work">ゆとらいず工房</a>「ゆとシートⅡ」ver.<TMPL_VAR ver></p>
   </footer>
 </body>
 

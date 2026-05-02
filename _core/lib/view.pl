@@ -56,11 +56,16 @@ sub getSheetData {
     if($::in{log}){
       ($pc{protect}, $pc{forbidden}) = getProtectType("${datadir}${file}/data.cgi");
       $pc{logId} = $::in{log};
+      $pc{hide} = 1;
+    }
+    if($main::login_error){
+      $pc{hide} = 1;
     }
   }
   ## データ読み込み：コンバート
   elsif($::in{url}){
     %pc = %conv_data;
+    $pc{hide} = 1;
     if(!$conv_data{ver}){
       require $set::lib_calc_char;
       %pc = data_calc(\%pc);
@@ -109,6 +114,8 @@ sub getSheetData {
     }
     else { $pc{imageCopyright} = unescapeTags($pc{imageCopyright}) }
   }
+  ## フォント
+  &setFont(\%pc,'');
 
   ## 
 
@@ -167,6 +174,20 @@ sub setColors {
   $::pc{$type.'colorBaseBgL'} = 100 - $::pc{$type.'colorBaseBgS'} / 6;
   $::pc{$type.'colorBaseBgD'} = 15;
 }
+### フォント出力 --------------------------------------------------
+sub setFont {
+  my ($pc, $type) = @_;
+  if($pc->{$type.'nameFont'}){
+    foreach (@set::googlefonts){
+      if($_->[0] eq $pc->{$type.'nameFont'}){
+        $pc->{$type.'nameFontUrl'} = $pc->{$type.'nameFont'} =~ s/ /+/gr;
+        if($_->[1] =~ /^[0-9]+$/){ $pc->{$type.'nameFontUrl'} .= ":wght@".$_->[1] }
+        $pc->{$type.'nameFontWeight'} = $_->[1];
+        last;
+      }
+    }
+  }
+}
 ### 伏せ文字 --------------------------------------------------
 sub noiseText {
   my $min = shift;
@@ -195,7 +216,7 @@ sub stylizeCharacterName {
   my $name = shift;
   my $ruby = shift;
   $name = insertWbr($name);
-  if($ruby) {
+  if($name ne '' && $ruby ne '') {
     return "<ruby><rp>｜</rp>${name}<rp>《</rp><rt>${ruby}</rt><rp>》</rp></ruby>"
   }
   return $name;

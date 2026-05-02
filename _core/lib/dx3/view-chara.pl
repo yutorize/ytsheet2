@@ -182,6 +182,8 @@ $SHEET->param(rawName => $pc{characterName} || ($pc{aka} ? "“$pc{aka}”" : ''
 if($pc{ver}){
   foreach (keys %pc) {
     next if($_ =~ /^image/);
+    next if($_ eq 'tags');
+    next if($_ eq 'stage');
     if($_ =~ /^(?:freeNote|freeHistory)$/){
       $pc{$_} = unescapeTagsLines($pc{$_});
     }
@@ -269,6 +271,10 @@ my $breedPrefix = ($pc{breed} ? $pc{breed} : $pc{syndrome3} ? 'トライ' : $pc{
 $SHEET->param(breed => isNoiseText(removeTags $breedPrefix) ? $breedPrefix : $breedPrefix ? "$breedPrefix<span class=\"shorten\">ブリード</span>" : '');
 
 ### 侵蝕率基本値 --------------------------------------------------
+if ($pc{encroachFixed}) {
+  $pc{'lifepathOtherEncroach'} = undef;
+  $pc{'lifepathOtherNote'} = undef;
+}
 $SHEET->param(hasEncroachOffset => $pc{'lifepathOtherEncroach'} || $pc{'lifepathOtherNote'} ? 1 : 0);
 
 ### 能力値 --------------------------------------------------
@@ -626,6 +632,7 @@ else {
     (removeTags removeRuby($pc{characterName}||"“$pc{aka}”")) .
     ($::in{log} ? " 【".($selectedLogName||$pc{updateTime})."】" : '')
   );
+  $SHEET->param(encodedNameLetter => uri_escape_utf8 removeTags "$pc{characterName}$pc{characterNameRuby}$pc{aka}$pc{akaRuby}“”");
 }
 
 ### 種族名 --------------------------------------------------

@@ -27,17 +27,6 @@ function formCheck(){
   return true;
 }
 
-// 名前 ----------------------------------------
-function setName(){
-  let m = ruby(form.monsterName.value);
-  let c = ruby(form.characterName.value);
-  document.querySelector('#header-menu > h2 > span').innerHTML = c && m ? `${c}<small>（${m}）</small>` : (c || m || '(名称未入力)');
-
-  function vCheck(id){
-    if(form[id]){ return form[id].value; }
-    else { return '' }
-  }
-}
 // 騎獣 ----------------------------------------
 let mountFlag = 0;
 function checkMount(){

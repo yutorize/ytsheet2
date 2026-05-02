@@ -24,12 +24,19 @@ sub data_calc {
   $pc{tags} = normalizeHashtags($pc{tags});
 
   ### newline --------------------------------------------------
-  my $name = $pc{itemName};
-  my $type = $pc{magic} ? '[ma]' : '';
-  $name =~ s/[|｜]([^|｜]+?)《.+?》/$1/g;
+  my %NL;
+  $NL{type} = $pc{magic} ? '[ma]' : '';
+  foreach ('itemName','author','category','price','age','summary'){
+    $NL{$_} = $pc{$_} =~ s/[|｜]([^|｜]+?)《.+?》/$1/gr;
+    $NL{$_} = removeTags unescapeTags $NL{$_} =~ s/^\s|\s$//gr;
+  }
+  $NL{name}    = substr($NL{name}   , 0, 108).'..' if length($NL{name}   ) > 108;
+  $NL{author}  = substr($NL{author} , 0,  25).'..' if length($NL{author} ) >  25;
+  $NL{sub}     = substr($NL{sub}    , 0,  40).'..' if length($NL{sub}    ) >  40;
+  $NL{summary} = substr($NL{summary}, 0,  35).'..' if length($NL{summary}) >  35;
   $::newline = "$pc{id}<>$::file<>".
-                "$pc{birthTime}<>$::now<>$name<>$pc{author}<>".
-                "$pc{category}<>$pc{price}<>$pc{age}<>$pc{summary}<>$type<>".
+                "$pc{birthTime}<>$::now<>$NL{itemName}<>$NL{author}<>".
+                "$NL{category}<>$NL{price}<>$NL{age}<>$NL{summary}<>$NL{type}<>".
                 "$pc{image}<> $pc{tags} <>$pc{hide}<>";
   
   return %pc;

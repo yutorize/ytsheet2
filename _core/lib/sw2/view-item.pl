@@ -60,6 +60,7 @@ $SHEET->param(rawName => $pc{itemName});
 
 ### タグ置換 #########################################################################################
 foreach (keys %pc) {
+  next if($_ eq 'tags');
   if($_ =~ /^(?:effects|description)$/){
     $pc{$_} = unescapeTagsLines($pc{$_});
   }
@@ -183,6 +184,7 @@ else {
     (removeTags removeRuby $pc{itemName}) .
     ($::in{log} ? " 【".($selectedLogName||$pc{updateTime})."】" : '')
   );
+  $SHEET->param(encodedNameLetter => uri_escape_utf8 removeTags $pc{itemName});
 }
 
 ### OGP --------------------------------------------------

@@ -180,6 +180,7 @@ $SHEET->param(rawName => $pc{characterName} || ($pc{aka} ? "“$pc{aka}”" : ''
 if($pc{ver}){
   foreach (keys %pc) {
     next if($_ =~ /^(?:partner[12]Url|(?:p[12]_)?(?:image))/);
+    next if($_ eq 'tags');
     if($_ =~ /^(?:freeNote|freeHistory)$/){
       $pc{$_} = unescapeTagsLines($pc{$_});
     }
@@ -198,6 +199,10 @@ if($pc{ver}){
 setColors();
 setColors('p1_');
 setColors('p2_');
+
+### フォント設定 --------------------------------------------------
+setFont(\%pc,'p1_');
+setFont(\%pc,'p2_');
 
 ### 出力準備 #########################################################################################
 ### データ全体 --------------------------------------------------
@@ -393,6 +398,9 @@ else {
     (removeTags removeRuby($pc{characterName}||"“$pc{aka}”")) .
     ($::in{log} ? " 【".($selectedLogName||$pc{updateTime})."】" : '')
   );
+  $SHEET->param(encodedNameLetter => uri_escape_utf8 removeTags $pc{characterName}.$pc{characterNameRuby});
+  $SHEET->param(p1_encodedNameLetter => uri_escape_utf8 removeTags $pc{partner1Name}.$pc{partner1NameRuby});
+  $SHEET->param(p2_encodedNameLetter => uri_escape_utf8 removeTags $pc{partner2Name}.$pc{partner2NameRuby});
 }
 
 ### OGP --------------------------------------------------

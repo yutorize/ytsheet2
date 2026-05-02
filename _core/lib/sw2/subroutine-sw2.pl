@@ -94,6 +94,16 @@ sub createUnitStatus {
         push(@unitStatus, { '人' => '0' });
       }
       push(@unitStatus, { '陣気' => '0' }) if $pc{lvWar};
+      push(@unitStatus, { '特殊失敗値' => '0' }) if ($pc{lvBib});
+      if ($pc{lvFai}) {
+        my @contractAttributes = ();
+        foreach ([Earth => '土'], [Water => '水'], [Fire => '炎'], [Wind => '風'], [Light => '光'], [Dark => '闇']) {
+          (my $attributeEn, my $attributeJa) = @{$_};
+          next unless $pc{"fairyContract${attributeEn}"};
+          push(@contractAttributes, $attributeJa);
+        }
+        push(@unitStatus, { 契約属性 => join('', @contractAttributes) });
+      }
     }
   }
   if(@unitMemo){
@@ -120,7 +130,42 @@ sub createUnitStatus {
   return \@unitStatus;
 }
 
-### クラス色分け --------------------------------------------------
+### 自由記入技能 --------------------------------------------------
+sub addFreeClassData {
+  my ($pc, $classData, $classNames, $classCasterNames) = @_;
+  %$classData = %data::class if !%$classData;
+  @$classNames = @data::class_names if !@$classNames;
+  @$classCasterNames = @data::class_caster if !@$classCasterNames;
+
+  foreach my $num (1 .. $pc->{freeClassNum}) {
+    my $name = $pc->{"freeClass${num}Name"};
+    next unless $name && $pc->{"freeClass${num}Lv"};
+
+    $classData->{$name} = {
+      expTable => $pc->{"freeClass${num}ExpTable"},
+      id       => "FC${num}",
+      eName    => "freeclass${num}",
+    };
+    $pc->{"lvFC${num}"} = $pc->{"freeClass${num}Lv"};
+    push @$classNames, $name;
+
+    if ($pc->{"freeClass${num}Acc"}) { $classData->{$name}{accUnlock} = { lv => 1 }; }
+    if ($pc->{"freeClass${num}Eva"}) { $classData->{$name}{evaUnlock} = { lv => 1 }; }
+    if ($pc->{"freeClass${num}Magic"}) {
+      $classData->{$name}{magic} = { jName => $pc->{"magicPowerNameFC${num}"} || '―' };
+      push @$classCasterNames, $name if $classCasterNames;
+    }
+    if($pc->{"freeClass${num}Tec"} || $pc->{"freeClass${num}Agi"} || $pc->{"freeClass${num}Obs"} || $pc->{"freeClass${num}Kno"}){
+      $classData->{$name}{package} = {};
+      if ($pc->{"freeClass${num}Tec"}) { $classData->{$name}{package}{Tec} = { name => '技巧', stt => 'A' }; }
+      if ($pc->{"freeClass${num}Agi"}) { $classData->{$name}{package}{Agi} = { name => '運動', stt => 'B' }; }
+      if ($pc->{"freeClass${num}Obs"}) { $classData->{$name}{package}{Obs} = { name => '観察', stt => 'E' }; }
+      if ($pc->{"freeClass${num}Kno"}) { $classData->{$name}{package}{Kno} = { name => '知識', stt => 'E' }; }
+    }
+  }
+}
+
+### 技能色分け --------------------------------------------------
 sub class_color {
   my $text = shift;
   $text =~ s/((?:.*?)(?:[0-9]+))/<span>$1<\/span>/g;
@@ -175,6 +220,29 @@ sub checkArtsName {
     $mark .= $&;
   }
   return $text, $mark;
+}
+
+### 戦闘特技の習得レベルセット --------------------------------------------------
+sub setFeatsLvs {
+  return deduplicate '1bat',@set::feats_lv,'S1','S2','S3','S4','S5';
+}
+sub setAcquiredFeatsLvs {
+  my ($pc) = @_;
+  my @output;
+  if($pc->{lvBat}){
+    push(@output, '1bat');
+  }
+  foreach (@set::feats_lv){
+    (my $lv = $_) =~ s/^([0-9]+)[^0-9].*?$/$1/;
+    next if $pc->{level} < $lv;
+    push(@output, $_);
+  }
+  if($pc->{buildupAddFeats}){
+    foreach (1 .. $pc->{buildupAddFeats}){
+      push(@output, 'S'.$_);
+    }
+  }
+  return deduplicate @output;
 }
 
 ### 特技カテゴリ取得 --------------------------------------------------
@@ -311,6 +379,18 @@ sub extractModifications {
   }
 
   return \@modifications;
+}
+
+### 神聖魔法の短剣符の抽出 --------------------------------------------------
+# (記号, 魔法名) のかたちで返す.
+sub extractDivineMark {
+  my $magicName = shift;
+
+  if ($magicName =~ s/^([†‡])//) {
+    return ($1, $magicName);
+  }
+
+  return (undef, $magicName);
 }
 
 ### バージョンアップデート --------------------------------------------------
@@ -520,6 +600,27 @@ sub data_update_chara {
   if($ver < 1.27004){
     if($pc{lvSam} || $pc{lvNin} || $pc{lvJuj} || $pc{lvFug}){
       $pc{unlockRyugai} = 1;
+    }
+  }
+  if($ver < 1.27013){
+    if($pc{lvDar}){
+      $pc{updateMessage}{'ver.1.27.013'} = '操気【剛力弾】を自動計算するようにしました。<br>既に手動で加算している場合、二重加算になってしまうため、修正してください。';
+    }
+  }
+  if($ver < 1.28003){
+    if($pc{unlockAbove16} || $pc{lvGri} || $pc{lvMys} || $pc{lvArt} || $pc{lvAri}){
+      $pc{unlockZeroData} = 1;
+    }
+    if($pc{lvBat} || $pc{lvDru} || $pc{lvAby} || $pc{lvGeo}){
+      $pc{unlockFiveData} = 1;
+    }
+    foreach(keys %pc){
+      if($_ =~ /^seekerAbility(.+?)$/){
+        $pc{"seekerSkill".$1} = $pc{$_};
+      }
+    }
+    if($pc{lvSeeker}){
+      foreach(1..5){ $pc{"combatFeatsLvS${_}"} = $pc{"combatFeatsLv".($_ + 15)} }
     }
   }
   $pc{ver} = $main::ver;

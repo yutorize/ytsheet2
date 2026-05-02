@@ -25,22 +25,34 @@ sub data_calc {
   $pc{tags} = normalizeHashtags($pc{tags});
 
   ### newline --------------------------------------------------
-  my $name = $pc{characterName} ? $pc{characterName} : $pc{monsterName};
-  $name = "【${name}】" if $name eq $pc{monsterName} && $pc{mount};
-  $name =~ s/[|｜]([^|｜]+?)《.+?》/$1/g;
-  $pc{hide} = 'IN' if(!$pc{hide} && $pc{description} =~ /#login-only/i);
-  my $taxa = ($pc{mount} ? '騎獣／':'')
+  my %NL;
+  $NL{name} = $pc{characterName} ? $pc{characterName} : $pc{monsterName};
+  $NL{name} = "【$NL{name}】" if $NL{name} eq $pc{monsterName} && $pc{mount};
+  $NL{taxa} = ($pc{mount} ? '騎獣／':'')
            . (($pc{taxa} && !grep { @$_[0] eq $pc{taxa} } @data::taxa) ? 'その他:' : '')
            . $pc{taxa};
-  my $lv = ($pc{mount} && $pc{lv} eq '') ? "$pc{lvMin}-$pc{lvMax}" : $pc{lv};
-  my $disposition = $pc{mount} ? '' : $pc{disposition};
-  my $initiative  = $pc{mount} ? '' : $pc{initiative};
-  my $habitat     = $pc{mount} ? '' : $pc{habitat};
-  my $price       = $pc{mount} ? "$pc{price}／$pc{priceRental}" : '';
+  $NL{lv} = ($pc{mount} && $pc{lv} eq '') ? "$pc{lvMin}-$pc{lvMax}" : $pc{lv};
+  $NL{$_} = $pc{$_} foreach ('author','intellect','perception','weakness');
+  $NL{$_} = $pc{mount} ? '' : $pc{$_} foreach ('disposition','initiative','habitat');
+  $NL{price} = $pc{mount} ? "$pc{price}／$pc{priceRental}" : '';
+  foreach (keys %NL){
+    $NL{$_} =~ s/[|｜]([^|｜]+?)《.+?》/$1/g;
+    $NL{$_} = removeTags unescapeTags $NL{$_} =~ s/^\s|\s$//gr;
+  }
+  $NL{name}    = substr($NL{name}   , 0, 108).'..' if length($NL{name}   ) > 108;
+  $NL{author}  = substr($NL{author} , 0,  25).'..' if length($NL{author} ) >  25;
+  $NL{taxa}    = substr($NL{taxa}   , 0,  20).'..' if length($NL{taxa}   ) >  20;
+  $NL{intellect}   = substr($NL{intellect}  , 0, 15).'..' if length($NL{intellect}  ) >  15;
+  $NL{perception}  = substr($NL{perception} , 0, 15).'..' if length($NL{perception} ) >  15;
+  $NL{disposition} = substr($NL{disposition}, 0, 15).'..' if length($NL{disposition}) >  15;
+  $NL{initiative}  = substr($NL{initiative} , 0, 10).'..' if length($NL{initiative} ) >  10;
+  $NL{weakness}    = substr($NL{weakness}   , 0, 25).'..' if length($NL{weakness}   ) >  25;
+  $NL{habitat}     = substr($NL{habitat}    , 0, 35).'..' if length($NL{habitat}    ) >  35;
+  $pc{hide} = 'IN' if(!$pc{hide} && $pc{description} =~ /#login-only/i);
   $::newline = "$pc{id}<>$::file<>".
-                "$pc{birthTime}<>$::now<>$name<>$pc{author}<>$taxa<>$lv<>".
-                "$pc{intellect}<>$pc{perception}<>$disposition<>$pc{sin}<>$initiative<>$pc{weakness}<>".
-                "$pc{image}<> $pc{tags} <>$pc{hide}<>$pc{partsNum}<>$habitat<>$price";
+                "$pc{birthTime}<>$::now<>$NL{name}<>$pc{author}<>$NL{taxa}<>$NL{lv}<>".
+                "$pc{intellect}<>$pc{perception}<>$NL{disposition}<>$pc{sin}<>$NL{initiative}<>$NL{weakness}<>".
+                "$pc{image}<> $pc{tags} <>$pc{hide}<>$pc{partsNum}<>$NL{habitat}<>$NL{price}<>";
   
   return %pc;
 }

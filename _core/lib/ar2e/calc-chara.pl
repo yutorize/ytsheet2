@@ -188,7 +188,7 @@ sub data_calc {
   $pc{battleTotalAtkL } = $pc{battleTotalAtk} - $pc{armamentHandRAtk};
   
   $pc{battleDiceAcc } = $pc{rollDexDice} + $pc{battleSkillAccDice} + $pc{battleOtherAccDice};
-  $pc{battleDiceAtk } = $pc{rollStrDice} + $pc{battleSkillAtkDice} + $pc{battleOtherAtkDice};
+  $pc{battleDiceAtk } = 2 + $pc{battleSkillAtkDice} + $pc{battleOtherAtkDice};
   $pc{battleDiceEva } = $pc{rollAgiDice} + $pc{battleSkillEvaDice} + $pc{battleOtherEvaDice};
   
   ### 特殊な判定 --------------------------------------------------
@@ -295,18 +295,37 @@ sub data_calc {
   }
 
   ### newline --------------------------------------------------
-  my $charactername = ($pc{aka} ? "“$pc{aka}”" : "").$pc{characterName};
-  $charactername =~ s/[|｜]([^|｜]+?)《.+?》/$1/g;
-  my $race = $pc{race} eq 'free' ? $pc{raceFree} : $pc{race};
-  $pc{lastSession} = removeTags unescapeTags $pc{lastSession};
+  my %NL;
+  $NL{name} = ($pc{aka} ? "“$pc{aka}”" : "").$pc{characterName};
+  $NL{race} = $pc{race} eq 'free' ? $pc{raceFree} : $pc{race};
+  $NL{$_} = $pc{$_} foreach ('playerName','gender','age','classMain','classSupport','classTitle','homeArea','guildName');
+  foreach (keys %NL){
+    $NL{$_} =~ s/[|｜]([^|｜]+?)《.+?》/$1/g;
+    $NL{$_} = removeTags unescapeTags $NL{$_} =~ s/^\s|\s$//gr;
+  }
+  if(length($NL{name}) > 108){
+    if($NL{name} =~ s/“.+”//r){ $NL{name} =~ s/“.+”// }
+    if(length($NL{name}) > 108){
+      $NL{name} = substr($NL{name}, 0, 108).'..' if length($NL{name}) > 108;
+    }
+  }
+  $NL{playerName} = substr($NL{playerName}, 0, 25).'..' if length($NL{playerName}) > 25;
+  $NL{race}   = substr($NL{race}  , 0, 30).'..' if length($NL{race}  ) > 30;
+  $NL{gender} = substr($NL{gender}, 0, 20).'..' if length($NL{gender}) > 20;
+  $NL{age}    = substr($NL{age}   , 0, 20).'..' if length($NL{age}   ) > 20;
+  $NL{classMain}    = substr($NL{classMain}   , 0, 20).'..' if length($NL{classMain}   ) > 20;
+  $NL{classSupport} = substr($NL{classSupport}, 0, 20).'..' if length($NL{classSupport}) > 20;
+  $NL{classTitle}   = substr($NL{classTitle}  , 0, 20).'..' if length($NL{classTitle}  ) > 20;
+  $NL{homeArea}  = substr($NL{homeArea} , 0,  30).'..' if length($NL{homeArea} ) >  30;
+  $NL{guildName} = substr($NL{guildName}, 0, 108).'..' if length($NL{guildName}) > 108;
   $::newline = "$pc{id}<>$::file<>".
-               "$pc{birthTime}<>$::now<>$charactername<>$pc{playerName}<>$pc{group}<>".
+               "$pc{birthTime}<>$::now<>$NL{name}<>$NL{playerName}<>$pc{group}<>".
                "$pc{image}<> $pc{tags} <>$pc{hide}<>".
 
-               "$race<>$pc{gender}<>$pc{age}<>".
+               "$NL{race}<>$NL{gender}<>$NL{age}<>".
                "$pc{expTotal}<>$pc{level}<>".
-               "$pc{classMain}/$pc{classSupport}/$pc{classTitle}<>".
-               "$pc{homeArea}<> $pc{areaTags} <>$pc{guildName}<>$pc{payment}<>".
+               "$NL{classMain}/$NL{classSupport}/$NL{classTitle}<>".
+               "$NL{homeArea}<> $pc{areaTags} <>$NL{guildName}<>$pc{payment}<>".
                "$pc{lastSession}<>";
 
   return %pc;
