@@ -27,6 +27,10 @@ sub data_calc {
     $NL{sub} = ($pc{schoolArea}||'―');
     $NL{summary} = $pc{schoolNote};
   }
+  elsif($pc{category} eq 'skill'){
+    $NL{name} = $pc{skillName};
+    $NL{summary} = $pc{skillRankB_summary};
+  }
   $pc{artsName} = $NL{name};
 
   $pc{magicSongPet} = join('、', 
@@ -58,6 +62,10 @@ sub data_calc {
     'schoolArtsNote',
     'schoolMagicNote',
     'schoolQnA',
+    'skillRankB_effect',
+    'skillRankA_effect',
+    'skillRankS_effect',
+    'skillRankSS_effect',
   ){
     $pc{$_} =~ s/\r\n?|\n/<br>/g;
   }
