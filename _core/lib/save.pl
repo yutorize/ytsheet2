@@ -403,7 +403,7 @@ sub passfileWriteMake {
   }
   my $passwrite; my $user_dir;
   if   ($protect eq 'account'&& $LOGIN_ID) { $passwrite = '['.$LOGIN_ID.']'; $user_dir = '_'.$LOGIN_ID.'/'; }
-  elsif($protect eq 'password')            { $passwrite = e_crypt($pass); }
+  elsif($protect eq 'password')            { $passwrite = encrypt($pass); }
   $user_dir ||= 'anonymous/';
   dataSave('make', $data_dir, $file, $protect, $user_dir);
   print $FH "$id<>$passwrite<>$now<>".$::in{type}."<>\n";
@@ -432,7 +432,7 @@ sub passfileWriteSave {
         }
       }
       elsif($protect eq 'password') {
-        if(!$passwrite || $passwrite =~ /^\[.+?\]$/) { $passwrite = e_crypt($pass); }
+        if(!$passwrite || $passwrite =~ /^\[.+?\]$/) { $passwrite = encrypt($pass); }
         if($old_dir) { $move = 1; }
       }
       elsif($protect eq 'none') {
