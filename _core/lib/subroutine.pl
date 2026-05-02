@@ -16,7 +16,7 @@ sub getfile {
       close($FH);
       my ($id, $pass, $file, $type) = (split /<>/, $line)[0..3];
       if ( (!$pass) # パス不要
-        || (&c_crypt($_[1], $pass)) # パス一致
+        || (&verifyCrypt($_[1], $pass)) # パス一致
         || ($pass eq "[$_[2]]") # 編集権アカウント一致
         || ($set::masterkey && $_[1] eq $set::masterkey) # 管理者パス一致
         || ($set::masterid && $_[2] eq $set::masterid) # 管理者アカウント一致
@@ -116,7 +116,6 @@ sub getplayername {
   return '';
 }
 
-
 ### 編集保護設定取得 --------------------------------------------------
 sub getProtectType {
   my $file = shift;
@@ -134,17 +133,53 @@ sub getProtectType {
 }
 
 ### 暗号化 --------------------------------------------------
-sub e_crypt {
+my $USE_ARGON2 = eval {
+  require Crypt::Argon2;
+  Crypt::Argon2->import(qw/argon2id_pass argon2id_verify/);
+  1;
+} ? 1 : 0;
+
+sub encrypt {
   my $plain = shift;
-  my $s;
-  my @salt = ('0'..'9','A'..'Z','a'..'z','.','/');
-  1 while (length($s .= $salt[rand(@salt)]) < 8);
+  return '' if !defined $plain || $plain eq '';
+
+  my $s = createSalt(16);
+  if($USE_ARGON2){
+    my $time_cost = 3;
+    my $memory_cost = 65536; # 64 MiB
+    my $parallelism = 1;
+    my $tag_length = 32;
+    return argon2id_pass($plain, $s, $time_cost, $memory_cost, $parallelism, $tag_length);
+  }
+
   return crypt($plain,index(crypt('a','$1$a$'),'$1$a$') == 0 ? '$1$'.$s.'$' : $s);
 }
 
-sub c_crypt {
+sub verifyCrypt {
   my($plain,$crypt) = @_;
-  return ($plain ne '' && $crypt ne '' && crypt($plain,$crypt) eq $crypt);
+  return 0 if !defined $plain || !defined $crypt || $plain eq '' || $crypt eq '';
+
+  if($USE_ARGON2 && $crypt =~ /^\$argon2id\$/){
+    return argon2id_verify($crypt, $plain) ? 1 : 0;
+  }
+  return crypt($plain,$crypt) eq $crypt;
+}
+sub createSalt {
+  my ($length) = @_;
+
+  if(open(my $RND, '<:raw', '/dev/urandom')){
+    my $salt = '';
+    if(read($RND, $salt, $length) == $length){
+      close($RND);
+      return $salt;
+    }
+    close($RND);
+  }
+
+  my @salts = ('0'..'9','A'..'Z','a'..'z','.','/');
+  my $salt = '';
+  1 while (length($salt .= $salts[rand(@salts)]) < $length);
+  return $salt;
 }
 
 ### ログイン --------------------------------------------------
@@ -182,16 +217,36 @@ sub getKey {
   open (my $FH, '<', $set::userfile);
   while (my $line = <$FH>) {
     my ($id, $pass) = (split /<>/, $line)[0,1];
-    if ($in_id eq $id && (&c_crypt($in_pass, $pass))) {
+    if ($in_id eq $id && (&verifyCrypt($in_pass, $pass))) {
       close($FH);
       my $s;
       my @salt = ('0'..'9','A'..'Z','a'..'z','.','/');
       1 while (length($s .= $salt[rand(@salt)] ) < 12);
+      if($USE_ARGON2 && $pass !~ /^\$argon2id\$/){ updatePasswordHash($in_id,$in_pass); }
       return $s;
     }
   }
   close($FH);
   return 0;
+}
+sub updatePasswordHash {
+  my ($id, $pass) = @_;
+  sysopen (my $FH, $set::userfile, O_RDWR);
+  flock($FH, 2);
+  my @list = <$FH>;
+  seek($FH, 0, 0);
+  foreach (@list){
+    if(index($_, "$id<") == 0){
+      my @data = split(/<>/, $_, -1);
+      @data[1] = encrypt($pass);
+      print $FH join('<>', @data);
+    }
+    else{
+      print $FH $_;
+    }
+  }
+  truncate($FH, tell($FH));
+  close($FH);
 }
 
 ### ログアウト --------------------------------------------------
