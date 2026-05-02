@@ -623,6 +623,11 @@ sub data_update_chara {
       foreach(1..5){ $pc{"combatFeatsLvS${_}"} = $pc{"combatFeatsLv".($_ + 15)} }
     }
   }
+  if($ver < 1.28010){
+    foreach('freeNote','freeHistory','cashbook'){
+      $pc{$_} =~ s/(^|&lt;br&gt;)\[↓\]/\[v\]/g;
+    }
+  }
   $pc{ver} = $main::ver;
   $pc{lasttimever} = $ver;
   return %pc;
@@ -635,6 +640,11 @@ sub data_update_mons {
   
   if($ver < 1.26000){
     $pc{partsManualInput} = 1;
+  }
+  if($ver < 1.28010){
+    foreach('skills','description'){
+      $pc{$_} =~ s/(^|&lt;br&gt;)\[↓\]/\[v\]/g;
+    }
   }
 
   $pc{ver} = $main::ver;
@@ -676,6 +686,11 @@ sub data_update_item {
   if($ver < 1.27009){
     $pc{iconMagic} = $pc{magic};
   }
+  if($ver < 1.28010){
+    foreach('effects','description'){
+      $pc{$_} =~ s/(^|&lt;br&gt;)\[↓\]/\[v\]/g;
+    }
+  }
 
   $pc{ver} = $main::ver;
   $pc{lasttimever} = $ver;
@@ -690,6 +705,28 @@ sub data_update_arts {
   if($ver < 1.20000){
     foreach my $num (1..$pc{schoolArtsNum}){
       $pc{"schoolArts${num}Type"} = $pc{"schoolArts${num}Base"};
+    }
+  }
+  if($ver < 1.28010){
+    foreach(
+      'magicEffect',
+      'magicDescription',
+      'godSymbol',
+      'godDeity',
+      'godNote',
+      'godMagic2Effect',
+      'godMagic4Effect',
+      'godMagic7Effect',
+      'godMagic10Effect',
+      'godMagic13Effect',
+      'godQnA',
+      'schoolNote',
+      'schoolItemNote',
+      'schoolArtsNote',
+      'schoolMagicNote',
+      'schoolQnA',
+    ){
+      $pc{$_} =~ s/(^|&lt;br&gt;)\[↓\]/\[v\]/g;
     }
   }
 
