@@ -519,16 +519,19 @@ my $text_rule = <<"HTML";
         　打撃武器　　　：<code>[打]</code>：<img class="i-icon" src="${set::icon_dir}wp_blow.png"><br>
         　地方特産品　　：<code>[特]</code>：<img class="i-icon" src="${set::icon_dir}item_local.png"><br>
 HTML
-if (!$::SW2_0) {
+if ($::SW2_0) {
   $text_rule .= <<~"HTML";
-        　流派アイテム　：<code>[流]</code>：<img class="i-icon" src="${set::icon_dir}wp_school.png"><br>
-        　アルフレイム大陸由来の流派アイテム：<code>[ア]</code>：<img class="i-icon" src="${set::icon_dir}wp_school_a.png"><br>
-        　テラスティア大陸由来の流派アイテム：<code>[テ]</code>：<img class="i-icon" src="${set::icon_dir}wp_school_t.png"><br>
+        　流派装備　　　：<code>[流]</code>：<img class="i-icon" src="${set::icon_dir}wp_school.png"><br>
   HTML
 }
 else {
   $text_rule .= <<~"HTML";
-        　流派装備　　　：<code>[流]</code>：<img class="i-icon" src="${set::icon_dir}wp_school.png"><br>
+        　流派アイテム　：<code>[流]</code>：<img class="i-icon" src="${set::icon_dir}wp_school.png"><br>
+        　アルフレイム大陸由来の流派アイテム：<code>[ア]</code>：<img class="i-icon" src="${set::icon_dir}wp_school_a.png"><br>
+        　テラスティア大陸由来の流派アイテム：<code>[テ]</code>：<img class="i-icon" src="${set::icon_dir}wp_school_t.png"><br>
+        　高揚の楽素：<code>[⤴]</code><code>[↑]</code>：<i class="s-icon uplift">⤴</i><br>
+        　鎮静の楽素：<code>[⤵]</code><code>[↓]</code>：<i class="s-icon calm">⤵</i><br>
+        　魅惑の楽素：<code>[♡]</code>：<i class="s-icon heart">♡</i><br>
   HTML
 }
 print textRuleArea( $text_rule,'「効果」「備考」「由来・逸話など」' );
