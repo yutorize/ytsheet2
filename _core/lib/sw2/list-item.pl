@@ -55,18 +55,6 @@ foreach(
 my $q_links = @q_links ? '&'.join('&', @q_links) : '';
 
 ### ファイル読み込み --------------------------------------------------
-## マイリスト取得
-my @mylist;
-if($mode eq 'mylist'){
-  $INDEX->param( playerName => (getplayername($LOGIN_ID))[0] );
-  open (my $FH, "<", $set::passfile);
-  while(my $line = <$FH>){
-    if($line =~ /^(.+?)<>\[$LOGIN_ID\]</){ push(@mylist, $1) }
-  }
-  close($FH);
-}
-
-## リスト取得
 my @list;
 #if($set::simpleindex && $index_mode){ #グループ見出しのみ
 #  my @grouplist;
@@ -77,78 +65,81 @@ my @list;
 #  $INDEX->param(ListGroups => \@grouplist);
 #}
 #else { #通常
-  open (my $FH, "<", $set::listfile);
-  @list = <$FH>;
-  close($FH);
+  # マイリスト
+  if($mode eq 'mylist'){
+    $INDEX->param( playerName => (getplayername($LOGIN_ID))[0] );
+    @list = getMylist($LOGIN_ID);
+  }
+  else {
+    open (my $FH, "<", $set::listfile);
+    # 管理者orタグ検索（全読込）
+    if(($set::masterid && $set::masterid eq $LOGIN_ID) || $::in{tag}){
+      @list = <$FH>;
+    }
+    # 非表示除外
+    else {
+      @list = grep { !/^(?:[^<]*<>){13}[^<0]/ } <$FH>;
+    }
+    close($FH);
+  }
 #}
-### フィルタ処理 --------------------------------------------------
-## マイリスト
-if($mode eq 'mylist'){
-  my $regex = join('|', @mylist);
-  @list = grep { $_ =~ /^(?:$regex)\</ } @list;
-}
-## 非表示除外
-elsif (
-     !($set::masterid && $set::masterid eq $LOGIN_ID)
-  && !($mode eq 'mylist')
-  && !$::in{tag}
-){
-  @list = grep { $_ !~ /^(?:[^<]*?<>){13}[^<0]/ } @list;
-}
-
+### 検索処理 --------------------------------------------------
 ## カテゴリ検索
 my @category_query = split('\s', decode('utf8', $::in{category}));
 if($::in{category} ne 'all'){
   foreach (@category_query) {
     my $q = $_;
-    if($q =~ s/^-//){ @list = grep { $_ !~ /^(?:[^<]*?<>){6}[^<]*?\Q$q\E/ } @list; } #マイナス検索
-    else            { @list = grep { $_ =~ /^(?:[^<]*?<>){6}[^<]*?\Q$q\E/ } @list; }
+    if($q =~ s/^-//){ @list = grep { !/^(?:[^<]*<>){6}[^<]*?\Q$q\E/ } @list; } #マイナス検索
+    else            { @list = grep { /^(?:[^<]*<>){6}[^<]*?\Q$q\E/ } @list; }
   }
   $INDEX->param(category => "@category_query");
 }
 
 ## タグ検索
 my $tag_query = normalizeHashtags(decode('utf8', $::in{tag}));
-if($tag_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){12}[^<]*? \Q$tag_query\E / } @list; }
+if($tag_query) { @list = grep { /^(?:[^<]*<>){12}[^<]*? \Q$tag_query\E / } @list; }
 $INDEX->param(tag => $tag_query);
 
 ## 名前検索
 my $name_query = decode('utf8', $::in{name});
-if($name_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){4}[^<]*?\Q$name_query\E/i } @list; }
+if($name_query) { @list = grep { /^(?:[^<]*<>){4}[^<]*?\Q$name_query\E/i } @list; }
 $INDEX->param(name => $name_query);
+
+## 投稿者検索
+my $author_query = decode('utf8', $::in{author});
+if($author_query) { @list = grep { /^(?:[^<]*<>){5}[^<]*?\Q$author_query\E/i } @list; }
+$INDEX->param(author => $author_query);
 
 ## 製作時期検索
 my $age_query = decode('utf8', $::in{age});
-if($age_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){8}[^<]*?\Q$age_query\E/i } @list; }
+if($age_query) { @list = grep { /^(?:[^<]*<>){8}[^<]*?\Q$age_query\E/i } @list; }
 $INDEX->param(age => $age_query);
 
 ### ソート --------------------------------------------------
-if   ($sort eq 'name')  { my @tmp = map { (split /<>/)[4] } @list; @list = @list[sort {$tmp[$a] cmp $tmp[$b]} 0 .. $#tmp]; }
-elsif($sort eq 'author'){ my @tmp = map { (split /<>/)[5] } @list; @list = @list[sort {$tmp[$a] cmp $tmp[$b]} 0 .. $#tmp]; }
-elsif($sort eq 'date')  { my @tmp = map { (split /<>/)[3] } @list; @list = @list[sort {$tmp[$b] <=> $tmp[$a]} 0 .. $#tmp]; }
+if   ($sort eq 'name')  { my @t = map { (/^(?:[^<]*<>){4}([^<]*)/)[0] } @list; @list = @list[sort {$t[$a] cmp $t[$b]} 0 .. $#t]; }
+elsif($sort eq 'author'){ my @t = map { (/^(?:[^<]*<>){5}([^<]*)/)[0] } @list; @list = @list[sort {$t[$a] cmp $t[$b]} 0 .. $#t]; }
+elsif($sort eq 'date')  { my @t = map { (/^(?:[^<]*<>){3}([^<]*)/)[0] } @list; @list = @list[sort {$t[$b] <=> $t[$a]} 0 .. $#t]; }
 
 ### リストを回す --------------------------------------------------
 my %count;
 my %grouplist;
 my $page = $::in{page} || 1;
-my $pagestart = $page * $set::pagemax - $set::pagemax + 1;
-my $pageend   = $page * $set::pagemax;
+$count{'すべて'} = scalar(@list);
+if($index_mode && $set::list_maxline){
+  my $end = $set::list_maxline > $count{'すべて'} ? $count{'すべて'} : $set::list_maxline;
+  @list = @list[0 .. $end-1];
+}
+elsif($set::pagemax){
+  my $pagestart = $page * $set::pagemax - $set::pagemax + 1;
+  my $pageend   = $page * $set::pagemax;
+  $pageend = $count{'すべて'} if $pageend > $count{'すべて'};
+  @list = @list[$pagestart-1 .. $pageend-1];
+}
 foreach (@list) {
   my (
     $id, undef, undef, $updatetime, $name, $author, $category, $price, $age, $summary, $type,
     $image, $tag, $hide
   ) = (split /<>/, $_)[0..13];
-  
-  #カウント
-  $count{'すべて'}++;
-
-  #表示域以外は弾く
-  if (
-    ( $index_mode && $count{'すべて'} > $set::list_maxline && $set::list_maxline) || #TOPページ
-    (!$index_mode && $set::pagemax && ($count{'すべて'} < $pagestart || $count{'すべて'} > $pageend)) #それ以外
-  ){
-    next;
-  }
   
   #グループ（分類）
   $category =~ s/[ 　]/<br>/g;

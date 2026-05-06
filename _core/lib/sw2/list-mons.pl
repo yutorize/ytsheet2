@@ -37,7 +37,7 @@ foreach (keys %::in) {
   $::in{$_} =~ s/</&lt;/g;
   $::in{$_} =~ s/>/&gt;/g;
 }
-if(!($mode eq 'mylist' || $::in{tag} || $::in{taxa} || $::in{mount} || $::in{name} || $::in{'lv-max'} || $::in{'lv-min'} || $::in{'parts-max'} || $::in{'parts-min'} || $::in{intellect} || $::in{perception} || $::in{disposition} || $::in{habitat} || $::in{weakness})){
+if(!($mode eq 'mylist' || $::in{tag} || $::in{taxa} || $::in{mount} || $::in{name} || $::in{author} || $::in{'lv-max'} || $::in{'lv-min'} || $::in{'parts-max'} || $::in{'parts-min'} || $::in{intellect} || $::in{perception} || $::in{disposition} || $::in{habitat} || $::in{weakness})){
   $index_mode = 1;
   $INDEX->param(modeIndex => 1);
 }
@@ -49,6 +49,7 @@ foreach(
   #'taxa',
   'mount',
   'name',
+  'author',
   'lv-min',
   'lv-max',
   'parts-min',
@@ -64,55 +65,45 @@ foreach(
 my $q_links = @q_links ? '&'.join('&', @q_links) : '';
 
 ### ファイル読み込み --------------------------------------------------
-## マイリスト取得
-my @mylist;
-if($mode eq 'mylist'){
-  $INDEX->param( playerName => (getplayername($LOGIN_ID))[0] );
-  open (my $FH, "<", $set::passfile);
-  while(my $line = <$FH>){
-    if($line =~ /^(.+?)<>\[$LOGIN_ID\]</){ push(@mylist, $1) }
-  }
-  close($FH);
-}
-
-## リスト取得
 my @list;
-if($set::simpleindex && $index_mode && $mode ne 'mylist') { #グループ見出しのみ
+#グループ見出しのみ
+if($set::simpleindex && $index_mode && $mode ne 'mylist') {
   $INDEX->param(simpleIndex => 1);
 }
-else { #通常
-  open (my $FH, "<", $set::listfile);
-  @list = <$FH>;
-  close($FH);
+#通常
+else {
+  # マイリスト
+  if($mode eq 'mylist'){
+    $INDEX->param( playerName => (getplayername($LOGIN_ID))[0] );
+    @list = getMylist($LOGIN_ID);
+  }
+  else {
+    open (my $FH, "<", $set::listfile);
+    # 管理者orタグ検索（全読込）
+    if(($set::masterid && $set::masterid eq $LOGIN_ID) || $::in{tag}){
+      @list = <$FH>;
+    }
+    # 非表示除外
+    else {
+      @list = grep { !/^(?:[^<]*<>){16}[^<0]/ } <$FH>;
+    }
+    close($FH);
+  }
 }
 ### フィルタ処理 --------------------------------------------------
-## マイリスト
-if($mode eq 'mylist'){
-  my $regex = join('|', @mylist);
-  @list = grep { $_ =~ /^(?:$regex)\</ } @list;
-}
-## 非表示除外
-elsif (
-     !($set::masterid && $set::masterid eq $LOGIN_ID)
-  && !($mode eq 'mylist')
-  && !$::in{tag}
-){
-  @list = grep { !(split(/<>/))[16] } @list;
-}
-
 ## 分類検索
 my $taxa_query = decode('utf8', $::in{taxa});
 if($::in{mount}) {
   if($taxa_query eq 'all'){ $taxa_query = '' }
-  @list = grep { $_ =~ /^(?:[^<]*?<>){6}騎獣／\Q$taxa_query\E/ } @list;
+  @list = grep { /^(?:[^<]*<>){6}騎獣／\Q$taxa_query\E/ } @list;
 }
 elsif($taxa_query) {
-  @list = grep { $_ !~ /^(?:[^<]*?<>){6}騎獣／/ } @list;
+  @list = grep { !/^(?:[^<]*<>){6}騎獣／/ } @list;
   if($taxa_query eq 'その他') {
-    @list = grep { $_ =~ /^(?:[^<]*?<>){6}その他/ } @list;
+    @list = grep { /^(?:[^<]*<>){6}その他/ } @list;
   }
   elsif($taxa_query ne 'all') {
-    @list = grep { $_ =~ /^(?:[^<]*?<>){6}\Q$taxa_query\E</ } @list;
+    @list = grep { /^(?:[^<]*<>){6}\Q$taxa_query\E</ } @list;
   }
 }
 if($::in{mount}){ $INDEX->param(group => '騎獣'.($taxa_query?"／$taxa_query":'')      ); }
@@ -130,37 +121,42 @@ $INDEX->param(Taxa => \@taxalist);
 
 ## タグ検索
 my $tag_query = normalizeHashtags(decode('utf8', $::in{tag}));
-if($tag_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){15}[^<]*? \Q$tag_query\E / } @list; }
+if($tag_query) { @list = grep { /^(?:[^<]*<>){15}[^<]*? \Q$tag_query\E / } @list; }
 $INDEX->param(tag => $tag_query);
 
 ## 名前検索
 my $name_query = decode('utf8', $::in{name});
-if($name_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){4}[^<]*?\Q$name_query\E/i } @list; }
+if($name_query) { @list = grep { /^(?:[^<]*<>){4}[^<]*?\Q$name_query\E/i } @list; }
 $INDEX->param(name => $name_query);
+
+## 投稿者検索
+my $author_query = decode('utf8', $::in{author});
+if($author_query) { @list = grep { /^(?:[^<]*<>){5}[^<]*?\Q$author_query\E/i } @list; }
+$INDEX->param(author => $author_query);
 
 ## 知能検索
 my $intellect_query = decode('utf8', $::in{intellect});
-if($intellect_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){8}\Q$intellect_query\E/ } @list; }
+if($intellect_query) { @list = grep { /^(?:[^<]*<>){8}\Q$intellect_query\E/ } @list; }
 $INDEX->param(intellect => $intellect_query);
 
 ## 知覚検索
 my $perception_query = decode('utf8', $::in{perception});
-if($perception_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){9}\Q$perception_query\E/ } @list; }
+if($perception_query) { @list = grep { /^(?:[^<]*<>){9}\Q$perception_query\E/ } @list; }
 $INDEX->param(perception => $perception_query);
 
 ## 反応検索
 my $disposition_query = decode('utf8', $::in{disposition});
-if($disposition_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){10}\Q$disposition_query\E/ } @list; }
+if($disposition_query) { @list = grep { /^(?:[^<]*<>){10}\Q$disposition_query\E/ } @list; }
 $INDEX->param(disposition => $disposition_query);
 
 ## 生息地検索
 my $habitat_query = decode('utf8', $::in{habitat});
-if($habitat_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){18}\Q$habitat_query\E/ } @list; }
+if($habitat_query) { @list = grep { /^(?:[^<]*<>){18}\Q$habitat_query\E/ } @list; }
 $INDEX->param(habitat => $habitat_query);
 
 ## 弱点検索
 my $weakness_query = decode('utf8', $::in{weakness});
-if($weakness_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){13}\Q$weakness_query\E/ } @list; }
+if($weakness_query) { @list = grep { /^(?:[^<]*<>){13}\Q$weakness_query\E/ } @list; }
 $INDEX->param(weakness => $weakness_query);
 
 ## レベル検索
@@ -192,14 +188,11 @@ sub lvMaxCheck {
 }
 
 ### ソート --------------------------------------------------
-if   ($sort eq 'name')  { my @tmp = map { (split /<>/)[4] } @list; @list = @list[sort {$tmp[$a] cmp $tmp[$b]} 0 .. $#tmp]; }
-elsif($sort eq 'author'){ my @tmp = map { (split /<>/)[5] } @list; @list = @list[sort {$tmp[$a] cmp $tmp[$b]} 0 .. $#tmp]; }
-elsif($sort eq 'date')  { my @tmp = map { (split /<>/)[3] } @list; @list = @list[sort {$tmp[$b] <=> $tmp[$a]} 0 .. $#tmp]; }
-elsif($sort eq 'lv')    { my @tmp = map { (split /<>/)[7] } @list; @list = @list[sort {$tmp[$a] <=> $tmp[$b]} 0 .. $#tmp]; }
-elsif($sort eq 'parts') { my @tmp = map { (split /<>/)[17] } @list; @list = @list[sort {$tmp[$a] <=> $tmp[$b]} 0 .. $#tmp]; }
-# unless($index_mode && $set::list_maxline){
-#   my @tmp = map { (split /<>/)[7] } @list; @list = @list[sort {$tmp[$a] <=> $tmp[$b]} 0 .. $#tmp];
-# }
+if   ($sort eq 'name')  { my @t = map { (/^(?:[^<]*<>){4}([^<]*)/)[0]  } @list; @list = @list[sort {$t[$a] cmp $t[$b]} 0 .. $#t]; }
+elsif($sort eq 'author'){ my @t = map { (/^(?:[^<]*<>){5}([^<]*)/)[0]  } @list; @list = @list[sort {$t[$a] cmp $t[$b]} 0 .. $#t]; }
+elsif($sort eq 'date')  { my @t = map { (/^(?:[^<]*<>){3}([^<]*)/)[0]  } @list; @list = @list[sort {$t[$b] <=> $t[$a]} 0 .. $#t]; }
+elsif($sort eq 'lv')    { my @t = map { (/^(?:[^<]*<>){7}([^<]*)/)[0]  } @list; @list = @list[sort {$t[$a] <=> $t[$b]} 0 .. $#t]; }
+elsif($sort eq 'parts') { my @t = map { (/^(?:[^<]*<>){17}([^<]*)/)[0] } @list; @list = @list[sort {$t[$a] <=> $t[$b]} 0 .. $#t]; }
 
 ### リストを回す --------------------------------------------------
 my %count;
@@ -207,6 +200,12 @@ my %grouplist;
 my $page = $::in{page} || 1;
 my $pagestart = $page * $set::pagemax - $set::pagemax + 1;
 my $pageend   = $page * $set::pagemax;
+if(($::in{taxa}) && $set::pagemax){
+  my $taxa = $::in{mount} ? '騎獣' : $::in{taxa} eq 'all' ? 'すべて' : $taxa_query;
+  $count{$taxa} = scalar(@list);
+  $pageend = $count{$taxa} if $pageend > $count{$taxa};
+  @list = @list[$pagestart-1 .. $pageend-1];
+}
 foreach (@list) {
   my (
     $id, undef, undef, $updatetime, $name, $author, $taxa, $lv,
@@ -230,16 +229,18 @@ foreach (@list) {
     }
   }
   
-  #カウント
-  $count{$taxa}++;
+  unless($::in{taxa} && $set::pagemax){
+    #カウント
+    $count{$taxa}++;
 
-  #表示域以外は弾く
-  if (
-    ( $index_mode && $count{$taxa} > $set::list_maxline && $set::list_maxline) || #TOPページ
-    ( !$::in{taxa} && !$::in{tag} && $mode ne 'mylist' && $count{$taxa} > $set::list_maxline && $set::list_maxline) || #検索結果（分類指定なし／マイリストでもなし）
-    (!$index_mode && $set::pagemax && ($count{$taxa} < $pagestart || $count{$taxa} > $pageend)) #それ以外
-  ){
-    next;
+    #表示域以外は弾く
+    if (
+      ( $index_mode && $count{$taxa} > $set::list_maxline && $set::list_maxline) || #TOPページ
+      ( !$::in{taxa} && !$::in{tag} && $mode ne 'mylist' && $count{$taxa} > $set::list_maxline && $set::list_maxline) || #検索結果（分類指定なし／マイリストでもなし）
+      (!$index_mode && $set::pagemax && ($count{$taxa} < $pagestart || $count{$taxa} > $pageend)) #それ以外
+    ){
+      next;
+    }
   }
 
   # 適正レベル
@@ -289,7 +290,7 @@ foreach (@taxa,['騎獣', 'XX' , '']){
 
   my $urltaxa;
   if($name eq '騎獣'){
-    if($taxa_query && $taxa_query ne 'all'){ $urltaxa = uri_escape_utf8($name); }
+    if($taxa_query && $taxa_query ne 'all'){ $urltaxa = uri_escape_utf8($taxa_query); }
     else { $urltaxa = 'all'; }
     if(!$::in{mount}){ $urltaxa .= '&mount=1' }
   }

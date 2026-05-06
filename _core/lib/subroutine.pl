@@ -674,7 +674,7 @@ sub generateTable {
         }
         foreach my $class (reverse @classesCell){
           if($class =~ /^(left|center|right)$/){
-            @classesCell = grep { $_ eq $class || $_ !~ /^(left|center|right)$/ } @classesCell;
+            @classesCell = grep { $_ eq $class || !/^(left|center|right)$/ } @classesCell;
             last;
           }
         }
@@ -925,6 +925,26 @@ sub urlDataGet {
   else {
     error '入力されたURLへのアクセスに失敗しました。(STATUS CODE:'.$res->code.')';
   }
+}
+### マイリスト取得 --------------------------------------------------
+sub getMylist {
+  my %mylist;
+  open (my $FH, "<", $set::passfile);
+  while(my $line = <$FH>){
+    if($line =~ /^(.+?)<>\[$_[0]\]</){ $mylist{$1} = 1 }
+  }
+  close($FH);
+  my @list;
+  open (my $FH, "<", $set::listfile);
+  foreach (<$FH>){
+    if($_ =~ /^(.+?)<>/ && exists $mylist{$1}){
+      push(@list, $_);
+      delete $mylist{$1};
+    }
+    if(!%mylist){ last; }
+  }
+  close($FH);
+  return @list;
 }
 ### HTMLテンプレート出力 --------------------------------------------------
 sub outputTemplate {
