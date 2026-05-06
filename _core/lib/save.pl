@@ -396,7 +396,7 @@ sub passfileWriteMake {
   flock($FH, 2);
   my @list = <$FH>;
   foreach (@list){
-    if ($_ =~ /^(?:[^<]*?<>){2}$now</){
+    if ($_ =~ /^(?:[^<]*<>){2}$now</){
       close($FH);
       infoJson('error','新規作成が衝突しました。再度保存してください。');
     }
