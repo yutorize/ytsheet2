@@ -244,6 +244,7 @@ foreach my $id ('magic','god','school','skill'){
     "NUM" => $count{$id},
     "Characters" => ($grouplist{$id} ? [@{$grouplist{$id}}] : []),
     "NAV" => $navbar,
+    "MORE" => (!$navbar && $count{$id} > scalar(@{$grouplist{$id}}) ? 1 : 0),
   });
 }
 
