@@ -215,6 +215,7 @@ foreach (@categories){
     "NUM" => $count{$name},
     "Characters" => [@{$grouplist{$name}}],
     "NAV" => $navbar,
+    "MORE" => (!$navbar && $count{$name} > scalar(@{$grouplist{$name}}) ? 1 : 0),
   });
 }
 
