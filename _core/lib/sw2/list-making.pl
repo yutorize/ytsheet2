@@ -58,15 +58,15 @@ close($FH);
 
 ## 検索
 if($::in{mylist}){
-  @lines = grep { $_ =~ /^(?:[^<]*?<>){2}\Q$LOGIN_ID\E</ } @lines;
+  @lines = grep { $_ =~ /^(?:[^<]*<>){2}\Q$LOGIN_ID\E</ } @lines;
   $INDEX->param(modeMylist => 1);
 }
 elsif($::in{id}){
-  @lines = grep { $_ =~ /^(?:[^<]*?<>){2}\Q$::in{id}\E</ } @lines;
+  @lines = grep { $_ =~ /^(?:[^<]*<>){2}\Q$::in{id}\E</ } @lines;
 }
 if($::in{tag}){
   my $tag_query = decode('utf8', $::in{tag}) =~ s/[#＃]//r;
-  @lines = grep { $_ =~ /^(?:[^<]*?<>){4}[^<]*?[#＃]\Q$tag_query\E(\s|[#＃]|<)/ } @lines if $::in{tag};
+  @lines = grep { $_ =~ /^(?:[^<]*<>){4}[^<]*?[#＃]\Q$tag_query\E(\s|[#＃]|<)/ } @lines if $::in{tag};
   $INDEX->param(tag => $tag_query);
 }
 
