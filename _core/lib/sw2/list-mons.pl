@@ -339,6 +339,7 @@ foreach (@taxa,['騎獣', 'XX' , '']){
     "MOUNT" => ($name eq '騎獣' ? 1 : 0),
     "Characters" => ($grouplist{$name} ? [@{$grouplist{$name}}] : []),
     "NAV" => $navbar,
+    "MORE" => (!$navbar && $count{$name} > scalar(@{$grouplist{$name}}) ? 1 : 0),
   });
 }
 

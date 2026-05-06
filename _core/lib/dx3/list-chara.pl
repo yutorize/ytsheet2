@@ -339,6 +339,7 @@ foreach my $id (sort {$groups{$a}{sort} <=> $groups{$b}{sort}} keys %grouplist){
     "NUM-PL" => $count{PL}{$id},
     "Characters" => [@{$grouplist{$id}}],
     "NAV" => $navbar,
+    "MORE" => (!$navbar && $count{PC}{$id} > scalar(@{$grouplist{$id}}) ? 1 : 0),
   });
 }
 
