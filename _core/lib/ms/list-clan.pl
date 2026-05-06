@@ -86,7 +86,7 @@ else { #通常
 ## マイリスト
 if($mode eq 'mylist'){
   my $regex = join('|', @mylist);
-  @list = grep { $_ =~ /^(?:$regex)\</ } @list;
+  @list = grep { /^(?:$regex)\</ } @list;
 }
 ## 非表示除外
 elsif (
@@ -104,31 +104,31 @@ $groups{all}{name} = 'すべて' if $::in{group} eq 'all' || !@set::groups_clan;
 $INDEX->param(Groups => @set::groups_clan ? groupArrayToList($group_query, \@set::groups_clan) : []);
 
 if($group_query && $::in{group} ne 'all') {
-  if($group_query eq $set::group_default_clan){ @list = grep { $_ =~ /^(?:[^<]*?<>){6}(\Q$group_query\E)?</ } @list; }
-  else { @list = grep { $_ =~ /^(?:[^<]*?<>){6}\Q$group_query\E</ } @list; }
+  if($group_query eq $set::group_default_clan){ @list = grep { /^(?:[^<]*<>){6}(\Q$group_query\E)?</ } @list; }
+  else { @list = grep { /^(?:[^<]*<>){6}\Q$group_query\E</ } @list; }
 }
 $INDEX->param(group => $groups{$group_query}{name});
 
 ## タグ検索
 my $tag_query = normalizeHashtags(decode('utf8', $::in{tag}));
-if($tag_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){8}[^<]*? \Q$tag_query\E / } @list; }
+if($tag_query) { @list = grep { /^(?:[^<]*<>){8}[^<]*? \Q$tag_query\E / } @list; }
 $INDEX->param(tag => $tag_query);
 
 ## 名前検索
 my $name_query = lc decode('utf8', $::in{name});
-if($name_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){4}[^<]*?\Q$name_query\E/i } @list; }
+if($name_query) { @list = grep { /^(?:[^<]*<>){4}[^<]*?\Q$name_query\E/i } @list; }
 $INDEX->param(name => $name_query);
 
 ## PL名検索
 my $pl_query = decode('utf8', $::in{player});
-if($pl_query) { @list = grep { $_ =~ /^(?:[^<]*?<>){5}[^<]*?\Q$pl_query\E/i } @list; }
+if($pl_query) { @list = grep { /^(?:[^<]*<>){5}[^<]*?\Q$pl_query\E/i } @list; }
 $INDEX->param(player => $pl_query);
 
 ## 強度検索
 my $lv_min_query = $::in{lvmin};
 my $lv_max_query = $::in{lvmax};
-if($lv_min_query) { @list = grep { (split(/<>/))[11] >= $lv_min_query } @list; }
-if($lv_max_query) { @list = grep { (split(/<>/))[11] <= $lv_max_query } @list; }
+if($lv_min_query) { @list = grep { (/^(?:[^<]*<>){11}([^<]*)/)[0] >= $lv_min_query } @list; }
+if($lv_max_query) { @list = grep { (/^(?:[^<]*<>){11}([^<]*)/)[0] <= $lv_max_query } @list; }
 $INDEX->param(lvMin => $lv_min_query);
 $INDEX->param(lvMax => $lv_max_query);
 my $lv_query;
@@ -138,26 +138,35 @@ $INDEX->param(lv => $lv_query);
 
 ## 画像フィルタ
 if($::in{image} == 1) {
-  @list = grep { $_ =~ /^(?:[^<]*?<>){7}[^<0]/ } @list;
+  @list = grep { /^(?:[^<]*<>){7}[^<0]/ } @list;
   $INDEX->param(image => 1);
 }
 elsif($::in{image} eq 'N') {
-  @list = grep { $_ !~ /^(?:[^<]*?<>){7}[^<0]/ } @list;
-  $INDEX->param(image => 1);
+  @list = grep { !/^(?:[^<]*<>){7}[^<0]/ } @list;
+  $INDEX->param(image => 0);
 }
 ### ソート --------------------------------------------------
-if   ($sort eq 'name')    { my @tmp = map { sortName((split /<>/)[4]) } @list; @list = @list[sort {$tmp[$a] cmp $tmp[$b]} 0 .. $#tmp]; }
-elsif($sort eq 'pl')      { my @tmp = map { (split /<>/)[5]           } @list; @list = @list[sort {$tmp[$a] cmp $tmp[$b]} 0 .. $#tmp]; }
-elsif($sort eq 'date')    { my @tmp = map { (split /<>/)[3]           } @list; @list = @list[sort {$tmp[$b] <=> $tmp[$a]} 0 .. $#tmp]; }
+if   ($sort eq 'name')  { my @t = map { sortName($_)                         } @list; @list = @list[sort {$t[$a] cmp $t[$b]} 0 .. $#t]; }
+elsif($sort eq 'pl')    { my @t = map { (/^(?:[^<]*<>){5}([^<]*)/)[0]  } @list; @list = @list[sort {$t[$a] cmp $t[$b]} 0 .. $#t]; }
+elsif($sort eq 'date')  { my @t = map { (/^(?:[^<]*<>){3}([^<]*)/)[0]  } @list; @list = @list[sort {$t[$b] <=> $t[$a]} 0 .. $#t]; }
 
 sub sortName { $_[0] =~ s/^“.*”//; return $_[0]; }
 
 ### リストを回す --------------------------------------------------
-my %count; my %pl_flag;
+my %count = ( PC => {}, PL => {} );
 my %grouplist;
 my $page = $::in{page} || 1;
 my $pagestart = $page * $set::pagemax - $set::pagemax + 1;
 my $pageend   = $page * $set::pagemax;
+if($::in{group} && $set::pagemax){
+  $count{PC}{$::in{group}} = scalar(@list);
+  $count{PL}{$::in{group}} = {};
+  if($set::playerlist){
+    $count{PL}{$::in{group}}{ (/^(?:[^<]*<>){5}([^<]*)/)[0] }++ foreach @list;
+  }
+  $pageend = $count{PC}{$::in{group}} if $pageend > $count{PC}{$::in{group}};
+  @list = @list[$pagestart-1 .. $pageend-1];
+}
 foreach (@list) {
   my (
     $id, undef, undef, $updatetime, $name, $player, $group, #0-6
@@ -171,17 +180,18 @@ foreach (@list) {
   $group = $set::group_default_clan if (!$group || !$groups{$group});
   $group = 'all' if $::in{group} eq 'all' || !@set::groups_clan;
   
-  #カウント
-  $count{PC}{$group}++;
-  $count{PL}{$group}++ if !$pl_flag{$group}{$player};
-  $pl_flag{$group}{$player} = 1;
+  unless($::in{group} && $set::pagemax){
+    #カウント
+    $count{PC}{$group}++;
+    $count{PL}{$group}{$player}++;
 
-  #表示域以外は弾く
-  if (
-    ( $index_mode && $count{PC}{$group} > $set::list_maxline && $set::list_maxline) || #TOPページ
-    (!$index_mode && $set::pagemax && ($count{PC}{$group} < $pagestart || $count{PC}{$group} > $pageend)) #それ以外
-  ){
-    next;
+    #表示域以外は弾く
+    if (
+      ( $index_mode && $count{PC}{$group} > $set::list_maxline && $set::list_maxline) || #TOPページ
+      (!$index_mode && $set::pagemax && ($count{PC}{$group} < $pagestart || $count{PC}{$group} > $pageend)) #それ以外
+    ){
+      next;
+    }
   }
   
   #名前
