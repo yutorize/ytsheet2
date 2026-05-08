@@ -14,7 +14,7 @@ our %conv_data = ();
 $::in{log} ||= $::in{backup};
 
 if($::in{id}){
-  ($file, $type, $author) = getfile_open($::in{id});
+  ($file, $type, $author) = findSheet($::in{id});
 }
 elsif($::in{url}){
   eval { require $set::lib_convert; };
@@ -30,7 +30,7 @@ require $set::lib_view_char;
 
 
 ### データ取得 --------------------------------------------------
-sub getSheetData {
+sub loadSheetData {
   my %pc;
   my $datadir = $set::char_dir;
   ## データ読み込み
@@ -142,7 +142,7 @@ sub viewNotFound { #v1.14/v1.20のコンバート処理
 sub getLogList {
   my $dir  = shift;
   my $file = shift;
-  open(my $FH,"${dir}${file}/log-list.cgi") || logFileCheck("${dir}${file}",'view');
+  open(my $FH,"${dir}${file}/log-list.cgi") || checkLogFile("${dir}${file}",'view');
   my @lines = reverse <$FH>;
   close($FH);
   my @logs; my $selectedname;
@@ -251,7 +251,7 @@ sub formatHistoryFigures {
   return $text;
 }
 ### メニュー --------------------------------------------------
-sub sheetMenuCreate {
+sub createSheetMenu {
   my @menu = @_;
   foreach my $line (@menu){
     if   (length($line->{TEXT}) >= 4){ $line->{TEXT} = "<span>$line->{TEXT}</span>" }

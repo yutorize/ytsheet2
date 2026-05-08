@@ -13,8 +13,7 @@ my $message;
 if(!$::in{id}){ error('IDがありません。'); }
 if(!$::in{check1} || !$::in{check2} || !$::in{check3}){ error('確認のチェックが入っていません。'); }
 
-my ($sheet_id, $sheet_user, $file, $type, $user);
-($sheet_id, undef, $file, $type, $user) = getfile($::in{id},$::in{pass},$LOGIN_ID);
+my ($file, $type, $user) = authSheet($::in{id},$::in{pass},$LOGIN_ID);
 changeFileByType($type);
 my $dataDir = $set::char_dir;
 if(!$file){ error('データが見つかりません。'); }
@@ -104,9 +103,9 @@ elsif($mode eq 'img-delete'){
   $message .= '<a href="./?id='.$::in{id}.'">キャラクターシートを確認</a>';
   
   
-  sysopen (my $FH, $::core_dir.'/data/delete.cgi', O_WRONLY | O_APPEND | O_CREAT, 0666) or $message .= 'デリートリストが開けませんでした。';
-    if($user){ print $FH "$sheet_id<>$user<>$file<>image<>".time."<>\n"; }
-    else { print $FH "$sheet_id<>-----<>$file<>image<>".time."<>\n"; }
+  sysopen (my $FH, $::core_dir.'/data/delete.cgi', O_WRONLY | O_APPEND | O_CREAT) or $message .= 'デリートリストが開けませんでした。';
+    if($user){ print $FH "$::in{id}<>$user<>$file<>image<>".time."<>\n"; }
+    else { print $FH "$::in{id}<>-----<>$file<>image<>".time."<>\n"; }
   close ($FH);
   
   info('画像の削除',$message);
