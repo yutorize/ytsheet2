@@ -565,7 +565,7 @@ foreach (0 .. $pc{historyNum}){
   $h_num++ if $pc{'history'.$_.'Gm'} || $pc{'history'.$_.'Completed'};
   if ($set::log_dir && $pc{'history'.$_.'Date'} =~ s/([^0-9]*?_[0-9]+(?:#[0-9a-zA-Z]+?)?)$//){
     my $room = $1;
-    (my $date = $pc{'history'.$_.'Date'}) =~ s/[\-\/]//g;
+    (my $date = $pc{'history'.$_.'Date'}) =~ y#\-\/##d;
     $pc{'history'.$_.'Date'} = "<a href=\"$set::log_dir$date$room.html\">$pc{'history'.$_.'Date'}<\/a>";
   }
   if ($set::sessionlist && $pc{'history'.$_.'Title'} =~ s/^#([0-9]+)//){
