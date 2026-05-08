@@ -166,8 +166,7 @@ sub getSheetData {
 sub tokenMake {
   my $token = random_id(12);
 
-  my $mask = umask 0;
-  sysopen (my $FH, $set::tokenfile, O_WRONLY | O_APPEND | O_CREAT, 0666);
+  sysopen (my $FH, $set::tokenfile, O_WRONLY | O_APPEND | O_CREAT);
   print $FH $token."<>".(time + 60*60*24*7)."<>\n";
   close($FH);
   

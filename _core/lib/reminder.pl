@@ -4,14 +4,11 @@ use strict;
 use utf8;
 use open ":utf8";
 
-my $mask = umask 0;
-
 
 if($::in{mail}){
-
-  open (my $FH, '<', $set::userfile) or &error('一覧データのオープンに失敗しました。');
-  my @list = <$FH>;
-  close($FH);
+  open (my $READ, '<', $set::userfile) or error('ユーザー一覧のオープンに失敗しました。//reminder'.__LINE__);
+  my @list = <$READ>;
+  close($READ);
 
   my @hit_id;
   foreach(@list){
@@ -28,13 +25,13 @@ if($::in{mail}){
 }
 elsif($::in{id}){
   my $token = random_id(12);
-  sysopen (my $FH, $set::tokenfile, O_WRONLY | O_APPEND | O_CREAT, 0666);
-  print $FH $::in{id}.'-'.$token."<>".(time + 60*60*1)."<>\n";
-  close($FH);
+  sysopen (my $WRITE, $set::tokenfile, O_WRONLY | O_APPEND | O_CREAT);
+  print $WRITE $::in{id}.'-'.$token."<>".(time + 60*60*1)."<>\n";
+  close($WRITE);
 
-  open (my $FH, '<', $set::userfile) or &error('一覧データのオープンに失敗しました。');
-  my @list = <$FH>;
-  close($FH);
+  open (my $READ, '<', $set::userfile) or error('ユーザー一覧のオープンに失敗しました。//reminder'.__LINE__);
+  my @list = <$READ>;
+  close($READ);
 
   my $in_mail;
   foreach(@list){
@@ -62,21 +59,20 @@ elsif($::in{password}){
   my $id = (split(/-/, $::in{code}))[0];
   
   my $flag;
-  sysopen (my $FH, $set::userfile, O_RDWR);
-  flock($FH, 2);
-  my @list = <$FH>;
-  seek($FH, 0, 0);
-  foreach (@list){
-    my @data= split /<>/;
-    if ($data[0] eq $id){
-      print $FH "$data[0]<>".encrypt($::in{password})."<>$data[2]<>$data[3]<>\n";
-      $flag = 1;
-    }else{
-      print $FH $_;
+  overwriteFile($set::userfile, sub {
+    my ($READ, $WRITE) = @_;
+    foreach (<$READ>){
+      if(index($_, "$id<") == 0){
+        $flag = 1;
+        my @data = split(/<>/, $_, -1);
+        @data[1] = encrypt($::in{password});
+        print $WRITE join('<>', @data);
+      }
+      else {
+        print $WRITE $_;
+      }
     }
-  }
-  truncate($FH, tell($FH));
-  close($FH);
+  });
   
   if(!$flag){ error('IDが存在しません。'); }
   
