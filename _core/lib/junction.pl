@@ -32,7 +32,7 @@ elsif($mode eq 'passchange'){
   require $set::lib_register;    #パスワード変更処理
 }
 elsif($mode eq 'login')   {
-  if($in{id}) { &log_in($in{id},$in{password}); }  #ログイン
+  if($in{id}) { &logIn($in{id},$in{password}); }  #ログイン
   else        { require $set::lib_form; }          #ログインフォーム
 }
 elsif($mode eq 'reminder')   {
@@ -48,7 +48,7 @@ elsif($mode eq 'making')   {
   if($in{make})     { require $set::lib_making; }  #キャラクター作成
   else              { require $set::lib_list_make; }  #キャラクター作成フォーム
 }
-elsif($mode eq 'logout')     { &log_out; }   #ログアウト
+elsif($mode eq 'logout')     { &logOut; }   #ログアウト
 elsif($mode eq 'option')     { require $set::lib_form; }   #オプション
 elsif($mode eq 'blanksheet') { require $set::lib_edit; }   #ブランクシート
 elsif($mode eq 'edit')       { require $set::lib_edit; }   #編集
