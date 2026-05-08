@@ -17,7 +17,7 @@ $SHEET = HTML::Template->new( filename => $set::skin_sheet, utf8 => 1,
   die_on_bad_params => 0, die_on_missing_include => 0, case_sensitive => 1, global_vars => 1);
 
 ### キャラクターデータ読み込み #######################################################################
-our %pc = getSheetData();
+our %pc = loadSheetData();
 
 ### タグ置換前処理 ###################################################################################
 ### 閲覧禁止データ --------------------------------------------------
@@ -25,6 +25,7 @@ if($pc{forbidden} && !$pc{yourAuthor}){
   my $author = $pc{playerName};
   my $protect   = $pc{protect};
   my $forbidden = $pc{forbidden};
+  my $convertSource = $pc{convertSource};
   
   if($forbidden eq 'all'){
     %pc = ();
@@ -94,6 +95,7 @@ if($pc{forbidden} && !$pc{yourAuthor}){
   $pc{playerName} = $author;
   $pc{protect} = $protect;
   $pc{forbidden} = $forbidden;
+  $pc{convertSource} = $convertSource;
   $pc{forbiddenMode} = 1;
 }
 
@@ -382,7 +384,7 @@ if(!$pc{modeDownload}){
     }
   }
 }
-$SHEET->param(Menu => sheetMenuCreate @menu);
+$SHEET->param(Menu => createSheetMenu @menu);
 
 ### エラー --------------------------------------------------
 $SHEET->param(error => $main::login_error);

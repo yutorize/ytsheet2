@@ -9,7 +9,7 @@ my $mode = $::in{mode};
 my $LOGIN_ID = check;
 if($LOGIN_ID && $mode =~ /register|login/){ print "Location: ./\n\n"; }
 
-my $token = random_id(12);
+my $token = randomId(12);
 
 if($mode eq 'register'){
   sysopen (my $FH, $set::tokenfile, O_WRONLY | O_APPEND | O_CREAT);
@@ -35,8 +35,8 @@ $INDEX->param(modeConvert  => 1) if $mode eq 'convertform';
 
 if($mode eq 'option' || $mode eq 'passchange'){
   $INDEX->param(setMessage => $main::set_message);
-  $INDEX->param(userName => (getplayername($LOGIN_ID))[0]);
-  $INDEX->param(userMail => (getplayername($LOGIN_ID))[1]);
+  $INDEX->param(userName => (getPlayerName($LOGIN_ID))[0]);
+  $INDEX->param(userMail => (getPlayerName($LOGIN_ID))[1]);
 }
 if($mode eq 'convertform'){
   my @urls;

@@ -24,7 +24,7 @@ if($::in{mail}){
   info('送信完了','入力されたメールアドレスにIDを送信しました。');
 }
 elsif($::in{id}){
-  my $token = random_id(12);
+  my $token = randomId(12);
   sysopen (my $WRITE, $set::tokenfile, O_WRONLY | O_APPEND | O_CREAT);
   print $WRITE $::in{id}.'-'.$token."<>".(time + 60*60*1)."<>\n";
   close($WRITE);
@@ -48,7 +48,7 @@ elsif($::in{id}){
   info('送信完了','登録されたメールアドレスにパスワードリセット用URLを送信しました。');
 }
 elsif($::in{password}){
-  if(!token_check($::in{code})){ error('URLの有効期限が過ぎています。'); }
+  if(!checkToken($::in{code})){ error('URLの有効期限が過ぎています。'); }
 
   if($::in{password} ne $::in{password_confirm}){ error('パスワードの確認入力が一致しません'); }
   if ($::in{password} eq ''){ error('パスワードが入力されていません'); }
