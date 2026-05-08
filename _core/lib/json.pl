@@ -51,7 +51,7 @@ if($id){
       ($pc{protect} eq 'none') || 
       ($author && ($author eq $LOGIN_ID || $set::masterid eq $LOGIN_ID))
     ){
-      infoJson('error',"閲覧権限がありません。");
+      error("閲覧権限がありません。");
     }
   }
   
