@@ -74,7 +74,7 @@ if($set::simpleindex && $index_mode && $mode ne 'mylist') {
 else {
   # マイリスト
   if($mode eq 'mylist'){
-    $INDEX->param( playerName => (getplayername($LOGIN_ID))[0] );
+    $INDEX->param( playerName => (getPlayerName($LOGIN_ID))[0] );
     @list = getMylist($LOGIN_ID);
   }
   else {

@@ -400,8 +400,8 @@ sub data_update_chara {
   $ver =~ s/^([0-9]+)\.([0-9]+)\.([0-9]+)$/$1.$2$3/;
   delete $pc{updateMessage};
   if($pc{colorHeadBgA}) {
-    ($pc{colorHeadBgH}, $pc{colorHeadBgS}, $pc{colorHeadBgL}) = rgb_to_hsl($pc{colorHeadBgR},$pc{colorHeadBgG},$pc{colorHeadBgB});
-    ($pc{colorBaseBgH}, $pc{colorBaseBgS}, undef) = rgb_to_hsl($pc{colorBaseBgR},$pc{colorBaseBgG},$pc{colorBaseBgB});
+    ($pc{colorHeadBgH}, $pc{colorHeadBgS}, $pc{colorHeadBgL}) = rgbToHsl($pc{colorHeadBgR},$pc{colorHeadBgG},$pc{colorHeadBgB});
+    ($pc{colorBaseBgH}, $pc{colorBaseBgS}, undef) = rgbToHsl($pc{colorBaseBgR},$pc{colorBaseBgG},$pc{colorBaseBgB});
     $pc{colorBaseBgS} = $pc{colorBaseBgS} * $pc{colorBaseBgA} * 10;
   }
   if($ver < 1.10){
