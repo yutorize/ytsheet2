@@ -22,7 +22,7 @@ $INDEX = HTML::Template->new( filename => $set::skin_tmpl, utf8 => 1,
 $INDEX->param(modeMaking => 1) if $::in{mode} eq 'making';
 $INDEX->param(typeName => 'キャラ');
 
-$INDEX->param(name => (getplayername($LOGIN_ID))[0]);
+$INDEX->param(name => (getPlayerName($LOGIN_ID))[0]);
 
 $INDEX->param(LOGIN_ID => $LOGIN_ID);
 $INDEX->param(OAUTH_MODE => $set::oauth_service);

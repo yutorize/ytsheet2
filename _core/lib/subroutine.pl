@@ -54,7 +54,7 @@ sub error {
 }
 
 ### ファイル名取得／パスorアカウント必要時 --------------------------------------------------
-sub getfile {
+sub authSheet {
   open (my $FH, '<', $set::passfile) or die;
   while (my $line = <$FH>) {
     if(index($line, "$_[0]<") == 0){ #まずID照会
@@ -68,7 +68,7 @@ sub getfile {
       ) {
         my $user;
         if($pass =~ /^\[(.+?)\]$/){ $user =$1; }
-        return ($id, $pass, $file, $type, $user);
+        return ($file, $type, $user);
       }
       return 0; #ID一致かつパス不一致
     }
@@ -77,16 +77,16 @@ sub getfile {
   return 0;
 }
 ### ファイル名取得／パスorアカウント不要時 --------------------------------------------------
-sub getfile_open {
+sub findSheet {
   open (my $FH, '<', $set::passfile) or die;
   while (my $line  = <$FH>) {
     if(index($line, "$_[0]<") == 0){
       close($FH);
-      my ($id, $pass, $file, $type) = (split /<>/, $line)[0,1,2,3];
+      my ($id, $pass, $file, $type) = (split /<>/, $line)[0..3];
       my $user;
       if($pass =~ /^\[(.+?)\]$/){ $file = '_'.$1.'/'.$file; $user = $1; }
       else { $file = 'anonymous/'.$file; }
-      return ($file,$type,$user);
+      return ($file, $type, $user);
     }
   }
   close($FH);
@@ -112,7 +112,7 @@ sub overwriteFile {
     my $tmpfile;
     my $WRITE;
     while (1) {
-      $tmpfile = dirname($filePath).'/'.random_id(16);
+      $tmpfile = dirname($filePath).'/'.randomId(16);
       last if sysopen $WRITE, $tmpfile, O_WRONLY | O_EXCL | O_CREAT;
     }
     # ファイル読込
@@ -164,7 +164,7 @@ sub changeFileByType {
 sub redirectToImage {
   my $id   = shift;
   my $type = shift;
-  my ($file,$type,$user) = getfile_open($id);
+  my ($file,$type,$user) = findSheet($id);
   changeFileByType($type);
   my $datadir = $set::char_dir;
   my $ext;
@@ -192,7 +192,7 @@ sub redirectToImage {
 }
 
 ### プレイヤー名取得 --------------------------------------------------
-sub getplayername {
+sub getPlayerName {
   my $in_id = shift;
   open (my $FH, '<', $set::userfile);
   while (my $line = <$FH>) {
@@ -273,7 +273,7 @@ sub createSalt {
 }
 
 ### ログイン --------------------------------------------------
-sub log_in {
+sub logIn {
   if($set::oauth_service){ error("$set::oauth_serviceでのログインのみ有効です"); }
   my $key = getKey($_[0],$_[1]);
   if($key){
@@ -291,7 +291,7 @@ sub log_in {
       print $FH "$_[0]<>$key<>".time."<>\n";
       truncate($FH, tell($FH));
     close ($FH);
-    print &cookie_set($set::cookie,$_[0],$key,'+365d');
+    print &setCookie($set::cookie,$_[0],$key,'+365d');
   }
   else { error('ログインできませんでした'); }
   
@@ -336,8 +336,8 @@ sub updatePasswordHash {
 }
 
 ### ログアウト --------------------------------------------------
-sub log_out {
-  my ($id, $key) = &cookie_get;
+sub logOut {
+  my ($id, $key) = &getCookie;
   my $key  = $::in{key};
   open (my $FH, '+<', $set::login_users);
   flock($FH, 2);
@@ -353,14 +353,14 @@ sub log_out {
   }
   truncate($FH, tell($FH));
   close($FH);
-  print &cookie_set($set::cookie,$id,$key,'Thu, 1-Jan-1970 00:00:00 GMT');
+  print &setCookie($set::cookie,$id,$key,'Thu, 1-Jan-1970 00:00:00 GMT');
   
   if($set::url_home){ print "Location: $set::url_home\n\n"; }
   else { print "Location: ./\n\n"; }
 }
 ### ログインチェック --------------------------------------------------
 sub check {
-  my ($in_id, $in_key) = &cookie_get;
+  my ($in_id, $in_key) = &getCookie;
   return 0 if !$in_id || !$in_key;
   open (my $FH, $set::login_users) or 0;
   while (my $line = <$FH>){
@@ -377,7 +377,7 @@ sub check {
 }
 
 ### Cookieセット --------------------------------------------------
-sub cookie_set {
+sub setCookie {
   my $value   = "$_[1]<>$_[2]";
   my $cookie = new CGI::Cookie(
     -name    => $_[0] ,
@@ -388,7 +388,7 @@ sub cookie_set {
 }
 
 ### Cookieゲット --------------------------------------------------
-sub cookie_get {
+sub getCookie {
   my %cookies = fetch CGI::Cookie;
   my $value   = $cookies{$set::cookie}->value if(exists $cookies{$set::cookie});
   my @return = split(/<>/, $value);
@@ -396,7 +396,7 @@ sub cookie_get {
 }
 
 ### ランダムID生成 --------------------------------------------------
-sub random_id {
+sub randomId {
   my @char = (0..9,'a'..'z','A'..'Z');
   my $s;
   1 while (length($s .= $char[rand(@char)]) < $_[0]);
@@ -404,7 +404,7 @@ sub random_id {
 }
 
 ### トークンチェック --------------------------------------------------
-sub token_check {
+sub checkToken {
   my $in_token = shift;
   my $flag = 0;
   open (my $FH, '+<', $set::tokenfile);
@@ -422,7 +422,6 @@ sub token_check {
   
   return $flag;
 }
-
 ### メール送信 --------------------------------------------------
 sub sendmail {
   my $from    = encode('MIME-Header', "ゆとシートⅡ")." <$set::admimail>";
@@ -502,7 +501,7 @@ sub epocToDateQuery {
   return sprintf("%04d-%02d-%02d-%02d-%02d-%02d",$year+1900,$mon+1,$day,$hour,$min, $sec);
 }
 
-### 安全にevalする --------------------------------------------------
+### 数式を安全にevalする --------------------------------------------------
 sub s_eval {
   my $i = shift;
   $i =~ y/ 　\t//d;
@@ -570,7 +569,7 @@ sub stylizeAge {
 }
 
 ### エスケープ --------------------------------------------------
-sub pcEscape {
+sub escapePcData {
   my $text = shift;
   $text =~ s/&/&amp;/g;
   $text =~ s/"/&quot;/g;
@@ -860,7 +859,7 @@ sub removeRuby {
 }
 
 ### RGB>HSL --------------------------------------------------
-sub rgb_to_hsl {
+sub rgbToHsl {
   my $re = shift || 0;
   my $gr = shift || 0;
   my $bl = shift || 0;
@@ -1106,7 +1105,7 @@ sub outputTemplate {
 }
 ### アップデート・コンバート --------------------------------------------------
 ## バックアップ形式変更
-sub logFileCheck {
+sub checkLogFile {
   my $dir = shift;
   my $mode = shift;
   if (-d "${dir}/backup") { logFileUpdate($dir,$mode); }

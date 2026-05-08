@@ -7,7 +7,7 @@ use open ":utf8";
 my $mode = $::in{mode};
 
 if($mode eq 'register'){
-  if(!token_check($::in{_token})){ error('セッションの有効期限が切れたか、二重投稿です'); }
+  if(!checkToken($::in{_token})){ error('セッションの有効期限が切れたか、二重投稿です'); }
 
   if($set::registerkey && $set::registerkey ne $::in{registerkey}){ error('登録キーが間違っています。'); }
   if($::in{password} ne $::in{password_confirm}){ error('パスワードの確認入力が一致しません'); }
@@ -35,7 +35,7 @@ if($mode eq 'register'){
     close ($FH);
   }
 
-  log_in($::in{id},$::in{password});
+  logIn($::in{id},$::in{password});
 }
 elsif($mode eq 'option'){
   my $LOGIN_ID = check;

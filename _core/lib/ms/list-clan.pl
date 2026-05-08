@@ -64,7 +64,7 @@ my $q_links = @q_links ? '&'.join('&', @q_links) : '';
 ## マイリスト取得
 my @mylist;
 if($mode eq 'mylist'){
-  $INDEX->param( playerName => (getplayername($LOGIN_ID))[0] );
+  $INDEX->param( playerName => (getPlayerName($LOGIN_ID))[0] );
   open (my $FH, "<", $set::passfile);
   while(my $line = <$FH>){
     if($line =~ /^(.+?)<>\[$LOGIN_ID\]</){ push(@mylist, $1) }
