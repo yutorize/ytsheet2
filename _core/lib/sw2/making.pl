@@ -75,9 +75,10 @@ if($in{race} eq 'アビスボーン'){
 }
 
 ## 書き込み
-sysopen (my $FH, $set::makelist, O_RDWR | O_CREAT, 0666);
-  flock($FH, 2);
-  my @lines = <$FH>;
+my $num;
+overwriteFile($set::makelist, sub {
+  my ($READ, $WRITE) = @_;
+  my @lines = <$READ>;
   # 連投制限
   if($set::making_interval){
     foreach(@lines){
@@ -88,19 +89,16 @@ sysopen (my $FH, $set::makelist, O_RDWR | O_CREAT, 0666);
         $in{name} eq $name &&
         $in{race} eq $race
       ){
-        close($FH);
-        error($set::making_interval.'秒以内の連続投稿は禁止されています。');
+        return $set::making_interval.'秒以内の連続投稿は禁止されています。';
       }
     }
   }
   # ---
-  seek($FH, 0, 0);
   my $num = (split(/<>/, $lines[0]))[0] + 1;
   if ($set::making_max) { while ($set::making_max <= @lines) { pop(@lines); } }
   unshift(@lines,"$num<>$now<>$LOGIN_ID<>$in{name}<>$in{comment}<>$in{race}<>$stt_data<>$curse<>\n");
-  print $FH @lines;
-  truncate($FH, tell($FH));
-close($FH);
+  print $WRITE @lines;
+});
 
 print "Location:./?mode=making&num=${num}\n\n";
 
