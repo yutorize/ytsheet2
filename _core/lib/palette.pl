@@ -15,7 +15,7 @@ my $editing = $::in{editingMode};
 if($editing){ outputChatPaletteTemplate(); } else { outputChatPalette(); }
 ### チャットパレット出力 #############################################################################
 sub outputChatPalette {
-  my ($file, $type, $author) = getfile_open($id);
+  my ($file, $type, $author) = findSheet($id);
 
   changeFileByType($type);
 

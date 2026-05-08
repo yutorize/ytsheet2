@@ -17,11 +17,11 @@ my $file; my $author;
 our %conv_data = ();
 
 if($mode eq 'edit'){
-  (undef, undef, $file, $type, my $user) = getfile($::in{id},$::in{pass},$LOGIN_ID);
+  ($file, $type, my $user) = authSheet($::in{id},$::in{pass},$LOGIN_ID);
   $file = ($user ? "_${user}/" : 'anonymous/') . $file;
 }
 elsif($mode eq 'copy'){
-  ($file, $type, $author) = (getfile_open($::in{id}))[0..2];
+  ($file, $type, $author) = (findSheet($::in{id}))[0..2];
 }
 elsif($mode eq 'convert'){
   use JSON::PP;
@@ -75,7 +75,7 @@ require $set::lib_edit_char;
 
 ### 共通サブルーチン --------------------------------------------------
 ## データ読み込み
-sub getSheetData {
+sub loadSheetData {
   my $mode = shift;
   my %pc;
   my $message;
@@ -164,7 +164,7 @@ sub getSheetData {
 }
 ## トークン生成
 sub tokenMake {
-  my $token = random_id(12);
+  my $token = randomId(12);
 
   sysopen (my $FH, $set::tokenfile, O_WRONLY | O_APPEND | O_CREAT);
   print $FH $token."<>".(time + 60*60*24*7)."<>\n";

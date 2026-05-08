@@ -87,7 +87,7 @@ if($mode eq 'make'){
   $pc{birthTime} = $file = $now;
 }
 elsif($mode eq 'save'){
-  (undef, undef, $file, undef) = getfile($pc{id},$pc{pass},$LOGIN_ID);
+  $file = (authSheet $pc{id},$pc{pass},$LOGIN_ID)[0];
   if(!$file){ error('編集権限がありません。'); }
 }
 
@@ -168,7 +168,7 @@ if($::in{imageCompressed} || $::in{imageFile}){
 ## 二重投稿チェック
 if ($mode eq 'make'){
   my $_token = $::in{_token};
-  if(!token_check($_token)){
+  if(!checkToken($_token)){
     error('セッションの有効期限が切れたか、二重投稿です。一覧やマイリストを確認してください。');
   }
 }
@@ -265,7 +265,7 @@ sub dataSave {
     my %log_save;
     my @log_list;
     my $delete_flag;
-    if(!-f "${dir}${file}/log-list.cgi"){ logFileCheck("${dir}${file}") }
+    if(!-f "${dir}${file}/log-list.cgi"){ checkLogFile("${dir}${file}") }
     open (my $FH, "${dir}${file}/log-list.cgi");
     flock($FH, 1);
     while (<$FH>){
@@ -386,7 +386,7 @@ sub appendPassFile {
       foreach (<$READ>){
         if ($_ =~ /^(?:[^<]*<>){2}$now</){
           close($READ);
-          infoJson('error','新規作成が衝突しました。再度保存してください。');
+          error('新規作成が衝突しました。再度保存してください。');
         }
       }
       close($READ);

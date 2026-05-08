@@ -12,7 +12,7 @@ require $set::data_magi;
 require $set::lib_palette_sub;
 
 ### データ読み込み ###################################################################################
-my ($data, $mode, $file, $message) = getSheetData($::in{mode});
+my ($data, $mode, $file, $message) = loadSheetData($::in{mode});
 our %pc = %{ $data };
 
 my $mode_make = ($mode =~ /^(blanksheet|copy|convert)$/) ? 1 : 0;
@@ -24,7 +24,7 @@ if($message){
 }
 ### プレイヤー名 --------------------------------------------------
 if($mode_make){
-  $pc{playerName} = (getplayername($LOGIN_ID))[0];
+  $pc{playerName} = (getPlayerName($LOGIN_ID))[0];
 }
 ### 初期設定 --------------------------------------------------
 if($mode_make){ $pc{protect} ||= $LOGIN_ID ? 'account' : 'password'; }
