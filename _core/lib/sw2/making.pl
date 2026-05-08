@@ -82,7 +82,7 @@ overwriteFile($set::makelist, sub {
   # 連投制限
   if($set::making_interval){
     foreach(@lines){
-      my ($num, $date, $id, $name, $comment, $race, $stt) = split(/<>/, $_);
+      my ($num, $date, $id, $name, $race) = (/^([0-9]+)<>([0-9]{10})<>([^<]*)<>([^<]*)<>[^<]*<>([^<]*)/);
       last if $now - $date > $set::making_interval;
       if(
         $LOGIN_ID eq $id &&
@@ -94,7 +94,7 @@ overwriteFile($set::makelist, sub {
     }
   }
   # ---
-  my $num = (split(/<>/, $lines[0]))[0] + 1;
+  $num = ($lines[0] =~ /^([0-9]+)</)[0] + 1;
   if ($set::making_max) { while ($set::making_max <= @lines) { pop(@lines); } }
   unshift(@lines,"$num<>$now<>$LOGIN_ID<>$in{name}<>$in{comment}<>$in{race}<>$stt_data<>$curse<>\n");
   print $WRITE @lines;
