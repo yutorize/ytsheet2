@@ -11,9 +11,8 @@ if($LOGIN_ID && $mode =~ /register|login/){ print "Location: ./\n\n"; }
 
 my $token = random_id(12);
 
-my $mask = umask 0;
 if($mode eq 'register'){
-  sysopen (my $FH, $set::tokenfile, O_WRONLY | O_APPEND | O_CREAT, 0666);
+  sysopen (my $FH, $set::tokenfile, O_WRONLY | O_APPEND | O_CREAT);
   print $FH $token."<>".(time + 60*60*24)."<>\n";
   close($FH);
 }
