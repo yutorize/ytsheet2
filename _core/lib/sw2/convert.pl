@@ -7,61 +7,14 @@ use JSON::PP;
 
 require $set::data_class;
 
-sub dataConvert {
-  my $set_url = shift;
-  my $file;
-  
-  ## キャラクター保管所
-  if($set_url =~ m"(^https?://charasheet\.vampire-blood\.net/m?[a-f0-9]+)"){
-    my $data = urlDataGet($1.'.js') or error 'キャラクター保管所のデータが取得できませんでした';
-    my %in = %{ decode_json(encode('utf8', (join '', $data))) };
-    
-    return convertHokanjoToYtsheet(\%in);
-  }
-  ## 旧ゆとシート
-  {
-    foreach my $url (keys %set::convert_url){
-      if($set_url =~ s"^${url}data/(.*?).html"$1"){
-        open my $IN, '<', "$set::convert_url{$url}data/${set_url}.cgi" or error '旧ゆとシートのデータが開けませんでした';
-        my %pc;
-        $_ =~ s/^(.+?)<>(.*)\n$/$pc{$1} = $2;/egi while <$IN>;
-        close($IN);
-        if($pc{'部位数'}){
-          return convertMto2(\%pc);
-        }
-        else { return convert1to2(\%pc); }
-      }
-    }
-  }
-  ## ゆとシートⅡ
-  {
-    my $data = urlDataGet($set_url.'&mode=json') or error 'コンバート元のデータが取得できませんでした';
-    if($data !~ /^{/){ error 'JSONデータが取得できませんでした' }
-    $data = escapeThanSign($data);
-    my %pc = utf8::is_utf8($data) ? %{ decode_json(encode('utf8', (join '', $data))) } : %{ decode_json(join '', $data) };
-    if($pc{result} eq 'OK'){
-      our $base_url = $set_url;
-      $base_url =~ s|/[^/]+?$|/|;
-      $pc{convertSource} = '別のゆとシートⅡ';
-      return %pc;
-    }
-    elsif($pc{result}) {
-      error 'コンバート元のゆとシートⅡでエラーがありました。<br>>'.$pc{result};
-    }
-    else {
-      error '有効なデータが取得できませんでした';
-    }
-  }
-}
-
-sub getItemData {
+sub loadItemData {
   my $set_url = shift;
   my $file;
   ## 同じゆとシートⅡ
   my $self = CGI->new()->url;
   if($set_url =~ m"^$self\?id=(.+?)(?:$|&)"){
     my $id = $1;
-    my ($file, $type, $author) = getfile_open($id);
+    my ($file, $type, $author) = findSheet($id);
     my %pc;
     open my $IN, '<', "$set::lib_type{i}{dataDir}${file}/data.cgi" or return;
     while (<$IN>){
@@ -75,10 +28,8 @@ sub getItemData {
   }
   ## 他のゆとシートⅡ
   {
-    my $data = urlDataGet($set_url.'&mode=json') or return;
-    if($data !~ /^{/){ return }
-    $data = escapeThanSign($data);
-    my %pc = utf8::is_utf8($data) ? %{ decode_json(encode('utf8', (join '', $data))) } : %{ decode_json(join '', $data) };
+    my %pc = fetchJson($set_url.'&mode=json');
+    $_ = escapeThanSign($_) foreach values %pc;
     if($pc{result} eq 'OK'){
       our $base_url = $set_url;
       $base_url =~ s|/[^/]+?$|/|;
