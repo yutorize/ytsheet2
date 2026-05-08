@@ -505,7 +505,7 @@ sub epocToDateQuery {
 ### 安全にevalする --------------------------------------------------
 sub s_eval {
   my $i = shift;
-  $i =~ s/[ 　]//g;
+  $i =~ y/ 　\t//d;
   if($i =~ /[^0-9,\+\-\*\/\%\(\) ]/){ $i = 0; }
   $i =~ s/,([0-9]{3}(?![0-9]))/$1/g;
   return eval($i);
@@ -633,7 +633,6 @@ sub unescapeTags {
       $text =~ s/(\[[常準主補宣]\])+/&textToIcon($&);/egi;
       $text =~ s/「((?:[○◯〇△＞▶〆☆≫»□☐☑🗨]|&gt;&gt;)+)/"「".&textToIcon($1);/egi;
     }
-
     $text =~ s|\[[⤴↑]\]|<i class="s-icon uplift">⤴</i>|g;
     $text =~ s|\[[⤵↓]\]|<i class="s-icon calm">⤵</i>|g;
     $text =~ s|\[♡\]|<i class="s-icon heart">♡</i>|g;
