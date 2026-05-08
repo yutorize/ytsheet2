@@ -19,7 +19,7 @@ my $url = $::in{url};
 my ($file, $type,$author);
 my %pc = ();
 if($id){
-  ($file, $type, $author) = getfile_open($id);
+  ($file, $type, $author) = findSheet($id);
 
   changeFileByType($type);
   my $dir = $set::char_dir;
@@ -70,7 +70,7 @@ elsif($::in{url}){
     %pc = data_calc(\%pc);
   }
   foreach(keys %pc){
-    $pc{$_} = pcEscape($pc{$_});
+    $pc{$_} = escapePcData($pc{$_});
     delete $pc{$_} if($pc{$_} eq '');
   }
 }

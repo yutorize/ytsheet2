@@ -833,7 +833,7 @@ sub data_calc {
   if(!$::mode_save){ return %pc; }
   
   #### エスケープ --------------------------------------------------
-  $pc{$_} = pcEscape($pc{$_}) foreach (keys %pc);
+  $pc{$_} = escapePcData($pc{$_}) foreach (keys %pc);
   $pc{tags} = normalizeHashtags($pc{tags});
   
   ### 最終参加卓 --------------------------------------------------
