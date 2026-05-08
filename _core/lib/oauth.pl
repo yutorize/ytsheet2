@@ -98,14 +98,15 @@ sub registerUser {
   my $password = "";
   my @salt = ('0'..'9','A'..'Z','a'..'z','.','/');
   1 while (length($password .= $salt[rand(@salt)] ) < 12);
-  sysopen (my $FH, $set::userfile, O_WRONLY | O_APPEND | O_CREAT, 0666);
+  appendFile($set::userfile, sub {
+    my ($WRITE) = @_;
     # print $FH "$id<>".&encrypt($password)."<>".Encode::decode('utf8', $name)."<>$mail<>".time."<>\n";
-    print $FH "$id<>".&encrypt($password)."<>$name<>$mail<>".time."<>\n";
-  close ($FH);
+    print $WRITE "$id<>".&encrypt($password)."<>$name<>$mail<>".time."<>\n";
+  });
 
   if($set::player_dir){
     if (!-d $set::player_dir.$id){ mkdir $set::player_dir.$id; }
-    sysopen (my $FH, $set::player_dir.$id.'/data.cgi', O_WRONLY | O_APPEND | O_CREAT, 0666);
+    sysopen (my $FH, $set::player_dir.$id.'/data.cgi', O_WRONLY | O_APPEND | O_CREAT);
       print $FH "id<>$id\n";
       print $FH "name<>$name\n";
     close ($FH);

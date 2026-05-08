@@ -3,6 +3,7 @@ use strict;
 #use warnings;
 use utf8;
 use open ":utf8";
+use File::Basename qw/dirname/;
 
 my $LOGIN_ID = check;
 my $mode = $::in{mode};
@@ -21,34 +22,27 @@ my $fileDir = $user ? "_${user}/${file}" : "anonymous/${file}";
 
 ## キャラシ削除
 if($mode eq 'delete'){
-  open (my $FH, "+<", $set::listfile) or error('一覧ファイルのオープンに失敗しました。');
-  flock($FH, 2);
-  my @list = <$FH>;
-  seek($FH, 0, 0);
-  foreach (@list){
-    if(index($_, "$::in{id}<") == 0){
-      $message .= 'リストから削除しました。<br>';
-    }else{
-      print $FH $_;
-    }
-  }
-  truncate($FH, tell($FH));
-  close($FH);
+  # 一覧ファイル
+  overwriteFile($set::listfile, sub {
+    my ($READ, $WRITE) = @_;
 
-  open (my $FH, '+<', $set::passfile) or error('IDファイルのオープンに失敗しました。');
-  flock($FH, 2);
-  my @list = <$FH>;
-  seek($FH, 0, 0);
-  foreach (@list){
-    if(index($_, "$::in{id}<") == 0){
-      $message .= 'IDを削除しました。<br>';
-    } else {
-      print $FH $_;
+    foreach (<$READ>){
+      if(index($_, "$::in{id}<") == 0){ $message .= '一覧から削除しました。<br>'; }
+      else { print $WRITE $_; }
     }
-  }
-  truncate($FH, tell($FH));
-  close($FH);
+  });
 
+  # パスワードファイル
+  overwriteFile($set::passfile, sub {
+    my ($READ, $WRITE) = @_;
+
+    foreach (<$READ>){
+      if(index($_, "$::in{id}<") == 0){ $message .= 'IDを削除しました。<br>'; }
+      else { print $WRITE $_; }
+    }
+  });
+
+  # 個別ファイル
   if (unlink "${dataDir}${fileDir}/image.png") { $message .= '画像(png)を削除しました。<br>'; }
   if (unlink "${dataDir}${fileDir}/image.jpg") { $message .= '画像(jpg)を削除しました。<br>'; }
   if (unlink "${dataDir}${fileDir}/image.gif") { $message .= '画像(gif)を削除しました。<br>'; }
