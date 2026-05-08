@@ -62,8 +62,8 @@ if($id){
   $pc{sheetURL} = url()."?id=${id}";
 }
 elsif($::in{url}){
-  require $set::lib_convert;
-  %pc = dataConvert($::in{url});
+  eval { require $set::lib_convert; };
+  %pc = importSheetData($::in{url});
   $type = $pc{type};
   if(!$pc{ver}){
     require $set::lib_calc_char;
