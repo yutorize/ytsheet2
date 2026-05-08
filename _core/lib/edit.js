@@ -986,7 +986,7 @@ function safeEval(text){
   if     (text === '') { return 0; }
   else if(text.match(/[^0-9,\+\-\*\/\(\) ]/)){ return NaN; }
   
-  text = text.replace(/,([0-9]{3}(?![0-9]))/g, "$1");
+  text = text.replace(/(^,|,$)/g,"").replace(/,([0-9]{3}(?![0-9]))/g, "$1");
 
   try { return Number( Function('"use strict";return (' + text + ')')() ); } 
   catch (e) { return NaN; }
