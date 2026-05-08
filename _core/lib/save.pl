@@ -33,21 +33,21 @@ our $new_id;
 
 ## パスワードチェック
 if($::in{protect} eq 'password'){
-  if ($pass eq ''){ infoJson('error','パスワードが入力されていません。'); }
+  if ($pass eq ''){ error('パスワードが入力されていません。'); }
   else {
-    if ($pass =~ /[^0-9A-Za-z\.\-\/]/) { infoJson('error','パスワードに使える文字は、半角の英数字とピリオド、ハイフン、スラッシュだけです。'); }
+    if ($pass =~ /[^0-9A-Za-z\.\-\/]/) { error('パスワードに使える文字は、半角の英数字とピリオド、ハイフン、スラッシュだけです。'); }
   }
 }
 ## 新規作成時処理
 if ($mode eq 'make'){
   ##ログインチェック
   if($set::user_reqd && !$LOGIN_ID) {
-    infoJson('error','ログインしていません。');
+    error('ログインしていません。');
   }
   
   ## 登録キーチェック
   if(!$set::user_reqd && $set::registerkey && $set::registerkey ne $::in{registerkey}){
-    infoJson('error','登録キーが一致しません。');
+    error('登録キーが一致しません。');
   }
   
   ## ID生成
@@ -99,7 +99,7 @@ if($mode eq 'make'){
 }
 elsif($mode eq 'save'){
   (undef, undef, $file, undef) = getfile($pc{id},$pc{pass},$LOGIN_ID);
-  if(!$file){ infoJson('error','編集権限がありません。'); }
+  if(!$file){ error('編集権限がありません。'); }
 }
 
 our $newline;
@@ -113,7 +113,7 @@ if($mode eq 'make' && $pc{protect} ne 'account'){
   opendir my $dh, "${data_dir}anonymous/";
   my $num_files = () = readdir($dh);
   if($num_files-2 >= $max_files){
-    infoJson('error','現在、サーバーの許容量の都合により、ユーザーアカウントに紐づけされていないシートを新規作成できません。\nアカウント登録・ログインをし、編集保護設定で「アカウントに紐付ける」を選択して保存してください。\nすでにログイン中であっても、「アカウントに紐づける」設定での保存しかできません。');
+    error('現在、サーバーの許容量の都合により、ユーザーアカウントに紐づけされていないシートを新規作成できません。\nアカウント登録・ログインをし、編集保護設定で「アカウントに紐付ける」を選択して保存してください。\nすでにログイン中であっても、「アカウントに紐づける」設定での保存しかできません。');
     require $set::lib_edit; exit;
   }
 }
@@ -121,7 +121,7 @@ if($mode eq 'save' && $pc{protect} ne 'account' && $pc{protectOld} eq 'account')
   opendir my $dh, "${data_dir}anonymous/";
   my $num_files = () = readdir($dh);
   if($num_files-2 >= $max_files){
-    infoJson('error','現在、サーバーの許容量の都合により、ユーザーアカウントに紐づけされていないシートを新規作成できません。\nアカウントに紐づけないデータをこれ以上増やせないため、紐づけ済みのシートの保護設定を変更できません。');
+    error('現在、サーバーの許容量の都合により、ユーザーアカウントに紐づけされていないシートを新規作成できません。\nアカウントに紐づけないデータをこれ以上増やせないため、紐づけ済みのシートの保護設定を変更できません。');
   }
 }
 
@@ -183,7 +183,7 @@ my $mask = umask 0;
 if ($mode eq 'make'){
   my $_token = $::in{_token};
   if(!token_check($_token)){
-    infoJson('error','セッションの有効期限が切れたか、二重投稿です。一覧やマイリストを確認してください。');
+    error('セッションの有効期限が切れたか、二重投稿です。一覧やマイリストを確認してください。');
   }
 }
 ### 個別データ保存 --------------------------------------------------
@@ -193,8 +193,8 @@ delete $pc{_token};
 delete $pc{registerkey};
 $pc{IP} = $ENV{'REMOTE_ADDR'};
 ### passfile --------------------------------------------------
-if (!-d $set::data_dir){ mkdir $set::data_dir or infoJson('error',"データディレクトリ($set::data_dir)の作成に失敗しました。"); }
-if (!-d $data_dir){ mkdir $data_dir or infoJson('error',"データディレクトリ($data_dir)の作成に失敗しました。"); }
+if (!-d $set::data_dir){ mkdir $set::data_dir or error("データディレクトリ($set::data_dir)の作成に失敗しました。"); }
+if (!-d $data_dir){ mkdir $data_dir or error("データディレクトリ($data_dir)の作成に失敗しました。"); }
 my $user_dir;
 ## 新規
 if($mode eq 'make'){
@@ -257,14 +257,14 @@ sub dataSave {
   my $user_dir = shift;
 
   if (!-d "${dir}${user_dir}"){
-    mkdir "${dir}${user_dir}" or infoJson('error',"データディレクトリの作成に失敗しました。");
+    mkdir "${dir}${user_dir}" or error("データディレクトリの作成に失敗しました。");
   }
   if (!-d "${dir}${user_dir}${file}"){
     if($mode eq 'save' && -d "${dir}${file}"){ #v1.14/v1.20のコンバート処理
-      move("${dir}${file}", "${dir}${user_dir}${file}") or infoJson('error',"データディレクトリの移動に失敗しました。");
+      move("${dir}${file}", "${dir}${user_dir}${file}") or error("データディレクトリの移動に失敗しました。");
     }
     else {
-      mkdir "${dir}${user_dir}${file}" or infoJson('error',"データファイルの作成に失敗しました。");
+      mkdir "${dir}${user_dir}${file}" or error("データファイルの作成に失敗しました。");
     }
   }
   $dir .= $user_dir;
@@ -398,7 +398,7 @@ sub passfileWriteMake {
   foreach (@list){
     if ($_ =~ /^(?:[^<]*<>){2}$now</){
       close($FH);
-      infoJson('error','新規作成が衝突しました。再度保存してください。');
+      error('新規作成が衝突しました。再度保存してください。');
     }
   }
   my $passwrite; my $user_dir;
@@ -446,8 +446,8 @@ sub passfileWriteSave {
   $new_dir ||= 'anonymous/';
   my $user_dir;
   if($move){
-    if(!-d "${dir}${new_dir}"){ mkdir "${dir}${new_dir}" or infoJson('error',"データディレクトリの作成に失敗しました。"); }
-    move("${data_dir}${old_dir}${file}", "${data_dir}${new_dir}${file}") or infoJson('error',"データディレクトリの移動に失敗しました。（${old_dir}⇒${new_dir}）");
+    if(!-d "${dir}${new_dir}"){ mkdir "${dir}${new_dir}" or error("データディレクトリの作成に失敗しました。"); }
+    move("${data_dir}${old_dir}${file}", "${data_dir}${new_dir}${file}") or error("データディレクトリの移動に失敗しました。（${old_dir}⇒${new_dir}）");
     $user_dir = $new_dir;
   }
   else {
