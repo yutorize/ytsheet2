@@ -4,7 +4,9 @@ use utf8;
 use open ":utf8";
 use CGI::Cookie;
 use List::Util qw/max min/;
-use Fcntl;
+use Fcntl qw(:DEFAULT :flock);
+use File::Copy qw/move/;
+use File::Basename qw/dirname/;
 
 ### サブルーチン #####################################################################################
 
@@ -89,6 +91,51 @@ sub getfile_open {
   }
   close($FH);
   return 0;
+}
+### ファイルロック／更新 --------------------------------------------------
+sub withLock {
+  my ($filePath, $code) = @_;
+
+  sysopen my $LOCK, "$filePath.lock", O_RDWR | O_CREAT
+    or error "ロックファイルのオープンに失敗しました: $!";
+  flock($LOCK, LOCK_EX)
+    or error "ファイルのロックに失敗しました: $!";
+
+  $code->();
+  
+  close($LOCK);
+}
+sub overwriteFile {
+  my ($filePath, $code) = @_;
+  withLock($filePath, sub {
+    # 一時ファイル作成
+    my $tmpfile;
+    my $WRITE;
+    while (1) {
+      $tmpfile = dirname($filePath).'/'.random_id(16);
+      last if sysopen $WRITE, $tmpfile, O_WRONLY | O_EXCL | O_CREAT;
+    }
+    # ファイル読込
+    sysopen my $READ, $filePath, O_RDONLY | O_CREAT
+      or error "ファイルのオープンに失敗しました: $!";
+    # 処理
+    $code->($READ, $WRITE);
+    close($READ);
+    close($WRITE);
+    # 保存（一時ファイルから上書き差替）
+    rename $tmpfile, $filePath;
+  });
+}
+sub appendFile {
+  my ($filePath, $code) = @_;
+  withLock($filePath, sub {
+    # ファイルオープン
+    sysopen my $WRITE, $filePath, O_WRONLY | O_APPEND | O_CREAT
+      or error "ファイルのオープンに失敗しました: $!";
+    # 処理
+    $code->($WRITE);
+    close($WRITE);
+  });
 }
 ### typeによって各ファイル・ディレクトリを変更 --------------------------------------------------
 sub changeFileByType {
@@ -231,8 +278,7 @@ sub log_in {
   my $key = getKey($_[0],$_[1]);
   if($key){
     my $flag = 0;
-    my $mask = umask 0;
-    sysopen (my $FH, $set::login_users, O_RDWR | O_CREAT, 0666);
+    sysopen (my $FH, $set::login_users, O_RDWR | O_CREAT);
       flock($FH, 2);
       my @list = <$FH>;
       seek($FH, 0, 0);
@@ -274,22 +320,19 @@ sub getKey {
 }
 sub updatePasswordHash {
   my ($id, $pass) = @_;
-  sysopen (my $FH, $set::userfile, O_RDWR);
-  flock($FH, 2);
-  my @list = <$FH>;
-  seek($FH, 0, 0);
-  foreach (@list){
-    if(index($_, "$id<") == 0){
-      my @data = split(/<>/, $_, -1);
-      @data[1] = encrypt($pass);
-      print $FH join('<>', @data);
+  overwriteFile($set::userfile, sub {
+    my ($READ, $WRITE) = @_;
+    foreach (<$READ>){
+      if(index($_, "$id<") == 0){
+        my @data = split(/<>/, $_, -1);
+        @data[1] = encrypt($pass);
+        print $WRITE join('<>', @data);
+      }
+      else{
+        print $WRITE $_;
+      }
     }
-    else{
-      print $FH $_;
-    }
-  }
-  truncate($FH, tell($FH));
-  close($FH);
+  });
 }
 
 ### ログアウト --------------------------------------------------

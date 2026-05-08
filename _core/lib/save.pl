@@ -105,7 +105,6 @@ elsif($mode eq 'save'){
 our $newline;
 require $set::lib_calc_char;
 my $data_dir = $set::char_dir;
-my $listfile = $set::listfile;
 
 ## 保存数チェック
 my $max_files = 32000;
@@ -177,8 +176,6 @@ if($::in{imageCompressed} || $::in{imageFile}){
 
 
 ### 保存 #############################################################################################
-my $mask = umask 0;
-
 ## 二重投稿チェック
 if ($mode eq 'make'){
   my $_token = $::in{_token};
@@ -198,7 +195,8 @@ if (!-d $data_dir){ mkdir $data_dir or error("データディレクトリ($data_
 my $user_dir;
 ## 新規
 if($mode eq 'make'){
-  $user_dir = passfileWriteMake($pc{id},$pass,$LOGIN_ID,$pc{protect},$now,$data_dir);
+  $user_dir = appendPassFile($pc{id},$pass,$LOGIN_ID,$pc{protect},$now);
+  dataSave('make', $data_dir, $file, $pc{protect}, $user_dir);
 }
 ## 更新
 elsif($mode eq 'save'){
@@ -206,7 +204,7 @@ elsif($mode eq 'save'){
     || ($set::masterid && $LOGIN_ID eq $set::masterid)
     || ($set::masterkey && $pass eq $set::masterkey)
   ){
-    $user_dir = passfileWriteSave($pc{id},$pass,$LOGIN_ID,$pc{protect},$data_dir);
+    $user_dir = updatePassFile($pc{id},$pass,$LOGIN_ID,$pc{protect},$data_dir);
   }
   else {
     $user_dir = ($pc{protect} eq 'account' && $LOGIN_ID) ? "_${LOGIN_ID}/" : 'anonymous/';
@@ -214,7 +212,7 @@ elsif($mode eq 'save'){
   dataSave('save', $data_dir, $file, $pc{protect}, $user_dir);
 }
 ### 一覧データ更新 --------------------------------------------------
-listSave($listfile, $newline);
+updateListFile($newline);
 
 ### 画像アップ更新 --------------------------------------------------
 if($pc{imageDelete}){
@@ -247,8 +245,6 @@ else {
 
 
 ### サブルーチン ###################################################################################
-use File::Copy qw/move/;
-
 sub dataSave {
   my $mode = shift;
   my $dir  = shift;
@@ -329,7 +325,7 @@ sub dataSave {
     
       # data => logs (削除あり)
       if($delete_flag){
-        sysopen(my $BU,"${dir}${file}/logs.cgi", O_RDWR | O_CREAT, 0666);
+        sysopen(my $BU,"${dir}${file}/logs.cgi", O_RDWR | O_CREAT);
         flock($BU, 2);
         my @lines = <$BU>;
         seek($BU, 0, 0);
@@ -357,7 +353,7 @@ sub dataSave {
       # data => logs (追記のみ)
       else {
         open (my $IN, '<', "${dir}${file}/data.cgi");
-        sysopen (my $BU, "${dir}${file}/logs.cgi", O_WRONLY | O_APPEND | O_CREAT, 0666);
+        sysopen (my $BU, "${dir}${file}/logs.cgi", O_WRONLY | O_APPEND | O_CREAT);
         flock($BU, 2);
         print $BU "=${latest_date}=\n";
         print $BU $_ while (<$IN>);
@@ -365,7 +361,7 @@ sub dataSave {
         close($IN);
       }
       
-      sysopen (my $BUL, "${dir}${file}/log-list.cgi", O_WRONLY | O_TRUNC | O_CREAT, 0666);
+      sysopen (my $BUL, "${dir}${file}/log-list.cgi", O_WRONLY | O_TRUNC | O_CREAT);
       flock($BUL, 2);
       print $BUL "$_<>$log_save{$_}<>$log_name{$_}\n" foreach (sort keys %log_save);
       print $BUL "${latest_date}<>${latest_epoc}<>$log_name{latest}\n";
@@ -374,14 +370,14 @@ sub dataSave {
     }
   }
   elsif($mode eq 'make'){
-    sysopen (my $BUL, "${dir}${file}/log-list.cgi", O_WRONLY | O_TRUNC | O_CREAT, 0666);
+    sysopen (my $BUL, "${dir}${file}/log-list.cgi", O_WRONLY | O_TRUNC | O_CREAT);
     flock($BUL, 2);
     print $BUL "latest<>${now}<>\n";
     close($BUL);
   }
 
   ## data.cgi保存／更新
-  sysopen (my $DD, "${dir}${file}/data.cgi", O_WRONLY | O_TRUNC | O_CREAT, 0666);
+  sysopen (my $DD, "${dir}${file}/data.cgi", O_WRONLY | O_TRUNC | O_CREAT);
   flock($DD, 2);
   print $DD "ver<>",$main::ver,"\n";
   foreach (sort keys %pc){
@@ -390,94 +386,99 @@ sub dataSave {
   close($DD);
 }
 
-sub passfileWriteMake {
-  my ($id, $pass ,$LOGIN_ID, $protect, $now, $data_dir) = @_;
-  sysopen (my $FH, $set::passfile, O_RDWR | O_APPEND | O_CREAT, 0666);
-  flock($FH, 2);
-  my @list = <$FH>;
-  foreach (@list){
-    if ($_ =~ /^(?:[^<]*<>){2}$now</){
-      close($FH);
-      error('新規作成が衝突しました。再度保存してください。');
-    }
-  }
-  my $passwrite; my $user_dir;
-  if   ($protect eq 'account'&& $LOGIN_ID) { $passwrite = '['.$LOGIN_ID.']'; $user_dir = '_'.$LOGIN_ID.'/'; }
-  elsif($protect eq 'password')            { $passwrite = encrypt($pass); }
-  $user_dir ||= 'anonymous/';
-  dataSave('make', $data_dir, $file, $protect, $user_dir);
-  print $FH "$id<>$passwrite<>$now<>".$::in{type}."<>\n";
-  close($FH);
-  return $user_dir;
-}
-
-sub passfileWriteSave {
-  my ($id, $pass ,$LOGIN_ID, $protect, $dir) = @_;
-  my $move; my $old_dir; my $new_dir; my $file;
-  sysopen (my $FH, $set::passfile, O_RDWR);
-  flock($FH, 2);
-  my @list = <$FH>;
-  seek($FH, 0, 0);
-  foreach (@list){
-    if(index($_, "$id<") == 0){
-      my @data = split /<>/;
-      $file = $data[2];
-      my $passwrite = $data[1];
-      if($passwrite =~ /^\[(.+?)\]$/){ $old_dir = '_'.$1.'/'; }
-      if   ($protect eq 'account')  {
-        if($passwrite !~ /^\[.+?\]$/) {
-          $passwrite = '['.$LOGIN_ID.']';
-          $move = 1;
-          $new_dir = '_'.$LOGIN_ID.'/';
+sub appendPassFile {
+  my ($id, $pass ,$LOGIN_ID, $protect, $now) = @_;
+  
+  my $user_dir;
+  appendFile($set::passfile, sub {
+    my ($WRITE) = @_;
+    # 衝突チェック
+    if(open (my $READ, '<', $set::passfile)){
+      foreach (<$READ>){
+        if ($_ =~ /^(?:[^<]*<>){2}$now</){
+          close($READ);
+          infoJson('error','新規作成が衝突しました。再度保存してください。');
         }
       }
-      elsif($protect eq 'password') {
-        if(!$passwrite || $passwrite =~ /^\[.+?\]$/) { $passwrite = encrypt($pass); }
-        if($old_dir) { $move = 1; }
-      }
-      elsif($protect eq 'none') {
-        $passwrite = '';
-        if($old_dir) { $move = 1; }
-      }
-      $_ = "$data[0]<>$passwrite<>$data[2]<>$data[3]<>\n";
+      close($READ);
     }
-  }
-  $old_dir ||= 'anonymous/';
-  $new_dir ||= 'anonymous/';
-  my $user_dir;
-  if($move){
-    if(!-d "${dir}${new_dir}"){ mkdir "${dir}${new_dir}" or error("データディレクトリの作成に失敗しました。"); }
-    move("${data_dir}${old_dir}${file}", "${data_dir}${new_dir}${file}") or error("データディレクトリの移動に失敗しました。（${old_dir}⇒${new_dir}）");
-    $user_dir = $new_dir;
-  }
-  else {
-    $user_dir = $old_dir;
-  }
-  print $FH $_ foreach @list;
-  truncate($FH, tell($FH));
-  close($FH);
+    # パスワードハッシュ化＆ディレクトリ確定
+    my $passwrite;
+    if   ($protect eq 'account' && $LOGIN_ID){ $passwrite = '['.$LOGIN_ID.']'; $user_dir = '_'.$LOGIN_ID.'/'; }
+    elsif($protect eq 'password')            { $passwrite = encrypt($pass); }
+    $user_dir ||= 'anonymous/';
+    # 書込（追記）
+    print $WRITE "$id<>$passwrite<>$now<>".$::in{type}."<>\n";
+  });
 
   return $user_dir;
 }
 
-sub listSave {
-  my $listfile = shift;
-  my $newline  = shift;
-  sysopen (my $FH, $listfile, O_RDWR | O_CREAT, 0666);
-  flock($FH, 2);
-  my @list = <$FH>;
-  my @tmp = map { (split /<>/)[3] } @list;
-  @list = @list[sort {$tmp[$b] <=> $tmp[$a]} 0 .. $#tmp];
-  seek($FH, 0, 0);
-  print $FH "$newline\n";
-  foreach (@list){
-    if(index($_, "$pc{id}<") != 0){
-      print $FH $_;
+sub updatePassFile {
+  my ($id, $pass ,$LOGIN_ID, $protect, $dir) = @_;
+  
+  my $user_dir;
+  overwriteFile($set::passfile, sub {
+    my ($READ, $WRITE) = @_;
+    # パスファイル読込
+    my @lines = <$READ>;
+    close($READ);
+    # データチェック
+    my $move; my $old_dir; my $new_dir; my $sheet;
+    foreach (@lines){
+      if(index($_, "$id<") == 0){
+        my @data = split /<>/;
+        $sheet = $data[2];
+        my $passwrite = $data[1];
+        if($passwrite =~ /^\[(.+?)\]$/){ $old_dir = '_'.$1.'/'; }
+        if   ($protect eq 'account')  {
+          if($passwrite !~ /^\[.+?\]$/) {
+            $passwrite = '['.$LOGIN_ID.']';
+            $move = 1;
+            $new_dir = '_'.$LOGIN_ID.'/';
+          }
+        }
+        elsif($protect eq 'password') {
+          if(!$passwrite || $passwrite =~ /^\[.+?\]$/) { $passwrite = encrypt($pass); }
+          if($old_dir) { $move = 1; }
+        }
+        elsif($protect eq 'none') {
+          $passwrite = '';
+          if($old_dir) { $move = 1; }
+        }
+        $_ = "$data[0]<>$passwrite<>$data[2]<>$data[3]<>\n";
+      }
     }
-  }
-  truncate($FH, tell($FH));
-  close($FH);
+    $old_dir ||= 'anonymous/';
+    $new_dir ||= 'anonymous/';
+    if($move){
+      if(!-d "${dir}${new_dir}"){ mkdir "${dir}${new_dir}" or return("データディレクトリの作成に失敗しました。//save".__LINE__); }
+      move("${data_dir}${old_dir}${sheet}", "${data_dir}${new_dir}${sheet}") or return("データディレクトリの移動に失敗しました。（${old_dir}⇒${new_dir}）//save".__LINE__);
+      $user_dir = $new_dir;
+    }
+    else {
+      $user_dir = $old_dir;
+    }
+    # 書込
+    print $WRITE @lines;
+  });
+
+  return $user_dir;
 }
 
+sub updateListFile {
+  my $newline  = shift;
+
+  overwriteFile($set::listfile, sub {
+    my ($READ, $WRITE) = @_;
+
+    print $WRITE "$newline\n";
+    
+    foreach (<$READ>){
+      if(index($_, "$pc{id}<") == 0){ next; }
+      else { print $WRITE $_; }
+    }
+  });
+}
 
 1;
