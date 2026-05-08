@@ -13,10 +13,10 @@ if($mode eq 'bu-naming'){
   my $id   = $::in{id};
   my $pass = $::in{pass};
   my $date = $::in{date} || 'latest';
-  my $name = pcEscape( decode('utf8',$::in{'log-name'}) );
+  my $name = escapePcData( decode('utf8',$::in{'log-name'}) );
 
   ## パスワードチェック
-  (undef, undef, my $file, my $type, my $user) = getfile($id,$pass,$LOGIN_ID);
+  (my $file, my $type, my $user) = authSheet($id,$pass,$LOGIN_ID);
   if(!$file){ error('パスワードが間違っているか、編集権限がありません。'); }
   changeFileByType($type);
 

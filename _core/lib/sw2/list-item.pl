@@ -67,7 +67,7 @@ my @list;
 #else { #通常
   # マイリスト
   if($mode eq 'mylist'){
-    $INDEX->param( playerName => (getplayername($LOGIN_ID))[0] );
+    $INDEX->param( playerName => (getPlayerName($LOGIN_ID))[0] );
     @list = getMylist($LOGIN_ID);
   }
   else {

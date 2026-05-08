@@ -136,7 +136,7 @@ sub registerToken {
     print $FH "$id<>$key<>".time."<>\n";
     truncate($FH, tell($FH));
   close ($FH);
-  return &cookie_set($set::cookie,$id,$key,'+365d');
+  return &setCookie($set::cookie,$id,$key,'+365d');
 }
 
 
