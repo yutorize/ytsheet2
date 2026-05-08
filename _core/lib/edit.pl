@@ -26,8 +26,8 @@ elsif($mode eq 'copy'){
 elsif($mode eq 'convert'){
   use JSON::PP;
   if($::in{url}){
-    require $set::lib_convert;
-    %conv_data = dataConvert($::in{url});
+    eval { require $set::lib_convert; };
+    %conv_data = importSheetData($::in{url});
     $type = $conv_data{type};
   }
   elsif($::in{file}){
