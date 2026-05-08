@@ -50,36 +50,25 @@ if ($mode eq 'make'){
     error('登録キーが一致しません。');
   }
   
+  open (my $FH, '<', $set::passfile);
+  my %ids = map { (/^([^<]+)</)[0] => 1; } <$FH>;
+  close ($FH);
   ## ID生成
   if($set::id_type && $LOGIN_ID){
     my $type = (exists $set::lib_type{$::in{type}}) ? $::in{type} : '';
-    my $i = 1;
-    $new_id = $LOGIN_ID.'-'.$type.sprintf("%03d",$i);
-    # 重複チェック
-    while (overlapCheck($new_id)) {
+    my $i = 0;
+    while (1) {
       $i++;
       $new_id = $LOGIN_ID.'-'.$type.sprintf("%03d",$i);
+      last unless $ids{$new_id};
     }
   }
   else {
-    $new_id = random_id(6);
-    # 重複チェック
-    while (overlapCheck($new_id)) {
-      $new_id = random_id(6);
+    while (1) {
+      $new_id = randomId(6);
+      last unless $ids{$new_id};
     }
   }
-}
-
-## 重複チェックサブルーチン
-sub overlapCheck {
-  my $id = shift;
-  my $flag;
-  open (my $FH, '<', $set::passfile);
-  while (my $line = <$FH>){ 
-    if(index($line, "$id<") == 0){ $flag = 1; }
-  }
-  close ($FH);
-  return $flag;
 }
 
 ### データ処理 #################################################################################
