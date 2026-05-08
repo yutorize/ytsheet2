@@ -25,6 +25,7 @@ if($pc{forbidden} && !$pc{yourAuthor}){
   my $author = $pc{playerName};
   my $protect   = $pc{protect};
   my $forbidden = $pc{forbidden};
+  my $convertSource = $pc{convertSource};
   
   if($forbidden eq 'all'){
     %pc = ();
@@ -84,6 +85,7 @@ if($pc{forbidden} && !$pc{yourAuthor}){
   $pc{playerName} = $author;
   $pc{protect} = $protect;
   $pc{forbidden} = $forbidden;
+  $pc{convertSource} = $convertSource;
   $pc{forbiddenMode} = 1;
 }
 
@@ -92,7 +94,7 @@ require $set::lib_convert if !$::in{url};
 if(!$::in{log}){
   ## パートナー1
   if($pc{partner1Url} && $pc{partner1Auto}){
-    my %pr = dataPartnerGet($pc{partner1Url});
+    my %pr = loadPartnerData($pc{partner1Url});
     if($pr{convertSource}){
       if($pr{ver}){ %pr = data_update_chara(\%pr); }
       $pc{'p1_'.$_} = $pr{$_} foreach keys %pr;
@@ -125,7 +127,7 @@ if(!$::in{log}){
   }
   ## パートナー2
   if($pc{partner2Url} && $pc{partner2Auto}){
-    my %pr = dataPartnerGet($pc{partner2Url});
+    my %pr = loadPartnerData($pc{partner2Url});
     if($pr{convertSource}){
       $pc{'p2_'.$_} = $pr{$_} foreach keys %pr;
       $pc{partner2Name}     = $pr{characterName};

@@ -5,59 +5,6 @@ use utf8;
 use open ":utf8";
 use JSON::PP;
 
-sub dataConvert {
-  my $set_url = shift;
-  my $file;
-  
-  ## キャラクター保管所
-  if($set_url =~ m"(^https?://charasheet\.vampire-blood\.net/m?[a-f0-9]+)"){
-    my $data = urlDataGet($1.'.js') or error 'キャラクター保管所のデータが取得できませんでした';
-    my %in = %{ decode_json(encode('utf8', (join '', $data))) };
-    
-    return convertHokanjoToYtsheet(\%in);
-  }
-  ## キャラクターシート倉庫
-  if($set_url =~ m"^https?://character-sheets\.appspot\.com/dx3/edit.html"){
-    $set_url =~ s/edit\.html\?/display\?ajax=1&/;
-    my $data = urlDataGet($set_url) or error 'キャラクターシート倉庫のデータが取得できませんでした';
-    my %in = %{ decode_json(encode('utf8', (join '', $data))) };
-
-    return convertSoukoToYtsheet(\%in);
-  }
-  ## 旧ゆとシート
-  {
-    foreach my $url (keys %set::convert_url){
-      if($set_url =~ s"^${url}data/(.*?).html"$1"){
-        open my $IN, '<', "$set::convert_url{$url}data/${set_url}.cgi" or error '旧ゆとシートのデータが開けませんでした';
-        my %pc;
-        $_ =~ s/^(.+?)<>(.*)\n$/$pc{$1} = $2;/egi while <$IN>;
-        close($IN);
-        
-        return convert1to2(\%pc);
-      }
-    }
-  }
-  ## ゆとシートⅡ
-  {
-    my $data = urlDataGet($set_url.'&mode=json') or error 'コンバート元のデータが取得できませんでした';
-    if($data !~ /^{/){ error 'JSONデータが取得できませんでした' }
-    $data = escapeThanSign($data);
-    my %pc = utf8::is_utf8($data) ? %{ decode_json(encode('utf8', (join '', $data))) } : %{ decode_json(join '', $data) };
-    if($pc{result} eq 'OK'){
-      our $base_url = $set_url;
-      $base_url =~ s|/[^/]+?$|/|;
-      $pc{convertSource} = '別のゆとシートⅡ';
-      return %pc;
-    }
-    elsif($pc{result}) {
-      error 'コンバート元のゆとシートⅡでエラーがありました<br>>'.$pc{result};
-    }
-    else {
-      error '有効なデータが取得できませんでした';
-    }
-  }
-}
-
 ### キャラクター保管所 --------------------------------------------------
 sub convertHokanjoToYtsheet {
   my %in = %{$_[0]};
@@ -520,7 +467,7 @@ sub convertSoukoToYtsheet {
   $pc{paletteUseBuff} = 1;
 
   ## 画像
-  ($pc{imageURL} = $::in{'url'}) =~ s/edit\.html/image/; 
+  $pc{imageURL} = $in{'image_url'};
   $pc{image} = LWP::UserAgent->new->simple_request(HTTP::Request->new(GET => $pc{imageURL}))->code == 200;
 
   ## 〆

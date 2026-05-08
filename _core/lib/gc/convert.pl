@@ -7,44 +7,15 @@ use JSON::PP;
 
 require $set::data_class;
 
-sub dataConvert {
-  my $set_url = shift;
-  my $file;
-  
-  ## キャラクター保管所
-  if($set_url =~ m"(^https?://charasheet\.vampire-blood\.net/m?[a-f0-9]+)"){
-    my $data = urlDataGet($1.'.js') or error 'キャラクター保管所のデータが取得できませんでした';
-    my %in = %{ decode_json(encode('utf8', (join '', $data))) };
-    
-    if(exists$in{guild_master}){
-      return convertHokanjoToYtsheetCountry(\%in);
-    }
-    else { return convertHokanjoToYtsheet(\%in); }
-  }
-
-  ## ゆとシートⅡ
-  {
-    my $data = urlDataGet($set_url.'&mode=json') or error 'コンバート元のデータが取得できませんでした';
-    if($data !~ /^{/){ error 'JSONデータが取得できませんでした' }
-    $data = escapeThanSign($data);
-    my %pc = utf8::is_utf8($data) ? %{ decode_json(encode('utf8', (join '', $data))) } : %{ decode_json(join '', $data) };
-    if($pc{result} eq 'OK'){
-      our $base_url = $set_url;
-      $base_url =~ s|/[^/]+?$|/|;
-      $pc{convertSource} = '別のゆとシートⅡ';
-      return %pc;
-    }
-    elsif($pc{result}) {
-      error 'コンバート元のゆとシートⅡでエラーがありました<br>>'.$pc{result};
-    }
-    else {
-      error '有効なデータが取得できませんでした';
-    }
-  }
-}
-
 ### キャラクター保管所 --------------------------------------------------
 sub convertHokanjoToYtsheet {
+  my %in = %{$_[0]};
+  if(exists $in{guild_master}){
+    return convertHokanjoToYtsheetCountry(\%in);
+  }
+  else { return convertHokanjoToYtsheetCharacter(\%in); }
+}
+sub convertHokanjoToYtsheetCharacter {
   my %in = %{$_[0]};
   ## 単純変換
   my %pc = (
@@ -420,14 +391,8 @@ sub convertHokanjoToYtsheetCountry {
     type => 'c',
     countryName => $in{'pc_name'} || $in{'data_title'},
     tags => convertTags($in{'pc_tags'}),
-    lord => $in{'guild_master'},
+    lordName => $in{'guild_master'},
     level => $in{'guild_lv'},
-    Characteristics1Food    => $in{'MC1'},
-    Characteristics1Tech    => $in{'MC2'},
-    Characteristics1Horse   => $in{'MC3'},
-    Characteristics1Mineral => $in{'MC4'},
-    Characteristics1Forest  => $in{'MC5'},
-    Characteristics1Funds   => $in{'MC6'},
     growFood    => $in{'LM1'},
     growTech    => $in{'LM2'},
     growHorse   => $in{'LM3'},
@@ -446,9 +411,33 @@ sub convertHokanjoToYtsheetCountry {
       $pc{"member${i}Memo"}  = $in{'guild_member_memo'}[$i];
       $i++;
     }
-    $pc{memberNum} = $i + 1;
+    $pc{memberNum} = $i;
   }
   
+  ## 国特徴
+  {
+    my $i = 0;
+    foreach my $name (@{$in{'LvupH_name'}}){
+      my $n = $i + 1;
+      $pc{'characteristic'.($n).'Name'}    = $name;
+      $pc{'characteristic'.($n).'Food'}    = $in{'LvupH_KN1'}[$i];
+      $pc{'characteristic'.($n).'Tech'}    = $in{'LvupH_KN2'}[$i];
+      $pc{'characteristic'.($n).'Horse'}   = $in{'LvupH_KN3'}[$i];
+      $pc{'characteristic'.($n).'Mineral'} = $in{'LvupH_KN4'}[$i];
+      $pc{'characteristic'.($n).'Forest'}  = $in{'LvupH_KN5'}[$i];
+      $pc{'characteristic'.($n).'Funds'}   = $in{'LvupH_KN6'}[$i];
+      $i++;
+    }
+    my $n = $i + 1;
+    $pc{'characteristic'.($n).'Name'}    = 'サポートによる修正';
+    $pc{'characteristic'.($n).'Food'}    = $in{'SC1'};
+    $pc{'characteristic'.($n).'Tech'}    = $in{'SC2'};
+    $pc{'characteristic'.($n).'Horse'}   = $in{'SC3'};
+    $pc{'characteristic'.($n).'Mineral'} = $in{'SC4'};
+    $pc{'characteristic'.($n).'Forest'}  = $in{'SC5'};
+    $pc{'characteristic'.($n).'Funds'}   = $in{'SC6'};
+    $pc{characteristicNum} = $n;
+  }
   ## アカデミーサポート
   {
     my $i = 0;
@@ -461,7 +450,7 @@ sub convertHokanjoToYtsheetCountry {
       $pc{'academySupport'.($n).'Note'}   = $in{'guild_skill_memo'}[$i];
       $i++;
     }
-    $pc{academySupportNum} = $i + 1;
+    $pc{academySupportNum} = $i;
   }
   ## アーティファクト
   {
@@ -473,7 +462,7 @@ sub convertHokanjoToYtsheetCountry {
       $pc{'artifact'.($n).'Note'}   = $in{'item_memo'}[$i];
       $i++;
     }
-    $pc{artifactNum} = $i + 1;
+    $pc{artifactNum} = $i;
   }
   ## 履歴
   my $i = 0;
