@@ -961,7 +961,7 @@ sub deduplicate {
 }
 
 ### 外部データ取得 --------------------------------------------------
-sub urlDataGet {
+sub fetchText {
   require LWP::UserAgent;
 
   my $url = shift;
@@ -973,6 +973,107 @@ sub urlDataGet {
   else {
     error '入力されたURLへのアクセスに失敗しました。(STATUS CODE:'.$res->code.')';
   }
+}
+sub fetchJson {
+  my $text = fetchText($_[0]);
+
+  $text = utf8::is_utf8($text) ? encode('utf8', (join '', $text)) : $text;
+
+  my $data = eval { decode_json($text) };
+  unless($data) {
+    if($::in{url}){
+      error 'JSONデータが取得できませんでした。URLに誤りがあるか、URL先に問題が発生しています。';
+    }
+    else {
+      $data = {  };
+    }
+  }
+
+  return %{ $data };
+}
+
+### シートデータインポート --------------------------------------------------
+sub importSheetData {
+  my $setUrl = shift;
+  my $file;
+  
+  ## キャラクター保管所
+  if($setUrl =~ m"(^https?://charasheet\.vampire-blood\.net/m?[a-f0-9]+)"){
+    if(defined &convertHokanjoToYtsheet){
+      my %in = fetchJson($1.'.js');
+      return convertHokanjoToYtsheet(\%in);
+    }
+    else {
+      error "このゲームではキャラクター保管所からのコンバートに対応していません。";
+    }
+  }
+  ## キャラクターシート倉庫
+  if($setUrl =~ m"^https?://character-sheets\.appspot\.com/[^/]+/edit.html"){
+    if(defined &convertSoukoToYtsheet){
+      $setUrl =~ s/edit\.html\?/display\?ajax=1&/;
+      my %in = fetchJson($setUrl);
+      $in{'image_url'} = $setUrl =~ s/display\?ajax=1&/image?/r;
+      return convertSoukoToYtsheet(\%in);
+    }
+    else {
+      error "このゲームではキャラクターシート倉庫からのコンバートに対応していません。";
+    }
+  }
+  ## 旧ゆとシート
+  {
+    foreach my $url (keys %set::convert_url){
+      if($setUrl =~ s"^${url}data/(.*?).html"$1"){
+        open my $IN, '<', "$set::convert_url{$url}data/${setUrl}.cgi" or error '旧ゆとシートのデータが開けませんでした。';
+        my %pc;
+        $_ =~ s/^(.+?)<>(.*)\n$/$pc{$1} = $2;/egi while <$IN>;
+        close($IN);
+        
+        return convert1to2(\%pc);
+      }
+    }
+  }
+  ## 同じゆとシートⅡ
+  my $self = CGI->new()->url;
+  if($setUrl =~ m"^$self\?id=(.+?)(?:$|&)"){
+    my $id = $1;
+    my ($file, $type, $author) = findSheet($id);
+    my %pc;
+    open my $IN, '<', "${set::char_dir}${file}/data.cgi" or error 'データが開けませんでした。';
+    while (<$IN>){
+      chomp;
+      my ($key, $value) = split(/<>/, $_, 2);
+      $pc{$key} = $value;
+    }
+    close($IN);
+
+    my $LOGIN_ID = check;
+    unless(
+      (!$pc{forbidden}) ||
+      ($pc{protect} eq 'none') || 
+      ($author && ($author eq $LOGIN_ID || $set::masterid eq $LOGIN_ID))
+    ){
+      error '閲覧・編集に制限がかかっており、コンバートできないデータです。';
+    }
+    $pc{imageURL} = $self."?id=$id&mode=image&cache=$pc{imageUpdate}";
+    $pc{convertSource} = '同じゆとシートⅡ';
+    return %pc;
+  }
+  ## 別のゆとシートⅡ
+  {
+    my %pc = fetchJson($setUrl.'&mode=json');
+    $_ = escapeThanSign($_) foreach values %pc;
+    if($pc{result} eq 'OK'){
+      our $base_url = $setUrl;
+      $base_url =~ s|/[^/]+?$|/|;
+      $pc{convertSource} = '別のゆとシートⅡ';
+      return %pc;
+    }
+    elsif($pc{result}) {
+      error "コンバート元のゆとシートⅡでエラーがありました。<br>> $pc{result}:$pc{message}";
+    }
+  }
+  
+  error '有効なデータが取得できませんでした';
 }
 ### マイリスト取得 --------------------------------------------------
 sub getMylist {

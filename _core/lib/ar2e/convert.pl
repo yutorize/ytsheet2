@@ -8,38 +8,6 @@ use JSON::PP;
 require $set::data_class;
 require $set::data_races;
 
-sub dataConvert {
-  my $set_url = shift;
-  my $file;
-  
-  ## キャラクター保管所
-  if($set_url =~ m"(^https?://charasheet\.vampire-blood\.net/m?[a-f0-9]+)"){
-    my $data = urlDataGet($1.'.js') or error 'キャラクター保管所のデータが取得できませんでした';
-    my %in = %{ decode_json(encode('utf8', (join '', $data))) };
-    
-    return convertHokanjoToYtsheet(\%in);
-  }
-  ## ゆとシートⅡ
-  {
-    my $data = urlDataGet($set_url.'&mode=json') or error 'コンバート元のデータが取得できませんでした';
-    if($data !~ /^{/){ error 'JSONデータが取得できませんでした' }
-    $data = escapeThanSign($data);
-    my %pc = utf8::is_utf8($data) ? %{ decode_json(encode('utf8', (join '', $data))) } : %{ decode_json(join '', $data) };
-    if($pc{result} eq 'OK'){
-      our $base_url = $set_url;
-      $base_url =~ s|/[^/]+?$|/|;
-      $pc{convertSource} = '別のゆとシートⅡ';
-      return %pc;
-    }
-    elsif($pc{result}) {
-      error 'コンバート元のゆとシートⅡでエラーがありました<br>>'.$pc{result};
-    }
-    else {
-      error '有効なデータが取得できませんでした';
-    }
-  }
-}
-
 ### キャラクター保管所 --------------------------------------------------
 sub convertHokanjoToYtsheet {
   my %in = %{$_[0]};

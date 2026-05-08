@@ -24,6 +24,7 @@ if($pc{forbidden} && !$pc{yourAuthor}){
   my $author = $pc{author};
   my $protect   = $pc{protect};
   my $forbidden = $pc{forbidden};
+  my $convertSource = $pc{convertSource};
   my $category  = $pc{category};
   
   if($forbidden eq 'all'){
@@ -144,6 +145,7 @@ if($pc{forbidden} && !$pc{yourAuthor}){
   $pc{protect}   = $protect;
   $pc{forbidden} = $forbidden;
   $pc{category}  = $category;
+  $pc{convertSource} = $convertSource;
   $pc{forbiddenMode} = 1;
 }
 
@@ -351,8 +353,8 @@ $SHEET->param(MagicData => \@magics);
 ### 流派アイテム --------------------------------------------------
 my @items;
 foreach my $set_url (split ',',$item_urls){
-  require $set::lib_convert;
-  my %item = getItemData($set_url);
+  eval { require $set::lib_convert; };
+  my %item = loadItemData($set_url);
   if(exists$item{itemName}){
     $item{price} =~ s/[+＋]/<br>＋/;
     $item{price} = commify $item{price} if $item{price} =~ /\d{4,}/;
