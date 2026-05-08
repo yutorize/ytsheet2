@@ -8,6 +8,49 @@ use Fcntl;
 
 ### サブルーチン #####################################################################################
 
+### 案内画面 --------------------------------------------------
+sub info {
+  our $header = shift;
+  our $message = shift;
+  require $set::lib_info;
+  exit;
+}
+
+### JSON --------------------------------------------------
+sub infoJson {
+  our $type = shift;
+  our $message = shift;
+  $message =~ s/"//g;
+  print "Content-type: text/javascript; charset=utf-8\n\n";
+  print '{"result":"'.$type.'","message":"'.$message.'"}';
+  exit;
+}
+
+### JSファイル --------------------------------------------------
+sub printJS {
+  my $mode = shift;
+  print "Content-type: text/javascript; charset=utf-8\n";
+  print "Cache-Control: public, max-age=604800\n";
+  print "\n";
+  print "// ytsheet JS output mode:$mode \n\n";
+  if($mode eq 'consts' && $set::lib_js_consts){
+    print "const base64Mode = ".($set::base64mode || 0).";\n";
+    require $set::lib_js_consts;
+  }
+  exit;
+}
+
+### エラー画面 --------------------------------------------------
+sub error {
+  our $message = shift;
+  if($::in{mode} =~ /^(?:json|make|save)$/){
+    infoJson('error',$message);
+  }
+  else {
+    info('エラー',$message)
+  }
+}
+
 ### ファイル名取得／パスorアカウント必要時 --------------------------------------------------
 sub getfile {
   open (my $FH, '<', $set::passfile) or die;
@@ -873,46 +916,6 @@ sub existsRowFull {
 sub deduplicate {
   my %seen;
   return grep { !$seen{$_}++ } @_;
-}
-
-### 案内画面 --------------------------------------------------
-sub info {
-  our $header = shift;
-  our $message = shift;
-  require $set::lib_info;
-  exit;
-}
-
-### エラー画面 --------------------------------------------------
-sub error {
-  our $header = 'エラー';
-  our $message = shift;
-  require $set::lib_info;
-  exit;
-}
-
-### JSファイル --------------------------------------------------
-sub printJS {
-  my $mode = shift;
-  print "Content-type: text/javascript; charset=utf-8\n";
-  print "Cache-Control: public, max-age=604800\n";
-  print "\n";
-  print "// ytsheet JS output mode:$mode \n\n";
-  if($mode eq 'consts' && $set::lib_js_consts){
-    print "const base64Mode = ".($set::base64mode || 0).";\n";
-    require $set::lib_js_consts;
-  }
-  exit;
-}
-
-### JSON --------------------------------------------------
-sub infoJson {
-  our $type = shift;
-  our $message = shift;
-  $message =~ s/"//g;
-  print "Content-type: text/javascript; charset=utf-8\n\n";
-  print '{"result":"'.$type.'","message":"'.$message.'"}';
-  exit;
 }
 
 ### 外部データ取得 --------------------------------------------------
