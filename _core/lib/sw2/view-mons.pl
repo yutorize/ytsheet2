@@ -30,6 +30,7 @@ if($pc{forbidden} && !$pc{yourAuthor}){
   my $author = $pc{author};
   my $protect   = $pc{protect};
   my $forbidden = $pc{forbidden};
+  my $convertSource = $pc{convertSource};
   
   if($forbidden eq 'all'){
     %pc = ();
@@ -84,6 +85,7 @@ if($pc{forbidden} && !$pc{yourAuthor}){
   $pc{author} = $author;
   $pc{protect} = $protect;
   $pc{forbidden} = $forbidden;
+  $pc{convertSource} = $convertSource;
   $pc{forbiddenMode} = 1;
 }
 

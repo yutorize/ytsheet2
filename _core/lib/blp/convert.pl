@@ -5,60 +5,22 @@ use utf8;
 use open ":utf8";
 use JSON::PP;
 
-sub dataConvert {
+sub loadPartnerData {
   my $set_url = shift;
   my $file;
   
   ## キャラクターシート倉庫
   if($set_url =~ m"^https?://character-sheets\.appspot\.com/bloodpath/edit.html"){
     $set_url =~ s/edit\.html\?/display\?ajax=1&/;
-    my $data = urlDataGet($set_url) or error 'キャラクターシート倉庫のデータが取得できませんでした';
-    my %in = %{ decode_json(encode('utf8', (join '', $data))) };
-    
-    ($in{'image_url'} = $set_url) =~ s/display\?ajax=1&/image?/; 
-
-    return convertSoukoToYtsheet(\%in);
-  }
-  ## ゆとシートⅡ
-  {
-    my $data = urlDataGet($set_url.'&mode=json') or error 'コンバート元のデータが取得できませんでした';
-    if($data !~ /^{/){ error 'JSONデータが取得できませんでした' }
-    $data = escapeThanSign($data);
-    my %pc = utf8::is_utf8($data) ? %{ decode_json(encode('utf8', (join '', $data))) } : %{ decode_json(join '', $data) };
-    if($pc{result} eq 'OK'){
-      our $base_url = $set_url;
-      $base_url =~ s|/[^/]+?$|/|;
-      $pc{convertSource} = '別のゆとシートⅡ';
-      return %pc;
-    }
-    elsif($pc{result}) {
-      error 'コンバート元のゆとシートⅡでエラーがありました<br>'.$pc{result};
-    }
-    else {
-      error '有効なデータが取得できませんでした';
-    }
-  }
-}
-
-sub dataPartnerGet {
-  my $set_url = shift;
-  my $file;
-  
-  ## キャラクターシート倉庫
-  if($set_url =~ m"^https?://character-sheets\.appspot\.com/bloodpath/edit.html"){
-    $set_url =~ s/edit\.html\?/display\?ajax=1&/;
-    my $data = urlDataGet($set_url) or return;
-    my %in = %{ decode_json(encode('utf8', (join '', $data))) };
-
-    ($in{'image_url'} = $set_url) =~ s/display\?ajax=1&/image?/; 
-    
+    my %in = fetchJson($set_url);
+    $in{'image_url'} = $set_url =~ s/display\?ajax=1&/image?/r; 
     return convertSoukoToYtsheet(\%in);
   }
   ## 同じゆとシートⅡ
   my $self = CGI->new()->url;
   if($set_url =~ m"^$self\?id=(.+?)(?:$|&)"){
     my $id = $1;
-    my ($file, $type, $author) = getfile_open($id);
+    my ($file, $type, $author) = findSheet($id);
     my %pc;
     open my $IN, '<', "${set::char_dir}${file}/data.cgi";
     while (<$IN>){
@@ -76,9 +38,8 @@ sub dataPartnerGet {
   }
   ## 他のゆとシートⅡ
   {
-    my $data = urlDataGet($set_url.'&mode=json') or return;
-    if($data !~ /^{/){ return }
-    my %pc = utf8::is_utf8($data) ? %{ decode_json(encode('utf8', (join '', $data))) } : %{ decode_json(join '', $data) };
+    my %pc = fetchJson($set_url.'&mode=json');
+    $_ = escapeThanSign($_) foreach values %pc;
     if($pc{result} eq 'OK'){
       our $base_url = $set_url;
       $base_url =~ s|/[^/]+?$|/|;
@@ -209,7 +170,7 @@ sub convertSoukoToYtsheet {
   $pc{historyNum} = 3;
 
   ## 画像
-  $pc{imageURL} = $in{'image_url'}; 
+  $pc{imageURL} = $in{'image_url'};
   $pc{image} = LWP::UserAgent->new->simple_request(HTTP::Request->new(GET => $pc{imageURL}))->code == 200;
 
   ## 〆
