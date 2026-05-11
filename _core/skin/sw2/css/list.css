@@ -60,9 +60,10 @@ body {
     line-height: 1;
     text-wrap: nowrap;
   }
-  & td:is(.race, .rank) span.small {
+  & td:is(.race, .rank) span.thin {
     display: inline-block;
     transform: scaleY(calc(1/0.85));
+    font-size: 0.85em;
   }
   & td.class {
     text-align: left;
@@ -116,7 +117,7 @@ body {
   & .habitat     { grid-area: HABIT; }
   & .date        { grid-area: DATE; }
 
-  & th:is(.level, .parts) span.small {
+  & th:is(.level, .parts) span.thin {
     display: inline-block;
     transform: scaleY(calc(1/0.8));
     font-size: 0.8em;
@@ -127,9 +128,10 @@ body {
   & td.level {
     font-size: 1.2em;
   }
-  & td:is(.taxa) span.small {
+  & td:is(.taxa) span.thin {
     display: inline-block;
     transform: scaleY(calc(1/0.85));
+    font-size: 0.85em;
   }
   @media screen and (width <= 735px){
     & td:is(.taxa, .disposition, .habitat, .price){
@@ -217,6 +219,11 @@ body {
   & .date    { grid-area: DATE; }
   & td.name a {
     font-size: 1.4rem;
+  }
+  & td.category span.thin {
+    display: inline-block;
+    transform: scaleY(calc(1/0.85));
+    font-size: 0.85em;
   }
   & td.sub span {
     display: inline-block;

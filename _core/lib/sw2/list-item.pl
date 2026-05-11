@@ -5,240 +5,153 @@ use utf8;
 use open ":utf8";
 use HTML::Template;
 
-my $LOGIN_ID = check;
-
-my $mode = $::in{mode};
-my $sort = $::in{sort};
+require $set::lib_list;
 
 #require $set::data_item;
 
+### クエリ ###########################################################################################
+my @queryKeys = qw(
+  mode tag category name author age
+);
+setFields({
+  id       => 0,
+  date     => 3,
+  name     => 4,
+  author   => 5,
+  category => 6,
+  price    => 7,
+  age      => 8,
+  summary  => 9,
+  type     => 10,
+  image    => 11,
+  tags     => 12,
+  hide     => 13,
+});
+
 ### テンプレート読み込み #############################################################################
-my $INDEX;
-$INDEX = HTML::Template->new( filename  => $set::skin_tmpl , utf8 => 1,
-  path => ['./', $::core_dir."/skin/sw2", $::core_dir."/skin/_common", $::core_dir],
-  search_path_on_include => 1,
-  die_on_bad_params => 0, die_on_missing_include => 0, case_sensitive => 1, global_vars => 1);
+$set::simplelist = 0; # アイテムは簡易表示なし
+$set::simpleindex = 0; # アイテムは簡易インデックスなし
+my $INDEX = setupListTemplate(
+  type     => 'i',
+  typeName => 'アイテム',
+);
+my ($indexMode, $qLinks) = listQueryInfo(
+  queryKeys => \@queryKeys,
+);
 
-$INDEX->param(modeItemList => 1);
-$INDEX->param(modeMylist => 1) if $mode eq 'mylist';
-$INDEX->param(typeName => 'アイテム');
+### ファイル読み込み #################################################################################
+my @lines = loadLines();
 
-$INDEX->param(LOGIN_ID => $LOGIN_ID);
-$INDEX->param(OAUTH_MODE => $set::oauth_service);
-$INDEX->param(OAUTH_LOGIN_URL => $set::oauth_login_url);
+### 検索フィルタ #####################################################################################
+@lines = filterTag(@lines) if $::in{tag};
+@lines = filterContainsRegex(lines => \@lines, key => 'name', flags => 'i') if $::in{name};
+@lines = filterContainsRegex(lines => \@lines, key => 'author', flags => 'i') if $::in{author};
+@lines = filterContainsRegex(lines => \@lines, key => 'age') if $::in{age};
 
-$INDEX->param(mode => $mode);
-$INDEX->param(type => 'i');
-
-### データ処理 #######################################################################################
-### クエリ --------------------------------------------------
-my $index_mode;
-foreach (keys %::in) {
-  $::in{$_} =~ s/</&lt;/g;
-  $::in{$_} =~ s/>/&gt;/g;
-}
-if(!($mode eq 'mylist' || $::in{tag} || $::in{category} || $::in{name} || $::in{author} || $::in{age})){
-  $index_mode = 1;
-  $INDEX->param(modeIndex => 1);
-}
-my @q_links;
-foreach(
-  'mode',
-  'tag',
-  'name',
-  'category',
-  'author',
-  'age',
-  ){
-  push( @q_links, $_.'='.uri_escape_utf8(decode('utf8', param($_))) ) if param($_);
-}
-my $q_links = @q_links ? '&'.join('&', @q_links) : '';
-
-### ファイル読み込み --------------------------------------------------
-my @list;
-#if($set::simpleindex && $index_mode){ #グループ見出しのみ
-#  my @grouplist;
-#    push(@grouplist, {
-#      "ID" => 'all',
-#      "NAME" => 'すべて',
-#    });
-#  $INDEX->param(ListGroups => \@grouplist);
-#}
-#else { #通常
-  # マイリスト
-  if($mode eq 'mylist'){
-    $INDEX->param( playerName => (getPlayerName($LOGIN_ID))[0] );
-    @list = getMylist($LOGIN_ID);
-  }
-  else {
-    open (my $FH, "<", $set::listfile);
-    # 管理者orタグ検索（全読込）
-    if(($set::masterid && $set::masterid eq $LOGIN_ID) || $::in{tag}){
-      @list = <$FH>;
-    }
-    # 非表示除外
-    else {
-      @list = grep { !/^(?:[^<]*<>){13}[^<0]/ } <$FH>;
-    }
-    close($FH);
-  }
-#}
-### 検索処理 --------------------------------------------------
 ## カテゴリ検索
-my @category_query = split('\s', decode('utf8', $::in{category}));
-if($::in{category} ne 'all'){
-  foreach (@category_query) {
-    my $q = $_;
-    if($q =~ s/^-//){ @list = grep { !/^(?:[^<]*<>){6}[^<]*?\Q$q\E/ } @list; } #マイナス検索
-    else            { @list = grep { /^(?:[^<]*<>){6}[^<]*?\Q$q\E/ } @list; }
-  }
-  $INDEX->param(category => "@category_query");
+my @categoryQuery = split(/\s/, $::in{category});
+if($::in{category} eq 'all'){
+  $::in{category} = '';
+  $INDEX->param(category => "");
 }
-
-## タグ検索
-my $tag_query = normalizeHashtags(decode('utf8', $::in{tag}));
-if($tag_query) { @list = grep { /^(?:[^<]*<>){12}[^<]*? \Q$tag_query\E / } @list; }
-$INDEX->param(tag => $tag_query);
-
-## 名前検索
-my $name_query = decode('utf8', $::in{name});
-if($name_query) { @list = grep { /^(?:[^<]*<>){4}[^<]*?\Q$name_query\E/i } @list; }
-$INDEX->param(name => $name_query);
-
-## 投稿者検索
-my $author_query = decode('utf8', $::in{author});
-if($author_query) { @list = grep { /^(?:[^<]*<>){5}[^<]*?\Q$author_query\E/i } @list; }
-$INDEX->param(author => $author_query);
-
-## 製作時期検索
-my $age_query = decode('utf8', $::in{age});
-if($age_query) { @list = grep { /^(?:[^<]*<>){8}[^<]*?\Q$age_query\E/i } @list; }
-$INDEX->param(age => $age_query);
+else {
+  foreach (@categoryQuery) {
+    my $q = $_;
+    if($q =~ s/^-//){ @lines = grep { !/^(?:[^<]*<>){6}[^<]*?\Q$q\E/ } @lines; } #マイナス検索
+    else            { @lines = grep { /^(?:[^<]*<>){6}[^<]*?\Q$q\E/ } @lines; }
+  }
+  $INDEX->param(category => "@categoryQuery");
+}
 
 ### ソート --------------------------------------------------
-if   ($sort eq 'name')  { my @t = map { (/^(?:[^<]*<>){4}([^<]*)/)[0] } @list; @list = @list[sort {$t[$a] cmp $t[$b]} 0 .. $#t]; }
-elsif($sort eq 'author'){ my @t = map { (/^(?:[^<]*<>){5}([^<]*)/)[0] } @list; @list = @list[sort {$t[$a] cmp $t[$b]} 0 .. $#t]; }
-elsif($sort eq 'date')  { my @t = map { (/^(?:[^<]*<>){3}([^<]*)/)[0] } @list; @list = @list[sort {$t[$b] <=> $t[$a]} 0 .. $#t]; }
+if($::in{sort}){
+  my $s = $::in{sort};
+  if   ($s eq 'name')  { my @t = map { capField($_,'name')   } @lines; @lines = @lines[sort {$t[$a] cmp $t[$b]} 0 .. $#t]; }
+  elsif($s eq 'author'){ my @t = map { capField($_,'author') } @lines; @lines = @lines[sort {$t[$a] cmp $t[$b]} 0 .. $#t]; }
+  elsif($s eq 'date')  { my @t = map { capField($_,'date')   } @lines; @lines = @lines[sort {$t[$b] <=> $t[$a]} 0 .. $#t]; }
+}
+### ページ処理 #######################################################################################
+if($indexMode && $set::list_maxline) { $set::pagemax = $set::list_maxline; }
+my ($pageLines, $count, $page, $pageStart, $pageEnd, $shouldSkip) = prepareGroupedPage(
+  lines         => \@lines,
+  selectedGroup => 'すべて',
+  hasTagQuery   => $::in{tag},
+);
 
-### リストを回す --------------------------------------------------
-my %count;
-my %grouplist;
-my $page = $::in{page} || 1;
-$count{'すべて'} = scalar(@list);
-if($index_mode && $set::list_maxline){
-  my $end = $set::list_maxline > $count{'すべて'} ? $count{'すべて'} : $set::list_maxline;
-  @list = @list[0 .. $end-1];
-}
-elsif($set::pagemax){
-  my $pagestart = $page * $set::pagemax - $set::pagemax + 1;
-  my $pageend   = $page * $set::pagemax;
-  $pageend = $count{'すべて'} if $pageend > $count{'すべて'};
-  @list = @list[$pagestart-1 .. $pageend-1];
-}
-foreach (@list) {
-  my (
-    $id, undef, undef, $updatetime, $name, $author, $category, $price, $age, $summary, $type,
-    $image, $tag, $hide
-  ) = (split /<>/, $_)[0..13];
+my %groupedLists;
+foreach (@$pageLines) {
+  my %pc = %{ splitField($_) };
+
+  next if $shouldSkip->(
+    group => 'すべて',
+  );
   
-  #グループ（分類）
-  $category =~ s/[ 　]/<br>/g;
+  #分類
+  $pc{category} =~ s/[ 　]/<br>/g;
 
   #価格
-  $price = commify $price if $price =~ /\d{4,}/;
-  $price =~ s/[+＋\/／]/<wbr>$&<wbr>/g;
-  
-  #タグ
-  my $tags_links;
-  foreach(grep $_, split(/ /, $tag)){ $tags_links .= '<a href="./?type=i&tag='.uri_escape_utf8($_).'">'.$_.'</a>'; }
-
-  #更新日時
-  my ($min,$hour,$day,$mon,$year) = (localtime($updatetime))[1..5];
-  $year += 1900; $mon++;
-  $updatetime = sprintf("<span>%04d-</span><span>%02d-%02d</span> <span>%02d:%02d</span>",$year,$mon,$day,$hour,$min);
+  $pc{price} = commify($pc{price}) if $pc{price} =~ /\d{4,}/;
+  $pc{price} =~ s/[+＋\/／]/<wbr>$&<wbr>/g;
   
   #出力用配列へ
-  my @characters;
-  push(@characters, {
-    "ID" => $id,
-    "NAME" => $name,
-    "AUTHOR" => $author,
-    "CATEGORY" => $category,
-    "PRICE" => $price,
-    "AGE" => $age,
-    "SUMMARY" => $summary,
-    "MAGIC" => ($type =~ /\[ma\]/ ? "<img class=\"${set::icon_dir}wp_magic.png\">" : ''),
-    "TAGS" => $tags_links,
-    "DATE" => $updatetime,
-    "HIDE" => $hide,
+  my @items;
+  push(@items, {
+    ID       => $pc{id},
+    NAME     => $pc{name},
+    AUTHOR   => $pc{author},
+    CATEGORY => $pc{category},
+    PRICE    => $pc{price},
+    AGE      => $pc{age},
+    SUMMARY  => $pc{summary},
+    MAGIC    => ($pc{type} =~ /\[ma\]/ ? "<img class=\"${set::icon_dir}wp_magic.png\">" : ''),
+    TAGS     => renderTagLinks($pc{tags}),
+    DATE     => renderUpdateTime($pc{date}),
+    HIDE     => $pc{hide},
   });
   
-  push(@{$grouplist{'すべて'}}, @characters);
+  push(@{$groupedLists{'すべて'}}, @items);
 }
 
-### 出力用配列 --------------------------------------------------
-my @characterlists;
-our @categories = (
-  ['すべて','']
+### テンプレートへ入力 ###############################################################################
+our @categories = ( ['すべて'] );
+$INDEX->param(Lists => [ makeGroupedLists(
+  groupOrder => \@categories,
+  groupedLists => \%groupedLists,
+  count => $count,
+  
+  makePager => sub {
+    my (%args) = @_;
+
+    return makePager(
+      count     => $args{count},
+      page      => $page,
+      enabled   => 1,
+      queryBase => "type=i$qLinks",
+    );
+  },
+
+  makeGroup => sub {
+    my (%args) = @_;
+    my $id = $args{id};
+
+    return {
+      NAME  => $args{id},
+      NUM   => $args{num},
+      Lines => $args{lines},
+      PAGER => $args{pager},
+      MORE  => $args{more},
+    };
+  },
+) ]);
+
+## 検索サマリー --------------------------------------------------
+setSearchSummary(
+  { nameHeader => '名称' },
+  [ $::in{category}, 'カテゴリ「%s」' ],
+  [ $::in{age},      '製作時期「%s」' ],
 );
-foreach (@categories){
-  my $name = $_->[0];
-  next if !$count{$name};
-
-  ## ページネーション
-  my $navbar;
-  if($set::pagemax && !$index_mode){
-    my $lastpage = ceil($count{$name} / $set::pagemax);
-    if($lastpage > 1){
-      foreach(1 .. $lastpage){
-        if($_ == $page){
-          $navbar .= '<b>'.$_.'</b> ';
-        }
-        elsif(
-          ($_ <= $page + 4 && $_ >= $page - 4) ||
-          $_ == 1 ||
-          $_ == $lastpage
-        ){
-          $navbar .= '<a href="./?type=i'.$q_links.'&page='.$_.'&sort='.$::in{sort}.'">'.$_.'</a> '
-        }
-        else { $navbar .= '...' }
-      }
-      $navbar =~ s/\.{3,}/... /g;
-    }
-    $navbar = '<div class="navbar">'.$navbar.'</div>' if $navbar;
-  }
-
-  ##
-  push(@characterlists, {
-    "URL" => uri_escape_utf8($name),
-    "NAME" => $name,
-    "NUM" => $count{$name},
-    "Characters" => [@{$grouplist{$name}}],
-    "NAV" => $navbar,
-    "MORE" => (!$navbar && $count{$name} > scalar(@{$grouplist{$name}}) ? 1 : 0),
-  });
-}
-
-$INDEX->param(qLinks => $q_links);
-
-$INDEX->param(Lists => \@characterlists);
-
-
-$INDEX->param(ogUrl => self_url());
-$INDEX->param(ogDescript => 
-  ($name_query  ? "名称「${name_query}」を含む " : '') .
-  ($tag_query   ? "タグ「${tag_query}」 " : '') .
-  (@category_query ? "カテゴリ「@{category_query}」 " : '') .
-  ($age_query      ? "製作時期「${age_query}」 " : '')
-);
-
-$INDEX->param(title => $set::title);
-$INDEX->param(ver => $::ver);
-$INDEX->param(coreDir => $::core_dir);
-$INDEX->param(gameDir => $set::game);
 
 ### 出力 #############################################################################################
-print "Content-Type: text/html\n\n";
-print outputTemplate($INDEX);
+printFinalizedList();
 
 1;

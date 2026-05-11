@@ -502,6 +502,16 @@ sub commify {
   return $num;
 }
 
+### 整数判定 --------------------------------------------------
+sub isInteger {
+  $_[0] =~ /^[+-]?[0-9]+$/;
+}
+sub hasInteger {
+  foreach(@_) {
+    return 1 if isInteger($_);
+  }
+  return 0;
+}
 
 ### エポック秒 => 年-月-日 時:分 --------------------------------------------------
 sub epocToDate {
@@ -522,62 +532,9 @@ sub s_eval {
   return eval($i);
 }
 
-### グループ設定の変換 --------------------------------------------------
-sub groupArrayToHash {
-  my @array = $_[0] ? @{$_[0]} : @set::groups;
-  my %hash;
-  foreach (@array){
-    $hash{@$_[0]} = {
-      "sort" => @$_[1],
-      "name" => @$_[2],
-      "text" => @$_[3],
-    };
-  }
-  return %hash;
-}
-sub groupArrayToList {
-  my $selected = $_[0];
-  my @array = $_[1] ? @{$_[1]} : @set::groups;
-  my @list;
-  foreach (sort { $a->[1] cmp $b->[1] } @array){
-    push(@list, {
-      "ID" => @$_[0],
-      "NAME" => @$_[2],
-      "TEXT" => @$_[3],
-      "SELECTED" => $selected eq @$_[0] ? 'selected' : '',
-    });
-  }
-  return \@list;
-}
-
-### 性別記号変換 --------------------------------------------------
-sub stylizeGender {
-  my $gender = shift;
-  my $m_flag; my $f_flag; my $n_flag;
-  $gender =~ s/^(.+?)[\(（].*?[）\)]$/$1/;
-  $gender =~ tr/Ａ-Ｚａ-ｚ/A-Za-z/;
-  if($gender =~ /男|おとこ|オトコ|♂|雄|オス|爺|漢|(?<!fe)m(ale|$)|(?<!wo)man/i) { $m_flag = 1 }
-  if($gender =~ /女|おんな|オンナ|♀|雌|メス|婆|娘|f(em(ale)?|$)|woman/i)       { $f_flag = 1 }
-  if($gender =~ /無|なし|^[\-ー‐‑–—―−ｰ]$|non/i)               { $n_flag = 1 }
-  if($gender =~ /両|半|トランス|ノンバ|non|Ft[MX]|Mt[FX]|^[XA]/i) { $m_flag = 1; $f_flag = 1 }
-
-  if   ($n_flag){ $gender = '<span data-gender="none">―</span>' }
-  elsif($m_flag && $f_flag){ $gender = '<span data-gender="cross">⚧</span>' }
-  elsif($m_flag){ $gender = '<span data-gender="male">♂</span>' }
-  elsif($f_flag){ $gender = '<span data-gender="female">♀</span>' }
-  else { $gender = '<span data-gender="unknown">？</span>' }
-
-  return $gender;
-}
-
-### 年齢変換 --------------------------------------------------
-sub stylizeAge {
-  my $age = shift;
-  $age =~ s/^(.+?)[\(（].*?[）\)]$/$1/;
-  $age =~ tr/０-９/0-9/;
-  if($age =~ /[0-9]$/){ $age .= '歳'; }
-  $age =~ s/([^0-9]+)/<span class="small">$1<\/span>/g;
-  return $age;
+### 前後の空白削除 --------------------------------------------------
+sub trim {
+  return shift =~ s/^\s+|\s+$//gr;
 }
 
 ### エスケープ --------------------------------------------------
@@ -933,6 +890,10 @@ sub convert10to36 {
   }
   return join('', @work);
 }
+### 進数変換 --------------------------------------------------
+sub kebabToCamel {
+  return $_[0] =~ s/-([a-z])/\u$1/gr;
+}
 
 ### 行の有無チェック --------------------------------------------------
 ## 数値の0も偽とする（NameとNoteは空のみ偽）
@@ -1086,26 +1047,7 @@ sub importSheetData {
   
   error '有効なデータが取得できませんでした';
 }
-### マイリスト取得 --------------------------------------------------
-sub getMylist {
-  my %mylist;
-  open (my $FH, "<", $set::passfile);
-  while(my $line = <$FH>){
-    if($line =~ /^(.+?)<>\[$_[0]\]</){ $mylist{$1} = 1 }
-  }
-  close($FH);
-  my @list;
-  open (my $FH, "<", $set::listfile);
-  foreach (<$FH>){
-    if($_ =~ /^(.+?)<>/ && exists $mylist{$1}){
-      push(@list, $_);
-      delete $mylist{$1};
-    }
-    if(!%mylist){ last; }
-  }
-  close($FH);
-  return @list;
-}
+
 ### HTMLテンプレート出力 --------------------------------------------------
 sub outputTemplate {
     my ($tmpl) = @_;
