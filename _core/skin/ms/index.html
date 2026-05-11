@@ -18,13 +18,13 @@
     <nav>
       <ul>
         <li class="<TMPL_IF modeList>current</TMPL_IF>"><a href="./?<TMPL_IF mode>mode=<TMPL_VAR mode>&</TMPL_IF><TMPL_IF tag>tag=<TMPL_VAR tag></TMPL_IF>">都民登録書</a></li>
-        <li class="<TMPL_IF modeClanList>current</TMPL_IF>"><a href="./?<TMPL_IF mode>mode=<TMPL_VAR mode>&</TMPL_IF><TMPL_IF tag>tag=<TMPL_VAR tag>&</TMPL_IF>type=c">クラン名簿</a></li>
+        <li class="<TMPL_IF modeListC>current</TMPL_IF>"><a href="./?<TMPL_IF mode>mode=<TMPL_VAR mode>&</TMPL_IF><TMPL_IF tag>tag=<TMPL_VAR tag>&</TMPL_IF>type=c">クラン名簿</a></li>
       </ul>
     </nav>
     <TMPL_IF modeIndex><TMPL_INCLUDE NAME="skin-add/index-message.html"></TMPL_IF>
 
     <TMPL_IF modeList><TMPL_INCLUDE NAME="list-chara.html"></TMPL_IF>
-    <TMPL_IF modeClanList><TMPL_INCLUDE NAME="list-clan.html"></TMPL_IF>
+    <TMPL_IF modeListC><TMPL_INCLUDE NAME="list-clan.html"></TMPL_IF>
     <TMPL_INCLUDE NAME="../_common/form.html">
     <TMPL_IF modeInfo>
     <article>

@@ -5,157 +5,161 @@ use utf8;
 use open ":utf8";
 use HTML::Template;
 
-my $LOGIN_ID = check;
+require $set::lib_list;
 
 require $set::data_races;
 
+unless(isInteger($::in{page}) && $::in{page} >= 0){
+  $::in{page} = 0;
+}
 my $page_items = 10;
 my $page = $::in{page} * $page_items;
 
 ### テンプレート読み込み #############################################################################
-my $INDEX;
-$INDEX = HTML::Template->new( filename => $set::skin_tmpl, utf8 => 1,
-  path => ['./', $::core_dir."/skin/sw2", $::core_dir."/skin/_common", $::core_dir],
-  search_path_on_include => 1,
-  die_on_bad_params => 0, die_on_missing_include => 0, case_sensitive => 1);
-
+my $INDEX = setupListTemplate(
+  type     => '',
+  typeName => '能力値',
+);
+$INDEX->param(mode => '');
+$INDEX->param(modeList => 0);
 $INDEX->param(modeMaking => 1) if $::in{mode} eq 'making';
-$INDEX->param(typeName => 'キャラ');
+$INDEX->param(mylistURL => './?mode=making&mylist=1');
 
-$INDEX->param(name => (getPlayerName($LOGIN_ID))[0]);
+$INDEX->param(name => (getPlayerName($::LOGIN_ID))[0]);
 
-$INDEX->param(LOGIN_ID => $LOGIN_ID);
-$INDEX->param(OAUTH_MODE => $set::oauth_service);
-$INDEX->param(OAUTH_LOGIN_URL => $set::oauth_login_url);
-
-my @race_makelist;
+my @raceMakeList;
 foreach my $name (@data::race_names){
   if($data::races{$name}{dice}){
-    push(@race_makelist, {VALUE => $name});
+    push(@raceMakeList, { VALUE => $name });
   }
   if($data::races{$name}{variant}){
     foreach my $varname (@{ $data::races{$name}{variantSort} }){
       if($data::races{$name}{variant}{$varname}{dice}){
-        push(@race_makelist, "${name}（${varname}）");
+        push(@raceMakeList, { VALUE => "${name}（${varname}）" });
       }
     }
   }
 
   if($name eq '人間'){
-    push(@race_makelist, {VALUE => "人間（冒険者）"});
+    push(@raceMakeList, { VALUE => "人間（冒険者）" });
   }
 
   if($name =~ /^label=(.+)$/){
-    push(@race_makelist, {"LABEL" => $1});
+    push(@raceMakeList, { LABEL => $1 });
   }
 }
-$INDEX->param(MakeList => \@race_makelist);
+$INDEX->param(MakeList => \@raceMakeList);
 
 my $i = 0;
-open (my $FH,"<", $set::makelist);
-my @lines = <$FH>;
-close($FH);
+my @lines = ();
+if(open (my $FH,"<", $set::makelist)){
+  @lines = <$FH>;
+  close($FH);
+}
 
 ## 検索
 if($::in{mylist}){
-  @lines = grep { $_ =~ /^(?:[^<]*<>){2}\Q$LOGIN_ID\E</ } @lines;
+  @lines = grep { $_ =~ /^(?:[^<]*<>){2}\Q$::LOGIN_ID\E</o } @lines;
   $INDEX->param(modeMylist => 1);
 }
 elsif($::in{id}){
-  @lines = grep { $_ =~ /^(?:[^<]*<>){2}\Q$::in{id}\E</ } @lines;
+  @lines = grep { $_ =~ /^(?:[^<]*<>){2}\Q$::in{id}\E</o } @lines;
 }
 if($::in{tag}){
   my $tag_query = decode('utf8', $::in{tag}) =~ s/[#＃]//r;
-  @lines = grep { $_ =~ /^(?:[^<]*<>){4}[^<]*?[#＃]\Q$tag_query\E(\s|[#＃]|<)/ } @lines if $::in{tag};
+  @lines = grep { $_ =~ /^(?:[^<]*<>){4}[^<]*?[#＃]\Q$tag_query\E(\s|[#＃]|<)/o } @lines if $::in{tag};
   $INDEX->param(tag => $tag_query);
 }
 
-my ($in_num, $in_trial) = split('-', $::in{num});
+my ($inNum, $inTrial) = split('-', $::in{num});
+$inNum   = '' unless defined($inNum)   && $inNum   =~ /^[0-9]+$/;
+$inTrial = '' unless defined($inTrial) && $inTrial =~ /^[0-9]+$/;
 
 my @posts;
 foreach my $data (@lines) {
   $i++;
   chomp $data;
   
-  next if $in_num && $data !~ /^$in_num</;
-  next if !$in_num && (($i <= $page) || ($i > $page+$page_items));
-  my ($num, $date, $id, $name, $comment, $race, $stt, $curse) = split(/<>/, $data);
+  next if $inNum && $data !~ /^$inNum</o;
+  next if !$inNum && (($i <= $page) || ($i > $page+$page_items));
+  my %pc = %{ splitMakingLine($data) };
 
   if(!$::SW2_0){
-    if   ($race eq 'ドレイク（ナイト）'    ){ $race = 'ドレイク' }
-    elsif($race eq 'ドレイク（ブロークン）'){ $race = 'ドレイクブロークン' }
+    if   ($pc{race} eq 'ドレイク（ナイト）'    ){ $pc{race} = 'ドレイク' }
+    elsif($pc{race} eq 'ドレイク（ブロークン）'){ $pc{race} = 'ドレイクブロークン' }
   }
   
-  my $adventurer = ($race =~ s/（冒険者）//) ? 1 : 0;
+  my $adventurer = ($pc{race} =~ s/（冒険者）//) ? 1 : 0;
+
+  my $diceTotal;
+  my $addTotal;
+  foreach ('A','B','C','D','E','F'){
+    $diceTotal += $data::races{$pc{race}}{dice}{$_} || 0;
+    $addTotal  += $data::races{$pc{race}}{dice}{$_.'+'} || 0;
+  }
+
   my @datalist;
   my $trial = 0;
-  foreach my $stt_data (split(/\//, $stt)){
+  foreach my $sttData (split('/', $pc{stt})){
     $trial++;
-    my ($tec, $phy, $spi, $stt_A, $stt_B, $stt_C, $stt_D, $stt_E, $stt_F) = split(/,/, $stt_data);
+    my %stt = %{ splitMakingStt($sttData) };
     
-    my $dicetotal = $data::races{$race}{dice}{'A'}
-                  + $data::races{$race}{dice}{'B'}
-                  + $data::races{$race}{dice}{'C'}
-                  + $data::races{$race}{dice}{'D'}
-                  + $data::races{$race}{dice}{'E'}
-                  + $data::races{$race}{dice}{'F'};
-    my $addtotal = $data::races{$race}{dice}{'A+'}
-                 + $data::races{$race}{dice}{'B+'}
-                 + $data::races{$race}{dice}{'C+'}
-                 + $data::races{$race}{dice}{'D+'}
-                 + $data::races{$race}{dice}{'E+'}
-                 + $data::races{$race}{dice}{'F+'};
+    my $url = "$stt{tec}_$stt{phy}_$stt{spi}_";
+    foreach ('A','B','C','D','E','F'){
+      $url .= ($stt{$_} + $data::races{$pc{race}}{dice}{$_.'+'}) . '_'
+    }
+    $url =~ s/_$//;
     
-    my $average = $dicetotal ? ($stt_A + $stt_B + $stt_C + $stt_D + $stt_E + $stt_F) / $dicetotal : 0;
-       $average = ($stt_A + $stt_B + $stt_C + $stt_D + $stt_E + $stt_F + $tec + $phy + $spi) / 18 if $adventurer;
-       
-    my $url = "${tec}_${phy}_${spi}_"
-            . ($stt_A + $data::races{$race}{dice}{'A+'}) . '_'
-            . ($stt_B + $data::races{$race}{dice}{'B+'}) . '_'
-            . ($stt_C + $data::races{$race}{dice}{'C+'}) . '_'
-            . ($stt_D + $data::races{$race}{dice}{'D+'}) . '_'
-            . ($stt_E + $data::races{$race}{dice}{'E+'}) . '_'
-            . ($stt_F + $data::races{$race}{dice}{'F+'});
+    my $average = $diceTotal ? ($stt{A} + $stt{B} + $stt{C} + $stt{D} + $stt{E} + $stt{F}) / $diceTotal : 0;
+       $average = ($stt{A} + $stt{B} + $stt{C} + $stt{D} + $stt{E} + $stt{F} + $stt{tec} + $stt{phy} + $stt{spi}) / 18 if $adventurer;
     
     push(@datalist, {
-      RACE => $race.($adventurer?'（冒険者）':''),
+      RACE => $pc{race}.($adventurer?'（冒険者）':''),
       
-      TEC => $tec,
-      PHY => $phy,
-      SPI => $spi,
-      A => $stt_A.($data::races{$race}{dice}{'A+'} ? "<span> +$data::races{$race}{dice}{'A+'}</span>" : ''),
-      B => $stt_B.($data::races{$race}{dice}{'B+'} ? "<span> +$data::races{$race}{dice}{'B+'}</span>" : ''),
-      C => $stt_C.($data::races{$race}{dice}{'C+'} ? "<span> +$data::races{$race}{dice}{'C+'}</span>" : ''),
-      D => $stt_D.($data::races{$race}{dice}{'D+'} ? "<span> +$data::races{$race}{dice}{'D+'}</span>" : ''),
-      E => $stt_E.($data::races{$race}{dice}{'E+'} ? "<span> +$data::races{$race}{dice}{'E+'}</span>" : ''),
-      F => $stt_F.($data::races{$race}{dice}{'F+'} ? "<span> +$data::races{$race}{dice}{'F+'}</span>" : ''),
-      DEX => $tec + $stt_A + $data::races{$race}{dice}{'A+'},
-      AGI => $tec + $stt_B + $data::races{$race}{dice}{'B+'},
-      STR => $phy + $stt_C + $data::races{$race}{dice}{'C+'},
-      VIT => $phy + $stt_D + $data::races{$race}{dice}{'D+'},
-      INT => $spi + $stt_E + $data::races{$race}{dice}{'E+'},
-      MND => $spi + $stt_F + $data::races{$race}{dice}{'F+'},
-      AVERAGE => $dicetotal ? sprintf("%.5g", $average) : '―',
-      TOTAL => $stt_A + $stt_B + $stt_C + $stt_D + $stt_E + $stt_F + ($tec + $phy + $spi) * 2 + $addtotal,
-      URLRACE => uri_escape_utf8($race),
+      TEC => $stt{tec},
+      PHY => $stt{phy},
+      SPI => $stt{spi},
+      A => $stt{A}.($data::races{$pc{race}}{dice}{'A+'} ? "<span> +$data::races{$pc{race}}{dice}{'A+'}</span>" : ''),
+      B => $stt{B}.($data::races{$pc{race}}{dice}{'B+'} ? "<span> +$data::races{$pc{race}}{dice}{'B+'}</span>" : ''),
+      C => $stt{C}.($data::races{$pc{race}}{dice}{'C+'} ? "<span> +$data::races{$pc{race}}{dice}{'C+'}</span>" : ''),
+      D => $stt{D}.($data::races{$pc{race}}{dice}{'D+'} ? "<span> +$data::races{$pc{race}}{dice}{'D+'}</span>" : ''),
+      E => $stt{E}.($data::races{$pc{race}}{dice}{'E+'} ? "<span> +$data::races{$pc{race}}{dice}{'E+'}</span>" : ''),
+      F => $stt{F}.($data::races{$pc{race}}{dice}{'F+'} ? "<span> +$data::races{$pc{race}}{dice}{'F+'}</span>" : ''),
+      DEX => $stt{tec} + $stt{A} + $data::races{$pc{race}}{dice}{'A+'},
+      AGI => $stt{tec} + $stt{B} + $data::races{$pc{race}}{dice}{'B+'},
+      STR => $stt{phy} + $stt{C} + $data::races{$pc{race}}{dice}{'C+'},
+      VIT => $stt{phy} + $stt{D} + $data::races{$pc{race}}{dice}{'D+'},
+      INT => $stt{spi} + $stt{E} + $data::races{$pc{race}}{dice}{'E+'},
+      MND => $stt{spi} + $stt{F} + $data::races{$pc{race}}{dice}{'F+'},
+      AVERAGE => $diceTotal ? sprintf("%.5g", $average) : '―',
+      TOTAL => $stt{A} + $stt{B} + $stt{C} + $stt{D} + $stt{E} + $stt{F} + ($stt{tec} + $stt{phy} + $stt{spi}) * 2 + $addTotal,
+      URLRACE => uri_escape_utf8($pc{race}),
       URLSTT => $url,
-      NUM => $num,
+      NUM => $pc{num},
       TRIAL => $trial,
-      SELECTED => ($in_trial eq $trial ? 'selected' : ''),
+      SELECTED => ($inTrial eq $trial ? 'selected' : ''),
     });
   }
 
-  my @curses = split('/', $curse);
+  my @curses = split('/', $pc{curse});
   $_ = $_.':'.$set::curseList{$_} foreach (@curses);
 
-  $comment =~ s/([#＃])(.+?)(?=\s|[#＃]|$)/<a href=".\/?mode=making&tag=$2">$1$2<\/a>/g;
+  if($pc{comment}){
+    $pc{comment} = escapeThanSign($pc{comment});
+    $pc{comment} =~ s{([#＃])(.+?)(?=\s|[#＃]|$)}{
+      my $mark = $1;
+      my $tag  = $2;
+      my $url  = uri_escape_utf8($tag);
+      qq|<a href="./?mode=making&tag=$url">$mark$tag</a>|
+    }eg;
+  }
 
-  my ($sec, $min, $hour, $day, $mon, $year) = localtime($date);
+  my ($sec, $min, $hour, $day, $mon, $year) = localtime($pc{date});
   push(@posts, {
-    NUM     => $num,
+    NUM     => $pc{num},
     DATE    => sprintf('%04d-%02d-%02d %02d:%02d:%02d', $year+1900, $mon+1, $day, $hour, $min, $sec),
-    NAME    => $name,
-    COMMENT => $comment,
+    NAME    => $pc{name},
+    COMMENT => $pc{comment},
     Data    => \@datalist,
     CURSE   => join('／', @curses),
   });
@@ -169,22 +173,49 @@ $paginationUrl .= '&mylist=1' if $::in{mylist};
 $INDEX->param(paginationUrl => $paginationUrl);
 $INDEX->param(pagePrev => ($page - $page_items) / $page_items);
 $INDEX->param(pageNext => ($page + $page_items) / $page_items);
-if(!$in_num) {
+if(!$inNum) {
   $INDEX->param(pagePrevOn => $page - $page_items >= 0);
   $INDEX->param(pageNextOn => $page + $page_items < @lines);
 }
-if($in_num || $::in{tag}) {
+if($inNum || $::in{tag}) {
   $INDEX->param(isMakingResult => 1);
 }
 $INDEX->param(formOn => 1) if !$::in{num} && !$::in{id};
 
-$INDEX->param(title => $set::title);
-$INDEX->param(ver => $::ver);
-$INDEX->param(coreDir => $::core_dir);
-$INDEX->param(gameDir => $set::game);
 
 ### 出力 #############################################################################################
-print "Content-Type: text/html\n\n";
-print outputTemplate($INDEX);
+printFinalizedList($INDEX);
+
+### サブルーチン #####################################################################################
+sub splitMakingLine {
+  my $line = shift;
+  my ($num, $date, $id, $name, $comment, $race, $stt, $curse) = split(/<>/, $line);
+  return {
+    num => $num,
+    date => $date,
+    id => $id,
+    name => $name,
+    comment => $comment,
+    race => $race,
+    stt => $stt,
+    curse => $curse,
+  };
+}
+sub splitMakingStt {
+  my $data = shift;
+  my ($tec, $phy, $spi, $sttA, $sttB, $sttC, $sttD, $sttE, $sttF) = split(/,/, $data);
+  return {
+    tec => $tec,
+    phy => $phy,
+    spi => $spi,
+    A => $sttA,
+    B => $sttB,
+    C => $sttC,
+    D => $sttD,
+    E => $sttE,
+    F => $sttF,
+  };
+}
+
 
 1;
