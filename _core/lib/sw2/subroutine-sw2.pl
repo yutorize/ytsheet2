@@ -165,17 +165,6 @@ sub addFreeClassData {
   }
 }
 
-### 技能色分け --------------------------------------------------
-sub class_color {
-  my $text = shift;
-  $text =~ s/((?:.*?)(?:[0-9]+))/<span>$1<\/span>/g;
-  $text =~ s/<span>((?:ファイター|グラップラー|フェンサー|バトルダンサー)(?:[0-9]+?))<\/span>/<span class="melee">$1<\/span>/;
-  $text =~ s/<span>((?:プリースト)(?:[0-9]+?))<\/span>/<span class="healer">$1<\/span>/;
-  $text =~ s/<span>((?:スカウト|ウォーリーダー|レンジャー)(?:[0-9]+?))<\/span>/<span class="initiative">$1<\/span>/;
-  $text =~ s/<span>((?:セージ)(?:[0-9]+?))<\/span>/<span class="knowledge">$1<\/span>/;
-  return $text;
-}
-
 ### 分類マーク --------------------------------------------------
 sub checkSkillName {
   my $text = shift;
