@@ -16,7 +16,7 @@ package set;
   our $registerkey = '';
  # データ作成・編集にユーザー登録（ログイン状態）を必須にする
   our $user_reqd = 0;
- # キャラクター・魔物のIDをランダムではなくユーザーID＋番号(001,002..)にする(魔物はm001..)
+ # シートのIDをランダムではなくユーザーID＋番号(001,002..)にする(キャラ以外はm001..やi001..になる)
   our $id_type = 0;
 
 
@@ -102,5 +102,25 @@ package set;
     ['WDXL Lubrifont JP N','normal'],
   );
 
+
+## ●各種ファイルへのパス
+  our $userfile    = $::core_dir . '/data/users.cgi';       # ユーザー一覧ファイル
+  our $login_users = $::core_dir . '/data/login_users.cgi'; # ログイン情報保存ファイル
+  our $tokenfile   = $::core_dir . '/data/token.cgi';       # 一時トークン保存ファイル
+  
+  our $lib_form     = $::core_dir . '/lib/form.pl';
+  our $lib_info     = $::core_dir . '/lib/info.pl';
+  our $lib_register = $::core_dir . '/lib/register.pl';
+  our $lib_reminder = $::core_dir . '/lib/reminder.pl';
+  our $lib_delete   = $::core_dir . '/lib/delete.pl';
+  
+  our $lib_others   = $::core_dir . '/lib/others.pl';
+  
+  our $lib_edit    = $::core_dir . '/lib/edit.pl'; # 編集画面
+  our $lib_save    = $::core_dir . '/lib/save.pl'; # 保存処理
+  our $lib_view    = $::core_dir . '/lib/view.pl'; # 閲覧画面
+  our $lib_list    = $::core_dir . '/lib/list.pl'; # 一覧画面
+  our $lib_palette = $::core_dir . '/lib/palette.pl'; # チャットパレット
+  our $lib_json     = $::core_dir . '/lib/json.pl'; # JSON出力
 
 1;

@@ -5,189 +5,114 @@ use utf8;
 use open ":utf8";
 use HTML::Template;
 
-my $LOGIN_ID = check;
+require $set::lib_list;
 
-my $mode = $::in{mode};
-my $sort = $::in{sort};
-
-### データ読み込み ###################################################################################
 require $set::data_class;
 require $set::data_races;
 
+### クエリ ###########################################################################################
+my @queryKeys = qw(
+  mode tag group name player race exp-min exp-max class rank faith image fellow
+);
+setFields({
+  id      => 0,
+  date    => 3,
+  name    => 4,
+  player  => 5,
+  group   => 6,
+  exp     => 7,
+  rank    => 8,
+  race    => 9,
+  gender  => 10,
+  age     => 11,
+  faith   => 12,
+  classes => 13,
+  session => 14,
+  image   => 15,
+  tags    => 16,
+  hide    => 17,
+  fellow  => 18,
+});
+
 ### テンプレート読み込み #############################################################################
-my $INDEX;
-$INDEX = HTML::Template->new( filename  => $set::skin_tmpl , utf8 => 1,
-  path => ['./', $::core_dir."/skin/sw2", $::core_dir."/skin/_common", $::core_dir],
-  search_path_on_include => 1,
-  die_on_bad_params => 0, die_on_missing_include => 0, case_sensitive => 1, global_vars => 1);
+my $INDEX = setupListTemplate(
+  type     => '',
+  typeName => 'キャラ',
+);
+my ($indexMode, $qLinks) = listQueryInfo(
+  queryKeys => \@queryKeys,
+  excludeFromQLinks => { group => 1 },
+);
+my %groups = setupGroupList();
 
+### ファイル読み込み #################################################################################
+my @lines = loadLines();
 
-$INDEX->param(modeList => 1);
-$INDEX->param(modeMylist => 1) if $mode eq 'mylist';
-$INDEX->param(typeName => 'キャラ');
+### 検索フィルタ #####################################################################################
+@lines = filterGroup(@lines) if $::in{group} && $::in{group} ne 'all';
+@lines = filterTag(@lines)   if $::in{tag};
+@lines = filterContainsRegex(lines => \@lines, key => 'name', flags => 'i') if $::in{name};
+@lines = filterContainsRegex(lines => \@lines, key => 'player', flags => 'i') if $::in{player};
+@lines = filterFlagRegex(lines => \@lines, key => 'image') if $::in{image};
+@lines = filterContainsRegex(lines => \@lines, key => 'faith') if $::in{faith};
+@lines = filterFlagRegex(lines => \@lines, key => 'fellow') if $::in{fellow};
 
-$INDEX->param(LOGIN_ID => $LOGIN_ID);
-$INDEX->param(OAUTH_MODE => $set::oauth_service);
-$INDEX->param(OAUTH_LOGIN_URL => $set::oauth_login_url);
+@lines = filterRange(
+  lines => \@lines,
+  key => 'exp',
+) if hasInteger($::in{'exp-min'}, $::in{'exp-max'});
 
-$INDEX->param(mode => $mode);
-
-### データ処理 #######################################################################################
-### クエリ --------------------------------------------------
-my $index_mode;
-foreach (keys %::in) {
-  $::in{$_} =~ s/</&lt;/g;
-  $::in{$_} =~ s/>/&gt;/g;
-}
-if(!($mode eq 'mylist' || $::in{tag} || $::in{group} || $::in{name} || $::in{player} || $::in{race} || $::in{'exp-min'} || $::in{'exp-max'} || $::in{class} || $::in{faith} || $::in{image} || $::in{fellow})){
-  $index_mode = 1;
-  $INDEX->param(modeIndex => 1);
-  $INDEX->param(simpleList => 1) if $set::simplelist;
-}
-my @q_links;
-foreach(
-  'mode',
-  'tag',
-  #'group',
-  'name',
-  'player',
-  'race',
-  'exp-min',
-  'exp-max',
-  'class',
-  'faith',
-  'image',
-  'fellow',
-  ){
-  push( @q_links, $_.'='.uri_escape_utf8(decode('utf8', param($_))) ) if param($_);
-}
-my $q_links = @q_links ? '&'.join('&', @q_links) : '';
-
-### ファイル読み込み --------------------------------------------------
-my @list;
-#グループ見出しのみ
-if($set::simpleindex && $index_mode) {
-  $INDEX->param(simpleIndex => 1);
-}
-#通常
-else {
-  # マイリスト
-  if($mode eq 'mylist'){
-    $INDEX->param( playerName => (getPlayerName($LOGIN_ID))[0] );
-    @list = getMylist($LOGIN_ID);
-  }
+## 種族検索 --------------------------------------------------
+if($::in{race}) {
+  if   (!$::SW2_0 && $::in{race} eq 'ドレイク'          ){ @lines = grep { /^(?:[^<]*<>){9}(ドレイク|ドレイク（ナイト）)</ } @lines; }
+  elsif(!$::SW2_0 && $::in{race} eq 'ドレイクブロークン'){ @lines = grep { /^(?:[^<]*<>){9}(ドレイクブロークン|ドレイク（ブロークン）)</ } @lines; }
   else {
-    open (my $FH, "<", $set::listfile);
-    # 管理者orタグ検索（全読込）
-    if(($set::masterid && $set::masterid eq $LOGIN_ID) || $::in{tag}){
-      @list = <$FH>;
-    }
-    # 非表示除外
-    else {
-      @list = grep { !/^(?:[^<]*<>){17}[^<0]/ } <$FH>;
-    }
-    close($FH);
-  }
-}
-### 検索処理 --------------------------------------------------
-## グループ検索
-my $group_query = $::in{group};
-my %groups = groupArrayToHash();
-$groups{all}{name} = 'すべて' if $::in{group} eq 'all';
-$INDEX->param(Groups => groupArrayToList $group_query);
-
-if($group_query && $::in{group} ne 'all') {
-  if($group_query eq $set::group_default){ @list = grep { /^(?:[^<]*<>){6}(\Q$group_query\E)?</ } @list; }
-  else { @list = grep { /^(?:[^<]*<>){6}\Q$group_query\E</ } @list; }
-}
-$INDEX->param(group => $groups{$group_query}{name});
-
-## タグ検索
-my $tag_query = normalizeHashtags(decode('utf8', $::in{tag}));
-if($tag_query) { @list = grep { /^(?:[^<]*<>){16}[^<]*? \Q$tag_query\E / } @list; }
-$INDEX->param(tag => $tag_query);
-
-## 名前検索
-my $name_query = decode('utf8', $::in{name});
-if($name_query) { @list = grep { /^(?:[^<]*<>){4}[^<]*?\Q$name_query\E/i } @list; }
-$INDEX->param(name => $name_query);
-
-## PL名検索
-my $pl_query = decode('utf8', $::in{player});
-if($pl_query) { @list = grep { /^(?:[^<]*<>){5}[^<]*?\Q$pl_query\E/i } @list; }
-$INDEX->param(player => $pl_query);
-
-## 種族検索
-my $race_query = decode('utf8', $::in{race});
-if($race_query) {
-  if   (!$::SW2_0 && $race_query eq 'ドレイク'          ){ @list = grep { /^(?:[^<]*<>){9}(ドレイク|ドレイク（ナイト）)</ } @list; }
-  elsif(!$::SW2_0 && $race_query eq 'ドレイクブロークン'){ @list = grep { /^(?:[^<]*<>){9}(ドレイクブロークン|ドレイク（ブロークン）)</ } @list; }
-  else {
-    if($race_query =~ s/（通常種）$//){
-      @list = grep { /^(?:[^<]*<>){9}\Q$race_query\E</ } @list;
-      $race_query .= '（通常種）';
+    if($::in{race} =~ s/（通常種）$//){
+      @lines = grep { /^(?:[^<]*<>){9}\Q$::in{race}\E</o } @lines;
+      $::in{race} .= '（通常種）';
     }
     else {
-      @list = grep { /^(?:[^<]*<>){9}\Q$race_query\E/ } @list;
+      @lines = grep { /^(?:[^<]*<>){9}\Q$::in{race}\E/o } @lines;
     }
   }
 }
-$INDEX->param(race => $race_query);
-my @race_search_list;
+my @raceList;
 foreach (@data::race_names){
   if(s/^label=//){
-    push(@race_search_list, {
-      LABEL => $_,
-    });
+    push(@raceList, { LABEL => $_ });
   }
   else {
-    push(@race_search_list, {
-      NAME => $_,
-      SELECTED => ($_ eq $race_query) ? 'selected' : '',
-    });
+    push(@raceList, { NAME => $_, SELECTED => ($_ eq $::in{race}) ? 'selected' : '' });
   }
 
   if($data::races{$_}{variant}){
     if($data::races{$_}{ability}){
-      push(@race_search_list, {
+      push(@raceList, {
         NAME => $_.'（通常種）',
-        SELECTED => ($_.'（通常種）' eq $race_query) ? 'selected' : '',
+        SELECTED => ($_.'（通常種）' eq $::in{race}) ? 'selected' : '',
       });
     }
     foreach my $varname (@{ $data::races{$_}{variantSort} }){ 
-      push(@race_search_list, {
+      push(@raceList, {
         NAME => $_."（$varname）",
-        SELECTED => ($_."（$varname）" eq $race_query) ? 'selected' : '',
+        SELECTED => ($_."（$varname）" eq $::in{race}) ? 'selected' : '',
       });
     }
   }
 }
-push(@race_search_list, {
+push(@raceList, {
   NAME => 'その他',
-  SELECTED => ('その他' eq $race_query) ? 'selected' : '',
+  SELECTED => ('その他' eq $::in{race}) ? 'selected' : '',
 });
-$INDEX->param(RaceList => \@race_search_list);
+$INDEX->param(RaceList => \@raceList);
 
-## 経験点検索
-my $exp_min_query = $::in{'exp-min'};
-my $exp_max_query = $::in{'exp-max'};
-if($exp_min_query) { @list = grep { (/^(?:[^<]*<>){7}([^<]*)/)[0] >= $exp_min_query } @list; }
-if($exp_max_query) { @list = grep { (/^(?:[^<]*<>){7}([^<]*)/)[0] <= $exp_max_query } @list; }
-$INDEX->param(expMin => $exp_min_query);
-$INDEX->param(expMax => $exp_max_query);
-my $exp_query;
-if   ($exp_min_query eq $exp_max_query){ $exp_query = $exp_min_query; }
-elsif($exp_min_query || $exp_max_query){ $exp_query = $exp_min_query.'～'.$exp_max_query; }
-$INDEX->param(exp => $exp_query);
-
-## 技能検索
-my @class_name = @data::class_list;
-my @class_query = split('\s', decode('utf8', $::in{class}));
-if(@class_query){
+## 技能検索 --------------------------------------------------
+my @classQuery = split(/\s/, $::in{class});
+if(@classQuery){
   my %num;
   my $i = 0;
-  foreach (@class_name){ $num{$_} = $i; $i++; }
-  foreach my $class (@class_query){
+  foreach (@data::class_list){ $num{$_} = $i; $i++; }
+  foreach my $class (@classQuery){
     my $op = ''; my $lv = '';
     $class =~ s/&lt;/</g;
     $class =~ s/&gt;/>/g;
@@ -214,101 +139,61 @@ if(@class_query){
     }
   }
 }
-$INDEX->param(class => "@class_query");
+$INDEX->param(class => "@classQuery");
 
-## 信仰検索
-my $faith_query = decode('utf8', $::in{faith});
-if($faith_query) { @list = grep { /^(?:[^<]*<>){12}[^<]*?\Q$faith_query\E/ } @list; }
-$INDEX->param(faith => $faith_query);
-
-## ランク
-my $rank_query = decode('utf8', $::in{rank});
-my %sortRank;
-my @rank_list;
-foreach (@set::adventurer_rank){
-  $sortRank{@$_[0]} = @$_[1];
-  push(@rank_list, {
-    "NAME" => @$_[0],
-    "SELECTED" => $rank_query eq @$_[0] ? 'selected' : '',
-  });
-}
-foreach (@set::barbaros_rank){
-  $sortRank{@$_[0]} = @$_[1];
-  push(@rank_list, {
-    "NAME" => @$_[0],
-    "SELECTED" => $rank_query eq @$_[0] ? 'selected' : '',
-  });
-}
+## ランク --------------------------------------------------
+@lines = filterExactRegex(lines => \@lines, key => 'rank', emptyKeyword => 'なし') if $::in{rank};
+my @rankValues = (
+  "label=冒険者ランク",
+  @set::adventurer_rank,
+  "label=蛮族栄光ランク",
+  @set::barbaros_rank
+);
+my %sortRank = map { $_->[0] => $_->[1] } grep{ ref($_) eq 'ARRAY' } @rankValues;
+my @rankList = makeSelectOptions(
+  values   => \@rankValues,
+  selected => $::in{rank},
+  labelOf  => sub { my $value = shift; return ($value =~ /^label=(.+)/)[0] },
+);
+unshift(@rankList, {
+  ID => 'なし',
+  NAME => 'なし',
+  SELECTED => $::in{rank} eq 'なし' ? 'selected' : '',
+});
 $sortRank{''} = -1;
-$INDEX->param(Ranks => \@rank_list);
+$INDEX->param(Ranks => \@rankList);
 
-if($rank_query eq 'none') {
-  @list = grep { /^(?:[^<]*<>){8}</ } @list;
-  $INDEX->param(rankNoneSelected => "selected");
-  $INDEX->param(rank => 'なし');
+### ソート ###########################################################################################
+if($::in{sort}){
+  my $s = $::in{sort};
+  if   ($s eq 'name'){ my @t = map { sortKeyName($_)       } @lines; @lines = @lines[sort {$t[$a] cmp $t[$b]} 0 .. $#t]; }
+  elsif($s eq 'pl')  { my @t = map { capField($_,'player') } @lines; @lines = @lines[sort {$t[$a] cmp $t[$b]} 0 .. $#t]; }
+  elsif($s eq 'date'){ my @t = map { capField($_,'date')   } @lines; @lines = @lines[sort {$t[$b] <=> $t[$a]} 0 .. $#t]; }
+  elsif($s eq 'exp') { my @t = map { capField($_,'exp')    } @lines; @lines = @lines[sort {$t[$b] <=> $t[$a]} 0 .. $#t]; }
+  elsif($s eq 'rank'){ my @t = map { sortKeyRank($_)       } @lines; @lines = @lines[sort {$t[$b] <=> $t[$a]} 0 .. $#t]; }
+  elsif($s eq 'lv')  { my @t = map { sortKeyLv($_)         } @lines; @lines = @lines[sort {$t[$b] <=> $t[$a]} 0 .. $#t]; }
 }
-elsif($rank_query) {
-  @list = grep { /^(?:[^<]*<>){8}\Q$rank_query\E</ } @list;
-  $INDEX->param(rank => $rank_query);
-}
+sub sortKeyRank { return $sortRank{capField($_[0],'rank')}; }
+sub sortKeyLv   { return max( split /\//, capField($_,'classes') ); }
 
-## 画像フィルタ
-if($::in{image} == 1) {
-  @list = grep { /^(?:[^<]*<>){15}[^<0]/ } @list;
-  $INDEX->param(image => 1);
-}
-elsif($::in{image} eq 'N') {
-  @list = grep { !/^(?:[^<]*<>){15}[^<0]/ } @list;
-  $INDEX->param(image => 0);
-}
+### ページ処理 #######################################################################################
+my ($pageLines, $count, $page, $pageStart, $pageEnd, $shouldSkip) = prepareGroupedPage(
+  lines => \@lines,
+  selectedGroup => $::in{group},
+  hasTagQuery   => $::in{tag},
+  countExtraOf  => $set::playerlist ? sub {
+    my $line = shift;
+    return capField($line, 'player');
+  } : undef,
+);
 
-## フェローフィルタ
-if($::in{fellow} == 1) {
-  @list = grep {  /^(?:[^<]*<>){18}[^<0]/ } @list;
-  $INDEX->param(fellow => 1);
-}
-elsif($::in{fellow} eq 'N') {
-  @list = grep { !/^(?:[^<]*<>){18}[^<0]/ } @list;
-  $INDEX->param(fellow => 0);
-}
-### ソート --------------------------------------------------
-if   ($sort eq 'name') { my @t = map { sortName($_)                   } @list; @list = @list[sort {$t[$a] cmp $t[$b]} 0 .. $#t]; }
-elsif($sort eq 'pl')   { my @t = map { (/^(?:[^<]*<>){5}([^<]*)/)[0]  } @list; @list = @list[sort {$t[$a] cmp $t[$b]} 0 .. $#t]; }
-elsif($sort eq 'date') { my @t = map { (/^(?:[^<]*<>){3}([^<]*)/)[0]  } @list; @list = @list[sort {$t[$b] <=> $t[$a]} 0 .. $#t]; }
-elsif($sort eq 'rank') { my @t = map { sortRank($_)                   } @list; @list = @list[sort {$t[$b] <=> $t[$a]} 0 .. $#t]; }
-elsif($sort eq 'lv')   { my @t = map { sortLv($_)                     } @list; @list = @list[sort {$t[$b] <=> $t[$a]} 0 .. $#t]; }
-elsif($sort eq 'exp')  { my @t = map { (/^(?:[^<]*<>){7}([^<]*)/)[0]  } @list; @list = @list[sort {$t[$b] <=> $t[$a]} 0 .. $#t]; }
-elsif($sort eq 'age')  { my @t = map { (/^(?:[^<]*<>){11}([^<]*)/)[0] } @list; @list = @list[sort {$t[$a] cmp $t[$b]} 0 .. $#t]; }
-
-sub sortName { $_[0] =~ /^(?:[^<]*<>){4}(?:“\s*(.*?)”)?\s*(.*?)</; return $2 || $1; }
-sub sortRank { return $sortRank{($_[0] =~ /^(?:[^<]*<>){8}([^<]*)/)[0]}; }
-sub sortLv   { my @levels = (split /\//, ($_[0] =~ /^(?:[^<]*<>){13}([^<]*)/)[0]); return max(@levels); }
-
-### リストを回す --------------------------------------------------
-my %count = ( PC => {}, PL => {} );
-my %grouplist;
-my $page = $::in{page} || 1;
-my $pagestart = $page * $set::pagemax - $set::pagemax + 1;
-my $pageend   = $page * $set::pagemax;
-if($::in{group} && $set::pagemax){
-  $count{PC}{$::in{group}} = scalar(@list);
-  $count{PL}{$::in{group}} = {};
-  if($set::playerlist){
-    $count{PL}{$::in{group}}{ (/^(?:[^<]*<>){5}([^<]*)/)[0] }++ foreach @list;
-  }
-  $pageend = $count{PC}{$::in{group}} if $pageend > $count{PC}{$::in{group}};
-  @list = @list[$pagestart-1 .. $pageend-1];
-}
-foreach (@list) {
-  my (
-    $id, undef, undef, $updatetime, $name, $player, $group,
-    $exp, $rank, $race, $gender, $age, $faith,
-    $classes, $session, $image, $tags, $hide, $fellow
-  ) = (split /<>/, $_)[0..18];
+my %groupedLists;
+foreach (@$pageLines) {
+  my %pc = %{ splitField($_) };
   
   #グループ
-  $group = $set::group_default if (!$group || !$groups{$group});
-  $group = 'all' if $::in{group} eq 'all';
+  $pc{group} = $set::group_default if (!$pc{group} || !$groups{$pc{group}});
+  $pc{group} = 'all' if $::in{group} eq 'all';
   
   unless($::in{group} && $set::pagemax){
     #カウント
@@ -345,7 +230,7 @@ foreach (@list) {
   $name =~ s/^“(.*)”(.*)$/<span>“$1”<\/span><span>$2<\/span>/;
   
   ## シンプルリスト
-  if($index_mode && $set::simplelist){
+  if($indexMode && $set::simplelist){
     #出力用配列へ
     my @characters;
     push(@characters, {
@@ -358,40 +243,11 @@ foreach (@list) {
       "RANK" => $rank,
       "HIDE" => $hide,
     });
-    push(@{$grouplist{$group}}, @characters);
+    push(@{$groupedLists{$pc{group}}}, @characters);
   }
   ## 通常リスト
   else {
     
-    #種族
-    $race =~ s/^その他://g;
-    $race =~ s/[（()].*[)）]|［.*］//;
-    $race = "<span class=\"small\">$race</span>" if length($race) >= 6;
-    
-    #性別
-    $gender = stylizeGender($gender);
-    
-    #年齢
-    $age = stylizeAge($age);
-
-    #ランク
-    $rank = "<span class=\"small\">$rank</span>" if length($rank) >= 6;
-
-    #タグ
-    my $tags_links;
-    foreach(grep $_, split(/ /, $tags)){ $tags_links .= '<a href="./?tag='.uri_escape_utf8($_).'">'.$_.'</a>'; }
-    
-    #最終参加セッション
-    if($session){ $tags_links .= '<span class="session">'.$session.'</span>' }
-
-    #フェロー
-    if($fellow != 1) { $fellow = 0; }
-    
-    #更新日時
-    my ($min,$hour,$day,$mon,$year) = (localtime($updatetime))[1..5];
-    $year += 1900; $mon++;
-    $updatetime = sprintf("<span>%04d-</span><span>%02d-%02d</span> <span>%02d:%02d</span>",$year,$mon,$day,$hour,$min);
-
     #出力用配列へ
     my @characters;
     push(@characters, {
@@ -412,72 +268,59 @@ foreach (@list) {
       "DATE" => $updatetime,
       "HIDE" => $hide,
     });
-    push(@{$grouplist{$group}}, @characters);
+    push(@{$groupedLists{$pc{group}}}, @characters);
   }
 }
 
-### 出力用配列 --------------------------------------------------
-my @characterlists;
-foreach my $id (sort {$groups{$a}{sort} <=> $groups{$b}{sort}} keys %grouplist){
-  ## ページネーション
-  my $navbar;
-  if($set::pagemax && !$index_mode && ($::in{group} || $mode eq 'mylist')){
-    my $lastpage = ceil($count{PC}{$id} / $set::pagemax);
-    if($lastpage > 1){
-      foreach(1 .. $lastpage){
-        if($_ == $page){
-          $navbar .= '<b>'.$_.'</b> ';
-        }
-        elsif(
-          ($_ <= $page + 4 && $_ >= $page - 4) ||
-          $_ == 1 ||
-          $_ == $lastpage
-        ){
-          $navbar .= '<a href="./?group='.$id.$q_links.'&page='.$_.'&sort='.$::in{sort}.'">'.$_.'</a> '
-        }
-        else { $navbar .= '...' }
-      }
-      $navbar =~ s/\.{3,}/... /g;
-    }
-    $navbar = '<div class="navbar">'.$navbar.'</div>' if $navbar;
-  }
+## 種族 --------------------------------------------------
+sub renderRace {
+  my $race = shift;
+  $race =~ s/^その他://g;
+  $race =~ s/[（(].*[)）]|［.*］//;
+  return thinIfLong($race, 6);
+}
+
+## 技能色分け --------------------------------------------------
+sub decorateClasses {
+  my $text = shift;
+  $text =~ s/((?:.*?)(?:[0-9]+))/<span>$1<\/span>/g;
+  $text =~ s/<span>((?:ファイター|グラップラー|フェンサー|バトルダンサー)(?:[0-9]+?))<\/span>/<span class="melee">$1<\/span>/;
+  $text =~ s/<span>((?:プリースト|フェアリーテイマー|アビスゲイザー)(?:[0-9]+?))<\/span>/<span class="healer">$1<\/span>/;
+  $text =~ s/<span>((?:スカウト|ウォーリーダー|レンジャー)(?:[0-9]+?))<\/span>/<span class="initiative">$1<\/span>/;
+  $text =~ s/<span>((?:セージ)(?:[0-9]+?))<\/span>/<span class="knowledge">$1<\/span>/;
+  return $text;
+}
+### テンプレートへ入力 ###############################################################################
+$INDEX->param(Lists => [ makeGroupedLists(
+  groupOrder => [ sort { $groups{$a}{sort} <=> $groups{$b}{sort} } keys %groupedLists ],
+  groupedLists => \%groupedLists,
+  count => $count,
   
-  ##
-  push(@characterlists, {
-    "ID" => $id,
-    "NAME" => $groups{$id}{name},
-    "TEXT" => $groups{$id}{text},
-    "NUM-PC" => $count{PC}{$id},
-    "NUM-PL" => $count{PL}{$id},
-    "Characters" => [@{$grouplist{$id}}],
-    "NAV" => $navbar,
-    "MORE" => (!$navbar && $count{PC}{$id} > scalar(@{$grouplist{$id}}) ? 1 : 0),
-  });
-}
+  makePager => sub {
+    my (%args) = @_;
 
-$INDEX->param(qLinks => $q_links);
+    return makePager(
+      count     => $args{count},
+      page      => $page,
+      enabled   => ($args{id} || $::in{mode} eq 'mylist'),
+      queryBase => "group=$::in{group}$qLinks",
+    );
+  },
 
-$INDEX->param(Lists => \@characterlists);
+  makeGroup => \&makeCharacterGroup,
+) ]);
 
-
-$INDEX->param(ogUrl => self_url());
-$INDEX->param(ogDescript => 
-  ($name_query ? "名前「${name_query}」を含む " : '') .
-  ($pl_query   ? "ＰＬ名「${pl_query}」を含む " : '') .
-  ($tag_query  ? "タグ「${tag_query}」 " : '') .
-  ($exp_query   ? "経験点「${exp_query}」 " : '') .
-  ($race_query  ? "種族「${race_query}」 "  : '') .
-  (@class_query ? "技能「@{class_query}」 " : '') .
-  ($faith_query ? "信仰「${faith_query}」 " : '')
+## 検索サマリー --------------------------------------------------
+setSearchSummary(
+  [ $::in{race},   '種族「%s」' ],
+  [ $::in{rank},   'ランク「%s」' ],
+  [ $::in{exp},    '経験点「%s」' ],
+  [ "@classQuery", '技能「%s」' ],
+  [ $::in{faith},  '信仰「%s」' ],
+  [ $::in{fellow}, 'フェローあり' ],
 );
 
-$INDEX->param(title => $set::title);
-$INDEX->param(ver => $::ver);
-$INDEX->param(coreDir => $::core_dir);
-$INDEX->param(gameDir => $set::game);
-
 ### 出力 #############################################################################################
-print "Content-Type: text/html\n\n";
-print outputTemplate($INDEX);
+printFinalizedList();
 
 1;
