@@ -1216,7 +1216,7 @@ my @cashbookOthers;
 foreach my $num (1..$pc{cashbookOtherNum}) {
   next if !$pc{"cashbookOther${num}Name"};
   $pc{'cashbookOther'.$num} =~ s/(:(?:\:|&lt;|&gt;))((?:[\+\-\*\/]?[0-9,]+)+)/$1.cashCheck($2)/eg;
-  push(@cashbookOthers, { DATA => $pc{'cashbookOther'.$num}, NAME => $pc{"cashbookOther${num}Name"}, UNIT => $pc{"cashbookOther${num}Unit"}, TOTAL => $pc{"cashbookOther${num}Total"} })
+  push(@cashbookOthers, { DATA => $pc{'cashbookOther'.$num}, NAME => $pc{"cashbookOther${num}Name"}, UNIT => $pc{"cashbookOther${num}Unit"}, TOTAL => commify($pc{"cashbookOther${num}Total"}) })
 }
 $SHEET->param(CashbookOthers => \@cashbookOthers);
 
