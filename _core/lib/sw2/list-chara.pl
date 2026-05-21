@@ -38,6 +38,7 @@ setFields({
 my $INDEX = setupListTemplate(
   type     => '',
   typeName => 'キャラ',
+  pageTitle => 'キャラクター',
 );
 my ($indexMode, $qLinks) = listQueryInfo(
   queryKeys => \@queryKeys,
@@ -119,23 +120,23 @@ if(@classQuery){
     (my $name = $class) =~ s/(?<op>\>=?|\<=?)?(?<lv>[0-9]+)$/$op = $+{op};$lv = $+{lv};''/e;
     if(exists $num{$name}){
       if($lv ne ''){
-        if   ($op eq '>='){ @list = grep { (split '/',(m/^(?:[^<]*<>){13}([^<|]*)/)[0])[$num{$name}] >= $lv } @list; }
-        elsif($op eq '<='){ @list = grep { (split '/',(m/^(?:[^<]*<>){13}([^<|]*)/)[0])[$num{$name}] <= $lv } @list; }
-        elsif($op eq '>' ){ @list = grep { (split '/',(m/^(?:[^<]*<>){13}([^<|]*)/)[0])[$num{$name}] >  $lv } @list; }
-        elsif($op eq '<' ){ @list = grep { (split '/',(m/^(?:[^<]*<>){13}([^<|]*)/)[0])[$num{$name}] <  $lv } @list; }
-        else              { @list = grep { (split '/',(m/^(?:[^<]*<>){13}([^<|]*)/)[0])[$num{$name}] == $lv } @list; }
+        if   ($op eq '>='){ @lines = grep { (split '/',(m/^(?:[^<]*<>){13}([^<|]*)/)[0])[$num{$name}] >= $lv } @lines; }
+        elsif($op eq '<='){ @lines = grep { (split '/',(m/^(?:[^<]*<>){13}([^<|]*)/)[0])[$num{$name}] <= $lv } @lines; }
+        elsif($op eq '>' ){ @lines = grep { (split '/',(m/^(?:[^<]*<>){13}([^<|]*)/)[0])[$num{$name}] >  $lv } @lines; }
+        elsif($op eq '<' ){ @lines = grep { (split '/',(m/^(?:[^<]*<>){13}([^<|]*)/)[0])[$num{$name}] <  $lv } @lines; }
+        else              { @lines = grep { (split '/',(m/^(?:[^<]*<>){13}([^<|]*)/)[0])[$num{$name}] == $lv } @lines; }
       }
-      else { @list = grep { (split '/',(m/^(?:[^<]*<>){13}([^<|]*)/)[0])[$num{$name}] >= 1 } @list; }
+      else { @lines = grep { (split '/',(m/^(?:[^<]*<>){13}([^<|]*)/)[0])[$num{$name}] >= 1 } @lines; }
     }
     else {
       if($lv ne ''){
-        if   ($op eq '>='){ @list = grep { (split '/', m/^(?:[^<]*<>){13}[^<|]*\|[^<]*?$name([0-9]+)/)[0] >= $lv } @list; }
-        elsif($op eq '<='){ @list = grep { (split '/', m/^(?:[^<]*<>){13}[^<|]*\|[^<]*?$name([0-9]+)/)[0] <= $lv } @list; }
-        elsif($op eq '>' ){ @list = grep { (split '/', m/^(?:[^<]*<>){13}[^<|]*\|[^<]*?$name([0-9]+)/)[0] >  $lv } @list; }
-        elsif($op eq '<' ){ @list = grep { (split '/', m/^(?:[^<]*<>){13}[^<|]*\|[^<]*?$name([0-9]+)/)[0] <  $lv } @list; }
-        else              { @list = grep { (split '/', m/^(?:[^<]*<>){13}[^<|]*\|[^<]*?$name([0-9]+)/)[0] == $lv } @list; }
+        if   ($op eq '>='){ @lines = grep { (split '/', m/^(?:[^<]*<>){13}[^<|]*\|[^<]*?$name([0-9]+)/)[0] >= $lv } @lines; }
+        elsif($op eq '<='){ @lines = grep { (split '/', m/^(?:[^<]*<>){13}[^<|]*\|[^<]*?$name([0-9]+)/)[0] <= $lv } @lines; }
+        elsif($op eq '>' ){ @lines = grep { (split '/', m/^(?:[^<]*<>){13}[^<|]*\|[^<]*?$name([0-9]+)/)[0] >  $lv } @lines; }
+        elsif($op eq '<' ){ @lines = grep { (split '/', m/^(?:[^<]*<>){13}[^<|]*\|[^<]*?$name([0-9]+)/)[0] <  $lv } @lines; }
+        else              { @lines = grep { (split '/', m/^(?:[^<]*<>){13}[^<|]*\|[^<]*?$name([0-9]+)/)[0] == $lv } @lines; }
       }
-      else { @list = grep { (split '/', m/^(?:[^<]*<>){13}[^<|]*\|[^<]*?$name([0-9]+)/)[0] >= 1 } @list; }
+      else { @lines = grep { (split '/', m/^(?:[^<]*<>){13}[^<|]*\|[^<]*?$name([0-9]+)/)[0] >= 1 } @lines; }
     }
   }
 }
@@ -195,22 +196,13 @@ foreach (@$pageLines) {
   $pc{group} = $set::group_default if (!$pc{group} || !$groups{$pc{group}});
   $pc{group} = 'all' if $::in{group} eq 'all';
   
-  unless($::in{group} && $set::pagemax){
-    #カウント
-    $count{PC}{$group}++;
-    $count{PL}{$group}{$player}++;
-
-    #表示域以外は弾く
-    if (
-      ( $index_mode && $count{PC}{$group} > $set::list_maxline && $set::list_maxline) || #TOPページ
-      (!$index_mode && $set::pagemax && ($count{PC}{$group} < $pagestart || $count{PC}{$group} > $pageend)) #それ以外
-    ){
-      next;
-    }
-  }
+  next if $shouldSkip->(
+    group => $pc{group},
+    extra => $pc{player},
+  );
 
   #技能レベル
-  ($classes, my $freeclasses) = split '\|', $classes;
+  my ($classes, $freeclasses) = split '\|', $pc{classes};
   my @levels = split '/', $classes;
   my $level = max(@levels);
   my %lv;
@@ -225,23 +217,20 @@ foreach (@$pageLines) {
   foreach (sort {$lv{$b} <=> $lv{$a}} keys %lv){
     $renderClass .= $_.$lv{$_} if $lv{$_};
   }
-
-  #名前
-  $name =~ s/^“(.*)”(.*)$/<span>“$1”<\/span><span>$2<\/span>/;
   
   ## シンプルリスト
   if($indexMode && $set::simplelist){
     #出力用配列へ
     my @characters;
     push(@characters, {
-      "ID" => $id,
-      "NAME" => $name,
-      "PLAYER" => $player,
-      "GROUP" => $group,
-      "EXP" => $exp,
-      "LV" => $level,
-      "RANK" => $rank,
-      "HIDE" => $hide,
+      ID     => $pc{id},
+      NAME   => renderCharacterName($pc{name}),
+      PLAYER => $pc{player},
+      GROUP  => $pc{group},
+      EXP    => $pc{exp},
+      LV     => $level,
+      RANK   => $pc{rank},
+      HIDE   => $pc{hide},
     });
     push(@{$groupedLists{$pc{group}}}, @characters);
   }
@@ -251,22 +240,22 @@ foreach (@$pageLines) {
     #出力用配列へ
     my @characters;
     push(@characters, {
-      "ID" => $id,
-      "NAME" => $name,
-      "PLAYER" => $player,
-      "GROUP" => $group,
-      "EXP" => commify($exp),
-      "LV" => $level,
-      "CLASS" => class_color($renderClass),
-      "RACE" => $race,
-      "GENDER" => $gender,
-      "AGE" => $age,
-      "FAITH" => $faith,
-      "RANK" => $rank,
-      "TAGS" => $tags_links,
-      "FELLOW" => $fellow,
-      "DATE" => $updatetime,
-      "HIDE" => $hide,
+      ID     => $pc{id},
+      NAME   => renderCharacterName($pc{name}),
+      PLAYER => $pc{player},
+      GROUP  => $pc{group},
+      EXP    => commify($pc{exp}),
+      LV     => $level,
+      CLASS  => decorateClasses($renderClass),
+      RACE   => renderRace($pc{race}),
+      GENDER => renderGender($pc{gender}),
+      AGE    => renderAge($pc{age}),
+      FAITH  => $pc{faith},
+      RANK   => thinIfLong($pc{rank}, 6),
+      FELLOW => ($pc{fellow} != 1) ? 0 : 1,
+      TAGS   => renderTagLinks($pc{tags}, $pc{session}),
+      DATE   => renderUpdateTime($pc{date}),
+      HIDE   => $pc{hide},
     });
     push(@{$groupedLists{$pc{group}}}, @characters);
   }
