@@ -19,6 +19,7 @@ my $page = $::in{page} * $page_items;
 my $INDEX = setupListTemplate(
   type     => '',
   typeName => '能力値',
+  pageTitle => ($::in{mylist} ? 'あなたの能力値作成履歴' : '能力値作成'),
 );
 $INDEX->param(mode => '');
 $INDEX->param(modeList => 0);
@@ -61,6 +62,7 @@ if(open (my $FH,"<", $set::makelist)){
 if($::in{mylist}){
   @lines = grep { $_ =~ /^(?:[^<]*<>){2}\Q$::LOGIN_ID\E</o } @lines;
   $INDEX->param(modeMylist => 1);
+  $INDEX->param(mode => 'mylist');
 }
 elsif($::in{id}){
   @lines = grep { $_ =~ /^(?:[^<]*<>){2}\Q$::in{id}\E</o } @lines;
@@ -184,7 +186,7 @@ $INDEX->param(formOn => 1) if !$::in{num} && !$::in{id};
 
 
 ### 出力 #############################################################################################
-printFinalizedList($INDEX);
+printFinalizedList();
 
 ### サブルーチン #####################################################################################
 sub splitMakingLine {

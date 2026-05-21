@@ -51,7 +51,7 @@ sub loadSheetData {
       $pc{$key} = $value if $value ne '';
     }
     close($IN);
-    if($datatype eq 'logs' && !$hit){ error("過去ログ（$::in{log}）が見つかりません。"); }
+    if($datatype eq 'logs' && !$hit){ error("404:過去ログ（$::in{log}）が見つかりません。"); }
 
     if($::in{log}){
       ($pc{protect}, $pc{forbidden}) = getProtectType("${datadir}${file}/data.cgi");
@@ -128,14 +128,14 @@ sub viewNotFound { #v1.14/v1.20のコンバート処理
     my $user = $1;
     my $file = $2;
     if(-d "${dir}${file}"){
-      if(!-d "${dir}${user}"){ mkdir "${dir}${user}" or error("データディレクトリの作成に失敗しました。"); }
+      if(!-d "${dir}${user}"){ mkdir "${dir}${user}" or error("500:データディレクトリの作成に失敗しました。"); }
       rename("${dir}${file}", "${dir}${user}/${file}");
       print "Location:./?id=$::in{id}\n\n";
       exit;
     }
   }
   
-  error('データがありません');
+  error('404:シートが見つかりませんでした。');
 }
 
 ### バックアップ一覧 --------------------------------------------------

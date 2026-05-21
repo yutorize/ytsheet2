@@ -48,12 +48,19 @@ function formSubmit() {
   const sendCount = formChangeCount;
   formChangeCount = 0;
   fetch(action, options)
-    .then(response => {
-      if(response.status === 200) {
-        return response.json()
-      }
-      throw Error(response.statusText);
-    })
+  .then(async response => {
+    let data;
+    try {
+      data = await response.json();
+    }
+    catch(e){
+      throw Error(response.statusText || '通信エラー');
+    }
+    if(!response.ok){
+      throw Error(data.message || response.statusText);
+    }
+    return data;
+  })
     .then(data => {
       if(data.result === 'make'){
         localStorage.removeItem('formData-'+sheetType); //中途バックアップ削除

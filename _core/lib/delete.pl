@@ -16,7 +16,7 @@ if(!$::in{check1} || !$::in{check2} || !$::in{check3}){ error('確認のチェ�
 my ($file, $type, $user) = authSheet($::in{id},$::in{pass},$LOGIN_ID);
 changeFileByType($type);
 my $dataDir = $set::char_dir;
-if(!$file){ error('データが見つかりません。'); }
+if(!$file){ error('404:データが見つかりません。'); }
 my $fileDir = $user ? "_${user}/${file}" : "anonymous/${file}";
 
 ## キャラシ削除
@@ -55,7 +55,7 @@ if($mode eq 'delete'){
   
   if(rmdir "${dataDir}${fileDir}"){ $message .= 'ディレクトリを削除しました。<br>シートを完全に削除しました。<br>'; }
   else {
-    if (!-d "${dataDir}deleted"){ mkdir "${dataDir}deleted" or error("削除データのバックアップディレクトリの作成に失敗しました。"); }
+    if (!-d "${dataDir}deleted"){ mkdir "${dataDir}deleted" or error("500:削除データのバックアップディレクトリの作成に失敗しました。"); }
     if(rename("${dataDir}${fileDir}", "${dataDir}deleted/${user}_${file}")){
        $message .= 'シートを削除しました。<br>';
     }

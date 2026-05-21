@@ -9,7 +9,7 @@ our $LOGIN_ID = check;
 our $mode = $::in{mode};
 $::in{log} ||= $::in{backup};
 
-if($set::user_reqd && !$LOGIN_ID){ error('ログインしていません。'); }
+if($set::user_reqd && !$LOGIN_ID){ error('401:ログインしていません。'); }
 ### type判別 --------------------------------------------------
 my $type = $::in{type};
 
@@ -33,7 +33,7 @@ elsif($mode eq 'convert'){
   elsif($::in{file}){
     my $data; my $buffer; my $i;
     while(my $bytesread = read(param('file'), $buffer, 2048)) {
-      if(!$i && $buffer !~ /^{/){ error '有効なJSONデータではありません。' }
+      if(!$i && $buffer !~ /^{/){ error '400:有効なJSONデータではありません。' }
       $data .= $buffer;
       $i++;
     }
@@ -49,7 +49,7 @@ elsif($mode eq 'convert'){
     $type = $conv_data{type};
   }
   else {
-    error('URLが入力されていない、または、ファイルが選択されていません。');
+    error('400:URLが入力されていない、または、ファイルが選択されていません。');
   }
 }
 
@@ -63,7 +63,7 @@ if(!$LOGIN_ID && $mode =~ /^(?:blanksheet|copy|convert)$/){
   my $num_files = () = readdir($dh);
   $num_files += -2;
   if($num_files >= $max_files){
-    error("現在、サーバーの許容量の都合により、ユーザーアカウントに紐づけされていないシートを新規作成できません。<br>アカウント登録・ログインをしてから作成を行ってください。<br>（現在の非紐付けシート総数: $num_files/$max_files 件）");
+    error("503:現在、サーバーの許容量の都合により、ユーザーアカウントに紐づけされていないシートを新規作成できません。<br>アカウント登録・ログインをしてから作成を行ってください。<br>（現在の非紐付けシート総数: $num_files/$max_files 件）");
   }
   elsif ($num_files >= $max_files - 100){
     $attentionOfCapacity = "<div class='attention left'>　ユーザーアカウントに紐づけされていないシートの数が許容上限近くです。（この画面を開いた時点の件数／上限件数: $num_files／$max_files）<br>　アカウントを作成・ログインしてから新規作成を行うことを推奨します。<br><br>　この新規シートを作成（編集）しているあいだに、（別のユーザーの新規保存によって）シートの件数が増加し上限に達すると、このシートの新規保存ができなくなる（エラーになる）ため、注意してください。<br>（一度新規保存した後は、上限に達していても、同シートの再編集・再保存は可能です）<br></div>";
@@ -96,7 +96,7 @@ sub loadSheetData {
       $pc{$key} = $value if $value ne '';
     }
     close($IN);
-    if($datatype eq 'logs' && !$hit){ error("過去ログ（$::in{log}）が見つかりません。"); }
+    if($datatype eq 'logs' && !$hit){ error("404:過去ログ（$::in{log}）が見つかりません。"); }
     
     if($::in{log}){
       ($pc{protect}, $pc{forbidden}) = getProtectType("${sheetDir}/data.cgi");
@@ -107,7 +107,7 @@ sub loadSheetData {
   elsif($mode eq 'copy'){
     my $datatype = ($::in{log}) ? 'logs' : 'data';
     my $hit = 0;
-    open my $IN, '<', "${sheetDir}/${datatype}.cgi" or error 'データがありません。';
+    open my $IN, '<', "${sheetDir}/${datatype}.cgi" or error '404:データがありません。';
     while (<$IN>){
       if($datatype eq 'logs'){
         if (index($_, "=$::in{log}:") == 0){ $hit = 1; next; }
@@ -119,7 +119,7 @@ sub loadSheetData {
       $pc{$key} = $value;
     }
     close($IN);
-    if($datatype eq 'logs' && !$hit){ error("過去ログ（$::in{log}）が見つかりません。"); }
+    if($datatype eq 'logs' && !$hit){ error("404:過去ログ（$::in{log}）が見つかりません。"); }
     
     if($pc{forbidden}){
       if($::in{log}){
@@ -129,7 +129,7 @@ sub loadSheetData {
         ($pc{protect} eq 'none') || 
         ($author && ($author eq $LOGIN_ID || $set::masterid eq $LOGIN_ID))
       ){
-        error("閲覧・編集権限がありません。");
+        error("403:閲覧・編集権限がありません。");
       }
     }
 
