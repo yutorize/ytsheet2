@@ -84,12 +84,15 @@ sub thinIfLong {
 }
 
 ### テンプレート操作 --------------------------------------------------
-$ENV{HTML_TEMPLATE_ROOT} = $::core_dir;
 my $template;
+my %pageTitleParts;
 sub setupListTemplate {
   my (%args) = @_;
   my $type     = $args{type};
   my $typeName = $args{typeName};
+  my $pageTitle = $args{pageTitle} || $typeName || '';
+  
+  $pageTitleParts{type} = $pageTitle;
 
   $template = HTML::Template->new(
     filename  => $set::skin_tmpl,
@@ -123,6 +126,11 @@ sub setupListTemplate {
 }
 ## 最終アウトプット
 sub printFinalizedList {
+  my @pageTitles;
+  foreach ('group','search','type') {
+    push(@pageTitles, $pageTitleParts{$_}) if exists $pageTitleParts{$_};
+  }
+  $template->param(pageTitle => join(' - ', @pageTitles) . ' - ') if @pageTitles;
   print "Content-Type: text/html; charset=utf-8\n\n";
   print outputTemplate($template);
 }
@@ -130,7 +138,6 @@ sub printFinalizedList {
 my $indexMode;
 sub listQueryInfo {
   my (%args) = @_;
-
   my @queryKeys = @{ $args{queryKeys} };
   my %excludeFromQLinks = %{ $args{excludeFromQLinks} || {} };
   
@@ -163,6 +170,7 @@ sub listQueryInfo {
     }
   }
   if($indexMode) {
+    delete $pageTitleParts{type} if !$::in{type};
     $template->param(modeIndex => 1);
     $template->param(simpleList => 1) if $set::simplelist;
     $template->param(simpleIndex => 1) if $set::simpleindex;
@@ -273,7 +281,6 @@ sub filterTag {
 ## 汎用：部分一致
 sub filterContainsRegex {
   my (%args) = @_;
-
   my $key   = $args{key};
   my $flags = $args{flags} || '';
   my $query = exists $args{query} ? $args{query} : $::in{$key};
@@ -292,7 +299,6 @@ sub filterContainsRegex {
 ## 汎用：完全一致
 sub filterExactRegex {
   my (%args) = @_;
-
   my $key   = $args{key};
   my $flags = $args{flags} || '';
   my $empty = $args{emptyKeyword} || '';
@@ -313,7 +319,6 @@ sub filterExactRegex {
 ## 汎用：I/O
 sub filterFlagRegex {
   my (%args) = @_;
-
   my $key = $args{key};
 
   return @{ $args{lines} } if !exists $::in{$key} || $::in{$key} eq '';
@@ -332,7 +337,6 @@ sub filterFlagRegex {
 ## 汎用：範囲
 sub filterRange {
   my (%args) = @_;
-
   my $key    = $args{key};
   my $minKey = $args{minKey} || "${key}-min";
   my $maxKey = $args{maxKey} || "${key}-max";
@@ -362,7 +366,6 @@ sub filterRange {
 ### ページ切り出し --------------------------------------------------
 sub prepareGroupedPage {
   my (%args) = @_;
-  
   my @lines         = @{ $args{lines} };
   my $selectedGroup = $args{selectedGroup};
   my $hasTagQuery   = $args{hasTagQuery};
@@ -392,7 +395,6 @@ sub prepareGroupedPage {
 
   my $shouldSkip = sub {
     my (%row) = @_;
-
     my $group = $row{group};
     my $extra = $row{extra};
 
@@ -450,7 +452,6 @@ sub makeCharacterGroup {
 ## 汎用
 sub makeGroupedLists {
   my (%args) = @_;
-
   my @groupOrder   = @{ $args{groupOrder} };
   my %groupedLists = %{ $args{groupedLists} };
   my %count        = %{ $args{count} };
@@ -504,7 +505,6 @@ sub groupId {
 ## ページネーション生成
 sub makePager {
   my (%args) = @_;
-
   my $count      = $args{count};
   my $page       = $args{page};
   my $enabled    = $args{enabled};
@@ -539,7 +539,6 @@ sub makePager {
 ### セレクトボックス用配列生成 --------------------------------------------------
 sub makeSelectOptions {
   my (%args) = @_;
-
   my @values   = @{ $args{values} || [] };
   my $selected = $args{selected};
 
@@ -596,6 +595,8 @@ sub setSearchSummary {
     elsif(ref($_) eq 'ARRAY'){ push @array, $_ }
   }
   my @summary;
+  if($::in{mode} eq 'mylist') { push(@summary, 'マイリスト') }
+  if($groups{$::in{group}}{name}){ push(@summary, $groups{$::in{group}}{name}) }
   foreach (
     [ $::in{tag},  'タグ「%s」' ],
     [ $::in{name}, ($args{nameHeader} || '名前').'に「%s」を含む' ],
@@ -616,6 +617,7 @@ sub setSearchSummary {
   if(@summary){
     $template->param(searchSummary => '：'.join('：', @summary));
     $template->param(ogDescript => join ',', @summary);
+    $pageTitleParts{search} = join(' ', @summary);
   }
 }
 
