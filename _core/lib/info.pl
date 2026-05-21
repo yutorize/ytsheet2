@@ -18,8 +18,9 @@ $INDEX->param(LOGIN_ID => $LOGIN_ID);
 $INDEX->param(OAUTH_MODE => $set::oauth_service);
 $INDEX->param(OAUTH_LOGIN_URL => $set::oauth_login_url);
 
-$INDEX->param(header => $main::header);
-$INDEX->param(message => $main::message);
+my $code;
+$INDEX->param(message => $main::message =~ s/^([0-9]{3}):/$code = $1; ''/er);
+$INDEX->param(header => $main::header . ($::statusCode{$code} ? qq|<span class="small"> - $::statusCode{$code}</span>| : ""));
 
 $INDEX->param(title => $set::title);
 $INDEX->param(ver => $main::ver);
@@ -28,7 +29,11 @@ $INDEX->param(gameDir => $set::game);
 $INDEX->param(hide => 1);
 
 ### 出力 #############################################################################################
-print "Content-Type: text/html\n\n";
+if($code){
+  if($::statusCode{$code}){ print "Status: $::statusCode{$code}\n"; }
+  else { print "Status: $code\n"; }
+}
+print "Content-Type: text/html; charset=utf-8\n\n";
 print outputTemplate($INDEX);
 
 1;
