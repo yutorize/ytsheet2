@@ -9,7 +9,17 @@ use File::Copy qw/move/;
 use File::Basename qw/dirname/;
 
 ### サブルーチン #####################################################################################
-
+our %statusCode = (
+  400 => '400 Bad Request',
+  401 => '401 Unauthorized',
+  404 => '404 Not Found',
+  403 => '403 Forbidden',
+  409 => '409 Conflict',
+  429 => '429 Too Many Requests',
+  500 => '500 Internal Server Error',
+  502 => '502 Bad Gateway',
+  503 => '503 Service Unavailable',
+);
 ### 案内画面 --------------------------------------------------
 sub info {
   our $header = shift;
@@ -22,7 +32,13 @@ sub info {
 sub infoJson {
   our $type = shift;
   our $message = shift;
-  $message =~ s/"//g;
+  $message =~ s/"/\\\"/g;
+  my $code;
+  $message =~ s/^([0-9]{3}):/$code = $1; ''/e;
+  if($code){
+    if($statusCode{$code}){ print "Status: $statusCode{$code}\n"; }
+    else { print "Status: $code\n"; }
+  }
   print "Content-type: text/javascript; charset=utf-8\n\n";
   print '{"result":"'.$type.'","message":"'.$message.'"}';
   exit;
@@ -46,10 +62,10 @@ sub printJS {
 sub error {
   our $message = shift;
   if($::in{mode} =~ /^(?:json|make|save)$/){
-    infoJson('error',$message);
+    infoJson('error',$message =~ s/<br>/ /gr);
   }
   else {
-    info('エラー',$message)
+    info('エラー',$message);
   }
 }
 
@@ -97,9 +113,9 @@ sub withLock {
   my ($filePath, $code) = @_;
 
   sysopen my $LOCK, "$filePath.lock", O_RDWR | O_CREAT
-    or error "ロックファイルのオープンに失敗しました: $!";
+    or error "500:ロックファイルのオープンに失敗しました。";
   flock($LOCK, LOCK_EX)
-    or error "ファイルのロックに失敗しました: $!";
+    or error "500:ファイルのロックに失敗しました。";
 
   $code->();
   
@@ -112,16 +128,18 @@ sub overwriteFile {
     my $tmpfile;
     my $WRITE;
     while (1) {
-      $tmpfile = dirname($filePath).'/'.randomId(16);
+      $tmpfile = dirname($filePath)."/tmp_$::in{mode}$::in{type}_".randomId(16);
       last if sysopen $WRITE, $tmpfile, O_WRONLY | O_EXCL | O_CREAT;
     }
     # ファイル読込
     sysopen my $READ, $filePath, O_RDONLY | O_CREAT
-      or error "ファイルのオープンに失敗しました: $!";
+      or error "500:ファイルのオープンに失敗しました。//subroutine".__LINE__;
     # 処理
-    $code->($READ, $WRITE);
+    my $returnValue;
+    $returnValue = $code->($READ, $WRITE); # 戻り値はエラーメッセージ
     close($READ);
     close($WRITE);
+    if($returnValue =~ /^[0-9]{3}:/){ unlink $tmpfile; error($returnValue); }
     # 保存（一時ファイルから上書き差替）
     rename $tmpfile, $filePath;
   });
@@ -131,7 +149,7 @@ sub appendFile {
   withLock($filePath, sub {
     # ファイルオープン
     sysopen my $WRITE, $filePath, O_WRONLY | O_APPEND | O_CREAT
-      or error "ファイルのオープンに失敗しました: $!";
+      or error "500:ファイルのオープンに失敗しました。//subroutine".__LINE__;
     # 処理
     $code->($WRITE);
     close($WRITE);
@@ -223,7 +241,8 @@ sub getProtectType {
   my $file = shift;
   my $protect   = '';
   my $forbidden = '';
-  open (my $IN, '<', $file) or error('キャラクターシートがありません。');
+  my $hide = '';
+  open (my $IN, '<', $file) or error('404:データがありません。');
   while (my $line = <$IN>){
     if   ($line =~ /^protect<>(.*)\n/)  { $protect = $1; }
     elsif($line =~ /^forbidden<>(.*)\n/){ $forbidden = $1; }
@@ -286,7 +305,7 @@ sub createSalt {
 
 ### ログイン --------------------------------------------------
 sub logIn {
-  if($set::oauth_service){ error("$set::oauth_serviceでのログインのみ有効です"); }
+  if($set::oauth_service){ error("$set::oauth_serviceでのログインのみ有効です。"); }
   my $key = getKey($_[0],$_[1]);
   if($key){
     my $flag = 0;
@@ -305,7 +324,7 @@ sub logIn {
     close ($FH);
     print &setCookie($set::cookie,$_[0],$key,'+365d');
   }
-  else { error('ログインできませんでした'); }
+  else { error('ログインできませんでした。'); }
   
   if($set::url_home){ print "Location: $set::url_home\n\n"; }
   else { print "Location: ./\n\n"; }
@@ -445,7 +464,7 @@ sub sendmail {
   $to      =~ s/\r|\n//g;
   $subject =~ s/\r|\n//g;
 
-  open (my $MA, "|$set::sendmail -t") or &error("sendmailの起動に失敗しました。");
+  open (my $MA, "|$set::sendmail -t") or &error("500:sendmailの起動に失敗しました。");
   print $MA "To: $to\n";
   print $MA "From: $from\n";
   print $MA "Subject: $subject\n";
@@ -939,8 +958,8 @@ sub fetchText {
   if ($res->is_success) {
     return $res->decoded_content;
   }
-  else {
-    error '入力されたURLへのアクセスに失敗しました。(STATUS CODE:'.$res->code.')';
+  elsif($::in{url}) {
+    error '400:入力されたURLへのアクセスに失敗しました。URLに誤りがあるか、URL先に問題が発生しています。(STATUS CODE:'.$res->code.')';
   }
 }
 sub fetchJson {
@@ -949,7 +968,12 @@ sub fetchJson {
   $text = utf8::is_utf8($text) ? encode('utf8', (join '', $text)) : $text;
 
   my $data = eval { decode_json($text) };
-  error 'JSONデータが取得できませんでした。' unless $data;
+  if($::in{url}){
+    error '400:JSONデータが取得できませんでした。URLに誤りがあるか、URL先に問題が発生しています。' unless $data;
+  }
+  else {
+    $data = {  } unless $data;
+  }
 
   return %{ $data };
 }
@@ -966,7 +990,7 @@ sub importSheetData {
       return convertHokanjoToYtsheet(\%in);
     }
     else {
-      error "このゲームではキャラクター保管所からのコンバートに対応していません。";
+      error "400:このゲームではキャラクター保管所からのコンバートに対応していません。";
     }
   }
   ## キャラクターシート倉庫
@@ -978,14 +1002,14 @@ sub importSheetData {
       return convertSoukoToYtsheet(\%in);
     }
     else {
-      error "このゲームではキャラクターシート倉庫からのコンバートに対応していません。";
+      error "400:このゲームではキャラクターシート倉庫からのコンバートに対応していません。";
     }
   }
   ## 旧ゆとシート
   {
     foreach my $url (keys %set::convert_url){
       if($setUrl =~ s"^${url}data/(.*?).html"$1"){
-        open my $IN, '<', "$set::convert_url{$url}data/${setUrl}.cgi" or error '旧ゆとシートのデータが開けませんでした。';
+        open my $IN, '<', "$set::convert_url{$url}data/${setUrl}.cgi" or error '500:旧ゆとシートのデータが開けませんでした。';
         my %pc;
         $_ =~ s/^(.+?)<>(.*)\n$/$pc{$1} = $2;/egi while <$IN>;
         close($IN);
@@ -1000,7 +1024,7 @@ sub importSheetData {
     my $id = $1;
     my ($file, $type, $author) = findSheet($id);
     my %pc;
-    open my $IN, '<', "${set::char_dir}${file}/data.cgi" or error 'データが開けませんでした。';
+    open my $IN, '<', "${set::char_dir}${file}/data.cgi" or error '500:データが開けませんでした。';
     while (<$IN>){
       chomp;
       my ($key, $value) = split(/<>/, $_, 2);
@@ -1014,7 +1038,7 @@ sub importSheetData {
       ($pc{protect} eq 'none') || 
       ($author && ($author eq $LOGIN_ID || $set::masterid eq $LOGIN_ID))
     ){
-      error '閲覧・編集に制限がかかっており、コンバートできないデータです。';
+      error '403:閲覧・編集に制限がかかっており、コンバートできないデータです。';
     }
     $pc{imageURL} = $self."?id=$id&mode=image&cache=$pc{imageUpdate}";
     $pc{convertSource} = '同じゆとシートⅡ';
@@ -1031,11 +1055,11 @@ sub importSheetData {
       return %pc;
     }
     elsif($pc{result}) {
-      error "コンバート元のゆとシートⅡでエラーがありました。<br>> $pc{result}:$pc{message}";
+      error "400:コンバート元のゆとシートⅡでエラーがありました。<br>> $pc{result}:$pc{message}";
     }
   }
   
-  error '有効なデータが取得できませんでした';
+  error '400:有効なデータが取得できませんでした。';
 }
 
 ### HTMLテンプレート出力 --------------------------------------------------

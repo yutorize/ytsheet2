@@ -32,7 +32,8 @@ $set::simplelist = 0; # 魔法は簡易表示なし
 $set::simpleindex = 0; # 魔法は簡易インデックスなし
 my $INDEX = setupListTemplate(
   type     => 'a',
-  typeName => '魔法',
+  typeName => '魔法など',
+  pageTitle => '魔法/神格/流派/特殊能力',
 );
 my ($indexMode, $qLinks) = listQueryInfo(
   queryKeys => \@queryKeys,
@@ -158,6 +159,7 @@ $INDEX->param(Lists => [ makeGroupedLists(
 ## 検索サマリー --------------------------------------------------
 setSearchSummary(
   { nameHeader => '名称' },
+  [ $categories{$::in{category}}, '大分類「%s」' ],
   [ $::in{sub}, '小分類「%s」' ],
 );
 
