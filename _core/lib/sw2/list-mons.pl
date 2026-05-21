@@ -38,6 +38,7 @@ setFields({
 my $INDEX = setupListTemplate(
   type     => 'm',
   typeName => '魔物',
+  pageTitle => '魔物/騎獣',
 );
 my ($indexMode, $qLinks) = listQueryInfo(
   queryKeys => \@queryKeys,
@@ -237,7 +238,7 @@ sub monsTaxaText {
 ## 検索サマリー --------------------------------------------------
 setSearchSummary(
   { nameHeader => '名称' },
-  [ $::in{taxa},   '分類「%s」' ],
+  [ ($::in{mount} ? join('／', grep { $_ } "騎獣",$::in{taxa}) : $selectedTaxaGroup), '分類「%s」' ],
   [ $::in{lv},     'レベル「%s」' ],
   [ $::in{parts},  '部位数「%s」' ],
   [ $::in{intellect},   '知能「%s」' ],
