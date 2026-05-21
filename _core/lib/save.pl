@@ -33,21 +33,21 @@ our $new_id;
 
 ## パスワードチェック
 if($::in{protect} eq 'password'){
-  if ($pass eq ''){ error('パスワードが入力されていません。'); }
+  if ($pass eq ''){ error('400:パスワードが入力されていません。'); }
   else {
-    if ($pass =~ /[^0-9A-Za-z\.\-\/]/) { error('パスワードに使える文字は、半角の英数字とピリオド、ハイフン、スラッシュだけです。'); }
+    if ($pass =~ /[^0-9A-Za-z\.\-\/]/) { error('400:パスワードに使える文字は、半角の英数字とピリオド、ハイフン、スラッシュだけです。'); }
   }
 }
 ## 新規作成時処理
 if ($mode eq 'make'){
   ##ログインチェック
   if($set::user_reqd && !$LOGIN_ID) {
-    error('ログインしていません。');
+    error('401:ログインしていません。');
   }
   
   ## 登録キーチェック
   if(!$set::user_reqd && $set::registerkey && $set::registerkey ne $::in{registerkey}){
-    error('登録キーが一致しません。');
+    error('400:登録キーが一致しません。');
   }
   
   open (my $FH, '<', $set::passfile);
@@ -88,7 +88,7 @@ if($mode eq 'make'){
 }
 elsif($mode eq 'save'){
   $file = (authSheet $pc{id},$pc{pass},$LOGIN_ID)[0];
-  if(!$file){ error('編集権限がありません。'); }
+  if(!$file){ error('404:シートが存在しないか、編集権限がありません。'); }
 }
 
 our $newline;
@@ -101,7 +101,7 @@ if($mode eq 'make' && $pc{protect} ne 'account'){
   opendir my $dh, "${data_dir}anonymous/";
   my $num_files = () = readdir($dh);
   if($num_files-2 >= $max_files){
-    error('現在、サーバーの許容量の都合により、ユーザーアカウントに紐づけされていないシートを新規作成できません。\nアカウント登録・ログインをし、編集保護設定で「アカウントに紐付ける」を選択して保存してください。\nすでにログイン中であっても、「アカウントに紐づける」設定での保存しかできません。');
+    error('503:現在、サーバーの許容量の都合により、ユーザーアカウントに紐づけされていないシートを新規作成できません。\nアカウント登録・ログインをし、編集保護設定で「アカウントに紐付ける」を選択して保存してください。\nすでにログイン中であっても、「アカウントに紐づける」設定での保存しかできません。');
     require $set::lib_edit; exit;
   }
 }
@@ -109,7 +109,7 @@ if($mode eq 'save' && $pc{protect} ne 'account' && $pc{protectOld} eq 'account')
   opendir my $dh, "${data_dir}anonymous/";
   my $num_files = () = readdir($dh);
   if($num_files-2 >= $max_files){
-    error('現在、サーバーの許容量の都合により、ユーザーアカウントに紐づけされていないシートを新規作成できません。\nアカウントに紐づけないデータをこれ以上増やせないため、紐づけ済みのシートの保護設定を変更できません。');
+    error('503:現在、サーバーの許容量の都合により、ユーザーアカウントに紐づけされていないシートを新規作成できません。\nアカウントに紐づけないデータをこれ以上増やせないため、紐づけ済みのシートの保護設定を変更できません。');
   }
 }
 
@@ -169,7 +169,7 @@ if($::in{imageCompressed} || $::in{imageFile}){
 if ($mode eq 'make'){
   my $_token = $::in{_token};
   if(!checkToken($_token)){
-    error('セッションの有効期限が切れたか、二重投稿です。一覧やマイリストを確認してください。');
+    error('400:セッションの有効期限が切れたか、二重投稿です。一覧やマイリストを確認してください。');
   }
 }
 ### 個別データ保存 --------------------------------------------------
@@ -179,8 +179,8 @@ delete $pc{_token};
 delete $pc{registerkey};
 $pc{IP} = $ENV{'REMOTE_ADDR'};
 ### passfile --------------------------------------------------
-if (!-d $set::data_dir){ mkdir $set::data_dir or error("データディレクトリ($set::data_dir)の作成に失敗しました。"); }
-if (!-d $data_dir){ mkdir $data_dir or error("データディレクトリ($data_dir)の作成に失敗しました。"); }
+if (!-d $set::data_dir){ mkdir $set::data_dir or error("500:データディレクトリ($set::data_dir)の作成に失敗しました。"); }
+if (!-d $data_dir){ mkdir $data_dir or error("500:データディレクトリ($data_dir)の作成に失敗しました。"); }
 my $user_dir;
 ## 新規
 if($mode eq 'make'){
@@ -242,14 +242,14 @@ sub dataSave {
   my $user_dir = shift;
 
   if (!-d "${dir}${user_dir}"){
-    mkdir "${dir}${user_dir}" or error("データディレクトリの作成に失敗しました。");
+    mkdir "${dir}${user_dir}" or error("500:データディレクトリの作成に失敗しました。");
   }
   if (!-d "${dir}${user_dir}${file}"){
     if($mode eq 'save' && -d "${dir}${file}"){ #v1.14/v1.20のコンバート処理
-      move("${dir}${file}", "${dir}${user_dir}${file}") or error("データディレクトリの移動に失敗しました。");
+      move("${dir}${file}", "${dir}${user_dir}${file}") or error("500:データディレクトリの移動に失敗しました。");
     }
     else {
-      mkdir "${dir}${user_dir}${file}" or error("データファイルの作成に失敗しました。");
+      mkdir "${dir}${user_dir}${file}" or error("500:データファイルの作成に失敗しました。");
     }
   }
   $dir .= $user_dir;
@@ -386,7 +386,7 @@ sub appendPassFile {
       foreach (<$READ>){
         if ($_ =~ /^(?:[^<]*<>){2}$now</){
           close($READ);
-          error('新規作成が衝突しました。再度保存してください。');
+          error('409:新規作成が衝突しました。再度保存してください。');
         }
       }
       close($READ);
@@ -441,8 +441,8 @@ sub updatePassFile {
     $old_dir ||= 'anonymous/';
     $new_dir ||= 'anonymous/';
     if($move){
-      if(!-d "${dir}${new_dir}"){ mkdir "${dir}${new_dir}" or return("データディレクトリの作成に失敗しました。//save".__LINE__); }
-      move("${data_dir}${old_dir}${sheet}", "${data_dir}${new_dir}${sheet}") or return("データディレクトリの移動に失敗しました。（${old_dir}⇒${new_dir}）//save".__LINE__);
+      if(!-d "${dir}${new_dir}"){ mkdir "${dir}${new_dir}" or return("500:データディレクトリの作成に失敗しました。//save".__LINE__); }
+      move("${data_dir}${old_dir}${sheet}", "${data_dir}${new_dir}${sheet}") or return("500:データディレクトリの移動に失敗しました。（${old_dir}⇒${new_dir}）//save".__LINE__);
       $user_dir = $new_dir;
     }
     else {

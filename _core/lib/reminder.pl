@@ -6,7 +6,7 @@ use open ":utf8";
 
 
 if($::in{mail}){
-  open (my $READ, '<', $set::userfile) or error('ユーザー一覧のオープンに失敗しました。//reminder'.__LINE__);
+  open (my $READ, '<', $set::userfile) or error('500:ユーザー一覧のオープンに失敗しました。//reminder'.__LINE__);
   my @list = <$READ>;
   close($READ);
 
@@ -29,7 +29,7 @@ elsif($::in{id}){
   print $WRITE $::in{id}.'-'.$token."<>".(time + 60*60*1)."<>\n";
   close($WRITE);
 
-  open (my $READ, '<', $set::userfile) or error('ユーザー一覧のオープンに失敗しました。//reminder'.__LINE__);
+  open (my $READ, '<', $set::userfile) or error('500:ユーザー一覧のオープンに失敗しました。//reminder'.__LINE__);
   my @list = <$READ>;
   close($READ);
 

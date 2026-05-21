@@ -89,7 +89,7 @@ overwriteFile($set::makelist, sub {
         $in{name} eq $name &&
         $in{race} eq $race
       ){
-        return $set::making_interval.'秒以内の連続投稿は禁止されています。';
+        return '429:'.$set::making_interval.'秒以内の連続投稿は禁止されています。';
       }
     }
   }
