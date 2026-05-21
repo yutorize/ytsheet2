@@ -26,7 +26,7 @@ if($id){
 
   my $datatype = ($::in{log}) ? 'logs' : 'data';
   my $hit = 0;
-  open my $IN, '<', "${dir}${file}/${datatype}.cgi" or error('データがありません');
+  open my $IN, '<', "${dir}${file}/${datatype}.cgi" or error('404:データがありません');
   while (<$IN>){
     if($datatype eq 'logs'){
       if (index($_, "=") == 0){
@@ -40,7 +40,7 @@ if($id){
     $pc{$key} = $value;
   }
   close($IN);
-  if($datatype eq 'logs' && !$hit){ error("過去ログ（$::in{log}）が見つかりません。"); }
+  if($datatype eq 'logs' && !$hit){ error("404:過去ログ（$::in{log}）が見つかりません。"); }
   
   if($pc{forbidden}){
     my $LOGIN_ID = check;
@@ -51,7 +51,7 @@ if($id){
       ($pc{protect} eq 'none') || 
       ($author && ($author eq $LOGIN_ID || $set::masterid eq $LOGIN_ID))
     ){
-      error("閲覧権限がありません。");
+      error("403:閲覧権限がありません。");
     }
   }
   
@@ -86,9 +86,9 @@ if($pc{ver} ne '') {
 }
 else {
   if($log eq "") {
-    $pc{result} = "リクエストされたシートは見つかりませんでした。(id: ${id})";
+    error "404:リクエストされたシートは見つかりませんでした。(id: ${id})";
   } else {
-    $pc{result} = "リクエストされたシートは見つかりませんでした。(id: ${id}, log: ${log})";
+    error "404:リクエストされたシートは見つかりませんでした。(id: ${id}, log: ${log})";
   }
 }
 
