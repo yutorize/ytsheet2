@@ -141,6 +141,11 @@ sub listQueryInfo {
   my @queryKeys = @{ $args{queryKeys} };
   my %excludeFromQLinks = %{ $args{excludeFromQLinks} || {} };
   
+  my @canonicalQueries;
+  foreach ('type','tag') {
+    push(@canonicalQueries, "$_=$::in{$_}") if $::in{$_};
+  }
+
   my @qLinks;
   foreach my $key (@queryKeys) {
     $::in{$key} = trim($::in{$key});
@@ -149,9 +154,18 @@ sub listQueryInfo {
     $::in{$key} = escapeThanSign($::in{$key});
     $template->param(kebabToCamel($key) => $::in{$key});
 
-    next if exists $excludeFromQLinks{$key};
-    push(@qLinks, $key.'='.uri_escape_utf8($::in{$key}));
+    if (exists $excludeFromQLinks{$key}){
+      push(@canonicalQueries, $key.'='.uri_escape_utf8($::in{$key}));
+    }
+    else {
+      push(@qLinks, $key.'='.uri_escape_utf8($::in{$key}));
+    }
   }
+  
+  $template->param(canonicalURL =>
+    url(-full => 1, -query => 0)
+    . (@canonicalQueries ? '?'.join('&', @canonicalQueries) : '')
+  );
   
   my $qLinks = @qLinks ? '&'.join('&', @qLinks) : '';
   $template->param(qLinks => $qLinks);
