@@ -25,6 +25,7 @@ $INDEX->param(mode => '');
 $INDEX->param(modeList => 0);
 $INDEX->param(modeMaking => 1) if $::in{mode} eq 'making';
 $INDEX->param(mylistURL => './?mode=making&mylist=1');
+$INDEX->param(canonicalURL => url(-full => 1, -query => 0) . "?mode=making");
 
 $INDEX->param(name => (getPlayerName($::LOGIN_ID))[0]);
 
