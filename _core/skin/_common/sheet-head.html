@@ -2,6 +2,7 @@
   <title><TMPL_VAR titleName> - <TMPL_VAR title></title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <TMPL_UNLESS modeDownload>
+    <link rel="canonical" href="<TMPL_VAR canonicalURL>">
     <meta property="og:title" content="<TMPL_VAR titleName> - <TMPL_VAR title>">
     <meta property="og:type" content="article">
     <meta property="og:url" content="<TMPL_VAR ogUrl>">

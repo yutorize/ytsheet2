@@ -393,6 +393,7 @@ sub setupViewTemplate {
 
   $template->param(logId => $::in{log});
 
+  $template->param(canonicalURL => url(-full => 1, -query => 0) . "?id=$::in{id}");
 
   $template->param(LOGIN_ID => $LOGIN_ID);
 
