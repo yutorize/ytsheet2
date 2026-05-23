@@ -10,100 +10,38 @@ require $set::data_races;
 require $set::data_items;
 
 ### テンプレート読み込み #############################################################################
-my $SHEET;
-$SHEET = HTML::Template->new( filename => $set::skin_sheet, utf8 => 1,
-  path => ['./', $::core_dir."/skin/sw2", $::core_dir."/skin/_common", $::core_dir],
-  search_path_on_include => 1,
-  die_on_bad_params => 0, die_on_missing_include => 0, case_sensitive => 1, global_vars => 1);
+(my $pcRef, my $SHEET) = setupViewBase(
+  generateType => 'SwordWorld2Enemy',
+  unescapeLinesKeys => [qw/effects description/],
+  nameKeys => [qw/itemName/],
+  updateSub => \&data_update_item,
+);
+our %pc = %{ $pcRef };
 
-### アイテムデータ読み込み ###########################################################################
-our %pc = loadSheetData();
-
-### タグ置換前処理 ###################################################################################
-### 閲覧禁止データ --------------------------------------------------
-if($pc{forbidden} && !$pc{yourAuthor}){
-  my $author = $pc{author};
-  my $protect   = $pc{protect};
-  my $forbidden = $pc{forbidden};
-  my $convertSource = $pc{convertSource};
-  
-  if($forbidden eq 'all'){
-    %pc = ();
-  }
-  if($forbidden ne 'battle'){
-    $pc{itemName}   = noiseText(6,14);
-    $pc{tags} = '';
+### 固有処理 #########################################################################################
+### 閲覧禁止データのマスク --------------------------------------------------
+sub maskPcData {
+  my ($pc, $forbidden) = @_;
+  unless($forbidden eq 'battle'){
+    $pc->{itemName}   = noiseText(6,14);
+    $pc->{tags} = '';
   }
   
-  $pc{price}      = noiseText(1,8);
-  $pc{reputation} = noiseText(2,3);
-  $pc{shape}      = noiseText(8,20);
-  $pc{category}   = noiseText(2,8);
-  $pc{age}        = noiseText(2,6);
-  $pc{summary}    = noiseText(8,28);
+  $pc->{price}      = noiseText(1,8);
+  $pc->{reputation} = noiseText(2,3);
+  $pc->{shape}      = noiseText(8,20);
+  $pc->{category}   = noiseText(2,8);
+  $pc->{age}        = noiseText(2,6);
+  $pc->{summary}    = noiseText(8,28);
   
-  $pc{effects} = '';
+  $pc->{effects} = '';
   foreach(1..int(rand 4)+1){
-    $pc{effects} .= noiseText(6,18)."\n";
-    $pc{effects} .= '　'.noiseText(18,40)."\n";
-    $pc{effects} .= '　'.noiseText(18,40)."\n" if(int rand 2);
-    $pc{effects} .= "\n";
+    $pc->{effects} .= noiseText(6,18)."<br>";
+    $pc->{effects} .= '　'.noiseText(18,40)."<br>";
+    $pc->{effects} .= '　'.noiseText(18,40)."<br>" if(int rand 2);
+    $pc->{effects} .= "<br>";
   }
-  
-  $pc{author} = $author;
-  $pc{protect} = $protect;
-  $pc{forbidden} = $forbidden;
-  $pc{convertSource} = $convertSource;
-  $pc{forbiddenMode} = 1;
 }
-
-### その他 --------------------------------------------------
-$SHEET->param(rawName => $pc{itemName});
-
-### タグ置換 #########################################################################################
-foreach (keys %pc) {
-  next if($_ eq 'tags');
-  if($_ =~ /^(?:effects|description)$/){
-    $pc{$_} = unescapeTagsLines($pc{$_});
-  }
-  $pc{$_} = unescapeTags($pc{$_});
-}
-$pc{effects} =~ s/<br>/\n/gi;
-$pc{effects} =~ s#(<p>|</p>|</details>)#$1\n#gi;
-$pc{effects} =~ s/^●(.*?)$/<\/p><h3>●$1<\/h3><p>/gim;
-$pc{effects} = checkSkillName($pc{effects});
-$pc{effects} =~ s/^((?:<i class="s-icon [a-z0]+?">.+?<\/i>)+.*?)(　|$)/<\/p><h5>$1<\/h5><p>$2/gim;
-$pc{effects} =~ s/\n+<\/p>/<\/p>/gi;
-$pc{effects} =~ s/(^|<p(?:.*?)>|<hr(?:.*?)>)\n/$1/gi;
-$pc{effects} = "<p>$pc{effects}</p>";
-$pc{effects} =~ s#(</p>|</details>)\n#$1#gi;
-$pc{effects} =~ s/<p><\/p>//gi;
-$pc{effects} =~ s#<h2>(.+?)</h2>#</dd><dt>$1</dt><dd class="box">#gi;
-$pc{effects} =~ s/\n/<br>/gi;
-
-### アップデート --------------------------------------------------
-if($pc{ver}){
-  %pc = data_update_item(\%pc);
-}
-
-### カラー設定 --------------------------------------------------
-setColors();
-
-### 出力準備 #########################################################################################
-### データ全体 --------------------------------------------------
-while (my ($key, $value) = each(%pc)){
-  $SHEET->param("$key" => $value);
-}
-### ID / URL--------------------------------------------------
-$SHEET->param(id => $::in{id});
-
-if($::in{url}){
-  $SHEET->param(convertMode => 1);
-  $SHEET->param(convertUrl => $::in{url});
-}
-
-### アイテム名 --------------------------------------------------
-$SHEET->param(itemName => stylizeCharacterName $pc{itemName});
 
 ### 価格 --------------------------------------------------
 $SHEET->param(price => commify $pc{price}) if $pc{price} =~ /\d{4,}/;
@@ -154,91 +92,28 @@ foreach (1 .. $pc{armourNum}){
 }
 $SHEET->param(ArmourData => \@armours) if !$pc{forbiddenMode};
 
-### タグ --------------------------------------------------
-my @tags;
-foreach(split(/ /, $pc{tags})){
-    push(@tags, {
-      URL  => uri_escape_utf8($_),
-      TEXT => $_,
-    });
-}
-$SHEET->param(Tags => \@tags);
-
-
-### バックアップ --------------------------------------------------
-my $selectedLogName;
-if($::in{id}){
-  ($selectedLogName, my $list) = getLogList($set::char_dir, $main::file);
-  $SHEET->param(LogList => $list);
-  $SHEET->param(selectedLogName => $selectedLogName);
-  if($pc{yourAuthor} || $pc{protect} eq 'password'){
-    $SHEET->param(viewLogNaming => 1);
-  }
-}
-
-### タイトル --------------------------------------------------
-$SHEET->param(title => $set::title);
-if($pc{forbidden} eq 'all' && $pc{forbiddenMode}){
-  $SHEET->param(titleName => '非公開データ');
-}
-else {
-  $SHEET->param(titleName =>
-    (removeTags removeRuby $pc{itemName}) .
-    ($::in{log} ? " 【".($selectedLogName||$pc{updateTime})."】" : '')
-  );
-  $SHEET->param(encodedNameLetter => uri_escape_utf8 removeTags $pc{itemName});
-}
+### 効果 --------------------------------------------------
+$pc{effects} =~ s/<br>/\n/gi;
+$pc{effects} =~ s#(<p>|</p>|</details>)#$1\n#gi;
+$pc{effects} =~ s/^●(.*?)$/<\/p><h3>●$1<\/h3><p>/gim;
+$pc{effects} = checkSkillName($pc{effects});
+$pc{effects} =~ s/^((?:<i class="s-icon [a-z0]+?">.+?<\/i>)+.*?)(　|$)/<\/p><h5>$1<\/h5><p>$2/gim;
+$pc{effects} =~ s/\n+<\/p>/<\/p>/gi;
+$pc{effects} =~ s/(^|<p(?:.*?)>|<hr(?:.*?)>)\n/$1/gi;
+$pc{effects} = "<p>$pc{effects}</p>";
+$pc{effects} =~ s#(</p>|</details>)\n#$1#gi;
+$pc{effects} =~ s/<p><\/p>//gi;
+$pc{effects} =~ s#<h2>(.+?)</h2>#</dd><dt>$1</dt><dd class="box">#gi;
+$pc{effects} =~ s/\n/<br>/gi;
+$SHEET->param(effects => $pc{effects});
 
 ### OGP --------------------------------------------------
-$SHEET->param(ogUrl => url().($::in{url} ? "?url=$::in{url}" : "?id=$::in{id}"));
-#if($pc{image}) { $SHEET->param(ogImg => url()."/".$imgsrc); }
 $SHEET->param(ogDescript => removeTags "カテゴリ:$pc{category}　形状:$pc{shape}　製作時期:$pc{age}　概要:$pc{summary}");
 
-### バージョン等 --------------------------------------------------
-$SHEET->param(ver => $::ver);
-$SHEET->param(coreDir => $::core_dir);
-$SHEET->param(gameDir => 'sw2');
-$SHEET->param(sheetType => 'item');
-
 ### メニュー --------------------------------------------------
-my @menu = ();
-if(!$pc{modeDownload}){
-  push(@menu, { TEXT => '⏎', TYPE => "href", VALUE => './?type=i', });
-  if($::in{url}){
-    push(@menu, { TEXT => 'コンバート', TYPE => "href", VALUE => "./?mode=convert&url=$::in{url}" });
-  }
-  else {
-    if($pc{logId}){
-      if(!$pc{forbiddenMode}){
-        push(@menu, { TEXT => '出力'    , TYPE => "onclick", VALUE => "downloadListOn()",  });
-      }
-      push(@menu, { TEXT => '過去ログ', TYPE => "onclick", VALUE => 'loglistOn()', });
-      if($pc{reqdPassword}){ push(@menu, { TEXT => '復元', TYPE => "onclick", VALUE => "editOn()", }); }
-      else                   { push(@menu, { TEXT => '復元', TYPE => "href"   , VALUE => "./?mode=edit&id=$::in{id}&log=$pc{logId}", }); }
-    }
-    else {
-      if(!$pc{forbiddenMode}){
-        push(@menu, { TEXT => '出力'    , TYPE => "onclick", VALUE => "downloadListOn()",  });
-        push(@menu, { TEXT => '過去ログ', TYPE => "onclick", VALUE => "loglistOn()",      });
-      }
-      if($pc{reqdPassword}){ push(@menu, { TEXT => '編集', TYPE => "onclick", VALUE => "editOn()", }); }
-      else                   { push(@menu, { TEXT => '編集', TYPE => "href"   , VALUE => "./?mode=edit&id=$::in{id}", }); }
-    }
-  }
-}
-$SHEET->param(Menu => createSheetMenu @menu);
-
-### エラー --------------------------------------------------
-$SHEET->param(error => $main::login_error);
+setSheetMenu();
 
 ### 出力 #############################################################################################
-print "Content-Type: text/html\n\n";
-if($pc{modeDownload}){
-  if($pc{forbidden} && $pc{yourAuthor}){ $SHEET->param(forbidden => ''); }
-  print downloadModeSheetConvert outputTemplate($SHEET);
-}
-else {
-  print outputTemplate($SHEET);
-}
+printFinalizedView();
 
 1;
