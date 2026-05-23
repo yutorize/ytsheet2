@@ -28,6 +28,239 @@ changeFileByType($type);
 ### 各システム別処理 --------------------------------------------------
 require $set::lib_view_char;
 
+### ベース処理 --------------------------------------------------
+our $selectedLogName;
+sub setupViewBase {
+  my (%ARGS) = @_;
+
+  my %pc = loadSheetData();
+  my $SHEET = setupViewTemplate(
+    generateType      => $ARGS{generateType},
+    defaultPieceImage => $ARGS{defaultPieceImage},
+  );
+  ## データアップデート
+  if($pc{ver} && $ARGS{updateSub} && ref $ARGS{updateSub} eq 'CODE'){
+    %pc = $ARGS{updateSub}->(\%pc);
+  }
+  ## データマスク
+  if($pc{forbidden} && !$pc{yourAuthor}){
+    my @keepKeys = ('playerName','author','protect','forbidden','convertSource');
+    push(@keepKeys, @{ $ARGS{maskSkipKeys} }) if $ARGS{maskSkipKeys};
+    my %keep;
+    $keep{$_} = $pc{$_} foreach(@keepKeys);
+    if($keep{forbidden} eq 'all'){ %pc = (); }
+    maskPcData(\%pc, $keep{forbidden});
+    $pc{$_} = $keep{$_} foreach(@keepKeys);
+    $pc{forbiddenMode} = 1;
+  }
+  ## 名前処理
+  if(my $callback = $ARGS{nameSub}){
+    $callback->(\%pc);
+  }
+  elsif($ARGS{nameKeys}){
+    foreach my $key (@{ $ARGS{nameKeys} }){
+      if(defined $pc{$key} && $pc{$key} ne ''){
+        $pc{encodedNameLetter} .= $pc{$key}.$pc{"${key}Ruby"};
+        $pc{titleName} = $pc{$key} if !$pc{titleName};
+      }
+    }
+  }
+  else {
+    $pc{titleName} = $pc{characterName} || ($pc{aka} ? qq|“$pc{aka}”| : '');
+    $pc{encodedNameLetter} = "$pc{characterName}$pc{characterNameRuby}";
+    $pc{encodedNameLetter} .= qq|“$pc{aka}$pc{akaRuby}”| if $pc{aka};
+  }
+  # ゆとシ内リンクタグ用
+  $SHEET->param(rawName => $pc{titleName});
+  # タイトルバー
+  if($pc{forbidden} eq 'all' && $pc{forbiddenMode}){
+    $SHEET->param(titleName => '非公開データ');
+  }
+  else {
+    $SHEET->param(titleName =>
+      (removeTags removeRuby unescapeTags $pc{titleName})
+      . ($::in{log} ? " 【". ($selectedLogName || $pc{updateTime}) ."】" : '')
+    );
+  }
+  delete $pc{titleName};
+  # フォント変更対象文字列
+  {
+    my $letters = removeTags unescapeTags $pc{encodedNameLetter};
+    my %seen;
+    $letters =~ s/(.)/$seen{$1}++ ? '' : $1/ge; #重複文字削除
+    $SHEET->param(encodedNameLetter => uri_escape_utf8 $letters);
+  }
+  delete $pc{encodedNameLetter};
+
+  ## タグ置換前にやっておきたいその他の処理
+  if(my $callback = $ARGS{beforeUnescape}){
+    $callback->(\%pc, $SHEET, \%ARGS);
+  }
+  ## タグ置換
+  if($pc{ver}){
+    normalizeViewTags(\%pc,
+      skipKeys      => $ARGS{unescapeSkipKeys},
+      skipRe        => $ARGS{unescapeSkipRe},
+      multilineKeys => $ARGS{unescapeLinesKeys},
+      multilineRe   => $ARGS{unescapeLinesRe},
+      forbiddenMode => $ARGS{forbiddenNoise},
+    );
+  }
+  elsif(my $conv = $ARGS{convertViewMap}){ #ゆとシ以外からのコンバート
+    foreach my $key (@{$conv}){
+      my $in = $key.'View';
+      $pc{$key} = $pc{$in} if defined $pc{$in} && $pc{$in} ne '';
+    }
+  }
+
+  ## シートカラー
+  setColors(\%pc, '');
+  ## フォント
+  setFont(\%pc, '');
+
+  ## %pc => $SHEET
+  while (my ($key, $value) = each(%pc)){
+    $SHEET->param($key => $value);
+  }
+
+  ## ID / URL
+  $SHEET->param(id => $::in{id});
+  if($::in{url}){
+    $SHEET->param(convertMode => 1);
+    $SHEET->param(convertUrl => $::in{url});
+  }
+  $SHEET->param(ogUrl => url().($::in{url} ? "?url=$::in{url}" : "?id=$::in{id}"));
+  ## タグ
+  {
+    my @tags;
+    push(@tags, { URL => uri_escape_utf8($_), TEXT => $_ }) foreach(split(/ /, $pc{tags}));
+    $SHEET->param(Tags => \@tags);
+  }
+  ## 名前出力
+  unless($pc{forbidden} eq 'all' && $pc{forbiddenMode}){
+    foreach my $key (@{ $ARGS{nameKeys} || [qw/characterName aka/] }){
+      $SHEET->param($key => renderCharacterName( $pc{$key},$pc{"${key}Ruby"} ));
+    }
+  }
+  ## プレイヤー名 
+  if($set::playerlist && $set::id_type){
+    my $plId = (split(/-/, $::in{id}))[0];
+    $SHEET->param(playerName => qq|<a href="$set::playerlist?id=$plId">$pc{playerName}</a>|);
+  }
+  ## グループ
+  if($::in{url}){
+    $SHEET->param(group => '');
+  }
+  else {
+    if(!$pc{group}) {
+      $pc{group} = $set::group_default;
+      $SHEET->param(group => $set::group_default);
+    }
+    foreach (@set::groups){
+      if($pc{group} eq @$_[0]){
+        $SHEET->param(groupName => @$_[2]);
+        last;
+      }
+    }
+  }
+  ## セリフ
+  if($pc{words}){
+    my ($words, $x, $y) = renderWords($pc{words},$pc{wordsX},$pc{wordsY});
+    $SHEET->param(words => $words);
+    $SHEET->param(wordsX => $x);
+    $SHEET->param(wordsY => $y);
+  }
+
+  ## バックアップ
+  if($::in{id}){
+    ($selectedLogName, my $list) = getLogList($set::char_dir, $main::file);
+    $SHEET->param(LogList => $list);
+    $SHEET->param(selectedLogName => $selectedLogName);
+    if($pc{yourAuthor} || $pc{protect} eq 'password'){
+      $SHEET->param(viewLogNaming => 1);
+    }
+  }
+  ## robots
+  if($pc{hide} || $main::login_error || ($::in{log} && !$selectedLogName)){
+    $SHEET->param(noindex => 1);
+  }
+  
+  ## パートナーの名前
+  foreach my $num (1 .. $ARGS{partnerMax}){
+    next unless $pc{"partner${num}Name"};
+    $SHEET->param("partner${num}Name" => renderCharacterName( $pc{"partner${num}Name"},$pc{"partner${num}NameRuby"} ));
+    $SHEET->param("p${num}_encodedNameLetter" => uri_escape_utf8 removeTags $pc{"partner${num}Name"}.$pc{"partner${num}NameRuby"});
+  }
+
+  return \%pc, $SHEET;
+}
+sub normalizeViewTags {
+  my ($pc, %OPT) = @_;
+  my %skip      = map { $_ => 1 } @{ $OPT{skipKeys}      // [] };
+  my %multiline = map { $_ => 1 } @{ $OPT{multilineKeys} // [] };
+  $skip{tags} = 1; # タグは置換しない
+
+  foreach my $key (keys %{$pc}) {
+    next if $skip{$key};
+    next if ($OPT{skipRe} && $key =~ $OPT{skipRe});
+    next if $key =~ /URL$/i; # URLは置換しない
+    next if $key =~ /^image/; # 画像関連は置換しない
+
+    if($multiline{$key} || ($OPT{multilineRe} && $key =~ $OPT{multilineRe})){
+      $pc->{$key} = unescapeTagsLines($pc->{$key});
+      $pc->{$key} =~ s{^(?:</p>)?<h2>(.*?)</h2>}{$pc->{"head_$key"} = $1; ''}e;
+    }
+    $pc->{$key} = unescapeTags($pc->{$key});
+
+    if($OPT{forbiddenMode} && $pc->{forbiddenMode}){
+      $pc->{$key} = noiseTextTag $pc->{$key};
+    }
+  }
+}
+### パートナーデータ共通処理 --------------------------------------------
+sub setupPartnerDataCommon {
+  my ($pc, %OPT) = @_;
+  require $set::lib_convert if !$::in{url};
+  return if $::in{log};
+
+  foreach my $num (1 .. $OPT{max}){
+    my $urlKey  = "partner${num}Url";
+    my $autoKey = "partner${num}Auto";
+    next if !$pc->{$urlKey} || !$pc->{$autoKey};
+    my %pr = loadPartnerData($pc->{$urlKey});
+    next if !$pr{convertSource};
+
+    if($pr{ver} && $OPT{updateSub} && ref $OPT{updateSub} eq 'CODE'){
+      %pr = $OPT{updateSub}->(\%pr);
+    }
+    $pc->{"p${num}_".$_} = $pr{$_} foreach keys %pr;
+
+    if($OPT{onPartner} && ref $OPT{onPartner} eq 'CODE'){
+      $OPT{onPartner}->($pc, \%pr, $num);
+    }
+    if($pr{forbidden} && $OPT{onForbidden} && ref $OPT{onForbidden} eq 'CODE'){
+      $OPT{onForbidden}->($pc, \%pr, $num);
+    }
+  }
+  foreach my $num (1 .. $OPT{max}){
+    next if !$pc->{"p${num}_imageURL"};
+    $pc->{"p${num}_imageSrc"} = $pc->{"p${num}_imageURL"};
+    $pc->{images} .= "'p${num}': \"".($pc->{modeDownload} ? urlToBase64($pc->{"p${num}_imagePath"}) : $pc->{"p${num}_imageURL"})."\", ";
+    if($pc->{"p${num}_imageFit"} eq 'percentY'){
+      $pc->{"p${num}_imageFit"} = 'auto '.$pc->{"p${num}_imagePercent"}.'%';
+    }
+    elsif($pc->{"p${num}_imageFit"} =~ /^percentX?$/){
+      $pc->{"p${num}_imageFit"} = $pc->{"p${num}_imagePercent"}.'%';
+    }
+    if($pc->{"p${num}_imageCopyrightURL"}){
+      $pc->{"p${num}_imageCopyright"} = "<a href=\"$pc->{\"p${num}_imageCopyrightURL\"}\" target=\"_blank\">".($pc->{"p${num}_imageCopyright"}||$pc->{"p${num}_imageCopyrightURL"})."</a>";
+    }
+  }
+  foreach my $num (1 .. $OPT{max}){
+    setColors($pc, "p${num}_");
+    setFont($pc, "p${num}_");
+  }
+}
 
 ### データ取得 --------------------------------------------------
 sub loadSheetData {
@@ -54,12 +287,8 @@ sub loadSheetData {
     if($datatype eq 'logs' && !$hit){ error("404:過去ログ（$::in{log}）が見つかりません。"); }
 
     if($::in{log}){
-      ($pc{protect}, $pc{forbidden}) = getProtectType("${datadir}${file}/data.cgi");
-      $pc{logId} = $::in{log};
-      $pc{hide} = 1;
-    }
-    if($main::login_error){
-      $pc{hide} = 1;
+      # 閲覧制限は最新のものを適用
+      ($pc{protect}, $pc{forbidden},$pc{hide}) = getProtectType("${datadir}${file}/data.cgi");
     }
   }
   ## データ読み込み：コンバート
@@ -73,9 +302,6 @@ sub loadSheetData {
   }
 
   ##
-  elsif(exists $set::lib_type{$type}){ $pc{sheetType} = $set::lib_type{$type}{sheetType}; }
-  else { $pc{sheetType} = 'chara'; }
-
   if(!$::in{checkView} && (
     ($pc{protect} eq 'none') || 
     ($author && ($author eq $LOGIN_ID || $set::masterid eq $LOGIN_ID))
@@ -115,8 +341,6 @@ sub loadSheetData {
     }
     else { $pc{imageCopyright} = unescapeTags($pc{imageCopyright}) }
   }
-  ## フォント
-  &setFont(\%pc,'');
 
   ## 
 
@@ -137,6 +361,99 @@ sub viewNotFound { #v1.14/v1.20のコンバート処理
   }
   
   error('404:シートが見つかりませんでした。');
+}
+
+### テンプレート操作 --------------------------------------------------
+my $template;
+sub setupViewTemplate {
+  my (%args) = @_;
+
+  $template = HTML::Template->new(
+    filename  => $set::skin_sheet,
+    utf8 => 1,
+    path => ['./', $::core_dir."/skin/$set::game", $::core_dir."/skin/_common", $::core_dir],
+    search_path_on_include => 1,
+    die_on_bad_params => 0,
+    die_on_missing_include => 0,
+    case_sensitive => 1,
+    global_vars => 1,
+    loop_context_vars => 1,
+  );
+
+  $template->param(title => $set::title);
+  $template->param(ver => $::ver);
+  $template->param(coreDir => $::core_dir);
+  $template->param(gameDir => $set::game);
+  
+  $template->param(mode => $::in{mode});
+
+  $template->param(sheetType => (exists $set::lib_type{$type}) ? $set::lib_type{$type}{sheetType} : 'chara' );
+  $template->param(generateType => $args{generateType} // '');
+  $template->param(defaultImage => $args{defaultPieceImage} // qq|$::core_dir/skin/$set::game/img/default_pc.png|);
+
+  $template->param(logId => $::in{log});
+
+
+  $template->param(LOGIN_ID => $LOGIN_ID);
+
+  return $template;
+}
+## 最終アウトプット
+sub printFinalizedView {
+  $template->param(error => $main::login_error);
+
+  print "Content-Type: text/html; charset=utf-8\n\n";
+  if($::pc{modeDownload}){
+    if($::pc{forbidden} && $::pc{yourAuthor}){ $template->param(forbidden => ''); }
+    print downloadModeSheetConvert outputTemplate($template);
+  }
+  else {
+    print outputTemplate($template);
+  }
+}
+
+### メニュー --------------------------------------------------
+sub setSheetMenu {
+  return if $::pc{modeDownload};
+
+  my @menu = ();
+  push(@menu, { TEXT => '⏎', TYPE => "href", VALUE => './'.($type ? "?type=$type" : '') });
+  push(@menu, @_);
+  if($::in{url}){ # コンバートビュー
+    push(@menu, { TEXT => 'コンバート', TYPE => "href", VALUE => "./?mode=convert&url=$::in{url}" });
+  }
+  else {
+    if($::in{log}){ # 過去ログ
+      unless($::pc{forbiddenMode}){
+        push(@menu, { TEXT => '出力' , TYPE => "onclick", VALUE => "downloadListOn()" });
+      }
+      push(@menu, { TEXT => '過去ログ', TYPE => "onclick", VALUE => 'loglistOn()' });
+      if($::pc{reqdPassword}){ push(@menu, { TEXT => '復元', TYPE => "onclick", VALUE => "editOn()" }); }
+      else                   { push(@menu, { TEXT => '復元', TYPE => "href" , VALUE => "./?mode=edit&id=$::in{id}&log=$::in{log}" });
+      }
+    }
+    else { #通常
+      unless($::pc{forbiddenMode}){
+        if($template->param('generateType')){
+          push(@menu, { TEXT => 'パレット', TYPE => "onclick", VALUE => "chatPaletteOn()" });
+        }
+        push(@menu, { TEXT => '出力'    , TYPE => "onclick", VALUE => "downloadListOn()" });
+        push(@menu, { TEXT => '過去ログ', TYPE => "onclick", VALUE => "loglistOn()" });
+      }
+      if($::pc{reqdPassword}){ push(@menu, { TEXT => '編集', TYPE => "onclick", VALUE => "editOn()" }); }
+      else                   { push(@menu, { TEXT => '編集', TYPE => "href"   , VALUE => "./?mode=edit&id=$::in{id}" }); }
+    }
+  }
+
+  $template->param(Menu => createSheetMenu(@menu));
+}
+
+sub createSheetMenu {
+  my @menu = @_;
+  foreach my $line (@menu){
+    if (length($line->{TEXT}) >= 4){ $line->{TEXT} = "<span>$line->{TEXT}</span>" }
+  }
+  return \@menu;
 }
 
 ### バックアップ一覧 --------------------------------------------------
@@ -169,11 +486,15 @@ sub getLogList {
 }
 ### カラー出力 --------------------------------------------------
 sub setColors {
-  my $type = shift;
-  setDefaultColors($type);
-  $::pc{$type.'colorBaseBgS'} = $::pc{$type.'colorBaseBgS'} * 0.7;
-  $::pc{$type.'colorBaseBgL'} = 100 - $::pc{$type.'colorBaseBgS'} / 6;
-  $::pc{$type.'colorBaseBgD'} = 15;
+  my ($pc, $type) = @_;
+  $pc->{$type.'colorHeadBgH'} //= 225;
+  $pc->{$type.'colorHeadBgS'} //=   9;
+  $pc->{$type.'colorHeadBgL'} //=  65;
+  $pc->{$type.'colorBaseBgH'} //= 235;
+  $pc->{$type.'colorBaseBgS'} //=   0;
+  $pc->{$type.'colorBaseBgS'} = $pc->{$type.'colorBaseBgS'} * 0.7;
+  $pc->{$type.'colorBaseBgL'} = 100 - $pc->{$type.'colorBaseBgS'} / 6;
+  $pc->{$type.'colorBaseBgD'} = 15;
 }
 ### フォント出力 --------------------------------------------------
 sub setFont {
@@ -213,7 +534,7 @@ sub isNoiseText {
   return $text =~ /^[█▇▆▅▄▃▂▚▞▙▛▜▟\n\s]+$/ ? 1 : undef;
 }
 ### キャラクター名 --------------------------------------------------
-sub stylizeCharacterName {
+sub renderCharacterName {
   my $name = shift;
   my $ruby = shift;
   $name = insertWbr($name);
@@ -229,8 +550,14 @@ sub insertWbr { #固有名詞向け
   $name =~ s#[+＋*＊@＠“＜]#<wbr>$&#g;
   return $name;
 }
+#sub insertWbrLineBreak { #強引に禁則処理する
+#  my $text = shift;
+#  $text =~ s#((?:\G|>)[^<]*?)([+\-*/]?[0-9a-zA-Z]+)#$1<wbr>$2#g;
+#  $text =~ s#((?:\G|>)[^<]*?)([^0-9a-zA-Z\s][,.、。)）\]］}｝、〕〉》」』】〙〗〟’”｠»ゝゞーァィゥェォッャュョヮヵヶぁぃぅぇぉっゃゅょゎゕゖㇰㇱㇲㇳㇴㇵㇶㇷㇸㇹㇷ゚ㇺㇻㇼㇽㇾㇿ々〻～!！?？･・:;]{1,3})#$1<span class="nowrap">$2</span>#g;
+#  return $text;
+#}
 ### セリフ --------------------------------------------------
-sub stylizeWords {
+sub renderWords {
   my ($words, $x, $y) = @_;
   $words =~ s/<br>/\n/g;
   $words =~ s/“/〝/g;
@@ -250,15 +577,6 @@ sub formatHistoryFigures {
   $text =~ s/[0-9]+/commify($&);/ge;
   $text =~ s#[0-9,]+#<span class="number">$&</span><wbr>#g;
   return $text;
-}
-### メニュー --------------------------------------------------
-sub createSheetMenu {
-  my @menu = @_;
-  foreach my $line (@menu){
-    if   (length($line->{TEXT}) >= 4){ $line->{TEXT} = "<span>$line->{TEXT}</span>" }
-    elsif(length($line->{TEXT}) >= 5){ $line->{TEXT} = "<span>$line->{TEXT}</span>" }
-  }
-  return \@menu;
 }
 ### ダウンロード用 --------------------------------------------------
 sub downloadModeSheetConvert {
