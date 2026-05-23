@@ -1114,10 +1114,9 @@ input[type="submit"]:hover {
   background-color: hsla(0, 0%, 10%, 0.6);
   image-rendering: -webkit-optimize-contrast;
 }
-.image-custom-view-area > div.image-custom-frame {  }
 .image-custom-view-area > div#image-custom-frame-M  { grid-column: 3; grid-row: 2 / span 2; height: 567px; }
-.image-custom-view-area > div#image-custom-frame-S1 { grid-column: 2; grid-row: 2; width: 20vh; height: 40vh; margin-top: 0; }
-.image-custom-view-area > div#image-custom-frame-S2 { grid-column: 2; grid-row: 3; width: 25vh; height: 30vh; margin-top: 3em; }
+.image-custom-view-area > div#image-custom-frame-S  { grid-column: 2; grid-row: 2; width: 20vh; height: 40vh; margin-top: 0; }
+.image-custom-view-area > div#image-custom-frame-O { grid-column: 2; grid-row: 3; width: 25vh; height: 25vh; margin-top: 3em; }
 .image-custom-view-area > div#image-custom-frame-M {
   cursor: grab;
 }
@@ -1132,6 +1131,10 @@ input[type="submit"]:hover {
   background-image: url(../img/back-pattern.png);
   background-repeat: repeat;
   border-radius: 5px;
+  &#image-custom-frame-O {
+  background-color: #f5f5f5;
+    background-image: none;
+  }
 }
 .image-custom-view-area > div.image-custom-frame .image-custom-view {
   position: absolute;
@@ -1255,8 +1258,8 @@ input[type="submit"]:hover {
     grid-template-columns: 1fr 350px 1fr;
   }
   .image-custom-view-area > div#image-custom-frame-M { grid-column: 2; grid-row: 2 / span 1; }
-  .image-custom-view-area > div#image-custom-frame-S1,
-  .image-custom-view-area > div#image-custom-frame-S2 { display: none; }
+  .image-custom-view-area > div#image-custom-frame-S,
+  .image-custom-view-area > div#image-custom-frame-O { display: none; }
 }
 @media screen and (width <= 860px){
   #image-custom {
