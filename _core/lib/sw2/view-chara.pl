@@ -11,198 +11,96 @@ require $set::data_races;
 require $set::data_items;
 require $set::data_faith;
 
-### テンプレート読み込み #############################################################################
-my $SHEET;
-$SHEET = HTML::Template->new( filename => $set::skin_sheet, utf8 => 1,
-  path => ['./', $::core_dir."/skin/sw2", $::core_dir."/skin/_common", $::core_dir],
-  search_path_on_include => 1,
-  loop_context_vars => 1,
-  die_on_bad_params => 0, die_on_missing_include => 0, case_sensitive => 1, global_vars => 1);
+### データ／テンプレート読込 #########################################################################
+(my $pcRef, my $SHEET) = setupViewBase(
+  generateType => 'SwordWorld2PC',
+  unescapeLinesKeys => [qw/freeNote freeHistory items cashbook/],
+  unescapeLinesRe   => qr/^cashbookOther[0-9]+/,
+  convertViewMap    => [qw/freeNote/],
+  updateSub => \&data_update_chara,
+);
+our %pc = %{ $pcRef };
+$SHEET->param(modeZero => $::SW2_0 ? 1 : 0);
 
-### キャラクターデータ読み込み #######################################################################
-our %pc = loadSheetData();
-
-### タグ置換前処理 ###################################################################################
-### 閲覧禁止データ --------------------------------------------------
-if($pc{forbidden} && !$pc{yourAuthor}){
-  my $author = $pc{playerName};
-  my $protect   = $pc{protect};
-  my $forbidden = $pc{forbidden};
-  my $convertSource = $pc{convertSource};
-  
-  if($forbidden eq 'all'){
-    %pc = ();
-  }
-  if($forbidden ne 'battle'){
-    $pc{aka} = '';
-    $pc{characterName} = noiseText(6,14);
-    $pc{group} = $pc{tags} = '';
+### 固有処理 #########################################################################################
+### 閲覧禁止データのマスク --------------------------------------------------
+sub maskPcData {
+  my ($pc, $forbidden) = @_;
+  unless($forbidden eq 'battle'){
+    $pc->{aka} = '';
+    $pc->{characterName} = noiseText(6,14);
+    $pc->{group} = $pc->{tags} = '';
     
-    $pc{freeNote} = '';
+    $pc->{freeNote} = '';
     foreach(1..int(rand 5)+4){
-      $pc{freeNote} .= '　'.noiseText(18,40)."\n";
+      $pc->{freeNote} .= '　'.noiseText(18,40)."<br>";
     }
-    $pc{freeHistory} = '';
+    $pc->{freeHistory} = '';
   }
   
-  $pc{age}    = noiseText(1,2);
-  $pc{gender} = noiseText(1,2);
-  $pc{birth}  = noiseText(2,4);
-  $pc{race}        = noiseText(3,8);
-  $pc{raceAbility} = noiseText(4,16);
-  $pc{sin} = noiseText(1);
-  $pc{faith}  = noiseText(6,10);
-  $pc{rank}   = noiseText(3,5);
+  $pc->{age}    = noiseText(1,2);
+  $pc->{gender} = noiseText(1,2);
+  $pc->{birth}  = noiseText(2,4);
+  $pc->{race}        = noiseText(3,8);
+  $pc->{raceAbility} = noiseText(4,16);
+  $pc->{sin} = noiseText(1);
+  $pc->{faith}  = noiseText(6,10);
+  $pc->{rank}   = noiseText(3,5);
   
-  foreach('Tec','Phy','Spi'){ $pc{'sttBase'.$_} = noiseText(1,2); }
+  foreach('Tec','Phy','Spi'){ $pc->{'sttBase'.$_} = noiseText(1,2); }
   foreach('A'..'F'){
-    $pc{'sttBase'.$_} = noiseText(1);
-    $pc{'sttGrow'.$_} = noiseText(1);
-    $pc{'sttAdd'.$_} = noiseText(1);
-    $pc{'sttPreGrow'.$_} = 0;
+    $pc->{'sttBase'.$_} = noiseText(1);
+    $pc->{'sttGrow'.$_} = noiseText(1);
+    $pc->{'sttAdd'.$_} = noiseText(1);
+    $pc->{'sttPreGrow'.$_} = 0;
   }
   foreach('Dex','Agi','Str','Vit','Int','Mnd'){
-    $pc{'stt'.$_} = noiseText(1);
-    $pc{'bonus'.$_} = noiseText(1);
+    $pc->{'stt'.$_} = noiseText(1);
+    $pc->{'bonus'.$_} = noiseText(1);
   }
   foreach('vitResist','mndResist','hp','mp'){
-    $pc{$_.'AddTotal'} = '';
-    $pc{$_.'Total'} = noiseText(1,2);
+    $pc->{$_.'AddTotal'} = '';
+    $pc->{$_.'Total'} = noiseText(1,2);
   }
   
-  $pc{expRest}  = noiseText(2,3);
-  $pc{expTotal} = noiseText(2,3);
-  $pc{level} = noiseText(1);
-  $pc{lvWiz} = $pc{lvSeeker} = $pc{lvMonster} = 0;
-  foreach my $class (@data::class_names){ $pc{ 'lv'.$data::class{$class}{id} } = 0; }
-  foreach (1 .. 10){ $pc{'commonClass'.$_} = ''; }
-  $pc{monsterLore} = noiseText(1);
-  $pc{initiative}  = noiseText(1);
-  $pc{mobilityLimited} = noiseText(1);
-  $pc{mobilityTotal}   = noiseText(1);
-  $pc{mobilityFull}    = noiseText(1,2);
+  $pc->{expRest}  = noiseText(2,3);
+  $pc->{expTotal} = noiseText(2,3);
+  $pc->{level} = noiseText(1);
+  $pc->{lvWiz} = $pc->{lvSeeker} = $pc->{lvMonster} = 0;
+  foreach my $class (@data::class_names){ $pc->{ 'lv'.$data::class{$class}{id} } = 0; }
+  foreach (1 .. 10){ $pc->{'commonClass'.$_} = ''; }
+  $pc->{monsterLore} = noiseText(1);
+  $pc->{initiative}  = noiseText(1);
+  $pc->{mobilityLimited} = noiseText(1);
+  $pc->{mobilityTotal}   = noiseText(1);
+  $pc->{mobilityFull}    = noiseText(1,2);
   
-  $pc{combatFeatsAuto} = '';
-  $pc{mysticArtsNum} = '';
+  $pc->{combatFeatsAuto} = '';
+  $pc->{mysticArtsNum} = '';
   
-  $pc{languageNum} = 1;
-  foreach (1 .. $pc{languageNum}){
-    $pc{'language'.$_} = '不明';
-    $pc{'language'.$_.'Read'} = $pc{'language'.$_.'Talk'} = '';
+  $pc->{languageNum} = 1;
+  foreach (1 .. $pc->{languageNum}){
+    $pc->{'language'.$_} = '不明';
+    $pc->{'language'.$_.'Read'} = $pc->{'language'.$_.'Talk'} = '';
   }
   
-  $pc{honor} = $pc{dishonor} = $pc{honorOffset} = noiseText(1,2);
-  $pc{honorItemsNum} = $pc{dishonorItemsNum} = $pc{rankHonorValue} = $pc{MysticArtsHonor} = '';
+  $pc->{honor} = $pc->{dishonor} = $pc->{honorOffset} = noiseText(1,2);
+  $pc->{honorItemsNum} = $pc->{dishonorItemsNum} = $pc->{rankHonorValue} = $pc->{MysticArtsHonor} = '';
   
-  $pc{money}   = noiseText(3,6);
-  $pc{deposit} = noiseText(3,6);
-  $pc{items} = '';
+  $pc->{money}   = noiseText(3,6);
+  $pc->{deposit} = noiseText(3,6);
+  $pc->{items} = '';
   foreach(1..int(rand 3)+6){
-    $pc{items} .= noiseText(6,24)."\n";
+    $pc->{items} .= noiseText(6,24)."<br>";
   }
-  $pc{cashbook} = '';
+  $pc->{cashbook} = '';
   
-  $pc{historyNum} = 0;
-  $pc{history0Exp}   = noiseText(1,3);
-  $pc{history0Honor} = noiseText(1,2);
-  $pc{history0Money} = noiseText(2,4);
-  
-  $pc{playerName} = $author;
-  $pc{protect} = $protect;
-  $pc{forbidden} = $forbidden;
-  $pc{convertSource} = $convertSource;
-  $pc{forbiddenMode} = 1;
+  $pc->{historyNum} = 0;
+  $pc->{history0Exp}   = noiseText(1,3);
+  $pc->{history0Honor} = noiseText(1,2);
+  $pc->{history0Money} = noiseText(2,4);
 }
 
-### その他 --------------------------------------------------
-$SHEET->param(rawName => $pc{characterName} || ($pc{aka} ? "“$pc{aka}”" : ''));
-
-### タグ置換 #########################################################################################
-if($pc{ver}){
-  foreach (keys %pc) {
-    next if($_ =~ /^image/);
-    next if($_ eq 'tags');
-    if($_ =~ /^(?:items|freeNote|freeHistory|cashbook(?:Other[0-9]+)?)$/){
-      $pc{$_} = unescapeTagsLines($pc{$_});
-    }
-    $pc{$_} = unescapeTags($pc{$_});
-
-    $pc{$_} = noiseTextTag $pc{$_} if $pc{forbiddenMode};
-  }
-}
-else {
-  $pc{freeNote} = $pc{freeNoteView} if $pc{freeNoteView};
-}
-
-### コンバート --------------------------------------------------
-foreach (1..17) {
-  $pc{'craftGramarye'.$_} = $pc{'craftGramarye'.$_} || $pc{'magicGramarye'.$_};
-}
-
-### アップデート --------------------------------------------------
-if($pc{ver}){
-  %pc = data_update_chara(\%pc);
-}
-
-### カラー設定 --------------------------------------------------
-setColors();
-
-### 置換後出力 #######################################################################################
-### データ全体 --------------------------------------------------
-while (my ($key, $value) = each(%pc)){
-  $SHEET->param("$key" => $value);
-}
-### ID / URL--------------------------------------------------
-$SHEET->param(id => $::in{id});
-
-if($::in{url}){
-  $SHEET->param(convertMode => 1);
-  $SHEET->param(convertUrl => $::in{url});
-}
-
-### キャラクター名 --------------------------------------------------
-$SHEET->param(characterName => stylizeCharacterName $pc{characterName},$pc{characterNameRuby});
-$SHEET->param(aka => stylizeCharacterName $pc{aka},$pc{akaRuby});
-
-### プレイヤー名 --------------------------------------------------
-if($set::playerlist){
-  my $pl_id = (split(/-/, $::in{id}))[0];
-  $SHEET->param(playerName => '<a href="'.$set::playerlist.'?id='.$pl_id.'">'.$pc{playerName}.'</a>');
-}
-### グループ --------------------------------------------------
-if($::in{url}){
-  $SHEET->param(group => '');
-}
-else {
-  if(!$pc{group}) {
-    $pc{group} = $set::group_default;
-    $SHEET->param(group => $set::group_default);
-  }
-  foreach (@set::groups){
-    if($pc{group} eq @$_[0]){
-      $SHEET->param(groupName => @$_[2]);
-      last;
-    }
-  }
-}
-
-### タグ --------------------------------------------------
-my @tags;
-foreach(split(/ /, $pc{tags})){
-  push(@tags, {
-    URL  => uri_escape_utf8($_),
-    TEXT => $_,
-  });
-}
-$SHEET->param(Tags => \@tags);
-
-### セリフ --------------------------------------------------
-{
-  my ($words, $x, $y) = stylizeWords($pc{words},$pc{wordsX},$pc{wordsY});
-  $SHEET->param(words => $words);
-  $SHEET->param(wordsX => $x);
-  $SHEET->param(wordsY => $y);
-}
 ### 種族名 --------------------------------------------------
 $pc{race} =~ s/［.*］//g;
 {
@@ -1307,94 +1205,32 @@ foreach (1 .. (8 + ceil($smax / 2))) {
 }
 $SHEET->param(BattleItems => \@battleitems);
 
-### バックアップ --------------------------------------------------
-my $selectedLogName;
-if($::in{id}){
-  ($selectedLogName, my $list) = getLogList($set::char_dir, $main::file);
-  $SHEET->param(LogList => $list);
-  $SHEET->param(selectedLogName => $selectedLogName);
-  if($pc{yourAuthor} || $pc{protect} eq 'password'){
-    $SHEET->param(viewLogNaming => 1);
-  }
-}
-
 ### フェロー --------------------------------------------------
 if($::in{f}){
   $SHEET->param(FellowMode => 1);
   $SHEET->param($_ => $pc{$_} =~ s{[0-9]+|[^0-9]+}{$&<wbr>}gr) foreach (grep {/^fellow[-0-9]+Num$/} keys %pc);
 }
 
-### タイトル --------------------------------------------------
-$SHEET->param(title => $set::title);
-if($pc{forbidden} eq 'all' && $pc{forbiddenMode}){
-  $SHEET->param(titleName => '非公開データ');
-}
-else {
-  $SHEET->param(titleName =>
-    (removeTags removeRuby($pc{characterName}||"“$pc{aka}”")) .
-    ($::in{log} ? " 【".($selectedLogName||$pc{updateTime})."】" : '')
-  );
-  $SHEET->param(encodedNameLetter => uri_escape_utf8 removeTags "$pc{characterName}$pc{aka}$pc{akaRuby}“”");
-}
-
 ### OGP --------------------------------------------------
-$SHEET->param(ogUrl => url().($::in{url} ? "?url=$::in{url}" : "?id=$::in{id}"));
-if($pc{image}) { $SHEET->param(ogImg => $pc{imageURL}); }
 $SHEET->param(ogDescript => removeTags "種族:$pc{race}　性別:$pc{gender}　年齢:$pc{age}　技能:${class_text}");
-
-### バージョン等 --------------------------------------------------
-$SHEET->param(ver => $::ver);
-$SHEET->param(coreDir => $::core_dir);
-$SHEET->param(gameDir => 'sw2');
-$SHEET->param(sheetType => 'chara');
-$SHEET->param(generateType => 'SwordWorld2PC');
-$SHEET->param(defaultImage => $::core_dir.'/skin/sw2/img/default_pc.png');
-$SHEET->param(modeZero => $::SW2_0 ? 1 : 0);
 
 ### メニュー --------------------------------------------------
 my @menu = ();
-if(!$pc{modeDownload}){
-  push(@menu, { TEXT => '⏎', TYPE => "href", VALUE => './', });
-  if($::in{url}){
-    push(@menu, { TEXT => 'コンバート', TYPE => "href", VALUE => "./?mode=convert&url=$::in{url}" });
-  }
-  else {
+unless($pc{modeDownload}){
+  unless($::in{url}){
     if($pc{logId}){
       if   ($::in{f}         ){ push(@menu, { TEXT => 'ＰＣ',     TYPE => "href", VALUE => "./?id=$::in{id}&log=$pc{logId}",     CLASSES => 'character-format', }); }
       elsif($pc{fellowPublic}){ push(@menu, { TEXT => 'フェロー', TYPE => "href", VALUE => "./?id=$::in{id}&log=$pc{logId}&f=1", CLASSES => 'character-format', }); }
-      if(!$pc{forbiddenMode}){
-        push(@menu, { TEXT => '出力'    , TYPE => "onclick", VALUE => "downloadListOn()",  });
-      }
-      push(@menu, { TEXT => '過去ログ', TYPE => "onclick", VALUE => 'loglistOn()', });
-      if($pc{reqdPassword}){ push(@menu, { TEXT => '復元', TYPE => "onclick", VALUE => "editOn()", }); }
-      else                 { push(@menu, { TEXT => '復元', TYPE => "href"   , VALUE => "./?mode=edit&id=$::in{id}&log=$pc{logId}", }); }
     }
     else {
       if   ($::in{f}         ){ push(@menu, { TEXT => 'ＰＣ',     TYPE => "href", VALUE => "./?id=$::in{id}",     CLASSES => 'character-format', }); }
       elsif($pc{fellowPublic}){ push(@menu, { TEXT => 'フェロー', TYPE => "href", VALUE => "./?id=$::in{id}&f=1", CLASSES => 'character-format', }); }
-      if(!$pc{forbiddenMode}){
-        push(@menu, { TEXT => 'パレット', TYPE => "onclick", VALUE => "chatPaletteOn()",   });
-        push(@menu, { TEXT => '出力'    , TYPE => "onclick", VALUE => "downloadListOn()",  });
-        push(@menu, { TEXT => '過去ログ', TYPE => "onclick", VALUE => "loglistOn()",      });
-      }
-      if($pc{reqdPassword}){ push(@menu, { TEXT => '編集', TYPE => "onclick", VALUE => "editOn()", }); }
-      else                 { push(@menu, { TEXT => '編集', TYPE => "href"   , VALUE => "./?mode=edit&id=$::in{id}", }); }
     }
   }
 }
-$SHEET->param(Menu => createSheetMenu @menu);
-
-### エラー --------------------------------------------------
-$SHEET->param(error => $main::login_error);
+setSheetMenu(@menu);
 
 ### 出力 #############################################################################################
-print "Content-Type: text/html\n\n";
-if($pc{modeDownload}){
-  if($pc{forbidden} && $pc{yourAuthor}){ $SHEET->param(forbidden => ''); }
-  print downloadModeSheetConvert outputTemplate($SHEET);
-}
-else {
-  print outputTemplate($SHEET);
-}
+printFinalizedView();
 
 1;
