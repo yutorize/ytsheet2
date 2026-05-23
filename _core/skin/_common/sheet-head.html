@@ -10,7 +10,7 @@
     <TMPL_IF imageOgpURL><meta property="og:image" content="<TMPL_VAR imageOgpURL>"></TMPL_IF>
     <meta name="twitter:card" content="summary">
     <meta name="twitter:site" content="@yutorize">
-    <TMPL_IF hide><meta name="robots" content="none"></TMPL_IF>
+    <TMPL_IF noindex><meta name="robots" content="none"></TMPL_IF>
     <TMPL_IF convertUrl>
       <link rel="ytchat-body-exporting-point" type="application/json" href="./?url=<TMPL_VAR convertUrl>&mode=json">
     <TMPL_ELSE>
