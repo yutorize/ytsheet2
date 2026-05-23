@@ -96,8 +96,9 @@ sub loadSheetData {
       $pc{imageSrc} = $pc{imageURL};
     }
     else {
-      $pc{imageSrc} =     "./?id=$::in{id}&mode=image&cache=$pc{imageUpdate}";
-      $pc{imageURL} = url()."?id=$::in{id}&mode=image&cache=$pc{imageUpdate}";
+      $pc{imageSrc}    =     "./?id=$::in{id}&mode=image&cache=$pc{imageUpdate}";
+      $pc{imageURL}    = url()."?id=$::in{id}&mode=image&cache=$pc{imageUpdate}";
+      $pc{imageOgpURL} = url()."?id=$::in{id}&mode=ogp-image&cache=$pc{imageUpdate}";
     }
     $pc{images} = "'1': \"".($pc{modeDownload} ? urlToBase64("${datadir}${file}/image.$pc{image}") : $pc{imageSrc})."\", ";
     
