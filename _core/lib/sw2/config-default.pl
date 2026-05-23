@@ -220,7 +220,7 @@ our @effects = (
       view => $::core_dir . '/lib/sw2/view-mons.pl',
       list => $::core_dir . '/lib/sw2/list-mons.pl',
       skin => $::core_dir . '/skin/sw2/sheet-monster.html',
-      sheetType => 'mons',
+      sheetType => 'monster',
     },
     'i' => {
       listFile => $data_dir . 'itemlist.cgi',
