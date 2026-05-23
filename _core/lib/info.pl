@@ -26,7 +26,7 @@ $INDEX->param(title => $set::title);
 $INDEX->param(ver => $main::ver);
 $INDEX->param(coreDir => $main::core_dir);
 $INDEX->param(gameDir => $set::game);
-$INDEX->param(hide => 1);
+$INDEX->param(noindex => 1);
 
 ### 出力 #############################################################################################
 if($code){
