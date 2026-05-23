@@ -355,9 +355,9 @@ sub imageForm {
     
     <div id="image-custom" style="display:none">
       <div class="image-custom-view-area">
-        <div id="image-custom-frame-S1" class="image-custom-frame"><div class="image-custom-view"><b>横幅が狭い時</b></div></div>
-        <div id="image-custom-frame-S2" class="image-custom-frame"><div class="image-custom-view"><b>縦幅が狭い時</b></div></div>
-        <div id="image-custom-frame-M"  class="image-custom-frame"><div class="image-custom-view"><b>標準の比率　<small>※縦横比は適宜変動します</small></b><div class="words" id="words-preview"></div><div id="image-copyright-preview"></div></div>
+        <div id="image-custom-frame-S" class="image-custom-frame"><div class="image-custom-view"><b>横幅が狭い時</b></div></div>
+        <div id="image-custom-frame-O" class="image-custom-frame"><div class="image-custom-view"><b>OGP <small>※シートURLをSNS等に貼った際に表示</small></b></div></div>
+        <div id="image-custom-frame-M" class="image-custom-frame"><div class="image-custom-view"><b>標準の比率 <small>※縦横比は適宜変動します</small></b><div class="words" id="words-preview"></div><div id="image-copyright-preview"></div></div>
           @{[ input "imagePositionY",'range','imagePosition','step="0.001"' ]}
           @{[ input "imagePositionX",'range','imagePosition','step="0.001"' ]}
         </div>

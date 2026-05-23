@@ -462,35 +462,36 @@ function imagePercentBarChange(per){
 // ポジション反映
 function imagePosition(){
   const bgSize = form.imageFit.options[form.imageFit.selectedIndex].value;
+  let configVisiblity = 'hidden';
+  let backgroundSize = '100%';
+  let ogpSize = '100%';
   if(bgSize === 'percentX'){
-    document.getElementById("image-percent-config").style.visibility = 'visible';
-    document.getElementById("image").style.backgroundSize = form.imagePercent.value + '%';
-    document.querySelectorAll(".image-custom-view").forEach((el) => {
-      el.style.backgroundSize = form.imagePercent.value + '%';
-    });
+    configVisiblity = 'visible';
+    backgroundSize = form.imagePercent.value + '%';
+    ogpSize = form.imagePercent.value + '%';
   }
   else if(bgSize === 'percentY'){
-    document.getElementById("image-percent-config").style.visibility = 'visible';
-    document.getElementById("image").style.backgroundSize = 'auto ' + form.imagePercent.value + '%';
-    document.querySelectorAll(".image-custom-view").forEach((el) => {
-      el.style.backgroundSize = 'auto ' + form.imagePercent.value + '%';
-    });
+    configVisiblity = 'visible';
+    backgroundSize = 'auto ' + form.imagePercent.value + '%';
+    ogpSize = 'auto ' + (Number(form.imagePercent.value) * 1.2) + '%';
   }
   else {
-    document.getElementById("image-percent-config").style.visibility = 'hidden';
-    document.getElementById("image").style.backgroundSize = bgSize;
-    document.querySelectorAll(".image-custom-view").forEach((el) => {
-      el.style.backgroundSize = bgSize;
-    });
+    configVisiblity = 'hidden';
+    backgroundSize = bgSize;
+    ogpSize = bgSize;
   }
-  document.getElementById("image-positionX-view").textContent = form.imagePositionX.value + '%';
-  document.getElementById("image-positionY-view").textContent = form.imagePositionY.value + '%';
-  document.getElementById("image").style.backgroundPositionX = form.imagePositionX.value + '%';
-  document.getElementById("image").style.backgroundPositionY = form.imagePositionY.value + '%';
-  document.querySelectorAll(".image-custom-view").forEach((el) => {
+  document.getElementById("image-percent-config").style.visibility = configVisiblity;
+  document.querySelectorAll("#image, :is(#image-custom-frame-M,#image-custom-frame-S) > .image-custom-view").forEach((el) => {
+    el.style.backgroundSize = backgroundSize;
     el.style.backgroundPositionX = form.imagePositionX.value + '%';
     el.style.backgroundPositionY = form.imagePositionY.value + '%';
   });
+  document.querySelector("#image-custom-frame-O > .image-custom-view").style.backgroundSize = ogpSize;
+  document.querySelector("#image-custom-frame-O > .image-custom-view").style.backgroundPositionX = form.imagePositionX.value + '%';
+  document.querySelector("#image-custom-frame-O > .image-custom-view").style.backgroundPositionY = (Number(form.imagePositionY.value) * 0.9) + '%';
+
+  document.getElementById("image-positionX-view").textContent = form.imagePositionX.value + '%';
+  document.getElementById("image-positionY-view").textContent = form.imagePositionY.value + '%';
   
   document.getElementById("image-percent-bar").value = form.imagePercent.value;
 }
