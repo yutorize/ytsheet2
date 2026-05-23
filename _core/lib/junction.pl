@@ -62,7 +62,8 @@ elsif($mode eq 'delete')     { require $set::lib_delete; } #削除
 elsif($mode eq 'img-delete') { require $set::lib_delete; } #画像削除
 elsif($mode eq 'palette')    { require $set::lib_palette; }#チャットパレット表示
 elsif($mode eq 'js-consts')  { &printJS('consts') }        #JS用定数
-elsif($mode eq 'image')      { &redirectToImage($in{id}); }#画像表示
+elsif($mode eq 'image')      { require $set::lib_others; }#画像表示
+elsif($mode eq 'ogp-image')  { require $set::lib_others; }#画像表示
 elsif(($in{id}||$in{url}) && $mode eq 'json') { require $set::lib_json; }#外部アプリ連携
 elsif($in{id})  { require $set::lib_view; }   #シート表示
 elsif($in{url}) { require $set::lib_view; }   #シート表示（コンバート）
