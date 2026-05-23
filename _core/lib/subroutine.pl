@@ -178,49 +178,6 @@ sub changeFileByType {
   }
 }
 
-### 画像リダイレクト --------------------------------------------------
-sub redirectToImage {
-  my $id   = shift;
-  my ($file,$type,$user) = findSheet($id);
-  changeFileByType($type);
-  my $datadir = $set::char_dir;
-  my $ext;
-
-  if(!$file){ die "image not found" }
-
-  open(my $DATA, '<', "./${datadir}/${file}/data.cgi") or die("file open error: $id:$file,$type // $!");
-  while(<$DATA>){
-    if($_ =~ /^image<>(.*?)\n/){ $ext = $1; last }
-  }
-  close($DATA);
-
-  if(!$ext){ die "invalid image extension" }
-
-  my %mime = (
-    jpg  => 'image/jpeg',
-    jpeg => 'image/jpeg',
-    png  => 'image/png',
-    gif  => 'image/gif',
-    webp => 'image/webp',
-  );
-  my $mimeType = $mime{lc $ext} or die "bad ext";
-
-  my $path = "./${datadir}/${file}/image.${ext}";
-
-  open(my $IMG, '<', $path) or die("image open error: $id:$file,$type // $!");
-  my $size = -s $IMG;
-  binmode $IMG;
-  binmode STDOUT;
-  print "Content-type: $mimeType\n";
-  print "Content-Length: $size\n";
-  print "Cache-Control: public, max-age=604800\n";
-  print "Content-Disposition: inline; filename=\"ytsheet_$::in{id}.$ext\"\n";
-  print "\n";
-  while (read($IMG, my $buf, 65536)) { print $buf; }
-  close($IMG);
-  exit;
-}
-
 ### プレイヤー名取得 --------------------------------------------------
 sub getPlayerName {
   my $in_id = shift;
