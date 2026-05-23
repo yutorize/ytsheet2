@@ -8,260 +8,161 @@ use HTML::Template;
 ### データ読み込み ###################################################################################
 require $set::data_syndrome;
 
-### テンプレート読み込み #############################################################################
-my $SHEET;
-$SHEET = HTML::Template->new( filename => $set::skin_sheet, utf8 => 1,
-  path => ['./', $::core_dir."/skin/dx3", $::core_dir."/skin/_common", $::core_dir],
-  search_path_on_include => 1,
-  loop_context_vars => 1,
-  die_on_bad_params => 0, die_on_missing_include => 0, case_sensitive => 1, global_vars => 1);
+### データ／テンプレート読込 #########################################################################
+(my $pcRef, my $SHEET) = setupViewBase(
+  generateType => 'DoubleCross3PC',
+  unescapeLinesKeys => [qw/freeNote freeHistory/],
+  unescapeSkipKeys  => [qw/stage/],
+  convertViewMap    => [qw/freeNote/],
+  updateSub => \&data_update_chara,
+);
+our %pc = %{ $pcRef };
 
-### キャラクターデータ読み込み #######################################################################
-our %pc = loadSheetData();
-
-### タグ置換前処理 ###################################################################################
-### 閲覧禁止データ --------------------------------------------------
-if($pc{forbidden} && !$pc{yourAuthor}){
-  my $author = $pc{playerName};
-  my $protect   = $pc{protect};
-  my $forbidden = $pc{forbidden};
-  my $convertSource = $pc{convertSource};
+### 固有処理 #########################################################################################
+### 閲覧禁止データのマスク --------------------------------------------------
+sub maskPcData {
+  my ($pc, $forbidden) = @_;
+  unless($forbidden eq 'battle'){
+    $pc->{aka} = '';
+    $pc->{characterName} = noiseText(6,14);
+    $pc->{group} = $pc->{stage} = $pc->{tags} = '';
   
-  if($forbidden eq 'all'){
-    %pc = ();
-  }
-  if($forbidden ne 'battle'){
-    $pc{aka} = '';
-    $pc{characterName} = noiseText(6,14);
-    $pc{group} = $pc{stage} = $pc{tags} = '';
-  
-    $pc{age}    = noiseText(1,2);
-    $pc{gender} = noiseText(1,2);
-    $pc{sign}   = noiseText(3);
-    $pc{height} = noiseText(2);
-    $pc{weight} = noiseText(2);
-    $pc{blood}  = noiseText(2,3);
+    $pc->{age}    = noiseText(1,2);
+    $pc->{gender} = noiseText(1,2);
+    $pc->{sign}   = noiseText(3);
+    $pc->{height} = noiseText(2);
+    $pc->{weight} = noiseText(2);
+    $pc->{blood}  = noiseText(2,3);
     
-    $pc{cover} = noiseText(3,8);
+    $pc->{cover} = noiseText(3,8);
     
-    $pc{freeNote} = '';
+    $pc->{freeNote} = '';
     foreach(1..int(rand 3)+2){
-      $pc{freeNote} .= '　'.noiseText(18,40)."\n";
+      $pc->{freeNote} .= '　'.noiseText(18,40)."<br>";
     }
-    $pc{freeHistory} = '';
+    $pc->{freeHistory} = '';
   }
   
-  $pc{works} = noiseText(3,8);
+  $pc->{works} = noiseText(3,8);
   
-  $pc{expUsedStatus} = noiseText(2);
-  $pc{expUsedSkill}  = noiseText(2);
-  $pc{expUsedEffect} = noiseText(2);
-  $pc{expUsedItem}   = noiseText(2);
-  $pc{expUsedMemory} = noiseText(2);
-  $pc{expUsed}       = noiseText(2);
-  $pc{expSpent}      = noiseText(2);
-  $pc{expRest}       = noiseText(2);
-  $pc{expTotal}      = noiseText(2);
+  $pc->{expUsedStatus} = noiseText(2);
+  $pc->{expUsedSkill}  = noiseText(2);
+  $pc->{expUsedEffect} = noiseText(2);
+  $pc->{expUsedItem}   = noiseText(2);
+  $pc->{expUsedMemory} = noiseText(2);
+  $pc->{expUsed}       = noiseText(2);
+  $pc->{expSpent}      = noiseText(2);
+  $pc->{expRest}       = noiseText(2);
+  $pc->{expTotal}      = noiseText(2);
   
   if($forbidden ne 'battle'){
-    $pc{lifepathOrigin}          = noiseText(3,5);
-    $pc{lifepathExperience}      = noiseText(3,5);
-    $pc{lifepathEncounter}       = noiseText(3,5);
-    $pc{lifepathOriginNote}      = noiseText(8,16);
-    $pc{lifepathExperienceNote}  = noiseText(8,16);
-    $pc{lifepathEncounterNote}   = noiseText(8,16);
+    $pc->{lifepathOrigin}          = noiseText(3,5);
+    $pc->{lifepathExperience}      = noiseText(3,5);
+    $pc->{lifepathEncounter}       = noiseText(3,5);
+    $pc->{lifepathOriginNote}      = noiseText(8,16);
+    $pc->{lifepathExperienceNote}  = noiseText(8,16);
+    $pc->{lifepathEncounterNote}   = noiseText(8,16);
   }
-  $pc{lifepathAwaken}          = noiseText(2);
-  $pc{lifepathImpulse}         = noiseText(2);
-  $pc{lifepathAwakenNote}      = noiseText(8,16);
-  $pc{lifepathImpulseNote}     = noiseText(8,16);
-  $pc{lifepathOtherNote}       = noiseText(8,16);
-  $pc{lifepathAwakenEncroach}  = noiseText(1);
-  $pc{lifepathImpulseEncroach} = noiseText(1);
-  $pc{lifepathOtherEncroach}   = noiseText(1);
-  $pc{baseEncroach} = noiseText(1,2);
-  $pc{lifepathUrgeCheck} = '';
+  $pc->{lifepathAwaken}          = noiseText(2);
+  $pc->{lifepathImpulse}         = noiseText(2);
+  $pc->{lifepathAwakenNote}      = noiseText(8,16);
+  $pc->{lifepathImpulseNote}     = noiseText(8,16);
+  $pc->{lifepathOtherNote}       = noiseText(8,16);
+  $pc->{lifepathAwakenEncroach}  = noiseText(1);
+  $pc->{lifepathImpulseEncroach} = noiseText(1);
+  $pc->{lifepathOtherEncroach}   = noiseText(1);
+  $pc->{baseEncroach} = noiseText(1,2);
+  $pc->{lifepathUrgeCheck} = '';
   
-  $pc{breed}       = noiseText(3);
-  $pc{syndrome1}   = noiseText(4,8);
-  $pc{syndrome2}   = noiseText(4,8);
-  $pc{syndrome3}   = noiseText(4,8);
+  $pc->{breed}       = noiseText(3);
+  $pc->{syndrome1}   = noiseText(4,8);
+  $pc->{syndrome2}   = noiseText(4,8);
+  $pc->{syndrome3}   = noiseText(4,8);
   
   foreach my $name ('Body','Sense','Mind','Social'){
-    $pc{'sttTotal'.$name} = noiseText(1);
-    $pc{'sttBase' .$name} = noiseText(1);
-    $pc{'sttWorks'.$name} = noiseText(1);
-    $pc{'sttGrow' .$name} = noiseText(1);
-    $pc{'sttAdd'  .$name} = noiseText(1);
+    $pc->{'sttTotal'.$name} = noiseText(1);
+    $pc->{'sttBase' .$name} = noiseText(1);
+    $pc->{'sttWorks'.$name} = noiseText(1);
+    $pc->{'sttGrow' .$name} = noiseText(1);
+    $pc->{'sttAdd'  .$name} = noiseText(1);
   }
-  $pc{maxHpTotal}      = noiseText(1,2);
-  $pc{initiativeTotal} = noiseText(1,2);
-  $pc{moveTotal}       = noiseText(1,2);
-  $pc{dashTotal}       = noiseText(1,2);
-  $pc{stockTotal}      = noiseText(1,2);
-  $pc{savingTotal}     = noiseText(1,2);
-  $pc{maxHpAdd}      = '';
-  $pc{initiativeAdd} = '';
-  $pc{moveAdd}       = '';
-  $pc{dashAdd}       = '';
-  $pc{stockAdd}      = '';
-  $pc{savingAdd}     = '';
+  $pc->{maxHpTotal}      = noiseText(1,2);
+  $pc->{initiativeTotal} = noiseText(1,2);
+  $pc->{moveTotal}       = noiseText(1,2);
+  $pc->{dashTotal}       = noiseText(1,2);
+  $pc->{stockTotal}      = noiseText(1,2);
+  $pc->{savingTotal}     = noiseText(1,2);
+  $pc->{maxHpAdd}      = '';
+  $pc->{initiativeAdd} = '';
+  $pc->{moveAdd}       = '';
+  $pc->{dashAdd}       = '';
+  $pc->{stockAdd}      = '';
+  $pc->{savingAdd}     = '';
   
   foreach my $name ('Melee','Ranged','RC','Negotiate','Dodge','Percept','Will','Procure'){
-    $pc{'skillTotal'.$name} = noiseText(1);
+    $pc->{'skillTotal'.$name} = noiseText(1);
   }
   foreach my $name ('Ride','Art','Know','Info'){
-    $pc{'skill'.$name.'Num'} = 1;
-    foreach my $num (1 .. $pc{'skill'.$name.'Num'}){
-      $pc{'skill'.$name.$num.'Name'} = noiseText(4,8);
-      $pc{'skillTotal'.$name.$num} = noiseText(1);
+    $pc->{'skill'.$name.'Num'} = 1;
+    foreach my $num (1 .. $pc->{'skill'.$name.'Num'}){
+      $pc->{'skill'.$name.$num.'Name'} = noiseText(4,8);
+      $pc->{'skillTotal'.$name.$num} = noiseText(1);
     }
   }
   
   foreach(1..7){
-    $pc{'lois'.$_.'Relation'} = noiseText(2,4);
-    $pc{'lois'.$_.'Name'}     = noiseText(3,10);
-    $pc{'lois'.$_.'Note'}     = noiseText(3,16);
-    $pc{'lois'.$_.'EmoPosi'}  = noiseText(2,3);
-    $pc{'lois'.$_.'EmoNega'}  = noiseText(2,3);
-    $pc{'lois'.$_.'EmoPosiCheck'} = $pc{'lois'.$_.'EmoNegaCheck'} = $pc{'lois'.$_.'Color'} = $pc{'lois'.$_.'State'} = '';
+    $pc->{'lois'.$_.'Relation'} = noiseText(2,4);
+    $pc->{'lois'.$_.'Name'}     = noiseText(3,10);
+    $pc->{'lois'.$_.'Note'}     = noiseText(3,16);
+    $pc->{'lois'.$_.'EmoPosi'}  = noiseText(2,3);
+    $pc->{'lois'.$_.'EmoNega'}  = noiseText(2,3);
+    $pc->{'lois'.$_.'EmoPosiCheck'} = $pc->{'lois'.$_.'EmoNegaCheck'} = $pc->{'lois'.$_.'Color'} = $pc->{'lois'.$_.'State'} = '';
   }
   
-  $pc{effectNum} = int(rand 4) + 8;
-  foreach(1..$pc{effectNum}){
-    $pc{'effect'.$_.'Type'}     = '';
-    $pc{'effect'.$_.'Name'}     = noiseText(5,10);
-    $pc{'effect'.$_.'Lv'}       = noiseText(1);
-    $pc{'effect'.$_.'Timing'}   = noiseText(4,7);
-    $pc{'effect'.$_.'Skill'}    = noiseText(2,6);
-    $pc{'effect'.$_.'Dfclty'}   = noiseText(1,2);
-    $pc{'effect'.$_.'Target'}   = noiseText(2,5);
-    $pc{'effect'.$_.'Range'}    = noiseText(2,3);
-    $pc{'effect'.$_.'Encroach'} = noiseText(1);
-    $pc{'effect'.$_.'Restrict'} = noiseText(2,3);
-    $pc{'effect'.$_.'Note'}     = noiseText(10,20);
+  $pc->{effectNum} = int(rand 4) + 8;
+  foreach(1..$pc->{effectNum}){
+    $pc->{'effect'.$_.'Type'}     = '';
+    $pc->{'effect'.$_.'Name'}     = noiseText(5,10);
+    $pc->{'effect'.$_.'Lv'}       = noiseText(1);
+    $pc->{'effect'.$_.'Timing'}   = noiseText(4,7);
+    $pc->{'effect'.$_.'Skill'}    = noiseText(2,6);
+    $pc->{'effect'.$_.'Dfclty'}   = noiseText(1,2);
+    $pc->{'effect'.$_.'Target'}   = noiseText(2,5);
+    $pc->{'effect'.$_.'Range'}    = noiseText(2,3);
+    $pc->{'effect'.$_.'Encroach'} = noiseText(1);
+    $pc->{'effect'.$_.'Restrict'} = noiseText(2,3);
+    $pc->{'effect'.$_.'Note'}     = noiseText(10,20);
   }
-  $pc{comboNum} = int(rand 3) + 1;
-  foreach(1..$pc{comboNum}){
-    $pc{'combo'.$_.'Name'}     = noiseText(5,10);
-    $pc{'combo'.$_.'Combo'}    = noiseText(10,30);
-    $pc{'combo'.$_.'Timing'}   = noiseText(4,7);
-    $pc{'combo'.$_.'Skill'}    = noiseText(2,6);
-    $pc{'combo'.$_.'Dfclty'}   = noiseText(1,2);
-    $pc{'combo'.$_.'Target'}   = noiseText(2,5);
-    $pc{'combo'.$_.'Range'}    = noiseText(2,3);
-    $pc{'combo'.$_.'Encroach'} = noiseText(1);
-    $pc{'combo'.$_.'Note'}     = noiseText(10,20);
+  $pc->{comboNum} = int(rand 3) + 1;
+  foreach(1..$pc->{comboNum}){
+    $pc->{'combo'.$_.'Name'}     = noiseText(5,10);
+    $pc->{'combo'.$_.'Combo'}    = noiseText(10,30);
+    $pc->{'combo'.$_.'Timing'}   = noiseText(4,7);
+    $pc->{'combo'.$_.'Skill'}    = noiseText(2,6);
+    $pc->{'combo'.$_.'Dfclty'}   = noiseText(1,2);
+    $pc->{'combo'.$_.'Target'}   = noiseText(2,5);
+    $pc->{'combo'.$_.'Range'}    = noiseText(2,3);
+    $pc->{'combo'.$_.'Encroach'} = noiseText(1);
+    $pc->{'combo'.$_.'Note'}     = noiseText(10,20);
     foreach my $i (1..2){
-      $pc{'combo'.$_.'Condition'.$i} = noiseText(3,4);
-      $pc{'combo'.$_.'Dice'.$i}  = noiseText(1,3);
-      $pc{'combo'.$_.'Crit'.$i}  = noiseText(1,3);
-      $pc{'combo'.$_.'Atk'.$i}   = noiseText(1,3);
-      $pc{'combo'.$_.'Fixed'.$i} = noiseText(1,3);
+      $pc->{'combo'.$_.'Condition'.$i} = noiseText(3,4);
+      $pc->{'combo'.$_.'Dice'.$i}  = noiseText(1,3);
+      $pc->{'combo'.$_.'Crit'.$i}  = noiseText(1,3);
+      $pc->{'combo'.$_.'Atk'.$i}   = noiseText(1,3);
+      $pc->{'combo'.$_.'Fixed'.$i} = noiseText(1,3);
     }
     foreach my $i (3..4){
-      $pc{'combo'.$_.'Condition'.$i} = '';
-      $pc{'combo'.$_.'Dice'.$i}  = '';
-      $pc{'combo'.$_.'Crit'.$i}  = '';
-      $pc{'combo'.$_.'Atk'.$i}   = '';
-      $pc{'combo'.$_.'Fixed'.$i} = '';
+      $pc->{'combo'.$_.'Condition'.$i} = '';
+      $pc->{'combo'.$_.'Dice'.$i}  = '';
+      $pc->{'combo'.$_.'Crit'.$i}  = '';
+      $pc->{'combo'.$_.'Atk'.$i}   = '';
+      $pc->{'combo'.$_.'Fixed'.$i} = '';
     }
   }
-  $pc{weaponNum} = $pc{armorNum} = $pc{itemNum} = $pc{vehicleNum} = $pc{magicNum} = $pc{historyNum} = 0;
-  $pc{history0Exp} = noiseText(1,3);
-  
-  $pc{playerName} = $author;
-  $pc{protect} = $protect;
-  $pc{forbidden} = $forbidden;
-  $pc{convertSource} = $convertSource;
-  $pc{forbiddenMode} = 1;
+  $pc->{weaponNum} = $pc->{armorNum} = $pc->{itemNum} = $pc->{vehicleNum} = $pc->{magicNum} = $pc->{historyNum} = 0;
+  $pc->{history0Exp} = noiseText(1,3);
 }
 
-### その他 --------------------------------------------------
-$SHEET->param(rawName => $pc{characterName} || ($pc{aka} ? "“$pc{aka}”" : ''));
-
-### タグ置換 #########################################################################################
-if($pc{ver}){
-  foreach (keys %pc) {
-    next if($_ =~ /^image/);
-    next if($_ eq 'tags');
-    next if($_ eq 'stage');
-    if($_ =~ /^(?:freeNote|freeHistory)$/){
-      $pc{$_} = unescapeTagsLines($pc{$_});
-    }
-    $pc{$_} = unescapeTags($pc{$_});
-
-    $pc{$_} = noiseTextTag $pc{$_} if $pc{forbiddenMode};
-  }
-}
-else {
-  $pc{freeNote} = $pc{freeNoteView} if $pc{freeNoteView};
-}
-
-### アップデート --------------------------------------------------
-if($pc{ver}){
-  %pc = data_update_chara(\%pc);
-}
-
-### カラー設定 --------------------------------------------------
-setColors();
-
-### 出力準備 #########################################################################################
-### データ全体 --------------------------------------------------
-while (my ($key, $value) = each(%pc)){
-  $SHEET->param("$key" => $value);
-}
-### ID / URL--------------------------------------------------
-$SHEET->param(id => $::in{id});
-
-if($::in{url}){
-  $SHEET->param(convertMode => 1);
-  $SHEET->param(convertUrl => $::in{url});
-}
-
-### キャラクター名 --------------------------------------------------
-$SHEET->param(characterName => stylizeCharacterName $pc{characterName},$pc{characterNameRuby});
-$SHEET->param(aka => stylizeCharacterName $pc{aka},$pc{akaRuby});
-
-### プレイヤー名 --------------------------------------------------
-if($set::playerlist){
-  my $pl_id = (split(/-/, $::in{id}))[0];
-  $SHEET->param(playerName => '<a href="'.$set::playerlist.'?id='.$pl_id.'">'.$pc{playerName}.'</a>');
-}
-### グループ --------------------------------------------------
-if($::in{url}){
-  $SHEET->param(group => '');
-}
-else {
-  if(!$pc{group}) {
-    $pc{group} = $set::group_default;
-    $SHEET->param(group => $set::group_default);
-  }
-  foreach (@set::groups){
-    if($pc{group} eq @$_[0]){
-      $SHEET->param(groupName => @$_[2]);
-      last;
-    }
-  }
-}
-
-### タグ --------------------------------------------------
-my @tags;
-foreach(split(/ /, $pc{tags})){
-  push(@tags, {
-    URL  => uri_escape_utf8($_),
-    TEXT => $_,
-  });
-}
-$SHEET->param(Tags => \@tags);
-
-### セリフ --------------------------------------------------
-{
-  my ($words, $x, $y) = stylizeWords($pc{words},$pc{wordsX},$pc{wordsY});
-  $SHEET->param(words => $words);
-  $SHEET->param(wordsX => $x);
-  $SHEET->param(wordsY => $y);
-}
 ### ステージ --------------------------------------------------
 if($pc{stage} =~ /クロウリングケイオス/){ $SHEET->param(ccOn => 1); }
 
@@ -361,21 +262,21 @@ foreach (1 .. $pc{effectNum}){
   next if !existsRow "effect$_",'Name','Lv','Timing','Skill','Dfclty','Target','Range','Encroach','Restrict','Note','Exp';
   push(@effects, {
     TYPE     => $pc{'effect'.$_.'Type'},
-    NAME     => textShrink(13,15,17,21,$pc{'effect'.$_.'Name'}),
+    NAME     => shrinkText(13,15,17,21,$pc{'effect'.$_.'Name'}),
     LV       => $pc{'effect'.$_.'Lv'},
-    TIMING   => textTiming($pc{'effect'.$_.'Timing'}),
-    SKILL    => textSkill($pc{'effect'.$_.'Skill'}),
-    DFCLTY   => textShrink(3,4,4,4,$pc{'effect'.$_.'Dfclty'}),
-    TARGET   => textShrink(6,7,8,8,$pc{'effect'.$_.'Target'}),
+    TIMING   => renderTiming($pc{'effect'.$_.'Timing'}),
+    SKILL    => renderSkill($pc{'effect'.$_.'Skill'}),
+    DFCLTY   => shrinkText(3,4,4,4,$pc{'effect'.$_.'Dfclty'}),
+    TARGET   => shrinkText(6,7,8,8,$pc{'effect'.$_.'Target'}),
     RANGE    => $pc{'effect'.$_.'Range'},
-    ENCROACH => textShrink(3,4,4,4,$pc{'effect'.$_.'Encroach'}),
+    ENCROACH => shrinkText(3,4,4,4,$pc{'effect'.$_.'Encroach'}),
     RESTRICT => $pc{'effect'.$_.'Restrict'},
     NOTE     => $pc{'effect'.$_.'Note'},
     EXP      => ($pc{'effect'.$_.'Exp'} > 0 ? '+' : '').$pc{'effect'.$_.'Exp'},
   });
 }
 $SHEET->param(Effects => \@effects);
-sub textTiming {
+sub renderTiming {
   my $text = shift;
   $text =~ s#([^<])[／\/]#$1<hr class="dotted">#g;
   $text =~ s#(オート|メジャー|マイナー)(アクション)?#<span class="thin">$1<span class="shorten">アクション</span></span>#g;
@@ -383,13 +284,13 @@ sub textTiming {
   $text =~ s#(セットアップ|クリンナップ)(プロセス)?#<span class="thiner">$1<span class="shorten">プロセス</span></span>#g;
   return $text;
 }
-sub textSkill {
+sub renderSkill {
   my $text = shift;
   $text =~ s#(〈.*?〉|【.*?】)#<span>$1</span>#g;
   $text =~ s#(シンドローム)#<span class="thin">$1</span>#g;
   return $text;
 }
-sub textShrink {
+sub shrinkText {
   my $thin    = shift;
   my $thiner  = shift;
   my $thinest = shift;
@@ -420,7 +321,7 @@ foreach (1 .. $pc{magicNum}){
   next if !existsRow "magic$_",'Name','Type','Exp','Activate','Encroach','Note';
   push(@magics, {
     NAME     => $pc{'magic'.$_.'Name'},
-    TYPE     => textShrink(5,5,5,5,$pc{'magic'.$_.'Type'}),
+    TYPE     => shrinkText(5,5,5,5,$pc{'magic'.$_.'Type'}),
     EXP      => $pc{'magic'.$_.'Exp'},
     ACTIVATE => $pc{'magic'.$_.'Activate'},
     ENCROACH => $pc{'magic'.$_.'Encroach'},
@@ -439,14 +340,14 @@ foreach (1 .. $pc{comboNum}){
   if(!$pc{'combo'.$_.'Condition4'}){ $blankrow++; }
   if(!$pc{'combo'.$_.'Condition5'}){ $blankrow++; }
   push(@combos, {
-    NAME     => textShrink(15,17,19,23,$pc{'combo'.$_.'Name'}),
+    NAME     => shrinkText(15,17,19,23,$pc{'combo'.$_.'Name'}),
     COMBO    => textCombo($pc{'combo'.$_.'Combo'}),
-    TIMING   => textTiming($pc{'combo'.$_.'Timing'}),
+    TIMING   => renderTiming($pc{'combo'.$_.'Timing'}),
     SKILL    => textComboSkill($pc{'combo'.$_.'Skill'}),
-    DFCLTY   => textShrink(3,4,4,4,$pc{'combo'.$_.'Dfclty'}),
-    TARGET   => textShrink(6,7,8,8,$pc{'combo'.$_.'Target'}),
+    DFCLTY   => shrinkText(3,4,4,4,$pc{'combo'.$_.'Dfclty'}),
+    TARGET   => shrinkText(6,7,8,8,$pc{'combo'.$_.'Target'}),
     RANGE    => $pc{'combo'.$_.'Range'},
-    ENCROACH => textShrink(3,4,4,4,$pc{'combo'.$_.'Encroach'}),
+    ENCROACH => shrinkText(3,4,4,4,$pc{'combo'.$_.'Encroach'}),
     NOTE     => $pc{'combo'.$_.'Note'},
     CONDITION1 => $pc{'combo'.$_.'Condition1'},
     DICE1      => $pc{'combo'.$_.'Dice1'},
@@ -500,11 +401,11 @@ my @weapons;
 foreach (1 .. $pc{weaponNum}){
   next if !existsRow "weapon$_",'Name','Stock','Exp','Skill','Acc','Atk','Guard','Range','Note';
   push(@weapons, {
-    NAME  => textShrink(12,13,14,15,$pc{'weapon'.$_.'Name'}),
+    NAME  => shrinkText(12,13,14,15,$pc{'weapon'.$_.'Name'}),
     STOCK => $pc{'weapon'.$_.'Stock'},
     EXP   => $pc{'weapon'.$_.'Exp'},
     TYPE  => textType($pc{'weapon'.$_.'Type'}),
-    SKILL => textSkill(textShrink(4,5,6,7,$pc{'weapon'.$_.'Skill'})),
+    SKILL => renderSkill(shrinkText(4,5,6,7,$pc{'weapon'.$_.'Skill'})),
     ACC   => $pc{'weapon'.$_.'Acc'},
     ATK   => $pc{'weapon'.$_.'Atk'},
     GUARD => $pc{'weapon'.$_.'Guard'},
@@ -516,7 +417,7 @@ $SHEET->param(Weapons => \@weapons);
 sub textType {
   my $text = shift;
   my @texts = split(/[／\/]/, $text);
-  foreach (@texts){ textShrink(5,6,7,8,$_) }
+  foreach (@texts){ shrinkText(5,6,7,8,$_) }
   return join('<hr class="dotted">', @texts);
 }
 
@@ -525,10 +426,10 @@ my @armors;
 foreach (1 .. $pc{armorNum}){
   next if !existsRow "armor$_",'Name','Stock','Exp','Initiative','Dodge','Armor','Note';
   push(@armors, {
-    NAME       => textShrink(12,13,14,15,$pc{'armor'.$_.'Name'}),
+    NAME       => shrinkText(12,13,14,15,$pc{'armor'.$_.'Name'}),
     STOCK      => $pc{'armor'.$_.'Stock'},
     EXP        => $pc{'armor'.$_.'Exp'},
-    TYPE       => textShrink(5,6,7,8,$pc{'armor'.$_.'Type'}),
+    TYPE       => shrinkText(5,6,7,8,$pc{'armor'.$_.'Type'}),
     INITIATIVE => $pc{'armor'.$_.'Initiative'},
     DODGE      => $pc{'armor'.$_.'Dodge'},
     ARMOR      => $pc{'armor'.$_.'Armor'},
@@ -542,11 +443,11 @@ my @vehicles;
 foreach (1 .. $pc{vehicleNum}){
   next if !existsRow "vehicle$_",'Name','Stock','Exp','Skill','Atk','Initiative','Armor','Dash','Note';
   push(@vehicles, {
-    NAME       => textShrink(12,13,14,15,$pc{'vehicle'.$_.'Name'}),
+    NAME       => shrinkText(12,13,14,15,$pc{'vehicle'.$_.'Name'}),
     STOCK      => $pc{'vehicle'.$_.'Stock'},
     EXP        => $pc{'vehicle'.$_.'Exp'},
     TYPE       => textType($pc{'vehicle'.$_.'Type'}),
-    SKILL      => textSkill(textShrink(4,5,6,7,$pc{'vehicle'.$_.'Skill'})),
+    SKILL      => renderSkill(shrinkText(4,5,6,7,$pc{'vehicle'.$_.'Skill'})),
     INITIATIVE => $pc{'vehicle'.$_.'Initiative'},
     ATK        => $pc{'vehicle'.$_.'Atk'},
     ARMOR      => $pc{'vehicle'.$_.'Armor'},
@@ -561,11 +462,11 @@ my @items;
 foreach (1 .. $pc{itemNum}){
   next if !existsRow "item$_",'Name','Stock','Exp','Skill','Note';
   push(@items, {
-    NAME  => textShrink(12,13,14,15,$pc{'item'.$_.'Name'}),
+    NAME  => shrinkText(12,13,14,15,$pc{'item'.$_.'Name'}),
     STOCK => $pc{'item'.$_.'Stock'},
     EXP   => $pc{'item'.$_.'Exp'},
-    TYPE  => textShrink(5,6,7,8,$pc{'item'.$_.'Type'}),
-    SKILL => textSkill(textShrink(4,5,6,7,$pc{'item'.$_.'Skill'})),
+    TYPE  => shrinkText(5,6,7,8,$pc{'item'.$_.'Type'}),
+    SKILL => renderSkill(shrinkText(4,5,6,7,$pc{'item'.$_.'Skill'})),
     NOTE  => $pc{'item'.$_.'Note'},
   });
 }
@@ -613,87 +514,13 @@ foreach (0 .. $pc{historyNum}){
 }
 $SHEET->param(History => \@history);
 
-### バックアップ --------------------------------------------------
-my $selectedLogName;
-if($::in{id}){
-  ($selectedLogName, my $list) = getLogList($set::char_dir, $main::file);
-  $SHEET->param(LogList => $list);
-  $SHEET->param(selectedLogName => $selectedLogName);
-  if($pc{yourAuthor} || $pc{protect} eq 'password'){
-    $SHEET->param(viewLogNaming => 1);
-  }
-}
-
-### タイトル --------------------------------------------------
-$SHEET->param(title => $set::title);
-if($pc{forbidden} eq 'all' && $pc{forbiddenMode}){
-  $SHEET->param(titleName => '非公開データ');
-}
-else {
-  $SHEET->param(titleName =>
-    (removeTags removeRuby($pc{characterName}||"“$pc{aka}”")) .
-    ($::in{log} ? " 【".($selectedLogName||$pc{updateTime})."】" : '')
-  );
-  $SHEET->param(encodedNameLetter => uri_escape_utf8 removeTags "$pc{characterName}$pc{characterNameRuby}$pc{aka}$pc{akaRuby}“”");
-}
-
-### 種族名 --------------------------------------------------
-$pc{race} =~ s/［.*］//g;
-$SHEET->param(race => $pc{race});
-
 ### OGP --------------------------------------------------
-$SHEET->param(ogUrl => url().($::in{url} ? "?url=$::in{url}" : "?id=$::in{id}"));
-if($pc{image}) { $SHEET->param(ogImg => $pc{imageURL}); }
 $SHEET->param(ogDescript => removeTags "性別:$pc{gender}　年齢:$pc{age}　ワークス:$pc{works}　シンドローム:$pc{syndrome1} $pc{syndrome2} $pc{syndrome3}");
 
-### バージョン等 --------------------------------------------------
-$SHEET->param(ver => $::ver);
-$SHEET->param(coreDir => $::core_dir);
-$SHEET->param(gameDir => 'dx3');
-$SHEET->param(sheetType => 'chara');
-$SHEET->param(generateType => 'DoubleCross3PC');
-$SHEET->param(defaultImage => $::core_dir.'/skin/dx3/img/default_pc.png');
-
 ### メニュー --------------------------------------------------
-my @menu = ();
-if(!$pc{modeDownload}){
-  push(@menu, { TEXT => '⏎', TYPE => "href", VALUE => './', });
-  if($::in{url}){
-    push(@menu, { TEXT => 'コンバート', TYPE => "href", VALUE => "./?mode=convert&url=$::in{url}" });
-  }
-  else {
-    if($pc{logId}){
-      if(!$pc{forbiddenMode}){
-        push(@menu, { TEXT => '出力'    , TYPE => "onclick", VALUE => "downloadListOn()",  });
-      }
-      push(@menu, { TEXT => '過去ログ', TYPE => "onclick", VALUE => 'loglistOn()', });
-      if($pc{reqdPassword}){ push(@menu, { TEXT => '復元', TYPE => "onclick", VALUE => "editOn()", }); }
-      else                 { push(@menu, { TEXT => '復元', TYPE => "href"   , VALUE => "./?mode=edit&id=$::in{id}&log=$pc{logId}", }); }
-    }
-    else {
-      if(!$pc{forbiddenMode}){
-        push(@menu, { TEXT => 'パレット', TYPE => "onclick", VALUE => "chatPaletteOn()",   });
-        push(@menu, { TEXT => '出力'    , TYPE => "onclick", VALUE => "downloadListOn()",  });
-        push(@menu, { TEXT => '過去ログ', TYPE => "onclick", VALUE => "loglistOn()",      });
-      }
-      if($pc{reqdPassword}){ push(@menu, { TEXT => '編集', TYPE => "onclick", VALUE => "editOn()", }); }
-      else                 { push(@menu, { TEXT => '編集', TYPE => "href"   , VALUE => "./?mode=edit&id=$::in{id}", }); }
-    }
-  }
-}
-$SHEET->param(Menu => createSheetMenu @menu);
-
-### エラー --------------------------------------------------
-$SHEET->param(error => $main::login_error);
+setSheetMenu();
 
 ### 出力 #############################################################################################
-print "Content-Type: text/html\n\n";
-if($pc{modeDownload}){
-  if($pc{forbidden} && $pc{yourAuthor}){ $SHEET->param(forbidden => ''); }
-  print downloadModeSheetConvert outputTemplate($SHEET);
-}
-else {
-  print outputTemplate($SHEET);
-}
+printFinalizedView();
 
 1;

@@ -203,11 +203,12 @@ sub getProtectType {
   while (my $line = <$IN>){
     if   ($line =~ /^protect<>(.*)\n/)  { $protect = $1; }
     elsif($line =~ /^forbidden<>(.*)\n/){ $forbidden = $1; }
+    elsif($line =~ /^hide<>(.*)\n/){ $hide = $1; }
     
-    if($protect && $forbidden){ close($IN); last; }
+    if($protect && $forbidden && $hide){ close($IN); last; }
   }
   close($IN);
-  return ($protect, $forbidden);
+  return ($protect, $forbidden, $hide);
 }
 
 ### 暗号化 --------------------------------------------------
@@ -644,7 +645,6 @@ sub unescapeTagsLines {
   $text =~ s/^\*\*\*\*(.*?)$/<\/p><h5>$1<\/h5><p>/gim;
   $text =~ s/^\*\*\*(.*?)$/<\/p><h4>$1<\/h4><p>/gim;
   $text =~ s/^\*\*(.*?)$/<\/p><h3>$1<\/h3><p>/gim;
-  $text =~ s/\A\*(.*?)$/$main::pc{"head_$_"} = $1; ''/egim if $_;
   $text =~ s/^\*(.*?)$/<\/p><h2>$1<\/h2><p>/gim;
   
   $text =~ s/(?:^(?:\|(?:.*?))+\|[hc]?(?:\n|$))+/'<\/p>'.&generateTable($&).'<p>'/egim;
@@ -863,9 +863,12 @@ sub convert10to36 {
   }
   return join('', @work);
 }
-### 進数変換 --------------------------------------------------
+### ケース変換 --------------------------------------------------
 sub kebabToCamel {
   return $_[0] =~ s/-([a-z])/\u$1/gr;
+}
+sub snakeToCamel {
+  return $_[0] =~ s/_([a-z])/\u$1/gr;
 }
 
 ### 行の有無チェック --------------------------------------------------

@@ -8,116 +8,55 @@ use HTML::Template;
 ### データ読み込み ###################################################################################
 require $set::data_magi;
 
-### テンプレート読み込み #############################################################################
-my $SHEET;
-$SHEET = HTML::Template->new( filename => $set::skin_sheet, utf8 => 1,
-  path => ['./', $::core_dir."/skin/ms", $::core_dir."/skin/_common", $::core_dir],
-  search_path_on_include => 1,
-  loop_context_vars => 1,
-  die_on_bad_params => 0, die_on_missing_include => 0, case_sensitive => 1, global_vars => 1);
+### データ／テンプレート読込 #########################################################################
+(my $pcRef, my $SHEET) = setupViewBase(
+  unescapeLinesKeys => [qw/freeNote freeHistory/],
+  unescapeSkipRe    => qr/^(?:member[0-9]+URL$|(?:image))/,
+  nameKeys          => [qw/clanName/],
+  updateSub => \&data_update_chara,
+);
+our %pc = %{ $pcRef };
 
-### キャラクターデータ読み込み #######################################################################
-our %pc = loadSheetData();
-
-### タグ置換前処理 ###################################################################################
-### 閲覧禁止データ --------------------------------------------------
-if($pc{forbidden} && !$pc{yourAuthor}){
-  my $author = $pc{playerName};
-  my $protect   = $pc{protect};
-  my $forbidden = $pc{forbidden};
-  my $convertSource = $pc{convertSource};
+### 固有処理 #########################################################################################
+### 閲覧禁止データのマスク --------------------------------------------------
+sub maskPcData {
+  my ($pc, $forbidden) = @_;
+  unless($forbidden eq 'battle'){
+    $pc->{aka} = '';
+    $pc->{clanName} = noiseText(6,14);
+    $pc->{group} = $pc->{clan} = $pc->{tags} = '';
   
-  if($forbidden eq 'all'){
-    %pc = ();
-  }
-  if($forbidden ne 'battle'){
-    $pc{aka} = '';
-    $pc{clanName} = noiseText(6,14);
-    $pc{group} = $pc{clan} = $pc{tags} = '';
-  
-    $pc{rule}  = noiseText(6,12);
-    $pc{base}  = noiseText(2,6);
-    $pc{belong} = noiseText(2,6);
-    $pc{leaderName} = noiseText(2,10);
-    $pc{leaderURL} = '';
+    $pc->{rule}  = noiseText(6,12);
+    $pc->{base}  = noiseText(2,6);
+    $pc->{belong} = noiseText(2,6);
+    $pc->{leaderName} = noiseText(2,10);
+    $pc->{leaderURL} = '';
 
-    foreach(1..$pc{memberNum}){
-      $pc{'member'.$_.'Name'} = noiseText(2,10);
-      $pc{'member'.$_.'URL'} = '';
+    foreach(1..$pc->{memberNum}){
+      $pc->{'member'.$_.'Name'} = noiseText(2,10);
+      $pc->{'member'.$_.'URL'} = '';
     }
     
-    $pc{freeNote} = '';
+    $pc->{freeNote} = '';
     foreach(1..int(rand 3)+2){
-      $pc{freeNote} .= '　'.noiseText(18,40)."\n";
+      $pc->{freeNote} .= '　'.noiseText(18,40)."<br>";
     }
-    $pc{freeHistory} = '';
+    $pc->{freeHistory} = '';
   }
 
-  $pc{level}  = noiseText(1,2);
+  $pc->{level}  = noiseText(1,2);
 
   foreach(1..4){
-    $pc{'magi'.$_.'Name'}   = noiseText(5,10);
-    $pc{'magi'.$_.'Timing'} = noiseText(3,4);
-    $pc{'magi'.$_.'Target'} = noiseText(2,5);
-    $pc{'magi'.$_.'Cond'}   = noiseText(3,4);
-    $pc{'magi'.$_.'Note'}   = noiseText(10,15);
+    $pc->{'magi'.$_.'Name'}   = noiseText(5,10);
+    $pc->{'magi'.$_.'Timing'} = noiseText(3,4);
+    $pc->{'magi'.$_.'Target'} = noiseText(2,5);
+    $pc->{'magi'.$_.'Cond'}   = noiseText(3,4);
+    $pc->{'magi'.$_.'Note'}   = noiseText(10,15);
   }
-  $pc{historyNum} = 0;
-  $pc{history0Exp} = noiseText(1,3);
-  
-  $pc{playerName} = $author;
-  $pc{protect} = $protect;
-  $pc{forbidden} = $forbidden;
-  $pc{convertSource} = $convertSource;
-  $pc{forbiddenMode} = 1;
+  $pc->{historyNum} = 0;
+  $pc->{history0Exp} = noiseText(1,3);
 }
 
-### その他 --------------------------------------------------
-$SHEET->param(rawName => $pc{clanName} || '');
-
-### タグ置換 #########################################################################################
-if($pc{ver}){
-  foreach (keys %pc) {
-    next if($_ =~ /^(?:(leader|member[0-9]+)URL$|(?:image))/);
-    next if($_ eq 'tags');
-    if($_ =~ /^(?:freeNote|freeHistory)$/){
-      $pc{$_} = unescapeTagsLines($pc{$_});
-    }
-    $pc{$_} = unescapeTags($pc{$_});
-
-    $pc{$_} = noiseTextTag $pc{$_} if $pc{forbiddenMode};
-  }
-}
-
-### アップデート --------------------------------------------------
-if($pc{ver}){
-  %pc = data_update_clan(\%pc);
-}
-
-### カラー設定 --------------------------------------------------
-setColors();
-
-### 出力準備 #########################################################################################
-### データ全体 --------------------------------------------------
-while (my ($key, $value) = each(%pc)){
-  $SHEET->param("$key" => $value);
-}
-### ID / URL--------------------------------------------------
-$SHEET->param(id => $::in{id});
-
-if($::in{url}){
-  $SHEET->param(convertMode => 1);
-  $SHEET->param(convertUrl => $::in{url});
-}
-
-### キャラクター名 --------------------------------------------------
-$SHEET->param(clanName => stylizeCharacterName $pc{clanName},$pc{clanNameRuby});
-
-### プレイヤー名 --------------------------------------------------
-if($set::playerlist){
-  my $pl_id = (split(/-/, $::in{id}))[0];
-  $SHEET->param(playerName => '<a href="'.$set::playerlist.'?id='.$pl_id.'">'.$pc{playerName}.'</a>');
-}
 ### グループ --------------------------------------------------
 if($::in{url} || !@set::groups_clan){
   $SHEET->param(group => '');
@@ -134,16 +73,6 @@ else {
     }
   }
 }
-
-### タグ --------------------------------------------------
-my @tags;
-foreach(split(/ /, $pc{tags})){
-  push(@tags, {
-    "URL"  => uri_escape_utf8($_),
-    "TEXT" => $_,
-  });
-}
-$SHEET->param(Tags => \@tags);
 
 ### リーダー --------------------------------------------------
 $SHEET->param(leader => $pc{leaderURL} ? "<a href=\"$pc{leaderURL}\">$pc{leaderName}</a>" : $pc{leaderName});
@@ -218,82 +147,13 @@ foreach (1 .. $pc{historyNum}){
 }
 $SHEET->param(History => \@history);
 
-### バックアップ --------------------------------------------------
-my $selectedLogName;
-if($::in{id}){
-  ($selectedLogName, my $list) = getLogList($set::char_dir, $main::file);
-  $SHEET->param(LogList => $list);
-  $SHEET->param(selectedLogName => $selectedLogName);
-  if($pc{yourAuthor} || $pc{protect} eq 'password'){
-    $SHEET->param(viewLogNaming => 1);
-  }
-}
-
-### タイトル --------------------------------------------------
-$SHEET->param(title => $set::title);
-if($pc{forbidden} eq 'all' && $pc{forbiddenMode}){
-  $SHEET->param(titleName => '非公開データ');
-}
-else {
-  $SHEET->param(titleName =>
-    (removeTags removeRuby($pc{clanName}||"“$pc{aka}”")) .
-    ($::in{log} ? " 【".($selectedLogName||$pc{updateTime})."】" : '')
-  );
-  $SHEET->param(encodedNameLetter => uri_escape_utf8 removeTags $pc{clanName}.$pc{clanNameRuby});
-}
-
 ### OGP --------------------------------------------------
-$SHEET->param(ogUrl => url().($::in{url} ? "?url=$::in{url}" : "?id=$::in{id}"));
-if($pc{image}) { $SHEET->param(ogImg => $pc{imageURL}); }
 $SHEET->param(ogDescript => removeTags "強度:$pc{level}ルール:$pc{rule}　拠点:$pc{base}　所属:$pc{belong}　リーダー:$pc{leaderName}");
 
-### バージョン等 --------------------------------------------------
-$SHEET->param(ver => $::ver);
-$SHEET->param(coreDir => $::core_dir);
-$SHEET->param(gameDir => 'ms');
-$SHEET->param(sheetType => 'clan');
-$SHEET->param(generateType => 'MamonoScrambleClan');
-$SHEET->param(defaultImage => $::core_dir.'/skin/ms/img/default_pc.png');
-
 ### メニュー --------------------------------------------------
-my @menu = ();
-if(!$pc{modeDownload}){
-  push(@menu, { TEXT => '⏎', TYPE => "href", VALUE => './', });
-  if($::in{url}){
-    push(@menu, { TEXT => 'コンバート', TYPE => "href", VALUE => "./?mode=convert&url=$::in{url}" });
-  }
-  else {
-    if($pc{logId}){
-      if(!$pc{forbiddenMode}){
-        push(@menu, { TEXT => '出力'    , TYPE => "onclick", VALUE => "downloadListOn()",  });
-      }
-      push(@menu, { TEXT => '過去ログ', TYPE => "onclick", VALUE => 'loglistOn()', });
-      if($pc{reqdPassword}){ push(@menu, { TEXT => '復元', TYPE => "onclick", VALUE => "editOn()", }); }
-      else                   { push(@menu, { TEXT => '復元', TYPE => "href"   , VALUE => "./?mode=edit&id=$::in{id}&log=$pc{logId}", }); }
-    }
-    else {
-      if(!$pc{forbiddenMode}){
-        push(@menu, { TEXT => '出力'    , TYPE => "onclick", VALUE => "downloadListOn()",  });
-        push(@menu, { TEXT => '過去ログ', TYPE => "onclick", VALUE => "loglistOn()",      });
-      }
-      if($pc{reqdPassword}){ push(@menu, { TEXT => '編集', TYPE => "onclick", VALUE => "editOn()", }); }
-      else                   { push(@menu, { TEXT => '編集', TYPE => "href"   , VALUE => "./?mode=edit&id=$::in{id}", }); }
-    }
-  }
-}
-$SHEET->param(Menu => createSheetMenu @menu);
-
-### エラー --------------------------------------------------
-$SHEET->param(error => $main::login_error);
+setSheetMenu();
 
 ### 出力 #############################################################################################
-print "Content-Type: text/html\n\n";
-if($pc{modeDownload}){
-  if($pc{forbidden} && $pc{yourAuthor}){ $SHEET->param(forbidden => ''); }
-  print downloadModeSheetConvert outputTemplate($SHEET);
-}
-else {
-  print outputTemplate($SHEET);
-}
+printFinalizedView();
 
 1;
