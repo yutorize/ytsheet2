@@ -29,26 +29,16 @@ if($pc{forbidden} && !$pc{yourAuthor}){
   if($forbidden eq 'all'){
     %pc = ();
   }
-  if($forbidden ne 'battle'){
+  unless($forbidden eq 'battle'){
     $pc{tags} = '';
-
+  }
+  ## 魔法
+  unless($forbidden eq 'battle'){
     $pc{magicName} = noiseText(6,14);
     $pc{magicDescription} = '';
     foreach(1..int(rand 3)+3){
-      $pc{magicDescription} .= noiseText(18,50)."\n";
+      $pc{magicDescription} .= noiseText(18,50)."<br>";
     }
-
-    $pc{godName}   = noiseText(2,12);
-    $pc{godAka}    = noiseText(2,5);
-    $pc{godClass}  = noiseText(3);
-    $pc{godRank}   = noiseText(2,3);
-    $pc{godArea}   = noiseText(5,10);
-
-    $pc{godSymbol} = '';
-    foreach(1..int(rand 3)+2){ $pc{godSymbol} .= noiseText(18,40)."\n"; }
-    $pc{godDeity} = '';
-    foreach(1..int(rand 5)+8){ $pc{godDeity} .= noiseText(18,40)."\n"; }
-    foreach(1..3){ $pc{"godMaxim".$_} .= noiseText(8,30); }
   }
   
   $pc{magicClass}    = noiseText(3,14);
@@ -66,10 +56,24 @@ if($pc{forbidden} && !$pc{yourAuthor}){
   $pc{magicActionTypeSetup} = 0;
   $pc{magicEffect} = '';
   foreach(1..int(rand 3)+2){
-    $pc{magicEffect} .= noiseText(18,40)."\n";
+    $pc{magicEffect} .= noiseText(18,40)."<br>";
   }
   $pc{magicMagisphere}  = noiseText(1,3);
 
+  ## 神格
+  unless($forbidden eq 'battle'){
+    $pc{godName}   = noiseText(2,12);
+    $pc{godAka}    = noiseText(2,5);
+    $pc{godClass}  = noiseText(3);
+    $pc{godRank}   = noiseText(2,3);
+    $pc{godArea}   = noiseText(5,10);
+
+    $pc{godSymbol} = '';
+    foreach(1..int(rand 3)+2){ $pc{godSymbol} .= noiseText(18,40)."<br>"; }
+    $pc{godDeity} = '';
+    foreach(1..int(rand 5)+8){ $pc{godDeity} .= noiseText(18,40)."<br>"; }
+    foreach(1..3){ $pc{"godMaxim".$_} .= noiseText(8,30); }
+  }
   foreach my $lv (2,4,7,10,13){
     $pc{"godMagic${lv}Name"}     = noiseText(3,14);
     $pc{"godMagic${lv}Cost"}     = noiseText(3,4);
@@ -84,16 +88,56 @@ if($pc{forbidden} && !$pc{yourAuthor}){
     $pc{"godMagic${lv}ActionTypeSetup"} = 0;
     $pc{"godMagic${lv}Effect"} = '';
     foreach(1..int(rand 3)+2){
-      $pc{"godMagic${lv}Effect"} .= noiseText(18,40)."\n";
+      $pc{"godMagic${lv}Effect"} .= noiseText(18,40)."<br>";
     }
   }
-  
-  $pc{effects} = '';
-  foreach(1..int(rand 4)+1){
-    $pc{effects} .= noiseText(6,18)."\n";
-    $pc{effects} .= '　'.noiseText(18,40)."\n";
-    $pc{effects} .= '　'.noiseText(18,40)."\n" if(int rand 2);
-    $pc{effects} .= "\n";
+  ## 流派
+  unless($forbidden eq 'battle'){
+    $pc{schoolName} = noiseText(2,12);
+    $pc{schoolArea} = noiseText(5,10);
+    $pc{schoolReq}  = noiseText(5,10);
+    $pc{schoolNote} = '';
+    foreach(1..int(rand 5)+5){
+      $pc{schoolNote} .= noiseText(18,40)."<br>";
+    }
+    $pc{schoolItemNote} = '';
+    foreach(1..int(rand 3)+1){
+      $pc{schoolItemNote} .= noiseText(18,40)."<br>";
+    }
+  }
+  $pc{schoolArtsNote} = '';
+  foreach(1..int(rand 2)+1){
+    $pc{schoolArtsNote} .= noiseText(18,40)."<br>";
+  }
+  $pc{"schoolArtsNum"} = 3;
+  foreach my $num (1..3){
+    $pc{"schoolArts${num}Name"}    = noiseText(3,14);
+    $pc{"schoolArts${num}Type"}    = noiseText(3,9);
+    $pc{"schoolArts${num}Premise"} = noiseText(3,9);
+    $pc{"schoolArts${num}Equip"}   = noiseText(3,9);
+    $pc{"schoolArts${num}Use"}     = noiseText(3,9);
+    $pc{"schoolArts${num}Apply"}   = noiseText(3,9);
+    $pc{"schoolArts${num}Risk"}    = noiseText(3,9);
+    $pc{"schoolArts${num}Summary"} = noiseText(6,16);
+    $pc{"schoolArts${num}Effect"} = '';
+    foreach(1..int(rand 3)+2){
+      $pc{"schoolArts${num}Effect"} .= noiseText(18,40)."<br>";
+    }
+  }
+  $pc{"schoolMagicNum"} = 0;
+  ## 特殊能力
+  unless($forbidden eq 'battle'){
+    $pc{skillName} = noiseText(2,12);
+  }
+  foreach('Passive','Minor','Setup','Major'){ $pc{"skillAction$_"} = 0; }
+  $pc{skillResist} = noiseText(2);
+  $pc{skillActionBaseValue} = noiseText(13,14);
+  $pc{skillResistBaseValue} = noiseText(5);
+  $pc{skillRankMode} = 0;
+  $pc{skillRankB_summary} = noiseText(6,16);
+  $pc{skillRankB_effect} = '';
+  foreach(1..int(rand 3)+2){
+    $pc{skillRankB_effect} .= noiseText(18,40)."<br>";
   }
   
   $pc{author}    = $author;
