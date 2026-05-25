@@ -50,9 +50,13 @@ if ($mode eq 'make'){
     error('400:登録キーが一致しません。');
   }
   
-  open (my $FH, '<', $set::passfile);
-  my %ids = map { (/^([^<]+)</)[0] => 1; } <$FH>;
-  close ($FH);
+  open (my $LIST, '<', $set::passfile);
+  my %ids = map { (/^([^<]+)</)[0] => 1; } <$LIST>;
+  close ($LIST);
+  if(open (my $DEL, '<', $set::data_dir.'/deleted.cgi')){
+    $ids{ (/^([^<]+)</)[0] } = 1 while <$DEL>;
+    close ($DEL);
+  }
   ## ID生成
   if($set::id_type && $LOGIN_ID){
     my $type = (exists $set::lib_type{$::in{type}}) ? $::in{type} : '';
