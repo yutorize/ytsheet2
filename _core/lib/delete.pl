@@ -60,6 +60,12 @@ if($mode eq 'delete'){
        $message .= 'シートを削除しました。<br>';
     }
   }
+
+  if(sysopen my $FH, $set::data_dir.'/deleted.cgi', O_WRONLY | O_APPEND | O_CREAT){
+    if($user){ print $FH "$::in{id}<>$file<>".time."<>$user<>\n"; }
+    else { print $FH "$::in{id}<>$file<>".time."<><>\n"; }
+    close ($FH);
+  }
   
   info('キャラクターシートの削除',$message);
 }
@@ -103,7 +109,7 @@ elsif($mode eq 'img-delete'){
   $message .= '<a href="./?id='.$::in{id}.'">キャラクターシートを確認</a>';
   
   
-  sysopen (my $FH, $::core_dir.'/data/delete.cgi', O_WRONLY | O_APPEND | O_CREAT) or $message .= 'デリートリストが開けませんでした。';
+  sysopen (my $FH, $::core_dir.'/data/image-delete.cgi', O_WRONLY | O_APPEND | O_CREAT) or $message .= 'デリートリストが開けませんでした。';
     if($user){ print $FH "$::in{id}<>$user<>$file<>image<>".time."<>\n"; }
     else { print $FH "$::in{id}<>-----<>$file<>image<>".time."<>\n"; }
   close ($FH);
