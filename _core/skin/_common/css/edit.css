@@ -1205,6 +1205,7 @@ input[type="submit"]:hover {
   padding-top: 1em;
   padding-bottom: 1em;
   writing-mode: vertical-rl;
+  font-family: var(--base-font-family-min);
   font-weight: bold;
   font-size: 2rem;
   color: var(--text-color);
