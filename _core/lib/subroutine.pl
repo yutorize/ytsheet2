@@ -15,6 +15,7 @@ our %statusCode = (
   404 => '404 Not Found',
   403 => '403 Forbidden',
   409 => '409 Conflict',
+  410 => '410 Gone',
   429 => '429 Too Many Requests',
   500 => '500 Internal Server Error',
   502 => '502 Bad Gateway',
