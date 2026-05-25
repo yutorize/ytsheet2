@@ -553,12 +553,12 @@ sub unescapeTags {
 
   if($set::game eq 'sw2'){
     if($::in{mode} ne 'download'){
-      $text =~ s/\[魔\]/<img alt="&#91;魔&#93;" class="i-icon" src="${set::icon_dir}wp_magic.png">/gi;
-      $text =~ s/\[刃\]/<img alt="&#91;刃&#93;" class="i-icon" src="${set::icon_dir}wp_edge.png">/gi;
-      $text =~ s/\[打\]/<img alt="&#91;打&#93;" class="i-icon" src="${set::icon_dir}wp_blow.png">/gi;
-      $text =~ s/\[流\]/<img alt="&#91;流&#93;" class="i-icon" src="${set::icon_dir}wp_school.png">/gi;
-      $text =~ s/\[ア\]/<img alt="&#91;ア&#93;" class="i-icon" src="${set::icon_dir}wp_school_a.png">/gi;
-      $text =~ s/\[テ\]/<img alt="&#91;テ&#93;" class="i-icon" src="${set::icon_dir}wp_school_t.png">/gi;
+      $text =~ s/\[魔\]/<img alt="&#91;魔&#93;" class="i-icon" src="${set::icon_dir}item_magic.png">/gi;
+      $text =~ s/\[刃\]/<img alt="&#91;刃&#93;" class="i-icon" src="${set::icon_dir}item_edge.png">/gi;
+      $text =~ s/\[打\]/<img alt="&#91;打&#93;" class="i-icon" src="${set::icon_dir}item_blow.png">/gi;
+      $text =~ s/\[流\]/<img alt="&#91;流&#93;" class="i-icon" src="${set::icon_dir}item_school.png">/gi;
+      $text =~ s/\[ア\]/<img alt="&#91;ア&#93;" class="i-icon" src="${set::icon_dir}item_school_a.png">/gi;
+      $text =~ s/\[テ\]/<img alt="&#91;テ&#93;" class="i-icon" src="${set::icon_dir}item_school_t.png">/gi;
       $text =~ s/\[特\]/<img alt="&#91;特&#93;" class="i-icon" src="${set::icon_dir}item_local.png">/gi;
     }
     else {
