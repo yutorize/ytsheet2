@@ -103,7 +103,7 @@ foreach (@$pageLines) {
     PRICE    => $pc{price},
     AGE      => $pc{age},
     SUMMARY  => $pc{summary},
-    MAGIC    => ($pc{type} =~ /\[ma\]/ ? "<img class=\"${set::icon_dir}wp_magic.png\">" : ''),
+    MAGIC    => ($pc{type} =~ /\[ma\]/ ? "<img class=\"${set::icon_dir}item_magic.png\">" : ''),
     TAGS     => renderTagLinks($pc{tags}),
     DATE     => renderUpdateTime($pc{date}),
     HIDE     => $pc{hide},
