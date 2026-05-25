@@ -161,8 +161,8 @@ if(!$::in{log}){
     next if !$pc{"p${num}_imageURL"};
     $pc{"p${num}_imageSrc"} = $pc{"p${num}_imageURL"};
     $pc{images} .= "'p${num}': \"".($pc{modeDownload} ? urlToBase64($pc{"p${num}_imagePath"}) : $pc{"p${num}_imageURL"})."\", ";
-    if($pc{"p${num}_imageFit"} eq "p${num}_percentY"){
-      $pc{"p${num}_imageFit"} = 'auto '.$pc{imagePercent}.'%';
+    if($pc{"p${num}_imageFit"} eq "percentY"){
+      $pc{"p${num}_imageFit"} = 'auto '.$pc{"p${num}_imagePercent"}.'%';
     }
     elsif($pc{"p${num}_imageFit"} =~ /^percentX?$/){
       $pc{"p${num}_imageFit"} = $pc{"p${num}_imagePercent"}.'%';
