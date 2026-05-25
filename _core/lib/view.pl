@@ -359,7 +359,14 @@ sub viewNotFound { #v1.14/v1.20のコンバート処理
       exit;
     }
   }
-  
+  # 削除済みシートの確認
+  if(open (my $LIST, '<', $set::data_dir.'/deleted.cgi')){
+    while(my $line = <$LIST>){
+      if(index($line, "$::in{id}<") == 0){ error('410:削除されたシートです。'); }
+    }
+    close($LIST);
+  }
+
   error('404:シートが見つかりませんでした。');
 }
 
