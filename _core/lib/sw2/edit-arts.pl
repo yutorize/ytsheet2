@@ -38,20 +38,22 @@ push(@magic_classes, @craft_classes);
 my ($data, $mode, $file, $message) = loadSheetData($::in{mode});
 our %pc = %{ $data };
 
-my $mode_make = ($mode =~ /^(blanksheet|copy|convert)$/) ? 1 : 0;
+my $isNewSheet = isNewSheet($mode);
 
 ### 出力準備 #########################################################################################
-if($message){
-  my $name = unescapeTags($pc{category} eq 'magic' ? $pc{magicName} : $pc{category} eq 'god' ? $pc{godAka}.$pc{godName} : $pc{category} eq 'school' ? $pc{schoolName} : '無題');
-  $message =~ s/<!NAME>/$name/;
-}
-### 製作者名 --------------------------------------------------
-if($mode_make){
-  $pc{author} = (getPlayerName($LOGIN_ID))[0];
-}
-### 初期設定 --------------------------------------------------
-if($mode_make){ $pc{protect} = $LOGIN_ID ? 'account' : 'password'; }
+$message = applyMessageName($message, unescapeTags(
+    $pc{category} eq 'magic'  ? $pc{magicName}
+  : $pc{category} eq 'god'    ? $pc{godAka}.$pc{godName}
+  : $pc{category} eq 'school' ? $pc{schoolName}
+  : $pc{category} eq 'skill'  ? $pc{skillName}
+  : '無題'
+));
 
+### 初期設定 --------------------------------------------------
+if($isNewSheet){
+  $pc{author} = (getPlayerName($LOGIN_ID))[0];
+  $pc{protect} ||= $LOGIN_ID ? 'account' : 'password';
+}
 if($mode eq 'edit' || ($mode eq 'convert' && $pc{ver})){
   %pc = data_update_arts(\%pc);
 }
@@ -117,7 +119,7 @@ my $image_maxsize_view = $image_maxsize >= 1048576 ? sprintf("%.3g",$image_maxsi
 
 ### フォーム表示 #####################################################################################
 print <<"HTML";
-Content-type: text/html\n
+Content-Type: text/html; charset=utf-8\n
 <!DOCTYPE html>
 <html lang="ja">
 
@@ -152,82 +154,29 @@ Content-type: text/html\n
       <input type="hidden" name="ver" value="${main::ver}">
       <input type="hidden" name="type" value="a">
 HTML
-if($mode_make){
+if($isNewSheet){
   print '<input type="hidden" name="_token" value="'.tokenMake().'">'."\n";
 }
-print <<"HTML";
-      <input type="hidden" name="mode" value="@{[ $mode eq 'edit' ? 'save' : 'make' ]}">
-            
-      <div id="header-menu">
-        <h2><span></span></h2>
-        <ul class="menu-items">
-          <li onclick="sectionSelect('common');" class="sheet-main"><span class="sheet-kind"></span><span>データ</span>
-          <li onclick="sectionSelect('color');" class="color-icon" title="シートデザインカスタム">
-          <li onclick="view('text-rule')" class="help-icon" title="テキスト整形ルール">
-          <li onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード切替">
-          <li onclick="exportAsJson()" class="download-icon" title="JSON出力">
-          <li class="buttons">
-            <ul>
-              <li @{[ display ($mode eq 'edit') ]} class="view-icon" title="閲覧画面"><a href="./?id=$::in{id}"></a>
-              <li @{[ display ($mode eq 'edit') ]} class="copy" onclick="window.open('./?mode=copy&id=$::in{id}@{[  $::in{log}?"&log=$::in{log}":'' ]}');">複製
-              <li class="submit" onclick="formSubmit()" title="Ctrl+S">保存
-            </ul>
-          </li>
-        </ul>
-        <div id="save-state"></div>
-      </div>
+print qq|<input type="hidden" name="mode" value="@{[ $mode eq 'edit' ? 'save' : 'make' ]}">\n|;
 
-      <aside class="message">$message</aside>
-      
-      <section id="section-common">
-HTML
-if($set::user_reqd){
-  print <<~"HTML";
-    <input type="hidden" name="protect" value="account">
-    <input type="hidden" name="protectOld" value="$pc{protect}">
-    <input type="hidden" name="pass" value="$::in{pass}">
+print renderEditHeaderMenu(
+  tabsHtml => <<~'HTML',
+        <li onclick="sectionSelect('common');" class="sheet-main"><span class="sheet-kind"></span><span>データ</span>
   HTML
-}
-else {
-  if($set::registerkey && $mode_make){
-    print '登録キー：<input type="text" name="registerkey" required>'."\n";
-  }
-  print <<~"HTML";
-      <details class="box" id="edit-protect" @{[$mode eq 'edit' ? '':'open']}>
-      <summary>編集保護設定</summary>
-      <fieldset id="edit-protect-view"><input type="hidden" name="protectOld" value="$pc{protect}">
-  HTML
-  if($LOGIN_ID){
-    print '<input type="radio" name="protect" value="account"'.($pc{protect} eq 'account'?' checked':'').'> アカウントに紐付ける（ログイン中のみ編集可能になります）<br>';
-  }
-    print '<input type="radio" name="protect" value="password"'.($pc{protect} eq 'password'?' checked':'').'> パスワードで保護 ';
-  if ($mode eq 'edit' && $pc{protect} eq 'password') {
-    print '<input type="hidden" name="pass" value="'.$::in{pass}.'"><br>';
-  } else {
-    print '<input type="password" name="pass"><br>';
-  }
-  print <<~"HTML";
-        <input type="radio" name="protect" value="none"@{[ $pc{protect} eq 'none'?' checked':'' ]}> 保護しない（誰でも編集できるようになります）
-      </fieldset>
-      </details>
-  HTML
-}
+);
+print qq|<aside class="message">$message</aside>\n|;
+print qq|<section id="section-common">\n|;
+
+print renderProtectBlock(
+  isNewSheet => $isNewSheet,
+  protect    => $pc{protect},
+  pass       => $::in{pass},
+);
+print renderVisibilityBlock(
+  forbidden => $pc{forbidden},
+  hide      => $pc{hide},
+);
 print <<"HTML";
-      <dl class="box" id="hide-options">
-        <dt>閲覧可否設定
-        <dd id="forbidden-checkbox">
-          <select name="forbidden">
-            <option value="">内容を全て開示
-            <option value="battle" @{[ $pc{forbidden} eq 'battle' ? 'selected' : '' ]}>データ・数値のみ秘匿
-            <option value="all"    @{[ $pc{forbidden} eq 'all'    ? 'selected' : '' ]}>内容を全て秘匿
-          </select>
-        <dd id="hide-checkbox">
-          <select name="hide">
-            <option value="">一覧に表示
-            <option value="1" @{[ $pc{hide} ? 'selected' : '' ]}>一覧には非表示
-          </select>
-        <dd>※「一覧に非表示」でもタグ検索結果・マイリストには表示されます
-      </dl>
       <div class="box" id="group">
         <dl>
           <dt>タグ<dd>@{[ input 'tags' ]}

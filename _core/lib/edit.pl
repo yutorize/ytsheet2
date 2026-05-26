@@ -198,6 +198,118 @@ sub loginError {
   exit;
 }
 
+## 新規作成系モード判定
+sub isNewSheet {
+  my $mode = shift // '';
+  return $mode =~ /^(?:blanksheet|copy|convert)$/ ? 1 : 0;
+}
+
+## メッセージの <!NAME> 展開
+sub applyMessageName {
+  my ($message, $name) = @_;
+  return $message if !$message;
+  $name ||= '無題';
+  $name = unescapeTags($name);
+  $message =~ s/<!NAME>/$name/g;
+  return $message;
+}
+
+## 編集画面ヘッダメニュー
+sub renderEditHeaderMenu {
+  my (%opt) = @_;
+  my $tabsHtml = $opt{tabsHtml} // '';
+  my $logQ = $::in{log} ? "&log=$::in{log}" : '';
+
+  return <<~"HTML";
+    <div id="header-menu">
+      <h2><span></span></h2>
+      <ul class="menu-items">
+        $tabsHtml
+        <li onclick="sectionSelect('color');" class="color-icon" title="シートデザインカスタム">
+        <li onclick="view('text-rule')" class="help-icon" title="テキスト整形ルール">
+        <li onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード切替">
+        <li onclick="exportAsJson()" class="download-icon" title="JSON出力">
+        <li class="buttons">
+          <ul>
+            <li @{[ display ($::in{mode} eq 'edit') ]} class="view-icon" title="閲覧画面"><a href="./?id=$::in{id}"></a>
+            <li @{[ display ($::in{mode} eq 'edit') ]} class="copy" onclick="window.open('./?mode=copy&id=$::in{id}$logQ');">複製
+            <li class="submit" onclick="formSubmit()" title="Ctrl+S">保存
+          </ul>
+        </li>
+      </ul>
+      <div id="save-state"></div>
+    </div>
+  HTML
+}
+
+## 編集保護設定ブロック
+sub renderProtectBlock {
+  my (%opt) = @_;
+  my $isNewSheet = $opt{isNewSheet} // 0;
+  my $protect    = $opt{protect}   // '';
+  my $pass       = $opt{pass}      // '';
+
+  my $html = '';
+
+  if($set::user_reqd){
+    $html .= qq|<input type="hidden" name="protect" value="account">\n|;
+    $html .= qq|<input type="hidden" name="protectOld" value="$protect">\n|;
+    $html .= qq|<input type="hidden" name="pass" value="$pass">\n|;
+    return $html;
+  }
+
+  if($set::registerkey && $isNewSheet){
+    $html .= qq|登録キー：<input type="text" name="registerkey" required>\n|;
+  }
+
+  $html .= qq|<details class="box" id="edit-protect" @{[$::in{mode} eq 'edit' ? '' : 'open']}>\n|;
+  $html .= qq|<summary>編集保護設定</summary>\n|;
+  $html .= qq|<fieldset id="edit-protect-view"><input type="hidden" name="protectOld" value="$protect">\n|;
+
+  if($LOGIN_ID){
+    $html .= qq|<input type="radio" name="protect" value="account"|.($protect eq 'account' ? ' checked' : '').qq|> アカウントに紐付ける（ログイン中のみ編集可能になります）<br>\n|;
+  }
+
+  $html .= qq|<input type="radio" name="protect" value="password"|.($protect eq 'password' ? ' checked' : '').qq|> パスワードで保護 |;
+  if($::in{mode} eq 'edit' && $protect eq 'password' && $pass){
+    $html .= qq|<input type="hidden" name="pass" value="$pass"><br>\n|;
+  }
+  else {
+    $html .= qq|<input type="password" name="pass"><br>\n|;
+  }
+
+  $html .= qq|<input type="radio" name="protect" value="none"|.($protect eq 'none' ? ' checked' : '').qq|> 保護しない（誰でも編集できるようになります）\n|;
+  $html .= qq|</fieldset>\n|;
+  $html .= qq|</details>\n|;
+
+  return $html;
+}
+
+## 閲覧可否設定ブロック
+sub renderVisibilityBlock {
+  my (%opt) = @_;
+  my $forbidden = $opt{forbidden} // '';
+  my $hide      = $opt{hide}      // '';
+
+  return <<~"HTML";
+    <dl class="box" id="hide-options">
+      <dt>閲覧可否設定
+      <dd id="forbidden-checkbox">
+        <select name="forbidden">
+          <option value="">内容を全て開示
+          <option value="battle" @{[ $forbidden eq 'battle' ? 'selected' : '' ]}>データ・数値のみ秘匿
+          <option value="all"    @{[ $forbidden eq 'all'    ? 'selected' : '' ]}>内容を全て秘匿
+        </select>
+      <dd id="hide-checkbox">
+        <select name="hide">
+          <option value="">一覧に表示
+          <option value="1" @{[ $hide ? 'selected' : '' ]}>一覧には非表示
+        </select>
+      <dd>※「一覧に非表示」でもタグ検索結果・マイリストには表示されます
+    </dl>
+  HTML
+}
+
 ## Javascript用共通変数
 sub commonJSVariable {
   return <<~"HTML";
