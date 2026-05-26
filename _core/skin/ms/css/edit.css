@@ -29,6 +29,12 @@
   }
 }
 
+#support-hub {
+  margin: var(--box-v-gap) auto;
+  width: max-content;
+  background-image: none;
+}
+
 #profile input {
   max-width: 10.5em;
 }
@@ -118,46 +124,50 @@
     & thead .title  { width: 12em; }
     & thead .member { width: 16em; }
   }
-  
 }
 
-form#mode-clan #area-status {
-  min-height: 0%;
-  margin: var(--box-v-gap) 0;
-  grid-template-columns: 1.56fr .4fr 1.4fr;
-  grid-template-areas:
-    "PRF LVL IMG"
-    "MEM MEM IMG"
-    "STT STT IMG"
-  ;
-  @media screen and (width <= 735px){
-    grid-template-columns: 1.56fr .4fr;
+
+/* // クラン
+---------------------------------------------------------------------------------------------------- */
+body[data-sheet-type="clan"]{
+  #area-status {
+    min-height: 0%;
+    margin: var(--box-v-gap) 0;
+    grid-template-columns: 1.56fr .4fr 1.4fr;
     grid-template-areas:
-      "IMG IMG"
-      "PRF LVL"
-      "MEM MEM"
-      "STT STT"
+      "PRF LVL IMG"
+      "MEM MEM IMG"
+      "STT STT IMG"
     ;
+    @media screen and (width <= 735px){
+      grid-template-columns: 1.56fr .4fr;
+      grid-template-areas:
+        "IMG IMG"
+        "PRF LVL"
+        "MEM MEM"
+        "STT STT"
+      ;
+    }
   }
-}
-form#mode-clan #profile #rule {
-  grid-column: span 2;
-  & input {
-    max-width: calc(100% - 2em);
+  #profile #rule {
+    grid-column: span 2;
+    & input {
+      max-width: calc(100% - 2em);
+    }
   }
-}
 
-form#mode-clan #member {
-  & .name { width: 40% }
-  & .url  { width: auto }
-  & table:first-of-type {
-    margin-top: -1.2em;
+  #member {
+    & .name { width: 40% }
+    & .url  { width: auto }
+    & table:first-of-type {
+      margin-top: -1.2em;
+    }
+    & table:nth-of-type(2) {
+      margin-top: -2.2em;
+    }
   }
-  & table:nth-of-type(2) {
-    margin-top: -2.2em;
+  #attribute li {
+    grid-template-columns: max-content auto max-content;
+    align-items: center;
   }
-}
-form#mode-clan #attribute li {
-  grid-template-columns: max-content auto max-content;
-  align-items: center;
 }

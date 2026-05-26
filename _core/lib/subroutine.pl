@@ -53,7 +53,6 @@ sub printJS {
   print "\n";
   print "// ytsheet JS output mode:$mode \n\n";
   if($mode eq 'consts' && $set::lib_js_consts){
-    print "const base64Mode = ".($set::base64mode || 0).";\n";
     require $set::lib_js_consts;
   }
   exit;
@@ -515,6 +514,15 @@ sub trim {
   return shift =~ s/^\s+|\s+$//gr;
 }
 
+### 改行変換 --------------------------------------------------
+sub convertEscapedBrToNewlines {
+  my $pc = shift;
+  for my $key (@_) {
+    next unless defined $pc->{$key};
+    $pc->{$key} =~ s/&lt;br&gt;/\n/g;
+  }
+}
+
 ### エスケープ --------------------------------------------------
 sub escapePcData {
   my $text = shift;
@@ -848,12 +856,12 @@ sub rgbToHsl {
 
 ### デフォルトカラー --------------------------------------------------
 sub setDefaultColors {
-  my $type = shift;
-  $::pc{$type.'colorHeadBgH'} //= 225;
-  $::pc{$type.'colorHeadBgS'} //=   9;
-  $::pc{$type.'colorHeadBgL'} //=  65;
-  $::pc{$type.'colorBaseBgH'} //= 235;
-  $::pc{$type.'colorBaseBgS'} //=   0;
+  my ($pc,$type) = @_;
+  $pc->{$type.'colorHeadBgH'} //= 225;
+  $pc->{$type.'colorHeadBgS'} //=   9;
+  $pc->{$type.'colorHeadBgL'} //=  65;
+  $pc->{$type.'colorBaseBgH'} //= 235;
+  $pc->{$type.'colorBaseBgS'} //=   0;
 }
 
 ### 進数変換 --------------------------------------------------

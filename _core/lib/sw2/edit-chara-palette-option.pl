@@ -4,7 +4,7 @@ use open ":utf8";
 
 package palette;
 
-sub chatPaletteFormOptional {
+sub renderChatPaletteFormOptional {
   my %pc = %{shift;};
 
   require($::core_dir . '/lib/edit.pl');

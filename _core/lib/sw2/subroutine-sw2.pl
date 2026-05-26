@@ -382,6 +382,43 @@ sub extractDivineMark {
   return (undef, $magicName);
 }
 
+### テキスト整形の追加ルール --------------------------------------------------
+sub renderAddTextRule {
+  my $html= <<~"HTML";
+    アイコン<br>
+    　魔法のアイテム：<code>[魔]</code>：<img class="i-icon" src="${set::icon_dir}item_magic.png"><br>
+    　刃武器　　　　：<code>[刃]</code>：<img class="i-icon" src="${set::icon_dir}item_edge.png"><br>
+    　打撃武器　　　：<code>[打]</code>：<img class="i-icon" src="${set::icon_dir}item_blow.png"><br>
+    　地方特産品　　：<code>[特]</code>：<img class="i-icon" src="${set::icon_dir}item_local.png"><br>
+  HTML
+  if($::SW2_0){
+    $html .= <<~"HTML";
+      　流派装備　　　：<code>[流]</code>：<i class="i-icon" data-kind="流"><span class="raw">[流]</span></i><br>
+      　常時型　　：<code>[常]</code>：<i class="s-icon passive  "><span class="raw">[常]</span></i><br>
+      　主動作型　：<code>[主]</code>：<i class="s-icon major0   "><span class="raw">[主]</span></i><br>
+      　補助動作型：<code>[補]</code>：<i class="s-icon minor0   "><span class="raw">[補]</span></i><br>
+      　宣言型　　：<code>[宣]</code>：<i class="s-icon active0  "><span class="raw">[宣]</span></i><br>
+      　条件型　　：<code>[条]</code>：<i class="s-icon condition"><span class="raw">[条]</span></i><br>
+      　条件選択型：<code>[選]</code>：<i class="s-icon selection"><span class="raw">[選]</span></i><br>
+    HTML
+  }
+  else {
+    $html .= <<~"HTML";
+      　流派アイテム　：<code>[流]</code>：<img class="i-icon" src="${set::icon_dir}item_school.png"><br>
+      　アルフレイム大陸由来の流派アイテム：<code>[ア]</code>：<img class="i-icon" src="${set::icon_dir}item_school_a.png"><br>
+      　テラスティア大陸由来の流派アイテム：<code>[テ]</code>：<img class="i-icon" src="${set::icon_dir}item_school_t.png"><br>
+      　常時型　　：<code>[常]</code>：<i class="s-icon passive"><span class="raw">[常]</span></i><br>
+      　戦闘準備型：<code>[準]</code>：<i class="s-icon setup  "><span class="raw">[準]</span></i><br>
+      　主動作型　：<code>[主]</code>：<i class="s-icon major  "><span class="raw">[主]</span></i><br>
+      　補助動作型：<code>[補]</code>：<i class="s-icon minor  "><span class="raw">[補]</span></i><br>
+      　宣言型　　：<code>[宣]</code>：<i class="s-icon active "><span class="raw">[宣]</span></i><br>
+      　高揚の楽素：<code>[⤴]</code><code>[↑]</code>：<i class="s-icon uplift">⤴</i><br>
+      　鎮静の楽素：<code>[⤵]</code><code>[↓]</code>：<i class="s-icon calm">⤵</i><br>
+      　魅惑の楽素：<code>[♡]</code>：<i class="s-icon heart">♡</i><br>
+    HTML
+  }
+  return $html;
+}
 ### バージョンアップデート --------------------------------------------------
 sub data_update_chara {
   my %pc = %{$_[0]};
