@@ -271,7 +271,7 @@ sub renderProtectBlock {
   }
 
   $html .= qq|<input type="radio" name="protect" value="password"|.($protect eq 'password' ? ' checked' : '').qq|> パスワードで保護 |;
-  if($::in{mode} eq 'edit' && $protect eq 'password' && $pass){
+  if($::in{mode} eq 'edit' && $protect eq 'password'){
     $html .= qq|<input type="hidden" name="pass" value="$pass"><br>\n|;
   }
   else {
