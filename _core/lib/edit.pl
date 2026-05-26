@@ -3,6 +3,7 @@ use strict;
 #use warnings;
 use utf8;
 use open ":utf8";
+use JSON::PP;
 
 our $LOGIN_ID = check;
 
@@ -24,7 +25,6 @@ elsif($mode eq 'copy'){
   ($file, $type, $author) = (findSheet($::in{id}))[0..2];
 }
 elsif($mode eq 'convert'){
-  use JSON::PP;
   if($::in{url}){
     eval { require $set::lib_convert; };
     %conv_data = importSheetData($::in{url});
@@ -73,10 +73,144 @@ if(!$LOGIN_ID && $mode =~ /^(?:blanksheet|copy|convert)$/){
 ### 各ゲームシステム処理 --------------------------------------------------
 require $set::lib_edit_char;
 
-### 共通サブルーチン --------------------------------------------------
-## データ読み込み
+### 共通サブルーチン #################################################################################
+### 簡略化系 --------------------------------------------------
+sub input {
+  my ($name, $type, $oninput, $other) = @_;
+  if($oninput && $oninput !~ /\(.*?\)$/){ $oninput .= '()'; }
+  '<input'.
+  ' type="'.($type?$type:'text').'"'.
+  ' name="'.$name.'"'.
+  ' value="'.($_[1] eq 'checkbox' ? 1 : $::pc{$name}).'"'.
+  ($other?" $other":"").
+  ($type eq 'checkbox' && $::pc{$name}?" checked":"").
+  ($oninput?' oninput="'.$oninput.'"':"").
+  '>';
+}
+sub textarea {
+  my ($name, $oninput, $other) = @_;
+  if($oninput && $oninput !~ /\(.*?\)$/){ $oninput .= '()'; }
+  '<textarea'.
+      ' name="'.$name.'"'.
+      ($other?" $other":"").
+      ($oninput?' oninput="'.$oninput.'"':"").
+      '>' . $::pc{$name} . '</textarea>';
+}
+sub checkbox {
+  my ($name, $text, $oninput, $other) = @_;
+  if($oninput && $oninput !~ /\(.*?\)$/){ $oninput .= '()'; }
+  '<label class="check-button">'.
+  '<input type="checkbox"'.
+  ' name="'.$name.'"'.
+  ' value="1"'.
+  ($::pc{$name}?" checked":"").
+  ($oninput?' oninput="'.$oninput.'"':"").
+  ($other?" $other":"").
+  '>'.
+  ($text?'<span>'.$text.'</span>':'').
+  '</label>';
+}
+sub radio {
+  my $name = shift;
+  my $oninput = shift;
+  my $value = shift;
+  my $text = shift;
+  my $deselectable;
+  if($oninput =~ s/^deselectable,?//){ $deselectable = 1; }
+  if($oninput && $oninput !~ /\(.*?\)$/){ $oninput .= '()'; }
+  '<label class="radio-button">'.
+  '<input type="radio"'.
+  ' name="'.$name.'"'.
+  ' value="'.$value.'"'.
+  ($::pc{$name} eq $value?" checked":"").
+  ($oninput?' oninput="'.$oninput.'"':"").
+  ($deselectable?' class="deselectable"':"").
+  '>'.
+  ($text?'<span>'.$text.'</span>':'').
+  '</label>';
+}
+sub radios {
+  my $name = shift;
+  my $oninput = shift;
+  my $deselectable;
+  if($oninput =~ s/^deselectable,?//){ $deselectable = 1; }
+  if($oninput && $oninput !~ /\(.*?\)$/){ $oninput .= '()'; }
+  my $out;
+  foreach (@_) {
+    my $value = $_;
+    my $view;
+    if($value =~ s/=>(.*?)$//){ $view = $1 } else { $view = $value }
+    $out .= '<label class="radio-button">'.
+    '<input type="radio"'.
+    ' name="'.$name.'"'.
+    ' value="'.$value.'"'.
+    ($::pc{$name} eq $value?" checked":"").
+    ($oninput?' oninput="'.$oninput.'"':"").
+    ($deselectable?' class="deselectable"':"").
+    '><span>'.$view.'</span></label>';
+  }
+  return $out;
+}
+sub option {
+  my $name = shift;
+  my $text = '<option value="">';
+  foreach my $i (@_) {
+    my $value = $i;
+    my $view;
+    if($value =~ s/^def=//){
+      if($value =~ s/\|\<(.*?)\>$//){ $view = $1 } else { $view = $value }
+      $text = '<option value="'.$value.'">'.$view;
+    }
+    elsif($value =~ s/^label=//){
+      $text .= '<optgroup label="'.$value.'">';
+    }
+    elsif($value eq 'close_group') {
+      $text .= '</optgroup>';
+    }
+    else {
+      if($value =~ s/\|\<(.*?)\>$//){ $view = $1 } else { $view = $value }
+      $text .= '<option value="'.$value.'"'.($::pc{$name} eq $value ? ' selected':'').'>'.$view;
+    }
+  }
+  return $text;
+}
+sub selectBox {
+  my $name = shift;
+  my $func = shift;
+  if($func && $func !~ /\(.*?\)$/){ $func .= '()'; }
+  my $text = '<select name="'.$name.'" oninput="'.$func.'">'.option($name, @_).'</select>';
+  return $text;
+}
+sub selectInput {
+  my $name = shift;
+  my $func = shift;
+  if($func && $func !~ /\(.*?\)$/){ $func .= '()'; }
+  my $text = '<div class="select-input"><select name="'.$name.'" oninput="selectInputCheck(this);'.$func.'">'.option($name, @_);
+  $text .= '<option value="free">その他（自由記入）'; 
+  my $hit = 0;
+  foreach my $i (@_) {
+    my $value = $i;
+    if($value =~ /^(.*)\|\<.*\>$/){ $value = $1; }
+    if($::pc{$name} eq $value){ $hit = 1; last; }
+  }
+  if($::pc{$name} && !$hit){ $text .= '<option value="'.$::pc{$name}.'" selected>'.$::pc{$name}; }
+  $text .= '</select>';
+  $text .= '<input type="text" name="'.$name.'Free" list="list-'.$name.'"></div>';
+  return $text;
+}
+sub display {
+  $_[0] ? ($_[1] ? " style=\"display:$_[1]\"" : '') : ' style="display:none"'
+}
+
+### ログインエラー --------------------------------------------------
+sub loginError {
+  our $login_error = 'パスワードが間違っているか、<br>編集権限がありません。';
+  require $set::lib_view;
+  exit;
+}
+
+### データ読み込み --------------------------------------------------
 sub loadSheetData {
-  my $mode = shift;
   my %pc;
   my $message;
   my $sheetDir =  $set::char_dir.$file;
@@ -160,9 +294,10 @@ sub loadSheetData {
     $message = $attentionOfCapacity .($message?'<hr>':''). $message
   }
   ##
-  return (\%pc, $mode, $file, $message)
+  return (\%pc, $file, $message)
 }
-## トークン生成
+
+### トークン生成 --------------------------------------------------
 sub tokenMake {
   my $token = randomId(12);
 
@@ -173,7 +308,28 @@ sub tokenMake {
   return $token;
 }
 
-## カスタマイズされた初期値の反映
+### 新規作成系モード判定 --------------------------------------------------
+sub isNewSheet {
+  return $mode =~ /^(?:blanksheet|copy|convert)$/ ? 1 : 0;
+}
+
+### 共通初期値 --------------------------------------------------
+## 画像
+sub setDefaultImageStyle {
+  my ($pc) = @_;
+  $pc->{imageFit} = ($pc->{imageFit} eq 'percent') ? 'percentX' : $pc->{imageFit};
+  $pc->{imagePercent}   //= '200';
+  $pc->{imagePositionX} //= '50';
+  $pc->{imagePositionY} //= '50';
+}
+## セリフ
+sub setDefaultWordsPosition {
+  my ($pc) = @_;
+  $pc->{wordsX} ||= '右';
+  $pc->{wordsY} ||= '上';
+}
+
+### カスタマイズされた初期値の反映 --------------------------------------------------
 sub applyCustomizedInitialValues {
   my %pc = %{shift;};
   my $_type = shift;
@@ -191,153 +347,206 @@ sub applyCustomizedInitialValues {
   return %pc;
 }
 
-## ログインエラー
-sub loginError {
-  our $login_error = 'パスワードが間違っているか、<br>編集権限がありません。';
-  require $set::lib_view;
-  exit;
+### メッセージの <!NAME> 展開 --------------------------------------------------
+sub applyMessageName {
+  my ($message, $name) = @_;
+  return $message if !$message;
+  $name ||= '無題';
+  $name = removeTags unescapeTags($name);
+  $message =~ s/<!NAME>/$name/g;
+  return $message;
 }
 
-## Javascript用共通変数
-sub commonJSVariable {
+### 編集画面の共通開始骨格（head〜form開始） --------------------------------------------------
+sub renderEditPageStart {
+  my (%opt) = @_;
+  my $title      = $opt{title}      // '編集';
+  my $isNewSheet = $opt{isNewSheet} // 0;
+  my $systemId   = $opt{systemId}   // $set::game;
+  my $headerMenu = $opt{headerMenu} // '';
+  my $extraCss   = $opt{extraCss}   // '';
+  my $extraJsTop = $opt{extraJsTop} // '';
+  my $extraJsMid = $opt{extraJsMid} // '';
+
+  my $type = $::pc{type} // $::in{type} // '';
+  my $sheetType = $set::lib_type{$type}{sheetType} || 'chara';
+  my $base64Mode = $set::base64mode || 0;
+
   return <<~"HTML";
-  const base64Mode = @{[ $set::base64mode || 0 ]};
+  Content-Type: text/html; charset=utf-8\n
+  <!DOCTYPE html>
+  <html lang="ja">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="robots" content="noindex">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>@{[ $::in{mode} eq 'edit' ? "編集：$title" : '新規作成']} - $set::title</title>
+    <link rel="stylesheet" media="all" href="$::core_dir/skin/_common/css/base.css?$::ver">
+    <link rel="stylesheet" media="all" href="$::core_dir/skin/_common/css/sheet.css?$::ver">
+    <link rel="stylesheet" media="all" href="$::core_dir/skin/$set::game/css/$sheetType.css?$::ver">
+    <link rel="stylesheet" media="all" href="$::core_dir/skin/_common/css/edit.css?$::ver">
+    <link rel="stylesheet" media="all" href="$::core_dir/skin/$set::game/css/edit.css?$::ver">
+    $extraCss
+    <script src="$::core_dir/skin/_common/js/lib/Sortable.min.js"></script>
+    <script src="$::core_dir/skin/_common/js/lib/compressor.min.js"></script>
+    $extraJsTop
+    @{[ $set::lib_js_consts ? qq|<script src="./?mode=js-consts&ver=$::ver"></script>| : '' ]}
+    <script src="$::core_dir/lib/edit.js?$::ver" defer></script>
+    <script src="$::core_dir/lib/$set::game/edit-$sheetType.js?$::ver" defer></script>
+    $extraJsMid
+    <script src="$::core_dir/skin/_common/js/common.js?$::ver"></script>
+    <script>const base64Mode = $base64Mode;</script>
+    @{[ $::pc{imageURL} ? qq|<style>
+      #image, .image-custom-view {
+        background-image: url("$::pc{imageURL}");
+      }
+    </style>| : '' ]}
+  </head>
+  <body id="edit" data-system="$systemId" @{[ $sheetType ? qq|data-sheet-type="$sheetType"| : '' ]}>
+    <header>
+      <h1>$set::title</h1>
+    </header>
+    <main>
+      <article>
+        <form name="sheet" method="post" action="./" enctype="multipart/form-data">
+          <input type="hidden" name="ver" value="$::ver">
+          <input type="hidden" name="mode" value="@{[ $::in{mode} eq 'edit' ? 'save' : 'make' ]}">
+          <input type="hidden" name="type" value="$type">
+          @{[ $isNewSheet ? qq|<input type="hidden" name="_token" value="|.tokenMake().'">' : '' ]}
   HTML
 }
 
-## 簡略化系
-sub input {
-  my ($name, $type, $oninput, $other) = @_;
-  if($oninput && $oninput !~ /\(.*?\)$/){ $oninput .= '()'; }
-  '<input'.
-  ' type="'.($type?$type:'text').'"'.
-  ' name="'.$name.'"'.
-  ' value="'.($_[1] eq 'checkbox' ? 1 : $::pc{$name}).'"'.
-  ($other?" $other":"").
-  ($type eq 'checkbox' && $::pc{$name}?" checked":"").
-  ($oninput?' oninput="'.$oninput.'"':"").
-  '>';
-}
-sub textarea {
-  my ($name, $oninput, $other) = @_;
-  if($oninput && $oninput !~ /\(.*?\)$/){ $oninput .= '()'; }
-  '<textarea'.
-      ' name="'.$name.'"'.
-      ($other?" $other":"").
-      ($oninput?' oninput="'.$oninput.'"':"").
-      '>' . $::pc{$name} . '</textarea>';
-}
-sub checkbox {
-  my ($name, $text, $oninput, $other) = @_;
-  if($oninput && $oninput !~ /\(.*?\)$/){ $oninput .= '()'; }
-  '<label class="check-button">'.
-  '<input type="checkbox"'.
-  ' name="'.$name.'"'.
-  ' value="1"'.
-  ($::pc{$name}?" checked":"").
-  ($oninput?' oninput="'.$oninput.'"':"").
-  ($other?" $other":"").
-  '>'.
-  ($text?'<span>'.$text.'</span>':'').
-  '</label>';
-}
-sub radio {
-  my $name = shift;
-  my $oninput = shift;
-  my $value = shift;
-  my $text = shift;
-  my $deselectable;
-  if($oninput =~ s/^deselectable,?//){ $deselectable = 1; }
-  if($oninput && $oninput !~ /\(.*?\)$/){ $oninput .= '()'; }
-  '<label class="radio-button">'.
-  '<input type="radio"'.
-  ' name="'.$name.'"'.
-  ' value="'.$value.'"'.
-  ($::pc{$name} eq $value?" checked":"").
-  ($oninput?' oninput="'.$oninput.'"':"").
-  ($deselectable?' class="deselectable"':"").
-  '>'.
-  ($text?'<span>'.$text.'</span>':'').
-  '</label>';
-}
-sub radios {
-  my $name = shift;
-  my $oninput = shift;
-  my $deselectable;
-  if($oninput =~ s/^deselectable,?//){ $deselectable = 1; }
-  if($oninput && $oninput !~ /\(.*?\)$/){ $oninput .= '()'; }
-  my $out;
-  foreach (@_) {
-    my $value = $_;
-    my $view;
-    if($value =~ s/=>(.*?)$//){ $view = $1 } else { $view = $value }
-    $out .= '<label class="radio-button">'.
-    '<input type="radio"'.
-    ' name="'.$name.'"'.
-    ' value="'.$value.'"'.
-    ($::pc{$name} eq $value?" checked":"").
-    ($oninput?' oninput="'.$oninput.'"':"").
-    ($deselectable?' class="deselectable"':"").
-    '><span>'.$view.'</span></label>';
-  }
-  return $out;
-}
-sub option {
-  my $name = shift;
-  my $text = '<option value="">';
-  foreach my $i (@_) {
-    my $value = $i;
-    my $view;
-    my $label = 0;
-    if($value =~ s/^def=//){
-      if($value =~ s/\|\<(.*?)\>$//){ $view = $1 } else { $view = $value }
-      $text = '<option value="'.$value.'">'.$view;
-    }
-    elsif($value =~ s/^label=//){
-      $text .= '<optgroup label="'.$value.'">';
-      $label = 1;
-    }
-    elsif($value eq 'close_group') {
-      $text .= '</optgroup>';
-      $label = 0;
-    }
-    else {
-      if($value =~ s/\|\<(.*?)\>$//){ $view = $1 } else { $view = $value }
-      $text .= '<option value="'.$value.'"'.($::pc{$name} eq $value ? ' selected':'').'>'.$view;
-    }
-  }
-  return $text;
-}
-sub selectBox {
-  my $name = shift;
-  my $func = shift;
-  if($func && $func !~ /\(.*?\)$/){ $func .= '()'; }
-  my $text = '<select name="'.$name.'" oninput="'.$func.'">'.option($name, @_).'</select>';
-  return $text;
-}
-sub selectInput {
-  my $name = shift;
-  my $func = shift;
-  if($func && $func !~ /\(.*?\)$/){ $func .= '()'; }
-  my $text = '<div class="select-input"><select name="'.$name.'" oninput="selectInputCheck(this);'.$func.'">'.option($name, @_);
-  $text .= '<option value="free">その他（自由記入）'; 
-  my $hit = 0;
-  foreach my $i (@_) {
-    my $value = $i;
-    if($value =~ /^(.*)\|\<.*\>$/){ $value = $1; }
-    if($::pc{$name} eq $value){ $hit = 1; last; }
-  }
-  if($::pc{$name} && !$hit){ $text .= '<option value="'.$::pc{$name}.'" selected>'.$::pc{$name}; }
-  $text .= '</select>';
-  $text .= '<input type="text" name="'.$name.'Free" list="list-'.$name.'"></div>';
-  return $text;
-}
-sub display {
-  $_[0] ? ($_[1] ? " style=\"display:$_[1]\"" : '') : ' style="display:none"'
+### 編集画面の共通終端（form〜html終了） --------------------------------------------------
+sub renderEditPageEnd {
+  my (%opt) = @_;
+  my $notes = $opt{notes} // '';
+  my $multilineTargets = $opt{multilineTargets} // '';
+  my $addTextRule = $opt{addTextRule} // '';
+  my $extraHtml = $opt{extraHtml} // '';
+  return <<~"HTML";
+          @{[ renderDecorationForm() ]}
+          @{[ input 'birthTime','hidden' ]}
+          <input type="hidden" name="id" value="$::in{id}">
+        </form>
+        @{[ renderDeleteForm() ]}
+      </article>
+      @{[ renderTextRuleArea($addTextRule, $multilineTargets) ]}
+    </main>
+    <footer>
+      <p class="notes">$notes</p>
+      <p class="copyright">©<a href="https://yutorize.work">ゆとらいず工房</a>「ゆとシートⅡ」ver.${main::ver}</p>
+    </footer>
+    $extraHtml
+  </body>
+  </html>
+  HTML
 }
 
-## 画像欄
-sub imageForm {
+### 編集画面ヘッダメニュー --------------------------------------------------
+sub renderEditHeaderMenu {
+  my (%opt) = @_;
+  my $tabsHtml = $opt{tabsHtml} // '';
+  my $logQ = $::in{log} ? "&log=$::in{log}" : '';
+
+  return <<~"HTML";
+    <div id="header-menu">
+      <h2><span></span></h2>
+      <ul class="menu-items">
+        $tabsHtml
+        <li onclick="sectionSelect('color');" class="color-icon" title="シートデザインカスタム">
+        <li onclick="view('text-rule')" class="help-icon" title="テキスト整形ルール">
+        <li onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード切替">
+        <li onclick="exportAsJson()" class="download-icon" title="JSON出力">
+        <li class="buttons">
+          <ul>
+            <li @{[ display ($::in{mode} eq 'edit') ]} class="view-icon" title="閲覧画面"><a href="./?id=$::in{id}"></a>
+            <li @{[ display ($::in{mode} eq 'edit') ]} class="copy" onclick="window.open('./?mode=copy&id=$::in{id}$logQ');">複製
+            <li class="submit" onclick="formSubmit()" title="Ctrl+S">保存
+          </ul>
+        </li>
+      </ul>
+      <div id="save-state"></div>
+    </div>
+  HTML
+}
+
+### 編集保護設定ブロック --------------------------------------------------
+sub renderProtectBlock {
+  my (%opt) = @_;
+  my $isNewSheet = $opt{isNewSheet} // 0;
+
+  my $html = '';
+
+  if($set::user_reqd){
+    $html .= qq|<input type="hidden" name="protect" value="account">\n|;
+    $html .= qq|<input type="hidden" name="protectOld" value="$::pc{protect}">\n|;
+    $html .= qq|<input type="hidden" name="pass" value="$::in{pass}">\n|;
+    return $html;
+  }
+
+  if($set::registerkey && $isNewSheet){
+    $html .= qq|登録キー：<input type="text" name="registerkey" required>\n|;
+  }
+
+  $html .= qq|<details class="box" id="edit-protect" @{[$::in{mode} eq 'edit' ? '' : 'open']}>\n|;
+  $html .= qq|<summary>編集保護設定</summary>\n|;
+  $html .= qq|<fieldset id="edit-protect-view"><input type="hidden" name="protectOld" value="$::pc{protect}">\n|;
+
+  if($LOGIN_ID){
+    $html .= qq|<input type="radio" name="protect" value="account"|.($::pc{protect} eq 'account' ? ' checked' : '').qq|> アカウントに紐付ける（ログイン中のみ編集可能になります）<br>\n|;
+  }
+
+  $html .= qq|<input type="radio" name="protect" value="password"|.($::pc{protect} eq 'password' ? ' checked' : '').qq|> パスワードで保護 |;
+  if($::in{mode} eq 'edit' && $::pc{protect} eq 'password'){
+    $html .= qq|<input type="hidden" name="pass" value="$::in{pass}"><br>\n|;
+  }
+  else {
+    $html .= qq|<input type="password" name="pass"><br>\n|;
+  }
+
+  $html .= qq|<input type="radio" name="protect" value="none"|.($::pc{protect} eq 'none' ? ' checked' : '').qq|> 保護しない（誰でも編集できるようになります）\n|;
+  $html .= qq|</fieldset>\n|;
+  $html .= qq|</details>\n|;
+
+  return $html;
+}
+
+### 閲覧可否設定ブロック --------------------------------------------------
+sub renderVisibilityBlock {
+  return <<~"HTML";
+    <dl class="box" id="hide-options">
+      <dt>閲覧可否設定
+      <dd id="forbidden-checkbox">
+        <select name="forbidden">
+          <option value="">内容を全て開示
+          <option value="battle" @{[ $::pc{forbidden} eq 'battle' ? 'selected' : '' ]}>データ・数値のみ秘匿
+          <option value="all"    @{[ $::pc{forbidden} eq 'all'    ? 'selected' : '' ]}>内容を全て秘匿
+        </select>
+      <dd id="hide-checkbox">
+        <select name="hide">
+          <option value="">一覧に表示
+          <option value="1" @{[ $::pc{hide} ? 'selected' : '' ]}>一覧には非表示
+        </select>
+      <dd>※「一覧に非表示」でもタグ検索結果・マイリストには表示されます
+    </dl>
+  HTML
+}
+
+### グループ欄 --------------------------------------------------
+sub renderGroupOptions {
+  my $html;
+  foreach (@set::groups){
+    my $id   = @$_[0];
+    my $name = @$_[2];
+    my $exclusive = @$_[4];
+    next if($exclusive && (!$LOGIN_ID || $LOGIN_ID !~ /^($exclusive)$/));
+    $html .= '<option value="'.$id.'"'.($::pc{group} eq $id ? ' selected': '').'>'.$name.'</option>';
+  }
+  return $html;
+}
+
+### 画像欄 --------------------------------------------------
+sub renderImageForm {
   my $imgurl = shift;
   my $image_maxsize_view = $set::image_maxsize >= 1048576 ? sprintf("%.3g",$set::image_maxsize/1048576).'MB' : sprintf("%.3g",$set::image_maxsize/1024).'KB';
   return <<~"HTML";
@@ -348,10 +557,10 @@ sub imageForm {
       </p>
       <p>
         <input type="checkbox" name="imageDelete" value="1"> 画像を削除する
-        @{[input('image','hidden')]}
+        @{[ input 'image','hidden' ]}
       </p>
     </div>
-    @{[ input('imageUpdate', 'hidden') ]}
+    @{[ input 'imageUpdate', 'hidden' ]}
     
     <div id="image-custom" style="display:none">
       <div class="image-custom-view-area">
@@ -461,8 +670,8 @@ sub imageForm {
   HTML
 }
 
-## チャットパレット
-sub chatPaletteForm {
+### チャットパレット --------------------------------------------------
+sub renderChatPaletteForm {
   my $palette;
   my %opt = (
     tool => [
@@ -558,7 +767,7 @@ sub chatPaletteForm {
             </dl>
           </div>
         </div>
-        @{[ chatPaletteFormOptional() ]}
+        @{[ renderChatPaletteFormOptional() ]}
         <div class="box" id="chatpalette-description">
           <h2>チャットパレットとは？</h2>
           <p>
@@ -572,14 +781,14 @@ sub chatPaletteForm {
       </div>
     </section>
   HTML
-  sub chatPaletteFormOptional {}
+  sub renderChatPaletteFormOptional {}
 }
 
 
-## カラーカスタム欄
-sub colorCostomForm {
+### シート装飾欄 --------------------------------------------------
+sub renderDecorationForm {
   return <<~"HTML";
-      <section id="section-color" style="display:none;">
+    <section id="section-color" style="display:none;">
       <h2>シートの装飾設定</h2>
       <div class="box-union">
         <div class="box color-custom">
@@ -603,7 +812,7 @@ sub colorCostomForm {
           <h2>名称欄のフォント</h2>
           <fieldset>
             <label class="check-button"><input type="radio" name="nameFont" value=""@{[ $::pc{nameFont} eq '' ? ' checked':''] } oninput="changeNameFont()"><span>フォント：<small>デフォルト</small></span></label>
-            @{[ fontCustomForm() ]}
+            @{[ renderFontCustomForm() ]}
           </fieldset>
           $set::test
         </div>
@@ -658,11 +867,11 @@ sub colorCostomForm {
           </div>
         </div>
       </div>
-      </section>
+    </section>
   HTML
 }
 ## フォントカスタム欄
-sub fontCustomForm {
+sub renderFontCustomForm {
   my $html;
   my $i = 1;
   foreach (@set::googlefonts) {
@@ -672,9 +881,9 @@ sub fontCustomForm {
   return $html.'<script>const fontList = '.JSON::PP->new->encode(\@set::googlefonts).';</script>';
 }
 
-## テキスト整形ルール
-sub textRuleArea {
-  my $system_rule = shift;
+### テキスト整形ルール --------------------------------------------------
+sub renderTextRuleArea {
+  my $systemRule = shift;
   my $multiline = shift;
   return <<~"HTML";
     <aside id="text-rule" class="sticky-footer" style="display:none">
@@ -692,7 +901,7 @@ sub textRuleArea {
         リンク：<code>[[テキスト>URL]]</code><br>
         別のゆとシートへのリンク：<code>[テキスト#シートのID]</code><br>
         <br>
-        ${system_rule}
+        ${systemRule}
         <hr class="dotted">
         ※以下は一部の複数行の欄でのみ有効です。<br>
         （有効な欄：${multiline}）<br>
@@ -728,9 +937,8 @@ sub textRuleArea {
   HTML
 }
 
-## 削除フォーム
-sub deleteForm {
-  my $mode = shift;
+### 削除フォーム --------------------------------------------------
+sub renderDeleteForm {
   return if ($mode ne 'edit');
 
   my $html = <<~"HTML";
@@ -751,19 +959,19 @@ sub deleteForm {
   # 管理者用画像削除フォーム
   if($LOGIN_ID eq $set::masterid){
     $html .= <<~"HTML";
-    <form name="imgdel" method="post" action="./" class="deleteform">
-      <fieldset style="font-size: 80%;">
-        <input type="hidden" name="mode" value="img-delete">
-        <input type="hidden" name="type" value="$::pc{type}">
-        <input type="hidden" name="id"   value="$::in{id}">
-        <input type="hidden" name="pass" value="$::in{pass}">
-        <input type="checkbox" name="check1" value="1" required>
-        <input type="checkbox" name="check2" value="1" required>
-        <input type="checkbox" name="check3" value="1" required>
-        <input type="submit" value="画像削除">
-      </fieldset>
-    </form>
-    <p class="right">@{[ $::in{log}?$::in{log}:'最終' ]}更新時のIP:$::pc{IP}</p>
+      <form name="imgdel" method="post" action="./" class="deleteform">
+        <fieldset style="font-size: 80%;">
+          <input type="hidden" name="mode" value="img-delete">
+          <input type="hidden" name="type" value="$::pc{type}">
+          <input type="hidden" name="id"   value="$::in{id}">
+          <input type="hidden" name="pass" value="$::in{pass}">
+          <input type="checkbox" name="check1" value="1" required>
+          <input type="checkbox" name="check2" value="1" required>
+          <input type="checkbox" name="check3" value="1" required>
+          <input type="submit" value="画像削除">
+        </fieldset>
+      </form>
+      <p class="right">@{[ $::in{log}?$::in{log}:'最終' ]}更新時のIP:$::pc{IP}</p>
     HTML
   }
   return $html;
