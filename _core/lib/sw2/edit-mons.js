@@ -31,7 +31,7 @@ function formCheck(){
 let mountFlag = 0;
 function checkMount(){
   mountFlag = form.mount.checked ? 1 : 0;
-  form.classList.toggle('mount', mountFlag);
+  document.body.classList.toggle('mount', mountFlag);
 }
 function checkLevel(){
   if(mountFlag){

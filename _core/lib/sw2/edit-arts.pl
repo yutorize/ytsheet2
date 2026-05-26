@@ -35,27 +35,29 @@ foreach(@data::class_names){
 push(@magic_classes, @craft_classes);
 @magic_classes = deduplicate(@magic_classes); #重複削除
 ### データ読み込み ###################################################################################
-my ($data, $mode, $file, $message) = loadSheetData($::in{mode});
+my ($data, $file, $message) = loadSheetData();
 our %pc = %{ $data };
 
-my $mode_make = ($mode =~ /^(blanksheet|copy|convert)$/) ? 1 : 0;
+my $isNewSheet = isNewSheet();
 
 ### 出力準備 #########################################################################################
-if($message){
-  my $name = unescapeTags($pc{category} eq 'magic' ? $pc{magicName} : $pc{category} eq 'god' ? $pc{godAka}.$pc{godName} : $pc{category} eq 'school' ? $pc{schoolName} : '無題');
-  $message =~ s/<!NAME>/$name/;
-}
-### 製作者名 --------------------------------------------------
-if($mode_make){
-  $pc{author} = (getPlayerName($LOGIN_ID))[0];
-}
-### 初期設定 --------------------------------------------------
-if($mode_make){ $pc{protect} = $LOGIN_ID ? 'account' : 'password'; }
+$message = applyMessageName($message, unescapeTags(
+    $pc{category} eq 'magic'  ? $pc{magicName}
+  : $pc{category} eq 'god'    ? $pc{godAka}.$pc{godName}
+  : $pc{category} eq 'school' ? $pc{schoolName}
+  : $pc{category} eq 'skill'  ? $pc{skillName}
+  : '無題'
+));
 
-if($mode eq 'edit' || ($mode eq 'convert' && $pc{ver})){
+### 初期設定 --------------------------------------------------
+if($isNewSheet){
+  $pc{author} = (getPlayerName($LOGIN_ID))[0];
+  $pc{protect} ||= $LOGIN_ID ? 'account' : 'password';
+}
+if($::mode eq 'edit' || ($::mode eq 'convert' && $pc{ver})){
   %pc = data_update_arts(\%pc);
 }
-if($mode eq 'blanksheet'){
+if($::mode eq 'blanksheet'){
   $pc{magicCost} = 'MP';
   foreach my $lv (2,4,7,10,13){ $pc{"godMagic${lv}Cost"} = 'MP' }
   $pc{schoolReq} = '＿名誉点';
@@ -64,7 +66,7 @@ if($mode eq 'blanksheet'){
 }
 
 ## カラー
-setDefaultColors();
+setDefaultColors(\%pc);
 
 ## その他
 $pc{schoolArtsNum} ||= 3;
@@ -80,154 +82,39 @@ if($pc{schoolQnA}      ){ $open{schoolQnA}   = 'open'; }
 if($pc{godQnA}         ){ $open{godQnA}      = 'open'; }
 
 ### 改行処理 --------------------------------------------------
-foreach (
-  'magicEffect',
-  'magicDescription',
-  'godSymbol',
-  'godDeity',
-  'godNote',
-  'godMagic2Effect',
-  'godMagic4Effect',
-  'godMagic7Effect',
-  'godMagic10Effect',
-  'godMagic13Effect',
-  'godQnA',
-  'schoolNote',
-  'schoolItemNote',
-  'schoolArtsNote',
-  'schoolMagicNote',
-  'schoolQnA',
-  'skillRankB_effect',
-  'skillRankA_effect',
-  'skillRankS_effect',
-  'skillRankSS_effect',
-){
-  $pc{$_} =~ s/&lt;br&gt;/\n/g;
-}
-foreach my $num (1..$pc{schoolArtsNum}){
-  $pc{"schoolArts${num}Effect"} =~ s/&lt;br&gt;/\n/g;
-}
-foreach my $num (1..$pc{schoolMagicNum}){
-  $pc{"schoolMagic${num}Effect"} =~ s/&lt;br&gt;/\n/g;
-}
+convertEscapedBrToNewlines(\%pc,
+  qw/magicEffect magicDescription
+  godSymbol godDeity godNote godQnA
+  schoolNote schoolItemNote schoolArtsNote schoolMagicNote schoolQnA
+  skillRankB_effect skillRankA_effect skillRankS_effect skillRankSS_effect
+  /,
+  ( map { "godMagic${_}Effect"    } 2,4,7,10,13 ),
+  ( map { "schoolArts${_}Effect"  } 1..$pc{schoolArtsNum} ),
+  ( map { "schoolMagic${_}Effect" } 1..$pc{schoolMagicNum} ),
+  ( map { "skillRank${_}_effect"  } qw/B A S SS/ ),
+);
 
 ### 画像 --------------------------------------------------
 my $image_maxsize = $set::image_maxsize / 4;
 my $image_maxsize_view = $image_maxsize >= 1048576 ? sprintf("%.3g",$image_maxsize/1048576).'MB' : sprintf("%.3g",$image_maxsize/1024).'KB';
 
 ### フォーム表示 #####################################################################################
-print <<"HTML";
-Content-type: text/html\n
-<!DOCTYPE html>
-<html lang="ja">
-
-<head>
-  <meta charset="UTF-8">
-  <title>@{[$mode eq 'edit'?"編集：$pc{artsName}":'新規作成']} - $set::title</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" media="all" href="${main::core_dir}/skin/_common/css/base.css?${main::ver}">
-  <link rel="stylesheet" media="all" href="${main::core_dir}/skin/_common/css/sheet.css?${main::ver}">
-  <link rel="stylesheet" media="all" href="${main::core_dir}/skin/sw2/css/arts.css?${main::ver}">
-  <link rel="stylesheet" media="all" href="${main::core_dir}/skin/_common/css/edit.css?${main::ver}">
-  <link rel="stylesheet" media="all" href="${main::core_dir}/skin/sw2/css/edit.css?${main::ver}">
-  <script src="${main::core_dir}/skin/_common/js/lib/Sortable.min.js"></script>
-  <script src="${main::core_dir}/skin/_common/js/lib/compressor.min.js"></script>
-  <script src="${main::core_dir}/lib/edit.js?${main::ver}" defer></script>
-  <script src="${main::core_dir}/lib/sw2/edit-arts.js?${main::ver}" defer></script>
-  <style>
-    #image {
-      background-image: url("$pc{imageURL}");
-    }
-  </style>
-</head>
-<body>
-  <script src="${main::core_dir}/skin/_common/js/common.js?${main::ver}"></script>
-  <header>
-    <h1>$set::title</h1>
-  </header>
-
-  <main>
-    <article>
-      <form id="arts" name="sheet" method="post" action="./" enctype="multipart/form-data">
-      <input type="hidden" name="ver" value="${main::ver}">
-      <input type="hidden" name="type" value="a">
-HTML
-if($mode_make){
-  print '<input type="hidden" name="_token" value="'.tokenMake().'">'."\n";
-}
-print <<"HTML";
-      <input type="hidden" name="mode" value="@{[ $mode eq 'edit' ? 'save' : 'make' ]}">
-            
-      <div id="header-menu">
-        <h2><span></span></h2>
-        <ul class="menu-items">
-          <li onclick="sectionSelect('common');" class="sheet-main"><span class="sheet-kind"></span><span>データ</span>
-          <li onclick="sectionSelect('color');" class="color-icon" title="シートデザインカスタム">
-          <li onclick="view('text-rule')" class="help-icon" title="テキスト整形ルール">
-          <li onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード切替">
-          <li onclick="exportAsJson()" class="download-icon" title="JSON出力">
-          <li class="buttons">
-            <ul>
-              <li @{[ display ($mode eq 'edit') ]} class="view-icon" title="閲覧画面"><a href="./?id=$::in{id}"></a>
-              <li @{[ display ($mode eq 'edit') ]} class="copy" onclick="window.open('./?mode=copy&id=$::in{id}@{[  $::in{log}?"&log=$::in{log}":'' ]}');">複製
-              <li class="submit" onclick="formSubmit()" title="Ctrl+S">保存
-            </ul>
-          </li>
-        </ul>
-        <div id="save-state"></div>
-      </div>
-
-      <aside class="message">$message</aside>
-      
-      <section id="section-common">
-HTML
-if($set::user_reqd){
-  print <<~"HTML";
-    <input type="hidden" name="protect" value="account">
-    <input type="hidden" name="protectOld" value="$pc{protect}">
-    <input type="hidden" name="pass" value="$::in{pass}">
+print renderEditPageStart(
+  title => (removeTags removeRuby unescapeTags ( $pc{artsName} )),
+  systemId => ($::SW2_0 ? 'sw2.0' : 'sw2.5'),
+  isNewSheet => $isNewSheet,
+);
+print renderEditHeaderMenu(
+  tabsHtml => <<~'HTML',
+    <li onclick="sectionSelect('common');" class="sheet-main"><span class="sheet-kind"></span><span>データ</span>
   HTML
-}
-else {
-  if($set::registerkey && $mode_make){
-    print '登録キー：<input type="text" name="registerkey" required>'."\n";
-  }
-  print <<~"HTML";
-      <details class="box" id="edit-protect" @{[$mode eq 'edit' ? '':'open']}>
-      <summary>編集保護設定</summary>
-      <fieldset id="edit-protect-view"><input type="hidden" name="protectOld" value="$pc{protect}">
-  HTML
-  if($LOGIN_ID){
-    print '<input type="radio" name="protect" value="account"'.($pc{protect} eq 'account'?' checked':'').'> アカウントに紐付ける（ログイン中のみ編集可能になります）<br>';
-  }
-    print '<input type="radio" name="protect" value="password"'.($pc{protect} eq 'password'?' checked':'').'> パスワードで保護 ';
-  if ($mode eq 'edit' && $pc{protect} eq 'password') {
-    print '<input type="hidden" name="pass" value="'.$::in{pass}.'"><br>';
-  } else {
-    print '<input type="password" name="pass"><br>';
-  }
-  print <<~"HTML";
-        <input type="radio" name="protect" value="none"@{[ $pc{protect} eq 'none'?' checked':'' ]}> 保護しない（誰でも編集できるようになります）
-      </fieldset>
-      </details>
-  HTML
-}
+);
+print qq|<aside class="message">$message</aside>| if $message;
+print '<section id="section-common">';
+print renderProtectBlock(isNewSheet => $isNewSheet);
+print renderVisibilityBlock();
+
 print <<"HTML";
-      <dl class="box" id="hide-options">
-        <dt>閲覧可否設定
-        <dd id="forbidden-checkbox">
-          <select name="forbidden">
-            <option value="">内容を全て開示
-            <option value="battle" @{[ $pc{forbidden} eq 'battle' ? 'selected' : '' ]}>データ・数値のみ秘匿
-            <option value="all"    @{[ $pc{forbidden} eq 'all'    ? 'selected' : '' ]}>内容を全て秘匿
-          </select>
-        <dd id="hide-checkbox">
-          <select name="hide">
-            <option value="">一覧に表示
-            <option value="1" @{[ $pc{hide} ? 'selected' : '' ]}>一覧には非表示
-          </select>
-        <dd>※「一覧に非表示」でもタグ検索結果・マイリストには表示されます
-      </dl>
       <div class="box" id="group">
         <dl>
           <dt>タグ<dd>@{[ input 'tags' ]}
@@ -480,7 +367,7 @@ print <<"HTML";
               @{[ radios 'skillRankMode','checkRankMode','0=>ランク分けなし','1=>ランク分けあり' ]}
           </dl>
         </div>
-        <section class="details box">
+        <div class="details box">
           <h2 class="in-toc" data-content-title="詳細"><span class="for-ranks">ランクごとの</span>詳細</h2>
           <dl class="ranks">
 HTML
@@ -499,49 +386,19 @@ HTML
 }
 print <<"HTML";
           </dl>
-        </section>
+        </div>
       </div>
     </section>
-      
-      @{[ colorCostomForm ]}
-    
-      @{[ input 'birthTime','hidden' ]}
-      <input type="hidden" name="id" value="$::in{id}">
-    </form>
-    @{[ deleteForm($mode) ]}
-    </article>
 HTML
-# ヘルプ
-my $text_rule = <<"HTML";
-        アイコン<br>
-        　魔法のアイテム：<code>[魔]</code>：<img class="i-icon" src="${set::icon_dir}item_magic.png"><br>
-        　刃武器　　　　：<code>[刃]</code>：<img class="i-icon" src="${set::icon_dir}item_edge.png"><br>
-        　打撃武器　　　：<code>[打]</code>：<img class="i-icon" src="${set::icon_dir}item_blow.png"><br>
-        　地方特産品　　：<code>[特]</code>：<img class="i-icon" src="${set::icon_dir}item_local.png"><br>
-HTML
-if ($::SW2_0) {
-  $text_rule .= <<~"HTML";
-        　流派装備　　　：<code>[流]</code>：<img class="i-icon" src="${set::icon_dir}item_school.png"><br>
-  HTML
-}
-else {
-  $text_rule .= <<~"HTML";
-        　流派アイテム　：<code>[流]</code>：<img class="i-icon" src="${set::icon_dir}item_school.png"><br>
-        　アルフレイム大陸由来の流派アイテム：<code>[ア]</code>：<img class="i-icon" src="${set::icon_dir}item_school_a.png"><br>
-        　テラスティア大陸由来の流派アイテム：<code>[テ]</code>：<img class="i-icon" src="${set::icon_dir}item_school_t.png"><br>
-        　高揚の楽素：<code>[⤴]</code><code>[↑]</code>：<i class="s-icon uplift">⤴</i><br>
-        　鎮静の楽素：<code>[⤵]</code><code>[↓]</code>：<i class="s-icon calm">⤵</i><br>
-        　魅惑の楽素：<code>[♡]</code>：<i class="s-icon heart">♡</i><br>
-  HTML
-}
-print textRuleArea( $text_rule,'「効果」「備考」「由来・逸話など」' );
 
-print <<"HTML";
-  </main>
-  <footer>
-    <p class="notes">(C)Group SNE「ソード・ワールド2.0／2.5」</p>
-    <p class="copyright">©<a href="https://yutorize.work">ゆとらいず工房</a>「ゆとシートⅡ」ver.${main::ver}</p>
-  </footer>
+print renderEditPageEnd(
+  notes => '(C)Group SNE「ソード・ワールド'.($::SW2_0 ? '2.0' : '2.5').'」',
+  multilineTargets => '「効果」「備考」「由来・逸話など」',
+  extraHtml => renderDataList(),
+);
+
+sub renderDataList {
+  return <<~"HTML";
   <datalist id="list-craft-required-level">
     <option value="1">
     <option value="5">
@@ -791,11 +648,7 @@ print <<"HTML";
     <option value="生命抵抗力">
     <option value="精神抵抗力">
   </datalist>
-  <script>
-@{[ &commonJSVariable ]}
-  </script>
-</body>
-</html>
-HTML
+  HTML
+}
 
 1;

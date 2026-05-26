@@ -516,7 +516,7 @@
   }
 }
 
-.mode-country {
+body[data-sheet-type="country"] {
   #profile {
     width: max-content;
     grid-template-columns: 6em 6em 6em;

@@ -1163,7 +1163,7 @@ dl#level {
     border-top-width: 1px;
   }
 }
-#sw2\.0 #honor {
+[data-system="sw2.0"] #honor {
   grid-template-columns: 1fr 1fr 1fr;
   align-items: normal;
   gap: 0px;

@@ -450,7 +450,6 @@ function encroachBonusSet(enc){
     }
   }
 }
-
 function encroachModeChanged() {
   const checkbox = document.querySelector('input[name="encroachFixed"]');
   const fixed = checkbox != null && checkbox.checked;

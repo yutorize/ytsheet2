@@ -4,7 +4,6 @@ use strict;
 use utf8;
 use open ":utf8";
 use feature 'say';
-use JSON::PP;
 
 my $LOGIN_ID = $::LOGIN_ID;
 
@@ -19,24 +18,21 @@ my @classes = data::classNameList();
 my @styles  = data::styleNameList();
 
 ### データ読み込み ###################################################################################
-my ($data, $mode, $file, $message) = loadSheetData($::in{mode});
+my ($data, $file, $message) = loadSheetData();
 our %pc = %{ $data };
 
-my $mode_make = ($mode =~ /^(blanksheet|copy|convert)$/) ? 1 : 0;
+my $isNewSheet = isNewSheet();
 
 ### 出力準備 #########################################################################################
-if($message){
-  my $name = unescapeTags($pc{characterName} || $pc{aka} || '無題');
-  $message =~ s/<!NAME>/$name/;
-}
-### プレイヤー名 --------------------------------------------------
-if($mode_make){
-  $pc{playerName} = (getPlayerName($LOGIN_ID))[0];
-}
-### 初期設定 --------------------------------------------------
-if($mode_make){ $pc{protect} ||= $LOGIN_ID ? 'account' : 'password'; }
+$message = applyMessageName($message, $pc{characterName} || $pc{aka} || '無題');
 
-if($mode eq 'edit' || ($mode eq 'convert' && $pc{ver})){
+### 初期設定 --------------------------------------------------
+if($isNewSheet){
+  $pc{playerName} = (getPlayerName($LOGIN_ID))[0];
+  $pc{protect} ||= $LOGIN_ID ? 'account' : 'password';
+}
+
+if($::mode eq 'edit' || ($::mode eq 'convert' && $pc{ver})){
   %pc = data_update_chara(\%pc);
   if($pc{updateMessage}){
     $message .= "<hr>" if $message;
@@ -48,7 +44,7 @@ if($mode eq 'edit' || ($mode eq 'convert' && $pc{ver})){
     $message .= "</dl><small>前回保存時のバージョン:$lasttimever</small>";
   }
 }
-elsif($mode eq 'blanksheet'){
+elsif($::mode eq 'blanksheet'){
   $pc{group} = $set::group_default;
   
   $pc{history0Result} = $set::make_exp || 0;
@@ -61,16 +57,12 @@ elsif($mode eq 'blanksheet'){
   %pc = applyCustomizedInitialValues(\%pc, '');
 }
 
-## 画像
-$pc{imageFit} = $pc{imageFit} eq 'percent' ? 'percentX' : $pc{imageFit};
-$pc{imagePercent}   //= '200';
-$pc{imagePositionX} //= '50';
-$pc{imagePositionY} //= '50';
-$pc{wordsX} ||= '右';
-$pc{wordsY} ||= '上';
+## 画像・セリフ位置
+setDefaultImageStyle(\%pc);
+setDefaultWordsPosition(\%pc);
 
 ## カラー
-setDefaultColors();
+setDefaultColors(\%pc);
 
 ## その他
 $pc{goodsNum}   ||= 2;
@@ -80,152 +72,35 @@ $pc{historyNum} ||= 3;
 ### 折り畳み判断 --------------------------------------------------
 my %open;
 $open{skills} = 'open';
-#foreach (3..$pc{skillsNum}){ if($pc{"skill${_}Name"} || $pc{"skill${_}Lv"}){ $open{skills} = 'open'; last; } }
 
 ### 改行処理 --------------------------------------------------
-foreach (
-  'words',
-  'items',
-  'freeNote',
-  'freeHistory',
-  'cashbook',
-  'chatPalette',
-){
-  $pc{$_} =~ s/&lt;br&gt;/\n/g;
-}
-foreach my $i (1 .. $pc{geisesNum}){
-  $pc{"geis${i}Note"} =~ s/&lt;br&gt;/\n/g;
-}
+convertEscapedBrToNewlines(\%pc,
+  qw/words freeNote freeHistory chatPalette/,
+);
 
 ### フォーム表示 #####################################################################################
-my $titlebarname = removeTags removeRuby unescapeTags ($pc{characterName}||"“$pc{aka}”");
-print <<"HTML";
-Content-type: text/html\n
-<!DOCTYPE html>
-<html lang="ja">
-
-<head>
-  <meta charset="UTF-8">
-  <title>@{[$mode eq 'edit'?"編集：$titlebarname" : '新規作成']} - $set::title</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" media="all" href="${main::core_dir}/skin/_common/css/base.css?${main::ver}">
-  <link rel="stylesheet" media="all" href="${main::core_dir}/skin/_common/css/sheet.css?${main::ver}">
-  <link rel="stylesheet" media="all" href="${main::core_dir}/skin/vc/css/chara.css?${main::ver}">
-  <link rel="stylesheet" media="all" href="${main::core_dir}/skin/_common/css/edit.css?${main::ver}">
-  <link rel="stylesheet" media="all" href="${main::core_dir}/skin/vc/css/edit.css?${main::ver}">
-  <script src="${main::core_dir}/skin/_common/js/lib/Sortable.min.js"></script>
-  <script src="${main::core_dir}/skin/_common/js/lib/compressor.min.js"></script>
-  <script src="${main::core_dir}/lib/edit.js?${main::ver}" defer></script>
-  <script src="${main::core_dir}/lib/vc/edit-chara.js?${main::ver}" defer></script>
-  <style>
-    #image,
-    .image-custom-view {
-      background-image: url("$pc{imageURL}");
-    }
-  </style>
-</head>
-<body>
-  <script src="${main::core_dir}/skin/_common/js/common.js?${main::ver}"></script>
-  <header>
-    <h1>$set::title</h1>
-  </header>
-
-  <main>
-    <article>
-      <form name="sheet" method="post" action="./" enctype="multipart/form-data">
-      <input type="hidden" name="ver" value="${main::ver}">
-HTML
-if($mode_make){
-  print '<input type="hidden" name="_token" value="'.tokenMake().'">'."\n";
-}
-print <<"HTML";
-      <input type="hidden" name="mode" value="@{[ $mode eq 'edit' ? 'save' : 'make' ]}">
-      
-      <div id="header-menu">
-        <h2><span></span></h2>
-        <ul>
-          <li onclick="sectionSelect('common');"><span>キャラ<span class="shorten">クター</span></span><span>データ</span>
-          <li onclick="sectionSelect('palette');"><span><span class="shorten">ユニット(</span>コマ<span class="shorten">)</span></span><span>設定</span>
-          <li onclick="sectionSelect('color');" class="color-icon" title="シートデザインカスタム">
-          <li onclick="view('text-rule')" class="help-icon" title="テキスト整形ルール">
-          <li onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード切替">
-          <li onclick="exportAsJson()" class="download-icon" title="JSON出力">
-          <li class="buttons">
-            <ul>
-              <li @{[ display ($mode eq 'edit') ]} class="view-icon" title="閲覧画面"><a href="./?id=$::in{id}"></a>
-              <li @{[ display ($mode eq 'edit') ]} class="copy" onclick="window.open('./?mode=copy&id=$::in{id}@{[  $::in{log}?"&log=$::in{log}":'' ]}');">複製
-              <li class="submit" onclick="formSubmit()" title="Ctrl+S">保存
-            </ul>
-          </li>
-        </ul>
-        <div id="save-state"></div>
-      </div>
-
-      <aside class="message">$message</aside>
-      
-      <section id="section-common">
-HTML
-if($set::user_reqd){
-  print <<~"HTML";
-    <input type="hidden" name="protect" value="account">
-    <input type="hidden" name="protectOld" value="$pc{protect}">
-    <input type="hidden" name="pass" value="$::in{pass}">
+print renderEditPageStart(
+  title => (removeTags removeRuby unescapeTags ($pc{characterName} || qq|“$pc{aka}”|)),
+  isNewSheet => $isNewSheet,
+);
+print renderEditHeaderMenu(
+  tabsHtml => <<~'HTML',
+    <li onclick="sectionSelect('common');" class="sheet-main"><span>キャラ<span class="shorten">クター</span></span><span>データ</span>
+    <li onclick="sectionSelect('palette');" class="unit-setting"><span><span class="shorten">ユニット(</span>コマ<span class="shorten">)</span></span><span>設定</span>
   HTML
-}
-else {
-  if($set::registerkey && $mode_make){
-    print '登録キー：<input type="text" name="registerkey" required>'."\n";
-  }
-  print <<~"HTML";
-      <details class="box" id="edit-protect" @{[$mode eq 'edit' ? '':'open']}>
-      <summary>編集保護設定</summary>
-      <fieldset id="edit-protect-view"><input type="hidden" name="protectOld" value="$pc{protect}">
-  HTML
-  if($LOGIN_ID){
-    print '<input type="radio" name="protect" value="account"'.($pc{protect} eq 'account'?' checked':'').'> アカウントに紐付ける（ログイン中のみ編集可能になります）<br>';
-  }
-    print '<input type="radio" name="protect" value="password"'.($pc{protect} eq 'password'?' checked':'').'> パスワードで保護 ';
-  if ($mode eq 'edit' && $pc{protect} eq 'password' && $::in{pass}) {
-    print '<input type="hidden" name="pass" value="'.$::in{pass}.'"><br>';
-  } else {
-    print '<input type="password" name="pass"><br>';
-  }
-  print <<~"HTML";
-        <input type="radio" name="protect" value="none"@{[ $pc{protect} eq 'none'?' checked':'' ]}> 保護しない（誰でも編集できるようになります）
-      </fieldset>
-      </details>
-  HTML
-}
+);
+print qq|<aside class="message">$message</aside>| if $message;
+print '<section id="section-common">';
+print renderProtectBlock(isNewSheet => $isNewSheet);
+print renderVisibilityBlock();
+
 print <<"HTML";
-      <dl class="box" id="hide-options">
-        <dt>閲覧可否設定</dt>
-        <dd id="forbidden-checkbox">
-          <select name="forbidden">
-            <option value="">内容を全て開示
-            <option value="battle" @{[ $pc{forbidden} eq 'battle' ? 'selected' : '' ]}>データ・数値のみ秘匿
-            <option value="all"    @{[ $pc{forbidden} eq 'all'    ? 'selected' : '' ]}>内容を全て秘匿
-          </select>
-        <dd id="hide-checkbox">
-          <select name="hide">
-            <option value="">一覧に表示
-            <option value="1" @{[ $pc{hide} ? 'selected' : '' ]}>一覧には非表示
-          </select>
-        <dd>※「一覧に非表示」でもタグ検索結果・マイリストには表示されます
-      </dl>
       <div class="box" id="group">
         <dl>
           <dt>グループ<dd><select name="group">
-HTML
-foreach (@set::groups){
-  my $id   = @$_[0];
-  my $name = @$_[2];
-  my $exclusive = @$_[4];
-  next if($exclusive && (!$LOGIN_ID || $LOGIN_ID !~ /^($exclusive)$/));
-  print '<option value="'.$id.'"'.($pc{group} eq $id ? ' selected': '').'>'.$name.'</option>';
-}
-print <<"HTML";
+          @{[ renderGroupOptions ]}
           </select>
-          <dt>タグ<dd>@{[ input 'tags','','','' ]}
+          <dt>タグ<dd>@{[ input 'tags' ]}
         </dl>
       </div>
       
@@ -243,7 +118,7 @@ print <<"HTML";
       </div>
       
       <div id="area-status">
-        @{[ imageForm($pc{imageURL}) ]}
+        @{[ renderImageForm($pc{imageURL}) ]}
         
         <div id="levels">
           <dl class="box">
@@ -627,26 +502,17 @@ print <<"HTML";
         </p>
       </div>
       </section>
-      
-      @{[ chatPaletteForm ]}
-      
-      @{[ colorCostomForm ]}
-      
-      @{[ input 'birthTime','hidden' ]}
-      <input type="hidden" name="id" value="$::in{id}">
-    </form>
-    @{[ deleteForm($mode) ]}
-    </article>
 HTML
-# ヘルプ
-print textRuleArea( '','「容姿・経歴・その他メモ」「履歴（自由記入）」「所持品」「収支履歴」' );
+print renderChatPaletteForm();
 
-print <<"HTML";
-  </main>
-  <footer>
-    <p class="notes">©FarEast Amusement Research Co.,Ltd.「ヴィジョンコネクト」</p>
-    <p class="copyright">©<a href="https://yutorize.work">ゆとらいず工房</a>「ゆとシートⅡ」ver.${main::ver}</p>
-  </footer>
+print renderEditPageEnd(
+  notes => '©FarEast Amusement Research Co.,Ltd.「ヴィジョンコネクト」',
+  multilineTargets => '「容姿・経歴・その他メモ」「履歴（自由記入）」',
+  extraHtml => renderDataList(),
+);
+
+sub renderDataList {
+  return <<~"HTML";
   <datalist id="list-gender">
     <option value="男">
     <option value="女">
@@ -668,20 +534,7 @@ print <<"HTML";
     <option value="薬品">
     <option value="料理">
   </datalist>
-  <script>
-  const races = @{[ JSON::PP->new->encode(\%data::races) ]};
-  const classes = @{[ JSON::PP->new->encode(\%data::class) ]};
-  let expUse = {
-    'level'      : @{[ $pc{expUsedLevel        } || 0 ]},
-    'skills'     : @{[ $pc{expUsedGeneralSkills} || 0 ]},
-    'connections': @{[ $pc{expUsedConnections  } || 0 ]},
-    'geises'     : @{[ $pc{expUsedGeises} || 0 ]},
-  };
-@{[ &commonJSVariable ]}
-  </script>
-</body>
-
-</html>
-HTML
+  HTML
+}
 
 1;
