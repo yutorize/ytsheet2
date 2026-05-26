@@ -4,7 +4,6 @@ use strict;
 use utf8;
 use open ":utf8";
 use feature 'say';
-use JSON::PP;
 
 my $LOGIN_ID = $::LOGIN_ID;
 
@@ -18,24 +17,21 @@ require $set::data_items;
 require $set::data_faith;
 
 ### データ読み込み ###################################################################################
-my ($data, $mode, $file, $message) = loadSheetData($::in{mode});
+my ($data, $file, $message) = loadSheetData();
 our %pc = %{ $data };
 
-my $mode_make = ($mode =~ /^(blanksheet|copy|convert)$/) ? 1 : 0;
+my $isNewSheet = isNewSheet();
 
 ### 出力準備 #########################################################################################
-if($message){
-  my $name = unescapeTags($pc{characterName} || $pc{aka} || '無題');
-  $message =~ s/<!NAME>/$name/;
-}
-### プレイヤー名 --------------------------------------------------
-if($mode_make){
-  $pc{playerName} = (getPlayerName($LOGIN_ID))[0];
-}
-### 初期設定 --------------------------------------------------
-if($mode_make){ $pc{protect} ||= $LOGIN_ID ? 'account' : 'password'; }
+$message = applyMessageName($message, $pc{characterName} || $pc{aka} || '無題');
 
-if($mode eq 'edit' || ($mode eq 'convert' && $pc{ver})){
+### 初期設定 --------------------------------------------------
+if($isNewSheet){
+  $pc{playerName} = (getPlayerName($LOGIN_ID))[0];
+  $pc{protect} ||= $LOGIN_ID ? 'account' : 'password';
+}
+
+if($::mode eq 'edit' || ($::mode eq 'convert' && $pc{ver})){
   %pc = data_update_chara(\%pc);
   if($pc{updateMessage}){
     $message .= "<hr>" if $message;
@@ -47,7 +43,7 @@ if($mode eq 'edit' || ($mode eq 'convert' && $pc{ver})){
     $message .= "</dl><small>前回保存時のバージョン:$lasttimever</small>";
   }
 }
-elsif($mode eq 'blanksheet'){
+elsif($::mode eq 'blanksheet'){
   $pc{group} = $set::group_default;
   
   $pc{history0Exp}   = $set::make_exp;
@@ -87,16 +83,12 @@ elsif($mode eq 'blanksheet'){
   %pc = applyCustomizedInitialValues(\%pc, '');
 }
 
-## 画像
-$pc{imageFit} = $pc{imageFit} eq 'percent' ? 'percentX' : $pc{imageFit};
-$pc{imagePercent}   //= '200';
-$pc{imagePositionX} //= '50';
-$pc{imagePositionY} //= '50';
-$pc{wordsX} ||= '右';
-$pc{wordsY} ||= '上';
+## 画像・セリフ位置
+setDefaultImageStyle(\%pc);
+setDefaultWordsPosition(\%pc);
 
 ## カラー
-setDefaultColors();
+setDefaultColors(\%pc);
 
 ## その他
 $pc{commonClassNum}||= 10;
@@ -120,152 +112,39 @@ foreach my $name (@data::class_names){
 }
 
 ### 改行処理 --------------------------------------------------
-$pc{words}           =~ s/&lt;br&gt;/\n/g;
-$pc{items}           =~ s/&lt;br&gt;/\n/g;
-$pc{freeNote}        =~ s/&lt;br&gt;/\n/g;
-$pc{freeHistory}     =~ s/&lt;br&gt;/\n/g;
-$pc{cashbook}        =~ s/&lt;br&gt;/\n/g;
-$pc{fellowProfile}   =~ s/&lt;br&gt;/\n/g;
-$pc{fellowNote}      =~ s/&lt;br&gt;/\n/g;
-$pc{chatPalette}     =~ s/&lt;br&gt;/\n/g;
-$pc{'cashbookOther'.$_} =~ s/&lt;br&gt;/\n/g foreach(1..$pc{cashbookOtherNum});
-$pc{'chatPaletteInsert'.$_} =~ s/&lt;br&gt;/\n/g foreach(1..$pc{chatPaletteInsertNum});
-$pc{$_} =~ s/&lt;br&gt;/\n/g foreach (grep {/^fellow[-0-9]+(?:Action|Note)$/} keys %pc);
+convertEscapedBrToNewlines(\%pc,
+  qw/words items freeNote freeHistory cashbook fellowProfile fellowNote chatPalette/,
+  ( map { 'chatPaletteInsert'.$_ } 1..$pc{chatPaletteInsertNum} ),
+  ( map { 'cashbookOther'    .$_ } 1..$pc{cashbookOtherNum} ),
+  ( grep {/^fellow[-0-9]+(?:Action|Note)$/} keys %pc ),
+);
 
 ### フォーム表示 #####################################################################################
-my $titlebarname = removeTags removeRuby unescapeTags ($pc{characterName}||"“$pc{aka}”");
-print <<"HTML";
-Content-type: text/html\n
-<!DOCTYPE html>
-<html lang="ja">
-
-<head>
-  <meta charset="UTF-8">
-  <title>@{[$mode eq 'edit'?"編集：$titlebarname" : '新規作成']} - $set::title</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" media="all" href="${main::core_dir}/skin/_common/css/base.css?${main::ver}">
-  <link rel="stylesheet" media="all" href="${main::core_dir}/skin/_common/css/sheet.css?${main::ver}">
-  <link rel="stylesheet" media="all" href="${main::core_dir}/skin/sw2/css/chara.css?${main::ver}">
-  <link rel="stylesheet" media="all" href="${main::core_dir}/skin/_common/css/edit.css?${main::ver}">
-  <link rel="stylesheet" media="all" href="${main::core_dir}/skin/sw2/css/edit.css?${main::ver}">
-  <script src="${main::core_dir}/skin/_common/js/lib/Sortable.min.js"></script>
-  <script src="${main::core_dir}/skin/_common/js/lib/compressor.min.js"></script>
-  <script src="./?mode=js-consts&ver=${main::ver}"></script>
-  <script src="${main::core_dir}/lib/edit.js?${main::ver}" defer></script>
-  <script src="${main::core_dir}/lib/sw2/edit-chara.js?${main::ver}" defer></script>
-  @{[ $::SW2_0 ? "<script src=\"${main::core_dir}/lib/sw2.0/edit-chara.js?${main::ver}\" defer></script>" : '' ]}
-  <style>
-    #image,
-    .image-custom-view {
-      background-image: url("$pc{imageURL}");
-    }
-  </style>
-</head>
-<body @{[ $::SW2_0 ? 'id="sw2.0"' : '' ]}>
-  <script src="${main::core_dir}/skin/_common/js/common.js?${main::ver}"></script>
-  <header>
-    <h1>$set::title</h1>
-  </header>
-
-  <main>
-    <article>
-      <form name="sheet" method="post" action="./" enctype="multipart/form-data">
-      <input type="hidden" name="ver" value="${main::ver}">
-HTML
-if($mode_make){
-  print '<input type="hidden" name="_token" value="'.tokenMake().'">'."\n";
-}
-print <<"HTML";
-      <input type="hidden" name="mode" value="@{[ $mode eq 'edit' ? 'save' : 'make' ]}">
-      
-      <div id="header-menu">
-        <h2><span></span></h2>
-        <ul>
-          <li onclick="sectionSelect('common');"><span>キャラ<span class="shorten">クター</span></span><span>データ</span>
-          <li onclick="sectionSelect('fellow');"><span>フェロー</span><span>データ</span>
-          <li onclick="sectionSelect('palette');"><span><span class="shorten">ユニット(</span>コマ<span class="shorten">)</span></span><span>設定</span>
-          <li onclick="sectionSelect('color');" class="color-icon" title="シートデザインカスタム">
-          <li onclick="view('text-rule')" class="help-icon" title="テキスト整形ルール">
-          <li onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード切替">
-          <li onclick="exportAsJson()" class="download-icon" title="JSON出力">
-          <li class="buttons">
-            <ul>
-              <li @{[ display ($mode eq 'edit') ]} class="view-icon" title="閲覧画面"><a href="./?id=$::in{id}"></a>
-              <li @{[ display ($mode eq 'edit') ]} class="copy" onclick="window.open('./?mode=copy&id=$::in{id}@{[  $::in{log}?"&log=$::in{log}":'' ]}');">複製
-              <li class="submit" onclick="formSubmit()" title="Ctrl+S">保存
-            </ul>
-          </li>
-        </ul>
-        <div id="save-state"></div>
-      </div>
-
-      <aside class="message">$message</aside>
-      
-      <section id="section-common">
-HTML
-if($set::user_reqd){
-  print <<~"HTML";
-    <input type="hidden" name="protect" value="account">
-    <input type="hidden" name="protectOld" value="$pc{protect}">
-    <input type="hidden" name="pass" value="$::in{pass}">
+print renderEditPageStart(
+  title => (removeTags removeRuby unescapeTags ( $pc{characterName} || qq|“$pc{aka}”| )),
+  systemId => ($::SW2_0 ? 'sw2.0' : 'sw2.5'),
+  isNewSheet => $isNewSheet,
+  extraJsMid =>  ($::SW2_0 ? qq|<script src="$::core_dir/lib/sw2.0/edit-chara.js?$::ver" defer></script>| : ''),
+);
+print renderEditHeaderMenu(
+  tabsHtml => <<~'HTML',
+    <li onclick="sectionSelect('common');" class="sheet-main"><span>キャラ<span class="shorten">クター</span></span><span>データ</span>
+    <li onclick="sectionSelect('fellow');"><span>フェロー</span><span>データ</span>
+    <li onclick="sectionSelect('palette');" class="unit-setting"><span><span class="shorten">ユニット(</span>コマ<span class="shorten">)</span></span><span>設定</span>
   HTML
-}
-else {
-  if($set::registerkey && $mode_make){
-    print '登録キー：<input type="text" name="registerkey" required>'."\n";
-  }
-  print <<~"HTML";
-      <details class="box" id="edit-protect" @{[$mode eq 'edit' ? '':'open']}>
-      <summary>編集保護設定</summary>
-      <fieldset id="edit-protect-view"><input type="hidden" name="protectOld" value="$pc{protect}">
-  HTML
-  if($LOGIN_ID){
-    print '<input type="radio" name="protect" value="account"'.($pc{protect} eq 'account'?' checked':'').'> アカウントに紐付ける（ログイン中のみ編集可能になります）<br>';
-  }
-    print '<input type="radio" name="protect" value="password"'.($pc{protect} eq 'password'?' checked':'').'> パスワードで保護 ';
-  if ($mode eq 'edit' && $pc{protect} eq 'password' && $::in{pass}) {
-    print '<input type="hidden" name="pass" value="'.$::in{pass}.'"><br>';
-  } else {
-    print '<input type="password" name="pass"><br>';
-  }
-  print <<~"HTML";
-        <input type="radio" name="protect" value="none"@{[ $pc{protect} eq 'none'?' checked':'' ]}> 保護しない（誰でも編集できるようになります）
-      </fieldset>
-      </details>
-  HTML
-}
+);
+print qq|<aside class="message">$message</aside>| if $message;
+print '<section id="section-common">';
+print renderProtectBlock(isNewSheet => $isNewSheet);
+print renderVisibilityBlock();
+
 print <<"HTML";
-      <dl class="box" id="hide-options">
-        <dt>閲覧可否設定
-        <dd id="forbidden-checkbox">
-          <select name="forbidden">
-            <option value="">内容を全て開示
-            <option value="battle" @{[ $pc{forbidden} eq 'battle' ? 'selected' : '' ]}>データ・数値のみ秘匿
-            <option value="all"    @{[ $pc{forbidden} eq 'all'    ? 'selected' : '' ]}>内容を全て秘匿
-          </select>
-        <dd id="hide-checkbox">
-          <select name="hide">
-            <option value="">一覧に表示
-            <option value="1" @{[ $pc{hide} ? 'selected' : '' ]}>一覧には非表示
-          </select>
-        <dd>※「一覧に非表示」でもタグ検索結果・マイリストには表示されます
-      </dl>
       <div class="box" id="group">
         <dl>
           <dt>グループ
-          <dd><select name="group">
-HTML
-foreach (@set::groups){
-  my $id   = @$_[0];
-  my $name = @$_[2];
-  my $exclusive = @$_[4];
-  next if($exclusive && (!$LOGIN_ID || $LOGIN_ID !~ /^($exclusive)$/));
-  print '<option value="'.$id.'"'.($pc{group} eq $id ? ' selected': '').'>'.$name.'</option>';
-}
-print <<"HTML";
-          </select>
+          <dd><select name="group">@{[ renderGroupOptions ]}</select>
           <dt>タグ
-          <dd>@{[ input 'tags','','','' ]}
+          <dd>@{[ input 'tags' ]}
         </dl>
       </div>
       
@@ -288,7 +167,7 @@ print <<"HTML";
         </dl>
       </div>
 
-      <details class="box" id="regulation" @{[$mode eq 'edit' ? '':'open']}>
+      <details class="box" id="regulation" @{[$::mode eq 'edit' ? '':'open']}>
         <summary class="in-toc">作成レギュレーション</summary>
         <dl>
           <dt>経験点
@@ -338,7 +217,7 @@ print <<"HTML";
         </ul>
       </details>
       <div id="area-status">
-        @{[ imageForm($pc{imageURL}) ]}
+        @{[ renderImageForm($pc{imageURL}) ]}
 
         <div id="personal" class="in-toc" data-content-title="種族・年齢・性別・穢れ・生まれ・信仰">
           <dl class="box" id="race">
@@ -1699,7 +1578,9 @@ print <<"HTML";
         @{[ $::in{log} ? '<button type="button" class="set-newest" onclick="setNewestHistoryData()">最新のセッション履歴を適用する</button>' : '' ]}
       </div>
       </section>
-      
+HTML
+### フェロー --------------------------------------------------
+print <<HTML;
       <section id="section-fellow" style="display:none;">
       <h2 id="fellow">フェロー関連データ</h2>
       <div class="box" id="f-public">
@@ -1791,74 +1672,15 @@ print <<"HTML";
         <textarea name="fellowNote">$pc{fellowNote}</textarea>
       </div>
       </section>
-      
-      @{[ chatPaletteForm ]}
-      
-      @{[ colorCostomForm ]}
-
-      @{[ input 'birthTime','hidden' ]}
-      <input type="hidden" name="id" value="$::in{id}">
-    </form>
-    @{[ deleteForm($mode) ]}
-    </article>
 HTML
-sub chatPaletteFormOptional {
-  require($::core_dir . '/lib/sw2/edit-chara-palette-option.pl');
-  return palette::chatPaletteFormOptional(\%pc);
-}
+print renderChatPaletteForm();
 
-# ヘルプ
-my $text_rule= <<"HTML";
-  アイコン<br>
-  　魔法のアイテム：<code>[魔]</code>：<img class="i-icon" src="${set::icon_dir}item_magic.png"><br>
-  　刃武器　　　　：<code>[刃]</code>：<img class="i-icon" src="${set::icon_dir}item_edge.png"><br>
-  　打撃武器　　　：<code>[打]</code>：<img class="i-icon" src="${set::icon_dir}item_blow.png"><br>
-  　地方特産品　　：<code>[特]</code>：<img class="i-icon" src="${set::icon_dir}item_local.png"><br>
-HTML
-if($::SW2_0){
-  $text_rule .= <<~"HTML";
-    　流派装備　　　：<code>[流]</code>：<i class="i-icon" data-kind="流"><span class="raw">[流]</span></i><br>
-    　常時型　　：<code>[常]</code>：<i class="s-icon passive  "><span class="raw">[常]</span></i><br>
-    　主動作型　：<code>[主]</code>：<i class="s-icon major0   "><span class="raw">[主]</span></i><br>
-    　補助動作型：<code>[補]</code>：<i class="s-icon minor0   "><span class="raw">[補]</span></i><br>
-    　宣言型　　：<code>[宣]</code>：<i class="s-icon active0  "><span class="raw">[宣]</span></i><br>
-    　条件型　　：<code>[条]</code>：<i class="s-icon condition"><span class="raw">[条]</span></i><br>
-    　条件選択型：<code>[選]</code>：<i class="s-icon selection"><span class="raw">[選]</span></i><br>
-  HTML
-}
-else {
-  $text_rule .= <<~"HTML";
-    　流派アイテム　：<code>[流]</code>：<img class="i-icon" src="${set::icon_dir}item_school.png"><br>
-    　アルフレイム大陸由来の流派アイテム：<code>[ア]</code>：<img class="i-icon" src="${set::icon_dir}item_school_a.png"><br>
-    　テラスティア大陸由来の流派アイテム：<code>[テ]</code>：<img class="i-icon" src="${set::icon_dir}item_school_t.png"><br>
-    　常時型　　：<code>[常]</code>：<i class="s-icon passive"><span class="raw">[常]</span></i><br>
-    　戦闘準備型：<code>[準]</code>：<i class="s-icon setup  "><span class="raw">[準]</span></i><br>
-    　主動作型　：<code>[主]</code>：<i class="s-icon major  "><span class="raw">[主]</span></i><br>
-    　補助動作型：<code>[補]</code>：<i class="s-icon minor  "><span class="raw">[補]</span></i><br>
-    　宣言型　　：<code>[宣]</code>：<i class="s-icon active "><span class="raw">[宣]</span></i><br>
-    　高揚の楽素：<code>[⤴]</code><code>[↑]</code>：<i class="s-icon uplift">⤴</i><br>
-    　鎮静の楽素：<code>[⤵]</code><code>[↓]</code>：<i class="s-icon calm">⤵</i><br>
-    　魅惑の楽素：<code>[♡]</code>：<i class="s-icon heart">♡</i><br>
-  HTML
-}
-print textRuleArea( $text_rule,'「容姿・経歴・その他メモ」「履歴（自由記入）」「所持品」「収支履歴」' );
-
-print <<"HTML";
-  </main>
-  <footer>
-    <p class="notes">(C)Group SNE「ソード・ワールド@{[ $::SW2_0 ? '2.0' : '2.5' ]}」</p>
-    <p class="copyright">©<a href="https://yutorize.work">ゆとらいず工房</a>「ゆとシートⅡ」ver.${main::ver}</p>
-  </footer>
-HTML
-
-require($::core_dir . '/lib/sw2/edit-chara-datalist.pl');
-printCharaDataList();
-
-print <<"HTML";
-</body>
-
-</html>
-HTML
+print renderEditPageEnd(
+  notes => '(C)Group SNE「ソード・ワールド'.($::SW2_0 ? '2.0' : '2.5').'」',
+  multilineTargets => '「容姿・経歴・その他メモ」「履歴（自由記入）」「所持品」「収支履歴」',
+  addTextRule => renderAddTextRule(),
+  extraHtml => renderDataList(),
+);
 
 ### サブルーチン #####################################################################################
 sub inputHonor {
@@ -1876,6 +1698,100 @@ sub inputHonor {
     return input($name, 'text', 'calcHonor');
   }
 }
-
+sub renderChatPaletteFormOptional {
+  require($::core_dir . '/lib/sw2/edit-chara-palette-option.pl');
+  return palette::renderChatPaletteFormOptional(\%pc);
+}
+sub renderDataList {
+  return <<~"HTML";
+  <datalist id="list-gender">
+    <option value="男">
+    <option value="女">
+    <option value="その他">
+    <option value="なし">
+    <option value="不明">
+    <option value="不詳">
+  </datalist>
+  <datalist id="list-weapon-name">
+    <option value="〈〉">
+    <option value="〈〉[刃]">
+    <option value="〈〉[打]">
+    <option value="〈〉[刃][打]">
+    <option value="[魔]〈〉">
+    <option value="[魔]〈〉[刃]">
+    <option value="[魔]〈〉[打]">
+    <option value="[魔]〈〉[刃][打]">
+  </datalist>
+  <datalist id="list-item-name">
+    <option value="〈〉">
+    <option value="[魔]〈〉">
+  </datalist>
+  <datalist id="list-usage">
+    <option value="1H">
+    <option value="1H#">
+    <option value="1H投">
+    <option value="1H拳">
+    <option value="1H両">
+    <option value="1H騎">
+    <option value="2H">
+    <option value="2H#">
+    <option value="2H投">
+    <option value="振2H">
+    <option value="突2H">
+  </datalist>
+  <datalist id="list-honor-item">
+    <option value="〈〉">
+    <option value="【】">
+    <option value="《》">
+  </datalist>
+  <datalist id="list-grow">
+    <option value="器用">
+    <option value="敏捷">
+    <option value="筋力">
+    <option value="生命">
+    <option value="知力">
+    <option value="精神">
+  </datalist>
+  <datalist id="list-language">
+    <option value="交易共通語">
+    <option value="地方語（）">
+    <option value="神紀文明語">
+    <option value="魔法文明語">
+    <option value="魔動機文明語">
+    <option value="エルフ語">
+    <option value="ドワーフ語">
+    <option value="グラスランナー語">
+    <option value="シャドウ語">
+    <option value="ソレイユ語">
+    <option value="ミアキス語">
+    <option value="リカント語">
+    <option value="ドラゴン語">
+    <option value="妖精語">
+    <option value="海獣語">
+    <option value="ヴァルグ語">
+    <option value="汎用蛮族語">
+    <option value="妖魔語">
+    <option value="巨人語">
+    <option value="ドレイク語">
+    <option value="バジリスク語">
+    <option value="ノスフェラトゥ語">
+    <option value="マーマン語">
+    <option value="ケンタウロス語">
+    <option value="ライカンスロープ語">
+    <option value="リザードマン語">
+    <option value="ハルピュイア語">
+    <option value="バルカン語">
+    <option value="翼人語">
+    <option value="魔神語">
+  </datalist>
+  <datalist id="list-currency-name">
+    <option value="闘技場ポイント">
+  </datalist>
+  <datalist id="list-currency-unit">
+    <option value="P">
+    <option value="点">
+  </datalist>
+  HTML
+}
 
 1;
