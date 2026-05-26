@@ -3,6 +3,7 @@ use strict;
 #use warnings;
 use utf8;
 use open ":utf8";
+use JSON::PP;
 
 our $LOGIN_ID = check;
 
@@ -495,11 +496,7 @@ sub getLogList {
 ### カラー出力 --------------------------------------------------
 sub setColors {
   my ($pc, $type) = @_;
-  $pc->{$type.'colorHeadBgH'} //= 225;
-  $pc->{$type.'colorHeadBgS'} //=   9;
-  $pc->{$type.'colorHeadBgL'} //=  65;
-  $pc->{$type.'colorBaseBgH'} //= 235;
-  $pc->{$type.'colorBaseBgS'} //=   0;
+  setDefaultColors($pc, $type);
   $pc->{$type.'colorBaseBgS'} = $pc->{$type.'colorBaseBgS'} * 0.7;
   $pc->{$type.'colorBaseBgL'} = 100 - $pc->{$type.'colorBaseBgS'} / 6;
   $pc->{$type.'colorBaseBgD'} = 15;

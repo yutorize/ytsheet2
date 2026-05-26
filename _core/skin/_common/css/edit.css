@@ -1750,7 +1750,7 @@ input[type="submit"]:hover {
   .night & .night .box {
     box-shadow: 1px 1px 2px 0px #ccc;
   }
-  .night &.night .box h2 {
+  .night & .night .box h2 {
     text-shadow: 0px 0px .3em #fff;
   }
 
