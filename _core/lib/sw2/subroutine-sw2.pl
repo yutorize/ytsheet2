@@ -664,6 +664,10 @@ sub data_update_chara {
       elsif($pc{"magicBibliomancyTemporary$_"} =~ s/ネブラ＝ウェネーヌムス/ネブラ＝ウェネースムス/) { next; }
     }
   }
+  if($ver < 2){
+    $pc{defenseTotalNum} //= $pc{defenseNum};
+    $pc{effectNum} //= $pc{effectBoxNum};
+  }
   $pc{ver} = $main::ver;
   $pc{lasttimever} = $ver;
   return %pc;
