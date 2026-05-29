@@ -657,7 +657,7 @@ sub data_calc {
 
   
   ## 回避力・防護点
-  foreach my $i (1..$pc{defenseNum}){
+  foreach my $i (1..$pc{defenseTotalNum}){
     my $class = $pc{"evasionClass$i"};
     my $id = $classData{$class}{id};
     my $lv = $pc{'lv'.$id} || 0;
@@ -791,7 +791,7 @@ sub data_calc {
   ### 穢れ --------------------------------------------------
   {
     my %effects = map { $_->{name} => $_ } @set::effects;
-    foreach my $box (1 .. $pc{effectBoxNum}){
+    foreach my $box (1 .. $pc{effectNum}){
       $pc{"effect${box}PtTotal"} = 0;
       my $name = $pc{"effect${box}Name"};
       my $freeMode = ($name =~ /^自由記入/) ? 1 : 0;
