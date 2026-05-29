@@ -654,6 +654,10 @@ sub data_update_chara {
       $pc{$_} =~ s/(^|&lt;br&gt;)\[↓\]/\[v\]/g;
     }
   }
+  if($ver < 2){
+    $pc{defenseTotalNum} //= $pc{defenseNum};
+    $pc{effectNum} //= $pc{effectBoxNum};
+  }
   $pc{ver} = $main::ver;
   $pc{lasttimever} = $ver;
   return %pc;
