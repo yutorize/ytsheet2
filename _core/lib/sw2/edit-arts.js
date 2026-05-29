@@ -241,7 +241,7 @@ function delSchoolItem(obj, url){
 // 秘伝欄 ----------------------------------------
 // 追加
 function addSchoolArts(){
-  document.querySelector("#arts-list").append(createRow('arts','schoolArtsNum'));
+  document.querySelector("#arts-list").append(createRow('school-arts','schoolArtsNum'));
 }
 // 削除
 function delSchoolArts(){
