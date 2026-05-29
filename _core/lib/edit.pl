@@ -98,7 +98,7 @@ sub textarea {
 }
 sub checkbox {
   my ($name, $text, $oninput, $other) = @_;
-  if($oninput && $oninput !~ /\(.*?\)$/){ $oninput .= '()'; }
+  if($oninput && $oninput !~ /\(.*?\);?$/){ $oninput .= '()'; }
   '<label class="check-button">'.
   '<input type="checkbox"'.
   ' name="'.$name.'"'.
@@ -117,7 +117,7 @@ sub radio {
   my $text = shift;
   my $deselectable;
   if($oninput =~ s/^deselectable,?//){ $deselectable = 1; }
-  if($oninput && $oninput !~ /\(.*?\)$/){ $oninput .= '()'; }
+  if($oninput && $oninput !~ /\(.*?\);?$/){ $oninput .= '()'; }
   '<label class="radio-button">'.
   '<input type="radio"'.
   ' name="'.$name.'"'.
@@ -153,47 +153,58 @@ sub radios {
 }
 sub option {
   my $name = shift;
-  my $text = '<option value="">';
+  my $HTML = '<option value="">';
+  my $selected = $::pc{$name};
   foreach my $i (@_) {
-    my $value = $i;
-    my $view;
-    if($value =~ s/^def=//){
-      if($value =~ s/\|\<(.*?)\>$//){ $view = $1 } else { $view = $value }
-      $text = '<option value="'.$value.'">'.$view;
+    my $value;
+    my $text;
+    my $attr;
+    if(ref $i eq 'HASH'){
+      $value = $i->{value} // '';
+      $text  = $i->{text}  // '';
+      $attr  = $i->{attr} ? " $i->{attr}" : '';
+      if($i->{label}){ $value = "label=$i->{label}" }
+      if($i->{close}){ $value = "close_group" }
     }
-    elsif($value =~ s/^label=//){
-      $text .= '<optgroup label="'.$value.'">';
+    else { $value = $i }
+
+    if($value =~ /^label=(.+)$/){
+      $HTML .= qq|<optgroup label="$1"$attr>|;
+      next;
     }
     elsif($value eq 'close_group') {
-      $text .= '</optgroup>';
+      $HTML .= '</optgroup>';
+      next;
     }
-    else {
-      if($value =~ s/\|\<(.*?)\>$//){ $view = $1 } else { $view = $value }
-      $text .= '<option value="'.$value.'"'.($::pc{$name} eq $value ? ' selected':'').'>'.$view;
+    elsif($value =~ s/^def=//){
+      $selected ||= $value;
+      $HTML =~ s/^<option value="">//;
     }
+
+    if($value =~ s/\|\<(.*?)\>$//){ $text = $1 }
+    else { $text = $value }
+
+    $HTML .= qq|<option value="$value"$attr|
+      . ($selected eq $value ? ' selected' : '')
+      . ">$text";
   }
-  return $text;
+
+  return $HTML;
 }
 sub selectBox {
   my $name = shift;
   my $func = shift;
-  if($func && $func !~ /\(.*?\)$/){ $func .= '()'; }
+  if($func && $func !~ /\(.*?\);?$/){ $func .= '()'; }
   my $text = '<select name="'.$name.'" oninput="'.$func.'">'.option($name, @_).'</select>';
   return $text;
 }
 sub selectInput {
   my $name = shift;
   my $func = shift;
-  if($func && $func !~ /\(.*?\)$/){ $func .= '()'; }
+  if($func && $func !~ /\(.*?\);?$/){ $func .= '()'; }
   my $text = '<div class="select-input"><select name="'.$name.'" oninput="selectInputCheck(this);'.$func.'">'.option($name, @_);
-  $text .= '<option value="free">その他（自由記入）'; 
-  my $hit = 0;
-  foreach my $i (@_) {
-    my $value = $i;
-    if($value =~ /^(.*)\|\<.*\>$/){ $value = $1; }
-    if($::pc{$name} eq $value){ $hit = 1; last; }
-  }
-  if($::pc{$name} && !$hit){ $text .= '<option value="'.$::pc{$name}.'" selected>'.$::pc{$name}; }
+  $text .= '<option value="free">その他（自由記入）';
+  unless($text =~ /value="\Q$::pc{$name}\E"/){ $text .= '<option value="'.$::pc{$name}.'" selected>'.$::pc{$name}; }
   $text .= '</select>';
   $text .= '<input type="text" name="'.$name.'Free" list="list-'.$name.'"></div>';
   return $text;
@@ -231,7 +242,7 @@ sub loadSheetData {
     }
     close($IN);
     if($datatype eq 'logs' && !$hit){ error("404:過去ログ（$::in{log}）が見つかりません。"); }
-    
+
     if($::in{log}){
       ($pc{protect}, $pc{forbidden}) = getProtectType("${sheetDir}/data.cgi");
       $message = $pc{updateTime}.' 時点のバックアップデータから編集しています。';
@@ -254,13 +265,13 @@ sub loadSheetData {
     }
     close($IN);
     if($datatype eq 'logs' && !$hit){ error("404:過去ログ（$::in{log}）が見つかりません。"); }
-    
+
     if($pc{forbidden}){
       if($::in{log}){
         ($pc{protect}, $pc{forbidden}) = getProtectType("${sheetDir}/data.cgi");
       }
       unless(
-        ($pc{protect} eq 'none') || 
+        ($pc{protect} eq 'none') ||
         ($author && ($author eq $LOGIN_ID || $set::masterid eq $LOGIN_ID))
       ){
         error("403:閲覧・編集権限がありません。");
@@ -304,7 +315,7 @@ sub tokenMake {
   sysopen (my $FH, $set::tokenfile, O_WRONLY | O_APPEND | O_CREAT);
   print $FH $token."<>".(time + 60*60*24*7)."<>\n";
   close($FH);
-  
+
   return $token;
 }
 
@@ -546,13 +557,26 @@ sub renderGroupOptions {
 }
 ### 行テンプレート --------------------------------------------------
 sub renderTemplateLoop {
-  my ($id, $callback) = @_;
-  my $numKey = kebabToCamel($id).'Num';
+  my ($data, $callback) = @_;
+  my ($id, $placeholder, $numKey, $startNum);
+  if(ref $data eq 'HASH'){
+    $id          = $data->{id};
+    $numKey      = $data->{numKey} // undef;
+    $placeholder = $data->{placeholder} // undef;
+    $startNum    = $data->{startNum} // undef;
+  }
+  else {
+    $id = $data;
+  }
+  $numKey      //= kebabToCamel($id).'Num';
+  $placeholder //= 'TMPL';
+  $startNum    //= 1;
+
   my $html;
-  foreach my $num ('TMPL', 1 .. $::pc{$numKey}) {
-    $html .= qq|<template id="$id-template">| if $num eq 'TMPL';
+  foreach my $num ($placeholder, $startNum .. $::pc{$numKey}) {
+    $html .= qq|<template id="$id-template">| if $num eq $placeholder;
     $html .= $callback->($num);
-    $html .= '</template>' if $num eq 'TMPL';
+    $html .= '</template>' if $num eq $placeholder;
   }
   return $html;
 }
@@ -582,7 +606,7 @@ sub renderImageForm {
       </p>
     </div>
     @{[ input 'imageUpdate', 'hidden' ]}
-    
+
     <div id="image-custom" style="display:none">
       <div class="image-custom-view-area">
         <div id="image-custom-frame-S" class="image-custom-frame"><div class="image-custom-view"><b>横幅が狭い時</b></div></div>
@@ -632,7 +656,7 @@ sub renderImageForm {
             imageDragPointSet();
             imagePosition();
           });
-          
+
           // ドラッグで位置調整
           let imgURL = "${imgurl}";
           let pointWidth  = 1;
@@ -704,7 +728,7 @@ sub renderChatPaletteForm {
     @_,
   );
   $palette .= "$_\n" foreach(paletteProperties('',$::in{type}));
-  
+
   $::pc{unitStatusNum} ||= 3;
   my $status;
   foreach ('TMPL',1..$::pc{unitStatusNum}) {
@@ -714,7 +738,7 @@ sub renderChatPaletteForm {
     $status .= '<td>'.input("unitStatus${_}Value",'','','placeholder="値"');
     $status = '<template id="unit-status-template">'.$status.'</template>' if $_ eq 'TMPL';
   }
-  
+
   return <<~"HTML";
     <section id="section-palette" style="display:none;">
       <div class="box" id="unit-setting">
@@ -763,7 +787,7 @@ sub renderChatPaletteForm {
             </select>
           </p>
           <textarea name="chatPalette" style="height:20em" placeholder="例）&#13;&#10;2d6+{冒険者}+{器用}&#13;&#10;&#13;&#10;※入力がない場合、プリセットが自動的に反映されます。">$::pc{chatPalette}</textarea>
-          
+
           <div class="palette-column">
           <h2>デフォルト変数 （自動的に末尾に出力されます）</h2>
           <textarea id="paletteDefaultProperties" readonly style="height:20em">$palette</textarea>
@@ -778,7 +802,7 @@ sub renderChatPaletteForm {
             <p>
               @{[ checkbox 'paletteUseVar','デフォルト変数を使う','setChatPalette' ]}
               @{[ $opt{buff} ? checkbox('paletteUseBuff','バフデバフ用変数を使う','setChatPalette') : '' ]}<br>
-              @{[ checkbox 'paletteRemoveTags','ルビなどテキスト装飾の構文を取り除く','setChatPalette' ]} 
+              @{[ checkbox 'paletteRemoveTags','ルビなどテキスト装飾の構文を取り除く','setChatPalette' ]}
             </p>
             <dl>
               <dt>使用するオンセツール

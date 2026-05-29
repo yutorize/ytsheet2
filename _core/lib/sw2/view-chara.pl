@@ -872,7 +872,7 @@ else {
   $SHEET->param(Armours => \@armours);
   
   my @total;
-  foreach my $i (1..$pc{defenseNum}){
+  foreach my $i (1..$pc{defenseTotalNum}){
     my @ths;
     my $class = $pc{"evasionClass$i"};
     my $part  = $pc{'part'.$pc{"evasionPart$i"}.'Name'};
@@ -1135,7 +1135,7 @@ foreach my $color ('Red','Gre','Bla','Whi','Gol'){
 {
   my %effects = map { $_->{name} => $_ } @set::effects;
   my @boxes;
-  foreach my $box (1 .. $pc{effectBoxNum}){
+  foreach my $box (1 .. $pc{effectNum}){
     my @rows;
     my $name = $pc{"effect${box}Name"};
     my $freeMode = ($name =~ /^自由記入/) ? 1 : 0;
