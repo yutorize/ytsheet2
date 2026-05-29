@@ -544,7 +544,28 @@ sub renderGroupOptions {
   }
   return $html;
 }
-
+### 行テンプレート --------------------------------------------------
+sub renderTemplateLoop {
+  my ($id, $callback) = @_;
+  my $numKey = kebabToCamel($id).'Num';
+  my $html;
+  foreach my $num ('TMPL', 1 .. $::pc{$numKey}) {
+    $html .= qq|<template id="$id-template">| if $num eq 'TMPL';
+    $html .= $callback->($num);
+    $html .= '</template>' if $num eq 'TMPL';
+  }
+  return $html;
+}
+sub renderAddDelButtons {
+  my ($id) = @_;
+  my $numKey = kebabToCamel($id).'Num';
+  my $key = ucfirst(kebabToCamel($id));
+  return '<div class="add-del-button">'
+    . qq|<a onclick="add$key()">▼</a>|
+    . qq|<a onclick="del$key()">▲</a>|
+    . '</div>'
+    . input($numKey, 'hidden');
+}
 ### 画像欄 --------------------------------------------------
 sub renderImageForm {
   my $imgurl = shift;
