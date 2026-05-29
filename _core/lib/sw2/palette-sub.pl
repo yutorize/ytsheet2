@@ -702,8 +702,8 @@ sub palettePreset {
     $text .= "2d+{生命抵抗}+{生命抵抗修正} 生命抵抗力\n";
     $text .= "2d+{精神抵抗}+{精神抵抗修正} 精神抵抗力\n";
     my %hasClass;
-    my @hasClass = grep { ! $hasClass{ $::pc{"evasionClass$_"} }++ } (1 .. $::pc{defenseNum});
-    foreach my $i (1..$::pc{defenseNum}){
+    my @hasClass = grep { ! $hasClass{ $::pc{"evasionClass$_"} }++ } (1 .. $::pc{defenseTotalNum});
+    foreach my $i (1..$::pc{defenseTotalNum}){
       my $hasChecked = 0;
       foreach my $j (1..$::pc{armourNum}){
         $hasChecked++ if($::pc{"defTotal${i}CheckArmour${j}"});
@@ -1074,7 +1074,7 @@ sub paletteProperties {
       push @propaties, '';
     }
     
-    foreach my $i (1..$::pc{defenseNum}){
+    foreach my $i (1..$::pc{defenseTotalNum}){
       next if ($::pc{"defenseTotal${i}Eva"} eq '');
 
       my $class = $::pc{"evasionClass${i}"};
