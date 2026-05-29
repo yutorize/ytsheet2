@@ -2054,7 +2054,7 @@ function calcArmour(evaAdd,defBase) {
 
     form[`armour${num}Reqd`].classList.remove('error');
     
-    for (let i = 1; i <= form.defenseNum.value; i++){
+    for (let i = 1; i <= form.defenseTotalNum.value; i++){
       if (type && form[`defTotal${i}CheckArmour${num}`].checked){
         checkedCount[type][i] ??= 0;
         checkedCount[type][i]++;
@@ -2062,7 +2062,7 @@ function calcArmour(evaAdd,defBase) {
     }
   }
   
-  for (let i = 1; i <= form.defenseNum.value; i++){
+  for (let i = 1; i <= form.defenseTotalNum.value; i++){
     const className = form['evasionClass'+i].value;
     const partNum   = form['evasionPart'+i].value;
     const partName  = form[`part${partNum}Name`]?.value || '';
@@ -2263,8 +2263,8 @@ function calcDishonor(){
   const dishonorItemsNum = form.dishonorItemsNum.value;
   for (let i = 1; i <= dishonorItemsNum; i++){
     let point = safeEval(form['dishonorItem'+i+'Pt'].value) || 0;
-    let type  = form['dishonorItem'+i+'PtType'].value || 'human';
-    form['dishonorItem'+i+'PtType'].dataset.type = type;
+    let type  = form['dishonorItem'+i+'PtType']?.value || 'human';
+    if(modeZero){ form['dishonorItem'+i+'PtType'].dataset.type = type; }
     if(type == 'both'){
       for(let t in pointTotal){ pointTotal[t] += point }
     }
@@ -2383,11 +2383,11 @@ function calcCashOther(num){
   document.querySelectorAll(`.cashbook-other${num}-unit`).forEach(obj => { obj.textContent = form[`cashbookOther${num}Unit`].value });
 }
 // 追加
-function addCashbook(){
+function addCashbookOther(){
   document.querySelector("#cashbook-others-list").append(createRow('cashbook-other','cashbookOtherNum'));
 }
 // 削除
-function delCashbook(){
+function delCashbookOther(){
   delRow('cashbookOtherNum', '#cashbook-others-list > :last-child');
 }
 
@@ -2483,11 +2483,11 @@ function changeEffect(obj){
 }
 function setEffectNames(){
   let selecteds = []
-  for(let num = 1; num <= form.effectBoxNum.value; num++){
+  for(let num = 1; num <= form.effectNum.value; num++){
     const name = form[`effect${num}Name`].value;
     if(name){ selecteds.push(name); }
   }
-  for(let num = 1; num <= form.effectBoxNum.value; num++){
+  for(let num = 1; num <= form.effectNum.value; num++){
     const options = form[`effect${num}Name`].options || [];
     for (const option of options) {
       option.style.display = (
@@ -2545,21 +2545,21 @@ function delEffect(obj){
 }
 // ソート
 (() => {
-  for(let num = 1; num <= form.effectBoxNum.value; num++){
+  for(let num = 1; num <= form.effectNum.value; num++){
     setSortable(`effect${num}-`,`#effect-row${num} table tbody`,'tr');
   }
 })();
 
 // 追加
 function addEffectBox(){
-  document.querySelector('#area-effects').append(createRow('effect','effectBoxNum',null,'BOX'));
-  const num = form.effectBoxNum.value;
+  document.querySelector('#area-effects').append(createRow('effect','effectNum',null,'BOX'));
+  const num = form.effectNum.value;
   setSortable(`effect${num}-`,`#effect-row${num} table tbody`);
   setEffectNames();
 }
 // 削除
 function delEffectBox(){
-  if(delRow('effectBoxNum', '#area-effects > :is(div:last-child:not(.add-del-button),div:has(+ .add-del-button:last-child))',1)){
+  if(delRow('effectNum', '#area-effects > :is(div:last-child:not(.add-del-button),div:has(+ .add-del-button:last-child))',1)){
     setEffectNames();
   }
 }
@@ -2644,11 +2644,11 @@ setSortable('mysticMagic','#mystic-magic-list','li');
 
 // 秘奥魔法／応急行使枠 ----------------------------------------
 // 追加
-function addBibliomancy(){
+function addBibliomancyTemporary(){
   document.querySelector("#bibliomancy-temporary-list").append(createRow('bibliomancy-temporary','bibliomancyTemporaryNum'));
 }
 // 削除
-function delBibliomancy(){
+function delBibliomancyTemporary(){
   delRow('bibliomancyTemporaryNum', '#bibliomancy-temporary-list li:last-of-type')
 }
 // ソート
@@ -2715,7 +2715,7 @@ setSortable('language','#language-table tbody','tr');
 
 // 武器欄 ----------------------------------------
 // 追加
-function addWeapons(copyBaseNum){
+function addWeapon(copyBaseNum){
   const row = createRow('weapon','weaponNum');
   document.querySelector("#weapons-table").append(row);
   
@@ -2731,9 +2731,10 @@ function addWeapons(copyBaseNum){
   }
   calcParts();
   generatePaletteWeaponCheckbox();
+  setupBracketInputCompletion();
 }
 // 削除
-function delWeapons(){
+function delWeapon(){
   if(delRow('weaponNum', '#weapons-table tbody:last-of-type')){
     generatePaletteWeaponCheckbox();
   }
@@ -2741,7 +2742,7 @@ function delWeapons(){
 // ソート
 setSortable('weapon', '#weapons-table', 'tbody',
   (row, num) => {
-    row.querySelector(`span[onclick]`).setAttribute('onclick',`addWeapons(${num})`);
+    row.querySelector(`span[onclick]`).setAttribute('onclick',`addWeapon(${num})`);
     row.querySelector(`b[id$=acc-total]`).id = `weapon${num}-acc-total`;
     row.querySelector(`b[id$=dmg-total]`).id = `weapon${num}-dmg-total`;
   },
@@ -2808,6 +2809,7 @@ function addArmour(){
     i++;
   });
   generateArmourCheckbox();
+  setupBracketInputCompletion();
 }
 // 削除
 function delArmour(){
@@ -2889,15 +2891,15 @@ function generateArmourCheckbox(checkListType = 'name'){
 
 // 回避・防護合計 ----------------------------------------
 // 追加
-function addDefense(){
-  document.querySelector("#armours tfoot").append(createRow('defense-total','defenseNum'));
+function addDefenseTotal(){
+  document.querySelector("#armours tfoot").append(createRow('defense-total','defenseTotalNum'));
   generateArmourCheckbox();
   calcParts();
   calcDefense();
 }
 // 削除
-function delDefense(){
-  delRow('defenseNum', '#armours tfoot tr:last-of-type');
+function delDefenseTotal(){
+  delRow('defenseTotalNum', '#armours tfoot tr:last-of-type');
 }
 
 // 装備の備考欄の補正 ----------------------------------------
@@ -2988,7 +2990,7 @@ function delPart(){
 // 名誉アイテム欄 ----------------------------------------
 // 追加
 function addHonorItems(){
-  document.querySelector("#honor-items-table").append(createRow('honor-item','honorItemsNum'));
+  document.querySelector("#honor-items-table").append(createRow('honor-items','honorItemsNum'));
 }
 // 削除
 function delHonorItems(){
@@ -3001,7 +3003,7 @@ setSortable('honorItem','#honor-items-table','tr');
 // 不名誉欄 ----------------------------------------
 // 追加
 function addDishonorItems(){
-  document.querySelector("#dishonor-items-table").append(createRow('dishonor-item','dishonorItemsNum'));
+  document.querySelector("#dishonor-items-table").append(createRow('dishonor-items','dishonorItemsNum'));
 }
 // 削除
 function delDishonorItems(){
@@ -3153,12 +3155,12 @@ function updatePackageTable() {
   }
 }
 // 追加
-function addClassFree(){
+function addFreeClass(){
   document.querySelector("#free-classes tbody").append(createRow('free-class','freeClassNum'));
   const num = form.freeClassNum.value;
 }
 // 削除
-function delClassFree(){
+function delFreeClass(){
   if(delRow('freeClassNum', '#free-classes tbody tr:last-of-type')){
     updateWeaponClassOptions();
     updateEvasionClassOptions();
