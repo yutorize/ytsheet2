@@ -3,6 +3,8 @@ use strict;
 #use warnings;
 use utf8;
 use open ":utf8";
+use feature 'signatures';
+no warnings 'experimental::signatures';
 
 my $LOGIN_ID = $::LOGIN_ID;
 
@@ -54,31 +56,31 @@ print renderEditHeaderMenu(
   HTML
 );
 print qq|<aside class="message">$message</aside>| if $message;
-print '<section id="section-common">';
-print renderProtectBlock(isNewSheet => $isNewSheet);
-print renderVisibilityBlock();
 
 print <<"HTML";
-      <div class="box" id="group">
-        <dl>
-          <dt>タグ<dd>@{[ input 'tags' ]}
-        </dl>
-      </div>
+  <section id="section-common">
+    @{[ renderProtectBlock(isNewSheet => $isNewSheet) ]}
+    @{[ renderVisibilityBlock() ]}
+    <div class="box" id="group">
+      <dl>
+        <dt>タグ<dd>@{[ input 'tags' ]}
+      </dl>
+    </div>
 
-      <div class="box in-toc" id="name-form" data-content-title="名称・製作者">
-        <div>
-          <dl id="character-name">
-            <dt>名称
-            <dd>@{[ input 'itemName','text',"setName",'id="main-name" list="list-item-name"' ]}
-          </dl>
-        </div>
-        <dl id="player-name">
-          <dt>製作者
-          <dd>@{[ input 'author' ]}
+    <div class="box in-toc" id="name-form" data-content-title="名称・製作者">
+      <div>
+        <dl id="character-name">
+          <dt>名称
+          <dd>@{[ input 'itemName','text',"setName",'id="main-name" list="list-item-name"' ]}
         </dl>
       </div>
-      
-      <div class="box input-data in-toc" data-content-title="基本データ">
+      <dl id="player-name">
+        <dt>製作者
+        <dd>@{[ input 'author' ]}
+      </dl>
+    </div>
+
+    <div class="box input-data in-toc" data-content-title="基本データ">
       <dl class="icon-checkboxes"><dt>アイコン<dd>
         @{[ checkbox 'iconMagic'  , "<img class='i-icon' src=\"${set::icon_dir}item_magic.png\">魔法のアイテム" ]}
         @{[ checkbox 'iconLocal'  , "<img class='i-icon' src=\"${set::icon_dir}item_local.png\">地方特産品" ]}<br>
@@ -103,26 +105,25 @@ print <<"HTML";
         <thead>
           <tr><th><th>用法<th>必筋<th>命中<th>威力<th>C値<th>追加D<th class="range">射程<th>備考
         <tbody>
-HTML
-foreach my $num ('TMPL', 1 .. $pc{weaponNum}){
-  print <<~"HTML";
-          @{[ $num eq 'TMPL' ? '<template id="weapon-template">' : '' ]}<tr id="weapon-row$num">
-            <td class="handle">
-            <td>@{[ input "weapon${num}Usage",'text','','list="list-weapon-usage"' ]}
-            <td>@{[ input "weapon${num}Reqd" ]}
-            <td>@{[ input "weapon${num}Acc" ]}
-            <td>@{[ input "weapon${num}Rate" ]}
-            <td>@{[ input "weapon${num}Crit" ]}
-            <td>@{[ input "weapon${num}Dmg" ]}
-            <td class="range">@{[ input "weapon${num}Range",'','','list="list-weapon-range"' ]}
-            <td>@{[ input "weapon${num}Note" ]}
-          @{[ $num eq 'TMPL' ? "</template>" : '' ]}
-  HTML
-}
-print <<"HTML";
+          @{[ renderTemplateLoop(
+            'weapon',
+            sub ($num) {
+              return <<~"ROW";
+              <tr id="weapon-row$num">
+                <td class="handle">
+                <td>@{[ input "weapon${num}Usage",'text','','list="list-weapon-usage"' ]}
+                <td>@{[ input "weapon${num}Reqd" ]}
+                <td>@{[ input "weapon${num}Acc" ]}
+                <td>@{[ input "weapon${num}Rate" ]}
+                <td>@{[ input "weapon${num}Crit" ]}
+                <td>@{[ input "weapon${num}Dmg" ]}
+                <td class="range">@{[ input "weapon${num}Range",'','','list="list-weapon-range"' ]}
+                <td>@{[ input "weapon${num}Note" ]}
+              ROW
+            }
+          ) ]}
       </table>
-      <div class="add-del-button"><a onclick="addWeapon()">▼</a><a onclick="delWeapon()">▲</a></div>
-      @{[ input 'weaponNum','hidden' ]}
+      @{[ renderAddDelButtons('weapon') ]}
       <p>
       <code>[刃]</code> <code>[打]</code> でそれぞれ<img class="i-icon" src="${set::icon_dir}item_edge.png"><img class="i-icon" src="${set::icon_dir}item_blow.png">に置き換え
       <p>
@@ -131,29 +132,28 @@ print <<"HTML";
         <thead>
           <tr><th><th>用法<th>必筋<th>回避<th>防護<th>備考
         <tbody>
-HTML
-foreach my $num ('TMPL', 1 .. $pc{armourNum}){
-  print <<~"HTML";
-          @{[ $num eq 'TMPL' ? '<template id="armour-template">' : '' ]}<tr id="armour-row$num">
-            <td class="handle">
-            <td>@{[ input "armour${num}Usage",'text','','list="list-armour-usage"' ]}
-            <td>@{[ input "armour${num}Reqd" ]}
-            <td>@{[ input "armour${num}Eva" ]}
-            <td>@{[ input "armour${num}Def" ]}
-            <td>@{[ input "armour${num}Note" ]}
-          @{[ $num eq 'TMPL' ? "</template>" : '' ]}
-  HTML
-}
-print <<"HTML";
+          @{[ renderTemplateLoop(
+            'armour',
+            sub ($num) {
+              return <<~"ROW";
+              <tr id="armour-row$num">
+                <td class="handle">
+                <td>@{[ input "armour${num}Usage",'text','','list="list-armour-usage"' ]}
+                <td>@{[ input "armour${num}Reqd" ]}
+                <td>@{[ input "armour${num}Eva" ]}
+                <td>@{[ input "armour${num}Def" ]}
+                <td>@{[ input "armour${num}Note" ]}
+              ROW
+            }
+          ) ]}
       </table>
-      <div class="add-del-button"><a onclick="addArmour()">▼</a><a onclick="delArmour()">▲</a></div>
-      @{[ input 'armourNum','hidden' ]}
+      @{[ renderAddDelButtons('armour') ]}
     </div>
     <div class="box">
       <h2 class="in-toc">由来・逸話</h2>
       <textarea name="description">$pc{description}</textarea>
     </div>
-    </section>
+  </section>
 HTML
 
 print renderEditPageEnd(
