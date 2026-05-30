@@ -17,8 +17,8 @@ sub data_calc {
   ### 戦果点 --------------------------------------------------
   foreach my $num (0 .. $pc{historyNum}){ $pc{resultPoint} += s_eval($pc{"history${num}Result"}); }
   $pc{historyResultTotal} = $pc{resultPoint};
-  foreach my $num (0 .. $pc{goodsNum  }){ $pc{resultPoint} -= $pc{"goods${num}Cost"}; }
-  foreach my $num (0 .. $pc{itemsNum  }){ $pc{resultPoint} -= $pc{"item${num}Cost"}; }
+  foreach my $num (0 .. $pc{goodsNum}){ $pc{resultPoint} -= $pc{"goods${num}Cost"}; }
+  foreach my $num (0 .. $pc{itemNum }){ $pc{resultPoint} -= $pc{"item${num}Cost"}; }
 
   ### 能力値 --------------------------------------------------
   $pc{staminaMax} = 5 + $pc{vitality} + $pc{staminaAdd};
