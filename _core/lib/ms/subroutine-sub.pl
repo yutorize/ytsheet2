@@ -44,6 +44,9 @@ sub data_update_chara {
       }
     }
   }
+  if($ver < 2){
+    $pc{attributeRows} //= $pc{attributeRow};
+  }
   
   $pc{ver} = $main::ver;
   $pc{lasttimever} = $ver;
