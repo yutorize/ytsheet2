@@ -3,7 +3,8 @@ use strict;
 #use warnings;
 use utf8;
 use open ":utf8";
-use feature 'say';
+use feature 'signatures';
+no warnings 'experimental::signatures';
 
 my $LOGIN_ID = $::LOGIN_ID;
 
@@ -40,7 +41,7 @@ if($::mode eq 'edit' || ($::mode eq 'convert' && $pc{ver})){
 }
 elsif($::mode eq 'blanksheet'){
   $pc{group} = $set::group_default;
-  
+
   $pc{level} = 0;
   $pc{endurance} = 20;
 
@@ -56,7 +57,7 @@ setDefaultColors(\%pc);
 
 ## その他
 $pc{historyNum} ||= 3;
-$pc{attributeRow} ||= 4;
+$pc{attributeRows} ||= 4;
 
 $pc{paletteTool} ||= 'bcdice';
 
@@ -77,250 +78,244 @@ print renderEditHeaderMenu(
   HTML
 );
 print qq|<aside class="message">$message</aside>| if $message;
-print '<section id="section-common">';
-print renderProtectBlock(isNewSheet => $isNewSheet);
-print renderVisibilityBlock();
 
 print <<"HTML";
-      <div class="box" id="group">
+  <section id="section-common">
+    @{[ renderProtectBlock(isNewSheet => $isNewSheet) ]}
+    @{[ renderVisibilityBlock() ]}
+    <div class="box" id="group">
+      <dl>
+        <dt>グループ
+        <dd><select name="group">@{[ renderGroupOptions ]}</select>
+        <dt>タグ
+        <dd>@{[ input 'tags' ]}
+      </dl>
+    </div>
+
+    <div class="box" id="support-hub">
+      <div class="annotate"><a href="https://karasuba-sei.biz/officialsite/?p=80" target="_blank">⇒キャラクター作成の手順（サポートハブ）</a></div>
+    </div>
+
+    <div class="box in-toc" id="name-form" data-content-title="東京名・プレイヤー名">
+      <div>
+        <dl id="character-name">
+          <dt>東京名
+          <dd>@{[ input 'characterName','text',"setName",'id="main-name" required' ]}
+          <dt class="ruby">ふりがな
+          <dd>@{[ input 'characterNameRuby','text',"setName" ]}
+        </dl>
+      </div>
+      <dl id="player-name">
+        <dt>プレイヤー名
+        <dd>@{[ input 'playerName' ]}
+      </dl>
+    </div>
+
+    <!--
+    <details class="box" id="regulation" @{[$::mode eq 'edit' ? '':'open']} style="display:none">
+      <summary>作成レギュレーション</summary>
+      <dl>
+        <dt>初期成長
+        <dd id="level-pre-grow">
+        <dt>強度
+        <dd>
+      </dl>
+    </details>
+    -->
+
+    <div id="area-status">
+      @{[ renderImageForm($pc{imageURL}) ]}
+
+      <div id="profile" class="box-union in-toc" data-content-title="キャラクターの背景">
+        <dl class="box" id="taxa"        ><dt>分類名<dd>@{[ input 'taxa' ]}</dl>
+        <dl class="box" id="home"        ><dt>出身地<dd>@{[ input 'home' ]}</dl>
+        <dl class="box" id="origin"      ><dt>根源<dd>@{[ input 'origin','','','list="list-origin"' ]}</dl>
+        <dl class="box" id="background"  ><dt>経緯<dd>@{[ input 'background','','','list="list-background"' ]}</dl>
+        <dl class="box" id="clan-emotion"><dt>クランへの感情<dd>@{[ input 'clanEmotion','','','list="list-clan-emotion"' ]}</dl>
+        <dl class="box" id="address"     ><dt>住所<dd>@{[ input 'address','','','list="list-address"' ]}</dl>
+      </div>
+
+      <div id="clan" class="box-union in-toc" data-content-title="所属クラン">
+        <dl class="box"><dt>所属クラン名<dd>@{[ input 'clan' ]}</dl>
+        <dl class="box"><dt>クランシートURL<dd>@{[ input 'clanURL' ]}</dl>
+      </div>
+
+      <div id="level" class="box-union in-toc" data-content-title="強度・耐久値">
+        <dl class="box"><dt>強度  <dd><b id="level-value">$pc{level}</b></dl>
+        <dl class="box"><dt>耐久値<dd>+@{[ input 'enduranceMod','number','calcEndurance' ]}=<b id="endurance-total">$pc{endurance}</b></dl>
+      </div>
+
+      <div class="box in-toc" id="status" data-content-title="能力値・特性">
         <dl>
-          <dt>グループ
-          <dd><select name="group">@{[ renderGroupOptions ]}</select>
-          <dt>タグ
-          <dd>@{[ input 'tags' ]}
+          <dt>能力値
+          <dd class="status">
+            <dl>
+              <dt>身体
+              <dd><select name="statusPhysicalBase" oninput="checkStatus()">@{[ option 'statusPhysicalBase',6,4,2 ]}</select>
+              <dd class="grow">+成長@{[ input 'statusPhysicalGrow','number' ]}
+            </dl>
+            <dl>
+              <dt>異質
+              <dd><select name="statusSpecialBase" oninput="checkStatus()">@{[ option 'statusSpecialBase',6,4,2 ]}</select>
+              <dd class="grow">+成長@{[ input 'statusSpecialGrow','number' ]}
+            </dl>
+            <dl>
+              <dt>社会
+              <dd><select name="statusSocialBase" oninput="checkStatus()">@{[ option 'statusSocialBase',6,4,2 ]}</select>
+              <dd class="grow">+成長@{[ input 'statusSocialGrow','number' ]}
+            </dl>
+            <div class="annotate caution"></div>
+          </dd>
+          <dt>特性
+          <dd class="attribute">
+            <ul id="attribute-physical">
+              @{[ map { '<li>《'.(input "attributePhysical$_",'','checkAttribute').'》' } (1 .. $pc{attributeRows}) ]}
+            </ul>
+            <ul id="attribute-special">
+              @{[ map { '<li>《'.(input "attributeSpecial$_", '','checkAttribute').'》' } (1 .. $pc{attributeRows}) ]}
+            </ul>
+            <ul id="attribute-social">
+              @{[ map { '<li>《'.(input "attributeSocial$_",  '','checkAttribute').'》' } (1 .. $pc{attributeRows}) ]}
+            </ul>
+            @{[ renderAddDelButtons('attribute','','attributeRows') ]}
+            <div class="annotate caution"></div>
+          </dd>
         </dl>
+        <div class="annotate"><a href="https://karasuba-sei.biz/officialsite/?p=142" target="_blank">⇒特性の例（サポートハブ）</a></div>
       </div>
 
-      <div class="box" id="support-hub">
-        <div class="annotate"><a href="https://karasuba-sei.biz/officialsite/?p=80" target="_blank">⇒キャラクター作成の手順（サポートハブ）</a></div>
-      </div>
+    </div>
 
-      <div class="box in-toc" id="name-form" data-content-title="東京名・プレイヤー名">
-        <div>
-          <dl id="character-name">
-            <dt>東京名
-            <dd>@{[ input 'characterName','text',"setName",'id="main-name" required' ]}
-            <dt class="ruby">ふりがな
-            <dd>@{[ input 'characterNameRuby','text',"setName" ]}
-          </dl>
-        </div>
-        <dl id="player-name">
-          <dt>プレイヤー名
-          <dd>@{[ input 'playerName' ]}
-        </dl>
-      </div>
-
-      <!--
-      <details class="box" id="regulation" @{[$::mode eq 'edit' ? '':'open']} style="display:none">
-        <summary>作成レギュレーション</summary>
-        <dl>
-          <dt>初期成長
-          <dd id="level-pre-grow">
-          <dt>強度
-          <dd>
-        </dl>
-      </details>
-      -->
-      
-      <div id="area-status">
-        @{[ renderImageForm($pc{imageURL}) ]}
-
-        <div id="profile" class="box-union in-toc" data-content-title="キャラクターの背景">
-          <dl class="box" id="taxa"        ><dt>分類名<dd>@{[ input 'taxa' ]}</dl>
-          <dl class="box" id="home"        ><dt>出身地<dd>@{[ input 'home' ]}</dl>
-          <dl class="box" id="origin"      ><dt>根源<dd>@{[ input 'origin','','','list="list-origin"' ]}</dl>
-          <dl class="box" id="background"  ><dt>経緯<dd>@{[ input 'background','','','list="list-background"' ]}</dl>
-          <dl class="box" id="clan-emotion"><dt>クランへの感情<dd>@{[ input 'clanEmotion','','','list="list-clan-emotion"' ]}</dl>
-          <dl class="box" id="address"     ><dt>住所<dd>@{[ input 'address','','','list="list-address"' ]}</dl>
-        </div>
-
-        <div id="clan" class="box-union in-toc" data-content-title="所属クラン">
-          <dl class="box"><dt>所属クラン名<dd>@{[ input 'clan' ]}</dl>
-          <dl class="box"><dt>クランシートURL<dd>@{[ input 'clanURL' ]}</dl>
-        </div>
-
-        <div id="level" class="box-union in-toc" data-content-title="強度・耐久値">
-          <dl class="box"><dt>強度  <dd><b id="level-value">$pc{level}</b></dl>
-          <dl class="box"><dt>耐久値<dd>+@{[ input 'enduranceMod','number','calcEndurance' ]}=<b id="endurance-total">$pc{endurance}</b></dl>
-        </div>
-
-        <div class="box in-toc" id="status" data-content-title="能力値・特性">
-          <dl>
-            <dt>能力値
-            <dd class="status">
-              <dl>
-                <dt>身体
-                <dd><select name="statusPhysicalBase" oninput="checkStatus()">@{[ option 'statusPhysicalBase',6,4,2 ]}</select>
-                <dd class="grow">+成長@{[ input 'statusPhysicalGrow','number' ]}
-              </dl>
-              <dl>
-                <dt>異質
-                <dd><select name="statusSpecialBase" oninput="checkStatus()">@{[ option 'statusSpecialBase',6,4,2 ]}</select>
-                <dd class="grow">+成長@{[ input 'statusSpecialGrow','number' ]}
-              </dl>
-              <dl>
-                <dt>社会
-                <dd><select name="statusSocialBase" oninput="checkStatus()">@{[ option 'statusSocialBase',6,4,2 ]}</select>
-                <dd class="grow">+成長@{[ input 'statusSocialGrow','number' ]}
-              </dl>
-              <div class="annotate caution"></div>
-            </dd>
-            <dt>特性
-            <dd class="attribute">
-        @{[input 'attributeRow','hidden']}
-HTML
-print '<ul id="attribute-physical">';
-print '<li>《'.input('attributePhysical'.$_,'','checkAttribute').'》' foreach (1 .. $pc{attributeRow});
-print '</ul>';
-print '<ul id="attribute-special">';
-print '<li>《'.input('attributeSpecial'.$_,'','checkAttribute').'》' foreach (1 .. $pc{attributeRow});
-print '</ul>';
-print '<ul id="attribute-social">';
-print '<li>《'.input('attributeSocial'.$_,'','checkAttribute').'》' foreach (1 .. $pc{attributeRow});
-print '</ul>';
-print <<"HTML";
-              <div class="add-del-button"><a onclick="addAttribute()">▼</a><a onclick="delAttribute()">▲</a></div>
-              <div class="annotate caution"></div>
-            </dd>
-          </dl>
-          <div class="annotate"><a href="https://karasuba-sei.biz/officialsite/?p=142" target="_blank">⇒特性の例（サポートハブ）</a></div>
-        </div>
-
-      </div>
-
-      <div class="box" id="magi">
-        <h2 class="in-toc">マギ</h2>
-          <table class="edit-table line-tbody no-border-cells" id="magi-table">
-            <colgroup id="magi-col">
-              <col class="name  ">
-              <col class="check ">
-              <col class="timing">
-              <col class="target">
-              <col class="cond  ">
-              <col class="note  ">
-            </colgroup>
-            <thead id="magi-thead">
-              <tr>
-                <th class="name  ">名前
-                <th class="check small nowrap">名前<br>変更
-                <th class="timing">タイミング
-                <th class="target">対象
-                <th class="cond  ">条件
-                <th class="note  ">効果
-HTML
-foreach my $num (1 .. 4) {
-  print <<~"HTML";
-            <tbody id="magi${num}">
-              <tr>
-                <td class="name  ">
-                  《@{[ selectBox "magi${num}",'checkMagi',@data::pcMagiNames,'その他' ]}》
-                  <div class="changed-name hidden">《@{[ input "magi${num}Name",'','','placeholder="任意の名前"' ]}》</div>
-                <td class="check ">@{[ checkbox "magi${num}NC",'','checkMagi' ]}
-                <td class="timing">@{[ input "magi${num}Timing" ,'','','list="list-timing"' ]}<div class="text-timing"></div>
-                <td class="target">@{[ input "magi${num}Target" ,'','','list="list-target"' ]}<div class="text-target"></div>
-                <td class="cond  ">@{[ input "magi${num}Cond"   ,'','','list="list-cond"'   ]}<div class="text-cond"></div>
-                <td class="left">@{[ input "magi${num}Note" ]}<div class="text-note"></div>
-  HTML
-}
-print <<"HTML";
-        </table>
-        <div class="annotate caution"></div>
-        <div class="annotate"><a href="https://karasuba-sei.biz/officialsite/?p=149#index_id1" target="_blank">⇒PC用マギの一覧（サポートハブ）</a></div>
-      </div>
-      
-      <details class="box" id="free-note" @{[$pc{freeNote}?'open':'']}>
-        <summary class="in-toc">その他<span class="small">（設定・メモなど）</summary>
-        <textarea name="freeNote">$pc{freeNote}</textarea>
-        @{[ $::in{log} ? '<button type="button" class="set-newest" onclick="setNewestSingleData(\'freeNote\')">最新のメモを適用する</button>' : '' ]}
-      </details>
-      
-      <details class="box" id="free-history" @{[$pc{freeHistory}?'open':'']}>
-        <summary class="in-toc">履歴（自由記入）</summary>
-        <textarea name="freeHistory">$pc{freeHistory}</textarea>
-        @{[ $::in{log} ? '<button type="button" class="set-newest" onclick="setNewestSingleData(\'freeHistory\')">最新の履歴（自由記入）を適用する</button>' : '' ]}
-      </details>
-      
-      <div class="box" id="history">
-        <h2 class="in-toc">セッション履歴</h2>
-        @{[input 'historyNum','hidden']}
-        <table class="edit-table line-tbody no-border-cells" id="history-table">
-          <thead id="history-head">
-            <tr>
-              <th>
-              <th class="date  ">日付
-              <th class="title ">タイトル
-              <th class="level ">強度
-              <th class="gm    ">GM
-              <th class="member">参加者
-            <!--
-            <tr>
-              <td>-
-              <td>
-              <td>キャラクター作成
-              <td id="history0-exp">$pc{history0Exp}
-            -->
-HTML
-foreach my $num ('TMPL',1 .. $pc{historyNum}) {
-  print '<template id="history-template">' if($num eq 'TMPL');
-  print <<~"HTML";
-          <tbody id="history-row${num}">
+    <div class="box" id="magi">
+      <h2 class="in-toc">マギ</h2>
+      <table class="edit-table line-tbody no-border-cells" id="magi-table">
+        <colgroup id="magi-col">
+          <col class="name  ">
+          <col class="check ">
+          <col class="timing">
+          <col class="target">
+          <col class="cond  ">
+          <col class="note  ">
+        </colgroup>
+        <thead id="magi-thead">
           <tr>
-            <td class="handle" rowspan="2">
-            <td class="date  " rowspan="2">@{[ input"history${num}Date" ]}
-            <td class="title " rowspan="2">@{[ input"history${num}Title" ]}
-            <td class="level " rowspan="2">@{[ input"history${num}Level",'','calcLevel' ]}
-            <td class="gm    ">@{[ input "history${num}Gm" ]}
-            <td class="member">@{[ input "history${num}Member" ]}
+            <th class="name  ">名前
+            <th class="check small nowrap">名前<br>変更
+            <th class="timing">タイミング
+            <th class="target">対象
+            <th class="cond  ">条件
+            <th class="note  ">効果
+        @{[ map {
+          my $num = $_;
+          <<~"ROW"
+          <tbody id="magi${num}">
+            <tr>
+              <td class="name  ">
+                《@{[ selectBox "magi${num}",'checkMagi',@data::pcMagiNames,'その他' ]}》
+                <div class="changed-name hidden">《@{[ input "magi${num}Name",'','','placeholder="任意の名前"' ]}》</div>
+              <td class="check ">@{[ checkbox "magi${num}NC",'','checkMagi' ]}
+              <td class="timing">@{[ input "magi${num}Timing" ,'','','list="list-timing"' ]}<div class="text-timing"></div>
+              <td class="target">@{[ input "magi${num}Target" ,'','','list="list-target"' ]}<div class="text-target"></div>
+              <td class="cond  ">@{[ input "magi${num}Cond"   ,'','','list="list-cond"'   ]}<div class="text-cond"></div>
+              <td class="left">@{[ input "magi${num}Note" ]}<div class="text-note"></div>
+          ROW
+        } 1 .. 4 ]}
+      </table>
+      <div class="annotate caution"></div>
+      <div class="annotate"><a href="https://karasuba-sei.biz/officialsite/?p=149#index_id1" target="_blank">⇒PC用マギの一覧（サポートハブ）</a></div>
+    </div>
+
+    <details class="box" id="free-note" @{[$pc{freeNote}?'open':'']}>
+      <summary class="in-toc">その他<span class="small">（設定・メモなど）</summary>
+      <textarea name="freeNote">$pc{freeNote}</textarea>
+      @{[ $::in{log} ? '<button type="button" class="set-newest" onclick="setNewestSingleData(\'freeNote\')">最新のメモを適用する</button>' : '' ]}
+    </details>
+
+    <details class="box" id="free-history" @{[$pc{freeHistory}?'open':'']}>
+      <summary class="in-toc">履歴（自由記入）</summary>
+      <textarea name="freeHistory">$pc{freeHistory}</textarea>
+      @{[ $::in{log} ? '<button type="button" class="set-newest" onclick="setNewestSingleData(\'freeHistory\')">最新の履歴（自由記入）を適用する</button>' : '' ]}
+    </details>
+
+    <div class="box" id="history">
+      <h2 class="in-toc">セッション履歴</h2>
+      <table class="edit-table line-tbody no-border-cells" id="history-table">
+        <thead id="history-head">
           <tr>
-            <td colspan="5" class="left">@{[input("history${num}Note",'','','placeholder="備考"')]}
-  HTML
-  print '</template>' if($num eq 'TMPL');
-}
-print <<"HTML";
-          <tfoot id="history-foot">
+            <th>
+            <th class="date  ">日付
+            <th class="title ">タイトル
+            <th class="level ">強度
+            <th class="gm    ">GM
+            <th class="member">参加者
+          <!--
+          <tr>
+            <td>-
+            <td>
+            <td>キャラクター作成
+            <td id="history0-exp">$pc{history0Exp}
+          -->
+        @{[ renderTemplateLoop(
+          'history',
+          sub ($num) {
+            return <<~"ROW";
+            <tbody id="history-row${num}">
             <tr>
-              <td>
-              <td>
-              <td>取得総計
-              <td id="history-level-total">
-              <td colspan="2">
+              <td class="handle" rowspan="2">
+              <td class="date  " rowspan="2">@{[ input"history${num}Date" ]}
+              <td class="title " rowspan="2">@{[ input"history${num}Title" ]}
+              <td class="level " rowspan="2">@{[ input"history${num}Level",'','calcLevel' ]}
+              <td class="gm    ">@{[ input "history${num}Gm" ]}
+              <td class="member">@{[ input "history${num}Member" ]}
             <tr>
-              <th>
-              <th class="date  ">日付
-              <th class="title ">タイトル
-              <th class="level ">強度
-              <th class="gm    ">GM
-              <th class="member">参加者
-            </tr>
-          </tfoot>
-        </table>
-        <div class="add-del-button"><a onclick="addHistory()">▼</a><a onclick="delHistory()">▲</a></div>
-        <h2>記入例</h2>
-        <table class="example edit-table line-tbody no-border-cells">
-          <thead>
-            <tr>
-              <th>
-              <th class="date  ">日付
-              <th class="title ">タイトル
-              <th class="level ">強度
-              <th class="gm    ">GM
-              <th class="member">参加者
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>-
-              <td><input type="text" value="2017-04-07" disabled>
-              <td><input type="text" value="第一話「記入例」" disabled>
-              <td>10
-              <td class="gm"><input type="text" value="サンプルGM" disabled>
-              <td class="member"><input type="text" value="" disabled>
-            </tr>
-          </tbody>
-        </table>
-        @{[ $::in{log} ? '<button type="button" class="set-newest" onclick="setNewestHistoryData()">最新のセッション履歴を適用する</button>' : '' ]}
-      </div>
-      </section>
+              <td colspan="5" class="left">@{[ input "history${num}Note",'','','placeholder="備考"' ]}
+            ROW
+          }
+        ) ]}
+        <tfoot id="history-foot">
+          <tr>
+            <td>
+            <td>
+            <td>取得総計
+            <td id="history-level-total">
+            <td colspan="2">
+          <tr>
+            <th>
+            <th class="date  ">日付
+            <th class="title ">タイトル
+            <th class="level ">強度
+            <th class="gm    ">GM
+            <th class="member">参加者
+          </tr>
+        </tfoot>
+      </table>
+      @{[ renderAddDelButtons('history') ]}
+      <h2>記入例</h2>
+      <table class="example edit-table line-tbody no-border-cells">
+        <thead>
+          <tr>
+            <th>
+            <th class="date  ">日付
+            <th class="title ">タイトル
+            <th class="level ">強度
+            <th class="gm    ">GM
+            <th class="member">参加者
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>-
+            <td><input type="text" value="2017-04-07" disabled>
+            <td><input type="text" value="第一話「記入例」" disabled>
+            <td>10
+            <td class="gm"><input type="text" value="サンプルGM" disabled>
+            <td class="member"><input type="text" value="" disabled>
+          </tr>
+        </tbody>
+      </table>
+      @{[ $::in{log} ? '<button type="button" class="set-newest" onclick="setNewestHistoryData()">最新のセッション履歴を適用する</button>' : '' ]}
+    </div>
+  </section>
 HTML
 print renderChatPaletteForm( tool => ['bcdice=>その他(BCDice)'], buff => 0 );
 

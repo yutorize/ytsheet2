@@ -58,7 +58,7 @@ function calcEndurance() {
 function checkAttribute() {
   let count = 0;
   for(let type of ['Physical','Special','Social']){
-    for (let num = 1; num <= Number(form.attributeRow.value); num++){
+    for (let num = 1; num <= Number(form.attributeRows.value); num++){
       if(form['attribute'+type+num].value){ count++ }
     }
   }
@@ -67,7 +67,7 @@ function checkAttribute() {
 }
 // 追加
 function addAttribute(){
-  let num = Number(form.attributeRow.value) + 1;
+  let num = Number(form.attributeRows.value) + 1;
 
   for(let type of ['Physical','Special','Social']){
     let li = document.createElement('li');
@@ -75,11 +75,11 @@ function addAttribute(){
     li.innerHTML = `《<input type="text" name="attribute${type}${num}" oninput="checkAttribute()">》`;
     document.getElementById('attribute-'+type.toLowerCase()).append(li);
   }
-  form.attributeRow.value = num;
+  form.attributeRows.value = num;
 }
 // 削除
 function delAttribute(){
-  let num = Number(form.attributeRow.value);
+  let num = Number(form.attributeRows.value);
   if(num > 0){
     if( form[`attributePhysical${num}`].value
      || form[`attributeSpecial${num}`].value
@@ -91,7 +91,7 @@ function delAttribute(){
     document.querySelector("#attribute-special  li:last-child").remove();
     document.querySelector("#attribute-social   li:last-child").remove();
     num--;
-    form.attributeRow.value = num;
+    form.attributeRows.value = num;
   }
 }
 
