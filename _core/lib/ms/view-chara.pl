@@ -57,7 +57,7 @@ sub maskPcData {
 ### 特性 --------------------------------------------------
 foreach my $type ('Physical','Special','Social'){
   my @attribute;
-  foreach (1 .. $pc{attributeRow}){
+  foreach (1 .. $pc{attributeRows}){
     next if(
       $_ > 4
       && !$pc{'attributePhysical'.$_}
