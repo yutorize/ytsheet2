@@ -602,7 +602,7 @@ function calcAdvCompleted(){
 
 // 武器欄 ----------------------------------------
 // 追加
-function addWeapons(copyBaseNum){
+function addWeapon(copyBaseNum){
   const row = createRow('weapon','weaponNum');
   document.querySelector("#weapons-table").append(row);
   
@@ -615,12 +615,12 @@ function addWeapons(copyBaseNum){
   }
 }
 // 削除
-function delWeapons(){
+function delWeapon(){
   delRow('weaponNum', '#weapons-table tbody:last-of-type');
 }
 // ソート
 setSortable('weapon', '#weapons-table', 'tbody', (row, num)=>{
-  row.querySelector(`span[onclick]`).setAttribute('onclick',`addWeapons(${num})`);
+  row.querySelector(`span[onclick]`).setAttribute('onclick',`addWeapon(${num})`);
   row.querySelector(`b[id$=hit-total]`).id = `weapon${num}-hit-total`;
   row.querySelector(`b[id$=power-lv]` ).id = `weapon${num}-power-lv`;
 })
