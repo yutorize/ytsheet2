@@ -42,6 +42,9 @@ sub data_update_chara {
     $pc{staminaMax} += 5;
     $pc{staminaHalf} = int($pc{staminaMax} / 2);
   }
+  if($ver < 2){
+    $pc{itemNum} //= $pc{itemsNum};
+  }
 
   $pc{ver} = $main::ver;
   $pc{lasttimever} = $ver;
