@@ -581,12 +581,12 @@ sub renderTemplateLoop {
   return $html;
 }
 sub renderAddDelButtons {
-  my ($id) = @_;
-  my $numKey = kebabToCamel($id).'Num';
+  my ($id, $arg, $numKey) = @_;
+  $numKey //= kebabToCamel($id).'Num';
   my $key = ucfirst(kebabToCamel($id));
   return '<div class="add-del-button">'
-    . qq|<a onclick="add$key()">▼</a>|
-    . qq|<a onclick="del$key()">▲</a>|
+    . qq|<a onclick="add$key($arg)">▼</a>|
+    . qq|<a onclick="del$key($arg)">▲</a>|
     . '</div>'
     . input($numKey, 'hidden');
 }
