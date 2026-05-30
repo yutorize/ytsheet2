@@ -70,8 +70,8 @@ sub maskPcData {
     $pc->{'goods'.$num.'Type'} = noiseText(2,5);
     $pc->{'goods'.$num.'Note'} = noiseText(8,22);
   }
-  $pc->{itemsNum} = int(rand 4)+1;
-  foreach my $num (1..$pc->{itemsNum}){
+  $pc->{itemNum} = int(rand 4)+1;
+  foreach my $num (1..$pc->{itemNum}){
     $pc->{'item'.$num.'Name'} = noiseText(3,8);
     $pc->{'item'.$num.'Type'} = noiseText(2,5);
     $pc->{'item'.$num.'Note'} = noiseText(8,22);
@@ -115,7 +115,7 @@ sub textType {
 
 ### アイテム --------------------------------------------------
 my @items;
-foreach my $num (1 .. $pc{itemsNum}){
+foreach my $num (1 .. $pc{itemNum}){
   next if !existsRow "item$num",'Name','Type','Lv','Note';
   push(@items, {
     NAME => $pc{'item'.$num.'Name'},
