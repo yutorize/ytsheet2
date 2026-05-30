@@ -275,6 +275,9 @@ body:not(.mode-crc) .crc-only {
   > dt {
     display: none;
   }
+  > dd {
+    align-content: start;
+  }
   > dd:not(:last-child) {
     border-right-width: 1px;
     border-right-style: solid;
