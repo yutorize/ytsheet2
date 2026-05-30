@@ -29,7 +29,7 @@ sub addJsonData {
     my $physical = "【身体】$pc{statusPhysical} ";
     my $special  = "【異質】$pc{statusSpecial} ";
     my $social   = "【社会】$pc{statusSocial} ";
-    foreach my $num (1..$pc{attributeRow}){
+    foreach my $num (1..$pc{attributeRows}){
       $physical .= "《$pc{'attributePhysical'.$num}》" if $pc{'attributePhysical'.$num};
       $special  .= "《$pc{'attributeSpecial'.$num}》" if $pc{'attributeSpecial'.$num};
       $social   .= "《$pc{'attributeSocial'.$num}》" if $pc{'attributeSocial'.$num};
