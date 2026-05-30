@@ -67,7 +67,7 @@ function calcResultPoint(){
   for (let num = 1; num <= Number(form.goodsNum.value); num++) {
     goods += Number(form[`goods${num}Cost`].value);
   }
-  for (let num = 1; num <= Number(form.itemsNum.value); num++) {
+  for (let num = 1; num <= Number(form.itemNum.value); num++) {
     items += Number(form[`item${num}Cost`].value);
   }
   const total = Number(form.history0Result.value || 0) + history;
@@ -99,11 +99,11 @@ setSortable('goods','#goods-table tbody','tr');
 //アイテム欄 ----------------------------------------
 // 追加
 function addItem(){
-  document.querySelector("#items-table tbody").append(createRow('item','itemsNum'));
+  document.querySelector("#items-table tbody").append(createRow('item','itemNum'));
 }
 // 削除
 function delItem(){
-  delRow('itemsNum', '#items-table tbody tr:last-of-type');
+  delRow('itemNum', '#items-table tbody tr:last-of-type');
 }
 // ソート
 setSortable('item','#items-table tbody','tr');
