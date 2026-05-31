@@ -41,7 +41,7 @@ sub data_calc {
   ## スキルレベル
   $pc{skillLvTotal} = $pc{skillLvGeneral} = 0;
   my %skill;
-  foreach my $num (1 .. $pc{skillsNum}){
+  foreach my $num (1 .. $pc{skillNum}){
     my $name = $pc{"skill${num}Name"};
     my $lv = $pc{"skill${num}Lv"};
     next if !$lv;
@@ -76,11 +76,11 @@ sub data_calc {
   $pc{expUsedGeneralSkills} = ($pc{skillLvGeneral} - 2) * 5;
   $pc{skillLvGeneral} -= $skill{'レガシーサイン'};
   #誓約
-  foreach my $num (1 .. $pc{geisesNum}){
+  foreach my $num (1 .. $pc{geisNum}){
     $pc{expUsedGeises} += $pc{"geis${num}Cost"};
   }
   #コネクション
-  foreach my $lv (1 .. $pc{connectionsNum}){
+  foreach my $lv (1 .. $pc{connectionNum}){
     $pc{expUsedConnections}++ if $pc{"connection${lv}Name"};
   }
   #合計
@@ -278,7 +278,7 @@ sub data_calc {
   ){
     $pc{$_} =~ s/\r\n?|\n/<br>/g;
   }
-  foreach my $i (1 .. $pc{geisesNum}){
+  foreach my $i (1 .. $pc{geisNum}){
     $pc{"geis${i}Note"} =~ s/\r\n?|\n/<br>/g;
   }
   

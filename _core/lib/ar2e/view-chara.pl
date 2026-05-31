@@ -103,14 +103,14 @@ sub maskPcData {
       $pc->{"roll${roll}Other"} = noiseText(1);
       $pc->{"roll${roll}Dice"} = noiseText(1);
   }
-  $pc->{geisesNum} = int(rand 2);
-  foreach(1..$pc->{geisesNum}){
+  $pc->{geisNum} = int(rand 2);
+  foreach(1..$pc->{geisNum}){
     $pc->{'geis'.$_.'Name'}      = noiseText(5,10);
     $pc->{'geis'.$_.'Num'}       = noiseText(1,2);
     $pc->{'geis'.$_.'Note'}      = noiseText(10,20);
   }
-  $pc->{connectionsNum} = int(rand 3) + 1;
-  foreach(1..$pc->{connectionsNum}){
+  $pc->{connectionNum} = int(rand 3) + 1;
+  foreach(1..$pc->{connectionNum}){
     $pc->{'connection'.$_.'Name'}      = noiseText(5,10);
     $pc->{'connection'.$_.'Relation'}  = noiseText(2,4);
     $pc->{'connection'.$_.'Note'}      = noiseText(10,20);
@@ -126,8 +126,8 @@ sub maskPcData {
   $pc->{lvUp1Class} = noiseText(5,10);
   foreach(1..6){ $pc->{"lvUp1Skill".$_} = noiseText(5,10); }
 
-  $pc->{skillsNum} = int(rand 3) + 8;
-  foreach(1..$pc->{skillsNum}){
+  $pc->{skillNum} = int(rand 3) + 8;
+  foreach(1..$pc->{skillNum}){
     $pc->{'skill'.$_.'Type'}    = noiseText(2,5);
     $pc->{'skill'.$_.'Category'}= noiseText(2);
     $pc->{'skill'.$_.'Name'}    = noiseText(5,10);
@@ -195,7 +195,7 @@ if($data::class{$pc{classMain}}{type} eq 'fate'){
 
 ### コネクション --------------------------------------------------
 my @connections;
-foreach (1 .. $pc{connectionsNum}){
+foreach (1 .. $pc{connectionNum}){
   next if !existsRow "connection$_",'Name','Relation','Note';
   push(@connections, {
     NAME     => $pc{'connection'.$_.'Name'},
@@ -207,7 +207,7 @@ $SHEET->param(Connections => \@connections);
 
 ### 誓約 --------------------------------------------------
 my @geises;
-foreach (1 .. $pc{geisesNum}){
+foreach (1 .. $pc{geisNum}){
   next if !existsRow "geis$_",'Name','Cost','Note';
   push(@geises, {
     NAME => $pc{'geis'.$_.'Name'},
@@ -298,7 +298,7 @@ $SHEET->param(Armours => \@armours);
 }
 ### スキル --------------------------------------------------
 my @skills; my $skillCount = 0;
-foreach (1 .. $pc{skillsNum}){
+foreach (1 .. $pc{skillNum}){
   next if !existsRow "skill$_",'Name','Lv','Timing','Skill','Target','Range','Cost','Reqd','Note';
   push(@skills, {
     TYPE     => checkType($pc{'skill'.$_.'Type'}),
