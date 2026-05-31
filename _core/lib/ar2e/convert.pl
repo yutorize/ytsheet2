@@ -289,7 +289,7 @@ sub convertHokanjoToYtsheet {
     $pc{'skill'.($n).'Type'}   = 'general';
     $n++; $i++;
   }
-  $pc{skillsNum} = $n-1;
+  $pc{skillNum} = $n-1;
   sub convertSkillLv {
     my $lv = shift;
     if   ($lv !~ /^[0-9]+$/) { return 1; }
