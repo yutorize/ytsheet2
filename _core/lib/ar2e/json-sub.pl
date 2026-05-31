@@ -12,7 +12,7 @@ sub addJsonData {
 
   ## 誓約
   my @geises;
-  foreach my $num (1..$pc{geisesNum}){
+  foreach my $num (1..$pc{geisNum}){
     if($pc{"geis${num}Name"}){
       push(@geises, $pc{"geis${num}Name"});
     }
