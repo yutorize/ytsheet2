@@ -31,8 +31,14 @@ our $pass = $::in{pass};
 our $new_id;
 (our $edit_ver = $::in{ver}) =~ s/^([0-9]+)\.([0-9]+)\.([0-9]+)$/$1.$2$3/;
 
+## 管理者モード判定
+my $hasMasterKey;
+if(($set::masterid && $LOGIN_ID eq $set::masterid) || ($set::masterkey && $pass eq $set::masterkey)){
+  $hasMasterKey = 1;
+}
+
 ## パスワードチェック
-if($::in{protect} eq 'password'){
+if($::in{protect} eq 'password' && !$hasMasterKey){
   if ($pass eq ''){ error('400:パスワードが入力されていません。'); }
   else {
     if ($pass =~ /[^0-9A-Za-z\.\-\/]/) { error('400:パスワードに使える文字は、半角の英数字とピリオド、ハイフン、スラッシュだけです。'); }
@@ -193,10 +199,7 @@ if($mode eq 'make'){
 }
 ## 更新
 elsif($mode eq 'save'){
-  if($pc{protect} ne $pc{protectOld}
-    || ($set::masterid && $LOGIN_ID eq $set::masterid)
-    || ($set::masterkey && $pass eq $set::masterkey)
-  ){
+  if($pc{protect} ne $pc{protectOld}){
     $user_dir = updatePassFile($pc{id},$pass,$LOGIN_ID,$pc{protect},$data_dir);
   }
   else {
