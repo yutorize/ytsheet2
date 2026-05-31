@@ -69,7 +69,15 @@ function formSubmit() {
       else if(data.result === 'ok'){
         saveInfo('saved');
         console.log(data.message);
-        form.protectOld.value = form.protect.value; 
+        const protectType = form.protect.value;
+        form.protectOld.value = protectType;
+        if(protectType === 'password'){
+          form.pass.type = 'hidden';
+        }
+        else {
+          form.pass.type = 'password';
+          form.pass.value = '';
+        }
       }
       else{
         throw Error(data.result === 'error' ? data.message : "保存できませんでした。");
@@ -87,7 +95,14 @@ function formCheck(){
     form.characterName.focus();
     return false;
   }
-  if(form.protect.value === 'password' && form.pass.value === ''){
+  if(!formPasswordCheck()){
+    return false;
+  }
+  
+  return true;
+}
+function formPasswordCheck(){
+  if(form.protect.value === 'password' && form.pass.type !== 'hidden' && form.pass.value === ''){
     alert('パスワードが入力されていません。');
     form.pass.focus();
     return false;
