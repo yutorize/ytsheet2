@@ -372,7 +372,6 @@ sub applyMessageName {
 sub renderEditPageStart {
   my (%opt) = @_;
   my $title      = $opt{title}      // '編集';
-  my $isNewSheet = $opt{isNewSheet} // 0;
   my $systemId   = $opt{systemId}   // $set::game;
   my $headerMenu = $opt{headerMenu} // '';
   my $extraCss   = $opt{extraCss}   // '';
@@ -423,7 +422,7 @@ sub renderEditPageStart {
           <input type="hidden" name="ver" value="$::ver">
           <input type="hidden" name="mode" value="@{[ $::in{mode} eq 'edit' ? 'save' : 'make' ]}">
           <input type="hidden" name="type" value="$type">
-          @{[ $isNewSheet ? qq|<input type="hidden" name="_token" value="|.tokenMake().'">' : '' ]}
+          @{[ $::isNewSheet ? qq|<input type="hidden" name="_token" value="|.tokenMake().'">' : '' ]}
   HTML
 }
 
@@ -484,7 +483,6 @@ sub renderEditHeaderMenu {
 ### 編集保護設定ブロック --------------------------------------------------
 sub renderProtectBlock {
   my (%opt) = @_;
-  my $isNewSheet = $opt{isNewSheet} // 0;
 
   my $html = '';
 
@@ -495,7 +493,7 @@ sub renderProtectBlock {
     return $html;
   }
 
-  if($set::registerkey && $isNewSheet){
+  if($set::registerkey && $::isNewSheet){
     $html .= qq|登録キー：<input type="text" name="registerkey" required>\n|;
   }
 
