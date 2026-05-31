@@ -486,17 +486,18 @@ sub renderProtectBlock {
 
   my $html = '';
 
+  # 作成・編集をログインユーザーに限定している場合、保護設定欄は非表示でprotect=accountで固定
   if($set::user_reqd){
     $html .= qq|<input type="hidden" name="protect" value="account">\n|;
     $html .= qq|<input type="hidden" name="protectOld" value="$::pc{protect}">\n|;
     $html .= qq|<input type="hidden" name="pass" value="$::in{pass}">\n|;
     return $html;
   }
-
+  # 登録キーの入力欄（設定している場合）
   if($set::registerkey && $::isNewSheet){
     $html .= qq|登録キー：<input type="text" name="registerkey" required>\n|;
   }
-
+  # 通常の表示
   $html .= qq|<details class="box" id="edit-protect" @{[$::in{mode} eq 'edit' ? '' : 'open']}>\n|;
   $html .= qq|<summary>編集保護設定</summary>\n|;
   $html .= qq|<fieldset id="edit-protect-view"><input type="hidden" name="protectOld" value="$::pc{protect}">\n|;
