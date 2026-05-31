@@ -19,9 +19,7 @@ function formCheck(){
     form.monsterName.focus();
     return false;
   }
-  if(form.protect.value === 'password' && form.pass.value === ''){
-    alert('パスワードが入力されていません。');
-    form.pass.focus();
+  if(!formPasswordCheck()){
     return false;
   }
   return true;
