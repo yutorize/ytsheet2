@@ -16,7 +16,7 @@ require $set::lib_palette_sub;
 my ($data, $file, $message) = loadSheetData();
 our %pc = %{ $data };
 
-my $isNewSheet = isNewSheet();
+our $isNewSheet = isNewSheet();
 
 ### 出力準備 #########################################################################################
 $message = applyMessageName($message, $pc{countryName} || '無題');
@@ -83,7 +83,6 @@ my $image_maxsize_view = $image_maxsize >= 1048576 ? sprintf("%.3g",$image_maxsi
 ### フォーム表示 #####################################################################################
 print renderEditPageStart(
   title => (removeTags removeRuby unescapeTags ( $pc{countryName} )),
-  isNewSheet => $isNewSheet,
 );
 print renderEditHeaderMenu(
   tabsHtml => <<~'HTML',
@@ -94,7 +93,7 @@ print qq|<aside class="message">$message</aside>| if $message;
 
 print <<"HTML";
   <section id="section-common">
-    @{[ renderProtectBlock(isNewSheet => $isNewSheet) ]}
+    @{[ renderProtectBlock() ]}
     @{[ renderVisibilityBlock() ]}
     <div class="box" id="group">
       <dl>

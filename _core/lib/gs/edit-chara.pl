@@ -18,7 +18,7 @@ require $set::data_races;
 my ($data, $file, $message) = loadSheetData();
 our %pc = %{ $data };
 
-my $isNewSheet = isNewSheet();
+our $isNewSheet = isNewSheet();
 
 ### 出力準備 #########################################################################################
 $message = applyMessageName($message, $pc{characterName} || $pc{aka} || '無題');
@@ -104,7 +104,6 @@ push(@spellNames, $data::class{$_}{magic}) foreach(grep { $data::class{$_}{magic
 ### フォーム表示 #####################################################################################
 print renderEditPageStart(
   title => (removeTags removeRuby unescapeTags ($pc{characterName} || qq|“$pc{aka}”|)),
-  isNewSheet => $isNewSheet,
 );
 print renderEditHeaderMenu(
   tabsHtml => <<~'HTML',
@@ -116,7 +115,7 @@ print qq|<aside class="message">$message</aside>| if $message;
 
 print <<"HTML";
   <section id="section-common">
-    @{[ renderProtectBlock(isNewSheet => $isNewSheet) ]}
+    @{[ renderProtectBlock() ]}
     @{[ renderVisibilityBlock() ]}
     <div class="box" id="group">
       <dl>
