@@ -17,7 +17,7 @@ require $set::data_mons;
 my ($data, $file, $message) = loadSheetData();
 our %pc = %{ $data };
 
-my $isNewSheet = isNewSheet();
+our $isNewSheet = isNewSheet();
 
 ### 出力準備 #########################################################################################
 $message = applyMessageName($message, $pc{characterName} || $pc{monsterName} || '無題');
@@ -56,7 +56,6 @@ convertEscapedBrToNewlines(\%pc,
 print renderEditPageStart(
   title => (removeTags removeRuby unescapeTags ( $pc{characterName} || $pc{monsterName} )),
   systemId => ($::SW2_0 ? 'sw2.0' : 'sw2.5'),
-  isNewSheet => $isNewSheet,
 );
 print renderEditHeaderMenu(
   tabsHtml => <<~'HTML',
@@ -68,7 +67,7 @@ print qq|<aside class="message">$message</aside>| if $message;
 
 print <<"HTML";
   <section id="section-common">
-    @{[ renderProtectBlock(isNewSheet => $isNewSheet) ]}
+    @{[ renderProtectBlock() ]}
     @{[ renderVisibilityBlock() ]}
     <div class="box in-toc" id="group" data-content-title="分類・タグ">
       <dl>
