@@ -1563,7 +1563,7 @@ function calcMagic() {
       const id = classData[key].id;
       if(!lv[id]){ continue; }
       const magicName = classData[key].magic.jName || '＊＊魔法';
-      inputs += `<label class="check-button"><input type="checkbox" name="paletteMagic${num}Check${id}" value="1" onchange="setChatPalette()" data-magic-name="${magicName}" ${values[magicName]?.[num-1||'']}><span>${magicName}</span></label>`;
+      inputs += `<label class="check-button"><input type="checkbox" name="paletteMagic${num}Check${id}" value="1" onchange="setChatPalette()" data-magic-name="${magicName}" ${values[magicName]?.[num-1]||''}><span>${magicName}</span></label>`;
     }
     document.querySelector(`#palette-magic-row${num} .palette-magic-checklist`).innerHTML = inputs;
   }
