@@ -21,7 +21,7 @@ require $set::data_faith;
 my ($data, $file, $message) = loadSheetData();
 our %pc = %{ $data };
 
-my $isNewSheet = isNewSheet();
+our $isNewSheet = isNewSheet();
 
 ### 出力準備 #########################################################################################
 $message = applyMessageName($message, $pc{characterName} || $pc{aka} || '無題');
@@ -191,7 +191,6 @@ my %effects = map { $_->{name} => $_ } @set::effects;
 print renderEditPageStart(
   title => (removeTags removeRuby unescapeTags ( $pc{characterName} || qq|“$pc{aka}”| )),
   systemId => ($::SW2_0 ? 'sw2.0' : 'sw2.5'),
-  isNewSheet => $isNewSheet,
   extraJsMid =>  ($::SW2_0 ? qq|<script src="$::core_dir/lib/sw2.0/edit-chara.js?$::ver" defer></script>| : ''),
 );
 print renderEditHeaderMenu(
@@ -205,7 +204,7 @@ print qq|<aside class="message">$message</aside>| if $message;
 
 print <<"HTML";
   <section id="section-common">
-    @{[ renderProtectBlock(isNewSheet => $isNewSheet) ]}
+    @{[ renderProtectBlock() ]}
     @{[ renderVisibilityBlock() ]}
     <div class="box" id="group">
       <dl>
