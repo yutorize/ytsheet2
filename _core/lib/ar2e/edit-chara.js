@@ -282,7 +282,7 @@ function checkClass(){
     }
   });
   // スキルの種別選択肢のクラス部分を書き換え
-  for(let num = 1; num <= form['skillsNum'].value; num++){
+  for(let num = 1; num <= form['skillNum'].value; num++){
     const select = form[`skill${num}Type`];
     const selected = select.value;
     for(let i = select.options.length - 1; i > 0; i--) {
@@ -502,7 +502,7 @@ function calcLvUpSkills(type){
       form[`skill${ skillNum[skill] }Lv`].value = skillLv[skill];
     }
     else { //ない場合
-      for(let num = 1; num <= form['skillsNum'].value+1; num++){
+      for(let num = 1; num <= form['skillNum'].value+1; num++){
         if(!form[`skill${num}Name`]){ addSkill(); } //空欄なかったら作る
         const skn = form[`skill${num}Name`];
         const skt = form[`skill${num}Type`];
@@ -530,7 +530,7 @@ function calcSkills(){
   autoCalcSkill = {};
   let total   = 0;
   let general = 0;
-  for(let num = 1; num <= form['skillsNum'].value; num++){
+  for(let num = 1; num <= form['skillNum'].value; num++){
     const name = form[`skill${num}Name`].value;
     const lv   = Number(form[`skill${num}Lv`].value);
     let type = form[`skill${num}Type`].value;
@@ -759,7 +759,7 @@ function calcCash(){
 // コネクション計算 ----------------------------------------
 function calcConnections(){
   expUse['connections'] = 0;
-  for(let i = 1; i <= Number(form.connectionsNum.value); i++){
+  for(let i = 1; i <= Number(form.connectionNum.value); i++){
     if(form[`connection${i}Name`].value) expUse['connections']++;
   }
   calcExp();
@@ -768,7 +768,7 @@ function calcConnections(){
 // 誓約計算 ----------------------------------------
 function calcGeises(){
   expUse['geises'] = 0;
-  for(let i = 1; i <= Number(form.geisesNum.value); i++){
+  for(let i = 1; i <= Number(form.geisNum.value); i++){
     expUse['geises'] += Number(form[`geis${i}Cost`].value);
   }
   calcExp();
@@ -810,12 +810,12 @@ function calcExp(){
 // スキル欄 ----------------------------------------
 // 追加
 function addSkill(){
-  document.querySelector("#skills-table tfoot").before(createRow('skill','skillsNum'));
+  document.querySelector("#skills-table tfoot").before(createRow('skill','skillNum'));
   checkClass();
 }
 // 削除
 function delSkill(){
-  if(delRow('skillsNum', '#skills-table tbody:last-of-type')){
+  if(delRow('skillNum', '#skills-table tbody:last-of-type')){
     calcSkills();
   }
 }
@@ -853,7 +853,7 @@ function delSkill(){
       replaceSortedNames(row,num,/^(skill)(?:Trash)?[0-9]+(.+)$/);
       num++;
     }
-    form.skillsNum.value = num-1;
+    form.skillNum.value = num-1;
     let del = 0;
     for(let id of trashtable.toArray()) {
       const row = document.querySelector(`tbody#${id}`);
@@ -870,11 +870,11 @@ function delSkill(){
 // コネクション欄 ----------------------------------------
 // 追加
 function addConnection(){
-  document.querySelector("#connections-table tbody").append(createRow('connection','connectionsNum'));
+  document.querySelector("#connections-table tbody").append(createRow('connection','connectionNum'));
 }
 // 削除
 function delConnection(){
-  if(delRow('connectionsNum', '#connections-table tbody tr:last-of-type')){
+  if(delRow('connectionNum', '#connections-table tbody tr:last-of-type')){
     calcConnections();
   }
 }
@@ -884,11 +884,11 @@ setSortable('connection','#connections-table tbody','tr');
 // 誓約欄 ----------------------------------------
 // 追加
 function addGeis(){
-  document.querySelector("#geises-table tbody").append(createRow('geis','geisesNum'));
+  document.querySelector("#geises-table tbody").append(createRow('geis','geisNum'));
 }
 // 削除
 function delGeis(){
-  if(delRow('geisesNum', '#geises-table tbody tr:last-of-type')){
+  if(delRow('geisNum', '#geises-table tbody tr:last-of-type')){
     calcGeises();
   }
 }
