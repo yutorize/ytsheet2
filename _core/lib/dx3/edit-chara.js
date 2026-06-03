@@ -196,7 +196,7 @@ function calcSaving(){
 }
 let magicDice = 0;
 function calcMagicDice(){
-  magicDice = Math.ceil(status['mind'] + Number(form.skillWill.value)+Number(form.skillAddWill.value) / 2) + Number(form.magicAdd.value);
+  magicDice = Math.ceil(status['mind'] + Number(form.skillWill.value) + Number(form.skillAddWill.value)) / 2 + Number(form.magicAdd.value);
   document.getElementById('magic-total').textContent = magicDice;
 }
 // 技能
