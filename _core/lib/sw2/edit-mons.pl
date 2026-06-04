@@ -131,21 +131,21 @@ print <<"HTML";
       <section id="section-common">
 HTML
 if($set::user_reqd){
-  print <<~"HTML";
+  print <<"HTML";
     <input type="hidden" name="protect" value="account">
     <input type="hidden" name="protectOld" value="$pc{protect}">
     <input type="hidden" name="pass" value="$::in{pass}">
-  HTML
+HTML
 }
 else {
   if($set::registerkey && $mode_make){
     print '登録キー：<input type="text" name="registerkey" required>'."\n";
   }
-  print <<~"HTML";
+  print <<"HTML";
       <details class="box" id="edit-protect" @{[$mode eq 'edit' ? '':'open']}>
       <summary>編集保護設定</summary>
       <fieldset id="edit-protect-view"><input type="hidden" name="protectOld" value="$pc{protect}">
-  HTML
+HTML
   if($LOGIN_ID){
     print '<input type="radio" name="protect" value="account"'.($pc{protect} eq 'account'?' checked':'').'> アカウントに紐付ける（ログイン中のみ編集可能になります）<br>';
   }
@@ -155,11 +155,11 @@ else {
   } else {
     print '<input type="password" name="pass"><br>';
   }
-  print <<~"HTML";
+  print <<"HTML";
         <input type="radio" name="protect" value="none"@{[ $pc{protect} eq 'none'?' checked':'' ]}> 保護しない（誰でも編集できるようになります）
       </fieldset>
       </details>
-  HTML
+HTML
 }
 print <<"HTML";
       <dl class="box" id="hide-options">
@@ -303,7 +303,7 @@ print <<"HTML";
 HTML
 foreach my $num (1 .. $pc{statusNum}){
   $pc{"status${num}Damage"} = '2d+' if $pc{"status${num}Damage"} eq '' && $mode eq 'blanksheet';
-  print <<~"HTML";
+  print <<"HTML";
         <tr id="status-row${num}">
           <th class="mount-only">
           <td class="handle">
@@ -317,18 +317,18 @@ foreach my $num (1 .. $pc{statusNum}){
           <td class="mount-only">@{[ input "status${num}Vit" ]}
           <td class="mount-only">@{[ input "status${num}Mnd" ]}
           <td><span class="button" onclick="addStatus(${num});">複<br>製</span>
-  HTML
+HTML
 }
 print <<"HTML";
         </tbody>
 HTML
 foreach my $lv (2 .. ($pc{lvMax}-$pc{lvMin}+1)){
-  print <<~"HTML";
+  print <<"HTML";
         <tbody class="mount-only" id="status-tbody${lv}" data-lv="${lv}">
-  HTML
+HTML
   foreach my $num (1 .. $pc{statusNum}){
     $pc{"status${num}Damage"} = '2d6+' if $pc{"status${num}Damage"} eq '' && $mode eq 'blanksheet';
-    print <<~"HTML";
+    print <<"HTML";
         <tr id="status-row${num}-${lv}">
           <th>
           <td>
@@ -342,11 +342,11 @@ foreach my $lv (2 .. ($pc{lvMax}-$pc{lvMin}+1)){
           <td>@{[ input "status${num}-${lv}Vit" ]}
           <td>@{[ input "status${num}-${lv}Mnd" ]}
           <td>
-    HTML
+HTML
   }
-  print <<~"HTML";
+  print <<"HTML";
         </tbody>
-  HTML
+HTML
 }
 print <<"HTML";
       </table>
@@ -370,20 +370,20 @@ print <<"HTML";
           常時型　　（<i class="s-icon passive"></i>）：<code>[常]</code><code>○</code> <code>◯</code> <code>〇</code><br>
 HTML
 if($::SW2_0){
-  print <<~"HTML";
+  print <<"HTML";
           主動作型　（<i class="s-icon major0"   ></i>）：<code>[主]</code><code>＞</code> <code>▶</code> <code>〆</code><br>
           補助動作型（<i class="s-icon minor0"   ></i>）：<code>[補]</code><code>≫</code> <code>&gt;&gt;</code> <code>☆</code><br>
           宣言型　　（<i class="s-icon active0"  ></i>）：<code>[宣]</code><code>🗨</code> <code>□</code> <code>☑</code><br>
           条件型　　（<i class="s-icon condition"></i>）：<code>[条]</code><code>▽</code><br>
           条件選択型（<i class="s-icon selection"></i>）：<code>[選]</code><code>▼</code><br>
-  HTML
+HTML
 } else {
-  print <<~"HTML";
+  print <<"HTML";
           戦闘準備型（<i class="s-icon setup"  ></i>）：<code>[準]</code><code>△</code><br>
           主動作型　（<i class="s-icon major"  ></i>）：<code>[主]</code><code>＞</code> <code>▶</code> <code>〆</code><br>
           補助動作型（<i class="s-icon minor"  ></i>）：<code>[補]</code><code>≫</code> <code>&gt;&gt;</code> <code>☆</code><br>
           宣言型　　（<i class="s-icon active" ></i>）：<code>[宣]</code><code>🗨</code> <code>□</code> <code>☑</code><br>
-  HTML
+HTML
 }
 print <<"HTML";
           <code>[]</code>で漢字一文字を囲う記法は、行頭でなくても各マークに変換されます。
@@ -395,10 +395,10 @@ print <<"HTML";
           <ul id="loots-num">
 HTML
 foreach my $num (1 .. $pc{lootsNum}){ print "<li id='loots-num${num}'><span class='handle'></span>".input("loots${num}Num",'','','list="data-roots-num"'); }
-  print <<~"HTML";
+  print <<"HTML";
           </ul>
           <ul id="loots-item">
-  HTML
+HTML
 foreach my $num (1 .. $pc{lootsNum}){ print "<li id='loots-item${num}'><span class='handle'></span>".input("loots${num}Item"); }
 print <<"HTML";
         </ul>
