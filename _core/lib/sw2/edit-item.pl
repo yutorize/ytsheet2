@@ -106,21 +106,21 @@ print <<"HTML";
       <section id="section-common">
 HTML
 if($set::user_reqd){
-  print <<"HTML";
+  print <<~"HTML";
     <input type="hidden" name="protect" value="account">
     <input type="hidden" name="protectOld" value="$pc{protect}">
     <input type="hidden" name="pass" value="$::in{pass}">
-HTML
+  HTML
 }
 else {
   if($set::registerkey && $mode_make){
     print '登録キー：<input type="text" name="registerkey" required>'."\n";
   }
-  print <<"HTML";
+  print <<~"HTML";
       <details class="box" id="edit-protect" @{[$mode eq 'edit' ? '':'open']}>
       <summary>編集保護設定</summary>
       <fieldset id="edit-protect-view"><input type="hidden" name="protectOld" value="$pc{protect}">
-HTML
+  HTML
   if($LOGIN_ID){
     print '<input type="radio" name="protect" value="account"'.($pc{protect} eq 'account'?' checked':'').'> アカウントに紐付ける（ログイン中のみ編集可能になります）<br>';
   }
@@ -130,11 +130,11 @@ HTML
   } else {
     print '<input type="password" name="pass"><br>';
   }
-  print <<"HTML";
+  print <<~"HTML";
         <input type="radio" name="protect" value="none"@{[ $pc{protect} eq 'none'?' checked':'' ]}> 保護しない（誰でも編集できるようになります）
       </fieldset>
       </details>
-HTML
+  HTML
 }
 print <<"HTML";
       <dl class="box" id="hide-options">
@@ -198,7 +198,7 @@ print <<"HTML";
         <tbody>
 HTML
 foreach my $num ('TMPL', 1 .. $pc{weaponNum}){
-  print <<"HTML";
+  print <<~"HTML";
           @{[ $num eq 'TMPL' ? '<template id="weapon-template">' : '' ]}<tr id="weapon-row$num">
             <td class="handle">
             <td>@{[ input "weapon${num}Usage",'text','','list="list-weapon-usage"' ]}
@@ -210,7 +210,7 @@ foreach my $num ('TMPL', 1 .. $pc{weaponNum}){
             <td class="range">@{[ input "weapon${num}Range",'','','list="list-weapon-range"' ]}
             <td>@{[ input "weapon${num}Note" ]}
           @{[ $num eq 'TMPL' ? "</template>" : '' ]}
-HTML
+  HTML
 }
 print <<"HTML";
       </table>
@@ -226,7 +226,7 @@ print <<"HTML";
         <tbody>
 HTML
 foreach my $num ('TMPL', 1 .. $pc{armourNum}){
-  print <<"HTML";
+  print <<~"HTML";
           @{[ $num eq 'TMPL' ? '<template id="armour-template">' : '' ]}<tr id="armour-row$num">
             <td class="handle">
             <td>@{[ input "armour${num}Usage",'text','','list="list-armour-usage"' ]}
@@ -235,7 +235,7 @@ foreach my $num ('TMPL', 1 .. $pc{armourNum}){
             <td>@{[ input "armour${num}Def" ]}
             <td>@{[ input "armour${num}Note" ]}
           @{[ $num eq 'TMPL' ? "</template>" : '' ]}
-HTML
+  HTML
 }
 print <<"HTML";
       </table>
@@ -265,19 +265,19 @@ my $text_rule = <<"HTML";
         　地方特産品　　：<code>[特]</code>：<img class="i-icon" src="${set::icon_dir}item_local.png"><br>
 HTML
 if ($::SW2_0) {
-  $text_rule .= <<"HTML";
+  $text_rule .= <<~"HTML";
         　流派装備　　　：<code>[流]</code>：<img class="i-icon" src="${set::icon_dir}wp_school.png"><br>
-HTML
+  HTML
 }
 else {
-  $text_rule .= <<"HTML";
+  $text_rule .= <<~"HTML";
         　流派アイテム　：<code>[流]</code>：<img class="i-icon" src="${set::icon_dir}wp_school.png"><br>
         　アルフレイム大陸由来の流派アイテム：<code>[ア]</code>：<img class="i-icon" src="${set::icon_dir}wp_school_a.png"><br>
         　テラスティア大陸由来の流派アイテム：<code>[テ]</code>：<img class="i-icon" src="${set::icon_dir}wp_school_t.png"><br>
         　高揚の楽素：<code>[⤴]</code><code>[↑]</code>：<i class="s-icon uplift">⤴</i><br>
         　鎮静の楽素：<code>[⤵]</code><code>[↓]</code>：<i class="s-icon calm">⤵</i><br>
         　魅惑の楽素：<code>[♡]</code>：<i class="s-icon heart">♡</i><br>
-HTML
+  HTML
 }
 print textRuleArea( $text_rule,'「効果」「解説」' );
 

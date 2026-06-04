@@ -166,21 +166,21 @@ print <<"HTML";
       <section id="section-common">
 HTML
 if($set::user_reqd){
-  print <<"HTML";
+  print <<~"HTML";
     <input type="hidden" name="protect" value="account">
     <input type="hidden" name="protectOld" value="$pc{protect}">
     <input type="hidden" name="pass" value="$::in{pass}">
-HTML
+  HTML
 }
 else {
   if($set::registerkey && $mode_make){
     print '登録キー：<input type="text" name="registerkey" required>'."\n";
   }
-  print <<"HTML";
+  print <<~"HTML";
       <details class="box" id="edit-protect" @{[$mode eq 'edit' ? '':'open']}>
       <summary>編集保護設定</summary>
       <fieldset id="edit-protect-view"><input type="hidden" name="protectOld" value="$pc{protect}">
-HTML
+  HTML
   if($LOGIN_ID){
     print '<input type="radio" name="protect" value="account"'.($pc{protect} eq 'account'?' checked':'').'> アカウントに紐付ける（ログイン中のみ編集可能になります）<br>';
   }
@@ -190,11 +190,11 @@ HTML
   } else {
     print '<input type="password" name="pass"><br>';
   }
-  print <<"HTML";
+  print <<~"HTML";
         <input type="radio" name="protect" value="none"@{[ $pc{protect} eq 'none'?' checked':'' ]}> 保護しない（誰でも編集できるようになります）
       </fieldset>
       </details>
-HTML
+  HTML
 }
 print <<"HTML";
       <dl class="box" id="hide-options">
@@ -362,14 +362,14 @@ print <<"HTML";
 HTML
 foreach my $num ('TMPL',1 .. $pc{goodsNum}){
   print '<template id="goods-template">' if($num eq 'TMPL');
-  print <<"HTML";
+  print <<~"HTML";
             <tr id="goods-row${num}">
               <td class="handle">
               <td>@{[input "goods${num}Name" ]}
               <td>@{[input "goods${num}Type",'','','list="list-goods-type"' ]}
               <td>@{[input "goods${num}Cost",'number','calcResultPoint' ]}
               <td>@{[input "goods${num}Note" ]}
-HTML
+  HTML
   print '</template>' if($num eq 'TMPL');
 }
 print <<"HTML";
@@ -451,7 +451,7 @@ foreach (
 ){
   my $th = @{$_}[1];
   my $id = @{$_}[0];
-  print <<"HTML";
+  print <<~"HTML";
             <tr>
               <th>@{[ length($th) > 3 ? "<span>$th</span>" : $th ]}
               <td>@{[ input "battle${id}Name" ]}
@@ -464,7 +464,7 @@ foreach (
               <td>@{[ input "battle${id}Mdf", 'number','calcBattle' ]}
               <td>@{[ input "battle${id}Ini", 'number','calcBattle' ]}
               <td>@{[ input "battle${id}Str", 'number','calcBattle' ]}
-HTML
+  HTML
 }
 print <<"HTML";
             <tr>
@@ -507,7 +507,7 @@ print <<"HTML";
 HTML
 foreach my $num ('TMPL',1 .. $pc{itemsNum}){
   print '<template id="item-template">' if($num eq 'TMPL');
-  print <<"HTML";
+  print <<~"HTML";
             <tr id="item-row${num}">
               <td class="handle">
               <td>@{[input "item${num}Name" ]}
@@ -515,7 +515,7 @@ foreach my $num ('TMPL',1 .. $pc{itemsNum}){
               <td>@{[input "item${num}Lv"  ,'number' ]}
               <td>@{[input "item${num}Cost",'number','calcResultPoint' ]}
               <td>@{[input "item${num}Note" ]}
-HTML
+  HTML
   print '</template>' if($num eq 'TMPL');
 }
 print <<"HTML";
@@ -558,7 +558,7 @@ print <<"HTML";
 HTML
 foreach my $num ('TMPL',1 .. $pc{historyNum}) {
   print '<template id="history-template">' if($num eq 'TMPL');
-  print <<"HTML";
+  print <<~"HTML";
           <tbody id="history-row${num}">
             <tr>
               <td class="handle" rowspan="2">
@@ -569,7 +569,7 @@ foreach my $num ('TMPL',1 .. $pc{historyNum}) {
               <td class="member">@{[input("history${num}Member")]}
             <tr>
               <td colspan="6" class="left">@{[input("history${num}Note",'','','placeholder="備考"')]}
-HTML
+  HTML
   print '</template>' if($num eq 'TMPL');
 }
 print <<"HTML";

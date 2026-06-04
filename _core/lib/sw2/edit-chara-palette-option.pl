@@ -12,7 +12,7 @@ sub chatPaletteFormOptional {
   $::pc{chatPaletteInsertNum} = ($pc{chatPaletteInsertNum} ||= 2);
   $::pc{paletteAttackNum} = ($pc{paletteAttackNum} ||= 3);
   $::pc{paletteMagicNum} = ($pc{paletteMagicNum} ||= 3);
-  my $html = <<"HTML";
+  my $html = <<~"HTML";
   <div class="box" id="palette-optional">
     <h2>プリセットの追加オプション</h2>
     <div id="palette-common-classes">
@@ -20,7 +20,7 @@ sub chatPaletteFormOptional {
       <p>その行の技能のレベルと、選択したボーナスの組み合わせが追加されます</p>
       <table class="edit-table side-margin">
         <tbody class="highlight-hovered-row">
-HTML
+  HTML
   foreach ('TMPL',1 .. $pc{commonClassNum}){
     $html .= '<template id="palette-common-class-template">' if $_ eq 'TMPL';
     $html .= '<tr id="palette-common-class-row'.$_.'"><td class="name">'.($pc{"commonClass$_"} =~ s/[(（].+?[）)]$//r).'</td>';
@@ -33,13 +33,13 @@ HTML
     $html .= ::checkbox("paletteCommonClass${_}Mnd", '精神力B', 'setChatPalette');
     $html .= '</template>' if $_ eq 'TMPL';
   }
-  $html .= <<"HTML";
+  $html .= <<~"HTML";
       </table>
     </div>
     <details id="palette-insert" @{[ $pc{chatPaletteInsert1} ? 'open' : '' ]}>
       <summary class="header2">追加挿入</summary>
       <ul>
-HTML
+  HTML
   foreach ('TMPL',1 .. $pc{chatPaletteInsertNum}){
     $html .= '<template id="palette-insert-template">' if $_ eq 'TMPL';
     $html .= "<li>"
@@ -48,7 +48,7 @@ HTML
       . "<textarea name=\"chatPaletteInsert${_}\" onchange=\"setChatPalette()\">$pc{'chatPaletteInsert'.$_}</textarea>";
     $html .= '</template>' if $_ eq 'TMPL';
   }
-  $html .= <<"HTML";
+  $html .= <<~"HTML";
       </ul>
       <div class="add-del-button"><a onclick="addChatPaletteInsert()">▼</a><a onclick="delChatPaletteInsert()">▲</a></div>
       @{[ ::input "chatPaletteInsertNum","hidden" ]}
@@ -67,7 +67,7 @@ HTML
         <th class="roll  ">出目修正
         <th class="target">対象の武器
       <tbody class="highlight-hovered-row">
-HTML
+  HTML
   foreach ('TMPL',1 .. $pc{paletteAttackNum}){
     $html .= '<template id="palette-attack-template">' if $_ eq 'TMPL';
     $html .= '<tr id="palette-attack-row'.$_.'">';
@@ -87,7 +87,7 @@ HTML
     }
     $html .= '</template>' if $_ eq 'TMPL';
   }
-  $html .= <<"HTML";
+  $html .= <<~"HTML";
       </table>
       <div class="add-del-button"><a onclick="addPaletteAttack()">▼</a><a onclick="delPaletteAttack()">▲</a></div>
       @{[ ::input "paletteAttackNum","hidden" ]}
@@ -108,7 +108,7 @@ HTML
         <th class="roll ">出目修正
         <th class="target">対象の魔法
       <tbody class="highlight-hovered-row">
-HTML
+  HTML
   foreach ('TMPL',1 .. $pc{paletteMagicNum}){
     $html .= '<template id="palette-magic-template">' if $_ eq 'TMPL';
     $html .= '<tr id="palette-magic-row'.$_.'">';
@@ -133,13 +133,13 @@ HTML
     }
     $html .= '</template>' if $_ eq 'TMPL';
   }
-  $html .= <<"HTML";
+  $html .= <<~"HTML";
       </table>
       <div class="add-del-button"><a onclick="addPaletteMagic()">▼</a><a onclick="delPaletteMagic()">▲</a></div>
       @{[ ::input "paletteMagicNum","hidden" ]}
     </details>
   </div>
-HTML
+  HTML
 }
 
 1;

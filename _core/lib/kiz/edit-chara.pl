@@ -166,21 +166,21 @@ print <<"HTML";
       <section id="section-common">
 HTML
 if($set::user_reqd){
-  print <<"HTML";
+  print <<~"HTML";
     <input type="hidden" name="protect" value="account">
     <input type="hidden" name="protectOld" value="$pc{protect}">
     <input type="hidden" name="pass" value="$::in{pass}">
-HTML
+  HTML
 }
 else {
   if($set::registerkey && $mode_make){
     print '登録キー：<input type="text" name="registerkey" required>'."\n";
   }
-  print <<"HTML";
+  print <<~"HTML";
       <details class="box" id="edit-protect" @{[$mode eq 'edit' ? '':'open']}>
       <summary>編集保護設定</summary>
       <fieldset id="edit-protect-view"><input type="hidden" name="protectOld" value="$pc{protect}">
-HTML
+  HTML
   if($LOGIN_ID){
     print '<input type="radio" name="protect" value="account"'.($pc{protect} eq 'account'?' checked':'').'> アカウントに紐付ける（ログイン中のみ編集可能になります）<br>';
   }
@@ -190,11 +190,11 @@ HTML
   } else {
     print '<input type="password" name="pass"><br>';
   }
-  print <<"HTML";
+  print <<~"HTML";
         <input type="radio" name="protect" value="none"@{[ $pc{protect} eq 'none'?' checked':'' ]}> 保護しない（誰でも編集できるようになります）
       </fieldset>
       </details>
-HTML
+  HTML
 }
 print <<"HTML";
       <dl class="box" id="hide-options">
@@ -515,14 +515,14 @@ print <<"HTML";
 HTML
 foreach my $num ('TMPL',1 .. $pc{kizunaNum}) {
   print '<template id="kizuna-template">' if($num eq 'TMPL');
-  print <<"HTML";
+  print <<~"HTML";
             <tr id="kizuna-row${num}" class="@{[ $pc{"kizuna${num}Hibi"} ? 'hibi':'' ]}@{[ $pc{"kizuna${num}Ware"} ? 'ware':'' ]}">
               <td class="handle">
               <td>@{[ input "kizuna${num}Name" ]}
               <td>@{[ input "kizuna${num}Note" ]}
               <td>@{[ input "kizuna${num}Hibi", 'checkbox', "checkHibi(${num})" ]}
               <td>@{[ input "kizuna${num}Ware", 'checkbox', "checkWare(${num})" ]}
-HTML
+  HTML
   print '</template>' if($num eq 'TMPL');
 }
 print <<"HTML";
@@ -554,7 +554,7 @@ print <<"HTML";
 HTML
 foreach my $num ('TMPL',1 .. $pc{kizuatoNum}) {
   print '<template id="kizuato-template">' if($num eq 'TMPL');
-  print <<"HTML";
+  print <<~"HTML";
             <tbody id="kizuato-row${num}">
               <tr>
                 <td class="name" colspan="6">
@@ -586,7 +586,7 @@ foreach my $num ('TMPL',1 .. $pc{kizuatoNum}) {
                 <td>@{[input "kizuato${num}BattleCost"   ,'','','list="list-bcost"']}
                 <td>@{[input "kizuato${num}BattleLimited",'','','list="list-blimited"']}
                 <td class="left">@{[input "kizuato${num}BattleNote"]}
-HTML
+  HTML
   print '</template>' if($num eq 'TMPL');
 }
 print <<"HTML";
@@ -628,7 +628,7 @@ print <<"HTML";
 HTML
 foreach my $num ('TMPL',1 .. $pc{historyNum}) {
   print '<template id="history-template">' if($num eq 'TMPL');
-  print <<"HTML";
+  print <<~"HTML";
           <tbody id="history-row${num}">
           <tr>
             <td class="handle" rowspan="2">
@@ -639,7 +639,7 @@ foreach my $num ('TMPL',1 .. $pc{historyNum}) {
             <td class="member">@{[ input "history${num}Member" ]}
           <tr>
             <td colspan="5" class="left">@{[input("history${num}Note",'','','placeholder="備考"')]}
-HTML
+  HTML
   print '</template>' if($num eq 'TMPL');
 }
 print <<"HTML";

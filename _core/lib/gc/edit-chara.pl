@@ -177,21 +177,21 @@ print <<"HTML";
       <section id="section-common">
 HTML
 if($set::user_reqd){
-  print <<"HTML";
+  print <<~"HTML";
     <input type="hidden" name="protect" value="account">
     <input type="hidden" name="protectOld" value="$pc{protect}">
     <input type="hidden" name="pass" value="$::in{pass}">
-HTML
+  HTML
 }
 else {
   if($set::registerkey && $mode_make){
     print '登録キー：<input type="text" name="registerkey" required>'."\n";
   }
-  print <<"HTML";
+  print <<~"HTML";
       <details class="box" id="edit-protect" @{[$mode eq 'edit' ? '':'open']}>
       <summary>編集保護設定</summary>
       <fieldset id="edit-protect-view"><input type="hidden" name="protectOld" value="$pc{protect}">
-HTML
+  HTML
   if($LOGIN_ID){
     print '<input type="radio" name="protect" value="account"'.($pc{protect} eq 'account'?' checked':'').'> アカウントに紐付ける（ログイン中のみ編集可能になります）<br>';
   }
@@ -201,11 +201,11 @@ HTML
   } else {
     print '<input type="password" name="pass"><br>';
   }
-  print <<"HTML";
+  print <<~"HTML";
         <input type="radio" name="protect" value="none"@{[ $pc{protect} eq 'none'?' checked':'' ]}> 保護しない（誰でも編集できるようになります）
       </fieldset>
       </details>
-HTML
+  HTML
 }
 print <<"HTML";
       <dl class="box" id="hide-options">
@@ -351,7 +351,7 @@ print <<"HTML";
 HTML
 foreach('TMPL',2..$pc{level}){
   print '<template id="status-grow-template">' if($_ eq 'TMPL');
-  print <<"HTML";
+  print <<~"HTML";
               <tr id="status-grow$_" class="status-grow" @{[ displayGrowRow($_) ]}>
                 <th>成長:${_}レベル
                 <td class="Str">@{[ checkbox "sttStrGrow$_",'+1',"changeGrow($_)" ]}
@@ -360,7 +360,7 @@ foreach('TMPL',2..$pc{level}){
                 <td class="Int">@{[ checkbox "sttIntGrow$_",'+1',"changeGrow($_)" ]}
                 <td class="Mnd">@{[ checkbox "sttMndGrow$_",'+1',"changeGrow($_)" ]}
                 <td class="Emp">@{[ checkbox "sttEmpGrow$_",'+1',"changeGrow($_)" ]}
-HTML
+  HTML
   print '</template>' if($_ eq 'TMPL');
 }
 sub displayGrowRow {
@@ -558,7 +558,7 @@ foreach my $stt ("Str","Ref","Per","Int","Mnd","Emp"){
     $i++;
   }
 }
-print <<"HTML";
+print <<~"HTML";
           </tbody>
         </table>
       </div>
@@ -596,7 +596,7 @@ print <<"HTML";
 HTML
 foreach my $num ('TMPL',1 .. $pc{classAbilityNum}){
   print '<template id="class-ability-template">' if($num eq 'TMPL');
-  print <<"HTML";
+  print <<~"HTML";
           <tbody id="class-ability-row${num}">
             <tr>
               <td class="handle" rowspan="2">
@@ -612,7 +612,7 @@ foreach my $num ('TMPL',1 .. $pc{classAbilityNum}){
               <td class="mc    ">@{[ selectBox "classAbility${num}MC",'','○','×','FW' ]}
             <tr>
               <td class="note" colspan="10"><b>効果:</b>@{[ input "classAbility${num}Note" ]}
-HTML
+  HTML
   print '</template>' if($num eq 'TMPL');
 }
 print <<"HTML";
@@ -656,7 +656,7 @@ print <<"HTML";
 HTML
 foreach my $num ('TMPL',1 .. $pc{worksAbilityNum}){
   print '<template id="works-ability-template">' if($num eq 'TMPL');
-  print <<"HTML";
+  print <<~"HTML";
           <tbody id="works-ability-row${num}">
             <tr>
               <td class="handle" rowspan="2">
@@ -671,7 +671,7 @@ foreach my $num ('TMPL',1 .. $pc{worksAbilityNum}){
               <td class="cost  ">@{[ input "worksAbility${num}Cost",'','','list="list-cost"' ]}
             <tr>
               <td class="note" colspan="9"><b>効果:</b>@{[ input "worksAbility${num}Note" ]}
-HTML
+  HTML
   print '</template>' if($num eq 'TMPL');
 }
 print <<"HTML";
@@ -719,7 +719,7 @@ print <<"HTML";
 HTML
 foreach my $num ('TMPL',1 .. $pc{magicNum}){
   print '<template id="magic-template">' if($num eq 'TMPL');
-  print <<"HTML";
+  print <<~"HTML";
           <tbody id="magic-row${num}">
             <tr>
               <td class="handle" rowspan="2">
@@ -736,7 +736,7 @@ foreach my $num ('TMPL',1 .. $pc{magicNum}){
               <td class="mc      ">@{[ selectBox "magic${num}MC",'','○','×','FW' ]}
             <tr>
               <td class="note" colspan="11"><b>効果:</b>@{[ input "magic${num}Note" ]}
-HTML
+  HTML
   print '</template>' if($num eq 'TMPL');
 }
 print <<"HTML";
@@ -784,7 +784,7 @@ print <<"HTML";
           <tbody>
 HTML
 foreach ('Main','Sub','Other'){
-  print <<"HTML";
+  print <<~"HTML";
             <tr>
               <th class="category">@{[ $_ eq 'Main'?'メイン':$_ eq 'Sub'?'サブ':'その他' ]}
               <td class="name    ">@{[ input "weapon${_}Name" ]}
@@ -798,7 +798,7 @@ foreach ('Main','Sub','Other'){
               <td class="range   ">@{[ input "weapon${_}Range" ]}
               <td class="guard   ">@{[ input "weapon${_}Guard","number",'changeWeapon' ]}
               <td class="note    ">@{[ input "weapon${_}Note" ]}
-HTML
+  HTML
 }
 print <<"HTML";
             <tr id="weapon-foot">
@@ -853,7 +853,7 @@ print <<"HTML";
           <tbody>
 HTML
 foreach ('Main','Sub','Other'){
-  print <<"HTML";
+  print <<~"HTML";
             <tr>
               <th class="category">@{[ $_ eq 'Main'?'メイン':$_ eq 'Sub'?'サブ':'その他' ]}
               <td class="name    ">@{[ input "armor${_}Name" ]}
@@ -867,7 +867,7 @@ foreach ('Main','Sub','Other'){
               <td class="init    ">@{[ input "armor${_}Init","number",'changeArmor' ]}
               <td class="move    ">@{[ input "armor${_}Move","number",'changeArmor' ]}
               <td class="note    ">@{[ input "armor${_}Note" ]}
-HTML
+  HTML
 }
 print <<"HTML";
             <tr id="armor-foot">
@@ -971,14 +971,14 @@ print <<"HTML";
 HTML
 foreach my $num ('TMPL',1 .. $pc{itemNum}){
   print '<template id="item-template">' if($num eq 'TMPL');
-  print <<"HTML";
+  print <<~"HTML";
             <tr id="item-row${num}">
               <td class="handle  ">
               <td class="name    ">@{[ input "item${num}Name" ]}
               <td class="weight  ">@{[ input "item${num}Weight",'number','changeItem' ]}
               <td class="quantity">@{[ input "item${num}Quantity",'number','changeItem','min="0"' ]}
               <td class="note    ">@{[ input "item${num}Note" ]}
-HTML
+  HTML
   print '</template>' if($num eq 'TMPL');
 }
 print <<"HTML";
@@ -1026,7 +1026,7 @@ print <<"HTML";
 HTML
 foreach my $num ('TMPL',1 .. $pc{forceNum}){
   print '<template id="force-template">' if($num eq 'TMPL');
-  print <<"HTML";
+  print <<~"HTML";
           <tbody id="force-row${num}">
             <tr>
               <td class="handle" rowspan="2">
@@ -1050,7 +1050,7 @@ foreach my $num ('TMPL',1 .. $pc{forceNum}){
             <tr>
               <td class="right">@{[ radio "forceLead",'deselectable',$num,'この部隊を率いる' ]}
               <td colspan="16"><b>備考:</b>@{[ input "force${num}Note",'','','placeholder="部隊特技やメモなど"' ]}
-HTML
+  HTML
   print '</template>' if($num eq 'TMPL');
 }
 print <<"HTML";
@@ -1065,7 +1065,7 @@ print <<"HTML";
 HTML
 foreach my $num ('TMPL',1 .. $pc{actionSetNum}){
   print '<template id="action-set-template">' if($num eq 'TMPL');
-  print <<"HTML";
+  print <<~"HTML";
           <fieldset id="action-set-row${num}">
             <div class="handle"></div>
             <div class="top-row">
@@ -1097,7 +1097,7 @@ foreach my $num ('TMPL',1 .. $pc{actionSetNum}){
               <span class="button" onclick="addActionSet($num)">複<br>製</span>
             </div>
           </fieldset>
-HTML
+  HTML
   print '</template>' if($num eq 'TMPL');
 }
 print <<"HTML";
@@ -1112,7 +1112,7 @@ print <<"HTML";
 HTML
 foreach my $num ('TMPL',1 .. $pc{reactionSetNum}){
   print '<template id="reaction-set-template">' if($num eq 'TMPL');
-  print <<"HTML";
+  print <<~"HTML";
           <fieldset id="reaction-set-row${num}">
             <div class="handle"></div>
             <div class="top-row">
@@ -1140,7 +1140,7 @@ foreach my $num ('TMPL',1 .. $pc{reactionSetNum}){
               <span class="button" onclick="addReactionSet($num)">複<br>製</span>
             </div>
           </fieldset>
-HTML
+  HTML
   print '</template>' if($num eq 'TMPL');
 }
 print <<"HTML";
@@ -1240,7 +1240,7 @@ print <<"HTML";
             <tbody>
 HTML
 foreach my $num (1 .. 5){
-  print <<"HTML";
+  print <<~"HTML";
               <tr id="bond-row${num}">
                 <td class="handle  ">
                 <td class="name    ">@{[ input "bond${num}Name" ]}
@@ -1249,7 +1249,7 @@ foreach my $num (1 .. 5){
                   @{[ input "bond${num}EmotionMain",'','','list="list-emotion"' ]}
                   /
                   @{[ input "bond${num}EmotionSub",'','','list="list-emotion"' ]}
-HTML
+  HTML
 }
 print <<"HTML";
           </table>
@@ -1299,7 +1299,7 @@ print <<"HTML";
 HTML
 foreach my $num ('TMPL',1 .. $pc{historyNum}) {
   print '<template id="history-template">' if($num eq 'TMPL');
-  print <<"HTML";
+  print <<~"HTML";
           <tbody id="history-row${num}">
             <tr>
               <td class="handle" rowspan="2">
@@ -1310,7 +1310,7 @@ foreach my $num ('TMPL',1 .. $pc{historyNum}) {
               <td class="member">@{[input("history${num}Member")]}
             <tr>
               <td colspan="3" class="left">@{[input("history${num}Note",'','','placeholder="備考"')]}
-HTML
+  HTML
   print '</template>' if($num eq 'TMPL');
 }
 print <<"HTML";
