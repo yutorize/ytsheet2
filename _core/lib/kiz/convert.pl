@@ -15,13 +15,11 @@ sub loadPartnerData {
     my $id = $1;
     my ($file, $type, $author) = findSheet($id);
     my %pc;
-    open my $IN, '<', "${set::char_dir}${file}/data.cgi";
-    while (<$IN>){
+    foreach (readSheetFileLines($set::char_dir, $file, 'data.cgi')){
       chomp;
       my ($key, $value) = split(/<>/, $_, 2);
       $pc{$key} = $value;
     }
-    close($IN);
     if($pc{image}){
       $pc{imageURL} = "./?id=$id&mode=image&cache=$pc{imageUpdate}";
       $pc{imagePath} = "${set::char_dir}${file}/image.$pc{image}";

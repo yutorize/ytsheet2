@@ -16,13 +16,11 @@ sub loadItemData {
     my $id = $1;
     my ($file, $type, $author) = findSheet($id);
     my %pc;
-    open my $IN, '<', "$set::lib_type{i}{dataDir}${file}/data.cgi" or return;
-    while (<$IN>){
+    foreach (readSheetFileLines($set::lib_type{i}{dataDir}, $file, 'data.cgi')){
       chomp;
       my ($key, $value) = split(/<>/, $_, 2);
       $pc{$key} = $value;
     }
-    close($IN);
     $pc{convertSource} = '同じゆとシートⅡ';
     return %pc;
   }

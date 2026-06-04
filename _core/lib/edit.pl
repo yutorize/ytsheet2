@@ -228,20 +228,12 @@ sub loadSheetData {
   # 保存 / 編集 / 複製 / コンバート
   if($mode eq 'edit'){
     my $datatype = ($::in{log}) ? 'logs' : 'data';
-    my $hit = 0;
-    open my $IN, '<', "${sheetDir}/${datatype}.cgi" or &loginError;
-    while (<$IN>){
-      if($datatype eq 'logs'){
-        if (index($_, "=$::in{log}=") == 0){ $hit = 1; next; }
-        if (index($_, "=") == 0 && $hit){ last; }
-        if (!$hit) { next; }
-      }
+    my @lines = readSheetRecordLines($set::char_dir, $file, $datatype, $::in{log});
+    foreach (@lines){
       chomp $_;
       my ($key, $value) = split(/<>/, $_, 2);
       $pc{$key} = $value if $value ne '';
     }
-    close($IN);
-    if($datatype eq 'logs' && !$hit){ error("404:過去ログ（$::in{log}）が見つかりません。"); }
 
     if($::in{log}){
       ($pc{protect}, $pc{forbidden}) = getProtectType("${sheetDir}/data.cgi");
@@ -251,20 +243,12 @@ sub loadSheetData {
   }
   elsif($mode eq 'copy'){
     my $datatype = ($::in{log}) ? 'logs' : 'data';
-    my $hit = 0;
-    open my $IN, '<', "${sheetDir}/${datatype}.cgi" or error '404:データがありません。';
-    while (<$IN>){
-      if($datatype eq 'logs'){
-        if (index($_, "=$::in{log}:") == 0){ $hit = 1; next; }
-        if (index($_, "=") == 0 && $hit){ last; }
-        if (!$hit) { next; }
-      }
+    my @lines = readSheetRecordLines($set::char_dir, $file, $datatype, $::in{log});
+    foreach (@lines){
       chomp $_;
       my ($key, $value) = split(/<>/, $_, 2);
       $pc{$key} = $value;
     }
-    close($IN);
-    if($datatype eq 'logs' && !$hit){ error("404:過去ログ（$::in{log}）が見つかりません。"); }
 
     if($pc{forbidden}){
       if($::in{log}){

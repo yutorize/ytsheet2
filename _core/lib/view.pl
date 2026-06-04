@@ -270,22 +270,13 @@ sub loadSheetData {
   ## データ読み込み
   if($::in{id}){
     my $datatype = ($::in{log}) ? 'logs' : 'data';
-    my $hit = 0;
-    open my $IN, '<', "${datadir}${file}/${datatype}.cgi" or viewNotFound($datadir);
-    while (<$IN>){
-      if($datatype eq 'logs'){
-        if (index($_, "=") == 0){
-          if (index($_, "=$::in{log}=") == 0){ $hit = 1; next; }
-          if ($hit){ last; }
-        }
-        if (!$hit) { next; }
-      }
+    my @lines = readSheetRecordLines($datadir, $file, $datatype, $::in{log});
+    if(!@lines){ viewNotFound($datadir); }
+    foreach (@lines){
       chomp $_;
       my ($key, $value) = split(/<>/, $_, 2);
       $pc{$key} = $value if $value ne '';
     }
-    close($IN);
-    if($datatype eq 'logs' && !$hit){ error("404:過去ログ（$::in{log}）が見つかりません。"); }
 
     if($::in{log}){
       # 閲覧制限は最新のものを適用
@@ -327,7 +318,7 @@ sub loadSheetData {
       $pc{imageURL}    = url()."?id=$::in{id}&mode=image&cache=$pc{imageUpdate}";
       $pc{imageOgpURL} = url()."?id=$::in{id}&mode=ogp-image&cache=$pc{imageUpdate}";
     }
-    $pc{images} = "'1': \"".($pc{modeDownload} ? urlToBase64("${datadir}${file}/image.$pc{image}") : $pc{imageSrc})."\", ";
+    $pc{images} = "'1': \"".($pc{modeDownload} ? sheetImageToBase64($datadir, $file, $pc{image}) : $pc{imageSrc})."\", ";
     
     if($pc{imageFit} eq 'percentY'){
       $pc{imageFit} = 'auto '.$pc{imagePercent}.'%';
@@ -469,9 +460,8 @@ sub createSheetMenu {
 sub getLogList {
   my $dir  = shift;
   my $file = shift;
-  open(my $FH,"${dir}${file}/log-list.cgi") || checkLogFile("${dir}${file}",'view');
-  my @lines = reverse <$FH>;
-  close($FH);
+  if(!sheetFileExists($dir, $file, 'log-list.cgi')){ checkLogFile("${dir}${file}",'view'); }
+  my @lines = reverse readSheetFileLines($dir, $file, 'log-list.cgi');
   my @logs; my $selectedname;
   foreach (@lines){
     chomp;
@@ -601,6 +591,18 @@ sub styleToHtml {
   return "$output";
 }
 use MIME::Base64;
+sub binaryToImageBase64 {
+  my ($binary, $ext) = @_;
+  if ($ext eq "jpg") { $ext ="jpeg"; }
+  my $base64 = encode_base64($binary, '');
+  return "data:image/$ext;base64,$base64";
+}
+sub sheetImageToBase64 {
+  my ($dir, $file, $ext) = @_;
+  my $binary = readSheetFileBinary($dir, $file, "image.$ext");
+  return binaryToImageBase64($binary, $ext) if defined $binary;
+  return urlToBase64("${dir}${file}/image.$ext", $ext);
+}
 sub urlToBase64 {
   my $url = shift;
   my $ext = shift;
@@ -614,8 +616,7 @@ sub urlToBase64 {
   my $binary; my $buffer;
   while(read($IMG, $buffer, 2048)) { $binary .= $buffer }
   close($IMG);
-  my $base64 = encode_base64($binary, '');
-  return "data:image/$ext;base64,$base64";
+  return binaryToImageBase64($binary, $ext);
 }
 
 1;

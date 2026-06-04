@@ -24,23 +24,7 @@ sub outputChatPalette {
 
   my $datatype = ($::in{log}) ? 'logs' : 'data';
 
-  my @lines;
-  open my $IN, '<', "${set::char_dir}${file}/${datatype}.cgi" or error('404:データがありません');
-  if($datatype eq 'logs'){
-    my $hit = 0;
-    while (<$IN>){
-      if (index($_, "=") == 0){
-        if (index($_, "=$::in{log}=") == 0){ $hit = 1; next; }
-        if ($hit){ last; }
-      }
-      if (!$hit) { next; }
-      push(@lines, $_);
-    }
-  }
-  else {
-    @lines = <$IN>;
-  }
-  close($IN);
+  my @lines = readSheetRecordLines($set::char_dir, $file, $datatype, $::in{log});
 
   foreach (@lines){
     chomp;

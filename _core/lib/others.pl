@@ -21,25 +21,21 @@ if($mode eq 'bu-naming'){
   changeFileByType($type);
 
   ## ディレクトリ
-  my $fileDir = $set::char_dir .($user ? "_${user}/${file}" : $file);
+  my $sheetDir = $user ? "_${user}/" : 'anonymous/';
+  my $fileDir = $set::char_dir . $sheetDir . $file;
 
-  ## 読込
-  sysopen (my $FH, "${fileDir}/log-list.cgi", O_RDWR) or error('500:ログ一覧が開けません。'.$fileDir);
-  flock($FH, 2);
-  my @list = <$FH>;
-  
-  ## 保存
-  seek($FH, 0, 0);
+  ## 読込・保存
+  my @list = readSheetFileLines($set::char_dir . $sheetDir, $file, 'log-list.cgi');
+  my $logList = '';
   foreach my $line (@list) {
     if(index($line, $date) == 0){
       chomp $line;
       my($_date, $_epoc, undef) = split(/<>/, $line);
-      print $FH "${_date}<>${_epoc}<>${name}\n";
+      $logList .= "${_date}<>${_epoc}<>${name}\n";
     }
-    else { print $FH $line; }
+    else { $logList .= $line; }
   }
-  truncate($FH, tell($FH));
-  close($FH);
+  updateSheetFile($set::char_dir . $sheetDir, $file, 'log-list.cgi', $logList);
 
   ## キャラシートへ移動／編集画面に戻る
   if($date eq 'latest'){ print "Location: ./?id=${id}\n\n"; }
@@ -54,11 +50,9 @@ elsif($mode eq 'image' || $mode eq 'ogp-image'){
 
   if(!$file){ error "404:データがありません。" }
   my %pc;
-  open(my $DATA, '<', "./${datadir}/${file}/data.cgi") or error("500:データが開けませんでした。");
-  while(<$DATA>){
+  foreach (readSheetFileLines($datadir, $file, 'data.cgi')){
     if($_ =~ /^(image.*?)<>(.*?)\n/){ $pc{$1} = $2; }
   }
-  close($DATA);
 
   my $ext = $pc{image};
   
@@ -71,14 +65,17 @@ elsif($mode eq 'image' || $mode eq 'ogp-image'){
   );
 
   my $path = "./${datadir}/${file}/image.${ext}";
+  my $imageData;
   
   my $imageExists;
-  if(-f $path){
-    $imageExists = 1;
+  if($ext){
+    $imageData = readSheetFileBinary($datadir, $file, "image.$ext");
+    $imageExists = 1 if defined $imageData;
   }
-  else {
+  if(!$imageExists){
     foreach (qw(png jpg jpeg gif webp)) {
-      if(-f "./${datadir}/${file}/image.$_") {
+      $imageData = readSheetFileBinary($datadir, $file, "image.$_");
+      if(defined $imageData) {
         $path = "./${datadir}/${file}/image.$_";
         $ext = $_;
         $imageExists = 1;
@@ -92,20 +89,17 @@ elsif($mode eq 'image' || $mode eq 'ogp-image'){
 
   if($mode eq 'ogp-image'){
     $pc{src} = $path;
+    $pc{imageData} = $imageData;
     outputOgpImage(%pc);
   }
 
-  open(my $IMG, '<', $path) or error("500:画像ファイルが開けませんでした。");
-  my $size = -s $IMG;
-  binmode $IMG;
   binmode STDOUT;
   print "Content-type: $mimeType\n";
-  print "Content-Length: $size\n";
+  print "Content-Length: ".length($imageData)."\n";
   print "Cache-Control: public, max-age=604800\n";
   print "Content-Disposition: inline; filename=\"ytsheet_$::in{id}.$ext\"\n";
   print "\n";
-  while (read($IMG, my $buf, 65536)) { print $buf; }
-  close($IMG);
+  print $imageData;
 
   exit;
 }
@@ -124,6 +118,7 @@ sub outputOgpImage {
 
   my (%opt) = @_;
   my $src     = $opt{src};
+  my $imageData = $opt{imageData};
   my $fit     = $opt{imageFit} // 'cover';
   my $percent = ($opt{imagePercent} // 100);
   my $posX    = ($opt{imagePositionX} // '50');
@@ -141,7 +136,9 @@ sub outputOgpImage {
   ## 元画像
   my $IMG = Image::Magick->new;
 
-  my $error = $IMG->Read($src);
+  my $error = defined $imageData
+    ? $IMG->BlobToImage($imageData)
+    : $IMG->Read($src);
   die $error if $error;
 
   my ($iw, $ih) = $IMG->Get('width','height');

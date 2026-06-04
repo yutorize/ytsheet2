@@ -97,7 +97,7 @@ if($mode eq 'make'){
   $pc{birthTime} = $file = $now;
 }
 elsif($mode eq 'save'){
-  $file = (authSheet $pc{id},$pc{pass},$LOGIN_ID)[0];
+  $file = (authSheet($pc{id},$pc{pass},$LOGIN_ID))[0];
   if(!$file){ error('404:シートが存在しないか、編集権限がありません。'); }
 }
 
@@ -211,15 +211,14 @@ elsif($mode eq 'save'){
 updateListFile($newline);
 
 ### 画像アップ更新 --------------------------------------------------
-if($pc{imageDelete}){
-  unlink "${data_dir}${user_dir}${file}/image.$pc{image}"; # ファイルを削除
+if($pc{imageDelete} && $oldext){
+  deleteSheetFile("${data_dir}${user_dir}", $file, "image.$oldext"); # ファイルを削除
 }
 if($imageflag && $pc{image}){
-  unlink "${data_dir}${user_dir}${file}/image.$oldext"; # 前のファイルを削除
-  open(my $IMG, ">", "${data_dir}${user_dir}${file}/image.$pc{image}");
-  binmode($IMG);
-  print $IMG $imagedata;
-  close($IMG);
+  if($oldext && $oldext ne $pc{image}){
+    deleteSheetFile("${data_dir}${user_dir}", $file, "image.$oldext"); # 前のファイルを削除
+  }
+  updateSheetFile("${data_dir}${user_dir}", $file, "image.$pc{image}", $imagedata);
 }
 
 
@@ -227,7 +226,7 @@ if($imageflag && $pc{image}){
 ### 保存後処理 ######################################################################################
 ### キャラシートへ移動／編集画面に戻る --------------------------------------------------
 if($edit_ver < 1.18012){
-  print "Location: ./?id=".(${new_id} || $pc{id})."\n\n";
+  print "Location: ./?id=".($new_id || $pc{id})."\n\n";
   exit;
 }
 if($mode eq 'make'){
@@ -259,7 +258,13 @@ sub dataSave {
       mkdir "${dir}${user_dir}${file}" or error("500:データファイルの作成に失敗しました。");
     }
   }
+  if($mode eq 'save' && -f "${dir}${file}.zip" && !-f "${dir}${user_dir}${file}.zip"){ #v1.14/v1.20のZIPコンバート処理
+    move("${dir}${file}.zip", "${dir}${user_dir}${file}.zip") or error("500:ZIPファイルの移動に失敗しました。");
+  }
   $dir .= $user_dir;
+
+  my $log_list_content = '';
+  my $logs_content = readSheetFile($dir, $file, 'logs.cgi') // '';
 
   ## バックアップ作成
   if($mode eq 'save'){
@@ -272,10 +277,9 @@ sub dataSave {
     my %log_save;
     my @log_list;
     my $delete_flag;
-    if(!-f "${dir}${file}/log-list.cgi"){ checkLogFile("${dir}${file}") }
-    open (my $FH, "${dir}${file}/log-list.cgi");
-    flock($FH, 1);
-    while (<$FH>){
+    if(!sheetFileExists($dir, $file, 'log-list.cgi')){ checkLogFile("${dir}${file}") }
+    my @current_log_list = readSheetFileLines($dir, $file, 'log-list.cgi');
+    foreach (@current_log_list){
       chomp;
       my ($date, $epoc, $name) = split('<>', $_, 3);
       if($name){ $log_name{$date} = $name; }
@@ -286,8 +290,7 @@ sub dataSave {
         push(@log_list, { date => $date, epoc => $epoc, name => $name });
       }
     }
-    close($FH);
-    $latest_epoc ||= (stat("${dir}${file}/data.cgi"))[9];
+    $latest_epoc ||= sheetFileMTime($dir, $file, 'data.cgi');
     my $latest_date = epocToDateQuery($latest_epoc);
     
     if($now - $latest_epoc > 3){ #3秒未満の連続更新は処理を飛ばす
@@ -319,13 +322,11 @@ sub dataSave {
         }
       }
     
+      my $data_content = readSheetFile($dir, $file, 'data.cgi') // '';
       # data => logs (削除あり)
       if($delete_flag){
-        sysopen(my $BU,"${dir}${file}/logs.cgi", O_RDWR | O_CREAT);
-        flock($BU, 2);
-        my @lines = <$BU>;
-        seek($BU, 0, 0);
-
+        my @lines = split(/(?<=\n)/, $logs_content);
+        $logs_content = '';
         my $cut = 0;
         foreach (@lines) {
           if (index($_, "=") == 0){
@@ -334,52 +335,42 @@ sub dataSave {
               if(!$log_save{$1}){ $cut = 1; }
             }
           }
-          print $BU $_ if !$cut;
+          $logs_content .= $_ if !$cut;
         }
-
-        print $BU "=${latest_date}=\n";
-        open (my $IN, '<', "${dir}${file}/data.cgi");
-        flock($IN, 2);
-        print $BU $_ while (<$IN>);
-        close($IN);
-
-        truncate($BU, tell($BU));
-        close($BU);
       }
-      # data => logs (追記のみ)
-      else {
-        open (my $IN, '<', "${dir}${file}/data.cgi");
-        sysopen (my $BU, "${dir}${file}/logs.cgi", O_WRONLY | O_APPEND | O_CREAT);
-        flock($BU, 2);
-        print $BU "=${latest_date}=\n";
-        print $BU $_ while (<$IN>);
-        close($BU);
-        close($IN);
-      }
+
+      $logs_content .= "=${latest_date}=\n";
+      $logs_content .= $data_content;
+      $logs_content .= "\n" if $data_content ne '' && $data_content !~ /\n\z/;
       
-      sysopen (my $BUL, "${dir}${file}/log-list.cgi", O_WRONLY | O_TRUNC | O_CREAT);
-      flock($BUL, 2);
-      print $BUL "$_<>$log_save{$_}<>$log_name{$_}\n" foreach (sort keys %log_save);
-      print $BUL "${latest_date}<>${latest_epoc}<>$log_name{latest}\n";
-      print $BUL "latest<>${now}<>\n";
-      close($BUL);
+      $log_list_content .= "$_<>$log_save{$_}<>$log_name{$_}\n" foreach (sort keys %log_save);
+      $log_list_content .= "${latest_date}<>${latest_epoc}<>$log_name{latest}\n";
+      $log_list_content .= "latest<>${now}<>\n";
+    }
+    else {
+      $log_list_content = readSheetFile($dir, $file, 'log-list.cgi') // '';
     }
   }
   elsif($mode eq 'make'){
-    sysopen (my $BUL, "${dir}${file}/log-list.cgi", O_WRONLY | O_TRUNC | O_CREAT);
-    flock($BUL, 2);
-    print $BUL "latest<>${now}<>\n";
-    close($BUL);
+    $log_list_content = "latest<>${now}<>\n";
   }
 
   ## data.cgi保存／更新
-  sysopen (my $DD, "${dir}${file}/data.cgi", O_WRONLY | O_TRUNC | O_CREAT);
-  flock($DD, 2);
-  print $DD "ver<>",$main::ver,"\n";
+  my $data_content = "ver<>$main::ver\n";
   foreach (sort keys %pc){
-    if($pc{$_} ne "") { print $DD "$_<>$pc{$_}\n"; }
+    if($pc{$_} ne "") { $data_content .= "$_<>$pc{$_}\n"; }
   }
-  close($DD);
+
+  my %archive = (
+    'data.cgi'     => $data_content,
+    'logs.cgi'     => $logs_content,
+    'log-list.cgi' => $log_list_content,
+  );
+  foreach my $ext (qw(png jpg jpeg gif webp)){
+    my $image = readSheetFileBinary($dir, $file, "image.$ext");
+    $archive{"image.$ext"} = $image if defined $image;
+  }
+  saveSheetArchive($dir, $file, \%archive);
 }
 
 sub appendPassFile {
@@ -449,7 +440,12 @@ sub updatePassFile {
     $new_dir ||= 'anonymous/';
     if($move){
       if(!-d "${dir}${new_dir}"){ mkdir "${dir}${new_dir}" or return("500:データディレクトリの作成に失敗しました。//save".__LINE__); }
-      move("${data_dir}${old_dir}${sheet}", "${data_dir}${new_dir}${sheet}") or return("500:データディレクトリの移動に失敗しました。（${old_dir}⇒${new_dir}）//save".__LINE__);
+      if(-d "${data_dir}${old_dir}${sheet}"){
+        move("${data_dir}${old_dir}${sheet}", "${data_dir}${new_dir}${sheet}") or return("500:データディレクトリの移動に失敗しました。（${old_dir}⇒${new_dir}）//save".__LINE__);
+      }
+      if(-f "${data_dir}${old_dir}${sheet}.zip"){
+        move("${data_dir}${old_dir}${sheet}.zip", "${data_dir}${new_dir}${sheet}.zip") or return("500:ZIPファイルの移動に失敗しました。（${old_dir}⇒${new_dir}）//save".__LINE__);
+      }
       $user_dir = $new_dir;
     }
     else {
