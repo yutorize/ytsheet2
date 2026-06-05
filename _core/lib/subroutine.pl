@@ -7,6 +7,9 @@ use List::Util qw/max min/;
 use Fcntl qw(:DEFAULT :flock);
 use File::Copy qw/move/;
 use File::Basename qw/dirname/;
+use Encode qw/encode decode/;
+use IO::Compress::Zip;
+use IO::Uncompress::Unzip;
 
 ### サブルーチン #####################################################################################
 our %statusCode = (
@@ -178,6 +181,284 @@ sub changeFileByType {
   }
 }
 
+### シートアーカイブ --------------------------------------------------
+sub sheetZipPath {
+  my ($dir, $file) = @_;
+  return "${dir}${file}.zip";
+}
+sub sheetLegacyDirPath {
+  my ($dir, $file) = @_;
+  return "${dir}${file}";
+}
+sub sheetFilePath {
+  my ($dir, $file, $name) = @_;
+  return "${dir}${file}/${name}";
+}
+sub sheetFileExists {
+  my ($dir, $file, $name) = @_;
+  my $zipPath = sheetZipPath($dir, $file);
+  return 1 if zipMemberExists($zipPath, $name);
+  return -f sheetFilePath($dir, $file, $name);
+}
+sub zipMemberExists {
+  my ($zipPath, $member) = @_;
+  return 0 if !-f $zipPath;
+
+  my $ZIP = IO::Uncompress::Unzip->new($zipPath)
+    or error "500:ZIPファイルのオープンに失敗しました。$IO::Uncompress::Unzip::UnzipError";
+  while (1) {
+    my $header = $ZIP->getHeaderInfo();
+    if($header && $header->{Name} eq $member){
+      close($ZIP);
+      return 1;
+    }
+    last unless $ZIP->nextStream();
+  }
+  close($ZIP);
+  return 0;
+}
+sub isSheetBinaryEntry {
+  my $name = shift;
+  return $name =~ /^image\.(?:png|jpe?g|gif|webp)$/i ? 1 : 0;
+}
+sub readZipMember {
+  my ($zipPath, $member, $binary) = @_;
+  return undef if !-f $zipPath;
+  $binary = isSheetBinaryEntry($member) if !defined $binary;
+
+  my $ZIP = IO::Uncompress::Unzip->new($zipPath)
+    or error "500:ZIPファイルのオープンに失敗しました。$IO::Uncompress::Unzip::UnzipError";
+  while (1) {
+    my $header = $ZIP->getHeaderInfo();
+    if($header && $header->{Name} eq $member){
+      my $content = '';
+      my $buffer;
+      while (($ZIP->read($buffer)) > 0) { $content .= $buffer; }
+      close($ZIP);
+      return $binary ? $content : decode('UTF-8', $content);
+    }
+    last unless $ZIP->nextStream();
+  }
+  close($ZIP);
+  return undef;
+}
+sub readSheetFile {
+  my ($dir, $file, $name) = @_;
+  my $zipPath = sheetZipPath($dir, $file);
+  my $content = readZipMember($zipPath, $name, 0);
+  return $content if defined $content;
+
+  my $path = sheetFilePath($dir, $file, $name);
+  return undef if !-f $path;
+  open(my $IN, '<', $path) or error "500:データファイルが開けませんでした。";
+  my $data = do { local $/; <$IN> };
+  close($IN);
+  return $data;
+}
+sub readSheetFileBinary {
+  my ($dir, $file, $name) = @_;
+  my $zipPath = sheetZipPath($dir, $file);
+  my $content = readZipMember($zipPath, $name, 1);
+  return $content if defined $content;
+
+  my $path = sheetFilePath($dir, $file, $name);
+  return undef if !-f $path;
+  open(my $IN, '<', $path) or error "500:データファイルが開けませんでした。";
+  binmode $IN;
+  my $data = do { local $/; <$IN> };
+  close($IN);
+  return $data;
+}
+sub readSheetFileLines {
+  my ($dir, $file, $name) = @_;
+  my $content = readSheetFile($dir, $file, $name);
+  return wantarray ? () : undef if !defined $content;
+  return split(/(?<=\n)/, $content);
+}
+sub readSheetRecordLines {
+  my ($dir, $file, $datatype, $log) = @_;
+  my @source = readSheetFileLines($dir, $file, "${datatype}.cgi");
+  if(!@source){
+    checkDeletedSheet();
+    error('404:シートが見つかりませんでした。');
+  }
+  elsif($datatype ne 'logs'){
+    return @source;
+  }
+
+  my @lines;
+  my $hit = 0;
+  foreach (@source){
+    if (index($_, "=") == 0){
+      if (index($_, "=${log}=") == 0){ $hit = 1; next; }
+      if ($hit){ last; }
+    }
+    if (!$hit) { next; }
+    push(@lines, $_);
+  }
+  if(!$hit){ error("404:過去ログ（${log}）が見つかりません。"); }
+  return @lines;
+}
+sub checkDeletedSheet {
+  if(open (my $LIST, '<', $set::data_dir.'/deleted.cgi')){
+    while(my $line = <$LIST>){
+      if(index($line, "$::in{id}<") == 0){ error('410:削除されたシートです。'); }
+    }
+    close($LIST);
+  }
+  if(defined &viewNotFound) { viewNotFound(); }
+}
+sub sheetFileMTime {
+  my ($dir, $file, $name) = @_;
+  my $path = sheetFilePath($dir, $file, $name);
+  return (stat($path))[9] if -f $path;
+  my $zipPath = sheetZipPath($dir, $file);
+  return (stat($zipPath))[9] if -f $zipPath;
+  return undef;
+}
+sub sheetZipTmpDir {
+  my $tmpDir = "${set::data_dir}/.tmp";
+  if(!-d $tmpDir){
+    mkdir $tmpDir or -d $tmpDir
+      or error "500:ZIP一時ディレクトリの作成に失敗しました。$!";
+  }
+  return $tmpDir;
+}
+sub createSheetZipTmpFile {
+  my $tmpDir = sheetZipTmpDir();
+  my $tmpfile;
+  my $lastError;
+  foreach (1 .. 100) {
+    $tmpfile = "$tmpDir/tmp_zip_$::in{mode}$::in{type}_".randomId(16);
+    if(sysopen(my $TMP, $tmpfile, O_WRONLY | O_EXCL | O_CREAT)){
+      close($TMP);
+      return $tmpfile;
+    }
+    $lastError = "$!";
+  }
+  error "500:ZIP一時ファイルの作成に失敗しました。$lastError";
+}
+sub writeSheetZip {
+  my ($zipPath, $entries) = @_;
+  my $tmpfile;
+  my @names = sort keys %{$entries};
+  if(!@names){
+    unlink $zipPath;
+    return;
+  }
+
+  my $zipError;
+  my $ok = eval {
+    $tmpfile = createSheetZipTmpFile();
+    my $first = shift @names;
+
+    my $ZIP = IO::Compress::Zip->new(
+      $tmpfile,
+      Name   => $first,
+      Method => IO::Compress::Zip::ZIP_CM_STORE(),
+    ) or do { $zipError = "500:ZIPファイルの作成に失敗しました。$IO::Compress::Zip::ZipError"; die; };
+    print $ZIP isSheetBinaryEntry($first) ? $entries->{$first} : encode('UTF-8', $entries->{$first});
+    foreach my $name (@names){
+      $ZIP->newStream(
+        Name   => $name,
+        Method => IO::Compress::Zip::ZIP_CM_STORE(),
+      ) or do { $zipError = "500:ZIPエントリの作成に失敗しました。$IO::Compress::Zip::ZipError"; die; };
+      print $ZIP isSheetBinaryEntry($name) ? $entries->{$name} : encode('UTF-8', $entries->{$name});
+    }
+    close($ZIP) or do { $zipError = "500:ZIPファイルの保存に失敗しました。$IO::Compress::Zip::ZipError"; die; };
+    rename $tmpfile, $zipPath or do { $zipError = "500:ZIPファイルの差し替えに失敗しました。"; die; };
+    1;
+  };
+  if(!$ok){
+    my $message = $zipError || $@ || '500:ZIPファイルの保存に失敗しました。';
+    unlink $tmpfile if $tmpfile && -f $tmpfile;
+    error $message;
+  }
+}
+
+sub readSheetZipEntries {
+  my $zipPath = shift;
+  my %entries;
+  return %entries if !-f $zipPath;
+
+  my $ZIP = IO::Uncompress::Unzip->new($zipPath)
+    or error "500:ZIPファイルのオープンに失敗しました。$IO::Uncompress::Unzip::UnzipError";
+  while (1) {
+    my $header = $ZIP->getHeaderInfo();
+    if($header){
+      my $content = '';
+      my $buffer;
+      while (($ZIP->read($buffer)) > 0) { $content .= $buffer; }
+      $entries{$header->{Name}} = isSheetBinaryEntry($header->{Name}) ? $content : decode('UTF-8', $content);
+    }
+    last unless $ZIP->nextStream();
+  }
+  close($ZIP);
+  return %entries;
+}
+sub cleanupSheetLegacyDir {
+  my ($dir, $file, $entries) = @_;
+  my $legacyDir = sheetLegacyDirPath($dir, $file);
+  return if !-d $legacyDir;
+
+  foreach my $name (keys %{$entries}){
+    next if $name =~ m|/|;
+    my $path = sheetFilePath($dir, $file, $name);
+    unlink $path if -f $path;
+  }
+  rmdir $legacyDir;
+}
+sub updateSheetArchive {
+  my ($dir, $file, $code) = @_;
+  my $zipPath = sheetZipPath($dir, $file);
+  my %current = readSheetZipEntries($zipPath);
+  my $changed = $code->(\%current);
+  if($changed){
+    writeSheetZip($zipPath, \%current);
+    cleanupSheetLegacyDir($dir, $file, \%current);
+  }
+  return $changed;
+}
+sub saveSheetArchive {
+  my ($dir, $file, $entries) = @_;
+  $entries ||= {};
+  updateSheetArchive($dir, $file, sub {
+    my $current = shift;
+    foreach my $name (keys %{$entries}){ $current->{$name} = $entries->{$name}; }
+    return 1;
+  });
+}
+sub updateSheetFile {
+  my ($dir, $file, $name, $content) = @_;
+  my $zipPath = sheetZipPath($dir, $file);
+  if(-f $zipPath){
+    saveSheetArchive($dir, $file, { $name => $content });
+  }
+  else {
+    sysopen(my $OUT, sheetFilePath($dir, $file, $name), O_WRONLY | O_TRUNC | O_CREAT)
+      or error "500:データファイルが開けませんでした。";
+    flock($OUT, 2);
+    binmode $OUT if isSheetBinaryEntry($name);
+    print $OUT $content;
+    close($OUT);
+  }
+}
+sub deleteSheetFile {
+  my ($dir, $file, $name) = @_;
+  my $zipPath = sheetZipPath($dir, $file);
+  my $legacyDeleted = unlink sheetFilePath($dir, $file, $name);
+  if(-f $zipPath){
+    my $zipDeleted = updateSheetArchive($dir, $file, sub {
+      my $current = shift;
+      return 0 if !exists $current->{$name};
+      delete $current->{$name};
+      return 1;
+    });
+    return $zipDeleted || $legacyDeleted;
+  }
+  return $legacyDeleted;
+}
+
 ### プレイヤー名取得 --------------------------------------------------
 sub getPlayerName {
   my $in_id = shift;
@@ -199,15 +480,23 @@ sub getProtectType {
   my $protect   = '';
   my $forbidden = '';
   my $hide = '';
-  open (my $IN, '<', $file) or error('404:データがありません。');
-  while (my $line = <$IN>){
+  my @lines;
+  if($file =~ m|^(.*/)([^/]+)/data\.cgi$|){
+    my ($dir, $sheet) = ($1, $2);
+    @lines = readSheetFileLines($dir, $sheet, 'data.cgi');
+  }
+  if(!@lines){
+    open (my $IN, '<', $file) or error('404:データがありません。');
+    @lines = <$IN>;
+    close($IN);
+  }
+  foreach my $line (@lines){
     if   ($line =~ /^protect<>(.*)\n/)  { $protect = $1; }
     elsif($line =~ /^forbidden<>(.*)\n/){ $forbidden = $1; }
     elsif($line =~ /^hide<>(.*)\n/){ $hide = $1; }
     
-    if($protect && $forbidden && $hide){ close($IN); last; }
+    if($protect && $forbidden && $hide){ last; }
   }
-  close($IN);
   return ($protect, $forbidden, $hide);
 }
 
@@ -994,14 +1283,19 @@ sub importSheetData {
   if($setUrl =~ m"^$self\?id=(.+?)(?:$|&)"){
     my $id = $1;
     my ($file, $type, $author) = findSheet($id);
+    unless($file){
+      error '404:コンバート元のゆとシートⅡのデータが見つかりませんでした。URLに誤りがあるか、データが削除されている可能性があります。';
+    }
     my %pc;
-    open my $IN, '<', "${set::char_dir}${file}/data.cgi" or error '500:データが開けませんでした。';
-    while (<$IN>){
+    my @lines = readSheetFileLines($set::char_dir, $file, 'data.cgi');
+    unless(@lines){
+      error '500:コンバート元のゆとシートⅡのデータが開けませんでした。';
+    }
+    foreach (@lines){
       chomp;
       my ($key, $value) = split(/<>/, $_, 2);
       $pc{$key} = $value;
     }
-    close($IN);
 
     my $LOGIN_ID = check;
     unless(
@@ -1087,10 +1381,8 @@ sub logFileUpdate {
 
   my $latest_epoc = (stat("${dir}/data.cgi"))[9];
 
-  sysopen (my $OUT, "${dir}/logs.cgi", O_WRONLY | O_TRUNC | O_CREAT, 0666);
-  flock($OUT, 2);
-  sysopen (my $BUL, "${dir}/log-list.cgi", O_WRONLY | O_TRUNC | O_CREAT, 0666);
-  flock($BUL, 2);
+  my $logs_content = '';
+  my $log_list_content = '';
   my $before_saved = 0;
   foreach my $i (0 .. $#log_list){
     my $date = $log_list[$i]{date};
@@ -1104,17 +1396,28 @@ sub logFileUpdate {
        $epoc - $before_saved >= $interval_long)
     ){
       $before_saved = $epoc;
-      print $OUT "=${date}=\n";
-      print $BUL "${date}<>$epoc<>$log_name{$date}\n";
+      $logs_content .= "=${date}=\n";
+      $log_list_content .= "${date}<>$epoc<>$log_name{$date}\n";
       open(my $IN,"${dir}/backup/${date}.cgi") or die;
-      while (my $line = <$IN>){ print $OUT $line; };
+      while (my $line = <$IN>){ $logs_content .= $line; };
       close($IN);
     }
     unlink("${dir}/backup/${date}.cgi");
   }
-  print $BUL "latest<>$latest_epoc<>\n";
-  close($OUT);
-  close($BUL);
+  $log_list_content .= "latest<>$latest_epoc<>\n";
+  if($dir =~ m|^(.*/)([^/]+)$|){
+    my ($sheetDir, $sheetFile) = ($1, $2);
+    my %archive = (
+      'data.cgi'     => readSheetFile($sheetDir, $sheetFile, 'data.cgi') // '',
+      'logs.cgi'     => $logs_content,
+      'log-list.cgi' => $log_list_content,
+    );
+    foreach my $ext (qw(png jpg jpeg gif webp)){
+      my $image = readSheetFileBinary($sheetDir, $sheetFile, "image.$ext");
+      $archive{"image.$ext"} = $image if defined $image;
+    }
+    saveSheetArchive($sheetDir, $sheetFile, \%archive);
+  }
   rmdir("${dir}/backup");
   unlink("${dir}/buname.cgi");
   if($mode eq 'view'){ print "Location:./?id=$::in{id}\n\n"; }
