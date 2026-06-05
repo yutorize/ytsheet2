@@ -303,32 +303,70 @@ sub sheetFileMTime {
   return (stat($zipPath))[9] if -f $zipPath;
   return undef;
 }
+sub sheetZipTmpDir {
+  my $zipPath = shift;
+  my $dir = dirname($zipPath);
+  my $tmpRoot = $dir;
+  if($dir =~ m#^(.+)/(?:anonymous|_[^/]+)$#){
+    $tmpRoot = $1;
+  }
+  my $tmpDir = "${tmpRoot}/.tmp";
+  if(!-d $tmpDir){
+    mkdir $tmpDir or error "500:ZIP一時ディレクトリの作成に失敗しました。";
+  }
+  return $tmpDir;
+}
+sub createSheetZipTmpFile {
+  my $zipPath = shift;
+  my $tmpDir = sheetZipTmpDir($zipPath);
+  my $tmpfile;
+  foreach (1 .. 100) {
+    $tmpfile = "$tmpDir/tmp_zip_$::in{mode}$::in{type}_".randomId(16);
+    if(sysopen(my $TMP, $tmpfile, O_WRONLY | O_EXCL | O_CREAT)){
+      close($TMP);
+      return $tmpfile;
+    }
+  }
+  error "500:ZIP一時ファイルの作成に失敗しました。";
+}
 sub writeSheetZip {
   my ($zipPath, $entries) = @_;
-  my $tmpfile = dirname($zipPath)."/tmp_zip_$::in{mode}$::in{type}_".randomId(16);
+  my $tmpfile;
   my @names = sort keys %{$entries};
   if(!@names){
     unlink $zipPath;
     return;
   }
-  my $first = shift @names;
 
-  my $ZIP = IO::Compress::Zip->new(
-    $tmpfile,
-    Name   => $first,
-    Method => IO::Compress::Zip::ZIP_CM_STORE(),
-  ) or error "500:ZIPファイルの作成に失敗しました。$IO::Compress::Zip::ZipError";
-  print $ZIP isSheetBinaryEntry($first) ? $entries->{$first} : encode('UTF-8', $entries->{$first});
-  foreach my $name (@names){
-    $ZIP->newStream(
-      Name   => $name,
+  my $zipError;
+  my $ok = eval {
+    $tmpfile = createSheetZipTmpFile($zipPath);
+    my $first = shift @names;
+
+    my $ZIP = IO::Compress::Zip->new(
+      $tmpfile,
+      Name   => $first,
       Method => IO::Compress::Zip::ZIP_CM_STORE(),
-    ) or error "500:ZIPエントリの作成に失敗しました。$IO::Compress::Zip::ZipError";
-    print $ZIP isSheetBinaryEntry($name) ? $entries->{$name} : encode('UTF-8', $entries->{$name});
+    ) or do { $zipError = "500:ZIPファイルの作成に失敗しました。$IO::Compress::Zip::ZipError"; die; };
+    print $ZIP isSheetBinaryEntry($first) ? $entries->{$first} : encode('UTF-8', $entries->{$first});
+    foreach my $name (@names){
+      $ZIP->newStream(
+        Name   => $name,
+        Method => IO::Compress::Zip::ZIP_CM_STORE(),
+      ) or do { $zipError = "500:ZIPエントリの作成に失敗しました。$IO::Compress::Zip::ZipError"; die; };
+      print $ZIP isSheetBinaryEntry($name) ? $entries->{$name} : encode('UTF-8', $entries->{$name});
+    }
+    close($ZIP) or do { $zipError = "500:ZIPファイルの保存に失敗しました。$IO::Compress::Zip::ZipError"; die; };
+    rename $tmpfile, $zipPath or do { $zipError = "500:ZIPファイルの差し替えに失敗しました。"; die; };
+    1;
+  };
+  if(!$ok){
+    my $message = $zipError || $@ || '500:ZIPファイルの保存に失敗しました。';
+    unlink $tmpfile if $tmpfile && -f $tmpfile;
+    error $message;
   }
-  close($ZIP) or error "500:ZIPファイルの保存に失敗しました。$IO::Compress::Zip::ZipError";
-  rename $tmpfile, $zipPath or error "500:ZIPファイルの差し替えに失敗しました。";
 }
+
 sub readSheetZipEntries {
   my $zipPath = shift;
   my %entries;
