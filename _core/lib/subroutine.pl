@@ -339,14 +339,23 @@ sub cleanupSheetLegacyDir {
   }
   rmdir $legacyDir;
 }
-sub saveSheetArchive {
-  my ($dir, $file, $entries) = @_;
+sub updateSheetArchive {
+  my ($dir, $file, $code) = @_;
   my $zipPath = sheetZipPath($dir, $file);
-  withLock($zipPath, sub {
-    my %current = readSheetZipEntries($zipPath);
-    foreach my $name (keys %{$entries}){ $current{$name} = $entries->{$name}; }
+  my %current = readSheetZipEntries($zipPath);
+  my $changed = $code->(\%current);
+  if($changed){
     writeSheetZip($zipPath, \%current);
     cleanupSheetLegacyDir($dir, $file, \%current);
+  }
+  return $changed;
+}
+sub saveSheetArchive {
+  my ($dir, $file, $entries) = @_;
+  updateSheetArchive($dir, $file, sub {
+    my $current = shift;
+    foreach my $name (keys %{$entries}){ $current->{$name} = $entries->{$name}; }
+    return 1;
   });
 }
 sub updateSheetFile {
@@ -369,14 +378,13 @@ sub deleteSheetFile {
   my $zipPath = sheetZipPath($dir, $file);
   my $legacyDeleted = unlink sheetFilePath($dir, $file, $name);
   if(-f $zipPath){
-    my $deleted;
-    withLock($zipPath, sub {
-      my %current = readSheetZipEntries($zipPath);
-      $deleted = exists $current{$name};
-      delete $current{$name};
-      writeSheetZip($zipPath, \%current) if $deleted;
+    my $zipDeleted = updateSheetArchive($dir, $file, sub {
+      my $current = shift;
+      return 0 if !exists $current->{$name};
+      delete $current->{$name};
+      return 1;
     });
-    return $deleted || $legacyDeleted;
+    return $zipDeleted || $legacyDeleted;
   }
   return $legacyDeleted;
 }
