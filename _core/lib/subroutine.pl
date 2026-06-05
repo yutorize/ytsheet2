@@ -312,7 +312,8 @@ sub sheetZipTmpDir {
   }
   my $tmpDir = "${tmpRoot}/.tmp";
   if(!-d $tmpDir){
-    mkdir $tmpDir or error "500:ZIP一時ディレクトリの作成に失敗しました。";
+    mkdir $tmpDir or -d $tmpDir
+      or error "500:ZIP一時ディレクトリの作成に失敗しました。$!";
   }
   return $tmpDir;
 }
@@ -320,14 +321,16 @@ sub createSheetZipTmpFile {
   my $zipPath = shift;
   my $tmpDir = sheetZipTmpDir($zipPath);
   my $tmpfile;
+  my $lastError;
   foreach (1 .. 100) {
     $tmpfile = "$tmpDir/tmp_zip_$::in{mode}$::in{type}_".randomId(16);
     if(sysopen(my $TMP, $tmpfile, O_WRONLY | O_EXCL | O_CREAT)){
       close($TMP);
       return $tmpfile;
     }
+    $lastError = "$!";
   }
-  error "500:ZIP一時ファイルの作成に失敗しました。";
+  error "500:ZIP一時ファイルの作成に失敗しました。$lastError";
 }
 sub writeSheetZip {
   my ($zipPath, $entries) = @_;
