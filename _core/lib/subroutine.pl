@@ -339,7 +339,7 @@ sub cleanupSheetLegacyDir {
   }
   rmdir $legacyDir;
 }
-sub updateSheetArchive {
+sub mutateSheetArchive {
   my ($dir, $file, $code) = @_;
   my $zipPath = sheetZipPath($dir, $file);
   my %current = readSheetZipEntries($zipPath);
@@ -350,13 +350,21 @@ sub updateSheetArchive {
   }
   return $changed;
 }
-sub saveSheetArchive {
+sub updateSheetArchive {
   my ($dir, $file, $entries) = @_;
-  updateSheetArchive($dir, $file, sub {
+  if(ref $entries eq 'CODE'){
+    return mutateSheetArchive($dir, $file, $entries);
+  }
+  $entries ||= {};
+  return mutateSheetArchive($dir, $file, sub {
     my $current = shift;
     foreach my $name (keys %{$entries}){ $current->{$name} = $entries->{$name}; }
     return 1;
   });
+}
+sub saveSheetArchive {
+  my ($dir, $file, $entries) = @_;
+  updateSheetArchive($dir, $file, $entries);
 }
 sub updateSheetFile {
   my ($dir, $file, $name, $content) = @_;
@@ -378,7 +386,7 @@ sub deleteSheetFile {
   my $zipPath = sheetZipPath($dir, $file);
   my $legacyDeleted = unlink sheetFilePath($dir, $file, $name);
   if(-f $zipPath){
-    my $zipDeleted = updateSheetArchive($dir, $file, sub {
+    my $zipDeleted = mutateSheetArchive($dir, $file, sub {
       my $current = shift;
       return 0 if !exists $current->{$name};
       delete $current->{$name};
