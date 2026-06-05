@@ -197,8 +197,26 @@ sub sheetFilePath {
 }
 sub sheetFileExists {
   my ($dir, $file, $name) = @_;
-  return 1 if -f sheetZipPath($dir, $file);
+  my $zipPath = sheetZipPath($dir, $file);
+  return 1 if zipMemberExists($zipPath, $name);
   return -f sheetFilePath($dir, $file, $name);
+}
+sub zipMemberExists {
+  my ($zipPath, $member) = @_;
+  return 0 if !-f $zipPath;
+
+  my $ZIP = IO::Uncompress::Unzip->new($zipPath)
+    or error "500:ZIPファイルのオープンに失敗しました。$IO::Uncompress::Unzip::UnzipError";
+  while (1) {
+    my $header = $ZIP->getHeaderInfo();
+    if($header && $header->{Name} eq $member){
+      close($ZIP);
+      return 1;
+    }
+    last unless $ZIP->nextStream();
+  }
+  close($ZIP);
+  return 0;
 }
 sub isSheetBinaryEntry {
   my $name = shift;
@@ -289,6 +307,10 @@ sub writeSheetZip {
   my ($zipPath, $entries) = @_;
   my $tmpfile = dirname($zipPath)."/tmp_zip_$::in{mode}$::in{type}_".randomId(16);
   my @names = sort keys %{$entries};
+  if(!@names){
+    unlink $zipPath;
+    return;
+  }
   my $first = shift @names;
 
   my $ZIP = IO::Compress::Zip->new(

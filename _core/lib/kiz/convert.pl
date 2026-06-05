@@ -22,7 +22,9 @@ sub loadPartnerData {
     }
     if($pc{image}){
       $pc{imageURL} = "./?id=$id&mode=image&cache=$pc{imageUpdate}";
-      $pc{imagePath} = "${set::char_dir}${file}/image.$pc{image}";
+      my $imagePath = "${set::char_dir}${file}/image.$pc{image}";
+      $pc{imagePath} = $imagePath if -f $imagePath;
+      $pc{imageData} = readSheetFileBinary($set::char_dir, $file, "image.$pc{image}");
     }
     $pc{convertSource} = '同じゆとシートⅡ';
     return %pc;

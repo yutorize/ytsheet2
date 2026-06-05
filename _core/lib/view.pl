@@ -246,7 +246,7 @@ sub setupPartnerDataCommon {
   foreach my $num (1 .. $OPT{max}){
     next if !$pc->{"p${num}_imageURL"};
     $pc->{"p${num}_imageSrc"} = $pc->{"p${num}_imageURL"};
-    $pc->{images} .= "'p${num}': \"".($pc->{modeDownload} ? urlToBase64($pc->{"p${num}_imagePath"}) : $pc->{"p${num}_imageURL"})."\", ";
+    $pc->{images} .= "'p${num}': \"".($pc->{modeDownload} ? partnerImageToBase64($pc, $num) : $pc->{"p${num}_imageURL"})."\", ";
     if($pc->{"p${num}_imageFit"} eq 'percentY'){
       $pc->{"p${num}_imageFit"} = 'auto '.$pc->{"p${num}_imagePercent"}.'%';
     }
@@ -602,6 +602,14 @@ sub sheetImageToBase64 {
   my $binary = readSheetFileBinary($dir, $file, "image.$ext");
   return binaryToImageBase64($binary, $ext) if defined $binary;
   return urlToBase64("${dir}${file}/image.$ext", $ext);
+}
+sub partnerImageToBase64 {
+  my ($pc, $num) = @_;
+  my $ext = $pc->{"p${num}_image"};
+  my $binary = $pc->{"p${num}_imageData"};
+  return binaryToImageBase64($binary, $ext) if defined $binary;
+  return urlToBase64($pc->{"p${num}_imagePath"}, $ext) if $pc->{"p${num}_imagePath"};
+  return $pc->{"p${num}_imageURL"};
 }
 sub urlToBase64 {
   my $url = shift;
