@@ -25,22 +25,11 @@ if($id){
   my $dir = $set::char_dir;
 
   my $datatype = ($::in{log}) ? 'logs' : 'data';
-  my $hit = 0;
-  open my $IN, '<', "${dir}${file}/${datatype}.cgi" or error('404:データがありません');
-  while (<$IN>){
-    if($datatype eq 'logs'){
-      if (index($_, "=") == 0){
-        if (index($_, "=$::in{log}=") == 0){ $hit = 1; next; }
-        if ($hit){ last; }
-      }
-      if (!$hit) { next; }
-    }
+  foreach (readSheetRecordLines $dir, $file, $datatype, $::in{log}){
     chomp $_;
     my ($key, $value) = split(/<>/, $_, 2);
     $pc{$key} = $value;
   }
-  close($IN);
-  if($datatype eq 'logs' && !$hit){ error("404:過去ログ（$::in{log}）が見つかりません。"); }
   
   if($pc{forbidden}){
     my $LOGIN_ID = check;
