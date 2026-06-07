@@ -329,9 +329,10 @@ foreach my $set_url (split ',',$pc{schoolItemList}){
     } );
   }
   else {
-    my $error = "データ取得失敗".($item{error} ? "<br><small>($item{error})</small>" : "");
+    my $error = ($item{_error} ? qq|<span class="small">$item{_error}</span>| : "");
     push(@items, {
-      "NAME" => "<a href=\"$set_url\" target=\"_blank\" class=\"failed\">$error</a>",
+      NAME => qq|<a href="$set_url" target="_blank" class="failed">データ取得失敗</a>|,
+      SUMMARY => $error,
     });
     next;
   }

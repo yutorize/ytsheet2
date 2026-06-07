@@ -470,37 +470,47 @@ body {
   border-width: 2px 0px 1px;
   border-style: solid;
   border-color: var(--box-outside-border-color, inherit);
-}
-.partner .partner-name h1 {
-  padding-left: .2em;
-  font-size: 1.5rem;
-  font-family: var(--base-font-family-min);
-  text-shadow: var(--bg-color) 0px 0px .5em,
-    var(--bg-color)  .1rem .1rem, var(--bg-color) -.1rem -.1rem,
-    var(--bg-color) -.1rem .1rem, var(--bg-color)  .1rem -.1rem,
-    var(--bg-color)  .0rem .1rem, var(--bg-color)  .0rem -.1rem,
-    var(--bg-color) -.1rem .0rem, var(--bg-color)  .1rem  .0rem;
-  & a {
-    font-size: 1.8rem;
+
+  > h1 {
+    padding-left: .2em;
+    font-size: 1.5rem;
+    font-family: var(--base-font-family-min);
+    text-shadow: var(--bg-color) 0px 0px .5em,
+      var(--bg-color)  .1rem .1rem, var(--bg-color) -.1rem -.1rem,
+      var(--bg-color) -.1rem .1rem, var(--bg-color)  .1rem -.1rem,
+      var(--bg-color)  .0rem .1rem, var(--bg-color)  .0rem -.1rem,
+      var(--bg-color) -.1rem .0rem, var(--bg-color)  .1rem  .0rem;
+    & a {
+      font-size: 1.8rem;
+    }
   }
-}
-.partner .partner-name dl {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: end;
-  margin: .2em .2em .2em auto;
-  line-height: 1;
-  align-self: end;
-  & dt {
-    font-size: 78%;
+
+  > dl {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    margin: .2em .2em .2em auto;
+    line-height: 1;
+    align-self: end;
+    & dt {
+      font-size: 78%;
+    }
+    & dt::after {
+      content: ":";
+    }
+    & dd {
+      font-size: 86%;
+      text-align: right;
+      flex-grow: 1;
+    }
   }
-  & dt::after {
-    content: ":";
-  }
-  & dd {
-    font-size: 86%;
-    text-align: right;
-    flex-grow: 1;
+
+  p.error{
+    align-content: end;
+    margin-left: auto;
+    padding: .2em .3em;
+    line-height: 1;
+    font-size: 85%;
   }
 }
 .partner-personal {

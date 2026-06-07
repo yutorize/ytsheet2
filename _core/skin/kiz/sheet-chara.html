@@ -275,8 +275,13 @@
           </TMPL_IF>
         
           <div class="partner-name">
-            <h1><TMPL_VAR head_p1>:<TMPL_IF partner1Url><a href="<TMPL_VAR partner1Url>"><TMPL_VAR partner1Name></a><TMPL_ELSE><TMPL_VAR partner1Name></TMPL_IF></h1>
-            <dl class="partner-playername"><dt>プレイヤー</dt><dd><TMPL_VAR p1_playerName></dd></dl>
+            <TMPL_UNLESS p1_error>
+              <h1><TMPL_VAR head_p1>:<TMPL_IF partner1Url><a href="<TMPL_VAR partner1Url>"><TMPL_VAR partner1Name></a><TMPL_ELSE><TMPL_VAR partner1Name></TMPL_IF></h1>
+              <dl class="partner-playername"><dt>プレイヤー<dd><TMPL_VAR p1_playerName></dl>
+            <TMPL_ELSE>
+              <h1><a href="<TMPL_VAR partner1Url>"><span class="material-symbols-outlined">warning</span>パートナーが見つかりません</a></h1>
+              <p class="error"><TMPL_VAR p1_error></p>
+            </TMPL_UNLESS>
           </div>
           <div class="box-union partner-personal">
             <dl class="box"><dt>年齢<dd><TMPL_VAR partner1Age></dl>
@@ -309,8 +314,13 @@
           </TMPL_IF>
         
           <div class="partner-name">
-            <h1><TMPL_VAR head_p2>:<TMPL_IF partner2Url><a href="<TMPL_VAR partner2Url>"><TMPL_VAR partner2Name></a><TMPL_ELSE><TMPL_VAR partner2Name></TMPL_IF></h1>
-            <dl class="partner-playername"><dt>プレイヤー<dd><TMPL_VAR p2_playerName></dl>
+            <TMPL_UNLESS p2_error>
+              <h1><TMPL_VAR head_p2>:<TMPL_IF partner2Url><a href="<TMPL_VAR partner2Url>"><TMPL_VAR partner2Name></a><TMPL_ELSE><TMPL_VAR partner2Name></TMPL_IF></h1>
+              <dl class="partner-playername"><dt>プレイヤー<dd><TMPL_VAR p2_playerName></dl>
+            <TMPL_ELSE>
+              <h1><a href="<TMPL_VAR partner2Url>"><span class="material-symbols-outlined">warning</span>パートナーが見つかりません</a></h1>
+              <p class="error"><TMPL_VAR p2_error></p>
+            </TMPL_UNLESS>
           </div>
           <div class="box-union partner-personal">
             <dl class="box"><dt>年齢<dd><TMPL_VAR partner2Age></dl>
