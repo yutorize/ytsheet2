@@ -17,6 +17,7 @@ my ($file, $type, $user) = authSheet($::in{id},$::in{pass},$LOGIN_ID);
 changeFileByType($type);
 my $dataDir = $set::char_dir;
 if(!$file){ error('404:データが見つかりません。'); }
+my $sheetBaseDir = $user ? "${dataDir}_${user}/" : "${dataDir}anonymous/";
 my $fileDir = $user ? "_${user}/${file}" : "anonymous/${file}";
 
 ## キャラシ削除
@@ -42,18 +43,29 @@ if($mode eq 'delete'){
   });
 
   # 個別ファイル
-  if (unlink "${dataDir}${fileDir}/image.png") { $message .= '画像(png)を削除しました。<br>'; }
-  if (unlink "${dataDir}${fileDir}/image.jpg") { $message .= '画像(jpg)を削除しました。<br>'; }
-  if (unlink "${dataDir}${fileDir}/image.gif") { $message .= '画像(gif)を削除しました。<br>'; }
-  if (unlink "${dataDir}${fileDir}/image.webp"){ $message .= '画像(webp)を削除しました。<br>'; }
+  if (deleteSheetFile($sheetBaseDir, $file, 'image.png')) { $message .= '画像(png)を削除しました。<br>'; }
+  if (deleteSheetFile($sheetBaseDir, $file, 'image.jpg')) { $message .= '画像(jpg)を削除しました。<br>'; }
+  if (deleteSheetFile($sheetBaseDir, $file, 'image.gif')) { $message .= '画像(gif)を削除しました。<br>'; }
+  if (deleteSheetFile($sheetBaseDir, $file, 'image.webp')){ $message .= '画像(webp)を削除しました。<br>'; }
 
   if($set::del_back){
-    if (unlink "${dataDir}${fileDir}/data.cgi")  { $message .= '最新データを削除しました。<br>'; }
-    if (unlink "${dataDir}${fileDir}/logs.cgi")  { $message .= '過去ログデータを削除しました。<br>'; }
-    if (unlink "${dataDir}${fileDir}/log-list.cgi")  { $message .= '過去ログ一覧を削除しました。<br>'; }
+    if (unlink "${dataDir}${fileDir}.zip")         { $message .= 'シートアーカイブを削除しました。<br>'; }
+    if (unlink "${dataDir}${fileDir}/data.cgi")    { $message .= '最新データを削除しました。<br>'; }
+    if (unlink "${dataDir}${fileDir}/logs.cgi")    { $message .= '過去ログデータを削除しました。<br>'; }
+    if (unlink "${dataDir}${fileDir}/log-list.cgi"){ $message .= '過去ログ一覧を削除しました。<br>'; }
+  }
+  elsif(-f "${dataDir}${fileDir}.zip") {
+    if (!-d "${dataDir}deleted"){ mkdir "${dataDir}deleted" or error("500:削除データのバックアップディレクトリの作成に失敗しました。"); }
+    if(rename("${dataDir}${fileDir}.zip", "${dataDir}deleted/${user}_${file}.zip")){
+      $message .= 'シートアーカイブを削除バックアップへ移動しました。<br>';
+    }
   }
   
-  if(rmdir "${dataDir}${fileDir}"){ $message .= 'ディレクトリを削除しました。<br>シートを完全に削除しました。<br>'; }
+  if(rmdir "${dataDir}${fileDir}"){
+    $message .= $set::del_back
+      ? 'ディレクトリを削除しました。<br>シートを完全に削除しました。<br>'
+      : 'ディレクトリを削除しました。<br>シートを削除しました。<br>';
+  }
   else {
     if (!-d "${dataDir}deleted"){ mkdir "${dataDir}deleted" or error("500:削除データのバックアップディレクトリの作成に失敗しました。"); }
     if(rename("${dataDir}${fileDir}", "${dataDir}deleted/${user}_${file}")){
@@ -73,38 +85,25 @@ if($mode eq 'delete'){
 elsif($mode eq 'img-delete'){
   # 画像差し替え
   if($set::beheaded){
-    use File::Copy 'copy';
-    if (unlink "${dataDir}${fileDir}/image.png") {
-      $message .= 'キャラクター画像を削除しました。<br>';
-      if(copy "${set::beheaded}.png", "${dataDir}${fileDir}/image.png"){
-        $message .= '差し替え画像を設定しました。<br>';
-      }
-    }
-    if (unlink "${dataDir}${fileDir}/image.jpg") {
-      $message .= 'キャラクター画像を削除しました。<br>';
-      if(copy "${set::beheaded}.jpg", "${dataDir}${fileDir}/image.jpg"){
-        $message .= '差し替え画像を設定しました。<br>';
-      }
-    }
-    if (unlink "${dataDir}${fileDir}/image.gif") {
-      $message .= 'キャラクター画像を削除しました。<br>';
-      if(copy "${set::beheaded}.gif", "${dataDir}${fileDir}/image.gif"){
-        $message .= '差し替え画像を設定しました。<br>';
-      }
-    }
-    if (unlink "${dataDir}${fileDir}/image.webp") {
-      $message .= 'キャラクター画像を削除しました。<br>';
-      if(copy "${set::beheaded}.webp", "${dataDir}${fileDir}/image.webp"){
-        $message .= '差し替え画像を設定しました。<br>';
+    foreach my $ext (qw(png jpg gif webp)){
+      if (deleteSheetFile($sheetBaseDir, $file, "image.$ext")) {
+        $message .= 'キャラクター画像を削除しました。<br>';
+        if(open(my $BEHEADED, '<', "${set::beheaded}.$ext")){
+          binmode $BEHEADED;
+          my $image = do { local $/; <$BEHEADED> };
+          close($BEHEADED);
+          updateSheetFile($sheetBaseDir, $file, "image.$ext", $image);
+          $message .= '差し替え画像を設定しました。<br>';
+        }
       }
     }
   }
   # 消すだけ
   else {
-    if (unlink "${dataDir}${fileDir}/image.png") { $message .= 'キャラクター画像を削除しました。<br>'; }
-    if (unlink "${dataDir}${fileDir}/image.jpg") { $message .= 'キャラクター画像を削除しました。<br>'; }
-    if (unlink "${dataDir}${fileDir}/image.gif") { $message .= 'キャラクター画像を削除しました。<br>'; }
-    if (unlink "${dataDir}${fileDir}/image.webp") { $message .= 'キャラクター画像を削除しました。<br>'; }
+    if (deleteSheetFile($sheetBaseDir, $file, 'image.png')) { $message .= 'キャラクター画像を削除しました。<br>'; }
+    if (deleteSheetFile($sheetBaseDir, $file, 'image.jpg')) { $message .= 'キャラクター画像を削除しました。<br>'; }
+    if (deleteSheetFile($sheetBaseDir, $file, 'image.gif')) { $message .= 'キャラクター画像を削除しました。<br>'; }
+    if (deleteSheetFile($sheetBaseDir, $file, 'image.webp')){ $message .= 'キャラクター画像を削除しました。<br>'; }
   }
   $message .= '<a href="./?id='.$::in{id}.'">キャラクターシートを確認</a>';
   

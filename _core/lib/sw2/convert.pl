@@ -13,16 +13,19 @@ sub loadItemData {
   ## 同じゆとシートⅡ
   my $self = CGI->new()->url;
   if($set_url =~ m"^$self\?id=(.+?)(?:$|&)"){
+    my %pc;
+
     my $id = $1;
     my ($file, $type, $author) = findSheet($id);
-    my %pc;
-    open my $IN, '<', "$set::lib_type{i}{dataDir}${file}/data.cgi" or return;
-    while (<$IN>){
+    unless($file) { $pc{error} = "存在しないシート"; return %pc; }
+
+    my @lines = readSheetFileLines($set::lib_type{i}{dataDir}, $file, 'data.cgi');
+    unless(@lines){ $pc{error} = "開けないデータ"; return %pc; }
+    foreach (@lines){
       chomp;
       my ($key, $value) = split(/<>/, $_, 2);
       $pc{$key} = $value;
     }
-    close($IN);
     $pc{convertSource} = '同じゆとシートⅡ';
     return %pc;
   }
