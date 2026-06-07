@@ -206,6 +206,7 @@ sub normalizeViewTags {
     next if ($OPT{skipRe} && $key =~ $OPT{skipRe});
     next if $key =~ /URL$/i; # URLは置換しない
     next if $key =~ /^image/; # 画像関連は置換しない
+    next if $key =~ /^(?:p[0-9]+)?_error$/; # エラーメッセージは置換しない
 
     if($multiline{$key} || ($OPT{multilineRe} && $key =~ $OPT{multilineRe})){
       $pc->{$key} = unescapeTagsLines($pc->{$key});
@@ -230,12 +231,11 @@ sub setupPartnerDataCommon {
     next if !$pc->{$urlKey} || !$pc->{$autoKey};
     my %pr = loadPartnerData($pc->{$urlKey});
 
-    if(!$pr{error} && !$pr{convertSource}){
-      $pr{error} = "データの読み込みに失敗しました。";
+    if(!$pr{_error} && !$pr{convertSource}){
+      $pr{_error} = "データの読み込みに失敗しました。";
     }
-    if($pr{error}){
-      my $error = "パートナーが見つかりません".($pr{error} ? " <small>($pr{error})</small>" : "");
-      $pc->{"partner${num}Name"} = qq|<span class="very-small" style="font-weight:normal;font-family:sans-serif;"><span class="material-symbols-outlined">warning</span>$error</span>|;
+    if($pr{_error}){
+      $pc->{"p${num}_error"} = $pr{_error};
       next;
     }
 

@@ -279,8 +279,13 @@
           </TMPL_IF>
         
           <div class="partner-name">
-            <h1><TMPL_VAR head_p1>:<TMPL_IF partner1Url><a href="<TMPL_VAR partner1Url>"><TMPL_VAR partner1Name></a><TMPL_ELSE><TMPL_VAR partner1Name></TMPL_IF></h1>
-            <dl class="partner-playername"><dt>プレイヤー<dd><TMPL_VAR p1_playerName></dl>
+            <TMPL_UNLESS p1_error>
+              <h1><TMPL_VAR head_p1>:<TMPL_IF partner1Url><a href="<TMPL_VAR partner1Url>"><TMPL_VAR partner1Name></a><TMPL_ELSE><TMPL_VAR partner1Name></TMPL_IF></h1>
+              <dl class="partner-playername"><dt>プレイヤー<dd><TMPL_VAR p1_playerName></dl>
+            <TMPL_ELSE>
+              <h1><a href="<TMPL_VAR partner1Url>"><span class="material-symbols-outlined">warning</span>パートナーが見つかりません</a></h1>
+              <p class="error"><TMPL_VAR p1_error></p>
+            </TMPL_UNLESS>
           </div>
           <div class="box-union partner-personal">
             <dl class="box"><dt><TMPL_IF typeH>起源／流儀</TMPL_IF><TMPL_IF typeV>信念／職能</TMPL_IF><dd><TMPL_VAR partner1Factor></dl>
@@ -303,17 +308,22 @@
         <TMPL_IF partner2On><!--連血鬼 -->
         <div class="partner" id="partner2">
           <TMPL_IF p2_image> 
-          <div class="image" style="background-image: url(<TMPL_VAR p2_imageSrc>);background-size:<TMPL_VAR p2_imageFit>;background-position:<TMPL_VAR p2_imagePositionX>% <TMPL_VAR p2_imagePositionY>%;">
-          <div onclick="popImage('p2')"><p class="words" style="<TMPL_VAR p2_wordsX><TMPL_VAR p2_wordsY>"><TMPL_VAR p2_words></p></div>
-          <p class="image-copyright"><TMPL_VAR p2_imageCopyright></p>
+            <div class="image" style="background-image: url(<TMPL_VAR p2_imageSrc>);background-size:<TMPL_VAR p2_imageFit>;background-position:<TMPL_VAR p2_imagePositionX>% <TMPL_VAR p2_imagePositionY>%;">
+            <div onclick="popImage('p2')"><p class="words" style="<TMPL_VAR p2_wordsX><TMPL_VAR p2_wordsY>"><TMPL_VAR p2_words></p></div>
+            <p class="image-copyright"><TMPL_VAR p2_imageCopyright></p>
           </div>
           <TMPL_ELSE>
           <div class="image-none" data-title="BLP"><p class="words" style="<TMPL_VAR p2_wordsX><TMPL_VAR p2_wordsY>"><TMPL_VAR p2_words></p></div>
           </TMPL_IF>
         
           <div class="partner-name">
-            <h1><TMPL_VAR head_p2>:<TMPL_IF partner2Url><a href="<TMPL_VAR partner2Url>"><TMPL_VAR partner2Name></a><TMPL_ELSE><TMPL_VAR partner2Name></TMPL_IF></h1>
-            <dl class="partner-playername"><dt>プレイヤー<dd><TMPL_VAR p2_playerName></dl>
+            <TMPL_UNLESS p2_error>
+              <h1><TMPL_VAR head_p2>:<TMPL_IF partner2Url><a href="<TMPL_VAR partner2Url>"><TMPL_VAR partner2Name></a><TMPL_ELSE><TMPL_VAR partner2Name></TMPL_IF></h1>
+              <dl class="partner-playername"><dt>プレイヤー<dd><TMPL_VAR p2_playerName></dl>
+            <TMPL_ELSE>
+              <h1><a href="<TMPL_VAR partner2Url>"><span class="material-symbols-outlined">warning</span>パートナーが見つかりません</a></h1>
+              <p class="error"><TMPL_VAR p2_error></p>
+            </TMPL_UNLESS>
           </div>
           <div class="box-union partner-personal">
             <dl class="box"><dt>起源／流儀<dd><TMPL_VAR partner2Factor></dl>

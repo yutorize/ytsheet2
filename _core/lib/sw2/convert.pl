@@ -8,41 +8,12 @@ use JSON::PP;
 require $set::data_class;
 
 sub loadItemData {
-  my $set_url = shift;
-  my $file;
-  ## 同じゆとシートⅡ
-  my $self = CGI->new()->url;
-  if($set_url =~ m"^$self\?id=(.+?)(?:$|&)"){
-    my %pc;
-
-    my $id = $1;
-    my ($file, $type, $author) = findSheet($id);
-    unless($file) { $pc{error} = "存在しないシート"; return %pc; }
-
-    my @lines = readSheetFileLines($set::lib_type{i}{dataDir}, $file, 'data.cgi');
-    unless(@lines){ $pc{error} = "開けないデータ"; return %pc; }
-    foreach (@lines){
-      chomp;
-      my ($key, $value) = split(/<>/, $_, 2);
-      $pc{$key} = $value;
-    }
-    $pc{convertSource} = '同じゆとシートⅡ';
-    return %pc;
-  }
-  ## 他のゆとシートⅡ
-  {
-    my %pc = fetchJson($set_url.'&mode=json');
-    $_ = escapeThanSign($_) foreach values %pc;
-    if($pc{result} eq 'OK'){
-      our $base_url = $set_url;
-      $base_url =~ s|/[^/]+?$|/|;
-      $pc{convertSource} = '別のゆとシートⅡ';
-      return %pc;
-    }
-    else {
-      return;
-    }
-  }
+  return importSheetData(
+    shift,
+    softError => 1,
+    dataDir => $set::lib_type{i}{dataDir},
+    skipPermission => 1,
+  );
 }
 
 ### キャラクター保管所 --------------------------------------------------
