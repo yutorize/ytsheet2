@@ -6,55 +6,14 @@ use open ":utf8";
 use JSON::PP;
 
 sub loadPartnerData {
-  my $set_url = shift;
-  my $file;
-  
-  ## キャラクターシート倉庫
-  if($set_url =~ m"^https?://character-sheets\.appspot\.com/bloodpath/edit.html"){
-    $set_url =~ s/edit\.html\?/display\?ajax=1&/;
-    my %in = fetchJson($set_url);
-    $in{'image_url'} = $set_url =~ s/display\?ajax=1&/image?/r; 
-    return convertSoukoToYtsheet(\%in);
-  }
-  ## 同じゆとシートⅡ
-  my $self = CGI->new()->url;
-  if($set_url =~ m"^$self\?id=(.+?)(?:$|&)"){
-    my %pc;
-
-    my $id = $1;
-    my ($file, $type, $author) = findSheet($id);
-    unless($file) { $pc{error} = "存在しないシート"; return %pc; }
-
-    my @lines = readSheetFileLines($set::char_dir, $file, 'data.cgi');
-    unless(@lines){ $pc{error} = "開けないデータ"; return %pc; }
-    foreach (@lines){
-      chomp;
-      my ($key, $value) = split(/<>/, $_, 2);
-      $pc{$key} = $value;
-    }
-    if($pc{image}){
-      $pc{imageURL} = "./?id=$id&mode=image&cache=$pc{imageUpdate}";
-      my $imagePath = "${set::char_dir}${file}/image.$pc{image}";
-      $pc{imagePath} = $imagePath if -f $imagePath;
-      $pc{imageData} = readSheetFileBinary($set::char_dir, $file, "image.$pc{image}");
-    }
-    $pc{convertSource} = '同じゆとシートⅡ';
-    return %pc;
-  }
-  ## 他のゆとシートⅡ
-  {
-    my %pc = fetchJson($set_url.'&mode=json');
-    $_ = escapeThanSign($_) foreach values %pc;
-    if($pc{result} eq 'OK'){
-      our $base_url = $set_url;
-      $base_url =~ s|/[^/]+?$|/|;
-      $pc{convertSource} = '別のゆとシートⅡ';
-      return %pc;
-    }
-    else {
-      return;
-    }
-  }
+  return importSheetData(
+    shift,
+    softError => 1,
+    includeImage => 1,
+    imageUrlBase => './',
+    skipPermission => 1,
+    soukoPath => 'bloodpath',
+  );
 }
 
 ### キャラクターシート倉庫 --------------------------------------------------

@@ -121,7 +121,7 @@ sub withLock {
     or error "500:ファイルのロックに失敗しました。";
 
   $code->();
-  
+
   close($LOCK);
 }
 sub overwriteFile {
@@ -494,7 +494,7 @@ sub getProtectType {
     if   ($line =~ /^protect<>(.*)\n/)  { $protect = $1; }
     elsif($line =~ /^forbidden<>(.*)\n/){ $forbidden = $1; }
     elsif($line =~ /^hide<>(.*)\n/){ $hide = $1; }
-    
+
     if($protect && $forbidden && $hide){ last; }
   }
   return ($protect, $forbidden, $hide);
@@ -572,7 +572,7 @@ sub logIn {
     print &setCookie($set::cookie,$_[0],$key,'+365d');
   }
   else { error('ログインできませんでした。'); }
-  
+
   if($set::url_home){ print "Location: $set::url_home\n\n"; }
   else { print "Location: ./\n\n"; }
 }
@@ -632,7 +632,7 @@ sub logOut {
   truncate($FH, tell($FH));
   close($FH);
   print &setCookie($set::cookie,$id,$key,'Thu, 1-Jan-1970 00:00:00 GMT');
-  
+
   if($set::url_home){ print "Location: $set::url_home\n\n"; }
   else { print "Location: ./\n\n"; }
 }
@@ -697,7 +697,7 @@ sub checkToken {
   }
   truncate($FH, tell($FH));
   close($FH);
-  
+
   return $flag;
 }
 ### メール送信 --------------------------------------------------
@@ -735,7 +735,7 @@ sub uri_escape_utf8 {
 sub ceil {
   my $num = shift;
   my $val = 0;
- 
+
   $val = 1 if($num > 0 and $num != int($num));
   return int($num + $val);
 }
@@ -843,11 +843,11 @@ sub unescapeTags {
   $text =~ s/&amp;/&/g;
   $text =~ s/&quot;/"/g;
   $text =~ s/&lt;br&gt;/\n/gi;
-  
+
   #$text =~ s/\{\{([0-9\+\-\*\/\%\(\) ]+?)\}\}/s_eval($1);/eg;
-  
+
   $text =~ s#(―{2,})#<span class="d-dash">$1</span>#g;
-  
+
   $text =~ s{©}{<i class="s-icon copyright">©</i>}gi;
 
   if($set::game eq 'sw2'){
@@ -880,14 +880,14 @@ sub unescapeTags {
     $text =~ s|\[[⤵↓]\]|<i class="s-icon calm">⤵</i>|g;
     $text =~ s|\[♡\]|<i class="s-icon heart">♡</i>|g;
   }
-  
-  
+
+
   our @linkPlaceholders;
   $text =~ s/((?:making|能力値作成(?:履歴)?)#([0-9]+(?:-[0-9]+)?))/ &generateLinkTag("?&mode=making&num=$2",$1) /egi if($set::game eq 'sw2'); # メイキングリンク
   $text =~ s/\[\[(.+?)&gt;((?:(?!<br>)[^"])+?)\]\]/ &generateLinkTag($2,$1) /egi; # リンク
   $text =~ s/\[(.+?)#([a-zA-Z0-9\-]+?)\]/ &generateLinkTag("?id=$2",$1) /egi; # シート内リンク
   $text =~ s/(https?:\/\/[^\s\<]+)/ &generateLinkTag($1,$1) /egi; # 自動リンク
-  
+
   $text =~ s/'''(.+?)'''/<span class="oblique">$1<\/span>/gi; # 斜体
   $text =~ s/''(.+?)''/<b>$1<\/b>/gi;  # 太字
   $text =~ s/%%(.+?)%%/<span class="strike">$1<\/span>/gi;  # 打ち消し線
@@ -897,14 +897,14 @@ sub unescapeTags {
   $text =~ s/《《(.+?)》》/<span class="text-em">$1<\/span>/gi; # カクヨム式傍点
 
   $text =~ s/\x{FFFC}(\d+)\x{FFFC}/$linkPlaceholders[$1-1]/g; # リンク後処理
-  
+
   $text =~ s/\n/<br>/gi;
 
   if($set::game eq 'sw2'){
   }
-  
+
   return $text;
-  
+
   sub generateLinkTag {
     my $url = shift;
     my $txt = shift;
@@ -919,15 +919,15 @@ sub unescapeTags {
 sub unescapeTagsLines {
   my $text = shift;
   $text =~ s/&lt;br&gt;/\n/gi;
-  
+
   $text =~ s|^//(.*?)\n?$||gm; # コメントアウト
-  
+
   $text =~ s/\\\\\n/<br>/gi;
-  
+
   $text =~ s/^LEFT:/<\/p><p class="left">/gim;
   $text =~ s/^CENTER:/<\/p><p class="center">/gim;
   $text =~ s/^RIGHT:/<\/p><p class="right">/gim;
-  
+
   my $d_count = 0;
   $d_count += ($text =~ s/^\[(&gt;|[vＶｖ])\]\*\*\*\*(.*?)$/"<\/p><details @{[$1 eq '&gt;' ? '' : 'open']}><summary class=\"header4\">$2<\/summary><div class=\"detail-body\"><p>"/gime);
   $d_count += ($text =~ s/^\[(&gt;|[vＶｖ])\]\*\*\*(.*?)$/"<\/p><details @{[$1 eq '&gt;' ? '' : 'open']}><summary class=\"header3\">$2<\/summary><div class=\"detail-body\"><p>"/gime);
@@ -947,7 +947,7 @@ sub unescapeTagsLines {
   $text =~ s/^\*\*\*(.*?)$/<\/p><h4>$1<\/h4><p>/gim;
   $text =~ s/^\*\*(.*?)$/<\/p><h3>$1<\/h3><p>/gim;
   $text =~ s/^\*(.*?)$/<\/p><h2>$1<\/h2><p>/gim;
-  
+
   $text =~ s/(?:^(?:\|(?:.*?))+\|[hc]?(?:\n|$))+/'<\/p>'.&generateTable($&).'<p>'/egim;
 
   $text =~ s/^\:(.*?)\|(.*?)$/<dt>$1<\/dt><dd>$2<\/dd>/gim;
@@ -960,12 +960,12 @@ sub unescapeTagsLines {
   $text =~ s/(^|<p(?:.*?)>|<hr(?:.*?)>)\n/$1/gi;
   $text =~ s/<p><\/p>//gi;
   $text =~ s/\n/&lt;br&gt;/gi;
-  
+
   while($d_count > 0) {
     $text .= "</div></details>";
     $d_count--;
   }
-  
+
   return $text;
 }
 
@@ -1214,28 +1214,29 @@ sub fetchText {
   require LWP::UserAgent;
 
   my $url = shift;
+  my %OPT = @_;
   my $ua  = LWP::UserAgent->new;
   my $res = $ua->get($url);
   if ($res->is_success) {
     return $res->decoded_content;
   }
-  elsif($::in{url}) {
-    error '400:入力されたURLへのアクセスに失敗しました。URLに誤りがあるか、URL先に問題が発生しています。(STATUS CODE:'.$res->code.')';
-  }
+
+  my $message = '入力されたURLへのアクセスに失敗しました。URLに誤りがあるか、URL先に問題が発生しています。(STATUS CODE:'.$res->code.')';
+  if($OPT{softError}){ return (undef, $message); }
+  else               { error  '400:'.$message; }
 }
 sub fetchJson {
-  my $text = fetchText($_[0]);
+  my $url = shift;
+  my %OPT = @_;
+  my ($text, $message) = fetchText($url, %OPT);
 
   $text = utf8::is_utf8($text) ? encode('utf8', (join '', $text)) : $text;
 
   my $data = eval { decode_json($text) };
   unless($data) {
-    if($::in{url}){
-      error '400:JSONデータが取得できませんでした。URLに誤りがあるか、URL先に問題が発生しています。';
-    }
-    else {
-      $data = {  };
-    }
+    $message //= 'JSONデータが取得できませんでした。URLに誤りがあるか、URL先に問題が発生しています。';
+    if($OPT{softError}){ return (_error => $message); }
+    else               { error  '400:'.$message; }
   }
 
   return %{ $data };
@@ -1244,39 +1245,62 @@ sub fetchJson {
 ### シートデータインポート --------------------------------------------------
 sub importSheetData {
   my $setUrl = shift;
+  my %OPT = @_;
+  my $softError = $OPT{softError};
   my $file;
-  
+
+  my $returnError = sub {
+    my $message = shift;
+    if($softError){
+      $message =~ s/^[0-9]{3}://;
+      return (_error => $message);
+    }
+    error $message;
+  };
+  my $fetchJson = sub {
+    my $url = shift;
+    if($softError){
+      my %result = fetchJson($url, softError => 1);
+      return $returnError->("400:$result{_error}") if $result{_error};
+      return %result;
+    }
+    return fetchJson($url);
+  };
+
   ## キャラクター保管所
   if($setUrl =~ m"(^https?://charasheet\.vampire-blood\.net/m?[a-f0-9]+)"){
     if(defined &convertHokanjoToYtsheet){
-      my %in = fetchJson($1.'.js');
+      my %in = $fetchJson->($1.'.js');
+      return %in if $in{_error};
       return convertHokanjoToYtsheet(\%in);
     }
     else {
-      error "400:このゲームではキャラクター保管所からのコンバートに対応していません。";
+      return $returnError->("400:このゲームではキャラクター保管所からのコンバートに対応していません。");
     }
   }
   ## キャラクターシート倉庫
-  if($setUrl =~ m"^https?://character-sheets\.appspot\.com/[^/]+/edit.html"){
+  my $soukoPath = $OPT{soukoPath} ? quotemeta($OPT{soukoPath}) : '[^/]+';
+  if($setUrl =~ m"^https?://character-sheets\.appspot\.com/${soukoPath}/edit.html"){
     if(defined &convertSoukoToYtsheet){
       $setUrl =~ s/edit\.html\?/display\?ajax=1&/;
-      my %in = fetchJson($setUrl);
+      my %in = $fetchJson->($setUrl);
+      return %in if $in{_error};
       $in{'image_url'} = $setUrl =~ s/display\?ajax=1&/image?/r;
       return convertSoukoToYtsheet(\%in);
     }
     else {
-      error "400:このゲームではキャラクターシート倉庫からのコンバートに対応していません。";
+      return $returnError->("400:このゲームではキャラクターシート倉庫からのコンバートに対応していません。");
     }
   }
   ## 旧ゆとシート
   {
     foreach my $url (keys %set::convert_url){
       if($setUrl =~ s"^${url}data/(.*?).html"$1"){
-        open my $IN, '<', "$set::convert_url{$url}data/${setUrl}.cgi" or error '500:旧ゆとシートのデータが開けませんでした。';
+        open my $IN, '<', "$set::convert_url{$url}data/${setUrl}.cgi" or return $returnError->('500:旧ゆとシートのデータが開けませんでした。');
         my %pc;
         $_ =~ s/^(.+?)<>(.*)\n$/$pc{$1} = $2;/egi while <$IN>;
         close($IN);
-        
+
         return convert1to2(\%pc);
       }
     }
@@ -1287,12 +1311,13 @@ sub importSheetData {
     my $id = $1;
     my ($file, $type, $author) = findSheet($id);
     unless($file){
-      error '404:コンバート元のゆとシートⅡのデータが見つかりませんでした。URLに誤りがあるか、データが削除されている可能性があります。';
+      return $returnError->('404:コンバート元のゆとシートⅡのデータが見つかりませんでした。URLに誤りがあるか、データが削除されている可能性があります。');
     }
     my %pc;
-    my @lines = readSheetFileLines($set::char_dir, $file, 'data.cgi');
+    my $dataDir = $OPT{dataDir} || $type ? $set::lib_type{$type}{dataDir} : $set::char_dir;
+    my @lines = readSheetFileLines($dataDir, $file, 'data.cgi');
     unless(@lines){
-      error '500:コンバート元のゆとシートⅡのデータが開けませんでした。';
+      return $returnError->('500:コンバート元のゆとシートⅡのデータが開けませんでした。');
     }
     foreach (@lines){
       chomp;
@@ -1300,21 +1325,34 @@ sub importSheetData {
       $pc{$key} = $value;
     }
 
-    my $LOGIN_ID = check;
-    unless(
-      (!$pc{forbidden}) ||
-      ($pc{protect} eq 'none') || 
-      ($author && ($author eq $LOGIN_ID || $set::masterid eq $LOGIN_ID))
-    ){
-      error '403:閲覧・編集に制限がかかっており、コンバートできないデータです。';
+    unless($OPT{skipPermission}){
+      my $LOGIN_ID = check;
+      unless(
+        (!$pc{forbidden}) ||
+        ($pc{protect} eq 'none') ||
+        ($author && ($author eq $LOGIN_ID || $set::masterid eq $LOGIN_ID))
+      ){
+        return $returnError->('403:閲覧・編集に制限がかかっており、コンバートできないデータです。');
+      }
     }
-    $pc{imageURL} = $self."?id=$id&mode=image&cache=$pc{imageUpdate}";
+    if($OPT{includeImage} && $pc{image}){
+      $pc{imageURL} = ($OPT{imageUrlBase} || $self)."?id=$id&mode=image&cache=$pc{imageUpdate}";
+      my $imagePath = "${dataDir}${file}/image.$pc{image}";
+      $pc{imagePath} = $imagePath if -f $imagePath;
+      if($::in{mode} eq 'download'){
+        $pc{imageData} = readSheetFileBinary($dataDir, $file, "image.$pc{image}");
+      }
+    }
+    elsif(!$OPT{includeImage} && $pc{image}){
+      $pc{imageURL} = $self."?id=$id&mode=image&cache=$pc{imageUpdate}";
+    }
     $pc{convertSource} = '同じゆとシートⅡ';
     return %pc;
   }
   ## 別のゆとシートⅡ
   {
-    my %pc = fetchJson($setUrl.'&mode=json');
+    my %pc = $fetchJson->($setUrl.'&mode=json');
+    return %pc if $pc{_error};
     $_ = escapeThanSign($_) foreach values %pc;
     if($pc{result} eq 'OK'){
       our $base_url = $setUrl;
@@ -1323,11 +1361,14 @@ sub importSheetData {
       return %pc;
     }
     elsif($pc{result}) {
-      error "400:コンバート元のゆとシートⅡでエラーがありました。<br>> $pc{result}:$pc{message}";
+      return $returnError->("400:コンバート元のゆとシートⅡでエラーがありました。<br>> $pc{result}:$pc{message}");
+    }
+    elsif($pc{_error}) {
+      return %pc;
     }
   }
-  
-  error '400:有効なデータが取得できませんでした。';
+
+  return $returnError->('400:有効なデータが取得できませんでした。');
 }
 
 ### .htaccess作成 --------------------------------------------------
@@ -1383,7 +1424,7 @@ sub logFileUpdate {
   my $lately_term    = 60*60*24;
   my $interval_long  = 60 * ($set::log_interval_long  || 60);
   my $interval_short = 60 * ($set::log_interval_short || 15);
-  
+
   require Time::Local;
 
   my %log_name;
