@@ -190,6 +190,7 @@ delete $pc{registerkey};
 $pc{IP} = $ENV{'REMOTE_ADDR'};
 ### passfile --------------------------------------------------
 if (!-d $set::data_dir){ mkdir $set::data_dir or error("500:データディレクトリ($set::data_dir)の作成に失敗しました。"); }
+ensureHtaccessDenied($set::data_dir);
 if (!-d $dataDir){ mkdir $dataDir or error("500:データディレクトリ($dataDir)の作成に失敗しました。"); }
 my $userDir;
 ## 新規
