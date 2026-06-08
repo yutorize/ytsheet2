@@ -1330,6 +1330,33 @@ sub importSheetData {
   error '400:有効なデータが取得できませんでした。';
 }
 
+### .htaccess作成 --------------------------------------------------
+sub ensureHtaccessDenied {
+  my ($dir) = @_;
+
+  my $path = "$dir/.htaccess";
+  my $content = "Require all denied\n";
+
+  if (-e $path) {
+    open(my $FH, '<', $path) or error "500:Cannot read $path: $!";
+
+    local $/;
+    my $current = <$FH>;
+
+    close($FH);
+
+    return 1 if $current =~ /^\s*Require\s+all\s+denied\s*$/m;
+
+    error "500:$path already exists, but does not contain 'Require all denied'";
+  }
+
+  sysopen(my $FH, $path, O_WRONLY | O_CREAT | O_EXCL, 0644) or error "500:Cannot create $path: $!";
+  print $FH $content;
+  close($FH);
+
+  return 1;
+}
+
 ### HTMLテンプレート出力 --------------------------------------------------
 sub outputTemplate {
     my ($tmpl) = @_;
