@@ -552,9 +552,12 @@ sub unescapeTagsLines {
   $d_count += ($text =~ s/^\[(&gt;|[vＶｖ])\]\*(.*?)$/"<\/p><details @{[$1 eq '&gt;' ? '' : 'open']}><summary class=\"header1\">$2<\/summary><div class=\"detail-bod\"><p>"/gime);
   $d_count += ($text =~ s/^\[(&gt;|[vＶｖ])\](.+?)$/"<\/p><details @{[$1 eq '&gt;' ? '' : 'open']}><summary>$2<\/summary><div class=\"detail-body\"><p>"/gime);
   $d_count += ($text =~ s/^\[(&gt;|[vＶｖ])\]$/"<\/p><details @{[$1 eq '&gt;' ? '' : 'open']}><summary>詳細<\/summary><div class=\"detail-body\"><p>"/gime);
-  $d_count -= ($text =~ s/^\[-{3,}\]\n?$/<\/p><\/div><\/details><p>/gim);
-  
-  $text =~ s/^-{4,}$/<\/p><hr><p>/gim;  
+  while($text =~ s/^\[-{3,}\]\n?$/<\/p><\/div><\/details><p>/im) {
+    $d_count--;
+    last if $d_count <= 0;
+  }
+
+  $text =~ s/^-{4,}$/<\/p><hr><p>/gim;
   $text =~ s/^( \*){4,}$/<\/p><hr class="dotted"><p>/gim;
   $text =~ s/^( \-){4,}$/<\/p><hr class="dashed"><p>/gim;
   $text =~ s/^\*\*\*\*(.*?)$/<\/p><h5>$1<\/h5><p>/gim;
