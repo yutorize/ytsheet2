@@ -1,0 +1,25 @@
+@charset "utf-8";
+
+:root{
+  --theme-hue: 225;
+  --theme-sub-hue: 225;
+  --theme-accent-hue: 350;
+  --header-saturation: 5%;
+  --header-lightness: 40%;
+  --icon-current-color   : #e02030;
+  --icon-current-bg-color: #000000;
+}
+.night {
+  --header-saturation: 5%;
+  --header-lightness: 15%;
+  --icon-bg-color: hsl(var(--theme-menu-hue),10%,30%);
+}
+body {
+  background-image: url(../../_common/img/back-pattern.png), url(../img/back-xx.png);
+  @media screen and (width <= 735px){
+    background-size: auto, 70%;
+  }
+}
+html:not(.night) header nav .toggle-theme-button {
+  > .icon.night { color: #fff9; }
+}

@@ -1,0 +1,30 @@
+@charset "utf-8";
+
+:root {
+  --theme-hue: 220;
+  --theme-sub-hue: 212;
+  --theme-menu-hue: var(--theme-sub-hue);
+  --theme-accent-hue: 225;
+  --header-saturation: 25%;
+  --h2-color: hsla(var(--theme-sub-hue),45%,75%,0.3);
+  --h3-color: hsla(var(--theme-sub-hue),40%,60%,0.3);
+
+  &:has([data-system="sw2.0"]) {
+    --header-saturation: 9%;
+    --h2-color: hsla(var(--theme-sub-hue),30%,75%,0.3);
+    --h3-color: hsla(var(--theme-sub-hue),25%,60%,0.3);
+  }
+}
+@media screen {
+  .night {
+    &:has([data-system="sw2.0"]) {
+      --icon-bg-color: hsl(var(--theme-menu-hue),9%,40%);
+    }
+  }
+}
+body {
+  background-image: url(../../_common/img/back-pattern.png), url(../img/back-first.png);
+  @media screen and (width <= 735px){
+    background-size: auto, 80%;
+  }
+}

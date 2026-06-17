@@ -1,0 +1,12 @@
+<ul>
+  <TMPL_LOOP Menu><li class="<TMPL_VAR SIZE> <TMPL_VAR CLASSES>">
+    <a <TMPL_VAR TYPE>="<TMPL_VAR VALUE>">
+      <span class="icon"><TMPL_IF ICON><span class="material-symbols-outlined" aria-hidden="true"><TMPL_VAR ICON></span></TMPL_IF></span>
+      <span class="label"><TMPL_VAR TEXT></span>
+    </a>
+  </TMPL_LOOP>
+</ul>
+<span class="toggle-theme-button" onclick="nightModeChange()">
+  <span class="icon light"></span>
+  <span class="icon night"></span>
+</span>

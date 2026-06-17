@@ -9,9 +9,6 @@
   html {
     font-size: 1.6vw;
   }
-  header nav {
-    margin-top: 4rem;
-  }
 }
 
 /* // Article
@@ -87,39 +84,195 @@ main aside {
 
 /* // Search-Form
 ---------------------------------------------------------------------------------------------------- */
+.search-button {
+  display: block;
+  margin-left: auto;
+  align-content: center;
+  text-align: center;
+  width : 1.5em;
+  height: 1.5em;
+  margin-top: -1.5em;
+  font-size: 2.2rem;
+  line-height: 1;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 50%;
+  background: var(--h2-color);
+  cursor: pointer;
+  &::before {
+    content: "\e8b6";
+    font-family: "Material Symbols Outlined";
+    font-variation-settings: 'FILL' 1;
+    font-weight: 700;
+  }
+  &:hover {
+    background: var(--bg-color);
+  }
+}
 form#form-search {
+  display: block;
   width: max-content;
+  margin: .2em;
   margin-left: auto;
   border-width: 1px;
   border-style: solid;
-  border-radius: 1rem;
+  border-radius: 10px;
+  background-color: var(--section-bg-color);
+  overflow: clip;
+  
+  transition-property: display, max-height;
+  transition-duration: 0.3s;
+  transition-behavior: allow-discrete;
   & h3 {
-    width: max-content;
-    margin-left: auto;
-    padding: 0 1em;
+    padding: .2em .5em;
+  }
+  & label {
     cursor: pointer;
   }
-  & h3:hover {
-    background-color: rgba(100,200,255,0.2);
+  & label.mylist {
+    display: block;
+    width: max-content;
+    margin-top: -1em;
+    margin-left: auto;
+    margin-right: 1.5em;
+  }
+  & dl {
+    margin: .5rem 0;
+    padding: 0 1em;
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    > dt,
+    > dd {
+      align-content: center;
+      &:nth-of-type(odd) {
+        background-color: #a5aaaf34;
+      }
+    }
+    > dt {
+      padding: 0 .5em;
+    }
+    > dd {
+      padding: 0 .5em 0 0;
+    }
   }
   & p {
-    width: max-content;
     margin: .5rem 1.5rem;
-    margin-left: auto;
-    padding: .5em 1em;
-    text-align: left;
+    padding: 0 1em;
   }
-  & p input {
-    height: 3rem;
-    margin: 1px;
+  & :is(input,select) {
+    height: 2.8rem;
+    margin: .2rem .1rem;
     vertical-align:middle;
     &::placeholder {
       font-size: 80%;
       opacity: 0.8;
     }
-    &[type="submit"] {
-      display: block;
-      margin-left: auto;
+  }
+
+  max-height: 100vh;
+  @starting-style {
+    max-height: 0;
+  }
+  &.hide{
+    display: none;
+    max-height: 0;
+  }
+}
+.search-summary {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  align-content: center;
+  position: sticky;
+  z-index: 2;
+  top: 4rem;
+  height: 3.6rem;
+  padding: 0 .5em;
+  line-height: 1.6rem;
+  background-color: var(--bg-color);
+  background-image: linear-gradient(var(--h2-color));
+  > dt::after {
+    content: ":";
+  }
+  > dd {
+    font-size: 1.2rem;
+    color: #7777;
+    > span {
+      display: inline-block;
+      color: var(--text-color);
+    }
+  }
+}
+
+/* // Main-Nav
+---------------------------------------------------------------------------------------------------- */
+main nav {
+  margin: 1em 1em 0;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  --nav-shadow: linear-gradient(to top, rgba(125,125,125,0.2), transparent 10px);
+}
+main nav::before,
+main nav::after {
+  content: '';
+  display: block;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: inherit;
+  background: var(--nav-shadow);
+}
+main nav ul {
+  display: flex;
+  justify-content: center;
+  padding: 2rem 0 0;
+}
+main nav ul li {
+  display: flex;
+  font-size: 100%;
+  
+  &::before,
+  &::after {
+    content: '';
+    display: block;
+    width: 5px;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: inherit;
+    background: var(--nav-shadow);
+  }
+  & a {
+    padding: .7em .8em;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: .5em .5em 0 0;
+    background: var(--nav-shadow);
+    background-color: hsla(var(--theme-sub-hue),30%,75%,0.2);
+    color: inherit !important;
+    font-weight: bold;
+  }
+  .night &:not(.current) a {
+    color: #ddf !important;
+  }
+  &.current a {
+    border-bottom-style: hidden;
+    background: linear-gradient(to bottom, var(--h2-color), transparent);
+  }
+  & a:hover {
+    background: var(--bg-color);
+  }
+}
+@media screen and (width <= 735px){
+  main nav  {
+    margin-top: 4em;
+
+    & ul li {
+      font-size: 100%;
+    }
+    & ul li::before,
+    & ul li::after {
+      width: 2px;
+    }
+    & ul li a {
+      padding: .8em .8em;
     }
   }
 }
@@ -128,11 +281,17 @@ form#form-search {
 ---------------------------------------------------------------------------------------------------- */
 .list {
   margin: 1.5rem 0 5rem;
-  padding: 1.5rem 0 0;
+  padding: 0;
   font-family: var(--font-proportional);
 }
 .list h2 {
-  font-size: 2rem;
+  height: 4rem;
+  padding: 0 .8em;
+  margin-bottom:.5em;
+  align-content: center;
+  background-color: var(--h2-color);
+  border-radius: 10px;
+  font-size: 1.6rem;
   & small {
     font-size: 1.4rem;
     font-weight: normal;
@@ -141,20 +300,14 @@ form#form-search {
 .list .navbar {
   text-align: center;
   padding: .5em;
-  & a {
+  & a, & b {
     display: inline-block;
     margin: .1em 0;
     padding: .3em .6em;
     border-radius: .5em;
-    background: rgba(175,175,175,0.2);
   }
-  & b {
-    display: inline-block;
-    margin: .1em 0;
-    padding: .3em .6em;
-    border-radius: .5em;
-    border: 1px solid rgba(175,175,175,0.5);
-  }
+  & a { background: #afafaf33; }
+  & b { border: 1px solid #afafaf80; }
 }
 .list table {
   position: relative;
@@ -162,60 +315,65 @@ form#form-search {
   width: 100%;
   height: 100%;
 }
-.list table thead {
-  display: block;
-  position: sticky;
-  top: 0;
-  z-index: 1;
-}
-.list table tbody {
-  display: block;
-}
-.list table tr {
+.list table :is(thead,tbody) tr {
   display: grid;
   grid-template-rows: auto;
 }
-.list table tr th {
-  display: grid;
+.list table thead {
+  display: block;
+  position: sticky;
+  top: 4rem;
+  z-index: 1;
+  background: var(--bg-color);
 }
-.list table th > a,
-.list table th > span {
-  display: grid;
-  align-items: center;
-  margin: 1px;
-  padding: 5px;
-  background: rgba(225,230,235,0.9);
-  border-radius: 5px;
-  white-space: nowrap;
+.search-summary ~ .list table thead {
+  top: 7.6rem;
 }
-.night .list table th > a,
-.night .list table th > span {
-  background: rgba(45,50,55,0.9);
+.list table thead tr {
+  gap: 0 1px;
+  > th {
+    display: grid;
+    margin-top: 1px;
+    > a,
+    > span {
+      place-content: center;
+      min-height: calc(1.5em + 10px);
+      padding: 0;
+      line-height: 1.2;
+      border-radius: 5px;
+      background: var(--h3-color);
+      white-space: nowrap;
+    }
+  }
+}
+.list table tbody {
+  display: block;
 }
 .list table tbody tr {
   border-bottom-width: 1px;
   border-bottom-style: solid;
   position: relative;
-}
-.list table tbody tr:nth-child(even) {
-  background: rgba(165,170,175,0.1);
-}
-.list table tbody tr::before,
-.list table tbody tr::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  pointer-events: none;
-}
-.list table tbody tr:hover::after {
-  background: linear-gradient(to top, rgba(100,230,255,0.2), transparent 50%);
-}
-.list table tbody tr.hide::before {
-  background-image: linear-gradient(135deg, rgba(80,80,200,0.3) 10px, transparent 10px);
-  background-position: top left;
+
+  &:nth-child(even) {
+    background: #a5aaaf1a;
+  }
+  &:hover {
+    background: var(--row-bg-hover);
+  }
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    pointer-events: none;
+  }
+  &.hide::before {
+    background-image: linear-gradient(135deg, rgba(80,80,200,0.3) 10px, transparent 10px);
+    background-position: top left;
+  }
 }
 .list table td {
   min-width: 0;
@@ -238,7 +396,7 @@ form#form-search {
     align-content: center;
     
     &:hover {
-      background: rgba(180,200,255,0.1);
+      background: var(--row-bg-hover);
     }
 
     > span {

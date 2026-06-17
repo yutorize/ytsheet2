@@ -17,6 +17,7 @@ use HTML::Template;
   updateSub => \&data_update_arts,
 );
 our %pc = %{ $pcRef };
+$SHEET->param(modeZero => $::SW2_0 ? 1 : 0);
 
 sub setArtsName {
   my ($pc) = @_;

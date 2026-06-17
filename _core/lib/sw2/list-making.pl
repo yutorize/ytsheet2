@@ -18,7 +18,8 @@ my $page = $::in{page} * $page_items;
 ### テンプレート読み込み #############################################################################
 my $INDEX = setupListTemplate(
   type     => '',
-  typeName => '能力値',
+  typeName => '能力値作成',
+  typeClass => 'making',
   pageTitle => ($::in{mylist} ? 'あなたの能力値作成履歴' : '能力値作成'),
 );
 $INDEX->param(mode => '');

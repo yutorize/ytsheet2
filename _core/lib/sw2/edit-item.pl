@@ -47,7 +47,6 @@ convertEscapedBrToNewlines(\%pc,
 ### フォーム表示 #####################################################################################
 print renderEditPageStart(
   title => (removeTags removeRuby unescapeTags ( $pc{itemName} )),
-  systemId => ($::SW2_0 ? 'sw2.0' : 'sw2.5'),
 );
 print renderEditHeaderMenu(
   tabsHtml => <<~'HTML',

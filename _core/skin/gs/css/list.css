@@ -1,18 +1,6 @@
 @charset "utf-8";
 
 @layer system {
-/* // Body
----------------------------------------------------------------------------------------------------- */
-body {
-  background-image: url(../../_common/img/back-pattern.png), url(../img/back-sword.png);
-  background-blend-mode: normal, normal;
-  .night & {
-    background-blend-mode: hard-light, normal;
-  }
-  @media screen and (width <= 735px){
-    background-size: auto, 80%;
-  }
-}
 /* // List
 ---------------------------------------------------------------------------------------------------- */
 .list table tr {

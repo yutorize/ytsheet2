@@ -3,38 +3,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Rubik+Dirt&display=swap&text=GOBLINSLAYER!');
 
 @layer system {
-/* // Body
----------------------------------------------------------------------------------------------------- */
-body {
-  background-image: url(../../_common/img/back-pattern.png), url(../img/back-sword.png);
-  background-blend-mode: normal, normal;
-  .night & {
-    background-blend-mode: hard-light, normal;
-  }
-  @media screen and (width <= 735px){
-    background-size: auto, 80%;
-  }
-}
 /* // Layout
 ---------------------------------------------------------------------------------------------------- */
 @media screen and (width >= 1400px){
-  body {
-    grid-template-columns: minmax(0, 1fr) minmax(auto, 1800px) minmax(0, 1fr);
-  }
-  header nav {
-    max-width: 1800px;
-  }
   article{
-    max-width: 1760px;
-    display: grid;
-    grid-gap: 0 1.2rem;
-    grid-template-columns: 1fr 1fr;
     grid-template-rows: auto auto auto;
-    padding: 0 1.2rem;
-    position: relative;
-  }
-  #area-name, #tags {
-    grid-column: span 2;
   }
   #column-status {
     grid-column: 1;

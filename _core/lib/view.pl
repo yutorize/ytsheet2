@@ -415,31 +415,31 @@ sub setSheetMenu {
   return if $::pc{modeDownload};
 
   my @menu = ();
-  push(@menu, { TEXT => '⏎', TYPE => "href", VALUE => './'.($type ? "?type=$type" : '') });
+  push(@menu, { TEXT => '', ICON => 'arrow_top_left', TYPE => "href", VALUE => './'.($type ? "?type=$type" : '') });
   push(@menu, @_);
   if($::in{url}){ # コンバートビュー
-    push(@menu, { TEXT => 'コンバート', TYPE => "href", VALUE => "./?mode=convert&url=$::in{url}" });
+    push(@menu, { TEXT => 'コンバート', ICON => 'input', TYPE => "href", VALUE => "./?mode=convert&url=$::in{url}" });
   }
   else {
     if($::in{log}){ # 過去ログ
       unless($::pc{forbiddenMode}){
-        push(@menu, { TEXT => '出力' , TYPE => "onclick", VALUE => "downloadListOn()" });
+        push(@menu, { TEXT => '出力' , ICON => 'output', TYPE => "onclick", VALUE => "downloadListOn()" });
       }
-      push(@menu, { TEXT => '過去ログ', TYPE => "onclick", VALUE => 'loglistOn()' });
-      if($::pc{reqdPassword}){ push(@menu, { TEXT => '復元', TYPE => "onclick", VALUE => "editOn()" }); }
-      else                   { push(@menu, { TEXT => '復元', TYPE => "href" , VALUE => "./?mode=edit&id=$::in{id}&log=$::in{log}" });
+      push(@menu, { TEXT => '過去ログ', ICON => 'history', TYPE => "onclick", VALUE => 'loglistOn()' });
+      if($::pc{reqdPassword}){ push(@menu, { TEXT => '復元', ICON => 'restore_page',  TYPE => "onclick", VALUE => "editOn()" }); }
+      else                   { push(@menu, { TEXT => '復元', ICON => 'restore_page',  TYPE => "href" , VALUE => "./?mode=edit&id=$::in{id}&log=$::in{log}" });
       }
     }
     else { #通常
       unless($::pc{forbiddenMode}){
         if($template->param('generateType')){
-          push(@menu, { TEXT => 'パレット', TYPE => "onclick", VALUE => "chatPaletteOn()" });
+          push(@menu, { TEXT => 'パレット', ICON => 'speaker_notes', TYPE => "onclick", VALUE => "chatPaletteOn()" });
         }
-        push(@menu, { TEXT => '出力'    , TYPE => "onclick", VALUE => "downloadListOn()" });
-        push(@menu, { TEXT => '過去ログ', TYPE => "onclick", VALUE => "loglistOn()" });
+        push(@menu, { TEXT => '出力'    , ICON => 'output',  TYPE => "onclick", VALUE => "downloadListOn()" });
+        push(@menu, { TEXT => '過去ログ', ICON => 'history', TYPE => "onclick", VALUE => "loglistOn()" });
       }
-      if($::pc{reqdPassword}){ push(@menu, { TEXT => '編集', TYPE => "onclick", VALUE => "editOn()" }); }
-      else                   { push(@menu, { TEXT => '編集', TYPE => "href"   , VALUE => "./?mode=edit&id=$::in{id}" }); }
+      if($::pc{reqdPassword}){ push(@menu, { TEXT => '編集', ICON => 'edit_document', SIZE=> 'large', TYPE => "onclick", VALUE => "editOn()" }); }
+      else                   { push(@menu, { TEXT => '編集', ICON => 'edit_document', SIZE=> 'large', TYPE => "href"   , VALUE => "./?mode=edit&id=$::in{id}" }); }
     }
   }
 
