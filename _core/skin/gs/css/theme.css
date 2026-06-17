@@ -1,0 +1,25 @@
+@charset "utf-8";
+
+:root{
+  --theme-hue: 240;
+  --theme-sub-hue: 0;
+  --theme-accent-hue: 0;
+  --header-saturation: 9%;
+  --icon-current-color   : #d00;
+  --icon-current-bg-color: #fff;
+}
+@media screen {
+  .night {
+    --icon-bg-color: hsl(var(--theme-menu-hue),23%,25%);
+  }
+}
+body {
+  background-image: url(../../_common/img/back-pattern.png), url(../img/back-sword.png);
+  background-blend-mode: normal, normal;
+  .night & {
+    background-blend-mode: hard-light, normal;
+  }
+  @media screen and (width <= 735px){
+    background-size: auto, 80%;
+  }
+}

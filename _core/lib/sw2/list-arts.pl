@@ -32,8 +32,7 @@ $set::simplelist = 0; # 魔法は簡易表示なし
 $set::simpleindex = 0; # 魔法は簡易インデックスなし
 my $INDEX = setupListTemplate(
   type     => 'a',
-  typeName => '魔法など',
-  pageTitle => '魔法/神格/流派/特殊能力',
+  typeName => '魔法/神格/流派/特殊能力',
 );
 my ($indexMode, $qLinks) = listQueryInfo(
   queryKeys => \@queryKeys,

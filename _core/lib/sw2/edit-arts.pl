@@ -105,7 +105,6 @@ my $image_maxsize_view = $image_maxsize >= 1048576 ? sprintf("%.3g",$image_maxsi
 ### フォーム表示 #####################################################################################
 print renderEditPageStart(
   title => (removeTags removeRuby unescapeTags ( $pc{artsName} )),
-  systemId => ($::SW2_0 ? 'sw2.0' : 'sw2.5'),
 );
 print renderEditHeaderMenu(
   tabsHtml => <<~'HTML',

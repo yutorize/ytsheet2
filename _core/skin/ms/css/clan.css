@@ -3,41 +3,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@800&display=swap');
 
 @layer system {
-/* // Body
----------------------------------------------------------------------------------------------------- */
-body {
-  background-image: url(../../_common/img/back-pattern.png), url(../img/back-scramble.png);
-  background-blend-mode: normal, normal;
-  background-position: center, bottom -100px right -20px;
-  .night & {
-    background-blend-mode: hard-light, hard-light;
-  }
-  @media screen and (width <= 735px){
-    background-size: auto, 100%;
-    background-position: center, bottom 50px right 0px;
-  }
-}
 /* // Layout
 ---------------------------------------------------------------------------------------------------- */
 @media screen and (width >= 1400px){
-  body {
-    grid-template-columns: minmax(0, 1fr) minmax(auto, 1800px) minmax(0, 1fr);
-  }
-  header nav {
-    max-width: 1800px;
-  }
-  article{
-    max-width: 1760px;
-    display: grid;
-    grid-gap: 0 1.2rem;
-    grid-template-columns: 1fr 1fr;
-    align-items: start;
-    padding: 0 1.2rem;
-    position: relative;
-  }
-  #area-name, #tags {
-    grid-column: span 2;
-  }
   .column-status{
     grid-row: span 3;
   }

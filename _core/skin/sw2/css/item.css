@@ -11,12 +11,6 @@
 @layer system {
 /* // Body
 ---------------------------------------------------------------------------------------------------- */
-body {
-  background-image: url(../../_common/img/back-pattern.png), url(../img/back-first.png);
-  @media screen and (width <= 735px){
-    background-size: auto, 80%;
-  }
-}
 article, .color-set {
   --item-head-bg-color: hsla(
     var(--box-head-bg-color-h, 225),

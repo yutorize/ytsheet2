@@ -3,10 +3,57 @@
 @layer system {
 /* // Body
 ---------------------------------------------------------------------------------------------------- */
-body {
-  background-image: url(../../_common/img/back-pattern.png), url(../img/back-first.png);
-  @media screen and (width <= 735px){
-    background-size: auto, 80%;
+header nav {
+  & li.head b {
+    .icon {
+      .making &::before { mask-image: url(../img/icon-2d.png); }
+      .chara  &::before { mask-image: url(../img/icon-person.png); }
+      .mons   &::before { mask-image: url(../img/icon-dragon.png); }
+      .item   &::before { mask-image: url(../img/icon-chest.png); }
+      .arts   &::before { mask-image: url(../img/icon-scroll.png); }
+    }
+    .label {
+      display: none;
+    }
+  }
+}
+main nav {
+  & a {
+    position: relative;
+    overflow: clip;
+    padding-left: 3em;
+    &::before {
+      content: "";
+      display: block;
+      position: absolute;
+      top: .4em;
+      left: .5em;
+      width : 2.2em;
+      height: 2.2em;
+      mask-size: 100%;
+      mask-repeat: no-repeat;
+      background-color: hsl(var(--theme-sub-hue),9%,50%);
+    }
+    .making  &::before { mask-image: url(../img/icon-2d.png); }
+    .chara   &::before { mask-image: url(../img/icon-person.png); }
+    .mons    &::before { mask-image: url(../img/icon-dragon.png); }
+    .item    &::before { mask-image: url(../img/icon-chest.png); }
+    .arts    &::before { mask-image: url(../img/icon-scroll.png); }
+    .current &::before {
+      background-color: hsl(var(--theme-accent-hue),50%,75%);
+    }
+    @media screen and (width <= 735px){
+      width: 9em;
+      padding: 1em 0 .5em;
+      font-size: 1rem;
+      text-align: center;
+      &::before {
+        position: static;
+        margin: auto;
+        width : 3rem;
+        height: 3rem;
+      }
+    }
   }
 }
 /* // List
@@ -59,6 +106,7 @@ body {
     font-size: 1.15em;
     line-height: 1;
     text-wrap: nowrap;
+    font-weight: bold;
   }
   & td:is(.race, .rank) span.thin {
     display: inline-block;
@@ -241,6 +289,13 @@ body {
 #making {
   max-width: 430px;
   margin: 3em auto;
+
+  > h1 {
+    margin: 0;
+    padding: .2em;
+    text-align: center;
+    font-size: 1.8rem;
+  }
 }
 #making form dl {
   display: grid;
@@ -275,22 +330,34 @@ body {
 }
 
 #making-posts h2 {
+  height: 4rem;
+  padding: 0 .8em;
+  margin-bottom:.5em;
+  align-content: center;
   text-align: center;
+  background: var(--h2-color);
+  border-radius: 10px;
+  font-size: 1.6rem;
   & small {
-    font-size: 60%;
+    font-size: 1.4rem;
+    font-weight: normal;
   }
+}
+#making-posts .search-button {
+  margin: -2em .2em .5em auto;
 }
 #making-posts .post {
   max-width: 500px;
-  margin: .5em auto 1.5em;
+  margin: 1.5em auto 1.5em;
   border-width: 1px;
   border-style: solid;
   border-radius: 10px;
   overflow: hidden;
+  background-color: var(--section-bg-color);
 }
 #making-posts .post h3 {
-  padding: 0.1em 0.3em;
-  background: rgba(100,120,190,0.25);
+  padding: 0.2em 0.3em;
+  background: linear-gradient(to bottom, var(--h3-color), transparent);
 }
 #making-posts .post p {
   padding: 0.5em 1.5em
@@ -319,7 +386,7 @@ body {
   & th {
     position: relative;
     padding: 0.2em 0.5em;
-    background: rgba(100,120,190,0.15);
+    background: var(--h3-color);
     text-align: left;
     & a.to-blanksheet {
       display: inline-block;
@@ -342,7 +409,7 @@ body {
 #making-posts .post time {
   display: block;
   padding: 2px .5em;
-  background: rgba(100,120,190,0.1);
+  background: var(--h2-color);
   text-align: right;
 }
 #making-posts .navigation {

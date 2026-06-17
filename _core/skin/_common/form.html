@@ -114,8 +114,14 @@
     </aside>
     </TMPL_IF>
     <article>
+      <TMPL_IF LOGIN_ID><aside id="login-state">
+        <ul>
+          <li><b><TMPL_VAR LOGIN_ID></b> でログイン中です
+          <li class="logout-button"><a href="./?mode=logout"><span class="material-symbols-outlined" aria-hidden="true">logout</span>ログアウト</a>
+        </ul>
+      </aside></TMPL_IF>
       <section class="form">
-        <h2>ユーザー設定</h2>
+        <h2>閲覧設定</h2>
         <dl>
           <dt><label class="toggle-button"><input type="checkbox" onchange="changeColorlessMode()"></label> カラーカスタムを無効にする
           <dd>ONにすると、各キャラクターシートのカラーカスタムが（名前欄を除き）無効化されます。
@@ -127,7 +133,7 @@
             ON:「｜漢字《かんじ》」／OFF:「漢字(かんじ)」
         </dl>
       </section>
-      <section class="form">
+      <TMPL_IF LOGIN_ID><section class="form">
         <h2>アカウント情報</h2>
         <form method="post" action="./">
           <input type="hidden" name="mode" value="option">
@@ -144,28 +150,28 @@
             <input type="submit" value="変更">
           </p>
         </form>
-      </section>
+      </section></TMPL_IF>
       <TMPL_IF OAUTH_MODE>
-      <!-- 何も出さない -->
+        <!-- 何も出さない -->
       <TMPL_ELSE>
-      <section class="form">
-      <h2>パスワード変更</h2>
-      <form method="post" action="./">
-        <input type="hidden" name="mode" value="passchange">
-        <p>
-          <label><span>現在のパスワード</span> <input type="password" name="password"></label>
-        </p>
-        <p>
-          <label><span>新しいパスワード</span> <input type="password" name="new_password" pattern="^[0-9A-Za-z\.\-\/]+$" title="半角英数字、『.』『-』『/』のみ"></label>
-        </p>
-        <p>
-          <label><span>新しいパスワード(確認)</span> <input type="password" name="new_password_confirm" pattern="^[0-9A-Za-z\.\-\/]+$" title="半角英数字、『.』『-』『/』のみ"></label>
-        </p>
-        <p>
-          <input type="submit" value="変更">
-        </p>
-      </form>
-      </section>
+        <TMPL_IF LOGIN_ID><section class="form">
+          <h2>パスワード変更</h2>
+          <form method="post" action="./">
+            <input type="hidden" name="mode" value="passchange">
+            <p>
+              <label><span>現在のパスワード</span> <input type="password" name="password"></label>
+            </p>
+            <p>
+              <label><span>新しいパスワード</span> <input type="password" name="new_password" pattern="^[0-9A-Za-z\.\-\/]+$" title="半角英数字、『.』『-』『/』のみ"></label>
+            </p>
+            <p>
+              <label><span>新しいパスワード(確認)</span> <input type="password" name="new_password_confirm" pattern="^[0-9A-Za-z\.\-\/]+$" title="半角英数字、『.』『-』『/』のみ"></label>
+            </p>
+            <p>
+              <input type="submit" value="変更">
+            </p>
+          </form>
+        </section></TMPL_IF>
       </TMPL_IF>
     </article>
   </TMPL_IF>
@@ -232,7 +238,7 @@
         <h3><span class="material-symbols-outlined bold">info</span>コンバートの仕様</h3>
         <section>
         <h4>データの変換</h4>
-        <p>
+        <p class="left">
           　基本的に、数値などは自動的に計算され直します。<br>
           　また、一部テキスト等もゆとシート向けに自動的に変換されます。<br>
           　一例を下記に示します。<br>
@@ -247,7 +253,7 @@
         </section>
         <section>
         <h4>データの欠損</h4>
-        <p>
+        <p class="left">
           　ゆとシートの型に合わないなどの理由で、一部データが抜けることがあります。<br>
           　現在確認できるものを以下に示します。<br>
         </p>

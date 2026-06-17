@@ -1,0 +1,29 @@
+@charset "utf-8";
+
+:root{
+  --theme-hue: 38;
+  --theme-sub-hue: 25;
+  --theme-accent-hue: 355;
+  --header-saturation: 45%;
+  --row-bg-hover: hsla(175,60%,50%,0.1);
+  --icon-bg-color     : hsl(var(--theme-sub-hue),23%,80%);
+  --icon-current-color: hsl(355,75%,40%);
+}
+@media screen {
+  .night {
+    --icon-bg-color: hsl(var(--theme-sub-hue),18%,40%);
+  }
+}
+body {
+  background-image: url(../../_common/img/back-pattern.png), url(../img/back-crest.png);
+  background-blend-mode: normal, normal;
+  background-position: center, bottom -80px right -100px;
+  background-size: auto, auto 110%;
+  .night & {
+    background-blend-mode: hard-light, normal;
+  }
+  @media screen and (width <= 735px){
+    background-size: auto, 100%;
+    background-position-x: 0, 30vw;
+  }
+}

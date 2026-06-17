@@ -18,6 +18,7 @@ require $set::data_items;
   nameSub  => \&setupMonsterName,
 );
 our %pc = %{ $pcRef };
+$SHEET->param(modeZero => $::SW2_0 ? 1 : 0);
 
 sub setupMonsterName {
   my ($pc) = @_;

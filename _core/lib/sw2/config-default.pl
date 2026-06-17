@@ -7,6 +7,7 @@ package set;
 require $::core_dir . '/lib/config-default.pl';
 
 our $game = 'sw2';
+our $system_id = 'sw2.5';
 
 # config.cgiのほうが優先されます
 # 変更する場合は同様の項目をconfig.cgiに追記してください
