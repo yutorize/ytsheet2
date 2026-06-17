@@ -190,7 +190,6 @@ my %effects = map { $_->{name} => $_ } @set::effects;
 ### フォーム表示 #####################################################################################
 print renderEditPageStart(
   title => (removeTags removeRuby unescapeTags ( $pc{characterName} || qq|“$pc{aka}”| )),
-  systemId => ($::SW2_0 ? 'sw2.0' : 'sw2.5'),
   extraJsMid =>  ($::SW2_0 ? qq|<script src="$::core_dir/lib/sw2.0/edit-chara.js?$::ver" defer></script>| : ''),
 );
 print renderEditHeaderMenu(

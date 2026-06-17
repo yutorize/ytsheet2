@@ -57,6 +57,7 @@ $INDEX->param(title => $set::title);
 $INDEX->param(ver => $main::ver);
 $INDEX->param(coreDir => $::core_dir);
 $INDEX->param(gameDir => $set::game);
+$INDEX->param(systemId => $set::system_id || $set::game);
 
 ### 出力 #############################################################################################
 print "Content-Type: text/html\n\n";

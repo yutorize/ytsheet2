@@ -1,18 +1,23 @@
-      <ul>
-        <TMPL_IF typeName><li class="head"><b><TMPL_VAR typeName></b></TMPL_IF>
-        <li><a href="./?mode=blanksheet<TMPL_IF type>&type=<TMPL_VAR type></TMPL_IF>">新規作成</a>
-        <li class="small <TMPL_IF modeConvert>current</TMPL_IF>"><a href="./?mode=convertform">コンバート</a>
-        <TMPL_IF LOGIN_ID>
-        <li class="mylist <TMPL_IF modeMylist>current</TMPL_IF>"><a href="<TMPL_VAR mylistURL>">マイリスト</a>
-        <li class="small <TMPL_IF modeOption>current</TMPL_IF>"><a href="./?mode=option">オプション</a>
-        <li class="small"><a href="./?mode=logout">ログアウト</a>
-        <TMPL_ELSE>
-          <TMPL_IF OAUTH_MODE>
-          <li class="small"><a href="<TMPL_VAR OAUTH_LOGIN_URL>">ログイン</a>
-          <TMPL_ELSE>
-          <li class="small"><a href="./?mode=login">ログイン</a>
-          <li class="small"><a href="./?mode=register">登録</a>
-          </TMPL_IF>
-        </TMPL_IF>
-        <li class="very-small"><a onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード"></a>
-      </ul>
+<ul>
+  <TMPL_IF typeName><li class="head <TMPL_VAR typeClass>">
+    <b><span class="icon"></span><span class="label"><TMPL_VAR typeName></span></b></li>
+  </TMPL_IF>
+  <li><a href="./?mode=blanksheet<TMPL_IF type>&type=<TMPL_VAR type></TMPL_IF>"><span class="icon"><span class="material-symbols-outlined" aria-hidden="true">note_add</span></span><span class="label">新規作成</span></a>
+  <li class="small <TMPL_IF modeConvert>current</TMPL_IF>"><a href="./?mode=convertform"><span class="icon"><span class="material-symbols-outlined" aria-hidden="true">file_export</span></span><span class="label">コンバート</span></a>
+  <TMPL_IF LOGIN_ID>
+    <li class="mylist <TMPL_IF modeMylist>current</TMPL_IF>"><a href='<TMPL_VAR mylistURL DEFAULT="./?mode=mylist">'><span class="icon"><span class="material-symbols-outlined" aria-hidden="true">article_person</span></span><span class="label">マイリスト</span></a>
+    <li class="small <TMPL_IF modeOption>current</TMPL_IF>"><a href="./?mode=option"><span class="icon"><span class="material-symbols-outlined" aria-hidden="true">manage_accounts</span></span><span class="label">アカウント</span></a>
+  <TMPL_ELSE>
+    <TMPL_IF OAUTH_MODE>
+      <li class="small"><a href="<TMPL_VAR OAUTH_LOGIN_URL>"><span class="icon"><span class="material-symbols-outlined" aria-hidden="true">login</span></span><span class="label">ログイン</span></a>
+    <TMPL_ELSE>
+      <li class="small <TMPL_IF modeLogin>current</TMPL_IF>"><a href="./?mode=login"><span class="icon"><span class="material-symbols-outlined" aria-hidden="true">login</span></span><span class="label">ログイン</span></a>
+      <li class="small <TMPL_IF modeRegister>current</TMPL_IF>"><a href="./?mode=register"><span class="icon"><span class="material-symbols-outlined" aria-hidden="true">person_add</span></span><span class="label">ユーザー登録</span></a>
+    </TMPL_IF>
+    <li class="small <TMPL_IF modeOption>current</TMPL_IF>"><a href="./?mode=option"><span class="icon"><span class="material-symbols-outlined" aria-hidden="true">settings</span></span><span class="label">設定</span></a>
+  </TMPL_IF>
+</ul>
+<span class="toggle-theme-button" onclick="nightModeChange()">
+  <span class="icon light"></span>
+  <span class="icon night"></span>
+</span>

@@ -31,8 +31,7 @@ setFields({
 ### テンプレート読み込み #############################################################################
 my $INDEX = setupListTemplate(
   type     => 'c',
-  typeName => 'クラン',
-  pageTitle => 'クラン一覧',
+  typeName => 'クラン名簿',
 );
 my ($indexMode, $qLinks) = listQueryInfo(
   queryKeys => \@queryKeys,

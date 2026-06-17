@@ -26,6 +26,7 @@ $INDEX->param(title => $set::title);
 $INDEX->param(ver => $main::ver);
 $INDEX->param(coreDir => $main::core_dir);
 $INDEX->param(gameDir => $set::game);
+$INDEX->param(systemId => $set::system_id || $set::game);
 $INDEX->param(noindex => 1);
 
 ### 出力 #############################################################################################

@@ -21,6 +21,7 @@
   </TMPL_UNLESS>
   <link rel="stylesheet" data-dl href="<TMPL_VAR coreDir>/skin/_common/css/base.css?<TMPL_VAR ver>">
   <link rel="stylesheet" data-dl href="<TMPL_VAR coreDir>/skin/_common/css/sheet.css?<TMPL_VAR ver>">
+  <link rel="stylesheet" data-dl href="<TMPL_VAR coreDir>/skin/<TMPL_VAR gameDir>/css/theme.css?<TMPL_VAR ver>">
   <link rel="stylesheet" data-dl href="<TMPL_VAR coreDir>/skin/<TMPL_VAR gameDir>/css/<TMPL_VAR sheetType>.css?<TMPL_VAR ver>">
   <script>
   const sheetId = '<TMPL_VAR id>';
@@ -54,6 +55,7 @@
       font-weight: <TMPL_VAR nameFontWeight>;
     }
     </TMPL_IF>
+    <TMPL_VAR themeCSS>
     :root, .color-set {
       --box-head-bg-color-h: <TMPL_VAR colorHeadBgH>;
       --box-head-bg-color-s: <TMPL_VAR colorHeadBgS>%;

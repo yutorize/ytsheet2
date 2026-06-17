@@ -11,12 +11,6 @@
 @layer system {
 /* // Body
 ---------------------------------------------------------------------------------------------------- */
-body {
-  background-image: url(../../_common/img/back-pattern.png), url(../img/back-first.png);
-  @media screen and (width <= 735px){
-    background-size: auto, 80%;
-  }
-}
 article,
 .color-set {
   --arts-name-bg-color: hsl(
@@ -31,26 +25,20 @@ article,
   );
   .night & {}
 }
-
-/* // Base
----------------------------------------------------------------------------------------------------- */
-article {
-  max-width: 800px;
-}
 /* // Layout
 ---------------------------------------------------------------------------------------------------- */
 #area-description > section:first-of-type {
   margin-top: 0;
 }
+article {
+  max-width: 800px;
+}
 @media screen and (width >= 1400px){
   body.wide {
-    grid-template-columns: minmax(0, 1fr) minmax(auto, 1800px) minmax(0, 1fr);
-
-    & header nav {
-      max-width: 1800px;
-    }
     & article {
       max-width: 1760px;
+      display: block;
+      padding: 0;
     }
     & #god,
     & #school {

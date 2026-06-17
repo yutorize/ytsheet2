@@ -5,12 +5,6 @@
 @layer system {
 /* // Body
 ---------------------------------------------------------------------------------------------------- */
-body {
-  background-image: url(../../_common/img/back-pattern.png), url(../img/back-first.png);
-  @media screen and (width <= 735px){
-    background-size: auto, 80%;
-  }
-}
 article, .color-set {
   --monster-level-bg-color: hsl(
     var(--box-head-bg-color-h, 0),

@@ -355,12 +355,12 @@ sub applyMessageName {
 sub renderEditPageStart {
   my (%opt) = @_;
   my $title      = $opt{title}      // '編集';
-  my $systemId   = $opt{systemId}   // $set::game;
   my $headerMenu = $opt{headerMenu} // '';
   my $extraCss   = $opt{extraCss}   // '';
   my $extraJsTop = $opt{extraJsTop} // '';
   my $extraJsMid = $opt{extraJsMid} // '';
 
+  my $systemId = $set::system_id || $set::game;
   my $type = $::pc{type} // $::in{type} // '';
   my $sheetType = $set::lib_type{$type}{sheetType} || 'chara';
   my $base64Mode = $set::base64mode || 0;
@@ -376,6 +376,7 @@ sub renderEditPageStart {
     <title>@{[ $::in{mode} eq 'edit' ? "編集：$title" : '新規作成']} - $set::title</title>
     <link rel="stylesheet" media="all" href="$::core_dir/skin/_common/css/base.css?$::ver">
     <link rel="stylesheet" media="all" href="$::core_dir/skin/_common/css/sheet.css?$::ver">
+    <link rel="stylesheet" media="all" href="$::core_dir/skin/$set::game/css/theme.css?$::ver">
     <link rel="stylesheet" media="all" href="$::core_dir/skin/$set::game/css/$sheetType.css?$::ver">
     <link rel="stylesheet" media="all" href="$::core_dir/skin/_common/css/edit.css?$::ver">
     <link rel="stylesheet" media="all" href="$::core_dir/skin/$set::game/css/edit.css?$::ver">
@@ -448,11 +449,11 @@ sub renderEditHeaderMenu {
         $tabsHtml
         <li onclick="sectionSelect('color');" class="color-icon" title="シートデザインカスタム">
         <li onclick="view('text-rule')" class="help-icon" title="テキスト整形ルール">
-        <li onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード切替">
-        <li onclick="exportAsJson()" class="download-icon" title="JSON出力">
+        <li onclick="nightModeChange()" class="nightmode-button">
         <li class="buttons">
           <ul>
             <li @{[ display ($::in{mode} eq 'edit') ]} class="view-icon" title="閲覧画面"><a href="./?id=$::in{id}"></a>
+            <li onclick="exportAsJson()" class="download-icon" title="JSONデータを保存">
             <li @{[ display ($::in{mode} eq 'edit') ]} class="copy" onclick="window.open('./?mode=copy&id=$::in{id}$logQ');">複製
             <li class="submit" onclick="formSubmit()" title="Ctrl+S">保存
           </ul>

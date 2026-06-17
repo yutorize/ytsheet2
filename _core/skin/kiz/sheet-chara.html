@@ -47,18 +47,14 @@
   </script>
 </TMPL_IF>
 </head>
-<body>
+<body class="wide" class="wide">
   <header>
     <h1><a href="./"><TMPL_VAR title></a></h1>
     <nav>
-      <ul>
-        <TMPL_LOOP Menu><li class="<TMPL_VAR SIZE>"><a <TMPL_VAR TYPE>="<TMPL_VAR VALUE>"><TMPL_VAR TEXT></a>
-        </TMPL_LOOP>
-        <li><a onclick="nightModeChange()" class="nightmode-icon" title="ナイトモード"></a>
-      </ul>
+      <TMPL_INCLUDE NAME="../_common/sheet-menu.html">
     </nav>
   </header>
-  <div class="header-back-name"><TMPL_VAR titleName> - <TMPL_VAR title></div>
+  <div class="header-back-name"><b><TMPL_VAR titleName> - <TMPL_VAR title></b></div>
   
   <TMPL_IF error>
   <aside id="error">
@@ -473,7 +469,6 @@
         <textarea id="chatPaletteBox"></textarea>
       </section>
     </article>
-    <div class="back-button"><a href="./">⏎</a></div>
   </main>
   <TMPL_INCLUDE NAME="skin-add/sheet-sidebar.html">
 

@@ -17,8 +17,8 @@
     <TMPL_INCLUDE NAME="skin-add/main-header.html">
     <nav>
       <ul>
-        <li class="<TMPL_IF modeList>current</TMPL_IF>"><a href="./?<TMPL_IF mode>mode=<TMPL_VAR mode>&</TMPL_IF><TMPL_IF tag>tag=<TMPL_VAR tag></TMPL_IF>">都民登録書</a></li>
-        <li class="<TMPL_IF modeListC>current</TMPL_IF>"><a href="./?<TMPL_IF mode>mode=<TMPL_VAR mode>&</TMPL_IF><TMPL_IF tag>tag=<TMPL_VAR tag>&</TMPL_IF>type=c">クラン名簿</a></li>
+        <li class="chara<TMPL_IF modeList> current</TMPL_IF>"><a href="./?<TMPL_IF mode>mode=<TMPL_VAR mode>&</TMPL_IF><TMPL_IF tag>tag=<TMPL_VAR tag></TMPL_IF>">都民登録書</a></li>
+        <li class="clan<TMPL_IF modeListC> current</TMPL_IF>"><a href="./?<TMPL_IF mode>mode=<TMPL_VAR mode>&</TMPL_IF><TMPL_IF tag>tag=<TMPL_VAR tag>&</TMPL_IF>type=c">クラン名簿</a></li>
       </ul>
     </nav>
     <TMPL_IF modeIndex><TMPL_INCLUDE NAME="skin-add/index-message.html"></TMPL_IF>
@@ -34,7 +34,6 @@
       </section>
     </article>
     </TMPL_IF>
-    <div class="back-button"><a href="./">⏎</a></div>
     <TMPL_INCLUDE NAME="skin-add/main-footer.html">
   </main>
   <TMPL_INCLUDE NAME="skin-add/sidebar.html">
