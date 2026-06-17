@@ -1,0 +1,21 @@
+@charset "utf-8";
+
+:root{
+  --theme-hue: 210;
+  --theme-sub-hue: 195;
+  --theme-accent-hue: 190;
+  --header-saturation: 50%;
+  --h2-color: hsla(195,61%,40%,0.2);
+  --icon-current-color   : #30d0e7;
+  --icon-current-bg-color: #000055;
+}
+body {
+  background-image: url(../../_common/img/back-pattern.png), url(../img/back-kiz.png);
+  background-blend-mode: normal, normal;
+  .night & {
+    background-blend-mode: hard-light, hard-light;
+  }
+  @media screen and (width <= 735px){
+    background-size: auto, 100%;
+  }
+}

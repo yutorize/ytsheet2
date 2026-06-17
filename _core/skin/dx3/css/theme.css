@@ -1,0 +1,16 @@
+@charset "utf-8";
+
+:root{
+  --theme-hue: 225;
+  --theme-sub-hue: 225;
+  --theme-accent-hue: 350;
+  --header-saturation: 30%;
+  --icon-current-color   : #e02030;
+  --icon-current-bg-color: #000000;
+}
+body {
+  background-image: url(../../_common/img/back-pattern.png), url(../img/back-xx.png);
+  @media screen and (width <= 735px){
+    background-size: auto, 70%;
+  }
+}

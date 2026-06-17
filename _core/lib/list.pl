@@ -90,9 +90,10 @@ sub setupListTemplate {
   my (%args) = @_;
   my $type     = $args{type};
   my $typeName = $args{typeName};
+  my $typeClass = $args{typeClass};
   my $pageTitle = $args{pageTitle} || $typeName || '';
   
-  $pageTitleParts{type} = $pageTitle;
+  $pageTitleParts{type} = $pageTitle if $pageTitle;
 
   $template = HTML::Template->new(
     filename  => $set::skin_tmpl,
@@ -117,6 +118,7 @@ sub setupListTemplate {
 
   $template->param(type => $type);
   $template->param(typeName => $typeName);
+  $template->param(typeClass => $typeClass || $set::lib_type{$type}{sheetType} || 'chara');
 
   $template->param(LOGIN_ID => $LOGIN_ID);
   $template->param(OAUTH_MODE => $set::oauth_service);
@@ -629,7 +631,7 @@ sub setSearchSummary {
   }
 
   if(@summary){
-    $template->param(searchSummary => '：'.join('：', @summary));
+    $template->param(searchSummary => join('／', map { "<span>$_</span>" } @summary));
     $template->param(ogDescript => join ',', @summary);
     $pageTitleParts{search} = join(' ', @summary);
   }

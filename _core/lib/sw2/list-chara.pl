@@ -37,8 +37,7 @@ setFields({
 ### テンプレート読み込み #############################################################################
 my $INDEX = setupListTemplate(
   type     => '',
-  typeName => 'キャラ',
-  pageTitle => 'キャラクター',
+  typeName => 'キャラクター',
 );
 my ($indexMode, $qLinks) = listQueryInfo(
   queryKeys => \@queryKeys,

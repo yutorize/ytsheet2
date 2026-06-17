@@ -138,6 +138,7 @@ body {
 }
 
 header {
+  position: relative;
 }
 header nav {
   position: fixed;
@@ -145,21 +146,61 @@ header nav {
 }
 .header-back-name {
   position: fixed;
+  z-index: 1;
   inset: 0 0 auto;
   height: 2rem;
-  padding: .3rem 3em .2rem 1em;
+  padding: .3rem 10px .2rem;
   line-height: 1;
   font-size: 1.2rem;
   font-weight: bold;
   font-family: var(--base-font-family-min);
   white-space: nowrap;
-  color: #fff;
+  text-overflow: ellipsis;
   
   cursor: pointer;
-
-  z-index: 1;
+  
 }
+.header-back-name {
+  background-color: hsla(
+    var(--box-head-bg-color-h, var(--theme-hue)),
+    calc((var(--box-head-bg-color-s,  9%) + 9%) / 2),
+    65%
+  );
+  @media screen {
+    .night & {
+      background-color: hsla(
+        var(--box-head-bg-color-h, var(--theme-hue)),
+        calc((var(--box-head-bg-color-s,  9%) + 9%) / 2),
+        35%
+      );
+    }
+  }
+}
+@media screen and (width >= 1400px){
+  body.wide {
+    grid-template-columns: minmax(0, 1fr) minmax(auto, 1800px) minmax(0, 1fr);
 
+    header nav {
+      max-width: 1800px;
+      padding-right: var(--toggle-button-width);
+      @media screen and (width >= 1800px){
+        padding-right: calc(var(--toggle-button-width) + 1rem - (100vw - 1800px) / 2);
+      }
+    }
+    article{
+      max-width: 1760px;
+      display: grid;
+      grid-gap: 0 1.2rem;
+      grid-template-columns: 1fr 1fr;
+      align-items: start;
+      padding: 0 1.2rem;
+      position: relative;
+    }
+    #area-name, #tags {
+      grid-column: span 2;
+    }
+  }
+}
 main {
   padding: 1rem 0 3rem;
 }
@@ -451,6 +492,14 @@ details:not([open]).box > summary:hover {
 
   @media print {
     display: none;
+  }
+
+  > h2::before {
+    content: "\e8cd";
+    font-family: "Material Symbols Outlined";
+    vertical-align: middle;
+    font-size: 1.2em;
+    line-height: 1;
   }
 }
 .box.chat-palette .chat-palette-menu {
@@ -797,38 +846,33 @@ header nav {
   z-index: 2;
 }
 header nav ul {
+  margin-top: 1rem;
   & li  {
-    margin: 0.6rem 1.2rem 0;
-    width: 3rem;
-    height: 3rem;
-    font-size: 1.1rem;
+    --size: 3.5rem;
+    &.large { --size: 4.2rem; }
+    width: calc(var(--size) * 1.41421356);
+    &:nth-last-child(even) { top:  4px; }
+    &:nth-last-child(odd)  { top: -4px; }
   }
-  & li.large  {
-    width: 4.2rem;
-    height: 4.2rem;
-  }
-  & li:nth-last-child(even)  {
-    top: 1rem;
-  }
-  & li:nth-last-child(odd)  {
-    top: 0rem;
-  }
-  & li + li {
-    margin-left: 0rem;
-  }
-  & li a span {
-    display: inline-block;
-    transform: scale(0.75, 0.9);
-    transform-origin: bottom;
+  .is-scrolled & {
+    margin-top: .5rem;
+    li {
+      --size: 2.8rem;
+      &.large { --size: 3.4rem; }
+      &:nth-last-child(even) { top:  3px; }
+      &:nth-last-child(odd)  { top: -3px; }
+    }
   }
 }
 @media screen and (width <= 735px){
-  header nav {
-    margin-top: 3rem;
-    right: -1rem;
-  }
-  main {
-    padding-top: 4.5rem;
+  header nav ul { margin-top: 5rem; margin-right: -5rem; }
+  main { padding-top: 3rem; }
+  .is-scrolled {
+    .toggle-theme-button { display: none; }
+    header nav {
+      padding-right: 0;
+      > ul { margin-top: 2rem; margin-right: 0; }
+    }
   }
 }
 
@@ -1102,6 +1146,15 @@ aside:is(#loglist,#downloadlist) {
   background: rgba(255,255,255,0.9);
   
   z-index: 300;
+
+  > h2::before {
+    font-family: "Material Symbols Outlined";
+    vertical-align: middle;
+    font-size: 1.2em;
+    line-height: 1;
+  }
+  &#loglist      h2::before { content: "\e889" }
+  &#downloadlist h2::before { content: "\ebbe" }
 
   &:not(.show) {
     right: 0;

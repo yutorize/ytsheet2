@@ -35,8 +35,7 @@ setFields({
 
 ### テンプレート読み込み #############################################################################
 my $INDEX = setupListTemplate(
-  type     => '',
-  typeName => '',
+  type => '',
 );
 my ($indexMode, $qLinks) = listQueryInfo(
   queryKeys => \@queryKeys,

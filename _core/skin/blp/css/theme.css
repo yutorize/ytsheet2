@@ -1,0 +1,23 @@
+@charset "utf-8";
+
+:root{
+  --theme-hue: 355;
+  --theme-sub-hue: 355;
+  --theme-accent-hue: 355;
+  --header-saturation: 50%;
+  --h2-color: hsla(355,61%,50%,0.2);
+  --icon-current-color   : #ffffff;
+  --icon-current-bg-color: #d02530;
+}
+body {
+  background-image: url(../../_common/img/back-pattern.png), url(../img/back-moon.png);
+  background-blend-mode: normal, hard-light;
+  .night & {
+    background-blend-mode: hard-light, hard-light;
+  }
+  @media screen and (width <= 735px){
+    background-size: auto, 120%;
+    background-position-x: 0, 5vw;
+    background-position-y: 0, 110%;
+  }
+}

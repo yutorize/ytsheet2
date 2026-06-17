@@ -1,0 +1,21 @@
+@charset "utf-8";
+
+:root{
+  --theme-hue: 240;
+  --theme-sub-hue: 0;
+  --theme-accent-hue: 0;
+  --header-saturation: 9%;
+  --h2-color: hsla(0,61%,40%,0.2);
+  --icon-current-color   : #d00;
+  --icon-current-bg-color: #fff;
+}
+body {
+  background-image: url(../../_common/img/back-pattern.png), url(../img/back-sword.png);
+  background-blend-mode: normal, normal;
+  .night & {
+    background-blend-mode: hard-light, normal;
+  }
+  @media screen and (width <= 735px){
+    background-size: auto, 80%;
+  }
+}

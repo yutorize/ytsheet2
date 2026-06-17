@@ -1,20 +1,6 @@
 @charset "utf-8";
 
 @layer system {
-/* // Body
----------------------------------------------------------------------------------------------------- */
-body {
-  background-image: url(../../_common/img/back-pattern.png), url(../img/back-moon.png);
-  background-blend-mode: normal, hard-light;
-  .night & {
-    background-blend-mode: hard-light, hard-light;
-  }
-  @media screen and (width <= 735px){
-    background-size: auto, 120%;
-    background-position-x: 0, 5vw;
-    background-position-y: 0, 110%;
-  }
-}
 /* // List
 ---------------------------------------------------------------------------------------------------- */
 .list table {

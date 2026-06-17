@@ -3,34 +3,11 @@
 @import "icons.css" layer(system);
 
 @layer system {
-/* // Body
----------------------------------------------------------------------------------------------------- */
-body {
-  background-image: url(../../_common/img/back-pattern.png), url(../img/back-first.png);
-  @media screen and (width <= 735px){
-    background-size: auto, 80%;
-  }
-}
 /* // Layout
 ---------------------------------------------------------------------------------------------------- */
 @media screen and (width >= 1400px){
-  body {
-    grid-template-columns: minmax(0, 1fr) minmax(auto, 1800px) minmax(0, 1fr);
-  }
-  header nav {
-    max-width: 1800px;
-  }
   article{
-    max-width: 1760px;
-    display: grid;
-    grid-gap: 0 1.2rem;
-    grid-template-columns: 1fr 1fr;
     grid-auto-rows: max-content max-content max-content 1fr auto;
-    padding: 0 1.2rem;
-    position: relative;
-  }
-  #area-name, #tags {
-    grid-column: span 2;
   }
   div.column-status {
     grid-row: span 2;
@@ -79,15 +56,9 @@ body {
 ---------------------------------------------------------------------------------------------------- */
 header nav ul li.character-format {
   > a {
-    display: flex;
-    flex-flow: column;
-    justify-content: center;
-    font-size: 85%;
-
-    &::after {
+    & .label::after {
       content: "データ";
-      font-size: 75%;
-      margin-top: 0.2em;
+      display: block;
     }
   }
 }
