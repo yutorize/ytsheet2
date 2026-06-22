@@ -44,7 +44,7 @@ my @lines = loadLines();
 
 ### 検索フィルタ #####################################################################################
 ## カテゴリ検索 --------------------------------------------------
-my %categories = ('magic'=>'魔法','god'=>'神格','school'=>'流派','skill'=>'特殊能力');
+my %categories = (magic => '魔法', god => '神格', school => '流派', skill => '特殊能力', all => 'すべて');
 if($::in{category} && $::in{category} ne 'all'){
   @lines = grep { /^(?:[^<]*<>){6}\Q$::in{category}\E</o } @lines;
   $INDEX->param(category => $categories{$::in{category}});
@@ -69,7 +69,6 @@ if($::in{sort}){
   elsif($s eq 'date')  { my @t = map { capField($_,'date')   } @lines; @lines = @lines[sort {$t[$b] <=> $t[$a]} 0 .. $#t]; }
 }
 ### ページ処理 #######################################################################################
-if($::in{category} eq 'all'){ $::in{category} = ''; }
 my ($pageLines, $count, $page, $pageStart, $pageEnd, $shouldSkip) = prepareGroupedPage(
   lines         => \@lines,
   selectedGroup => $::in{category},
@@ -79,6 +78,13 @@ my ($pageLines, $count, $page, $pageStart, $pageEnd, $shouldSkip) = prepareGroup
 my %groupedLists;
 foreach (@$pageLines) {
   my %pc = %{ splitField($_) };
+
+  #分類
+  my $renderCategory = $categories{$pc{category}};
+  if($pc{sub} =~ /(?:属性|特殊)妖精魔法|秘奥魔法/){ $pc{sub} =~ s#／([0-9]+)#／ランク$1#; }
+  else { $pc{sub} =~ s#(／[0-9-～]+)#$1レベル#; }
+  $pc{sub} = '―' if $pc{category} eq 'skill';
+  $pc{category} = 'all' if $::in{category} eq 'all';
   
   next if $shouldSkip->(
     group => $pc{category},
@@ -91,12 +97,8 @@ foreach (@$pageLines) {
     $pc{name} =~ s/\s?[－―‐–—─\-](.+?)[－―‐–—─\-]】$/】<span>－$1－<\/span>/;
     $pc{name} = $divineMark.$pc{name} if defined $divineMark;
   }
-  
-  #分類
-  my $renderCategory = $categories{$pc{category}};
-  if($pc{sub} =~ /(?:属性|特殊)妖精魔法|秘奥魔法/){ $pc{sub} =~ s#／([0-9]+)#／ランク$1#; }
-  else { $pc{sub} =~ s#(／[0-9-～]+)#$1レベル#; }
-  $pc{sub} = '―' if $pc{category} eq 'skill';
+
+  #サブ分類
   
   #出力用配列へ
   my @characters;
@@ -125,7 +127,7 @@ sub renderSub {
 
 ### テンプレートへ入力 ###############################################################################
 $INDEX->param(Lists => [ makeGroupedLists(
-  groupOrder => [qw(magic god school skill)],
+  groupOrder => [qw(magic god school skill all)],
   groupedLists => \%groupedLists,
   count => $count,
 
