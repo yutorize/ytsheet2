@@ -5,30 +5,35 @@
 @layer system {
 /* // Layout
 ---------------------------------------------------------------------------------------------------- */
-@media screen and (width >= 1400px){
-  .column-status{
-    grid-row: span 3;
-  }
-  #area-partner {
-    grid-column: 2;
-    grid-row: 3;
-  }
-  #free-note {
-    grid-column: 2;
-    align-self: normal;
-  }
-  #history {
-    grid-column: 2;
-    grid-row: 5;
-    align-self: end;
-  }
-  aside#sidebar-left,
-  aside#sidebar-right {
-    display:none;
-  }
-  aside#sidebar-top,
-  aside#sidebar-bottom {
-    display: block;
+.wide {
+  @media screen and (width >= 1400px){
+    .column-status{
+      grid-row: span 3;
+    }
+    #area-partner {
+      grid-column: 2;
+      grid-row: 3;
+    }
+    #free-note {
+      grid-column: 2;
+      align-self: normal;
+    }
+    #history {
+      grid-column: 2;
+      grid-row: 5;
+      align-self: end;
+    }
+    aside#sidebar-left,
+    aside#sidebar-right {
+      display:none;
+    }
+    aside#sidebar-top,
+    aside#sidebar-bottom {
+      display: block;
+    }
+    #free-note {
+      margin-top: 0;
+    }
   }
 }
 /* // Font
@@ -302,11 +307,6 @@ h1#character-name:not(:has(ruby)) {
 #free-note,
 #free-history{
   margin-top: var(--box-v-gap);
-}
-@media screen and (width >= 1400px){
-  #free-note {
-    margin-top: 0;
-  }
 }
 
 

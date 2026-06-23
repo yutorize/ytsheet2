@@ -18,6 +18,10 @@ section.form {
   > h2 {
     padding: .1em .2em;
     font-size: 2rem;
+    > small {
+      font-size: 1.4rem;
+      font-weight: normal;
+    }
   }
   > h3 {
     padding: .2em .2em;

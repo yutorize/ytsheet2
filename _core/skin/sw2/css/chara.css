@@ -286,7 +286,9 @@ header nav ul li.character-format {
   main#character &::after {
     opacity: 0.5;
   }
-  
+  > dt {
+    container-type: inline-size;
+  }
   > dt span {
     display: block;
     width: 3em;
@@ -295,7 +297,7 @@ header nav ul li.character-format {
     &::after {
       content: "ボーナス";
     }
-    @media screen and (width <= 850px), screen and (1400px <= width <= 1680px), print and (width <= 850px) {
+    @container (width <= 69px){
       &::after {
         content: "Ｂ";
       }
@@ -358,12 +360,15 @@ dl#level {
     
     font-size: 200%;
   }
-  @media screen and (1400px <= width <= 1600px){
-    > dt > span::after {
-      content:'Lv'
-    }
-    > dt span.shorten {
-      display: none;
+  > dt {
+    container-type: inline-size;
+    @container (width < 6em){
+      > span::after {
+        content:'Lv'
+      }
+      & span.shorten {
+        display: none;
+      }
     }
   }
   @media screen and (width <= 735px){
@@ -372,12 +377,6 @@ dl#level {
       margin-left : -5%;
       margin-right: -5%;
       transform: scaleX(0.9);
-    }
-    & dt > span::after {
-      content:'Lv'
-    }
-    & dt span.shorten {
-      display: none;
     }
   }
 }
@@ -632,7 +631,9 @@ dl#level {
   }
 
   @media screen and (width >= 1400px){
-    margin-top: 0;
+    .wide & {
+      margin-top: 0;
+    }
   }
   @media screen and (width <= 735px){
     display: grid;

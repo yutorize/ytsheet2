@@ -5,32 +5,37 @@
 @layer system {
 /* // Layout
 ---------------------------------------------------------------------------------------------------- */
-@media screen and (width >= 1400px){
-  article{
-    grid-template-rows: auto auto auto;
-  }
-  #column-status {
-    grid-column: 1;
-    grid-row: 3;
-  }
-  #area-equipment {
-    grid-column: 2;
-    grid-row: 3;
-    align-self: start;
-  }
-  #area-skills {
-    grid-column: 1;
-    grid-row: 4;
-    align-self: start;
-  }
-  #area-arts {
-    grid-column: 2;
-    grid-row: 4;
-    align-self: start;
-  }
-  #free-note {
-    grid-column: 1;
-    grid-row: 5;
+.wide {
+  @media screen and (width >= 1400px){
+    article{
+      grid-template-rows: auto auto auto;
+    }
+    #column-status {
+      grid-column: 1;
+      grid-row: 3;
+    }
+    #area-equipment {
+      grid-column: 2;
+      grid-row: 3;
+      align-self: start;
+    }
+    #area-skills {
+      grid-column: 1;
+      grid-row: 4;
+      align-self: start;
+    }
+    #area-arts {
+      grid-column: 2;
+      grid-row: 4;
+      align-self: start;
+    }
+    #free-note {
+      grid-column: 1;
+      grid-row: 5;
+    }
+    #area-equipment > .box:first-child {
+      margin-top: 0;
+    }
   }
 }
 
@@ -350,7 +355,7 @@
   }
 }
 @media screen and (1400px <= width <= 1600px){
-  #status .shorten { display: none; }
+  .wide #status .shorten { display: none; }
 }
 
 /* // Area-Ability
@@ -564,12 +569,6 @@
   white-space: nowrap;
 }
 #area-equipment tbody td.note { font-size: .9em; }
-
-@media screen and (width >= 1400px){
-  #area-equipment > .box:first-child {
-    margin-top: 0;
-  }
-}
 
 /* Attack */
 #attack-classes {

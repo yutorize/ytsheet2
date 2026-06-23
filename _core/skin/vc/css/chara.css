@@ -3,12 +3,14 @@
 @layer system {
 /* // Layout
 ---------------------------------------------------------------------------------------------------- */
-@media screen and (width >= 1400px){
-  #column-skills {
-    grid-column: 2;
+.wide {
+  @media screen and (width >= 1400px){
+    #column-skills {
+      grid-column: 2;
+    }
+    #battle { margin-top: 0; }
   }
 }
-
 /* // Font
 ---------------------------------------------------------------------------------------------------- */
 #level dd {
@@ -299,9 +301,6 @@
   border-style: solid;
   border-color: var(--box-inside-border-color);
   pointer-events: none;
-}
-@media screen and (width >= 1400px){
-  #battle { margin-top: 0; }
 }
 @media screen and (width <= 735px){
   #battle th { font-size: 92%; }
