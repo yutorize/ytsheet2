@@ -759,20 +759,27 @@ dl#level {
 }
 
 
+#skills table tbody:focus-within {
+  outline: 2px solid var(--text-color);
+  outline-offset: -1px;
+}
 #skills table tbody td.note {
   padding-left: .5rem;
+
   display: none;
-  &:empty::before {
-    content: '　';
+  @media screen {
+    tbody:focus-within & {
+      display: table-cell;
+    }
   }
+  #skills[data-full-open="true"] & {
+    display: table-cell;
+  }
+  
   & span.right {
     float: right;
     font-size: 90%;
   }
-}
-#skills table tbody:hover td.note,
-#skills[data-full-open="true"] table tbody td.note {
-  display: table-cell;
 }
 
 #skills table tbody td.type,
