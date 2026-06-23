@@ -661,21 +661,27 @@
   &:nth-child(10){ font-size: 90%; } /* 制限 */
 }
 
+#effect table tbody:focus-within {
+  outline: 2px solid var(--text-color);
+  outline-offset: -1px;
+}
 #effect table tbody td.note {
   padding-left: .5rem;
+
   display: none;
-}
-@media screen {
-  #effect table tbody:hover td.note {
+  @media screen {
+    tbody:focus-within & {
+      display: table-cell;
+    }
+  }
+  #effect[data-full-open="true"] & {
     display: table-cell;
   }
-}
-#effect[data-full-open="true"] table tbody td.note {
-  display: table-cell;
-}
-#effect table tbody td.note span.right {
-  float: right;
-  font-size: 90%;
+  
+  & span.right {
+    float: right;
+    font-size: 90%;
+  }
 }
 #effect tbody tr td:nth-child(9) span.thinest.small {
   transform: scaleY(calc(1/0.8)) translateY(-.1rem);
@@ -761,7 +767,7 @@
   font-weight: bold;
 }
 @media all and (width > 735px){
-  #effect:not([data-full-open="true"]) table > tbody:last-child:not(:hover) > tr:last-child {
+  #effect:not([data-full-open="true"]) table > tbody:last-child:not(:focus-within) > tr:last-child {
     border-top: none;
   }
 }
