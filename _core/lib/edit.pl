@@ -449,7 +449,7 @@ sub renderEditHeaderMenu {
         $tabsHtml
         <li onclick="sectionSelect('color');" class="color-icon" title="シートデザインカスタム">
         <li onclick="view('text-rule')" class="help-icon" title="テキスト整形ルール">
-        <li onclick="nightModeChange()" class="nightmode-button">
+        <li onclick="toggleNightMode()" class="nightmode-button">
         <li class="buttons">
           <ul>
             <li @{[ display ($::in{mode} eq 'edit') ]} class="view-icon" title="閲覧画面"><a href="./?id=$::in{id}"></a>

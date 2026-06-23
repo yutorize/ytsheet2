@@ -3,16 +3,21 @@
 @layer system {
 /* // Layout
 ---------------------------------------------------------------------------------------------------- */
-@media screen and (width >= 1400px){
-  article{
-    grid-template-rows: auto auto auto 1fr auto;
-  }
-  #area-name, #tags {
-    grid-column: span 2;
-  }
-  .column-items {
-    grid-column: 2;
-    grid-row: span 2;
+.wide {
+  @media screen and (width >= 1400px){
+    article{
+      grid-template-rows: auto auto auto 1fr auto;
+    }
+    #area-name, #tags {
+      grid-column: span 2;
+    }
+    .column-items {
+      grid-column: 2;
+      grid-row: span 2;
+    }
+    #academy-supports {
+      margin-top: 0;
+    }
   }
 }
 
@@ -170,9 +175,7 @@
 /* // Items
 ---------------------------------------------------------------------------------------------------- */
 #academy-supports {
-  @media screen and (width < 1400px){
-    margin-top: var(--box-v-gap);
-  }
+  margin-top: var(--box-v-gap);
   & table {
     margin-top: -1em;
     > thead {
