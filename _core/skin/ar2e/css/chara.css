@@ -3,9 +3,14 @@
 @layer system {
 /* // Layout
 ---------------------------------------------------------------------------------------------------- */
-@media screen and (width >= 1400px){
-  #column-skills {
-    grid-row: span 3;
+.wide {
+  @media screen and (width >= 1400px){
+    #column-skills {
+      grid-row: span 3;
+    }
+    #skills {
+      margin-top: 0;
+    }
   }
 }
 
@@ -478,9 +483,11 @@ dl#level {
   #battle table col:nth-child(n) {
     width: unset;
   }
-  #battle table thead tr,
-  #battle table tbody tr,
-  #battle table tfoot tr {
+  #battle table,
+  #battle table :is(thead,tbody,tfoot) {
+    display: block;
+  }
+  #battle table :is(thead,tbody,tfoot) tr {
     display: grid;
     grid-template-columns: 3em auto 3.3em 3em 3em 3em 3em 3em 3em 3em 3em;
   }
@@ -696,11 +703,9 @@ dl#level {
 #skills {
   position: relative;
   margin-top: var(--box-v-gap);
-  @media screen and (width >= 1400px){
-    margin-top: 0;
-  }
+
   @media screen and (1400px <= width <= 1600px){
-    .shorten { display: none; }
+    .wide & .shorten { display: none; }
   }
 }
 #skills table thead th {
@@ -718,13 +723,15 @@ dl#level {
   &:nth-child(8) { width: 4.8em; } /* 射程 */
   &:nth-child(9) { width: 2.4em; } /* コスト */
   &:nth-child(10) { width:10.8em; } /* 使用条件 */
-  @media screen and (1400px <= width <= 1680px){
-    &:nth-child(6) { width: 5.2em; } /* 対象 */
-    &:nth-child(8) { width: 4.2em; } /* 射程 */
-    &:nth-child(9) { width: 3.1em; } /* コスト */
-  }
-  @media screen and (1400px <= width <= 1600px){
-    &:nth-child(5) { width: 5.4em; } /* タイミング */
+  .wide & {
+    @media screen and (1400px <= width <= 1680px){
+      &:nth-child(6) { width: 5.2em; } /* 対象 */
+      &:nth-child(8) { width: 4.2em; } /* 射程 */
+      &:nth-child(9) { width: 3.1em; } /* コスト */
+    }
+    @media screen and (1400px <= width <= 1600px){
+      &:nth-child(5) { width: 5.4em; } /* タイミング */
+    }
   }
 
   &:nth-child(9) > div.thin {

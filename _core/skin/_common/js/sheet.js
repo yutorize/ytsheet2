@@ -147,3 +147,20 @@ window.addEventListener('load', ()=>{
     });
   }
 });
+
+// シングルカラムモード ----------------------------------------
+if(localStorage.getItem("singleColumnMode") == 1){
+  const observer = new MutationObserver((mutations, observer) => {
+    const targetElement = document.body;
+
+    if (targetElement) {
+      document.body.classList.remove('wide');
+      observer.disconnect();
+    }
+  });
+
+  observer.observe(document.documentElement, {
+    childList: true,
+    subtree: true
+  });
+}
