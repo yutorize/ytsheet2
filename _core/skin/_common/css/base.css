@@ -352,7 +352,7 @@ header {
 }
 header, .header-back-name {
   border-bottom: 1px solid #aaa;
-  background-image: url(../img/back-abstract.webp);
+  background-image: url(../img/back-abstract.webp)/* DL:linear-gradient(to right,#fffc,transparent) */;
   background-position: left top;
   background-repeat: no-repeat;
   background-color: var(--header-color);
@@ -369,7 +369,7 @@ footer {
   padding: 15px 10px 20px;
   border-top: 1px solid #aaa;
   background-color: var(--header-color);
-  background-image: url(../img/back-abstract-reverse.webp);
+  background-image: url(../img/back-abstract-reverse.webp)/* DL:linear-gradient(to left,#fffc,transparent) */;
   background-position: right top;
   background-repeat: no-repeat;
   text-align: right;

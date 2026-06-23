@@ -1,8 +1,13 @@
-document.forms.search.addEventListener('submit', clean_query);
+// 検索フォーム開閉
+function toggleHide(id){
+  document.getElementById(id).classList.toggle('hide');
+}
+// 空クエリを削除
+document.forms.search.addEventListener('submit', cleanQuery);
 
-function clean_query(e) {
+function cleanQuery(e) {
   e.preventDefault();
-  this.removeEventListener('submit', clean_query);
+  this.removeEventListener('submit', cleanQuery);
   var query = serialize(this);
   location.href = this.action + '?' + (function(){
     var arr = [];
