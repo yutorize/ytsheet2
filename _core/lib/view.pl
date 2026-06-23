@@ -576,6 +576,7 @@ sub downloadModeSheetConvert {
   my $sheet = shift;
   $sheet =~ s#<link rel="stylesheet" data-dl href="(.+?)(\?.+?)?">#"<style>\n".styleToHtml($1)."\n</style>"#gie;
   $sheet =~ s#<script data-dl src="(.+?)(\?.+?)?"></script>#"<script>\n".styleToHtml($1)."\n</script>"#gie;
+  $sheet =~ s{ href="\./.*?"}{}gi;
   return $sheet;
 }
 sub styleToHtml {
@@ -585,7 +586,8 @@ sub styleToHtml {
   close($FH);
   
   (my $dir = $_[0]) =~ s#/[^/]+?$##;
-  $output =~ s/url\((.+?\.png|jpg|gif|webp)\)/"url(".urlToBase64("$dir\/$1").")"/gie;
+  $output =~ s{url\((.+?\.(?:png|jpg|gif|webp))\)/\* DL:(.+?) \*/}{$2}gi;
+  $output =~ s{url\((.+?\.(?:png|jpg|gif|webp))\)}{"url(".urlToBase64("$dir\/$1").")"}gie;
   return "$output";
 }
 use MIME::Base64;
