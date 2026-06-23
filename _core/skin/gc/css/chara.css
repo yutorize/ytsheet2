@@ -3,13 +3,17 @@
 @layer system {
 /* // Layout
 ---------------------------------------------------------------------------------------------------- */
-@media screen and (width >= 1400px){
-  .column-abilities {
-    grid-column: 2;
-    grid-row: span 2;
+.wide {
+  @media screen and (width >= 1400px){
+    .column-abilities {
+      grid-column: 2;
+      grid-row: span 2;
+    }
+    #class-ability {
+      margin-top: 0;
+    }
   }
 }
-
 /* // Font
 ---------------------------------------------------------------------------------------------------- */
 #level dd {
@@ -384,11 +388,6 @@
 ---------------------------------------------------------------------------------------------------- */
 .column-abilities > .box {
   margin-top: var(--box-v-gap);
-}
-#class-ability {
-  @media screen and (width >= 1400px){
-    margin-top: 0;
-  }
 }
 .ability-table {
   > colgroup {
