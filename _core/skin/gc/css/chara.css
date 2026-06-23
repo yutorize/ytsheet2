@@ -443,7 +443,11 @@
         overflow-wrap: break-word;
       }
     }
-    &:hover td.note,
+    &:focus-within {
+      outline: 2px solid var(--text-color);
+      outline-offset: -1px;
+    }
+    &:focus-within td.note,
     .box[data-full-open="true"] & td.note {
       display: table-cell;
     }
@@ -466,7 +470,7 @@
     }
   }
 }
-.box:not([data-full-open="true"]) .ability-table > tbody:last-child:not(:hover) > tr:last-child {
+.box:not([data-full-open="true"]) .ability-table > tbody:last-child:not(:focus-within) > tr:last-child {
   border-top: hidden;
 }
 
