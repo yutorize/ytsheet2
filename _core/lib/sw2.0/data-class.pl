@@ -110,15 +110,6 @@ $data::class{'アルケミスト'}{package} = {
 $data::class{'ジオマンサー'}{package} = {
   Int => { name => '知力', stt => 'E' },
 };
-$data::class{'ウィザード'} = {
-  expTable => '',
-  id       => 'Wiz',
-  eName    => 'wizard',
-  magic => {
-    jName => '深智魔法',
-    eName => 'wizardry',
-  },
-};
 $data::class{'バード'}{craft}{data} = [
   [ 1,'アーリーバード'],
   [ 1,'アンビエント'],
