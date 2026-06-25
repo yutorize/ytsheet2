@@ -876,7 +876,6 @@ print renderChatPaletteForm();
 
 print renderEditPageEnd(
   notes => '©Group SNE ©Kumo Kagyu「ゴブリンスレイヤーTRPG」',
-  multilineTargets => '「容姿詳細・経歴詳細・その他メモ」「履歴（自由記入）」「所持品」「収支履歴」',
   extraHtml => renderDataList(),
 );
 

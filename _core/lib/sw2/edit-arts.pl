@@ -388,7 +388,6 @@ HTML
 
 print renderEditPageEnd(
   notes => '(C)Group SNE「ソード・ワールド'.($::SW2_0 ? '2.0' : '2.5').'」',
-  multilineTargets => '「効果」「備考」「由来・逸話など」',
   extraHtml => renderDataList(),
 );
 
