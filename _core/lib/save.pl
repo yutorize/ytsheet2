@@ -17,7 +17,7 @@ if($::in{base64mode}){
 }
 else {
   foreach(keys %::in){
-    next if $_ =~ /^(?:imageFile|imageCompressed)$/;
+    next if $_ eq 'imageFile';
     $::in{$_} = decode('utf8', param($_))
   }
 }
@@ -84,7 +84,6 @@ if ($mode eq 'make'){
 ### データ処理 #################################################################################
 my %pc = %::in;
 delete $pc{imageFile};
-delete $pc{imageCompressed};
 if($main::newId){ $pc{id} = $main::newId; }
 ## 現在時刻
 our $now = time;
@@ -134,23 +133,16 @@ if($pc{imageDelete}){
 }
 use MIME::Base64;
 my $imagedata; my $imageflag;
-if($::in{imageCompressed} || $::in{imageFile}){
+if($::in{imageFile}){
   my $mime;
-  # 縮小済み
-  if($::in{imageCompressed}){
-    $imagedata = decode_base64( (split ',', $::in{imageCompressed})[1] );
-    $mime = $::in{imageCompressedType};
-  }
-  # オリジナル
-  elsif($::in{imageFile}){
-    my $imagefile = $::in{imageFile}; # ファイル名の取得
-    $mime = uploadInfo($imagefile)->{'Content-Type'}; # MIMEタイプの取得
-    
-    # ファイルの受け取り
-    my $buffer;
-    while(my $bytesread = read($imagefile, $buffer, 2048)) {
-      $imagedata .= $buffer;
-    }
+
+  my $imagefile = $::in{imageFile}; # ファイル名の取得
+  $mime = uploadInfo($imagefile)->{'Content-Type'}; # MIMEタイプの取得
+
+  # ファイルの受け取り
+  my $buffer;
+  while(my $bytesread = read($imagefile, $buffer, 2048)) {
+    $imagedata .= $buffer;
   }
   # サイズチェック
   my $max_size = ( $set::image_maxsize ? $set::image_maxsize : 1024 * 1024 );
