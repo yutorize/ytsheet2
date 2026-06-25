@@ -1398,17 +1398,80 @@ sub ensureHtaccessDenied {
   return 1;
 }
 
+### テキスト整形ルール --------------------------------------------------
+sub renderTextRule {
+  my $type = $::pc{type} // $::in{type} // '';
+  return <<~"HTML";
+    <p>以下の書式で記入することで、テキスト装飾・整形が行なえます。</p>
+    <section>
+      <dl><dt>太字  <dd><code>''テキスト''</code>：<b>テキスト</b></dl>
+      <dl><dt>斜体  <dd><code>'''テキスト'''</code>：<span class="oblique">テキスト</span></dl>
+      <dl><dt>打消線<dd><code>%%テキスト%%</code>：<span class="strike">テキスト</span></dl>
+      <dl><dt>下線  <dd><code>__テキスト__</code>：<span class="underline">テキスト</span></dl>
+      <dl><dt>ルビ  <dd><code>|テキスト《てきすと》</code>：<ruby>テキスト<rt>てきすと</rt></ruby></dl>
+      <dl><dt>傍点  <dd><code>《《テキスト》》</code>：<span class="text-em">テキスト</span></dl>
+      <dl><dt>透明  <dd><code>{{テキスト}}</code>：<span style="color:transparent">テキスト</span>（ドラッグ反転で見える）</dl>
+      <dl><dt>リンク<dd><code>[[テキスト>URL]]</code></dl>
+      <dl><dt>他のシートへのリンク<dd><code>[テキスト#シートのID]</code></dl>
+      @{[ defined(&renderAddTextRule) ? &renderAddTextRule() : '' ]}
+    </section>
+    <hr>
+    <section class="multiline-rule">
+      <p>
+        ※以下は一部の複数行の欄でのみ有効です。
+        @{[ $::multilineTargets{$type} ? "<br>（有効な欄：$::multilineTargets{$type}）<br>" : '' ]}
+      </p>
+      <dl><dt>大見出し<dd>行頭に<code>*</code>：1行目に記述すると項目の見出しを差し替え</dl>
+      <dl><dt>中見出し<dd>行頭に<code>**</code></dl>
+      <dl><dt>小見出し<dd>行頭に<code>***</code></dl>
+      <dl><dt>左寄せ  <dd>行頭に<code>LEFT:</code>：以降のテキストがすべて左寄せになります。</dl>
+      <dl><dt>中央寄せ<dd>行頭に<code>CENTER:</code>：以降のテキストがすべて中央寄せになります。</dl>
+      <dl><dt>右寄せ  <dd>行頭に<code>RIGHT:</code>：以降のテキストがすべて右寄せになります。</dl>
+      <dl><dt>横罫線（直線）<dd><code>----</code>（4つ以上のハイフン）</dl>
+      <dl><dt>横罫線（点線）<dd><code> * * * *</code>（4つ以上の「スペース＋アスタリスク」）</dl>
+      <dl><dt>横罫線（破線）<dd><code> - - - -</code>（4つ以上の「スペース＋ハイフン」）</dl>
+      <dl><dt>表組み<dd>
+        <code>|テキスト|テキスト|</code>：表組み（テーブル）を作成します。<br>
+        <code>|~テキスト|</code>のようにセル頭に<code>~</code>で見出しセルになります。<br>
+        <code>|&gt;|テキスト|</code>のように<code>&gt;</code>単独で右のセルと結合します。<br>
+        <code>|CENTER: テキスト|</code>のようにセル頭に<code>CENTER:</code>で中央揃えになります。<br>
+        <code>|RIGHT: テキスト|</code>のようにセル頭に<code>RIGHT:</code>で右揃えになります。<br>
+        <code>|NOWRAP: テキスト|</code>のようにセル頭に<code>NOWRAP:</code>でそのセル内で改行しなくなります<br>
+        <code>|CENTER:5em|RIGHT:10em|c</code>のように行末に<code>c</code>をつけると書式指定行となり、その列の文字揃えや幅をまとめて指定できます。<br>
+        ※書式指定行では、通常の文字列は無効になります。<br>
+        ※指定できる幅の単位は、<code>em</code>（1em=全角1文字）および<code>%</code>が有効です。<br>
+        ※指定できる幅の上限は、それぞれ<code>20em</code>と<code>100%</code>です。<br>
+      </dl>
+      <dl><dt>定義リスト<dd>
+        <code>:項目名|説明文</code><br>
+        <code>:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|説明文2行目</code> 項目名を記入しないか、半角スペースで埋めると上と結合します。
+      </dl>
+      <dl><dt>折り畳み<dd>
+        行頭に<code>[>]項目名</code>：以降のテキストがすべて折り畳みになります。<br>
+        項目名を省略すると、自動的に「詳細」になります。<br>
+        <code>&gt;</code>の代わりに<code>V</code><code>v</code><code>Ｖ</code><code>ｖ</code>のいずれかの文字をもちいると、デフォルトで展開状態となります（例： <code>[v]項目名</code>）。
+      </dl>
+      <dl><dt>折り畳み終了<dd>
+        行頭に<code>[---]</code>：（ハイフンは3つ以上任意）<br>
+        省略すると、以後のテキストが全て折りたたまれます。
+      </dl>
+      <dl><dt>コメントアウト<dd>行頭に<code>//</code>：記述した行を非表示にします。</dl>
+    </section>
+  HTML
+}
+
 ### HTMLテンプレート出力 --------------------------------------------------
 sub outputTemplate {
-    my ($tmpl) = @_;
-    my $out = $tmpl->output;
-    if (
-      eval { $tmpl->isa('HTML::Template::Pro') }
-      && !Encode::is_utf8($out)
-    ) {
-      $out = Encode::decode('UTF-8', $out);
-    }
-    return $out;
+  my ($tmpl) = @_;
+
+  my $out = $tmpl->output;
+  if (
+    eval { $tmpl->isa('HTML::Template::Pro') }
+    && !Encode::is_utf8($out)
+  ) {
+    $out = Encode::decode('UTF-8', $out);
+  }
+  return $out;
 }
 ### アップデート・コンバート --------------------------------------------------
 ## バックアップ形式変更

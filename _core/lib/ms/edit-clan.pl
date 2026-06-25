@@ -343,7 +343,6 @@ HTML
 
 print renderEditPageEnd(
   notes => '©からすば晴「マモノスクランブル」',
-  multilineTargets => '「容姿・経歴・その他メモ」「履歴（自由記入）」',
   extraHtml => renderDataList(),
 );
 

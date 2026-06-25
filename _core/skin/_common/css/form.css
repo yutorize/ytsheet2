@@ -144,5 +144,46 @@ aside#login-state {
   }
 }
 
+#edit-help section.form {
+  dl {
+    display: grid;
+    grid-template-columns: minmax(3em, max-content) 1fr;
+    border-width: 0 0 1px;
+    border-style: dotted;
+    dl + & { margin-top: 0; }
+    &:has(+ dl) { margin-bottom: 0; }
+    > dt {
+      position: relative;
+
+      &::after {
+        content: "：";
+        position: absolute;
+        right: -1em;
+      }
+    }
+    > dd {
+      --dt-width: attr(data-dt-em em);
+      > dl {
+        grid-template-columns: minmax(var(--dt-width), max-content) 1fr;
+        margin-top: 0;
+        margin-left: 0;
+        &:last-child {
+          border-bottom: 0;
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+  .multiline-rule dl {
+    grid-template-columns: minmax(4em, max-content) 1fr;
+  }
+  code {
+    margin: 0 1px;
+    padding: 0.2em 0.4em;
+    font-size: 90%;
+    font-family: "SFMono-Regular",Consolas,"Liberation Mono",Menlo,Courier,meiryo,monospace,serif;
+    background-color: rgba(100,250,170,0.4);
+  }
+}
 /* ////////// LayerEnd ////////// */
 }

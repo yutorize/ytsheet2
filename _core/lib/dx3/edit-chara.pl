@@ -896,7 +896,6 @@ print renderChatPaletteForm();
 
 print renderEditPageEnd(
   notes => '©FarEast Amusement Research Co.,Ltd.「ダブルクロスThe 3rd Edition」',
-  multilineTargets => '「容姿・経歴・その他メモ」「履歴（自由記入）」',
   extraHtml => renderDataList() . renderFooterScript(),
 );
 

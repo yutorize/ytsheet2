@@ -739,59 +739,6 @@ i.term-em {
   background-color: hsla(var(--box-base-bg-color-h,230),40%,70%,0.3);
 }
 
-/* アイテムアイコン */
-.i-icon {
-  width: 1em;
-  height: 1em;
-  vertical-align: -1px;
-}
-
-/* アイコン */
-.s-icon {
-  display: inline-block;
-  position: relative;
-  width: 1em;
-  height: 1em;
-  text-align: center;
-  font-style: normal;
-  line-height: 1;
-  vertical-align: text-bottom;
-
-  > .raw {
-    display: block;
-    position: absolute;
-    transform: scaleX(0.5) translateX(-1em);
-    text-wrap: nowrap;
-    color: transparent;
-    text-shadow: none;
-  }
-
-  &::before,
-  &::after {
-    display: grid;
-    position: absolute;
-    inset: -0.2em 0 0;
-    justify-items: center;
-    align-items: center;
-    font-family: "Material Symbols Outlined";
-    font-weight: bold;
-    pointer-events: none;
-  }
-
-  &:not(:has(.raw)) {
-    color: transparent;
-    &::before, &::after {
-      color: var(--text-color);
-    }
-  }
-
-  /* コピーライト */
-  &.copyright::before {
-    content: "\e90c";
-    font-weight: normal;
-    transform: scale(1.2) translateX(-1px);
-  }
-}
 /* 狭いときに消す */
 @media screen and (width <= 735px){
   .sp-del {

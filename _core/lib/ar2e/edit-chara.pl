@@ -1112,7 +1112,6 @@ print renderChatPaletteForm();
 
 print renderEditPageEnd(
   notes => '©FarEast Amusement Research Co.,Ltd.「アリアンロッドRPG 2E」',
-  multilineTargets => '「容姿・経歴・その他メモ」「履歴（自由記入）」「携帯品・所持品」「収支履歴」',
   extraHtml => renderDataList() . renderFooterScript(),
 );
 

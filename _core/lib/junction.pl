@@ -54,6 +54,7 @@ elsif($mode eq 'blanksheet') { require $set::lib_edit; }   #ブランクシー�
 elsif($mode eq 'edit')       { require $set::lib_edit; }   #編集
 elsif($mode eq 'copy')       { require $set::lib_edit; }   #コピー
 elsif($mode eq 'convert')    { require $set::lib_edit; }   #コンバート編集
+elsif($mode eq 'edit-help')  { require $set::lib_form; }   #編集
 elsif($mode eq 'convertform'){ require $set::lib_form; }   #コンバートフォーム
 elsif($mode eq 'make')       { require $set::lib_save; }   #新規作成
 elsif($mode eq 'save')       { require $set::lib_save; }   #更新

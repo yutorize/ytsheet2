@@ -1607,8 +1607,6 @@ print renderChatPaletteForm();
 
 print renderEditPageEnd(
   notes => '(C)Group SNE「ソード・ワールド'.($::SW2_0 ? '2.0' : '2.5').'」',
-  multilineTargets => '「容姿・経歴・その他メモ」「履歴（自由記入）」「所持品」「収支履歴」',
-  addTextRule => renderAddTextRule(),
   extraHtml => renderDataList(),
 );
 
