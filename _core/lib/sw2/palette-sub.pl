@@ -343,11 +343,12 @@ sub palettePreset {
 
       if (@drugsLines) {
         my $drugTexts = join("\n", reverse @drugsLines); # 手前のループを逆順で回した分を相殺するために reverse
-        $text .= "### ■${headline}\n${drugTexts}\n###\n";
+        $text .= "### ■${headline}\n${drugTexts}\n\n";
       }
     }
+    $text .= appendPaletteInsert('drug');
 
-    # 宣言特技
+    # 宣言特技・種族特徴
     require $set::data_feats;
     my @declarationFeats = ();
     foreach (setAcquiredFeatsLvs(\%::pc)) {
@@ -364,18 +365,42 @@ sub palettePreset {
     foreach (1 .. $::pc{mysticArtsNum}) {
       my $artsName = $::pc{"mysticArts${_}"};
       my $marks = '';
-      $marks .= $& while $artsName =~ s/\[.]//;
+      $marks .= $& while $artsName =~ s/^\[.]//;
       next if $marks !~ /宣|準/;
       next unless $artsName;
       push(@declarationFeats, [$marks, $artsName]);
     }
-    if (@declarationFeats) {
+    my @raceAbilities;
+    #{
+    #  if($::pc{raceAbility} =~ /［HP変換］/ && $bot{YTC}){ push(@raceAbilities, "\@HP-{変換量} MP+{変換量} [補]［HP変換］\n//変換量=") }
+    #  if($::pc{raceAbility} =~ /［巨人化］/ && $bot{YTC}){ push(@raceAbilities, "\@HP+12/+12 [主]［巨人化］") }
+    #  if($::pc{raceAbility} =~ /［切り裂く風］/){
+    #    push(@raceAbilities, '2d+{冒険者}+{生命B} [主]［切り裂く風］');
+    #    push(@raceAbilities, "$sym{'@'}MP-4", 'k10[10]+{冒険者}+{生命B}［切り裂く風］ダメージ',"k10+{冒険者}+{生命B}$sym{'//'} ［切り裂く風］半減ダメージ");
+    #    push(@raceAbilities, "$sym{'@'}MP-8", 'k30[10]+{冒険者}+{生命B}［切り裂く風］ダメージ',"k30+{冒険者}+{生命B}$sym{'//'} ［切り裂く風］半減ダメージ") if $::pc{level} > 6;
+    #    push(@raceAbilities, "$sym{'@'}MP-16",'k50[10]+{冒険者}+{生命B}［切り裂く風］ダメージ',"k50+{冒険者}+{生命B}$sym{'//'} ［切り裂く風］半減ダメージ") if $::pc{level} > 11;
+    #  }
+    #  if($::pc{raceAbility} =~ /［石化の視線］/){
+    #    push(@raceAbilities, '2d+{冒険者}+{精神B} [補]［石化の視線］',setChoice(1,'器用度-6（命中-1）,敏捷度-6（回避-1）'),"$sym{'@'}MP-5");
+    #  }
+    #}
+    if (@declarationFeats || @raceAbilities) {
       $text .= "###\n" if $bot{TKY};
-      $text .= "\n### ■宣言特技\n";
+      $text .= "### ■";
+      if(@declarationFeats){ $text .= '宣言特技' }
+      if(@declarationFeats && @raceAbilities){ $text .= '・' }
+      if(@raceAbilities){ $text .= '種族特徴' }
+      $text .= "\n";
+    }
+    if (@declarationFeats) {
       foreach (@declarationFeats) {
         (my $marks, my $featName) = @{$_};
         $text .= "${marks}《${featName}》\n";
       }
+      $text .= "\n";
+    }
+    if (@raceAbilities) {
+      $text .= "$_\n" foreach (@raceAbilities);
       $text .= "\n";
     }
     $text .= appendPaletteInsert('feats');
