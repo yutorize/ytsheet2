@@ -28,8 +28,18 @@ let saving = 0;
 function formSubmit() {
   if(saving){ return; }
   if(!formCheck()){ return false; }
+
   const formData = new FormData(form);
-  const action = form.getAttribute("action");
+  if(compressedImageFile){
+    formData.set('imageFile', compressedImageFile, compressedImageFile.name);
+  }
+
+  for (const key of formData.keys()) {
+    if(/\[\]$/.test(key)){
+      formData.set(key.replace(/\[\]$/,''), formData.getAll(key));
+      formData.delete(key);
+    }
+  }
   if(base64Mode){
     for(let item of formData){
       if(item[0] === 'mode'){ continue; }
@@ -47,6 +57,7 @@ function formSubmit() {
   saving = 1;
   const sendCount = formChangeCount;
   formChangeCount = 0;
+  const action = form.getAttribute("action");
   fetch(action, options)
   .then(async response => {
     let data;
@@ -155,8 +166,6 @@ function backupFormInputs() {
   delete obj.pass;
   delete obj.image;
   delete obj.imageFile;
-  delete obj.imageCompressed;
-  delete obj.imageCompressedType;
   const formDataJSON = JSON.stringify(obj);
   localStorage.setItem('formData-'+sheetType, formDataJSON);
   console.log('backupFormInputs(): formData-'+sheetType)
@@ -331,7 +340,6 @@ function setChatPalette(){
   formData.set("editingMode", "1");
   formData.delete("password");
   formData.delete("imageFile");
-  formData.delete("imageCompressed");
   formData.delete("unitStatusNum");
   formData.delete("unitStatusNotOutput");
   const action = form.getAttribute("action")
@@ -419,12 +427,18 @@ function imagePositionClose(){
 }
 // プレビュー
 function imagePreView(file, imageMaxSize){
+  if(!file){ return; }
+
+  compressedImageFile = null;
+  compressScale = 1;
+
   if(file.size > imageMaxSize){
     alert(`ファイルサイズが${ (imageMaxSize >= 1048576) ? (imageMaxSize / 1048576)+'MB' : (imageMaxSize / 1024)+'KB' }を超えているため、自動的に画像形式を変換・縮小されます。元画像が大きいと、変換・縮小処理に時間がかかることがあります。`);
     form.imageFile.value = '';
     imageCompressor(file, imageMaxSize);
   }
   else {
+    compressedImageFile = null;
     imageBlobPreview(file)
   }
 }
@@ -438,6 +452,8 @@ function imageBlobPreview(blob){
   if(imageType == 'character'){ imageDragPointSet(); }
 }
 // 圧縮
+
+let compressedImageFile = null;
 let compressScale = 1;
 function imageCompressor(data, imageMaxSize){
   let image = new Image();
@@ -457,12 +473,10 @@ function imageCompressor(data, imageMaxSize){
         }
         else {
           imageBlobPreview(result);
-          let reader = new FileReader();
-          reader.readAsDataURL(result);
-          reader.onload = function() {
-            form.imageCompressed.value = reader.result;
-            form.imageCompressedType.value = result.type;
-          }
+          compressedImageFile = new File([result], 'image.webp', {
+            type: result.type || 'image/webp',
+            lastModified: Date.now(),
+          });
         }
       },
       maxWidth : image.width * compressScale,
@@ -683,8 +697,6 @@ function exportAsJson() {
   delete o.pass;
   delete o.image;
   delete o.imageFile;
-  delete o.imageCompressed;
-  delete o.imageCompressedType;
   const json = JSON.stringify(o);
 
   const jsonUrl = window.URL.createObjectURL(new Blob([json], {type: 'text/json;charset=utf-8;'}));
