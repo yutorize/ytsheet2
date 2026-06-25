@@ -507,7 +507,6 @@ print renderChatPaletteForm();
 
 print renderEditPageEnd(
   notes => '©からすば晴／N.G.P.／アークライト／新紀元社「人鬼血盟RPG ブラッドパス」',
-  multilineTargets => '「容姿・経歴・その他メモ」「履歴（自由記入）」',
   extraHtml => renderDataList() . renderFooterScript(),
 );
 

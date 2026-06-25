@@ -414,8 +414,6 @@ sub renderEditPageStart {
 sub renderEditPageEnd {
   my (%opt) = @_;
   my $notes = $opt{notes} // '';
-  my $multilineTargets = $opt{multilineTargets} // '';
-  my $addTextRule = $opt{addTextRule} // '';
   my $extraHtml = $opt{extraHtml} // '';
   return <<~"HTML";
           @{[ renderDecorationForm() ]}
@@ -424,7 +422,16 @@ sub renderEditPageEnd {
         </form>
         @{[ renderDeleteForm() ]}
       </article>
-      @{[ renderTextRuleArea($addTextRule, $multilineTargets) ]}
+      <aside id="text-rule" class="sticky-footer" style="display:none">
+        <h2>
+          テキスト装飾・整形ルール
+          <small>（<a href="./?mode=edit-help@{[ $type ? "&type=$type" : '' ]}" target="_blank">⇒別ウィンドウで開く</a>）</small>
+        </h2>
+        <i class="close-button" onclick="view('text-rule')"></i>
+        <div>
+        @{[ renderTextRule() ]}
+        </div>
+      </aside>
     </main>
     <footer>
       <p class="notes">$notes</p>
@@ -907,62 +914,6 @@ sub renderFontCustomForm {
     $i++;
   }
   return $html.'<script>const fontList = '.JSON::PP->new->encode(\@set::googlefonts).';</script>';
-}
-
-### テキスト整形ルール --------------------------------------------------
-sub renderTextRuleArea {
-  my $systemRule = shift;
-  my $multiline = shift;
-  return <<~"HTML";
-    <aside id="text-rule" class="sticky-footer" style="display:none">
-      <h2>テキスト装飾・整形ルール</h2>
-      <i class="close-button" onclick="view('text-rule')"></i>
-      <div>
-        以下の書式で記入することで、テキスト装飾・整形が行なえます。<br>
-        太字　：<code>''テキスト''</code>：<b>テキスト</b><br>
-        斜体　：<code>'''テキスト'''</code>：<span class="oblique">テキスト</span><br>
-        打消線：<code>%%テキスト%%</code>：<span class="strike">テキスト</span><br>
-        下線　：<code>__テキスト__</code>：<span class="underline">テキスト</span><br>
-        ルビ　：<code>|テキスト《てきすと》</code>：<ruby>テキスト<rt>てきすと</rt></ruby><br>
-        傍点　：<code>《《テキスト》》</code>：<span class="text-em">テキスト</span><br>
-        透明　：<code>{{テキスト}}</code>：<span style="color:transparent">テキスト</span>（ドラッグ反転で見える）<br>
-        リンク：<code>[[テキスト>URL]]</code><br>
-        別のゆとシートへのリンク：<code>[テキスト#シートのID]</code><br>
-        <br>
-        ${systemRule}
-        <hr class="dotted">
-        ※以下は一部の複数行の欄でのみ有効です。<br>
-        （有効な欄：${multiline}）<br>
-        大見出し：行頭に<code>*</code>：1行目に記述すると項目の見出しを差し替え<br>
-        中見出し：行頭に<code>**</code><br>
-        小見出し：行頭に<code>***</code><br>
-        左寄せ　：行頭に<code>LEFT:</code>：以降のテキストがすべて左寄せになります。<br>
-        中央寄せ：行頭に<code>CENTER:</code>：以降のテキストがすべて中央寄せになります。<br>
-        右寄せ　：行頭に<code>RIGHT:</code>：以降のテキストがすべて右寄せになります。<br>
-        横罫線（直線）：<code>----</code>（4つ以上のハイフン）<br>
-        横罫線（点線）：<code> * * * *</code>（4つ以上の「スペース＋アスタリスク」）<br>
-        横罫線（破線）：<code> - - - -</code>（4つ以上の「スペース＋ハイフン」）<br>
-        表組み：<code>|テキスト|テキスト|</code>：表組み（テーブル）を作成します。<br>
-        　　　　<code>|~テキスト|</code>のようにセル頭に<code>~</code>で見出しセルになります。<br>
-        　　　　<code>|&gt;|テキスト|</code>のように<code>&gt;</code>単独で右のセルと結合します。<br>
-        　　　　<code>|CENTER: テキスト|</code>のようにセル頭に<code>CENTER:</code>で中央揃えになります。<br>
-        　　　　<code>|RIGHT: テキスト|</code>のようにセル頭に<code>RIGHT:</code>で右揃えになります。<br>
-        　　　　<code>|NOWRAP: テキスト|</code>のようにセル頭に<code>NOWRAP:</code>でそのセル内で改行しなくなります<br>
-        　　　　<code>|CENTER:5em|RIGHT:10em|c</code>のように行末に<code>c</code>をつけると書式指定行となり、その列の文字揃えや幅をまとめて指定できます。<br>
-        　　　　※書式指定行では、通常の文字列は無効になります。<br>
-        　　　　※指定できる幅の単位は、<code>em</code>（1em=全角1文字）および<code>%</code>が有効です。<br>
-        　　　　※指定できる幅の上限は、それぞれ<code>20em</code>と<code>100%</code>です。<br>
-        定義リスト：<code>:項目名|説明文</code><br>
-        　　　　　　<code>:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|説明文2行目</code> 項目名を記入しないか、半角スペースで埋めると上と結合します。<br>
-        折り畳み：行頭に<code>[>]項目名</code>：以降のテキストがすべて折り畳みになります。<br>
-        　　　　　項目名を省略すると、自動的に「詳細」になります。<br>
-        　　　　　<code>&gt;</code>の代わりに<code>V</code><code>v</code><code>Ｖ</code><code>ｖ</code>のいずれかの文字をもちいると、デフォルトで展開状態となります（例： <code>[v]項目名</code>）。<br>
-        折り畳み終了：行頭に<code>[---]</code>：（ハイフンは3つ以上任意）<br>
-        　　　　　　　省略すると、以後のテキストが全て折りたたまれます。<br>
-        コメントアウト：行頭に<code>//</code>：記述した行を非表示にします。
-      </div>
-    </aside>
-  HTML
 }
 
 ### 削除フォーム --------------------------------------------------

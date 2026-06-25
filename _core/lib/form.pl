@@ -38,12 +38,16 @@ if($mode eq 'option' || $mode eq 'passchange'){
   $INDEX->param(userName => (getPlayerName($LOGIN_ID))[0]);
   $INDEX->param(userMail => (getPlayerName($LOGIN_ID))[1]);
 }
-if($mode eq 'convertform'){
+elsif($mode eq 'convertform'){
   my @urls;
   foreach (keys %set::convert_url){
     push(@urls, { URL => $_ });
   }
   $INDEX->param(ConvertURLs => \@urls);
+}
+elsif($mode eq 'edit-help'){
+  $INDEX->param(pageTitle => 'テキスト装飾・整形ルール - ');
+  $INDEX->param(textRule => renderTextRule());
 }
 
 $INDEX->param(LOGIN_ID => $LOGIN_ID);

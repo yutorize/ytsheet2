@@ -300,8 +300,6 @@ print renderChatPaletteForm();
 
 print renderEditPageEnd(
   notes => '(C)Group SNE「ソード・ワールド'.($::SW2_0 ? '2.0' : '2.5').'」',
-  multilineTargets => '「特殊能力」「解説」',
-  addTextRule => renderAddTextRule(),
   extraHtml => renderDataList(),
 );
 
