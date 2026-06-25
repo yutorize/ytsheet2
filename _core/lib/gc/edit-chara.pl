@@ -1227,7 +1227,6 @@ print renderChatPaletteForm();
 
 print renderEditPageEnd(
   notes => '©Shunsaku Yano/Team Barrelroll.「グランクレストRPG」',
-  multilineTargets => '「設定・メモ」「履歴（自由記入）」',
   extraHtml => renderDataList() . renderFooterScript(),
 );
 

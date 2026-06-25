@@ -1854,6 +1854,48 @@ input[type="submit"]:hover {
   overflow-y: auto;
   overscroll-behavior: contain;
 }
+#text-rule {
+  section {
+    margin-top: .5em;
+  }
+  hr {
+    margin: 1em 0;
+  }
+  dl {
+    display: grid;
+    grid-template-columns: minmax(3em, max-content) 1fr;
+    border-width: 0 0 1px;
+    border-style: dotted;
+
+    dl + & { margin-top: 0; }
+    &:has(+ dl) { margin-bottom: 0; }
+    > dt {
+      position: relative;
+
+      &::after {
+        content: "：";
+        position: absolute;
+        right: -1em;
+      }
+    }
+    > dd {
+      padding-left: 1em;
+      --dt-width: attr(data-dt-em em);
+      > dl {
+        grid-template-columns: minmax(var(--dt-width), max-content) 1fr;
+        margin-top: 0;
+        margin-left: 0;
+        &:last-child {
+          border-bottom: 0;
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+  .multiline-rule dl {
+    grid-template-columns: minmax(4em, max-content) 1fr;
+  }
+}
 
 /* ////////// LayerEnd ////////// */
 }

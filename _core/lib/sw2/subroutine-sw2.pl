@@ -382,42 +382,50 @@ sub extractDivineMark {
   return (undef, $magicName);
 }
 
-### テキスト整形の追加ルール --------------------------------------------------
+### テキスト整形ルール --------------------------------------------------
+## 複数行対応覧
+our %multilineTargets = (
+  ''  => '「容姿・経歴・その他メモ」「履歴（自由記入）」「所持品」「収支履歴」',
+  'm' => '「特殊能力」「解説」',
+  'i' => '「効果」「解説」',
+  'a' => '「効果」「備考」「由来・逸話など」',
+);
+## 追加ルール
 sub renderAddTextRule {
   my $html= <<~"HTML";
-    アイコン<br>
-    　魔法のアイテム：<code>[魔]</code>：<img class="i-icon" src="${set::icon_dir}item_magic.png"><br>
-    　刃武器　　　　：<code>[刃]</code>：<img class="i-icon" src="${set::icon_dir}item_edge.png"><br>
-    　打撃武器　　　：<code>[打]</code>：<img class="i-icon" src="${set::icon_dir}item_blow.png"><br>
-    　地方特産品　　：<code>[特]</code>：<img class="i-icon" src="${set::icon_dir}item_local.png"><br>
+    <dl><dt>アイコン<dd data-dt-em="5">
+      <dl><dt>魔法のアイテム<dd><code>[魔]</code>：<img class="i-icon" src="${set::icon_dir}item_magic.png"></dl>
+      <dl><dt>刃武器        <dd><code>[刃]</code>：<img class="i-icon" src="${set::icon_dir}item_edge.png"></dl>
+      <dl><dt>打撃武器      <dd><code>[打]</code>：<img class="i-icon" src="${set::icon_dir}item_blow.png"></dl>
+      <dl><dt>地方特産品    <dd><code>[特]</code>：<img class="i-icon" src="${set::icon_dir}item_local.png"></dl>
   HTML
   if($::SW2_0){
     $html .= <<~"HTML";
-      　流派装備　　　：<code>[流]</code>：<i class="i-icon" data-kind="流"><span class="raw">[流]</span></i><br>
-      　常時型　　：<code>[常]</code>：<i class="s-icon passive  "><span class="raw">[常]</span></i><br>
-      　主動作型　：<code>[主]</code>：<i class="s-icon major0   "><span class="raw">[主]</span></i><br>
-      　補助動作型：<code>[補]</code>：<i class="s-icon minor0   "><span class="raw">[補]</span></i><br>
-      　宣言型　　：<code>[宣]</code>：<i class="s-icon active0  "><span class="raw">[宣]</span></i><br>
-      　条件型　　：<code>[条]</code>：<i class="s-icon condition"><span class="raw">[条]</span></i><br>
-      　条件選択型：<code>[選]</code>：<i class="s-icon selection"><span class="raw">[選]</span></i><br>
+      <dl><dt>流派装備  <dd><code>[流]</code>：<i class="i-icon" data-kind="流"><span class="raw">[流]</span></i></dl>
+      <dl><dt>常時型    <dd><code>[常]</code>：<i class="s-icon passive  "><span class="raw">[常]</span></i></dl>
+      <dl><dt>主動作型  <dd><code>[主]</code>：<i class="s-icon major0   "><span class="raw">[主]</span></i></dl>
+      <dl><dt>補助動作型<dd><code>[補]</code>：<i class="s-icon minor0   "><span class="raw">[補]</span></i></dl>
+      <dl><dt>宣言型    <dd><code>[宣]</code>：<i class="s-icon active0  "><span class="raw">[宣]</span></i></dl>
+      <dl><dt>条件型    <dd><code>[条]</code>：<i class="s-icon condition"><span class="raw">[条]</span></i></dl>
+      <dl><dt>条件選択型<dd><code>[選]</code>：<i class="s-icon selection"><span class="raw">[選]</span></i></dl>
     HTML
   }
   else {
     $html .= <<~"HTML";
-      　流派アイテム　：<code>[流]</code>：<img class="i-icon" src="${set::icon_dir}item_school.png"><br>
-      　アルフレイム大陸由来の流派アイテム：<code>[ア]</code>：<img class="i-icon" src="${set::icon_dir}item_school_a.png"><br>
-      　テラスティア大陸由来の流派アイテム：<code>[テ]</code>：<img class="i-icon" src="${set::icon_dir}item_school_t.png"><br>
-      　常時型　　：<code>[常]</code>：<i class="s-icon passive"><span class="raw">[常]</span></i><br>
-      　戦闘準備型：<code>[準]</code>：<i class="s-icon setup  "><span class="raw">[準]</span></i><br>
-      　主動作型　：<code>[主]</code>：<i class="s-icon major  "><span class="raw">[主]</span></i><br>
-      　補助動作型：<code>[補]</code>：<i class="s-icon minor  "><span class="raw">[補]</span></i><br>
-      　宣言型　　：<code>[宣]</code>：<i class="s-icon active "><span class="raw">[宣]</span></i><br>
-      　高揚の楽素：<code>[⤴]</code><code>[↑]</code>：<i class="s-icon uplift">⤴</i><br>
-      　鎮静の楽素：<code>[⤵]</code><code>[↓]</code>：<i class="s-icon calm">⤵</i><br>
-      　魅惑の楽素：<code>[♡]</code>：<i class="s-icon heart">♡</i><br>
+      <dl><dt>流派アイテム<dd><code>[流]</code>：<img class="i-icon" src="${set::icon_dir}item_school.png"></dl>
+      <dl><dt>アルフレイム大陸由来の流派アイテム<dd><code>[ア]</code>：<img class="i-icon" src="${set::icon_dir}item_school_a.png"></dl>
+      <dl><dt>テラスティア大陸由来の流派アイテム<dd><code>[テ]</code>：<img class="i-icon" src="${set::icon_dir}item_school_t.png"></dl>
+      <dl><dt>常時型    <dd><code>[常]</code>：<i class="s-icon passive"><span class="raw">[常]</span></i></dl>
+      <dl><dt>戦闘準備型<dd><code>[準]</code>：<i class="s-icon setup  "><span class="raw">[準]</span></i></dl>
+      <dl><dt>主動作型  <dd><code>[主]</code>：<i class="s-icon major  "><span class="raw">[主]</span></i></dl>
+      <dl><dt>補助動作型<dd><code>[補]</code>：<i class="s-icon minor  "><span class="raw">[補]</span></i></dl>
+      <dl><dt>宣言型    <dd><code>[宣]</code>：<i class="s-icon active "><span class="raw">[宣]</span></i></dl>
+      <dl><dt>高揚の楽素<dd><code>[⤴]</code><code>[↑]</code>：<i class="s-icon uplift">⤴</i></dl>
+      <dl><dt>鎮静の楽素<dd><code>[⤵]</code><code>[↓]</code>：<i class="s-icon calm">⤵</i></dl>
+      <dl><dt>魅惑の楽素<dd><code>[♡]</code>：<i class="s-icon heart">♡</i></dl>
     HTML
   }
-  return $html;
+  return "</dl>".$html;
 }
 ### バージョンアップデート --------------------------------------------------
 sub data_update_chara {
