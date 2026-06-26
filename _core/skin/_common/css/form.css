@@ -103,6 +103,13 @@ aside#login-state {
     }
   }
 }
+#delete-account {
+  & button.submit {
+    width: max-content;
+    background: linear-gradient(to bottom, #fdd550, #ff5555);
+    &:hover { background: red; color: white; }
+  }
+}
 
 #convertform section.form {
   margin: 2em 10%;
