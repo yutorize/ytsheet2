@@ -239,7 +239,13 @@ sub loadSheetData {
       ($pc{protect}, $pc{forbidden}) = getProtectType("${sheetDir}/data.cgi");
       $message = $pc{updateTime}.' 時点のバックアップデータから編集しています。';
     }
-    $pc{imageURL} = $pc{image} ? "./?id=$::in{id}&mode=image&cache=$pc{imageUpdate}" : '';
+    $pc{mainImage} ||= 1;
+    for my $imageNo (1 .. ($set::image_maxcount || 1)){
+      my $suffix = $imageNo == 1 ? '' : $imageNo;
+      my $update = $pc{"imageUpdate$suffix"};
+      $pc{"imageURL$suffix"} = $pc{"image$suffix"} ? "./?id=$::in{id}&mode=image&imageNo=$imageNo&cache=$update" : '';
+    }
+    $pc{imageURL} = $pc{"imageURL".($pc{mainImage} == 1 ? '' : $pc{mainImage})} || $pc{imageURL};
   }
   elsif($mode eq 'copy'){
     my $datatype = ($::in{log}) ? 'logs' : 'data';
@@ -261,7 +267,7 @@ sub loadSheetData {
       }
     }
 
-    delete $pc{image};
+    deleteImageData(\%pc);
     delete $pc{protect};
 
     $message  = '<div class="data-imported">';
@@ -272,7 +278,7 @@ sub loadSheetData {
   }
   elsif($mode eq 'convert'){
     %pc = %::conv_data;
-    delete $pc{image};
+    deleteImageData(\%pc);
     delete $pc{imageURL};
     delete $pc{protect};
     $_ =~ s/"/&quot;/g foreach(values %pc);
@@ -300,6 +306,18 @@ sub tokenMake {
   close($FH);
 
   return $token;
+}
+
+### 画像データ削除 --------------------------------------------------
+sub deleteImageData {
+  my ($pc) = @_;
+  for my $imageNo (1 .. ($set::image_maxcount || 1)){
+    my $suffix = $imageNo == 1 ? '' : $imageNo;
+    delete $pc->{"image$suffix"};
+    delete $pc->{"imageUpdate$suffix"};
+    delete $pc->{"imageURL$suffix"};
+  }
+  delete $pc->{mainImage};
 }
 
 ### 新規作成系モード判定 --------------------------------------------------
@@ -584,6 +602,7 @@ sub renderAddDelButtons {
 sub renderImageForm {
   my $imgurl = shift;
   my $image_maxsize_view = $set::image_maxsize >= 1048576 ? sprintf("%.3g",$set::image_maxsize/1048576).'MB' : sprintf("%.3g",$set::image_maxsize/1024).'KB';
+  $::pc{mainImage} ||= 1;
   return <<~"HTML";
     <div class="box" id="image" style="max-height:550px;">
       <h2>キャラクター画像</h2>
@@ -591,11 +610,11 @@ sub renderImageForm {
         <a class="button" onclick="imagePositionView();wordsPreView()">画像とセリフの設定</a>
       </p>
       <p>
-        <input type="checkbox" name="imageDelete" value="1"> 画像を削除する
-        @{[ input 'image','hidden' ]}
+        <input type="checkbox" name="imageDelete" value="1"> 画像1を削除する
+        @{[ join '', map { my $n=$_; my $suffix = $n == 1 ? '' : $n; input("image$suffix",'hidden') . input("imageUpdate$suffix",'hidden') } (1 .. ($set::image_maxcount || 1)) ]}
+        <br>メイン画像：@{[ join ' ', map { my $n=$_; qq|<label><input type="radio" name="mainImage" value="$n" |.($::pc{mainImage}==$n?'checked':'').qq|> $n</label>| } (1 .. ($set::image_maxcount || 1)) ]}
       </p>
     </div>
-    @{[ input 'imageUpdate', 'hidden' ]}
 
     <div id="image-custom" style="display:none">
       <div class="image-custom-view-area">
@@ -613,6 +632,7 @@ sub renderImageForm {
           プレビューエリアに画像ファイルをドロップ、<br>
           または
           <input type="file" accept="image/*" name="imageFile" onchange="imagePreView(this.files[0], $set::image_maxsize || 0)"><br>
+          @{[ join '', map { my $n=$_; qq~<label>画像$n：<input type="file" accept="image/*" name="imageFile$n" onchange="imagePreView(this.files[0], $set::image_maxsize || 0, $n)"></label> <label><input type="checkbox" name="imageDelete$n" value="1"> 削除</label><br>~ } (2 .. ($set::image_maxcount || 1)) ]}
           ※ ファイルサイズ @{[ $image_maxsize_view ]} までの JPG/PNG/GIF/WebP
           <small>（サイズを超過する場合、自動的にWebP形式に変換し、その上でまだ超過している場合は縮小処理が行われます）</small>
         </p>

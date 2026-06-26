@@ -51,10 +51,13 @@ elsif($mode eq 'image' || $mode eq 'ogp-image'){
   if(!$file){ error "404:データがありません。" }
   my %pc;
   foreach (readSheetFileLines($datadir, $file, 'data.cgi')){
-    if($_ =~ /^(image.*?)<>(.*?)\n/){ $pc{$1} = $2; }
+    if($_ =~ /^((?:mainImage)|(?:image.*?))<>(.*?)\n/){ $pc{$1} = $2; }
   }
 
-  my $ext = $pc{image};
+  my $imageNo = $::in{imageNo} || $pc{mainImage} || 1;
+  $imageNo = 1 if $imageNo !~ /^\d+$/ || $imageNo < 1 || $imageNo > ($set::image_maxcount || 1);
+  my $suffix = $imageNo == 1 ? '' : $imageNo;
+  my $ext = $pc{"image$suffix"};
   
   my %mime = (
     jpg  => 'image/jpeg',
@@ -64,19 +67,19 @@ elsif($mode eq 'image' || $mode eq 'ogp-image'){
     webp => 'image/webp',
   );
 
-  my $path = "./${datadir}/${file}/image.${ext}";
+  my $path = "./${datadir}/${file}/image$suffix.${ext}";
   my $imageData;
   
   my $imageExists;
   if($ext){
-    $imageData = readSheetFileBinary($datadir, $file, "image.$ext");
+    $imageData = readSheetFileBinary($datadir, $file, "image$suffix.$ext");
     $imageExists = 1 if defined $imageData;
   }
   if(!$imageExists){
     foreach (qw(png jpg jpeg gif webp)) {
-      $imageData = readSheetFileBinary($datadir, $file, "image.$_");
+      $imageData = readSheetFileBinary($datadir, $file, "image$suffix.$_");
       if(defined $imageData) {
-        $path = "./${datadir}/${file}/image.$_";
+        $path = "./${datadir}/${file}/image$suffix.$_";
         $ext = $_;
         $imageExists = 1;
         last;

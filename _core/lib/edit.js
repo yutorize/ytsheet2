@@ -30,8 +30,9 @@ function formSubmit() {
   if(!formCheck()){ return false; }
 
   const formData = new FormData(form);
-  if(compressedImageFile){
-    formData.set('imageFile', compressedImageFile, compressedImageFile.name);
+  for(const [imageNo, compressedImageFile] of Object.entries(compressedImageFiles)){
+    const suffix = imageNo == '1' ? '' : imageNo;
+    formData.set(`imageFile${suffix}`, compressedImageFile, compressedImageFile.name);
   }
 
   for (const key of formData.keys()) {
@@ -164,8 +165,10 @@ function backupFormInputs() {
   delete obj._token;
   delete obj.id;
   delete obj.pass;
-  delete obj.image;
-  delete obj.imageFile;
+  delete obj.mainImage;
+  for(const key of Object.keys(obj)){
+    if(/^imageFile\d*$/.test(key) || /^image(?:Update)?\d*$/.test(key)){ delete obj[key]; }
+  }
   const formDataJSON = JSON.stringify(obj);
   localStorage.setItem('formData-'+sheetType, formDataJSON);
   console.log('backupFormInputs(): formData-'+sheetType)
@@ -339,7 +342,9 @@ function setChatPalette(){
   formData.set("mode", "palette");
   formData.set("editingMode", "1");
   formData.delete("password");
-  formData.delete("imageFile");
+  for(const key of Array.from(formData.keys())){
+    if(/^imageFile\d*$/.test(key)){ formData.delete(key); }
+  }
   formData.delete("unitStatusNum");
   formData.delete("unitStatusNotOutput");
   const action = form.getAttribute("action")
@@ -426,19 +431,19 @@ function imagePositionClose(){
   document.getElementById('image-custom').style.display = 'none';
 }
 // プレビュー
-function imagePreView(file, imageMaxSize){
+function imagePreView(file, imageMaxSize, imageNo = 1){
   if(!file){ return; }
 
-  compressedImageFile = null;
-  compressScale = 1;
+  delete compressedImageFiles[imageNo];
 
   if(file.size > imageMaxSize){
     alert(`ファイルサイズが${ (imageMaxSize >= 1048576) ? (imageMaxSize / 1048576)+'MB' : (imageMaxSize / 1024)+'KB' }を超えているため、自動的に画像形式を変換・縮小されます。元画像が大きいと、変換・縮小処理に時間がかかることがあります。`);
-    form.imageFile.value = '';
-    imageCompressor(file, imageMaxSize);
+    const suffix = imageNo == 1 ? '' : imageNo;
+    form[`imageFile${suffix}`].value = '';
+    imageCompressor(file, imageMaxSize, imageNo);
   }
   else {
-    compressedImageFile = null;
+    delete compressedImageFiles[imageNo];
     imageBlobPreview(file)
   }
 }
@@ -453,9 +458,8 @@ function imageBlobPreview(blob){
 }
 // 圧縮
 
-let compressedImageFile = null;
-let compressScale = 1;
-function imageCompressor(data, imageMaxSize){
+const compressedImageFiles = {};
+function imageCompressor(data, imageMaxSize, imageNo = 1, compressScale = 1){
   let image = new Image();
   let blobURL = URL.createObjectURL(data);
   image.src = blobURL;
@@ -464,16 +468,16 @@ function imageCompressor(data, imageMaxSize){
       quality: 0.9,
       success(result) {
         if(result.size > imageMaxSize){
-          compressScale -= 0.1;
-          if(compressScale > 0){
-            console.log(`画像縮小: ${ compressScale * 100 } %`);
-            imageCompressor(result, imageMaxSize);
+          const nextCompressScale = compressScale - 0.1;
+          if(nextCompressScale > 0){
+            console.log(`画像縮小: ${ nextCompressScale * 100 } %`);
+            imageCompressor(result, imageMaxSize, imageNo, nextCompressScale);
           }
           else { alert('画像サイズを既定まで下げることができませんでした。'); }
         }
         else {
           imageBlobPreview(result);
-          compressedImageFile = new File([result], 'image.webp', {
+          compressedImageFiles[imageNo] = new File([result], 'image.webp', {
             type: result.type || 'image/webp',
             lastModified: Date.now(),
           });
@@ -695,8 +699,10 @@ function exportAsJson() {
   delete o._token;
   delete o.id;
   delete o.pass;
-  delete o.image;
-  delete o.imageFile;
+  delete o.mainImage;
+  for(const key of Object.keys(o)){
+    if(/^imageFile\d*$/.test(key) || /^image(?:Update)?\d*$/.test(key)){ delete o[key]; }
+  }
   const json = JSON.stringify(o);
 
   const jsonUrl = window.URL.createObjectURL(new Blob([json], {type: 'text/json;charset=utf-8;'}));

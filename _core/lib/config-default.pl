@@ -41,6 +41,8 @@ package set;
 ## ●画像関係
  # キャラクター画像のファイルサイズ上限(単位byte)
   our $image_maxsize = 1024 * 1024 * 1;
+ # キャラクター画像の保存上限枚数
+  our $image_maxcount = 1;
 
 
 ## ●削除関係

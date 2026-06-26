@@ -11,13 +11,13 @@ if($::in{base64mode}){
   foreach(keys %::in){
     next if $_ eq 'mode';
     next if !$_;
-    next if $_ =~ 'imageFile';
+    next if $_ =~ /^imageFile\d*$/;
     $::in{$_} = decode('utf8', decode_base64($::in{$_}) );
   }
 }
 else {
   foreach(keys %::in){
-    next if $_ eq 'imageFile';
+    next if $_ =~ /^imageFile\d*$/;
     $::in{$_} = decode('utf8', param($_))
   }
 }
@@ -84,6 +84,7 @@ if ($mode eq 'make'){
 ### データ処理 #################################################################################
 my %pc = %::in;
 delete $pc{imageFile};
+delete @pc{grep { /^imageFile\d+$/ } keys %pc};
 if($main::newId){ $pc{id} = $main::newId; }
 ## 現在時刻
 our $now = time;
@@ -96,7 +97,7 @@ if($mode eq 'make'){
   $pc{birthTime} = $file = $now;
 }
 elsif($mode eq 'save'){
-  $file = (authSheet $pc{id},$pc{pass},$LOGIN_ID)[0];
+  $file = (authSheet($pc{id},$pc{pass},$LOGIN_ID))[0];
   if(!$file){ error('404:シートが存在しないか、編集権限がありません。'); }
 }
 
@@ -126,27 +127,39 @@ if($mode eq 'save' && $pc{protect} ne 'account' && $pc{protectOld} eq 'account')
 %pc = data_calc(\%pc);
 
 ### 画像アップロード --------------------------------------------------
-my $oldext;
-if($pc{imageDelete}){
-  $oldext = $pc{image};
-  $pc{image} = '';
-}
-use MIME::Base64;
-my $imagedata; my $imageflag;
-if($::in{imageFile}){
-  my $mime;
+my $imageMaxCount = $set::image_maxcount || 1;
+$imageMaxCount = 1 if $imageMaxCount < 1;
+my %oldext;
+my %imagedata;
+my %imageflag;
+my %imageUpload;
+my %imageDelete;
+for my $imageNo (1 .. $imageMaxCount){
+  my $suffix = $imageNo == 1 ? '' : $imageNo;
+  my $imageKey = "image$suffix";
+  my $deleteKey = "imageDelete$suffix";
+  my $fileKey = "imageFile$suffix";
+  my $updateKey = "imageUpdate$suffix";
+  if($pc{$deleteKey}){
+    $imageDelete{$imageNo} = 1;
+    $oldext{$imageNo} = $pc{$imageKey};
+    $pc{$imageKey} = '';
+    $pc{mainImage} = '' if ($pc{mainImage} || 1) == $imageNo;
+  }
+  next if !$::in{$fileKey};
 
-  my $imagefile = $::in{imageFile}; # ファイル名の取得
+  my $mime;
+  my $imagefile = $::in{$fileKey}; # ファイル名の取得
   $mime = uploadInfo($imagefile)->{'Content-Type'}; # MIMEタイプの取得
 
   # ファイルの受け取り
   my $buffer;
   while(my $bytesread = read($imagefile, $buffer, 2048)) {
-    $imagedata .= $buffer;
+    $imagedata{$imageNo} .= $buffer;
   }
   # サイズチェック
   my $max_size = ( $set::image_maxsize ? $set::image_maxsize : 1024 * 1024 );
-  if (length($imagedata) <= $max_size){ $imageflag = 1; }
+  if (length($imagedata{$imageNo}) <= $max_size){ $imageflag{$imageNo} = 1; }
 
   # MIME-type -> 拡張子
   my $ext; 
@@ -158,12 +171,26 @@ if($::in{imageFile}){
   elsif ($mime eq "image/webp")  { $ext ="webp"; } #WebP
 
   # 通して良しなら
-  if($imageflag && $ext){
-    $oldext = $pc{image} || $oldext;
-    $pc{image} = $ext;
-    $pc{imageUpdate} = time;
+  if($imageflag{$imageNo} && $ext){
+    $oldext{$imageNo} = $pc{$imageKey} || $oldext{$imageNo};
+    $pc{$imageKey} = $ext;
+    $pc{$updateKey} = time;
+    $imageUpload{$imageNo} = 1;
+    $pc{mainImage} ||= $imageNo;
   }
 }
+$pc{mainImage} = 1 if !$pc{mainImage} || $pc{mainImage} !~ /^\d+$/ || $pc{mainImage} > $imageMaxCount;
+if(!$pc{'image'.($pc{mainImage} == 1 ? '' : $pc{mainImage})}){
+  for my $imageNo (1 .. $imageMaxCount){
+    my $suffix = $imageNo == 1 ? '' : $imageNo;
+    if($pc{"image$suffix"}){ $pc{mainImage} = $imageNo; last; }
+  }
+}
+for my $imageNo (1 .. $imageMaxCount){
+  my $suffix = $imageNo == 1 ? '' : $imageNo;
+  delete $pc{"imageDelete$suffix"};
+}
+
 
 
 ### 保存 #############################################################################################
@@ -188,7 +215,11 @@ my $userDir;
 ## 新規
 if($mode eq 'make'){
   $userDir = appendPassFile($pc{id},$pass,$LOGIN_ID,$pc{protect},$now);
-  dataSave('make', $dataDir, $file, $pc{protect}, $userDir);
+  dataSave('make', $dataDir, $file, $pc{protect}, $userDir, {
+    imageData   => \%imagedata,
+    imageFlag   => \%imageUpload,
+    imageDelete => \%imageDelete,
+  });
 }
 ## 更新
 elsif($mode eq 'save'){
@@ -198,21 +229,30 @@ elsif($mode eq 'save'){
   else {
     $userDir = ($pc{protect} eq 'account' && $LOGIN_ID) ? "_${LOGIN_ID}/" : 'anonymous/';
   }
-  dataSave('save', $dataDir, $file, $pc{protect}, $userDir);
+  dataSave('save', $dataDir, $file, $pc{protect}, $userDir, {
+    imageData   => \%imagedata,
+    imageFlag   => \%imageUpload,
+    imageDelete => \%imageDelete,
+  });
 }
 ### 一覧データ更新 --------------------------------------------------
 updateListFile($newline);
 
 ### 画像アップ更新 --------------------------------------------------
-if($pc{imageDelete} && $oldext){
-  deleteSheetFile("${dataDir}${userDir}", $file, "image.$oldext"); # ファイルを削除
-}
-if($imageflag && $pc{image}){
-  if($oldext && $oldext ne $pc{image}){
-    deleteSheetFile("${dataDir}${userDir}", $file, "image.$oldext"); # 前のファイルを削除
+for my $imageNo (1 .. $imageMaxCount){
+  my $suffix = $imageNo == 1 ? '' : $imageNo;
+  my $imageKey = "image$suffix";
+  if($imageDelete{$imageNo} && $oldext{$imageNo}){
+    deleteSheetFile("${dataDir}${userDir}", $file, "image$suffix.$oldext{$imageNo}"); # ファイルを削除
   }
-  updateSheetFile("${dataDir}${userDir}", $file, "image.$pc{image}", $imagedata);
+  if($imageflag{$imageNo} && $pc{$imageKey}){
+    if($oldext{$imageNo} && $oldext{$imageNo} ne $pc{$imageKey}){
+      deleteSheetFile("${dataDir}${userDir}", $file, "image$suffix.$oldext{$imageNo}"); # 前のファイルを削除
+    }
+    updateSheetFile("${dataDir}${userDir}", $file, "image$suffix.$pc{$imageKey}", $imagedata{$imageNo});
+  }
 }
+
 
 
 
@@ -239,6 +279,10 @@ sub dataSave {
   my $file = shift;
   my $protect = shift;
   my $userDir = shift;
+  my $imageOpt = shift || {};
+  my $archiveImageData   = $imageOpt->{imageData}   || {};
+  my $archiveImageFlag   = $imageOpt->{imageFlag}   || {};
+  my $archiveImageDelete = $imageOpt->{imageDelete} || {};
 
   if (!-d "${dir}${userDir}"){
     mkdir "${dir}${userDir}" or error("500:データディレクトリの作成に失敗しました。");
@@ -356,8 +400,18 @@ sub dataSave {
     'log-list.cgi' => $logListContent,
   );
   foreach my $ext (qw(png jpg jpeg gif webp)){
-    my $image = readSheetFileBinary($dir, $file, "image.$ext");
-    $archive{"image.$ext"} = $image if defined $image;
+    foreach my $imageNo (1 .. ($set::image_maxcount || 1)){
+      my $suffix = $imageNo == 1 ? '' : $imageNo;
+      my $imageKey = "image$suffix";
+      if($archiveImageFlag->{$imageNo}){
+        next if $pc{$imageKey} ne $ext;
+        $archive{"image$suffix.$ext"} = $archiveImageData->{$imageNo};
+        next;
+      }
+      next if $archiveImageDelete->{$imageNo};
+      my $image = readSheetFileBinary($dir, $file, "image$suffix.$ext");
+      $archive{"image$suffix.$ext"} = $image if defined $image;
+    }
   }
   saveSheetArchive($dir, $file, \%archive);
 }

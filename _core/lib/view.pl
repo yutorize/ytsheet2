@@ -316,16 +316,33 @@ sub loadSheetData {
   }
   
   ## キャラクター画像
-  if($pc{image}){
+  $pc{mainImage} ||= 1;
+  my $mainSuffix = $pc{mainImage} == 1 ? '' : $pc{mainImage};
+  if(!$pc{"image$mainSuffix"}){
+    for my $imageNo (1 .. ($set::image_maxcount || 1)){
+      my $suffix = $imageNo == 1 ? '' : $imageNo;
+      if($pc{"image$suffix"}){ $pc{mainImage} = $imageNo; $mainSuffix = $suffix; last; }
+    }
+  }
+  if($pc{"image$mainSuffix"}){
+    $pc{image} = $pc{"image$mainSuffix"};
+    $pc{imageUpdate} = $pc{"imageUpdate$mainSuffix"};
     if($pc{convertSource}) {
       $pc{imageSrc} = $pc{imageURL};
     }
     else {
-      $pc{imageSrc}    =     "./?id=$::in{id}&mode=image&cache=$pc{imageUpdate}";
-      $pc{imageURL}    = url()."?id=$::in{id}&mode=image&cache=$pc{imageUpdate}";
-      $pc{imageOgpURL} = url()."?id=$::in{id}&mode=ogp-image&cache=$pc{imageUpdate}";
+      $pc{imageSrc}    =     "./?id=$::in{id}&mode=image&imageNo=$pc{mainImage}&cache=$pc{imageUpdate}";
+      $pc{imageURL}    = url()."?id=$::in{id}&mode=image&imageNo=$pc{mainImage}&cache=$pc{imageUpdate}";
+      $pc{imageOgpURL} = url()."?id=$::in{id}&mode=ogp-image&imageNo=$pc{mainImage}&cache=$pc{imageUpdate}";
     }
-    $pc{images} = "'1': \"".($pc{modeDownload} ? sheetImageToBase64($datadir, $file, $pc{image}) : $pc{imageSrc})."\", ";
+    $pc{images} = '';
+    for my $imageNo (1 .. ($set::image_maxcount || 1)){
+      my $suffix = $imageNo == 1 ? '' : $imageNo;
+      next if !$pc{"image$suffix"};
+      my $update = $pc{"imageUpdate$suffix"};
+      my $src = "./?id=$::in{id}&mode=image&imageNo=$imageNo&cache=$update";
+      $pc{images} .= "'$imageNo': \"".($pc{modeDownload} ? sheetImageToBase64($datadir, $file, $pc{"image$suffix"}, $suffix) : $src)."\", ";
+    }
     
     if($pc{imageFit} eq 'percentY'){
       $pc{imageFit} = 'auto '.$pc{imagePercent}.'%';
@@ -592,10 +609,11 @@ sub styleToHtml {
 }
 use MIME::Base64;
 sub sheetImageToBase64 {
-  my ($dir, $file, $ext) = @_;
-  my $binary = readSheetFileBinary($dir, $file, "image.$ext");
+  my ($dir, $file, $ext, $suffix) = @_;
+  $suffix //= '';
+  my $binary = readSheetFileBinary($dir, $file, "image$suffix.$ext");
   return binaryToImageBase64($binary, $ext) if defined $binary;
-  return urlToBase64("${dir}${file}/image.$ext", $ext);
+  return urlToBase64("${dir}${file}/image$suffix.$ext", $ext);
 }
 sub binaryToImageBase64 {
   my ($binary, $ext) = @_;
