@@ -633,7 +633,8 @@ sub logOut {
   close($FH);
   print &setCookie($set::cookie,$id,$key,'Thu, 1-Jan-1970 00:00:00 GMT');
 
-  if($set::url_home){ print "Location: $set::url_home\n\n"; }
+  if($::in{mode} eq 'delete-account'){ info('アカウントの削除が完了しました') }
+  elsif($set::url_home){ print "Location: $set::url_home\n\n"; }
   else { print "Location: ./\n\n"; }
 }
 ### ログインチェック --------------------------------------------------

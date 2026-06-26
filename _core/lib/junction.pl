@@ -48,6 +48,9 @@ elsif($mode eq 'making')   {
   if($in{make})     { require $set::lib_making; }  #キャラクター作成
   else              { require $set::lib_list_make; }  #キャラクター作成フォーム
 }
+elsif($mode eq 'delete-account')   {
+  require $set::lib_register;
+}
 elsif($mode eq 'logout')     { &logOut; }   #ログアウト
 elsif($mode eq 'option')     { require $set::lib_form; }   #オプション
 elsif($mode eq 'blanksheet') { require $set::lib_edit; }   #ブランクシート

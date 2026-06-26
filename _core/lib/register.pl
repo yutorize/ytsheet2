@@ -90,4 +90,35 @@ elsif($mode eq 'passchange'){
   our $set_message = '変更を保存しました。';
   require $set::lib_form;
 }
+elsif($mode eq 'delete-account'){
+  my $LOGIN_ID = check;
+
+  unless(getKey($LOGIN_ID, $::in{password})){ error('401:ログイン状態でないか、パスワードが間違っています。') }
+
+  overwriteFile($set::userfile, sub {
+    my ($READ, $WRITE) = @_;
+    foreach (<$READ>){
+      if(index($_, "$LOGIN_ID<") == 0){
+        my @data = split(/<>/, $_, -1);
+        @data[2] = @data[3] = '';
+        print $WRITE "$LOGIN_ID<>DELETED<><><>\n";
+      }
+      else {
+        print $WRITE $_;
+      }
+    }
+  });
+
+  overwriteFile($set::login_users, sub {
+    my ($READ, $WRITE) = @_;
+    foreach (<$READ>) {
+      next if (index($_, "$LOGIN_ID<") == 0);
+      print $WRITE $_;
+    }
+  });
+
+  logOut();
+}
+
+
 1;
