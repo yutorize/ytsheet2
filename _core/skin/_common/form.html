@@ -175,6 +175,22 @@
               <input type="submit" value="変更">
             </p>
           </form>
+        </section><section class="form" id="delete-account">
+          <h2>アカウント削除</h2>
+          <p><button class="submit" onclick="document.querySelector('#delete-account > form').style.display = 'block'">アカウント削除</button></p>
+          <form method="post" action="./" style="display:none;">
+            <input type="hidden" name="mode" value="delete-account">
+            <p>
+              本当にアカウントを削除してもよろしいですか？<br>
+              <br>
+              アカウントを削除しても、現在保存されている各シートは<b>削除されません</b>。<br>
+              （閲覧／出力のみが可能なシートとして残ります）<br>
+              <br>
+              アカウントの削除を行う場合、<br>以下にパスワードを入力した後、「削除する」ボタンを押してください。
+            </p>
+            <p><label><span>パスワード</span> <input type="password" name="password"></label></p>
+            <p><input type="submit" value="削除する"></p>
+          </form>
         </section></TMPL_IF>
       </TMPL_IF>
     </article>
