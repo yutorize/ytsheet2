@@ -124,9 +124,6 @@ if($mode eq 'save' && $pc{protect} ne 'account' && $pc{protectOld} eq 'account')
   }
 }
 
-## データ計算
-%pc = data_calc(\%pc);
-
 ### 画像アップロード --------------------------------------------------
 my $imageMaxCount = $set::image_maxcount || 1;
 $imageMaxCount = 1 if $imageMaxCount < 1;
@@ -136,7 +133,7 @@ my %imageSizeOk;
 my %imageAccepted;
 my %imageDelete;
 for my $imageNo (1 .. $imageMaxCount){
-  my $suffix = $imageNo == 1 ? '' : $imageNo;
+  my $suffix = imageSuffix($imageNo);
   my $imageKey = "image$suffix";
   my $deleteKey = "imageDelete$suffix";
   my $fileKey = "imageFile$suffix";
@@ -181,17 +178,18 @@ for my $imageNo (1 .. $imageMaxCount){
   }
 }
 $pc{mainImage} = 1 if !$pc{mainImage} || $pc{mainImage} !~ /^[0-9]+$/ || $pc{mainImage} > $imageMaxCount;
-if(!$pc{'image'.($pc{mainImage} == 1 ? '' : $pc{mainImage})}){
+if(!$pc{'image'.imageSuffix($pc{mainImage})}){
   for my $imageNo (1 .. $imageMaxCount){
-    my $suffix = $imageNo == 1 ? '' : $imageNo;
-    if($pc{"image$suffix"}){ $pc{mainImage} = $imageNo; last; }
+    if($pc{'image'.imageSuffix($imageNo)}){ $pc{mainImage} = $imageNo; last; }
   }
 }
 for my $imageNo (1 .. $imageMaxCount){
-  my $suffix = $imageNo == 1 ? '' : $imageNo;
-  delete $pc{"imageDelete$suffix"};
+  delete $pc{'imageDelete'.imageSuffix($imageNo)};
 }
 
+
+## データ計算 --------------------------------------------------
+%pc = data_calc(\%pc);
 
 
 ### 保存 #############################################################################################
@@ -241,7 +239,7 @@ updateListFile($newline);
 
 ### 画像アップ更新 --------------------------------------------------
 for my $imageNo (1 .. $imageMaxCount){
-  my $suffix = $imageNo == 1 ? '' : $imageNo;
+  my $suffix = imageSuffix($imageNo);
   my $imageKey = "image$suffix";
   if($imageDelete{$imageNo} && $oldext{$imageNo}){
     deleteSheetFile("${dataDir}${userDir}", $file, "image$suffix.$oldext{$imageNo}"); # ファイルを削除
@@ -398,7 +396,7 @@ sub dataSave {
   );
   foreach my $ext (qw(png jpg jpeg gif webp)){
     foreach my $imageNo (1 .. ($set::image_maxcount || 1)){
-      my $suffix = $imageNo == 1 ? '' : $imageNo;
+      my $suffix = imageSuffix($imageNo);
       my $imageKey = "image$suffix";
       if($archiveImageAccepted->{$imageNo}){
         next if $pc{$imageKey} ne $ext;

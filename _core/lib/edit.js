@@ -29,7 +29,9 @@ function formSubmit() {
   if(saving){ return; }
   if(!formCheck()){ return false; }
 
-  saveCurrentImageLayout();
+  if(typeof imageType !== "undefined" && imageType === 'character'){
+    saveCurrentImageLayout();
+  }
 
   const formData = new FormData(form);
   for(const [imageNo, compressedImageFile] of Object.entries(compressedImageFiles)){
@@ -424,19 +426,33 @@ if (document.getElementById('unit-status-optional')) {
 }
 
 // 画像配置 ----------------------------------------
+let imgURL = '';
+window.addEventListener('load', function(e) {
+  if(typeof imageType !== 'undefined'){
+    if(imageType === 'character'){
+      setImagePosition();
+    }
+    else {
+      imgURL = `./?id=${form.id.value}&mode=image&imageNo=1&cache=${form.imageUpdate.value}`;
+      document.getElementById('image').style.backgroundImage = `url(${imgURL})`;
+    }
+  }
+});
+
 // ビューを開く
 function imagePositionView(){
   document.getElementById('image-custom').style.display = 'grid';
   imageDragPointSet();
 }
 function imagePositionClose(){
+  saveCurrentImageLayout();
   document.getElementById('image-custom').style.display = 'none';
 }
 // プレビュー
 function imagePreView(file, imageMaxSize, imageNo = 1){
   if(!file){ return; }
 
-  switchImageLayoutConfig(imageNo);
+  if(imageType === 'character'){ switchImageLayoutConfig(imageNo); }
 
   delete compressedImageFiles[imageNo];
 
@@ -460,6 +476,9 @@ function imageBlobPreview(blob, imageNo = 1){
   }
 
   previewImageURLs[imageNo] = blobURL;
+  if(document.querySelector(`#image-select-buttons img[data-num="${imageNo}"]`)) {
+    document.querySelector(`#image-select-buttons img[data-num="${imageNo}"]`).src = blobURL;
+  }
   setPreviewImage(imageNo);
 }
 // 圧縮
@@ -691,7 +710,6 @@ function setPreviewImage(imageNo) {
   const url = getPreviewImageURL(imageNo);
 
   const backgroundImage = url ? `url("${url}")` : '';
-  console.log(imageNo, url, backgroundImage)
 
   const imageBox = document.getElementById('image');
   if(imageBox){
@@ -705,16 +723,18 @@ function setPreviewImage(imageNo) {
   // imageDragPointSet() が参照する現在画像URL
   imgURL = url || '';
 
-  // 画像がある場合のみ、ドラッグ基準点を再計算
-  if(imageType === 'character' && imgURL){
-    imageDragPointSet();
+  if(imageType === 'character'){
+    if(imgURL){
+      // 画像がある場合のみ、ドラッグ基準点を再計算
+      imageDragPointSet();
+    }
+    // 現在フォームに入っているレイアウト設定をプレビューへ反映
+    imagePosition();
+
+    // 著作権表示・セリフ表示も更新
+    wordsPreView();
   }
 
-  // 現在フォームに入っているレイアウト設定をプレビューへ反映
-  imagePosition();
-
-  // 著作権表示・セリフ表示も更新
-  wordsPreView();
 }
 function saveCurrentImageLayout(){
   const suffix = imageSuffix(editingImageNo);
@@ -750,6 +770,7 @@ function switchImageLayoutConfig(imageNo){
     obj.classList.toggle('selected', obj.dataset.num == imageNo);
   });
 }
+
 // カラーカスタム ----------------------------------------
 function changeColor(){
   let hH = Number(form.colorHeadBgH.value);

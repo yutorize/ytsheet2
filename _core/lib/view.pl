@@ -252,6 +252,13 @@ sub setupPartnerDataCommon {
     }
   }
   foreach my $num (1 .. $OPT{max}){
+    if($pc->{"p${num}_mainImage"} > 1){
+      my $suffix = imageSuffix($pc->{"p${num}_mainImage"});
+      foreach my $key (qw/image imageUpdate imageURL imagePath imageData imageFit imagePercent imagePositionX imagePositionY imageCopyright imageCopyrightURL words wordsX wordsY/){
+        $pc->{"p${num}_$key"} = $pc->{"p${num}_$key$suffix"};
+      }
+    }
+
     next if !$pc->{"p${num}_imageURL"};
     $pc->{"p${num}_imageSrc"} = $pc->{"p${num}_imageURL"};
     $pc->{images} .= "'p${num}': \"".($pc->{modeDownload} ? partnerImageToBase64($pc, $num) : $pc->{"p${num}_imageURL"})."\", ";
@@ -314,30 +321,21 @@ sub loadSheetData {
   if($::in{mode} eq 'download'){
     $pc{modeDownload} = 1;
   }
-  
+
   ## キャラクター画像
   $pc{mainImage} ||= 1;
-  my $mainSuffix = $pc{mainImage} == 1 ? '' : $pc{mainImage};
-  if(!$pc{"image$mainSuffix"}){
-    foreach my $imageNo (1 .. ($set::image_maxcount || 1)){
-      my $suffix = $imageNo == 1 ? '' : $imageNo;
-      if($pc{"image$suffix"}){ $pc{mainImage} = $imageNo; $mainSuffix = $suffix; last; }
-    }
-  }
-  if($pc{convertSource} && $pc{image}){
-    $pc{imageSrc} = $pc{imageURL};
-  }
-  else {
+  if($pc{ver} || !$pc{convertSource}) {
     $pc{images} = '';
     $pc{imageLayouts} = '';
     my %layouts;
-    foreach my $imageNo (1 .. ($set::image_maxcount || 1)){
-      my $suffix = $imageNo == 1 ? '' : $imageNo;
+    my $maxCount = $pc{imageMaxCount} || $set::image_maxcount || 1;
+    foreach my $imageNo (1 .. $maxCount){
+      my $suffix = imageSuffix($imageNo);
       next unless $pc{"image$suffix"};
-      
+
       my $update = $pc{"imageUpdate$suffix"};
-      my $src = "./?id=$::in{id}&mode=image&imageNo=$imageNo&cache=$update";
-      
+      my $src = $pc{convertSource} ? $pc{"imageURL$suffix"} : "./?id=$::in{id}&mode=image&imageNo=$imageNo&cache=$update";
+
       if($pc{"imageFit$suffix"} eq 'percentY'){
         $pc{"imageFit$suffix"} = 'auto '.$pc{"imagePercent$suffix"}.'%';
       }
@@ -347,7 +345,7 @@ sub loadSheetData {
       elsif(!$pc{"imageFit$suffix"}){
         $pc{"imageFit$suffix"} = 'cover';
       }
-      
+
       if($pc{"imageCopyrightURL$suffix"}){
         $pc{"imageCopyright$suffix"} = qq|<a href="$pc{"imageCopyrightURL$suffix"}" target="_blank">|
           . (unescapeTags($pc{"imageCopyright$suffix"}) || $pc{"imageCopyrightURL$suffix"})
@@ -372,9 +370,19 @@ sub loadSheetData {
     }
     $pc{imageLayouts} = %layouts ? JSON::PP->new->canonical(1)->encode(\%layouts) : "{}";
 
-    $pc{imageSrc}    =     "./?id=$::in{id}&mode=image&imageNo=$pc{mainImage}&cache=$pc{imageUpdate}";
-    $pc{imageURL}    = url()."?id=$::in{id}&mode=image&imageNo=$pc{mainImage}&cache=$pc{imageUpdate}";
-    $pc{imageOgpURL} = url()."?id=$::in{id}&mode=ogp-image&imageNo=$pc{mainImage}&cache=$pc{imageUpdate}";
+
+    my $mainSuffix = imageSuffix($pc{mainImage});
+    if(!$pc{"image$mainSuffix"}){
+      foreach my $imageNo (1 .. $maxCount){
+        my $suffix = imageSuffix($imageNo);
+        if($pc{"image$suffix"}){
+          $pc{mainImage} = $imageNo;
+          $mainSuffix = $suffix;
+          last;
+        }
+      }
+    }
+    $pc{image} = $pc{"image$mainSuffix"};
     $pc{imageFit} = $pc{"imageFit$mainSuffix"};
     $pc{imagePositionX} = $pc{"imagePositionX$mainSuffix"};
     $pc{imagePositionY} = $pc{"imagePositionY$mainSuffix"};
@@ -382,6 +390,21 @@ sub loadSheetData {
     $pc{words} = $pc{"words$mainSuffix"};
     $pc{wordsX} = $pc{"wordsX$mainSuffix"};
     $pc{wordsY} = $pc{"wordsY$mainSuffix"};
+
+    if($pc{image}) {
+      if($pc{convertSource}) {
+        $pc{imageSrc} = $pc{"imageURL$mainSuffix"};
+      }
+      else {
+        $pc{imageSrc}    =     qq|./?id=$::in{id}&mode=image&imageNo=$pc{mainImage}&cache=$pc{"imageUpdate$mainSuffix"}|;
+        $pc{imageURL}    = url().qq|?id=$::in{id}&mode=image&imageNo=$pc{mainImage}&cache=$pc{"imageUpdate$mainSuffix"}|;
+        $pc{imageOgpURL} = url().qq|?id=$::in{id}&mode=ogp-image&imageNo=$pc{mainImage}&cache=$pc{"imageUpdate$mainSuffix"}|;
+      }
+    }
+  }
+  elsif($pc{convertSource}) {
+    $pc{imageSrc} = $pc{imageURL};
+    $pc{images} = qq|1: "$pc{imageURL}"|;
   }
 
   ## 

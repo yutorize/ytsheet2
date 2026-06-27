@@ -103,7 +103,6 @@ window.onload = function() {
 
   checkStageAll();
   
-  setImagePosition();
   changeColor();
 };
 

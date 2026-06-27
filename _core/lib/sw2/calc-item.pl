@@ -34,10 +34,11 @@ sub data_calc {
   $NL{author}  = substr($NL{author} , 0,  25).'..' if length($NL{author} ) >  25;
   $NL{sub}     = substr($NL{sub}    , 0,  40).'..' if length($NL{sub}    ) >  40;
   $NL{summary} = substr($NL{summary}, 0,  35).'..' if length($NL{summary}) >  35;
-  $::newline = "$pc{id}<>$::file<>".
-                "$pc{birthTime}<>$::now<>$NL{itemName}<>$NL{author}<>".
-                "$NL{category}<>$NL{price}<>$NL{age}<>$NL{summary}<>$NL{type}<>".
-                "$pc{image}<> $pc{tags} <>$pc{hide}<>";
+  $::newline =
+    "$pc{id}<>$::file<>"
+    . "$pc{birthTime}<>$::now<>$NL{itemName}<>$NL{author}<>"
+    . "$NL{category}<>$NL{price}<>$NL{age}<>$NL{summary}<>$NL{type}<>"
+    . $pc{"image".imageSuffix($pc{mainImage})}."<> $pc{tags} <>$pc{hide}<>";
   
   return %pc;
 }

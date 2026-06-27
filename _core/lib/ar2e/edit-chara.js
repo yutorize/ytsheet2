@@ -18,7 +18,6 @@ window.onload = function() {
   calcCash();
   changeHandedness();
   
-  setImagePosition();
   changeColor();
 };
 

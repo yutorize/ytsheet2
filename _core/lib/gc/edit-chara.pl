@@ -97,7 +97,8 @@ sub displayGrowRow {
 
 ### 改行処理 --------------------------------------------------
 convertEscapedBrToNewlines(\%pc,
-  qw/words freeNote freeHistory chatPalette/,
+  qw/freeNote freeHistory chatPalette/,
+  ( map { 'words'.$_ } '', 2 .. ($set::image_maxcount || 1) ),
 );
 
 ### フォーム表示 #####################################################################################
@@ -1023,7 +1024,7 @@ print <<"HTML";
     </div>
 
     <div id="area-profile">
-      @{[ renderImageForm($pc{imageURL}) ]}
+      @{[ renderImageForm() ]}
       <div class="box-union in-toc" id="personal" data-content-title="所属国・性別・年齢・身長・体重">
         <dl class="box" id="country">
           <dt>所属国

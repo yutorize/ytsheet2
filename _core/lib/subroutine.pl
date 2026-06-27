@@ -812,6 +812,13 @@ sub convertEscapedBrToNewlines {
     $pc->{$key} =~ s/&lt;br&gt;/\n/g;
   }
 }
+sub convertNewlinesToBrTag {
+  my $pc = shift;
+  for my $key (@_) {
+    next unless defined $pc->{$key};
+    $pc->{$key} =~ s/\r\n?|\n/<br>/g;
+  }
+}
 
 ### エスケープ --------------------------------------------------
 sub escapePcData {
@@ -1336,16 +1343,19 @@ sub importSheetData {
         return $returnError->('403:閲覧・編集に制限がかかっており、コンバートできないデータです。');
       }
     }
-    if($OPT{includeImage} && $pc{image}){
-      $pc{imageURL} = ($OPT{imageUrlBase} || $self)."?id=$id&mode=image&cache=$pc{imageUpdate}";
-      my $imagePath = "${dataDir}${file}/image.$pc{image}";
-      $pc{imagePath} = $imagePath if -f $imagePath;
-      if($::in{mode} eq 'download'){
-        $pc{imageData} = readSheetFileBinary($dataDir, $file, "image.$pc{image}");
+    my $mainSuffix = imageSuffix($pc{mainImage});
+    foreach my $imageNo (1 .. ($set::image_maxcount || 1)){
+      my $suffix = imageSuffix($imageNo);
+      next unless $pc{"image$suffix"};
+      $pc{"imageURL$suffix"} = ($OPT{imageUrlBase} || $self).qq|?id=$id&mode=image&imageNo=$imageNo&cache=$pc{"imageUpdate$suffix"}|;
+      if($OPT{includeImage}){
+        my $imgName = qq|image$suffix.$pc{"image$suffix"}|;
+        my $imagePath = qq|${dataDir}${file}/$imgName|;
+        $pc{"imagePath$suffix"} = $imagePath if -f $imagePath;
+        if($::in{mode} eq 'download'){
+          $pc{"imageData$suffix"} = readSheetFileBinary($dataDir, $file, $imgName);
+        }
       }
-    }
-    elsif(!$OPT{includeImage} && $pc{image}){
-      $pc{imageURL} = $self."?id=$id&mode=image&cache=$pc{imageUpdate}";
     }
     $pc{convertSource} = '同じゆとシートⅡ';
     return %pc;
@@ -1558,5 +1568,10 @@ sub logFileUpdate {
   if($mode eq 'view'){ print "Location:./?id=$::in{id}\n\n"; }
 }
 
+### 画像接尾辞 --------------------------------------------------
+sub imageSuffix {
+  my $imageNo = shift;
+  return $imageNo == 1 ? '' : $imageNo;
+}
 
 1;

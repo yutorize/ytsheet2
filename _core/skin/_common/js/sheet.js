@@ -43,7 +43,6 @@ function changeImage(direction = 0){
     selectedImage = selected;
     
     const imageArea = document.querySelector('#image');
-    const current = imageArea.querySelector('.image.current');
     let next = document.createElement('div');
     next.classList.add('image','next');
     next.style.backgroundImage    = `url(${images[selected]})`;
@@ -54,19 +53,29 @@ function changeImage(direction = 0){
         <p class="words" style="${imageLayouts[selected].wordsPosition}">${imageLayouts[selected].words}</p>
       </div>
       <p class="image-copyright">${imageLayouts[selected].copyright}</p>`;
-    current.addEventListener('transitionend', () => {
-      current.remove();
-    });
     next.addEventListener('transitionend', () => {
+      document.querySelectorAll('#image .image.current').forEach(el => {
+        el.remove();
+      });
       next.classList.replace('next','current');
     });
-    imageArea.append(next);
+    const img = new Image();
+    img.src = images[selected];
+    img.addEventListener('load', () => {
+      imageArea.prepend(next);
+      document.querySelectorAll('#image .image.current').forEach(el => {
+        el.style.opacity = 0;
+      });
+    });
 
-    current.style.opacity = 0;
   }
 }
 function getImageId(direction = 0) {
-  const ids = Object.keys(images).map(Number).sort((a, b) => a - b);
+  const ids =
+    Object.keys(images)
+    .filter(key => /^[0-9]+$/.test(key))
+    .map(Number)
+    .sort((a, b) => a - b);
   const index = ids.indexOf(Number(selectedImage));
 
   if (index === -1) return selectedImage;

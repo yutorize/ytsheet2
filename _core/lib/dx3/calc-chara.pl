@@ -228,7 +228,7 @@ sub data_calc {
   }
 
   #### 改行を<br>に変換 --------------------------------------------------
-  $pc{words}         =~ s/\r\n?|\n/<br>/g;
+  $pc{'words'.$_} =~ s/\r\n?|\n/<br>/g foreach('', 2 .. ($set::image_maxcount || 1));
   $pc{freeNote}      =~ s/\r\n?|\n/<br>/g;
   $pc{freeHistory}   =~ s/\r\n?|\n/<br>/g;
   $pc{chatPalette}   =~ s/\r\n?|\n/<br>/g;
@@ -286,17 +286,17 @@ sub data_calc {
     $syn = substr($syn, 0, 20).'..' if length($syn) > 20;
     return "その他:$syn";
   }
-  $::newline = "$pc{id}<>$::file<>".
-               "$pc{birthTime}<>$::now<>$NL{name}<>$NL{playerName}<>$pc{group}<>".
-               (130+$pc{expSpent}).
-               "<>$NL{gender}<>$NL{age}<>$NL{sign}<>$NL{blood}<>$NL{works}<>".
-               
-               synCheck($pc{syndrome1}).'/'.
-               synCheck($pc{syndrome2}).'/'.
-               synCheck($pc{syndrome3}).'<>'.
-               join('/',@dloises).'<>'.
-               
-               "$pc{lastSession}<>$pc{image}<> $pc{tags} <>$pc{hide}<>$pc{stage}<>";
+  $::newline =
+    "$pc{id}<>$::file<>"
+    . "$pc{birthTime}<>$::now<>$NL{name}<>$NL{playerName}<>$pc{group}<>"
+    . (130+$pc{expSpent})
+    . "<>$NL{gender}<>$NL{age}<>$NL{sign}<>$NL{blood}<>$NL{works}<>"
+    . synCheck($pc{syndrome1}).'/'
+    . synCheck($pc{syndrome2}).'/'
+    . synCheck($pc{syndrome3}).'<>'
+    . join('/',@dloises).'<>'
+    . "$pc{lastSession}<>"
+    . $pc{"image".imageSuffix($pc{mainImage})}."<> $pc{tags} <>$pc{hide}<>$pc{stage}<>";
 
   return %pc;
 }

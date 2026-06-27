@@ -55,8 +55,8 @@ elsif($mode eq 'image' || $mode eq 'ogp-image'){
   }
 
   my $imageNo = $::in{imageNo} || $pc{mainImage} || 1;
-  $imageNo = 1 if $imageNo !~ /^\d+$/ || $imageNo < 1 || $imageNo > ($set::image_maxcount || 1);
-  my $suffix = $imageNo == 1 ? '' : $imageNo;
+  $imageNo = 1 if $imageNo !~ /^[0-9]+$/ || $imageNo < 1 || $imageNo > ($set::image_maxcount || 1);
+  my $suffix = imageSuffix($imageNo);
   my $ext = $pc{"image$suffix"};
   
   my %mime = (
@@ -93,6 +93,7 @@ elsif($mode eq 'image' || $mode eq 'ogp-image'){
   if($mode eq 'ogp-image'){
     $pc{src} = $path;
     $pc{imageData} = $imageData;
+    $pc{imageMainSuffix} = $suffix;
     outputOgpImage(%pc);
   }
 
@@ -122,10 +123,12 @@ sub outputOgpImage {
   my (%opt) = @_;
   my $src       = $opt{src};
   my $imageData = $opt{imageData};
-  my $fit       = $opt{imageFit} // 'cover';
-  my $percent   = ($opt{imagePercent} // 100);
-  my $posX      = ($opt{imagePositionX} // '50');
-  my $posY      = ($opt{imagePositionY} // '50');
+
+  my $main      = $opt{imageMainSuffix} // 1;
+  my $fit       = $opt{"imageFit$main"} // 'cover';
+  my $percent   = ($opt{"imagePercent$main"} // 100);
+  my $posX      = ($opt{"imagePositionX$main"} // '50');
+  my $posY      = ($opt{"imagePositionY$main"} // '50');
 
   my $W = 630;
   my $H = 630;

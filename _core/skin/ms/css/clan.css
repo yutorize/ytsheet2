@@ -110,9 +110,10 @@ h1#character-name:not(:has(ruby)) {
 }
 
 /* Image */
-.image, .image-none {
+#image {
   aspect-ratio: 1 / 1;
   container-type: inline-size;
+  align-self: start;
 }
 .image-none::after {
   font-family: 'Montserrat','Impact';

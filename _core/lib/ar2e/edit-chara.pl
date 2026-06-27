@@ -115,7 +115,8 @@ $open{skills} = 'open';
 
 ### 改行処理 --------------------------------------------------
 convertEscapedBrToNewlines(\%pc,
-  qw/words items freeNote freeHistory cashbook chatPalette armamentHandRNote armamentHandLNote armamentHeadNote armamentBodyNote armamentSubNote armamentOtherNote armamentTotalNote battleSkillNote battleOtherNote/,
+  qw/items freeNote freeHistory cashbook chatPalette armamentHandRNote armamentHandLNote armamentHeadNote armamentBodyNote armamentSubNote armamentOtherNote armamentTotalNote battleSkillNote battleOtherNote/,
+  ( map { 'words'.$_ } '', 2 .. ($set::image_maxcount || 1) ),
   ( map { "geis${_}Note" } 1..$pc{geisNum} ),
 );
 
@@ -246,7 +247,7 @@ print <<"HTML";
       <dl class="regulation-note"><dt>備考<dd>@{[ input "history0Note" ]}</dl>
     </details>
     <div id="area-status">
-      @{[ renderImageForm($pc{imageURL}) ]}
+      @{[ renderImageForm() ]}
 
       <div id="personal" class="in-toc" data-content-title="種族・年齢・性別">
         <dl class="box select-or-input" id="race">

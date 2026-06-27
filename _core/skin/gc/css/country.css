@@ -70,9 +70,10 @@
   #resources  { grid-area: RSC; }
 }
 /* Image */
-#image     { aspect-ratio: 1 / 1; }
-.image-none {
+#image {
+  aspect-ratio: 1 / 1;
   container-type: size;
+  align-self: start;
 }
 .image-none::after {
   font-size: 17cqw;

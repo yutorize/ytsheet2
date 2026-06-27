@@ -240,12 +240,6 @@ sub loadSheetData {
       $message = $pc{updateTime}.' 時点のバックアップデータから編集しています。';
     }
     $pc{mainImage} ||= 1;
-    for my $imageNo (1 .. ($set::image_maxcount || 1)){
-      my $suffix = $imageNo == 1 ? '' : $imageNo;
-      my $update = $pc{"imageUpdate$suffix"};
-      $pc{"imageURL$suffix"} = $pc{"image$suffix"} ? "./?id=$::in{id}&mode=image&imageNo=$imageNo&cache=$update" : '';
-    }
-    $pc{imageURL} = $pc{"imageURL".($pc{mainImage} == 1 ? '' : $pc{mainImage})} || $pc{imageURL};
   }
   elsif($mode eq 'copy'){
     my $datatype = ($::in{log}) ? 'logs' : 'data';
@@ -312,7 +306,7 @@ sub tokenMake {
 sub deleteImageData {
   my ($pc) = @_;
   for my $imageNo (1 .. ($set::image_maxcount || 1)){
-    my $suffix = $imageNo == 1 ? '' : $imageNo;
+    my $suffix = imageSuffix($imageNo);
     delete $pc->{"image$suffix"};
     delete $pc->{"imageUpdate$suffix"};
     delete $pc->{"imageURL$suffix"};
@@ -408,11 +402,6 @@ sub renderEditPageStart {
     $extraJsMid
     <script src="$::core_dir/skin/_common/js/common.js?$::ver"></script>
     <script>const base64Mode = $base64Mode;</script>
-    @{[ $::pc{imageURL} ? qq|<style>
-      #image, .image-custom-view {
-        background-image: url("$::pc{imageURL}");
-      }
-    </style>| : '' ]}
   </head>
   <body id="edit" data-system="$systemId" @{[ $sheetType ? qq|data-sheet-type="$sheetType"| : '' ]}>
     <header>
@@ -600,12 +589,14 @@ sub renderAddDelButtons {
 }
 ### 画像欄 --------------------------------------------------
 sub renderImageForm {
-  my $image_maxsize_view = $set::image_maxsize >= 1048576 ? sprintf("%.3g",$set::image_maxsize/1048576).'MB' : sprintf("%.3g",$set::image_maxsize/1024).'KB';
+  my $imageMaxSize = $set::image_maxsize || 0;
+  my $imageMaxSizeView = $imageMaxSize >= 1048576 ? sprintf("%.3g",$imageMaxSize/1048576).'MB' : sprintf("%.3g",$imageMaxSize/1024).'KB';
+  my $imageMaxCount = $set::image_maxcount || 1;
   $::pc{mainImage} ||= 1;
-  my $mainSuffix = $::pc{mainImage} == 1 ? '' : $::pc{mainImage};
+  my $mainSuffix = imageSuffix($::pc{mainImage});
   my %imageURLs;
   my $imageURLsJS;
-  foreach my $n (1 .. $set::image_maxcount){
+  foreach my $n (1 .. $imageMaxCount){
     my $suffix = ($n == 1) ? '' : $n;
     if($::pc{'image'.$suffix}){
       $imageURLs{$n} = "./?id=$::in{id}&mode=image&imageNo=$n&cache=$::pc{'imageUpdate'.$suffix}";
@@ -627,10 +618,11 @@ sub renderImageForm {
           join '', map {
             my $n = $_;
             my $suffix = ($n == 1) ? '' : $n;
-            input("image$suffix",'hidden') .input("imageUpdate$suffix",'hidden')
-            } 1 .. ($set::image_maxcount || 1)
+            input("image$suffix",'hidden')
+            . input("imageUpdate$suffix",'hidden')
+            } 1 .. $imageMaxCount
           ]}
-        <br>メイン画像：@{[ radios('mainImage', 'setImagePosition', 1 .. ($set::image_maxcount || 1)) ]}
+        <br>メイン画像：@{[ radios('mainImage', 'setImagePosition', 1 .. $imageMaxCount) ]}
       </p>
     </div>
 
@@ -653,17 +645,27 @@ sub renderImageForm {
           @{[
             join '', map {
               my $n = $_;
-              qq#<div><label>画像@{[$n||1]}: <input type="file" accept="image/*" name="imageFile$n" onchange="imagePreView(this.files[0], ($set::image_maxsize || 0), $n)"></label>#
+              qq#<div><label>画像@{[$n||1]}: <input type="file" accept="image/*" name="imageFile$n" onchange="imagePreView(this.files[0], $imageMaxSize, $n)"></label>#
               . checkbox("imageDelete$n","削除")
               . "</div>"
-            } '', 2 .. ($set::image_maxcount || 1)
+            } '', 2 .. $imageMaxCount
           ]}
         <p>
-          ※ ファイルサイズ @{[ $image_maxsize_view ]} までの JPG/PNG/GIF/WebP
+          ※ ファイルサイズ @{[ $imageMaxSizeView ]} までの JPG/PNG/GIF/WebP
           <small>（サイズを超過する場合、自動的にWebP形式に変換し、その上でまだ超過している場合は縮小処理が行われます）</small>
+        </p>
+        <p id="image-select-buttons">
+          @{[
+            join '', map {
+              my $n = $_;
+              my $selected = ($::pc{mainImage} eq $n) ? 'selected' : '';
+              qq#<label onclick="switchImageLayoutConfig($n)"><img src="$imageURLs{$n}" style="width:100px;height:100px;object-fit:contain;" data-num="$n" class="$selected"><span>画像$n<span></label>#
+            } 1 .. $imageMaxCount
+          ]}
         </p>
         <script>
           const imageType = 'character';
+          const imageUpdate = '$::pc{imageUpdate}';
           const savedImageURLs = { $imageURLsJS };
           // ドラッグ＆ドロップで画像アップ
           document.getElementById('image-custom').addEventListener('dragover',function(e){
@@ -680,7 +682,7 @@ sub renderImageForm {
             if(!obj){ return; }
 
             obj.files = e.dataTransfer.files;
-            imagePreView(obj.files[0], imageMaxSize, imageNo);
+            imagePreView(obj.files[0], $imageMaxSize, imageNo);
           });
 
           // ホイールで拡大率調整
@@ -698,7 +700,6 @@ sub renderImageForm {
           });
 
           // ドラッグで位置調整
-          let imgURL = "$imageURLs{$::pc{mainImage}}";
           let pointWidth  = 1;
           let pointHeight = 1;
           mainArea.addEventListener('mousedown' , function (e) { imageDragStart(e); });
@@ -710,15 +711,6 @@ sub renderImageForm {
           mainArea.addEventListener('touchend'  , function (e) { imageDragEnd();    });
         </script>
         <h3>画像レイアウト</h3>
-        <p id="image-select-buttons">
-          @{[
-            join '', map {
-              my $n = $_;
-              my $selected = ($::pc{mainImage} eq $n) ? 'selected' : '';
-              qq#<label onclick="switchImageLayoutConfig($n)"><img src="$imageURLs{$n}" style="width:100px;height:100px;object-fit:contain;" data-num="$n" class="$selected"><span>画像$n<span></label>#
-            } 1 .. ($set::image_maxcount || 1)
-          ]}
-        <p>
         <p>
           <b>縦基準位置</b>:<input type="number" id="image-positionY" step="0.1" min="0" max="100" onchange="imagePositionNumberToRange()">%<br>
           <b>横基準位置</b>:<input type="number" id="image-positionX" step="0.1" min="0" max="100" onchange="imagePositionNumberToRange()">%<br>
@@ -772,7 +764,7 @@ sub renderImageForm {
           . input("words$n",'hidden')
           . input("wordsX$n",'hidden')
           . input("wordsY$n",'hidden')
-        } '',2 .. ($set::image_maxcount || 1)
+        } '',2 .. $imageMaxCount
       ]}
     </div>
   HTML
