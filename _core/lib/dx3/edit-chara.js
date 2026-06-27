@@ -22,7 +22,7 @@ window.onload = function() {
   calcMemory();
   refreshByImpulse();
   for(let i = 1; i <= 7; i++){ changeLoisColor(i); }
-  imagePosition();
+  setImagePosition();
   changeColor();
   console.log('=====LOADED=====');
 };

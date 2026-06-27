@@ -102,7 +102,6 @@ header nav ul li.character-format {
       "EXP  LVL  sSTT IMG"
     ;
   }
-  #image-none,
   #image     { grid-area: IMG; }
   #personal  { grid-area: PER; }
   #status    { grid-area: STT; }

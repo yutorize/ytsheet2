@@ -1184,12 +1184,12 @@ input[type="submit"]:hover {
   pointer-events: none;
   user-select: none;
 }
-.image-custom-view-area > div.image-custom-frame input[name="imagePositionX"] {
+.image-custom-view-area > div.image-custom-frame input[name="editingImagePositionX"] {
   position: absolute;
   bottom: -1.5em;
   width: 100%;
 }
-.image-custom-view-area > div.image-custom-frame input[name="imagePositionY"] {
+.image-custom-view-area > div.image-custom-frame input[name="editingImagePositionY"] {
   position: absolute;
   top: 50%;
   right: calc(-567px /2 - 1em);
@@ -1228,6 +1228,37 @@ input[type="submit"]:hover {
 .image-custom-form p select,
 .image-custom-form p textarea {
   padding: .2em .5em;
+}
+.image-custom-form div:has(input[type="file"]) {
+  display: grid;
+  grid-template-columns: 1fr max-content;
+  align-items: center;
+  gap: .5em;
+  padding: 0 .5em .2em;
+  .check-button {
+    height: max-content;
+  }
+}
+#image-select-buttons label {
+  display: inline-block;
+  margin: 0 3px;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 5px;
+  cursor: pointer;
+  > img {
+    width: 100px;
+    height: 100px;
+  }
+  &:has(.selected) {
+    outline-width: 1px;
+    outline-style: solid;
+    outline-offset: 1px;
+  }
+  > span {
+    display: block;
+    text-align: center;
+  }
 }
 #words-preview {
   position: absolute;
@@ -1295,7 +1326,7 @@ input[type="submit"]:hover {
     grid-template-columns: 1fr 35vw 1fr;
   }
   .image-custom-view-area > div#image-custom-frame-M { height: 56.7vw; }
-  .image-custom-view-area > div.image-custom-frame input[name="imagePositionY"] {
+  .image-custom-view-area > div.image-custom-frame input[name="editingImagePositionY"] {
     right: calc(-56.7vw /2 - 1em);
     width: 56.7vw;
   }
@@ -1318,7 +1349,7 @@ input[type="submit"]:hover {
     grid-template-rows: 1fr max-content 1fr;
   }
   .image-custom-view-area > div#image-custom-frame-M { grid-column: 2; grid-row: 2 / span 1; height: 46vh; }
-  .image-custom-view-area > div.image-custom-frame input[name="imagePositionY"] {
+  .image-custom-view-area > div.image-custom-frame input[name="editingImagePositionY"] {
     right: calc(-46vh /2 - 1em);
     width: 46vh;
   }

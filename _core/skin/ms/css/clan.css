@@ -96,7 +96,6 @@ h1#character-name:not(:has(ruby)) {
     "MAG MAG MAG"
     ;
   }
-  #image-none,
   #image      { grid-area: IMG; }
   #profile    { grid-area: PRF; }
   #level      { grid-area: LVL; }

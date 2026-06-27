@@ -8,7 +8,7 @@ window.onload = function() {
   calcBattle();
   calcResultPoint();
   
-  imagePosition();
+  setImagePosition();
   changeColor();
 };
 

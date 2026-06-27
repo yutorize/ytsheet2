@@ -319,43 +319,69 @@ sub loadSheetData {
   $pc{mainImage} ||= 1;
   my $mainSuffix = $pc{mainImage} == 1 ? '' : $pc{mainImage};
   if(!$pc{"image$mainSuffix"}){
-    for my $imageNo (1 .. ($set::image_maxcount || 1)){
+    foreach my $imageNo (1 .. ($set::image_maxcount || 1)){
       my $suffix = $imageNo == 1 ? '' : $imageNo;
       if($pc{"image$suffix"}){ $pc{mainImage} = $imageNo; $mainSuffix = $suffix; last; }
     }
   }
-  if($pc{"image$mainSuffix"}){
-    $pc{image} = $pc{"image$mainSuffix"};
-    $pc{imageUpdate} = $pc{"imageUpdate$mainSuffix"};
-    if($pc{convertSource}) {
-      $pc{imageSrc} = $pc{imageURL};
-    }
-    else {
-      $pc{imageSrc}    =     "./?id=$::in{id}&mode=image&imageNo=$pc{mainImage}&cache=$pc{imageUpdate}";
-      $pc{imageURL}    = url()."?id=$::in{id}&mode=image&imageNo=$pc{mainImage}&cache=$pc{imageUpdate}";
-      $pc{imageOgpURL} = url()."?id=$::in{id}&mode=ogp-image&imageNo=$pc{mainImage}&cache=$pc{imageUpdate}";
-    }
+  if($pc{convertSource} && $pc{image}){
+    $pc{imageSrc} = $pc{imageURL};
+  }
+  else {
     $pc{images} = '';
-    for my $imageNo (1 .. ($set::image_maxcount || 1)){
+    $pc{imageLayouts} = '';
+    my %layouts;
+    foreach my $imageNo (1 .. ($set::image_maxcount || 1)){
       my $suffix = $imageNo == 1 ? '' : $imageNo;
-      next if !$pc{"image$suffix"};
+      next unless $pc{"image$suffix"};
+      
       my $update = $pc{"imageUpdate$suffix"};
       my $src = "./?id=$::in{id}&mode=image&imageNo=$imageNo&cache=$update";
-      $pc{images} .= "'$imageNo': \"".($pc{modeDownload} ? sheetImageToBase64($datadir, $file, $pc{"image$suffix"}, $suffix) : $src)."\", ";
+      
+      if($pc{"imageFit$suffix"} eq 'percentY'){
+        $pc{"imageFit$suffix"} = 'auto '.$pc{"imagePercent$suffix"}.'%';
+      }
+      elsif($pc{"imageFit$suffix"} =~ /^percentX?$/){
+        $pc{"imageFit$suffix"} = $pc{"imagePercent$suffix"}.'%';
+      }
+      elsif(!$pc{"imageFit$suffix"}){
+        $pc{"imageFit$suffix"} = 'cover';
+      }
+      
+      if($pc{"imageCopyrightURL$suffix"}){
+        $pc{"imageCopyright$suffix"} = qq|<a href="$pc{"imageCopyrightURL$suffix"}" target="_blank">|
+          . (unescapeTags($pc{"imageCopyright$suffix"}) || $pc{"imageCopyrightURL$suffix"})
+          . "</a>";
+      }
+      else { $pc{"imageCopyright$suffix"} = unescapeTags($pc{"imageCopyright$suffix"}) }
+
+      $pc{images} .= qq|$imageNo: "|.($pc{modeDownload} ? sheetImageToBase64($datadir, $file, $pc{"image$suffix"}, $suffix) : $src).'", ';
+      my @words = renderWords(
+        unescapeTags($pc{"words$suffix"}),
+        $pc{"wordsX$suffix"},
+        $pc{"wordsY$suffix"}
+      );
+      $layouts{$imageNo} = {
+        fit => $pc{"imageFit$suffix"},
+        X => $pc{"imagePositionX$suffix"}."%",
+        Y => $pc{"imagePositionY$suffix"}."%",
+        words  => ($words[0] || ''),
+        wordsPosition => join(';', $words[1],$words[2]),
+        copyright => ($pc{"imageCopyright$suffix"} || ''),
+      };
     }
-    
-    if($pc{imageFit} eq 'percentY'){
-      $pc{imageFit} = 'auto '.$pc{imagePercent}.'%';
-    }
-    elsif($pc{imageFit} =~ /^percentX?$/){
-      $pc{imageFit} = $pc{imagePercent}.'%';
-    }
-    
-    ## 権利表記
-    if($pc{imageCopyrightURL}){
-      $pc{imageCopyright} = "<a href=\"$pc{imageCopyrightURL}\" target=\"_blank\">".(unescapeTags($pc{imageCopyright})||$pc{imageCopyrightURL})."</a>";
-    }
-    else { $pc{imageCopyright} = unescapeTags($pc{imageCopyright}) }
+    $pc{imageLayouts} = %layouts ? JSON::PP->new->canonical(1)->encode(\%layouts) : "{}";
+
+    $pc{imageSrc}    =     "./?id=$::in{id}&mode=image&imageNo=$pc{mainImage}&cache=$pc{imageUpdate}";
+    $pc{imageURL}    = url()."?id=$::in{id}&mode=image&imageNo=$pc{mainImage}&cache=$pc{imageUpdate}";
+    $pc{imageOgpURL} = url()."?id=$::in{id}&mode=ogp-image&imageNo=$pc{mainImage}&cache=$pc{imageUpdate}";
+    $pc{imageFit} = $pc{"imageFit$mainSuffix"};
+    $pc{imagePositionX} = $pc{"imagePositionX$mainSuffix"};
+    $pc{imagePositionY} = $pc{"imagePositionY$mainSuffix"};
+    $pc{imageCopyright} = $pc{"imageCopyright$mainSuffix"};
+    $pc{words} = $pc{"words$mainSuffix"};
+    $pc{wordsX} = $pc{"wordsX$mainSuffix"};
+    $pc{wordsY} = $pc{"wordsY$mainSuffix"};
   }
 
   ## 

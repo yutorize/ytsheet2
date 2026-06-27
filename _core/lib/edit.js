@@ -29,6 +29,8 @@ function formSubmit() {
   if(saving){ return; }
   if(!formCheck()){ return false; }
 
+  saveCurrentImageLayout();
+
   const formData = new FormData(form);
   for(const [imageNo, compressedImageFile] of Object.entries(compressedImageFiles)){
     const suffix = imageNo == '1' ? '' : imageNo;
@@ -434,6 +436,8 @@ function imagePositionClose(){
 function imagePreView(file, imageMaxSize, imageNo = 1){
   if(!file){ return; }
 
+  switchImageLayoutConfig(imageNo);
+
   delete compressedImageFiles[imageNo];
 
   if(file.size > imageMaxSize){
@@ -444,20 +448,21 @@ function imagePreView(file, imageMaxSize, imageNo = 1){
   }
   else {
     delete compressedImageFiles[imageNo];
-    imageBlobPreview(file)
+    imageBlobPreview(file, imageNo)
   }
 }
-function imageBlobPreview(blob){
+function imageBlobPreview(blob, imageNo = 1){
   const blobURL = window.URL.createObjectURL(blob);
-  document.getElementById('image').style.backgroundImage = 'url("'+blobURL+'")';
-  document.querySelectorAll(".image-custom-view").forEach((el) => {
-    el.style.backgroundImage = 'url("'+blobURL+'")';
-  });
-  imgURL = blobURL;
-  if(imageType == 'character'){ imageDragPointSet(); }
+
+  // 古いBlob URLがある場合は破棄
+  if(previewImageURLs[imageNo]){
+    URL.revokeObjectURL(previewImageURLs[imageNo]);
+  }
+
+  previewImageURLs[imageNo] = blobURL;
+  setPreviewImage(imageNo);
 }
 // 圧縮
-
 const compressedImageFiles = {};
 function imageCompressor(data, imageMaxSize, imageNo = 1, compressScale = 1){
   let image = new Image();
@@ -476,7 +481,7 @@ function imageCompressor(data, imageMaxSize, imageNo = 1, compressScale = 1){
           else { alert('画像サイズを既定まで下げることができませんでした。'); }
         }
         else {
-          imageBlobPreview(result);
+          imageBlobPreview(result, imageNo);
           compressedImageFiles[imageNo] = new File([result], 'image.webp', {
             type: result.type || 'image/webp',
             lastModified: Date.now(),
@@ -491,24 +496,24 @@ function imageCompressor(data, imageMaxSize, imageNo = 1, compressScale = 1){
 }
 // パーセンテージゲージ変更
 function imagePercentBarChange(per){
-  form.imagePercent.value = per;
+  form.editingImagePercent.value = per;
   imagePosition();
 }
 // ポジション反映
 function imagePosition(){
-  const bgSize = form.imageFit.options[form.imageFit.selectedIndex].value;
+  const bgSize = form.editingImageFit.value;
   let configVisiblity = 'hidden';
   let backgroundSize = '100%';
   let ogpSize = '100%';
   if(bgSize === 'percentX'){
     configVisiblity = 'visible';
-    backgroundSize = form.imagePercent.value + '%';
-    ogpSize = form.imagePercent.value + '%';
+    backgroundSize = form.editingImagePercent.value + '%';
+    ogpSize = form.editingImagePercent.value + '%';
   }
   else if(bgSize === 'percentY'){
     configVisiblity = 'visible';
-    backgroundSize = 'auto ' + form.imagePercent.value + '%';
-    ogpSize = 'auto ' + (Number(form.imagePercent.value) * 1.2) + '%';
+    backgroundSize = 'auto ' + form.editingImagePercent.value + '%';
+    ogpSize = 'auto ' + (Number(form.editingImagePercent.value) * 1.2) + '%';
   }
   else {
     configVisiblity = 'hidden';
@@ -518,17 +523,22 @@ function imagePosition(){
   document.getElementById("image-percent-config").style.visibility = configVisiblity;
   document.querySelectorAll("#image, :is(#image-custom-frame-M,#image-custom-frame-S) > .image-custom-view").forEach((el) => {
     el.style.backgroundSize = backgroundSize;
-    el.style.backgroundPositionX = form.imagePositionX.value + '%';
-    el.style.backgroundPositionY = form.imagePositionY.value + '%';
+    el.style.backgroundPositionX = form.editingImagePositionX.value + '%';
+    el.style.backgroundPositionY = form.editingImagePositionY.value + '%';
   });
   document.querySelector("#image-custom-frame-O > .image-custom-view").style.backgroundSize = ogpSize;
-  document.querySelector("#image-custom-frame-O > .image-custom-view").style.backgroundPositionX = form.imagePositionX.value + '%';
-  document.querySelector("#image-custom-frame-O > .image-custom-view").style.backgroundPositionY = (Number(form.imagePositionY.value) * 0.9) + '%';
+  document.querySelector("#image-custom-frame-O > .image-custom-view").style.backgroundPositionX = form.editingImagePositionX.value + '%';
+  document.querySelector("#image-custom-frame-O > .image-custom-view").style.backgroundPositionY = (Number(form.editingImagePositionY.value) * 0.9) + '%';
 
-  document.getElementById("image-positionX-view").textContent = form.imagePositionX.value + '%';
-  document.getElementById("image-positionY-view").textContent = form.imagePositionY.value + '%';
+  document.getElementById("image-positionX").value = form.editingImagePositionX.value;
+  document.getElementById("image-positionY").value = form.editingImagePositionY.value;
   
-  document.getElementById("image-percent-bar").value = form.imagePercent.value;
+  document.getElementById("image-percent-bar").value = form.editingImagePercent.value;
+}
+function imagePositionNumberToRange(){
+  form.editingImagePositionX.value = document.getElementById("image-positionX").value;
+  form.editingImagePositionY.value = document.getElementById("image-positionY").value;
+  imagePosition();
 }
 // ドラッグ処理
 let dragFlag = 0;
@@ -550,7 +560,7 @@ function imageDragMove(e){
     const x2 = touches[1].pageX;
     const y2 = touches[1].pageY;
     const distance = Math.sqrt( Math.pow( x2-x1, 2 ) + Math.pow( y2-y1, 2 ) );
-    const obj = form.imagePercent;
+    const obj = form.editingImagePercent;
     if(baseDistance){
       const gap = (distance - baseDistance);
       if     (gap > 0){ obj.value = Number(obj.value)+5; }
@@ -564,9 +574,9 @@ function imageDragMove(e){
   // ドラッグ移動
   else {
     if(dragFlag){
-      const objX = form.imagePositionX;
-      const objY = form.imagePositionY;
-      const objP = form.imagePercent;
+      const objX = form.editingImagePositionX;
+      const objY = form.editingImagePositionY;
+      const objP = form.editingImagePercent;
       const x = e.x || e.changedTouches[0].pageX;
       const y = e.y || e.changedTouches[0].pageY;
       objX.value = Number(objX.value) + (dragPoint.x - x) * pointWidth;
@@ -585,8 +595,8 @@ function imageDragPointSet(){
   let img = new Image();
   img.src = imgURL;
   img.onload = function() {
-    const type = form.imageFit.value;
-    const ratio = Number(form.imagePercent.value) / 100;
+    const type = form.editingImageFit.value;
+    const ratio = Number(form.editingImagePercent.value) / 100;
     const imgWidth  = img.width;
     const imgHeight = img.height;
     const boxWidth  = document.getElementById('image-custom-frame-M').offsetWidth  || 350;
@@ -631,7 +641,7 @@ function imageDragPointSet(){
 }
 // セリフプレビュー
 function wordsPreView(){
-  let words = form.words.value;
+  let words = form.editingWords.value;
   words = words.replace(/[|｜](.+?)《(.+?)》/g, '<ruby><rp>｜</rp>$1<rp>《</rp><rt>$2</rt><rp>》</rp></ruby>')
                .replace(/《《(.+?)》》/g, '<span class="text-em">$1</span>')
                .replace(/“/g, '〝')
@@ -644,14 +654,102 @@ function wordsPreView(){
   const wObj = document.getElementById('words-preview');
   wObj.innerHTML = words;
   
-  wObj.style.left   = form.wordsX.value === '左' ? '0' : '';
-  wObj.style.right  = form.wordsX.value === '右' || !form.wordsX.value ? '0' : '';
-  wObj.style.top    = form.wordsY.value === '上' || !form.wordsY.value ? '0' : '';
-  wObj.style.bottom = form.wordsY.value === '下' ? '0' : '';
+  wObj.style.left   = form.editingWordsX.value === '左' ? '0' : '';
+  wObj.style.right  = form.editingWordsX.value === '右' || !form.editingWordsX.value ? '0' : '';
+  wObj.style.top    = form.editingWordsY.value === '上' || !form.editingWordsY.value ? '0' : '';
+  wObj.style.bottom = form.editingWordsY.value === '下' ? '0' : '';
   
-  document.getElementById('image-copyright-preview').textContent = form.imageCopyright.value;
+  document.getElementById('image-copyright-preview').textContent = form.editingImageCopyright.value;
 }
 
+// 画像プレビュー切替
+const previewImageURLs = {};
+let editingImageNo = Number(form.mainImage?.value || 1);
+
+function setImagePosition() {
+  editingImageNo = Number(form.mainImage?.value || 1);
+  loadImageLayout(editingImageNo);
+  setPreviewImage(editingImageNo);
+  imagePosition();
+  document.querySelectorAll("#image-select-buttons img").forEach(obj => {
+    obj.classList.toggle('selected', obj.dataset.num == editingImageNo);
+  });
+}
+function imageSuffix(imageNo){
+  return imageNo == 1 ? '' : imageNo;
+}
+function getSavedImageURL(imageNo) {
+  if(typeof savedImageURLs === 'undefined'){ return ''; }
+  return savedImageURLs[imageNo] || '';
+}
+function getPreviewImageURL(imageNo) {
+  return previewImageURLs[imageNo] || getSavedImageURL(imageNo) || '';
+}
+function setPreviewImage(imageNo) {
+  imageNo = Number(imageNo || 1);
+
+  const url = getPreviewImageURL(imageNo);
+
+  const backgroundImage = url ? `url("${url}")` : '';
+  console.log(imageNo, url, backgroundImage)
+
+  const imageBox = document.getElementById('image');
+  if(imageBox){
+    imageBox.style.backgroundImage = backgroundImage;
+  }
+
+  document.querySelectorAll('.image-custom-view').forEach((el) => {
+    el.style.backgroundImage = backgroundImage;
+  });
+
+  // imageDragPointSet() が参照する現在画像URL
+  imgURL = url || '';
+
+  // 画像がある場合のみ、ドラッグ基準点を再計算
+  if(imageType === 'character' && imgURL){
+    imageDragPointSet();
+  }
+
+  // 現在フォームに入っているレイアウト設定をプレビューへ反映
+  imagePosition();
+
+  // 著作権表示・セリフ表示も更新
+  wordsPreView();
+}
+function saveCurrentImageLayout(){
+  const suffix = imageSuffix(editingImageNo);
+  form[`imageFit${suffix}`].value          = form.editingImageFit.value;
+  form[`imagePercent${suffix}`].value      = form.editingImagePercent.value;
+  form[`imagePositionX${suffix}`].value    = form.editingImagePositionX.value;
+  form[`imagePositionY${suffix}`].value    = form.editingImagePositionY.value;
+  form[`imageCopyright${suffix}`].value    = form.editingImageCopyright.value;
+  form[`imageCopyrightURL${suffix}`].value = form.editingImageCopyrightURL.value;
+  form[`words${suffix}`].value  = form.editingWords.value;
+  form[`wordsX${suffix}`].value = form.editingWordsX.value;
+  form[`wordsY${suffix}`].value = form.editingWordsY.value;
+}
+function loadImageLayout(imageNo){
+  const suffix = imageSuffix(imageNo);
+  form.editingImageFit.value          = form[`imageFit${suffix}`].value || 'cover';
+  form.editingImagePercent.value      = form[`imagePercent${suffix}`].value || 200;
+  form.editingImagePositionX.value    = form[`imagePositionX${suffix}`].value || 50;
+  form.editingImagePositionY.value    = form[`imagePositionY${suffix}`].value || 50;
+  form.editingImageCopyright.value    = form[`imageCopyright${suffix}`].value || '';
+  form.editingImageCopyrightURL.value = form[`imageCopyrightURL${suffix}`].value || '';
+  form.editingWords.value  = form[`words${suffix}`].value || '';
+  form.editingWordsX.value = form[`wordsX${suffix}`].value || '';
+  form.editingWordsY.value = form[`wordsY${suffix}`].value || '';
+}
+function switchImageLayoutConfig(imageNo){
+  saveCurrentImageLayout();
+
+  editingImageNo = Number(imageNo);
+  loadImageLayout(editingImageNo);
+  setPreviewImage(editingImageNo);  
+  document.querySelectorAll("#image-select-buttons img").forEach(obj => {
+    obj.classList.toggle('selected', obj.dataset.num == imageNo);
+  });
+}
 // カラーカスタム ----------------------------------------
 function changeColor(){
   let hH = Number(form.colorHeadBgH.value);

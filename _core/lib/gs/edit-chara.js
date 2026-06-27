@@ -18,7 +18,7 @@ window.onload = function() {
   calcAdvCompleted();
   openCoins();
   
-  imagePosition();
+  setImagePosition();
   changeColor();
 };
 

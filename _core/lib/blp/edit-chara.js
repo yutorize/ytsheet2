@@ -20,7 +20,7 @@ window.onload = function() {
 
   toggleServant();
   
-  imagePosition();
+  setImagePosition();
   changeColor();
 };
 

@@ -64,19 +64,17 @@
     ;
   }
 
-  #image-none,
   #image      { grid-area: IMG; }
   #profile    { grid-area: PRF; }
   #members    { grid-area: MEM; }
   #resources  { grid-area: RSC; }
 }
 /* Image */
-#image-none,
 #image     { aspect-ratio: 1 / 1; }
-#image-none {
+.image-none {
   container-type: size;
 }
-#image-none::after {
+.image-none::after {
   font-size: 17cqw;
   line-height: 1;
   letter-spacing: -.1em;

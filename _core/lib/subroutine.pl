@@ -219,7 +219,7 @@ sub zipMemberExists {
 }
 sub isSheetBinaryEntry {
   my $name = shift;
-  return $name =~ /^image\d*\.(?:png|jpe?g|gif|webp)$/i ? 1 : 0;
+  return $name =~ /^image[0-9]*\.(?:png|jpe?g|gif|webp)$/i ? 1 : 0;
 }
 sub readZipMember {
   my ($zipPath, $member, $binary) = @_;
