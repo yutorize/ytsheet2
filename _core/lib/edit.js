@@ -1213,3 +1213,11 @@ function getYtsheetJSON(url){
     });
   });
 }
+
+// 読込完了 ----------------------------------------
+function deleteLoadingArea() {
+  const loadingArea = document.getElementById('loading');
+  if (loadingArea) {
+    loadingArea.remove();
+  }
+}

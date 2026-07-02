@@ -4,7 +4,9 @@ const gameSystem = 'sw2';
 window.onload = function() {
   setName('itemName');
   checkCategory();
+  
   changeColor();
+  deleteLoadingArea();
 }
 
 // 送信前チェック ----------------------------------------

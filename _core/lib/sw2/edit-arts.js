@@ -6,7 +6,9 @@ window.onload = function() {
   setSchoolItemList();
   checkMagicClass();
   setupRangeField();
+
   changeColor();
+  deleteLoadingArea();
 }
 
 // 送信前チェック ----------------------------------------

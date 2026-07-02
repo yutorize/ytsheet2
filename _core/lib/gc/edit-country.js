@@ -8,6 +8,7 @@ window.onload = function() {
   calcResources();
 
   changeColor();
+  deleteLoadingArea();
 };
 
 // 送信前チェック ----------------------------------------

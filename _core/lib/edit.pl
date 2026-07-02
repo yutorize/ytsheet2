@@ -404,6 +404,7 @@ sub renderEditPageStart {
     <script>const base64Mode = $base64Mode;</script>
   </head>
   <body id="edit" data-system="$systemId" @{[ $sheetType ? qq|data-sheet-type="$sheetType"| : '' ]}>
+    <div id="loading"><div id="loading-animation"></div></div>
     <header>
       <h1>$set::title</h1>
     </header>

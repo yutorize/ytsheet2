@@ -19,6 +19,7 @@ window.onload = function() {
   changeHandedness();
   
   changeColor();
+  deleteLoadingArea();
 };
 
 // 送信前チェック ----------------------------------------

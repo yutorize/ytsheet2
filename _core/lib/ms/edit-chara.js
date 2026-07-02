@@ -12,6 +12,7 @@ window.onload = function() {
   calcEndurance();
   
   changeColor();
+  deleteLoadingArea();
 };
 
 function changeRegu(){
