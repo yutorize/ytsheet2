@@ -12,7 +12,7 @@ require $set::data_magi;
 (my $pcRef, my $SHEET) = setupViewBase(
   generateType => 'MamonoScramblePC',
   unescapeLinesKeys => [qw/freeNote freeHistory/],
-  updateSub => \&data_update_chara,
+  updateSub => \&upgradeCharaData,
 );
 our %pc = %{ $pcRef };
 

@@ -8,7 +8,7 @@ sub addJsonData {
   my %pc = %{ $_[0] };
   my $type = $_[1];
   
-  %pc = data_update_chara(\%pc) if $pc{ver};
+  %pc = upgradeCharaData(\%pc) if $pc{ver};
 
   ## 誓約
   my @geises;

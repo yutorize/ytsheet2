@@ -3,11 +3,11 @@ use strict;
 #use warnings;
 use utf8;
 
-sub data_calc {
+sub dataCalc {
   my %pc = %{$_[0]};
   ### アップデート --------------------------------------------------
   if($pc{ver}){
-    %pc = data_update_chara(\%pc);
+    %pc = upgradeCharaData(\%pc);
   }
 
   ### レベル・成長 --------------------------------------------------
@@ -56,7 +56,7 @@ sub data_calc {
     if($pc{"history${i}Gm"} && $pc{"history${i}Title"}){ $pc{lastSession} = removeTags unescapeTags $pc{"history${i}Title"}; last; }
   }
 
-  ### newline --------------------------------------------------
+  ### updatedLine --------------------------------------------------
   my %NL;
   foreach ('characterName','playerName','taxa','home','origin','background','clan','clanEmotion','address'){
     $NL{$_} = $pc{$_} =~ s/[|｜]([^|｜]+?)《.+?》/$1/gr;
@@ -71,7 +71,7 @@ sub data_calc {
   $NL{clan}        = substr($NL{clan}       , 0,108).'..' if length($NL{clan}       ) > 108;
   $NL{clanEmotion} = substr($NL{clanEmotion}, 0, 30).'..' if length($NL{clanEmotion}) >  30;
   $NL{address}     = substr($NL{address}    , 0, 30).'..' if length($NL{address}    ) >  30;
-  $::newline =
+  $::updatedLine =
     "$pc{id}<>$::file<>"
     . "$pc{birthTime}<>$::now<>$NL{characterName}<>$NL{playerName}<>$pc{group}<>"
     . $pc{"image".imageSuffix($pc{mainImage})}."<> $pc{tags} <>$pc{hide}<>$pc{lastSession}<>"

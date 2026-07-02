@@ -5,7 +5,7 @@ use utf8;
 
 require $set::data_mons;
 
-sub data_calc {
+sub dataCalc {
   my %pc = %{$_[0]};
 
   ####  --------------------------------------------------
@@ -24,7 +24,7 @@ sub data_calc {
   $pc{$_} = escapePcData($pc{$_}) foreach (keys %pc);
   $pc{tags} = normalizeHashtags($pc{tags});
 
-  ### newline --------------------------------------------------
+  ### updatedLine --------------------------------------------------
   my %NL;
   $NL{name} = $pc{characterName} ? $pc{characterName} : $pc{monsterName};
   $NL{name} = "【$NL{name}】" if $NL{name} eq $pc{monsterName} && $pc{mount};
@@ -49,7 +49,7 @@ sub data_calc {
   $NL{weakness}    = substr($NL{weakness}   , 0, 25).'..' if length($NL{weakness}   ) >  25;
   $NL{habitat}     = substr($NL{habitat}    , 0, 35).'..' if length($NL{habitat}    ) >  35;
   $pc{hide} = 'IN' if(!$pc{hide} && $pc{description} =~ /#login-only/i);
-  $::newline =
+  $::updatedLine =
     "$pc{id}<>$::file<>"
     . "$pc{birthTime}<>$::now<>$NL{name}<>$pc{author}<>$NL{taxa}<>$NL{lv}<>"
     . "$pc{intellect}<>$pc{perception}<>$NL{disposition}<>$pc{sin}<>$NL{initiative}<>$NL{weakness}<>"

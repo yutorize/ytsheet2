@@ -14,7 +14,7 @@ require $set::data_items;
   generateType => 'SwordWorld2Enemy',
   unescapeLinesKeys => [qw/effects description/],
   nameKeys => [qw/itemName/],
-  updateSub => \&data_update_item,
+  updateSub => \&upgradeItemData,
 );
 our %pc = %{ $pcRef };
 $SHEET->param(modeZero => $::SW2_0 ? 1 : 0);

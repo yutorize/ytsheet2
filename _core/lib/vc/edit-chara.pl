@@ -34,7 +34,7 @@ if($isNewSheet){
 }
 
 if($::mode eq 'edit' || ($::mode eq 'convert' && $pc{ver})){
-  %pc = data_update_chara(\%pc);
+  %pc = upgradeCharaData(\%pc);
   if($pc{updateMessage}){
     $message .= "<hr>" if $message;
     $message .= "<h2>アップデート通知</h2><dl>";

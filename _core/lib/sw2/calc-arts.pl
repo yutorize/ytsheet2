@@ -6,7 +6,7 @@ use open ":utf8";
 
 #require $set::data_item;
 
-sub data_calc {
+sub dataCalc {
   my %pc = %{$_[0]};
   my %NL;
   
@@ -83,7 +83,7 @@ sub data_calc {
   $pc{$_} = escapePcData($pc{$_}) foreach (keys %pc);
   $pc{tags} = normalizeHashtags($pc{tags});
 
-  ### newline --------------------------------------------------
+  ### updatedLine --------------------------------------------------
   $NL{author} = $pc{author};
   foreach (keys %NL){
     $NL{$_} =~ s/[|｜]([^|｜]+?)《.+?》/$1/g;
@@ -93,7 +93,7 @@ sub data_calc {
   $NL{author}  = substr($NL{author} , 0,  25).'..' if length($NL{author} ) >  25;
   $NL{sub}     = substr($NL{sub}    , 0,  40).'..' if length($NL{sub}    ) >  40;
   $NL{summary} = substr($NL{summary}, 0,  35).'..' if length($NL{summary}) >  35;
-  $::newline =
+  $::updatedLine =
     "$pc{id}<>$::file<>"
     . "$pc{birthTime}<>$::now<>$NL{name}<>$NL{author}<>"
     . "$pc{category}<>$NL{sub}<>$NL{summary}<>"

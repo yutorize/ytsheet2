@@ -150,7 +150,7 @@ sub outputChatPaletteTemplate {
   require $set::lib_calc_char;
   our %pc;
   for (param()){ $pc{$_} = decode('utf8', param($_)) }
-  %pc = data_calc(\%pc);
+  %pc = dataCalc(\%pc);
   if (defined &setupPaletteData) { setupPaletteData(); }
   if($pc{paletteRemoveTags}){
     $_ = removeTags(unescapeTags($_ =~ s/<br>/{BREAKTAG}/gr)) =~ s/{BREAKTAG}/<br>/gr foreach values %pc;

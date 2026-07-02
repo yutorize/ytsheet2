@@ -21,6 +21,7 @@ $INDEX->param(OAUTH_LOGIN_URL => $set::oauth_login_url);
 my $code;
 $INDEX->param(message => $main::message =~ s/^([0-9]{3}):/$code = $1; ''/er);
 $INDEX->param(header => $main::header . ($::statusCode{$code} ? qq|<span class="small"> - $::statusCode{$code}</span>| : ""));
+$INDEX->param(isError => $::statusCode{$code} || 200) if $::isError;
 
 $INDEX->param(title => $set::title);
 $INDEX->param(ver => $main::ver);

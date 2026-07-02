@@ -59,7 +59,7 @@ if($isNewSheet){
   $pc{protect} ||= $LOGIN_ID ? 'account' : 'password';
 }
 if($::mode eq 'edit' || ($::mode eq 'convert' && $pc{ver})){
-  %pc = data_update_arts(\%pc);
+  %pc = upgradeArtsData(\%pc);
 }
 if($::mode eq 'blanksheet'){
   $pc{magicCost} = 'MP';
