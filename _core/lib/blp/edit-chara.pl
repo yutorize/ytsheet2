@@ -63,7 +63,8 @@ $pc{artsNum} ||= 3;
 
 ### 改行処理 --------------------------------------------------
 convertEscapedBrToNewlines(\%pc,
-  qw/words scarNote freeNote freeHistory chatPalette/,
+  qw/scarNote freeNote freeHistory chatPalette/,
+  ( map { 'words'.$_ } '', 2 .. ($set::image_maxcount || 1) ),
 );
 
 ### フォーム表示 #####################################################################################
@@ -124,7 +125,7 @@ print <<"HTML";
       <dl class="regulation-note"><dt>備考<dd>@{[ input "history0Note" ]}</dl>
     </details>
     <div id="area-status">
-      @{[ renderImageForm($pc{imageURL}) ]}
+      @{[ renderImageForm() ]}
 
       <div id="factors" class="box">
         <h2 class="in-toc" data-content-title="能力値">練度:<span id="level-value"></span> ／ 能力値</h2>

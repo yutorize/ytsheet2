@@ -292,6 +292,8 @@ details:not([open]).box > summary:hover {
 .box li,
 .box td {
   text-align: center;
+  .left  & { text-align: left; }
+  .right & { text-align: right; }
 }
 .box dd,
 .box li {
@@ -483,7 +485,7 @@ details:not([open]).box > summary:hover {
   margin: auto;
   background: #fff;
   transition: top 0.3s;
-  z-index: 1;
+  z-index: 10;
 
   &.show { top: 60px; }
   .night & { background: #000; }
@@ -916,6 +918,58 @@ textarea::placeholder {
 
 /* // Image
 ---------------------------------------------------------------------------------------------------- */
+#image {
+  position: relative;
+  overflow: clip;
+  > :is(.image, .image-none) {
+    position: absolute;
+    z-index: 2;
+    inset: 0;
+
+    opacity: 1;
+    transition: opacity 0.5s ease;
+    transition-behavior: allow-discrete;
+    &.next {
+      z-index: 1;
+
+      opacity: 1;
+      @starting-style {
+        opacity: 0;
+      }
+    }
+  }
+
+  > :is(.prev-button, .next-button) {
+    display: none;
+    #image:hover & { display: block; }
+    position: absolute;
+    z-index: 3;
+    top: 0;
+    bottom: 0;
+    margin: auto 0;
+    width: 2em;
+    height: 2em;
+    padding-top: .1em;
+    text-align: center;
+    place-content: center;
+    border-radius: 50%;
+    background-color: #777a;
+    color: #fff;
+    line-height: 1;
+    font-size: 1.5em;
+    cursor: pointer;
+    
+    &.prev-button { left : 1px; padding-right: .1em; }
+    &.next-button { right: 1px; padding-left : .1em; }
+
+    &::before {
+      font-family: "Material Symbols Outlined";
+      font-weight: bold;
+    }
+    &.prev-button::before { content: "\e2ea"; }
+    &.next-button::before { content: "\e5e1"; }
+  }
+}
 .image {
   overflow: hidden;
   background-size: cover;
@@ -931,28 +985,29 @@ textarea::placeholder {
   position: relative;
 
   image-rendering: -webkit-optimize-contrast;
-}
-.image div[onclick] {
-  flex-grow: 1;
-  width: 100%;
-  cursor: pointer;
-  position: relative;
-}
-.image p.image-copyright {
-  padding: 0 5px;
-  font-size: 86%;
-  color: #fff;
-  text-shadow: 
-    #000  .1rem .1rem, #000 -.1rem -.1rem,
-    #000 -.1rem .1rem, #000  .1rem -.1rem,
-    #000  .0rem .1rem, #000  .0rem -.1rem,
-    #000 -.1rem .0rem, #000  .1rem  .0rem,
-    #000 0 0 .3rem, #000 0 0 .3rem, #000 0 0 .3rem;
-  word-break: break-all;
 
-  & a,
-  & i::before {
-    color: #fff !important;
+  > div[onclick] {
+    flex-grow: 1;
+    width: 100%;
+    cursor: pointer;
+    position: relative;
+  }
+  > p.image-copyright {
+    padding: 0 5px;
+    font-size: 86%;
+    color: #fff;
+    text-shadow: 
+      #000  .1rem .1rem, #000 -.1rem -.1rem,
+      #000 -.1rem .1rem, #000  .1rem -.1rem,
+      #000  .0rem .1rem, #000  .0rem -.1rem,
+      #000 -.1rem .0rem, #000  .1rem  .0rem,
+      #000 0 0 .3rem, #000 0 0 .3rem, #000 0 0 .3rem;
+    word-break: break-all;
+
+    & a,
+    & i::before {
+      color: #fff !important;
+    }
   }
 }
 

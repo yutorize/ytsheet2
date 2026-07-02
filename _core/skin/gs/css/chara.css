@@ -98,7 +98,6 @@
       "STT STT STT STT"
     ;
   }
-  #image-none,
   #image     { grid-area: IMG; }
   #personal  { grid-area: PER; }
   #ability   { grid-area: ABL; }

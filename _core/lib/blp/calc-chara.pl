@@ -45,7 +45,7 @@ sub data_calc {
   #}
 
   #### 改行を<br>に変換 --------------------------------------------------
-  $pc{words}       =~ s/\r\n?|\n/<br>/g;
+  $pc{'words'.$_} =~ s/\r\n?|\n/<br>/g foreach('', 2 .. ($set::image_maxcount || 1));
   $pc{freeNote}    =~ s/\r\n?|\n/<br>/g;
   $pc{freeHistory} =~ s/\r\n?|\n/<br>/g;
   $pc{chatPalette} =~ s/\r\n?|\n/<br>/g;
@@ -79,14 +79,15 @@ sub data_calc {
   $NL{ageApp}  = substr($NL{ageApp} , 0, 20).'..' if length($NL{ageApp} ) > 20;
   $NL{belong}  = substr($pc{belong} , 0, 30).'..' if length($pc{belong} ) > 30;
   $NL{missing} = substr($pc{missing}, 0, 30).'..' if length($pc{missing}) > 30;
-  $::newline = "$pc{id}<>$::file<>".
-               "$pc{birthTime}<>$::now<>$NL{characterName}<>$NL{playerName}<>$pc{group}<>".
-               "$NL{factor}<>$NL{factorCore}<>$NL{factorStyle}<>".
-               "$NL{gender}<>$NL{age}<>$NL{ageApp}<>".
-               "$NL{belong}<>$NL{missing}<>".
-               "$pc{level}<>".
-               
-               "$pc{lastSession}<>$pc{image}<> $pc{tags} <>$pc{hide}<><>";
+  $::newline =
+    "$pc{id}<>$::file<>"
+    . "$pc{birthTime}<>$::now<>$NL{characterName}<>$NL{playerName}<>$pc{group}<>"
+    . "$NL{factor}<>$NL{factorCore}<>$NL{factorStyle}<>"
+    . "$NL{gender}<>$NL{age}<>$NL{ageApp}<>"
+    . "$NL{belong}<>$NL{missing}<>"
+    . "$pc{level}<>"
+    . "$pc{lastSession}<>"
+    . $pc{"image".imageSuffix($pc{mainImage})}."<> $pc{tags} <>$pc{hide}<><>";
 
   return %pc;
 }

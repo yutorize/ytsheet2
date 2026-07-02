@@ -52,14 +52,15 @@ sub data_calc {
   $NL{belong} = substr($pc{belong}, 0, 30).'..' if length($pc{belong}) > 30;
   $NL{rule}   = substr($pc{rule}  , 0, 50).'..' if length($pc{rule}  ) > 50;
   $NL{leaderName} = substr($NL{leaderName}, 0, 108).'..' if length($NL{leaderName}) > 108;
-  $::newline = "$pc{id}<>$::file<>".
-               "$pc{birthTime}<>$::now<>$NL{clanName}<>$pc{playerName}<>$pc{group}<>".
-               "$pc{image}<> $pc{tags} <>$pc{hide}<>$pc{lastSession}<>".
+  $::newline =
+    "$pc{id}<>$::file<>"
+    . "$pc{birthTime}<>$::now<>$NL{clanName}<>$pc{playerName}<>$pc{group}<>"
+    . $pc{"image".imageSuffix($pc{mainImage})}."<> $pc{tags} <>$pc{hide}<>$pc{lastSession}<>"
 
-               "$pc{level}<>".
-               "$NL{base}<>$NL{belong}<>".
-               "$NL{rule}<>".
-               "$NL{leaderName}<>";
+    . "$pc{level}<>"
+    . "$NL{base}<>$NL{belong}<>"
+    . "$NL{rule}<>"
+    . "$NL{leaderName}<>";
 
   return %pc;
 }

@@ -20,6 +20,20 @@ if(!$file){ error('404:データが見つかりません。'); }
 my $sheetBaseDir = $user ? "${dataDir}_${user}/" : "${dataDir}anonymous/";
 my $fileDir = $user ? "_${user}/${file}" : "anonymous/${file}";
 
+sub deleteSheetImages {
+  my ($dir, $file) = @_;
+  my $imageMaxCount = $set::image_maxcount || 1;
+  $imageMaxCount = 1 if $imageMaxCount < 1;
+  my $deleted = 0;
+  for my $imageNo (1 .. $imageMaxCount){
+    my $suffix = imageSuffix($imageNo);
+    foreach my $ext (qw(png jpg jpeg gif webp)){
+      $deleted += deleteSheetFile($dir, $file, "image$suffix.$ext") ? 1 : 0;
+    }
+  }
+  return $deleted;
+}
+
 ## キャラシ削除
 if($mode eq 'delete'){
   # 一覧ファイル
@@ -43,10 +57,9 @@ if($mode eq 'delete'){
   });
 
   # 個別ファイル
-  if (deleteSheetFile($sheetBaseDir, $file, 'image.png')) { $message .= '画像(png)を削除しました。<br>'; }
-  if (deleteSheetFile($sheetBaseDir, $file, 'image.jpg')) { $message .= '画像(jpg)を削除しました。<br>'; }
-  if (deleteSheetFile($sheetBaseDir, $file, 'image.gif')) { $message .= '画像(gif)を削除しました。<br>'; }
-  if (deleteSheetFile($sheetBaseDir, $file, 'image.webp')){ $message .= '画像(webp)を削除しました。<br>'; }
+  if (my $deletedImages = deleteSheetImages($sheetBaseDir, $file)) {
+    $message .= "画像を${deletedImages}件削除しました。<br>";
+  }
 
   if($set::del_back){
     if (unlink "${dataDir}${fileDir}.zip")         { $message .= 'シートアーカイブを削除しました。<br>'; }
@@ -83,31 +96,26 @@ if($mode eq 'delete'){
 }
 ## 画像削除
 elsif($mode eq 'img-delete'){
+  my $deletedImages = deleteSheetImages($sheetBaseDir, $file);
+  if($deletedImages){
+    $message .= "キャラクター画像を${deletedImages}件削除しました。<br>";
+  }
+
   # 画像差し替え
-  if($set::beheaded){
-    foreach my $ext (qw(png jpg gif webp)){
-      if (deleteSheetFile($sheetBaseDir, $file, "image.$ext")) {
-        $message .= 'キャラクター画像を削除しました。<br>';
-        if(open(my $BEHEADED, '<', "${set::beheaded}.$ext")){
-          binmode $BEHEADED;
-          my $image = do { local $/; <$BEHEADED> };
-          close($BEHEADED);
-          updateSheetFile($sheetBaseDir, $file, "image.$ext", $image);
-          $message .= '差し替え画像を設定しました。<br>';
-        }
+  if($set::beheaded && $deletedImages){
+    foreach my $ext (qw(png jpg jpeg gif webp)){
+      if(open(my $BEHEADED, '<', "${set::beheaded}.$ext")){
+        binmode $BEHEADED;
+        my $image = do { local $/; <$BEHEADED> };
+        close($BEHEADED);
+        updateSheetFile($sheetBaseDir, $file, "image.$ext", $image);
+        $message .= '差し替え画像を設定しました。<br>';
+        last;
       }
     }
   }
-  # 消すだけ
-  else {
-    if (deleteSheetFile($sheetBaseDir, $file, 'image.png')) { $message .= 'キャラクター画像を削除しました。<br>'; }
-    if (deleteSheetFile($sheetBaseDir, $file, 'image.jpg')) { $message .= 'キャラクター画像を削除しました。<br>'; }
-    if (deleteSheetFile($sheetBaseDir, $file, 'image.gif')) { $message .= 'キャラクター画像を削除しました。<br>'; }
-    if (deleteSheetFile($sheetBaseDir, $file, 'image.webp')){ $message .= 'キャラクター画像を削除しました。<br>'; }
-  }
   $message .= '<a href="./?id='.$::in{id}.'">キャラクターシートを確認</a>';
-  
-  
+
   sysopen (my $FH, $::core_dir.'/data/image-delete.cgi', O_WRONLY | O_APPEND | O_CREAT) or $message .= 'デリートリストが開けませんでした。';
     if($user){ print $FH "$::in{id}<>$user<>$file<>image<>".time."<>\n"; }
     else { print $FH "$::in{id}<>-----<>$file<>image<>".time."<>\n"; }
@@ -115,4 +123,5 @@ elsif($mode eq 'img-delete'){
   
   info('画像の削除',$message);
 }
+
 1;

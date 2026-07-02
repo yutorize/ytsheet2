@@ -175,7 +175,7 @@ print <<"HTML";
     <!-- 神格 -->
     <div class="data-area in-toc" id="data-god" data-content-title="神格の詳細">
       <div class="box input-data">
-        <div id="image" style="">
+        <div id="image">
           <h2>聖印の画像</h2>
           <p>
             プレビューエリアに画像ファイルをドロップ、または
@@ -186,10 +186,10 @@ print <<"HTML";
           <p>
             <input type="checkbox" name="imageDelete" value="1"> 画像を削除する
             @{[ input 'image','hidden' ]}
+            @{[ input 'imageUpdate','hidden' ]}
           </p>
         <script>
           const imageType = 'symbol';
-          let imgURL = "$pc{imageURL}";
         </script>
         </div>
         <dl class="name  "><dt>名称      <dd>@{[ input 'godName','',"setName" ]}</dl>

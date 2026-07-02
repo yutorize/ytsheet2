@@ -29,9 +29,14 @@ function formSubmit() {
   if(saving){ return; }
   if(!formCheck()){ return false; }
 
+  if(typeof imageType !== "undefined" && imageType === 'character'){
+    saveCurrentImageLayout();
+  }
+
   const formData = new FormData(form);
-  if(compressedImageFile){
-    formData.set('imageFile', compressedImageFile, compressedImageFile.name);
+  for(const [imageNo, compressedImageFile] of Object.entries(compressedImageFiles)){
+    const suffix = imageNo == '1' ? '' : imageNo;
+    formData.set(`imageFile${suffix}`, compressedImageFile, compressedImageFile.name);
   }
 
   for (const key of formData.keys()) {
@@ -90,6 +95,34 @@ function formSubmit() {
             form.pass.type = 'password';
             form.pass.value = '';
           }
+        }
+        if(typeof imageType !== "undefined" && imageType === 'character'){
+          const newImageData = data?.data?.newImageData || {};
+          Object.keys(newImageData).forEach(imageNo => {
+            const suffix = imageSuffix(imageNo);
+            form[`imageFile${suffix}`].value = '';
+            delete compressedImageFiles[imageNo];
+            form[`imageDelete${suffix}`].checked = false;
+            if(newImageData[imageNo].ext === ''){
+              if(imageURLs[imageNo]){
+                URL.revokeObjectURL(imageURLs[imageNo]);
+                imageURLs[imageNo] = '';
+                form[`image${suffix}`].value = '';
+                form[`imageUpdate${suffix}`].value = '';
+              }
+              document.querySelector(`#image-select-buttons img[data-num="${imageNo}"]`).src = emptyImageURL;
+              if(imageNo == editingImageNo){
+                document.getElementById('image').style.backgroundImage = '';
+                document.querySelectorAll('.image-custom-view').forEach((obj) => {
+                  obj.style.backgroundImage = '';
+                });
+              }
+            }
+            else if(newImageData[imageNo].ext){
+              form[`image${suffix}`].value = newImageData[imageNo].ext;
+              form[`imageUpdate${suffix}`].value = newImageData[imageNo].update;
+            }
+          });
         }
       }
       else{
@@ -164,8 +197,10 @@ function backupFormInputs() {
   delete obj._token;
   delete obj.id;
   delete obj.pass;
-  delete obj.image;
-  delete obj.imageFile;
+  delete obj.mainImage;
+  for(const key of Object.keys(obj)){
+    if(/^imageFile\d*$/.test(key) || /^image(?:Update)?\d*$/.test(key)){ delete obj[key]; }
+  }
   const formDataJSON = JSON.stringify(obj);
   localStorage.setItem('formData-'+sheetType, formDataJSON);
   console.log('backupFormInputs(): formData-'+sheetType)
@@ -339,7 +374,9 @@ function setChatPalette(){
   formData.set("mode", "palette");
   formData.set("editingMode", "1");
   formData.delete("password");
-  formData.delete("imageFile");
+  for(const key of Array.from(formData.keys())){
+    if(/^imageFile\d*$/.test(key)){ formData.delete(key); }
+  }
   formData.delete("unitStatusNum");
   formData.delete("unitStatusNotOutput");
   const action = form.getAttribute("action")
@@ -417,45 +454,66 @@ if (document.getElementById('unit-status-optional')) {
 }
 
 // 画像配置 ----------------------------------------
+let imgURL = '';
+let imageURLs = typeof savedImageURLs === 'object' ? savedImageURLs : {};
+window.addEventListener('load', function(e) {
+  if(typeof imageType !== 'undefined'){
+    if(imageType === 'character'){
+      setImagePosition();
+      checkMainImage(form.mainImage.value);
+    }
+    else {
+      imgURL = `./?id=${form.id.value}&mode=image&imageNo=1&cache=${form.imageUpdate.value}`;
+      document.getElementById('image').style.backgroundImage = `url(${imgURL})`;
+    }
+  }
+});
+
 // ビューを開く
 function imagePositionView(){
   document.getElementById('image-custom').style.display = 'grid';
   imageDragPointSet();
 }
 function imagePositionClose(){
+  saveCurrentImageLayout();
   document.getElementById('image-custom').style.display = 'none';
 }
 // プレビュー
-function imagePreView(file, imageMaxSize){
+function imagePreView(file, imageMaxSize, imageNo = 1){
   if(!file){ return; }
 
-  compressedImageFile = null;
-  compressScale = 1;
+  if(imageType === 'character'){ switchImageLayoutConfig(imageNo); }
+
+  delete compressedImageFiles[imageNo];
 
   if(file.size > imageMaxSize){
     alert(`ファイルサイズが${ (imageMaxSize >= 1048576) ? (imageMaxSize / 1048576)+'MB' : (imageMaxSize / 1024)+'KB' }を超えているため、自動的に画像形式を変換・縮小されます。元画像が大きいと、変換・縮小処理に時間がかかることがあります。`);
-    form.imageFile.value = '';
-    imageCompressor(file, imageMaxSize);
+    const suffix = imageNo == 1 ? '' : imageNo;
+    form[`imageFile${suffix}`].value = '';
+    imageCompressor(file, imageMaxSize, imageNo);
   }
   else {
-    compressedImageFile = null;
-    imageBlobPreview(file)
+    delete compressedImageFiles[imageNo];
+    imageBlobPreview(file, imageNo)
   }
 }
-function imageBlobPreview(blob){
+function imageBlobPreview(blob, imageNo = 1){
   const blobURL = window.URL.createObjectURL(blob);
-  document.getElementById('image').style.backgroundImage = 'url("'+blobURL+'")';
-  document.querySelectorAll(".image-custom-view").forEach((el) => {
-    el.style.backgroundImage = 'url("'+blobURL+'")';
-  });
-  imgURL = blobURL;
-  if(imageType == 'character'){ imageDragPointSet(); }
+
+  // 古いBlob URLがある場合は破棄
+  if(imageURLs[imageNo]){
+    URL.revokeObjectURL(imageURLs[imageNo]);
+  }
+
+  imageURLs[imageNo] = blobURL;
+  if(document.querySelector(`#image-select-buttons img[data-num="${imageNo}"]`)) {
+    document.querySelector(`#image-select-buttons img[data-num="${imageNo}"]`).src = blobURL;
+  }
+  setPreviewImage(imageNo);
 }
 // 圧縮
-
-let compressedImageFile = null;
-let compressScale = 1;
-function imageCompressor(data, imageMaxSize){
+const compressedImageFiles = {};
+function imageCompressor(data, imageMaxSize, imageNo = 1, compressScale = 1){
   let image = new Image();
   let blobURL = URL.createObjectURL(data);
   image.src = blobURL;
@@ -464,16 +522,16 @@ function imageCompressor(data, imageMaxSize){
       quality: 0.9,
       success(result) {
         if(result.size > imageMaxSize){
-          compressScale -= 0.1;
-          if(compressScale > 0){
-            console.log(`画像縮小: ${ compressScale * 100 } %`);
-            imageCompressor(result, imageMaxSize);
+          const nextCompressScale = compressScale - 0.1;
+          if(nextCompressScale > 0){
+            console.log(`画像縮小: ${ nextCompressScale * 100 } %`);
+            imageCompressor(result, imageMaxSize, imageNo, nextCompressScale);
           }
           else { alert('画像サイズを既定まで下げることができませんでした。'); }
         }
         else {
-          imageBlobPreview(result);
-          compressedImageFile = new File([result], 'image.webp', {
+          imageBlobPreview(result, imageNo);
+          compressedImageFiles[imageNo] = new File([result], 'image.webp', {
             type: result.type || 'image/webp',
             lastModified: Date.now(),
           });
@@ -487,24 +545,24 @@ function imageCompressor(data, imageMaxSize){
 }
 // パーセンテージゲージ変更
 function imagePercentBarChange(per){
-  form.imagePercent.value = per;
+  form.editingImagePercent.value = per;
   imagePosition();
 }
 // ポジション反映
 function imagePosition(){
-  const bgSize = form.imageFit.options[form.imageFit.selectedIndex].value;
+  const bgSize = form.editingImageFit.value;
   let configVisiblity = 'hidden';
   let backgroundSize = '100%';
   let ogpSize = '100%';
   if(bgSize === 'percentX'){
     configVisiblity = 'visible';
-    backgroundSize = form.imagePercent.value + '%';
-    ogpSize = form.imagePercent.value + '%';
+    backgroundSize = form.editingImagePercent.value + '%';
+    ogpSize = form.editingImagePercent.value + '%';
   }
   else if(bgSize === 'percentY'){
     configVisiblity = 'visible';
-    backgroundSize = 'auto ' + form.imagePercent.value + '%';
-    ogpSize = 'auto ' + (Number(form.imagePercent.value) * 1.2) + '%';
+    backgroundSize = 'auto ' + form.editingImagePercent.value + '%';
+    ogpSize = 'auto ' + (Number(form.editingImagePercent.value) * 1.2) + '%';
   }
   else {
     configVisiblity = 'hidden';
@@ -514,17 +572,22 @@ function imagePosition(){
   document.getElementById("image-percent-config").style.visibility = configVisiblity;
   document.querySelectorAll("#image, :is(#image-custom-frame-M,#image-custom-frame-S) > .image-custom-view").forEach((el) => {
     el.style.backgroundSize = backgroundSize;
-    el.style.backgroundPositionX = form.imagePositionX.value + '%';
-    el.style.backgroundPositionY = form.imagePositionY.value + '%';
+    el.style.backgroundPositionX = form.editingImagePositionX.value + '%';
+    el.style.backgroundPositionY = form.editingImagePositionY.value + '%';
   });
   document.querySelector("#image-custom-frame-O > .image-custom-view").style.backgroundSize = ogpSize;
-  document.querySelector("#image-custom-frame-O > .image-custom-view").style.backgroundPositionX = form.imagePositionX.value + '%';
-  document.querySelector("#image-custom-frame-O > .image-custom-view").style.backgroundPositionY = (Number(form.imagePositionY.value) * 0.9) + '%';
+  document.querySelector("#image-custom-frame-O > .image-custom-view").style.backgroundPositionX = form.editingImagePositionX.value + '%';
+  document.querySelector("#image-custom-frame-O > .image-custom-view").style.backgroundPositionY = (Number(form.editingImagePositionY.value) * 0.9) + '%';
 
-  document.getElementById("image-positionX-view").textContent = form.imagePositionX.value + '%';
-  document.getElementById("image-positionY-view").textContent = form.imagePositionY.value + '%';
+  document.getElementById("image-positionX").value = form.editingImagePositionX.value;
+  document.getElementById("image-positionY").value = form.editingImagePositionY.value;
   
-  document.getElementById("image-percent-bar").value = form.imagePercent.value;
+  document.getElementById("image-percent-bar").value = form.editingImagePercent.value;
+}
+function imagePositionNumberToRange(){
+  form.editingImagePositionX.value = document.getElementById("image-positionX").value;
+  form.editingImagePositionY.value = document.getElementById("image-positionY").value;
+  imagePosition();
 }
 // ドラッグ処理
 let dragFlag = 0;
@@ -546,7 +609,7 @@ function imageDragMove(e){
     const x2 = touches[1].pageX;
     const y2 = touches[1].pageY;
     const distance = Math.sqrt( Math.pow( x2-x1, 2 ) + Math.pow( y2-y1, 2 ) );
-    const obj = form.imagePercent;
+    const obj = form.editingImagePercent;
     if(baseDistance){
       const gap = (distance - baseDistance);
       if     (gap > 0){ obj.value = Number(obj.value)+5; }
@@ -560,9 +623,9 @@ function imageDragMove(e){
   // ドラッグ移動
   else {
     if(dragFlag){
-      const objX = form.imagePositionX;
-      const objY = form.imagePositionY;
-      const objP = form.imagePercent;
+      const objX = form.editingImagePositionX;
+      const objY = form.editingImagePositionY;
+      const objP = form.editingImagePercent;
       const x = e.x || e.changedTouches[0].pageX;
       const y = e.y || e.changedTouches[0].pageY;
       objX.value = Number(objX.value) + (dragPoint.x - x) * pointWidth;
@@ -581,8 +644,8 @@ function imageDragPointSet(){
   let img = new Image();
   img.src = imgURL;
   img.onload = function() {
-    const type = form.imageFit.value;
-    const ratio = Number(form.imagePercent.value) / 100;
+    const type = form.editingImageFit.value;
+    const ratio = Number(form.editingImagePercent.value) / 100;
     const imgWidth  = img.width;
     const imgHeight = img.height;
     const boxWidth  = document.getElementById('image-custom-frame-M').offsetWidth  || 350;
@@ -627,7 +690,7 @@ function imageDragPointSet(){
 }
 // セリフプレビュー
 function wordsPreView(){
-  let words = form.words.value;
+  let words = form.editingWords.value;
   words = words.replace(/[|｜](.+?)《(.+?)》/g, '<ruby><rp>｜</rp>$1<rp>《</rp><rt>$2</rt><rp>》</rp></ruby>')
                .replace(/《《(.+?)》》/g, '<span class="text-em">$1</span>')
                .replace(/“/g, '〝')
@@ -640,14 +703,106 @@ function wordsPreView(){
   const wObj = document.getElementById('words-preview');
   wObj.innerHTML = words;
   
-  wObj.style.left   = form.wordsX.value === '左' ? '0' : '';
-  wObj.style.right  = form.wordsX.value === '右' || !form.wordsX.value ? '0' : '';
-  wObj.style.top    = form.wordsY.value === '上' || !form.wordsY.value ? '0' : '';
-  wObj.style.bottom = form.wordsY.value === '下' ? '0' : '';
+  wObj.style.left   = form.editingWordsX.value === '左' ? '0' : '';
+  wObj.style.right  = form.editingWordsX.value === '右' || !form.editingWordsX.value ? '0' : '';
+  wObj.style.top    = form.editingWordsY.value === '上' || !form.editingWordsY.value ? '0' : '';
+  wObj.style.bottom = form.editingWordsY.value === '下' ? '0' : '';
   
-  document.getElementById('image-copyright-preview').textContent = form.imageCopyright.value;
+  document.getElementById('image-copyright-preview').textContent = form.editingImageCopyright.value;
 }
 
+// 画像プレビュー切替
+let editingImageNo = Number(form.mainImage?.value || 1);
+
+function setImagePosition() {
+  editingImageNo = Number(form.mainImage?.value || 1);
+  loadImageLayout(editingImageNo);
+  setPreviewImage(editingImageNo);
+  imagePosition();
+  document.querySelectorAll("#image-select-buttons img").forEach(obj => {
+    obj.classList.toggle('selected', obj.dataset.num == editingImageNo);
+  });
+}
+function imageSuffix(imageNo){
+  return imageNo == 1 ? '' : imageNo;
+}
+function getSavedImageURL(imageNo) {
+  if(typeof imageURLs === 'undefined'){ return ''; }
+  return imageURLs[imageNo] || '';
+}
+function setPreviewImage(imageNo) {
+  imageNo = Number(imageNo || 1);
+
+  const url = imageURLs[imageNo] || '';
+
+  const backgroundImage = url ? `url("${url}")` : '';
+
+  const imageBox = document.getElementById('image');
+  if(imageBox){
+    imageBox.style.backgroundImage = backgroundImage;
+  }
+
+  document.querySelectorAll('.image-custom-view').forEach((obj) => {
+    obj.style.backgroundImage = backgroundImage;
+  });
+
+  // imageDragPointSet() が参照する現在画像URL
+  imgURL = url || '';
+
+  if(imageType === 'character'){
+    if(imgURL){
+      // 画像がある場合のみ、ドラッグ基準点を再計算
+      imageDragPointSet();
+    }
+    // 現在フォームに入っているレイアウト設定をプレビューへ反映
+    imagePosition();
+
+    // 著作権表示・セリフ表示も更新
+    wordsPreView();
+  }
+
+}
+function saveCurrentImageLayout(){
+  const suffix = imageSuffix(editingImageNo);
+  form[`imageFit${suffix}`].value          = form.editingImageFit.value;
+  form[`imagePercent${suffix}`].value      = form.editingImagePercent.value;
+  form[`imagePositionX${suffix}`].value    = form.editingImagePositionX.value;
+  form[`imagePositionY${suffix}`].value    = form.editingImagePositionY.value;
+  form[`imageCopyright${suffix}`].value    = form.editingImageCopyright.value;
+  form[`imageCopyrightURL${suffix}`].value = form.editingImageCopyrightURL.value;
+  form[`words${suffix}`].value  = form.editingWords.value;
+  form[`wordsX${suffix}`].value = form.editingWordsX.value;
+  form[`wordsY${suffix}`].value = form.editingWordsY.value;
+}
+function loadImageLayout(imageNo){
+  const suffix = imageSuffix(imageNo);
+  form.editingImageFit.value          = form[`imageFit${suffix}`].value || 'cover';
+  form.editingImagePercent.value      = form[`imagePercent${suffix}`].value || 200;
+  form.editingImagePositionX.value    = form[`imagePositionX${suffix}`].value || 50;
+  form.editingImagePositionY.value    = form[`imagePositionY${suffix}`].value || 50;
+  form.editingImageCopyright.value    = form[`imageCopyright${suffix}`].value || '';
+  form.editingImageCopyrightURL.value = form[`imageCopyrightURL${suffix}`].value || '';
+  form.editingWords.value  = form[`words${suffix}`].value || '';
+  form.editingWordsX.value = form[`wordsX${suffix}`].value || '';
+  form.editingWordsY.value = form[`wordsY${suffix}`].value || '';
+}
+function switchImageLayoutConfig(imageNo){
+  saveCurrentImageLayout();
+
+  editingImageNo = Number(imageNo);
+  loadImageLayout(editingImageNo);
+  setPreviewImage(editingImageNo);  
+  document.querySelectorAll("#image-select-buttons img").forEach(obj => {
+    obj.classList.toggle('selected', obj.dataset.num == imageNo);
+  });
+}
+// メイン画像変更
+function checkMainImage(imageNo){
+  document.querySelectorAll(`#image-select-buttons input[name^="imageHide"]`).forEach(obj => {
+    obj.disabled = false;
+  });
+  form["imageHide"+imageSuffix(imageNo)].disabled = true;
+}
 // カラーカスタム ----------------------------------------
 function changeColor(){
   let hH = Number(form.colorHeadBgH.value);
@@ -695,8 +850,10 @@ function exportAsJson() {
   delete o._token;
   delete o.id;
   delete o.pass;
-  delete o.image;
-  delete o.imageFile;
+  delete o.mainImage;
+  for(const key of Object.keys(o)){
+    if(/^imageFile\d*$/.test(key) || /^image(?:Update)?\d*$/.test(key)){ delete o[key]; }
+  }
   const json = JSON.stringify(o);
 
   const jsonUrl = window.URL.createObjectURL(new Blob([json], {type: 'text/json;charset=utf-8;'}));

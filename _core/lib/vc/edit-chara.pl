@@ -76,7 +76,8 @@ $open{skills} = 'open';
 
 ### 改行処理 --------------------------------------------------
 convertEscapedBrToNewlines(\%pc,
-  qw/words freeNote freeHistory chatPalette/,
+  qw/freeNote freeHistory chatPalette/,
+  ( map { 'words'.$_ } '', 2 .. ($set::image_maxcount || 1) ),
 );
 
 ### パラメータ定義 --------------------------------------------------
@@ -121,7 +122,7 @@ print <<"HTML";
     </div>
 
     <div id="area-status">
-      @{[ renderImageForm($pc{imageURL}) ]}
+      @{[ renderImageForm() ]}
 
       <div id="levels">
         <dl class="box">
