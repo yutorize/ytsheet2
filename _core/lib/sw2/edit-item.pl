@@ -28,7 +28,7 @@ if($isNewSheet){
 }
 
 if($::mode eq 'edit' || ($::mode eq 'convert' && $pc{ver})){
-  %pc = data_update_item(\%pc);
+  %pc = upgradeItemData(\%pc);
 }
 
 %pc = applyCustomizedInitialValues(\%pc, 'i') if $::mode eq 'blanksheet';

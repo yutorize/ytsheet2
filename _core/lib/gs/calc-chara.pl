@@ -6,12 +6,12 @@ use utf8;
 require $set::data_class;
 require $set::data_races;
 
-sub data_calc {
+sub dataCalc {
   my %pc = %{$_[0]};
   my %st;
   ### アップデート --------------------------------------------------
   if($pc{ver}){
-    %pc = data_update_chara(\%pc);
+    %pc = upgradeCharaData(\%pc);
   }
 
   ### 経験点／名誉点／所持金計算 --------------------------------------------------
@@ -236,7 +236,7 @@ sub data_calc {
     if($pc{"history${i}Gm"} && $pc{"history${i}Title"}){ $pc{lastSession} = removeTags unescapeTags $pc{"history${i}Title"}; last; }
   }
 
-  ### newline --------------------------------------------------
+  ### updatedLine --------------------------------------------------
   my %NL;
   $NL{$_} = $pc{$_} foreach ('characterName','playerName','gender','age','rank','faith');
   $NL{race}     = ($pc{race}     && $pc{raceFree}    ) ? "$pc{race}($pc{raceFree})"         : $pc{race}     || $pc{raceFree};
@@ -257,7 +257,7 @@ sub data_calc {
   foreach my $class (@data::class_list){
     $classlv .= $pc{'lv'.$data::class{$class}{id}}.'/';
   }
-  $::newline =
+  $::updatedLine =
     "$pc{id}<>$::file<>"
     . "$pc{birthTime}<>$::now<>$NL{characterName}<>$NL{playerName}<>$pc{group}<>"
     . $pc{"image".imageSuffix($pc{mainImage})}."<> $pc{tags} <>$pc{hide}<>$pc{lastSession}<>"

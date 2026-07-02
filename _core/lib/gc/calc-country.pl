@@ -5,12 +5,12 @@ use utf8;
 
 require $set::data_class;
 
-sub data_calc {
+sub dataCalc {
   my %pc = %{$_[0]};
   my %st;
   ### アップデート --------------------------------------------------
   if($pc{ver}){
-    %pc = data_update_chara(\%pc);
+    %pc = upgradeCharaData(\%pc);
   }
 
   ### カウント・レベル・爵位 --------------------------------------------------
@@ -66,13 +66,13 @@ sub data_calc {
     if($pc{"history${i}Gm"} && $pc{"history${i}Title"}){ $pc{lastSession} = removeTags unescapeTags $pc{"history${i}Title"}; last; }
   }
 
-  ### newline --------------------------------------------------
+  ### updatedLine --------------------------------------------------
   my %NL;
   foreach ('countryName','playerName','lordName'){
     $NL{$_} = $pc{$_} =~ s/[|｜]([^|｜]+?)《.+?》/$1/gr;
     $NL{$_} = removeTags unescapeTags $NL{$_} =~ s/^\s|\s$//gr;
   }
-  $::newline =
+  $::updatedLine =
     "$pc{id}<>$::file<>"
     . "$pc{birthTime}<>$::now<>$NL{countryName}<>$NL{playerName}<>$pc{group}<>"
     . $pc{"image".imageSuffix($pc{mainImage})}."<> $pc{tags} <>$pc{hide}<>"

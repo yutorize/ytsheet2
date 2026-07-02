@@ -6,12 +6,12 @@ use utf8;
 require $set::data_races;
 require $set::data_class;
 
-sub data_calc {
+sub dataCalc {
   my %pc = %{$_[0]};
   my %st;
   ### アップデート --------------------------------------------------
   if($pc{ver}){
-    %pc = data_update_chara(\%pc);
+    %pc = upgradeCharaData(\%pc);
   }
   
 
@@ -294,7 +294,7 @@ sub data_calc {
     if($pc{"history${i}Gm"} && $pc{"history${i}Title"}){ $pc{lastSession} = removeTags unescapeTags $pc{"history${i}Title"}; last; }
   }
 
-  ### newline --------------------------------------------------
+  ### updatedLine --------------------------------------------------
   my %NL;
   $NL{name} = ($pc{aka} ? "“$pc{aka}”" : "").$pc{characterName};
   $NL{race} = $pc{race} eq 'free' ? $pc{raceFree} : $pc{race};
@@ -318,7 +318,7 @@ sub data_calc {
   $NL{classTitle}   = substr($NL{classTitle}  , 0, 20).'..' if length($NL{classTitle}  ) > 20;
   $NL{homeArea}  = substr($NL{homeArea} , 0,  30).'..' if length($NL{homeArea} ) >  30;
   $NL{guildName} = substr($NL{guildName}, 0, 108).'..' if length($NL{guildName}) > 108;
-  $::newline =
+  $::updatedLine =
     "$pc{id}<>$::file<>"
     . "$pc{birthTime}<>$::now<>$NL{name}<>$NL{playerName}<>$pc{group}<>"
     . $pc{"image".imageSuffix($pc{mainImage})}."<> $pc{tags} <>$pc{hide}<>"

@@ -14,7 +14,7 @@ require $set::data_syndrome;
   unescapeLinesKeys => [qw/freeNote freeHistory/],
   unescapeSkipKeys  => [qw/stage/],
   convertViewMap    => [qw/freeNote/],
-  updateSub => \&data_update_chara,
+  updateSub => \&upgradeCharaData,
 );
 our %pc = %{ $pcRef };
 

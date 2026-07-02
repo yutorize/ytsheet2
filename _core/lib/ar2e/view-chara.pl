@@ -14,7 +14,7 @@ require $set::data_class;
   unescapeLinesKeys => [qw/freeNote freeHistory items cashbook/],
   unescapeSkipKeys  => [qw/areaTags/],
   convertViewMap    => [qw/freeNote items/],
-  updateSub => \&data_update_chara,
+  updateSub => \&upgradeCharaData,
 );
 our %pc = %{ $pcRef };
 

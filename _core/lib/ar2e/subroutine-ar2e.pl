@@ -37,7 +37,7 @@ our %multilineTargets = (
 );
 
 ### バージョンアップデート --------------------------------------------------
-sub data_update_chara {
+sub upgradeCharaData {
   my %pc = %{$_[0]};
   my $ver = $pc{ver};
   $ver =~ s/^([0-9]+)\.([0-9]+)\.([0-9]+)$/$1.$2$3/;

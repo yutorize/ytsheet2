@@ -15,7 +15,7 @@ my $partnerMax = 2; #パートナーの最大人数
   generateType => 'BloodPathPC',
   unescapeLinesKeys => [qw/freeNote freeHistory/],
   unescapeSkipRe    => qr/^(?:partner[12]Url|(?:p[12]_)?(?:image))/,
-  updateSub      => \&data_update_chara,
+  updateSub      => \&upgradeCharaData,
   beforeUnescape => \&setPartnerData,
   partnerMax => $partnerMax,
 );
@@ -83,7 +83,7 @@ sub setPartnerData {
   my ($pc) = @_;
   setupPartnerDataCommon($pc,
     max => $partnerMax,
-    updateSub => \&data_update_chara,
+    updateSub => \&upgradeCharaData,
     onPartner => sub {
       my ($pc, $pr, $num) = @_;
       $pc->{"partner${num}Name"}     = $pr->{characterName};

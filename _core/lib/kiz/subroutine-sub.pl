@@ -36,7 +36,7 @@ our %multilineTargets = (
 );
 
 ### バージョンアップデート --------------------------------------------------
-sub data_update_chara {
+sub upgradeCharaData {
   my %pc = %{$_[0]};
   my $ver = $pc{ver};
   delete $pc{updateMessage};

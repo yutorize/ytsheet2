@@ -28,7 +28,7 @@ if($isNewSheet){
   $pc{protect} ||= $LOGIN_ID ? 'account' : 'password';
 }
 if($::mode eq 'edit' || ($::mode eq 'convert' && $pc{ver})){
-  %pc = data_update_mons(\%pc);
+  %pc = upgradeMonsterData(\%pc);
 }
 elsif($::mode eq 'blanksheet'){
   $pc{paletteUseBuff} = 1;

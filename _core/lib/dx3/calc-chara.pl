@@ -9,11 +9,11 @@ my %impulses;
 $awakens{@$_[0]} = @$_[1] foreach(@data::awakens);
 $impulses{@$_[0]} = @$_[1] foreach(@data::impulses);
 
-sub data_calc {
+sub dataCalc {
   my %pc = %{$_[0]};
   ### アップデート --------------------------------------------------
   if($pc{ver}){
-    %pc = data_update_chara(\%pc);
+    %pc = upgradeCharaData(\%pc);
   }
   
   ### 能力値 --------------------------------------------------
@@ -251,7 +251,7 @@ sub data_calc {
     if($pc{"history${i}Gm"} && $pc{"history${i}Title"}){ $pc{lastSession} = removeTags unescapeTags $pc{"history${i}Title"}; last; }
   }
 
-  ### newline --------------------------------------------------
+  ### updatedLine --------------------------------------------------
   my %NL;
   $NL{name}  = ($pc{aka} ? "“$pc{aka}”" : "").$pc{characterName};
   $NL{$_} = $pc{$_} foreach ('playerName','gender','age','sign','blood','works');
@@ -286,7 +286,7 @@ sub data_calc {
     $syn = substr($syn, 0, 20).'..' if length($syn) > 20;
     return "その他:$syn";
   }
-  $::newline =
+  $::updatedLine =
     "$pc{id}<>$::file<>"
     . "$pc{birthTime}<>$::now<>$NL{name}<>$NL{playerName}<>$pc{group}<>"
     . (130+$pc{expSpent})

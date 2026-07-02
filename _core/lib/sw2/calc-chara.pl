@@ -7,12 +7,12 @@ require $set::data_class;
 require $set::data_races;
 require $set::data_items;
 
-sub data_calc {
+sub dataCalc {
   my %pc = %{$_[0]};
   my %st;
   ### アップデート --------------------------------------------------
   if($pc{ver}){
-    %pc = data_update_chara(\%pc);
+    %pc = upgradeCharaData(\%pc);
   }
   
   ### 技能 --------------------------------------------------
@@ -860,7 +860,7 @@ sub data_calc {
     if($pc{"history${i}Gm"} && $pc{"history${i}Title"}){ $pc{lastSession} = removeTags unescapeTags $pc{"history${i}Title"}; last; }
   }
 
-  ### newline --------------------------------------------------
+  ### updatedLine --------------------------------------------------
   my %NL;
   $NL{name}  = ($pc{aka} ? "“$pc{aka}”" : "").$pc{characterName};
   $NL{rank}  = $pc{honorRank} >= $pc{honorRankBarbaros} ? $pc{rank} : $pc{rankBarbaros};
@@ -897,7 +897,7 @@ sub data_calc {
   }
   $classlv .= '|'.$freeclass if $freeclass;
 
-  $::newline =
+  $::updatedLine =
     "$pc{id}<>$::file<>"
     . "$pc{birthTime}<>$::now<>$NL{name}<>$NL{playerName}<>$pc{group}<>"
     . "$pc{expTotal}<>$NL{rank}<>$NL{race}<>$NL{gender}<>$NL{age}<>$NL{faith}<>"

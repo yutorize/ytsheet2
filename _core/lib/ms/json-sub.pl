@@ -10,7 +10,7 @@ sub addJsonData {
   if ($pc{type} eq 'c'){
   }
   else {
-    %pc = data_update_chara(\%pc) if $pc{ver};
+    %pc = upgradeCharaData(\%pc) if $pc{ver};
 
     ### 簡易プロフィール
     my @classes;

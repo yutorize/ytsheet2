@@ -14,7 +14,7 @@ use HTML::Template;
   unescapeSkipKeys  => [qw/schoolItemList/],
   maskSkipKeys      => ['category'],
   nameSub           => \&setArtsName,
-  updateSub => \&data_update_arts,
+  updateSub => \&upgradeArtsData,
 );
 our %pc = %{ $pcRef };
 $SHEET->param(modeZero => $::SW2_0 ? 1 : 0);
