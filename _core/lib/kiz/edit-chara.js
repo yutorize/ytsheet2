@@ -16,6 +16,7 @@ window.onload = function() {
   autoInputPartner(2);
   
   changeColor();
+  deleteLoadingArea();
 };
 
 function changeRegu(){

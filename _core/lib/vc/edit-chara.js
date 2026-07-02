@@ -9,6 +9,7 @@ window.onload = function() {
   calcResultPoint();
   
   changeColor();
+  deleteLoadingArea();
 };
 
 // 送信前チェック ----------------------------------------

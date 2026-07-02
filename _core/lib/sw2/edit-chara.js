@@ -104,6 +104,7 @@ window.onload = function() {
   checkStageAll();
   
   changeColor();
+  deleteLoadingArea();
 };
 
 // 送信前チェック ----------------------------------------

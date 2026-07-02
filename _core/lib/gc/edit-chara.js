@@ -25,6 +25,7 @@ window.onload = function() {
   calcTotalWeight();
   
   changeColor();
+  deleteLoadingArea();
 };
 
 // 送信前チェック ----------------------------------------

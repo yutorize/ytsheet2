@@ -10,6 +10,7 @@ window.onload = function() {
   checkMount();
 
   changeColor();
+  deleteLoadingArea();
 }
 
 // 送信前チェック ----------------------------------------
