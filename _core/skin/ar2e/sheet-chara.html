@@ -97,14 +97,20 @@
       </div>
       <div class="column column-status"><!-- COLUMN -->
       <div id="area-status">
-        <TMPL_IF image>
-        <div id="image" class="image" style="background-image: url(<TMPL_VAR imageSrc>);background-size:<TMPL_VAR imageFit>;background-position:<TMPL_VAR imagePositionX>% <TMPL_VAR imagePositionY>%;">
-        <div onclick="popImage()"><p class="words" style="<TMPL_VAR wordsX><TMPL_VAR wordsY>"><TMPL_VAR words></p></div>
-        <p class="image-copyright"><TMPL_VAR imageCopyright></p>
-        </div>
+        <div id="image"><TMPL_IF image>
+          <div class="image current" style="
+            background-image: url(<TMPL_VAR imageSrc>);
+            background-size:<TMPL_VAR imageFit>;
+            background-position:<TMPL_VAR imagePositionX>% <TMPL_VAR imagePositionY>%;
+          ">
+            <div onclick="popImage(<TMPL_VAR mainImage DEFAULT=1>)">
+              <p class="words" style="<TMPL_VAR wordsX><TMPL_VAR wordsY>"><TMPL_VAR words></p>
+            </div>
+            <p class="image-copyright"><TMPL_VAR imageCopyright></p>
+          </div>
         <TMPL_ELSE>
-        <div id="image-none" class="image-none" data-title="AR&#13;&#10;2E"><p class="words" style="<TMPL_VAR wordsX><TMPL_VAR wordsY>"><TMPL_VAR words></p></div>
-        </TMPL_IF>
+          <div class="image-none" data-title="AR&#13;&#10;2E"><p class="words" style="<TMPL_VAR wordsX><TMPL_VAR wordsY>"><TMPL_VAR words></p></div>
+        </TMPL_IF></div>
 
         <div class="box-union" id="classes">
           <dl class="box" id="class-main">

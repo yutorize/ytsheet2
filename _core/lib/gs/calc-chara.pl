@@ -217,7 +217,7 @@ sub data_calc {
   }
 
   #### 改行を<br>に変換 --------------------------------------------------
-  $pc{words}         =~ s/\r\n?|\n/<br>/g;
+  $pc{'words'.$_} =~ s/\r\n?|\n/<br>/g foreach('', 2 .. ($set::image_maxcount || 1));
   $pc{items}         =~ s/\r\n?|\n/<br>/g;
   $pc{freeNote}      =~ s/\r\n?|\n/<br>/g;
   $pc{freeHistory}   =~ s/\r\n?|\n/<br>/g;
@@ -257,12 +257,13 @@ sub data_calc {
   foreach my $class (@data::class_list){
     $classlv .= $pc{'lv'.$data::class{$class}{id}}.'/';
   }
-  $::newline = "$pc{id}<>$::file<>".
-               "$pc{birthTime}<>$::now<>$NL{characterName}<>$NL{playerName}<>$pc{group}<>".
-               "$pc{image}<> $pc{tags} <>$pc{hide}<>$pc{lastSession}<>".
+  $::newline =
+    "$pc{id}<>$::file<>"
+    . "$pc{birthTime}<>$::now<>$NL{characterName}<>$NL{playerName}<>$pc{group}<>"
+    . $pc{"image".imageSuffix($pc{mainImage})}."<> $pc{tags} <>$pc{hide}<>$pc{lastSession}<>"
 
-               "$pc{expTotal}<>$pc{level}<>$classlv<>".
-               "$NL{race}<>$NL{raceBase}<>$NL{gender}<>$NL{age}<>$NL{rank}<>$NL{faith}<>";
+    . "$pc{expTotal}<>$pc{level}<>$classlv<>"
+    . "$NL{race}<>$NL{raceBase}<>$NL{gender}<>$NL{age}<>$NL{rank}<>$NL{faith}<>";
 
   return %pc;
 }

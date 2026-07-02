@@ -65,7 +65,6 @@
       "LFP LFP LFP"
     ;
   }
-  #image-none,
   #image      { grid-area: IMG; }
   #personal   { grid-area: PER; }
   #sub-status { grid-area: STT; }

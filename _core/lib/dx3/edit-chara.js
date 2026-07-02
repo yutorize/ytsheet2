@@ -22,7 +22,6 @@ window.onload = function() {
   calcMemory();
   refreshByImpulse();
   for(let i = 1; i <= 7; i++){ changeLoisColor(i); }
-  imagePosition();
   changeColor();
   console.log('=====LOADED=====');
 };

@@ -73,7 +73,7 @@ foreach (1..$pc{forceNum}){ if($pc{"force${_}Type"}){ $open{forces} = 'open'; la
 
 ### 改行処理 --------------------------------------------------
 convertEscapedBrToNewlines(\%pc,
-  qw/words freeNote freeHistory chatPalette/,
+  qw/freeNote freeHistory chatPalette/,
 );
 
 ### 画像 --------------------------------------------------
@@ -453,10 +453,10 @@ print <<"HTML";
       <p>
         <input type="checkbox" name="imageDelete" value="1"> 画像を削除する
         @{[ input 'image','hidden' ]}
+        @{[ input 'imageUpdate','hidden' ]}
       </p>
     <script>
       const imageType = 'symbol';
-      let imgURL = "$pc{imageURL}";
     </script>
     </div>
 

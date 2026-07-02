@@ -63,7 +63,8 @@ $pc{paletteTool} ||= 'bcdice';
 
 ### 改行処理 --------------------------------------------------
 convertEscapedBrToNewlines(\%pc,
-  qw/words freeNote freeHistory chatPalette/,
+  qw/freeNote freeHistory chatPalette/,
+  ( map { 'words'.$_ } '', 2 .. ($set::image_maxcount || 1) ),
 );
 
 ### フォーム表示 #####################################################################################
@@ -123,7 +124,7 @@ print <<"HTML";
     -->
 
     <div id="area-status">
-      @{[ renderImageForm($pc{imageURL}) ]}
+      @{[ renderImageForm() ]}
 
       <div id="profile" class="box-union in-toc" data-content-title="キャラクターの背景">
         <dl class="box" id="taxa"        ><dt>分類名<dd>@{[ input 'taxa' ]}</dl>

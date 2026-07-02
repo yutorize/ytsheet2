@@ -18,7 +18,6 @@ window.onload = function() {
   calcAdvCompleted();
   openCoins();
   
-  imagePosition();
   changeColor();
 };
 

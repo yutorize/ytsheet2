@@ -260,7 +260,6 @@ sub data_calc {
   }
   #### 改行を<br>に変換 --------------------------------------------------
   foreach (
-    'words',
     'items',
     'freeNote',
     'freeHistory',
@@ -281,6 +280,7 @@ sub data_calc {
   foreach my $i (1 .. $pc{geisNum}){
     $pc{"geis${i}Note"} =~ s/\r\n?|\n/<br>/g;
   }
+  $pc{'words'.$_} =~ s/\r\n?|\n/<br>/g foreach('', 2 .. ($set::image_maxcount || 1));
   
   #### 保存処理でなければここまで --------------------------------------------------
   if(!$::mode_save){ return %pc; }
@@ -318,15 +318,16 @@ sub data_calc {
   $NL{classTitle}   = substr($NL{classTitle}  , 0, 20).'..' if length($NL{classTitle}  ) > 20;
   $NL{homeArea}  = substr($NL{homeArea} , 0,  30).'..' if length($NL{homeArea} ) >  30;
   $NL{guildName} = substr($NL{guildName}, 0, 108).'..' if length($NL{guildName}) > 108;
-  $::newline = "$pc{id}<>$::file<>".
-               "$pc{birthTime}<>$::now<>$NL{name}<>$NL{playerName}<>$pc{group}<>".
-               "$pc{image}<> $pc{tags} <>$pc{hide}<>".
+  $::newline =
+    "$pc{id}<>$::file<>"
+    . "$pc{birthTime}<>$::now<>$NL{name}<>$NL{playerName}<>$pc{group}<>"
+    . $pc{"image".imageSuffix($pc{mainImage})}."<> $pc{tags} <>$pc{hide}<>"
 
-               "$NL{race}<>$NL{gender}<>$NL{age}<>".
-               "$pc{expTotal}<>$pc{level}<>".
-               "$NL{classMain}/$NL{classSupport}/$NL{classTitle}<>".
-               "$NL{homeArea}<> $pc{areaTags} <>$NL{guildName}<>$pc{payment}<>".
-               "$pc{lastSession}<>";
+    . "$NL{race}<>$NL{gender}<>$NL{age}<>"
+    . "$pc{expTotal}<>$pc{level}<>"
+    . "$NL{classMain}/$NL{classSupport}/$NL{classTitle}<>"
+    . "$NL{homeArea}<> $pc{areaTags} <>$NL{guildName}<>$pc{payment}<>"
+    . "$pc{lastSession}<>";
 
   return %pc;
 }

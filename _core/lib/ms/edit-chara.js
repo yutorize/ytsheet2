@@ -11,7 +11,6 @@ window.onload = function() {
   checkMagi();
   calcEndurance();
   
-  imagePosition();
   changeColor();
 };
 

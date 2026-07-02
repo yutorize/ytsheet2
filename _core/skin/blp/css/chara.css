@@ -64,7 +64,6 @@
       "SCR SCR"
     ;
   }
-  #image-none,
   #image      { grid-area: IMG; }
   #personal   { grid-area: PER; }
   #factors    { grid-area: FAC; }

@@ -44,8 +44,16 @@ if($id){
     }
   }
   
-  if($pc{image}){
-    $pc{imageURL} = url()."?id=$id&mode=image&cache=$pc{imageUpdate}";
+  my $imageMaxCount = $pc{imageMaxCount} = $set::image_maxcount || 1;
+  foreach my $n (1 .. $imageMaxCount){
+    my $suffix = imageSuffix($n);
+    $pc{"imageURL$suffix"} = url().qq|?id=$id&mode=image&imageNo=$n&cache=$pc{"imageUpdate$suffix"}| if $pc{"image$suffix"};
+  }
+  if(!$pc{image} && $pc{mainImage} > 1){ # 複数画像未対応verへの対応
+    my $suffix = imageSuffix($pc{mainImage});
+    foreach my $key (qw/image imageUpdate imageURL imageFit imagePercent imagePositionX imagePositionY imageCopyright imageCopyrightURL words wordsX wordsY/){
+      $pc{$key} = $pc{"$key$suffix"};
+    }
   }
 
   $pc{sheetURL} = url()."?id=${id}";

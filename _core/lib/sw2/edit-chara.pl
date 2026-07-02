@@ -124,7 +124,8 @@ foreach my $num (1 .. $pc{freeClassNum}){
 
 ### 改行処理 --------------------------------------------------
 convertEscapedBrToNewlines(\%pc,
-  qw/words items freeNote freeHistory cashbook fellowProfile fellowNote chatPalette/,
+  qw/items freeNote freeHistory cashbook fellowProfile fellowNote chatPalette/,
+  ( map { 'words'.$_ } '', 2 .. ($set::image_maxcount || 1) ),
   ( map { 'chatPaletteInsert'.$_ } 1..$pc{chatPaletteInsertNum} ),
   ( map { 'cashbookOther'    .$_ } 1..$pc{cashbookOtherNum} ),
   ( grep {/^fellow[-0-9]+(?:Action|Note)$/} keys %pc ),
@@ -283,7 +284,7 @@ print <<"HTML";
       </ul>
     </details>
     <div id="area-status">
-      @{[ renderImageForm($pc{imageURL}) ]}
+      @{[ renderImageForm() ]}
 
       <div id="personal" class="in-toc" data-content-title="種族・年齢・性別・穢れ・生まれ・信仰">
         <dl class="box" id="race">

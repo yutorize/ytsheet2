@@ -780,8 +780,8 @@ input[type="submit"]:hover {
 
   &:empty{ display: none; }
 
+  list-style-type: "※";
   > li {
-    list-style-type: "※";
     margin-left: 1em;
     text-align: inherit;
   }
@@ -1184,12 +1184,12 @@ input[type="submit"]:hover {
   pointer-events: none;
   user-select: none;
 }
-.image-custom-view-area > div.image-custom-frame input[name="imagePositionX"] {
+.image-custom-view-area > div.image-custom-frame input[name="editingImagePositionX"] {
   position: absolute;
   bottom: -1.5em;
   width: 100%;
 }
-.image-custom-view-area > div.image-custom-frame input[name="imagePositionY"] {
+.image-custom-view-area > div.image-custom-frame input[name="editingImagePositionY"] {
   position: absolute;
   top: 50%;
   right: calc(-567px /2 - 1em);
@@ -1228,6 +1228,99 @@ input[type="submit"]:hover {
 .image-custom-form p select,
 .image-custom-form p textarea {
   padding: .2em .5em;
+}
+.image-custom-form div:has(input[type="file"]) {
+  display: grid;
+  grid-template-columns: 1fr max-content;
+  align-items: center;
+  gap: .5em;
+  padding: 0 .5em .2em;
+  .check-button {
+    height: max-content;
+  }
+}
+#image-select-buttons {
+  display: flex;
+  gap: 10px;
+  margin: 1em auto 0;
+  padding: 1px 1em 1em;
+  overflow-x: auto;
+  
+  > div {
+    display: grid;
+    gap: 5px;
+
+    > label {
+      text-align: center;
+      &:has(:disabled) {
+        visibility: hidden;
+      }
+    }
+    > label:has([name^="imageDelete"]) {
+      width: max-content;
+      margin: auto;
+      .image-ext[value=""] ~ & {
+        visibility: hidden;
+      }
+    }
+    > label.image-select {
+      padding-top: 2px;
+      display: inline-block;
+      border-width: 1px;
+      border-style: solid;
+      border-radius: 5px;
+      cursor: pointer;
+      > img {
+        width: 100px;
+        height: 100px;
+      }
+      &:has(.selected) {
+        outline-width: 1px;
+        outline-style: solid;
+        outline-offset: 0;
+      }
+      > span {
+        display: block;
+        line-height: 1.2;
+      }
+      > span.check {
+        height: 1.2em;
+        &::before {
+          content: "";
+          display: inline-block;
+          width: 12px;
+          height: 12px;
+          margin-right: 2px;
+          background-color: #eee;
+          border-color: #eee;
+          border-style: solid;
+          border-width: 2px;
+          border-radius: 50%;
+          outline: 1px solid #777;
+        }
+        &::after {
+          content: "編集する";
+          display: inline-block;
+          width: 4em;
+          opacity: 0.5;
+        }
+        label:hover &::after {
+          opacity: 1;
+        }
+      }
+      > span.check:has(~ .selected) {
+        &::before {
+          background-color: #08f;
+          border-color: #fff;
+          outline-color: #08f;
+        }
+        &::after {
+          content: "編集中";
+          opacity: 1;
+        }
+      }
+    }
+  }
 }
 #words-preview {
   position: absolute;
@@ -1295,7 +1388,7 @@ input[type="submit"]:hover {
     grid-template-columns: 1fr 35vw 1fr;
   }
   .image-custom-view-area > div#image-custom-frame-M { height: 56.7vw; }
-  .image-custom-view-area > div.image-custom-frame input[name="imagePositionY"] {
+  .image-custom-view-area > div.image-custom-frame input[name="editingImagePositionY"] {
     right: calc(-56.7vw /2 - 1em);
     width: 56.7vw;
   }
@@ -1318,7 +1411,7 @@ input[type="submit"]:hover {
     grid-template-rows: 1fr max-content 1fr;
   }
   .image-custom-view-area > div#image-custom-frame-M { grid-column: 2; grid-row: 2 / span 1; height: 46vh; }
-  .image-custom-view-area > div.image-custom-frame input[name="imagePositionY"] {
+  .image-custom-view-area > div.image-custom-frame input[name="editingImagePositionY"] {
     right: calc(-46vh /2 - 1em);
     width: 46vh;
   }

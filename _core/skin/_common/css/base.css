@@ -255,6 +255,10 @@ dt {
 
 ul,ol {
   list-style-type: none;
+  &.disc    { padding-left: 2em; list-style-type: disc !important; }
+  &.circle  { padding-left: 2em; list-style-type: circle !important; }
+  &.square  { padding-left: 2em; list-style-type: square !important; }
+  &.decimal { padding-left: 2em; list-style-type: decimal !important; }
 }
 
 a {
