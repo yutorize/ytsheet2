@@ -14,7 +14,7 @@ require $set::data_class;
   unescapeLinesKeys => [qw/freeNote freeHistory/],
   unescapeSkipRe    => qr/^image|URL$/,
   convertViewMap    => [qw/freeNote freeHistory/],
-  updateSub => \&data_update_chara,
+  updateSub => \&upgradeCharaData,
 );
 our %pc = %{ $pcRef };
 

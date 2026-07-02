@@ -13,7 +13,7 @@ require $set::data_magi;
   unescapeLinesKeys => [qw/freeNote freeHistory/],
   unescapeSkipRe    => qr/^(?:member[0-9]+URL$|(?:image))/,
   nameKeys          => [qw/clanName/],
-  updateSub => \&data_update_chara,
+  updateSub => \&upgradeCharaData,
 );
 our %pc = %{ $pcRef };
 

@@ -303,7 +303,7 @@ sub loadSheetData {
     $pc{hide} = 1;
     if(!$conv_data{ver}){
       require $set::lib_calc_char;
-      %pc = data_calc(\%pc);
+      %pc = dataCalc(\%pc);
     }
   }
 

@@ -17,7 +17,7 @@ require $set::data_faith;
   unescapeLinesKeys => [qw/freeNote freeHistory items cashbook/],
   unescapeLinesRe   => qr/^cashbookOther[0-9]+/,
   convertViewMap    => [qw/freeNote/],
-  updateSub => \&data_update_chara,
+  updateSub => \&upgradeCharaData,
 );
 our %pc = %{ $pcRef };
 $SHEET->param(modeZero => $::SW2_0 ? 1 : 0);

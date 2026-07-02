@@ -428,7 +428,7 @@ sub renderAddTextRule {
   return "</dl>".$html;
 }
 ### バージョンアップデート --------------------------------------------------
-sub data_update_chara {
+sub upgradeCharaData {
   my %pc = %{$_[0]};
   my $ver = $pc{ver};
   $ver =~ s/^([0-9]+)\.([0-9]+)\.([0-9]+)$/$1.$2$3/;
@@ -680,7 +680,7 @@ sub data_update_chara {
   $pc{lasttimever} = $ver;
   return %pc;
 }
-sub data_update_mons {
+sub upgradeMonsterData {
   my %pc = %{$_[0]};
   my $ver = $pc{ver};
   $ver =~ s/^([0-9]+)\.([0-9]+)\.([0-9]+)$/$1.$2$3/;
@@ -699,7 +699,7 @@ sub data_update_mons {
   $pc{lasttimever} = $ver;
   return %pc;
 }
-sub data_update_item {
+sub upgradeItemData {
   my %pc = %{$_[0]};
   my $ver = $pc{ver};
   $ver =~ s/^([0-9]+)\.([0-9]+)\.([0-9]+)$/$1.$2$3/;
@@ -744,7 +744,7 @@ sub data_update_item {
   $pc{lasttimever} = $ver;
   return %pc;
 }
-sub data_update_arts {
+sub upgradeArtsData {
   my %pc = %{$_[0]};
   my $ver = $pc{ver};
   $ver =~ s/^([0-9]+)\.([0-9]+)\.([0-9]+)$/$1.$2$3/;

@@ -68,6 +68,7 @@ sub printJS {
 ### エラー画面 --------------------------------------------------
 sub error {
   our $message = shift;
+  our $isError = 1;
   if($::in{mode} =~ /^(?:json|make|save)$/){
     infoJson('error',$message =~ s/<br>/ /gr);
   }

@@ -14,7 +14,7 @@ require $set::data_races;
   generateType => 'GoblinSlayerPC',
   unescapeLinesKeys => [qw/freeNote freeHistory items cashbook/],
   convertViewMap    => [qw/freeNote/],
-  updateSub => \&data_update_chara,
+  updateSub => \&upgradeCharaData,
 );
 our %pc = %{ $pcRef };
 

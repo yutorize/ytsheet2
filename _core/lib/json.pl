@@ -64,7 +64,7 @@ elsif($::in{url}){
   $type = $pc{type};
   if(!$pc{ver}){
     require $set::lib_calc_char;
-    %pc = data_calc(\%pc);
+    %pc = dataCalc(\%pc);
   }
   foreach(keys %pc){
     $pc{$_} = escapePcData($pc{$_});

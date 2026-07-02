@@ -6,12 +6,12 @@ use utf8;
 require $set::data_races;
 require $set::data_class;
 
-sub data_calc {
+sub dataCalc {
   my %pc = %{$_[0]};
   my %st;
   ### アップデート --------------------------------------------------
   if($pc{ver}){
-    %pc = data_update_chara(\%pc);
+    %pc = upgradeCharaData(\%pc);
   }
 
   ### 戦果点 --------------------------------------------------
@@ -62,7 +62,7 @@ sub data_calc {
     if($pc{"history${i}Gm"} && $pc{"history${i}Title"}){ $pc{lastSession} = removeTags unescapeTags $pc{"history${i}Title"}; last; }
   }
 
-  ### newline --------------------------------------------------
+  ### updatedLine --------------------------------------------------
   my %NL;
   foreach ('characterName','playerName','gender','race','class','style1','style2','gender','age','height'){
     $NL{$_} = $pc{$_} =~ s/[|｜]([^|｜]+?)《.+?》/$1/gr;
@@ -78,7 +78,7 @@ sub data_calc {
   $NL{age}    = substr($NL{age}   , 0, 20).'..' if length($NL{age}   ) > 20;
   $NL{height} = substr($NL{height}, 0, 20).'..' if length($NL{height}) > 20;
 
-  $::newline =
+  $::updatedLine =
     "$pc{id}<>$::file<>"
     . "$pc{birthTime}<>$::now<>$NL{characterName}<>$NL{playerName}<>$pc{group}<>"
     . $pc{"image".imageSuffix($pc{mainImage})}."<> $pc{tags} <>$pc{hide}<>"
