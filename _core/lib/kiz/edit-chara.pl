@@ -81,7 +81,8 @@ $pc{kizuatoNum} ||= 2;
 
 ### 改行処理 --------------------------------------------------
 convertEscapedBrToNewlines(\%pc,
-  qw/words freeNote freeHistory chatPalette partner1Memory partner2Memory/,
+  qw/freeNote freeHistory chatPalette partner1Memory partner2Memory/,
+  ( map { 'words'.$_ } '', 2 .. ($set::image_maxcount || 1) ),
 );
 
 ### フォーム表示 #####################################################################################
@@ -136,7 +137,7 @@ print <<"HTML";
       </dl>
     </details>
     <div id="area-status">
-      @{[ renderImageForm($pc{imageURL}) ]}
+      @{[ renderImageForm() ]}
 
       <div id="make-type" class="box">
         @{[ radios 'makeType','changeMakeType','normal=>通常作成','gospel=>ゴスペルバレット作成' ]}

@@ -69,7 +69,6 @@
       "PER IMG"
     ;
   }
-  #image-none,
   #image      { grid-area: IMG; }
   #classes    { grid-area: CLS; }
   #hitogara   { grid-area: PER; }

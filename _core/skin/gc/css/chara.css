@@ -63,7 +63,6 @@
     ;
   }
 
-  #image-none,
   #image    { grid-area: IMG; max-height: 56.7rem; }
   #class-and-style
             { grid-area: CLS; }

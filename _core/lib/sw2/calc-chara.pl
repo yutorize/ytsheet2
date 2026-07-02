@@ -836,7 +836,7 @@ sub data_calc {
   }
 
   #### 改行を<br>に変換 --------------------------------------------------
-  $pc{words}         =~ s/\r\n?|\n/<br>/g;
+  $pc{'words'.$_} =~ s/\r\n?|\n/<br>/g foreach('', 2 .. ($set::image_maxcount || 1));
   $pc{items}         =~ s/\r\n?|\n/<br>/g;
   $pc{freeNote}      =~ s/\r\n?|\n/<br>/g;
   $pc{freeHistory}   =~ s/\r\n?|\n/<br>/g;
@@ -897,11 +897,13 @@ sub data_calc {
   }
   $classlv .= '|'.$freeclass if $freeclass;
 
-  $::newline = "$pc{id}<>$::file<>"
-             . "$pc{birthTime}<>$::now<>$NL{name}<>$NL{playerName}<>$pc{group}<>"
-             . "$pc{expTotal}<>$NL{rank}<>$NL{race}<>$NL{gender}<>$NL{age}<>$NL{faith}<>"
-             . "$classlv<>"
-             . "$pc{lastSession}<>$pc{image}<> $pc{tags} <>$pc{hide}<>$pc{fellowPublic}<>";
+  $::newline =
+    "$pc{id}<>$::file<>"
+    . "$pc{birthTime}<>$::now<>$NL{name}<>$NL{playerName}<>$pc{group}<>"
+    . "$pc{expTotal}<>$NL{rank}<>$NL{race}<>$NL{gender}<>$NL{age}<>$NL{faith}<>"
+    . "$classlv<>$pc{lastSession}<>"
+    . $pc{"image".imageSuffix($pc{mainImage})}."<> $pc{tags} <>$pc{hide}<>"
+    . "$pc{fellowPublic}<>";
 
   return %pc;
 }

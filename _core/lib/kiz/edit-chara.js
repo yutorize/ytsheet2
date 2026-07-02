@@ -15,7 +15,6 @@ window.onload = function() {
   autoInputPartner(1);
   autoInputPartner(2);
   
-  imagePosition();
   changeColor();
 };
 

@@ -76,7 +76,6 @@
       "STT   STT  STT  STT"
     ;
   }
-  #image-none,
   #image     { grid-area: IMG; }
   #personal  { grid-area: PER; }
   #classes   { grid-area: CLS; }

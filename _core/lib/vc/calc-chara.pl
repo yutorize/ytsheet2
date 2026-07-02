@@ -42,13 +42,13 @@ sub data_calc {
   }
   #### 改行を<br>に変換 --------------------------------------------------
   foreach (
-    'words',
     'freeNote',
     'freeHistory',
     'chatPalette',
   ){
     $pc{$_} =~ s/\r\n?|\n/<br>/g;
   }
+  $pc{'words'.$_} =~ s/\r\n?|\n/<br>/g foreach('', 2 .. ($set::image_maxcount || 1));
   
   #### 保存処理でなければここまで --------------------------------------------------
   if(!$::mode_save){ return %pc; }
@@ -77,13 +77,15 @@ sub data_calc {
   $NL{gender} = substr($NL{gender}, 0, 20).'..' if length($NL{gender}) > 20;
   $NL{age}    = substr($NL{age}   , 0, 20).'..' if length($NL{age}   ) > 20;
   $NL{height} = substr($NL{height}, 0, 20).'..' if length($NL{height}) > 20;
-  $::newline = "$pc{id}<>$::file<>".
-               "$pc{birthTime}<>$::now<>$NL{characterName}<>$NL{playerName}<>$pc{group}<>".
-               "$pc{image}<> $pc{tags} <>$pc{hide}<>".
 
-               "$NL{race}<>$NL{class}<>$NL{style1}／$NL{style2}<>".
-               "$pc{level}<>$pc{resultPointsTotal}<>".
-               "$NL{gender}<>$NL{age}<>$NL{height}<>$pc{lastSession}<>";
+  $::newline =
+    "$pc{id}<>$::file<>"
+    . "$pc{birthTime}<>$::now<>$NL{characterName}<>$NL{playerName}<>$pc{group}<>"
+    . $pc{"image".imageSuffix($pc{mainImage})}."<> $pc{tags} <>$pc{hide}<>"
+
+    . "$NL{race}<>$NL{class}<>$NL{style1}／$NL{style2}<>"
+    . "$pc{level}<>$pc{resultPointsTotal}<>"
+    . "$NL{gender}<>$NL{age}<>$NL{height}<>$pc{lastSession}<>";
 
   return %pc;
 }

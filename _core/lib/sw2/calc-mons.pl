@@ -49,10 +49,12 @@ sub data_calc {
   $NL{weakness}    = substr($NL{weakness}   , 0, 25).'..' if length($NL{weakness}   ) >  25;
   $NL{habitat}     = substr($NL{habitat}    , 0, 35).'..' if length($NL{habitat}    ) >  35;
   $pc{hide} = 'IN' if(!$pc{hide} && $pc{description} =~ /#login-only/i);
-  $::newline = "$pc{id}<>$::file<>".
-                "$pc{birthTime}<>$::now<>$NL{name}<>$pc{author}<>$NL{taxa}<>$NL{lv}<>".
-                "$pc{intellect}<>$pc{perception}<>$NL{disposition}<>$pc{sin}<>$NL{initiative}<>$NL{weakness}<>".
-                "$pc{image}<> $pc{tags} <>$pc{hide}<>$pc{partsNum}<>$NL{habitat}<>$NL{price}<>";
+  $::newline =
+    "$pc{id}<>$::file<>"
+    . "$pc{birthTime}<>$::now<>$NL{name}<>$pc{author}<>$NL{taxa}<>$NL{lv}<>"
+    . "$pc{intellect}<>$pc{perception}<>$NL{disposition}<>$pc{sin}<>$NL{initiative}<>$NL{weakness}<>"
+    . $pc{"image".imageSuffix($pc{mainImage})}."<> $pc{tags} <>$pc{hide}<>"
+    . "$pc{partsNum}<>$NL{habitat}<>$NL{price}<>";
   
   return %pc;
 }

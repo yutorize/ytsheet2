@@ -34,8 +34,10 @@ sub info {
 
 ### JSON --------------------------------------------------
 sub infoJson {
+  require JSON::PP;
   our $type = shift;
   our $message = shift;
+  our $data = shift;
   $message =~ s/"/\\\"/g;
   my $code;
   $message =~ s/^([0-9]{3}):/$code = $1; ''/e;
@@ -44,7 +46,9 @@ sub infoJson {
     else { print "Status: $code\n"; }
   }
   print "Content-type: text/javascript; charset=utf-8\n\n";
-  print '{"result":"'.$type.'","message":"'.$message.'"}';
+  print '{"result":"'.$type.'","message":"'.$message.'","data":'
+    .(defined $data ? JSON::PP->new->canonical(1)->encode( $data ) : 'null')
+    .'}';
   exit;
 }
 
@@ -219,7 +223,7 @@ sub zipMemberExists {
 }
 sub isSheetBinaryEntry {
   my $name = shift;
-  return $name =~ /^image\.(?:png|jpe?g|gif|webp)$/i ? 1 : 0;
+  return $name =~ /^image[0-9]*\.(?:png|jpe?g|gif|webp)$/i ? 1 : 0;
 }
 sub readZipMember {
   my ($zipPath, $member, $binary) = @_;
@@ -1336,16 +1340,19 @@ sub importSheetData {
         return $returnError->('403:閲覧・編集に制限がかかっており、コンバートできないデータです。');
       }
     }
-    if($OPT{includeImage} && $pc{image}){
-      $pc{imageURL} = ($OPT{imageUrlBase} || $self)."?id=$id&mode=image&cache=$pc{imageUpdate}";
-      my $imagePath = "${dataDir}${file}/image.$pc{image}";
-      $pc{imagePath} = $imagePath if -f $imagePath;
-      if($::in{mode} eq 'download'){
-        $pc{imageData} = readSheetFileBinary($dataDir, $file, "image.$pc{image}");
+    my $mainSuffix = imageSuffix($pc{mainImage});
+    foreach my $imageNo (1 .. ($set::image_maxcount || 1)){
+      my $suffix = imageSuffix($imageNo);
+      next unless $pc{"image$suffix"};
+      $pc{"imageURL$suffix"} = ($OPT{imageUrlBase} || $self).qq|?id=$id&mode=image&imageNo=$imageNo&cache=$pc{"imageUpdate$suffix"}|;
+      if($OPT{includeImage}){
+        my $imgName = qq|image$suffix.$pc{"image$suffix"}|;
+        my $imagePath = qq|${dataDir}${file}/$imgName|;
+        $pc{"imagePath$suffix"} = $imagePath if -f $imagePath;
+        if($::in{mode} eq 'download'){
+          $pc{"imageData$suffix"} = readSheetFileBinary($dataDir, $file, $imgName);
+        }
       }
-    }
-    elsif(!$OPT{includeImage} && $pc{image}){
-      $pc{imageURL} = $self."?id=$id&mode=image&cache=$pc{imageUpdate}";
     }
     $pc{convertSource} = '同じゆとシートⅡ';
     return %pc;
@@ -1558,5 +1565,10 @@ sub logFileUpdate {
   if($mode eq 'view'){ print "Location:./?id=$::in{id}\n\n"; }
 }
 
+### 画像接尾辞 --------------------------------------------------
+sub imageSuffix {
+  my $imageNo = shift;
+  return $imageNo == 1 ? '' : $imageNo;
+}
 
 1;

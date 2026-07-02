@@ -29,6 +29,8 @@
   const generateType = '<TMPL_VAR generateType>';
   const defaultImage = '<TMPL_VAR defaultImage>';
   const images = { <TMPL_VAR images /> };
+  const imageLayouts = <TMPL_VAR imageLayouts DEFAULT="{}" />;
+  let selectedImage = '<TMPL_VAR mainImage>';
 
   <!-- TMPL_IF error -->
   window.onload = function() {
@@ -41,8 +43,8 @@
   <!-- /TMPL_IF -->
   <!-- TMPL_IF modeDownload -->
   document.addEventListener('DOMContentLoaded', () => {
-    if(document.getElementById('image')){
-      document.getElementById('image').style.backgroundImage = `url(${images['1']})`;
+    if(document.querySelector('#image .image.current')){
+      document.querySelector('#image .image.current').style.backgroundImage = `url(${images['<TMPL_VAR mainImage DEFAULT=1>']})`;
     }
   });
   <!-- /TMPL_IF -->

@@ -144,10 +144,10 @@ print <<"HTML";
         <p>
           <input type="checkbox" name="imageDelete" value="1"> 画像を削除する
           @{[ input 'image','hidden' ]}
+          @{[ input 'imageUpdate','hidden' ]}
         </p>
       <script>
         const imageType = 'symbol';
-        let imgURL = "$pc{imageURL}";
       </script>
       </div>
 

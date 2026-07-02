@@ -239,7 +239,7 @@ sub loadSheetData {
       ($pc{protect}, $pc{forbidden}) = getProtectType("${sheetDir}/data.cgi");
       $message = $pc{updateTime}.' 時点のバックアップデータから編集しています。';
     }
-    $pc{imageURL} = $pc{image} ? "./?id=$::in{id}&mode=image&cache=$pc{imageUpdate}" : '';
+    $pc{mainImage} ||= 1;
   }
   elsif($mode eq 'copy'){
     my $datatype = ($::in{log}) ? 'logs' : 'data';
@@ -261,7 +261,7 @@ sub loadSheetData {
       }
     }
 
-    delete $pc{image};
+    deleteImageData(\%pc);
     delete $pc{protect};
 
     $message  = '<div class="data-imported">';
@@ -272,7 +272,7 @@ sub loadSheetData {
   }
   elsif($mode eq 'convert'){
     %pc = %::conv_data;
-    delete $pc{image};
+    deleteImageData(\%pc);
     delete $pc{imageURL};
     delete $pc{protect};
     $_ =~ s/"/&quot;/g foreach(values %pc);
@@ -300,6 +300,18 @@ sub tokenMake {
   close($FH);
 
   return $token;
+}
+
+### 画像データ削除 --------------------------------------------------
+sub deleteImageData {
+  my ($pc) = @_;
+  for my $imageNo (1 .. ($set::image_maxcount || 1)){
+    my $suffix = imageSuffix($imageNo);
+    delete $pc->{"image$suffix"};
+    delete $pc->{"imageUpdate$suffix"};
+    delete $pc->{"imageURL$suffix"};
+  }
+  delete $pc->{mainImage};
 }
 
 ### 新規作成系モード判定 --------------------------------------------------
@@ -390,11 +402,6 @@ sub renderEditPageStart {
     $extraJsMid
     <script src="$::core_dir/skin/_common/js/common.js?$::ver"></script>
     <script>const base64Mode = $base64Mode;</script>
-    @{[ $::pc{imageURL} ? qq|<style>
-      #image, .image-custom-view {
-        background-image: url("$::pc{imageURL}");
-      }
-    </style>| : '' ]}
   </head>
   <body id="edit" data-system="$systemId" @{[ $sheetType ? qq|data-sheet-type="$sheetType"| : '' ]}>
     <header>
@@ -582,28 +589,39 @@ sub renderAddDelButtons {
 }
 ### 画像欄 --------------------------------------------------
 sub renderImageForm {
-  my $imgurl = shift;
-  my $image_maxsize_view = $set::image_maxsize >= 1048576 ? sprintf("%.3g",$set::image_maxsize/1048576).'MB' : sprintf("%.3g",$set::image_maxsize/1024).'KB';
+  my $imageMaxSize = $set::image_maxsize || 0;
+  my $imageMaxSizeView = $imageMaxSize >= 1048576 ? sprintf("%.3g",$imageMaxSize/1048576).'MB' : sprintf("%.3g",$imageMaxSize/1024).'KB';
+  my $imageMaxCount = $set::image_maxcount || 1;
+  $::pc{mainImage} ||= 1;
+  my $mainSuffix = imageSuffix($::pc{mainImage});
+  my %imageURLs;
+  my $imageURLsJS;
+  foreach my $n (1 .. $imageMaxCount){
+    my $suffix = ($n == 1) ? '' : $n;
+    if($::pc{'image'.$suffix}){
+      $imageURLs{$n} = "./?id=$::in{id}&mode=image&imageNo=$n&cache=$::pc{'imageUpdate'.$suffix}";
+    }
+    else {
+      $imageURLs{$n} = "";
+    }
+    $imageURLsJS  .= qq|$n: "$imageURLs{$n}",|;
+  }
+  my $emptyImageURL = 'data:image/webp;base64,UklGRhgBAABXRUJQVlA4TAwBAAAvY8AYEBK3AdCGzf//5MJWAqx0r7yycNzc9ooFE8BBxtnHwG0jRVk+zOIj9h90eIABiDAr7IeFiTK24obPYciHZ18Bdyuo04LtXSSCdIohUjoFmhlB/CQCxiQjwAJ3hQpeChq11stDUBEdKxnqUi057iYUU0KWBl80RQiUAksAKuIStE6qUEo5QLOLSA5Av/MKXJeQjtFUeyiDFr2UH2EUJc9cFvrgHaGMGqOPc5PHKPN7ggEBj8r7UiWN3YnLd/tLKlkBfh5NvAZ2pIS9q5NaDtFHexmu57gG3P+eoltDoPVL2XW7QYnGOxl+EZGi8RJ3ivqDcPJbGV0m7182Dl2EaaULsEyzqfb/08MC';
   return <<~"HTML";
     <div class="box" id="image" style="max-height:550px;">
       <h2>キャラクター画像</h2>
       <p>
         <a class="button" onclick="imagePositionView();wordsPreView()">画像とセリフの設定</a>
       </p>
-      <p>
-        <input type="checkbox" name="imageDelete" value="1"> 画像を削除する
-        @{[ input 'image','hidden' ]}
-      </p>
     </div>
-    @{[ input 'imageUpdate', 'hidden' ]}
 
     <div id="image-custom" style="display:none">
       <div class="image-custom-view-area">
         <div id="image-custom-frame-S" class="image-custom-frame"><div class="image-custom-view"><b>横幅が狭い時</b></div></div>
         <div id="image-custom-frame-O" class="image-custom-frame"><div class="image-custom-view"><b>OGP <small>※シートURLをSNS等に貼った際に表示</small></b></div></div>
         <div id="image-custom-frame-M" class="image-custom-frame"><div class="image-custom-view"><b>標準の比率 <small>※縦横比は適宜変動します</small></b><div class="words" id="words-preview"></div><div id="image-copyright-preview"></div></div>
-          @{[ input "imagePositionY",'range','imagePosition','step="0.001"' ]}
-          @{[ input "imagePositionX",'range','imagePosition','step="0.001"' ]}
+          @{[ input "editingImagePositionY",'range','imagePosition','step="0.001"' ]}
+          @{[ input "editingImagePositionX",'range','imagePosition','step="0.001"' ]}
         </div>
       </div>
       <div class="image-custom-form">
@@ -611,13 +629,51 @@ sub renderImageForm {
         <h3>画像選択</h3>
         <p>
           プレビューエリアに画像ファイルをドロップ、<br>
-          または
-          <input type="file" accept="image/*" name="imageFile" onchange="imagePreView(this.files[0], $set::image_maxsize || 0)"><br>
-          ※ ファイルサイズ @{[ $image_maxsize_view ]} までの JPG/PNG/GIF/WebP
+          または画像を選択<br>
+        </p>
+          @{[
+            join '', map {
+              my $n = $_;
+              qq#<div><label>画像@{[$n||1]}: <input type="file" accept="image/*" name="imageFile$n" onchange="imagePreView(this.files[0], $imageMaxSize, $n)"></label></div>#
+            } '', 2 .. $imageMaxCount
+          ]}
+        <p>
+          ※ ファイルサイズ @{[ $imageMaxSizeView ]} までの JPG/PNG/GIF/WebP
           <small>（サイズを超過する場合、自動的にWebP形式に変換し、その上でまだ超過している場合は縮小処理が行われます）</small>
         </p>
+        <div id="image-select-buttons">
+          @{[
+            join '', map {
+              my $n = $_;
+              my $suffix = imageSuffix($n);
+              my $selected = ($::pc{mainImage} eq $n) ? 'selected' : '';
+              <<~"HTM";
+                <div class="image-select-block" data-num="$n">
+                  @{[ input "image$suffix",'hidden','','class="image-ext"' ]}
+                  @{[ input "imageUpdate$suffix",'hidden' ]}
+                  @{[ checkbox "imageDelete$suffix","削除" ]}
+                  <label class="image-select" onclick="switchImageLayoutConfig($n)">
+                    <span>画像$n</span>
+                    <span class="check"></span>
+                    <img src="@{[ $imageURLs{$n} || $emptyImageURL ]}" style="width:100px;height:100px;object-fit:contain;" data-num="$n" class="$selected">
+                  </label>
+                  @{[ radio "mainImage", "checkMainImage($n)", $n, 'メイン画像' ]}
+                  @{[ checkbox "imageHide$suffix", '非表示' ]}
+                </div>
+              HTM
+            } 1 .. $imageMaxCount
+          ]}
+        </div>
+        <ul class="annotate">
+          <li>画像を複数登録している場合、<b>メイン画像</b>に設定した画像が、シートの最初の表示やOGPに使用されます。<br>
+              それ以外の画像は、シート内の切り替えボタンで表示されます。
+          <li>画像を<b>非表示</b>に設定した場合、シートの表示やOGPには使用されません。（画像へのアクセス自体は可能です）
+        </ul>
         <script>
           const imageType = 'character';
+          const imageUpdate = '$::pc{imageUpdate}';
+          const savedImageURLs = { $imageURLsJS };
+          const emptyImageURL = '$emptyImageURL';
           // ドラッグ＆ドロップで画像アップ
           document.getElementById('image-custom').addEventListener('dragover',function(e){
             e.preventDefault();
@@ -626,9 +682,14 @@ sub renderImageForm {
             e.preventDefault();
           });
           document.querySelector('.image-custom-view-area').addEventListener('drop', function (e) {
-            const obj = document.querySelector("[name='imageFile']");
+            const imageNo = editingImageNo || Number(form.mainImage?.value || 1);
+            const suffix = imageSuffix(imageNo);
+            const obj = document.querySelector(`[name='imageFile\${suffix}']`);
+
+            if(!obj){ return; }
+
             obj.files = e.dataTransfer.files;
-            imagePreView(obj.files[0], $set::image_maxsize || 0);
+            imagePreView(obj.files[0], $imageMaxSize, imageNo);
           });
 
           // ホイールで拡大率調整
@@ -637,7 +698,7 @@ sub renderImageForm {
             e.preventDefault();
           });
           mainArea.addEventListener('wheel', function (e) {
-            const obj = form.imagePercent;
+            const obj = form.editingImagePercent;
             if     (e.deltaY > 0){ obj.value = Number(obj.value)+10 }
             else if(e.deltaY < 0){ obj.value = Number(obj.value)-10 }
             if(obj.value < 0){ obj.value = 0 }
@@ -646,59 +707,72 @@ sub renderImageForm {
           });
 
           // ドラッグで位置調整
-          let imgURL = "${imgurl}";
           let pointWidth  = 1;
           let pointHeight = 1;
           mainArea.addEventListener('mousedown' , function (e) { imageDragStart(e); });
           mainArea.addEventListener('mousemove' , function (e) { imageDragMove(e);  });
           mainArea.addEventListener('mouseup'   , function (e) { imageDragEnd();    });
-          mainArea.addEventListener('mouseleave', function (e) { imageDragEnd();   });
+          mainArea.addEventListener('mouseleave', function (e) { imageDragEnd();    });
           mainArea.addEventListener('touchstart', function (e) { imageDragStart(e); });
           mainArea.addEventListener('touchmove' , function (e) { imageDragMove(e);  });
-          mainArea.addEventListener('touchend'  , function (e) { imageDragEnd();   });
+          mainArea.addEventListener('touchend'  , function (e) { imageDragEnd();    });
         </script>
         <h3>画像レイアウト</h3>
         <p>
-          <b>縦基準位置</b>:<span id="image-positionY-view"></span> ／
-          <b>横基準位置</b>:<span id="image-positionX-view"></span><br>
+          <b>縦基準位置</b>:<input type="number" id="image-positionY" step="0.1" min="0" max="100" onchange="imagePositionNumberToRange()">%<br>
+          <b>横基準位置</b>:<input type="number" id="image-positionX" step="0.1" min="0" max="100" onchange="imagePositionNumberToRange()">%<br>
         </p>
         <p>
-          <b>表示（トリミング）方式</b>：<br><select name="imageFit" oninput="imageDragPointSet();imagePosition()">
-          <option value="cover"   @{[$::pc{imageFit} eq 'cover'  ?'selected':'']}>自動的に最低限のトリミング（表示域いっぱいに表示）
-          <option value="contain" @{[$::pc{imageFit} eq 'contain'?'selected':'']}>トリミングしない（必ず画像全体を収める）
-          <option value="percentX" @{[$::pc{imageFit} eq 'percentX'?'selected':'']}>任意のトリミング／横幅を基準
-          <option value="percentY" @{[$::pc{imageFit} eq 'percentY'?'selected':'']}>任意のトリミング／縦幅を基準
-          <option value="unset"   @{[$::pc{imageFit} eq 'unset'  ?'selected':'']}>拡大縮小せず表示（ドット絵など向き）
+          <b>表示（トリミング）方式</b>：<br><select name="editingImageFit" oninput="imageDragPointSet();imagePosition()">
+          <option value="cover"    @{[$::pc{editingImageFit} eq 'cover'   ?'selected':'']}>自動的に最低限のトリミング（表示域いっぱいに表示）
+          <option value="contain"  @{[$::pc{editingImageFit} eq 'contain' ?'selected':'']}>トリミングしない（必ず画像全体を収める）
+          <option value="percentX" @{[$::pc{editingImageFit} eq 'percentX'?'selected':'']}>任意のトリミング／横幅を基準
+          <option value="percentY" @{[$::pc{editingImageFit} eq 'percentY'?'selected':'']}>任意のトリミング／縦幅を基準
+          <option value="unset"    @{[$::pc{editingImageFit} eq 'unset'   ?'selected':'']}>拡大縮小せず表示（ドット絵など向き）
           </select><br>
           <small>※いずれの設定でも、クリックすると画像全体が表示されます。</small>
         </p>
         <p id="image-percent-config">
-          <b>拡大率</b>：@{[ input "imagePercent",'number','imageDragPointSet();imagePosition','min="0"  style="width:4em;"' ]}%<br>
+          <b>拡大率</b>：@{[ input "editingImagePercent",'number','imageDragPointSet();imagePosition','min="0"  style="width:4em;"' ]}%<br>
           <input type="range" id="image-percent-bar" min="10" max="1000" oninput="imagePercentBarChange(this.value)" style="width:100%;"><br>
           （100%で幅ピッタリ）<br>
         </p>
         <h3>画像の注釈</h3>
         <p>
           <b>作者名や権利表示：</b><br>
-          @{[ input 'imageCopyright','text ','wordsPreView','placeholder="(C)画像の作者名" style="width:70%;"' ]}<br>
+          @{[ input 'editingImageCopyright','text ','wordsPreView','placeholder="(C)画像の作者名" style="width:70%;"' ]}<br>
         </p>
         <p>
           <b>URL（作者のWebサイトなどあれば）：</b><br>
-          @{[ input 'imageCopyrightURL','url ','wordsPreView','placeholder="https://..." style="width:90%;"' ]}<br>
+          @{[ input 'editingImageCopyrightURL','url ','wordsPreView','placeholder="https://..." style="width:90%;"' ]}<br>
         </p>
         <h3>画像に重ねるセリフ</h3>
         <p>
-          <textarea name="words" style="width:100%;height:3.6em;" onchange="wordsPreView();" placeholder="「任意の台詞」">$::pc{words}</textarea>
+          <textarea name="editingWords" style="width:100%;height:3.6em;" onchange="wordsPreView();" placeholder="「任意の台詞」">$::pc{words}</textarea>
         </p>
         <p>
           <b>セリフの配置</b>：
-          <select name="wordsX" oninput="wordsPreView();">@{[ option 'wordsX','右','左' ]}</select>
-          <select name="wordsY" oninput="wordsPreView();">@{[ option 'wordsY','上','下' ]}</select>
+          <select name="editingWordsX" oninput="wordsPreView();">@{[ option 'editingWordsX','右','左' ]}</select>
+          <select name="editingWordsY" oninput="wordsPreView();">@{[ option 'editingWordsY','上','下' ]}</select>
         </p>
       </div>
       <div class="image-custom-form close-button">
         <a class="button" onclick="imagePositionClose()">画像とセリフの設定を閉じる</a>
       </div>
+      @{[
+        join '', map {
+          my $n = $_;
+          input("imageFit$n",'hidden')
+          . input("imagePercent$n",'hidden')
+          . input("imagePositionX$n",'hidden')
+          . input("imagePositionY$n",'hidden')
+          . input("imageCopyright$n",'hidden')
+          . input("imageCopyrightURL$n",'hidden')
+          . input("words$n",'hidden')
+          . input("wordsX$n",'hidden')
+          . input("wordsY$n",'hidden')
+        } '',2 .. $imageMaxCount
+      ]}
     </div>
   HTML
 }

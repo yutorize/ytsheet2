@@ -120,7 +120,8 @@ if(exists $data::syndrome_status{$pc{syndrome2}}){
 
 ### 改行処理 --------------------------------------------------
 convertEscapedBrToNewlines(\%pc,
-  qw/words freeNote freeHistory chatPalette/,
+  qw/freeNote freeHistory chatPalette/,
+  ( map { 'words'.$_ } '', 2 .. ($set::image_maxcount || 1) ),
   ( map { "combo${_}Note" } 1..$pc{comboNum} ),
   ( map { "weapon${_}Note" } 1..$pc{weaponNum} ),
   ( map { "armor${_}Note" } 1..$pc{armorNum} ),
@@ -200,7 +201,7 @@ print <<"HTML";
     </details>
 
     <div id="area-status">
-      @{[ renderImageForm($pc{imageURL}) ]}
+      @{[ renderImageForm() ]}
 
       <div class="box-union" id="personal">
         <dl class="box"><dt>年齢  <dd>@{[input "age"]}</dl>

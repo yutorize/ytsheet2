@@ -46,13 +46,13 @@ sub data_calc {
 
   #### 改行を<br>に変換 --------------------------------------------------
   foreach (
-    'words',
     'freeNote',
     'freeHistory',
     'chatPalette',
   ){
     $pc{$_} =~ s/\r\n?|\n/<br>/g;
   }
+  $pc{'words'.$_} =~ s/\r\n?|\n/<br>/g foreach('', 2 .. ($set::image_maxcount || 1));
   
   #### 保存処理でなければここまで --------------------------------------------------
   if(!$::mode_save){ return %pc; }
@@ -72,13 +72,14 @@ sub data_calc {
     $NL{$_} = $pc{$_} =~ s/[|｜]([^|｜]+?)《.+?》/$1/gr;
     $NL{$_} = removeTags unescapeTags $NL{$_} =~ s/^\s|\s$//gr;
   }
-  $::newline = "$pc{id}<>$::file<>".
-               "$pc{birthTime}<>$::now<>$NL{countryName}<>$NL{playerName}<>$pc{group}<>".
-               "$pc{image}<> $pc{tags} <>$pc{hide}<>".
+  $::newline =
+    "$pc{id}<>$::file<>"
+    . "$pc{birthTime}<>$::now<>$NL{countryName}<>$NL{playerName}<>$pc{group}<>"
+    . $pc{"image".imageSuffix($pc{mainImage})}."<> $pc{tags} <>$pc{hide}<>"
 
-               "$NL{lordName}<>".
-               "$pc{level}<>$pc{countsTotal}<>$pc{peerage}<>".
-               "$pc{lastSession}<>";
+    . "$NL{lordName}<>"
+    . "$pc{level}<>$pc{countsTotal}<>$pc{peerage}<>"
+    . "$pc{lastSession}<>";
 
   return %pc;
 }

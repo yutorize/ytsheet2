@@ -1,5 +1,6 @@
 // 開閉系 ----------------------------------------
-async function popImage(id) {
+// 画像
+async function popImage(id = 1) {
   let imageBox = document.getElementById("image-box") || null;
   if(!imageBox){
     imageBox = document.createElement('div');
@@ -12,7 +13,6 @@ async function popImage(id) {
     await new Promise((r) => setTimeout(r, 1));
   }
   if(typeof images !== 'undefined'){
-    id ||= 1;
     document.getElementById('image-box-image').src = images[id];
   }
   imageBox.style.bottom = 0;
@@ -25,6 +25,64 @@ function closeImage() {
     imageBox.style.bottom = '-100vh';
   },200);
 }
+window.addEventListener('DOMContentLoaded', ()=>{
+  if(imageLayouts && Object.keys(imageLayouts).length > 1){
+    let prev = document.createElement('span');
+    prev.classList.add('prev-button');
+    prev.addEventListener('click', () => { changeImage(-1) });
+    let next = document.createElement('span');
+    next.classList.add('next-button');
+    next.addEventListener('click', () => { changeImage(1) });
+    document.getElementById('image').append(prev, next);
+  }
+});
+function changeImage(direction = 0){
+  const selected = getImageId(direction);
+
+  if(images.hasOwnProperty(selected)){
+    selectedImage = selected;
+    
+    const imageArea = document.querySelector('#image');
+    let next = document.createElement('div');
+    next.classList.add('image','next');
+    next.style.backgroundImage    = `url(${images[selected]})`;
+    next.style.backgroundSize     = imageLayouts[selected].fit;
+    next.style.backgroundPosition = `${imageLayouts[selected].X} ${imageLayouts[selected].Y}`;
+    next.innerHTML = `
+      <div onclick="popImage('${selected}')">
+        <p class="words" style="${imageLayouts[selected].wordsPosition}">${imageLayouts[selected].words}</p>
+      </div>
+      <p class="image-copyright">${imageLayouts[selected].copyright}</p>`;
+    next.addEventListener('transitionend', () => {
+      next.classList.replace('next','current');
+    });
+    const img = new Image();
+    img.src = images[selected];
+    img.addEventListener('load', () => {
+      document.querySelectorAll('#image .image').forEach(el => {
+        el.addEventListener('transitionend', () => {
+          el.remove();
+        });
+        el.style.opacity = 0;
+      });
+      imageArea.prepend(next);
+    });
+
+  }
+}
+function getImageId(direction = 0) {
+  const ids =
+    Object.keys(images)
+    .filter(key => /^[0-9]+$/.test(key))
+    .map(Number)
+    .sort((a, b) => a - b);
+  const index = ids.indexOf(Number(selectedImage));
+
+  if (index === -1) return selectedImage;
+
+  return ids[(index + direction + ids.length) % ids.length];
+}
+// 他
 function closeTextareaForCopy() {
   document.getElementById('copyText-box').remove();
   document.getElementById('copyText-box-textarea').remove();

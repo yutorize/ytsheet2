@@ -24,7 +24,6 @@ window.onload = function() {
   calcItems();
   calcTotalWeight();
   
-  imagePosition();
   changeColor();
 };
 

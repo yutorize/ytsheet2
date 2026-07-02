@@ -252,6 +252,13 @@ sub setupPartnerDataCommon {
     }
   }
   foreach my $num (1 .. $OPT{max}){
+    if($pc->{"p${num}_mainImage"} > 1){
+      my $suffix = imageSuffix($pc->{"p${num}_mainImage"});
+      foreach my $key (qw/image imageUpdate imageURL imagePath imageData imageFit imagePercent imagePositionX imagePositionY imageCopyright imageCopyrightURL words wordsX wordsY/){
+        $pc->{"p${num}_$key"} = $pc->{"p${num}_$key$suffix"};
+      }
+    }
+
     next if !$pc->{"p${num}_imageURL"};
     $pc->{"p${num}_imageSrc"} = $pc->{"p${num}_imageURL"};
     $pc->{images} .= "'p${num}': \"".($pc->{modeDownload} ? partnerImageToBase64($pc, $num) : $pc->{"p${num}_imageURL"})."\", ";
@@ -314,31 +321,91 @@ sub loadSheetData {
   if($::in{mode} eq 'download'){
     $pc{modeDownload} = 1;
   }
-  
+
   ## キャラクター画像
-  if($pc{image}){
-    if($pc{convertSource}) {
-      $pc{imageSrc} = $pc{imageURL};
+  $pc{mainImage} ||= 1;
+  if($pc{ver} || !$pc{convertSource}) {
+    $pc{images} = '';
+    $pc{imageLayouts} = '';
+    my %layouts;
+    my $maxCount = $pc{imageMaxCount} || $set::image_maxcount || 1;
+    foreach my $imageNo (1 .. $maxCount){
+      my $suffix = imageSuffix($imageNo);
+      next unless $pc{"image$suffix"};
+      next if $pc{"imageHide$suffix"};
+
+      my $update = $pc{"imageUpdate$suffix"};
+      my $src = $pc{convertSource} ? $pc{"imageURL$suffix"} : "./?id=$::in{id}&mode=image&imageNo=$imageNo&cache=$update";
+
+      if($pc{"imageFit$suffix"} eq 'percentY'){
+        $pc{"imageFit$suffix"} = 'auto '.$pc{"imagePercent$suffix"}.'%';
+      }
+      elsif($pc{"imageFit$suffix"} =~ /^percentX?$/){
+        $pc{"imageFit$suffix"} = $pc{"imagePercent$suffix"}.'%';
+      }
+      elsif(!$pc{"imageFit$suffix"}){
+        $pc{"imageFit$suffix"} = 'cover';
+      }
+
+      if($pc{"imageCopyrightURL$suffix"}){
+        $pc{"imageCopyright$suffix"} = qq|<a href="$pc{"imageCopyrightURL$suffix"}" target="_blank">|
+          . (unescapeTags($pc{"imageCopyright$suffix"}) || $pc{"imageCopyrightURL$suffix"})
+          . "</a>";
+      }
+      else { $pc{"imageCopyright$suffix"} = unescapeTags($pc{"imageCopyright$suffix"}) }
+
+      $pc{images} .= qq|$imageNo: "|.($pc{modeDownload} ? sheetImageToBase64($datadir, $file, $pc{"image$suffix"}, $suffix) : $src).'", ';
+      my @words = renderWords(
+        unescapeTags($pc{"words$suffix"}),
+        $pc{"wordsX$suffix"},
+        $pc{"wordsY$suffix"}
+      );
+      $layouts{$imageNo} = {
+        fit => $pc{"imageFit$suffix"},
+        X => $pc{"imagePositionX$suffix"}."%",
+        Y => $pc{"imagePositionY$suffix"}."%",
+        words  => ($words[0] || ''),
+        wordsPosition => join(';', $words[1],$words[2]),
+        copyright => ($pc{"imageCopyright$suffix"} || ''),
+      };
     }
-    else {
-      $pc{imageSrc}    =     "./?id=$::in{id}&mode=image&cache=$pc{imageUpdate}";
-      $pc{imageURL}    = url()."?id=$::in{id}&mode=image&cache=$pc{imageUpdate}";
-      $pc{imageOgpURL} = url()."?id=$::in{id}&mode=ogp-image&cache=$pc{imageUpdate}";
+    $pc{imageLayouts} = %layouts ? JSON::PP->new->canonical(1)->encode(\%layouts) : "{}";
+
+
+    my $mainSuffix = imageSuffix($pc{mainImage});
+    if(!$pc{"image$mainSuffix"}){
+      foreach my $imageNo (1 .. $maxCount){
+        my $suffix = imageSuffix($imageNo);
+        if($pc{"image$suffix"}){
+          $pc{mainImage} = $imageNo;
+          $mainSuffix = $suffix;
+          last;
+        }
+      }
     }
-    $pc{images} = "'1': \"".($pc{modeDownload} ? sheetImageToBase64($datadir, $file, $pc{image}) : $pc{imageSrc})."\", ";
-    
-    if($pc{imageFit} eq 'percentY'){
-      $pc{imageFit} = 'auto '.$pc{imagePercent}.'%';
+    $pc{image} = $pc{"image$mainSuffix"};
+    $pc{imageFit} = $pc{"imageFit$mainSuffix"};
+    $pc{imagePositionX} = $pc{"imagePositionX$mainSuffix"};
+    $pc{imagePositionY} = $pc{"imagePositionY$mainSuffix"};
+    $pc{imageCopyright} = $pc{"imageCopyright$mainSuffix"};
+    $pc{words} = $pc{"words$mainSuffix"};
+    $pc{wordsX} = $pc{"wordsX$mainSuffix"};
+    $pc{wordsY} = $pc{"wordsY$mainSuffix"};
+
+    if($pc{image}) {
+      if($pc{convertSource}) {
+        $pc{imageSrc} = $pc{"imageURL$mainSuffix"};
+      }
+      else {
+        $pc{imageSrc}    =     qq|./?id=$::in{id}&mode=image&imageNo=$pc{mainImage}&cache=$pc{"imageUpdate$mainSuffix"}|;
+        $pc{imageURL}    = url().qq|?id=$::in{id}&mode=image&imageNo=$pc{mainImage}&cache=$pc{"imageUpdate$mainSuffix"}|;
+        $pc{imageOgpURL} = url().qq|?id=$::in{id}&mode=ogp-image&imageNo=$pc{mainImage}&cache=$pc{"imageUpdate$mainSuffix"}|;
+      }
     }
-    elsif($pc{imageFit} =~ /^percentX?$/){
-      $pc{imageFit} = $pc{imagePercent}.'%';
-    }
-    
-    ## 権利表記
-    if($pc{imageCopyrightURL}){
-      $pc{imageCopyright} = "<a href=\"$pc{imageCopyrightURL}\" target=\"_blank\">".(unescapeTags($pc{imageCopyright})||$pc{imageCopyrightURL})."</a>";
-    }
-    else { $pc{imageCopyright} = unescapeTags($pc{imageCopyright}) }
+  }
+  elsif($pc{convertSource}) {
+    $pc{imageSrc} = $pc{imageURL};
+    $pc{images} = qq|1: "$pc{imageURL}"|;
   }
 
   ## 
@@ -592,10 +659,11 @@ sub styleToHtml {
 }
 use MIME::Base64;
 sub sheetImageToBase64 {
-  my ($dir, $file, $ext) = @_;
-  my $binary = readSheetFileBinary($dir, $file, "image.$ext");
+  my ($dir, $file, $ext, $suffix) = @_;
+  $suffix //= '';
+  my $binary = readSheetFileBinary($dir, $file, "image$suffix.$ext");
   return binaryToImageBase64($binary, $ext) if defined $binary;
-  return urlToBase64("${dir}${file}/image.$ext", $ext);
+  return urlToBase64("${dir}${file}/image$suffix.$ext", $ext);
 }
 sub binaryToImageBase64 {
   my ($binary, $ext) = @_;
