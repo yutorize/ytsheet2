@@ -19,6 +19,7 @@ window.onload = function() {
   openCoins();
   
   changeColor();
+  deleteLoadingArea();
 };
 
 // 送信前チェック ----------------------------------------

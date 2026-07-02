@@ -8,6 +8,7 @@ window.onload = function() {
   checkMagi();
 
   changeColor();
+  deleteLoadingArea();
 }
 
 // 送信前チェック ----------------------------------------

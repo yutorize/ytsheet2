@@ -21,6 +21,7 @@ window.onload = function() {
   toggleServant();
   
   changeColor();
+  deleteLoadingArea();
 };
 
 function changeRegu(){
