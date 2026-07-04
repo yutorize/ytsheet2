@@ -1993,12 +1993,18 @@ body[data-sheet-type="arts"] {
     height: 6em;
     padding: 2px;
   }
-  textarea[name="godSymbol"] {
-    height: 10em;
-  }
-  textarea[name="godDeity"],
-  textarea[name="godNote"] {
-    height: 16em;
+  #data-god {
+    textarea[name="godSymbol"] {
+      height: 10em;
+    }
+    textarea[name="godDeity"],
+    textarea[name="godNote"] {
+      height: 16em;
+    }
+    select[name="godClass"],
+    select[name="godRank"] {
+      width: 6em;
+    }
   }
 
   #data-school dl dt {
@@ -2113,12 +2119,17 @@ body[data-sheet-type="arts"] {
   #image {
     float: right;
     width: 280px;
+    height: 280px;
     margin: 5px;
     border-width: 1px;
     border-style: solid;
+    border-radius: 5px;
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
+    > h2 {
+      background: transparent;
+    }
   }
   @media screen and (width <= 735px){
     #image {
