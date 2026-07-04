@@ -628,6 +628,16 @@ sub data_update_chara {
       $pc{$_} =~ s/(^|&lt;br&gt;)\[↓\]/\[v\]/g;
     }
   }
+  if($ver < 1.29002){
+    foreach(1 .. $pc{lvBib}){
+      if   ($pc{"magicBibliomancy$_"} =~ s/スパティウム＝オルクス/スパティウム＝オクルス/) { next; }
+      elsif($pc{"magicBibliomancy$_"} =~ s/ネブラ＝ウェネーヌムス/ネブラ＝ウェネースムス/) { next; }
+    }
+    foreach(1 .. $pc{bibliomancyTemporaryNum}){
+      if   ($pc{"magicBibliomancyTemporary$_"} =~ s/スパティウム＝オルクス/スパティウム＝オクルス/) { next; }
+      elsif($pc{"magicBibliomancyTemporary$_"} =~ s/ネブラ＝ウェネーヌムス/ネブラ＝ウェネースムス/) { next; }
+    }
+  }
   $pc{ver} = $main::ver;
   $pc{lasttimever} = $ver;
   return %pc;
