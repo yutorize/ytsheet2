@@ -77,8 +77,8 @@ convertEscapedBrToNewlines(\%pc,
 );
 
 ### 画像 --------------------------------------------------
-my $image_maxsize = $set::image_maxsize / 2;
-my $image_maxsize_view = $image_maxsize >= 1048576 ? sprintf("%.3g",$image_maxsize/1048576).'MB' : sprintf("%.3g",$image_maxsize/1024).'KB';
+my $imageMaxSize = $set::image_maxsize / 2;
+my $imageMaxSizeView = $imageMaxSize >= 1048576 ? sprintf("%.3g",$imageMaxSize/1048576).'MB' : sprintf("%.3g",$imageMaxSize/1024).'KB';
 
 ### フォーム表示 #####################################################################################
 print renderEditPageStart(
@@ -446,8 +446,8 @@ print <<"HTML";
       <h2 class="in-toc">地図などの画像</h2>
       <p>
         プレビューエリアに画像ファイルをドロップ、<br>または
-        <input type="file" accept="image/*" name="imageFile" onchange="imagePreView(this.files[0], $image_maxsize || 0)"><br>
-        ※ ファイルサイズ @{[ $image_maxsize_view ]} までの JPG/PNG/GIF/WebP<br>
+        <input type="file" accept="image/*" name="imageFile" onchange="imagePreView(this.files[0], $imageMaxSize || 0)"><br>
+        ※ ファイルサイズ @{[ $imageMaxSizeView ]} までの JPG/PNG/GIF/WebP<br>
         <small>（サイズを超過する場合、自動的にWebP形式に変換し、その上でまだ超過している場合は縮小処理が行われます）</small>
       </p>
       <p>
@@ -457,6 +457,19 @@ print <<"HTML";
       </p>
     <script>
       const imageType = 'symbol';
+      // ドラッグ＆ドロップで画像アップ
+      document.getElementById('image').addEventListener('dragover',function(e){
+        e.preventDefault();
+      });
+      document.getElementById('image').addEventListener('drop',function(e){
+        e.preventDefault();
+      });
+      document.getElementById('image').addEventListener('drop', function (e) {
+        const obj = document.querySelector(`[name='imageFile']`);
+        if(!obj){ return; }
+        obj.files = e.dataTransfer.files;
+        imagePreView(obj.files[0], $imageMaxSize, 1);
+      });
     </script>
     </div>
 
