@@ -99,8 +99,8 @@ convertEscapedBrToNewlines(\%pc,
 );
 
 ### 画像 --------------------------------------------------
-my $image_maxsize = $set::image_maxsize / 4;
-my $image_maxsize_view = $image_maxsize >= 1048576 ? sprintf("%.3g",$image_maxsize/1048576).'MB' : sprintf("%.3g",$image_maxsize/1024).'KB';
+my $imageMaxSize = $set::image_maxsize / 4;
+my $imageMaxSizeView = $imageMaxSize >= 1048576 ? sprintf("%.3g",$imageMaxSize/1048576).'MB' : sprintf("%.3g",$imageMaxSize/1024).'KB';
 
 ### フォーム表示 #####################################################################################
 print renderEditPageStart(
@@ -179,8 +179,8 @@ print <<"HTML";
           <h2>聖印の画像</h2>
           <p>
             プレビューエリアに画像ファイルをドロップ、または
-            <input type="file" accept="image/*" name="imageFile" onchange="imagePreView(this.files[0], $image_maxsize || 0)"><br>
-            ※ ファイルサイズ @{[ $image_maxsize_view ]} までの JPG/PNG/GIF/WebP
+            <input type="file" accept="image/*" name="imageFile" onchange="imagePreView(this.files[0], $imageMaxSize || 0)"><br>
+            ※ ファイルサイズ @{[ $imageMaxSizeView ]} までの JPG/PNG/GIF/WebP
             <small>（サイズを超過する場合、自動的にWebP形式に変換し、その上でまだ超過している場合は縮小処理が行われます）</small>
           </p>
           <p>
@@ -190,6 +190,19 @@ print <<"HTML";
           </p>
         <script>
           const imageType = 'symbol';
+          // ドラッグ＆ドロップで画像アップ
+          document.getElementById('image').addEventListener('dragover',function(e){
+            e.preventDefault();
+          });
+          document.getElementById('image').addEventListener('drop',function(e){
+            e.preventDefault();
+          });
+          document.getElementById('image').addEventListener('drop', function (e) {
+            const obj = document.querySelector(`[name='imageFile']`);
+            if(!obj){ return; }
+            obj.files = e.dataTransfer.files;
+            imagePreView(obj.files[0], $imageMaxSize, 1);
+          });
         </script>
         </div>
         <dl class="name  "><dt>名称      <dd>@{[ input 'godName','',"setName" ]}</dl>
