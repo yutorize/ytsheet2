@@ -13,13 +13,13 @@ sub dataCalc {
   if(!$pc{taxa} && $pc{taxaSelect} eq 'その他'){ $pc{taxa} = 'その他' }
 
   #### 改行を<br>に変換 --------------------------------------------------
-  $pc{skills}      =~ s/\r\n?|\n/<br>/g;
-  $pc{description} =~ s/\r\n?|\n/<br>/g;
-  $pc{chatPalette} =~ s/\r\n?|\n/<br>/g;
-  
+  convertNewlinesToBrTag(\%pc,
+    qw/skills description chatPalette/,
+  );
+
   #### 保存処理でなければここまで --------------------------------------------------
   if(!$::mode_save){ return %pc; }
-  
+
   #### エスケープ --------------------------------------------------
   $pc{$_} = escapePcData($pc{$_}) foreach (keys %pc);
   $pc{tags} = normalizeHashtags($pc{tags});
@@ -55,7 +55,7 @@ sub dataCalc {
     . "$pc{intellect}<>$pc{perception}<>$NL{disposition}<>$pc{sin}<>$NL{initiative}<>$NL{weakness}<>"
     . $pc{"image".imageSuffix($pc{mainImage})}."<> $pc{tags} <>$pc{hide}<>"
     . "$pc{partsNum}<>$NL{habitat}<>$NL{price}<>";
-  
+
   return %pc;
 }
 

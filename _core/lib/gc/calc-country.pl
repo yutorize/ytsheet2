@@ -35,7 +35,7 @@ sub dataCalc {
       $pc{"resource${type}Total"} += $pc{"characteristic${i}${type}"};
     }
       $pc{"resource${type}Total"} += $pc{"grow${type}"};
-    
+
     $pc{"resource${type}Used"} = 0;
     foreach my $i (1 .. $pc{forceNum}){
       $pc{"resource${type}Used"} += $pc{"force${i}Cost${type}"};
@@ -45,22 +45,17 @@ sub dataCalc {
   ### 0を消去 --------------------------------------------------
 
   #### 改行を<br>に変換 --------------------------------------------------
-  foreach (
-    'freeNote',
-    'freeHistory',
-    'chatPalette',
-  ){
-    $pc{$_} =~ s/\r\n?|\n/<br>/g;
-  }
-  $pc{'words'.$_} =~ s/\r\n?|\n/<br>/g foreach('', 2 .. ($set::image_maxcount || 1));
-  
+  convertNewlinesToBrTag(\%pc,
+    qw/freeNote freeHistory chatPalette/,
+  );
+
   #### 保存処理でなければここまで --------------------------------------------------
   if(!$::mode_save){ return %pc; }
 
   #### エスケープ --------------------------------------------------
   $pc{$_} = escapePcData($pc{$_}) foreach (keys %pc);
   $pc{tags} = normalizeHashtags($pc{tags});
-  
+
   ### 最終参加卓 --------------------------------------------------
   foreach my $i (reverse 1 .. $pc{historyNum}){
     if($pc{"history${i}Gm"} && $pc{"history${i}Title"}){ $pc{lastSession} = removeTags unescapeTags $pc{"history${i}Title"}; last; }

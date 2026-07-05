@@ -14,7 +14,7 @@ sub dataCalc {
   if($pc{ver}){
     %pc = upgradeCharaData(\%pc);
   }
-  
+
   ### 技能 --------------------------------------------------
   my %classData; my @classNames; my @classCasterNames;
   addFreeClassData(\%pc, \%classData, \@classNames, \@classCasterNames);
@@ -22,10 +22,10 @@ sub dataCalc {
   my $lvCastersTotal;
   foreach my $class (@classNames){
     my $id = $classData{$class}{id};
-    
+
     ## 冒険者レベル算出
     $pc{level} = $pc{'lv'.$id} if ($pc{level} < $pc{'lv'.$id});
-    
+
     ## 魔法使い最大/合計レベル算出
     $pc{lvCaster} = $pc{'lv'.$id} if ($pc{lvCaster} < $pc{'lv'.$id} && $classData{$class}{magic}{jName});
     $lvCastersTotal += $pc{'lv'.$id} if $classData{$class}{magic}{jName};
@@ -38,7 +38,7 @@ sub dataCalc {
   $pc{lvWiz} = max($pc{lvSor},$pc{lvCon}) if ($pc{lvSor} && $pc{lvCon});
 
   ### 経験点／名誉点／ガメル計算 --------------------------------------------------
-  ## 履歴から 
+  ## 履歴から
   $pc{moneyTotal}   = 0;
   $pc{depositTotal} = 0;
   $pc{debtTotal}    = 0;
@@ -50,7 +50,7 @@ sub dataCalc {
   foreach my $i (1 .. $pc{historyNum}){
     $pc{expTotal} += s_eval($pc{"history${i}Exp"});
     $pc{moneyTotal} += s_eval($pc{"history${i}Money"});
-    
+
     if   ($pc{"history${i}HonorType"} eq 'barbaros'){ $pc{honorBarbaros} += s_eval($pc{"history${i}Honor"}); }
     elsif($pc{"history${i}HonorType"} eq 'dragon'  ){ $pc{honorDragon}   += s_eval($pc{"history${i}Honor"}); }
     else {
@@ -156,7 +156,7 @@ sub dataCalc {
   foreach (@classNames){
     $pc{expRest} -= $expTable{$classData{$_}{expTable}}[$pc{'lv'.$classData{$_}{id}}];
   }
-  
+
   ### 求道者 --------------------------------------------------
   $pc{expRest} -= $expTable{S}[$pc{lvSeeker}];
   if($pc{lvSeeker}){
@@ -345,7 +345,7 @@ sub dataCalc {
     $pc{sttHistGrowE} += ($grow =~ s/知/知/g);
     $pc{sttHistGrowF} += ($grow =~ s/精/精/g);
   }
-  
+
   ## 能力値算出
   $pc{historyGrowTotal} = 0;
   foreach (
@@ -515,7 +515,7 @@ sub dataCalc {
     my $c_en = $classData{$class}{eName};
     my $craftName = ucfirst $classData{$class}{craft}{eName};
     my %pData = %{$classData{$class}{package}};
-    
+
     foreach my $p_id (keys %pData){
       my $auto = $pData{$p_id}{mod};
       my $disabled = 0;
@@ -528,7 +528,7 @@ sub dataCalc {
         }
       }
       # 陣率：軍師の知略
-      if($c_id eq 'War' && $p_id eq 'Int'){ 
+      if($c_id eq 'War' && $p_id eq 'Int'){
         foreach(1 .. $pc{'lv'.$c_id}+$addAcuire){
           if($pc{'craftCommand'.$_} =~ /^陣率/){ $auto +=1; last; }
         }
@@ -566,7 +566,7 @@ sub dataCalc {
       + $pc{raceAbilityMagicPower}
       + $pc{'raceAbilityMagicPower'.$id}
     ) : 0;
-    
+
     $pc{'magicPower'.$id} += $pc{seekerSkillMagic} if $pc{'lv'.$id} >= 15; #求道者
   }
   ## 奏力ほか
@@ -578,7 +578,7 @@ sub dataCalc {
     $pc{'magicPower'.$id} = $pc{'lv'.$id} ? ( $pc{'lv'.$id} + int(($pc{'stt'.$stt{$st}[0]} + $pc{'sttAdd'.$stt{$st}[1]} + $pc{'sttEquip'.$stt{$st}[1]} + ($pc{'magicPowerOwn'.$id} ? 2 : 0)) / 6) + $pc{'magicPowerAdd'.$id} ) : 0;
   }
   $pc{magicPowerAlc} += $pc{alchemyEnhance};
-  
+
   ### 装備 --------------------------------------------------
   ## 武器
   foreach (1 .. $pc{weaponNum}){
@@ -655,7 +655,7 @@ sub dataCalc {
     }
   }
 
-  
+
   ## 回避力・防護点
   foreach my $i (1..$pc{defenseTotalNum}){
     my $class = $pc{"evasionClass$i"};
@@ -708,7 +708,7 @@ sub dataCalc {
     my $artisan = 0;
     foreach my $num (1 .. $pc{armourNum}){
       next if !$pc{"defTotal${i}CheckArmour${num}"};
-      
+
       my $category = $pc{"armour${num}Category"};
       $eva += $pc{"armour${num}Eva"};
       $def += $pc{"armour${num}Def"};
@@ -720,7 +720,7 @@ sub dataCalc {
         if($category =~ /鎧/){ $def += $pc{armourDefenseUp}; }
         if($pc{"armour${num}Note"} =~ /〈魔器〉/){ $artisan = $pc{masteryArtisan}; }
       }
-      
+
       if($category eq '盾' && $pc{"armour${num}Own"}){ $own_agi = 2 }
     }
     $eva += $lv ? $lv + int(($agi+$own_agi)/6) : 0;
@@ -787,7 +787,7 @@ sub dataCalc {
     }
     return 0;
   }
-  
+
   ### 穢れ --------------------------------------------------
   {
     my %effects = map { $_->{name} => $_ } @set::effects;
@@ -836,25 +836,21 @@ sub dataCalc {
   }
 
   #### 改行を<br>に変換 --------------------------------------------------
-  $pc{'words'.$_} =~ s/\r\n?|\n/<br>/g foreach('', 2 .. ($set::image_maxcount || 1));
-  $pc{items}         =~ s/\r\n?|\n/<br>/g;
-  $pc{freeNote}      =~ s/\r\n?|\n/<br>/g;
-  $pc{freeHistory}   =~ s/\r\n?|\n/<br>/g;
-  $pc{cashbook}      =~ s/\r\n?|\n/<br>/g;
-  $pc{fellowProfile} =~ s/\r\n?|\n/<br>/g;
-  $pc{fellowNote}    =~ s/\r\n?|\n/<br>/g;
-  $pc{chatPalette}   =~ s/\r\n?|\n/<br>/g;
-  $pc{'cashbookOther'.$_} =~ s/\r\n?|\n/<br>/g foreach(1..$pc{cashbookOtherNum});
-  $pc{'chatPaletteInsert'.$_} =~ s/\r\n?|\n/<br>/g foreach(1..$pc{chatPaletteInsertNum});
-  $pc{$_} =~ s/\r\n?|\n/<br>/g foreach (grep {/^fellow[-0-9]+(?:Action|Note)$/} keys %pc);
-  
+  convertNewlinesToBrTag(\%pc,
+    qw/items freeNote freeHistory cashbook fellowProfile fellowNote chatPalette/,
+    ( map { 'words'.$_ } '', 2 .. ($set::image_maxcount || 1) ),
+    ( map { 'chatPaletteInsert'.$_ } 1..$pc{chatPaletteInsertNum} ),
+    ( map { 'cashbookOther'    .$_ } 1..$pc{cashbookOtherNum} ),
+    ( grep {/^fellow[-0-9]+(?:Action|Note)$/} keys %pc ),
+  );
+
   #### 保存処理でなければここまで --------------------------------------------------
   if(!$::mode_save){ return %pc; }
-  
+
   #### エスケープ --------------------------------------------------
   $pc{$_} = escapePcData($pc{$_}) foreach (keys %pc);
   $pc{tags} = normalizeHashtags($pc{tags});
-  
+
   ### 最終参加卓 --------------------------------------------------
   foreach my $i (reverse 1 .. $pc{historyNum}){
     if($pc{"history${i}Gm"} && $pc{"history${i}Title"}){ $pc{lastSession} = removeTags unescapeTags $pc{"history${i}Title"}; last; }
