@@ -11,10 +11,10 @@ sub dataCalc {
   }
 
   ### レベル・成長 --------------------------------------------------
-  ## 履歴から 
+  ## 履歴から
   $pc{enduranceGrow}  = $pc{endurancePreGrow};
   $pc{initiativeGrow} = $pc{initiativePreGrow};
-  
+
   foreach my $i (0 .. $pc{historyNum}){
     if   ($pc{"history${i}Grow"} eq 'endurance' ) { $pc{enduranceGrow}  += 5; }
     elsif($pc{"history${i}Grow"} eq 'initiative') { $pc{initiativeGrow} += 2; }
@@ -45,19 +45,18 @@ sub dataCalc {
   #}
 
   #### 改行を<br>に変換 --------------------------------------------------
-  $pc{'words'.$_} =~ s/\r\n?|\n/<br>/g foreach('', 2 .. ($set::image_maxcount || 1));
-  $pc{freeNote}    =~ s/\r\n?|\n/<br>/g;
-  $pc{freeHistory} =~ s/\r\n?|\n/<br>/g;
-  $pc{chatPalette} =~ s/\r\n?|\n/<br>/g;
-  $pc{scarNote}    =~ s/\r\n?|\n/<br>/g;
-  
+  convertNewlinesToBrTag(\%pc,
+    qw/scarNote freeNote freeHistory chatPalette/,
+    ( map { 'words'.$_ } '', 2 .. ($set::image_maxcount || 1) ),
+  );
+
   #### 保存処理でなければここまで --------------------------------------------------
   if(!$::mode_save){ return %pc; }
-  
+
   #### エスケープ --------------------------------------------------
   $pc{$_} = escapePcData($pc{$_}) foreach (keys %pc);
   $pc{tags} = normalizeHashtags($pc{tags});
-  
+
   ### 最終参加卓 --------------------------------------------------
   foreach my $i (reverse 1 .. $pc{historyNum}){
     if($pc{"history${i}Gm"} && $pc{"history${i}Title"}){ $pc{lastSession} = removeTags unescapeTags $pc{"history${i}Title"}; last; }

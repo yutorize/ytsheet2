@@ -13,10 +13,10 @@ sub dataCalc {
   if($pc{ver}){
     %pc = upgradeCharaData(\%pc);
   }
-  
+
 
   ### 経験点／ゴールド計算 --------------------------------------------------
-  ## 履歴から 
+  ## 履歴から
   $pc{moneyTotal}   = 0;
   #$pc{depositTotal} = 0;
   #$pc{debtTotal}    = 0;
@@ -86,13 +86,13 @@ sub dataCalc {
   #合計
   $pc{expUsed} = $pc{expUsedLevel} + $pc{expUsedGeneralSkills} + $pc{expUsedConnections} + $pc{expUsedGeises};
   $pc{expRest} = $pc{expTotal} - $pc{expUsed};
-  
+
   ### クラス --------------------------------------------------
   $pc{classMain}    = $pc{classMainLv1};
   $pc{classSupport} = $pc{classSupportLv1};
   if($pc{classSupport} eq 'free'){ $pc{classSupport} = $pc{classSupportLv1Free}; }
   $pc{classTitle} = '';
-  
+
   ## レベルアップ
   $pc{skillLvLimit} += 1+1+4; #種族1＋メイン1＋任意4
   $pc{hpGrow} = 0;
@@ -178,19 +178,19 @@ sub dataCalc {
   $pc{battleTotalMDef} = $pc{battleAddMDef} + $pc{sttMndTotal};
   $pc{battleTotalIni } = $pc{battleAddIni } + $pc{sttAgiTotal} + $pc{sttSenTotal};
   $pc{battleTotalMove} = $pc{battleAddMove} + $pc{sttStrTotal} + 5;
-  
+
   if($pc{battleTotalDef } < 0){ $pc{battleTotalDef } = 0; }
   if($pc{battleTotalMDef} < 0){ $pc{battleTotalMDef} = 0; }
-  
+
   $pc{battleTotalAccR } = $pc{battleTotalAcc} - $pc{armamentHandLAcc};
   $pc{battleTotalAccL } = $pc{battleTotalAcc} - $pc{armamentHandRAcc};
   $pc{battleTotalAtkR } = $pc{battleTotalAtk} - $pc{armamentHandLAtk};
   $pc{battleTotalAtkL } = $pc{battleTotalAtk} - $pc{armamentHandRAtk};
-  
+
   $pc{battleDiceAcc } = $pc{rollDexDice} + $pc{battleSkillAccDice} + $pc{battleOtherAccDice};
   $pc{battleDiceAtk } = 2 + $pc{battleSkillAtkDice} + $pc{battleOtherAtkDice};
   $pc{battleDiceEva } = $pc{rollAgiDice} + $pc{battleSkillEvaDice} + $pc{battleOtherEvaDice};
-  
+
   ### 特殊な判定 --------------------------------------------------
   $pc{rollTrapDetectAdd  } = $pc{rollTrapDetectSkill}   + $pc{rollTrapDetectOther};
   $pc{rollTrapReleaseAdd } = $pc{rollTrapReleaseSkill}  + $pc{rollTrapReleaseOther};
@@ -200,7 +200,7 @@ sub dataCalc {
   $pc{rollMagicAdd       } = $pc{rollMagicSkill}        + $pc{rollMagicOther};
   $pc{rollSongAdd        } = $pc{rollSongSkill}         + $pc{rollSongOther};
   $pc{rollAlchemyAdd     } = $pc{rollAlchemySkill}      + $pc{rollAlchemyOther};
-  
+
   $pc{rollTrapDetect  } = $pc{rollSen} + $pc{rollTrapDetectAdd  };
   $pc{rollTrapRelease } = $pc{rollDex} + $pc{rollTrapReleaseAdd };
   $pc{rollDangerDetect} = $pc{rollSen} + $pc{rollDangerDetectAdd};
@@ -209,7 +209,7 @@ sub dataCalc {
   $pc{rollMagic       } = $pc{rollInt} + $pc{rollMagicAdd       };
   $pc{rollSong        } = $pc{rollMnd} + $pc{rollSongAdd        };
   $pc{rollAlchemy     } = $pc{rollDex} + $pc{rollAlchemyAdd     };
-  
+
   $pc{rollTrapDetectDice  } = $pc{rollSenDice} + $pc{rollTrapDetectDiceAdd  };
   $pc{rollTrapReleaseDice } = $pc{rollDexDice} + $pc{rollTrapReleaseDiceAdd };
   $pc{rollDangerDetectDice} = $pc{rollSenDice} + $pc{rollDangerDetectDiceAdd};
@@ -218,7 +218,7 @@ sub dataCalc {
   $pc{rollMagicDice       } = $pc{rollIntDice} + $pc{rollMagicDiceAdd       };
   $pc{rollSongDice        } = $pc{rollMndDice} + $pc{rollSongDiceAdd        };
   $pc{rollAlchemyDice     } = $pc{rollDexDice} + $pc{rollAlchemyDiceAdd     };
-  
+
   ### 傾向重量計算 --------------------------------------------------
   {
     my $items = $pc{items};
@@ -259,36 +259,19 @@ sub dataCalc {
     delete $pc{'roll'.$s.'Add'} if !$pc{'roll'.$s.'Add'};
   }
   #### 改行を<br>に変換 --------------------------------------------------
-  foreach (
-    'items',
-    'freeNote',
-    'freeHistory',
-    'cashbook',
-    'chatPalette',
-    'armamentHandRNote',
-    'armamentHandLNote',
-    'armamentHeadNote',
-    'armamentBodyNote',
-    'armamentSubNote',
-    'armamentOtherNote',
-    'armamentTotalNote',
-    'battleSkillNote',
-    'battleOtherNote',
-  ){
-    $pc{$_} =~ s/\r\n?|\n/<br>/g;
-  }
-  foreach my $i (1 .. $pc{geisNum}){
-    $pc{"geis${i}Note"} =~ s/\r\n?|\n/<br>/g;
-  }
-  $pc{'words'.$_} =~ s/\r\n?|\n/<br>/g foreach('', 2 .. ($set::image_maxcount || 1));
-  
+  convertNewlinesToBrTag(\%pc,
+    qw/items freeNote freeHistory cashbook chatPalette armamentHandRNote armamentHandLNote armamentHeadNote armamentBodyNote armamentSubNote armamentOtherNote armamentTotalNote battleSkillNote battleOtherNote/,
+    ( map { 'words'.$_ } '', 2 .. ($set::image_maxcount || 1) ),
+    ( map { "geis${_}Note" } 1..$pc{geisNum} ),
+  );
+
   #### 保存処理でなければここまで --------------------------------------------------
   if(!$::mode_save){ return %pc; }
 
   #### エスケープ --------------------------------------------------
   $pc{$_} = escapePcData($pc{$_}) foreach (keys %pc);
   $pc{tags} = normalizeHashtags($pc{tags});
-  
+
   ### 最終参加卓 --------------------------------------------------
   foreach my $i (reverse 1 .. $pc{historyNum}){
     if($pc{"history${i}Gm"} && $pc{"history${i}Title"}){ $pc{lastSession} = removeTags unescapeTags $pc{"history${i}Title"}; last; }

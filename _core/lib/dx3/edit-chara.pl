@@ -122,11 +122,11 @@ if(exists $data::syndrome_status{$pc{syndrome2}}){
 convertEscapedBrToNewlines(\%pc,
   qw/freeNote freeHistory chatPalette/,
   ( map { 'words'.$_ } '', 2 .. ($set::image_maxcount || 1) ),
-  ( map { "combo${_}Note" } 1..$pc{comboNum} ),
-  ( map { "weapon${_}Note" } 1..$pc{weaponNum} ),
-  ( map { "armor${_}Note" } 1..$pc{armorNum} ),
+  ( map { "combo${_}Note"   } 1..$pc{comboNum} ),
+  ( map { "weapon${_}Note"  } 1..$pc{weaponNum} ),
+  ( map { "armor${_}Note"   } 1..$pc{armorNum} ),
   ( map { "vehicle${_}Note" } 1..$pc{vehicleNum} ),
-  ( map { "item${_}Note" } 1..$pc{itemNum} ),
+  ( map { "item${_}Note"    } 1..$pc{itemNum} ),
 );
 
 ### コンボ欄用選択肢 --------------------------------------------------

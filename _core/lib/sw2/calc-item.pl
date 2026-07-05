@@ -13,8 +13,9 @@ sub dataCalc {
   $pc{category} =~ tr/ａ-ｚＡ-Ｚ/a-zA-Z/;
 
   #### 改行を<br>に変換 --------------------------------------------------
-  $pc{effects}     =~ s/\r\n?|\n/<br>/g;
-  $pc{description} =~ s/\r\n?|\n/<br>/g;
+  convertNewlinesToBrTag(\%pc,
+    qw/effects description/,
+  );
   
   #### 保存処理でなければここまで --------------------------------------------------
   if(!$::mode_save){ return %pc; }

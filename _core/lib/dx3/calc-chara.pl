@@ -15,7 +15,7 @@ sub dataCalc {
   if($pc{ver}){
     %pc = upgradeCharaData(\%pc);
   }
-  
+
   ### 能力値 --------------------------------------------------
   my %status = (0=>'body', 1=>'sense', 2=>'mind', 3=>'social');
   $pc{expUsedStatus} = 0;
@@ -30,7 +30,7 @@ sub dataCalc {
     $base += $pc{syndrome2} ? $pc{'sttSyn2'.$Name} : $base;
     $pc{'sttBase'.$Name} = $base;
     if($name eq $pc{sttWorks}){ $base++; }
-    
+
     $pc{'sttTotal'.$Name} = $base + $pc{'sttGrow'.$Name} + $pc{'sttAdd'.$Name};
     # 経験点
     for (my $i = $base; $i < $base+$pc{'sttGrow'.$Name}; $i++){
@@ -47,7 +47,7 @@ sub dataCalc {
   $pc{stockTotal} = $pc{sttTotalSocial} * 2 + $pc{skillProcure} * 2 + $pc{stockAdd};
   $pc{savingTotal} = $pc{stockTotal} + $pc{savingAdd};
   $pc{magicTotal}  = ceil(($pc{sttTotalMind} + $pc{skillWill} + $pc{skillAddWill}) / 2) + $pc{magicAdd};
-  
+
   ### 技能 --------------------------------------------------
   my %skill_name_to_id = (
     '白兵' => 'Melee',
@@ -65,7 +65,7 @@ sub dataCalc {
     my $lv = $pc{'skill'.$name};
     for(my $i = 0; $i < $lv; $i++){ $pc{expUsedSkill} += ($i > 20) ? 10 : ($i > 10) ? 5 : ($i > 5) ? 3 : 2; }
     if($pc{'skill'.$name} || $pc{'skillAdd'.$name}){ $pc{'skillTotal'.$name} = $pc{'skill'.$name} + $pc{'skillAdd'.$name}; }
-    
+
   }
   foreach my $name ('Ride','Art','Know','Info'){
     foreach my $num (1 .. $pc{'skill'.$name.'Num'}){
@@ -77,7 +77,7 @@ sub dataCalc {
   }
   $pc{fpUsedSkill} = $pc{expUsedSkill} / 2;
   if($pc{fpUsedSkill} > 5){ $pc{fpUsedSkill} = 5 }
-  
+
   ### エフェクト --------------------------------------------------
   $pc{expUsedEffect} = 0;
   $pc{fpUsedEffect}  = 0;
@@ -114,7 +114,7 @@ sub dataCalc {
   foreach my $num (1 .. $pc{magicNum}){
     $pc{expUsedMagic} += $pc{'magic'.$num.'Exp'};
   }
-  
+
   ### コンボ --------------------------------------------------
   foreach my $num (1 .. $pc{comboNum}){
     my $name = $pc{"combo${num}Skill"};
@@ -146,7 +146,7 @@ sub dataCalc {
       $pc{"combo${num}Fixed".$_} = ($lv  && $fadd) ? optimizeOperator("$lv+$fadd" ) : ($lv ||$fadd) if !$pc{"combo${num}Fixed".$_};
     }
   }
-  
+
   ### アイテム --------------------------------------------------
   foreach my $num (1 .. $pc{weaponNum}){
     $pc{stockUsed}   += $pc{"weapon${num}Stock"};
@@ -164,13 +164,13 @@ sub dataCalc {
     $pc{stockUsed}   += $pc{"item${num}Stock"};
     $pc{expUsedItem} += $pc{"item${num}Exp"};
   }
-  $pc{savingTotal} -= $pc{stockUsed}; 
-  
+  $pc{savingTotal} -= $pc{stockUsed};
+
   ### 侵蝕率 --------------------------------------------------
   $pc{lifepathAwakenEncroach}  = $awakens{$pc{lifepathAwaken}};
   $pc{lifepathImpulseEncroach} = $impulses{$pc{lifepathImpulse}};
   $pc{baseEncroach} = $pc{lifepathAwakenEncroach} + $pc{lifepathImpulseEncroach} + $pc{lifepathOtherEncroach};
-  
+
   ### ロイス --------------------------------------------------
   my @dloises;
   foreach my $num (1..7){
@@ -188,7 +188,7 @@ sub dataCalc {
   }
 
   ### 経験点 --------------------------------------------------
-  ## 履歴から 
+  ## 履歴から
   $pc{expTotal} = $set::make_exp + $pc{history0Exp};
   foreach my $i (1 .. $pc{historyNum}){
     $pc{expTotal} += s_eval($pc{"history${i}Exp"}) if $pc{"history${i}ExpApply"};
@@ -228,24 +228,24 @@ sub dataCalc {
   }
 
   #### 改行を<br>に変換 --------------------------------------------------
-  $pc{'words'.$_} =~ s/\r\n?|\n/<br>/g foreach('', 2 .. ($set::image_maxcount || 1));
-  $pc{freeNote}      =~ s/\r\n?|\n/<br>/g;
-  $pc{freeHistory}   =~ s/\r\n?|\n/<br>/g;
-  $pc{chatPalette}   =~ s/\r\n?|\n/<br>/g;
-  $pc{"combo${_}Note"}   =~ s/\r\n?|\n/<br>/g foreach (1 .. $pc{comboNum});
-  $pc{"weapon${_}Note"}  =~ s/\r\n?|\n/<br>/g foreach (1 .. $pc{weaponNum});
-  $pc{"armor${_}Note"}   =~ s/\r\n?|\n/<br>/g foreach (1 .. $pc{armorNum});
-  $pc{"vehicle${_}Note"} =~ s/\r\n?|\n/<br>/g foreach (1 .. $pc{vehicleNum});
-  $pc{"item${_}Note"}    =~ s/\r\n?|\n/<br>/g foreach (1 .. $pc{itemNum});
-  
+  convertNewlinesToBrTag(\%pc,
+    qw/freeNote freeHistory chatPalette/,
+    ( map { 'words'.$_ } '', 2 .. ($set::image_maxcount || 1) ),
+    ( map { "combo${_}Note"   } 1..$pc{comboNum} ),
+    ( map { "weapon${_}Note"  } 1..$pc{weaponNum} ),
+    ( map { "armor${_}Note"   } 1..$pc{armorNum} ),
+    ( map { "vehicle${_}Note" } 1..$pc{vehicleNum} ),
+    ( map { "item${_}Note"    } 1..$pc{itemNum} ),
+  );
+
   #### 保存処理でなければここまで --------------------------------------------------
   if(!$::mode_save){ return %pc; }
-  
+
   #### エスケープ --------------------------------------------------
   $pc{$_} = escapePcData($pc{$_}) foreach (keys %pc);
   $pc{tags} = normalizeHashtags($pc{tags});
   $_ = escapePcData($_) foreach (@dloises);
-  
+
   ### 最終参加卓 --------------------------------------------------
   foreach my $i (reverse 1 .. $pc{historyNum}){
     if($pc{"history${i}Gm"} && $pc{"history${i}Title"}){ $pc{lastSession} = removeTags unescapeTags $pc{"history${i}Title"}; last; }
