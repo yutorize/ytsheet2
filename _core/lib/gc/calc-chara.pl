@@ -37,7 +37,7 @@ sub dataCalc {
   }
   $pc{sttInitEquip} = $pc{weaponTotalInit} + $pc{armorTotalInit};
   $pc{sttMoveEquip} = $pc{weaponTotalMove} + $pc{armorTotalMove};
-  
+
   $pc{totalWeight} = $pc{weaponTotalWeight} + $pc{armorTotalWeight} + $pc{itemsTotalWeight};
 
   ### 乗騎 --------------------------------------------------
@@ -104,22 +104,18 @@ sub dataCalc {
     delete $pc{"stt${stt}Other"} if !$pc{"stt${stt}Other"};
   }
   #### 改行を<br>に変換 --------------------------------------------------
-  foreach (
-    'freeNote',
-    'freeHistory',
-    'chatPalette',
-  ){
-    $pc{$_} =~ s/\r\n?|\n/<br>/g;
-  }
-  $pc{'words'.$_} =~ s/\r\n?|\n/<br>/g foreach('', 2 .. ($set::image_maxcount || 1));
-  
+  convertNewlinesToBrTag(\%pc,
+    qw/freeNote freeHistory chatPalette/,
+    ( map { 'words'.$_ } '', 2 .. ($set::image_maxcount || 1) ),
+  );
+
   #### 保存処理でなければここまで --------------------------------------------------
   if(!$::mode_save){ return %pc; }
 
   #### エスケープ --------------------------------------------------
   $pc{$_} = escapePcData($pc{$_}) foreach (keys %pc);
   $pc{tags} = normalizeHashtags($pc{tags});
-  
+
   ### 最終参加卓 --------------------------------------------------
   foreach my $i (reverse 1 .. $pc{historyNum}){
     if($pc{"history${i}Gm"} && $pc{"history${i}Title"}){ $pc{lastSession} = removeTags unescapeTags $pc{"history${i}Title"}; last; }

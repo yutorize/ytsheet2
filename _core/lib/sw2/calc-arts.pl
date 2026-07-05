@@ -9,7 +9,7 @@ use open ":utf8";
 sub dataCalc {
   my %pc = %{$_[0]};
   my %NL;
-  
+
   if($pc{category} eq 'magic'){
     $NL{name} = $pc{magicName};
     $NL{sub} = $pc{magicClass}.'／'.$pc{magicLevel};
@@ -33,11 +33,11 @@ sub dataCalc {
   }
   $pc{artsName} = $NL{name};
 
-  $pc{magicSongPet} = join('、', 
+  $pc{magicSongPet} = join('、',
       grep $_, ($pc{magicSongPetBird}?'小鳥':undef) ,($pc{magicSongPetFrog}?'蛙':undef),($pc{magicSongPetBug}?'虫':undef)
     );
   if($pc{magicClass} eq '騎芸'){
-    $pc{magicType} = join('、', 
+    $pc{magicType} = join('、',
         grep $_, ($pc{magicMountTypeAnimal}?'動物':undef) ,($pc{magicMountTypeCryptid}?'幻獣':undef),($pc{magicMountTypeMachine}?'魔動機':undef)
       );
   }
@@ -45,40 +45,21 @@ sub dataCalc {
   $pc{category} =~ tr/ａ-ｚＡ-Ｚ/a-zA-Z/;
 
   #### 改行を<br>に変換 --------------------------------------------------
-  foreach (
-    'magicEffect',
-    'magicDescription',
-    'godSymbol',
-    'godDeity',
-    'godNote',
-    'godMagic2Effect',
-    'godMagic4Effect',
-    'godMagic7Effect',
-    'godMagic10Effect',
-    'godMagic13Effect',
-    'godQnA',
-    'schoolNote',
-    'schoolItemNote',
-    'schoolArtsNote',
-    'schoolMagicNote',
-    'schoolQnA',
-    'skillRankB_effect',
-    'skillRankA_effect',
-    'skillRankS_effect',
-    'skillRankSS_effect',
-  ){
-    $pc{$_} =~ s/\r\n?|\n/<br>/g;
-  }
-  foreach my $num (1..$pc{schoolArtsNum}){
-    $pc{"schoolArts${num}Effect"} =~ s/\r\n?|\n/<br>/g;
-  }
-  foreach my $num (1..$pc{schoolMagicNum}){
-    $pc{"schoolMagic${num}Effect"} =~ s/\r\n?|\n/<br>/g;
-  }
-  
+  convertNewlinesToBrTag(\%pc,
+    qw/magicEffect magicDescription
+    godSymbol godDeity godNote godQnA
+    schoolNote schoolItemNote schoolArtsNote schoolMagicNote schoolQnA
+    skillRankB_effect skillRankA_effect skillRankS_effect skillRankSS_effect
+    /,
+    ( map { "godMagic${_}Effect"    } 2,4,7,10,13 ),
+    ( map { "schoolArts${_}Effect"  } 1..$pc{schoolArtsNum} ),
+    ( map { "schoolMagic${_}Effect" } 1..$pc{schoolMagicNum} ),
+    ( map { "skillRank${_}_effect"  } qw/B A S SS/ ),
+  );
+
   #### 保存処理でなければここまで --------------------------------------------------
   if(!$::mode_save){ return %pc; }
-  
+
   #### エスケープ --------------------------------------------------
   $pc{$_} = escapePcData($pc{$_}) foreach (keys %pc);
   $pc{tags} = normalizeHashtags($pc{tags});
@@ -98,7 +79,7 @@ sub dataCalc {
     . "$pc{birthTime}<>$::now<>$NL{name}<>$NL{author}<>"
     . "$pc{category}<>$NL{sub}<>$NL{summary}<>"
     . $pc{"image".imageSuffix($pc{mainImage})}."<> $pc{tags} <>$pc{hide}<>";
-  
+
   return %pc;
 }
 

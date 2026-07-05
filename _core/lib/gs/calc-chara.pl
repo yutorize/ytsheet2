@@ -15,7 +15,7 @@ sub dataCalc {
   }
 
   ### 経験点／名誉点／所持金計算 --------------------------------------------------
-  ## 履歴から 
+  ## 履歴から
   $pc{moneyTotal}   = 0;
   $pc{depositTotal} = 0;
   $pc{debtTotal}    = 0;
@@ -54,7 +54,7 @@ sub dataCalc {
   }
   $pc{expUsed} += $pc{adpFromExp} * 500;
   $pc{expRest} = $pc{expTotal} - $pc{expUsed};
-  
+
   ## 冒険者レベル／成長点
   my %adventurerExpTable = (
        0 => { lv=> 1, pt=> 10 },
@@ -143,7 +143,7 @@ sub dataCalc {
       = ($race && $data::races{$race}{move} eq 'base' && $raceB && $data::races{$raceB}{move} eq 'variant') ? ($raceBV ? $data::races{$raceB}{variantData}{$raceBV}{move} : 0)
       : ($race && $data::races{$race}{move} eq 'base'   ) ? ($raceB ? $data::races{$raceB}{move} : 0)
       : ($race && $data::races{$race}{move} eq 'variant') ? ($raceV ? $data::races{$race}{variantData}{$raceV}{move} : 0)
-      : ($race) ? $data::races{$race}{move} 
+      : ($race) ? $data::races{$race}{move}
       : 0;
     $pc{statusMove} = $pc{statusMoveDice} * $pc{statusMoveRace} + $pc{statusMoveMod};
 
@@ -157,7 +157,7 @@ sub dataCalc {
     ## 呪文抵抗基準値
     $pc{statusResist} = $pc{abilityPsyRef} + $pc{level} + $pc{statusResistMod};
   }
-  
+
   ### 呪文行使 --------------------------------------------------
   foreach my $name (grep { $data::class{$_}{type} =~ /spell/ } @data::class_names){
     my $id = $data::class{$name}{id};
@@ -165,13 +165,13 @@ sub dataCalc {
       $pc{'spellCast'.$id} = $pc{'ability'.$data::class{$name}{cast}} + $pc{'lv'.$id} + $pc{spellCastModValue};
     }
   }
-  
+
   ### 攻撃 --------------------------------------------------
   ## 職業
   foreach my $class (grep { $data::class{$_}{type} =~ /warrior/ } @data::class_names){
     my $id = $data::class{$class}{id};
     foreach my $type ('Melee','Throwing','Projectile'){
-      if($data::class{$class}{proper}{hitscore} =~ /$type/){ 
+      if($data::class{$class}{proper}{hitscore} =~ /$type/){
         $pc{'hitScore'.$id.$type} = $pc{'lv'.$id} + $pc{abilityTecFoc} + $pc{'hitScoreMod'.$type};
       }
     }
@@ -217,20 +217,18 @@ sub dataCalc {
   }
 
   #### 改行を<br>に変換 --------------------------------------------------
-  $pc{'words'.$_} =~ s/\r\n?|\n/<br>/g foreach('', 2 .. ($set::image_maxcount || 1));
-  $pc{items}         =~ s/\r\n?|\n/<br>/g;
-  $pc{freeNote}      =~ s/\r\n?|\n/<br>/g;
-  $pc{freeHistory}   =~ s/\r\n?|\n/<br>/g;
-  $pc{cashbook}      =~ s/\r\n?|\n/<br>/g;
-  $pc{chatPalette}   =~ s/\r\n?|\n/<br>/g;
-  
+  convertNewlinesToBrTag(\%pc,
+    qw/items freeNote freeHistory cashbook chatPalette/,
+    ( map { 'words'.$_ } '', 2 .. ($set::image_maxcount || 1) ),
+  );
+
   #### 保存処理でなければここまで --------------------------------------------------
   if(!$::mode_save){ return %pc; }
-  
+
   #### エスケープ --------------------------------------------------
   $pc{$_} = escapePcData($pc{$_}) foreach (keys %pc);
   $pc{tags} = normalizeHashtags($pc{tags});
-  
+
   ### 最終参加卓 --------------------------------------------------
   foreach my $i (reverse 1 .. $pc{historyNum}){
     if($pc{"history${i}Gm"} && $pc{"history${i}Title"}){ $pc{lastSession} = removeTags unescapeTags $pc{"history${i}Title"}; last; }

@@ -817,6 +817,13 @@ sub convertEscapedBrToNewlines {
     $pc->{$key} =~ s/&lt;br&gt;/\n/g;
   }
 }
+sub convertNewlinesToBrTag {
+  my $pc = shift;
+  for my $key (@_) {
+    next unless defined $pc->{$key};
+    $pc->{$key} =~ s/\r\n?|\n/<br>/g;
+  }
+}
 
 ### エスケープ --------------------------------------------------
 sub escapePcData {
