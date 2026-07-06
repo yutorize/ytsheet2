@@ -7,8 +7,6 @@ use open ":utf8";
 sub addJsonData {
   my %pc = %{ $_[0] };
   my $type = $_[1];
-  
-  %pc = upgradeCharaData(\%pc) if $pc{ver};
 
   ### 簡易プロフィール
   my @classes;
@@ -25,13 +23,13 @@ sub addJsonData {
   my $missing = ($pc{factor} eq '吸血鬼' ? "欠落" : "喪失").":$pc{missing}";
   my $belong  = "所属:$pc{belong}";
   my $scar    = $pc{scarName} ? "傷号:$pc{scarName}" : '';
-  
+
   $pc{sheetDescriptionS} = $factor."\n".$base."\n".$missing."　".$scar;
   $pc{sheetDescriptionM} = $factor."\n".$base."\n".$belong."\n".$missing.($scar?"\n$scar":'');
-  
+
   ## ユニット（コマ）用ステータス
   $pc{unitStatus} = createUnitStatus(\%pc);
-  
+
   return \%pc;
 }
 

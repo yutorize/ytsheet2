@@ -16,7 +16,7 @@ my $log = $::in{log};
 my $id  = $::in{id};
 my $url = $::in{url};
 
-my ($file, $type,$author);
+my ($file, $type, $author);
 my %pc = ();
 if($id){
   ($file, $type, $author) = findSheet($id);
@@ -75,6 +75,13 @@ elsif($::in{url}){
 
 if($pc{ver} ne '') {
   $pc{result} = "OK";
+  if(defined &upgradeData){
+    %pc = upgradeData(\%pc, $type);
+  }
+  elsif(defined &upgradeCharaData){
+    %pc = upgradeCharaData(\%pc);
+  }
+
   if($set::lib_json_sub){
     require $set::lib_json_sub;
     %pc = %{ addJsonData(\%pc , $type , $::in{target} || '') };

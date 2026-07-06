@@ -35,8 +35,7 @@ if($::mode eq 'edit' || ($::mode eq 'convert' && $pc{ver})){
     foreach (sort keys %{$pc{updateMessage}}){
       $message .= '<dt>'.$_.'</dt><dd>'.$pc{updateMessage}{$_}.'</dd>';
     }
-    (my $lasttimever = $pc{lasttimever}) =~ s/([0-9]{3})$/\.$1/;
-    $message .= "</dl><small>前回保存時のバージョン:$lasttimever</small>";
+    $message .= "</dl><small>前回保存時のバージョン:$pc{lasttimever}</small>";
   }
 }
 elsif($::mode eq 'blanksheet'){

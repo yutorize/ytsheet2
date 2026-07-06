@@ -70,8 +70,8 @@ sub upgradeCharaData {
     }
   }
 
+  $pc{lasttimever} = $pc{ver};
   $pc{ver} = $main::ver;
-  $pc{lasttimever} = $ver;
   return %pc;
 }
 

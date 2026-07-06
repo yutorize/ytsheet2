@@ -43,8 +43,8 @@ sub upgradeCharaData {
     ($pc{characterName},$pc{characterNameRuby}) = split(':', $pc{characterName});
     ($pc{aka},$pc{akaRuby}) = split(':', $pc{aka});
   }
+  $pc{lasttimever} = $pc{ver};
   $pc{ver} = $main::ver;
-  $pc{lasttimever} = $ver;
   return %pc;
 }
 

@@ -445,7 +445,6 @@ sub setupViewTemplate {
   );
 
   $template->param(title => $set::title);
-  $template->param(ver => $::ver);
   $template->param(coreDir => $::core_dir);
   $template->param(gameDir => $set::game);
   
@@ -466,6 +465,7 @@ sub setupViewTemplate {
 ## 最終アウトプット
 sub printFinalizedView {
   $template->param(error => $main::login_error);
+  $template->param(ver => $::ver);
 
   print "Content-Type: text/html; charset=utf-8\n\n";
   if($::pc{modeDownload}){

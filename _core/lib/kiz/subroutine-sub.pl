@@ -45,8 +45,8 @@ sub upgradeCharaData {
     $pc{class} = $pc{type};
     delete $pc{type};
   }
+  $pc{lasttimever} = $pc{ver};
   $pc{ver} = $main::ver;
-  $pc{lasttimever} = $ver;
   return %pc;
 }
 

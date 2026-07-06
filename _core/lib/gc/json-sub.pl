@@ -10,8 +10,6 @@ sub addJsonData {
   if ($pc{type} eq 'c'){
   }
   else {
-    %pc = upgradeCharaData(\%pc) if $pc{ver};
-
     ### 簡易プロフィール --------------------------------------------------
     my $base  = "レベル:$pc{level}　クラス:$pc{class}　スタイル:$pc{style}\n";
     $base .= "ワークス:$pc{works}";
@@ -29,14 +27,14 @@ sub addJsonData {
       }
       $pc{"skill${stt}Num"} = $i - 1;
     }
-    
+
     $pc{sheetDescriptionS} = $base."\n".$profile."\n";
     $pc{sheetDescriptionM} = $base."\n".$profile."\n能力値(判定値):".$status."\n";
-    
+
     ## ユニット（コマ）用ステータス
     $pc{unitStatus} = createUnitStatus(\%pc);
   }
-  
+
   return \%pc;
 }
 
