@@ -65,7 +65,7 @@ sub createUnitStatus {
       push(@unitStatus, { 'MP' => $mp }) unless isEmptyValue($mp);
       push(@unitStatus, { '防護' => $pc{"status${i}Defense"} });
     }
-    
+
     if($pc{weakness} && $pc{weakness} ne 'なし'){
       if ($target eq 'udonarium') {
         push(@unitStatus, { '弱点' => $pc{weakness} });
@@ -169,7 +169,7 @@ sub addFreeClassData {
 sub checkSkillName {
   my $text = shift;
   my $markList = $::SW2_0 ? "[○◯〇＞▶〆☆≫»□☐☑🗨▽▼]|&gt;&gt;" : "[○◯〇△＞▶〆☆≫»□☐☑🗨]|&gt;&gt;";
-  
+
   $text =~ s/^((?:$markList)+.+?)(　|$)/&replaceSkillName($1).$2/egim;
   return $text;
 
@@ -184,7 +184,7 @@ sub checkSkillName {
 }
 sub textToIcon {
   my $text = shift;
-  
+
   if($::SW2_0){
     $text =~ s{\[常\]|[○◯〇]}{<i class="s-icon passive"><span class="raw">&#91;常&#93;</span></i>}gi;
     $text =~ s{\[主\]|[＞▶〆]}{<i class="s-icon major0"><span class="raw">&#91;主&#93;</span></i>}gi;
@@ -199,7 +199,7 @@ sub textToIcon {
     $text =~ s{\[補\]|[☆≫»]|&gt;&gt;}{<i class="s-icon minor"><span class="raw">&#91;補&#93;</span></i>}gi;
     $text =~ s{\[宣\]|[□☐☑🗨]}{<i class="s-icon active"><span class="raw">&#91;宣&#93;</span></i>}gi;
   }
-  
+
   return $text;
 }
 sub checkArtsName {
@@ -428,6 +428,14 @@ sub renderAddTextRule {
   return "</dl>".$html;
 }
 ### バージョンアップデート --------------------------------------------------
+sub upgradeData {
+  my $data = $_[0];
+  my $type = $_[1];
+  if   ($type eq 'm'){ return upgradeMonsterData($data) }
+  elsif($type eq 'i'){ return upgradeItemData($data) }
+  elsif($type eq 'a'){ return upgradeArtsData($data) }
+  else               { return upgradeCharaData($data) }
+}
 sub upgradeCharaData {
   my %pc = %{$_[0]};
   my $ver = $pc{ver};
@@ -525,7 +533,7 @@ sub upgradeCharaData {
     foreach my $i (0 .. $pc{historyNum}){
       $pc{historyExpTotal} += s_eval($pc{"history${i}Exp"});
       $pc{historyMoneyTotal} += s_eval($pc{"history${i}Money"});
-      
+
       if   ($pc{"history${i}HonorType"} eq 'barbaros'){ $pc{historyHonorBarbarosTotal} += s_eval($pc{"history${i}Honor"}); }
       elsif($pc{"history${i}HonorType"} eq 'dragon'  ){ $pc{historyHonorDragonTotal}   += s_eval($pc{"history${i}Honor"}); }
       else {
@@ -676,8 +684,8 @@ sub upgradeCharaData {
     $pc{defenseTotalNum} //= $pc{defenseNum};
     $pc{effectNum} //= $pc{effectBoxNum};
   }
+  $pc{lasttimever} = $pc{ver};
   $pc{ver} = $main::ver;
-  $pc{lasttimever} = $ver;
   return %pc;
 }
 sub upgradeMonsterData {
@@ -685,7 +693,7 @@ sub upgradeMonsterData {
   my $ver = $pc{ver};
   $ver =~ s/^([0-9]+)\.([0-9]+)\.([0-9]+)$/$1.$2$3/;
   delete $pc{updateMessage};
-  
+
   if($ver < 1.26000){
     $pc{partsManualInput} = 1;
   }
@@ -695,8 +703,8 @@ sub upgradeMonsterData {
     }
   }
 
+  $pc{lasttimever} = $pc{ver};
   $pc{ver} = $main::ver;
-  $pc{lasttimever} = $ver;
   return %pc;
 }
 sub upgradeItemData {
@@ -740,8 +748,8 @@ sub upgradeItemData {
     }
   }
 
+  $pc{lasttimever} = $pc{ver};
   $pc{ver} = $main::ver;
-  $pc{lasttimever} = $ver;
   return %pc;
 }
 sub upgradeArtsData {
@@ -778,8 +786,8 @@ sub upgradeArtsData {
     }
   }
 
+  $pc{lasttimever} = $pc{ver};
   $pc{ver} = $main::ver;
-  $pc{lasttimever} = $ver;
   return %pc;
 }
 

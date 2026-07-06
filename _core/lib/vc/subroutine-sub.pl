@@ -52,8 +52,8 @@ sub upgradeCharaData {
     $pc{itemNum} //= $pc{itemsNum};
   }
 
+  $pc{lasttimever} = $pc{ver};
   $pc{ver} = $main::ver;
-  $pc{lasttimever} = $ver;
   return %pc;
 }
 

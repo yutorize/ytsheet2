@@ -52,8 +52,8 @@ sub upgradeCharaData {
     $pc{connectionNum} //= $pc{connectionsNum};
   }
 
+  $pc{lasttimever} = $pc{ver};
   $pc{ver} = $main::ver;
-  $pc{lasttimever} = $ver;
   return %pc;
 }
 
