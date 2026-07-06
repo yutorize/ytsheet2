@@ -10,8 +10,6 @@ sub addJsonData {
   if ($pc{type} eq 'c'){
   }
   else {
-    %pc = upgradeCharaData(\%pc) if $pc{ver};
-
     ### 簡易プロフィール
     my @classes;
     foreach (@data::class_names){
@@ -34,10 +32,10 @@ sub addJsonData {
       $special  .= "《$pc{'attributeSpecial'.$num}》" if $pc{'attributeSpecial'.$num};
       $social   .= "《$pc{'attributeSocial'.$num}》" if $pc{'attributeSocial'.$num};
     }
-    
+
     $pc{sheetDescriptionS} = $base."　".$address;
     $pc{sheetDescriptionM} = $base."　".$address."\n".$clan."\n".$level."\n".$physical."\n".$special."\n".$social;
-    
+
     ## ユニット（コマ）用ステータス
     $pc{unitStatus} = createUnitStatus(\%pc);
   }

@@ -14,7 +14,7 @@ sub createUnitStatus {
   my @unitStatus = (
     { '耐久値' => $pc{endurance} },
   );
-  
+
   foreach my $key (split ',', $pc{unitStatusNotOutput}){
     @unitStatus = grep { !exists $_->{$key} } @unitStatus;
   }
@@ -33,6 +33,14 @@ our %multilineTargets = (
   ''  => '「容姿・経歴・その他メモ」「履歴（自由記入）」',
   'c' => '「その他メモ」「履歴（自由記入）」',
 );
+
+### バージョンアップデート --------------------------------------------------
+sub upgradeData {
+  my $data = $_[0];
+  my $type = $_[1];
+  if   ($type eq 'c'){ return upgradeClanData($data) }
+  else               { return upgradeCharaData($data) }
+}
 
 ### バージョンアップデート --------------------------------------------------
 sub upgradeCharaData {
@@ -54,9 +62,9 @@ sub upgradeCharaData {
   if($ver < 2){
     $pc{attributeRows} //= $pc{attributeRow};
   }
-  
+
+  $pc{lasttimever} = $pc{ver};
   $pc{ver} = $main::ver;
-  $pc{lasttimever} = $ver;
   return %pc;
 }
 
@@ -77,8 +85,8 @@ sub upgradeClanData {
       }
     }
   }
+  $pc{lasttimever} = $pc{ver};
   $pc{ver} = $main::ver;
-  $pc{lasttimever} = $ver;
   return %pc;
 }
 

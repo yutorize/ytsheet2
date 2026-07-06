@@ -50,12 +50,11 @@ sub addJsonData {
     my $data3  = ($pc{mount}?'':"先制値:$pc{initiative}　")."生命抵抗力:${vitresist}　精神抵抗力:${mndresist}";
     $pc{sheetDescriptionS} = $taxa."\n".$data3;
     $pc{sheetDescriptionM} = $taxa."　".$data1."\n".$data2."\n".$data3;
-    
+
     if($pc{statusNum} > 1){ $pc{unitExceptStatus} = { 'HP'=>1,'MP'=>1,'防護'=>1 } }
   }
   ### キャラクター --------------------------------------------------
   else {
-    %pc = upgradeCharaData(\%pc) if $pc{ver};
     ## 簡易プロフィール
     my @classes;
     foreach (@data::class_names){
@@ -102,7 +101,7 @@ sub addJsonData {
   else {
     $pc{unitStatus} = createUnitStatus(\%pc, $target);
   }
-  
+
   return \%pc;
 }
 

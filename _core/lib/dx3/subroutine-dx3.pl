@@ -95,8 +95,8 @@ sub upgradeCharaData {
       $pc{"combo${_}Manual"} = 1 foreach (1 .. $pc{comboNum});
     }
   }
+  $pc{lasttimever} = $pc{ver};
   $pc{ver} = $main::ver;
-  $pc{lasttimever} = $ver;
   return %pc;
 }
 

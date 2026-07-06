@@ -7,8 +7,6 @@ use open ":utf8";
 sub addJsonData {
   my %pc = %{ $_[0] };
   my $type = $_[1];
-  
-  %pc = upgradeCharaData(\%pc) if $pc{ver};
 
   ## ロイス数
   my @dloises; $pc{loisHave} = 0; $pc{loisMax} = 0; $pc{titusHave} = 0; $pc{sublimated} = 0;
@@ -47,13 +45,13 @@ sub addJsonData {
                . ($pc{syndrome2}?"／$pc{syndrome2}":'')
                . ($pc{syndrome3}?"／$pc{syndrome3}":'');
   my $dlois = (@dloises ? 'Dロイス:'.join('／', @dloises) : '');
-  
+
   $pc{sheetDescriptionS} = $base."\n".$works."\n".$syndrome;
   $pc{sheetDescriptionM} = $base."　".$sub."\n".$works."\n".$syndrome.($dlois?"\n$dlois":'');
-  
+
   ## ユニット（コマ）用ステータス
   $pc{unitStatus} = createUnitStatus(\%pc);
-  
+
   return \%pc;
 }
 
