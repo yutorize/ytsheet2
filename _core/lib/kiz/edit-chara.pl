@@ -507,7 +507,7 @@ print <<"HTML";
               <td class="handle" rowspan="2">
               <td class="date  " rowspan="2">@{[ input"history${num}Date" ]}
               <td class="title " rowspan="2">@{[ input"history${num}Title" ]}
-              <td class="grow  "><select name="history${num}Grow" oninput="calcGrow()">@{[ option "history${num}Grow",'endurance|<耐久値+2>','operation|<作戦力+1>' ]}</select>
+              <td class="grow  "><select name="history${num}Grow" oninput="calcGrow()">@{[ option "history${num}Grow",'endurance=>耐久値+2','operation=>作戦力+1' ]}</select>
               <td class="gm    ">@{[ input "history${num}Gm" ]}
               <td class="member">@{[ input "history${num}Member" ]}
             <tr>

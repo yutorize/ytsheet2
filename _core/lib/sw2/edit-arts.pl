@@ -19,9 +19,9 @@ foreach(@data::class_names){
   if($_ eq 'フェアリーテイマー'){
     push(
       @magic_classes,
-      'label=妖精魔法',
+      'LABEL=妖精魔法',
       '基本妖精魔法', '属性妖精魔法(土)', '属性妖精魔法(水・氷)', '属性妖精魔法(炎)', '属性妖精魔法(風)', '属性妖精魔法(光)', '属性妖精魔法(闇)', '特殊妖精魔法',
-      'close_group'
+      'GROUPCLOSE'
     );
   }
   elsif($_ eq 'コンジャラー'){
@@ -127,7 +127,7 @@ print <<"HTML";
       <div>
         <dl id="category">
           <dt>カテゴリ
-          <dd><select name="category" oninput="checkCategory();">@{[ option 'category','magic|<魔法／練技・呪歌など>','god|<神格＋特殊神聖魔法>','school|<流派＋秘伝>','skill|<特殊能力（蛮族向け）>' ]}</select>
+          <dd><select name="category" oninput="checkCategory();">@{[ option 'category','magic=>魔法／練技・呪歌など','god=>神格＋特殊神聖魔法','school=>流派＋秘伝','skill=>特殊能力（蛮族向け）' ]}</select>
         </dl>
       </div>
       <dl id="player-name">

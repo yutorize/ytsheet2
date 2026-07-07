@@ -161,15 +161,15 @@ foreach my $name (@allClassNames){
   push(@evasionClasses, $name);
 }
 ## 言語
-my @langoptionT = ('auto|<○ 自動習得／その他の習得>','listen|<△ 聞き取り限定（通辞の耳飾りなど）>');
-my @langoptionR = ('auto|<○ 自動習得／その他の習得>');
+my @langoptionT = ('auto=>○ 自動習得／その他の習得','listen=>△ 聞き取り限定（通辞の耳飾りなど）');
+my @langoptionR = ('auto=>○ 自動習得／その他の習得');
 foreach my $key (reverse keys %classData) {
   next if !$classData{$key}{language} || !$classData{$key}{language}{any};
   if($classData{$key}{language}{any}{talk}){
-    unshift(@langoptionT, "$classData{$key}{id}|<○ ${key}技能による習得>");
+    unshift(@langoptionT, "$classData{$key}{id}=>○ ${key}技能による習得");
   }
   if($classData{$key}{language}{any}{read}){
-    unshift(@langoptionR, "$classData{$key}{id}|<○ ${key}技能による習得>");
+    unshift(@langoptionR, "$classData{$key}{id}=>○ ${key}技能による習得");
   }
 }
 
@@ -181,7 +181,7 @@ my @effectNames = map {
 
   $label .= "（$notes）" if $_->{notes};
 
-  "$name|<$label>";
+  "$name=>$label";
 
 } @set::effects;
 
@@ -572,9 +572,9 @@ print <<"HTML";
             ]}
           </ul>
           <ul id="combat-feat-vagrants-auto" data-stage="2.5">
-            <li id="combat-feat-vagrants-sco5" data-label="スカウト5"  ><select name="combatFeatsExcSco5">@{[ option 'combatFeatsExcSco5', 'def=トレジャーハント','掠め取り','クルードテイク' ]}</select>
-            <li id="combat-feat-vagrants-ran5" data-label="レンジャー5"><select name="combatFeatsExcRan5">@{[ option 'combatFeatsExcRan5', 'def=サバイバビリティ','掠め取り','クルードテイク' ]}</select>
-            <li id="combat-feat-vagrants-sag5" data-label="セージ5"    ><select name="combatFeatsExcSag5">@{[ option 'combatFeatsExcSag5', 'def=鋭い目','掠め取り','クルードテイク' ]}</select>
+            <li id="combat-feat-vagrants-sco5" data-label="スカウト5"  ><select name="combatFeatsExcSco5">@{[ option 'combatFeatsExcSco5', 'DEF=トレジャーハント','掠め取り','クルードテイク' ]}</select>
+            <li id="combat-feat-vagrants-ran5" data-label="レンジャー5"><select name="combatFeatsExcRan5">@{[ option 'combatFeatsExcRan5', 'DEF=サバイバビリティ','掠め取り','クルードテイク' ]}</select>
+            <li id="combat-feat-vagrants-sag5" data-label="セージ5"    ><select name="combatFeatsExcSag5">@{[ option 'combatFeatsExcSag5', 'DEF=鋭い目','掠め取り','クルードテイク' ]}</select>
           </ul>
           <div class="feats-options">
             <ul>
@@ -741,7 +741,7 @@ print <<"HTML";
             <h2>
               <span class="handle"></span>
               <div class="select-input">
-                @{[ selectBox "effect${box}Name","changeEffect(this)",'def=|<各種影響表（穢れや侵蝕など）>',@effectNames ]}
+                @{[ selectBox "effect${box}Name","changeEffect(this)",'DEF==>各種影響表（穢れや侵蝕など）',@effectNames ]}
                 @{[ input "effect${box}NameFree",'','','placeholder="例: 穢れ＠穢れ度"' ]}
             </h2>
             <dl class="effect-points"><dt>$effects{$name}{pointName}<dd>0</dl>
@@ -988,7 +988,7 @@ print <<"HTML";
                   <td rowspan="2">@{[ input "weapon${num}Crit" ]}
                   <td rowspan="2">+@{[ input "weapon${num}Dmg",'number','calcWeapon' ]}<b id="weapon${num}-dmg-total">0</b>
                   <td>@{[ input "weapon${num}Own",'checkbox','calcWeapon' ]}
-                  <td><select name="weapon${num}Category" oninput="calcWeapon()">@{[option("weapon${num}Category",@weaponCategories,'その他|<その他（盾、魔導書など）>')]}</select>
+                  <td><select name="weapon${num}Category" oninput="calcWeapon()">@{[option("weapon${num}Category",@weaponCategories,'その他=>その他（盾、魔導書など）')]}</select>
                   <td><select name="weapon${num}Class" oninput="calcWeapon()">@{[option("weapon${num}Class",@weaponUsers,'自動計算しない')]}</select>
                   <td rowspan="2"><span class="button" onclick="addWeapon(${num});setupBracketInputCompletion()">複<br>製</span>
                 <tr>
@@ -1621,7 +1621,7 @@ sub classInputBox {
   $html .= ' data-stage="2.5"' if $data::class{$name}{'2.5'};
   $html .= '>';
   $html .= $name;
-  $html .= '<select name="faithType">'.option('faithType','†|<†セイクリッド系>','‡|<‡ヴァイス系>','†‡|<†‡両系統使用可>').'</select>' if($name eq 'プリースト');
+  $html .= '<select name="faithType">'.option('faithType','†=>†セイクリッド系','‡=>‡ヴァイス系','†‡=>†‡両系統使用可').'</select>' if($name eq 'プリースト');
   $html .= '<dd';
   $html .= ' data-stage="2.0"' if $data::class{$name}{'2.0'};
   $html .= ' data-stage="2.5"' if $data::class{$name}{'2.5'};
@@ -1632,7 +1632,7 @@ sub classInputBox {
 sub honorInput {
   my $name = shift;
   if($::SW2_0){
-    my @honortypes = ('def=human|<人族名誉点（通常の名誉点）>','barbaros|<蛮族名誉点>','dragon|<盟竜点>');
+    my @honortypes = ('DEF=human=>人族名誉点（通常の名誉点）','barbaros=>蛮族名誉点','dragon=>盟竜点');
     return '<span class="honor-pt">'
       .'<select name="'.$name.'Type" oninput="calcHonor()" data-type="human">'
       .(option $name.'Type',@honortypes).'</select>'

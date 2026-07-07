@@ -164,25 +164,25 @@ sub option {
       $value = $i->{value} // '';
       $text  = $i->{text}  // '';
       $attr  = $i->{attr} ? " $i->{attr}" : '';
-      if($i->{label}){ $value = "label=$i->{label}" }
-      if($i->{close}){ $value = "close_group" }
+      if($i->{label}){ $value = "LABEL=$i->{label}" }
+      if($i->{close}){ $value = "GROUPCLOSE" }
     }
     else { $value = $i }
 
-    if($value =~ /^label=(.+)$/){
+    if($value =~ /^LABEL=(.+)$/){
       $HTML .= qq|<optgroup label="$1"$attr>|;
       next;
     }
-    elsif($value eq 'close_group') {
+    elsif($value eq 'GROUPCLOSE') {
       $HTML .= '</optgroup>';
       next;
     }
-    elsif($value =~ s/^def=//){
+    elsif($value =~ s/^DEF=//){
       $selected ||= $value;
       $HTML =~ s/^<option value="">//;
     }
 
-    if($value =~ s/\|\<(.*?)\>$//){ $text = $1 }
+    if($value =~ s/=>(.*?)$//){ $text = $1 }
     else { $text = $value }
 
     $HTML .= qq|<option value="$value"$attr|

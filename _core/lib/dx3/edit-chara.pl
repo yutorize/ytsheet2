@@ -137,7 +137,7 @@ foreach my $id ('Ride','Art','Know','Info'){
 }
 push(@setComboSkills, '解説参照');
 
-my @setComboStatus = qw/def=|<自動（技能に合った能力値）> label=▼エフェクト等による差し替え 肉体 感覚 精神 社会/;
+my @setComboStatus = qw/DEF==>自動（技能に合った能力値） LABEL=▼エフェクト等による差し替え 肉体 感覚 精神 社会/;
 ### フォーム表示 #####################################################################################
 print renderEditPageStart(
   title => (removeTags removeRuby unescapeTags ($pc{characterName} || qq|“$pc{aka}”|)),
@@ -552,7 +552,7 @@ print <<"HTML";
                   <td>@{[input "effect${num}Restrict",'','','placeholder="制限" list="list-restrict"']}
                 <tr><td colspan="9">
                   <div>
-                    <b>種別</b><select name="effect${num}Type" oninput="calcEffect()">@{[ option "effect${num}Type",'auto|<自動取得>','dlois|<Dロイス>','easy|<イージー>','enemy|<エネミー>' ]}</select>
+                    <b>種別</b><select name="effect${num}Type" oninput="calcEffect()">@{[ option "effect${num}Type",'auto=>自動取得','dlois=>Dロイス','easy=>イージー','enemy=>エネミー' ]}</select>
                     <b class="small">経験点修正</b>@{[input "effect${num}Exp",'number','calcEffect']}
                     <b>効果</b>@{[input "effect${num}Note"]}
                   </div>
@@ -1273,7 +1273,7 @@ sub renderFooterScript {
   $html .= "};\n";
   $html .= "const awakens = {";
   foreach (@data::awakens) {
-    next if (@$_[0] =~ /^label=/);
+    next if (@$_[0] =~ /^LABEL=/);
     $html .= qq|"@$_[0]":@$_[1],|;
   }
   $html .= "};\n";

@@ -942,7 +942,7 @@ print <<"HTML";
                   <dl>
                     <dt>使用技能<dd>@{[ selectBox "actionSet${num}Skill","",@skillNames  ]}
                     <dt>ダイス  <dd><span>+</span>@{[ input "actionSet${num}Dice"   ]}
-                    <dt>判定値  <dd>@{[ selectBox "actionSet${num}Check","",'def=|<自動（技能に合った判定値）>','筋力','反射','感覚','知力','精神','共感'  ]}
+                    <dt>判定値  <dd>@{[ selectBox "actionSet${num}Check","",'DEF==>自動（技能に合った判定値）','筋力','反射','感覚','知力','精神','共感'  ]}
                     <dt>修正値  <dd><span>+</span>@{[ input "actionSet${num}Mod"    ]}
                     <dt>目標値  <dd>@{[ input "actionSet${num}Dfclty","","",'list="list-dfclty"' ]}
                   </dl>
@@ -986,7 +986,7 @@ print <<"HTML";
                   <dl>
                     <dt>使用技能<dd>@{[ selectBox "reactionSet${num}Skill","",@skillNames  ]}
                     <dt>ダイス  <dd><span>+</span>@{[ input "reactionSet${num}Dice"   ]}
-                    <dt>判定値  <dd>@{[ selectBox "reactionSet${num}Check","",'def=|<自動（技能に合った判定値）>','筋力','反射','感覚','知力','精神','共感'  ]}
+                    <dt>判定値  <dd>@{[ selectBox "reactionSet${num}Check","",'DEF==>自動（技能に合った判定値）','筋力','反射','感覚','知力','精神','共感'  ]}
                     <dt>修正値  <dd><span>+</span>@{[ input "reactionSet${num}Mod"    ]}
                     <dt>目標値  <dd>@{[ input "reactionSet${num}Dfclty","","",'list="list-dfclty"' ]}
                   </dl>
