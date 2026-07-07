@@ -32,15 +32,15 @@ foreach (sort{$data::class{$a}{sort} cmp $data::class{$b}{sort}} keys %data::cla
 
 }
 @main_class = (
-  'label=基本クラス',@main_class,
-  #'label=その他', 'free|<その他（自由記入）>',
+  'LABEL=基本クラス',@main_class,
+  #'LABEL=その他', 'free=>その他（自由記入）',
 );
 foreach my $area (@area_names){
-  push(@support_class, 'label='.$area, @{$area_class{$area}});
+  push(@support_class, 'LABEL='.$area, @{$area_class{$area}});
 }
-unshift(@support_class, 'label=基本クラス');
-push(@support_class, 'label=レガシークラス', @legacy_class);
-push(@support_class, 'label=その他', 'free|<その他（自由記入）>');
+unshift(@support_class, 'LABEL=基本クラス');
+push(@support_class, 'LABEL=レガシークラス', @legacy_class);
+push(@support_class, 'LABEL=その他', 'free=>その他（自由記入）');
 
 ### データ読み込み ###################################################################################
 my ($data, $file, $message) = loadSheetData();
@@ -140,7 +140,7 @@ foreach my $lv (2 .. $pc{level}){
 }
 my @experienced = sort { $experienced{$a} <=> $experienced{$b} } keys %experienced;
 if($data::class{$pc{classMain}} && $data::class{$pc{classMain}}{type} eq 'fate'){
-  unshift(@experienced, 'power|<パワー（共通）>', 'another|<異才>')
+  unshift(@experienced, 'power=>パワー（共通）', 'another=>異才')
 }
 ### フォーム表示 #####################################################################################
 print renderEditPageStart(
@@ -251,7 +251,7 @@ print <<"HTML";
       <div id="personal" class="in-toc" data-content-title="種族・年齢・性別">
         <dl class="box select-or-input" id="race">
           <dt>種族
-          <dd><select name="race" onchange="changeRace()">@{[ option 'race',(sort{$data::races{$a}{sort} cmp $data::races{$b}{sort} } keys %data::races),'free|<その他（自由記入）>' ]}</select>@{[ input 'raceFree' ]}
+          <dd><select name="race" onchange="changeRace()">@{[ option 'race',(sort{$data::races{$a}{sort} cmp $data::races{$b}{sort} } keys %data::races),'free=>その他（自由記入）' ]}</select>@{[ input 'raceFree' ]}
         </dl>
         <div class="box-union">
           <dl class="box" id="age">
@@ -496,10 +496,10 @@ print <<"HTML";
           <tbody id="levelup-lines">
             @{[ map {
               my $lv = $_;
-              my @classes = ('fate|<フェイト増加>',@support_class);
-              if($lv >= 10){ push(@classes, 'label=上級クラス',@adv_class); }
-              if($lv >= 20){ push(@classes, 'label=運命クラス',@fate_class); }
-              if($lv >= 15){ push(@classes, 'label=称号クラス','title|<称号クラス（自由記入）>'); }
+              my @classes = ('fate=>フェイト増加',@support_class);
+              if($lv >= 10){ push(@classes, 'LABEL=上級クラス',@adv_class); }
+              if($lv >= 20){ push(@classes, 'LABEL=運命クラス',@fate_class); }
+              if($lv >= 15){ push(@classes, 'LABEL=称号クラス','title=>称号クラス（自由記入）'); }
               <<~"ROW";
               <tr id="lvup${lv}">
                 <th>$lv
@@ -515,10 +515,10 @@ print <<"HTML";
               ROW
             } reverse 2 .. $pc{level} ]}
             <script>
-            const lvupClasses1  = `@{[ option '', 'fate|<フェイト増加>',@support_class ]}`;
-            const lvupClasses10 = `@{[ option '', 'fate|<フェイト増加>',@support_class,'label=上級クラス',@adv_class ]}`;
-            const lvupClasses15 = `@{[ option '', 'fate|<フェイト増加>',@support_class,'label=上級クラス',@adv_class,'label=称号クラス','title|<称号クラス（自由記入）>' ]}`;
-            const lvupClasses20 = `@{[ option '', 'fate|<フェイト増加>',@support_class,'label=上級クラス',@adv_class,'label=運命クラス',@fate_class,'label=称号クラス','title|<称号クラス（自由記入）>' ]}`;
+            const lvupClasses1  = `@{[ option '', 'fate=>フェイト増加',@support_class ]}`;
+            const lvupClasses10 = `@{[ option '', 'fate=>フェイト増加',@support_class,'LABEL=上級クラス',@adv_class ]}`;
+            const lvupClasses15 = `@{[ option '', 'fate=>フェイト増加',@support_class,'LABEL=上級クラス',@adv_class,'LABEL=称号クラス','title=>称号クラス（自由記入）' ]}`;
+            const lvupClasses20 = `@{[ option '', 'fate=>フェイト増加',@support_class,'LABEL=上級クラス',@adv_class,'LABEL=運命クラス',@fate_class,'LABEL=称号クラス','title=>称号クラス（自由記入）' ]}`;
             </script>
             <tr id="lvup1">
               <th rowspan="3">1
@@ -571,7 +571,7 @@ print <<"HTML";
                 </tr>
                 <tr><td colspan="8">
                   <div>
-                    <b>取得元</b><select name="skill${num}Type" onchange="calcSkills();calcLvUpSkills();">@{[ option "skill${num}Type",'general|<一般>','race|<種族>','style|<流派>','faith|<天恵>','geis|<誓約>','add|<他スキル>',@experienced ]}</select>
+                    <b>取得元</b><select name="skill${num}Type" onchange="calcSkills();calcLvUpSkills();">@{[ option "skill${num}Type",'general=>一般','race=>種族','style=>流派','faith=>天恵','geis=>誓約','add=>他スキル',@experienced ]}</select>
                     <b>分類</b>@{[input "skill${num}Category",'','','list="list-category"']}
                     <b>効果</b>@{[input "skill${num}Note"]}
                   </div>
@@ -753,7 +753,7 @@ print <<"HTML";
             <tr class="battle-total-value">
               <th colspan="3">
                 合計<br>
-                (右手・左手:<select name="handedness" onchange="changeHandedness()">@{[ option 'handedness', 'def=1|<合計しない>', '2|<両手を合計>', '3|<命中のみ合計>', '4|<全部表示>' ]}</select>)
+                (右手・左手:<select name="handedness" onchange="changeHandedness()">@{[ option 'handedness', 'DEF=1=>合計しない', '2=>両手を合計', '3=>命中のみ合計', '4=>全部表示' ]}</select>)
               <td>
                 <b id="battle-total-acc-right" data-name="右"></b>
                 <b id="battle-total-acc-left" data-name="左"></b>

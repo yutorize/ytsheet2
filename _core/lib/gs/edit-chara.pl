@@ -802,7 +802,7 @@ print <<"HTML";
                 <td class="handle" rowspan="2">
                 <td class="date  " rowspan="2">@{[ input "history${num}Date" ]}
                 <td class="title " rowspan="2">@{[ input "history${num}Title" ]}
-                <td class="comp  "><select name="history${num}Completed" oninput="calcAdvCompleted()">@{[ option "history${num}Completed", '1|<達成>','-1|<失敗>' ]}</select>
+                <td class="comp  "><select name="history${num}Completed" oninput="calcAdvCompleted()">@{[ option "history${num}Completed", '1=>達成','-1=>失敗' ]}</select>
                 <td class="exp   ">@{[ input "history${num}Exp",'text','calcExp' ]}
                 <td class="adp   ">@{[ input "history${num}Adp",'text','calcAdp' ]}
                 <td class="money ">@{[ input "history${num}Money",'text','calcCash' ]}

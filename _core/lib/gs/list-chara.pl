@@ -92,7 +92,7 @@ my %sortRank = map { $_->[0] => $_->[1] } grep{ ref($_) eq 'ARRAY' } @set::adven
 my @rankList = makeSelectOptions(
   values   => \@set::adventurer_rank,
   selected => $::in{rank},
-  labelOf  => sub { my $value = shift; return ($value =~ /^label=(.+)/)[0] },
+  labelOf  => sub { my $value = shift; return ($value =~ /^LABEL=(.+)/)[0] },
 );
 unshift(@rankList, {
   ID => 'なし',

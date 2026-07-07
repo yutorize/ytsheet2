@@ -47,7 +47,7 @@ foreach my $name (@data::race_names){
     push(@raceMakeList, { VALUE => "人間（冒険者）" });
   }
 
-  if($name =~ /^label=(.+)$/){
+  if($name =~ /^LABEL=(.+)$/){
     push(@raceMakeList, { LABEL => $1 });
   }
 }
