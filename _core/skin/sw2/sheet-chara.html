@@ -97,11 +97,14 @@
       <div class="column column-status"><!-- COLUMN -->
       <div id="area-status">
         <div id="image"><TMPL_IF image>
-          <div class="image current" style="
-            background-image: url(<TMPL_VAR imageSrc>);
-            background-size:<TMPL_VAR imageFit>;
-            background-position:<TMPL_VAR imagePositionX>% <TMPL_VAR imagePositionY>%;
-          ">
+          <div class="image current"
+            <TMPL_IF imageSpoiler>data-spoiler="<TMPL_VAR imageSpoiler ESCAPE=HTML>"</TMPL_IF>
+            style="
+              background-image: url(<TMPL_VAR imageSrc>);
+              background-size:<TMPL_VAR imageFit>;
+              background-position:<TMPL_VAR imagePositionX>% <TMPL_VAR imagePositionY>%;
+            "
+          >
             <div onclick="popImage(<TMPL_VAR mainImage DEFAULT=1>)">
               <p class="words" style="<TMPL_VAR wordsX><TMPL_VAR wordsY>"><TMPL_VAR words></p>
             </div>

@@ -660,6 +660,7 @@ sub renderImageForm {
                   </label>
                   @{[ radio "mainImage", "checkMainImage($n)", $n, 'メイン画像' ]}
                   @{[ checkbox "imageHide$suffix", '非表示' ]}
+                  @{[ selectBox "imageSpoiler$suffix", "", 'DEF==>スポイラー設定▼','R-18=>R-18（性的な）画像としてスポイラー','R-18G=>R-18G（グロテスクな）画像としてスポイラー','spoiler=>ネタバレとしてスポイラー', ]}
                 </div>
               HTM
             } 1 .. $imageMaxCount
@@ -669,6 +670,7 @@ sub renderImageForm {
           <li>画像を複数登録している場合、<b>メイン画像</b>に設定した画像が、シートの最初の表示やOGPに使用されます。<br>
               それ以外の画像は、シート内の切り替えボタンで表示されます。
           <li>画像を<b>非表示</b>に設定した場合、シートの表示やOGPには使用されません。（画像へのアクセス自体は可能です）
+          <li>スポイラー設定をすると、画像にぼかしがかかります。（クリックでぼかしが解除されます）
         </ul>
         <script>
           const imageType = 'character';
@@ -740,11 +742,11 @@ sub renderImageForm {
         </p>
         <h3>画像の注釈</h3>
         <p>
-          <b>作者名や権利表示：</b><br>
+          <b>作者名や権利表示、その他注釈など：</b><br>
           @{[ input 'editingImageCopyright','text ','wordsPreView','placeholder="(C)画像の作者名" style="width:70%;"' ]}<br>
         </p>
         <p>
-          <b>URL（作者のWebサイトなどあれば）：</b><br>
+          <b>URL（作者のWebサイトなど）：</b><br>
           @{[ input 'editingImageCopyrightURL','url ','wordsPreView','placeholder="https://..." style="width:90%;"' ]}<br>
         </p>
         <h3>画像に重ねるセリフ</h3>

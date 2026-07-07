@@ -30,7 +30,7 @@ function toggleRubyCopyMode(){
   localStorage.setItem("rubyCopyMode", rubyCopyMode);
 }
 window.addEventListener("DOMContentLoaded", () => {
-  console.log('rubyCopyMode:'+rubyCopyMode)
+  console.log('rubyCopyMode:'+rubyCopyMode);
   const obj = document.querySelector('[onchange*=toggleRubyCopyMode]') || ''
   if(obj && rubyCopyMode == 1){
     obj.checked = true;
@@ -43,11 +43,41 @@ function toggleSingleColumnMode(){
   localStorage.setItem("singleColumnMode", singleColumnMode);
 }
 window.addEventListener("DOMContentLoaded", () => {
-  console.log('singleColumnMode:'+singleColumnMode)
+  console.log('singleColumnMode:'+singleColumnMode);
   const obj = document.querySelector('[onchange*=toggleSingleColumnMode]') || ''
   if(obj && singleColumnMode == 1){
     obj.checked = true;
   }
+})
+// 18歳以上確認
+let hasDeclaredAdultAge = localStorage.getItem("hasDeclaredAdultAge") ?? 0;
+function declareAdultAge() {
+  hasDeclaredAdultAge = (hasDeclaredAdultAge != 1) ? 1 : 0;
+  localStorage.setItem("hasDeclaredAdultAge", hasDeclaredAdultAge);
+}
+window.addEventListener("DOMContentLoaded", () => {
+  console.log('hasDeclaredAdultAge:'+hasDeclaredAdultAge);
+  const obj = document.querySelector('[onchange*=declareAdultAge]') || ''
+  if(obj && hasDeclaredAdultAge == 1){
+    obj.checked = true;
+  }
+})
+// スポイラー表示モード
+let alwaysShowSpoilers = {
+  'R-18' : localStorage.getItem("alwaysShowSpoilers:R-18")  ?? 0,
+  'R-18G': localStorage.getItem("alwaysShowSpoilers:R-18G") ?? 0,
+};
+function toggleSpoilerDisplayMode(type){
+  alwaysShowSpoilers[type] = (alwaysShowSpoilers[type] != 1) ? 1 : 0;
+  localStorage.setItem("alwaysShowSpoilers:"+type, alwaysShowSpoilers[type]);
+}
+window.addEventListener("DOMContentLoaded", () => {
+  console.log('alwaysShowSpoilers:',alwaysShowSpoilers);
+  document.querySelectorAll('[onchange*=toggleSpoilerDisplayMode]').forEach(obj => {
+    if(alwaysShowSpoilers[obj.dataset.type] == 1){
+      obj.checked = true;
+    }
+  });
 })
 // スクロール位置検知
 window.addEventListener('DOMContentLoaded', () => {

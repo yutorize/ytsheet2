@@ -986,11 +986,83 @@ textarea::placeholder {
 
   image-rendering: -webkit-optimize-contrast;
 
+  div[onclick]     { z-index: 1; }
+  .words           { z-index: 1; }
+  &::before        { z-index: 2; }
+  .spoiler-notes   { z-index: 3; }
+  .image-copyright { z-index: 4; }
+
+  &[data-spoiler]:not([data-spoiler=""]) {
+    background-color: var(--bg-color);
+    &::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      backdrop-filter: blur(30px);
+      background: #fff7;
+    }
+    .night &::before {
+      background: #0007;
+    }
+  }
+  .spoiler-notes {
+    position: absolute;
+    inset: 0;
+    padding: 0 3.5em;
+    align-content: center;
+    .partner & {
+      width: auto;
+      padding: 0 0.5em;
+      font-size: .9em;
+      @media screen and (width <= 735px){
+        align-content: start;
+        font-size: .8em;
+      }
+    }
+    &::before {
+      display: block;
+      content: "\e8f5";
+      font-family: "Material Symbols Outlined";
+      font-weight: bold;
+      font-size: 2em;
+      text-align: center;
+    }
+    > small {
+      display: block;
+      margin: 1em 0;
+    }
+  }
+  .remove-spoiler-button {
+    display: block;
+    margin-top: .5em;
+    margin-left: auto;
+    margin-right: 2em;
+    padding: 1em 1.5em;
+    width: max-content;
+    height: max-content;
+    border-radius: 1.5em;
+    line-height: 1;
+    font-weight: bold;
+    background: #0005;
+    color: #fff;
+    cursor: pointer;
+
+    &:hover {
+      background: #0008;
+    }
+  }
+
   > div[onclick] {
     flex-grow: 1;
     width: 100%;
     cursor: pointer;
     position: relative;
+    [data-spoiler]:not([data-spoiler=""]) > & {
+      cursor: auto;
+    }
+    :has(.spoiler-notes) > & {
+      pointer-events: none;
+    }
   }
   > p.image-copyright {
     padding: 0 5px;

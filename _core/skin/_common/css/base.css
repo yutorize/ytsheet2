@@ -533,6 +533,12 @@ label.toggle-button {
     content: 'OFF';
     color: #777;
   }
+  &.yes-no:has(input:checked)::before {
+    content: 'YES';
+  }
+  &.yes-no:has(input:not(:checked))::before {
+    content: 'NO';
+  }
   &::after {
     content: '';
     position: absolute;

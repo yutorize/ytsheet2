@@ -254,7 +254,7 @@ sub setupPartnerDataCommon {
   foreach my $num (1 .. $OPT{max}){
     if($pc->{"p${num}_mainImage"} > 1){
       my $suffix = imageSuffix($pc->{"p${num}_mainImage"});
-      foreach my $key (qw/image imageUpdate imageURL imagePath imageData imageFit imagePercent imagePositionX imagePositionY imageCopyright imageCopyrightURL words wordsX wordsY/){
+      foreach my $key (qw/image imageUpdate imageURL imagePath imageData imageFit imagePercent imagePositionX imagePositionY imageCopyright imageCopyrightURL imageSpoiler words wordsX wordsY/){
         $pc->{"p${num}_$key"} = $pc->{"p${num}_$key$suffix"};
       }
     }
@@ -364,9 +364,10 @@ sub loadSheetData {
         fit => $pc{"imageFit$suffix"},
         X => $pc{"imagePositionX$suffix"}."%",
         Y => $pc{"imagePositionY$suffix"}."%",
+        spoiler => $pc{"imageSpoiler$suffix"},
+        copyright => ($pc{"imageCopyright$suffix"} || ''),
         words  => ($words[0] || ''),
         wordsPosition => join(';', $words[1],$words[2]),
-        copyright => ($pc{"imageCopyright$suffix"} || ''),
       };
     }
     $pc{imageLayouts} = %layouts ? JSON::PP->new->canonical(1)->encode(\%layouts) : "{}";
@@ -388,6 +389,7 @@ sub loadSheetData {
     $pc{imagePositionX} = $pc{"imagePositionX$mainSuffix"};
     $pc{imagePositionY} = $pc{"imagePositionY$mainSuffix"};
     $pc{imageCopyright} = $pc{"imageCopyright$mainSuffix"};
+    $pc{imageSpoiler} = $pc{"imageSpoiler$mainSuffix"};
     $pc{words} = $pc{"words$mainSuffix"};
     $pc{wordsX} = $pc{"wordsX$mainSuffix"};
     $pc{wordsY} = $pc{"wordsY$mainSuffix"};

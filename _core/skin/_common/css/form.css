@@ -103,6 +103,27 @@ aside#login-state {
     }
   }
 }
+#confirm-adult-age {
+  border-top-width: 1px;
+  border-top-style: solid;
+  padding-top: 1em;
+  &:not(:has(input:checked)) + dl {
+    opacity: 0.3;
+    user-select: none;
+    pointer-events: none;
+    & label {
+      padding-left: 0;
+      padding-right: 0;
+      &::before {
+        content: "OFF";
+        color: #777;
+      }
+      &::after {
+        display: none;
+      }
+    }
+  }
+}
 #delete-account {
   & button.submit {
     width: max-content;
