@@ -120,7 +120,7 @@ print <<"HTML";
       <summary class="in-toc">作成レギュレーション</summary>
       <dl>
         <dt>作成時爵位
-        <dd>@{[ selectBox 'makePeerage','changePeerage','def=騎士','男爵','子爵','伯爵','辺境伯','侯爵','公爵','大公' ]}
+        <dd>@{[ selectBox 'makePeerage','changePeerage','DEF=騎士','男爵','子爵','伯爵','辺境伯','侯爵','公爵','大公' ]}
         <dt>備考
         <dd>@{[ input "history0Note" ]}
       </dl>

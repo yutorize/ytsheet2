@@ -78,7 +78,7 @@ if($::in{race}) {
 }
 my @raceList;
 foreach (@data::race_names){
-  if(s/^label=//){
+  if(s/^LABEL=//){
     push(@raceList, { LABEL => $_ });
   }
   else {
@@ -144,16 +144,16 @@ $INDEX->param(class => "@classQuery");
 ## ランク --------------------------------------------------
 @lines = filterExactRegex(lines => \@lines, key => 'rank', emptyKeyword => 'なし') if $::in{rank};
 my @rankValues = (
-  "label=冒険者ランク",
+  "LABEL=冒険者ランク",
   @set::adventurer_rank,
-  "label=蛮族栄光ランク",
+  "LABEL=蛮族栄光ランク",
   @set::barbaros_rank
 );
 my %sortRank = map { $_->[0] => $_->[1] } grep{ ref($_) eq 'ARRAY' } @rankValues;
 my @rankList = makeSelectOptions(
   values   => \@rankValues,
   selected => $::in{rank},
-  labelOf  => sub { my $value = shift; return ($value =~ /^label=(.+)/)[0] },
+  labelOf  => sub { my $value = shift; return ($value =~ /^LABEL=(.+)/)[0] },
 );
 unshift(@rankList, {
   ID => 'なし',
