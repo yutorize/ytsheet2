@@ -31,6 +31,7 @@
   const images = { <TMPL_VAR images /> };
   const imageLayouts = <TMPL_VAR imageLayouts DEFAULT="{}" />;
   let selectedImage = '<TMPL_VAR mainImage>';
+  const downloadMode = <TMPL_VAR modeDownload DEFAULT="null" />;
 
   <!-- TMPL_IF error -->
   window.onload = function() {

@@ -78,7 +78,10 @@ function createRemoveSpoilerButton(id, type = imageLayouts[id].spoiler) {
   if(type == 'R-18G'  ){ notes.innerHTML = "<p>画像はR-18G（成人向け／グロテスク表現を含む）として設定されています。</p>" }
   if(type == 'spoiler'){ notes.innerHTML = "<p>画像はネタバレのおそれのあるものとして設定されています。</p>" }
 
-  if(hasDeclaredAdultAge == 1 || type == 'spoiler'){
+  if(hasDeclaredAdultAge == 1 || type == 'spoiler' || downloadMode){
+    if(downloadMode && type != 'spoiler'){
+      notes.innerHTML += `<small>18歳未満のユーザーは閲覧しないでください。</small>`;
+    }
     let button = document.createElement('span');
     button.textContent = "表示";
     button.classList.add('remove-spoiler-button');
