@@ -401,7 +401,7 @@ sub loadSheetData {
       else {
         $pc{imageSrc}    =     qq|./?id=$::in{id}&mode=image&imageNo=$pc{mainImage}&cache=$pc{"imageUpdate$mainSuffix"}|;
         $pc{imageURL}    = url().qq|?id=$::in{id}&mode=image&imageNo=$pc{mainImage}&cache=$pc{"imageUpdate$mainSuffix"}|;
-        $pc{imageOgpURL} = url().qq|?id=$::in{id}&mode=ogp-image&imageNo=$pc{mainImage}&cache=$pc{"imageUpdate$mainSuffix"}|;
+        $pc{imageOgpURL} = url().qq|?id=$::in{id}&mode=ogp-image&imageNo=$pc{mainImage}&cache=$pc{"imageUpdate$mainSuffix"}| unless $pc{imageSpoiler};
       }
     }
   }
