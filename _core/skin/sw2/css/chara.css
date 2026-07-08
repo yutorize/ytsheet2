@@ -1564,7 +1564,8 @@ dl#level {
     padding-right: 5px;
   }
   #fellow #personal-area {
-    grid-template-columns: 100px 1fr 4em auto;
+    grid-template-columns: 70px 1fr 4em 100px;
+    grid-template-rows: auto auto auto auto auto auto max-content 1fr;
     grid-template-areas:
       " LVL NAME NAME NAME"
       " LVL  PLN  PLN  PLN"
@@ -1575,6 +1576,23 @@ dl#level {
       "LANG LANG   MP CHCK"
       "PROF PROF  PROF PROF"
     ;
+    &:has(#f-sin){
+      grid-template-columns: 70px 1fr 5.5em 4em 100px;
+      grid-template-areas:
+        " LVL NAME NAME NAME NAME"
+        " LVL  PLN  PLN  PLN  PLN"
+        "RACE RACE  SIN  IMG  IMG"
+        " PER  PER  PER  IMG  IMG"
+        " CLS  CLS  CLS  IMG  IMG"
+        "LANG LANG LANG  IMG  IMG"
+        "LANG LANG LANG   MP CHCK"
+        "PROF PROF PROF PROF PROF"
+      ;
+    }
+  }
+  #fellow #f-level {
+    width: 70px;
+    height: 60.6px;
   }
   #f-checkboxes dl {
     max-width: none;
