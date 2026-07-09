@@ -58,6 +58,10 @@ elsif($mode eq 'image' || $mode eq 'ogp-image'){
   $imageNo = 1 if $imageNo !~ /^[0-9]+$/ || $imageNo < 1 || $imageNo > ($set::image_maxcount || 1);
   my $suffix = imageSuffix($imageNo);
   my $ext = $pc{"image$suffix"};
+
+  if($mode eq 'ogp-image' && $pc{"imageSpoiler$suffix"}){
+    error "403:スポイラー設定されており、OGP表示できない画像です。"
+  }
   
   my %mime = (
     jpg  => 'image/jpeg',

@@ -898,7 +898,7 @@ sub dataCalc {
     . "$pc{birthTime}<>$::now<>$NL{name}<>$NL{playerName}<>$pc{group}<>"
     . "$pc{expTotal}<>$NL{rank}<>$NL{race}<>$NL{gender}<>$NL{age}<>$NL{faith}<>"
     . "$classlv<>$pc{lastSession}<>"
-    . $pc{"image".imageSuffix($pc{mainImage})}."<> $pc{tags} <>$pc{hide}<>"
+    . setUpdatatLineImage(\%pc)."<> $pc{tags} <>$pc{hide}<>"
     . "$pc{fellowPublic}<>";
 
   return %pc;

@@ -514,4 +514,19 @@ sub updateListFile {
   });
 }
 
+sub setUpdatatLineImage {
+  my $pc = $_[0];
+  my @data;
+
+  foreach my $n (1 .. $set::image_maxcount){
+    my $s = imageSuffix($n);
+    if($pc->{"image$s"} && !$pc->{"imageHide$s"}){
+      push(@data,
+        $n.($pc->{"imageSpoiler$s"} ? escapeThanSign(qq|+$pc->{"imageSpoiler$s"}|) : '')
+      );
+    }
+  }
+  return join(',', @data);
+}
+
 1;

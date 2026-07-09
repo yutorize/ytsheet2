@@ -224,26 +224,36 @@ sub loginError {
 ### データ読み込み --------------------------------------------------
 sub loadSheetData {
   my %pc;
+  my %latest;
   my $message;
-  my $sheetDir =  $set::char_dir.$file;
+  my $dir =  $set::char_dir;
+  # 最新データ取得（ログ用）
+  if($::in{log}){
+    %latest = getLatestData($dir, $file, 'protect','forbidden','mainImage',
+      ( map {
+        my $s = imageSuffix($_);
+        "image$s","imageUpdate$s","imageFit$s","imagePercent$s","imagePositionX$s","imagePositionY$s","imageCopyright$s","imageCopyrightURL$s","imageSpoiler$s",
+      } 1 .. $set::image_maxcount)
+    );
+  }
   # 保存 / 編集 / 複製 / コンバート
   if($mode eq 'edit'){
     my $datatype = ($::in{log}) ? 'logs' : 'data';
-    foreach (readSheetRecordLines $set::char_dir, $file, $datatype, $::in{log}){
+    foreach (readSheetRecordLines $dir, $file, $datatype, $::in{log}){
       chomp $_;
       my ($key, $value) = split(/<>/, $_, 2);
       $pc{$key} = $value if $value ne '';
     }
 
     if($::in{log}){
-      ($pc{protect}, $pc{forbidden}) = getProtectType("${sheetDir}/data.cgi");
+      %pc = (%pc, %latest);
       $message = $pc{updateTime}.' 時点のバックアップデータから編集しています。';
     }
     $pc{mainImage} ||= 1;
   }
   elsif($mode eq 'copy'){
     my $datatype = ($::in{log}) ? 'logs' : 'data';
-    foreach (readSheetRecordLines $set::char_dir, $file, $datatype, $::in{log}){
+    foreach (readSheetRecordLines $dir, $file, $datatype, $::in{log}){
       chomp $_;
       my ($key, $value) = split(/<>/, $_, 2);
       $pc{$key} = $value;
@@ -251,7 +261,7 @@ sub loadSheetData {
 
     if($pc{forbidden}){
       if($::in{log}){
-        ($pc{protect}, $pc{forbidden}) = getProtectType("${sheetDir}/data.cgi");
+        %pc = (%pc, %latest);
       }
       unless(
         ($pc{protect} eq 'none') ||
@@ -608,6 +618,12 @@ sub renderImageForm {
     $imageURLsJS  .= qq|$n: "$imageURLs{$n}",|;
   }
   my $emptyImageURL = 'data:image/webp;base64,UklGRhgBAABXRUJQVlA4TAwBAAAvY8AYEBK3AdCGzf//5MJWAqx0r7yycNzc9ooFE8BBxtnHwG0jRVk+zOIj9h90eIABiDAr7IeFiTK24obPYciHZ18Bdyuo04LtXSSCdIohUjoFmhlB/CQCxiQjwAJ3hQpeChq11stDUBEdKxnqUi057iYUU0KWBl80RQiUAksAKuIStE6qUEo5QLOLSA5Av/MKXJeQjtFUeyiDFr2UH2EUJc9cFvrgHaGMGqOPc5PHKPN7ggEBj8r7UiWN3YnLd/tLKlkBfh5NvAZ2pIS9q5NaDtFHexmu57gG3P+eoltDoPVL2XW7QYnGOxl+EZGi8RJ3ivqDcPJbGV0m7182Dl2EaaULsEyzqfb/08MC';
+  my @spoilerTypes = (
+    'R-18=>R-18（性的な）画像としてスポイラー',
+    'R-18G=>R-18G（グロテスクな）画像としてスポイラー',
+    'sensitive=>センシティブ（その他の理由／R-18ではない）としてスポイラー',
+    'spoiler=>ネタバレとしてスポイラー',
+  );
   return <<~"HTML";
     <div class="box" id="image" style="max-height:550px;">
       <h2>キャラクター画像</h2>
@@ -660,6 +676,7 @@ sub renderImageForm {
                   </label>
                   @{[ radio "mainImage", "checkMainImage($n)", $n, 'メイン画像' ]}
                   @{[ checkbox "imageHide$suffix", '非表示' ]}
+                  @{[ selectBox "imageSpoiler$suffix", "", 'DEF==>スポイラー設定▼', @spoilerTypes ]}
                 </div>
               HTM
             } 1 .. $imageMaxCount
@@ -669,6 +686,7 @@ sub renderImageForm {
           <li>画像を複数登録している場合、<b>メイン画像</b>に設定した画像が、シートの最初の表示やOGPに使用されます。<br>
               それ以外の画像は、シート内の切り替えボタンで表示されます。
           <li>画像を<b>非表示</b>に設定した場合、シートの表示やOGPには使用されません。（画像へのアクセス自体は可能です）
+          <li>スポイラー設定をすると、画像にぼかしがかかります。（クリックでぼかしが解除されます）
         </ul>
         <script>
           const imageType = 'character';
@@ -740,11 +758,11 @@ sub renderImageForm {
         </p>
         <h3>画像の注釈</h3>
         <p>
-          <b>作者名や権利表示：</b><br>
+          <b class="small">作者名や権利表示、スポイラーの理由など：</b><br>
           @{[ input 'editingImageCopyright','text ','wordsPreView','placeholder="(C)画像の作者名" style="width:70%;"' ]}<br>
         </p>
         <p>
-          <b>URL（作者のWebサイトなどあれば）：</b><br>
+          <b>URL（作者のWebサイトなど）：</b><br>
           @{[ input 'editingImageCopyrightURL','url ','wordsPreView','placeholder="https://..." style="width:90%;"' ]}<br>
         </p>
         <h3>画像に重ねるセリフ</h3>

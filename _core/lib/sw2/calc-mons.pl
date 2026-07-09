@@ -53,7 +53,7 @@ sub dataCalc {
     "$pc{id}<>$::file<>"
     . "$pc{birthTime}<>$::now<>$NL{name}<>$pc{author}<>$NL{taxa}<>$NL{lv}<>"
     . "$pc{intellect}<>$pc{perception}<>$NL{disposition}<>$pc{sin}<>$NL{initiative}<>$NL{weakness}<>"
-    . $pc{"image".imageSuffix($pc{mainImage})}."<> $pc{tags} <>$pc{hide}<>"
+    . setUpdatatLineImage(\%pc)."<> $pc{tags} <>$pc{hide}<>"
     . "$pc{partsNum}<>$NL{habitat}<>$NL{price}<>";
 
   return %pc;

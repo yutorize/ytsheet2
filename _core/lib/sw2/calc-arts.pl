@@ -78,7 +78,7 @@ sub dataCalc {
     "$pc{id}<>$::file<>"
     . "$pc{birthTime}<>$::now<>$NL{name}<>$NL{author}<>"
     . "$pc{category}<>$NL{sub}<>$NL{summary}<>"
-    . $pc{"image".imageSuffix($pc{mainImage})}."<> $pc{tags} <>$pc{hide}<>";
+    . setUpdatatLineImage(\%pc)."<> $pc{tags} <>$pc{hide}<>";
 
   return %pc;
 }

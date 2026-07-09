@@ -1,5 +1,5 @@
-// 開閉系 ----------------------------------------
-// 画像
+// 画像 ----------------------------------------
+// 全体表示
 async function popImage(id = 1) {
   let imageBox = document.getElementById("image-box") || null;
   if(!imageBox){
@@ -25,6 +25,7 @@ function closeImage() {
     imageBox.style.bottom = '-100vh';
   },200);
 }
+// Prev/Nextボタン・スポイラー表示ボタン
 window.addEventListener('DOMContentLoaded', ()=>{
   if(imageLayouts && Object.keys(imageLayouts).length > 1){
     let prev = document.createElement('span');
@@ -35,7 +36,76 @@ window.addEventListener('DOMContentLoaded', ()=>{
     next.addEventListener('click', () => { changeImage(1) });
     document.getElementById('image').append(prev, next);
   }
+  if(imageLayouts && Object.keys(imageLayouts).length > 0){
+    Object.keys(imageLayouts).forEach(id => {
+      if(imageLayouts[id].spoiler){
+        if((hasDeclaredAdultAge == 1 && (
+            (imageLayouts[id].spoiler == 'R-18'  && alwaysShowSpoilers['R-18']  == 1) ||
+            (imageLayouts[id].spoiler == 'R-18G' && alwaysShowSpoilers['R-18G'] == 1)
+          )) ||
+          (imageLayouts[id].spoiler == 'sensitive' && alwaysShowSpoilers.sensitive == 1)
+        ) {
+          delete imageLayouts[id].spoiler;
+        }
+      }
+    });
+    const selectedLayout = imageLayouts[selectedImage] || {};
+    const currentImage = document.querySelector('.image.current');
+    if(selectedLayout.spoiler){
+      currentImage?.append(createRemoveSpoilerButton(selectedImage, selectedLayout.spoiler));
+    }
+    else if(currentImage){
+      delete currentImage.dataset.spoiler;
+    }
+  }
+  // パートナー画像
+  document.querySelectorAll(`.partner .image`).forEach(obj => {
+    const spoiler = obj.dataset.spoiler || '';
+    if((hasDeclaredAdultAge == 1 && (
+        (spoiler == 'R-18'  && alwaysShowSpoilers['R-18']  == 1) ||
+        (spoiler == 'R-18G' && alwaysShowSpoilers['R-18G'] == 1)
+      )) ||
+      (spoiler == 'sensitive' && alwaysShowSpoilers.sensitive == 1)
+    ) {
+      delete obj.dataset.spoiler;
+    }
+    else if(spoiler){
+      obj.append(createRemoveSpoilerButton('', spoiler));
+    }
+  });
 });
+// スポイラー警告および表示ボタン生成
+function createRemoveSpoilerButton(id, type = imageLayouts[id].spoiler) {
+  let notes = document.createElement('div');
+  notes.classList.add('spoiler-notes');
+  if(type == 'R-18'     ){ notes.innerHTML = "<p>画像はR-18（成人向け／性的表現を含む）として設定されています。</p>" }
+  if(type == 'R-18G'    ){ notes.innerHTML = "<p>画像はR-18G（成人向け／グロテスク表現を含む）として設定されています。</p>" }
+  if(type == 'sensitive'){ notes.innerHTML = "<p>画像はセンシティブな内容を含むものとして設定されています。</p>" }
+  if(type == 'spoiler'  ){ notes.innerHTML = "<p>画像はネタバレのおそれのあるものとして設定されています。</p>" }
+
+  if(hasDeclaredAdultAge == 1 || (type && !/R-18/.test(type)) || downloadMode){
+    if(downloadMode && /R-18/.test(type)){
+      notes.innerHTML += `<small>18歳未満のユーザーは閲覧しないでください。</small>`;
+    }
+    let button = document.createElement('span');
+    button.textContent = "表示";
+    button.classList.add('remove-spoiler-button');
+    button.addEventListener('click', (e) => { 
+      delete notes.parentNode.dataset.spoiler;
+      if(id){ delete imageLayouts[id].spoiler; }
+      notes.remove();
+    });
+    notes.append(button);
+  }
+  else {
+    notes.innerHTML += `<small>18歳未満のユーザーには表示できません。</small>`;
+    if(id) {
+      notes.innerHTML += `<small>あなたが18歳以上である場合は、<a href="./?mode=option">閲覧設定</a>で設定してください。</small>`;
+    }
+  }
+  return notes;
+}
+// 画像変更
 function changeImage(direction = 0){
   const selected = getImageId(direction);
 
@@ -53,6 +123,10 @@ function changeImage(direction = 0){
         <p class="words" style="${imageLayouts[selected].wordsPosition}">${imageLayouts[selected].words}</p>
       </div>
       <p class="image-copyright">${imageLayouts[selected].copyright}</p>`;
+    if(imageLayouts[selected].spoiler){
+      next.dataset.spoiler = imageLayouts[selected].spoiler;
+      next.append(createRemoveSpoilerButton(selectedImage));
+    }
     next.addEventListener('transitionend', () => {
       next.classList.replace('next','current');
     });
@@ -82,7 +156,7 @@ function getImageId(direction = 0) {
 
   return ids[(index + direction + ids.length) % ids.length];
 }
-// 他
+// 開閉系 ----------------------------------------
 function closeTextareaForCopy() {
   document.getElementById('copyText-box').remove();
   document.getElementById('copyText-box-textarea').remove();

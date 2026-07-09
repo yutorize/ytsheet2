@@ -254,7 +254,7 @@ sub setupPartnerDataCommon {
   foreach my $num (1 .. $OPT{max}){
     if($pc->{"p${num}_mainImage"} > 1){
       my $suffix = imageSuffix($pc->{"p${num}_mainImage"});
-      foreach my $key (qw/image imageUpdate imageURL imagePath imageData imageFit imagePercent imagePositionX imagePositionY imageCopyright imageCopyrightURL words wordsX wordsY/){
+      foreach my $key (qw/image imageUpdate imageURL imagePath imageData imageFit imagePercent imagePositionX imagePositionY imageCopyright imageCopyrightURL imageSpoiler words wordsX wordsY/){
         $pc->{"p${num}_$key"} = $pc->{"p${num}_$key$suffix"};
       }
     }
@@ -281,11 +281,11 @@ sub setupPartnerDataCommon {
 ### データ取得 --------------------------------------------------
 sub loadSheetData {
   my %pc;
-  my $datadir = $set::char_dir;
+  my $dir = $set::char_dir;
   ## データ読み込み
   if($::in{id}){
     my $datatype = ($::in{log}) ? 'logs' : 'data';
-    my @lines = readSheetRecordLines($datadir, $file, $datatype, $::in{log});
+    my @lines = readSheetRecordLines($dir, $file, $datatype, $::in{log});
     foreach (@lines){
       chomp $_;
       my ($key, $value) = split(/<>/, $_, 2);
@@ -293,8 +293,23 @@ sub loadSheetData {
     }
 
     if($::in{log}){
-      # 閲覧制限は最新のものを適用
-      ($pc{protect}, $pc{forbidden},$pc{hide}) = getProtectType("${datadir}${file}/data.cgi");
+      # 閲覧制限・画像関係は最新のものを適用
+      my %imageNotsets = map {
+        my $suffix = imageSuffix($_);
+        "$suffix" => ($pc{"image$suffix"} ? 0 : 1)
+      } 1 .. $set::image_maxcount;
+
+      %pc = (%pc, getLatestData($dir, $file,
+        'protect','forbidden','hide',
+        ( map {
+          my $s = imageSuffix($_);
+          "image$s","imageUpdate$s","imageFit$s","imagePercent$s","imagePositionX$s","imagePositionY$s","imageCopyright$s","imageCopyrightURL$s","imageSpoiler$s",
+        } 1 .. $set::image_maxcount)
+      ));
+      # 「画像がない」状態だけ当時を反映
+      foreach my $suffix (keys %imageNotsets) {
+        delete $pc{"image$suffix"} if $imageNotsets{$suffix};
+      }
     }
   }
   ## データ読み込み：コンバート
@@ -354,7 +369,7 @@ sub loadSheetData {
       }
       else { $pc{"imageCopyright$suffix"} = unescapeTags($pc{"imageCopyright$suffix"}) }
 
-      $pc{images} .= qq|$imageNo: "|.($pc{modeDownload} ? sheetImageToBase64($datadir, $file, $pc{"image$suffix"}, $suffix) : $src).'", ';
+      $pc{images} .= qq|$imageNo: "|.($pc{modeDownload} ? sheetImageToBase64($dir, $file, $pc{"image$suffix"}, $suffix) : $src).'", ';
       my @words = renderWords(
         unescapeTags($pc{"words$suffix"}),
         $pc{"wordsX$suffix"},
@@ -364,9 +379,10 @@ sub loadSheetData {
         fit => $pc{"imageFit$suffix"},
         X => $pc{"imagePositionX$suffix"}."%",
         Y => $pc{"imagePositionY$suffix"}."%",
+        spoiler => $pc{"imageSpoiler$suffix"},
+        copyright => ($pc{"imageCopyright$suffix"} || ''),
         words  => ($words[0] || ''),
         wordsPosition => join(';', $words[1],$words[2]),
-        copyright => ($pc{"imageCopyright$suffix"} || ''),
       };
     }
     $pc{imageLayouts} = %layouts ? JSON::PP->new->canonical(1)->encode(\%layouts) : "{}";
@@ -388,6 +404,7 @@ sub loadSheetData {
     $pc{imagePositionX} = $pc{"imagePositionX$mainSuffix"};
     $pc{imagePositionY} = $pc{"imagePositionY$mainSuffix"};
     $pc{imageCopyright} = $pc{"imageCopyright$mainSuffix"};
+    $pc{imageSpoiler} = $pc{"imageSpoiler$mainSuffix"};
     $pc{words} = $pc{"words$mainSuffix"};
     $pc{wordsX} = $pc{"wordsX$mainSuffix"};
     $pc{wordsY} = $pc{"wordsY$mainSuffix"};
@@ -399,7 +416,7 @@ sub loadSheetData {
       else {
         $pc{imageSrc}    =     qq|./?id=$::in{id}&mode=image&imageNo=$pc{mainImage}&cache=$pc{"imageUpdate$mainSuffix"}|;
         $pc{imageURL}    = url().qq|?id=$::in{id}&mode=image&imageNo=$pc{mainImage}&cache=$pc{"imageUpdate$mainSuffix"}|;
-        $pc{imageOgpURL} = url().qq|?id=$::in{id}&mode=ogp-image&imageNo=$pc{mainImage}&cache=$pc{"imageUpdate$mainSuffix"}|;
+        $pc{imageOgpURL} = url().qq|?id=$::in{id}&mode=ogp-image&imageNo=$pc{mainImage}&cache=$pc{"imageUpdate$mainSuffix"}| unless $pc{imageSpoiler};
       }
     }
   }
