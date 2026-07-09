@@ -940,7 +940,6 @@ sub renderDecorationForm {
             <label class="check-button"><input type="radio" name="nameFont" value=""@{[ $::pc{nameFont} eq '' ? ' checked':''] } oninput="changeNameFont()"><span>フォント：<small>デフォルト</small></span></label>
             @{[ renderFontCustomForm() ]}
           </fieldset>
-          $set::test
         </div>
       </div>
       <div class="color-sample">
