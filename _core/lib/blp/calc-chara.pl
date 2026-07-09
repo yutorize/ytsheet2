@@ -86,7 +86,7 @@ sub dataCalc {
     . "$NL{belong}<>$NL{missing}<>"
     . "$pc{level}<>"
     . "$pc{lastSession}<>"
-    . $pc{"image".imageSuffix($pc{mainImage})}."<> $pc{tags} <>$pc{hide}<><>";
+    . setUpdatatLineImage(\%pc)."<> $pc{tags} <>$pc{hide}<><>";
 
   return %pc;
 }

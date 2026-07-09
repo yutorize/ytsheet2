@@ -296,7 +296,7 @@ sub dataCalc {
     . synCheck($pc{syndrome3}).'<>'
     . join('/',@dloises).'<>'
     . "$pc{lastSession}<>"
-    . $pc{"image".imageSuffix($pc{mainImage})}."<> $pc{tags} <>$pc{hide}<>$pc{stage}<>";
+    . setUpdatatLineImage(\%pc)."<> $pc{tags} <>$pc{hide}<>$pc{stage}<>";
 
   return %pc;
 }

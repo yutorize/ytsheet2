@@ -77,7 +77,7 @@ sub dataCalc {
   $::updatedLine =
     "$pc{id}<>$::file<>"
     . "$pc{birthTime}<>$::now<>$NL{characterName}<>$NL{playerName}<>$pc{group}<>"
-    . $pc{"image".imageSuffix($pc{mainImage})}."<> $pc{tags} <>$pc{hide}<>"
+    . setUpdatatLineImage(\%pc)."<> $pc{tags} <>$pc{hide}<>"
 
     . "$NL{class}<>$NL{negaiOutside}<>$NL{negaiInside}<>"
     . "$NL{gender}<>$NL{age}<>"

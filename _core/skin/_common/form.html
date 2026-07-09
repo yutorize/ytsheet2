@@ -136,6 +136,13 @@
           <dt><label class="toggle-button"><input type="checkbox" onchange="toggleSingleColumnMode()"></label> 常に１カラムで表示する
           <dd>ONにすると、キャラクターシート表示時、ウインドウサイズに関わらず、常に１カラムレイアウトにします。（ウインドウサイズが広いときに、２カラムレイアウトにするのを無効化します）
         </dl>
+        <p id="confirm-adult-age">あなたは18歳以上ですか？ <label class="toggle-button yes-no"><input type="checkbox" onchange="declareAdultAge()"></label></p>
+        <dl>
+          <dt><label class="toggle-button"><input type="checkbox" onchange="toggleSpoilerDisplayMode('R-18')" data-type="R-18"></label> R-18（成人向け／性的表現を含む）画像を常に表示
+          <dt><label class="toggle-button"><input type="checkbox" onchange="toggleSpoilerDisplayMode('R-18G')" data-type="R-18G"></label> R-18G（成人向け／グロテスク表現を含む）画像を常に表示
+          <dt><label class="toggle-button"><input type="checkbox" onchange="toggleSpoilerDisplayMode('sensitive')" data-type="sensitive"></label> その他のセンシティブ（成人向け以外の理由）な画像を常に表示
+          <dd>それぞれ、OFFの状態では、ワンクッション置いて（スポイラー／ぼかした状態）で表示されます。
+        </dl>
       </section>
       <TMPL_IF LOGIN_ID><section class="form">
         <h2>アカウント情報</h2>

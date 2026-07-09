@@ -479,30 +479,23 @@ sub getPlayerName {
   return '';
 }
 
-### 編集保護設定取得 --------------------------------------------------
-sub getProtectType {
+### 特定キーの最新データ取得 --------------------------------------------------
+sub getLatestData {
+  my $dir = shift;
   my $file = shift;
-  my $protect   = '';
-  my $forbidden = '';
-  my $hide = '';
-  my @lines;
-  if($file =~ m|^(.*/)([^/]+)/data\.cgi$|){
-    my ($dir, $sheet) = ($1, $2);
-    @lines = readSheetFileLines($dir, $sheet, 'data.cgi');
+  my @keys = @_;
+  my %pc;
+  foreach my $line (readSheetRecordLines($dir, $file, 'data')){
+    chomp $line;
+    my ($key, $value) = split(/<>/, $line, 2);
+    $pc{$key} = $value;
   }
-  if(!@lines){
-    open (my $IN, '<', $file) or error('404:データがありません。');
-    @lines = <$IN>;
-    close($IN);
+  my %output;
+  foreach my $key (@keys){
+    $output{$key} = $pc{$key};
   }
-  foreach my $line (@lines){
-    if   ($line =~ /^protect<>(.*)\n/)  { $protect = $1; }
-    elsif($line =~ /^forbidden<>(.*)\n/){ $forbidden = $1; }
-    elsif($line =~ /^hide<>(.*)\n/){ $hide = $1; }
 
-    if($protect && $forbidden && $hide){ last; }
-  }
-  return ($protect, $forbidden, $hide);
+  return %output;
 }
 
 ### 暗号化 --------------------------------------------------

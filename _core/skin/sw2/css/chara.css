@@ -1244,8 +1244,7 @@ dl#level {
       "PROF PROF PROF   MP CHCK"
     ;
   }
-  #f-image-none,
-  #f-image          { grid-area: IMG; }
+  #image            { grid-area: IMG; }
   #f-level          { grid-area: LVL; }
   #f-character-name { grid-area: NAME; }
   #f-player-name    { grid-area: PLN; }
@@ -1259,9 +1258,7 @@ dl#level {
   #f-checkboxes     { grid-area: CHCK; }
 }
 
-
-#f-image-none,
-#f-image          {
+#fellow #image {
   aspect-ratio: 5 / 8;
   & p.words {
     font-size: 1.9rem;

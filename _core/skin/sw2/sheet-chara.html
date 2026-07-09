@@ -81,7 +81,7 @@
       <a href="<TMPL_VAR convertUrl>" target="_blank"><TMPL_VAR convertSource></a> のデータを表示しています。
     </aside></TMPL_IF>
     
-    <article<TMPL_IF FellowMode> style="display:none"</TMPL_IF>>
+    <TMPL_UNLESS FellowMode><article>
       <div id="area-name" class="color-set">
         <h1 id="character-name"><TMPL_IF aka><span id="aka">“<TMPL_VAR aka>”</span></TMPL_IF><TMPL_VAR characterName></h1>
         <div>
@@ -97,11 +97,14 @@
       <div class="column column-status"><!-- COLUMN -->
       <div id="area-status">
         <div id="image"><TMPL_IF image>
-          <div class="image current" style="
-            background-image: url(<TMPL_VAR imageSrc>);
-            background-size:<TMPL_VAR imageFit>;
-            background-position:<TMPL_VAR imagePositionX>% <TMPL_VAR imagePositionY>%;
-          ">
+          <div class="image current"
+            <TMPL_IF imageSpoiler>data-spoiler="<TMPL_VAR imageSpoiler ESCAPE=HTML>"</TMPL_IF>
+            style="
+              background-image: url(<TMPL_VAR imageSrc>);
+              background-size:<TMPL_VAR imageFit>;
+              background-position:<TMPL_VAR imagePositionX>% <TMPL_VAR imagePositionY>%;
+            "
+          >
             <div onclick="popImage(<TMPL_VAR mainImage DEFAULT=1>)">
               <p class="words" style="<TMPL_VAR wordsX><TMPL_VAR wordsY>"><TMPL_VAR words></p>
             </div>
@@ -721,7 +724,7 @@
         <div><p><TMPL_VAR DATA></p></div>
       </section>
       </TMPL_LOOP>
-    </article>
+    </article></TMPL_UNLESS>
     <section class="box chat-palette float-box">
       <h2>チャットパレット</h2>
       <div class="chat-palette-menu">
@@ -733,17 +736,26 @@
       <textarea id="chatPaletteBox"></textarea>
     </section>
     <!-- フェロー -->
-    <article id="fellow" <TMPL_UNLESS FellowMode> style="display:none"</TMPL_UNLESS>>
+    <TMPL_IF FellowMode><article id="fellow">
       <TMPL_IF fellowPublic>
       <div id="personal-area">
-      <TMPL_IF image> 
-      <div id="f-image" class="image" style="background-image: url(<TMPL_VAR imageSrc>);background-size:<TMPL_VAR imageFit>;background-position:<TMPL_VAR imagePositionX>% <TMPL_VAR imagePositionY>%;">
-      <div onclick="popImage(<TMPL_VAR mainImage DEFAULT=1>)"><p class="words" style="<TMPL_VAR wordsX><TMPL_VAR wordsY>"><TMPL_VAR words></p></div>
-      <p class="image-copyright"><TMPL_VAR imageCopyright></p>
-      </div>
+      <div id="image"><TMPL_IF image>
+        <div id="f-image" class="image current"
+          <TMPL_IF imageSpoiler>data-spoiler="<TMPL_VAR imageSpoiler ESCAPE=HTML>"</TMPL_IF>
+          style="
+            background-image: url(<TMPL_VAR imageSrc>);
+            background-size:<TMPL_VAR imageFit>;
+            background-position:<TMPL_VAR imagePositionX>% <TMPL_VAR imagePositionY>%;
+          "
+        >
+          <div onclick="popImage(<TMPL_VAR mainImage DEFAULT=1>)">
+            <p class="words" style="<TMPL_VAR wordsX><TMPL_VAR wordsY>"><TMPL_VAR words></p>
+          </div>
+          <p class="image-copyright"><TMPL_VAR imageCopyright></p>
+        </div>
       <TMPL_ELSE>
-      <div id="f-image-none" class="image-none"><p class="words" style="<TMPL_VAR wordsX><TMPL_VAR wordsY>"><TMPL_VAR words></p></div>
-      </TMPL_IF>
+        <div id="f-image-none" class="image-none"><p class="words" style="<TMPL_VAR wordsX><TMPL_VAR wordsY>"><TMPL_VAR words></p></div>
+      </TMPL_IF></div>
       <dl id="f-level">
         <dt>レベル<dd><TMPL_VAR level>
       </dl>
@@ -862,7 +874,7 @@
       <TMPL_ELSE>
         <p>このキャラクターのフェローは公開されていません。</p>
       </TMPL_IF>
-    </article>
+    </article></TMPL_IF>
   </main>
   <TMPL_INCLUDE NAME="skin-add/sheet-sidebar.html">
 

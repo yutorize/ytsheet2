@@ -1206,13 +1206,9 @@ input[type="number"] {
 }
 .image-custom-form div:has(input[type="file"]) {
   display: grid;
-  grid-template-columns: 1fr max-content;
   align-items: center;
   gap: .5em;
   padding: 0 .5em .2em;
-  .check-button {
-    height: max-content;
-  }
 }
 #image-select-buttons {
   display: flex;
@@ -1293,6 +1289,25 @@ input[type="number"] {
           content: "編集中";
           opacity: 1;
         }
+      }
+    }
+    > select {
+      width: 100px;
+      margin: 0 1px;
+      font-size: .8em;
+      appearance: none;
+      cursor: pointer;
+      option { font-size: 1.1em; }
+      &:has(:first-child:checked) { opacity: 0.6; }
+      &:has([value="R-18"]:checked)     { background-color: #f7c; }
+      &:has([value="R-18G"]:checked)    { background-color: #f64; }
+      &:has([value="sensitive"]:checked){ background-color: #c9f; }
+      &:has([value="spoiler"]:checked)  { background-color: #fb0; }
+      .night & {
+        &:has([value="R-18"]:checked)     { background-color: #d59; }
+        &:has([value="R-18G"]:checked)    { background-color: #c00; }
+        &:has([value="sensitive"]:checked){ background-color: #a0d; }
+        &:has([value="spoiler"]:checked)  { background-color: #c80; }
       }
     }
   }
