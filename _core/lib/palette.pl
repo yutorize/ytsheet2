@@ -33,7 +33,7 @@ sub outputChatPalette {
   if($pc{forbidden}){
     my $LOGIN_ID = check;
     if($::in{log}){
-      ($pc{protect}, $pc{forbidden}) = getProtectType("${set::char_dir}${file}/data.cgi");
+      %pc = (%pc, getLatestData($set::char_dir, $file, 'protect','forbidden'));
     }
     unless(
       ($pc{protect} eq 'none') || 

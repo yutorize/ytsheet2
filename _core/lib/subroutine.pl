@@ -482,9 +482,6 @@ sub getPlayerName {
 ### 編集保護設定取得 --------------------------------------------------
 sub getProtectType {
   my $file = shift;
-  my $protect   = '';
-  my $forbidden = '';
-  my $hide = '';
   my @lines;
   if($file =~ m|^(.*/)([^/]+)/data\.cgi$|){
     my ($dir, $sheet) = ($1, $2);
@@ -495,14 +492,36 @@ sub getProtectType {
     @lines = <$IN>;
     close($IN);
   }
+  my %pc;
   foreach my $line (@lines){
-    if   ($line =~ /^protect<>(.*)\n/)  { $protect = $1; }
-    elsif($line =~ /^forbidden<>(.*)\n/){ $forbidden = $1; }
-    elsif($line =~ /^hide<>(.*)\n/){ $hide = $1; }
-
-    if($protect && $forbidden && $hide){ last; }
+    if   ($line =~ /^protect<>(.*)\n/)  { $pc{protect} = $1; }
+    elsif($line =~ /^forbidden<>(.*)\n/){ $pc{forbidden} = $1; }
+    elsif($line =~ /^hide<>(.*)\n/){ $pc{hide} = $1; }
+    elsif($line =~ /^(imageSpoiler[0-9]*)<>(.*)\n/){ $pc{$1} = $2; }
   }
-  return ($protect, $forbidden, $hide);
+
+  return 
+    $pc{protect},
+    $pc{forbidden},
+    $pc{hide},
+    (map { $pc{"imageSpoiler$_"} } '', 2 .. $set::image_maxcount);
+}
+sub getLatestData {
+  my $dir = shift;
+  my $file = shift;
+  my @keys = @_;
+  my %pc;
+  foreach my $line (readSheetRecordLines($dir, $file, 'data')){
+    chomp $line;
+    my ($key, $value) = split(/<>/, $line, 2);
+    $pc{$key} = $value;
+  }
+  my %output;
+  foreach my $key (@keys){
+    $output{$key} = $pc{$key};
+  }
+
+  return %output;
 }
 
 ### 暗号化 --------------------------------------------------

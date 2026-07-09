@@ -224,26 +224,36 @@ sub loginError {
 ### データ読み込み --------------------------------------------------
 sub loadSheetData {
   my %pc;
+  my %latest;
   my $message;
-  my $sheetDir =  $set::char_dir.$file;
+  my $dir =  $set::char_dir;
+  # 最新データ取得（ログ用）
+  if($::in{log}){
+    %latest = getLatestData($dir, $file, 'protect','forbidden','mainImage',
+      ( map {
+        my $s = imageSuffix($_);
+        "image$s","imageUpdate$s","imageFit$s","imagePercent$s","imagePositionX$s","imagePositionY$s","imageCopyright$s","imageCopyrightURL$s","imageSpoiler$s",
+      } 1 .. $set::image_maxcount)
+    );
+  }
   # 保存 / 編集 / 複製 / コンバート
   if($mode eq 'edit'){
     my $datatype = ($::in{log}) ? 'logs' : 'data';
-    foreach (readSheetRecordLines $set::char_dir, $file, $datatype, $::in{log}){
+    foreach (readSheetRecordLines $dir, $file, $datatype, $::in{log}){
       chomp $_;
       my ($key, $value) = split(/<>/, $_, 2);
       $pc{$key} = $value if $value ne '';
     }
 
     if($::in{log}){
-      ($pc{protect}, $pc{forbidden}) = getProtectType("${sheetDir}/data.cgi");
+      %pc = (%pc, %latest);
       $message = $pc{updateTime}.' 時点のバックアップデータから編集しています。';
     }
     $pc{mainImage} ||= 1;
   }
   elsif($mode eq 'copy'){
     my $datatype = ($::in{log}) ? 'logs' : 'data';
-    foreach (readSheetRecordLines $set::char_dir, $file, $datatype, $::in{log}){
+    foreach (readSheetRecordLines $dir, $file, $datatype, $::in{log}){
       chomp $_;
       my ($key, $value) = split(/<>/, $_, 2);
       $pc{$key} = $value;
@@ -251,7 +261,7 @@ sub loadSheetData {
 
     if($pc{forbidden}){
       if($::in{log}){
-        ($pc{protect}, $pc{forbidden}) = getProtectType("${sheetDir}/data.cgi");
+        %pc = (%pc, %latest);
       }
       unless(
         ($pc{protect} eq 'none') ||

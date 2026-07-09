@@ -31,11 +31,17 @@ if($id){
     $pc{$key} = $value;
   }
   
+  if($::in{log}){
+    %pc = (%pc, getLatestData($dir, $file,
+      'protect','forbidden','hide',
+      ( map {
+        my $s = imageSuffix($_);
+        "image$s","imageUpdate$s","imageFit$s","imagePercent$s","imagePositionX$s","imagePositionY$s","imageCopyright$s","imageCopyrightURL$s","imageSpoiler$s",
+      } 1 .. $set::image_maxcount)
+    ));
+  }
   if($pc{forbidden}){
     my $LOGIN_ID = check;
-    if($::in{log}){
-      ($pc{protect}, $pc{forbidden}) = getProtectType("${dir}${file}/data.cgi");
-    }
     unless(
       ($pc{protect} eq 'none') || 
       ($author && ($author eq $LOGIN_ID || $set::masterid eq $LOGIN_ID))
@@ -51,7 +57,7 @@ if($id){
   }
   if(!$pc{image} && $pc{mainImage} > 1){ # 複数画像未対応verへの対応
     my $suffix = imageSuffix($pc{mainImage});
-    foreach my $key (qw/image imageUpdate imageURL imageFit imagePercent imagePositionX imagePositionY imageCopyright imageCopyrightURL words wordsX wordsY/){
+    foreach my $key (qw/image imageUpdate imageURL imageFit imagePercent imagePositionX imagePositionY imageCopyright imageCopyrightURL imageSpoiler words wordsX wordsY/){
       $pc{$key} = $pc{"$key$suffix"};
     }
   }
