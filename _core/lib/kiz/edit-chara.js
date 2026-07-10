@@ -162,25 +162,21 @@ function autoInputPartner(num){
           form[`partner${num}Gender`].value = data[`gender`] || '';
           form[`partner${num}NegaiOutside`].value = data[`negaiOutside`] || '';
           form[`partner${num}NegaiInside` ].value = data[`negaiInside` ] || '';
-          if(data[`convertSource`] === 'キャラクターシート倉庫'){
-            form[`fromPartner${num}MarkerPosition`].readOnly = false;
-            form[`fromPartner${num}MarkerColor`   ].readOnly = false;
-            form[`fromPartner${num}Emotion1`].readOnly = false;
-            form[`fromPartner${num}Emotion2`].readOnly = false;  
+          for (const key of ['MarkerPosition','MarkerColor','Emotion1','Emotion2']) {
+            form[`fromPartner${num}${key}`].value = data[`toPartner${from}${key}`] || '';
           }
-          else {
-            form[`fromPartner${num}MarkerPosition`].value = data[`toPartner${from}MarkerPosition`] || '';
-            form[`fromPartner${num}MarkerColor`   ].value = data[`toPartner${from}MarkerColor`   ] || '';
-            form[`fromPartner${num}Emotion1`].value = data[`toPartner${from}Emotion1`] || '';
-            form[`fromPartner${num}Emotion2`].value = data[`toPartner${from}Emotion2`] || '';
+          for (const key of ['colorHeadBgH','colorHeadBgS','colorHeadBgL','colorBaseBgH','colorBaseBgS','nameFont','mainImage']) {
+            form[`p${num}_${key}`].value = data[`${key}`] || '';
           }
         }
         else {
           form[`partner${num}Url`].classList.add('error');
-          form[`fromPartner${num}MarkerPosition`].value = '';
-          form[`fromPartner${num}MarkerColor`   ].value = '';
-          form[`fromPartner${num}Emotion1`].value = '';
-          form[`fromPartner${num}Emotion2`].value = '';
+          for (const key of ['MarkerPosition','MarkerColor','Emotion1','Emotion2']) {
+            form[`fromPartner${num}${key}`].value = '';
+          }
+          for (const key of ['colorHeadBgH','colorHeadBgS','colorHeadBgL','colorBaseBgH','colorBaseBgS','nameFont','mainImage']) {
+            form[`p${num}_${key}`].value = '';
+          }
         }
       });
     }

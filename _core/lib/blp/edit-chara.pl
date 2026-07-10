@@ -303,6 +303,13 @@ print <<"HTML";
           <dd>@{[ input 'partner1Promise' ]}
         </dl>
       </div>
+      @{[ input 'p1_colorHeadBgH', 'hidden' ]}
+      @{[ input 'p1_colorHeadBgS', 'hidden' ]}
+      @{[ input 'p1_colorHeadBgL', 'hidden' ]}
+      @{[ input 'p1_colorBaseBgH', 'hidden' ]}
+      @{[ input 'p1_colorBaseBgS', 'hidden' ]}
+      @{[ input 'p1_nameFont', 'hidden' ]}
+      @{[ input 'p1_mainImage', 'hidden' ]}
     </div>
 
     <div class="box partner-edit">
@@ -357,6 +364,13 @@ print <<"HTML";
           <dd>@{[ input 'partner2Promise' ]}
         </dl>
       </div>
+      @{[ input 'p2_colorHeadBgH', 'hidden' ]}
+      @{[ input 'p2_colorHeadBgS', 'hidden' ]}
+      @{[ input 'p2_colorHeadBgL', 'hidden' ]}
+      @{[ input 'p2_colorBaseBgH', 'hidden' ]}
+      @{[ input 'p2_colorBaseBgS', 'hidden' ]}
+      @{[ input 'p2_nameFont', 'hidden' ]}
+      @{[ input 'p2_mainImage', 'hidden' ]}
     </div>
 
     <div class="box" id="bloodarts">
