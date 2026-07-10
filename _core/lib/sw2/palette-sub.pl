@@ -517,6 +517,7 @@ sub palettePreset {
             }
             next if !$exist;
           }
+          if($id eq 'Bar'){ $pow += $::pc{finaleEnhance} || 0; }
 
           my $modifiedRate = modifyRate($pow, $activeRate);
           next if $modifiedRate eq $lastModifiedRate;
