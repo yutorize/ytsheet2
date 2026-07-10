@@ -223,7 +223,6 @@ sub normalizeViewTags {
 sub setupPartnerDataCommon {
   my ($pc, %OPT) = @_;
   require $set::lib_convert if !$::in{url};
-  return if $::in{log};
 
   foreach my $num (1 .. $OPT{max}){
     my $urlKey  = "partner${num}Url";
@@ -238,17 +237,29 @@ sub setupPartnerDataCommon {
       $pc->{"p${num}_error"} = $pr{_error};
       next;
     }
-
     if($pr{ver} && $OPT{updateSub} && ref $OPT{updateSub} eq 'CODE'){
       %pr = $OPT{updateSub}->(\%pr);
     }
-    $pc->{"p${num}_".$_} = $pr{$_} foreach keys %pr;
-
-    if($OPT{onPartner} && ref $OPT{onPartner} eq 'CODE'){
-      $OPT{onPartner}->($pc, \%pr, $num);
+    if($::in{log}){
+      my $test;
+      my $maxCount = $pr{imageMaxCount} || $set::image_maxcount;
+      foreach (qw/image imageUpdate imageURL imagePath imageData imageFit imagePercent imagePositionX imagePositionY imageCopyright imageCopyrightURL imageSpoiler words wordsX wordsY/){
+        foreach my $s ('', 2 .. $maxCount){
+          $pc->{"p${num}_$_$s"} = $pr{$_.$s};
+          $test .= "p${num}_$_$s, ";
+        }
+      }
+      $pc->{"p${num}_mainImage"} = $pr{mainImage};
     }
-    if($pr{forbidden} && $OPT{onForbidden} && ref $OPT{onForbidden} eq 'CODE'){
-      $OPT{onForbidden}->($pc, \%pr, $num);
+    else {
+      $pc->{"p${num}_".$_} = $pr{$_} foreach keys %pr;
+
+      if($OPT{onPartner} && ref $OPT{onPartner} eq 'CODE'){
+        $OPT{onPartner}->($pc, \%pr, $num);
+      }
+      if($pr{forbidden} && $OPT{onForbidden} && ref $OPT{onForbidden} eq 'CODE'){
+        $OPT{onForbidden}->($pc, \%pr, $num);
+      }
     }
   }
   foreach my $num (1 .. $OPT{max}){

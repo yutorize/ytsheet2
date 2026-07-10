@@ -192,24 +192,27 @@ function autoInputPartner(num){
           form[`partner${num}Gender`].value  = data[`gender`] || '';
           form[`partner${num}Missing`].value = data[`missing`] || '';
           if(data[`convertSource`] === 'キャラクターシート倉庫'){
-            form[`fromPartner${num}SealPosition`].readOnly = false;
-            form[`fromPartner${num}SealShape`].readOnly    = false;
-            form[`fromPartner${num}Emotion1`].readOnly     = false;
-            form[`fromPartner${num}Emotion2`].readOnly     = false;
+            for (const key of ['SealPosition','SealShape','Emotion1','Emotion2']) {
+              form[`fromPartner${num}${key}`].readOnly = false;
+            }
           }
           else {
-            form[`fromPartner${num}SealPosition`].value = data[`toPartner${from}SealPosition`] || '';
-            form[`fromPartner${num}SealShape`].value    = data[`toPartner${from}SealShape`]    || '';
-            form[`fromPartner${num}Emotion1`].value     = data[`toPartner${from}Emotion1`]     || '';
-            form[`fromPartner${num}Emotion2`].value     = data[`toPartner${from}Emotion2`]     || '';
+            for (const key of ['SealPosition','SealShape','Emotion1','Emotion2']) {
+              form[`fromPartner${num}${key}`].value = data[`toPartner${from}${key}`] || '';
+            }
+          }
+          for (const key of ['colorHeadBgH','colorHeadBgS','colorHeadBgL','colorBaseBgH','colorBaseBgS','nameFont','mainImage']) {
+            form[`p${num}_${key}`].value = data[`${key}`] || '';
           }
         }
         else {
           form[`partner${num}Url`].classList.add('error');
-          form[`fromPartner${num}SealPosition`].value = '';
-          form[`fromPartner${num}SealShape`].value    = '';
-          form[`fromPartner${num}Emotion1`].value     = '';
-          form[`fromPartner${num}Emotion2`].value     = '';
+          for (const key of ['SealPosition','SealShape','Emotion1','Emotion2']) {
+            form[`fromPartner${num}${key}`].value = '';
+          }
+          for (const key of ['colorHeadBgH','colorHeadBgS','colorHeadBgL','colorBaseBgH','colorBaseBgS','nameFont','mainImage']) {
+            form[`p${num}_${key}`].value = '';
+          }
         }
       });
     }
