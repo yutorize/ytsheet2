@@ -72,7 +72,7 @@ main aside {
     grid-row: 2 / 3;
   }
   main {
-    grid-row: 3 / 4;
+    grid-row: auto;
   }
   aside#sidebar-bottom{
     grid-row: 4 / 5;
