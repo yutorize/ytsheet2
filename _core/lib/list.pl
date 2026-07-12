@@ -92,13 +92,15 @@ sub setupListTemplate {
   my $typeName = $args{typeName};
   my $typeClass = $args{typeClass};
   my $pageTitle = $args{pageTitle} || $typeName || '';
-  
-  $pageTitleParts{type} = $pageTitle if $pageTitle;
 
+  my $game =  (exists $set::lib_type{$type}) ? $set::lib_type{$type}{game} || $set::game : $set::game;
+  my $systemId = (exists $set::lib_type{$type}) ? $set::lib_type{$type}{systemId} || $set::system_id : $set::system_id || $game;
+
+  $pageTitleParts{type} = $pageTitle if $pageTitle;
   $template = HTML::Template->new(
     filename  => $set::skin_tmpl,
     utf8 => 1,
-    path => ['./', $::core_dir."/skin/$set::game", $::core_dir."/skin/_common", $::core_dir],
+    path => ['./', $::core_dir."/skin/$game", $::core_dir."/skin/_common", $::core_dir],
     search_path_on_include => 1,
     die_on_bad_params => 0,
     die_on_missing_include => 0,
@@ -109,8 +111,8 @@ sub setupListTemplate {
   $template->param(title => $set::title);
   $template->param(ver => $::ver);
   $template->param(coreDir => $::core_dir);
-  $template->param(gameDir => $set::game);
-  $template->param(systemId => $set::system_id || $set::game);
+  $template->param(gameDir => $game);
+  $template->param(systemId => $systemId);
   
   $template->param(mode => $::in{mode});
   

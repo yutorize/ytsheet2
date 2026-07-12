@@ -461,10 +461,12 @@ my $template;
 sub setupViewTemplate {
   my (%args) = @_;
 
+  my $game =  (exists $set::lib_type{$type}) ? $set::lib_type{$type}{game} || $set::game : $set::game;
+
   $template = HTML::Template->new(
     filename  => $set::skin_sheet,
     utf8 => 1,
-    path => ['./', $::core_dir."/skin/$set::game", $::core_dir."/skin/_common", $::core_dir],
+    path => ['./', $::core_dir."/skin/$game", $::core_dir."/skin/_common", $::core_dir],
     search_path_on_include => 1,
     die_on_bad_params => 0,
     die_on_missing_include => 0,
@@ -475,13 +477,13 @@ sub setupViewTemplate {
 
   $template->param(title => $set::title);
   $template->param(coreDir => $::core_dir);
-  $template->param(gameDir => $set::game);
+  $template->param(gameDir => $game);
   
   $template->param(mode => $::in{mode});
 
   $template->param(sheetType => (exists $set::lib_type{$type}) ? $set::lib_type{$type}{sheetType} : 'chara' );
   $template->param(generateType => $args{generateType} // '');
-  $template->param(defaultImage => $args{defaultPieceImage} // qq|$::core_dir/skin/$set::game/img/default_pc.png|);
+  $template->param(defaultImage => $args{defaultPieceImage} // qq|$::core_dir/skin/$game/img/default_pc.png|);
 
   $template->param(logId => $::in{log});
 
