@@ -91,7 +91,13 @@
   }
 }
 
+
 /* Image */
+.image, .image-none {
+  @media screen and (width <= 735px){
+    aspect-ratio: 5 / 8;
+  }
+}
 
 /* Personal */
 #personal {

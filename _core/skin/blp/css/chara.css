@@ -72,6 +72,11 @@
 }
 
 /* Image */
+.image, .image-none {
+  @media screen and (width <= 735px){
+    aspect-ratio: 5 / 8;
+  }
+}
 .image-none::after {
   transform: scale(1, 1.5);
 }

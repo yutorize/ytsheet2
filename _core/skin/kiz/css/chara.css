@@ -81,9 +81,6 @@
 }
 
 /* Image */
-.image, .image-none {
-  max-height: 56.7rem;
-}
 .image-none::after {
   transform: scale(1, 1.5);
 }

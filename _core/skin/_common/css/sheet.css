@@ -922,6 +922,12 @@ textarea::placeholder {
   position: relative;
   overflow: clip;
   > :is(.image, .image-none) {
+    max-height: 56.7rem;
+    container-type: inline-size;
+    @media screen and (width <= 735px){
+      max-height: auto;
+    }
+
     position: absolute;
     z-index: 2;
     inset: 0;
