@@ -132,6 +132,45 @@ body {
     th.style { width: 7.5em; }
     th.note  { width: auto; }
   }
+  @media screen and (width <= 767px){
+    & table {
+      display: block;
+      margin-top: 0em;
+      font-size: 90%;
+      & :is(thead,tbody){
+        display: block;
+        > tr {
+          display: grid;
+          grid-template-columns: 1fr 5em 7.5em;
+        }
+      }
+      > thead {
+        .note { display: none; }
+      }
+      > tbody {
+        > tr {
+          border-bottom: 0;
+        }
+        & td {
+          border-right: 0;
+        }
+        .name {
+          grid-row: span 2;
+          align-content: center;
+          border-left: 0;
+        }
+        .note {
+          grid-column: span 2;
+          font-size: 85%;
+          border-top-width: 1px;
+          border-top-style: solid;
+          &:empty {
+            display: none;
+          }
+        }
+      }
+    }
+  }
 }
 /* Resources */
 #resources {
@@ -194,6 +233,13 @@ body {
       }
     }
   }
+  @media screen and (width <= 767px){
+    & table {
+      > tbody {
+        .note { font-size: 85%; }
+      }
+    }
+  }
 }
 /* // Items
 ---------------------------------------------------------------------------------------------------- */
@@ -216,6 +262,14 @@ body {
     }
 
     & .note input { width: calc(100% - 1px); }
+  }
+  @media screen and (width <= 767px){
+    & table {
+      margin-top: -.5em;
+      > tbody {
+        .note { font-size: 85%; }
+      }
+    }
   }
 }
 #artifacts {
@@ -242,6 +296,13 @@ body {
       }
     }
   }
+  @media screen and (width <= 767px){
+    & table {
+      > tbody {
+        .note { font-size: 85%; }
+      }
+    }
+  }
 }
 #forces {
   margin-top: var(--box-v-gap);
@@ -265,6 +326,13 @@ body {
       }
       & th.left {
         padding-left: .5em;
+      }
+    }
+  }
+  @media screen and (width <= 767px){
+    & table {
+      > tbody {
+        .note { font-size: 85%; }
       }
     }
   }

@@ -26,10 +26,6 @@ body {
   ;
   @media screen and (width <= 735px){
     grid-template-columns: 18rem 6em 1fr 3.2em 1.9fr 3.5em;
-    grid-template-areas:
-      "NAME PL RACE RACE STYL DATE"
-      "NAME PL  CLS  LVL  PRF DATE"
-    ;
   }
   .name   { grid-area: NAME; }
   .player { grid-area:   PL; }

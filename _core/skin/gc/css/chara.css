@@ -241,12 +241,21 @@ body {
   grid-template-columns: 1fr 1fr 1fr 1fr 6em 4em;
   justify-content: space-between;
   > dl {
+    display: grid;
+    grid-template-rows: max-content 1fr;
     &:not(:first-child,#move){
       border-left-width: 1px;
       border-left-style: solid;
     }
     > dd {
-      > b { font-size: 120%; line-height: 1; }
+      align-content: center;
+      > b {
+        font-size: 120%;
+        line-height: 1;
+        @media screen and (width <= 735px){
+          white-space: nowrap;
+        }
+      }
     }
   }
 }
@@ -404,6 +413,9 @@ body {
         margin-left: auto;
         text-wrap: nowrap;
         font-size: 80%;
+        @media screen and (width <= 735px){
+          font-size: 70%;
+        }
         > s {
           text-decoration: none;
           opacity: 0.3;
@@ -484,16 +496,19 @@ body {
   }
   @media screen and (width <= 735px){
     > colgroup {
-      .name   { min-width: 6em; }
-      .type   { min-width: 5em; }
-      .lv     { min-width: 2em; }
-      .timing { min-width: 5em; }
-      .check  { min-width: 3.8em; }
-      .target { min-width: 3.8em; }
-      .range  { min-width: 3.5em; }
-      .dfclty { min-width: 3.2em; }
-      .cost   { min-width: 3em; }
-      .mc     { min-width: 2em; }
+      .name   { min-width: 6em; width: auto; }
+      .type   { width: 5em; }
+      .lv     { width: 1.8em; }
+      .timing { width: 5em; }
+      .check  { width: 3.8em; }
+      .target { width: 3.8em; }
+      .range  { width: 3.5em; }
+      .dfclty { width: 3.2em; }
+      .cost   { width: 3em; }
+      .mc     { width: 2em; }
+    }
+    > thead tr {
+      font-size: 90%;
     }
     > tbody tr {
       font-size: 90%;
@@ -582,6 +597,39 @@ body {
       font-size: 90%;
     }
   }
+  @media screen and (width <= 735px){
+  > colgroup {
+    .category{ width: 2em; }
+    .name    { width: 8em; min-width: 4em; }
+    .note    { width: auto; min-width: 4em; }
+
+    .type    { width: 3.4em; }
+    #armors & .type { width: 4.8em; }
+    .weight  { width: 2em; }
+    .skill   { width: 3.4em; }
+    .acc     { width: 2em; }
+    .atk     { width: 5em; }
+    #vehicle & .atk { width: 2.4em; }
+    .init    { width: 2em; }
+    .move    { width: 2em; }
+    .range   { width: 2em; }
+    .guard   { width: 2em; }
+    
+    .eva     { width: 2em; }
+    .def     { width: 9em; }
+    
+    .quantity{ width: 2em; }
+  }
+    > thead tr {
+      font-size: 90%;
+    }
+    > tbody tr {
+      font-size: 90%;
+      .category { font-size: 80%; }
+      .atk      { font-size: 90%; }
+      .note     { font-size: 85%; }
+    }
+  }
 }
 #weapons, #armors, #vehicle, #items {
   > table > tbody > tr:last-child {
@@ -603,6 +651,13 @@ body {
   }
   & input {
     transform: scale(1.2);
+  }
+  @media screen and (width <= 735px){
+    span.thin {
+      display: block;
+      margin: 0 -15%;
+      transform: scaleX(0.7);
+    }
   }
 }
 
