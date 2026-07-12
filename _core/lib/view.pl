@@ -4,6 +4,7 @@ use strict;
 use utf8;
 use open ":utf8";
 use JSON::PP;
+use HTML::Template;
 
 our $LOGIN_ID = check;
 

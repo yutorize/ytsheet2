@@ -3,6 +3,7 @@ use strict;
 #use warnings;
 use utf8;
 use Encode;
+use FindBin;
 
 our $ver = "2.00.003";
 
@@ -10,7 +11,7 @@ our %in;
 for (param()){ $in{$_} = param($_); }
 
 my $mode = $in{mode};
-$ENV{HTML_TEMPLATE_ROOT} = $::core_dir;
+$ENV{HTML_TEMPLATE_ROOT} = $FindBin::Bin;
 
 #if ( $mode eq 'register'
 #  || $mode eq 'option'

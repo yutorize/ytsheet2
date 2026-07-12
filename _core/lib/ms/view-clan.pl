@@ -3,7 +3,6 @@ use strict;
 #use warnings;
 use utf8;
 use open ":utf8";
-use HTML::Template;
 
 ### データ読み込み ###################################################################################
 require $set::data_magi;
