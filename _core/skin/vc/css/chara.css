@@ -67,7 +67,7 @@
     ;
   }
 }
-#image       { grid-area: IMG; max-height: 56.7rem; }
+#image       { grid-area: IMG; }
 #levels      { grid-area: LVL; }
 #personal    { grid-area: PER; }
 #appearance  { grid-area: APP; }

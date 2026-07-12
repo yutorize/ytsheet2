@@ -63,7 +63,7 @@
     ;
   }
 
-  #image    { grid-area: IMG; max-height: 56.7rem; }
+  #image    { grid-area: IMG; }
   #class-and-style
             { grid-area: CLS; }
   #personal { grid-area: PER; }
@@ -71,6 +71,14 @@
   #belief   { grid-area: BLF; }
   #bond     { grid-area: BND; }
 }
+
+/* Image */
+.image, .image-none {
+  @media screen and (width <= 735px){
+    aspect-ratio: 5 / 8;
+  }
+}
+
 /* Class / Style / Works / Level */
 #class-and-style {
   display: grid;

@@ -124,9 +124,6 @@ h1#character-name:not(:has(ruby)) {
   transform: scale(1, 1.1);
 }
 @container (width <= 320px) {
-  .image, .image-none {
-    max-height: auto;
-  }
   .image-none::after {
     font-size: 4.8rem;
   }

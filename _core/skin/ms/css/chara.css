@@ -134,10 +134,6 @@ h1#character-name:not(:has(ruby)) {
 }
 
 /* Image */
-.image, .image-none {
-  max-height: 56.7rem;
-  container-type: inline-size;
-}
 .image-none::after {
   font-family: 'Montserrat','Impact';
   font-size: 5.8rem;
@@ -147,9 +143,6 @@ h1#character-name:not(:has(ruby)) {
   transform: scale(1, 1.1);
 }
 @container (width <= 320px) {
-  .image, .image-none {
-    max-height: auto;
-  }
   .image-none::after {
     font-size: 4.8rem;
   }
