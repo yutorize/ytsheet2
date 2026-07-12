@@ -382,7 +382,8 @@ sub renderEditPageStart {
   my $extraJsTop = $opt{extraJsTop} // '';
   my $extraJsMid = $opt{extraJsMid} // '';
 
-  my $systemId = $set::system_id || $set::game;
+  my $game =  (exists $set::lib_type{$type}) ? $set::lib_type{$type}{game} || $set::game : $set::game;
+  my $systemId = (exists $set::lib_type{$type}) ? $set::lib_type{$type}{systemId} || $set::system_id : $set::system_id || $game;
   my $type = $::pc{type} // $::in{type} // '';
   my $sheetType = $set::lib_type{$type}{sheetType} || 'chara';
   my $base64Mode = $set::base64mode || 0;
@@ -398,17 +399,17 @@ sub renderEditPageStart {
     <title>@{[ $::in{mode} eq 'edit' ? "編集：$title" : '新規作成']} - $set::title</title>
     <link rel="stylesheet" media="all" href="$::core_dir/skin/_common/css/base.css?$::ver">
     <link rel="stylesheet" media="all" href="$::core_dir/skin/_common/css/sheet.css?$::ver">
-    <link rel="stylesheet" media="all" href="$::core_dir/skin/$set::game/css/theme.css?$::ver">
-    <link rel="stylesheet" media="all" href="$::core_dir/skin/$set::game/css/$sheetType.css?$::ver">
+    <link rel="stylesheet" media="all" href="$::core_dir/skin/$game/css/theme.css?$::ver">
+    <link rel="stylesheet" media="all" href="$::core_dir/skin/$game/css/$sheetType.css?$::ver">
     <link rel="stylesheet" media="all" href="$::core_dir/skin/_common/css/edit.css?$::ver">
-    <link rel="stylesheet" media="all" href="$::core_dir/skin/$set::game/css/edit.css?$::ver">
+    <link rel="stylesheet" media="all" href="$::core_dir/skin/$game/css/edit.css?$::ver">
     $extraCss
     <script src="$::core_dir/skin/_common/js/lib/Sortable.min.js"></script>
     <script src="$::core_dir/skin/_common/js/lib/compressor.min.js"></script>
     $extraJsTop
     @{[ $set::lib_js_consts ? qq|<script src="./?mode=js-consts&ver=$::ver"></script>| : '' ]}
     <script src="$::core_dir/lib/edit.js?$::ver" defer></script>
-    <script src="$::core_dir/lib/$set::game/edit-$sheetType.js?$::ver" defer></script>
+    <script src="$::core_dir/lib/$game/edit-$sheetType.js?$::ver" defer></script>
     $extraJsMid
     <script src="$::core_dir/skin/_common/js/common.js?$::ver"></script>
     <script>const base64Mode = $base64Mode;</script>
