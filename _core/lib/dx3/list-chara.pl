@@ -9,7 +9,7 @@ require $set::lib_list;
 
 ### クエリ ###########################################################################################
 my @queryKeys = qw(
-  mode tag group name player stage exp-min exp-max works breed syndrome dlois sign image fellow
+  mode tag group image name player gender stage exp-min exp-max works breed syndrome dlois sign
 );
 setFields({
   id      => 0,
@@ -46,11 +46,12 @@ my %groups = setupGroupList();
 my @lines = loadLines();
 
 ### 検索フィルタ #####################################################################################
-@lines = filterGroup(@lines) if $::in{group} && $::in{group} ne 'all';
-@lines = filterTag(@lines)   if $::in{tag};
+@lines = filterGroup(@lines)  if $::in{group} && $::in{group} ne 'all';
+@lines = filterTag(@lines)    if $::in{tag};
+@lines = filterImage(@lines)  if $::in{image};
+@lines = filterGender(@lines) if $::in{gender};
 @lines = filterContainsRegex(lines => \@lines, key => 'name', flags => 'i') if $::in{name};
 @lines = filterContainsRegex(lines => \@lines, key => 'player', flags => 'i') if $::in{player};
-@lines = filterFlagRegex(lines => \@lines, key => 'image') if $::in{image};
 @lines = filterContainsRegex(lines => \@lines, key => 'works') if $::in{works};
 @lines = filterContainsRegex(lines => \@lines, key => 'syndrome', query => $_) foreach split /\s/,$::in{syndrome};
 @lines = filterContainsRegex(lines => \@lines, key => 'dlois', query => $_) foreach split /\s/,$::in{dlois};

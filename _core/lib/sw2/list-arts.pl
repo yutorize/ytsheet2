@@ -12,7 +12,7 @@ my $sort = $::in{sort};
 
 ### クエリ ###########################################################################################
 my @queryKeys = qw(
-  mode tag category name author sub
+  mode tag image category name author sub
 );
 setFields({
   id      => 0,
@@ -57,6 +57,7 @@ $INDEX->param(Categories => [makeSelectOptions(
 
 
 @lines = filterTag(@lines)   if $::in{tag};
+@lines = filterImage(@lines) if $::in{image};
 @lines = filterContainsRegex(lines => \@lines, key => 'sub') if $::in{sub};
 @lines = filterContainsRegex(lines => \@lines, key => 'name', flags => 'i') if $::in{name};
 @lines = filterContainsRegex(lines => \@lines, key => 'author', flags => 'i') if $::in{author};

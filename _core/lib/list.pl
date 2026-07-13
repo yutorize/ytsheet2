@@ -49,22 +49,13 @@ sub renderCharacterName {
 }
 
 sub renderGender {
-  my $gender = shift;
-  my $m_flag; my $f_flag; my $n_flag;
-  $gender =~ s/^(.+?)[\(（].*?[）\)]$/$1/;
-  $gender =~ tr/Ａ-Ｚａ-ｚ/A-Za-z/;
-  if($gender =~ /男|おとこ|オトコ|♂|雄|オス|爺|漢|(?<!fe)m(ale|$)|(?<!wo)man/i) { $m_flag = 1 }
-  if($gender =~ /女|おんな|オンナ|♀|雌|メス|婆|娘|f(em(ale)?|$)|woman/i)       { $f_flag = 1 }
-  if($gender =~ /無|なし|^[\-ー‐‑–—―−ｰ]$|non/i)               { $n_flag = 1 }
-  if($gender =~ /両|半|トランス|ノンバ|non|Ft[MX]|Mt[FX]|^[XA]/i) { $m_flag = 1; $f_flag = 1 }
-
-  if   ($n_flag){ $gender = '<span data-gender="none">―</span>' }
-  elsif($m_flag && $f_flag){ $gender = '<span data-gender="cross">⚧</span>' }
-  elsif($m_flag){ $gender = '<span data-gender="male">♂</span>' }
-  elsif($f_flag){ $gender = '<span data-gender="female">♀</span>' }
-  else { $gender = '<span data-gender="unknown">？</span>' }
-
-  return $gender;
+  my $gender = checkGender($_[0]);
+  return
+    ($gender eq 'none'  ) ? '<span data-gender="none">―</span>' :
+    ($gender eq 'cross' ) ? '<span data-gender="cross">⚧</span>' :
+    ($gender eq 'male'  ) ? '<span data-gender="male">♂</span>' :
+    ($gender eq 'female') ? '<span data-gender="female">♀</span>' :
+    '<span data-gender="unknown">？</span>'
 }
 
 sub renderAge {
@@ -296,6 +287,37 @@ sub filterTag {
   my @lines = @_;
   my $tagQuery = normalizeHashtags($::in{tag});
   return grep { /^(?:[^<]*<>){$fields{tags}}[^<]*? \Q$tagQuery\E /o } @lines;
+}
+## 画像
+sub filterImage {
+  my @lines = @_;
+  if($::in{image} eq '1') {
+    $template->param(image => 1);
+    return grep { /^(?:[^<]*<>){$fields{image}}[^<0]/o } @lines;
+  }
+  elsif($::in{image} eq 'N') {
+    $template->param(image => 0);
+    return grep { /^(?:[^<]*<>){$fields{image}}[<0]/o } @lines;
+  }
+  elsif($::in{image}) {
+    return grep { /^(?:[^<]*<>){$fields{image}}[^<]*?\Q$::in{image}\E/o } @lines;
+  }
+  return @lines;
+}
+## 性別
+sub filterGender {
+  my @lines = @_;
+
+  my $value = $::in{gender};
+  if($value =~ /^(male|female|cross|none)$/){
+    $template->param('gender'.ucfirst($value) => 'checked');
+    $::in{gender} = renderGender($value);
+  }
+
+  return grep {
+    my ($gender) = $_ =~ /^(?:[^<]*<>){$fields{gender}}([^<]*)/o;
+    $value eq checkGender($gender // '');
+  } @lines;
 }
 ## 汎用：部分一致
 sub filterContainsRegex {
@@ -621,8 +643,9 @@ sub setSearchSummary {
     [ $::in{name}, ($args{nameHeader} || '名前').'に「%s」を含む' ],
     [ $::in{player}, 'ＰＬ名に「%s」を含む' ],
     [ $::in{author}, '製作者名に「%s」を含む' ],
+    [ $::in{gender}, '性別「%s」' ],
     @array,
-    [ $::in{image},'画像あり' ],
+    [ $::in{image}, ($::in{image} eq '1' ? '画像あり' : $::in{image} eq 'N' ? '画像なし' : '画像「%s」') ],
   ) {
     my ($value, $format) = @$_;
     next if !defined($value) || $value eq '';
@@ -635,8 +658,8 @@ sub setSearchSummary {
 
   if(@summary){
     $template->param(searchSummary => join('／', map { "<span>$_</span>" } @summary));
-    $template->param(ogDescript => join ',', @summary);
-    $pageTitleParts{search} = join(' ', @summary);
+    $template->param(ogDescript => removeTags(join ',', @summary));
+    $pageTitleParts{search} = removeTags(join ' ', @summary);
   }
 }
 

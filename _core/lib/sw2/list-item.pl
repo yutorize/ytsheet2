@@ -11,7 +11,7 @@ require $set::lib_list;
 
 ### クエリ ###########################################################################################
 my @queryKeys = qw(
-  mode tag category name author age
+  mode tag image category name author age
 );
 setFields({
   id       => 0,
@@ -43,7 +43,8 @@ my ($indexMode, $qLinks) = listQueryInfo(
 my @lines = loadLines();
 
 ### 検索フィルタ #####################################################################################
-@lines = filterTag(@lines) if $::in{tag};
+@lines = filterTag(@lines)   if $::in{tag};
+@lines = filterImage(@lines) if $::in{image};
 @lines = filterContainsRegex(lines => \@lines, key => 'name', flags => 'i') if $::in{name};
 @lines = filterContainsRegex(lines => \@lines, key => 'author', flags => 'i') if $::in{author};
 @lines = filterContainsRegex(lines => \@lines, key => 'age') if $::in{age};

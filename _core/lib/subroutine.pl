@@ -1110,6 +1110,25 @@ sub removeRuby {
   return $text;
 }
 
+### 性別 --------------------------------------------------
+sub checkGender {
+  my $gender = shift // '';
+  my $m_flag; my $f_flag; my $n_flag;
+  $gender =~ s/^(.+?)[\(（].*?[）\)]$/$1/;
+  $gender =~ tr/Ａ-Ｚａ-ｚ/A-Za-z/;
+  if($gender =~ /男|おとこ|オトコ|♂|雄|オス|爺|漢|(?<!fe)m(ale|$)|(?<!wo)man/i) { $m_flag = 1 }
+  if($gender =~ /女|おんな|オンナ|♀|雌|メス|婆|娘|f(em(ale)?|$)|woman/i) { $f_flag = 1 }
+  if($gender =~ /無|なし|^[\-ー‐‑–—―−ｰ]$|non/i) { $n_flag = 1 }
+  if($gender =~ /両|半|トランス|ノンバ|non-?b|cross|Ft[MX]|Mt[FX]|^[XA]/i) { $m_flag = 1; $f_flag = 1 }
+
+  return
+    ($m_flag && $f_flag) ? 'cross' :
+    ($n_flag) ? 'none' :
+    ($m_flag) ? 'male' :
+    ($f_flag) ? 'female' :
+    'unknown'
+}
+
 ### RGB>HSL --------------------------------------------------
 sub rgbToHsl {
   my $re = shift || 0;

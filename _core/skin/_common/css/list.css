@@ -82,6 +82,40 @@ main aside {
   }
 }
 
+
+/* // Gender-Icon
+---------------------------------------------------------------------------------------------------- */
+span[data-gender] {
+  display: inline-block;
+  position: relative;
+  width: calc(1em + 6px);
+  padding: 3px;
+  border-radius: 3px;
+  font-size: 90%;
+  line-height: 1;
+  color: transparent;
+
+  &::before {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    font-family: "Material Symbols Outlined";
+    color: var(--text-color);
+    font-size: 1.2em;
+  }
+  &[data-gender=male]   { background-color: #07f3; }
+  &[data-gender=female] { background-color: #f003; }
+  &[data-gender=cross]  { background-color: #70f3; }
+  &[data-gender=none]   { background-color: #7773; }
+  &[data-gender=unknown]{ background-color: #7773; }
+  &[data-gender=male]::before   { content:"\e58e"; }
+  &[data-gender=female]::before { content:"\e590"; }
+  &[data-gender=cross]::before  { content:"\e58d"; }
+  &[data-gender=none]::before   { content:"\f108"; }
+  &[data-gender=unknown]::before{ content:"\eb8b"; }
+}
+
 /* // Search-Form
 ---------------------------------------------------------------------------------------------------- */
 .search-button {
@@ -135,6 +169,9 @@ form#form-search {
     margin-top: -1em;
     margin-left: auto;
     margin-right: 1.5em;
+  }
+  & label + label {
+    margin-left: .5em;
   }
   & dl {
     margin: .5rem 0;
@@ -409,36 +446,6 @@ main nav ul li {
 }
 .list table td:is(.player, .author) {
   font-size: 90%;
-}
-.list table td span[data-gender] {
-  display: inline-block;
-  position: relative;
-  width: calc(1em + 6px);
-  padding: 3px;
-  border-radius: 3px;
-  font-size: 90%;
-  line-height: 1;
-  color: transparent;
-
-  &::before {
-    position: absolute;
-    inset: 0;
-    display: grid;
-    place-items: center;
-    font-family: "Material Symbols Outlined";
-    color: var(--text-color);
-    font-size: 1.2em;
-  }
-  &[data-gender=male]   { background-color: #07f3; }
-  &[data-gender=female] { background-color: #f003; }
-  &[data-gender=cross]  { background-color: #70f3; }
-  &[data-gender=none]   { background-color: #7773; }
-  &[data-gender=unknown]{ background-color: #7773; }
-  &[data-gender=male]::before   { content:"\e58e"; }
-  &[data-gender=female]::before { content:"\e590"; }
-  &[data-gender=cross]::before  { content:"\e58d"; }
-  &[data-gender=none]::before   { content:"\f108"; }
-  &[data-gender=unknown]::before{ content:"\eb8b"; }
 }
 .list table th.date {
   font-size: 80%;
