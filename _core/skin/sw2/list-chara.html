@@ -23,6 +23,12 @@
             <dd><input type="text" name="class" value="<TMPL_VAR class>">
           <dt>信仰
             <dd><input type="text" name="faith" value="<TMPL_VAR faith>">
+          <dt>性別
+            <dd>
+              <label><input type="radio" name="gender" value="male"   <TMPL_VAR genderMale  >><span data-gender="male"  >♂</span></label>
+              <label><input type="radio" name="gender" value="female" <TMPL_VAR genderFemale>><span data-gender="female">♀</span></label>
+              <label><input type="radio" name="gender" value="cross"  <TMPL_VAR genderCross >><span data-gender="cross" >⚧</span></label>
+              <label><input type="radio" name="gender" value="none"   <TMPL_VAR genderNone  >><span data-gender="none"  >―</span></label>
           <dt>フェロー
             <dd><label><input type="checkbox" name="fellow" value="1" <TMPL_IF fellow>checked</TMPL_IF>>あり</label>
           <dt>画像

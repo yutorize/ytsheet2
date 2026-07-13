@@ -9,7 +9,7 @@ require $set::lib_list;
 
 ### クエリ ###########################################################################################
 my @queryKeys = qw(
-  mode tag group name player lv-min lv-max rule base belong leader image
+  mode tag group image name player lv-min lv-max rule base belong leader
 );
 setFields({
   id      => 0,
@@ -45,9 +45,9 @@ my @lines = loadLines();
 ### 検索フィルタ #####################################################################################
 @lines = filterGroup(@lines) if $::in{group} && $::in{group} ne 'all';
 @lines = filterTag(@lines)   if $::in{tag};
+@lines = filterImage(@lines) if $::in{image};
 @lines = filterContainsRegex(lines => \@lines, key => 'name', flags => 'i') if $::in{name};
 @lines = filterContainsRegex(lines => \@lines, key => 'player', flags => 'i') if $::in{player};
-@lines = filterFlagRegex(lines => \@lines, key => 'image') if $::in{image};
 
 @lines = filterRange(
   lines => \@lines,

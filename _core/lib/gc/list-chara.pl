@@ -8,7 +8,7 @@ require $set::lib_list;
 
 ### クエリ ###########################################################################################
 my @queryKeys = qw(
-  mode tag group name player class style works image
+  mode tag group image name player gender class style works
 );
 setFields({
   id       => 0,
@@ -48,8 +48,10 @@ my %groups = setupGroupList();
 my @lines = loadLines();
 
 ### 検索フィルタ #####################################################################################
-@lines = filterGroup(@lines) if $::in{group} && $::in{group} ne 'all';
-@lines = filterTag(@lines)   if $::in{tag};
+@lines = filterGroup(@lines)  if $::in{group} && $::in{group} ne 'all';
+@lines = filterTag(@lines)    if $::in{tag};
+@lines = filterImage(@lines)  if $::in{image};
+@lines = filterGender(@lines) if $::in{gender};
 @lines = filterContainsRegex(lines => \@lines, key => 'name', flags => 'i') if $::in{name};
 @lines = filterContainsRegex(lines => \@lines, key => 'player', flags => 'i') if $::in{player};
 @lines = filterContainsRegex(lines => \@lines, key => 'class', query => $_) foreach split /\s/,$::in{class};

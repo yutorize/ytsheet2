@@ -11,7 +11,7 @@ require $set::data_mons;
 
 ### クエリ ###########################################################################################
 my @queryKeys = qw(
-  mode tag taxa name author lv-max lv-min parts-max parts-min intellect perception disposition habitat weakness
+  mode tag image taxa name author lv-max lv-min parts-max parts-min intellect perception disposition habitat weakness
 );
 setFields({
   id      => 0,
@@ -48,7 +48,8 @@ my ($indexMode, $qLinks) = listQueryInfo(
 my @lines = loadLines();
 
 ### 検索フィルタ #####################################################################################
-@lines = filterTag(@lines) if $::in{tag};
+@lines = filterTag(@lines)   if $::in{tag};
+@lines = filterImage(@lines) if $::in{image};
 @lines = filterContainsRegex(lines => \@lines, key => 'name', flags => 'i') if $::in{name};
 @lines = filterContainsRegex(lines => \@lines, key => 'author', flags => 'i') if $::in{author};
 @lines = filterContainsRegex(lines => \@lines, key => 'intellect') if $::in{intellect};

@@ -1,8 +1,8 @@
-// 検索フォーム開閉
+// 検索フォーム開閉 ----------------------------------------
 function toggleHide(id){
   document.getElementById(id).classList.toggle('hide');
 }
-// 空クエリを削除
+// 空クエリを削除 ----------------------------------------
 document.forms.search.addEventListener('submit', cleanQuery);
 
 function cleanQuery(e) {
@@ -43,4 +43,31 @@ function serialize(form) {
     }
   }
   return s.join('&').replace(/%20/g, '+');
+}
+
+
+// ラジオボタン解除 ----------------------------------------
+document.querySelectorAll('#form-search input[type="radio"]').forEach(radioButton => {
+  let label = radioButton.closest(`label`);
+
+  if(label){
+    label.addEventListener("mouseup", ()=>{
+      if(radioButton.checked){
+        clearRadioButton(radioButton)
+      }
+    });
+  }
+  else {
+    radioButton.addEventListener("mouseup", ()=>{
+      if(radioButton.checked){
+        clearRadioButton(radioButton)
+      }
+    });
+  }
+});
+function clearRadioButton(radioButton) {
+  setTimeout(()=>{
+    radioButton.checked = false;
+    radioButton.dispatchEvent(new Event('input'));
+  },100)
 }

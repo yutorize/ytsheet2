@@ -9,7 +9,7 @@ require $set::lib_list;
 
 ### クエリ ###########################################################################################
 my @queryKeys = qw(
-  mode tag group name player exp-min exp-max factor belong missing image
+  mode tag group image name player gender exp-min exp-max factor belong missing
 );
 setFields({
   id      => 0,
@@ -46,11 +46,12 @@ my %groups = setupGroupList();
 my @lines = loadLines();
 
 ### 検索フィルタ #####################################################################################
-@lines = filterGroup(@lines) if $::in{group} && $::in{group} ne 'all';
-@lines = filterTag(@lines)   if $::in{tag};
+@lines = filterGroup(@lines)  if $::in{group} && $::in{group} ne 'all';
+@lines = filterTag(@lines)    if $::in{tag};
+@lines = filterImage(@lines)  if $::in{image};
+@lines = filterGender(@lines) if $::in{gender};
 @lines = filterContainsRegex(lines => \@lines, key => 'name', flags => 'i') if $::in{name};
 @lines = filterContainsRegex(lines => \@lines, key => 'player', flags => 'i') if $::in{player};
-@lines = filterFlagRegex(lines => \@lines, key => 'image') if $::in{image};
 @lines = filterContainsRegex(lines => \@lines, key => 'belong', query => $_) foreach split /\s/,$::in{belong};
 @lines = filterContainsRegex(lines => \@lines, key => 'missing', query => $_) foreach split /\s/,$::in{missing};
 
