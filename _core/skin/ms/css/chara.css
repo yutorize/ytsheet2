@@ -23,14 +23,6 @@
       grid-row: 5;
       align-self: end;
     }
-    aside#sidebar-left,
-    aside#sidebar-right {
-      display:none;
-    }
-    aside#sidebar-top,
-    aside#sidebar-bottom {
-      display: block;
-    }
     #free-note {
       margin-top: 0;
     }

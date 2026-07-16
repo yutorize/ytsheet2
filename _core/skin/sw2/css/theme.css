@@ -1,24 +1,29 @@
 @charset "utf-8";
 
 :root {
-  --theme-hue: 220;
-  --theme-sub-hue: 212;
-  --theme-menu-hue: var(--theme-sub-hue);
-  --theme-accent-hue: 225;
-  --header-saturation: 25%;
-  --h2-color: hsla(var(--theme-sub-hue),45%,75%,0.3);
-  --h3-color: hsla(var(--theme-sub-hue),40%,60%,0.3);
+  --theme-main-hue: 255;
+  --theme-sub-hue: 265;
+  --theme-accent-hue: 270;
+  --h2-color: oklch(88% 0.04 var(--theme-sub-hue));
+  --h3-color: oklch(92% 0.03 var(--theme-sub-hue));
+  --menu-icon-current-color: #d02530;
+  --icon--current-color: var(--menu-icon-current-color);
 
   &:has([data-system="sw2.0"]) {
-    --header-saturation: 9%;
-    --h2-color: hsla(var(--theme-sub-hue),30%,75%,0.3);
-    --h3-color: hsla(var(--theme-sub-hue),25%,60%,0.3);
+    --header-chroma: 0.03;
+    --menu-icon-bg-color: oklch(80% 0.02 var(--theme-menu-hue));
+    --h2-color    : oklch(88% 0.02 var(--theme-sub-hue));
+    --h3-color    : oklch(92% 0.01 var(--theme-sub-hue));
   }
 }
 @media screen {
   .night {
+    --h2-color: oklch(35% 0.04 var(--theme-sub-hue));
+    --h3-color: oklch(30% 0.03 var(--theme-sub-hue));
     &:has([data-system="sw2.0"]) {
-      --icon-bg-color: hsl(var(--theme-menu-hue),9%,40%);
+      --menu-icon-bg-color: oklch(45% 0.02 var(--theme-menu-hue));
+      --h2-color: oklch(35% 0.02 var(--theme-sub-hue));
+      --h3-color: oklch(30% 0.01 var(--theme-sub-hue));
     }
   }
 }

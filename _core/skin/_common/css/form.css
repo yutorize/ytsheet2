@@ -28,6 +28,8 @@ section.form {
   }
   > :is(h2,h3):first-child {
     background: linear-gradient(to bottom, var(--h2-color), transparent);
+    mix-blend-mode: multiply;
+    .night & { mix-blend-mode: screen; }
     > .material-symbols-outlined {
       display: inline-block;
       vertical-align: middle;

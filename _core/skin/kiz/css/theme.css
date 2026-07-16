@@ -1,21 +1,20 @@
 @charset "utf-8";
 
 :root{
-  --theme-hue: 210;
-  --theme-sub-hue: 195;
-  --theme-menu-hue: var(--theme-hue);
-  --theme-accent-hue: 190;
-  --header-saturation: 50%;
-  --header-lightness: 50%;
-  --h2-color: hsla(195,61%,50%,0.3);
-  --icon-current-color   : #30d0e7;
-  --icon-current-bg-color: #000055;
+  --theme-main-hue  : 253;
+  --theme-sub-hue   : 235;
+  --theme-accent-hue: 220;
+  --theme-menu-hue: var(--theme-main-hue);
+  --header-chroma: 0.12;
+  --header-lightness: 65%;
+  --menu-icon-current-color   : #30d0e7;
+  --menu-icon-current-bg-color: #000055;
+  --icon-current-color: #30d0e7;
 }
 @media screen {
   .night {
-    --header-saturation: 50%;
-    --header-lightness: 50%;
-    --icon-bg-color: hsl(var(--theme-menu-hue),23%,20%);
+    --header-lightness: 55%;
+    --menu-icon-bg-color: oklch(32% 0.02 var(--theme-menu-hue));
   }
 }
 body {

@@ -574,7 +574,7 @@ sub makePager {
     }
     $OUTPUT =~ s/\.{3,}/... /g;
   }
-  $OUTPUT = qq|<div class="navbar">$OUTPUT</div>| if $OUTPUT;
+  $OUTPUT = qq|<div class="pager">$OUTPUT</div>| if $OUTPUT;
 }
 
 ### セレクトボックス用配列生成 --------------------------------------------------

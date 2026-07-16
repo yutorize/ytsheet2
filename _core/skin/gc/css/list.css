@@ -29,13 +29,9 @@ main nav {
       height: 2.2em;
       mask-size: 100%;
       mask-repeat: no-repeat;
-      background-color: hsl(var(--theme-sub-hue),9%,50%);
     }
     .chara   &::before { mask-image: url(../img/icon-person.png); }
     .country &::before { mask-image: url(../img/icon-castle.png); }
-    .current &::before {
-      background-color: hsl(355,75%,50%);
-    }
     @media screen and (width <= 735px){
       width: 9em;
       padding: 1em 0 .5em;

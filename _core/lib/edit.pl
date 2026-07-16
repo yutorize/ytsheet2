@@ -672,7 +672,7 @@ sub renderImageForm {
                   @{[ checkbox "imageDelete$suffix","削除" ]}
                   <label class="image-select" onclick="switchImageLayoutConfig($n)">
                     <span>画像$n</span>
-                    <span class="check"></span>
+                    <span class="check"><input type="radio" name="imageEditing" @{[ $n eq $::pc{mainImage} ? 'checked' : '' ]}></span>
                     <img src="@{[ $imageURLs{$n} || $emptyImageURL ]}" style="width:100px;height:100px;object-fit:contain;" data-num="$n" class="$selected">
                   </label>
                   @{[ radio "mainImage", "checkMainImage($n)", $n, 'メイン画像' ]}

@@ -27,14 +27,6 @@
       grid-column: 2;
       align-self: end;
     }
-    aside#sidebar-left,
-    aside#sidebar-right {
-      display:none;
-    }
-    aside#sidebar-top,
-    aside#sidebar-bottom {
-      display: block;
-    }
     .partner:first-child {
       margin-top: 0;
     }
