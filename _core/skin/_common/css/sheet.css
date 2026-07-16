@@ -111,17 +111,23 @@ html {
 }
 
 main article a {
-  background: linear-gradient(to top, hsla(var(--box-head-bg-color-h,230),100%,80%,0.7) .2rem, transparent .2rem, transparent);
+  --a-line-color: hsla(var(--box-head-bg-color-h,230),100%,80%,0.7);
   &:link    { color: hsl(var(--box-head-bg-color-h,230),90%,40%); }
   &:visited { color: hsl(var(--box-base-bg-color-h,270),40%,40%); }
-  &:hover   { color: #000; background: hsla(var(--box-head-bg-color-h,230),100%,80%,0.7); }
+  &:hover   { color: #000; background: hsla(var(--box-head-bg-color-h,230),100%,80%,1); }
   @media screen {
-    .night & { background: linear-gradient(to top, hsla(var(--box-head-bg-color-h,230),100%,20%,0.7) .2rem, transparent .2rem, transparent); }
+    .night & {
+      --a-line-color: hsla(var(--box-head-bg-color-h,230),100%,20%,0.7);
+    }
     .night &:link    { color: hsl(var(--box-head-bg-color-h,210),100%,80%); }
     .night &:visited { color: hsl(var(--box-base-bg-color-h,270), 40%,75%); }
-    .night &:hover   { color: #fff; background: hsla(var(--box-head-bg-color-h,230),100%,20%,0.7); }
+    .night &:hover   { color: #fff; background: hsla(var(--box-head-bg-color-h,230),100%,20%,1); }
   }
   &[onclick] { background: none; }
+}
+
+main article input {
+  accent-color: hsl(var(--box-head-bg-color-h,230) 100% 50%);
 }
 
 code {
@@ -160,14 +166,14 @@ header nav {
   cursor: pointer;
   
   background-color: hsla(
-    var(--box-head-bg-color-h, var(--theme-hue)),
+    var(--box-head-bg-color-h),
     calc((var(--box-head-bg-color-s,  9%) + 9%) / 2),
     65%
   );
   @media screen {
     .night & {
       background-color: hsla(
-        var(--box-head-bg-color-h, var(--theme-hue)),
+        var(--box-head-bg-color-h),
         calc((var(--box-head-bg-color-s,  9%) + 9%) / 2),
         35%
       );
@@ -499,9 +505,10 @@ details:not([open]).box > summary:hover {
     font-family: "Material Symbols Outlined";
     vertical-align: middle;
     margin-right: .1em;
+    font-weight: normal;
     font-size: 1.2em;
     line-height: 1;
-    color: var(--a-link-color);
+    color: var(--icon--current-color);
   }
 }
 .box.chat-palette .chat-palette-menu {
@@ -549,7 +556,7 @@ details:not([open]).box > summary:hover {
     content: '\e876';
   }
   > a:hover {
-    background-color: #0af5;
+    background-color: var(--row-bg-hover);
   }
 }
 .box.chat-palette textarea {
@@ -824,6 +831,14 @@ header nav ul {
     }
   }
 }
+:has(#loglist.show)      a[onclick^="loglistOn"],
+:has(#downloadlist.show) a[onclick^="downloadListOn"],
+:has(.chat-palette.show) a[onclick^="chatPaletteOn"] {
+  .icon {
+    background: var(--menu-icon-current-bg-color);
+    color: var(--menu-icon-current-color);
+  }
+}
 
 /* // Log-in Form
 ---------------------------------------------------------------------------------------------------- */
@@ -885,6 +900,7 @@ textarea::placeholder {
   display: inline-flex;
   align-items: center;
   background-image: none;
+  text-decoration: none;
 }
 #tags .tag {
   padding: .2rem .5rem;
@@ -1231,9 +1247,10 @@ aside:is(#loglist,#downloadlist) {
     font-family: "Material Symbols Outlined";
     vertical-align: middle;
     margin-right: .1em;
+    font-weight: normal;
     font-size: 1.2em;
     line-height: 1;
-    color: var(--a-link-color);
+    color: var(--icon--current-color);
   }
   &#loglist      h2::before { content: "\e889" }
   &#downloadlist h2::before { content: "\ebbe" }
@@ -1286,10 +1303,10 @@ aside:is(#loglist,#downloadlist) ul {
   & li > :is(a, span) {
     display: block;
     padding: .3rem 1.5rem .3rem 1.5rem;
-    color: inherit;
+    text-decoration: none;
   }
   & li a:hover {
-    background: linear-gradient(to top, rgba(100,200,255,0.2) 20%, transparent 20%);
+    background: var(--row-bg-hover);
   }
   & li a small {
     display: block;

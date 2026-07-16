@@ -1,18 +1,17 @@
 @charset "utf-8";
 
 :root{
-  --theme-hue: 225;
-  --theme-sub-hue: 225;
-  --theme-accent-hue: 350;
-  --header-saturation: 5%;
-  --header-lightness: 40%;
-  --icon-current-color   : #e02030;
-  --icon-current-bg-color: #000000;
+  --theme-main-hue: 280;
+  --theme-sub-hue: 280;
+  --theme-accent-hue: 26;
+  --header-lightness: 50%;
+  --menu-icon-current-color   : #e02030;
+  --menu-icon-current-bg-color: #000000;
+  --icon--current-color: var(--menu-icon-current-color);
 }
 .night {
-  --header-saturation: 5%;
-  --header-lightness: 15%;
-  --icon-bg-color: hsl(var(--theme-menu-hue),10%,30%);
+  --header-lightness: 27%;
+  --menu-icon-bg-color: oklch(40% 0.05 var(--theme-menu-hue));
 }
 body {
   background-image: url(../../_common/img/back-pattern.png), url(../img/back-xx.png);

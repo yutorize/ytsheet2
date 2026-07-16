@@ -34,16 +34,12 @@ main nav {
       height: 2.2em;
       mask-size: 100%;
       mask-repeat: no-repeat;
-      background-color: hsl(var(--theme-sub-hue),9%,50%);
     }
     .making  &::before { mask-image: url(../img/icon-2d.png); }
     .chara   &::before { mask-image: url(../img/icon-person.png); }
     .mons    &::before { mask-image: url(../img/icon-dragon.png); }
     .item    &::before { mask-image: url(../img/icon-chest.png); }
     .arts    &::before { mask-image: url(../img/icon-scroll.png); }
-    .current &::before {
-      background-color: hsl(var(--theme-accent-hue),50%,75%);
-    }
     @media screen and (width <= 735px){
       width: 9em;
       padding: 1em 0 .5em;

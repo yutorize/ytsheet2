@@ -126,12 +126,13 @@ span[data-gender] {
   width : 1.5em;
   height: 1.5em;
   margin-top: -1.5em;
+  margin-bottom: 2px;
   font-size: 2.2rem;
   line-height: 1;
   border-width: 1px;
   border-style: solid;
   border-radius: 50%;
-  background: var(--h2-color);
+  background-color: var(--h4-color);
   cursor: pointer;
   &::before {
     content: "\e8b6";
@@ -285,16 +286,28 @@ main nav ul li {
     border-style: solid;
     border-radius: .5em .5em 0 0;
     background: var(--nav-shadow);
-    background-color: hsla(var(--theme-sub-hue),30%,75%,0.2);
-    color: inherit !important;
+    background-color: var(--h4-color);
+    .night & { background-color: oklch(30% 0.02 var(--theme-sub-hue)); }
+    color: var(--text-color);
     font-weight: bold;
+    text-decoration: none;
+    &::before {
+      background-color: var(--icon--color);
+    }
+    &:hover::before,
+    .current &::before {
+      background-color: var(--icon--current-color);
+    }
   }
   .night &:not(.current) a {
-    color: #ddf !important;
+    color: #ddd !important;
   }
   &.current a {
     border-bottom-style: hidden;
-    background: linear-gradient(to bottom, var(--h2-color), transparent);
+    background: linear-gradient(to bottom, oklch(97% 0.03 var(--theme-sub-hue)), transparent);
+  }
+  .night &.current a {
+    background: linear-gradient(to bottom, oklch(35% 0.03 var(--theme-sub-hue)), transparent);
   }
   & a:hover {
     background: var(--bg-color);
@@ -337,7 +350,7 @@ main nav ul li {
     font-weight: normal;
   }
 }
-.list .navbar {
+.list .pager {
   text-align: center;
   padding: .5em;
   & a, & b {
@@ -345,6 +358,7 @@ main nav ul li {
     margin: .1em 0;
     padding: .3em .6em;
     border-radius: .5em;
+    text-decoration: none;
   }
   & a { background: #afafaf33; }
   & b { border: 1px solid #afafaf80; }
@@ -384,6 +398,9 @@ main nav ul li {
       background: var(--h3-color);
       white-space: nowrap;
     }
+    > a {
+      
+    }
   }
 }
 .list table tbody {
@@ -400,20 +417,6 @@ main nav ul li {
   &:hover {
     background: var(--row-bg-hover);
   }
-  &::before,
-  &::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    pointer-events: none;
-  }
-  &.hide::before {
-    background-image: linear-gradient(135deg, rgba(80,80,200,0.3) 10px, transparent 10px);
-    background-position: top left;
-  }
 }
 .list table td {
   min-width: 0;
@@ -429,18 +432,48 @@ main nav ul li {
   line-height: 1;
   & a {
     display: block;
-    height: 100%;
-    font-size: 1.1em;
+    height: calc(100% - 2px);
+    margin: 1px;
     font-weight: bold;
     text-align: center;
     align-content: center;
-    
+
+    position: relative;
+    overflow: clip;
+
+    line-height: 1.4;
+
+    border-radius: 8px;
+
+    &,
+    & span {
+      text-decoration: 2px underline var(--a-line-color);
+      text-underline-offset: .3rem;
+    }
     &:hover {
+      color: var(--text-color);
       background: var(--row-bg-hover);
+      &,
+      & span {
+        text-decoration: none;
+      }
     }
 
     > span {
       display: inline-block;
+    }
+    
+    tr.hide &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background-position: top left;
+      background-image: linear-gradient(135deg, var(--a-line-color) 12px, transparent 12px);
+      mix-blend-mode: multiply;
+    }
+    .night tr.hide &::before {
+      mix-blend-mode: screen;
     }
   }
 }
@@ -475,6 +508,7 @@ main nav ul li {
     color: inherit;
     font-size: 80%;
     line-height: 1;
+    text-decoration: none;
   }
   & a:first-child {
     margin-left: 0;
@@ -579,13 +613,16 @@ main nav ul li {
     &::before { content:"by "  }
   }
   &:hover {
-    background: rgba(180,200,255,0.1);
+    background: var(--row-bg-hover);
+    color: var(--text-color);
+    text-decoration: none;
   }
 }
 
 .list ul.grouplist a {
   text-align: left;
   font-size: 125%;
+  text-decoration: none;
 
   & small {
     position: static;

@@ -1,17 +1,17 @@
 @charset "utf-8";
 
 :root{
-  --theme-hue: 355;
-  --theme-sub-hue: 355;
-  --theme-accent-hue: 355;
-  --header-saturation: 50%;
-  --h2-color: hsla(355,61%,60%,0.3);
-  --icon-current-color   : #ffffff;
-  --icon-current-bg-color: #d02530;
+  --theme-main-hue  : 21;
+  --theme-sub-hue   : 290;
+  --theme-accent-hue: 26;
+  --theme-menu-hue: var(--theme-main-hue);
+  --header-chroma: 0.12;
+  --menu-icon-current-color   : #ffffff;
+  --menu-icon-current-bg-color: #d02530;
+  --icon--current-color: #d02530;
 }
 @media screen {
   .night {
-    --icon-bg-color: hsl(var(--theme-menu-hue),23%,15%);
   }
 }
 body {

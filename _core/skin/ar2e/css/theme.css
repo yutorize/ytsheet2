@@ -1,18 +1,15 @@
 @charset "utf-8";
 
 :root{
-  --theme-hue: 210;
-  --theme-sub-hue: 210;
-  --theme-menu-hue: 50;
-  --theme-accent-hue: 50;
-  --header-saturation: 30%;
-  --a-link-color   : hsl(var(--theme-accent-hue),90%,30%);
-  --a-visited-color: hsl(var(--theme-accent-hue),15%,45%);
+  --theme-main-hue  : 250;
+  --theme-sub-hue   : 270;
+  --theme-accent-hue: 95;
+  --theme-menu-hue : 95;
+  --a-line-color: oklch(80% 0.21 var(--theme-accent-hue));
 }
 @media screen {
   .night {
-    --a-link-color   : hsl(var(--theme-accent-hue),100%,80%);
-    --a-visited-color: hsl(var(--theme-accent-hue),25%,70%);
+    --a-line-color: oklch(55% 0.21 var(--theme-accent-hue));
   }
 }
 body {
