@@ -328,8 +328,7 @@ function ruby(text){
 // 最新のデータを取得 ----------------------------------------
 let newestData = {};
 async function getNewestData(){
-  const queries = new URLSearchParams(window.location.search);
-  const id = queries.get('id');
+  const id = form.id.value;
   
   const action = form.getAttribute("action")
   const options = {
@@ -1221,3 +1220,86 @@ function deleteLoadingArea() {
     loadingArea.remove();
   }
 }
+
+// インポート ----------------------------------------
+window.addEventListener('load', () => {
+  const button = document.getElementById('button-to-import-from-clipboard');
+
+  if (button != null) {
+    button.addEventListener('click', async () => {
+      button.disabled = true;
+
+      let errorMessage;
+
+      try {
+        const text = await navigator.clipboard.readText();
+
+        if (URL.canParse(text)) {
+          const url = new URL(text);
+          if (url.protocol === 'http:' || url.protocol === 'https:') {
+            /** @var {HTMLFormElement} */
+            const formObj = document.getElementById('form-to-import-from-url');
+
+            formObj.querySelector('[name=url]').value = url.toString();
+            formObj.submit();
+          } else {
+            errorMessage = "無効な形式のURLです。";
+          }
+        } else {
+          let json;
+
+          try {
+            const data = JSON.parse(text);
+            json = JSON.stringify(data);
+          } catch {
+            errorMessage = "クリップボードの内容がURLでもJSONでもありません。";
+          }
+
+          if (errorMessage == null) {
+            /**
+             * @param {string} name
+             * @param {string} value
+             * @return {HTMLInputElement}
+             */
+            function createParameter(name, value) {
+              const input = document.createElement('input');
+              input.setAttribute('name', name);
+              input.setAttribute('value', value);
+              input.setAttribute('type', 'hidden');
+              return input;
+            }
+
+            const formObj = document.createElement('form');
+            formObj.setAttribute('method', 'post');
+            formObj.setAttribute('action', './');
+            formObj.appendChild(createParameter('mode', 'edit'));
+            formObj.appendChild(createParameter('overwrite', '1'));
+            formObj.appendChild(createParameter('id', form.id.value));
+            if (form.pass != null) {
+              formObj.appendChild(createParameter('pass', form.pass.value));
+            }
+            formObj.appendChild(createParameter('json', json));
+            formObj.style.display = 'none';
+
+            document.querySelector('body').appendChild(formObj);
+            formObj.submit();
+          }
+        }
+      } catch (error) {
+        if (error.name === 'NotAllowedError') {
+          errorMessage = "Read permission denied.";
+        } else {
+          throw error;
+        }
+      } finally {
+        if (errorMessage != null) {
+          alert(errorMessage);
+        }
+
+        button.disabled = false;
+      }
+    });
+
+    button.disabled = false;
+  }
+});

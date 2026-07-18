@@ -51,6 +51,39 @@ button,
   &:hover {
     background: #c0c7cf;
   }
+  
+  &[disabled]{
+    cursor: not-allowed;
+    pointer-events: none;
+    opacity: 0.5;
+  }
+}
+
+dialog {
+  margin: auto;
+  padding: 1em;
+  text-align: center;
+  border-radius: 1em;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+
+  & h3 {
+    text-align: left;
+  }
+  & p {
+    margin: 1em;
+  }
+  > form {
+    & input + input[type="submit"] {
+      margin-left: .5em;
+    }
+  }
+  > button + button {
+    margin-left: 1em;
+  }
+  > hr {
+    margin: 1em 0;
+  }
 }
 
 fieldset {
@@ -422,6 +455,13 @@ dl.edit-table:last-child > dt:last-of-type ~ dd {
   > span {
     display: inline-block;
   }
+  > button {
+    position: absolute;
+    inset: 0;
+    border-radius: 0;
+    border-width: 0;
+    background: none;
+  }
 }
 #header-menu ul li:not(.buttons) {
   border-width: 0 1px 0 0;
@@ -492,7 +532,10 @@ dl.edit-table:last-child > dt:last-of-type ~ dd {
       background: none;
     }
   }
-  &.download-icon {
+  &.import-icon {
+    &::before { content: '\e255'; }
+  }
+  &.export-icon {
     &::before { content: '\f090'; }
   }
 }
@@ -522,15 +565,16 @@ dl.edit-table:last-child > dt:last-of-type ~ dd {
   #header-menu ul {
     bottom: calc(-1em - 3px - 2rem);
   }
-  #header-menu ul li:not(.buttons) {
-    min-width: 2.5em;
+  #header-menu ul li {
     text-align: center;
     white-space: nowrap;
   }
   #header-menu ul li[class$=icon] {
+    width: 4.5rem;
     font-size: 150%;
   }
   #header-menu ul li.buttons .submit {
+    width: 5rem;
     font-size: 130%;
   }
   #header-menu ul li span.shorten {

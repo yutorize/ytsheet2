@@ -1116,13 +1116,13 @@ print <<"HTML";
     <details class="box" id="free-note" @{[$pc{freeNote}?'open':'']}>
       <summary class="in-toc">設定・メモ</summary>
       <textarea name="freeNote">$pc{freeNote}</textarea>
-      @{[ $::in{log} ? '<button type="button" class="set-newest" onclick="setNewestSingleData(\'freeNote\')">最新のメモを適用する</button>' : '' ]}
+      @{[ ($::in{log} || $::in{overwrite}) ? '<button type="button" class="set-newest" onclick="setNewestSingleData(\'freeNote\')">最新のメモを適用する</button>' : '' ]}
     </details>
 
     <details class="box" id="free-history" @{[$pc{freeHistory}?'open':'']}>
       <summary class="in-toc">履歴（自由記入）</summary>
       <textarea name="freeHistory">$pc{freeHistory}</textarea>
-      @{[ $::in{log} ? '<button type="button" class="set-newest" onclick="setNewestSingleData(\'freeHistory\')">最新の履歴（自由記入）を適用する</button>' : '' ]}
+      @{[ ($::in{log} || $::in{overwrite}) ? '<button type="button" class="set-newest" onclick="setNewestSingleData(\'freeHistory\')">最新の履歴（自由記入）を適用する</button>' : '' ]}
     </details>
 
     <div class="box" id="history">
@@ -1219,7 +1219,7 @@ print <<"HTML";
       <ul class="annotate">
         <li>経験点欄は<code>1+2*2</code>など四則演算が有効です。<br>
       </ul>
-      @{[ $::in{log} ? '<button type="button" class="set-newest" onclick="setNewestHistoryData()">最新のセッション履歴を適用する</button>' : '' ]}
+      @{[ ($::in{log} || $::in{overwrite}) ? '<button type="button" class="set-newest" onclick="setNewestHistoryData()">最新のセッション履歴を適用する</button>' : '' ]}
     </div>
   </section>
 HTML

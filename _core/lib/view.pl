@@ -11,7 +11,7 @@ our $LOGIN_ID = check;
 our $file;
 my $type;
 my $author;
-our %conv_data = ();
+our %convData = ();
 
 $::in{log} ||= $::in{backup};
 
@@ -20,8 +20,8 @@ if($::in{id}){
 }
 elsif($::in{url}){
   eval { require $set::lib_convert; };
-  %conv_data = importSheetData($::in{url});
-  $type = $conv_data{type};
+  %convData = importSheetData($::in{url});
+  $type = $convData{type};
 }
 
 changeFileByType($type);
@@ -326,9 +326,9 @@ sub loadSheetData {
   }
   ## データ読み込み：コンバート
   elsif($::in{url}){
-    %pc = %conv_data;
+    %pc = %convData;
     $pc{hide} = 1;
-    if(!$conv_data{ver}){
+    if(!$convData{ver}){
       require $set::lib_calc_char;
       %pc = dataCalc(\%pc);
     }

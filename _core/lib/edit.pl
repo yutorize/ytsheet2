@@ -15,7 +15,30 @@ if($set::user_reqd && !$LOGIN_ID){ error('401:ログインしていません。'
 my $type = $::in{type};
 
 my $file; my $author;
-our %conv_data = ();
+our %convData = ();
+
+if($::in{url}){
+  eval { require $set::lib_convert; };
+  %convData = importSheetData($::in{url});
+}
+elsif($::in{file}){
+  my $data; my $buffer; my $i;
+  while(my $bytesread = read(param('file'), $buffer, 2048)) {
+    if(!$i && $buffer !~ /^{/){ error '400:有効なJSONデータではありません。' }
+    $data .= $buffer;
+    $i++;
+  }
+  %convData =  %{ decode_json($data) };
+}
+elsif($::in{json}){
+  %convData =  %{ decode_json($::in{json}) };
+}
+elsif($::in{backupJSON}){
+  %convData =  %{ decode_json($::in{backupJSON} ) };
+}
+elsif($mode eq 'convert') {
+  error('400:URLが入力されていない、または、ファイルが選択されていません。');
+}
 
 if($mode eq 'edit'){
   ($file, $type, my $user) = authSheet($::in{id},$::in{pass},$LOGIN_ID);
@@ -26,32 +49,7 @@ elsif($mode eq 'copy'){
   ($file, $type, $author) = (findSheet($::in{id}))[0..2];
 }
 elsif($mode eq 'convert'){
-  if($::in{url}){
-    eval { require $set::lib_convert; };
-    %conv_data = importSheetData($::in{url});
-    $type = $conv_data{type};
-  }
-  elsif($::in{file}){
-    my $data; my $buffer; my $i;
-    while(my $bytesread = read(param('file'), $buffer, 2048)) {
-      if(!$i && $buffer !~ /^{/){ error '400:有効なJSONデータではありません。' }
-      $data .= $buffer;
-      $i++;
-    }
-    %conv_data =  %{ decode_json($data) };
-    $type = $conv_data{type};
-  }
-  elsif($::in{json}){
-    %conv_data =  %{ decode_json($::in{json}) };
-    $type = $conv_data{type};
-  }
-  elsif($::in{backupJSON}){
-    %conv_data =  %{ decode_json($::in{backupJSON} ) };
-    $type = $conv_data{type};
-  }
-  else {
-    error('400:URLが入力されていない、または、ファイルが選択されていません。');
-  }
+  $type = $convData{type};
 }
 
 changeFileByType($type);
@@ -228,16 +226,29 @@ sub loadSheetData {
   my $message;
   my $dir =  $set::char_dir;
   # 最新データ取得（ログ用）
-  if($::in{log}){
-    %latest = getLatestData($dir, $file, 'protect','forbidden','mainImage',
+  if($::in{log} || $::in{overwrite}){
+    %latest = getLatestData($dir, $file, 'protect','forbidden','birthTime','mainImage',
       ( map {
         my $s = imageSuffix($_);
         "image$s","imageUpdate$s","imageFit$s","imagePercent$s","imagePositionX$s","imagePositionY$s","imageCopyright$s","imageCopyrightURL$s","imageSpoiler$s",
       } 1 .. $set::image_maxcount)
     );
   }
+  # コンバート用
+  my $convertedName;
+  if(%::convData){
+    if($::in{url}){ $convertedName = qq|URLから「<a href="$::in{url}" target="_blank"><!NAME></a>」|; }
+    elsif($::in{file}){ $convertedName = qq|JSONファイルから「<!NAME>」|; }
+    elsif($::in{json}){ $convertedName = qq|JSONデータから「<!NAME>」|; }
+  }
   # 保存 / 編集 / 複製 / コンバート
-  if($mode eq 'edit'){
+  if($::in{overwrite}){
+    %pc = %::convData;
+    $_ =~ s/"/&quot;/g foreach(values %pc);
+    $message = qq|<div class="data-imported">${convertedName}をコンバートして現在のシート上に開きました。<br>（まだ上書きはされていません）</div>|;
+    %pc = (%pc, %latest);
+  }
+  elsif($mode eq 'edit'){
     my $datatype = ($::in{log}) ? 'logs' : 'data';
     foreach (readSheetRecordLines $dir, $file, $datatype, $::in{log}){
       chomp $_;
@@ -281,7 +292,7 @@ sub loadSheetData {
     $message .= '</div>';
   }
   elsif($mode eq 'convert'){
-    %pc = %::conv_data;
+    %pc = %::convData;
     deleteImageData(\%pc);
     delete $pc{imageURL};
     delete $pc{protect};
@@ -290,7 +301,7 @@ sub loadSheetData {
       $message = '<span class="data-imported backup-loaded">入力途中の新規シートを復元しました</span>';
     }
     else {
-      $message = '<div class="data-imported">「<a href="'.$::in{url}.'" target="_blank"><!NAME></a>」をコンバートして新規作成します。<br>（まだ保存はされていません）</div>';
+      $message = qq|<div class="data-imported">${convertedName}をコンバートして新規作成します。<br>（まだ保存はされていません）</div>|;
     }
   }
 
@@ -456,6 +467,45 @@ sub renderEditPageEnd {
       <p class="notes">$notes</p>
       <p class="copyright">©<a href="https://yutorize.work">ゆとらいず工房</a>「ゆとシートⅡ」ver.${main::ver}</p>
     </footer>
+
+    <dialog id="dialog-import-json">
+      <p>別のデータを開き、このシートに上書きして編集します。<br>（未保存の編集は破棄されます）</p>
+      <hr>
+      <form method="post" action="./" id="form-to-import-from-url">
+        <input type="hidden" name="mode" value="edit">
+        <input type="hidden" name="overwrite" value="1">
+        <input type="hidden" name="id" value="$::in{id}">
+        <input type="hidden" name="pass" value="$::in{pass}">
+        <h3>URLから</h3>
+        <p>入力したURLのデータを開きます。</p>
+        <input type="url" name="url" style="width:80%;" placeholder="http://..." required><input type="submit" value="開く">
+      </form>
+      <hr>
+      <form method="post" action="./" enctype="multipart/form-data">
+        <input type="hidden" name="mode" value="edit">
+        <input type="hidden" name="overwrite" value="1">
+        <input type="hidden" name="id" value="$::in{id}">
+        <input type="hidden" name="pass" value="$::in{pass}">
+        <h3>ローカルのJSONファイルから</h3>
+        <p>アップロードしたJSONファイルのデータを開きます。</p>
+        <input type="file" name="file" style="width:80%;" accept=".json,.txt" required><input type="submit" value="開く">
+      </form>
+      <hr>
+      <div class="form">
+        <h3>クリップボードから</h3>
+        <p>クリップボードからURL/JSONを読み取りデータを開きます。</p>
+        <button type="submit" id="button-to-import-from-clipboard" disabled>開く</button>
+      </div>
+      <hr>
+      <button type="button" command="close" commandfor="dialog-import-json">キャンセル</button>
+    </dialog>
+
+    <dialog id="dialog-export-json">
+      <p>現在編集中のデータをJSONファイルとしてダウンロードします。</p>
+      <button onclick="exportAsJson()">ダウンロード</button>
+      <button type="button" command="close" commandfor="dialog-export-json">キャンセル</button>
+    </dialog>
+
     $extraHtml
   </body>
   </html>
@@ -479,7 +529,8 @@ sub renderEditHeaderMenu {
         <li class="buttons">
           <ul>
             <li @{[ display ($::in{mode} eq 'edit') ]} class="view-icon" title="閲覧画面"><a href="./?id=$::in{id}"></a>
-            <li onclick="exportAsJson()" class="download-icon" title="JSONデータを保存">
+            <li @{[ display ($::in{mode} eq 'edit') ]}  class="import-icon" title="別のデータを開く"><button type="button" command="show-modal" commandfor="dialog-import-json"></button>
+            <li class="export-icon" title="JSONデータを保存"><button type="button" command="show-modal" commandfor="dialog-export-json"></button>
             <li @{[ display ($::in{mode} eq 'edit') ]} class="copy" onclick="window.open('./?mode=copy&id=$::in{id}$logQ');">複製
             <li class="submit" onclick="formSubmit()" title="Ctrl+S">保存
           </ul>
@@ -1041,7 +1092,7 @@ sub renderDeleteForm {
           <input type="submit" value="画像削除">
         </fieldset>
       </form>
-      <p class="right">@{[ $::in{log}?$::in{log}:'最終' ]}更新時のIP:$::pc{IP}</p>
+      <p class="right">@{[ ($::in{log} || $::in{overwrite})?$::in{log}:'最終' ]}更新時のIP:$::pc{IP}</p>
     HTML
   }
   return $html;
