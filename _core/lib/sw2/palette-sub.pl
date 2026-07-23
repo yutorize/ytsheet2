@@ -343,9 +343,10 @@ sub palettePreset {
 
       if (@drugsLines) {
         my $drugTexts = join("\n", reverse @drugsLines); # 手前のループを逆順で回した分を相殺するために reverse
-        $text .= "### ■${headline}\n${drugTexts}\n###\n";
+        $text .= "### ■${headline}\n${drugTexts}\n\n";
       }
     }
+    $text .= appendPaletteInsert('drug');
 
     # 宣言特技
     require $set::data_feats;
@@ -382,14 +383,14 @@ sub palettePreset {
 
     # 魔法
     my $magicText;
-  
+
     foreach my $class (@classNames){
       next if !($classData{$class}{magic}{jName} || $classData{$class}{craft}{stt});
       my $id   = $classData{$class}{id};
       my $name = $classData{$class}{magic}{jName} || $classData{$class}{craft}{jName};
       my $power = $classData{$class}{craft}{power} || $name;
       next if !$::pc{'lv'.$id};
-      
+
       my %dmgTexts;
       foreach my $paNum (0 .. $::pc{paletteMagicNum}){
         next if($paNum && !($::pc{'paletteMagic'.$paNum.'Name'} && $::pc{'paletteMagic'.$paNum.'Check'.$id}));
@@ -427,7 +428,7 @@ sub palettePreset {
 
           return $base;
         }
-        
+
         my $half;
         my $lastModifiedRate;
         foreach my $pow (sort {$a <=> $b} keys %{$pows{$id}}) {
@@ -530,19 +531,21 @@ sub palettePreset {
         $txt =~ s/^(k[0-9]+)\[(.+?)\]/$1\[($2)\]/gm if $bot{BCD};
         $dmgTexts{$paNum} = $txt;
       }
-      
+
       foreach my $paNum (0 .. $::pc{paletteMagicNum}){
         next if($paNum && !($::pc{'paletteMagic'.$paNum.'Name'} && $::pc{'paletteMagic'.$paNum.'Check'.$id}));
-        
+
         my $activeName  = $::pc{'paletteMagic'.$paNum.'Name'} ? "＋$::pc{'paletteMagic'.$paNum.'Name'}" : '';
         my $activePower = $::pc{'paletteMagic'.$paNum.'Power'} ? optimizeOperatorFirst("+$::pc{'paletteMagic'.$paNum.'Power'}") : '';
         my $activeCast  = $::pc{'paletteMagic'.$paNum.'Cast' } ? optimizeOperatorFirst("+$::pc{'paletteMagic'.$paNum.'Cast' }") : '';
 
+        my $castAdd = $::pc{'magicCastAdd'.$id};
+
         $magicText .= "2d+{$power}";
-        if   ($name =~ /魔/){ $magicText .= "$activePower+{行使修正}$activeCast ${name}行使$activeName\n"; }
-        elsif($name =~ /歌/){ $magicText .= " @{[$::SW2_0 ? '呪歌' : '']}演奏\n"; }
-        else                { $magicText .= " ${name}\n"; }
-        
+        if   ($name =~ /魔/){ $magicText .= "$activePower+{行使修正}+$castAdd$activeCast ${name}行使$activeName\n"; }
+        elsif($name =~ /歌/){ $magicText .= "+$castAdd @{[$::SW2_0 ? '呪歌' : '']}演奏\n"; }
+        else                { $magicText .= "+$castAdd ${name}\n"; }
+
         if($dmgTexts{$paNum + 1} && $dmgTexts{$paNum} eq $dmgTexts{$paNum + 1}){
           next;
         }
@@ -561,7 +564,7 @@ sub palettePreset {
       $text .= "<<BUFF-VAR:魔法系>>";
     }
     $text .= $magicText;
-    
+
     $text .= appendPaletteInsert('magic');
 
     # 攻撃
@@ -573,7 +576,7 @@ sub palettePreset {
       $text .= "<<BUFF-VAR:武器攻撃系>>";
       last;
     }
-    
+
     foreach (1 .. $::pc{weaponNum}){
       next if $::pc{'weapon'.$_.'Acc'}.$::pc{'weapon'.$_.'Rate'}.
               $::pc{'weapon'.$_.'Crit'}.$::pc{'weapon'.$_.'Dmg'} eq '';
@@ -594,7 +597,7 @@ sub palettePreset {
       }
       $::pc{'weapon'.$_.'Crit'} = normalizeCrit $::pc{'weapon'.$_.'Crit'};
       my $partName = $::pc{'part'.$::pc{'weapon'.$_.'Part'}.'Name'};
-      
+
       my %dmgTexts;
       foreach my $paNum (0 .. $::pc{paletteAttackNum}){
         next if($paNum && !($::pc{'paletteAttack'.$paNum.'Name'} && $::pc{'paletteAttack'.$paNum.'CheckWeapon'.$_}));
@@ -639,7 +642,7 @@ sub palettePreset {
           $text .= "\]+";
           $text .= $::pc{paletteUseVar} ? "{追加D$_}" : $::pc{"weapon${_}DmgTotal"};
           $text .= $activeDmg;
-          
+
           $text .= "+{追加D修正}";
           if($::pc{'paletteAttack'.$paNum.'Roll'}){
             $::pc{'paletteAttack'.$paNum.'Roll'} =~ s/^+//;
@@ -664,7 +667,7 @@ sub palettePreset {
 
       foreach my $paNum (0 .. $::pc{paletteAttackNum}){
         next if($paNum && !($::pc{'paletteAttack'.$paNum.'Name'} && $::pc{'paletteAttack'.$paNum.'CheckWeapon'.$_}));
-        
+
         my $activeName = $::pc{'paletteAttack'.$paNum.'Name'} ? "＋$::pc{'paletteAttack'.$paNum.'Name'}" : '';
 
         $text .= "2d+";
@@ -680,7 +683,7 @@ sub palettePreset {
           $text .= "＋$::pc{'paletteAttack'.$paNum.'Name'}";
         }
         $text .= "\n";
-        
+
         if($dmgTexts{$paNum + 1} && $dmgTexts{$paNum} eq $dmgTexts{$paNum + 1}){
           next;
         }
@@ -692,7 +695,7 @@ sub palettePreset {
       }
     }
     $text .= "//出目修正=\$+{クリレイ}\#{必殺効果}\n" if $text =~ /■武器攻撃系/;
-    
+
     $text .= appendPaletteInsert('attack');
     # 抵抗回避
     $text .= "###\n" if $bot{TKY};
@@ -718,7 +721,7 @@ sub palettePreset {
       $text .= ($::pc{"defenseTotal${i}Note"}?"／$::pc{'defenseTotal'.$i.'Note'}":'')."\n";
     }
     $text .= appendPaletteInsert('defense');
-    
+
     #
     $text .= "###\n" if $bot{YTC} || $bot{TKY};
     # バフ変数セット
@@ -785,7 +788,7 @@ sub palettePreset {
       ([0-9]+)
       [(（][0-9]+[）)]
       /$text .= "2d+{$+{name}} $+{name}\n\n";/megix;
-    
+
     $skills =~ s/^
       (?<head>
         (?<mark>(?:$skillMarkRE)+)
@@ -813,7 +816,7 @@ sub palettePreset {
             .skillNote($+{head},$+{name},$+{note})."\n";
       /megix;
   }
-  
+
   return $text;
 
   sub skillNote {
@@ -844,7 +847,7 @@ sub palettePreset {
       $text =~ s{[☆≫»]|&gt;&gt;}{[補]}gi;
       $text =~ s{[□☑🗨]}{[宣]}gi;
     }
-    
+
     return $text;
   }
 }
@@ -860,7 +863,7 @@ sub extractWeaponMarks {
 sub palettePresetSimple {
   my $tool = shift;
   my $type = shift;
-  
+
   my $text = palettePreset($tool,$type);
   my %propaty;
   foreach (paletteProperties($tool,$type)){
@@ -878,7 +881,7 @@ sub palettePresetSimple {
   1 while $text =~ s/(?<![0-9])\([+\-*0-9]+\)/s_eval($&)/egi;
   $text =~ s/[0-9]+\/6/int s_eval($&)/egi;
   1 while $text =~ s/(?<![0-9])\([+\-*0-9]+\)/s_eval($&)/egi;
-  
+
   return $text;
 }
 
@@ -979,7 +982,7 @@ sub paletteProperties {
       }
     }
     push @propaties, '';
-    
+
     foreach my $class (@classNames){
       next if !($classData{$class}{magic}{jName} || $classData{$class}{craft}{stt});
       my $id = $classData{$class}{id};
@@ -1001,22 +1004,22 @@ sub paletteProperties {
       push @propaties, "//$name=({$class}+({$stt}+{$stt\増強}$own)/6)$add";
     }
     push @propaties, '';
-    
+
     foreach (1 .. $::pc{weaponNum}){
       next if $::pc{'weapon'.$_.'Name'}.$::pc{'weapon'.$_.'Usage'}.$::pc{'weapon'.$_.'Reqd'}.
               $::pc{'weapon'.$_.'Acc'}.$::pc{'weapon'.$_.'Rate'}.$::pc{'weapon'.$_.'Crit'}.
               $::pc{'weapon'.$_.'Dmg'}.$::pc{'weapon'.$_.'Own'}.$::pc{'weapon'.$_.'Note'}
               eq '';
       $::pc{'weapon'.$_.'Name'} = $::pc{'weapon'.$_.'Name'} || $::pc{'weapon'.($_-1).'Name'};
-      
+
       $::pc{'weapon'.$_.'Crit'} = normalizeCrit $::pc{'weapon'.$_.'Crit'};
-      
+
       my $class = $::pc{"weapon${_}Class"};
       my $category = $::pc{"weapon${_}Category"};
       my $partNum = $::pc{"weapon${_}Part"};
 
       push @propaties, "//武器$_=$::pc{'weapon'.$_.'Name'}";
-      
+
       # 命中
       if(!$::pc{'weapon'.$_.'Class'} || $::pc{'weapon'.$_.'Class'} eq '自動計算しない'){ push @propaties, "//命中$_=$::pc{'weapon'.$_.'Acc'}"; }
       else {
@@ -1074,7 +1077,7 @@ sub paletteProperties {
 
       push @propaties, '';
     }
-    
+
     foreach my $i (1..$::pc{defenseTotalNum}){
       next if ($::pc{"defenseTotal${i}Eva"} eq '');
 
@@ -1093,7 +1096,7 @@ sub paletteProperties {
         }
       }
       next if !$hasChecked && !$class;
-      
+
       if(!$partNum || $partNum eq $::pc{partCore}) {
         $evaMod += $::pc{evasiveManeuver} + $::pc{mindsEye};
         if($::pc{evasiveManeuver} == 2 && $id ne 'Fen' && $id ne 'Bat'){ $evaMod -= 1 }
@@ -1111,7 +1114,7 @@ sub paletteProperties {
         .")";
       push @propaties, "//防護${i}=".($::pc{"defenseTotal${i}Def"} || 0);
     }
-    
+
   }
   ## 魔物
   elsif($type eq 'm') {
@@ -1130,7 +1133,7 @@ sub paletteProperties {
       push @propaties, "//生命抵抗=$::pc{vitResist}";
       push @propaties, "//精神抵抗=$::pc{mndResist}";
     }
-    
+
     push @propaties, '';
     foreach (1 .. $::pc{statusNum}){
       my $num = $_;
@@ -1176,7 +1179,7 @@ sub paletteProperties {
       (?=^$skillMarkRE|^●|\z)
       /push @propaties, "\/\/$+{name}=$+{value}";push @propaties, skillNoteP($+{name},$+{note});/megix;
   }
-  
+
   return @propaties;
 
   sub skillNoteP {
