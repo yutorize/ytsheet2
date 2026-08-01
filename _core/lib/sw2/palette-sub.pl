@@ -539,12 +539,12 @@ sub palettePreset {
         my $activePower = $::pc{'paletteMagic'.$paNum.'Power'} ? optimizeOperatorFirst("+$::pc{'paletteMagic'.$paNum.'Power'}") : '';
         my $activeCast  = $::pc{'paletteMagic'.$paNum.'Cast' } ? optimizeOperatorFirst("+$::pc{'paletteMagic'.$paNum.'Cast' }") : '';
 
-        my $castAdd = $::pc{'magicCastAdd'.$id};
+        my $castAdd = $::pc{'magicCastAdd'.$id} ? "+$::pc{'magicCastAdd'.$id}" : '';
 
         $magicText .= "2d+{$power}";
-        if   ($name =~ /魔/){ $magicText .= "$activePower+{行使修正}+$castAdd$activeCast ${name}行使$activeName\n"; }
-        elsif($name =~ /歌/){ $magicText .= "+$castAdd @{[$::SW2_0 ? '呪歌' : '']}演奏\n"; }
-        else                { $magicText .= "+$castAdd ${name}\n"; }
+        if   ($name =~ /魔/){ $magicText .= "$activePower+{行使修正}$castAdd$activeCast ${name}行使$activeName\n"; }
+        elsif($name =~ /歌/){ $magicText .= "$castAdd @{[$::SW2_0 ? '呪歌' : '']}演奏\n"; }
+        else                { $magicText .= "$castAdd ${name}\n"; }
 
         if($dmgTexts{$paNum + 1} && $dmgTexts{$paNum} eq $dmgTexts{$paNum + 1}){
           next;
