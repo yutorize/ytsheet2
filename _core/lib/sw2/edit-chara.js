@@ -1634,7 +1634,7 @@ function calcParts(){
     const partName = form[`part${num}Name`].value;
     let partData = SET.partsData[ partName ] || {};
     let classLv = lv.Phy || 0;
-    if(form.unlockDemonoPalace.checked && lv.Par && SET.partsData[ partName ]?.variantPar){
+    if(form.unlockDemonoPalace && form.unlockDemonoPalace.checked && lv.Par && SET.partsData[ partName ]?.variantPar){
       partData = SET.partsData[ partName ].variantPar;
       classLv = lv.Par || 0;
     }
