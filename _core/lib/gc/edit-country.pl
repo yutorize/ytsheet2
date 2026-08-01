@@ -27,7 +27,7 @@ if($isNewSheet){
   $pc{protect} ||= $LOGIN_ID ? 'account' : 'password';
 }
 
-if($::mode eq 'edit' || ($::mode eq 'convert' && $pc{ver})){
+if($::mode eq 'edit' || ($::mode =~ /^(?:convert|copy)$/ && $pc{ver})){
   %pc = upgradeCharaData(\%pc);
   if($pc{updateMessage}){
     $message .= "<hr>" if $message;

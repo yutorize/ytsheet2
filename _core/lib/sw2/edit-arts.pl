@@ -58,7 +58,7 @@ if($isNewSheet){
   $pc{author} = (getPlayerName($LOGIN_ID))[0];
   $pc{protect} ||= $LOGIN_ID ? 'account' : 'password';
 }
-if($::mode eq 'edit' || ($::mode eq 'convert' && $pc{ver})){
+if($::mode eq 'edit' || ($::mode =~ /^(?:convert|copy)$/ && $pc{ver})){
   %pc = upgradeArtsData(\%pc);
 }
 if($::mode eq 'blanksheet'){
