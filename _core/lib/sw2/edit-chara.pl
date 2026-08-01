@@ -160,6 +160,20 @@ foreach my $name (@allClassNames){
   next if $classData{$name}{type} ne 'weapon-user' && !$classData{$name}{evaUnlock};
   push(@evasionClasses, $name);
 }
+## 戦闘特技（ヴァグランツ5Lv選択用）
+my %featsVagrants;
+foreach (qw/レンジャー スカウト セージ/){
+  unless(exists $featsVagrants{$_}){
+    $featsVagrants{$_} = ['掠め取り','クルードテイク'];
+  }
+  foreach my $data (@{ $classData{$_}{feats} }){
+    if($data->[1] == 5){
+      unshift(@{ $featsVagrants{$_} }, "DEF=$data->[0]");
+      last;
+    }
+  }
+}
+
 ## 言語
 my @langoptionT = ('auto=>○ 自動習得／その他の習得','listen=>△ 聞き取り限定（通辞の耳飾りなど）');
 my @langoptionR = ('auto=>○ 自動習得／その他の習得');
@@ -572,9 +586,9 @@ print <<"HTML";
             ]}
           </ul>
           <ul id="combat-feat-vagrants-auto" data-stage="2.5">
-            <li id="combat-feat-vagrants-sco5" data-label="スカウト5"  ><select name="combatFeatsExcSco5">@{[ option 'combatFeatsExcSco5', 'DEF=トレジャーハント','掠め取り','クルードテイク' ]}</select>
-            <li id="combat-feat-vagrants-ran5" data-label="レンジャー5"><select name="combatFeatsExcRan5">@{[ option 'combatFeatsExcRan5', 'DEF=サバイバビリティ','掠め取り','クルードテイク' ]}</select>
-            <li id="combat-feat-vagrants-sag5" data-label="セージ5"    ><select name="combatFeatsExcSag5">@{[ option 'combatFeatsExcSag5', 'DEF=鋭い目','掠め取り','クルードテイク' ]}</select>
+            <li id="combat-feat-vagrants-sco5" data-label="スカウト5"  ><select name="combatFeatsExcSco5">@{[ option 'combatFeatsExcSco5', @{ $featsVagrants{'スカウト'} } ]}</select>
+            <li id="combat-feat-vagrants-ran5" data-label="レンジャー5"><select name="combatFeatsExcRan5">@{[ option 'combatFeatsExcRan5', @{ $featsVagrants{'レンジャー'} } ]}</select>
+            <li id="combat-feat-vagrants-sag5" data-label="セージ5"    ><select name="combatFeatsExcSag5">@{[ option 'combatFeatsExcSag5', @{ $featsVagrants{'セージ'} } ]}</select>
           </ul>
           <div class="feats-options">
             <ul>
