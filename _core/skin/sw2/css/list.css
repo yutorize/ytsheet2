@@ -334,7 +334,8 @@ main nav {
   align-content: center;
   text-align: center;
   background: var(--h2-color);
-  border-radius: 10px;
+  border-width: 1px 0 0;
+  border-style: solid;
   font-size: 1.6rem;
   & small {
     font-size: 1.4rem;

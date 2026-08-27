@@ -13,8 +13,8 @@
 @media screen {
   .night {
     --menu-icon-bg-color: oklch(35% 0.04 var(--theme-menu-hue));
-    --h2-color: oklch(35% 0.02 var(--theme-sub-hue));
-    --h3-color: oklch(30% 0.01 var(--theme-sub-hue));
+    --h2-color: oklch(40% 0.02 var(--theme-sub-hue));
+    --h3-color: oklch(35% 0.01 var(--theme-sub-hue));
   }
 }
 body {

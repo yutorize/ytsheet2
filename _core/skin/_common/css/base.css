@@ -178,9 +178,10 @@ ruby rp {
 /* // Base
 ---------------------------------------------------------------------------------------------------- */
 :root {
-  --bg-color: #fff;
-  --text-color: #000;
-  --section-bg-color: #fff1;
+  --text-color: #000000;
+  --bg-color: #ffffff;
+  --section-bg-color: #ffffff80;
+  --border-color: #999;
   --input-bg-color: rgba(255,255,255,0.7);
 
   --theme-main-hue  : 255;
@@ -208,14 +209,16 @@ ruby rp {
 }
 @media screen {
   .night {
-    --text-color: #fff;
-    --bg-color: #000;
+    --text-color: #ffffff;
+    --bg-color: #0f0f0f;
+    --section-bg-color: #26262680;
+    --border-color: #556;
     --input-bg-color: rgba(0,0,0,0.8);
   
     --header-lightness: 45%;
-    --h2-color: oklch(35% 0.05 var(--theme-sub-hue));
-    --h3-color: oklch(30% 0.04 var(--theme-sub-hue));
-    --h4-color: oklch(25% 0.02 var(--theme-sub-hue));
+    --h2-color: oklch(40% 0.05 var(--theme-sub-hue));
+    --h3-color: oklch(35% 0.04 var(--theme-sub-hue));
+    --h4-color: oklch(30% 0.02 var(--theme-sub-hue));
     --menu-icon-color   : oklch(98% 0.04 var(--theme-menu-hue));
     --menu-icon-bg-color: oklch(45% 0.04 var(--theme-menu-hue));
     --icon--current-color: oklch(85% 0.1 var(--theme-accent-hue));
@@ -423,7 +426,6 @@ header {
   }
 }
 header, .header-back-name {
-  border-bottom: 1px solid #aaa;
   background-image: url(../img/back-abstract.webp)/* DL:linear-gradient(to right,#fffc,transparent) */;
   background-position: left top;
   background-repeat: no-repeat;
@@ -439,7 +441,6 @@ footer {
   height: 6rem;
   margin-top: auto;
   padding: 15px 10px 20px;
-  border-top: 1px solid #aaa;
   background-color: var(--header-color);
   background-image: url(../img/back-abstract-reverse.webp)/* DL:linear-gradient(to left,#fffc,transparent) */;
   background-position: right top;
@@ -487,7 +488,6 @@ main {
   padding: 4rem 0 1rem;
   border-width: 0px 3px;
   border-style: double;
-  border-color: #aaa;
 
   @media print {
     border-width: 0;
@@ -503,10 +503,7 @@ article h1 {
   font-size: 2.5rem;
 }
 
-* { border-color: #999; }
-@media screen {
-  .night * { border-color: #556; }
-}
+* { border-color: var(--border-color); }
 
 /* トグルボタン */
 label.toggle-button {
@@ -917,12 +914,9 @@ aside#sidebar-bottom {
   margin: 0;
   border-width: 0px 3px;
   border-style: double;
-  border-color: #aaa;
+  border-color: var(--border-color);
   grid-column: 2 / 3;
   text-align: center;
-  .night & {
-    border-color: #556;
-  }
 }
 aside#sidebar-top {
   padding: 5rem 0 0rem;

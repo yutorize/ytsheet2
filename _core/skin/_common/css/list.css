@@ -14,6 +14,7 @@
 /* // Article
 ---------------------------------------------------------------------------------------------------- */
 article {
+  max-width: none;
   border-width: 1px 0 0;
   border-style: solid;
 }
@@ -22,6 +23,7 @@ nav + article {
 }
 article h1 {
   margin-top: .5em;
+  padding-left: 1.4rem;
   & small {
     display: inline-block;
     font-size: 50%;
@@ -126,6 +128,7 @@ span[data-gender] {
   width : 1.5em;
   height: 1.5em;
   margin-top: -1.5em;
+  margin-right: 5px;
   margin-bottom: 2px;
   font-size: 2.2rem;
   line-height: 1;
@@ -147,7 +150,7 @@ span[data-gender] {
 form#form-search {
   display: block;
   width: max-content;
-  margin: .2em;
+  margin: 2px 5px;
   margin-left: auto;
   border-width: 1px;
   border-style: solid;
@@ -227,10 +230,9 @@ form#form-search {
   z-index: 2;
   top: 4rem;
   height: 3.6rem;
-  padding: 0 .5em;
+  padding: 0 1.4rem;
   line-height: 1.6rem;
   background-color: var(--bg-color);
-  background-image: linear-gradient(var(--h2-color));
   > dt::after {
     content: ":";
   }
@@ -247,7 +249,7 @@ form#form-search {
 /* // Main-Nav
 ---------------------------------------------------------------------------------------------------- */
 main nav {
-  margin: 1em 1em 0;
+  margin: 1em 0 0;
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   --nav-shadow: linear-gradient(to top, rgba(125,125,125,0.2), transparent 10px);
@@ -336,14 +338,16 @@ main nav ul li {
   margin: 1.5rem 0 5rem;
   padding: 0;
   font-family: var(--font-proportional);
+  background-color: var(--section-bg-color);
 }
 .list h2 {
-  height: 4rem;
+  height: calc(4rem + 1px);
   padding: 0 .8em;
   margin-bottom:.5em;
   align-content: center;
   background-color: var(--h2-color);
-  border-radius: 10px;
+  border-width: 1px 0 0;
+  border-style: solid;
   font-size: 1.6rem;
   & small {
     font-size: 1.4rem;
@@ -378,23 +382,33 @@ main nav ul li {
   position: sticky;
   top: 4rem;
   z-index: 1;
-  background: var(--bg-color);
 }
 .search-summary ~ .list table thead {
   top: 7.6rem;
 }
 .list table thead tr {
+  padding: 0 0 1px;
   gap: 0 1px;
+  background-color: var(--bg-color);
   > th {
     display: grid;
     margin-top: 1px;
+    border-radius: 5px;
+    overflow: clip;
+    &.name {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+    &.date {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
     > a,
     > span {
       place-content: center;
       min-height: calc(1.5em + 10px);
       padding: 0;
       line-height: 1.2;
-      border-radius: 5px;
       background: var(--h3-color);
       white-space: nowrap;
     }
@@ -432,8 +446,8 @@ main nav ul li {
   line-height: 1;
   & a {
     display: block;
-    height: calc(100% - 2px);
-    margin: 1px;
+    height: 100%;
+    padding: 0 .3rem;
     font-weight: bold;
     text-align: center;
     align-content: center;
@@ -442,8 +456,6 @@ main nav ul li {
     overflow: clip;
 
     line-height: 1.4;
-
-    border-radius: 8px;
 
     &,
     & span {
@@ -577,6 +589,7 @@ main nav ul li {
 ---------------------------------------------------------------------------------------------------- */
 .list ul {
   display: grid;
+  padding: .5rem;
   grid-gap: .5rem;
   grid-template-columns: 1fr 1fr;
 }
