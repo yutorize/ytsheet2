@@ -98,6 +98,10 @@ ruby rp {
   -webkit-text-emphasis: dot filled;
   text-emphasis: dot filled;
 }
+.transparent {
+  color: transparent;
+  text-shadow: none;
+}
 .d-dash {
   display: inline-block;
   font-family: "Meiryo","小塚明朝 Pro","Kozuka Mincho Pro","Kozuka Mincho Std",sans-serif;

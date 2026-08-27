@@ -898,7 +898,7 @@ sub unescapeTags {
   $text =~ s/''(.+?)''/<b>$1<\/b>/gi;  # 太字
   $text =~ s/%%(.+?)%%/<span class="strike">$1<\/span>/gi;  # 打ち消し線
   $text =~ s/__(.+?)__/<span class="underline">$1<\/span>/gi;  # 下線
-  $text =~ s/\{\{(.+?)\}\}/<span style="color:transparent">$1<\/span>/gi;  # 透明
+  $text =~ s/\{\{(.+?)\}\}/<span class="transparent">$1<\/span>/gi;  # 透明
   $text =~ s/[|｜]([^|｜\n]+?)《(.+?)》/<ruby><rp>｜<\/rp>$1<rp>《<\/rp><rt>$2<\/rt><rp>》<\/rp><\/ruby>/gi; # なろう式ルビ
   $text =~ s/《《(.+?)》》/<span class="text-em">$1<\/span>/gi; # カクヨム式傍点
 
@@ -1438,7 +1438,7 @@ sub renderTextRule {
       <dl><dt>下線  <dd><code>__テキスト__</code>：<span class="underline">テキスト</span></dl>
       <dl><dt>ルビ  <dd><code>|テキスト《てきすと》</code>：<ruby>テキスト<rt>てきすと</rt></ruby></dl>
       <dl><dt>傍点  <dd><code>《《テキスト》》</code>：<span class="text-em">テキスト</span></dl>
-      <dl><dt>透明  <dd><code>{{テキスト}}</code>：<span style="color:transparent">テキスト</span>（ドラッグ反転で見える）</dl>
+      <dl><dt>透明  <dd><code>{{テキスト}}</code>：<span class="transparent">テキスト</span>（ドラッグ反転で見える）</dl>
       <dl><dt>リンク<dd><code>[[テキスト>URL]]</code></dl>
       <dl><dt>他のシートへのリンク<dd><code>[テキスト#シートのID]</code></dl>
       @{[ defined(&renderAddTextRule) ? &renderAddTextRule() : '' ]}
