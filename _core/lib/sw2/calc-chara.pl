@@ -140,7 +140,7 @@ sub data_calc {
     $pc{dishonorBarbaros} -= $pc{honorOffsetBarbaros};
   }
   ## 冒険者ランク
-  if('','Barbaros'){
+  foreach ('','Barbaros'){
     if($pc{"rank$_"} !~ /★$/ || $pc{"rankStar$_"} <= 1){ $pc{"rankStar$_"} = '' }
     if($pc{"rank$_"} =~ /★$/ && $pc{"rankStar$_"} >= 2){ $pc{honor} -= 500 * ($pc{"rankStar$_"}-1) }
   }
