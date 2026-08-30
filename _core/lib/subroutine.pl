@@ -24,6 +24,7 @@ our %statusCode = (
   502 => '502 Bad Gateway',
   503 => '503 Service Unavailable',
 );
+
 ### 案内画面 --------------------------------------------------
 sub info {
   our $header = shift;
@@ -505,6 +506,31 @@ my $USE_ARGON2 = eval {
   1;
 } ? 1 : 0;
 
+my $CRYPT_METHOD;
+sub getCryptMethod {
+  return $CRYPT_METHOD if defined $CRYPT_METHOD;
+
+  my $test;
+
+  # SHA-512 crypt
+  $test = crypt('a', '$6$testsalt$');
+  if (defined $test && index($test, '$6$') == 0) {
+    return $CRYPT_METHOD = 'sha512';
+  }
+  # SHA-256 crypt
+  $test = crypt('a', '$5$testsalt$');
+  if (defined $test && index($test, '$5$') == 0) {
+    return $CRYPT_METHOD = 'sha256';
+  }
+  # MD5 crypt
+  $test = crypt('a', '$1$testsalt$');
+  if (defined $test && index($test, '$1$') == 0) {
+    return $CRYPT_METHOD = 'md5';
+  }
+
+  return $CRYPT_METHOD = '';
+}
+
 sub encrypt {
   my $plain = shift;
   return '' if !defined $plain || $plain eq '';
@@ -518,7 +544,32 @@ sub encrypt {
     return argon2id_pass($plain, $s, $time_cost, $memory_cost, $parallelism, $tag_length);
   }
 
-  return crypt($plain,index(crypt('a','$1$a$'),'$1$a$') == 0 ? '$1$'.$s.'$' : $s);
+  # crypt()
+  my $method = getCryptMethod();
+  my $CRYPT_ROUNDS = 100000;
+  if ($method eq 'sha512') {
+    my $salt = createSalt(16, 1);
+    return crypt(
+      $plain,
+      "\$6\$rounds=$CRYPT_ROUNDS\$$salt\$"
+    );
+  }
+  if ($method eq 'sha256') {
+    my $salt = createSalt(16, 1);
+    return crypt(
+      $plain,
+      "\$5\$rounds=$CRYPT_ROUNDS\$$salt\$"
+    );
+  }
+  if ($method eq 'md5') {
+    my $salt = createSalt(8, 1);
+    return crypt(
+      $plain,
+      "\$1\$$salt\$"
+    );
+  }
+
+  return crypt($plain, $s);
 }
 
 sub verifyCrypt {
@@ -530,10 +581,11 @@ sub verifyCrypt {
   }
   return crypt($plain,$crypt) eq $crypt;
 }
-sub createSalt {
-  my ($length) = @_;
 
-  if(open(my $RND, '<:raw', '/dev/urandom')){
+sub createSalt {
+  my ($length, $cryptSafe) = @_;
+
+  if(!$cryptSafe && open(my $RND, '<:raw', '/dev/urandom')){
     my $salt = '';
     if(read($RND, $salt, $length) == $length){
       close($RND);

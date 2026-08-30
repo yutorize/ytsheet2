@@ -22,9 +22,12 @@ if($mode eq 'register'){
   }
   close ($READ);
 
+  my $hash = encrypt($::in{password});
+  if($hash =~ /^\*/){ error('パスワードの暗号化に失敗しました'); }
+
   appendFile($set::userfile, sub {
     my ($WRITE) = @_;
-    print $WRITE $::in{id}."<>".&encrypt($::in{password})."<>".decode('utf8', $::in{name})."<>".$::in{mail}."<>".time."<>\n";
+    print $WRITE $::in{id}."<>".$hash."<>".decode('utf8', $::in{name})."<>".$::in{mail}."<>".time."<>\n";
   });
   
   if($set::player_dir){
@@ -67,6 +70,9 @@ elsif($mode eq 'passchange'){
   else {
     if ($::in{new_password} =~ /[^0-9A-Za-z\.\-\/]/) { error('パスワードに使える文字は、半角の英数字とピリオド、ハイフン、スラッシュだけです'); }
   }
+
+  my $newHash = encrypt($::in{password});
+  if($newHash =~ /^\*/){ error('新しいパスワードの暗号化に失敗しました'); }
   
   my $flag;
   overwriteFile($set::userfile, sub {
@@ -75,7 +81,7 @@ elsif($mode eq 'passchange'){
       if(index($_, "$LOGIN_ID<") == 0){
         my @data = split(/<>/, $_, -1);
         if (verifyCrypt($::in{password},$data[1])){
-          @data[1] = encrypt($::in{new_password});
+          @data[1] = $newHash;
           print $WRITE join('<>', @data);
           $flag = 1;
           next;
