@@ -116,6 +116,22 @@ sub createUnitStatus {
     else {
       push(@unitStatus, {'メモ' => join("<br>",@unitMemo)});
     }
+
+    if ($pc{lvRid}) {
+      my $hasMagicIndication = undef;
+      my $hasMagicIndicationIncrement = undef;
+
+      foreach (1 .. $pc{lvRid}) {
+        my $riding = $pc{"craftRiding$_"};
+        $hasMagicIndication = 1 if $riding eq '魔法指示';
+        $hasMagicIndicationIncrement = 1 if $riding eq '魔法指示回数増加';
+      }
+
+      if ($hasMagicIndication) {
+        my $count = $hasMagicIndicationIncrement ? 4 : 2;
+        push(@unitStatus, { '魔法指示' => "$count/$count" });
+      }
+    }
   }
 
   foreach my $key (split ',', $pc{unitStatusNotOutput}){
