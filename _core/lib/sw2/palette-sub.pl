@@ -687,7 +687,7 @@ sub palettePreset {
         if($dmgTexts{$paNum} eq $dmgTexts{$paNum - 1}){
           $activeName = $::pc{'paletteAttack'.($paNum - 1).'Name'} ? "＋$::pc{'paletteAttack'.($paNum - 1).'Name'}" : '';
         }
-        $text .= $bot{BCD} ? ($dmgTexts{$paNum} =~ s/(\n)/$activeName$1/gr) : $dmgTexts{$paNum};
+        $text .= ($dmgTexts{$paNum} =~ s/(\n)/$activeName$1/gr);
         $text .= "\n";
       }
     }
