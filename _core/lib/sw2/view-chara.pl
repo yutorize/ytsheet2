@@ -133,14 +133,41 @@ foreach('expUsed','expTotal','expRest'){
   $SHEET->param($_ => commify $pc{$_});
 }
 ### 能力値 --------------------------------------------------
-foreach ('A'..'F'){
-  my $value = $pc{'sttAdd'.$_} + $pc{'sttEquip'.$_};
-  $SHEET->param('sttAdd'.$_ => $value) if $value;
+foreach (
+  ['A','Dex'],
+  ['B','Agi'],
+  ['C','Str'],
+  ['D','Vit'],
+  ['E','Int'],
+  ['F','Mnd']
+){
+  my $i = @$_[0];
+  my $name = @$_[1];
+  my $value = $pc{'sttAdd'.$i} + $pc{'sttEquip'.$i};
+  $SHEET->param('sttAdd'.$i => $value) if $value;
+
+  $SHEET->param('stt'.$name => qq|<span class="replace">$pc{'stt'.$name}</span>|) if $pc{'sttReplace'.$i} ne '';
 }
 
 ### HPなど --------------------------------------------------
 foreach('vitResistAddTotal','mndResistAddTotal','hpAddTotal','mpAddTotal','mobilityAddTotal','monsterLoreAdd','initiativeAdd'){
   $SHEET->param($_ => addNum $pc{$_});
+}
+foreach (
+  ['vResist', 'vitResist'],
+  ['mResist', 'mndResist'],
+  ['hp',      'hp'],
+  ['mp',      'mp'],
+  ['mobility','mobility'],
+){
+  if($pc{$_->[0].'Replace'} ne ''){
+    if($pc{$_->[1].'AddTotal'}){
+      $SHEET->param($_->[1]."Base" => qq|<span class="replace">$pc{$_->[1].'Base'}</span>|);
+    }
+    else {
+      $SHEET->param($_->[1]."Total" => qq|<span class="replace">$pc{$_->[1].'Base'}</span>|);
+    }
+  }
 }
 
 ### 技能 --------------------------------------------------
@@ -636,7 +663,7 @@ sub replaceModificationNotation {
       (
         器(?:用度?)?(?:増強)?  |
         敏(?:捷度?)?(?:増強)?  |
-        筋(?:力)?(?:増強)?     |
+        筋力?(?:増強)?         |
         生(?:命力)?(?:増強)?   |
         知力?(?:増強)?         |
         精(?:神力?)?(?:増強)?  |
@@ -654,6 +681,39 @@ sub replaceModificationNotation {
       )
       ([＋+－-][0-9]+)
     #<i class="term-em">$1$2</i>#gx;
+
+  $sourceText =~ s#
+      [\@＠]
+      (
+        器(?:用度?)?  |
+        敏(?:捷度?)?  |
+        筋力?         |
+        生(?:命力)?   |
+        知力?         |
+        精(?:神力?)?  |
+        生命抵抗(?:力(?:判定)?)? |
+        精神抵抗(?:力(?:判定)?)? |
+        [HＨ][PＰ]    |
+        [MＭ][PＰ]    |
+        移動力        |
+      )
+      ([0-9]+)
+    #<i class="term-em">$1$2</i>#gx;
+
+  return $sourceText;
+}
+sub replaceRowModificationNotation {
+  my $sourceText = shift // '';
+
+  $sourceText =~ s#
+      [\#＃]
+      (
+        器(?:用度?)?  |
+        敏(?:捷度?)?  |
+        筋力?
+      )
+      ([＋+－-][0-9]+([\/／][0-9]+)?|[0-9]+)
+    #<b class="term-em">$1$2</b>#gx;
 
   return $sourceText;
 }
@@ -715,7 +775,7 @@ else {
       DMG      => addNum($pc{'weapon'.$_.'Dmg'}),
       DMGTOTAL => $pc{'weapon'.$_.'DmgTotal'},
       OWN      => $pc{'weapon'.$_.'Own'},
-      NOTE     => replaceModificationNotation($pc{'weapon'.$_.'Note'}),
+      NOTE     => replaceRowModificationNotation(replaceModificationNotation($pc{'weapon'.$_.'Note'})),
       NOTESPAN => $pc{'weapon'.$_.'NoteSpan'},
       NOTEOFF  => $pc{'weapon'.$_.'NoteOff'},
       CLOSE    => ($pc{'weapon'.$_.'NameOff'} || $first ? 0 : 1),
@@ -858,13 +918,21 @@ else {
     if($pc{'armour'.$_.'Type'} =~ /^(鎧|盾|他|龍骸)[0-9]+/ && $count{$1} <= 1){ $pc{'armour'.$_.'Type'} = $1 }
 
     $pc{"armour${_}Note"} =~ s#〈(レッサー・?アームスフィア[ⅠⅡⅢ]|アームスフィア)〉#<b class="term-em">$&</b>#;
+
+    my $ownType = ($pc{'armour'.$_.'Type'} =~ /^盾/ ? 'b' : 'i');
+    my $own;
+    if($own = $pc{'armour'.$_.'Own'}){
+      $own = $pc{'armour'.$_.'Type'} =~ /^鎧/ ? '移動力+2' : $pc{'armour'.$_.'Type'} =~ /^盾/ ? '敏捷度+2' : '';
+    }
+
     push(@armours, {
       TYPE => $pc{'armour'.$_.'Type'},
       NAME => $pc{'armour'.$_.'Name'},
       REQD => $pc{'armour'.$_.'Reqd'},
       EVA  => $pc{'armour'.$_.'Eva'} ? addNum($pc{'armour'.$_.'Eva'}) : ($pc{'armour'.$_.'Category'} =~ /[鎧盾]/ ? '―' : ''),
       DEF  => $pc{'armour'.$_.'Def'} // ($pc{'armour'.$_.'Category'} =~ /[鎧盾]/ ? '0' : ''),
-      OWN  => $pc{'armour'.$_.'Own'},
+      OWN  => $own,
+      OWNTYPE  => $ownType,
       NOTE => replaceModificationNotation($pc{'armour'.$_.'Note'}),
     } );
   }
@@ -897,7 +965,7 @@ else {
       TH   => $th,
       EVA  => $pc{"defenseTotal${i}Eva"},
       DEF  => $pc{"defenseTotal${i}Def"},
-      NOTE => $pc{"defenseTotal${i}Note"},
+      NOTE => replaceRowModificationNotation($pc{"defenseTotal${i}Note"}),
     } );
   }
   $SHEET->param(ArmourTotals => \@total);
@@ -1126,6 +1194,10 @@ sub cashCheck(){
   elsif($num < 0) { return '<b class="cash minus">'.$text.'</b>'; }
   else { return '<b class="cash">'.$text.'</b>'; }
 }
+
+### 所持品 --------------------------------------------------
+$SHEET->param(items => replaceModificationNotation($pc{items}));
+
 ### マテリアルカード --------------------------------------------------
 foreach my $color ('Red','Gre','Bla','Whi','Gol'){
   $SHEET->param("card${color}View" => $pc{'card'.$color.'B'}+$pc{'card'.$color.'A'}+$pc{'card'.$color.'S'}+$pc{'card'.$color.'SS'});
@@ -1149,13 +1221,25 @@ foreach my $color ('Red','Gre','Bla','Whi','Gol'){
         }
       }
       push(@rows, {
-        TEXT => $pc{"effect${box}-${num}"},
+        TEXT => replaceModificationNotation($pc{"effect${box}-${num}"}),
         POINT1 => $point{1},
         POINT2 => $point{2},
       });
     }
     my $effectName = $name;
     my $pointName = $effects{$name}{pointName};
+    my $rankName  = $effects{$name}{rankName};
+    my $rankValue = '';
+    if(exists $effects{$name}{rank}){
+      foreach (@{$effects{$name}{rank}}){
+        if($pc{"effect${box}PtTotal"} >= $_->[0]){
+          $rankValue = $_->[1];
+        }
+        else {
+          last;
+        }
+      }
+    }
     if($freeMode) {
       ($effectName,$pointName) = split(/\s?[@＠]\s?/, $pc{"effect${box}NameFree"});
     }
@@ -1169,11 +1253,18 @@ foreach my $color ('Red','Gre','Bla','Whi','Gol'){
         }
       }
     }
+    my $notes;
+    if($rankName){
+      $notes .= "${rankName}：<b>${rankValue}</b>";
+    }
+    if($pointName){
+      $notes .= "　<wbr>" if($notes);
+      $notes .= qq|${pointName}：<b>$pc{"effect${box}PtTotal"}</b>|;
+    }
     push(@boxes, {
       SORT => $sort,
       NAME => $effectName,
-      PTNAME => $pointName,
-      TOTAL => $pc{"effect${box}PtTotal"},
+      NOTES => $notes,
       HEAD0 => $freeMode ? $pc{"effect${box}-1"   } : $effects{$name}{header}[0],
       HEAD1 => $freeMode ? $pc{"effect${box}-1Pt1"} : $effects{$name}{header}[1],
       HEAD2 => $freeMode ? $pc{"effect${box}-1Pt2"} : $effects{$name}{header}[2],

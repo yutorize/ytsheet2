@@ -423,6 +423,7 @@
   & .box:has(select option:checked[value=""]) h2 ~ *{
     display: none;
   }
+  .effect-rank,
   .effect-points {
     display: flex;
     width: max-content;

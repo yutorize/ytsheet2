@@ -258,7 +258,7 @@
           <TMPL_LOOP Effects><section class="box effects">
             <h2>
               <TMPL_VAR NAME>
-              <TMPL_IF PTNAME><small class="notes"><TMPL_VAR PTNAME>：<b><TMPL_VAR TOTAL></b></small></TMPL_IF>
+              <TMPL_IF NOTES><small class="notes"><TMPL_VAR NOTES></small></TMPL_IF>
             </h2>
             <table class="data-table side-margin">
               <thead>
@@ -449,7 +449,7 @@
                 <td class="crit "><TMPL_VAR CRIT>
                 <td class="dmg  "><TMPL_IF DMG><span class="small"><TMPL_VAR DMG>=</span><wbr></TMPL_IF><b><TMPL_VAR DMGTOTAL></b>
                 <TMPL_UNLESS NOTEOFF><td class="note" rowspan="<TMPL_VAR NOTESPAN>">
-                  <span class="item-name"><TMPL_IF OWN><b class="term-em">専用</b></TMPL_IF><TMPL_VAR NOTE></span>
+                  <span class="item-name"><TMPL_IF OWN><b class="term-em">専用(器用度+2)</b></TMPL_IF><TMPL_VAR NOTE></span>
                 </TMPL_UNLESS>
             </TMPL_LOOP></tbody>
           </table>
@@ -493,7 +493,7 @@
                 <td class="reqd"><TMPL_VAR REQD>
                 <td class="eva "><TMPL_VAR EVA>
                 <td class="def "><TMPL_VAR DEF>
-                <td class="note"><TMPL_IF OWN><b class="term-em">専用</b></TMPL_IF><TMPL_VAR NOTE>
+                <td class="note"><TMPL_IF OWN><<TMPL_VAR OWNTYPE DEFAULT=i> class="term-em">専用(<TMPL_VAR OWN>)</i></TMPL_IF><TMPL_VAR NOTE>
               </TMPL_LOOP>
             </tbody>
             <tfoot>
@@ -539,7 +539,7 @@
               <TMPL_LOOP Accessories><tr>
                 <th><TMPL_VAR TYPE>
                 <td><span class="item-name"><TMPL_VAR NAME></span>
-                <td class="note"><TMPL_IF OWN><b class="term-em">専用(<TMPL_VAR OWN>)</b></TMPL_IF><TMPL_VAR NOTE>
+                <td class="note"><TMPL_IF OWN><i class="term-em">専用(<TMPL_VAR OWN>+2)</i></TMPL_IF><TMPL_VAR NOTE>
               </TMPL_LOOP>
             </tbody>
           </table>

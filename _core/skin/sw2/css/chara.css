@@ -51,6 +51,9 @@
 #cashbook p {
   font-family: var(--base-font-family-mono);
 }
+.replace {
+  color: #dd7700;
+}
 
 /* // Menu
 ---------------------------------------------------------------------------------------------------- */
@@ -245,16 +248,25 @@ header nav ul li.character-format {
 #status dl[id^="stt-add"]::before {
   position: absolute;
   content: "+";
-  left: -1rem;
+  left: -11.5px;
   bottom: 0;
-  font-size: 1.2rem;
+  font-size: 12px;
+  width: 12px;
+  display: inline-block;
+  text-align: center;
 }
 #status dl:nth-child(n+16):nth-child(-n+21)::before {
   position: absolute;
   content: "=";
-  left: -1rem;
+  left: -11.5px;
   bottom: 0;
-  font-size: 1.2rem;
+  font-size: 12px;
+  width: 12px;
+  display: inline-block;
+  text-align: center;
+}
+#status dl:nth-child(n+16):nth-child(-n+21):has(.replace)::before {
+  content: "";
 }
 #status dl[id^="stt-add"]::before {
   left: -.3rem;
@@ -473,10 +485,15 @@ dl#level {
 }
 
 /* Effects */
+.effects > h2 {
+  align-items: start;
+}
 .effects > h2 > small.notes {
   line-height: 1;
+  padding-top: 0.1em;
   border-bottom-width: 1px;
   border-bottom-style: solid;
+  text-align: right;
   > b {
     font-size: 140%;
   }

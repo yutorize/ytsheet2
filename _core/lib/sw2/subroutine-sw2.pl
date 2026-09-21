@@ -263,6 +263,7 @@ sub fairyRank {
 }
 
 ### 補正値記法の解釈 --------------------------------------------------
+## 修正算
 sub extractModifications {
   my %pc = %{shift;};
 
@@ -281,7 +282,7 @@ sub extractModifications {
       'F:increment' => '精(?:神力?)?増強',
       'A' => '器(?:用度?)?',
       'B' => '敏(?:捷度?)?',
-      'C' => '筋(?:力)?',
+      'C' => '筋力?',
       'D' => '生(?:命力)?',
       'E' => '知力?',
       'F' => '精(?:神力?)?',
@@ -340,7 +341,7 @@ sub extractModifications {
     push(@modifications, \%modification);
   }
 
-  for my $slot ('Head', 'Face', 'Ear', 'Neck', 'Back', 'HandR', 'HandL', 'Waist', 'Leg', 'Other', 'Other2', 'Other3', 'Other4') {
+  foreach my $slot ('Head', 'Face', 'Ear', 'Neck', 'Back', 'HandR', 'HandL', 'Waist', 'Leg', 'Other', 'Other2', 'Other3', 'Other4') {
     for my $suffix ('', '_', '__') {
       my $nameKey = "accessory${slot}${suffix}Name";
       my $noteKey = "accessory${slot}${suffix}Note";
@@ -367,7 +368,141 @@ sub extractModifications {
     }
   }
 
+  foreach my $box (1 .. $pc{effectNum}){
+    my $name = $pc{"effect${box}Name"} // '';
+    foreach my $num (1 .. $pc{"effect${box}Num"}){
+      my $key = "effect${box}-${num}";
+      my $value = $pc{$key} // '';
+
+      my %modification = %{extractModification($name, $value)};
+      next unless %modification;
+
+      push(@modifications, \%modification);
+    }
+  }
+
+  # 所持品欄には複数のアイテムを改行区切りで記載するため、行ごとに
+  # 補正を抽出する。同じ種類の補正が複数行にあってもそれぞれを集計し、
+  # 「増強」は他の装備欄と同様に最大値だけが採用される。
+  foreach my $item (split(/\R/, $pc{items} // '')) {
+    my %modification = %{extractModification('所持品', $item)};
+    push(@modifications, \%modification) if %modification;
+  }
+
   return \@modifications;
+}
+## 差替値
+sub extractReplaceStatuses {
+  my %pc = %{shift;};
+
+  my @replaceStatuses = ();
+
+  sub extractReplaceStatus {
+    my $name = shift;
+    my $note = shift;
+
+    my %sttRegEx = (
+      'A' => '器(?:用度?)?',
+      'B' => '敏(?:捷度?)?',
+      'C' => '筋力?',
+      'D' => '生(?:命力)?',
+      'E' => '知力?',
+      'F' => '精(?:神力?)?',
+      'vResist' => '生命抵抗(?:力(?:判定)?)?',
+      'mResist' => '精神抵抗(?:力(?:判定)?)?',
+      'hp' => '[HＨ][PＰ]',
+      'mp' => '[MＭ][PＰ]',
+      'mobility' => '移動力',
+    );
+    my %modData;
+    foreach my $key (keys %sttRegEx){
+      if ($note =~ s/[\@＠]${sttRegEx{$key}}([0-9]+)//) {
+        $modData{$key} = $1;
+      }
+    }
+
+    return {} if !%modData;
+
+    $modData{name} = $name;
+    return \%modData;
+  }
+
+  foreach (1 .. $pc{weaponNum}) {
+    my $nameKey = "weapon${_}Name";
+    my $noteKey = "weapon${_}Note";
+
+    my $name = $pc{$nameKey} // '';
+    my $note = $pc{$noteKey} // '';
+
+    $name = $name ne '' ? $name : '武器';
+
+    my %replaceStatus = %{extractReplaceStatus($name, $note)};
+    next unless %replaceStatus;
+
+    push(@replaceStatuses, \%replaceStatus);
+  }
+
+  foreach (1 .. $pc{armourNum}) {
+    my $nameKey = "armour${_}Name";
+    my $noteKey = "armour${_}Note";
+
+    my $name = $pc{$nameKey} // '';
+    my $note = $pc{$noteKey} // '';
+
+    $name = $name ne '' ? $name : '防具';
+
+    my %replaceStatus = %{extractReplaceStatus($name, $note)};
+    next unless %replaceStatus;
+
+    push(@replaceStatuses, \%replaceStatus);
+  }
+
+  foreach my $slot ('Head', 'Face', 'Ear', 'Neck', 'Back', 'HandR', 'HandL', 'Waist', 'Leg', 'Other', 'Other2', 'Other3', 'Other4') {
+    for my $suffix ('', '_', '__') {
+      my $nameKey = "accessory${slot}${suffix}Name";
+      my $noteKey = "accessory${slot}${suffix}Note";
+
+      if ($suffix ne '') {
+        # 拡張枠は有効化されていなければ無視する
+
+        my $addingKey = "accessory${slot}${suffix}";
+        $addingKey =~ s/_$//;
+        $addingKey .= 'Add';
+
+        next unless $pc{$addingKey};
+      }
+
+      my $name = $pc{$nameKey} // '';
+      my $note = $pc{$noteKey} // '';
+
+      $name = $name ne '' ? $name : '装飾品';
+
+      my %replaceStatus = %{extractReplaceStatus($name, $note)};
+      next unless %replaceStatus;
+
+      push(@replaceStatuses, \%replaceStatus);
+    }
+  }
+
+  foreach my $box (1 .. $pc{effectNum}){
+    my $name = $pc{"effect${box}Name"} // '';
+    foreach my $num (1 .. $pc{"effect${box}Num"}){
+      my $key = "effect${box}-${num}";
+      my $value = $pc{$key} // '';
+
+      my %replaceStatus = %{extractReplaceStatus($name, $value)};
+      next unless %replaceStatus;
+
+      push(@replaceStatuses, \%replaceStatus);
+    }
+  }
+
+  foreach my $item (split(/\R/, $pc{items} // '')) {
+    my %replaceStatus = %{extractReplaceStatus('所持品', $item)};
+    push(@replaceStatuses, \%replaceStatus) if %replaceStatus;
+  }
+
+  return \@replaceStatuses;
 }
 
 ### 神聖魔法の短剣符の抽出 --------------------------------------------------
@@ -683,6 +818,14 @@ sub upgradeCharaData {
   if($ver < 2){
     $pc{defenseTotalNum} //= $pc{defenseNum};
     $pc{effectNum} //= $pc{effectBoxNum};
+  }
+  if($ver < 2.01001){
+    foreach (1 .. $pc{weaponNum}){
+      $pc{'weapon'.$_.'Note'} =~ s/[@＠]魔動義体[:：]/#/g;
+    }
+    foreach (1 .. $pc{defenseTotalNum}){
+      $pc{'defenseTotal'.$_.'Note'} =~ s/[@＠]魔動義体[:：]/#/g;
+    }
   }
   $pc{lasttimever} = $pc{ver};
   $pc{ver} = $main::ver;
