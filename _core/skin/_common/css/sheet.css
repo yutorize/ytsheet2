@@ -738,12 +738,12 @@ dl.note-description {
   border-style: dotted;
 }
 b.term-em {
-  padding: 1px .3em 0;
+  padding: 1px .4em 0;
   border-radius: .3em;
   background-color: hsla(var(--box-head-bg-color-h,230),100%,70%,0.3);
 }
 i.term-em {
-  padding: 1px .6em 0;
+  padding: 1px .4em 0;
   border-radius: .8em;
   background-color: hsla(var(--box-base-bg-color-h,230),40%,70%,0.3);
 }

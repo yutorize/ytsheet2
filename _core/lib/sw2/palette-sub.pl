@@ -1021,8 +1021,20 @@ sub paletteProperties {
       push @propaties, "//武器$_=$::pc{'weapon'.$_.'Name'}";
 
       # 命中
+      my $note = $::pc{"weapon${_}Note"} =~ tr{＃＋－／}{#+\-/}r;
       if(!$::pc{'weapon'.$_.'Class'} || $::pc{'weapon'.$_.'Class'} eq '自動計算しない'){ push @propaties, "//命中$_=$::pc{'weapon'.$_.'Acc'}"; }
       else {
+        my $dex = '{器用}';
+        if($note =~ /#器(?:用度?)?(?:(?<mod>[+-][0-9]+)(?:\/(?<min>[0-9]+))?|(?<fixed>[0-9]+))/){
+          if(defined $+{mod}){
+            if(defined $+{min}){
+              if($::pc{sttDex} + $+{mod} > $+{min}){ $dex .= $+{mod}; }
+              else                                 { $dex  = $+{min}; }
+            }
+            else { $dex .= $+{mod}; }
+          }
+          else { $dex = $+{fixed}; }
+        }
         my $accMod = 0;
         if(!$partNum || $partNum eq $::pc{partCore}) {
           $accMod += $::pc{accuracyEnhance};
@@ -1033,14 +1045,14 @@ sub paletteProperties {
         }
         if($classData{$class}{accUnlock}{acc} eq 'power'){
           push @propaties,
-            "//命中$_=({".($classData{$class}{craft}{power} || $classData{$class}{craft}{power}).'}'
+            "//命中$_=({".($classData{$class}{craft}{power} || $classData{$class}{magic}{power}).'}'
             ."+"
             .( ($::pc{'weapon'.$_.'Acc'}||0) + $accMod )
             .")";
         }
         else {
           push @propaties,
-            "//命中$_=({$::pc{'weapon'.$_.'Class'}}+({器用}+{器用増強}"
+            "//命中$_=({$::pc{'weapon'.$_.'Class'}}+(${dex}+{器用増強}"
             .($::pc{'weapon'.$_.'Own'}?"+2":"")
             .")/6+"
             .( ($::pc{'weapon'.$_.'Acc'}||0) + $accMod )
@@ -1053,6 +1065,18 @@ sub paletteProperties {
       # ダメージ
       if(!$::pc{'weapon'.$_.'Class'} || $::pc{'weapon'.$_.'Class'} eq '自動計算しない'){ push @propaties, "//追加D$_=$::pc{'weapon'.$_.'Dmg'}"; }
       else {
+        my $str = '{筋力}'; my $strValue = $::pc{sttStr};
+        if($::pc{"weapon${_}Note"} =~ /［巨人化］/){ $str .= "+12"; $strValue += 12; }
+        if($note =~ /#筋力?(?:(?<mod>[+-][0-9]+)(?:\/(?<min>[0-9]+))?|(?<fixed>[0-9]+))/){
+          if(defined $+{mod}){
+            if(defined $+{min}){
+              if($strValue + $+{mod} > $+{min}){ $str .= $+{mod}; }
+              else                             { $str  = $+{min}; }
+            }
+            else { $str .= $+{mod}; }
+          }
+          else { $str = $+{fixed}; }
+        }
         my $dmgMod = 0;
         if(!$partNum || $partNum eq $::pc{partCore}) {
           $dmgMod += $::pc{'mastery' . ucfirst($data::weapon_id{ $category }) };
@@ -1070,7 +1094,7 @@ sub paletteProperties {
         if   ($category eq 'クロスボウ'){ $basetext = $::SW2_0 ? '' : "{$::pc{'weapon'.$_.'Class'}}"; }
         elsif($category eq 'ガン'      ){ $basetext = "{魔動機術}"; }
         elsif($classData{$class}{accUnlock}{dmg} eq 'power'){ $basetext = '{'.($classData{$class}{magic}{jName} || $classData{$class}{craft}{power} || $classData{$class}{craft}{jName}).'}' }
-        else { $basetext = "{$::pc{'weapon'.$_.'Class'}}+({筋力}+{筋力増強})/6"; }
+        else { $basetext = "{$::pc{'weapon'.$_.'Class'}}+(${str}+{筋力増強})/6"; }
         $basetext .= addNum($dmgMod);
         push @propaties, "//追加D$_=(${basetext}+".($::pc{'weapon'.$_.'Dmg'}||0).")";
       }
@@ -1108,8 +1132,22 @@ sub paletteProperties {
       if($partName eq '邪眼'){
         $evaMod += 2;
       }
+
+      my $note = $::pc{"defenseTotal${i}Note"} =~ tr{＃＋－／}{#+\-/}r;
+      my $agi = '{敏捷}'; my $agiValue = $::pc{sttAgi};
+      if($note =~ /［巨人化］/){ $agi .= "-6"; $agiValue -= 6; }
+      if($note =~ /#敏(?:捷度?)?(?:(?<mod>[+-][0-9]+)(?:\/(?<min>[0-9]+))?|(?<fixed>[0-9]+))/){
+        if(defined $+{mod}){
+          if(defined $+{min}){
+            if($agiValue + $+{mod} > $+{min}){ $agi .= $+{mod}; }
+            else                             { $agi  = $+{min}; }
+          }
+          else { $agi .= $+{mod}; }
+        }
+        else { $agi = $+{fixed}; }
+      }
       push @propaties, "//回避${i}=("
-        .($class ? "{$class}+({敏捷}+{敏捷増強}${ownAgi})/6+" : '')
+        .($class ? "{$class}+(${agi}+{敏捷増強}${ownAgi})/6+" : '')
         .$evaMod
         .")";
       push @propaties, "//防護${i}=".($::pc{"defenseTotal${i}Def"} || 0);
