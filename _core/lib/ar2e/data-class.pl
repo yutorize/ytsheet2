@@ -559,6 +559,28 @@ our %class = (
       Hp => 12, Mp => 11,
     },
   },
+  'アタッカー' => {
+    sort => 'b01',
+    type => 'semi',
+    stt => {
+      Str => 1, Dex => 1, Agi => 1,
+      Int => 0, Sen => 0, Mnd => 0,
+      Luk => 0,
+      Hp => 14, Mp => 12,
+      HpGrow => 7, MpGrow => 6,
+    },
+  },
+  'キャスター' => {
+    sort => 'b02',
+    type => 'semi',
+    stt => {
+      Str => 0, Dex => 0, Agi => 0,
+      Int => 1, Sen => 1, Mnd => 1,
+      Luk => 0,
+      Hp => 12, Mp => 14,
+      HpGrow => 6, MpGrow => 7,
+    },
+  },
 );
 
 

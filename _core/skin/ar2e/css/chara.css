@@ -77,7 +77,6 @@
     ;
   }
   #image     { grid-area: IMG; }
-  #personal  { grid-area: PER; }
   #classes   { grid-area: CLS; }
   #status    { grid-area: STT; }
   #sub-status{ grid-area: sSTT; }
@@ -308,14 +307,22 @@ dl#level {
   border-top-width: 1px;
   border-top-style: solid;
   & th {
-    width: 7em;
+    width: 7.78em;
     padding: .3rem 0 0 .3rem;
     line-height: 1;
     border-bottom: hidden;
     text-align: left;
+    font-size: 90%;
   }
   & td.comment {
     font-size: 93%;
+  }
+}
+
+#lifepath #persona {
+  margin-top: 3px;
+  & th {
+    width: 11.5em;
   }
 }
 

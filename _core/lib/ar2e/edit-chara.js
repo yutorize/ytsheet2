@@ -377,7 +377,7 @@ function calcStt() {
   if(makeBonusTotal > 5){ sttNames.forEach(s => { form[`stt${s}Make`].classList.add('error') }); }
   document.getElementById(`make-bonus-total`).textContent = makeBonusTotal;
   // フェイト／スキルレベル合計最大値
-  const fateBase = (classMainLv1 === classSupportLv1) ? 6 : 5;
+  const fateBase = classes[classMainLv1]?.type === 'semi' || classMainLv1 === classSupportLv1 ? 6 : 5;
   let fateGrow = 0;
   let skillsLvLimit = 1+1+4;
   for(let lv = 2; lv <= level; lv++){
