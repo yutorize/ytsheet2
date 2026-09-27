@@ -13,13 +13,14 @@ require $set::lib_palette_sub;
 ### 各種データライブラリ読み込み --------------------------------------------------
 require $set::data_races;
 require $set::data_class;
-my @main_class; my @adv_class; my @fate_class; my @legacy_class;
+my @main_class; my @adv_class; my @fate_class; my @legacy_class; my @semi_class;
 my @support_class; my @area_names; my %area_class;
 foreach (sort{$data::class{$a}{sort} cmp $data::class{$b}{sort}} keys %data::class){
   if($data::class{$_}{type} eq 'main'){ push(@main_class, $_); push(@support_class, $_); }
   elsif($data::class{$_}{type} eq 'adv'   ){ push(@adv_class , $_); }
   elsif($data::class{$_}{type} eq 'fate'  ){ push(@fate_class, $_); }
   elsif($data::class{$_}{type} eq 'legacy'){ push(@legacy_class, $_); }
+  elsif($data::class{$_}{type} eq 'semi'  ){ push(@semi_class, $_); }
   else {
     if($data::class{$_}{area}){
       push(@area_names, $data::class{$_}{area}) if !$area_class{$data::class{$_}{area}};
@@ -33,6 +34,7 @@ foreach (sort{$data::class{$a}{sort} cmp $data::class{$b}{sort}} keys %data::cla
 }
 @main_class = (
   'LABEL=基本クラス',@main_class,
+  'LABEL=セミスクラッチ用',@semi_class,
   #'LABEL=その他', 'free=>その他（自由記入）',
 );
 foreach my $area (@area_names){
@@ -248,7 +250,7 @@ print <<"HTML";
     <div id="area-status">
       @{[ renderImageForm() ]}
 
-      <div id="personal" class="in-toc" data-content-title="種族・年齢・性別">
+      <div id="profile" class="in-toc" data-content-title="種族・年齢・性別">
         <dl class="box select-or-input" id="race">
           <dt>種族
           <dd><select name="race" onchange="changeRace()">@{[ option 'race',(sort{$data::races{$a}{sort} cmp $data::races{$b}{sort} } keys %data::races),'free=>その他（自由記入）' ]}</select>@{[ input 'raceFree' ]}
@@ -269,7 +271,6 @@ print <<"HTML";
         <h2 class="in-toc">ライフパス</h2>
         <dl id="home"><dt>出身地</dt><dd>@{[ input "homeArea",'','','list="list-area"' ]}</dd></dl>
         <table class="edit-table line-tbody no-border-cells">
-          </thead>
           <tbody id="lifepath-origin">
             <tr>
               <th>出自
@@ -291,6 +292,13 @@ print <<"HTML";
           </tbody>
         </table>
         <div id="lifepath-earthian">@{[ input 'lifepathEarthian','checkbox','checkRace' ]}アーシアン専用ライフパスを使う</div>
+      </div>
+      <div class="box" id="persona">
+        <table class="edit-table line-tbody no-border-cells">
+          <th>ペルソナ
+          <td>@{[ input 'persona' ]}
+          <td>@{[ input 'personaNote','','','placeholder="備考"' ]}
+        </table>
       </div>
 
       <div class="box-union in-toc" id="classes" data-content-title="クラス">

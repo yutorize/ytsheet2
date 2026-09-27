@@ -55,8 +55,9 @@ dd.area-tags {
   min-height: 0;
   grid-template-columns: 2.7fr .5fr 1.8fr;
   grid-template-areas:
-    "PER  --- IMG"
+    "PRF  --- IMG"
     "LPT  LPT IMG"
+    "PER  PER IMG"
     "CLS  CLS IMG"
     "STT  STT STT"
   ;
@@ -65,11 +66,12 @@ dd.area-tags {
     grid-gap: var(--box-v-gap) var(--box-h-gap);
 
     grid-template-areas:
-      "IMG  IMG "
-      "PER  PER "
-      "CLS  CLS "
-      "LPT  LPT "
-      "STT  STT "
+      "IMG  IMG"
+      "PRF  PRF"
+      "CLS  CLS"
+      "LPT  LPT"
+      "PER  PER"
+      "STT  STT"
     ;
   }
 }
@@ -87,13 +89,13 @@ dd.area-tags {
 }
 .select-or-input:not(.free) input { display: none; }
 
-#personal {
-  grid-area: PER;
+#profile {
+  grid-area: PRF;
   display: grid;
   grid-template-columns: 1.5fr 2fr;
   gap: 10px;
 }
-#personal > .box-union {
+#profile > .box-union {
   display: grid;
   grid-template-columns: 1fr 1fr;
   justify-self: end;
@@ -116,6 +118,17 @@ dd.area-tags {
   border-top-width: 1px;
   border-top-style: dotted;
   padding: .2em .5em;
+}
+
+#persona {
+  grid-area: PER;
+  & th {
+    width: 4.4em;
+    text-align: center;
+  }
+  & td:nth-child(2) {
+    width: 8.5em;
+  }
 }
 
 #classes {

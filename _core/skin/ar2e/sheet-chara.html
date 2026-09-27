@@ -12,7 +12,7 @@
     </nav>
   </header>
   <div class="header-back-name"><b><TMPL_VAR titleName> - <TMPL_VAR title></b></div>
-  
+
   <TMPL_IF error>
   <aside id="error">
     <p>
@@ -20,7 +20,7 @@
     </p>
   </aside>
   </TMPL_IF>
-  
+
   <TMPL_UNLESS modeDownload>
     <TMPL_UNLESS forbiddenMode>
       <aside id="loglist" class="float-box">
@@ -71,16 +71,16 @@
       閲覧が制限されているデータです。<br>
       <TMPL_IF yourAuthor>あなた以外には一部または全てのデータが伏せられます。(<a href="./?id=<TMPL_VAR id>&checkView=1">⇒確認</a>)</TMPL_IF>
     </aside></TMPL_IF>
-    
+
     <TMPL_IF logId><aside class="information log">
       <h2><TMPL_VAR selectedLogName></h2>
       <p><TMPL_VAR updateTime> 時点の過去ログ(バックアップ)データです。</p>
     </aside></TMPL_IF>
-    
+
     <TMPL_IF convertMode><aside class="information">
       <a href="<TMPL_VAR convertUrl>" target="_blank"><TMPL_VAR convertSource></a> のデータを表示しています。
     </aside></TMPL_IF>
-    
+
     <article<TMPL_IF FellowMode> style="display:none"</TMPL_IF>>
       <div id="area-name" class="color-set">
         <h1 id="character-name"><TMPL_IF aka><span id="aka">“<TMPL_VAR aka>”</span></TMPL_IF><TMPL_VAR characterName></h1>
@@ -89,7 +89,7 @@
         <p id="player-name">プレイヤー：<TMPL_VAR playerName></p>
         </div>
       </div>
-      
+
       <div id="tags">
         <TMPL_IF group><a id="group" href="./?group=<TMPL_VAR group>"><TMPL_VAR groupName></a></TMPL_IF>
         <TMPL_LOOP AreaTags><i class="stage"><TMPL_VAR TEXT></i></TMPL_LOOP>
@@ -135,7 +135,7 @@
             <dt>性別<dd><TMPL_VAR gender>
           </dl>
         </div>
-        
+
         <section class="box" id="exp">
           <h2>成長点</h2>
           <dl>
@@ -265,13 +265,11 @@
                 <th><TMPL_IF head_origin><TMPL_VAR head_origin><TMPL_ELSE>出自</TMPL_IF>
                 <td class="comment" rowspan="2"><TMPL_VAR lifepathOriginNote>
               <tr><td><TMPL_VAR lifepathOrigin></td>
-            </tbody>
             <tbody>
               <tr>
                 <th><TMPL_IF head_experience><TMPL_VAR head_experience><TMPL_ELSE>境遇</TMPL_IF>
                 <td class="comment" rowspan="2"><TMPL_VAR lifepathExperienceNote>
               <tr><td><TMPL_VAR lifepathExperience></td>
-            </tbody>
             <tbody>
               <tr>
                 <th><TMPL_IF head_motive><TMPL_VAR head_motive><TMPL_ELSE>目的</TMPL_IF>
@@ -279,9 +277,17 @@
               <tr><td><TMPL_VAR lifepathMotive></td>
             </tbody>
           </table>
+
+          <TMPL_IF persona><table class="data-table line-tbody" id="persona">
+            <tbody>
+              <tr>
+                <th>ペルソナ
+                <td class="comment" rowspan="2"><TMPL_VAR personaNote>
+              <tr><td><TMPL_VAR persona></td>
+          </table></TMPL_IF>
         </section>
       </div>
-      
+
       <div id="area-armaments">
         <div class="box-union" id="battle">
           <section class="box" id="armaments">
@@ -652,7 +658,7 @@
           </TMPL_IF>
         </section>
       </div>
-      
+
       <section class="box" id="free-note">
         <h2><TMPL_IF head_freeNote><TMPL_VAR head_freeNote><TMPL_ELSE>容姿・経歴・その他メモ</TMPL_IF></h2>
         <p><TMPL_VAR freeNote></p>

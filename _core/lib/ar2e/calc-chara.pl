@@ -134,7 +134,7 @@ sub dataCalc {
   $pc{mpTotal} = $pc{sttMndBase} + $pc{mpMain} + $pc{mpSupport} + $pc{mpAdd} + $pc{mpAuto} +  $pc{mpGrow};
 
   ## フェイト
-  $pc{fateTotal} = $pc{fateGrow} + $pc{fateAdd} + 5 + ($pc{classMainLv1} eq $pc{classSupportLv1} ? 1 : 0);
+  $pc{fateTotal} = $pc{fateGrow} + $pc{fateAdd} + 5 + ($data::class{$pc{classMainLv1}}{type} eq 'semi' || $pc{classMainLv1} eq $pc{classSupportLv1} ? 1 : 0);
   $pc{fateLimit} = $pc{sttLukTotal} + $pc{fateLimitAdd};
 
   ### 武器・戦闘判定 --------------------------------------------------
