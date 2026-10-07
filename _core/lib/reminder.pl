@@ -56,7 +56,7 @@ elsif($::in{password}){
     if ($::in{password} =~ /[^0-9A-Za-z\.\-\/]/) { error('パスワードに使える文字は、半角の英数字とピリオド、ハイフン、スラッシュだけです'); }
   }
   
-  my $id = (split(/-/, $::in{code}))[0];
+  my $id = $::in{code} =~ s/-.*$//r;
   
   my $flag;
   overwriteFile($set::userfile, sub {
