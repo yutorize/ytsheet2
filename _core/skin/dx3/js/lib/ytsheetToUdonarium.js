@@ -63,3 +63,16 @@ output.generateUdonariumXmlDetailOfDoubleCross3PC = (json, opt_url, defaultPalet
 
   return dataDetails
 };
+
+output.generateUdonariumXmlDetailOfDoubleCross3Enemy = (json, opt_url, defaultPalette, resources) => {
+  const dataDetails = output.generateUdonariumXmlDetailOfDoubleCross3PC(json, opt_url, defaultPalette, resources);
+  dataDetails['情報'] = [
+    `        <data name="データ製作者">${json.author || ''}</data>`,
+    `        <data name="種別">${json.enemyType || ''}</data>`,
+    `        <data name="ステージ">${json.stage || ''}</data>`,
+    `        <data type="note" name="説明">${(json.freeNote || '').replace(/&lt;br&gt;/g, '\n')}</data>`
+  ];
+  if(opt_url) { dataDetails['情報'].push(`        <data name="URL">${opt_url}</data>`); }
+
+  return dataDetails;
+};

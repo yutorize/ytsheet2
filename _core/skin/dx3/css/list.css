@@ -1,6 +1,51 @@
 @charset "utf-8";
 
 @layer system {
+/* // Navigation
+---------------------------------------------------------------------------------------------------- */
+header nav {
+  & li.head b {
+    .icon {
+      .chara  &::before { mask-image: url(../img/icon-person.png); }
+      .enemy  &::before { mask-image: url(../img/icon-enemy.png); }
+    }
+    .label {
+      display: none;
+    }
+  }
+}
+main nav {
+  & a {
+    position: relative;
+    overflow: clip;
+    padding-left: 3em;
+    &::before {
+      content: "";
+      display: block;
+      position: absolute;
+      top: .4em;
+      left: .5em;
+      width : 2.2em;
+      height: 2.2em;
+      mask-size: 100%;
+      mask-repeat: no-repeat;
+    }
+    .chara &::before { mask-image: url(../img/icon-person.png); }
+    .enemy &::before { mask-image: url(../img/icon-enemy.png); }
+    @media screen and (width <= 735px){
+      width: 9em;
+      padding: 1em 0 .5em;
+      font-size: 1rem;
+      text-align: center;
+      &::before {
+        position: static;
+        margin: auto;
+        width : 3rem;
+        height: 3rem;
+      }
+    }
+  }
+}
 /* // List
 ---------------------------------------------------------------------------------------------------- */
 .list table tr {
@@ -39,6 +84,51 @@
 }
 @media screen and (width <= 735px){
   .list table tr {
+    grid-template-columns: 18rem 6em 3em 0.6fr 1fr 4em 4em;
+  }
+}
+/* // List-Enemy
+---------------------------------------------------------------------------------------------------- */
+.list.enemy {
+  table {
+    tr {
+      grid-template-columns: 26rem 0.7fr 6.2em 1.8fr 10em 0.6fr;
+      grid-template-areas:
+        "NAME   PL TYPE  SYN  STG DATE"
+        "NAME TAGS TAGS TAGS TAGS DATE"
+      ;
+    }
+    tbody tr:has(.tags:empty) {
+      grid-template-areas:
+        "NAME   PL TYPE  SYN  STG DATE"
+      ;
+    }
+    .name    { grid-area: NAME; }
+    .author  { grid-area:   PL; }
+    .type    { grid-area: TYPE; }
+    .syndrome{ grid-area:  SYN; }
+    .stage   { grid-area:  STG; }
+    .tags    { grid-area: TAGS; }
+    .date    { grid-area: DATE; }
+    td {
+      vertical-align: middle;
+    }
+    td.syndrome {
+      font-size: 85%;
+    }
+    td.syndrome div {
+      display: flex;
+      gap: 0 1em;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    td.stage {
+      font-size: 85%;
+    }
+  }
+}
+@media screen and (width <= 735px){
+  .list.enemy table tr {
     grid-template-columns: 18rem 6em 3em 0.6fr 1fr 4em 4em;
   }
 }

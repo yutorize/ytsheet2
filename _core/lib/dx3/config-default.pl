@@ -55,6 +55,20 @@ our $game = 'dx3';
   our $skin_tmpl  = $::core_dir . '/skin/dx3/index.html';      # 一覧／登録フォーム等の大枠
   our $skin_sheet = $::core_dir . '/skin/dx3/sheet-chara.html';   # キャラクターシート
 
+  # 魔物・アイテム・魔法/流派などの設定
+  our %lib_type = (
+    'e' => {
+      listFile => $data_dir . 'enemylist.cgi',
+      dataDir => $data_dir . 'enemy/',
+      edit => $::core_dir . '/lib/dx3/edit-enemy.pl',
+      calc => $::core_dir . '/lib/dx3/calc-enemy.pl',
+      view => $::core_dir . '/lib/dx3/view-enemy.pl',
+      list => $::core_dir . '/lib/dx3/list-enemy.pl',
+      skin => $::core_dir . '/skin/dx3/sheet-enemy.html',
+      sheetType => 'enemy',
+    },
+  );
+
 # シート初期値の変更
 our %customizedInitialValues = (
     '' => {
