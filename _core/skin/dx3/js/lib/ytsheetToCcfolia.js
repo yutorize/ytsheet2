@@ -20,3 +20,19 @@ output.generateCcfoliaJsonOfDoubleCross3PC = (json, character, defaultPalette) =
 
   return character;
 };
+
+output.generateCcfoliaJsonOfDoubleCross3Enemy = (json, character, defaultPalette) => {
+  character.name = json.namePlate || json.enemyName;
+
+  character.memo = '';
+  character.memo += json.namePlate ? `${json.enemyName || ''}\n` : '';
+  character.memo += `データ製作者: ${json.author || ''}\n`;
+  character.memo += `種別: ${json.enemyType || ''}\n`;
+  character.memo += `ステージ: ${json.stage || ''}\n`;
+  character.memo += `${json.syndrome1 || ''}${json.syndrome2 ? '、'+json.syndrome2 : ''}${json.syndrome3 ? '、'+json.syndrome3 : ''}\n`;
+  character.memo += (json.freeNote || '').replace(/&lt;br&gt;/g, '\n');
+
+  character.params = character.params.concat(defaultPalette.parameters || []);
+
+  return character;
+};

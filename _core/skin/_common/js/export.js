@@ -60,11 +60,11 @@ function copyToClipboard(text) {
 
 async function downloadAsUdonarium() {
   const characterDataJson = await getJsonData('udonarium');
-  const characterId = characterDataJson.characterName || characterDataJson.monsterName || characterDataJson.aka || '無題';
+  const characterId = characterDataJson.name || '無題';
   const imageSuffix = characterDataJson.mainImage > 1 ? characterDataJson.mainImage : '';
   const image = await output.getPicture(characterDataJson['imageURL'+imageSuffix] || defaultImage, "image."+characterDataJson['image'+imageSuffix]);
   const udonariumXml = output.generateUdonariumXml(generateType, characterDataJson, location.href, image.hash);
-  const udonariumUrl = await generateUdonariumZipFile((characterDataJson.characterName||characterDataJson.aka), udonariumXml, image);
+  const udonariumUrl = await generateUdonariumZipFile(characterId, udonariumXml, image);
   downloadFile(`udonarium_data_${characterId}.zip`, udonariumUrl);
 }
 
@@ -163,7 +163,7 @@ async function downloadAsFullSet(){
     const imageSuffix = characterDataJson.mainImage > 1 ? characterDataJson.mainImage : '';
     const image = await output.getPicture(characterDataJson['imageURL'+imageSuffix] || defaultImage, "image."+characterDataJson['image'+imageSuffix]);
     const udonariumXml = output[`generateUdonariumXml`](generateType,characterDataJson, location.href, image.hash);
-    const udonariumUrl = await generateUdonariumZipFile((characterDataJson.characterName||characterDataJson.aka), udonariumXml, image);
+    const udonariumUrl = await generateUdonariumZipFile(characterDataJson.name, udonariumXml, image);
     zip.file(name+'_udonarium.zip', await JSZipUtils.getBinaryContent(udonariumUrl));
   }
   // ココフォリア
