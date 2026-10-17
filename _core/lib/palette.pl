@@ -147,6 +147,7 @@ sub makeChoiceCommand {
 sub outputChatPaletteTemplate {
   use JSON::PP;
   my $type = $::in{type};
+  changeFileByType($type);
   require $set::lib_calc_char;
   our %pc;
   for (param()){ $pc{$_} = decode('utf8', param($_)) }

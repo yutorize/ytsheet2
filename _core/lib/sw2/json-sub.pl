@@ -13,6 +13,7 @@ sub addJsonData {
   $pc{'gameVersion'} = $::SW2_0 ? '2.0' : '2.5';
   ### 魔物 --------------------------------------------------
   if ($pc{type} eq 'm'){
+    $pc{name} = $pc{characterName} // $pc{monsterName};
     my @n2a = ('','A' .. 'Z');
 
     my $vitresist = "$pc{vitResist}\($pc{vitResistFix}\)";
@@ -55,6 +56,7 @@ sub addJsonData {
   }
   ### キャラクター --------------------------------------------------
   else {
+    $pc{name} = $pc{characterName} // $pc{aka};
     ## 簡易プロフィール
     my @classes;
     foreach (@data::class_names){

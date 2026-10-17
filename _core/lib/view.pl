@@ -669,6 +669,10 @@ sub formatHistoryFigures {
   $text =~ s#[0-9,]+#<span class="number">$&</span><wbr>#g;
   return $text;
 }
+### 括弧に囲まれているか判断 --------------------------------------------------
+sub isBracketed {
+  return ($_[0] // '') =~ /\A(?:\(.*\)|\[.*\]|\{.*\}|（.*）|［.*］|｛.*｝|「.*」|『.*』|【.*】|〔.*〕|〈.*〉|《.*》)\z/s;
+}
 ### ダウンロード用 --------------------------------------------------
 sub downloadModeSheetConvert {
   my $sheet = shift;

@@ -175,7 +175,6 @@ sub dataCalc {
   my @dloises;
   foreach my $num (1..7){
     if($pc{"lois${num}Relation"} =~ /[DＤ]ロイス|^[DＤ]$/){
-      $pc{"lois${num}Name"} =~ s#/#／#g;
       push(@dloises, $pc{"lois${num}Name"});
     }
   }
@@ -274,6 +273,7 @@ sub dataCalc {
   foreach (@dloises){
     $_ =~ s/[|｜]([^|｜]+?)《.+?》/$1/g;
     $_ =~ s/[:：].+?$//g;
+    $_ =~ s#/#／#g;
     $_ = removeTags unescapeTags $_ =~ s/^\s|\s$//gr;
     $_ = substr($_ , 0, 30).'..' if length($_) > 30;
   }
