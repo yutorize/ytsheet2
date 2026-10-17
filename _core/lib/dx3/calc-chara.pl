@@ -92,8 +92,8 @@ sub dataCalc {
       # 通常
       else {
         $pc{expUsedEffect} += $lv * 5 + 10; #lv×5 + 新規取得の差分10
-        if($type =~ /^(auto|dlois)$/i){
-          $pc{expUsedEffect} += -15; #自動かDロイスは新規取得ぶん減らす
+        if($type =~ /^auto/i){
+          $pc{expUsedEffect} += -15; #自動は新規取得ぶん減らす
           if($pc{createType} eq 'C' && $pc{'effect'.$num.'Name'} =~ /^コンセントレイト/ && $lv >= 2){
             $pc{expUsedEffect} += -5;
           }
@@ -175,7 +175,6 @@ sub dataCalc {
   my @dloises;
   foreach my $num (1..7){
     if($pc{"lois${num}Relation"} =~ /[DＤ]ロイス|^[DＤ]$/){
-      $pc{"lois${num}Name"} =~ s#/#／#g;
       push(@dloises, $pc{"lois${num}Name"});
     }
   }
@@ -274,6 +273,7 @@ sub dataCalc {
   foreach (@dloises){
     $_ =~ s/[|｜]([^|｜]+?)《.+?》/$1/g;
     $_ =~ s/[:：].+?$//g;
+    $_ =~ s#/#／#g;
     $_ = removeTags unescapeTags $_ =~ s/^\s|\s$//gr;
     $_ = substr($_ , 0, 30).'..' if length($_) > 30;
   }

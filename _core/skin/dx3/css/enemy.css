@@ -1,0 +1,1243 @@
+@charset "utf-8";
+
+@layer system {
+/* // Layout
+---------------------------------------------------------------------------------------------------- */
+.wide {
+  @media screen and (width >= 1400px){
+    .column-status{
+      grid-row: span 2;
+    }
+    #area-battle {
+      grid-row: span 1;
+    }
+    #free-note {
+      grid-column: 1;
+    }
+    #enc-bonus {
+      grid-column: 2;
+      align-self: end;
+    }
+    #area-battle {
+      margin-top: calc(-1 * var(--box-v-gap));
+    }
+  }
+}
+/* // Font
+---------------------------------------------------------------------------------------------------- */
+
+
+/* // Area-Status
+---------------------------------------------------------------------------------------------------- */
+#area-status {
+  display: grid;
+  grid-gap: var(--box-v-gap) var(--box-h-gap);
+  grid-template-columns: 0.5fr 0.5fr 1.4fr 8em;
+  grid-template-rows: max-content max-content auto;
+  grid-template-areas:
+    "TYP REN REN SUB"
+    "STT STT STT SUB"
+  ;
+  @media screen and (width <= 735px){
+    grid-template-columns: 0.5fr 0.5fr 1.4fr 6em;
+  }
+
+  #image      { grid-area: IMG; }
+  #enemy-type { grid-area: TYP; }
+  #renegade   { grid-area: REN; }
+  #sub-status { grid-area: SUB; }
+  #status     { grid-area: STT; }
+}
+
+#area-status dd:empty::before,
+#area-status td:empty::before {
+  content: '　';
+}
+
+:is(#personal, #works-cover) dl {
+  display: grid;
+  grid-template-rows: max-content 1fr;
+  > dd {
+    min-width: 0;
+    line-height: 1;
+    align-self: center;
+    word-break: auto-phrase;
+    overflow-wrap: break-word;
+  }
+}
+
+
+/* Image */
+.image, .image-none {
+  @media screen and (width <= 735px){
+    aspect-ratio: 5 / 8;
+  }
+}
+
+
+/* Type */
+#enemy-type {
+  align-self: start;
+}
+
+/* Renegade */
+#renegade {
+  display: flex;
+  container-type: inline-size;
+  align-self: start;
+
+  > dl:last-child {
+    border-left-width: 1px;
+    border-left-style: dotted;
+  }
+  > dl dd {
+    font-family: var(--font-proportional);
+    font-feature-settings: "palt";
+  }
+}
+#breed {
+  flex-basis: 7em;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: max-content auto;
+}
+#syndrome {
+  flex-grow: 1;
+  display: grid;
+  grid-gap: 0 .8em;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: max-content auto;
+  > dt:last-of-type {
+    grid-column: 3;
+    font-size: 85%;
+    line-height: calc(1.5 / .85);
+  }
+  > dd {
+    grid-row: 2;
+    white-space: nowrap;
+  }
+}
+@media screen and (width > 735px){
+  @container (width <= 480px){
+    #breed {
+      flex-basis: 5em;
+    }
+    #breed dd span.shorten {
+      display: none;
+    }
+    #syndrome dd {
+      font-size: 0.9em;
+      transform: scaleY(calc(1/0.9));
+    }
+  }
+}
+@media screen and (width <= 735px){
+  #renegade {
+    display: block;
+  }
+  #renegade dl:last-child {
+    border-width: 1px 0 0;
+  }
+  #breed dd span {
+    display: inline;
+  }
+}
+
+/* Sub-Status */
+#sub-status {
+  align-self: start;
+
+  container-type: inline-size;
+
+  > dl {
+    flex-grow: 1;
+    margin: -1px 0 0 -1px;
+    border-top-width: 1px;
+    border-top-style: solid;
+    border-left-width: 1px;
+    border-left-style: dotted;
+    > dd b {
+      display: inline-block;
+      font-weight: normal;
+      margin-left: .5rem;
+      transform: scale(1.3) translateY(-.1rem);
+    }
+  }
+  & span.shorten {
+    @container (width <= 331px){
+      font-size: 85%;
+    }
+    @container (width <= 290px){
+      display: none;
+    }
+    @media screen and (width <= 735px){
+      display: none;
+    }
+  }
+}
+
+/* // Status / Skills
+---------------------------------------------------------------------------------------------------- */
+#status {
+  align-self: end;
+}
+#status table {
+  width: 100%;
+  table-layout: fixed;
+}
+#status table thead {
+  border-width: 0 0 1px;
+  border-style: solid;
+  border-right: hidden;
+  & td {
+    width: 2.8em;
+    border-width: 1px;
+    border-style: solid;
+    font-size: 130%;
+  }
+  > tr.breakdown {
+    display: none;
+    > th {
+      border-top-width: 1px;
+      border-top-style: solid;
+      font-weight: normal;
+      font-size: 90%;
+    }
+    > td {
+      font-weight: normal;
+      font-size: 100%;
+    }
+  }
+}
+#status table tbody {
+  border-style: none hidden hidden;
+  font-family: var(--font-proportional);
+  font-feature-settings: "palt";
+  & td {
+    border-width: 1px 0px;
+    border-style: solid;
+  }
+  & td.left {
+    padding-left: .5em;
+  }
+  & td.right {
+    padding-right: .1rem;
+    border-right-width: 1px;
+    font-size: 120%;
+    white-space: nowrap;
+  }
+  & td.right span.small {
+    display: inline-block;
+    margin: 0 -.3em 0 -1em;
+    font-size: 70%;
+    transform: scaleX(0.8);
+  }
+  & td.right::after {
+    content: 'Lv';
+    margin-left: .1em;
+    font-size: 70%;
+  }
+  & td.left:empty + td.right:empty::after {
+    content: '';
+  }
+  & td.left:has(+ td.right:empty),
+  & td.right:empty {
+    color: #7777;
+  }
+}
+@media screen and (width <= 735px){
+  #status table thead td {
+    width: 2.2em;
+  }
+  #status table tbody {
+    font-size: 90%;
+    & td.left {
+      font-size: 90%;
+    }
+    & td.right {
+      padding-right: .15em;
+      font-size: 1.3em;
+    }
+    & td.right::after {
+      display: none;
+    }
+  }
+}
+
+/* Items */
+#items {
+}
+#items table {
+  border-width: 0 0 1px;
+  border-style: solid hidden !important;
+}
+#items .box:last-child table {
+  border-bottom-style: hidden !important;
+}
+#items table thead th {
+  vertical-align: bottom;
+
+  &:nth-child(1) { width:  12em; } /* 名称 */
+  &:nth-child(2) { width: 5.9em; } /* 技能 */
+  &:nth-child(3) { width: 3.4em; } /* 命中  ／ドッジ */
+  &:nth-child(4) { width: 3.4em; } /* 攻撃力／行動 */
+  &:nth-child(5) { width: 3.4em; } /* ガード値／装甲値 */
+  &:nth-child(6) { width: 3.4em; } /* 全力移動 */
+  &:last-child   { width: auto; text-align: left; padding-left: 1em; } /* 解説 */
+}
+@media screen and (width <= 735px){
+}
+
+/* // Area-Battle
+---------------------------------------------------------------------------------------------------- */
+#area-battle {
+  position: relative;
+}
+#area-battle > .box {
+  margin-top: var(--box-v-gap);
+}
+#area-battle > .box > table {
+  width: 100%;
+  border-style: hidden;
+}
+#area-battle > .box > table tbody tr {
+  border-width: 1px 0 0;
+  border-style: solid;
+}
+#area-battle > .box > table tbody td {
+  border-left-width: 1px;
+  border-style: dotted;
+}
+
+/* Effects */
+#effect {
+  position: relative;
+}
+#effect table thead th {
+  vertical-align: bottom;
+}
+#effect table thead th:nth-child(n+4) {
+  font-size: 90%;
+}
+@media screen {
+  #effect table thead th {
+    &:nth-child(1) { width: 2.1em; } /* No. */
+    &:nth-child(2) { width:  auto; } /* 名称 */
+    &:nth-child(3) { width:   2em; } /* LV */
+    &:nth-child(4) { width: 8.4em; } /* タイミング */
+    &:nth-child(5) { width: 7.0em; } /* 技能 */
+    &:nth-child(6) { width: 3.8em; } /* 難易度 */
+    &:nth-child(7) { width: 5.8em; } /* 対象 */
+    &:nth-child(8) { width: 4.8em; } /* 射程 */
+    &:nth-child(9) { width: 3.4em; } /* 侵蝕値 */
+    &:nth-child(10){ width: 4.9em; } /* 制限 */
+  }
+}
+
+#effect table tbody td:nth-child(n+2) {
+  font-family: var(--font-proportional);
+  font-feature-settings: "palt";
+}
+#effect table tbody td {
+  &:nth-child(1) {  } /* No. */
+  &:nth-child(2) { font-weight: bold; } /* 名称 */
+  &:nth-child(3) {  } /* LV */
+  &:nth-child(4) { font-size: 90%; } /* タイミング */
+  &:nth-child(5) { font-size: 90%; } /* 技能 */
+  &:nth-child(6) { font-size: 90%; } /* 難易度 */
+  &:nth-child(7) { font-size: 90%; } /* 対象 */
+  &:nth-child(8) { font-size: 90%; } /* 射程 */
+  &:nth-child(9) {  } /* 侵蝕値 */
+  &:nth-child(10){ font-size: 90%; } /* 制限 */
+}
+
+#effect table tbody:focus-within {
+  outline: 2px solid var(--text-color);
+  outline-offset: -1px;
+}
+#effect table tbody td.note {
+  padding-left: .5rem;
+
+  display: none;
+  @media screen {
+    tbody:focus-within & {
+      display: table-cell;
+    }
+  }
+  #effect[data-full-open="true"] & {
+    display: table-cell;
+  }
+  
+  & span.right {
+    float: right;
+    font-size: 90%;
+  }
+}
+#effect tbody tr td:nth-child(9) span.thinest.small {
+  transform: scaleY(calc(1/0.8)) translateY(-.1rem);
+  font-size: 70%;
+}
+#effect table td.type {
+  padding: 0;
+  overflow: hidden;
+  position: relative;
+  > i {
+    position: absolute;
+    inset: 0;
+    align-content: center;
+    white-space: nowrap;
+  }
+}
+.ef-easy {
+  display: block;
+  margin: -1em;
+  transform: scale(0.8, 0.7);
+  font-style: normal;
+  font-weight: bold;
+  line-height: 1;
+  color: hsl(100,30%,50%);
+  &::before {
+    content: 'EA';
+    display: block;
+  }
+  &::after {
+    content: 'SY';
+    display: block;
+  }
+}
+.ef-enemy {
+  display: block;
+  margin: -1.5em;
+  transform: scale(0.8, 0.7) translateY(0.05em);
+  font-style: normal;
+  font-weight: bold;
+  line-height: 1;
+  color: hsl(270,30%,50%);
+  &:before {
+    content: 'ENE';
+    display: block;
+  }
+  &::after {
+    display: block;
+    content: 'MY';
+    white-space: nowrap;
+  }
+}
+.ef-dlois {
+  display: block;
+  margin: -1.5em;
+  transform: scale(0.5);
+  font-style: normal;
+  font-weight: bold;
+  line-height: 1;
+  color: hsl(0,30%,50%);
+  &::before {
+    content: 'D';
+    display: block;
+    transform: scale(1.1,0.9) translateY(.05em);
+    font-size: 3em;
+  }
+  &::after {
+    display: block;
+    content: 'ロイス';
+    white-space: nowrap;
+    transform: translateY(-.3em);
+  }
+}
+.ef-elois {
+  display: block;
+  margin: -1.5em;
+  transform: scale(0.5);
+  font-style: normal;
+  font-weight: bold;
+  line-height: 1;
+  color: hsl(250,30%,25%);
+  &::before {
+    content: 'E';
+    display: block;
+    transform: scale(1.1,0.9) translateY(.05em);
+    font-size: 3em;
+  }
+  &::after {
+    display: block;
+    content: 'ロイス';
+    white-space: nowrap;
+    transform: translateY(-.3em);
+  }
+}
+.ef-other::before {
+  content: '他';
+  color: hsl(0,0%,50%);
+  font-size: 1em;
+  font-style: normal;
+  font-weight: bold;
+}
+@media all and (width > 735px){
+  #effect:not([data-full-open="true"]) table > tbody:last-child:not(:focus-within) > tr:last-child {
+    border-top: none;
+  }
+}
+@media screen and (width <= 735px){
+  #effect table thead tr,
+  #effect table tbody tr {
+    display: grid;
+    grid-template-columns: 2.1em 2em 6em auto 4em 5.5em 3em 3em 4.9em;
+    border-width: 0 0 1px;
+  }
+  #effect table tbody tr:last-child { border: 0; }
+  #effect table thead th:nth-child(n) {
+    width: auto;
+  }
+  #effect table thead th:nth-child(2) {
+    display: none;
+  }
+  #effect table tbody td[rowspan] {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  #effect table tbody td {
+    font-size: 100% !important;
+    border-width: 0 0 0 1px;
+    border-style: dotted;
+  }
+  #effect table tbody td.name {
+    grid-row: 1; grid-column: 1 / span 9;
+    text-align: left;
+    padding-left: .5rem;
+    border-width: 0 0 1px;
+    border-style: solid;
+  }
+  #effect table tbody td.note {
+    grid-row: 1; grid-column: 1 / span 9;
+    border-width: 1px 0 0;
+    border-style: solid;
+  }
+  #effect table tbody td:first-child { border-left: 0; }
+  #effect table tbody td:last-child  { border-right: 0; }
+  #effect table tbody td span.shorten {
+    display: none !important;
+  }
+  #effect table tbody td span.thin,
+  #effect table tbody td span.thiner,
+  #effect table tbody td span.thinest {
+    transform: scaleY(calc(1/0.9)) !important;
+    font-size: 90% !important;
+  }
+  .ef-dlois {
+    margin: -1.5em;
+  }
+}
+
+#magic table {
+  > colgroup {
+    .name { width:  16em; } /* 名称 */
+    .type { width: 4.5em; } /* 種別 */
+    .exp  { width: 3.5em; } /* 経験点 */
+    .act  { width: 5.5em; } /* 発動値 */
+    .enc  { width: 3.4em; } /* 侵蝕値 */
+    .note { width:  auto; } /* 効果 */
+  }
+  > thead th {
+    font-size: 90%;
+  }
+  > tbody td:nth-child(1) { font-weight: bold; } /* 名称 */
+  > tbody td.note { padding-left: .5rem; }
+}
+
+
+/* Combos */
+#combo .combo-table {
+  display: grid;
+  grid-template-columns: 1.7fr 1.3fr 2fr;
+  grid-template-rows: max-content max-content 1fr;
+  grid-template-areas:
+    "NAME COMB COMB"
+    "  IN   IN  OUT"
+    "NOTE NOTE  OUT"
+  ;
+  border-top-width: 1px;
+  border-top-style: solid;
+  text-align: center;
+
+  @media print {
+    break-inside: avoid;
+  }
+  
+  &:nth-of-type(even) {
+    background: var(--box-even-rows-bg-color);
+  }
+  > h3 { grid-area: NAME; }
+  > .combo-combo { grid-area: COMB; }
+  > .combo-in    { grid-area:   IN; }
+  > .combo-out   { grid-area:  OUT; }
+  > .combo-note  { grid-area: NOTE; }
+}
+#combo .combo-table h3 {
+  display: grid;
+  place-items: center;
+  margin: 0;
+  border-width: 0 0 1px;
+  border-style: solid;
+  background: none;
+  font-family: var(--font-proportional);
+  word-break: auto-phrase;
+  overflow-wrap: break-word;
+}
+#combo .combo-table dl {
+  > dt {
+    padding: .2rem 0 .1rem;
+    font-size: 80%;
+    white-space: nowrap;
+  }
+  > dd {
+    font-size: 90%;
+    padding: .1em 0;
+    border-top-width: 1px;
+    border-top-style: solid;
+  }
+  > dd:empty {
+    padding: 0;
+  }
+}
+#combo .combo-table .combo-combo {
+  border-width: 0 0 1px 1px;
+  border-style: solid;
+
+  & dt {
+    padding-left: .3em;
+    text-align: left;
+  }
+  & dd {
+    text-align: left;
+    padding-left: .5em;
+  }
+  & dd span:empty::before {
+    content: "";
+    display: inline-block;
+  }
+}
+#combo .combo-table .combo-in {
+  display: flex;
+  border-width: 0 1px 0 0;
+  border-style: solid;
+}
+#combo .combo-table .combo-in dl {
+  flex-grow: 1;
+  display: grid;
+  grid-template-rows: max-content auto;
+  
+  &:nth-child(1) { flex-basis: auto; }
+  &:nth-child(2) { flex-basis: 15%; }
+  &:nth-child(3) { flex-basis: 3.5em; }
+  &:nth-child(4) { flex-basis: 6em; }
+  &:nth-child(5) { flex-basis: 4em; }
+  &:nth-child(6) { flex-basis: 3em; flex-shrink: 1; flex-grow: 0; }
+  
+  & dd {
+    display: grid;
+    place-items: center;
+  }
+  & + dl dd {
+    border-left-width: 1px;
+    border-left-style: dotted;
+  }
+}
+#combo .combo-table .combo-out {
+  display: grid;
+  grid-template-columns: auto auto auto auto auto;
+  grid-template-rows: max-content auto;
+  
+  .combo-cond  { grid-column: 1; }
+  .combo-dice  { grid-column: 2; }
+  .combo-crit  { grid-column: 3; }
+  .combo-fixed { grid-column: 4; }
+  .combo-atk   { grid-column: 5; }
+  
+  & dd.combo-dice  ,
+  & dd.combo-crit  ,
+  & dd.combo-fixed ,
+  & dd.combo-atk   { font-size: 1.2em; }
+  & > dd:not(.combo-cond) {
+    border-left-width: 1px;
+    border-left-style: dotted;
+  }
+  & dd {
+    display: grid;
+    place-items: center;
+  }
+  & dd.combo-cond  {
+    font-size: 80%;
+  }
+}
+#combo .combo-table .combo-note {
+  margin: 0;
+  padding: .2em .5em;
+  border-width: 1px 1px 0 0;
+  border-style: solid;
+  text-align: left;
+  line-height: 1.4;
+
+  &:empty {
+    display: unset;
+  }
+}
+
+#combo .combo-table .combo-combo dd span.thin {
+  display: inline-block;
+  font-size: 90%;
+  transform: scaleY(calc(1/0.9));
+  text-decoration: inherit;
+}
+#combo .combo-table .combo-in dd span {
+  display: inline-block;
+  
+  &.thin          { transform: scaleY(calc(1/0.93)); font-size: 93%; }
+  &.thiner        { transform: scaleY(calc(1/0.86)); font-size: 86%; }
+  &.thinest       { transform: scaleY(calc(1/0.8));  font-size: 79%; }
+  &.thinest.small { transform: scaleY(calc(1/0.8));  font-size: 73%; }
+}
+
+@media screen and (width <= 735px){
+  #combo .combo-table {
+    grid-template-columns: 11fr;
+    grid-template-areas:
+      "NAME"
+      "COMB"
+      "  IN"
+      " OUT"
+      "NOTE"
+    ;
+    border-top-width: 1px;
+    border-top-style: solid;
+    text-align: center;
+  }
+  #combo .combo-table h3 {
+    display: block;
+    padding: .5rem .2em;
+    text-align: left;
+    border: 0;
+  }
+  #combo .combo-table dl dd {
+    font-size: inherit;
+  }
+  #combo .combo-table .combo-combo {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    border-width: 1px 0;
+    border-style: solid;
+    > dt {
+      padding-left :.5em;
+      padding-right:.5em;
+    }
+    > dd {
+      padding-left: .2em;
+      border-width: 0 0 0 1px;
+      border-style: dotted;
+    }
+  }
+  #combo .combo-table .combo-in {
+    margin: .5rem 0;
+    border-width: 0 0 1px;
+    border-style: solid;
+  }
+  #combo .combo-table .combo-out {
+    border-width: 0 0 1px;
+    border-style: solid;
+  }
+  #combo .combo-table .combo-note {
+    margin: .5rem 0;
+    border-width: 0;
+    border-style: solid;
+  }
+  #combo .shorten {
+    display: none !important;
+  }
+}
+
+#combo[data-display-mode="simple"] .combo-table {
+  & h3 {
+    border-bottom: none;
+  }
+  & .combo-combo {
+    display: grid;
+    align-items: center;
+    border-bottom: none;
+  }
+  & .combo-combo > dd {
+    border-top: none;
+  }
+  & .combo-combo > dt,
+  & .combo-in ,
+  & .combo-out,
+  & .combo-note {
+    display: none;
+  }
+}
+@media screen and (width <= 735px){
+  #combo[data-display-mode="simple"] .combo-table .combo-combo {
+    display: block;
+  }
+}
+
+/* Encroach-Bonus
+---------------------------------------------------------------------------------------------------- */
+#enc-bonus {
+  position: sticky;
+  bottom: 0;
+  margin-top: var(--box-v-gap);
+  background-image: none;
+  background-color: var(--bg-color);
+  border-radius: 5px;
+}
+#enc-bonus details:not([open]) summary::after {
+  content: '（クリックで展開）';
+  font-size: 90%;
+}
+#enc-bonus p {
+  margin: -1.4em 0 0 9em;
+}
+#enc-bonus p input {
+  &#current-encroach {
+    width: 4em;
+    padding: .1em;
+    text-align: center;
+    vertical-align: text-bottom;
+    font-size: 110%;
+    font-weight: bold;
+  }
+  &[type="checkbox"] {
+    margin: 0 .4rem 0 1em;
+    transform: scale(1.4);
+  }
+  &[type="checkbox"] + label {
+    display: inline-block;
+    user-select: none;
+    cursor: pointer;
+  }
+  &[type="checkbox"]:not(:checked) + label {
+    opacity: 0.5;
+  }
+  &[type="checkbox"] + label:hover {
+    opacity: 0.8;
+  }
+}
+#enc-bonus.encroach-fixed p .encroach-prefix {
+  display: none;
+}
+#enc-bonus table {
+  border-top: 1px;
+  border-bottom: hidden;
+
+  & col.current {
+    background-color: hsla(340,100%,50%,0.3);
+  }
+  & th {
+    font-size: 80%;
+    line-height: 1;
+    padding: .2rem;
+  }
+  & td {
+    padding: .2rem 0 .1rem;
+    line-height: 1;
+  }
+}
+
+@media screen and (width <= 735px){
+  #enc-bonus p {
+    margin: 0 0 0 1em;
+  }
+  #enc-bonus p input#current-encroach {
+    font-size: 150%;
+  }
+}
+
+[data-edb] {
+  position: relative;
+}
+[data-edb]:not(:empty):not([data-edb="0"]):not([data-edb=""]) {
+  padding-right: .5em !important;
+}
+[data-edb]:not(:empty):not([data-edb="0"]):not([data-edb=""])::after {
+  content: '+'attr(data-edb);
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  font-size: 75%;
+  line-height: 0.8;
+  color: #b00;
+}
+
+/* // Free-Memo
+---------------------------------------------------------------------------------------------------- */
+#free-note,
+#free-history{
+  margin-top: var(--box-v-gap);
+}
+
+
+
+/* // Simple
+---------------------------------------------------------------------------------------------------- */
+.mode-button {
+  display: inline-flex;
+  align-items: center;
+  margin: 0 0 .5em .5em;
+  padding: 1px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #7777;
+  border-radius: 5px;
+  background-color: #7775;
+  cursor: pointer;
+  user-select: none;
+  > .toggle-button {
+    font-size: 90%;
+    width: 3.5em;
+    background-color: var(--bg-color);
+    &:has(input:not(:checked))::after {
+      right: calc(2.5em - 4px);
+    }
+  }
+  > span.text {
+    display: inline-block;
+    line-height: 1;
+    margin: 0 3px;
+    font-size: 80%;
+  }
+}
+#status {
+  > dl {
+    display: none;
+  }
+}
+#simple-items {
+  display: none;
+}
+#simple-effect {
+  display: none;
+}
+:root.simple {
+  article {
+    position: relative;
+    padding: .5em calc(1em + 3px) 1em;
+    max-width: 400px;
+    background-color: var(--box-base-bg-color);
+    @media screen and (width <= 735px){
+      max-width: calc(100% - 2em);
+      font-size: 120%;
+    }
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 3px -3px;
+      border-width: 2px 0 1px 0;
+      border-style: solid;
+      border-color: var(--box-outside-border-color);
+      pointer-events: none;
+    }
+    &::after {
+      content: '';
+      position: absolute;
+      inset: -3px 3px;
+      border-width: 0 1px 0 2px;
+      border-style: solid;
+      border-color: var(--box-outside-border-color);
+      pointer-events: none;
+    }
+  }
+  .box-union, .box:not(.chat-palette) {
+    border-width: 0;
+    background-image: none;
+    background-color: transparent;
+    box-shadow: none;
+  }
+  .box:not(.chat-palette) {
+    dt, h2 {
+      font-size: inherit;
+    }
+    h2 {
+      margin: 0;
+      padding: 0;
+      border: 0;
+      background: none;
+      &::before { content: "◆"; }
+      p + & {
+        margin-top: .5em;
+      }
+    }
+    h3 {
+      margin: .3em 0 0;
+      padding: 0;
+      border: 0;
+      background: none;
+      &::before { content: "▼"; }
+    }
+    & {
+      > dt::after {
+        content: ":";
+      }
+    }
+  }
+  #area-name {
+    margin: 0 calc(-1em - 5px);
+    padding: 0;
+    background-image: none;
+    background-color: transparent;
+    display: block;
+    border-width: 0;
+    h1 {
+      position: relative;
+      margin-right: 10px;
+      padding-left: 1em;
+      border-width: 0 0 1px 0;
+      border-style: solid;
+      align-items: start;
+      text-align-last: auto;
+      overflow: visible;
+      font-size: 1.8rem;
+
+      &::after {
+        content: "";
+        position: absolute;
+        z-index: -1;
+        inset: 1em 5px -5px;
+        border-width: 0 1px 0 0;
+        border-style: solid;
+        border-color: var(--box-outside-border-color);
+      }
+    }
+    > div {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      margin-top: 3px;
+      margin-left: 1.5em;
+      margin-right: 1.5em;
+       > * {
+        margin: 0;
+      }
+    }
+  }
+  #area-status {
+    display: block;
+  }
+  #enemy-type {
+    display: inline;
+    > * {
+      display: inline;
+    }
+  }
+  #renegade {
+    display: block;
+    container-type: unset;
+    overflow: visible;
+    #breed, #syndrome {
+      display: block;
+      > * {
+        display: inline;
+      }
+      .optional {
+        display: none;
+      }
+    }
+    #breed {
+      width: max-content;
+      margin-top: -1.5em;
+      margin-left: auto;
+      margin-right: 3em;
+      .shorten {
+        display: none;
+      }
+    }
+    #syndrome {
+      display: inline-flex;
+      gap: 0;
+      border-width: 0;
+      > dd ~ dd:not(:empty)::before {
+        content: "／";
+      }
+    }
+  }
+  #status {
+    margin-top: 1em;
+    > table {
+      display: none;
+    }
+    > dl {
+      display: grid;
+      grid-template-columns: max-content 1fr;
+      gap: 0 1em;
+      > dt::after {
+        position: relative;
+      }
+      > dd {
+        text-align: left;
+      }
+    }
+  }
+  #sub-status {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    > dl {
+      display: inline-block;
+      border-width: 0;
+      > * {
+        display: inline-block;
+      }
+      > dd b {
+        transform: none;
+      }
+    }
+  }
+  #items {
+    display: none;
+  }
+  #simple-items {
+    display: block;
+    margin-top: 1em;
+    .rows > :nth-child(even) { background-color: var(--box-even-rows-bg-color); }
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0 1em;
+      padding-left: .5em;
+      padding-bottom: .3em;
+      & + .row {
+        padding-top: .5em;
+      }
+      > b {
+        margin-left: -.5em;
+        &::before {
+          content: "▼";
+        }
+      }
+      > span, > b {
+        .thin,
+        .thiner,
+        .thinest {
+          display: inline;
+          font-size: inherit;
+        }
+      }
+      > p {
+        flex-basis: 100%;
+        margin: 0;
+        padding: 0;
+        line-height: inherit;
+      }
+    }
+  }
+  .open-button {
+    display: none;
+  }
+  #effect {
+    display: none;
+  }
+  #simple-effect {
+    display: block;
+    margin-top: 1em;
+    > p {
+      > span {
+        white-space: nowrap;
+      }
+    }
+  }
+  #combo {
+    margin-top: 1em;
+    .combo-table {
+      display: block;
+      border: 0;
+      & + .combo-table {
+        margin-top: .2em;
+        padding-top: .3em;
+      }
+      & * {
+        border: 0;
+        font-size: inherit;
+      }
+    }
+    h3 {
+      display: block;
+      text-align: left;
+    }
+    .combo-combo {
+      display: block;
+      > dt {
+        display: none;
+      }
+    }
+    .combo-in {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0 1em;
+      margin-left: .5em;
+      text-align: left;
+      font-size: inherit;
+      font-family: var(--font-proportional);
+      font-feature-settings: "palt";
+      > dl {
+        display: flex;
+        white-space: nowrap;
+        align-items: center;
+
+        &.timing {
+          grid-column: span 2;
+          .shorten {
+            display: inline !important;
+          }
+        }
+        dt {
+          display: flex;
+        }
+        dt::after {
+          content: ":";
+        }
+        dd :is(.thin,.thiner,.thinest) {
+          transform: none;
+          font-size: inherit;
+        }
+        &:has(dd > span:empty){
+          display: none;
+        }
+      }
+    }
+    .combo-out {
+      width: max-content;
+      margin-left: .5em;
+      border-width: 1px;
+      border-style: solid;
+      border-color: var(--box-inside-border-color);
+      &:not(:has(
+        dd.combo-cond > b:not(:empty),
+        dd.combo-dice:not(:empty),
+        dd.combo-crit:not(:empty),
+        dd.combo-fixed:not(:empty),
+        dd.combo-atk:not(:empty))
+      ) {
+        display: none;
+      }
+      > dt {
+        padding: 0 .5em;
+      }
+      > dd {
+        border-top-width: 1px;
+        border-top-style: solid;
+        border-color: var(--box-inside-border-color);
+      }
+      > dd.combo-cond:empty::after {
+        content: "――";
+      }
+    }
+  }
+  #enc-bonus {
+    display: none;
+  }
+  #free-note {
+    margin-top: 1em;
+  }
+}
+
+/* ////////// LayerEnd ////////// */
+}

@@ -173,3 +173,37 @@ output.consts.DX3_STATUS = [
     }
   }
 ];
+
+output.consts.ENEMY_WEAPON_COLUMNS = {
+  name: '装備',
+  name: '武器',
+  skill: '技能',
+  hit: '命中',
+  attack: '攻撃力',
+  guard: 'ガード値',
+  note: '解説'
+};
+
+output.consts.ENEMY_ARMOR_COLUMNS = {
+  name: '防具',
+  move: '行動',
+  dodge: 'ドッジ',
+  value: '装甲値',
+  note: '解説'
+};
+
+output.consts.ENEMY_VEHICLE_COLUMNS = {
+  name: 'ヴィークル',
+  skill: '技能',
+  move: '行動',
+  attack: '攻撃力',
+  value: '装甲値',
+  dash: '全力移動',
+  note: '解説'
+};
+
+output.consts.ENEMY_ITEM_COLUMNS = {
+  name: '一般アイテム',
+  skill: '技能',
+  note: '解説'
+};
