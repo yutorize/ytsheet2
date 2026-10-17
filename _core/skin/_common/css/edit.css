@@ -844,6 +844,10 @@ input[type="number"] {
     }
   }
 }
+.box.annotate {
+  margin: 0;
+  background-image: none;
+}
 .example {
   background: rgba(170,170,170,0.2);
 }

@@ -510,7 +510,7 @@ article h1 {
 * { border-color: var(--border-color); }
 
 /* トグルボタン */
-label.toggle-button {
+.toggle-button {
   display: inline-block;
   position: relative;
   width: 4.5em;

@@ -161,7 +161,7 @@ output.generateUdonariumXml = async (generateType, json, opt_url='', opt_imageHa
 
   dataCharacter.common = `
     <data name="common">
-      <data name="name">${json.namePlate || json.characterName || json.monsterName || json.aka}</data>
+      <data name="name">${json.namePlate || json.name}</data>
       <data name="size">1</data>
     </data>`;
 

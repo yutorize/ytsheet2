@@ -1,6 +1,25 @@
 @charset "utf-8";
 
 @layer system {
+/* // Navigation
+---------------------------------------------------------------------------------------------------- */
+header nav {
+  & li.head b {
+    .icon {
+      .chara  &::before { mask-image: url(../img/icon-person.png); }
+      .enemy  &::before { mask-image: url(../img/icon-enemy.png); }
+    }
+    .label {
+      display: none;
+    }
+  }
+}
+main nav {
+  & a {
+    .chara &::before { mask-image: url(../img/icon-person.png); }
+    .enemy &::before { mask-image: url(../img/icon-enemy.png); }
+  }
+}
 /* // List
 ---------------------------------------------------------------------------------------------------- */
 .list table tr {
@@ -39,6 +58,51 @@
 }
 @media screen and (width <= 735px){
   .list table tr {
+    grid-template-columns: 18rem 6em 3em 0.6fr 1fr 4em 4em;
+  }
+}
+/* // List-Enemy
+---------------------------------------------------------------------------------------------------- */
+.list.enemy {
+  table {
+    tr {
+      grid-template-columns: 26rem 0.7fr 6.2em 1.8fr 10em 0.6fr;
+      grid-template-areas:
+        "NAME   PL TYPE  SYN  STG DATE"
+        "NAME TAGS TAGS TAGS TAGS DATE"
+      ;
+    }
+    tbody tr:has(.tags:empty) {
+      grid-template-areas:
+        "NAME   PL TYPE  SYN  STG DATE"
+      ;
+    }
+    .name    { grid-area: NAME; }
+    .author  { grid-area:   PL; }
+    .type    { grid-area: TYPE; }
+    .syndrome{ grid-area:  SYN; }
+    .stage   { grid-area:  STG; }
+    .tags    { grid-area: TAGS; }
+    .date    { grid-area: DATE; }
+    td {
+      vertical-align: middle;
+    }
+    td.syndrome {
+      font-size: 85%;
+    }
+    td.syndrome div {
+      display: flex;
+      gap: 0 1em;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    td.stage {
+      font-size: 85%;
+    }
+  }
+}
+@media screen and (width <= 735px){
+  .list.enemy table tr {
     grid-template-columns: 18rem 6em 3em 0.6fr 1fr 4em 4em;
   }
 }
