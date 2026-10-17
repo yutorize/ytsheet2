@@ -717,14 +717,14 @@
 .ef-dlois::before {
   content: 'D';
   display: block;
-  transform: scale(1.1,0.9) translateY(.1em);
+  transform: scale(1.1,0.9) translateY(.05em);
   font-size: 3em;
 }
 .ef-dlois::after {
   display: block;
   content: 'ロイス';
   white-space: nowrap;
-  transform: translateY(-.1em);
+  transform: translateY(-.3em);
 }
 .ef-easy {
   display: block;
@@ -755,14 +755,35 @@
 .ef-enemy::before {
   content: 'E';
   display: block;
-  transform: scale(1.1,0.9) translateY(.1em);
+  transform: scale(1.1,0.9) translateY(.05em);
   font-size: 3em;
 }
 .ef-enemy::after {
   display: block;
   content: 'NEMY';
   white-space: nowrap;
-  transform: translateY(-.1em);
+  transform: translateY(-.3em);
+}
+.ef-elois {
+  display: block;
+  margin: -1.5em;
+  transform: scale(0.5);
+  font-style: normal;
+  font-weight: bold;
+  line-height: 1;
+  color: hsl(250,30%,25%);
+}
+.ef-elois::before {
+  content: 'E';
+  display: block;
+  transform: scale(1.1,0.9) translateY(.05em);
+  font-size: 3em;
+}
+.ef-elois::after {
+  display: block;
+  content: 'ロイス';
+  white-space: nowrap;
+  transform: translateY(-.3em);
 }
 .ef-other::before {
   content: '他';

@@ -173,3 +173,11 @@ output.consts.DX3_STATUS = [
     }
   }
 ];
+
+output.consts.ENEMY_WEAPON_COLUMNS = {
+  name: '装備',
+  skill: '技能',
+  hit: '命中',
+  attack: '攻撃力',
+  note: '解説'
+};

@@ -26,9 +26,9 @@ SOFTWARE.
 
 var output = output || {};
 
-output._convertDoubleCrossStatus = (json, s) => {
+output._convertDoubleCrossStatus = (json, s, showGrowth = true) => {
   const result = [];
-  result.push(`【${s.name}】：${json['sttTotal' + s.column]} (内成長：${json['sttGrow' + s.column] || 0})`);
+  result.push(`【${s.name}】：${json['sttTotal' + s.column]}${showGrowth ? ` (内成長：${json['sttGrow' + s.column] || 0})` : ''}`);
   s.skills.forEach((skill)=>{
     result.push(`〈${skill.name}〉：${json['skillTotal' + skill.column] || 0} / 判定 ${json['sttTotal' + s.column]}r+${json['skillTotal' + skill.column] || 0}`);
   });
@@ -70,8 +70,10 @@ output._getDoubleCrossCombos = (json) => {
   let cursor = 1;
   const comboData = [];
   while(json[`combo${cursor}Name`]) {
-    let limitationCursor = 1;
-    while(json[`combo${cursor}Condition${limitationCursor}`]) {
+    for(let limitationCursor = 1; limitationCursor <= 5; limitationCursor++) {
+      if(limitationCursor > 1 && !json[`combo${cursor}Condition${limitationCursor}`]) {
+        continue;
+      }
       comboData.push({
         name: json[`combo${cursor}Name`] || '',
         combination: (json[`combo${cursor}Combo`] || '').trim(),
@@ -84,7 +86,6 @@ output._getDoubleCrossCombos = (json) => {
         limitation: (json[`combo${cursor}Condition${limitationCursor}`] || '').trim(),
         note: json[`combo${cursor}Note`] || ''
       });
-      limitationCursor++;
     }
     cursor++;
   }
@@ -263,5 +264,45 @@ output.generateCharacterTextOfDoubleCross3PC = (json) => {
   result.push('■その他■');
   result.push((json.freeNote || '').replace(/&lt;br&gt;/gm, '\n').replace(/&quot;/gm, '"'));
   
+  return result.join('\n');
+};
+
+
+output.generateCharacterTextOfDoubleCross3Enemy = (json) => {
+  const result = [];
+
+  result.push(`エネミー名：${json.enemyName || ''}`);
+  if(json.aka) { result.push(`コードネーム：${json.aka}`); }
+  result.push(`種別：${json.enemyType || ''}
+ステージ：${json.stage || ''}
+データ製作者：${json.author || ''}
+シンドローム：${json.syndrome1 || ''}${json.syndrome2 ? '、'+json.syndrome2 : ''}${json.syndrome3 ? '、'+json.syndrome3 : ''}`);
+  result.push('');
+
+  result.push('■能力値と技能■\n');
+  output.consts.DX3_STATUS.forEach((statusPattern) => {
+    result.push(output._convertDoubleCrossStatus(json, statusPattern, false));
+  });
+  result.push(`【ＨＰ】　${String(json.maxHpTotal ?? '').padStart(3, ' ')}
+【行動値】${String(json.initiativeTotal ?? '').padStart(3, ' ')}
+【装甲値】${String(json.armorTotal ?? '').padStart(3, ' ')}
+【侵蝕率】${String(json.encroachTotal ?? '').padStart(3, ' ')}％`);
+  result.push('');
+
+  result.push('■エフェクト■\n');
+  result.push(output._convertList(output._getDoubleCrossEffects(json), output.consts.EFFECT_COLUMNS, ' / '));
+  result.push('');
+
+  result.push('■コンボ■\n');
+  result.push(output._convertList(output._getDoubleCrossCombos(json), output.consts.COMBO_COLUMNS, ' / '));
+  result.push('');
+
+  result.push('■装備■\n');
+  result.push(output._convertList(output._getDoubleCrossWeapons(json), output.consts.ENEMY_WEAPON_COLUMNS, ' / '));
+  result.push('');
+
+  result.push('■解説・戦闘プランなど■');
+  result.push((json.freeNote || '').replace(/&lt;br&gt;/gm, '\n').replace(/&quot;/gm, '"'));
+
   return result.join('\n');
 };
