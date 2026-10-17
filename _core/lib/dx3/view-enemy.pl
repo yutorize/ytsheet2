@@ -10,6 +10,7 @@ require $set::data_syndrome;
 ### データ／テンプレート読込 #########################################################################
 (my $pcRef, my $SHEET) = setupViewBase(
   generateType => 'DoubleCross3PC',
+  nameKeys => [qw/enemyName aka/],
   unescapeLinesKeys => [qw/freeNote/],
   unescapeSkipKeys  => [qw/stage/],
   convertViewMap    => [qw/freeNote/],
@@ -102,7 +103,7 @@ sub maskPcData {
       $pc->{'combo'.$_.'Atk'.$i}   = noiseText(1,3);
       $pc->{'combo'.$_.'Fixed'.$i} = noiseText(1,3);
     }
-    foreach my $i (3..4){
+    foreach my $i (3..5){
       $pc->{'combo'.$_.'Condition'.$i} = '';
       $pc->{'combo'.$_.'Dice'.$i}  = '';
       $pc->{'combo'.$_.'Crit'.$i}  = '';

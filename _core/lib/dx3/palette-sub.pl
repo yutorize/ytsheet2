@@ -51,11 +51,12 @@ sub palettePreset {
       $text .= "### ■攻撃\n";
       foreach my $num (1 .. $::pc{weaponNum}){
         next if !$::pc{'weapon'.$num.'Name'};
+        my $acc = addNum($::pc{"weapon${num}Acc"});
         if   ($::pc{"weapon${num}Skill"} =~ /^(白兵|回避|運転)/){ $text .= '{肉体}+';  }
         elsif($::pc{"weapon${num}Skill"} =~ /^(射撃|知覚|芸術)/){ $text .= '{感覚}+';  }
         elsif($::pc{"weapon${num}Skill"} =~ /^(RC|意思|知識)/)  { $text .= '{精神}+';  }
         elsif($::pc{"weapon${num}Skill"} =~ /^(交渉|調達|情報)/){ $text .= '{社会}+';  }
-        $text .= "{DB}dx(10+{CB})+{$::pc{'weapon'.$num.'Skill'}}+{AB} 命中／$::pc{'weapon'.$num.'Name'}\n";
+        $text .= "{DB}dx(10+{CB})+{$::pc{'weapon'.$num.'Skill'}}$acc+{AB} 命中／$::pc{'weapon'.$num.'Name'}\n";
         $text .= "d10+$::pc{'weapon'.$num.'Atk'}+{AtkB} ダメージ／$::pc{'weapon'.$num.'Name'}\n" if $::pc{'weapon'.$num.'Atk'} ne '';
       }
 

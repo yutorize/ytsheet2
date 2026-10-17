@@ -8,6 +8,11 @@ sub addJsonData {
   my %pc = %{ $_[0] };
   my $type = $_[1];
 
+  ## 共通の外部出力処理が参照する名前
+  if($type eq 'e'){
+    $pc{characterName} = $pc{enemyName};
+  }
+
   ## ロイス数
   my @dloises; $pc{loisHave} = 0; $pc{loisMax} = 0; $pc{titusHave} = 0; $pc{sublimated} = 0;
   foreach my $num (1..7){

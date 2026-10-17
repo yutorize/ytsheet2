@@ -3,6 +3,7 @@
       <a class="search-button" onclick="toggleHide('form-search')"></a>
       <form method="get" action="./" name="search" id="form-search" class="hide">
         <h3>検索条件</h3>
+        <input type="hidden" name="type" value="e">
         <TMPL_IF LOGIN_ID><label class="mylist"><input type="checkbox" name="mode" value="mylist" <TMPL_IF modeMylist>checked</TMPL_IF>>マイリスト内を検索</label></TMPL_IF>
         <dl>
           <dt>タグ
@@ -12,7 +13,7 @@
           <dt>名前
             <dd><input type="text" name="name" value="<TMPL_VAR name>">
           <dt>データ製作者
-            <dd><input type="text" name="player" value="<TMPL_VAR player>">
+            <dd><input type="text" name="author" value="<TMPL_VAR author>">
           <dt>ステージ
             <dd><input type="text" name="stage" value="<TMPL_VAR stage>">
           <dt>シンドローム
@@ -40,12 +41,12 @@
         <table>
           <thead>
             <tr>
-              <th class="name"><a href="./?group=<TMPL_VAR ID><TMPL_VAR qLinks>&sort=name">名前</a>
-              <th class="player"><a href="./?group=<TMPL_VAR ID><TMPL_VAR qLinks>&sort=pl">プレイヤー</a>
+              <th class="name"><a href="./?<TMPL_VAR QUERYBASE><TMPL_VAR qLinks>&sort=name">名前</a>
+              <th class="player"><a href="./?<TMPL_VAR QUERYBASE><TMPL_VAR qLinks>&sort=pl">プレイヤー</a>
               <th class="type"><span>種別</span>
               <th class="syndrome"><span>シンドローム</span>
               <th class="stage"><span>ステージ</span>
-              <th class="date"><a href="./?group=<TMPL_VAR ID><TMPL_VAR qLinks>&sort=date">更新<br>日時</a>
+              <th class="date"><a href="./?<TMPL_VAR QUERYBASE><TMPL_VAR qLinks>&sort=date">更新<br>日時</a>
           </thead>
           <TMPL_LOOP Lines><tr<TMPL_IF HIDE> class="hide"</TMPL_IF>>
             <td class="name"><a href="./?id=<TMPL_VAR ID>"><TMPL_VAR NAME></a>
@@ -59,12 +60,12 @@
         </table>
         </TMPL_IF>
         <TMPL_VAR PAGER>
-        <TMPL_IF MORE><p class="more"><a href="./?group=<TMPL_VAR ID>">>>MORE</a></p></TMPL_IF>
+        <TMPL_IF MORE><p class="more"><a href="./?<TMPL_VAR QUERYBASE><TMPL_VAR qLinks>">>>MORE</a></p></TMPL_IF>
       </section>
       </TMPL_LOOP>
       <TMPL_IF simpleIndex><section class="list">
         <ul class="grouplist">
-        <TMPL_LOOP Groups><li><a href="./?group=<TMPL_VAR ID>"><TMPL_VAR NAME><small><TMPL_VAR TEXT></small></a></TMPL_LOOP>
+        <TMPL_LOOP Groups><li><a href="./?type=e&group=<TMPL_VAR ID>"><TMPL_VAR NAME><small><TMPL_VAR TEXT></small></a></TMPL_LOOP>
         </ul>
       </section></TMPL_IF>
     </article>

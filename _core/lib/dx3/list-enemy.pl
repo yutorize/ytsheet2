@@ -38,6 +38,7 @@ my ($indexMode, $qLinks) = listQueryInfo(
   queryKeys => \@queryKeys,
   excludeFromQLinks => { group => 1 },
 );
+my $queryBase = 'type=e&group='.uri_escape_utf8($::in{group} || 'all');
 my %groups = setupGroupList();
 
 ### ファイル読み込み #################################################################################
@@ -70,7 +71,7 @@ if($::in{breed}){
 if($::in{sort}){
   my $s = $::in{sort};
   if   ($s eq 'name'){ my @t = map { sortKeyName($_)       } @lines; @lines = @lines[sort {$t[$a] cmp $t[$b]} 0 .. $#t]; }
-  elsif($s eq 'pl')  { my @t = map { capField($_,'player') } @lines; @lines = @lines[sort {$t[$a] cmp $t[$b]} 0 .. $#t]; }
+  elsif($s eq 'pl')  { my @t = map { capField($_,'author') } @lines; @lines = @lines[sort {$t[$a] cmp $t[$b]} 0 .. $#t]; }
   elsif($s eq 'date'){ my @t = map { capField($_,'date')   } @lines; @lines = @lines[sort {$t[$b] <=> $t[$a]} 0 .. $#t]; }
   elsif($s eq 'age') { my @t = map { capField($_,'age')    } @lines; @lines = @lines[sort {$t[$b] <=> $t[$a]} 0 .. $#t]; }
 }
@@ -101,7 +102,7 @@ foreach (@$pageLines) {
       GROUP  => $pc{group},
       HIDE   => $pc{hide},
     });
-    push(@{$groupedLists{$pc{group}}}, @characters);
+    push(@{$groupedLists{'すべて'}}, @characters);
   }
   ## 通常リスト
   else {
@@ -141,7 +142,7 @@ $INDEX->param(Lists => [ makeGroupedLists(
       count     => $args{count},
       page      => $page,
       enabled   => ($args{id} || $::in{mode} eq 'mylist'),
-      queryBase => "type=e$qLinks",
+      queryBase => "$queryBase$qLinks",
     );
   },
 
@@ -150,6 +151,7 @@ $INDEX->param(Lists => [ makeGroupedLists(
     my $id = $args{id};
 
     return {
+      QUERYBASE => $queryBase,
       NAME  => $args{id},
       NUM   => $args{num},
       Lines => $args{lines},
