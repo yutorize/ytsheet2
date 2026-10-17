@@ -26,9 +26,9 @@ SOFTWARE.
 
 var output = output || {};
 
-output._convertDoubleCrossStatus = (json, s) => {
+output._convertDoubleCrossStatus = (json, s, showGrowth = true) => {
   const result = [];
-  result.push(`【${s.name}】：${json['sttTotal' + s.column]} (内成長：${json['sttGrow' + s.column] || 0})`);
+  result.push(`【${s.name}】：${json['sttTotal' + s.column]}${showGrowth ? ` (内成長：${json['sttGrow' + s.column] || 0})` : ''}`);
   s.skills.forEach((skill)=>{
     result.push(`〈${skill.name}〉：${json['skillTotal' + skill.column] || 0} / 判定 ${json['sttTotal' + s.column]}r+${json['skillTotal' + skill.column] || 0}`);
   });
@@ -70,8 +70,10 @@ output._getDoubleCrossCombos = (json) => {
   let cursor = 1;
   const comboData = [];
   while(json[`combo${cursor}Name`]) {
-    let limitationCursor = 1;
-    while(json[`combo${cursor}Condition${limitationCursor}`]) {
+    for(let limitationCursor = 1; limitationCursor <= 5; limitationCursor++) {
+      if(limitationCursor > 1 && !json[`combo${cursor}Condition${limitationCursor}`]) {
+        continue;
+      }
       comboData.push({
         name: json[`combo${cursor}Name`] || '',
         combination: (json[`combo${cursor}Combo`] || '').trim(),
@@ -84,7 +86,6 @@ output._getDoubleCrossCombos = (json) => {
         limitation: (json[`combo${cursor}Condition${limitationCursor}`] || '').trim(),
         note: json[`combo${cursor}Note`] || ''
       });
-      limitationCursor++;
     }
     cursor++;
   }
@@ -98,7 +99,7 @@ output._getDoubleCrossLoises = (json) => {
     data.push({
       name: json[`lois${cursor}Name`],
       relation: json[`lois${cursor}Relation`] || '',
-      positive: json[`lois${cursor}EmoPosi`] || '', 
+      positive: json[`lois${cursor}EmoPosi`] || '',
       negative: json[`lois${cursor}EmoNega`] || '',
       color: json[`lois${cursor}Color`] || '',
       condition: json[`lois${cursor}State`],
@@ -158,6 +159,24 @@ output._getDoubleCrossArmors = (json) => {
       move: json[`armor${cursor}Initiative`] || '',
       dodge: json[`armor${cursor}Dodge`] || '',
       note: json[`armor${cursor}Note`] || ''
+    });
+    cursor++;
+  }
+  return data;
+};
+
+output._getDoubleCrossVehicles = (json) => {
+  let cursor = 1;
+  const data = [];
+  while(json[`vehicle${cursor}Name`]) {
+    data.push({
+      name: json[`vehicle${cursor}Name`] || '',
+      skill: json[`vehicle${cursor}Skill`] || '',
+      move: json[`vehicle${cursor}Initiative`] || '',
+      attack: json[`vehicle${cursor}Atk`] || '',
+      value: json[`vehicle${cursor}Armor`] || '',
+      dash: json[`vehicle${cursor}Dash`] || '',
+      note: json[`vehicle${cursor}Note`] || ''
     });
     cursor++;
   }
@@ -262,6 +281,145 @@ output.generateCharacterTextOfDoubleCross3PC = (json) => {
 
   result.push('■その他■');
   result.push((json.freeNote || '').replace(/&lt;br&gt;/gm, '\n').replace(/&quot;/gm, '"'));
-  
+
   return result.join('\n');
+};
+
+
+output._formatDoubleCrossEnemyName = (name, brackets) => {
+  const isBracketed = /^(?:\(.*\)|\[.*\]|\{.*\}|（.*）|［.*］|｛.*｝|「.*」|『.*』|【.*】|〔.*〕|〈.*〉|《.*》)$/s.test(name);
+  return isBracketed ? name : `${brackets[0]}${name}${brackets[1]}`;
+};
+
+output._convertDoubleCrossEnemyList = (list, columns) => {
+  const result = [];
+  for(const data of list) {
+    const details = [data.name];
+    for(const key in columns) {
+      if(key === 'name' || key === 'note') { continue; }
+      details.push(`${columns[key]}：${data[key] ?? ''}`);
+    }
+    result.push(details.join('　'), data.note || '');
+  }
+  return result.join('\n');
+};
+
+output._convertDoubleCrossEnemyEquipment = (json, type, columns) => {
+  const fields = {
+    skill: 'Skill', hit: 'Acc', attack: 'Atk', guard: 'Guard',
+    move: 'Initiative', dodge: 'Dodge', value: 'Armor', dash: 'Dash'
+  };
+  const result = [];
+  for(let cursor = 1; cursor <= Number(json[`${type}Num`] || 0) || json[`${type}${cursor}Name`]; cursor++) {
+    const prefix = `${type}${cursor}`;
+    if(!json[`${prefix}Name`]) { continue; }
+    const data = { name: json[`${prefix}Name`], note: json[`${prefix}Note`] || '' };
+    for(const key in fields) {
+      data[key] = json[prefix + fields[key]] ?? '';
+    }
+    result.push(data);
+  }
+  return output._convertDoubleCrossEnemyList(result, columns);
+};
+
+output._convertDoubleCrossEnemyCombos = (json) => {
+  const result = [];
+  for(let cursor = 1; cursor <= Number(json.comboNum || 0) || json[`combo${cursor}Name`]; cursor++) {
+    const prefix = `combo${cursor}`;
+    if(!json[`${prefix}Name`]) { continue; }
+    const lines = [
+      `▼${json[`${prefix}Name`]}`,
+      (json[`${prefix}Combo`] || '').trim(),
+      `タイミング：${json[`${prefix}Timing`] || ''}`,
+      `技能：${json[`${prefix}Skill`] || ''}　難易度：${json[`${prefix}Dfclty`] || ''}`,
+      `対象：${json[`${prefix}Target`] || ''}　射程：${json[`${prefix}Range`] || ''}`
+    ];
+    const rows = [['条件', 'ダイス', 'C値', '達成値修正', '攻撃力']];
+    for(let condition = 1; condition <= 5; condition++) {
+      if(condition > 1 && !json[`${prefix}Condition${condition}`]) { continue; }
+      rows.push(['Condition', 'Dice', 'Crit', 'Fixed', 'Atk'].map((field) => String(json[`${prefix}${field}${condition}`] ?? '')));
+    }
+    const widths = rows[0].map((_, column) => Math.max(...rows.map((row) => output.length(row[column]))));
+    lines.push(...rows.map((row) => row.map((value, column) => value + ' '.repeat(widths[column] - output.length(value))).join(' / ')));
+    result.push(lines.join('\n'));
+  }
+  return result.join('\n\n');
+};
+
+output.generateCharacterTextOfDoubleCross3Enemy = (json) => {
+  const result = [];
+
+  result.push(`エネミー名：${json.enemyName || ''}`);
+  if(json.aka) { result.push(`コードネーム：${json.aka}`); }
+  result.push(`種別：${json.enemyType || ''}
+ステージ：${json.stage || ''}
+データ製作者：${json.author || ''}
+シンドローム：${json.syndrome1 || ''}${json.syndrome2 ? '、'+json.syndrome2 : ''}${json.syndrome3 ? '、'+json.syndrome3 : ''}`);
+  result.push('');
+
+  result.push('◆能力値\n');
+  output.consts.DX3_STATUS.forEach((statusPattern) => {
+    const skills = statusPattern.skills.map((skill) => `〈${skill.name}〉${json['skillTotal' + skill.column] || 0}`);
+    const skillColumn = statusPattern.extendableSkill.column;
+    for(let cursor = 1; cursor <= Number(json[`skill${skillColumn}Num`] || 0) || json[`skill${skillColumn}${cursor}Name`]; cursor++) {
+      const name = json[`skill${skillColumn}${cursor}Name`];
+      if(name) {
+        skills.push(`${output._formatDoubleCrossEnemyName(name, '〈〉')}${json[`skillTotal${skillColumn}${cursor}`] || 0}`);
+      }
+    }
+    if(skills.length === statusPattern.skills.length) {
+      skills.push(`〈${statusPattern.extendableSkill.name}〉0`);
+    }
+    result.push(`【${statusPattern.name}】${json['sttTotal' + statusPattern.column] ?? 0}　${skills.join(' ')}`);
+  });
+  result.push('');
+  result.push(`【ＨＰ】　${String(json.maxHpTotal ?? '').padStart(3, ' ')}
+【行動値】${String(json.initiativeTotal ?? '').padStart(3, ' ')}
+【装甲値】${String(json.armorTotal ?? '').padStart(3, ' ')}
+【侵蝕率】${String(json.encroachTotal ?? '').padStart(3, ' ')}％`);
+  result.push('');
+
+  result.push('◆エフェクト\n');
+  const effects = [];
+  const dLoises = [];
+  const eLoises = [];
+  for(let cursor = 1; cursor <= Number(json.effectNum || 0) || json[`effect${cursor}Name`]; cursor++) {
+    const name = json[`effect${cursor}Name`];
+    if(!name) { continue; }
+    const type = json[`effect${cursor}Type`];
+    if(type === 'dlois' || type === 'elois') {
+      const loises = type === 'dlois' ? dLoises : eLoises;
+      loises.push(output._formatDoubleCrossEnemyName(name, '「」'));
+    }
+    else {
+      const level = json[`effect${cursor}Lv`];
+      effects.push(`${output._formatDoubleCrossEnemyName(name, '《》')}${level === '' ? 1 : (level ?? 1)}`);
+    }
+  }
+  result.push(effects.join('、'));
+  if(dLoises.length) { result.push('▼Dロイス', dLoises.join('、')); }
+  if(eLoises.length) { result.push('▼Eロイス', eLoises.join('、')); }
+  result.push('');
+
+  result.push('◆コンボ\n');
+  result.push(output._convertDoubleCrossEnemyCombos(json));
+  result.push('');
+
+  result.push('◆装備\n');
+  result.push(output._convertDoubleCrossEnemyEquipment(json, 'weapon', output.consts.ENEMY_WEAPON_COLUMNS));
+  result.push('');
+
+  result.push(output._convertDoubleCrossEnemyEquipment(json, 'armor', output.consts.ENEMY_ARMOR_COLUMNS));
+  result.push('');
+
+  result.push(output._convertDoubleCrossEnemyEquipment(json, 'vehicle', output.consts.ENEMY_VEHICLE_COLUMNS));
+  result.push('');
+
+  result.push(output._convertDoubleCrossEnemyEquipment(json, 'item', output.consts.ENEMY_ITEM_COLUMNS));
+  result.push('');
+
+  result.push('◆解説・戦闘プランなど');
+  result.push(json.freeNote || '');
+
+  return result.join('\n').replace(/&lt;br&gt;/gm, '\n').replace(/&quot;/gm, '"');
 };

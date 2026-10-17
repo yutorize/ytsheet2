@@ -256,8 +256,8 @@ function calcEffect() {
       else {
         exps['effect'] += lv * 5 + 10; //lv×5 + 新規取得の差分10
 
-        //自動かDロイスは新規取得ぶん減らす
-        if(type.match(/^(auto|dlois)$/i)){
+        //自動取得は新規取得ぶん減らす
+        if(type.match(/^auto/i)){
           exps['effect'] += -15;
           //コンストラクションのコンセントレイトは2LVのぶんも減らす
           if(createType === 'C' && form['effect'+num+'Name'].value.match(/^コンセントレイト/) && lv >= 2){
@@ -272,10 +272,10 @@ function calcEffect() {
     }
     exps['effect'] += Number(form['effect'+num+'Exp'].value)
     const bg = form['effect'+num+'Name'].parentNode.parentNode.parentNode.style;
-    if     (type == 'easy') { bg.backgroundImage = 'linear-gradient(to right,hsla(120,100%, 50%,0.2),transparent)'; }
-    else if(type == 'auto') { bg.backgroundImage = 'linear-gradient(to right,hsla(200,100%, 50%,0.2),transparent)'; }
-    else if(type == 'dlois'){ bg.backgroundImage = 'linear-gradient(to right,hsla(  0,100%, 50%,0.2),transparent)'; }
-    else if(type == 'enemy'){ bg.backgroundImage = 'linear-gradient(to right,hsla(270,100%, 50%,0.2),transparent)'; }
+    if     (type == 'easy'      ){ bg.backgroundImage = 'linear-gradient(to right,hsla(120,100%, 50%,0.2),transparent)'; }
+    else if(type == 'auto'      ){ bg.backgroundImage = 'linear-gradient(to right,hsla(200,100%, 50%,0.2),transparent)'; }
+    else if(type == 'auto-dlois'){ bg.backgroundImage = 'linear-gradient(to right,hsla(  0,100%, 50%,0.2),transparent)'; }
+    else if(type == 'enemy'     ){ bg.backgroundImage = 'linear-gradient(to right,hsla(270,100%, 50%,0.2),transparent)'; }
     else { bg.backgroundImage = ''; }
   }
 

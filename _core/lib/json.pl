@@ -92,6 +92,7 @@ if($pc{ver} ne '') {
     require $set::lib_json_sub;
     %pc = %{ addJsonData(\%pc , $type , $::in{target} || '') };
   }
+  $pc{name} //= $pc{characterName} // $pc{aka};
   delete $pc{IP};
 }
 else {

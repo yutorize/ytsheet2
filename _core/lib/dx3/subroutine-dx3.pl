@@ -11,14 +11,24 @@ use Fcntl;
 ### ユニットステータス出力 --------------------------------------------------
 sub createUnitStatus {
   my %pc = %{$_[0]};
-  my @unitStatus = (
-    { 'HP' => $pc{maxHpTotal}.'/'.$pc{maxHpTotal} },
-    { '侵蝕' => $pc{baseEncroach} },
-    { 'ロイス' => $pc{loisHave}.'/'.$pc{loisMax} },
-    { '財産' => $pc{savingTotal} },
-    { '行動' => $pc{initiativeTotal} },
-  );
-  
+  my @unitStatus;
+  if ($pc{type} eq 'e'){
+    @unitStatus = (
+      { 'HP' => 0 },
+      { '侵蝕' => $pc{encroachTotal} },
+      { '行動' => $pc{initiativeTotal} },
+    );
+  }
+  else {
+    @unitStatus = (
+      { 'HP' => $pc{maxHpTotal}.'/'.$pc{maxHpTotal} },
+      { '侵蝕' => $pc{baseEncroach} },
+      { 'ロイス' => $pc{loisHave}.'/'.$pc{loisMax} },
+      { '財産' => $pc{savingTotal} },
+      { '行動' => $pc{initiativeTotal} },
+    );
+  }
+
   foreach my $key (split ',', $pc{unitStatusNotOutput}){
     @unitStatus = grep { !exists $_->{$key} } @unitStatus;
   }
@@ -38,6 +48,12 @@ our %multilineTargets = (
 );
 
 ### バージョンアップデート --------------------------------------------------
+sub upgradeData {
+  my $data = $_[0];
+  my $type = $_[1];
+  if   ($type eq 'e'){ return upgradeEnemyData($data) }
+  else               { return upgradeCharaData($data) }
+}
 sub upgradeCharaData {
   my %pc = %{$_[0]};
   my $ver = $pc{ver};
@@ -95,6 +111,28 @@ sub upgradeCharaData {
       $pc{"combo${_}Manual"} = 1 foreach (1 .. $pc{comboNum});
     }
   }
+  if($ver < 2.10010){
+    foreach (1 .. $pc{effectNum}){
+      if($pc{"effect${_}Type"} eq 'dlois'){ $pc{"effect${_}Type"} = 'auto-dlois' }
+    }
+  }
+  $pc{lasttimever} = $pc{ver};
+  $pc{ver} = $main::ver;
+  return %pc;
+}
+
+### バージョンアップデート --------------------------------------------------
+sub upgradeEnemyData {
+  my %pc = %{$_[0]};
+  my $ver = $pc{ver};
+  $ver =~ s/^([0-9]+)\.([0-9]+)\.([0-9]+)$/$1.$2$3/;
+
+  if($ver < 2.10012){
+    $pc{"weapon${_}Skill"}  =~ s/^〈(.+?)〉$/$1/ foreach (1 .. $pc{weaponNum});
+    $pc{"vihicle${_}Skill"} =~ s/^〈(.+?)〉$/$1/ foreach (1 .. $pc{vehicleNum});
+    $pc{"item${_}Skill"}    =~ s/^〈(.+?)〉$/$1/ foreach (1 .. $pc{itemNum});
+  }
+
   $pc{lasttimever} = $pc{ver};
   $pc{ver} = $main::ver;
   return %pc;
