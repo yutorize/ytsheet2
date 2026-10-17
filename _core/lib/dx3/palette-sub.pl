@@ -12,8 +12,8 @@ sub palettePreset {
   if   (!$tool)           { $bot{YTC} = 1; }
   elsif($tool eq 'tekey' ){ $bot{TKY} = $bot{BCD} = 1; }
   elsif($tool eq 'bcdice'){ $bot{BCD} = 1; }
-  ## ＰＣ
-  if(!$type){
+  ## 共通
+  {
     $text .= "//侵蝕率ダイスボーナス=0\n";
     $text .= "### ■バフ・デバフ\n";
     $text .= "//ダイス修正=0\n";
@@ -47,6 +47,19 @@ sub palettePreset {
       $text .= "{社会}+{DB}dx(10+{CB})+{$::pc{'skillInfo'.$num.'Name'}}+{AB} 〈$::pc{'skillInfo'.$num.'Name'}〉判定\n" if $::pc{'skillInfo'.$num.'Name'};
     }
     $text .= "\n";
+    if($type eq 'e'){
+      $text .= "### ■攻撃\n";
+      foreach my $num (1 .. $::pc{weaponNum}){
+        next if !$::pc{'weapon'.$num.'Name'};
+        if   ($::pc{"weapon${num}Skill"} =~ /^(白兵|回避|運転)/){ $text .= '{肉体}+';  }
+        elsif($::pc{"weapon${num}Skill"} =~ /^(射撃|知覚|芸術)/){ $text .= '{感覚}+';  }
+        elsif($::pc{"weapon${num}Skill"} =~ /^(RC|意思|知識)/)  { $text .= '{精神}+';  }
+        elsif($::pc{"weapon${num}Skill"} =~ /^(交渉|調達|情報)/){ $text .= '{社会}+';  }
+        $text .= "{DB}dx(10+{CB})+{$::pc{'weapon'.$num.'Skill'}}+{AB} 命中／$::pc{'weapon'.$num.'Name'}\n";
+        $text .= "d10+$::pc{'weapon'.$num.'Atk'}+{AtkB} ダメージ／$::pc{'weapon'.$num.'Name'}\n" if $::pc{'weapon'.$num.'Atk'} ne '';
+      }
+
+    }
     foreach my $num (1 .. $::pc{comboNum}){
       next if !$::pc{'combo'.$num.'Name'};
       $text .= "###\n" if $bot{TKY};

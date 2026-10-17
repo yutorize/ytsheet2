@@ -11,14 +11,25 @@ use Fcntl;
 ### ユニットステータス出力 --------------------------------------------------
 sub createUnitStatus {
   my %pc = %{$_[0]};
-  my @unitStatus = (
-    { 'HP' => $pc{maxHpTotal}.'/'.$pc{maxHpTotal} },
-    { '侵蝕' => $pc{baseEncroach} },
-    { 'ロイス' => $pc{loisHave}.'/'.$pc{loisMax} },
-    { '財産' => $pc{savingTotal} },
-    { '行動' => $pc{initiativeTotal} },
-  );
-  
+  my @unitStatus;
+  if ($pc{type} eq 'e'){
+    @unitStatus = (
+      { 'HP' => $pc{maxHpTotal}.'/'.$pc{maxHpTotal} },
+      { '侵蝕' => $pc{encroachTotal} },
+      { '行動' => $pc{initiativeTotal} },
+    );
+  }
+  else {
+    @unitStatus = (
+      { 'HP' => $pc{maxHpTotal}.'/'.$pc{maxHpTotal} },
+      { '侵蝕' => $pc{baseEncroach} },
+      { 'ロイス' => $pc{loisHave}.'/'.$pc{loisMax} },
+      { '財産' => $pc{savingTotal} },
+      { '行動' => $pc{initiativeTotal} },
+      { '装甲' => $pc{armorTotal} },
+    );
+  }
+
   foreach my $key (split ',', $pc{unitStatusNotOutput}){
     @unitStatus = grep { !exists $_->{$key} } @unitStatus;
   }

@@ -907,3 +907,65 @@ body:not(.mode-crc) .crc-only {
     color: #e70;
   }
 }
+
+
+
+/* // エネミー
+---------------------------------------------------------------------------------------------------- */
+body[data-sheet-type="enemy"] {
+  #group {
+    & dl {
+      grid-template-columns: 2.5em 6em 4.5em 10em 2.5em 3fr;
+    }
+  }
+  #area-status {
+    min-height: 0%;
+    grid-template-columns: 1.2fr 0.6fr 0.9fr 1.8fr;
+    grid-template-rows: auto auto;
+    grid-template-areas:
+      "SYN SUB SUB"
+    ;
+  }
+  #syndrome-status {
+    table {
+      border-top-style: hidden;
+      .breed { width: 3.5em; }
+      .syndrome { width: auto; }
+    }
+  }
+  #sub-status {
+    display: flex;
+    flex-wrap: wrap;
+    #max-hp     { flex-basis: 50%; }
+    #initiative { flex-basis: 50%; }
+    #armor      { flex-basis: 50%; }
+    #encroach   { flex-basis: 50%; }
+  }
+  #weapon {
+    margin-top: var(--box-v-gap);
+    table {
+      > thead th {
+        &:nth-child(1) { width:   1em !important; }
+        &:nth-child(2) { width:  11em !important; }
+        &:nth-child(3) { width:   8em !important; }
+        &:nth-child(4) { width: 4.5em !important; }
+        &:nth-child(5) { width: 4.5em !important; }
+      }
+    }
+  }
+
+  #effect table tbody td[colspan] {
+    padding: 0 0 5px;
+    vertical-align: middle;
+    text-align: right;
+    & div {
+      display: grid;
+      grid-gap: .1rem;
+      grid-template-columns: 2.3em 6.5em 2.3em 1fr;
+      align-items: end;
+    }
+  }
+  #combo .combo-table .combo-out dd:nth-of-type(n+29) { /* 条件の５行目 */
+    display: grid;
+  }
+}
