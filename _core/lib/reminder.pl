@@ -13,7 +13,7 @@ if($::in{mail}){
   my @hit_id;
   foreach(@list){
     my($id, $pass, $name, $mail) = (split /<>/, $_)[0..3];
-    if($mail eq $::in{mail}){
+    if(lc($mail) eq lc($::in{mail})){
       push(@hit_id, $id);
     }
   }
