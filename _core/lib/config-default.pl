@@ -124,4 +124,6 @@ package set;
   our $lib_palette = $::core_dir . '/lib/palette.pl'; # チャットパレット
   our $lib_json     = $::core_dir . '/lib/json.pl'; # JSON出力
 
+  our $lib_admin_id_check = $::core_dir . '/lib/admin-id-check.pl'; # 管理者用ID重複チェック
+
 1;
