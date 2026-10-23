@@ -34,6 +34,7 @@ function formSubmit() {
   }
 
   const formData = new FormData(form);
+  const submittedPassword = formData.get('pass') || '';
   for(const [imageNo, compressedImageFile] of Object.entries(compressedImageFiles)){
     const suffix = imageNo == '1' ? '' : imageNo;
     formData.set(`imageFile${suffix}`, compressedImageFile, compressedImageFile.name);
@@ -96,6 +97,9 @@ function formSubmit() {
             form.pass.value = '';
           }
         }
+        document.querySelectorAll('form[data-sheet-auth]').forEach(actionForm => {
+          actionForm.elements.pass.value = submittedPassword;
+        });
         if(typeof imageType !== "undefined" && imageType === 'character'){
           const newImageData = data?.data?.newImageData || {};
           Object.keys(newImageData).forEach(imageNo => {

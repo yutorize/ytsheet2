@@ -896,8 +896,30 @@ print renderChatPaletteForm();
 
 print renderEditPageEnd(
   notes => '©FarEast Amusement Research Co.,Ltd.「ダブルクロスThe 3rd Edition」',
+  afterSheetHtml => renderEnemyMigrationForm(),
   extraHtml => renderDataList() . renderFooterScript(),
 );
+
+sub renderEnemyMigrationForm {
+  return '' unless $::mode eq 'edit' && !$::in{log} && !$::in{overwrite};
+  return <<~"HTML";
+    <form method="post" action="./" class="box" data-sheet-auth>
+      <fieldset>
+        <legend>エネミーシートへ移行</legend>
+        <p>ID・編集保護設定を維持して、保存済みデータをエネミーシートへ移動します。<br>
+        キャラクター一覧からは削除され、エネミー一覧に表示されます。<br>
+        未保存の変更は含まれません。必要な変更は先に保存してください。<br>
+        エネミーシートにない項目は引き継がれません。</p>
+        <input type="hidden" name="mode" value="migrate-enemy">
+        <input type="hidden" name="id" value="$::in{id}">
+        <input type="hidden" name="pass" value="$::in{pass}">
+        <input type="hidden" name="_token" value="@{[ tokenMake('migrate-enemy:'.$::in{id}.':'.join(':', getCookie())) ]}">
+        <label><input type="checkbox" name="confirm_migrate" value="1" required> 上記を確認し、エネミーシートへ移行する</label>
+        <button type="submit">エネミーシートへ移行</button>
+      </fieldset>
+    </form>
+    HTML
+}
 
 sub renderDataList {
   return <<~"HTML";

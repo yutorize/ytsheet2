@@ -314,10 +314,12 @@ sub loadSheetData {
 
 ### トークン生成 --------------------------------------------------
 sub tokenMake {
+  my $scope = shift // '';
   my $token = randomId(12);
 
   sysopen (my $FH, $set::tokenfile, O_WRONLY | O_APPEND | O_CREAT);
-  print $FH $token."<>".(time + 60*60*24*7)."<>\n";
+  flock($FH, LOCK_EX);
+  print $FH $token."<>".(time + 60*60*24*7)."<>$scope<>\n";
   close($FH);
 
   return $token;
@@ -445,11 +447,13 @@ sub renderEditPageEnd {
   my (%opt) = @_;
   my $notes = $opt{notes} // '';
   my $extraHtml = $opt{extraHtml} // '';
+  my $afterSheetHtml = $opt{afterSheetHtml} // '';
   return <<~"HTML";
           @{[ renderDecorationForm() ]}
           @{[ input 'birthTime','hidden' ]}
           <input type="hidden" name="id" value="$::in{id}">
         </form>
+        $afterSheetHtml
         @{[ renderDeleteForm() ]}
       </article>
       <aside id="text-rule" class="sticky-footer" style="display:none">
