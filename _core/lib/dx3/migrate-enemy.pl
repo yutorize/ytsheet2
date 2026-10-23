@@ -65,6 +65,51 @@ sub dx3MigrationConvertRecord {
       $enemy{$key} = $chara{$key};
     }
   }
+  # 専用欄のないプロフィール・ロイスは、既存メモの後ろへ文章として残す。
+  my @profile;
+  foreach my $field (
+    [characterNameRuby => '名前のふりがな'], [akaRuby => 'コードネームのフリガナ'],
+    [age => '年齢'], [gender => '性別'], [sign => '星座'],
+    [height => '身長'], [weight => '体重'], [blood => '血液型'],
+    [works => 'ワークス'], [cover => 'カヴァー'],
+  ) {
+    my ($key, $label) = @$field;
+    push @profile, "$label：$chara{$key}" if defined($chara{$key}) && $chara{$key} =~ /\S/;
+  }
+  foreach my $field (
+    [Origin => '出自'], [Experience => '経験'], [Encounter => '邂逅／欲望'],
+    [Awaken => '覚醒'], [Impulse => '衝動'],
+  ) {
+    my ($key, $label) = @$field;
+    my $value = $chara{'lifepath'.$key} // '';
+    my $note = $chara{'lifepath'.$key.'Note'} // '';
+    if ($value =~ /\S/) {
+      push @profile, "$label：$value" . ($note =~ /\S/ ? " ／ 備考：$note" : '');
+    } elsif ($note =~ /\S/) { push @profile, "${label}の備考：$note"; }
+  }
+  my @lois;
+  foreach my $num (1..7) {
+    my @parts;
+    foreach my $field (
+      [Relation => '関係'], [Name => '名前'], [EmoPosi => '感情P'],
+      [EmoNega => '感情N'], [Color => '属性'], [Note => '備考'],
+    ) {
+      my ($key, $label) = @$field;
+      my $value = $chara{"lois${num}$key"} // '';
+      $value = '○'.$value if $key =~ /\AEmo/ && $chara{"lois${num}${key}Check"};
+      push @parts, "$label：$value" if $value =~ /\S/;
+    }
+    push @parts, 'Sロイス' if $chara{"lois${num}S"};
+    my $state = $chara{"lois${num}State"} // '';
+    # 空行にも保存される初期状態「ロイス」だけでは、メモに行を作らない。
+    next unless @parts || ($state =~ /\S/ && $state ne 'ロイス');
+    push @parts, "状態：$state" if $state =~ /\S/;
+    push @lois, "$num. " . join(' ／ ', @parts);
+  }
+  my @notes;
+  push @notes, "【プロフィール】\n" . join("\n", @profile) if @profile;
+  push @notes, "【ロイス】\n" . join("\n", @lois) if @lois;
+  $enemy{freeNote} = join("\n\n", grep { defined($_) && $_ ne '' } ($enemy{freeNote}, @notes)) if @notes;
   $enemy{type} = 'e';
   $enemy{enemyType} = '一般';
   $enemy{enemyName} = ($chara{aka} ? "“$chara{aka}”" : '') . ($chara{characterName} // '');

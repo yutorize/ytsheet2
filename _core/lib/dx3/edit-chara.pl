@@ -909,7 +909,8 @@ sub renderEnemyMigrationForm {
         <p>ID・編集保護設定を維持して、保存済みデータをエネミーシートへ移動します。<br>
         キャラクター一覧からは削除され、エネミー一覧に表示されます。<br>
         未保存の変更は含まれません。必要な変更は先に保存してください。<br>
-        エネミーシートにない項目は引き継がれません。</p>
+        プロフィール・ロイス欄はメモへ追記します。<br>
+        それ以外のエネミーシートにない項目は引き継がれません。</p>
         <input type="hidden" name="mode" value="migrate-enemy">
         <input type="hidden" name="id" value="$::in{id}">
         <input type="hidden" name="pass" value="$::in{pass}">
