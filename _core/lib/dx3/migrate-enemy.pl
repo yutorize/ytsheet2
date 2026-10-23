@@ -65,7 +65,13 @@ sub dx3MigrationConvertRecord {
       $enemy{$key} = $chara{$key};
     }
   }
-  # 専用欄のないプロフィール・ロイスは、既存メモの後ろへ文章として残す。
+  # 専用欄のないプロフィール・ロイスは、既存メモの後ろへ定義リスト記法で残す。
+  my $definition = sub {
+    my ($label, $value) = @_;
+    # 値の改行は説明欄の継続行にする。行頭の文字が別の記法として解釈されるのも防ぐ。
+    $value =~ s/<br>|\r\n?|\n/\n:|/gi;
+    return ":$label|$value";
+  };
   my @profile;
   foreach my $field (
     [characterNameRuby => '名前のふりがな'], [akaRuby => 'コードネームのフリガナ'],
@@ -74,7 +80,7 @@ sub dx3MigrationConvertRecord {
     [works => 'ワークス'], [cover => 'カヴァー'],
   ) {
     my ($key, $label) = @$field;
-    push @profile, "$label：$chara{$key}" if defined($chara{$key}) && $chara{$key} =~ /\S/;
+    push @profile, $definition->($label, $chara{$key}) if defined($chara{$key}) && $chara{$key} =~ /\S/;
   }
   foreach my $field (
     [Origin => '出自'], [Experience => '経験'], [Encounter => '邂逅／欲望'],
@@ -84,8 +90,8 @@ sub dx3MigrationConvertRecord {
     my $value = $chara{'lifepath'.$key} // '';
     my $note = $chara{'lifepath'.$key.'Note'} // '';
     if ($value =~ /\S/) {
-      push @profile, "$label：$value" . ($note =~ /\S/ ? " ／ 備考：$note" : '');
-    } elsif ($note =~ /\S/) { push @profile, "${label}の備考：$note"; }
+      push @profile, $definition->($label, $value . ($note =~ /\S/ ? " ／ 備考：$note" : ''));
+    } elsif ($note =~ /\S/) { push @profile, $definition->("${label}の備考", $note); }
   }
   my @lois;
   foreach my $num (1..7) {
@@ -104,11 +110,11 @@ sub dx3MigrationConvertRecord {
     # 空行にも保存される初期状態「ロイス」だけでは、メモに行を作らない。
     next unless @parts || ($state =~ /\S/ && $state ne 'ロイス');
     push @parts, "状態：$state" if $state =~ /\S/;
-    push @lois, "$num. " . join(' ／ ', @parts);
+    push @lois, $definition->("ロイス$num", join("\n", @parts));
   }
   my @notes;
-  push @notes, "【プロフィール】\n" . join("\n", @profile) if @profile;
-  push @notes, "【ロイス】\n" . join("\n", @lois) if @lois;
+  push @notes, "**プロフィール\n" . join("\n", @profile) if @profile;
+  push @notes, "**ロイス\n" . join("\n", @lois) if @lois;
   $enemy{freeNote} = join("\n\n", grep { defined($_) && $_ ne '' } ($enemy{freeNote}, @notes)) if @notes;
   $enemy{type} = 'e';
   $enemy{enemyType} = '一般';
