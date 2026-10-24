@@ -65,6 +65,15 @@ sub dx3MigrationConvertRecord {
       $enemy{$key} = $chara{$key};
     }
   }
+  # 名前のルビはルビ記法に変換する
+  {
+    my $name = $chara{characterName} // '';
+    my $aka  = $chara{aka} // '';
+    if($name && $chara{characterNameRuby}){ $name = "｜${name}《$chara{characterNameRuby}》" }
+    if($aka  && $chara{akaRuby}          ){ $aka  = "｜${aka}《$chara{aka}》" }
+    $enemy{enemyName} = ($aka ? "“${aka}”" : '') . $name;
+    $enemy{enemyName} ||= '無題';
+  }
   # 専用欄のないプロフィールは定義リスト、ロイスは表組みで既存メモの後ろへ残す。
   my $definition = sub {
     my ($label, $value) = @_;
@@ -82,7 +91,6 @@ sub dx3MigrationConvertRecord {
   };
   my @profile;
   foreach my $field (
-    [characterNameRuby => '名前のふりがな'], [akaRuby => 'コードネームのフリガナ'],
     [age => '年齢'], [gender => '性別'], [sign => '星座'],
     [height => '身長'], [weight => '体重'], [blood => '血液型'],
     [works => 'ワークス'], [cover => 'カヴァー'],
@@ -116,21 +124,19 @@ sub dx3MigrationConvertRecord {
       $enemy{"effect${effect}Name"} = $values[1];
       $enemy{"effect${effect}Note"} = $values[5];
     }
-    my $superior = $chara{"lois${num}S"} ? '○' : '';
+    my $superior = $chara{"lois${num}S"} ? 'Sロイス' : '';
     my $state = $chara{"lois${num}State"} // '';
     # 空行にも保存される初期状態「ロイス」だけでは、メモに行を作らない。
     next unless (grep { /\S/ } @values) || $superior || ($state =~ /\S/ && $state ne 'ロイス');
-    my @row = ($num, @values[0..4], $superior, $state, $values[5]);
+    my @row = ( $num, @values[0..4], $state, join('／', grep { $_ } $superior,$values[5]) );
     push @lois, '|' . join('|', map { $tableCell->($_) } @row) . '|';
   }
   my @notes;
   push @notes, "**プロフィール\n" . join("\n", @profile) if @profile;
-  push @notes, "**ロイス\n|~番号|~関係|~名前|~感情P|~感情N|~属性|~Sロイス|~状態|~備考|h\n" . join("\n", @lois) if @lois;
+  push @notes, "**ロイス\n|~ |~関係|~名前|~感情P|~感情N|~属性|~状態|~備考|h\n" . join("\n", @lois) if @lois;
   $enemy{freeNote} = join("\n\n", grep { defined($_) && $_ ne '' } ($enemy{freeNote}, @notes)) if @notes;
   $enemy{type} = 'e';
   $enemy{enemyType} = '一般';
-  $enemy{enemyName} = ($chara{aka} ? "“$chara{aka}”" : '') . ($chara{characterName} // '');
-  $enemy{enemyName} ||= '無題';
   $enemy{author} = $chara{playerName};
   foreach my $name (qw(Body Sense Mind Social)) { $enemy{'stt'.$name} = $chara{'sttTotal'.$name} // 0; }
   $enemy{maxHp} = $chara{maxHpTotal};
