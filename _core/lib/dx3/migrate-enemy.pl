@@ -65,12 +65,20 @@ sub dx3MigrationConvertRecord {
       $enemy{$key} = $chara{$key};
     }
   }
-  # 専用欄のないプロフィール・ロイスは、既存メモの後ろへ定義リスト記法で残す。
+  # 専用欄のないプロフィールは定義リスト、ロイスは表組みで既存メモの後ろへ残す。
   my $definition = sub {
     my ($label, $value) = @_;
     # 値の改行は説明欄の継続行にする。行頭の文字が別の記法として解釈されるのも防ぐ。
     $value =~ s/<br>|\r\n?|\n/\n:|/gi;
     return ":$label|$value";
+  };
+  my $tableCell = sub {
+    my $value = shift // '';
+    $value =~ s/\|/&#124;/g;
+    # セル内の改行には既存の行継続記法を使い、コメント記号が行頭に来るのも防ぐ。
+    $value =~ s/<br>|\r\n?|\n/\\\\\n /gi;
+    # 先頭の空白で見出し・セル結合・書式指定を避け、末尾の空セルも列として残す。
+    return ' '.$value;
   };
   my @profile;
   foreach my $field (
@@ -95,26 +103,29 @@ sub dx3MigrationConvertRecord {
   }
   my @lois;
   foreach my $num (1..7) {
-    my @parts;
-    foreach my $field (
-      [Relation => '関係'], [Name => '名前'], [EmoPosi => '感情P'],
-      [EmoNega => '感情N'], [Color => '属性'], [Note => '備考'],
-    ) {
-      my ($key, $label) = @$field;
+    my @values;
+    foreach my $key (qw(Relation Name EmoPosi EmoNega Color Note)) {
       my $value = $chara{"lois${num}$key"} // '';
       $value = '○'.$value if $key =~ /\AEmo/ && $chara{"lois${num}${key}Check"};
-      push @parts, "$label：$value" if $value =~ /\S/;
+      push @values, $value;
     }
-    push @parts, 'Sロイス' if $chara{"lois${num}S"};
+    # Eロイスは名称と備考をエフェクト欄にも追加する。既存のエフェクトは維持する。
+    if ($values[0] =~ /[EＥ]ロイス|\A\s*[EＥ]\s*\z/i && ($values[1] =~ /\S/ || $values[5] =~ /\S/)) {
+      my $effect = ++$enemy{effectNum};
+      $enemy{"effect${effect}Type"} = 'elois';
+      $enemy{"effect${effect}Name"} = $values[1];
+      $enemy{"effect${effect}Note"} = $values[5];
+    }
+    my $superior = $chara{"lois${num}S"} ? '○' : '';
     my $state = $chara{"lois${num}State"} // '';
     # 空行にも保存される初期状態「ロイス」だけでは、メモに行を作らない。
-    next unless @parts || ($state =~ /\S/ && $state ne 'ロイス');
-    push @parts, "状態：$state" if $state =~ /\S/;
-    push @lois, $definition->("ロイス$num", join("\n", @parts));
+    next unless (grep { /\S/ } @values) || $superior || ($state =~ /\S/ && $state ne 'ロイス');
+    my @row = ($num, @values[0..4], $superior, $state, $values[5]);
+    push @lois, '|' . join('|', map { $tableCell->($_) } @row) . '|';
   }
   my @notes;
   push @notes, "**プロフィール\n" . join("\n", @profile) if @profile;
-  push @notes, "**ロイス\n" . join("\n", @lois) if @lois;
+  push @notes, "**ロイス\n|~番号|~関係|~名前|~感情P|~感情N|~属性|~Sロイス|~状態|~備考|h\n" . join("\n", @lois) if @lois;
   $enemy{freeNote} = join("\n\n", grep { defined($_) && $_ ne '' } ($enemy{freeNote}, @notes)) if @notes;
   $enemy{type} = 'e';
   $enemy{enemyType} = '一般';
