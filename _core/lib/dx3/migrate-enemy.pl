@@ -42,11 +42,11 @@ sub dx3MigrationParseRecord {
     $line =~ s/\r\z//;
     next if $line eq '';
     my ($key, $value) = split /<>/, $line, 2;
-    die "400:保存済みデータの形式が不正です。\n" if !length($key) || !defined($value) || exists $pc{$key};
+    error('400:保存済みデータの形式が不正です。') if !length($key) || !defined($value) || exists $pc{$key};
     $pc{$key} = CGI::unescapeHTML($value);
   }
-  die "409:保存済みデータとIDが一致しません。\n" unless ($pc{id} // '') eq $id;
-  die "400:作成日時が不正です。\n" unless ($pc{birthTime} // '') =~ /\A[0-9]+\z/;
+  error('409:保存済みデータとIDが一致しません。') unless ($pc{id} // '') eq $id;
+  error('400:作成日時が不正です。') unless ($pc{birthTime} // '') =~ /\A[0-9]+\z/;
   return \%pc;
 }
 
@@ -166,14 +166,15 @@ sub dx3MigrationConvertRecord {
 
 sub dx3MigrationReadRaw {
   my $path = shift;
-  open(my $in, '<:raw', $path) or die "500:ファイルを読み込めません。（$path）\n";
+  open(my $in, '<:raw', $path) or error("500:ファイルを読み込めません。（$path）");
   my $text = do { local $/; <$in> };
-  close($in) or die "500:ファイルを閉じられません。（$path）\n";
+  close($in) or error("500:ファイルを閉じられません。（$path）");
   return $text // '';
 }
 
 sub dx3MigrationTemp {
   my ($path, $raw) = @_;
+  # 書込・復元のeval内から使うため、失敗はexitせず例外として呼出元へ返す。
   my ($out, $temp) = tempfile('tmp_migrate_XXXXXXXX', DIR => dirname($path), UNLINK => 0);
   binmode $out, ':raw';
   my $ok = print $out $raw;
@@ -189,7 +190,7 @@ sub dx3MigrationIndexLocks {
   my @paths = @_;
   my @locks;
   foreach my $path (sort @paths) {
-    sysopen(my $lock, "$path.lock", O_RDWR | O_CREAT) or die "500:一覧をロックできません。\n";
+    sysopen(my $lock, "$path.lock", O_RDWR | O_CREAT) or error('500:一覧をロックできません。');
     push @locks, $lock;
   }
   # 管理者の一覧修復も複数台帳をロックする。取得できなければ全て解放して再試行する。
@@ -203,19 +204,18 @@ sub dx3MigrationIndexLocks {
     flock($_, LOCK_UN) foreach @held;
     select undef, undef, undef, 0.02;
   }
-  die "409:一覧を更新中です。しばらくしてから再度実行してください。\n";
+  error('409:一覧を更新中です。しばらくしてから再度実行してください。');
 }
 
 sub migrateEnemySheet {
   my ($id, $pass, $login) = @_;
-  die "400:DX3rdのキャラクターを指定してください。\n" unless $set::game eq 'dx3' && $set::lib_type{e};
-  die "400:IDがありません。\n" unless defined($id) && length($id);
-  die "401:ログインしていません。\n" if $set::user_reqd && !$login;
-  local *::error = sub { die $_[0]."\n"; };
+  error('400:DX3rdのキャラクターを指定してください。') unless $set::game eq 'dx3' && $set::lib_type{e};
+  error('400:IDがありません。') unless defined($id) && length($id);
+  error('401:ログインしていません。') if $set::user_reqd && !$login;
   my ($file, $type, $user, $sheetLock) = authSheetForUpdate($id, $pass, $login);
-  die "403:シートが存在しないか、編集権限がありません。\n" unless $file;
-  die "409:キャラクターシートだけを移行できます。\n" if $type;
-  die "400:保存先の形式が不正です。\n" unless $file =~ /\A[0-9]+\z/ && (!defined($user) || $user =~ /\A[0-9A-Za-z_-]+\z/);
+  error('403:シートが存在しないか、編集権限がありません。') unless $file;
+  error('409:キャラクターシートだけを移行できます。') if $type;
+  error('400:保存先の形式が不正です。') unless $file =~ /\A[0-9]+\z/ && (!defined($user) || $user =~ /\A[0-9A-Za-z_-]+\z/);
   my $relative = ($user ? "_${user}/" : 'anonymous/') . $file;
   my $source = $set::char_dir . $relative;
   my $destination = $set::lib_type{e}{dataDir} . $relative . '.zip';
@@ -224,11 +224,11 @@ sub migrateEnemySheet {
   my %distinct;
   foreach (@paths) {
     my $real = abs_path($_) || File::Spec->rel2abs($_);
-    die "409:移行に使う台帳の保存先が重複しています。\n" if $distinct{$real}++;
+    error('409:移行に使う台帳の保存先が重複しています。') if $distinct{$real}++;
   }
   my $indexLocks = dx3MigrationIndexLocks(@paths);
-  die "409:移行先に同名のデータがあります。\n" if -e $destination || -l $destination || -e substr($destination, 0, -4) || -l substr($destination, 0, -4);
-  die "400:移行元にリンクは指定できません。\n" if -l $source || -l "$source.zip";
+  error('409:移行先に同名のデータがあります。') if -e $destination || -l $destination || -e substr($destination, 0, -4) || -l substr($destination, 0, -4);
+  error('400:移行元にリンクは指定できません。') if -l $source || -l "$source.zip";
   # 設定がシンボリックリンクの場合、リンクを置換せず参照先の台帳を更新する。
   my @indexes = map { +{ path => abs_path($_) || File::Spec->rel2abs($_), existed => -e $_, raw => -e $_ ? dx3MigrationReadRaw($_) : '' } } @paths;
   my @passRows = split /(?<=\n)/, decode('UTF-8', $indexes[0]{raw}, FB_CROAK | LEAVE_SRC);
@@ -237,34 +237,34 @@ sub migrateEnemySheet {
     next unless index($row, "$id<") == 0;
     $found++;
     my @fields = split /<>/, $row, -1;
-    die "409:認証台帳の内容が変更されています。\n" unless $fields[2] eq $file && !$fields[3];
+    error('409:認証台帳の内容が変更されています。') unless $fields[2] eq $file && !$fields[3];
     $fields[3] = 'e';
     $row = join('<>', @fields);
   }
-  die "409:認証台帳のIDが重複しているか、見つかりません。\n" unless $found == 1;
+  error('409:認証台帳のIDが重複しているか、見つかりません。') unless $found == 1;
   my @characterRows = split /(?<=\n)/, decode('UTF-8', $indexes[1]{raw}, FB_CROAK | LEAVE_SRC);
   my @enemyRows = split /(?<=\n)/, decode('UTF-8', $indexes[2]{raw}, FB_CROAK | LEAVE_SRC);
-  die "409:エネミー一覧に同じIDがあります。\n" if grep { index($_, "$id<") == 0 } @enemyRows;
-  die "409:キャラクター一覧にIDが見つかりません。\n" unless grep { index($_, "$id<") == 0 } @characterRows;
+  error('409:エネミー一覧に同じIDがあります。') if grep { index($_, "$id<") == 0 } @enemyRows;
+  error('409:キャラクター一覧にIDが見つかりません。') unless grep { index($_, "$id<") == 0 } @characterRows;
 
   my %entries = readSheetZipEntries("$source.zip");
   if (-d $source) {
-    opendir(my $dir, $source) or die "500:移行元を開けません。\n";
+    opendir(my $dir, $source) or error('500:移行元を開けません。');
     my @names = grep { $_ ne '.' && $_ ne '..' } readdir($dir);
     closedir($dir);
     foreach my $name (@names) {
-      die "400:移行元に通常ファイル以外が含まれています。\n" unless -f "$source/$name" && !-l "$source/$name";
+      error('400:移行元に通常ファイル以外が含まれています。') unless -f "$source/$name" && !-l "$source/$name";
       next if exists $entries{$name};
       my $raw = dx3MigrationReadRaw("$source/$name");
       $entries{$name} = isSheetBinaryEntry($name) ? $raw : decode('UTF-8', $raw, FB_CROAK);
     }
   }
-  die "404:移行元のデータがありません。\n" unless defined $entries{'data.cgi'};
+  error('404:移行元のデータがありません。') unless defined $entries{'data.cgi'};
   my $now = time;
   ($entries{'data.cgi'}, my $line) = dx3MigrationConvertRecord($entries{'data.cgi'}, $id, $file, $now, 1);
   if (length($entries{'logs.cgi'} // '')) {
     my @parts = split /(^=[^\r\n]+=\r?\n)/m, $entries{'logs.cgi'};
-    die "400:過去ログの形式が不正です。\n" if shift(@parts) ne '' || @parts % 2;
+    error('400:過去ログの形式が不正です。') if shift(@parts) ne '' || @parts % 2;
     my $logs = '';
     while (@parts) {
       my $header = shift @parts;
@@ -296,6 +296,8 @@ sub migrateEnemySheet {
   my (@committed, @moved, $stagedZip, $recovery);
   my $published = 0;
   my $ok = eval {
+    # 共通ZIP処理のerrorも、この書込区間だけは例外化して復元処理へ進める。
+    local *::error = sub { die $_[0]."\n"; };
     # 全てを準備してから公開する。失敗時の復旧用コピーは確定まで保持する。
     $recovery = tempdir('migrate_XXXXXXXX', DIR => sheetZipTmpDir(), CLEANUP => 0);
     foreach my $i (0..$#indexes) {
@@ -342,7 +344,7 @@ sub migrateEnemySheet {
     unlink $_->{temp} foreach grep { $_->{temp} && -e $_->{temp} } @indexes;
     if ($restored) { remove_tree($recovery) if $recovery; }
     else { $reason .= "復旧が必要です。バックアップ保存先: $recovery\n"; }
-    die $reason;
+    error($reason);
   }
   remove_tree($recovery);
   return $id;
