@@ -105,10 +105,10 @@ foreach (1..3){ if(existsRowStrict "memory$_",'Relation','Name'){ $open{memory} 
 foreach (3..$pc{effectNum}){ if(existsRow "effect$_",'Name','Lv' ){ $open{effect} = 'open'; last; } }
 foreach (1..$pc{magicNum }){ if(existsRow "magic$_" ,'Name','Exp'){ $open{magic } = 'open'; last; } }
 foreach (1..$pc{comboNum}) { if(existsRowStrict "combo$_" ,'Name','Combo'){ $open{combo } = 'open'; last; } }
-foreach (1..$pc{weaponNum  }){ if(existsRow "weapon$_"  ,'Name','Stock','Exp'){ $open{item} = 'open'; last; } }
-foreach (1..$pc{armorNum   }){ if(existsRow "armor$_"   ,'Name','Stock','Exp'){ $open{item} = 'open'; last; } }
-foreach (1..$pc{vehiclesNum}){ if(existsRow "vehicles$_",'Name','Stock','Exp'){ $open{item} = 'open'; last; } }
-foreach (1..$pc{itemNum    }){ if(existsRow "item$_"    ,'Name','Stock','Exp'){ $open{item} = 'open'; last; } }
+foreach (1..$pc{weaponNum }){ if(existsRow "weapon$_" ,'Name','Stock','Exp'){ $open{item} = 'open'; last; } }
+foreach (1..$pc{armorNum  }){ if(existsRow "armor$_"  ,'Name','Stock','Exp'){ $open{item} = 'open'; last; } }
+foreach (1..$pc{vehicleNum}){ if(existsRow "vehicle$_",'Name','Stock','Exp'){ $open{item} = 'open'; last; } }
+foreach (1..$pc{itemNum   }){ if(existsRow "item$_"   ,'Name','Stock','Exp'){ $open{item} = 'open'; last; } }
 
 if(exists $data::syndrome_status{$pc{syndrome1}}){
   $pc{sttSyn1Body} = $pc{sttSyn1Sense}  = $pc{sttSyn1Mind} = $pc{sttSyn1Social} = '';

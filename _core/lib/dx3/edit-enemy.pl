@@ -64,6 +64,9 @@ $pc{skillKnowNum} ||= 2;
 $pc{skillInfoNum} ||= 2;
 $pc{effectNum}  ||= 5;
 $pc{weaponNum}  ||= 1;
+$pc{armorNum}   ||= 0;
+$pc{vehicleNum} ||= 0;
+$pc{itemNum}    ||= 0;
 
 ### 折り畳み判断 --------------------------------------------------
 my %open;
@@ -86,7 +89,10 @@ foreach (1..7){ if(existsRowStrict "lois$_"  ,'Relation','Name'){ $open{lois  } 
 foreach (1..3){ if(existsRowStrict "memory$_",'Relation','Name'){ $open{memory} = 'open'; last; } }
 foreach (3..$pc{effectNum}){ if(existsRow "effect$_",'Name','Lv' ){ $open{effect} = 'open'; last; } }
 foreach (1..$pc{comboNum}) { if(existsRowStrict "combo$_" ,'Name','Combo'){ $open{combo } = 'open'; last; } }
-foreach (1..$pc{weaponNum  }){ if(existsRow "weapon$_"  ,'Name','Stock','Exp'){ $open{item} = 'open'; last; } }
+foreach (1..$pc{weaponNum }){ if(existsRow "weapon$_" ,'Name'){ $open{item} = 'open'; last; } }
+foreach (1..$pc{armorNum  }){ if(existsRow "armor$_"  ,'Name'){ $open{item} = 'open'; last; } }
+foreach (1..$pc{vehicleNum}){ if(existsRow "vehicle$_",'Name'){ $open{item} = 'open'; last; } }
+foreach (1..$pc{itemNum   }){ if(existsRow "item$_"   ,'Name'){ $open{item} = 'open'; last; } }
 
 if(exists $data::syndrome_status{$pc{syndrome1}}){
   $pc{sttSyn1Body} = $pc{sttSyn1Sense}  = $pc{sttSyn1Mind} = $pc{sttSyn1Social} = '';
@@ -275,28 +281,100 @@ print <<"HTML";
       </div>
     </div>
 
-    <div class="box" id="weapon">
-      <table class="edit-table no-border-cells" id="weapon-table">
-        <thead>
-          <tr><th><th>装備<th>技能<th>命中<th>攻撃力<th>解説
-        <tbody>
-          @{[ renderTemplateLoop(
-            'weapon',
-            sub ($num) {
-              return <<~"ROW";
-              <tr id="weapon-row${num}">
-                <td class="handle">
-                <td>@{[ input "weapon${num}Name" ]}
-                <td>@{[ selectBox "weapon${num}Skill",'', @setComboSkills ]}
-                <td>@{[ input "weapon${num}Acc",'number' ]}
-                <td>@{[ input "weapon${num}Atk",'number' ]}
-                <td><textarea name="weapon${num}Note" rows="2">$pc{"weapon${num}Note"}</textarea>
-              ROW
-            }
-          ) ]}
-      </table>
-      @{[ renderAddDelButtons('weapon') ]}
-    </div>
+    <details class="box box-union" id="items" $open{item}>
+      <summary class="in-toc" data-content-title="装備">装備</summary>
+      <div class="box" id="weapon">
+        <table class="edit-table no-border-cells" id="weapon-table">
+          <thead>
+            <tr><th><th>武器<th>技能<th>命中<th>攻撃力<th><span class="small">ガード値</span><th>解説
+          <tbody>
+            @{[ renderTemplateLoop(
+              'weapon',
+              sub ($num) {
+                return <<~"ROW";
+                <tr id="weapon-row${num}">
+                  <td class="handle">
+                  <td>@{[ input "weapon${num}Name" ]}
+                  <td>@{[ selectBox "weapon${num}Skill",'', @setComboSkills ]}
+                  <td>@{[ input "weapon${num}Acc",'number' ]}
+                  <td>@{[ input "weapon${num}Atk",'number' ]}
+                  <td>@{[ input "weapon${num}Guard" ]}
+                  <td><textarea name="weapon${num}Note" rows="2">$pc{"weapon${num}Note"}</textarea>
+                ROW
+              }
+            ) ]}
+        </table>
+        @{[ renderAddDelButtons('weapon') ]}
+      </div>
+      <div class="box">
+        <table class="edit-table no-border-cells" id="armor-table">
+          <thead>
+            <tr><th><th>防具<th><th>行動<th>ドッジ<th>装甲値<th>解説
+          <tbody>
+            @{[ renderTemplateLoop(
+              'armor',
+              sub ($num) {
+                return <<~"ROW";
+                <tr id="armor-row${num}">
+                  <td class="handle">
+                  <td>@{[ input "armor${num}Name" ]}
+                  <td>
+                  <td>@{[ input "armor${num}Initiative",'number' ]}
+                  <td>@{[ input "armor${num}Dodge",'number' ]}
+                  <td>@{[ input "armor${num}Armor",'number' ]}
+                  <td><textarea name="armor${num}Note" rows="2">$pc{"armor${num}Note"}</textarea>
+                ROW
+              }
+            ) ]}
+          </tbody>
+        </table>
+        @{[ renderAddDelButtons('armor') ]}
+      </div>
+      <div class="box">
+        <table class="edit-table no-border-cells" id="vehicle-table">
+          <thead>
+            <tr><th><th>ヴィークル<th>技能<th>行動<th>攻撃力<th>装甲値<th><span class="small">全力移動</span><th>解説
+          <tbody>
+            @{[ renderTemplateLoop(
+              'vehicle',
+              sub ($num) {
+                return <<~"ROW";
+                <tr id="vehicle-row${num}">
+                  <td class="handle">
+                  <td>@{[ input "vehicle${num}Name" ]}
+                  <td>@{[ selectBox "vehicle${num}Skill",'', @setComboSkills ]}
+                  <td>@{[ input "vehicle${num}Initiative",'number' ]}
+                  <td>@{[ input "vehicle${num}Atk",'number' ]}
+                  <td>@{[ input "vehicle${num}Armor",'number' ]}
+                  <td>@{[ input "vehicle${num}Dash" ]}
+                  <td><textarea name="vehicle${num}Note" rows="2">$pc{"vehicle${num}Note"}</textarea>
+                ROW
+              }
+            ) ]}
+        </table>
+        @{[ renderAddDelButtons('vehicle') ]}
+      </div>
+      <div class="box">
+        <table class="edit-table no-border-cells" id="item-table">
+          <thead>
+            <tr><th><th>一般アイテム<th>技能<th>解説
+          <tbody>
+            @{[ renderTemplateLoop(
+              'item',
+              sub ($num) {
+                return <<~"ROW";
+                <tr id="item-row${num}">
+                  <td class="handle">
+                  <td>@{[ input "item${num}Name" ]}
+                  <td>@{[ selectBox "item${num}Skill",'', @setComboSkills ]}
+                  <td><textarea name="item${num}Note" rows="2">$pc{"item${num}Note"}</textarea>
+                ROW
+              }
+            ) ]}
+        </table>
+        @{[ renderAddDelButtons('item') ]}
+      </div>
+    </details>
 
     <details class="box" id="effect" $open{effect}>
       <summary class="in-toc">取得エフェクト／Eロイス</summary>

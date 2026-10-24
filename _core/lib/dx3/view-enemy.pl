@@ -128,13 +128,6 @@ $SHEET->param(isFH => $pc{works} =~ /[FＦ][HＨ]/i);
 my $breedPrefix = ($pc{breed} ? $pc{breed} : $pc{syndrome3} ? 'トライ' : $pc{syndrome2} ? 'クロス' : $pc{syndrome1} ? 'ピュア' : '');
 $SHEET->param(breed => isNoiseText(removeTags $breedPrefix) ? $breedPrefix : $breedPrefix ? "$breedPrefix<span class=\"shorten\">ブリード</span>" : '');
 
-### 侵蝕率基本値 --------------------------------------------------
-if ($pc{encroachFixed}) {
-  $pc{'lifepathOtherEncroach'} = undef;
-  $pc{'lifepathOtherNote'} = undef;
-}
-$SHEET->param(hasEncroachOffset => $pc{'lifepathOtherEncroach'} || $pc{'lifepathOtherNote'} ? 1 : 0);
-
 ### 能力値 --------------------------------------------------
 $SHEET->param('sttWorks'.ucfirst($pc{sttWorks}) => 1);
 foreach my $name ('Body','Sense','Mind','Social') {
@@ -314,18 +307,66 @@ sub textComboSkill {
 my @weapons;
 foreach (1 .. $pc{weaponNum}){
   next if !existsRow "weapon$_",'Name','Stock','Exp','Skill','Acc','Atk','Guard','Range','Note';
-  if($pc{'weapon'.$_.'Skill'} && $pc{'weapon'.$_.'Skill'} !~ /^(?:―|解説参照)$/){
-    $pc{'weapon'.$_.'Skill'} = "〈$pc{'weapon'.$_.'Skill'}〉";
-  }
   push(@weapons, {
     NAME  => shrinkText(12,13,14,15,$pc{'weapon'.$_.'Name'}),
-    SKILL => renderSkill(shrinkText(4,5,6,7,$pc{'weapon'.$_.'Skill'})),
+    SKILL => renderSkill(shrinkText(4,5,6,7,formatSkillName($pc{'weapon'.$_.'Skill'}))),
     ACC   => $pc{'weapon'.$_.'Acc'},
     ATK   => $pc{'weapon'.$_.'Atk'},
+    GUARD => $pc{'weapon'.$_.'Guard'},
     NOTE  => $pc{'weapon'.$_.'Note'},
   });
 }
 $SHEET->param(Weapons => \@weapons);
+
+### 防具 --------------------------------------------------
+my @armors;
+foreach (1 .. $pc{armorNum}){
+  next if !existsRow "armor$_",'Name','Initiative','Dodge','Armor','Note';
+  push(@armors, {
+    NAME       => shrinkText(12,13,14,15,$pc{'armor'.$_.'Name'}),
+    INITIATIVE => $pc{'armor'.$_.'Initiative'},
+    DODGE      => $pc{'armor'.$_.'Dodge'},
+    ARMOR      => $pc{'armor'.$_.'Armor'},
+    NOTE       => $pc{'armor'.$_.'Note'},
+  });
+}
+$SHEET->param(Armors => \@armors);
+
+### ヴィークル --------------------------------------------------
+my @vehicles;
+foreach (1 .. $pc{vehicleNum}){
+  next if !existsRow "vehicle$_",'Name','Skill','Atk','Initiative','Armor','Dash','Note';
+  push(@vehicles, {
+    NAME       => shrinkText(12,13,14,15,$pc{'vehicle'.$_.'Name'}),
+    SKILL      => renderSkill(shrinkText(4,5,6,7,formatSkillName($pc{'vehicle'.$_.'Skill'}))),
+    INITIATIVE => $pc{'vehicle'.$_.'Initiative'},
+    ATK        => $pc{'vehicle'.$_.'Atk'},
+    ARMOR      => $pc{'vehicle'.$_.'Armor'},
+    DASH       => $pc{'vehicle'.$_.'Dash'},
+    NOTE       => $pc{'vehicle'.$_.'Note'},
+  });
+}
+$SHEET->param(Vehicles => \@vehicles);
+
+### アイテム --------------------------------------------------
+my @items;
+foreach (1 .. $pc{itemNum}){
+  next if !existsRow "item$_",'Name','Skill','Note';
+  push(@items, {
+    NAME  => shrinkText(12,13,14,15,$pc{'item'.$_.'Name'}),
+    TYPE  => shrinkText(5,6,7,8,$pc{'item'.$_.'Type'}),
+    SKILL => renderSkill(shrinkText(4,5,6,7,formatSkillName($pc{'item'.$_.'Skill'}))),
+    NOTE  => $pc{'item'.$_.'Note'},
+  });
+}
+$SHEET->param(Items => \@items);
+
+sub formatSkillName {
+  if($_[0] && $_[0] !~ /^(?:―|解説参照)$/){
+    return "〈$_[0]〉";
+  }
+  return $_[0];
+}
 sub textType {
   my $text = shift;
   my @texts = split(/[／\/]/, $text);

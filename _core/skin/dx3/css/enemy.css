@@ -37,7 +37,6 @@
   grid-template-areas:
     "TYP REN REN SUB"
     "STT STT STT SUB"
-    "WPN WPN WPN WPN"
   ;
   @media screen and (width <= 735px){
     grid-template-columns: 0.5fr 0.5fr 1.4fr 6em;
@@ -48,7 +47,6 @@
   #renegade   { grid-area: REN; }
   #sub-status { grid-area: SUB; }
   #status     { grid-area: STT; }
-  #weapon     { grid-area: WPN; }
 }
 
 #area-status dd:empty::before,
@@ -267,22 +265,24 @@
 }
 
 /* Items */
-#weapon {
+#items {
 }
-#weapon table {
+#items table {
   border-width: 0 0 1px;
   border-style: solid hidden !important;
 }
-#weapon .box:last-child table {
+#items .box:last-child table {
   border-bottom-style: hidden !important;
 }
-#weapon table thead th {
+#items table thead th {
   vertical-align: bottom;
 
   &:nth-child(1) { width:  12em; } /* 名称 */
   &:nth-child(2) { width: 5.9em; } /* 技能 */
   &:nth-child(3) { width: 3.4em; } /* 命中  ／ドッジ */
   &:nth-child(4) { width: 3.4em; } /* 攻撃力／行動 */
+  &:nth-child(5) { width: 3.4em; } /* ガード値／装甲値 */
+  &:nth-child(6) { width: 3.4em; } /* 全力移動 */
   &:last-child   { width: auto; text-align: left; padding-left: 1em; } /* 解説 */
 }
 @media screen and (width <= 735px){
@@ -916,6 +916,9 @@
     display: none;
   }
 }
+#simple-items {
+  display: none;
+}
 #simple-effect {
   display: none;
 }
@@ -949,13 +952,13 @@
       pointer-events: none;
     }
   }
-  .box-union, .box {
+  .box-union, .box:not(.chat-palette) {
     border-width: 0;
     background-image: none;
     background-color: transparent;
     box-shadow: none;
   }
-  .box {
+  .box:not(.chat-palette) {
     dt, h2 {
       font-size: inherit;
     }
@@ -1093,35 +1096,42 @@
       }
     }
   }
-  #weapon {
+  #items {
+    display: none;
+  }
+  #simple-items {
+    display: block;
     margin-top: 1em;
-    table {
-      display: grid;
-      grid-template-columns: 2fr 1fr 1fr 1fr;
-      border-width: 0;
-    }
-    thead, tbody {
-      display: grid;
-      grid-column: span 4;
-      grid-template-columns: subgrid;
-    }
-    tr {
-      display: grid;
-      grid-column: span 4;
-      grid-template-columns: subgrid;
-      border-width: 0;
-    }
-    td {
-      border-width: 0;
-    }
-    .name {
-      text-align: left;
-    }
-    th.note {
-      display: none;
-    }
-    td.note {
-      grid-column: span 4;
+    .rows > :nth-child(even) { background-color: var(--box-even-rows-bg-color); }
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0 1em;
+      padding-left: .5em;
+      padding-bottom: .3em;
+      & + .row {
+        padding-top: .5em;
+      }
+      > b {
+        margin-left: -.5em;
+        &::before {
+          content: "▼";
+        }
+      }
+      > span, > b {
+        .thin,
+        .thiner,
+        .thinest {
+          display: inline;
+          font-size: inherit;
+        }
+      }
+      > p {
+        flex-basis: 100%;
+        margin: 0;
+        padding: 0;
+        line-height: inherit;
+      }
     }
   }
   .open-button {
@@ -1132,9 +1142,10 @@
   }
   #simple-effect {
     display: block;
+    margin-top: 1em;
     > p {
       > span {
-        display: inline-block;
+        white-space: nowrap;
       }
     }
   }

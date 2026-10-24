@@ -959,7 +959,7 @@ body[data-sheet-type="enemy"] {
     #armor      { flex-basis: 50%; }
     #encroach   { flex-basis: 50%; }
   }
-  #weapon {
+  #items {
     margin-top: var(--box-v-gap);
     table {
       > thead th {
@@ -968,6 +968,8 @@ body[data-sheet-type="enemy"] {
         &:nth-child(3) { width:   8em !important; }
         &:nth-child(4) { width: 4.5em !important; }
         &:nth-child(5) { width: 4.5em !important; }
+        &:nth-child(6) { width: 4.5em !important; }
+        &:last-child   { width:  auto !important; }
       }
     }
   }

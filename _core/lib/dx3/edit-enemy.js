@@ -308,12 +308,24 @@ function setSkillSelectAll(){
   for(let i = 1; i <= Number(form.weaponNum.value); i++){
     setWeaponSkill(i);
   }
+  for(let i = 1; i <= Number(form.vehicleNum.value); i++){
+    setVehicleSkill(i);
+  }
+  for(let i = 1; i <= Number(form.itemNum.value); i++){
+    setItemSkill(i);
+  }
 }
 function setComboSkill(num){
   setSkillOptions(form[`combo${num}Skill`]);
 }
 function setWeaponSkill(num){
   setSkillOptions(form[`weapon${num}Skill`]);
+}
+function setVehicleSkill(num){
+  setSkillOptions(form[`vehicle${num}Skill`]);
+}
+function setItemSkill(num){
+  setSkillOptions(form[`item${num}Skill`]);
 }
 function setSkillOptions(select){
   const nowSelect = select.value;
@@ -539,3 +551,43 @@ function delWeapon(){
 }
 // ソート
 setSortable('weapon','#weapon-table tbody','tr');
+
+
+// 防具欄 ----------------------------------------
+// 追加
+function addArmor(){
+  document.querySelector("#armor-table tbody").append(createRow('armor','armorNum'));
+}
+// 削除
+function delArmor(){
+  delRow('armorNum', '#armor-table tbody tr:last-of-type')
+}
+// ソート
+setSortable('armor','#armor-table tbody','tr');
+
+// ヴィークル欄 ----------------------------------------
+// 追加
+function addVehicle(){
+  document.querySelector("#vehicle-table tbody").append(createRow('vehicle','vehicleNum'));
+  setVehicleSkill(form.vehicleNum.value);
+}
+// 削除
+function delVehicle(){
+  delRow('vehicleNum', '#vehicle-table tbody tr:last-of-type')
+}
+// ソート
+setSortable('vehicle','#vehicle-table tbody','tr');
+
+// アイテム欄 ----------------------------------------
+// 追加
+function addItem(){
+  document.querySelector("#item-table tbody").append(createRow('item','itemNum'));
+  setItemSkill(form.itemNum.value);
+}
+// 削除
+function delItem(){
+  delRow('itemNum', '#item-table tbody tr:last-of-type')
+}
+// ソート
+setSortable('item','#item-table tbody','tr');
+
