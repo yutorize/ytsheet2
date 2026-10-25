@@ -41,6 +41,24 @@ function formCheck(){
   return true;
 }
 
+// エネミーシートへの移行 ----------------------------------------
+function confirmEnemyMigration(){
+  const losses = [
+    ['history-table', 'セッション履歴'],
+    ['memory-table', 'メモリー'],
+    ['insanity-table', '永続的狂気'],
+    ['magic-table', '術式'],
+  ].filter(([id]) => {
+    const fields = form.querySelectorAll(`#${id} input, #${id} textarea, #${id} select`);
+    return [...fields].some(field => !field.disabled
+      && !['hidden', 'checkbox', 'radio'].includes(field.type)
+      && field.value.trim() !== '');
+  }).map(([, label]) => label);
+
+  return !losses.length || confirm('次の項目はエネミーシートに引き継がれません。\n\n・'
+    + losses.join('\n・') + '\n\n移行しますか？');
+}
+
 // レギュレーション ----------------------------------------
 let createType = 'F';
 function changeCreateType(){

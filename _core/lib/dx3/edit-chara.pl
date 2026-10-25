@@ -905,7 +905,7 @@ sub renderEnemyMigrationForm {
   return <<~"HTML";
     <details class="box" id="migrate-form">
       <summary>エネミーシートへ移行</summary>
-      <form method="post" action="./" data-sheet-auth>
+      <form method="post" action="./" data-sheet-auth onsubmit="return confirmEnemyMigration()">
         <p>ID・編集保護設定を維持して、保存済みデータをエネミーシートへ移動します。<br>
         キャラクター一覧からは削除され、エネミー一覧に表示されます。<br>
         未保存の変更は含まれません。必要な変更は先に保存してください。<br>
