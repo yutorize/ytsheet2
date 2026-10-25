@@ -89,18 +89,25 @@ delete @pc{ grep { /^editing/ } keys %pc };
 if($main::newId){ $pc{id} = $main::newId; }
 ## 現在時刻
 our $now = time;
-## 最終更新
-$pc{updateTime} = epocToDate($now);
 
 ## ファイル名取得
 our $file;
+my $sheetLock;
 if($mode eq 'make'){
   $pc{birthTime} = $file = $now;
 }
 elsif($mode eq 'save'){
-  $file = (authSheet($pc{id},$pc{pass},$LOGIN_ID))[0];
+  my $storedType;
+  ($file, $storedType, undef, $sheetLock) = authSheetForUpdate($pc{id},$pc{pass},$LOGIN_ID);
   if(!$file){ error('404:シートが存在しないか、編集権限がありません。'); }
+  if(($storedType // '') ne ($pc{type} // '')){
+    error('409:シートの種別が変更されています。編集画面を開き直してください。');
+  }
 }
+
+## 最終更新（認証・ロックの待機後の時刻を使う）
+$now = time if $mode eq 'save';
+$pc{updateTime} = epocToDate($now);
 
 our $updatedLine;
 require $set::lib_calc_char;
