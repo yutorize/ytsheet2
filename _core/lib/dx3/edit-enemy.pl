@@ -28,7 +28,7 @@ if($isNewSheet){
 }
 
 if($::mode eq 'edit' || ($::mode =~ /^(?:convert|copy)$/ && $pc{ver})){
-  %pc = upgradeCharaData(\%pc);
+  %pc = upgradeEnemyData(\%pc);
   if($pc{updateMessage}){
     $message .= "<hr>" if $message;
     $message .= "<h2>アップデート通知</h2><dl>";
@@ -377,7 +377,7 @@ print <<"HTML";
     </details>
 
     <details class="box" id="effect" $open{effect}>
-      <summary class="in-toc">取得エフェクト／Eロイス</summary>
+      <summary class="in-toc">取得エフェクト／Dロイス／Eロイス</summary>
       <div>
         <table class="edit-table line-tbody no-border-cells" id="effect-table">
           <thead id="effect-head">
@@ -400,7 +400,7 @@ print <<"HTML";
                   <td>@{[input "effect${num}Restrict",'','','placeholder="制限" list="list-restrict"']}
                 <tr><td colspan="9">
                   <div>
-                    <b>種別</b><select name="effect${num}Type" oninput="calcEffect()">@{[ option "effect${num}Type",'auto=>自動取得','dlois=>Dロイス','easy=>イージー','enemy=>エネミー','elois=>Eロイス' ]}</select>
+                    <b>種別</b><select name="effect${num}Type" oninput="calcEffect()">@{[ option "effect${num}Type",'easy=>イージー','enemy=>エネミー','dlois=>Dロイス','elois=>Eロイス' ]}</select>
                     <b>効果</b>@{[input "effect${num}Note"]}
                   </div>
               ROW

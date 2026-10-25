@@ -369,7 +369,7 @@ sub convertSoukoToYtsheet {
   my $i = 1;
   foreach (@{$in{'arts'}}){
     @$_{'name'} =~ s/\n/ /;
-    $pc{"effect${i}Type"}     = @$_{'check'}==1?'auto' : @$_{'check'}==2?'dlois' : @$_{'check'}==3?'easy' : @$_{'check'}==5?'enemy' : '';
+    $pc{"effect${i}Type"}     = @$_{'check'}==1?'auto' : @$_{'check'}==2?'auto-dlois' : @$_{'check'}==3?'easy' : @$_{'check'}==5?'enemy' : '';
     $pc{"effect${i}Name"}     = @$_{'name'};
     $pc{"effect${i}Lv"}       = @$_{'level'};
     $pc{"effect${i}Timing"}   = convertTiming(@$_{'timing'});

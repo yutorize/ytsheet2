@@ -49,6 +49,12 @@ our %multilineTargets = (
 );
 
 ### バージョンアップデート --------------------------------------------------
+sub upgradeData {
+  my $data = $_[0];
+  my $type = $_[1];
+  if   ($type eq 'e'){ return upgradeEnemyData($data) }
+  else               { return upgradeCharaData($data) }
+}
 sub upgradeCharaData {
   my %pc = %{$_[0]};
   my $ver = $pc{ver};
@@ -104,6 +110,11 @@ sub upgradeCharaData {
   if($ver < 1.24026){
     if($pc{comboCalcOff}){
       $pc{"combo${_}Manual"} = 1 foreach (1 .. $pc{comboNum});
+    }
+  }
+  if($ver < 2.10010){
+    foreach (1 .. $pc{effectNum}){
+      if($pc{"effect${_}Type"} eq 'dlois'){ $pc{"effect${_}Type"} = 'auto-dlois' }
     }
   }
   $pc{lasttimever} = $pc{ver};

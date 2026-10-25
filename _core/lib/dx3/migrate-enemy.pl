@@ -70,7 +70,7 @@ sub dx3MigrationConvertRecord {
     my $name = $chara{characterName} // '';
     my $aka  = $chara{aka} // '';
     if($name && $chara{characterNameRuby}){ $name = "｜${name}《$chara{characterNameRuby}》" }
-    if($aka  && $chara{akaRuby}          ){ $aka  = "｜${aka}《$chara{aka}》" }
+    if($aka  && $chara{akaRuby}          ){ $aka  = "｜${aka}《$chara{akaRuby}》" }
     $enemy{enemyName} = ($aka ? "“${aka}”" : '') . $name;
     $enemy{enemyName} ||= '無題';
   }
@@ -128,7 +128,7 @@ sub dx3MigrationConvertRecord {
     my $state = $chara{"lois${num}State"} // '';
     # 空行にも保存される初期状態「ロイス」だけでは、メモに行を作らない。
     next unless (grep { /\S/ } @values) || $superior || ($state =~ /\S/ && $state ne 'ロイス');
-    my @row = ( $num, @values[0..4], $state, join('／', grep { $_ } $superior,$values[5]) );
+    my @row = ( $num, @values[0..4], $state, join('／', grep { length($_) } $superior,$values[5]) );
     push @lois, '|' . join('|', map { $tableCell->($_) } @row) . '|';
   }
   my @notes;

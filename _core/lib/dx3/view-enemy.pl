@@ -27,11 +27,6 @@ sub maskPcData {
     $pc->{aka} = '';
     $pc->{enemyName} = noiseText(6,14);
     $pc->{group} = $pc->{stage} = $pc->{tags} = '';
-    
-    $pc->{freeNote} = '';
-    foreach(1..int(rand 3)+2){
-      $pc->{freeNote} .= '　'.noiseText(18,40)."<br>";
-    }
   }
 
   $pc->{expUsedStatus} = noiseText(2);
@@ -112,7 +107,10 @@ sub maskPcData {
       $pc->{'combo'.$_.'Fixed'.$i} = '';
     }
   }
-  $pc->{weaponNum} = 0;
+  $pc->{weaponNum} =
+  $pc->{armorNum} =
+  $pc->{vehicleNum} =
+  $pc->{itemNum} = 0;
 }
 
 ### 簡易表示 --------------------------------------------------
@@ -168,6 +166,7 @@ $SHEET->param(SkillInfo => \@skillInfo);
 ### エフェクト --------------------------------------------------
 my @effects;
 my @simpleEffects;
+my @simpleDLoises;
 my @simpleELoises;
 foreach (1 .. $pc{effectNum}){
   next if !existsRow "effect$_",'Name','Lv','Timing','Skill','Dfclty','Target','Range','Encroach','Restrict','Note','Exp';
@@ -175,17 +174,21 @@ foreach (1 .. $pc{effectNum}){
   push(@effects, {
     TYPE     => $type,
     NAME     => shrinkText(13,15,17,21,$pc{'effect'.$_.'Name'}),
-    LV       => ($type eq 'elois' ? '―' : $pc{'effect'.$_.'Lv'}),
-    TIMING   => renderTiming($pc{'effect'.$_.'Timing'}),
-    SKILL    => renderSkill($pc{'effect'.$_.'Skill'}),
-    DFCLTY   => shrinkText(3,4,4,4,$pc{'effect'.$_.'Dfclty'}),
-    TARGET   => shrinkText(6,7,8,8,$pc{'effect'.$_.'Target'}),
-    RANGE    => $pc{'effect'.$_.'Range'},
-    ENCROACH => shrinkText(3,4,4,4,$pc{'effect'.$_.'Encroach'}),
-    RESTRICT => ($type eq 'elois' ? '衝動：' : '').$pc{'effect'.$_.'Restrict'},
+    LV       => ($type =~ /^[de]lois$/ ? '―' : $pc{'effect'.$_.'Lv'}),
+    TIMING   => ($type eq 'dlois' ? '―' : renderTiming($pc{'effect'.$_.'Timing'})),
+    SKILL    => ($type eq 'dlois' ? '―' : renderSkill($pc{'effect'.$_.'Skill'})),
+    DFCLTY   => ($type eq 'dlois' ? '―' : shrinkText(3,4,4,4,$pc{'effect'.$_.'Dfclty'})),
+    TARGET   => ($type eq 'dlois' ? '―' : shrinkText(6,7,8,8,$pc{'effect'.$_.'Target'})),
+    RANGE    => ($type eq 'dlois' ? '―' : $pc{'effect'.$_.'Range'}),
+    ENCROACH => ($type =~ /^[de]lois$/ ? '―' : shrinkText(3,4,4,4,$pc{'effect'.$_.'Encroach'})),
+    RESTRICT => ($type eq 'dlois' ? '―' : $type eq 'elois' ? '衝動：' : '').$pc{'effect'.$_.'Restrict'},
     NOTE     => $pc{'effect'.$_.'Note'},
   });
-  if($type eq 'elois'){
+  if($type eq 'dlois'){
+    unless(isBracketed($pc{'effect'.$_.'Name'})){ $pc{'effect'.$_.'Name'} = "「$pc{'effect'.$_.'Name'}」"; }
+    push(@simpleDLoises, { NAME => $pc{'effect'.$_.'Name'} });
+  }
+  elsif($type eq 'elois'){
     unless(isBracketed($pc{'effect'.$_.'Name'})){ $pc{'effect'.$_.'Name'} = "「$pc{'effect'.$_.'Name'}」"; }
     push(@simpleELoises, { NAME => $pc{'effect'.$_.'Name'} });
   }
@@ -196,6 +199,7 @@ foreach (1 .. $pc{effectNum}){
 }
 $SHEET->param(Effects => \@effects);
 $SHEET->param(SimpleEffects => \@simpleEffects);
+$SHEET->param(SimpleDLoises => \@simpleDLoises);
 $SHEET->param(SimpleELoises => \@simpleELoises);
 sub renderTiming {
   my $text = shift;

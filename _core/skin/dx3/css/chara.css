@@ -692,6 +692,17 @@
   transform: scaleY(calc(1/0.8)) translateY(-.1rem);
   font-size: 70%;
 }
+#effect table td.type {
+  padding: 0;
+  overflow: hidden;
+  position: relative;
+  > i {
+    position: absolute;
+    inset: 0;
+    align-content: center;
+    white-space: nowrap;
+  }
+}
 .ef-auto {
   display: block;
   transform: scaleY(calc(1/0.66));
@@ -701,68 +712,63 @@
   line-height: 1;
   color: hsl(200,30%,50%);
   white-space: nowrap;
+  &::before {
+    content: '自動';
+  }
 }
-.ef-auto::before {
-  content: '自動';
-}
-.ef-dlois {
+.ef-auto-dlois {
   display: block;
-  margin: -1.5em;
-  transform: scale(0.5);
-  font-style: normal;
-  font-weight: bold;
   line-height: 1;
+  font-size: 0.66em;
+  font-weight: bold;
+  font-style: normal;
   color: hsl(0,30%,50%);
-}
-.ef-dlois::before {
-  content: 'D';
-  display: block;
-  transform: scale(1.1,0.9) translateY(.05em);
-  font-size: 3em;
-}
-.ef-dlois::after {
-  display: block;
-  content: 'ロイス';
-  white-space: nowrap;
-  transform: translateY(-.3em);
+  &::before {
+    display: block;
+    content: '自動';
+    white-space: nowrap;
+  }
+  &::after {
+    content: 'Ｄロイス';
+    display: block;
+    margin: 0 -1em;
+    transform: scaleX(0.8);
+  }
 }
 .ef-easy {
   display: block;
   margin: -1em;
-  transform: scale(0.8, 0.7) translateY(.25em);
+  transform: scale(0.8, 0.7);
   font-style: normal;
   font-weight: bold;
   line-height: 1;
   color: hsl(100,30%,50%);
-}
-.ef-easy::before {
-  content: 'EA';
-  display: block;
-}
-.ef-easy::after {
-  content: 'SY';
-  display: block;
+  &::before {
+    content: 'EA';
+    display: block;
+  }
+  &::after {
+    content: 'SY';
+    display: block;
+  }
 }
 .ef-enemy {
   display: block;
   margin: -1.5em;
-  transform: scale(0.5);
+  transform: scale(0.8, 0.7);
   font-style: normal;
   font-weight: bold;
   line-height: 1;
   color: hsl(270,30%,50%);
-}
-.ef-enemy::before {
-  content: 'E';
-  display: block;
-  transform: scale(1.1,0.9) translateY(.05em);
-  font-size: 3em;
-}
-.ef-enemy::after {
-  display: block;
-  content: 'NEMY';
-  white-space: nowrap;
-  transform: translateY(-.3em);
+  &:before {
+    content: 'ENE';
+    display: block;
+  }
+  &::after {
+    display: block;
+    content: 'MY';
+    white-space: nowrap;
+  }
 }
 .ef-elois {
   display: block;
@@ -772,18 +778,18 @@
   font-weight: bold;
   line-height: 1;
   color: hsl(250,30%,25%);
-}
-.ef-elois::before {
-  content: 'E';
-  display: block;
-  transform: scale(1.1,0.9) translateY(.05em);
-  font-size: 3em;
-}
-.ef-elois::after {
-  display: block;
-  content: 'ロイス';
-  white-space: nowrap;
-  transform: translateY(-.3em);
+  &::before {
+    content: 'E';
+    display: block;
+    transform: scale(1.1,0.9) translateY(.05em);
+    font-size: 3em;
+  }
+  &::after {
+    display: block;
+    content: 'ロイス';
+    white-space: nowrap;
+    transform: translateY(-.3em);
+  }
 }
 .ef-other::before {
   content: '他';

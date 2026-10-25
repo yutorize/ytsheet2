@@ -552,7 +552,7 @@ print <<"HTML";
                   <td>@{[input "effect${num}Restrict",'','','placeholder="制限" list="list-restrict"']}
                 <tr><td colspan="9">
                   <div>
-                    <b>種別</b><select name="effect${num}Type" oninput="calcEffect()">@{[ option "effect${num}Type",'auto=>自動取得','dlois=>Dロイス','easy=>イージー','enemy=>エネミー' ]}</select>
+                    <b>種別</b><select name="effect${num}Type" oninput="calcEffect()">@{[ option "effect${num}Type",'auto=>自動取得','auto-dlois=>自動取得:Dロイス','easy=>イージー','enemy=>エネミー' ]}</select>
                     <b class="small">経験点修正</b>@{[input "effect${num}Exp",'number','calcEffect']}
                     <b>効果</b>@{[input "effect${num}Note"]}
                   </div>
@@ -565,7 +565,7 @@ print <<"HTML";
       </div>
       @{[ renderAddDelButtons('effect') ]}
       <ul class="annotate">
-        <li>種別「自動」「Dロイス」を選択した場合、取得時（1レベル）の経験点を0として計算します。
+        <li>種別「自動取得」「自動取得:Dロイス」を選択した場合、取得時（1レベル）の経験点を0として計算します。
         <li>経験点修正の欄は、自動計算で対応しきれない例外的な取得・成長に使用してください（Dロイス転生者など）
       </ul>
     </details>

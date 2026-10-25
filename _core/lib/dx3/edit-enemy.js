@@ -137,17 +137,37 @@ function calcEffect() {
     else if(type == 'elois'){ bg.backgroundImage = 'linear-gradient(to right,hsla(250,100%, 25%,0.3))'; }
     else { bg.backgroundImage = ''; }
 
-    if(type == 'elois'){
-      form['effect'+num+'Lv'].disabled = true;
+    if(type == 'dlois'){
+      form['effect'+num+'Lv'].disabled =
+      form['effect'+num+'Timing'].disabled =
+      form['effect'+num+'Skill'].disabled =
+      form['effect'+num+'Dfclty'].disabled =
+      form['effect'+num+'Target'].disabled =
+      form['effect'+num+'Range'].disabled =
+      form['effect'+num+'Encroach'].disabled =
+      form['effect'+num+'Restrict'].disabled = true;
+    }
+    else if(type == 'elois'){
+      form['effect'+num+'Lv'].disabled =
       form['effect'+num+'Encroach'].disabled = true;
-      form['effect'+num+'Lv'].value = '';
-      form['effect'+num+'Encroach'].value = '';
+      form['effect'+num+'Timing'].disabled =
+      form['effect'+num+'Skill'].disabled =
+      form['effect'+num+'Dfclty'].disabled =
+      form['effect'+num+'Target'].disabled =
+      form['effect'+num+'Range'].disabled =
+      form['effect'+num+'Restrict'].disabled = false;
       form['effect'+num+'Restrict'].placeholder = '衝動';
       form['effect'+num+'Restrict'].setAttribute('list', 'list-impulse');
     }
     else {
-      form['effect'+num+'Lv'].disabled = false;
-      form['effect'+num+'Encroach'].disabled = false;
+      form['effect'+num+'Lv'].disabled =
+      form['effect'+num+'Timing'].disabled =
+      form['effect'+num+'Skill'].disabled =
+      form['effect'+num+'Dfclty'].disabled =
+      form['effect'+num+'Target'].disabled =
+      form['effect'+num+'Range'].disabled =
+      form['effect'+num+'Encroach'].disabled =
+      form['effect'+num+'Restrict'].disabled = false;
       form['effect'+num+'Restrict'].placeholder = '制限';
       form['effect'+num+'Restrict'].setAttribute('list', 'list-restrict');
     }

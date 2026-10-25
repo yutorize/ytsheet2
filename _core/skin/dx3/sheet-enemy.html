@@ -206,23 +206,109 @@
             <dd><TMPL_IF encroachTotal><b><TMPL_VAR encroachTotal><span class="small">%</span></b><TMPL_ELSE>―</TMPL_IF>
           </dl>
         </div>
+      </div>
 
+      <div class="box-union" id="items">
         <TMPL_IF Weapons><section class="box" id="weapon">
           <table class="data-table">
             <thead>
-              <tr><th class="name">装備<th>技能<th>命中<th>攻撃力<th class="note">解説
+              <tr><th class="name">武器<th>技能<th>命中<th>攻撃力<th><span class="small">ガード値</span><th class="note">解説
             </thead>
             <tbody>
               <TMPL_LOOP Weapons><tr>
                 <td class="name"><TMPL_VAR NAME>
-                <td><TMPL_VAR SKILL>
+                <td class="skill"><TMPL_VAR SKILL>
                 <td><TMPL_VAR ACC>
                 <td><TMPL_VAR ATK>
+                <td><TMPL_VAR GUARD>
                 <td class="note"><TMPL_VAR NOTE>
               </TMPL_LOOP>
             </tbody>
           </table>
         </section></TMPL_IF>
+        <TMPL_IF Armors><section class="box" id="armor">
+          <table class="data-table">
+            <thead>
+              <tr><th class="name">防具<th><th>行動<th>ドッジ<th>装甲値<th class="note">解説
+            </thead>
+            <tbody>
+              <TMPL_LOOP Armors><tr>
+                <td class="name"><TMPL_VAR NAME>
+                <td class="skill">
+                <td><TMPL_VAR INITIATIVE>
+                <td><TMPL_VAR DODGE>
+                <td><TMPL_VAR ARMOR>
+                <td class="note"><TMPL_VAR NOTE>
+              </TMPL_LOOP>
+            </tbody>
+          </table>
+        </section></TMPL_IF>
+        <TMPL_IF Vehicles><section class="box" id="vehicle">
+          <table class="data-table">
+            <thead>
+              <tr><th class="name">ヴィークル<th>技能<th>行動<th>攻撃力<th>装甲値<th><span class="small">全力移動</span><th class="note">解説
+            </thead>
+            <tbody>
+              <TMPL_LOOP Vehicles><tr>
+                <td class="name"><TMPL_VAR NAME>
+                <td class="skill"><TMPL_VAR SKILL>
+                <td><TMPL_VAR INITIATIVE>
+                <td><TMPL_VAR ATK>
+                <td><TMPL_VAR ARMOR>
+                <td><TMPL_VAR DASH>
+                <td class="note"><TMPL_VAR NOTE>
+              </TMPL_LOOP>
+            </tbody>
+          </table>
+        </section></TMPL_IF>
+        <TMPL_IF Items><section class="box" id="item">
+          <table class="data-table">
+            <thead>
+              <tr><th class="name">アイテム<th>技能<th class="note">解説
+            </thead>
+            <tbody>
+              <TMPL_LOOP Items><tr>
+                <td class="name"><TMPL_VAR NAME>
+                <td class="skill"><TMPL_VAR SKILL>
+                <td class="note"><TMPL_VAR NOTE>
+              </TMPL_LOOP>
+            </tbody>
+          </table>
+        </section></TMPL_IF>
+      </div>
+      <div class="box" id="simple-items">
+        <h2>装備</h2>
+        <div class="rows">
+          <TMPL_LOOP Weapons><div class="row">
+            <b><TMPL_VAR NAME></b>
+            <span>技能:<TMPL_VAR SKILL></span>
+            <span>命中:<TMPL_VAR ACC></span>
+            <span>攻撃力:<TMPL_VAR ATK></span>
+            <TMPL_IF GUARD><span>ガード値:<TMPL_VAR GUARD></span></TMPL_IF>
+            <TMPL_IF NOTE><p><TMPL_VAR NOTE></p></TMPL_IF>
+          </div></TMPL_LOOP>
+          <TMPL_LOOP Armors><div class="row">
+            <b><TMPL_VAR NAME></b>
+            <TMPL_IF INITIATIVE><span>行動:<TMPL_VAR INITIATIVE></span></TMPL_IF>
+            <span>ドッジ:<TMPL_VAR DODGE></span>
+            <span>装甲値:<TMPL_VAR ARMOR></span>
+            <TMPL_IF NOTE><p><TMPL_VAR NOTE></p></TMPL_IF>
+          </div></TMPL_LOOP>
+          <TMPL_LOOP Vehicles><div class="row">
+            <b><TMPL_VAR NAME></b>
+            <TMPL_IF SKILL><span>技能:<TMPL_VAR SKILL></span></TMPL_IF>
+            <TMPL_IF INITIATIVE><span>行動:<TMPL_VAR INITIATIVE></span></TMPL_IF>
+            <TMPL_IF ATK><span>攻撃力:<TMPL_VAR ATK></span></TMPL_IF>
+            <TMPL_IF ARMOR><span>装甲値:<TMPL_VAR ARMOR></span></TMPL_IF>
+            <TMPL_IF DASH><span>全力移動:<TMPL_VAR DASH></span></TMPL_IF>
+            <TMPL_IF NOTE><p><TMPL_VAR NOTE></p></TMPL_IF>
+          </div></TMPL_LOOP>
+          <TMPL_LOOP Items><div class="row">
+            <b><TMPL_VAR NAME></b>
+            <TMPL_IF SKILL><span>技能:<TMPL_VAR SKILL></span></TMPL_IF>
+            <TMPL_IF NOTE><p><TMPL_VAR NOTE></p></TMPL_IF>
+          </div></TMPL_LOOP>
+        </div>
       </div>
 
       </div><!-- / COLUMN -->
@@ -238,7 +324,7 @@
             </thead>
             <TMPL_LOOP Effects><tbody tabindex="0">
                <tr>
-                <td rowspan="2"><TMPL_IF TYPE><i class="ef-<TMPL_VAR TYPE>"></i></TMPL_IF>
+                <td class="type" rowspan="2"><TMPL_IF TYPE><i class="ef-<TMPL_VAR TYPE>"></i></TMPL_IF>
                 <td class="name"><TMPL_VAR NAME>
                 <td class="lv"><TMPL_VAR LV>
                 <td><TMPL_VAR TIMING>
@@ -267,6 +353,12 @@
           <p>
             <TMPL_LOOP SimpleEffects><TMPL_UNLESS __first__>、</TMPL_UNLESS><span><TMPL_VAR NAME><TMPL_VAR LV></span></TMPL_LOOP>
           </p>
+          <TMPL_IF SimpleDLoises>
+            <h3>Dロイス</h3>
+            <p>
+              <TMPL_LOOP SimpleDLoises><TMPL_UNLESS __first__>、</TMPL_UNLESS><span><TMPL_VAR NAME><TMPL_VAR LV></span></TMPL_LOOP>
+            </p>
+          </TMPL_IF>
           <TMPL_IF SimpleELoises>
             <h3>Eロイス</h3>
             <p>
