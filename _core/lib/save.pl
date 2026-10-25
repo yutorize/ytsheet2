@@ -273,7 +273,12 @@ if($mode eq 'make'){
   infoJson('make',$newId);
 }
 else {
-  infoJson('ok','保存しました。', { newImageData => \%newImageData })
+  my $responseData = { newImageData => \%newImageData };
+  if($set::game eq 'dx3' && !$pc{type}){
+    require $::core_dir . '/lib/dx3/migrate-enemy.pl';
+    $responseData->{migrationLosses} = dx3MigrationLosses(\%pc, readSheetFile("$dataDir$userDir", $file, 'logs.cgi'));
+  }
+  infoJson('ok','保存しました。', $responseData)
 }
 
 
