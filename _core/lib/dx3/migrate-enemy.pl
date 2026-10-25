@@ -61,7 +61,7 @@ sub dx3MigrationConvertRecord {
   my %enemy;
   foreach my $key (keys %chara) {
     if ($key =~ /\A(?:id|birthTime|updateTime|protect|forbidden|hide|stage|tags|mainImage|freeNote|nameFont|namePlate|nameColor|encroachEaOn|encroachOrOn)\z/
-      || $key =~ /\A(?:effect|combo|weapon|skill|syndrome|sttSyn|image|words|color|palette|chatPalette|unitStatus)/) {
+      || $key =~ /\A(?:effect|combo|weapon|armor|vehicle|item|skill|syndrome|sttSyn|image|words|color|palette|chatPalette|unitStatus)/) {
       $enemy{$key} = $chara{$key};
     }
   }
