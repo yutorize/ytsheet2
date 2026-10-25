@@ -109,6 +109,9 @@ sub dx3MigrationConvertRecord {
       push @profile, $definition->($label, $value . ($note =~ /\S/ ? " ／ 備考：$note" : ''));
     } elsif ($note =~ /\S/) { push @profile, $definition->("${label}の備考", $note); }
   }
+  foreach my $num (1..$chara{"effectNum"}) {
+    if($chara{"effect${num}Type"} =~ /^(auto|dlois)/){ $enemy{"effect${num}Type"} = '' }
+  }
   my @lois;
   foreach my $num (1..7) {
     my @values;
@@ -117,12 +120,20 @@ sub dx3MigrationConvertRecord {
       $value = '○'.$value if $key =~ /\AEmo/ && $chara{"lois${num}${key}Check"};
       push @values, $value;
     }
-    # Eロイスは名称と備考をエフェクト欄にも追加する。既存のエフェクトは維持する。
+    # D/Eロイスは名称と備考をエフェクト欄にも追加する。既存のエフェクトは維持する。
+    if ($values[0] =~ /[DＤ]ロイス|\A\s*[DＤ]\s*\z/i && ($values[1] =~ /\S/ || $values[5] =~ /\S/)) {
+      my $effect = ++$enemy{effectNum};
+      $enemy{"effect${effect}Type"} = 'dlois';
+      $enemy{"effect${effect}Name"} = $values[1];
+      $enemy{"effect${effect}Note"} = $values[5];
+      next;
+    }
     if ($values[0] =~ /[EＥ]ロイス|\A\s*[EＥ]\s*\z/i && ($values[1] =~ /\S/ || $values[5] =~ /\S/)) {
       my $effect = ++$enemy{effectNum};
       $enemy{"effect${effect}Type"} = 'elois';
       $enemy{"effect${effect}Name"} = $values[1];
       $enemy{"effect${effect}Note"} = $values[5];
+      next;
     }
     my $superior = $chara{"lois${num}S"} ? 'Sロイス' : '';
     my $state = $chara{"lois${num}State"} // '';
