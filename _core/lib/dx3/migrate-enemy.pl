@@ -146,6 +146,8 @@ sub dx3MigrationConvertRecord {
   push @notes, "**プロフィール\n" . join("\n", @profile) if @profile;
   push @notes, "**ロイス\n|~ |~関係|~名前|~感情P|~感情N|~属性|~状態|~備考|h\n" . join("\n", @lois) if @lois;
   $enemy{freeNote} = join("\n\n", grep { defined($_) && $_ ne '' } ($enemy{freeNote}, @notes)) if @notes;
+  $enemy{freeNote} .= "\n\n".$chara{freeHistory} if $chara{freeHistory};
+
   $enemy{type} = 'e';
   $enemy{enemyType} = '一般';
   $enemy{author} = $chara{playerName};
