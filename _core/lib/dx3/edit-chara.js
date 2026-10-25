@@ -43,6 +43,10 @@ function formCheck(){
 
 // エネミーシートへの移行 ----------------------------------------
 function confirmEnemyMigration(){
+  if(saving){
+    alert('保存中です。保存が完了してから移行してください。');
+    return false;
+  }
   const losses = [
     ['history-table', 'セッション履歴'],
     ['memory-table', 'メモリー'],
