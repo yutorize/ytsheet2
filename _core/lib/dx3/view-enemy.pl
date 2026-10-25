@@ -29,16 +29,6 @@ sub maskPcData {
     $pc->{group} = $pc->{stage} = $pc->{tags} = '';
   }
 
-  $pc->{expUsedStatus} = noiseText(2);
-  $pc->{expUsedSkill}  = noiseText(2);
-  $pc->{expUsedEffect} = noiseText(2);
-  $pc->{expUsedItem}   = noiseText(2);
-  $pc->{expUsedMemory} = noiseText(2);
-  $pc->{expUsed}       = noiseText(2);
-  $pc->{expSpent}      = noiseText(2);
-  $pc->{expRest}       = noiseText(2);
-  $pc->{expTotal}      = noiseText(2);
-
   $pc->{breed}       = noiseText(3);
   $pc->{syndrome1}   = noiseText(4,8);
   $pc->{syndrome2}   = noiseText(4,8);
@@ -111,6 +101,8 @@ sub maskPcData {
   $pc->{armorNum} =
   $pc->{vehicleNum} =
   $pc->{itemNum} = 0;
+
+  $pc->{freeNote} = '';
 }
 
 ### 簡易表示 --------------------------------------------------
