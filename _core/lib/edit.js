@@ -100,11 +100,6 @@ function formSubmit() {
         document.querySelectorAll('form[data-sheet-auth]').forEach(actionForm => {
           actionForm.elements.pass.value = submittedPassword;
         });
-        if(Array.isArray(data.data?.migrationLosses)){
-          document.querySelectorAll('form[data-migration-losses]').forEach(actionForm => {
-            actionForm.dataset.migrationLosses = JSON.stringify(data.data.migrationLosses);
-          });
-        }
         if(typeof imageType !== "undefined" && imageType === 'character'){
           const newImageData = data?.data?.newImageData || {};
           Object.keys(newImageData).forEach(imageNo => {

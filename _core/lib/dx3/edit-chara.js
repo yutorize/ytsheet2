@@ -41,19 +41,6 @@ function formCheck(){
   return true;
 }
 
-// エネミーシートへの移行 ----------------------------------------
-function alertEnemyMigrationLoss(migrationForm) {
-  if(saving){
-    alert('保存中です。保存が完了してから移行してください。');
-    return false;
-  }
-  const losses = JSON.parse(migrationForm.dataset.migrationLosses || '[]');
-  if(losses.length){
-    alert('次の項目はエネミーシートに欄がなく、移行でデータが失われる可能性があります（過去ログを含む）。\n\n・' + losses.join('\n・'));
-  }
-  return true;
-}
-
 // レギュレーション ----------------------------------------
 let createType = 'F';
 function changeCreateType(){

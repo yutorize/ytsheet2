@@ -50,79 +50,6 @@ sub dx3MigrationParseRecord {
   return \%pc;
 }
 
-sub dx3MigrationLoisEffectType {
-  my $relation = shift // '';
-  return 'dlois' if $relation =~ /[DＤ]ロイス|\A\s*[DＤ]\s*\z/i;
-  return 'elois' if $relation =~ /[EＥ]ロイス|\A\s*[EＥ]\s*\z/i;
-  return '';
-}
-
-# 編集画面の初期表示と保存成功時に、実際の保存済みデータから警告対象を作る。
-# エネミーの合計値・名前・メモへ変換される元の項目と、空行の件数は含めない。
-sub dx3MigrationLosses {
-  my ($pc, $logs) = @_;
-  my @records = ($pc);
-  foreach my $text (split /^=[^\r\n]+=\r?\n/m, $logs // '') {
-    next unless $text =~ /<>/;
-    my %past;
-    foreach my $line (split /\n/, $text) {
-      $line =~ s/\r\z//;
-      my ($key, $value) = split /<>/, $line, 2;
-      $past{$key} = $value if defined $value;
-    }
-    push @records, \%past;
-  }
-  my $hasValue = sub {
-    return 0 unless defined($_[0]) && !ref($_[0]);
-    my $value = $_[0];
-    $value =~ s/<br\s*\/?>//gi;
-    return $value =~ /\S/;
-  };
-  my (%filled, $loisDetails, $nameRuby, $akaRuby);
-  foreach my $record (@records) {
-    my %decoded = map {
-      $_ => (defined($record->{$_}) && !ref($record->{$_}) ? CGI::unescapeHTML($record->{$_}) : undef)
-    } keys %$record;
-    $record = \%decoded;
-    foreach my $key (keys %$record) {
-      next if $key =~ /(?:Check|ExpApply)\z/ && !$record->{$key};
-      $filled{$key} = 1 if $hasValue->($record->{$key});
-    }
-    $nameRuby ||= !$record->{characterName} && $hasValue->($record->{characterNameRuby});
-    $akaRuby ||= !$record->{aka} && $hasValue->($record->{akaRuby});
-    foreach my $num (1..7) {
-      next unless dx3MigrationLoisEffectType($record->{"lois${num}Relation"})
-        && (($record->{"lois${num}Name"} // '') =~ /\S/ || ($record->{"lois${num}Note"} // '') =~ /\S/);
-      $loisDetails ||= scalar grep { $hasValue->($record->{"lois${num}$_"}) } qw(EmoPosi EmoNega Color);
-      $loisDetails ||= $record->{"lois${num}EmoPosiCheck"} || $record->{"lois${num}EmoNegaCheck"} || $record->{"lois${num}S"};
-      my $state = $record->{"lois${num}State"} // '';
-      $loisDetails ||= $hasValue->($state) && $state ne 'ロイス';
-    }
-  }
-  my @losses;
-  foreach my $group (
-    ['グループ', qr/\Agroup\z/],
-    ['作成方法・経験点・作成時の備考', qr/\A(?:createType|history0(?:Exp|Note)|exp(?:Total|Spent|Rest))\z/],
-    ['常備化・財産ポイント', qr/\A(?:stock(?:Add|Total|Used)|saving(?:Add|Total))\z/],
-    ['戦闘移動・全力移動', qr/\A(?:move(?:Add|Total)|dash(?:Add|Total))\z/],
-    ['変異暴走', qr/\AlifepathUrge(?:Check|Note)\z/],
-    ['侵蝕率修正の備考', qr/\AlifepathOtherNote\z/],
-    ['メモリー', qr/\Amemory[0-9]+(?:Relation|Name|Emo|Note)\z/],
-    ['永続的狂気', qr/\Ainsanity(?:Note)?\z/],
-    ['術式・魔術ダイス', qr/\Amagic(?:[0-9]+(?:Name|Type|Exp|Activate|Encroach|Note)|Add|Total)\z/],
-    ['履歴（自由記入）', qr/\AfreeHistory\z/],
-    ['セッション履歴', qr/\Ahistory[1-9][0-9]*(?:Date|Title|Exp|ExpApply|Gm|Member|Note)\z/],
-    ['装備の常備化・経験点', qr/\A(?:weapon|armor|vehicle|item)[0-9]+(?:Stock|Exp)\z/],
-    ['武器・防具・ヴィークルの種別／武器の射程', qr/\A(?:weapon[0-9]+(?:Type|Range)|(?:armor|vehicle)[0-9]+Type)\z/],
-  ) {
-    push @losses, $group->[0] if grep { /$group->[1]/ } keys %filled;
-  }
-  push @losses, '名前のふりがな（名前が空欄）' if $nameRuby;
-  push @losses, 'コードネームのフリガナ（コードネームが空欄）' if $akaRuby;
-  push @losses, 'D/Eロイスの感情・属性・Sロイス・状態' if $loisDetails;
-  return \@losses;
-}
-
 sub dx3MigrationConvertRecord {
   my ($text, $id, $file, $now, $latest) = @_;
   my $pc = dx3MigrationParseRecord($text, $id);
@@ -194,10 +121,16 @@ sub dx3MigrationConvertRecord {
       push @values, $value;
     }
     # D/Eロイスは名称と備考をエフェクト欄にも追加する。既存のエフェクトは維持する。
-    my $loisType = dx3MigrationLoisEffectType($values[0]);
-    if ($loisType && ($values[1] =~ /\S/ || $values[5] =~ /\S/)) {
+    if ($values[0] =~ /[DＤ]ロイス|\A\s*[DＤ]\s*\z/i && ($values[1] =~ /\S/ || $values[5] =~ /\S/)) {
       my $effect = ++$enemy{effectNum};
-      $enemy{"effect${effect}Type"} = $loisType;
+      $enemy{"effect${effect}Type"} = 'dlois';
+      $enemy{"effect${effect}Name"} = $values[1];
+      $enemy{"effect${effect}Note"} = $values[5];
+      next;
+    }
+    if ($values[0] =~ /[EＥ]ロイス|\A\s*[EＥ]\s*\z/i && ($values[1] =~ /\S/ || $values[5] =~ /\S/)) {
+      my $effect = ++$enemy{effectNum};
+      $enemy{"effect${effect}Type"} = 'elois';
       $enemy{"effect${effect}Name"} = $values[1];
       $enemy{"effect${effect}Note"} = $values[5];
       next;

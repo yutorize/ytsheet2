@@ -21,12 +21,6 @@ push(@impulses, @$_[0]) foreach(@data::impulses);
 my ($data, $file, $message) = loadSheetData();
 our %pc = %{ $data };
 
-my $migrationLosses = [];
-if($::mode eq 'edit' && !$::in{log} && !$::in{overwrite}){
-  require $::core_dir . '/lib/dx3/migrate-enemy.pl';
-  $migrationLosses = dx3MigrationLosses($data, readSheetFile($set::char_dir, $file, 'logs.cgi'));
-}
-
 our $isNewSheet = isNewSheet();
 
 ### 出力準備 #########################################################################################
@@ -911,13 +905,11 @@ sub renderEnemyMigrationForm {
   return <<~"HTML";
     <details class="box" id="migrate-form">
       <summary>エネミーシートへ移行</summary>
-      <form method="post" action="./" data-sheet-auth
-        data-migration-losses="@{[ escapePcData(JSON::PP->new->encode($migrationLosses)) ]}"
-        onsubmit="return alertEnemyMigrationLoss(this)">
+      <form method="post" action="./" data-sheet-auth>
         <p>ID・編集保護設定を維持して、保存済みデータをエネミーシートへ移動します。<br>
         キャラクター一覧からは削除され、エネミー一覧に表示されます。<br>
         未保存の変更は含まれません。必要な変更は先に保存してください。<br>
-        プロフィール・通常のロイスはメモへ追記し、D/Eロイスはエフェクト欄へ移します。<br>
+        プロフィール・ロイス欄はメモへ追記します。<br>
         それ以外のエネミーシートにない項目は引き継がれません。</p>
         <input type="hidden" name="mode" value="migrate-enemy">
         <input type="hidden" name="id" value="$::in{id}">
