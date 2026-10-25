@@ -101,6 +101,15 @@ sub authSheet {
   close($FH);
   return 0;
 }
+### 更新用認証（認証後にロックし、待機中の権限変更も確認する） --------------------------------------------------
+sub authSheetForUpdate {
+  my ($id, $pass, $login) = @_;
+  return 0 unless (authSheet($id, $pass, $login))[0];
+  my $lock = lockSheet($id);
+  my @sheet = authSheet($id, $pass, $login);
+  return 0 unless $sheet[0];
+  return (@sheet, $lock);
+}
 ### ファイル名取得／パスorアカウント不要時 --------------------------------------------------
 sub findSheet {
   open (my $FH, '<', $set::passfile) or die;
@@ -118,6 +127,18 @@ sub findSheet {
   return 0;
 }
 ### ファイルロック／更新 --------------------------------------------------
+# 保存先が変わっても同じIDの更新は直列化する。戻り値を保持している間ロックする。
+sub lockSheet {
+  my $id = shift;
+  require Digest::SHA;
+  my $dir = $set::data_dir . '.sheet-locks';
+  mkdir $dir or -d $dir or error('500:シートロック用ディレクトリを作成できません。');
+  my $path = $dir . '/' . Digest::SHA::sha256_hex(encode('UTF-8', $id // ''));
+  sysopen(my $lock, $path, O_RDWR | O_CREAT)
+    or error('500:シートロックを開けません。');
+  flock($lock, LOCK_EX) or error('500:シートをロックできません。');
+  return $lock;
+}
 sub withLock {
   my ($filePath, $code) = @_;
 
@@ -747,14 +768,16 @@ sub randomId {
 ### トークンチェック --------------------------------------------------
 sub checkToken {
   my $in_token = shift;
+  my $scope = shift // '';
   my $flag = 0;
   open (my $FH, '+<', $set::tokenfile);
   flock($FH, 2);
   my @list = <$FH>;
   seek($FH, 0, 0);
   foreach (@list){
-    my ($token, $time) = (split/<>/, $_);
-    if   ($token eq $in_token && $time >= time){ $flag = 1; }
+    my ($token, $time, $storedScope) = (split/<>/, $_);
+    $storedScope =~ s/\r?\n\z// if defined $storedScope;
+    if   ($token eq $in_token && $time >= time && ($storedScope // '') eq $scope){ $flag = 1; }
     elsif($time < time) {  }
     else { print $FH $_; }
   }
