@@ -13,7 +13,7 @@ my $message;
 if(!$::in{id}){ error('IDがありません。'); }
 if(!$::in{check1} || !$::in{check2} || !$::in{check3}){ error('確認のチェックが入っていません。'); }
 
-my ($file, $type, $user) = authSheet($::in{id},$::in{pass},$LOGIN_ID);
+my ($file, $type, $user, $sheetLock) = authSheetForUpdate($::in{id},$::in{pass},$LOGIN_ID);
 changeFileByType($type);
 my $dataDir = $set::char_dir;
 if(!$file){ error('404:データが見つかりません。'); }

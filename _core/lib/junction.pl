@@ -54,6 +54,10 @@ elsif($mode eq 'edit-help')  { require $set::lib_form; }   #編集
 elsif($mode eq 'convertform'){ require $set::lib_form; }   #コンバートフォーム
 elsif($mode eq 'make')       { require $set::lib_save; }   #新規作成
 elsif($mode eq 'save')       { require $set::lib_save; }   #更新
+elsif($mode eq 'migrate-enemy' && $set::game eq 'dx3') {
+  require $::core_dir . '/lib/dx3/migrate-enemy.pl';
+  migrateEnemyRequest();
+}
 elsif($mode eq 'bu-naming')  { require $set::lib_others; } #過去ログ命名
 elsif($mode eq 'delete')     { require $set::lib_delete; } #削除
 elsif($mode eq 'img-delete') { require $set::lib_delete; } #画像削除

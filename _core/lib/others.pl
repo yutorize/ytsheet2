@@ -16,7 +16,7 @@ if($mode eq 'bu-naming'){
   my $name = escapePcData( decode('utf8',$::in{'log-name'}) );
 
   ## パスワードチェック
-  (my $file, my $type, my $user) = authSheet($id,$pass,$LOGIN_ID);
+  (my $file, my $type, my $user, my $sheetLock) = authSheetForUpdate($id,$pass,$LOGIN_ID);
   if(!$file){ error('403:パスワードが間違っているか、編集権限がありません。'); }
   changeFileByType($type);
 
