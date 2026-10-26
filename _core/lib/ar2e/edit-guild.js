@@ -62,12 +62,15 @@ function delMember(){
 setSortable('member','#members table tbody','tr');
 
 // URLから自動セット
+const memberDataRequests = new WeakMap();
 async function setMemberData(obj){
+  const request = {};
+  memberDataRequests.set(obj, request);
   const url = obj.value;
   if(!url) return;
   const row = obj.closest('tr');
   const data = await getYtsheetJSON(url);
-  if(!data) return;
+  if(!data || obj.value !== url || memberDataRequests.get(obj) !== request) return;
   row.querySelector('[name$="Name"  ]').value = data.characterName;
   row.querySelector('[name$="CL"    ]').value = data.level;
   row.querySelector('[name$="Race"  ]').value = data.race;
@@ -83,7 +86,7 @@ function addGuildSupport(){
 }
 // 削除
 function delGuildSupport(){
-  if(delRow('guildSupportNum', '#guild-supports table tbody tr:last-of-type')){
+  if(delRow('guildSupportNum', '#guild-supports table tbody tr:last-of-type', 2)){
     calcExp();
   }
 }

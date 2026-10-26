@@ -14,6 +14,9 @@ sub dataCalc {
   }
 
   ### レベル・経験点 --------------------------------------------------
+  if($::mode_save && ($pc{guildSupportNum} !~ /^[0-9]+$/ || $pc{guildSupportNum} < 2)){
+    error('400:ギルドサポートは2行以上必要です。');
+  }
   $pc{expTotal} = 0;
   $pc{expTotal} += s_eval($pc{"history".$_."Exp"}) foreach (1 .. $pc{historyNum});
   $pc{historyExpTotal} = $pc{expTotal};
