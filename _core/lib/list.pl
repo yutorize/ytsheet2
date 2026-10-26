@@ -237,9 +237,10 @@ sub getMylist {
 ### グループ設定 --------------------------------------------------
 my %groups;
 sub setupGroupList {
-  %groups = groupArrayToHash();
+  my @groups = @_ ? @_ : @set::groups;
+  %groups = groupArrayToHash(\@groups);
   $groups{all}{name} = 'すべて' if $::in{group} eq 'all';
-  $template->param(Groups => groupArrayToList());
+  $template->param(Groups => groupArrayToList(\@groups));
   $template->param(group => $groups{$::in{group}}{name});
   return %groups;
 }
@@ -256,7 +257,7 @@ sub groupArrayToHash {
   return %hash;
 }
 sub groupArrayToList {
-  my @array = $_[1] ? @{$_[1]} : @set::groups;
+  my @array = $_[0] ? @{$_[0]} : @set::groups;
   my @list;
   foreach (sort { $a->[1] cmp $b->[1] } @array){
     push(@list, {
@@ -270,10 +271,6 @@ sub groupArrayToList {
 }
 
 ### 検索フィルタ --------------------------------------------------
-## 名前キー
-sub sortKeyName {
-  $_[0] =~ /^(?:[^<]*<>){$fields{name}}(?:“\s*(.*?)”)?\s*(.*?)</o; return $2 || $1;
-}
 ## グループ
 sub filterGroup {
   my @lines = @_;
@@ -404,6 +401,12 @@ sub filterRange {
   }
   return @lines;
 }
+### ソートキー --------------------------------------------------
+## 名前
+sub sortKeyName {
+  $_[0] =~ /^(?:[^<]*<>){$fields{name}}(?:“\s*(.*?)”)?\s*(.*?)</o; return $2 || $1;
+}
+
 ### ページ切り出し --------------------------------------------------
 sub prepareGroupedPage {
   my (%args) = @_;

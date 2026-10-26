@@ -609,8 +609,9 @@ sub renderVisibilityBlock {
 
 ### グループ欄 --------------------------------------------------
 sub renderGroupOptions {
+  my @groups = @_ ? @_ : @set::groups;
   my $html;
-  foreach (@set::groups){
+  foreach (@groups){
     my $id   = @$_[0];
     my $name = @$_[2];
     my $exclusive = @$_[4];

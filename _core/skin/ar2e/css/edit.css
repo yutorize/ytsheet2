@@ -741,3 +741,101 @@ dd.area-tags {
 }
 
 
+
+/* // ギルド
+---------------------------------------------------------------------------------------------------- */
+body[data-sheet-type="guild"] {
+  #regulation {
+    > dl:first-of-type {
+      grid-template-columns: max-content 1fr;
+      gap: .5em;
+      input[type="number"] {
+        width: 3em;
+      }
+    }
+  }
+  #members {
+    margin-top: var(--box-v-gap);
+    overflow-x: auto;
+    > table {
+      table-layout: fixed;
+      > colgroup {
+        .handle{ width: 1em; }
+        .name  { width: 18%; }
+        .url   { width: 12%; }
+        .cl    { width: 3em; }
+        .race  { width: 6em; }
+        .mclass{ width: 6em; }
+        .sclass{ width: 6em; }
+        .player{ width: 6em; }
+        .note  { width: auto; min-width: 12em; }
+        @media screen and (width <= 735px){
+          .name  { width: 10em; }
+          .url   { width: 8em; }
+          .note  { width: 12em; }
+        }
+      }
+      > tbody {
+        .url {
+          white-space: nowrap;
+          position: relative;
+          text-align: left;
+          > input {
+            width: calc(100% - 1.2em - 2px);
+          }
+          > .refresh {
+            display: block;
+            position: absolute;
+            inset: 1px 1px 1px auto;
+            line-height: 1;
+            font-size: 1.2em;
+            width: 1em;
+            align-content: center;
+            cursor: pointer;
+            &::before {
+              content: "\e5d5";
+              font-family: "Material Symbols Outlined";
+              font-variation-settings: 'FILL' 1;
+            }
+          }
+        }
+        .cl input {
+          min-width: 2.5em;
+        }
+      }
+    }
+  }
+  #guild-supports {
+    overflow-x: auto;
+    > table {
+      table-layout: fixed;
+      > colgroup {
+        .gl    { width: 2.8em; }
+        .name  { width: 18%; }
+        .timing{ width: 6em; }
+        .lv    { width: 3em; }
+        .stack { width: 3em; }
+        .note  { width: auto; min-width: 12em; }
+        .used  { width: 3.6em; }
+        .select{ width: 3.6em; }
+        @media screen and (width <= 735px){
+          .name  { width: 9em; }
+          .note  { width: 12em; }
+        }
+      }
+      > thead {
+        vertical-align: bottom;
+      }
+      > tbody {
+        counter-reset: guild-level;
+        > tr:first-of-type th.gl::before {
+          content: "1";
+        }
+        > tr:not(:first-of-type) th.gl::before {
+          counter-increment: guild-level;
+          content: counter(guild-level);
+        }
+      }
+    }
+  }
+}

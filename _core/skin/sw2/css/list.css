@@ -21,37 +21,11 @@ header nav {
 }
 main nav {
   & a {
-    position: relative;
-    overflow: clip;
-    padding-left: 3em;
-    &::before {
-      content: "";
-      display: block;
-      position: absolute;
-      top: .4em;
-      left: .5em;
-      width : 2.2em;
-      height: 2.2em;
-      mask-size: 100%;
-      mask-repeat: no-repeat;
-    }
     .making  &::before { mask-image: url(../img/icon-2d.png); }
     .chara   &::before { mask-image: url(../img/icon-person.png); }
     .mons    &::before { mask-image: url(../img/icon-dragon.png); }
     .item    &::before { mask-image: url(../img/icon-chest.png); }
     .arts    &::before { mask-image: url(../img/icon-scroll.png); }
-    @media screen and (width <= 735px){
-      width: 9em;
-      padding: 1em 0 .5em;
-      font-size: 1rem;
-      text-align: center;
-      &::before {
-        position: static;
-        margin: auto;
-        width : 3rem;
-        height: 3rem;
-      }
-    }
   }
 }
 /* // List
