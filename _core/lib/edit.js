@@ -268,8 +268,13 @@ function setName(){
   })
 
   function setRuby(name) {
-    if(vCheck(name+'Ruby')){ return `<ruby>${form[name].value}<rp>(</rp><rt>${form[name+'Ruby'].value}</rt><rp>)</rp></ruby>` }
-    else { return ruby(form[name].value) }
+    const text = escapeName(form[name].value);
+    if(vCheck(name+'Ruby')){ return `<ruby>${text}<rp>(</rp><rt>${escapeName(form[name+'Ruby'].value)}</rt><rp>)</rp></ruby>` }
+    else { return ruby(text) }
+  }
+  function escapeName(text) {
+    return text.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;').replaceAll("'", '&#39;');
   }
   function vCheck(id){
     if(form[id]){ return form[id].value; }

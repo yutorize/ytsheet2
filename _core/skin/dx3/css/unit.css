@@ -1,0 +1,34 @@
+@charset "utf-8";
+
+@layer system {
+  .unit-members table,
+  .unit-orders table {
+    width: 100%;
+    table-layout: fixed;
+  }
+  .unit-members .name { width: 26%; }
+  .unit-members .belong { width: 16%; }
+  .unit-members .leader { width: 5em; }
+  .unit-orders .name { width: 24%; }
+  .unit-orders .organization { width: 14%; }
+  .unit-orders .timing { width: 17%; }
+  .unit-orders .ref { width: 5em; }
+  .unit-members td,
+  .unit-orders td {
+    overflow-wrap: anywhere;
+  }
+  .unit-members td:last-child { text-align: center; }
+  #unit #area-name h1 { padding: 1rem; font-size: 2.6rem; }
+}
+
+body[data-sheet-type="unit"] {
+  .row-handle { width: 2rem; }
+  .unit-members textarea,
+  .unit-orders textarea {
+    min-height: 4em;
+    height: 4em;
+  }
+  .member-url label { display: block; font-size: 1.1rem; }
+  .member-url input { display: block; }
+  #member-table tbody + tbody { border-top: 1px solid var(--box-inside-border-color); }
+}

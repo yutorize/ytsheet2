@@ -127,6 +127,8 @@ sub printFinalizedList {
     push(@pageTitles, $pageTitleParts{$_}) if exists $pageTitleParts{$_};
   }
   $template->param(pageTitle => join(' - ', @pageTitles) . ' - ') if @pageTitles;
+  # 表示用の文字参照を戻し、OGP属性ではテンプレート側でエスケープする。
+  $template->param(ogDescript => CGI::unescapeHTML($template->param('ogDescript') // ''));
   print "Content-Type: text/html; charset=utf-8\n\n";
   print outputTemplate($template);
 }
@@ -139,7 +141,7 @@ sub listQueryInfo {
   
   my @canonicalQueries;
   foreach ('type','tag') {
-    push(@canonicalQueries, "$_=$::in{$_}") if $::in{$_};
+    push(@canonicalQueries, $_.'='.uri_escape_utf8(decode('utf8', $::in{$_}))) if $::in{$_};
   }
 
   my @qLinks;
@@ -147,6 +149,8 @@ sub listQueryInfo {
     $::in{$key} = trim($::in{$key});
     next if $::in{$key} eq '';
     $::in{$key} = decode('utf8', $::in{$key});
+    $template->param(kebabToCamel($key).'Input' => $::in{$key});
+    $template->param(tagQuery => uri_escape_utf8($::in{$key})) if $key eq 'tag';
     $::in{$key} = escapeThanSign($::in{$key});
     $template->param(kebabToCamel($key) => $::in{$key});
 
