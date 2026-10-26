@@ -957,6 +957,7 @@ print <<"HTML";
         <div class="box-union in-toc" id="guild" data-content-title="所属ギルド">
           <dl class="box">
             <dt>所属ギルド<dd>@{[ input 'guildName' ]}
+            <dt class="small">ギルドシートURL<dd>@{[ input 'guildURL','url','','placeholder="https://example.com"' ]}
           </dl>
           <dl class="box">
             <dt>ギルドマスター<dd>@{[ input 'guildMaster' ]}
@@ -1072,13 +1073,13 @@ print <<"HTML";
         <thead>
           <tr>
             <th>
-            <th>日付
-            <th>タイトル
-            <th>成長点
-            <th>- 上納
-            <th>ゴールド
-            <th>GM
-            <th>参加者
+            <th class="date  ">日付
+            <th class="title ">タイトル
+            <th class="exp   ">成長点
+            <th class="pay   ">- 上納
+            <th class="money ">ゴールド
+            <th class="gm    ">GM
+            <th class="member">参加者
           </tr>
         <tbody>
           <tr>
@@ -1089,7 +1090,7 @@ print <<"HTML";
             <td><input type="text" value="5" disabled>
             <td><input type="text" value="1400" disabled>
             <td><input type="text" value="サンプルさん" disabled>
-            <td><input type="text" value="アルバート　ラミット　ブランデン　レンダ・レイ　ナイルベルト" disabled>
+            <td><input type="text" value="アルバート　ラミット　ブランデン　レンダ・レイ　ナイルベルト" disabled class="left">
           </tr>
         </tbody>
       </table>

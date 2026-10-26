@@ -375,8 +375,14 @@ dl#level {
   align-items: start;
   margin-top: var(--box-v-gap);
 }
-#guild > .box:not(:first-child) {
-  border-top-width: 1px;
+#guild {
+  > .box:not(:first-child) {
+    border-top-width: 1px;
+  }
+  dt.small {
+    margin-top: .5em;
+    line-height: 1;
+  }
 }
 #connections table {
   margin-top: -1.2em;
