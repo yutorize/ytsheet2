@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+<TMPL_INCLUDE NAME="../_common/sheet-head.html">
+</head>
+<body class="wide">
+  <header>
+    <h1><a href="./?type=g"><TMPL_VAR title></a></h1>
+    <nav>
+      <TMPL_INCLUDE NAME="../_common/sheet-menu.html">
+    </nav>
+  </header>
+  <div class="header-back-name"><b><TMPL_VAR titleName> - <TMPL_VAR title></b></div>
+  
+  <TMPL_IF error>
+  <aside id="error">
+    <p>
+      <TMPL_VAR error>
+    </p>
+  </aside>
+  </TMPL_IF>
+  
+  <TMPL_UNLESS modeDownload>
+    <TMPL_UNLESS forbiddenMode>
+      <aside id="loglist" class="float-box">
+        <h2>過去ログ（バックアップ）</h2>
+        <ul>
+          <TMPL_LOOP LogList><li class="<TMPL_VAR SELECTED>"><a href="?id=<TMPL_VAR id><TMPL_VAR URL>"><TMPL_VAR DATE></a></TMPL_LOOP>
+        </ul>
+        <TMPL_IF viewLogNaming><details id="log-naming">
+          <summary>閲覧中のログ<TMPL_IF selectedLogName>の名前をつけなおす<TMPL_ELSE>に名前をつける</TMPL_IF></summary>
+          <form id="log-naming-form" method="post" action="./">
+            <input type="hidden" name="mode" value="bu-naming">
+            <input type="hidden" name="id" value="<TMPL_VAR id>">
+            <input type="hidden" name="date" value="<TMPL_VAR logId>">
+            <dl>
+              <dt>名前<dd><input type="text" name="log-name" value="<TMPL_VAR selectedLogName>">
+              <TMPL_IF reqdPassword><dt>パスワード<dd><input type="password" name="pass"></TMPL_IF>
+              <dd><input type="submit" value="命名">
+            </dl>
+          </form>
+        </details></TMPL_IF>
+      </aside>
+
+      <aside id="downloadlist" class="float-box">
+        <h2>出力</h2>
+        <ul>
+          <!-- 
+          <li id="downloadlist-text"><a onclick="downloadAsText();">テキスト形式</a>
+           -->
+          <li id="downloadlist-json"><a onclick="downloadAsJson();">JSON 形式</a>
+          <li id="downloadlist-html"><a onclick="downloadAsHtml();">HTML 形式</a>
+          <li id="downloadlist-zipped"><a onclick="downloadAsFullSet();">ZIP 形式（上記全部入り）</a>
+          <li class="link-tag"><span>ゆとシート内リンク用タグ<br><input type="text" onclick="this.select()" value="[<TMPL_VAR rawName>#<TMPL_VAR id>]"></span>
+        </ul>
+      </aside>
+    </TMPL_UNLESS>
+
+    <form id="login-form" class="float-box" method="post" action="./">
+      <input type="hidden" name="mode" value="edit">
+      <input type="hidden" name="id" value="<TMPL_VAR id>">
+      <input type="password" name="pass" placeholder="password">
+      <input type="hidden" name="log" value="<TMPL_VAR logId>">
+      <input type="submit" value="編集">
+    </form>
+  </TMPL_UNLESS>
+
+  <main id="guild">
+    <TMPL_IF forbidden><aside class="information attention">
+      閲覧が制限されているデータです。<br>
+      <TMPL_IF yourAuthor>あなた以外には一部または全てのデータが伏せられます。(<a href="./?id=<TMPL_VAR id>&checkView=1">⇒確認</a>)</TMPL_IF>
+    </aside></TMPL_IF>
+    
+    <TMPL_IF logId><aside class="information log">
+      <h2><TMPL_VAR selectedLogName></h2>
+      <p><TMPL_VAR updateTime> 時点の過去ログ(バックアップ)データです。</p>
+    </aside></TMPL_IF>
+    
+    <TMPL_IF convertMode><aside class="information">
+      <a href="<TMPL_VAR convertUrl>" target="_blank"><TMPL_VAR convertSource></a> のデータを表示しています。
+    </aside></TMPL_IF>
+    
+    <article>
+      <div id="area-name" class="color-set">
+        <h1 id="guild-name"><TMPL_IF aka><span id="aka">“<TMPL_VAR aka>”</span></TMPL_IF><TMPL_VAR guildName></h1>
+        <div>
+        <p id="update-time"><time><TMPL_VAR updateTime></time></p>
+        <p id="player-name">プレイヤー：<TMPL_VAR playerName></p>
+        </div>
+      </div>
+      
+      <div id="tags">
+        <TMPL_IF group><a id="group" href="./?type=g&group=<TMPL_VAR group>"><TMPL_VAR groupName></a></TMPL_IF>
+        <TMPL_LOOP AreaTags><i class="stage"><TMPL_VAR TEXT></i></TMPL_LOOP>
+        <TMPL_LOOP Tags><a class="tag" href="./?type=g&tag=<TMPL_VAR URL>"><TMPL_VAR TEXT></a></TMPL_LOOP>
+      </div>
+      <div class="column column-status"><!-- COLUMN -->
+        <div id="area-profile">
+          <div id="profile">
+            <dl class="box" id="master">
+              <dt>ギルドマスター
+              <dd><TMPL_VAR masterName>
+            </dl>
+            <dl class="box" id="level">
+              <dt>ギルド<br>レベル
+              <dd><TMPL_VAR level>
+            </dl>
+            <div class="box-union" id="exp">
+              <dl class="box" id="exp-rest">
+                <dt>現在成長点
+                <dd><TMPL_VAR expRest>
+              </dl>
+              <dl class="box" id="exp-used">
+                <dt>消費成長点
+                <dd><TMPL_VAR expUsed>
+              </dl>
+            </div>
+          </div>
+        </div>
+
+        <section class="box" id="guild-supports">
+          <h2>所持ギルドサポート</h2>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th class="gl    ">
+                <th class="name  ">
+                <th class="timing">タイミング
+                <th class="lv    "><span class="small">レベル</small>
+                <th class="stack ">重複
+                <th class="note left">効果
+                <th class="used  "><span class="small">使用<br>チェック</small>
+                <th class="select">選択
+            </thead>
+            <tbody>
+              <TMPL_LOOP AcademySupports><tr>
+                <td class="gl    "><TMPL_VAR GL>
+                <td class="name  "><TMPL_VAR NAME>
+                <td class="timing"><TMPL_VAR TIMING>
+                <td class="lv    "><TMPL_VAR LV>
+                <td class="stack "><TMPL_VAR STACKABLE>
+                <td class="note  "><TMPL_VAR NOTE>
+                <td class="used  "><input type="checkbox" <TMPL_VAR USED>>
+                <td class="select"><input type="checkbox" <TMPL_VAR SELECTED>>
+              </TMPL_LOOP>
+          </table>
+        </section>
+      </div><!-- / COLUMN -->
+
+      <section class="box" id="members">
+        <h2>所属キャラクター</h2>
+        <table class="data-table line-tbody">
+          <thead>
+            <tr>
+              <th class="name  ">
+              <th class="cl    ">CL
+              <th class="race  ">種族
+              <th class="mclass"><span class="small">メインクラス</span>
+              <th class="sclass"><span class="small">サポートクラス</span>
+              <th class="player"><span class="small">プレイヤー名</span>
+              <th class="note left">備考
+          <tbody>
+            <TMPL_LOOP Members><tr>
+              <td class="name  "><TMPL_VAR NAME>
+              <td class="cl    "><TMPL_VAR CL>
+              <td class="race  "><TMPL_VAR RACE>
+              <td class="mclass"><TMPL_VAR MCLASS>
+              <td class="sclass"><TMPL_VAR SCLASS>
+              <td class="player"><TMPL_VAR PLAYER>
+              <td class="note small comment"><TMPL_VAR NOTE></td>
+            </TMPL_LOOP>
+        </table>
+      </section>
+
+      <div id="items-and-money">
+        <dl class="box" id="money">
+          <dt>ギルド管理金<dd><TMPL_VAR money> G
+        </dl>
+        <section class="box" id="items">
+          <h2><TMPL_IF head_items><TMPL_VAR head_items><TMPL_ELSE>ギルド管理アイテム</TMPL_IF></h2>
+          <p><TMPL_VAR items></p>
+        </section>
+      </div>
+
+      <section class="box" id="free-note">
+        <h2>ギルドの経歴・メモ</h2>
+        <p><TMPL_VAR freeNote></p>
+      </section>
+
+      <TMPL_IF freeHistory>
+      <section class="box" id="free-history">
+        <h2><TMPL_IF head_freeHistory><TMPL_VAR head_freeHistory><TMPL_ELSE>履歴</TMPL_IF></h2>
+        <p><TMPL_VAR freeHistory></p>
+      </section>
+      </TMPL_IF>
+      <section class="box" id="history">
+        <h2>セッション履歴</h2>
+        <button class="open-button" onclick="switchHistoryView();" data-open="true" data-text-open="履歴を展開" data-text-close="履歴を畳む"></button>
+        <table class="data-table line-tbody">
+          <thead>
+            <tr>
+              <th class="num   ">No.
+              <th class="date  ">日付
+              <th class="title ">タイトル
+              <th class="exp   ">成長点
+              <th class="gm    ">GM
+              <th class="member">参加者
+            </tr>
+          </thead>
+          <TMPL_LOOP History><tbody>
+            <tr>
+              <td class="num   " <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR NUM></td>
+              <td class="date  " <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR DATE></td>
+              <td class="title " <TMPL_IF NOTE>rowspan="2"</TMPL_IF>><TMPL_VAR TITLE></td>
+              <td class="exp   "><TMPL_VAR EXP></td>
+              <td class="gm    "><span><TMPL_VAR GM></span></td>
+              <td class="member"><TMPL_VAR MEMBER></td>
+            </tr>
+            <TMPL_IF NOTE><tr><td colspan="6" class="note"><TMPL_VAR NOTE></TMPL_IF>
+          </TMPL_LOOP>
+          <tfoot>
+            <tr>
+              <td>
+              <td>
+              <td>取得総計
+              <td><TMPL_VAR historyExpTotal>
+              <td colspan="2">
+            </tr>
+          </tfoot>
+        </table>
+      </section>
+      <TMPL_IF cashbook>
+      <section class="box" id="cashbook">
+        <h2><TMPL_IF head_cashbook><TMPL_VAR head_cashbook><TMPL_ELSE>収支履歴</TMPL_IF></h2>
+        <div><p><TMPL_VAR cashbook></p></div>
+      </section>
+      </TMPL_IF>
+      <section class="box chat-palette float-box">
+        <h2>チャットパレット</h2>
+        <div class="chat-palette-menu">
+          <b>使用ツール:</b>
+          <a onclick="chatPaletteSelect('')"       id="cp-switch-ytc">ゆとチャadv.</a>
+          <a onclick="chatPaletteSelect('tekey')"  id="cp-switch-tekey">Tekey</a>
+          <a onclick="chatPaletteSelect('bcdice')" id="cp-switch-bcdice">他BCDice系</a>
+        </div>
+        <textarea id="chatPaletteBox"></textarea>
+      </section>
+    </article>
+  </main>
+  <TMPL_INCLUDE NAME="skin-add/sheet-sidebar.html">
+
+  <footer>
+    <p class="notes">©FarEast Amusement Research Co.,Ltd.「アリアンロッドRPG 2E」</p>
+    <p class="copyright">©<a href="https://yutorize.work">ゆとらいず工房</a>「ゆとシートⅡ」ver.<TMPL_VAR ver></p>
+  </footer>
+</body>
+
+</html>

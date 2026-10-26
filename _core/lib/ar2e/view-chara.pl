@@ -204,6 +204,10 @@ foreach (1 .. $pc{connectionNum}){
 }
 $SHEET->param(Connections => \@connections);
 
+### ギルド --------------------------------------------------
+if ($pc{guildName} && $pc{guildURL}){
+  $SHEET->param(guildName => qq|<a href="$pc{guildURL}">$pc{guildName}</a>|) 
+}
 ### 誓約 --------------------------------------------------
 my @geises;
 foreach (1 .. $pc{geisNum}){

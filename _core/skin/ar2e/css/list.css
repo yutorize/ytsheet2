@@ -1,10 +1,29 @@
 @charset "utf-8";
 
 @layer system {
+/* // Navigation
+---------------------------------------------------------------------------------------------------- */
+header nav {
+  & li.head b {
+    .icon {
+      .chara  &::before { mask-image: url(../img/icon-person.png); }
+      .guild  &::before { mask-image: url(../img/icon-groups.png); }
+    }
+    .label {
+      display: none;
+    }
+  }
+}
+main nav {
+  & a {
+    .chara &::before { mask-image: url(../img/icon-person.png); }
+    .guild &::before { mask-image: url(../img/icon-groups.png); }
+  }
+}
 /* // List
 ---------------------------------------------------------------------------------------------------- */
 .list table tr {
-  grid-template-columns: 26rem 0.8fr 3em 0.7fr 4.5em 1.9fr 0.7fr;
+  grid-template-columns: 26rem 0.8fr 3em 0.7fr 4.5em 1.9fr 5em;
   grid-template-areas:
     "NAME   PL RACE RACE  LVL  CLS DATE"
     "NAME   PL  GEN  AGE  EXP  CLS DATE"
@@ -26,6 +45,7 @@
   & td.lv {
     font-size: 1.15em;
     line-height: 1;
+    font-weight: bold;
   }
   & td.class {
     flex-direction: column;
@@ -44,6 +64,33 @@
       grid-template-columns: 18rem 6em 2.8em 0.6fr 0.6fr 10em 4em;
     }
     & .geis { display: none; }
+  }
+}
+/* // List-Guild
+---------------------------------------------------------------------------------------------------- */
+.list.guild table tr {
+  grid-template-columns: 26rem 0.5fr 2fr 4.5em 5em;
+  grid-template-areas:
+    "NAME   PL  MAS  LVL DATE"
+    "NAME TAGS TAGS TAGS DATE"
+  ;
+  & .name   { grid-area: NAME; }
+  & .player { grid-area:   PL; }
+  & .master { grid-area:  MAS; }
+  & .lv     { grid-area:  LVL; }
+  & .tags   { grid-area: TAGS; }
+  & .date   { grid-area: DATE; }
+  
+  & td.master {
+    font-size: 92%;
+  }
+  & td.lv {
+    font-size: 1.15em;
+    line-height: 1;
+    font-weight: bold;
+  }
+  @media screen and (width <= 735px){
+    grid-template-columns: 18rem 6em 2fr 4.5em 4em;
   }
 }
 
