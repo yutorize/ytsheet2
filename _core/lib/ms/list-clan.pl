@@ -37,7 +37,7 @@ my ($indexMode, $qLinks) = listQueryInfo(
   queryKeys => \@queryKeys,
   excludeFromQLinks => { group => 1 },
 );
-my %groups = setupGroupList();
+my %groups = setupGroupList(@set::groups_clan);
 
 ### ファイル読み込み #################################################################################
 my @lines = loadLines();

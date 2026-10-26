@@ -158,7 +158,9 @@ sub setupViewBase {
       $pc{group} = $set::group_default;
       $SHEET->param(group => $set::group_default);
     }
-    foreach (@set::groups){
+    my $groups = $ARGS{groups};
+    $groups = \@set::groups unless $groups && @$groups;
+    foreach (@$groups){
       if($pc{group} eq @$_[0]){
         $SHEET->param(groupName => @$_[2]);
         last;

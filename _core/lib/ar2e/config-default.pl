@@ -58,6 +58,20 @@ our $game = 'ar2e';
   our $skin_tmpl  = $::core_dir . '/skin/ar2e/index.html';         # 一覧／登録フォーム等の大枠
   our $skin_sheet = $::core_dir . '/skin/ar2e/sheet-chara.html';   # キャラクターシート
 
+  # 魔物・アイテム・魔法/流派などの設定
+  our %lib_type = (
+    'g' => {
+      listFile => $data_dir . 'guildlist.cgi',
+      dataDir => $data_dir . 'guild/',
+      edit => $::core_dir . '/lib/ar2e/edit-guild.pl',
+      calc => $::core_dir . '/lib/ar2e/calc-guild.pl',
+      view => $::core_dir . '/lib/ar2e/view-guild.pl',
+      list => $::core_dir . '/lib/ar2e/list-guild.pl',
+      skin => $::core_dir . '/skin/ar2e/sheet-guild.html',
+      sheetType => 'guild',
+    },
+  );
+
 # シート初期値の変更
 our %customizedInitialValues = (
     '' => {

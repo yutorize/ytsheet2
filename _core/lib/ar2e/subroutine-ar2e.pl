@@ -37,6 +37,12 @@ our %multilineTargets = (
 );
 
 ### バージョンアップデート --------------------------------------------------
+sub upgradeData {
+  my $data = $_[0];
+  my $type = $_[1];
+  if   ($type eq 'g'){ return upgradeGuildData($data) }
+  else               { return upgradeCharaData($data) }
+}
 sub upgradeCharaData {
   my %pc = %{$_[0]};
   my $ver = $pc{ver};
@@ -51,6 +57,17 @@ sub upgradeCharaData {
     $pc{geisNum}       //= $pc{geisesNum};
     $pc{connectionNum} //= $pc{connectionsNum};
   }
+
+  $pc{lasttimever} = $pc{ver};
+  $pc{ver} = $main::ver;
+  return %pc;
+}
+sub upgradeGuildData {
+  my %pc = %{$_[0]};
+  my $ver = $pc{ver};
+  $ver =~ s/^([0-9]+)\.([0-9]+)\.([0-9]+)$/$1.$2$3/;
+  delete $pc{updateMessage};
+
 
   $pc{lasttimever} = $pc{ver};
   $pc{ver} = $main::ver;

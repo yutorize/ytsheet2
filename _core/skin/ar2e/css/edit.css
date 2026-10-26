@@ -741,3 +741,83 @@ dd.area-tags {
 }
 
 
+
+/* // ギルド
+---------------------------------------------------------------------------------------------------- */
+body[data-sheet-type="guild"] {
+  #regulation {
+    > dl:first-of-type {
+      grid-template-columns: max-content 1fr;
+      gap: .5em;
+      input[type="number"] {
+        width: 3em;
+      }
+    }
+  }
+  #members {
+    margin-top: var(--box-v-gap);
+    overflow-x: auto;
+    table-layout: fixed;
+    > table {
+      col.handle{ width: 1em; }
+      col.name  { width: 18%; }
+      col.url   { width: 12%; }
+      col.cl    { width: 1.2em; }
+      col.race  { width: 6em; }
+      col.mclass{ width: 6em; }
+      col.sclass{ width: 6em; }
+      col.player{ width: 6em; }
+      col.note  { width: auto; min-width: 12em; }
+      > tbody {
+        .url {
+          white-space: nowrap;
+          position: relative;
+          text-align: left;
+          > input {
+            width: calc(100% - 1.2em - 2px);
+          }
+          > .refresh {
+            display: block;
+            position: absolute;
+            inset: 1px 1px 1px auto;
+            line-height: 1;
+            font-size: 1.2em;
+            width: 1em;
+            align-content: center;
+            cursor: pointer;
+            &::before {
+              content: "\e5d5";
+              font-family: "Material Symbols Outlined";
+              font-variation-settings: 'FILL' 1;
+            }
+          }
+        }
+      }
+    }
+  }
+  #guild-supports {
+    > table {
+      col.gl    { width: 2.8em; }
+      col.name  { width: 18%; }
+      col.timing{ width: 6em; }
+      col.lv    { width: 3em; }
+      col.stack { width: 3em; }
+      col.note  { width: auto; min-width: 12em; }
+      col.used  { width: 3.6em; }
+      col.select{ width: 3.6em; }
+      > thead {
+        vertical-align: bottom;
+      }
+      > tbody {
+        counter-reset: guild-level;
+        > tr:first-of-type th.gl::before {
+          content: "1";
+        }
+        > tr:not(:first-of-type) th.gl::before {
+          counter-increment: guild-level;
+          content: counter(guild-level);
+        }
+      }
+    }
+  }
+}

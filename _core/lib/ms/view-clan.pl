@@ -12,6 +12,7 @@ require $set::data_magi;
   unescapeLinesKeys => [qw/freeNote freeHistory/],
   unescapeSkipRe    => qr/^(?:member[0-9]+URL$|(?:image))/,
   nameKeys          => [qw/clanName/],
+  groups            => \@set::groups_clan,
   updateSub => \&upgradeCharaData,
 );
 our %pc = %{ $pcRef };

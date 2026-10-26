@@ -283,7 +283,9 @@ main nav ul li {
     background: var(--nav-shadow);
   }
   & a {
-    padding: .7em .8em;
+    position: relative;
+    overflow: clip;
+    padding: .7em .8em .7em 3em;
     border-width: 1px;
     border-style: solid;
     border-radius: .5em .5em 0 0;
@@ -294,6 +296,15 @@ main nav ul li {
     font-weight: bold;
     text-decoration: none;
     &::before {
+      content: "";
+      display: block;
+      position: absolute;
+      top: .4em;
+      left: .5em;
+      width : 2.2em;
+      height: 2.2em;
+      mask-size: 100%;
+      mask-repeat: no-repeat;
       background-color: var(--icon--color);
     }
     &:hover::before,
@@ -327,7 +338,16 @@ main nav ul li {
       width: 2px;
     }
     & ul li a {
-      padding: .8em .8em;
+      width: 9em;
+      padding: 1em 0 .5em;
+      font-size: 1rem;
+      text-align: center;
+      &::before {
+        position: static;
+        margin: auto;
+        width : 3rem;
+        height: 3rem;
+      }
     }
   }
 }
