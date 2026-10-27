@@ -106,7 +106,7 @@ sub dx3MigrationConvertRecord {
     my $value = $chara{'lifepath'.$key} // '';
     my $note = $chara{'lifepath'.$key.'Note'} // '';
     if ($value =~ /\S/) {
-      push @profile, $definition->($label, $value . ($note =~ /\S/ ? " ／ 備考：$note" : ''));
+      push @profile, $definition->($label, $value . ($note =~ /\S/ ? " ／ $note" : ''));
     } elsif ($note =~ /\S/) { push @profile, $definition->("${label}の備考", $note); }
   }
   foreach my $num (1..$chara{"effectNum"}) {
