@@ -4,31 +4,42 @@ use utf8;
 
 sub dataCalc {
   my %pc = %{$_[0]};
+  ### アップデート --------------------------------------------------
+  if($pc{ver}){
+    %pc = upgradeUnitData(\%pc);
+  }
+  
+  #### 改行を<br>に変換 --------------------------------------------------
   convertNewlinesToBrTag(\%pc,
     'freeNote', grep { /^(?:member|order)[0-9]+Note$/ } keys %pc,
   );
+  #### 保存処理でなければここまで --------------------------------------------------
   return %pc unless $::mode_save;
 
+  #### エスケープ --------------------------------------------------
   $pc{$_} = escapePcData($pc{$_}) foreach keys %pc;
   $pc{tags} = normalizeHashtags($pc{tags});
 
-  my %line;
+  ### updatedLine --------------------------------------------------
+  my %NL;
   foreach my $key ('unitName','playerName'){
-    $line{$key} = removeTags removeRuby unescapeTags $pc{$key};
-    $line{$key} = substr($line{$key}, 0, 108);
+    $NL{$key} = removeTags removeRuby unescapeTags $pc{$key};
+    $NL{$key} = substr($NL{$key}, 0, 108);
   }
   my @members;
   my @leaders;
   foreach my $num (1 .. $pc{memberNum}){
     next unless $pc{"member${num}Name"};
     my $name = removeTags removeRuby unescapeTags $pc{"member${num}Name"};
+    $name = substr($name, 0, 108).'..' if length($name) > 108;
     push @members, $name;
     push @leaders, $name if $pc{"member${num}Leader"};
   }
+  ### updatedLine --------------------------------------------------
   $::updatedLine = join('<>',
     $pc{id}, $::file, $pc{birthTime}, $::now,
-    $line{unitName}, $line{playerName}, $pc{group},
-    " $pc{tags} ", $pc{hide}, join('／', @members), join('／', @leaders),
+    $NL{unitName}, $NL{playerName}, $pc{group},
+    " $pc{tags} ", $pc{hide}, $leaders[0],
   ).'<>';
   return %pc;
 }

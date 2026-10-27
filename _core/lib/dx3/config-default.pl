@@ -79,8 +79,8 @@ our $game = 'dx3';
     },
   );
 
-# シート初期値の変更
-our %customizedInitialValues = (
+## ●シート初期値の変更
+  our %customizedInitialValues = (
     '' => {
         # 例：「侵蝕率効果表」の「エフェクトアーカイブ適用」を初期状態で有効にする
         # 'encroachEaOn' => '1',
@@ -88,6 +88,6 @@ our %customizedInitialValues = (
     u => {
         # 'unitName' => 'unnamed',
     },
-);
+  );
 
 1;

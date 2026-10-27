@@ -7,11 +7,12 @@ use open ":utf8";
 sub addJsonData {
   my %pc = %{ $_[0] };
   my $type = $_[1];
+
+  ### ユニット --------------------------------------------------
   if($type eq 'u'){
     $pc{name} = $pc{unitName};
     return \%pc;
   }
-
   ### エネミー --------------------------------------------------
   if($type eq 'e'){
     $pc{name} = $pc{enemyName};

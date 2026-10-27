@@ -3,14 +3,17 @@ use strict;
 use utf8;
 use open ":utf8";
 
-my ($data, $SHEET) = setupViewBase(
+### データ／テンプレート読込 #########################################################################
+my ($pcRef, $SHEET) = setupViewBase(
   nameKeys => [qw/unitName/],
   unescapeLinesKeys => [qw/freeNote/],
-  unescapeLinesRe => qr/^(?:member|order)[0-9]+Note$/,
   keepHeadings => 1,
+  updateSub => \&upgradeUnitData,
 );
-our %pc = %{$data};
+our %pc = %{ $pcRef };
 
+### 固有処理 #########################################################################################
+### 閲覧禁止データのマスク --------------------------------------------------
 sub maskPcData {
   my ($pc, $forbidden) = @_;
   if($forbidden ne 'battle'){
@@ -21,6 +24,7 @@ sub maskPcData {
   $pc->{orderNum} = 0;
 }
 
+### メンバー --------------------------------------------------
 my @members;
 foreach my $num (1 .. $pc{memberNum}){
   next unless existsRow "member$num", 'Name','Belong','Note','Leader','URL';
@@ -39,6 +43,7 @@ foreach my $num (1 .. $pc{memberNum}){
 }
 $SHEET->param(Members => \@members);
 
+### ユニットオーダー --------------------------------------------------
 my @orders;
 foreach my $num (1 .. $pc{orderNum}){
   next unless existsRow "order$num", 'Name','Organization','Timing','Note','Ref';
@@ -51,8 +56,14 @@ foreach my $num (1 .. $pc{orderNum}){
   };
 }
 $SHEET->param(Orders => \@orders);
+
+### OGP --------------------------------------------------
 $SHEET->param(ogDescript => removeTags "GM:$pc{playerName}　メンバー:".join('／', map { $_->{NAME} } @members));
+
+### メニュー --------------------------------------------------
 setSheetMenu();
+
+### 出力 #############################################################################################
 printFinalizedView();
 
 1;

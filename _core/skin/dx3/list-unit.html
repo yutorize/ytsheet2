@@ -31,9 +31,8 @@
         <table>
           <thead><tr>
             <th class="name"><a href="./?type=u&group=<TMPL_VAR ID><TMPL_VAR qLinks>&sort=name">ユニット名</a>
-            <th class="player"><a href="./?type=u&group=<TMPL_VAR ID><TMPL_VAR qLinks>&sort=pl">GM名</a>
-            <th class="leader">リーダー
-            <th class="member">メンバー
+            <th class="player"><a href="./?type=u&group=<TMPL_VAR ID><TMPL_VAR qLinks>&sort=pl">プレイヤー</a>
+            <th class="leader"><span>リーダー</span>
             <th class="date"><a href="./?type=u&group=<TMPL_VAR ID><TMPL_VAR qLinks>&sort=date">更新日時</a>
           </thead>
           <tbody>
@@ -41,8 +40,7 @@
             <td class="name"><a href="./?id=<TMPL_VAR ID>"><TMPL_VAR NAME></a>
             <td class="player"><TMPL_VAR PLAYER>
             <td class="leader"><TMPL_VAR LEADER>
-            <td class="member"><TMPL_VAR MEMBER>
-            <td class="tags"><TMPL_VAR TAGS>
+            <td class="tags"><TMPL_VAR TAGS></td>
             <td class="date"><div><TMPL_VAR DATE></div>
           </TMPL_LOOP>
           </tbody>

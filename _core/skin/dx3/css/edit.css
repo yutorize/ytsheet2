@@ -1002,3 +1002,18 @@ body[data-sheet-type="enemy"] {
     display: grid;
   }
 }
+
+
+/* // ユニット
+---------------------------------------------------------------------------------------------------- */
+body[data-sheet-type="unit"] {
+  .row-handle { width: 2rem; }
+  .unit-members textarea,
+  .unit-orders textarea {
+    min-height: 4em;
+    height: 4em;
+  }
+  .member-url label { display: block; font-size: 1.1rem; }
+  .member-url input { display: block; }
+  #member-table tbody + tbody { border-top: 1px solid var(--box-inside-border-color); }
+}

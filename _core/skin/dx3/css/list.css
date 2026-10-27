@@ -8,7 +8,7 @@ header nav {
     .icon {
       .chara  &::before { mask-image: url(../img/icon-person.png); }
       .enemy  &::before { mask-image: url(../img/icon-enemy.png); }
-      .unit   &::before { mask-image: url(../img/icon-unit.png); }
+      .unit   &::before { mask-image: url(../img/icon-groups.png); }
     }
     .label {
       display: none;
@@ -19,7 +19,7 @@ main nav {
   & a {
     .chara &::before { mask-image: url(../img/icon-person.png); }
     .enemy &::before { mask-image: url(../img/icon-enemy.png); }
-    .unit  &::before { mask-image: url(../img/icon-unit.png); }
+    .unit  &::before { mask-image: url(../img/icon-groups.png); }
   }
 }
 /* // List
@@ -58,20 +58,9 @@ main nav {
 .list table td.syndrome span {
   display: block;
 }
-.list.unit table tr {
-  grid-template-columns: 26rem 1fr 1fr 2fr 7em;
-  grid-template-areas:
-    "NAME PL LEADER MEMBER DATE"
-    "NAME TAGS TAGS TAGS DATE";
-}
-.list.unit table .leader { grid-area: LEADER; }
-.list.unit table .member { grid-area: MEMBER; }
 @media screen and (width <= 735px){
   .list table tr {
     grid-template-columns: 18rem 6em 3em 0.6fr 1fr 4em 4em;
-  }
-  .list.unit table tr {
-    grid-template-columns: 18rem 1fr 1fr 2fr 7em;
   }
 }
 /* // List-Enemy
@@ -119,7 +108,23 @@ main nav {
     grid-template-columns: 18rem 6em 4.2em 10em 1fr 4em;
   }
 }
-
+/* // List-Unit
+---------------------------------------------------------------------------------------------------- */
+.list.unit table tr {
+  grid-template-columns: 26rem 0.5fr 2.1fr 5em;
+  grid-template-areas:
+    "NAME PL LEADER DATE"
+    "NAME TAGS TAGS DATE";
+  &:has(.tags:empty){
+    grid-template-areas: "NAME PL LEADER DATE";
+  }
+  .leader { grid-area: LEADER; }
+}
+@media screen and (width <= 735px){
+  .list.unit table tr {
+    grid-template-columns: 18rem 1fr 1fr 2fr 7em;
+  }
+}
 /* // List-Simple
 ---------------------------------------------------------------------------------------------------- */
 .list ul li a::before {

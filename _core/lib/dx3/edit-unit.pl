@@ -5,26 +5,48 @@ use open ":utf8";
 use feature 'signatures';
 no warnings 'experimental::signatures';
 
+### データ読み込み ###################################################################################
 my ($data, $file, $message) = loadSheetData();
 our %pc = %{ $data };
+
 our $isNewSheet = isNewSheet();
+
+### 出力準備 #########################################################################################
 $message = applyMessageName($message, $pc{unitName} || '無題');
 
+### 初期設定 --------------------------------------------------
 if($isNewSheet){
+  $pc{playerName} = (getPlayerName($::LOGIN_ID))[0];
   $pc{protect} ||= $::LOGIN_ID ? 'account' : 'password';
 }
-if($::mode eq 'blanksheet'){
-  $pc{playerName} = (getPlayerName($::LOGIN_ID))[0];
+
+if($::mode eq 'edit' || ($::mode =~ /^(?:convert|copy)$/ && $pc{ver})){
+  %pc = upgradeUnitData(\%pc);
+  if($pc{updateMessage}){
+    $message .= "<hr>" if $message;
+    $message .= "<h2>アップデート通知</h2><dl>";
+    foreach (sort keys %{$pc{updateMessage}}){
+      $message .= '<dt>'.$_.'</dt><dd>'.$pc{updateMessage}{$_}.'</dd>';
+    }
+    $message .= "</dl><small>前回保存時のバージョン:$pc{lasttimever}</small>";
+  }
+}
+elsif($::mode eq 'blanksheet'){
   $pc{group} = $set::group_default;
   %pc = applyCustomizedInitialValues(\%pc, 'u');
 }
 $pc{memberNum} //= 6;
 $pc{orderNum} //= 6;
+
+## カラー
 setDefaultColors(\%pc);
+
+### 改行処理 --------------------------------------------------
 convertEscapedBrToNewlines(\%pc,
   'freeNote', grep { /^(?:member|order)[0-9]+Note$/ } keys %pc,
 );
 
+### フォーム表示 #####################################################################################
 print renderEditPageStart(title => removeTags removeRuby unescapeTags $pc{unitName});
 print renderEditHeaderMenu(
   tabsHtml => '<li onclick="sectionSelect(\'common\');" class="sheet-main"><span>ユニット</span><span>データ</span>',
@@ -95,7 +117,7 @@ print <<"HTML";
   </section>
 HTML
 print renderEditPageEnd(
-  notes => '(C) 矢野俊策／F.E.A.R.「ダブルクロス The 3rd Edition」',
+  notes => '©FarEast Amusement Research Co.,Ltd.「ダブルクロスThe 3rd Edition」',
   extraHtml => '<datalist id="list-unit-organization"><option value="UGN"><option value="FH"><option value="ゼノス"><option value="その他"></datalist>',
 );
 

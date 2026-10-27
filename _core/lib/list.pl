@@ -141,7 +141,11 @@ sub listQueryInfo {
   
   my @canonicalQueries;
   foreach ('type','tag') {
-    push(@canonicalQueries, $_.'='.uri_escape_utf8(decode('utf8', $::in{$_}))) if $::in{$_};
+    if($::in{$_}){
+      push(@canonicalQueries,
+        $_.'='.uri_escape_utf8(decode('utf8', $::in{$_}))
+      );
+    }
   }
 
   my @qLinks;

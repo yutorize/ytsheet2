@@ -45,7 +45,7 @@ sub createUnitStatus {
 ## 複数行対応覧
 our %multilineTargets = (
   ''  => '「容姿・経歴・その他メモ」「履歴（自由記入）」',
-  'u' => '「MEMO」「ユニットメンバーの備考」「ユニットオーダーの備考」',
+  'u' => '「メモ」',
 );
 
 ### バージョンアップデート --------------------------------------------------
@@ -53,7 +53,7 @@ sub upgradeData {
   my $data = $_[0];
   my $type = $_[1];
   if   ($type eq 'e'){ return upgradeEnemyData($data) }
-  elsif($type eq 'u'){ return %{$data} }
+  if   ($type eq 'u'){ return upgradeUnitData($data) }
   else               { return upgradeCharaData($data) }
 }
 sub upgradeCharaData {
@@ -123,8 +123,17 @@ sub upgradeCharaData {
   return %pc;
 }
 
-### バージョンアップデート --------------------------------------------------
 sub upgradeEnemyData {
+  my %pc = %{$_[0]};
+  my $ver = $pc{ver};
+  $ver =~ s/^([0-9]+)\.([0-9]+)\.([0-9]+)$/$1.$2$3/;
+  
+  $pc{lasttimever} = $pc{ver};
+  $pc{ver} = $main::ver;
+  return %pc;
+}
+
+sub upgradeUnitData {
   my %pc = %{$_[0]};
   my $ver = $pc{ver};
   $ver =~ s/^([0-9]+)\.([0-9]+)\.([0-9]+)$/$1.$2$3/;
