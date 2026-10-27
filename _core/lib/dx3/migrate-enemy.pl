@@ -142,6 +142,11 @@ sub dx3MigrationConvertRecord {
     my @row = ( $num, @values[0..4], $state, join('／', grep { length($_) } $superior,$values[5]) );
     push @lois, '|' . join('|', map { $tableCell->($_) } @row) . '|';
   }
+  foreach my $key (keys %enemy) {
+    if($key =~ /^(?:weapon|vehicle|item)[0-9]+Skill$/){
+      $enemy{$key} =~ s/^〈(.+?)〉$/$1/;
+    }
+  }
   my @notes;
   push @notes, "**プロフィール\n" . join("\n", @profile) if @profile;
   push @notes, "**ロイス\n|~ |~関係|~名前|~感情P|~感情N|~属性|~状態|~備考|h\n" . join("\n", @lois) if @lois;

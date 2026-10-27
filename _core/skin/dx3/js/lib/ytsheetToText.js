@@ -383,6 +383,7 @@ output.generateCharacterTextOfDoubleCross3Enemy = (json) => {
   const effects = [];
   const dLoises = [];
   const eLoises = [];
+  const perks = [];
   for(let cursor = 1; cursor <= Number(json.effectNum || 0) || json[`effect${cursor}Name`]; cursor++) {
     const name = json[`effect${cursor}Name`];
     if(!name) { continue; }
@@ -391,12 +392,17 @@ output.generateCharacterTextOfDoubleCross3Enemy = (json) => {
       const loises = type === 'dlois' ? dLoises : eLoises;
       loises.push(output._formatDoubleCrossEnemyName(name, '「」'));
     }
+    else if(type === 'perk') {
+      const level = json[`effect${cursor}Lv`];
+      perks.push(`${output._formatDoubleCrossEnemyName(name, '《》')}${level === '' ? 1 : (level ?? 1)}`);
+    }
     else {
       const level = json[`effect${cursor}Lv`];
       effects.push(`${output._formatDoubleCrossEnemyName(name, '《》')}${level === '' ? 1 : (level ?? 1)}`);
     }
   }
   result.push(effects.join('、'));
+  if(perks.length)   { result.push('▼パーク',  perks.join('、')); }
   if(dLoises.length) { result.push('▼Dロイス', dLoises.join('、')); }
   if(eLoises.length) { result.push('▼Eロイス', eLoises.join('、')); }
   result.push('');

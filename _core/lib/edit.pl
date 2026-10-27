@@ -181,7 +181,7 @@ sub option {
     }
 
     if($value =~ s/=>(.*?)$//){ $text = $1 }
-    else { $text = $value }
+    elsif($text eq '') { $text = $value }
 
     $HTML .= qq|<option value="$value"$attr|
       . ($selected eq $value ? ' selected' : '')

@@ -11,6 +11,9 @@ require $set::lib_list;
 if($set::simpleindex){
   $set::simpleindex = 0;
 }
+
+# グループがないので、常にgroupをallとして扱う
+$::in{group} = 'all';
 ### クエリ ###########################################################################################
 my @queryKeys = qw(
   mode tag group image name author stage etype works breed syndrome hp init armor encroach
@@ -120,7 +123,7 @@ foreach (@$pageLines) {
       NAME     => renderCharacterName($pc{name}),
       AUTHOR   => $pc{author},
       GROUP    => $pc{group},
-      TYPE     => $pc{etype},
+      TYPE     => renderEnemyType($pc{etype}),
       SYNDROME => join('', @syndromes),
       STAGE    => $pc{stage},
       TAGS     => renderTagLinks($pc{tags}, $pc{session}),
@@ -129,6 +132,14 @@ foreach (@$pageLines) {
     });
     push(@{$groupedLists{'すべて'}}, @characters);
   }
+}
+
+sub renderEnemyType {
+  if($_[0] =~ /^[MＭ]エネミー/){
+    if($_[0] =~ /[(（][TＴ][)）]$/){ return "Mエネミー（T）" }
+    else { return "Mエネミー" }
+  }
+  return $_[0];
 }
 
 ### テンプレートへ入力 ###############################################################################

@@ -61,6 +61,20 @@ sub palettePreset {
     $text .= "\n";
     if($type eq 'e'){
       $text .= "### ■攻撃\n";
+      foreach my $n (1 .. $::pc{attackNum}){
+        next if !$::pc{"attack${n}Name"};
+        $text .= qq|$::pc{"attack${n}Dice"}+{DB}|
+          . "dx"
+          . qq|($::pc{"attack${n}Crit"}+{CB})|
+          . "+"
+          . qq|($::pc{"attack${n}Mod"}+{AB})|
+          . qq| 命中／$::pc{"attack${n}Name"}|
+          . "\n";
+        $text .= qq|d10+$::pc{"attack${n}Atk"}+{AtkB}|
+          . qq| ダメージ／$::pc{"attack${n}Name"}|
+          . "\n"
+          if $::pc{"attack${n}Atk"} ne '';
+      }
       foreach my $num (1 .. $::pc{weaponNum}){
         next if !$::pc{'weapon'.$num.'Name'};
         if   ($::pc{"weapon${num}Skill"} =~ /^(白兵|回避|運転)/){ $text .= '{肉体}+';  }
