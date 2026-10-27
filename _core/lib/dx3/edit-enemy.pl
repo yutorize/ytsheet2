@@ -63,6 +63,7 @@ $pc{skillArtNum}  ||= 2;
 $pc{skillKnowNum} ||= 2;
 $pc{skillInfoNum} ||= 2;
 $pc{effectNum}  ||= 5;
+$pc{attackNum}  ||= 1;
 $pc{weaponNum}  ||= 1;
 $pc{armorNum}   ||= 0;
 $pc{vehicleNum} ||= 0;
@@ -84,11 +85,9 @@ foreach (
   }
 }
 if(existsRowStrict "lifepath",'Origin','Experience','Encounter','Awaken','Impulse'){ $open{lifepath} = 'open'; }
-if(existsRowStrict "insanity",'','Note'){ $open{insanity} = 'open'; }
-foreach (1..7){ if(existsRowStrict "lois$_"  ,'Relation','Name'){ $open{lois  } = 'open'; last; } }
-foreach (1..3){ if(existsRowStrict "memory$_",'Relation','Name'){ $open{memory} = 'open'; last; } }
-foreach (3..$pc{effectNum}){ if(existsRow "effect$_",'Name','Lv' ){ $open{effect} = 'open'; last; } }
+foreach (3..$pc{effectNum}){ if(existsRow "effect$_",'Name'){ $open{effect} = 'open'; last; } }
 foreach (1..$pc{comboNum}) { if(existsRowStrict "combo$_" ,'Name','Combo'){ $open{combo } = 'open'; last; } }
+foreach (1..$pc{attackNum }){ if(existsRow "attack$_" ,'Name'){ $open{attack} = 'open'; last; } }
 foreach (1..$pc{weaponNum }){ if(existsRow "weapon$_" ,'Name'){ $open{item} = 'open'; last; } }
 foreach (1..$pc{armorNum  }){ if(existsRow "armor$_"  ,'Name'){ $open{item} = 'open'; last; } }
 foreach (1..$pc{vehicleNum}){ if(existsRow "vehicle$_",'Name'){ $open{item} = 'open'; last; } }
@@ -141,12 +140,40 @@ print <<"HTML";
     <div class="box" id="group">
       <dl>
         <dt class="type">種別
-        <dd>@{[ selectInput 'enemyType','', '一般','トループ' ]}
+        <dd>@{[
+          selectInput 'enemyType','', 
+          {value => '一般', text => '一般（ゲスト）'},
+          {value => 'トループ'},
+          {attr => 'class="crc-only"', label => 'Mエネミー'},
+          {attr => 'class="crc-only"', value => 'Mエネミー／人間', text => '人間'},
+          {attr => 'class="crc-only"', value => 'Mエネミー／動物', text => '動物'},
+          {attr => 'class="crc-only"', value => 'Mエネミー／植物', text => '植物'},
+          {attr => 'class="crc-only"', value => 'Mエネミー／兵器', text => '兵器'},
+          {attr => 'class="crc-only"', value => 'Mエネミー／オーヴァード', text => 'オーヴァード'},
+          {attr => 'class="crc-only"', value => 'Mエネミー／ジャーム', text => 'ジャーム'},
+          {attr => 'class="crc-only"', value => 'Mエネミー／神話生物', text => '神話生物'},
+          {attr => 'class="crc-only"', value => 'Mエネミー／アンデッド', text => 'アンデッド'},
+          {attr => 'class="crc-only"', value => 'Mエネミー／神性', text => '神性'},
+          {attr => 'class="crc-only"', label => 'Mエネミー（トループ）'},
+          {attr => 'class="crc-only"', value => 'Mエネミー／人間（T）', text => '人間（T）'},
+          {attr => 'class="crc-only"', value => 'Mエネミー／動物（T）', text => '動物（T）'},
+          {attr => 'class="crc-only"', value => 'Mエネミー／植物（T）', text => '植物（T）'},
+          {attr => 'class="crc-only"', value => 'Mエネミー／兵器（T）', text => '兵器（T）'},
+          {attr => 'class="crc-only"', value => 'Mエネミー／オーヴァード（T）', text => 'オーヴァード（T）'},
+          {attr => 'class="crc-only"', value => 'Mエネミー／ジャーム（T）', text => 'ジャーム（T）'},
+          {attr => 'class="crc-only"', value => 'Mエネミー／神話生物（T）', text => '神話生物（T）'},
+          {attr => 'class="crc-only"', value => 'Mエネミー／アンデッド（T）', text => 'アンデッド（T）'},
+          {attr => 'class="crc-only"', value => 'Mエネミー／神性（T）', text => '神性（T）'},
+          {close => 1}
+        ]}
         <dt class="stage">ステージ
-        <dd>@{[ input 'stage','','','list="list-stage"' ]}
+        <dd>@{[ input 'stage','','checkStage','list="list-stage"' ]}
         <dt class="tags">タグ
         <dd>@{[ input 'tags' ]}
       </dl>
+      <ul class="annotate">
+       <li>ステージの入力値に「クロウリングケイオス」が“含まれる”場合、専用項目／専用選択肢が表示されます。
+      </ul>
     </div>
 
     <div class="box in-toc" id="name-form" data-content-title="エネミー名">
@@ -188,6 +215,10 @@ print <<"HTML";
         <dl class="box" id="initiative">
           <dt>行動値
           <dd>@{[ input "initiative",'number','calcInitiative' ]}
+        </dl>
+        <dl class="box crc-only" id="armor">
+          <dt>回避値
+          <dd>@{[ input "dodge",'number' ]}
         </dl>
         <dl class="box" id="armor">
           <dt>装甲値
@@ -284,8 +315,64 @@ print <<"HTML";
       </div>
     </div>
 
+    <details class="box crc-only" id="attack" $open{attack}>
+      <summary class="in-toc">攻撃</summary>
+      <table class="edit-table no-border-cells" id="attack-table">
+        <colgroup>
+          <col class="handle">
+          <col class="name ">
+          <col class="margin">
+          <col class="dice ">
+          <col class="code ">
+          <col class="mod  ">
+          <col class="crit ">
+          <col class="fixed">
+          <col class="margin">
+          <col class="atk  ">
+          <col class="margin">
+          <col class="range">
+        </colgroup>
+        <thead>
+          <tr>
+            <th rowspan="2">
+            <th rowspan="2">攻撃方法
+            <th rowspan="2">
+            <th colspan="5">判定値
+            <th rowspan="2">
+            <th rowspan="2">攻撃力
+            <th rowspan="2">
+            <th rowspan="2">射程
+          <tr class="small"><th>ダイス<th><th>修正<th>C値<th>期待値
+        <tbody>
+          @{[ renderTemplateLoop(
+            'attack',
+            sub ($num) {
+              return <<~"ROW";
+              <tr id="attack-row${num}">
+                <td class="handle">
+                <td>@{[ input "attack${num}Name" ]}
+                <td>
+                <td>@{[ input "attack${num}Dice",'number' ]}
+                <td>D+
+                <td>@{[ input "attack${num}Mod",'number' ]}
+                <td>@{[ input "attack${num}Crit",'number' ]}
+                <td><div>@{[ input "attack${num}Fixed",'number' ]}</div>
+                <td>
+                <td>@{[ input "attack${num}Atk",'number' ]}
+                <td>
+                <td>@{[ input "attack${num}Range",'','','list="list-range-atk"' ]}
+              ROW
+            }
+          ) ]}
+      </table>
+      @{[ renderAddDelButtons('attack') ]}
+      <ul class="annotate">
+        <li>MエネミーのC値はパークで変更されますが、ダイスコマンド出力の為にこの欄でも項目を設けています。
+      </ul>
+    </details>
+
     <details class="box box-union" id="items" $open{item}>
-      <summary class="in-toc" data-content-title="装備">装備</summary>
+      <summary class="in-toc">装備</summary>
       <div class="box" id="weapon">
         <table class="edit-table no-border-cells" id="weapon-table">
           <thead>
@@ -380,7 +467,7 @@ print <<"HTML";
     </details>
 
     <details class="box" id="effect" $open{effect}>
-      <summary class="in-toc">取得エフェクト／Dロイス／Eロイス</summary>
+      <summary class="in-toc" data-content-title="取得エフェクト・Eロイスなど">取得エフェクト<span class="crc-only">／パーク</span>／Dロイス／Eロイス</summary>
       <div>
         <table class="edit-table line-tbody no-border-cells" id="effect-table">
           <thead id="effect-head">
@@ -403,7 +490,14 @@ print <<"HTML";
                   <td>@{[input "effect${num}Restrict",'','','placeholder="制限" list="list-restrict"']}
                 <tr><td colspan="9">
                   <div>
-                    <b>種別</b>@{[ selectBox "effect${num}Type","calcEffect()",'DEF==>エフェクト','easy=>イージーエフェクト','enemy=>エネミーエフェクト','dlois=>Dロイス','elois=>Eロイス' ]}
+                    <b>種別</b>@{[ selectBox "effect${num}Type","calcEffect()",
+                      {value => 'DEF=', text => 'エフェクト'},
+                      {value => 'easy', text => 'イージーエフェクト'},
+                      {value => 'enemy', text => 'エネミーエフェクト'},
+                      {value => 'perk', text => 'パーク', attr => 'crc-only'},
+                      {value => 'dlois', text => 'Dロイス'},
+                      {value => 'elois', text => 'Eロイス'},
+                    ]}
                     <b>効果</b>@{[input "effect${num}Note"]}
                   </div>
               ROW
@@ -565,16 +659,6 @@ sub renderDataList {
     <option value="情報:メディア">
     <option value="情報:ビジネス">
   </datalist>
-  <datalist id="list-lois-color">
-    <option value="BK">ブラック
-    <option value="BL">ブルー
-    <option value="GR">グリーン
-    <option value="OR">オレンジ
-    <option value="PU">パープル
-    <option value="RE">レッド
-    <option value="WH">ホワイト
-    <option value="YE">イエロー
-  </datalist>
   <datalist id="list-timing">
     <option value="オート">
     <option value="マイナー">
@@ -669,6 +753,13 @@ sub renderDataList {
     <option value="シーン">
     <option value="シーン（選択）">
     <option value="効果参照">
+  </datalist>
+  <datalist id="list-range-atk">
+    <option value="m">
+    <option value="至近">
+    <option value="視界">
+    <option value="m※">
+    <option value="視界※">
   </datalist>
   <datalist id="list-range">
     <option value="―">

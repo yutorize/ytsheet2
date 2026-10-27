@@ -9,6 +9,7 @@ window.onload = function() {
   syndromes = [form.syndrome1.value, form.syndrome2.value, form.syndrome3.value];
   
   setName();
+  checkStage();
   checkSyndrome();
   calcStt();
   checkEncroachBonus();
@@ -35,6 +36,11 @@ function formCheck(){
     return false;
   }
   return true;
+}
+
+// ステージチェック ----------------------------------------
+function checkStage(){
+  document.body.classList.toggle('mode-crc', form.stage.value.match('クロウリングケイオス'));
 }
 
 // シンドローム変更 ----------------------------------------
@@ -135,6 +141,7 @@ function calcEffect() {
     else if(type == 'dlois'){ bg.backgroundImage = 'linear-gradient(to right,hsla(  0,100%, 50%,0.2),transparent)'; }
     else if(type == 'enemy'){ bg.backgroundImage = 'linear-gradient(to right,hsla(270,100%, 50%,0.2),transparent)'; }
     else if(type == 'elois'){ bg.backgroundImage = 'linear-gradient(to right,hsla(250,100%, 25%,0.3))'; }
+    else if(type == 'perk') { bg.backgroundImage = 'linear-gradient(to right,hsla(180, 80%, 25%,0.2),transparent)'; }
     else { bg.backgroundImage = ''; }
 
     if(type == 'dlois'){
@@ -158,6 +165,16 @@ function calcEffect() {
       form['effect'+num+'Restrict'].disabled = false;
       form['effect'+num+'Restrict'].placeholder = '衝動';
       form['effect'+num+'Restrict'].setAttribute('list', 'list-impulse');
+    }
+    else if(type == 'perk'){
+      form['effect'+num+'Encroach'].disabled =
+      form['effect'+num+'Restrict'].disabled = true;
+      form['effect'+num+'Lv'].disabled =
+      form['effect'+num+'Timing'].disabled =
+      form['effect'+num+'Skill'].disabled =
+      form['effect'+num+'Dfclty'].disabled =
+      form['effect'+num+'Target'].disabled =
+      form['effect'+num+'Range'].disabled = false;
     }
     else {
       form['effect'+num+'Lv'].disabled =
@@ -558,6 +575,18 @@ function makeComboConditionUtility(comboNode) {
   );
 }
 document.querySelectorAll('#combo .combo-table').forEach(node => makeComboConditionUtility(node));
+
+// 攻撃欄 ----------------------------------------
+// 追加
+function addAttack(){
+  document.querySelector("#attack-table tbody").append(createRow('attack','attackNum'));
+}
+// 削除
+function delAttack(){
+  delRow('attackNum', '#attack-table tbody tr:last-of-type');
+}
+// ソート
+setSortable('attack','#attack-table tbody','tr');
 
 // 武器欄 ----------------------------------------
 // 追加
