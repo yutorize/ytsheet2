@@ -44,6 +44,7 @@ sub dataCalc {
   if($pc{initiative} eq ''){ $pc{initiativeTotal} = $pc{sttTotalSense} * 2 + $pc{sttTotalMind}; }
   else { $pc{initiativeTotal} = $pc{initiative}; }
 
+  $pc{dodgeTotal} = $pc{dodge};
   $pc{armorTotal} = $pc{armor};
   $pc{encroachTotal} = $pc{encroach};
 

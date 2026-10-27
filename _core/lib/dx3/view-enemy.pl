@@ -43,6 +43,7 @@ sub maskPcData {
   }
   $pc->{maxHpTotal}      = noiseText(1,2);
   $pc->{initiativeTotal} = noiseText(1,2);
+  $pc->{dodgeTotal}      = noiseText(1,2);
   $pc->{armorTotal}      = noiseText(1,2);
   $pc->{encroachTotal}   = noiseText(1,3);
   
@@ -111,18 +112,32 @@ if($::in{simple}){ $SHEET->param(simpleMode => 1); }
 ### ステージ --------------------------------------------------
 if($pc{stage} =~ /クロウリングケイオス/){ $SHEET->param(ccOn => 1); }
 
-### ワークス --------------------------------------------------
-$SHEET->param(isFH => $pc{works} =~ /[FＦ][HＨ]/i);
+### 種別 --------------------------------------------------
+my $mEnemy = ($pc{enemyType} =~ /^[MＭ]エネミー/) ? 1 : 0;
+$SHEET->param(isMEnemy => $mEnemy ? 1 : 0);
 
 ### ブリード --------------------------------------------------
-my $breedPrefix = ($pc{breed} ? $pc{breed} : $pc{syndrome3} ? 'トライ' : $pc{syndrome2} ? 'クロス' : $pc{syndrome1} ? 'ピュア' : '');
-$SHEET->param(breed => isNoiseText(removeTags $breedPrefix) ? $breedPrefix : $breedPrefix ? "$breedPrefix<span class=\"shorten\">ブリード</span>" : '');
+my $breedPrefix = (
+  $pc{breed} ? $pc{breed}
+  : $pc{syndrome3} ? 'トライ'
+  : $pc{syndrome2} ? 'クロス'
+  : $pc{syndrome1} ? 'ピュア'
+  : ''
+);
+$SHEET->param(breed =>
+  isNoiseText(removeTags $breedPrefix) ? $breedPrefix
+  : $breedPrefix ? "$breedPrefix<span class=\"shorten\">ブリード</span>"
+  : ''
+);
+
+$SHEET->param(renegadeIsVisible => ($mEnemy && !$breedPrefix) ? 0 : 1);
 
 ### 能力値 --------------------------------------------------
-$SHEET->param('sttWorks'.ucfirst($pc{sttWorks}) => 1);
-foreach my $name ('Body','Sense','Mind','Social') {
-  $SHEET->param('sttBaseBreakdown'.$name => $pc{syndrome2} ? "$pc{'sttSyn1'.$name}＋$pc{'sttSyn2'.$name}" : "$pc{'sttSyn1'.$name}×2");
-}
+## 回避値
+$SHEET->param(dodgeIsVisible => $mEnemy ? 1 : 0);
+
+## 侵蝕率
+$SHEET->param(encroachIsVisible => ($mEnemy && $pc{encroach} eq '') ? 0 : 1);
 
 ### 技能 --------------------------------------------------
 foreach my $name ('Melee','Ranged','RC','Negotiate','Dodge','Percept','Will','Procure'){
@@ -160,39 +175,45 @@ my @effects;
 my @simpleEffects;
 my @simpleDLoises;
 my @simpleELoises;
-foreach (1 .. $pc{effectNum}){
-  next if !existsRow "effect$_",'Name','Lv','Timing','Skill','Dfclty','Target','Range','Encroach','Restrict','Note','Exp';
-  my $type = $pc{'effect'.$_.'Type'};
+my @simplePerks;
+foreach my $n (1 .. $pc{effectNum}){
+  next if !existsRow "effect$n",'Name','Lv','Timing','Skill','Dfclty','Target','Range','Encroach','Restrict','Note','Exp';
+  my $type = $pc{"effect${n}Type"};
   push(@effects, {
     TYPE     => $type,
-    NAME     => shrinkText(13,15,17,21,$pc{'effect'.$_.'Name'}),
-    LV       => ($type =~ /^[de]lois$/ ? '―' : $pc{'effect'.$_.'Lv'}),
-    TIMING   => ($type eq 'dlois' ? '―' : renderTiming($pc{'effect'.$_.'Timing'})),
-    SKILL    => ($type eq 'dlois' ? '―' : renderSkill($pc{'effect'.$_.'Skill'})),
-    DFCLTY   => ($type eq 'dlois' ? '―' : shrinkText(3,4,4,4,$pc{'effect'.$_.'Dfclty'})),
-    TARGET   => ($type eq 'dlois' ? '―' : shrinkText(6,7,8,8,$pc{'effect'.$_.'Target'})),
-    RANGE    => ($type eq 'dlois' ? '―' : $pc{'effect'.$_.'Range'}),
-    ENCROACH => ($type =~ /^[de]lois$/ ? '―' : shrinkText(3,4,4,4,$pc{'effect'.$_.'Encroach'})),
-    RESTRICT => ($type eq 'dlois' ? '―' : $type eq 'elois' ? '衝動：' : '').$pc{'effect'.$_.'Restrict'},
-    NOTE     => $pc{'effect'.$_.'Note'},
+    NAME     => shrinkText(13,15,17,21,$pc{"effect${n}Name"}),
+    LV       => ($type =~ /^[de]lois$/ ? '―' : $pc{"effect${n}Lv"}),
+    TIMING   => ($type eq 'dlois' ? '―' : renderTiming($pc{"effect${n}Timing"})),
+    SKILL    => ($type eq 'dlois' ? '―' : renderSkill($pc{"effect${n}Skill"})),
+    DFCLTY   => ($type eq 'dlois' ? '―' : shrinkText(3,4,4,4,$pc{"effect${n}Dfclty"})),
+    TARGET   => ($type eq 'dlois' ? '―' : shrinkText(6,7,8,8,$pc{"effect${n}Target"})),
+    RANGE    => ($type eq 'dlois' ? '―' : $pc{"effect${n}Range"}),
+    ENCROACH => ($type =~ /^([de]lois|perk)$/ ? '―' : shrinkText(3,4,4,4,$pc{"effect${n}Encroach"})),
+    RESTRICT => ($type =~ /^(dlois|perk)$/ ? '―' : $type eq 'elois' ? '衝動：' : '').$pc{"effect${n}Restrict"},
+    NOTE     => $pc{"effect${n}Note"},
   });
   if($type eq 'dlois'){
-    unless(isBracketed($pc{'effect'.$_.'Name'})){ $pc{'effect'.$_.'Name'} = "「$pc{'effect'.$_.'Name'}」"; }
-    push(@simpleDLoises, { NAME => $pc{'effect'.$_.'Name'} });
+    unless(isBracketed($pc{"effect${n}Name"})){ $pc{"effect${n}Name"} = qq|「$pc{"effect${n}Name"}」|; }
+    push(@simpleDLoises, { NAME => $pc{"effect${n}Name"} });
   }
   elsif($type eq 'elois'){
-    unless(isBracketed($pc{'effect'.$_.'Name'})){ $pc{'effect'.$_.'Name'} = "「$pc{'effect'.$_.'Name'}」"; }
-    push(@simpleELoises, { NAME => $pc{'effect'.$_.'Name'} });
+    unless(isBracketed($pc{"effect${n}Name"})){ $pc{"effect${n}Name"} = qq|「$pc{"effect${n}Name"}」|; }
+    push(@simpleELoises, { NAME => $pc{"effect${n}Name"} });
+  }
+  elsif($type eq 'perk'){
+    unless(isBracketed($pc{"effect${n}Name"})){ $pc{"effect${n}Name"} = qq|《$pc{"effect${n}Name"}》|; }
+    push(@simplePerks, { NAME => $pc{"effect${n}Name"}, LV => $pc{"effect${n}Lv"} });
   }
   else {
-    unless(isBracketed($pc{'effect'.$_.'Name'})){ $pc{'effect'.$_.'Name'} = "《$pc{'effect'.$_.'Name'}》"; }
-    push(@simpleEffects, { NAME => $pc{'effect'.$_.'Name'}, LV => $pc{'effect'.$_.'Lv'} });
+    unless(isBracketed($pc{"effect${n}Name"})){ $pc{"effect${n}Name"} = qq|《$pc{"effect${n}Name"}》|; }
+    push(@simpleEffects, { NAME => $pc{"effect${n}Name"}, LV => $pc{"effect${n}Lv"} });
   }
 }
 $SHEET->param(Effects => \@effects);
 $SHEET->param(SimpleEffects => \@simpleEffects);
 $SHEET->param(SimpleDLoises => \@simpleDLoises);
 $SHEET->param(SimpleELoises => \@simpleELoises);
+$SHEET->param(SimplePerks => \@simplePerks);
 sub renderTiming {
   my $text = shift;
   $text =~ s#([^<])[／\/]#$1<hr class="dotted">#g;
@@ -299,63 +320,77 @@ sub textComboSkill {
   return $text;
 }
 
-### 武器 --------------------------------------------------
-my @weapons;
-foreach (1 .. $pc{weaponNum}){
-  next if !existsRow "weapon$_",'Name','Stock','Exp','Skill','Acc','Atk','Guard','Range','Note';
-  push(@weapons, {
-    NAME  => shrinkText(12,13,14,15,$pc{'weapon'.$_.'Name'}),
-    SKILL => renderSkill(shrinkText(4,5,6,7,formatSkillName($pc{'weapon'.$_.'Skill'}))),
-    ACC   => $pc{'weapon'.$_.'Acc'},
-    ATK   => $pc{'weapon'.$_.'Atk'},
-    GUARD => $pc{'weapon'.$_.'Guard'},
-    NOTE  => $pc{'weapon'.$_.'Note'},
-  });
+### 攻撃 --------------------------------------------------
+{
+  my @row;
+  my @fields = qw/Name Dice Mod Crit Fixed Atk Range Note/;
+  foreach my $n  (1 .. $pc{attackNum}){
+    next if !existsRow "attack$n", @fields;
+    my %print;
+    $print{uc $_} = $pc{"attack${n}$_"} for @fields;
+    push(@row, \%print);
+  }
+  $SHEET->param(Attacks => \@row);
 }
-$SHEET->param(Weapons => \@weapons);
+
+### 武器 --------------------------------------------------
+{
+  my @row;
+  my @fields = qw/Name Skill Acc Atk Guard Range Note/;
+  foreach my $n (1 .. $pc{weaponNum}){
+    next if !existsRow "weapon$n", @fields;
+    my %print;
+    $print{uc $_} = $pc{"weapon${n}$_"} for @fields;
+    $print{NAME}  = shrinkText(12,13,14,15,$print{NAME});
+    $print{SKILL} = renderSkill(shrinkText(4,5,6,7,formatSkillName($print{SKILL})));
+    push(@row, \%print);
+  }
+  $SHEET->param(Weapons => \@row);
+}
 
 ### 防具 --------------------------------------------------
-my @armors;
-foreach (1 .. $pc{armorNum}){
-  next if !existsRow "armor$_",'Name','Initiative','Dodge','Armor','Note';
-  push(@armors, {
-    NAME       => shrinkText(12,13,14,15,$pc{'armor'.$_.'Name'}),
-    INITIATIVE => $pc{'armor'.$_.'Initiative'},
-    DODGE      => $pc{'armor'.$_.'Dodge'},
-    ARMOR      => $pc{'armor'.$_.'Armor'},
-    NOTE       => $pc{'armor'.$_.'Note'},
-  });
+{
+  my @row;
+  my @fields = qw/Name Initiative Dodge Armor Note/;
+  foreach my $n (1 .. $pc{armorNum}){
+    next if !existsRow "armor$n", @fields;
+    my %print;
+    $print{uc $_} = $pc{"armor${n}$_"} for @fields;
+    $print{NAME}  = shrinkText(12,13,14,15,$print{NAME});
+    push(@row, \%print);
+  }
+  $SHEET->param(Armors => \@row);
 }
-$SHEET->param(Armors => \@armors);
 
 ### ヴィークル --------------------------------------------------
-my @vehicles;
-foreach (1 .. $pc{vehicleNum}){
-  next if !existsRow "vehicle$_",'Name','Skill','Atk','Initiative','Armor','Dash','Note';
-  push(@vehicles, {
-    NAME       => shrinkText(12,13,14,15,$pc{'vehicle'.$_.'Name'}),
-    SKILL      => renderSkill(shrinkText(4,5,6,7,formatSkillName($pc{'vehicle'.$_.'Skill'}))),
-    INITIATIVE => $pc{'vehicle'.$_.'Initiative'},
-    ATK        => $pc{'vehicle'.$_.'Atk'},
-    ARMOR      => $pc{'vehicle'.$_.'Armor'},
-    DASH       => $pc{'vehicle'.$_.'Dash'},
-    NOTE       => $pc{'vehicle'.$_.'Note'},
-  });
+{
+  my @row;
+  my @fields = qw/Name Skill Atk Initiative Armor Dash Note/;
+  foreach my $n (1 .. $pc{vehicleNum}){
+    next if !existsRow "vehicle$n", @fields;
+    my %print;
+    $print{uc $_} = $pc{"vehicle${n}$_"} for @fields;
+    $print{NAME}  = shrinkText(12,13,14,15,$print{NAME});
+    $print{SKILL} = renderSkill(shrinkText(4,5,6,7,formatSkillName($print{SKILL})));
+    push(@row, \%print);
+  }
+  $SHEET->param(Vehicles => \@row);
 }
-$SHEET->param(Vehicles => \@vehicles);
 
 ### アイテム --------------------------------------------------
-my @items;
-foreach (1 .. $pc{itemNum}){
-  next if !existsRow "item$_",'Name','Skill','Note';
-  push(@items, {
-    NAME  => shrinkText(12,13,14,15,$pc{'item'.$_.'Name'}),
-    TYPE  => shrinkText(5,6,7,8,$pc{'item'.$_.'Type'}),
-    SKILL => renderSkill(shrinkText(4,5,6,7,formatSkillName($pc{'item'.$_.'Skill'}))),
-    NOTE  => $pc{'item'.$_.'Note'},
-  });
+{
+  my @row;
+  my @fields = qw/Name Skill Note/;
+  foreach my $n (1 .. $pc{itemNum}){
+    next if !existsRow "item$n", @fields;
+    my %print;
+    $print{uc $_} = $pc{"item${n}$_"} for @fields;
+    $print{NAME}  = shrinkText(12,13,14,15,$print{NAME});
+    $print{SKILL} = renderSkill(shrinkText(4,5,6,7,formatSkillName($print{SKILL})));
+    push(@row, \%print);
+  }
+  $SHEET->param(Items => \@row);
 }
-$SHEET->param(Items => \@items);
 
 sub formatSkillName {
   if($_[0] && $_[0] !~ /^(?:―|解説参照)$/){
@@ -371,7 +406,7 @@ sub textType {
 }
 
 ### OGP --------------------------------------------------
-$SHEET->param(ogDescript => removeTags "シンドローム:$pc{syndrome1} $pc{syndrome2} $pc{syndrome3}");
+$SHEET->param(ogDescript => removeTags "種別:$pc{enemyType}　シンドローム:$pc{syndrome1} $pc{syndrome2} $pc{syndrome3}");
 
 ### メニュー --------------------------------------------------
 setSheetMenu();

@@ -66,7 +66,7 @@
     </form>
   </TMPL_UNLESS>
 
-  <main id="enemy">
+  <main id="enemy" <TMPL_IF isMEnemy>class="m-enemy"</TMPL_IF>>
     <TMPL_IF forbidden><aside class="information attention">
       閲覧が制限されているデータです。<br>
       <TMPL_IF yourAuthor>あなた以外には一部または全てのデータが伏せられます。(<a href="./?id=<TMPL_VAR id>&checkView=1">⇒確認</a>)</TMPL_IF>
@@ -121,7 +121,7 @@
           <dt>種別<dd><TMPL_VAR enemyType>
         </dl>
 
-        <div id="renegade" class="box-union">
+        <TMPL_IF renegadeIsVisible><div id="renegade" class="box-union">
           <dl class="box" id="breed">
             <dt>ブリード<dd><TMPL_VAR breed>
           </dl>
@@ -132,7 +132,7 @@
             <dt class="optional"><TMPL_IF syndrome3>オプショナル</TMPL_IF></dt>
             <dd><TMPL_VAR syndrome3></dd>
           </dl>
-        </div>
+        </div></TMPL_IF>
 
         <section class="box" id="status">
           <h2>能力値</h2>
@@ -197,15 +197,36 @@
             <dt>行動値
             <dd><b><TMPL_VAR initiativeTotal></b>
           </dl>
+          <TMPL_IF dodgeIsVisible><dl class="box" id="armor">
+            <dt>回避値
+            <dd><b><TMPL_VAR dodgeTotal></b>
+          </dl></TMPL_IF>
           <dl class="box" id="armor">
             <dt>装甲値
             <dd><b><TMPL_VAR armorTotal></b>
           </dl>
-          <dl class="box" id="encroach">
+          <TMPL_IF encroachIsVisible><dl class="box" id="encroach">
             <dt>侵蝕率
             <dd><TMPL_IF encroachTotal><b><TMPL_VAR encroachTotal><span class="small">%</span></b><TMPL_ELSE>―</TMPL_IF>
-          </dl>
+          </dl></TMPL_IF>
         </div>
+
+        <TMPL_IF Attacks><section class="box" id="attack">
+          <h2>攻撃</h2>
+          <table class="data-table">
+            <thead>
+              <tr><th class="name"><th class="dice">判定値<span class="fixed">（期待値）</span><th class="atk">攻撃力<th class="range">射程
+            </thead>
+            <tbody>
+              <TMPL_LOOP Attacks><tr>
+                <td class="name"><TMPL_VAR NAME>
+                <td><TMPL_VAR DICE>D+<TMPL_VAR MOD> (<TMPL_VAR FIXED>)
+                <td><TMPL_VAR ATK>
+                <td><TMPL_VAR RANGE>
+              </TMPL_LOOP>
+            </tbody>
+          </table>
+        </section></TMPL_IF>
       </div>
 
       <div class="box-union" id="items">
@@ -316,7 +337,7 @@
       <div id="area-battle">
         <TMPL_IF Effects>
           <section class="box effects" id="effect">
-          <h2>取得エフェクト<TMPL_IF SimpleELoises>／Eロイス</TMPL_IF></h2>
+          <h2>取得エフェクト<TMPL_IF SimplePerks>／エネミーパーク</TMPL_IF><TMPL_IF SimpleDLoises>／Dロイス</TMPL_IF><TMPL_IF SimpleELoises>／Eロイス</TMPL_IF></h2>
           <button class="open-button" onclick="switchEffectNoteFullOpen();" data-open="" data-text-open="効果を全展開" data-text-close="効果を折畳む"></button>
           <table class="data-table line-tbody">
             <thead>
@@ -353,16 +374,22 @@
           <p>
             <TMPL_LOOP SimpleEffects><TMPL_UNLESS __first__>、</TMPL_UNLESS><span><TMPL_VAR NAME><TMPL_VAR LV></span></TMPL_LOOP>
           </p>
+          <TMPL_IF SimplePerks>
+            <h3>パーク</h3>
+            <p>
+              <TMPL_LOOP SimplePerks><TMPL_UNLESS __first__>、</TMPL_UNLESS><span><TMPL_VAR NAME><TMPL_VAR LV></span></TMPL_LOOP>
+            </p>
+          </TMPL_IF>
           <TMPL_IF SimpleDLoises>
             <h3>Dロイス</h3>
             <p>
-              <TMPL_LOOP SimpleDLoises><TMPL_UNLESS __first__>、</TMPL_UNLESS><span><TMPL_VAR NAME><TMPL_VAR LV></span></TMPL_LOOP>
+              <TMPL_LOOP SimpleDLoises><TMPL_UNLESS __first__>、</TMPL_UNLESS><span><TMPL_VAR NAME></span></TMPL_LOOP>
             </p>
           </TMPL_IF>
           <TMPL_IF SimpleELoises>
             <h3>Eロイス</h3>
             <p>
-              <TMPL_LOOP SimpleELoises><TMPL_UNLESS __first__>、</TMPL_UNLESS><span><TMPL_VAR NAME><TMPL_VAR LV></span></TMPL_LOOP>
+              <TMPL_LOOP SimpleELoises><TMPL_UNLESS __first__>、</TMPL_UNLESS><span><TMPL_VAR NAME></span></TMPL_LOOP>
             </p>
           </TMPL_IF>
         </section></TMPL_IF>
@@ -407,7 +434,7 @@
         </script>
       </div>
 
-      <div id="enc-bonus" <TMPL_IF encroachFixed>class="encroach-fixed"</TMPL_IF>>
+      <TMPL_IF encroachIsVisible><div id="enc-bonus" <TMPL_IF encroachFixed>class="encroach-fixed"</TMPL_IF>>
         <details class="box">
           <summary>侵蝕率効果表</summary>
           <p>
@@ -474,7 +501,7 @@
           }
         }
       }
-      </script>
+      </script></TMPL_IF>
 
       <TMPL_IF freeNote><section class="box" id="free-note">
         <h2><TMPL_IF head_freeNote><TMPL_VAR head_freeNote><TMPL_ELSE>解説・戦闘プランなど</TMPL_IF></h2>
