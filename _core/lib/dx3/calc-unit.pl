@@ -8,15 +8,23 @@ sub dataCalc {
   if($pc{ver}){
     %pc = upgradeUnitData(\%pc);
   }
+
+  ### カンパニー --------------------------------------------------
+  $pc{companyExpUsed} = $pc{companyExp} + $pc{exteriorExp};
+  $pc{companySlotUsed} = 0;
+  foreach my $n (1 .. $pc{facilityNum}){
+    $pc{companyExpUsed}  += $pc{"facility${n}Exp"};
+    $pc{companySlotUsed} += $pc{"facility${n}Slot"}; 
+  }
   
-  #### 改行を<br>に変換 --------------------------------------------------
+  ### 改行を<br>に変換 --------------------------------------------------
   convertNewlinesToBrTag(\%pc,
     'freeNote', grep { /^(?:member|order)[0-9]+Note$/ } keys %pc,
   );
-  #### 保存処理でなければここまで --------------------------------------------------
+  ### 保存処理でなければここまで --------------------------------------------------
   return %pc unless $::mode_save;
 
-  #### エスケープ --------------------------------------------------
+  ### エスケープ --------------------------------------------------
   $pc{$_} = escapePcData($pc{$_}) foreach keys %pc;
   $pc{tags} = normalizeHashtags($pc{tags});
 
@@ -35,11 +43,12 @@ sub dataCalc {
     push @members, $name;
     push @leaders, $name if $pc{"member${num}Leader"};
   }
+  $NL{sheetSubType} = $pc{sheetSubType} if ($pc{sheetSubType} =~ /^(?:unit|company)$/);
   ### updatedLine --------------------------------------------------
   $::updatedLine = join('<>',
     $pc{id}, $::file, $pc{birthTime}, $::now,
     $NL{unitName}, $NL{playerName}, $pc{group},
-    " $pc{tags} ", $pc{hide}, $leaders[0],
+    " $pc{tags} ", ($pc{hide}?1:''), $pc{sheetSubType}, $leaders[0],
   ).'<>';
   return %pc;
 }

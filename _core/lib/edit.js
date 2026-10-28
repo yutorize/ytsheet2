@@ -1075,6 +1075,7 @@ function createRow(name, numNodeName, max = null, replaceText = 'TMPL'){
   row.id = idNumSet(name+'-row');
   row.innerHTML = row.innerHTML.replaceAll(replaceText, num);
   form[numNodeName].value = num;
+  form.dispatchEvent(new Event('change'));
   return row;
 }
 
@@ -1085,6 +1086,7 @@ function delRow(numNodeName, targetSelector, min = 0, initialText){
   if(!delRowNode(targetSelector,initialText)){ return false; }
   num--;
   form[numNodeName].value = num;
+  form.dispatchEvent(new Event('change'));
   return true;
 }
 function delRowNode(targetSelector, initialText){
@@ -1161,6 +1163,11 @@ function idNumSet (id,after){
   return id+num+after;
 }
 
+// 数値化（有効でないなら0） ----------------------------------------
+function toNumber(value) {
+  const num = Number(value);
+  return String(value).trim() !== '' && Number.isFinite(num) ? num : 0;
+}
 
 // 数値3桁区切り ----------------------------------------
 function commify(num) {

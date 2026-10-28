@@ -44,5 +44,63 @@
   }
 }
 
+#company-profile {
+  margin-bottom: var(--box-v-gap);
+  display: grid;
+  grid-template-columns: 3fr minmax(14em,2fr) minmax(8em, 1fr) minmax(8em, 1fr);
+  gap: var(--box-v-gap) var(--box-h-gap);
+}
+#company-size {
+  display: grid;
+  grid-template-columns: 1fr 5.2em;
+  > dt { grid-row: 1; }
+  > dd { grid-row: 2; }
+  > :last-of-type {
+    border-width: 0 0 0 1px;
+    border-style: dotted;
+  }
+}
+#company-saving {
+  > dt {
+    margin-right: -1em;
+    transform-origin: left top;
+    transform: scale(0.9);
+  }
+}
+#company-exterior {
+  margin-top: var(--box-v-gap);
+  .data-table {
+    margin-top: -1.5em;
+    table-layout: fixed;
+    > thead {
+      vertical-align: bottom;
+      .name { width: 12em; }
+      .save { width: 4em; }
+      .exp  { width: 4em; }
+
+      .left {
+        padding-left: .5em;
+      }
+    }
+  }
+}
+#company-facility {
+  margin-top: var(--box-v-gap);
+  .data-table {
+    margin-top: -1.5em;
+    table-layout: fixed;
+    > thead {
+      vertical-align: bottom;
+      .name { width: 16em; }
+      .exp  { width: 4em; }
+      .slot { width: 4em; }
+
+      .left {
+        padding-left: .5em;
+      }
+    }
+  }
+}
+
 /* ////////// LayerEnd ////////// */
 }

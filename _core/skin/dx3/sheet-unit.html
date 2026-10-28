@@ -90,25 +90,43 @@
         <TMPL_IF group><a id="group" href="./?group=<TMPL_VAR group>"><TMPL_VAR groupName></a></TMPL_IF>
         <TMPL_LOOP Tags><a class="tag" href="./?type=u&tag=<TMPL_VAR URL>"><TMPL_VAR TEXT></a></TMPL_LOOP>
       </div>
+
+      <TMPL_IF isCompany><div id="company-profile">
+        <dl class="box" id="company-form">
+          <dt>組織形態<dd><TMPL_VAR companyForm>
+        </dl>
+        <dl class="box" id="company-size">
+          <dt>規模<dd><TMPL_VAR companySize>
+          <dt>スロット<dd><TMPL_VAR companySlotUsed> / <TMPL_VAR companySlot>
+        </dl>
+        <dl class="box" id="company-saving">
+          <dt>取得財産ポイント<dd><TMPL_VAR exteriorSaving>
+        </dl>
+        <dl class="box" id="company-exp-used">
+          <dt>消費経験点合計<dd><TMPL_VAR companyExpUsed>
+        </dl>
+      </div></TMPL_IF>
+
       <section class="box" id="unit-members">
-        <h2>ユニットメンバー</h2>
+        <h2><TMPL_IF isUnit>ユニット</TMPL_IF><TMPL_IF isCompany>チーム</TMPL_IF>メンバー</h2>
         <table class="data-table line-tbody">
           <thead>
             <tr>
               <th class="name">名称
-              <th class="belong">所属
+              <TMPL_IF isUnit><th class="belong">所属</TMPL_IF>
               <th class="note left">備考
               <th class="leader"><span class="small">リーダー</span>
           <tbody>
             <TMPL_LOOP Members><tr>
               <td><TMPL_VAR NAME>
-              <td><TMPL_VAR BELONG>
-              <td><TMPL_VAR NOTE>
+              <TMPL_IF isUnit><td><TMPL_VAR BELONG></TMPL_IF>
+              <td class="left"><TMPL_VAR NOTE>
               <td><input type="checkbox" <TMPL_IF LEADER>checked</TMPL_IF>>
             </TMPL_LOOP>
         </table>
       </section>
-      <section class="box" id="unit-orders">
+
+      <TMPL_IF isUnit><section class="box" id="unit-orders">
         <h2>ユニットオーダー</h2>
         <table class="data-table line-tbody">
           <thead>
@@ -122,11 +140,48 @@
               <td><TMPL_VAR NAME>
               <td><TMPL_VAR ORGANIZATION>
               <td><TMPL_VAR TIMING>
-              <td><TMPL_VAR NOTE>
-              <td><TMPL_VAR REF>
+              <td class="left"><TMPL_VAR NOTE>
             </TMPL_LOOP>
         </table>
-      </section>
+      </section></TMPL_IF>
+  
+      <TMPL_IF isCompany><section class="box" id="company-exterior">
+        <h2>カンパニー外装</h2>
+        <table class="data-table line-tbody">
+          <thead>
+            <tr>
+              <th class="name">名称
+              <th class="save"><span class="small">取得財産<br>ポイント</span>
+              <th class="exp "><span class="small">消費<br>経験点</span>
+              <th class="note left">効果
+          <tbody>
+            <tr>
+              <td><TMPL_VAR exteriorName>
+              <td><TMPL_VAR exteriorSaving>
+              <td><TMPL_VAR exteriorExp>
+              <td class="left"><TMPL_VAR exteriorNote>
+        </table>
+      </section></TMPL_IF>
+  
+      <TMPL_IF isCompany><section class="box" id="company-facility">
+        <h2>カンパニー追加施設</h2>
+        <table class="data-table line-tbody">
+          <thead>
+            <tr>
+              <th class="name">名称
+              <th class="exp "><span class="small">消費<br>経験点</span>
+              <th class="slot"><span class="small">消費<br>スロット</span>
+              <th class="note left">効果
+          <tbody>
+            <TMPL_LOOP Facilities><tr>
+              <td><TMPL_VAR NAME>
+              <td><TMPL_VAR EXP>
+              <td><TMPL_VAR SLOT>
+              <td class="left"><TMPL_VAR NOTE>
+            </TMPL_LOOP>
+        </table>
+      </section></TMPL_IF>
+
       <TMPL_IF freeNote><section class="box" id="free-note">
         <h2><TMPL_IF head_freeNote><TMPL_VAR head_freeNote><TMPL_ELSE>メモ</TMPL_IF></h2>
         <p><TMPL_VAR freeNote></p>

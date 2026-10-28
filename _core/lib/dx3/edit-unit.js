@@ -4,6 +4,8 @@ const gameSystem = 'dx3';
 window.onload = function() {
   console.log('=====START=====');
   setName();
+  checkSheetType();
+  calcCompany();
   changeColor();
   deleteLoadingArea();
   console.log('=====LOADED=====');
@@ -23,26 +25,75 @@ function markUnitChanged(){
   form.dispatchEvent(new Event('change'));
 }
 
+// 送信前チェック ----------------------------------------
+function checkSheetType(){
+  const type = form.sheetSubType.value || '';
+  document.body.dataset.sheetSubType = type;
+}
+
 // メンバー ----------------------------------------
 function addMember(){
   document.getElementById('member-table').append(createRow('member','memberNum'));
-  markUnitChanged();
 }
 function delMember(){
-  if(delRow('memberNum', '#member-table tbody:last-of-type')){
-    markUnitChanged();
-  }
+  delRow('memberNum', '#member-table tbody:last-of-type');
 }
-setSortable('member','#member-table','tbody', null, markUnitChanged);
+setSortable('member','#member-table','tbody');
 
 // ユニットオーダー ----------------------------------------
 function addOrder(){
   document.getElementById('order-tbody').append(createRow('order','orderNum'));
-  markUnitChanged();
 }
 function delOrder(){
-  if(delRow('orderNum', '#order-tbody tr:last-of-type')){
-    markUnitChanged();
-  }
+  delRow('orderNum', '#order-tbody tr:last-of-type');
 }
-setSortable('order','#order-tbody','tr', null, markUnitChanged);
+setSortable('order','#order-tbody','tr');
+
+// ユニットオーダー ----------------------------------------
+function addFacility(){
+  document.getElementById('facility-tbody').append(createRow('facility','facilityNum'));
+}
+function delFacility(){
+  delRow('facilityNum', '#facility-tbody tr:last-of-type');
+}
+setSortable('facility','#facility-tbody','tr');
+
+// カンパニー ----------------------------------------
+let companySize2Exp = {
+  1:  0,
+  2:  2,
+  3:  4,
+  4:  6,
+  5: 10,
+  6: 15,
+}
+function calcCompany(){
+  const size = form.companySize.value;
+  let slotMax = 0;
+  let expUsed = 0;
+  if(Object.hasOwn(companySize2Exp, size)){
+    slotMax = Number(size);
+    form.companySlot.value = slotMax;
+    form.companySlot.readOnly = true;
+    expUsed = companySize2Exp[size]
+    form.companyExp.value = companySize2Exp[size];
+    form.companyExp.readOnly = true;
+  }
+  else {
+    slotMax = toNumber(form.companySlot.value);
+    form.companySlot.readOnly = false;
+    expUsed = toNumber(form.companyExp.value);
+    form.companyExp.readOnly = false;
+  }
+
+  expUsed += toNumber(form.exteriorExp.value);
+
+  let slotUsed = 0;
+  for (let num = 1; num <= Number(form.facilityNum.value); num++){
+    slotUsed += toNumber(form[`facility${num}Slot`].value);
+    expUsed  += toNumber(form[`facility${num}Exp`].value);
+  }
+
+  document.querySelector("#company-facility tfoot .exp").textContent = expUsed;
+  document.querySelector("#company-facility tfoot .slot").textContent = slotUsed+'/'+slotMax;
+}
