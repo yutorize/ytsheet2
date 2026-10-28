@@ -148,40 +148,42 @@
         </section>
       </div><!-- / COLUMN -->
 
-      <section class="box" id="members">
-        <h2>所属キャラクター</h2>
-        <table class="data-table line-tbody">
-          <thead>
-            <tr>
-              <th class="name  ">
-              <th class="cl    ">CL
-              <th class="race  ">種族
-              <th class="mclass"><span class="small">メインクラス</span>
-              <th class="sclass"><span class="small">サポートクラス</span>
-              <th class="player"><span class="small">プレイヤー名</span>
-              <th class="note left">備考
-          <tbody>
-            <TMPL_LOOP Members><tr>
-              <td class="name  "><TMPL_VAR NAME>
-              <td class="cl    "><TMPL_VAR CL>
-              <td class="race  "><TMPL_VAR RACE>
-              <td class="mclass"><TMPL_VAR MCLASS>
-              <td class="sclass"><TMPL_VAR SCLASS>
-              <td class="player"><TMPL_VAR PLAYER>
-              <td class="note small comment"><TMPL_VAR NOTE></td>
-            </TMPL_LOOP>
-        </table>
-      </section>
-
-      <div id="items-and-money">
-        <dl class="box" id="money">
-          <dt>ギルド管理金<dd><TMPL_VAR money> G
-        </dl>
-        <section class="box" id="items">
-          <h2><TMPL_IF head_items><TMPL_VAR head_items><TMPL_ELSE>ギルド管理アイテム</TMPL_IF></h2>
-          <p><TMPL_VAR items></p>
+      <div class="column column-right"><!-- COLUMN -->
+        <section class="box" id="members">
+          <h2>所属キャラクター</h2>
+          <table class="data-table line-tbody">
+            <thead>
+              <tr>
+                <th class="name  ">
+                <th class="cl    ">CL
+                <th class="race  ">種族
+                <th class="mclass"><span class="small">メインクラス</span>
+                <th class="sclass"><span class="small">サポートクラス</span>
+                <th class="player"><span class="small">プレイヤー名</span>
+                <th class="note left">備考
+            <tbody>
+              <TMPL_LOOP Members><tr>
+                <td class="name  "><TMPL_VAR NAME>
+                <td class="cl    "><TMPL_VAR CL>
+                <td class="race  "><TMPL_VAR RACE>
+                <td class="mclass"><TMPL_VAR MCLASS>
+                <td class="sclass"><TMPL_VAR SCLASS>
+                <td class="player"><TMPL_VAR PLAYER>
+                <td class="note small comment"><TMPL_VAR NOTE></td>
+              </TMPL_LOOP>
+          </table>
         </section>
-      </div>
+
+        <div id="items-and-money">
+          <dl class="box" id="money">
+            <dt>ギルド管理金<dd><TMPL_VAR money> G
+          </dl>
+          <section class="box" id="items">
+            <h2><TMPL_IF head_items><TMPL_VAR head_items><TMPL_ELSE>ギルド管理アイテム</TMPL_IF></h2>
+            <p><TMPL_VAR items></p>
+          </section>
+        </div>
+      </div><!-- / COLUMN -->
 
       <section class="box" id="free-note">
         <h2>ギルドの経歴・メモ</h2>

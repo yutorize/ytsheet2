@@ -15,9 +15,6 @@
     #members {
       margin-top: 0;
     }
-    #items-and-money {
-      grid-column: 2;
-    }
   }
 }
 
@@ -117,39 +114,11 @@ dl#level {
   }
   @media screen and (width <= 767px){
     & table {
-      display: block;
       margin-top: 0em;
       font-size: 90%;
-      & :is(thead,tbody){
-        display: block;
-        > tr {
-          display: grid;
-          grid-template-columns: 1fr 5em 7.5em;
-        }
-      }
-      > thead {
-        .note { display: none; }
-      }
       > tbody {
-        > tr {
-          border-bottom: 0;
-        }
-        & td {
-          border-right: 0;
-        }
-        .name {
-          grid-row: span 2;
-          align-content: center;
-          border-left: 0;
-        }
         .note {
-          grid-column: span 2;
           font-size: 85%;
-          border-top-width: 1px;
-          border-top-style: solid;
-          &:empty {
-            display: none;
-          }
         }
       }
     }
@@ -162,21 +131,30 @@ dl#level {
   & .data-table {
     margin-top: -1.5em;
     > thead {
-      .gl     { width: 2.6em; }
-      .name   { width: 20%; min-width: 11.5em; }
-      .lv     { width: 2.6em; }
-      .timing { width: 8em; min-width: 7em; }
-      .stack  { width: 2.6em; }
+      .gl     { width: 1.6em; }
+      .name   { width: 8.5em; }
+      .timing { width: 6.5em; }
+      .lv     { width: 2.5em; }
+      .stack  { width: 2.5em; }
       .used   { width: 2.5em; }
       .select { width: 2.5em; }
       & th {
         vertical-align: bottom;
       }
+      & th.lv {
+        line-height: 1;
+        > span {
+          display: block;
+          margin: 0 -1em;
+          transform: scaleX(0.9);
+          font-size: inherit;
+        }
+      }
       & th.used {
         line-height: 1;
         > span {
           display: block;
-          margin: -10% -20%;
+          margin: -10% -1em;
           transform: scale(0.8);
         }
       }
@@ -185,6 +163,9 @@ dl#level {
       }
     }
     > tbody {
+      .note {
+        font-size: 90%;
+      }
       td:has(input){ line-height: 1; }
       input {
         pointer-events: none;
@@ -194,7 +175,28 @@ dl#level {
   }
   @media screen and (width <= 767px){
     & .data-table {
-      margin-top: -.5em;
+      > thead {
+        .gl     { width: 1.6em; }
+        .name   { width: 8.5em; }
+        .timing { width: 6.5em; }
+        .lv     { width: 2em; }
+        .stack  { width: 2em; }
+        .used   { width: 2em; }
+        .select { width: 2em; }
+        .lv .small {
+          display: block;
+          margin: 0 -1em;
+          font-size: inherit;
+          transform: scaleX(0.6)
+        }
+        .used .small {
+          text-align: right;
+          margin-left: -2em;
+          margin-right: 1px;
+          transform: scale(0.7, 0.8);
+          transform-origin: right;
+        }
+      }
       > tbody {
         .note { font-size: 85%; }
       }
@@ -209,16 +211,8 @@ dl#level {
   grid-template-columns: 1fr 1fr 2fr;
   margin-top: var(--box-v-gap);
 }
-#weight {
-  border-right-width: 0;
-  border-bottom-width: 0;
-  border-top-right-radius: 0;
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
-}
 #money {
   border-bottom-width: 0;
-  border-top-left-radius: 0;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
 }

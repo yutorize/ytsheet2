@@ -341,7 +341,7 @@ print <<"HTML";
             <th>
             <th class="date  ">日付
             <th class="title ">タイトル
-            <th class="exp">カウント
+            <th class="exp"   >成長点
             <th class="gm    ">GM
             <th class="member">参加者
         <tbody>
@@ -356,7 +356,7 @@ print <<"HTML";
         </tbody>
       </table>
       <ul class="annotate">
-        <li>カウント欄は<code>1+2*2</code>など四則演算が有効です。<br>
+        <li>成長点欄は<code>1+2*2</code>など四則演算が有効です。<br>
       </ul>
       @{[ ($::in{log} || $::in{overwrite}) ? '<button type="button" class="set-newest" onclick="setNewestHistoryData()">最新のセッション履歴を適用する</button>' : '' ]}
     </div>

@@ -10,7 +10,7 @@ require $set::data_class;
 ### データ／テンプレート読込 #########################################################################
 (my $pcRef, my $SHEET) = setupViewBase(
   nameKeys          => [qw/guildName/],
-  unescapeLinesKeys => [qw/freeNote freeHistory/],
+  unescapeLinesKeys => [qw/freeNote freeHistory items cashbook/],
   unescapeSkipRe    => qr/^image|URL$/,
   convertViewMap    => [qw/freeNote freeHistory/],
   groups            => \@set::groups_guild,
@@ -62,6 +62,7 @@ sub maskPcData {
     $pc->{"guildSupport${n}Selected"}  = '';
   }
 
+  $pc->{moneyAuto} = 0;
   $pc->{money} = noiseText(1,3);
   $pc->{cashbook} = '';
 
@@ -122,6 +123,21 @@ sub maskPcData {
   $SHEET->param(AcademySupports => \@row);
 }
 
+
+### 収支履歴 --------------------------------------------------
+if($pc{moneyAuto}){
+  $SHEET->param(money => commify($pc{moneyTotal}));
+}
+$pc{cashbook} =~ s/(::)((?:[\+\-\*\/]?[0-9,]+)+)/$1.cashCheck($2)/eg;
+$SHEET->param(cashbook => $pc{cashbook});
+
+sub cashCheck(){
+  my $text = shift;
+  my $num = s_eval($text);
+  if   ($num > 0) { return '<b class="cash plus">'.$text.'</b>'; }
+  elsif($num < 0) { return '<b class="cash minus">'.$text.'</b>'; }
+  else { return '<b class="cash">'.$text.'</b>'; }
+}
 ### 履歴 --------------------------------------------------
 {
   my @row;
@@ -157,7 +173,7 @@ sub maskPcData {
 }
 
 ### OGP --------------------------------------------------
-$SHEET->param(ogDescript => removeTags "レベル:$pc{level}　爵位:$pc{peerage}　ロード:$pc{lordName}");
+$SHEET->param(ogDescript => removeTags "ギルドレベル:$pc{level}　ギルドマスター:$pc{masterName}");
 
 ### メニュー --------------------------------------------------
 setSheetMenu();

@@ -40,6 +40,47 @@
   ;
   @media screen and (width <= 735px){
     grid-template-columns: 0.5fr 0.5fr 1.4fr 6em;
+    grid-template-areas:
+      "TYP TYP .   SUB"
+      "REN REN REN SUB"
+      "STT STT STT SUB"
+    ;
+  }
+  main.m-enemy & {
+    grid-template-columns: 0.5fr 0.5fr 1.4fr 8em;
+    grid-template-rows: max-content max-content max-content auto;
+    grid-template-areas:
+      "TYP TYP .   SUB"
+      ".   REN REN SUB"
+      "STT STT STT SUB"
+      "ATK ATK ATK SUB"
+    ;
+    @media screen and (width <= 735px){
+      grid-template-columns: 0.5fr 0.5fr 1.4fr 6em;
+      grid-template-areas:
+        "TYP TYP .   SUB"
+        "REN REN REN SUB"
+        "STT STT STT SUB"
+        "ATK ATK ATK SUB"
+      ;
+    }
+  }
+  main:not(.m-enemy) &:has(#attack) {
+    grid-template-columns: 0.5fr 0.5fr 1.4fr 8em;
+    grid-template-rows: max-content max-content auto;
+    grid-template-areas:
+      "TYP REN REN SUB"
+      "STT STT STT SUB"
+      "ATK ATK ATK SUB"
+    ;
+    @media screen and (width <= 735px){
+      grid-template-columns: 0.5fr 0.5fr 1.4fr 6em;
+      grid-template-areas:
+        "TYP REN REN SUB"
+        "STT STT STT SUB"
+        "ATK ATK ATK SUB"
+      ;
+    }
   }
 
   #image      { grid-area: IMG; }
@@ -47,6 +88,7 @@
   #renegade   { grid-area: REN; }
   #sub-status { grid-area: SUB; }
   #status     { grid-area: STT; }
+  #attack     { grid-area: ATK; }
 }
 
 #area-status dd:empty::before,
@@ -132,14 +174,11 @@
   }
 }
 @media screen and (width <= 735px){
-  #renegade {
-    display: block;
+  #breed {
+    flex-basis: 5em;
   }
-  #renegade dl:last-child {
-    border-width: 1px 0 0;
-  }
-  #breed dd span {
-    display: inline;
+  #breed dd span.shorten {
+    display: none;
   }
 }
 
@@ -184,65 +223,74 @@
 #status table {
   width: 100%;
   table-layout: fixed;
-}
-#status table thead {
-  border-width: 0 0 1px;
-  border-style: solid;
-  border-right: hidden;
-  & td {
-    width: 2.8em;
-    border-width: 1px;
+
+  > thead {
+    border-width: 0 0 1px;
     border-style: solid;
-    font-size: 130%;
-  }
-  > tr.breakdown {
-    display: none;
-    > th {
-      border-top-width: 1px;
-      border-top-style: solid;
-      font-weight: normal;
-      font-size: 90%;
+    border-right: hidden;
+    & td {
+      width: 2.8em;
+      border-width: 1px;
+      border-style: solid;
+      font-size: 130%;
     }
-    > td {
-      font-weight: normal;
-      font-size: 100%;
+    > tr.breakdown {
+      display: none;
+      > th {
+        border-top-width: 1px;
+        border-top-style: solid;
+        font-weight: normal;
+        font-size: 90%;
+      }
+      > td {
+        font-weight: normal;
+        font-size: 100%;
+      }
     }
   }
-}
-#status table tbody {
-  border-style: none hidden hidden;
-  font-family: var(--font-proportional);
-  font-feature-settings: "palt";
-  & td {
-    border-width: 1px 0px;
-    border-style: solid;
+  > tbody {
+    border-style: none hidden hidden;
+    font-family: var(--font-proportional);
+    font-feature-settings: "palt";
+    & td {
+      border-width: 1px 0px;
+      border-style: solid;
+    }
+    & td.left {
+      padding-left: .5em;
+    }
+    & td.right {
+      padding-right: .1rem;
+      border-right-width: 1px;
+      font-size: 120%;
+      white-space: nowrap;
+    }
+    & td.right span.small {
+      display: inline-block;
+      margin: 0 -.3em 0 -1em;
+      font-size: 70%;
+      transform: scaleX(0.8);
+    }
+    & td.right::after {
+      content: 'Lv';
+      margin-left: .1em;
+      font-size: 70%;
+    }
+    & td.left:empty + td.right:empty::after {
+      content: '';
+    }
+    & td.left:has(+ td.right:empty),
+    & td.right:empty {
+      color: #7777;
+    }
   }
-  & td.left {
-    padding-left: .5em;
-  }
-  & td.right {
-    padding-right: .1rem;
-    border-right-width: 1px;
-    font-size: 120%;
-    white-space: nowrap;
-  }
-  & td.right span.small {
-    display: inline-block;
-    margin: 0 -.3em 0 -1em;
-    font-size: 70%;
-    transform: scaleX(0.8);
-  }
-  & td.right::after {
-    content: 'Lv';
-    margin-left: .1em;
-    font-size: 70%;
-  }
-  & td.left:empty + td.right:empty::after {
-    content: '';
-  }
-  & td.left:has(+ td.right:empty),
-  & td.right:empty {
-    color: #7777;
+  &:not(:has(tbody td.right:not(:empty))){
+    > thead {
+      border-bottom-style: hidden;
+    }
+    > tbody {
+      display: none;
+    }
   }
 }
 @media screen and (width <= 735px){
@@ -264,28 +312,49 @@
   }
 }
 
+/* Attack */
+#attack {
+  width: max-content;
+  max-width: calc(100vw - 8em - var(--box-h-gap) - 6px);
+  .data-table {
+    width: auto;
+    max-width: 100%;
+    margin-top: -1.5em;
+    > thead {
+      white-space: nowrap;
+      .name  { width: auto; min-width: 12em; }
+      .dice  { width: 8.5em; }
+      .atk   { width: 3.5em; }
+      .range { width: 5.5em; }
+      .fixed {
+        font-size: 80%;
+      }
+    }
+  }
+}
+
 /* Items */
 #items {
-}
-#items table {
-  border-width: 0 0 1px;
-  border-style: solid hidden !important;
-}
-#items .box:last-child table {
-  border-bottom-style: hidden !important;
-}
-#items table thead th {
-  vertical-align: bottom;
-
-  &:nth-child(1) { width:  12em; } /* 名称 */
-  &:nth-child(2) { width: 5.9em; } /* 技能 */
-  &:nth-child(3) { width: 3.4em; } /* 命中  ／ドッジ */
-  &:nth-child(4) { width: 3.4em; } /* 攻撃力／行動 */
-  &:nth-child(5) { width: 3.4em; } /* ガード値／装甲値 */
-  &:nth-child(6) { width: 3.4em; } /* 全力移動 */
-  &:last-child   { width: auto; text-align: left; padding-left: 1em; } /* 解説 */
-}
-@media screen and (width <= 735px){
+  margin-top: var(--box-v-gap);
+  .data-table {
+    border-width: 0 0 1px;
+    border-style: solid hidden !important;
+    .box:last-child & {
+      border-bottom-style: hidden !important;
+    }
+    > thead th {
+      vertical-align: bottom;
+      &:nth-child(1) { width:  12em; } /* 名称 */
+      &:nth-child(2) { width: 5.9em; } /* 技能 */
+      &:nth-child(3) { width: 3.4em; } /* 命中  ／ドッジ */
+      &:nth-child(4) { width: 3.4em; } /* 攻撃力／行動 */
+      &:nth-child(5) { width: 3.4em; } /* ガード値／装甲値 */
+      &:nth-child(6) { width: 3.4em; } /* 全力移動 */
+      &:last-child   { width: auto; text-align: left; padding-left: 1em; } /* 解説 */
+    }
+  }
+  @media screen and (width <= 735px){
+  }
 }
 
 /* // Area-Battle
@@ -463,6 +532,17 @@
     content: 'ロイス';
     white-space: nowrap;
     transform: translateY(-.3em);
+  }
+}
+.ef-perk {
+  display: block;
+  font-style: normal;
+  font-weight: bold;
+  line-height: 1;
+  color: hsl(180,25%,40%);
+  white-space: nowrap;
+  &::before {
+    content: 'EP';
   }
 }
 .ef-other::before {
@@ -1052,8 +1132,9 @@
       }
     }
     #syndrome {
-      display: inline-flex;
-      gap: 0;
+      display: inline-block;
+      margin-right: auto;
+      text-align-last: right;
       border-width: 0;
       > dd ~ dd:not(:empty)::before {
         content: "／";
@@ -1088,6 +1169,28 @@
       }
       > dd b {
         transform: none;
+      }
+    }
+  }
+  #attack {
+    width: auto;
+    .data-table {
+      width: 100%;
+      table-layout: auto;
+      > thead {
+        th {
+          width: auto;
+          padding: 0 2px;
+        }
+        .fixed { display:none; }
+      }
+      > tbody {
+        td {
+          border-style: hidden;
+        }
+        .name {
+          text-align: left;
+        }
       }
     }
   }
