@@ -98,6 +98,7 @@ sub maskPcData {
       $pc->{'combo'.$_.'Fixed'.$i} = '';
     }
   }
+  $pc->{attackNum} =
   $pc->{weaponNum} =
   $pc->{armorNum} =
   $pc->{vehicleNum} =
@@ -113,8 +114,8 @@ if($::in{simple}){ $SHEET->param(simpleMode => 1); }
 if($pc{stage} =~ /クロウリングケイオス/){ $SHEET->param(ccOn => 1); }
 
 ### 種別 --------------------------------------------------
-my $mEnemy = ($pc{enemyType} =~ /^[MＭ]エネミー/) ? 1 : 0;
-$SHEET->param(isMEnemy => $mEnemy ? 1 : 0);
+my $isMEnemy = ($pc{enemyType} =~ /^[MＭ]エネミー/) ? 1 : 0;
+$SHEET->param(isMEnemy => $isMEnemy ? 1 : 0);
 
 ### ブリード --------------------------------------------------
 my $breedPrefix = (
@@ -130,14 +131,14 @@ $SHEET->param(breed =>
   : ''
 );
 
-$SHEET->param(renegadeIsVisible => ($mEnemy && !$breedPrefix) ? 0 : 1);
+$SHEET->param(renegadeIsVisible => ($isMEnemy && !$breedPrefix) ? 0 : 1);
 
 ### 能力値 --------------------------------------------------
 ## 回避値
-$SHEET->param(dodgeIsVisible => $mEnemy ? 1 : 0);
+$SHEET->param(dodgeIsVisible => $isMEnemy ? 1 : 0);
 
 ## 侵蝕率
-$SHEET->param(encroachIsVisible => ($mEnemy && $pc{encroach} eq '') ? 0 : 1);
+$SHEET->param(encroachIsVisible => ($isMEnemy && $pc{encroach} eq '') ? 0 : 1);
 
 ### 技能 --------------------------------------------------
 foreach my $name ('Melee','Ranged','RC','Negotiate','Dodge','Percept','Will','Procure'){
@@ -321,7 +322,7 @@ sub textComboSkill {
 }
 
 ### 攻撃 --------------------------------------------------
-{
+if($isMEnemy){
   my @row;
   my @fields = qw/Name Dice Mod Crit Fixed Atk Range Note/;
   foreach my $n  (1 .. $pc{attackNum}){

@@ -315,7 +315,7 @@ print <<"HTML";
       </div>
     </div>
 
-    <details class="box" id="attack" $open{attack}>
+    <details class="box crc-only" id="attack" $open{attack}>
       <summary class="in-toc">攻撃</summary>
       <table class="edit-table no-border-cells" id="attack-table">
         <colgroup>
