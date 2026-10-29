@@ -623,6 +623,9 @@ table.data-table {
       padding: .3rem 0 .2rem;
       border-width: 0;
       line-height: 1;
+      > .small {
+        display: inline-block;
+      }
     }
     > tbody th,
     > tbody td {

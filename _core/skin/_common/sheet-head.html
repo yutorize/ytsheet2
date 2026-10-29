@@ -2,13 +2,13 @@
   <title><TMPL_VAR titleName> - <TMPL_VAR title></title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <TMPL_UNLESS modeDownload>
-    <link rel="canonical" href="<TMPL_VAR canonicalURL>">
-    <meta property="og:title" content="<TMPL_VAR titleName> - <TMPL_VAR title>">
+    <link rel="canonical" href="<TMPL_VAR canonicalURL ESCAPE=HTML>">
+    <meta property="og:title" content="<TMPL_VAR ogTitleName ESCAPE=HTML> - <TMPL_VAR title ESCAPE=HTML>">
     <meta property="og:type" content="article">
-    <meta property="og:url" content="<TMPL_VAR ogUrl>">
-    <meta property="og:site_name" content="<TMPL_VAR title>">
-    <meta property="og:description" content="<TMPL_VAR ogDescript>">
-    <TMPL_IF imageOgpURL><meta property="og:image" content="<TMPL_VAR imageOgpURL>"></TMPL_IF>
+    <meta property="og:url" content="<TMPL_VAR ogUrl ESCAPE=HTML>">
+    <meta property="og:site_name" content="<TMPL_VAR title ESCAPE=HTML>">
+    <meta property="og:description" content="<TMPL_VAR ogDescript ESCAPE=HTML>">
+    <TMPL_IF imageOgpURL><meta property="og:image" content="<TMPL_VAR imageOgpURL ESCAPE=HTML>"></TMPL_IF>
     <meta name="twitter:card" content="summary">
     <meta name="twitter:site" content="@yutorize">
     <TMPL_IF noindex><meta name="robots" content="none"></TMPL_IF>

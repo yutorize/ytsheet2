@@ -109,6 +109,25 @@ sub checkbox {
   ($text?'<span>'.$text.'</span>':'').
   '</label>';
 }
+sub checkboxes {
+  my $name = shift;
+  my $oninput = shift;
+  if($oninput && $oninput !~ /\(.*?\);?$/){ $oninput .= '()'; }
+  my @data = split(/,/, $::pc{$name});
+  my $out;
+  foreach my $value (@_) {
+    my $view;
+    if($value =~ s/=>(.*?)$//){ $view = $1 } else { $view = $value }
+    $out .= '<label class="check-button">'.
+    '<input type="checkbox"'.
+    ' name="'.$name.'[]"'.
+    ' value="'.$value.'"'.
+    ((grep {$_ eq $value} @data)?" checked":"").
+    ($oninput?' oninput="'.$oninput.'"':"").
+    '><span>'.$view.'</span></label>';
+  }
+  return $out;
+}
 sub radio {
   my $name = shift;
   my $oninput = shift;

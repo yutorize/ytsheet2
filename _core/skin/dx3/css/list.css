@@ -8,6 +8,7 @@ header nav {
     .icon {
       .chara  &::before { mask-image: url(../img/icon-person.png); }
       .enemy  &::before { mask-image: url(../img/icon-enemy.png); }
+      .unit   &::before { mask-image: url(../img/icon-groups.png); }
     }
     .label {
       display: none;
@@ -18,6 +19,10 @@ main nav {
   & a {
     .chara &::before { mask-image: url(../img/icon-person.png); }
     .enemy &::before { mask-image: url(../img/icon-enemy.png); }
+    .unit  &::before { mask-image: url(../img/icon-groups.png); }
+  }
+  .thin {
+    white-space: nowrap;
   }
 }
 /* // List
@@ -106,7 +111,24 @@ main nav {
     grid-template-columns: 18rem 6em 4.6em 10em 1fr 4em;
   }
 }
-
+/* // List-Unit
+---------------------------------------------------------------------------------------------------- */
+.list.unit table tr {
+  grid-template-columns: 26rem 0.5fr 7em 2.1fr 5em;
+  grid-template-areas:
+    "NAME PL SUBTYPE LEADER DATE"
+    "NAME TAGS TAGS TAGS DATE";
+  &:has(.tags:empty){
+    grid-template-areas: "NAME PL SUBTYPE LEADER DATE";
+  }
+  .subtype { grid-area: SUBTYPE; }
+  .leader { grid-area: LEADER; }
+}
+@media screen and (width <= 735px){
+  .list.unit table tr {
+    grid-template-columns: 18rem 1fr 7em 2fr 7em;
+  }
+}
 /* // List-Simple
 ---------------------------------------------------------------------------------------------------- */
 .list ul li a::before {

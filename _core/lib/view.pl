@@ -105,6 +105,7 @@ sub setupViewBase {
       skipRe        => $ARGS{unescapeSkipRe},
       multilineKeys => $ARGS{unescapeLinesKeys},
       multilineRe   => $ARGS{unescapeLinesRe},
+      keepHeadings  => $ARGS{keepHeadings},
       forbiddenMode => $ARGS{forbiddenNoise},
     );
   }
@@ -213,7 +214,7 @@ sub normalizeViewTags {
 
     if($multiline{$key} || ($OPT{multilineRe} && $key =~ $OPT{multilineRe})){
       $pc->{$key} = unescapeTagsLines($pc->{$key});
-      $pc->{$key} =~ s{^(?:</p>)?<h2>(.*?)</h2>}{$pc->{"head_$key"} = $1; ''}e;
+      $pc->{$key} =~ s{^(?:</p>)?<h2>(.*?)</h2>}{$pc->{"head_$key"} = $1; ''}e unless $OPT{keepHeadings};
     }
     $pc->{$key} = unescapeTags($pc->{$key});
 
@@ -499,6 +500,11 @@ sub setupViewTemplate {
 sub printFinalizedView {
   $template->param(error => $main::login_error);
   $template->param(ver => $::ver);
+  # 表示用の文字参照を戻し、OGP属性ではテンプレート側でエスケープする。
+  $template->param(
+    ogTitleName => CGI::unescapeHTML($template->param('titleName') // ''),
+    ogDescript => CGI::unescapeHTML($template->param('ogDescript') // ''),
+  );
 
   print "Content-Type: text/html; charset=utf-8\n\n";
   if($::pc{modeDownload}){

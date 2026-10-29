@@ -268,8 +268,13 @@ function setName(){
   })
 
   function setRuby(name) {
-    if(vCheck(name+'Ruby')){ return `<ruby>${form[name].value}<rp>(</rp><rt>${form[name+'Ruby'].value}</rt><rp>)</rp></ruby>` }
-    else { return ruby(form[name].value) }
+    const text = escapeName(form[name].value);
+    if(vCheck(name+'Ruby')){ return `<ruby>${text}<rp>(</rp><rt>${escapeName(form[name+'Ruby'].value)}</rt><rp>)</rp></ruby>` }
+    else { return ruby(text) }
+  }
+  function escapeName(text) {
+    return text.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;').replaceAll("'", '&#39;');
   }
   function vCheck(id){
     if(form[id]){ return form[id].value; }
@@ -1070,6 +1075,7 @@ function createRow(name, numNodeName, max = null, replaceText = 'TMPL'){
   row.id = idNumSet(name+'-row');
   row.innerHTML = row.innerHTML.replaceAll(replaceText, num);
   form[numNodeName].value = num;
+  form.dispatchEvent(new Event('change'));
   return row;
 }
 
@@ -1080,6 +1086,7 @@ function delRow(numNodeName, targetSelector, min = 0, initialText){
   if(!delRowNode(targetSelector,initialText)){ return false; }
   num--;
   form[numNodeName].value = num;
+  form.dispatchEvent(new Event('change'));
   return true;
 }
 function delRowNode(targetSelector, initialText){
@@ -1126,6 +1133,7 @@ function setSortable(namePrefix, targetSelector, rowElement = '', addReplace, ne
         num++;
       }
       if(nextFunction){ nextFunction(); }
+      form.dispatchEvent(new Event('change'));
     }
   });
 }
@@ -1156,6 +1164,11 @@ function idNumSet (id,after){
   return id+num+after;
 }
 
+// 数値化（有効でないなら0） ----------------------------------------
+function toNumber(value) {
+  const num = Number(value);
+  return String(value).trim() !== '' && Number.isFinite(num) ? num : 0;
+}
 
 // 数値3桁区切り ----------------------------------------
 function commify(num) {

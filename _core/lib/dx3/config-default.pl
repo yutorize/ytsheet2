@@ -34,6 +34,16 @@ our $game = 'dx3';
   our $make_fix   = 0;
 
 
+## ●カンパニー規模
+  our %companySize = (
+    'パーソナル' => {slot => 1, exp =>  0},
+    'ごく小規模' => {slot => 2, exp =>  2},
+    '小規模'     => {slot => 3, exp =>  4},
+    '中規模'     => {slot => 4, exp =>  6},
+    '大規模'     => {slot => 5, exp => 10},
+    '超大規模'   => {slot => 6, exp => 15},
+  );
+
 ## ●各種ファイルへのパス
   our $data_dir = './data/'; # データ格納ディレクトリ
   our $passfile = $data_dir . 'charpass.cgi'; # パスワード記録ファイル
@@ -67,14 +77,27 @@ our $game = 'dx3';
       skin => $::core_dir . '/skin/dx3/sheet-enemy.html',
       sheetType => 'enemy',
     },
+    'u' => {
+      listFile => $data_dir . 'unitlist.cgi',
+      dataDir => $data_dir . 'unit/',
+      edit => $::core_dir . '/lib/dx3/edit-unit.pl',
+      calc => $::core_dir . '/lib/dx3/calc-unit.pl',
+      view => $::core_dir . '/lib/dx3/view-unit.pl',
+      list => $::core_dir . '/lib/dx3/list-unit.pl',
+      skin => $::core_dir . '/skin/dx3/sheet-unit.html',
+      sheetType => 'unit',
+    },
   );
 
-# シート初期値の変更
-our %customizedInitialValues = (
+## ●シート初期値の変更
+  our %customizedInitialValues = (
     '' => {
         # 例：「侵蝕率効果表」の「エフェクトアーカイブ適用」を初期状態で有効にする
         # 'encroachEaOn' => '1',
     },
-);
+    u => {
+        # 'unitName' => 'unnamed',
+    },
+  );
 
 1;
