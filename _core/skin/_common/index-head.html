@@ -1,18 +1,18 @@
   <meta charset="UTF-8">
   <title><TMPL_VAR pageTitle><TMPL_VAR title></title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="canonical" href="<TMPL_VAR canonicalURL DEFAULT=./>">
+  <link rel="canonical" href="<TMPL_VAR canonicalURL DEFAULT=./ ESCAPE=HTML>">
   <link rel="stylesheet" media="all" href="<TMPL_VAR coreDir>/skin/_common/css/base.css?<TMPL_VAR ver>">
   <link rel="stylesheet" media="all" href="<TMPL_VAR coreDir>/skin/_common/css/form.css?<TMPL_VAR ver>">
   <link rel="stylesheet" media="all" href="<TMPL_VAR coreDir>/skin/_common/css/list.css?<TMPL_VAR ver>">
   <link rel="stylesheet" media="all" href="<TMPL_VAR coreDir>/skin/<TMPL_VAR gameDir>/css/theme.css?<TMPL_VAR ver>">
   <link rel="stylesheet" media="all" href="<TMPL_VAR coreDir>/skin/<TMPL_VAR gameDir>/css/list.css?<TMPL_VAR ver>">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
-  <meta property="og:title" content="<TMPL_VAR title>">
+  <meta property="og:title" content="<TMPL_VAR title ESCAPE=HTML>">
   <meta property="og:type" content="article">
-  <meta property="og:url" content="<TMPL_VAR ogUrl>">
-  <meta property="og:site_name" content="<TMPL_VAR title>">
-  <meta property="og:description" content="<TMPL_VAR ogDescript>">
+  <meta property="og:url" content="<TMPL_VAR ogUrl ESCAPE=HTML>">
+  <meta property="og:site_name" content="<TMPL_VAR title ESCAPE=HTML>">
+  <meta property="og:description" content="<TMPL_VAR ogDescript ESCAPE=HTML>">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@yutorize">
   <TMPL_IF noindex><meta name="robots" content="none"></TMPL_IF>
