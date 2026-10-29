@@ -60,15 +60,16 @@ print <<"HTML";
     <div class="box" id="group">
       <dl>
         ${\ do {
-          if(@set::groups_guild) {
+          if(@set::groups_unit) {
             <<~"HTML";
               <dt>グループ
-              <dd><select name="group">@{[ renderGroupOptions(@set::groups_guild) ]}</select>
+              <dd><select name="group">@{[ renderGroupOptions(@set::groups_unit) ]}</select>
             HTML
           }
           else { "" }
         } }
-        <dd @{[ @set::groups_guild ? '' : 'style="grid-column:span 3;"' ]}>@{[ input 'tags' ]}
+        <dt>タグ
+        <dd @{[ @set::groups_unit ? '' : 'style="grid-column:span 3;"' ]}>@{[ input 'tags' ]}
       </dl>
     </div>
 
