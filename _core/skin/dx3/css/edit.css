@@ -1052,8 +1052,8 @@ body[data-sheet-type="enemy"] {
 
 /* // ユニット
 ---------------------------------------------------------------------------------------------------- */
-body:not([data-sheet-sub-type="unit"]   ) .unit-only    { display: none; }
-body:not([data-sheet-sub-type="company"]) .company-only { display: none; }
+body:not([data-sheet-sub-type="unit"]   ) .unit-only    { display: none !important; }
+body:not([data-sheet-sub-type="company"]) .company-only { display: none !important; }
 
 body[data-sheet-type="unit"] {
   #sheet-type {
@@ -1093,7 +1093,18 @@ body[data-sheet-type="unit"] {
     }
   }
   #member-table tbody + tbody { border-top: 1px solid var(--box-inside-border-color); }
-  
+
+  #unit-orders {
+    margin-top: var(--box-v-gap);
+    .edit-table {
+      > thead {
+        .name         { width: 24%; }
+        .organization { width: 6em; }
+        .timing       { width: 7em; }
+      }
+    }
+  }
+
   #company-profile {
     display: block;
     margin-top: var(--box-v-gap);

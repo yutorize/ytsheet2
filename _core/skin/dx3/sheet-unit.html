@@ -87,7 +87,7 @@
         </div>
       </div>
       <div id="tags">
-        <TMPL_IF group><a id="group" href="./?group=<TMPL_VAR group>"><TMPL_VAR groupName></a></TMPL_IF>
+        <TMPL_IF group><a id="group" href="./?type=u&group=<TMPL_VAR group>"><TMPL_VAR groupName></a></TMPL_IF>
         <TMPL_LOOP Tags><a class="tag" href="./?type=u&tag=<TMPL_VAR URL>"><TMPL_VAR TEXT></a></TMPL_LOOP>
       </div>
 
@@ -107,7 +107,7 @@
         </dl>
       </div></TMPL_IF>
 
-      <section class="box" id="unit-members">
+      <section class="box" id="members">
         <h2><TMPL_IF isUnit>ユニット</TMPL_IF><TMPL_IF isCompany>チーム</TMPL_IF>メンバー</h2>
         <table class="data-table line-tbody">
           <thead>
@@ -117,11 +117,11 @@
               <th class="note left">備考
               <th class="leader"><span class="small">リーダー</span>
           <tbody>
-            <TMPL_LOOP Members><tr>
+            <TMPL_LOOP Members><tr<TMPL_IF LEFT> class="has-left"</TMPL_IF>>
               <td><TMPL_VAR NAME>
               <TMPL_IF isUnit><td><TMPL_VAR BELONG></TMPL_IF>
               <td class="left"><TMPL_VAR NOTE>
-              <td><input type="checkbox" <TMPL_IF LEADER>checked</TMPL_IF>>
+              <td><TMPL_IF LEADER><input type="checkbox" checked></TMPL_IF>
             </TMPL_LOOP>
         </table>
       </section>

@@ -114,6 +114,9 @@ print <<"HTML";
           }) ]}
       </table>
       @{[ renderAddDelButtons('member') ]}
+      <ul class="annotate">
+        <li>「離脱」にチェックを入れたメンバーは閲覧画面でグレーアウトします。
+      </ul>
     </div>
 
     <div class="box unit-only" id="unit-orders">

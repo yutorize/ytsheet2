@@ -4,8 +4,8 @@
 
 /* // Data
 ---------------------------------------------------------------------------------------------------- */
-#unit-members table,
-#unit-orders table {
+#members .data-table,
+#unit-orders .data-table {
   width: 100%;
   table-layout: fixed;
   > thead .left {
@@ -14,33 +14,41 @@
   }
 }
 
-#unit-members {
-  thead {
-    .name   { width: 26%; }
-    .belong { width: 5em; }
-    .leader { width: 2em; }
+#members {
+  .data-table {
+    > thead {
+      .name   { width: 26%; }
+      .belong { width: 5em; }
+      .leader { width: 2em; }
 
-    .note {
+      .note {
+      }
+      .leader > span {
+        margin-left: -2em;
+        white-space: nowrap;
+      }
     }
-    .leader > span {
-      margin-left: -2em;
-      white-space: nowrap;
-    }
-  }
-  tbody {
-    td:has(input[type="checkbox"]){ line-height: 1; }
-    input[type="checkbox"] {
-      pointer-events: none;
-      transform: scale(1.2);
+    > tbody {
+      td:has(input[type="checkbox"]){ line-height: 1; }
+      input[type="checkbox"] {
+        pointer-events: none;
+        transform: scale(1.2);
+      }
+      .has-left {
+        color: #8888;
+        a { opacity: 0.5; }
+      }
     }
   }
 }
 #unit-orders {
   margin-top: var(--box-v-gap);
-  thead {
-    .name         { width: 24%; }
-    .organization { width: 5em; }
-    .timing       { width: 8.4em; }
+  .data-table {
+    > thead {
+      .name         { width: 24%; }
+      .organization { width: 5em; }
+      .timing       { width: 8.4em; }
+    }
   }
 }
 
