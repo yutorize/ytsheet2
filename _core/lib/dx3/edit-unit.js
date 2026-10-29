@@ -18,6 +18,11 @@ function formCheck(){
     form.unitName.focus();
     return false;
   }
+  if(!form.sheetSubType.value){
+    alert('ユニットシートまたはカンパニーシートを選択してください。');
+    form.sheetSubType[0].focus();
+    return false;
+  }
   return formPasswordCheck();
 }
 

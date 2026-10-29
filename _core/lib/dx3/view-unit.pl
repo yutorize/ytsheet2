@@ -69,7 +69,7 @@ my @members;
 
     my $url = $pc{"member${n}URL"};
     if($print{NAME} && $url =~ m{^https?://}i){
-      $name =~ s{</?a\b[^>]*>}{}gi;
+      $print{NAME} =~ s{</?a\b[^>]*>}{}gi;
       $print{NAME} = qq|<a href="$url">$print{NAME}</a>|;
     }
     push @members, \%print;

@@ -111,18 +111,19 @@ main nav {
 /* // List-Unit
 ---------------------------------------------------------------------------------------------------- */
 .list.unit table tr {
-  grid-template-columns: 26rem 0.5fr 2.1fr 5em;
+  grid-template-columns: 26rem 0.5fr 7em 2.1fr 5em;
   grid-template-areas:
-    "NAME PL LEADER DATE"
-    "NAME TAGS TAGS DATE";
+    "NAME PL SUBTYPE LEADER DATE"
+    "NAME TAGS TAGS TAGS DATE";
   &:has(.tags:empty){
-    grid-template-areas: "NAME PL LEADER DATE";
+    grid-template-areas: "NAME PL SUBTYPE LEADER DATE";
   }
+  .subtype { grid-area: SUBTYPE; }
   .leader { grid-area: LEADER; }
 }
 @media screen and (width <= 735px){
   .list.unit table tr {
-    grid-template-columns: 18rem 1fr 1fr 2fr 7em;
+    grid-template-columns: 18rem 1fr 7em 2fr 7em;
   }
 }
 /* // List-Simple

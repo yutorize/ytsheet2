@@ -7,6 +7,7 @@ require $set::lib_list;
 
 ### クエリ ###########################################################################################
 my @queryKeys = qw/mode tag group name player subtype leader/;
+my %subtypeNames = (unit => 'ユニット', company => 'カンパニー');
 setFields({
   id      => 0,
   date    => 3,
@@ -29,6 +30,11 @@ my ($indexMode, $qLinks) = listQueryInfo(
   excludeFromQLinks => { group => 1 },
 );
 my %groups = setupGroupList();
+$INDEX->param(Subtypes => [makeSelectOptions(
+  values => [qw/unit company/],
+  selected => $::in{subtype},
+  nameOf => sub { $subtypeNames{$_[0]} },
+)]);
 
 ### ファイル読み込み #################################################################################
 my @lines = loadLines();
@@ -36,7 +42,8 @@ my @lines = loadLines();
 ### 検索フィルタ #####################################################################################
 @lines = filterGroup(@lines) if $::in{group} && $::in{group} ne 'all';
 @lines = filterTag(@lines) if $::in{tag};
-foreach my $key (qw/name player member leader/){
+@lines = filterExactRegex(lines => \@lines, key => 'subtype') if $::in{subtype};
+foreach my $key (qw/name player leader/){
   @lines = filterContainsRegex(lines => \@lines, key => $key, flags => 'i') if $::in{$key};
 }
 ### ソート --------------------------------------------------
@@ -73,7 +80,7 @@ foreach (@$pageLines){
     NAME   => renderCharacterName($pc{name}),
     PLAYER => $pc{player},
     GROUP  => $pc{group},
-    MEMBER => $pc{member},
+    SUBTYPE => $subtypeNames{$pc{subtype}},
     LEADER => $pc{leader},
     TAGS   => renderTagLinks($pc{tags}),
     DATE   => renderUpdateTime($pc{date}),
@@ -98,6 +105,7 @@ $INDEX->param(Lists => [ makeGroupedLists(
 
 ## 検索サマリー --------------------------------------------------
 setSearchSummary(
+  [ $subtypeNames{$::in{subtype}}, '種別「%s」' ],
   [ $::in{leader}, 'リーダー「%s」' ],
 );
 ### 出力 #############################################################################################

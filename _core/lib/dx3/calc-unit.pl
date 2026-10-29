@@ -34,13 +34,11 @@ sub dataCalc {
     $NL{$key} = removeTags removeRuby unescapeTags $pc{$key};
     $NL{$key} = substr($NL{$key}, 0, 108);
   }
-  my @members;
   my @leaders;
   foreach my $num (1 .. $pc{memberNum}){
     next unless $pc{"member${num}Name"};
     my $name = removeTags removeRuby unescapeTags $pc{"member${num}Name"};
     $name = substr($name, 0, 108).'..' if length($name) > 108;
-    push @members, $name;
     push @leaders, $name if $pc{"member${num}Leader"};
   }
   $NL{sheetSubType} = $pc{sheetSubType} if ($pc{sheetSubType} =~ /^(?:unit|company)$/);
