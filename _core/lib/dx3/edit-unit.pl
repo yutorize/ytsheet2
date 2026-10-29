@@ -108,7 +108,7 @@ print <<"HTML";
               <td class="url   ">@{[ input "member${num}URL",'url','','placeholder="https://..."' ]}
               <td class="belong unit-only">@{[ input "member${num}Belong",'','','list="list-unit-organization"' ]}
               <td class="note  ">@{[ input "member${num}Note" ]}
-              <td class="leader">@{[ input "member${num}Leader",'checkbox' ]}
+              <td class="leader">@{[ input "member${num}Leader",'checkbox','checkMemberLeader(this)' ]}
               <td class="m-left">@{[ input "member${num}Left",'checkbox' ]}
             ROW
           }) ]}
