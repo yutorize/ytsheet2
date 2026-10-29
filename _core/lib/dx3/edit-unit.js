@@ -33,12 +33,12 @@ function checkSheetType(){
 
 // メンバー ----------------------------------------
 function addMember(){
-  document.getElementById('member-table').append(createRow('member','memberNum'));
+  document.getElementById('member-tbody').append(createRow('member','memberNum'));
 }
 function delMember(){
-  delRow('memberNum', '#member-table tbody:last-of-type');
+  delRow('memberNum', '#member-tbody tr:last-of-type');
 }
-setSortable('member','#member-table','tbody');
+setSortable('member','#member-tbody','tr');
 
 // ユニットオーダー ----------------------------------------
 function addOrder(){
@@ -49,12 +49,14 @@ function delOrder(){
 }
 setSortable('order','#order-tbody','tr');
 
-// ユニットオーダー ----------------------------------------
+// 追加施設 ----------------------------------------
 function addFacility(){
   document.getElementById('facility-tbody').append(createRow('facility','facilityNum'));
 }
 function delFacility(){
-  delRow('facilityNum', '#facility-tbody tr:last-of-type');
+  if(delRow('facilityNum', '#facility-tbody tr:last-of-type')){
+    calcCompany();
+  }
 }
 setSortable('facility','#facility-tbody','tr');
 

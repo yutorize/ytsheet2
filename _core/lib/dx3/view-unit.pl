@@ -19,9 +19,40 @@ sub maskPcData {
   if($forbidden ne 'battle'){
     $pc->{unitName} = noiseText(6,14);
     $pc->{unitNameRuby} = $pc->{tags} = $pc->{freeNote} = '';
-    $pc->{memberNum} = 0;
+
+    $pc->{memberNum} = 5;
+    foreach my $n (1..$pc->{memberNum}){
+      $pc->{"member${n}Name"}   = noiseText(5,10);
+      $pc->{"member${n}Belong"} = noiseText(3);
+      $pc->{"member${n}Note"}   = noiseText(6,14);
+      $pc->{"member${n}Leader"} = 0;
+      $pc->{"member${n}Left"}   = 0;
+    }
   }
-  $pc->{orderNum} = 0;
+  $pc->{orderNum} = 6;
+  foreach my $n (1..$pc->{orderNum}){
+    $pc->{"order${n}Name"}   = noiseText(4,8);
+    $pc->{"order${n}Organization"} = noiseText(3);
+    $pc->{"order${n}Timing"} = noiseText(3,6);
+    $pc->{"order${n}Note"}   = noiseText(6,14);
+  }
+
+  $pc->{"companySize"} = noiseText(3,5);
+  $pc->{"companySlot"} = noiseText(1);
+  $pc->{"companySlotUsed"} = noiseText(1);
+  $pc->{"companyExp"}  = noiseText(1);
+  $pc->{"companyExpUsed"}  = noiseText(1);
+  $pc->{"exteriorName"}   = noiseText(3,8);
+  $pc->{"exteriorSaving"} = noiseText(1);
+  $pc->{"exteriorExp"}    = noiseText(1);
+  $pc->{"exteriorNote"}   = noiseText(6,20);
+  $pc->{facilityNum} = 6;
+  foreach my $n (1..$pc->{facilityNum}){
+    $pc->{"facility${n}Name"} = noiseText(4,10);
+    $pc->{"facility${n}Exp"}  = noiseText(1);
+    $pc->{"facility${n}Slot"} = noiseText(1);
+    $pc->{"facility${n}Note"} = noiseText(6,14);
+  }
 }
 
 ### 種別 --------------------------------------------------
@@ -30,7 +61,7 @@ $SHEET->param('is'.ucfirst($pc{sheetSubType}) => 1);
 ### メンバー --------------------------------------------------
 my @members;
 {
-  my @fields = qw/Name Belong Timing Note Leader Left/;
+  my @fields = qw/Name Belong Note Leader Left/;
   foreach my $n (1 .. $pc{memberNum}){
     next unless existsRow "member$n", @fields;
     my %print;
@@ -38,6 +69,7 @@ my @members;
 
     my $url = $pc{"member${n}URL"};
     if($print{NAME} && $url =~ m{^https?://}i){
+      $name =~ s{</?a\b[^>]*>}{}gi;
       $print{NAME} = qq|<a href="$url">$print{NAME}</a>|;
     }
     push @members, \%print;

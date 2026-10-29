@@ -1133,6 +1133,7 @@ function setSortable(namePrefix, targetSelector, rowElement = '', addReplace, ne
         num++;
       }
       if(nextFunction){ nextFunction(); }
+      form.dispatchEvent(new Event('change'));
     }
   });
 }

@@ -6,17 +6,17 @@ use HTML::Template;
 require $set::lib_list;
 
 ### クエリ ###########################################################################################
-my @queryKeys = qw/mode tag group name player member leader/;
+my @queryKeys = qw/mode tag group name player subtype leader/;
 setFields({
-  id     => 0,
-  date   => 3,
-  name   => 4,
-  player => 5,
-  group  => 6,
-  tags   => 7,
-  hide   => 8,
-  member => 9,
-  leader => 10,
+  id      => 0,
+  date    => 3,
+  name    => 4,
+  player  => 5,
+  group   => 6,
+  tags    => 7,
+  hide    => 8,
+  subtype => 9,
+  leader  => 10,
 });
 
 ### テンプレート読み込み #############################################################################

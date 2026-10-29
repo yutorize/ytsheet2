@@ -48,7 +48,7 @@ sub dataCalc {
   $::updatedLine = join('<>',
     $pc{id}, $::file, $pc{birthTime}, $::now,
     $NL{unitName}, $NL{playerName}, $pc{group},
-    " $pc{tags} ", ($pc{hide}?1:''), $pc{sheetSubType}, $leaders[0],
+    " $pc{tags} ", ($pc{hide}?1:''), $NL{sheetSubType}, $leaders[0],
   ).'<>';
   return %pc;
 }

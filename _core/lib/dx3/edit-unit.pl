@@ -80,7 +80,7 @@ print <<"HTML";
 
     <div class="box" id="members">
       <h2 class="in-toc" data-content-title="メンバー"><span class="unit-only">ユニット</span><span class="company-only">チーム</span>メンバー</h2>
-      <table class="edit-table no-border-cells" id="member-table">
+      <table class="edit-table no-border-cells">
         <thead id="member-head">
           <tr>
           <th class="row-handle">
@@ -90,7 +90,7 @@ print <<"HTML";
           <th class="note left">備考
           <th class="leader"><span class="thin">リーダー</span>
           <th class="m-left"><span class="thin">離脱</span>
-        <tbody>
+        <tbody id="member-tbody">
           @{[ renderTemplateLoop('member', sub ($num) {
             return <<~"ROW";
             <tr id="member-row$num">
