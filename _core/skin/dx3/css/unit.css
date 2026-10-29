@@ -1,0 +1,114 @@
+@charset "utf-8";
+
+@layer system {
+
+/* // Data
+---------------------------------------------------------------------------------------------------- */
+#members .data-table,
+#unit-orders .data-table {
+  width: 100%;
+  table-layout: fixed;
+  > thead .left {
+    padding-left: .5em;
+    text-align: left;
+  }
+}
+
+#members {
+  .data-table {
+    > thead {
+      .name   { width: 26%; }
+      .belong { width: 5em; }
+      .leader { width: 2em; }
+
+      .note {
+      }
+      .leader > span {
+        margin-left: -2em;
+        white-space: nowrap;
+      }
+    }
+    > tbody {
+      td:has(input[type="checkbox"]){ line-height: 1; }
+      input[type="checkbox"] {
+        pointer-events: none;
+        transform: scale(1.2);
+      }
+      .has-left {
+        color: #8888;
+        a { opacity: 0.5; }
+      }
+    }
+  }
+}
+#unit-orders {
+  margin-top: var(--box-v-gap);
+  .data-table {
+    > thead {
+      .name         { width: 24%; }
+      .organization { width: 5em; }
+      .timing       { width: 8.4em; }
+    }
+  }
+}
+
+#company-profile {
+  margin-bottom: var(--box-v-gap);
+  display: grid;
+  grid-template-columns: minmax(8.4em,1.5fr) 3fr minmax(10.4em,2fr) minmax(8em, 1fr) minmax(8em, 1fr);
+  gap: var(--box-v-gap) var(--box-h-gap);
+}
+#company-size {
+  display: grid;
+  grid-template-columns: 1fr 5.2em;
+  > dt { grid-row: 1; }
+  > dd { grid-row: 2; }
+  > :last-of-type {
+    border-width: 0 0 0 1px;
+    border-style: dotted;
+  }
+}
+#company-saving {
+  > dt {
+    margin-right: -1em;
+    transform-origin: left top;
+    transform: scale(0.9);
+  }
+}
+#company-exterior {
+  margin-top: var(--box-v-gap);
+  .data-table {
+    margin-top: -1.5em;
+    table-layout: fixed;
+    > thead {
+      vertical-align: bottom;
+      .name { width: 12em; }
+      .save { width: 4em; }
+      .exp  { width: 4em; }
+
+      .left {
+        padding-left: .5em;
+      }
+    }
+  }
+}
+#company-facility {
+  margin-top: var(--box-v-gap);
+  .data-table {
+    margin-top: -1.5em;
+    table-layout: fixed;
+    > thead {
+      vertical-align: bottom;
+      .name { width: 16em; }
+      .exp  { width: 4em; }
+      .slot { width: 4em; }
+
+      .left {
+        padding-left: .5em;
+      }
+    }
+  }
+}
+
+/* ////////// LayerEnd ////////// */
+}

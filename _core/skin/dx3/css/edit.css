@@ -1048,3 +1048,115 @@ body[data-sheet-type="enemy"] {
     display: grid;
   }
 }
+
+
+/* // ユニット
+---------------------------------------------------------------------------------------------------- */
+body:not([data-sheet-sub-type="unit"]   ) .unit-only    { display: none !important; }
+body:not([data-sheet-sub-type="company"]) .company-only { display: none !important; }
+
+body[data-sheet-type="unit"] {
+  #character-name {
+    dt.company-only { grid-column: 1; grid-row: 3; }
+    dd.company-only { grid-column: 1; grid-row: 4; }
+  }
+  #player-name { align-items: start; }
+  #sheet-type {
+    width: max-content;
+    margin: var(--box-v-gap) auto;
+    padding: .5em;
+    background-image: none;
+  }
+  #name-form dl {
+    > dt { display: block; }
+  }
+  .row-handle { width: 2rem; }
+  #members {
+    .edit-table {
+      table-layout: fixed;
+      > thead {
+        .name  { width: 12em; }
+        .url   { width: 6em; }
+        .belong{ width: 6em; }
+        .leader{ width: 2em; }
+        .m-left{ width: 2em; }
+
+        .left {
+          padding-left: .5em;
+        }
+        .leader .thin {
+          display: block;
+          margin-left: -2em;
+          transform-origin: right bottom;
+          transform: scale(0.8);
+          white-space: nowrap;
+        }
+        .m-left .thin {
+          font-size: 80%;
+        }
+      }
+    }
+  }
+  #member-table tbody + tbody { border-top: 1px solid var(--box-inside-border-color); }
+
+  #unit-orders {
+    margin-top: var(--box-v-gap);
+    .edit-table {
+      > thead {
+        .name         { width: 24%; }
+        .organization { width: 6em; }
+        .timing       { width: 7em; }
+      }
+    }
+  }
+
+  #company-profile {
+    display: block;
+    margin-top: var(--box-v-gap);
+    width: max-content;
+    .edit-table {
+      width: auto;
+      > thead {
+        vertical-align: bottom;
+        .form { width: 10em; }
+        .size { width: 7em; }
+        .exp  { width: 4em; }
+        .slot { width: 4em; }
+      }
+    }
+  }
+  #company-exterior {
+    margin-top: var(--box-v-gap);
+    .edit-table {
+      margin-top: -1.5em;
+      table-layout: fixed;
+      > thead {
+        vertical-align: bottom;
+        .name { width: 10em; }
+        .save { width: 4em; }
+        .exp  { width: 4em; }
+
+        .left {
+          padding-left: .5em;
+        }
+      }
+    }
+  }
+  #company-facility {
+    margin-top: var(--box-v-gap);
+    .edit-table {
+      margin-top: -1.5em;
+      table-layout: fixed;
+      > thead {
+        vertical-align: bottom;
+        .name { width: 14em; }
+        .exp  { width: 4em; }
+        .slot { width: 4em; }
+
+        .left {
+          padding-left: .5em;
+        }
+      }
+    }
+  }
+}

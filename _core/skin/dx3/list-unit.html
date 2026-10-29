@@ -1,0 +1,59 @@
+    <article>
+      <h1>ユニット一覧</h1>
+      <a class="search-button" onclick="toggleHide('form-search')"></a>
+      <form method="get" action="./" name="search" id="form-search" class="hide">
+        <h3>検索条件</h3>
+        <input type="hidden" name="type" value="u">
+        <TMPL_IF LOGIN_ID><label class="mylist"><input type="checkbox" name="mode" value="mylist" <TMPL_IF modeMylist>checked</TMPL_IF>>マイリスト内を検索</label></TMPL_IF>
+        <dl>
+          <dt>タグ<dd><input type="text" name="tag" value="<TMPL_VAR tagInput ESCAPE=HTML>">
+          <dt>グループ<dd><select name="group"><option value="all">すべて<TMPL_LOOP Groups><option value="<TMPL_VAR ID>" <TMPL_VAR SELECTED>><TMPL_VAR NAME></TMPL_LOOP></select>
+          <dt>ユニット名<dd><input type="text" name="name" value="<TMPL_VAR nameInput ESCAPE=HTML>">
+          <dt>プレイヤー名<dd><input type="text" name="player" value="<TMPL_VAR playerInput ESCAPE=HTML>">
+          <dt>種別<dd><select name="subtype"><option value="">すべて<TMPL_LOOP Subtypes><option value="<TMPL_VAR ID>" <TMPL_VAR SELECTED>><TMPL_VAR NAME></TMPL_LOOP></select>
+          <dt>リーダー<dd><input type="text" name="leader" value="<TMPL_VAR leaderInput ESCAPE=HTML>">
+        </dl>
+        <p class="right"><input type="submit" value="検索"></p>
+      </form>
+      <script src="<TMPL_VAR coreDir>/skin/_common/js/list.js?<TMPL_VAR ver>" defer></script>
+      <TMPL_IF searchSummary><dl class="search-summary"><dt>検索結果<dd><TMPL_VAR searchSummary></dl></TMPL_IF>
+      <TMPL_LOOP Lists>
+      <section class="list unit" id="group-<TMPL_VAR ID>">
+        <h2><TMPL_VAR NAME> <small><TMPL_VAR TEXT> (<TMPL_VAR NUM>)</small></h2>
+        <TMPL_VAR PAGER>
+        <TMPL_IF simpleList>
+        <ul>
+          <TMPL_LOOP Lines><li<TMPL_IF HIDE> class="hide"</TMPL_IF>>
+            <a href="./?id=<TMPL_VAR ID>"><TMPL_VAR NAME><small><TMPL_VAR PLAYER><TMPL_IF PLAYER>／</TMPL_IF><TMPL_VAR SUBTYPE></small></a>
+          </TMPL_LOOP>
+        </ul>
+        <TMPL_ELSE>
+        <table>
+          <thead><tr>
+            <th class="name"><a href="./?type=u&group=<TMPL_VAR ID><TMPL_VAR qLinks>&sort=name">ユニット名</a>
+            <th class="player"><a href="./?type=u&group=<TMPL_VAR ID><TMPL_VAR qLinks>&sort=pl">プレイヤー</a>
+            <th class="subtype"><span>種別</span>
+            <th class="leader"><span>リーダー</span>
+            <th class="date"><a href="./?type=u&group=<TMPL_VAR ID><TMPL_VAR qLinks>&sort=date">更新日時</a>
+          </thead>
+          <tbody>
+          <TMPL_LOOP Lines><tr<TMPL_IF HIDE> class="hide"</TMPL_IF>>
+            <td class="name"><a href="./?id=<TMPL_VAR ID>"><TMPL_VAR NAME></a>
+            <td class="player"><TMPL_VAR PLAYER>
+            <td class="subtype"><TMPL_VAR SUBTYPE>
+            <td class="leader"><TMPL_VAR LEADER>
+            <td class="tags"><TMPL_VAR TAGS></td>
+            <td class="date"><div><TMPL_VAR DATE></div>
+          </TMPL_LOOP>
+          </tbody>
+        </table>
+        </TMPL_IF>
+        <TMPL_VAR PAGER>
+        <TMPL_IF MORE><p class="more"><a href="./?type=u&group=<TMPL_VAR ID>">>>MORE</a></p></TMPL_IF>
+      </section>
+      </TMPL_LOOP>
+      <TMPL_IF simpleIndex><section class="list"><ul class="grouplist">
+        <TMPL_LOOP Groups><li><a href="./?type=u&group=<TMPL_VAR ID>"><TMPL_VAR NAME><small><TMPL_VAR TEXT></small></a></TMPL_LOOP>
+      </ul></section></TMPL_IF>
+    </article>
+    <div id="page-top-button"><a href="#"></a></div>
