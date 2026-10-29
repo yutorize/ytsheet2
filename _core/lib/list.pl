@@ -18,6 +18,11 @@ sub capField {
   return ($line =~ /^(?:[^<]*<>){$fields{$key}}([^<]*)/o)[0] // '';
 }
 
+# PL集計はソート用のcapFieldと/oのキャッシュを分ける。
+sub capPlayerField {
+  return ($_[0] =~ /^(?:[^<]*<>){$fields{player}}([^<]*)/o)[0] // '';
+}
+
 sub splitField {
   my @array = split '<>', $_[0];
   my %hash;
@@ -137,7 +142,13 @@ my $indexMode;
 sub listQueryInfo {
   my (%args) = @_;
   my @queryKeys = @{ $args{queryKeys} };
+  # ページ・ソート指定を判定に含めても、qLinksには追加しない。
+  my @indexQueryKeys = @{ $args{indexQueryKeys} || $args{queryKeys} };
   my %excludeFromQLinks = %{ $args{excludeFromQLinks} || {} };
+  my $forceAllGroups = exists $args{groupList} && !@{ $args{groupList} };
+  # 暗黙の「すべて」は検索条件に数えず、トップ表示とcanonical URLを保つ。
+  my $implicitAllGroup = $forceAllGroups && trim($::in{group} // '') eq '';
+  $::in{group} = 'all' if $forceAllGroups;
   
   my @canonicalQueries;
   foreach ('type','tag') {
@@ -150,6 +161,7 @@ sub listQueryInfo {
 
   my @qLinks;
   foreach my $key (@queryKeys) {
+    next if $key eq 'group' && $implicitAllGroup;
     $::in{$key} = trim($::in{$key});
     next if $::in{$key} eq '';
     $::in{$key} = decode('utf8', $::in{$key});
@@ -180,7 +192,8 @@ sub listQueryInfo {
     $template->param(modeMylist => 1);
   }
   else {
-    foreach my $key (@queryKeys) {
+    foreach my $key (@indexQueryKeys) {
+      next if $key eq 'group' && $implicitAllGroup;
       if($::in{$key}) {
         $indexMode = 0;
         last;
@@ -244,13 +257,35 @@ sub getMylist {
 
 ### グループ設定 --------------------------------------------------
 my %groups;
+my ($defaultGroup, $hasSpecificGroups);
 sub setupGroupList {
-  my @groups = @_ ? @_ : @set::groups;
+  # 空の配列参照は、共通グループを引き継がない指定として扱う。
+  $hasSpecificGroups = @_ ? 1 : 0;
+  my @groups = @_ ? @{ $_[0] } : @set::groups;
   %groups = groupArrayToHash(\@groups);
-  $groups{all}{name} = 'すべて' if $::in{group} eq 'all';
-  $template->param(Groups => groupArrayToList(\@groups));
-  $template->param(group => $groups{$::in{group}}{name});
+  $defaultGroup = $set::group_default;
+  if($hasSpecificGroups && !exists $groups{$defaultGroup // ''}){
+    $defaultGroup = @groups ? $groups[0][0] : 'all';
+  }
+  if($::in{group} eq 'all'){
+    $groups{all}{name} = 'すべて';
+    $groups{all}{sort} //= 0;
+    $groups{all}{text} //= '';
+  }
+  my $groupList = groupArrayToList(\@groups);
+  $template->param(Groups => $groupList);
+  $template->param(IndexGroups => @groups ? $groupList : [{ ID => 'all', NAME => 'すべて' }]);
+  # 通常一覧では旧URLの未設定IDも分類先として残し、ページ集計と表示を揃える。
+  $groups{$::in{group} // ''} //= {} unless $hasSpecificGroups;
+  my $selectedGroup = $groups{$::in{group} // ''};
+  $template->param(group => $selectedGroup ? $selectedGroup->{name} : undef);
   return %groups;
+}
+sub normalizeListGroup {
+  my $group = shift;
+  return 'all' if $::in{group} eq 'all';
+  return $group if defined $group && $group ne '' && exists $groups{$group};
+  return $defaultGroup;
 }
 sub groupArrayToHash {
   my @array = $_[0] ? @{$_[0]} : @set::groups;
@@ -282,6 +317,13 @@ sub groupArrayToList {
 ## グループ
 sub filterGroup {
   my @lines = @_;
+  # 専用設定では、保存済みの未分類・廃止済みIDも表示と同じ規則で補正する。
+  if($hasSpecificGroups){
+    return grep {
+      my ($group) = /^(?:[^<]*<>){$fields{group}}([^<]*)/;
+      normalizeListGroup($group) eq $::in{group};
+    } @lines;
+  }
   if($::in{group} eq $set::group_default){
     return grep { /^(?:[^<]*<>){$fields{group}}(\Q$::in{group}\E)?</o } @lines;
   }
@@ -648,7 +690,7 @@ sub setSearchSummary {
   }
   my @summary;
   if($::in{mode} eq 'mylist') { push(@summary, 'マイリスト') }
-  if($groups{$::in{group}}{name}){ push(@summary, $groups{$::in{group}}{name}) }
+  if(!$indexMode && $groups{$::in{group}}{name}){ push(@summary, $groups{$::in{group}}{name}) }
   foreach (
     [ $::in{tag},  'タグ「%s」' ],
     [ $::in{name}, ($args{nameHeader} || '名前').'に「%s」を含む' ],
