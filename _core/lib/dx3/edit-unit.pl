@@ -82,6 +82,7 @@ print <<"HTML";
         <dl id="character-name">
           <dt><span class="company-only">カンパニー</span><span class="unit-only">ユニット</span>名称<dd>@{[ input 'unitName','text','setName','id="main-name" required' ]}
           <dt class="ruby">ふりがな<dd>@{[ input 'unitNameRuby','text','setName' ]}
+          <dt class="company-only">略称<dd class="company-only">@{[ input 'nickName','text','setName' ]}
         </dl>
       </div>
       <dl id="player-name"><dt>プレイヤー名<dd>@{[ input 'playerName' ]}</dl>

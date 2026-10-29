@@ -55,7 +55,7 @@
 #company-profile {
   margin-bottom: var(--box-v-gap);
   display: grid;
-  grid-template-columns: 3fr minmax(14em,2fr) minmax(8em, 1fr) minmax(8em, 1fr);
+  grid-template-columns: minmax(8.4em,1.5fr) 3fr minmax(10.4em,2fr) minmax(8em, 1fr) minmax(8em, 1fr);
   gap: var(--box-v-gap) var(--box-h-gap);
 }
 #company-size {

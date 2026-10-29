@@ -43,13 +43,14 @@ function addMember(){
 function delMember(){
   delRow('memberNum', '#member-tbody tr:last-of-type');
 }
+setSortable('member','#member-tbody','tr');
+
 function checkMemberLeader(input){
   if(!input.checked){ return; }
   document.querySelectorAll('#member-tbody input[name$="Leader"]').forEach(checkbox => {
     if(checkbox !== input){ checkbox.checked = false; }
   });
 }
-setSortable('member','#member-tbody','tr');
 
 // ユニットオーダー ----------------------------------------
 function addOrder(){
