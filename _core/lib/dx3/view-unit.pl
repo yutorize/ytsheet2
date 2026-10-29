@@ -100,18 +100,6 @@ sub renderTiming {
   return $text;
 }
 
-### カンパニー規模 --------------------------------------------------
-{
-  my %companySize2Name = (
-    1 => 'パーソナル',
-    2 => 'ごく小規模',
-    3 => '小規模',
-    4 => '中規模',
-    5 => '大規模',
-    6 => '超大規模',
-  );
-  $SHEET->param(companySize => $companySize2Name{$pc{companySize}} // $pc{companySize});
-}
 ### カンパニー追加施設 --------------------------------------------------
 {
   my @rows;

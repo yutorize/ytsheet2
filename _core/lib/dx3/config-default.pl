@@ -34,6 +34,16 @@ our $game = 'dx3';
   our $make_fix   = 0;
 
 
+## ●カンパニー規模
+  our %companySize = (
+    'パーソナル' => {slot => 1, exp =>  0},
+    'ごく小規模' => {slot => 2, exp =>  2},
+    '小規模'     => {slot => 3, exp =>  4},
+    '中規模'     => {slot => 4, exp =>  6},
+    '大規模'     => {slot => 5, exp => 10},
+    '超大規模'   => {slot => 6, exp => 15},
+  );
+
 ## ●各種ファイルへのパス
   our $data_dir = './data/'; # データ格納ディレクトリ
   our $passfile = $data_dir . 'charpass.cgi'; # パスワード記録ファイル

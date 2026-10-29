@@ -73,24 +73,16 @@ function delFacility(){
 setSortable('facility','#facility-tbody','tr');
 
 // カンパニー ----------------------------------------
-let companySize2Exp = {
-  1:  0,
-  2:  2,
-  3:  4,
-  4:  6,
-  5: 10,
-  6: 15,
-}
 function calcCompany(){
   const size = form.companySize.value;
   let slotMax = 0;
   let expUsed = 0;
-  if(Object.hasOwn(companySize2Exp, size)){
-    slotMax = Number(size);
+  if(Object.hasOwn(SET.companySize, size)){
+    slotMax = SET.companySize[size].slot;
     form.companySlot.value = slotMax;
     form.companySlot.readOnly = true;
-    expUsed = companySize2Exp[size]
-    form.companyExp.value = companySize2Exp[size];
+    expUsed = SET.companySize[size].exp;
+    form.companyExp.value = expUsed;
     form.companyExp.readOnly = true;
   }
   else {

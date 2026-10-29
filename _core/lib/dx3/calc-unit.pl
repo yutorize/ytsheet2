@@ -42,11 +42,12 @@ sub dataCalc {
     push @leaders, $name if $pc{"member${num}Leader"};
   }
   $NL{sheetSubType} = $pc{sheetSubType} if ($pc{sheetSubType} =~ /^(?:unit|company)$/);
+  $NL{companySize}  = exists $set::companySize{$pc{companySize}} ? $pc{companySize} : 'その他';
   ### updatedLine --------------------------------------------------
   $::updatedLine = join('<>',
     $pc{id}, $::file, $pc{birthTime}, $::now,
     $NL{unitName}, $NL{playerName}, $pc{group},
-    " $pc{tags} ", ($pc{hide}?1:''), $NL{sheetSubType}, $leaders[0],
+    " $pc{tags} ", ($pc{hide}?1:''), $NL{sheetSubType}, $leaders[0], $NL{companySize},
   ).'<>';
   return %pc;
 }

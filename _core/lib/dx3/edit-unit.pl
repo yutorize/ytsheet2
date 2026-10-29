@@ -48,7 +48,10 @@ convertEscapedBrToNewlines(\%pc,
 );
 
 ### フォーム表示 #####################################################################################
-print renderEditPageStart(title => removeTags removeRuby unescapeTags $pc{unitName});
+print renderEditPageStart(
+  title => (removeTags removeRuby unescapeTags $pc{unitName}),
+  extraJsTop => renderConstJs(),
+);
 print renderEditHeaderMenu(
   tabsHtml => '<li onclick="sectionSelect(\'common\');" class="sheet-main"><span>ユニット</span><span>データ</span>',
 );
@@ -159,12 +162,7 @@ print <<"HTML";
             <th class="handle">
             <td class="form">@{[ input "companyForm" ]}
             <td class="size">@{[ selectInput "companySize", "calcCompany",
-                '1=>パーソナル',
-                '2=>ごく小規模',
-                '3=>小規模',
-                '4=>中規模',
-                '5=>大規模',
-                '6=>超大規模',
+                sort { $set::companySize{$a}{slot} <=> $set::companySize{$b}{slot} } keys %set::companySize
               ]}
             <td class="slot">@{[ input "companySlot","number","calcCompany" ]}
             <td class="exp ">@{[ input "companyExp","number","calcCompany" ]}
@@ -254,6 +252,12 @@ sub renderDataList {
     <option value="効果参照">
   </datalist>
   HTML
+}
+sub renderConstJs {
+  my %set = (
+    companySize => \%set::companySize,
+  );
+  return '<script>const SET = '.JSON::PP->new->encode(\%set).'</script>'
 }
 
 1;
