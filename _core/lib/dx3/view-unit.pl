@@ -8,6 +8,7 @@ my ($pcRef, $SHEET) = setupViewBase(
   nameKeys => [qw/unitName/],
   unescapeLinesKeys => [qw/freeNote/],
   keepHeadings => 1,
+  groups => \@set::groups_unit,
   updateSub => \&upgradeUnitData,
 );
 our %pc = %{ $pcRef };

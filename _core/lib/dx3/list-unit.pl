@@ -23,13 +23,14 @@ setFields({
 ### テンプレート読み込み #############################################################################
 my $INDEX = setupListTemplate(
   type => 'u',
-  typeName => 'ユニットシート'
+  typeName => 'ユニット'
 );
 my ($indexMode, $qLinks) = listQueryInfo(
   queryKeys => \@queryKeys,
   excludeFromQLinks => { group => 1 },
 );
-my %groups = setupGroupList();
+my %groups = setupGroupList(@set::groups_unit);
+
 $INDEX->param(Subtypes => [makeSelectOptions(
   values => [qw/unit company/],
   selected => $::in{subtype},

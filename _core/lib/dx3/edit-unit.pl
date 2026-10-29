@@ -59,8 +59,16 @@ print <<"HTML";
     @{[ renderVisibilityBlock() ]}
     <div class="box" id="group">
       <dl>
-        <dt>グループ<dd><select name="group">@{[ renderGroupOptions() ]}</select>
-        <dt>タグ<dd>@{[ input 'tags' ]}
+        ${\ do {
+          if(@set::groups_guild) {
+            <<~"HTML";
+              <dt>グループ
+              <dd><select name="group">@{[ renderGroupOptions(@set::groups_guild) ]}</select>
+            HTML
+          }
+          else { "" }
+        } }
+        <dd @{[ @set::groups_guild ? '' : 'style="grid-column:span 3;"' ]}>@{[ input 'tags' ]}
       </dl>
     </div>
 
