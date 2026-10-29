@@ -1060,6 +1060,7 @@ body[data-sheet-type="unit"] {
     dt.company-only { grid-column: 1; grid-row: 3; }
     dd.company-only { grid-column: 1; grid-row: 4; }
   }
+  #player-name { align-items: start; }
   #sheet-type {
     width: max-content;
     margin: var(--box-v-gap) auto;
