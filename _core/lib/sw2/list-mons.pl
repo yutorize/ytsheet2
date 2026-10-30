@@ -220,7 +220,7 @@ sub monsTaxaUrl {
   if($name eq '騎獣'){
     if($query && $query ne 'all'){ $urltaxa = uri_escape_utf8($query)  }
     else { $urltaxa = 'all' }
-    if(!$::in{mount}){ $urltaxa .= '&mount=1' }
+    $urltaxa .= '&mount=1';
   }
   elsif($name eq 'すべて'){ $urltaxa = 'all' }
   else { $urltaxa = uri_escape_utf8($name) }
