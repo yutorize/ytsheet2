@@ -201,7 +201,7 @@ sub renderRace {
 
 ### テンプレートへ入力 ###############################################################################
 $INDEX->param(Lists => [ makeGroupedLists(
-  groupOrder => [ sort { $groups{$a}{sort} <=> $groups{$b}{sort} } keys %groupedLists ],
+  groupOrder => [ sort { $groups{$a}{sort} <=> $groups{$b}{sort} } keys %{ $count->{PC} } ],
   groupedLists => \%groupedLists,
   count => $count,
   

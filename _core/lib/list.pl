@@ -611,7 +611,7 @@ sub makePager {
   my $OUTPUT;
   my $lastpage = ceil($count / $set::pagemax);
   
-  if($lastpage > 1){
+  if($lastpage > 1 || ($lastpage == 1 && $page > $lastpage)){
     foreach(1 .. $lastpage){
       if($_ == $page){
         $OUTPUT .= '<b>'.$_.'</b> ';
