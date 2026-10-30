@@ -13,6 +13,7 @@ require $set::data_class;
   unescapeLinesKeys => [qw/freeNote freeHistory/],
   unescapeSkipRe    => qr/^image|URL$/,
   convertViewMap    => [qw/freeNote freeHistory/],
+  groups            => \@set::groups_country,
   updateSub => \&upgradeCountryData,
 );
 our %pc = %{ $pcRef };

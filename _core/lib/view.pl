@@ -151,16 +151,16 @@ sub setupViewBase {
     $SHEET->param(playerName => qq|<a href="$set::playerlist?id=$plId">$pc{playerName}</a>|);
   }
   ## グループ
-  if($::in{url}){
-    $SHEET->param(group => '');
+  # 空の専用グループ設定は、共通グループを引き継がない。
+  my $groups = exists $ARGS{groups} ? $ARGS{groups} : \@set::groups;
+  if($::in{url} || !@$groups){
+    $SHEET->param(group => '', groupName => '');
   }
   else {
     if(!$pc{group}) {
       $pc{group} = $set::group_default;
       $SHEET->param(group => $set::group_default);
     }
-    my $groups = $ARGS{groups};
-    $groups = \@set::groups unless $groups && @$groups;
     foreach (@$groups){
       if($pc{group} eq @$_[0]){
         $SHEET->param(groupName => @$_[2]);
