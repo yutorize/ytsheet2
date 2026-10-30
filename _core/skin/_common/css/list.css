@@ -222,6 +222,9 @@ form#form-search {
     max-height: 0;
   }
 }
+.search-empty {
+  margin: 1.4rem;
+}
 .search-summary {
   display: grid;
   grid-template-columns: max-content 1fr;

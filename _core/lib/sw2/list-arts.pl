@@ -138,7 +138,7 @@ $INDEX->param(Lists => [ makeGroupedLists(
     return makePager(
       count     => $args{count},
       page      => $page,
-      enabled   => ($::in{category} || $mode eq 'mylist'),
+      enabled   => ($args{id} || $mode eq 'mylist'),
       queryBase => "type=a&category=$args{id}$qLinks",
     );
   },

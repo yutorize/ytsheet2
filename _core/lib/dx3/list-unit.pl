@@ -3,6 +3,7 @@ use strict;
 use utf8;
 use open ":utf8";
 use HTML::Template;
+
 require $set::lib_list;
 
 ### クエリ ###########################################################################################
@@ -28,8 +29,9 @@ my $INDEX = setupListTemplate(
 my ($indexMode, $qLinks) = listQueryInfo(
   queryKeys => \@queryKeys,
   excludeFromQLinks => { group => 1 },
+  groupList => \@set::groups_unit,
 );
-my %groups = setupGroupList(@set::groups_unit);
+my %groups = setupGroupList(\@set::groups_unit);
 
 $INDEX->param(Subtypes => [makeSelectOptions(
   values => [qw/unit company/],
@@ -66,15 +68,14 @@ if($::in{sort}){
 ### リストを回す --------------------------------------------------
 my ($pageLines, $count, $page, $pageStart, $pageEnd, $shouldSkip) = prepareGroupedPage(
   lines => \@lines,
-  selectedGroup => $::in{group},
+  selectedGroup => $indexMode ? '' : $::in{group},
   hasTagQuery => $::in{tag},
-  countExtraOf => $set::playerlist ? sub { capField($_[0], 'player') } : undef,
+  countExtraOf => $set::playerlist ? \&capPlayerField : undef,
 );
 my %groupedLists;
 foreach (@$pageLines){
   my %pc = %{ splitField($_) };
-  $pc{group} = $set::group_default if !$pc{group} || !$groups{$pc{group}};
-  $pc{group} = 'all' if $::in{group} eq 'all';
+  $pc{group} = normalizeListGroup($pc{group});
   next if $shouldSkip->(group => $pc{group}, extra => $pc{player});
   push @{$groupedLists{$pc{group}}}, {
     ID     => $pc{id},
@@ -90,7 +91,7 @@ foreach (@$pageLines){
 }
 ### テンプレートへ入力 ###############################################################################
 $INDEX->param(Lists => [ makeGroupedLists(
-  groupOrder => [ sort { $groups{$a}{sort} <=> $groups{$b}{sort} } keys %groupedLists ],
+  groupOrder => [ sort { $groups{$a}{sort} <=> $groups{$b}{sort} } keys %{ $count->{PC} } ],
   groupedLists => \%groupedLists,
   count => $count,
   makePager => sub {

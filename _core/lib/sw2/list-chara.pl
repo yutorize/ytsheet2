@@ -182,19 +182,13 @@ my ($pageLines, $count, $page, $pageStart, $pageEnd, $shouldSkip) = prepareGroup
   lines => \@lines,
   selectedGroup => $::in{group},
   hasTagQuery   => $::in{tag},
-  countExtraOf  => $set::playerlist ? sub {
-    my $line = shift;
-    return capField($line, 'player');
-  } : undef,
+  countExtraOf  => $set::playerlist ? \&capPlayerField : undef,
 );
 
 my %groupedLists;
 foreach (@$pageLines) {
   my %pc = %{ splitField($_) };
-  
-  #グループ
-  $pc{group} = $set::group_default if (!$pc{group} || !$groups{$pc{group}});
-  $pc{group} = 'all' if $::in{group} eq 'all';
+  $pc{group} = normalizeListGroup($pc{group});
   
   next if $shouldSkip->(
     group => $pc{group},
@@ -280,7 +274,7 @@ sub decorateClasses {
 }
 ### テンプレートへ入力 ###############################################################################
 $INDEX->param(Lists => [ makeGroupedLists(
-  groupOrder => [ sort { $groups{$a}{sort} <=> $groups{$b}{sort} } keys %groupedLists ],
+  groupOrder => [ sort { $groups{$a}{sort} <=> $groups{$b}{sort} } keys %{ $count->{PC} } ],
   groupedLists => \%groupedLists,
   count => $count,
   
