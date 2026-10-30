@@ -35,8 +35,9 @@ my $INDEX = setupListTemplate(
 my ($indexMode, $qLinks) = listQueryInfo(
   queryKeys => \@queryKeys,
   excludeFromQLinks => { group => 1 },
+  groupList => \@set::groups_country,
 );
-my %groups = setupGroupList();
+my %groups = setupGroupList(\@set::groups_country);
 
 ### ファイル読み込み #################################################################################
 my @lines = loadLines();
@@ -60,21 +61,15 @@ if($::in{sort}){
 ### ページ処理 #######################################################################################
 my ($pageLines, $count, $page, $pageStart, $pageEnd, $shouldSkip) = prepareGroupedPage(
   lines => \@lines,
-  selectedGroup => $::in{group},
+  selectedGroup => $indexMode ? '' : $::in{group},
   hasTagQuery   => $::in{tag},
-  countExtraOf  => $set::playerlist ? sub {
-    my $line = shift;
-    return capField($line, 'player');
-  } : undef,
+  countExtraOf  => $set::playerlist ? \&capPlayerField : undef,
 );
 
 my %groupedLists;
 foreach (@$pageLines) {
   my %pc = %{ splitField($_) };
-  
-  #グループ
-  $pc{group} = $set::group_default if (!$pc{group} || !$groups{$pc{group}});
-  $pc{group} = 'all' if $::in{group} eq 'all';
+  $pc{group} = normalizeListGroup($pc{group});
   
   next if $shouldSkip->(
     group => $pc{group},
@@ -118,7 +113,7 @@ foreach (@$pageLines) {
 
 ### テンプレートへ入力 ###############################################################################
 $INDEX->param(Lists => [ makeGroupedLists(
-  groupOrder => [ sort { $groups{$a}{sort} <=> $groups{$b}{sort} } keys %groupedLists ],
+  groupOrder => [ sort { $groups{$a}{sort} <=> $groups{$b}{sort} } keys %{ $count->{PC} } ],
   groupedLists => \%groupedLists,
   count => $count,
   
