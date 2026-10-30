@@ -138,7 +138,7 @@ sub printFinalizedList {
   print outputTemplate($template);
 }
 ### クエリ関係の処理 --------------------------------------------------
-my $indexMode;
+my ($indexMode, $simpleIndex);
 sub listQueryInfo {
   my (%args) = @_;
   my @queryKeys = @{ $args{queryKeys} };
@@ -146,6 +146,8 @@ sub listQueryInfo {
   my @indexQueryKeys = @{ $args{indexQueryKeys} || $args{queryKeys} };
   my %excludeFromQLinks = %{ $args{excludeFromQLinks} || {} };
   my $forceAllGroups = exists $args{groupList} && !@{ $args{groupList} };
+  # グループ設定がない一覧では、簡易トップを経由せずデータを表示する。
+  $simpleIndex = $set::simpleindex && !$forceAllGroups;
   # 暗黙の「すべて」は検索条件に数えず、トップ表示とcanonical URLを保つ。
   my $implicitAllGroup = $forceAllGroups && trim($::in{group} // '') eq '';
   $::in{group} = 'all' if $forceAllGroups;
@@ -204,7 +206,7 @@ sub listQueryInfo {
     delete $pageTitleParts{type} if !$::in{type};
     $template->param(modeIndex => 1);
     $template->param(simpleList => 1) if $set::simplelist;
-    $template->param(simpleIndex => 1) if $set::simpleindex;
+    $template->param(simpleIndex => 1) if $simpleIndex;
   }
 
   return $indexMode, $qLinks;
@@ -214,7 +216,7 @@ sub listQueryInfo {
 sub loadLines {
   my (%args) = @_;
 
-  if($set::simpleindex && $indexMode) {
+  if($simpleIndex && $indexMode) {
     return ();
   }
 
@@ -272,9 +274,7 @@ sub setupGroupList {
     $groups{all}{sort} //= 0;
     $groups{all}{text} //= '';
   }
-  my $groupList = groupArrayToList(\@groups);
-  $template->param(Groups => $groupList);
-  $template->param(IndexGroups => @groups ? $groupList : [{ ID => 'all', NAME => 'すべて' }]);
+  $template->param(Groups => groupArrayToList(\@groups));
   # 通常一覧では旧URLの未設定IDも分類先として残し、ページ集計と表示を揃える。
   $groups{$::in{group} // ''} //= {} unless $hasSpecificGroups;
   my $selectedGroup = $groups{$::in{group} // ''};
