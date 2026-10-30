@@ -7,13 +7,6 @@ use HTML::Template;
 
 require $set::lib_list;
 
-# グループがないので、simpleindexを強制的に0にする
-if($set::simpleindex){
-  $set::simpleindex = 0;
-}
-
-# グループがないので、常にgroupをallとして扱う
-$::in{group} = 'all';
 ### クエリ ###########################################################################################
 my @queryKeys = qw(
   mode tag group image name author stage etype works breed syndrome hp init armor encroach
@@ -43,9 +36,11 @@ my $INDEX = setupListTemplate(
 );
 my ($indexMode, $qLinks) = listQueryInfo(
   queryKeys => \@queryKeys,
+  indexQueryKeys => [ @queryKeys, qw(page sort) ],
   excludeFromQLinks => { group => 1 },
+  groupList => [],
 );
-my %groups = setupGroupList();
+my %groups = setupGroupList([]);
 
 ### ファイル読み込み #################################################################################
 my @lines = loadLines();
@@ -85,16 +80,17 @@ if($::in{sort}){
 ### リストを回す --------------------------------------------------
 my ($pageLines, $count, $page, $pageStart, $pageEnd, $shouldSkip) = prepareGroupedPage(
   lines => \@lines,
-  selectedGroup => 'すべて',
+  selectedGroup => $indexMode ? '' : $::in{group},
   hasTagQuery   => $::in{tag},
 );
 
 my %groupedLists;
 foreach (@$pageLines) {
   my %pc = %{ splitField($_) };
+  $pc{group} = normalizeListGroup($pc{group});
 
   next if $shouldSkip->(
-    group => 'すべて',
+    group => $pc{group},
   );
 
   ## シンプルリスト
@@ -108,7 +104,7 @@ foreach (@$pageLines) {
       GROUP  => $pc{group},
       HIDE   => $pc{hide},
     });
-    push(@{$groupedLists{'すべて'}}, @characters);
+    push(@{$groupedLists{$pc{group}}}, @characters);
   }
   ## 通常リスト
   else {
@@ -130,7 +126,7 @@ foreach (@$pageLines) {
       DATE     => renderUpdateTime($pc{date}),
       HIDE     => $pc{hide},
     });
-    push(@{$groupedLists{'すべて'}}, @characters);
+    push(@{$groupedLists{$pc{group}}}, @characters);
   }
 }
 
@@ -143,9 +139,8 @@ sub renderEnemyType {
 }
 
 ### テンプレートへ入力 ###############################################################################
-our @categories = ( ['すべて'] );
 $INDEX->param(Lists => [ makeGroupedLists(
-  groupOrder => \@categories,
+  groupOrder => [ sort { $groups{$a}{sort} <=> $groups{$b}{sort} } keys %{ $count->{PC} } ],
   groupedLists => \%groupedLists,
   count => $count,
   
@@ -156,22 +151,11 @@ $INDEX->param(Lists => [ makeGroupedLists(
       count     => $args{count},
       page      => $page,
       enabled   => ($args{id} || $::in{mode} eq 'mylist'),
-      queryBase => "type=e$qLinks",
+      queryBase => "type=e&group=$::in{group}$qLinks",
     );
   },
 
-  makeGroup => sub {
-    my (%args) = @_;
-    my $id = $args{id};
-
-    return {
-      NAME  => $args{id},
-      NUM   => $args{num},
-      Lines => $args{lines},
-      PAGER => $args{pager},
-      MORE  => $args{more},
-    };
-  },
+  makeGroup => \&makeCharacterGroup,
 ) ]);
 
 ## 検索サマリー --------------------------------------------------
