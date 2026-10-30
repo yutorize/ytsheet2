@@ -550,6 +550,10 @@ sub makeGroupedLists {
   my %groupedLists = %{ $args{groupedLists} };
   my %count        = %{ $args{count} };
 
+  # 範囲外ページの空行と、検索結果自体が0件の場合を区別する。
+  my $hasResults = grep { $_ > 0 } values %{ $count{PC} };
+  $template->param(noSearchResults => !$indexMode && !$hasResults);
+
   my $showEmptyGroups  = exists $args{showEmptyGroups} ? $args{showEmptyGroups} : 0;
 
   my $makePager = $args{makePager};
