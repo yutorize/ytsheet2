@@ -78,12 +78,11 @@ sub renderChatPaletteFormOptional {
     $html .= '<td>'.::input("paletteAttack${_}Dmg" ,'','','onchange="setChatPalette()"');
     $html .= '<td>'.::input("paletteAttack${_}Roll",'','','onchange="setChatPalette()"');
     $html .= '<td class="palette-attack-checklist left">';
-    my %added;
+    my $weaponName = '';
     foreach my $num (1 .. $pc{weaponNum}) {
-      my $name = $pc{"weapon${num}Name"}.$pc{"weapon${num}Usage"} || '―';
-      next if $added{$name};
-      $html .= ::checkbox("paletteAttack${_}CheckWeapon${num}",$name,'setChatPalette');
-      $added{$name} = 1;
+     $weaponName = $pc{"weapon${num}Name"} || $weaponName;
+      my $name = $weaponName.$pc{"weapon${num}Usage"} || '―';
+      $html .= ::checkbox("paletteAttack${_}CheckWeapon${num}","${num}: $name",'setChatPalette', qq|data-weapon-id="weapon-row${num}"|);
     }
     $html .= '</template>' if $_ eq 'TMPL';
   }
