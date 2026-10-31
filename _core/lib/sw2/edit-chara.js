@@ -2823,43 +2823,37 @@ setSortable('weapon', '#weapons-table', 'tbody',
 );
 
 function changeWeaponName (){
-  let rowNum = 0;
-  document.querySelectorAll(`#palette-attack .palette-attack-checklist`).forEach(row => {
-    rowNum++;
-    for(let num = 1; num <= form.weaponNum.value; num++){
-      const name = (form[`weapon${num}Name`].value || form[`weapon${num-1}Name`]?.value || '')+form[`weapon${num}Usage`].value;
-      form[`paletteAttack${rowNum}CheckWeapon${num}`].nextElementSibling.textContent = name;
-    }
-  });
+  generatePaletteWeaponCheckbox();
 }
 function generatePaletteWeaponCheckbox (){
-  let checkList = {};
-  let rowNum = 0;
+  const weapons = [];
+  let weaponName = '';
+  for(let num = 1; num <= form.weaponNum.value; num++){
+    const nameInput = form[`weapon${num}Name`];
+    weaponName = nameInput.value || weaponName;
+    weapons.push({
+      id: nameInput.closest('tbody').id,
+      name: `${num}: ${weaponName + form[`weapon${num}Usage`].value || '―'}`,
+    });
+  }
   const rows = document.querySelectorAll(`#palette-attack .palette-attack-checklist`);
-  rows.forEach(row => {
-    rowNum++;
-    checkList[rowNum] = {};
+  rows.forEach((row, index) => {
+    // 並べ替えで変わる行番号や重複する表示名ではなく、武器行のIDで選択状態を保持する。
+    const checkList = new Map();
     row.querySelectorAll(`label input`).forEach(checkbox => {
-      const name = checkbox.nextElementSibling.textContent || '';
-      checkList[rowNum][name] = checkbox.checked ? 'checked' : '';
-    })
-  });
-  rowNum = 1;
-  rows.forEach(row => {
+      checkList.set(checkbox.dataset.weaponId, checkbox.checked);
+    });
     row.innerHTML = '';
-    const added = {};
-    for(let num = 1; num <= form.weaponNum.value; num++){
-      const name = (form[`weapon${num}Name`].value || form[`weapon${num-1}Name`]?.value || '')+form[`weapon${num}Usage`].value;
-
-      let checkbox = document.createElement('label');
-      checkbox.classList.add('check-button');
-      if(added[name] || !name){ checkbox.disabled = true; }
-      checkbox.innerHTML = `<input type="checkbox" name="paletteAttack${rowNum}CheckWeapon${num}" value="1" oninput="setChatPalette()" ${checkList[rowNum][name]}><span>${name||'―'}</span>`;
-      row.append(checkbox);
-
-      added[name] = 1;
-    }
-    rowNum++;
+    weapons.forEach((weapon, weaponIndex) => {
+      const label = document.createElement('label');
+      label.classList.add('check-button');
+      label.innerHTML = `<input type="checkbox" name="paletteAttack${index+1}CheckWeapon${weaponIndex+1}" value="1" oninput="setChatPalette()"><span></span>`;
+      const checkbox = label.querySelector('input');
+      checkbox.dataset.weaponId = weapon.id;
+      checkbox.checked = checkList.get(weapon.id) || false;
+      checkbox.nextElementSibling.textContent = weapon.name;
+      row.append(label);
+    });
   });
 }
 
