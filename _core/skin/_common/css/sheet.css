@@ -777,7 +777,7 @@ aside.information a {
   font-weight: bold;
 }
 aside.information + article {
-  border-top: 0;
+  border-top-width: 0;
 }
 aside.information.log h2 {
   margin-top: -.3rem;

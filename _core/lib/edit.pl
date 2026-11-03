@@ -115,16 +115,17 @@ sub checkboxes {
   if($oninput && $oninput !~ /\(.*?\);?$/){ $oninput .= '()'; }
   my @data = split(/,/, $::pc{$name});
   my $out;
-  foreach my $value (@_) {
+  foreach my $v (@_) {
+    my $value = $v;
     my $view;
     if($value =~ s/=>(.*?)$//){ $view = $1 } else { $view = $value }
-    $out .= '<label class="check-button">'.
-    '<input type="checkbox"'.
-    ' name="'.$name.'[]"'.
-    ' value="'.$value.'"'.
-    ((grep {$_ eq $value} @data)?" checked":"").
-    ($oninput?' oninput="'.$oninput.'"':"").
-    '><span>'.$view.'</span></label>';
+    $out .= '<label class="check-button">'
+    . '<input type="checkbox"'
+    . qq| name="${name}[]"|
+    . qq| value="$value"|
+    . ((any {$_ eq $value} @data) ? ' checked' : '')
+    . ($oninput ? qq| oninput="$oninput"| : '')
+    . qq|><span>$view</span></label>|;
   }
   return $out;
 }

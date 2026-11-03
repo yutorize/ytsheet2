@@ -8,6 +8,7 @@ header nav {
     .icon {
       .chara  &::before { mask-image: url(../img/icon-person.png); }
       .guild  &::before { mask-image: url(../img/icon-groups.png); }
+      .enemy  &::before { mask-image: url(../img/icon-mushroomfolk.png); }
     }
     .label {
       display: none;
@@ -18,6 +19,7 @@ main nav {
   & a {
     .chara &::before { mask-image: url(../img/icon-person.png); }
     .guild &::before { mask-image: url(../img/icon-groups.png); }
+    .enemy &::before { mask-image: url(../img/icon-mushroomfolk.png); }
   }
 }
 /* // List
@@ -64,6 +66,50 @@ main nav {
       grid-template-columns: 18rem 6em 2.8em 0.6fr 0.6fr 10em 4em;
     }
     & .geis { display: none; }
+  }
+}
+/* // List-Enemy
+---------------------------------------------------------------------------------------------------- */
+.list.enemy table {
+  display: grid;
+  grid-template-columns: 26rem 0.5fr 1.2fr 6.5em 5.5em 5.5em 5em;
+  > thead, tbody {
+    display: grid;
+    grid-template-columns: subgrid;
+    grid-column: 1 / -1;
+    > tr {
+      display: grid;
+      grid-column: 1 / -1;
+      grid-template-columns: subgrid;
+      grid-template-areas:
+        "NAME   PL  TXN ELM  LVL  TYPE DATE"
+        "NAME TAGS TAGS TAGS TAGS TAGS DATE"
+      ;
+      &:has(.tags:empty){
+        grid-template-areas: "NAME PL TXN ELM LVL TYPE DATE";
+      }
+    }
+  }
+  & .name   { grid-area: NAME; }
+  & .author { grid-area:   PL; }
+  & .taxon  { grid-area:  TXN; }
+  & .type   { grid-area: TYPE; }
+  & .element{ grid-area:  ELM; }
+  & .lv     { grid-area:  LVL; }
+  & .tags   { grid-area: TAGS; }
+  & .date   { grid-area: DATE; }
+  
+  & td.lv {
+    font-size: 1.15em;
+    line-height: 1;
+    font-weight: bold;
+    > .mob {
+      font-size: 80%;
+      font-weight: normal;
+    }
+  }
+  @media screen and (width <= 735px){
+    grid-template-columns: 18rem 6em 1fr 3.5em 3.5em 3.5em 4em;
   }
 }
 /* // List-Guild

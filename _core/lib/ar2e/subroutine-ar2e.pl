@@ -11,12 +11,22 @@ use Fcntl;
 ### ユニットステータス出力 --------------------------------------------------
 sub createUnitStatus {
   my %pc = %{$_[0]};
-  my @unitStatus = (
-    { 'HP' => $pc{hpTotal}.'/'.$pc{hpTotal} },
-    { 'MP' => $pc{mpTotal}.'/'.$pc{mpTotal} },
-    { 'フェイト' => $pc{fateTotal}.'/'.$pc{fateTotal} },
-    { '行動値' => $pc{battleTotalIni} }
-  );
+  my @unitStatus;
+  if ($pc{type} eq 'e'){
+    @unitStatus = (
+      { 'HP' => $pc{hp}.'/'.$pc{hp} },
+      ($pc{isMob} ? () : { 'MP' => $pc{mp}.'/'.$pc{mp} }),
+      { '行動値' => $pc{initiative} },
+    );
+  }
+  else {
+    @unitStatus = (
+      { 'HP' => $pc{hpTotal}.'/'.$pc{hpTotal} },
+      { 'MP' => $pc{mpTotal}.'/'.$pc{mpTotal} },
+      { 'フェイト' => $pc{fateTotal}.'/'.$pc{fateTotal} },
+      { '行動値' => $pc{battleTotalIni} }
+    );
+  }
   
   foreach my $key (split ',', $pc{unitStatusNotOutput}){
     @unitStatus = grep { !exists $_->{$key} } @unitStatus;
@@ -34,6 +44,8 @@ sub createUnitStatus {
 ## 複数行対応覧
 our %multilineTargets = (
   ''  => '「容姿・経歴・その他メモ」「履歴（自由記入）」「携帯品・所持品」「収支履歴」',
+  'e'  => '「エネミースキル」「解説」',
+  'g'  => '「ギルドの経歴・メモ」「履歴（自由記入）」「ギルド管理アイテム」「収支履歴」',
 );
 
 ### バージョンアップデート --------------------------------------------------
@@ -41,6 +53,7 @@ sub upgradeData {
   my $data = $_[0];
   my $type = $_[1];
   if   ($type eq 'g'){ return upgradeGuildData($data) }
+  elsif($type eq 'e'){ return upgradeEnemyData($data) }
   else               { return upgradeCharaData($data) }
 }
 sub upgradeCharaData {
@@ -57,6 +70,17 @@ sub upgradeCharaData {
     $pc{geisNum}       //= $pc{geisesNum};
     $pc{connectionNum} //= $pc{connectionsNum};
   }
+
+  $pc{lasttimever} = $pc{ver};
+  $pc{ver} = $main::ver;
+  return %pc;
+}
+sub upgradeEnemyData {
+  my %pc = %{$_[0]};
+  my $ver = $pc{ver};
+  $ver =~ s/^([0-9]+)\.([0-9]+)\.([0-9]+)$/$1.$2$3/;
+  delete $pc{updateMessage};
+
 
   $pc{lasttimever} = $pc{ver};
   $pc{ver} = $main::ver;

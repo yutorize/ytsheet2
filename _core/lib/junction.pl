@@ -5,13 +5,29 @@ use utf8;
 use Encode;
 use FindBin;
 
-our $ver = "2.01.013";
+our $ver = "2.01.015";
 
 our %in;
 for (param()){ $in{$_} = param($_); }
 
 my $mode = $in{mode};
 $ENV{HTML_TEMPLATE_ROOT} = $FindBin::Bin;
+
+#if ( $mode eq 'register'
+#  || $mode eq 'option'
+#  || $mode eq 'passchange'
+#  || $mode eq 'reset'
+#){
+#  error('ユーザーID関連機能メンテナンス中：2025// :～');
+#}
+#if ( $mode eq 'make'
+#  || $mode eq 'save'
+#  || $mode eq 'bu-naming'
+#  || $mode eq 'delete'
+#  || $mode eq 'image-delete'
+#){
+#  error('データ保存機能関連メンテナンス中：2026/10/12 3:42～終了未定（数十分間予定）');
+#}
 
 if($mode eq 'register'){
   if($in{id})    { require $set::lib_register; }    #登録処理

@@ -741,6 +741,127 @@ dd.area-tags {
 }
 
 
+/* // エネミー
+---------------------------------------------------------------------------------------------------- */
+body[data-sheet-type="enemy"] {
+  #area-status {
+    > div { padding: .5em .5em; }
+    dl {
+      display: grid;
+      grid-template-columns: 2.5em 1fr;
+      align-items: center;
+      > dt {
+        text-align: center;
+        &::after { content: ":"; float: right; }
+      }
+      > dd {
+        text-align: left;
+        line-height: 1;
+        input[type="number"] { width: 4em; }
+        input[type="checkbox"] { vertical-align: middle; }
+        @media screen and (width <= 735px){
+          input[type="number"] { width: 3.5em; }
+        }
+      }
+    }
+  }
+  #base-data {
+    width: max-content;
+    display: grid;
+    gap: .5em;
+    grid-template-columns: max-content;
+    @media screen and (width <= 735px){
+      grid-template-columns: max-content;
+    }
+    dl {
+      grid-template-columns: 3.5em max-content;
+      > dd {
+        align-content: center;
+        > .select-input:has([name="taxon"]) {
+          display: inline-block;
+          width: 6.5em;
+        }
+        [name="race"]   { width: 6.5em; }
+        [name="element"]{ width: 3.5em; }
+      }
+    }
+  }
+  #status-solo {
+    width: max-content;
+    display: grid;
+    gap: 0 1em;
+    grid-template-columns: max-content max-content max-content;
+    @media screen and (width <= 735px){
+      grid-template-columns: max-content max-content;
+    }
+  }
+  #status-battle {
+    width: max-content;
+    display: grid;
+    gap: 0 1em;
+    grid-template-columns: max-content max-content max-content max-content;
+    @media screen and (width <= 735px){
+      grid-template-columns: max-content max-content;
+    }
+  }
+  #attack {
+    margin-top: var(--box-v-gap);
+    overflow-x: auto;
+    .edit-table {
+      margin-top: -1em;
+      > thead {
+        .name > .small { font-size: 75%; }
+      }
+      > tbody {
+        white-space: nowrap;
+        td { padding: 0 .5em; }
+        input[name$="Name"]    { min-width: 12em; }
+        input[type="number"]  { width: 3.8em; }
+        input[name$="Type"]   { width: 4em; }
+        input[name$="DmgType"]{ width: 5.5em; }
+        input[name$="Range"]  { width: 5.5em; }
+      }
+    }
+  }
+  #skills {
+    margin-top: var(--box-v-gap);
+    > textarea {
+      height: 10em;
+    }
+  }
+  #description {
+    margin-top: var(--box-v-gap);
+    > textarea {
+      height: 10em;
+    }
+  }
+  #loot {
+    margin-top: var(--box-v-gap);
+  }
+  #loot-list {
+    display: grid;
+    grid-template-columns: 7em auto;
+    white-space: nowrap;
+
+    & ul li {
+      border-width: 1px 0;
+      border-style: solid;
+    }
+    & ul li + li {
+      border-top-width: 0;
+    }
+    & .handle {
+      display: inline-block;
+      widows: 1.4em;
+    }
+    & input {
+      width: calc(100% - 1.4em - 2px);
+    }
+    & ul#loot-num {
+      background-color: rgba(127,127,127,0.3);
+    }
+  }
+}
 
 /* // ギルド
 ---------------------------------------------------------------------------------------------------- */

@@ -3,7 +3,7 @@ use strict;
 use utf8;
 use open ":utf8";
 use CGI::Cookie;
-use List::Util qw/max min/;
+use List::Util qw/max min any/;
 use Fcntl qw(:DEFAULT :flock);
 use File::Copy qw/move/;
 use File::Basename qw/dirname/;

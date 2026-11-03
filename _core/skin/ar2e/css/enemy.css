@@ -1,0 +1,123 @@
+@charset "utf-8";
+
+@layer system {
+/* // Layout
+---------------------------------------------------------------------------------------------------- */
+article.data-view {
+
+  max-width: 600px;
+  &:first-child {
+    margin-top: 10px;
+  }
+  @media screen and (width <= 735px){
+    max-width: calc(100% - 2em);
+    font-size: 120%;
+  }
+  
+  .data-frame {
+    border-width: 2px;
+    border-style: solid;
+    border-radius: 10px;
+    overflow: clip;
+    background-color: var(--box-base-bg-color);
+  }
+}
+
+/* // Font
+---------------------------------------------------------------------------------------------------- */
+
+/* // Data
+---------------------------------------------------------------------------------------------------- */
+#area-name {
+  border-style: hidden;
+  background: linear-gradient(to bottom, var(--box-head-bg-color), transparent);
+}
+
+.data-section {
+  display: grid;
+  gap: 0 1em;
+  width: max-content;
+  margin: 0 1em .5em;
+  dl {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    > dt::after { content: ":"; float: right; }
+  }
+  &#base-data {
+    width: auto;
+    padding-top: .5em;
+    border-width: 1px 0 0;
+    border-style: solid;
+    grid-template-columns: max-content minmax(5em, 1fr) max-content 1fr;
+    dl {
+      gap: 0 .2em;
+      grid-column: span 2;
+      grid-template-columns: subgrid;
+    }
+  }
+  &#status {
+    dl:has(dd > dl) {
+      display: block;
+      > dt {
+        width: max-content;
+      }
+      > dd {
+        display: grid;
+        grid-template-columns: max-content max-content max-content;
+        gap: 0 1em;
+        padding-left: 1em;
+      }
+    }
+  }
+  &#battle-status {
+    display: flex;
+    @media screen and (width <= 735px){
+      display: grid;
+      grid-template-columns: max-content max-content max-content max-content;
+    }
+  }
+  &#attack {
+    width: auto;
+    > dl {
+      grid-template-columns: max-content 1fr;
+      > dd > span {
+        display: inline-block;
+      }
+    }
+  }
+  &#skills,
+  &#description,
+  &#loot {
+    display: block;
+    width: auto;
+    padding-top: .5em;
+    border-width: 1px 0 0;
+    border-style: solid;
+    > h2 {
+      font-size: inherit;
+      &::after { content: ":"; }
+    }
+  }
+  &#loot {
+    > dl {
+      margin-left: .5em;
+      > dt {
+        text-align: center;
+        font-weight: normal;
+        &::after {
+          margin-left: .5em;
+        }
+      }
+    }
+  }
+}
+#sheet-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 0 1em;
+  padding: .2em .5em;
+}
+
+
+/* ////////// LayerEnd ////////// */
+}
