@@ -234,3 +234,55 @@ output.generateCharacterTextOfArianrhod2PC = (json) => {
   
   return result.join('\n');
 };
+
+output.generateCharacterTextOfArianrhod2Enemy = (json) => {
+  const result = [];
+
+  result.push(`エネミー名：${json.enemyName || ''}`);
+  result.push(`分類：${json.taxon || ''}${json.race ? `（${json.race}）` : ''}`);
+  result.push(`属性：${json.element || ''}`);
+  result.push(`レベル：${json.level || ''}${json.isMob ? '（モブ）' : ''}`);
+  result.push(`識別値：${json.identifyTarget || ''}`);
+  result.push('');
+  if(json.isMob){
+    result.push(`判定：${json.action || ''}／${json.reaction || ''}`);
+  }
+  else {
+    result.push(`筋力：${json.sttStrBase || ''}／${json.sttStr || ''}`);
+    result.push(`器用：${json.sttDexBase || ''}／${json.sttDex || ''}`);
+    result.push(`敏捷：${json.sttAgiBase || ''}／${json.sttAgi || ''}`);
+    result.push(`知力：${json.sttIntBase || ''}／${json.sttInt || ''}`);
+    result.push(`感知：${json.sttSenBase || ''}／${json.sttSen || ''}`);
+    result.push(`精神：${json.sttMndBase || ''}／${json.sttMnd || ''}`);
+    result.push(`幸運：${json.sttLukBase || ''}／${json.sttLuk || ''}`);
+  }
+  result.push('');
+  result.push(`回避：${json.dodge || ''}`);
+  result.push(`防御：${json.armorP || ''}／${json.armorM || ''}`);
+  result.push(`ＨＰ：${json.hp || ''}`);
+  result.push(`ＭＰ：${json.mp || ''}`);
+  result.push(`行動：${json.initiative || ''}`);
+  result.push(`移動：${json.mobility || ''}`);
+  result.push('');
+  for(let n = 1; n <= json.attackNum; n++){
+    if(!json[`attack${n}Name`]){ continue; }
+    result.push(`攻撃：${json[`attack${n}Name`] || ''}`
+      +`　${json[`attack${n}Acc`] || ''}（${json[`attack${n}AccDice`] || ''}D）`
+      +`／${json[`attack${n}Dmg`] || ''}（${json[`attack${n}DmgDice`] || ''}D）`
+      +`／${json[`attack${n}Type`] || ''}（${json[`attack${n}DmgType`] || ''}）`
+      +`／${json[`attack${n}Range`] || ''}`);
+  }
+  result.push('');
+  result.push('エネミースキル：');
+  result.push((json.skills || '').replace(/&lt;br&gt;/gm, '\n').replace(/&quot;/gm, '"'));
+  result.push('');
+  result.push('解説：');
+  result.push((json.description || '').replace(/&lt;br&gt;/gm, '\n').replace(/&quot;/gm, '"'));
+  result.push('');
+  result.push('ドロップ品');
+  for(let n = 1; n <= json.lootNum; n++){
+    result.push(`${json[`loot${n}Num`] || ''}：${json[`loot${n}Item`] || ''}`);
+  }
+    
+  return result.join('\n');
+};

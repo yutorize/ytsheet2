@@ -12,8 +12,39 @@ sub palettePreset {
   if   (!$tool)           { $bot{YTC} = 1; }
   elsif($tool eq 'tekey' ){ $bot{TKY} = $bot{BCD} = 1; }
   elsif($tool eq 'bcdice'){ $bot{BCD} = 1; }
+
+  ## エネミー
+  if($type eq 'e'){
+    $text .= "### ■判定\n";
+    if($::pc{isMob}){
+      $text .= qq|{能動}+2D メジャーアクション判定\n|;
+      $text .= qq|{受動}+2D リアクション判定\n|;
+    }
+    else {
+      $text .= "{筋力}+2D 【筋力】判定\n";
+      $text .= "{器用}+2D 【器用】判定\n";
+      $text .= "{敏捷}+2D 【敏捷】判定\n";
+      $text .= "{知力}+2D 【知力】判定\n";
+      $text .= "{感知}+2D 【感知】判定\n";
+      $text .= "{精神}+2D 【精神】判定\n";
+      $text .= "{幸運}+2D 【幸運】判定\n";
+    }
+    $text .= "\n";
+    $text .= qq|{回避}+2D 回避判定\n|;
+    $text .= "\n";
+    foreach my $n (1..$::pc{attackNum}){
+      next unless $::pc{"attack${n}Name"};
+      $text .= qq|$::pc{"attack${n}Acc"}+$::pc{"attack${n}AccDice"}D|
+        . qq| 命中／$::pc{"attack${n}Name"}|
+        . "\n";
+      $text .= qq|$::pc{"attack${n}Dmg"}+$::pc{"attack${n}DmgDice"}D|
+        . qq| ダメージ／$::pc{"attack${n}Name"}|
+        . "\n";
+      $text .= "\n";
+    }
+  }
   ## ＰＣ
-  if(!$type){
+  else {
     # 基本判定
     $text .= "### ■判定\n";
     $text .= "{筋力判定}+{筋力判定ダイス}D 【筋力】判定\n";
@@ -70,8 +101,30 @@ sub paletteProperties {
   my $tool = shift;
   my $type = shift;
   my @propaties;
-  ## PC
-  if  (!$type){
+  ## エネミー
+  if($type eq 'e'){
+    push @propaties, "//EL=$::pc{level}";
+    if($::pc{isMob}){
+      push @propaties, "//能動=$::pc{action}";
+      push @propaties, "//受動=$::pc{reaction}";
+    }
+    else {
+      push @propaties, "//筋力=$::pc{sttStr}";
+      push @propaties, "//器用=$::pc{sttDex}";
+      push @propaties, "//敏捷=$::pc{sttAgi}";
+      push @propaties, "//知力=$::pc{sttInt}";
+      push @propaties, "//感知=$::pc{sttSen}";
+      push @propaties, "//精神=$::pc{sttMnd}";
+      push @propaties, "//幸運=$::pc{sttLuk}";
+    }
+    push @propaties, "//回避=$::pc{dodge}";
+    push @propaties, "//物理防御力=$::pc{armorP}";
+    push @propaties, "//魔法防御力=$::pc{armorM}";
+    push @propaties, "//行動値=$::pc{initiative}";
+    push @propaties, "//移動力=$::pc{mobility}";
+  }
+  ## ＰＣ
+  else {
     push @propaties, "### ■能力値";
     push @propaties, "//CL=$::pc{level}";
     push @propaties, "//筋力=$::pc{sttStrTotal}";

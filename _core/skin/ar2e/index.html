@@ -18,6 +18,8 @@
       <ul>
         <li class="chara<TMPL_IF modeList> current</TMPL_IF>">
           <a href="./?<TMPL_IF mode>mode=<TMPL_VAR mode>&</TMPL_IF><TMPL_IF tag>tag=<TMPL_VAR tag></TMPL_IF>">キャラクター</a>
+        <li class="enemy<TMPL_IF modeListE> current</TMPL_IF>">
+          <a href="./?<TMPL_IF mode>mode=<TMPL_VAR mode>&</TMPL_IF><TMPL_IF tag>tag=<TMPL_VAR tag>&</TMPL_IF>type=e">エネミー</a>
         <li class="guild<TMPL_IF modeListG> current</TMPL_IF>">
           <a href="./?<TMPL_IF mode>mode=<TMPL_VAR mode>&</TMPL_IF><TMPL_IF tag>tag=<TMPL_VAR tag>&</TMPL_IF>type=g">ギルド</a>
       </ul>
@@ -25,6 +27,7 @@
     <TMPL_IF modeIndex><TMPL_INCLUDE NAME="skin-add/index-message.html"></TMPL_IF>
 
     <TMPL_IF modeList><TMPL_INCLUDE NAME="list-chara.html"></TMPL_IF>
+    <TMPL_IF modeListE><TMPL_INCLUDE NAME="list-enemy.html"></TMPL_IF>
     <TMPL_IF modeListG><TMPL_INCLUDE NAME="list-guild.html"></TMPL_IF>
     <TMPL_INCLUDE NAME="../_common/form.html">
     <TMPL_IF modeInfo>

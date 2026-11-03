@@ -49,3 +49,47 @@ output.generateUdonariumXmlDetailOfArianrhod2PC = (json, opt_url, defaultPalette
 
   return dataDetails
 };
+
+output.generateUdonariumXmlDetailOfArianrhod2Enemy = (json, opt_url, defaultPalette, resources)=>{
+  const dataDetails = {'リソース':resources};
+  
+  dataDetails['情報'] = [
+    `        <data name="データ作成者">${json.author || '?'}</data>`,
+    `        <data name="分類">${json.taxon || ''}${json.race ? `（${json.race}）` : ''}</data>`,
+    `        <data name="属性">${json.element || ''}</data>`,
+    `        <data name="レベル">${json.level || ''}</data>`,
+    `        <data type="note" name="エネミースキル">${(json.skills || '').replace(/&lt;br&gt;/g, '\n')}</data>`,
+    `        <data type="note" name="説明">${(json.description || '').replace(/&lt;br&gt;/g, '\n')}</data>`
+  ];
+
+  let addedParam = {};
+  if(json.isMob){
+    dataDetails['能力値'] = [
+      `        <data name="能動">${json.action || 0}</data>`,
+      `        <data name="受動">${json.reaction || 0}</data>`
+    ];
+    addedParam['能動'] = addedParam['受動'] = 1;
+  }
+  else{
+    dataDetails['能力値'] = output.consts.AR2_STATUS.map((s)=>{
+      addedParam[s.name] = 1;
+      return `        <data name="${s.name}">${json['stt' + s.column]}</data>`
+    });
+  }
+  dataDetails['戦闘'] = [
+    `        <data name="回避">${json.dodge || 0}</data>`,
+    `        <data name="物理防御力">${json.armorP || 0}</data>`,
+    `        <data name="魔法防御力">${json.armorM || 0}</data>`,
+    `        <data name="行動値">${json.initiative || 0}</data>`,
+    `        <data name="移動力">${json.mobility || 0}</data>`
+  ];
+  addedParam['回避'] = addedParam['物理防御力'] = addedParam['魔法防御力'] = addedParam['行動値'] = addedParam['移動力'] = 1;
+
+  dataDetails['追加パラメータ'] = defaultPalette.parameters
+    .filter(({ label }) => !Object.hasOwn(addedParam, label))
+    .map(({ label, value }) =>
+      `        <data name="${label}">${value}</data>`
+    );
+
+  return dataDetails
+};

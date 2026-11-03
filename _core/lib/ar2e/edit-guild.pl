@@ -104,7 +104,7 @@ print <<"HTML";
       </dl>
     </div>
 
-    <div class="box in-toc" id="name-form" data-content-title="国名・ロード名・プレイヤー名">
+    <div class="box in-toc" id="name-form" data-content-title="ギルド名・ギルドマスター名・プレイヤー名">
       <div>
         <dl id="character-name">
           <dt>ギルド名
