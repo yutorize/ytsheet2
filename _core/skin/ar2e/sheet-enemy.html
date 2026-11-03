@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+<TMPL_INCLUDE NAME="../_common/sheet-head.html">
+</head>
+<body>
+  <header>
+    <h1><a href="./?type=e"><TMPL_VAR title></a></h1>
+    <nav>
+      <TMPL_INCLUDE NAME="../_common/sheet-menu.html">
+    </nav>
+  </header>
+  <div class="header-back-name"><b><TMPL_VAR titleName> - <TMPL_VAR title></b></div>
+  
+  <TMPL_IF error>
+  <aside id="error">
+    <p>
+      <TMPL_VAR error>
+    </p>
+  </aside>
+  </TMPL_IF>
+  
+  <TMPL_UNLESS modeDownload>
+    <TMPL_UNLESS forbiddenMode>
+      <aside id="loglist" class="float-box">
+        <h2>過去ログ（バックアップ）</h2>
+        <ul>
+          <TMPL_LOOP LogList><li class="<TMPL_VAR SELECTED>"><a href="?id=<TMPL_VAR id><TMPL_VAR URL>"><TMPL_VAR DATE></a></TMPL_LOOP>
+        </ul>
+        <TMPL_IF viewLogNaming><details id="log-naming">
+          <summary>閲覧中のログ<TMPL_IF selectedLogName>の名前をつけなおす<TMPL_ELSE>に名前をつける</TMPL_IF></summary>
+          <form id="log-naming-form" method="post" action="./">
+            <input type="hidden" name="mode" value="bu-naming">
+            <input type="hidden" name="id" value="<TMPL_VAR id>">
+            <input type="hidden" name="date" value="<TMPL_VAR logId>">
+            <dl>
+              <dt>名前<dd><input type="text" name="log-name" value="<TMPL_VAR selectedLogName>">
+              <TMPL_IF reqdPassword><dt>パスワード<dd><input type="password" name="pass"></TMPL_IF>
+              <dd><input type="submit" value="命名">
+            </dl>
+          </form>
+        </details></TMPL_IF>
+      </aside>
+
+      <aside id="downloadlist" class="float-box">
+        <h2>出力</h2>
+        <ul>
+          <li id="downloadlist-udonarium"><a onclick="downloadAsUdonarium();">ユドナリウム用コマデータ<small>(zip形式ファイル)</small></a>
+          <li id="downloadlist-ccfolia"><a onclick="downloadAsCcfolia();">ココフォリア用コマデータ<small>(クリップボードへコピー)</small></a>
+          <li id="downloadlist-text"><a onclick="downloadAsText();">テキスト形式</a>
+          <li id="downloadlist-json"><a onclick="downloadAsJson();">JSON 形式</a>
+          <li id="downloadlist-html"><a onclick="downloadAsHtml();">HTML 形式</a>
+          <li id="downloadlist-zipped"><a onclick="downloadAsFullSet();">ZIP 形式（上記全部入り）</a>
+          <li class="link-tag"><span>ゆとシート内リンク用タグ<br><input type="text" onclick="this.select()" value="[<TMPL_VAR rawName>#<TMPL_VAR id>]"></span>
+        </ul>
+      </aside>
+    </TMPL_UNLESS>
+
+    <form id="login-form" class="float-box" method="post" action="./">
+      <input type="hidden" name="mode" value="edit">
+      <input type="hidden" name="id" value="<TMPL_VAR id>">
+      <input type="password" name="pass" placeholder="password">
+      <input type="hidden" name="log" value="<TMPL_VAR logId>">
+      <input type="submit" value="編集">
+    </form>
+  </TMPL_UNLESS>
+
+  <main id="enemy">
+    <TMPL_IF forbidden><aside class="information attention">
+      閲覧が制限されているデータです。<br>
+      <TMPL_IF yourAuthor>あなた以外には一部または全てのデータが伏せられます。(<a href="./?id=<TMPL_VAR id>&checkView=1">⇒確認</a>)</TMPL_IF>
+    </aside></TMPL_IF>
+    
+    <TMPL_IF logId><aside class="information log">
+      <h2><TMPL_VAR selectedLogName></h2>
+      <p><TMPL_VAR updateTime> 時点の過去ログ(バックアップ)データです。</p>
+    </aside></TMPL_IF>
+    
+    <TMPL_IF convertMode><aside class="information">
+      <a href="<TMPL_VAR convertUrl>" target="_blank"><TMPL_VAR convertSource></a> のデータを表示しています。
+    </aside></TMPL_IF>
+    
+    <article class="data-view">
+      <div id="area-name" class="color-set">
+        <h1 id="enemy-name"><TMPL_VAR enemyName></h1>
+      </div>
+      
+      <div id="tags">
+        <TMPL_IF group><a id="group" href="./?type=e&group=<TMPL_VAR group>"><TMPL_VAR groupName></a></TMPL_IF>
+        <TMPL_LOOP AreaTags><i class="stage"><TMPL_VAR TEXT></i></TMPL_LOOP>
+        <TMPL_LOOP Tags><a class="tag" href="./?type=e&tag=<TMPL_VAR URL>"><TMPL_VAR TEXT></a></TMPL_LOOP>
+      </div>
+
+      <section class="data-section" id="base-data">
+        <dl><dt>分類<dd><TMPL_VAR taxon><TMPL_IF race>（<TMPL_VAR race>）</TMPL_IF></dl>
+        <dl><dt>属性<dd><TMPL_VAR element></dl>
+        <dl><dt>レベル<dd><TMPL_VAR level> <TMPL_IF isMob>（モブ）</TMPL_IF></dl>
+        <dl><dt>識別値<dd><TMPL_VAR identifyTarget></dl>
+      </section>
+      <section class="data-section" id="status">
+        <TMPL_IF isMob>
+          <dl><dt>判定<dd><TMPL_VAR action>／<TMPL_VAR reaction></dl>
+        <TMPL_ELSE>
+          <dl>
+            <dt>能力値
+            <dd>
+              <dl><dt>筋力<dd><TMPL_VAR sttStrBase>／<TMPL_VAR sttStr></dl>
+              <dl><dt>器用<dd><TMPL_VAR sttDexBase>／<TMPL_VAR sttDex></dl>
+              <dl><dt>敏捷<dd><TMPL_VAR sttAgiBase>／<TMPL_VAR sttAgi></dl>
+              <dl><dt>知力<dd><TMPL_VAR sttIntBase>／<TMPL_VAR sttInt></dl>
+              <dl><dt>感知<dd><TMPL_VAR sttSenBase>／<TMPL_VAR sttSen></dl>
+              <dl><dt>精神<dd><TMPL_VAR sttMndBase>／<TMPL_VAR sttMnd></dl>
+              <dl><dt>幸運<dd><TMPL_VAR sttLukBase>／<TMPL_VAR sttLuk></dl>
+          </dl>
+        </TMPL_IF>
+      </section>
+      <section class="data-section" id="battle-status">
+        <dl><dt>回避<dd><TMPL_VAR dodge></dl>
+        <dl><dt>防御<dd><TMPL_VAR armorP>／<TMPL_VAR armorM></dl>
+        <dl><dt>ＨＰ<dd><TMPL_VAR hp></dl>
+        <TMPL_UNLESS isMob><dl><dt>ＭＰ<dd><TMPL_VAR mp></dl></TMPL_UNLESS>
+        <dl><dt>行動<dd><TMPL_VAR initiative></dl>
+        <dl><dt>移動<dd><TMPL_VAR mobility></dl>
+      </section>
+      <section class="data-section" id="attack">
+        <TMPL_LOOP Attacks>
+          <dl><dt>攻撃<dd><span><TMPL_VAR NAME></span>　<span><TMPL_VAR ACC>（<TMPL_VAR ACCDICE>D）</span>／<span><TMPL_VAR DMG>（<TMPL_VAR DMGDICE>D）</span>／<span><TMPL_VAR TYPE>（<TMPL_VAR DMGTYPE>）</span>／<span><TMPL_VAR RANGE></span></dl>
+        </TMPL_LOOP>
+      </section>
+      <section class="data-section" id="skills">
+        <h2><TMPL_IF head_skills><TMPL_VAR head_skills><TMPL_ELSE>エネミースキル</TMPL_IF></h2>
+        <TMPL_VAR skills>
+      </section>
+      <section class="data-section" id="description">
+        <h2><TMPL_IF head_description><TMPL_VAR head_description><TMPL_ELSE>解説</TMPL_IF></h2>
+        <TMPL_VAR description>
+      </section>
+      <section class="data-section" id="loot">
+        <h2>ドロップ品</h2>
+        <dl><TMPL_LOOP Loot>
+          <dt><TMPL_VAR NUM>
+          <dd><TMPL_VAR ITEM>
+        </TMPL_LOOP></dl>
+      </section>
+
+      <section class="box chat-palette float-box">
+        <h2>チャットパレット</h2>
+        <div class="chat-palette-menu">
+          <b>使用ツール:</b>
+          <a onclick="chatPaletteSelect('')"       id="cp-switch-ytc">ゆとチャadv.</a>
+          <a onclick="chatPaletteSelect('tekey')"  id="cp-switch-tekey">Tekey</a>
+          <a onclick="chatPaletteSelect('bcdice')" id="cp-switch-bcdice">他BCDice系</a>
+        </div>
+        <textarea id="chatPaletteBox"></textarea>
+      </section>
+    </article>
+  </main>
+  <TMPL_INCLUDE NAME="skin-add/sheet-sidebar.html">
+
+  <footer>
+    <p class="notes">©FarEast Amusement Research Co.,Ltd.「アリアンロッドRPG 2E」</p>
+    <p class="copyright">©<a href="https://yutorize.work">ゆとらいず工房</a>「ゆとシートⅡ」ver.<TMPL_VAR ver></p>
+  </footer>
+</body>
+
+</html>

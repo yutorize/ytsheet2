@@ -34,6 +34,9 @@ our $game = 'ar2e';
   our $make_money = 500;
   our $make_fix   = 0;
 
+## ●各種選択肢
+  our @enemyTaxa = qw/植物 動物 人間 妖精 妖魔 アンデッド 精霊 人造生物 機械 魔獣 霊獣 巨人 竜 魔族/;
+
 
 ## ●各種ファイルへのパス
   our $data_dir = './data/'; # データ格納ディレクトリ
@@ -60,6 +63,16 @@ our $game = 'ar2e';
 
   # 魔物・アイテム・魔法/流派などの設定
   our %lib_type = (
+    'e' => {
+      listFile => $data_dir . 'enemylist.cgi',
+      dataDir => $data_dir . 'enemy/',
+      edit => $::core_dir . '/lib/ar2e/edit-enemy.pl',
+      calc => $::core_dir . '/lib/ar2e/calc-enemy.pl',
+      view => $::core_dir . '/lib/ar2e/view-enemy.pl',
+      list => $::core_dir . '/lib/ar2e/list-enemy.pl',
+      skin => $::core_dir . '/skin/ar2e/sheet-enemy.html',
+      sheetType => 'enemy',
+    },
     'g' => {
       listFile => $data_dir . 'guildlist.cgi',
       dataDir => $data_dir . 'guild/',

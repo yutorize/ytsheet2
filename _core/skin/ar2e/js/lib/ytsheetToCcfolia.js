@@ -29,3 +29,32 @@ output.generateCcfoliaJsonOfArianrhod2PC = (json, character, defaultPalette) => 
 
   return character;
 };
+
+
+output.generateCcfoliaJsonOfArianrhod2Enemy = (json, character, defaultPalette) => {
+  character.initiative = Number(json.initiative ?? 0);
+
+  character.name = json.namePlate || json.enemyName || json.aka;
+
+  character.memo = '';
+  character.memo += json.namePlate?json.enemyName+"\n":'';
+  character.memo += `PL: ${json.playerName || 'PL情報無し'}\n`;
+  character.memo += `分類：${json.taxon || ''}${json.race ? `（${json.race}）` : ''} / 属性：${json.element || ''} / レベル：${json.level}\n`;
+  character.memo += `\n`;
+  character.memo += json.imageURL ? '立ち絵: ' + (json.imageCopyright || '権利情報なし') : '';
+  
+  let addedParam = {};
+  output.consts.AR2_STATUS.forEach((s)=>{
+    character.params.push({
+      label: s.name, value: json[`stt${s.column}`] || 0
+    });
+    addedParam[s.name] = 1;
+  });
+
+  defaultPalette.parameters.forEach(s => {
+    if(addedParam[s.label]){ return ''; }
+    character.params.push(s);
+  });
+
+  return character;
+};

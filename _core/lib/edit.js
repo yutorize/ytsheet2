@@ -413,7 +413,7 @@ function delChatPaletteInsert(){
 // ユニット ----------------------------------------
 // 表示名・名前色
 function changeNamePlate(){
-  const name = form.namePlate.value || form.characterName?.value || form.aka?.value || form.monsterName?.value || '';
+  const name = form.namePlate.value || form.characterName?.value || form.aka?.value || form.monsterName?.value || form.enemyName?.value || '';
   const colors = form.nameColor.value.split(/,/);
   const color  = /^#[0-9a-zA-Z]{6}$/.test(colors[0]) ? colors[0] : '';
   form.nameColor.classList.toggle('error', colors[0] != '' && !color);

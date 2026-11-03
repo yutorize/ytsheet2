@@ -681,6 +681,14 @@ sub formatHistoryFigures {
 sub isBracketed {
   return ($_[0] // '') =~ /\A(?:\(.*\)|\[.*\]|\{.*\}|（.*）|［.*］|｛.*｝|「.*」|『.*』|【.*】|〔.*〕|〈.*〉|《.*》)\z/s;
 }
+### TMPL_LOOP用ハッシュに変換 --------------------------------------------------
+sub fieldsToHash {
+  my $prefix = shift;
+  my %print;
+  $print{uc $_} = $::pc{"$prefix$_"} for @_;
+  return %print;
+}
+
 ### ダウンロード用 --------------------------------------------------
 sub downloadModeSheetConvert {
   my $sheet = shift;
