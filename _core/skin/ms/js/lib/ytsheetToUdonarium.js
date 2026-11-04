@@ -20,7 +20,7 @@ output.generateUdonariumXmlDetailOfMamonoScramblePC = (json, opt_url, defaultPal
     `        <data name="住所">${json.address || ''}</data>`,
     `        <data type="note" name="その他">${(json.freeNote || '').replace(/&lt;br&gt;/g, '\n')}</data>`
   ];
-  if(opt_url) { dataDetails['情報'].push(`        <data name="URL">${opt_url}</data>`);}
+  if(opt_url) { dataDetails['情報'].push(`        <data name="URL">${output.escapeXml(opt_url)}</data>`);}
 
   return dataDetails
 };

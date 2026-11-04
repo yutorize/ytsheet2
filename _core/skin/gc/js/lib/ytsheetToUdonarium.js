@@ -18,7 +18,7 @@ output.generateUdonariumXmlDetailOfGranCrestPC = (json, opt_url, defaultPalette,
     `        <data name="体重">${json.weight || ''}</data>`,
     `        <data type="note" name="説明">${(json.freeNote || '').replace(/&lt;br&gt;/g, '\n')}</data>`
   ];
-  if(opt_url) { dataDetails['情報'].push(`        <data name="URL">${opt_url}</data>`);}
+  if(opt_url) { dataDetails['情報'].push(`        <data name="URL">${output.escapeXml(opt_url)}</data>`);}
 
   let addedParam = {};
   dataDetails['レベル・判定値'] = [];
@@ -28,6 +28,7 @@ output.generateUdonariumXmlDetailOfGranCrestPC = (json, opt_url, defaultPalette,
   });
   if(json.forceLead){
     output.consts.GC_PARAMS.forEach(data => {
+      if(!data.force){ return; }
       dataDetails['レベル・判定値'].push(`        <data name="部隊${data.name}">${json[data.force.replace('1',json.forceLead)] || 0}</data>`);
       addedParam['部隊'+data.name] = 1;
     });
@@ -42,7 +43,7 @@ output.generateUdonariumXmlDetailOfGranCrestPC = (json, opt_url, defaultPalette,
 
   dataDetails['バフ・デバフ'] = defaultPalette.parameters.map((param)=>{
     if(addedParam[param.label]){ return `` }
-    return `        <data type="numberResource" currentValue="${param.value}" name="${param.label}">${param.value < 10 ? 10 : param.value}</data>`; 
+    return output.generateUdonariumParameter(param, true);
   });
 
 

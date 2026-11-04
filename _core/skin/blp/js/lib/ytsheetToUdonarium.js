@@ -28,7 +28,7 @@ output.generateUdonariumXmlDetailOfBloodPathPC = (json, opt_url, defaultPalette,
     `        <data name="性別">${json.gender || ''}</data>`,
     `        <data type="note" name="説明">${(json.freeNote || '').replace(/&lt;br&gt;/g, '\n')}</data>`
   ];
-  if(opt_url) { dataDetails['情報'].push(`        <data name="URL">${opt_url}</data>`);}
+  if(opt_url) { dataDetails['情報'].push(`        <data name="URL">${output.escapeXml(opt_url)}</data>`);}
 
   return dataDetails
 };
