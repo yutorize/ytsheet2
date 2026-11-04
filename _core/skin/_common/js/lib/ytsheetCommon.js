@@ -150,6 +150,44 @@ output.getChatPalette = (sheetUrl) => {
 };
 
 
+output.escapeXml = value => String(value ?? '')
+  .replaceAll('&', '&amp;')
+  .replaceAll('<', '&lt;')
+  .replaceAll('>', '&gt;')
+  .replaceAll('"', '&quot;')
+  .replaceAll("'", '&apos;');
+
+// パレットから取り出した未エスケープの変数をXMLにする。
+output.generateUdonariumParameter = ({label, value}, asResource = false) => {
+  const name = output.escapeXml(label);
+  const text = output.escapeXml(value);
+  if(asResource) {
+    const max = output.escapeXml(value < 10 ? 10 : value);
+    return `        <data type="numberResource" currentValue="${text}" name="${name}">${max}</data>`;
+  }
+  return `        <data name="${name}">${text}</data>`;
+};
+
+// 各ゲームで出力済みのデータを優先し、残りのパレット変数を補完する。
+output.appendUdonariumParameters = (dataDetails, parameters) => {
+  if(!parameters.length) { return; }
+  const fragments = Object.values(dataDetails).flat().filter(Boolean).join('\n');
+  const xmlDoc = new DOMParser().parseFromString(`<root>${fragments}</root>`, 'application/xml');
+  if(xmlDoc.querySelector('parsererror')) {
+    throw new Error('ユドナリウム用データのXMLが不正です。');
+  }
+  const names = new Set(Array.from(xmlDoc.querySelectorAll('data[name]'), node => node.getAttribute('name')));
+  const additional = [];
+  for(const parameter of parameters) {
+    if(names.has(parameter.label)) { continue; }
+    names.add(parameter.label);
+    additional.push(output.generateUdonariumParameter(parameter));
+  }
+  if(additional.length) {
+    dataDetails['追加パラメータ'] = [...(dataDetails['追加パラメータ'] || []), ...additional];
+  }
+};
+
 output.generateUdonariumXml = async (generateType, json, opt_url='', opt_imageHash='') => {
   const defaultPalette = await output.getChatPalette(opt_url);
   const dataCharacter = {};
@@ -179,6 +217,7 @@ output.generateUdonariumXml = async (generateType, json, opt_url='', opt_imageHa
   }
 
   const dataCharacterDetail = output['generateUdonariumXmlDetailOf'+generateType](json,opt_url,defaultPalette,resources);
+  output.appendUdonariumParameters(dataCharacterDetail, defaultPalette.parameters);
   
   dataCharacter.detail = `  <data name="detail">\n`;
   for(const key in dataCharacterDetail) {

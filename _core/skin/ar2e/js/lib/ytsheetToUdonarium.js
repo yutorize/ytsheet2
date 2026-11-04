@@ -20,7 +20,7 @@ output.generateUdonariumXmlDetailOfArianrhod2PC = (json, opt_url, defaultPalette
     `        <data name="称号クラス">${json.classTitle || ''}</data>`,
     `        <data type="note" name="説明">${(json.freeNote || '').replace(/&lt;br&gt;/g, '\n')}</data>`
   ];
-  if(opt_url) { dataDetails['情報'].push(`        <data name="URL">${opt_url}</data>`);}
+  if(opt_url) { dataDetails['情報'].push(`        <data name="URL">${output.escapeXml(opt_url)}</data>`);}
 
   let addedParam = {};
   dataDetails['能力値'] = output.consts.AR2_STATUS.map((s)=>{
@@ -43,7 +43,7 @@ output.generateUdonariumXmlDetailOfArianrhod2PC = (json, opt_url, defaultPalette
 
   dataDetails['バフ・デバフ'] = defaultPalette.parameters.map((param)=>{
     if(addedParam[param.label]){ return `` }
-    return `        <data type="numberResource" currentValue="${param.value}" name="${param.label}">${param.value < 10 ? 10 : param.value}</data>`; 
+    return output.generateUdonariumParameter(param, true);
   });
 
 
@@ -88,7 +88,7 @@ output.generateUdonariumXmlDetailOfArianrhod2Enemy = (json, opt_url, defaultPale
   dataDetails['追加パラメータ'] = defaultPalette.parameters
     .filter(({ label }) => !Object.hasOwn(addedParam, label))
     .map(({ label, value }) =>
-      `        <data name="${label}">${value}</data>`
+      output.generateUdonariumParameter({label, value})
     );
 
   return dataDetails

@@ -19,7 +19,7 @@ output.generateUdonariumXmlDetailOfVisionConnectPC = (json, opt_url, defaultPale
     `        <data name="身長">${json.height || ''}</data>`,
     `        <data type="note" name="説明">${(json.freeNote || '').replace(/&lt;br&gt;/g, '\n')}</data>`
   ];
-  if(opt_url) { dataDetails['情報'].push(`        <data name="URL">${opt_url}</data>`);}
+  if(opt_url) { dataDetails['情報'].push(`        <data name="URL">${output.escapeXml(opt_url)}</data>`);}
 
   let addedParam = {};
   dataDetails['能力値・戦闘値'] = [];
@@ -30,7 +30,7 @@ output.generateUdonariumXmlDetailOfVisionConnectPC = (json, opt_url, defaultPale
 
   dataDetails['その他のパラメータ'] = defaultPalette.parameters.map((param)=>{
     if(addedParam[param.label]){ return `` }
-    return `        <data type="numberResource" currentValue="${param.value}" name="${param.label}">${param.value < 10 ? 10 : param.value}</data>`; 
+    return output.generateUdonariumParameter(param, true);
   });
 
 

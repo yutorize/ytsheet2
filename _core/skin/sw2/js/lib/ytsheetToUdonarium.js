@@ -31,12 +31,12 @@ output.generateUdonariumXmlDetailOfSwordWorld2Enemy = (json, opt_url, defaultPal
   
   dataDetails['バフ・デバフ'] = defaultPalette.parameters.map((param)=>{
     if(/修正$/.test(param.label)){
-      return `        <data type="numberResource" currentValue="${param.value}" name="${param.label}">${param.value < 10 ? 10 : param.value}</data>`; 
+      return output.generateUdonariumParameter(param, true);
     }
   });
   dataDetails['能力値'] = defaultPalette.parameters.map((param)=>{
     if(!/修正$/.test(param.label)){
-      return `        <data name="${param.label}">${param.value}</data>`; 
+      return output.generateUdonariumParameter(param);
     }
   });
   
@@ -44,7 +44,7 @@ output.generateUdonariumXmlDetailOfSwordWorld2Enemy = (json, opt_url, defaultPal
     `        <data type="note" name="特殊能力">${(json.skills || '').replace(/&lt;br&gt;/g, '\n')}</data>`,
     `        <data type="note" name="説明">${(json.description || '').replace(/&lt;br&gt;/g, '\n')}</data>`
   ];
-  if(opt_url) { dataDetails['情報'].push(`        <data name="URL">${opt_url}</data>`) }
+  if(opt_url) { dataDetails['情報'].push(`        <data name="URL">${output.escapeXml(opt_url)}</data>`) }
 
   dataDetails['戦利品'] = [];
   for(let num = 1; num <= json.lootsNum; num++){
@@ -67,7 +67,7 @@ output.generateUdonariumXmlDetailOfSwordWorld2PC = (json, opt_url, defaultPalett
     `        <data name="種族">${json.race || '?'}</data>`,
     `        <data type="note" name="説明">${(json.freeNote || '').replace(/&lt;br&gt;/g, '\n')}</data>`
   ];
-  if(opt_url) { dataDetails['情報'].push(`        <data name="URL">${opt_url}</data>`) }
+  if(opt_url) { dataDetails['情報'].push(`        <data name="URL">${output.escapeXml(opt_url)}</data>`) }
 
   dataDetails['能力値'] = [
     `        <data name="器用度">${json.sttDex}</data>`,
@@ -118,12 +118,12 @@ output.generateUdonariumXmlDetailOfSwordWorld2PC = (json, opt_url, defaultPalett
 
     if(/修正$/.test(param.label) || /^(必殺効果|クリレイ|魔法C)$/.test(param.label)){
       addedParam[param.label] = 1;
-      return `        <data type="numberResource" currentValue="${param.value}" name="${param.label}">${param.value < 10 ? 10 : param.value}</data>`;
+      return output.generateUdonariumParameter(param, true);
     }
   });
   dataDetails['その他のパラメータ'] = defaultPalette.parameters.map((param)=>{
     if(addedParam[param.label]){ return ''; }
-    return `        <data name="${param.label}">${param.value}</data>`;
+    return output.generateUdonariumParameter(param);
   });
   
   return dataDetails

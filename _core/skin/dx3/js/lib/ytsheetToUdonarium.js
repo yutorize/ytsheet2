@@ -33,7 +33,7 @@ output.generateUdonariumXmlDetailOfDoubleCross3PC = (json, opt_url, defaultPalet
     `        <data name="PL">${json.playerName || '?'}</data>`,
     `        <data type="note" name="説明">${(json.freeNote || '').replace(/&lt;br&gt;/g, '\n')}</data>`
   ];
-  if(opt_url) { dataDetails['情報'].push(`        <data name="URL">${opt_url}</data>`);}
+  if(opt_url) { dataDetails['情報'].push(`        <data name="URL">${output.escapeXml(opt_url)}</data>`);}
 
   let addedParam = {};
   dataDetails['能力値'] = output.consts.DX3_STATUS.map((s)=>{
@@ -57,7 +57,7 @@ output.generateUdonariumXmlDetailOfDoubleCross3PC = (json, opt_url, defaultPalet
 
   dataDetails['バフ・デバフ'] = defaultPalette.parameters.map((param)=>{
     if(addedParam[param.label]){ return `` }
-    return `        <data type="numberResource" currentValue="${param.value}" name="${param.label}">${param.value < 10 ? 10 : param.value}</data>`; 
+    return output.generateUdonariumParameter(param, true);
   });
 
 
@@ -72,7 +72,7 @@ output.generateUdonariumXmlDetailOfDoubleCross3Enemy = (json, opt_url, defaultPa
     `        <data name="ステージ">${json.stage || ''}</data>`,
     `        <data type="note" name="説明">${(json.freeNote || '').replace(/&lt;br&gt;/g, '\n')}</data>`
   ];
-  if(opt_url) { dataDetails['情報'].push(`        <data name="URL">${opt_url}</data>`); }
+  if(opt_url) { dataDetails['情報'].push(`        <data name="URL">${output.escapeXml(opt_url)}</data>`); }
 
   return dataDetails;
 };

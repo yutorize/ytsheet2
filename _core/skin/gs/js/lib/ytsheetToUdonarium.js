@@ -13,7 +13,7 @@ output.generateUdonariumXmlDetailOfGoblinSlayerPC = (json, opt_url, defaultPalet
     `        <data name="性別">${json.gender || ''}</data>`,
     `        <data type="note" name="説明">${(json.freeNote || '').replace(/&lt;br&gt;/g, '\n')}</data>`
   ];
-  if(opt_url) { dataDetails['情報'].push(`        <data name="URL">${opt_url}</data>`);}
+  if(opt_url) { dataDetails['情報'].push(`        <data name="URL">${output.escapeXml(opt_url)}</data>`);}
 
   dataDetails['能力値'] = [
     `<data name="体力点">${json.ability1Str}</data>`,
@@ -36,8 +36,8 @@ output.generateUdonariumXmlDetailOfGoblinSlayerPC = (json, opt_url, defaultPalet
     }
     if(param.label.match(/^(冒険者レベル|体力点|魂魄点|技量点|知力点|集中度|持久度|反射度)$/)){ return `` }
 
-    if(param.value.match(/[^0-9]/) || param.value === ''){ return `        <data name="${param.label}">${param.value}</data>`; }
-    else { return `        <data type="numberResource" currentValue="${param.value}" name="${param.label}">${param.value < 10 ? 10 : param.value}</data>`; }
+    if(param.value.match(/[^0-9]/) || param.value === ''){ return output.generateUdonariumParameter(param); }
+    else { return output.generateUdonariumParameter(param, true); }
   });
 
   return dataDetails
