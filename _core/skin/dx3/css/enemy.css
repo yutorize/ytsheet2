@@ -1139,6 +1139,9 @@
       > dd ~ dd:not(:empty)::before {
         content: "／";
       }
+      > dd ~ dd:empty {
+        display:none
+      }
     }
   }
   #status {
