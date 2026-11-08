@@ -355,7 +355,8 @@ article {
   font-size: 75%;
   transform: scaleY(calc(1/0.75));
 }
-#mystic-arts .data-magic:not(.data-arts) {
+/* 系統設定済みの秘伝魔法には、各系統のレイアウトを適用する。 */
+#mystic-arts .data-magic:not(.data-arts,.school-magic) {
   grid-template-columns: 1.1fr 1.1fr 0.35fr 0.65fr 0.8fr;
   grid-template-areas:
     "NAME NAME NAME ACST COST"

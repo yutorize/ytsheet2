@@ -33,13 +33,16 @@ sub dataCalc {
   }
   $pc{artsName} = $NL{name};
 
-  $pc{magicSongPet} = join('、',
-      grep $_, ($pc{magicSongPetBird}?'小鳥':undef) ,($pc{magicSongPetFrog}?'蛙':undef),($pc{magicSongPetBug}?'虫':undef)
+  # 通常魔法と、各流派秘伝魔法の派生項目を同じ規則で作る。
+  foreach my $prefix ('magic', map { "schoolMagic$_" } 1..$pc{schoolMagicNum}){
+    $pc{"${prefix}SongPet"} = join('、',
+      grep $_, ($pc{"${prefix}SongPetBird"}?'小鳥':undef), ($pc{"${prefix}SongPetFrog"}?'蛙':undef), ($pc{"${prefix}SongPetBug"}?'虫':undef)
     );
-  if($pc{magicClass} eq '騎芸'){
-    $pc{magicType} = join('、',
-        grep $_, ($pc{magicMountTypeAnimal}?'動物':undef) ,($pc{magicMountTypeCryptid}?'幻獣':undef),($pc{magicMountTypeMachine}?'魔動機':undef)
+    if($pc{"${prefix}Class"} eq '騎芸'){
+      $pc{"${prefix}Type"} = join('、',
+        grep $_, ($pc{"${prefix}MountTypeAnimal"}?'動物':undef), ($pc{"${prefix}MountTypeCryptid"}?'幻獣':undef), ($pc{"${prefix}MountTypeMachine"}?'魔動機':undef)
       );
+    }
   }
   #### カテゴリの全角半角変換 --------------------------------------------------
   $pc{category} =~ tr/ａ-ｚＡ-Ｚ/a-zA-Z/;

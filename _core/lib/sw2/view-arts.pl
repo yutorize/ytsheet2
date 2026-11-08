@@ -173,98 +173,108 @@ elsif($pc{category} eq 'skill'){
 }
 
 ### 魔法 --------------------------------------------------
-{
-  my $icon;
-  my $class = $pc{magicClass};
-  if($pc{magicActionTypePassive}){ $icon .= '<i class="s-icon passive"><span class="raw">[常]</span></i>' }
-  if($pc{magicActionTypeMajor}  ){ $icon .= '<i class="s-icon major"><span class="raw">[主]</span></i>' }
-  if($pc{magicActionTypeMinor}  ){ $icon .= '<i class="s-icon minor"><span class="raw">[補]</span></i>' }
-  if($pc{magicActionTypeSetup}  ){ $icon .= '<i class="s-icon setup"><span class="raw">[準]</span></i>' }
+my $magicView = magicViewData('magic');
+$SHEET->param("magic$_" => $magicView->{$_}) foreach keys %$magicView;
 
-  my $magicName = $pc{magicName};
-  (my $divineMark, $magicName) = extractDivineMark $magicName if $pc{magicClass} eq '神聖魔法';
+# 接頭辞を外した表示データを返し、通常魔法と秘伝魔法で共有する。
+sub magicViewData {
+  my ($prefix) = @_;
+  my %magic = map { substr($_, length $prefix) => $pc{$_} }
+    grep { /^\Q$prefix\E[A-Z]/ } keys %pc;
+  my $icon = '';
+  my $isSchool = $prefix ne 'magic';
+  my $class = $magic{Class};
+  if($class eq '騎芸' || $class eq '操気'){
+    if($magic{ActionTypePassive}){ $icon .= '<i class="s-icon passive"><span class="raw">[常]</span></i>' }
+    if($magic{ActionTypeMajor}  ){ $icon .= '<i class="s-icon major"><span class="raw">[主]</span></i>' }
+  }
+  if($magic{ActionTypeMinor}  ){ $icon .= ($isSchool ? '<i class="s-icon minor">≫</i>' : '<i class="s-icon minor"><span class="raw">[補]</span></i>') }
+  if($magic{ActionTypeSetup}  ){ $icon .= ($isSchool ? '<i class="s-icon setup">△</i>' : '<i class="s-icon setup"><span class="raw">[準]</span></i>') }
+
+  my $magicName = $magic{Name};
+  (my $divineMark, $magicName) = extractDivineMark $magicName if $isSchool || $magic{Class} eq '神聖魔法';
   my $alias;
   if($magicName =~ s/\s?[－―‐–—─\-](.+?)[－―‐–—─\-]$//){ $alias = "－$1－" }
 
-  $SHEET->param(magicIcon => $icon);
-  $SHEET->param(magicName => renderCharacterName $magicName);
-  $SHEET->param(magicAlias => $alias);
-  $SHEET->param(magicDivineMark => $divineMark) if defined $divineMark;
-  $SHEET->param(magicTarget   => textMagic($pc{magicTarget}));
-  $SHEET->param(magicDuration => textMagic($pc{magicDuration}));
+  $magic{Icon} = $icon;
+  $magic{Name} = renderCharacterName $magicName;
+  $magic{Alias} = $alias;
+  $magic{DivineMark} = $divineMark;
+  $magic{Target} = textMagic($magic{Target});
+  $magic{Duration} = textMagic($magic{Duration});
 
-  if($pc{magicClass} =~ /魔動機術/){ $SHEET->param(magicNameNotes => 'マギスフィア:'.$pc{magicMagisphere}); }
+  if($magic{Class} =~ /魔動機術/){ $magic{NameNotes} = 'マギスフィア:'.$magic{Magisphere}; }
   
   if   ($class eq '練技'){
-    $SHEET->param(magicClassEn => 'enhance');
-    magicItemViewOn('Duration');
+    $magic{ClassEn} = 'enhance';
+    magicItemViewOn(\%magic,'Duration');
   }
   elsif   ($class eq '呪歌'){
-    $SHEET->param(magicClassEn => 'song');
-    $SHEET->param(magicSongSing => $pc{magicSongSing} ? '必要':'なし');
-    $SHEET->param(magicCondition => textSongPoint($pc{magicCondition}));
-    $SHEET->param(magicSongBasePoint => textSongPoint($pc{magicSongBasePoint}));
-    $SHEET->param(magicSongAddPoint => textSongPoint($pc{magicSongAddPoint}));
-    magicItemViewOn('Song','Condition','Resist','Element');
+    $magic{ClassEn} = 'song';
+    $magic{SongSing} = $magic{SongSing} ? '必要':'なし';
+    $magic{Condition} = textSongPoint($magic{Condition});
+    $magic{SongBasePoint} = textSongPoint($magic{SongBasePoint});
+    $magic{SongAddPoint} = textSongPoint($magic{SongAddPoint});
+    magicItemViewOn(\%magic,'Song','Condition','Resist','Element');
   }
   elsif   ($class eq '終律'){
-    $SHEET->param(magicClassEn => 'finale');
-    $SHEET->param(magicCost => textSongPoint($pc{magicCost}));
-    magicItemViewOn('Cost','Resist','Element');
+    $magic{ClassEn} = 'finale';
+    $magic{Cost} = textSongPoint($magic{Cost});
+    magicItemViewOn(\%magic,'Cost','Resist','Element');
   }
   elsif   ($class eq '騎芸'){
-    $SHEET->param(magicClassEn => 'riding');
-    $SHEET->param(magicPremise => $pc{magicPremise} || 'なし');
-    magicItemViewOn('Premise','Type','Part');
+    $magic{ClassEn} = 'riding';
+    $magic{Premise} = $magic{Premise} || 'なし';
+    magicItemViewOn(\%magic,'Premise','Type','Part');
   }
   elsif   ($class eq '相域'){
-    $SHEET->param(magicClassEn => 'geomancy');
-    magicItemViewOn('Cost','Duration','Element');
+    $magic{ClassEn} = 'geomancy';
+    magicItemViewOn(\%magic,'Cost','Duration','Element');
   }
   elsif   ($class eq '鼓咆'){
-    $SHEET->param(magicClassEn => 'command');
-    $SHEET->param(magicTypeDt   => '系統');
-    $SHEET->param(magicCommandCost   => $pc{magicCommandCost}   ? "$pc{magicCommandCost}消費" : 'なし');
-    $SHEET->param(magicCommandCharge => $pc{magicCommandCharge} ? "＋$pc{magicCommandCharge}" : 'なし');
-    magicItemViewOn('Type','Rank','CommandCost','CommandCharge');
+    $magic{ClassEn} = 'command';
+    $magic{TypeDt} = '系統';
+    $magic{CommandCost} = $magic{CommandCost}   ? "$magic{CommandCost}消費" : 'なし';
+    $magic{CommandCharge} = $magic{CommandCharge} ? "＋$magic{CommandCharge}" : 'なし';
+    magicItemViewOn(\%magic,'Type','Rank','CommandCost','CommandCharge');
   }
   elsif   ($class eq '陣率'){
-    $SHEET->param(magicClassEn => 'lead');
-    $SHEET->param(magicCommandCost   => $pc{magicCommandCost}   ? "$pc{magicCommandCost}消費" : 'なし');
-    magicItemViewOn('Premise','Condition','CommandCost');
+    $magic{ClassEn} = 'lead';
+    $magic{CommandCost} = $magic{CommandCost}   ? "$magic{CommandCost}消費" : 'なし';
+    magicItemViewOn(\%magic,'Premise','Condition','CommandCost');
   }
   elsif   ($class eq '占瞳'){
-    $SHEET->param(magicClassEn => 'divination');
-    $SHEET->param(magicTypeDt   => 'タイプなど');
-    magicItemViewOn('Type','Target','Range','Duration');
+    $magic{ClassEn} = 'divination';
+    $magic{TypeDt} = 'タイプなど';
+    magicItemViewOn(\%magic,'Type','Target','Range','Duration');
   }
   elsif   ($class eq '魔装'){
-    $SHEET->param(magicClassEn => 'potential');
-    $SHEET->param(magicApplyHumanForm =>
-      ($pc{magicApplyHumanForm} eq 'available')   ? '有効' :
-      ($pc{magicApplyHumanForm} eq 'unavailable') ? '無効' :
-      '―'
-    );
-    magicItemViewOn('Premise','Part','HumanForm');
+    $magic{ClassEn} = 'potential';
+    $magic{ApplyHumanForm} =
+      ($magic{ApplyHumanForm} eq 'available')   ? '有効' :
+      ($magic{ApplyHumanForm} eq 'unavailable') ? '無効' :
+      '―';
+    magicItemViewOn(\%magic,'Premise','Part','HumanForm');
   }
   elsif   ($class eq '操気'){
-    $SHEET->param(magicClassEn => 'psychokinesis');
-    if($pc{magicActionTypePassive}){ magicItemViewOn('Cost','Premise') }
-    else { magicItemViewOn('Cost','Premise','Target','Range','Duration','Resist') }
+    $magic{ClassEn} = 'psychokinesis';
+    if($magic{ActionTypePassive}){ magicItemViewOn(\%magic,'Cost','Premise') }
+    else { magicItemViewOn(\%magic,'Cost','Premise','Target','Range','Duration','Resist') }
   }
   elsif   ($class eq '呪印'){
-    $SHEET->param(magicClassEn => 'seal');
-    magicItemViewOn('Premise','Type');
+    $magic{ClassEn} = 'seal';
+    magicItemViewOn(\%magic,'Premise','Type');
   }
   elsif   ($class eq '貴格'){
-    $SHEET->param(magicClassEn => 'dignity');
-    magicItemViewOn('Premise','Type','Target');
+    $magic{ClassEn} = 'dignity';
+    magicItemViewOn(\%magic,'Premise','Type','Target');
   }
   else {
-    magicItemViewOn('Cost','Target','Range','Duration','Resist',($pc{magicElement}?'Element':undef));
+    magicItemViewOn(\%magic,'Cost','Target','Range','Duration','Resist',($magic{Element}?'Element':undef));
   }
   
-  $SHEET->param(magicEffect => $pc{magicEffect} =~ s#<h2>(.+?)</h2>#</dd><dt><span class="center">$1</span></dt><dd class="box">#gir);
+  $magic{Effect} = $magic{Effect} =~ s#<h2>(.+?)</h2>#</dd><dt><span class="center">$1</span></dt><dd class="box">#gir;
+  return \%magic;
 }
 sub textMagic {
   $_[0] =~ s#／#／<wbr>#;
@@ -277,7 +287,8 @@ sub textSongPoint {
   return '<span>'.$_[0].'</span>';
 }
 sub magicItemViewOn {
-  foreach my $name (@_){ $SHEET->param("magic${name}On" => 1); }
+  my $magic = shift;
+  foreach my $name (grep { defined } @_){ $magic->{"${name}On"} = 1; }
 }
 
 ### 特殊神聖魔法 --------------------------------------------------
@@ -378,34 +389,10 @@ if(@arts || $pc{schoolArtsNote}){ $SHEET->param(ArtsView => 1); }
 my @schoolmagics;
 foreach my $num (1..$pc{schoolMagicNum}){
   next if !($pc{'schoolMagic'.$num.'Name'});
-  my $icon;
-  if($pc{'schoolMagic'.$num.'ActionTypeMinor'}){ $icon .= '<i class="s-icon minor">≫</i>' }
-  if($pc{'schoolMagic'.$num.'ActionTypeSetup'}){ $icon .= '<i class="s-icon setup">△</i>' }
-  $pc{'schoolMagic'.$num.'Effect'} =~ s#<h2>(.+?)</h2>#</dd><dt><span class="center">$1</span></dt><dd class="box">#gi;
-
-  my $schoolMagicName = $pc{'schoolMagic'.$num.'Name'};
-  (my $divineMark, $schoolMagicName) = extractDivineMark $schoolMagicName;
-  my $alias;
-  if($schoolMagicName =~ s/\s?[－―‐–—─\-](.+?)[－―‐–—─\-]$//){ $alias = "－$1－" }
-
-  push(@schoolmagics, {
-    "NAME"     => renderCharacterName($schoolMagicName),
-    "ALIAS"    => $alias,
-    "DIVINE_MARK" => $divineMark,
-    "LEVEL"    => $pc{'schoolMagic'.$num.'Lv'},
-    "ICON"     => $icon,
-    "A-COST"   => $pc{'schoolMagic'.$num.'AcquireCost'},
-    "COST"     => $pc{'schoolMagic'.$num.'Cost'},
-    "TARGET"   => textMagic($pc{'schoolMagic'.$num.'Target'}),
-    "RANGE"    => $pc{'schoolMagic'.$num.'Range'},
-    "FORM"     => $pc{'schoolMagic'.$num.'Form'},
-    "DURATION" => textMagic($pc{'schoolMagic'.$num.'Duration'}),
-    "RESIST"   => $pc{'schoolMagic'.$num.'Resist'},
-    "ELEMENT"  => $pc{'schoolMagic'.$num.'Element'},
-    "SUMMARY"  => $pc{'schoolMagic'.$num.'Summary'},
-    "EFFECT"   => $pc{'schoolMagic'.$num.'Effect'},
-    "head_EFFECT" => $pc{'head_schoolMagic'.$num.'Effect'},
-  } );
+  my $magic = magicViewData("schoolMagic$num");
+  $magic->{Level} = $magic->{Lv}; # 既存の保存キーを維持
+  $magic->{head_Effect} = $pc{"head_schoolMagic${num}Effect"};
+  push(@schoolmagics, $magic);
 }
 $SHEET->param(schoolMagicData => \@schoolmagics);
 if(@schoolmagics || $pc{schoolMagicNote}){ $SHEET->param(schoolMagicView => 1); }

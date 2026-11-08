@@ -254,17 +254,30 @@
           <TMPL_IF schoolMagicView><h2>秘伝魔法</h2>
           <TMPL_IF schoolMagicNote><div class="box"><p><TMPL_VAR schoolMagicNote></p></div></TMPL_IF>
           <TMPL_LOOP schoolMagicData>
-          <div class="data-magic">
-            <dl class="name    "><dt><TMPL_VAR LEVEL><dd><div><TMPL_VAR ICON><TMPL_VAR DIVINE_MARK>【<TMPL_VAR NAME>】<TMPL_VAR ALIAS></div></dl>
-            <dl class="a-cost  "><dt><span>必要名誉点</span><dd><TMPL_VAR A-COST></dl>
-            <dl class="cost    "><dt>消費      <dd><TMPL_VAR COST></dl>
-            <dl class="target  "><dt>対象      <dd><TMPL_VAR TARGET></dl>
-            <dl class="range   "><dt>射程/<br>形状<dd><TMPL_VAR RANGE>／<wbr><TMPL_VAR FORM></dl>
-            <dl class="duration"><dt>時間      <dd><TMPL_VAR DURATION></dl>
-            <dl class="resist  "><dt>抵抗      <dd><TMPL_VAR RESIST></dl>
-            <TMPL_IF ELEMENT><dl class="element" ><dt>属性<dd><TMPL_VAR ELEMENT></dl></TMPL_IF>
-            <dl class="summary "><dt>概要      <dd><TMPL_VAR SUMMARY></dl>
-            <dl class="effect  "><dt><TMPL_IF head_EFFECT><TMPL_VAR head_EFFECT><TMPL_ELSE>効果</TMPL_IF><dd class="box"><p><TMPL_VAR EFFECT></p></dl>
+          <div class="data-magic<TMPL_IF Class> school-magic <TMPL_VAR ClassEn></TMPL_IF>">
+            <dl class="name"><dt><TMPL_VAR Level><dd><div><TMPL_VAR Icon><TMPL_VAR DivineMark>【<TMPL_VAR Name>】</div><TMPL_IF Alias><span class="alias"><TMPL_VAR Alias></span></TMPL_IF><TMPL_IF Class><small>系統：<TMPL_VAR Class> ／ 必要名誉点：<TMPL_VAR AcquireCost><TMPL_IF NameNotes><br><TMPL_VAR NameNotes></TMPL_IF></small></TMPL_IF></dl>
+            <TMPL_UNLESS Class><dl class="a-cost"><dt><span>必要名誉点</span><dd><TMPL_VAR AcquireCost></dl></TMPL_UNLESS>
+            <TMPL_IF CostOn     ><dl class="cost     "><dt>消費         <dd><TMPL_VAR Cost></dl></TMPL_IF>
+            <TMPL_IF TargetOn   ><dl class="target   "><dt>対象         <dd><TMPL_VAR Target></dl></TMPL_IF>
+            <TMPL_IF RangeOn    ><dl class="range    "><dt>射程/<br>形状<dd><TMPL_VAR Range>／<wbr><TMPL_VAR Form></dl></TMPL_IF>
+            <TMPL_IF DurationOn ><dl class="duration "><dt>時間         <dd><TMPL_VAR Duration></dl></TMPL_IF>
+            <TMPL_IF ResistOn   ><dl class="resist   "><dt>抵抗         <dd><TMPL_VAR Resist></dl></TMPL_IF>
+            <TMPL_IF ElementOn  ><dl class="element  "><dt>属性         <dd><TMPL_VAR Element DEFAULT="―"></dl></TMPL_IF>
+            <TMPL_IF SongOn     ><dl class="sing     "><dt>歌唱         <dd><TMPL_VAR SongSing DEFAULT="なし"></dl></TMPL_IF>
+            <TMPL_IF SongOn     ><dl class="pet      "><dt>ペット       <dd><TMPL_VAR SongPet DEFAULT="―"></dl></TMPL_IF>
+            <TMPL_IF ConditionOn><dl class="condition"><dt>条件         <dd><TMPL_VAR Condition></dl></TMPL_IF>
+            <TMPL_IF SongOn     ><dl class="basepoint"><dt>基礎楽素     <dd><TMPL_VAR SongBasePoint></dl></TMPL_IF>
+            <TMPL_IF SongOn     ><dl class="setpoint "><dt>巧奏値       <dd><TMPL_VAR SongSetPoint></dl></TMPL_IF>
+            <TMPL_IF SongOn     ><dl class="addpoint "><dt>追加楽素     <dd><TMPL_VAR SongAddPoint></dl></TMPL_IF>
+            <TMPL_IF TypeOn     ><dl class="type     "><dt><TMPL_VAR TypeDt DEFAULT="対応"><dd><TMPL_VAR Type></dl></TMPL_IF>
+            <TMPL_IF PremiseOn  ><dl class="premise  "><dt>前提         <dd><TMPL_VAR Premise></dl></TMPL_IF>
+            <TMPL_IF PartOn     ><dl class="part     "><dt>適用部位     <dd><TMPL_VAR ApplyPart></dl></TMPL_IF>
+            <TMPL_IF HumanFormOn><dl class="human-form"><dt>人間形態時  <dd><TMPL_VAR ApplyHumanForm></dl></TMPL_IF>
+            <TMPL_IF RankOn     ><dl class="rank     "><dt>ランク       <dd><TMPL_VAR Rank></dl></TMPL_IF>
+            <TMPL_IF CommandCostOn  ><dl class="ccost  "><dt>陣気コスト<dd><TMPL_VAR CommandCost></dl></TMPL_IF>
+            <TMPL_IF CommandChargeOn><dl class="ccharge"><dt>陣気蓄積  <dd><TMPL_VAR CommandCharge></dl></TMPL_IF>
+            <dl class="summary "><dt>概要      <dd><TMPL_VAR Summary></dl>
+            <dl class="effect  "><dt><TMPL_IF head_Effect><TMPL_VAR head_Effect><TMPL_ELSE>効果</TMPL_IF><dd class="box"><p><TMPL_VAR Effect></p></dl>
           </div>
           </TMPL_LOOP></TMPL_IF>
         </section>

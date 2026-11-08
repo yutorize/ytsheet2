@@ -4,7 +4,9 @@ const gameSystem = 'sw2';
 window.onload = function() {
   checkCategory();
   setSchoolItemList();
+  setupMagicDatalists();
   checkMagicClass();
+  document.querySelectorAll('#school-magic-list .input-data').forEach(row => checkMagicClass(row));
   setupRangeField();
 
   changeColor();
@@ -102,96 +104,105 @@ function checkCategory(){
 }
 
 // 魔法系統 ----------------------------------------
-function checkMagicClass(){
-  const magic = form.magicClass.value;
+function checkMagicClass(row = document.querySelector('#data-magic .input-data')){
+  const classSelect = row.querySelector('dl.class select');
+  const prefix = classSelect.name.replace(/Class(?:Select)?$/, '');
+  const field = suffix => row.querySelector(`[name="${prefix}${suffix}"]`);
+  const magic = classSelect.value === 'free' ? row.querySelector('dl.class input').value : classSelect.value;
+  const cost = field('Cost');
+  let items;
+  let costList = 'list-cost';
   if(magic == '練技'){
-    viewMagicInputs(['duration']);
+    items = ['duration'];
   }
   else if(magic == '呪歌'){
-    viewMagicInputs(['song','condition','resist','element']);
+    items = ['song','condition','resist','element'];
   }
   else if(magic == '終律'){
-    viewMagicInputs(['cost','resist','element']);
-    if(form.magicCost.value == "MP"){ form.magicCost.value = '' }
-    form.magicCost.setAttribute('list', 'list-cost-song');
+    items = ['cost','resist','element'];
+    costList = 'list-cost-song';
   }
   else if(magic == '騎芸'){
-    viewMagicInputs(['premise','rider','part']);
+    items = ['premise','rider','part'];
   }
   else if(magic == '賦術'){
-    viewMagicInputs(['cost','target','range','duration','resist']);
-    if(form.magicCost.value == "MP"){ form.magicCost.value = '' }
-    form.magicCost.setAttribute('list', 'list-cost-alchemy');
+    items = ['cost','target','range','duration','resist'];
+    costList = 'list-cost-alchemy';
   }
   else if(magic == '相域'){
-    viewMagicInputs(['cost','duration','element']);
-    if(form.magicCost.value == "MP"){ form.magicCost.value = '' }
-    form.magicCost.setAttribute('list', 'list-cost-geomancy');
+    items = ['cost','duration','element'];
+    costList = 'list-cost-geomancy';
   }
   else if(magic == '鼓咆'){
-    viewMagicInputs(['type','rank','command','commcost']);
+    items = ['type','rank','command','commcost'];
   }
   else if(magic == '陣率'){
-    viewMagicInputs(['premise','condition','commcost']);
+    items = ['premise','condition','commcost'];
   }
   else if(magic == '占瞳'){
-    viewMagicInputs(['type','target','range','duration']);
+    items = ['type','target','range','duration'];
   }
   else if(magic == '魔装'){
-    viewMagicInputs(['premise','part','human-form']);
+    items = ['premise','part','human-form'];
   }
   else if(magic == '操気'){
-    viewMagicInputs(['cost','premise','target','range','duration','resist']);
-    if(form.magicCost.value == "MP"){ form.magicCost.value = '' }
-    form.magicCost.setAttribute('list', 'list-cost-psychokinesis');
+    items = field('ActionTypePassive').checked
+      ? ['cost','premise'] : ['cost','premise','target','range','duration','resist'];
+    costList = 'list-cost-psychokinesis';
   }
   else if(magic == '呪印'){
-    viewMagicInputs(['type','premise']);
+    items = ['type','premise'];
   }
   else if(magic == '貴格'){
-    viewMagicInputs(['type','target','premise']);
+    items = ['type','target','premise'];
   }
   else if(magic == '魔動機術'){
-    viewMagicInputs(['cost','target','range','duration','resist','element','sphere']);
-    if(form.magicCost.value == ''){ form.magicCost.value = 'MP' }
-    form.magicCost.setAttribute('list', 'list-cost');
+    items = ['cost','target','range','duration','resist','element','sphere'];
   }
   else {
-    viewMagicInputs(['cost','target','range','duration','resist','element']);
-    if(form.magicCost.value == ''){ form.magicCost.value = 'MP' }
-    form.magicCost.setAttribute('list', 'list-cost');
+    items = ['cost','target','range','duration','resist','element'];
   }
-  form.magicActionTypePassive.parentNode.style.display = (magic.match(/^(騎芸|操気)$/)) ? '' : 'none';
-  form.magicActionTypeMajor.parentNode.style.display   = (magic.match(/^(騎芸|操気)$/)) ? '' : 'none';
-  document.querySelector('#data-magic dl.summary').style.display   = (magic == '呪印' || magic == '貴格') ? 'none' : '';
-  document.querySelector('#data-magic dl.level     dt').textContent = (magic.match(/(属性|特殊)妖精魔法|秘奥魔法/)) ? 'ランク' : '習得レベル';
-  document.querySelector('#data-magic dl.type      dt').textContent = (magic == '鼓咆') ? '鼓咆の系統' : (magic == '占瞳') ? 'タイプなど' : (magic == '貴格') ? '形態' : '対応';
-  document.querySelector('#data-magic dl.premise   dt').textContent = (magic == '呪印') ? '前提ＡＣ'   : '前提';
-  document.querySelector('#data-magic dl.condition dt').textContent = (magic == '呪歌') ? '効果発生条件' : (magic == '陣率') ? '使用条件' : '条件';
+  viewMagicInputs(items, row);
+  cost.setAttribute('list', costList);
+  if(costList !== 'list-cost' && cost.value === 'MP'){ cost.value = ''; }
+  // 系統未設定の既存秘伝魔法には、初期値を補わない。
+  if(items.includes('cost') && costList === 'list-cost' &&
+      (prefix === 'magic' || magic !== '') && cost.value === ''){ cost.value = 'MP'; }
+  field('ActionTypePassive').parentNode.style.display = (magic.match(/^(騎芸|操気)$/)) ? '' : 'none';
+  field('ActionTypeMajor').parentNode.style.display   = (magic.match(/^(騎芸|操気)$/)) ? '' : 'none';
+  row.querySelector('dl.summary').style.display   = (magic == '呪印' || magic == '貴格') ? 'none' : '';
+  row.querySelector('dl.level     dt').textContent = (magic.match(/(属性|特殊)妖精魔法|秘奥魔法/)) ? 'ランク' : '習得レベル';
+  row.querySelector('dl.type      dt').textContent = (magic == '鼓咆') ? '鼓咆の系統' : (magic == '占瞳') ? 'タイプなど' : (magic == '貴格') ? '形態' : '対応';
+  row.querySelector('dl.premise   dt').textContent = (magic == '呪印') ? '前提ＡＣ'   : '前提';
+  row.querySelector('dl.condition dt').textContent = (magic == '呪歌') ? '効果発生条件' : (magic == '陣率') ? '使用条件' : '条件';
 
-  const levelInput = document.querySelector('#data-magic dl.level dd input');
-  const targetOptionSelf = document.querySelector('#list-target option.self');
-  const rangeOptionSelf = document.querySelector('#list-range option.self');
+  const levelInput = row.querySelector('dl.level dd input');
   if (magic.length === 2) {
     // 練技、呪歌など
     levelInput.setAttribute('list', 'list-craft-required-level');
-    targetOptionSelf.setAttribute('value', "自身");
-    rangeOptionSelf.setAttribute('value', "自身");
   } else {
     levelInput.removeAttribute('list');
-    targetOptionSelf.setAttribute('value', "術者");
-    rangeOptionSelf.setAttribute('value', "術者");
   }
+  field('Target').setAttribute('list', magic.length === 2 ? 'list-target-craft' : 'list-target');
+  field('Range').setAttribute('list', magic.length === 2 ? 'list-range-craft' : 'list-range');
 }
-function viewMagicInputs(items){
-  document.querySelectorAll(`#data-magic dl`).forEach(obj => {
+function viewMagicInputs(items, row){
+  row.querySelectorAll('dl').forEach(obj => {
     obj.style.display = 'none';
   });
-  items.unshift('name','class','level','summary','effect');
-  for (const item of items) {
-    document.querySelectorAll(`#data-magic dl.${item}`).forEach(obj => {
+  for (const item of ['name','class','a-cost','level','summary','effect', ...items]) {
+    row.querySelectorAll(`dl.${item}`).forEach(obj => {
       obj.style.display = '';
     });
+  }
+}
+function setupMagicDatalists(){
+  // 各秘伝魔法と特殊神聖魔法が、他の行の系統に影響されないようにする。
+  for(const id of ['list-target','list-range']){
+    const list = document.getElementById(id).cloneNode(true);
+    list.id += '-craft';
+    list.querySelector('option.self').value = '自身';
+    document.body.append(list);
   }
 }
 // 流派アイテム欄 ----------------------------------------
@@ -256,6 +267,7 @@ function addSchoolMagic(){
   const row = createRow('school-magic','schoolMagicNum');
   setupRangeField(row.querySelector('input[name$="Range"]'));
   document.querySelector("#school-magic-list").append(row);
+  checkMagicClass(row);
 }
 // 削除
 function delSchoolMagic(){
