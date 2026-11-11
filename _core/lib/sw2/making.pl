@@ -30,9 +30,9 @@ my $average_max = 0;
 my $i = 1;
 while ($i <= $in{repeat} || ($average_max <= $set::average_over)){
   if($adventurer){
-    $in{tec} = dice(2);
-    $in{phy} = dice(2);
-    $in{spi} = dice(2);
+    $in{tec} = rollMakingDice(2);
+    $in{phy} = rollMakingDice(2);
+    $in{spi} = rollMakingDice(2);
   }
   elsif(exists $data::races{$in{race}}{birth}){
     $in{tec} = $data::races{$in{race}}{birth}{tec};
@@ -40,12 +40,12 @@ while ($i <= $in{repeat} || ($average_max <= $set::average_over)){
     $in{spi} = $data::races{$in{race}}{birth}{spi};
   }
   
-  my $stt_A = dice($data::races{$in{race}}{dice}{A});
-  my $stt_B = dice($data::races{$in{race}}{dice}{B});
-  my $stt_C = dice($data::races{$in{race}}{dice}{C});
-  my $stt_D = dice($data::races{$in{race}}{dice}{D});
-  my $stt_E = dice($data::races{$in{race}}{dice}{E});
-  my $stt_F = dice($data::races{$in{race}}{dice}{F});
+  my $stt_A = rollMakingDice($data::races{$in{race}}{dice}{A});
+  my $stt_B = rollMakingDice($data::races{$in{race}}{dice}{B});
+  my $stt_C = rollMakingDice($data::races{$in{race}}{dice}{C});
+  my $stt_D = rollMakingDice($data::races{$in{race}}{dice}{D});
+  my $stt_E = rollMakingDice($data::races{$in{race}}{dice}{E});
+  my $stt_F = rollMakingDice($data::races{$in{race}}{dice}{F});
 
   my $dicetotal  = $data::races{$in{race}}{dice}{A}
                  + $data::races{$in{race}}{dice}{B}
@@ -75,12 +75,12 @@ if($in{race} eq 'アビスボーン'){
 
 ## 書き込み
 my $num = eval {
-  YtSheet::MakingLog->new(
+  YtSheet::MakingLog->newMakingLog(
     file => $set::makelist,
     keep => $set::making_archive_keep,
     unit => $set::making_archive_unit,
     max  => $set::making_max,
-  )->post(
+  )->saveMakingPost(
     id => $LOGIN_ID, name => $in{name}, comment => $in{comment},
     race => $in{race}, stt => $stt_data, curse => $curse,
     interval => $set::making_interval,
@@ -90,7 +90,7 @@ error($@) if $@;
 
 print "Location:./?mode=making&num=${num}\n\n";
 
-sub dice {
+sub rollMakingDice {
   my $loop = shift;
   my $num = 0;
   foreach (1..$loop){
