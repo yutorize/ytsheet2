@@ -107,6 +107,10 @@ our $system_id = 'sw2.5';
 
 ## ●メイキング
   our $making_max = 0; # 作成板の最大保存数（0で無制限）
+  # making_maxが0のとき、keep+unit件に達したら古いunit件を過去ログへ退避する。
+  # 両方0で自動退避なし。過去ログも一覧・検索の対象になる。
+  our $making_archive_keep = 10000;
+  our $making_archive_unit = 10000;
   our $average_over = 0;
   our $adventurer_onlyonce = 0;
   our $making_interval = 0;
@@ -199,6 +203,7 @@ our @effects = (
   our $passfile = $data_dir . 'charpass.cgi'; # パスワード記録ファイル
   our $listfile = $data_dir . 'charlist.cgi'; # キャラクター一覧ファイル
   our $makelist = $data_dir . 'makelist.cgi'; # 能力値作成データファイル
+  our $making_archive_dir = $data_dir . 'makelist-log/'; # 能力値作成の過去ログ保存先
   our $char_dir = $data_dir . 'chara/'; # キャラクターデータ格納ディレクトリ
 
   our $lib_edit_char   = $::core_dir . '/lib/sw2/edit-chara.pl';  # 編集画面

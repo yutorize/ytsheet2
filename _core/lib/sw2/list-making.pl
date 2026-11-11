@@ -8,6 +8,7 @@ use HTML::Template;
 require $set::lib_list;
 
 require $set::data_races;
+require $::core_dir . '/lib/sw2/making-log.pl';
 
 unless(isInteger($::in{page}) && $::in{page} >= 0){
   $::in{page} = 0;
@@ -53,39 +54,38 @@ foreach my $name (@data::race_names){
 }
 $INDEX->param(MakeList => \@raceMakeList);
 
-my $i = 0;
-my @lines = ();
-if(open (my $FH,"<", $set::makelist)){
-  @lines = <$FH>;
-  close($FH);
-}
-
 ## 検索
+my %query = (page => $::in{page}, items => $page_items);
 if($::in{mylist}){
-  @lines = grep { $_ =~ /^(?:[^<]*<>){2}\Q$::LOGIN_ID\E</o } @lines;
+  $query{id} = $::LOGIN_ID // '';
   $INDEX->param(modeMylist => 1);
   $INDEX->param(mode => 'mylist');
 }
 elsif($::in{id}){
-  @lines = grep { $_ =~ /^(?:[^<]*<>){2}\Q$::in{id}\E</o } @lines;
+  $query{id} = $::in{id};
 }
 if($::in{tag}){
   my $tag_query = decode('utf8', $::in{tag}) =~ s/[#＃]//r;
-  @lines = grep { $_ =~ /^(?:[^<]*<>){4}[^<]*?[#＃]\Q$tag_query\E(\s|[#＃]|<)/o } @lines if $::in{tag};
+  $query{tag} = $tag_query;
   $INDEX->param(tag => $tag_query);
 }
 
 my ($inNum, $inTrial) = split('-', $::in{num});
 $inNum   = '' unless defined($inNum)   && $inNum   =~ /^[0-9]+$/;
 $inTrial = '' unless defined($inTrial) && $inTrial =~ /^[0-9]+$/;
+$query{num} = $inNum;
+my $result = eval {
+  my $log = newMakingLog(
+    file => $set::makelist,
+    archive_dir => $set::making_archive_dir,
+  );
+  searchMakingPosts($log, %query);
+};
+error($@) if $@;
 
 my @posts;
-foreach my $data (@lines) {
-  $i++;
+foreach my $data (@{$result->{lines}}) {
   chomp $data;
-  
-  next if $inNum && $data !~ /^$inNum</o;
-  next if !$inNum && (($i <= $page) || ($i > $page+$page_items));
   my %pc = %{ splitMakingLine($data) };
 
   if(!$::SW2_0){
@@ -179,7 +179,7 @@ $INDEX->param(pagePrev => ($page - $page_items) / $page_items);
 $INDEX->param(pageNext => ($page + $page_items) / $page_items);
 if(!$inNum) {
   $INDEX->param(pagePrevOn => $page - $page_items >= 0);
-  $INDEX->param(pageNextOn => $page + $page_items < @lines);
+  $INDEX->param(pageNextOn => $result->{has_next});
 }
 if($inNum || $::in{tag}) {
   $INDEX->param(isMakingResult => 1);

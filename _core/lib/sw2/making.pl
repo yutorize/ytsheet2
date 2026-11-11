@@ -7,6 +7,7 @@ use open ":utf8";
 my $LOGIN_ID = check;
 
 require $set::data_races;
+require $::core_dir . '/lib/sw2/making-log.pl';
 
 error('名前が未入力です') if !$::in{name};
 error('種族が未選択です') if !$::in{race};
@@ -21,8 +22,6 @@ foreach(param()){
   $in{$_} =~ s/\r\n?|\n/<br>/g;
 }
 
-my $now = time;
-
 ## 能力値作成処理
 my $adventurer = ($in{race} =~ s/（冒険者）//) ? 1 : 0;
 
@@ -31,9 +30,9 @@ my $average_max = 0;
 my $i = 1;
 while ($i <= $in{repeat} || ($average_max <= $set::average_over)){
   if($adventurer){
-    $in{tec} = dice(2);
-    $in{phy} = dice(2);
-    $in{spi} = dice(2);
+    $in{tec} = rollMakingDice(2);
+    $in{phy} = rollMakingDice(2);
+    $in{spi} = rollMakingDice(2);
   }
   elsif(exists $data::races{$in{race}}{birth}){
     $in{tec} = $data::races{$in{race}}{birth}{tec};
@@ -41,12 +40,12 @@ while ($i <= $in{repeat} || ($average_max <= $set::average_over)){
     $in{spi} = $data::races{$in{race}}{birth}{spi};
   }
   
-  my $stt_A = dice($data::races{$in{race}}{dice}{A});
-  my $stt_B = dice($data::races{$in{race}}{dice}{B});
-  my $stt_C = dice($data::races{$in{race}}{dice}{C});
-  my $stt_D = dice($data::races{$in{race}}{dice}{D});
-  my $stt_E = dice($data::races{$in{race}}{dice}{E});
-  my $stt_F = dice($data::races{$in{race}}{dice}{F});
+  my $stt_A = rollMakingDice($data::races{$in{race}}{dice}{A});
+  my $stt_B = rollMakingDice($data::races{$in{race}}{dice}{B});
+  my $stt_C = rollMakingDice($data::races{$in{race}}{dice}{C});
+  my $stt_D = rollMakingDice($data::races{$in{race}}{dice}{D});
+  my $stt_E = rollMakingDice($data::races{$in{race}}{dice}{E});
+  my $stt_F = rollMakingDice($data::races{$in{race}}{dice}{F});
 
   my $dicetotal  = $data::races{$in{race}}{dice}{A}
                  + $data::races{$in{race}}{dice}{B}
@@ -75,34 +74,25 @@ if($in{race} eq 'アビスボーン'){
 }
 
 ## 書き込み
-my $num;
-overwriteFile($set::makelist, sub {
-  my ($READ, $WRITE) = @_;
-  my @lines = <$READ>;
-  # 連投制限
-  if($set::making_interval){
-    foreach(@lines){
-      my ($num, $date, $id, $name, $race) = (/^([0-9]+)<>([0-9]{10})<>([^<]*)<>([^<]*)<>[^<]*<>([^<]*)/);
-      last if $now - $date > $set::making_interval;
-      if(
-        $LOGIN_ID eq $id &&
-        $in{name} eq $name &&
-        $in{race} eq $race
-      ){
-        return '429:'.$set::making_interval.'秒以内の連続投稿は禁止されています。';
-      }
-    }
-  }
-  # ---
-  $num = ($lines[0] =~ /^([0-9]+)</)[0] + 1;
-  if ($set::making_max) { while ($set::making_max <= @lines) { pop(@lines); } }
-  unshift(@lines,"$num<>$now<>$LOGIN_ID<>$in{name}<>$in{comment}<>$in{race}<>$stt_data<>$curse<>\n");
-  print $WRITE @lines;
-});
+my $num = eval {
+  my $log = newMakingLog(
+    file => $set::makelist,
+    archive_dir => $set::making_archive_dir,
+    keep => $set::making_archive_keep,
+    unit => $set::making_archive_unit,
+    max  => $set::making_max,
+  );
+  saveMakingPost($log,
+    id => $LOGIN_ID, name => $in{name}, comment => $in{comment},
+    race => $in{race}, stt => $stt_data, curse => $curse,
+    interval => $set::making_interval,
+  );
+};
+error($@) if $@;
 
 print "Location:./?mode=making&num=${num}\n\n";
 
-sub dice {
+sub rollMakingDice {
   my $loop = shift;
   my $num = 0;
   foreach (1..$loop){
