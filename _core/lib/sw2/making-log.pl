@@ -17,7 +17,8 @@ sub newMakingLog {
   }
   error("500:過去ログの保存件数と分割単位は両方とも正数、または両方とも0にしてください。\n")
     if !!$args{keep} != !!$args{unit};
-  $args{archive_dir} = $args{file}.'.archive';
+  $args{archive_dir} //= dirname($args{file}).'/makelist-log/';
+  error("500:能力値作成の過去ログ保存先が未指定です。\n") unless length $args{archive_dir};
   return \%args;
 }
 

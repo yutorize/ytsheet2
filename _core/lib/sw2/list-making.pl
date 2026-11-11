@@ -75,7 +75,11 @@ $inNum   = '' unless defined($inNum)   && $inNum   =~ /^[0-9]+$/;
 $inTrial = '' unless defined($inTrial) && $inTrial =~ /^[0-9]+$/;
 $query{num} = $inNum;
 my $result = eval {
-  searchMakingPosts(newMakingLog(file => $set::makelist), %query);
+  my $log = newMakingLog(
+    file => $set::makelist,
+    archive_dir => $set::making_archive_dir,
+  );
+  searchMakingPosts($log, %query);
 };
 error($@) if $@;
 

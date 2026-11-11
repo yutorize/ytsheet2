@@ -203,6 +203,7 @@ our @effects = (
   our $passfile = $data_dir . 'charpass.cgi'; # パスワード記録ファイル
   our $listfile = $data_dir . 'charlist.cgi'; # キャラクター一覧ファイル
   our $makelist = $data_dir . 'makelist.cgi'; # 能力値作成データファイル
+  our $making_archive_dir = $data_dir . 'makelist-log/'; # 能力値作成の過去ログ保存先
   our $char_dir = $data_dir . 'chara/'; # キャラクターデータ格納ディレクトリ
 
   our $lib_edit_char   = $::core_dir . '/lib/sw2/edit-chara.pl';  # 編集画面

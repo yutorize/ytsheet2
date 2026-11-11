@@ -77,6 +77,7 @@ if($in{race} eq 'アビスボーン'){
 my $num = eval {
   my $log = newMakingLog(
     file => $set::makelist,
+    archive_dir => $set::making_archive_dir,
     keep => $set::making_archive_keep,
     unit => $set::making_archive_unit,
     max  => $set::making_max,
