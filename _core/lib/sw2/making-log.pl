@@ -12,25 +12,26 @@ sub new {
   my ($class, %args) = @_;
   foreach my $key (qw(keep unit max)) {
     $args{$key} = 0 unless defined $args{$key};
-    die "500:能力値作成ログの設定が不正です。\n" unless $args{$key} =~ /^[0-9]+$/;
+    ::error("500:能力値作成ログの設定が不正です。\n") unless $args{$key} =~ /^[0-9]+$/;
     $args{$key} = 0 + $args{$key};
   }
-  die "500:過去ログの保存件数と分割単位は両方とも正数、または両方とも0にしてください。\n"
+  ::error("500:過去ログの保存件数と分割単位は両方とも正数、または両方とも0にしてください。\n")
     if !!$args{keep} != !!$args{unit};
   $args{archive_dir} = $args{file}.'.archive';
   return bless \%args, $class;
 }
 
 # 既存のoverwriteFileと同じロックを使う。検索ではスナップショット取得中だけ共有ロックする。
+# ロック中の例外は捕捉し、解放してから既存のerror()で表示する。
 sub _with_lock {
   my ($self, $mode, $code) = @_;
   sysopen my $lock, $self->{file}.'.lock', O_RDWR | O_CREAT
-    or die "500:能力値作成ログのロックファイルを開けません。\n";
-  flock($lock, $mode) or die "500:能力値作成ログをロックできません。\n";
+    or ::error("500:能力値作成ログのロックファイルを開けません。\n");
+  flock($lock, $mode) or ::error("500:能力値作成ログをロックできません。\n");
   my $result = eval { $code->() };
   my $error = $@;
   close($lock) or $error ||= "500:能力値作成ログのロックを解放できません。\n";
-  die $error if $error;
+  ::error($error) if $error;
   return $result;
 }
 
@@ -56,6 +57,7 @@ sub _number {
 }
 
 # 呼び出し元が排他ロックを保持する。差し替え前のファイルは失敗時も残す。
+# eval内のdieで後片付けへ進み、_with_lockでロックを解放してからerror()を呼ぶ。
 sub _write_file {
   my ($self, $file, $lines) = @_;
   my ($fh, $tmp) = eval {
@@ -221,17 +223,17 @@ sub _visit {
   }
   foreach my $archive (@$archives) {
     next if $num && ($num < $archive->{low} || $num > $archive->{high});
-    open my $fh, '<', $archive->{file} or die "500:能力値作成の過去ログを開けません。\n";
+    open my $fh, '<', $archive->{file} or ::error("500:能力値作成の過去ログを開けません。\n");
     my $stop = 0;
     while (1) {
       local $! = 0;
       my $line = <$fh>;
-      die "500:能力値作成の過去ログを読み込めません。\n" if !defined($line) && $!;
+      ::error("500:能力値作成の過去ログを読み込めません。\n") if !defined($line) && $!;
       last unless defined $line;
       next if $num && _number($line) != $num;
       unless ($code->($line)) { $stop = 1; last; }
     }
-    close($fh) or die "500:能力値作成の過去ログを読み込めません。\n";
+    close($fh) or ::error("500:能力値作成の過去ログを読み込めません。\n");
     return if $stop;
   }
 }
