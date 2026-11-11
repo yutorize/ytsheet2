@@ -1,4 +1,4 @@
-package YtSheet::MakingLog;
+################## 能力値作成ログ ##################
 use strict;
 use warnings;
 use utf8;
@@ -9,36 +9,36 @@ use File::Basename qw(dirname);
 use File::Temp qw(tempfile);
 
 sub newMakingLog {
-  my ($class, %args) = @_;
+  my (%args) = @_;
   foreach my $key (qw(keep unit max)) {
     $args{$key} = 0 unless defined $args{$key};
-    ::error("500:能力値作成ログの設定が不正です。\n") unless $args{$key} =~ /^[0-9]+$/;
+    error("500:能力値作成ログの設定が不正です。\n") unless $args{$key} =~ /^[0-9]+$/;
     $args{$key} = 0 + $args{$key};
   }
-  ::error("500:過去ログの保存件数と分割単位は両方とも正数、または両方とも0にしてください。\n")
+  error("500:過去ログの保存件数と分割単位は両方とも正数、または両方とも0にしてください。\n")
     if !!$args{keep} != !!$args{unit};
   $args{archive_dir} = $args{file}.'.archive';
-  return bless \%args, $class;
+  return \%args;
 }
 
 # 既存のoverwriteFileと同じロックを使う。検索ではスナップショット取得中だけ共有ロックする。
 # ロック中の例外は捕捉し、解放してから既存のerror()で表示する。
 sub withMakingLogLock {
-  my ($self, $mode, $code) = @_;
-  sysopen my $lock, $self->{file}.'.lock', O_RDWR | O_CREAT
-    or ::error("500:能力値作成ログのロックファイルを開けません。\n");
-  flock($lock, $mode) or ::error("500:能力値作成ログをロックできません。\n");
+  my ($log, $mode, $code) = @_;
+  sysopen my $lock, $log->{file}.'.lock', O_RDWR | O_CREAT
+    or error("500:能力値作成ログのロックファイルを開けません。\n");
+  flock($lock, $mode) or error("500:能力値作成ログをロックできません。\n");
   my $result = eval { $code->() };
   my $error = $@;
   close($lock) or $error ||= "500:能力値作成ログのロックを解放できません。\n";
-  ::error($error) if $error;
+  error($error) if $error;
   return $result;
 }
 
 sub readCurrentMakingLog {
-  my ($self) = @_;
+  my ($log) = @_;
   my $fh;
-  unless (open $fh, '<', $self->{file}) {
+  unless (open $fh, '<', $log->{file}) {
     return [] if $! == ENOENT;
     die "500:能力値作成ログを開けません。\n";
   }
@@ -59,7 +59,7 @@ sub getMakingPostNumber {
 # 呼び出し元が排他ロックを保持する。差し替え前のファイルは失敗時も残す。
 # eval内のdieで後片付けへ進み、withMakingLogLock()でロックを解放してからerror()を呼ぶ。
 sub writeMakingLogFile {
-  my ($self, $file, $lines) = @_;
+  my ($log, $file, $lines) = @_;
   my ($fh, $tmp) = eval {
     tempfile('tmp_making_XXXXXXXX', DIR => dirname($file), UNLINK => 0);
   };
@@ -83,9 +83,9 @@ sub writeMakingLogFile {
 
 # 過去ログは作成後に更新・削除しない。ファイル名の番号を数値で比較する。
 sub listMakingLogArchives {
-  my ($self) = @_;
+  my ($log) = @_;
   my $dir;
-  unless (opendir $dir, $self->{archive_dir}) {
+  unless (opendir $dir, $log->{archive_dir}) {
     return [] if $! == ENOENT;
     die "500:能力値作成の過去ログ一覧を開けません。\n";
   }
@@ -94,7 +94,7 @@ sub listMakingLogArchives {
     next unless $name =~ /^makelist-([0-9]+)-([0-9]+)\.cgi$/;
     my ($low, $high) = (0 + $1, 0 + $2);
     die "500:能力値作成の過去ログ範囲が不正です。\n" unless $low > 0 && $low <= $high;
-    push @files, { file => "$self->{archive_dir}/$name", low => $low, high => $high };
+    push @files, { file => "$log->{archive_dir}/$name", low => $low, high => $high };
   }
   closedir($dir) or die "500:能力値作成の過去ログ一覧を読み込めません。\n";
   @files = sort { $b->{high} <=> $a->{high} } @files;
@@ -106,8 +106,8 @@ sub listMakingLogArchives {
 }
 
 sub rotateMakingLogs {
-  my ($self, $lines) = @_;
-  return if $self->{max} || !$self->{keep} || @$lines < $self->{keep} + $self->{unit};
+  my ($log, $lines) = @_;
+  return if $log->{max} || !$log->{keep} || @$lines < $log->{keep} + $log->{unit};
   my $previous;
   foreach my $line (@$lines) {
     my $num = getMakingPostNumber($line);
@@ -115,14 +115,14 @@ sub rotateMakingLogs {
       if defined($previous) && $num >= $previous;
     $previous = $num;
   }
-  mkdir($self->{archive_dir}) or die "500:能力値作成の過去ログ保存先を作れません。\n"
-    unless -d $self->{archive_dir};
-  my $archives = $self->listMakingLogArchives;
-  while (@$lines >= $self->{keep} + $self->{unit}) {
+  mkdir($log->{archive_dir}) or die "500:能力値作成の過去ログ保存先を作れません。\n"
+    unless -d $log->{archive_dir};
+  my $archives = listMakingLogArchives($log);
+  while (@$lines >= $log->{keep} + $log->{unit}) {
     # 必ず最古のブロックから保存する。中断時も同じ範囲・同じ内容で再試行できる。
-    my @chunk = splice(@$lines, -$self->{unit});
+    my @chunk = splice(@$lines, -$log->{unit});
     my ($low, $high) = (getMakingPostNumber($chunk[-1]), getMakingPostNumber($chunk[0]));
-    my $file = sprintf('%s/makelist-%010d-%010d.cgi', $self->{archive_dir}, $low, $high);
+    my $file = sprintf('%s/makelist-%010d-%010d.cgi', $log->{archive_dir}, $low, $high);
     foreach my $archive (@$archives) {
       next if $archive->{high} < $low || $archive->{low} > $high;
       die "500:退避途中の過去ログと範囲が重複します。分割単位を元に戻して再試行してください。\n"
@@ -138,25 +138,25 @@ sub rotateMakingLogs {
         unless join('', @saved) eq join('', @chunk);
     }
     else {
-      $self->writeMakingLogFile($file, \@chunk);
+      writeMakingLogFile($log, $file, \@chunk);
     }
   }
 }
 
 # 初回移行用。新規投稿なしで、既存ログだけを分割する。
 sub archiveMakingLogs {
-  my ($self) = @_;
-  return $self->withMakingLogLock(LOCK_EX, sub {
-    my $lines = $self->readCurrentMakingLog;
+  my ($log) = @_;
+  return withMakingLogLock($log, LOCK_EX, sub {
+    my $lines = readCurrentMakingLog($log);
     my $before = @$lines;
-    $self->rotateMakingLogs($lines);
-    $self->writeMakingLogFile($self->{file}, $lines) if @$lines != $before;
+    rotateMakingLogs($log, $lines);
+    writeMakingLogFile($log, $log->{file}, $lines) if @$lines != $before;
     return $before - @$lines;
   });
 }
 
 sub checkMakingPostInterval {
-  my ($self, $lines, $post) = @_;
+  my ($log, $lines, $post) = @_;
   return unless $post->{interval};
   my $check = sub {
     my ($line) = @_;
@@ -169,7 +169,7 @@ sub checkMakingPostInterval {
   };
   foreach my $line (@$lines) { return unless $check->($line); }
   # 現行の末尾も制限時間内なら、直前の過去ログにさかのぼる。
-  foreach my $archive (@{$self->listMakingLogArchives}) {
+  foreach my $archive (@{listMakingLogArchives($log)}) {
     open my $fh, '<', $archive->{file} or die "500:能力値作成の過去ログを開けません。\n";
     my $stop = 0;
     while (1) {
@@ -185,33 +185,33 @@ sub checkMakingPostInterval {
 }
 
 sub saveMakingPost {
-  my ($self, %post) = @_;
-  return $self->withMakingLogLock(LOCK_EX, sub {
+  my ($log, %post) = @_;
+  return withMakingLogLock($log, LOCK_EX, sub {
     $post{now} = time unless defined $post{now};
-    my $lines = $self->readCurrentMakingLog;
+    my $lines = readCurrentMakingLog($log);
     die "500:過去ログがあるため、空の現行ログから採番できません。\n"
-      if !@$lines && @{$self->listMakingLogArchives};
-    $self->checkMakingPostInterval($lines, \%post);
+      if !@$lines && @{listMakingLogArchives($log)};
+    checkMakingPostInterval($log, $lines, \%post);
     my $num = @$lines ? getMakingPostNumber($lines->[0]) + 1 : 1;
     # making_maxが正数の場合は従来の保存上限を優先し、自動退避しない。
-    splice(@$lines, $self->{max} - 1) if $self->{max} && @$lines >= $self->{max};
+    splice(@$lines, $log->{max} - 1) if $log->{max} && @$lines >= $log->{max};
     unshift @$lines, join('<>', $num, $post{now}, map { $post{$_} // '' }
       qw(id name comment race stt curse))."<>\n";
-    $self->rotateMakingLogs($lines);
-    $self->writeMakingLogFile($self->{file}, $lines);
+    rotateMakingLogs($log, $lines);
+    writeMakingLogFile($log, $log->{file}, $lines);
     return $num;
   });
 }
 
 sub getMakingLogSnapshot {
-  my ($self) = @_;
-  return $self->withMakingLogLock(LOCK_SH, sub {
-    return { lines => $self->readCurrentMakingLog, archives => $self->listMakingLogArchives };
+  my ($log) = @_;
+  return withMakingLogLock($log, LOCK_SH, sub {
+    return { lines => readCurrentMakingLog($log), archives => listMakingLogArchives($log) };
   });
 }
 
 sub visitMakingLogLines {
-  my ($self, $snapshot, $num, $code) = @_;
+  my ($log, $snapshot, $num, $code) = @_;
   my $archives = $snapshot->{archives};
   my $archived_max = @$archives ? $archives->[0]{high} : 0;
   foreach my $line (@{$snapshot->{lines}}) {
@@ -223,29 +223,29 @@ sub visitMakingLogLines {
   }
   foreach my $archive (@$archives) {
     next if $num && ($num < $archive->{low} || $num > $archive->{high});
-    open my $fh, '<', $archive->{file} or ::error("500:能力値作成の過去ログを開けません。\n");
+    open my $fh, '<', $archive->{file} or error("500:能力値作成の過去ログを開けません。\n");
     my $stop = 0;
     while (1) {
       local $! = 0;
       my $line = <$fh>;
-      ::error("500:能力値作成の過去ログを読み込めません。\n") if !defined($line) && $!;
+      error("500:能力値作成の過去ログを読み込めません。\n") if !defined($line) && $!;
       last unless defined $line;
       next if $num && getMakingPostNumber($line) != $num;
       unless ($code->($line)) { $stop = 1; last; }
     }
-    close($fh) or ::error("500:能力値作成の過去ログを読み込めません。\n");
+    close($fh) or error("500:能力値作成の過去ログを読み込めません。\n");
     return if $stop;
   }
 }
 
 sub searchMakingPosts {
-  my ($self, %query) = @_;
+  my ($log, %query) = @_;
   my $items = $query{items} || 10;
   my $offset = ($query{page} || 0) * $items;
   my $tag = defined $query{tag} ? qr/^(?:[^<]*<>){4}[^<]*?[#＃]\Q$query{tag}\E(\s|[#＃]|<)/ : undef;
   my (@lines, $matched, $has_next);
   $matched = $has_next = 0;
-  $self->visitMakingLogLines($self->getMakingLogSnapshot, $query{num}, sub {
+  visitMakingLogLines($log, getMakingLogSnapshot($log), $query{num}, sub {
     my ($line) = @_;
     return 1 if defined($query{id}) && $line !~ /^(?:[^<]*<>){2}\Q$query{id}\E</;
     return 1 if defined($tag) && $line !~ $tag;

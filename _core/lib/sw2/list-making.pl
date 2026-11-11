@@ -75,7 +75,7 @@ $inNum   = '' unless defined($inNum)   && $inNum   =~ /^[0-9]+$/;
 $inTrial = '' unless defined($inTrial) && $inTrial =~ /^[0-9]+$/;
 $query{num} = $inNum;
 my $result = eval {
-  YtSheet::MakingLog->newMakingLog(file => $set::makelist)->searchMakingPosts(%query);
+  searchMakingPosts(newMakingLog(file => $set::makelist), %query);
 };
 error($@) if $@;
 

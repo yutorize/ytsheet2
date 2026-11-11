@@ -75,12 +75,13 @@ if($in{race} eq 'アビスボーン'){
 
 ## 書き込み
 my $num = eval {
-  YtSheet::MakingLog->newMakingLog(
+  my $log = newMakingLog(
     file => $set::makelist,
     keep => $set::making_archive_keep,
     unit => $set::making_archive_unit,
     max  => $set::making_max,
-  )->saveMakingPost(
+  );
+  saveMakingPost($log,
     id => $LOGIN_ID, name => $in{name}, comment => $in{comment},
     race => $in{race}, stt => $stt_data, curse => $curse,
     interval => $set::making_interval,
