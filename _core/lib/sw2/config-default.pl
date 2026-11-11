@@ -107,6 +107,10 @@ our $system_id = 'sw2.5';
 
 ## ●メイキング
   our $making_max = 0; # 作成板の最大保存数（0で無制限）
+  # making_maxが0のとき、keep+unit件に達したら古いunit件を過去ログへ退避する。
+  # 両方0で自動退避なし。過去ログも一覧・検索の対象になる。
+  our $making_archive_keep = 1000;
+  our $making_archive_unit = 1000;
   our $average_over = 0;
   our $adventurer_onlyonce = 0;
   our $making_interval = 0;

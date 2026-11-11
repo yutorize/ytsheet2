@@ -7,6 +7,7 @@ use open ":utf8";
 my $LOGIN_ID = check;
 
 require $set::data_races;
+require $::core_dir . '/lib/sw2/making-log.pl';
 
 error('名前が未入力です') if !$::in{name};
 error('種族が未選択です') if !$::in{race};
@@ -20,8 +21,6 @@ foreach(param()){
   $in{$_} =~ s/>/&gt;/g;
   $in{$_} =~ s/\r\n?|\n/<br>/g;
 }
-
-my $now = time;
 
 ## 能力値作成処理
 my $adventurer = ($in{race} =~ s/（冒険者）//) ? 1 : 0;
@@ -75,30 +74,19 @@ if($in{race} eq 'アビスボーン'){
 }
 
 ## 書き込み
-my $num;
-overwriteFile($set::makelist, sub {
-  my ($READ, $WRITE) = @_;
-  my @lines = <$READ>;
-  # 連投制限
-  if($set::making_interval){
-    foreach(@lines){
-      my ($num, $date, $id, $name, $race) = (/^([0-9]+)<>([0-9]{10})<>([^<]*)<>([^<]*)<>[^<]*<>([^<]*)/);
-      last if $now - $date > $set::making_interval;
-      if(
-        $LOGIN_ID eq $id &&
-        $in{name} eq $name &&
-        $in{race} eq $race
-      ){
-        return '429:'.$set::making_interval.'秒以内の連続投稿は禁止されています。';
-      }
-    }
-  }
-  # ---
-  $num = ($lines[0] =~ /^([0-9]+)</)[0] + 1;
-  if ($set::making_max) { while ($set::making_max <= @lines) { pop(@lines); } }
-  unshift(@lines,"$num<>$now<>$LOGIN_ID<>$in{name}<>$in{comment}<>$in{race}<>$stt_data<>$curse<>\n");
-  print $WRITE @lines;
-});
+my $num = eval {
+  YtSheet::MakingLog->new(
+    file => $set::makelist,
+    keep => $set::making_archive_keep,
+    unit => $set::making_archive_unit,
+    max  => $set::making_max,
+  )->post(
+    id => $LOGIN_ID, name => $in{name}, comment => $in{comment},
+    race => $in{race}, stt => $stt_data, curse => $curse,
+    interval => $set::making_interval,
+  );
+};
+error($@) if $@;
 
 print "Location:./?mode=making&num=${num}\n\n";
 
