@@ -236,7 +236,7 @@ sub migrateEnemySheet {
   error('400:DX3rdのキャラクターを指定してください。') unless $set::game eq 'dx3' && $set::lib_type{e};
   error('400:IDがありません。') unless defined($id) && length($id);
   error('401:ログインしていません。') if $set::user_reqd && !$login;
-  my ($file, $type, $user, $sheetLock) = authSheetForUpdate($id, $pass, $login);
+  my ($file, $type, $user) = authSheet($id, $pass, $login);
   error('403:シートが存在しないか、編集権限がありません。') unless $file;
   error('409:キャラクターシートだけを移行できます。') if $type;
   error('400:保存先の形式が不正です。') unless $file =~ /\A[0-9]+\z/ && (!defined($user) || $user =~ /\A[0-9A-Za-z_-]+\z/);
