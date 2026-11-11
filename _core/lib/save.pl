@@ -92,20 +92,19 @@ our $now = time;
 
 ## ファイル名取得
 our $file;
-my $sheetLock;
 if($mode eq 'make'){
   $pc{birthTime} = $file = $now;
 }
 elsif($mode eq 'save'){
   my $storedType;
-  ($file, $storedType, undef, $sheetLock) = authSheetForUpdate($pc{id},$pc{pass},$LOGIN_ID);
+  ($file, $storedType) = authSheet($pc{id},$pc{pass},$LOGIN_ID);
   if(!$file){ error('404:シートが存在しないか、編集権限がありません。'); }
   if(($storedType // '') ne ($pc{type} // '')){
     error('409:シートの種別が変更されています。編集画面を開き直してください。');
   }
 }
 
-## 最終更新（認証・ロックの待機後の時刻を使う）
+## 最終更新（認証後の時刻を使う）
 $now = time if $mode eq 'save';
 $pc{updateTime} = epocToDate($now);
 
