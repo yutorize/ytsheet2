@@ -54,6 +54,28 @@ for my $system ('sw2','sw2.0'){
     is($custom->{magicDataCustom},1,'未知の系統を自由記入に移行');
     is($custom->{magicData1Value},'HP3','自由記入の既存値も保持');
     is_deeply([sort keys %{ ArtsMagicData::schema()->{labels} }],\@labels_before,'自由記入の系統名で共有の定義を変更しない');
+    for my $prefix ('magic','schoolMagic1'){
+      for my $element (undef,'','炎','0'){
+        my $legacy = { "${prefix}Class" => '独自系統' };
+        $legacy->{"${prefix}Element"} = $element if defined $element;
+        ArtsMagicData::upgradePrefix($legacy,$prefix);
+        my @elements = grep { $_->{Label} eq '属性' } @{ ArtsMagicData::rows($legacy,$prefix) };
+        my $has_element = defined($element) && $element ne '';
+        is(scalar @elements,$has_element ? 1 : 0,"$prefix: 旧形式の未指定・空欄の属性を新設しない");
+        is($legacy->{"${prefix}DataNum"},$has_element ? 6 : 5,"$prefix: 移行後の行数が一致");
+        is($elements[0]{Value},$element,"$prefix: 指定済みの属性を保持") if $has_element;
+      }
+      my $explicit = { "${prefix}Class" => '独自系統', "${prefix}DataCustom" => 1,
+        "${prefix}DataNum" => 1, "${prefix}Data1Label" => '属性', "${prefix}Data1Value" => '' };
+      ArtsMagicData::upgradePrefix($explicit,$prefix);
+      is_deeply(ArtsMagicData::rows($explicit,$prefix),[{ Label => '属性', Value => '' }],"$prefix: 新形式で明示した空の属性は保持");
+      for my $class ('呪歌','終律','相域'){
+        my $legacy = { "${prefix}Class" => $class, "${prefix}DataCustom" => 1 };
+        ArtsMagicData::upgradePrefix($legacy,$prefix);
+        my @elements = grep { $_->{Label} eq '属性' } @{ ArtsMagicData::rows($legacy,$prefix) };
+        is(scalar @elements,1,"$prefix: $class の既存の空属性表示を維持");
+      }
+    }
 
     my $existing = { magicClass => '真語魔法', magicDataNum => 2,
       magicData1Label => '独自項目', magicData1Value => '独自値',

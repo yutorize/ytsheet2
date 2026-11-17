@@ -131,9 +131,13 @@ sub upgradePrefix {
   my $ids = preset($class,$pc->{"${prefix}ActionTypePassive"});
   my $num = 0;
   foreach my $id (@$ids){
+    my $value = legacyValue($pc,$prefix,$id);
+    # 旧画面で非表示だった空の属性は、自由記入の項目として新設しない。
+    next if $id eq 'Element' && $pc->{"${prefix}DataCustom"} && $value eq ''
+      && baseClass($class) !~ /^(?:呪歌|終律|相域)$/;
     $num++;
     $pc->{"${prefix}Data${num}Label"} = label($id,$class);
-    $pc->{"${prefix}Data${num}Value"} = legacyValue($pc,$prefix,$id);
+    $pc->{"${prefix}Data${num}Value"} = $value;
   }
   $pc->{"${prefix}DataNum"} = $num;
 }
