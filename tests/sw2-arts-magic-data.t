@@ -1,0 +1,72 @@
+use strict;
+use warnings;
+use utf8;
+use Test::More;
+use FindBin;
+no warnings 'once';
+binmode Test::More->builder->output, ':encoding(UTF-8)';
+binmode Test::More->builder->failure_output, ':encoding(UTF-8)';
+binmode Test::More->builder->todo_output, ':encoding(UTF-8)';
+
+our $core_dir = "$FindBin::Bin/../_core";
+require "$core_dir/lib/sw2/arts-magic-data.pl";
+
+for my $system ('sw2','sw2.0'){
+  local $set::data_class = "$core_dir/lib/$system/data-class.pl";
+  subtest $system => sub {
+    my $pc = {
+      magicClass => '呪歌', magicSongSing => 1,
+      magicSongPetBird => 1, magicSongPetBug => 1,
+      magicCondition => '⤴♡', magicSongBasePoint => '⤵', magicSongSetPoint => 13,
+      magicSongAddPoint => '♡', magicResist => '消滅', magicElement => '精神効果',
+      schoolMagicNum => 2,
+      schoolMagic1Class => '騎芸', schoolMagic1MountTypeAnimal => 1, schoolMagic1MountTypeMachine => 1,
+      schoolMagic1Premise => '前提', schoolMagic1ApplyPart => 'すべて',
+      schoolMagic2Class => '魔動機術', schoolMagic2Magisphere => '小', schoolMagic2Cost => 'MP5',
+      schoolMagic2Range => '2(30m)', schoolMagic2Form => '射撃',
+    };
+    ArtsMagicData::upgrade($pc);
+    is($pc->{magicDataNum},8,'呪歌の8項目を移行');
+    is($pc->{magicDataCustom},0,'既定系統のラベルは固定');
+    my %song = map { $_->{Label} => $_->{Value} } @{ ArtsMagicData::rows($pc,'magic') };
+    is($song{歌唱},'必要','歌唱チェックを移行');
+    is($song{ペット},'小鳥、虫','複数のペットを保持');
+    is($song{効果発生条件},'⤴♡','条件のラベルと値を保持');
+    is($song{基礎楽素},'⤵','基礎楽素を移行');
+    is($song{巧奏値},13,'巧奏値を移行');
+    is($song{追加楽素},'♡','追加楽素を移行');
+    my %mount = map { $_->{Label} => $_->{Value} } @{ ArtsMagicData::rows($pc,'schoolMagic1') };
+    is($mount{対応},'動物、魔動機','騎芸の対応を移行');
+    my %spell = map { $_->{Label} => $_->{Value} } @{ ArtsMagicData::rows($pc,'schoolMagic2') };
+    is($spell{マギスフィア},'小','マギスフィアを移行');
+    is($spell{'射程／形状'},'2(30m)／射撃','射程と形状を一つの値に移行');
+    ArtsMagicData::clearLegacy($pc);
+    ok(!exists $pc->{magicSongPetBird} && !exists $pc->{schoolMagic2Range},'新形式の保存で個別項目を残さない');
+    is($pc->{schoolMagic2Data2Value},'MP5','個別項目を除去しても新形式の値は保持');
+
+    my $zero = { magicClass => '呪歌', magicDataCustom => 1, magicDataNum => 0 };
+    ArtsMagicData::upgrade($zero);
+    is_deeply(ArtsMagicData::rows($zero,'magic'),[],'自由記入の0行を維持');
+    is($zero->{magicDataCustom},1,'既定名を自由記入しても自由記入モードを維持');
+    my @labels_before = sort keys %{ ArtsMagicData::schema()->{labels} };
+    my $custom = { magicClass => '独自系統', magicCost => 'HP3' };
+    ArtsMagicData::upgrade($custom);
+    is($custom->{magicDataCustom},1,'未知の系統を自由記入に移行');
+    is($custom->{magicData1Value},'HP3','自由記入の既存値も保持');
+    is_deeply([sort keys %{ ArtsMagicData::schema()->{labels} }],\@labels_before,'自由記入の系統名で共有の定義を変更しない');
+
+    my $existing = { magicClass => '真語魔法', magicDataNum => 2,
+      magicData1Label => '独自項目', magicData1Value => '独自値',
+      magicData2Label => '消費', magicData2Value => 'HP2' };
+    ArtsMagicData::upgrade($existing);
+    is($existing->{magicData1Label},'独自項目','移行済みのラベルを上書きしない');
+    is($existing->{magicData2Value},'HP2','移行済みの値を上書きしない');
+    is(ArtsMagicData::fieldDefinition(ArtsMagicData::fieldId('鼓咆の系統'))->{class},'type','項目名から既存CSSクラスを取得');
+    is(ArtsMagicData::fieldId('前提AC'),'Premise','項目名の別表記に対応');
+    is(ArtsMagicData::fieldId('独自項目'),undef,'独自名をCSSクラスとして使用しない');
+    is_deeply(ArtsMagicData::preset('操気',1),['Cost','Premise'],'常時操気の項目を限定');
+    is(ArtsMagicData::layout('呪歌'),'song','呪歌の既存レイアウトを使用');
+    is(ArtsMagicData::layout('神聖魔法 (小魔法)'),'', '小魔法表記を系統名から除去');
+  };
+}
+done_testing;

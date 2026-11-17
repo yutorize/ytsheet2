@@ -7,6 +7,8 @@ use open ":utf8";
 ### データ読み込み ###################################################################################
 # なし
 
+require $::core_dir.'/lib/sw2/arts-magic-data.pl';
+
 ### データ／テンプレート読込 #########################################################################
 (my $pcRef, my $SHEET) = setupViewBase(
   unescapeLinesRe   => qr/(?:Effect|Description|Note|QnA)$/,
@@ -74,6 +76,11 @@ sub maskPcData {
     $pc->{magicEffect} .= noiseText(18,40)."<br>";
   }
   $pc->{magicMagisphere}  = noiseText(1,3);
+
+  foreach my $num (1..($pc->{magicDataNum} || 0)){
+    $pc->{"magicData${num}Label"} = noiseText(2,8);
+    $pc->{"magicData${num}Value"} = noiseText(3,14);
+  }
 
   ## 神格
   unless($forbidden eq 'battle'){
@@ -183,7 +190,7 @@ sub magicViewData {
     grep { /^\Q$prefix\E[A-Z]/ } keys %pc;
   my $icon = '';
   my $isSchool = $prefix ne 'magic';
-  my $class = $magic{Class};
+  my $class = ArtsMagicData::baseClass($magic{Class});
   if($class eq '騎芸' || $class eq '操気'){
     if($magic{ActionTypePassive}){ $icon .= '<i class="s-icon passive"><span class="raw">[常]</span></i>' }
     if($magic{ActionTypeMajor}  ){ $icon .= '<i class="s-icon major"><span class="raw">[主]</span></i>' }
@@ -203,76 +210,12 @@ sub magicViewData {
   $magic{Target} = textMagic($magic{Target});
   $magic{Duration} = textMagic($magic{Duration});
 
-  if($magic{Class} =~ /魔動機術/){ $magic{NameNotes} = 'マギスフィア:'.$magic{Magisphere}; }
-  
-  if   ($class eq '練技'){
-    $magic{ClassEn} = 'enhance';
-    magicItemViewOn(\%magic,'Duration');
-  }
-  elsif   ($class eq '呪歌'){
-    $magic{ClassEn} = 'song';
-    $magic{SongSing} = $magic{SongSing} ? '必要':'なし';
-    $magic{Condition} = textSongPoint($magic{Condition});
-    $magic{SongBasePoint} = textSongPoint($magic{SongBasePoint});
-    $magic{SongAddPoint} = textSongPoint($magic{SongAddPoint});
-    magicItemViewOn(\%magic,'Song','Condition','Resist','Element');
-  }
-  elsif   ($class eq '終律'){
-    $magic{ClassEn} = 'finale';
-    $magic{Cost} = textSongPoint($magic{Cost});
-    magicItemViewOn(\%magic,'Cost','Resist','Element');
-  }
-  elsif   ($class eq '騎芸'){
-    $magic{ClassEn} = 'riding';
-    $magic{Premise} = $magic{Premise} || 'なし';
-    magicItemViewOn(\%magic,'Premise','Type','Part');
-  }
-  elsif   ($class eq '相域'){
-    $magic{ClassEn} = 'geomancy';
-    magicItemViewOn(\%magic,'Cost','Duration','Element');
-  }
-  elsif   ($class eq '鼓咆'){
-    $magic{ClassEn} = 'command';
-    $magic{TypeDt} = '系統';
-    $magic{CommandCost} = $magic{CommandCost}   ? "$magic{CommandCost}消費" : 'なし';
-    $magic{CommandCharge} = $magic{CommandCharge} ? "＋$magic{CommandCharge}" : 'なし';
-    magicItemViewOn(\%magic,'Type','Rank','CommandCost','CommandCharge');
-  }
-  elsif   ($class eq '陣率'){
-    $magic{ClassEn} = 'lead';
-    $magic{CommandCost} = $magic{CommandCost}   ? "$magic{CommandCost}消費" : 'なし';
-    magicItemViewOn(\%magic,'Premise','Condition','CommandCost');
-  }
-  elsif   ($class eq '占瞳'){
-    $magic{ClassEn} = 'divination';
-    $magic{TypeDt} = 'タイプなど';
-    magicItemViewOn(\%magic,'Type','Target','Range','Duration');
-  }
-  elsif   ($class eq '魔装'){
-    $magic{ClassEn} = 'potential';
-    $magic{ApplyHumanForm} =
-      ($magic{ApplyHumanForm} eq 'available')   ? '有効' :
-      ($magic{ApplyHumanForm} eq 'unavailable') ? '無効' :
-      '―';
-    magicItemViewOn(\%magic,'Premise','Part','HumanForm');
-  }
-  elsif   ($class eq '操気'){
-    $magic{ClassEn} = 'psychokinesis';
-    if($magic{ActionTypePassive}){ magicItemViewOn(\%magic,'Cost','Premise') }
-    else { magicItemViewOn(\%magic,'Cost','Premise','Target','Range','Duration','Resist') }
-  }
-  elsif   ($class eq '呪印'){
-    $magic{ClassEn} = 'seal';
-    magicItemViewOn(\%magic,'Premise','Type');
-  }
-  elsif   ($class eq '貴格'){
-    $magic{ClassEn} = 'dignity';
-    magicItemViewOn(\%magic,'Premise','Type','Target');
-  }
-  else {
-    magicItemViewOn(\%magic,'Cost','Target','Range','Duration','Resist',($magic{Element}?'Element':undef));
-  }
-  
+  $magic{ClassEn} = ArtsMagicData::layout($class);
+  my ($rows,$extras,$notes) = magicDataViewRows($prefix,$class);
+  $magic{DataRows} = $rows;
+  $magic{ExtraDataRows} = $extras;
+  $magic{NameNotes} = $notes;
+
   $magic{Effect} = $magic{Effect} =~ s#<h2>(.+?)</h2>#</dd><dt><span class="center">$1</span></dt><dd class="box">#gir;
   return \%magic;
 }
@@ -286,9 +229,45 @@ sub textSongPoint {
   $_[0] =~ s#[♡♥❤]#<i class="s-icon heart">♡</i>#g;
   return '<span>'.$_[0].'</span>';
 }
-sub magicItemViewOn {
-  my $magic = shift;
-  foreach my $name (grep { defined } @_){ $magic->{"${name}On"} = 1; }
+# 項目名は固定の対応表でクラスへ変換し、独自名をCSSに直接埋め込まない。
+sub magicDataViewRows {
+  my ($prefix,$class) = @_;
+  my $layout = ArtsMagicData::layout($class);
+  my $ids = $layout ? ArtsMagicData::preset($class,0) : ArtsMagicData::schema()->{default};
+  my %allowed = map { ArtsMagicData::fieldDefinition($_)->{class} => 1 } @$ids;
+  $allowed{element} = 1 if !$layout || $layout eq 'psychokinesis';
+  my (@rows,@extras,%seen,$notes);
+  foreach my $item (@{ ArtsMagicData::rows(\%pc,$prefix) }){
+    my ($label,$value) = @{$item}{'Label','Value'};
+    next if $label eq '' && $value eq '';
+    my $id = ArtsMagicData::fieldId($label);
+    my $css = $id ? ArtsMagicData::fieldDefinition($id)->{class} : 'custom';
+    if($id && $id eq 'Magisphere' && ($prefix eq 'magic' || $class ne '') && !$seen{sphere}++){
+      $notes = "$label:$value";
+      next;
+    }
+    if($id && $id eq 'Element'){
+      next if !$pc{"${prefix}DataCustom"} && $value eq '' && $class !~ /^(?:呪歌|終律|相域)$/;
+      $value = '―' if $value eq '';
+    }
+    if($id && ($id eq 'Target' || $id eq 'Range' || $id eq 'Duration')){ $value = textMagic($value); }
+    if($id && ($id =~ /^Song(?:Base|Add)Point$/ || ($id eq 'Condition' && ($class eq '呪歌' || $label eq '効果発生条件')) || ($id eq 'Cost' && $class eq '終律'))){
+      $value = textSongPoint($value);
+    }
+    if($id && $id eq 'SongSing' && $value eq ''){ $value = 'なし'; }
+    if($id && ($id eq 'SongPet' || $id eq 'ApplyHumanForm') && $value eq ''){ $value = '―'; }
+    if($id && $id eq 'Premise' && $class eq '騎芸' && $value eq ''){ $value = 'なし'; }
+    if($id && $id eq 'CommandCost'){
+      $value = !$value ? 'なし' : $value =~ /^\d+$/ ? "${value}消費" : $value;
+    }
+    if($id && $id eq 'CommandCharge'){
+      $value = !$value ? 'なし' : $value =~ /^\d+$/ ? "＋$value" : $value;
+    }
+    my $row = { Label => $label, Value => $value, CssClass => $css };
+    if($allowed{$css} && !$seen{$css}++){ push @rows,$row; }
+    else { push @extras,$row; }
+  }
+  return \@rows,\@extras,$notes;
 }
 
 ### 特殊神聖魔法 --------------------------------------------------

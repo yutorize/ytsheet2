@@ -12,32 +12,8 @@ require $set::lib_convert;
 
 ### 読込前処理 #######################################################################################
 ### 各種データライブラリ読み込み --------------------------------------------------
-require $set::data_class;
-my @magic_classes;
-my @craft_classes;
-foreach(@data::class_names){
-  if($_ eq 'フェアリーテイマー'){
-    push(
-      @magic_classes,
-      'LABEL=妖精魔法',
-      '基本妖精魔法', '属性妖精魔法(土)', '属性妖精魔法(水・氷)', '属性妖精魔法(炎)', '属性妖精魔法(風)', '属性妖精魔法(光)', '属性妖精魔法(闇)', '特殊妖精魔法',
-      'GROUPCLOSE'
-    );
-  }
-  elsif($_ eq 'コンジャラー'){
-    push(@magic_classes, $data::class{$_}{magic}{jName}, '深智魔法');
-  }
-  elsif($_ eq 'バード'){
-    push(@craft_classes, $data::class{$_}{craft}{jName}, '終律');
-  }
-  elsif($_ eq 'ウォーリーダー'){
-    push(@craft_classes, '鼓咆','陣率');
-  }
-  elsif($data::class{$_}{magic}) { push(@magic_classes, $data::class{$_}{magic}{jName}); }
-  elsif($data::class{$_}{craft}) { push(@craft_classes, $data::class{$_}{craft}{jName}); }
-}
-push(@magic_classes, @craft_classes);
-@magic_classes = deduplicate(@magic_classes); #重複削除
+require $::core_dir.'/lib/sw2/arts-magic-data.pl';
+my @magic_classes = ArtsMagicData::classOptions();
 ### データ読み込み ###################################################################################
 my ($data, $file, $message) = loadSheetData();
 our %pc = %{ $data };
@@ -75,6 +51,7 @@ setDefaultColors(\%pc);
 ## その他
 $pc{schoolArtsNum} ||= 3;
 $pc{schoolMagicNum} ||= 1;
+ArtsMagicData::upgrade(\%pc);
 
 ### 折り畳み判断 --------------------------------------------------
 my %open;
@@ -144,26 +121,8 @@ print <<"HTML";
         <dl class="name     "><dt>名称        <dd>【@{[ input 'magicName','',"setName" ]}】<br>
                                                   @{[ checkbox 'magicActionTypePassive','常時',"checkMagicClass(this.closest('.input-data'))" ]}@{[ checkbox 'magicActionTypeMajor','主動作' ]}@{[ checkbox 'magicActionTypeMinor','補助動作' ]}@{[ checkbox 'magicActionTypeSetup','戦闘準備' ]}</dl>
         <dl class="class    " oninput="checkMagicClass(this.closest('.input-data'))"><dt>系統        <dd>@{[ selectInput "magicClass","",@magic_classes ]} @{[ checkbox 'magicMinor','小魔法' ]}</dl>
-        <dl class="sphere   "><dt>マギスフィア<dd>@{[ input 'magicMagisphere','','','list="list-sphere"' ]}</dl>
         <dl class="level    "><dt>習得レベル  <dd>@{[ input 'magicLevel' ]}</dl>
-        <dl class="type     "><dt>対応        <dd>@{[ input 'magicType','','','list="list-type"' ]}</dl>
-        <dl class="premise  "><dt>前提        <dd>@{[ input 'magicPremise','','','list="list-premise"' ]}</dl>
-        <dl class="cost     "><dt>消費        <dd>@{[ input 'magicCost','','','list="list-cost"' ]}</dl>
-        <dl class="target   "><dt>対象        <dd>@{[ input 'magicTarget','','','list="list-target"' ]}</dl>
-        <dl class="range    "><dt>射程／形状  <dd>@{[ input 'magicRange','','','list="list-range"' ]}／@{[ input 'magicForm','','','list="list-form"' ]}</dl>
-        <dl class="duration "><dt>時間        <dd>@{[ input 'magicDuration','','','list="list-duration"' ]}</dl>
-        <dl class="song     "><dt>歌唱        <dd>@{[ checkbox 'magicSongSing','必要' ]}</dl>
-        <dl class="song     "><dt>ペット      <dd>@{[ checkbox 'magicSongPetBird','小鳥' ]}@{[ checkbox 'magicSongPetFrog','蛙' ]}@{[ checkbox 'magicSongPetBug','虫' ]}</dl>
-        <dl class="condition"><dt>条件        <dd>@{[ input 'magicCondition','','','list="list-song-condition"' ]}</dl>
-        <dl class="song     "><dt>楽素        <dd>基礎@{[ input 'magicSongBasePoint','','','list="list-songpoint"' ]} 巧奏値@{[ input 'magicSongSetPoint','','','list="list-song-set-point"' ]} 追加@{[ input 'magicSongAddPoint','','','list="list-songpoint"' ]}</dl>
-        <dl class="rider    "><dt>対応        <dd>@{[ checkbox 'magicMountTypeAnimal','動物' ]}@{[ checkbox 'magicMountTypeCryptid','幻獣' ]}@{[ checkbox 'magicMountTypeMachine','魔動機' ]}</dl>
-        <dl class="part     "><dt>適用部位    <dd>@{[ input 'magicApplyPart','','','list="list-part"' ]}</dl>
-        <dl class="human-form"><dt>人間形態時 <dd>@{[ radios 'magicApplyHumanForm','','available=>有効','unavailable=>無効','=>指定なし（変身しない種族用）' ]}</dl>
-        <dl class="rank     "><dt>ランク      <dd>@{[ input 'magicRank' ]}</dl>
-        <dl class="commcost "><dt>陣気コスト  <dd>@{[ input 'magicCommandCost','number' ]}消費</dl>
-        <dl class="command  "><dt>陣気蓄積    <dd>＋@{[ input 'magicCommandCharge','number' ]}</dl>
-        <dl class="resist   "><dt>抵抗        <dd>@{[ input 'magicResist','','','list="list-resist"' ]}</dl>
-        <dl class="element  "><dt>属性        <dd>@{[ input 'magicElement','','','list="list-element"' ]}</dl>
+        @{[ renderMagicDataInputs("magic") ]}
         <dl class="summary  "><dt>概要        <dd>@{[ input 'magicSummary' ]}</dl>
         <dl class="effect   "><dt>効果        <dd><textarea name="magicEffect">$pc{magicEffect}</textarea></dl>
       </div>
@@ -318,27 +277,9 @@ print <<"HTML";
                 <dl class="name     "><dt>名称        <dd>【@{[ input "schoolMagic${num}Name",'' ]}】<br>
                                                           @{[ checkbox "schoolMagic${num}ActionTypePassive",'常時',"checkMagicClass(this.closest('.input-data'))" ]}@{[ checkbox "schoolMagic${num}ActionTypeMajor",'主動作' ]}@{[ checkbox "schoolMagic${num}ActionTypeMinor",'補助動作' ]}@{[ checkbox "schoolMagic${num}ActionTypeSetup",'戦闘準備' ]}</dl>
                 <dl class="class    " oninput="checkMagicClass(this.closest('.input-data'))"><dt>系統        <dd>@{[ selectInput "schoolMagic${num}Class","",@magic_classes ]}</dl>
-                <dl class="sphere   "><dt>マギスフィア<dd>@{[ input "schoolMagic${num}Magisphere",'','','list="list-sphere"' ]}</dl>
                 <dl class="a-cost   "><dt>必要名誉点  <dd>@{[ input "schoolMagic${num}AcquireCost" ]}</dl>
                 <dl class="level    "><dt>習得レベル  <dd>@{[ input "schoolMagic${num}Lv" ]}</dl>
-                <dl class="type     "><dt>対応        <dd>@{[ input "schoolMagic${num}Type",'','','list="list-type"' ]}</dl>
-                <dl class="premise  "><dt>前提        <dd>@{[ input "schoolMagic${num}Premise",'','','list="list-premise"' ]}</dl>
-                <dl class="cost     "><dt>消費        <dd>@{[ input "schoolMagic${num}Cost",'','','list="list-cost"' ]}</dl>
-                <dl class="target   "><dt>対象        <dd>@{[ input "schoolMagic${num}Target",'','','list="list-target"' ]}</dl>
-                <dl class="range    "><dt>射程／形状  <dd>@{[ input "schoolMagic${num}Range",'','','list="list-range"' ]}／@{[ input "schoolMagic${num}Form",'','','list="list-form"' ]}</dl>
-                <dl class="duration "><dt>時間        <dd>@{[ input "schoolMagic${num}Duration",'','','list="list-duration"' ]}</dl>
-                <dl class="song     "><dt>歌唱        <dd>@{[ checkbox "schoolMagic${num}SongSing",'必要' ]}</dl>
-                <dl class="song     "><dt>ペット      <dd>@{[ checkbox "schoolMagic${num}SongPetBird",'小鳥' ]}@{[ checkbox "schoolMagic${num}SongPetFrog",'蛙' ]}@{[ checkbox "schoolMagic${num}SongPetBug",'虫' ]}</dl>
-                <dl class="condition"><dt>条件        <dd>@{[ input "schoolMagic${num}Condition",'','','list="list-song-condition"' ]}</dl>
-                <dl class="song     "><dt>楽素        <dd>基礎@{[ input "schoolMagic${num}SongBasePoint",'','','list="list-songpoint"' ]} 巧奏値@{[ input "schoolMagic${num}SongSetPoint",'','','list="list-song-set-point"' ]} 追加@{[ input "schoolMagic${num}SongAddPoint",'','','list="list-songpoint"' ]}</dl>
-                <dl class="rider    "><dt>対応        <dd>@{[ checkbox "schoolMagic${num}MountTypeAnimal",'動物' ]}@{[ checkbox "schoolMagic${num}MountTypeCryptid",'幻獣' ]}@{[ checkbox "schoolMagic${num}MountTypeMachine",'魔動機' ]}</dl>
-                <dl class="part     "><dt>適用部位    <dd>@{[ input "schoolMagic${num}ApplyPart",'','','list="list-part"' ]}</dl>
-                <dl class="human-form"><dt>人間形態時 <dd>@{[ selectBox "schoolMagic${num}ApplyHumanForm",'','DEF==>指定なし（変身しない種族用）','available=>有効','unavailable=>無効' ]}</dl>
-                <dl class="rank     "><dt>ランク      <dd>@{[ input "schoolMagic${num}Rank" ]}</dl>
-                <dl class="commcost "><dt>陣気コスト  <dd>@{[ input "schoolMagic${num}CommandCost",'number' ]}消費</dl>
-                <dl class="command  "><dt>陣気蓄積    <dd>＋@{[ input "schoolMagic${num}CommandCharge",'number' ]}</dl>
-                <dl class="resist   "><dt>抵抗        <dd>@{[ input "schoolMagic${num}Resist",'','','list="list-resist"' ]}</dl>
-                <dl class="element  "><dt>属性        <dd>@{[ input "schoolMagic${num}Element",'','','list="list-element"' ]}</dl>
+                @{[ renderMagicDataInputs("schoolMagic$num") ]}
                 <dl class="summary  "><dt>概要        <dd>@{[ input "schoolMagic${num}Summary" ]}</dl>
                 <dl class="effect   "><dt>効果        <dd><textarea name="schoolMagic${num}Effect">$pc{"schoolMagic${num}Effect"}</textarea></dl>
               </div>
@@ -414,8 +355,42 @@ HTML
 
 print renderEditPageEnd(
   notes => '(C)Group SNE「ソード・ワールド'.($::SW2_0 ? '2.0' : '2.5').'」',
-  extraHtml => renderDataList(),
+  extraHtml => renderDataList().renderMagicDataSchema(),
 );
+
+# 可変項目は通常魔法と秘伝魔法で同じフォームを使う。
+sub renderMagicDataInputs {
+  my ($prefix) = @_;
+  my $rows = ArtsMagicData::rows(\%pc,$prefix);
+  my $num = 0;
+  my $html = '<div class="magic-data-editor">'
+    . input("${prefix}DataNum",'hidden')
+    . input("${prefix}DataCustom",'hidden')
+    . '<div class="magic-data-list">';
+  foreach my $row (@$rows){
+    $num++;
+    $html .= '<dl class="magic-data-row"><dt>'
+      . input("${prefix}Data${num}Label",'','','readonly list="list-magic-data-label" aria-label="項目名"')
+      . '<dd>'.input("${prefix}Data${num}Value",'','','aria-label="項目の値"')
+      . '<button type="button" class="magic-data-remove" onclick="removeMagicData(this)" hidden>削除</button></dl>';
+  }
+  return $html.'</div><div class="magic-data-controls" hidden>'
+    . qq|<button type="button" onclick="addMagicData(this.closest('.input-data'))">項目を追加</button>|
+    . '</div></div>';
+}
+sub renderMagicDataSchema {
+  require JSON::PP;
+  my $json = JSON::PP->new->canonical->encode(ArtsMagicData::schema());
+  $json =~ s/</\\u003c/g;
+  my $options = join('',map { '<option value="'.$_.'">' } sort keys %{ ArtsMagicData::schema()->{aliases} });
+  return '<datalist id="list-magic-data-label">'.$options.'</datalist>'
+    . '<datalist id="list-magic-range-form"><option value="術者／―"><option value="接触／―"><option value="1(10m)／射撃"><option value="2(30m)／起点指定"><option value="2(50m)／貫通"></datalist>'
+    . '<datalist id="list-magic-sing"><option value="必要"><option value="なし"></datalist>'
+    . '<datalist id="list-magic-pet"><option value="なし"><option value="小鳥"><option value="蛙"><option value="虫"><option value="小鳥、蛙"><option value="小鳥、虫"><option value="蛙、虫"><option value="小鳥、蛙、虫"></datalist>'
+    . '<datalist id="list-magic-mount"><option value="動物"><option value="幻獣"><option value="魔動機"><option value="動物、幻獣"><option value="動物、魔動機"><option value="幻獣、魔動機"><option value="動物、幻獣、魔動機"></datalist>'
+    . '<datalist id="list-magic-human-form"><option value="有効"><option value="無効"><option value="―"></datalist>'
+    . '<script>const ARTS_MAGIC_DATA = '.$json.';</script>';
+}
 
 sub renderDataList {
   return <<~"HTML";

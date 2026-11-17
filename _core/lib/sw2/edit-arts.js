@@ -103,105 +103,168 @@ function checkCategory(){
   }
 }
 
-// 魔法系統 ----------------------------------------
-function checkMagicClass(row = document.querySelector('#data-magic .input-data')){
-  const classSelect = row.querySelector('dl.class select');
-  const prefix = classSelect.name.replace(/Class(?:Select)?$/, '');
-  const field = suffix => row.querySelector(`[name="${prefix}${suffix}"]`);
-  const magic = classSelect.value === 'free' ? row.querySelector('dl.class input').value : classSelect.value;
-  const cost = field('Cost');
-  let items;
-  let costList = 'list-cost';
-  if(magic == '練技'){
-    items = ['duration'];
-  }
-  else if(magic == '呪歌'){
-    items = ['song','condition','resist','element'];
-  }
-  else if(magic == '終律'){
-    items = ['cost','resist','element'];
-    costList = 'list-cost-song';
-  }
-  else if(magic == '騎芸'){
-    items = ['premise','rider','part'];
-  }
-  else if(magic == '賦術'){
-    items = ['cost','target','range','duration','resist'];
-    costList = 'list-cost-alchemy';
-  }
-  else if(magic == '相域'){
-    items = ['cost','duration','element'];
-    costList = 'list-cost-geomancy';
-  }
-  else if(magic == '鼓咆'){
-    items = ['type','rank','command','commcost'];
-  }
-  else if(magic == '陣率'){
-    items = ['premise','condition','commcost'];
-  }
-  else if(magic == '占瞳'){
-    items = ['type','target','range','duration'];
-  }
-  else if(magic == '魔装'){
-    items = ['premise','part','human-form'];
-  }
-  else if(magic == '操気'){
-    items = field('ActionTypePassive').checked
-      ? ['cost','premise'] : ['cost','premise','target','range','duration','resist'];
-    costList = 'list-cost-psychokinesis';
-  }
-  else if(magic == '呪印'){
-    items = ['type','premise'];
-  }
-  else if(magic == '貴格'){
-    items = ['type','target','premise'];
-  }
-  else if(magic == '魔動機術'){
-    items = ['cost','target','range','duration','resist','element','sphere'];
-  }
-  else {
-    items = ['cost','target','range','duration','resist','element'];
-  }
-  viewMagicInputs(items, row);
-  cost.setAttribute('list', costList);
-  if(costList !== 'list-cost' && cost.value === 'MP'){ cost.value = ''; }
-  // 系統未設定の既存秘伝魔法には、初期値を補わない。
-  if(items.includes('cost') && costList === 'list-cost' &&
-      (prefix === 'magic' || magic !== '') && cost.value === ''){ cost.value = 'MP'; }
-  field('ActionTypePassive').parentNode.style.display = (magic.match(/^(騎芸|操気)$/)) ? '' : 'none';
-  field('ActionTypeMajor').parentNode.style.display   = (magic.match(/^(騎芸|操気)$/)) ? '' : 'none';
-  row.querySelector('dl.summary').style.display   = (magic == '呪印' || magic == '貴格') ? 'none' : '';
-  row.querySelector('dl.level     dt').textContent = (magic.match(/(属性|特殊)妖精魔法|秘奥魔法/)) ? 'ランク' : '習得レベル';
-  row.querySelector('dl.type      dt').textContent = (magic == '鼓咆') ? '鼓咆の系統' : (magic == '占瞳') ? 'タイプなど' : (magic == '貴格') ? '形態' : '対応';
-  row.querySelector('dl.premise   dt').textContent = (magic == '呪印') ? '前提ＡＣ'   : '前提';
-  row.querySelector('dl.condition dt').textContent = (magic == '呪歌') ? '効果発生条件' : (magic == '陣率') ? '使用条件' : '条件';
-
-  const levelInput = row.querySelector('dl.level dd input');
-  if (magic.length === 2) {
-    // 練技、呪歌など
-    levelInput.setAttribute('list', 'list-craft-required-level');
-  } else {
-    levelInput.removeAttribute('list');
-  }
-  field('Target').setAttribute('list', magic.length === 2 ? 'list-target-craft' : 'list-target');
-  field('Range').setAttribute('list', magic.length === 2 ? 'list-range-craft' : 'list-range');
+// 魔法系統・可変項目 ----------------------------------------
+const magicDataStates = new WeakMap();
+function magicDataFieldId(label){
+  return Object.hasOwn(ARTS_MAGIC_DATA.aliases,label) ? ARTS_MAGIC_DATA.aliases[label] : undefined;
 }
-function viewMagicInputs(items, row){
-  row.querySelectorAll('dl').forEach(obj => {
-    obj.style.display = 'none';
+function magicDataPrefix(row){
+  return row.querySelector('dl.class select').name.replace(/Class(?:Select)?$/, '');
+}
+function magicDataRows(row){
+  return [...row.querySelectorAll('.magic-data-row')].map(item => ({
+    label: item.querySelector('[name$="Label"]').value,
+    value: item.querySelector('[name$="Value"]').value,
+  }));
+}
+function rememberMagicData(row, state){
+  const seen = new Set();
+  for(const item of magicDataRows(row)){
+    state.byLabel.set(item.label,item.value);
+    const id = magicDataFieldId(item.label);
+    if(id && !seen.has(id)){ state.byId.set(id,item.value); seen.add(id); }
+  }
+}
+function createMagicDataRow(row, label = '', value = ''){
+  const item = document.createElement('dl');
+  item.className = 'magic-data-row';
+  const title = document.createElement('dt');
+  const body = document.createElement('dd');
+  const nameInput = document.createElement('input');
+  nameInput.type = 'text';
+  nameInput.setAttribute('aria-label','項目名');
+  nameInput.setAttribute('list','list-magic-data-label');
+  nameInput.value = label;
+  const valueInput = document.createElement('input');
+  valueInput.type = 'text';
+  valueInput.setAttribute('aria-label','項目の値');
+  valueInput.value = value;
+  const remove = document.createElement('button');
+  remove.type = 'button';
+  remove.className = 'magic-data-remove';
+  remove.textContent = '削除';
+  remove.addEventListener('click',()=>removeMagicData(remove));
+  title.append(nameInput);
+  body.append(valueInput,remove);
+  item.append(title,body);
+  row.querySelector('.magic-data-list').append(item);
+}
+function renumberMagicData(row){
+  const prefix = magicDataPrefix(row);
+  const rows = row.querySelectorAll('.magic-data-row');
+  rows.forEach((item,index)=>{
+    item.querySelector('dt input').name = `${prefix}Data${index+1}Label`;
+    item.querySelector('dd input').name = `${prefix}Data${index+1}Value`;
   });
-  for (const item of ['name','class','a-cost','level','summary','effect', ...items]) {
-    row.querySelectorAll(`dl.${item}`).forEach(obj => {
-      obj.style.display = '';
+  row.querySelector(`[name="${prefix}DataNum"]`).value = rows.length;
+}
+function refreshMagicDataHints(row){
+  const select = row.querySelector('dl.class select');
+  const custom = select.value === 'free';
+  const magic = custom ? row.querySelector('dl.class input').value : select.value;
+  row.querySelectorAll('.magic-data-row').forEach(item=>{
+    const label = item.querySelector('dt input');
+    const value = item.querySelector('dd input');
+    value.setAttribute('aria-label',`${label.value || '項目'}の値`);
+    label.readOnly = !custom;
+    item.querySelector('.magic-data-remove').hidden = !custom;
+    const id = magicDataFieldId(label.value);
+    let list = ARTS_MAGIC_DATA.fields[id]?.list;
+    if(id === 'Cost'){
+      list = new Map([['終律','list-cost-song'],['賦術','list-cost-alchemy'],['相域','list-cost-geomancy'],['操気','list-cost-psychokinesis']]).get(magic) || 'list-cost';
+    }
+    if(magic.length === 2 && (id === 'Target' || id === 'Range')){ list += '-craft'; }
+    if(id === 'Type' && magic === '騎芸'){ list = 'list-magic-mount'; }
+    if(list){ value.setAttribute('list',list); }
+    else { value.removeAttribute('list'); }
+  });
+  row.querySelector('.magic-data-controls').hidden = !custom;
+}
+function checkMagicClass(row = document.querySelector('#data-magic .input-data')){
+  const select = row.querySelector('dl.class select');
+  const prefix = magicDataPrefix(row);
+  const field = suffix=>row.querySelector(`[name="${prefix}${suffix}"]`);
+  let state = magicDataStates.get(row);
+  if(!state){
+    // 自由記入で保存した系統は、再編集時にも自由記入モードに戻す。
+    if(field('DataCustom').value === '1'){
+      row.querySelector('dl.class input').value = select.value;
+      select.value = 'free';
+      selectInputCheck(select);
+    }
+    state = { byLabel:new Map(), byId:new Map(), freeRows:null, mode:null, signature:null };
+    magicDataStates.set(row,state);
+    row.querySelector('.magic-data-list').addEventListener('input',event=>{
+      if(event.target.name.endsWith('Label')){ refreshMagicDataHints(row); }
     });
   }
+  rememberMagicData(row,state);
+  if(state.mode === 'free'){ state.freeRows = magicDataRows(row); }
+  const custom = select.value === 'free';
+  const magic = custom ? row.querySelector('dl.class input').value : select.value;
+  field('DataCustom').value = custom ? '1' : '0';
+  const passive = field('ActionTypePassive').checked;
+  const signature = `${magic}|${passive}`;
+  if(custom){
+    if(state.mode === 'preset' && state.freeRows){
+      row.querySelector('.magic-data-list').replaceChildren();
+      state.freeRows.forEach(item=>createMagicDataRow(row,item.label,item.value));
+    }
+    state.signature = null;
+  }
+  else if(state.mode !== 'preset' || state.signature !== signature){
+    const preset = Object.hasOwn(ARTS_MAGIC_DATA.presets,magic) ? ARTS_MAGIC_DATA.presets[magic] : ARTS_MAGIC_DATA.default;
+    const ids = magic === '操気' && passive ? ['Cost','Premise'] : preset;
+    row.querySelector('.magic-data-list').replaceChildren();
+    ids.forEach(id=>{
+      const overrides = Object.hasOwn(ARTS_MAGIC_DATA.labels,magic) ? ARTS_MAGIC_DATA.labels[magic] : {};
+      const label = overrides[id] || ARTS_MAGIC_DATA.fields[id].label;
+      let value = state.byId.get(id) ?? state.byLabel.get(label) ?? '';
+      if(id === 'Cost'){
+        if(['終律','賦術','相域','操気'].includes(magic)){
+          if(value === 'MP'){ value = ''; }
+        }
+        else if((prefix === 'magic' || magic !== '') && value === ''){ value = 'MP'; }
+      }
+      createMagicDataRow(row,label,value);
+    });
+    state.signature = signature;
+  }
+  state.mode = custom ? 'free' : 'preset';
+  renumberMagicData(row);
+  refreshMagicDataHints(row);
+  field('ActionTypePassive').parentNode.style.display = /^(騎芸|操気)$/.test(magic) ? '' : 'none';
+  field('ActionTypeMajor').parentNode.style.display = /^(騎芸|操気)$/.test(magic) ? '' : 'none';
+  row.querySelector('dl.summary').style.display = /^(呪印|貴格)$/.test(magic) ? 'none' : '';
+  row.querySelector('dl.level dt').textContent = /(属性|特殊)妖精魔法|秘奥魔法/.test(magic) ? 'ランク' : '習得レベル';
+  const level = row.querySelector('dl.level input');
+  if(magic.length === 2){ level.setAttribute('list','list-craft-required-level'); }
+  else { level.removeAttribute('list'); }
+}
+function addMagicData(row){
+  if(row.querySelector('dl.class select').value !== 'free'){ return; }
+  createMagicDataRow(row);
+  renumberMagicData(row);
+  refreshMagicDataHints(row);
+  row.querySelector('.magic-data-row:last-child dt input').focus();
+  form.dispatchEvent(new Event('change'));
+}
+function removeMagicData(button){
+  const row = button.closest('.input-data');
+  if(row.querySelector('dl.class select').value !== 'free'){ return; }
+  const item = button.closest('.magic-data-row');
+  if([...item.querySelectorAll('input')].some(input=>input.value !== '') && !confirm(delConfirmText)){ return; }
+  item.remove();
+  renumberMagicData(row);
+  form.dispatchEvent(new Event('change'));
 }
 function setupMagicDatalists(){
-  // 各秘伝魔法と特殊神聖魔法が、他の行の系統に影響されないようにする。
-  for(const id of ['list-target','list-range']){
+  for(const id of ['list-target','list-magic-range-form']){
     const list = document.getElementById(id).cloneNode(true);
     list.id += '-craft';
-    list.querySelector('option.self').value = '自身';
+    for(const option of list.querySelectorAll('option')){
+      option.value = option.value.replace(/^術者/,'自身');
+    }
     document.body.append(list);
   }
 }
@@ -265,7 +328,6 @@ setSortable('schoolArts','#arts-list','.input-data');
 // 追加
 function addSchoolMagic(){
   const row = createRow('school-magic','schoolMagicNum');
-  setupRangeField(row.querySelector('input[name$="Range"]'));
   document.querySelector("#school-magic-list").append(row);
   checkMagicClass(row);
 }
@@ -296,12 +358,9 @@ function checkRankMode() {
   }
 }
 
-function setupRangeField(rangeField = null) {
-  const rangeFields =
-    (rangeField != null)
-      ? [rangeField]
-      : [...document.querySelectorAll('[name="magicRange"], [name^="godMagic"][name$="Range"], [name^="schoolMagic"][name$="Range"]')];
-
+function setupRangeField() {
+  // 特殊神聖魔法は従来の射程・形状の入力欄を維持する。
+  const rangeFields = document.querySelectorAll('[name^="godMagic"][name$="Range"]');
   rangeFields.forEach(rangeField =>
     rangeField.addEventListener('input', () => {
       const formField = rangeField.parentNode.querySelector(`[name$="Form"]`);

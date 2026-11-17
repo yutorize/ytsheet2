@@ -1974,6 +1974,42 @@ body[data-sheet-type="arts"] {
   div.input-data dl.range dd input {
     max-width: 6.5em;
   }
+  div.input-data .magic-data-editor,
+  div.input-data .magic-data-list {
+    display: block;
+    width: 100%;
+  }
+  div.input-data dl.magic-data-row {
+    display: grid;
+    grid-template-columns: 10em minmax(0,1fr);
+  }
+  div.input-data dl.magic-data-row dt {
+    width: auto;
+  }
+  div.input-data dl.magic-data-row dt input {
+    width: 100%;
+    min-width: 0;
+  }
+  div.input-data dl.magic-data-row dd {
+    display: flex;
+    gap: .5em;
+    min-width: 0;
+  }
+  div.input-data dl.magic-data-row dd input {
+    flex: 1;
+    width: 100%;
+    min-width: 0;
+  }
+  div.input-data .magic-data-controls {
+    margin: .5em var(--box-v-gap);
+  }
+  div.input-data .magic-data-controls[hidden],
+  div.input-data .magic-data-remove[hidden] {
+    display: none;
+  }
+  @media screen and (width <= 735px) {
+    div.input-data dl.magic-data-row { grid-template-columns: 8em minmax(0,1fr); }
+  }
   div.input-data dl.summary dd input {
     max-width: 100%;
   }

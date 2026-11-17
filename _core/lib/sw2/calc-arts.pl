@@ -4,10 +4,11 @@ use strict;
 use utf8;
 use open ":utf8";
 
-#require $set::data_item;
+require $::core_dir.'/lib/sw2/arts-magic-data.pl';
 
 sub dataCalc {
   my %pc = %{$_[0]};
+  ArtsMagicData::upgrade(\%pc);
   my %NL;
 
   if($pc{category} eq 'magic'){
@@ -33,17 +34,7 @@ sub dataCalc {
   }
   $pc{artsName} = $NL{name};
 
-  # 通常魔法と、各流派秘伝魔法の派生項目を同じ規則で作る。
-  foreach my $prefix ('magic', map { "schoolMagic$_" } 1..$pc{schoolMagicNum}){
-    $pc{"${prefix}SongPet"} = join('、',
-      grep $_, ($pc{"${prefix}SongPetBird"}?'小鳥':undef), ($pc{"${prefix}SongPetFrog"}?'蛙':undef), ($pc{"${prefix}SongPetBug"}?'虫':undef)
-    );
-    if($pc{"${prefix}Class"} eq '騎芸'){
-      $pc{"${prefix}Type"} = join('、',
-        grep $_, ($pc{"${prefix}MountTypeAnimal"}?'動物':undef), ($pc{"${prefix}MountTypeCryptid"}?'幻獣':undef), ($pc{"${prefix}MountTypeMachine"}?'魔動機':undef)
-      );
-    }
-  }
+  ArtsMagicData::clearLegacy(\%pc);
   #### カテゴリの全角半角変換 --------------------------------------------------
   $pc{category} =~ tr/ａ-ｚＡ-Ｚ/a-zA-Z/;
 

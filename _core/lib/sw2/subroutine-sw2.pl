@@ -929,6 +929,9 @@ sub upgradeArtsData {
     }
   }
 
+  require $::core_dir.'/lib/sw2/arts-magic-data.pl';
+  ArtsMagicData::upgrade(\%pc);
+
   $pc{lasttimever} = $pc{ver};
   $pc{ver} = $main::ver;
   return %pc;
