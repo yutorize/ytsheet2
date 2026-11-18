@@ -380,9 +380,10 @@ sub renderMagicDataInputs {
 }
 sub renderMagicDataSchema {
   require JSON::PP;
-  my $json = JSON::PP->new->canonical->encode(ArtsMagicData::schema());
+  my $schema = ArtsMagicData::schema();
+  my $json = JSON::PP->new->canonical->encode($schema);
   $json =~ s/</\\u003c/g;
-  my $options = join('',map { '<option value="'.$_.'">' } sort keys %{ ArtsMagicData::schema()->{aliases} });
+  my $options = join('',map { '<option value="'.$schema->{fields}{$_}{label}.'">' } @{ $schema->{default} });
   return '<datalist id="list-magic-data-label">'.$options.'</datalist>'
     . '<datalist id="list-magic-range-form"><option value="術者／―"><option value="接触／―"><option value="1(10m)／射撃"><option value="2(30m)／起点指定"><option value="2(50m)／貫通"></datalist>'
     . '<datalist id="list-magic-sing"><option value="必要"><option value="なし"></datalist>'
