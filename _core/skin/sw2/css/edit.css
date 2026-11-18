@@ -1994,7 +1994,7 @@ body[data-sheet-type="arts"] {
     text-align: left;
     text-align-last: left;
     .magic-data-handle:not([hidden]) + & {
-      width: calc(100% -  1.5em);
+      width: calc(100% - 1.5em - 4px);
     }
   }
   div.input-data dl.magic-data-row dd {
@@ -2016,6 +2016,12 @@ body[data-sheet-type="arts"] {
     flex-shrink: 0;
     touch-action: none;
     user-select: none;
+    &:not([hidden]) {
+      display: inline-block;
+      width: 1.5em;
+      text-align: center;
+      text-align-last: center;
+    }
   }
   div.input-data .magic-data-remove {
     font-size: 80%;

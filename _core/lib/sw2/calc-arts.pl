@@ -15,7 +15,7 @@ sub dataCalc {
     $NL{name} = $pc{magicName};
     $NL{sub} = $pc{magicClass}.'／'.$pc{magicLevel};
     if($pc{magicMinor}){ $NL{sub} .= '／小魔法'; }
-    if($pc{magicClass} =~ /呪印|貴格/) { $NL{summary} = substr($pc{magicEffect}, 0, 35).'..'; }
+    if($pc{magicClass} =~ /^(?:呪印|貴格|城識)$/) { $NL{summary} = substr($pc{magicEffect}, 0, 35).'..'; }
     else { $NL{summary} = $pc{magicSummary}; }
   }
   elsif($pc{category} eq 'god'){

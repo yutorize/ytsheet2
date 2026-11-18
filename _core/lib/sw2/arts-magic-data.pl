@@ -57,6 +57,7 @@ my %layouts = (
   '練技' => 'enhance', '呪歌' => 'song', '終律' => 'finale', '騎芸' => 'riding',
   '相域' => 'geomancy', '鼓咆' => 'command', '陣率' => 'lead', '占瞳' => 'divination',
   '魔装' => 'potential', '操気' => 'psychokinesis', '呪印' => 'seal', '貴格' => 'dignity',
+  '城識' => 'palacesense',
 );
 my %aliases = map { $fields{$_}{label} => $_ } keys %fields;
 foreach my $overrides (values %labels){ $aliases{$overrides->{$_}} = $_ foreach keys %$overrides; }

@@ -339,6 +339,18 @@ article {
   }
 }
 
+.data-magic.palacesense {
+  grid-template-columns: 1fr;
+  grid-template-areas:
+    "NAME"
+    "EXTR"
+    "EFCT"
+  ;
+  > dl.summary {
+    display: none;
+  }
+}
+
 .data-magic.data-arts {
   grid-template-columns: 1fr 1fr .45fr .55fr;
   grid-template-areas:
