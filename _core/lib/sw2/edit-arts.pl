@@ -370,7 +370,8 @@ sub renderMagicDataInputs {
     $num++;
     $html .= '<dl class="magic-data-row"><dt>'
       . input("${prefix}Data${num}Label",'','','readonly list="list-magic-data-label" aria-label="項目名"')
-      . '<dd>'.input("${prefix}Data${num}Value",'','','aria-label="項目の値"')
+      . '<dd><span class="magic-data-handle" title="ドラッグして並べ替え" hidden>↕</span>'
+      . input("${prefix}Data${num}Value",'','','aria-label="項目の値"')
       . '<button type="button" class="magic-data-remove" onclick="removeMagicData(this)" hidden>削除</button></dl>';
   }
   return $html.'</div><div class="magic-data-controls" hidden>'
