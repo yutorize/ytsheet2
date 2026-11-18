@@ -249,8 +249,9 @@ function checkMagicClass(row = document.querySelector('#data-magic .input-data')
   state.mode = custom ? 'free' : 'preset';
   renumberMagicData(row);
   refreshMagicDataHints(row);
-  field('ActionTypePassive').parentNode.style.display = /^(騎芸|操気)$/.test(magic) ? '' : 'none';
-  field('ActionTypeMajor').parentNode.style.display = /^(騎芸|操気)$/.test(magic) ? '' : 'none';
+  const actionDisplay = custom || /^(騎芸|操気)$/.test(magic) ? '' : 'none';
+  field('ActionTypePassive').parentNode.style.display = actionDisplay;
+  field('ActionTypeMajor').parentNode.style.display = actionDisplay;
   row.querySelector('dl.summary').style.display = /^(呪印|貴格|城識)$/.test(magic) ? 'none' : '';
   row.querySelector('dl.level dt').textContent = /(属性|特殊)妖精魔法|秘奥魔法/.test(magic) ? 'ランク' : '習得レベル';
   const level = row.querySelector('dl.level input');

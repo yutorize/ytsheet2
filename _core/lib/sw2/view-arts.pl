@@ -67,6 +67,8 @@ sub maskPcData {
   $pc->{magicResist}   = noiseText(2);
   $pc->{magicElement}  = noiseText(1,6);
   $pc->{magicSummary}  = noiseText(8,25);
+  $pc->{magicActionTypePassive} = 0;
+  $pc->{magicActionTypeMajor} = 0;
   $pc->{magicActionTypeMinor} = 0;
   $pc->{magicActionTypeSetup} = 0;
   $pc->{magicEffect} = '';
@@ -189,7 +191,7 @@ sub magicViewData {
   my $icon = '';
   my $isSchool = $prefix ne 'magic';
   my $class = ArtsMagicData::baseClass($magic{Class});
-  if($class eq '騎芸' || $class eq '操気'){
+  if($magic{DataCustom} || $class eq '騎芸' || $class eq '操気'){
     if($magic{ActionTypePassive}){ $icon .= '<i class="s-icon passive"><span class="raw">[常]</span></i>' }
     if($magic{ActionTypeMajor}  ){ $icon .= '<i class="s-icon major"><span class="raw">[主]</span></i>' }
   }
