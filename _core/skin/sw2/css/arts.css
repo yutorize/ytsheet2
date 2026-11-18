@@ -429,6 +429,13 @@ article {
 .data-magic dl.name {
   grid-template-columns: 3.5em 1fr;
 }
+.data-magic:not(
+  :has(> dl.cost, > dl.a-cost),
+  .enhance:has(> dl.duration),
+  :is(.riding, .lead):has(> dl.premise)
+) > .name {
+  grid-column: 1 / -1;
+}
 .data-magic > dl > dd,
 .data-magic .magic-extra-data > dl > dd {
   padding: .2em 0;
