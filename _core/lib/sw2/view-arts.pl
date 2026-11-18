@@ -55,9 +55,9 @@ sub maskPcData {
       $pc->{magicDescription} .= noiseText(18,50)."<br>";
     }
   }
-  
+
   $pc->{magicClass}    = noiseText(3,14);
-  
+
   $pc->{magicLevel}    = noiseText(2);
   $pc->{magicCost}     = noiseText(3,4);
   $pc->{magicTarget}   = noiseText(2,14);

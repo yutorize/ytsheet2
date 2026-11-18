@@ -143,15 +143,15 @@ function createMagicDataRow(row, label = '', value = ''){
   const handle = document.createElement('span');
   handle.className = 'magic-data-handle';
   handle.title = 'ドラッグして並べ替え';
-  handle.textContent = '↕';
+  handle.textContent = '::';
   handle.hidden = true;
   const remove = document.createElement('button');
   remove.type = 'button';
   remove.className = 'magic-data-remove';
   remove.textContent = '削除';
   remove.addEventListener('click',()=>removeMagicData(remove));
-  title.append(nameInput);
-  body.append(handle,valueInput,remove);
+  title.append(handle,nameInput);
+  body.append(valueInput,remove);
   item.append(title,body);
   row.querySelector('.magic-data-list').append(item);
 }
@@ -251,7 +251,7 @@ function checkMagicClass(row = document.querySelector('#data-magic .input-data')
   refreshMagicDataHints(row);
   field('ActionTypePassive').parentNode.style.display = /^(騎芸|操気)$/.test(magic) ? '' : 'none';
   field('ActionTypeMajor').parentNode.style.display = /^(騎芸|操気)$/.test(magic) ? '' : 'none';
-  row.querySelector('dl.summary').style.display = /^(呪印|貴格)$/.test(magic) ? 'none' : '';
+  row.querySelector('dl.summary').style.display = /^(呪印|貴格|城識)$/.test(magic) ? 'none' : '';
   row.querySelector('dl.level dt').textContent = /(属性|特殊)妖精魔法|秘奥魔法/.test(magic) ? 'ランク' : '習得レベル';
   const level = row.querySelector('dl.level input');
   if(magic.length === 2){ level.setAttribute('list','list-craft-required-level'); }

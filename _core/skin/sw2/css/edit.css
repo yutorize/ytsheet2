@@ -1987,11 +1987,15 @@ body[data-sheet-type="arts"] {
   div.input-data dl.magic-data-row dt {
     width: auto;
     padding-top: 0;
+    white-space: nowrap;
   }
   div.input-data dl.magic-data-row dt input {
     min-width: 0;
     text-align: left;
     text-align-last: left;
+    .magic-data-handle:not([hidden]) + & {
+      width: calc(100% -  1.5em);
+    }
   }
   div.input-data dl.magic-data-row dd {
     display: flex;
