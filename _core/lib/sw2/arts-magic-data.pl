@@ -12,14 +12,14 @@ my %fields = (
   Target         => { label => '対象', class => 'target', list => 'list-target' },
   Range          => { label => '射程／形状', class => 'range', list => 'list-magic-range-form' },
   Duration       => { label => '時間', class => 'duration', list => 'list-duration' },
-  SongSing       => { label => '歌唱', class => 'sing', list => 'list-magic-sing' },
-  SongPet        => { label => 'ペット', class => 'pet', list => 'list-magic-pet' },
+  SongSing       => { label => '歌唱', class => 'sing', list => 'list-song-sing' },
+  SongPet        => { label => 'ペット', class => 'pet', list => 'list-song-pet' },
   Condition      => { label => '条件', class => 'condition', list => 'list-song-condition' },
   SongBasePoint  => { label => '基礎楽素', class => 'basepoint', list => 'list-songpoint' },
   SongSetPoint   => { label => '巧奏値', class => 'setpoint', list => 'list-song-set-point' },
   SongAddPoint   => { label => '追加楽素', class => 'addpoint', list => 'list-songpoint' },
   ApplyPart      => { label => '適用部位', class => 'part', list => 'list-part' },
-  ApplyHumanForm => { label => '人間形態時', class => 'human-form', list => 'list-magic-human-form' },
+  ApplyHumanForm => { label => '人間形態時', class => 'human-form', list => 'list-human-form' },
   Rank           => { label => 'ランク', class => 'rank' },
   CommandCost    => { label => '陣気コスト', class => 'ccost' },
   CommandCharge  => { label => '陣気蓄積', class => 'ccharge' },
@@ -36,9 +36,10 @@ my %presets = (
   '相域' => [qw/Cost Duration Element/],
   '鼓咆' => [qw/Type Rank CommandCost CommandCharge/],
   '陣率' => [qw/Premise Condition CommandCost/],
-  '占瞳' => [qw/Type Target Range Duration/],
   '魔装' => [qw/Premise ApplyPart ApplyHumanForm/],
   '操気' => [qw/Cost Premise Target Range Duration Resist/],
+  '城識' => [],
+  '占瞳' => [qw/Type Target Range Duration/],
   '呪印' => [qw/Type Premise/],
   '貴格' => [qw/Type Target Premise/],
   '魔動機術' => [qw/Magisphere Cost Target Range Duration Resist Element/],
@@ -59,8 +60,8 @@ my %layouts = (
 );
 my %aliases = map { $fields{$_}{label} => $_ } keys %fields;
 foreach my $overrides (values %labels){ $aliases{$overrides->{$_}} = $_ foreach keys %$overrides; }
-$aliases{'射程/形状'} = 'Range';
 $aliases{'系統'} = 'Type';
+$aliases{'射程/形状'} = 'Range';
 $aliases{'前提AC'} = 'Premise';
 
 sub schema { return { fields => \%fields, presets => \%presets, labels => \%labels, aliases => \%aliases, default => \@default }; }

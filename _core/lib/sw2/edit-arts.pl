@@ -51,7 +51,6 @@ setDefaultColors(\%pc);
 ## その他
 $pc{schoolArtsNum} ||= 3;
 $pc{schoolMagicNum} ||= 1;
-ArtsMagicData::upgrade(\%pc);
 
 ### 折り畳み判断 --------------------------------------------------
 my %open;
@@ -385,11 +384,6 @@ sub renderMagicDataSchema {
   $json =~ s/</\\u003c/g;
   my $options = join('',map { '<option value="'.$schema->{fields}{$_}{label}.'">' } @{ $schema->{default} });
   return '<datalist id="list-magic-data-label">'.$options.'</datalist>'
-    . '<datalist id="list-magic-range-form"><option value="術者／―"><option value="接触／―"><option value="1(10m)／射撃"><option value="2(30m)／起点指定"><option value="2(50m)／貫通"></datalist>'
-    . '<datalist id="list-magic-sing"><option value="必要"><option value="なし"></datalist>'
-    . '<datalist id="list-magic-pet"><option value="なし"><option value="小鳥"><option value="蛙"><option value="虫"><option value="小鳥、蛙"><option value="小鳥、虫"><option value="蛙、虫"><option value="小鳥、蛙、虫"></datalist>'
-    . '<datalist id="list-magic-mount"><option value="動物"><option value="幻獣"><option value="魔動機"><option value="動物、幻獣"><option value="動物、魔動機"><option value="幻獣、魔動機"><option value="動物、幻獣、魔動機"></datalist>'
-    . '<datalist id="list-magic-human-form"><option value="有効"><option value="無効"><option value="―"></datalist>'
     . '<script>const ARTS_MAGIC_DATA = '.$json.';</script>';
 }
 
@@ -482,6 +476,24 @@ sub renderDataList {
     <option value="貫通">
     <option value="突破">
   </datalist>
+  <datalist id="list-magic-range-form">
+    <option value="術者／―">
+    <option value="接触／―">
+    <option value="1(10m)／射撃">
+    <option value="2(20m)／射撃">
+    <option value="2(30m)／射撃">
+    <option value="2(50m)／射撃">
+    <option value="1(10m)／起点指定">
+    <option value="2(20m)／起点指定">
+    <option value="2(30m)／起点指定">
+    <option value="2(50m)／起点指定">
+    <option value="1(10m)／貫通">
+    <option value="2(20m)／貫通">
+    <option value="2(30m)／貫通">
+    <option value="2(50m)／貫通">
+    <option value="2(無限)／―">
+    <option value="2()／">
+  </datalist>
   <datalist id="list-duration">
     <option value="一瞬">
     <option value="10秒(1ラウンド)">
@@ -538,6 +550,20 @@ sub renderDataList {
     <option value="大中小">
     <option value="大（＿個）">
   </datalist>
+  <datalist id="list-song-sing">
+    <option value="必要">
+    <option value="なし">
+  </datalist>
+  <datalist id="list-song-pet">
+    <option value="なし">
+    <option value="小鳥">
+    <option value="蛙">
+    <option value="虫">
+    <option value="小鳥、蛙">
+    <option value="小鳥、虫">
+    <option value="蛙、虫">
+    <option value="小鳥、蛙、虫">
+  </datalist>
   <datalist id="list-song-condition">
     <option value="なし">
     <option value="⤴">
@@ -560,6 +586,15 @@ sub renderDataList {
     <option value="18">
     <option value="24">
   </datalist>
+  <datalist id="list-magic-mount">
+    <option value="動物">
+    <option value="幻獣">
+    <option value="魔動機">
+    <option value="動物、幻獣">
+    <option value="動物、魔動機">
+    <option value="幻獣、魔動機">
+    <option value="動物、幻獣、魔動機">
+  </datalist>
   <datalist id="list-part">
     <option value="―">
     <option value="すべて">
@@ -573,6 +608,11 @@ sub renderDataList {
     <option value="邪眼">
     <option value="蠍">
     <option value="鋏">
+  </datalist>
+  <datalist id="list-human-form">
+    <option value="有効">
+    <option value="無効">
+    <option value="―">
   </datalist>
   <datalist id="list-school-req">
     <option value="50名誉点">

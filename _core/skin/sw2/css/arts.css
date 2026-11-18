@@ -306,12 +306,12 @@ article {
 }
 .data-magic.psychokinesis {
   grid-template-areas:
-  "NAME NAME NAME COST"
-  "PRMS PRMS PRMS PRMS"
-  "TRGT RANG DURA RESI"
-  "EXTR EXTR EXTR EXTR"
+    "NAME NAME NAME COST"
+    "PRMS PRMS PRMS PRMS"
+    "TRGT RANG DURA RESI"
+    "EXTR EXTR EXTR EXTR"
     "SMRY SMRY SMRY ELEM"
-  "EFCT EFCT EFCT EFCT"
+    "EFCT EFCT EFCT EFCT"
   ;
 }
 .data-magic.seal {
@@ -345,6 +345,7 @@ article {
     "NAME NAME NAME COST"
     "TYPE PRMS EQIP EQIP"
     "USE  APLY RISK RISK"
+    "EXTR EXTR EXTR EXTR"
     "SMRY SMRY SMRY SMRY"
     "EFCT EFCT EFCT EFCT"
   ;
@@ -384,9 +385,14 @@ article {
   }
 }
 
-
 .data-magic .magic-extra-data {
   grid-area: EXTR;
+  display: flex;
+  flex-wrap: wrap;
+  > dl {
+    flex-basis: 25%;
+    flex-grow: 2;
+  }
   > dl.magic-data-item > dd { white-space: normal; overflow-wrap: anywhere; }
   > dl > dt { overflow-wrap: anywhere; min-width: 0; }
 }
@@ -418,6 +424,7 @@ article {
   line-height: 1;
   padding: 2px 0px;
   text-wrap: balance;
+  text-align: center;
 }
 .data-magic dl.name {
   grid-template-columns: 3.5em 1fr;
