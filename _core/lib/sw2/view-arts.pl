@@ -236,8 +236,17 @@ sub magicDataViewRows {
   my $ids = $layout ? ArtsMagicData::preset($class,0) : ArtsMagicData::schema()->{default};
   my %allowed = map { ArtsMagicData::fieldDefinition($_)->{class} => 1 } @$ids;
   $allowed{element} = 1 if !$layout || $layout eq 'psychokinesis';
+  my $items = ArtsMagicData::rows(\%pc,$prefix);
+  if($pc{"${prefix}DataCustom"}){
+    my @group = qw/Target Range Duration Resist/;
+    my %present = map { (ArtsMagicData::fieldId($_->{Label}) // '') => 1 } @$items;
+    # 自由記入で4項目が揃わない場合は、通常の配置を使わず追加欄にまとめる。
+    if(grep { !$present{$_} } @group){
+      delete $allowed{ ArtsMagicData::fieldDefinition($_)->{class} } foreach @group;
+    }
+  }
   my (@rows,@extras,%seen,$notes);
-  foreach my $item (@{ ArtsMagicData::rows(\%pc,$prefix) }){
+  foreach my $item (@$items){
     my ($label,$value) = @{$item}{'Label','Value'};
     next if $label eq '' && $value eq '';
     my $id = ArtsMagicData::fieldId($label);
