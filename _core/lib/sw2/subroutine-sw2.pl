@@ -929,7 +929,7 @@ sub upgradeArtsData {
     }
   }
 
-  require $::core_dir.'/lib/sw2/arts-magic-data.pl';
+  require $::core_dir.'/lib/sw2/data-arts.pl';
   ArtsMagicData::upgrade(\%pc);
 
   $pc{lasttimever} = $pc{ver};

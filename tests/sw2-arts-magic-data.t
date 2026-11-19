@@ -9,7 +9,7 @@ binmode Test::More->builder->failure_output, ':encoding(UTF-8)';
 binmode Test::More->builder->todo_output, ':encoding(UTF-8)';
 
 our $core_dir = "$FindBin::Bin/../_core";
-require "$core_dir/lib/sw2/arts-magic-data.pl";
+require "$core_dir/lib/sw2/data-arts.pl";
 
 for my $system ('sw2','sw2.0'){
   local $set::data_class = "$core_dir/lib/$system/data-class.pl";

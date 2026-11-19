@@ -5,7 +5,7 @@ use utf8;
 use open ":utf8";
 
 ### データ読み込み ###################################################################################
-require $::core_dir.'/lib/sw2/arts-magic-data.pl';
+require $::core_dir.'/lib/sw2/data-arts.pl';
 
 ### データ／テンプレート読込 #########################################################################
 (my $pcRef, my $SHEET) = setupViewBase(

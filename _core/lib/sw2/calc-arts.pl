@@ -4,7 +4,7 @@ use strict;
 use utf8;
 use open ":utf8";
 
-require $::core_dir.'/lib/sw2/arts-magic-data.pl';
+require $::core_dir.'/lib/sw2/data-arts.pl';
 
 sub dataCalc {
   my %pc = %{$_[0]};

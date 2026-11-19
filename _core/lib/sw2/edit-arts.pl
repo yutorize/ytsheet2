@@ -12,7 +12,7 @@ require $set::lib_convert;
 
 ### 読込前処理 #######################################################################################
 ### 各種データライブラリ読み込み --------------------------------------------------
-require $::core_dir.'/lib/sw2/arts-magic-data.pl';
+require $::core_dir.'/lib/sw2/data-arts.pl';
 my @magic_classes = ArtsMagicData::classOptions();
 ### データ読み込み ###################################################################################
 my ($data, $file, $message) = loadSheetData();
