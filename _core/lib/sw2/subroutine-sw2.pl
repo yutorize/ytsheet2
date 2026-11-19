@@ -928,9 +928,10 @@ sub upgradeArtsData {
       $pc{$_} =~ s/(^|&lt;br&gt;)\[↓\]/\[v\]/g;
     }
   }
-
-  require $::core_dir.'/lib/sw2/data-arts.pl';
-  ArtsMagicData::upgrade(\%pc);
+  if($ver < 2.01016){
+    require $::core_dir.'/lib/sw2/data-arts.pl';
+    ArtsMagicData::upgrade(\%pc);
+  }
 
   $pc{lasttimever} = $pc{ver};
   $pc{ver} = $main::ver;

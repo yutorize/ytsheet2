@@ -8,7 +8,9 @@ require $::core_dir.'/lib/sw2/data-arts.pl';
 
 sub dataCalc {
   my %pc = %{$_[0]};
-  ArtsMagicData::upgrade(\%pc);
+  if($pc{ver}){
+    %pc = upgradeArtsData(\%pc);
+  }
   my %NL;
 
   if($pc{category} eq 'magic'){
