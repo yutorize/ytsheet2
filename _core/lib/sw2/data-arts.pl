@@ -143,17 +143,17 @@ sub upgradePrefix {
   }
   $pc->{"${prefix}DataNum"} = $num;
 }
-sub upgrade {
-  my ($pc) = @_;
-  upgradePrefix($pc,'magic');
-  upgradePrefix($pc,"schoolMagic$_") foreach 1..($pc->{schoolMagicNum} || 0);
-  return $pc;
-}
 sub rows {
   my ($pc,$prefix) = @_;
   upgradePrefix($pc,$prefix);
   return [map { +{ Label => $pc->{"${prefix}Data${_}Label"} // '', Value => $pc->{"${prefix}Data${_}Value"} // '' } }
     1..($pc->{"${prefix}DataNum"} || 0)];
+}
+sub upgrade {
+  my ($pc) = @_;
+  upgradePrefix($pc,'magic');
+  upgradePrefix($pc,"schoolMagic$_") foreach 1..($pc->{schoolMagicNum} || 0);
+  return $pc;
 }
 sub clearLegacy {
   my ($pc) = @_;

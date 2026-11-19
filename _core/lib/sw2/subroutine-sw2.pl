@@ -931,6 +931,7 @@ sub upgradeArtsData {
   if($ver < 2.01016){
     require $::core_dir.'/lib/sw2/data-arts.pl';
     data::arts::upgrade(\%pc);
+    data::arts::clearLegacy(\%pc);
   }
 
   $pc{lasttimever} = $pc{ver};

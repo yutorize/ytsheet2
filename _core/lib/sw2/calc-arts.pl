@@ -36,7 +36,6 @@ sub dataCalc {
   }
   $pc{artsName} = $NL{name};
 
-  data::arts::clearLegacy(\%pc);
   #### カテゴリの全角半角変換 --------------------------------------------------
   $pc{category} =~ tr/ａ-ｚＡ-Ｚ/a-zA-Z/;
 
