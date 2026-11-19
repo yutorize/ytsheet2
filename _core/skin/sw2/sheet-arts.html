@@ -97,26 +97,13 @@
         </div>
         <h2><TMPL_VAR magicClass DEFAULT="未分類"></h2>
         <div class="data-magic <TMPL_VAR magicClassEn>">
-          <dl class="name color-set"><dt><TMPL_VAR magicLevel><dd><div><TMPL_VAR magicIcon><TMPL_VAR magicDivineMark>【<TMPL_VAR magicName>】</div><TMPL_IF magicAlias><span class="alias"><TMPL_VAR magicAlias></span></TMPL_IF><small><TMPL_VAR magicNameNotes></small></dl>
-          <TMPL_IF magicCostOn     ><dl class="cost     "><dt>消費         <dd><TMPL_VAR magicCost></dl></TMPL_IF>
-          <TMPL_IF magicTargetOn   ><dl class="target   "><dt>対象         <dd><TMPL_VAR magicTarget></dl></TMPL_IF>
-          <TMPL_IF magicRangeOn    ><dl class="range    "><dt>射程/<br>形状<dd><TMPL_VAR magicRange>／<wbr><TMPL_VAR magicForm></dl></TMPL_IF>
-          <TMPL_IF magicDurationOn ><dl class="duration "><dt>時間         <dd><TMPL_VAR magicDuration></dl></TMPL_IF>
-          <TMPL_IF magicResistOn   ><dl class="resist   "><dt>抵抗         <dd><TMPL_VAR magicResist></dl></TMPL_IF>
-          <TMPL_IF magicElementOn  ><dl class="element  "><dt>属性         <dd><TMPL_VAR magicElement DEFAULT="―"></dl></TMPL_IF>
-          <TMPL_IF magicSongOn     ><dl class="sing     "><dt>歌唱         <dd><TMPL_VAR magicSongSing DEFAULT="なし"></dl></TMPL_IF>
-          <TMPL_IF magicSongOn     ><dl class="pet      "><dt>ペット       <dd><TMPL_VAR magicSongPet DEFAULT="―"></dl></TMPL_IF>
-          <TMPL_IF magicConditionOn><dl class="condition"><dt>条件         <dd><TMPL_VAR magicCondition></dl></TMPL_IF>
-          <TMPL_IF magicSongOn     ><dl class="basepoint"><dt>基礎楽素     <dd><TMPL_VAR magicSongBasePoint></dl></TMPL_IF>
-          <TMPL_IF magicSongOn     ><dl class="setpoint "><dt>巧奏値       <dd><TMPL_VAR magicSongSetPoint></dl></TMPL_IF>
-          <TMPL_IF magicSongOn     ><dl class="addpoint "><dt>追加楽素     <dd><TMPL_VAR magicSongAddPoint></dl></TMPL_IF>
-          <TMPL_IF magicTypeOn     ><dl class="type     "><dt><TMPL_VAR magicTypeDt DEFAULT="対応"><dd><TMPL_VAR magicType></dl></TMPL_IF>
-          <TMPL_IF magicPremiseOn  ><dl class="premise  "><dt>前提         <dd><TMPL_VAR magicPremise></dl></TMPL_IF>
-          <TMPL_IF magicPartOn     ><dl class="part     "><dt>適用部位     <dd><TMPL_VAR magicApplyPart></dl></TMPL_IF>
-          <TMPL_IF magicHumanFormOn><dl class="human-form"><dt>人間形態時  <dd><TMPL_VAR magicApplyHumanForm></dl></TMPL_IF>
-          <TMPL_IF magicRankOn     ><dl class="rank     "><dt>ランク       <dd><TMPL_VAR magicRank></dl></TMPL_IF>
-          <TMPL_IF magicCommandCostOn  ><dl class="ccost  "><dt>陣気コスト<dd><TMPL_VAR magicCommandCost></dl></TMPL_IF>
-          <TMPL_IF magicCommandChargeOn><dl class="ccharge"><dt>陣気蓄積  <dd><TMPL_VAR magicCommandCharge></dl></TMPL_IF>
+          <dl class="name color-set"><dt><TMPL_VAR magicLevel><dd><div><TMPL_VAR magicIcon><TMPL_VAR magicDivineMark>【<TMPL_VAR magicName>】</div><TMPL_IF magicAlias><span class="alias"><TMPL_VAR magicAlias></span></TMPL_IF><small class="sphere"><TMPL_VAR magicNameNotes></small></dl>
+          <TMPL_LOOP magicDataRows>
+          <dl class="magic-data-item <TMPL_VAR CssClass>"><dt><TMPL_VAR Label><dd><TMPL_VAR Value></dl>
+          </TMPL_LOOP>
+          <TMPL_IF magicExtraDataRows><div class="magic-extra-data">
+            <TMPL_LOOP magicExtraDataRows><dl class="magic-data-item <TMPL_VAR CssClass>"><dt><TMPL_VAR Label><dd><TMPL_VAR Value></dl></TMPL_LOOP>
+          </div></TMPL_IF>
           <dl class="summary "><dt>概要      <dd><TMPL_VAR magicSummary></dl>
           <dl class="effect  "><dt><TMPL_IF head_magicEffect><TMPL_VAR head_magicEffect><TMPL_ELSE>効果</TMPL_IF><dd class="box"><p><TMPL_VAR magicEffect></p></dl>
         </div>
@@ -254,17 +241,17 @@
           <TMPL_IF schoolMagicView><h2>秘伝魔法</h2>
           <TMPL_IF schoolMagicNote><div class="box"><p><TMPL_VAR schoolMagicNote></p></div></TMPL_IF>
           <TMPL_LOOP schoolMagicData>
-          <div class="data-magic">
-            <dl class="name    "><dt><TMPL_VAR LEVEL><dd><div><TMPL_VAR ICON><TMPL_VAR DIVINE_MARK>【<TMPL_VAR NAME>】<TMPL_VAR ALIAS></div></dl>
-            <dl class="a-cost  "><dt><span>必要名誉点</span><dd><TMPL_VAR A-COST></dl>
-            <dl class="cost    "><dt>消費      <dd><TMPL_VAR COST></dl>
-            <dl class="target  "><dt>対象      <dd><TMPL_VAR TARGET></dl>
-            <dl class="range   "><dt>射程/<br>形状<dd><TMPL_VAR RANGE>／<wbr><TMPL_VAR FORM></dl>
-            <dl class="duration"><dt>時間      <dd><TMPL_VAR DURATION></dl>
-            <dl class="resist  "><dt>抵抗      <dd><TMPL_VAR RESIST></dl>
-            <TMPL_IF ELEMENT><dl class="element" ><dt>属性<dd><TMPL_VAR ELEMENT></dl></TMPL_IF>
-            <dl class="summary "><dt>概要      <dd><TMPL_VAR SUMMARY></dl>
-            <dl class="effect  "><dt><TMPL_IF head_EFFECT><TMPL_VAR head_EFFECT><TMPL_ELSE>効果</TMPL_IF><dd class="box"><p><TMPL_VAR EFFECT></p></dl>
+          <div class="data-magic<TMPL_IF Class> school-magic <TMPL_VAR ClassEn></TMPL_IF>">
+            <dl class="name"><dt><TMPL_VAR Level><dd><div><TMPL_VAR Icon><TMPL_VAR DivineMark>【<TMPL_VAR Name>】</div><TMPL_IF Alias><span class="alias"><TMPL_VAR Alias></span></TMPL_IF><TMPL_IF Class><small>系統：<TMPL_VAR Class> ／ 必要名誉点：<TMPL_VAR AcquireCost><TMPL_IF NameNotes><br><span class="sphere"><TMPL_VAR NameNotes></span></TMPL_IF></small></TMPL_IF></dl>
+            <TMPL_UNLESS Class><dl class="a-cost"><dt><span>必要名誉点</span><dd><TMPL_VAR AcquireCost></dl></TMPL_UNLESS>
+            <TMPL_LOOP DataRows>
+            <dl class="magic-data-item <TMPL_VAR CssClass>"><dt><TMPL_VAR Label><dd><TMPL_VAR Value></dl>
+            </TMPL_LOOP>
+            <TMPL_IF ExtraDataRows><div class="magic-extra-data">
+              <TMPL_LOOP ExtraDataRows><dl class="magic-data-item <TMPL_VAR CssClass>"><dt><TMPL_VAR Label><dd><TMPL_VAR Value></dl></TMPL_LOOP>
+            </div></TMPL_IF>
+            <dl class="summary "><dt>概要      <dd><TMPL_VAR Summary></dl>
+            <dl class="effect  "><dt><TMPL_IF head_Effect><TMPL_VAR head_Effect><TMPL_ELSE>効果</TMPL_IF><dd class="box"><p><TMPL_VAR Effect></p></dl>
           </div>
           </TMPL_LOOP></TMPL_IF>
         </section>

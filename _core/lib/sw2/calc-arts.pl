@@ -4,17 +4,20 @@ use strict;
 use utf8;
 use open ":utf8";
 
-#require $set::data_item;
+require $::core_dir.'/lib/sw2/data-arts.pl';
 
 sub dataCalc {
   my %pc = %{$_[0]};
+  if($pc{ver}){
+    %pc = upgradeArtsData(\%pc);
+  }
   my %NL;
 
   if($pc{category} eq 'magic'){
     $NL{name} = $pc{magicName};
     $NL{sub} = $pc{magicClass}.'／'.$pc{magicLevel};
     if($pc{magicMinor}){ $NL{sub} .= '／小魔法'; }
-    if($pc{magicClass} =~ /呪印|貴格/) { $NL{summary} = substr($pc{magicEffect}, 0, 35).'..'; }
+    if($pc{magicClass} =~ /^(?:呪印|貴格|城識)$/) { $NL{summary} = substr($pc{magicEffect}, 0, 35).'..'; }
     else { $NL{summary} = $pc{magicSummary}; }
   }
   elsif($pc{category} eq 'god'){
@@ -33,14 +36,6 @@ sub dataCalc {
   }
   $pc{artsName} = $NL{name};
 
-  $pc{magicSongPet} = join('、',
-      grep $_, ($pc{magicSongPetBird}?'小鳥':undef) ,($pc{magicSongPetFrog}?'蛙':undef),($pc{magicSongPetBug}?'虫':undef)
-    );
-  if($pc{magicClass} eq '騎芸'){
-    $pc{magicType} = join('、',
-        grep $_, ($pc{magicMountTypeAnimal}?'動物':undef) ,($pc{magicMountTypeCryptid}?'幻獣':undef),($pc{magicMountTypeMachine}?'魔動機':undef)
-      );
-  }
   #### カテゴリの全角半角変換 --------------------------------------------------
   $pc{category} =~ tr/ａ-ｚＡ-Ｚ/a-zA-Z/;
 
