@@ -13,7 +13,7 @@ require $set::lib_convert;
 ### 読込前処理 #######################################################################################
 ### 各種データライブラリ読み込み --------------------------------------------------
 require $::core_dir.'/lib/sw2/data-arts.pl';
-my @magic_classes = ArtsMagicData::classOptions();
+my @magic_classes = data::arts::classOptions();
 ### データ読み込み ###################################################################################
 my ($data, $file, $message) = loadSheetData();
 our %pc = %{ $data };
@@ -360,7 +360,7 @@ print renderEditPageEnd(
 # 可変項目は通常魔法と秘伝魔法で同じフォームを使う。
 sub renderMagicDataInputs {
   my ($prefix) = @_;
-  my $rows = ArtsMagicData::rows(\%pc,$prefix);
+  my $rows = data::arts::rows(\%pc,$prefix);
   my $num = 0;
   my $html = '<div class="magic-data-editor">'
     . input("${prefix}DataNum",'hidden')
@@ -380,7 +380,7 @@ sub renderMagicDataInputs {
 }
 sub renderMagicDataSchema {
   require JSON::PP;
-  my $schema = ArtsMagicData::schema();
+  my $schema = data::arts::schema();
   my $json = JSON::PP->new->canonical->encode($schema);
   $json =~ s/</\\u003c/g;
   my $options = join('',map { '<option value="'.$schema->{fields}{$_}{label}.'">' } @{ $schema->{default} });

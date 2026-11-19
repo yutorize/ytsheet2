@@ -190,7 +190,7 @@ sub magicViewData {
     grep { /^\Q$prefix\E[A-Z]/ } keys %pc;
   my $icon = '';
   my $isSchool = $prefix ne 'magic';
-  my $class = ArtsMagicData::baseClass($magic{Class});
+  my $class = data::arts::baseClass($magic{Class});
   if($magic{DataCustom} || $class eq '騎芸' || $class eq '操気'){
     if($magic{ActionTypePassive}){ $icon .= '<i class="s-icon passive"><span class="raw">[常]</span></i>' }
     if($magic{ActionTypeMajor}  ){ $icon .= '<i class="s-icon major"><span class="raw">[主]</span></i>' }
@@ -210,7 +210,7 @@ sub magicViewData {
   $magic{Target} = textMagic($magic{Target});
   $magic{Duration} = textMagic($magic{Duration});
 
-  $magic{ClassEn} = ArtsMagicData::layout($class);
+  $magic{ClassEn} = data::arts::layout($class);
   my ($rows,$extras,$notes) = magicDataViewRows($prefix,$class);
   $magic{DataRows} = $rows;
   $magic{ExtraDataRows} = $extras;
@@ -232,25 +232,25 @@ sub textSongPoint {
 # 項目名は固定の対応表でクラスへ変換し、独自名をCSSに直接埋め込まない。
 sub magicDataViewRows {
   my ($prefix,$class) = @_;
-  my $layout = ArtsMagicData::layout($class);
-  my $ids = $layout ? ArtsMagicData::preset($class,0) : ArtsMagicData::schema()->{default};
-  my %allowed = map { ArtsMagicData::fieldDefinition($_)->{class} => 1 } @$ids;
+  my $layout = data::arts::layout($class);
+  my $ids = $layout ? data::arts::preset($class,0) : data::arts::schema()->{default};
+  my %allowed = map { data::arts::fieldDefinition($_)->{class} => 1 } @$ids;
   $allowed{element} = 1 if !$layout || $layout eq 'psychokinesis';
-  my $items = ArtsMagicData::rows(\%pc,$prefix);
+  my $items = data::arts::rows(\%pc,$prefix);
   if($pc{"${prefix}DataCustom"}){
     my @group = qw/Target Range Duration Resist/;
-    my %present = map { (ArtsMagicData::fieldId($_->{Label}) // '') => 1 } @$items;
+    my %present = map { (data::arts::fieldId($_->{Label}) // '') => 1 } @$items;
     # 自由記入で4項目が揃わない場合は、通常の配置を使わず追加欄にまとめる。
     if(grep { !$present{$_} } @group){
-      delete $allowed{ ArtsMagicData::fieldDefinition($_)->{class} } foreach @group;
+      delete $allowed{ data::arts::fieldDefinition($_)->{class} } foreach @group;
     }
   }
   my (@rows,@extras,%seen,$notes);
   foreach my $item (@$items){
     my ($label,$value) = @{$item}{'Label','Value'};
     next if $label eq '' && $value eq '';
-    my $id = ArtsMagicData::fieldId($label);
-    my $css = $id ? ArtsMagicData::fieldDefinition($id)->{class} : 'custom';
+    my $id = data::arts::fieldId($label);
+    my $css = $id ? data::arts::fieldDefinition($id)->{class} : 'custom';
     if($id && $id eq 'Magisphere' && ($prefix eq 'magic' || $class ne '') && !$seen{sphere}++){
       $notes = "$label:$value";
       next;

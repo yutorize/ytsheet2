@@ -930,7 +930,7 @@ sub upgradeArtsData {
   }
   if($ver < 2.01016){
     require $::core_dir.'/lib/sw2/data-arts.pl';
-    ArtsMagicData::upgrade(\%pc);
+    data::arts::upgrade(\%pc);
   }
 
   $pc{lasttimever} = $pc{ver};

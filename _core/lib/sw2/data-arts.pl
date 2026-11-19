@@ -1,7 +1,7 @@
 use strict;
 use utf8;
 
-package ArtsMagicData;
+package data::arts;
 
 # 編集・移行・表示で共有する、項目名とレイアウトの対応。
 my %fields = (
