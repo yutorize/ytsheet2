@@ -732,7 +732,7 @@ sub dataCalc {
       $def += $pc{raceAbilityDef} + $pc{defenseSeeker};
       # 戦闘特技
       $eva += $pc{evasiveManeuver} + $pc{mindsEye};
-      if($pc{evasiveManeuver} == 2 && $id ne 'Fen' && $id ne 'Bat'){ $eva -= 1 }
+      if($pc{evasiveManeuver} == 2 && $id ne 'Fen' && $id ne 'Bat' && $id ne 'Vit'){ $eva -= 1 }
       if($pc{mindsEye} && $id ne 'Fen'){ $eva -= $pc{mindsEye} }
     }
     ## 部位全般

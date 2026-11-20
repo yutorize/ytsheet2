@@ -730,17 +730,17 @@ function checkFeats(){
       }
       else if (feat.match(/回避行動/)){
         if(feat.match(/Ⅰ$/)){
-          if (f2 && (lv['Fen'] >= 9 || lv['Bat'] >= 9)) { (auto) ? box.value = "回避行動Ⅱ" : cL.add("mark") }
+          if (f2 && (lv['Fen'] >= 9 || lv['Bat'] >= 9 || lv['Vit'] >= 9)) { (auto) ? box.value = "回避行動Ⅱ" : cL.add("mark") }
         }
         else if(feat.match(/Ⅱ$/)){
-          if(!f2 || (lv['Fen'] < 9 && lv['Bat'] < 9)) { (auto) ? box.value = "回避行動Ⅰ" : cL.add("error") }
+          if(!f2 || (lv['Fen'] < 9 && lv['Bat'] < 9 && lv['Vit'] < 9)) { (auto) ? box.value = "回避行動Ⅰ" : cL.add("error") }
         }
       }
       else if (feat.match(/超頑強/)){
         if((lv['Fig'] < 7 && lv['Gra'] < 7)|| !acquire.match('頑強')){ cL.add("error"); }
       }
       else if (feat.match(/^頑強/)){
-        if(lv['Fig'] < 5 && lv['Gra'] < 5 && lv['Fen'] < 5 && lv['Bat'] < 5){ cL.add("error"); }
+        if(lv['Fig'] < 5 && lv['Gra'] < 5 && lv['Fen'] < 5 && lv['Bat'] < 5 && lv['Vit'] < 5){ cL.add("error"); }
       }
       else if (feat.match(/鼓咆陣率追加/)){
         if(lv['War'] < 1){ cL.add("error"); }
@@ -855,7 +855,7 @@ function checkFeats(){
         if(lv['Gra'] < 5){ cL.add("error"); }
       }
       else if (feat.match(/変幻自在/)){
-        if(lv['Gra'] < 5 && lv['Fen'] < 5 && lv['Bat'] < 5){ cL.add("error"); }
+        if(lv['Gra'] < 5 && lv['Fen'] < 5 && lv['Bat'] < 5 && lv['Vit'] < 5){ cL.add("error"); }
         if(feat.match(/Ⅰ$/)){
           if (f2 && (lv['Gra'] >= 13 || lv['Fen'] >= 13 || lv['Bat'] >= 13)) { (auto) ? box.value = "変幻自在Ⅱ" : cL.add("mark") }
         }
@@ -2132,7 +2132,7 @@ function calcArmour(evaAdd,defBase) {
     if(!partNum || partNum == form.partCore.value) {
       def += defBase;
       eva += evaAdd;
-      if(feats['回避行動'] == 2 && className != 'フェンサー' && className != 'バトルダンサー'){ eva -= 1 }
+      if(feats['回避行動'] == 2 && className != 'フェンサー' && className != 'バトルダンサー' && className != 'ヴァイタルスミス'){ eva -= 1 }
       if(feats['心眼'] && className != 'フェンサー'){ eva -= feats['心眼'] }
     }
     if(partNum){

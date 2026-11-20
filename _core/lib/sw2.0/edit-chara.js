@@ -58,17 +58,17 @@ function checkFeats(){
       else if (feat.match(/回避行動/)){
         if(level < 3){ cL.add("error"); }
         if(feat.match(/Ⅰ$/)){
-          if (f2 && (lv['Fen'] >= 9 || lv['Bat'] >= 9)) { (auto) ? box.value = "回避行動Ⅱ" : cL.add("mark") }
+          if (f2 && (lv['Fen'] >= 9 || lv['Bat'] >= 9 || lv['Vit'] >= 9)) { (auto) ? box.value = "回避行動Ⅱ" : cL.add("mark") }
         }
         else if(feat.match(/Ⅱ$/)){
-          if(!f2 || (lv['Fen'] < 9 && lv['Bat'] < 9)) { (auto) ? box.value = "回避行動Ⅰ" : cL.add("error") }
+          if(!f2 || (lv['Fen'] < 9 && lv['Bat'] < 9 && lv['Vit'] < 9)) { (auto) ? box.value = "回避行動Ⅰ" : cL.add("error") }
         }
       }
       else if (feat.match(/超頑強/)){
         if((lv['Fig'] < 7 && lv['Gra'] < 7)|| !acquire.match('頑強')){ cL.add("error"); }
       }
       else if (feat.match(/^頑強/)){
-        if(lv['Fig'] < 5 && lv['Gra'] < 5 && lv['Fen'] < 5 && lv['Bat'] < 5){ cL.add("error"); }
+        if(lv['Fig'] < 5 && lv['Gra'] < 5 && lv['Fen'] < 5 && lv['Bat'] < 5 && lv['Vit'] < 5){ cL.add("error"); }
       }
       else if (feat.match(/キャパシティ/)){
         if(level < 11){ cL.add("error"); }
