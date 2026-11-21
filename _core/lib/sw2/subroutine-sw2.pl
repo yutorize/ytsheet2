@@ -3,7 +3,6 @@ use strict;
 use utf8;
 use open ":utf8";
 use CGI::Cookie;
-use JSON::PP ();
 use List::Util qw/max min/;
 use Fcntl;
 
@@ -869,18 +868,19 @@ sub itemSheetName {
   return $title if itemDataCount($pc) > 1 && $title =~ /\S/;
   return $pc->{itemName};
 }
-sub encodeItemListValues {
-  return $_[0] if @_ == 1 && $_[0] !~ /\A\x1f/;
-  # 先頭の区切り文字で従来の単一値と区別する
-  return "\x1f" . escapeThanSign(JSON::PP->new->encode(\@_));
+my $itemListSeparator = '␟';
+sub validateItemListValues {
+  if(grep { index($_ // '', $itemListSeparator) >= 0 } @_){
+    error "400:ページタイトル・アイテム名・カテゴリに一覧の区切り文字「$itemListSeparator」は使用できません。";
+  }
 }
-sub decodeItemListValues {
+sub joinItemListValues {
+  return join $itemListSeparator, map { escapeThanSign($_) } @_;
+}
+sub splitItemListValues {
   my $field = shift // '';
-  return ($field) unless $field =~ /\A\x1f/;
-  my $values = eval { JSON::PP->new->decode(substr($field, 1)) };
-  return ($field) if ref($values) ne 'ARRAY' || !@$values
-    || grep { !defined($_) || ref($_) } @$values;
-  return map { escapeThanSign($_) } @$values;
+  return ('') if $field eq '';
+  return split /\Q$itemListSeparator\E/, $field, -1;
 }
 sub commonItemListCategory {
   my ($first, @others) = @_;

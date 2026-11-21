@@ -21,6 +21,8 @@ sub dataCalc {
   
   #### 保存処理でなければここまで --------------------------------------------------
   if(!$::mode_save){ return %pc; }
+
+  validateItemListValues($pc{pageTitle}, map { ($pc{"${_}itemName"}, $pc{"${_}category"}) } @prefixes);
   
   #### エスケープ --------------------------------------------------
   $pc{$_} = escapePcData($pc{$_}) foreach (keys %pc);
@@ -49,8 +51,8 @@ sub dataCalc {
     }
     @categories = ($commonCategory // 'さまざま') if $forbidden ne '';
   }
-  $NL{itemName} = encodeItemListValues(deduplicate(@names));
-  $NL{category} = encodeItemListValues(@categories);
+  $NL{itemName} = joinItemListValues(deduplicate(@names));
+  $NL{category} = joinItemListValues(@categories);
   $NL{author}  = substr($NL{author} , 0,  25).'..' if length($NL{author} ) >  25;
   $NL{summary} = substr($NL{summary}, 0,  35).'..' if length($NL{summary}) >  35;
   $::updatedLine =
