@@ -10,6 +10,12 @@ sub addJsonData {
   my %pc = %{ $_[0] };
   my $type = $_[1];
   my $target = $_[2];
+  if($type eq 'i' && defined $::in{item}){
+    my ($item, $message) = selectItemData(\%pc, $::in{item});
+    error($message) if !$item;
+    %pc = %$item;
+    $pc{sheetURL} .= '&item='.$::in{item} if $::in{id} && $pc{sheetURL};
+  }
   $pc{'gameVersion'} = $::SW2_0 ? '2.0' : '2.5';
   ### 魔物 --------------------------------------------------
   if ($pc{type} eq 'm'){

@@ -205,6 +205,7 @@ print <<"HTML";
         <dl class="arms  "><dt>アイテム一覧
           <dd>
             <input type="text" id="schoolItemUrl" placeholder="アイテムシートのURL"><span class="button" onclick="addSchoolItem()">追加</span>
+            <p class="annotate">個別のアイテムを参照する場合は、URLの末尾に <code>&amp;item=2</code> のように番号を付けます。</p>
             @{[ input 'schoolItemList','hidden' ]}
             <table id="school-item-list" class="data-table">
               <thead>

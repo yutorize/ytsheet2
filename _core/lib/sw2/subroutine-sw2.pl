@@ -862,6 +862,33 @@ sub itemDataPrefix {
   # 1件目は従来の保存キーを使う
   return $num eq '1' ? '' : "item${num}_";
 }
+sub selectItemData {
+  my ($pc, $num) = @_;
+  return (undef, '400:アイテム番号は1以上の整数で指定してください。')
+    if !defined($num) || $num !~ /\A[1-9][0-9]*\z/;
+  return (undef, '404:指定された番号のアイテムは見つかりませんでした。')
+    if $num > itemDataCount($pc);
+
+  my %item = %$pc;
+  delete $item{pageTitle};
+  $item{itemNum} = 1;
+  my $itemField = qr/\A(?:
+    itemName(?:Ruby)? | price | reputation | shape | category | age | summary | effects
+    | magic | icon(?:Magic|Local|School[AT]?)
+    | (?:weapon|armour)(?:Num|[0-9]+[A-Za-z]+)
+  )\z/x;
+  delete @item{ grep { /\Aitem[0-9]+_/ || ($num > 1 && /$itemField/) } keys %item };
+
+  if($num > 1){
+    my $prefix = itemDataPrefix($num);
+    foreach my $key (keys %$pc){
+      next unless index($key, $prefix) == 0;
+      my $field = substr($key, length($prefix));
+      $item{$field} = $pc->{$key} if $field =~ $itemField;
+    }
+  }
+  return (\%item, undef);
+}
 sub itemSheetName {
   my ($pc) = @_;
   my $title = $pc->{pageTitle} // '';
