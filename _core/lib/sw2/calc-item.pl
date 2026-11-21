@@ -9,13 +9,15 @@ use open ":utf8";
 sub dataCalc {
   my %pc = %{$_[0]};
 
-  #### カテゴリの全角半角変換 --------------------------------------------------
-  $pc{category} =~ tr/ａ-ｚＡ-Ｚ/a-zA-Z/;
+  my $itemNum = itemDataCount(\%pc);
+  $pc{itemNum} = $itemNum;
+  delete $pc{pageTitle} if $itemNum == 1;
 
-  #### 改行を<br>に変換 --------------------------------------------------
-  convertNewlinesToBrTag(\%pc,
-    qw/effects description/,
-  );
+  my @prefixes = map { itemDataPrefix($_) } 1 .. $itemNum;
+  foreach my $prefix (@prefixes){
+    $pc{"${prefix}category"} =~ tr/ａ-ｚＡ-Ｚ/a-zA-Z/;
+  }
+  convertNewlinesToBrTag(\%pc, 'description', map { "${_}effects" } @prefixes);
   
   #### 保存処理でなければここまで --------------------------------------------------
   if(!$::mode_save){ return %pc; }
@@ -27,13 +29,22 @@ sub dataCalc {
   ### updatedLine --------------------------------------------------
   my %NL;
   $NL{type} = $pc{magic} ? '[ma]' : '';
-  foreach ('itemName','author','category','price','age','summary'){
-    $NL{$_} = $pc{$_} =~ s/[|｜]([^|｜]+?)《.+?》/$1/gr;
-    $NL{$_} = removeTags unescapeTags $NL{$_} =~ s/^\s|\s$//gr;
+  foreach (qw/author category price age summary/){
+    $NL{$_} = itemListText($pc{$_});
   }
-  $NL{name}    = substr($NL{name}   , 0, 108).'..' if length($NL{name}   ) > 108;
+  $NL{itemName} = itemListText(itemSheetName(\%pc));
+  if($itemNum > 1){
+    my @categories = map { itemListText($pc{"${_}category"}) } @prefixes;
+    my @categorySets = map { join ' ', sort(deduplicate(split /\s+/, $_)) } @categories;
+    if(grep { $_ ne $categorySets[0] } @categorySets){
+      $NL{category} = $NL{price} = 'さまざま';
+    }
+    else {
+      $NL{category} = join ' ', split /\s+/, $categories[0];
+      $NL{price} = join '／', map { itemListText($pc{"${_}price"}) } @prefixes;
+    }
+  }
   $NL{author}  = substr($NL{author} , 0,  25).'..' if length($NL{author} ) >  25;
-  $NL{sub}     = substr($NL{sub}    , 0,  40).'..' if length($NL{sub}    ) >  40;
   $NL{summary} = substr($NL{summary}, 0,  35).'..' if length($NL{summary}) >  35;
   $::updatedLine =
     "$pc{id}<>$::file<>"
@@ -42,6 +53,12 @@ sub dataCalc {
     . setUpdatatLineImage(\%pc)."<> $pc{tags} <>$pc{hide}<>";
   
   return %pc;
+}
+
+sub itemListText {
+  my ($text) = @_;
+  $text =~ s/[|｜]([^|｜]+?)《.+?》/$1/g;
+  return trim(removeTags(unescapeTags($text)));
 }
 
 1;

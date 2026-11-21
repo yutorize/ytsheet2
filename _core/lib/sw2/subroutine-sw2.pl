@@ -850,6 +850,24 @@ sub upgradeMonsterData {
   $pc{ver} = $main::ver;
   return %pc;
 }
+### アイテムシート --------------------------------------------------
+sub itemDataCount {
+  my ($pc) = @_;
+  my $count = $pc->{itemNum};
+  return 1 if !defined($count) || $count !~ /\A[1-9][0-9]*\z/ || $count > keys(%$pc);
+  return $count;
+}
+sub itemDataPrefix {
+  my ($num) = @_;
+  # 1件目は従来の保存キーを使う
+  return $num eq '1' ? '' : "item${num}_";
+}
+sub itemSheetName {
+  my ($pc) = @_;
+  my $title = $pc->{pageTitle} // '';
+  return $title if itemDataCount($pc) > 1 && $title =~ /\S/;
+  return $pc->{itemName};
+}
 sub upgradeItemData {
   my %pc = %{$_[0]};
   my $ver = $pc{ver};
