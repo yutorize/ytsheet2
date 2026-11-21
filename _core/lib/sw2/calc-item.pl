@@ -3,7 +3,6 @@ use strict;
 #use warnings;
 use utf8;
 use open ":utf8";
-use JSON::PP ();
 
 #require $set::data_item;
 
@@ -30,39 +29,35 @@ sub dataCalc {
   ### updatedLine --------------------------------------------------
   my %NL;
   $NL{type} = $pc{magic} ? '[ma]' : '';
-  foreach (qw/author category price age summary/){
+  foreach (qw/author price age summary/){
     $NL{$_} = itemListText($pc{$_});
   }
-  $NL{itemName} = itemListText(itemSheetName(\%pc));
-  my $itemSearch = '';
+  my @names = (itemListText(itemSheetName(\%pc)));
+  my @categories = map { itemListText($pc{"${_}category"}) } @prefixes;
   if($itemNum > 1){
-    my @categories = map { itemListText($pc{"${_}category"}) } @prefixes;
-    my @categorySets = map { join ' ', sort(deduplicate(split /\s+/, $_)) } @categories;
-    if(grep { $_ ne $categorySets[0] } @categorySets){
-      $NL{category} = $NL{price} = 'さまざま';
+    my $commonCategory = commonItemListCategory(@categories);
+    if(defined $commonCategory){
+      $NL{price} = join '／', map { itemListText($pc{"${_}price"}) } @prefixes;
     }
     else {
-      $NL{category} = join ' ', split /\s+/, $categories[0];
-      $NL{price} = join '／', map { itemListText($pc{"${_}price"}) } @prefixes;
+      $NL{price} = 'さまざま';
     }
 
     my $forbidden = $pc{forbidden} // '';
     if($forbidden eq '' || $forbidden eq 'battle'){
-      my %search = (
-        version => 1,
-        names   => [ map { itemListText($pc{"${_}itemName"}) } @prefixes ],
-      );
-      $search{categories} = \@categories if $forbidden eq '';
-      $itemSearch = escapeThanSign(JSON::PP->new->canonical(1)->encode(\%search));
+      push @names, map { itemListText($pc{"${_}itemName"}) } @prefixes;
     }
+    @categories = ($commonCategory // 'さまざま') if $forbidden ne '';
   }
+  $NL{itemName} = encodeItemListValues(deduplicate(@names));
+  $NL{category} = encodeItemListValues(@categories);
   $NL{author}  = substr($NL{author} , 0,  25).'..' if length($NL{author} ) >  25;
   $NL{summary} = substr($NL{summary}, 0,  35).'..' if length($NL{summary}) >  35;
   $::updatedLine =
     "$pc{id}<>$::file<>"
     . "$pc{birthTime}<>$::now<>$NL{itemName}<>$NL{author}<>"
     . "$NL{category}<>$NL{price}<>$NL{age}<>$NL{summary}<>$NL{type}<>"
-    . setUpdatatLineImage(\%pc)."<> $pc{tags} <>$pc{hide}<>$itemSearch<>";
+    . setUpdatatLineImage(\%pc)."<> $pc{tags} <>$pc{hide}<>";
   
   return %pc;
 }

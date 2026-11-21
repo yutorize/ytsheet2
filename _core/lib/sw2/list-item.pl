@@ -4,7 +4,6 @@ use strict;
 use utf8;
 use open ":utf8";
 use HTML::Template;
-use JSON::PP ();
 
 require $set::lib_list;
 
@@ -27,7 +26,6 @@ setFields({
   image    => 11,
   tags     => 12,
   hide     => 13,
-  search   => 14,
 });
 
 ### テンプレート読み込み #############################################################################
@@ -68,36 +66,27 @@ if($namePattern || @categoryTerms){
 
 sub matchItemListSearch {
   my ($row, $namePattern, $categoryTerms) = @_;
-  my $search = decodeItemListSearchData($row->{search});
   if($namePattern){
-    my @names = ($row->{name} // '', @{ $search->{names} // [] });
-    return 0 unless grep { /$namePattern/ } @names;
+    return 0 unless grep { /$namePattern/ } decodeItemListValues($row->{name});
   }
+  return 1 unless @$categoryTerms;
 
-  my $categories = $search->{categories} // [$row->{category} // ''];
+  my @categories = decodeItemListValues($row->{category});
   foreach my $term (@$categoryTerms){
     my ($exclude, $pattern) = @$term;
-    my $matches = grep { /$pattern/ } @$categories;
+    my $matches = grep { /$pattern/ } @categories;
     return 0 if $exclude ? $matches : !$matches;
   }
   return 1;
 }
 
-sub decodeItemListSearchData {
-  my ($index) = @_;
-  return {} if !defined($index) || $index !~ /\S/;
-  my $search = eval { JSON::PP->new->decode($index) };
-  # 閲覧制限を反映した形式だけを検索に使う
-  return {} unless ref($search) eq 'HASH' && ($search->{version} // '') eq '1'
-    && ref($search->{names}) eq 'ARRAY'
-    && (!exists($search->{categories}) || ref($search->{categories}) eq 'ARRAY');
-  return $search;
-}
-
 ### ソート --------------------------------------------------
 if($::in{sort}){
   my $s = $::in{sort};
-  if   ($s eq 'name')  { my @t = map { capField($_,'name')   } @lines; @lines = @lines[sort {$t[$a] cmp $t[$b]} 0 .. $#t]; }
+  if($s eq 'name'){
+    my @titles = map { (decodeItemListValues(capField($_,'name')))[0] } @lines;
+    @lines = @lines[sort { $titles[$a] cmp $titles[$b] } 0 .. $#titles];
+  }
   elsif($s eq 'author'){ my @t = map { capField($_,'author') } @lines; @lines = @lines[sort {$t[$a] cmp $t[$b]} 0 .. $#t]; }
   elsif($s eq 'date')  { my @t = map { capField($_,'date')   } @lines; @lines = @lines[sort {$t[$b] <=> $t[$a]} 0 .. $#t]; }
 }
@@ -117,7 +106,9 @@ foreach (@$pageLines) {
     group => 'すべて',
   );
   
-  #分類
+  #名称とカテゴリの表示
+  ($pc{name}) = decodeItemListValues($pc{name});
+  $pc{category} = commonItemListCategory(decodeItemListValues($pc{category})) // 'さまざま';
   $pc{category} =~ s/[ 　]/<br>/g;
 
   #価格

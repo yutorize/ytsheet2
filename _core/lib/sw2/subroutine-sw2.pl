@@ -3,6 +3,7 @@ use strict;
 use utf8;
 use open ":utf8";
 use CGI::Cookie;
+use JSON::PP ();
 use List::Util qw/max min/;
 use Fcntl;
 
@@ -867,6 +868,26 @@ sub itemSheetName {
   my $title = $pc->{pageTitle} // '';
   return $title if itemDataCount($pc) > 1 && $title =~ /\S/;
   return $pc->{itemName};
+}
+sub encodeItemListValues {
+  return $_[0] if @_ == 1 && $_[0] !~ /\A\x1f/;
+  # 先頭の区切り文字で従来の単一値と区別する
+  return "\x1f" . escapeThanSign(JSON::PP->new->encode(\@_));
+}
+sub decodeItemListValues {
+  my $field = shift // '';
+  return ($field) unless $field =~ /\A\x1f/;
+  my $values = eval { JSON::PP->new->decode(substr($field, 1)) };
+  return ($field) if ref($values) ne 'ARRAY' || !@$values
+    || grep { !defined($_) || ref($_) } @$values;
+  return map { escapeThanSign($_) } @$values;
+}
+sub commonItemListCategory {
+  my ($first, @others) = @_;
+  return $first unless @others;
+  my @sets = map { join ' ', sort(deduplicate(split /\s+/, $_)) } ($first, @others);
+  return undef if grep { $_ ne $sets[0] } @sets;
+  return join ' ', split /\s+/, $first;
 }
 sub upgradeItemData {
   my %pc = %{$_[0]};
