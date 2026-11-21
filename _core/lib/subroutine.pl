@@ -228,12 +228,15 @@ sub isSheetBinaryEntry {
   return $name =~ /^image[0-9]*\.(?:png|jpe?g|gif|webp)$/i ? 1 : 0;
 }
 sub readZipMember {
-  my ($zipPath, $member, $binary) = @_;
+  my ($zipPath, $member, $binary, %opt) = @_;
   return undef if !-f $zipPath;
   $binary = isSheetBinaryEntry($member) if !defined $binary;
 
-  my $ZIP = IO::Uncompress::Unzip->new($zipPath)
-    or error "500:ZIPファイルのオープンに失敗しました。$IO::Uncompress::Unzip::UnzipError";
+  my $ZIP = IO::Uncompress::Unzip->new($zipPath);
+  if(!$ZIP){
+    return undef if $opt{softError};
+    error "500:ZIPファイルのオープンに失敗しました。$IO::Uncompress::Unzip::UnzipError";
+  }
   while (1) {
     my $header = $ZIP->getHeaderInfo();
     if($header && $header->{Name} eq $member){
@@ -249,14 +252,17 @@ sub readZipMember {
   return undef;
 }
 sub readSheetFile {
-  my ($dir, $file, $name) = @_;
+  my ($dir, $file, $name, %opt) = @_;
   my $zipPath = sheetZipPath($dir, $file);
-  my $content = readZipMember($zipPath, $name, 0);
+  my $content = readZipMember($zipPath, $name, 0, %opt);
   return $content if defined $content;
 
   my $path = sheetFilePath($dir, $file, $name);
   return undef if !-f $path;
-  open(my $IN, '<', $path) or error "500:データファイルが開けませんでした。";
+  open(my $IN, '<', $path) or do {
+    return undef if $opt{softError};
+    error "500:データファイルが開けませんでした。";
+  };
   my $data = do { local $/; <$IN> };
   close($IN);
   return $data;
@@ -276,8 +282,7 @@ sub readSheetFileBinary {
   return $data;
 }
 sub readSheetFileLines {
-  my ($dir, $file, $name) = @_;
-  my $content = readSheetFile($dir, $file, $name);
+  my $content = readSheetFile(@_);
   return wantarray ? () : undef if !defined $content;
   return split(/(?<=\n)/, $content);
 }

@@ -868,6 +868,18 @@ sub itemSheetName {
   return $title if itemDataCount($pc) > 1 && $title =~ /\S/;
   return $pc->{itemName};
 }
+sub itemListText {
+  my $text = shift // '';
+  $text =~ s/[|｜]([^|｜]+?)《.+?》/$1/g;
+  return trim(removeTags(unescapeTags($text)));
+}
+sub itemListSearchData {
+  my ($pc, @prefixes) = @_;
+  return {
+    names      => [ map { itemListText($pc->{"${_}itemName"}) } @prefixes ],
+    categories => [ map { itemListText($pc->{"${_}category"}) } @prefixes ],
+  };
+}
 sub upgradeItemData {
   my %pc = %{$_[0]};
   my $ver = $pc{ver};
