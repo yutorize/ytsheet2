@@ -67,11 +67,11 @@ if($namePattern || @categoryTerms){
 sub matchItemListSearch {
   my ($row, $namePattern, $categoryTerms) = @_;
   if($namePattern){
-    return 0 unless grep { /$namePattern/ } splitItemListValues($row->{name});
+    return 0 unless grep { /$namePattern/ } splitItemListValues($row->{name}, $row->{type});
   }
   return 1 unless @$categoryTerms;
 
-  my @categories = splitItemListValues($row->{category});
+  my @categories = splitItemListValues($row->{category}, $row->{type});
   foreach my $term (@$categoryTerms){
     my ($exclude, $pattern) = @$term;
     my $matches = grep { /$pattern/ } @categories;
@@ -84,7 +84,10 @@ sub matchItemListSearch {
 if($::in{sort}){
   my $s = $::in{sort};
   if($s eq 'name'){
-    my @titles = map { (splitItemListValues(capField($_,'name')))[0] } @lines;
+    my @titles = map {
+      my $row = splitField($_);
+      (splitItemListValues($row->{name}, $row->{type}))[0];
+    } @lines;
     @lines = @lines[sort { $titles[$a] cmp $titles[$b] } 0 .. $#titles];
   }
   elsif($s eq 'author'){ my @t = map { capField($_,'author') } @lines; @lines = @lines[sort {$t[$a] cmp $t[$b]} 0 .. $#t]; }
@@ -107,8 +110,8 @@ foreach (@$pageLines) {
   );
   
   #名称とカテゴリの表示
-  ($pc{name}) = splitItemListValues($pc{name});
-  $pc{category} = commonItemListCategory(splitItemListValues($pc{category})) // 'さまざま';
+  ($pc{name}) = splitItemListValues($pc{name}, $pc{type});
+  $pc{category} = commonItemListCategory(splitItemListValues($pc{category}, $pc{type})) // 'さまざま';
   $pc{category} =~ s/[ 　]/<br>/g;
 
   #価格

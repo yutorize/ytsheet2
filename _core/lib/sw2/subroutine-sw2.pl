@@ -869,18 +869,25 @@ sub itemSheetName {
   return $pc->{itemName};
 }
 my $itemListSeparator = '␟';
-sub validateItemListValues {
-  if(grep { index($_ // '', $itemListSeparator) >= 0 } @_){
-    error "400:ページタイトル・アイテム名・カテゴリに一覧の区切り文字「$itemListSeparator」は使用できません。";
-  }
-}
+# 一覧の種別欄で、従来の単一値と区切り・エスケープ形式を区別する
+use constant ITEM_LIST_VALUES_FLAG => '[item-values]';
 sub joinItemListValues {
-  return join $itemListSeparator, map { escapeThanSign($_) } @_;
+  return join $itemListSeparator, map {
+    my $value = escapeThanSign($_);
+    $value =~ s/\\/\\\\/g;
+    $value =~ s/\Q$itemListSeparator\E/\\u241F/g;
+    $value;
+  } @_;
 }
 sub splitItemListValues {
-  my $field = shift // '';
-  return ('') if $field eq '';
-  return split /\Q$itemListSeparator\E/, $field, -1;
+  my ($field, $type) = @_;
+  $field //= '';
+  return ($field) if $field eq '' || index($type // '', ITEM_LIST_VALUES_FLAG) < 0;
+  my @values = split /\Q$itemListSeparator\E/, $field, -1;
+  foreach (@values){
+    s/\\(\\|u241F)/$1 eq 'u241F' ? $itemListSeparator : '\\'/ge;
+  }
+  return @values;
 }
 sub commonItemListCategory {
   my ($first, @others) = @_;

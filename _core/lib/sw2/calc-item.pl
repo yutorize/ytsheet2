@@ -21,8 +21,6 @@ sub dataCalc {
   
   #### 保存処理でなければここまで --------------------------------------------------
   if(!$::mode_save){ return %pc; }
-
-  validateItemListValues($pc{pageTitle}, map { ($pc{"${_}itemName"}, $pc{"${_}category"}) } @prefixes);
   
   #### エスケープ --------------------------------------------------
   $pc{$_} = escapePcData($pc{$_}) foreach (keys %pc);
@@ -30,7 +28,7 @@ sub dataCalc {
 
   ### updatedLine --------------------------------------------------
   my %NL;
-  $NL{type} = $pc{magic} ? '[ma]' : '';
+  $NL{type} = ($pc{magic} ? '[ma]' : '') . ITEM_LIST_VALUES_FLAG();
   foreach (qw/author price age summary/){
     $NL{$_} = itemListText($pc{$_});
   }
