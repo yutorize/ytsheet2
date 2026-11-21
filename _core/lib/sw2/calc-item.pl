@@ -36,9 +36,7 @@ sub dataCalc {
   $NL{itemName} = itemListText(itemSheetName(\%pc));
   my $itemSearch = '';
   if($itemNum > 1){
-    my $searchData = itemListSearchData(\%pc, @prefixes);
-    $itemSearch = escapeThanSign(JSON::PP->new->canonical(1)->encode($searchData));
-    my @categories = @{ $searchData->{categories} };
+    my @categories = map { itemListText($pc{"${_}category"}) } @prefixes;
     my @categorySets = map { join ' ', sort(deduplicate(split /\s+/, $_)) } @categories;
     if(grep { $_ ne $categorySets[0] } @categorySets){
       $NL{category} = $NL{price} = 'さまざま';
@@ -46,6 +44,16 @@ sub dataCalc {
     else {
       $NL{category} = join ' ', split /\s+/, $categories[0];
       $NL{price} = join '／', map { itemListText($pc{"${_}price"}) } @prefixes;
+    }
+
+    my $forbidden = $pc{forbidden} // '';
+    if($forbidden eq '' || $forbidden eq 'battle'){
+      my %search = (
+        version => 1,
+        names   => [ map { itemListText($pc{"${_}itemName"}) } @prefixes ],
+      );
+      $search{categories} = \@categories if $forbidden eq '';
+      $itemSearch = escapeThanSign(JSON::PP->new->canonical(1)->encode(\%search));
     }
   }
   $NL{author}  = substr($NL{author} , 0,  25).'..' if length($NL{author} ) >  25;
@@ -57,6 +65,12 @@ sub dataCalc {
     . setUpdatatLineImage(\%pc)."<> $pc{tags} <>$pc{hide}<>$itemSearch<>";
   
   return %pc;
+}
+
+sub itemListText {
+  my $text = shift // '';
+  $text =~ s/[|｜]([^|｜]+?)《.+?》/$1/g;
+  return trim(removeTags(unescapeTags($text)));
 }
 
 1;

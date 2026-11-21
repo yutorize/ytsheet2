@@ -68,7 +68,7 @@ if($namePattern || @categoryTerms){
 
 sub matchItemListSearch {
   my ($row, $namePattern, $categoryTerms) = @_;
-  my $search = loadItemListSearchData($row);
+  my $search = decodeItemListSearchData($row->{search});
   if($namePattern){
     my @names = ($row->{name} // '', @{ $search->{names} // [] });
     return 0 unless grep { /$namePattern/ } @names;
@@ -83,31 +83,15 @@ sub matchItemListSearch {
   return 1;
 }
 
-sub loadItemListSearchData {
-  my ($row) = @_;
-  my $index = $row->{search};
-  return {} if defined($index) && $index eq ''; # 現行形式の単体シート
-  if(defined($index) && $index =~ /\S/){
-    my $search = eval { JSON::PP->new->decode($index) };
-    return $search if ref($search) eq 'HASH'
-      && ref($search->{names}) eq 'ARRAY' && ref($search->{categories}) eq 'ARRAY';
-  }
-
-  # 検索欄の追加前に保存した複数アイテムは、価格が「／」区切りか「さまざま」になる。
-  my $price = $row->{price} // '';
-  return {} unless $price =~ /／/
-    || ($price eq 'さまざま' && ($row->{category} // '') eq 'さまざま');
-  my ($file, $type) = eval { findSheet($row->{id}) };
-  return {} if !$file || $type ne 'i';
-  my %data;
-  foreach my $line (readSheetFileLines($set::char_dir, $file, 'data.cgi', softError => 1)){
-    chomp $line;
-    my ($key, $value) = split /<>/, $line, 2;
-    $data{$key} = $value;
-  }
-  my $count = itemDataCount(\%data);
-  return {} if $count == 1;
-  return itemListSearchData(\%data, map { itemDataPrefix($_) } 1 .. $count);
+sub decodeItemListSearchData {
+  my ($index) = @_;
+  return {} if !defined($index) || $index !~ /\S/;
+  my $search = eval { JSON::PP->new->decode($index) };
+  # 閲覧制限を反映した形式だけを検索に使う
+  return {} unless ref($search) eq 'HASH' && ($search->{version} // '') eq '1'
+    && ref($search->{names}) eq 'ARRAY'
+    && (!exists($search->{categories}) || ref($search->{categories}) eq 'ARRAY');
+  return $search;
 }
 
 ### ソート --------------------------------------------------
