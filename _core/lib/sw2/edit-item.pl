@@ -18,9 +18,6 @@ our %pc = %{ $data };
 
 our $isNewSheet = isNewSheet();
 
-### 出力準備 #########################################################################################
-$message = applyMessageName($message, $pc{itemName} || '無題');
-
 ### 初期設定 --------------------------------------------------
 if($isNewSheet){
   $pc{author} = (getPlayerName($LOGIN_ID))[0];
@@ -33,20 +30,20 @@ if($::mode eq 'edit' || ($::mode =~ /^(?:convert|copy)$/ && $pc{ver})){
 
 %pc = applyCustomizedInitialValues(\%pc, 'i') if $::mode eq 'blanksheet';
 
-$pc{weaponNum} ||= 1;
-$pc{armourNum} ||= 1;
+$pc{itemNum} = itemDataCount(\%pc);
+my $multipleItems = $pc{itemNum} > 1;
+my $sheetName = itemSheetName(\%pc);
+$message = applyMessageName($message, $sheetName);
 
 ## カラー
 setDefaultColors(\%pc);
 
 ### 改行処理 --------------------------------------------------
-convertEscapedBrToNewlines(\%pc,
-  qw/effects description/,
-);
+convertEscapedBrToNewlines(\%pc, 'description', map { itemDataPrefix($_).'effects' } 1 .. $pc{itemNum});
 
 ### フォーム表示 #####################################################################################
 print renderEditPageStart(
-  title => (removeTags removeRuby unescapeTags ( $pc{itemName} )),
+  title => (removeTags removeRuby unescapeTags $sheetName),
 );
 print renderEditHeaderMenu(
   tabsHtml => <<~'HTML',
@@ -65,11 +62,11 @@ print <<"HTML";
       </dl>
     </div>
 
-    <div class="box in-toc" id="name-form" data-content-title="名称・製作者">
-      <div>
-        <dl id="character-name">
-          <dt>名称
-          <dd>@{[ input 'itemName','text',"setName",'id="main-name" list="list-item-name"' ]}
+    <div class="box in-toc" id="name-form" data-content-title="ページ情報">
+      <div id="item-page-title" @{[ $multipleItems ? '' : 'hidden' ]}>
+        <dl>
+          <dt>ページタイトル
+          <dd>@{[ input 'pageTitle','text','setItemName',($multipleItems ? 'id="main-name"' : 'disabled') ]}
         </dl>
       </div>
       <dl id="player-name">
@@ -78,74 +75,14 @@ print <<"HTML";
       </dl>
     </div>
 
-    <div class="box input-data in-toc" data-content-title="基本データ">
-      <dl class="icon-checkboxes"><dt>アイコン<dd>
-        @{[ checkbox 'iconMagic'  , "<img class='i-icon' src=\"${set::icon_dir}item_magic.png\">魔法のアイテム" ]}
-        @{[ checkbox 'iconLocal'  , "<img class='i-icon' src=\"${set::icon_dir}item_local.png\">地方特産品" ]}<br>
-        @{[ checkbox 'iconSchool' , "<img class='i-icon' src=\"${set::icon_dir}item_school.png\">流派アイテム" ]}
-        @{[ checkbox 'iconSchoolA', "<img class='i-icon' src=\"${set::icon_dir}item_school_a.png\">流派アイテム（アルフレイム）" ]}
-        @{[ checkbox 'iconSchoolT', "<img class='i-icon' src=\"${set::icon_dir}item_school_t.png\">流派アイテム（テラスティア）" ]}
-      </dl>
-      <hr>
-      <dl><dt>基本取引価格<dd>@{[ input 'price','','','list="list-item-price"' ]}G</dl>
-      <dl><dt>知名度  <dd>@{[ input 'reputation', 'text','','pattern="^[0-9\/／]+$"' ]} 数字と／のみ入力可</dl>
-      <dl><dt>形状    <dd>@{[ input 'shape' ]}</dl>
-      <dl><dt>カテゴリ<dd>@{[ input 'category','text','checkCategory','list="list-category"' ]}
-        複数カテゴリの場合、スペースで区切ってください。</dl>
-      <dl><dt>製作時期<dd>@{[ input 'age','text','','list="list-age"' ]}</dl>
-      <dl><dt>概要    <dd>@{[ input 'summary' ]}</dl>
+    <div id="item-forms" class="in-toc" data-content-title="アイテムデータ">
+      @{[ renderItemForm(1) ]}
+      @{[ renderTemplateLoop({ id => 'item', placeholder => 'ITEMNUM', startNum => 2 }, \&renderItemForm) ]}
     </div>
-    <div class="box">
-      <h2 class="in-toc">効果</h2>
-      <textarea name="effects">$pc{effects}</textarea>
-      <h4 class="in-toc">武器データ</h4>
-      <table class="input-arms-data" id="weapons-table">
-        <thead>
-          <tr><th><th>用法<th>必筋<th>命中<th>威力<th>C値<th>追加D<th class="range">射程<th>備考
-        <tbody>
-          @{[ renderTemplateLoop(
-            'weapon',
-            sub ($num) {
-              return <<~"ROW";
-              <tr id="weapon-row$num">
-                <td class="handle">
-                <td>@{[ input "weapon${num}Usage",'text','','list="list-weapon-usage"' ]}
-                <td>@{[ input "weapon${num}Reqd" ]}
-                <td>@{[ input "weapon${num}Acc" ]}
-                <td>@{[ input "weapon${num}Rate" ]}
-                <td>@{[ input "weapon${num}Crit" ]}
-                <td>@{[ input "weapon${num}Dmg" ]}
-                <td class="range">@{[ input "weapon${num}Range",'','','list="list-weapon-range"' ]}
-                <td>@{[ input "weapon${num}Note" ]}
-              ROW
-            }
-          ) ]}
-      </table>
-      @{[ renderAddDelButtons('weapon') ]}
-      <p>
-      <code>[刃]</code> <code>[打]</code> でそれぞれ<img class="i-icon" src="${set::icon_dir}item_edge.png"><img class="i-icon" src="${set::icon_dir}item_blow.png">に置き換え
-      <p>
-      <h4 class="in-toc">防具データ</h4>
-      <table class="input-arms-data" id="armours-table">
-        <thead>
-          <tr><th><th>用法<th>必筋<th>回避<th>防護<th>備考
-        <tbody>
-          @{[ renderTemplateLoop(
-            'armour',
-            sub ($num) {
-              return <<~"ROW";
-              <tr id="armour-row$num">
-                <td class="handle">
-                <td>@{[ input "armour${num}Usage",'text','','list="list-armour-usage"' ]}
-                <td>@{[ input "armour${num}Reqd" ]}
-                <td>@{[ input "armour${num}Eva" ]}
-                <td>@{[ input "armour${num}Def" ]}
-                <td>@{[ input "armour${num}Note" ]}
-              ROW
-            }
-          ) ]}
-      </table>
-      @{[ renderAddDelButtons('armour') ]}
+    <div class="item-buttons">
+      <button type="button" onclick="addItem()">アイテムを追加</button>
+      <button type="button" id="delete-item" onclick="delItem()" @{[ $multipleItems ? '' : 'disabled' ]}>最後のアイテムを削除</button>
+      @{[ input 'itemNum','hidden' ]}
     </div>
     <div class="box">
       <h2 class="in-toc">由来・逸話</h2>
@@ -158,6 +95,93 @@ print renderEditPageEnd(
   notes => '(C)Group SNE「ソード・ワールド'.($::SW2_0 ? '2.0' : '2.5').'」',
   extraHtml => renderDataList(),
 );
+
+sub renderItemForm ($num) {
+  my $prefix = itemDataPrefix($num);
+  my $weapon = "${prefix}weapon";
+  my $armour = "${prefix}armour";
+  $pc{"${weapon}Num"} ||= 1;
+  $pc{"${armour}Num"} ||= 1;
+  my $nameAttr = 'list="list-item-name"';
+  $nameAttr .= ' id="main-name"' if $num eq '1' && !$multipleItems;
+
+  return <<~"HTML";
+    <div class="box input-data item-form" id="item-row$num">
+      <h2>アイテム $num</h2>
+      <dl class="item-form-name">
+        <dt>名称
+        <dd>@{[ input "${prefix}itemName",'text',($num eq '1' ? 'setItemName' : ''),$nameAttr ]}
+      </dl>
+      <dl class="icon-checkboxes"><dt>アイコン<dd>
+        @{[ checkbox "${prefix}iconMagic"  , "<img class='i-icon' src=\"${set::icon_dir}item_magic.png\">魔法のアイテム" ]}
+        @{[ checkbox "${prefix}iconLocal"  , "<img class='i-icon' src=\"${set::icon_dir}item_local.png\">地方特産品" ]}<br>
+        @{[ checkbox "${prefix}iconSchool" , "<img class='i-icon' src=\"${set::icon_dir}item_school.png\">流派アイテム" ]}
+        @{[ checkbox "${prefix}iconSchoolA", "<img class='i-icon' src=\"${set::icon_dir}item_school_a.png\">流派アイテム（アルフレイム）" ]}
+        @{[ checkbox "${prefix}iconSchoolT", "<img class='i-icon' src=\"${set::icon_dir}item_school_t.png\">流派アイテム（テラスティア）" ]}
+      </dl>
+      <hr>
+      <dl><dt>基本取引価格<dd>@{[ input "${prefix}price",'','','list="list-item-price"' ]}G</dl>
+      <dl><dt>知名度  <dd>@{[ input "${prefix}reputation",'text','','pattern="^[0-9\/／]+$"' ]} 数字と／のみ入力可</dl>
+      <dl><dt>形状    <dd>@{[ input "${prefix}shape" ]}</dl>
+      <dl><dt>カテゴリ<dd>@{[ input "${prefix}category",'text','checkCategory(this)','list="list-category"' ]}
+        複数カテゴリの場合、スペースで区切ってください。</dl>
+      <dl><dt>製作時期<dd>@{[ input "${prefix}age",'text','','list="list-age"' ]}</dl>
+      <dl><dt>概要    <dd>@{[ input "${prefix}summary" ]}</dl>
+      <h3>効果</h3>
+      @{[ textarea "${prefix}effects" ]}
+      <h4>武器データ</h4>
+      <table class="input-arms-data" id="$weapon-table" data-arms="$weapon">
+        <thead>
+          <tr><th><th>用法<th>必筋<th>命中<th>威力<th>C値<th>追加D<th class="range">射程<th>備考
+        <tbody>
+          @{[ renderTemplateLoop(
+            { id => $weapon, numKey => "${weapon}Num" },
+            sub ($row) {
+              my $field = "$weapon$row";
+              return <<~"ROW";
+              <tr id="$weapon-row$row">
+                <td class="handle">
+                <td>@{[ input "${field}Usage",'text','','list="list-weapon-usage"' ]}
+                <td>@{[ input "${field}Reqd" ]}
+                <td>@{[ input "${field}Acc" ]}
+                <td>@{[ input "${field}Rate" ]}
+                <td>@{[ input "${field}Crit" ]}
+                <td>@{[ input "${field}Dmg" ]}
+                <td class="range">@{[ input "${field}Range",'','','list="list-weapon-range"' ]}
+                <td>@{[ input "${field}Note" ]}
+              ROW
+            }
+          ) ]}
+      </table>
+      @{[ renderAddDelButtons('arms', "'$weapon'", "${weapon}Num") ]}
+      <p>
+      <code>[刃]</code> <code>[打]</code> でそれぞれ<img class="i-icon" src="${set::icon_dir}item_edge.png"><img class="i-icon" src="${set::icon_dir}item_blow.png">に置き換え
+      </p>
+      <h4>防具データ</h4>
+      <table class="input-arms-data" id="$armour-table" data-arms="$armour">
+        <thead>
+          <tr><th><th>用法<th>必筋<th>回避<th>防護<th>備考
+        <tbody>
+          @{[ renderTemplateLoop(
+            { id => $armour, numKey => "${armour}Num" },
+            sub ($row) {
+              my $field = "$armour$row";
+              return <<~"ROW";
+              <tr id="$armour-row$row">
+                <td class="handle">
+                <td>@{[ input "${field}Usage",'text','','list="list-armour-usage"' ]}
+                <td>@{[ input "${field}Reqd" ]}
+                <td>@{[ input "${field}Eva" ]}
+                <td>@{[ input "${field}Def" ]}
+                <td>@{[ input "${field}Note" ]}
+              ROW
+            }
+          ) ]}
+      </table>
+      @{[ renderAddDelButtons('arms', "'$armour'", "${armour}Num") ]}
+    </div>
+  HTML
+}
 
 sub renderDataList {
   return <<~"HTML";

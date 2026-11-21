@@ -9,13 +9,15 @@ use open ":utf8";
 sub dataCalc {
   my %pc = %{$_[0]};
 
-  #### カテゴリの全角半角変換 --------------------------------------------------
-  $pc{category} =~ tr/ａ-ｚＡ-Ｚ/a-zA-Z/;
+  my $itemNum = itemDataCount(\%pc);
+  $pc{itemNum} = $itemNum;
+  delete $pc{pageTitle} if $itemNum == 1;
 
-  #### 改行を<br>に変換 --------------------------------------------------
-  convertNewlinesToBrTag(\%pc,
-    qw/effects description/,
-  );
+  my @prefixes = map { itemDataPrefix($_) } 1 .. $itemNum;
+  foreach my $prefix (@prefixes){
+    $pc{"${prefix}category"} =~ tr/ａ-ｚＡ-Ｚ/a-zA-Z/;
+  }
+  convertNewlinesToBrTag(\%pc, 'description', map { "${_}effects" } @prefixes);
   
   #### 保存処理でなければここまで --------------------------------------------------
   if(!$::mode_save){ return %pc; }
@@ -26,14 +28,30 @@ sub dataCalc {
 
   ### updatedLine --------------------------------------------------
   my %NL;
-  $NL{type} = $pc{magic} ? '[ma]' : '';
-  foreach ('itemName','author','category','price','age','summary'){
-    $NL{$_} = $pc{$_} =~ s/[|｜]([^|｜]+?)《.+?》/$1/gr;
-    $NL{$_} = removeTags unescapeTags $NL{$_} =~ s/^\s|\s$//gr;
+  $NL{type} = ($pc{magic} ? '[ma]' : '') . ITEM_LIST_VALUES_FLAG();
+  foreach (qw/author price age summary/){
+    $NL{$_} = itemListText($pc{$_});
   }
-  $NL{name}    = substr($NL{name}   , 0, 108).'..' if length($NL{name}   ) > 108;
+  my @names = (itemListText(itemSheetName(\%pc)));
+  my @categories = map { itemListText($pc{"${_}category"}) } @prefixes;
+  if($itemNum > 1){
+    my $commonCategory = commonItemListCategory(@categories);
+    if(defined $commonCategory){
+      $NL{price} = join '／', map { itemListText($pc{"${_}price"}) } @prefixes;
+    }
+    else {
+      $NL{price} = 'さまざま';
+    }
+
+    my $forbidden = $pc{forbidden} // '';
+    if($forbidden eq '' || $forbidden eq 'battle'){
+      push @names, map { itemListText($pc{"${_}itemName"}) } @prefixes;
+    }
+    @categories = ($commonCategory // 'さまざま') if $forbidden ne '';
+  }
+  $NL{itemName} = joinItemListValues(deduplicate(@names));
+  $NL{category} = joinItemListValues(@categories);
   $NL{author}  = substr($NL{author} , 0,  25).'..' if length($NL{author} ) >  25;
-  $NL{sub}     = substr($NL{sub}    , 0,  40).'..' if length($NL{sub}    ) >  40;
   $NL{summary} = substr($NL{summary}, 0,  35).'..' if length($NL{summary}) >  35;
   $::updatedLine =
     "$pc{id}<>$::file<>"
@@ -42,6 +60,12 @@ sub dataCalc {
     . setUpdatatLineImage(\%pc)."<> $pc{tags} <>$pc{hide}<>";
   
   return %pc;
+}
+
+sub itemListText {
+  my $text = shift // '';
+  $text =~ s/[|｜]([^|｜]+?)《.+?》/$1/g;
+  return trim(removeTags(unescapeTags($text)));
 }
 
 1;

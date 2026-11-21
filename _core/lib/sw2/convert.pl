@@ -8,12 +8,29 @@ use JSON::PP;
 require $set::data_class;
 
 sub loadItemData {
-  return importSheetData(
-    shift,
+  my $url = CGI::unescapeHTML(shift);
+  my ($base, $query) = split /\?/, ($url =~ s/#.*\z//r), 2;
+  my $params = CGI->new($query // '');
+  my $num = $params->param('item');
+  if(defined $num){
+    # 同一サーバーと他サーバーの両方で、シート全体から指定のアイテムを取り出す。
+    my $id = $params->param('id');
+    $params->delete(qw/id item mode/);
+    my $idQuery = defined $id ? CGI->new({ id => $id })->query_string : '';
+    $url = $base.'?'.join('&', grep { length } ($idQuery, $params->query_string));
+  }
+
+  my %data = importSheetData(
+    $url,
     softError => 1,
     dataDir => $set::lib_type{i}{dataDir},
-    skipPermission => 1,
+    skipPermission => !defined $num,
   );
+  return %data if !defined($num) || $data{_error};
+  return (_error => 'アイテムデータではありません。') if ($data{type} // '') ne 'i';
+  my ($item, $message) = selectItemData(\%data, $num);
+  return %$item if $item;
+  return (_error => $message =~ s/\A[0-9]{3}://r);
 }
 
 ### キャラクター保管所 --------------------------------------------------

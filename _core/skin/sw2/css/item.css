@@ -40,14 +40,19 @@ article {
 
 /* // Font
 ---------------------------------------------------------------------------------------------------- */
-#area-name h1 {
+.item-page-title,
+.item-name > :is(h1, h2) {
   font-family: var(--base-font-family-min);
 }
 
 
 /* // Name
 ---------------------------------------------------------------------------------------------------- */
-#area-name {
+.item-page-title {
+  margin-top: 1em;
+  padding: 0 1rem;
+}
+:is(#area-name, .item-name) {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -63,7 +68,7 @@ article {
     background-image: none;
   }
 
-  > h1 {
+  > :is(h1, h2) {
     padding: .25em 1rem 0;
     text-align: left;
     font-size: 160%;

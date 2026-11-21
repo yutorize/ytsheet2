@@ -850,6 +850,79 @@ sub upgradeMonsterData {
   $pc{ver} = $main::ver;
   return %pc;
 }
+### アイテムシート --------------------------------------------------
+sub itemDataCount {
+  my ($pc) = @_;
+  my $count = $pc->{itemNum};
+  return 1 if !defined($count) || $count !~ /\A[1-9][0-9]*\z/ || $count > keys(%$pc);
+  return $count;
+}
+sub itemDataPrefix {
+  my ($num) = @_;
+  # 1件目は従来の保存キーを使う
+  return $num eq '1' ? '' : "item${num}_";
+}
+sub selectItemData {
+  my ($pc, $num) = @_;
+  return (undef, '400:アイテム番号は1以上の整数で指定してください。')
+    if !defined($num) || $num !~ /\A[1-9][0-9]*\z/;
+  return (undef, '404:指定された番号のアイテムは見つかりませんでした。')
+    if $num > itemDataCount($pc);
+
+  my %item = %$pc;
+  delete $item{pageTitle};
+  $item{itemNum} = 1;
+  my $itemField = qr/\A(?:
+    itemName(?:Ruby)? | price | reputation | shape | category | age | summary | effects
+    | magic | icon(?:Magic|Local|School[AT]?)
+    | (?:weapon|armour)(?:Num|[0-9]+[A-Za-z]+)
+  )\z/x;
+  delete @item{ grep { /\Aitem[0-9]+_/ || ($num > 1 && /$itemField/) } keys %item };
+
+  if($num > 1){
+    my $prefix = itemDataPrefix($num);
+    foreach my $key (keys %$pc){
+      next unless index($key, $prefix) == 0;
+      my $field = substr($key, length($prefix));
+      $item{$field} = $pc->{$key} if $field =~ $itemField;
+    }
+  }
+  return (\%item, undef);
+}
+sub itemSheetName {
+  my ($pc) = @_;
+  my $title = $pc->{pageTitle} // '';
+  return $title if itemDataCount($pc) > 1 && $title =~ /\S/;
+  return $pc->{itemName};
+}
+my $itemListSeparator = '␟';
+# 一覧の種別欄で、従来の単一値と区切り・エスケープ形式を区別する
+use constant ITEM_LIST_VALUES_FLAG => '[item-values]';
+sub joinItemListValues {
+  return join $itemListSeparator, map {
+    my $value = escapeThanSign($_);
+    $value =~ s/\\/\\\\/g;
+    $value =~ s/\Q$itemListSeparator\E/\\u241F/g;
+    $value;
+  } @_;
+}
+sub splitItemListValues {
+  my ($field, $type) = @_;
+  $field //= '';
+  return ($field) if $field eq '' || index($type // '', ITEM_LIST_VALUES_FLAG) < 0;
+  my @values = split /\Q$itemListSeparator\E/, $field, -1;
+  foreach (@values){
+    s/\\(\\|u241F)/$1 eq 'u241F' ? $itemListSeparator : '\\'/ge;
+  }
+  return @values;
+}
+sub commonItemListCategory {
+  my ($first, @others) = @_;
+  return $first unless @others;
+  my @sets = map { join ' ', sort(deduplicate(split /\s+/, $_)) } ($first, @others);
+  return undef if grep { $_ ne $sets[0] } @sets;
+  return join ' ', split /\s+/, $first;
+}
 sub upgradeItemData {
   my %pc = %{$_[0]};
   my $ver = $pc{ver};

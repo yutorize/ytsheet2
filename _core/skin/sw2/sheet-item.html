@@ -79,65 +79,80 @@
     </aside></TMPL_IF>
     
     <article class="item">
-      <div id="area-name">
-        <h1><TMPL_VAR icon><TMPL_VAR itemName></h1>
-        <div class="price">基本取引価格：<TMPL_VAR price></div>
-      </div>
-      
-      <div id="tags">
-        <TMPL_LOOP Tags><a class="tag" href="./?type=i&tag=<TMPL_VAR URL>"><TMPL_VAR TEXT></a></TMPL_LOOP>
-      </div>
-      
-      <div class="data">
-      <dl class="reputation"><dt>知名度<dd><TMPL_VAR reputation></dl>
-      <dl class="shape"><dt>形状<dd><div><TMPL_VAR shape></div></dl>
-      <dl class="category"><dt>カテゴリ<dd><div><TMPL_VAR category></div></dl>
-      <dl class="age"><dt>製作時期<dd><TMPL_VAR age></dl>
-      <dl class="summary"><dt>概要<dd><TMPL_VAR summary></dl>
-      <dl class="effects"><dt><TMPL_IF head_effects><TMPL_VAR head_effects><TMPL_ELSE>効果</TMPL_IF><dd class="box">
-        <TMPL_VAR effects>
-        <TMPL_IF WeaponData>
-          <table class="weapon-table">
-            <tr>
-              <th>用法
-              <th>必筋
-              <th>命中
-              <th>威力
-              <th>C値
-              <th>追加D
-              <th class="range">射程
-              <th class="note left">備考
-            <TMPL_LOOP WeaponData><tr>
-              <td><TMPL_VAR USAGE>
-              <td><TMPL_VAR REQD>
-              <td><TMPL_VAR ACC>
-              <td><TMPL_VAR RATE>
-              <td><TMPL_VAR CRIT>
-              <td><TMPL_VAR DMG>
-              <td class="range"><TMPL_VAR RANGE></td>
-              <td class="note left"><TMPL_VAR NOTE></td>
-            </TMPL_LOOP>
-          </table>
-        </TMPL_IF>
-        <TMPL_IF ArmourData>
-          <table class="weapon-table armour-table">
-            <tr>
-              <th class="usage">用法
-              <th>必筋
-              <th>回避
-              <th>防護
-              <th class="note left">備考
-            <TMPL_LOOP ArmourData><tr>
-              <td class="usage"><TMPL_VAR USAGE></td>
-              <td><TMPL_VAR REQD>
-              <td><TMPL_VAR EVA>
-              <td><TMPL_VAR DEF>
-              <td class="note left"><TMPL_VAR NOTE></td>
-            </TMPL_LOOP>
-          </table>
-        </TMPL_IF>
-      </dl>
-      </div>
+      <TMPL_IF multipleItems>
+        <h1 class="item-page-title"><TMPL_VAR itemPageTitle></h1>
+        <div id="tags">
+          <TMPL_LOOP Tags><a class="tag" href="./?type=i&tag=<TMPL_VAR URL>"><TMPL_VAR TEXT></a></TMPL_LOOP>
+        </div>
+      </TMPL_IF>
+      <TMPL_LOOP Items>
+        <section class="item-data">
+          <div class="item-name"<TMPL_UNLESS multipleItems> id="area-name"</TMPL_UNLESS>>
+            <TMPL_IF multipleItems>
+              <h2><TMPL_VAR ICON><TMPL_VAR NAME></h2>
+            <TMPL_ELSE>
+              <h1><TMPL_VAR ICON><TMPL_VAR NAME></h1>
+            </TMPL_IF>
+            <div class="price">基本取引価格：<TMPL_VAR PRICE></div>
+          </div>
+          <TMPL_UNLESS multipleItems>
+            <div id="tags">
+              <TMPL_LOOP Tags><a class="tag" href="./?type=i&tag=<TMPL_VAR URL>"><TMPL_VAR TEXT></a></TMPL_LOOP>
+            </div>
+          </TMPL_UNLESS>
+
+          <div class="data">
+            <dl class="reputation"><dt>知名度<dd><TMPL_VAR REPUTATION></dl>
+            <dl class="shape"><dt>形状<dd><div><TMPL_VAR SHAPE></div></dl>
+            <dl class="category"><dt>カテゴリ<dd><div><TMPL_VAR CATEGORY></div></dl>
+            <dl class="age"><dt>製作時期<dd><TMPL_VAR AGE></dl>
+            <dl class="summary"><dt>概要<dd><TMPL_VAR SUMMARY></dl>
+            <dl class="effects"><dt><TMPL_IF HEAD_EFFECTS><TMPL_VAR HEAD_EFFECTS><TMPL_ELSE>効果</TMPL_IF><dd class="box">
+              <TMPL_VAR EFFECTS>
+              <TMPL_IF WeaponData>
+                <table class="weapon-table">
+                  <tr>
+                    <th>用法
+                    <th>必筋
+                    <th>命中
+                    <th>威力
+                    <th>C値
+                    <th>追加D
+                    <th class="range">射程
+                    <th class="note left">備考
+                  <TMPL_LOOP WeaponData><tr>
+                    <td><TMPL_VAR USAGE>
+                    <td><TMPL_VAR REQD>
+                    <td><TMPL_VAR ACC>
+                    <td><TMPL_VAR RATE>
+                    <td><TMPL_VAR CRIT>
+                    <td><TMPL_VAR DMG>
+                    <td class="range"><TMPL_VAR RANGE></td>
+                    <td class="note left"><TMPL_VAR NOTE></td>
+                  </TMPL_LOOP>
+                </table>
+              </TMPL_IF>
+              <TMPL_IF ArmourData>
+                <table class="weapon-table armour-table">
+                  <tr>
+                    <th class="usage">用法
+                    <th>必筋
+                    <th>回避
+                    <th>防護
+                    <th class="note left">備考
+                  <TMPL_LOOP ArmourData><tr>
+                    <td class="usage"><TMPL_VAR USAGE></td>
+                    <td><TMPL_VAR REQD>
+                    <td><TMPL_VAR EVA>
+                    <td><TMPL_VAR DEF>
+                    <td class="note left"><TMPL_VAR NOTE></td>
+                  </TMPL_LOOP>
+                </table>
+              </TMPL_IF>
+            </dl>
+          </div>
+        </section>
+      </TMPL_LOOP>
       
       <TMPL_IF description><section class="box description">
         <h2><TMPL_IF head_description><TMPL_VAR head_description><TMPL_ELSE>由来・逸話</TMPL_IF></h2>
