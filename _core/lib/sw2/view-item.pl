@@ -9,7 +9,7 @@ require $set::data_races;
 require $set::data_items;
 
 ### テンプレート読み込み #############################################################################
-my $itemViewQuery = '';
+my $itemNumber;
 (my $pcRef, my $SHEET) = setupViewBase(
   generateType => 'SwordWorld2Enemy',
   unescapeLinesKeys => ['description'],
@@ -21,8 +21,7 @@ my $itemViewQuery = '';
       my ($item, $message) = selectItemData($pc, $::in{item});
       error($message) if !$item;
       %$pc = %$item;
-      $itemViewQuery = '&item='.$::in{item};
-      $itemViewQuery .= '&log='.uri_escape_utf8($::in{log}) if $::in{log};
+      $itemNumber = $::in{item};
     }
     $pc->{titleName} = itemSheetName($pc);
     $pc->{encodedNameLetter} = $pc->{pageTitle} // '';
@@ -34,8 +33,26 @@ my $itemViewQuery = '';
   updateSub => \&upgradeItemData,
 );
 our %pc = %{ $pcRef };
-$SHEET->param(modeZero => $::SW2_0 ? 1 : 0);
-$SHEET->param(itemViewQuery => $itemViewQuery);
+
+my $itemViewQuery = '';
+my $itemLinkTag = '';
+if(defined $itemNumber){
+  $itemViewQuery = '&item='.$itemNumber;
+  $itemViewQuery .= '&log='.uri_escape_utf8($::in{log}) if $::in{log};
+  if($::in{id}){
+    my $label = CGI::unescapeHTML(removeTags removeRuby ($pc{itemName} // ''));
+    # アイテム名の > をリンク書式の区切りと区別する。
+    $label =~ s/&/&#38;/g;
+    $label =~ s/>/&#62;/g;
+    $itemLinkTag = "[[$label>?id=$::in{id}$itemViewQuery]]";
+  }
+}
+$SHEET->param(
+  modeZero => $::SW2_0 ? 1 : 0,
+  itemNumber => $itemNumber,
+  itemViewQuery => $itemViewQuery,
+  itemLinkTag => $itemLinkTag,
+);
 $SHEET->param(ogUrl => $SHEET->param('ogUrl').$itemViewQuery) if $itemViewQuery;
 
 ### 固有処理 #########################################################################################
