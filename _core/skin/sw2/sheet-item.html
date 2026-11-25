@@ -80,7 +80,7 @@
     
     <article class="item">
       <TMPL_IF multipleItems>
-        <h1 class="item-page-title"><TMPL_VAR itemPageTitle></h1>
+        <div id="area-name" class="color-set"><h1 class="item-page-title"><TMPL_VAR itemPageTitle></h1></div>
         <div id="tags">
           <TMPL_LOOP Tags><a class="tag" href="./?type=i&tag=<TMPL_VAR URL>"><TMPL_VAR TEXT></a></TMPL_LOOP>
         </div>
