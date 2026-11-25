@@ -48,11 +48,7 @@ article {
 
 /* // Name
 ---------------------------------------------------------------------------------------------------- */
-.item-page-title {
-  margin-top: 1em;
-  padding: 0 1rem;
-}
-:is(#area-name, .item-name) {
+.item-name {
   display: flex;
   justify-content: space-between;
   align-items: center;
