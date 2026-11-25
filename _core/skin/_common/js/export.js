@@ -2,9 +2,10 @@
 function getJsonData(targetEnvironment = '') {
   const paramId = /id=[0-9a-zA-Z\-]+/.exec(location.href)[0];
   const paramDate = /log=[0-9\-]+/.exec(location.href)?.[0] ?? null;
+  const viewQuery = document.body.dataset.itemViewQuery || (paramDate ? '&'+paramDate : '');
   return new Promise((resolve, reject)=>{
     let xhr = new XMLHttpRequest();
-    xhr.open('GET', `./?${paramId}&mode=json&target=${targetEnvironment}${paramDate?'&'+paramDate:''}`, true);
+    xhr.open('GET', `./?${paramId}&mode=json&target=${targetEnvironment}${viewQuery}`, true);
     xhr.responseType = "json";
     xhr.onload = (e) => {
       resolve(e.currentTarget.response);
