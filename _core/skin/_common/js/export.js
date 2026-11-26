@@ -1,11 +1,20 @@
 // 保存系 ----------------------------------------
+function getSheetDownloadUrl(mode, targetEnvironment = '') {
+  const url = new URL(location.href);
+  url.hash = '';
+  // CGI が受け付ける区切りを URLSearchParams に合わせる。
+  url.search = url.search.replaceAll(';', '&');
+  url.searchParams.set('mode', mode);
+  url.searchParams.delete('callback');
+  if(targetEnvironment){ url.searchParams.set('target', targetEnvironment); }
+  else { url.searchParams.delete('target'); }
+  return url.href;
+}
+
 function getJsonData(targetEnvironment = '') {
-  const paramId = /id=[0-9a-zA-Z\-]+/.exec(location.href)[0];
-  const paramDate = /log=[0-9\-]+/.exec(location.href)?.[0] ?? null;
-  const viewQuery = document.body.dataset.itemViewQuery || (paramDate ? '&'+paramDate : '');
   return new Promise((resolve, reject)=>{
     let xhr = new XMLHttpRequest();
-    xhr.open('GET', `./?${paramId}&mode=json&target=${targetEnvironment}${viewQuery}`, true);
+    xhr.open('GET', getSheetDownloadUrl('json', targetEnvironment), true);
     xhr.responseType = "json";
     xhr.onload = (e) => {
       resolve(e.currentTarget.response);
@@ -15,13 +24,6 @@ function getJsonData(targetEnvironment = '') {
     xhr.ontimeout = () => reject('timeout');
     xhr.send();
   });
-}
-
-function getSheetDownloadUrl(mode) {
-  const url = new URL(location.href);
-  url.hash = '';
-  url.searchParams.set('mode', mode);
-  return url.href;
 }
 
 function generateUdonariumZipFile(title, data, image){
