@@ -12,6 +12,9 @@ class RecordListEditor {
     this.countField = root.querySelector('[data-record-count]');
     this.orderField = root.querySelector('[data-record-form-order]');
     this.lastNumberField = root.querySelector('[data-record-last-number]');
+    const controls = root.querySelector(':scope > .record-list-buttons');
+    const addButton = controls.querySelector('[data-record-add]');
+    this.deleteLastButton = controls.querySelector('[data-record-delete-last]');
     this.setupRecord = setupRecord;
     this.onChange = onChange;
 
@@ -22,7 +25,11 @@ class RecordListEditor {
       animation: 150,
       onUpdate: () => this.changeOrder(),
     });
-    root.querySelector('[data-record-add]').addEventListener('click', () => this.add());
+    addButton.addEventListener('click', () => this.add());
+    this.deleteLastButton.addEventListener('click', () => {
+      const removed = this.remove(this.forms.lastElementChild, this.list.lastElementChild);
+      if(removed && this.deleteLastButton.disabled){ addButton.focus({ preventScroll: true }); }
+    });
   }
 
   register(record) {
@@ -43,7 +50,14 @@ class RecordListEditor {
       const behavior = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
       window.scrollTo({ top, behavior });
     });
-    row.querySelector('[data-record-delete]').addEventListener('click', () => this.remove(record, row));
+    row.querySelector('[data-record-delete]').addEventListener('click', () => {
+      const adjacentRow = row.nextElementSibling ?? row.previousElementSibling;
+      if(!this.remove(record, row)){ return; }
+      const focusTarget = this.orderPanel.hidden
+        ? this.forms.firstElementChild
+        : adjacentRow.querySelector('[data-record-delete]');
+      focusTarget.focus({ preventScroll: true });
+    });
     this.list.append(row);
     return nameInput;
   }
@@ -62,14 +76,10 @@ class RecordListEditor {
   }
 
   remove(record, row) {
-    if(this.forms.children.length <= 1 || !delRowNode(`#${CSS.escape(record.id)}`)){ return; }
-    const adjacentRow = row.nextElementSibling ?? row.previousElementSibling;
+    if(this.forms.children.length <= 1 || !delRowNode(`#${CSS.escape(record.id)}`)){ return false; }
     row.remove();
     this.changeOrder();
-    const focusTarget = this.orderPanel.hidden
-      ? this.forms.firstElementChild
-      : adjacentRow.querySelector('[data-record-delete]');
-    focusTarget.focus({ preventScroll: true });
+    return true;
   }
 
   changeOrder() {
@@ -87,6 +97,7 @@ class RecordListEditor {
     this.orderField.value = rows.map(row => row.dataset.recordNumber).join(',');
     this.countField.value = rows.length;
     this.orderPanel.hidden = rows.length <= 1;
+    this.deleteLastButton.disabled = rows.length <= 1;
     this.onChange?.(rows.length);
   }
 }
