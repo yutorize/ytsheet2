@@ -20,12 +20,6 @@ function getJsonData(targetEnvironment = '') {
 function getSheetDownloadUrl(mode) {
   const url = new URL(location.href);
   url.hash = '';
-  const log = url.searchParams.get('log');
-  const backup = url.searchParams.get('backup');
-  if ((!log || log === '0') && backup) {
-    url.searchParams.set('log', backup);
-  }
-  url.searchParams.delete('backup');
   url.searchParams.set('mode', mode);
   return url.href;
 }
