@@ -713,7 +713,6 @@ sub renderRecordList {
     <div class="record-list-buttons">
       <button type="button" data-record-add>${label}を追加</button>
       <button type="button" id="delete-$key" data-record-delete-last @{[ @$order > 1 ? '' : 'disabled' ]}>最後の${label}を削除</button>
-      @{[ input $records->countKey(), 'hidden', '', 'data-record-count' ]}
       @{[ input $records->formOrderKey(), 'hidden', '', 'data-record-form-order' ]}
       @{[ input $records->lastNumberKey(), 'hidden', '', 'data-record-last-number' ]}
     </div>

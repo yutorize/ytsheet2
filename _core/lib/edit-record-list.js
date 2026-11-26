@@ -9,7 +9,6 @@ class RecordListEditor {
     this.orderPanel = root.querySelector('[data-record-order-panel]');
     this.rowTemplate = root.querySelector('[data-record-order-row]');
     this.formTemplate = root.querySelector('[data-record-template]');
-    this.countField = root.querySelector('[data-record-count]');
     this.orderField = root.querySelector('[data-record-form-order]');
     this.lastNumberField = root.querySelector('[data-record-last-number]');
     const controls = root.querySelector(':scope > .record-list-buttons');
@@ -95,7 +94,6 @@ class RecordListEditor {
       if(record !== this.forms.children[index]){ this.forms.insertBefore(record, this.forms.children[index]); }
     });
     this.orderField.value = rows.map(row => row.dataset.recordNumber).join(',');
-    this.countField.value = rows.length;
     this.orderPanel.hidden = rows.length <= 1;
     this.deleteLastButton.disabled = rows.length <= 1;
     this.onChange?.(rows.length);

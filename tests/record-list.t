@@ -30,7 +30,8 @@ is($data{enemyFormOrder}, '1,2', 'The edit order uses the configured key');
 is($data{enemyLastNumber}, 2, 'Legacy IDs determine the initial counter');
 
 $data{enemyFormOrder} = '2,1';
-is($records->normalizeForm(\%data), undef, 'A valid reorder can be saved');
+delete $data{enemyNum};
+is($records->normalizeForm(\%data), undef, 'A valid reorder can be saved without a posted count');
 is_deeply(
   \%data,
   {
@@ -66,9 +67,12 @@ my %original = %invalid;
 is(substr($records->normalizeForm(\%invalid), 0, 4), '400:', 'Duplicate IDs cause a validation error');
 is_deeply(\%invalid, \%original, 'Invalid input leaves the data intact');
 
-$data{enemyNum} = 1;
+%invalid = (%data, enemyFormOrder => '');
+is(substr($records->normalizeForm(\%invalid), 0, 4), '400:', 'At least one record is required');
+
 $data{enemyFormOrder} = '2';
 is($records->normalizeForm(\%data), undef, 'A single record can retain a higher ID');
+is($data{enemyNum}, 1, 'The saved count comes from the order even when an older form posts a count');
 is((($records->select(\%data, 2))[0])->{monsterName}, 'Bear', 'The remaining record is still addressable');
 is(substr(($records->select(\%data, 1))[1], 0, 4), '404:', 'A removed ID no longer resolves');
 is($data{enemyLastNumber}, 5, 'Deleting records does not roll back the counter');

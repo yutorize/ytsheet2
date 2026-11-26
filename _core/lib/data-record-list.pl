@@ -50,17 +50,18 @@ sub _isNumber {
 }
 
 sub _validOrder {
-  my ($self, $data, $order) = @_;
-  return 0 if @$order != $self->count($data);
+  my ($order) = @_;
+  return 0 unless @$order;
   my %seen;
   return !grep { !_isNumber($_) || $seen{$_}++ } @$order;
 }
 
 sub order {
   my ($self, $data) = @_;
+  my $count = $self->count($data);
   my @order = split /,/, ($data->{$self->{orderKey}} // ''), -1;
-  return @order if $self->_validOrder($data, \@order);
-  return 1 .. $self->count($data);
+  return @order if @order == $count && _validOrder(\@order);
+  return 1 .. $count;
 }
 
 sub _lastNumber {
@@ -94,7 +95,6 @@ sub prepareForm {
   my ($self, $data, $latest) = @_;
   my @order = $self->order($data);
   $latest //= {};
-  $data->{$self->{countKey}} = scalar @order;
   $data->{$self->{formOrderKey}} = join ',', @order;
   $data->{$self->{lastNumberKey}} = $self->_lastNumber(
     $data, @order, $latest->{$self->{lastNumberKey}}, $latest->{$self->{countKey}},
@@ -110,11 +110,12 @@ sub normalizeForm {
   return unless exists $data->{$formOrderKey};
   my @order = split /,/, ($data->{$formOrderKey} // ''), -1;
   return "400:$self->{label}の並び順が不正です。"
-    if !$self->_validOrder($data, \@order)
+    if !_validOrder(\@order)
     || grep { !exists $data->{$self->prefix($_).$self->{nameField}} } @order;
 
   delete $data->{$formOrderKey};
   $self->_remapFields($data, { map { $order[$_ - 1] => $_ } 1 .. @order });
+  $data->{$self->{countKey}} = scalar @order;
   $data->{$self->{orderKey}} = join ',', @order;
   $data->{$self->{lastNumberKey}} = $self->_lastNumber($data, @order);
   return;

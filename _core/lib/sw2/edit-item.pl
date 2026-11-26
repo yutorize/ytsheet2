@@ -73,7 +73,7 @@ print <<"HTML";
       <div id="item-page-title" @{[ $multipleItems ? '' : 'hidden' ]}>
         <dl>
           <dt>ページタイトル
-          <dd>@{[ input 'pageTitle','text','setItemName',($multipleItems ? 'id="main-name"' : 'disabled') ]}
+          <dd>@{[ input 'pageTitle','text','setItemName',($multipleItems ? '' : 'disabled') ]}
         </dl>
       </div>
       <dl id="player-name">

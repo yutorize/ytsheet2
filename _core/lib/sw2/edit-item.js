@@ -35,10 +35,7 @@ function setupItemForm(item) {
       form[`${name}Num`].dispatchEvent(new Event('change', { bubbles: true }));
     });
   });
-  const nameInput = item.querySelector('.item-form-name input');
-  nameInput.addEventListener('input', () => {
-    if(nameInput.id === 'main-name'){ setName(); }
-  });
+  item.querySelector('.item-form-name input').addEventListener('input', setItemName);
 }
 
 function updateItemPageTitle(count) {
@@ -50,10 +47,8 @@ function updateItemPageTitle(count) {
 
 function setItemName() {
   const hasTitle = !form.pageTitle.disabled && form.pageTitle.value.trim() !== '';
-  document.getElementById('main-name')?.removeAttribute('id');
   const nameInput = hasTitle ? form.pageTitle : itemForms.querySelector('.item-form-name input');
-  nameInput.id = 'main-name';
-  setName();
+  setName(nameInput.name);
 }
 
 function checkCategory(input) {
