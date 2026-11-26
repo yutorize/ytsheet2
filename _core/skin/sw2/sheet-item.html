@@ -4,7 +4,7 @@
 <head>
 <TMPL_INCLUDE NAME="../_common/sheet-head.html">
 </head>
-<body id="item" data-system="<TMPL_IF modeZero>sw2.0<TMPL_ELSE>sw2.5</TMPL_IF>">
+<body id="item" data-system="<TMPL_IF modeZero>sw2.0<TMPL_ELSE>sw2.5</TMPL_IF>"<TMPL_IF itemViewQuery> data-item-view-query="<TMPL_VAR itemViewQuery ESCAPE=HTML>"</TMPL_IF>>
   <header>
     <h1><a href="./?type=i"><TMPL_VAR title></a></h1>
     <nav>
@@ -26,7 +26,7 @@
       <aside id="loglist" class="float-box">
         <h2>過去ログ（バックアップ）</h2>
         <ul>
-          <TMPL_LOOP LogList><li class="<TMPL_VAR SELECTED>"><a href="?id=<TMPL_VAR id><TMPL_VAR URL>"><TMPL_VAR DATE></a></TMPL_LOOP>
+          <TMPL_LOOP LogList><li class="<TMPL_VAR SELECTED>"><a href="?id=<TMPL_VAR id><TMPL_VAR URL ESCAPE=HTML><TMPL_IF itemNumber>&amp;item=<TMPL_VAR itemNumber></TMPL_IF>"><TMPL_VAR DATE></a></TMPL_LOOP>
         </ul>
         <TMPL_IF viewLogNaming><details id="log-naming">
           <summary>閲覧中のログ<TMPL_IF selectedLogName>の名前をつけなおす<TMPL_ELSE>に名前をつける</TMPL_IF></summary>
@@ -49,7 +49,7 @@
           <li id="downloadlist-json"><a onclick="downloadAsJson();">JSON 形式</a>
           <li id="downloadlist-html"><a onclick="downloadAsHtml();">HTML 形式</a>
           <li id="downloadlist-zipped"><a onclick="downloadAsFullSet();">ZIP 形式（上記全部入り）</a>
-          <li class="link-tag"><span>ゆとシート内リンク用タグ<br><input type="text" onclick="this.select()" value="[<TMPL_VAR rawName>#<TMPL_VAR id>]"></span>
+          <li class="link-tag"><span>ゆとシート内リンク用タグ<br><input type="text" onclick="this.select()" value="<TMPL_IF itemLinkTag><TMPL_VAR itemLinkTag ESCAPE=HTML><TMPL_ELSE>[<TMPL_VAR rawName>#<TMPL_VAR id>]</TMPL_IF>"></span>
         </ul>
       </aside>
     </TMPL_UNLESS>
@@ -66,7 +66,7 @@
   <main>
     <TMPL_IF forbidden><aside class="information attention">
       閲覧が制限されているデータです。<br>
-      <TMPL_IF yourAuthor>あなた以外には一部または全てのデータが伏せられます。(<a href="./?id=<TMPL_VAR id>&checkView=1">⇒確認</a>)</TMPL_IF>
+      <TMPL_IF yourAuthor>あなた以外には一部または全てのデータが伏せられます。(<a href="./?id=<TMPL_VAR id>&checkView=1<TMPL_VAR itemViewQuery ESCAPE=HTML>">⇒確認</a>)</TMPL_IF>
     </aside></TMPL_IF>
     
     <TMPL_IF logId><aside class="information log">

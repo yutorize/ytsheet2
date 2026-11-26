@@ -9,12 +9,20 @@ require $set::data_races;
 require $set::data_items;
 
 ### テンプレート読み込み #############################################################################
+my $itemNumber;
 (my $pcRef, my $SHEET) = setupViewBase(
   generateType => 'SwordWorld2Enemy',
   unescapeLinesKeys => ['description'],
   unescapeLinesRe => qr/^(?:item[0-9]+_)?effects$/,
   nameSub => sub {
     my ($pc) = @_;
+    # 全体が非公開の場合は、番号の有効・無効から件数が分からないようにする。
+    if(defined $::in{item} && !($pc->{forbiddenMode} && $pc->{forbidden} eq 'all')){
+      my ($item, $message) = selectItemData($pc, $::in{item});
+      error($message) if !$item;
+      %$pc = %$item;
+      $itemNumber = $::in{item};
+    }
     $pc->{titleName} = itemSheetName($pc);
     $pc->{encodedNameLetter} = $pc->{pageTitle} // '';
     foreach my $num (1 .. itemDataCount($pc)){
@@ -25,7 +33,27 @@ require $set::data_items;
   updateSub => \&upgradeItemData,
 );
 our %pc = %{ $pcRef };
-$SHEET->param(modeZero => $::SW2_0 ? 1 : 0);
+
+my $itemViewQuery = '';
+my $itemLinkTag = '';
+if(defined $itemNumber){
+  $itemViewQuery = '&item='.$itemNumber;
+  $itemViewQuery .= '&log='.uri_escape_utf8($::in{log}) if $::in{log};
+  if($::in{id}){
+    my $label = CGI::unescapeHTML(removeTags removeRuby ($pc{itemName} // ''));
+    # アイテム名の > をリンク書式の区切りと区別する。
+    $label =~ s/&/&#38;/g;
+    $label =~ s/>/&#62;/g;
+    $itemLinkTag = "[[$label>?id=$::in{id}$itemViewQuery]]";
+  }
+}
+$SHEET->param(
+  modeZero => $::SW2_0 ? 1 : 0,
+  itemNumber => $itemNumber,
+  itemViewQuery => $itemViewQuery,
+  itemLinkTag => $itemLinkTag,
+);
+$SHEET->param(ogUrl => $SHEET->param('ogUrl').$itemViewQuery) if $itemViewQuery;
 
 ### 固有処理 #########################################################################################
 ### 閲覧禁止データのマスク --------------------------------------------------

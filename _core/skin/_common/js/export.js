@@ -2,9 +2,10 @@
 function getJsonData(targetEnvironment = '') {
   const paramId = /id=[0-9a-zA-Z\-]+/.exec(location.href)[0];
   const paramDate = /log=[0-9\-]+/.exec(location.href)?.[0] ?? null;
+  const viewQuery = document.body.dataset.itemViewQuery || (paramDate ? '&'+paramDate : '');
   return new Promise((resolve, reject)=>{
     let xhr = new XMLHttpRequest();
-    xhr.open('GET', `./?${paramId}&mode=json&target=${targetEnvironment}${paramDate?'&'+paramDate:''}`, true);
+    xhr.open('GET', `./?${paramId}&mode=json&target=${targetEnvironment}${viewQuery}`, true);
     xhr.responseType = "json";
     xhr.onload = (e) => {
       resolve(e.currentTarget.response);
@@ -14,6 +15,13 @@ function getJsonData(targetEnvironment = '') {
     xhr.ontimeout = () => reject('timeout');
     xhr.send();
   });
+}
+
+function getSheetDownloadUrl(mode) {
+  const url = new URL(location.href);
+  url.hash = '';
+  url.searchParams.set('mode', mode);
+  return url.href;
 }
 
 function generateUdonariumZipFile(title, data, image){
@@ -146,16 +154,14 @@ async function downloadAsJson() {
 }
 async function downloadAsHtml(){
   const name = document.title.replace(/ - .+?$/,'') || '無題';
-  const url = location.href.replace(/#(.+)$/,'').replace(/&mode=(.+?)(&|$)/,'')+'&mode=download';
-  downloadFile(name+'.html', url);
+  downloadFile(name+'.html', getSheetDownloadUrl('download'));
 }
 async function downloadAsFullSet(){
   const name = document.title.replace(/ - .+?$/,'') || '無題';
-  const url = location.href.replace(/#(.+)$/,'').replace(/&mode=(.+?)(&|$)/,'');
   let zip = new JSZip();
-  zip.file(name+'.html', await JSZipUtils.getBinaryContent(url+'&mode=download'));
-  zip.file(name+'.json', await JSZipUtils.getBinaryContent(url+'&mode=json'));
-  if(document.getElementById('chatPaletteBox')) zip.file(name+'_チャットパレット.txt', await JSZipUtils.getBinaryContent(url+'&mode=palette'));
+  zip.file(name+'.html', await JSZipUtils.getBinaryContent(getSheetDownloadUrl('download')));
+  zip.file(name+'.json', await JSZipUtils.getBinaryContent(getSheetDownloadUrl('json')));
+  if(document.getElementById('chatPaletteBox')) zip.file(name+'_チャットパレット.txt', await JSZipUtils.getBinaryContent(getSheetDownloadUrl('palette')));
   
   // ユドナリウム
   if(document.getElementById('downloadlist-udonarium')){
