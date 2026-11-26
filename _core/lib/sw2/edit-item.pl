@@ -15,7 +15,8 @@ my $LOGIN_ID = $::LOGIN_ID;
 ### データ読み込み ###################################################################################
 my ($data, $file, $message) = loadSheetData();
 our %pc = %{ $data };
-normalizeItemFormData(\%pc);
+my $records = itemRecordList();
+if(my $formError = $records->normalizeForm(\%pc)){ error($formError); }
 
 our $isNewSheet = isNewSheet();
 
@@ -31,15 +32,11 @@ if($::mode eq 'edit' || ($::mode =~ /^(?:convert|copy)$/ && $pc{ver})){
 
 %pc = applyCustomizedInitialValues(\%pc, 'i') if $::mode eq 'blanksheet';
 
-$pc{itemNum} = itemDataCount(\%pc);
-my @itemOrder = itemDataOrder(\%pc);
-$pc{itemFormOrder} = join ',', @itemOrder;
-$pc{itemLastNumber} = itemLastNumber(\%pc, @itemOrder);
+my %latest;
 if($::mode eq 'edit' && ($::in{log} || $::in{overwrite})){
-  my %latest = getLatestData($set::char_dir, $file, 'itemLastNumber', 'itemNum');
-  $pc{itemLastNumber} = itemLastNumber(\%pc, $latest{itemLastNumber}, $latest{itemNum});
+  %latest = getLatestData($set::char_dir, $file, $records->lastNumberKey(), $records->countKey());
 }
-my $multipleItems = $pc{itemNum} > 1;
+my $multipleItems = $records->count(\%pc) > 1;
 my $sheetName = itemSheetName(\%pc);
 $message = applyMessageName($message, $sheetName);
 
@@ -47,12 +44,13 @@ $message = applyMessageName($message, $sheetName);
 setDefaultColors(\%pc);
 
 ### 改行処理 --------------------------------------------------
-convertEscapedBrToNewlines(\%pc, 'description', map { itemDataPrefix($_).'effects' } 1 .. $pc{itemNum});
-remapItemFields(\%pc, { map { $_ => $itemOrder[$_ - 1] } 1 .. @itemOrder });
+convertEscapedBrToNewlines(\%pc, 'description', map { $_.'effects' } $records->prefixes(\%pc));
+my @itemOrder = $records->prepareForm(\%pc, \%latest);
 
 ### フォーム表示 #####################################################################################
 print renderEditPageStart(
   title => (removeTags removeRuby unescapeTags $sheetName),
+  extraJsTop => qq|<script src="$::core_dir/lib/edit-record-list.js?$::ver" defer></script>|,
 );
 print renderEditHeaderMenu(
   tabsHtml => <<~'HTML',
@@ -84,29 +82,7 @@ print <<"HTML";
       </dl>
     </div>
 
-    <div class="box" id="item-order" hidden>
-      <h2>アイテムの並べ替え</h2>
-      <ul id="item-order-list"></ul>
-    </div>
-    <template id="item-order-row-template">
-      <li>
-        <span class="handle" aria-hidden="true" title="ドラッグして並べ替え">≡</span>
-        <a class="item-order-name"></a>
-        <button type="button" data-direction="-1">上へ</button>
-        <button type="button" data-direction="1">下へ</button>
-      </li>
-    </template>
-    <div id="item-forms" class="in-toc" data-content-title="アイテムデータ">
-      @{[ map { renderItemForm($_) } @itemOrder ]}
-    </div>
-    <template id="item-template">@{[ renderItemForm('ITEMNUM') ]}</template>
-    <div class="item-buttons">
-      <button type="button" onclick="addItem()">アイテムを追加</button>
-      <button type="button" id="delete-item" onclick="delItem()" @{[ $multipleItems ? '' : 'disabled' ]}>最後のアイテムを削除</button>
-      @{[ input 'itemNum','hidden' ]}
-      @{[ input 'itemFormOrder','hidden' ]}
-      @{[ input 'itemLastNumber','hidden' ]}
-    </div>
+    @{[ renderRecordList($records, \@itemOrder, \&renderItemFields) ]}
     <div class="box">
       <h2 class="in-toc">由来・逸話</h2>
       <textarea name="description">$pc{description}</textarea>
@@ -119,8 +95,7 @@ print renderEditPageEnd(
   extraHtml => renderDataList(),
 );
 
-sub renderItemForm ($num) {
-  my $prefix = itemDataPrefix($num);
+sub renderItemFields ($prefix) {
   my $weapon = "${prefix}weapon";
   my $armour = "${prefix}armour";
   $pc{"${weapon}Num"} ||= 1;
@@ -128,8 +103,6 @@ sub renderItemForm ($num) {
   my $nameAttr = 'list="list-item-name"';
 
   return <<~"HTML";
-    <div class="box input-data item-form" id="item-row$num" data-item-number="$num">
-      <h2>アイテム $num</h2>
       <dl class="item-form-name">
         <dt>名称
         <dd>@{[ input "${prefix}itemName",'text','',$nameAttr ]}
@@ -201,7 +174,6 @@ sub renderItemForm ($num) {
           ) ]}
       </table>
       @{[ renderAddDelButtons('arms', "'$armour'", "${armour}Num") ]}
-    </div>
   HTML
 }
 

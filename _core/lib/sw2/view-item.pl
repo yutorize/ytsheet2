@@ -9,6 +9,7 @@ require $set::data_races;
 require $set::data_items;
 
 ### テンプレート読み込み #############################################################################
+my $records = itemRecordList();
 my $itemNumber;
 (my $pcRef, my $SHEET) = setupViewBase(
   unescapeLinesKeys => ['description'],
@@ -24,8 +25,7 @@ my $itemNumber;
     }
     $pc->{titleName} = itemSheetName($pc);
     $pc->{encodedNameLetter} = $pc->{pageTitle} // '';
-    foreach my $num (1 .. itemDataCount($pc)){
-      my $prefix = itemDataPrefix($num);
+    foreach my $prefix ($records->prefixes($pc)){
       $pc->{encodedNameLetter} .= $pc->{"${prefix}itemName"}.$pc->{"${prefix}itemNameRuby"};
     }
   },
@@ -63,8 +63,7 @@ sub maskPcData {
     $pc->{pageTitle} = '';
   }
   
-  foreach my $num (1 .. itemDataCount($pc)){
-    my $prefix = itemDataPrefix($num);
+  foreach my $prefix ($records->prefixes($pc)){
     $pc->{"${prefix}itemName"}   = noiseText(6,14) if $forbidden ne 'battle';
     $pc->{"${prefix}price"}      = noiseText(1,8);
     $pc->{"${prefix}reputation"} = noiseText(2,3);
@@ -86,7 +85,7 @@ sub maskPcData {
 }
 
 ### アイテムデータ --------------------------------------------------
-my @items = map { renderItemData(itemDataPrefix($_)) } 1 .. itemDataCount(\%pc);
+my @items = map { renderItemData($_) } $records->prefixes(\%pc);
 $SHEET->param(Items => \@items);
 if(@items > 1){
   $SHEET->param(multipleItems => 1);

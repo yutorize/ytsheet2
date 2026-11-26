@@ -1,0 +1,102 @@
+"use strict";
+
+class RecordListEditor {
+  constructor(root, { setupRecord, onChange } = {}) {
+    this.label = root.dataset.recordLabel;
+    this.placeholder = root.dataset.recordPlaceholder;
+    this.forms = root.querySelector('[data-record-forms]');
+    this.list = root.querySelector('[data-record-order]');
+    this.orderPanel = root.querySelector('[data-record-order-panel]');
+    this.rowTemplate = root.querySelector('[data-record-order-row]');
+    this.formTemplate = root.querySelector('[data-record-template]');
+    this.countField = root.querySelector('[data-record-count]');
+    this.orderField = root.querySelector('[data-record-form-order]');
+    this.lastNumberField = root.querySelector('[data-record-last-number]');
+    this.deleteButton = root.querySelector('[data-record-delete]');
+    this.setupRecord = setupRecord;
+    this.onChange = onChange;
+
+    Array.from(this.forms.children).forEach(record => this.register(record));
+    this.sync();
+    Sortable.create(this.list, {
+      handle: '.handle',
+      animation: 150,
+      onUpdate: () => this.changeOrder(),
+    });
+    this.list.addEventListener('click', event => this.move(event));
+    root.querySelector('[data-record-add]').addEventListener('click', () => this.add());
+    this.deleteButton.addEventListener('click', () => this.removeLast());
+  }
+
+  register(record) {
+    this.setupRecord?.(record);
+    const row = this.rowTemplate.content.firstElementChild.cloneNode(true);
+    const nameInput = record.querySelector(`[name="${record.dataset.recordName}"]`);
+    const link = row.querySelector('.record-order-name');
+    row.dataset.recordNumber = record.dataset.recordNumber;
+    link.href = `#${record.id}`;
+    const updateLabel = () => {
+      link.textContent = nameInput.value.trim() || `${this.label} ${row.dataset.recordNumber}`;
+    };
+    updateLabel();
+    nameInput.addEventListener('input', updateLabel);
+    this.list.append(row);
+    return nameInput;
+  }
+
+  add() {
+    const number = Number(this.lastNumberField.value) + 1;
+    if(!Number.isSafeInteger(number)){ return; }
+    const template = document.createElement('template');
+    template.innerHTML = this.formTemplate.innerHTML.replaceAll(this.placeholder, number);
+    const record = template.content.firstElementChild;
+    this.lastNumberField.value = number;
+    this.forms.append(record);
+    const nameInput = this.register(record);
+    this.changeOrder();
+    nameInput.focus();
+  }
+
+  removeLast() {
+    if(this.forms.children.length <= 1 || !delRowNode(`#${this.forms.id} > :last-child`)){ return; }
+    this.list.lastElementChild.remove();
+    this.changeOrder();
+  }
+
+  move(event) {
+    const button = event.target.closest('button[data-direction]');
+    if(!button){ return; }
+    const row = button.closest('li');
+    if(button.dataset.direction === '-1'){
+      if(!row.previousElementSibling){ return; }
+      row.previousElementSibling.before(row);
+    }
+    else {
+      if(!row.nextElementSibling){ return; }
+      row.nextElementSibling.after(row);
+    }
+    this.changeOrder();
+    (button.disabled ? row.querySelector('.record-order-name') : button).focus();
+  }
+
+  changeOrder() {
+    this.sync();
+    this.orderField.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+
+  sync() {
+    const rows = Array.from(this.list.children);
+    const records = new Map(Array.from(this.forms.children, record => [record.dataset.recordNumber, record]));
+    rows.forEach((row, index) => {
+      const record = records.get(row.dataset.recordNumber);
+      if(record !== this.forms.children[index]){ this.forms.insertBefore(record, this.forms.children[index]); }
+      row.querySelector('[data-direction="-1"]').disabled = index === 0;
+      row.querySelector('[data-direction="1"]').disabled = index === rows.length - 1;
+    });
+    this.orderField.value = rows.map(row => row.dataset.recordNumber).join(',');
+    this.countField.value = rows.length;
+    this.orderPanel.hidden = rows.length <= 1;
+    this.deleteButton.disabled = rows.length <= 1;
+    this.onChange?.(rows.length);
+  }
+}

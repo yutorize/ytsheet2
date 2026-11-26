@@ -675,6 +675,52 @@ sub renderAddDelButtons {
     . '</div>'
     . input($numKey, 'hidden');
 }
+### 複数レコードを持つシートの編集欄 --------------------------------------------------
+# prepareForm が返した固定番号の順と、接頭辞を受け取る入力欄の描画関数を指定する。
+sub renderRecordList {
+  my ($records, $order, $renderFields) = @_;
+  my $key = $records->key;
+  my $label = escapePcData($records->label);
+  my $placeholder = 'RECORD_NUMBER';
+  my $renderForm = sub {
+    my ($number) = @_;
+    my $prefix = $records->prefix($number);
+    my $name = $prefix.$records->nameField();
+    return <<~"HTML";
+    <div class="box input-data $key-form" id="$key-row$number" data-record-number="$number" data-record-name="$name">
+      <h2>$label $number</h2>
+      @{[ $renderFields->($prefix) ]}
+    </div>
+    HTML
+  };
+  return <<~"HTML";
+  <div id="$key-records" data-record-label="$label" data-record-placeholder="$placeholder">
+    <div class="box" id="$key-order" data-record-order-panel hidden>
+      <h2>${label}の並べ替え</h2>
+      <ul class="record-order-list" id="$key-order-list" data-record-order></ul>
+    </div>
+    <template data-record-order-row>
+      <li>
+        <span class="handle" aria-hidden="true" title="ドラッグして並べ替え">≡</span>
+        <a class="record-order-name"></a>
+        <button type="button" data-direction="-1">上へ</button>
+        <button type="button" data-direction="1">下へ</button>
+      </li>
+    </template>
+    <div id="$key-forms" class="in-toc" data-content-title="${label}データ" data-record-forms>
+      @{[ map { $renderForm->($_) } @$order ]}
+    </div>
+    <template id="$key-template" data-record-template>@{[ $renderForm->($placeholder) ]}</template>
+    <div class="record-list-buttons">
+      <button type="button" data-record-add>${label}を追加</button>
+      <button type="button" id="delete-$key" data-record-delete @{[ @$order > 1 ? '' : 'disabled' ]}>最後の${label}を削除</button>
+      @{[ input $records->countKey(), 'hidden', '', 'data-record-count' ]}
+      @{[ input $records->formOrderKey(), 'hidden', '', 'data-record-form-order' ]}
+      @{[ input $records->lastNumberKey(), 'hidden', '', 'data-record-last-number' ]}
+    </div>
+  </div>
+  HTML
+}
 ### 画像欄 --------------------------------------------------
 sub renderImageForm {
   my $imageMaxSize = $set::image_maxsize || 0;

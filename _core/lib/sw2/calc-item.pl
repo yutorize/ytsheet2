@@ -9,12 +9,13 @@ use open ":utf8";
 sub dataCalc {
   my %pc = %{$_[0]};
 
-  normalizeItemFormData(\%pc);
-  my $itemNum = itemDataCount(\%pc);
+  my $records = itemRecordList();
+  if(my $formError = $records->normalizeForm(\%pc)){ error($formError); }
+  my $itemNum = $records->count(\%pc);
   $pc{itemNum} = $itemNum;
   delete $pc{pageTitle} if $itemNum == 1;
 
-  my @prefixes = map { itemDataPrefix($_) } 1 .. $itemNum;
+  my @prefixes = $records->prefixes(\%pc);
   foreach my $prefix (@prefixes){
     $pc{"${prefix}category"} =~ tr/ａ-ｚＡ-Ｚ/a-zA-Z/;
   }

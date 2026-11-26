@@ -1797,26 +1797,6 @@ body[data-sheet-type="item"] {
   .item-form > h3 {
     margin-top: 1em;
   }
-  #item-order-list {
-    margin: .5rem 0;
-    padding: 0 .75rem;
-    list-style: none;
-    > li {
-      display: grid;
-      grid-template-columns: auto minmax(0, 1fr) auto auto;
-      align-items: center;
-      gap: .5em;
-      padding: .25em 0;
-    }
-    .handle { cursor: grab; padding: 0 .35em; touch-action: none; }
-    .item-order-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    button { white-space: nowrap; }
-  }
-  .item-buttons {
-    display: flex;
-    flex-wrap: wrap;
-    gap: .5em;
-  }
   div.input-data dl {
     display: flex;
     margin-right: 1.5em;
