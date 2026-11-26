@@ -1854,6 +1854,12 @@ body[data-sheet-type="item"] {
         display: none;
       }
     }
+    @media screen and (width <= 735px){
+      & td { width: 2.8em; }
+      & td:first-child { width: 1em; }
+      & td:last-child { width: auto; }
+      & td input { min-width: 2em; }
+    }
   }
 
   .input-data label {
