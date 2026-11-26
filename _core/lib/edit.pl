@@ -703,8 +703,7 @@ sub renderRecordList {
       <li>
         <span class="handle" aria-hidden="true" title="ドラッグして並べ替え">≡</span>
         <button type="button" class="record-order-name"></button>
-        <button type="button" data-direction="-1">上へ</button>
-        <button type="button" data-direction="1">下へ</button>
+        <button type="button" data-record-delete>削除</button>
       </li>
     </template>
     <div id="$key-forms" class="in-toc" data-content-title="${label}データ" data-record-forms>
@@ -713,7 +712,6 @@ sub renderRecordList {
     <template id="$key-template" data-record-template>@{[ $renderForm->($placeholder) ]}</template>
     <div class="record-list-buttons">
       <button type="button" data-record-add>${label}を追加</button>
-      <button type="button" id="delete-$key" data-record-delete @{[ @$order > 1 ? '' : 'disabled' ]}>最後の${label}を削除</button>
       @{[ input $records->countKey(), 'hidden', '', 'data-record-count' ]}
       @{[ input $records->formOrderKey(), 'hidden', '', 'data-record-form-order' ]}
       @{[ input $records->lastNumberKey(), 'hidden', '', 'data-record-last-number' ]}

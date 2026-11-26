@@ -709,7 +709,7 @@ input[type="number"] {
   list-style: none;
   > li {
     display: grid;
-    grid-template-columns: auto minmax(0, 1fr) auto auto;
+    grid-template-columns: auto minmax(0, 1fr) auto;
     align-items: center;
     gap: .5em;
     padding: .25em 0;

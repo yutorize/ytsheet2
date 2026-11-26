@@ -12,7 +12,6 @@ class RecordListEditor {
     this.countField = root.querySelector('[data-record-count]');
     this.orderField = root.querySelector('[data-record-form-order]');
     this.lastNumberField = root.querySelector('[data-record-last-number]');
-    this.deleteButton = root.querySelector('[data-record-delete]');
     this.setupRecord = setupRecord;
     this.onChange = onChange;
 
@@ -23,9 +22,7 @@ class RecordListEditor {
       animation: 150,
       onUpdate: () => this.changeOrder(),
     });
-    this.list.addEventListener('click', event => this.move(event));
     root.querySelector('[data-record-add]').addEventListener('click', () => this.add());
-    this.deleteButton.addEventListener('click', () => this.removeLast());
   }
 
   register(record) {
@@ -46,6 +43,7 @@ class RecordListEditor {
       const behavior = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
       window.scrollTo({ top, behavior });
     });
+    row.querySelector('[data-record-delete]').addEventListener('click', () => this.remove(record, row));
     this.list.append(row);
     return nameInput;
   }
@@ -63,26 +61,15 @@ class RecordListEditor {
     nameInput.focus();
   }
 
-  removeLast() {
-    if(this.forms.children.length <= 1 || !delRowNode(`#${this.forms.id} > :last-child`)){ return; }
-    this.list.lastElementChild.remove();
+  remove(record, row) {
+    if(this.forms.children.length <= 1 || !delRowNode(`#${CSS.escape(record.id)}`)){ return; }
+    const adjacentRow = row.nextElementSibling ?? row.previousElementSibling;
+    row.remove();
     this.changeOrder();
-  }
-
-  move(event) {
-    const button = event.target.closest('button[data-direction]');
-    if(!button){ return; }
-    const row = button.closest('li');
-    if(button.dataset.direction === '-1'){
-      if(!row.previousElementSibling){ return; }
-      row.previousElementSibling.before(row);
-    }
-    else {
-      if(!row.nextElementSibling){ return; }
-      row.nextElementSibling.after(row);
-    }
-    this.changeOrder();
-    (button.disabled ? row.querySelector('.record-order-name') : button).focus();
+    const focusTarget = this.orderPanel.hidden
+      ? this.forms.firstElementChild
+      : adjacentRow.querySelector('[data-record-delete]');
+    focusTarget.focus({ preventScroll: true });
   }
 
   changeOrder() {
@@ -96,13 +83,10 @@ class RecordListEditor {
     rows.forEach((row, index) => {
       const record = records.get(row.dataset.recordNumber);
       if(record !== this.forms.children[index]){ this.forms.insertBefore(record, this.forms.children[index]); }
-      row.querySelector('[data-direction="-1"]').disabled = index === 0;
-      row.querySelector('[data-direction="1"]').disabled = index === rows.length - 1;
     });
     this.orderField.value = rows.map(row => row.dataset.recordNumber).join(',');
     this.countField.value = rows.length;
     this.orderPanel.hidden = rows.length <= 1;
-    this.deleteButton.disabled = rows.length <= 1;
     this.onChange?.(rows.length);
   }
 }
