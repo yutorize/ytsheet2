@@ -205,7 +205,7 @@ print <<"HTML";
         <dl class="arms  "><dt>アイテム一覧
           <dd>
             <input type="text" id="schoolItemUrl" placeholder="アイテムシートのURL"><span class="button" onclick="addSchoolItem()">追加</span>
-            <p class="annotate">個別のアイテムを参照する場合は、URLの末尾に <code>&amp;item=2</code> のように番号を付けます。</p>
+            <p class="annotate">URLに <code>&amp;item=2</code> のようにアイテム番号を指定します。省略時は番号1を参照します。</p>
             @{[ input 'schoolItemList','hidden' ]}
             <table id="school-item-list" class="data-table">
               <thead>
@@ -221,14 +221,14 @@ print <<"HTML";
                   <tr>
                   ${\ do {
                     if(exists $item{itemName}) {
-                      qq|<td><a href="$_" target="_blank">|.unescapeTags($item{itemName})."</a>";
+                      qq|<td><a href="@{[ escapePcData($item{_itemUrl}) ]}" target="_blank">|.unescapeTags($item{itemName})."</a>";
                     }
                     else {
                       qq|<td><a href="$_" target="_blank" class="failed">データ取得失敗</a>|;
                     }
                   }}
                   <td>@{[ unescapeTags $item{category} ]}
-                  <td>@{[ unescapeTags $item{summary} ]}
+                  <td>@{[ $item{_error} ? escapePcData($item{_error}) : unescapeTags($item{summary}) ]}
                   <td class='button' onclick="delSchoolItem(this,'$_')">×
                   HTML
                 } split ',',$pc{schoolItemList} ]}

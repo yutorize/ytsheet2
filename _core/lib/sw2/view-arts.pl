@@ -319,7 +319,7 @@ foreach my $set_url (split ',',$pc{schoolItemList}){
       $icon .= qq|<img class="i-icon" src="${set::icon_dir}item_${_}.png">|;
     }
     push(@items, {
-      "NAME"      => qq|<a href="$set_url" target="_blank">$icon|.unescapeTags($item{itemName})."</a>",
+      "NAME"      => qq|<a href="@{[ escapePcData($item{_itemUrl}) ]}" target="_blank">$icon|.unescapeTags($item{itemName})."</a>",
       "PRICE"     => unescapeTags($item{price}),
       "CATEGORY"  => unescapeTags($item{category}),
       "REPUTATION"=> unescapeTags($item{reputation}),

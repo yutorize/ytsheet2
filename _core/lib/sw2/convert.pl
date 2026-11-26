@@ -9,28 +9,28 @@ require $set::data_class;
 
 sub loadItemData {
   my $url = CGI::unescapeHTML(shift);
-  my ($base, $query) = split /\?/, ($url =~ s/#.*\z//r), 2;
+  my ($source, $fragment) = split /(?=#)/, $url, 2;
+  my ($base, $query) = split /\?/, $source, 2;
   my $params = CGI->new($query // '');
   my $num = $params->param('item');
-  if(defined $num){
-    # 同一サーバーと他サーバーの両方で、シート全体から指定のアイテムを取り出す。
-    my $id = $params->param('id');
-    $params->delete(qw/id item mode/);
-    my $idQuery = defined $id ? CGI->new({ id => $id })->query_string : '';
-    $url = $base.'?'.join('&', grep { length } ($idQuery, $params->query_string));
-  }
+  # 同一サーバーと他サーバーの両方で、シート全体から固定番号で選ぶ。
+  my $id = $params->param('id');
+  $params->delete(qw/id item mode/);
+  my $idQuery = defined $id ? CGI->new({ id => $id })->query_string : '';
+  my $dataUrl = $base.'?'.join('&', grep { length } ($idQuery, $params->query_string));
 
   my %data = importSheetData(
-    $url,
+    $dataUrl,
     softError => 1,
     dataDir => $set::lib_type{i}{dataDir},
     skipPermission => !defined $num,
   );
-  return %data if !defined($num) || $data{_error};
+  return %data if $data{_error};
   return (_error => 'アイテムデータではありません。') if ($data{type} // '') ne 'i';
-  my ($item, $message) = selectItemData(\%data, $num);
-  return %$item if $item;
-  return (_error => $message =~ s/\A[0-9]{3}://r);
+  my ($item, $message) = selectItemData(\%data, $num // 1);
+  return (_error => $message =~ s/\A[0-9]{3}://r) if !$item;
+  my $itemUrl = defined($num) ? $url : $base.'?'.join('&', grep { length } ($query // '', 'item=1')).($fragment // '');
+  return (%$item, _itemUrl => $itemUrl);
 }
 
 ### キャラクター保管所 --------------------------------------------------
