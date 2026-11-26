@@ -11,7 +11,6 @@ require $set::data_items;
 ### テンプレート読み込み #############################################################################
 my $itemNumber;
 (my $pcRef, my $SHEET) = setupViewBase(
-  generateType => 'SwordWorld2Enemy',
   unescapeLinesKeys => ['description'],
   unescapeLinesRe => qr/^(?:item[0-9]+_)?effects$/,
   nameSub => sub {
