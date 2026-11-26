@@ -687,7 +687,7 @@ sub renderRecordList {
     my $prefix = $records->prefix($number);
     my $name = $prefix.$records->nameField();
     return <<~"HTML";
-    <div class="box input-data $key-form" id="$key-row$number" data-record-number="$number" data-record-name="$name">
+    <div class="box input-data $key-form" id="$key-row$number" data-record-number="$number" data-record-name="$name" tabindex="-1">
       <h2>$label $number</h2>
       @{[ $renderFields->($prefix) ]}
     </div>
@@ -702,7 +702,7 @@ sub renderRecordList {
     <template data-record-order-row>
       <li>
         <span class="handle" aria-hidden="true" title="ドラッグして並べ替え">≡</span>
-        <a class="record-order-name"></a>
+        <button type="button" class="record-order-name"></button>
         <button type="button" data-direction="-1">上へ</button>
         <button type="button" data-direction="1">下へ</button>
       </li>

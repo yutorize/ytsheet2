@@ -32,14 +32,20 @@ class RecordListEditor {
     this.setupRecord?.(record);
     const row = this.rowTemplate.content.firstElementChild.cloneNode(true);
     const nameInput = record.querySelector(`[name="${record.dataset.recordName}"]`);
-    const link = row.querySelector('.record-order-name');
+    const nameButton = row.querySelector('.record-order-name');
     row.dataset.recordNumber = record.dataset.recordNumber;
-    link.href = `#${record.id}`;
     const updateLabel = () => {
-      link.textContent = nameInput.value.trim() || `${this.label} ${row.dataset.recordNumber}`;
+      nameButton.textContent = nameInput.value.trim() || `${this.label} ${row.dataset.recordNumber}`;
     };
     updateLabel();
     nameInput.addEventListener('input', updateLabel);
+    nameButton.addEventListener('click', () => {
+      record.focus({ preventScroll: true });
+      const headerHeight = document.getElementById('header-menu')?.clientHeight ?? 0;
+      const top = record.getBoundingClientRect().top + window.scrollY - headerHeight - 30;
+      const behavior = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+      window.scrollTo({ top, behavior });
+    });
     this.list.append(row);
     return nameInput;
   }

@@ -715,7 +715,19 @@ input[type="number"] {
     padding: .25em 0;
   }
   .handle { cursor: grab; padding: 0 .35em; touch-action: none; }
-  .record-order-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .record-order-name {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--a-link-color);
+    font: inherit;
+    text-align: left;
+    text-decoration: 2px underline var(--a-line-color);
+    text-underline-offset: .2rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    &:hover { color: var(--a-hover-color); }
+  }
   button { white-space: nowrap; }
 }
 .record-list-buttons {
