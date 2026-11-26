@@ -9,6 +9,7 @@ use open ":utf8";
 sub dataCalc {
   my %pc = %{$_[0]};
 
+  normalizeItemFormData(\%pc);
   my $itemNum = itemDataCount(\%pc);
   $pc{itemNum} = $itemNum;
   delete $pc{pageTitle} if $itemNum == 1;

@@ -15,6 +15,7 @@ my $LOGIN_ID = $::LOGIN_ID;
 ### データ読み込み ###################################################################################
 my ($data, $file, $message) = loadSheetData();
 our %pc = %{ $data };
+normalizeItemFormData(\%pc);
 
 our $isNewSheet = isNewSheet();
 
@@ -31,6 +32,13 @@ if($::mode eq 'edit' || ($::mode =~ /^(?:convert|copy)$/ && $pc{ver})){
 %pc = applyCustomizedInitialValues(\%pc, 'i') if $::mode eq 'blanksheet';
 
 $pc{itemNum} = itemDataCount(\%pc);
+my @itemOrder = itemDataOrder(\%pc);
+$pc{itemFormOrder} = join ',', @itemOrder;
+$pc{itemLastNumber} = itemLastNumber(\%pc, @itemOrder);
+if($::mode eq 'edit' && ($::in{log} || $::in{overwrite})){
+  my %latest = getLatestData($set::char_dir, $file, 'itemLastNumber', 'itemNum');
+  $pc{itemLastNumber} = itemLastNumber(\%pc, $latest{itemLastNumber}, $latest{itemNum});
+}
 my $multipleItems = $pc{itemNum} > 1;
 my $sheetName = itemSheetName(\%pc);
 $message = applyMessageName($message, $sheetName);
@@ -40,6 +48,7 @@ setDefaultColors(\%pc);
 
 ### 改行処理 --------------------------------------------------
 convertEscapedBrToNewlines(\%pc, 'description', map { itemDataPrefix($_).'effects' } 1 .. $pc{itemNum});
+remapItemFields(\%pc, { map { $_ => $itemOrder[$_ - 1] } 1 .. @itemOrder });
 
 ### フォーム表示 #####################################################################################
 print renderEditPageStart(
@@ -75,14 +84,28 @@ print <<"HTML";
       </dl>
     </div>
 
-    <div id="item-forms" class="in-toc" data-content-title="アイテムデータ">
-      @{[ renderItemForm(1) ]}
-      @{[ renderTemplateLoop({ id => 'item', placeholder => 'ITEMNUM', startNum => 2 }, \&renderItemForm) ]}
+    <div class="box" id="item-order" hidden>
+      <h2>アイテムの並べ替え</h2>
+      <ul id="item-order-list"></ul>
     </div>
+    <template id="item-order-row-template">
+      <li>
+        <span class="handle" aria-hidden="true" title="ドラッグして並べ替え">≡</span>
+        <a class="item-order-name"></a>
+        <button type="button" data-direction="-1">上へ</button>
+        <button type="button" data-direction="1">下へ</button>
+      </li>
+    </template>
+    <div id="item-forms" class="in-toc" data-content-title="アイテムデータ">
+      @{[ map { renderItemForm($_) } @itemOrder ]}
+    </div>
+    <template id="item-template">@{[ renderItemForm('ITEMNUM') ]}</template>
     <div class="item-buttons">
       <button type="button" onclick="addItem()">アイテムを追加</button>
       <button type="button" id="delete-item" onclick="delItem()" @{[ $multipleItems ? '' : 'disabled' ]}>最後のアイテムを削除</button>
       @{[ input 'itemNum','hidden' ]}
+      @{[ input 'itemFormOrder','hidden' ]}
+      @{[ input 'itemLastNumber','hidden' ]}
     </div>
     <div class="box">
       <h2 class="in-toc">由来・逸話</h2>
@@ -103,14 +126,13 @@ sub renderItemForm ($num) {
   $pc{"${weapon}Num"} ||= 1;
   $pc{"${armour}Num"} ||= 1;
   my $nameAttr = 'list="list-item-name"';
-  $nameAttr .= ' id="main-name"' if $num eq '1' && !$multipleItems;
 
   return <<~"HTML";
-    <div class="box input-data item-form" id="item-row$num">
+    <div class="box input-data item-form" id="item-row$num" data-item-number="$num">
       <h2>アイテム $num</h2>
       <dl class="item-form-name">
         <dt>名称
-        <dd>@{[ input "${prefix}itemName",'text',($num eq '1' ? 'setItemName' : ''),$nameAttr ]}
+        <dd>@{[ input "${prefix}itemName",'text','',$nameAttr ]}
       </dl>
       <dl class="icon-checkboxes"><dt>アイコン<dd>
         @{[ checkbox "${prefix}iconMagic"  , "<img class='i-icon' src=\"${set::icon_dir}item_magic.png\">魔法のアイテム" ]}

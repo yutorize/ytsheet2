@@ -862,31 +862,77 @@ sub itemDataPrefix {
   # 1件目は従来の保存キーを使う
   return $num eq '1' ? '' : "item${num}_";
 }
+sub isItemDataNumber {
+  my ($number) = @_;
+  return defined($number) && $number =~ /\A[1-9][0-9]*\z/ && $number <= 9_007_199_254_740_991;
+}
+sub itemDataOrder {
+  my ($pc) = @_;
+  my $count = itemDataCount($pc);
+  my @order = split /,/, ($pc->{itemOrder} // ''), -1;
+  return @order if @order == $count && @order == deduplicate(@order)
+    && !grep { !isItemDataNumber($_) } @order;
+  return 1 .. $count;
+}
+sub itemLastNumber {
+  my ($pc, @numbers) = @_;
+  my $last = 1;
+  foreach my $number ($pc->{itemLastNumber}, @numbers){
+    $last = $number if isItemDataNumber($number) && $number > $last;
+  }
+  return $last;
+}
+
+my $itemField = qr/\A(?:
+  itemName(?:Ruby)? | price | reputation | shape | category | age | summary | effects
+  | magic | icon(?:Magic|Local|School[AT]?)
+  | (?:weapon|armour)(?:Num|[0-9]+[A-Za-z]+)
+)\z/x;
+
+sub remapItemFields {
+  my ($pc, $positions) = @_;
+  my %fields;
+  foreach my $key (keys %$pc){
+    my ($num, $field) = $key =~ /\Aitem([0-9]+)_(.*)\z/;
+    if(!defined $num){
+      next unless $key =~ $itemField;
+      ($num, $field) = (1, $key);
+    }
+    my $position = $positions->{$num};
+    $fields{itemDataPrefix($position).$field} = $pc->{$key}
+      if defined($position) && $field =~ $itemField;
+    delete $pc->{$key};
+  }
+  @$pc{keys %fields} = values %fields;
+}
+
+sub normalizeItemFormData {
+  my ($pc) = @_;
+  return unless exists $pc->{itemFormOrder};
+  my @order = split /,/, (delete $pc->{itemFormOrder} // ''), -1;
+  error('400:アイテムの並び順が不正です。')
+    if @order != itemDataCount($pc) || @order != deduplicate(@order)
+    || grep { !isItemDataNumber($_) || !exists $pc->{itemDataPrefix($_).'itemName'} } @order;
+
+  # フォームは固定番号で参照し、保存データの各欄は表示順に詰める。
+  my %positions = map { $order[$_ - 1] => $_ } 1 .. @order;
+  remapItemFields($pc, \%positions);
+  $pc->{itemOrder} = join ',', @order;
+  $pc->{itemLastNumber} = itemLastNumber($pc, @order);
+}
+
 sub selectItemData {
   my ($pc, $num) = @_;
   return (undef, '400:アイテム番号は1以上の整数で指定してください。')
     if !defined($num) || $num !~ /\A[1-9][0-9]*\z/;
-  return (undef, '404:指定された番号のアイテムは見つかりませんでした。')
-    if $num > itemDataCount($pc);
+  my @order = itemDataOrder($pc);
+  my ($position) = grep { $order[$_ - 1] eq $num } 1 .. @order;
+  return (undef, '404:指定された番号のアイテムは見つかりませんでした。') if !defined $position;
 
   my %item = %$pc;
-  delete $item{pageTitle};
+  delete @item{qw/pageTitle itemOrder itemLastNumber/};
   $item{itemNum} = 1;
-  my $itemField = qr/\A(?:
-    itemName(?:Ruby)? | price | reputation | shape | category | age | summary | effects
-    | magic | icon(?:Magic|Local|School[AT]?)
-    | (?:weapon|armour)(?:Num|[0-9]+[A-Za-z]+)
-  )\z/x;
-  delete @item{ grep { /\Aitem[0-9]+_/ || ($num > 1 && /$itemField/) } keys %item };
-
-  if($num > 1){
-    my $prefix = itemDataPrefix($num);
-    foreach my $key (keys %$pc){
-      next unless index($key, $prefix) == 0;
-      my $field = substr($key, length($prefix));
-      $item{$field} = $pc->{$key} if $field =~ $itemField;
-    }
-  }
+  remapItemFields(\%item, { $position => 1 });
   return (\%item, undef);
 }
 sub itemSheetName {
