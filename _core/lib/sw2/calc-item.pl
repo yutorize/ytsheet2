@@ -49,7 +49,7 @@ sub dataCalc {
     if($forbidden eq '' || $forbidden eq 'battle'){
       push @names, map { itemListText($pc{"${_}itemName"}) } @prefixes;
     }
-    @categories = ($commonCategory // 'さまざま') if $forbidden ne '';
+    @categories = (itemListDisplayCategory(@categories)) if $forbidden ne '';
   }
   $NL{itemName} = joinItemListValues(deduplicate(@names));
   $NL{category} = joinItemListValues(@categories);

@@ -905,6 +905,11 @@ sub commonItemListCategory {
   return undef if grep { $_ ne $sets[0] } @sets;
   return join ' ', split /\s+/, $first;
 }
+sub itemListDisplayCategory {
+  return commonItemListCategory(@_)
+    // commonItemListCategory(map { s/(?<!\S)(〈[^〈〉\s]+〉)(?:[BA]|SS?)(?=\s|\z)/$1/gir } @_)
+    // 'さまざま';
+}
 sub upgradeItemData {
   my %pc = %{$_[0]};
   my $ver = $pc{ver};

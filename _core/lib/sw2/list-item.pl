@@ -111,7 +111,7 @@ foreach (@$pageLines) {
   
   #名称とカテゴリの表示
   ($pc{name}) = splitItemListValues($pc{name}, $pc{type});
-  $pc{category} = commonItemListCategory(splitItemListValues($pc{category}, $pc{type})) // 'さまざま';
+  $pc{category} = itemListDisplayCategory(splitItemListValues($pc{category}, $pc{type}));
   $pc{category} =~ s/[ 　]/<br>/g;
 
   #価格
