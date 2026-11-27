@@ -41,8 +41,9 @@ sub dataCalc {
   my @names = (itemListText(itemSheetName(\%pc)));
   my @categories = map { itemListText($pc{"${_}category"}) } @prefixes;
   if($itemNum > 1){
-    my $commonCategory = commonItemListCategory(@categories);
-    if(defined $commonCategory){
+    my @labelsByItem = splitItemListCategoryLabels(@categories);
+    my $commonLabels = commonItemListCategoryLabels(@labelsByItem);
+    if(defined $commonLabels){
       $NL{price} = join '／', map { itemListText($pc{"${_}price"}) } @prefixes;
     }
     else {
@@ -53,7 +54,7 @@ sub dataCalc {
     if($forbidden eq '' || $forbidden eq 'battle'){
       push @names, map { itemListText($pc{"${_}itemName"}) } @prefixes;
     }
-    @categories = (itemListDisplayCategory(@categories)) if $forbidden ne '';
+    @categories = (itemListDisplayCategory($commonLabels, @labelsByItem)) if $forbidden ne '';
   }
   $NL{itemName} = joinItemListValues(deduplicate(@names));
   $NL{category} = joinItemListValues(@categories);

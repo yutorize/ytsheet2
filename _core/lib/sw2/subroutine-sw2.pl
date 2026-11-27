@@ -898,24 +898,28 @@ sub splitItemListValues {
   }
   return @values;
 }
-sub commonItemListCategory {
+sub splitItemListCategoryLabels {
+  return map { [deduplicate(split ' ', $_)] } @_;
+}
+# 重複除去済みのラベルを比較し、一致したときは先頭の順序を使う。
+sub commonItemListCategoryLabels {
   my ($first, @others) = @_;
   return $first unless @others;
-  my @sets = map { join ' ', sort(deduplicate(split /\s+/, $_)) } ($first, @others);
-  return undef if grep { $_ ne $sets[0] } @sets;
-  return join ' ', split /\s+/, $first;
+  my %labels = map { $_ => 1 } @$first;
+  foreach my $other (@others){
+    return undef if @$other != @$first || grep { !exists $labels{$_} } @$other;
+  }
+  return $first;
 }
 sub itemListDisplayCategory {
-  return $_[0] // 'さまざま' if @_ < 2;
-
-  my $common = commonItemListCategory(@_);
-  return join ' ', deduplicate(split ' ', $common) if defined $common;
+  my ($commonLabels, @labelsByItem) = @_;
+  return join ' ', @$commonLabels if defined $commonLabels;
 
   my @baseOrder;
   my @categoriesByItem;
-  foreach my $categories (@_){
+  foreach my $labels (@labelsByItem){
     my %labelsByCategory;
-    foreach my $label (deduplicate(split ' ', $categories)){
+    foreach my $label (@$labels){
       my $base = $label =~ s/\A(〈[^〈〉\s]+〉)(?:[BA]|SS?)\z/$1/ir;
       push @baseOrder, $base if !@categoriesByItem && !exists $labelsByCategory{$base};
       push @{$labelsByCategory{$base}}, $label;
@@ -927,8 +931,8 @@ sub itemListDisplayCategory {
   my @display;
   foreach my $base (@baseOrder){
     return 'さまざま' if grep { !exists $_->{$base} } @categoriesByItem;
-    my @labels = map { join ' ', @{$_->{$base}} } @categoriesByItem;
-    push @display, commonItemListCategory(@labels) // $base;
+    my $labels = commonItemListCategoryLabels(map { $_->{$base} } @categoriesByItem);
+    push @display, defined($labels) ? @$labels : $base;
   }
   return join ' ', @display;
 }

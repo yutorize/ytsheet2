@@ -111,7 +111,12 @@ foreach (@$pageLines) {
   
   #名称とカテゴリの表示
   ($pc{name}) = splitItemListValues($pc{name}, $pc{type});
-  $pc{category} = itemListDisplayCategory(splitItemListValues($pc{category}, $pc{type}));
+  my @categories = splitItemListValues($pc{category}, $pc{type});
+  $pc{category} = $categories[0];
+  if(@categories > 1){
+    my @labelsByItem = splitItemListCategoryLabels(@categories);
+    $pc{category} = itemListDisplayCategory(commonItemListCategoryLabels(@labelsByItem), @labelsByItem);
+  }
   $pc{category} =~ s/[ 　]/<br>/g;
 
   #価格
