@@ -306,9 +306,10 @@ $SHEET->param(MagicData => \@magics);
 
 ### 流派アイテム --------------------------------------------------
 my @items;
+my %itemSheetCache;
 foreach my $set_url (split ',',$pc{schoolItemList}){
   eval { require $set::lib_convert; };
-  my %item = loadItemData($set_url);
+  my %item = loadItemData($set_url, \%itemSheetCache);
   if(exists $item{itemName}){
     $item{price} =~ s/[+＋]/<br>＋/;
     $item{price} = commify($item{price}) if $item{price} =~ /\d{4,}/;

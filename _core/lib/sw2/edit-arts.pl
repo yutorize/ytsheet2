@@ -89,6 +89,7 @@ print renderEditHeaderMenu(
 );
 print qq|<aside class="message">$message</aside>| if $message;
 
+my %itemSheetCache;
 print <<"HTML";
   <section id="section-common">
     @{[ renderProtectBlock() ]}
@@ -215,7 +216,7 @@ print <<"HTML";
                 <th>
               <tbody>
                 @{[ map {
-                  my %item = loadItemData($_);
+                  my %item = loadItemData($_, \%itemSheetCache);
                   $item{category} =~ s/\s/<hr>/g;
                   <<~"HTML";
                   <tr>

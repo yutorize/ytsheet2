@@ -8,7 +8,9 @@ use JSON::PP;
 require $set::data_class;
 
 sub loadItemData {
-  my $url = CGI::unescapeHTML(shift);
+  my ($url, $sheetCache) = @_;
+  $url = CGI::unescapeHTML($url);
+  $sheetCache //= {};
   my ($source, $fragment) = split /(?=#)/, $url, 2;
   my ($base, $query) = split /\?/, $source, 2;
   my $params = CGI->new($query // '');
@@ -19,15 +21,21 @@ sub loadItemData {
   my $idQuery = defined $id ? CGI->new({ id => $id })->query_string : '';
   my $dataUrl = $base.'?'.join('&', grep { length } ($idQuery, $params->query_string));
 
-  my %data = importSheetData(
-    $dataUrl,
-    softError => 1,
-    dataDir => $set::lib_type{i}{dataDir},
-    skipPermission => !defined $num,
-  );
-  return %data if $data{_error};
-  return (_error => 'アイテムデータではありません。') if ($data{type} // '') ne 'i';
-  my ($item, $message) = selectItemData(\%data, $num // 1);
+  # 番号の指定有無で閲覧権限の扱いが異なるため、取得結果も区別する。
+  my $skipPermission = !defined $num;
+  my $data = $sheetCache->{$dataUrl}{$skipPermission};
+  if(!$data){
+    $data = { importSheetData(
+      $dataUrl,
+      softError => 1,
+      dataDir => $set::lib_type{i}{dataDir},
+      skipPermission => $skipPermission,
+    ) };
+    return %$data if $data->{_error};
+    return (_error => 'アイテムデータではありません。') if ($data->{type} // '') ne 'i';
+    $sheetCache->{$dataUrl}{$skipPermission} = $data;
+  }
+  my ($item, $message) = selectItemData($data, $num // 1);
   return (_error => $message =~ s/\A[0-9]{3}://r) if !$item;
   my $itemUrl = defined($num) ? $url : $base.'?'.join('&', grep { length } ($query // '', 'item=1')).($fragment // '');
   return (%$item, _itemUrl => $itemUrl);
