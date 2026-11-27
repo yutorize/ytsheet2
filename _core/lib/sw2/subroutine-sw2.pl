@@ -928,16 +928,7 @@ sub itemListDisplayCategory {
   foreach my $base (@baseOrder){
     return 'さまざま' if grep { !exists $_->{$base} } @categoriesByItem;
     my @labels = map { join ' ', @{$_->{$base}} } @categoriesByItem;
-    my $commonLabel = commonItemListCategory(@labels);
-    if(!defined $commonLabel){
-      # 基礎カテゴリに続くランクの大小文字をそろえて比較する。
-      my @normalizedLabels = map {
-        my @labelsWithRank = map { $base . uc(substr($_, length($base))) } split ' ', $_;
-        join ' ', deduplicate(@labelsWithRank);
-      } @labels;
-      $commonLabel = commonItemListCategory(@normalizedLabels);
-    }
-    push @display, $commonLabel // $base;
+    push @display, commonItemListCategory(@labels) // $base;
   }
   return join ' ', @display;
 }
