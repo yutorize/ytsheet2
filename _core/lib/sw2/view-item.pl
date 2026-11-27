@@ -117,6 +117,7 @@ sub renderItemData {
 
   return {
     NAME         => renderCharacterName($pc{"${prefix}itemName"}, $pc{"${prefix}itemNameRuby"}),
+    TOC_NAME     => CGI::unescapeHTML(removeTags removeRuby ($pc{"${prefix}itemName"} // '')),
     PRICE        => $price,
     ICON         => unescapeTags($icon),
     CATEGORY     => $category,
