@@ -85,8 +85,14 @@
           <TMPL_LOOP Tags><a class="tag" href="./?type=i&tag=<TMPL_VAR URL>"><TMPL_VAR TEXT></a></TMPL_LOOP>
         </div>
       </TMPL_IF>
+
+      <TMPL_IF multipleItems><ul class="item-list">
+        <TMPL_LOOP Items><li><a href="#item-<TMPL_VAR NUMBER>"><TMPL_VAR ICON><TMPL_VAR NAME></a>
+        </TMPL_LOOP>
+      </ul></TMPL_IF>
+
       <TMPL_LOOP Items>
-        <section class="item-data">
+        <section class="item-data" id="item-<TMPL_VAR NUMBER>">
           <div class="item-name"<TMPL_UNLESS multipleItems> id="area-name"</TMPL_UNLESS>>
             <TMPL_IF multipleItems>
               <h2><TMPL_VAR ICON><TMPL_VAR NAME></h2>
@@ -152,7 +158,7 @@
             </dl>
           </div>
           <TMPL_IF SINGLE_VIEW_URL>
-            <p class="right"><a href="<TMPL_VAR SINGLE_VIEW_URL ESCAPE=HTML>">このアイテムを単体で表示</a></p>
+            <p class="right small"><a href="<TMPL_VAR SINGLE_VIEW_URL ESCAPE=HTML>">このアイテムを単体で表示</a></p>
           </TMPL_IF>
         </section>
       </TMPL_LOOP>

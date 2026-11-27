@@ -36,6 +36,12 @@ article, .color-set {
 ---------------------------------------------------------------------------------------------------- */
 article {
   max-width: 800px;
+
+  &:not(:has(.item-page-title)){
+    border-width: 3px 0 0;
+    border-style: solid;
+    border-color: var(--box-outside-border-color);
+  }
 }
 .item-data + .item-data {
   margin-top: 20px;
@@ -58,9 +64,7 @@ article {
   flex-wrap: wrap;
   
   padding: 0px;
-  border-width: 3px 0 0;
-  border-style: solid;
-  border-color: var(--box-outside-border-color);
+  border-width: 0;
   background-image: linear-gradient(to bottom, var(--bg-color), transparent);
   @media print {
     background-image: none;
@@ -87,11 +91,26 @@ article {
   & .price {
     flex-grow: 1;
     padding-right: .5em;
+    align-self: end;
     text-align: right;
     font-size: inherit;
   }
 }
 
+
+/* // Item-List
+---------------------------------------------------------------------------------------------------- */
+.item-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  margin-bottom: 1em;
+  padding: .5em 1em;
+  gap: .5em 1em;
+  border-width: 1px 0;
+  border-style: solid;
+  border-color: var(--box-outside-border-color);
+}
 
 /* // Item
 ---------------------------------------------------------------------------------------------------- */
