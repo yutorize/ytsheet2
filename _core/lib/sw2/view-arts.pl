@@ -306,10 +306,13 @@ $SHEET->param(MagicData => \@magics);
 
 ### 流派アイテム --------------------------------------------------
 my @items;
-my %itemSheetCache;
-foreach my $set_url (split ',',$pc{schoolItemList}){
-  eval { require $set::lib_convert; };
-  my %item = loadItemData($set_url, \%itemSheetCache);
+my @itemReferences;
+if(my @itemUrls = split ',', $pc{schoolItemList}){
+  require $set::lib_convert;
+  @itemReferences = prepareItemReferences(@itemUrls);
+}
+foreach my $reference (@itemReferences){
+  my %item = loadItemData($reference);
   if(exists $item{itemName}){
     $item{price} =~ s/[+＋]/<br>＋/;
     $item{price} = commify($item{price}) if $item{price} =~ /\d{4,}/;
@@ -329,9 +332,10 @@ foreach my $set_url (split ',',$pc{schoolItemList}){
     } );
   }
   else {
+    my $url = $reference->{sourceUrl};
     my $error = ($item{_error} ? qq|<span class="small">$item{_error}</span>| : "");
     push(@items, {
-      NAME => qq|<a href="$set_url" target="_blank" class="failed">データ取得失敗</a>|,
+      NAME => qq|<a href="$url" target="_blank" class="failed">データ取得失敗</a>|,
       SUMMARY => $error,
     });
     next;

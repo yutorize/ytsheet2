@@ -7,38 +7,61 @@ use JSON::PP;
 
 require $set::data_class;
 
-sub loadItemData {
-  my ($url, $sheetCache) = @_;
-  $url = CGI::unescapeHTML($url);
-  $sheetCache //= {};
-  my ($source, $fragment) = split /(?=#)/, $url, 2;
-  my ($base, $query) = split /\?/, $source, 2;
-  my $params = CGI->new($query // '');
-  my $num = $params->param('item');
-  # 同一サーバーと他サーバーの両方で、シート全体から固定番号で選ぶ。
-  my $id = $params->param('id');
-  $params->delete(qw/id item mode/);
-  my $idQuery = defined $id ? CGI->new({ id => $id })->query_string : '';
-  my $dataUrl = $base.'?'.join('&', grep { length } ($idQuery, $params->query_string));
+sub prepareItemReferences {
+  my %sheets;
+  my @references;
+  foreach my $sourceUrl (@_){
+    my $url = CGI::unescapeHTML($sourceUrl);
+    my ($source, $fragment) = split /(?=#)/, $url, 2;
+    my ($base, $query) = split /\?/, $source, 2;
+    my $params = CGI->new($query // '');
+    my $num = $params->param('item');
+    # 同一サーバーと他サーバーの両方で、シート全体から固定番号で選ぶ。
+    my $id = $params->param('id');
+    $params->delete(qw/id item mode/);
+    my $idQuery = defined $id ? CGI->new({ id => $id })->query_string : '';
+    my $dataUrl = $base.'?'.join('&', grep { length } ($idQuery, $params->query_string));
 
-  # 番号の指定有無で閲覧権限の扱いが異なるため、取得結果も区別する。
-  my $skipPermission = !defined $num;
-  my $data = $sheetCache->{$dataUrl}{$skipPermission};
+    # 番号の指定有無で閲覧権限の扱いが異なるため、取得結果も区別する。
+    my $skipPermission = !defined $num;
+    my $sheet = $sheets{$dataUrl}{$skipPermission} //= {
+      url => $dataUrl,
+      skipPermission => $skipPermission,
+      remainingReferences => 0,
+    };
+    $sheet->{remainingReferences}++;
+    my $itemUrl = defined($num) ? $url : $base.'?'.join('&', grep { length } ($query // '', 'item=1')).($fragment // '');
+    push @references, {
+      sourceUrl => $sourceUrl,
+      itemUrl => $itemUrl,
+      number => $num // 1,
+      sheet => $sheet,
+    };
+  }
+  return @references;
+}
+
+sub loadItemData {
+  my ($reference) = @_;
+  my $sheet = $reference->{sheet};
+  # 後続の参照があるあいだだけシート全体を保持する。
+  my $hasLaterReference = --$sheet->{remainingReferences} > 0;
+  my $data = $sheet->{data};
+  delete $sheet->{data} unless $hasLaterReference;
   if(!$data){
     $data = { importSheetData(
-      $dataUrl,
+      $sheet->{url},
       softError => 1,
       dataDir => $set::lib_type{i}{dataDir},
-      skipPermission => $skipPermission,
+      skipPermission => $sheet->{skipPermission},
     ) };
     return %$data if $data->{_error};
     return (_error => 'アイテムデータではありません。') if ($data->{type} // '') ne 'i';
-    $sheetCache->{$dataUrl}{$skipPermission} = $data;
+    $sheet->{data} = $data if $hasLaterReference;
   }
-  my ($item, $message) = selectItemData($data, $num // 1);
+  my ($item, $message) = selectItemData($data, $reference->{number});
   return (_error => $message =~ s/\A[0-9]{3}://r) if !$item;
-  my $itemUrl = defined($num) ? $url : $base.'?'.join('&', grep { length } ($query // '', 'item=1')).($fragment // '');
-  return (%$item, _itemUrl => $itemUrl);
+  return (%$item, _itemUrl => $reference->{itemUrl});
 }
 
 ### キャラクター保管所 --------------------------------------------------

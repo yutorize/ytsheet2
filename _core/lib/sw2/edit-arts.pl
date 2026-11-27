@@ -89,7 +89,6 @@ print renderEditHeaderMenu(
 );
 print qq|<aside class="message">$message</aside>| if $message;
 
-my %itemSheetCache;
 print <<"HTML";
   <section id="section-common">
     @{[ renderProtectBlock() ]}
@@ -216,7 +215,8 @@ print <<"HTML";
                 <th>
               <tbody>
                 @{[ map {
-                  my %item = loadItemData($_, \%itemSheetCache);
+                  my $url = $_->{sourceUrl};
+                  my %item = loadItemData($_);
                   $item{category} =~ s/\s/<hr>/g;
                   <<~"HTML";
                   <tr>
@@ -225,14 +225,14 @@ print <<"HTML";
                       qq|<td><a href="@{[ escapePcData($item{_itemUrl}) ]}" target="_blank">|.unescapeTags($item{itemName})."</a>";
                     }
                     else {
-                      qq|<td><a href="$_" target="_blank" class="failed">データ取得失敗</a>|;
+                      qq|<td><a href="$url" target="_blank" class="failed">データ取得失敗</a>|;
                     }
                   }}
                   <td>@{[ unescapeTags $item{category} ]}
                   <td>@{[ $item{_error} ? escapePcData($item{_error}) : unescapeTags($item{summary}) ]}
-                  <td class='button' onclick="delSchoolItem(this,'$_')">×
+                  <td class='button' onclick="delSchoolItem(this,'$url')">×
                   HTML
-                } split ',',$pc{schoolItemList} ]}
+                } prepareItemReferences(split ',', $pc{schoolItemList}) ]}
           </table>
         </dl>
       </div>
