@@ -67,14 +67,14 @@ if($namePattern || @categoryTerms){
 sub matchItemListSearch {
   my ($row, $namePattern, $categoryTerms) = @_;
   if($namePattern){
-    return 0 unless grep { /$namePattern/ } splitItemListValues($row->{name}, $row->{type});
+    return 0 unless any { /$namePattern/ } splitItemListValues($row->{name}, $row->{type});
   }
   return 1 unless @$categoryTerms;
 
   my @categories = splitItemListValues($row->{category}, $row->{type});
   foreach my $term (@$categoryTerms){
     my ($exclude, $pattern) = @$term;
-    my $matches = grep { /$pattern/ } @categories;
+    my $matches = any { /$pattern/ } @categories;
     return 0 if $exclude ? $matches : !$matches;
   }
   return 1;
