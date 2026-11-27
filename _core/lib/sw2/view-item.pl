@@ -123,10 +123,7 @@ sub renderItemData {
     PRICE        => $price,
     ICON         => unescapeTags($icon),
     CATEGORY     => $category,
-    REPUTATION   => $pc{"${prefix}reputation"},
-    SHAPE        => $pc{"${prefix}shape"},
-    AGE          => $pc{"${prefix}age"},
-    SUMMARY      => $pc{"${prefix}summary"},
+    fieldsToHash($prefix, qw/reputation shape age summary/),
     EFFECTS      => renderItemEffects($pc{"${prefix}effects"}),
     HEAD_EFFECTS => $pc{"head_${prefix}effects"},
     WeaponData   => $pc{forbiddenMode} ? [] : renderItemWeapons($prefix),
@@ -140,20 +137,16 @@ sub renderItemData {
 sub renderItemWeapons {
   my ($prefix) = @_;
   my @weapons;
+  my @fields = qw/Usage Reqd Acc Rate Crit Dmg Note/;
   my $isRanged = $pc{"${prefix}category"} =~ /投擲|ボウ|クロスボウ|ガン/;
   foreach my $num (1 .. $pc{"${prefix}weaponNum"}){
     my $row = "${prefix}weapon$num";
-    next if !existsRow $row,'Usage','Reqd','Acc','Rate','Crit','Dmg','Note';
-    push(@weapons, {
-      USAGE => $pc{"${row}Usage"},
-      REQD  => $pc{"${row}Reqd"},
-      ACC   => $pc{"${row}Acc"} // '―',
-      RATE  => $pc{"${row}Rate"},
-      CRIT  => $pc{"${row}Crit"},
-      DMG   => $pc{"${row}Dmg"} // '―',
-      RANGE => $isRanged ? $pc{"${row}Range"} : undef,
-      NOTE  => $pc{"${row}Note"},
-    });
+    next if !existsRow($row, @fields);
+    my %weapon = fieldsToHash($row, @fields);
+    $weapon{ACC} //= '―';
+    $weapon{DMG} //= '―';
+    $weapon{RANGE} = $isRanged ? $pc{"${row}Range"} : undef;
+    push(@weapons, \%weapon);
   }
   return \@weapons;
 }
@@ -162,16 +155,14 @@ sub renderItemWeapons {
 sub renderItemArmours {
   my ($prefix) = @_;
   my @armours;
+  my @fields = qw/Usage Reqd Eva Def Note/;
   foreach my $num (1 .. $pc{"${prefix}armourNum"}){
     my $row = "${prefix}armour$num";
-    next if !existsRow $row,'Usage','Reqd','Eva','Def','Note';
-    push(@armours, {
-      USAGE => $pc{"${row}Usage"},
-      REQD  => $pc{"${row}Reqd"},
-      EVA   => $pc{"${row}Eva"} // '―',
-      DEF   => $pc{"${row}Def"} // 0,
-      NOTE  => $pc{"${row}Note"},
-    });
+    next if !existsRow($row, @fields);
+    my %armour = fieldsToHash($row, @fields);
+    $armour{EVA} //= '―';
+    $armour{DEF} //= 0;
+    push(@armours, \%armour);
   }
   return \@armours;
 }
