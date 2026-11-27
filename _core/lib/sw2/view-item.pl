@@ -85,25 +85,28 @@ sub maskPcData {
 }
 
 ### アイテムデータ --------------------------------------------------
-my @items = map { renderItemData($_) } $records->prefixes(\%pc);
+my @numbers = $records->order(\%pc);
+my $multipleItems = @numbers > 1;
+my $singleViewQuery;
 
-if(@items > 1){
+if($multipleItems){
   $SHEET->param(multipleItems => 1);
   $SHEET->param(itemPageTitle => renderCharacterName(itemSheetName(\%pc)));
-  
-  my $query = $::in{id} ? 'id='.CGI::escape($::in{id}) : 'url='.CGI::escape($::in{url});
-  $query .= '&log='.CGI::escape($::in{log}) if $::in{log};
-  $query .= '&checkView=1' if $::in{checkView};
-  my @numbers = $records->order(\%pc);
-  foreach my $i (0 .. $#items){
-    $items[$i]{NUMBER} = $numbers[$i];
-    $items[$i]{SINGLE_VIEW_URL} = "?$query&item=$numbers[$i]" if(!$pc{modeDownload});
+
+  if(!$pc{modeDownload}){
+    $singleViewQuery = $::in{id} ? 'id='.CGI::escape($::in{id}) : 'url='.CGI::escape($::in{url});
+    $singleViewQuery .= '&log='.CGI::escape($::in{log}) if $::in{log};
+    $singleViewQuery .= '&checkView=1' if $::in{checkView};
   }
 }
+my @items = map {
+  my $number = $multipleItems ? $numbers[$_] : undef;
+  renderItemData($records->prefix($_ + 1), $number, $singleViewQuery);
+} 0 .. $#numbers;
 $SHEET->param(Items => \@items);
 
 sub renderItemData {
-  my ($prefix) = @_;
+  my ($prefix, $number, $query) = @_;
   my $price = $pc{"${prefix}price"};
   $price = commify($price) if $price =~ /\d{4,}/;
   my $category = $pc{"${prefix}category"} =~ s/((?:\G|>)[^<]*?)[ 　]/$1<hr>/gr;
@@ -128,6 +131,8 @@ sub renderItemData {
     HEAD_EFFECTS => $pc{"head_${prefix}effects"},
     WeaponData   => $pc{forbiddenMode} ? [] : renderItemWeapons($prefix),
     ArmourData   => $pc{forbiddenMode} ? [] : renderItemArmours($prefix),
+    NUMBER       => $number,
+    SINGLE_VIEW_URL => defined($query) ? "?$query&item=$number" : undef,
   };
 }
 
