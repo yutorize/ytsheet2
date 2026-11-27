@@ -241,18 +241,23 @@ sub loginError {
 
 ### データ読み込み --------------------------------------------------
 sub loadSheetData {
+  my @latestKeys = @_;
   my %pc;
   my %latest;
+  my %requestedLatest;
   my $message;
   my $dir =  $set::char_dir;
-  # 最新データ取得（ログ用）
+  # フォームに引き継ぐ項目と、呼び出し元が指定した項目をまとめて読む。
   if($::in{log} || $::in{overwrite}){
-    %latest = getLatestData($dir, $file, 'protect','forbidden','birthTime','mainImage',
-      ( map {
+    my @formKeys = (qw/protect forbidden birthTime mainImage/,
+      map {
         my $s = imageSuffix($_);
         "image$s","imageUpdate$s","imageFit$s","imagePercent$s","imagePositionX$s","imagePositionY$s","imageCopyright$s","imageCopyrightURL$s","imageSpoiler$s",
-      } 1 .. $set::image_maxcount)
+      } 1 .. $set::image_maxcount
     );
+    my %current = getLatestData($dir, $file, @formKeys, @latestKeys);
+    @latest{@formKeys} = @current{@formKeys};
+    @requestedLatest{@latestKeys} = @current{@latestKeys};
   }
   # コンバート用
   my $convertedName;
@@ -329,7 +334,7 @@ sub loadSheetData {
     $message = $attentionOfCapacity .($message?'<hr>':''). $message
   }
   ##
-  return (\%pc, $file, $message)
+  return (\%pc, $file, $message, \%requestedLatest);
 }
 
 ### トークン生成 --------------------------------------------------

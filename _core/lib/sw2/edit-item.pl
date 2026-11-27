@@ -13,9 +13,11 @@ my $LOGIN_ID = $::LOGIN_ID;
 #require $set::data_item;
 
 ### データ読み込み ###################################################################################
-my ($data, $file, $message) = loadSheetData();
-our %pc = %{ $data };
 my $records = itemRecordList();
+my ($data, undef, $message, $latest) = loadSheetData(
+  $::mode eq 'edit' ? ($records->lastNumberKey(), $records->countKey()) : (),
+);
+our %pc = %{ $data };
 if(my $formError = $records->normalizeForm(\%pc)){ error($formError); }
 
 our $isNewSheet = isNewSheet();
@@ -32,10 +34,6 @@ if($::mode eq 'edit' || ($::mode =~ /^(?:convert|copy)$/ && $pc{ver})){
 
 %pc = applyCustomizedInitialValues(\%pc, 'i') if $::mode eq 'blanksheet';
 
-my %latest;
-if($::mode eq 'edit' && ($::in{log} || $::in{overwrite})){
-  %latest = getLatestData($set::char_dir, $file, $records->lastNumberKey(), $records->countKey());
-}
 my $multipleItems = $records->count(\%pc) > 1;
 my $sheetName = itemSheetName(\%pc);
 $message = applyMessageName($message, $sheetName);
@@ -45,7 +43,7 @@ setDefaultColors(\%pc);
 
 ### 改行処理 --------------------------------------------------
 convertEscapedBrToNewlines(\%pc, 'description', map { $_.'effects' } $records->prefixes(\%pc));
-my @itemOrder = $records->prepareForm(\%pc, \%latest);
+my @itemOrder = $records->prepareForm(\%pc, $latest);
 
 ### フォーム表示 #####################################################################################
 print renderEditPageStart(
