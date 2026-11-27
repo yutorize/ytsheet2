@@ -151,6 +151,9 @@
               </TMPL_IF>
             </dl>
           </div>
+          <TMPL_IF SINGLE_VIEW_URL>
+            <p class="right"><a href="<TMPL_VAR SINGLE_VIEW_URL ESCAPE=HTML>">このアイテムを単体で表示</a></p>
+          </TMPL_IF>
         </section>
       </TMPL_LOOP>
       

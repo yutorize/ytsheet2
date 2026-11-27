@@ -86,11 +86,21 @@ sub maskPcData {
 
 ### アイテムデータ --------------------------------------------------
 my @items = map { renderItemData($_) } $records->prefixes(\%pc);
-$SHEET->param(Items => \@items);
 if(@items > 1){
   $SHEET->param(multipleItems => 1);
   $SHEET->param(itemPageTitle => renderCharacterName(itemSheetName(\%pc)));
+
+  if(!$pc{modeDownload}){
+    my $query = $::in{id} ? 'id='.CGI::escape($::in{id}) : 'url='.CGI::escape($::in{url});
+    $query .= '&log='.CGI::escape($::in{log}) if $::in{log};
+    $query .= '&checkView=1' if $::in{checkView};
+    my @numbers = $records->order(\%pc);
+    foreach my $i (0 .. $#items){
+      $items[$i]{SINGLE_VIEW_URL} = "?$query&item=$numbers[$i]";
+    }
+  }
 }
+$SHEET->param(Items => \@items);
 
 sub renderItemData {
   my ($prefix) = @_;
