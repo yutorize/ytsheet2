@@ -30,10 +30,7 @@ function formCheck(){
 function setupItemForm(item) {
   checkCategory(item.querySelector('[list="list-category"]'));
   item.querySelectorAll('.input-arms-data').forEach(table => {
-    const name = table.dataset.arms;
-    setSortable(name, `#${table.id} tbody`, 'tr', undefined, () => {
-      form[`${name}Num`].dispatchEvent(new Event('change', { bubbles: true }));
-    });
+    setSortable(table.dataset.arms, `#${table.id} tbody`, 'tr');
   });
   item.querySelector('.item-form-name input').addEventListener('input', setItemName);
 }
@@ -63,8 +60,5 @@ function addArms(name) {
 }
 
 function delArms(name) {
-  const numKey = `${name}Num`;
-  if(delRow(numKey, `#${name}-table tbody tr:last-of-type`)){
-    form[numKey].dispatchEvent(new Event('change', { bubbles: true }));
-  }
+  delRow(`${name}Num`, `#${name}-table tbody tr:last-of-type`);
 }
