@@ -90,7 +90,6 @@ my @items = map { renderItemData($_) } $records->prefixes(\%pc);
 if(@items > 1){
   $SHEET->param(multipleItems => 1);
   $SHEET->param(itemPageTitle => renderCharacterName(itemSheetName(\%pc)));
-
   
   my $query = $::in{id} ? 'id='.CGI::escape($::in{id}) : 'url='.CGI::escape($::in{url});
   $query .= '&log='.CGI::escape($::in{log}) if $::in{log};
@@ -117,8 +116,7 @@ sub renderItemData {
 
   return {
     NAME         => renderCharacterName($pc{"${prefix}itemName"}, $pc{"${prefix}itemNameRuby"}),
-    # 目次のリンク本文用に、既存の文字参照を保つ。
-    TOC_NAME_HTML => escapeThanSign(removeTags removeRuby ($pc{"${prefix}itemName"} // '')),
+    TOC_NAME     => (removeTags removeRuby ($pc{"${prefix}itemName"} // '')),
     PRICE        => $price,
     ICON         => unescapeTags($icon),
     CATEGORY     => $category,

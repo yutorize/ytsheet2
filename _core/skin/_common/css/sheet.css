@@ -104,7 +104,10 @@ article, .color-set {
 
 html {
   overflow-x: hidden;
-  scroll-behavior: smooth;
+
+  @media (prefers-reduced-motion: no-preference) {
+    scroll-behavior: smooth;
+  }
   scroll-padding-top: 3rem;
 
   @media screen and (width <= 735px){
