@@ -15,10 +15,14 @@ sub dataCalc {
   $pc{itemNum} = $itemNum;
   delete $pc{pageTitle} if $itemNum == 1;
 
+  #### カテゴリのランク正規化 --------------------------------------------------
   my @prefixes = $records->prefixes(\%pc);
   foreach my $prefix (@prefixes){
     $pc{"${prefix}category"} =~ tr/ａ-ｚＡ-Ｚ/a-zA-Z/;
+    $pc{"${prefix}category"} =~ s/(?<!\S)(〈[^〈〉\s]+〉)([BA]|SS?)(?=\s|\z)/$1.uc($2)/gie;
   }
+
+  #### 改行を<br>に変換 --------------------------------------------------
   convertNewlinesToBrTag(\%pc, 'description', map { "${_}effects" } @prefixes);
   
   #### 保存処理でなければここまで --------------------------------------------------
