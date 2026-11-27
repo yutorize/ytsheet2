@@ -906,9 +906,31 @@ sub commonItemListCategory {
   return join ' ', split /\s+/, $first;
 }
 sub itemListDisplayCategory {
-  return commonItemListCategory(@_)
-    // commonItemListCategory(map { s/(?<!\S)(〈[^〈〉\s]+〉)(?:[BA]|SS?)(?=\s|\z)/$1/gir } @_)
-    // 'さまざま';
+  return $_[0] // 'さまざま' if @_ < 2;
+
+  my $common = commonItemListCategory(@_);
+  return join ' ', deduplicate(split ' ', $common) if defined $common;
+
+  my @baseOrder;
+  my @categoriesByItem;
+  foreach my $categories (@_){
+    my %labelsByCategory;
+    foreach my $label (deduplicate(split ' ', $categories)){
+      my $base = $label =~ s/\A(〈[^〈〉\s]+〉)(?:[BA]|SS?)\z/$1/ir;
+      push @baseOrder, $base if !@categoriesByItem && !exists $labelsByCategory{$base};
+      push @{$labelsByCategory{$base}}, $label;
+    }
+    push @categoriesByItem, \%labelsByCategory;
+  }
+
+  return 'さまざま' if grep { keys(%$_) != @baseOrder } @categoriesByItem;
+  my @display;
+  foreach my $base (@baseOrder){
+    return 'さまざま' if grep { !exists $_->{$base} } @categoriesByItem;
+    my @labels = map { join ' ', @{$_->{$base}} } @categoriesByItem;
+    push @display, commonItemListCategory(@labels) // $base;
+  }
+  return join ' ', @display;
 }
 sub upgradeItemData {
   my %pc = %{$_[0]};
