@@ -181,14 +181,5 @@ async function downloadAsFullSet(){
 
   // ダウンロード
   zip.generateAsync({type:"blob"})
-    .then(function(content) {
-      const url = URL.createObjectURL(content);
-      const a = document.createElement("a");
-      document.body.appendChild(a);
-      a.download = name+'.zip';
-      a.href = url;
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
-    });
+    .then(content => downloadFile(name+'.zip', URL.createObjectURL(content)));
 }
