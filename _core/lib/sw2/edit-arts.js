@@ -299,7 +299,6 @@ function normalizeSchoolItemUrl(value) {
   const url = new URL(value, document.baseURI);
   if(url.protocol !== 'https:' && url.protocol !== 'http:'){ return null; }
   url.search = url.search.replaceAll(';', '&');
-  if(!url.searchParams.has('item')){ url.searchParams.set('item', '1'); }
   url.searchParams.delete('mode');
   return url;
 }

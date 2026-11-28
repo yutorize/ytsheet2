@@ -12,29 +12,25 @@ sub prepareItemReferences {
   my @references;
   foreach my $sourceUrl (@_){
     my $url = CGI::unescapeHTML($sourceUrl);
-    my ($source, $fragment) = split /(?=#)/, $url, 2;
+    my ($source) = split /#/, $url, 2;
     my ($base, $query) = split /\?/, $source, 2;
     my $params = CGI->new($query // '');
     my $num = $params->param('item');
-    # 同一サーバーと他サーバーの両方で、シート全体から固定番号で選ぶ。
+    # 固定番号を指定した場合も、選択前にシート全体を取得する。
     my $id = $params->param('id');
     $params->delete(qw/id item mode/);
     my $idQuery = defined $id ? CGI->new({ id => $id })->query_string : '';
     my $dataUrl = $base.'?'.join('&', grep { length } ($idQuery, $params->query_string));
 
-    # 番号の指定有無で閲覧権限の扱いが異なるため、取得結果も区別する。
-    my $skipPermission = !defined $num;
-    my $sheet = $sheets{$dataUrl}{$skipPermission} //= {
+    my $sheet = $sheets{$dataUrl} //= {
       url => $dataUrl,
-      skipPermission => $skipPermission,
       remainingReferences => 0,
     };
     $sheet->{remainingReferences}++;
-    my $itemUrl = defined($num) ? $url : $base.'?'.join('&', grep { length } ($query // '', 'item=1')).($fragment // '');
     push @references, {
       sourceUrl => $sourceUrl,
-      itemUrl => $itemUrl,
-      number => $num // 1,
+      itemUrl => $url,
+      number => $num,
       sheet => $sheet,
     };
   }
@@ -53,12 +49,12 @@ sub loadItemData {
       $sheet->{url},
       softError => 1,
       dataDir => $set::lib_type{i}{dataDir},
-      skipPermission => $sheet->{skipPermission},
     ) };
     return %$data if $data->{_error};
     return (_error => 'アイテムデータではありません。') if ($data->{type} // '') ne 'i';
     $sheet->{data} = $data if $hasLaterReference;
   }
+  return (%$data, _itemUrl => $reference->{itemUrl}) unless defined $reference->{number};
   my ($item, $message) = selectItemData($data, $reference->{number});
   return (_error => $message =~ s/\A[0-9]{3}://r) if !$item;
   return (%$item, _itemUrl => $reference->{itemUrl});
