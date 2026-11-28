@@ -1001,6 +1001,37 @@ sub selectMagicData {
   return ($magic, $message);
 }
 
+sub magicListSubcategories {
+  my ($data) = @_;
+  my $class = recordListText($data->{magicClass});
+  my $minor = $data->{magicMinor} ? '／小魔法' : '';
+  my @levels = sort { $a cmp $b } deduplicate(grep { length } map {
+    recordListText($data->{"${_}magicLevel"})
+  } $magicRecords->prefixes($data));
+
+  my (@bounds, @displayLevels);
+  foreach my $level (@levels){
+    my $digits = $level =~ tr/０-９/0-9/r;
+    if($digits =~ /\A([0-9]+)(?:\s*[-－～〜]\s*([0-9]+))?\z/){
+      push @bounds, 0 + $1;
+      push @bounds, 0 + $2 if defined $2;
+    }
+    else { push @displayLevels, $level; }
+  }
+  if(@bounds){
+    my ($min, $max) = (min(@bounds), max(@bounds));
+    unshift @displayLevels, $min == $max ? $min : "$min～$max";
+  }
+
+  my $display = join('／', $class, @displayLevels).$minor;
+  my $forbidden = $data->{forbidden} // '';
+  # 個別データを秘匿するシートは一覧の表示値を検索対象とする。
+  my @subcategories = $forbidden eq '' || $forbidden eq 'battle'
+    ? map { "$class／$_$minor" } (@levels ? @levels : (''))
+    : ($display);
+  return (escapeThanSign($display), joinRecordListValues(@subcategories));
+}
+
 sub upgradeArtsData {
   my %pc = %{$_[0]};
   my $ver = $pc{ver};

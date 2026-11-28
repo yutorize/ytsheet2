@@ -78,18 +78,25 @@ sub dataCalc {
     $NL{$_} =~ s/[|｜]([^|｜]+?)《.+?》/$1/g;
     $NL{$_} = removeTags unescapeTags $NL{$_} =~ s/^\s|\s$//gr;
   }
+  my $magicSubcategories;
+  if($pc{category} eq 'magic' && $magicNum > 1){
+    ($NL{sub}, $magicSubcategories) = magicListSubcategories(\%pc);
+  }
   $NL{name}    = substr($NL{name}   , 0, 108).'..' if length($NL{name}   ) > 108;
   $NL{author}  = substr($NL{author} , 0,  25).'..' if length($NL{author} ) >  25;
-  $NL{sub}     = substr($NL{sub}    , 0,  40).'..' if length($NL{sub}    ) >  40;
+  $NL{sub}     = substr($NL{sub}    , 0,  40).'..' if !defined($magicSubcategories) && length($NL{sub}) > 40;
   $NL{summary} = substr($NL{summary}, 0,  35).'..' if length($NL{summary}) >  35;
   $::updatedLine =
     "$pc{id}<>$::file<>"
     . "$pc{birthTime}<>$::now<>$NL{name}<>$NL{author}<>"
     . "$pc{category}<>$NL{sub}<>$NL{summary}<>"
     . setUpdatatLineImage(\%pc)."<> $pc{tags} <>$pc{hide}<>";
-  if($pc{category} eq 'magic' && $magicNum > 1 && ($pc{forbidden} eq '' || $pc{forbidden} eq 'battle')){
-    my @names = map { recordListText($pc{"${_}magicName"}) } @magicPrefixes;
-    $::updatedLine .= joinRecordListValues(deduplicate(@names)).'<>';
+  if(defined $magicSubcategories){
+    my @names;
+    if($pc{forbidden} eq '' || $pc{forbidden} eq 'battle'){
+      @names = map { recordListText($pc{"${_}magicName"}) } @magicPrefixes;
+    }
+    $::updatedLine .= joinRecordListValues(deduplicate(@names))."<>$magicSubcategories<>";
   }
 
   return %pc;
