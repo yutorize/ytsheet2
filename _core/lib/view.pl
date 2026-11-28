@@ -179,6 +179,9 @@ sub setupViewBase {
   ## バックアップ
   if($::in{id}){
     ($selectedLogName, my $list) = getLogList($set::char_dir, $main::file);
+    if($ARGS{logListSub} && !$pc{forbiddenMode} && !$pc{modeDownload}){
+      $ARGS{logListSub}->($list, $set::char_dir, $main::file);
+    }
     $SHEET->param(LogList => $list);
     $SHEET->param(selectedLogName => $selectedLogName);
     if($pc{yourAuthor} || $pc{protect} eq 'password'){
@@ -609,7 +612,7 @@ sub getLogList {
       $query    = "&log=$date";
       $text     = ($name ? "<b>$name</b>":'') .epocToDate($epoc);
     }
-    push(@logs, { "SELECTED"  => ($selected ? 'selected' : ''), "URL"  => $query, "DATE" => $text });
+    push(@logs, { "SELECTED"  => ($selected ? 'selected' : ''), "URL"  => $query, "DATE" => $text, "LOG_ID" => $date });
     if($selected){ $selectedname = $name }
   }
   return $selectedname, \@logs;

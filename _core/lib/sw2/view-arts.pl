@@ -15,6 +15,7 @@ my $magicNumber;
   unescapeSkipKeys  => [qw/schoolItemList/],
   maskSkipKeys      => ['category'],
   nameSub           => \&setArtsName,
+  logListSub        => \&setMagicLogLinks,
   updateSub => \&upgradeArtsData,
 );
 our %pc = %{ $pcRef };
@@ -52,6 +53,42 @@ sub setArtsName {
     $pc->{titleName} = $pc->{skillName};
   }
   $pc->{encodedNameLetter} = $pc->{artsName};
+}
+
+sub setMagicLogLinks {
+  my ($links, $dir, $file) = @_;
+  return unless defined $magicNumber;
+
+  my %otherLinks;
+  my $query = "&magic=$magicNumber";
+  foreach my $link (@$links){
+    if($link->{SELECTED}){ $link->{URL} .= $query; }
+    else { $otherLinks{$link->{LOG_ID}} = $link; }
+  }
+
+  if(my $latest = delete $otherLinks{latest}){
+    $latest->{URL} = $query if snapshotHasMagic(readSheetFile($dir, $file, 'data.cgi'));
+  }
+  return unless %otherLinks;
+
+  # ログ全体を一度だけ読み、各リンクのデータに固定番号があるか確認する。
+  my (undef, @logs) = split /^=([^=\n]+)=[^\n]*\n/m, (readSheetFile($dir, $file, 'logs.cgi') // '');
+  while(@logs){
+    my $logId = shift @logs;
+    my $data = shift @logs;
+    my $link = delete $otherLinks{$logId} or next;
+    $link->{URL} .= $query if snapshotHasMagic($data);
+  }
+}
+
+sub snapshotHasMagic {
+  my ($data) = @_;
+  my %snapshot;
+  foreach my $line (split /\n/, ($data // '')){
+    my ($key, $value) = split /<>/, $line, 2;
+    $snapshot{$key} = $value if defined($value) && $value ne '';
+  }
+  return ($snapshot{category} // '') eq 'magic' && any { $_ eq $magicNumber } $magicRecords->order(\%snapshot);
 }
 
 ### 固有処理 #########################################################################################
