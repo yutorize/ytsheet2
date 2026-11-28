@@ -1,11 +1,17 @@
 "use strict";
 const gameSystem = 'sw2';
+const magicForms = document.getElementById('magic-forms');
+const sheetMagicClassSelect = document.querySelector('#magic-class select');
 
 window.onload = function() {
+  setupMagicDatalists();
+  if(form.magicDataCustom.value === '1'){ restoreMagicClass(sheetMagicClassSelect); }
+  new RecordListEditor(document.getElementById('magic-records'), {
+    setupRecord: checkMagicClass,
+    onChange: updateMagicPageTitle,
+  });
   checkCategory();
   setSchoolItemList();
-  setupMagicDatalists();
-  checkMagicClass();
   document.querySelectorAll('#school-magic-list .input-data').forEach(row => checkMagicClass(row));
   setupRangeField();
 
@@ -20,10 +26,14 @@ function formCheck(){
     form.category.focus();
     return false;
   }
-  else if(form.category.value === 'magic' && form.magicName.value === ''){
-    alert('名称を入力してください。');
-    form.magicName.focus();
-    return false;
+  else if(form.category.value === 'magic'){
+    const names = Array.from(magicForms.children, row => form.elements[row.dataset.recordName]);
+    const emptyName = names.find(input => input.value.trim() === '');
+    if(emptyName){
+      alert('名称を入力してください。');
+      emptyName.focus();
+      return false;
+    }
   }
   else if(form.category.value === 'god' && form.godName.value === ''){
     alert('名称を入力してください。');
@@ -51,7 +61,9 @@ function setName(){
   const category = form.category.value;
   let name;
   if(category == 'magic'){
-    name = '【'+ruby(form.magicName.value)+'】';
+    const pageTitle = !form.magicPageTitle.disabled && form.magicPageTitle.value.trim();
+    const firstName = form.elements[magicForms.firstElementChild.dataset.recordName].value;
+    name = pageTitle ? ruby(pageTitle) : '【'+ruby(firstName)+'】';
   }
   else if(category == 'god'){
     name = (form.godAka.value ? `“${ruby(form.godAka.value)}”` : '') + ruby(form.godName.value);
@@ -68,6 +80,12 @@ function setName(){
     div.innerHTML = output;
   })
 
+}
+
+function updateMagicPageTitle(count){
+  document.getElementById('magic-page-title').hidden = count <= 1;
+  form.magicPageTitle.disabled = count <= 1;
+  if(form.category.value === 'magic'){ setName(); }
 }
 
 // カテゴリ ----------------------------------------
@@ -108,8 +126,21 @@ const magicDataStates = new WeakMap();
 function magicDataFieldId(label){
   return Object.hasOwn(ARTS_MAGIC_DATA.aliases,label) ? ARTS_MAGIC_DATA.aliases[label] : undefined;
 }
+function magicClassSelectFor(row){
+  return row.dataset.recordName ? sheetMagicClassSelect : row.querySelector('dl.class select');
+}
 function magicDataPrefix(row){
+  if(row.dataset.recordName){ return row.dataset.recordName.replace(/Name$/, ''); }
   return row.querySelector('dl.class select').name.replace(/Class(?:Select)?$/, '');
+}
+function restoreMagicClass(select){
+  select.nextElementSibling.value = select.value;
+  select.value = 'free';
+  selectInputCheck(select);
+}
+function updateMagicClass(){
+  form.magicDataCustom.value = sheetMagicClassSelect.value === 'free' ? '1' : '0';
+  for(const row of magicForms.children){ checkMagicClass(row); }
 }
 function magicDataRows(row){
   return [...row.querySelectorAll('.magic-data-row')].map(item => ({
@@ -165,9 +196,9 @@ function renumberMagicData(row){
   row.querySelector(`[name="${prefix}DataNum"]`).value = rows.length;
 }
 function refreshMagicDataHints(row){
-  const select = row.querySelector('dl.class select');
+  const select = magicClassSelectFor(row);
   const custom = select.value === 'free';
-  const magic = custom ? row.querySelector('dl.class input').value : select.value;
+  const magic = custom ? select.nextElementSibling.value : select.value;
   row.querySelectorAll('.magic-data-row').forEach(item=>{
     const label = item.querySelector('dt input');
     const value = item.querySelector('dd input');
@@ -187,23 +218,20 @@ function refreshMagicDataHints(row){
   });
   row.querySelector('.magic-data-controls').hidden = !custom;
 }
-function checkMagicClass(row = document.querySelector('#data-magic .input-data')){
-  const select = row.querySelector('dl.class select');
+function checkMagicClass(row){
+  const select = magicClassSelectFor(row);
   const prefix = magicDataPrefix(row);
   const field = suffix=>row.querySelector(`[name="${prefix}${suffix}"]`);
+  const customField = field('DataCustom');
   let state = magicDataStates.get(row);
   if(!state){
     // 自由記入で保存した系統は、再編集時にも自由記入モードに戻す。
-    if(field('DataCustom').value === '1'){
-      row.querySelector('dl.class input').value = select.value;
-      select.value = 'free';
-      selectInputCheck(select);
-    }
+    if(customField?.value === '1'){ restoreMagicClass(select); }
     const list = row.querySelector('.magic-data-list');
     list.id = idNumSet('magic-data-list');
     list.querySelectorAll('.magic-data-row').forEach(item=>{ item.id = idNumSet('magic-data-row'); });
-    // 外側の秘伝魔法が並べ替えられても、現在の接頭辞を保持して項目番号だけを振り直す。
-    setSortable('(?:magic|schoolMagic[0-9]+)Data',`#${list.id}`,'.magic-data-row');
+    // 現在の接頭辞を保持して、魔法内の項目番号だけを振り直す。
+    setSortable('(?:magic(?:[0-9]+_magic)?|schoolMagic[0-9]+)Data',`#${list.id}`,'.magic-data-row');
     const sortable = Sortable.get(list);
     // 秘伝魔法全体の .handle と区別し、内側の項目だけを並べ替える。
     sortable.option('handle','.magic-data-handle');
@@ -216,8 +244,8 @@ function checkMagicClass(row = document.querySelector('#data-magic .input-data')
   rememberMagicData(row,state);
   if(state.mode === 'free'){ state.freeRows = magicDataRows(row); }
   const custom = select.value === 'free';
-  const magic = custom ? row.querySelector('dl.class input').value : select.value;
-  field('DataCustom').value = custom ? '1' : '0';
+  const magic = custom ? select.nextElementSibling.value : select.value;
+  if(customField){ customField.value = custom ? '1' : '0'; }
   state.sortable.option('disabled',!custom);
   const passive = field('ActionTypePassive').checked;
   const signature = `${magic}|${passive}`;
@@ -240,7 +268,7 @@ function checkMagicClass(row = document.querySelector('#data-magic .input-data')
         if(['終律','賦術','相域','操気'].includes(magic)){
           if(value === 'MP'){ value = ''; }
         }
-        else if((prefix === 'magic' || magic !== '') && value === ''){ value = 'MP'; }
+        else if((row.dataset.recordName || magic !== '') && value === ''){ value = 'MP'; }
       }
       createMagicDataRow(row,label,value);
     });
@@ -259,7 +287,7 @@ function checkMagicClass(row = document.querySelector('#data-magic .input-data')
   else { level.removeAttribute('list'); }
 }
 function addMagicData(row){
-  if(row.querySelector('dl.class select').value !== 'free'){ return; }
+  if(magicClassSelectFor(row).value !== 'free'){ return; }
   createMagicDataRow(row);
   renumberMagicData(row);
   refreshMagicDataHints(row);
@@ -268,7 +296,7 @@ function addMagicData(row){
 }
 function removeMagicData(button){
   const row = button.closest('.input-data');
-  if(row.querySelector('dl.class select').value !== 'free'){ return; }
+  if(magicClassSelectFor(row).value !== 'free'){ return; }
   const item = button.closest('.magic-data-row');
   if([...item.querySelectorAll('input')].some(input=>input.value !== '') && !confirm(delConfirmText)){ return; }
   item.remove();

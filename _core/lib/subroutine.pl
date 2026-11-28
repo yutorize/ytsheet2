@@ -282,9 +282,10 @@ sub readSheetFileLines {
   return split(/(?<=\n)/, $content);
 }
 sub readSheetRecordLines {
-  my ($dir, $file, $datatype, $log) = @_;
+  my ($dir, $file, $datatype, $log, %opt) = @_;
   my @source = readSheetFileLines($dir, $file, "${datatype}.cgi");
   if(!@source){
+    return () if $opt{softError};
     checkDeletedSheet();
     error('404:シートが見つかりませんでした。');
   }
@@ -302,7 +303,7 @@ sub readSheetRecordLines {
     if (!$hit) { next; }
     push(@lines, $_);
   }
-  if(!$hit){ error("404:過去ログ（${log}）が見つかりません。"); }
+  if(!$hit && !$opt{softError}){ error("404:過去ログ（${log}）が見つかりません。"); }
   return @lines;
 }
 sub checkDeletedSheet {
@@ -1398,23 +1399,30 @@ sub importSheetData {
   }
   ## 同じゆとシートⅡ
   my $self = CGI->new()->url;
-  if($setUrl =~ m"^$self\?id=(.+?)(?:$|&)"){
-    my $id = $1;
+  my ($base, $query) = split /\?/, ($setUrl =~ s/#.*\z//r), 2;
+  my $params = CGI->new($query // '');
+  my $magicNumber = defined &selectMagicData ? scalar $params->param('magic') : undef;
+  my $sameMagicInstall = defined($magicNumber) &&
+    ($base =~ s{/index\.cgi\z}{/}r) eq ($self =~ s{/index\.cgi\z}{/}r);
+  my $id = $params->param('id');
+  if(defined($id) && $id ne '' && ($base eq $self || $sameMagicInstall)){
     my ($file, $type, $author) = findSheet($id);
     unless($file){
       return $returnError->('404:コンバート元のゆとシートⅡのデータが見つかりませんでした。URLに誤りがあるか、データが削除されている可能性があります。');
     }
-    my %pc;
     my $dataDir = $OPT{dataDir} || $type ? $set::lib_type{$type}{dataDir} : $set::char_dir;
     my @lines = readSheetFileLines($dataDir, $file, 'data.cgi');
     unless(@lines){
       return $returnError->('500:コンバート元のゆとシートⅡのデータが開けませんでした。');
     }
-    foreach (@lines){
-      chomp;
-      my ($key, $value) = split(/<>/, $_, 2);
-      $pc{$key} = $value;
-    }
+    my $parseData = sub {
+      return map {
+        chomp;
+        my ($key, $value) = split /<>/, $_, 2;
+        ($key, $value);
+      } @_;
+    };
+    my %pc = $parseData->(@lines);
 
     unless($OPT{skipPermission}){
       my $LOGIN_ID = check;
@@ -1424,6 +1432,26 @@ sub importSheetData {
         ($author && ($author eq $LOGIN_ID || $set::masterid eq $LOGIN_ID))
       ){
         return $returnError->('403:閲覧・編集に制限がかかっており、コンバートできないデータです。');
+      }
+    }
+    if($type eq 'a' && defined $magicNumber){
+      if(my $log = $params->param('log') || $params->param('backup')){
+        my @logLines = readSheetRecordLines($dataDir, $file, 'logs', $log, softError => 1);
+        return $returnError->('404:指定された過去ログが見つかりませんでした。') unless @logLines;
+
+        my @latestKeys = ('protect', 'forbidden', 'hide', map {
+          my $s = imageSuffix($_);
+          "image$s", "imageUpdate$s", "imageFit$s", "imagePercent$s", "imagePositionX$s", "imagePositionY$s",
+          "imageCopyright$s", "imageCopyrightURL$s", "imageSpoiler$s",
+        } 1 .. $set::image_maxcount);
+        my @latestValues = @pc{@latestKeys};
+        %pc = $parseData->(@logLines);
+        @pc{@latestKeys} = @latestValues;
+      }
+      if($pc{category} eq 'magic'){
+        my ($magic, $message) = selectMagicData(\%pc, $magicNumber);
+        return $returnError->($message) unless $magic;
+        %pc = %$magic;
       }
     }
     my $mainSuffix = imageSuffix($pc{mainImage});

@@ -89,6 +89,16 @@ for my $system ('sw2','sw2.0'){
     is_deeply(data::arts::preset('操気',1),['Cost','Premise'],'常時操気の項目を限定');
     is(data::arts::layout('呪歌'),'song','呪歌の既存レイアウトを使用');
     is(data::arts::layout('神聖魔法 (小魔法)'),'', '小魔法表記を系統名から除去');
+
+    my $multiple = {
+      magicClass => '操気', magicDataCustom => 0, magicDataNum => 0,
+      magic2_magicActionTypePassive => 1, magic2_magicCost => 'HP3',
+    };
+    my $second = data::arts::rows($multiple, 'magic2_magic', 'magic');
+    is_deeply($second, [ { Label => '消費', Value => 'HP3' }, { Label => '前提', Value => '' } ],
+      '2件目は共通系統と自分の動作区分から項目を構成する');
+    is_deeply(data::arts::rows($multiple, 'magic'), [], '2件目の項目を生成しても1件目の内容を維持する');
+    ok(!exists $multiple->{magic2_magicDataCustom}, '自由記入の設定はページの共通欄だけに保持する');
   };
 }
 done_testing;

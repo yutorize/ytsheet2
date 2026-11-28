@@ -179,6 +179,9 @@ sub setupViewBase {
   ## バックアップ
   if($::in{id}){
     ($selectedLogName, my $list) = getLogList($set::char_dir, $main::file);
+    if($ARGS{logListSub} && !$pc{forbiddenMode} && !$pc{modeDownload}){
+      $ARGS{logListSub}->($list, $set::char_dir, $main::file);
+    }
     $SHEET->param(LogList => $list);
     $SHEET->param(selectedLogName => $selectedLogName);
     if($pc{yourAuthor} || $pc{protect} eq 'password'){
@@ -221,6 +224,28 @@ sub normalizeViewTags {
     if($OPT{forbiddenMode} && $pc->{forbiddenMode}){
       $pc->{$key} = noiseTextTag $pc->{$key};
     }
+  }
+}
+### 複数レコードを持つシートの閲覧URL --------------------------------------------------
+sub recordSheetURL {
+  my $query = $::in{id} ? 'id='.CGI::escape($::in{id}) : 'url='.CGI::escape($::in{url});
+  $query .= '&log='.CGI::escape($::in{log}) if $::in{log};
+  $query .= '&checkView=1' if $::in{checkView};
+  return '?'.$query;
+}
+sub setRecordViewParams {
+  my ($sheet, $key, $number, $name) = @_;
+  return unless defined $number;
+
+  my $query = "&$key=$number";
+  $query .= '&log='.uri_escape_utf8($::in{log}) if $::in{log};
+  $sheet->param(recordViewQuery => $query, ogUrl => $sheet->param('ogUrl').$query);
+  if($::in{id}){
+    my $label = CGI::unescapeHTML(removeTags removeRuby ($name // ''));
+    # リンク書式の区切りと区別する。
+    $label =~ s/&/&#38;/g;
+    $label =~ s/>/&#62;/g;
+    $sheet->param(recordLinkTag => "[[$label>?id=$::in{id}$query]]");
   }
 }
 ### パートナーデータ共通処理 --------------------------------------------
@@ -524,7 +549,12 @@ sub setSheetMenu {
   push(@menu, { TEXT => '', ICON => 'arrow_top_left', TYPE => "href", VALUE => './'.($type ? "?type=$type" : '') });
   push(@menu, @_);
   if($::in{url}){ # コンバートビュー
-    push(@menu, { TEXT => 'コンバート', ICON => 'input', TYPE => "href", VALUE => "./?mode=convert&url=$::in{url}" });
+    my $sourceURL = $::in{url};
+    if(my $magicNumber = $template->param('magicNumber')){
+      $sourceURL =~ s/#.*\z//;
+      $sourceURL .= "&magic=$magicNumber" unless $sourceURL =~ /[?&;]magic=/;
+    }
+    push(@menu, { TEXT => 'コンバート', ICON => 'input', TYPE => "href", VALUE => './?mode=convert&url='.CGI::escape($sourceURL) });
   }
   else {
     if($::in{log}){ # 過去ログ
@@ -582,7 +612,7 @@ sub getLogList {
       $query    = "&log=$date";
       $text     = ($name ? "<b>$name</b>":'') .epocToDate($epoc);
     }
-    push(@logs, { "SELECTED"  => ($selected ? 'selected' : ''), "URL"  => $query, "DATE" => $text });
+    push(@logs, { "SELECTED"  => ($selected ? 'selected' : ''), "URL"  => $query, "DATE" => $text, "LOG_ID" => $date });
     if($selected){ $selectedname = $name }
   }
   return $selectedname, \@logs;

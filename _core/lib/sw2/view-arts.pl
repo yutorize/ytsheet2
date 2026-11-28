@@ -8,22 +8,37 @@ use open ":utf8";
 require $::core_dir.'/lib/sw2/data-arts.pl';
 
 ### データ／テンプレート読込 #########################################################################
+my $magicRecords = magicRecordList();
+my $magicNumber;
 (my $pcRef, my $SHEET) = setupViewBase(
   unescapeLinesRe   => qr/(?:Effect|Description|Note|QnA)$/,
   unescapeSkipKeys  => [qw/schoolItemList/],
   maskSkipKeys      => ['category'],
   nameSub           => \&setArtsName,
+  logListSub        => \&setMagicLogLinks,
   updateSub => \&upgradeArtsData,
 );
 our %pc = %{ $pcRef };
-$SHEET->param(modeZero => $::SW2_0 ? 1 : 0);
+$SHEET->param(modeZero => $::SW2_0 ? 1 : 0, magicNumber => $magicNumber);
+setRecordViewParams($SHEET, $magicRecords->key, $magicNumber, $pc{magicName});
 
 sub setArtsName {
   my ($pc) = @_;
   if($pc->{category} eq 'magic'){
-    if($pc->{magicMinor}){ $pc->{magicClass} .= ' (小魔法)' }
-    $pc->{artsName} = '【'.($pc->{magicClass} eq '神聖魔法' ? (extractDivineMark $pc->{magicName})[1] : $pc->{magicName}).'】';
-    $pc->{titleName} = $pc->{magicName};
+    # 全体が非公開の場合は、番号の有効・無効を表示しない。
+    if(defined $::in{magic} && !($pc->{forbiddenMode} && $pc->{forbidden} eq 'all')){
+      my ($magic, $message) = $magicRecords->select($pc, $::in{magic});
+      error($message) if !$magic;
+      %$pc = %$magic;
+      $magicNumber = $::in{magic};
+    }
+    $pc->{titleName} = $magicRecords->sheetName($pc);
+    $pc->{artsName} = $pc->{titleName};
+    if($magicRecords->count($pc) == 1){
+      my $name = $pc->{magicName};
+      (undef, $name) = extractDivineMark($name) if $pc->{magicClass} eq '神聖魔法' && !$pc->{magicMinor};
+      $pc->{artsName} = "【$name】";
+    }
   }
   elsif($pc->{category} eq 'god'){
     $pc->{artsName} = ($pc->{godAka} ? "“$pc->{godAka}”" : "").$pc->{godName};
@@ -40,6 +55,42 @@ sub setArtsName {
   $pc->{encodedNameLetter} = $pc->{artsName};
 }
 
+sub setMagicLogLinks {
+  my ($links, $dir, $file) = @_;
+  return unless defined $magicNumber;
+
+  my %otherLinks;
+  my $query = "&magic=$magicNumber";
+  foreach my $link (@$links){
+    if($link->{SELECTED}){ $link->{URL} .= $query; }
+    else { $otherLinks{$link->{LOG_ID}} = $link; }
+  }
+
+  if(my $latest = delete $otherLinks{latest}){
+    $latest->{URL} = $query if snapshotHasMagic(readSheetFile($dir, $file, 'data.cgi'));
+  }
+  return unless %otherLinks;
+
+  # ログ全体を一度だけ読み、各リンクのデータに固定番号があるか確認する。
+  my (undef, @logs) = split /^=([^=\n]+)=[^\n]*\n/m, (readSheetFile($dir, $file, 'logs.cgi') // '');
+  while(@logs){
+    my $logId = shift @logs;
+    my $data = shift @logs;
+    my $link = delete $otherLinks{$logId} or next;
+    $link->{URL} .= $query if snapshotHasMagic($data);
+  }
+}
+
+sub snapshotHasMagic {
+  my ($data) = @_;
+  my %snapshot;
+  foreach my $line (split /\n/, ($data // '')){
+    my ($key, $value) = split /<>/, $line, 2;
+    $snapshot{$key} = $value if defined($value) && $value ne '';
+  }
+  return ($snapshot{category} // '') eq 'magic' && any { $_ eq $magicNumber } $magicRecords->order(\%snapshot);
+}
+
 ### 固有処理 #########################################################################################
 ### 閲覧禁止データのマスク --------------------------------------------------
 sub maskPcData {
@@ -49,37 +100,40 @@ sub maskPcData {
   }
   ## 魔法
   unless($forbidden eq 'battle'){
-    $pc->{magicName} = noiseText(6,14);
+    $pc->{magicPageTitle} = '';
     $pc->{magicDescription} = '';
+    delete $pc->{head_magicDescription};
     foreach(1..int(rand 3)+3){
       $pc->{magicDescription} .= noiseText(18,50)."<br>";
     }
   }
 
-  $pc->{magicClass}    = noiseText(3,14);
+  $pc->{magicClass} = noiseText(3,14);
 
-  $pc->{magicLevel}    = noiseText(2);
-  $pc->{magicCost}     = noiseText(3,4);
-  $pc->{magicTarget}   = noiseText(2,14);
-  $pc->{magicRange}    = noiseText(2,4);
-  $pc->{magicForm}     = noiseText(2,4);
-  $pc->{magicDuration} = noiseText(2,9);
-  $pc->{magicResist}   = noiseText(2);
-  $pc->{magicElement}  = noiseText(1,6);
-  $pc->{magicSummary}  = noiseText(8,25);
-  $pc->{magicActionTypePassive} = 0;
-  $pc->{magicActionTypeMajor} = 0;
-  $pc->{magicActionTypeMinor} = 0;
-  $pc->{magicActionTypeSetup} = 0;
-  $pc->{magicEffect} = '';
-  foreach(1..int(rand 3)+2){
-    $pc->{magicEffect} .= noiseText(18,40)."<br>";
-  }
-  $pc->{magicMagisphere}  = noiseText(1,3);
+  foreach my $recordPrefix ($magicRecords->prefixes($pc)){
+    my $prefix = $recordPrefix.'magic';
+    $pc->{"${prefix}Name"}     = noiseText(6,14) if $forbidden ne 'battle';
+    $pc->{"${prefix}Level"}    = noiseText(2);
+    $pc->{"${prefix}Cost"}     = noiseText(3,4);
+    $pc->{"${prefix}Target"}   = noiseText(2,14);
+    $pc->{"${prefix}Range"}    = noiseText(2,4);
+    $pc->{"${prefix}Form"}     = noiseText(2,4);
+    $pc->{"${prefix}Duration"} = noiseText(2,9);
+    $pc->{"${prefix}Resist"}   = noiseText(2);
+    $pc->{"${prefix}Element"}  = noiseText(1,6);
+    $pc->{"${prefix}Summary"}  = noiseText(8,25);
+    $pc->{"${prefix}ActionType$_"} = 0 foreach qw/Passive Major Minor Setup/;
+    $pc->{"${prefix}Effect"} = '';
+    foreach(1..int(rand 3)+2){
+      $pc->{"${prefix}Effect"} .= noiseText(18,40)."<br>";
+    }
+    delete $pc->{"head_${prefix}Effect"};
+    $pc->{"${prefix}Magisphere"} = noiseText(1,3);
 
-  foreach my $num (1..($pc->{magicDataNum} || 0)){
-    $pc->{"magicData${num}Label"} = noiseText(2,8);
-    $pc->{"magicData${num}Value"} = noiseText(3,14);
+    foreach my $num (1..($pc->{"${prefix}DataNum"} || 0)){
+      $pc->{"${prefix}Data${num}Label"} = noiseText(2,8);
+      $pc->{"${prefix}Data${num}Value"} = noiseText(3,14);
+    }
   }
 
   ## 神格
@@ -180,18 +234,42 @@ elsif($pc{category} eq 'skill'){
 }
 
 ### 魔法 --------------------------------------------------
-my $magicView = magicViewData('magic');
-$SHEET->param("magic$_" => $magicView->{$_}) foreach keys %$magicView;
+if($pc{category} eq 'magic'){
+  my @numbers = $magicRecords->order(\%pc);
+  my $multiple = @numbers > 1;
+  my $sheetURL = $pc{modeDownload} ? undef : recordSheetURL();
+  if($multiple){
+    $SHEET->param(multipleMagics => 1, magicPageName => renderCharacterName($magicRecords->sheetName(\%pc)));
+  }
+  if(defined $magicNumber && defined $sheetURL){
+    $SHEET->param(magicSheetURL => $sheetURL);
+  }
+  my @magics;
+  foreach my $index (0 .. $#numbers){
+    my $prefix = $magicRecords->prefix($index + 1).'magic';
+    my $magic = magicViewData($prefix, 'magic');
+    if($multiple){
+      $magic->{RecordNumber} = $numbers[$index];
+      $magic->{TocName} = removeTags removeRuby $magic->{Name};
+      $magic->{SingleViewURL} = "$sheetURL&magic=$numbers[$index]" if defined $sheetURL;
+    }
+    $magic->{HeadEffect} = $pc{"head_${prefix}Effect"};
+    push @magics, $magic;
+  }
+  $SHEET->param(Magics => \@magics);
+}
 
 # 接頭辞を外した表示データを返し、通常魔法と秘伝魔法で共有する。
 sub magicViewData {
-  my ($prefix) = @_;
+  my ($prefix, $classPrefix) = @_;
   my %magic = map { substr($_, length $prefix) => $pc{$_} }
     grep { /^\Q$prefix\E[A-Z]/ } keys %pc;
   my $icon = '';
-  my $isSchool = $prefix ne 'magic';
-  my $class = data::arts::baseClass($magic{Class});
-  if($magic{DataCustom} || $class eq '騎芸' || $class eq '操気'){
+  my $isSchool = !defined $classPrefix;
+  $classPrefix //= $prefix;
+  my $className = $pc{"${classPrefix}Class"};
+  my $class = data::arts::baseClass($className);
+  if($pc{"${classPrefix}DataCustom"} || $class eq '騎芸' || $class eq '操気'){
     if($magic{ActionTypePassive}){ $icon .= '<i class="s-icon passive"><span class="raw">[常]</span></i>' }
     if($magic{ActionTypeMajor}  ){ $icon .= '<i class="s-icon major"><span class="raw">[主]</span></i>' }
   }
@@ -199,7 +277,7 @@ sub magicViewData {
   if($magic{ActionTypeSetup}  ){ $icon .= ($isSchool ? '<i class="s-icon setup">△</i>' : '<i class="s-icon setup"><span class="raw">[準]</span></i>') }
 
   my $magicName = $magic{Name};
-  (my $divineMark, $magicName) = extractDivineMark $magicName if $isSchool || $magic{Class} eq '神聖魔法';
+  (my $divineMark, $magicName) = extractDivineMark $magicName if $isSchool || ($className eq '神聖魔法' && !$pc{magicMinor});
   my $alias;
   if($magicName =~ s/\s?[－―‐–—─\-](.+?)[－―‐–—─\-]$//){ $alias = "－$1－" }
 
@@ -211,7 +289,7 @@ sub magicViewData {
   $magic{Duration} = textMagic($magic{Duration});
 
   $magic{ClassEn} = data::arts::layout($class);
-  my ($rows,$extras,$notes) = magicDataViewRows($prefix,$class);
+  my ($rows,$extras,$notes) = magicDataViewRows($prefix,$class,$classPrefix);
   $magic{DataRows} = $rows;
   $magic{ExtraDataRows} = $extras;
   $magic{NameNotes} = $notes;
@@ -231,13 +309,14 @@ sub textSongPoint {
 }
 # 項目名は固定の対応表でクラスへ変換し、独自名をCSSに直接埋め込まない。
 sub magicDataViewRows {
-  my ($prefix,$class) = @_;
+  my ($prefix,$class,$classPrefix) = @_;
   my $layout = data::arts::layout($class);
   my $ids = $layout ? data::arts::preset($class,0) : data::arts::schema()->{default};
   my %allowed = map { data::arts::fieldDefinition($_)->{class} => 1 } @$ids;
   $allowed{element} = 1 if !$layout || $layout eq 'psychokinesis';
-  my $items = data::arts::rows(\%pc,$prefix);
-  if($pc{"${prefix}DataCustom"}){
+  my $items = data::arts::rows(\%pc,$prefix,$classPrefix);
+  my $custom = $pc{"${classPrefix}DataCustom"};
+  if($custom){
     my @group = qw/Target Range Duration Resist/;
     my %present = map { (data::arts::fieldId($_->{Label}) // '') => 1 } @$items;
     # 自由記入で4項目が揃わない場合は、通常の配置を使わず追加欄にまとめる。
@@ -251,12 +330,12 @@ sub magicDataViewRows {
     next if $label eq '' && $value eq '';
     my $id = data::arts::fieldId($label);
     my $css = $id ? data::arts::fieldDefinition($id)->{class} : 'custom';
-    if($id && $id eq 'Magisphere' && ($prefix eq 'magic' || $class ne '') && !$seen{sphere}++){
+    if($id && $id eq 'Magisphere' && ($classPrefix eq 'magic' || $class ne '') && !$seen{sphere}++){
       $notes = "$label:$value";
       next;
     }
     if($id && $id eq 'Element'){
-      next if !$pc{"${prefix}DataCustom"} && $value eq '' && $class !~ /^(?:呪歌|終律|相域)$/;
+      next if !$custom && $value eq '' && $class !~ /^(?:呪歌|終律|相域)$/;
       $value = '―' if $value eq '';
     }
     if($id && ($id eq 'Target' || $id eq 'Range' || $id eq 'Duration')){ $value = textMagic($value); }
@@ -423,7 +502,8 @@ if ($pc{category} eq 'skill') {
   my $sub; my $category;
   if($pc{category} eq 'magic'){
     $category = '魔法';
-    $sub = "／$pc{magicClass}／$pc{magicLevel}";
+    $sub = "／$pc{magicClass}";
+    $sub .= "／$pc{magicLevel}" if $magicRecords->count(\%pc) == 1;
     $sub .= '／小魔法' if $pc{magicMinor};
   }
   if($pc{category} eq 'god'){

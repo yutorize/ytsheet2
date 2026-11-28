@@ -35,7 +35,7 @@
       <aside id="loglist" class="float-box">
         <h2>過去ログ（バックアップ）</h2>
         <ul>
-          <TMPL_LOOP LogList><li class="<TMPL_VAR SELECTED>"><a href="?id=<TMPL_VAR id><TMPL_VAR URL>"><TMPL_VAR DATE></a></TMPL_LOOP>
+          <TMPL_LOOP LogList><li class="<TMPL_VAR SELECTED>"><a href="?id=<TMPL_VAR id><TMPL_VAR URL ESCAPE=HTML>"><TMPL_VAR DATE></a></TMPL_LOOP>
         </ul>
         <TMPL_IF viewLogNaming><details id="log-naming">
           <summary>閲覧中のログ<TMPL_IF selectedLogName>の名前をつけなおす<TMPL_ELSE>に名前をつける</TMPL_IF></summary>
@@ -58,7 +58,7 @@
           <li id="downloadlist-json"><a onclick="downloadAsJson();">JSON 形式</a>
           <li id="downloadlist-html"><a onclick="downloadAsHtml();">HTML 形式</a>
           <li id="downloadlist-zipped"><a onclick="downloadAsFullSet();">ZIP 形式（上記全部入り）</a>
-          <li class="link-tag"><span>ゆとシート内リンク用タグ<br><input type="text" onclick="this.select()" value="[<TMPL_VAR rawName>#<TMPL_VAR id>]"></span>
+          <li class="link-tag"><span>ゆとシート内リンク用タグ<br><input type="text" onclick="this.select()" value="<TMPL_IF recordLinkTag><TMPL_VAR recordLinkTag ESCAPE=HTML><TMPL_ELSE>[<TMPL_VAR rawName>#<TMPL_VAR id>]</TMPL_IF>"></span>
         </ul>
       </aside>
     </TMPL_UNLESS>
@@ -75,7 +75,7 @@
   <main>
     <TMPL_IF forbidden><aside class="information attention">
       閲覧が制限されているデータです。<br>
-      <TMPL_IF yourAuthor>あなた以外には一部または全てのデータが伏せられます。(<a href="./?id=<TMPL_VAR id>&checkView=1">⇒確認</a>)</TMPL_IF>
+      <TMPL_IF yourAuthor>あなた以外には一部または全てのデータが伏せられます。(<a href="./?id=<TMPL_VAR id>&checkView=1<TMPL_VAR recordViewQuery ESCAPE=HTML>">⇒確認</a>)</TMPL_IF>
     </aside></TMPL_IF>
     
     <TMPL_IF logId><aside class="information log">
@@ -92,21 +92,33 @@
       <!-- 魔法 -->
       <TMPL_IF categoryMagic>
       <section id="magic">
+        <TMPL_IF multipleMagics>
+          <div id="area-name" class="color-set"><h1><TMPL_VAR magicPageName></h1></div>
+        </TMPL_IF>
         <div id="tags">
           <TMPL_LOOP Tags><a class="tag" href="./?type=a&tag=<TMPL_VAR URL>"><TMPL_VAR TEXT></a></TMPL_LOOP>
         </div>
-        <h2><TMPL_VAR magicClass DEFAULT="未分類"></h2>
-        <div class="data-magic <TMPL_VAR magicClassEn>">
-          <dl class="name color-set"><dt><TMPL_VAR magicLevel><dd><div><TMPL_VAR magicIcon><TMPL_VAR magicDivineMark>【<TMPL_VAR magicName>】</div><TMPL_IF magicAlias><span class="alias"><TMPL_VAR magicAlias></span></TMPL_IF><small class="sphere"><TMPL_VAR magicNameNotes></small></dl>
-          <TMPL_LOOP magicDataRows>
-          <dl class="magic-data-item <TMPL_VAR CssClass>"><dt><TMPL_VAR Label><dd><TMPL_VAR Value></dl>
-          </TMPL_LOOP>
-          <TMPL_IF magicExtraDataRows><div class="magic-extra-data">
-            <TMPL_LOOP magicExtraDataRows><dl class="magic-data-item <TMPL_VAR CssClass>"><dt><TMPL_VAR Label><dd><TMPL_VAR Value></dl></TMPL_LOOP>
-          </div></TMPL_IF>
-          <dl class="summary "><dt>概要      <dd><TMPL_VAR magicSummary></dl>
-          <dl class="effect  "><dt><TMPL_IF head_magicEffect><TMPL_VAR head_magicEffect><TMPL_ELSE>効果</TMPL_IF><dd class="box"><p><TMPL_VAR magicEffect></p></dl>
-        </div>
+        <TMPL_IF magicSheetURL><p class="small"><a href="<TMPL_VAR magicSheetURL ESCAPE=HTML>">シート全体を表示</a></p></TMPL_IF>
+        <TMPL_IF multipleMagics><ul class="magic-list">
+          <TMPL_LOOP Magics><li><a href="#magic-<TMPL_VAR RecordNumber>"><TMPL_VAR Icon><TMPL_VAR DivineMark><TMPL_VAR TocName></a></li></TMPL_LOOP>
+        </ul></TMPL_IF>
+        <h2><TMPL_VAR magicClass DEFAULT="未分類"><TMPL_IF magicMinor> (小魔法)</TMPL_IF></h2>
+        <TMPL_LOOP Magics>
+          <div class="magic-entry"<TMPL_IF RecordNumber> id="magic-<TMPL_VAR RecordNumber>"</TMPL_IF>>
+            <div class="data-magic <TMPL_VAR ClassEn>">
+              <dl class="name color-set"><dt><TMPL_VAR Level><dd><div><TMPL_VAR Icon><TMPL_VAR DivineMark>【<TMPL_VAR Name>】</div><TMPL_IF Alias><span class="alias"><TMPL_VAR Alias></span></TMPL_IF><small class="sphere"><TMPL_VAR NameNotes></small></dl>
+              <TMPL_LOOP DataRows>
+                <dl class="magic-data-item <TMPL_VAR CssClass>"><dt><TMPL_VAR Label><dd><TMPL_VAR Value></dl>
+              </TMPL_LOOP>
+              <TMPL_IF ExtraDataRows><div class="magic-extra-data">
+                <TMPL_LOOP ExtraDataRows><dl class="magic-data-item <TMPL_VAR CssClass>"><dt><TMPL_VAR Label><dd><TMPL_VAR Value></dl></TMPL_LOOP>
+              </div></TMPL_IF>
+              <dl class="summary"><dt>概要<dd><TMPL_VAR Summary></dl>
+              <dl class="effect"><dt><TMPL_IF HeadEffect><TMPL_VAR HeadEffect><TMPL_ELSE>効果</TMPL_IF><dd class="box"><p><TMPL_VAR Effect></p></dl>
+            </div>
+            <TMPL_IF SingleViewURL><p class="right small"><a href="<TMPL_VAR SingleViewURL ESCAPE=HTML>">この魔法を単体で表示</a></p></TMPL_IF>
+          </div>
+        </TMPL_LOOP>
       </section>
       <TMPL_IF magicDescription><section class="box description">
         <h2><TMPL_IF head_magicDescription><TMPL_VAR head_magicDescription><TMPL_ELSE>由来・逸話など</TMPL_IF></h2>

@@ -4,7 +4,7 @@ use utf8;
 package data::record_list;
 
 # key は保存キーの接頭辞、label は画面に表示する呼び名。
-# nameField は名称欄、fields はレコードに属する保存キーを指定する。
+# nameField は名称欄、titleField は複数レコード用のタイトル欄、fields はレコードの保存キーを指定する。
 sub new {
   my ($class, %options) = @_;
   my $key = $options{key};
@@ -30,6 +30,15 @@ sub count {
   my $count = $data->{$self->{countKey}};
   return 1 if !defined($count) || $count !~ /\A[1-9][0-9]*\z/ || $count > keys(%$data);
   return $count;
+}
+
+sub sheetName {
+  my ($self, $data) = @_;
+  if(defined $self->{titleField} && $self->count($data) > 1){
+    my $title = $data->{$self->{titleField}} // '';
+    return $title if $title =~ /\S/;
+  }
+  return $data->{$self->{nameField}};
 }
 
 sub prefix {
@@ -132,6 +141,7 @@ sub select {
 
   my %record = %$data;
   delete @record{$self->{orderKey}, $self->{lastNumberKey}};
+  delete $record{$self->{titleField}} if defined $self->{titleField};
   $record{$self->{countKey}} = 1;
   $self->_remapFields(\%record, { $position => 1 });
   return (\%record, undef);

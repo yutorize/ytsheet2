@@ -856,6 +856,7 @@ my $itemRecords = data::record_list->new(
   key => 'item',
   label => 'アイテム',
   nameField => 'itemName',
+  titleField => 'pageTitle',
   fields => qr/\A(?:
     itemName(?:Ruby)? | price | reputation | shape | category | age | summary | effects
     | magic | icon(?:Magic|Local|School[AT]?)
@@ -865,38 +866,37 @@ my $itemRecords = data::record_list->new(
 
 sub itemRecordList { return $itemRecords; }
 
-sub selectItemData {
-  my ($item, $message) = $itemRecords->select(@_);
-  delete $item->{pageTitle} if $item;
-  return ($item, $message);
-}
-
-sub itemSheetName {
-  my ($pc) = @_;
-  my $title = $pc->{pageTitle} // '';
-  return $title if $itemRecords->count($pc) > 1 && $title =~ /\S/;
-  return $pc->{itemName};
-}
-my $itemListSeparator = '␟';
+sub selectItemData { return $itemRecords->select(@_); }
+sub itemSheetName { return $itemRecords->sheetName(@_); }
+my $recordListSeparator = '␟';
 # 一覧の種別欄で、従来の単一値と区切り・エスケープ形式を区別する
 use constant ITEM_LIST_VALUES_FLAG => '[item-values]';
-sub joinItemListValues {
-  return join $itemListSeparator, map {
+sub recordListText {
+  my $text = shift // '';
+  $text =~ s/[|｜]([^|｜]+?)《.+?》/$1/g;
+  return trim(removeTags(unescapeTags($text)));
+}
+sub joinRecordListValues {
+  return join $recordListSeparator, map {
     my $value = escapeThanSign($_);
     $value =~ s/\\/\\\\/g;
-    $value =~ s/\Q$itemListSeparator\E/\\u241F/g;
+    $value =~ s/\Q$recordListSeparator\E/\\u241F/g;
     $value;
   } @_;
+}
+sub splitRecordListValues {
+  my $field = shift // '';
+  my @values = split /\Q$recordListSeparator\E/, $field, -1;
+  foreach (@values){
+    s/\\(\\|u241F)/$1 eq 'u241F' ? $recordListSeparator : '\\'/ge;
+  }
+  return @values;
 }
 sub splitItemListValues {
   my ($field, $type) = @_;
   $field //= '';
   return ($field) if $field eq '' || index($type // '', ITEM_LIST_VALUES_FLAG) < 0;
-  my @values = split /\Q$itemListSeparator\E/, $field, -1;
-  foreach (@values){
-    s/\\(\\|u241F)/$1 eq 'u241F' ? $itemListSeparator : '\\'/ge;
-  }
-  return @values;
+  return splitRecordListValues($field);
 }
 sub splitItemListCategoryLabels {
   return map { [deduplicate(split ' ', $_)] } @_;
@@ -981,6 +981,57 @@ sub upgradeItemData {
   $pc{ver} = $main::ver;
   return %pc;
 }
+### 魔法シート --------------------------------------------------
+my $magicRecords = data::record_list->new(
+  key => 'magic',
+  label => '魔法',
+  nameField => 'magicName',
+  titleField => 'magicPageTitle',
+  fields => qr/\Amagic(?:
+    Name | Level | Summary | Effect | ActionType(?:Passive|Major|Minor|Setup)
+    | Data(?:Num|[0-9]+(?:Label|Value))
+  )\z/x,
+);
+
+sub magicRecordList { return $magicRecords; }
+
+sub selectMagicData {
+  my ($magic, $message) = $magicRecords->select(@_);
+  $magic->{artsName} = $magic->{magicName} if $magic;
+  return ($magic, $message);
+}
+
+sub magicListSubcategories {
+  my ($data) = @_;
+  my $class = recordListText($data->{magicClass});
+  my $minor = $data->{magicMinor} ? '／小魔法' : '';
+  my @levels = sort { $a cmp $b } deduplicate(grep { length } map {
+    recordListText($data->{"${_}magicLevel"})
+  } $magicRecords->prefixes($data));
+
+  my (@bounds, @displayLevels);
+  foreach my $level (@levels){
+    my $digits = $level =~ tr/０-９/0-9/r;
+    if($digits =~ /\A([0-9]+)(?:\s*[-－～〜]\s*([0-9]+))?\z/){
+      push @bounds, 0 + $1;
+      push @bounds, 0 + $2 if defined $2;
+    }
+    else { push @displayLevels, $level; }
+  }
+  if(@bounds){
+    my ($min, $max) = (min(@bounds), max(@bounds));
+    unshift @displayLevels, $min == $max ? $min : "$min～$max";
+  }
+
+  my $display = join('／', $class, @displayLevels).$minor;
+  my $forbidden = $data->{forbidden} // '';
+  # 個別データを秘匿するシートは一覧の表示値を検索対象とする。
+  my @subcategories = $forbidden eq '' || $forbidden eq 'battle'
+    ? map { "$class／$_$minor" } (@levels ? @levels : (''))
+    : ($display);
+  return (escapeThanSign($display), joinRecordListValues(@subcategories));
+}
+
 sub upgradeArtsData {
   my %pc = %{$_[0]};
   my $ver = $pc{ver};

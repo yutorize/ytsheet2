@@ -102,7 +102,7 @@ sub classOptions {
 }
 
 sub legacyValue {
-  my ($pc,$prefix,$id) = @_;
+  my ($pc,$prefix,$id,$class) = @_;
   my $value = $pc->{"$prefix$id"} // '';
   if($id eq 'Range'){
     my $form = $pc->{"${prefix}Form"} // '';
@@ -113,7 +113,7 @@ sub legacyValue {
     return $value || join('、', map { $_->[1] } grep { $pc->{"${prefix}SongPet".$_->[0]} }
       ['Bird','小鳥'], ['Frog','蛙'], ['Bug','虫']);
   }
-  if($id eq 'Type' && baseClass($pc->{"${prefix}Class"}) eq '騎芸'){
+  if($id eq 'Type' && baseClass($class) eq '騎芸'){
     return $value || join('、', map { $_->[1] } grep { $pc->{"${prefix}MountType".$_->[0]} }
       ['Animal','動物'], ['Cryptid','幻獣'], ['Machine','魔動機']);
   }
@@ -122,20 +122,22 @@ sub legacyValue {
 }
 
 sub upgradePrefix {
-  my ($pc,$prefix) = @_;
-  my $class = $pc->{"${prefix}Class"} // '';
-  if(!exists $pc->{"${prefix}DataCustom"}){
+  my ($pc,$prefix,$classPrefix) = @_;
+  $classPrefix //= $prefix;
+  my $class = $pc->{"${classPrefix}Class"} // '';
+  my $customKey = "${classPrefix}DataCustom";
+  if(!exists $pc->{$customKey}){
     my %known = map { $_ => 1 } classOptions();
-    $pc->{"${prefix}DataCustom"} = ($class ne '' && !$known{baseClass($class)}) ? 1 : 0;
+    $pc->{$customKey} = ($class ne '' && !$known{baseClass($class)}) ? 1 : 0;
   }
   # 0行の自由記入データも、移行済みとして扱う。
   return if exists $pc->{"${prefix}DataNum"};
   my $ids = preset($class,$pc->{"${prefix}ActionTypePassive"});
   my $num = 0;
   foreach my $id (@$ids){
-    my $value = legacyValue($pc,$prefix,$id);
+    my $value = legacyValue($pc,$prefix,$id,$class);
     # 旧画面で非表示だった空の属性は、自由記入の項目として新設しない。
-    next if $id eq 'Element' && $pc->{"${prefix}DataCustom"} && $value eq ''
+    next if $id eq 'Element' && $pc->{$customKey} && $value eq ''
       && baseClass($class) !~ /^(?:呪歌|終律|相域)$/;
     $num++;
     $pc->{"${prefix}Data${num}Label"} = label($id,$class);
@@ -144,8 +146,8 @@ sub upgradePrefix {
   $pc->{"${prefix}DataNum"} = $num;
 }
 sub rows {
-  my ($pc,$prefix) = @_;
-  upgradePrefix($pc,$prefix);
+  my ($pc,$prefix,$classPrefix) = @_;
+  upgradePrefix($pc,$prefix,$classPrefix);
   return [map { +{ Label => $pc->{"${prefix}Data${_}Label"} // '', Value => $pc->{"${prefix}Data${_}Value"} // '' } }
     1..($pc->{"${prefix}DataNum"} || 0)];
 }

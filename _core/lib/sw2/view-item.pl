@@ -33,26 +33,11 @@ my $itemNumber;
 );
 our %pc = %{ $pcRef };
 
-my $itemViewQuery = '';
-my $itemLinkTag = '';
-if(defined $itemNumber){
-  $itemViewQuery = '&item='.$itemNumber;
-  $itemViewQuery .= '&log='.uri_escape_utf8($::in{log}) if $::in{log};
-  if($::in{id}){
-    my $label = CGI::unescapeHTML(removeTags removeRuby ($pc{itemName} // ''));
-    # アイテム名の > をリンク書式の区切りと区別する。
-    $label =~ s/&/&#38;/g;
-    $label =~ s/>/&#62;/g;
-    $itemLinkTag = "[[$label>?id=$::in{id}$itemViewQuery]]";
-  }
-}
 $SHEET->param(
   modeZero => $::SW2_0 ? 1 : 0,
   itemNumber => $itemNumber,
-  itemViewQuery => $itemViewQuery,
-  itemLinkTag => $itemLinkTag,
 );
-$SHEET->param(ogUrl => $SHEET->param('ogUrl').$itemViewQuery) if $itemViewQuery;
+setRecordViewParams($SHEET, $records->key, $itemNumber, $pc{itemName});
 
 ### 固有処理 #########################################################################################
 ### 閲覧禁止データのマスク --------------------------------------------------
@@ -93,11 +78,7 @@ if($multipleItems){
   $SHEET->param(multipleItems => 1);
   $SHEET->param(itemPageTitle => renderCharacterName(itemSheetName(\%pc)));
 
-  if(!$pc{modeDownload}){
-    $singleViewQuery = $::in{id} ? 'id='.CGI::escape($::in{id}) : 'url='.CGI::escape($::in{url});
-    $singleViewQuery .= '&log='.CGI::escape($::in{log}) if $::in{log};
-    $singleViewQuery .= '&checkView=1' if $::in{checkView};
-  }
+  $singleViewQuery = recordSheetURL() if !$pc{modeDownload};
 }
 my @items = map {
   my $number = $multipleItems ? $numbers[$_] : undef;
@@ -129,7 +110,7 @@ sub renderItemData {
     WeaponData   => $pc{forbiddenMode} ? [] : renderItemWeapons($prefix),
     ArmourData   => $pc{forbiddenMode} ? [] : renderItemArmours($prefix),
     NUMBER       => $number,
-    SINGLE_VIEW_URL => defined($query) ? "?$query&item=$number" : undef,
+    SINGLE_VIEW_URL => defined($query) ? "$query&item=$number" : undef,
   };
 }
 
