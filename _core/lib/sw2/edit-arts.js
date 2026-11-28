@@ -294,32 +294,60 @@ async function setSchoolItemList(){
     schoolItems = Array.from(new Set(form.schoolItemList.value.split(',')));
   }
 }
+function normalizeSchoolItemUrl(value) {
+  if(!URL.canParse(value, document.baseURI)){ return null; }
+  const url = new URL(value, document.baseURI);
+  if(url.protocol !== 'https:' && url.protocol !== 'http:'){ return null; }
+  url.search = url.search.replaceAll(';', '&');
+  if(!url.searchParams.has('item')){ url.searchParams.set('item', '1'); }
+  url.searchParams.delete('mode');
+  return url;
+}
+
 async function addSchoolItem(){
   const urlForm = document.getElementById('schoolItemUrl');
-  const url = urlForm.value;
-  if(!url){ return; }
-  if(!schoolItems.includes(url)){
-    const data = await getYtsheetJSON(url);
-    if(data){
-      if(data.itemName == null){ alert('アイテムデータではありません。'); return; }
-      let tr = document.createElement('tr');
-      tr.setAttribute('class','item-data');
-      tr.innerHTML = `
-        <td><a href="${url}" target="_blank">${ruby(data.itemName||'')}</a></td>
-        <td>${data?.category.replace(/\s+/g, '<hr>') ?? ''}</td>
-        <td>${data.summary ||''}</td>
-        <td class="button" onclick="delSchoolItem(this,'${url}')">×</td>
-      `;
-      document.querySelector("#school-item-list tbody").appendChild(tr);
-      schoolItems.push(url);
-      form.schoolItemList.value = schoolItems.join(',');
-      urlForm.value = "";
+  const value = urlForm.value.trim();
+  if(!value){ return; }
+  const url = normalizeSchoolItemUrl(value);
+  if(!url){ alert('アイテムシートのURLを確認してください。'); return; }
+  const href = url.href;
+  if(schoolItems.some(item => normalizeSchoolItemUrl(item)?.href === href)){
+    alert('そのデータは追加済みです');
+    urlForm.value = '';
+    return;
+  }
+
+  let data;
+  try {
+    url.hash = '';
+    url.searchParams.set('mode', 'json');
+    const response = await fetch(url);
+    data = await response.json();
+    if(!response.ok || data?.result !== 'OK'){
+      throw new Error(data?.message || response.statusText);
     }
   }
-  else {
-    alert('そのデータは追加済みです');
-    urlForm.value = "";
+  catch(error) {
+    alert(`アイテムデータを取得できませんでした。\n${error.message}`);
+    return;
   }
+  if(data.type !== 'i' || data.itemName == null){ alert('アイテムデータではありません。'); return; }
+
+  const tr = document.createElement('tr');
+  tr.setAttribute('class', 'item-data');
+  tr.innerHTML = `
+    <td><a target="_blank">${ruby(data.itemName)}</a></td>
+    <td>${data.category?.replace(/\s+/g, '<hr>') ?? ''}</td>
+    <td>${data.summary || ''}</td>
+    <td class="button">×</td>
+  `;
+  tr.querySelector('a').href = href;
+  const remove = tr.querySelector('.button');
+  remove.addEventListener('click', () => delSchoolItem(remove, href));
+  document.querySelector('#school-item-list tbody').appendChild(tr);
+  schoolItems.push(href);
+  form.schoolItemList.value = schoolItems.join(',');
+  urlForm.value = '';
 }
 
 // 削除

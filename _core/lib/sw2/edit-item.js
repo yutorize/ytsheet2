@@ -1,19 +1,23 @@
 "use strict";
 const gameSystem = 'sw2';
+const itemForms = document.getElementById('item-forms');
 
 window.onload = function() {
-  setName('itemName');
-  checkCategory();
-  
+  new RecordListEditor(document.getElementById('item-records'), {
+    setupRecord: setupItemForm,
+    onChange: updateItemPageTitle,
+  });
+
   changeColor();
   deleteLoadingArea();
 }
 
 // 送信前チェック ----------------------------------------
 function formCheck(){
-  if(form.itemName.value === ''){
+  const emptyName = [...form.querySelectorAll('.item-form-name input')].find(input => input.value === '');
+  if(emptyName){
     alert('名称を入力してください。');
-    form.itemName.focus();
+    emptyName.focus();
     return false;
   }
   if(!formPasswordCheck()){
@@ -22,34 +26,39 @@ function formCheck(){
   return true;
 }
 
-// 入力値による挙動の変化 ----------------------------------------
-function checkCategory() {
-  const category = document.querySelector('[name="category"]').value?.trim() ?? '';
-  document.getElementById('section-common').classList.toggle(
-      'is-ranged-weapon',
-      /投擲|ボウ|クロスボウ|ガン/.test(category)
-  );
+// アイテムデータ欄 ----------------------------------------
+function setupItemForm(item) {
+  checkCategory(item.querySelector('[list="list-category"]'));
+  item.querySelectorAll('.input-arms-data').forEach(table => {
+    setSortable(table.dataset.arms, `#${table.id} tbody`, 'tr');
+  });
+  item.querySelector('.item-form-name input').addEventListener('input', setItemName);
 }
-// 武器データ欄 ----------------------------------------
-// 追加
-function addWeapon(){
-  document.querySelector("#weapons-table tbody").append(createRow('weapon','weaponNum'));
-}
-// 削除
-function delWeapon(){
-  delRow('weaponNum', '#weapons-table tbody tr:last-of-type');
-}
-// ソート
-setSortable('weapon','#weapons-table tbody','tr');
 
-// 防具データ欄 ----------------------------------------
-// 追加
-function addArmour(){
-  document.querySelector("#armours-table tbody").append(createRow('armour','armourNum'));
+function updateItemPageTitle(count) {
+  const multipleItems = count > 1;
+  document.getElementById('item-page-title').hidden = !multipleItems;
+  form.pageTitle.disabled = !multipleItems;
+  setItemName();
 }
-// 削除
-function delArmour(){
-  delRow('armourNum', '#armours-table tbody tr:last-of-type');
+
+function setItemName() {
+  const hasTitle = !form.pageTitle.disabled && form.pageTitle.value.trim() !== '';
+  const nameInput = hasTitle ? form.pageTitle : itemForms.querySelector('.item-form-name input');
+  setName(nameInput.name);
 }
-// ソート
-setSortable('armour','#armours-table tbody','tr');
+
+function checkCategory(input) {
+  input.closest('.item-form').classList.toggle('is-ranged-weapon', /投擲|ボウ|クロスボウ|ガン/.test(input.value));
+}
+
+// 武器・防具データ欄 ----------------------------------------
+function addArms(name) {
+  const numKey = `${name}Num`;
+  document.getElementById(`${name}-table`).tBodies[0].append(createRow(name, numKey));
+  form[numKey].dispatchEvent(new Event('change', { bubbles: true }));
+}
+
+function delArms(name) {
+  delRow(`${name}Num`, `#${name}-table tbody tr:last-of-type`);
+}

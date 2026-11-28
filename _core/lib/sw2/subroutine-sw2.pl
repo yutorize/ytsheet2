@@ -850,6 +850,92 @@ sub upgradeMonsterData {
   $pc{ver} = $main::ver;
   return %pc;
 }
+### アイテムシート --------------------------------------------------
+require "$::core_dir/lib/data-record-list.pl";
+my $itemRecords = data::record_list->new(
+  key => 'item',
+  label => 'アイテム',
+  nameField => 'itemName',
+  fields => qr/\A(?:
+    itemName(?:Ruby)? | price | reputation | shape | category | age | summary | effects
+    | magic | icon(?:Magic|Local|School[AT]?)
+    | (?:weapon|armour)(?:Num|[0-9]+[A-Za-z]+)
+  )\z/x,
+);
+
+sub itemRecordList { return $itemRecords; }
+
+sub selectItemData {
+  my ($item, $message) = $itemRecords->select(@_);
+  delete $item->{pageTitle} if $item;
+  return ($item, $message);
+}
+
+sub itemSheetName {
+  my ($pc) = @_;
+  my $title = $pc->{pageTitle} // '';
+  return $title if $itemRecords->count($pc) > 1 && $title =~ /\S/;
+  return $pc->{itemName};
+}
+my $itemListSeparator = '␟';
+# 一覧の種別欄で、従来の単一値と区切り・エスケープ形式を区別する
+use constant ITEM_LIST_VALUES_FLAG => '[item-values]';
+sub joinItemListValues {
+  return join $itemListSeparator, map {
+    my $value = escapeThanSign($_);
+    $value =~ s/\\/\\\\/g;
+    $value =~ s/\Q$itemListSeparator\E/\\u241F/g;
+    $value;
+  } @_;
+}
+sub splitItemListValues {
+  my ($field, $type) = @_;
+  $field //= '';
+  return ($field) if $field eq '' || index($type // '', ITEM_LIST_VALUES_FLAG) < 0;
+  my @values = split /\Q$itemListSeparator\E/, $field, -1;
+  foreach (@values){
+    s/\\(\\|u241F)/$1 eq 'u241F' ? $itemListSeparator : '\\'/ge;
+  }
+  return @values;
+}
+sub splitItemListCategoryLabels {
+  return map { [deduplicate(split ' ', $_)] } @_;
+}
+# 重複除去済みのラベルを比較し、一致したときは先頭の順序を使う。
+sub commonItemListCategoryLabels {
+  my ($first, @others) = @_;
+  return $first unless @others;
+  my %labels = map { $_ => 1 } @$first;
+  foreach my $other (@others){
+    return undef if @$other != @$first || grep { !exists $labels{$_} } @$other;
+  }
+  return $first;
+}
+sub itemListDisplayCategory {
+  my ($commonLabels, @labelsByItem) = @_;
+  return join ' ', @$commonLabels if defined $commonLabels;
+
+  my @baseOrder;
+  my @categoriesByItem;
+  foreach my $labels (@labelsByItem){
+    my %labelsByCategory;
+    foreach my $label (@$labels){
+      my $base = $label =~ s/\A(〈[^〈〉\s]+〉)(?:[BA]|SS?)\z/$1/ir;
+      push @baseOrder, $base if !@categoriesByItem && !exists $labelsByCategory{$base};
+      push @{$labelsByCategory{$base}}, $label;
+    }
+    push @categoriesByItem, \%labelsByCategory;
+  }
+
+  return 'さまざま' if grep { keys(%$_) != @baseOrder } @categoriesByItem;
+  my @display;
+  foreach my $base (@baseOrder){
+    return 'さまざま' if grep { !exists $_->{$base} } @categoriesByItem;
+    my $labels = commonItemListCategoryLabels(map { $_->{$base} } @categoriesByItem);
+    push @display, defined($labels) ? @$labels : $base;
+  }
+  return join ' ', @display;
+}
 sub upgradeItemData {
   my %pc = %{$_[0]};
   my $ver = $pc{ver};

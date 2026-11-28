@@ -702,6 +702,40 @@ input[type="number"] {
   text-align: center;
 }
 
+/* 複数レコードの並べ替え */
+.record-order-list {
+  margin: .5rem 0;
+  padding: 0 .75rem;
+  list-style: none;
+  > li {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: .5em;
+    padding: .25em 0;
+  }
+  .handle { cursor: grab; padding: 0 .35em; touch-action: none; }
+  .record-order-name {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--a-link-color);
+    font: inherit;
+    text-align: left;
+    text-decoration: 2px underline var(--a-line-color);
+    text-underline-offset: .2rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    &:hover { color: var(--a-hover-color); }
+  }
+  button { white-space: nowrap; }
+}
+.record-list-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5em;
+}
+
 /* 行追加ボタン */
 .add-del-button {
   text-align: center;

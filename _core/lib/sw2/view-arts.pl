@@ -306,9 +306,13 @@ $SHEET->param(MagicData => \@magics);
 
 ### 流派アイテム --------------------------------------------------
 my @items;
-foreach my $set_url (split ',',$pc{schoolItemList}){
-  eval { require $set::lib_convert; };
-  my %item = loadItemData($set_url);
+my @itemReferences;
+if(my @itemUrls = split ',', $pc{schoolItemList}){
+  require $set::lib_convert;
+  @itemReferences = prepareItemReferences(@itemUrls);
+}
+foreach my $reference (@itemReferences){
+  my %item = loadItemData($reference);
   if(exists $item{itemName}){
     $item{price} =~ s/[+＋]/<br>＋/;
     $item{price} = commify($item{price}) if $item{price} =~ /\d{4,}/;
@@ -319,7 +323,7 @@ foreach my $set_url (split ',',$pc{schoolItemList}){
       $icon .= qq|<img class="i-icon" src="${set::icon_dir}item_${_}.png">|;
     }
     push(@items, {
-      "NAME"      => qq|<a href="$set_url" target="_blank">$icon|.unescapeTags($item{itemName})."</a>",
+      "NAME"      => qq|<a href="@{[ escapePcData($item{_itemUrl}) ]}" target="_blank">$icon|.unescapeTags($item{itemName})."</a>",
       "PRICE"     => unescapeTags($item{price}),
       "CATEGORY"  => unescapeTags($item{category}),
       "REPUTATION"=> unescapeTags($item{reputation}),
@@ -328,9 +332,10 @@ foreach my $set_url (split ',',$pc{schoolItemList}){
     } );
   }
   else {
+    my $url = $reference->{sourceUrl};
     my $error = ($item{_error} ? qq|<span class="small">$item{_error}</span>| : "");
     push(@items, {
-      NAME => qq|<a href="$set_url" target="_blank" class="failed">データ取得失敗</a>|,
+      NAME => qq|<a href="$url" target="_blank" class="failed">データ取得失敗</a>|,
       SUMMARY => $error,
     });
     next;

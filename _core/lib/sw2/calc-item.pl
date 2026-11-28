@@ -9,13 +9,21 @@ use open ":utf8";
 sub dataCalc {
   my %pc = %{$_[0]};
 
-  #### カテゴリの全角半角変換 --------------------------------------------------
-  $pc{category} =~ tr/ａ-ｚＡ-Ｚ/a-zA-Z/;
+  my $records = itemRecordList();
+  if(my $formError = $records->normalizeForm(\%pc)){ error($formError); }
+  my $itemNum = $records->count(\%pc);
+  $pc{itemNum} = $itemNum;
+  delete $pc{pageTitle} if $itemNum == 1;
+
+  #### カテゴリのランク正規化 --------------------------------------------------
+  my @prefixes = $records->prefixes(\%pc);
+  foreach my $prefix (@prefixes){
+    $pc{"${prefix}category"} =~ tr/ａ-ｚＡ-Ｚ/a-zA-Z/;
+    $pc{"${prefix}category"} =~ s/(?<!\S)(〈[^〈〉\s]+〉)([BA]|SS?)(?=\s|\z)/$1.uc($2)/gie;
+  }
 
   #### 改行を<br>に変換 --------------------------------------------------
-  convertNewlinesToBrTag(\%pc,
-    qw/effects description/,
-  );
+  convertNewlinesToBrTag(\%pc, 'description', map { "${_}effects" } @prefixes);
   
   #### 保存処理でなければここまで --------------------------------------------------
   if(!$::mode_save){ return %pc; }
@@ -26,14 +34,31 @@ sub dataCalc {
 
   ### updatedLine --------------------------------------------------
   my %NL;
-  $NL{type} = $pc{magic} ? '[ma]' : '';
-  foreach ('itemName','author','category','price','age','summary'){
-    $NL{$_} = $pc{$_} =~ s/[|｜]([^|｜]+?)《.+?》/$1/gr;
-    $NL{$_} = removeTags unescapeTags $NL{$_} =~ s/^\s|\s$//gr;
+  $NL{type} = ($pc{magic} ? '[ma]' : '') . ITEM_LIST_VALUES_FLAG();
+  foreach (qw/author price age summary/){
+    $NL{$_} = itemListText($pc{$_});
   }
-  $NL{name}    = substr($NL{name}   , 0, 108).'..' if length($NL{name}   ) > 108;
+  my @names = (itemListText(itemSheetName(\%pc)));
+  my @categories = map { itemListText($pc{"${_}category"}) } @prefixes;
+  if($itemNum > 1){
+    my @labelsByItem = splitItemListCategoryLabels(@categories);
+    my $commonLabels = commonItemListCategoryLabels(@labelsByItem);
+    if(defined $commonLabels){
+      $NL{price} = join '／', map { itemListText($pc{"${_}price"}) } @prefixes;
+    }
+    else {
+      $NL{price} = 'さまざま';
+    }
+
+    my $forbidden = $pc{forbidden} // '';
+    if($forbidden eq '' || $forbidden eq 'battle'){
+      push @names, map { itemListText($pc{"${_}itemName"}) } @prefixes;
+    }
+    @categories = (itemListDisplayCategory($commonLabels, @labelsByItem)) if $forbidden ne '';
+  }
+  $NL{itemName} = joinItemListValues(deduplicate(@names));
+  $NL{category} = joinItemListValues(@categories);
   $NL{author}  = substr($NL{author} , 0,  25).'..' if length($NL{author} ) >  25;
-  $NL{sub}     = substr($NL{sub}    , 0,  40).'..' if length($NL{sub}    ) >  40;
   $NL{summary} = substr($NL{summary}, 0,  35).'..' if length($NL{summary}) >  35;
   $::updatedLine =
     "$pc{id}<>$::file<>"
@@ -42,6 +67,12 @@ sub dataCalc {
     . setUpdatatLineImage(\%pc)."<> $pc{tags} <>$pc{hide}<>";
   
   return %pc;
+}
+
+sub itemListText {
+  my $text = shift // '';
+  $text =~ s/[|｜]([^|｜]+?)《.+?》/$1/g;
+  return trim(removeTags(unescapeTags($text)));
 }
 
 1;
