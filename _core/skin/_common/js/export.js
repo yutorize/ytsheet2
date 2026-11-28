@@ -1,10 +1,20 @@
 // 保存系 ----------------------------------------
+function getSheetDownloadUrl(mode, targetEnvironment = '') {
+  const url = new URL(location.href);
+  url.hash = '';
+  // CGI が受け付ける区切りを URLSearchParams に合わせる。
+  url.search = url.search.replaceAll(';', '&');
+  url.searchParams.set('mode', mode);
+  url.searchParams.delete('callback');
+  if(targetEnvironment){ url.searchParams.set('target', targetEnvironment); }
+  else { url.searchParams.delete('target'); }
+  return url.href;
+}
+
 function getJsonData(targetEnvironment = '') {
-  const paramId = /id=[0-9a-zA-Z\-]+/.exec(location.href)[0];
-  const paramDate = /log=[0-9\-]+/.exec(location.href)?.[0] ?? null;
   return new Promise((resolve, reject)=>{
     let xhr = new XMLHttpRequest();
-    xhr.open('GET', `./?${paramId}&mode=json&target=${targetEnvironment}${paramDate?'&'+paramDate:''}`, true);
+    xhr.open('GET', getSheetDownloadUrl('json', targetEnvironment), true);
     xhr.responseType = "json";
     xhr.onload = (e) => {
       resolve(e.currentTarget.response);
@@ -146,16 +156,14 @@ async function downloadAsJson() {
 }
 async function downloadAsHtml(){
   const name = document.title.replace(/ - .+?$/,'') || '無題';
-  const url = location.href.replace(/#(.+)$/,'').replace(/&mode=(.+?)(&|$)/,'')+'&mode=download';
-  downloadFile(name+'.html', url);
+  downloadFile(name+'.html', getSheetDownloadUrl('download'));
 }
 async function downloadAsFullSet(){
   const name = document.title.replace(/ - .+?$/,'') || '無題';
-  const url = location.href.replace(/#(.+)$/,'').replace(/&mode=(.+?)(&|$)/,'');
   let zip = new JSZip();
-  zip.file(name+'.html', await JSZipUtils.getBinaryContent(url+'&mode=download'));
-  zip.file(name+'.json', await JSZipUtils.getBinaryContent(url+'&mode=json'));
-  if(document.getElementById('chatPaletteBox')) zip.file(name+'_チャットパレット.txt', await JSZipUtils.getBinaryContent(url+'&mode=palette'));
+  zip.file(name+'.html', await JSZipUtils.getBinaryContent(getSheetDownloadUrl('download')));
+  zip.file(name+'.json', await JSZipUtils.getBinaryContent(getSheetDownloadUrl('json')));
+  if(document.getElementById('chatPaletteBox')) zip.file(name+'_チャットパレット.txt', await JSZipUtils.getBinaryContent(getSheetDownloadUrl('palette')));
   
   // ユドナリウム
   if(document.getElementById('downloadlist-udonarium')){
@@ -173,14 +181,5 @@ async function downloadAsFullSet(){
 
   // ダウンロード
   zip.generateAsync({type:"blob"})
-    .then(function(content) {
-      const url = URL.createObjectURL(content);
-      const a = document.createElement("a");
-      document.body.appendChild(a);
-      a.download = name+'.zip';
-      a.href = url;
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
-    });
+    .then(content => downloadFile(name+'.zip', URL.createObjectURL(content)));
 }

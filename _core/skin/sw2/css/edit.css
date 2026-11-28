@@ -1776,14 +1776,12 @@ body[data-sheet-type="item"] {
     margin: var(--box-v-gap) 0;
     overflow-x: auto;
   }
-  #area-name {
-    font-weight: bold;
-  }
-  #item-name {
-    flex-grow: 1;
-  }
-  #item-name input {
-    width: calc(100% - 1em);
+  #name-form:has(> #item-page-title[hidden]) {
+    grid-template-columns: 1fr;
+    > #player-name {
+      border-width: 0 !important;
+      margin-top: 0;
+    }
   }
   #group dl {
     display: grid;
@@ -1793,9 +1791,11 @@ body[data-sheet-type="item"] {
   div.input-data {
     padding: 1rem;
   }
-  div.input-data div {
-    display: flex;
-    flex-wrap: wrap;
+  .item-form > h2 {
+    margin: -1rem -1rem .5em;
+  }
+  .item-form > h3 {
+    margin-top: 1em;
   }
   div.input-data dl {
     display: flex;
@@ -1821,10 +1821,11 @@ body[data-sheet-type="item"] {
   }
   div.input-data dl dd input {
     max-width: 14em;
-    &[name="reputation"] { width: 6em; }
-    &[name="shape"]      { max-width: 26em; }
-    &[name="summary"]    { max-width: 100%; }
+    &[name$="reputation"] { width: 6em; }
+    &[name$="shape"]      { max-width: 26em; }
+    &[name$="summary"]    { max-width: 100%; }
   }
+  div.input-data dl.item-form-name dd input { max-width: 26em; }
 
   div.input-data dl.icon-checkboxes label {
     & .i-icon {
@@ -1843,10 +1844,16 @@ body[data-sheet-type="item"] {
     & td:first-child { width: 1.5em; }
     & td:last-child { width: auto; }
     
-    #section-common:not(.is-ranged-weapon) & {
+    .item-form:not(.is-ranged-weapon) & {
       :is(th, td).range {
         display: none;
       }
+    }
+    @media screen and (width <= 735px){
+      & td { width: 2.8em; }
+      & td:first-child { width: 1em; }
+      & td:last-child { width: auto; }
+      & td input { min-width: 2em; }
     }
   }
 
@@ -1863,10 +1870,7 @@ body[data-sheet-type="item"] {
     }
   }
 
-  textarea[name="effects"] {
-    height: 16em;
-    padding: 2px;
-  }
+  textarea[name$="effects"],
   textarea[name="description"] {
     height: 16em;
     padding: 2px;

@@ -45,29 +45,51 @@ my @lines = loadLines();
 ### 検索フィルタ #####################################################################################
 @lines = filterTag(@lines)   if $::in{tag};
 @lines = filterImage(@lines) if $::in{image};
-@lines = filterContainsRegex(lines => \@lines, key => 'name', flags => 'i') if $::in{name};
 @lines = filterContainsRegex(lines => \@lines, key => 'author', flags => 'i') if $::in{author};
 @lines = filterContainsRegex(lines => \@lines, key => 'age') if $::in{age};
 
-## カテゴリ検索
-my @categoryQuery = split(/\s/, $::in{category});
+## 名称とカテゴリ
 if($::in{category} eq 'all'){
   $::in{category} = '';
-  $INDEX->param(category => "");
 }
-else {
-  foreach (@categoryQuery) {
-    my $q = $_;
-    if($q =~ s/^-//){ @lines = grep { !/^(?:[^<]*<>){6}[^<]*?\Q$q\E/ } @lines; } #マイナス検索
-    else            { @lines = grep { /^(?:[^<]*<>){6}[^<]*?\Q$q\E/ } @lines; }
+my @categoryQuery = split(/\s+/, $::in{category});
+$INDEX->param(category => "@categoryQuery");
+my @categoryTerms = map {
+  my $term = $_;
+  my $exclude = $term =~ s/^-//;
+  [$exclude, qr/\Q$term\E/];
+} @categoryQuery;
+my $namePattern = $::in{name} ne '' ? qr/\Q$::in{name}\E/i : undef;
+if($namePattern || @categoryTerms){
+  @lines = grep { matchItemListSearch(splitField($_), $namePattern, \@categoryTerms) } @lines;
+}
+
+sub matchItemListSearch {
+  my ($row, $namePattern, $categoryTerms) = @_;
+  if($namePattern){
+    return 0 unless any { /$namePattern/ } splitItemListValues($row->{name}, $row->{type});
   }
-  $INDEX->param(category => "@categoryQuery");
+  return 1 unless @$categoryTerms;
+
+  my @categories = splitItemListValues($row->{category}, $row->{type});
+  foreach my $term (@$categoryTerms){
+    my ($exclude, $pattern) = @$term;
+    my $matches = any { /$pattern/ } @categories;
+    return 0 if $exclude ? $matches : !$matches;
+  }
+  return 1;
 }
 
 ### ソート --------------------------------------------------
 if($::in{sort}){
   my $s = $::in{sort};
-  if   ($s eq 'name')  { my @t = map { capField($_,'name')   } @lines; @lines = @lines[sort {$t[$a] cmp $t[$b]} 0 .. $#t]; }
+  if($s eq 'name'){
+    my @titles = map {
+      my $row = splitField($_);
+      (splitItemListValues($row->{name}, $row->{type}))[0];
+    } @lines;
+    @lines = @lines[sort { $titles[$a] cmp $titles[$b] } 0 .. $#titles];
+  }
   elsif($s eq 'author'){ my @t = map { capField($_,'author') } @lines; @lines = @lines[sort {$t[$a] cmp $t[$b]} 0 .. $#t]; }
   elsif($s eq 'date')  { my @t = map { capField($_,'date')   } @lines; @lines = @lines[sort {$t[$b] <=> $t[$a]} 0 .. $#t]; }
 }
@@ -87,7 +109,14 @@ foreach (@$pageLines) {
     group => 'すべて',
   );
   
-  #分類
+  #名称とカテゴリの表示
+  ($pc{name}) = splitItemListValues($pc{name}, $pc{type});
+  my @categories = splitItemListValues($pc{category}, $pc{type});
+  $pc{category} = $categories[0];
+  if(@categories > 1){
+    my @labelsByItem = splitItemListCategoryLabels(@categories);
+    $pc{category} = itemListDisplayCategory(commonItemListCategoryLabels(@labelsByItem), @labelsByItem);
+  }
   $pc{category} =~ s/[ 　]/<br>/g;
 
   #価格

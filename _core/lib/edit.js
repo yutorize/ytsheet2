@@ -250,8 +250,7 @@ window.addEventListener('load', () => {
 });
 
 // 名前 ----------------------------------------
-function setName(){
-  const main = document.getElementById('main-name')?.name;
+function setName(main = document.getElementById('main-name')?.name){
   const sub = document.getElementById('sub-name')?.name;
 
   console.log(`setName():`, main, sub);

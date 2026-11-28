@@ -7,13 +7,57 @@ use JSON::PP;
 
 require $set::data_class;
 
+sub prepareItemReferences {
+  my %sheets;
+  my @references;
+  foreach my $sourceUrl (@_){
+    my $url = CGI::unescapeHTML($sourceUrl);
+    my ($source) = split /#/, $url, 2;
+    my ($base, $query) = split /\?/, $source, 2;
+    my $params = CGI->new($query // '');
+    my $num = $params->param('item');
+    # 固定番号を指定した場合も、選択前にシート全体を取得する。
+    my $id = $params->param('id');
+    $params->delete(qw/id item mode/);
+    my $idQuery = defined $id ? CGI->new({ id => $id })->query_string : '';
+    my $dataUrl = $base.'?'.join('&', grep { length } ($idQuery, $params->query_string));
+
+    my $sheet = $sheets{$dataUrl} //= {
+      url => $dataUrl,
+      remainingReferences => 0,
+    };
+    $sheet->{remainingReferences}++;
+    push @references, {
+      sourceUrl => $sourceUrl,
+      itemUrl => $url,
+      number => $num,
+      sheet => $sheet,
+    };
+  }
+  return @references;
+}
+
 sub loadItemData {
-  return importSheetData(
-    shift,
-    softError => 1,
-    dataDir => $set::lib_type{i}{dataDir},
-    skipPermission => 1,
-  );
+  my ($reference) = @_;
+  my $sheet = $reference->{sheet};
+  # 後続の参照があるあいだだけシート全体を保持する。
+  my $hasLaterReference = --$sheet->{remainingReferences} > 0;
+  my $data = $sheet->{data};
+  delete $sheet->{data} unless $hasLaterReference;
+  if(!$data){
+    $data = { importSheetData(
+      $sheet->{url},
+      softError => 1,
+      dataDir => $set::lib_type{i}{dataDir},
+    ) };
+    return %$data if $data->{_error};
+    return (_error => 'アイテムデータではありません。') if ($data->{type} // '') ne 'i';
+    $sheet->{data} = $data if $hasLaterReference;
+  }
+  return (%$data, _itemUrl => $reference->{itemUrl}) unless defined $reference->{number};
+  my ($item, $message) = selectItemData($data, $reference->{number});
+  return (_error => $message =~ s/\A[0-9]{3}://r) if !$item;
+  return (%$item, _itemUrl => $reference->{itemUrl});
 }
 
 ### キャラクター保管所 --------------------------------------------------

@@ -13,9 +13,9 @@
     <meta name="twitter:site" content="@yutorize">
     <TMPL_IF noindex><meta name="robots" content="none"></TMPL_IF>
     <TMPL_IF convertUrl>
-      <link rel="ytchat-body-exporting-point" type="application/json" href="./?url=<TMPL_VAR convertUrl>&mode=json">
+      <link rel="ytchat-body-exporting-point" type="application/json" href="./?url=<TMPL_VAR convertUrl>&mode=json<TMPL_VAR itemViewQuery ESCAPE=HTML>">
     <TMPL_ELSE>
-      <link rel="ytchat-body-exporting-point" type="application/json" href="./?id=<TMPL_VAR id>&mode=json">
+      <link rel="ytchat-body-exporting-point" type="application/json" href="./?id=<TMPL_VAR id>&mode=json<TMPL_VAR itemViewQuery ESCAPE=HTML>">
       <link rel="ytchat-palette-exporting-point" type="text/plain" href="./?id=<TMPL_VAR id>&mode=palette">
     </TMPL_IF>
   </TMPL_UNLESS>
@@ -53,7 +53,8 @@
   <style>
     <TMPL_IF nameFont>
     @import url('https://fonts.googleapis.com/css2?family=<TMPL_VAR nameFontUrl>&text=<TMPL_VAR encodedNameLetter>');
-    #area-name h1 {
+    #area-name h1,
+    body#item :is(.item-page-title, .item-name > h2) {
       font-family: "<TMPL_VAR nameFont>", var(--base-font-family-min);
       font-weight: <TMPL_VAR nameFontWeight>;
     }
