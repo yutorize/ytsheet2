@@ -17,10 +17,9 @@ sub addJsonData {
     $pc{sheetURL} .= '&item='.$::in{item} if $::in{id} && $pc{sheetURL};
   }
   if($type eq 'a' && $pc{category} eq 'magic' && defined $::in{magic}){
-    my ($magic, $message) = magicRecordList()->select(\%pc, $::in{magic});
+    my ($magic, $message) = selectMagicData(\%pc, $::in{magic});
     error($message) if !$magic;
     %pc = %$magic;
-    $pc{artsName} = $pc{magicName};
     if($::in{id} && $pc{sheetURL}){
       $pc{sheetURL} .= '&magic='.$::in{magic};
       $pc{sheetURL} .= '&log='.CGI::escape($::in{log}) if $::in{log};

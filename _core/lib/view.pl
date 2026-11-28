@@ -546,7 +546,12 @@ sub setSheetMenu {
   push(@menu, { TEXT => '', ICON => 'arrow_top_left', TYPE => "href", VALUE => './'.($type ? "?type=$type" : '') });
   push(@menu, @_);
   if($::in{url}){ # コンバートビュー
-    push(@menu, { TEXT => 'コンバート', ICON => 'input', TYPE => "href", VALUE => "./?mode=convert&url=$::in{url}" });
+    my $sourceURL = $::in{url};
+    if(my $magicNumber = $template->param('magicNumber')){
+      $sourceURL =~ s/#.*\z//;
+      $sourceURL .= "&magic=$magicNumber" unless $sourceURL =~ /[?&;]magic=/;
+    }
+    push(@menu, { TEXT => 'コンバート', ICON => 'input', TYPE => "href", VALUE => './?mode=convert&url='.CGI::escape($sourceURL) });
   }
   else {
     if($::in{log}){ # 過去ログ

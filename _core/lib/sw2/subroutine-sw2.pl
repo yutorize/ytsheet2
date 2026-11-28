@@ -995,6 +995,12 @@ my $magicRecords = data::record_list->new(
 
 sub magicRecordList { return $magicRecords; }
 
+sub selectMagicData {
+  my ($magic, $message) = $magicRecords->select(@_);
+  $magic->{artsName} = $magic->{magicName} if $magic;
+  return ($magic, $message);
+}
+
 sub upgradeArtsData {
   my %pc = %{$_[0]};
   my $ver = $pc{ver};
