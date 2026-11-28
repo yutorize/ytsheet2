@@ -15,19 +15,14 @@ require $set::lib_convert;
 require $::core_dir.'/lib/sw2/data-arts.pl';
 my @magic_classes = data::arts::classOptions();
 ### データ読み込み ###################################################################################
-my ($data, $file, $message) = loadSheetData();
+my $records = magicRecordList();
+my ($data, undef, $message, $latest) = loadSheetData(
+  $::mode eq 'edit' ? ($records->lastNumberKey(), $records->countKey()) : (),
+);
 our %pc = %{ $data };
+if(my $formError = $records->normalizeForm(\%pc)){ error($formError); }
 
 our $isNewSheet = isNewSheet();
-
-### 出力準備 #########################################################################################
-$message = applyMessageName($message, unescapeTags(
-    $pc{category} eq 'magic'  ? $pc{magicName}
-  : $pc{category} eq 'god'    ? $pc{godAka}.$pc{godName}
-  : $pc{category} eq 'school' ? $pc{schoolName}
-  : $pc{category} eq 'skill'  ? $pc{skillName}
-  : '無題'
-));
 
 ### 初期設定 --------------------------------------------------
 if($isNewSheet){
@@ -44,6 +39,16 @@ if($::mode eq 'blanksheet'){
 
   %pc = applyCustomizedInitialValues(\%pc, 'a');
 }
+
+my $magicSheetName = $records->sheetName(\%pc);
+my $multipleMagics = $records->count(\%pc) > 1;
+$message = applyMessageName($message, unescapeTags(
+    $pc{category} eq 'magic'  ? $magicSheetName
+  : $pc{category} eq 'god'    ? $pc{godAka}.$pc{godName}
+  : $pc{category} eq 'school' ? $pc{schoolName}
+  : $pc{category} eq 'skill'  ? $pc{skillName}
+  : '無題'
+));
 
 ## カラー
 setDefaultColors(\%pc);
@@ -63,16 +68,19 @@ if($pc{godQnA}         ){ $open{godQnA}      = 'open'; }
 
 ### 改行処理 --------------------------------------------------
 convertEscapedBrToNewlines(\%pc,
-  qw/magicEffect magicDescription
+  qw/magicDescription
   godSymbol godDeity godNote godQnA
   schoolNote schoolItemNote schoolArtsNote schoolMagicNote schoolQnA
   skillRankB_effect skillRankA_effect skillRankS_effect skillRankSS_effect
   /,
+  ( map { "${_}magicEffect"       } $records->prefixes(\%pc) ),
   ( map { "godMagic${_}Effect"    } 2,4,7,10,13 ),
   ( map { "schoolArts${_}Effect"  } 1..$pc{schoolArtsNum} ),
   ( map { "schoolMagic${_}Effect" } 1..$pc{schoolMagicNum} ),
   ( map { "skillRank${_}_effect"  } qw/B A S SS/ ),
 );
+data::arts::upgradePrefix(\%pc, 'magic');
+my @magicOrder = $records->prepareForm(\%pc, $latest);
 
 ### 画像 --------------------------------------------------
 my $imageMaxSize = $set::image_maxsize / 4;
@@ -80,7 +88,8 @@ my $imageMaxSizeView = $imageMaxSize >= 1048576 ? sprintf("%.3g",$imageMaxSize/1
 
 ### フォーム表示 #####################################################################################
 print renderEditPageStart(
-  title => (removeTags removeRuby unescapeTags ( $pc{artsName} )),
+  title => (removeTags removeRuby unescapeTags ($pc{category} eq 'magic' ? $magicSheetName : $pc{artsName})),
+  extraJsTop => qq|<script src="$::core_dir/lib/edit-record-list.js?$::ver" defer></script>|,
 );
 print renderEditHeaderMenu(
   tabsHtml => <<~'HTML',
@@ -116,15 +125,16 @@ print <<"HTML";
     </div>
     <!-- 魔法 -->
     <div class="data-area in-toc" id="data-magic" data-content-title="データ">
-      <div class="box input-data">
-        <dl class="name     "><dt>名称        <dd>【@{[ input 'magicName','',"setName" ]}】<br>
-                                                  @{[ checkbox 'magicActionTypePassive','常時',"checkMagicClass(this.closest('.input-data'))" ]}@{[ checkbox 'magicActionTypeMajor','主動作' ]}@{[ checkbox 'magicActionTypeMinor','補助動作' ]}@{[ checkbox 'magicActionTypeSetup','戦闘準備' ]}</dl>
-        <dl class="class    " oninput="checkMagicClass(this.closest('.input-data'))"><dt>系統        <dd>@{[ selectInput "magicClass","",@magic_classes ]} @{[ checkbox 'magicMinor','小魔法' ]}</dl>
-        <dl class="level    "><dt>習得レベル  <dd>@{[ input 'magicLevel' ]}</dl>
-        @{[ renderMagicDataInputs("magic") ]}
-        <dl class="summary  "><dt>概要        <dd>@{[ input 'magicSummary' ]}</dl>
-        <dl class="effect   "><dt>効果        <dd><textarea name="magicEffect">$pc{magicEffect}</textarea></dl>
+      <div class="box input-data" id="magic-sheet-info">
+        <dl id="magic-page-title" @{[ $multipleMagics ? '' : 'hidden' ]}>
+          <dt>ページタイトル<dd>@{[ input 'magicPageTitle','text','setName',($multipleMagics ? '' : 'disabled') ]}
+        </dl>
+        <dl class="class" id="magic-class" oninput="updateMagicClass()">
+          <dt>系統<dd>@{[ selectInput 'magicClass','',@magic_classes ]} @{[ checkbox 'magicMinor','小魔法' ]}
+        </dl>
+        @{[ input 'magicDataCustom','hidden' ]}
       </div>
+      @{[ renderRecordList($records, \@magicOrder, \&renderMagicFields) ]}
       <div class="box">
         <h2 class="in-toc">由来・逸話など</h2>
         <textarea name="magicDescription">$pc{magicDescription}</textarea>
@@ -359,14 +369,32 @@ print renderEditPageEnd(
   extraHtml => renderDataList().renderMagicDataSchema(),
 );
 
+sub renderMagicFields ($recordPrefix) {
+  my $prefix = $recordPrefix.'magic';
+  return <<~"HTML";
+    <dl class="name"><dt>名称<dd>【@{[ input "${prefix}Name",'','setName' ]}】<br>
+      @{[ checkbox "${prefix}ActionTypePassive",'常時',"checkMagicClass(this.closest('.input-data'))" ]}
+      @{[ checkbox "${prefix}ActionTypeMajor",'主動作' ]}
+      @{[ checkbox "${prefix}ActionTypeMinor",'補助動作' ]}
+      @{[ checkbox "${prefix}ActionTypeSetup",'戦闘準備' ]}
+    </dl>
+    <dl class="level"><dt>習得レベル<dd>@{[ input "${prefix}Level" ]}</dl>
+    @{[ renderMagicDataInputs($prefix, 'magic') ]}
+    <dl class="summary"><dt>概要<dd>@{[ input "${prefix}Summary" ]}</dl>
+    <dl class="effect"><dt>効果<dd>@{[ textarea "${prefix}Effect" ]}</dl>
+  HTML
+}
+
 # 可変項目は通常魔法と秘伝魔法で同じフォームを使う。
 sub renderMagicDataInputs {
-  my ($prefix) = @_;
-  my $rows = data::arts::rows(\%pc,$prefix);
+  my ($prefix, $classPrefix) = @_;
+  # 追加用テンプレートには、挿入時に現在の共通系統に沿った項目を設定する。
+  my $rows = $classPrefix && $prefix ne $classPrefix && !exists $pc{"${prefix}Name"} && !exists $pc{"${prefix}DataNum"}
+    ? [] : data::arts::rows(\%pc, $prefix, $classPrefix);
   my $num = 0;
   my $html = '<div class="magic-data-editor">'
     . input("${prefix}DataNum",'hidden')
-    . input("${prefix}DataCustom",'hidden')
+    . ($classPrefix ? '' : input("${prefix}DataCustom",'hidden'))
     . '<div class="magic-data-list">';
   foreach my $row (@$rows){
     $num++;

@@ -1904,6 +1904,12 @@ body[data-sheet-type="arts"] {
   div.input-data {
     position: relative;
   }
+  #magic-sheet-info > dl dt {
+    width: 8em;
+  }
+  #magic-sheet-info > dl[hidden] {
+    display: none;
+  }
   :is(#arts-list,#school-magic-list) .input-data {
     border-width: 1px 0 0;
     border-style: solid;

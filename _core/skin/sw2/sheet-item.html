@@ -49,7 +49,7 @@
           <li id="downloadlist-json"><a onclick="downloadAsJson();">JSON 形式</a>
           <li id="downloadlist-html"><a onclick="downloadAsHtml();">HTML 形式</a>
           <li id="downloadlist-zipped"><a onclick="downloadAsFullSet();">ZIP 形式（上記全部入り）</a>
-          <li class="link-tag"><span>ゆとシート内リンク用タグ<br><input type="text" onclick="this.select()" value="<TMPL_IF itemLinkTag><TMPL_VAR itemLinkTag ESCAPE=HTML><TMPL_ELSE>[<TMPL_VAR rawName>#<TMPL_VAR id>]</TMPL_IF>"></span>
+          <li class="link-tag"><span>ゆとシート内リンク用タグ<br><input type="text" onclick="this.select()" value="<TMPL_IF recordLinkTag><TMPL_VAR recordLinkTag ESCAPE=HTML><TMPL_ELSE>[<TMPL_VAR rawName>#<TMPL_VAR id>]</TMPL_IF>"></span>
         </ul>
       </aside>
     </TMPL_UNLESS>
@@ -66,7 +66,7 @@
   <main>
     <TMPL_IF forbidden><aside class="information attention">
       閲覧が制限されているデータです。<br>
-      <TMPL_IF yourAuthor>あなた以外には一部または全てのデータが伏せられます。(<a href="./?id=<TMPL_VAR id>&checkView=1<TMPL_VAR itemViewQuery ESCAPE=HTML>">⇒確認</a>)</TMPL_IF>
+      <TMPL_IF yourAuthor>あなた以外には一部または全てのデータが伏せられます。(<a href="./?id=<TMPL_VAR id>&checkView=1<TMPL_VAR recordViewQuery ESCAPE=HTML>">⇒確認</a>)</TMPL_IF>
     </aside></TMPL_IF>
     
     <TMPL_IF logId><aside class="information log">

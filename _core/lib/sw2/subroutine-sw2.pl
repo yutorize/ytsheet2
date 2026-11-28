@@ -856,6 +856,7 @@ my $itemRecords = data::record_list->new(
   key => 'item',
   label => 'アイテム',
   nameField => 'itemName',
+  titleField => 'pageTitle',
   fields => qr/\A(?:
     itemName(?:Ruby)? | price | reputation | shape | category | age | summary | effects
     | magic | icon(?:Magic|Local|School[AT]?)
@@ -865,38 +866,37 @@ my $itemRecords = data::record_list->new(
 
 sub itemRecordList { return $itemRecords; }
 
-sub selectItemData {
-  my ($item, $message) = $itemRecords->select(@_);
-  delete $item->{pageTitle} if $item;
-  return ($item, $message);
-}
-
-sub itemSheetName {
-  my ($pc) = @_;
-  my $title = $pc->{pageTitle} // '';
-  return $title if $itemRecords->count($pc) > 1 && $title =~ /\S/;
-  return $pc->{itemName};
-}
-my $itemListSeparator = '␟';
+sub selectItemData { return $itemRecords->select(@_); }
+sub itemSheetName { return $itemRecords->sheetName(@_); }
+my $recordListSeparator = '␟';
 # 一覧の種別欄で、従来の単一値と区切り・エスケープ形式を区別する
 use constant ITEM_LIST_VALUES_FLAG => '[item-values]';
-sub joinItemListValues {
-  return join $itemListSeparator, map {
+sub recordListText {
+  my $text = shift // '';
+  $text =~ s/[|｜]([^|｜]+?)《.+?》/$1/g;
+  return trim(removeTags(unescapeTags($text)));
+}
+sub joinRecordListValues {
+  return join $recordListSeparator, map {
     my $value = escapeThanSign($_);
     $value =~ s/\\/\\\\/g;
-    $value =~ s/\Q$itemListSeparator\E/\\u241F/g;
+    $value =~ s/\Q$recordListSeparator\E/\\u241F/g;
     $value;
   } @_;
+}
+sub splitRecordListValues {
+  my $field = shift // '';
+  my @values = split /\Q$recordListSeparator\E/, $field, -1;
+  foreach (@values){
+    s/\\(\\|u241F)/$1 eq 'u241F' ? $recordListSeparator : '\\'/ge;
+  }
+  return @values;
 }
 sub splitItemListValues {
   my ($field, $type) = @_;
   $field //= '';
   return ($field) if $field eq '' || index($type // '', ITEM_LIST_VALUES_FLAG) < 0;
-  my @values = split /\Q$itemListSeparator\E/, $field, -1;
-  foreach (@values){
-    s/\\(\\|u241F)/$1 eq 'u241F' ? $itemListSeparator : '\\'/ge;
-  }
-  return @values;
+  return splitRecordListValues($field);
 }
 sub splitItemListCategoryLabels {
   return map { [deduplicate(split ' ', $_)] } @_;
@@ -981,6 +981,20 @@ sub upgradeItemData {
   $pc{ver} = $main::ver;
   return %pc;
 }
+### 魔法シート --------------------------------------------------
+my $magicRecords = data::record_list->new(
+  key => 'magic',
+  label => '魔法',
+  nameField => 'magicName',
+  titleField => 'magicPageTitle',
+  fields => qr/\Amagic(?:
+    Name | Level | Summary | Effect | ActionType(?:Passive|Major|Minor|Setup)
+    | Data(?:Num|[0-9]+(?:Label|Value))
+  )\z/x,
+);
+
+sub magicRecordList { return $magicRecords; }
+
 sub upgradeArtsData {
   my %pc = %{$_[0]};
   my $ver = $pc{ver};

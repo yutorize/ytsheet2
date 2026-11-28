@@ -16,6 +16,16 @@ sub addJsonData {
     %pc = %$item;
     $pc{sheetURL} .= '&item='.$::in{item} if $::in{id} && $pc{sheetURL};
   }
+  if($type eq 'a' && $pc{category} eq 'magic' && defined $::in{magic}){
+    my ($magic, $message) = magicRecordList()->select(\%pc, $::in{magic});
+    error($message) if !$magic;
+    %pc = %$magic;
+    $pc{artsName} = $pc{magicName};
+    if($::in{id} && $pc{sheetURL}){
+      $pc{sheetURL} .= '&magic='.$::in{magic};
+      $pc{sheetURL} .= '&log='.CGI::escape($::in{log}) if $::in{log};
+    }
+  }
   $pc{'gameVersion'} = $::SW2_0 ? '2.0' : '2.5';
   ### 魔物 --------------------------------------------------
   if ($pc{type} eq 'm'){

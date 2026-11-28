@@ -13,9 +13,9 @@
     <meta name="twitter:site" content="@yutorize">
     <TMPL_IF noindex><meta name="robots" content="none"></TMPL_IF>
     <TMPL_IF convertUrl>
-      <link rel="ytchat-body-exporting-point" type="application/json" href="./?url=<TMPL_VAR convertUrl>&mode=json<TMPL_VAR itemViewQuery ESCAPE=HTML>">
+      <link rel="ytchat-body-exporting-point" type="application/json" href="./?url=<TMPL_VAR convertUrl>&mode=json<TMPL_VAR recordViewQuery ESCAPE=HTML>">
     <TMPL_ELSE>
-      <link rel="ytchat-body-exporting-point" type="application/json" href="./?id=<TMPL_VAR id>&mode=json<TMPL_VAR itemViewQuery ESCAPE=HTML>">
+      <link rel="ytchat-body-exporting-point" type="application/json" href="./?id=<TMPL_VAR id>&mode=json<TMPL_VAR recordViewQuery ESCAPE=HTML>">
       <link rel="ytchat-palette-exporting-point" type="text/plain" href="./?id=<TMPL_VAR id>&mode=palette">
     </TMPL_IF>
   </TMPL_UNLESS>

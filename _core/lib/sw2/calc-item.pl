@@ -36,15 +36,15 @@ sub dataCalc {
   my %NL;
   $NL{type} = ($pc{magic} ? '[ma]' : '') . ITEM_LIST_VALUES_FLAG();
   foreach (qw/author price age summary/){
-    $NL{$_} = itemListText($pc{$_});
+    $NL{$_} = recordListText($pc{$_});
   }
-  my @names = (itemListText(itemSheetName(\%pc)));
-  my @categories = map { itemListText($pc{"${_}category"}) } @prefixes;
+  my @names = (recordListText(itemSheetName(\%pc)));
+  my @categories = map { recordListText($pc{"${_}category"}) } @prefixes;
   if($itemNum > 1){
     my @labelsByItem = splitItemListCategoryLabels(@categories);
     my $commonLabels = commonItemListCategoryLabels(@labelsByItem);
     if(defined $commonLabels){
-      $NL{price} = join '／', map { itemListText($pc{"${_}price"}) } @prefixes;
+      $NL{price} = join '／', map { recordListText($pc{"${_}price"}) } @prefixes;
     }
     else {
       $NL{price} = 'さまざま';
@@ -52,12 +52,12 @@ sub dataCalc {
 
     my $forbidden = $pc{forbidden} // '';
     if($forbidden eq '' || $forbidden eq 'battle'){
-      push @names, map { itemListText($pc{"${_}itemName"}) } @prefixes;
+      push @names, map { recordListText($pc{"${_}itemName"}) } @prefixes;
     }
     @categories = (itemListDisplayCategory($commonLabels, @labelsByItem)) if $forbidden ne '';
   }
-  $NL{itemName} = joinItemListValues(deduplicate(@names));
-  $NL{category} = joinItemListValues(@categories);
+  $NL{itemName} = joinRecordListValues(deduplicate(@names));
+  $NL{category} = joinRecordListValues(@categories);
   $NL{author}  = substr($NL{author} , 0,  25).'..' if length($NL{author} ) >  25;
   $NL{summary} = substr($NL{summary}, 0,  35).'..' if length($NL{summary}) >  35;
   $::updatedLine =
@@ -67,12 +67,6 @@ sub dataCalc {
     . setUpdatatLineImage(\%pc)."<> $pc{tags} <>$pc{hide}<>";
   
   return %pc;
-}
-
-sub itemListText {
-  my $text = shift // '';
-  $text =~ s/[|｜]([^|｜]+?)《.+?》/$1/g;
-  return trim(removeTags(unescapeTags($text)));
 }
 
 1;

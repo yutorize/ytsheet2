@@ -25,6 +25,7 @@ setFields({
   image    => 9,
   tags     => 10,
   hide     => 11,
+  magicNames => 12,
 });
 
 ### テンプレート読み込み #############################################################################
@@ -59,7 +60,14 @@ $INDEX->param(Categories => [makeSelectOptions(
 @lines = filterTag(@lines)   if $::in{tag};
 @lines = filterImage(@lines) if $::in{image};
 @lines = filterContainsRegex(lines => \@lines, key => 'sub') if $::in{sub};
-@lines = filterContainsRegex(lines => \@lines, key => 'name', flags => 'i') if $::in{name};
+if($::in{name}){
+  my $pattern = qr/\Q$::in{name}\E/i;
+  @lines = grep {
+    my $row = splitField($_);
+    $row->{name} =~ $pattern
+      || ($row->{category} eq 'magic' && any { /$pattern/ } splitRecordListValues($row->{magicNames}));
+  } @lines;
+}
 @lines = filterContainsRegex(lines => \@lines, key => 'author', flags => 'i') if $::in{author};
 
 ### ソート --------------------------------------------------

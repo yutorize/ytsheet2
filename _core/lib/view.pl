@@ -223,6 +223,28 @@ sub normalizeViewTags {
     }
   }
 }
+### 複数レコードを持つシートの閲覧URL --------------------------------------------------
+sub recordSheetURL {
+  my $query = $::in{id} ? 'id='.CGI::escape($::in{id}) : 'url='.CGI::escape($::in{url});
+  $query .= '&log='.CGI::escape($::in{log}) if $::in{log};
+  $query .= '&checkView=1' if $::in{checkView};
+  return '?'.$query;
+}
+sub setRecordViewParams {
+  my ($sheet, $key, $number, $name) = @_;
+  return unless defined $number;
+
+  my $query = "&$key=$number";
+  $query .= '&log='.uri_escape_utf8($::in{log}) if $::in{log};
+  $sheet->param(recordViewQuery => $query, ogUrl => $sheet->param('ogUrl').$query);
+  if($::in{id}){
+    my $label = CGI::unescapeHTML(removeTags removeRuby ($name // ''));
+    # リンク書式の区切りと区別する。
+    $label =~ s/&/&#38;/g;
+    $label =~ s/>/&#62;/g;
+    $sheet->param(recordLinkTag => "[[$label>?id=$::in{id}$query]]");
+  }
+}
 ### パートナーデータ共通処理 --------------------------------------------
 sub setupPartnerDataCommon {
   my ($pc, %OPT) = @_;

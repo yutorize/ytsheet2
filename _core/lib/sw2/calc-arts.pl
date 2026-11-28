@@ -11,10 +11,22 @@ sub dataCalc {
   if($pc{ver}){
     %pc = upgradeArtsData(\%pc);
   }
+  my $records = magicRecordList();
+  if(my $formError = $records->normalizeForm(\%pc)){ error($formError); }
+  my @magicPrefixes = $records->prefixes(\%pc);
+  my $magicNum = @magicPrefixes;
+  if($pc{category} eq 'magic'){
+    $pc{magicNum} = $magicNum;
+  }
+  elsif($magicNum == 1 && ($pc{magicLastNumber} // 1) == 1){
+    # 他のカテゴリでは、既存の魔法一覧がある場合だけその採番を保持する。
+    delete @pc{qw/magicNum magicOrder magicLastNumber/};
+  }
+  delete $pc{magicPageTitle} if $magicNum == 1;
   my %NL;
 
   if($pc{category} eq 'magic'){
-    $NL{name} = $pc{magicName};
+    $NL{name} = $records->sheetName(\%pc);
     $NL{sub} = $pc{magicClass}.'／'.$pc{magicLevel};
     if($pc{magicMinor}){ $NL{sub} .= '／小魔法'; }
     if($pc{magicClass} =~ /^(?:呪印|貴格|城識)$/) { $NL{summary} = substr($pc{magicEffect}, 0, 35).'..'; }
@@ -41,11 +53,12 @@ sub dataCalc {
 
   #### 改行を<br>に変換 --------------------------------------------------
   convertNewlinesToBrTag(\%pc,
-    qw/magicEffect magicDescription
+    qw/magicDescription
     godSymbol godDeity godNote godQnA
     schoolNote schoolItemNote schoolArtsNote schoolMagicNote schoolQnA
     skillRankB_effect skillRankA_effect skillRankS_effect skillRankSS_effect
     /,
+    ( map { "${_}magicEffect"       } @magicPrefixes ),
     ( map { "godMagic${_}Effect"    } 2,4,7,10,13 ),
     ( map { "schoolArts${_}Effect"  } 1..$pc{schoolArtsNum} ),
     ( map { "schoolMagic${_}Effect" } 1..$pc{schoolMagicNum} ),
@@ -74,6 +87,10 @@ sub dataCalc {
     . "$pc{birthTime}<>$::now<>$NL{name}<>$NL{author}<>"
     . "$pc{category}<>$NL{sub}<>$NL{summary}<>"
     . setUpdatatLineImage(\%pc)."<> $pc{tags} <>$pc{hide}<>";
+  if($pc{category} eq 'magic' && $magicNum > 1 && ($pc{forbidden} eq '' || $pc{forbidden} eq 'battle')){
+    my @names = map { recordListText($pc{"${_}magicName"}) } @magicPrefixes;
+    $::updatedLine .= joinRecordListValues(deduplicate(@names)).'<>';
+  }
 
   return %pc;
 }

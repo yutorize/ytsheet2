@@ -5,7 +5,7 @@ use utf8;
 use Encode;
 use FindBin;
 
-our $ver = "2.01.017";
+our $ver = "2.01.018";
 
 our %in;
 for (param()){ $in{$_} = param($_); }
